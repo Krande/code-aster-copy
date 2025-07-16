@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -22,7 +22,7 @@ subroutine nmgpin(ndim, nno, axi, vu)
 #include "asterf_types.h"
 !
     aster_logical :: axi
-    integer :: ndim, nno, vu(3, 27)
+    integer(kind=8) :: ndim, nno, vu(3, 27)
 ! ----------------------------------------------------------------------
 !        INITIALISATION POUR LES ELEMENTS EN GRANDES DEFORMATIONS
 ! ----------------------------------------------------------------------
@@ -31,7 +31,7 @@ subroutine nmgpin(ndim, nno, axi, vu)
 ! IN  AXI   INDICATEUR DE MODELISATION AXISYMETRIQUE
 ! OUT VU    RENVOIE L'INDICE DU DDL CORRESPONDANT A (I,N)
 ! ----------------------------------------------------------------------
-    integer :: n, i
+    integer(kind=8) :: n, i
 ! ----------------------------------------------------------------------
 !
     do n = 1, nno

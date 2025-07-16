@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -21,12 +21,12 @@
 interface
     subroutine recuma(mailla, nbma, nbgr, nomma, nomgr,&
                       nbto, numnot)
-        integer :: nbto
-        integer :: nbgr
-        integer :: nbma
+        integer(kind=8) :: nbto
+        integer(kind=8) :: nbgr
+        integer(kind=8) :: nbma
         character(len=8) :: mailla
         character(len=8) :: nomma(nbma)
         character(len=24) :: nomgr(nbgr)
-        integer :: numnot(nbto)
+        integer(kind=8) :: numnot(nbto)
     end subroutine recuma
 end interface

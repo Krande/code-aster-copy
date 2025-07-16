@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -48,12 +48,7 @@ class TimesListStateBuilder(InternalStateBuilder):
             *InternalStateBuilder*: The internal state itself.
         """
         super().save(obj)
-        stp = obj.stepper
-        self._st["times"] = stp._times
-        self._st["initial"] = stp.getInitial()
-        self._st["final"] = stp.getFinal()
-        self._st["eps"] = stp.null_increment
-        self._st["actions"] = stp._actions
+        self._st["stepper"] = obj.stepper
         return self
 
     def restore(self, obj):
@@ -64,14 +59,7 @@ class TimesListStateBuilder(InternalStateBuilder):
             obj (*DataStructure*): The *DataStructure* object to be restored.
         """
         super().restore(obj)
-        obj.stepper = TimeStepper(
-            self._st["times"],
-            initial=self._st["initial"],
-            final=self._st["final"],
-            epsilon=self._st["eps"],
-        )
-        for act in self._st["actions"]:
-            obj.stepper.register_event(act)
+        obj.stepper = self._st["stepper"]
 
 
 @injector(TimesList)

@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2018 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -25,7 +25,7 @@ interface
                       jacobi   , l_axis_warn_)
         aster_logical, intent(in) :: l_axis
         character(len=8), intent(in) :: elem_code
-        integer, intent(in) :: elem_dime, nb_node
+        integer(kind=8), intent(in) :: elem_dime, nb_node
         real(kind=8), intent(in) :: elem_coor(3, 9)
         real(kind=8), intent(in) :: ff(9), dff(2, 9)
         real(kind=8), intent(out) :: jacobi

@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -22,10 +22,10 @@ interface
     subroutine pteequ(nume_equa    , base, neq, igds, nb_cmp_field,&
                       field_to_cata)
         character(len=19), intent(in) :: nume_equa
-        integer, intent(in) :: neq
-        integer, intent(in) :: igds
-        integer, intent(in) :: nb_cmp_field
-        integer, pointer :: field_to_cata(:)
+        integer(kind=8), intent(in) :: neq
+        integer(kind=8), intent(in) :: igds
+        integer(kind=8), intent(in) :: nb_cmp_field
+        integer(kind=8), pointer :: field_to_cata(:)
         character(len=1), intent(in) :: base
     end subroutine pteequ
 end interface

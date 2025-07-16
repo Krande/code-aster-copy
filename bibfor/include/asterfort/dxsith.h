@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -21,7 +21,7 @@
 interface
     subroutine dxsith(nomte, mater, sigma)
         character(len=16) :: nomte
-        integer :: mater
+        integer(kind=8) :: mater
         real(kind=8) :: sigma(*)
     end subroutine dxsith
 end interface

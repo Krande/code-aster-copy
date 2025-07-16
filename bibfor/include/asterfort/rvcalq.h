@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -22,18 +22,18 @@ interface
     subroutine rvcalq(iocc, sdeval, vec1, vec2, repere,&
                       nomcp, nbcpnc, nbcpcd, option, quant,&
                       sdlieu, codir, valdir, sdcalq, courbe)
-        integer :: iocc
+        integer(kind=8) :: iocc
         character(len=24) :: sdeval
         real(kind=8) :: vec1(*)
         real(kind=8) :: vec2(*)
         character(len=8) :: repere
         character(len=8) :: nomcp(*)
-        integer :: nbcpnc
-        integer :: nbcpcd
+        integer(kind=8) :: nbcpnc
+        integer(kind=8) :: nbcpcd
         character(len=16) :: option
         character(len=24) :: quant
         character(len=24) :: sdlieu
-        integer :: codir
+        integer(kind=8) :: codir
         real(kind=8) :: valdir(*)
         character(len=19) :: sdcalq
         character(len=8) :: courbe

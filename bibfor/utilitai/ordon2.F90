@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -21,7 +21,7 @@ subroutine ordon2(vale, nb)
     implicit none
 #include "asterfort/ordr8.h"
 #include "blas/dcopy.h"
-    integer :: nb
+    integer(kind=8) :: nb
     real(kind=8) :: vale(*)
 ! person_in_charge: mathieu.courtois at edf.fr
 ! ----------------------------------------------------------------------
@@ -31,7 +31,7 @@ subroutine ordon2(vale, nb)
 !                 SOUS LA FORME X1,Y1,Z1, X2,Y2,Z2, ...
 ! IN     : NB   : NBRE DE POINTS
 ! ----------------------------------------------------------------------
-    integer :: i, iord(nb)
+    integer(kind=8) :: i, iord(nb)
     real(kind=8) :: xbid(nb), yrbid(nb), yibid(nb)
     blas_int :: b_incx, b_incy, b_n
 !     ------------------------------------------------------------------

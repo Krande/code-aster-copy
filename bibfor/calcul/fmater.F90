@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -26,12 +26,12 @@ subroutine fmater(nbfmax, nftab, tab)
 #include "jeveux.h"
 #include "asterfort/assert.h"
 
-    integer :: nbfmax, nftab
+    integer(kind=8) :: nbfmax, nftab
     character(len=8) :: tab(*)
 !-----------------------------------------------------------------------
 ! but : recuperer les familles de points de gauss de la liste MATER
 !-----------------------------------------------------------------------
-    integer :: i
+    integer(kind=8) :: i
 !-----------------------------------------------------------------------
 
     ASSERT(nbfmax .ge. ca_nfpg_)

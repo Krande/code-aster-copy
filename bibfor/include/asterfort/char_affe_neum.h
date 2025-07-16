@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -21,10 +21,10 @@ interface
                               keywordfact, iocc,&
                               nbMap      , map , nbCmp)
         character(len=8), intent(in) :: model, mesh
-        integer, intent(in) :: ndim
+        integer(kind=8), intent(in) :: ndim
         character(len=16), intent(in) :: keywordfact
-        integer, intent(in) :: iocc, nbMap
+        integer(kind=8), intent(in) :: iocc, nbMap
         character(len=19), intent(in) :: map(nbMap)
-        integer, intent(in) :: nbCmp(nbMap)
+        integer(kind=8), intent(in) :: nbCmp(nbMap)
     end subroutine char_affe_neum
 end interface

@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -55,7 +55,7 @@ subroutine lcdehy(fami, kpg, ksp, nmat, materd, &
 !       ----------------------------------------------------------------
 
     aster_logical, optional, intent(in) :: l_epsi_varc_
-    integer :: ndt, ndi, nmat, k, iret, kpg, ksp
+    integer(kind=8) :: ndt, ndi, nmat, k, iret, kpg, ksp
     character(len=*) :: fami
     real(kind=8) :: hd, hf, sd, sf, sref
     real(kind=8) :: epsdm(6), depsm(6)

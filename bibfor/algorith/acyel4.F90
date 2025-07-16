@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -57,14 +57,14 @@ subroutine acyel4(nmcolz, nomobz, nobl, nobc, okpart, &
 #include "asterfort/jexnom.h"
 #include "asterfort/jexnum.h"
 !-----------------------------------------------------------------------
-    integer :: i, iad, ibid, ideb, iret, j, jdeb
-    integer :: llob, nbcol, nblig, ndim, nobc, nobl
+    integer(kind=8) :: i, iad, ibid, ideb, iret, j, jdeb
+    integer(kind=8) :: llob, nbcol, nblig, ndim, nobc, nobl
     real(kind=8) :: abet, bbet, beta
     character(len=8) :: nomob
     character(len=24) :: nomcol
     character(len=*) :: nmcolz, nomobz
     complex(kind=8) :: cmat(ndim, ndim)
-    integer :: lilig(nblig), licol(nbcol)
+    integer(kind=8) :: lilig(nblig), licol(nbcol)
     aster_logical :: okpart
 !-----------------------------------------------------------------------
     call jemarq()

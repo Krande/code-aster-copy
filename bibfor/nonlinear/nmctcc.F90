@@ -26,20 +26,17 @@ subroutine nmctcc(mesh, model_, nume_inst, &
     implicit none
 !
 #include "asterf_types.h"
-#include "asterfort/assert.h"
 #include "asterfort/cfdisi.h"
-#include "asterfort/cfdisl.h"
 #include "asterfort/infdbg.h"
 #include "asterfort/mmbouc.h"
 #include "asterfort/mm_cycl_flip.h"
 #include "asterfort/mmstat.h"
 #include "asterfort/nmcrel.h"
-#include "asterfort/utmess.h"
 #include "asterfort/nmchex.h"
 !
     character(len=8), intent(in) :: mesh
     character(len=24), intent(in) :: model_
-    integer, intent(in) :: nume_inst
+    integer(kind=8), intent(in) :: nume_inst
     character(len=24), intent(in) :: sderro
     character(len=19), intent(in) :: sddisc
     character(len=19), intent(in) :: hval_incr(*)
@@ -70,12 +67,12 @@ subroutine nmctcc(mesh, model_, nume_inst, &
 !
 ! --------------------------------------------------------------------------------------------------
 !
-    integer :: ifm, niv
+    integer(kind=8) :: ifm, niv
     aster_logical :: l_erro_cont
-    integer :: loop_cont_count, iter_cont_maxi
+    integer(kind=8) :: loop_cont_count, iter_cont_maxi
     character(len=8) :: model
     real(kind=8) :: loop_cont_vale
-    integer :: iter_newt
+    integer(kind=8) :: iter_newt
     aster_logical :: cycl_flip, loop_cont_conv
     character(len=19) :: disp_curr, disp_cumu_inst
 !

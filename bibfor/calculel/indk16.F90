@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -18,12 +18,12 @@
 !
 function indk16(lk16, k16z, rang, nbk16)
     implicit none
-    integer :: indk16
+    integer(kind=8) :: indk16
 !
 ! INSPI INDIK8
 !     ARGUMENTS:
 !     ----------
-    integer :: nbk16, rang
+    integer(kind=8) :: nbk16, rang
     character(len=*) :: k16z, lk16(*)
     character(len=16) :: k16, lk16z
 ! ----------------------------------------------------------------------
@@ -41,7 +41,7 @@ function indk16(lk16, k16z, rang, nbk16)
 !
 !     VARIABLES LOCALES:
 !     ------------------
-    integer :: i, j
+    integer(kind=8) :: i, j
 ! DEB-------------------------------------------------------------------
 !
     k16 = k16z

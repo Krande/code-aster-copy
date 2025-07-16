@@ -25,11 +25,10 @@ subroutine rco3d_calcmat(nb_gauss, gauss_weight, gauss_coor, jac_det, &
     implicit none
 !
 #include "asterf_types.h"
-#include "asterfort/assert.h"
 #include "jeveux.h"
 
     real(kind=8), intent(in) :: epai, crig
-    integer, intent(in) :: nb_gauss, nno_co, nno_3d
+    integer(kind=8), intent(in) :: nb_gauss, nno_co, nno_3d
     real(kind=8), intent(in) :: jac_det(NB_GAUSS_MAX)
     real(kind=8), intent(in) :: gauss_weight(NB_GAUSS_MAX)
     real(kind=8), intent(in) :: gauss_coor(2, NB_GAUSS_MAX)
@@ -81,7 +80,7 @@ subroutine rco3d_calcmat(nb_gauss, gauss_weight, gauss_coor, jac_det, &
 !
     real(kind=8) :: mat1(3, 6*nno_co), mat2(3, 6*nno_co+3*nno_3d)
     real(kind=8) :: rot(3, 3), mat3(3, 3), mat4(3, 3), mat5(3, 3)
-    integer :: i, j, index, ddl_co, ddl_3d
+    integer(kind=8) :: i, j, index, ddl_co, ddl_3d
     real(kind=8) :: epsilon
 
     mat1 = 0.0d0

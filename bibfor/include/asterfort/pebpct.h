@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -21,13 +21,13 @@
           interface 
             subroutine pebpct(ligrel,nbma,lma,cham,nomcmp,dim,bfix,borne&
      &,norme,seuil,lseuil,borpct,voltot,carele,cespoi)
-              integer :: dim
+              integer(kind=8) :: dim
               character(len=*) :: ligrel
-              integer :: nbma
+              integer(kind=8) :: nbma
               character(len=24) :: lma
               character(len=19) :: cham
               character(len=8) :: nomcmp
-              integer :: bfix
+              integer(kind=8) :: bfix
               real(kind=8) :: borne(2)
               character(len=8) :: norme
               real(kind=8) :: seuil

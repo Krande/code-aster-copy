@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -24,7 +24,7 @@ subroutine dgseui(em, num, ef, nuf, eb, &
     implicit none
 !
 ! PARAMETRES ENTRANTS
-    integer :: icisai
+    integer(kind=8) :: icisai
     real(kind=8) :: em, num, ef, nuf, h
     real(kind=8) :: eb, nub, ftj
 !

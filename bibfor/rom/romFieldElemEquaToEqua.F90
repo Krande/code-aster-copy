@@ -28,13 +28,12 @@ subroutine romFieldElemEquaToEqua(fieldA, fieldB, equaAToB)
 #include "asterfort/utmess.h"
 #include "asterfort/jexnum.h"
 #include "asterfort/dismoi.h"
-#include "asterfort/jenuno.h"
 #include "asterfort/jeveuo.h"
 #include "asterfort/utchdl.h"
 #include "asterfort/int_to_char8.h"
 !
     type(ROM_DS_Field), intent(in) :: fieldA, fieldB
-    integer, pointer :: equaAToB(:)
+    integer(kind=8), pointer :: equaAToB(:)
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -53,18 +52,18 @@ subroutine romFieldElemEquaToEqua(fieldA, fieldB, equaAToB)
 !
 ! --------------------------------------------------------------------------------------------------
 !
-    integer :: ifm, niv
-    integer :: nbEquaA, nbEquaB
+    integer(kind=8) :: ifm, niv
+    integer(kind=8) :: nbEquaA, nbEquaB
     character(len=4) :: fieldSuppA, fieldSuppB
-    integer :: iGrel, nbGrel, iElem, nbElem, iPt, nbPt, iCmpName, nbCmpName
-    integer :: locaNume, elemNume, addr, numeEquaA, numeEquaB
+    integer(kind=8) :: iGrel, nbGrel, iElem, nbElem, iPt, nbPt, iCmpName, nbCmpName
+    integer(kind=8) :: locaNume, elemNume, addr, numeEquaA, numeEquaB
     aster_logical :: diff
     character(len=19) :: ligrName
     character(len=24) :: fieldRefeA, fieldRefeB
     character(len=8) :: mesh, elemName, cmpName
-    integer, pointer :: celd(:) => null()
-    integer, pointer :: modloc(:) => null()
-    integer, pointer :: liel(:) => null()
+    integer(kind=8), pointer :: celd(:) => null()
+    integer(kind=8), pointer :: modloc(:) => null()
+    integer(kind=8), pointer :: liel(:) => null()
     real(kind=8), pointer :: celv(:) => null()
 !
 ! --------------------------------------------------------------------------------------------------

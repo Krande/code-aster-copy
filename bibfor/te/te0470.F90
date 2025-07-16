@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -41,19 +41,19 @@ subroutine te0470(option, nomte)
 !                      NOMTE        -->  NOM DU TYPE ELEMENT           C
 ! .....................................................................C
 ! .....................................................................C
-    integer :: nbres, nddl
+    integer(kind=8) :: nbres, nddl
     parameter(nbres=3, nddl=7)
     character(len=24) :: carac, ff
     character(len=8) :: elrefe, fami, poum
     character(len=16) :: nomres(nbres)
-    integer :: icodre(nbres), kpg, spt
+    integer(kind=8) :: icodre(nbres), kpg, spt
     real(kind=8) :: valres(nbres), tpg, pgl(3, 3)
-    integer :: nno1, nno2, npg1(2, 2), npg2(2, 2), npg, n, nbv
-    integer :: imatuu, icarac, iff, imate, igeom, lorien, lsect, itype
-    integer :: kp, k1, k2, k3, i, j, ik, ijkl, k, l, ij, ijl, lcorr
-    integer :: ipoi2, ivf2p, ivf2g, iddx2g, iddy2g, iddz2g, ipoi3, ivf3f, iddx3f
-    integer :: iddy3f, iddz3f, ivf3g, iddx3g, iddy3g, iddz3g, ipoi4, ivf4p
-    integer :: ivf4f, iddx4f, iddy4f, iddz4f, ivf4g, iddx4g, iddy4g, iddz4g
+    integer(kind=8) :: nno1, nno2, npg1(2, 2), npg2(2, 2), npg, n, nbv
+    integer(kind=8) :: imatuu, icarac, iff, imate, igeom, lorien, lsect, itype
+    integer(kind=8) :: kp, k1, k2, k3, i, j, ik, ijkl, k, l, ij, ijl, lcorr
+    integer(kind=8) :: ipoi2, ivf2p, ivf2g, iddx2g, iddy2g, iddz2g, ipoi3, ivf3f, iddx3f
+    integer(kind=8) :: iddy3f, iddz3f, ivf3g, iddx3g, iddy3g, iddz3g, ipoi4, ivf4p
+    integer(kind=8) :: ivf4f, iddx4f, iddy4f, iddz4f, ivf4g, iddx4g, iddy4g, iddz4g
     real(kind=8) :: mass(3, 3), rdp(3, 3), d(2, 2), mtor
     real(kind=8) :: dpdx(8), dpdy(8), dpdz(8), poids2, poids3, poids4, ffdpl2(8)
     real(kind=8) :: ffrot2(8), ffdpl4(8), ffrot4(8), xk(2), dfpdx3(20)

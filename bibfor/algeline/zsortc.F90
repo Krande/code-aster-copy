@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -91,7 +91,7 @@ subroutine zsortc(which, apply, n, x, y)
 #include "blas/dlapy2.h"
     character(len=2) :: which
     aster_logical :: apply
-    integer :: n
+    integer(kind=8) :: n
 !
 !     %-----------------%
 !     | ARRAY ARGUMENTS |
@@ -103,7 +103,7 @@ subroutine zsortc(which, apply, n, x, y)
 !     | LOCAL SCALARS |
 !     %---------------%
 !
-    integer :: i, igap, j
+    integer(kind=8) :: i, igap, j
     complex(kind=8) :: temp
     real(kind=8) :: temp1, temp2
 !

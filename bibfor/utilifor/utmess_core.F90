@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -31,7 +31,6 @@ subroutine utmess_core(typ, idmess, nk, valk, ni, &
 #include "asterc/utprin.h"
 #include "asterf_types.h"
 #include "asterfort/asmpi_warn.h"
-#include "asterfort/assert.h"
 #include "asterfort/jedema.h"
 #include "asterfort/jedetc.h"
 #include "asterfort/jefini.h"
@@ -43,23 +42,23 @@ subroutine utmess_core(typ, idmess, nk, valk, ni, &
 #include "asterfort/trabck.h"
     character(len=*), intent(in) :: typ
     character(len=*), intent(in) :: idmess
-    integer, intent(in) :: nk
+    integer(kind=8), intent(in) :: nk
     character(len=*), intent(in) :: valk(*)
-    integer, intent(in) :: ni
-    integer, intent(in) :: vali(*)
-    integer, intent(in) :: nr
+    integer(kind=8), intent(in) :: ni
+    integer(kind=8), intent(in) :: vali(*)
+    integer(kind=8), intent(in) :: nr
     real(kind=8), intent(in) :: valr(*)
-    integer, intent(in) :: nexcep
+    integer(kind=8), intent(in) :: nexcep
     character(len=*), intent(in) :: fname
 !
-    integer, save :: recurs
+    integer(kind=8), save :: recurs
     character(len=24) :: msgId
     character(len=16) :: compex
     character(len=8) :: nomres, k8b
     character(len=2) :: typm
     aster_logical :: lerror, lvalid, labort, suite, lstop, lerrm, ltrb
-    integer :: lout, idf, i, lc, imaap, icode
-    integer :: numex
+    integer(kind=8) :: lout, idf, i, lc, imaap, icode
+    integer(kind=8) :: numex
 !
     aster_logical, save :: isFirst = ASTER_TRUE
     type(Message), save :: firstMsg

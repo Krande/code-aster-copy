@@ -22,7 +22,6 @@ subroutine trmult(modsta, numexi, mailla, neq, iddeeq, &
 #include "jeveux.h"
 #include "asterfort/as_allocate.h"
 #include "asterfort/as_deallocate.h"
-#include "asterfort/assert.h"
 #include "asterfort/compno.h"
 #include "asterfort/copmod.h"
 #include "asterfort/getvem.h"
@@ -31,10 +30,8 @@ subroutine trmult(modsta, numexi, mailla, neq, iddeeq, &
 #include "asterfort/jedetr.h"
 #include "asterfort/jelira.h"
 #include "asterfort/jemarq.h"
-#include "asterfort/jenuno.h"
 #include "asterfort/jeveuo.h"
 #include "asterfort/jexnom.h"
-#include "asterfort/jexnum.h"
 #include "asterfort/r8inir.h"
 #include "asterfort/rsexch.h"
 #include "asterfort/rsorac.h"
@@ -45,7 +42,7 @@ subroutine trmult(modsta, numexi, mailla, neq, iddeeq, &
 #include "asterfort/int_to_char8.h"
 !
     character(len=8) :: modsta, mailla, numddl
-    integer :: numexi, neq, iddeeq
+    integer(kind=8) :: numexi, neq, iddeeq
     real(kind=8) :: pside(neq)
 !     OPERATEUR :   DYNA_TRAN_MODAL
 !
@@ -63,18 +60,18 @@ subroutine trmult(modsta, numexi, mailla, neq, iddeeq, &
     character(len=24) :: magrno
     character(len=24) :: valk(3)
     character(len=8) :: kbid
-    integer :: ibid, iordr(1), ier
+    integer(kind=8) :: ibid, iordr(1), ier
     real(kind=8) :: r8b, epsi
     character(len=8) :: cmp(6), crit
     character(len=16) :: acces
     character(len=19) :: chamno
     complex(kind=8) :: c16b
-    integer :: imode
+    integer(kind=8) :: imode
 !     ------------------------------------------------------------------
 !-----------------------------------------------------------------------
-    integer :: i, id, idno, ii, in
-    integer :: iret, ldgn, nb, nbd, nbdir, nbgr, nbno
-    integer :: nbtrou, nbv, tmod(1)
+    integer(kind=8) :: i, id, idno, ii, in
+    integer(kind=8) :: iret, ldgn, nb, nbd, nbdir, nbgr, nbno
+    integer(kind=8) :: nbtrou, nbv, tmod(1)
     real(kind=8) :: xd
     character(len=24), pointer :: group_no(:) => null()
     real(kind=8), pointer :: base(:) => null()

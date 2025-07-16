@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -37,11 +37,11 @@ subroutine apcrsd(ds_contact, sdappa, &
 !
     type(NL_DS_Contact), intent(in) :: ds_contact
     character(len=19), intent(in) :: sdappa
-    integer, intent(in) :: nt_poin
-    integer, intent(in) :: nb_cont_elem
-    integer, intent(in) :: nb_cont_node
-    integer, intent(in) :: nt_elem_node
-    integer, intent(in) :: nb_node_mesh
+    integer(kind=8), intent(in) :: nt_poin
+    integer(kind=8), intent(in) :: nb_cont_elem
+    integer(kind=8), intent(in) :: nb_cont_node
+    integer(kind=8), intent(in) :: nt_elem_node
+    integer(kind=8), intent(in) :: nb_node_mesh
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -61,15 +61,15 @@ subroutine apcrsd(ds_contact, sdappa, &
 !
 ! --------------------------------------------------------------------------------------------------
 !
-    integer :: i_cont_elem, longt, elem_indx, longc, elem_nbnode
+    integer(kind=8) :: i_cont_elem, longt, elem_indx, longc, elem_nbnode
     character(len=24) :: sdappa_poin
     real(kind=8), pointer :: v_sdappa_poin(:) => null()
     character(len=24) :: sdappa_infp
-    integer, pointer :: v_sdappa_infp(:) => null()
+    integer(kind=8), pointer :: v_sdappa_infp(:) => null()
     character(len=24) :: sdappa_noms
     character(len=16), pointer :: v_sdappa_noms(:) => null()
     character(len=24) :: sdappa_appa
-    integer, pointer :: v_sdappa_appa(:) => null()
+    integer(kind=8), pointer :: v_sdappa_appa(:) => null()
     character(len=24) :: sdappa_dist
     real(kind=8), pointer :: v_sdappa_dist(:) => null()
     character(len=24) :: sdappa_tau1

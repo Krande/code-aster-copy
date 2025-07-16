@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -29,10 +29,10 @@ subroutine apinte_chck2(proj_tole, elem_dime, &
 #include "asterfort/reerel.h"
 !
     real(kind=8), intent(in) :: proj_tole
-    integer, intent(in) :: elem_dime
-    integer, intent(in) :: elem_sside_nbnode
+    integer(kind=8), intent(in) :: elem_dime
+    integer(kind=8), intent(in) :: elem_sside_nbnode
     real(kind=8), intent(in) :: elem_sside_coor(3, 9)
-    integer, intent(in) :: elem_pside_nbnode
+    integer(kind=8), intent(in) :: elem_pside_nbnode
     real(kind=8), intent(in) :: elem_pside_coor(3, 9)
     real(kind=8), intent(in) :: norm_pside(3)
     real(kind=8), intent(in) :: norm_sside(3)
@@ -66,7 +66,7 @@ subroutine apinte_chck2(proj_tole, elem_dime, &
     real(kind=8) :: ksi1(2), ksi2(2)
     real(kind=8) :: vect_pside(3), vect_sside(3), vect_stpj(3)
     real(kind=8) :: sig, sp_ns_vsp, sp_np_vsp
-    integer :: i_node, i_dime, listNodenext(4)
+    integer(kind=8) :: i_node, i_dime, listNodenext(4)
 !
 ! --------------------------------------------------------------------------------------------------
 !

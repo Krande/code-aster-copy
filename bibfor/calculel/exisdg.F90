@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -21,18 +21,18 @@ function exisdg(dg, cmp)
     implicit none
 #include "asterf_types.h"
     aster_logical :: exisdg
-    integer :: dg(*), cmp
+    integer(kind=8) :: dg(*), cmp
 ! person_in_charge: jacques.pellet at edf.fr
 !
 !     INDIQUE L'EXISTENCE D'1 CMP DANS UN DESCRIPTEUR-GRANDEUR DG
 !     ------------------------------------------------------------------
 !     EXTERNAL:
 !     ---------
-    integer :: iand, lshift
+    integer(kind=8) :: iand, lshift
 !
 !     VARIABLES LOCALES:
 !     ------------------
-    integer :: iec, reste, code
+    integer(kind=8) :: iec, reste, code
 !
 ! DEB-------------------------------------------------------------------
 !

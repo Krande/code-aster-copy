@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -36,7 +36,7 @@ subroutine arlcou(mail, iocc, nomo, typmai, &
     character(len=19) :: lisrel
     character(len=10) :: nom1, nom2
     character(len=8) ::  cine(3)
-    integer ::      dime, iocc
+    integer(kind=8) ::      dime, iocc
 
 ! ----------------------------------------------------------------------
 
@@ -59,7 +59,7 @@ subroutine arlcou(mail, iocc, nomo, typmai, &
 
     character(len=10) :: nomgr1, nomgr2
     character(len=8) ::  cine1, cine2
-    integer ::      nbma1, nbma2
+    integer(kind=8) ::      nbma1, nbma2
     character(len=19) :: ngrm1, ngrm2
     character(len=8) ::  k8bid
 

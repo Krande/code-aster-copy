@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -25,7 +25,7 @@ interface
                       dmob1f, dmob2f,&
                       fmw   , fm1w  , fm2w)
         aster_logical, intent(in) :: l_matr, l_resi
-        integer, intent(in) :: ifa, maxfa, nface
+        integer(kind=8), intent(in) :: ifa, maxfa, nface
         real(kind=8), intent(in) :: fkss, dfks1(1+maxfa, maxfa), dfks2(1+maxfa, maxfa)
         real(kind=8), intent(in) :: mobfas,  dmob1(1:maxfa), dmob2(1:maxfa)
         real(kind=8), intent(in) :: dmob2f(1:maxfa), dmob1f(1:maxfa)

@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -68,15 +68,15 @@ subroutine utersa(ndim, iflup, iflum, ino, mno, &
 #include "asterfort/jeveuo.h"
 #include "asterfort/jexnum.h"
 !
-    integer :: iflup, iflum, ndim, ino, mno, jno, ivois, nsomm, ityp, iel, nbnv
-    integer :: iavalp, iavalm, nbsv, jad, jadv, noe(9, 6, 3), niv, ifm
+    integer(kind=8) :: iflup, iflum, ndim, ino, mno, jno, ivois, nsomm, ityp, iel, nbnv
+    integer(kind=8) :: iavalp, iavalm, nbsv, jad, jadv, noe(9, 6, 3), niv, ifm
     real(kind=8) :: jac(9), term22, aux, valthe, valunt, xn(9), yn(9), zn(9)
     character(len=8) :: ma
     aster_logical :: ltheta
 !
 !
 ! DECLARATION VARIABLES LOCALES
-    integer :: ij, in, iino, i1, inov0, jnov0, mnov, ncher, inov, jnov, iinov
+    integer(kind=8) :: ij, in, iino, i1, inov0, jnov0, mnov, ncher, inov, jnov, iinov
     real(kind=8) :: aux1, aux2, aux3, aux4, term23
 !
 ! INIT.

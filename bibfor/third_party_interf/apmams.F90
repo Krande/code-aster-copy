@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -36,7 +36,6 @@ subroutine apmams(matass, auxMat)
 #include "asterfort/jexnum.h"
 #include "asterfort/mtmchc.h"
 #include "asterfort/wkvect.h"
-#include "asterfort/asmpi_info.h"
     !----------------------------------------------------------------
     !
     !  CONSTRUCTION DE LA MATRICE DE RIGIDITE LOCALE DU SOUS-DOMAINE

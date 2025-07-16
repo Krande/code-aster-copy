@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2020 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -21,8 +21,8 @@ interface
                       nbCellSelect, cellSelect  ,&
                       nodeFlag)
         character(len=*), intent(in) :: meshNameZ
-        integer, intent(in) :: nbCellSelect
-        integer, pointer :: cellSelect(:)
+        integer(kind=8), intent(in) :: nbCellSelect
+        integer(kind=8), pointer :: cellSelect(:)
         aster_logical, pointer :: nodeFlag(:)
     end subroutine irmano
 end interface

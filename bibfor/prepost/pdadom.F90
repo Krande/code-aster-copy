@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -38,19 +38,19 @@ subroutine pdadom(xm0, xm2, xm4, dom)
 !     ----------------------------------------------------------------
 !
 !
-    integer :: icodwo, icodre(6)
-    integer :: icodba, icodhs
+    integer(kind=8) :: icodwo, icodre(6)
+    integer(kind=8) :: icodba, icodhs
     character(len=8) :: nommat, method, mecomp, nompar, kcorre, kbid
     character(len=16) :: nomres(6), cara
     character(len=32) :: pheno
     real(kind=8) :: delta, rvke, alpha, pi, salt, x, val(6), re(1)
     real(kind=8) :: valmin, valmax, pas, xireg, rundf, nrupt(1)
-    integer :: ibask, ifonc, ihosin, nbval
+    integer(kind=8) :: ibask, ifonc, ihosin, nbval
     aster_logical :: endur
 !
 !     ----------------------------------------------------------------
 !-----------------------------------------------------------------------
-    integer :: ipoint, nbpar, nbpoin
+    integer(kind=8) :: ipoint, nbpar, nbpoin
     real(kind=8) :: rbid, x1, x2, xnpoin
     real(kind=8) :: xp, y, y1, yd1, yd2, ypic1, ypic2
     real(kind=8), pointer :: dispics(:) => null()

@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -24,8 +24,8 @@ subroutine thetapdg(ndim, nno, discr, ff, dfdi, ideg, ilag, ithet, dtdm)
 #include "asterfort/plegen.h"
 #include "asterfort/dplegen.h"
 !
-    integer, intent(in) :: ndim, nno
-    integer, intent(in) :: ithet, ideg, ilag
+    integer(kind=8), intent(in) :: ndim, nno
+    integer(kind=8), intent(in) :: ithet, ideg, ilag
     real(kind=8), intent(in)  :: ff(nno), dfdi(nno, ndim)
     real(kind=8), intent(out) :: dtdm(3, 4)
     character(len=8) :: discr
@@ -52,7 +52,7 @@ subroutine thetapdg(ndim, nno, discr, ff, dfdi, ideg, ilag, ithet, dtdm)
 ! OUT DTDM      : GRADIENT DE THETA + THETA (4ème colonne)
 !......................................................................
 !
-    integer      :: i, j, k
+    integer(kind=8)      :: i, j, k
     real(kind=8) :: th0, s, t(3), xl
     real(kind=8) :: sno, s0, s1, s2
     real(kind=8) :: gam, dgam, eval

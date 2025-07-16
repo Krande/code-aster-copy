@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2020 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -20,8 +20,8 @@
 interface
     subroutine irmpar(nomcon, ifichi, paraListNb, paraListName)
         character(len=*) :: nomcon
-        integer :: ifichi
-        integer, intent(in) :: paraListNb
+        integer(kind=8) :: ifichi
+        integer(kind=8), intent(in) :: paraListNb
         character(len=16), pointer :: paraListName(:)
     end subroutine irmpar
 end interface

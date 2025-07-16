@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -32,12 +32,12 @@ subroutine mefrot(ndim, som, vit0, promas, provis, &
 #include "asterfort/jedetr.h"
 #include "asterfort/jemarq.h"
 #include "asterfort/wkvect.h"
-    integer :: ndim(14)
+    integer(kind=8) :: ndim(14)
     real(kind=8) :: som(9), vit0, z(*), ru, rint(*), re(*), cp(*), cf(*), dh
     real(kind=8) :: vit(0:*), rho(0:*), visc(*)
     character(len=8) :: promas, provis
 !
-    integer :: itypg(*)
+    integer(kind=8) :: itypg(*)
     real(kind=8) :: zg(*), tg(*), dg(*), rugg(*), axg(*), xig(*)
     real(kind=8) :: afluid, pm
     real(kind=8) :: cfg(*), vitg(*), rhog(*), viscg(*)
@@ -86,7 +86,7 @@ subroutine mefrot(ndim, som, vit0, promas, provis, &
 ! OUT : RHOG   : MASSE VOLUMIQUE DU FLUIDE AUX MEMES POINTS
 ! OUT : VISCG  : VISCOSITE DU FLUIDE AUX MEMES POINTS
 ! ----------------------------------------------------------------------
-    integer :: i, j, k, idhg, iencei, ier, ireg, nbcyl, nbgtot, nbz, ndir, ntypg
+    integer(kind=8) :: i, j, k, idhg, iencei, ier, ireg, nbcyl, nbgtot, nbz, ndir, ntypg
     real(kind=8) :: ecart, xsom(4), ysom(4), pi, rext, rho0
     character(len=8) :: nompar
     real(kind=8) :: a, b, relim1, relim2, nbplaq

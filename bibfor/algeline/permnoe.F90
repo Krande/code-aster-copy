@@ -53,27 +53,27 @@ subroutine permnoe(maillage, deform, nbmod, nbno, nbddl)
 !
 !   -0.1- Input/output arguments
     character(len=8), intent(in) :: maillage
-    integer, intent(in) :: nbmod
-    integer, intent(in) :: nbno
-    integer, intent(in) :: nbddl
+    integer(kind=8), intent(in) :: nbmod
+    integer(kind=8), intent(in) :: nbno
+    integer(kind=8), intent(in) :: nbddl
     real(kind=8) :: deform(nbno*nbmod*nbddl)
 !
 !   -0.2- Local variables
-    integer :: i, j, k, iexi, labs, nbrma, nbseg2, nbpoi1, kseg
-    integer :: im, itypm, iseg2, iacnex, jgcnx, ino, nbse2
-    integer :: numno, nbchm, isens, mi, ing, ind
+    integer(kind=8) :: i, j, k, iexi, labs, nbrma, nbseg2, nbpoi1, kseg
+    integer(kind=8) :: im, itypm, iseg2, iacnex, jgcnx, ino, nbse2
+    integer(kind=8) :: numno, nbchm, isens, mi, ing, ind
     character(len=8) :: typm
     character(len=24) :: cooabs, conseg, typseg, connex, typmai
 !
-    integer, pointer :: grmai(:) => null()
-    integer, pointer :: vois1(:) => null()
-    integer, pointer :: vois2(:) => null()
-    integer, pointer :: ptch(:) => null()
-    integer, pointer :: lnoe(:) => null()
-    integer, pointer :: v_ach(:) => null()
-    integer, pointer :: maille(:) => null()
+    integer(kind=8), pointer :: grmai(:) => null()
+    integer(kind=8), pointer :: vois1(:) => null()
+    integer(kind=8), pointer :: vois2(:) => null()
+    integer(kind=8), pointer :: ptch(:) => null()
+    integer(kind=8), pointer :: lnoe(:) => null()
+    integer(kind=8), pointer :: v_ach(:) => null()
+    integer(kind=8), pointer :: maille(:) => null()
     real(kind=8), pointer :: copyv(:) => null()
-    integer, pointer :: tym(:) => null()
+    integer(kind=8), pointer :: tym(:) => null()
     blas_int :: b_incx, b_incy, b_n
 !
 !

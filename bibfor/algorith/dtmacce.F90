@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -40,15 +40,15 @@ subroutine dtmacce(sd_dtm_, sd_int_, index, buffdtm, buffint, calcf)
 !   -0.1- Input/output arguments
     character(len=*), intent(in) :: sd_dtm_
     character(len=*), intent(in) :: sd_int_
-    integer, intent(in) :: index
-    integer, pointer :: buffdtm(:)
-    integer, pointer :: buffint(:)
+    integer(kind=8), intent(in) :: index
+    integer(kind=8), pointer :: buffdtm(:)
+    integer(kind=8), pointer :: buffint(:)
     aster_logical, optional, intent(in) :: calcf
 !
 !   -0.2- Local variables
     aster_logical     :: mdiag, kdiag, cdiag, instrum, calcforc
-    integer           :: index_m, nbmode, iret, iret2
-    integer           :: i
+    integer(kind=8)           :: index_m, nbmode, iret, iret2
+    integer(kind=8)           :: i
     real(kind=8)      :: tps(7), omega2
     complex(kind=8)   :: cbid
 !
@@ -56,7 +56,7 @@ subroutine dtmacce(sd_dtm_, sd_int_, index, buffdtm, buffint, calcf)
     character(len=24) :: solver
 
 !
-    integer, pointer :: matdesc(:) => null()
+    integer(kind=8), pointer :: matdesc(:) => null()
 !
     real(kind=8), pointer :: depl(:) => null()
     real(kind=8), pointer :: vite(:) => null()

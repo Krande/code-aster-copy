@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -54,17 +54,17 @@ subroutine cfnodb(sdcont)
 !
     character(len=24) :: defico
     aster_logical :: lcalc, lliss
-    integer :: nzoco, nnoco, iform
+    integer(kind=8) :: nzoco, nnoco, iform
     character(len=24) :: nodbl, nodbl2
-    integer :: jnodbl, jnodb2
+    integer(kind=8) :: jnodbl, jnodb2
     character(len=24) :: contno, sansno, psans
-    integer :: jnoco, jsans, jpsans
-    integer :: izone, ibid(1), ndoubl, nvdbl
-    integer :: izonea, izoneb, nvdba, nvdbb
-    integer :: nbnoe, jdecne, nbnoea, nbnoeb
-    integer :: nbnom, jdecnm, jdecea, jdeceb
-    integer :: nsans, jdecs, nsansa, jdecsa, nsansb, jdecsb
-    integer :: vali(3)
+    integer(kind=8) :: jnoco, jsans, jpsans
+    integer(kind=8) :: izone, ibid(1), ndoubl, nvdbl
+    integer(kind=8) :: izonea, izoneb, nvdba, nvdbb
+    integer(kind=8) :: nbnoe, jdecne, nbnoea, nbnoeb
+    integer(kind=8) :: nbnom, jdecnm, jdecea, jdeceb
+    integer(kind=8) :: nsans, jdecs, nsansa, jdecsa, nsansb, jdecsb
+    integer(kind=8) :: vali(3)
 !
 ! ----------------------------------------------------------------------
 !

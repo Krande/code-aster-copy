@@ -51,7 +51,7 @@ subroutine nmdorc(modelZ, chmateZ, l_etat_init, comporZ, carcriZ, mult_compZ_)
 !
 ! --------------------------------------------------------------------------------------------------
 !
-    integer :: ifm, niv
+    integer(kind=8) :: ifm, niv
     character(len=8) :: model, chmate
     character(len=19) :: compor
     character(len=24) :: carcri

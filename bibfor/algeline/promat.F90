@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -34,10 +34,10 @@ subroutine promat(a, nlamax, dimal, dimac, b, &
 ! ------------------------------------------------------------------
     implicit none
 #include "asterfort/utmess.h"
-    integer :: dimac, dimal, dimbc, dimbl, nlamax, nlbmax
+    integer(kind=8) :: dimac, dimal, dimbc, dimbl, nlamax, nlbmax
     real(kind=8) :: a(nlamax, *), b(nlbmax, *), res(nlamax, *)
 !-----------------------------------------------------------------------
-    integer :: icol, ilig, k
+    integer(kind=8) :: icol, ilig, k
     real(kind=8) :: xaux
 !-----------------------------------------------------------------------
     if (dimac .ne. dimbl) then

@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -25,8 +25,8 @@ subroutine rccome(nommat, pheno, icodre, iarret, k11_ind_nomrc)
 #include "asterfort/jeveuo.h"
 #include "asterfort/utmess.h"
     character(len=*), intent(in) :: nommat, pheno
-    integer, intent(out) :: icodre
-    integer, intent(in), optional :: iarret
+    integer(kind=8), intent(out) :: icodre
+    integer(kind=8), intent(in), optional :: iarret
     character(len=11), intent(out), optional :: k11_ind_nomrc
 ! ----------------------------------------------------------------------
 !     OBTENTION DU COMPORTEMENT COMPLET D'UN MATERIAU DONNE A PARTIR
@@ -45,7 +45,7 @@ subroutine rccome(nommat, pheno, icodre, iarret, k11_ind_nomrc)
 ! DEB ------------------------------------------------------------------
     character(len=32) :: ncomp
     character(len=6) :: k6
-    integer :: i, icomp, nbcomp, iarret_in
+    integer(kind=8) :: i, icomp, nbcomp, iarret_in
 !-----------------------------------------------------------------------
 !
     if (present(iarret)) then

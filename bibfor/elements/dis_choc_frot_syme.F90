@@ -37,7 +37,7 @@ subroutine dis_choc_frot_syme(DD, icodma, ulp, xg, klv, &
 #include "asterfort/utpsgl.h"
 !
     type(te0047_dscr), intent(in) :: DD
-    integer :: icodma
+    integer(kind=8) :: icodma
     real(kind=8) :: ulp(*), dvl(*)
     real(kind=8) :: dpe(*), dve(*)
     real(kind=8) :: klv(*), xg(*), kgv(*)
@@ -67,23 +67,23 @@ subroutine dis_choc_frot_syme(DD, icodma, ulp, xg, klv, &
 ! --------------------------------------------------------------------------------------------------
 ! person_in_charge: jean-luc.flejou at edf.fr
 !
-    integer, parameter :: nbre1 = 12
+    integer(kind=8), parameter :: nbre1 = 12
     real(kind=8) :: valre1(nbre1)
-    integer :: codre1(nbre1)
+    integer(kind=8) :: codre1(nbre1)
     character(len=12) :: nomre1(nbre1)
 !   Index des variables internes
-    integer, parameter :: idepx = 1, idepy = 2, idepz = 3, iidic = 4, idepyp = 5, idepzp = 6
-    integer, parameter :: ifx = 7, ify = 8, ifz = 9, icalc = 10
+    integer(kind=8), parameter :: idepx = 1, idepy = 2, idepz = 3, iidic = 4, idepyp = 5, idepzp = 6
+    integer(kind=8), parameter :: ifx = 7, ify = 8, ifz = 9, icalc = 10
 !   État du discret : adhérent, glissant, décollé
-    integer, parameter :: EtatAdher = 0, EtatGliss = 1, EtatDecol = 2
-    integer, parameter :: EnVitesse = 1, EnPlasticite = 2
+    integer(kind=8), parameter :: EtatAdher = 0, EtatGliss = 1, EtatDecol = 2
+    integer(kind=8), parameter :: EnVitesse = 1, EnPlasticite = 2
 !
-    integer :: ii
+    integer(kind=8) :: ii
     real(kind=8) :: xl(6), xd(3), raide(6), raidep(6), rignor, rigtan, depxyz(3), vitxyz(3)
     real(kind=8) :: coulom, dist12, psca, vit123(3), Precis, klvp(78), utotxyz(3)
     real(kind=8) :: vitt, fort, kp, kt
 !
-    integer :: axes(3), ContactInGlobal, TestOK, TestNOK
+    integer(kind=8) :: axes(3), ContactInGlobal, TestOK, TestNOK
     real(kind=8) :: ldp(3), ldm(3), SigneAxe(3)
     real(kind=8) :: ldpglob(3), forceglob(3), raideglob(6)
     aster_logical :: IsEnfonce
@@ -92,7 +92,7 @@ subroutine dis_choc_frot_syme(DD, icodma, ulp, xg, klv, &
 !       0 : discret normal
 !       1 : discret repère global
 !       2 : discret repère global en diagonale
-    integer, parameter :: ReperLocal = 0, ReperGlobal = 1, ReperBizarre = 2
+    integer(kind=8), parameter :: ReperLocal = 0, ReperGlobal = 1, ReperBizarre = 2
 !
     character(len=32) :: messak(3)
     blas_int :: b_incx, b_incy, b_n

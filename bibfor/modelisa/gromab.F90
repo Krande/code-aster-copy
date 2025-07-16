@@ -52,33 +52,32 @@ subroutine gromab(mailla, nmabet, nbmabe, mail2d, caelem, &
 #include "asterfort/jenuno.h"
 #include "asterfort/jeveuo.h"
 #include "asterfort/jexatr.h"
-#include "asterfort/jexnom.h"
 #include "asterfort/jexnum.h"
 #include "asterfort/rgcmpg.h"
 #include "asterfort/utmess.h"
 #include "asterfort/int_to_char8.h"
     character(len=8) :: mailla, caelem
     character(len=24) :: nmabet, gromai
-    integer :: nbmabe
+    integer(kind=8) :: nbmabe
     aster_logical :: mail2d
 !
 ! VARIABLES LOCALES
 ! -----------------
-    integer :: ino, jcoor, nbno, ima, iad
+    integer(kind=8) :: ino, jcoor, nbno, ima, iad
     real(kind=8) :: xmax, xk, ymax, yk, zmax, zk, x, y, z, epmax
     real(kind=8) :: ep, sqrt
     character(len=8) :: ngrand, nomai
     character(len=19) :: carte
     character(len=24) :: coorno, connex, k24bid
 !
-    integer :: i, j, k, iad2, inok
-    integer :: jmabet, jconn, jtabco, jgmai
-    integer :: nunoe(27)
-    integer :: igrand, iasmax, iasedi, inomcp
-    integer :: nbcmp, nbec, irep, iasbon, ii, icode, izone
-    integer :: ilima, nbmaza, irvep, jj
+    integer(kind=8) :: i, j, k, iad2, inok
+    integer(kind=8) :: jmabet, jconn, jtabco, jgmai
+    integer(kind=8) :: nunoe(27)
+    integer(kind=8) :: igrand, iasmax, iasedi, inomcp
+    integer(kind=8) :: nbcmp, nbec, irep, iasbon, ii, icode, izone
+    integer(kind=8) :: ilima, nbmaza, irvep, jj
     real(kind=8), pointer :: vale(:) => null()
-    integer, pointer :: desc(:) => null()
+    integer(kind=8), pointer :: desc(:) => null()
 !
 !
 !-------------------   DEBUT DU CODE EXECUTABLE    ---------------------

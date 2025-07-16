@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -38,7 +38,7 @@ subroutine ccchel(option, modele, resuin, resuou, numord, &
 #include "asterfort/utmess.h"
 !
     aster_logical, intent(in) :: l_poux, exitim
-    integer :: nbchre, ioccur, numord, nordm1
+    integer(kind=8) :: nbchre, ioccur, numord, nordm1
     character(len=1) :: basopt
     character(len=8) :: modele, resuin, resuou, carael
     character(len=16) :: option, typesd
@@ -78,7 +78,7 @@ subroutine ccchel(option, modele, resuin, resuou, numord, &
 !
 ! --------------------------------------------------------------------------------------------------
 !
-    integer :: iret, nbpaou, nbpain, nbRet
+    integer(kind=8) :: iret, nbpaou, nbpain, nbRet
     character(len=8) :: lipain(100), lipaou(1)
     character(len=24) :: lichin(100), lichou(2)
 !

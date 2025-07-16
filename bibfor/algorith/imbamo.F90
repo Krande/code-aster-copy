@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -35,7 +35,7 @@ subroutine imbamo(nomres)
 #include "asterfort/utmess.h"
 !
 !-----------------------------------------------------------------------
-    integer :: i, nbdef, nbmod, nbpabm, nbtot
+    integer(kind=8) :: i, nbdef, nbmod, nbpabm, nbtot
 !
     real(kind=8) :: freq, genek, genem
 !-----------------------------------------------------------------------
@@ -43,7 +43,7 @@ subroutine imbamo(nomres)
     character(len=8) :: nomres, intf, nomnoe, nomcmp
     character(len=19) :: raid, mass, typeba, valk(4)
     character(len=14) :: numref
-    integer :: ldpar(nbpabm), vali(2)
+    integer(kind=8) :: ldpar(nbpabm), vali(2)
     character(len=16) :: bmpara(nbpabm), typdef
     character(len=8) :: rescyc
     character(len=8) :: k8bid

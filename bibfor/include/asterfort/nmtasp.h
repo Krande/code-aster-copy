@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -22,7 +22,7 @@ interface
     subroutine nmtasp(ndimsi, crit, mat, sigel, vim,&
                       epm, dp, sp, xi, f,&
                       iret)
-        integer :: ndimsi
+        integer(kind=8) :: ndimsi
         real(kind=8) :: crit(3)
         real(kind=8) :: mat(14)
         real(kind=8) :: sigel(*)
@@ -32,6 +32,6 @@ interface
         real(kind=8) :: sp
         real(kind=8) :: xi
         real(kind=8) :: f
-        integer :: iret
+        integer(kind=8) :: iret
     end subroutine nmtasp
 end interface

@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -51,8 +51,8 @@ subroutine irmmno(idfimd, nomamd, ndim, nbnoeu, coordo, &
 #include "asterfort/jeveuo.h"
 #include "asterfort/utmess.h"
 #include "asterfort/wkvect.h"
-    integer :: idfimd
-    integer :: ndim, nbnoeu
+    med_idt :: idfimd
+    integer(kind=8) :: ndim, nbnoeu
 !
     real(kind=8) :: coordo(*)
 !
@@ -68,14 +68,14 @@ subroutine irmmno(idfimd, nomamd, ndim, nbnoeu, coordo, &
     character(len=6) :: nompro
     parameter(nompro='IRMMNO')
 !
-    integer :: edfuin
+    integer(kind=8) :: edfuin
     parameter(edfuin=0)
 !
-    integer :: codret
-    integer :: iaux
-    integer :: jcoord
-    integer :: ifm, nivinf, rang, nbproc, start, filter(1), jaux
-    integer :: jnbno, nbnot, jno, nbnol, cmpt
+    integer(kind=8) :: codret
+    integer(kind=8) :: iaux
+    integer(kind=8) :: jcoord
+    integer(kind=8) :: ifm, nivinf, rang, nbproc, start, filter(1), jaux
+    integer(kind=8) :: jnbno, nbnot, jno, nbnol, cmpt
     mpi_int :: mrank, msize
     aster_logical :: lfu
     real(kind=8) :: start1, end1
@@ -153,15 +153,6 @@ subroutine irmmno(idfimd, nomamd, ndim, nbnoeu, coordo, &
                 zr(jcoord+ndim*iaux+jaux) = coordo(3*iaux+jaux+1)
             end do
         end do
-
-!        print *, "Calling as_mmhcow with:"
-!        print *, "IDFIMD (fid):", idfimd
-!        print *, "Address of NOMAMD (maa):", LOC(nomamd)
-!        print *, "NOMAMD (maa):", nomamd
-!        print *, "ZR(JCOORD) (coo):", zr(jcoord)
-!        print *, "EDFUIN (modcoo):", edfuin
-!        print *, "NBNOT (n):", nbnoeu
-!        print *, "CODRET (cret):", codret
         call as_mmhcow(idfimd, nomamd, zr(jcoord), edfuin, nbnoeu, &
                        codret)
     end if

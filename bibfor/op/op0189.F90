@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -67,36 +67,36 @@ subroutine op0189()
     character(len=19) :: ligrmo, cestmp
     character(len=24) :: k24ordr, chsief
 !
-    integer :: i, j, iret, iel, ima, nbordr, iorfin, jptvoi, jelvoi
-    integer :: cpt, itypel, igrel, numa, numaco, ndim, dimmai, dimmod
-    integer :: nbma, nbgrmo, nbel, nbelco, nbelma
-    integer :: jrepmo, nbvois, nbvmas, numavo, jcesd, jcesl, iad
-    integer :: jcelds, jcelvs
-    integer, pointer :: numeor(:) => null(), tab_typel(:) => null()
-    integer, pointer :: tab_tra(:) => null(), tab_numa(:) => null()
-    integer, pointer :: tab_maco(:) => null()
+    integer(kind=8) :: i, j, iret, iel, ima, nbordr, iorfin, jptvoi, jelvoi
+    integer(kind=8) :: cpt, itypel, igrel, numa, numaco, ndim, dimmai, dimmod
+    integer(kind=8) :: nbma, nbgrmo, nbel, nbelco, nbelma
+    integer(kind=8) :: jrepmo, nbvois, nbvmas, numavo, jcesd, jcesl, iad
+    integer(kind=8) :: jcelds, jcelvs
+    integer(kind=8), pointer :: numeor(:) => null(), tab_typel(:) => null()
+    integer(kind=8), pointer :: tab_tra(:) => null(), tab_numa(:) => null()
+    integer(kind=8), pointer :: tab_maco(:) => null()
 !
     real(kind=8) :: trxmoy
 !
 !   code des modelisations autorisees pour les elements "massifs"
-    integer :: nmodmas
+    integer(kind=8) :: nmodmas
     parameter(nmodmas=4)
     character(len=3) :: lk3moma(nmodmas)
     character(len=8) :: lk8moma(nmodmas)
     data lk3moma/'CPL', 'DPL', 'AX_', '3D_'/
 !
 !   attributs 'TYPMOD2' des modelisations "cohesives"
-    integer :: natczm
+    integer(kind=8) :: natczm
     parameter(natczm=2)
     character(len=8) :: lk8atczm(natczm)
     data lk8atczm/'ELEMJOIN', 'INTERFAC'/
 !
 !   pour la sd voisinage
-    integer :: nvoima, nscoma
+    integer(kind=8) :: nvoima, nscoma
     parameter(nvoima=100, nscoma=4)
-    integer :: livois(1:nvoima), tyvois(1:nvoima), nbnovo(1:nvoima)
-    integer :: nbsoco(1:nvoima), lisoco(1:nvoima, 1:nscoma, 1:2)
-    integer :: livmas(2)
+    integer(kind=8) :: livois(1:nvoima), tyvois(1:nvoima), nbnovo(1:nvoima)
+    integer(kind=8) :: nbsoco(1:nvoima), lisoco(1:nvoima, 1:nscoma, 1:2)
+    integer(kind=8) :: livmas(2)
     real(kind=8), pointer :: cesv(:) => null()
 !
 !-----------------------------------------------------------------------

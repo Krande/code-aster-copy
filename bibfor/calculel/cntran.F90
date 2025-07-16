@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -25,7 +25,7 @@ subroutine cntran(linoeu, nbno, chs1, chs2)
 #include "asterfort/jedema.h"
 #include "asterfort/jemarq.h"
 #include "asterfort/jeveuo.h"
-    integer :: linoeu(*), nbno
+    integer(kind=8) :: linoeu(*), nbno
     character(len=*) :: chs1, chs2
 !
 !     COMMANDE:  CREA_RESU
@@ -35,13 +35,13 @@ subroutine cntran(linoeu, nbno, chs1, chs2)
 !
 !
 !
-    integer :: ncmp1, ncmp2, ino1, ino2, jcn1v, jcn1l
-    integer :: icmp1, jcn2v, jcn2l, icmp2
+    integer(kind=8) :: ncmp1, ncmp2, ino1, ino2, jcn1v, jcn1l
+    integer(kind=8) :: icmp1, jcn2v, jcn2l, icmp2
     character(len=3) :: tsca
     character(len=8) :: nomgd, nomgd2, nocmp
     character(len=19) :: cns1, cns2
-    integer, pointer :: cn1d(:) => null()
-    integer, pointer :: cn2d(:) => null()
+    integer(kind=8), pointer :: cn1d(:) => null()
+    integer(kind=8), pointer :: cn2d(:) => null()
     character(len=8), pointer :: cn1c(:) => null()
     character(len=8), pointer :: cn2c(:) => null()
     character(len=8), pointer :: cn1k(:) => null()

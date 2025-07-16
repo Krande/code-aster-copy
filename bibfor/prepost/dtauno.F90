@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -24,9 +24,6 @@ subroutine dtauno(jrwork, lisnoe, nbnot, nbordr, ordini, &
     implicit none
 #include "asterf_types.h"
 #include "jeveux.h"
-#include "asterc/loisem.h"
-#include "asterc/lor8em.h"
-#include "asterc/r8pi.h"
 #include "asterfort/acgrdo.h"
 #include "asterfort/carces.h"
 #include "asterfort/cncinv.h"
@@ -45,8 +42,8 @@ subroutine dtauno(jrwork, lisnoe, nbnot, nbordr, ordini, &
 #include "asterfort/rnomat.h"
 #include "asterfort/utmess.h"
 !
-    integer :: jrwork, nbnot, lisnoe(nbnot), nbordr, nnoini, nbnop
-    integer :: tspaq, ordini
+    integer(kind=8) :: jrwork, nbnot, lisnoe(nbnot), nbordr, nnoini, nbnop
+    integer(kind=8) :: tspaq, ordini
     aster_logical :: post
     real(kind=8) :: vresu(24), valpar(35)
     character(len=8) :: nommai, nommap
@@ -84,13 +81,13 @@ subroutine dtauno(jrwork, lisnoe, nbnot, nbordr, ordini, &
 !    NOEUDS DIVISEE PAR LE NOMBRE DE NUMERO D'ORDRE (NBORDR).
 !-----------------------------------------------------------------------
 !
-    integer :: ki, l, jcnrd, jcnrl, ibidno
-    integer :: iret, nbma, adrma, icesd, icesl, icesv
-    integer :: inop, nunoe
-    integer :: jtypma
-    integer :: icmp, kwork, somnow, cnbno
-    integer :: vali(2), jad, ima
-    integer :: icodwo
+    integer(kind=8) :: ki, l, jcnrd, jcnrl, ibidno
+    integer(kind=8) :: iret, nbma, adrma, icesd, icesl, icesv
+    integer(kind=8) :: inop, nunoe
+    integer(kind=8) :: jtypma
+    integer(kind=8) :: icmp, kwork, somnow, cnbno
+    integer(kind=8) :: vali(2), jad, ima
+    integer(kind=8) :: icodwo
 !
     real(kind=8) :: coepre, vala, valb
     real(kind=8) :: coefpa

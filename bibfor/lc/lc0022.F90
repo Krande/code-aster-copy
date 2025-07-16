@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -28,10 +28,10 @@ subroutine lc0022(fami, kpg, ksp, ndim, imate, &
 #include "asterfort/nmccam.h"
 !
     character(len=*), intent(in) :: fami
-    integer, intent(in) :: kpg
-    integer, intent(in) :: ksp
-    integer, intent(in) :: ndim
-    integer, intent(in) :: imate
+    integer(kind=8), intent(in) :: kpg
+    integer(kind=8), intent(in) :: ksp
+    integer(kind=8), intent(in) :: ndim
+    integer(kind=8), intent(in) :: imate
     character(len=16), intent(in) :: compor(*)
     real(kind=8), intent(in) :: carcri(*)
     real(kind=8), intent(in) :: instam
@@ -45,10 +45,10 @@ subroutine lc0022(fami, kpg, ksp, ndim, imate, &
     real(kind=8), intent(out) :: sigp(6)
     real(kind=8), intent(out) :: vip(*)
     character(len=8), intent(in) :: typmod(*)
-    integer, intent(in) :: icomp
-    integer, intent(in) :: nvi
+    integer(kind=8), intent(in) :: icomp
+    integer(kind=8), intent(in) :: nvi
     real(kind=8), intent(out) :: dsidep(6, 6)
-    integer, intent(out) :: codret
+    integer(kind=8), intent(out) :: codret
 !
 ! --------------------------------------------------------------------------------------------------
 !

@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -30,13 +30,13 @@ subroutine lcimpl(fami, kpg, ksp, imate, em, &
     real(kind=8) :: sigp, dsde
     character(len=16) :: option
     character(len=*) :: fami
-    integer :: kpg, ksp, imate
+    integer(kind=8) :: kpg, ksp, imate
 !     ------------------------------------------------------------------
 !     VARIABLES LOCALES
 !     ------------------------------------------------------------------
     real(kind=8) :: rprim, rm, sige, valres(2), depsth
     real(kind=8) :: sieleq, rp, dp
-    integer :: codres(2)
+    integer(kind=8) :: codres(2)
     character(len=16) :: nomecl(2)
     data nomecl/'D_SIGM_EPSI', 'SY'/
 !

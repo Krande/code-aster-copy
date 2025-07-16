@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -23,18 +23,18 @@ interface
                       vgli, iadh, wk1, wk2, wk3,&
                       iwk4, nbloc, offset,&
                       trepos, noecho, intitu, nomres)
-        integer :: nbobst
-        integer :: nbpt
+        integer(kind=8) :: nbobst
+        integer(kind=8) :: nbpt
         real(kind=8) :: temps(*)
         real(kind=8) :: dloc(*)
         real(kind=8) :: fcho(*)
         real(kind=8) :: vgli(*)
-        integer :: iadh(*)
+        integer(kind=8) :: iadh(*)
         real(kind=8) :: wk1(*)
         real(kind=8) :: wk2(*)
         real(kind=8) :: wk3(*)
-        integer :: iwk4(*)
-        integer :: nbloc
+        integer(kind=8) :: iwk4(*)
+        integer(kind=8) :: nbloc
         real(kind=8) :: offset
         real(kind=8) :: trepos
         character(len=8) :: noecho(*)

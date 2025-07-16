@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -32,7 +32,7 @@ subroutine tbliva(nomta, npacri, lipacr, vi, vr, &
 #include "asterfort/jeveuo.h"
 #include "asterfort/utmess.h"
 !
-    integer :: npacri, vi(*), vali, ier
+    integer(kind=8) :: npacri, vi(*), vali, ier
     real(kind=8) :: vr(*), valr, prec(*)
     complex(kind=8) :: vc(*), valc
     character(len=*) :: nomta, lipacr(*), vk(*), valk, crit(*), ctype, para
@@ -59,17 +59,17 @@ subroutine tbliva(nomta, npacri, lipacr, vi, vr, &
 !                            3 : PLUSIEURS LIGNES TROUVEES
 ! ----------------------------------------------------------------------
 ! ----------------------------------------------------------------------
-    integer :: iret, nbpara, nblign, nbpu
-    integer :: i, j, k, n, jvale, itrouv
-    integer :: ki, kr, kc, k8, jvall
+    integer(kind=8) :: iret, nbpara, nblign, nbpu
+    integer(kind=8) :: i, j, k, n, jvale, itrouv
+    integer(kind=8) :: ki, kr, kc, k8, jvall
     real(kind=8) :: refr, xr, epsi
     complex(kind=8) :: refc, xc
     character(len=4) :: rela, type
     character(len=19) :: nomtab
     character(len=24) :: nomjv, nomjvl, inpar, jnpar
     aster_logical :: lok
-    integer, pointer :: numero(:) => null()
-    integer, pointer :: tbnp(:) => null()
+    integer(kind=8), pointer :: numero(:) => null()
+    integer(kind=8), pointer :: tbnp(:) => null()
     character(len=24), pointer :: tblp(:) => null()
 ! ----------------------------------------------------------------------
 !

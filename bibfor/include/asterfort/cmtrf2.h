@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -21,15 +21,15 @@
 interface
     subroutine cmtrf2(codcm1, codtrf, ncm1, lcm1, ntrf,&
                       ltrf, nbma, codint, lint, nint)
-        integer :: nbma
-        integer :: ntrf
-        integer :: ncm1
-        integer :: codcm1
-        integer :: codtrf
-        integer :: lcm1(ncm1)
-        integer :: ltrf(ntrf)
-        integer :: codint
-        integer :: lint(nbma)
-        integer :: nint
+        integer(kind=8) :: nbma
+        integer(kind=8) :: ntrf
+        integer(kind=8) :: ncm1
+        integer(kind=8) :: codcm1
+        integer(kind=8) :: codtrf
+        integer(kind=8) :: lcm1(ncm1)
+        integer(kind=8) :: ltrf(ntrf)
+        integer(kind=8) :: codint
+        integer(kind=8) :: lint(nbma)
+        integer(kind=8) :: nint
     end subroutine cmtrf2
 end interface

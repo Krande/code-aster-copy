@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -32,8 +32,8 @@ subroutine apcpoi(sdcont_defi, model_ndim, i_zone, elem_name, &
 ! person_in_charge: mickael.abbas at edf.fr
 !
     character(len=24), intent(in) :: sdcont_defi
-    integer, intent(in) :: model_ndim
-    integer, intent(in) :: i_zone
+    integer(kind=8), intent(in) :: model_ndim
+    integer(kind=8), intent(in) :: i_zone
     character(len=8), intent(in) :: elem_name
     character(len=4), intent(in) :: zone_type
     real(kind=8), intent(out) :: tau1(3)
@@ -59,7 +59,7 @@ subroutine apcpoi(sdcont_defi, model_ndim, i_zone, elem_name, &
 !
 ! --------------------------------------------------------------------------------------------------
 !
-    integer :: itype
+    integer(kind=8) :: itype
     real(kind=8) :: normal(3), norme
 !
 ! --------------------------------------------------------------------------------------------------

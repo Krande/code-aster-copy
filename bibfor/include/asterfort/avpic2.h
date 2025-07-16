@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -22,16 +22,16 @@ interface
     subroutine avpic2(method, nbvec, nbordr, jrtrv, jitrv,&
                       npoin, jvalpo, jvalor, npic, jpic,&
                       jordpi)
-        integer :: nbordr
-        integer :: nbvec
+        integer(kind=8) :: nbordr
+        integer(kind=8) :: nbvec
         character(len=8) :: method
-        integer :: jrtrv
-        integer :: jitrv
-        integer :: npoin(nbvec)
-        integer :: jvalpo
-        integer :: jvalor
-        integer :: npic(nbvec)
-        integer :: jpic
-        integer :: jordpi
+        integer(kind=8) :: jrtrv
+        integer(kind=8) :: jitrv
+        integer(kind=8) :: npoin(nbvec)
+        integer(kind=8) :: jvalpo
+        integer(kind=8) :: jvalor
+        integer(kind=8) :: npic(nbvec)
+        integer(kind=8) :: jpic
+        integer(kind=8) :: jordpi
     end subroutine avpic2
 end interface

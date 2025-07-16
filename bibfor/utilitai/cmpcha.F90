@@ -38,10 +38,10 @@ subroutine cmpcha(fieldz, cmp_name, cata_to_field, field_to_cata, nb_cmpz, &
 !
     character(len=*), intent(in) :: fieldz
     character(len=8), pointer :: cmp_name(:)
-    integer, pointer :: cata_to_field(:)
-    integer, pointer :: field_to_cata(:)
-    integer, optional, intent(out) :: nb_cmpz
-    integer, optional, intent(out) :: nb_cmp_mxz
+    integer(kind=8), pointer :: cata_to_field(:)
+    integer(kind=8), pointer :: field_to_cata(:)
+    integer(kind=8), optional, intent(out) :: nb_cmpz
+    integer(kind=8), optional, intent(out) :: nb_cmp_mxz
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -68,10 +68,10 @@ subroutine cmpcha(fieldz, cmp_name, cata_to_field, field_to_cata, nb_cmpz, &
 !
 ! --------------------------------------------------------------------------------------------------
 !
-    integer :: nb_grel, jceld, nb_ec, jcmpgd, nb_cmp, nb_cmp_mx
-    integer :: igr, imolo, jmolo, idx_gd, nb_pt, i_pt, k, iadg, i_cmp
-    integer :: jdesc, long, jprno, nb_node, i_node, ncmpp
-    integer :: ngrmx, nbedit, igd, ient, debgd, dg(200), ior, kpt, kcmp
+    integer(kind=8) :: nb_grel, jceld, nb_ec, jcmpgd, nb_cmp, nb_cmp_mx
+    integer(kind=8) :: igr, imolo, jmolo, idx_gd, nb_pt, i_pt, k, iadg, i_cmp
+    integer(kind=8) :: jdesc, long, jprno, nb_node, i_node, ncmpp
+    integer(kind=8) :: ngrmx, nbedit, igd, ient, debgd, dg(200), ior, kpt, kcmp
     aster_logical :: diff, l_pmesh
     character(len=8) :: gran_name, mesh
     character(len=16) :: typsd

@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -19,7 +19,7 @@
 !
 interface
     subroutine dfdm2b(nno, poids, dfrdk, coor, jacp, normal)
-        integer :: nno
+        integer(kind=8) :: nno
         real(kind=8) :: poids
         real(kind=8) :: dfrdk(*)
         real(kind=8) :: coor(18)

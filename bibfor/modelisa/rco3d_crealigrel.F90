@@ -35,7 +35,6 @@ subroutine rco3d_crealigrel(ligrel, noma, mod, list_pairs, nb_pairs, nt_nodes, &
 #include "asterfort/jemarq.h"
 #include "asterfort/jeveuo.h"
 #include "asterfort/jexatr.h"
-#include "asterfort/utmess.h"
 #include "asterfort/wkvect.h"
 #include "asterfort/as_deallocate.h"
 #include "asterfort/as_allocate.h"
@@ -47,12 +46,12 @@ subroutine rco3d_crealigrel(ligrel, noma, mod, list_pairs, nb_pairs, nt_nodes, &
 !
     character(len=19), intent(in) :: ligrel
     character(len=8), intent(in) :: noma, mod
-    integer, intent(in):: nb_pairs, nt_nodes, nbnocot
-    integer, intent(out) :: map_noco_pair(:, :, :)
-    integer, intent(out) :: map_noco_nbelem(:, :)
-    integer, intent(out) :: map_noco_nbnoco(:, :, :)
-    integer, pointer :: list_total_no_co(:)
-    integer, pointer :: list_pairs(:)
+    integer(kind=8), intent(in):: nb_pairs, nt_nodes, nbnocot
+    integer(kind=8), intent(out) :: map_noco_pair(:, :, :)
+    integer(kind=8), intent(out) :: map_noco_nbelem(:, :)
+    integer(kind=8), intent(out) :: map_noco_nbnoco(:, :, :)
+    integer(kind=8), pointer :: list_total_no_co(:)
+    integer(kind=8), pointer :: list_pairs(:)
 
 ! -------------------------------------------------------------------------------
 !  SUBROUTINE: rco3d_crealigrel
@@ -88,25 +87,25 @@ subroutine rco3d_crealigrel(ligrel, noma, mod, list_pairs, nb_pairs, nt_nodes, &
 
     character(len=8)  :: typg_co_name, typg_vo_name
     character(len=16) :: typg_racc_name, typf_racc_name
-    integer :: typg_racc_nume, typf_racc_nume
-    integer :: el_co, el_vo, typg_co_nume, typg_vo_nume
-    integer :: nb_nodes_co, nb_nodes_vo
-    integer :: i, j, k, index, liel_l, nb_grel, elem, deca, jv_liel
-    integer, pointer :: v_list_type(:) => null()
-    integer, pointer :: v_mesh_typmail(:) => null()
-    integer, pointer :: v_connex(:) => null()
-    integer, pointer :: v_connex_lcum(:) => null()
-    integer, pointer :: v_ligr_nbno(:) => null()
-    integer, pointer :: v_index_bool(:) => null()
-    integer, pointer :: v_ligrel_nema(:) => null()
-    integer, pointer :: v_ligrel_liel(:) => null()
-    integer, pointer :: v_list_no_pair(:) => null()
+    integer(kind=8) :: typg_racc_nume, typf_racc_nume
+    integer(kind=8) :: el_co, el_vo, typg_co_nume, typg_vo_nume
+    integer(kind=8) :: nb_nodes_co, nb_nodes_vo
+    integer(kind=8) :: i, j, k, index, liel_l, nb_grel, elem, deca, jv_liel
+    integer(kind=8), pointer :: v_list_type(:) => null()
+    integer(kind=8), pointer :: v_mesh_typmail(:) => null()
+    integer(kind=8), pointer :: v_connex(:) => null()
+    integer(kind=8), pointer :: v_connex_lcum(:) => null()
+    integer(kind=8), pointer :: v_ligr_nbno(:) => null()
+    integer(kind=8), pointer :: v_index_bool(:) => null()
+    integer(kind=8), pointer :: v_ligrel_nema(:) => null()
+    integer(kind=8), pointer :: v_ligrel_liel(:) => null()
+    integer(kind=8), pointer :: v_list_no_pair(:) => null()
     character(len=16):: nomte
-    integer:: ndim, nddl, nnco, nn3d
+    integer(kind=8):: ndim, nddl, nnco, nn3d
     character(len=8):: typmaco, typma3d
 
     ! TABLEAUX DE DONNEES
-    integer, parameter :: nb_racc = 8
+    integer(kind=8), parameter :: nb_racc = 8
     character(len=8), parameter, dimension(nb_racc) :: coq_el = (/ &
                                                        'SEG2    ', 'SEG2    ', 'SEG3    ', &
                                                        'SEG2    ', 'SEG2    ', 'SEG3    ', &
@@ -126,10 +125,10 @@ subroutine rco3d_crealigrel(ligrel, noma, mod, list_pairs, nb_pairs, nt_nodes, &
                                                        'RACS2T3 ', 'RACS2Q4 ', 'RACS3T6 ', &
                                                        'RACS2T6 ', 'RACS2Q8 ', 'RACS3T3 ', &
                                                        'RACS3Q4 ', 'RACS3Q8 '/)
-    integer, parameter, dimension(nb_racc) :: nb_nodes = (/ &
-                                              5, 6, 9, &
-                                              8, 10, 6, &
-                                              7, 11/)
+    integer(kind=8), parameter, dimension(nb_racc) :: nb_nodes = (/ &
+                                                      5, 6, 9, &
+                                                      8, 10, 6, &
+                                                      7, 11/)
 
     AS_ALLOCATE(vi=v_index_bool, size=nb_racc)
 

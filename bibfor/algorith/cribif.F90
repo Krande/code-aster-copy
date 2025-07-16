@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -25,13 +25,13 @@ subroutine cribif(mod, dsidep, vbifur, nbrac4, racine)
 #include "asterfort/utmess.h"
 #include "asterfort/zerop3.h"
 #include "asterfort/zeropn.h"
-    integer :: nbrac4
+    integer(kind=8) :: nbrac4
     real(kind=8) :: dsidep(6, 6), racine(4), vbifur
     character(len=8) :: mod
 ! =====================================================================
 ! --- RECHERCHE DE ZONES DE LOCALISATION PAR LE CRITERE DE RICE -------
 ! =====================================================================
-    integer :: ii, degre, compt, nbrac3, ier
+    integer(kind=8) :: ii, degre, compt, nbrac3, ier
     real(kind=8) :: zero, un, deux, trois, quatre
     real(kind=8) :: a0, a1, a2, a3, a4, lamba, lambb, lambc
     real(kind=8) :: valeur
@@ -61,7 +61,7 @@ subroutine cribif(mod, dsidep, vbifur, nbrac4, racine)
 ! =====================================================================
     a0 = dsidep(1, 1)*dsidep(4, 4)-dsidep(1, 4)*dsidep(4, 1)
    a1 = dsidep(1, 1)*(dsidep(4, 2)+dsidep(2, 4))-dsidep(1, 4)*dsidep(2, 1)-dsidep(1, 2)*dsidep(4, 1&
-          &)
+           &)
     a2 = dsidep(1, 1)*dsidep(2, 2)+dsidep(1, 4)*dsidep(4, 2)+dsidep(4, 1)*dsidep(2, 4)-dsidep(1, 2&
          &)*dsidep(4, 4)-dsidep(1, 2)*dsidep(2, 1)-dsidep(4, 4)*dsidep(2, 1)
     a3 = dsidep(2, 2)*(dsidep(1, 4)+dsidep(4, 1))-dsidep(1, 2)*dsidep(2, 4)-dsidep(4, 2)*dsidep(2&

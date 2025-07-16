@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -23,11 +23,10 @@ subroutine dbr_calcpod_size(base, snap, m, n)
 !
     implicit none
 !
-#include "asterfort/assert.h"
 !
     type(ROM_DS_Empi), intent(in) :: base
     type(ROM_DS_Snap), intent(in) :: snap
-    integer, intent(out) :: m, n
+    integer(kind=8), intent(out) :: m, n
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -44,7 +43,7 @@ subroutine dbr_calcpod_size(base, snap, m, n)
 !
 ! --------------------------------------------------------------------------------------------------
 !
-    integer :: nbEqua, nbSlice, nbSnap
+    integer(kind=8) :: nbEqua, nbSlice, nbSnap
     character(len=8)  :: baseType
 !
 ! --------------------------------------------------------------------------------------------------

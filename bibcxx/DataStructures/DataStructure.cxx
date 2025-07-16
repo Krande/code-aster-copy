@@ -104,11 +104,12 @@ DataStructure::~DataStructure() {
     bool mainDs = _name.find( "." ) == std::string::npos && _name[0] != '&';
     std::string nameWithoutBlanks = strip( _name );
     // empty name or no memory manager : skip silently
-    if ( nameWithoutBlanks == "" || get_sh_jeveux_status() != 1 )
+    if ( nameWithoutBlanks == "" || get_sh_jeveux_status() != 1 ) {
         return;
-        // Allow to see when the datastructure is really deleted.
-        // In case of embraced datastructures, '_tco' is deallocated the first time
-        // (no type)
+    }
+    // Allow to see when the datastructure is really deleted.
+    // In case of embraced datastructures, '_tco' is deallocated the first time
+    // (no type)
 #ifdef ASTER_DEBUG_CXX_OBJECTS
     if ( mainDs && this->getType() != "not_found" ) {
         // Too low-level to call UTMESS.
@@ -187,8 +188,10 @@ void DataStructure::debugPrint( int logicalUnit, bool synchro ) const {
 #ifdef ASTER_HAVE_MPI
     int rank = getMPIRank();
     int nbProcs = getMPISize();
-    if ( !synchro )
-        rank = nbProcs = 0;
+    if ( !synchro ) {
+        rank = 0;
+        nbProcs = 1;
+    }
     for ( int iProc = 0; iProc < nbProcs; ++iProc ) {
         if ( iProc == rank ) {
 #endif /* ASTER_HAVE_MPI */

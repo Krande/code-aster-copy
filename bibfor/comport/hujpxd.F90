@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -34,8 +34,8 @@ subroutine hujpxd(k, mater, sig, vin, prox, &
 #include "asterf_types.h"
 #include "asterfort/hujprj.h"
 #include "asterfort/infniv.h"
-    integer :: k, ndt, ndi
-    integer :: ifm, niv
+    integer(kind=8) :: k, ndt, ndi
+    integer(kind=8) :: ifm, niv
     real(kind=8) :: mater(22, 2), sig(6), vin(*)
     real(kind=8) :: un, r, epsvp, pcr, pa, tole1, tole2
     real(kind=8) :: degr, beta, b, m, phi, pcref, ptrac

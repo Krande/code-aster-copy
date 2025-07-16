@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -70,17 +70,17 @@ subroutine xposep(mo, malini, mailc, mailx, nsetot, &
 !       LOGRMA : LONGUEUR DES NOUVEAUX GROUP_MA
 !       LISTGR : LISTE DES GROUPES CONTENANT CHAQUE MAILLE
 !
-    integer :: nbma, isepma, jcesd, jcesl, iad, ima
-    integer :: nbman, nbmac, nbmax, ngr, igr, j1, n1, nbelt, iel, nsetot
-    integer :: imac, imax, jmac, jmax, nnntot, ncotot, nse, n, nbgma
-    integer ::  ndime, iret1, jlogma
+    integer(kind=8) :: nbma, isepma, jcesd, jcesl, iad, ima
+    integer(kind=8) :: nbman, nbmac, nbmax, ngr, igr, j1, n1, nbelt, iel, nsetot
+    integer(kind=8) :: imac, imax, jmac, jmax, nnntot, ncotot, nse, n, nbgma
+    integer(kind=8) ::  ndime, iret1, jlogma
     character(len=8) :: massmo, typma
     character(len=19) :: ces, ligrel
     character(len=24) :: sepmai, liel
-    integer, pointer :: tmdim(:) => null()
-    integer, pointer :: tma(:) => null()
-    integer, pointer :: typm(:) => null()
-    integer, pointer :: cesv(:) => null()
+    integer(kind=8), pointer :: tmdim(:) => null()
+    integer(kind=8), pointer :: tma(:) => null()
+    integer(kind=8), pointer :: typm(:) => null()
+    integer(kind=8), pointer :: cesv(:) => null()
     parameter(massmo='NON')
 !
 !

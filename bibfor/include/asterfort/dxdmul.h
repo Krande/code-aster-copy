@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -24,8 +24,8 @@ interface
     subroutine dxdmul(lcalct, icou, iniv, t1ve, t2ui,&
                       h, d1i, d2i, x3i, epi)
         aster_logical :: lcalct
-        integer :: icou
-        integer :: iniv
+        integer(kind=8) :: icou
+        integer(kind=8) :: iniv
         real(kind=8) :: t1ve(3, 3)
         real(kind=8) :: t2ui(2, 2)
         real(kind=8) :: h(3, 3)

@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -32,7 +32,7 @@ subroutine tanbul(option, ndim, g, mate, compor, &
 #include "asterfort/utmess.h"
 !
     aster_logical :: resi, mini
-    integer :: ndim, g, mate
+    integer(kind=8) :: ndim, g, mate
     real(kind=8) :: alpha, dsbdep(2*ndim, 2*ndim), trepst
     character(len=16) :: option, compor
 !-----------------------------------------------------------------------
@@ -50,8 +50,8 @@ subroutine tanbul(option, ndim, g, mate, compor, &
 ! OUT TREPST  : TRACE DU TENSEUR DES DEFORMATIONS THERMIQUES
 !-----------------------------------------------------------------------
 !
-    integer :: k, nbpar
-    integer :: icodre(2), itemps, iret, iepsv
+    integer(kind=8) :: k, nbpar
+    integer(kind=8) :: icodre(2), itemps, iret, iepsv
     real(kind=8) :: e, nu, valres(2), valpar
     real(kind=8) :: angl_naut(3), epsth(6)
     real(kind=8) :: coef, coef1, coef2, coef3

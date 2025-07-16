@@ -58,7 +58,6 @@ subroutine mdconf(typflu, base, noma, nbm, lnoe, &
 #include "asterfort/jelibe.h"
 #include "asterfort/jelira.h"
 #include "asterfort/jemarq.h"
-#include "asterfort/jenonu.h"
 #include "asterfort/jeveuo.h"
 #include "asterfort/jexnom.h"
 #include "asterfort/mtdscr.h"
@@ -75,8 +74,8 @@ subroutine mdconf(typflu, base, noma, nbm, lnoe, &
 ! ARGUMENTS
 ! ---------
     character(len=8) :: typflu, base, noma
-    integer :: nbm, lnoe, nuor(*), iimpr, indic, veci1(*)
-    integer :: vali(2)
+    integer(kind=8) :: nbm, lnoe, nuor(*), iimpr, indic, veci1(*)
+    integer(kind=8) :: vali(2)
     real(kind=8) :: vecr1(*), vecr2(*), vecr3(*), vecr4(*), vecr5(*)
 !
 !
@@ -98,13 +97,13 @@ subroutine mdconf(typflu, base, noma, nbm, lnoe, &
 ! DATA
 ! ----
 !-----------------------------------------------------------------------
-    integer :: iaxe, icoupl, ide, ideeq, idep, ifsic
-    integer :: ifsvi, ifsvk, igrap, ik, imail, imod, ipas
-    integer :: ipm, ipv, ireszo, iret, irhoe, irhoi
-    integer :: irota1, irota2, itran1, itran2, itypfl, ivale, izone
-    integer :: j, lfsvk, lfsvr, lmasg, lmasse, n1
-    integer :: n2, nbma, nbmano, neq, numno0, numod, nuzo
-    integer :: nzex
+    integer(kind=8) :: iaxe, icoupl, ide, ideeq, idep, ifsic
+    integer(kind=8) :: ifsvi, ifsvk, igrap, ik, imail, imod, ipas
+    integer(kind=8) :: ipm, ipv, ireszo, iret, irhoe, irhoi
+    integer(kind=8) :: irota1, irota2, itran1, itran2, itypfl, ivale, izone
+    integer(kind=8) :: j, lfsvk, lfsvr, lmasg, lmasse, n1
+    integer(kind=8) :: n2, nbma, nbmano, neq, numno0, numod, nuzo
+    integer(kind=8) :: nzex
     real(kind=8) :: aire, alonto, cm1, cm2, cocaj, cokaj, comaj
     real(kind=8) :: comaj1, comaj2, difphi, dryi, drzi, dyi, dzi
     real(kind=8) :: ep, phi1, phi2, phie, prota, ptran, rhof

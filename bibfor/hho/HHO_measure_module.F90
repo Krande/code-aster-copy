@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -27,7 +27,6 @@ module HHO_measure_module
 #include "asterf_types.h"
 #include "asterfort/assert.h"
 #include "MeshTypes_type.h"
-#include "blas/ddot.h"
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -92,8 +91,8 @@ contains
 !  Out vol         :: volume
 ! --------------------------------------------------------------------------------------------------
 !
-        integer, dimension(4, 5) :: tets
-        integer :: i, j
+        integer(kind=8), dimension(4, 5) :: tets
+        integer(kind=8) :: i, j
         real(kind=8) :: nodestet(3, 4)
 ! --------------------------------------------------------------------------------------------------
 !
@@ -130,8 +129,8 @@ contains
 !  Out vol         :: volume
 ! --------------------------------------------------------------------------------------------------
 !
-        integer, dimension(4, 3) :: tets
-        integer :: i, j
+        integer(kind=8), dimension(4, 3) :: tets
+        integer(kind=8) :: i, j
         real(kind=8) :: nodestet(3, 4)
 ! --------------------------------------------------------------------------------------------------
 !
@@ -166,8 +165,8 @@ contains
 !  Out vol         :: volume
 ! --------------------------------------------------------------------------------------------------
 !
-        integer, dimension(4, 2) :: tets
-        integer :: i, j
+        integer(kind=8), dimension(4, 2) :: tets
+        integer(kind=8) :: i, j
         real(kind=8) :: nodestet(3, 4)
 ! --------------------------------------------------------------------------------------------------
 !
@@ -380,7 +379,7 @@ contains
     function hhoDiameter(coorno, nbnodes) result(diam)
 !
         implicit none
-        integer, intent(in) :: nbnodes
+        integer(kind=8), intent(in) :: nbnodes
         real(kind=8), dimension(3, nbnodes), intent(in) :: coorno
         real(kind=8) :: diam
 !
@@ -390,7 +389,7 @@ contains
 !  Out diam              :: maximum length of two distinc nodes
 ! --------------------------------------------------------------------------------------------------
 !
-        integer :: inode, jnode
+        integer(kind=8) :: inode, jnode
         real(kind=8), dimension(3) :: vector
 !
         diam = 0.d0
@@ -489,7 +488,7 @@ contains
 ! --------------------------------------------------------------------------------------------------
         real(kind=8), dimension(3) :: pt
         real(kind=8) :: rotmat(3, 3)
-        integer :: inode, idim
+        integer(kind=8) :: inode, idim
 ! --------------------------------------------------------------------------------------------------
 !
         box(:, 1) = r8maem()
@@ -526,7 +525,7 @@ contains
 ! --------------------------------------------------------------------------------------------------
         real(kind=8) :: pt(2)
         real(kind=8) :: rotmat(2, 3)
-        integer :: inode, idim
+        integer(kind=8) :: inode, idim
 ! --------------------------------------------------------------------------------------------------
 !
         rotmat = transpose(axes)
@@ -562,7 +561,7 @@ contains
 !  Out length               :: length of the bounding box of the cell
 ! --------------------------------------------------------------------------------------------------
         real(kind=8), dimension(3, 2) :: box
-        integer :: idim, ndim
+        integer(kind=8) :: idim, ndim
 ! --------------------------------------------------------------------------------------------------
         length = 1.d0
         ndim = hhoCell%ndim
@@ -593,7 +592,7 @@ contains
 !  Out length               :: length of the bounding box of the face
 ! --------------------------------------------------------------------------------------------------
         real(kind=8) :: box(2, 2)
-        integer :: idim, ndim
+        integer(kind=8) :: idim, ndim
 ! --------------------------------------------------------------------------------------------------
         length = 1.d0
         ndim = hhoFace%ndim
@@ -628,7 +627,7 @@ contains
 !  Out center               :: center of the bounding box of the cell
 ! --------------------------------------------------------------------------------------------------
         real(kind=8), dimension(3, 2) :: box, c(3)
-        integer :: idim, ndim
+        integer(kind=8) :: idim, ndim
 ! --------------------------------------------------------------------------------------------------
         c = 0.d0
         ndim = hhoCell%ndim
@@ -661,7 +660,7 @@ contains
 !  Out center               :: center of the bounding box of the face
 ! --------------------------------------------------------------------------------------------------
         real(kind=8) :: box(2, 2), c(2)
-        integer :: idim, ndim
+        integer(kind=8) :: idim, ndim
 ! --------------------------------------------------------------------------------------------------
         ndim = hhoFace%ndim
 !

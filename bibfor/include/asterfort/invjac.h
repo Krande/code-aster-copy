@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -21,10 +21,10 @@
 interface
     subroutine invjac(nno, ipg, ipoids, idfde, coor,&
                       invja, jac)
-        integer :: nno
-        integer :: ipg
-        integer :: ipoids
-        integer :: idfde
+        integer(kind=8) :: nno
+        integer(kind=8) :: ipg
+        integer(kind=8) :: ipoids
+        integer(kind=8) :: idfde
         real(kind=8) :: coor(1)
         real(kind=8) :: invja(3, 3)
         real(kind=8) :: jac

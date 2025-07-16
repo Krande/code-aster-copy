@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -18,13 +18,13 @@
 !
 function maxint(n, x)
     implicit none
-    integer :: maxint
+    integer(kind=8) :: maxint
 !     MAXIMUM DES TERMES DU VECTEUR D'ENTIER   X
 !     IN N      :  DIMENSION DE X
 !     IN X      :  VECTEUR D'ENTIER
 !     ----------------------------------------------------------------
-    integer :: n, i, s
-    integer :: x(n)
+    integer(kind=8) :: n, i, s
+    integer(kind=8) :: x(n)
 !
     s = -1000000
     do i = 1, n

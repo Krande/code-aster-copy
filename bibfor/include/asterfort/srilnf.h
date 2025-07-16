@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -21,12 +21,12 @@
 interface
     subroutine srilnf(nvi, vind, nmat, materf, dt,&
                       nr, yf, deps,vinf)
-        integer :: nmat
-        integer :: nvi
+        integer(kind=8) :: nmat
+        integer(kind=8) :: nvi
         real(kind=8) :: vind(nvi)
         real(kind=8) :: materf(nmat, 2)
         real(kind=8) :: dt
-        integer :: nr
+        integer(kind=8) :: nr
         real(kind=8) :: yf(nr)
         real(kind=8) :: deps(6)
         real(kind=8) :: vinf(nvi)

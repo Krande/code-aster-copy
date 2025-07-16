@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -41,9 +41,9 @@ subroutine xdecfa(elp, nno, igeom, jlsn, jlst, &
 #include "asterfort/xnormv.h"
 #include "blas/ddot.h"
 !
-    integer :: npi, noeud(9), npis
-    integer :: igeom, jlsn, jlst, zxain
-    integer :: nintar, npts, ndim, nno, jgrlsn
+    integer(kind=8) :: npi, noeud(9), npis
+    integer(kind=8) :: igeom, jlsn, jlst, zxain
+    integer(kind=8) :: nintar, npts, ndim, nno, jgrlsn
     real(kind=8) :: pinter(*), ainter(*), cooree(6, ndim), cooref(6, ndim)
     real(kind=8) :: rainter(3, 4), lst(6), lonref, pinref(43*ndim)
     character(len=8) :: elp
@@ -84,9 +84,9 @@ subroutine xdecfa(elp, nno, igeom, jlsn, jlst, &
     real(kind=8) :: vectn(ndim), ksi(ndim), dff(3, 27)
     real(kind=8) :: epsmax, cridist, a, b, c, ab(ndim), bc(ndim), gradlsn(ndim)
     real(kind=8) :: normfa(ndim), det, tempo, temp1(ndim), temp2(ndim), temp3(4)
-    integer :: k, ii, jj, j, ni, kk, ibid, num(8)
-    integer :: n(3), kkk, nn(4), exit(2)
-    integer :: itemax
+    integer(kind=8) :: k, ii, jj, j, ni, kk, ibid, num(8)
+    integer(kind=8) :: n(3), kkk, nn(4), exit(2)
+    integer(kind=8) :: itemax
     aster_logical :: deja, jonc
     blas_int :: b_incx, b_incy, b_n
     parameter(cridist=1.d-7)

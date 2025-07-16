@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -23,7 +23,7 @@
 interface
     subroutine relax_cable(ppr, ppi, ppc, yy0, dy0, dyy, decoup)
         real(kind=8)     :: ppr(*)
-        integer          :: ppi(*)
+        integer(kind=8)          :: ppi(*)
         character(len=*) :: ppc(*)
         real(kind=8)     :: yy0(*)
         real(kind=8)     :: dy0(*)

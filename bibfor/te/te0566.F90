@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -45,18 +45,18 @@ subroutine te0566(nomopt, nomte)
 !     ------------------------------------------------------------------
     character(len=16) :: nomte, nomopt
 !
-    integer :: nbnomx, nfissmx
+    integer(kind=8) :: nbnomx, nfissmx
     parameter(nbnomx=27, nfissmx=4)
 !
-    integer :: ndim, nnop, nnops, nspg, irese, nse
-    integer :: nfh, nfe, singu, ddlc, nnom, ddls, nddl, ddlm, ddlg
-    integer :: nfiss, contac
-    integer :: jdeplno, jxpg, jheavt, jlonch, jbaslo, jlsn, jlst, jheavn, jdeplpg, jstno, imate
-    integer :: jtab(7), jtab2(7), iret, ncomp, ncompn
-    integer :: ise, kpg, ipg, i, ino, ifiss, ifh, alp, igeom
-    integer :: he(nfissmx), dec(nbnomx), heavn(nbnomx, 5)
-    integer :: hea_se
-    integer :: iadzi, iazk24
+    integer(kind=8) :: ndim, nnop, nnops, nspg, irese, nse
+    integer(kind=8) :: nfh, nfe, singu, ddlc, nnom, ddls, nddl, ddlm, ddlg
+    integer(kind=8) :: nfiss, contac
+ integer(kind=8) :: jdeplno, jxpg, jheavt, jlonch, jbaslo, jlsn, jlst, jheavn, jdeplpg, jstno, imate
+    integer(kind=8) :: jtab(7), jtab2(7), iret, ncomp, ncompn
+    integer(kind=8) :: ise, kpg, ipg, i, ino, ifiss, ifh, alp, igeom
+    integer(kind=8) :: he(nfissmx), dec(nbnomx), heavn(nbnomx, 5)
+    integer(kind=8) :: hea_se
+    integer(kind=8) :: iadzi, iazk24
     real(kind=8) :: xg(3), ug(3)
     real(kind=8) :: ff(nbnomx)
     real(kind=8) :: fk(27, 3, 3)

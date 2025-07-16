@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -34,7 +34,7 @@ subroutine conper(macoc, i1, i2, i3, i4)
     character(len=8) :: macoc(*)
 !
 !-----------------------------------------------------------------------
-    integer :: i1, i2, i3, i4
+    integer(kind=8) :: i1, i2, i3, i4
 !-----------------------------------------------------------------------
     kdum = macoc(i1+2)
     macoc(i1+2) = macoc(i2+2)

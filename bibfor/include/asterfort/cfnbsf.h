@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -21,9 +21,9 @@
 interface
     subroutine cfnbsf(defico, isurf, typent, nbent, jdec)
         character(len=24) :: defico
-        integer :: isurf
+        integer(kind=8) :: isurf
         character(len=4) :: typent
-        integer :: nbent
-        integer :: jdec
+        integer(kind=8) :: nbent
+        integer(kind=8) :: jdec
     end subroutine cfnbsf
 end interface

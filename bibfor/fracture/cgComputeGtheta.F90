@@ -41,10 +41,8 @@ subroutine cgComputeGtheta(cgField, cgTheta, cgStudy, cgTable, cgStat)
 #include "asterfort/glegen.h"
 #include "asterfort/gsyste.h"
 #include "asterfort/hatSmooth.h"
-#include "asterfort/imprsd.h"
 #include "asterfort/jedema.h"
 #include "asterfort/jedetr.h"
-#include "asterfort/jelira.h"
 #include "asterfort/jemarq.h"
 #include "asterfort/jeveuo.h"
 #include "asterfort/mecact.h"
@@ -68,9 +66,9 @@ subroutine cgComputeGtheta(cgField, cgTheta, cgStudy, cgTable, cgStat)
 !    Compute G(Theta) in 2D and 3D
 !
 !----------------------------------------------
-    integer :: iret, nsig, ino1, ino2, inga, ibid, i_theta, i, j
-    integer :: nchin, iadrt3
-    integer :: jcesd, jcesl, jcesd2, jcesl2
+    integer(kind=8) :: iret, nsig, ino1, ino2, inga, ibid, i_theta, i, j
+    integer(kind=8) :: nchin, iadrt3
+    integer(kind=8) :: jcesd, jcesl, jcesd2, jcesl2
     real(kind=8) :: gth(7), som(7)
     real(kind=8) :: s1, s2, s3, sn2, sn1, sn
     character(len=2)  :: codret
@@ -83,7 +81,7 @@ subroutine cgComputeGtheta(cgField, cgTheta, cgStudy, cgTable, cgStat)
     character(len=24) :: pavolu, papres, pa2d3d, pepsin, pa1d2d
     character(len=24) :: lchin(50), lchout(1)
     aster_logical     :: lfonc, inco
-    integer, pointer  :: v_cesv(:) => null()
+    integer(kind=8), pointer  :: v_cesv(:) => null()
     real(kind=8), pointer :: v_absc(:) => null()
     real(kind=8), pointer :: v_base(:) => null()
     real(kind=8), pointer :: v_basf(:) => null()
@@ -417,7 +415,8 @@ subroutine cgComputeGtheta(cgField, cgTheta, cgStudy, cgTable, cgStat)
             nchin = nchin+1
         end if
 !
-        if (cgStudy%option .eq. 'G' .or. cgStudy%option .eq. 'G_EPSI') then
+        if (cgStudy%option .eq. 'G' .or. cgStudy%option .eq. 'G_EPSI' &
+            .or. cgStudy%option .eq. 'KJ' .or. cgStudy%option .eq. 'KJ_EPSI') then
             if (cgStudy%vitesse .ne. ' ') then
                 lpain(nchin+1) = 'PVITESS'
                 lchin(nchin+1) = cgStudy%vitesse
@@ -427,8 +426,8 @@ subroutine cgComputeGtheta(cgField, cgTheta, cgStudy, cgTable, cgStat)
             end if
         end if
 !
-!       Recuperation des contraintes du resultat pour option G
-        if (cgStudy%option .eq. 'G') then
+!       Recuperation des contraintes du resultat pour option G et KJ
+        if (cgStudy%option .eq. 'G' .or. cgStudy%option .eq. 'KJ') then
             call rsexch(' ', cgField%result_in, 'SIEF_ELGA', cgStudy%nume_ordre, chsig, iret)
 !
             if (iret .ne. 0) then

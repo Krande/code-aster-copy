@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -20,12 +20,12 @@ subroutine forpes(intsn, nb1, xr, rho, epais, &
                   vpesan, rnormc, vecl1)
     implicit none
 !
-    integer :: intsn, nb1, intsx
+    integer(kind=8) :: intsn, nb1, intsx
     real(kind=8) :: wgt, rho
     real(kind=8) :: xr(*), vpesan(3), vecl1(42)
 !
 !-----------------------------------------------------------------------
-    integer :: i, i1, i2, l1
+    integer(kind=8) :: i, i1, i2, l1
     real(kind=8) :: epais, rnormc
 !-----------------------------------------------------------------------
     wgt = xr(127-1+intsn)

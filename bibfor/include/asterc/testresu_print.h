@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -27,15 +27,15 @@ interface
         implicit none
         character(len=16), intent(in) :: refer
         character(len=16), intent(in) :: legend
-        integer, intent(in) :: llab
-        integer, intent(in) :: skip
-        integer, intent(in) :: rela
+        integer(kind=8), intent(in) :: llab
+        integer(kind=8), intent(in) :: skip
+        integer(kind=8), intent(in) :: rela
         real(kind=8), intent(in) :: tole
-        integer, intent(in) :: typ
+        integer(kind=8), intent(in) :: typ
         real(kind=8), intent(in) :: refr
         real(kind=8), intent(in) :: valr
-        integer, intent(in) :: refi
-        integer, intent(in) :: vali
+        integer(kind=8), intent(in) :: refi
+        integer(kind=8), intent(in) :: vali
         complex(kind=8), intent(in) :: refc
         complex(kind=8), intent(in) :: valc
         real(kind=8), intent(in) :: compare

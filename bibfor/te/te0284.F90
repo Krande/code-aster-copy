@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -41,7 +41,7 @@ subroutine te0284(option, nomte)
     character(len=4) :: fami
     real(kind=8) :: sigi(162), epsi(162), bsigma(81), angl_naut(3)
     real(kind=8) :: instan, nharm, xyz(81)
-    integer :: dimcoo, idim
+    integer(kind=8) :: dimcoo, idim
 !
 !
 !
@@ -49,9 +49,9 @@ subroutine te0284(option, nomte)
 ! ---- GEOMETRIE ET INTEGRATION
 !      ------------------------
 !-----------------------------------------------------------------------
-    integer :: i, idfde, igeom, iharmo, imate, ipoids, iret
-    integer :: itemps, ivectu, ivf, jgano, nbsig, ndim, nno
-    integer :: nnos, npg
+    integer(kind=8) :: i, idfde, igeom, iharmo, imate, ipoids, iret
+    integer(kind=8) :: itemps, ivectu, ivf, jgano, nbsig, ndim, nno
+    integer(kind=8) :: nnos, npg
     real(kind=8) :: zero
 !-----------------------------------------------------------------------
     fami = 'RIGI'

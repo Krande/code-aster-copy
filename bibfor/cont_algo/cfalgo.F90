@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -44,14 +44,14 @@ subroutine cfalgo(mesh, ds_measure, resi_glob_rela, iter_newt, &
     character(len=8), intent(in) :: mesh
     type(NL_DS_Measure), intent(inout) :: ds_measure
     real(kind=8), intent(in) :: resi_glob_rela
-    integer, intent(in) :: iter_newt
+    integer(kind=8), intent(in) :: iter_newt
     character(len=19), intent(in) :: solver
     character(len=14), intent(in) :: nume_dof
     character(len=19), intent(in) :: matr_asse
     character(len=19), intent(in) :: disp_iter
     character(len=19), intent(in) :: disp_cumu_inst
     type(NL_DS_Contact), intent(inout) :: ds_contact
-    integer, intent(out) :: ctccvg
+    integer(kind=8), intent(out) :: ctccvg
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -79,8 +79,8 @@ subroutine cfalgo(mesh, ds_measure, resi_glob_rela, iter_newt, &
 !
 ! --------------------------------------------------------------------------------------------------
 !
-    integer :: ifm, niv
-    integer :: algo_cont, algo_frot
+    integer(kind=8) :: ifm, niv
+    integer(kind=8) :: algo_cont, algo_frot
     character(len=19) :: syme
     aster_logical :: l_gliss, l_first_geom, l_matr_syme
 !

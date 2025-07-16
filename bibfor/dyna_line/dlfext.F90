@@ -27,12 +27,10 @@ subroutine dlfext(nbVectAsse, nbLoad, temps, neq, liad, &
 #include "asterc/r8vide.h"
 #include "asterfort/asasve.h"
 #include "asterfort/ascova.h"
-#include "asterfort/assert.h"
 #include "asterfort/fext.h"
 #include "asterfort/getvtx.h"
 #include "asterfort/jedema.h"
 #include "asterfort/jedetr.h"
-#include "asterfort/jelira.h"
 #include "asterfort/jemarq.h"
 #include "asterfort/jeveuo.h"
 #include "asterfort/utmess.h"
@@ -40,7 +38,7 @@ subroutine dlfext(nbVectAsse, nbLoad, temps, neq, liad, &
 #include "asterfort/vedime.h"
 #include "blas/daxpy.h"
 !
-    integer, intent(in) :: nbVectAsse, nbLoad, neq, liad(*)
+    integer(kind=8), intent(in) :: nbVectAsse, nbLoad, neq, liad(*)
     real(kind=8), intent(in) :: temps
     character(len=24), intent(in) :: lifo(*), loadInfoJv, loadFuncJv
     character(len=24), intent(in) :: model, caraElem, loadNameJv, materField, mateco, numedd
@@ -75,7 +73,7 @@ subroutine dlfext(nbVectAsse, nbLoad, temps, neq, liad, &
 ! --------------------------------------------------------------------------------------------------
 !
     character(len=4), parameter :: typmat = "R", para = 'INST'
-    integer :: iret, ieq, n1
+    integer(kind=8) :: iret, ieq, n1
     real(kind=8) :: partps(3)
     character(len=16) :: method
     character(len=24) :: vechmp, vachmp, cnchmp

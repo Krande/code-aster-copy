@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -55,29 +55,29 @@ subroutine ircecl(fileUnit, &
 #include "asterfort/nbec.h"
 #include "asterfort/utmess.h"
 !
-    integer, intent(in) :: fileUnit
+    integer(kind=8), intent(in) :: fileUnit
     character(len=4), intent(in) :: fieldSupport
-    integer, pointer :: celd(:)
+    integer(kind=8), pointer :: celd(:)
     character(len=8), intent(in) :: realFormat, cplxFormat
-    integer, intent(in) :: nodeListNb
-    integer, pointer :: nodeListNume(:)
-    integer, intent(in) :: cellListNb
-    integer, pointer :: cellListNume(:)
-    integer, intent(in) :: meshCellNb
+    integer(kind=8), intent(in) :: nodeListNb
+    integer(kind=8), pointer :: nodeListNume(:)
+    integer(kind=8), intent(in) :: cellListNb
+    integer(kind=8), pointer :: cellListNume(:)
+    integer(kind=8), intent(in) :: meshCellNb
     character(len=8), pointer :: meshCellName(:), meshNodeName(:)
     aster_logical, intent(in) :: lMeshCoor
-    integer, intent(in) :: meshDimeIn
+    integer(kind=8), intent(in) :: meshDimeIn
     real(kind=8), pointer :: meshCoor(:)
-    integer, intent(in) :: cmpCataNb
+    integer(kind=8), intent(in) :: cmpCataNb
     character(len=8), pointer :: cmpCataName(:)
-    integer, intent(in) :: cmpListNb
-    integer, pointer :: cmpListIndx(:)
-    integer, intent(in) :: cmpVariNb
-    integer, pointer :: cmpVariIndx(:)
-    integer, intent(in) :: grelNb
-    integer, pointer :: liel(:), lielLen(:)
+    integer(kind=8), intent(in) :: cmpListNb
+    integer(kind=8), pointer :: cmpListIndx(:)
+    integer(kind=8), intent(in) :: cmpVariNb
+    integer(kind=8), pointer :: cmpVariIndx(:)
+    integer(kind=8), intent(in) :: grelNb
+    integer(kind=8), pointer :: liel(:), lielLen(:)
     character(len=19), intent(in) :: liliName
-    integer, pointer :: connex(:), connexLen(:)
+    integer(kind=8), pointer :: connex(:), connexLen(:)
     aster_logical, intent(in) :: lsup, linf, lmax, lmin
     real(kind=8), intent(in) :: borsup, borinf
     complex(kind=8), pointer  :: vale(:)
@@ -122,44 +122,44 @@ subroutine ircecl(fileUnit, &
 ! --------------------------------------------------------------------------------------------------
 !
     character(len=1), parameter :: meshCmpName(3) = (/'X', 'Y', 'Z'/)
-    integer :: ilong, imodel, meshDime
+    integer(kind=8) :: ilong, imodel, meshDime
     real(kind=8) :: rundf, value, valmax, valmin, c1
     character(len=3) :: text3
     character(len=8) :: nodeName, variName, blank
     character(len=8) :: fmtText
     character(len=50) :: fmtHead, fmtVal1, fmt1, fmt2, fmt3, fmtVal2, form1
     aster_logical :: limpr
-    integer :: iGrel, iVari, iCell, iForm, iNode, iLayer, iNodeList
-    integer :: iCmpList, iCmpVari, iCmpCata, iCmpActi, iCmp
-    integer :: i2, iachml, iad, iadr
-    integer :: icomp2, iBegin, iel, grelElem, iEnd
-    integer :: ilign, irest
-    integer :: cmpNume, cellNume, grelNume, cmpListNume, nodeNume, cmpCataNume
-    integer :: ipca, ipoin, ipoin1
-    integer :: j, fmtLen, mode, modsau
-    integer :: nbcpt, nbNode, nbCmpActi, nbCmpVale, nbLayer, nec, nbCmp
-    integer :: npcalc, nbScal, modeNbScal
-    integer :: nbVariMaxi, nbCell, nbVariActi, nbVariCell
-    integer, pointer :: inec(:) => null()
-    integer, pointer :: repe(:) => null()
-    integer, pointer :: locatedCmp(:) => null()
+    integer(kind=8) :: iGrel, iVari, iCell, iForm, iNode, iLayer, iNodeList
+    integer(kind=8) :: iCmpList, iCmpVari, iCmpCata, iCmpActi, iCmp
+    integer(kind=8) :: i2, iachml, iad, iadr
+    integer(kind=8) :: icomp2, iBegin, iel, grelElem, iEnd
+    integer(kind=8) :: ilign, irest
+    integer(kind=8) :: cmpNume, cellNume, grelNume, cmpListNume, nodeNume, cmpCataNume
+    integer(kind=8) :: ipca, ipoin, ipoin1
+    integer(kind=8) :: j, fmtLen, mode, modsau
+    integer(kind=8) :: nbcpt, nbNode, nbCmpActi, nbCmpVale, nbLayer, nec, nbCmp
+    integer(kind=8) :: npcalc, nbScal, modeNbScal
+    integer(kind=8) :: nbVariMaxi, nbCell, nbVariActi, nbVariCell
+    integer(kind=8), pointer :: inec(:) => null()
+    integer(kind=8), pointer :: repe(:) => null()
+    integer(kind=8), pointer :: locatedCmp(:) => null()
     real(kind=8), pointer :: valeReal(:) => null()
     real(kind=8), pointer :: valeImag(:) => null()
     real(kind=8), pointer :: valeComp(:) => null()
-    integer, pointer :: valeIndx(:) => null()
+    integer(kind=8), pointer :: valeIndx(:) => null()
     real(kind=8), pointer :: valeMaxReal(:) => null()
     real(kind=8), pointer :: valeMaxImag(:) => null()
     character(len=8), pointer :: valeMaxElem(:) => null()
-    integer, pointer :: valeMaxNb(:) => null()
+    integer(kind=8), pointer :: valeMaxNb(:) => null()
     real(kind=8), pointer :: valeMinReal(:) => null()
     real(kind=8), pointer :: valeMinImag(:) => null()
     character(len=8), pointer :: valeMinElem(:) => null()
-    integer, pointer :: valeMinNb(:) => null()
+    integer(kind=8), pointer :: valeMinNb(:) => null()
     character(len=16), pointer :: cmpNameMinMax(:) => null()
     character(len=16), pointer :: cmpName(:) => null()
-    integer, pointer :: cmpInPhys(:) => null()
-    integer, pointer :: cmpInVale(:) => null()
-    integer, pointer :: valeSupIndx(:) => null()
+    integer(kind=8), pointer :: cmpInPhys(:) => null()
+    integer(kind=8), pointer :: cmpInVale(:) => null()
+    integer(kind=8), pointer :: valeSupIndx(:) => null()
     character(len=16), pointer :: valeSupName(:) => null()
 !
 ! --------------------------------------------------------------------------------------------------

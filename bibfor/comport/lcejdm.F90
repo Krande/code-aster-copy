@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -27,7 +27,6 @@ subroutine lcejdm(BEHinteg, fami, kpg, ksp, ndim, &
     implicit none
 !
 #include "asterf_types.h"
-#include "asterc/r8pi.h"
 #include "asterfort/matinv.h"
 #include "asterfort/pmavec.h"
 #include "asterfort/r8inir.h"
@@ -38,7 +37,7 @@ subroutine lcejdm(BEHinteg, fami, kpg, ksp, ndim, &
 #include "asterfort/finlf1.h"
 #include "asterfort/finlf2.h"
     type(Behaviour_Integ), intent(in) :: BEHinteg
-    integer :: mate, ndim, kpg, ksp
+    integer(kind=8) :: mate, ndim, kpg, ksp
     real(kind=8) :: epsm(6), deps(6)
     real(kind=8) :: sigma(6), dsidep(6, 6)
     real(kind=8) :: vim(*), vip(*), instam, instap
@@ -63,11 +62,11 @@ subroutine lcejdm(BEHinteg, fami, kpg, ksp, ndim, &
 ! IN : SIGMO - SIGMA INSTANT MOINS ET FLUX HYDRO SI HYME
 ! OUT : SIGMA , DSIDEP , VIP
 !-----------------------------------------------------------------------
-    integer :: nbpa
+    integer(kind=8) :: nbpa
     parameter(nbpa=11)
-    integer :: cod(nbpa), i, j, n, kronec
+    integer(kind=8) :: cod(nbpa), i, j, n, kronec
 ! Indicateur de plastification
-    integer :: ifplas
+    integer(kind=8) :: ifplas
 ! Parametres meca de la loi
     real(kind=8) :: kn, kt, mu, cbar
     real(kind=8) :: m1, m2, D1, Bn, Bt, CC, TT
@@ -111,7 +110,7 @@ subroutine lcejdm(BEHinteg, fami, kpg, ksp, ndim, &
     real(kind=8) :: W_vect(2), W_norm, pt_norm, ptxw, disc, d_lambda
     real(kind=8) :: ddldalp, dfddn, dfddt(2), dfdalp, ddlddn, ddlddt(2)
     real(kind=8) :: dgddn, dgddt(2), dgdalp, ddpnddn, ddpnddt(2), ddptddn(2), ddptddt(2, 2)
-    integer :: identity
+    integer(kind=8) :: identity
 !
 ! Parametre numerique aster
     aster_logical :: resi, rigi, elas, ifpahm, ifhyme

@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -36,9 +36,9 @@ subroutine irpara(resultName, fileUnit, &
 #include "asterfort/wkvect.h"
 !
     character(len=*), intent(in) :: resultName
-    integer, intent(in) :: fileUnit
-    integer, intent(in) :: storeNb, storeIndx(*)
-    integer, intent(in) :: paraNb
+    integer(kind=8), intent(in) :: fileUnit
+    integer(kind=8), intent(in) :: storeNb, storeIndx(*)
+    integer(kind=8), intent(in) :: paraNb
     character(len=*), intent(in) :: paraName(*)
     character(len=1), intent(in) :: tablFormat
 !
@@ -63,16 +63,16 @@ subroutine irpara(resultName, fileUnit, &
 !
 ! --------------------------------------------------------------------------------------------------
 !
-    integer :: necri, necrr, iundf
+    integer(kind=8) :: necri, necrr, iundf
     real(kind=8) :: rundf
     character(len=4) :: ctype, chfin
     character(len=8) :: form1
     character(len=104) :: toto
     character(len=2000) :: titi
-    integer :: i, iad, iec, ieci, iecr, ik16
-    integer :: ik24, ik32, ik8, ik80, iStore, iPara
-    integer :: lk16pa, lk24pa, lk32pa, lk80pa, lk8pa, lnipa, lnrpa
-    integer :: neck16, neck24, neck32, neck8, neck80
+    integer(kind=8) :: i, iad, iec, ieci, iecr, ik16
+    integer(kind=8) :: ik24, ik32, ik8, ik80, iStore, iPara
+    integer(kind=8) :: lk16pa, lk24pa, lk32pa, lk80pa, lk8pa, lnipa, lnrpa
+    integer(kind=8) :: neck16, neck24, neck32, neck8, neck80
 !
 ! --------------------------------------------------------------------------------------------------
 !

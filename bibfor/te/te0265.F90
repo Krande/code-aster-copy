@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -18,7 +18,6 @@
 
 subroutine te0265(nomopt, nomte)
     implicit none
-#include "asterfort/assert.h"
 #include "jeveux.h"
 #include "asterfort/jevech.h"
 #include "asterfort/tecach.h"
@@ -160,21 +159,21 @@ subroutine te0265(nomopt, nomte)
 
     character(len=16) :: nomopt, nomte
     ! Return value for differents ops
-    integer :: iret
+    integer(kind=8) :: iret
     ! Max is 7
-    integer :: itabin(3)
-    integer :: EFGE_ELNO_pointer
-    integer :: EFGE_ELNO_length
-    integer :: EFGE_ELNO_nbOfPoints
-    integer :: EFGE_ELNO_nbOfComponents
-    integer :: jcagepo, jfer1, jfer2, jefge
+    integer(kind=8) :: itabin(3)
+    integer(kind=8) :: EFGE_ELNO_pointer
+    integer(kind=8) :: EFGE_ELNO_length
+    integer(kind=8) :: EFGE_ELNO_nbOfPoints
+    integer(kind=8) :: EFGE_ELNO_nbOfComponents
+    integer(kind=8) :: jcagepo, jfer1, jfer2, jefge
 
 !   INFO ON MAILLE AND ELEMENT
     ! For tecael
-    integer :: iadzi, iazk24
+    integer(kind=8) :: iadzi, iazk24
     character(len=24) :: meshName, elementName
 !   For tecael
-    integer :: node_nb, node_i_id, node_j_id
+    integer(kind=8) :: node_nb, node_i_id, node_j_id
 
 !   OUTPUT FOR 1D ELEMENTS
     real(kind=8) :: dnsvol, construc
@@ -187,7 +186,7 @@ subroutine te0265(nomopt, nomte)
     real(kind=8) :: Vx, VY, VZ, MT, MFY, MFZ
 
 !   COMMAND DATA
-    integer :: typcmb, typco, i, k, uc, um, typstru
+    integer(kind=8) :: typcmb, typco, i, uc, um, typstru
     real(kind=8) :: cequi, sigs, sigci, sigcs, sigcyi, sigcys, sigczi, sigczs
     real(kind=8) :: alphacc, effrts(6), dnsits(6)
     real(kind=8) :: ht, bw, enrobi, enrobs, enrobyi, enrobys, enrobzi, enrobzs
@@ -196,10 +195,10 @@ subroutine te0265(nomopt, nomte)
     real(kind=8) :: astirr, rhocrit, datcrit, lcrit, thiter, epiter, aphiter
     real(kind=8) :: wmaxi, wmaxs, wmaxyi, wmaxys, wmaxzi, wmaxzs, sigelsqp, kt
     real(kind=8) :: phixi, phixs, phiyi, phiys, phizi, phizs
-    integer :: clacier, compress, epucisa, ferrcomp, ferrmin, ferrsyme, typdiag
-    integer :: ierrl, ierrt, meth2D, cond109, precs
+    integer(kind=8) :: clacier, compress, epucisa, ferrcomp, ferrmin, ferrsyme, typdiag
+    integer(kind=8) :: ierrl, ierrt, meth2D, cond109, precs
     character(len=24) :: valk(2)
-    integer :: vali(2)
+    integer(kind=8) :: vali(2)
 
 !   DEFAULT VALUES
     do i = 1, 6

@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -54,9 +54,9 @@ subroutine nmelru(fami, kpg, ksp, &
 #include "asterfort/Behaviour_type.h"
 !
     character(len=*), intent(in)  :: fami
-    integer, intent(in)          :: kpg
-    integer, intent(in)          :: ksp
-    integer, intent(in)          :: imate
+    integer(kind=8), intent(in)          :: kpg
+    integer(kind=8), intent(in)          :: ksp
+    integer(kind=8), intent(in)          :: imate
     character(len=16), intent(in) :: compor(*)
     real(kind=8), intent(in)     :: epseq
     real(kind=8), intent(in)     :: p_arg
@@ -67,8 +67,8 @@ subroutine nmelru(fami, kpg, ksp, &
     real(kind=8), intent(out)    :: ener(2)
 ! --------------------------------------------------------------------------------------------------
     character(len=1), parameter:: poum = '+'
-    integer :: icodre(3)
-    integer :: jprol, jvale, nbvale, iret1, iret2
+    integer(kind=8) :: icodre(3)
+    integer(kind=8) :: jprol, jvale, nbvale, iret1, iret2
     real(kind=8) :: temp, tref, p
     real(kind=8) :: e, nu, demu, k, k3, alpha, para_vale
     real(kind=8) :: de, dnu, demudt, dk, dalpha

@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -20,10 +20,10 @@
 !
 interface
     subroutine somloc(m, adco, nbso, nusglo, nusloc)
-        integer :: m
-        integer :: adco
-        integer :: nbso
-        integer :: nusglo
-        integer :: nusloc
+        integer(kind=8) :: m
+        integer(kind=8) :: adco
+        integer(kind=8) :: nbso
+        integer(kind=8) :: nusglo
+        integer(kind=8) :: nusloc
     end subroutine somloc
 end interface

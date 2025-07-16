@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -33,7 +33,7 @@ subroutine affbar(tmp, tmpf, fcx, nommai, isec, &
 #include "asterfort/jexnom.h"
 #include "asterfort/utmess.h"
 !
-    integer :: isec, ncar, ier
+    integer(kind=8) :: isec, ncar, ier
     real(kind=8) :: val(*)
     character(len=6) :: kioc
     character(len=8) :: fcx, nommai, car(*), exp(*)
@@ -58,7 +58,7 @@ subroutine affbar(tmp, tmpf, fcx, nommai, isec, &
 !     ------------------------------------------------------------------
 !
 !-----------------------------------------------------------------------
-    integer :: i, iisec, j, jdge, jdgef, num
+    integer(kind=8) :: i, iisec, j, jdge, jdgef, num
 !-----------------------------------------------------------------------
     call jemarq()
     call getres(resu, concep, cmd)

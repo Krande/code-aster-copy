@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -15,6 +15,7 @@
 ! You should have received a copy of the GNU General Public License
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
+! aslint: disable=W1501
 !
 subroutine tran75(nomres, typres, nomin, basemo)
 !
@@ -44,7 +45,6 @@ subroutine tran75(nomres, typres, nomin, basemo)
 #include "asterfort/asmpi_comm_vect.h"
 #include "asterfort/assert.h"
 #include "asterfort/cnocre.h"
-#include "asterfort/codent.h"
 #include "asterfort/copmod.h"
 #include "asterfort/detrsd.h"
 #include "asterfort/dismoi.h"
@@ -84,39 +84,39 @@ subroutine tran75(nomres, typres, nomin, basemo)
 #include "asterfort/vtdefs.h"
 #include "asterfort/wkvect.h"
 ! ----------------------------------------------------------------------
-    integer :: i, j, itresu(8), i_cham(8)
-    integer :: foci, focf, fomi, fomf, fomo
+    integer(kind=8) :: i, j, itresu(8), i_cham(8)
+    integer(kind=8) :: foci, focf, fomi, fomf, fomo
     real(kind=8) :: r8b, epsi, alpha, xnorm, coef(3), direction(9), zero
     character(len=1) :: typ1
     character(len=8) :: k8b, blanc, basemo, crit, interp, basem2, mailla, nomres
     character(len=8) :: nomin, nomcmp(6), mode, monmot(2), matgen, nomgd
     character(len=14) :: numddl
-    character(len=16) :: typres, type(8), typcha, typbas(8), concep
+    character(len=16) :: typres, type(8), fieldType, typbas(8), concep
     character(len=19) :: fonct(3), kinst, knume, numeq, numeq1, trange
     character(len=19) :: typref(8), prof
     character(len=24) :: matric, chamno, crefe(2), nomcha, chamn2, objve1
     character(len=24) :: objve2, objve3, objve4, chmod, tmpcha, valk
     aster_logical :: tousno, multap, leffor, prems, l_corr_stat, l_multi_app
-    integer :: iexi
+    integer(kind=8) :: iexi
 !     ------------------------------------------------------------------
 !-----------------------------------------------------------------------
-    integer :: iarchi, ibid, ich, id
-    integer :: idec, idefm, ie
-    integer :: ier, inocmp, inoecp, inuddl, inumno, ipsdel, ir
-    integer :: irou, jc, jinst
-    integer :: jnume, jpsdel, jvec, linst
-    integer :: lpsdel, lval2, lvale, n1, n2, n3, borne1, borne2
-    integer :: n4, nbcham, nbd, nbexci, nbinsg, nbinst
-    integer :: nbmode, nbnoeu, ncmp, neq, nfonct, neq0, ifonct, vali(2), neq1
-    integer :: shift, i_bloc
-    integer :: indice, taille, inst, indice1, taille1, ifm, niv, jddl
+    integer(kind=8) :: iarchi, ibid, ich, id
+    integer(kind=8) :: idec, idefm, ie
+    integer(kind=8) :: ier, inocmp, inoecp, inuddl, inumno, ipsdel, ir
+    integer(kind=8) :: irou, jc, jinst
+    integer(kind=8) :: jnume, jpsdel, jvec, linst
+    integer(kind=8) :: lpsdel, lval2, lvale, n1, n2, n3, borne1, borne2
+    integer(kind=8) :: n4, nbcham, nbd, nbexci, nbinsg, nbinst
+    integer(kind=8) :: nbmode, nbnoeu, ncmp, neq, nfonct, neq0, ifonct, vali(2), neq1
+    integer(kind=8) :: shift, i_bloc
+    integer(kind=8) :: indice, taille, inst, indice1, taille1, ifm, niv, jddl
     complex(kind=8) :: cbid
     real(kind=8), pointer :: base(:) => null()
     real(kind=8), pointer :: vectgene(:) => null()
     character(len=8), pointer :: fvit(:) => null()
     character(len=24), pointer :: refn(:) => null()
     character(len=8), pointer :: facc(:) => null()
-    integer, pointer :: desc(:) => null()
+    integer(kind=8), pointer :: desc(:) => null()
     real(kind=8), pointer :: disc(:) => null()
     real(kind=8), pointer :: resu(:) => null()
     character(len=8), pointer :: fdep(:) => null()
@@ -201,17 +201,12 @@ subroutine tran75(nomres, typres, nomin, basemo)
 !
     if (mode .eq. blanc) then
 !
-        call dismoi('BASE_MODALE', trange, 'RESU_DYNA', repk=basemo, arret='C', &
-                    ier=ir)
-        call dismoi('REF_RIGI_PREM', trange, 'RESU_DYNA', repk=matgen, arret='C', &
-                    ier=ir)
+        call dismoi('BASE_MODALE', trange, 'RESU_DYNA', repk=basemo, arret='C', ier=ir)
+        call dismoi('REF_RIGI_PREM', trange, 'RESU_DYNA', repk=matgen, arret='C', ier=ir)
 !
         if (matgen(1:8) .ne. blanc) then
-            call dismoi('NUME_DDL', basemo, 'RESU_DYNA', repk=numddl, arret='C', &
-                        ier=ir)
-            call dismoi('REF_RIGI_PREM', basemo, 'RESU_DYNA', repk=matric, arret='C', &
-                        ier=ir)
-!
+            call dismoi('NUME_DDL', basemo, 'RESU_DYNA', repk=numddl, arret='C', ier=ir)
+            call dismoi('REF_RIGI_PREM', basemo, 'RESU_DYNA', repk=matric, arret='C', ier=ir)
             if (numddl .eq. blanc) then
                 if (matric .ne. blanc) then
                     call dismoi('NOM_NUME_DDL', matric, 'MATR_ASSE', repk=numddl)
@@ -392,9 +387,8 @@ subroutine tran75(nomres, typres, nomin, basemo)
 !
 !            --- RECUPERATION DES DEFORMEES MODALES ---
 !
-        typcha = typbas(ich)
-        call rsexch('F', basemo, typcha, 1, nomcha, &
-                    ir)
+        fieldType = typbas(ich)
+        call rsexch('F', basemo, fieldType, 1, nomcha, ir)
         nomcha = nomcha(1:19)//'.VALE'
         call jeexin(nomcha, ibid)
         if (ibid .gt. 0) then
@@ -411,7 +405,7 @@ subroutine tran75(nomres, typres, nomin, basemo)
 !
         AS_ALLOCATE(vr=base, size=nbmode*neq)
         if (tousno) then
-            call copmod(basemo, champ=typcha, numer=numeq(1:14), bmodr=base, nequa=neq, &
+            call copmod(basemo, champ=fieldType, numer=numeq(1:14), bmodr=base, nequa=neq, &
                         nbmodes=nbmode)
         else
             crefe(1) = " "
@@ -419,10 +413,8 @@ subroutine tran75(nomres, typres, nomin, basemo)
             tmpcha = '&&TRAN75.CHAMP'
             call dismoi('NB_EQUA', numeq, 'NUME_EQUA', repi=neq1)
             do j = 1, nbmode
-                call rsexch('F', basemo, typcha, j, nomcha, &
-                            ir)
+                call rsexch('F', basemo, fieldType, j, nomcha, ir)
                 call jeexin(nomcha(1:19)//'.VALE', iexi)
-!              TOUSNO=.FALSE. => ON NE S'INTERESSE QU'AUX CHAM_NO :
                 ASSERT(iexi .gt. 0)
                 call jelira(nomcha(1:19)//'.VALE', 'TYPE', cval=typ1)
                 ASSERT(typ1 .eq. 'R')
@@ -432,7 +424,10 @@ subroutine tran75(nomres, typres, nomin, basemo)
                 call dismoi('NUME_EQUA', nomcha, 'CHAM_NO', repk=numeq1)
                 if (.not. idensd('NUME_EQUA', numeq, numeq1)) then
                     call vtcrea(tmpcha, crefe, 'V', 'R', neq1)
-                    call vtcopy(nomcha, tmpcha, ' ', ir)
+                    call vtcopy(nomcha, tmpcha, ir)
+                    if (ir .ne. 0) then
+                        call utmess("A", "FIELD0_3", sk=fieldType)
+                    end if
                     nomcha = tmpcha
                 end if
                 nomcha(20:24) = '.VALE'

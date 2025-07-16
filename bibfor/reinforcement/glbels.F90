@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -83,7 +83,7 @@ subroutine glbels(typco, cequi, effrts, ht, bw, &
 #include "asterfort/bresels.h"
 #include "asterfort/cftels.h"
 !
-    integer :: typco
+    integer(kind=8) :: typco
     real(kind=8) :: cequi
     real(kind=8) :: effrts(6)
     real(kind=8) :: ht
@@ -99,20 +99,20 @@ subroutine glbels(typco, cequi, effrts, ht, bw, &
     real(kind=8) :: sigczi
     real(kind=8) :: sigczs
     real(kind=8) :: sigs
-    integer :: precs
-    integer :: ferrsyme
+    integer(kind=8) :: precs
+    integer(kind=8) :: ferrsyme
     real(kind=8) :: slsyme
-    integer :: ferrcomp
-    integer :: epucisa
-    integer :: ferrmin
+    integer(kind=8) :: ferrcomp
+    integer(kind=8) :: epucisa
+    integer(kind=8) :: ferrmin
     real(kind=8) :: rholmin
     real(kind=8) :: rhotmin
-    integer :: compress
-    integer :: uc
-    integer :: um
+    integer(kind=8) :: compress
+    integer(kind=8) :: uc
+    integer(kind=8) :: um
     real(kind=8) :: dnsits(6)
-    integer :: ierrl
-    integer :: ierrt
+    integer(kind=8) :: ierrl
+    integer(kind=8) :: ierrt
 
 !   DEFINITION DES EFFORTS 1D
     real(kind=8) :: effn, effmy, effmz, effty, efftz, effmt
@@ -122,14 +122,14 @@ subroutine glbels(typco, cequi, effrts, ht, bw, &
     real(kind=8) :: sigmsyi, sigmsys, sigmcyi, sigmcys
     real(kind=8) :: sigmszi, sigmszs, sigmczi, sigmczs
     real(kind=8) :: alphay, alphaz
-    integer :: pivoty, pivotz, etaty, etatz
+    integer(kind=8) :: pivoty, pivotz, etaty, etatz
     real(kind=8) :: dnstray, thetaby, aky, uky
     real(kind=8) :: dnstraz, thetabz, akz, ukz
-    integer :: ierry, ierrz
+    integer(kind=8) :: ierry, ierrz
     real(kind=8) :: Asl, thetab, ak, uk, unite_pa, unite_m
     real(kind=8) :: d, Smoy, fctm, Calc, ab1, ab2, ab3, ab4
     real(kind=8) :: effrts_fake(8)
-    integer :: i, ierr
+    integer(kind=8) :: i, ierr
 
     do i = 1, 8
         effrts_fake(i) = 0.0

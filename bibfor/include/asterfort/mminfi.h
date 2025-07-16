@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -22,7 +22,7 @@ interface
     function mminfi(sdcont_defi_, question_, i_zone_)
         character(len=*), intent(in) :: sdcont_defi_
         character(len=*), intent(in) :: question_
-        integer, optional, intent(in) :: i_zone_
-        integer :: mminfi
+        integer(kind=8), optional, intent(in) :: i_zone_
+        integer(kind=8) :: mminfi
     end function mminfi
 end interface

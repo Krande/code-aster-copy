@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -20,9 +20,9 @@
 !
 interface
     subroutine xmoajo(jj, nfiss, itypx, ntypx)
-        integer :: jj
-        integer :: nfiss
-        integer :: itypx(*)
-        integer :: ntypx(*)
+        integer(kind=8) :: jj
+        integer(kind=8) :: nfiss
+        integer(kind=8) :: itypx(*)
+        integer(kind=8) :: ntypx(*)
     end subroutine xmoajo
 end interface

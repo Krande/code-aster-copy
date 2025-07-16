@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -15,11 +15,12 @@
 ! You should have received a copy of the GNU General Public License
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
+#include "intdef.h"
 
 ! Parameters definitions
 ! -------------------------------------------------------------------------
 !
-    integer :: parind(_INT_NBPAR)
+    integer(kind=8) :: parind(_INT_NBPAR)
     character(len=3)  :: partyp(_INT_NBPAR)
     character(len=8)  :: params(_INT_NBPAR)
 
@@ -33,7 +34,7 @@
                  'I  ', 'I  ', 'R  ', 'R  ', 'R  ', &
                  'I  ', 'R  ', 'R  ', 'R  ', 'R  ', &
                  'R  ', 'R  ', 'R  ', 'R  ', 'R  ', &
-                 'R  ', 'R  ', 'R  ', 'R  '/ 
+                 'R  ', 'R  ', 'R  ', 'R  '/
 
 ! -------------------------------------------------------------------------
 !   parind = -2 : vector global        ; = -1 : scalar global ;

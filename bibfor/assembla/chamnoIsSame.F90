@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -27,12 +27,11 @@ subroutine chamnoIsSame(chamno1_, chamno2_, ier)
 #include "asterfort/jelira.h"
 #include "asterfort/jemarq.h"
 #include "asterfort/jeveuo.h"
-#include "asterfort/assert.h"
 #include "asterfort/jenuno.h"
 #include "asterfort/jexnum.h"
 !
     character(len=*), intent(in) :: chamno1_, chamno2_
-    integer, intent(out) :: ier
+    integer(kind=8), intent(out) :: ier
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -44,13 +43,13 @@ subroutine chamnoIsSame(chamno1_, chamno2_, ier)
 ! --------------------------------------------------------------------------------------------------
 !
     aster_logical :: l_same
-    integer :: nb_refe1, nb_refe2, nb_ligr1, nb_ligr2, nbno
+    integer(kind=8) :: nb_refe1, nb_refe2, nb_ligr1, nb_ligr2, nbno
     character(len=19) :: chamno1, chamno2, numeq1, numeq2, ligrel
     character(len=24) :: refe1, refe2
     character(len=24), pointer :: v_refe1(:) => null()
     character(len=24), pointer :: v_refe2(:) => null()
-    integer, pointer :: v_nbno(:) => null()
-    integer :: iexi
+    integer(kind=8), pointer :: v_nbno(:) => null()
+    integer(kind=8) :: iexi
 !
 ! --------------------------------------------------------------------------------------------------
 !

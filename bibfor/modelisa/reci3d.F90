@@ -78,10 +78,6 @@ subroutine reci3d(lirela, mailla, nnoeca, noebe, nbcnx, &
 #include "asterfort/elrfvf.h"
 #include "asterfort/jedema.h"
 #include "asterfort/jemarq.h"
-#include "asterfort/jenonu.h"
-#include "asterfort/jenuno.h"
-#include "asterfort/jexnom.h"
-#include "asterfort/jexnum.h"
 #include "asterfort/as_deallocate.h"
 #include "asterfort/as_allocate.h"
 #include "asterfort/int_to_char8.h"
@@ -92,13 +88,13 @@ subroutine reci3d(lirela, mailla, nnoeca, noebe, nbcnx, &
 ! ---------
     character(len=19) :: lirela
     character(len=8) :: mailla, nnoeca
-    integer :: noebe, nbcnx, cxma(*), itetra, immer
+    integer(kind=8) :: noebe, nbcnx, cxma(*), itetra, immer
     real(kind=8) :: xbar(*)
 !
 ! VARIABLES LOCALES
 ! -----------------
-    integer :: icnx, iterm, nbsom, nbterm
-    integer :: nbtmax, nnomax, noeca
+    integer(kind=8) :: icnx, iterm, nbsom, nbterm
+    integer(kind=8) :: nbtmax, nnomax, noeca
     real(kind=8) :: ksi1, ksi2, ksi3, zero
     complex(kind=8) :: cbid
     character(len=8) :: k8b
@@ -106,7 +102,7 @@ subroutine reci3d(lirela, mailla, nnoeca, noebe, nbcnx, &
 !
     real(kind=8) :: ffel3d, ff(27), x(3)
     real(kind=8), pointer :: coemur(:) => null()
-    integer, pointer :: dimens(:) => null()
+    integer(kind=8), pointer :: dimens(:) => null()
     real(kind=8), pointer :: direct(:) => null()
     character(len=8), pointer :: nomddl(:) => null()
     character(len=8), pointer :: nomnoe(:) => null()

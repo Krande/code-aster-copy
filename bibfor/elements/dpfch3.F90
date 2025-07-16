@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -22,7 +22,7 @@ subroutine dpfch3(nno, nnf, poids, dfrdef, dfrdnf, &
     implicit none
 !      REAL*8 (A-H,O-Z)
 #include "asterfort/utmess.h"
-    integer :: nno, nnf
+    integer(kind=8) :: nno, nnf
     real(kind=8) :: poids, dfrdeg(1), dfrdng(1), dfrdkg(1), coor(1)
     real(kind=8) :: dfrdef(1), dfrdnf(1), dfrdkf(1)
     real(kind=8) :: dfdx(1), dfdy(1), dfdz(1), jac
@@ -47,7 +47,7 @@ subroutine dpfch3(nno, nnf, poids, dfrdef, dfrdnf, &
 !          JAC           <--  JACOBIEN AU POINT DE GAUSS
 ! ......................................................................
 !
-    integer :: i, j, ii
+    integer(kind=8) :: i, j, ii
     real(kind=8) :: g(3, 3), j11, j12, j13, j21, j22, j23, j31, j32, j33, de, dn
     real(kind=8) :: dk
     real(kind=8) :: valr

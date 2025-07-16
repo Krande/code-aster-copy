@@ -57,10 +57,9 @@ subroutine nmcoma(listFuncActi, &
 #include "asterfort/nmrenu.h"
 #include "asterfort/NonLinear_type.h"
 #include "asterfort/nonlinIntForce.h"
-#include "asterfort/nonlinIntForceAsse.h"
 #include "asterfort/utmess.h"
 !
-    integer, intent(in) :: listFuncActi(*)
+    integer(kind=8), intent(in) :: listFuncActi(*)
     character(len=*), intent(in) :: modelz
     character(len=24), intent(in) :: caraElem
     type(NL_DS_Material), intent(in) :: ds_material
@@ -68,7 +67,7 @@ subroutine nmcoma(listFuncActi, &
     character(len=19), intent(in) :: listLoad, sddyna
     type(NLDYNA_DAMPING), intent(in) :: nlDynaDamping
     character(len=19), intent(in) :: sddisc
-    integer, intent(in) :: numeTime, iterNewt
+    integer(kind=8), intent(in) :: numeTime, iterNewt
     type(NL_DS_AlgoPara), intent(in) :: ds_algopara
     type(NL_DS_Contact), intent(inout) :: ds_contact
     type(ROM_DS_AlgoPara), intent(in) :: ds_algorom
@@ -82,7 +81,7 @@ subroutine nmcoma(listFuncActi, &
     type(NL_DS_System), intent(in) :: ds_system
     character(len=19), intent(in) :: maprec
     character(len=19), intent(inout) :: matrAsse
-    integer, intent(out) :: faccvg, ldccvg
+    integer(kind=8), intent(out) :: faccvg, ldccvg
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -134,8 +133,8 @@ subroutine nmcoma(listFuncActi, &
 !
 ! --------------------------------------------------------------------------------------------------
 !
-    integer, parameter :: phaseType = CORR_NEWTON
-    integer :: ifm, niv
+    integer(kind=8), parameter :: phaseType = CORR_NEWTON
+    integer(kind=8) :: ifm, niv
     aster_logical :: l_update_matr, l_renumber
     aster_logical :: lRigiCompute, lDampMatrUpdate, lRigiAssemble
     aster_logical :: lMassAssemble
@@ -143,7 +142,7 @@ subroutine nmcoma(listFuncActi, &
     aster_logical :: lContCompute
     character(len=16) :: matrType, nonLinearOption
     character(len=19) :: contElem, rigid
-    integer :: reac_iter
+    integer(kind=8) :: reac_iter
     character(len=8) :: answer
     real(kind=8) :: time
 !

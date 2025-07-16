@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -30,8 +30,8 @@ subroutine mmelem(nomte, ndim, nddl, &
 #include "asterfort/lteatt.h"
 !
     character(len=16), intent(in) :: nomte
-    integer, intent(out) :: ndim, nddl, nne, nnm, nnl
-    integer, intent(out) :: nbcps, nbdm
+    integer(kind=8), intent(out) :: ndim, nddl, nne, nnm, nnl
+    integer(kind=8), intent(out) :: nbcps, nbdm
     character(len=8), intent(out) :: typmae, typmam
     aster_logical, intent(out) :: laxis, leltf
 !
@@ -58,7 +58,7 @@ subroutine mmelem(nomte, ndim, nddl, &
 !
 ! --------------------------------------------------------------------------------------------------
 !
-    integer :: i2d, i3d
+    integer(kind=8) :: i2d, i3d
 !
 ! --------------------------------------------------------------------------------------------------
 !

@@ -35,7 +35,6 @@ subroutine nxcvci(loadNameJv, loadInfoJv, loadFuncJv, numedd, tempmoi, &
 #include "asterfort/assert.h"
 #include "asterfort/copisd.h"
 #include "asterfort/detrsd.h"
-#include "asterfort/dismoi.h"
 #include "asterfort/exisd.h"
 #include "asterfort/jedema.h"
 #include "asterfort/jedetr.h"
@@ -51,11 +50,11 @@ subroutine nxcvci(loadNameJv, loadInfoJv, loadFuncJv, numedd, tempmoi, &
     character(len=24) :: l2cnci(2), cncinm, cncinp, dlci
     character(len=8) :: char1
     real(kind=8) :: instap, coefr(2)
-    integer :: neq, ieq, neq2, iret, jinfc, ichar
-    integer :: nbchar, jlchar
+    integer(kind=8) :: neq, ieq, neq2, iret, jinfc, ichar
+    integer(kind=8) :: nbchar, jlchar
     character(len=1) :: typch(2)
     aster_logical :: lvcine
-    integer, pointer :: v_dlci(:) => null()
+    integer(kind=8), pointer :: v_dlci(:) => null()
     real(kind=8), pointer :: cncim(:) => null()
     real(kind=8), pointer :: vale(:) => null()
 !----------------------------------------------------------------------

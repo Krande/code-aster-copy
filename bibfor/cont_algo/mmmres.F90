@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -38,7 +38,6 @@ subroutine mmmres(mesh, time_incr, ds_contact, disp_cumu_inst, sddisc, &
 #include "asterfort/jedetr.h"
 #include "asterfort/jemarq.h"
 #include "asterfort/jeveuo.h"
-#include "asterfort/jexatr.h"
 #include "asterfort/mcopco.h"
 #include "asterfort/mminfi.h"
 #include "asterfort/mminfl.h"
@@ -77,11 +76,11 @@ subroutine mmmres(mesh, time_incr, ds_contact, disp_cumu_inst, sddisc, &
 ! --------------------------------------------------------------------------------------------------
 !
     real(kind=8), parameter :: eps = 1.d-6
-    integer :: i_cont_poin, i_zone, i_elem_slav, i_poin_elem
-    integer :: nb_dof, nb_poin_elem, nb_elem_slav, nb_cont_zone, model_ndim, nt_cont_poin
-    integer :: ztabf, zresu, zperc
-    integer :: node_slav_nume, elem_mast_nume, elem_slav_indx
-    integer :: jdecme, indi_cont, pair_type
+    integer(kind=8) :: i_cont_poin, i_zone, i_elem_slav, i_poin_elem
+    integer(kind=8) :: nb_dof, nb_poin_elem, nb_elem_slav, nb_cont_zone, model_ndim, nt_cont_poin
+    integer(kind=8) :: ztabf, zresu, zperc
+    integer(kind=8) :: node_slav_nume, elem_mast_nume, elem_slav_indx
+    integer(kind=8) :: jdecme, indi_cont, pair_type
     real(kind=8) :: gli, gli1, gli2
     real(kind=8) :: rn, rnx, rny, rnz
     real(kind=8) :: rtax, rtay, rtaz

@@ -20,7 +20,7 @@
 interface
     subroutine reerel(elrefp, nnop, ndim, tabar, xe, &
                       xg, dxg)
-        integer, intent(in) :: ndim, nnop
+        integer(kind=8), intent(in) :: ndim, nnop
         real(kind=8), intent(in) :: xe(ndim), tabar(*)
         character(len=8), intent(in) :: elrefp
         real(kind=8), intent(out) :: xg(ndim)

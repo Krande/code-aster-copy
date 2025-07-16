@@ -43,7 +43,7 @@ subroutine acecel(noma, nomo, nbocc, ele_sup_num, ele_sup_typ, nb_ty_el, zjdlm, 
     use cara_elem_parameter_module
     implicit none
     character(len=8) :: noma, nomo
-    integer :: nbocc(*), ele_sup_num(*), ele_sup_typ(*), nb_ty_el(*), zjdlm(*), ier
+    integer(kind=8) :: nbocc(*), ele_sup_num(*), ele_sup_typ(*), nb_ty_el(*), zjdlm(*), ier
 !
 #include "jeveux.h"
 #include "asterfort/assert.h"
@@ -58,7 +58,7 @@ subroutine acecel(noma, nomo, nbocc, ele_sup_num, ele_sup_typ, nb_ty_el, zjdlm, 
 #include "asterfort/utmess.h"
 !
 ! --------------------------------------------------------------------------------------------------
-    integer :: ii, ifm, ixma, tt, jdme, nbmail, nummai, nutyel, nb_elem_p
+    integer(kind=8) :: ii, ifm, ixma, tt, jdme, nbmail, nummai, nutyel, nb_elem_p
 !
     character(len=24) :: mlgnma, modmai
     aster_logical :: l_pmesh

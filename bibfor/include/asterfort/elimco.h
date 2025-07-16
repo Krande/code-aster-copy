@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -26,10 +26,10 @@ interface
         character(len=8), intent(in) :: sdcont
         character(len=8), intent(in) :: mesh
         character(len=8), intent(in) :: model
-        integer, intent(in) :: nb_cont_surf
-        integer, intent(inout) :: nb_cont_elem
-        integer, intent(inout) :: nb_cont_node
+        integer(kind=8), intent(in) :: nb_cont_surf
+        integer(kind=8), intent(inout) :: nb_cont_elem
+        integer(kind=8), intent(inout) :: nb_cont_node
         aster_logical, intent(in) :: l_elim_coq3d
-        integer, optional, intent(out) :: nb_node_coq3d_
+        integer(kind=8), optional, intent(out) :: nb_node_coq3d_
     end subroutine elimco
 end interface

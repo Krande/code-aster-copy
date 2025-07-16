@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -30,10 +30,10 @@ subroutine gt_linoma(mesh, list_elem, nb_elem, list_node, nb_node)
 ! aslint: disable=W1306
 !
     character(len=8), intent(in) :: mesh
-    integer, intent(in) :: nb_elem
-    integer, intent(in) :: list_elem(nb_elem)
-    integer, pointer :: list_node(:)
-    integer, intent(out) :: nb_node
+    integer(kind=8), intent(in) :: nb_elem
+    integer(kind=8), intent(in) :: list_elem(nb_elem)
+    integer(kind=8), pointer :: list_node(:)
+    integer(kind=8), intent(out) :: nb_node
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -52,11 +52,11 @@ subroutine gt_linoma(mesh, list_elem, nb_elem, list_node, nb_node)
 !
 ! --------------------------------------------------------------------------------------------------
 !
-    integer, pointer :: list_node_aux(:) => null()
-    integer, pointer :: litrav(:) => null()
-    integer, pointer :: list_elem_aux(:) => null()
-    integer          :: aux(nb_elem), nb_elem_aux, nbno, j_info
-    integer          :: i_elem, indx_mini, elem_nume, elem_indx
+    integer(kind=8), pointer :: list_node_aux(:) => null()
+    integer(kind=8), pointer :: litrav(:) => null()
+    integer(kind=8), pointer :: list_elem_aux(:) => null()
+    integer(kind=8)          :: aux(nb_elem), nb_elem_aux, nbno, j_info
+    integer(kind=8)          :: i_elem, indx_mini, elem_nume, elem_indx
     character(len=24)::klitrav, klist_elem_aux, klist_node_aux
 !
 ! --------------------------------------------------------------------------------------------------

@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -21,10 +21,10 @@ subroutine ircael(jcesdi, jcesli, jcesvi, jcesci, nummai, &
     implicit none
 #include "asterfort/assert.h"
 #include "asterfort/cesexi.h"
-    integer :: nmaxfi
+    integer(kind=8) :: nmaxfi
     parameter(nmaxfi=10)
-    integer :: jcesdi, jcesli, nummai, nbqcou, nbtcou, jcesvi
-    integer :: nbrsec, nbrfib, nbrgrf, nugrfi(nmaxfi), jcesci
+    integer(kind=8) :: jcesdi, jcesli, nummai, nbqcou, nbtcou, jcesvi
+    integer(kind=8) :: nbrsec, nbrfib, nbrgrf, nugrfi(nmaxfi), jcesci
 ! person_in_charge: nicolas.sellenet at edf.fr
 ! ----------------------------------------------------------------------
 !  IMPR_RESU - CARACTERISTIQUE DE L'ELEMENT
@@ -50,7 +50,7 @@ subroutine ircael(jcesdi, jcesli, jcesvi, jcesci, nummai, &
 !
 #include "jeveux.h"
 !
-    integer :: nbrcmp, numgrf, icmp, iad
+    integer(kind=8) :: nbrcmp, numgrf, icmp, iad
 !
     nugrfi(1:nmaxfi) = 0
 !

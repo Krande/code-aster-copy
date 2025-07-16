@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -19,7 +19,7 @@
 subroutine stati1(nval, serie, moyenn, ectype)
     implicit none
 #include "asterfort/assert.h"
-    integer :: nval
+    integer(kind=8) :: nval
     real(kind=8) :: serie(nval), moyenn, ectype
 ! person_in_charge: jacques.pellet at edf.fr
 ! ----------------------------------------------------------------------
@@ -30,7 +30,7 @@ subroutine stati1(nval, serie, moyenn, ectype)
 !  OUT: ECTYPE : VALEUR DE L'ECART-TYPE
 ! ----------------------------------------------------------------------
 !
-    integer :: k
+    integer(kind=8) :: k
 !----------------------------------------------------------------------
     ASSERT(nval .ge. 1)
 !

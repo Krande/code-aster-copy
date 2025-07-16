@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -26,7 +26,6 @@ subroutine compStress(modelz, ligrel, compor, &
 !
 #include "asterf_types.h"
 #include "asterfort/ajchca.h"
-#include "asterfort/assert.h"
 #include "asterfort/cesvar.h"
 #include "asterfort/copisd.h"
 #include "asterfort/detrsd.h"
@@ -40,7 +39,7 @@ subroutine compStress(modelz, ligrel, compor, &
     character(len=*), intent(in) :: chcara(*), chtime, chharm
     character(len=*), intent(in) :: chvarc, chvref, chstrx
     character(len=*), intent(in) :: chelemz, basez
-    integer, intent(out) :: codret
+    integer(kind=8), intent(out) :: codret
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -53,7 +52,7 @@ subroutine compStress(modelz, ligrel, compor, &
 !
 ! --------------------------------------------------------------------------------------------------
 !
-    integer, parameter :: maxin = 65, maxout = 1
+    integer(kind=8), parameter :: maxin = 65, maxout = 1
     character(len=8) :: lpain(maxin), lpaout(maxout)
     character(len=24) :: lchin(maxin), lchout(maxout)
     character(len=1) :: base
@@ -61,8 +60,8 @@ subroutine compStress(modelz, ligrel, compor, &
     character(len=16) :: option
     character(len=19) :: canbsp, chxfem(12)
     character(len=24) :: chdisp, chelem
-    integer :: iret1, nbin, nbout, iret
-    integer :: ifiss
+    integer(kind=8) :: iret1, nbin, nbout, iret
+    integer(kind=8) :: ifiss
 !
 ! --------------------------------------------------------------------------------------------------
 !

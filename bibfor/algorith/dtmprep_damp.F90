@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -44,9 +44,9 @@ subroutine dtmprep_damp(sd_dtm_)
     character(len=*), intent(in) :: sd_dtm_
 !
 !   -0.2- Local variables
-    integer           :: n1, n2, n, nbamor, nbmode
-    integer           :: vali(3), iamog, iam, idiff
-    integer           :: im, lamre
+    integer(kind=8)           :: n1, n2, n, nbamor, nbmode
+    integer(kind=8)           :: vali(3), iamog, iam, idiff
+    integer(kind=8)           :: im, lamre
     real(kind=8)      :: rundef, epsi
     character(len=8)  :: sd_dtm, basemo, listam
     character(len=24) :: typeba, valk(1)

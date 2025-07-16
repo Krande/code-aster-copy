@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -29,7 +29,7 @@ subroutine angvec(v1, v2, angle)
 #include "asterfort/provec.h"
     real(kind=8) :: v1(3), v2(3), angle, cosphi, sinphi, v1v2(3), nv1, nv2
     real(kind=8) :: norm(3), nv3
-    integer :: i
+    integer(kind=8) :: i
 !
     call normev(v1, nv1)
     call normev(v2, nv2)

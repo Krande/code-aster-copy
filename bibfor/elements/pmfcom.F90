@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -74,11 +74,9 @@ subroutine pmfcom(kpg, debsp, option, compor, crit, &
 #include "asterfort/utmess.h"
 !
 #include "jeveux.h"
-#include "asterfort/jevech.h"
 !
-    integer :: icompo
 !
-    integer      :: nf, icdmat, nbvalc, kpg, debsp, codret
+    integer(kind=8)      :: nf, icdmat, nbvalc, kpg, debsp, codret
     real(kind=8) :: contm(nf), defm(nf), ddefp(nf), modf(nf), sigf(nf)
     real(kind=8) :: varimp(nbvalc*nf), varip(nbvalc*nf), varim(nbvalc*nf)
     real(kind=8) :: instam, instap, epsm
@@ -89,12 +87,12 @@ subroutine pmfcom(kpg, debsp, option, compor, crit, &
 !
 ! --------------------------------------------------------------------------------------------------
 !
-    integer, parameter :: nbval = 1
-    integer             :: icodre(nbval)
-    real(kind=8)        :: valres(nbval)
+    integer(kind=8), parameter :: nbval = 1
+    integer(kind=8)    :: icodre(nbval)
+    real(kind=8)       :: valres(nbval)
 
-    integer      :: nbvari, codrep, ksp, fib, ivari, nbvari_grfibre
-    real(kind=8) :: ep, em, depsth, tref, tempm, tempp, sigx, epsx, depsx
+    integer(kind=8)    ::  codrep, ksp, fib, ivari, nbvari_grfibre
+    real(kind=8) :: ep, em, depsth, tref, tempm, tempp
     real(kind=8) :: angmas(3), depsm, nu
 !
     character(len=4)  :: fami

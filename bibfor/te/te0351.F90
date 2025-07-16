@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -32,8 +32,8 @@ subroutine te0351(option, nomte)
     character(len=16) :: option, nomte
 !
     character(len=8) :: typmod(2)
-    integer :: nno, npg1, ipoids, ivf, idfde, jvGeom
-    integer :: jvSief, ivectu, ndim, nnos, jgano
+    integer(kind=8) :: nno, npg1, ipoids, ivf, idfde, jvGeom
+    integer(kind=8) :: jvSief, ivectu, ndim, nnos, jgano
     real(kind=8) :: work(18)
 !
 !

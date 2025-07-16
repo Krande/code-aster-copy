@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -52,28 +52,28 @@ subroutine op0192()
 
     character(len=6) :: nompro
     parameter(nompro='OP0192')
-    integer :: ednono
+    integer(kind=8) :: ednono
     parameter(ednono=-1)
-    integer :: ednopt
+    integer(kind=8) :: ednopt
     parameter(ednopt=-1)
     character(len=7) :: lcmpva
     parameter(lcmpva='NOM_CMP')
     character(len=11) :: lcmpvm
     parameter(lcmpvm='NOM_CMP_MED')
-    integer :: iaux, jaux, iret, iinst
+    integer(kind=8) :: iaux, jaux, iret, iinst
     med_idt :: idfimd
-    integer :: fileUnit, imaj, imin, irel
-    integer :: codret, iver, entityType
-    integer :: numpt, numord
-    integer :: cmpNb, jcmpva, jcmpvm
-    integer :: nbma, jnbpgm, jnbpmm, jnbsmm
-    integer :: ednoeu
+    integer(kind=8) :: fileUnit, imaj, imin, irel
+    integer(kind=8) :: codret, iver, entityType
+    integer(kind=8) :: numpt, numord
+    integer(kind=8) :: cmpNb, jcmpva, jcmpvm
+    integer(kind=8) :: nbma, jnbpgm, jnbpmm, jnbsmm
+    integer(kind=8) :: ednoeu
     parameter(ednoeu=3)
-    integer :: edmail
+    integer(kind=8) :: edmail
     parameter(edmail=0)
-    integer :: ednoma
+    integer(kind=8) :: ednoma
     parameter(ednoma=4)
-    integer :: edlect
+    integer(kind=8) :: edlect
     parameter(edlect=0)
     real(kind=8) :: inst
     real(kind=8) :: storeEpsi
@@ -320,4 +320,3 @@ subroutine op0192()
     call jedema()
 !
 end subroutine
-

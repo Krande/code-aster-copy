@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -30,16 +30,16 @@ interface
         character(len=19) :: newgeo
         type(NL_DS_Contact), intent(in) :: ds_contact
         aster_logical :: lctfd
-        integer :: ndimg
-        integer :: izone
-        integer :: posnoe
-        integer :: numnoe
+        integer(kind=8) :: ndimg
+        integer(kind=8) :: izone
+        integer(kind=8) :: posnoe
+        integer(kind=8) :: numnoe
         real(kind=8) :: coorne(3)
-        integer :: posmam
+        integer(kind=8) :: posmam
         real(kind=8) :: ksipr1
         real(kind=8) :: ksipr2
         real(kind=8) :: tau1m(3)
         real(kind=8) :: tau2m(3)
-        integer :: iliai
+        integer(kind=8) :: iliai
     end subroutine cfapma
 end interface

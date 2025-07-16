@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -21,9 +21,9 @@
 interface
     subroutine matdn(nb1, xr, intsn, madn, nks1,&
                      nks2)
-        integer :: nb1
+        integer(kind=8) :: nb1
         real(kind=8) :: xr(*)
-        integer :: intsn
+        integer(kind=8) :: intsn
         real(kind=8) :: madn(3, 51)
         real(kind=8) :: nks1(3, 51)
         real(kind=8) :: nks2(3, 51)

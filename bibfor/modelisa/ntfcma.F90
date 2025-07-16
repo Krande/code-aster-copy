@@ -1,6 +1,6 @@
 ! --------------------------------------------------------------------
 ! Copyright (C) 2019 Christophe Durand - www.code-aster.org
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -22,7 +22,7 @@ subroutine ntfcma(compo, jmat, aniso, ifon)
 #include "jeveux.h"
 #include "asterfort/assert.h"
 #include "asterfort/utmess.h"
-    integer :: imate, jmat, ifon(6)
+    integer(kind=8) :: imate, jmat, ifon(6)
     character(len=*) :: compo
     aster_logical :: aniso
 ! ----------------------------------------------------------------------
@@ -39,12 +39,12 @@ subroutine ntfcma(compo, jmat, aniso, ifon)
 !      IFON(5) : ADRESSE RELATIVE DU PARAMETRE LAMBDA_T (ORTHOTROPIE)
 !      IFON(6) : ADRESSE RELATIVE DU PARAMETRE LAMBDA_N (ORTHOTROPIE)
 !
-    integer :: ipi, k, nbmat
+    integer(kind=8) :: ipi, k, nbmat
 ! ----------------------------------------------------------------------
 ! PARAMETER ASSOCIE AU MATERIAU CODE
 !
 !-----------------------------------------------------------------------
-    integer :: idf, lfct, lmat
+    integer(kind=8) :: idf, lfct, lmat
     character(len=16) :: valk(2), compo2
 !-----------------------------------------------------------------------
     parameter(lmat=9, lfct=10)

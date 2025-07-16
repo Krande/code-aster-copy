@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -93,11 +93,11 @@ subroutine lrceme(chanom, nochmd, typech, nomamd, nomaas, &
     character(len=24) :: option
     character(len=*) :: nochmd, nomamd
 !
-    integer :: nrofic, typent
-    integer :: nbcmpv
-    integer :: iinst, numpt, numord
-    integer :: nbpgma(*), nbpgmm(*), nbspmm(*)
-    integer :: codret
+    integer(kind=8) :: nrofic, typent
+    integer(kind=8) :: nbcmpv
+    integer(kind=8) :: iinst, numpt, numord
+    integer(kind=8) :: nbpgma(*), nbpgmm(*), nbspmm(*)
+    integer(kind=8) :: codret
 !
     real(kind=8) :: inst
     real(kind=8) :: prec
@@ -109,15 +109,15 @@ subroutine lrceme(chanom, nochmd, typech, nomamd, nomaas, &
     character(len=6) :: nompro
     parameter(nompro='LRCEME')
 !
-    integer :: iaux, naux, unite, nbcham, nbcmp, jcmp
-    integer :: tycha, junit
-    integer :: vali(2)
-    integer :: ibid
-    integer :: jcesl
+    integer(kind=8) :: iaux, naux, unite, nbcham, nbcmp, jcmp
+    integer(kind=8) :: tycha, junit
+    integer(kind=8) :: vali(2)
+    integer(kind=8) :: ibid
+    integer(kind=8) :: jcesl
     med_idt :: idfimd
-    integer :: ifm, nivinf, nseqca
-    integer :: jnocmp, ncmprf, jcmpva, nbcmpa, iret, i, j, nncp
-    integer :: edlect
+    integer(kind=8) :: ifm, nivinf, nseqca
+    integer(kind=8) :: jnocmp, ncmprf, jcmpva, nbcmpa, iret, i, j, nncp
+    integer(kind=8) :: edlect
     parameter(edlect=0)
 !
     character(len=1) :: saux01

@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -24,7 +24,6 @@ subroutine dbrChckPod(operation, paraPod, lReuse, base)
     implicit none
 !
 #include "asterf_types.h"
-#include "asterfort/assert.h"
 #include "asterfort/infniv.h"
 #include "asterfort/romTableChck.h"
 #include "asterfort/rs_paraonce.h"
@@ -50,13 +49,13 @@ subroutine dbrChckPod(operation, paraPod, lReuse, base)
 !
 ! --------------------------------------------------------------------------------------------------
 !
-    integer :: ifm, niv
-    integer, parameter :: nbPara = 4
+    integer(kind=8) :: ifm, niv
+    integer(kind=8), parameter :: nbPara = 4
     character(len=16), parameter :: paraName(nbPara) = (/ &
                                     'MODELE  ', 'CHAMPMAT', &
                                     'CARAELEM', 'EXCIT   '/)
     aster_logical :: lTablFromResu, lTablRequired
-    integer :: nbMode, nbSnap
+    integer(kind=8) :: nbMode, nbSnap
 !
 ! --------------------------------------------------------------------------------------------------
 !

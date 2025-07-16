@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -42,7 +42,7 @@ subroutine rc36th(noma, nbma, listma, chth, iocs, &
 #include "asterfort/utmess.h"
 #include "asterfort/wkvect.h"
 !
-    integer :: nbma, listma(*), iocs, nbths, liths(*)
+    integer(kind=8) :: nbma, listma(*), iocs, nbths, liths(*)
     character(len=8) :: noma
     character(len=24) :: chth(*)
 !
@@ -51,10 +51,10 @@ subroutine rc36th(noma, nbma, listma, chth, iocs, &
 !
 !     ------------------------------------------------------------------
 !
-    integer :: nbreth, nbcmp, iths, ith, iret, n1, n2, iocc, ino, iad, in
-    integer :: ima, im, jmail, jnoeu, nbmail, nbmat, nbtou, nbnoeu, jcesl
-    integer :: nbpt, decal, i, ipt, jconx2, icmp, it1, vali(4)
-    integer :: jinst, jther, jmoye, jabsc, nbabsc, nbinst, ibid
+    integer(kind=8) :: nbreth, nbcmp, iths, ith, iret, n1, n2, iocc, ino, iad, in
+    integer(kind=8) :: ima, im, jmail, jnoeu, nbmail, nbmat, nbtou, nbnoeu, jcesl
+    integer(kind=8) :: nbpt, decal, i, ipt, jconx2, icmp, it1, vali(4)
+    integer(kind=8) :: jinst, jther, jmoye, jabsc, nbabsc, nbinst, ibid
     parameter(nbcmp=2)
     real(kind=8) :: inst, epsi, vmoy, ta, tint, text, vale(2), prec(2)
     complex(kind=8) :: cbid
@@ -64,9 +64,9 @@ subroutine rc36th(noma, nbma, listma, chth, iocs, &
     character(len=16) :: nopara(2)
     character(len=19) :: chams0
     character(len=24) :: instan, abscur, mesmai, mesnoe, nojvth, nojvmy, valk(7)
-    integer, pointer :: connex(:) => null()
+    integer(kind=8), pointer :: connex(:) => null()
     character(len=24), pointer :: cesv(:) => null()
-    integer, pointer :: cesd(:) => null()
+    integer(kind=8), pointer :: cesd(:) => null()
 ! DEB ------------------------------------------------------------------
     call jemarq()
 !

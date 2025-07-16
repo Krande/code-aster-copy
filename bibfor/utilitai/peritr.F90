@@ -35,12 +35,10 @@ subroutine peritr(resu, modele, cara, nh, nbocc)
 #include "asterfort/jelira.h"
 #include "asterfort/jemarq.h"
 #include "asterfort/jenonu.h"
-#include "asterfort/jenuno.h"
 #include "asterfort/jerazo.h"
 #include "asterfort/jerecu.h"
 #include "asterfort/jeveuo.h"
 #include "asterfort/jexnom.h"
-#include "asterfort/jexnum.h"
 #include "asterfort/mecact.h"
 #include "asterfort/mecham.h"
 #include "asterfort/memaxm.h"
@@ -56,17 +54,17 @@ subroutine peritr(resu, modele, cara, nh, nbocc)
 #include "asterfort/char8_to_int.h"
 #include "asterfort/int_to_char8.h"
 !
-    integer :: nh, nbocc
+    integer(kind=8) :: nh, nbocc
     character(len=*) :: resu, modele, cara
 !     OPERATEUR   POST_ELEM
 !     TRAITEMENT DU MOT CLE-FACTEUR "RICE_TRACEY"
 !     ------------------------------------------------------------------
 !
-    integer :: nbparr, nbpard, numa, long, mxvale
-    integer :: ifm, nd, nr, niv, i, ni, np, nq, n1, n2, iret, jord, jins
-    integer :: iord, iainst, lvale, nbin, iocc, nt, nm, nc
-    integer :: ng, kk, nbgrma, jgr, ig, nbma, jad, nbmail, jma, im, nume, ier
-    integer :: numord, numomu, nbordr, nbMaiT
+    integer(kind=8) :: nbparr, nbpard, numa, long, mxvale
+    integer(kind=8) :: ifm, nd, nr, niv, i, ni, np, nq, n1, n2, iret, jord, jins
+    integer(kind=8) :: iord, iainst, lvale, nbin, iocc, nt, nm, nc
+    integer(kind=8) :: ng, kk, nbgrma, jgr, ig, nbma, jad, nbmail, jma, im, nume, ier
+    integer(kind=8) :: numord, numomu, nbordr, nbMaiT
     parameter(mxvale=5, nbparr=6, nbpard=4)
     real(kind=8) :: prec, inst, rsr0, volu, numema, triax, lnrsr0
     real(kind=8) :: vr(5), rtval(2), valer(3)

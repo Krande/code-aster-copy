@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -23,7 +23,6 @@ subroutine varinonu(modelZ, comporZ, &
     implicit none
 !
 #include "jeveux.h"
-#include "asterfort/assert.h"
 #include "asterfort/codent.h"
 #include "asterfort/etenca.h"
 #include "asterfort/jeexin.h"
@@ -38,8 +37,8 @@ subroutine varinonu(modelZ, comporZ, &
 #include "asterfort/utmess.h"
 !
     character(len=*), intent(in) :: modelZ, comporZ
-    integer, intent(in) :: nbCell, listCell(nbCell)
-    integer, intent(in) :: nbVari
+    integer(kind=8), intent(in) :: nbCell, listCell(nbCell)
+    integer(kind=8), intent(in) :: nbVari
     character(len=16), intent(in) :: listVariName(nbVari)
     character(len=8), intent(out) ::  listVariNume(nbCell, nbVari)
 !
@@ -59,12 +58,12 @@ subroutine varinonu(modelZ, comporZ, &
 !
 ! --------------------------------------------------------------------------------------------------
 !
-    integer :: iVari, variNume
-    integer :: iret, iCell, zoneField, jv_vari
-    integer :: cellNume, nbVariZone
+    integer(kind=8) :: iVari, variNume
+    integer(kind=8) :: iret, iCell, zoneField, jv_vari
+    integer(kind=8) :: cellNume, nbVariZone
     character(len=19) :: compor, modelLigrel
     character(len=19), parameter :: comporInfo = '&&NMDOCC.INFO'
-    integer, pointer :: comporPtma(:) => null()
+    integer(kind=8), pointer :: comporPtma(:) => null()
 !
 ! --------------------------------------------------------------------------------------------------
 !

@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -23,7 +23,7 @@ subroutine nmfifi(npg, typmod, geom, sigma, fint)
 #include "asterf_types.h"
 #include "asterfort/nmfisa.h"
 #include "asterfort/r8inir.h"
-    integer :: npg
+    integer(kind=8) :: npg
     real(kind=8) :: geom(2, 4), sigma(2, npg), fint(8)
     character(len=8) :: typmod(2)
 !
@@ -38,7 +38,7 @@ subroutine nmfifi(npg, typmod, geom, sigma, fint)
 !-----------------------------------------------------------------------
 !
     aster_logical :: axi
-    integer :: i, j, kpg
+    integer(kind=8) :: i, j, kpg
     real(kind=8) :: b(2, 8), poids
 !-----------------------------------------------------------------------
 !

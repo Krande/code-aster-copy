@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -36,7 +36,7 @@ interface
         type(NL_DS_System), intent(in) :: ds_system
         type(NL_DS_Measure), intent(inout) :: ds_measure
         real(kind=8), intent(in) :: eta
-        integer, intent(in) :: listFuncActi(*), numeTime
+        integer(kind=8), intent(in) :: listFuncActi(*), numeTime
         type(NL_DS_Contact), intent(in) :: ds_contact
     end subroutine nmener
 end interface

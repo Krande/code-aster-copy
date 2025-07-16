@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -61,7 +61,7 @@ contains
         implicit none
 !
         real(kind=8), dimension(3), intent(in) :: v1, v2
-        integer :: ind
+        integer(kind=8) :: ind
 !
 ! --------------------------------------------------------------------------------------------------
 ! Find the nodes at bottom left between two nodes
@@ -107,7 +107,7 @@ contains
 !
         implicit none
 !
-        integer, intent(in) :: nbnodes
+        integer(kind=8), intent(in) :: nbnodes
         real(kind=8), dimension(3, nbnodes), intent(in) :: nodes
         real(kind=8), dimension(3) :: bar
 !
@@ -118,7 +118,7 @@ contains
 !  Out bar         :: barycenter of nodes
 ! --------------------------------------------------------------------------------------------------
 !
-        integer :: inode
+        integer(kind=8) :: inode
 ! --------------------------------------------------------------------------------------------------
 !
         bar = 0.d0
@@ -230,7 +230,7 @@ contains
         implicit none
 !
         real(kind=8), dimension(3, 4), intent(in) :: coorno
-        integer, intent(in) :: nbnodes
+        integer(kind=8), intent(in) :: nbnodes
         real(kind=8), dimension(3), optional, intent(in) :: barycenter_face
         real(kind=8), dimension(3), optional, intent(in) :: barycenter_cell
         real(kind=8), dimension(3) :: normal
@@ -377,7 +377,7 @@ contains
 !
         implicit none
 !
-        integer, intent(in) :: typma
+        integer(kind=8), intent(in) :: typma
         real(kind=8), dimension(3, 4), intent(in) :: nodes_coor
         real(kind=8), dimension(3) :: normal
 !
@@ -454,11 +454,11 @@ contains
 !
         implicit none
 !
-        integer, intent(in) :: ndimF
+        integer(kind=8), intent(in) :: ndimF
         real(kind=8), dimension(3, 4), intent(in) :: coorno
-        integer, intent(in) :: nbnodes
+        integer(kind=8), intent(in) :: nbnodes
         real(kind=8), dimension(3, 4) :: nodes_face
-        integer, intent(out), optional :: numsorted_(4)
+        integer(kind=8), intent(out), optional :: numsorted_(4)
 !
 ! --------------------------------------------------------------------------------------------------
 !   We have to reorder the nodes of the face to use the same basis functions for a face
@@ -466,7 +466,7 @@ contains
 !  In HHO_Face           :: face HHO
 ! --------------------------------------------------------------------------------------------------
 !
-        integer :: ino, minnum1, minnum2, numsorted(4), ind, candidate(2)
+        integer(kind=8) :: ino, minnum1, minnum2, numsorted(4), ind, candidate(2)
 !
         numsorted(:) = 0
 !
@@ -591,7 +591,7 @@ contains
 !
         implicit none
 !
-        integer, intent(in) :: typema
+        integer(kind=8), intent(in) :: typema
         real(kind=8), intent(in) :: pt(3)
         real(kind=8), intent(out) :: basis(8)
 !
@@ -635,7 +635,7 @@ contains
 !
         implicit none
 !
-        integer, intent(in) :: typema
+        integer(kind=8), intent(in) :: typema
         real(kind=8), intent(in) :: pt(3)
         real(kind=8), intent(out) :: dbasis(3, 8)
 !
@@ -680,9 +680,9 @@ contains
 !
         implicit none
 !
-        integer, intent(in) :: typema
-        integer, intent(out) :: n_simpl
-        integer, intent(out) :: indice_simpl(6, 4)
+        integer(kind=8), intent(in) :: typema
+        integer(kind=8), intent(out) :: n_simpl
+        integer(kind=8), intent(out) :: indice_simpl(6, 4)
 !
 ! ---------------------------------------------------------------------------------
 !  HHO - geometrie
@@ -737,9 +737,9 @@ contains
 !
         implicit none
 !
-        integer, intent(in) :: nbnodes
+        integer(kind=8), intent(in) :: nbnodes
         real(kind=8), dimension(3, nbnodes), intent(in) :: coorno
-        integer, intent(in) :: typema
+        integer(kind=8), intent(in) :: typema
         real(kind=8), dimension(3), intent(in) :: coorref
         real(kind=8), dimension(3), optional, intent(out) :: coorac
         real(kind=8), optional, intent(out) :: jacob
@@ -758,7 +758,7 @@ contains
         real(kind=8), dimension(8) :: basis
         real(kind=8), dimension(3, 8) :: dbasis
         real(kind=8), dimension(3, 3) :: jaco
-        integer :: i
+        integer(kind=8) :: i
 !
         if (present(coorac)) then
 !
@@ -804,7 +804,7 @@ contains
 !
         real(kind=8), dimension(3, 4), intent(in) :: coorno
         real(kind=8), dimension(2), intent(in) :: coorref
-        integer, intent(in) :: ndim
+        integer(kind=8), intent(in) :: ndim
         real(kind=8), optional, intent(out) :: jacob
         real(kind=8), dimension(3), intent(out), optional :: coorac
 !
@@ -820,12 +820,12 @@ contains
 !
 ! --------------------------------------------------------------------------------------------------
 !
-        integer, parameter :: typema = MT_QUAD4
+        integer(kind=8), parameter :: typema = MT_QUAD4
         real(kind=8), dimension(8) :: basis
         real(kind=8), dimension(3, 8) :: dbasis
         real(kind=8), dimension(2, 2) :: jaco
         real(kind=8), dimension(3) :: da, db, normal
-        integer :: i
+        integer(kind=8) :: i
         blas_int :: b_incx, b_n
 !
         if (present(coorac)) then
@@ -885,7 +885,7 @@ contains
         implicit none
 !
         real(kind=8), dimension(3, 4), intent(in) :: coorno
-        integer, intent(in) :: ndim
+        integer(kind=8), intent(in) :: ndim
         aster_logical :: l_cst
 !
 ! --------------------------------------------------------------------------------------------------
@@ -899,7 +899,7 @@ contains
 !
 !
         real(kind=8) :: coor_nno(3, MT_NNOMAX), jac1, jac, tole
-        integer :: i_node
+        integer(kind=8) :: i_node
 !
         l_cst = ASTER_TRUE
         call elrfno('QU4', nodeCoor=coor_nno)
@@ -925,7 +925,7 @@ contains
         implicit none
 !
         real(kind=8), dimension(3, 8), intent(in) :: coorno
-        integer, intent(in) :: typema
+        integer(kind=8), intent(in) :: typema
         aster_logical :: l_cst
 !
 ! --------------------------------------------------------------------------------------------------
@@ -939,7 +939,7 @@ contains
 !
         real(kind=8) :: coor_nno(3, MT_NNOMAX), jac1, jac, tole
         character(len=8) :: sname
-        integer :: i_node, nno
+        integer(kind=8) :: i_node, nno
 !
         l_cst = ASTER_TRUE
         call CellNameL2S(typema, sname)
@@ -966,7 +966,7 @@ contains
         implicit none
 !
         real(kind=8), dimension(3, *), intent(in) :: coorno
-        integer, intent(in) :: typema, ndim
+        integer(kind=8), intent(in) :: typema, ndim
         aster_logical :: l_cst
 !
 ! --------------------------------------------------------------------------------------------------

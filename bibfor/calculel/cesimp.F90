@@ -29,15 +29,13 @@ subroutine cesimp(cesz, unite, nbmat, nummai)
 #include "asterfort/jedetr.h"
 #include "asterfort/jeexin.h"
 #include "asterfort/jemarq.h"
-#include "asterfort/jenuno.h"
 #include "asterfort/jeveuo.h"
 #include "asterfort/jexatr.h"
-#include "asterfort/jexnum.h"
 #include "asterfort/wkvect.h"
 #include "asterfort/int_to_char8.h"
 !
     character(len=*) :: cesz
-    integer :: unite, nbmat, nummai(*)
+    integer(kind=8) :: unite, nbmat, nummai(*)
 ! ---------------------------------------------------------------------
 ! BUT: IMPRIMER UN CHAM_ELEM_S
 ! ---------------------------------------------------------------------
@@ -54,9 +52,9 @@ subroutine cesimp(cesz, unite, nbmat, nummai)
 !-----------------------------------------------------------------------
 !
 !     ------------------------------------------------------------------
-    integer :: jcesd, jcesv, jcesl, iad, jconx2
-    integer :: nbma, k, ima, ncmp, jlval, ipt, isp, nbpt, nbsp, ino, iret
-    integer :: ik, ncmpu, licmpu(997), nbmai, im
+    integer(kind=8) :: jcesd, jcesv, jcesl, iad, jconx2
+    integer(kind=8) :: nbma, k, ima, ncmp, jlval, ipt, isp, nbpt, nbsp, ino, iret
+    integer(kind=8) :: ik, ncmpu, licmpu(997), nbmai, im
     character(len=8) :: ma, nomgd, nomma, poin, spoin, typces
     character(len=3) :: tsca
     character(len=19) :: ces
@@ -64,7 +62,7 @@ subroutine cesimp(cesz, unite, nbmat, nummai)
     aster_logical :: exicmp
     character(len=8), pointer :: cesk(:) => null()
     character(len=8), pointer :: cesc(:) => null()
-    integer, pointer :: connex(:) => null()
+    integer(kind=8), pointer :: connex(:) => null()
 !     ------------------------------------------------------------------
     call jemarq()
 !

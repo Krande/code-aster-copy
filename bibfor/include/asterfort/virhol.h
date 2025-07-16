@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -23,14 +23,14 @@ interface
                       cliq  , alpliq, signe ,&
                       rho110, rho11 , rho11m,&
                       retcom)
-        integer, intent(in) :: nbvari
+        integer(kind=8), intent(in) :: nbvari
         real(kind=8), intent(in) :: vintm(nbvari)
         real(kind=8), intent(inout) :: vintp(nbvari)
-        integer, intent(in) :: advihy, vihrho
+        integer(kind=8), intent(in) :: advihy, vihrho
         real(kind=8), intent(in) :: dtemp, dp1, dp2, dpad
         real(kind=8), intent(in) :: cliq, signe, alpliq
         real(kind=8), intent(in) :: rho110
         real(kind=8), intent(out) :: rho11, rho11m
-        integer, intent(out) :: retcom
+        integer(kind=8), intent(out) :: retcom
     end subroutine virhol
 end interface

@@ -37,8 +37,6 @@ subroutine te0465(option, nomte)
 #include "asterfort/jevech.h"
 #include "asterfort/readVector.h"
 #include "asterfort/writeVector.h"
-#include "blas/daxpy.h"
-#include "blas/dcopy.h"
 #include "jeveux.h"
 !
     character(len=16), intent(in) :: option, nomte
@@ -58,7 +56,7 @@ subroutine te0465(option, nomte)
 !
 !---------------------------------------------------------------------------------------------------
 !
-    integer, parameter :: maxpara = 4
+    integer(kind=8), parameter :: maxpara = 4
     real(kind=8) :: valpar(maxpara)
     character(len=8) :: nompar(maxpara)
     type(HHO_Data) :: hhoData
@@ -69,8 +67,8 @@ subroutine te0465(option, nomte)
     real(kind=8), dimension(MSIZE_TDOFS_SCAL) :: rhs
     real(kind=8) :: VoluValuesQP(MAX_QP_CELL)
     real(kind=8) :: theta, time_curr, tg
-    integer :: fbs, nbpara, npg, faces_dofs, cbs, total_dofs
-    integer :: j_time, j_sour, ipg, iret
+    integer(kind=8) :: fbs, nbpara, npg, faces_dofs, cbs, total_dofs
+    integer(kind=8) :: j_time, j_sour, ipg, iret
 !
 !
 ! -- Get number of Gauss points

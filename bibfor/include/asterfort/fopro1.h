@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -21,7 +21,7 @@
 interface
     subroutine fopro1(vec, i, prolgd, interp)
         character(len=*) :: vec(*)
-        integer :: i
+        integer(kind=8) :: i
         character(len=*) :: prolgd
         character(len=*) :: interp
     end subroutine fopro1

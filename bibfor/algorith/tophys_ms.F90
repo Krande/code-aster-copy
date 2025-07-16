@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -35,7 +35,7 @@ subroutine tophys_ms(dplmod, psidel, coef, xgene, xphys)
     real(kind=8), pointer  :: xgene(:)
     real(kind=8), intent(out) :: xphys(:)
 !-----------------------------------------------------------------------
-    integer :: i, j, nbmode, nbexci
+    integer(kind=8) :: i, j, nbmode, nbexci
 !-----------------------------------------------------------------------
     nbmode = size(dplmod)/3
     nbexci = size(psidel)/3

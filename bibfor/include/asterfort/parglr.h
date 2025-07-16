@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -23,7 +23,7 @@ interface
                       omx, omy, rx, ry, hh,&
                       bn11, bn12, bn22, bn33, bm11,&
                       bm12, bm22, bc11, bc22)
-        integer :: nlit
+        integer(kind=8) :: nlit
         real(kind=8) :: elb(*)
         real(kind=8) :: ea(*)
         real(kind=8) :: nua(*)

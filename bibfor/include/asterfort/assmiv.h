@@ -23,10 +23,10 @@ interface
                       nu, type)
         character(len=1) :: base
         character(len=*) :: vec
-        integer :: nbvec
+        integer(kind=8) :: nbvec
         character(len=*) :: tlivec(nbvec)
         real(kind=8) :: licoef(nbvec)
         character(len=*) :: nu
-        integer :: type
+        integer(kind=8) :: type
     end subroutine assmiv
 end interface

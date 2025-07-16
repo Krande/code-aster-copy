@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -45,8 +45,8 @@ function idenob(obj1, obj2)
     character(len=24) :: ob1, ob2, k241, k242
     character(len=1) :: typ1, typ2
     character(len=4) :: genr1, genr2, genr, xous1, xous2, xous, type
-    integer :: iret1, iret2, ltyp1, ltyp2, ltyp, l, l1, l2, k, iad1, iad2
-    integer :: iobj, nbobj
+    integer(kind=8) :: iret1, iret2, ltyp1, ltyp2, ltyp, l, l1, l2, k, iad1, iad2
+    integer(kind=8) :: iobj, nbobj
 !----------------------------------------------------------------------
     call jemarq()
     ob1 = obj1

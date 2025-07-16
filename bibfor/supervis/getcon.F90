@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -33,8 +33,8 @@ subroutine getcon(nomres, iob, ishf, ilng, ctype, &
 #include "asterfort/wkvect.h"
 !
     character(len=*) :: nomres
-    integer :: ctype, lcon, iob, ishf, ilng
-    integer :: iadvar, loc
+    integer(kind=8) :: ctype, lcon, iob, ishf, ilng
+    integer(kind=8) :: iadvar, loc
     character(len=24) :: nomob
 ! IN  NOMRES  K*  NOM DU CONCEPT DEMANDE
 ! IN  IBOB    I  POUR UNE COLLECTION : NUMERO DE L OBJET
@@ -50,7 +50,7 @@ subroutine getcon(nomres, iob, ishf, ilng, ctype, &
     character(len=4) :: type
     character(len=2) :: acces
     character(len=1) :: xous, genr
-    integer :: jres, iret, lobj, iad, kk
+    integer(kind=8) :: jres, iret, lobj, iad, kk
     character(len=32) :: noml32
 !     ------------------------------------------------------------------
     ctype = -1

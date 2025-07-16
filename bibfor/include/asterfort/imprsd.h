@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -22,7 +22,7 @@ interface
     subroutine imprsd(typesd, nomsd, ific, titre)
         character(len=*) :: typesd
         character(len=*) :: nomsd
-        integer :: ific
+        integer(kind=8) :: ific
         character(len=*) :: titre
     end subroutine imprsd
 end interface

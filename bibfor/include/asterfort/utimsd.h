@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -23,12 +23,12 @@
 interface
     subroutine utimsd(unit, niveau, lattr, lcont, sch1,&
                       ipos, base, perm)
-        integer :: unit
-        integer :: niveau
+        integer(kind=8) :: unit
+        integer(kind=8) :: niveau
         aster_logical :: lattr
         aster_logical :: lcont
         character(len=*) :: sch1
-        integer :: ipos
+        integer(kind=8) :: ipos
         character(len=*) :: base
         character(len=3), optional, intent(in) :: perm
     end subroutine utimsd

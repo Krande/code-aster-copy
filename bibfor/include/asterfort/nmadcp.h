@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -21,9 +21,9 @@
 interface
     subroutine nmadcp(sddisc, ds_contact, i_event_acti, retpen)
         use NonLin_Datastructure_type
-        integer, intent(in) :: i_event_acti
+        integer(kind=8), intent(in) :: i_event_acti
         type(NL_DS_Contact), intent(in) :: ds_contact
         character(len=19), intent(in) :: sddisc
-        integer, intent(out) :: retpen
+        integer(kind=8), intent(out) :: retpen
     end subroutine nmadcp
 end interface

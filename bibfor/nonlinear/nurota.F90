@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -20,14 +20,7 @@ subroutine nurota(modelz, nume_ddl, compor, sdnuro)
 !
     implicit none
 !
-#include "asterfort/assert.h"
 #include "asterfort/dismoi.h"
-#include "asterfort/exisdg.h"
-#include "asterfort/jexnom.h"
-#include "asterfort/jexnum.h"
-#include "asterfort/nbelem.h"
-#include "asterfort/nbgrel.h"
-#include "asterfort/typele.h"
 #include "asterfort/sele_elem_comp.h"
 #include "asterfort/sele_node_elem.h"
 #include "asterfort/select_dof.h"
@@ -57,13 +50,13 @@ subroutine nurota(modelz, nume_ddl, compor, sdnuro)
 !
 ! --------------------------------------------------------------------------------------------------
 !
-    integer :: nb_elem_type, nbCmp, nb_node_found, nbEqua
+    integer(kind=8) :: nb_elem_type, nbCmp, nb_node_found, nbEqua
     character(len=16) :: defo_comp
     character(len=8), pointer :: listCmp(:) => null()
-    integer, pointer :: listEqua(:) => null()
-    integer, pointer :: listNode(:) => null()
+    integer(kind=8), pointer :: listEqua(:) => null()
+    integer(kind=8), pointer :: listNode(:) => null()
     character(len=16), pointer :: list_elem_type(:) => null()
-    integer, pointer :: list_elem_comp(:) => null()
+    integer(kind=8), pointer :: list_elem_comp(:) => null()
 !
 ! --------------------------------------------------------------------------------------------------
 !

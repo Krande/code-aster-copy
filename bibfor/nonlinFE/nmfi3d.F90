@@ -42,7 +42,7 @@ subroutine nmfi3d(BEHInteg, typmod, &
 #include "blas/ddot.h"
 !
     type(Behaviour_Integ), intent(inout) :: BEHinteg
-    integer :: nno, nddl, npg, lgpg, mate, codret
+    integer(kind=8) :: nno, nddl, npg, lgpg, mate, codret
     real(kind=8) :: wref(npg), vff(nno, npg), dfde(2, nno, npg)
     real(kind=8) :: geom(nddl), deplm(nddl), ddepl(nddl), tm, tp
     real(kind=8) :: fint(nddl), ktan(*), coopg(4, npg)
@@ -85,10 +85,10 @@ subroutine nmfi3d(BEHInteg, typmod, &
 !
 ! --------------------------------------------------------------------------------------------------
 !
-    integer, parameter :: ksp = 1
-    integer, parameter :: ndim = 3
+    integer(kind=8), parameter :: ksp = 1
+    integer(kind=8), parameter :: ndim = 3
     character(len=4), parameter :: fami = "RIGI"
-    integer :: cod(9), ni, mj, kk, p, q, kpg, n
+    integer(kind=8) :: cod(9), ni, mj, kk, p, q, kpg, n
     real(kind=8) :: b(3, 60), sigmo(6), sigma(6)
     real(kind=8) :: sum(3), dsu(3), dsidep(6, 6), poids
     real(kind=8) :: angmas(3)

@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -50,11 +50,11 @@ function diincl(sddisc, nomchz, force)
 !
 !
 !
-    integer :: iret, nb, i
+    integer(kind=8) :: iret, nb, i
     character(len=16) :: nomcha
     character(len=19) :: sdarch
     character(len=24) :: arcexc
-    integer :: jarexc
+    integer(kind=8) :: jarexc
 !
 ! ----------------------------------------------------------------------
 !

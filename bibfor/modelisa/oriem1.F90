@@ -25,7 +25,6 @@ subroutine oriem1(ma, kdim, numa2d, numa3d)
 #include "asterfort/jedema.h"
 #include "asterfort/jelira.h"
 #include "asterfort/jemarq.h"
-#include "asterfort/jenuno.h"
 #include "asterfort/jeveuo.h"
 #include "asterfort/jexnum.h"
 #include "asterfort/provec.h"
@@ -34,8 +33,8 @@ subroutine oriem1(ma, kdim, numa2d, numa3d)
 #include "blas/ddot.h"
     character(len=8), intent(in) :: ma
     character(len=2), intent(in) :: kdim
-    integer, intent(in) :: numa2d
-    integer, intent(inout) :: numa3d
+    integer(kind=8), intent(in) :: numa2d
+    integer(kind=8), intent(inout) :: numa3d
 ! But :  regarder si la maille numa3d est bien du cote "-" de la normale
 !        de la maille de peau numa2d.
 !        Si ce n'est pas le cas, met a zero numa3d
@@ -53,10 +52,10 @@ subroutine oriem1(ma, kdim, numa2d, numa3d)
 ! inout: numa3d : numero d'une maille "volumique"
 ! ======================================================================
 !
-    integer :: ino, n1, n2, n3, ic, nbno1, nbno3, indi
+    integer(kind=8) :: ino, n1, n2, n3, ic, nbno1, nbno3, indi
     real(kind=8) :: nor1(3), n1n2(3), n1n3(3), ps1
-    integer, pointer :: lino1(:) => null()
-    integer, pointer :: lino3(:) => null()
+    integer(kind=8), pointer :: lino1(:) => null()
+    integer(kind=8), pointer :: lino3(:) => null()
     real(kind=8), pointer :: coor(:) => null()
     character(len=24) :: valk(2)
     blas_int :: b_incx, b_incy, b_n

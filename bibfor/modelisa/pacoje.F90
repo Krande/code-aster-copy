@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -38,7 +38,7 @@ subroutine pacoje(coniz, iocc, motfaz, nomaz, conrz, &
     character(len=8) :: noma
     character(len=16) :: motfac
     character(len=24) :: coni, conr
-    integer :: iocc, ndim
+    integer(kind=8) :: iocc, ndim
 !
 !     BUT : CREATION ET AFFECTATION DE LA .S.D. CONR
 !           CONTENANT LES COMPOSANTES DU VECTEUR NORMAL
@@ -90,8 +90,8 @@ subroutine pacoje(coniz, iocc, motfaz, nomaz, conrz, &
 !
 !
 !
-    integer :: nbcmp, ivale, idconi, nbcoup, idrad, idangl, no1, no2, i, j
-    integer :: inoma
+    integer(kind=8) :: nbcmp, ivale, idconi, nbcoup, idrad, idangl, no1, no2, i, j
+    integer(kind=8) :: inoma
     real(kind=8) :: norm1(3), norm2(3), jeu
     real(kind=8) :: nrmbid, nor1(3), nor2(3)
     character(len=24) :: llist1, llist2

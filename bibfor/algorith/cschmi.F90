@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -41,7 +41,7 @@ subroutine cschmi(ca, ndim, cvec, cbas, ndimax, &
 #include "asterfort/cvnorm.h"
 #include "asterfort/utmess.h"
 #include "asterfort/zconju.h"
-    integer :: nbbas, ndim, ndimax
+    integer(kind=8) :: nbbas, ndim, ndimax
     complex(kind=8) :: ca(*)
     complex(kind=8) :: cbas(ndimax, nbbas)
     complex(kind=8) :: cvec(ndim), ctrav1, ctrav2, cprod, cconj, cmodu
@@ -52,7 +52,7 @@ subroutine cschmi(ca, ndim, cvec, cbas, ndimax, &
 ! CAS OU IL N'Y A PAS DE VECTEUR DE REFERENCE
 !
 !-----------------------------------------------------------------------
-    integer :: i, ic, icdiag, il, ildiag, iretou, j
+    integer(kind=8) :: i, ic, icdiag, il, ildiag, iretou, j
 !-----------------------------------------------------------------------
     if (nbbas .eq. 0) then
 !

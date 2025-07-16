@@ -44,13 +44,13 @@ subroutine imvari(compor_info)
 !
 ! --------------------------------------------------------------------------------------------------
 !
-    integer :: iVari, mapZoneNume
-    integer :: nbVari, mapNbZone, nbElemZone, nt_vari, nbCellPMF
+    integer(kind=8) :: iVari, mapZoneNume
+    integer(kind=8) :: nbVari, mapNbZone, nbElemZone, nt_vari, nbCellPMF
     character(len=16) :: vari_excl
     character(len=16) :: rela_comp, defo_comp, type_cpla, regu_visc, post_incr
     aster_logical :: l_excl, lPMF
-    integer, pointer :: comporInfoInfo(:) => null()
-    integer, pointer :: comporInfoZone(:) => null()
+    integer(kind=8), pointer :: comporInfoInfo(:) => null()
+    integer(kind=8), pointer :: comporInfoZone(:) => null()
     character(len=16), pointer :: comporInfoVari(:) => null()
     character(len=16), pointer :: comporInfoRela(:) => null()
 !

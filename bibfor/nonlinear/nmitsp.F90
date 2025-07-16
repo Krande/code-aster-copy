@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -33,8 +33,8 @@ subroutine nmitsp(ds_print, sddisc, iterat, retsup)
 !
     type(NL_DS_Print), intent(in) :: ds_print
     character(len=19), intent(in) :: sddisc
-    integer, intent(in) :: iterat
-    integer, intent(out) :: retsup
+    integer(kind=8), intent(in) :: iterat
+    integer(kind=8), intent(out) :: retsup
 !
 ! ----------------------------------------------------------------------
 !
@@ -55,7 +55,7 @@ subroutine nmitsp(ds_print, sddisc, iterat, retsup)
 !
     aster_logical :: lextra
     real(kind=8) :: valext(4), ciblen
-    integer :: itesup, nbitaj, vali(2), nbiter, mniter
+    integer(kind=8) :: itesup, nbitaj, vali(2), nbiter, mniter
     real(kind=8) :: r8bid
 !
 ! ----------------------------------------------------------------------

@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -46,7 +46,7 @@ subroutine lcumef(rela_plas, dep, depm, an, bn, &
 ! OUT SIGT     : CONTRAINTES AU TEMPS PLUS
 !_______________________________________________________________________
 !
-    integer :: i, j, k, nstrs
+    integer(kind=8) :: i, j, k, nstrs
     real(kind=8) :: an(6), bn(6, 6), cn(6, 6)
     real(kind=8) :: dep(6, 6), sigi(6), sigt(6), depsi(6), epsm(6), epsfm(6)
     real(kind=8) :: epsrm, epsrp
@@ -54,10 +54,10 @@ subroutine lcumef(rela_plas, dep, depm, an, bn, &
     real(kind=8) :: deflun(6), temp2(6, 6), temp3(6, 6), rtemp(6)
     real(kind=8) :: bnsigi(6), depsc(6)
     real(kind=8) :: depsr(6), depm(6, 6), epsm2(6)
-    integer :: iret
+    integer(kind=8) :: iret
     real(kind=8) :: det
     real(kind=8), parameter :: kron(6) = (/1.d0, 1.d0, 1.d0, 0.d0, 0.d0, 0.d0/)
-    integer :: ndt, ndi
+    integer(kind=8) :: ndt, ndi
     common/tdim/ndt, ndi
 !
 ! INITIALISATION DES VARIABLES

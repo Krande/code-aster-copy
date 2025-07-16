@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -20,7 +20,7 @@ function sdeiso(vect)
 ! person_in_charge: olivier.boiteau at edf.fr
 !
     implicit none
-    integer :: sdeiso
+    integer(kind=8) :: sdeiso
 #include "asterfort/assert.h"
     character(len=5) :: vect
 !
@@ -41,7 +41,7 @@ function sdeiso(vect)
 !
 ! ----------------------------------------------------------------------
 !
-    integer :: zslvk, zslvr, zslvi
+    integer(kind=8) :: zslvk, zslvr, zslvi
     parameter(zslvk=20, zslvr=15, zslvi=15)
 !
 ! ----------------------------------------------------------------------

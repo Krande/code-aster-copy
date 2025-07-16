@@ -25,12 +25,12 @@ interface
                       r)
         use THM_type
         type(THM_DS), intent(in) :: ds_thm
-        integer, intent(in) :: jv_mater
-        integer, intent(in) :: ndim
+        integer(kind=8), intent(in) :: jv_mater
+        integer(kind=8), intent(in) :: ndim
         aster_logical, intent(in) :: fnoevo
-        integer, intent(in) :: mecani(5), press1(7), press2(7), tempe(5)
-        integer, intent(in) :: second(5)
-        integer, intent(in) :: dimdef, dimcon
+        integer(kind=8), intent(in) :: mecani(5), press1(7), press2(7), tempe(5)
+        integer(kind=8), intent(in) :: second(5)
+        integer(kind=8), intent(in) :: dimdef, dimcon
         real(kind=8), intent(in) :: dt
         real(kind=8), intent(inout) :: congem(dimcon)
         real(kind=8), intent(inout) :: congep(dimcon)

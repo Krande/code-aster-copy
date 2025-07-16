@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -31,7 +31,7 @@ subroutine cabhvf(maxfa, ndim, nno, nnos, nface, &
 #include "asterfort/vfgefa.h"
 #include "asterfort/vfnulo.h"
 !
-    integer, intent(in) :: maxfa, ndim, nno, nnos, nface
+    integer(kind=8), intent(in) :: maxfa, ndim, nno, nnos, nface
     real(kind=8), intent(in) :: elem_coor(ndim, nno)
     real(kind=8), intent(out) :: vol
     real(kind=8), intent(out) :: mface(1:maxfa)
@@ -61,18 +61,18 @@ subroutine cabhvf(maxfa, ndim, nno, nnos, nface, &
 !
 ! --------------------------------------------------------------------------------------------------
 !
-    integer, parameter :: maxfa1 = 6, maxdi1 = 3, maxar = 12, manofa = 4
+    integer(kind=8), parameter :: maxfa1 = 6, maxdi1 = 3, maxar = 12, manofa = 4
     real(kind=8) :: xg(maxdi1)
-    integer :: ifa
+    integer(kind=8) :: ifa
     real(kind=8), parameter :: epsrel = 0.1d0
     real(kind=8) :: epsilo
-    integer :: nbnofa(1:maxfa1)
-    integer :: nosar(1:maxar, 2)
-    integer :: nosfa(1:maxfa1, manofa)
-    integer :: narfa(1:maxfa1, manofa)
+    integer(kind=8) :: nbnofa(1:maxfa1)
+    integer(kind=8) :: nosar(1:maxar, 2)
+    integer(kind=8) :: nosfa(1:maxfa1, manofa)
+    integer(kind=8) :: narfa(1:maxfa1, manofa)
     real(kind=8) :: xs(1:maxdi1, manofa), t(1:maxdi1, maxar)
-    integer :: idim, is, iar, ns1, ns2, iret
-    integer :: iadzi, iazk24
+    integer(kind=8) :: idim, is, iar, ns1, ns2, iret
+    integer(kind=8) :: iadzi, iazk24
     character(len=8) :: elem_name
 !
 ! --------------------------------------------------------------------------------------------------

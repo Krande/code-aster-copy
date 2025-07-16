@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -27,7 +27,7 @@ interface
         character(len=*) :: nu
         character(len=*) :: vecpro
         character(len=4) :: motcle
-        integer :: type
+        integer(kind=8) :: type
         character(len=24) :: fomult
         real(kind=8) :: instap
     end subroutine assvss

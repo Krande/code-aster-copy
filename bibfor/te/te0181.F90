@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -22,7 +22,6 @@ subroutine te0181(option, nomte)
 #include "asterfort/dfdm3d.h"
 #include "asterfort/elrefe_info.h"
 #include "asterfort/jevech.h"
-#include "asterfort/rcvalc.h"
 #include "asterfort/getFluidPara.h"
 #include "asterc/r8prem.h"
 #include "asterfort/utmess.h"
@@ -40,14 +39,14 @@ subroutine te0181(option, nomte)
 !.......................................................................
 !
 !
-    integer :: ipoids, ivf, idfde, igeom, imate
-    integer :: jgano, nno, kp, npg, ij, i, j, imattt
+    integer(kind=8) :: ipoids, ivf, idfde, igeom, imate
+    integer(kind=8) :: jgano, nno, kp, npg, ij, i, j, imattt
     real(kind=8) :: poids, cele_r, cele_i
     complex(kind=8) :: cele_c
 !
 !
 !-----------------------------------------------------------------------
-    integer :: l, ndi, ndim, nnos
+    integer(kind=8) :: l, ndi, ndim, nnos
 !-----------------------------------------------------------------------
     call elrefe_info(fami='MASS', ndim=ndim, nno=nno, nnos=nnos, &
                      npg=npg, jpoids=ipoids, jvf=ivf, jdfde=idfde, jgano=jgano)

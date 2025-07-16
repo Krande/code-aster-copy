@@ -47,10 +47,7 @@ subroutine cgmasp(mofaz, iocc, nomaz, lismaz, nbma)
 #include "asterfort/jedema.h"
 #include "asterfort/jelira.h"
 #include "asterfort/jemarq.h"
-#include "asterfort/jenonu.h"
-#include "asterfort/jenuno.h"
 #include "asterfort/jeveuo.h"
-#include "asterfort/jexnom.h"
 #include "asterfort/jexnum.h"
 #include "asterfort/utcono.h"
 #include "asterfort/utmess.h"
@@ -63,7 +60,7 @@ subroutine cgmasp(mofaz, iocc, nomaz, lismaz, nbma)
     character(len=*) :: mofaz, nomaz, lismaz
 !
 ! --------- VARIABLES LOCALES ---------------------------
-    integer :: nbnod, nbno
+    integer(kind=8) :: nbnod, nbno
     character(len=8) :: noma, k8bid, nomail
     character(len=16) :: motfac, mocle(3)
     character(len=16) :: selec
@@ -73,9 +70,9 @@ subroutine cgmasp(mofaz, iocc, nomaz, lismaz, nbma)
 !.========================= DEBUT DU CODE EXECUTABLE ==================
 !
 !-----------------------------------------------------------------------
-    integer :: ibid, idlima, idnoeu, ima, ino
-    integer :: iocc, iret, nb, nbma, nbmai, ndim, nrayon
-    integer :: numnoe
+    integer(kind=8) :: ibid, idlima, idnoeu, ima, ino
+    integer(kind=8) :: iocc, iret, nb, nbma, nbmai, ndim, nrayon
+    integer(kind=8) :: numnoe
     real(kind=8) :: d2, rayon, zero
     real(kind=8), pointer :: vale(:) => null()
 !-----------------------------------------------------------------------

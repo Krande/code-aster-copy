@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -43,13 +43,13 @@ subroutine glegen(nbre, lobj2, xl, absgam, legen)
 #include "asterfort/jemarq.h"
 #include "asterfort/jeveuo.h"
 #include "asterfort/wkvect.h"
-    integer :: lobj2, nbre, iadabs, iadpo
+    integer(kind=8) :: lobj2, nbre, iadabs, iadpo
 !
     real(kind=8) :: xl, s1, coef
 !
     character(len=24) :: absgam
     real(kind=8) :: legen(1)
-    integer :: i, j
+    integer(kind=8) :: i, j
     real(kind=8) :: cof1, cof2
 !
 !   POLYNOMES DE LEGENDRE

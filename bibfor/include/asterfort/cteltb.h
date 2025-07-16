@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -24,15 +24,15 @@ interface
                       nrval,  resu,   nomtb, nsymb, &
                       chpgs, chpsu,  tych,   nival, niord, &
                       label)
-        integer :: nbma
+        integer(kind=8) :: nbma
         character(len=24) :: mesmai
         character(len=8) :: noma
-        integer :: nbval
+        integer(kind=8) :: nbval
         character(len=24) :: nkcha
         character(len=24) :: nkcmp
         character(len=24) :: nkvari
         aster_logical :: toucmp
-        integer :: nbcmp
+        integer(kind=8) :: nbcmp
         character(len=8) :: typac
         character(len=24) :: nrval
         character(len=8) :: resu

@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2019 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -19,7 +19,7 @@
 interface
     subroutine writeMatrix(name, nrows, ncols, l_sym, mat)
         character(len=*), intent(in)              :: name
-        integer, intent(in)                       :: nrows, ncols
+        integer(kind=8), intent(in)                       :: nrows, ncols
         aster_logical, intent(in)                 :: l_sym
         real(kind=8), dimension(:,:), intent(in)  :: mat
     end subroutine writeMatrix

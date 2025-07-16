@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -45,18 +45,18 @@ subroutine intdis(coint, nnoint, noddli, ddlsst, nbsst)
 #include "asterfort/jemarq.h"
 #include "asterfort/jeveuo.h"
 #include "asterfort/wkvect.h"
-    integer :: nnoint, nbsst
+    integer(kind=8) :: nnoint, nbsst
     character(len=24) :: coint, noddli, ddlsst
 !
 !-- VARIABLES DE LA ROUTINE
-    integer :: i1, j1, k1, n1, l1, lconnc
-    integer :: nz0, nz1, lindin, decal, nbno, nbvois, no, lnddli
+    integer(kind=8) :: i1, j1, k1, n1, l1, lconnc
+    integer(kind=8) :: nz0, nz1, lindin, decal, nbno, nbvois, no, lnddli
     real(kind=8), pointer :: defi_ss_lib(:) => null()
-    integer, pointer :: numero_noeuds(:) => null()
-    integer, pointer :: vect_ind_mat(:) => null()
-    integer, pointer :: vect_indsst(:) => null()
+    integer(kind=8), pointer :: numero_noeuds(:) => null()
+    integer(kind=8), pointer :: vect_ind_mat(:) => null()
+    integer(kind=8), pointer :: vect_indsst(:) => null()
     real(kind=8), pointer :: vect_temp(:) => null()
-    integer, pointer :: ind_noeud(:) => null()
+    integer(kind=8), pointer :: ind_noeud(:) => null()
 !
 !-----------C
 !--       --C

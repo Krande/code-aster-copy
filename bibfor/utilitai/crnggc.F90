@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -18,11 +18,9 @@
 
 subroutine crnggc(chamnz)
     implicit none
-#include "asterc/asmpi_allgather_i.h"
 #include "asterc/asmpi_recv_i.h"
 #include "asterc/asmpi_send_i.h"
 #include "asterc/asmpi_sendrecv_i.h"
-#include "asterc/loisem.h"
 #include "asterf_config.h"
 #include "asterf_debug.h"
 #include "asterf_types.h"
@@ -48,7 +46,6 @@ subroutine crnggc(chamnz)
 #include "asterfort/jexatr.h"
 #include "asterfort/jexnom.h"
 #include "asterfort/jexnum.h"
-#include "asterfort/jecroc.h"
 #include "asterfort/jeecra.h"
 #include "asterfort/jecrec.h"
 #include "asterfort/nbec.h"
@@ -61,28 +58,28 @@ subroutine crnggc(chamnz)
 
 #ifdef ASTER_HAVE_MPI
 !
-    integer :: rang, nbproc, jrefn, iaux, nddll
-    integer :: nb_comm, icmp, ico2, nbcmp
-    integer :: idprn1, idprn2, ili, neql
-    integer :: nec, numpro, jjoine, jjoinr, nbnoee, jaux, numno1, numno2, iec
-    integer :: ncmpmx, iad, jcpnec, jencod, jenvoi1, lgenve1, lgenvr1, poscom
-    integer :: nbddll, jnequ, nddl, jenco2, jcpne2, numpr2
-    integer :: nbnoer, jrecep1, curpos, ijoin
-    integer :: jmlogl, nuno, nb_ddl_envoi, nbddl, domj_i
-    integer :: nddlg, jenvoi2, jrecep2, numnoe, gd
-    integer :: ifm, niv, vali(5), ino, nno, nb_node, nlag
-    integer :: lgenve2, lgenvr2, jnujoi1, jnujoi2, iret, iret1, iret2, nlili
+    integer(kind=8) :: rang, nbproc, jrefn, iaux, nddll
+    integer(kind=8) :: nb_comm, icmp, ico2, nbcmp
+    integer(kind=8) :: idprn1, idprn2, ili, neql
+    integer(kind=8) :: nec, numpro, jjoine, jjoinr, nbnoee, jaux, numno1, numno2, iec
+    integer(kind=8) :: ncmpmx, iad, jcpnec, jencod, jenvoi1, lgenve1, lgenvr1, poscom
+    integer(kind=8) :: nbddll, jnequ, nddl, jenco2, jcpne2, numpr2
+    integer(kind=8) :: nbnoer, jrecep1, curpos, ijoin
+    integer(kind=8) :: jmlogl, nuno, nb_ddl_envoi, nbddl, domj_i
+    integer(kind=8) :: nddlg, jenvoi2, jrecep2, numnoe, gd
+    integer(kind=8) :: ifm, niv, vali(5), ino, nno, nb_node, nlag
+    integer(kind=8) :: lgenve2, lgenvr2, jnujoi1, jnujoi2, iret, iret1, iret2, nlili
     mpi_int :: mrank, mnbproc, mpicou, tag4, numpr4, n4e, n4r
-    integer, pointer :: v_noex(:) => null()
-    integer, pointer :: v_nugll(:) => null()
-    integer, pointer :: v_posdd(:) => null()
-    integer, pointer :: v_deeq(:) => null()
-    integer, pointer :: v_deeg(:) => null()
-    integer, pointer :: v_nuls(:) => null()
-    integer, pointer :: v_comm(:) => null()
-    integer, pointer :: v_tag(:) => null()
-    integer, pointer :: v_dom(:) => null()
-    integer, pointer :: v_gco(:) => null()
+    integer(kind=8), pointer :: v_noex(:) => null()
+    integer(kind=8), pointer :: v_nugll(:) => null()
+    integer(kind=8), pointer :: v_posdd(:) => null()
+    integer(kind=8), pointer :: v_deeq(:) => null()
+    integer(kind=8), pointer :: v_deeg(:) => null()
+    integer(kind=8), pointer :: v_nuls(:) => null()
+    integer(kind=8), pointer :: v_comm(:) => null()
+    integer(kind=8), pointer :: v_tag(:) => null()
+    integer(kind=8), pointer :: v_dom(:) => null()
+    integer(kind=8), pointer :: v_gco(:) => null()
     integer(kind=4), pointer :: v_pgid(:) => null()
 !
     character(len=8) :: mesh, k8bid, nomgdr
@@ -154,7 +151,7 @@ subroutine crnggc(chamnz)
         call jeveuo(tag_name, 'L', vi=v_tag)
         call jeveuo(gcom, 'L', vi=v_gco)
         call jeveuo(pgid, 'L', vi4=v_pgid)
-        mpicou = v_gco(1)
+        mpicou = to_mpi_int(v_gco(1))
     end if
 
 !     !!!! IL PEUT ETRE INTERESSANT DE STOCKER CES INFOS
@@ -308,7 +305,7 @@ subroutine crnggc(chamnz)
             gcom = joints//'.GCOM'
             call jeveuo(domj, 'L', vi=v_dom)
             call jeveuo(gcom, 'L', vi=v_gco)
-            mpicou = v_gco(1)
+            mpicou = to_mpi_int(v_gco(1))
             do ijoin = 1, nb_comm
                 domj_i = v_comm(ijoin)
                 numpro = v_dom(domj_i)

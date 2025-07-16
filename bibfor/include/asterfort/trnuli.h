@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -20,10 +20,10 @@
 !
 interface
     subroutine trnuli(itab, nblig, nbcol, icol, nures)
-        integer :: nbcol
-        integer :: nblig
-        integer :: itab(nblig, nbcol)
-        integer :: icol(nbcol)
-        integer :: nures
+        integer(kind=8) :: nbcol
+        integer(kind=8) :: nblig
+        integer(kind=8) :: itab(nblig, nbcol)
+        integer(kind=8) :: icol(nbcol)
+        integer(kind=8) :: nures
     end subroutine trnuli
 end interface

@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -24,8 +24,8 @@ subroutine vp2tru(method, ty, alpha, beta, signes, &
 #include "asterfort/vphqrp.h"
     character(len=1) :: ty
     character(len=8) :: method
-    integer :: nbvect, mxiter, ier, nitqr
-    integer :: vali
+    integer(kind=8) :: nbvect, mxiter, ier, nitqr
+    integer(kind=8) :: vali
     real(kind=8) :: alpha(nbvect), beta(nbvect), signes(nbvect)
     real(kind=8) :: a(nbvect, *), w(*), z(*), wk(*)
     real(kind=8) :: valr(2)
@@ -50,7 +50,7 @@ subroutine vp2tru(method, ty, alpha, beta, signes, &
 !     ------------------------------------------------------------------
 !
 !-----------------------------------------------------------------------
-    integer :: i, ival1, j
+    integer(kind=8) :: i, ival1, j
     real(kind=8) :: ww
 !-----------------------------------------------------------------------
     if (method .eq. 'TRI_DIAG') then

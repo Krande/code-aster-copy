@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -41,13 +41,13 @@ subroutine asseVectSuper(model, mesh, vectElem, &
 !
     character(len=8), intent(in) :: model, mesh
     character(len=19), intent(in) :: vectElem
-    integer, intent(in) :: vectScalType
+    integer(kind=8), intent(in) :: vectScalType
     real(kind=8), intent(in) :: vectElemCoef
     character(len=8), pointer :: nomacr(:)
-    integer, intent(in) :: meshNbNode, nbCmp, nec, nbecmx
-    integer, intent(in) :: iapsdl, ianueq, jvale, jresl
-    integer, intent(in) :: idprn1, idprn2
-    integer, intent(inout) :: icodla(nbecmx), icodge(nbecmx)
+    integer(kind=8), intent(in) :: meshNbNode, nbCmp, nec, nbecmx
+    integer(kind=8), intent(in) :: iapsdl, ianueq, jvale, jresl
+    integer(kind=8), intent(in) :: idprn1, idprn2
+    integer(kind=8), intent(inout) :: icodla(nbecmx), icodge(nbecmx)
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -56,18 +56,18 @@ subroutine asseVectSuper(model, mesh, vectElem, &
 ! --------------------------------------------------------------------------------------------------
 !
 ! - Convention: first LIGREL (model) is on mesh
-    integer, parameter :: ligrelMeshIndx = 1
+    integer(kind=8), parameter :: ligrelMeshIndx = 1
 !
-    integer :: iSuperCell, iLoadCase, iNode, iDofSuper
-    integer :: nbSuperCell, nbLoadCase, nbNode, nbDofSuper
-    integer :: iec, iDof
-    integer :: iad1
-    integer :: nodeNume, ncmpel, nodeNumeOld
-    integer, pointer :: sssa(:) => null()
-    integer, pointer :: relc(:) => null()
-    integer, pointer :: conx(:) => null()
-    integer, pointer :: superCellNode(:) => null()
-    integer, pointer :: prno(:) => null()
+    integer(kind=8) :: iSuperCell, iLoadCase, iNode, iDofSuper
+    integer(kind=8) :: nbSuperCell, nbLoadCase, nbNode, nbDofSuper
+    integer(kind=8) :: iec, iDof
+    integer(kind=8) :: iad1
+    integer(kind=8) :: nodeNume, ncmpel, nodeNumeOld
+    integer(kind=8), pointer :: sssa(:) => null()
+    integer(kind=8), pointer :: relc(:) => null()
+    integer(kind=8), pointer :: conx(:) => null()
+    integer(kind=8), pointer :: superCellNode(:) => null()
+    integer(kind=8), pointer :: prno(:) => null()
     character(len=8) :: loadCaseName, superCellName
     character(len=14) :: superCellNume
 !

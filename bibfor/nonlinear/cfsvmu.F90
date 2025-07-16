@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -50,13 +50,13 @@ subroutine cfsvmu(ds_contact, lconv)
 ! In  ds_contact       : datastructure for contact management
 ! IN  LCONV  : SAUVEGARDE T-ON UN ETAT CONVERGE ?
 !
-    integer :: nnoco
-    integer :: iliai, posnoe
-    integer :: nbliai
+    integer(kind=8) :: nnoco
+    integer(kind=8) :: iliai, posnoe
+    integer(kind=8) :: nbliai
     character(len=19) :: svmu, mu
-    integer :: jsvmu, jmu
+    integer(kind=8) :: jsvmu, jmu
     character(len=24) :: numlia
-    integer :: jnumli
+    integer(kind=8) :: jnumli
     aster_logical :: lgcp
 !
 ! ----------------------------------------------------------------------

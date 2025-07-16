@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -61,10 +61,10 @@ subroutine cnoaff(noma, nomgd, base, cno)
 ! ----------------------------------------------------------------------
 !
 !
-    integer :: numgd, iav, ibid, nocc, jcmpt, nbcmpt
-    integer :: iocc, nbcmp, nbvar, nbvai, nbvac, nbvak, nbva, vali, jcmp
-    integer :: i, iret, ncmp, ncmpmx, jcmpmx, jcnsv, jcnsl
-    integer :: nbno, nbtou, nbnoe, jlno, jval, icmp, j, ino, nt, nbval
+    integer(kind=8) :: numgd, iav, ibid, nocc, jcmpt, nbcmpt
+    integer(kind=8) :: iocc, nbcmp, nbvar, nbvai, nbvac, nbvak, nbva, vali, jcmp
+    integer(kind=8) :: i, iret, ncmp, ncmpmx, jcmpmx, jcnsv, jcnsl
+    integer(kind=8) :: nbno, nbtou, nbnoe, jlno, jval, icmp, j, ino, nt, nbval
     character(len=1) :: tsca
     character(len=3) :: prol0
     character(len=8) :: kbid, typmcl(4)

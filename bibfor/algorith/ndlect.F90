@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -71,25 +71,25 @@ subroutine ndlect(model, materialField, caraElem, listLoad, &
 ! --------------------------------------------------------------------------------------------------
 !
     real(kind=8), parameter :: undemi = 0.5d0, un = 1.d0, quatre = 4.d0
-    integer :: nondp
-    integer :: nbmods, nbmodp
-    integer :: iret
-    integer :: n1, nbmg
-    integer :: nbexci, nbgene
+    integer(kind=8) :: nondp
+    integer(kind=8) :: nbmods, nbmodp
+    integer(kind=8) :: iret
+    integer(kind=8) :: n1, nbmg
+    integer(kind=8) :: nbexci, nbgene
     character(len=24) :: tsch, psch, losd, nosd, tfor
-    integer :: jtsch, jpsch, jlosd, jnosd, jtfor
+    integer(kind=8) :: jtsch, jpsch, jlosd, jnosd, jtfor
     character(len=24) :: tcha, ncha, veol, vaol
-    integer :: jtcha, jncha, jveol, jvaol
+    integer(kind=8) :: jtcha, jncha, jveol, jvaol
     character(len=24) :: vecent, vecabs
-    integer :: jvecen, jvecab, amfl(2)
+    integer(kind=8) :: jvecen, jvecab, amfl(2)
     character(len=8) :: k8bid, licmp(3), rep
     character(len=16) :: schema, kform
     character(len=24) :: texte
     character(len=19) :: stadyn, sdamfl
     character(len=15) :: sdmuap, sdprmo, sdexso
     character(len=24) :: chondp
-    integer :: iform
-    integer :: ifm, niv
+    integer(kind=8) :: iform
+    integer(kind=8) :: ifm, niv
     real(kind=8) :: alpha, beta, gamma, phi, vnor
     real(kind=8) :: rcmp(3), shima
     aster_logical :: lmuap, lshima, lviss

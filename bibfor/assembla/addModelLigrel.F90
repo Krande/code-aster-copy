@@ -22,11 +22,10 @@ subroutine addModelLigrel(modelZ, nbLigr, listLigr)
 !
 #include "asterfort/assert.h"
 #include "asterfort/as_allocate.h"
-#include "asterfort/as_deallocate.h"
 #include "asterfort/dismoi.h"
 !
     character(len=*), intent(in) :: modelZ
-    integer, intent(inout) :: nbLigr
+    integer(kind=8), intent(inout) :: nbLigr
     character(len=24), pointer :: listLigr(:)
 !
 ! --------------------------------------------------------------------------------------------------

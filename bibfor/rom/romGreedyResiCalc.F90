@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -34,7 +34,7 @@ subroutine romGreedyResiCalc(ds_multipara, ds_algoGreedy, &
 !
     type(ROM_DS_MultiPara), intent(inout) :: ds_multipara
     type(ROM_DS_AlgoGreedy), intent(inout) :: ds_algoGreedy
-    integer, intent(in) :: i_mode_until, i_mode_coef
+    integer(kind=8), intent(in) :: i_mode_until, i_mode_coef
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -51,9 +51,9 @@ subroutine romGreedyResiCalc(ds_multipara, ds_algoGreedy, &
 !
 ! --------------------------------------------------------------------------------------------------
 !
-    integer :: ifm, niv
-    integer :: i_coef
-    integer :: nb_mode, nb_coef, nb_matr, nb_equa
+    integer(kind=8) :: ifm, niv
+    integer(kind=8) :: i_coef
+    integer(kind=8) :: nb_mode, nb_coef, nb_matr, nb_equa
 !
 ! --------------------------------------------------------------------------------------------------
 !

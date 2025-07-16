@@ -95,9 +95,9 @@
 #include "asterc/r8prem.h"
 !
 !
-      integer :: typcmb
-      integer :: typco
-      integer :: nb
+      integer(kind=8) :: typcmb
+      integer(kind=8) :: typco
+      integer(kind=8) :: nb
       real(kind=8) :: cequi
       real(kind=8) :: enrobi
       real(kind=8) :: enrobs
@@ -109,10 +109,10 @@
       real(kind=8) :: gammac
       real(kind=8) :: facier
       real(kind=8) :: eys
-      integer :: typdiag
+      integer(kind=8) :: typdiag
       real(kind=8) :: fbeton
-      integer :: clacier
-      integer :: uc
+      integer(kind=8) :: clacier
+      integer(kind=8) :: uc
       real(kind=8) :: ht
       real(kind=8) :: effrts(8), effref(8)
       real(kind=8) :: dnsxi, dnsxs, dnsyi, dnsys
@@ -130,17 +130,17 @@
 !       MOMENT DE FLEXION DANS CETTE DIRECTION
       real(kind=8) :: effm, effm0
 !       VARIABLE D'ITERATION
-      integer :: i
+      integer(kind=8) :: i
 !       AUTRES VARIABLES
       character(24) :: pnrd, pmrd
-      integer :: icrit
+      integer(kind=8) :: icrit
       real(kind=8), pointer :: mrd(:) => null()
       real(kind=8), pointer :: nrd(:) => null()
       logical :: is_facette_crit
       real(kind=8) :: myNrd, myMrd, taux_util, tau_crit, c0c, c0_crd, c0c_crit, c0crd_crit
       real(kind=8) :: dnsinf_crit, dnssup_crit, myNrd_crit, myMrd_crit, theta
       real(kind=8) :: theta_crit, effn_crit, effm_crit, effn0_crit, effm0_crit
-      integer :: s, ntot, ndemi
+      integer(kind=8) :: s, ntot, ndemi
 
       pnrd = 'POINT_NRD'
       pmrd = 'POINT_MRD'

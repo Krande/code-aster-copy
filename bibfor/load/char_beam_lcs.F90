@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -36,14 +36,14 @@ subroutine char_beam_lcs(mesh, model, connex_inv, keywordfact, iocc, &
     character(len=8), intent(in) :: model
     character(len=19), intent(in) :: connex_inv
     character(len=16), intent(in) :: keywordfact
-    integer, intent(in) :: iocc
-    integer, intent(in) :: node_nume
-    integer, intent(in) :: n_keyword
+    integer(kind=8), intent(in) :: iocc
+    integer(kind=8), intent(in) :: node_nume
+    integer(kind=8), intent(in) :: n_keyword
     character(len=8), intent(in) :: node_name
     character(len=16), intent(in) :: cmp_name_loc(6)
     real(kind=8), intent(in) :: cmp_valr_loc(6)
     character(len=16), intent(out) :: cmp_name_glo(6)
-    integer, intent(out) :: cmp_acti_glo(6)
+    integer(kind=8), intent(out) :: cmp_acti_glo(6)
     real(kind=8), intent(out) :: cmp_valr_glo(6)
 !
 ! --------------------------------------------------------------------------------------------------
@@ -72,11 +72,11 @@ subroutine char_beam_lcs(mesh, model, connex_inv, keywordfact, iocc, &
     real(kind=8) :: matr_glob_loca(3, 3)
     real(kind=8) :: rln1(3), rgn1(3)
     real(kind=8) :: dloc(3), dglo(3)
-    integer :: i_direc, i_cmp
+    integer(kind=8) :: i_direc, i_cmp
     character(len=16) :: keyw_name(2), keyw_type(2)
     character(len=16) :: cmp_name, list_cmp(6)
     character(len=24) :: list_repe_elem
-    integer :: nb_repe_elem, j_repe_elem
+    integer(kind=8) :: nb_repe_elem, j_repe_elem
 !
     data list_cmp/'DX', 'DY', 'DZ', 'DRX', 'DRY', 'DRZ'/
 !

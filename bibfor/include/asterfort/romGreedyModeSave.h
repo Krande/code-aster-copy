@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2020 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -23,7 +23,7 @@ interface
         use Rom_Datastructure_type
         type(ROM_DS_MultiPara), intent(in) :: ds_multipara
         type(ROM_DS_Empi), intent(inout)   :: base
-        integer, intent(in)                :: iMode
+        integer(kind=8), intent(in)                :: iMode
         character(len=19), intent(in)      :: mode
     end subroutine romGreedyModeSave
 end interface

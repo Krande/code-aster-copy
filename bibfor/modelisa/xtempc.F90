@@ -25,11 +25,9 @@ subroutine xtempc(nfiss, fiss, fonree, char)
 #include "asterfort/dismoi.h"
 #include "asterfort/jedema.h"
 #include "asterfort/jemarq.h"
-#include "asterfort/jenuno.h"
 #include "asterfort/jeveuo.h"
-#include "asterfort/jexnum.h"
 #include "asterfort/int_to_char8.h"
-    integer :: nfiss
+    integer(kind=8) :: nfiss
     character(len=8) :: fiss(nfiss), char
     character(len=4) :: fonree
 !
@@ -54,9 +52,9 @@ subroutine xtempc(nfiss, fiss, fonree, char)
     character(len=8) :: noma, nomo, betaf, nomnoe(1), ddlh(1), ddle(1)
     character(len=4) :: typval
     complex(kind=8) :: cbid
-    integer :: nrel, ifiss, nbno, ino, istan, ndim(1)
+    integer(kind=8) :: nrel, ifiss, nbno, ino, istan, ndim(1)
     real(kind=8) :: betar, coefr(1)
-    integer, pointer :: vale(:) => null()
+    integer(kind=8), pointer :: vale(:) => null()
 !
     data ddlh/'H1'/
     data ddle/'E1'/

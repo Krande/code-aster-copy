@@ -25,7 +25,6 @@ subroutine ntcrch(model, nume_dof, vhydr_, hydr_init_)
 #include "asterfort/copisd.h"
 #include "asterfort/detrsd.h"
 #include "asterfort/dismoi.h"
-#include "asterfort/mecact.h"
 #include "asterfort/vtcreb.h"
 !
     character(len=8), intent(in) :: model
@@ -49,7 +48,7 @@ subroutine ntcrch(model, nume_dof, vhydr_, hydr_init_)
 ! --------------------------------------------------------------------------------------------------
 !
     character(len=19) :: hydric, hydris, ligrmo
-    integer :: iret
+    integer(kind=8) :: iret
     character(len=24) :: vtemp
 !
 ! --------------------------------------------------------------------------------------------------

@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2020 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -22,6 +22,6 @@ interface
     subroutine cgcrio(resu, vecord, nbnume)
         character(len=8) :: resu
         character(len=19) :: vecord
-        integer, optional :: nbnume
+        integer(kind=8), optional :: nbnume
     end subroutine cgcrio
 end interface

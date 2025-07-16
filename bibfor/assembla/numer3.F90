@@ -25,7 +25,6 @@ subroutine numer3(modelZ, base, listLoadZ, numeDofZ, ds_contact)
     implicit none
 !
 #include "asterfort/addModelLigrel.h"
-#include "asterfort/as_allocate.h"
 #include "asterfort/as_deallocate.h"
 #include "asterfort/assert.h"
 #include "asterfort/copisd.h"
@@ -60,7 +59,7 @@ subroutine numer3(modelZ, base, listLoadZ, numeDofZ, ds_contact)
 ! --------------------------------------------------------------------------------------------------
 !
     character(len=14), parameter :: numeDofSave = '&&NUMER3.NUAV'
-    integer :: nbLigr
+    integer(kind=8) :: nbLigr
     character(len=24), pointer :: listLigr(:) => null()
     character(len=14) :: numeDofOld
     character(len=24) :: idenRela

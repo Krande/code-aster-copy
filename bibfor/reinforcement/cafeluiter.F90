@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -87,7 +87,7 @@ subroutine cafeluiter(typco, alphacc, effm, effn, ht, bw, &
 !!!!TERMES PRINCIPAUX D'ENTREE
 !-----------------------------------------------------------------------
 
-    integer :: typco
+    integer(kind=8) :: typco
     real(kind=8) :: alphacc
     real(kind=8) :: effm
     real(kind=8) :: effn
@@ -99,15 +99,15 @@ subroutine cafeluiter(typco, alphacc, effm, effn, ht, bw, &
     real(kind=8) :: fbeton
     real(kind=8) :: gammas
     real(kind=8) :: gammac
-    integer :: clacier
+    integer(kind=8) :: clacier
     real(kind=8) :: eys
-    integer :: typdiag
-    integer :: ferrcomp
-    integer :: precs
-    integer :: ferrsyme
+    integer(kind=8) :: typdiag
+    integer(kind=8) :: ferrcomp
+    integer(kind=8) :: precs
+    integer(kind=8) :: ferrsyme
     real(kind=8) :: slsyme
-    integer :: uc
-    integer :: um
+    integer(kind=8) :: uc
+    integer(kind=8) :: um
     logical :: condns
     real(kind=8) :: astend
     real(kind=8) :: ascomp
@@ -116,9 +116,9 @@ subroutine cafeluiter(typco, alphacc, effm, effn, ht, bw, &
     real(kind=8) :: ectend
     real(kind=8) :: eccomp
     real(kind=8) :: alpha
-    integer :: pivot
-    integer :: etat
-    integer :: ierr
+    integer(kind=8) :: pivot
+    integer(kind=8) :: etat
+    integer(kind=8) :: ierr
 
 !-----------------------------------------------------------------------
 !!!!VARIABLES DE CALCUL
@@ -132,14 +132,14 @@ subroutine cafeluiter(typco, alphacc, effm, effn, ht, bw, &
     real(kind=8) :: COEF1, COEF2, VAR_COEF1, VAR_COEF2
     real(kind=8) :: Calc, a11, a12, a21, a22, f1, f2, x1, y1, DELTA, Beta, yE
     real(kind=8) :: escomp, estend
-    integer :: N_ET, N_PC, N_EC, s, N_TOT, i, verif, indx_ch
+    integer(kind=8) :: N_ET, N_PC, N_EC, s, N_TOT, i, verif, indx_ch
     real(kind=8) :: DE, X, astot
     logical :: COND_AJOUT_AsCOMP, COND_AJOUT_AsTEND, COND_AJOUT_Proceed, COND_F
     real(kind=8) :: AsCOMP_FOUND, AsTEND_FOUND, AsTOT_FOUND
     real(kind=8) :: AsCOMP_F, AsTEND_F, AsTOT_F
-    integer :: INDICE_F, j, k
+    integer(kind=8) :: INDICE_F, j, k
     real(kind=8) :: aG, aD, alphaI, fG, fD, r1, r2
-    integer :: COUNT_F, COUNT_ELU, COUNT_ELU_SYME, COUNT_ELU_NOCOMP, COUNT_ELU_SYMENOCOMP
+    integer(kind=8) :: COUNT_F, COUNT_ELU, COUNT_ELU_SYME, COUNT_ELU_NOCOMP, COUNT_ELU_SYMENOCOMP
     logical :: COND_COUNT, COND_COUNT_SYME, COND_COUNT_NOCOMP, COND_COUNT_SYMENOCOMP
 
     character(20) :: p(48)
@@ -149,28 +149,28 @@ subroutine cafeluiter(typco, alphacc, effm, effn, ht, bw, &
     real(kind=8), pointer :: astend_ET(:) => null(), ascomp_ET(:) => null()
     real(kind=8), pointer :: AsTOT_ET(:) => null(), alpha_ET(:) => null()
     real(kind=8), pointer :: sstend_ET(:) => null(), sscomp_ET(:) => null()
-    integer, pointer :: pivot_ET(:) => null(), etat_ET(:) => null()
+    integer(kind=8), pointer :: pivot_ET(:) => null(), etat_ET(:) => null()
 
     real(kind=8), pointer :: ectend_PC(:) => null(), eccomp_PC(:) => null()
     real(kind=8), pointer :: estend_PC(:) => null(), escomp_PC(:) => null()
     real(kind=8), pointer :: astend_PC(:) => null(), ascomp_PC(:) => null()
     real(kind=8), pointer :: AsTOT_PC(:) => null(), alpha_PC(:) => null()
     real(kind=8), pointer :: sstend_PC(:) => null(), sscomp_PC(:) => null()
-    integer, pointer :: pivot_PC(:) => null(), etat_PC(:) => null()
+    integer(kind=8), pointer :: pivot_PC(:) => null(), etat_PC(:) => null()
 
     real(kind=8), pointer :: ectend_EC(:) => null(), eccomp_EC(:) => null()
     real(kind=8), pointer :: estend_EC(:) => null(), escomp_EC(:) => null()
     real(kind=8), pointer :: astend_EC(:) => null(), ascomp_EC(:) => null()
     real(kind=8), pointer :: AsTOT_EC(:) => null(), alpha_EC(:) => null()
     real(kind=8), pointer :: sstend_EC(:) => null(), sscomp_EC(:) => null()
-    integer, pointer :: pivot_EC(:) => null(), etat_EC(:) => null()
+    integer(kind=8), pointer :: pivot_EC(:) => null(), etat_EC(:) => null()
 
     real(kind=8), pointer :: ectend_TOT(:) => null(), eccomp_TOT(:) => null()
     real(kind=8), pointer :: estend_TOT(:) => null(), escomp_TOT(:) => null()
     real(kind=8), pointer :: astend_TOT(:) => null(), ascomp_TOT(:) => null()
     real(kind=8), pointer :: AsTOT_TOT(:) => null(), alpha_TOT(:) => null()
     real(kind=8), pointer :: sstend_TOT(:) => null(), sscomp_TOT(:) => null()
-    integer, pointer :: pivot_TOT(:) => null(), etat_TOT(:) => null()
+    integer(kind=8), pointer :: pivot_TOT(:) => null(), etat_TOT(:) => null()
 
 !-----------------------------------------------------------------------
 !!!!LANCEMENT DU CALCUL

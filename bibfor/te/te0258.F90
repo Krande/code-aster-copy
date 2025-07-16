@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -30,7 +30,6 @@ subroutine te0258(option, nomte)
 #include "asterfort/utmess.h"
 #include "asterfort/getFluidPara.h"
 #include "asterc/r8prem.h"
-#include "asterfort/rcvalb.h"
 !
     character(len=16), intent(in) :: option, nomte
 !
@@ -52,12 +51,12 @@ subroutine te0258(option, nomte)
     real(kind=8) :: nx, ny, jac
     real(kind=8) :: poids
     real(kind=8) :: rho, rhon, cele_r, alpha, q_alpha, q_c, coef_ordre, onde_flui
-    integer :: ipoids, ivf, idfde
-    integer :: jv_geom, jv_mate, jv_matr, jv_amor
-    integer :: ndim, nno, ndi, ipg, npg
-    integer :: ldec
-    integer :: i, ij, j
-    integer :: j_mater, iret
+    integer(kind=8) :: ipoids, ivf, idfde
+    integer(kind=8) :: jv_geom, jv_mate, jv_matr, jv_amor
+    integer(kind=8) :: ndim, nno, ndi, ipg, npg
+    integer(kind=8) :: ldec
+    integer(kind=8) :: i, ij, j
+    integer(kind=8) :: j_mater, iret
     character(len=16) :: FEForm
     aster_logical :: l_axis
     real(kind=8) :: r

@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -25,7 +25,7 @@ interface
                       geom,cara,valpg,outno,lzr,matr, lgreen)
         character(len=16) :: nomte
         character(len=16) :: option
-        integer :: nb1,nb2,npgsr,npgsn,nso,nbcou
+        integer(kind=8) :: nb1,nb2,npgsr,npgsn,nso,nbcou
         real(kind=8) :: geom(*),cara(*),valpg(*),outno(*),lzr(*),matr(*)
         aster_logical :: lgreen
     end subroutine elno_coq3d

@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -24,9 +24,9 @@ subroutine arlcns(nummai, connex, loncum, nbno, cxno)
 #include "jeveux.h"
 #include "asterfort/assert.h"
 !
-    integer :: nummai, connex(*), loncum(*)
-    integer :: nbno
-    integer :: cxno(nbno)
+    integer(kind=8) :: nummai, connex(*), loncum(*)
+    integer(kind=8) :: nbno
+    integer(kind=8) :: cxno(nbno)
 !
 ! ----------------------------------------------------------------------
 !
@@ -46,7 +46,7 @@ subroutine arlcns(nummai, connex, loncum, nbno, cxno)
 !
 ! ----------------------------------------------------------------------
 !
-    integer :: ino, jdec
+    integer(kind=8) :: ino, jdec
 !
 ! ----------------------------------------------------------------------
 !

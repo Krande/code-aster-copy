@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -44,12 +44,12 @@ subroutine i2gspl(debspl, tvois1, tvois2, tplace, schm, &
 !******************************************************************
 !
     aster_logical :: tplace(*)
-    integer :: debspl, tvois1(*), tvois2(*)
-    integer :: schm(*), achm(*), pts, pta
+    integer(kind=8) :: debspl, tvois1(*), tvois2(*)
+    integer(kind=8) :: schm(*), achm(*), pts, pta
 !
     aster_logical :: fini
 !
-    integer :: s, s1, s2
+    integer(kind=8) :: s, s1, s2
 !
 !-----------------------------------------------------------------------
 !-----------------------------------------------------------------------

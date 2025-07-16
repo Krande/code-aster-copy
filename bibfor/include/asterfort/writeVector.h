@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2019 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -19,7 +19,7 @@
 interface
     subroutine writeVector(name, nb_value, vect)
         character(len=*), intent(in) :: name
-        integer, intent(in)          :: nb_value
+        integer(kind=8), intent(in)          :: nb_value
         real(kind=8), intent(in)     :: vect(*)
     end subroutine writeVector
 end interface

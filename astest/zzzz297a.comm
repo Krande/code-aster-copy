@@ -17,7 +17,6 @@
 # along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 # --------------------------------------------------------------------
 
-# aslint: disable=C2023
 
 DEBUT(CODE="OUI", ERREUR=_F(ALARME="EXCEPTION"), DEBUG=_F(SDVERI="OUI"))
 
@@ -63,9 +62,9 @@ def proj2liai(MatrProj):
     # -- création des noms des noeuds
     noeud = [f"N{i}" for i in range(1, nb_nodes + 1)]
     # -- structure de données projection
-    pj_cf = MatrProj.sdj.PJEF_CF.get()
-    pj_nu = MatrProj.sdj.PJEF_NU.get()
-    pj_nb = MatrProj.sdj.PJEF_NB.get()
+    pj_cf = MatrProj.getCoefficients()
+    pj_nu = MatrProj.getNodesIds()
+    pj_nb = MatrProj.getNumberOfMasterNodes()
     #
     mcfact = []
     #  boucle sur les noeuds esclaves

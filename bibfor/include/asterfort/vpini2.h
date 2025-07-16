@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -25,15 +25,15 @@ interface
 #include "asterf_types.h"
         character(len=19) , intent(in)    :: eigsol
         aster_logical , intent(in)    :: lcomod
-        integer           , intent(in)    :: nbvecg
-        integer           , intent(in)    :: nfreqg
-        integer           , intent(in)    :: nbpark
-        integer           , intent(in)    :: nbpari
-        integer           , intent(in)    :: nbparr
+        integer(kind=8)           , intent(in)    :: nbvecg
+        integer(kind=8)           , intent(in)    :: nfreqg
+        integer(kind=8)           , intent(in)    :: nbpark
+        integer(kind=8)           , intent(in)    :: nbpari
+        integer(kind=8)           , intent(in)    :: nbparr
         character(len=24) , intent(in)    :: vecrer
         character(len=24) , intent(in)    :: vecrei
         character(len=24) , intent(in)    :: vecrek
         character(len=24) , intent(in)    :: vecvp
-        integer           , intent(out)   :: mxresf
+        integer(kind=8)           , intent(out)   :: mxresf
     end subroutine vpini2
 end interface

@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2020 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -24,7 +24,7 @@ interface
                       lsup      , borsup   ,&
                       linf      , borinf)
         character(len=16), intent(in) :: keywf
-        integer, intent(in) :: keywfIocc
+        integer(kind=8), intent(in) :: keywfIocc
         aster_logical, intent(in) :: lField, lResu
         character(len=8), intent(in) :: fileFormat
         aster_logical, intent(out) :: lsup, linf, lmax, lmin

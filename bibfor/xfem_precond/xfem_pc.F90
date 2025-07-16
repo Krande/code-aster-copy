@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -30,11 +30,9 @@ subroutine xfem_pc(matass, base)
 !
 #include "asterf_types.h"
 #include "jeveux.h"
-#include "asterc/r8prem.h"
 #include "asterfort/assert.h"
 #include "asterfort/as_deallocate.h"
 #include "asterfort/as_allocate.h"
-#include "asterc/asmpi_comm.h"
 #include "asterfort/dismoi.h"
 #include "asterfort/echmat.h"
 #include "asterfort/infniv.h"
@@ -43,7 +41,6 @@ subroutine xfem_pc(matass, base)
 #include "asterfort/jemarq.h"
 #include "asterfort/jeveuo.h"
 #include "asterfort/jexnom.h"
-#include "asterfort/jexnum.h"
 #include "asterfort/mtdscr.h"
 #include "asterfort/utmess.h"
 #include "asterfort/xfem_count_ddl.h"
@@ -57,20 +54,19 @@ subroutine xfem_pc(matass, base)
     character(len=1) :: base
 !-----------------------------------------------------------------------
     character(len=1) :: bas1
-    character(len=3) :: mathpc
     character(len=8) :: nomgd, noma
     character(len=14) :: nonu
     character(len=19) :: matas1, pc_1
     character(len=24), pointer :: refa(:) => null()
     character(len=24), pointer :: refn(:) => null()
     real(kind=8), pointer :: tab_mloc(:) => null()
-    integer, pointer :: ino_xfem(:) => null()
-    integer, pointer :: neq_mloc(:) => null()
-    integer, pointer :: iglob_ddl(:) => null()
-    integer, pointer :: ieq_loc(:) => null()
+    integer(kind=8), pointer :: ino_xfem(:) => null()
+    integer(kind=8), pointer :: neq_mloc(:) => null()
+    integer(kind=8), pointer :: iglob_ddl(:) => null()
+    integer(kind=8), pointer :: ieq_loc(:) => null()
     aster_logical, pointer :: is_xfem(:) => null()
-    integer :: nuno, neq, ieq, jcmp, jdeeq
-    integer :: jdime, nbnomax, nbnoxfem, maxi_ddl, nvale, niv, ifm
+    integer(kind=8) :: nuno, neq, ieq, jcmp, jdeeq
+    integer(kind=8) :: jdime, nbnomax, nbnoxfem, maxi_ddl, nvale, niv, ifm
     real(kind=8) :: kmin, kmax, coef, scal
     aster_logical :: lmd, l_parallel_matrix
     parameter(pc_1='&&XFEM_PC_1')

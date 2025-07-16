@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -33,11 +33,11 @@ subroutine dltp0(t0, nume)
 #include "asterfort/utmess.h"
 #include "asterfort/wkvect.h"
     real(kind=8) :: t0
-    integer :: nume
+    integer(kind=8) :: nume
 ! OUT : T0   : INSTANT INITIAL
 ! OUT : NUME : NUMERO D'ORDRE DE REPRISE
 !     ------------------------------------------------------------------
-    integer :: vali
+    integer(kind=8) :: vali
     real(kind=8) :: valr
     character(len=8) :: k8b, nomres, dyna, li, crit, ctype
     character(len=16) :: typres, nomcmd
@@ -45,8 +45,8 @@ subroutine dltp0(t0, nume)
     complex(kind=8) :: c16b
 !     -----------------------------------------------------------------
 !-----------------------------------------------------------------------
-    integer :: i, ibid, jadr, jordr, n1, nbordr(1), tnume(1)
-    integer :: nbtrou, nc, ndy, nni, np, nt
+    integer(kind=8) :: i, ibid, jadr, jordr, n1, nbordr(1), tnume(1)
+    integer(kind=8) :: nbtrou, nc, ndy, nni, np, nt
     real(kind=8) :: prec, r8b, temps
     real(kind=8), pointer :: bint(:) => null()
 !-----------------------------------------------------------------------

@@ -21,11 +21,11 @@ function int_to_char8(to_convert, lcolle, nommai, typent)
     implicit none
 #include "asterf_types.h"
 #include "asterfort/assert.h"
-#include "asterfort/jeexin.h"
 #include "asterfort/jenuno.h"
 #include "asterfort/jexnum.h"
+#include "asterc/int_to_string_conversion.h"
 !
-    integer, intent(in) :: to_convert
+    integer(kind=8), intent(in) :: to_convert
     aster_logical, optional, intent(in) :: lcolle
     character(len=8), optional, intent(in) :: nommai
     character(len=*), optional, intent(in) :: typent
@@ -52,9 +52,8 @@ function int_to_char8(to_convert, lcolle, nommai, typent)
     if (lcolle2) then
         call jenuno(jexnum(nomobj, to_convert), int_to_char8)
     else
-        write (int_to_char8, 10) to_convert
-        int_to_char8 = adjustl(int_to_char8)
+        int_to_char8 = ' '
+        call int_to_string_conversion(to_convert, int_to_char8)
     end if
-10  format(I8)
 !
 end function

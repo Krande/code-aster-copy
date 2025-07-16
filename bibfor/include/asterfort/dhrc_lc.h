@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2019 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -43,7 +43,7 @@ interface
         real(kind=8), intent(in) :: ga_c(6, 6, 2)
         real(kind=8), intent(in) :: cstseu(6)
         real(kind=8), intent(in) :: crit(*)
-        integer, intent(out) :: codret
+        integer(kind=8), intent(out) :: codret
         real(kind=8), intent(out) :: dsidep(6, 6)
         aster_logical, intent(in):: debug
     end subroutine dhrc_lc

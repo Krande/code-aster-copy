@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -25,7 +25,7 @@ interface
         character(len=*), intent(in) :: optionz, modelz
         character(len=24), intent(in) :: cara_elem, mate
         character(len=19), intent(in) :: compor
-        integer, intent(in) :: nh
+        integer(kind=8), intent(in) :: nh
         character(len=*), intent(in) :: ligrelz
         character(len=*), intent(in) :: sigmz, varcz, strxz, dispz
         character(len=1), intent(in) :: base

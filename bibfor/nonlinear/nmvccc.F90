@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -30,8 +30,8 @@ subroutine nmvccc(model, nbin, nbout, lpain, lchin, &
 ! person_in_charge: mickael.abbas at edf.fr
 !
     character(len=8), intent(in) :: model
-    integer, intent(in) :: nbout
-    integer, intent(in) :: nbin
+    integer(kind=8), intent(in) :: nbout
+    integer(kind=8), intent(in) :: nbin
     character(len=8), intent(in) :: lpain(nbin)
     character(len=19), intent(in) :: lchin(nbin)
     character(len=8), intent(in) :: lpaout(nbout)
@@ -74,7 +74,7 @@ subroutine nmvccc(model, nbin, nbout, lpain, lchin, &
     character(len=6) :: masque
     character(len=16) :: option
     character(len=24) :: ligrmo
-    integer :: nbr
+    integer(kind=8) :: nbr
 !
 ! --------------------------------------------------------------------------------------------------
 !

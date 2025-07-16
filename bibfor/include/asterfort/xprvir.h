@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -30,10 +30,10 @@ interface
         character(len=19) :: vitvir
         character(len=19) :: angvir
         character(len=19) :: numvir
-        integer :: numfon
+        integer(kind=8) :: numfon
         character(len=24) :: nvit
         character(len=24) :: nbeta
-        integer :: nbptff
+        integer(kind=8) :: nbptff
         real(kind=8) :: radimp
         real(kind=8) :: radtor
         real(kind=8) :: damax

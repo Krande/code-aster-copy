@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -31,7 +31,7 @@ subroutine orien2(xp, xq, xr, angl)
     real(kind=8) :: xpr(3), xpq(3), xxpr(3), mro(3, 3)
 ! ----------------------------------------------------------------------
 !-----------------------------------------------------------------------
-    integer :: i
+    integer(kind=8) :: i
     real(kind=8) :: r, s, zero
 !-----------------------------------------------------------------------
     zero = 0.d0

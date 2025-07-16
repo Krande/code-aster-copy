@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -27,7 +27,7 @@ subroutine mpglcp(typecp, nbnolo, coordo, alpha, beta, &
 #include "asterfort/dxtpgl.h"
 #include "asterfort/matrot.h"
     character(len=1) :: typecp
-    integer :: nbnolo
+    integer(kind=8) :: nbnolo
     real(kind=8) :: coordo(*), alpha, beta, gamma, pgl(3, 3)
 !     --- ARGUMENTS ---
 ! ----------------------------------------------------------------------

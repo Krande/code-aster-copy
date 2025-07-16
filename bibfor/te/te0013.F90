@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -49,8 +49,8 @@ subroutine te0013(option, nomte)
 !
     character(len=4) :: fami
     real(kind=8) :: bsigma(81), sigth(162), angl_naut(3), time, nharm
-    integer :: i, idfde, igeom, imate, ipoids, itemps, ivectu, iret
-    integer :: ivf, nbsig, ndim, nno, npg
+    integer(kind=8) :: i, idfde, igeom, imate, ipoids, itemps, ivectu, iret
+    integer(kind=8) :: ivf, nbsig, ndim, nno, npg
     real(kind=8) :: zero
     aster_logical :: l_meta
 !

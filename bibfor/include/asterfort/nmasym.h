@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -24,9 +24,9 @@ interface
                       effnom, vim, effnop, vip, klv,&
                       fono)
         character(len=*) :: fami
-        integer :: kpg
-        integer :: ksp
-        integer :: icodma
+        integer(kind=8) :: kpg
+        integer(kind=8) :: ksp
+        integer(kind=8) :: icodma
         character(len=*) :: option
         real(kind=8) :: xlong0
         real(kind=8) :: a

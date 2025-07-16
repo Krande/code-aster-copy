@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -24,8 +24,8 @@ interface
                       typdis)
         character(len=8) :: noma
         character(len=24) :: lisno
-        integer :: nmafis
-        integer :: jmafis
+        integer(kind=8) :: nmafis
+        integer(kind=8) :: jmafis
         character(len=19) :: cnslt
         character(len=19) :: cnsln
         character(len=19) :: cnslj

@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -23,9 +23,9 @@
 interface
     subroutine rk5app(nbeq, vparam_real, vparam_int, vparam_car, dtemps, &
                       yinit, dyinit, rk5fct, solu, decoup)
-        integer          :: nbeq
+        integer(kind=8)          :: nbeq
         real(kind=8)     :: vparam_real(*)
-        integer          :: vparam_int(*)
+        integer(kind=8)          :: vparam_int(*)
         character(len=*) :: vparam_car(*)
         real(kind=8)     :: dtemps
         real(kind=8)     :: yinit(nbeq)
@@ -36,7 +36,7 @@ interface
         interface
             subroutine rk5fct(ppr, ppi, ppc, yy0, dy0, dyy, decoup)
                 real(kind=8)     :: ppr(*)
-                integer          :: ppi(*)
+                integer(kind=8)          :: ppi(*)
                 character(len=*) :: ppc(*)
                 real(kind=8)     :: yy0(*)
                 real(kind=8)     :: dy0(*)

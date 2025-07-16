@@ -30,7 +30,7 @@ interface
         real(kind=8), intent(in) :: timePara(3)
         character(len=*), intent(inout) :: vectElemZ
         character(len=*), optional, intent(in) :: varcCurrZ_
-        integer, optional, intent(in) :: nharm_
+        integer(kind=8), optional, intent(in) :: nharm_
         character(len=*), optional, intent(in) :: ligrelCalcZ_
         character(len=1), optional, intent(in) :: jvBase_
     end subroutine vechme

@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -33,11 +33,11 @@ subroutine impmv(ifm, txt, mv, nn, isym)
 ! --------------------------------------------------------------------------------------------------
 !
     implicit none
-    integer :: ifm, nn, isym
+    integer(kind=8) :: ifm, nn, isym
     real(kind=8) :: mv(nn)
     character(len=8) :: txt
 ! --------------------------------------------------------------------------------------------------
-    integer :: ii, jj, kk, dimmp
+    integer(kind=8) :: ii, jj, kk, dimmp
     real(kind=8) :: mp(12, 12)
 ! --------------------------------------------------------------------------------------------------
 !

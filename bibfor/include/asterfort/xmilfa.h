@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -24,14 +24,14 @@ interface
                       ksi, milfa, pintt, pmitt)
         character(len=8) :: elrefp
         character(len=8) :: typma
-        integer :: ndim
-        integer :: ndime
-        integer :: nnose
-        integer :: it
-        integer :: ip1
-        integer :: ip2
-        integer :: pm2
-        integer :: cnset(*)
+        integer(kind=8) :: ndim
+        integer(kind=8) :: ndime
+        integer(kind=8) :: nnose
+        integer(kind=8) :: it
+        integer(kind=8) :: ip1
+        integer(kind=8) :: ip2
+        integer(kind=8) :: pm2
+        integer(kind=8) :: cnset(*)
         real(kind=8) :: pinref(*)
         real(kind=8) :: pmiref(*)
         real(kind=8) :: geom(*)

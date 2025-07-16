@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -21,7 +21,7 @@
 interface
     subroutine nmreso(fonact, cndonn, cnpilo, cncine, solveu,&
                       maprec, matass, depso1, depso2, rescvg)
-        integer :: fonact(*)
+        integer(kind=8) :: fonact(*)
         character(len=19) :: cndonn
         character(len=19) :: cnpilo
         character(len=19) :: cncine
@@ -30,6 +30,6 @@ interface
         character(len=19) :: matass
         character(len=19) :: depso1
         character(len=19) :: depso2
-        integer :: rescvg
+        integer(kind=8) :: rescvg
     end subroutine nmreso
 end interface

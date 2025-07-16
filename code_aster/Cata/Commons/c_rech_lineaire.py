@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -30,7 +30,7 @@ def C_RECH_LINEAIRE(cmd=None):
         resi = 1.0e-1
         iter = 3
     elif cmd == "THER_NON_LINE":
-        stat = "d"
+        stat = "f"
         into_meth = ("CORDE",)
         resi = 1.0e-1
         iter = 3

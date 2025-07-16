@@ -29,7 +29,6 @@ subroutine niMatr(parameters, geom, matr_cont, matr_fric)
 #include "asterfort/getInterCont.h"
 #include "asterfort/getQuadCont.h"
 #include "asterfort/niElemCont.h"
-#include "blas/dgemm.h"
 #include "blas/dger.h"
 #include "contact_module.h"
 !
@@ -52,7 +51,7 @@ subroutine niMatr(parameters, geom, matr_cont, matr_fric)
 !
     type(ContactNitsche) :: nits
     aster_logical :: l_cont_qp, l_fric_qp
-    integer ::  i_qp, nb_qp, total_dofs, face_dofs, slav_dofs
+    integer(kind=8) ::  i_qp, nb_qp, total_dofs, face_dofs, slav_dofs
     real(kind=8) :: weight_sl_qp, coeff, hF
     real(kind=8) :: coor_qp_sl(2)
     real(kind=8) :: coor_qp(2, MAX_NB_QUAD), weight_qp(MAX_NB_QUAD)
@@ -61,8 +60,8 @@ subroutine niMatr(parameters, geom, matr_cont, matr_fric)
     real(kind=8) :: dGap(MAX_LAGA_DOFS), d2Gap(MAX_LAGA_DOFS, MAX_LAGA_DOFS)
     real(kind=8) :: dStress_nn(MAX_NITS_DOFS), dGapRenum(MAX_NITS_DOFS)
     real(kind=8) :: matr_tmp(MAX_LAGA_DOFS, MAX_LAGA_DOFS)
-    integer :: dofsMap(54)
-    integer :: nbPoinInte
+    integer(kind=8) :: dofsMap(54)
+    integer(kind=8) :: nbPoinInte
     real(kind=8) :: poinInteSlav(2, MAX_NB_INTE)
     blas_int :: b_incx, b_incy, b_lda, b_m, b_n
 !

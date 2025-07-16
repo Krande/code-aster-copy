@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -31,11 +31,9 @@ module mesh_modification_module
 #include "jeveux.h"
 #include "MeshTypes_type.h"
 #include "asterc/getfac.h"
-#include "asterfort/assert.h"
 #include "asterfort/getvr8.h"
 #include "asterfort/getvtx.h"
 #include "asterfort/jelira.h"
-#include "asterfort/jenonu.h"
 #include "asterfort/jeveuo.h"
 #include "asterfort/jexnom.h"
 #include "asterfort/jexnum.h"
@@ -63,7 +61,7 @@ contains
 ! ----- Local
         character(len=8) :: mesh
         character(len=16) :: factorKeyword
-        integer :: nbFactorKeyword, meshDime
+        integer(kind=8) :: nbFactorKeyword, meshDime
 !   ------------------------------------------------------------------------------------------------
 !
         mesh = meshZ
@@ -99,12 +97,13 @@ contains
         type(MESH_OPER_MODI_PARA), intent(inout) :: meshOperModiPara
 ! ----- Local
         character(len=8) :: mesh, nodeName
-        integer :: iFactorKeyword, nbret, nbVectCmp, nbGroupNode, nbGroupCell, nodeNume, cellNume
+        integer(kind=8) :: iFactorKeyword, nbret, nbVectCmp, nbGroupNode, nbGroupCell
+        integer(kind=8) :: nodeNume, cellNume
         character(len=16), parameter :: factorKeyword = "ORIE_NORM_COQUE"
         aster_logical :: orieByVect
         real(kind=8) :: orieVect(3)
         character(len=24) :: nodeGroup, groupCellName
-        integer, pointer :: meshConnex(:) => null(), listCellNume(:) => null()
+        integer(kind=8), pointer :: meshConnex(:) => null(), listCellNume(:) => null()
 !   ------------------------------------------------------------------------------------------------
 !
         mesh = meshZ
@@ -172,7 +171,7 @@ contains
 ! ----- Parameters
         type(MESH_OPER_MODI_PARA), intent(inout) :: meshOperModiPara
 ! ----- Local
-        integer :: iOrieShell
+        integer(kind=8) :: iOrieShell
 !   ------------------------------------------------------------------------------------------------
 !
         do iOrieShell = 1, meshOperModiPara%orieShell
@@ -195,7 +194,7 @@ contains
 ! ----- Parameters
         type(MESH_OPER_ORIE_SHELL), intent(inout) :: meshOperOrieShell
 ! ----- Local
-        integer :: iOrieShell
+        integer(kind=8) :: iOrieShell
 !   ------------------------------------------------------------------------------------------------
 !
         deallocate (meshOperOrieShell%listOfGroupOfCell)
@@ -219,9 +218,9 @@ contains
         type(MESH_OPER_ORIE_SHELL), intent(in) :: meshOperOrieShell
 ! ----- Local
         character(len=8) :: mesh
-        integer :: iGroupCell, nbGroupCell, nbCell, nbOrie, nbOrieTotal, nodeNume, nbConex
+        integer(kind=8) :: iGroupCell, nbGroupCell, nbCell, nbOrie, nbOrieTotal, nodeNume, nbConex
         character(len=24) :: groupCellName
-        integer, pointer :: listCellNume(:) => null()
+        integer(kind=8), pointer :: listCellNume(:) => null()
         aster_logical, parameter :: reorie = ASTER_TRUE
         real(kind=8) :: orieVect(3)
 !   ------------------------------------------------------------------------------------------------

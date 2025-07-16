@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -37,29 +37,29 @@ subroutine xprfastcalcul(jvtemp, nbnoma, jcalculs, jnodto, nbno, jcnsls, &
 #include "asterfort/xsolveurtria.h"
 #include "asterfort/xvaleurmin.h"
 
-    integer           :: jvtemp, nbnoma, jcalculs, jnodto, nbno
-    integer           :: jcnsls, jconx1, jconx2
-    integer           :: ndim, jcopiels
+    integer(kind=8)           :: jvtemp, nbnoma, jcalculs, jnodto, nbno
+    integer(kind=8)           :: jcnsls, jconx1, jconx2
+    integer(kind=8)           :: ndim, jcopiels
     character(len=19) :: cnxinv
     character(len=8)  :: noma
 
 ! person_in_charge: patrick.massin at edf.fr
 
 !   nombre max de ss_element que l'on peut obtenir(hexa)
-    integer, parameter                :: ss_elem_max = 144
+    integer(kind=8), parameter                :: ss_elem_max = 144
     character(len=8)                  :: elp
 
-    integer                           :: ifm, niv
-    integer                           :: cnset(ss_elem_max*4), nse, nnose
-    integer                           :: i, j, k, ise, nbr, minlo, node, node_sselm
-    integer                           :: nbelno, jelno, numelm
-    integer                           :: itypma, eldim, jaux, upd_node, indmax
+    integer(kind=8)                           :: ifm, niv
+    integer(kind=8)                           :: cnset(ss_elem_max*4), nse, nnose
+    integer(kind=8)                           :: i, j, k, ise, nbr, minlo, node, node_sselm
+    integer(kind=8)                           :: nbelno, jelno, numelm
+    integer(kind=8)                           :: itypma, eldim, jaux, upd_node, indmax
     real(kind=8)                      :: delta, p, detT, solution, term(3)
     real(kind=8), dimension(ndim)      :: D, Id, dist, n
     real(kind=8), dimension(ndim+1)    :: phi, x, y, z
     real(kind=8), dimension(ndim, ndim) :: V, T, coor_nod, invT
-    integer, pointer                  :: mai(:) => null()
-    integer, pointer                  :: tmdim(:) => null()
+    integer(kind=8), pointer                  :: mai(:) => null()
+    integer(kind=8), pointer                  :: tmdim(:) => null()
     real(kind=8), pointer             :: vale(:) => null()
     aster_logical                     :: pres
 

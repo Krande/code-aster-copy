@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -21,6 +21,6 @@
 interface
     subroutine addGroupElem(mesh, nb_add)
         character(len=8), intent(in) :: mesh
-        integer, intent(in) :: nb_add
+        integer(kind=8), intent(in) :: nb_add
     end subroutine addGroupElem
 end interface

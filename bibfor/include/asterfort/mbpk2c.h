@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -20,7 +20,7 @@
 !
 interface
     subroutine mbpk2c(sens,alpha, beta, h,covaini,jacini,jacdef,sigin,sigout)
-    integer :: sens
+    integer(kind=8) :: sens
     real(kind=8) :: covaini(3, 3), jacini, jacdef
     real(kind=8) :: alpha, beta, h
     real(kind=8) :: sigin(3), sigout(3)

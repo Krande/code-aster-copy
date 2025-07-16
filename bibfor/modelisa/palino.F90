@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -27,7 +27,7 @@ subroutine palino(nomaz, mcfact, mcgrno, mcno, iocc, &
 #include "asterfort/reliem.h"
 #include "asterfort/wkvect.h"
     character(len=*) :: nomaz, mcfact, mcgrno, mcno, noml
-    integer :: iocc
+    integer(kind=8) :: iocc
 !
 ! BUT : LECTURE DE LA LISTE DE NOEUDS DECRITS PAR LA SEQUENCE :
 !       MCFAC : ( MCGRNO : LISTE DE GROUP_NO ,
@@ -46,7 +46,7 @@ subroutine palino(nomaz, mcfact, mcgrno, mcno, iocc, &
     character(len=8) :: noma
     character(len=16) :: mcf, tymocl(2), limocl(2)
     character(len=24) :: liste1
-    integer :: j1, j2, n1, k
+    integer(kind=8) :: j1, j2, n1, k
 !
     call jemarq()
     noma = nomaz

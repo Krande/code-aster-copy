@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -20,8 +20,8 @@
 !
 interface
     subroutine mbvfie(nno,kpg,dff,sigpk2,ipoids,h,covadef,vecfie)
-    integer :: nno, kpg
-    integer :: ipoids
+    integer(kind=8) :: nno, kpg
+    integer(kind=8) :: ipoids
     real(kind=8) :: h
     real(kind=8) :: sigpk2(2, 2), dsigpk2(2, 2, 2, 2)
     real(kind=8) :: dff(2, nno), covadef(3,3)

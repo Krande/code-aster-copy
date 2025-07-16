@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -33,7 +33,7 @@ subroutine mcmult(cumul, lmat, vect, xsol, nbvect, &
 #include "asterfort/as_deallocate.h"
 #include "asterfort/as_allocate.h"
     character(len=*) :: cumul
-    integer :: lmat, nbvect
+    integer(kind=8) :: lmat, nbvect
     complex(kind=8) :: vect(*), xsol(*)
     aster_logical :: prepos, prepo2
 !     EFFECTUE LE PRODUIT D'UNE MATRICE PAR N VECTEURS COMPLEXES.
@@ -56,7 +56,7 @@ subroutine mcmult(cumul, lmat, vect, xsol, nbvect, &
 !     ------------------------------------------------------------------
     character(len=3) :: kmpic
     character(len=19) :: matas
-    integer :: jsmdi, jsmhc, neq
+    integer(kind=8) :: jsmdi, jsmhc, neq
     complex(kind=8), pointer :: vectmp(:) => null()
     character(len=24), pointer :: refa(:) => null()
 !

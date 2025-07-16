@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -73,16 +73,16 @@ subroutine paqmai(nomsd, nomu, nommai, nommet, nomcri, &
 ! TYPCHA     IN    K16: TYPE DE CHARGEMENT (PERIODIQUE OU NON).
 ! PROAXE     IN    K16: TYPE DE PROJECTION (UN OU DEUX AXES).
 !-----------------------------------------------------------------------
-    integer :: ibid, ierd, lordr, nbordr, ndim, iret
-    integer :: nbma, nbpgt, nbpgmx, jnbpg, ima, tdisp(1), jrwork, tpaq
-    integer :: nbpaq, numpaq, nmapaq, nbcmp, bormax, nbpmax
-    integer :: nmaini, nbmap, tspaq, iordr, jad, tord(1)
-    integer :: jsigv, jsigd, jsigl, imap, nbpg, ipg, icmp, iret1
-    integer :: jepsv, jepsd, jepsl, paract(35), jepped, jeppel
-    integer :: jepspv, jepspd, jepspl, iret2, jeppev, valep
-    integer :: i, kwork, sompgw, sompgs, sompgi, jmail, jgrma
-    integer :: n, ninit, nbpggm, nbmagm, nmemo, nncp
-    integer :: vali(2), decal, ordini, k, jinst, iord
+    integer(kind=8) :: ibid, ierd, lordr, nbordr, ndim, iret
+    integer(kind=8) :: nbma, nbpgt, nbpgmx, jnbpg, ima, tdisp(1), jrwork, tpaq
+    integer(kind=8) :: nbpaq, numpaq, nmapaq, nbcmp, bormax, nbpmax
+    integer(kind=8) :: nmaini, nbmap, tspaq, iordr, jad, tord(1)
+    integer(kind=8) :: jsigv, jsigd, jsigl, imap, nbpg, ipg, icmp, iret1
+    integer(kind=8) :: jepsv, jepsd, jepsl, paract(35), jepped, jeppel
+    integer(kind=8) :: jepspv, jepspd, jepspl, iret2, jeppev, valep
+    integer(kind=8) :: i, kwork, sompgw, sompgs, sompgi, jmail, jgrma
+    integer(kind=8) :: n, ninit, nbpggm, nbmagm, nmemo, nncp
+    integer(kind=8) :: vali(2), decal, ordini, k, jinst, iord
 !
     real(kind=8) :: r8b, val1
 !
@@ -97,9 +97,9 @@ subroutine paqmai(nomsd, nomu, nommai, nommet, nomcri, &
     character(len=19) :: cheps, ces3, ces4, cheppe
     character(len=19) :: chepsp, ces5, ces6, ces7, ces8
     aster_logical :: lbid, crsigm, crepst, crepse, crepsp, creppe
-    integer, pointer :: nume_ordre(:) => null()
-    integer, pointer :: paqma(:) => null()
-    integer, pointer :: cesd(:) => null()
+    integer(kind=8), pointer :: nume_ordre(:) => null()
+    integer(kind=8), pointer :: paqma(:) => null()
+    integer(kind=8), pointer :: cesd(:) => null()
 !
 !-----------------------------------------------------------------------
 !234567                                                              012

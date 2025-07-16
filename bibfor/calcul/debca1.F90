@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -51,9 +51,8 @@ subroutine debca1(nin)
 #include "asterfort/utmess.h"
 #include "asterfort/wkvect.h"
 #include "asterfort/asmpi_info.h"
-#include "asterfort/isParallelMesh.h"
 
-    integer :: nin
+    integer(kind=8) :: nin
 !----------------------------------------------------------------------
 !     but : initialiser certaines variables de calcul_module
 !
@@ -65,16 +64,16 @@ subroutine debca1(nin)
 !----------------------------------------------------------------------
     mpi_int :: mrank, msize
     character(len=8) :: ma
-    integer :: iret, ier, opt, nbscmx, nbpara
-    integer :: nnomx, nbopt, nbte, i, j, vali(2)
+    integer(kind=8) :: iret, ier, opt, nbscmx, nbpara
+    integer(kind=8) :: nnomx, nbopt, nbte, i, j, vali(2)
     character(len=16) :: nomop2, nomte
     character(len=3) :: bevois, exiele
     character(len=12) :: vge
     character(len=19) :: partit
     real(kind=8) :: rundef
-    integer, pointer :: nbligcol(:) => null()
+    integer(kind=8), pointer :: nbligcol(:) => null()
     character(len=16), pointer :: nvge(:) => null()
-    integer, pointer :: prti(:) => null()
+    integer(kind=8), pointer :: prti(:) => null()
     character(len=24), pointer :: prtk(:) => null()
 
 ! -------------------------------------------------------------------

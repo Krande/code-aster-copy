@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -30,12 +30,12 @@ subroutine hujcrd(k, mater, sig, vin, seuild, iret)
 #include "asterf_types.h"
 #include "asterfort/hujprj.h"
 #include "asterc/r8prem.h"
-    integer, intent(in) :: k
+    integer(kind=8), intent(in) :: k
     real(kind=8), intent(in) :: mater(22, 2), sig(6), vin(*)
     real(kind=8), intent(out) :: seuild
-    integer, intent(out) :: iret
+    integer(kind=8), intent(out) :: iret
 
-    integer :: ndt, ndi
+    integer(kind=8) :: ndt, ndi
     real(kind=8) :: r, epsvp, pcr
     real(kind=8) :: beta, b, m, phi, pcref, ptrac
     real(kind=8) :: sigd(3), p, q, rap

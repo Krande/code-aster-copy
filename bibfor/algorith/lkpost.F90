@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -24,21 +24,21 @@ subroutine lkpost(imate, sigf, nvi, vip)
 #include "asterfort/lkcrit.h"
 #include "asterfort/rcvala.h"
 #include "asterfort/get_varc.h"
-    integer :: imate, nvi
+    integer(kind=8) :: imate, nvi
     real(kind=8) :: sigf(6), vip(nvi)
 ! =================================================================
 ! IN  : IMATE  : ADRESSE DU MATERIAU CODE -------------------------
 ! --- : NVI    : NOMBRE DE VARIABLES INTERNES ---------------------
 ! OUT : VIP    : MISE A JOUR DES VARIABLES INTERNES DE POST -------
 ! =================================================================
-    integer :: dimpar
+    integer(kind=8) :: dimpar
     parameter(dimpar=12)
-    integer :: cerr(dimpar)
+    integer(kind=8) :: cerr(dimpar)
     real(kind=8) :: mater(dimpar), i1, sii, devsig(6), lgleps, rcos3t
     real(kind=8) :: crit0, crite, tempd, tempf, tref
     parameter(lgleps=1.0d-8)
     character(len=16) :: nomc(dimpar)
-    integer :: ndi, ndt
+    integer(kind=8) :: ndi, ndt
     common/tdim/ndt, ndi
 !
 ! - Get temperatures

@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -20,10 +20,10 @@
 !
 interface
     subroutine extrma(amatst, nlig, ncol, nmat, amat)
-        integer :: ncol
-        integer :: nlig
+        integer(kind=8) :: ncol
+        integer(kind=8) :: nlig
         real(kind=8) :: amatst(9, 6, 6)
-        integer :: nmat
+        integer(kind=8) :: nmat
         real(kind=8) :: amat(nlig, ncol)
     end subroutine extrma
 end interface

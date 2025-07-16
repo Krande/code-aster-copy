@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -24,14 +24,14 @@ subroutine ptinma(elem_nbnode, elem_dime, elem_code, elem_coor, pair_tole, &
 #include "asterfort/assert.h"
 
 !
-    integer, intent(in) :: elem_nbnode
-    integer, intent(in) :: elem_dime
+    integer(kind=8), intent(in) :: elem_nbnode
+    integer(kind=8), intent(in) :: elem_dime
     character(len=8), intent(in) :: elem_code
     real(kind=8), intent(in) :: elem_coor(elem_dime-1, elem_nbnode)
     real(kind=8), intent(in) :: pair_tole
     real(kind=8), intent(in) :: poin_coorx
     real(kind=8), intent(in) :: poin_coory
-    integer, intent(out) :: test
+    integer(kind=8), intent(out) :: test
     real(kind=8), intent(out), optional ::cor_inte_ori(2)
 !
 ! --------------------------------------------------------------------------------------------------

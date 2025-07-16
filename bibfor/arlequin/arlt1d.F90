@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -23,11 +23,11 @@ subroutine arlt1d(mlv, ndim, ndml2, mcpln2)
     implicit none
 #include "jeveux.h"
 !
-    integer :: ndml2, ndim
+    integer(kind=8) :: ndml2, ndim
     real(kind=8) :: mlv(78)
 !
     real(kind=8) :: mcpln2(2*ndim*ndml2, 2*ndim*ndml2)
-    integer :: iaux, jaux, kaux
+    integer(kind=8) :: iaux, jaux, kaux
 !
 ! ----------------------------------------------------------------------
 !

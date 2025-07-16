@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -28,38 +28,38 @@ interface
                       pred, matrel, imptgt, option, nomvi,&
                       nbvita, sderro)
         use NonLin_Datastructure_type
-        integer :: nbvari
-        integer :: imate
-        integer :: ndim
+        integer(kind=8) :: nbvari
+        integer(kind=8) :: imate
+        integer(kind=8) :: ndim
         character(len=8) :: typmod(2)
         character(len=8) :: table
-        integer :: nbpar
-        integer :: iforta
+        integer(kind=8) :: nbpar
+        integer(kind=8) :: iforta
         character(len=16) :: nompar(*)
         character(len=8) :: typpar(*)
         real(kind=8) :: angl_naut(3)
         real(kind=8) :: pgl(3, 3)
-        integer :: irota
+        integer(kind=8) :: irota
         real(kind=8) :: epsm(9)
         real(kind=8) :: sigm(6)
         real(kind=8) :: vim(nbvari)
         real(kind=8) :: vip(nbvari)
         real(kind=8) :: vr(*)
-        integer :: defimp
+        integer(kind=8) :: defimp
         real(kind=8) :: coef
-        integer :: indimp(9)
+        integer(kind=8) :: indimp(9)
         character(len=8) :: fonimp(9)
         real(kind=8) :: cimpo(6, 12)
         real(kind=8) :: kel(6, 6)
         character(len=19) :: sddisc
         type(NL_DS_Conv), intent(inout) :: ds_conv
         type(NL_DS_AlgoPara), intent(inout) :: ds_algopara
-        integer :: pred
-        integer :: matrel
-        integer :: imptgt
+        integer(kind=8) :: pred
+        integer(kind=8) :: matrel
+        integer(kind=8) :: imptgt
         character(len=16) :: option
         character(len=8) :: nomvi(*)
-        integer :: nbvita
+        integer(kind=8) :: nbvita
         character(len=24) :: sderro
     end subroutine pminit
 end interface

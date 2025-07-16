@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2020 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -26,12 +26,12 @@ interface
                       lsup_      , borsup_     ,&
                       linf_      , borinf_     ,&
                       realFormat_, cplxFormat_)
-        integer, intent(in) :: fileUnit
+        integer(kind=8), intent(in) :: fileUnit
         character(len=*), intent(in) :: fieldNameZ, fieldTypeZ
-        integer, intent(in) :: cmpUserNb
+        integer(kind=8), intent(in) :: cmpUserNb
         character(len=8), pointer :: cmpUserName(:)
-        integer, intent(in) :: nodeUserNb
-        integer, pointer :: nodeUserNume(:)
+        integer(kind=8), intent(in) :: nodeUserNb
+        integer(kind=8), pointer :: nodeUserNume(:)
         aster_logical, optional, intent(in) :: lMeshCoor_
         aster_logical, optional, intent(in) :: lsup_, linf_, lmax_, lmin_
         real(kind=8),  optional, intent(in) :: borsup_, borinf_

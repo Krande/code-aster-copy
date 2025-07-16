@@ -90,23 +90,6 @@ def raiseAsterError(idmess="VIDE_1"):
     pass
 
 
-# class UseCppPickling in libaster
-
-
-class UseCppPickling:
-    pass
-
-    # Method resolution order:
-    #     UseCppPickling
-    #     pybind11_builtins.pybind11_object
-    #     builtins.object
-
-    # Methods defined here:
-
-    def __init__(self):
-        pass
-
-
 # class PythonBool in libaster
 
 
@@ -273,6 +256,24 @@ class DataStructure:
     @property
     def userName(self):
         """str: Name of the user variable that holds this object."""
+
+
+# class DSWithCppPickling in libaster
+
+
+class DSWithCppPickling(DataStructure):
+    pass
+
+    # Method resolution order:
+    #     DSWithCppPickling
+    #     DataStructure
+    #     pybind11_builtins.pybind11_object
+    #     builtins.object
+
+    # Methods defined here:
+
+    def __init__(self, /, *args, **kwargs):
+        """Initialize self.  See help(type(self)) for accurate signature."""
 
 
 # built-in function debugJeveuxContent in libaster
@@ -2405,6 +2406,9 @@ class ElementaryCharacteristics(DataStructure):
         2. __init__(self: libaster.ElementaryCharacteristics, arg0: str, arg1: Model) -> None
         """
 
+    def containsFieldOnCells(self):
+        """Return True if ElementaryCharacteristics contains FieldOnCells"""
+
     def getMesh(self):
         pass
 
@@ -2606,13 +2610,26 @@ class FieldOnCellsReal(DataField):
     def build(self, feds=[]):
         pass
 
-    def checkInternalStateVariables(self, prevBehaviour, currBehaviour):
+    def checkInternalStateVariables(self, prevBehaviour, currBehaviour, newFEDesc):
         """Check consistency of internal states variables with behaviour.
         If you give previous behaviour, check is more precise (name of beahviour for instance)
 
         Arguments:
             prevBehaviour (ConstantFieldOnCellsChar16): previous behaviour
             currBehaviour (ConstantFieldOnCellsChar16): current behaviour
+            newFEDesc (FiniteElementDescriptorPtr): new finite element descriptor
+        """
+
+    def compareShape(self, fieldModel, projectOnLigrel, paraName):
+        """Compare structure of field with another one and project on new model if require
+
+        Arguments:
+            fieldModel (FieldOnCellsRealPtr): field as model
+            projectOnLigrel (bool) : project field on new model (from model field)
+            paraName (string) : name of parameter to complete the new values in field
+
+        Returns:
+            iret (integer) : error code
         """
 
     def copy(self):
@@ -3212,15 +3229,14 @@ class FieldOnNodesReal(DataField):
     def copy(self):
         pass
 
-    def copyUsingDescription(self, desc, raiseError=True):
+    def copyUsingDescription(self, desc, warn=True):
         """Return a new field using the description.
         Be careful, Lagrange DOFs are set to zero. Moreover, components that are
         not present in the field are also set to zero in the output field.
 
         Arguments:
             desc [EquationNumbering]: description of equations
-            raiseError [bool]: If set to true, raises an error if the copy fails.
-            Otherwise, nothing happens. Defaults to true.
+            warn [bool]: If set to true, raises a warning if values are set to zero
 
         Returns:
             FieldOnNodesReal: field using new description.
@@ -6381,13 +6397,13 @@ class PairingParameter:
 # class ContactNew in libaster
 
 
-class ContactNew(DataStructure, UseCppPickling):
+class ContactNew(DSWithCppPickling):
     pass
 
     # Method resolution order:
     #     ContactNew
+    #     DSWithCppPickling
     #     DataStructure
-    #     UseCppPickling
     #     pybind11_builtins.pybind11_object
     #     builtins.object
 
@@ -6502,14 +6518,14 @@ class ContactNew(DataStructure, UseCppPickling):
 # class FrictionNew in libaster
 
 
-class FrictionNew(ContactNew, UseCppPickling):
+class FrictionNew(ContactNew):
     pass
 
     # Method resolution order:
     #     FrictionNew
     #     ContactNew
+    #     DSWithCppPickling
     #     DataStructure
-    #     UseCppPickling
     #     pybind11_builtins.pybind11_object
     #     builtins.object
 
@@ -6535,13 +6551,13 @@ class FrictionNew(ContactNew, UseCppPickling):
 # class ContactZone in libaster
 
 
-class ContactZone(DataStructure, UseCppPickling):
+class ContactZone(DSWithCppPickling):
     """Object to define a zone of contact."""
 
     # Method resolution order:
     #     ContactZone
+    #     DSWithCppPickling
     #     DataStructure
-    #     UseCppPickling
     #     pybind11_builtins.pybind11_object
     #     builtins.object
 
@@ -6722,13 +6738,13 @@ class ContactZone(DataStructure, UseCppPickling):
 # class MeshPairing in libaster
 
 
-class MeshPairing(DataStructure, UseCppPickling):
+class MeshPairing(DSWithCppPickling):
     """Object to create a pairing operator between two meshed surfaces."""
 
     # Method resolution order:
     #     MeshPairing
+    #     DSWithCppPickling
     #     DataStructure
-    #     UseCppPickling
     #     pybind11_builtins.pybind11_object
     #     builtins.object
 
@@ -11273,8 +11289,29 @@ class MeshesMapping(DataStructure):
         2. __init__(self: libaster.MeshesMapping, arg0: str) -> None
         """
 
+    def getCoefficients(self):
+        """Return the coefficients of the interpolation of the slave nodes on the master cells
+
+        Returns:
+            list[real] : interpolation coefficients for each slave node
+        """
+
     def getFirstMesh(self):
         pass
+
+    def getNodesIds(self):
+        """Return the ids of the master nodes for the interpolation of the slave nodes
+
+        Returns:
+            list[int] : master nodes ids for each slave node
+        """
+
+    def getNumberOfMasterNodes(self):
+        """Return the number of master nodes implied in the interpolation of the slave nodes
+
+        Returns:
+            list[int] : number of master nodes for each slave node
+        """
 
     def getSecondMesh(self):
         pass
@@ -15536,8 +15573,8 @@ class ParallelContactNew(ContactNew):
     # Method resolution order:
     #     ParallelContactNew
     #     ContactNew
+    #     DSWithCppPickling
     #     DataStructure
-    #     UseCppPickling
     #     pybind11_builtins.pybind11_object
     #     builtins.object
 
@@ -15574,8 +15611,8 @@ class ParallelFrictionNew(ParallelContactNew):
     #     ParallelFrictionNew
     #     ParallelContactNew
     #     ContactNew
+    #     DSWithCppPickling
     #     DataStructure
-    #     UseCppPickling
     #     pybind11_builtins.pybind11_object
     #     builtins.object
 
@@ -17637,3 +17674,30 @@ class SyntaxSaver:
 
     def __init__(self, arg0, arg1, arg2):
         pass
+
+
+# built-in function projectionAlongDirection in libaster
+
+
+def projectionAlongDirection(
+    type_elem, nb_node, nb_dim, elem_coor, pt_coor, iter_maxi, tole_maxi, proj_dire
+):
+    """Do the intersection of a node  with a given element along a given direction
+
+    Arguments:
+        type_elem (str)         : type of the element
+        nb_node (int)           : number of nodes on element
+        nb_dim (int)            : dimension of the problem(2 or 3)
+        elem_coor (list[float]) : coordinates of nodes of element
+        pt_coor (list[flot])    : coordinates of point to project
+        iter_maxi (int)         : maximum number of ierations of the Newton algorithm
+        tole_maxi (float)       : tolerance of newton algorithm
+        proj_dire (list[float]) : direction of projection
+        tang_1 (list[float])    : first tangent of local basis for the projection of point on element
+        tang_2  (list[float])   : second tangent of local basis for the projection of point on element
+    Returns:
+        int : 1 if error detected
+        float : scalar value that multiply proj_dire to obtain the projected position
+        float : first parametric coordinate of projection of point on element
+        float : second parametric coordinate of projection of point on element
+    """

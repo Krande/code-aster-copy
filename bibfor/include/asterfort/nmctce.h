@@ -24,6 +24,6 @@ interface
         type(NL_DS_Contact), intent(in) :: ds_contact
         character(len=19), intent(in)  :: sddyna
         character(len=19), intent(in)  :: sddisc
-        integer, intent(in) :: nume_inst
+        integer(kind=8), intent(in) :: nume_inst
     end subroutine nmctce
 end interface

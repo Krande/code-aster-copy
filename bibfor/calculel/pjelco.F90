@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -35,7 +35,7 @@ subroutine pjelco(moa1, moa2, cham1, corres, base)
     character(len=19) :: cham1
     character(len=1) :: base
     character(len=8) :: ma1p, ma2p
-    integer :: ndim, ndim1, ndim2
+    integer(kind=8) :: ndim, ndim1, ndim2
 !     ----------------------------------------------
 !
     ASSERT(base .eq. 'V')

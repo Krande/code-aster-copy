@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -56,25 +56,25 @@ subroutine mpmod2(basemo, nommes, nbmesu, nbmtot, basepr, &
 !
     character(len=8) :: basemo, nommes
     character(len=24) :: vnoeud, vrange, basepr, vcham
-    integer :: nbmesu, nbmtot
+    integer(kind=8) :: nbmesu, nbmtot
 !
     character(len=8) :: nomres
     character(len=16) :: nomcha, corres, nomch, typres, k16bid, nomchm
     character(len=19) :: chamno, ch1s, ch2s
     character(len=24) :: vorien
 !
-    integer :: lred, lori, lrange
-    integer :: imesu, ii, imode, iret
-    integer :: iposd, icmp, ino
-    integer :: lnoeud, nnoema, ncmpma
-    integer :: jcnsv, jcnsl, jcnsk
-    integer :: ibid, nbcmpi, nbcham, lch, ich, lcham
+    integer(kind=8) :: lred, lori, lrange
+    integer(kind=8) :: imesu, ii, imode, iret
+    integer(kind=8) :: iposd, icmp, ino
+    integer(kind=8) :: lnoeud, nnoema, ncmpma
+    integer(kind=8) :: jcnsv, jcnsl, jcnsk
+    integer(kind=8) :: ibid, nbcmpi, nbcham, lch, ich, lcham
 !
     real(kind=8) :: vori(3)
     real(kind=8) :: val, vect(3)
-    integer, pointer :: ordr(:) => null()
+    integer(kind=8), pointer :: ordr(:) => null()
     character(len=8), pointer :: cnsc(:) => null()
-    integer, pointer :: cnsd(:) => null()
+    integer(kind=8), pointer :: cnsd(:) => null()
 !
 ! ----------------------------------------------------------------------
 !

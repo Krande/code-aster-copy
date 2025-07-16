@@ -27,7 +27,6 @@ subroutine nmelcm(model, &
     implicit none
 !
 #include "asterf_types.h"
-#include "asterfort/assert.h"
 #include "asterfort/calcul.h"
 #include "asterfort/cfdisl.h"
 #include "asterfort/detrsd.h"
@@ -70,8 +69,8 @@ subroutine nmelcm(model, &
 !
 ! --------------------------------------------------------------------------------------------------
 !
-    integer :: ifm, niv
-    integer, parameter :: nbout = 2, nbin = 36
+    integer(kind=8) :: ifm, niv
+    integer(kind=8), parameter :: nbout = 2, nbin = 36
     character(len=8) :: lpaout(nbout), lpain(nbin)
     character(len=19) :: lchout(nbout), lchin(nbin)
     character(len=1), parameter :: base = 'V'

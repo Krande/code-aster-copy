@@ -24,17 +24,13 @@ subroutine cfcgeo(mesh, hval_algo, ds_contact)
 !
 #include "asterf_types.h"
 #include "asterc/r8prem.h"
-#include "asterc/r8vide.h"
-#include "asterfort/assert.h"
 #include "asterfort/cfdisd.h"
 #include "asterfort/cfdisi.h"
 #include "asterfort/cfdisl.h"
 #include "asterfort/cfdisr.h"
 #include "asterfort/cfverl.h"
 #include "asterfort/cnomax.h"
-#include "asterfort/jenuno.h"
 #include "asterfort/jeveuo.h"
-#include "asterfort/jexnum.h"
 #include "asterfort/mmbouc.h"
 #include "asterfort/nmchex.h"
 #include "asterfort/utmess.h"
@@ -60,11 +56,11 @@ subroutine cfcgeo(mesh, hval_algo, ds_contact)
 !
 ! --------------------------------------------------------------------------------------------------
 !
-    integer, parameter :: nb_cmp_disp = 3
+    integer(kind=8), parameter :: nb_cmp_disp = 3
     character(len=8), parameter :: list_cmp_disp(nb_cmp_disp) = (/'DX', 'DY', 'DZ'/)
-    integer :: nb_equa, i_equa
-    integer :: rea1_node, rea2_node
-    integer :: loop_geom_count, nb_iter_geom, iter_geom_maxi
+    integer(kind=8) :: nb_equa, i_equa
+    integer(kind=8) :: rea1_node, rea2_node
+    integer(kind=8) :: loop_geom_count, nb_iter_geom, iter_geom_maxi
     real(kind=8) :: loop_geom_vale, rea1_maxi, rea2_maxi, geom_epsi_maxi, geom_mini, geom_maxi
     character(len=16) :: loop_geom_node
     aster_logical :: l_geom_sans, l_geom_manu, l_geom_auto

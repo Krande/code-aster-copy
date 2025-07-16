@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -31,8 +31,8 @@ subroutine xhmddl(ndim, nfh, ddls, nddl, nno, &
 #include "asterfort/hmdeca.h"
 #include "asterfort/teattr.h"
     aster_logical :: matsym, lcontx
-    integer :: ndim, ddls, nddl, nno, nnos, stano(*), ddlm, nfh
-    integer :: nfiss, jfisno, dec, contac
+    integer(kind=8) :: ndim, ddls, nddl, nno, nnos, stano(*), ddlm, nfh
+    integer(kind=8) :: nfiss, jfisno, dec, contac
     character(len=16) :: option, nomte
     real(kind=8) :: mat(*), vect(*)
 !
@@ -60,9 +60,9 @@ subroutine xhmddl(ndim, nfh, ddls, nddl, nno, &
 !---------------- DECLARATION DES VARIABLES LOCALES  -------------------
 !
     aster_logical :: lelim
-    integer :: ier, istatu, ino, k, i, j, ielim, in, ddlmax
+    integer(kind=8) :: ier, istatu, ino, k, i, j, ielim, in, ddlmax
     parameter(ddlmax=52*20)
-    integer :: posddl(ddlmax), ifh, fisno(nno, nfiss)
+    integer(kind=8) :: posddl(ddlmax), ifh, fisno(nno, nfiss)
     real(kind=8) :: dmax, dmin, codia
     character(len=8) :: tyenel
 !

@@ -24,7 +24,6 @@ subroutine nmdoct(listLoad, ds_contact)
     implicit none
 !
 #include "asterf_types.h"
-#include "asterfort/assert.h"
 #include "asterfort/jeexin.h"
 #include "asterfort/jeveuo.h"
 #include "asterfort/utmess.h"
@@ -46,9 +45,9 @@ subroutine nmdoct(listLoad, ds_contact)
 !
 ! --------------------------------------------------------------------------------------------------
 !
-    integer, parameter :: nbLoadIden = 1
+    integer(kind=8), parameter :: nbLoadIden = 1
     character(len=24) :: listLoadIden(LOAD_NBIDEN_MAXI)
-    integer :: iLoad, iret, nbLoad
+    integer(kind=8) :: iLoad, iret, nbLoad
     character(len=8) :: ligrel_link, lag12
     character(len=24) :: loadName24, loadNameJv
     character(len=8) :: loadFunc, funcCste

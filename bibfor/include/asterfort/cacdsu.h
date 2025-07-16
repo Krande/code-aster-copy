@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -23,9 +23,9 @@ interface
                       vol      , mface     , dface,&
                       xface    , normfa    , kdiag,&
                       yss      , c         , d    )
-        integer, intent(in) :: maxfa
+        integer(kind=8), intent(in) :: maxfa
         real(kind=8), intent(in) :: parm_alpha
-        integer, intent(in) :: ndim, nno, nface
+        integer(kind=8), intent(in) :: ndim, nno, nface
         real(kind=8), intent(in) :: elem_coor(ndim, nno)
         real(kind=8), intent(in) :: vol
         real(kind=8), intent(in) :: mface(1:maxfa)

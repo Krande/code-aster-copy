@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -46,8 +46,6 @@ subroutine calipj(load, model)
 #include "LoadTypes_type.h"
 #include "asterc/getfac.h"
 #include "asterfort/aflrch.h"
-#include "asterfort/assert.h"
-#include "asterfort/infniv.h"
 !
     character(len=8), intent(in) :: load, model
 !
@@ -56,7 +54,7 @@ subroutine calipj(load, model)
     character(len=4), parameter :: valeType = 'REEL'
     character(len=16), parameter :: factorKeyword = 'LIAISON_PROJ'
     character(len=19) :: listLineRela
-    integer :: nbOcc
+    integer(kind=8) :: nbOcc
 !
 ! --------------------------------------------------------------------------------------------------
 !

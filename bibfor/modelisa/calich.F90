@@ -30,13 +30,11 @@ subroutine calich(chargz, phenom)
 #include "asterfort/getvr8.h"
 #include "asterfort/jedema.h"
 #include "asterfort/jedetr.h"
-#include "asterfort/jeexin.h"
+#include "asterfort/exisd.h"
 #include "asterfort/jelira.h"
 #include "asterfort/jemarq.h"
-#include "asterfort/jenuno.h"
 #include "asterfort/jeveuo.h"
 #include "asterfort/jexnom.h"
-#include "asterfort/jexnum.h"
 #include "asterfort/utmess.h"
 #include "asterfort/as_deallocate.h"
 #include "asterfort/as_allocate.h"
@@ -66,25 +64,25 @@ subroutine calich(chargz, phenom)
 ! -------------------------------------------------------
 !
     character(len=4) :: tych, typval, typcoe
-    character(len=8) :: chamno, noma, nomcmp, nomnoe, betaf
+    character(len=8) :: noma, nomcmp, nomnoe, betaf
     character(len=8) :: charge, nomgd
     character(len=16) :: motfac
-    character(len=19) :: lisrel, cham19, numeq
+    character(len=19) :: lisrel, chamno, numeq
     complex(kind=8) :: betac
 !
 !-----------------------------------------------------------------------
-    integer :: i
-    integer ::    iequa, ino, inocmp
-    integer :: iocc, iret, k, nb, nbcmp, nbec, nbnoeu
-    integer :: nbterm, nequa, nliai, nucmp
+    integer(kind=8) :: i
+    integer(kind=8) ::    iequa, ino, inocmp
+    integer(kind=8) :: iocc, iret, k, nb, nbcmp, nbec, nbnoeu
+    integer(kind=8) :: nbterm, nequa, nliai, nucmp
     real(kind=8) :: beta, vale, zero
     complex(kind=8), pointer :: coec(:) => null()
     real(kind=8), pointer :: coer(:) => null()
-    integer, pointer :: dime(:) => null()
+    integer(kind=8), pointer :: dime(:) => null()
     real(kind=8), pointer :: direct(:) => null()
     character(len=8), pointer :: lisddl(:) => null()
     character(len=8), pointer :: lisno(:) => null()
-    integer, pointer :: deeq(:) => null()
+    integer(kind=8), pointer :: deeq(:) => null()
     real(kind=8), pointer :: vvale(:) => null()
 !-----------------------------------------------------------------------
     call jemarq()
@@ -106,7 +104,6 @@ subroutine calich(chargz, phenom)
     betac = (0.0d0, 0.0d0)
     betaf = '&FOZERO'
 !
-    cham19 = '                   '
     charge = chargz
 !
 ! --- TYPE DES VALEURS AU SECOND MEMBRE DE LA RELATION
@@ -132,11 +129,9 @@ subroutine calich(chargz, phenom)
             call utmess('F', 'CHARGES2_10')
         end if
 !
-        cham19(1:8) = chamno
-!
 ! ---   VERIFICATION DE L'EXISTENCE DU CHAMNO
 !       -------------------------------------
-        call jeexin(cham19//'.VALE', iret)
+        call exisd("CHAM_NO", chamno, iret)
         if (iret .eq. 0) then
             call utmess('F', 'CHARGES2_11')
         end if
@@ -188,7 +183,7 @@ subroutine calich(chargz, phenom)
 !
 ! ---   RECUPERATION DU .VALE DU CHAM_NO
 !       --------------------------------
-        call jeveuo(cham19//'.VALE', 'E', vr=vvale)
+        call jeveuo(chamno//'.VALE', 'E', vr=vvale)
 !
 ! ---   RECUPERATION DU .DEEQ DU NUME_EQUA
 !       ----------------------------------

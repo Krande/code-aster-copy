@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -22,19 +22,19 @@ interface
     subroutine wp3vec(appr, opt, nbfreq, nbvect, neq,&
                       shift, vpr, vpi, vecp, mxresf,&
                       resufi, resufr, lagr, vauc, omecor)
-        integer :: mxresf
-        integer :: neq
+        integer(kind=8) :: mxresf
+        integer(kind=8) :: neq
         character(len=1) :: appr
         character(len=*) :: opt
-        integer :: nbfreq
-        integer :: nbvect
+        integer(kind=8) :: nbfreq
+        integer(kind=8) :: nbvect
         complex(kind=8) :: shift
         real(kind=8) :: vpr(*)
         real(kind=8) :: vpi(*)
         complex(kind=8) :: vecp(neq, *)
-        integer :: resufi(mxresf, *)
+        integer(kind=8) :: resufi(mxresf, *)
         real(kind=8) :: resufr(mxresf, *)
-        integer :: lagr(*)
+        integer(kind=8) :: lagr(*)
         complex(kind=8) :: vauc(2*neq, *)
         real(kind=8) :: omecor
     end subroutine wp3vec

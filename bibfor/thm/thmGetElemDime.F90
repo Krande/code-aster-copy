@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -25,14 +25,13 @@ subroutine thmGetElemDime(ndim, nnos, nnom, &
     implicit none
 !
 #include "asterf_types.h"
-#include "asterfort/assert.h"
 #include "asterfort/thmGetGeneDime.h"
 !
-    integer, intent(in) :: ndim, nnos, nnom
-    integer, intent(in) :: mecani(5), press1(7), press2(7), tempe(5), second(5)
-    integer, intent(out) :: nddls, nddlm
-    integer, intent(out) :: nddl_meca, nddl_p1, nddl_p2, nddl_2nd
-    integer, intent(out) :: dimdep, dimdef, dimcon, dimuel
+    integer(kind=8), intent(in) :: ndim, nnos, nnom
+    integer(kind=8), intent(in) :: mecani(5), press1(7), press2(7), tempe(5), second(5)
+    integer(kind=8), intent(out) :: nddls, nddlm
+    integer(kind=8), intent(out) :: nddl_meca, nddl_p1, nddl_p2, nddl_2nd
+    integer(kind=8), intent(out) :: dimdep, dimdef, dimcon, dimuel
 !
 ! --------------------------------------------------------------------------------------------------
 !

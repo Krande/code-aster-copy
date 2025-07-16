@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -21,9 +21,9 @@
 interface
     subroutine lcrksg(rela_comp, nvi, vinf, fd, df,&
                       nmat, coefl, sigi)
-        integer :: nmat
+        integer(kind=8) :: nmat
         character(len=16) :: rela_comp
-        integer :: nvi
+        integer(kind=8) :: nvi
         real(kind=8) :: vinf(*)
         real(kind=8) :: fd(9)
         real(kind=8) :: df(9)

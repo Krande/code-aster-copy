@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -20,9 +20,9 @@
 !
 interface
     subroutine xerfis(ndime, ninter, npts, nptm)
-        integer :: ndime
-        integer :: ninter
-        integer :: npts
-        integer :: nptm
+        integer(kind=8) :: ndime
+        integer(kind=8) :: ninter
+        integer(kind=8) :: npts
+        integer(kind=8) :: nptm
     end subroutine xerfis
 end interface

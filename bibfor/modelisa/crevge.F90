@@ -59,19 +59,19 @@ subroutine crevge(ligrel, bas1)
     character(len=19) :: ligrel
     character(len=1) :: bas1
     character(len=12) :: vge
-    integer :: iaddvo, iadvoi
+    integer(kind=8) :: iaddvo, iadvoi
 !
     character(len=24) :: typmai, connex, coninv, ptvois, elvois
     character(len=8) :: ma, typem0, typemr, noma
     aster_logical :: troisd
 !
 !
-    integer :: nvoima, nscoma
+    integer(kind=8) :: nvoima, nscoma
     parameter(nvoima=200, nscoma=4)
-    integer :: touvoi(1:nvoima, 1:nscoma+2)
-    integer :: iv, nbma, dim, dimma, iatyma, m0, is, adcom0, nbsom0
-    integer :: nbmr, admar, ir, numar, nvtot, iad, dimvlo, jnvge
-    integer :: jconnex0, jconnexc, jconinv0, jconinvc
+    integer(kind=8) :: touvoi(1:nvoima, 1:nscoma+2)
+    integer(kind=8) :: iv, nbma, dim, dimma, iatyma, m0, is, adcom0, nbsom0
+    integer(kind=8) :: nbmr, admar, ir, numar, nvtot, iad, dimvlo, jnvge
+    integer(kind=8) :: jconnex0, jconnexc, jconinv0, jconinvc
 !
 !
 !

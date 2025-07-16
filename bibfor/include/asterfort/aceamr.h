@@ -21,9 +21,9 @@ interface
         use cara_elem_info_type
         use cara_elem_carte_type
         type (cara_elem_info) :: infdonn
-        integer :: lmax
-        integer :: nbocc
+        integer(kind=8) :: lmax
+        integer(kind=8) :: nbocc
         type (cara_elem_carte) :: infcarte(*)
-        integer :: ivr(*)
+        integer(kind=8) :: ivr(*)
     end subroutine aceamr
 end interface

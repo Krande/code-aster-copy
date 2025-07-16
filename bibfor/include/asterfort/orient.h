@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -23,9 +23,9 @@ interface
                       itran)
         character(len=24) :: mdgene
         character(len=8) :: sst
-        integer :: jcoor
-        integer :: ino
+        integer(kind=8) :: jcoor
+        integer(kind=8) :: ino
         real(kind=8) :: coordo(3)
-        integer :: itran
+        integer(kind=8) :: itran
     end subroutine orient
 end interface

@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -21,7 +21,7 @@ interface
     subroutine discret_sief(for_discret, klv, dul, sim, ilogic, sip, fono, force)
         use te0047_type
         type(te0047_dscr), intent(in) :: for_discret
-        integer         :: ilogic
+        integer(kind=8)         :: ilogic
         real(kind=8)    :: klv(*), dul(*),  sim(*)
         real(kind=8)    :: sip(*), fono(*), force(*)
     end subroutine discret_sief

@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -20,7 +20,7 @@ subroutine jermxd(rval, iret)
     implicit none
 #include "asterfort/utmess.h"
     real(kind=8) :: rval
-    integer :: iret
+    integer(kind=8) :: iret
 ! person_in_charge: j-pierre.lefebvre at edf.fr
 ! ----------------------------------------------------------------------
 ! REDUIT LA VALEUR LIMITE MAXIMUM DE LA MEMOIRE ALLOUEE DYNAMIQUEMENT
@@ -35,7 +35,7 @@ subroutine jermxd(rval, iret)
 !                   MEMOIRE OCCUPEE PAR JEVEUX
 !
 ! DEB ------------------------------------------------------------------
-    integer :: lbis, lois, lols, lor8, loc8
+    integer(kind=8) :: lbis, lois, lols, lor8, loc8
     common/ienvje/lbis, lois, lols, lor8, loc8
     real(kind=8) :: mxdyn, mcdyn, mldyn, vmxdyn, vmet, lgio, cuvtrav
     common/r8dyje/mxdyn, mcdyn, mldyn, vmxdyn, vmet, lgio(2), cuvtrav

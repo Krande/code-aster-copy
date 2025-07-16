@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -24,8 +24,8 @@ interface
         character(len=8) :: mater
         character(len=16) :: kfonc
         real(kind=8) :: xx
-        integer :: dn
+        integer(kind=8) :: dn
         real(kind=8) :: fxx
-        integer :: ier
+        integer(kind=8) :: ier
     end subroutine cdnfo2
 end interface

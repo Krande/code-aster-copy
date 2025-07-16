@@ -38,8 +38,8 @@ module HHO_matrix_module
 !
 
     type HHO_matrix
-        integer :: nrows = 0, ncols = 0
-        integer :: max_nrows = 0, max_ncols = 0
+        integer(kind=8) :: nrows = 0, ncols = 0
+        integer(kind=8) :: max_nrows = 0, max_ncols = 0
         aster_logical :: is_allocated = ASTER_FALSE
 ! ----- array
         real(kind=8), dimension(:, :), pointer :: m
@@ -79,7 +79,7 @@ contains
         implicit none
 !
         class(HHO_matrix), intent(inout) :: this
-        integer, intent(in) :: n_rows, n_cols
+        integer(kind=8), intent(in) :: n_rows, n_cols
         real(kind=8), intent(in), optional :: val
 !
         this%nrows = n_rows
@@ -185,7 +185,7 @@ contains
 !   In mat   : matrix to print
 ! --------------------------------------------------------------------------------------------------
 !
-        integer :: i
+        integer(kind=8) :: i
 !
 !
         write (6, *) "matrix of", this%nrows, "rows x ", this%ncols, "cols"
@@ -204,7 +204,7 @@ contains
         implicit none
 !
         class(HHO_matrix), intent(in) :: this
-        integer, intent(in), optional :: row_offset_, col_offset_
+        integer(kind=8), intent(in), optional :: row_offset_, col_offset_
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -212,7 +212,7 @@ contains
 !   In mat   : matrix to print
 ! --------------------------------------------------------------------------------------------------
 !
-        integer :: row_offset, col_offset, il, size, ig, jg
+        integer(kind=8) :: row_offset, col_offset, il, size, ig, jg
 !
         row_offset = 0
         if (present(row_offset_)) row_offset = row_offset_
@@ -239,7 +239,7 @@ contains
 !
         class(HHO_matrix), intent(inout) :: this
         type(HHO_matrix), intent(in) :: mat
-        integer, intent(in), optional :: row_offset_, col_offset_
+        integer(kind=8), intent(in), optional :: row_offset_, col_offset_
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -247,7 +247,7 @@ contains
 !   In mat   : matrix to print
 ! --------------------------------------------------------------------------------------------------
 !
-        integer :: row_offset, col_offset
+        integer(kind=8) :: row_offset, col_offset
 !
         row_offset = 0
         if (present(row_offset_)) row_offset = row_offset_
@@ -279,7 +279,7 @@ contains
 !   In mat   : matrix to print
 ! --------------------------------------------------------------------------------------------------
 !
-        integer :: j
+        integer(kind=8) :: j
         real(kind=8) :: alpha
 !
         alpha = 1.d0
@@ -311,7 +311,7 @@ contains
 !   In mat   : matrix to print
 ! --------------------------------------------------------------------------------------------------
 !
-        integer :: i, j
+        integer(kind=8) :: i, j
 !
         do j = 1, this%ncols
             do i = 1, this%nrows

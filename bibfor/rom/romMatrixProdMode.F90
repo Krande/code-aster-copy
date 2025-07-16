@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -28,7 +28,7 @@ subroutine romMatrixProdMode(nb_matr, l_matr_name, l_matr_type, matr_mode_curr, 
 #include "asterfort/mrmult.h"
 #include "asterfort/jeveuo.h"
 !
-    integer, intent(in) :: nb_matr, i_mode
+    integer(kind=8), intent(in) :: nb_matr, i_mode
     character(len=8), intent(in) :: l_matr_name(:)
     character(len=8), intent(in) :: l_matr_type(:)
     character(len=24), intent(in) :: matr_mode_curr(:)
@@ -54,12 +54,12 @@ subroutine romMatrixProdMode(nb_matr, l_matr_name, l_matr_type, matr_mode_curr, 
 !
 ! --------------------------------------------------------------------------------------------------
 !
-    integer :: i_matr, i_equa, nb_equa
+    integer(kind=8) :: i_matr, i_equa, nb_equa
     complex(kind=8), pointer :: vc_matr_mode_c(:) => null()
     complex(kind=8), pointer :: vc_matr_mode(:) => null()
     real(kind=8), pointer :: vr_matr_mode_c(:) => null()
     real(kind=8), pointer :: vr_matr_mode(:) => null()
-    integer :: jv_desc_matr
+    integer(kind=8) :: jv_desc_matr
     character(len=1) :: matr_type
     character(len=8) :: matr
 !

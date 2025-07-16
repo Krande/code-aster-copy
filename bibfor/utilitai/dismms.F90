@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -24,17 +24,14 @@ subroutine dismms(questi, nomobz, repi, repkz, ierd)
 #include "jeveux.h"
 #include "asterfort/asmpi_comm_vect.h"
 #include "asterfort/assert.h"
-#include "asterfort/dismme.h"
 #include "asterfort/dismnu.h"
 #include "asterfort/gettco.h"
 #include "asterfort/jedema.h"
 #include "asterfort/jeexin.h"
-#include "asterfort/jelira.h"
 #include "asterfort/jemarq.h"
 #include "asterfort/jeveuo.h"
-#include "asterfort/jexnum.h"
 
-    integer :: repi, ierd
+    integer(kind=8) :: repi, ierd
     character(len=*) :: questi
     character(len=*) :: nomobz, repkz
 ! ----------------------------------------------------------------------
@@ -50,12 +47,12 @@ subroutine dismms(questi, nomobz, repi, repkz, ierd)
 !     VARIABLES LOCALES:
 !     ------------------
     character(len=32) :: repk
-    character(len=24) :: p1, p2, k24
+    character(len=24) ::   k24
     character(len=19) :: nomob, solveu
     character(len=2) :: typmat
     character(len=8) :: nommai
 !-----------------------------------------------------------------------
-    integer :: i, ibid, ier
+    integer(kind=8) ::  ier
     character(len=16) :: typeco
     character(len=24), pointer :: refa(:) => null()
     character(len=24), pointer :: slvk(:) => null()

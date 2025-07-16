@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -35,12 +35,12 @@ subroutine meobl2(eps, b, d, deltab, deltad, &
     real(kind=8) :: eps(6), b(6), d, dsidep(6, 6)
     real(kind=8) :: deltab(6), deltad, mult
     real(kind=8) :: lambda, mu, alpha, k1, k2, ecrob, ecrod
-    integer :: bdim
+    integer(kind=8) :: bdim
 !
 !--CALCUL DE LA MATRICE TANGENTE POUR LA LOI ENDO_ORTHO_BETON
 !-------------------------------------------------------------
 !
-    integer :: i, j, k, iret
+    integer(kind=8) :: i, j, k, iret
     real(kind=8) :: rac2, nofbm, un, det, deux, fb(6)
     real(kind=8) :: treps, fd, dfmf(3, 3), tdfbdb(6, 6), tdfbde(6, 6)
     real(kind=8) :: tdfdde(6), tdfddd, interd(3), intert(6), interg(3)

@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -25,7 +25,7 @@ subroutine pidegv(neps, tau, epsm, epsp, epsd, &
 #include "asterfort/zerop2.h"
 #include "blas/ddot.h"
 #include "blas/dnrm2.h"
-    integer :: neps
+    integer(kind=8) :: neps
     real(kind=8) :: tau, epsm(neps), epsd(neps), epsp(neps)
     real(kind=8) :: copilo(2, 2)
 ! ----------------------------------------------------------------------
@@ -40,7 +40,7 @@ subroutine pidegv(neps, tau, epsm, epsp, epsd, &
 !               F := COPILO(1,1)+COPILO(2,1)*ETA = TAU
 !               F := COPILO(1,2)+COPILO(2,2)*ETA = TAU
 ! ----------------------------------------------------------------------
-    integer :: ndim, ndimsi, nrac, i
+    integer(kind=8) :: ndim, ndimsi, nrac, i
     real(kind=8) :: epsmno, p0, p1, p2, rac(2)
     blas_int :: b_incx, b_incy, b_n
 ! ----------------------------------------------------------------------

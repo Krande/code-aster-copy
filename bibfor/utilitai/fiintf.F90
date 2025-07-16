@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -44,10 +44,10 @@ subroutine fiintf(nomfon, nbpu, param, val, iret, &
 
 !   Arguments
     character(len=*), intent(in) :: nomfon
-    integer, intent(in) :: nbpu
+    integer(kind=8), intent(in) :: nbpu
     character(len=*), intent(in) :: param(*)
     real(kind=8), intent(in) :: val(*)
-    integer, intent(out) :: iret
+    integer(kind=8), intent(out) :: iret
     character(len=*), intent(in) :: coderr
     real(kind=8), intent(out) :: resu(:)
 
@@ -55,8 +55,8 @@ subroutine fiintf(nomfon, nbpu, param, val, iret, &
     character(len=1) :: cod
     character(len=2) :: codS
     character(len=19) :: nomf
-    integer, pointer :: iaddr(:) => null()
-    integer :: nbres
+    integer(kind=8), pointer :: iaddr(:) => null()
+    integer(kind=8) :: nbres
 
     call jemarq()
     nomf = nomfon

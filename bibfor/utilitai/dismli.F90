@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -25,7 +25,7 @@ subroutine dismli(questi, nomobz, repi, repkz, ierd)
 #include "asterfort/jedema.h"
 #include "asterfort/jemarq.h"
 #include "asterfort/jeveuo.h"
-    integer :: repi, ierd
+    integer(kind=8) :: repi, ierd
     character(len=*) :: questi
     character(len=32) :: repk
     character(len=14) :: nomob
@@ -40,7 +40,7 @@ subroutine dismli(questi, nomobz, repi, repkz, ierd)
 !       IERD   : CODE RETOUR (0--> OK, 1 --> PB)
 !
 ! ----------------------------------------------------------------------
-    integer :: lldes, llref
+    integer(kind=8) :: lldes, llref
 !-----------------------------------------------------------------------
     call jemarq()
     repk = ' '

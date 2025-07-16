@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -34,7 +34,7 @@ subroutine mmGetShapeFunctions(laxis, typmae, typmam, &
 !
     aster_logical, intent(in) :: laxis
     character(len=8), intent(in) :: typmae, typmam
-    integer, intent(in) :: ndim, nne, nnm
+    integer(kind=8), intent(in) :: ndim, nne, nnm
     real(kind=8), intent(in) :: xpc, ypc, xpr, ypr
     real(kind=8), intent(out) :: ffe(9), ffm(9), dffm(2, 9), ddffm(3, 9), ffl(9)
     real(kind=8), intent(out) :: jacobi
@@ -66,8 +66,8 @@ subroutine mmGetShapeFunctions(laxis, typmae, typmam, &
 !
 ! --------------------------------------------------------------------------------------------------
 !
-    integer :: i_node, i_dime
-    integer :: jgeom
+    integer(kind=8) :: i_node, i_dime
+    integer(kind=8) :: jgeom
     real(kind=8) :: slav_coor_init(3, 9)
     real(kind=8) :: dffe(2, 9), ddffe(3, 9)
     real(kind=8) :: dffl(2, 9), ddffl(3, 9)

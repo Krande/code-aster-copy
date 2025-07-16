@@ -35,6 +35,7 @@
 #include "MemoryManager/JeveuxAllowedTypes.h"
 #include "MemoryManager/JeveuxVector.h"
 #include "Meshes/BaseMesh.h"
+#include "Messages/Messages.h"
 #include "Numbering/DOFNumbering.h"
 #include "Numbering/EquationNumbering.h"
 #include "Numbering/ParallelDOFNumbering.h"
@@ -622,17 +623,20 @@ class FieldOnNodes : public DataField, private AllowedFieldType< ValueType > {
     /**
      * @brief Wrap of copy constructor
      * @param desc Description that is used for the copy
-     * @param raiseError If set to true, an error is raised if the copy fails. Otherwise, nothing
-     * happens. Defaults to true.
+     * @param warn If set to true, raises an alarm if values are set to zero
      * @return new field, copy of the calling field
      */
     FieldOnNodesPtr copyUsingDescription( const EquationNumberingPtr desc,
-                                          const bool raiseError = true ) {
+                                          const bool warn = true ) {
         auto field = std::make_shared< FieldOnNodes< ValueType > >( desc );
 
-        const std::string kstop = raiseError ? "F" : " ";
         ASTERINTEGER iret = -1;
-        CALLO_VTCOPY( getName(), field->getName(), kstop, &iret );
+        CALLO_VTCOPY( getName(), field->getName(), &iret );
+
+        if ( warn && iret != 0 ) {
+            UTMESS( "A", "FIELD0_30" );
+        }
+
         return field;
     }
 

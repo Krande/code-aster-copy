@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -21,9 +21,9 @@
 interface
     subroutine xlacti(typma, ninter, jaint, lact, nlact)
         character(len=8) :: typma
-        integer :: ninter
-        integer :: jaint
-        integer :: lact(8)
-        integer :: nlact
+        integer(kind=8) :: ninter
+        integer(kind=8) :: jaint
+        integer(kind=8) :: lact(8)
+        integer(kind=8) :: nlact
     end subroutine xlacti
 end interface

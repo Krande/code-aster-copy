@@ -38,7 +38,6 @@ module NonLinearElem_module
     private
 #include "asterf_types.h"
 #include "asterfort/asmatr.h"
-#include "asterfort/assert.h"
 #include "asterfort/dismoi.h"
 #include "asterfort/infdbg.h"
 #include "asterfort/jeveuo.h"
@@ -74,7 +73,7 @@ contains
 ! - Local
         character(len=1), parameter :: jvBase = "V"
         character(len=16), parameter :: option = "RIGI_MECA"
-        integer :: ifm, niv
+        integer(kind=8) :: ifm, niv
         character(len=24), pointer :: rerr(:) => null()
 !   ------------------------------------------------------------------------------------------------
 !
@@ -108,7 +107,7 @@ contains
         character(len=*), intent(in) :: superElemZ, superAsseZ
 ! - Local
         character(len=1), parameter :: jvBase = "V"
-        integer :: ifm, niv
+        integer(kind=8) :: ifm, niv
         character(len=19) :: superElem
 !   ------------------------------------------------------------------------------------------------
 !
@@ -155,7 +154,7 @@ contains
         character(len=24), intent(in) :: massElem
 ! - Local
         character(len=1), parameter :: jvBase = "V"
-        integer :: ifm, niv
+        integer(kind=8) :: ifm, niv
         character(len=19) :: modelLigrel
 !   ------------------------------------------------------------------------------------------------
 !
@@ -196,7 +195,7 @@ contains
         character(len=*), intent(in) :: diriElemZ, massElemZ, massAsseZ
 ! - Local
         character(len=1), parameter :: jvBase = "V"
-        integer :: ifm, niv
+        integer(kind=8) :: ifm, niv
         character(len=19) :: matrList(2)
         character(len=19) :: massElem
 !   ------------------------------------------------------------------------------------------------
@@ -238,7 +237,7 @@ contains
 ! - Local
         character(len=1), parameter :: jvBase = "V"
         character(len=24) :: diriElem
-        integer :: ifm, niv
+        integer(kind=8) :: ifm, niv
 !   ------------------------------------------------------------------------------------------------
 !
         call infdbg('MECANONLINE', ifm, niv)
@@ -276,7 +275,7 @@ contains
                         hval_incr, hval_algo)
 !   ------------------------------------------------------------------------------------------------
 ! - Parameters
-        integer, intent(in) :: listFuncActi(*)
+        integer(kind=8), intent(in) :: listFuncActi(*)
         character(len=19), intent(in) :: sddyna
         character(len=24), intent(in) :: model, caraElem
         type(NL_DS_Material), intent(in) :: ds_material
@@ -286,9 +285,9 @@ contains
         character(len=19), intent(in) :: hval_incr(*), hval_algo(*)
 ! - Local
         character(len=16), parameter :: optionElas = "RIGI_MECA"
-        integer :: ifm, niv
-        integer, parameter :: iterNewtPred = 0
-        integer :: ldccvg
+        integer(kind=8) :: ifm, niv
+        integer(kind=8), parameter :: iterNewtPred = 0
+        integer(kind=8) :: ldccvg
 !   ------------------------------------------------------------------------------------------------
 !
         call infdbg('MECANONLINE', ifm, niv)
@@ -342,7 +341,7 @@ contains
         character(len=24), intent(in) :: dampElem
 ! - Local
         character(len=1), parameter :: jvBase = "V"
-        integer :: ifm, niv
+        integer(kind=8) :: ifm, niv
 
 !   ------------------------------------------------------------------------------------------------
 !
@@ -379,7 +378,7 @@ contains
         character(len=24), intent(in) :: dampElemZ, dampAsseZ
 ! - Local
         character(len=1), parameter :: jvBase = "V"
-        integer :: ifm, niv
+        integer(kind=8) :: ifm, niv
         character(len=19) :: dampElem
 !   ------------------------------------------------------------------------------------------------
 !
@@ -429,7 +428,7 @@ contains
         character(len=19), intent(in) :: dispPrev, dispCumu
         character(len=24), intent(in) :: neumElem
 ! - Local
-        integer :: ifm, niv
+        integer(kind=8) :: ifm, niv
 !   ------------------------------------------------------------------------------------------------
 !
         call infdbg('MECANONLINE', ifm, niv)
@@ -471,7 +470,7 @@ contains
         character(len=24), intent(in) :: geomElem
 ! - Local
         character(len=1), parameter :: jvBase = "V"
-        integer :: ifm, niv
+        integer(kind=8) :: ifm, niv
 !   ------------------------------------------------------------------------------------------------
 !
         call infdbg('MECANONLINE', ifm, niv)

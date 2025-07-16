@@ -37,7 +37,6 @@ M1 = DEFI_GROUP(
         _F(GROUP_MA="ENCBIS1"),
         _F(GROUP_MA="ENCBIS2"),
         _F(GROUP_MA="PATBIELA"),
-        _F(GROUP_MA="PATBIELB"),
         _F(GROUP_MA="PATBIELC"),
         _F(GROUP_MA="PATVAN"),
         _F(GROUP_MA="VANNE"),

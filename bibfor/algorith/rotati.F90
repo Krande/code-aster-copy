@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -57,7 +57,7 @@ subroutine rotati(euler, rot)
 !
 !-- VARIABLES DE LA ROUTINE
     real(kind=8) :: rotb(3, 3), rotc(3, 3), rotd(3, 3), rot(3, 3)
-    integer :: i1, j1, k1
+    integer(kind=8) :: i1, j1, k1
 !
     rota(1, 1) = cos(euler(1))
     rota(1, 2) = -sin(euler(1))

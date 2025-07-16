@@ -25,17 +25,15 @@ subroutine crpcvg(ma1, ma2, gma1, gma2, tran, &
 #include "asterfort/jedema.h"
 #include "asterfort/jelira.h"
 #include "asterfort/jemarq.h"
-#include "asterfort/jenuno.h"
 #include "asterfort/jeveuo.h"
 #include "asterfort/jexatr.h"
 #include "asterfort/jexnom.h"
-#include "asterfort/jexnum.h"
 #include "asterfort/utmess.h"
 #include "asterfort/wkvect.h"
 #include "asterfort/int_to_char8.h"
 !
     real(kind=8) :: tran(3), prec
-    integer :: linoeu(*)
+    integer(kind=8) :: linoeu(*)
     character(len=8) :: ma1, ma2
     character(len=24) :: gma1, gma2
     character(len=*) :: lima1, lima2
@@ -47,10 +45,10 @@ subroutine crpcvg(ma1, ma2, gma1, gma2, tran, &
 !
 !
 !
-    integer :: nbma1, nbma2, jtyma1, jtyma2, jgma1, jgma2, ima, ima1, ima2, ino
-    integer :: ino1, ino2, nutyp1, iamac1, ilmac1, nutyp2
-    integer :: iamac2, ilmac2, jcoor1, jcoor2, jnum1, jnum2, jma
-    integer :: ibid
+    integer(kind=8) :: nbma1, nbma2, jtyma1, jtyma2, jgma1, jgma2, ima, ima1, ima2, ino
+    integer(kind=8) :: ino1, ino2, nutyp1, iamac1, ilmac1, nutyp2
+    integer(kind=8) :: iamac2, ilmac2, jcoor1, jcoor2, jnum1, jnum2, jma
+    integer(kind=8) :: ibid
     real(kind=8) :: x1, y1, z1, x2, y2, z2, v1, v2, v3
     real(kind=8) :: valr(3)
     aster_logical :: erreur

@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -25,9 +25,9 @@ interface
                       nbocc)
         character(len=8) :: nomu
         character(len=8) :: noma
-        integer :: lmax
+        integer(kind=8) :: lmax
         aster_logical :: locagb
         aster_logical :: locamb
-        integer :: nbocc
+        integer(kind=8) :: nbocc
     end subroutine aceaco
 end interface

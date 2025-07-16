@@ -12,6 +12,8 @@ variables:
   GIT_SSL_NO_VERIFY: "true"
   NPROC_MAX: 12
   FF_DISABLE_UMASK_FOR_DOCKER_EXECUTOR: "true"
+  PIXI_HOME: ${CI_PROJECT_DIR}/.pixi
+  WEEKLY_RUN: 5
 
 default:
   tags:
@@ -44,15 +46,20 @@ stages:
 image:
   name: ${IMAGE_URL}
 
+before_script:
+  - export PATH="${PIXI_HOME}/bin:${PATH}"
+
 .prepare:
   interruptible: true
   stage: setup
   script:
+    - .gitlabci/prepare_pixi.sh
     - .gitlabci/prepare.sh
   artifacts:
     paths:
       - devtools/*
       - data-src/*
+      - .pixi/*
     expire_in: 6 hours
   rules:
     - if: $BUILDTYPE != "code-checking" && $BUILDTYPE != "docker"
@@ -60,7 +67,6 @@ image:
 .compile:
   interruptible: true
   stage: build
-  needs: ["prepare"]
   script:
     - .gitlabci/compile.sh
   artifacts:
@@ -147,18 +153,6 @@ minimal_test:
   stage: test
   tags:
     - hulk
-  needs:
-    - job: prepare
-    - job: compile
-    - job: minimal_test
-      artifacts: false
-      optional: true
-    - job: check_source
-      artifacts: false
-      optional: true
-    - job: doc_html
-      artifacts: false
-      optional: true
   script:
     - .gitlabci/test.sh
         -L verification
@@ -251,9 +245,23 @@ prepare:
 
 compile:
   extends: .compile
+  needs:
+    - job: prepare
 
 verification_test:
   extends: .verification_test
+  needs:
+    - job: prepare
+    - job: compile
+    - job: minimal_test
+      artifacts: false
+      optional: true
+    - job: check_source
+      artifacts: false
+      optional: true
+    - job: doc_html
+      artifacts: false
+      optional: true
 
 # --- variant debian-12 for nightly build
 prepare_debian-12:
@@ -266,39 +274,102 @@ prepare_debian-12:
 compile_debian-12:
   variables:
     OSNAME: debian-12
-  needs: ["prepare_debian-12"]
   extends: .compile
+  needs:
+    - prepare_debian-12
   rules:
     - if: $BUILDTYPE == "nightly"
 
 verification_test_debian-12:
   variables:
     OSNAME: debian-12
-  needs: ["compile_debian-12"]
   extends: .verification_test
+  needs:
+    - prepare_debian-12
+    - compile_debian-12
   rules:
     - if: $BUILDTYPE == "nightly"
 
-# --- variant win for nightly build
+# --- variant win for weekly build
 prepare_win:
   variables:
     OSNAME: win
   extends: .prepare
+  script:
+    - test "$(date +%u)" -ne $WEEKLY_RUN && echo "not run" && exit 0
+    - !reference [.prepare, script]
   rules:
     - if: $BUILDTYPE == "nightly"
 
 compile_win:
   variables:
     OSNAME: win
-  needs: ["prepare_win"]
   extends: .compile
+  needs:
+    - prepare_win
+  script:
+    - test "$(date +%u)" -ne $WEEKLY_RUN && echo "not run" && exit 0
+    - !reference [.compile, script]
   rules:
     - if: $BUILDTYPE == "nightly"
 
 verification_test_win:
   variables:
     OSNAME: win
-  needs: ["compile_win"]
   extends: .verification_test
+  needs:
+    - prepare_win
+    - compile_win
+  script:
+    - test "$(date +%u)" -ne $WEEKLY_RUN && echo "not run" && exit 0
+    - !reference [.verification_test, script]
+  rules:
+    - if: $BUILDTYPE == "nightly"
+
+# --- variant using pixi for weekly build
+prepare_pixi:
+  image:
+    name: nexus.retd.edf.fr:5075/debian-base:bookworm
+  variables:
+    OSNAME: pixi
+  extends: .prepare
+  script:
+    - test "$(date +%u)" -ne $WEEKLY_RUN && echo "not run" && exit 0
+    - !reference [.prepare, script]
+  rules:
+    - if: $BUILDTYPE == "nightly"
+
+compile_pixi:
+  image:
+    name: nexus.retd.edf.fr:5075/debian-base:bookworm
+  variables:
+    OSNAME: pixi
+  extends: .compile
+  needs:
+    - prepare_pixi
+  script:
+    - test "$(date +%u)" -ne $WEEKLY_RUN && echo "not run" && exit 0
+    - pixi list --explicit
+    - ls -la ${PIXI_HOME} || true
+    - pixi run .gitlabci/compile.sh
+  rules:
+    - if: $BUILDTYPE == "nightly"
+
+verification_test_pixi:
+  image:
+    name: nexus.retd.edf.fr:5075/debian-base:bookworm
+  variables:
+    OSNAME: pixi
+  extends: .verification_test
+  needs:
+    - prepare_pixi
+    - compile_pixi
+  script:
+    - test "$(date +%u)" -ne $WEEKLY_RUN && echo "not run" && exit 0
+    - ls -la ${PIXI_HOME} || true
+    - pixi run .gitlabci/test.sh
+        -L verification
+        --exclude-testlist .gitlabci/known_failures-pleiade.list
+        --resutest=results
   rules:
     - if: $BUILDTYPE == "nightly"

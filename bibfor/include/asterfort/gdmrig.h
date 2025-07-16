@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -22,8 +22,8 @@ interface
     subroutine gdmrig(kp, nno, ajacob, pjacob, en,&
                       enprim, x0pg, rot0, rotk, granc,&
                       pn, pm, rigi)
-        integer :: kp
-        integer :: nno
+        integer(kind=8) :: kp
+        integer(kind=8) :: nno
         real(kind=8) :: ajacob
         real(kind=8) :: pjacob
         real(kind=8) :: en(3, 2)

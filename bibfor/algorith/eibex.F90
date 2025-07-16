@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -30,7 +30,7 @@ subroutine eibex(fami, kpg, ksp, ndim, imate, &
 #include "blas/ddot.h"
     character(len=16) :: option
     character(len=*) :: fami
-    integer :: ndim, imate, ksp, kpg
+    integer(kind=8) :: ndim, imate, ksp, kpg
     real(kind=8) :: epsm(6), deps(6), vim(2), instap, instam
     real(kind=8) :: sig(6), vip(2), dsidep(6, 6)
 ! ----------------------------------------------------------------------
@@ -54,8 +54,8 @@ subroutine eibex(fami, kpg, ksp, ndim, imate, &
 ! ----------------------------------------------------------------------
     aster_logical :: raph, tang
 !
-    integer :: ndimsi, k, l, i, j, m, n, t(3, 3)
-    integer :: codret, iret
+    integer(kind=8) :: ndimsi, k, l, i, j, m, n, t(3, 3)
+    integer(kind=8) :: codret, iret
 !
     real(kind=8) :: eps(6), treps, sigel(6)
     real(kind=8) :: rac2

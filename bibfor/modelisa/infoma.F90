@@ -32,7 +32,7 @@ subroutine infoma(nomu, niv_)
 #include "asterfort/int_to_char8.h"
 !
     character(len=8) :: nomu
-    integer, optional :: niv_
+    integer(kind=8), optional :: niv_
 !
 !     IMPRESSION DES INFOS (1 OU 2)
 !
@@ -42,14 +42,14 @@ subroutine infoma(nomu, niv_)
     character(len=24) :: conxv, grpnov, grpmav, titre, cooval
     character(len=24) :: nom
     character(len=8) :: type
-    integer :: niv, ifm, nn, nbno, j, idec, iad1, nbcoor, nbma
-    integer :: nbltit, iad, i, nbnoeu, nbmail, nbgrno, nbgrma
-    integer :: nbmmai, n1, nbmmax, ityp
+    integer(kind=8) :: niv, ifm, nn, nbno, j, idec, iad1, nbcoor, nbma
+    integer(kind=8) :: nbltit, iad, i, nbnoeu, nbmail, nbgrno, nbgrma
+    integer(kind=8) :: nbmmai, n1, nbmmax, ityp
     parameter(nbmmax=100)
-    integer :: dimmai(nbmmax), iret
+    integer(kind=8) :: dimmai(nbmmax), iret
     character(len=8) :: mclmai(nbmmax)
-    integer, pointer :: typmail(:) => null()
-    integer, pointer :: dime(:) => null()
+    integer(kind=8), pointer :: typmail(:) => null()
+    integer(kind=8), pointer :: dime(:) => null()
 !
 !
 !

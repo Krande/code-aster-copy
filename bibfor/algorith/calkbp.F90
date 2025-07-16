@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -22,7 +22,7 @@ subroutine calkbp(nno, ndim, w, dff1, kbp)
 !
 #include "asterfort/assert.h"
 #include "asterfort/r8inir.h"
-    integer :: ndim, nno
+    integer(kind=8) :: ndim, nno
     real(kind=8) :: w, dff1(nno, ndim)
     real(kind=8) :: kbp(ndim, nno)
 !-----------------------------------------------------------------------
@@ -37,7 +37,7 @@ subroutine calkbp(nno, ndim, w, dff1, kbp)
 ! OUT KBP    : MATRICE KBP
 !-----------------------------------------------------------------------
 !
-    integer :: ia, na
+    integer(kind=8) :: ia, na
     real(kind=8) :: pbulle
 !-----------------------------------------------------------------------
 !

@@ -29,7 +29,6 @@ subroutine merimp(l_xfem, l_dyna, &
     implicit none
 !
 #include "asterf_types.h"
-#include "asterfort/assert.h"
 #include "asterfort/cesvar.h"
 #include "asterfort/copisd.h"
 #include "asterfort/exisd.h"
@@ -37,7 +36,6 @@ subroutine merimp(l_xfem, l_dyna, &
 #include "asterfort/mecara.h"
 #include "asterfort/megeom.h"
 #include "asterfort/ndynkk.h"
-#include "asterfort/ndynlo.h"
 #include "asterfort/nmchex.h"
 #include "asterfort/nmvcex.h"
 #include "asterfort/vtzero.h"
@@ -46,15 +44,15 @@ subroutine merimp(l_xfem, l_dyna, &
     aster_logical, intent(in) :: l_xfem, l_dyna
     character(len=24), intent(in) :: model, cara_elem
     character(len=19), intent(in) :: sddyna
-    integer, intent(in) :: iter_newt
+    integer(kind=8), intent(in) :: iter_newt
     type(NL_DS_Constitutive), intent(in) :: ds_constitutive
     type(NL_DS_Material), intent(in) :: ds_material
     character(len=19), intent(in) :: hval_incr(*), hval_algo(*)
     character(len=24), intent(in) :: caco3d
-    integer, intent(in) :: mxchin
+    integer(kind=8), intent(in) :: mxchin
     character(len=8), intent(inout) :: lpain(mxchin)
     character(len=19), intent(inout) :: lchin(mxchin)
-    integer, intent(out) :: nbin
+    integer(kind=8), intent(out) :: nbin
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -83,7 +81,7 @@ subroutine merimp(l_xfem, l_dyna, &
 ! Out nbin             : number of input fields
 ! --------------------------------------------------------------------------------------------------
 !
-    integer :: iret
+    integer(kind=8) :: iret
     character(len=24) :: chgeom, chcara(18), chiter
     character(len=19) :: stadyn, depent, vitent
     character(len=16) :: option

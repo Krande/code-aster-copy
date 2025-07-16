@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -27,11 +27,11 @@ subroutine somloc(m, adco, nbso, nusglo, nusloc)
 #include "asterf_types.h"
 #include "jeveux.h"
 #include "asterfort/utmess.h"
-    integer :: m, adco, nbso, nusglo, nusloc
+    integer(kind=8) :: m, adco, nbso, nusglo, nusloc
 !
     aster_logical :: trouve
-    integer :: is
-    integer :: vali(2)
+    integer(kind=8) :: is
+    integer(kind=8) :: vali(2)
 !
     trouve = .false.
     do is = 1, nbso

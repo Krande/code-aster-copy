@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -29,40 +29,40 @@ interface
         type(THM_DS), intent(inout) :: ds_thm
         character(len=16) :: nomte
         character(len=3), intent(out) :: inte_type
-        integer :: mecani(5)
-        integer :: press1(7)
-        integer :: press2(7)
-        integer :: tempe(5)
-        integer :: dimdef
-        integer :: dimcon
-        integer :: nmec
-        integer :: np1
-        integer :: np2
-        integer :: nno
-        integer :: nnos
-        integer :: nnom
-        integer :: npi
-        integer :: npg
-        integer :: nddls
-        integer :: nddlm
-        integer :: dimuel
-        integer :: ipoids
-        integer :: ivf
-        integer :: idfde
-        integer :: ddld
-        integer :: ddlm
-        integer :: ddlp
-        integer :: enrmec(3)
-        integer :: nenr
-        integer :: dimenr
-        integer :: nnop
-        integer :: nnops
-        integer :: nnopm
-        integer :: enrhyd(3)
-        integer :: ddlc
-        integer :: nfh
+        integer(kind=8) :: mecani(5)
+        integer(kind=8) :: press1(7)
+        integer(kind=8) :: press2(7)
+        integer(kind=8) :: tempe(5)
+        integer(kind=8) :: dimdef
+        integer(kind=8) :: dimcon
+        integer(kind=8) :: nmec
+        integer(kind=8) :: np1
+        integer(kind=8) :: np2
+        integer(kind=8) :: nno
+        integer(kind=8) :: nnos
+        integer(kind=8) :: nnom
+        integer(kind=8) :: npi
+        integer(kind=8) :: npg
+        integer(kind=8) :: nddls
+        integer(kind=8) :: nddlm
+        integer(kind=8) :: dimuel
+        integer(kind=8) :: ipoids
+        integer(kind=8) :: ivf
+        integer(kind=8) :: idfde
+        integer(kind=8) :: ddld
+        integer(kind=8) :: ddlm
+        integer(kind=8) :: ddlp
+        integer(kind=8) :: enrmec(3)
+        integer(kind=8) :: nenr
+        integer(kind=8) :: dimenr
+        integer(kind=8) :: nnop
+        integer(kind=8) :: nnops
+        integer(kind=8) :: nnopm
+        integer(kind=8) :: enrhyd(3)
+        integer(kind=8) :: ddlc
+        integer(kind=8) :: nfh
         aster_logical, intent(out) :: l_axi
-        integer, intent(out) :: ndim
+        integer(kind=8), intent(out) :: ndim
         character(len=8), intent(out) :: type_elem(2)
     end subroutine xcaehm
 end interface

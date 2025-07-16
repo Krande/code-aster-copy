@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -26,7 +26,7 @@ subroutine chsfus(nbchs, lichs, lcumul, lcoefr, lcoefc, &
 #include "asterfort/cnsfus.h"
 #include "asterfort/exisd.h"
 #include "asterfort/utmess.h"
-    integer :: nbchs
+    integer(kind=8) :: nbchs
     character(len=*) :: lichs(nbchs), chs3, base
     aster_logical :: lcumul(nbchs), lcoc
     real(kind=8) :: lcoefr(nbchs)
@@ -62,7 +62,7 @@ subroutine chsfus(nbchs, lichs, lcumul, lcoefr, lcoefc, &
 ! ---------------------------------------------------------------------
 !
     character(len=19) :: chs
-    integer :: i1, i2, k, j1, j2
+    integer(kind=8) :: i1, i2, k, j1, j2
 !
     j1 = 0
     j2 = 0

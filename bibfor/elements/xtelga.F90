@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -33,8 +33,8 @@ subroutine xtelga(ndim, elrefp, nnop, igeom, tempno, &
 #include "asterfort/xcalfe.h"
 !
     character(len=8) :: elrefp
-    integer :: ndim, nnop, igeom, nfh, nfe, jpintt
-    integer :: lonch(10), cnset(4*32), heavt(36), heavn(27, 5)
+    integer(kind=8) :: ndim, nnop, igeom, nfh, nfe, jpintt
+    integer(kind=8) :: lonch(10), cnset(4*32), heavt(36), heavn(27, 5)
     real(kind=8) :: tempno(nnop*(1+nfh+nfe)), lsn(nnop), lst(nnop)
     real(kind=8) :: basloc(*), temppg(*)
 !
@@ -75,9 +75,9 @@ subroutine xtelga(ndim, elrefp, nnop, igeom, tempno, &
     real(kind=8) :: dgdth(ndim), dffenr(nnop, 1+nfh+nfe, ndim)
     real(kind=8) :: he
     real(kind=8) :: ffenr(nnop, 1+nfh+nfe), dfdi(nnop, ndim)
-    integer :: ivf, kpg, nno, npg, j, iret, nse, ise, inp, in, ino, kddl
-    integer :: nbddl, hea_se
-    integer :: mxstac
+    integer(kind=8) :: ivf, kpg, nno, npg, j, iret, nse, ise, inp, in, ino, kddl
+    integer(kind=8) :: nbddl, hea_se
+    integer(kind=8) :: mxstac
 !
     parameter(mxstac=1000)
 !

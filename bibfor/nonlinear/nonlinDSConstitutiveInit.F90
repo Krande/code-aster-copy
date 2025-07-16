@@ -23,11 +23,9 @@ subroutine nonlinDSConstitutiveInit(modelZ, caraElemZ, ds_constitutive, verbose_
     implicit none
 !
 #include "asterf_types.h"
-#include "asterfort/assert.h"
 #include "asterfort/infdbg.h"
 #include "asterfort/nmdoco.h"
 #include "asterfort/nmcpqu.h"
-#include "asterfort/dismoi.h"
 #include "asterfort/jeveuo.h"
 #include "asterfort/utmess.h"
 #include "asterfort/comp_info.h"
@@ -52,11 +50,11 @@ subroutine nonlinDSConstitutiveInit(modelZ, caraElemZ, ds_constitutive, verbose_
 !
 ! --------------------------------------------------------------------------------------------------
 !
-    integer :: ifm, niv
+    integer(kind=8) :: ifm, niv
     aster_logical :: lLinear, lDisCtc, verbose
-    integer :: nb_affe, i_affe
+    integer(kind=8) :: nb_affe, i_affe
     character(len=16), pointer :: v_compor_vale(:) => null()
-    integer, pointer :: v_compor_desc(:) => null()
+    integer(kind=8), pointer :: v_compor_desc(:) => null()
 !
 ! --------------------------------------------------------------------------------------------------
 !

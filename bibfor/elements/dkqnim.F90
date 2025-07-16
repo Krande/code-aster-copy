@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -25,7 +25,7 @@ subroutine dkqnim(shp, shpr1, shpr2, shpmem1, shpmem2, gm1, gm2)
 !     ------------------------------------------------------------------
 !     person_in_charge: ayaovi-dzifa.kudawoo at edf.fr
 
-    integer :: j, j1
+    integer(kind=8) :: j, j1
 
     j1 = 0
 

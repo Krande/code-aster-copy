@@ -15,11 +15,12 @@
 ! You should have received a copy of the GNU General Public License
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
+#include "nldef.h"
 
 ! Parameters definitions
 ! -------------------------------------------------------------------------
 !
-    integer :: parind(_NL_NBPAR)
+    integer(kind=8) :: parind(_NL_NBPAR)
     character(len=3)  :: partyp(_NL_NBPAR)
     character(len=8)  :: params(_NL_NBPAR)
 

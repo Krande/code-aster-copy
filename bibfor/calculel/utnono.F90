@@ -26,17 +26,15 @@ subroutine utnono(mess, nomma, type, nomgrp, nomobj, &
 #include "asterfort/jeexin.h"
 #include "asterfort/jelira.h"
 #include "asterfort/jemarq.h"
-#include "asterfort/jenuno.h"
 #include "asterfort/jeveuo.h"
 #include "asterfort/jexnom.h"
-#include "asterfort/jexnum.h"
 #include "asterfort/utmess.h"
 #include "asterfort/int_to_char8.h"
 !
     character(len=8) :: nomma, nomobj
     character(len=24) :: nomgrp
     character(len=*) :: mess, type
-    integer :: iret
+    integer(kind=8) :: iret
 !
 !     RENVOIE LE PREMIER NOEUD OU MAILLE CONTENU DANS UN GROUP_NO
 !             OU UN GROUP_MA
@@ -56,7 +54,7 @@ subroutine utnono(mess, nomma, type, nomgrp, nomobj, &
 ! ----------------------------------------------------------------------
     character(len=24) :: valk(2)
 !
-    integer :: iret1, nbno, iad
+    integer(kind=8) :: iret1, nbno, iad
     character(len=1) :: typm
     character(len=8) :: knbno
     character(len=16) :: typgrp

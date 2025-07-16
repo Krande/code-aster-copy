@@ -41,7 +41,6 @@ subroutine cescel(cesz, ligrez, optini, nompaz, prolz, &
 #include "asterfort/jelira.h"
 #include "asterfort/jemarq.h"
 #include "asterfort/jenonu.h"
-#include "asterfort/jenuno.h"
 #include "asterfort/jeveuo.h"
 #include "asterfort/jexatr.h"
 #include "asterfort/jexnom.h"
@@ -56,7 +55,7 @@ subroutine cescel(cesz, ligrez, optini, nompaz, prolz, &
 !
     character(len=*) :: cesz, celz, basez, ligrez, optini, nompaz, prolz
     character(len=1) :: kstop
-    integer :: nncp, iret
+    integer(kind=8) :: nncp, iret
     type(prolongation), optional :: prolong
 !
 ! ------------------------------------------------------------------
@@ -107,15 +106,15 @@ subroutine cescel(cesz, ligrez, optini, nompaz, prolz, &
 !
     aster_logical :: dbg
 !     ------------------------------------------------------------------
-    integer :: icmp, nec, jcesd, jcesv, jcesl, gd
-    integer :: jnucm2, jnucm1, i
-    integer :: ncmpmx, ncmp1, jcmpgd, icmp1, k, iopt, iadg
-    integer :: jcelv, neq, nbvces, nbvcop, nbvaco
-    integer :: igr, iel, illiel, nbgr, imolo, jmolo
-    integer :: nbpt, ico, ipt, numa, iad, ieq, iad2
-    integer :: jdceld, jdcell, ima, nbma, nbspt, ispt, icmpmx
-    integer :: adiel, jlpt, lgcata, ncdyn, cumu, nbel, nptmx
-    integer :: nbsp, nbcmp, isp, nbpt2, vali(2), inan
+    integer(kind=8) :: icmp, nec, jcesd, jcesv, jcesl, gd
+    integer(kind=8) :: jnucm2, jnucm1, i
+    integer(kind=8) :: ncmpmx, ncmp1, jcmpgd, icmp1, k, iopt, iadg
+    integer(kind=8) :: jcelv, neq, nbvces, nbvcop, nbvaco
+    integer(kind=8) :: igr, iel, illiel, nbgr, imolo, jmolo
+    integer(kind=8) :: nbpt, ico, ipt, numa, iad, ieq, iad2
+    integer(kind=8) :: jdceld, jdcell, ima, nbma, nbspt, ispt, icmpmx
+    integer(kind=8) :: adiel, jlpt, lgcata, ncdyn, cumu, nbel, nptmx
+    integer(kind=8) :: nbsp, nbcmp, isp, nbpt2, vali(2), inan
     aster_logical :: diff, prol, prol2
     character(len=1) :: base
     character(len=8) :: ma, nomgd, nomcmp, nompar, nomma, licmp(2)
@@ -128,11 +127,11 @@ subroutine cescel(cesz, ligrez, optini, nompaz, prolz, &
     real(kind=8) :: rnan
     character(len=8), pointer :: cesc(:) => null()
     character(len=8), pointer :: cesk(:) => null()
-    integer, pointer :: liel(:) => null()
-    integer, pointer :: dcelv(:) => null()
-    integer, pointer :: celd(:) => null()
-    integer, pointer :: copi(:) => null()
-    integer, pointer :: long_pt_cumu(:) => null()
+    integer(kind=8), pointer :: liel(:) => null()
+    integer(kind=8), pointer :: dcelv(:) => null()
+    integer(kind=8), pointer :: celd(:) => null()
+    integer(kind=8), pointer :: copi(:) => null()
+    integer(kind=8), pointer :: long_pt_cumu(:) => null()
 !
 #define numail(igr,iel) liel(zi(illiel+igr-1)+iel-1)
 !     ------------------------------------------------------------------

@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -79,11 +79,11 @@ subroutine cnsces(cnsz, typces, cesmoz, mnogaz, base, &
 !  3) les eventuels sous-points portent tous les memes valeurs
 !
 !-----------------------------------------------------------------------
-    integer :: ima, ncmp, icmp, jcnsl
-    integer :: jcesd, jcesl, nbma, iret, nbsp, nbno, ico
-    integer :: iad, nbpt, ipt, ino, nuno, isp, nbpg2, nbno2, iad1
-    integer :: ilcnx1, nbpg, ipg, imaref, sz
-    integer :: mnogal, mnogad
+    integer(kind=8) :: ima, ncmp, icmp, jcnsl
+    integer(kind=8) :: jcesd, jcesl, nbma, iret, nbsp, nbno, ico
+    integer(kind=8) :: iad, nbpt, ipt, ino, nuno, isp, nbpg2, nbno2, iad1
+    integer(kind=8) :: ilcnx1, nbpg, ipg, imaref, sz
+    integer(kind=8) :: mnogal, mnogad
     character(len=8) :: ma, nomgd
     character(len=3) :: tsca
     character(len=19) :: ces, cesmod, cns, mnoga
@@ -92,13 +92,13 @@ subroutine cnsces(cnsz, typces, cesmoz, mnogaz, base, &
     real(kind=8), pointer :: nmnogav(:) => null()
     real(kind=8) :: liv1(MT_NNOMAX), liv2(MT_NNOMAX)
     character(len=8), pointer :: cnsc(:) => null()
-    integer, pointer :: connex(:) => null()
+    integer(kind=8), pointer :: connex(:) => null()
     character(len=8), pointer :: cnsk(:) => null()
     character(len=8), pointer :: cesk(:) => null()
-    integer, pointer :: cemd(:) => null()
+    integer(kind=8), pointer :: cemd(:) => null()
     real(kind=8), pointer :: cnsv(:) => null()
-    integer, pointer :: vnbpt(:) => null()
-    integer, pointer :: vnbsp(:) => null()
+    integer(kind=8), pointer :: vnbpt(:) => null()
+    integer(kind=8), pointer :: vnbsp(:) => null()
 !------------------------------------------------------------------
     call jemarq()
 !

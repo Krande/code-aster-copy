@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -38,7 +38,7 @@ subroutine jeagco(schin, schout, nbocnw, lontnw, claout)
 #include "asterfort/jxliro.h"
 #include "asterfort/utmess.h"
     character(len=*), intent(in) :: schin, schout, claout
-    integer, intent(in) :: nbocnw, lontnw
+    integer(kind=8), intent(in) :: nbocnw, lontnw
 ! ----------------------------------------------------------------------
 !     AGRANDIT LA COLLECTION DE NOM SCHOUT A PARTIR DE SCHIN SUR LA BASE
 !     CLAOUT
@@ -53,19 +53,19 @@ subroutine jeagco(schin, schout, nbocnw, lontnw, claout)
 !     POUR UNE COLLECTION DISERSEE ON VERIFIE QUE LOBNTNW > 0
 !     POUR UNE COLLECTION CONTIGUEE ON S'ASSURE QUE LONTNW >= LONT SCHIN
 ! ----------------------------------------------------------------------
-    integer :: lk1zon, jk1zon, liszon, jiszon
+    integer(kind=8) :: lk1zon, jk1zon, liszon, jiszon
     common/izonje/lk1zon, jk1zon, liszon, jiszon
-    integer :: iclas, iclaos, iclaco, idatos, idatco, idatoc
+    integer(kind=8) :: iclas, iclaos, iclaco, idatos, idatco, idatoc
     common/iatcje/iclas, iclaos, iclaco, idatos, idatco, idatoc
 !-----------------------------------------------------------------------
-    integer :: iadmi, iadmo1, iadmo2, iadout, iadyn, iadzon, ibacol
-    integer :: ibaout, ibiadd, ibiadm, ibiado, iblono, ibmaro, icin
-    integer :: icout, idat, idcout, idin, idout, ioc, iret1
-    integer :: iret2, iret3, ista1, ista2, ixdeso, ixiadd, ixiadm
-    integer :: ixiado, ixlong, ixlono, ixmaro, ixnom, jcara, jdate
-    integer :: jdocu, jgenr, jhcod, jiadd, jiadm, jlong, jlono
-    integer :: jltyp, jluti, jmarq, jorig, jrnom, jtype, k
-    integer :: llect, lonoi, n, nbl, nmax
+    integer(kind=8) :: iadmi, iadmo1, iadmo2, iadout, iadyn, iadzon, ibacol
+    integer(kind=8) :: ibaout, ibiadd, ibiadm, ibiado, iblono, ibmaro, icin
+    integer(kind=8) :: icout, idat, idcout, idin, idout, ioc, iret1
+    integer(kind=8) :: iret2, iret3, ista1, ista2, ixdeso, ixiadd, ixiadm
+    integer(kind=8) :: ixiado, ixlong, ixlono, ixmaro, ixnom, jcara, jdate
+    integer(kind=8) :: jdocu, jgenr, jhcod, jiadd, jiadm, jlong, jlono
+    integer(kind=8) :: jltyp, jluti, jmarq, jorig, jrnom, jtype, k
+    integer(kind=8) :: llect, lonoi, n, nbl, nmax
 !-----------------------------------------------------------------------
     parameter(n=5)
     common/jiatje/jltyp(n), jlong(n), jdate(n), jiadd(n), jiadm(n),&
@@ -77,20 +77,20 @@ subroutine jeagco(schin, schout, nbocnw, lontnw, claout)
     character(len=8) :: nomfic, kstout, kstini
     common/kficje/classe, nomfic(n), kstout(n), kstini(n),&
      &                 dn2(n)
-    integer :: lbis, lois, lols, lor8, loc8
+    integer(kind=8) :: lbis, lois, lols, lor8, loc8
     common/ienvje/lbis, lois, lols, lor8, loc8
-    integer :: istat
+    integer(kind=8) :: istat
     common/istaje/istat(4)
 !     ------------------------------------------------------------------
-    integer :: ivnmax, iddeso, idiadd, idiadm, idmarq, idnom, idlong, idlono
-    integer :: idnum
+    integer(kind=8) :: ivnmax, iddeso, idiadd, idiadm, idmarq, idnom, idlong, idlono
+    integer(kind=8) :: idnum
     parameter(ivnmax=0, iddeso=1, idiadd=2, idiadm=3,&
      &               idmarq=4, idnom=5, idlong=7,&
      &               idlono=8, idnum=10)
-    integer :: iv(idnum)
+    integer(kind=8) :: iv(idnum)
     character(len=8) :: csuffi(idnum)
 ! ----------------------------------------------------------------------
-    integer :: ltypi, iaddi(2)
+    integer(kind=8) :: ltypi, iaddi(2)
     character(len=24) :: nom24
     character(len=32) :: nomin, nomout
     character(len=1) :: kclas, genri, typei

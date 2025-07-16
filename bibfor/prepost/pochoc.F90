@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -24,6 +24,7 @@ subroutine pochoc(trange, nbbloc, tdebut, tfin, offset, &
     implicit none
 #include "asterf_types.h"
 #include "jeveux.h"
+#include "nldef.h"
 #include "asterfort/infniv.h"
 #include "asterfort/jedema.h"
 #include "asterfort/jedetr.h"
@@ -31,7 +32,6 @@ subroutine pochoc(trange, nbbloc, tdebut, tfin, offset, &
 #include "asterfort/jelira.h"
 #include "asterfort/jemarq.h"
 #include "asterfort/jeveuo.h"
-#include "asterfort/nlget.h"
 #include "asterfort/statch.h"
 #include "asterfort/statim.h"
 #include "asterfort/utmess.h"
@@ -54,26 +54,27 @@ subroutine pochoc(trange, nbbloc, tdebut, tfin, offset, &
 !
 !     --- RECUPERATION DES VECTEURS CONTENANT LES RESULTATS ---
 !-----------------------------------------------------------------------
-    integer :: idwk1, idwk2, idwk3, idwk4, nbbloc
-    integer :: nbnoli, nbclas, nbpt, ifm, info, ic, nbchoc, nbflam, i, j, ifl, nbtot, dec, nbvint
-    integer :: idebut, ifin, nbpas, shift, long
+    integer(kind=8) :: idwk1, idwk2, idwk3, idwk4, nbbloc
+    integer(kind=8) :: nbnoli, nbclas, nbpt, ifm, info, ic, nbchoc
+    integer(kind=8) :: nbflam, i, j, ifl, nbtot, dec, nbvint
+    integer(kind=8) :: idebut, ifin, nbpas, shift, long
     real(kind=8) :: offset, tdebut, tfin, tmax, tmin, trepos, dt
 !-----------------------------------------------------------------------
-    integer, pointer :: desc(:) => null()
+    integer(kind=8), pointer :: desc(:) => null()
     real(kind=8), pointer :: disc(:) => null()
-    integer, pointer :: nltype(:) => null()
-    integer, pointer :: vindx(:) => null()
+    integer(kind=8), pointer :: nltype(:) => null()
+    integer(kind=8), pointer :: vindx(:) => null()
     character(len=24), pointer :: nlname(:) => null()
     real(kind=8), pointer :: vint(:) => null()
 !-----------------------------------------------------------------------
-    integer, pointer :: chindx(:) => null()
-    integer, pointer :: flindx(:) => null()
+    integer(kind=8), pointer :: chindx(:) => null()
+    integer(kind=8), pointer :: flindx(:) => null()
     real(kind=8), pointer :: vin(:) => null()
     real(kind=8), pointer :: vcho(:) => null()
     real(kind=8), pointer :: fcho(:) => null()
     real(kind=8), pointer :: dloc(:) => null()
     character(len=24), pointer :: inti(:) => null()
-    integer, pointer :: icho(:) => null()
+    integer(kind=8), pointer :: icho(:) => null()
     character(len=8), pointer :: ncho(:) => null()
     real(kind=8), pointer :: v_disc(:) => null()
     type(DynaGene) :: dyna_gene

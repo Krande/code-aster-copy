@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -25,7 +25,7 @@ subroutine rc36zz(noma, nomgd, nbcmp, nocmp, nbma, &
 #include "asterfort/jeexin.h"
 #include "asterfort/jemarq.h"
 #include "asterfort/jeveuo.h"
-    integer :: nbcmp, nbma, listma(*)
+    integer(kind=8) :: nbcmp, nbma, listma(*)
     character(len=8) :: noma, nomgd
     character(len=16) :: nocmp(*)
     character(len=24) :: chelem
@@ -33,9 +33,9 @@ subroutine rc36zz(noma, nomgd, nbcmp, nocmp, nbma, &
 !
 !     ------------------------------------------------------------------
 !
-    integer :: jcesl, im, ima, nbpt, decal, iad, ipt, icmp, iret
+    integer(kind=8) :: jcesl, im, ima, nbpt, decal, iad, ipt, icmp, iret
     real(kind=8), pointer :: cesv(:) => null()
-    integer, pointer :: cesd(:) => null()
+    integer(kind=8), pointer :: cesd(:) => null()
 ! DEB ------------------------------------------------------------------
     call jemarq()
 !

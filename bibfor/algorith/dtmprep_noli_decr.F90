@@ -48,10 +48,8 @@ subroutine dtmprep_noli_decr(sd_dtm_, sd_nl_, icomp)
 #include "asterfort/jedetr.h"
 #include "asterfort/jelira.h"
 #include "asterfort/jemarq.h"
-#include "asterfort/jenonu.h"
 #include "asterfort/jeveuo.h"
 #include "asterfort/jeveut.h"
-#include "asterfort/jexnom.h"
 #include "asterfort/mdchdl.h"
 #include "asterfort/nlget.h"
 #include "asterfort/nlinivec.h"
@@ -66,15 +64,15 @@ subroutine dtmprep_noli_decr(sd_dtm_, sd_nl_, icomp)
 !   -0.1- Input/output arguments
     character(len=*), intent(in) :: sd_dtm_
     character(len=*), intent(in) :: sd_nl_
-    integer, intent(in) :: icomp
+    integer(kind=8), intent(in) :: icomp
 !
 !   -0.2- Local variables
     aster_logical     :: lnoeu2, OkFct
-    integer           :: i, n1, ibid, nbdecr, nbnoli, nbfx, nbfyz, iloi, tecro
-    integer           :: nbmcl, ier, nbno1, nbno2, ino1
-    integer           :: ino2, ind1, ind2, nbmode, info
-    integer           :: vali, j, neq, mxlevel, nexcit
-    integer           :: kk, nbvale, jprol, jvale
+    integer(kind=8)           :: i, n1, ibid, nbdecr, nbnoli, nbfx, nbfyz, iloi, tecro
+    integer(kind=8)           :: nbmcl, ier, nbno1, nbno2, ino1
+    integer(kind=8)           :: ino2, ind1, ind2, nbmode, info
+    integer(kind=8)           :: vali, j, neq, mxlevel, nexcit
+    integer(kind=8)           :: kk, nbvale, jprol, jvale
 !
     real(kind=8)      :: fx, dx, r8bid, alpha, beta, raidex, dfx
     real(kind=8)      :: sina, cosa, sinb, cosb, sing
@@ -89,7 +87,7 @@ subroutine dtmprep_noli_decr(sd_dtm_, sd_nl_, icomp)
     character(len=19) :: nomres, nomfon
     character(len=24) :: nl_title, chprol, chvale, chpara, valk(2)
 !
-    integer, pointer       :: ddlcho(:) => null()
+    integer(kind=8), pointer       :: ddlcho(:) => null()
     real(kind=8), pointer       :: coor_no1(:) => null()
     real(kind=8), pointer       :: coor_no2(:) => null()
     real(kind=8), pointer       :: vale(:) => null()

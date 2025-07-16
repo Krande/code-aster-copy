@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -41,8 +41,8 @@ subroutine ssdmrc(mag)
 !
 ! ----------------------------------------------------------------------
 !-----------------------------------------------------------------------
-    integer :: i, iancnf, nnnoe
-    integer, pointer :: dime(:) => null()
+    integer(kind=8) :: i, iancnf, nnnoe
+    integer(kind=8), pointer :: dime(:) => null()
 !-----------------------------------------------------------------------
     call jemarq()
     call jeveuo(mag//'.DIME', 'L', vi=dime)

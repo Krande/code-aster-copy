@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -36,10 +36,10 @@ interface
         real(kind=8) :: rhom
         real(kind=8) :: rho
         real(kind=8) :: rhoopt
-        integer :: ldcopt
-        integer :: ldccvg
-        integer :: opt
-        integer :: act
+        integer(kind=8) :: ldcopt
+        integer(kind=8) :: ldccvg
+        integer(kind=8) :: opt
+        integer(kind=8) :: act
         aster_logical :: stite
     end subroutine nmrech
 end interface

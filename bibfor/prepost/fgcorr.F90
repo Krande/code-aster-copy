@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -23,7 +23,7 @@ subroutine fgcorr(nbcycl, sigmin, sigmax, method, su, &
 #include "asterfort/utmess.h"
     character(len=*) :: method
     real(kind=8) :: sigmin(*), sigmax(*), su, rcorr(*)
-    integer :: nbcycl
+    integer(kind=8) :: nbcycl
 !     CORRECTION DE HAIGH : GOODMAN OU GERBER
 !     ------------------------------------------------------------------
 ! IN  NBCYCL : I   : NOMBRE DE CYCLES
@@ -37,7 +37,7 @@ subroutine fgcorr(nbcycl, sigmin, sigmax, method, su, &
     real(kind=8) :: valmoy
 !
 !-----------------------------------------------------------------------
-    integer :: i
+    integer(kind=8) :: i
 !-----------------------------------------------------------------------
     do i = 1, nbcycl
         valmoy = (sigmax(i)+sigmin(i))/2.d0

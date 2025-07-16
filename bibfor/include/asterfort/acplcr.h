@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -25,25 +25,25 @@ interface
                   kwork, sompgw, jrwork, tspaq, ipg, dectau,nommet, &
                   jvecpg, jnorma,rayon,jresun, jdtaum,jtauma,&
                   jsgnma, jdsgma )
-        integer :: nbvec
-        integer :: jvectn
-        integer :: jvectu
-        integer :: jvectv
-        integer :: nbordr
-        integer :: kwork
-        integer :: sompgw
-        integer :: jrwork
-        integer :: tspaq
-        integer :: ipg
-        integer :: dectau
+        integer(kind=8) :: nbvec
+        integer(kind=8) :: jvectn
+        integer(kind=8) :: jvectu
+        integer(kind=8) :: jvectv
+        integer(kind=8) :: nbordr
+        integer(kind=8) :: kwork
+        integer(kind=8) :: sompgw
+        integer(kind=8) :: jrwork
+        integer(kind=8) :: tspaq
+        integer(kind=8) :: ipg
+        integer(kind=8) :: dectau
         character(len=16) :: nommet
-        integer :: jvecpg
-        integer :: jnorma
+        integer(kind=8) :: jvecpg
+        integer(kind=8) :: jnorma
         aster_logical :: rayon
-        integer :: jresun
-        integer :: jdtaum
-        integer :: jtauma
-        integer :: jsgnma
-        integer :: jdsgma
+        integer(kind=8) :: jresun
+        integer(kind=8) :: jdtaum
+        integer(kind=8) :: jtauma
+        integer(kind=8) :: jsgnma
+        integer(kind=8) :: jdsgma
     end subroutine acplcr
 end interface

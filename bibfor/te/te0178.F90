@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -33,7 +33,6 @@ subroutine te0178(option, nomte)
 #include "asterfort/elrefe_info.h"
 #include "asterfort/jevech.h"
 #include "asterfort/lteatt.h"
-#include "asterfort/rcvalc.h"
 #include "asterfort/vff2dn.h"
 #include "asterfort/getFluidPara.h"
 #include "asterc/r8prem.h"
@@ -42,14 +41,14 @@ subroutine te0178(option, nomte)
     complex(kind=8) :: rhosz, cele_c
     character(len=16) :: option, nomte
     real(kind=8) :: poids, r, nx, ny, rho, alpha, q_alpha, cele_r, cele_i, onde_flui
-    integer :: nno, kp, npg, ipoids, ivf, idfde, igeom, jv_amor
-    integer :: imattt, i, j, ij, l, li, lj
-    integer :: imate
+    integer(kind=8) :: nno, kp, npg, ipoids, ivf, idfde, igeom, jv_amor
+    integer(kind=8) :: imattt, i, j, ij, l, li, lj
+    integer(kind=8) :: imate
     aster_logical :: laxi
 !
 !
 !-----------------------------------------------------------------------
-    integer :: jgano, mater, ndim, nnos
+    integer(kind=8) :: jgano, mater, ndim, nnos
 !-----------------------------------------------------------------------
     call elrefe_info(fami='RIGI', ndim=ndim, nno=nno, nnos=nnos, npg=npg, &
                      jpoids=ipoids, jvf=ivf, jdfde=idfde, jgano=jgano)

@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -22,7 +22,7 @@ interface
     subroutine pmfk21(sk, casect, a, xl, &
                   xjx, xig, g, alfay,&
                   alfaz, ey, ez)
-        integer :: id
+        integer(kind=8) :: id
         real(kind=8) :: sk(*)
         real(kind=8) :: casect(6)
         real(kind=8) :: a

@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -50,12 +50,12 @@ subroutine irdepl(fileUnit, &
 #include "asterfort/cnsimp.h"
 #include "asterfort/nbec.h"
 !
-    integer, intent(in) :: fileUnit
+    integer(kind=8), intent(in) :: fileUnit
     character(len=*), intent(in) :: fieldNameZ, fieldTypeZ
-    integer, intent(in) :: cmpUserNb
+    integer(kind=8), intent(in) :: cmpUserNb
     character(len=8), pointer :: cmpUserName(:)
-    integer, intent(in) :: nodeUserNb
-    integer, pointer :: nodeUserNume(:)
+    integer(kind=8), intent(in) :: nodeUserNb
+    integer(kind=8), pointer :: nodeUserNume(:)
     aster_logical, optional, intent(in) :: lMeshCoor_
     aster_logical, optional, intent(in) :: lsup_, linf_, lmax_, lmin_
     real(kind=8), optional, intent(in) :: borsup_, borinf_
@@ -88,24 +88,24 @@ subroutine irdepl(fileUnit, &
 !
 ! --------------------------------------------------------------------------------------------------
 !
-    integer :: cmpCataNb, cmpListNb
+    integer(kind=8) :: cmpCataNb, cmpListNb
     character(len=8) :: meshName
     character(len=19) :: fieldName
     character(len=16) :: fieldType
     character(len=19), parameter :: fieldNameS = '&&IRDEPL_CES'
     character(len=24) :: profName
     character(len=1) :: type
-    integer :: fieldScalar, quantityIndx, nec, liliMesh
-    integer :: meshDime, meshNodeNb
-    integer, pointer :: cmpListIndx(:) => null()
-    integer, pointer :: nueq(:) => null()
-    integer, pointer :: prno(:) => null()
+    integer(kind=8) :: fieldScalar, quantityIndx, nec, liliMesh
+    integer(kind=8) :: meshDime, meshNodeNb
+    integer(kind=8), pointer :: cmpListIndx(:) => null()
+    integer(kind=8), pointer :: nueq(:) => null()
+    integer(kind=8), pointer :: prno(:) => null()
     real(kind=8), pointer :: meshCoor(:) => null()
     character(len=8), pointer :: cmpCataName(:) => null()
-    integer :: nodeNb
+    integer(kind=8) :: nodeNb
     character(len=8), pointer :: nodeListName(:) => null()
-    integer, pointer :: nodeListNume(:) => null()
-    integer, pointer :: codeInte(:) => null()
+    integer(kind=8), pointer :: nodeListNume(:) => null()
+    integer(kind=8), pointer :: codeInte(:) => null()
     aster_logical :: lMeshCoor
     aster_logical :: lsup, linf, lmax, lmin
     real(kind=8) :: borsup, borinf

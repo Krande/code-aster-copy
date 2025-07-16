@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -30,11 +30,11 @@ interface
         real(kind=8) :: scmaxi
         real(kind=8) :: scmaxs
         real(kind=8) :: ssmax
-        integer :: uc
+        integer(kind=8) :: uc
         real(kind=8) :: dnsinf
         real(kind=8) :: dnssup
         real(kind=8) :: effm
         real(kind=8) :: effn
-        integer :: verif
+        integer(kind=8) :: verif
     end subroutine verifels
 end interface

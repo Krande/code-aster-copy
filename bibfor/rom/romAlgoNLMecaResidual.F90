@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -34,7 +34,7 @@ subroutine romAlgoNLMecaResidual(v_cnequi, ds_algorom, l_cine, v_ccid, resi)
     real(kind=8), pointer :: v_cnequi(:)
     type(ROM_DS_AlgoPara), intent(in) :: ds_algorom
     aster_logical, intent(in) :: l_cine
-    integer, pointer :: v_ccid(:)
+    integer(kind=8), pointer :: v_ccid(:)
     real(kind=8), intent(out) :: resi
 !
 ! --------------------------------------------------------------------------------------------------
@@ -57,7 +57,7 @@ subroutine romAlgoNLMecaResidual(v_cnequi, ds_algorom, l_cine, v_ccid, resi)
     character(len=8) :: resultName
     character(len=19) :: resultField
     character(len=24) :: fieldName
-    integer :: iEqua, nbEqua, nbMode, iMode, iret
+    integer(kind=8) :: iEqua, nbEqua, nbMode, iMode, iret
     real(kind=8) :: term
     real(kind=8), pointer :: resultVale(:) => null()
     real(kind=8), pointer :: v_resi(:) => null()

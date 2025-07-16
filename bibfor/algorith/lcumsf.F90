@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -50,7 +50,7 @@ subroutine lcumsf(sigi, sigf, nstrs, vari, nvari, &
 #include "asterfort/lcumfb.h"
 #include "asterfort/lcumfd.h"
 #include "asterfort/lcumfs.h"
-    integer :: i, icou, ifou, ifpo, ides, isph, j, nmat, nstrs, nvari
+    integer(kind=8) :: i, icou, ifou, ifpo, ides, isph, j, nmat, nstrs, nvari
     real(kind=8) :: ersp, eisp
     real(kind=8) :: varf(20), cmat(15), sigf(nstrs), sigi(nstrs)
 ! MODIFI DU 6 JANVIER 2003 - YLP SUPPRESSION DES DECLARATIONS

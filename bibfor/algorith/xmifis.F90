@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -24,13 +24,12 @@ subroutine xmifis(ndim, ndime, elrefp, geom, lsn, &
 !
 #include "jeveux.h"
 #include "blas/ddot.h"
-#include "asterfort/assert.h"
 #include "asterfort/reeref.h"
 #include "asterfort/reerel.h"
 #include "asterfort/xelrex.h"
 #include "asterfort/xnewto.h"
 #include "asterfort/xnormv.h"
-    integer :: ndim, ndime, n(3), ip1, ip2, exit(2)
+    integer(kind=8) :: ndim, ndime, n(3), ip1, ip2, exit(2)
     character(len=8) :: elrefp
     real(kind=8) :: mifis(ndim), pinref(*), miref(ndime), geom(*), lsn(*)
     real(kind=8) :: pintt(*)
@@ -55,12 +54,12 @@ subroutine xmifis(ndim, ndime, elrefp, geom, lsn, &
 !       mifis   : COORDONNES DU PT MILIEU ENTRE IPP ET IP
 !     ----------------------------------------------------------------
 !
-    integer :: nno, j, ia, ib, ic
+    integer(kind=8) :: nno, j, ia, ib, ic
     real(kind=8) :: x(81), ksi(ndime), bc(ndime), ba(ndime), ff(27)
     real(kind=8) :: epsmax, rbid, ip1ip2(ndime), ptxx(2*ndime)
     real(kind=8) :: vect(ndime), k, k1, k2, alpha, dekker(4*ndime)
     real(kind=8) :: pta(ndime), ptb(ndime), ptc(ndime), newpt(ndime)
-    integer :: itemax
+    integer(kind=8) :: itemax
     character(len=6) :: name
     blas_int :: b_incx, b_incy, b_n
 !

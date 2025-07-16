@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -25,7 +25,7 @@ function utmotp(fonree, motfac, iocc, motcle)
 !     UTILISE PAR EXEMPLE POUR AFFE_CHAR_MECA
 !
     implicit none
-    integer :: utmotp
+    integer(kind=8) :: utmotp
 #include "asterfort/getvc8.h"
 #include "asterfort/getvid.h"
 #include "asterfort/getvr8.h"
@@ -33,7 +33,7 @@ function utmotp(fonree, motfac, iocc, motcle)
     character(len=4) :: fonree
     character(len=*) :: motfac, motcle
 !-----------------------------------------------------------------------
-    integer :: iocc
+    integer(kind=8) :: iocc
 !-----------------------------------------------------------------------
     if (fonree .eq. 'REEL') then
         call getvr8(motfac, motcle, iocc=iocc, nbval=0, nbret=utmotp)

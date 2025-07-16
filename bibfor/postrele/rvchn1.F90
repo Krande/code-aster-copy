@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -20,33 +20,30 @@ subroutine rvchn1(deplaz, nomjv, nbno, numnd, pgl)
     implicit none
 #include "jeveux.h"
 #include "asterfort/dismoi.h"
-#include "asterfort/exisdg.h"
 #include "asterfort/jedema.h"
 #include "asterfort/jedupo.h"
 #include "asterfort/jemarq.h"
 #include "asterfort/jeveuo.h"
-#include "asterfort/jexnom.h"
-#include "asterfort/jexnum.h"
 #include "asterfort/select_dof.h"
 #include "asterfort/utmess.h"
 #include "asterfort/utpvgl.h"
 #include "asterfort/as_allocate.h"
 #include "asterfort/as_deallocate.h"
 !
-    integer :: nbno, numnd(*)
+    integer(kind=8) :: nbno, numnd(*)
     character(len=*) :: deplaz, nomjv
     real(kind=8) :: pgl(3, 3)
 !
 ! --------------------------------------------------------------------------------------------------
 !
-    integer :: ino
-    integer :: iavald, numdx, numdy, numdz, numdrx
-    integer :: numdry, numdrz, nbNode, nbCmp
+    integer(kind=8) :: ino
+    integer(kind=8) :: iavald, numdx, numdy, numdz, numdrx
+    integer(kind=8) :: numdry, numdrz, nbNode, nbCmp
     real(kind=8) :: valed(3), vald(3), valer(3), valr(3)
     character(len=8) :: gran_name
     character(len=19) :: depla
-    integer, pointer :: tablCmp(:) => null()
-    integer, pointer :: listNode(:) => null()
+    integer(kind=8), pointer :: tablCmp(:) => null()
+    integer(kind=8), pointer :: listNode(:) => null()
     character(len=8), pointer :: listCmp(:) => null()
 !
 ! --------------------------------------------------------------------------------------------------

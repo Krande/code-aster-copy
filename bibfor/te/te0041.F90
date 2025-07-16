@@ -66,13 +66,13 @@ subroutine te0041(option, nomte)
 #include "asterfort/Behaviour_type.h"
 !
 ! --------------------------------------------------------------------------------------------------
-    integer         ::  nddlm, nl1, nl2, infodi, ntermx
+    integer(kind=8)         ::  nddlm, nl1, nl2, infodi, ntermx
     parameter(nddlm=12, nl1=nddlm*(nddlm+1)/2, nl2=nddlm*nddlm, ntermx=144)
 !
     real(kind=8)    :: mata1(nl1), mata2(nl1), mata3(nl2), mata4(nl2)
 !
-    integer         :: ibid, itype, irep, nbterm, nno, nc, ndim, nddl, i, j, iret
-    integer         :: jdr, jdm, lorien, jdc, iacce, ivect, jma, jVNonLin
+    integer(kind=8)         :: ibid, itype, irep, nbterm, nno, nc, ndim, nddl, i, j, iret
+    integer(kind=8)         :: jdr, jdm, lorien, jdc, iacce, ivect, jma, jVNonLin
     real(kind=8)    :: pgl(3, 3), matv1(nl1), matp(nddlm, nddlm)
     real(kind=8)    :: eta, r8bid, xrota
     real(kind=8)    :: tempo(ntermx)
@@ -82,7 +82,7 @@ subroutine te0041(option, nomte)
     character(len=8)    :: k8bid
     character(len=24)   :: valk(2)
 !
-    integer             :: icodre(3)
+    integer(kind=8)             :: icodre(3)
     real(kind=8)        :: valres(3)
     character(len=16)   :: nomres(3)
     character(len=16), pointer :: compor(:) => null()

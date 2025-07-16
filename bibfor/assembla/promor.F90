@@ -22,6 +22,7 @@ subroutine promor(nuz, base, printz)
 #include "jeveux.h"
 #include "asterfort/asmpi_info.h"
 #include "asterfort/assert.h"
+#include "asterfort/detrsd.h"
 #include "asterfort/dismoi.h"
 #include "asterfort/infniv.h"
 #include "asterfort/jedema.h"
@@ -60,27 +61,27 @@ subroutine promor(nuz, base, printz)
     aster_logical :: ldist, ldgrel, lmadis, printt, lligrel_cp
     character(len=19) :: nomlig
     character(len=24) :: crco
-    integer :: iconx2, ili, iel
-    integer :: idprn1
-    integer :: idprn2, ifm, niv, iret, nnoe, jnueq
-    integer :: vali(3), neqx, iilib, igr, numa, k1, n1, iad1, nddl1, n12
-    integer :: iddl, jddl, iamail, jsmhc, ncoef, jsmde, igd, nbss
-    integer :: iadequ, nlili, nequ, iimax, jnoip, jsuiv, mxddlt
-    integer :: ima, nddlt, jalm, jsmdi, nel, nec, nbsma
-    integer ::  rang, imd, jsmh1, ili2
+    integer(kind=8) :: iconx2, ili, iel
+    integer(kind=8) :: idprn1
+    integer(kind=8) :: idprn2, ifm, niv, iret, nnoe, jnueq
+    integer(kind=8) :: vali(3), neqx, iilib, igr, numa, k1, n1, iad1, nddl1, n12
+    integer(kind=8) :: iddl, jddl, iamail, jsmhc, ncoef, jsmde, igd, nbss
+    integer(kind=8) :: iadequ, nlili, nequ, iimax, jnoip, jsuiv, mxddlt
+    integer(kind=8) :: ima, nddlt, jalm, jsmdi, nel, nec, nbsma
+    integer(kind=8) ::  rang, imd, jsmh1, ili2
 !
     character(len=19) :: partit
     real(kind=8) :: valr(2), rcoef, requ
-    integer :: nbproc
-    integer, pointer :: maille(:) => null()
-    integer, pointer :: adne(:) => null()
-    integer, pointer :: connex(:) => null()
-    integer, pointer :: adli(:) => null()
+    integer(kind=8) :: nbproc
+    integer(kind=8), pointer :: maille(:) => null()
+    integer(kind=8), pointer :: adne(:) => null()
+    integer(kind=8), pointer :: connex(:) => null()
+    integer(kind=8), pointer :: adli(:) => null()
     character(len=24), pointer :: prtk(:) => null()
     character(len=24), pointer :: tco(:) => null()
-    integer, pointer :: sssa(:) => null()
-    integer, pointer :: v_refp(:) => null()
-    integer, pointer :: v_crco(:) => null()
+    integer(kind=8), pointer :: sssa(:) => null()
+    integer(kind=8), pointer :: v_refp(:) => null()
+    integer(kind=8), pointer :: v_crco(:) => null()
     mpi_int :: mrank, msize
 !
 !-----------------------------------------------------------------------
@@ -229,8 +230,6 @@ subroutine promor(nuz, base, printz)
     nec = nbec(igd)
     nequ = zi(iadequ)
 !
-!
-!
 !---- CREATION DE 2 TABLEAUX DE TRAVAIL :
 !      .NOIP   :   TABLE DES NUMEROS DE LIGNE
 !      .NOSUIV :   TABLE DES CHAINAGES DE LA STRUCTURE CHAINEE
@@ -242,19 +241,17 @@ subroutine promor(nuz, base, printz)
     call wkvect('&&PROMOR.NOIP', 'V V I', iimax, jnoip)
     call wkvect('&&PROMOR.NOSUIV', 'V V I', iimax, jsuiv)
 !
-!
-!
 !     -- ALLOCATION DU VECTEUR &&PROMOR.ANCIEN.LM
 !     CE VECTEUR SERA AGRANDI SI NECESSAIRE
     mxddlt = 100
     call wkvect('&&PROMOR.ANCIEN.LM', 'V V I', mxddlt, jalm)
 !
-!
-!
-!
 !     -- ALLOCATION DE .SMOS.SMDI
+    call jeexin(nu//'.SMOS', iret)
+    if (iret == 0) then
+        call detrsd('STOC_MORSE', nu//'.SMOS')
+    end if
     call wkvect(nu//'.SMOS.SMDI', base//' V I', nequ, jsmdi)
-!
 !
 !---- INITIALISATION DES TABLEAUX POUR LE STOCKAGE MORSE
 !     ATTENTION:   PENDANT LA CONSTRUCTION DE LA STRUCTURE CHAINEE
@@ -269,7 +266,6 @@ subroutine promor(nuz, base, printz)
 !
 !     IILIB  : 1-ERE PLACE LIBRE
     iilib = 1
-!
 !
 !     -- BOUCLE SUR LES LIGREL DE NU//'.NUME.LILI' :
 !     -----------------------------------------------
@@ -298,7 +294,6 @@ subroutine promor(nuz, base, printz)
             nbss = 0
         end if
         if (exiele .eq. 'NON') goto 90
-!
 !
 !       1. TRAITEMENT DES ELEMENTS FINIS CLASSIQUES:
 !       --------------------------------------------
@@ -387,8 +382,6 @@ subroutine promor(nuz, base, printz)
 80          continue
         end do
 !
-!
-!
 !       3. TRAITEMENT DES SOUS-STRUCTURES STATIQUES :
 !       ---------------------------------------------
 90      continue
@@ -433,8 +426,6 @@ subroutine promor(nuz, base, printz)
         call utmess('F', 'ASSEMBLA_65', ni=2, vali=vali)
     end if
 !
-!
-!
 !     DESIMBRIQUATION DE CHAINES POUR OBTENIR LA STRUCTURE COMPACTE
 !     (SMDI,SMHC) DE LA MATRICE
     call wkvect(nu//'.SMOS.SMH1', base//' V S', iimax, jsmh1)
@@ -446,13 +437,11 @@ subroutine promor(nuz, base, printz)
     end do
     call jedetr(nu//'.SMOS.SMH1')
 !
-!
 !     -- CREATION ET REMPLISSAGE DE .SMDE
     call wkvect(nu//'.SMOS.SMDE', base//' V I', 6, jsmde)
     zi(jsmde-1+1) = nequ
     zi(jsmde-1+2) = ncoef
     zi(jsmde-1+3) = 1
-!
 !
     call jedetr('&&PROMOR.NOIP')
     call jedetr('&&PROMOR.NOSUIV')

@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -60,13 +60,13 @@ subroutine nmevim(ds_print, sddisc, sderro, loop_name)
 ! --------------------------------------------------------------------------------------------------
 !
     aster_logical :: lacti, cvbouc, lerrei, l_sep_line, lldcbo
-    integer :: i_fail_acti
-    integer :: iEvent
+    integer(kind=8) :: i_fail_acti
+    integer(kind=8) :: iEvent
     character(len=24) :: eventEACTJv, eventENIVJv, eventEMSGJv
-    integer, pointer :: eventEACT(:) => null()
+    integer(kind=8), pointer :: eventEACT(:) => null()
     character(len=16), pointer :: eventENIV(:) => null()
     character(len=24), pointer :: eventEMSG(:) => null()
-    integer :: eventState, eventType
+    integer(kind=8) :: eventState, eventType
     character(len=9) :: eventLevel
     character(len=24) :: eventMesg
 !

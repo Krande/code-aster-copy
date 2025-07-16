@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -29,7 +29,7 @@ subroutine lcmmro(BEHinteg, omp, nvi, vind, vinf)
 !     Stockage variables internes rotation reseau
 !     ----------------------------------------------------------------
     type(Behaviour_Integ), intent(in) :: BEHinteg
-    integer :: i, j, nvi, k
+    integer(kind=8) :: i, j, nvi, k
     real(kind=8) :: omp(3), dtheta, iden(3, 3), nax(3, 3), q(3, 3)
     real(kind=8) :: omegap(3, 3), omegae(3, 3), omega(3, 3), dq(3, 3)
     real(kind=8) :: vind(nvi), vinf(nvi), l(3, 3), qm(3, 3)

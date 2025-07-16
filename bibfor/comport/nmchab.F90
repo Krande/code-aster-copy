@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -76,7 +76,7 @@ subroutine nmchab(fami, kpg, ksp, ndim, typmod, &
 #include "blas/daxpy.h"
 #include "blas/dcopy.h"
 #include "blas/dscal.h"
-    integer :: kpg, ksp, ndim, imate, nbvar, iret
+    integer(kind=8) :: kpg, ksp, ndim, imate, nbvar, iret
     real(kind=8) :: depsth(6), pm, c2inf, gamm20
     real(kind=8) :: plast, depsmo, sigmmo, e, nu, troisk, deps(6), deuxmu
     real(kind=8) :: rpm, sieleq, seuil, dp, cm, ainf, cp, rpvm, rpvp
@@ -95,7 +95,7 @@ subroutine nmchab(fami, kpg, ksp, ndim, typmod, &
     common/fchab/mat, pm, sigedv, epspm, alfam, alfa2m, deuxmu, rpvm, rpvp,&
      &    qm, qp, ksim, ksip, dt, n1, n2, depsp,&
      &    beta1, beta2, ndimsi, nbvar, visc, memo, idelta
-    integer :: ndimsi, i, niter, visc, memo, idelta
+    integer(kind=8) :: ndimsi, i, niter, visc, memo, idelta
     blas_int :: b_incx, b_incy, b_n
     data kron/1.d0, 1.d0, 1.d0, 0.d0, 0.d0, 0.d0/
 !

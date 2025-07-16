@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -49,13 +49,13 @@ subroutine ace_crea_carte(infdonn, infcarte)
 #include "asterfort/nocart.h"
 !
 ! --------------------------------------------------------------------------------------------------
-    integer             :: ii, jj, ixci, ibid, indx
+    integer(kind=8)             :: ii, jj, ixci, ibid, indx
     real(kind=8)        :: r8bid
     character(len=6)    :: kjj
     character(len=8)    :: nomu, noma, k8bid
     character(len=24)   :: tmpcinf, tmpvinf
 !
-    integer             :: adr_cmp, adr_val, nbr_cmp
+    integer(kind=8)             :: adr_cmp, adr_val, nbr_cmp
     character(len=19)   :: nom_carte
 !
     character(len=5), parameter :: kma(3) = (/'K    ', 'M    ', 'A    '/)

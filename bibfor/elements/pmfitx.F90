@@ -55,20 +55,20 @@ subroutine pmfitx(icdmat, isw, casect, gto)
 !
 ! --------------------------------------------------------------------------------------------------
 !
-    integer :: icdmat, isw
+    integer(kind=8) :: icdmat, isw
     real(kind=8) :: casect(6), gto
 !
 ! --------------------------------------------------------------------------------------------------
 !
-    integer :: jacf, labsc
-    integer :: isdcom, i, ipos, icp, ig, nbfig
+    integer(kind=8) :: jacf, labsc
+    integer(kind=8) :: isdcom, i, ipos, icp, ig, nbfig
     real(kind=8) :: carsec(6)
     real(kind=8) :: rho, rhos, rhofi, rhofe, cm, phie, phii
     real(kind=8) :: val(1), e, nu, absmoy
     character(len=16), pointer :: compor(:) => null()
     character(len=32) :: materi
 !
-    integer :: codres(4)
+    integer(kind=8) :: codres(4)
     real(kind=8) :: valres(4)
     character(len=2) ::  nomres2(2)
     character(len=16) :: nomres4(4)
@@ -76,13 +76,13 @@ subroutine pmfitx(icdmat, isw, casect, gto)
     data nomres4/'RHO', 'PROF_RHO_F_INT', 'PROF_RHO_F_EXT', 'COEF_MASS_AJOU'/
 !
 ! --------------------------------------------------------------------------------------------------
-    integer, parameter :: nb_cara1 = 2
+    integer(kind=8), parameter :: nb_cara1 = 2
     real(kind=8) :: vale_cara1(nb_cara1)
     character(len=8) :: noms_cara1(nb_cara1)
     data noms_cara1/'R1', 'EP1'/
 !-----------------------------------------------------------------------
 !
-    integer :: nbfibr, nbgrfi, tygrfi, nbcarm, nug(10)
+    integer(kind=8) :: nbfibr, nbgrfi, tygrfi, nbcarm, nug(10)
 !
 ! --------------------------------------------------------------------------------------------------
 !   Récupération des caractéristiques des fibres

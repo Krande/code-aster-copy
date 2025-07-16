@@ -33,11 +33,8 @@ subroutine carbe3(charge)
 #include "asterfort/jedema.h"
 #include "asterfort/jelira.h"
 #include "asterfort/jemarq.h"
-#include "asterfort/jenonu.h"
-#include "asterfort/jenuno.h"
 #include "asterfort/jeveuo.h"
 #include "asterfort/jexnom.h"
-#include "asterfort/jexnum.h"
 #include "asterfort/lxlgut.h"
 #include "asterfort/mgauss.h"
 #include "asterfort/pmppr.h"
@@ -55,7 +52,7 @@ subroutine carbe3(charge)
 !     ET ENRICHIR LA CHARGE (CHARGE) AVEC LES RELATIONS LINEAIRES
 ! IN/JXVAR : CHARGE : NOM D'UNE SD CHARGE
 ! ----------------------------------------------------------------------
-    integer :: vali(2)
+    integer(kind=8) :: vali(2)
 !
     character(len=4) :: typcoe, typval
     character(len=7) :: typcha
@@ -66,15 +63,15 @@ subroutine carbe3(charge)
     character(len=19) :: lisrel
     character(len=24) :: ddlstr, grouno, gromai
     complex(kind=8) :: betac
-    integer :: ifm, niv, iret
-    integer :: idxrbe, idxlig, idxcol, idxvec, idxnoe, idxgro, idxter
-    integer :: idxddl
-    integer :: posesc, posmai, cntlig, cntddl, cntnoe, inilig
-    integer :: jlises, jcofes, jddles, jcescl, jcoore
-    integer :: jnorel, jddl, jcmur, jcmuc, jcmuf, jdirec, jdime
-    integer :: jnogro, jnoesc, jnzddl, jnznor
-    integer :: nbrbe3, nbdles, nbcfes, nbddl, nblign, nbcol, nbgrou, nbent
-    integer :: nbnoeu, nbdlma, maxesc, maxles, maxddl, dime
+    integer(kind=8) :: ifm, niv, iret
+    integer(kind=8) :: idxrbe, idxlig, idxcol, idxvec, idxnoe, idxgro, idxter
+    integer(kind=8) :: idxddl
+    integer(kind=8) :: posesc, posmai, cntlig, cntddl, cntnoe, inilig
+    integer(kind=8) :: jlises, jcofes, jddles, jcescl, jcoore
+    integer(kind=8) :: jnorel, jddl, jcmur, jcmuc, jcmuf, jdirec, jdime
+    integer(kind=8) :: jnogro, jnoesc, jnzddl, jnznor
+    integer(kind=8) :: nbrbe3, nbdles, nbcfes, nbddl, nblign, nbcol, nbgrou, nbent
+    integer(kind=8) :: nbnoeu, nbdlma, maxesc, maxles, maxddl, dime
     aster_logical :: fincod, ddlesc(6), ddlmai(6), frstco, dime2d
     real(kind=8) :: rbid, coomai(3), cooesc(3), lc, norme, lcsqua, stws(6, 6)
     real(kind=8) :: cofesc, beta, x(6, 6)

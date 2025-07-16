@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -23,7 +23,7 @@ subroutine jacobi(nbvec, nperm, tol, toldyn, ar, &
 #include "asterf_types.h"
 #include "asterfort/utmess.h"
 #include "asterfort/vpordo.h"
-    integer :: nbvec, nperm, nitjac, type, iordre
+    integer(kind=8) :: nbvec, nperm, nitjac, type, iordre
     real(kind=8) :: ar(nbvec), br(nbvec), vecpro(nbvec, nbvec), valpro(nbvec)
     real(kind=8) :: valaux(nbvec), tol, toldyn
 !
@@ -64,9 +64,9 @@ subroutine jacobi(nbvec, nperm, tol, toldyn, ar, &
 !     --- TERME DIAGONAL RAIDEUR / TERME DIAGONAL MASSE ---
 !
 !-----------------------------------------------------------------------
-    integer :: i, ii, ij, ik, im1, j, ji
-    integer :: jj, jk, jm1, jp1, k, ki, kk
-    integer :: km1, kp1, lji, ljk, lki, niter
+    integer(kind=8) :: i, ii, ij, ik, im1, j, ji
+    integer(kind=8) :: jj, jk, jm1, jp1, k, ki, kk
+    integer(kind=8) :: km1, kp1, lji, ljk, lki, niter
     real(kind=8) :: ab, aj, ajj, ak, akk, bb, bj
     real(kind=8) :: bk, ca, cg, compa, compb, d1, d2
     real(kind=8) :: den, dif, epcoma, epcomb, eps, epsa, epsb

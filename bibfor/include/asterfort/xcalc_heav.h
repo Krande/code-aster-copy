@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -19,9 +19,9 @@
 !
 interface
     function xcalc_heav(id_no, hea_se, iflag)
-       integer :: id_no
-       integer :: hea_se
-       integer :: iflag
+       integer(kind=8) :: id_no
+       integer(kind=8) :: hea_se
+       integer(kind=8) :: iflag
        real(kind=8) :: xcalc_heav
     end function xcalc_heav
 end interface

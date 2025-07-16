@@ -37,7 +37,7 @@ subroutine vtzero(chamna, typesdz)
 !
 !
 ! DECLARATION VARIABLES LOCALES
-    integer :: neq, ival, i, neq1, iret
+    integer(kind=8) :: neq, ival, i, neq1, iret
     character(len=24) :: kval, chamn
     character(len=16) :: typesd
 !

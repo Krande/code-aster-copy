@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -22,9 +22,9 @@ interface
     subroutine aptypm(mesh     , elem_nume, elem_ndim, elem_nbnode, elem_type,&
                       elem_name)
         character(len=8), intent(in) :: mesh
-        integer, intent(in) :: elem_nume
-        integer, intent(out) :: elem_ndim
-        integer, intent(in) :: elem_nbnode
+        integer(kind=8), intent(in) :: elem_nume
+        integer(kind=8), intent(out) :: elem_ndim
+        integer(kind=8), intent(in) :: elem_nbnode
         character(len=8), intent(out) :: elem_type
         character(len=8), intent(out) :: elem_name
     end subroutine aptypm

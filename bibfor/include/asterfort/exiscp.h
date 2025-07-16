@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -24,10 +24,10 @@ interface
         character(len=8) :: nomcmp
         character(len=8) :: char
         character(len=8) :: modele
-        integer :: nbnd
+        integer(kind=8) :: nbnd
         character(len=3) :: typend
         character(len=8) :: nomnd(*)
-        integer :: numnd(*)
-        integer :: resu(*)
+        integer(kind=8) :: numnd(*)
+        integer(kind=8) :: resu(*)
     end subroutine exiscp
 end interface

@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -21,7 +21,7 @@
 interface
     subroutine colni2(col1, col2, n, d1, d2,&
                       coef1, t1, t2, eps, ier)
-        integer :: n
+        integer(kind=8) :: n
         real(kind=8) :: col1(n)
         real(kind=8) :: col2(n)
         real(kind=8) :: d1
@@ -30,6 +30,6 @@ interface
         real(kind=8) :: t1(n)
         real(kind=8) :: t2(n)
         real(kind=8) :: eps
-        integer :: ier
+        integer(kind=8) :: ier
     end subroutine colni2
 end interface

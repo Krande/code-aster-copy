@@ -22,7 +22,7 @@ interface
                              nb_cont_zone, lLineRela, listRela)
         character(len=8), intent(in) :: sdcont, mesh, model
         character(len=16), intent(in) :: zoneKeyword
-        integer, intent(in) :: model_ndim, nb_cont_zone
+        integer(kind=8), intent(in) :: model_ndim, nb_cont_zone
         aster_logical, intent(out) :: lLineRela
         character(len=19), intent(out) :: listRela
     end subroutine dfc_read_disc

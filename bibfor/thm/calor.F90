@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -22,7 +22,6 @@ function calor(mdal, temp, dtemp, deps, &
 !
     implicit none
 !
-#include "asterfort/assert.h"
 !
     real(kind=8), intent(in) :: mdal(6)
     real(kind=8), intent(in) :: temp
@@ -34,7 +33,7 @@ function calor(mdal, temp, dtemp, deps, &
     real(kind=8), intent(in) :: alp11
     real(kind=8), intent(in) :: alp12
     real(kind=8), intent(in) :: coeps
-    integer, intent(in) ::  ndim
+    integer(kind=8), intent(in) ::  ndim
     real(kind=8) :: calor
 !
 ! --------------------------------------------------------------------------------------------------
@@ -60,7 +59,7 @@ function calor(mdal, temp, dtemp, deps, &
 !
 ! --------------------------------------------------------------------------------------------------
 !
-    integer :: i
+    integer(kind=8) :: i
     real(kind=8) :: calome
     real(kind=8), parameter :: rac2 = sqrt(2.d0)
 !

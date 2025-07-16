@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -26,14 +26,14 @@ interface
                       acc0, fexte0, famor0, fliai0, &
                       tabwk, force0, force1, ds_energy, kineLoad)
         use NonLin_Datastructure_type
-        integer :: neq
-        integer :: imat(3)
+        integer(kind=8) :: neq
+        integer(kind=8) :: imat(3)
         character(len=8) :: masse
         character(len=8) :: rigid
-        integer :: liad(*)
+        integer(kind=8) :: liad(*)
         character(len=24) :: lifo(*)
-        integer :: nchar
-        integer :: nveca
+        integer(kind=8) :: nchar
+        integer(kind=8) :: nveca
         aster_logical :: lcrea
         aster_logical :: lprem
         aster_logical :: lamort
@@ -45,7 +45,7 @@ interface
         character(len=24) :: fomult
         character(len=24) :: modele
         character(len=24) :: numedd
-        integer :: nume
+        integer(kind=8) :: nume
         character(len=19) :: solveu
         character(len=24) :: criter
         real(kind=8) :: dep0(*)

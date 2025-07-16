@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -22,8 +22,8 @@ interface
     subroutine rvche1(chelez, nomjv, nbel, numail, pgl)
         character(len=*) :: chelez
         character(len=*) :: nomjv
-        integer :: nbel
-        integer :: numail(*)
+        integer(kind=8) :: nbel
+        integer(kind=8) :: numail(*)
         real(kind=8) :: pgl(3, 3)
     end subroutine rvche1
 end interface

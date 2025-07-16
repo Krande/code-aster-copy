@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -23,7 +23,6 @@ subroutine te0364(option, nomte)
 !
 #include "asterf_types.h"
 #include "jeveux.h"
-#include "asterfort/assert.h"
 #include "asterfort/mmelem.h"
 #include "asterfort/mmlagc.h"
 #include "asterfort/mmGetAlgo.h"
@@ -53,11 +52,11 @@ subroutine te0364(option, nomte)
 !
 ! --------------------------------------------------------------------------------------------------
 !
-    integer :: nne, nnm, nnl, i, j, ij
-    integer :: nddl, ndim, nbcps, nbdm
-    integer :: i_reso_fric, i_reso_geom, ialgoc, ialgof
-    integer :: ndexfr
-    integer :: indco, indco_prev, indadhe_prev, indadhe2_prev
+    integer(kind=8) :: nne, nnm, nnl, i, j, ij
+    integer(kind=8) :: nddl, ndim, nbcps, nbdm
+    integer(kind=8) :: i_reso_fric, i_reso_geom, ialgoc, ialgof
+    integer(kind=8) :: ndexfr
+    integer(kind=8) :: indco, indco_prev, indadhe_prev, indadhe2_prev
     character(len=8) :: typmae, typmam
     character(len=4) :: phase, phase_prev
     aster_logical :: laxis, leltf

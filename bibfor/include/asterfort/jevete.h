@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -22,6 +22,6 @@ interface
     subroutine jevete(nomobj, code, iad)
         character(len=*) :: nomobj
         character(len=1) :: code
-        integer :: iad
+        integer(kind=8) :: iad
     end subroutine jevete
 end interface

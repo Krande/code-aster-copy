@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -24,13 +24,13 @@ subroutine impft0(isor, ift, ibl, fmoy, fetyp, &
 !
 !
     implicit none
-    integer :: isor, ift
+    integer(kind=8) :: isor, ift
     real(kind=8) :: fmoy, frms, fetyp, fmax, fmin
 !
 !
 !
 !-----------------------------------------------------------------------
-    integer :: ibl
+    integer(kind=8) :: ibl
 !-----------------------------------------------------------------------
     if (ift .eq. 1) then
         if (ibl .eq. 1) then
@@ -77,6 +77,6 @@ subroutine impft0(isor, ift, ibl, fmoy, fetyp, &
     end if
 !
 10  format(' !', i2, '!', 1pe12.5, ' !', 1pe12.5, ' !', 1pe12.5, ' !',&
-     &        1pe12.5, ' !', 1pe12.5, ' !')
+      &        1pe12.5, ' !', 1pe12.5, ' !')
 !
 end subroutine

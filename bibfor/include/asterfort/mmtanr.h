@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -26,9 +26,9 @@ interface
                       elem_mast_nume, tau1m, tau2m, tau1, tau2)
         use NonLin_Datastructure_type
         character(len=8) :: mesh
-        integer :: i_zone
-        integer :: model_ndim
-        integer :: node_slav_indx, elem_mast_indx, elem_mast_nume
+        integer(kind=8) :: i_zone
+        integer(kind=8) :: model_ndim
+        integer(kind=8) :: node_slav_indx, elem_mast_indx, elem_mast_nume
         real(kind=8) :: ksi1, ksi2
         type(NL_DS_Contact), intent(in) :: ds_contact
         real(kind=8) :: tau1m(3), tau2m(3)

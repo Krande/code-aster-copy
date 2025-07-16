@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -21,10 +21,10 @@
 interface
     subroutine confac(typma, ft, nbft, f, nbf, quad)
         character(len=8) :: typma
-        integer :: ft(12, 3)
-        integer :: nbft
-        integer :: f(6, 8)
-        integer :: nbf
+        integer(kind=8) :: ft(12, 3)
+        integer(kind=8) :: nbft
+        integer(kind=8) :: f(6, 8)
+        integer(kind=8) :: nbf
         character(len=*), optional, intent(in) :: quad
     end subroutine confac
 end interface

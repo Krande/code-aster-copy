@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -25,8 +25,8 @@ subroutine xdblsn(ninter, npts, ndim, ar, &
 #include "asterfort/jedema.h"
 #include "asterfort/jemarq.h"
 #include "asterfort/xxmmvd.h"
-    integer :: ninter, npts, ndim, ar(12, 3), cnset(*)
-    integer :: nnose, it
+    integer(kind=8) :: ninter, npts, ndim, ar(12, 3), cnset(*)
+    integer(kind=8) :: nnose, it
     real(kind=8) :: pinref(*), pinter(*), ainter(*)
 !            BUT :  RAMENER LES CONFIGURATIONS DE DECOUPE 3D DEGENEREES
 !                   (RASANTES) A DES CONFIGURATIONS DE DECOUPE CLASSIQUES
@@ -46,9 +46,9 @@ subroutine xdblsn(ninter, npts, ndim, ar, &
 !
 !     ----------------------------------------------------------------
 !
-    integer :: i, j, k, l, p1, p2
-    integer :: a1, a2, a3, a4, elim, elim2
-    integer :: zxain
+    integer(kind=8) :: i, j, k, l, p1, p2
+    integer(kind=8) :: a1, a2, a3, a4, elim, elim2
+    integer(kind=8) :: zxain
 !
 ! --------------------------------------------------------------------
 !

@@ -22,7 +22,6 @@ subroutine extrs2(resu0, resu1, typcon, lrest, mailla, &
     implicit none
 #include "asterf_types.h"
 #include "jeveux.h"
-#include "asterfort/assert.h"
 #include "asterfort/copisd.h"
 #include "asterfort/dismoi.h"
 #include "asterfort/jedema.h"
@@ -39,7 +38,7 @@ subroutine extrs2(resu0, resu1, typcon, lrest, mailla, &
 #include "asterfort/rsnoch.h"
 #include "asterfort/utmess.h"
 !
-    integer :: nbordr, nuordr(*), nbarch, nbacc, nuarch(*), nbexcl, nbnosy
+    integer(kind=8) :: nbordr, nuordr(*), nbarch, nbacc, nuarch(*), nbexcl, nbnosy
     character(len=16) :: nomacc(*), chexcl(*)
     character(len=*) :: resu0, resu1
     character(len=16) :: typcon
@@ -55,10 +54,10 @@ subroutine extrs2(resu0, resu1, typcon, lrest, mailla, &
 !
 ! 0.3. ==> VARIABLES LOCALES
 !
-    integer :: vali(2)
+    integer(kind=8) :: vali(2)
 !
-    integer :: i, j, ire1, ire2, iadin, iadou, iret
-    integer :: cret
+    integer(kind=8) :: i, j, ire1, ire2, iadin, iadou, iret
+    integer(kind=8) :: cret
     character(len=3) :: type
     character(len=4) :: tych
     character(len=8) :: noma1, noma2, noma3, nomavr

@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2018 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -24,17 +24,17 @@ interface
                       iscal, rscal, cscal, kvect, ivect,&
                       rvect, cvect, buffer)
         character(len=*)          , intent(in) :: sd_int_
-        integer                   , intent(in) :: ip
-        integer                   , intent(in) :: lonvec
-        integer,          optional, intent(in) :: iocc
+        integer(kind=8)                   , intent(in) :: ip
+        integer(kind=8)                   , intent(in) :: lonvec
+        integer(kind=8),          optional, intent(in) :: iocc
         character(len=*), optional, intent(in) :: kscal
-        integer,          optional, intent(in) :: iscal
+        integer(kind=8),          optional, intent(in) :: iscal
         real(kind=8),     optional, intent(in) :: rscal
         complex(kind=8),  optional, intent(in) :: cscal   
         character(len=*), optional, intent(in) :: kvect(lonvec)
-        integer,          optional, intent(in) :: ivect(lonvec)
+        integer(kind=8),          optional, intent(in) :: ivect(lonvec)
         real(kind=8),     optional, intent(in) :: rvect(lonvec)
         complex(kind=8),  optional, intent(in) :: cvect(lonvec)
-        integer, pointer, optional :: buffer(:)
+        integer(kind=8), pointer, optional :: buffer(:)
     end subroutine intsav
 end interface

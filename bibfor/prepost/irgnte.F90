@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -26,7 +26,7 @@ subroutine irgnte(ifi, nbordr, coord, connex, point, &
 #include "asterfort/jelibe.h"
 #include "asterfort/jemarq.h"
 #include "asterfort/jeveuo.h"
-    integer :: ifi, nbordr, connex(*), point(*), cnsv(*), cnsd(*), jtype
+    integer(kind=8) :: ifi, nbordr, connex(*), point(*), cnsv(*), cnsd(*), jtype
     real(kind=8) :: coord(*)
     character(len=*) :: njvmai, partie
 !
@@ -34,8 +34,8 @@ subroutine irgnte(ifi, nbordr, coord, connex, point, &
 !
 !     ------------------------------------------------------------------
 !
-    integer :: imai, ima, ipoin, listno(8), j, jcnsv, jcnsd, ncmp, jmai, ior
-    integer :: inoe, nbno, nbmai
+    integer(kind=8) :: imai, ima, ipoin, listno(8), j, jcnsv, jcnsd, ncmp, jmai, ior
+    integer(kind=8) :: inoe, nbno, nbmai
     real(kind=8) :: zero
 !     ------------------------------------------------------------------
 !

@@ -96,7 +96,7 @@ subroutine burftm(cmp, ndim, vim, epsfm)
     implicit none
     character(len=*) :: cmp
     real(kind=8) :: vim(33), epsfm(6)
-    integer :: ndim, i
+    integer(kind=8) :: ndim, i
 !
     if (cmp(1:2) .eq. 'FP') then
         if (ndim .eq. 3) then

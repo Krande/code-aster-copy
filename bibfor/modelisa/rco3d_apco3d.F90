@@ -25,25 +25,21 @@ subroutine rco3d_apco3d(noma, lismavo, lismaco, nbmavo, nbmaco, epai, &
 !
 
 #include "jeveux.h"
-#include "asterfort/as_deallocate.h"
 #include "asterfort/as_allocate.h"
 #include "asterfort/jelira.h"
 #include "asterfort/jedema.h"
 #include "asterfort/jemarq.h"
-#include "asterfort/jenonu.h"
 #include "asterfort/jenuno.h"
 #include "asterfort/jeveuo.h"
-#include "asterfort/jexnom.h"
 #include "asterfort/jexnum.h"
-#include "asterc/r8prem.h"
 #include "asterfort/utmess.h"
 
     character(len=8), intent(in) :: noma
     character(len=24), intent(in) :: lismaco, lismavo
-    integer, intent(in) :: nbmavo, nbmaco
+    integer(kind=8), intent(in) :: nbmavo, nbmaco
     real(kind=8), intent(in) :: epai
-    integer, intent(out) :: nb_pairs, nt_nodes
-    integer, pointer :: list_pairs(:)
+    integer(kind=8), intent(out) :: nb_pairs, nt_nodes
+    integer(kind=8), pointer :: list_pairs(:)
 
 ! -------------------------------------------------------
 !     APPARIER LES MAILLES DE BORD COQUE ET MASSIF
@@ -68,10 +64,10 @@ subroutine rco3d_apco3d(noma, lismavo, lismaco, nbmavo, nbmaco, epai, &
 !
     character(len=24) :: desc, vale, connex, typemail
     character(len=8) :: elem_type
-    integer ::  i, j, k, l, m, idvale
-    integer :: imavo, idconnvo, nbnovo, inovo1, inovo2, jlismavo
-    integer :: imaco, idconnco, nbnoco, inoco1, inoco2, jlismaco
-    integer :: mesh_typmail, elem_type_nume
+    integer(kind=8) ::  i, j, k, l, m, idvale
+    integer(kind=8) :: imavo, idconnvo, nbnovo, inovo1, inovo2, jlismavo
+    integer(kind=8) :: imaco, idconnco, nbnoco, inoco1, inoco2, jlismaco
+    integer(kind=8) :: mesh_typmail, elem_type_nume
     aster_logical :: check
     real(kind=8) :: dist
     real(kind=8) :: coorsegvo(3, 2), coorsegco(3, 2)

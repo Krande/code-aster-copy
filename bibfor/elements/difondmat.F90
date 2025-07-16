@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -57,15 +57,15 @@ subroutine difondmat(tirela, raidTang, vloc, vpara, nbVloc, nbPara, klr, errmax,
 #include "asterc/r8prem.h"
 #include "asterfort/mgauss.h"
 !
-    integer      :: nbVloc, nbPara, iret
+    integer(kind=8)      :: nbVloc, nbPara, iret
     real(kind=8) :: vpara(nbPara), tirela(6), raidTang(6), vloc(nbVloc), klr(78), errmax, dulMat(4)
 !
 ! --------------------------------------------------------------------------------------------------
 !
 !   compteur du nombre d'itération
-    integer :: ii, jj, compt
+    integer(kind=8) :: ii, jj, compt
 !   nombre de critères à vérifier
-    integer :: nbDDL, nbDDLii, nbDDLjj
+    integer(kind=8) :: nbDDL, nbDDLii, nbDDLjj
 !
 !   valeur avec le signe des moments et de l'effort horizontal pour les différents critères
     real(kind=8) :: valH, valMx, valMy, valMxPabs, valMyPabs
@@ -90,7 +90,7 @@ subroutine difondmat(tirela, raidTang, vloc, vpara, nbVloc, nbPara, klr, errmax,
 !   fsInverse       : les deltas(finaux)
 !   dfOrdo          : récupération des dérivés des critères uniquement utiles au calcul
     real(kind=8), allocatable :: MatAinverser(:, :), fsInverse(:, :), dfOrdo(:, :)
-    integer, allocatable :: assoddl(:)
+    integer(kind=8), allocatable :: assoddl(:)
     real(kind=8) :: etatCP, etatG
 !   numérotation pour savoir quels critères sont concernés H et H- pour le
 !   transfert à la matrice de raideur
@@ -349,10 +349,14 @@ subroutine difondmat(tirela, raidTang, vloc, vpara, nbVloc, nbPara, klr, errmax,
             dfdF(ii+4, 1) = (tirela(1)-vloc(13))*valH*valint/HCP/tirela(3)
             dfdF(ii+4, 2) = (tirela(2)-vloc(14))*valH*valint/HCP/tirela(3)
         end if
-        dfdF(ii+4, 3) = -1.0+(Velas+vloc(15))*2.0*valMx*abs(tirela(4)-vloc(16))/(Ly*tirela(3)**2)* &
-                  (1.0+valH*HCP/tirela(3))**3*(1.0+2.0*valMy*abs(tirela(5)-vloc(17))/(Lx*tirela(3)))
-        dfdF(ii+4, 3) = dfdF(ii+4, 3)+(Velas+vloc(15))*2.0*valMy* &
-                        abs(tirela(5)-vloc(17))/(Lx*tirela(3)**2)*(1.0+valH*HCP/tirela(3))**3* &
+        dfdF(ii+4, 3) = -1.0+ &
+                        (Velas+vloc(15))*2.0*valMx* &
+                        abs(tirela(4)-vloc(16))/(Ly*tirela(3)**2)* &
+                        (1.0+valH*HCP/tirela(3))**3* &
+                        (1.0+2.0*valMy*abs(tirela(5)-vloc(17))/(Lx*tirela(3)))
+        dfdF(ii+4, 3) = dfdF(ii+4, 3)+ &
+                        (Velas+vloc(15))*2.0*valMy*abs(tirela(5)-vloc(17))/(Lx*tirela(3)**2)* &
+                        (1.0+valH*HCP/tirela(3))**3* &
                         (1.0+2.0*valMx*abs(tirela(4)-vloc(16))/(Ly*tirela(3)))
         dfdF(ii+4, 3) = dfdF(ii+4, 3)+(Velas+vloc(15))*3.0*valH*HCP/(tirela(3)**2)* &
                         (1.0+valH*HCP/tirela(3))**2* &
@@ -410,7 +414,8 @@ subroutine difondmat(tirela, raidTang, vloc, vpara, nbVloc, nbPara, klr, errmax,
             jj = assoddl(nbDDLjj)
             if ((ii .le. 4) .and. (jj .le. 4)) then
                 MatAinverser(nbDDLii, nbDDLjj) = sum(dfdF(ii, :)*raidTang(:5)*dfdF(jj, :))- &
-                               dfdQsl(ii, 1)*Hslid(1)*dfdF(jj, 1)-dfdQsl(ii, 2)*Hslid(2)*dfdF(jj, 2)
+                                                 dfdQsl(ii, 1)*Hslid(1)*dfdF(jj, 1)- &
+                                                 dfdQsl(ii, 2)*Hslid(2)*dfdF(jj, 2)
             else if ((ii .ge. 5) .and. (jj .ge. 5)) then
                 if (dfdF(ii, 3) .gt. r8prem()) then
                     signeHHCP3(3) = +1.0
@@ -418,7 +423,8 @@ subroutine difondmat(tirela, raidTang, vloc, vpara, nbVloc, nbPara, klr, errmax,
                     signeHHCP3(3) = -1.0
                 end if
                 MatAinverser(nbDDLii, nbDDLjj) = sum(dfdF(ii, :)*raidTang(:5)*dfdF(jj, :))- &
-                                              sum(dfdQCP(ii-4, :)*HHCP(:)*signeHHCP3(:)*dfdF(jj, :))
+                                                 sum(dfdQCP(ii-4, :)*HHCP(:)* &
+                                                     signeHHCP3(:)*dfdF(jj, :))
             else
                 MatAinverser(nbDDLii, nbDDLjj) = sum(dfdF(ii, :)*raidTang(:5)*dfdF(jj, :))
             end if

@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -40,16 +40,16 @@ subroutine rfmge1(modgen)
 !     OPERATEUR "RECU_FONCTION"  MOT CLE "RESU_GENE"
 !                                CONCEPT MODE_GENE
 !     ------------------------------------------------------------------
-    integer :: n1, ncmp, iret, jordr, lpro, lvar, lfon, nbordr, im, iord, iad
-    integer :: nbmode, i, istru
+    integer(kind=8) :: n1, ncmp, iret, jordr, lpro, lvar, lfon, nbordr, im, iord, iad
+    integer(kind=8) :: nbmode, i, istru
     real(kind=8) :: epsi
     character(len=4) :: interp(2)
     character(len=8) :: k8b, crit, mode
     character(len=14) :: nugene
     character(len=16) :: k16b, nomcmd, typcon, nomcha, npara
     character(len=19) :: noch19, nomfon, knume
-    integer, pointer :: nequ(:) => null()
-    integer, pointer :: deeq(:) => null()
+    integer(kind=8), pointer :: nequ(:) => null()
+    integer(kind=8), pointer :: deeq(:) => null()
     real(kind=8), pointer :: vale(:) => null()
     character(len=24), pointer :: refe(:) => null()
 !     ------------------------------------------------------------------

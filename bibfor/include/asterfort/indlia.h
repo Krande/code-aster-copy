@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -23,8 +23,8 @@ interface
                       sizlia)
         character(len=8) :: modgen
         character(len=24) :: seliai
-        integer :: nindep
-        integer :: nbddl
+        integer(kind=8) :: nindep
+        integer(kind=8) :: nbddl
         character(len=24) :: sst
         character(len=24) :: sizlia
     end subroutine indlia

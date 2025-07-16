@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -46,17 +46,17 @@ subroutine op0120()
 #include "asterfort/wkvect.h"
 !
 !-----------------------------------------------------------------------
-    integer :: i, ifft, ifm, imatr, it, j, k
-    integer :: kb, kf, kk, ktabl, l, l1, l2
-    integer :: lcomp1, lfon, lint, long1, long2
-    integer :: lresu1, lrms, ls1, lssx, ltabl, lvalc, lvale
-    integer :: nbpts, nbpts2, nda, ndd
-    integer :: nfcod, nfonc, niv, nmatr
+    integer(kind=8) :: i, ifft, ifm, imatr, it, j, k
+    integer(kind=8) :: kb, kf, kk, ktabl, l, l1, l2
+    integer(kind=8) :: lcomp1, lfon, lint, long1, long2
+    integer(kind=8) :: lresu1, lrms, ls1, lssx, ltabl, lvalc, lvale
+    integer(kind=8) :: nbpts, nbpts2, nda, ndd
+    integer(kind=8) :: nfcod, nfonc, niv, nmatr
     real(kind=8) :: bmatr, dfreq, dt, durana, durdec, frefin, freini
     real(kind=8) :: pts, pts1, pts2, pts3, tinst, tinst1
     real(kind=8) :: tinst2
 !-----------------------------------------------------------------------
-    integer :: long, ival(2), ier
+    integer(kind=8) :: long, ival(2), ier
     real(kind=8) :: resu, zero
     character(len=8) :: nomu, nomref
     character(len=16) :: concep, nomcmd
@@ -64,8 +64,8 @@ subroutine op0120()
     character(len=24) :: nomobj
     character(len=24) :: chnumi, chnumj, chfreq, chvale
 !
-    integer :: ispec
-    integer :: lnumi, lnumj, lfreq, lrefe, nbabs, mxval, ipf
+    integer(kind=8) :: ispec
+    integer(kind=8) :: lnumi, lnumj, lfreq, lrefe, nbabs, mxval, ipf
 !
 !     ------------------------------------------------------------------
 !

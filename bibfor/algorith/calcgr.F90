@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -19,7 +19,7 @@
 subroutine calcgr(igau, nbsig, nbvari, vip, nu, &
                   epsfl)
     implicit none
-    integer :: nbsig, igau, nbvari
+    integer(kind=8) :: nbsig, igau, nbvari
     real(kind=8) :: nu, epsfl(nbsig), vip(*)
 !
 ! ======================================================================
@@ -27,7 +27,7 @@ subroutine calcgr(igau, nbsig, nbvari, vip, nu, &
 !         UN POINT DE GAUSS
 !         ROUTINE APPELEE POUR LE POST-TRAITEMENT
 !----------------------------------------------------------------------
-    integer :: i, k
+    integer(kind=8) :: i, k
     real(kind=8) :: epstmp(6)
 !
 !

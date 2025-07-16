@@ -41,7 +41,6 @@ module NonLinear_module
     private
 #include "asterf_types.h"
 #include "asterfort/assert.h"
-#include "asterfort/cfdisl.h"
 #include "asterfort/diinst.h"
 #include "asterfort/dismoi.h"
 #include "asterfort/infdbg.h"
@@ -188,7 +187,7 @@ contains
     subroutine getOption(phaseType, listFuncActi, matrType, nonLinearOption, l_update_matr_)
 !   ------------------------------------------------------------------------------------------------
 ! - Parameters
-        integer, intent(in) :: phaseType, listFuncActi(*)
+        integer(kind=8), intent(in) :: phaseType, listFuncActi(*)
         character(len=16), intent(in) :: matrType
         character(len=16), intent(out) :: nonLinearOption
         aster_logical, optional, intent(in) :: l_update_matr_
@@ -228,12 +227,12 @@ contains
                            matrType, reac_iter_, reac_incr_)
 !   ------------------------------------------------------------------------------------------------
 ! - Parameters
-        integer, intent(in) :: phaseType, listFuncActi(*)
+        integer(kind=8), intent(in) :: phaseType, listFuncActi(*)
         character(len=19), intent(in) :: sddisc
-        integer, intent(in) :: numeTime
+        integer(kind=8), intent(in) :: numeTime
         type(NL_DS_AlgoPara), intent(in) :: ds_algopara
         character(len=16), intent(out) :: matrType
-        integer, optional, intent(out) :: reac_iter_, reac_incr_
+        integer(kind=8), optional, intent(out) :: reac_iter_, reac_incr_
 ! - Local
         aster_logical :: l_dischoc
 !   ------------------------------------------------------------------------------------------------
@@ -267,10 +266,10 @@ contains
 !   ------------------------------------------------------------------------------------------------
 ! - Parameters
         character(len=19), intent(in) :: sddisc
-        integer, intent(in) :: numeTime
+        integer(kind=8), intent(in) :: numeTime
         type(NL_DS_AlgoPara), intent(in) :: ds_algopara
         character(len=16), intent(out) :: matrType
-        integer, intent(out) :: reac_incr
+        integer(kind=8), intent(out) :: reac_incr
 ! - Local
         aster_logical :: l_swap
 !   ------------------------------------------------------------------------------------------------
@@ -306,10 +305,10 @@ contains
 ! - Parameters
         aster_logical, intent(in) :: l_dischoc
         character(len=19), intent(in) :: sddisc
-        integer, intent(in) :: numeTime
+        integer(kind=8), intent(in) :: numeTime
         type(NL_DS_AlgoPara), intent(in) :: ds_algopara
         character(len=16), intent(out) :: matrType
-        integer, intent(out) :: reac_iter
+        integer(kind=8), intent(out) :: reac_iter
 ! - Local
         aster_logical :: l_swap, l_swapToElastic
 !   ------------------------------------------------------------------------------------------------
@@ -353,7 +352,7 @@ contains
 !   ------------------------------------------------------------------------------------------------
 ! - Parameters
         character(len=19), intent(in) :: sddisc
-        integer, intent(in) :: numeTime
+        integer(kind=8), intent(in) :: numeTime
         type(NL_DS_AlgoPara), intent(in) :: ds_algopara
         aster_logical, intent(out) :: l_swap
 ! - Local
@@ -401,14 +400,14 @@ contains
                             reac_iter_, reac_incr_)
 !   ------------------------------------------------------------------------------------------------
 ! - Parameters
-        integer, intent(in) :: phaseType
+        integer(kind=8), intent(in) :: phaseType
         character(len=16), intent(in) :: matrType
-        integer, intent(in) :: listFuncActi(*)
+        integer(kind=8), intent(in) :: listFuncActi(*)
         type(NLDYNA_DAMPING), intent(in) :: nlDynaDamping
         type(NL_DS_System), intent(in) :: ds_system
         aster_logical, intent(out) :: l_update_matr
-        integer, optional, intent(in) :: nume_inst_, iter_newt_
-        integer, optional, intent(in) :: reac_iter_, reac_incr_
+        integer(kind=8), optional, intent(in) :: nume_inst_, iter_newt_
+        integer(kind=8), optional, intent(in) :: reac_iter_, reac_incr_
 ! - Local
         aster_logical :: l_matr_elas
         aster_logical :: l_cont_elem, lDyna
@@ -495,7 +494,7 @@ contains
 !   ------------------------------------------------------------------------------------------------
 ! - Parameters
         aster_logical, intent(in) :: l_dyna, lDampMatrix, l_matr_elas, l_varc, l_elas_fo
-        integer, intent(in) :: reac_incr, numeTime
+        integer(kind=8), intent(in) :: reac_incr, numeTime
         aster_logical, intent(out) :: l_update_matr
 ! - Local
         aster_logical :: l_first_step
@@ -542,7 +541,7 @@ contains
 !   ------------------------------------------------------------------------------------------------
 ! - Parameters
         character(len=16), intent(in) :: matrType
-        integer, intent(in) :: iter_newt, reac_iter
+        integer(kind=8), intent(in) :: iter_newt, reac_iter
         aster_logical, intent(out) :: l_update_matr
 !   ------------------------------------------------------------------------------------------------
         l_update_matr = ASTER_FALSE
@@ -601,9 +600,9 @@ contains
                                  lRigiCompute, lRigiAssemble)
 !   ------------------------------------------------------------------------------------------------
 ! - Parameters
-        integer, intent(in) :: phaseType
+        integer(kind=8), intent(in) :: phaseType
         character(len=19), intent(in) :: sddyna
-        integer, intent(in) :: numeTime
+        integer(kind=8), intent(in) :: numeTime
         aster_logical, intent(in) :: l_update_matr, lDampCompute
         aster_logical, intent(out) :: lRigiCompute, lRigiAssemble
 ! - Local
@@ -661,9 +660,9 @@ contains
                                  nonLinearOption, iter_newt, &
                                  l_comp_rigi, l_comp_fint)
 ! - Parameters
-        integer, intent(in) :: phaseType, listFuncActi(*)
+        integer(kind=8), intent(in) :: phaseType, listFuncActi(*)
         character(len=16), intent(in) :: nonLinearOption
-        integer, intent(in) :: iter_newt
+        integer(kind=8), intent(in) :: iter_newt
         aster_logical, intent(in) :: l_comp_rigi
         aster_logical, intent(out) :: l_comp_fint
 !   ------------------------------------------------------------------------------------------------
@@ -733,16 +732,16 @@ contains
                             numeDof, solveu, maprec, matass, &
                             faccvg)
 ! - Parameters
-        integer, intent(in) :: listFuncActi(*)
+        integer(kind=8), intent(in) :: listFuncActi(*)
         type(NL_DS_Measure), intent(inout) :: ds_measure
         type(ROM_DS_AlgoPara), intent(in) :: ds_algorom
         character(len=19), intent(in) :: maprec, matass, solveu
         character(len=24), intent(in) :: numeDof
-        integer, intent(out) :: faccvg
+        integer(kind=8), intent(out) :: faccvg
 !   ------------------------------------------------------------------------------------------------
 ! - Local
         aster_logical :: l_rom
-        integer :: npvneg, ifm, niv
+        integer(kind=8) :: npvneg, ifm, niv
 !   ------------------------------------------------------------------------------------------------
 !
         call infdbg('MECANONLINE', ifm, niv)
@@ -790,9 +789,9 @@ contains
         character(len=19), intent(in) :: sdnume, cnforc
 !   ------------------------------------------------------------------------------------------------
 ! - Local
-        integer :: nb_equa, i_equa
+        integer(kind=8) :: nb_equa, i_equa
         real(kind=8), pointer :: v_cnforc(:) => null()
-        integer, pointer :: v_endo(:) => null()
+        integer(kind=8), pointer :: v_endo(:) => null()
 !   ------------------------------------------------------------------------------------------------
 !
         call jeveuo(sdnume(1:19)//'.ENDO', 'L', vi=v_endo)
@@ -826,9 +825,9 @@ contains
                                   lNodeComp, lInteComp, typeAsse)
 !   ------------------------------------------------------------------------------------------------
 ! - Parameters
-        integer, intent(in) :: phaseType, listFuncActi(*)
+        integer(kind=8), intent(in) :: phaseType, listFuncActi(*)
         aster_logical, intent(out) :: lNodeComp, lInteComp
-        integer, intent(out) :: typeAsse
+        integer(kind=8), intent(out) :: typeAsse
         type(ROM_DS_AlgoPara), intent(in) :: ds_algorom
 ! - Local
         aster_logical :: lDyna, lRomCorr, lHHO
@@ -898,9 +897,9 @@ contains
                                   hval_meelem)
 !   ------------------------------------------------------------------------------------------------
 ! - Parameters
-        integer, intent(in) :: listFuncActi(*)
+        integer(kind=8), intent(in) :: listFuncActi(*)
         character(len=19), intent(in) :: listLoad, sddisc
-        integer, intent(in) :: numeTime
+        integer(kind=8), intent(in) :: numeTime
         character(len=24), intent(in) :: modelZ, caraElemZ
         type(NL_DS_Material), intent(in) :: ds_material
         type(NL_DS_Constitutive), intent(in) :: ds_constitutive

@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -21,7 +21,7 @@
 interface
     subroutine caramx(sdcont, cont_form, nb_cont_zone)
         character(len=8), intent(in) :: sdcont
-        integer, intent(in) :: cont_form
-        integer, intent(in) :: nb_cont_zone
+        integer(kind=8), intent(in) :: cont_form
+        integer(kind=8), intent(in) :: nb_cont_zone
     end subroutine caramx
 end interface

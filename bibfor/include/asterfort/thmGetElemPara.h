@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -34,14 +34,14 @@ interface
         aster_logical, intent(out) :: l_axi
         character(len=8), intent(out) :: type_elem(2)
         character(len=3), intent(out) :: inte_type
-        integer, intent(out) :: ndim
-        integer, intent(out) :: mecani(5), press1(7), press2(7), tempe(5), second(5)
-        integer, intent(out) :: dimdep, dimdef, dimcon, dimuel
-        integer, intent(out) :: nddls, nddlm, nddl_meca, nddl_p1, nddl_p2, nddl_2nd
-        integer, intent(out) :: nno, nnos
-        integer, intent(out) :: npi, npg
-        integer, intent(out) :: jv_func, jv_dfunc, jv_poids
-        integer, intent(out) :: jv_func2, jv_dfunc2, jv_poids2
-        integer, intent(out) :: jv_gano
+        integer(kind=8), intent(out) :: ndim
+        integer(kind=8), intent(out) :: mecani(5), press1(7), press2(7), tempe(5), second(5)
+        integer(kind=8), intent(out) :: dimdep, dimdef, dimcon, dimuel
+        integer(kind=8), intent(out) :: nddls, nddlm, nddl_meca, nddl_p1, nddl_p2, nddl_2nd
+        integer(kind=8), intent(out) :: nno, nnos
+        integer(kind=8), intent(out) :: npi, npg
+        integer(kind=8), intent(out) :: jv_func, jv_dfunc, jv_poids
+        integer(kind=8), intent(out) :: jv_func2, jv_dfunc2, jv_poids2
+        integer(kind=8), intent(out) :: jv_gano
     end subroutine thmGetElemPara
 end interface

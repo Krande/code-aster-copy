@@ -3,7 +3,7 @@
  * @brief Implementation de Function2D
  * @author Nicolas Sellenet
  * @section LICENCE
- *   Copyright (C) 1991 - 2023  EDF R&D                www.code-aster.org
+ *   Copyright (C) 1991 - 2025  EDF R&D                www.code-aster.org
  *
  *   This file is part of Code_Aster.
  *
@@ -37,7 +37,7 @@ ASTERINTEGER Function2D::maximumSize() const {
         return 0;
     _value->build();
     ASTERINTEGER toReturn = 0;
-    for ( const auto &[key, obj] : *_value ) {
+    for ( const auto &obj : *_value ) {
         if ( obj->size() > toReturn )
             toReturn = obj->size();
     }
@@ -49,7 +49,7 @@ ASTERINTEGER Function2D::size() const {
         return 0;
     _value->build();
     ASTERINTEGER toReturn = 0;
-    for ( const auto &[key, obj] : *_value ) {
+    for ( const auto &obj : *_value ) {
         toReturn += obj->size();
     }
     return toReturn;

@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -32,7 +32,7 @@ subroutine tbadap(nomta, nbpar, nompar, vi, vr, &
 #include "asterfort/as_deallocate.h"
 #include "asterfort/as_allocate.h"
 !
-    integer :: nbpar, vi(*)
+    integer(kind=8) :: nbpar, vi(*)
     real(kind=8) :: vr(*)
     complex(kind=8) :: vc(*)
     character(len=*) :: nomta, nompar(*), vk(*)
@@ -41,8 +41,8 @@ subroutine tbadap(nomta, nbpar, nompar, vi, vr, &
 !   correctly. The entry parameters are exactly the same as those
 !   of tbajli.
 ! ----------------------------------------------------------------------
-    integer :: nbpara, nblign, add_c, noadd_c, save_ind
-    integer ::  i, j, ki, kr, kc, kk
+    integer(kind=8) :: nbpara, nblign, add_c, noadd_c, save_ind
+    integer(kind=8) ::  i, j, ki, kr, kc, kk
     character(len=1) :: base
     character(len=3) :: type
     character(len=4) :: knume
@@ -50,10 +50,10 @@ subroutine tbadap(nomta, nbpar, nompar, vi, vr, &
     character(len=24) :: nomjvl, inpar, jnpar, nomjvl1, nomjvl2
 
     character(len=24), pointer :: tblp(:) => null()
-    integer, pointer :: tbnp(:) => null()
+    integer(kind=8), pointer :: tbnp(:) => null()
 
-    integer, pointer :: add_i(:) => null()
-    integer, pointer :: noadd_i(:) => null()
+    integer(kind=8), pointer :: add_i(:) => null()
+    integer(kind=8), pointer :: noadd_i(:) => null()
     character(len=24), pointer :: add(:) => null()
     character(len=24), pointer :: noadd(:) => null()
 ! ----------------------------------------------------------------------

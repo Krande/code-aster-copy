@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -23,15 +23,15 @@
 interface
     subroutine specep(casint, nomu, spectr, base, vite,&
                       nuor, imodi, imodf, nbm, nbpf)
-        integer :: nbm
+        integer(kind=8) :: nbm
         aster_logical :: casint
         character(len=8) :: nomu
         character(len=19) :: spectr
         character(len=19) :: base
         real(kind=8) :: vite
-        integer :: nuor(nbm)
-        integer :: imodi
-        integer :: imodf
-        integer :: nbpf
+        integer(kind=8) :: nuor(nbm)
+        integer(kind=8) :: imodi
+        integer(kind=8) :: imodf
+        integer(kind=8) :: nbpf
     end subroutine specep
 end interface

@@ -30,8 +30,8 @@ subroutine evalFaceSpeedVale(lFunc, lTime, time, &
 #include "asterfort/fointe.h"
 !
     aster_logical, intent(in) :: lFunc, lTime
-    integer, intent(in) :: cellDime, nbNode, ipg
-    integer, intent(in) :: jvGeom, jvShape, jvLoad
+    integer(kind=8), intent(in) :: cellDime, nbNode, ipg
+    integer(kind=8), intent(in) :: jvGeom, jvShape, jvLoad
     real(kind=8), intent(in) :: time
     real(kind=8), intent(out) :: speedVale
     real(kind=8), intent(out) :: x, y
@@ -61,8 +61,8 @@ subroutine evalFaceSpeedVale(lFunc, lTime, time, &
 !
     real(kind=8) :: z
     character(len=8) :: funcName
-    integer :: i_node, ldec, iret
-    integer :: nbPara
+    integer(kind=8) :: i_node, ldec, iret
+    integer(kind=8) :: nbPara
     character(len=8), parameter :: paraName2d(3) = (/'X   ', 'Y   ', 'INST'/)
     character(len=8), parameter :: paraName3d(4) = (/'X   ', 'Y   ', 'Z   ', 'INST'/)
     real(kind=8) :: paraVale2d(3)

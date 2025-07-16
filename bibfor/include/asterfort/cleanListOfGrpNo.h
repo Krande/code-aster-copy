@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2020 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -21,8 +21,8 @@ interface
     subroutine cleanListOfGrpNo(mesh, listGrpNo, nbGrpNo, l_stop, iret)
         character(len=*), intent(in)    :: mesh
         character(len=*), intent(inout) :: listGrpNo(*)
-        integer, intent(inout)          :: nbGrpNo
+        integer(kind=8), intent(inout)          :: nbGrpNo
         aster_logical, intent(in)       :: l_stop
-        integer, intent(out)            :: iret
+        integer(kind=8), intent(out)            :: iret
     end subroutine cleanListOfGrpNo
 end interface

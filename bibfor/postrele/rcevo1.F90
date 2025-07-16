@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -32,9 +32,9 @@ subroutine rcevo1(nommat, fatizh, sm, para, symax)
 !
 !     ------------------------------------------------------------------
 !
-    integer :: nbpar
+    integer(kind=8) :: nbpar
     real(kind=8) :: valres(3), erefe(1), e(1), rbid, tsm(1)
-    integer :: icodre(3)
+    integer(kind=8) :: icodre(3)
     character(len=8) :: nompar, nomval(3)
 ! DEB ------------------------------------------------------------------
 !

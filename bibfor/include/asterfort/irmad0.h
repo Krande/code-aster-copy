@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -20,9 +20,9 @@
 !
 interface
     subroutine irmad0(ifc, versio, nstat, chamno, nomsym)
-        integer :: ifc
-        integer :: versio
-        integer :: nstat
+        integer(kind=8) :: ifc
+        integer(kind=8) :: versio
+        integer(kind=8) :: nstat
         character(len=*) :: chamno(*)
         character(len=*) :: nomsym
     end subroutine irmad0

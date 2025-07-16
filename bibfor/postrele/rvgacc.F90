@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -29,7 +29,7 @@ subroutine rvgacc(iocc, typac, nival, nrval, nbval)
 #include "asterfort/jeveuo.h"
 #include "asterfort/rsorac.h"
 #include "asterfort/wkvect.h"
-    integer :: iocc, nbval
+    integer(kind=8) :: iocc, nbval
     character(len=2) :: typac
     character(len=24) :: nival, nrval
 !     ------------------------------------------------------------------
@@ -46,8 +46,8 @@ subroutine rvgacc(iocc, typac, nival, nrval, nbval)
 !     LES OJB SONT DU GENRE 'V V SCAL' 'LONMAX' = NBVAL
 !     ------------------------------------------------------------------
 !     ------------------------------------------------------------------
-    integer :: aival, arval, alist, i, ibid, n1, nbcm, nbif, nbii, nbim, nbio
-    integer :: nbis, nbnc, nbnf, nbni, nbnm, nbno, nbr8, nbto, nbtrou
+    integer(kind=8) :: aival, arval, alist, i, ibid, n1, nbcm, nbif, nbii, nbim, nbio
+    integer(kind=8) :: nbis, nbnc, nbnf, nbni, nbnm, nbno, nbr8, nbto, nbtrou
     real(kind=8) :: prec, r8b
     complex(kind=8) :: c16b
     character(len=8) :: resu, crit

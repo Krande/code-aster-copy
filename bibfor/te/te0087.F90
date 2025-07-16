@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -42,11 +42,11 @@ subroutine te0087(option, nomte)
 !              ---> NOMTE  : NOM DU TYPE ELEMENT
 ! ......................................................................
 !
-    integer :: nbsig, nbsig1, nbsig2, ndim, nno, i
-    integer :: nnos, npg, ipoids, ivf, idfde
-    integer :: igau, isig, igeom, idepl, iret
-    integer :: itemps, idefo
-    integer :: jgano
+    integer(kind=8) :: nbsig, nbsig1, nbsig2, ndim, nno, i
+    integer(kind=8) :: nnos, npg, ipoids, ivf, idfde
+    integer(kind=8) :: igau, isig, igeom, idepl, iret
+    integer(kind=8) :: itemps, idefo
+    integer(kind=8) :: jgano
 !
     real(kind=8) :: epsm(54), angl_naut(3)
     real(kind=8) :: nharm, instan, zero

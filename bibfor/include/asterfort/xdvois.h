@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -22,23 +22,23 @@ interface
                       ch2 , lsn, nbmano, jma, adrma, ndim, coupee,&
                       nno, arete, milieu, lsno, voisin)
         character(len=8) :: typma
-        integer :: ino
+        integer(kind=8) :: ino
         character(len=8) :: noma
-        integer :: numa
-        integer :: jlsnd
-        integer :: jlsnl
+        integer(kind=8) :: numa
+        integer(kind=8) :: jlsnd
+        integer(kind=8) :: jlsnl
         character(len=19) :: ch2
         real(kind=8) :: lsn(4)
-        integer :: nbmano
-        integer :: jma
-        integer :: adrma
-        integer :: ndim
+        integer(kind=8) :: nbmano
+        integer(kind=8) :: jma
+        integer(kind=8) :: adrma
+        integer(kind=8) :: ndim
         aster_logical :: coupee
         character(len=8) :: arete
         aster_logical :: milieu
         real(kind=8) :: lsno(3)
-        integer :: voisin(3)
-        integer :: jconx2
-        integer :: nno
+        integer(kind=8) :: voisin(3)
+        integer(kind=8) :: jconx2
+        integer(kind=8) :: nno
     end subroutine xdvois
 end interface

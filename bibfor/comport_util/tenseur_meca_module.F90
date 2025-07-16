@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -21,19 +21,19 @@ module tenseur_meca_module
 !
 ! person_in_charge: jean-luc.flejou at edf.fr
 !
-    integer, parameter :: dimspace = 3
+    integer(kind=8), parameter :: dimspace = 3
 
     type vecteur
         real(kind=8), dimension(dimspace) :: vect = 0.0d0
     end type vecteur
 
     type tenseur2
-        integer :: ordre = 2
+        integer(kind=8) :: ordre = 2
         real(kind=8), dimension(dimspace, dimspace) :: tens = 0.0d0
     end type tenseur2
 
     type tenseur4
-        integer :: ordre = 4
+        integer(kind=8) :: ordre = 4
         real(kind=8), dimension(dimspace, dimspace, dimspace, dimspace) :: tens = 0.0d0
     end type tenseur4
 
@@ -221,7 +221,7 @@ contains
     ! Produit tensoriel de 2 vecteurs
     type(tenseur2) function vecteur_ptens_vecteur(V1, V2) result(X)
         type(vecteur), intent(in) :: V1, V2
-        integer :: ii, jj
+        integer(kind=8) :: ii, jj
         do ii = 1, dimspace
             do jj = 1, dimspace
                 X%tens(ii, jj) = V1%vect(ii)*V2%vect(jj)
@@ -249,7 +249,7 @@ contains
         real(kind=8), intent(in)  :: Y(1:6)
         real(kind=8), intent(in)  :: scal
         real(kind=8) :: X(1:6)
-        integer :: ii
+        integer(kind=8) :: ii
         !
         X = abs(scal)
         do ii = 1, 6
@@ -408,7 +408,7 @@ contains
         !                                                   (2,1) (3,1) (3,2)
         real(kind=8), intent(out), dimension(:, :) :: X
         type(tenseur4), intent(in) :: Y
-        integer :: ii, jj, kk
+        integer(kind=8) :: ii, jj, kk
         !
         if ((size(X, 1) == 2*dimspace) .and. (size(X, 2) == 2*dimspace)) then
             do ii = 1, 3
@@ -621,7 +621,7 @@ contains
     ! Multiplication tenseur(ordre=2) par tenseur(ordre=2) : X = Y * Z
     type(tenseur2) function tenseur2_mult_tenseur2(Y, Z) result(X)
         type(tenseur2), intent(in) :: Y, Z
-        integer :: ii, jj, kk
+        integer(kind=8) :: ii, jj, kk
         !
         do ii = 1, dimspace
             do jj = 1, dimspace
@@ -636,7 +636,7 @@ contains
     type(vecteur) function tenseur2_mult_vecteur(T2, VY) result(VX)
         type(tenseur2), intent(in) :: T2
         type(vecteur), intent(in) :: VY
-        integer :: ii, kk
+        integer(kind=8) :: ii, kk
         !
         do ii = 1, dimspace
             do kk = 1, dimspace
@@ -649,7 +649,7 @@ contains
     type(tenseur2) function tenseur4_contract2_tenseur2(T4, T2) result(X)
         type(tenseur4), intent(in) :: T4
         type(tenseur2), intent(in) :: T2
-        integer :: ii, jj, kk, ll
+        integer(kind=8) :: ii, jj, kk, ll
         !
         do ii = 1, dimspace
             do jj = 1, dimspace
@@ -665,7 +665,7 @@ contains
     ! tenseur transposé d'un tenseur(ordre=2)
     type(tenseur2) function tenseur2_transpose(T2) result(X)
         type(tenseur2), intent(in) :: T2
-        integer :: ii, jj
+        integer(kind=8) :: ii, jj
 
         do ii = 1, dimspace
             do jj = 1, dimspace
@@ -680,12 +680,12 @@ contains
         type(tenseur2), intent(in) :: T2
         real(kind=8), optional, intent(in) :: Coeff
         !
-        integer, parameter :: dimesym = (dimspace+1)*dimspace/2
+        integer(kind=8), parameter :: dimesym = (dimspace+1)*dimspace/2
         !
         real(kind=8) :: Nrm = 1.0D0
         real(kind=8) :: ar(dimesym), br(dimesym), jacaux(dimspace)
         real(kind=8) :: vecp(dimspace, dimspace), valep(dimspace)
-        integer      :: ii
+        integer(kind=8)      :: ii
         !
         if (present(Coeff)) then
             Nrm = Coeff
@@ -725,7 +725,7 @@ contains
     type(TracComp) function tenseur2_TracComp(Bp) result(X)
         type(basepropre), intent(in) :: Bp
         type(tenseur2) :: Matp
-        integer        :: ii
+        integer(kind=8)        :: ii
         !
         do ii = 1, dimspace
             if (Bp%valep%vect(ii) .gt. 0.0d0) then
@@ -753,7 +753,7 @@ contains
     !
     subroutine jacobi(dimens, ar, br, vecpro, valpro, valaux)
         implicit none
-        integer :: dimens
+        integer(kind=8) :: dimens
         real(kind=8) :: ar(1), br(1), vecpro(dimens, dimens), valpro(1)
         real(kind=8) :: valaux(1)
         !
@@ -791,9 +791,9 @@ contains
         !
         logical :: okconv
         !
-        integer :: i, ii, ij, ik, im1, j, ji
-        integer :: jj, jk, jm1, jp1, k, ki, kk
-        integer :: km1, kp1, lji, ljk, lki, niter
+        integer(kind=8) :: i, ii, ij, ik, im1, j, ji
+        integer(kind=8) :: jj, jk, jm1, jp1, k, ki, kk
+        integer(kind=8) :: km1, kp1, lji, ljk, lki, niter
         !
         real(kind=8) :: ab, aj, ajj, ak, akk, bb, bj
         real(kind=8) :: bk, ca, cg, compa, compb, d1, d2
@@ -803,7 +803,7 @@ contains
         ! ------------------------------------------------------------------------------------------
         !
         ! nperm         : nombre max d'itérations de la méthode de jacobi
-        integer, parameter :: nperm = 12
+        integer(kind=8), parameter :: nperm = 12
         ! tol           : précision de convergence
         ! toldyn        : précision de petitesse dynamique
         real(kind=8), parameter :: tol = 1.0d-10, toldyn = 1.0d-02

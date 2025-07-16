@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -48,15 +48,15 @@ subroutine nm1dis(fami, kpg, ksp, imate, em, &
 #include "asterfort/rcvarc.h"
 #include "asterfort/utmess.h"
 ! --------------------------------------------------------------------------------------------------
-    integer :: kpg, ksp, imate
+    integer(kind=8) :: kpg, ksp, imate
     real(kind=8) :: em, ep, et, sigy
     real(kind=8) :: sigm, deps, pm, vim(*), vip(*), para_vale
     real(kind=8) :: sigp, dsde
     character(len=16) :: option, rela_comp
     character(len=*) :: fami, materi
 ! --------------------------------------------------------------------------------------------------
-    integer :: jprolm, jvalem, nbvalm, nbvalp, jprolp, jvalep, iret
-    integer :: icodre(2)
+    integer(kind=8) :: jprolm, jvalem, nbvalm, nbvalp, jprolp, jvalep, iret
+    integer(kind=8) :: icodre(2)
     real(kind=8) :: rprim, rm, sige, valpar, valres(2), airerp, sieleq, rp, dp, nu, asige
     character(len=8) :: nompar, para_type
     character(len=16) :: nomecl(2)

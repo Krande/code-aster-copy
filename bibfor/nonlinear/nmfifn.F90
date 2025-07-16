@@ -1,6 +1,6 @@
 ! --------------------------------------------------------------------
 ! Copyright (C) 2007 NECS - BRUNO ZUBER   WWW.NECS.FR
-! Copyright (C) 2007 - 2024 - EDF R&D - www.code-aster.org
+! Copyright (C) 2007 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -25,7 +25,7 @@ subroutine nmfifn(nno, nddl, npg, wref, vff, &
 #include "asterfort/nmfici.h"
 #include "asterfort/r8inir.h"
 #include "blas/ddot.h"
-    integer :: nno, nddl, npg
+    integer(kind=8) :: nno, nddl, npg
     real(kind=8) :: wref(npg), vff(nno, npg), dfde(2, nno, npg)
     real(kind=8) :: geom(nddl), fint(nddl), sigma(3, npg)
 !-----------------------------------------------------------------------
@@ -41,7 +41,7 @@ subroutine nmfifn(nno, nddl, npg, wref, vff, &
 ! IN  SIGMA  CONTRAINTES LOCALES AUX POINTS DE GAUSS (SIGN, SITX, SITY)
 ! OUT FINT   FORCES NODALES
 !-----------------------------------------------------------------------
-    integer :: ni, kpg
+    integer(kind=8) :: ni, kpg
     real(kind=8) :: b(3, 60), poids
     blas_int :: b_incx, b_incy, b_n
 !-----------------------------------------------------------------------

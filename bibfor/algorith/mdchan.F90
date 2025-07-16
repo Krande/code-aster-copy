@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -33,7 +33,7 @@ subroutine mdchan(nlcase, ioc, iliai, mdgene, typnum, &
 #include "asterfort/wkvect.h"
 #include "asterfort/nlget.h"
 #include "asterfort/nlsav.h"
-    integer :: ioc, iliai
+    integer(kind=8) :: ioc, iliai
     real(kind=8) :: xjeu
     character(len=8) :: repere, sd_nl
     character(len=*) :: nlcase
@@ -60,7 +60,7 @@ subroutine mdchan(nlcase, ioc, iliai, mdgene, typnum, &
 !                PARCHO(ILIAI,21)= SIN G
 !                PARCHO(ILIAI,22)= COS G
 !     ------------------------------------------------------------------
-    integer :: n1, jnorm
+    integer(kind=8) :: n1, jnorm
     real(kind=8) :: txloc(3), tzloc(3), tyloc(3), ang(3), alpha, beta
     real(kind=8) :: normx(3), normy(3), angl, rnorm, rad, eps
     real(kind=8), pointer :: coor_no1(:) => null()

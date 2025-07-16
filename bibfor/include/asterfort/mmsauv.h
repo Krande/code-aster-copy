@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -24,15 +24,15 @@ interface
                       ksipc1, ksipc2, wpc)
         use NonLin_Datastructure_type
         type(NL_DS_Contact), intent(in) :: ds_contact
-        integer :: izone
-        integer :: iptc
-        integer :: nummam
+        integer(kind=8) :: izone
+        integer(kind=8) :: iptc
+        integer(kind=8) :: nummam
         real(kind=8) :: ksipr1
         real(kind=8) :: ksipr2
         real(kind=8) :: tau1(3)
         real(kind=8) :: tau2(3)
-        integer :: nummae
-        integer :: numnoe
+        integer(kind=8) :: nummae
+        integer(kind=8) :: numnoe
         real(kind=8) :: ksipc1
         real(kind=8) :: ksipc2
         real(kind=8) :: wpc

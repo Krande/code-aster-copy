@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -28,7 +28,7 @@ subroutine jjalls(lonoi, ic, genri, typei, lty, &
 #include "asterfort/jjldyn.h"
 #include "asterfort/jxlocs.h"
 #include "asterfort/utmess.h"
-    integer :: lonoi, lty, itab(*), jitab, iadmi, iadyn
+    integer(kind=8) :: lonoi, lty, itab(*), jitab, iadmi, iadyn
     character(len=*) :: genri, typei, ci
 ! ----------------------------------------------------------------------
 ! ALLOUE UN SEGMENT DE VALEUR EN MEMOIRE
@@ -44,34 +44,34 @@ subroutine jjalls(lonoi, ic, genri, typei, lty, &
 ! OUT IADMI  : ADRESSE DU PREMIER MOT DU SEGMENT DE VALEUR
 ! OUT IADYN  : ADRESSE DU TABLEAU ALLOUE DYNAMIQUEMENT
 ! ----------------------------------------------------------------------
-    integer :: lk1zon, jk1zon, liszon, jiszon
+    integer(kind=8) :: lk1zon, jk1zon, liszon, jiszon
     common/izonje/lk1zon, jk1zon, liszon, jiszon
 !-----------------------------------------------------------------------
-    integer :: i, iada, idm, ierr, iessai, ildyna, jcara
-    integer :: jdate, jhcod, jiadd, jiadm, jiszo2, jlong, jlono
-    integer :: jltyp, jluti, jmarq, lgbl, lsi, lso
-    integer :: ltot, n, nde
+    integer(kind=8) :: i, iada, idm, ierr, iessai, ildyna, jcara
+    integer(kind=8) :: jdate, jhcod, jiadd, jiadm, jiszo2, jlong, jlono
+    integer(kind=8) :: jltyp, jluti, jmarq, lgbl, lsi, lso
+    integer(kind=8) :: ltot, n, nde
 !-----------------------------------------------------------------------
     parameter(n=5)
     common/jiatje/jltyp(n), jlong(n), jdate(n), jiadd(n), jiadm(n),&
      &                 jlono(n), jhcod(n), jcara(n), jluti(n), jmarq(n)
-    integer :: nblmax, nbluti, longbl, kitlec, kitecr, kiadm, iitlec, iitecr
-    integer :: nitecr, kmarq
+    integer(kind=8) :: nblmax, nbluti, longbl, kitlec, kitecr, kiadm, iitlec, iitecr
+    integer(kind=8) :: nitecr, kmarq
     common/ificje/nblmax(n), nbluti(n), longbl(n),&
      &                 kitlec(n), kitecr(n), kiadm(n),&
      &                 iitlec(n), iitecr(n), nitecr(n), kmarq(n)
 ! ----------------------------------------------------------------------
-    integer :: istat
+    integer(kind=8) :: istat
     common/istaje/istat(4)
-    integer :: lbis, lois, lols, lor8, loc8
+    integer(kind=8) :: lbis, lois, lols, lor8, loc8
     common/ienvje/lbis, lois, lols, lor8, loc8
-    integer :: ldyn, lgdyn, nbdyn, nbfree
+    integer(kind=8) :: ldyn, lgdyn, nbdyn, nbfree
     common/idynje/ldyn, lgdyn, nbdyn, nbfree
     real(kind=8) :: mxdyn, mcdyn, mldyn, vmxdyn, vmet, lgio, cuvtrav
     common/r8dyje/mxdyn, mcdyn, mldyn, vmxdyn, vmet, lgio(2), cuvtrav
 ! ----------------------------------------------------------------------
-    integer :: init, iblanc, valloc, lsic
-    integer :: ic, ival(4), unmega
+    integer(kind=8) :: init, iblanc, valloc, lsic
+    integer(kind=8) :: ic, ival(4), unmega
     aster_logical :: linit, ldeps
     character(len=8) :: cblanc
     equivalence(cblanc, iblanc)

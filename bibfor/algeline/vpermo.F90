@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -28,7 +28,7 @@ subroutine vpermo(lmasse, lraide, nbprop, vecp, valp, &
 #include "asterfort/wkvect.h"
 #include "blas/daxpy.h"
 #include "blas/dscal.h"
-    integer :: lmasse, lraide, nbprop, excl(*)
+    integer(kind=8) :: lmasse, lraide, nbprop, excl(*)
     real(kind=8) :: vecp(*), valp(*), omecor, ernorm(*)
 !     CALCUL DE LA NORME D'ERREUR MODALE
 !     ( IE NORME D'ERREUR SUR LES VALEURS ET VECTEURS PROPRES.)
@@ -55,7 +55,7 @@ subroutine vpermo(lmasse, lraide, nbprop, vecp, valp, &
 !
 !     --- SEUIL EN PULSATION POUR LES MODES DE CORPS RIGIDE ---
 !-----------------------------------------------------------------------
-    integer :: i, iaux1, iaux2, j, neq, ivec
+    integer(kind=8) :: i, iaux1, iaux2, j, neq, ivec
     real(kind=8) :: xseuil, rmin, raux
     blas_int :: b_incx, b_incy, b_n
 !-----------------------------------------------------------------------

@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -24,7 +24,7 @@ subroutine nmtama(fami, kpg, ksp, imate, instam, &
 #include "asterf_types.h"
 #include "asterfort/rcvalb.h"
 #include "asterfort/utmess.h"
-    integer :: kpg, ksp, imate
+    integer(kind=8) :: kpg, ksp, imate
     character(len=*) :: fami
     real(kind=8) :: instam, instap, matm(3), mat(14)
 !
@@ -57,7 +57,7 @@ subroutine nmtama(fami, kpg, ksp, imate, instam, &
 !
     aster_logical :: visco
     character(len=8) :: nom(14)
-    integer :: ok(14)
+    integer(kind=8) :: ok(14)
     real(kind=8) :: e, nu
 !
     data nom/'E', 'NU', 'ALPHA',&

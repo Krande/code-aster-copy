@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -26,12 +26,12 @@ subroutine avpic2(method, nbvec, nbordr, jrtrv, jitrv, &
 #include "asterfort/jedema.h"
 #include "asterfort/jemarq.h"
 #include "asterfort/utmess.h"
-    integer :: nbvec, nbordr, npoin(nbvec), jvalor
-    integer :: npic(nbvec), jordpi
-    integer :: jitrv
+    integer(kind=8) :: nbvec, nbordr, npoin(nbvec), jvalor
+    integer(kind=8) :: npic(nbvec), jordpi
+    integer(kind=8) :: jitrv
 !
     character(len=8) :: method
-    integer :: jrtrv, jvalpo, jpic
+    integer(kind=8) :: jrtrv, jvalpo, jpic
 ! ----------------------------------------------------------------------
 ! BUT: EXTRACTION DES PICS POUR RAINFLOW <=> REARANGEMENT DES PICS,
 !      PIC LE PLUS GRAND AU DEBUT ET A LA FIN.
@@ -59,7 +59,7 @@ subroutine avpic2(method, nbvec, nbordr, jrtrv, jitrv, &
 !
 !-----------------------------------------------------------------------
 !     ------------------------------------------------------------------
-    integer :: ivect, adrs, i, nmax, ntrv, ointer
+    integer(kind=8) :: ivect, adrs, i, nmax, ntrv, ointer
     real(kind=8) :: epsilo, pmax, pinter, dp1, dp2
     character(len=8) :: k8b
 !-----------------------------------------------------------------------

@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -26,11 +26,11 @@ interface
                       amort, dep0, vit0, acc0, fexte,&
                       famor, fliai, numedd, nume, nbtyar,&
                       typear)
-        integer :: nbtyar
-        integer :: neq
+        integer(kind=8) :: nbtyar
+        integer(kind=8) :: neq
         character(len=8) :: result
-        integer :: nbordr
-        integer :: iarchi
+        integer(kind=8) :: nbordr
+        integer(kind=8) :: iarchi
         character(len=*) :: texte
         real(kind=8) :: t0
         aster_logical :: lcrea
@@ -45,7 +45,7 @@ interface
         real(kind=8) :: famor(2*neq)
         real(kind=8) :: fliai(2*neq)
         character(len=24) :: numedd
-        integer :: nume
+        integer(kind=8) :: nume
         character(len=16) :: typear(nbtyar)
     end subroutine dltcrr
 end interface

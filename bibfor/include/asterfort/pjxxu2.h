@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2018 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -22,9 +22,9 @@ interface
     subroutine pjxxu2(dim, moa, lima, nbma, klino, nbnoOut)
         character(len=2) :: dim
         character(len=8) :: moa
-        integer :: lima(*)
-        integer :: nbma
+        integer(kind=8) :: lima(*)
+        integer(kind=8) :: nbma
         character(len=16) :: klino
-        integer :: nbnoOut
+        integer(kind=8) :: nbnoOut
     end subroutine pjxxu2
 end interface

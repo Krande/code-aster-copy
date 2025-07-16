@@ -15,14 +15,12 @@
 ! You should have received a copy of the GNU General Public License
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
-! aslint: disable=C0110
 
 subroutine cmqutr(basz, nomain, nomaou, nbma, nummai, &
                   prefix, ndinit)
     implicit none
 #include "asterf_types.h"
 #include "jeveux.h"
-#include "asterfort/codent.h"
 #include "asterfort/dismoi.h"
 #include "asterfort/infniv.h"
 #include "asterfort/ingrma.h"
@@ -49,39 +47,40 @@ subroutine cmqutr(basz, nomain, nomaou, nbma, nummai, &
 #include "asterfort/int_to_char8.h"
 #include "asterfort/char8_to_int.h"
 !
-    integer :: nbma, nummai(*), ndinit
+    integer(kind=8) :: nbma, nummai(*), ndinit
     character(len=8) :: nomain, nomaou, prefix
     character(len=*) :: basz
 !     OPTION = 'QUAD_TRIA3'
 !
 !     ------------------------------------------------------------------
-    integer :: i, ima, nbmat, nbmail, typtri, nbtri, iret, nbgrno, nbnomx, nbpt
-    integer :: ino, ima2, imav, iatyma, jvg, jtypm, jdime, jopt, jnpt
-    integer :: nbno, ier, jgg, im, j, lgpref, lgnd, nbmag, nbgrm, ifm, niv, iq4
-    integer :: iq8, iq9, igrma, nbgm, jlgrma, jgrma, nbma2, jdec, ig, ind
-    integer :: nbmais
+    integer(kind=8) :: i, ima, nbmat, nbmail, typtri, nbtri, iret, nbgrno, nbnomx, nbpt
+    integer(kind=8) :: ino, ima2, imav, iatyma, jvg, jtypm, jdime, jopt, jnpt
+    integer(kind=8) :: nbno, ier, jgg, im, j, lgpref, nbmag, nbgrm, ifm, niv, iq4
+    integer(kind=8) :: iq8, iq9, igrma, nbgm, jlgrma, jgrma, nbma2, jdec, ig, ind
+    integer(kind=8) :: nbmais
     aster_logical :: logic
     character(len=1) :: base
     character(len=24) :: valk
     character(len=8) :: typm, nima
-    character(len=16) :: knume
     character(len=24) :: typmai, connex, nodime, grpnoe, cooval
     character(len=24) :: coodsc, grpmai, nomg
     character(len=24) :: typmav, connev, nodimv, grpnov, gpptnn, coovav
     character(len=24) :: coodsv, grpmav, gpptnm
-    integer :: versio
+    integer(kind=8) :: versio
     parameter(versio=1)
 !  --- TABLEAU DE DECOUPAGE
-    integer :: ntyele, maxel, maxno
+    integer(kind=8) :: ntyele, maxel, maxno
     parameter(ntyele=28)
     parameter(maxel=48)
     parameter(maxno=8)
-    integer :: tdec(ntyele, maxel, maxno)
-    integer :: typd(ntyele, 3)
+    integer(kind=8), allocatable :: tdec(:, :, :)
+    integer(kind=8) :: typd(ntyele, 3)
 !     ------------------------------------------------------------------
 !
     call jemarq()
     call infniv(ifm, niv)
+!
+    allocate (tdec(ntyele, maxel, maxno))
 !
 !====
 ! 1. TABLEAU DE DECOUPAGE
@@ -363,6 +362,7 @@ subroutine cmqutr(basz, nomain, nomaou, nbma, nummai, &
 !
 !     -- RETASSAGE  DE CONNEX (QUI A ETE ALLOUEE TROP GRANDE) :
     call jeccta(connex)
+    deallocate (tdec)
 !
 !
 !

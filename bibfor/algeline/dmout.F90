@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -42,14 +42,14 @@ subroutine dmout(lout, m, n, a, lda, &
 !
 !     .. SCALAR ARGUMENTS ..
     character(len=*) :: ifmt
-    integer :: idigit, lda, lout, m, n
+    integer(kind=8) :: idigit, lda, lout, m, n
 !
 !     .. ARRAY ARGUMENTS ..
     real(kind=8) :: a(lda, *)
 !
 !     .. LOCAL SCALARS ..
     character(len=80) :: line
-    integer :: i, j, k1, k2, lll, ndigit
+    integer(kind=8) :: i, j, k1, k2, lll, ndigit
 !
 !     .. LOCAL ARRAYS ..
     character(len=1) :: icol(3)

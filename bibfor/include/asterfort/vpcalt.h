@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -31,9 +31,9 @@ interface
         character(len=24) , intent(in)    :: vecvp
         character(len=19) , intent(in)    :: matopa
         character(len=19) , intent(in)    :: matpsc
-        integer           , intent(in)    :: mxresf
-        integer           , intent(in)    :: nblagr
-        integer           , intent(in)    :: nstoc
+        integer(kind=8)           , intent(in)    :: mxresf
+        integer(kind=8)           , intent(in)    :: nblagr
+        integer(kind=8)           , intent(in)    :: nstoc
         real(kind=8)      , intent(in)    :: omemax
         real(kind=8)      , intent(in)    :: omemin
         real(kind=8)      , intent(in)    :: omeshi
@@ -43,9 +43,9 @@ interface
         character(len=19) , intent(in)    :: vecrig
         complex(kind=8)   , intent(in)    :: sigma
 !!
-        integer           , intent(inout) :: npivot
+        integer(kind=8)           , intent(inout) :: npivot
         aster_logical   , intent(out)   :: flage
-        integer           , intent(out)   :: nconv
+        integer(kind=8)           , intent(out)   :: nconv
         real(kind=8)      , intent(out)   :: vpinf
         real(kind=8)      , intent(out)   :: vpmax
     end subroutine vpcalt

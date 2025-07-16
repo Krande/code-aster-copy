@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -32,7 +32,7 @@ subroutine cgtabl(table_container, nb_obje, obje_name, obje_sdname, nb_cham_thet
 #include "asterfort/tbcrsd.h"
 !
     character(len=8), intent(in)  :: table_container
-    integer, intent(in)           :: nb_obje, nb_cham_theta
+    integer(kind=8), intent(in)           :: nb_obje, nb_cham_theta
     character(len=16), intent(in) :: obje_name(nb_obje)
     character(len=24), intent(in) :: obje_sdname(nb_obje)
 !
@@ -52,19 +52,19 @@ subroutine cgtabl(table_container, nb_obje, obje_name, obje_sdname, nb_cham_thet
 !
 ! --------------------------------------------------------------------------------------------------
 !
-    integer, parameter :: nbpara = 4
+    integer(kind=8), parameter :: nbpara = 4
     character(len=19), parameter :: nompar(nbpara) = (/ &
                                     'NOM_OBJET ', 'TYPE_OBJET', 'NOM_SD    ', 'NUME_ORDRE'/)
     character(len=19), parameter :: typpar(nbpara) = (/ &
                                     'K16', 'K16', 'K24', 'I  '/)
 !
-    integer, parameter :: l_nb_obje = 3
+    integer(kind=8), parameter :: l_nb_obje = 3
     character(len=16), parameter :: l_obje_name(l_nb_obje) = (/ &
                                     'TABLE_G         ', 'CHAM_THETA      ', 'NB_CHAM_THETA   '/)
     character(len=16), parameter :: l_obje_type(l_nb_obje) = (/ &
                                     'TABLE           ', 'CHAM_NO         ', 'ENTIER          '/)
 !
-    integer :: i_l_obj, i_obj, nume_store, nume_store_theta
+    integer(kind=8) :: i_l_obj, i_obj, nume_store, nume_store_theta
     character(len=24) :: vk(3)
     character(len=16) :: obje_type
     aster_logical, parameter :: debug = ASTER_FALSE

@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -31,7 +31,7 @@ subroutine mechpo(souche, charge, modele, chdep2, chdynr, &
 #include "asterfort/mecact.h"
     character(len=*) :: souche, charge, modele, chdep2, chdynr, suropt, lpain(*)
     character(len=*) :: lchin(*), typcoe
-    integer :: nbopt
+    integer(kind=8) :: nbopt
     real(kind=8) :: alpha
     complex(kind=8) :: calpha
 !     CREE UNE CARTE SPECFIQUE POUTRE A LA POUX
@@ -52,7 +52,7 @@ subroutine mechpo(souche, charge, modele, chdep2, chdynr, &
     character(len=24) :: ligrmo, chdepl
     complex(kind=8) :: tpc(11)
 !-----------------------------------------------------------------------
-    integer :: i, iret
+    integer(kind=8) :: i, iret
 !-----------------------------------------------------------------------
     data ncmppe/'G', 'AG', 'BG', 'CG'/
     data ncmpfo/'FX', 'FY', 'FZ', 'MX', 'MY', 'MZ',&

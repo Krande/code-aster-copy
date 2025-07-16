@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -27,15 +27,15 @@ interface
                       solveu, criter, chondp, nondp, numrep, ds_energy,&
                       sd_obsv, mesh, kineLoad)
         use NonLin_Datastructure_type
-        integer :: nondp
+        integer(kind=8) :: nondp
         character(len=8) :: result
         character(len=19) :: force0
         character(len=19) :: force1
         aster_logical :: lcrea
         aster_logical :: lamort
-        integer :: iinteg
-        integer :: neq
-        integer :: imat(3)
+        integer(kind=8) :: iinteg
+        integer(kind=8) :: neq
+        integer(kind=8) :: imat(3)
         character(len=8) :: masse
         character(len=8) :: rigid
         character(len=8) :: amort
@@ -46,9 +46,9 @@ interface
         real(kind=8) :: famor(*)
         real(kind=8) :: fliai(*)
         real(kind=8) :: t0
-        integer :: nchar
-        integer :: nveca
-        integer :: liad(*)
+        integer(kind=8) :: nchar
+        integer(kind=8) :: nveca
+        integer(kind=8) :: liad(*)
         character(len=24) :: lifo(*)
         character(len=24) :: modele
         character(len=24) :: mate, mateco
@@ -57,11 +57,11 @@ interface
         character(len=24) :: infoch
         character(len=24) :: fomult
         character(len=24) :: numedd, kineLoad
-        integer :: nume
+        integer(kind=8) :: nume
         character(len=19) :: solveu
         character(len=24) :: criter
         character(len=8) :: chondp(nondp)
-        integer :: numrep
+        integer(kind=8) :: numrep
         type(NL_DS_Energy), intent(inout) :: ds_energy
         character(len=19), intent(inout) :: sd_obsv
         character(len=*), intent(in) :: mesh

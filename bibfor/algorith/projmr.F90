@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -42,7 +42,7 @@ subroutine projmr(matras, nomres, basemo, nugene, nu, &
 #include "asterfort/as_allocate.h"
 #include "blas/ddot.h"
 !
-    integer :: neq, nbmo
+    integer(kind=8) :: neq, nbmo
     character(len=8) :: matras, nomres, basemo
     character(len=14) :: nu, nugene
     character(len=19) :: nomsto
@@ -52,19 +52,19 @@ subroutine projmr(matras, nomres, basemo, nugene, nu, &
 !
 !-----------------------------------------------------------------------
 !
-    integer :: nueq, ntbloc, nbloc, iaconl, jrefa, iadesc
-    integer :: i, j, imatra, iblo, ldblo, n1bloc, n2bloc
-    integer :: idbase, nbj, ldblo1, ldblo2, hc
+    integer(kind=8) :: nueq, ntbloc, nbloc, iaconl, jrefa, iadesc
+    integer(kind=8) :: i, j, imatra, iblo, ldblo, n1bloc, n2bloc
+    integer(kind=8) :: idbase, nbj, ldblo1, ldblo2, hc
     real(kind=8) :: pij
     complex(kind=8) :: cbid
     character(len=16) :: typbas
     character(len=19) :: matr, resu
     aster_logical :: lsym
     real(kind=8), pointer :: vectass2(:) => null()
-    integer, pointer :: deeq(:) => null()
-    integer, pointer :: smde(:) => null()
+    integer(kind=8), pointer :: deeq(:) => null()
+    integer(kind=8), pointer :: smde(:) => null()
     integer(kind=4), pointer :: smhc(:) => null()
-    integer, pointer :: smdi(:) => null()
+    integer(kind=8), pointer :: smdi(:) => null()
     blas_int :: b_incx, b_incy, b_n
     cbid = dcmplx(0.d0, 0.d0)
 !-----------------------------------------------------------------------

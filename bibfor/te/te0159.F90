@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -34,17 +34,17 @@ subroutine te0159(nomopt, nomte)
 !          ---> NOMTE  : NOM DU TYPE ELEMENT
 !.......................................................................
 !
-    integer :: icodre(1)
+    integer(kind=8) :: icodre(1)
     character(len=8) :: fami, poum
     character(len=16) :: nomte, nomopt
     real(kind=8) :: a(3, 3, 27, 27), poids
-    integer :: ipoids, ivf, idfde, igeom, imate
-    integer :: jgano, nno, kp, i, j, imatuu, kpg, spt
+    integer(kind=8) :: ipoids, ivf, idfde, igeom, imate
+    integer(kind=8) :: jgano, nno, kp, i, j, imatuu, kpg, spt
 !
 !
 !-----------------------------------------------------------------------
-    integer :: ijkl, ik, jl, irota, k, l, ndim, nnos
-    integer :: npg2
+    integer(kind=8) :: ijkl, ik, jl, irota, k, l, ndim, nnos
+    integer(kind=8) :: npg2
     real(kind=8) :: omega1, omega2, omega3, rho(1), wij
 !-----------------------------------------------------------------------
     call elrefe_info(fami='MASS', ndim=ndim, nno=nno, nnos=nnos, npg=npg2, &

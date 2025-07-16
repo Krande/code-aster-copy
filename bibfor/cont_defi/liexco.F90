@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -36,9 +36,9 @@ subroutine liexco(sdcont, keywf, mesh, model, nb_cont_zone, &
     character(len=8), intent(in) :: mesh
     character(len=8), intent(in) :: model
     character(len=16), intent(in) :: keywf
-    integer, intent(in) :: nb_cont_zone
-    integer, intent(in) :: nb_cont_elem
-    integer, intent(in) :: nb_cont_node
+    integer(kind=8), intent(in) :: nb_cont_zone
+    integer(kind=8), intent(in) :: nb_cont_elem
+    integer(kind=8), intent(in) :: nb_cont_node
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -58,18 +58,18 @@ subroutine liexco(sdcont, keywf, mesh, model, nb_cont_zone, &
 !
 ! --------------------------------------------------------------------------------------------------
 !
-    integer :: jdecma, jdecno
-    integer :: nb_elem_slav, nb_node_slav
-    integer :: nb_elem_mast, nb_node_mast
-    integer :: i_zone, i_surf, i_elem, i_node
+    integer(kind=8) :: jdecma, jdecno
+    integer(kind=8) :: nb_elem_slav, nb_node_slav
+    integer(kind=8) :: nb_elem_mast, nb_node_mast
+    integer(kind=8) :: i_zone, i_surf, i_elem, i_node
     character(len=24) :: list_elem_slav, list_elem_mast
     character(len=24) :: list_node_slav, list_node_mast
-    integer, pointer :: v_list(:) => null()
+    integer(kind=8), pointer :: v_list(:) => null()
     character(len=24) :: sdcont_defi
     character(len=24) :: sdcont_mailco
-    integer, pointer :: v_sdcont_mailco(:) => null()
+    integer(kind=8), pointer :: v_sdcont_mailco(:) => null()
     character(len=24) :: sdcont_noeuco
-    integer, pointer :: v_sdcont_noeuco(:) => null()
+    integer(kind=8), pointer :: v_sdcont_noeuco(:) => null()
 !
 ! --------------------------------------------------------------------------------------------------
 !

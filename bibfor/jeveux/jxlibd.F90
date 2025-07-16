@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -23,7 +23,7 @@ subroutine jxlibd(idco, idos, ic, iaddi, lonoi)
 #include "jeveux_private.h"
 #include "asterfort/jxecrb.h"
 #include "asterfort/jxlirb.h"
-    integer :: idco, idos, ic, iaddi(2), lonoi
+    integer(kind=8) :: idco, idos, ic, iaddi(2), lonoi
 ! ----------------------------------------------------------------------
 ! MARQUE LA PLACE DISQUE EN VUE D'UNE RECUPERATION ULTERIEURE
 ! L'IDENTIFICATEUR EST MIS NEGATIF
@@ -33,19 +33,19 @@ subroutine jxlibd(idco, idos, ic, iaddi, lonoi)
 ! IN  IADDI  : ADRESSE DISQUE DE L'OBJET REPERE PAR ID
 ! IN  LONOI  : LONGUEUR EN OCTETS DE L'OBJET
 ! ----------------------------------------------------------------------
-    integer :: lk1zon, jk1zon, liszon, jiszon
+    integer(kind=8) :: lk1zon, jk1zon, liszon, jiszon
     common/izonje/lk1zon, jk1zon, liszon, jiszon
 !     ------------------------------------------------------------------
-    integer :: lbis, lois, lols, lor8, loc8
+    integer(kind=8) :: lbis, lois, lols, lor8, loc8
     common/ienvje/lbis, lois, lols, lor8, loc8
 !     ------------------------------------------------------------------
 !-----------------------------------------------------------------------
-    integer :: i, jiecr, jusadi, n, nbgros, nblent
-    integer :: nblim, nbpeti
+    integer(kind=8) :: i, jiecr, jusadi, n, nbgros, nblent
+    integer(kind=8) :: nblim, nbpeti
 !-----------------------------------------------------------------------
     parameter(n=5)
-    integer :: nblmax, nbluti, longbl, kitlec, kitecr, kiadm, iitlec, iitecr
-    integer :: nitecr, kmarq
+    integer(kind=8) :: nblmax, nbluti, longbl, kitlec, kitecr, kiadm, iitlec, iitecr
+    integer(kind=8) :: nitecr, kmarq
     common/ificje/nblmax(n), nbluti(n), longbl(n),&
      &                 kitlec(n), kitecr(n), kiadm(n),&
      &                 iitlec(n), iitecr(n), nitecr(n), kmarq(n)
@@ -54,7 +54,7 @@ subroutine jxlibd(idco, idos, ic, iaddi, lonoi)
     common/jusadi/jusadi(n)
     common/inbdet/nblim(n), nbgros(n), nbpeti(n)
 !     ------------------------------------------------------------------
-    integer :: kadd, ladd, lgbl
+    integer(kind=8) :: kadd, ladd, lgbl
     aster_logical :: lpetit, lrab
 ! DEB ------------------------------------------------------------------
     kadd = iaddi(1)

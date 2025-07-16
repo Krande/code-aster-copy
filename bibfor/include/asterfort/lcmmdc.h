@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -21,12 +21,12 @@
 interface
     subroutine lcmmdc(coeft, ifa, nmat, nbcomm, alphap,&
                       is, ceff, dcdals)
-        integer :: nmat
+        integer(kind=8) :: nmat
         real(kind=8) :: coeft(*)
-        integer :: ifa
-        integer :: nbcomm(nmat, 3)
+        integer(kind=8) :: ifa
+        integer(kind=8) :: nbcomm(nmat, 3)
         real(kind=8) :: alphap(12)
-        integer :: is
+        integer(kind=8) :: is
         real(kind=8) :: ceff
         real(kind=8) :: dcdals
     end subroutine lcmmdc

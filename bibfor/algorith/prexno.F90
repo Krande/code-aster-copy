@@ -29,14 +29,12 @@ subroutine prexno(champ, ioc, nomax, cmpmax, valmax, &
 #include "asterfort/detrsd.h"
 #include "asterfort/getvtx.h"
 #include "asterfort/jedetr.h"
-#include "asterfort/jenuno.h"
 #include "asterfort/jeveuo.h"
-#include "asterfort/jexnum.h"
 #include "asterfort/reliem.h"
 #include "asterfort/utmess.h"
 #include "asterfort/int_to_char8.h"
 !
-    integer :: ioc
+    integer(kind=8) :: ioc
     real(kind=8) :: valmin, valmax, vaamin, vaamax
     character(len=8) :: nomax, nomin, cmpmax, cmpmin
     character(len=8) :: noamax, noamin, cmamax, cmamin
@@ -47,9 +45,9 @@ subroutine prexno(champ, ioc, nomax, cmpmax, valmax, &
 !
 ! ----------------------------------------------------------------------
 !
-    integer :: jcnsl, nbno, ncmp, nbn
-    integer :: ibid, nbnoeu, idnoeu, nbc, nbcmp
-    integer :: i100, i110, icp, ino, inomax, inomin, inamax, inamin
+    integer(kind=8) :: jcnsl, nbno, ncmp, nbn
+    integer(kind=8) :: ibid, nbnoeu, idnoeu, nbc, nbcmp
+    integer(kind=8) :: i100, i110, icp, ino, inomax, inomin, inamax, inamin
     real(kind=8) :: x
     character(len=8) :: nocmp, ma
     character(len=16) :: motcle(4), typmcl(4)
@@ -57,7 +55,7 @@ subroutine prexno(champ, ioc, nomax, cmpmax, valmax, &
     character(len=24) :: mesnoe
     character(len=8), pointer :: nom_cmp(:) => null()
     character(len=8), pointer :: cnsc(:) => null()
-    integer, pointer :: cnsd(:) => null()
+    integer(kind=8), pointer :: cnsd(:) => null()
     real(kind=8), pointer :: cnsv(:) => null()
     character(len=8), pointer :: cnsk(:) => null()
 ! ---------------------------------------------------------------------

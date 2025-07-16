@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -24,11 +24,11 @@ subroutine mltaff(n, ncol, adper, matper, matfi, &
 ! POUR UNE MEILLEURE UTILISATION DES REGISTRES SUR CRAY
     implicit none
     integer(kind=4) :: local(*)
-    integer :: n, ncol, adper(*), p
+    integer(kind=8) :: n, ncol, adper(*), p
     real(kind=8) :: matper(*), matfi(*)
 !     VARIABLES LOCALES
-    integer :: decp1, decf1, j, i, ni, id1
-    integer :: decp0
+    integer(kind=8) :: decp1, decf1, j, i, ni, id1
+    integer(kind=8) :: decp0
 !-----------------------------------------------------------------------
 !-----------------------------------------------------------------------
     decf1 = 1+(n+(n-ncol+1))*ncol/2

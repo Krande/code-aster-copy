@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -29,7 +29,7 @@ subroutine irrjpl(model, nmat, mater, sigf, vind, &
 #include "asterfort/lcprte.h"
 #include "asterfort/mgauss.h"
     character(len=8) :: model
-    integer :: nmat
+    integer(kind=8) :: nmat
     real(kind=8) :: mater(nmat, 2), dsde(6, 6), sigf(6)
     real(kind=8) :: vind(*), vinf(*)
 !
@@ -49,7 +49,7 @@ subroutine irrjpl(model, nmat, mater, sigf, vind, &
 !           VINF   :  VARIABLES INTERNES A T+DT
 !       OUT DSDE   :  MATRICE DE COMPORTEMENT TANGENT = DSIG/DEPS
 !       ----------------------------------------------------------------
-    integer :: ndt, ndi
+    integer(kind=8) :: ndt, ndi
 !     ------------------------------------------------------------------
     common/tdim/ndt, ndi
 !
@@ -60,7 +60,7 @@ subroutine irrjpl(model, nmat, mater, sigf, vind, &
     real(kind=8) :: ddfdds(6, 6), drsds(6, 6), sequiv, dev(6), dfds(6), drids
     real(kind=8) :: drpdp
 !
-    integer :: iret
+    integer(kind=8) :: iret
     aster_logical :: ldrpdp
 !     ------------------------------------------------------------------
     data i4/1.0d0, 0.0d0, 0.0d0, 0.0d0, 0.0d0, 0.0d0,&

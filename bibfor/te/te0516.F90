@@ -68,25 +68,24 @@ subroutine te0516(option, nomte)
 #include "asterfort/utpvgl.h"
 #include "asterfort/utpvlg.h"
 #include "asterfort/Behaviour_type.h"
-#include "blas/ddot.h"
 #include "blas/dscal.h"
 !
 ! --------------------------------------------------------------------------------------------------
 !
-    integer :: nc, nno, dimklv, npg, iret, codrep
+    integer(kind=8) :: nc, nno, dimklv, npg, iret, codrep
     parameter(nc=7, dimklv=2*nc*(2*nc+1)/2, nno=2, npg=3)
     real(kind=8) :: hoel(nc), fl(2*nc), hota(nc, nc), d1b(nc, 2*nc)
     real(kind=8) :: rg0(2*nc, 2*nc), eps(nc), deps(nc), u(2*nc), du(2*nc)
     real(kind=8) :: klv(dimklv), work(nc, 2*nc), co(npg)
     real(kind=8) :: rigge0(2*nc, 2*nc), ddu(2*nc), effgep(nc), d1bsig(4, 2*nc)
 !
-    integer :: ne, cara, idepla, ifgp
-    integer :: ii, jcret, npge
-    integer :: igeom, imate, icontm, iorien, ivarim, iinstp, ipoids
-    integer :: icarcr, ideplm, ideplp, iinstm, ivectu, icontp, ivarip, imat
-    integer :: jacf, ivarmp, codret
-    integer :: ncomp, nbvalc, isdcom
-    integer :: kp, jj, kk, istrxm, istrxp, istrmp, ncomp2
+    integer(kind=8) :: ne, cara, idepla, ifgp
+    integer(kind=8) :: ii, jcret, npge
+    integer(kind=8) :: igeom, imate, icontm, iorien, ivarim, iinstp, ipoids
+    integer(kind=8) :: icarcr, ideplm, ideplp, iinstm, ivectu, icontp, ivarip, imat
+    integer(kind=8) :: jacf, ivarmp, codret
+    integer(kind=8) :: ncomp, nbvalc, isdcom
+    integer(kind=8) :: kp, jj, kk, istrxm, istrxp, istrmp, ncomp2
     real(kind=8) :: ey, ez, gamma, xl, xls2, Nx, My, Mz
     real(kind=8) :: aa, xiy, xiz, alfay, alfaz, xjx, xjg
     real(kind=8) :: e, g, nu, temp, phiy, phiz
@@ -105,7 +104,7 @@ subroutine te0516(option, nomte)
     character(len=8) :: mator
     character(len=16) :: rela_comp, defo_comp, mult_comp, rigi_geom, type_comp
 !
-    integer :: nbfibr, nbgrfi, tygrfi, nbcarm, nug(10)
+    integer(kind=8) :: nbfibr, nbgrfi, tygrfi, nbcarm, nug(10)
 !
     real(kind=8), pointer :: defmfib(:) => null()
     real(kind=8), pointer :: defpfib(:) => null()
@@ -113,7 +112,7 @@ subroutine te0516(option, nomte)
     real(kind=8), pointer :: vsigfib(:) => null()
     real(kind=8), pointer :: varfib(:) => null()
 ! --------------------------------------------------------------------------------------------------
-    integer, parameter :: nb_cara = 8
+    integer(kind=8), parameter :: nb_cara = 8
     real(kind=8) :: vale_cara(nb_cara)
     character(len=8), parameter :: noms_cara(nb_cara) = (/'AY1  ', 'AZ1  ', 'EY1  ', 'EZ1  ', &
                                                           'JX1  ', 'JG1  ', 'IYR21', 'IZR21'/)

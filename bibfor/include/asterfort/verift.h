@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -23,12 +23,12 @@ interface
                       materi_   , iret_     , epsth_    , epsth_anis_, epsth_meta_,&
                       temp_prev_, temp_curr_, temp_refe_)
         character(len=*), intent(in) :: fami
-        integer, intent(in) :: kpg
-        integer, intent(in) :: ksp
+        integer(kind=8), intent(in) :: kpg
+        integer(kind=8), intent(in) :: ksp
         character(len=*), intent(in) :: poum
-        integer, intent(in) :: j_mater
+        integer(kind=8), intent(in) :: j_mater
         character(len=8), optional, intent(in) :: materi_
-        integer, optional, intent(out) :: iret_
+        integer(kind=8), optional, intent(out) :: iret_
         real(kind=8), optional, intent(out) :: epsth_
         real(kind=8), optional, intent(out) :: epsth_anis_(3)
         real(kind=8), optional, intent(out) :: epsth_meta_

@@ -123,20 +123,20 @@ subroutine sandcas2bis(effrts, ht, enrobi, enrobs, facier, fbeton, gammas, gamma
     real(kind=8) :: thiter
     real(kind=8) :: epiter
     real(kind=8) :: aphiter
-    integer :: cond109
-    integer :: ferrcomp
-    integer :: ferrsyme
+    integer(kind=8) :: cond109
+    integer(kind=8) :: ferrcomp
+    integer(kind=8) :: ferrsyme
     real(kind=8) :: slsyme
-    integer :: uc
-    integer :: um
+    integer(kind=8) :: uc
+    integer(kind=8) :: um
     real(kind=8) :: dnsxi
     real(kind=8) :: dnsxs
     real(kind=8) :: dnsyi
     real(kind=8) :: dnsys
-    integer :: etsxi
-    integer :: etsxs
-    integer :: etsyi
-    integer :: etsys
+    integer(kind=8) :: etsxi
+    integer(kind=8) :: etsxs
+    integer(kind=8) :: etsyi
+    integer(kind=8) :: etsys
     real(kind=8) :: snsxi
     real(kind=8) :: snsxs
     real(kind=8) :: snsyi
@@ -149,11 +149,11 @@ subroutine sandcas2bis(effrts, ht, enrobi, enrobs, facier, fbeton, gammas, gamma
     real(kind=8) :: t_sup
     real(kind=8) :: theta_inf
     real(kind=8) :: theta_sup
-    integer :: ierr
+    integer(kind=8) :: ierr
 
 !Variables de calcul
     real(kind=8) :: pi, fcd, fyd, ySUP, yINF, alpha_INF, Z
-    integer :: i, j, k, l, m, N1, N2, N3, N_IIbis, indx, count_F, indx_F, iret
+    integer(kind=8) :: i, j, k, l, m, N1, N2, N3, N_IIbis, indx, count_F, indx_F, iret
     real(kind=8) :: Nxx, Nxy, Nyy, Mxx, Mxy, Myy, CalcX, CalcY
     real(kind=8) :: unite_m, fcSUP, fcINF, nC_INF, nC_SUP, mC_INF, mC_SUP
     real(kind=8) :: a11, a12, a21, a22, a00, b00, c00, Delta, X_alpha_inf, t1, t2

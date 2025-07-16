@@ -44,11 +44,11 @@ subroutine op0003()
 #include "asterfort/titre.h"
 #include "asterfort/utmess.h"
 #include "asterfort/wkvect.h"
-    integer :: i, iret, ibid, ival, jval, ifm
-    integer :: lpara, lpar2, l, lpro, n1, n2, n3, n4, n5, niv
-    integer :: jnoe, n, nbval, lval, lfon
-    integer :: nbcoup, nbcou2
-    integer :: nblr, nblv, nbrma, nbln, nbvc, nbvr, nbla, nblo
+    integer(kind=8) :: i, iret, ibid, ival, jval, ifm
+    integer(kind=8) :: lpara, lpar2, l, lpro, n1, n2, n3, n4, n5, niv
+    integer(kind=8) :: jnoe, n, nbval, lval, lfon
+    integer(kind=8) :: nbcoup, nbcou2
+    integer(kind=8) :: nblr, nblv, nbrma, nbln, nbvc, nbvr, nbla, nblo
     real(kind=8) :: min1, min2, min3
     character(len=2) :: prolgd
     character(len=4) :: interp(2)

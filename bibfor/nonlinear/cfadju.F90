@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -24,7 +24,7 @@ subroutine cfadju(alias, ksi1, ksi2, toleou, iproj)
 #include "asterfort/assert.h"
     character(len=8) :: alias
     real(kind=8) :: ksi1, ksi2, toleou
-    integer :: iproj
+    integer(kind=8) :: iproj
 !
 ! ----------------------------------------------------------------------
 !
@@ -51,7 +51,7 @@ subroutine cfadju(alias, ksi1, ksi2, toleou, iproj)
 ! ----------------------------------------------------------------------
 !
     real(kind=8) :: ecart, ksi1e, ksi2e, k1pk2, k2mk1
-    integer :: izone
+    integer(kind=8) :: izone
 !
 !   tolerances --- absolue et relative --- pour determiner si deux distances sont egales
     real(kind=8), parameter :: atol = 1.e-12

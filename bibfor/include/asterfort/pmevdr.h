@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -25,9 +25,9 @@ interface
                       actite)
         character(len=19) :: sddisc
         character(len=19) :: tabinc(*)
-        integer :: liccvg(*)
+        integer(kind=8) :: liccvg(*)
         aster_logical :: itemax
         aster_logical :: conver
-        integer :: actite
+        integer(kind=8) :: actite
     end subroutine pmevdr
 end interface

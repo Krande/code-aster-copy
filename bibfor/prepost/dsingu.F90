@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -25,8 +25,8 @@ subroutine dsingu(ndim, nelem, nnoem, nsommx, nelcom, &
 #include "asterfort/assert.h"
 #include "asterfort/dalp2d.h"
 #include "asterfort/dalp3d.h"
-    integer :: ndim, nelem, nnoem, nsommx, nelcom, degre
-    integer :: icnc(nsommx+2, nelem), numeli(nelcom+2, nnoem)
+    integer(kind=8) :: ndim, nelem, nnoem, nsommx, nelcom, degre
+    integer(kind=8) :: icnc(nsommx+2, nelem), numeli(nelcom+2, nnoem)
     real(kind=8) :: xy(3, nnoem), erreur(nelem), energi(nelem), mesu(nelem)
     real(kind=8) :: alpha(nelem)
 !
@@ -79,7 +79,7 @@ subroutine dsingu(ndim, nelem, nnoem, nsommx, nelcom, &
 !
 !
 !
-    integer :: nalpha
+    integer(kind=8) :: nalpha
 !
 ! CALCUL DU DEGRE DE LA SINGULARITE ALPHA(NELEM)
 !

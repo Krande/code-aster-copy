@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -21,8 +21,8 @@
 interface
     subroutine liscpp(lischa, ichar, phase, npuis)
         character(len=19) :: lischa
-        integer :: ichar
+        integer(kind=8) :: ichar
         real(kind=8) :: phase
-        integer :: npuis
+        integer(kind=8) :: npuis
     end subroutine liscpp
 end interface

@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -28,18 +28,18 @@ interface
         character(len=*) :: nomamd
         character(len=8) :: nomaas
         character(len=8) :: nomgd
-        integer :: typent
-        integer :: nbcmpv
+        integer(kind=8) :: typent
+        integer(kind=8) :: nbcmpv
         character(len=*) :: ncmpva
         character(len=*) :: ncmpvm
-        integer :: iinst
-        integer :: numpt
-        integer :: numord
+        integer(kind=8) :: iinst
+        integer(kind=8) :: numpt
+        integer(kind=8) :: numord
         real(kind=8) :: inst
         character(len=8) :: crit
         real(kind=8) :: prec
-        integer :: nrofic
-        integer :: codret
+        integer(kind=8) :: nrofic
+        integer(kind=8) :: codret
         character(len=1), optional, intent(in) :: base
     end subroutine lrcnme
 end interface

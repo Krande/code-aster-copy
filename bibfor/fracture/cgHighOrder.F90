@@ -45,7 +45,7 @@ subroutine cgHighOrder(cgField, cgTheta, cgStudy, cgStat, chscer, chseli, v_cer,
     type(CalcG_Study), intent(in) :: cgStudy
     type(CalcG_stat), intent(inout) :: cgStat
     character(len=19), intent(in) :: chscer, chseli
-    integer, intent(in) :: jcesd2, jcesl2
+    integer(kind=8), intent(in) :: jcesd2, jcesl2
     real(kind=8), pointer :: v_cer(:)
     real(kind=8), pointer :: v_eli(:)
     character(len=19), intent(inout) :: chcer
@@ -61,8 +61,8 @@ subroutine cgHighOrder(cgField, cgTheta, cgStudy, cgStat, chscer, chseli, v_cer,
 !
     character(len=16) :: nomte
     character(len=19) :: ligrmo
-    integer :: igr, nbgrel, nel, nute, iel, iad, ima, nncp, iret
-    integer, pointer :: v_liel(:) => null()
+    integer(kind=8) :: igr, nbgrel, nel, nute, iel, iad, ima, nncp, iret
+    integer(kind=8), pointer :: v_liel(:) => null()
     real(kind=8) :: start, finish
 !
     call cpu_time(start)

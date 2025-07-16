@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -22,21 +22,21 @@ interface
     subroutine xalg41(ndim, elrefp, nnop, it, nnose, cnset, typma, ndime,&
                       geom, lsnelp, pmilie, ninter, ainter, ar, npts, nptm, &
                       pmmax, nmilie, mfis, lonref, pinref, pintt, pmitt, jonc, exit)
-        integer :: ndim
-        integer :: nnop
-        integer :: it
-        integer :: nnose
-        integer :: cnset(*)
-        integer :: ndime
+        integer(kind=8) :: ndim
+        integer(kind=8) :: nnop
+        integer(kind=8) :: it
+        integer(kind=8) :: nnose
+        integer(kind=8) :: cnset(*)
+        integer(kind=8) :: ndime
         real(kind=8) :: geom(81)
-        integer :: ninter
-        integer ::  ar(12, 3)
-        integer :: npts
-        integer :: nptm
-        integer :: nbar
-        integer :: pmmax
-        integer :: nmilie
-        integer :: mfis
+        integer(kind=8) :: ninter
+        integer(kind=8) ::  ar(12, 3)
+        integer(kind=8) :: npts
+        integer(kind=8) :: nptm
+        integer(kind=8) :: nbar
+        integer(kind=8) :: pmmax
+        integer(kind=8) :: nmilie
+        integer(kind=8) :: mfis
         character(len=8) :: typma
         character(len=8) :: elrefp
         real(kind=8) :: lonref
@@ -47,6 +47,6 @@ interface
         real(kind=8) :: pintt(*)
         real(kind=8) :: pmitt(*)
         aster_logical :: jonc
-        integer :: exit(2)
+        integer(kind=8) :: exit(2)
     end subroutine xalg41
 end interface 

@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -42,7 +42,6 @@ subroutine op0113()
 #include "asterfort/getvid.h"
 #include "asterfort/getvtx.h"
 #include "asterfort/initel.h"
-#include "asterfort/ismali.h"
 #include "asterfort/jecrec.h"
 #include "asterfort/jecroc.h"
 #include "asterfort/jedema.h"
@@ -63,19 +62,19 @@ subroutine op0113()
 #include "asterfort/xverm2.h"
 #include "asterfort/xvermo.h"
 !
-    integer :: iret, iel, ima, nmoth
-    integer :: i, j2
-    integer :: jmofis
-    integer :: nbma, nelt
-    integer :: nb1
-    integer :: nfiss, jnfis
-    integer :: ndim
+    integer(kind=8) :: iret, iel, ima, nmoth
+    integer(kind=8) :: i, j2
+    integer(kind=8) :: jmofis
+    integer(kind=8) :: nbma, nelt
+    integer(kind=8) :: nb1
+    integer(kind=8) :: nfiss, jnfis
+    integer(kind=8) :: ndim
     character(len=16) :: motfac, k16bid, line_quad, face
     character(len=19) :: ligr1, ligr2
     character(len=24) :: liel1, liel2
     character(len=24) :: mail2
     character(len=24) :: trav
-    integer :: jmail2, jtab, jxc
+    integer(kind=8) :: jmail2, jtab, jxc
     character(len=8) :: modelx, mod1, modthx, noma, k8cont, k8condi, decou
     aster_logical :: linter
     character(len=8), pointer :: lgrf1(:) => null()

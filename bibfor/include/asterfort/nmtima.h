@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -23,6 +23,6 @@ interface
         use NonLin_Datastructure_type
         type(NL_DS_Measure), intent(in) :: ds_measure
         character(len=*), intent(in) :: timer_type_
-        integer, intent(out) :: vali
+        integer(kind=8), intent(out) :: vali
     end subroutine nmtima
 end interface

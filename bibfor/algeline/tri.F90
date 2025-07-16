@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -38,13 +38,13 @@ subroutine tri(clef, tab, ntab, n)
 #include "asterfort/assert.h"
 #include "asterfort/triins.h"
 #include "asterfort/trirap.h"
-    integer :: blocmx, npile
+    integer(kind=8) :: blocmx, npile
     parameter(blocmx=14)
     parameter(npile=59)
 !
 ! --- VARIABLES
-    integer :: n, ntab, clef(*), tab(n, *)
-    integer :: pile(npile+1), g, d, gs, ds, m, ipile
+    integer(kind=8) :: n, ntab, clef(*), tab(n, *)
+    integer(kind=8) :: pile(npile+1), g, d, gs, ds, m, ipile
 !
 ! --- INITIALISATION
 !

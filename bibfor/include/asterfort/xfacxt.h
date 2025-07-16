@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -21,21 +21,21 @@ interface
     subroutine xfacxt(elp, jpint, jmilt, jnit, jcnset, pinter,&
                       ninter, jphe, ndim, ainter,nface,nptf, cface,&
                       igeom, jlsn, jlst, jaint, jgrlsn)
-        integer :: ninter
-        integer :: nface
-        integer :: cface(30,6)
-        integer :: jcnset
-        integer :: jnit
-        integer :: jmilt
-        integer :: jpint
-        integer :: nptf
-        integer :: ndim
-        integer :: jphe
-        integer :: igeom
-        integer :: jlsn
-        integer :: jaint
-        integer :: jlst
-        integer :: jgrlsn
+        integer(kind=8) :: ninter
+        integer(kind=8) :: nface
+        integer(kind=8) :: cface(30,6)
+        integer(kind=8) :: jcnset
+        integer(kind=8) :: jnit
+        integer(kind=8) :: jmilt
+        integer(kind=8) :: jpint
+        integer(kind=8) :: nptf
+        integer(kind=8) :: ndim
+        integer(kind=8) :: jphe
+        integer(kind=8) :: igeom
+        integer(kind=8) :: jlsn
+        integer(kind=8) :: jaint
+        integer(kind=8) :: jlst
+        integer(kind=8) :: jgrlsn
         real(kind=8) :: pinter(*)
         real(kind=8) :: ainter(*)
         character(len=8) :: elp

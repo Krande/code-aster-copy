@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -24,25 +24,25 @@ interface
                       fcorig, vec, resufi, resufr, resufk,&
                       nbrssa, nbpari, nbparr, nbpark, typres,&
                       optiof, solveu)
-        integer :: nbpark
-        integer :: nbparr
-        integer :: nbpari
-        integer :: nfreqb
-        integer :: neq
+        integer(kind=8) :: nbpark
+        integer(kind=8) :: nbparr
+        integer(kind=8) :: nbpari
+        integer(kind=8) :: nfreqb
+        integer(kind=8) :: neq
         character(len=*) :: optiom
-        integer :: lraide
-        integer :: lmasse
-        integer :: ldynam
-        integer :: nfreq
+        integer(kind=8) :: lraide
+        integer(kind=8) :: lmasse
+        integer(kind=8) :: ldynam
+        integer(kind=8) :: nfreq
         real(kind=8) :: tolv
-        integer :: nitv
-        integer :: iexcl(*)
+        integer(kind=8) :: nitv
+        integer(kind=8) :: iexcl(*)
         real(kind=8) :: fcorig
         real(kind=8) :: vec(neq, *)
-        integer :: resufi(nfreqb, nbpari)
+        integer(kind=8) :: resufi(nfreqb, nbpari)
         real(kind=8) :: resufr(nfreqb, nbparr)
         character(len=*) :: resufk(nfreqb, nbpark)
-        integer :: nbrssa
+        integer(kind=8) :: nbrssa
         character(len=16) :: typres
         character(len=16) :: optiof
         character(len=19) :: solveu

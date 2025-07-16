@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -26,7 +26,7 @@ subroutine getInterCont(nbPoinInte, poinInteSlav)
 #include "asterfort/mesh_pairing_type.h"
 #include "jeveux.h"
 !
-    integer, intent(out) :: nbPoinInte
+    integer(kind=8), intent(out) :: nbPoinInte
     real(kind=8), intent(out) :: poinInteSlav(2, MAX_NB_INTE)
 !
 ! --------------------------------------------------------------------------------------------------
@@ -42,7 +42,7 @@ subroutine getInterCont(nbPoinInte, poinInteSlav)
 !
 ! --------------------------------------------------------------------------------------------------
 !
-    integer ::  jcont, iPoinInte
+    integer(kind=8) ::  jcont, iPoinInte
 !
 ! --------------------------------------------------------------------------------------------------
 !

@@ -51,7 +51,6 @@ subroutine camoat(nomres, numref, intf, raid, raildl, &
 #include "asterfort/jelibe.h"
 #include "asterfort/jelira.h"
 #include "asterfort/jemarq.h"
-#include "asterfort/jenuno.h"
 #include "asterfort/jeveuo.h"
 #include "asterfort/jexnum.h"
 #include "asterfort/utmess.h"
@@ -59,10 +58,10 @@ subroutine camoat(nomres, numref, intf, raid, raildl, &
 #include "asterfort/int_to_char8.h"
 !
 !-----------------------------------------------------------------------
-    integer :: i, ier, ik, ino, inord
-    integer :: j, lldeeq, lldes, llncmp, llnoin, ltddl
-    integer :: ltpar, nbatta, nbcmp, nbcpmx, nbdeb, nbec, nbfin
-    integer :: nbint, nbmn, nbnoe, nbnot, neq, ntail, numgd
+    integer(kind=8) :: i, ier, ik, ino, inord
+    integer(kind=8) :: j, lldeeq, lldes, llncmp, llnoin, ltddl
+    integer(kind=8) :: ltpar, nbatta, nbcmp, nbcpmx, nbdeb, nbec, nbfin
+    integer(kind=8) :: nbint, nbmn, nbnoe, nbnot, neq, ntail, numgd
 !
 !-----------------------------------------------------------------------
     parameter(nbcpmx=300)
@@ -72,7 +71,7 @@ subroutine camoat(nomres, numref, intf, raid, raildl, &
     character(len=19) :: raildl, raid
     character(len=16) :: typdef
     character(len=24) :: desdef, deeq, temddl, tempar
-    integer :: idec(nbcpmx)
+    integer(kind=8) :: idec(nbcpmx)
     character(len=8), pointer :: idc_type(:) => null()
 !
 !-----------------------------------------------------------------------

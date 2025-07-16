@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -69,7 +69,7 @@ subroutine mnlali(reprise, modini, imat, xcdl, parcho, &
 ! --- DECLARATION DES ARGUMENTS DE LA ROUTINE
 ! ----------------------------------------------------------------------
     aster_logical :: reprise
-    integer :: imat(2), ninc, nd, nchoc, h, hf, num_ordr
+    integer(kind=8) :: imat(2), ninc, nd, nchoc, h, hf, num_ordr
     character(len=8) :: modini
     character(len=14) :: parcho, adime, xcdl, xvect
     real(kind=8) :: ampl
@@ -82,17 +82,17 @@ subroutine mnlali(reprise, modini, imat, xcdl, parcho, &
     character(len=24) :: typmod
     character(len=16) :: k16bid
     real(kind=8) :: omega, lambda, ampref, alpha, eta, jeu
-    integer :: ivect, neq, neqv, nbmode, nbpari, nbparr, nbpark, ilnm, ifreq
-    integer :: iadim, i, j, k, icdl
-    integer :: neqs, ijmax, nddlx, nddly
-    integer :: nt, nddl, ht, idep1, idep2, itemp
+    integer(kind=8) :: ivect, neq, neqv, nbmode, nbpari, nbparr, nbpark, ilnm, ifreq
+    integer(kind=8) :: iadim, i, j, k, icdl
+    integer(kind=8) :: neqs, ijmax, nddlx, nddly
+    integer(kind=8) :: nt, nddl, ht, idep1, idep2, itemp
     real(kind=8), pointer :: raid(:) => null()
     real(kind=8), pointer :: reg(:) => null()
     character(len=8), pointer :: type(:) => null()
-    integer, pointer :: vneqs(:) => null()
+    integer(kind=8), pointer :: vneqs(:) => null()
     real(kind=8), pointer :: vjeu(:) => null()
     real(kind=8), pointer :: orig(:) => null()
-    integer, pointer :: vnddl(:) => null()
+    integer(kind=8), pointer :: vnddl(:) => null()
     blas_int :: b_incx, b_incy, b_n
 !
     call jemarq()

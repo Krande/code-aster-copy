@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -27,8 +27,8 @@ subroutine dxdmul(lcalct, icou, iniv, t1ve, t2ui, &
 #include "asterfort/utbtab.h"
 !
     aster_logical :: lcalct
-    integer :: icou
-    integer :: iniv
+    integer(kind=8) :: icou
+    integer(kind=8) :: iniv
     real(kind=8) :: t1ve(3, 3)
     real(kind=8) :: t2ui(2, 2)
     real(kind=8) :: h(3, 3)
@@ -47,7 +47,7 @@ subroutine dxdmul(lcalct, icou, iniv, t1ve, t2ui, &
 !     OUT D2I    : MATRICE D2I REPERE INTRINSEQUE
 !     OUT X3I    : Z DE CALCUL DE LA CONTRAINTE
 !      CHARACTER*32 JEXNUM,JEXNOM,JEXR8,JEXATR
-    integer :: i, k, l, jcaco, jcou, jmate, icodre(27)
+    integer(kind=8) :: i, k, l, jcaco, jcou, jmate, icodre(27)
     character(len=2) :: val
     character(len=3) :: num
     character(len=16) :: nomres(27)

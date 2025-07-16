@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -37,18 +37,18 @@ subroutine rgiRenfoStress(xmat, iadrmat, sigmf6, epstf6, epspt6, &
 #include "asterfort/renfort3d.h"
 #include "asterfort/getValVect.h"
 #include "asterfort/utmess.h"
-    integer, intent(in) :: ngf, iadrmat, ipzero(ngf)
+    integer(kind=8), intent(in) :: ngf, iadrmat, ipzero(ngf)
     real(kind=8), intent(in) :: xmat(*), sigmf6(6), epstf6(6), epspt6(6)
     real(kind=8), intent(in) :: var0(*), rc00, teta1, teta2, dt, theta
     real(kind=8), intent(in) :: wpl3(3), vwpl33(3, 3), vwpl33t(3, 3), dt3(3), dr3(3)
     aster_logical, intent(in) :: end3d, fl3d, ppas
     real(kind=8), intent(out) :: varf(*), sigf6d(6), matdechac(6, 6), rhov
-    integer, intent(out) :: ierr1
+    integer(kind=8), intent(out) :: ierr1
 !-----------------------------------------------------------------------
 !   local variables
-    integer :: nbrenf, nbparr, ngfba
+    integer(kind=8) :: nbrenf, nbparr, ngfba
     parameter(nbrenf=5, nbparr=21, ngfba=65)
-    integer :: i, j, k, l, c, istepbid, iadr, numf, numr, nrenf00, m, n
+    integer(kind=8) :: i, j, k, l, c, istepbid, iadr, numf, numr, nrenf00, m, n
     aster_logical :: errr, plast_seule
     real(kind=8) :: XN(ngfba), BN(ngfba), ANN(ngfba, ngfba+1)
     real(kind=8) :: rhor(nbrenf), deqr(nbrenf), yor(nbrenf), syr(nbrenf), taur(nbrenf)

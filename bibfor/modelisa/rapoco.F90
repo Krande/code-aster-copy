@@ -64,7 +64,7 @@ subroutine rapoco(numdlz, iocc, fonrez, lisrez, chargz)
 #include "asterfort/int_to_char8.h"
 #include "asterc/r8pi.h"
 !
-    integer :: iocc
+    integer(kind=8) :: iocc
     character(len=8) :: charge
     character(len=14) :: numddl
     character(len=19) :: lisrel
@@ -86,7 +86,7 @@ subroutine rapoco(numdlz, iocc, fonrez, lisrez, chargz)
 !
 !
 ! --------- VARIABLES LOCALES ---------------------------
-    integer :: nmocl
+    integer(kind=8) :: nmocl
     parameter(nmocl=300)
     character(len=4) :: typval, typcoe
     character(len=8) :: betaf, mod, nomg, k8bid, cara
@@ -98,13 +98,13 @@ subroutine rapoco(numdlz, iocc, fonrez, lisrez, chargz)
     character(len=19) :: ligrmo, ligrel
     character(len=24) :: lchin(4), lchout(2), nolili, lismai, valk(2)
     character(len=24) :: lisnoe, vale1, grnoma, vale2, nogrno
-    integer :: ntypel(nmocl), dg, icmp(6), niv, ifm, iop, numnop, nliai
-    integer :: vali(2), nlili, nbterm, ncara, nddla, nbma, nbno, nno, nbec
-    integer :: nbcmp
-    integer :: naxe, lonlis, k, j, in, ino, i, ival, n1
-    integer :: nbgno
-    integer ::   jlisma, jgro
-    integer ::  iaprno, idch2, idch1, ilisno, inom
+    integer(kind=8) :: ntypel(nmocl), dg, icmp(6), niv, ifm, iop, numnop, nliai
+    integer(kind=8) :: vali(2), nlili, nbterm, ncara, nddla, nbma, nbno, nno, nbec
+    integer(kind=8) :: nbcmp
+    integer(kind=8) :: naxe, lonlis, k, j, in, ino, i, ival, n1
+    integer(kind=8) :: nbgno
+    integer(kind=8) ::   jlisma, jgro
+    integer(kind=8) ::  iaprno, idch2, idch1, ilisno, inom
     real(kind=8) :: ig(6), coorig(3), axepou(3), valr(9)
     real(kind=8) :: ayz, axx, ax, ay, axz, axy, ayy, azz, az, beta, dnorme, eps
     real(kind=8) :: un, pi
@@ -112,14 +112,14 @@ subroutine rapoco(numdlz, iocc, fonrez, lisrez, chargz)
     complex(kind=8) :: betac, ccmp(3)
     complex(kind=8), pointer :: coec(:) => null()
     real(kind=8), pointer :: coer(:) => null()
-    integer, pointer :: dime(:) => null()
+    integer(kind=8), pointer :: dime(:) => null()
     real(kind=8), pointer :: direct(:) => null()
     real(kind=8), pointer :: inertie_raccord(:) => null()
     character(len=8), pointer :: lisddl(:) => null()
     character(len=8), pointer :: lisno(:) => null()
     character(len=8), pointer :: lgrf(:) => null()
     real(kind=8), pointer :: vale(:) => null()
-    integer, pointer :: prnm(:) => null()
+    integer(kind=8), pointer :: prnm(:) => null()
 ! --------- FIN  DECLARATIONS  VARIABLES LOCALES --------
 !
     call jemarq()

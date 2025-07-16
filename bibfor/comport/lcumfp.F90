@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -44,10 +44,10 @@ subroutine lcumfp(fami, kpg, ksp, ndim, typmod, &
 #include "blas/dcopy.h"
 !
 !
-    integer, intent(in) :: ndim
-    integer, intent(in) :: imate
-    integer, intent(in) :: kpg
-    integer, intent(in) :: ksp
+    integer(kind=8), intent(in) :: ndim
+    integer(kind=8), intent(in) :: imate
+    integer(kind=8), intent(in) :: kpg
+    integer(kind=8), intent(in) :: ksp
     character(len=8), intent(in) :: typmod(*)
     character(len=16), intent(in) :: compor(*)
     character(len=16), intent(in) :: rela_plas
@@ -212,11 +212,11 @@ subroutine lcumfp(fami, kpg, ksp, ndim, typmod, &
 !
     character(len=16) :: option2
     real(kind=8) :: det
-    integer :: iret
+    integer(kind=8) :: iret
     character(len=16) :: nomres(16), phenbid
-    integer :: icodre(16)
+    integer(kind=8) :: icodre(16)
     real(kind=8) :: cfps, cfpd
-    integer :: i, j, k, l, nstrs, ifou, isph
+    integer(kind=8) :: i, j, k, l, nstrs, ifou, isph
     real(kind=8) :: tdt
     real(kind=8) :: youn, xnu
     real(kind=8) :: bendo, kdess

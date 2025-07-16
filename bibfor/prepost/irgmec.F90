@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -31,8 +31,8 @@ subroutine irgmec(numold, ima, connex, nbord2, tabd, &
 #include "asterfort/rsexch.h"
 #include "asterfort/utmess.h"
 !
-    integer :: numold(*), tabd(*), tabl(*), tabv(*), nbno
-    integer :: listno(*), icmp, ifi, ima, nbord2, iadmax, jtype, ordr(nbord2)
+    integer(kind=8) :: numold(*), tabd(*), tabl(*), tabv(*), nbno
+    integer(kind=8) :: listno(*), icmp, ifi, ima, nbord2, iadmax, jtype, ordr(nbord2)
     aster_logical :: iwri, lresu
     character(len=*) :: partie, chamsy, nomcon
     character(len=24) :: connex
@@ -63,8 +63,8 @@ subroutine irgmec(numold, ima, connex, nbord2, tabd, &
 !     IADMAX  : I   : MAX DES IAD SI >0 LE CHAMP EXISTE POUR LA MAILLE
 !
 !     ------------------------------------------------------------------
-    integer :: imaold, jcnold, ior, jcesd, jcesl, jcesv, nbpt, nbsp, j, ino
-    integer :: itrou, ipt, inold, isp, iad, iret
+    integer(kind=8) :: imaold, jcnold, ior, jcesd, jcesl, jcesv, nbpt, nbsp, j, ino
+    integer(kind=8) :: itrou, ipt, inold, isp, iad, iret
     real(kind=8) :: vale
     character(len=16) :: chams2
     character(len=19) :: ch19, nomco2

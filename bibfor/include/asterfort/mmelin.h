@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -21,8 +21,8 @@
 interface
     subroutine mmelin(noma, numa, typint, nnint)
         character(len=8) :: noma
-        integer :: numa
-        integer :: typint
-        integer :: nnint
+        integer(kind=8) :: numa
+        integer(kind=8) :: typint
+        integer(kind=8) :: nnint
     end subroutine mmelin
 end interface

@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -24,8 +24,8 @@ interface
     subroutine nmveso(rb, nb, rp, np, drbdb,&
                       drbdp, drpdb, drpdp, dp, dbeta,&
                       nr, cplan)
-        integer :: np
-        integer :: nb
+        integer(kind=8) :: np
+        integer(kind=8) :: nb
         real(kind=8) :: rb(nb)
         real(kind=8) :: rp(np)
         real(kind=8) :: drbdb(nb, nb)
@@ -34,7 +34,7 @@ interface
         real(kind=8) :: drpdp(np, np)
         real(kind=8) :: dp(np)
         real(kind=8) :: dbeta(nb)
-        integer :: nr
+        integer(kind=8) :: nr
         aster_logical :: cplan
     end subroutine nmveso
 end interface

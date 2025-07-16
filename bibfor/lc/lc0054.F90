@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -26,10 +26,10 @@ subroutine lc0054(fami, kpg, ksp, ndim, imate, &
 #include "asterfort/nmtevp.h"
 #include "asterfort/rccoma.h"
 #include "asterfort/utmess.h"
-    integer :: imate, ndim, kpg, ksp, codret
+    integer(kind=8) :: imate, ndim, kpg, ksp, codret
     real(kind=8) :: crit(*), angmas(3)
     real(kind=8) :: instam, instap
-    integer :: icomp, nvi
+    integer(kind=8) :: icomp, nvi
     real(kind=8) :: epsm(6), deps(6)
     real(kind=8) :: sigm(6), sigp(6)
     real(kind=8) :: vim(*), vip(*)
@@ -67,7 +67,7 @@ subroutine lc0054(fami, kpg, ksp, ndim, imate, &
 !.......................................................................
 !               CODRET
     character(len=16) :: mcmate
-    integer :: iret
+    integer(kind=8) :: iret
     real(kind=8) :: r8bid
 !
     call rccoma(imate, 'ELAS', 1, mcmate, iret)

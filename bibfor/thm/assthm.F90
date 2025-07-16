@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -42,7 +42,6 @@ subroutine assthm(ds_thm, option, j_mater, &
     implicit none
 !
 #include "asterf_types.h"
-#include "asterc/r8prem.h"
 #include "asterfort/assert.h"
 #include "asterfort/cabthm.h"
 #include "asterfort/equthm.h"
@@ -55,25 +54,25 @@ subroutine assthm(ds_thm, option, j_mater, &
 #include "asterfort/thmGetBehaviourChck.h"
 !
     type(THM_DS), intent(inout) :: ds_thm
-    integer, parameter :: dimmat = 120
+    integer(kind=8), parameter :: dimmat = 120
     character(len=16), intent(in) :: option
     aster_logical, intent(in) :: lMatr, lSigm, lVari, lMatrPred, lVect
-    integer, intent(in) :: j_mater
+    integer(kind=8), intent(in) :: j_mater
     aster_logical, intent(in)  :: l_axi
     character(len=8), intent(in) :: typmod(2)
     character(len=3), intent(in) :: inte_type
     real(kind=8), intent(in)  :: angl_naut(3)
-    integer, intent(in) :: nbvari, ndim
-    integer, intent(in) :: nno, nnos
-    integer, intent(in) :: npg, npi
-    integer, intent(in) :: nddls, nddlm, nddl_meca, nddl_p1, nddl_p2, nddl_2nd
-    integer, intent(in) :: dimuel, dimdef, dimcon
-    integer, intent(in) :: mecani(5), press1(7), press2(7), tempe(5), second(5)
+    integer(kind=8), intent(in) :: nbvari, ndim
+    integer(kind=8), intent(in) :: nno, nnos
+    integer(kind=8), intent(in) :: npg, npi
+    integer(kind=8), intent(in) :: nddls, nddlm, nddl_meca, nddl_p1, nddl_p2, nddl_2nd
+    integer(kind=8), intent(in) :: dimuel, dimdef, dimcon
+    integer(kind=8), intent(in) :: mecani(5), press1(7), press2(7), tempe(5), second(5)
     character(len=16), intent(in)  :: compor(COMPOR_SIZE)
     real(kind=8), intent(in) :: carcri(CARCRI_SIZE)
-    integer, intent(in) :: jv_poids, jv_poids2
-    integer, intent(in) :: jv_func, jv_func2
-    integer, intent(in) :: jv_dfunc, jv_dfunc2
+    integer(kind=8), intent(in) :: jv_poids, jv_poids2
+    integer(kind=8), intent(in) :: jv_func, jv_func2
+    integer(kind=8), intent(in) :: jv_dfunc, jv_dfunc2
     real(kind=8), intent(in) :: elem_coor(ndim, nno)
     real(kind=8), intent(in) :: dispm(dimuel), dispp(dimuel)
     real(kind=8), intent(inout) :: congem(dimcon*npi)
@@ -83,7 +82,7 @@ subroutine assthm(ds_thm, option, j_mater, &
     real(kind=8), intent(in) :: time_prev, time_curr
     real(kind=8), intent(inout) :: matuu(dimuel*dimuel)
     real(kind=8), intent(inout) :: vectu(dimuel)
-    integer, intent(out) :: codret
+    integer(kind=8), intent(out) :: codret
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -145,20 +144,22 @@ subroutine assthm(ds_thm, option, j_mater, &
 ! --------------------------------------------------------------------------------------------------
 !
     real(kind=8) :: time_incr, parm_theta
-    integer :: kpi, ipi
-    integer :: i, j, n, k, kji
-    integer :: nb_vari_meca
+    integer(kind=8) :: kpi, ipi
+    integer(kind=8) :: i, j, n, k, kji
+    integer(kind=8) :: nb_vari_meca
     real(kind=8) :: a(2), as(2), ak(2), poids, poids2
     real(kind=8) :: c(dimdef), ck(dimdef), cs(dimdef)
-    integer :: addeme, addep1, addep2, addete, adde2nd, ii, jj
+    integer(kind=8) :: addeme, addep1, addep2, addete, adde2nd, ii, jj
     real(kind=8) :: defgep(dimdef), defgem(dimdef)
     real(kind=8) :: dfdi(nno, 3), dfdi2(nnos, 3), b(dimdef, dimuel)
     real(kind=8) :: drds(dimdef+1, dimcon), drdsr(dimdef, dimcon), dsde(dimcon, dimdef)
     real(kind=8) :: r(dimdef+1), sigbar(dimdef)
-    real(kind=8) :: work1(dimcon, dimuel), work2(dimdef, dimuel), matri(dimmat, dimmat)
+    real(kind=8) :: work1(dimcon, dimuel), work2(dimdef, dimuel)
+    real(kind=8), allocatable, dimension(:, :) :: matri
 !
 ! --------------------------------------------------------------------------------------------------
 !
+    allocate (matri(dimmat, dimmat))
     ASSERT(nddls*nnos .le. dimmat)
     ASSERT(dimuel .le. dimmat)
     codret = 0
@@ -359,5 +360,6 @@ subroutine assthm(ds_thm, option, j_mater, &
     end if
 ! ======================================================================
 99  continue
+    deallocate (matri)
 ! ======================================================================
 end subroutine

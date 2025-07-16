@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -28,8 +28,6 @@ subroutine agdual(load, type_liai, nbrela, nbterm)
 #include "asterfort/jelira.h"
 #include "asterfort/jemarq.h"
 #include "asterfort/jeveuo.h"
-#include "asterfort/jexnom.h"
-#include "asterfort/jexnum.h"
 #include "asterfort/wkvect.h"
 #include "asterfort/juveca.h"
 #include "asterfort/jeexin.h"
@@ -38,8 +36,8 @@ subroutine agdual(load, type_liai, nbrela, nbterm)
 !
     character(len=8), intent(in) :: load
     character(len=*), intent(in) :: type_liai
-    integer, intent(in) :: nbrela
-    integer, intent(in) :: nbterm
+    integer(kind=8), intent(in) :: nbrela
+    integer(kind=8), intent(in) :: nbterm
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -58,8 +56,8 @@ subroutine agdual(load, type_liai, nbrela, nbterm)
 !
     character(len=8), pointer :: prdk(:) => null()
     character(len=8), pointer :: prdso(:) => null()
-    integer, pointer :: prdi(:) => null()
-    integer :: nbpaqu_max, n1, n2, iexi, kpaqu, term1
+    integer(kind=8), pointer :: prdi(:) => null()
+    integer(kind=8) :: nbpaqu_max, n1, n2, iexi, kpaqu, term1
     character(len=13) :: chdual
 !
 ! --------------------------------------------------------------------------------------------------

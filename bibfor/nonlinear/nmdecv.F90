@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -22,11 +22,12 @@ subroutine nmdecv(sddisc, nume_inst, i_event_acti, dtmin, retdec)
 !
     implicit none
 #include "asterc/r8prem.h"
+#include "asterfort/assert.h"
 #include "asterfort/dinins.h"
 #include "asterfort/utdidt.h"
 #include "asterfort/utmess.h"
     character(len=19) :: sddisc
-    integer :: nume_inst, i_event_acti, retdec
+    integer(kind=8) :: nume_inst, i_event_acti, retdec
     real(kind=8) :: dtmin
 !
 ! ----------------------------------------------------------------------
@@ -49,28 +50,24 @@ subroutine nmdecv(sddisc, nume_inst, i_event_acti, dtmin, retdec)
 !
 ! ----------------------------------------------------------------------
 !
-    integer :: nbnivo, lenivo
+    character(len=16) :: submet
+    integer(kind=8) :: nbnivo, lenivo
     real(kind=8) :: pasmin
 !
 ! ----------------------------------------------------------------------
 !
 !
-! --- NIVEAU DE REDECOUPAGE ACTUEL
+!   Methode de decoupage
+    call utdidt('L', sddisc, 'ECHE', 'SUBD_METHODE', index_=i_event_acti, &
+                valk_=submet)
+    ASSERT(submet .eq. 'MANUEL' .or. submet .eq. 'AUTO')
+
 !
-    lenivo = dinins(sddisc, nume_inst)
-!
-! --- NIVEAU MAXI DE SUBDIVISION
-!
-    call utdidt('L', sddisc, 'ECHE', 'SUBD_NIVEAU', index_=i_event_acti, &
-                vali_=nbnivo)
-!
-! --- PAS MINIMUM
+! --- PAS MINIMUM ATTEINT ?
 !
     call utdidt('L', sddisc, 'ECHE', 'SUBD_PAS_MINI', index_=i_event_acti, &
                 valr_=pasmin)
-!
-! --- TAILLE DE PAS MINIMALE ATTEINTE PENDANT LA SUBDIVISION
-!
+
     if ((dtmin .lt. pasmin) .or. (dtmin .le. r8prem())) then
         retdec = 0
         call utmess('I', 'SUBDIVISE_16', sr=pasmin)
@@ -78,11 +75,24 @@ subroutine nmdecv(sddisc, nume_inst, i_event_acti, dtmin, retdec)
     else
         retdec = 1
     end if
+
 !
-! --- NIVEAU MAXIMUM DE REDECOUPAGE ATTEINT
+! --- NIVEAU DE REDECOUPAGE MAXIMAL ATTEINT
 !
-    if ((nbnivo .gt. 1) .and. (lenivo .eq. nbnivo)) then
-        call utmess('I', 'SUBDIVISE_17', si=lenivo)
+    call utdidt('L', sddisc, 'ECHE', 'SUBD_NIVEAU', index_=i_event_acti, &
+                vali_=nbnivo)
+
+    ! Aucun controle par le nombre de decoupages dans la methode AUTO
+    if (submet .eq. 'AUTO' .or. nbnivo .eq. -1) then
+        retdec = 1
+        goto 999
+    end if
+
+    ! Niveau courant (avant decoupe)
+    lenivo = dinins(sddisc, nume_inst)
+
+    if (lenivo-1 .ge. nbnivo) then
+        call utmess('I', 'SUBDIVISE_17', si=nbnivo)
         retdec = 0
     else
         retdec = 1

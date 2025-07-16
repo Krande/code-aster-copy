@@ -27,16 +27,14 @@ subroutine cgmaxf(mofaz, iocc, nomaz, lismaz, nbma)
 #include "asterfort/jedetr.h"
 #include "asterfort/jelira.h"
 #include "asterfort/jemarq.h"
-#include "asterfort/jenuno.h"
 #include "asterfort/jeveuo.h"
-#include "asterfort/jexnum.h"
 #include "asterfort/wkvect.h"
 #include "asterfort/xtmafi.h"
 #include "asterfort/as_deallocate.h"
 #include "asterfort/as_allocate.h"
 #include "asterfort/int_to_char8.h"
 !
-    integer :: iocc, nbma
+    integer(kind=8) :: iocc, nbma
     character(len=*) :: mofaz, nomaz, lismaz
 !
 !       CGMAXF -- TRAITEMENT DE L'OPTION FISS_XFEM
@@ -54,17 +52,17 @@ subroutine cgmaxf(mofaz, iocc, nomaz, lismaz, nbma)
 ! -------------------------------------------------------
 !
 !
-    integer :: i, ii, ima, ifiss, ino, n
-    integer :: nbno, nbnot, nfiss, nmax, nbmalo, nbmala
-    integer :: jlmas, idlist, jtem3, jtem4
-    integer :: ibid, test, valeno
+    integer(kind=8) :: i, ii, ima, ifiss, ino, n
+    integer(kind=8) :: nbno, nbnot, nfiss, nmax, nbmalo, nbmala
+    integer(kind=8) :: jlmas, idlist, jtem3, jtem4
+    integer(kind=8) :: ibid, test, valeno
     character(len=8) :: noma, nomail, fiss
     character(len=16) :: motfac, typgrp
     character(len=19) :: stno
     character(len=24) :: lismai, lismar, lisman, maifis
     character(len=8), pointer :: vfiss(:) => null()
-    integer, pointer :: tem5(:) => null()
-    integer, pointer :: vale(:) => null()
+    integer(kind=8), pointer :: tem5(:) => null()
+    integer(kind=8), pointer :: vale(:) => null()
 !
 !     -----------------------------------------------------------------
 !

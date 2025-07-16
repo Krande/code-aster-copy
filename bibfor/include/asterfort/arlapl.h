@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -21,14 +21,14 @@
 interface
     subroutine arlapl(ndim,nns,ndml1,ndml2,nomte, &
                       npgs,ipoids,ivfs,idfdes)
-        integer :: ndim
-        integer :: nns
-        integer :: ndml1
-        integer :: ndml2
-        integer :: npgs
-        integer :: ipoids
-        integer :: ivfs
-        integer :: idfdes
+        integer(kind=8) :: ndim
+        integer(kind=8) :: nns
+        integer(kind=8) :: ndml1
+        integer(kind=8) :: ndml2
+        integer(kind=8) :: npgs
+        integer(kind=8) :: ipoids
+        integer(kind=8) :: ivfs
+        integer(kind=8) :: idfdes
         character(len=16) :: nomte
     end subroutine arlapl
 end interface

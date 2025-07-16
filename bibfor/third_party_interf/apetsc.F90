@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -29,10 +29,8 @@ subroutine apetsc(action, solvez, matasz, rsolu, vcinez, &
     implicit none
 !
 #include "jeveux.h"
-#include "asterc/asmpi_comm.h"
 #include "asterc/aster_petsc_initialize.h"
 #include "asterc/aster_petsc_finalize.h"
-#include "asterc/getfac.h"
 #include "asterfort/apmain.h"
 #include "asterfort/apldlt.h"
 #include "asterfort/assert.h"

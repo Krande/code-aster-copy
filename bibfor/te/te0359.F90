@@ -55,10 +55,10 @@ subroutine te0359(option, nomte)
 ! --------------------------------------------------------------------------------------------------
     character(len=8) :: typmod(2), lielrf(10)
     aster_logical :: axi
-    integer :: nno1, nno2, npg, lgpg, ndim, iret, ntrou, jtab(7), neps, nddl
-    integer :: jv_w, jv_vff1, jv_geom, jv_mate, jv_vff2, jv_dff2, jv_dtau
-    integer :: jv_copilo, jv_varim, jv_ddlm, jv_ddld, jv_ddl0, jv_ddl1, jv_angmas
-    integer :: jv_borne
+    integer(kind=8) :: nno1, nno2, npg, lgpg, ndim, iret, ntrou, jtab(7), neps, nddl
+    integer(kind=8) :: jv_w, jv_vff1, jv_geom, jv_mate, jv_vff2, jv_dff2, jv_dtau
+    integer(kind=8) :: jv_copilo, jv_varim, jv_ddlm, jv_ddld, jv_ddl0, jv_ddl1, jv_angmas
+    integer(kind=8) :: jv_borne
     real(kind=8):: etamin, etamax
     real(kind=8), allocatable:: wg(:, :), ni2ldc(:, :), b(:, :, :), ang(:, :)
     real(kind=8), allocatable:: sigm(:, :)

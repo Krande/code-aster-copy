@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -28,7 +28,7 @@ subroutine ssrone(mag, isma, rota)
 #include "asterfort/jemarq.h"
 #include "asterfort/jeveuo.h"
     character(len=8) :: mag, rota
-    integer :: isma
+    integer(kind=8) :: isma
 ! ----------------------------------------------------------------------
 !     IN:  MAG : NOM DU MAILLAGE CONTENANT LA (SUPER)MAILLE ISMA
 !          ISMA: NUMERO DE LA (SUPER)MAILLE DANS LE MAILLAGE MAG
@@ -40,11 +40,11 @@ subroutine ssrone(mag, isma, rota)
 !     VARIABLES LOCALES:
 !     ------------------
     real(kind=8) :: r1
-    integer :: rot1, rot2
+    integer(kind=8) :: rot1, rot2
 !
 !
 !-----------------------------------------------------------------------
-    integer :: iret, k
+    integer(kind=8) :: iret, k
     real(kind=8), pointer :: para_r(:) => null()
 !-----------------------------------------------------------------------
     call jemarq()

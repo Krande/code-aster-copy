@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -22,16 +22,16 @@ interface
     subroutine lcmmcv(yd, dy, ddy, nr, itmax,&
                       toler, iter, r, rini, epstr,&
                       irteti)
-        integer :: nr
+        integer(kind=8) :: nr
         real(kind=8) :: yd(nr)
         real(kind=8) :: dy(nr)
         real(kind=8) :: ddy(nr)
-        integer :: itmax
+        integer(kind=8) :: itmax
         real(kind=8) :: toler
-        integer :: iter
+        integer(kind=8) :: iter
         real(kind=8) :: r(nr)
         real(kind=8) :: rini(nr)
         real(kind=8) :: epstr(6)
-        integer :: irteti
+        integer(kind=8) :: irteti
     end subroutine lcmmcv
 end interface

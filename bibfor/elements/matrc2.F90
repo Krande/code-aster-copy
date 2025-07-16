@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -29,20 +29,20 @@ subroutine matrc2(nbpar, nompar, valpar, kcis, matc, &
 #include "asterfort/rcvalb.h"
 #include "asterfort/utbtab.h"
 #include "asterfort/utmess.h"
-    integer :: nbpar
+    integer(kind=8) :: nbpar
     real(kind=8) :: valpar(*), kcis, matc(5, 5), vectt(3, 3)
     character(len=8) :: nompar(*)
 !
 !
     real(kind=8) :: valres(26)
-    integer :: icodre(26)
+    integer(kind=8) :: icodre(26)
     character(len=16) :: nomres(26)
     character(len=32) :: phenom
     real(kind=8) :: young, nu, nult, nutl, alpha, beta
     real(kind=8) :: passag(3, 3), pas2(2, 2), dorth(3, 3), work(3, 3), d(3, 3)
     real(kind=8) :: dcis(2, 2), c, s, d2(2, 2), el, et, glt, gtn, delta
     real(kind=8) :: r8bid4(4)
-    integer :: i, j, jmate, nbv, jcoqu
+    integer(kind=8) :: i, j, jmate, nbv, jcoqu
 !
     do i = 1, 5
         do j = 1, 5

@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -32,10 +32,10 @@ subroutine cfsans(ds_contact, nt_ncomp_poin, v_ncomp_jeux, v_ncomp_enti, v_ncomp
 ! person_in_charge: mickael.abbas at edf.fr
 !
     type(NL_DS_Contact), intent(in) :: ds_contact
-    integer, intent(in) :: nt_ncomp_poin
+    integer(kind=8), intent(in) :: nt_ncomp_poin
     real(kind=8), pointer :: v_ncomp_jeux(:)
     character(len=16), pointer :: v_ncomp_enti(:)
-    integer, pointer :: v_ncomp_zone(:)
+    integer(kind=8), pointer :: v_ncomp_zone(:)
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -54,10 +54,10 @@ subroutine cfsans(ds_contact, nt_ncomp_poin, v_ncomp_jeux, v_ncomp_enti, v_ncomp
 ! --------------------------------------------------------------------------------------------------
 !
     character(len=16) :: enti_name, poin_name
-    integer :: interp
+    integer(kind=8) :: interp
     aster_logical :: l_stop
     real(kind=8) :: gap, tole_interp
-    integer :: i_ncomp_poin, i_zone
+    integer(kind=8) :: i_ncomp_poin, i_zone
 !
 ! --------------------------------------------------------------------------------------------------
 !

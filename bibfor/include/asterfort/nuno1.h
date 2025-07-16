@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -21,12 +21,12 @@
 interface
     subroutine nuno1(i, iligr, nunoel, n, inum21,&
                      inuno2, nlili)
-        integer :: i
-        integer :: iligr
-        integer :: nunoel
-        integer :: n
-        integer :: inum21
-        integer :: inuno2
-        integer :: nlili
+        integer(kind=8) :: i
+        integer(kind=8) :: iligr
+        integer(kind=8) :: nunoel
+        integer(kind=8) :: n
+        integer(kind=8) :: inum21
+        integer(kind=8) :: inuno2
+        integer(kind=8) :: nlili
     end subroutine nuno1
 end interface

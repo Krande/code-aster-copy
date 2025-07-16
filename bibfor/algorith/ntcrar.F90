@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -50,16 +50,16 @@ subroutine ntcrar(result, sddisc, lReuse)
 !
 ! ----------------------------------------------------------------------
 !
-    integer :: ifm, niv
-    integer, parameter :: iocc = 1
+    integer(kind=8) :: ifm, niv
+    integer(kind=8), parameter :: iocc = 1
     character(len=16), parameter :: factorKeyword = 'ARCHIVAGE', keywStep = 'PAS_ARCH'
     character(len=1), parameter :: base = 'V'
-    integer :: nbFactorKeyword
-    integer :: lastIndex, numeReuseCalc, numeReuse
-    integer :: numeStoring
+    integer(kind=8) :: nbFactorKeyword
+    integer(kind=8) :: lastIndex, numeReuseCalc, numeReuse
+    integer(kind=8) :: numeStoring
     character(len=19) :: sdarch
     character(len=24) :: sdarchAinfJv
-    integer, pointer :: sdarchAinf(:) => null()
+    integer(kind=8), pointer :: sdarchAinf(:) => null()
     real(kind=8) :: lastTime
 !
 ! ----------------------------------------------------------------------

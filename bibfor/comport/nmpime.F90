@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -26,14 +26,14 @@ subroutine nmpime(fami, kpg, ksp, imate, option, &
 #include "asterfort/nm1dpm.h"
 #include "asterfort/r8inir.h"
 #include "asterfort/verift.h"
-    integer :: nbt, neq, nvar
+    integer(kind=8) :: nbt, neq, nvar
     real(kind=8) :: dsde
 !-----------------------------------------------------------------------
     parameter(neq=6, nbt=21, nvar=8)
 !
     character(len=*) :: fami, option
     real(kind=8) :: xlong0, a, xlongm
-    integer :: kpg, ksp, ncstpm, imate
+    integer(kind=8) :: kpg, ksp, ncstpm, imate
     real(kind=8) :: cstpm(ncstpm)
     real(kind=8) :: dlong0
     real(kind=8) :: effnom, vim(nvar)

@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -27,7 +27,7 @@ subroutine caracm(sdcont, nb_cont_zone)
 ! person_in_charge: ayaovi-dzifa.kudawoo at edf.fr
 !
     character(len=8), intent(in) :: sdcont
-    integer, intent(in) :: nb_cont_zone
+    integer(kind=8), intent(in) :: nb_cont_zone
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -44,11 +44,11 @@ subroutine caracm(sdcont, nb_cont_zone)
 !
     character(len=1) :: jv_base
     character(len=24) :: sdcont_defi
-    integer :: ztole, zdirn, zmeth
+    integer(kind=8) :: ztole, zdirn, zmeth
     character(len=24) :: sdcont_methco, sdcont_dirapp, sdcont_toleco, sdcont_dirnor
-    integer :: j_sdcont_methco, j_sdcont_dirapp, j_sdcont_toleco, j_sdcont_dirnor
+    integer(kind=8) :: j_sdcont_methco, j_sdcont_dirapp, j_sdcont_toleco, j_sdcont_dirnor
     character(len=24) :: sdcont_jeufo1, sdcont_jeufo2
-    integer :: j_sdcont_jeufo1, j_sdcont_jeufo2
+    integer(kind=8) :: j_sdcont_jeufo1, j_sdcont_jeufo2
 !
 ! --------------------------------------------------------------------------------------------------
 !

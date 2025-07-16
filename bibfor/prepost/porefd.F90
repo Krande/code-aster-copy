@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -22,18 +22,15 @@ subroutine porefd(trange, noeu, cmp, nomrez)
 
     implicit none
 #include "jeveux.h"
+#include "nldef.h"
 #include "asterfort/jedema.h"
-#include "asterfort/jedetr.h"
 #include "asterfort/jelibe.h"
-#include "asterfort/jelira.h"
 #include "asterfort/jemarq.h"
 #include "asterfort/jeveuo.h"
-#include "asterfort/nlget.h"
 #include "asterfort/tbajli.h"
 #include "asterfort/tbajpa.h"
 #include "asterfort/tbcrsd.h"
 #include "asterfort/utmess.h"
-#include "asterfort/wkvect.h"
 #include "asterfort/as_deallocate.h"
 #include "asterfort/as_allocate.h"
     character(len=*) :: trange, noeu, cmp, nomrez
@@ -41,8 +38,8 @@ subroutine porefd(trange, noeu, cmp, nomrez)
 !     POST-TRAITEMENT DE "RELA_EFFO_DEPL"
 !
 ! ----------------------------------------------------------------------
-    integer ::      nbpt, nbred, inume, nbnoli, nbvint, inl, start
-    integer ::    i, ii, ic, nbpara, bloc_ini, i_bloc
+    integer(kind=8) ::      nbpt, nbred, inume, nbnoli, nbvint, inl, start
+    integer(kind=8) ::    i, ii, ic, nbpara, bloc_ini, i_bloc
     parameter(nbpara=8)
     real(kind=8) :: para(nbpara), xmax, temd, temf, temm
     complex(kind=8) :: c16b
@@ -50,13 +47,13 @@ subroutine porefd(trange, noeu, cmp, nomrez)
     character(len=16) :: nopara(nbpara), nomk16
     character(len=19) :: nomk19
     character(len=24) :: identifier
-    integer :: nlin
+    integer(kind=8) :: nlin
     real(kind=8), pointer :: disc(:) => null()
-    integer, pointer :: desc(:) => null()
-    integer, pointer :: rdindx(:) => null()
+    integer(kind=8), pointer :: desc(:) => null()
+    integer(kind=8), pointer :: rdindx(:) => null()
 !
-    integer, pointer :: nltype(:) => null()
-    integer, pointer :: vindx(:) => null()
+    integer(kind=8), pointer :: nltype(:) => null()
+    integer(kind=8), pointer :: vindx(:) => null()
     character(len=24), pointer :: nlname(:) => null()
     real(kind=8), pointer :: vint(:) => null()
     type(DynaGene) :: dyna_gene

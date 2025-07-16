@@ -6,7 +6,7 @@
  * @brief Fichier entete de la struct CppToFortranGlossary
  * @author Nicolas Sellenet
  * @section LICENCE
- *   Copyright (C) 1991 - 2023  EDF R&D                www.code-aster.org
+ *   Copyright (C) 1991 - 2025  EDF R&D                www.code-aster.org
  *
  *   This file is part of Code_Aster.
  *
@@ -67,7 +67,7 @@ class Glossary {
         MapStrIntIter curIter = _strToInt.find( searchComp );
         if ( curIter == _strToInt.end() )
             throw std::runtime_error( "Unknown component" );
-        return ( PhysicalQuantityComponent )( curIter->second );
+        return (PhysicalQuantityComponent)( curIter->second );
     };
 
     /**
@@ -79,7 +79,7 @@ class Glossary {
         MapStrIntIter curIter = _strToInt.find( searchMod );
         if ( curIter == _strToInt.end() )
             throw std::runtime_error( "Unknown modeling" );
-        return ( Modelings )( curIter->second );
+        return (Modelings)( curIter->second );
     };
 
     /**
@@ -91,7 +91,7 @@ class Glossary {
         MapStrIntIter curIter = _strToInt.find( searchPhysics );
         if ( curIter == _strToInt.end() )
             throw std::runtime_error( "Unknown physics" );
-        return ( Physics )( curIter->second );
+        return (Physics)( curIter->second );
     };
 };
 

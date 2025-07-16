@@ -51,8 +51,8 @@ subroutine nmdoch(listLoadPrep, listLoadZ, jvBase)
 ! --------------------------------------------------------------------------------------------------
 !
     character(len=4), parameter :: phenom = "MECA"
-    integer :: iLoadList, iKeyword, indxLoadInList
-    integer :: nbLoadList, nbLoadPilo, nbDiriSuiv
+    integer(kind=8) :: iLoadList, iKeyword, indxLoadInList
+    integer(kind=8) :: nbLoadList, nbLoadPilo, nbDiriSuiv
     character(len=24) :: listLoad
     character(len=8), parameter :: funcCste = '&&NMDOME'
     character(len=16) :: loadKeyword, loadCommand, loadApply

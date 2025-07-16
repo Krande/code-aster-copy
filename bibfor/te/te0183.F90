@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -38,15 +38,15 @@ subroutine te0183(option, nomte)
 !
 ! --------------------------------------------------------------------------------------------------
 !
-    integer :: jvGeom, jvMate, jvLoad, jvVect
+    integer(kind=8) :: jvGeom, jvMate, jvLoad, jvVect
     real(kind=8) :: nx, ny, nz, sx(9, 9), sy(9, 9), sz(9, 9)
     real(kind=8) :: rho, jac
     complex(kind=8) :: speedVale
-    integer :: jvWeight, jvShape, jvDShapeX, jvDShapeY
-    integer :: nbNode, npg, cellDime, ndof
-    integer :: idec, jdec, kdec, ldec
-    integer :: i, ino, j, jno, ipg
-    integer :: j_mater
+    integer(kind=8) :: jvWeight, jvShape, jvDShapeX, jvDShapeY
+    integer(kind=8) :: nbNode, npg, cellDime, ndof
+    integer(kind=8) :: idec, jdec, kdec, ldec
+    integer(kind=8) :: i, ino, j, jno, ipg
+    integer(kind=8) :: j_mater
 !
 ! --------------------------------------------------------------------------------------------------
 !

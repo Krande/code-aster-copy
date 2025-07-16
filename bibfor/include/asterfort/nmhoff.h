@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -21,8 +21,8 @@
 interface
     subroutine nmhoff(ndim, imate, inst, epsm, deps,&
                       option, sigp, dsidep)
-        integer :: ndim
-        integer :: imate
+        integer(kind=8) :: ndim
+        integer(kind=8) :: imate
         real(kind=8) :: inst
         real(kind=8) :: epsm(6)
         real(kind=8) :: deps(6)

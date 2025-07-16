@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -42,7 +42,7 @@ subroutine gdmmas(kp, nno, pjacob, en, grani, &
     real(kind=8) :: iro(3, 3), amat1(3, 3)
 !
 !-----------------------------------------------------------------------
-    integer :: i, j, kp, nno
+    integer(kind=8) :: i, j, kp, nno
     real(kind=8) :: coef, pjacob, zero
 !-----------------------------------------------------------------------
     zero = 0.d0

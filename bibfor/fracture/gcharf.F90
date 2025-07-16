@@ -34,7 +34,6 @@ subroutine gcharf(ichar, fonc1, char1, fonc2, char2, &
 #include "asterfort/jeecra.h"
 #include "asterfort/jelira.h"
 #include "asterfort/jemarq.h"
-#include "asterfort/jenuno.h"
 #include "asterfort/jeveuo.h"
 #include "asterfort/jexatr.h"
 #include "asterfort/jexnum.h"
@@ -43,7 +42,7 @@ subroutine gcharf(ichar, fonc1, char1, fonc2, char2, &
 !
     character(len=19) :: char1, char2, charg
     character(len=24) :: oldfon
-    integer :: ichar
+    integer(kind=8) :: ichar
     aster_logical :: fonc1, fonc2
 !
 !     BUT : EFFECTUE LA FUSION DE 2 CHARGES DE MEME TYPE
@@ -60,16 +59,16 @@ subroutine gcharf(ichar, fonc1, char1, fonc2, char2, &
 ! ======================================================================
 ! ----------------------------------------------------------------------
 !
-    integer :: jzcar1, nbma, p1, p2, nmazo, jdes
-    integer :: nbzo1, ima, izo, numa, nbzo2, jzcar2, izo1, izo2, ii, nbzo, nuzo1
-    integer :: nuzo2, jzcar, jma, jval, ncmpmx, jk24, ilim, jmazo, jnumz, nuzo
-    integer :: k, jval1, icmp, jval2, kk, jfonci
+    integer(kind=8) :: jzcar1, nbma, p1, p2, nmazo, jdes
+    integer(kind=8) :: nbzo1, ima, izo, numa, nbzo2, jzcar2, izo1, izo2, ii, nbzo, nuzo1
+    integer(kind=8) :: nuzo2, jzcar, jma, jval, ncmpmx, jk24, ilim, jmazo, jnumz, nuzo
+    integer(kind=8) :: k, jval1, icmp, jval2, kk, jfonci
     character(len=8) :: ma, k8b, val1, val2, nomfct, noms2f
     character(len=19) :: charg1, charg2
     character(len=40) :: acces
     aster_logical :: s2f
-    integer, pointer :: des1(:) => null()
-    integer, pointer :: des2(:) => null()
+    integer(kind=8), pointer :: des1(:) => null()
+    integer(kind=8), pointer :: des2(:) => null()
 !
     call jemarq()
 !

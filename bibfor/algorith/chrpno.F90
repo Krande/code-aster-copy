@@ -29,14 +29,11 @@ subroutine chrpno(champ1, repere, nom_cham, type)
 #include "asterfort/detrsd.h"
 #include "asterfort/dismoi.h"
 #include "asterfort/getvr8.h"
-#include "asterfort/getvtx.h"
 #include "asterfort/jedema.h"
 #include "asterfort/jedetr.h"
 #include "asterfort/jemarq.h"
-#include "asterfort/jenuno.h"
 #include "asterfort/jeveuo.h"
 #include "asterfort/jexatr.h"
-#include "asterfort/jexnum.h"
 #include "asterfort/matrot.h"
 #include "asterfort/normev.h"
 #include "asterfort/provec.h"
@@ -46,8 +43,6 @@ subroutine chrpno(champ1, repere, nom_cham, type)
 #include "asterfort/utmess.h"
 #include "asterfort/utpsgl.h"
 #include "asterfort/utpvgl.h"
-#include "asterfort/as_deallocate.h"
-#include "asterfort/as_allocate.h"
 #include "blas/ddot.h"
 #include "asterfort/int_to_char8.h"
 !
@@ -62,11 +57,11 @@ subroutine chrpno(champ1, repere, nom_cham, type)
 ! ----------------------------------------------------------------------
 ! ---------------------------------------------------------------------
 !
-    integer :: i, nbno, ino, ibid, nbcmp, ndim_type
-    integer :: ii, nbma, ipt2, inel
-    integer :: jcnsv, jconx1, jconx2, nbpt
-    integer :: ipt, inot, ndim, licmpu(6), jcnsl
-    integer :: nbn, idnoeu, nbnoeu, inoe
+    integer(kind=8) :: i, nbno, ino, ibid, nbcmp, ndim_type
+    integer(kind=8) :: ii, nbma, ipt2, inel
+    integer(kind=8) :: jcnsv, jconx1, jconx2, nbpt
+    integer(kind=8) :: ipt, inot, ndim, licmpu(6), jcnsl
+    integer(kind=8) :: nbn, idnoeu, nbnoeu, inoe
     real(kind=8) :: angnot(3), pgl(3, 3), valer(6), valed(6)
     real(kind=8) :: valr, valei(6)
     real(kind=8) :: orig(3), axez(3), axer(3), axet(3)
@@ -79,13 +74,13 @@ subroutine chrpno(champ1, repere, nom_cham, type)
     character(len=19) :: chams1, chams0
     character(len=24) :: mesnoe
     character(len=24) :: valk
-    integer, parameter :: nbCmpMax = 8
+    integer(kind=8), parameter :: nbCmpMax = 8
     character(len=8) :: nom_cmp(nbCmpMax)
     real(kind=8), pointer :: vale(:) => null()
-    integer, pointer :: cnsd(:) => null()
+    integer(kind=8), pointer :: cnsd(:) => null()
     character(len=8), pointer :: cnsk(:) => null()
     character(len=8), pointer :: cnsc(:) => null()
-    integer :: iocc, nocc
+    integer(kind=8) :: iocc, nocc
     blas_int :: b_incx, b_incy, b_n
 !
     call jemarq()

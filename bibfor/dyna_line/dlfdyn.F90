@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -23,7 +23,7 @@ subroutine dlfdyn(rigid, amort, lamort, neq, d0, &
 #include "asterfort/mrmult.h"
 #include "blas/daxpy.h"
     real(kind=8) :: d0(*), v0(*), f(*), f0(*)
-    integer :: rigid, amort, neq
+    integer(kind=8) :: rigid, amort, neq
     aster_logical :: lamort
 !
 !   BUT :      CALCUL DU VECTEUR FORCE DYNAMIQUE

@@ -67,9 +67,9 @@ subroutine rvlieu(mailla, typco, nlsnac, sdlieu)
     character(len=19) :: sdcour
     character(len=10) :: iden
     character(len=4) :: docu
-    integer :: aabsc, arefe, adesc, acoor, ier
-    integer :: ansdl, adr, anumnd, anume
-    integer :: nbsd, isd, nbpt, ipt
+    integer(kind=8) :: aabsc, arefe, adesc, acoor, ier
+    integer(kind=8) :: ansdl, adr, anumnd, anume
+    integer(kind=8) :: nbsd, isd, nbpt, ipt
     real(kind=8) :: zero
     aster_logical lnomnoe
 !

@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -43,7 +43,7 @@ subroutine xstano(noma, lisno, nmafis, jmafis, cnslt, &
 #include "blas/ddot.h"
 !
     real(kind=8) :: rayon
-    integer :: nmafis, jmafis
+    integer(kind=8) :: nmafis, jmafis
     character(len=8) :: noma
     character(len=16) :: typdis
     character(len=19) :: cnslt, cnsln, cnslj, cnxinv
@@ -72,12 +72,12 @@ subroutine xstano(noma, lisno, nmafis, jmafis, cnslt, &
 !         STANO  : VECTEUR STATUT DES NOEUDS
 !     ------------------------------------------------------------------
 !
-    integer :: in, ar(12, 3), ia, i, j, k, nbnoe, nbnott(3)
-    integer :: ino, ima, nuno, nrien, nbar, na, nm, nunom
-    integer :: nb, nunoa, nunob, enr, enr1, enr2, jdlino, jma, jstano
-    integer :: jconx2, itypma, ndim
-    integer :: nfiss, ifiss
-    integer :: nbma, jlmaf, nmasup, jmasup, isup, iret
+    integer(kind=8) :: in, ar(12, 3), ia, i, j, k, nbnoe, nbnott(3)
+    integer(kind=8) :: ino, ima, nuno, nrien, nbar, na, nm, nunom
+    integer(kind=8) :: nb, nunoa, nunob, enr, enr1, enr2, jdlino, jma, jstano
+    integer(kind=8) :: jconx2, itypma, ndim
+    integer(kind=8) :: nfiss, ifiss
+    integer(kind=8) :: nbma, jlmaf, nmasup, jmasup, isup, iret
     real(kind=8) :: minlsn, minlst, maxlsn, maxlst, lsna, lsnb, lsta, lstb
     real(kind=8) :: minlsj(10, 2), maxlsj(10), lsja(10, 2), lsjb(10, 2), lsjm(10, 2)
     real(kind=8) :: lsjc(10, 2), lstm, lsnm, a1, b1, c1, a2, b2, c2, x1
@@ -90,8 +90,8 @@ subroutine xstano(noma, lisno, nmafis, jmafis, cnslt, &
     real(kind=8), pointer :: ljsv(:) => null()
     real(kind=8), pointer :: lnsv(:) => null()
     real(kind=8), pointer :: ltsv(:) => null()
-    integer, pointer :: connex(:) => null()
-    integer, pointer :: cnsd(:) => null()
+    integer(kind=8), pointer :: connex(:) => null()
+    integer(kind=8), pointer :: cnsd(:) => null()
     blas_int :: b_incx, b_incy, b_n
 ! ----------------------------------------------------------------------
 !

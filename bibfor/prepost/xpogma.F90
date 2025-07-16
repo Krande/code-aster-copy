@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -28,7 +28,7 @@ subroutine xpogma(nbgma, nb, listgr, ima, jlogma)
 #include "asterfort/jeveuo.h"
 #include "asterfort/jexnum.h"
 !
-    integer :: nbgma, nb, ima, jlogma
+    integer(kind=8) :: nbgma, nb, ima, jlogma
     character(len=24) :: listgr
 !
 !   AUGMENTATION DE LA TAILLE DES GROUP_MA A CREER
@@ -42,7 +42,7 @@ subroutine xpogma(nbgma, nb, listgr, ima, jlogma)
 !   IN/OUT
 !       JLOGMA  : ADRESSE DES VECTEUR DE TAILLE
 !
-    integer :: ngrm, iagma, i, ig
+    integer(kind=8) :: ngrm, iagma, i, ig
 !
 !
     call jemarq()

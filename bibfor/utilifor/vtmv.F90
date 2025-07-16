@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -18,7 +18,7 @@
 !
 subroutine vtmv(n, v, a, r)
     implicit none
-    integer :: n
+    integer(kind=8) :: n
     real(kind=8) :: v(n), a(n, n), r
 !     ------------------------------------------------------------------
 ! IN  N      :  DIMENSION DU VECTEUR
@@ -27,7 +27,7 @@ subroutine vtmv(n, v, a, r)
 ! OUT R      :  REEL, RESULTAT DE VT*A*V
 !     ------------------------------------------------------------------
 !-----------------------------------------------------------------------
-    integer :: i, j
+    integer(kind=8) :: i, j
 !-----------------------------------------------------------------------
     r = 0.d0
     do i = 1, n

@@ -22,7 +22,6 @@ subroutine cazofm(sdcont, keywf, cont_form, cont_nbzone)
     implicit none
 !
 #include "asterf_types.h"
-#include "asterc/r8prem.h"
 #include "asterfort/assert.h"
 #include "asterfort/cazouu.h"
 #include "asterfort/getvr8.h"
@@ -33,8 +32,8 @@ subroutine cazofm(sdcont, keywf, cont_form, cont_nbzone)
 #include "asterfort/utmess.h"
 !
     character(len=8), intent(in) :: sdcont
-    integer, intent(in) :: cont_form
-    integer, intent(in) :: cont_nbzone
+    integer(kind=8), intent(in) :: cont_form
+    integer(kind=8), intent(in) :: cont_nbzone
     character(len=16), intent(in) :: keywf
 !
 ! --------------------------------------------------------------------------------------------------
@@ -53,10 +52,10 @@ subroutine cazofm(sdcont, keywf, cont_form, cont_nbzone)
 ! --------------------------------------------------------------------------------------------------
 !
     character(len=16) :: s_algo_cont, s_formul, s_frott
-    integer :: algo_cont, algo_frot, izone
+    integer(kind=8) :: algo_cont, algo_frot, izone
     aster_logical :: l_frot, lmunul
     character(len=24) :: sdcont_paraci
-    integer, pointer :: v_sdcont_paraci(:) => null()
+    integer(kind=8), pointer :: v_sdcont_paraci(:) => null()
     real(kind=8) :: coefff
 !
 ! --------------------------------------------------------------------------------------------------

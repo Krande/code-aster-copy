@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -21,9 +21,9 @@
 interface
     subroutine jjalty(typei, ltypi, cel, inatb, jctab)
         character(len=*) :: typei
-        integer :: ltypi
+        integer(kind=8) :: ltypi
         character(len=*) :: cel
-        integer :: inatb
-        integer :: jctab
+        integer(kind=8) :: inatb
+        integer(kind=8) :: jctab
     end subroutine jjalty
 end interface

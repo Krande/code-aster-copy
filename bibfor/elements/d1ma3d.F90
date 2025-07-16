@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -49,17 +49,17 @@ subroutine d1ma3d(fami, mater, instan, poum, kpg, &
 #include "asterfort/utbtab.h"
 #include "asterfort/utmess.h"
     character(len=*) :: poum, fami
-    integer :: kpg, ksp
+    integer(kind=8) :: kpg, ksp
     real(kind=8) :: angl(3), d1(6, 6), instan
 ! -----  VARIABLES LOCALES
 !-----------------------------------------------------------------------
-    integer :: i, irep, j, mater, nbres, nbv
+    integer(kind=8) :: i, irep, j, mater, nbres, nbv
     real(kind=8) :: coef1, coef2, coef3, deux, e, e1, e2
     real(kind=8) :: e3, un, zero
 !-----------------------------------------------------------------------
     parameter(nbres=9)
 !
-    integer :: icodre(nbres)
+    integer(kind=8) :: icodre(nbres)
     character(len=8) :: nompar(2)
     character(len=16) :: nomres(nbres)
     character(len=32) :: phenom
@@ -67,7 +67,7 @@ subroutine d1ma3d(fami, mater, instan, poum, kpg, &
     real(kind=8) :: valres(nbres), valpar(1)
     real(kind=8) :: passag(6, 6), d1orth(6, 6), work(6, 6)
     real(kind=8) :: nu, nu12, nu21, nu13, nu23, nu31, nu32
-    integer :: nbpar
+    integer(kind=8) :: nbpar
 !.========================= DEBUT DU CODE EXECUTABLE ==================
 !
 ! ---- INITIALISATIONS

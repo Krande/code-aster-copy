@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -30,7 +30,7 @@ subroutine rcstoc_verif(nomfcz, nomclz, nomrz, nbmax)
     character(len=*) :: nomfcz
     character(len=*) :: nomclz
     character(len=*) :: nomrz
-    integer :: nbmax
+    integer(kind=8) :: nbmax
 ! ----------------------------------------------------------------------
 !
     real(kind=8) :: e1, ei, precma, valrr(4)
@@ -38,9 +38,9 @@ subroutine rcstoc_verif(nomfcz, nomclz, nomrz, nbmax)
     character(len=19) :: nomfct
     character(len=8) :: nomcle
     character(len=32) :: nomrc
-    integer :: vali
-    integer :: k, i, ii, jrpv, nbcoup
-    integer :: iret, nbfct, nbpts, nbptm
+    integer(kind=8) :: vali
+    integer(kind=8) :: k, i, ii, jrpv, nbcoup
+    integer(kind=8) :: iret, nbfct, nbpts, nbptm
     character(len=24), pointer :: prol(:) => null()
 ! ----------------------------------------------------------------------
 !

@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -44,8 +44,8 @@ subroutine addGrpNo(mesh, group_no, listNodes, nbNodes, l_added_grpno)
 !
     character(len=8), intent(in)  :: mesh
     character(len=24), intent(in) :: group_no
-    integer, intent(in)           :: listNodes(*)
-    integer, intent(in)           :: nbNodes
+    integer(kind=8), intent(in)           :: listNodes(*)
+    integer(kind=8), intent(in)           :: nbNodes
     aster_logical, intent(out), optional :: l_added_grpno
 !
 !---------------------------------------------------------------------------------------------------
@@ -63,9 +63,9 @@ subroutine addGrpNo(mesh, group_no, listNodes, nbNodes, l_added_grpno)
 !
 !---------------------------------------------------------------------------------------------------
     character(len=24) :: grnoma, grnomap, nomgrp
-    integer :: nbGrp, iaux, iret
+    integer(kind=8) :: nbGrp, iaux, iret
     aster_logical :: l_parallel_mesh, l_exi_in_grp, l_exi_in_grp_p, l_added
-    integer, pointer :: v_nodes(:) => null()
+    integer(kind=8), pointer :: v_nodes(:) => null()
     character(len=24), pointer :: v_grpp(:) => null()
 !-----------------------------------------------------------------------
 !
@@ -82,7 +82,7 @@ subroutine addGrpNo(mesh, group_no, listNodes, nbNodes, l_added_grpno)
 !
     if (l_exi_in_grp) then
         l_added = ASTER_FALSE
-        call utmess('A', 'SOUSTRUC_37', sk=group_no)
+        call utmess('F', 'SOUSTRUC_37', sk=group_no)
     elseif (nbNodes <= 0) then
         l_added = ASTER_FALSE
         call utmess('A', 'SOUSTRUC_38', sk=group_no)

@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -33,7 +33,7 @@ subroutine rsnume(resu, nomsy, nu)
 ! OUT  K14  NU      : NOM DU NUME_DDL  TROUVE (OU ' ' SINON)
 ! ----------------------------------------------------------------------
 !
-    integer :: nume_last, icode, iret, luti, iret2
+    integer(kind=8) :: nume_last, icode, iret, luti, iret2
     character(len=19) :: chamno, resu2
     character(len=24), pointer :: refe(:) => null()
 !

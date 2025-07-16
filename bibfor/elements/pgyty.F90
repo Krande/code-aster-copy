@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -33,8 +33,8 @@ subroutine pgyty(nno, npg, dfde, yty)
 ! ----------------------------------------------------------------------
 !
 !-----------------------------------------------------------------------
-    integer :: i, ii, j, jj, k, ki, ngaus
-    integer :: nno, nordre, npg, numero
+    integer(kind=8) :: i, ii, j, jj, k, ki, ngaus
+    integer(kind=8) :: nno, nordre, npg, numero
 !-----------------------------------------------------------------------
     k = 0
     do j = 1, npg

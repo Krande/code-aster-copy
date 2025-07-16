@@ -59,13 +59,13 @@ subroutine te0039(option, nomte)
     type(te0047_dscr) :: for_discret
 !
 !   Les variables internes
-    integer, parameter :: nbvari = 9
+    integer(kind=8), parameter :: nbvari = 9
     real(kind=8) :: varmo(nbvari), varpl(nbvari)
 !
-    integer :: lorien, lmater, ii, jj
-    integer :: ivectu, jvSief, neq
-    integer :: iplouf, infodi, itype, ibid
-    integer :: igeom, jdc, irep, ifono, ilogic, jvDisp
+    integer(kind=8) :: lorien, lmater, ii, jj
+    integer(kind=8) :: ivectu, jvSief, neq
+    integer(kind=8) :: iplouf, infodi, itype, ibid
+    integer(kind=8) :: igeom, jdc, irep, ifono, ilogic, jvDisp
 !
     real(kind=8) :: pgl(3, 3), force(3)
     real(kind=8) :: fs(12), ugp(12), ulp(12), dvl(12), dpe(12), dve(12)

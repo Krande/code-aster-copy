@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -52,14 +52,14 @@ subroutine nmdopo(sddyna, ds_posttimestep)
 !
 ! --------------------------------------------------------------------------------------------------
 !
-    integer, parameter :: nb_maxi_dof = 40
-    integer :: iret, iocc, nb_dof_excl, nb_dof_stab, nocc
-    integer :: ifm, niv
+    integer(kind=8), parameter :: nb_maxi_dof = 40
+    integer(kind=8) :: iret, iocc, nb_dof_excl, nb_dof_stab, nocc
+    integer(kind=8) :: ifm, niv
     aster_logical :: l_dyna, l_stat, l_impl
     aster_logical :: l_crit_stab, l_mode_vibr
     aster_logical :: l_small, l_strip
     character(len=16) :: option, type_matr_rigi, keywfact, answer, instab_sign
-    integer :: nb_eigen, coef_dim_espace
+    integer(kind=8) :: nb_eigen, coef_dim_espace
     real(kind=8) :: strip(2)
     real(kind=8) :: instab_prec
     character(len=16) :: level

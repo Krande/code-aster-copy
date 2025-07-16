@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -86,8 +86,8 @@ subroutine meca01(optio0, nbordr, jordr, nchar, jcha, &
 #include "asterfort/utmess.h"
 #include "asterfort/vrcins.h"
 !
-    integer :: nbordr, jordr, nchar, jcha
-    integer :: codret
+    integer(kind=8) :: nbordr, jordr, nchar, jcha
+    integer(kind=8) :: codret
     real(kind=8) :: tbgrca(3)
     character(len=8) :: noma, resuco, resuc1, modele, cara
     character(len=19) :: kcha, chvarc
@@ -102,16 +102,16 @@ subroutine meca01(optio0, nbordr, jordr, nchar, jcha, &
     character(len=6) :: nompro
     parameter(nompro='MECA01')
 !
-    integer :: npacri
+    integer(kind=8) :: npacri
     parameter(npacri=2)
 !
-    integer :: iordr, jfin, jaux, tabido(5)
-    integer :: np, nd, ncharp, nchard, jchap, jchad
-    integer :: iret, iret1, iad
-    integer :: iainst, ii
-    integer :: iaux, ibid
-    integer :: vali
-    integer :: irxfem
+    integer(kind=8) :: iordr, jfin, jaux, tabido(5)
+    integer(kind=8) :: np, nd, ncharp, nchard, jchap, jchad
+    integer(kind=8) :: iret, iret1, iad
+    integer(kind=8) :: iainst, ii
+    integer(kind=8) :: iaux, ibid
+    integer(kind=8) :: vali
+    integer(kind=8) :: irxfem
 !
     real(kind=8) :: rbid, rundf, theta, deltat
     real(kind=8) :: time, erp, erd, s, longc, presc

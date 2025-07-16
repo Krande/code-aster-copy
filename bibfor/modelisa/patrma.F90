@@ -29,7 +29,6 @@ subroutine patrma(llist1, llist2, t, nbtymx, nomma, &
 #include "asterfort/jeexin.h"
 #include "asterfort/jelibe.h"
 #include "asterfort/jemarq.h"
-#include "asterfort/jenuno.h"
 #include "asterfort/jeveuo.h"
 #include "asterfort/jexnum.h"
 #include "asterfort/pacoor.h"
@@ -43,7 +42,7 @@ subroutine patrma(llist1, llist2, t, nbtymx, nomma, &
     character(len=*) :: llist1, llist2, llistt
     character(len=8) :: nomma
     real(kind=8) :: t(3)
-    integer :: nbtymx, ntypm
+    integer(kind=8) :: nbtymx, ntypm
 !     BUT: TRIER DE 2 LISTES DE MAILLES GENEREES PAR LA ROUTINE PALIMA
 !     A FIN DE GENERER UN OJB METTANT EN VIS A VIS LES 2 LISTES VIA
 !     LA TRANSLATION  T
@@ -72,19 +71,19 @@ subroutine patrma(llist1, llist2, t, nbtymx, nomma, &
 !
 ! ROUTINES APPELEES:
     aster_logical :: fintyp
-    integer :: nbnott(3)
-    integer :: vali
+    integer(kind=8) :: nbnott(3)
+    integer(kind=8) :: vali
     character(len=8) :: nomma1, nomma2, nomma3
     character(len=24) :: l1, l2, lt, coor1, coor2, couple, wcpl, connex, biject
     character(len=24) :: valk(3)
     real(kind=8) :: centre(3)
     real(kind=8) :: mrot(3, 3)
 !-----------------------------------------------------------------------
-    integer :: i1, iageom, idbij, idcoo1, idcoo2, idcopl, idl1
-    integer :: idl2, idlt, idno1, idno2, idtyp, idwcpl, iftyp
-    integer :: ima, ima2, ino, iret, ityp, ityp1, j
-    integer :: j2, jdeb, jfin, jtyp, k, lonmx, nbma, err, tot_error
-    integer :: nbma1, nbma2, nbmaty, nbntot, numa1, numa2, numa3
+    integer(kind=8) :: i1, iageom, idbij, idcoo1, idcoo2, idcopl, idl1
+    integer(kind=8) :: idl2, idlt, idno1, idno2, idtyp, idwcpl, iftyp
+    integer(kind=8) :: ima, ima2, ino, iret, ityp, ityp1, j
+    integer(kind=8) :: j2, jdeb, jfin, jtyp, k, lonmx, nbma, err, tot_error
+    integer(kind=8) :: nbma1, nbma2, nbmaty, nbntot, numa1, numa2, numa3
 !
     real(kind=8) :: d, dmin
 !-----------------------------------------------------------------------

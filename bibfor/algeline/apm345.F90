@@ -33,7 +33,7 @@ subroutine apm345(nbtetc, typcon, rayonc, centrc, nk, &
 #include "asterfort/jemarq.h"
 #include "asterfort/wkvect.h"
 !
-    integer :: nbtetc, nk, pivot2, lraide, lmasse, ldynam, lamor, ifapm
+    integer(kind=8) :: nbtetc, nk, pivot2, lraide, lmasse, ldynam, lamor, ifapm
     real(kind=8) :: rayonc
     complex(kind=8) :: centrc
     aster_logical :: ltest, lc
@@ -65,7 +65,7 @@ subroutine apm345(nbtetc, typcon, rayonc, centrc, nk, &
 ! person_in_charge: olivier.boiteau at edf.fr
 !
 !
-    integer :: i, jcont, jtheta, ifm, niv
+    integer(kind=8) :: i, jcont, jtheta, ifm, niv
     real(kind=8) :: raux1, pi, raux2, rauxx, rauxy, theta, thetao, thetap
     real(kind=8) :: thetam, raddeg, prec2, piprec
 !

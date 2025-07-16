@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -35,7 +35,7 @@ subroutine e1e2nn(nno, dfde, dfdk, e1n, e2n, &
     real(kind=8) :: normn(3, 9), e1n(3, 9), e2n(3, 9), uni1n(3, 9)
     real(kind=8) :: dfde(9, 9), dfdk(9, 9), j1n(9), j2n(9), can(9)
     real(kind=8) :: sx(9, 9), sy(9, 9), sz(9, 9), uni2n(3, 9)
-    integer :: igeom, i, ino, j, jno, k, nno
+    integer(kind=8) :: igeom, i, ino, j, jno, k, nno
 !
 !
     call jevech('PGEOMER', 'L', igeom)

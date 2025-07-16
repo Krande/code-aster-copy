@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -21,15 +21,15 @@
 interface 
     subroutine xdblsn(ninter, npts, ndim, ar,&
                       pinref, pinter, ainter, cnset, nnose, it)
-        integer :: ninter
-        integer ::  ar(12, 3)
-        integer :: npts
-        integer :: ndim
+        integer(kind=8) :: ninter
+        integer(kind=8) ::  ar(12, 3)
+        integer(kind=8) :: npts
+        integer(kind=8) :: ndim
         real(kind=8) :: ainter(*)
         real(kind=8) :: pinter(*)
         real(kind=8) :: pinref(*) 
-        integer :: cnset(*)
-        integer :: nnose
-        integer :: it
+        integer(kind=8) :: cnset(*)
+        integer(kind=8) :: nnose
+        integer(kind=8) :: it
     end subroutine xdblsn
 end interface 

@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -22,7 +22,7 @@ interface
     subroutine char_crea_ligf(mesh, ligrch, nb_elem_late, nb_noel_maxi)
         character(len=19), intent(in) :: ligrch
         character(len=8), intent(in) :: mesh
-        integer, intent(in) :: nb_elem_late
-        integer, intent(in) :: nb_noel_maxi
+        integer(kind=8), intent(in) :: nb_elem_late
+        integer(kind=8), intent(in) :: nb_noel_maxi
     end subroutine char_crea_ligf
 end interface

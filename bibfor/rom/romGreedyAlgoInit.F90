@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -30,7 +30,7 @@ subroutine romGreedyAlgoInit(nb_mode, nb_vari_coef, vect_refe, ds_algoGreedy)
 #include "asterfort/utmess.h"
 #include "asterfort/wkvect.h"
 !
-    integer, intent(in) :: nb_mode, nb_vari_coef
+    integer(kind=8), intent(in) :: nb_mode, nb_vari_coef
     character(len=19), intent(in) :: vect_refe
     type(ROM_DS_AlgoGreedy), intent(in) :: ds_algoGreedy
 !
@@ -49,8 +49,8 @@ subroutine romGreedyAlgoInit(nb_mode, nb_vari_coef, vect_refe, ds_algoGreedy)
 !
 ! --------------------------------------------------------------------------------------------------
 !
-    integer :: ifm, niv
-    integer :: jv_dummy
+    integer(kind=8) :: ifm, niv
+    integer(kind=8) :: jv_dummy
 !
 ! --------------------------------------------------------------------------------------------------
 !

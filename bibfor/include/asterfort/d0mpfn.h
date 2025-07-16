@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -20,7 +20,7 @@
 !
 interface
     subroutine d0mpfn(zimat, nmnbn, nmdpla)
-        integer :: zimat
+        integer(kind=8) :: zimat
         real(kind=8) :: nmnbn(6)
         real(kind=8) :: nmdpla(2, 2)
     end subroutine d0mpfn

@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -26,11 +26,11 @@ subroutine ut2pgl(nn, nc, p, sg, sl)
 #include "asterfort/ut2agl.h"
 #include "asterfort/ut2mgl.h"
 #include "asterfort/vecmap.h"
-    integer, intent(in) :: nn, nc
+    integer(kind=8), intent(in) :: nn, nc
     real(kind=8), intent(in) :: p(3, 3), sg(*)
     real(kind=8), intent(out) :: sl(*)
 !
-    integer :: n, n1, nddl
+    integer(kind=8) :: n, n1, nddl
     real(kind=8), dimension(nn*nc, nn*nc) :: matsy1, matsy2, matas2
     real(kind=8), dimension(nn*nc, nn*nc) :: matsym, matasy
     real(kind=8), dimension(nn*nc, nn*nc) :: parsmg, parayg, matril, matrig

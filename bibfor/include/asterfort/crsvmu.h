@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -23,8 +23,8 @@
      &kellag,kxfem)
               character(len=16) :: motfac
               character(len=19) :: solveu
-              integer :: istop
-              integer :: nprec
+              integer(kind=8) :: istop
+              integer(kind=8) :: nprec
               real(kind=8) :: epsmat
               character(len=3) :: mixpre
               character(len=3) :: kellag

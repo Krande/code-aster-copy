@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -22,11 +22,11 @@ subroutine mltacp(n, ncol, adper, matper, matfi, &
 ! VERSION COMPLEXE DE MLTAFP
     implicit none
     integer(kind=4) :: local(*)
-    integer :: n, ncol, adper(*)
+    integer(kind=8) :: n, ncol, adper(*)
     complex(kind=8) :: matper(*), matfi(*)
 !     VARIABLES LOCALES
-    integer :: decp1, decp2, decf1, decf2, j, i, ni, decp
-    integer :: ip
+    integer(kind=8) :: decp1, decp2, decf1, decf2, j, i, ni, decp
+    integer(kind=8) :: ip
     decf1 = 1
     decf2 = n
     if (mod(ncol, 2) .eq. 0) then

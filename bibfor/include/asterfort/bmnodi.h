@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -21,12 +21,12 @@
           interface 
             subroutine bmnodi(basmdz,intfz,nmintz,numint,nbdef,ivcord,  &
      &nbdif)
-              integer, intent(in) :: nbdef
+              integer(kind=8), intent(in) :: nbdef
               character(len=*), intent(in) :: basmdz
               character(len=*), intent(in) :: intfz
               character(len=*), intent(in) :: nmintz
-              integer, intent(inout) :: numint
-              integer, intent(out) :: ivcord(nbdef)
-              integer, intent(inout) :: nbdif
+              integer(kind=8), intent(inout) :: numint
+              integer(kind=8), intent(out) :: ivcord(nbdef)
+              integer(kind=8), intent(inout) :: nbdif
             end subroutine bmnodi
           end interface 

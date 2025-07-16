@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -101,24 +101,24 @@ subroutine ssriu1(nomu)
 ! ----------------------------------------------------------------------
 !
 !
-    integer :: i
+    integer(kind=8) :: i
     character(len=8) :: nogdsi
     character(len=14) :: nume_ddl
     character(len=19) :: nume_equa
-    integer :: iaconx
-    integer :: iaprno, ico, icoe, icoi
-    integer :: ieqn, ili, inl, ino, iret
-    integer :: itylag, n1, nbno, nbnoe, nbnoet, nddle, nddli
-    integer :: nddlt, nec, nlage, nlagi, nlagl, nlili, nuddl
-    integer :: nueq, nulag, nuno, nuno2, nunold
-    integer, pointer :: interne(:) => null()
-    integer, pointer :: work1(:) => null()
-    integer, pointer :: work2(:) => null()
-    integer, pointer :: vnueq(:) => null()
-    integer, pointer :: delg(:) => null()
-    integer, pointer :: deeq(:) => null()
-    integer, pointer :: lino(:) => null()
-    integer, pointer :: desm(:) => null()
+    integer(kind=8) :: iaconx
+    integer(kind=8) :: iaprno, ico, icoe, icoi
+    integer(kind=8) :: ieqn, ili, inl, ino, iret
+    integer(kind=8) :: itylag, n1, nbno, nbnoe, nbnoet, nddle, nddli
+    integer(kind=8) :: nddlt, nec, nlage, nlagi, nlagl, nlili, nuddl
+    integer(kind=8) :: nueq, nulag, nuno, nuno2, nunold
+    integer(kind=8), pointer :: interne(:) => null()
+    integer(kind=8), pointer :: work1(:) => null()
+    integer(kind=8), pointer :: work2(:) => null()
+    integer(kind=8), pointer :: vnueq(:) => null()
+    integer(kind=8), pointer :: delg(:) => null()
+    integer(kind=8), pointer :: deeq(:) => null()
+    integer(kind=8), pointer :: lino(:) => null()
+    integer(kind=8), pointer :: desm(:) => null()
 !-----------------------------------------------------------------------
     call jemarq()
     nume_ddl = nomu

@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -35,11 +35,10 @@ subroutine cnoadd(chno, chnop)
 #include "asterfort/copisd.h"
 #include "asterfort/jelira.h"
 #include "asterfort/gettco.h"
-#include "asterfort/assert.h"
 #include "asterfort/asmpi_info.h"
 
-    integer :: rang, nbproc
-    integer :: iaux, jvale, jprddl, nbeq
+    integer(kind=8) :: rang, nbproc
+    integer(kind=8) :: iaux, jvale, jprddl, nbeq
     mpi_int :: mrank, msize
     character(len=8)  :: k8bid
     character(len=16) :: typsd

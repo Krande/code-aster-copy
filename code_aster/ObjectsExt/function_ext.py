@@ -215,8 +215,6 @@ class ExtendedFunctionComplex:
         class_fonction = t_fonction
         if arg == "complex":
             class_fonction = t_fonction_c
-        absc = self.Absc()
-        para = self.Parametres()
         if arg == "real":
             ordo = self.Ordo()
         elif arg == "imag":

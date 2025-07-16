@@ -1,6 +1,6 @@
 ! --------------------------------------------------------------------
 ! Copyright (C) LAPACK
-! Copyright (C) 2007 - 2024 - EDF R&D - www.code-aster.org
+! Copyright (C) 2007 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -139,7 +139,7 @@ subroutine ar_dlrsyl(trana, tranb, isgn, m, n, &
 #include "blas/dscal.h"
 #include "blas/lsame.h"
     character(len=1) :: trana, tranb
-    integer :: info, isgn, lda, ldb, ldc, m, n
+    integer(kind=8) :: info, isgn, lda, ldb, ldc, m, n
     real(kind=8) :: scale
 !     ..
 !     .. ARRAY ARGUMENTS ..
@@ -151,7 +151,7 @@ subroutine ar_dlrsyl(trana, tranb, isgn, m, n, &
 !     ..
 !     .. LOCAL SCALARS ..
     aster_logical :: notrna, notrnb
-    integer :: ierr, j, k, k1, k2, knext, l, l1, l2, lnext
+    integer(kind=8) :: ierr, j, k, k1, k2, knext, l, l1, l2, lnext
     real(kind=8) :: a11, bignum, da11, db, eps, scaloc, sgn, smin, smlnum, suml
     real(kind=8) :: sumr, xnorm
 !     ..

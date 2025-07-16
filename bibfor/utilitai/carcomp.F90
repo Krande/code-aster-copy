@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -30,11 +30,10 @@ subroutine carcomp(carte_1, carte_2, iret, indxCmpExcl_)
 #include "asterfort/jedema.h"
 #include "asterfort/jemarq.h"
 #include "asterfort/jeveuo.h"
-#include "asterfort/jexnum.h"
 !
     character(len=*), intent(in) :: carte_1, carte_2
-    integer, intent(out) :: iret
-    integer, intent(in), optional :: indxCmpExcl_
+    integer(kind=8), intent(out) :: iret
+    integer(kind=8), intent(in), optional :: indxCmpExcl_
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -51,21 +50,21 @@ subroutine carcomp(carte_1, carte_2, iret, indxCmpExcl_)
 !
 ! --------------------------------------------------------------------------------------------------
 !
-    integer :: nbCell, iCell, iCmp, iret1, iret2
+    integer(kind=8) :: nbCell, iCell, iCmp, iret1, iret2
     character(len=8) :: mesh_1, mesh_2, mesh
     character(len=19) :: carte_1s, carte_2s
-    integer :: jcesd1, jcesv1, jcesl1
-    integer :: jcesd2, jcesv2, jcesl2
-    integer :: iad1, iad2
+    integer(kind=8) :: jcesd1, jcesv1, jcesl1
+    integer(kind=8) :: jcesd2, jcesv2, jcesl2
+    integer(kind=8) :: iad1, iad2
     character(len=8) :: nomgd1, nomgd2, nomgd, type_test
     character(len=3) :: tsca
     real(kind=8) :: zero, valr1, valr2, valr_error
-    integer :: vali1, vali2
-    integer :: ncmp1, ncmp2, nbCmp
+    integer(kind=8) :: vali1, vali2
+    integer(kind=8) :: ncmp1, ncmp2, nbCmp
     character(len=80) :: valk1, valk2
     aster_logical :: vall1, vall2, lok
     real(kind=8) :: epsi
-    integer :: indxCmpExcl
+    integer(kind=8) :: indxCmpExcl
 !
 ! --------------------------------------------------------------------------------------------------
 !

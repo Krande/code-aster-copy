@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -27,7 +27,7 @@ subroutine thmGetParaBiot(j_mater, ds_thm)
 #include "asterfort/rcvala.h"
 #include "asterfort/THM_type.h"
 !
-    integer, intent(in) :: j_mater
+    integer(kind=8), intent(in) :: j_mater
     type(THM_DS), intent(inout) :: ds_thm
 !
 ! --------------------------------------------------------------------------------------------------
@@ -43,8 +43,8 @@ subroutine thmGetParaBiot(j_mater, ds_thm)
 !
 ! --------------------------------------------------------------------------------------------------
 !
-    integer, parameter :: nb_resu = 4
-    integer :: icodre(nb_resu)
+    integer(kind=8), parameter :: nb_resu = 4
+    integer(kind=8) :: icodre(nb_resu)
     real(kind=8) :: resu_vale(nb_resu)
     character(len=16), parameter :: resu_name(nb_resu) = (/'BIOT_COEF', 'BIOT_L   ', &
                                                            'BIOT_N   ', 'BIOT_T   '/)

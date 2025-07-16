@@ -1,5 +1,9 @@
 ! --------------------------------------------------------------------
+<<<<<<< HEAD
 ! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
+=======
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
+>>>>>>> e29b759c59 ([#34577] MECA_NON_LINE: allow different behaviours along transient problem)
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify

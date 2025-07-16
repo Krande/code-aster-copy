@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -22,7 +22,7 @@ interface
     subroutine lkd2fs(nmat, materf, para, vara, varh,&
                       i1, devsig, ds2hds, d2shds, d2fds2,&
                       iret)
-        integer :: nmat
+        integer(kind=8) :: nmat
         real(kind=8) :: materf(nmat, 2)
         real(kind=8) :: para(3)
         real(kind=8) :: vara(4)
@@ -32,6 +32,6 @@ interface
         real(kind=8) :: ds2hds(6)
         real(kind=8) :: d2shds(6, 6)
         real(kind=8) :: d2fds2(6, 6)
-        integer :: iret
+        integer(kind=8) :: iret
     end subroutine lkd2fs
 end interface

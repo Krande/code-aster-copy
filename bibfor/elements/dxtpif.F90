@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -41,7 +41,7 @@ subroutine dxtpif(temp, ltemp)
 !        SI TEMP_INF (OU TEMP_SUP) N'EST PAS AFFECTE :
 !          SI TEMP_MIL EST AFFECTE : TEMP_INF = TEMP_SUP = TEMP_MIL
 !          SINON : ERREUR 'F'
-    integer :: iadzi, iazk24
+    integer(kind=8) :: iadzi, iazk24
     character(len=8) :: nomail
 !
 !

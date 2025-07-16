@@ -23,7 +23,7 @@ subroutine exisd(typesd, nomsd, iret)
 #include "asterfort/jeexin.h"
 #include "asterfort/jemarq.h"
 #include "asterfort/utmess.h"
-    integer :: iret
+    integer(kind=8) :: iret
     character(len=*) :: typesd, nomsd
 ! ----------------------------------------------------------------------
 !  BUT : DETERMINER SI UNE SD EXISTE
@@ -47,7 +47,7 @@ subroutine exisd(typesd, nomsd, iret)
 !                 1 -> LA SD EXISTE
 ! ----------------------------------------------------------------------
 !
-    integer :: i1, i2, i3, i4, i5
+    integer(kind=8) :: i1, i2, i3, i4, i5
     character(len=8) :: ch8
     character(len=16) :: typ2sd
     character(len=19) :: ch

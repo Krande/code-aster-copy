@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -21,8 +21,8 @@
 interface
     subroutine rangen(prgene, isst, inumod, irang)
         character(len=19) :: prgene
-        integer :: isst
-        integer :: inumod
-        integer :: irang
+        integer(kind=8) :: isst
+        integer(kind=8) :: inumod
+        integer(kind=8) :: irang
     end subroutine rangen
 end interface

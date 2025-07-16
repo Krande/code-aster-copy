@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -23,16 +23,16 @@ interface
                       compor, ndim, epsm, deps,  instam, &
                       instap, codret)
         character(len=*) :: fami
-        integer :: kpg
-        integer :: ksp
-        integer :: imate
+        integer(kind=8) :: kpg
+        integer(kind=8) :: ksp
+        integer(kind=8) :: imate
         character(len=8)  :: materi
         character(len=16) :: compor(*)
-        integer :: ndim
+        integer(kind=8) :: ndim
         real(kind=8) :: epsm(6)
         real(kind=8) :: deps(6)
         real(kind=8) :: instam
         real(kind=8) :: instap
-        integer :: codret
+        integer(kind=8) :: codret
     end subroutine lcvali
 end interface

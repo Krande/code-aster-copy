@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -22,18 +22,18 @@ interface
     subroutine voiuti(numa, codvoi, nvoima, nscoma, iarepe,&
                       iaddvo, iadvoi, nbvois, livois, tyvois,&
                       nbnovo, nbsoco, lisoco)
-        integer :: nscoma
-        integer :: nvoima
-        integer :: numa
+        integer(kind=8) :: nscoma
+        integer(kind=8) :: nvoima
+        integer(kind=8) :: numa
         character(len=*) :: codvoi
-        integer :: iarepe
-        integer :: iaddvo
-        integer :: iadvoi
-        integer :: nbvois
-        integer :: livois(1:nvoima)
-        integer :: tyvois(1:nvoima)
-        integer :: nbnovo(1:nvoima)
-        integer :: nbsoco(1:nvoima)
-        integer :: lisoco(1:nvoima, 1:nscoma, 1:2)
+        integer(kind=8) :: iarepe
+        integer(kind=8) :: iaddvo
+        integer(kind=8) :: iadvoi
+        integer(kind=8) :: nbvois
+        integer(kind=8) :: livois(1:nvoima)
+        integer(kind=8) :: tyvois(1:nvoima)
+        integer(kind=8) :: nbnovo(1:nvoima)
+        integer(kind=8) :: nbsoco(1:nvoima)
+        integer(kind=8) :: lisoco(1:nvoima, 1:nscoma, 1:2)
     end subroutine voiuti
 end interface

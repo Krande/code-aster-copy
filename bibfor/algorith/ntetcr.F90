@@ -24,7 +24,6 @@ subroutine ntetcr(nume_dof, ds_inout, &
     implicit none
 !
 #include "asterf_types.h"
-#include "asterfort/assert.h"
 #include "asterfort/nthydr.h"
 #include "asterfort/nmetcc.h"
 #include "asterfort/vtcreb.h"
@@ -55,7 +54,7 @@ subroutine ntetcr(nume_dof, ds_inout, &
 !
 ! --------------------------------------------------------------------------------------------------
 !
-    integer :: nb_field, i_field
+    integer(kind=8) :: nb_field, i_field
     aster_logical :: l_hydr, l_temp_nonl
     character(len=24) :: temp_init, listLoadResu
     character(len=24) :: field_type, algo_name, init_name

@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -22,10 +22,10 @@ interface
     subroutine fonno3(noma, tablev, ndim, na, nb,&
                       noe)
         character(len=8) :: noma
-        integer :: tablev(2)
-        integer :: ndim
-        integer :: na
-        integer :: nb
-        integer :: noe(4, 4)
+        integer(kind=8) :: tablev(2)
+        integer(kind=8) :: ndim
+        integer(kind=8) :: na
+        integer(kind=8) :: nb
+        integer(kind=8) :: noe(4, 4)
     end subroutine fonno3
 end interface

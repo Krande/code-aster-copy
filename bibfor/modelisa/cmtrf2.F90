@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -20,15 +20,15 @@ subroutine cmtrf2(codcm1, codtrf, ncm1, lcm1, ntrf, &
                   ltrf, nbma, codint, lint, nint)
     implicit none
 #include "asterfort/assert.h"
-    integer :: codcm1, codtrf, codint, ncm1, ntrf, nint, nbma
-    integer :: lint(nbma), lcm1(ncm1), ltrf(ntrf)
+    integer(kind=8) :: codcm1, codtrf, codint, ncm1, ntrf, nint, nbma
+    integer(kind=8) :: lint(nbma), lcm1(ncm1), ltrf(ntrf)
 !  BUT :
 !  -----
 !  ETABLIR LA LISTE DES NUMEROS DE MAILLES (LINT) APPARTENANT
 !  AUX 2 LISTES LCM1 ET LTRF
 ! ----------------------------------------------------------------------
 !
-    integer :: k
+    integer(kind=8) :: k
 ! ----------------------------------------------------------------------
     ASSERT(codcm1 .eq. 1 .or. codcm1 .eq. 3)
     ASSERT(codtrf .eq. 1 .or. codtrf .eq. 3)

@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -28,8 +28,8 @@ subroutine nirfpd(ndim, nno1, nno2, nno3, npg, &
 #include "asterfort/dfdmip.h"
 #include "asterfort/r8inir.h"
 #include "blas/ddot.h"
-    integer :: ndim, nno1, nno2, nno3, npg, iw, idff1
-    integer :: vu(3, 27), vg(27), vp(27)
+    integer(kind=8) :: ndim, nno1, nno2, nno3, npg, iw, idff1
+    integer(kind=8) :: vu(3, 27), vg(27), vp(27)
     real(kind=8) :: geomi(ndim, nno1)
     real(kind=8) :: vff1(nno1, npg), vff2(nno2, npg), vff3(nno3, npg)
     real(kind=8) :: sigref, epsref
@@ -64,9 +64,9 @@ subroutine nirfpd(ndim, nno1, nno2, nno3, npg, &
 !-----------------------------------------------------------------------
 !
     aster_logical :: axi
-    integer :: nddl, g
-    integer :: kl, sa, ra, na, ia, kk
-    integer :: ndimsi
+    integer(kind=8) :: nddl, g
+    integer(kind=8) :: kl, sa, ra, na, ia, kk
+    integer(kind=8) :: ndimsi
     real(kind=8) :: r, w, sigma(6)
     real(kind=8) :: rac2
     real(kind=8) :: f(3, 3)

@@ -104,7 +104,7 @@ subroutine nmdata(model, mesh, mater, mateco, cara_elem, ds_constitutive, &
 !
 ! --------------------------------------------------------------------------------------------------
 !
-    integer :: ifm, niv
+    integer(kind=8) :: ifm, niv
     character(len=1), parameter:: jvBase = "V"
     character(len=8) :: result, modelCara
     character(len=16) :: k16bid, nomcmd
@@ -112,7 +112,7 @@ subroutine nmdata(model, mesh, mater, mateco, cara_elem, ds_constitutive, &
     character(len=24) :: typco
     character(len=8) :: stin_evol, cara_elem_in
     type(ListLoad_Prep) :: listLoadPrep
-    integer :: nocc
+    integer(kind=8) :: nocc
 !
 ! --------------------------------------------------------------------------------------------------
 !

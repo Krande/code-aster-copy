@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -56,18 +56,18 @@ subroutine nm1dco(fami, kpg, ksp, option, imate, &
     real(kind=8) :: sigp, dsde, resi, crildc(*)
     character(len=16) :: option
     character(len=*) :: fami, materi
-    integer :: imate, codret, kpg, ksp
+    integer(kind=8) :: imate, codret, kpg, ksp
 !     ------------------------------------------------------------------
 !     VARIABLES LOCALES
 !     ------------------------------------------------------------------
     real(kind=8) :: epsm
-    integer :: codres(1)
+    integer(kind=8) :: codres(1)
     real(kind=8) :: e, sy, dc, v, k, m
     real(kind=8) :: epsilf, epsd, epsc, d, p, epsp, ecr, fplas, indi
     real(kind=8) :: dfds, dfpds, dfdecr, difecr, lambp, fd, var1
     real(kind=8) :: var2, var3, rv, fini, fplas2, b, val(1)
     aster_logical :: dconv, pconv, melas
-    integer :: iter, itemax, i, j, ibid
+    integer(kind=8) :: iter, itemax, i, j, ibid
     pm = vim(1)
     epspm = vim(1)
     d = vim(2)

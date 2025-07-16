@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -51,14 +51,14 @@ subroutine pmfd02(noma, cesdec)
 !
 ! --------------------------------------------------------------------------------------------------
 !
-    integer :: nbocc, iocc, iret, nbma, nbcou, nbv, nbsec
-    integer :: nbap, k, i, jma
+    integer(kind=8) :: nbocc, iocc, iret, nbma, nbcou, nbv, nbsec
+    integer(kind=8) :: nbap, k, i, jma
 !
     character(len=16) :: mocles(2), typmcl(2), moclef(3)
     character(len=19) :: carte
     character(len=24) :: mesmai
 !
-    integer, pointer          :: valv(:) => null()
+    integer(kind=8), pointer          :: valv(:) => null()
     character(len=8), pointer :: ncmp(:) => null()
 !
     data mocles/'MAILLE', 'GROUP_MA'/

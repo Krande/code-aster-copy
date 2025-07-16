@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -28,7 +28,7 @@ subroutine tresu_obj(nomobj, type, tbtxt, refi, refr, &
     character(len=24), intent(in) :: nomobj
     character(len=*), intent(in) :: type
     character(len=16), intent(in) :: tbtxt(2)
-    integer, intent(in) :: refi
+    integer(kind=8), intent(in) :: refi
     real(kind=8), intent(in) :: refr
     real(kind=8), intent(in) :: epsi
     character(len=*), intent(in) :: crit
@@ -55,7 +55,7 @@ subroutine tresu_obj(nomobj, type, tbtxt, refi, refr, &
 !     VARIABLES LOCALES:
     character(len=3) :: tysc
     real(kind=8) :: sommr
-    integer :: resume, sommi, lonuti, lonmax, ni, iret, iret2
+    integer(kind=8) :: resume, sommi, lonuti, lonmax, ni, iret, iret2
     aster_logical :: skip
     real(kind=8) :: ordgrd
 !

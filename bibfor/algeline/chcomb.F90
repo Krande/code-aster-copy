@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -60,7 +60,7 @@ subroutine chcomb(tablez, nomaou)
 !                                 DE CISAILLEMENT-TORSION EN SORTIE.
 !.========================= DEBUT DES DECLARATIONS ====================
 ! -----  VARIABLES LOCALES
-    integer :: ibid, iret, idcode, dimcoo, nbno, jcoor, idcoor, ino
+    integer(kind=8) :: ibid, iret, idcode, dimcoo, nbno, jcoor, idcoor, ino
     real(kind=8) :: r8b, xt, yt
     complex(kind=8) :: c16b
     character(len=8) :: k8b, noma, typobj

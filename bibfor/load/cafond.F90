@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -46,7 +46,7 @@ subroutine cafond(load, mesh, model, geomDime, valeType)
 #include "asterfort/utmess.h"
 !
     character(len=8), intent(in) :: load, mesh, model
-    integer, intent(in) :: geomDime
+    integer(kind=8), intent(in) :: geomDime
     character(len=4), intent(in) :: valeType
 !
 ! --------------------------------------------------------------------------------------------------
@@ -66,7 +66,7 @@ subroutine cafond(load, mesh, model, geomDime, valeType)
 !
 ! --------------------------------------------------------------------------------------------------
 !
-    integer, parameter :: nbout = 1, nbin = 1
+    integer(kind=8), parameter :: nbout = 1, nbin = 1
     character(len=8) :: lpaout(nbout), lpain(nbin)
     character(len=19) :: lchout(nbout), lchin(nbin)
 !
@@ -75,19 +75,19 @@ subroutine cafond(load, mesh, model, geomDime, valeType)
     character(len=24), parameter :: listCellSect = '&&CAFOND.LISTSECT'
     character(len=16), parameter :: option = 'CARA_SECT_POUT3'
     character(len=19), parameter :: ligrel = '&&CAFOND.LIGREL'
-    integer :: npres, iocc
-    integer :: ifm, niv, val_nb, jvalv
+    integer(kind=8) :: npres, iocc
+    integer(kind=8) :: ifm, niv, val_nb, jvalv
     real(kind=8) :: r8dummy
     real(kind=8) :: hole_area, cara_geom(10), mate_area, coef_mult
     complex(kind=8) :: c16dummy
     character(len=8) :: pres_fonc
     real(kind=8) :: pres_real
     character(len=16) :: k16dummy, answer
-    integer :: jvCellHole, jvCellSect
-    integer :: nbCellHole, nbCellSect
+    integer(kind=8) :: jvCellHole, jvCellSect
+    integer(kind=8) :: nbCellHole, nbCellSect
     character(len=8) :: suffix
     character(len=19) :: map(LOAD_MAP_NBMAX)
-    integer :: nbMap, nbCmp(LOAD_MAP_NBMAX)
+    integer(kind=8) :: nbMap, nbCmp(LOAD_MAP_NBMAX)
 !
 ! --------------------------------------------------------------------------------------------------
 !

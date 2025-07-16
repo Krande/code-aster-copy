@@ -52,10 +52,8 @@ subroutine mnlcho(reprise, imat, numedd, xcdl, nd, &
 #include "asterfort/jedetr.h"
 #include "asterfort/jelira.h"
 #include "asterfort/jemarq.h"
-#include "asterfort/jenuno.h"
 #include "asterfort/jeveuo.h"
 #include "asterfort/jexnom.h"
-#include "asterfort/jexnum.h"
 #include "asterfort/mrmult.h"
 #include "asterfort/posddl.h"
 #include "asterfort/preres.h"
@@ -71,7 +69,7 @@ subroutine mnlcho(reprise, imat, numedd, xcdl, nd, &
 ! --- DECLARATION DES ARGUMENTS DE LA ROUTINE
 ! ----------------------------------------------------------------------
     aster_logical :: reprise, lcine
-    integer :: imat(2), nd, nchoc, h, hf, ninc
+    integer(kind=8) :: imat(2), nd, nchoc, h, hf, ninc
     character(len=14) :: numedd, xcdl, parcho, adime
     character(len=8) :: tabchoc
     character(len=19) :: solveu
@@ -79,9 +77,9 @@ subroutine mnlcho(reprise, imat, numedd, xcdl, nd, &
 ! ----------------------------------------------------------------------
 ! --- DECLARATION DES VARIABLES LOCALES
 ! ----------------------------------------------------------------------
-    integer :: iind, k, ier, pddl, ind, ldgn
-    integer :: j, nunoe, iadim, pdlmax, neq, iei, ier2, i, iorig
-    integer :: icmp, icmp1, icmp2, iorigx, iorigy, iorigz
+    integer(kind=8) :: iind, k, ier, pddl, ind, ldgn
+    integer(kind=8) :: j, nunoe, iadim, pdlmax, neq, iei, ier2, i, iorig
+    integer(kind=8) :: icmp, icmp1, icmp2, iorigx, iorigy, iorigz
     character(len=19) :: matk, matm, nomcmp1, nomcmp2, origx, origy, origz
     character(len=8) :: tchoc, kvide, typval, mailla
     character(len=8) :: noeud(2)
@@ -96,10 +94,10 @@ subroutine mnlcho(reprise, imat, numedd, xcdl, nd, &
     real(kind=8), pointer :: jeu(:) => null()
     real(kind=8), pointer :: jeumax(:) => null()
     character(len=8), pointer :: type(:) => null()
-    integer, pointer :: neqs(:) => null()
-    integer, pointer :: indmax(:) => null()
-    integer, pointer :: nddl(:) => null()
-    integer, pointer :: ncmp(:) => null()
+    integer(kind=8), pointer :: neqs(:) => null()
+    integer(kind=8), pointer :: indmax(:) => null()
+    integer(kind=8), pointer :: nddl(:) => null()
+    integer(kind=8), pointer :: ncmp(:) => null()
     blas_int :: b_incx, b_n
     blas_int :: b_incy
     cbid = dcmplx(0.d0, 0.d0)

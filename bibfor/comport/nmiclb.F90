@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -37,7 +37,7 @@ subroutine nmiclb(fami, kpg, ksp, option, rela_comp, &
 !
 ! --------------------------------------------------------------------------------------------------
 !
-    integer :: imate, neq, nbt, kpg, ksp, codret
+    integer(kind=8) :: imate, neq, nbt, kpg, ksp, codret
     parameter(neq=6, nbt=21)
 !
     real(kind=8) :: xlong0, aire, tmoins, tplus, dlong0, carcri(CARCRI_SIZE), epsm
@@ -74,7 +74,7 @@ subroutine nmiclb(fami, kpg, ksp, option, rela_comp, &
 !
 ! --------------------------------------------------------------------------------------------------
 !
-    integer       :: codres(1)
+    integer(kind=8)       :: codres(1)
     real(kind=8)  :: sigm, deps, depsth, depsm, em, ep
     real(kind=8)  :: sigp, xrig, val(1), dsde
     aster_logical :: isot, cine, elas, corr, implex, isotli, relax

@@ -66,25 +66,25 @@ subroutine iremed_filtre(nomast, nomsd, base, par_seqfile)
 !
 ! --------------------------------------------------------------------------------------------------
 !
-    integer :: nbtyp, nbnoeu, nbmail, iret
-    integer :: nnotyp(MT_NTYMAX), typgeo(MT_NTYMAX)
-    integer :: renumd(MT_NTYMAX), modnum(MT_NTYMAX), numnoa(MT_NTYMAX, MT_NNOMAX)
-    integer :: nuanom(MT_NTYMAX, MT_NNOMAX)
-    integer :: ino, jnoex, jnbno, jnbno1, nbnot, iproc, jno, jma, jnbma, nbmat, jmaex
-    integer :: rang, nbproc, ityp, jtyp, jtyp2, iaux, ifm, niv, jtypg
-    integer :: ima, ite04, ite08, itr03, itr04, nb_comm, i_comm, domj_i
-    integer :: jjoine, jjoinr, nbnoee, nbnoer, numpro, jenvoi1, jrecep1
+    integer(kind=8) :: nbtyp, nbnoeu, nbmail, iret
+    integer(kind=8) :: nnotyp(MT_NTYMAX), typgeo(MT_NTYMAX)
+    integer(kind=8) :: renumd(MT_NTYMAX), modnum(MT_NTYMAX), numnoa(MT_NTYMAX, MT_NNOMAX)
+    integer(kind=8) :: nuanom(MT_NTYMAX, MT_NNOMAX)
+    integer(kind=8) :: ino, jnoex, jnbno, jnbno1, nbnot, iproc, jno, jma, jnbma, nbmat, jmaex
+    integer(kind=8) :: rang, nbproc, ityp, jtyp, jtyp2, iaux, ifm, niv, jtypg
+    integer(kind=8) :: ima, ite04, ite08, itr03, itr04, nb_comm, i_comm, domj_i
+    integer(kind=8) :: jjoine, jjoinr, nbnoee, nbnoer, numpro, jenvoi1, jrecep1
     integer(kind=4) :: tag4, numpr4, n4e, n4r
     character(len=8) :: nomtyp(MT_NTYMAX), k8bid
     character(len=19) :: tag_name, comm_name, joints
     character(len=24) :: domj, recv, send
     character(len=32) :: nojoie, nojoir
-    integer, pointer :: connex(:) => null()
-    integer, pointer :: point(:) => null()
-    integer, pointer :: typma(:) => null()
-    integer, pointer :: v_comm(:) => null()
-    integer, pointer :: v_tag(:) => null()
-    integer, pointer :: v_dom(:) => null()
+    integer(kind=8), pointer :: connex(:) => null()
+    integer(kind=8), pointer :: point(:) => null()
+    integer(kind=8), pointer :: typma(:) => null()
+    integer(kind=8), pointer :: v_comm(:) => null()
+    integer(kind=8), pointer :: v_tag(:) => null()
+    integer(kind=8), pointer :: v_dom(:) => null()
     real(kind=8), pointer :: coordo(:) => null()
     aster_logical, pointer :: par_seq(:) => null()
     mpi_int :: mrank, msize, world

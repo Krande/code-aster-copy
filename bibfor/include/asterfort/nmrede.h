@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2018 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -24,9 +24,9 @@ interface
                       hval_measse   , hval_incr  ,&
                       r_char_vale   , r_char_indx)
         use NonLin_Datastructure_type
-        integer, intent(in) :: list_func_acti(*)
+        integer(kind=8), intent(in) :: list_func_acti(*)
         character(len=19), intent(in) :: sddyna, sdnume
-        integer, intent(in) :: nb_equa
+        integer(kind=8), intent(in) :: nb_equa
         character(len=19), intent(in) :: matass
         type(NL_DS_Material), intent(in) :: ds_material
         type(NL_DS_Contact), intent(in) :: ds_contact
@@ -34,6 +34,6 @@ interface
         character(len=19), intent(in) :: hval_measse(*)
         character(len=19), intent(in) :: hval_incr(*)
         real(kind=8), intent(out) :: r_char_vale
-        integer, intent(out) :: r_char_indx
+        integer(kind=8), intent(out) :: r_char_indx
     end subroutine nmrede
 end interface

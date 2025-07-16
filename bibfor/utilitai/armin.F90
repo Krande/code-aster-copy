@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -46,8 +46,8 @@ function armin(nomaz)
     character(len=8) :: noma, k8b
     character(len=19) :: nomt19
     character(len=24) :: para
-    integer :: ibid, ier
-    integer :: nbpar
+    integer(kind=8) :: ibid, ier
+    integer(kind=8) :: nbpar
     real(kind=8) :: r8b, arete
     complex(kind=8) :: cbid
 !

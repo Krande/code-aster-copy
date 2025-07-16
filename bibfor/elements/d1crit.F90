@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -48,7 +48,7 @@ subroutine d1crit(zimat, nmnbn, nmplas, nmdpla, nmprox, &
 #include "asterfort/dfuuss.h"
 #include "asterfort/fplass.h"
 #include "asterfort/nmnet1.h"
-    integer :: bend, j, zimat, nmprox(2), cief, cier
+    integer(kind=8) :: bend, j, zimat, nmprox(2), cief, cier
 !
     real(kind=8) :: nmnbn(6), nmplas(2, 3), nmdpla(2, 2)
     real(kind=8) :: cnbn(6), cplas(2, 3), czef, czeg, cdeps(6)

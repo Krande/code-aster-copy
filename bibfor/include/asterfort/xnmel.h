@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -24,37 +24,37 @@ interface
                      lst, sig, vi, matuu, ivectu,&
                      codret, jpmilt, nfiss, jheavn, jstno,&
                      l_line, l_nonlin, lMatr, lVect, lSigm)
-        integer :: nfiss
-        integer :: nnop
-        integer :: nfh
-        integer :: nfe
-        integer :: ddlc
-        integer :: ddlm
-        integer :: igeom
+        integer(kind=8) :: nfiss
+        integer(kind=8) :: nnop
+        integer(kind=8) :: nfh
+        integer(kind=8) :: nfe
+        integer(kind=8) :: ddlc
+        integer(kind=8) :: ddlm
+        integer(kind=8) :: igeom
         character(len=8) :: typmod(*)
         character(len=16) :: option
-        integer :: imate
+        integer(kind=8) :: imate
         character(len=16) :: compor(*)
-        integer :: lgpg
+        integer(kind=8) :: lgpg
         real(kind=8) :: carcri(*)
-        integer :: jpintt
-        integer :: cnset(128)
-        integer :: heavt(*)
-        integer :: lonch(10)
+        integer(kind=8) :: jpintt
+        integer(kind=8) :: cnset(128)
+        integer(kind=8) :: heavt(*)
+        integer(kind=8) :: lonch(10)
         real(kind=8) :: basloc(*)
         real(kind=8) :: instam
         real(kind=8) :: instap
-        integer :: idepl
+        integer(kind=8) :: idepl
         real(kind=8) :: lsn(nnop)
         real(kind=8) :: lst(nnop)
         real(kind=8) :: sig(*)
         real(kind=8) :: vi(*)
         real(kind=8) :: matuu(*)
-        integer :: ivectu
-        integer :: codret
-        integer :: jpmilt
-        integer :: jheavn
-        integer :: jstno
+        integer(kind=8) :: ivectu
+        integer(kind=8) :: codret
+        integer(kind=8) :: jpmilt
+        integer(kind=8) :: jheavn
+        integer(kind=8) :: jstno
         aster_logical, intent(in) :: l_line, l_nonlin, lMatr, lVect, lSigm
     end subroutine xnmel
 end interface

@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -24,11 +24,11 @@ interface
     subroutine xpoco2(malini, dirno, nbno, dirma, nbma,&
                       cns1, cns2, ces1, ces2, cesvi1,&
                       cesvi2, resuco, comps1, comps2, pre1)
-        integer :: nbma
-        integer :: nbno
+        integer(kind=8) :: nbma
+        integer(kind=8) :: nbno
         character(len=8) :: malini
-        integer :: dirno(nbno)
-        integer :: dirma(nbma)
+        integer(kind=8) :: dirno(nbno)
+        integer(kind=8) :: dirma(nbma)
         character(len=19) :: cns1
         character(len=19) :: cns2
         character(len=19) :: ces1

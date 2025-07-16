@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -22,7 +22,7 @@ interface
         use THM_type
         type(THM_DS), intent(inout) :: ds_thm
         aster_logical, optional, intent(out) :: l_axi_, l_vf_
-        integer, optional, intent(out) :: ndim_
+        integer(kind=8), optional, intent(out) :: ndim_
         character(len=8), optional, intent(out) :: type_elem_(2)
     end subroutine thmGetElemModel
 end interface

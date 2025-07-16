@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -38,9 +38,9 @@ subroutine nmrede(list_func_acti, sddyna, &
 #include "asterfort/ndynlo.h"
 #include "asterfort/ndiner.h"
 !
-    integer, intent(in) :: list_func_acti(*)
+    integer(kind=8), intent(in) :: list_func_acti(*)
     character(len=19), intent(in) :: sddyna, sdnume
-    integer, intent(in) :: nb_equa
+    integer(kind=8), intent(in) :: nb_equa
     character(len=19), intent(in) :: matass
     type(NL_DS_Material), intent(in) :: ds_material
     type(NL_DS_Contact), intent(in) :: ds_contact
@@ -48,7 +48,7 @@ subroutine nmrede(list_func_acti, sddyna, &
     character(len=19), intent(in) :: hval_measse(*)
     character(len=19), intent(in) :: hval_incr(*)
     real(kind=8), intent(out) :: r_char_vale
-    integer, intent(out) :: r_char_indx
+    integer(kind=8), intent(out) :: r_char_indx
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -78,11 +78,11 @@ subroutine nmrede(list_func_acti, sddyna, &
 !
     aster_logical :: l_dyna, l_load_cine, l_cont_cont, l_cont_lac, l_macr
     character(len=19), parameter :: cniner = '&&CNPART.CHP1'
-    integer :: i_equa
+    integer(kind=8) :: i_equa
     real(kind=8) :: val2, appui, fext
     character(len=24) :: sdnuco
-    integer, pointer :: v_ccid(:) => null()
-    integer, pointer :: v_sdnuco(:) => null()
+    integer(kind=8), pointer :: v_ccid(:) => null()
+    integer(kind=8), pointer :: v_sdnuco(:) => null()
     real(kind=8), pointer :: v_cnctdf(:) => null()
     real(kind=8), pointer :: v_cnunil(:) => null()
     real(kind=8), pointer :: v_cndiri(:) => null()

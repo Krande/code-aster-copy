@@ -36,7 +36,6 @@ module crea_maillage_module
 #include "asterfort/assert.h"
 #include "asterfort/build_tree_comm.h"
 #include "asterfort/codent.h"
-#include "asterfort/codlet.h"
 #include "asterfort/elrfno.h"
 #include "asterfort/elrfvf.h"
 #include "asterfort/isParallelMesh.h"
@@ -3084,8 +3083,8 @@ contains
                         coor_diff = abs(this%nodes(v_nkeep(i_node))%coor- &
                                         this%nodes(v_nkeep(j_node))%coor)
                         if (maxval(coor_diff) < tole_comp) then
-                                !! Verif pas de noeud double
-                            ASSERT(ASTER_FALSE)
+                            !! Verif pas de noeud double
+                            call utmess('F', 'MAILLAGE1_4')
                         end if
                     end do
                 end do

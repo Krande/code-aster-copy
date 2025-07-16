@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -25,7 +25,6 @@ subroutine barych(ch1z, ch2z, r1, r2, chz, &
 #include "asterfort/copisd.h"
 #include "asterfort/idenob.h"
 #include "asterfort/jedema.h"
-#include "asterfort/jeexin.h"
 #include "asterfort/jeimpo.h"
 #include "asterfort/jelira.h"
 #include "asterfort/jemarq.h"
@@ -54,8 +53,8 @@ subroutine barych(ch1z, ch2z, r1, r2, chz, &
     character(len=4) :: docu, scal
     character(len=24) :: valk(2)
     character(len=8) :: nomsd
-    integer :: i, jvale, jvale1, jvale2, ier
-    integer :: lon1
+    integer(kind=8) :: i, jvale, jvale1, jvale2, ier
+    integer(kind=8) :: lon1
     aster_logical :: iden
 !-----------------------------------------------------------------------
     call jemarq()
@@ -96,11 +95,9 @@ subroutine barych(ch1z, ch2z, r1, r2, chz, &
                 end do
             end if
         else
-            call vtcopy(ch2, ch, ' ', ier)
+            call vtcopy(ch2, ch, ier)
             if (ier .ne. 0) then
-                valk(1) = ch1
-                valk(2) = ch2
-                call utmess('F', 'ALGELINE7_21', nk=2, valk=valk)
+                call utmess('F', 'ALGELINE7_21')
             end if
             call jeveuo(ch//'.VALE', 'E', jvale)
             call jeveuo(ch1//'.VALE', 'L', jvale1)

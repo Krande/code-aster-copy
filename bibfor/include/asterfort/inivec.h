@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -20,9 +20,9 @@
 !
 interface
     subroutine inivec(vec, neq, id, nbcp)
-        integer :: nbcp
-        integer :: neq
+        integer(kind=8) :: nbcp
+        integer(kind=8) :: neq
         real(kind=8) :: vec(neq)
-        integer :: id(nbcp)
+        integer(kind=8) :: id(nbcp)
     end subroutine inivec
 end interface

@@ -42,11 +42,11 @@ subroutine rco3d_clcrela(ligrel, noma, nb_pairs, nbnocot, &
 
     character(len=19), intent(in) :: ligrel, resuelem, lisrel
     character(len=8), intent(in) :: noma
-    integer, intent(in) :: nb_pairs, nbnocot
-    integer, intent(in) :: map_noco_pair(:, :, :)
-    integer, intent(in) :: map_noco_nbnoco(:, :, :)
-    integer, intent(in) :: map_noco_nbelem(:, :)
-    integer, pointer, intent(in) :: list_total_no_co(:)
+    integer(kind=8), intent(in) :: nb_pairs, nbnocot
+    integer(kind=8), intent(in) :: map_noco_pair(:, :, :)
+    integer(kind=8), intent(in) :: map_noco_nbnoco(:, :, :)
+    integer(kind=8), intent(in) :: map_noco_nbelem(:, :)
+    integer(kind=8), pointer, intent(in) :: list_total_no_co(:)
     character(len=*), intent(in) :: fonrez
 
 !  SUBROUTINE: rco3d_addrela
@@ -94,21 +94,21 @@ subroutine rco3d_clcrela(ligrel, noma, nb_pairs, nbnocot, &
     character(len=24) :: noeuma
     character(len=16) :: motfac
     character(len=8) :: betaf, dofs(6), nomnoe
-    integer :: nbterm, i, j, k, l
+    integer(kind=8) :: nbterm, i, j, k, l
     character(len=4) :: typval, typcoe
     character(len=8), pointer :: lisddl(:) => null()
     character(len=8), pointer :: lisno(:) => null()
-    integer, pointer :: repe_type(:) => null()
+    integer(kind=8), pointer :: repe_type(:) => null()
     real(kind=8), pointer :: repe_defi(:) => null()
     complex(kind=8), pointer :: coec(:) => null()
     real(kind=8), pointer :: coer(:) => null()
-    integer, pointer :: v_desc(:) => null()
-    integer, pointer :: v_list_no_pair(:) => null()
-    integer :: iret, nb_gr, ncomp, mode
-    integer :: jv_liel, num_pair, nno
+    integer(kind=8), pointer :: v_desc(:) => null()
+    integer(kind=8), pointer :: v_list_no_pair(:) => null()
+    integer(kind=8) :: iret, nb_gr, ncomp, mode
+    integer(kind=8) :: jv_liel, num_pair, nno
     type(PointerContainer), allocatable :: grel_ptr(:), resu_ptr(:)
-    integer :: nnco, nn3d, idx, nddl, row_index, ico, i3d
-    integer :: dofco, dof3d, idof, jdof
+    integer(kind=8) :: nnco, nn3d, idx, nddl, row_index, ico, i3d
+    integer(kind=8) :: dofco, dof3d, idof, jdof
     aster_logical :: found, check, lcolle
 
     call jemarq()

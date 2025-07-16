@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -26,7 +26,7 @@ interface
         real(kind=8) :: fmin
         real(kind=8) :: fmax
         real(kind=8) :: precdc
-        integer :: nfreq
+        integer(kind=8) :: nfreq
         real(kind=8) :: effmin
         real(kind=8) :: effmax
     end subroutine vptabl

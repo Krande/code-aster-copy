@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -39,7 +39,7 @@ subroutine rvgchf(epsi, criter, nomsd, chpsym, acces, &
     character(len=16) :: chpsym, ncheff
     character(len=8) :: nomsd
     character(len=2) :: acces
-    integer :: ival(*), nbval
+    integer(kind=8) :: ival(*), nbval
     real(kind=8) :: rval(*), epsi
 !
 !     GENERATION DE LA LISTE DES NOM DE CHAMP EFFECTIFS DANS UNE
@@ -75,9 +75,9 @@ subroutine rvgchf(epsi, criter, nomsd, chpsym, acces, &
     character(len=16) :: modacc
     character(len=8) :: k8bid
     character(len=1) :: car1, car2
-    integer :: n1, n2, n3, i, j, nbordr, ibid, iordr, nbtrou
-    integer :: aliste, atypac, avalac, alschp, avalr8, avalis, anores
-    integer :: vali, tord(1)
+    integer(kind=8) :: n1, n2, n3, i, j, nbordr, ibid, iordr, nbtrou
+    integer(kind=8) :: aliste, atypac, avalac, alschp, avalr8, avalis, anores
+    integer(kind=8) :: vali, tord(1)
     real(kind=8) :: rbid
     complex(kind=8) :: cbid
 !

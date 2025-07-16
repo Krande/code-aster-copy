@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -31,9 +31,9 @@ subroutine xcalfh(ds_thm, &
 #include "asterfort/THM_type.h"
 !
     type(THM_DS), intent(in) :: ds_thm
-    integer :: ndim, nfh
-    integer :: addeme, addep1, adcp11, adenhy
-    integer :: dimcon, dimenr
+    integer(kind=8) :: ndim, nfh
+    integer(kind=8) :: addeme, addep1, adcp11, adenhy
+    integer(kind=8) :: dimcon, dimenr
     real(kind=8) :: congep(1:dimcon)
     real(kind=8) :: dsde(1:dimcon, 1:dimenr), grap1(3)
     real(kind=8) :: rho11, gravity(3), tperm(ndim, ndim)
@@ -48,7 +48,7 @@ subroutine xcalfh(ds_thm, &
 ! --------------------------------------------------------------------------------------------------
 !
     real(kind=8) :: cliq, viscl, dviscl
-    integer :: i, j, k, ifh, nume_thmc
+    integer(kind=8) :: i, j, k, ifh, nume_thmc
     real(kind=8) :: lambd1(3), visco, dvisco
     real(kind=8) :: krel1, dkrel1
     real(kind=8) :: dr11p1

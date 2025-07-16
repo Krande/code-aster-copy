@@ -34,7 +34,7 @@ interface
         character(len=24), intent(in) :: timeMap
         character(len=19), intent(in) :: varc_curr
         aster_logical :: l_stat
-        integer :: lonch
+        integer(kind=8) :: lonch
         character(len=24) :: matass
         character(len=19) :: maprec
         character(len=24) :: temp_prev

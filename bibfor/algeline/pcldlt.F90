@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -65,27 +65,27 @@ subroutine pcldlt(matf, mat, niremp, base)
 !-----------------------------------------------------------------------
     aster_logical :: complt
     character(len=1) :: bas1
-    integer :: iret, nequ, ncoef, nblc
-    integer :: jvalm, i, nzmax, niremp
-    integer :: ier, k, jvalf
+    integer(kind=8) :: iret, nequ, ncoef, nblc
+    integer(kind=8) :: jvalm, i, nzmax, niremp
+    integer(kind=8) :: ier, k, jvalf
     real(kind=8) :: dnorm, epsi
     character(len=19) :: matfac, matas, matas1
     character(len=1) :: tysca
     character(len=14) :: nu, nuf
     character(len=24) :: noobj, nperm
     character(len=8) :: ma
-    integer, pointer :: icpcx(:) => null()
-    integer, pointer :: icpd(:) => null()
-    integer, pointer :: icplx(:) => null()
-    integer, pointer :: smdif(:) => null()
-    integer, pointer :: smdi2(:) => null()
+    integer(kind=8), pointer :: icpcx(:) => null()
+    integer(kind=8), pointer :: icpd(:) => null()
+    integer(kind=8), pointer :: icplx(:) => null()
+    integer(kind=8), pointer :: smdif(:) => null()
+    integer(kind=8), pointer :: smdi2(:) => null()
     real(kind=8), pointer :: vect(:) => null()
     real(kind=8), pointer :: vtravail(:) => null()
     integer(kind=4), pointer :: smhc(:) => null()
     integer(kind=4), pointer :: smhc1(:) => null()
     integer(kind=4), pointer :: smhcf(:) => null()
-    integer, pointer :: smde(:) => null()
-    integer, pointer :: smdi(:) => null()
+    integer(kind=8), pointer :: smde(:) => null()
+    integer(kind=8), pointer :: smdi(:) => null()
     character(len=24), pointer :: refa(:) => null()
     character(len=24), pointer :: refaf(:) => null()
 

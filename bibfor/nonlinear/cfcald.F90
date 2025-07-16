@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -32,7 +32,7 @@ function cfcald(defico, izone, typnoe)
     aster_logical :: cfcald
     character(len=4) :: typnoe
     character(len=24) :: defico
-    integer :: izone
+    integer(kind=8) :: izone
 !
 ! ----------------------------------------------------------------------
 !
@@ -51,7 +51,7 @@ function cfcald(defico, izone, typnoe)
 !
 ! ----------------------------------------------------------------------
 !
-    integer :: iappa
+    integer(kind=8) :: iappa
     aster_logical :: lliss, lmait, lescl, lmaes
 !
 ! ----------------------------------------------------------------------

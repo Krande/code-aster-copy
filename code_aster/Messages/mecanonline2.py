@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -42,8 +42,13 @@ cata_msg = {
     ),
     28: _(
         """
- La prédiction par DEPL_CALCULE à l'instant de calcul %(r1)f à partir du concept %(k1)s n'a pas pu être construite car les maillages sont différents et vous utilisez des conditions limites de type Lagrange (AFFE_CHAR_MECA).
+ La prédiction par DEPL_CALCULE à l'instant de calcul %(r1)f à partir du résultat fourni n'a pas pu être construite car les maillages sont différents et vous utilisez des conditions limites de type Lagrange (AFFE_CHAR_MECA).
  Conseil : essayez avec des conditions limites de type AFFE_CHAR_CINE si c'est possible. Mais dans ce cas, le champ de déplacements n'étant plus cinématiquement admissible au premier pas de temps, vous risquez d'avoir des problèmes de convergence.
+"""
+    ),
+    29: _(
+        """
+ La prédiction par DEPL_CALCULE ou EXTRAPOLE ne peut pas se faire car la numérotation du champ de déplacement est incohérente avec le modèle du calcul.
 """
     ),
     37: _(

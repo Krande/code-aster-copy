@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -24,18 +24,17 @@ subroutine dbr_calcpod_svd(m, n, q, s, v, &
 !
     implicit none
 !
-#include "asterfort/assert.h"
 #include "asterfort/infniv.h"
 #include "asterfort/utmess.h"
 #include "blas/dgesvd.h"
 #include "asterfort/as_allocate.h"
 #include "asterfort/as_deallocate.h"
 !
-    integer, intent(in) :: m, n
+    integer(kind=8), intent(in) :: m, n
     real(kind=8), pointer :: q(:)
     real(kind=8), pointer :: v(:)
     real(kind=8), pointer :: s(:)
-    integer, intent(out) :: nb_sing
+    integer(kind=8), intent(out) :: nb_sing
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -54,8 +53,8 @@ subroutine dbr_calcpod_svd(m, n, q, s, v, &
 !
 ! --------------------------------------------------------------------------------------------------
 !
-    integer :: ifm, niv
-    integer :: lda, lwork
+    integer(kind=8) :: ifm, niv
+    integer(kind=8) :: lda, lwork
     real(kind=8), pointer :: w(:) => null()
     real(kind=8), pointer :: work(:) => null()
     real(kind=8), pointer :: qSave(:) => null()

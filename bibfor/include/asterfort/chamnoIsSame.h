@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2018 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -19,6 +19,6 @@
 interface
     subroutine chamnoIsSame(chamno1_, chamno2_, ier)
         character(len=*), intent(in) :: chamno1_, chamno2_
-        integer, intent(out) :: ier
+        integer(kind=8), intent(out) :: ier
     end subroutine chamnoIsSame
 end interface

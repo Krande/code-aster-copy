@@ -35,14 +35,13 @@ subroutine xprini(noma, cnxinv, grille, noesom, vcn, &
 #include "asterfort/jexnum.h"
 #include "asterfort/wkvect.h"
 #include "asterfort/xprcnu.h"
-#include "asterfort/assert.h"
 #include "asterfort/int_to_char8.h"
 !
     character(len=8) :: noma
     character(len=19) :: noesom, cnxinv
     character(len=24) :: vcn, grlr
     real(kind=8) :: lcmin
-    integer :: ndim
+    integer(kind=8) :: ndim
     aster_logical :: grille
 !
 ! person_in_charge: patrick.massin at edf.fr
@@ -72,13 +71,13 @@ subroutine xprini(noma, cnxinv, grille, noesom, vcn, &
 !
 !     ------------------------------------------------------------------
 !
-    integer :: jconx1, jconx2, itypma
-    integer :: ino, ima, ifm, niv, nbno, nbma, jnosom, ibid
-    integer :: ar(12, 3), nbar, iar, na, nb, nunoa, nunob
+    integer(kind=8) :: jconx1, jconx2, itypma
+    integer(kind=8) :: ino, ima, ifm, niv, nbno, nbma, jnosom, ibid
+    integer(kind=8) :: ar(12, 3), nbar, iar, na, nb, nunoa, nunob
     character(len=8) :: method, nomno, typma
     real(kind=8) :: dist
     real(kind=8), dimension(ndim) :: xa, xb, v
-    integer, pointer :: mai(:) => null()
+    integer(kind=8), pointer :: mai(:) => null()
     real(kind=8), pointer :: vale(:) => null()
 !-----------------------------------------------------------------------
 !     DEBUT

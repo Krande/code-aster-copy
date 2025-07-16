@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -25,8 +25,8 @@ subroutine rs_get_liststore(result_, nb_store, v_list_store_)
 #include "asterfort/utmess.h"
 !
     character(len=*), intent(in) :: result_
-    integer, intent(out) :: nb_store
-    integer, pointer, optional :: v_list_store_(:)
+    integer(kind=8), intent(out) :: nb_store
+    integer(kind=8), pointer, optional :: v_list_store_(:)
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -47,7 +47,7 @@ subroutine rs_get_liststore(result_, nb_store, v_list_store_)
 ! --------------------------------------------------------------------------------------------------
 !
     character(len=8) :: result
-    integer :: i_dummy, tord(1)
+    integer(kind=8) :: i_dummy, tord(1)
     character(len=8) :: k8_dummy
     real(kind=8) :: r8_dummy
     complex(kind=8) :: c16_dummy

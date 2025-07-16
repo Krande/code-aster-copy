@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -48,8 +48,8 @@ subroutine xcourb(basloc, noma, modele, courb)
 !      COURB     :   NOM DU TENSEUR DE COURBURE
 !.......................................................................
 !
-    integer :: ino, i, j, nbno, ibid, nchin
-    integer ::  jrsl, jgl
+    integer(kind=8) :: ino, i, j, nbno, ibid, nchin
+    integer(kind=8) ::  jrsl, jgl
     real(kind=8) :: el1(3), el2(3), el3(3), p(3, 3), invp(3, 3), norme
     character(len=8) :: lpain(2), lpaout(1), licmp(9)
     character(len=19) :: cnsr, matpas, cnsg

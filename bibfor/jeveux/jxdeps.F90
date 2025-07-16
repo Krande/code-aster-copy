@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -29,18 +29,18 @@ subroutine jxdeps(iadini, iadfin, lso)
 !             FONCTION(S) UTILISEE(S) : IAND
 !
 #include "jeveux_private.h"
-    integer :: iadini, iadfin, lso
+    integer(kind=8) :: iadini, iadfin, lso
 !     ------------------------------------------------------------------
-    integer :: lk1zon, jk1zon, liszon, jiszon
+    integer(kind=8) :: lk1zon, jk1zon, liszon, jiszon
     common/izonje/lk1zon, jk1zon, liszon, jiszon
 !     ------------------------------------------------------------------
-    integer :: mslois
+    integer(kind=8) :: mslois
     common/jenvje/mslois
-    integer :: lbis, lois, lols, lor8, loc8
+    integer(kind=8) :: lbis, lois, lols, lor8, loc8
     common/ienvje/lbis, lois, lols, lor8, loc8
 ! DEB ------------------------------------------------------------------
 !-----------------------------------------------------------------------
-    integer :: i, jfin, jini
+    integer(kind=8) :: i, jfin, jini
 !-----------------------------------------------------------------------
     if (iand(jk1zon+iadini-1, mslois) .eq. 0 .and. &
         iand(jk1zon+iadfin-1, mslois) .eq. 0 .and. iand(lso, mslois) .eq. 0) then

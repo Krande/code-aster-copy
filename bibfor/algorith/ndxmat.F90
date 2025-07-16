@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -35,8 +35,8 @@ subroutine ndxmat(fonact, lischa, numedd, sddyna, numins, &
 !
     character(len=19) :: matass
     character(len=19) :: sddyna
-    integer :: fonact(*)
-    integer :: numins
+    integer(kind=8) :: fonact(*)
+    integer(kind=8) :: numins
     character(len=19) :: meelem(*), measse(*)
     character(len=24) :: numedd
     character(len=19) :: lischa
@@ -60,7 +60,7 @@ subroutine ndxmat(fonact, lischa, numedd, sddyna, numins, &
 !
 ! ----------------------------------------------------------------------
 !
-    integer :: ifm, niv
+    integer(kind=8) :: ifm, niv
     aster_logical :: l_neum_undead, lshima, lprem
     real(kind=8) :: coemas, coeshi
     character(len=8) :: nomddl
@@ -70,7 +70,7 @@ subroutine ndxmat(fonact, lischa, numedd, sddyna, numins, &
     real(kind=8) :: coemam(2)
     character(len=24) :: limam(2)
     character(len=4) :: typcsm(2)
-    integer :: nbmat
+    integer(kind=8) :: nbmat
     character(len=19) :: rigid, masse
 !
 ! ----------------------------------------------------------------------

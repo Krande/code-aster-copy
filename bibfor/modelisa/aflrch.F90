@@ -81,7 +81,7 @@ subroutine aflrch(lisrez, chargz, type_liai, elim, detr_lisrez, l_preallocz)
 ! -----------------------------------------------------------
     character(len=19) :: lisrel
     character(len=8) :: charge
-    integer :: nmocl
+    integer(kind=8) :: nmocl
     parameter(nmocl=300)
     complex(kind=8) :: betac
     character(len=3) :: klag2
@@ -94,28 +94,28 @@ subroutine aflrch(lisrez, chargz, type_liai, elim, detr_lisrez, l_preallocz)
     character(len=9) :: nomte
     character(len=19) :: ca1, ca2
     character(len=19) :: ligrmo, ligrch
-    integer :: ntypel(nmocl)
+    integer(kind=8) :: ntypel(nmocl)
     real(kind=8) :: beta
-    integer :: i, icmp, iddl, idecal, ifm, igrel, gd1, gd2, nbRet
-    integer :: in, indsur, inema, inema0, ino, inom, ipntrl, irela
-    integer :: iret, j, jprnm, jrlbe, jrlco, ier
-    integer :: jrlcof, jrldd, jrlno, idnoeu, jrlpo
-    integer ::    jvale1, jvale2, jvalv1, jvalv2, kddl, nec1, nec2
-    integer ::    ncmpmx1, ncmpmx2, jnocmp1, jnocmp2, jnoma1, jnoma2
-    integer ::    jnoli1, jnoli2, jdesc1, jdesc2, jncmp1, jncmp2, nedit
-    integer ::    jlima01, jlima02, jlimac1, jlimac2, lontav1, lontav2
-    integer :: nbcmp, nec, nbnema, nbrela, nbteli, nbterm, nddla
-    integer :: jliel0, jlielc, jnema0, jnemac, nbrela2, nbterm2
+    integer(kind=8) :: i, icmp, iddl, idecal, ifm, igrel, gd1, gd2, nbRet
+    integer(kind=8) :: in, indsur, inema, inema0, ino, inom, ipntrl, irela
+    integer(kind=8) :: iret, j, jprnm, jrlbe, jrlco, ier
+    integer(kind=8) :: jrlcof, jrldd, jrlno, idnoeu, jrlpo
+    integer(kind=8) ::    jvale1, jvale2, jvalv1, jvalv2, kddl, nec1, nec2
+    integer(kind=8) ::    ncmpmx1, ncmpmx2, jnocmp1, jnocmp2, jnoma1, jnoma2
+    integer(kind=8) ::    jnoli1, jnoli2, jdesc1, jdesc2, jncmp1, jncmp2, nedit
+    integer(kind=8) ::    jlima01, jlima02, jlimac1, jlimac2, lontav1, lontav2
+    integer(kind=8) :: nbcmp, nec, nbnema, nbrela, nbteli, nbterm, nddla
+    integer(kind=8) :: jliel0, jlielc, jnema0, jnemac, nbrela2, nbterm2
     character(len=3), parameter :: rapide = 'OUI'
     aster_logical :: detr_lisrel, l_lag1, l_prealloc, lcolle
 
-    integer :: niv, numel, nunewm, iexi, jlgns
+    integer(kind=8) :: niv, numel, nunewm, iexi, jlgns
     character(len=8), pointer :: lgrf(:) => null()
-    integer, pointer :: rlnr(:) => null()
+    integer(kind=8), pointer :: rlnr(:) => null()
     character(len=8), pointer :: rltc(:) => null()
-    integer, pointer :: rlnt(:) => null()
-    integer, pointer :: rlsu(:) => null()
-    integer, pointer :: nbno(:) => null()
+    integer(kind=8), pointer :: rlnt(:) => null()
+    integer(kind=8), pointer :: rlsu(:) => null()
+    integer(kind=8), pointer :: nbno(:) => null()
     character(len=8), pointer :: rltv(:) => null()
 ! --------- FIN  DECLARATIONS  VARIABLES LOCALES --------
     call jemarq()

@@ -31,13 +31,11 @@ subroutine zwaeckel(metaSteelPara, nbPhase, nbVari, &
 #include "jeveux.h"
 #include "asterc/r8prem.h"
 #include "asterfort/assert.h"
-#include "asterfort/smcarc.h"
 #include "asterfort/utmess.h"
-#include "asterfort/metaSteelGrainSize.h"
 #include "asterfort/Metallurgy_type.h"
 !
     type(META_SteelParameters), intent(in) :: metaSteelPara
-    integer, intent(in) :: nbPhase, nbVari
+    integer(kind=8), intent(in) :: nbPhase, nbVari
     real(kind=8), intent(in) :: temp0, temp1, temp2
     real(kind=8), intent(in) :: deltaTime01, deltaTime12
     real(kind=8), intent(in) :: metaPrev(nbVari)
@@ -66,7 +64,7 @@ subroutine zwaeckel(metaSteelPara, nbPhase, nbVari, &
     real(kind=8) :: tpoint
     real(kind=8) :: zeq1, zeq2, zAustPrev, zAustCurr
     real(kind=8) :: dPrev, dCurr
-    integer :: j, nbStep, nbHist
+    integer(kind=8) :: j, nbStep, nbHist
     aster_logical :: l_cold, lMultiStep
     real(kind=8), parameter :: un = 1.d0, zero = 0.d0
 !

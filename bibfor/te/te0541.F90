@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -34,7 +34,6 @@ subroutine te0541(option, nomte)
 #include "asterfort/xsigth.h"
 #include "asterfort/xteddl.h"
 #include "asterfort/xteini.h"
-#include "asterfort/lteatt.h"
     character(len=16) :: option, nomte
 ! ----------------------------------------------------------------------
 ! FONCTION REALISEE:  CALCUL DE L'OPTION CHAR_MECA_TEMP_R POUR LES
@@ -44,12 +43,12 @@ subroutine te0541(option, nomte)
 !        DONNEES:      OPTION       -->  OPTION DE CALCUL
 !                      NOMTE        -->  NOM DU TYPE ELEMENT
 !
-    integer :: ndim, nno, nnos, npg, ipoids, ivf, idfde, jgano, igeom, ivectu
-    integer :: jpintt, jcnset, jheavt, jlonch, jbaslo, jlsn, jlst
-    integer :: jpmilt, ddlm, nfiss, jfisno, icontt
-    integer :: nfh, ddlc, nfe, ibid, ddls, nbsig, nddl, jstno, jheavn, imate
-    integer :: contac, nnom, singu, itab(1)
-    integer :: iret, k, itemps
+    integer(kind=8) :: ndim, nno, nnos, npg, ipoids, ivf, idfde, jgano, igeom, ivectu
+    integer(kind=8) :: jpintt, jcnset, jheavt, jlonch, jbaslo, jlsn, jlst
+    integer(kind=8) :: jpmilt, ddlm, nfiss, jfisno, icontt
+    integer(kind=8) :: nfh, ddlc, nfe, ibid, ddls, nbsig, nddl, jstno, jheavn, imate
+    integer(kind=8) :: contac, nnom, singu, itab(1)
+    integer(kind=8) :: iret, k, itemps
     aster_logical :: lbid
     character(len=8) :: enr, elref
     character(len=16) :: compor(4)

@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -27,7 +27,7 @@ interface
         real(kind=8) :: mb(12)
         real(kind=8) :: presa
         real(kind=8) :: presb
-        integer :: ns
+        integer(kind=8) :: ns
         real(kind=8) :: s2
     end subroutine rcZ2s0
 end interface

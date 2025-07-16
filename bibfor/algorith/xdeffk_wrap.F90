@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -22,12 +22,11 @@ subroutine xdeffk_wrap(kappa, mu, r, theta, ndim, fkpo, option, istano)
 !
     implicit none
 #include "jeveux.h"
-#include "asterfort/assert.h"
 #include "asterfort/xdeffk.h"
 #include "asterc/r8depi.h"
 #include "asterc/r8prem.h"
 !
-    integer :: ndim, istano
+    integer(kind=8) :: ndim, istano
     real(kind=8) :: r, theta, fkpo(ndim, ndim), kappa, mu
     character(len=*) :: option
 !

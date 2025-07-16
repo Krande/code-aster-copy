@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -27,7 +27,7 @@ subroutine nuadrf(nuag1, nuag2, ic1, ic2, dref)
 #include "asterfort/jeveuo.h"
 #include "asterfort/utmess.h"
     character(len=19) :: nuag1, nuag2
-    integer :: ic1, ic2
+    integer(kind=8) :: ic1, ic2
     real(kind=8) :: dref(*)
 !
 !  BUT : CALCULER POUR TOUS LES POINTS DE NUAG2 UNE DISTANCE
@@ -49,16 +49,16 @@ subroutine nuadrf(nuag1, nuag2, ic1, ic2, dref)
 ! OU       DREF    : VECTEUR QUI CONTIENDRA LES DISTANCE**2 CHERCHEES
 !                    DIMENSION : NP2 = NOMBRE DE POINTS DE NUAG2
 ! VARIABLES LOCALES :
-    integer :: inual1, inual2
-    integer :: np1, np2, nx1, nx2, nc1, nc2, ip1, ip2, im1, im2, im3, im4
+    integer(kind=8) :: inual1, inual2
+    integer(kind=8) :: np1, np2, nx1, nx2, nc1, nc2, ip1, ip2, im1, im2, im3, im4
     real(kind=8) :: x2, y2, z2, x1, y1, z1, xm1, ym1, zm1
     real(kind=8) :: d, dm0, dm, l2, s, s2, v, l
     real(kind=8) :: m1m2(3), m1m3(3), m1p1(3), n2(3), n(3), epsabs
     real(kind=8), pointer :: vdm0(:) => null()
     real(kind=8), pointer :: nuax1(:) => null()
     real(kind=8), pointer :: nuax2(:) => null()
-    integer, pointer :: nuai1(:) => null()
-    integer, pointer :: nuai2(:) => null()
+    integer(kind=8), pointer :: nuai1(:) => null()
+    integer(kind=8), pointer :: nuai2(:) => null()
 !
 ! DEB-------------------------------------------------------------------
     call jemarq()

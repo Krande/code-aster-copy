@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -45,7 +45,7 @@ subroutine hujpre(fami, kpg, ksp, etat, mod, &
 #include "asterfort/hujtid.h"
 #include "asterfort/tecael.h"
 #include "asterfort/trace.h"
-    integer :: ndt, ndi, imat, iret, iadzi, iazk24, i, kpg, ksp
+    integer(kind=8) :: ndt, ndi, imat, iret, iadzi, iazk24, i, kpg, ksp
     real(kind=8) :: vind(*)
     real(kind=8) :: deps(6), dev(3), pf(3), q, pd(3), dp(3)
     real(kind=8) :: sigd(6), sigf(6), dsig(6), dsde(6, 6), rtrac

@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -56,7 +56,7 @@ subroutine op0107()
 #include "asterfort/utmess.h"
 #include "jeveux.h"
 !
-    integer :: nh, iret, jordr, n1, n2, nbocc, nbordr, nc, np, nr, ier
+    integer(kind=8) :: nh, iret, jordr, n1, n2, nbocc, nbordr, nc, np, nr, ier
     real(kind=8) :: prec
     character(len=8) :: k8b, modele, carele, deform, resuco, crit, mesh
     character(len=16) :: concep, nomcmd

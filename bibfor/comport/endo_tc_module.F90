@@ -54,15 +54,15 @@ module endo_tc_module
 ! --------------------------------------------------------------------------------------------------
 
     ! Variables internes
-    integer, parameter:: ENDO = 1
-    integer, parameter:: ENDOTRAC = 2
-    integer, parameter:: HISTTRAC = 3
-    integer, parameter:: ENERTRAC = 4
-    integer, parameter:: ENDOCOMP = 5
-    integer, parameter:: HISTCOMP = 6
-    integer, parameter:: ENERCOMP = 7
-    integer, parameter:: SIGMVISC = 8
-    integer, parameter:: ENDOTOT = 9
+    integer(kind=8), parameter:: ENDO = 1
+    integer(kind=8), parameter:: ENDOTRAC = 2
+    integer(kind=8), parameter:: HISTTRAC = 3
+    integer(kind=8), parameter:: ENERTRAC = 4
+    integer(kind=8), parameter:: ENDOCOMP = 5
+    integer(kind=8), parameter:: HISTCOMP = 6
+    integer(kind=8), parameter:: ENERCOMP = 7
+    integer(kind=8), parameter:: SIGMVISC = 8
+    integer(kind=8), parameter:: ENDOTOT = 9
 
     ! Material parameters
     type MATERIAL
@@ -91,9 +91,9 @@ module endo_tc_module
 
     ! Shared attibutes through the global variable self
     type CONSTITUTIVE_LAW
-        integer         :: exception = 0
+        integer(kind=8)         :: exception = 0
         aster_logical   :: elas, rigi, vari, pilo, pred, visc
-        integer         :: ndimsi, itemax
+        integer(kind=8)         :: ndimsi, itemax
         real(kind=8)    :: deltat
         type(PRECISION) :: prec
         type(MATERIAL)  :: mat
@@ -121,7 +121,7 @@ contains
 
         implicit none
 
-        integer, intent(in)          :: kpg, ksp, imate, itemax, ndimsi
+        integer(kind=8), intent(in)          :: kpg, ksp, imate, itemax, ndimsi
         real(kind=8), intent(in)    :: deltat, precvg
         character(len=16), intent(in):: option
         character(len=*), intent(in) :: fami
@@ -223,7 +223,7 @@ contains
         implicit none
 
         type(CONSTITUTIVE_LAW), intent(inout):: self
-        integer, intent(in)                   :: kpg, ksp, imate
+        integer(kind=8), intent(in)                   :: kpg, ksp, imate
         character(len=*), intent(in)          :: fami
         real(kind=8), intent(in)              :: precvg
         type(MATERIAL)                       :: mat
@@ -234,9 +234,9 @@ contains
 ! imate     material pointer
 ! precvg    required precision
 ! --------------------------------------------------------------------------------------------------
-        integer, parameter:: nbel = 2, nben = 5, nbrg = 1
+        integer(kind=8), parameter:: nbel = 2, nben = 5, nbrg = 1
 ! --------------------------------------------------------------------------------------------------
-        integer :: iokel(nbel), ioken(nben), iokrg(nbrg)
+        integer(kind=8) :: iokel(nbel), ioken(nben), iokrg(nbrg)
         real(kind=8) :: valel(nbel), valen(nben), valrg(nbrg)
         character(len=16) :: nomel(nbel), nomen(nben), nomrg(nbrg)
         real(kind=8):: pi
@@ -361,7 +361,7 @@ contains
 ! sig   stress at the end of the time step
 ! dsde  tangent matrix (ndimsi,ndimsi)
 ! --------------------------------------------------------------------------------------------------
-        integer     :: tens_state, comp_state
+        integer(kind=8)     :: tens_state, comp_state
         real(kind=8), dimension(self%ndimsi):: kr
         real(kind=8), dimension(self%ndimsi):: sigpos, signeg
         real(kind=8), dimension(self%ndimsi, self%ndimsi):: deps_sigpos, deps_signeg
@@ -452,7 +452,7 @@ contains
         type(CONSTITUTIVE_LAW), intent(inout):: self
         real(kind=8), intent(in)              :: bem
         real(kind=8), intent(out)             :: be
-        integer, intent(out)                  :: tens_state
+        integer(kind=8), intent(out)                  :: tens_state
 ! --------------------------------------------------------------------------------------------------
 ! self
 ! bem   tensile damage at the beginning of the time step
@@ -462,7 +462,7 @@ contains
 !               1 = damage
 !               2 = saturated
 ! --------------------------------------------------------------------------------------------------
-        integer     :: iter
+        integer(kind=8)     :: iter
         real(kind=8), dimension(self%ndimsi):: sigpos, signeg
         real(kind=8):: quad, equ, db_equ, phi, visc
         real(kind=8):: bemin, equmin, bemax, equmax, signrm, dsig, dbemax, becpt, equcpt
@@ -552,7 +552,7 @@ contains
         type(CONSTITUTIVE_LAW), intent(inout):: self
         real(kind=8), intent(in)              :: cmaxm
         real(kind=8), intent(out)             :: cmax
-        integer, intent(out)                  :: comp_state
+        integer(kind=8), intent(out)                  :: comp_state
 ! --------------------------------------------------------------------------------------------------
 ! self
 ! bem   tensile damage at the beginning of the time step
@@ -582,7 +582,7 @@ contains
 ! be    damage at the end of the time-step
 ! cmax  maximal compressive driving variable
 ! --------------------------------------------------------------------------------------------------
-        integer:: state_free
+        integer(kind=8):: state_free
         real(kind=8):: we, be_free, tens_stf_free, sigpos_eig(3), signeg_eig(3)
 ! --------------------------------------------------------------------------------------------------
 

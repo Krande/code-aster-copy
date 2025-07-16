@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2018 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -21,11 +21,11 @@ interface
     subroutine alfint(chmatz   , imate, mate_namz, tdef   , para_namz,&
                       mate_nume, prec , func_name, l_ther)
         character(len=*), intent(in) :: chmatz
-        integer, intent(in) :: imate
+        integer(kind=8), intent(in) :: imate
         character(len=*), intent(in) :: mate_namz
         real(kind=8), intent(in) :: tdef
         character(len=*), intent(in) :: para_namz
-        integer, intent(in) :: mate_nume
+        integer(kind=8), intent(in) :: mate_nume
         real(kind=8), intent(in) :: prec
         character(len=19), intent(inout) :: func_name
         aster_logical, intent(in) :: l_ther

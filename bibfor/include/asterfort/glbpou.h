@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -30,8 +30,8 @@ interface
                   epucisa, ferrmin, rholmin, rhotmin, compress, uc, um, &
                   rhoacier, areinf, ashear, astirr, rhocrit, datcrit, lcrit,&
                   dnsits, dnsvol, construc, ierrl, ierrt)
-    integer :: typcmb
-    integer :: typco
+    integer(kind=8) :: typcmb
+    integer(kind=8) :: typco
     real(kind=8) :: cequi
     real(kind=8) :: effrts(6)
     real(kind=8) :: ht
@@ -46,10 +46,10 @@ interface
     real(kind=8) :: kt
     real(kind=8) :: eys
     real(kind=8) :: alphacc
-    integer :: clacier
+    integer(kind=8) :: clacier
     real(kind=8) :: gammas
     real(kind=8) :: gammac
-    integer :: typdiag
+    integer(kind=8) :: typdiag
     real(kind=8) :: sigcyi
     real(kind=8) :: sigcys
     real(kind=8) :: sigczi
@@ -63,17 +63,17 @@ interface
     real(kind=8) :: phiys
     real(kind=8) :: phizi
     real(kind=8) :: phizs
-    integer :: precs
-    integer :: ferrsyme
+    integer(kind=8) :: precs
+    integer(kind=8) :: ferrsyme
     real(kind=8) :: slsyme
-    integer :: ferrcomp
-    integer :: epucisa
-    integer :: ferrmin
+    integer(kind=8) :: ferrcomp
+    integer(kind=8) :: epucisa
+    integer(kind=8) :: ferrmin
     real(kind=8) :: rholmin
     real(kind=8) :: rhotmin
-    integer :: compress
-    integer :: uc
-    integer :: um
+    integer(kind=8) :: compress
+    integer(kind=8) :: uc
+    integer(kind=8) :: um
     real(kind=8) :: rhoacier
     real(kind=8) :: areinf
     real(kind=8) :: ashear
@@ -84,7 +84,7 @@ interface
     real(kind=8) :: dnsits(6)
     real(kind=8) :: dnsvol
     real(kind=8) :: construc
-    integer :: ierrl
-    integer :: ierrt
+    integer(kind=8) :: ierrl
+    integer(kind=8) :: ierrt
     end subroutine glbpou
 end interface

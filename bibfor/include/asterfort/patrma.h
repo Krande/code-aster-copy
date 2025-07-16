@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -24,9 +24,9 @@ interface
         character(len=*) :: llist1
         character(len=*) :: llist2
         real(kind=8) :: t(3)
-        integer :: nbtymx
+        integer(kind=8) :: nbtymx
         character(len=8) :: nomma
         character(len=*) :: llistt
-        integer :: ntypm
+        integer(kind=8) :: ntypm
     end subroutine patrma
 end interface

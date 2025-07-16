@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -22,6 +22,6 @@ interface
         real(kind=8), intent(out) :: tole
         real(kind=8), intent(out), optional :: prec
         character(len=*), intent(in), optional :: mcf
-        integer, intent(in), optional :: iocc
+        integer(kind=8), intent(in), optional :: iocc
     end subroutine tresu_tole
 end interface

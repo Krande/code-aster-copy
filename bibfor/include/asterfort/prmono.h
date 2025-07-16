@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -21,9 +21,9 @@
 interface
     subroutine prmono(champ, ioc, som, nbcmp, nocmp)
         character(len=*) :: champ
-        integer :: ioc
+        integer(kind=8) :: ioc
         real(kind=8) :: som(1)
-        integer :: nbcmp
+        integer(kind=8) :: nbcmp
         character(len=8) :: nocmp(1)
     end subroutine prmono
 end interface

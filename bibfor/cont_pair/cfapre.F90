@@ -40,8 +40,6 @@ subroutine cfapre(mesh, ds_contact, time_curr)
 #include "asterfort/cfnumn.h"
 #include "asterfort/cfparz.h"
 #include "asterfort/infdbg.h"
-#include "asterfort/jenuno.h"
-#include "asterfort/jexnum.h"
 #include "asterfort/mminfi.h"
 #include "asterfort/mminfl.h"
 #include "asterfort/mminfr.h"
@@ -67,17 +65,17 @@ subroutine cfapre(mesh, ds_contact, time_curr)
 !
 ! --------------------------------------------------------------------------------------------------
 !
-    integer :: ifm, niv
+    integer(kind=8) :: ifm, niv
     character(len=19) :: sdappa, newgeo
-    integer :: izone, i, iliai, ip
-    integer :: jdecne
-    integer :: inoe
-    integer :: posmae, posnoe(1), posmam, posnom(1)
-    integer :: numnoe(1)
-    integer :: entapp, typapp
+    integer(kind=8) :: izone, i, iliai, ip
+    integer(kind=8) :: jdecne
+    integer(kind=8) :: inoe
+    integer(kind=8) :: posmae, posnoe(1), posmam, posnom(1)
+    integer(kind=8) :: numnoe(1)
+    integer(kind=8) :: entapp, typapp
     aster_logical :: lctfd
-    integer :: nzoco, ndimg, nbpt, nbliai
-    integer :: nesmax
+    integer(kind=8) :: nzoco, ndimg, nbpt, nbliai
+    integer(kind=8) :: nesmax
     aster_logical :: lveri
     character(len=8) :: nomnoe
     real(kind=8) :: ksipr1, ksipr2, tau1m(3), tau2m(3)

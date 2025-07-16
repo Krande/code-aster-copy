@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -38,7 +38,7 @@ subroutine cachre(load, model, mesh, geomDime, valeType, &
 !
 
     character(len=8), intent(in) :: load, mesh, model
-    integer, intent(in) :: geomDime
+    integer(kind=8), intent(in) :: geomDime
     character(len=4), intent(in) :: valeType
     character(len=5), intent(in) :: param
     character(len=*), intent(in) :: keywordFactZ
@@ -60,8 +60,8 @@ subroutine cachre(load, model, mesh, geomDime, valeType, &
 !
 ! --------------------------------------------------------------------------------------------------
 !
-    integer :: i, n, nchre, nrep, ncmp, jvalv, iocc, nfx, nfy, nfz
-    integer :: nmx, nmy, nmz, nplan, nmgx, nmgy, nmgz
+    integer(kind=8) :: i, n, nchre, nrep, ncmp, jvalv, iocc, nfx, nfy, nfz
+    integer(kind=8) :: nmx, nmy, nmz, nplan, nmgx, nmgy, nmgz
     real(kind=8) :: fx, fy, fz, mx, my, mz, vpre, mgx, mgy, mgz
     complex(kind=8) :: cfx, cfy, cfz, cmx, cmy, cmz, cvpre
     character(len=8) :: kfx, kfy, kfz, kmx, kmy, kmz, typch, plan
@@ -69,7 +69,7 @@ subroutine cachre(load, model, mesh, geomDime, valeType, &
     character(len=16) :: keywordFact
     character(len=19) :: carte
     character(len=19) :: cartes(1)
-    integer :: ncmps(1)
+    integer(kind=8) :: ncmps(1)
     character(len=8), pointer :: vncmp(:) => null()
 !
 ! --------------------------------------------------------------------------------------------------

@@ -239,25 +239,24 @@ Returns:
             Arguments:
                 prevBehaviour (ConstantFieldOnCellsChar16): previous behaviour
                 currBehaviour (ConstantFieldOnCellsChar16): current behaviour
+                newFEDesc (FiniteElementDescriptorPtr): new finite element descriptor
 
 
             )",
-              py::arg( "prevBehaviour" ), py::arg( "currBehaviour" ) )
-        // .def( "restrict", &FieldOnCellsReal::restrict,
-        //       R"(
-        //     Return a new field restricted to the list of components and groups of cells given
+              py::arg( "prevBehaviour" ), py::arg( "currBehaviour" ), py::arg( "newFEDesc" ) )
+        .def( "compareShape", &FieldOnCellsReal::compareShape, R"(
+            Compare structure of field with another one and project on new model if require
 
-        //     Arguments:
-        //         cmps[list[str]]: filter on list of components
-        //         If empty, all components are used
-        //         groupsOfCells[list[str]]: filter on list of groups of cells (default=" ").
-        //         If empty, the full mesh is used
+            Arguments:
+                fieldModel (FieldOnCellsRealPtr): field as model
+                projectOnLigrel (bool) : project field on new model (from model field)
+                paraName (string) : name of parameter to complete the new values in field
 
-        //     Returns:
-        //         FieldOnCellsReal: field restricted.
-        //     )",
-        //       py::arg( "cmps" ) = VectorString(), py::arg( "groupsOfCells" ) = VectorString() );
-        ;
+            Returns:
+                iret (integer) : error code
+
+            )",
+              py::arg( "fieldModel" ), py::arg( "projectOnLigrel" ), py::arg( "paraName" ) );
 
     py::class_< FieldOnCellsComplex, FieldOnCellsComplexPtr, DataField >( mod,
                                                                           "FieldOnCellsComplex" )

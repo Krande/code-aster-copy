@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -23,9 +23,9 @@
 interface
     subroutine mpinvr(nbmesu, nbmode, nbabs, phi, rmesu,&
                       coef, xabs, lfonct, reta)
-        integer :: nbabs
-        integer :: nbmode
-        integer :: nbmesu
+        integer(kind=8) :: nbabs
+        integer(kind=8) :: nbmode
+        integer(kind=8) :: nbmesu
         real(kind=8) :: phi(nbmesu, nbmode)
         real(kind=8) :: rmesu(nbmesu, nbabs)
         real(kind=8) :: coef(*)

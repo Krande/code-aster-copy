@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -25,21 +25,21 @@ interface
                       kwork, sommw, vwork, tdisp, tspaq,&
                       i, nomcri, nomfor, fordef, fatsoc,&
                       jvectr)
-        integer :: tdisp
-        integer :: nbordr
-        integer :: nbvec
+        integer(kind=8) :: tdisp
+        integer(kind=8) :: nbordr
+        integer(kind=8) :: nbvec
         real(kind=8) :: vectn(3*nbvec)
         real(kind=8) :: vectu(3*nbvec)
         real(kind=8) :: vectv(3*nbvec)
-        integer :: kwork
-        integer :: sommw
+        integer(kind=8) :: kwork
+        integer(kind=8) :: sommw
         real(kind=8) :: vwork(tdisp)
-        integer :: tspaq
-        integer :: i
+        integer(kind=8) :: tspaq
+        integer(kind=8) :: i
         character(len=16) :: nomcri
         character(len=16) :: nomfor
         aster_logical :: fordef
         real(kind=8) :: fatsoc
-        integer :: jvectr
+        integer(kind=8) :: jvectr
     end subroutine propla
 end interface

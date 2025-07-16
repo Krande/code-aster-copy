@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2019 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -26,19 +26,19 @@ interface
                       r)
         use THM_type
         type(THM_DS), intent(in) :: ds_thm
-        integer :: dimcon
-        integer :: dimdef
-        integer :: ndim
+        integer(kind=8) :: dimcon
+        integer(kind=8) :: dimdef
+        integer(kind=8) :: ndim
         real(kind=8) :: dt
         aster_logical :: fnoevo
-        integer :: addeme
-        integer :: addep1
-        integer :: addep2
-        integer :: addlh1
-        integer :: adcome
-        integer :: adcp11
-        integer :: adcop1
-        integer :: adcop2
+        integer(kind=8) :: addeme
+        integer(kind=8) :: addep1
+        integer(kind=8) :: addep2
+        integer(kind=8) :: addlh1
+        integer(kind=8) :: adcome
+        integer(kind=8) :: adcp11
+        integer(kind=8) :: adcop1
+        integer(kind=8) :: adcop2
         real(kind=8) :: congem(dimcon)
         real(kind=8) :: r(dimdef)
     end subroutine fonoei

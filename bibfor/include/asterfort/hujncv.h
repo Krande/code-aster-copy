@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -21,12 +21,12 @@
 interface
     subroutine hujncv(rouhuj, nitimp, iter, ndt, nvi,&
                       umess, erimp, deps, sigd, vind)
-        integer :: nvi
-        integer :: ndt
-        integer :: nitimp
+        integer(kind=8) :: nvi
+        integer(kind=8) :: ndt
+        integer(kind=8) :: nitimp
         character(len=*) :: rouhuj
-        integer :: iter
-        integer :: umess
+        integer(kind=8) :: iter
+        integer(kind=8) :: umess
         real(kind=8) :: erimp(nitimp, 3)
         real(kind=8) :: deps(ndt)
         real(kind=8) :: sigd(ndt)

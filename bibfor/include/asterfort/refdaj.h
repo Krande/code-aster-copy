@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -25,7 +25,7 @@ interface
         character(len=*) :: numer
         character(len=*) :: typre
         character(len=*) :: conre(3)
-        integer      :: nbordr
-        integer      :: codret
+        integer(kind=8)      :: nbordr
+        integer(kind=8)      :: codret
     end subroutine refdaj
 end interface

@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -29,8 +29,8 @@ subroutine lc0040(fami, kpg, ksp, ndim, imate, &
 #include "asterfort/assert.h"
 #include "asterfort/lcdp_wrap.h"
 
-    integer      :: imate, ndim, kpg, ksp, codret, icomp
-    integer      :: nvi, neps, nsig, ndsde
+    integer(kind=8)      :: imate, ndim, kpg, ksp, codret, icomp
+    integer(kind=8)      :: nvi, neps, nsig, ndsde
     real(kind=8) :: carcri(*), angmas(*)
     real(kind=8) :: instam, instap
     real(kind=8) :: epsm(*), deps(*)

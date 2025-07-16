@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -23,10 +23,10 @@ interface
                       resu, ier)
         character(len=*), intent(in) :: codmes
         character(len=*), intent(in) :: nomf
-        integer, intent(in) :: nbpu
+        integer(kind=8), intent(in) :: nbpu
         character(len=*), intent(in) :: nompu(*)
         real(kind=8), intent(in) :: valpu(*)
         real(kind=8), intent(out) :: resu
-        integer, intent(out) :: ier
+        integer(kind=8), intent(out) :: ier
     end subroutine fointe
 end interface

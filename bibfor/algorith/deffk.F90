@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -24,7 +24,7 @@ subroutine deffk(kappa, mu, r, theta, ndim, fkpo)
 #include "jeveux.h"
 #include "asterc/r8depi.h"
 !
-    integer :: ndim
+    integer(kind=8) :: ndim
     real(kind=8) :: r, theta, fkpo(3, 3), kappa, mu
 !
 !

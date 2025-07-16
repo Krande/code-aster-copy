@@ -40,15 +40,15 @@ subroutine nulili(nbLigr, listLigr, lili, base, gran_name, &
 #include "asterfort/nbgrel.h"
 #include "asterfort/typele.h"
 !
-    integer, intent(in) :: nbLigr
+    integer(kind=8), intent(in) :: nbLigr
     character(len=24), pointer :: listLigr(:)
     character(len=24), intent(in):: lili
     character(len=1), intent(in):: base
     character(len=8), intent(out) :: gran_name
-    integer, intent(out) :: igds
+    integer(kind=8), intent(out) :: igds
     character(len=8), intent(out) :: mesh
-    integer, intent(out) :: nec
-    integer, intent(out) :: nlili
+    integer(kind=8), intent(out) :: nec
+    integer(kind=8), intent(out) :: nlili
     character(len=*), optional, intent(in) :: modeLocZ_
 !
 ! --------------------------------------------------------------------------------------------------
@@ -101,12 +101,12 @@ subroutine nulili(nbLigr, listLigr, lili, base, gran_name, &
     character(len=16) :: phenom, ligrelPhenom, nomte
     character(len=19) :: prefix
     character(len=24) :: ligrName
-    integer :: iad, iGrel, nbCell
-    integer :: iligr, iret
-    integer :: nbgr, nbsup, jmoloc, imode, cellTypeNume
+    integer(kind=8) :: iad, iGrel, nbCell
+    integer(kind=8) :: iligr, iret
+    integer(kind=8) :: nbgr, nbsup, jmoloc, imode, cellTypeNume
     character(len=8) :: modeLoc
-    integer, pointer :: adli(:) => null()
-    integer, pointer :: adne(:) => null()
+    integer(kind=8), pointer :: adli(:) => null()
+    integer(kind=8), pointer :: adne(:) => null()
 !
 ! --------------------------------------------------------------------------------------------------
 !

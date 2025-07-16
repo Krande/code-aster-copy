@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -21,14 +21,14 @@
 interface
     subroutine sricvg(nr, itmax, toler, iter, r,&
                       nvi, vinf, dy, irtet)
-        integer :: nvi
-        integer :: nr
-        integer :: itmax
+        integer(kind=8) :: nvi
+        integer(kind=8) :: nr
+        integer(kind=8) :: itmax
         real(kind=8) :: toler
-        integer :: iter
+        integer(kind=8) :: iter
         real(kind=8) :: r(nr)
         real(kind=8) :: vinf(nvi)
         real(kind=8) :: dy(nr)
-        integer :: irtet
+        integer(kind=8) :: irtet
     end subroutine sricvg
 end interface

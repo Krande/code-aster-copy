@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2020 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -23,13 +23,13 @@ subroutine nocart_c(carte, code, ncmp, groupma, mode, nma,&
                     limano, limanu, ligrel)
 
     character(len=*), intent(in) :: carte
-    integer, intent(in) :: code
-    integer, intent(in) :: ncmp
+    integer(kind=8), intent(in) :: code
+    integer(kind=8), intent(in) :: ncmp
     character(len=*), intent(in) :: groupma
     character(len=*),intent(in) :: mode
-    integer, intent(in) :: nma
+    integer(kind=8), intent(in) :: nma
     character(len=*), intent(in) :: limano(*)
-    integer, intent(in) :: limanu(*)
+    integer(kind=8), intent(in) :: limanu(*)
     character(len=*), intent(in) ::  ligrel
 
 end subroutine nocart_c

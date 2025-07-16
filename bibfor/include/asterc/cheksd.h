@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -22,6 +22,6 @@ interface
     subroutine cheksd(nomsd, typesd, iret)
         character(len=*) :: nomsd
         character(len=*) :: typesd
-        integer :: iret
+        integer(kind=8) :: iret
     end subroutine cheksd
 end interface

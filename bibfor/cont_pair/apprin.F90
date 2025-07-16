@@ -23,7 +23,6 @@ subroutine apprin(mesh, newgeo, pair_tole, nb_elem_mast, &
     implicit none
 !
 #include "asterf_types.h"
-#include "asterfort/assert.h"
 #include "asterfort/jexatr.h"
 #include "asterfort/jenuno.h"
 #include "asterfort/jeveuo.h"
@@ -36,15 +35,15 @@ subroutine apprin(mesh, newgeo, pair_tole, nb_elem_mast, &
     character(len=8), intent(in) :: mesh
     character(len=19), intent(in) :: newgeo
     real(kind=8), intent(in) :: pair_tole
-    integer, intent(in) :: nb_elem_mast
-    integer, intent(in) :: list_elem_mast(nb_elem_mast)
-    integer, intent(in) :: nb_elem_slav
-    integer, intent(in) :: list_elem_slav(nb_elem_slav)
-    integer, pointer :: elem_slav_flag(:)
-    integer, intent(out) :: nb_mast_start
-    integer, intent(out) :: elem_mast_start(nb_elem_slav)
-    integer, intent(out) :: nb_slav_start
-    integer, intent(out) :: elem_slav_start(nb_elem_slav)
+    integer(kind=8), intent(in) :: nb_elem_mast
+    integer(kind=8), intent(in) :: list_elem_mast(nb_elem_mast)
+    integer(kind=8), intent(in) :: nb_elem_slav
+    integer(kind=8), intent(in) :: list_elem_slav(nb_elem_slav)
+    integer(kind=8), pointer :: elem_slav_flag(:)
+    integer(kind=8), intent(out) :: nb_mast_start
+    integer(kind=8), intent(out) :: elem_mast_start(nb_elem_slav)
+    integer(kind=8), intent(out) :: nb_slav_start
+    integer(kind=8), intent(out) :: elem_slav_start(nb_elem_slav)
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -71,25 +70,25 @@ subroutine apprin(mesh, newgeo, pair_tole, nb_elem_mast, &
 !
 ! --------------------------------------------------------------------------------------------------
 !
-    integer :: elem_type_nume
-    integer :: elem_slav_nbnode, elem_slav_dime, elem_slav_nume, elem_slav_indx
+    integer(kind=8) :: elem_type_nume
+    integer(kind=8) :: elem_slav_nbnode, elem_slav_dime, elem_slav_nume, elem_slav_indx
     character(len=8) :: elem_slav_type, elem_slav_code
     real(kind=8) :: elem_slav_coor(27)
-    integer :: elin_slav_nbnode
-    integer :: elem_mast_nbnode, elem_mast_dime, elem_mast_nume, elem_mast_indx
+    integer(kind=8) :: elin_slav_nbnode
+    integer(kind=8) :: elem_mast_nbnode, elem_mast_dime, elem_mast_nume, elem_mast_indx
     character(len=8) :: elem_mast_type, elem_mast_code, elem_slav_name, elem_mast_name
     real(kind=8) :: elem_mast_coor(27)
-    integer :: elin_mast_nbnode
+    integer(kind=8) :: elin_mast_nbnode
     character(len=8) :: elin_mast_code, elin_slav_code
-    integer :: slav_indx_mini, mast_indx_mini
-    integer :: jv_geom
-    integer :: i_elem_slav, i_elem_mast
-    integer :: nb_poin_inte
+    integer(kind=8) :: slav_indx_mini, mast_indx_mini
+    integer(kind=8) :: jv_geom
+    integer(kind=8) :: i_elem_slav, i_elem_mast
+    integer(kind=8) :: nb_poin_inte
     real(kind=8) :: poin_inte(32), inte_weight
-    integer, pointer :: v_mesh_typmail(:) => null()
+    integer(kind=8), pointer :: v_mesh_typmail(:) => null()
     aster_logical :: debug
-    integer, pointer :: v_mesh_connex(:) => null()
-    integer, pointer :: v_connex_lcum(:) => null()
+    integer(kind=8), pointer :: v_mesh_connex(:) => null()
+    integer(kind=8), pointer :: v_connex_lcum(:) => null()
 !
 ! --------------------------------------------------------------------------------------------------
 !

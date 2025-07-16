@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -27,8 +27,8 @@ subroutine xextre(iptbor, vectn, nbfacb, jbas, jborl, &
 #include "asterfort/normev.h"
 #include "asterfort/provec.h"
 #include "blas/ddot.h"
-    integer :: iptbor(2), nbfacb
-    integer :: jbas, jborl, jdirol, jnvdir
+    integer(kind=8) :: iptbor(2), nbfacb
+    integer(kind=8) :: jbas, jborl, jdirol, jnvdir
     real(kind=8) :: vectn(12)
 !
 !
@@ -60,7 +60,7 @@ subroutine xextre(iptbor, vectn, nbfacb, jbas, jborl, &
 !
 !     ------------------------------------------------------------------
 !
-    integer :: h, i, ind, k, nptbom, signe
+    integer(kind=8) :: h, i, ind, k, nptbom, signe
     real(kind=8) :: maxi, norm, proj, sens, temp
     real(kind=8) :: normal(3), vdir(3), vdirol(3), vnor(3)
     aster_logical :: change, vecmax

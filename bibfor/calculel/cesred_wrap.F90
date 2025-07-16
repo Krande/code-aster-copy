@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -23,8 +23,8 @@ subroutine cesred_wrap(ces1z, nbma, lima, nbcmp, licmp, base, ces2z)
 #include "asterf_types.h"
 #include "jeveux.h"
 #include "asterfort/cesred.h"
-    integer :: nbma, nbcmp
-    integer :: lima(nbma)
+    integer(kind=8) :: nbma, nbcmp
+    integer(kind=8) :: lima(nbma)
     character(len=*) :: ces1z, ces2z, base
     character(len=8) :: licmp(*)
 

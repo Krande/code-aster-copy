@@ -53,7 +53,7 @@ subroutine cmcovo(main, maout, nbma, lima, prefno, &
 #include "asterfort/int_to_char8.h"
 #include "asterfort/char8_to_int.h"
 !
-    integer :: inima, nbma, lima(nbma)
+    integer(kind=8) :: inima, nbma, lima(nbma)
     character(len=8) :: main, maout, prefno, prefma, plan, trans
     real(kind=8) :: epais
 !         EXTRUSION DU GROUP_MA SURF EN GROUP_MA VOL
@@ -69,14 +69,14 @@ subroutine cmcovo(main, maout, nbma, lima, prefno, &
 ! IN        PLAN    K8 PLAN 'SUP' 'MOY' 'INF'
 ! IN        TRANS   K8 CAS PLAN ='MOY' ON TRANSLATE EN PEAU INF OU SUP
 ! ----------------------------------------------------------------------
-    integer :: jdime, jcoor, nbnin, nbmin, nbnot, nbgrno, ifm, niv
-    integer :: jnorn, ima, n1, n2, n3, nnoaj, ic, i, ij, iq4, it3
-    integer :: jlisma, jnbnum, ino, jnorm
-    integer :: jtypm, numa, nbno, lgno, inov, jnewm
-    integer :: iret, jvale, kvale, lgnu, lgpref, nbgrmv
-    integer :: typhex, typpen, iatyma, nbnomx, imav, lgnd, nbgrmn
-    integer :: jopt, nbpt, jnpt, nbnuma, n4, jdimo, j, jvg
-    integer :: nbmai, jgg, nbmat, jno, ima2
+    integer(kind=8) :: jdime, jcoor, nbnin, nbmin, nbnot, nbgrno, ifm, niv
+    integer(kind=8) :: jnorn, ima, n1, n2, n3, nnoaj, ic, i, ij, iq4, it3
+    integer(kind=8) :: jlisma, jnbnum, ino, jnorm
+    integer(kind=8) :: jtypm, numa, nbno, lgno, inov, jnewm
+    integer(kind=8) :: iret, jvale, kvale, lgnu, lgpref, nbgrmv
+    integer(kind=8) :: typhex, typpen, iatyma, nbnomx, imav, lgnd, nbgrmn
+    integer(kind=8) :: jopt, nbpt, jnpt, nbnuma, n4, jdimo, j, jvg
+    integer(kind=8) :: nbmai, jgg, nbmat, jno, ima2
     character(len=8) :: knume, cdim, typm, ma1, ma2
     character(len=10) :: kangl
     character(len=24) :: normno, nonuma, grpmai, grpmav
@@ -90,7 +90,7 @@ subroutine cmcovo(main, maout, nbma, lima, prefno, &
     real(kind=8) :: n4n2(3), n4n3(3), nq(3), norme, angl
     aster_logical :: logic
     character(len=24), pointer :: new_noeuds(:) => null()
-    integer, pointer :: noeuds(:) => null()
+    integer(kind=8), pointer :: noeuds(:) => null()
 ! ----------------------------------------------------------------------
 !
     call jemarq()

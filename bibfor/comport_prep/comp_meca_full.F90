@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -21,9 +21,7 @@ subroutine comp_meca_full(model, comp_elas, full_elem_s)
     implicit none
 !
 #include "asterf_types.h"
-#include "asterc/getexm.h"
 #include "asterc/getfac.h"
-#include "asterfort/assert.h"
 #include "asterfort/carces.h"
 #include "asterfort/celces.h"
 #include "asterfort/cescel.h"
@@ -51,7 +49,7 @@ subroutine comp_meca_full(model, comp_elas, full_elem_s)
 !
 ! --------------------------------------------------------------------------------------------------
 !
-    integer :: nbocc, ibid, iexi
+    integer(kind=8) :: nbocc, ibid, iexi
     character(len=16) :: keywordfact
     character(len=19) :: elas_elem_s, elas_elem, ligrel
     aster_logical :: l_comp

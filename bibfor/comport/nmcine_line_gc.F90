@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -89,11 +89,11 @@ subroutine nmcine_line_gc(fami, kpg, ksp, ndim, typmod, &
 #include "asterfort/verift.h"
 #include "asterfort/zerofr.h"
 !
-    integer         :: kpg, ksp, ndim, imate, iret
+    integer(kind=8)         :: kpg, ksp, ndim, imate, iret
     real(kind=8)    :: crit(10)
     real(kind=8)    :: epsm(6), deps(6), sigm(6), sigp(6), dsidep(6, 6)
 !
-    integer, parameter  :: nbvari = 12
+    integer(kind=8), parameter  :: nbvari = 12
     real(kind=8)        :: vim(nbvari), vip(nbvari)
 !
     character(len=*)  :: fami
@@ -102,9 +102,9 @@ subroutine nmcine_line_gc(fami, kpg, ksp, ndim, typmod, &
 !
 ! --------------------------------------------------------------------------------------------------
 !   Nom des index des variables internes pour VMIS_CINE_GC et VMIS_CINE_LINE
-    integer  :: icels, icelu, iepsq, iplas, idiss, iwthe
-    integer  :: ixxm, iyym, izzm, ixym, ixzm, iyzm
-    integer  :: ivari
+    integer(kind=8)  :: icels, icelu, iepsq, iplas, idiss, iwthe
+    integer(kind=8)  :: ixxm, iyym, izzm, ixym, ixzm, iyzm
+    integer(kind=8)  :: ivari
 !
 !   Variables globales (cf. contains)
 !       deuxmup, troiskp, sigyp, rprim, pm, sigel(6), pragp
@@ -112,7 +112,7 @@ subroutine nmcine_line_gc(fami, kpg, ksp, ndim, typmod, &
 !
     aster_logical   :: plasti, cinegc, cineli
 
-    integer         :: ndimsi, kk, ll, niter, ibid
+    integer(kind=8)         :: ndimsi, kk, ll, niter, ibid
 !
     real(kind=8)    :: sigedv(6), depsdv(6), sigmdv(6), sigpdv(6), sigdv(6), sigmp(6), sigel(6)
     real(kind=8)    :: depsth(6), xp(6), xm(6), epsicplan(6)
@@ -130,7 +130,7 @@ subroutine nmcine_line_gc(fami, kpg, ksp, ndim, typmod, &
     real(kind=8)        :: valrm(3)
     character(len=16)   :: valkm(3)
 ! --------------------------------------------------------------------------------------------------
-    integer             :: icodre(4)
+    integer(kind=8)             :: icodre(4)
     real(kind=8)        :: valres(4)
     character(len=16)   :: nomres(4)
 ! --------------------------------------------------------------------------------------------------

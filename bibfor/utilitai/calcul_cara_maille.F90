@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -36,8 +36,8 @@ subroutine calcul_cara_maille(coord, noeuds, topologie, surface, centre, &
 !
     implicit none
     real(kind=8), intent(in) :: coord(*)
-    integer, intent(in) :: noeuds(:)
-    integer, intent(in) :: topologie
+    integer(kind=8), intent(in) :: noeuds(:)
+    integer(kind=8), intent(in) :: topologie
     real(kind=8), optional, intent(out) :: surface(*)
     real(kind=8), optional, intent(out) :: centre(*)
     real(kind=8), optional, intent(out) :: normale(*)
@@ -46,7 +46,7 @@ subroutine calcul_cara_maille(coord, noeuds, topologie, surface, centre, &
 #include "blas/ddot.h"
 !
 ! --------------------------------------------------------------------------------------------------
-    integer :: ii, pta, ptb, ptc, ptd, inoe, nbnoeu
+    integer(kind=8) :: ii, pta, ptb, ptc, ptd, inoe, nbnoeu
     real(kind=8) :: cdg(3), vectab(3), vectcd(3), vect(3), surf
     blas_int :: b_incx, b_incy, b_n
 ! --------------------------------------------------------------------------------------------------

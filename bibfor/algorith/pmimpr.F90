@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -41,7 +41,7 @@ subroutine pmimpr(ind, inst, indimp, valimp, &
 !-----------------------------------------------------------------------
     implicit none
 #include "asterfort/infniv.h"
-    integer :: nbvari, niv, ifm, ind, i, iter, idbg, indimp(6)
+    integer(kind=8) :: nbvari, niv, ifm, ind, i, iter, idbg, indimp(6)
     real(kind=8) :: inst, valimp(6), eps(6), sig(6), vi(nbvari), r(12), ee, eini
     character(len=4) :: nomeps(6), nomsig(6)
     data nomeps/'EPXX', 'EPYY', 'EPZZ', 'EPXY', 'EPXZ', 'EPYZ'/

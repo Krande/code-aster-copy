@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -27,14 +27,13 @@ subroutine evalPressureSetFuncPara(lTime, time, &
 !
 #include "jeveux.h"
 #include "asterf_types.h"
-#include "asterfort/assert.h"
 !
     aster_logical, intent(in) :: lTime
     real(kind=8), intent(in) :: time
-    integer, intent(in) :: nbNode, cellDime, ipg
-    integer, intent(in) :: jvShapFunc, jvGeom
-    integer, intent(in) :: paraNbMax
-    integer, intent(out) :: paraNb
+    integer(kind=8), intent(in) :: nbNode, cellDime, ipg
+    integer(kind=8), intent(in) :: jvShapFunc, jvGeom
+    integer(kind=8), intent(in) :: paraNbMax
+    integer(kind=8), intent(out) :: paraNb
     character(len=8) :: paraName(paraNbMax)
     real(kind=8) :: paraVale(paraNbMax)
     real(kind=8), optional, intent(in) :: geomCurr_(*)
@@ -63,7 +62,7 @@ subroutine evalPressureSetFuncPara(lTime, time, &
 ! --------------------------------------------------------------------------------------------------
 !
     real(kind=8) :: x, y, z, xf, yf, zf
-    integer :: iNode, ldec
+    integer(kind=8) :: iNode, ldec
 !
 ! --------------------------------------------------------------------------------------------------
 !

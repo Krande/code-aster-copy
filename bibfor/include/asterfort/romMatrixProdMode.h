@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2019 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -20,7 +20,7 @@
 interface
     subroutine romMatrixProdMode(nb_matr  , l_matr_name, l_matr_type, matr_mode_curr,&
                                  prod_matr_mode, i_mode, mode_type, vc_mode, vr_mode)
-        integer, intent(in) :: nb_matr, i_mode
+        integer(kind=8), intent(in) :: nb_matr, i_mode
         character(len=8), intent(in) :: l_matr_name(:)
         character(len=8), intent(in) :: l_matr_type(:)
         character(len=24), intent(in) :: matr_mode_curr(:)

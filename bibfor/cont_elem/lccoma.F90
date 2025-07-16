@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -26,15 +26,14 @@ subroutine lccoma(elem_dime, nb_node_mast, nb_node_slav, nb_lagr, &
 !
 #include "jeveux.h"
 #include "asterf_types.h"
-#include "asterfort/assert.h"
 #include "asterfort/jevech.h"
 !
-    integer, intent(in) :: elem_dime
-    integer, intent(in) :: nb_node_mast
-    integer, intent(in) :: nb_node_slav
-    integer, intent(in) :: nb_lagr
+    integer(kind=8), intent(in) :: elem_dime
+    integer(kind=8), intent(in) :: nb_node_mast
+    integer(kind=8), intent(in) :: nb_node_slav
+    integer(kind=8), intent(in) :: nb_lagr
     aster_logical, intent(in) :: l_norm_smooth
-    integer, intent(in) :: indi_lagc(10)
+    integer(kind=8), intent(in) :: indi_lagc(10)
     real(kind=8), intent(in) :: poidpg
     real(kind=8), intent(in) :: shape_mast_func(9)
     real(kind=8), intent(in) :: jaco_upda, dist_vect(3)
@@ -62,9 +61,9 @@ subroutine lccoma(elem_dime, nb_node_mast, nb_node_slav, nb_lagr, &
 !
 ! --------------------------------------------------------------------------------------------------
 !
-    integer :: i_node_lagc, i_node_mast, i_dime, jj, indlgc, shift
+    integer(kind=8) :: i_node_lagc, i_node_mast, i_dime, jj, indlgc, shift
     real(kind=8) :: r_nb_lagr
-    integer :: jv_norm
+    integer(kind=8) :: jv_norm
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -82,11 +81,15 @@ subroutine lccoma(elem_dime, nb_node_mast, nb_node_slav, nb_lagr, &
                     do i_dime = 1, elem_dime
                         jj = (i_node_mast-1)*elem_dime+nb_node_slav*elem_dime+nb_lagr+i_dime
                         mmat(jj, indlgc) = mmat(jj, indlgc)+ &
-                           (zr(jv_norm+nb_node_slav*elem_dime+(i_node_mast-1)*elem_dime+i_dime-1)* &
-                                          jaco_upda*poidpg*shape_mast_func(i_node_mast))/(r_nb_lagr)
+                                           (zr(jv_norm+nb_node_slav*elem_dime+ &
+                                               (i_node_mast-1)*elem_dime+i_dime-1)* &
+                                            jaco_upda*poidpg*shape_mast_func(i_node_mast)) &
+                                           /(r_nb_lagr)
                         mmat(indlgc, jj) = mmat(indlgc, jj)+ &
-                           (zr(jv_norm+nb_node_slav*elem_dime+(i_node_mast-1)*elem_dime+i_dime-1)* &
-                                          jaco_upda*poidpg*shape_mast_func(i_node_mast))/(r_nb_lagr)
+                                           (zr(jv_norm+nb_node_slav*elem_dime+ &
+                                               (i_node_mast-1)*elem_dime+i_dime-1)* &
+                                            jaco_upda*poidpg*shape_mast_func(i_node_mast)) &
+                                           /(r_nb_lagr)
                     end do
                 end do
             end if
@@ -101,10 +104,12 @@ subroutine lccoma(elem_dime, nb_node_mast, nb_node_slav, nb_lagr, &
                         jj = (i_node_mast-1)*elem_dime+nb_node_slav*elem_dime+nb_lagr+i_dime
                         mmat(jj, indlgc) = mmat(jj, indlgc)+ &
                                            (-dist_vect(i_dime)* &
-                                          jaco_upda*poidpg*shape_mast_func(i_node_mast))/(r_nb_lagr)
+                                            jaco_upda*poidpg* &
+                                            shape_mast_func(i_node_mast))/(r_nb_lagr)
                         mmat(indlgc, jj) = mmat(indlgc, jj)+ &
                                            (-dist_vect(i_dime)* &
-                                          jaco_upda*poidpg*shape_mast_func(i_node_mast))/(r_nb_lagr)
+                                            jaco_upda*poidpg* &
+                                            shape_mast_func(i_node_mast))/(r_nb_lagr)
                     end do
                 end do
             end if

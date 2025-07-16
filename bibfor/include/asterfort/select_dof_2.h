@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2020 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -20,9 +20,9 @@ interface
     subroutine select_dof_2(listEqua_     , tablEqua_        ,&
                             numeDofZ_     , fieldNodeZ_      ,&
                             nbCmpToSelect_, listCmpToSelect_)
-        integer, pointer, optional :: listEqua_(:), tablEqua_(:, :)
+        integer(kind=8), pointer, optional :: listEqua_(:), tablEqua_(:, :)
         character(len=*), optional, intent(in) :: numeDofZ_, fieldNodeZ_
-        integer, optional, intent(in) :: nbCmpToSelect_
+        integer(kind=8), optional, intent(in) :: nbCmpToSelect_
         character(len=8), pointer, optional :: listCmpToSelect_(:)
     end subroutine select_dof_2
 end interface

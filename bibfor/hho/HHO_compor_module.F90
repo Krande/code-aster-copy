@@ -56,10 +56,10 @@ module HHO_compor_module
         aster_logical       :: c_plan = ASTER_FALSE
         aster_logical       :: axis = ASTER_FALSE
 !
-        integer             :: nbsigm = 0
-        integer             :: lgpg = 0
-        integer             :: codret = 0
-        integer             :: imater = 0
+        integer(kind=8)             :: nbsigm = 0
+        integer(kind=8)             :: lgpg = 0
+        integer(kind=8)             :: codret = 0
+        integer(kind=8)             :: imater = 0
 !
         real(kind=8)        :: angl_naut(3)
 ! --- pointer
@@ -88,7 +88,7 @@ contains
         class(HHO_Compor_State), intent(inout)  :: this
         character(len=4), intent(in) :: fami
         character(len=16), intent(in) :: option
-        integer, intent(in) :: ndim
+        integer(kind=8), intent(in) :: ndim
         real(kind=8), intent(in) :: bary(3)
 !
 ! --------------------------------------------------------------------------------------------------
@@ -97,7 +97,7 @@ contains
 !   In this     : a HHo Compor
 ! --------------------------------------------------------------------------------------------------
 !
-        integer :: iret, jmate, jtab(7)
+        integer(kind=8) :: iret, jmate, jtab(7)
         character(len=16), pointer :: v_mult(:) => null()
 !
         this%fami = fami
@@ -186,7 +186,7 @@ contains
 !
         implicit none
 !
-        integer, intent(in) :: ndim
+        integer(kind=8), intent(in) :: ndim
         character(len=8) :: typmod
 !
 ! --------------------------------------------------------------------------------------------------

@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -29,7 +29,7 @@ subroutine dkqshp(qsi, eta, caraq4, jacob, shpN, shpr1, shpr2)
 !     AU POINT QSI ETA POUR ELEMENTS DKQ ET DSQ
 !     ------------------------------------------------------------------
 
-    integer :: i, j, l
+    integer(kind=8) :: i, j, l
     real(kind=8) :: vj11, vj12, vj21, vj22
     real(kind=8) :: s2, t2, shp(3, 4), temp, n1(4), n2(4)
 !     ------------------------------------------------------------------

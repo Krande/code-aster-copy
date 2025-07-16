@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -18,7 +18,7 @@
 !
 subroutine rc32my(nbabsc, absc, vale, momen0, momen1)
     implicit none
-    integer :: nbabsc
+    integer(kind=8) :: nbabsc
     real(kind=8) :: absc(*), vale(*), momen0, momen1
 !     OPERATEUR POST_RCCM, TRAITEMENT DE FATIGUE_B3200
 !
@@ -27,7 +27,7 @@ subroutine rc32my(nbabsc, absc, vale, momen0, momen1)
 !
 !     ------------------------------------------------------------------
 !
-    integer :: nbsgt, isgt
+    integer(kind=8) :: nbsgt, isgt
     real(kind=8) :: l, s1, s2, s12, t1, t2, t12, smil
 ! DEB ------------------------------------------------------------------
 !

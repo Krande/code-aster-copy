@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -21,7 +21,7 @@
 interface
     subroutine apcopt(sdappa, i_poin, poin_coor)
         character(len=19), intent(in) :: sdappa
-        integer, intent(in) :: i_poin
+        integer(kind=8), intent(in) :: i_poin
         real(kind=8), intent(out) :: poin_coor(3)
     end subroutine apcopt
 end interface

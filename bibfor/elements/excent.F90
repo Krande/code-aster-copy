@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -22,7 +22,7 @@ subroutine excent(sens, excen, nbpoin, nbcmp, lreel, &
 #include "asterf_types.h"
 #include "asterfort/assert.h"
     character(len=*) :: sens
-    integer :: nbpoin, nbcmp
+    integer(kind=8) :: nbpoin, nbcmp
     real(kind=8) :: excen, reffin(*), reffou(*)
     complex(kind=8) :: ceffin(*), ceffou(*)
     aster_logical :: lreel
@@ -46,7 +46,7 @@ subroutine excent(sens, excen, nbpoin, nbcmp, lreel, &
 !     ON PEUT APPELER CETTE ROUTINE AVEC LE MEME TABLEAU POUR EFFOU ET
 !     EFFIN (IL N'Y A PAS D'EFFET DE BORD)
 !     ------------------------------------------------------------------
-    integer :: k, i
+    integer(kind=8) :: k, i
     real(kind=8) :: rsign
 !     ------------------------------------------------------------------
 !

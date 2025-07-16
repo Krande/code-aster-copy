@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -36,7 +36,7 @@ subroutine lcejmr(BEHinteg, fami, kpg, ksp, ndim, &
 #include "blas/daxpy.h"
 #include "blas/dcopy.h"
     type(Behaviour_Integ), intent(in) :: BEHinteg
-    integer :: mate, ndim, kpg, ksp
+    integer(kind=8) :: mate, ndim, kpg, ksp
     real(kind=8) :: epsm(6), deps(6)
     real(kind=8) :: sigma(6), dsidep(6, 6)
     real(kind=8) :: vim(*), vip(*), instam, instap
@@ -62,10 +62,10 @@ subroutine lcejmr(BEHinteg, fami, kpg, ksp, ndim, &
 ! IN : SIGMO - SIGMA INSTANT MOINS ET FLUX HYDRO SI HYME
 ! OUT : SIGMA , DSIDEP , VIP
 !-----------------------------------------------------------------------
-    integer :: nbpa
+    integer(kind=8) :: nbpa
     parameter(nbpa=12)
-    integer :: cod(nbpa)
-    integer :: i, n, diss, cass
+    integer(kind=8) :: cod(nbpa)
+    integer(kind=8) :: i, n, diss, cass
     real(kind=8) :: sc, lc, lct, k0, val(nbpa), presfl, presg, prescl, sciage, tmp
     real(kind=8) :: gp(ndim-1), gploc(ndim), gpglo(ndim), fhloc(ndim), fhglo(ndim)
     real(kind=8) :: delta(ndim), ddelta(ndim), ka, r0, rc, alpha, beta, rk, ra, rt

@@ -28,15 +28,13 @@ subroutine gverlc(resu, compor, iord0)
 #include "asterfort/getvtx.h"
 #include "asterfort/jedema.h"
 #include "asterfort/jemarq.h"
-#include "asterfort/jenuno.h"
 #include "asterfort/jeveuo.h"
-#include "asterfort/jexnum.h"
 #include "asterfort/rsexch.h"
 #include "asterfort/utmess.h"
 #include "asterfort/int_to_char8.h"
 !
 !
-    integer, intent(in) :: iord0
+    integer(kind=8), intent(in) :: iord0
     character(len=8), intent(in) :: resu
     character(len=19), intent(in) :: compor
 !
@@ -54,8 +52,8 @@ subroutine gverlc(resu, compor, iord0)
 !
 ! --------------------------------------------------------------------------------------------------
 !
-    integer :: iret, jresd, jresl, jresk, jcald, jcall
-    integer :: nbma, iadr, iadc, ima, cldc, celasto, cdefdiffat, cdefnook, cdefdifal
+    integer(kind=8) :: iret, jresd, jresl, jresk, jcald, jcall
+    integer(kind=8) :: nbma, iadr, iadc, ima, cldc, celasto, cdefdiffat, cdefnook, cdefdifal
     character(len=8) :: noma, nomail
     character(len=6) :: lcham(3)
     character(len=16) :: valk(3), option

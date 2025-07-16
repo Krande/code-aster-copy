@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -21,12 +21,12 @@
 interface
     subroutine lkdndx(nmat, mater, i1, devsig, bprime,&
                       val, para, xi, dpardx, dndxi)
-        integer :: nmat
+        integer(kind=8) :: nmat
         real(kind=8) :: mater(nmat, 2)
         real(kind=8) :: i1
         real(kind=8) :: devsig(6)
         real(kind=8) :: bprime
-        integer :: val
+        integer(kind=8) :: val
         real(kind=8) :: para(3)
         real(kind=8) :: xi
         real(kind=8) :: dpardx(3)

@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -25,7 +25,7 @@ interface
         character(len=*), intent(in) :: resu
         character(len=*), intent(in) :: node_name
         character(len=*), intent(in) :: cmp_name
-        integer, intent(out) :: node_nume
-        integer, intent(out) :: dof_nume
+        integer(kind=8), intent(out) :: node_nume
+        integer(kind=8), intent(out) :: dof_nume
     end subroutine posddl
 end interface

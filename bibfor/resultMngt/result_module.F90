@@ -57,15 +57,15 @@ contains
 !   ------------------------------------------------------------------------------------------------
 ! ----- Parameters
         character(len=*), intent(in) :: resultInZ, resultOutZ
-        integer, intent(in) :: nbStore
-        integer, pointer :: listStore(:)
+        integer(kind=8), intent(in) :: nbStore
+        integer(kind=8), pointer :: listStore(:)
 ! ----- Local
         character(len=24), parameter :: paraJvName = '&&CCBCOP.NOMS_PARA '
-        integer :: nbParaAccess, nbPara, nbParaTotal, jvPara, iParaTotal
-        integer :: numeStore, iStore
+        integer(kind=8) :: nbParaAccess, nbPara, nbParaTotal, jvPara, iParaTotal
+        integer(kind=8) :: numeStore, iStore
         character(len=19) :: resultIn, resultOut
         character(len=8) :: paraType
-        integer :: jvResultIn, jvResultOut
+        integer(kind=8) :: jvResultIn, jvResultOut
 !   ------------------------------------------------------------------------------------------------
 !
         call jemarq()

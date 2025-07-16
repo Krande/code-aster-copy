@@ -21,7 +21,7 @@ subroutine acevdi(nbocc, nomaz, nomoz, mcf, nlm, &
 !
 !
     implicit none
-    integer :: nbocc, nlm, nlg, nln, nlj, ier
+    integer(kind=8) :: nbocc, nlm, nlg, nln, nlj, ier
     character(len=*) :: nomaz, nomoz, mcf
 !
 ! --------------------------------------------------------------------------------------------------
@@ -55,7 +55,6 @@ subroutine acevdi(nbocc, nomaz, nomoz, mcf, nlm, &
 #include "asterfort/isParallelMesh.h"
 #include "asterfort/jedetr.h"
 #include "asterfort/jelira.h"
-#include "asterfort/jenonu.h"
 #include "asterfort/jenuno.h"
 #include "asterfort/jeveuo.h"
 #include "asterfort/jexnom.h"
@@ -69,8 +68,8 @@ subroutine acevdi(nbocc, nomaz, nomoz, mcf, nlm, &
 #include "asterfort/char8_to_int.h"
 #include "asterfort/int_to_char8.h"
 ! --------------------------------------------------------------------------------------------------
-    integer ::  i3d, i2d, ndim1, ioc, nc, ng, nm, nsom, nbmail, un
-    integer :: n1, ima, nbgrm, ig, jmail, numa, nutyma, lmax2
+    integer(kind=8) ::  i3d, i2d, ndim1, ioc, nc, ng, nm, nsom, nbmail, un
+    integer(kind=8) :: n1, ima, nbgrm, ig, jmail, numa, nutyma, lmax2
     character(len=4) :: type
     character(len=8) :: k8b, nomu, noma, nomo, nomail, typel
     character(len=16) :: concep, cmd
@@ -78,7 +77,7 @@ subroutine acevdi(nbocc, nomaz, nomoz, mcf, nlm, &
     character(len=24) :: valk(4)
     aster_logical :: l_parallel_mesh
 ! --------------------------------------------------------------------------------------------------
-    integer, pointer :: typmail(:) => null()
+    integer(kind=8), pointer :: typmail(:) => null()
     character(len=24), pointer :: group_ma(:) => null()
 ! --------------------------------------------------------------------------------------------------
     call getres(nomu, concep, cmd)

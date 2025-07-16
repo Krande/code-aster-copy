@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -22,8 +22,8 @@ interface
     subroutine rccome(nommat, pheno, icodre, iarret, k11_ind_nomrc)
         character(len=*), intent(in) :: nommat
         character(len=*), intent(in) :: pheno
-        integer, intent(out) :: icodre
-        integer, intent(in), optional :: iarret
+        integer(kind=8), intent(out) :: icodre
+        integer(kind=8), intent(in), optional :: iarret
         character(len=11), intent(out), optional :: k11_ind_nomrc
     end subroutine rccome
 end interface

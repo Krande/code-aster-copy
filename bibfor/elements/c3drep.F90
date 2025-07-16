@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -24,7 +24,7 @@ subroutine c3drep(nomte, epais, alpha, beta, coord, &
 #include "asterfort/vdrep2.h"
 #include "asterfort/vectan.h"
 #include "asterfort/vectgt.h"
-    integer :: numnoe
+    integer(kind=8) :: numnoe
     character(len=16) :: nomte
     real(kind=8) :: epais, alpha, beta, coord(3, 9), pgl(3, 3)
 ! person_in_charge: nicolas.sellenet at edf.fr
@@ -37,13 +37,13 @@ subroutine c3drep(nomte, epais, alpha, beta, coord, &
 !         DE PASSAGE GLOBAL -> LOCAL) AINSI QUE SON INVERSE
 !
 !     ------------------------------------------------------------------
-    integer :: nb1, nb2, npgsr, i, j, k, ind, intsr
+    integer(kind=8) :: nb1, nb2, npgsr, i, j, k, ind, intsr
 !
     real(kind=8) :: vecta(9, 2, 3), vectn(9, 3), vectg(2, 3), vectt(3, 3)
     real(kind=8) :: zero, vectpt(9, 2, 3), vectmp(3, 3), pgltmp(3, 3)
     real(kind=8) :: matevn(2, 2, 10), matevg(2, 2, 10), v
     real(kind=8), pointer :: desr(:) => null()
-    integer, pointer :: desi(:) => null()
+    integer(kind=8), pointer :: desi(:) => null()
 !
     zero = 0.d0
     call jeveuo('&INEL.'//nomte(1:8)//'.DESI', 'L', vi=desi)

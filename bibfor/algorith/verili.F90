@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -54,9 +54,9 @@ subroutine verili(nomres, ii, fpli1, fpli2, iret)
 #include "asterfort/utmess.h"
 !
 !-----------------------------------------------------------------------
-    integer :: i, idim1, idim2, ii, iret, j
-    integer ::  lllia, llncmp, llpl1, llpl2, nbcmpm, nbec
-    integer :: nbecmx, nbnoe1, nbnoe2, numgd
+    integer(kind=8) :: i, idim1, idim2, ii, iret, j
+    integer(kind=8) ::  lllia, llncmp, llpl1, llpl2, nbcmpm, nbec
+    integer(kind=8) :: nbecmx, nbnoe1, nbnoe2, numgd
 !-----------------------------------------------------------------------
     parameter(nbcmpm=10)
     parameter(nbecmx=10)
@@ -64,10 +64,10 @@ subroutine verili(nomres, ii, fpli1, fpli2, iret)
     character(len=24) :: fpli1, fpli2
     character(len=24) :: valk(6)
     character(len=8) :: sst1, sst2, intf1, intf2, blanc
-    integer :: idecp(nbcmpm), idecm(nbcmpm)
-    integer :: vali(2)
-    integer :: icodp(nbecmx), icodm(nbecmx)
-    integer, pointer :: desc(:) => null()
+    integer(kind=8) :: idecp(nbcmpm), idecm(nbcmpm)
+    integer(kind=8) :: vali(2)
+    integer(kind=8) :: icodp(nbecmx), icodm(nbecmx)
+    integer(kind=8), pointer :: desc(:) => null()
 !
 !-----------------------------------------------------------------------
     data blanc/' '/

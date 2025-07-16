@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -30,11 +30,9 @@ subroutine te0078(option, nomte)
 !
 #include "asterf_types.h"
 #include "jeveux.h"
-#include "asterfort/assert.h"
 #include "asterfort/jevech.h"
 #include "asterfort/rccoma.h"
 #include "asterfort/rcvalb.h"
-#include "asterfort/utmess.h"
 #include "asterfort/nlcomp.h"
 #include "asterfort/writeVector.h"
 #include "FE_module.h"
@@ -54,14 +52,14 @@ subroutine te0078(option, nomte)
     type(FE_Quadrature) :: FEQuadRigi, FEQuadMass
     type(FE_basis) :: FEBasis
 !
-    integer :: nbres
+    integer(kind=8) :: nbres
     parameter(nbres=1)
-    integer :: icodre(nbres)
+    integer(kind=8) :: icodre(nbres)
     character(len=16) :: phenom
     real(kind=8) :: valQPM(MAX_QP), tpg, dtpg(3), flux(3), BGSEval(3, MAX_BS)
     real(kind=8) :: resi_f(MAX_BS), resi_m(MAX_BS), resi(MAX_BS)
     real(kind=8) :: cp, valres(1), Kglo(3, 3), time, deltat, theta
-    integer :: kp, imate, itemps
+    integer(kind=8) :: kp, imate, icamas, itemps
     real(kind=8), pointer :: temp(:) => null()
     character(len=8), parameter :: famiR = "RIGI"
     character(len=8), parameter :: famiM = "MASS"
@@ -80,6 +78,11 @@ subroutine te0078(option, nomte)
     theta = zr(itemps+2)
 !
     call rccoma(zi(imate), 'THER', 1, phenom, icodre(1))
+!
+!   pour stopper le calcul si PCAMASS n'est pas disponible
+    if (phenom == "THER_ORTH") then
+        call jevech('PCAMASS', 'L', icamas)
+    end if
 !
     resi_f = 0.d0
     do kp = 1, FEQuadRigi%nbQuadPoints

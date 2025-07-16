@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -26,11 +26,9 @@ subroutine te0354(option, nomte)
     use FE_mass_module
 !
     implicit none
-#include "asterfort/assert.h"
 #include "asterfort/jevech.h"
 #include "asterfort/fointe.h"
 #include "asterfort/foderi.h"
-#include "asterfort/utmess.h"
 #include "asterfort/writeVector.h"
 #include "asterfort/writeMatrix.h"
 #include "FE_module.h"
@@ -55,7 +53,7 @@ subroutine te0354(option, nomte)
     type(FE_Quadrature) :: FEQuadCell
     type(FE_basis) :: FEBasis
 !
-    integer :: kp, iret, itemps, isour
+    integer(kind=8) :: kp, iret, itemps, isour
     real(kind=8) :: valQP(MAX_QP), tg, sour, theta, coefop, dsdt
     real(kind=8) :: resi(MAX_BS), mass(MAX_BS, MAX_BS)
     real(kind=8), pointer :: tempi(:) => null()

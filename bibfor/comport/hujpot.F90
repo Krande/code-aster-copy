@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -49,8 +49,8 @@ subroutine hujpot(mod, mater, vind, depsh, sigd, &
 #include "asterfort/hujpxd.h"
 #include "asterfort/hujpxs.h"
 #include "asterfort/utmess.h"
-    integer :: ndt, ndi, elas, jj, iret
-    integer :: i, indi(7), j, mono(7), hist(4, 2)
+    integer(kind=8) :: ndt, ndi, elas, jj, iret
+    integer(kind=8) :: i, indi(7), j, mono(7), hist(4, 2)
     real(kind=8) :: tole1, sigd(6), sige(6)
     real(kind=8) :: vind(*), charge
     real(kind=8) :: mater(22, 2), un, zero, pref

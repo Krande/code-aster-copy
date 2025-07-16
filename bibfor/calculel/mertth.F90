@@ -61,9 +61,9 @@ subroutine mertth(model, loadNameJv, loadInfoJv, caraElem, mateco, &
 !
 ! --------------------------------------------------------------------------------------------------
 !
-    integer :: nbchmx
+    integer(kind=8) :: nbchmx
     parameter(nbchmx=3)
-    integer :: nbopt(nbchmx), nligr(nbchmx)
+    integer(kind=8) :: nbopt(nbchmx), nligr(nbchmx)
     character(len=6) :: nomchp(nbchmx)
     character(len=7) :: nompar(nbchmx), nompaf(nbchmx)
 !
@@ -71,10 +71,10 @@ subroutine mertth(model, loadNameJv, loadInfoJv, caraElem, mateco, &
     character(len=16) :: option, nomopr(nbchmx), nomopf(nbchmx)
     character(len=24) :: ligrel(2), lchin(5), lchout(1)
     character(len=24) :: chgeom, chcara(18)
-    integer :: iret, nb_load, i_load, ilires, k, load_nume
+    integer(kind=8) :: iret, nb_load, i_load, ilires, k, load_nume
     aster_logical :: load_empty
     character(len=24), pointer :: v_load_name(:) => null()
-    integer, pointer :: v_load_info(:) => null()
+    integer(kind=8), pointer :: v_load_info(:) => null()
     data nomchp/'.FLUNL', '.HECHP', '.COEFH'/
     data nomopr/'                ', 'MTAN_THER_PARO_R', 'RIGI_THER_ECHA_R'/
     data nomopf/'MTAN_THER_FLUXNL', 'MTAN_THER_PARO_F', 'RIGI_THER_ECHA_F'/

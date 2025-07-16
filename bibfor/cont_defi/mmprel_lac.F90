@@ -25,12 +25,9 @@ subroutine mmprel_lac(sdcont, mesh, slavElemLigr)
 #include "asterfort/ajellt.h"
 #include "asterfort/assert.h"
 #include "asterfort/cfdisi.h"
-#include "asterfort/cfdisl.h"
-#include "asterfort/dismoi.h"
 #include "asterfort/jedetr.h"
 #include "asterfort/jeveuo.h"
 #include "asterfort/mminfi.h"
-#include "asterfort/mminfl.h"
 #include "asterfort/utmess.h"
 #include "asterfort/wkvect.h"
 #include "asterfort/getvtx.h"
@@ -58,18 +55,18 @@ subroutine mmprel_lac(sdcont, mesh, slavElemLigr)
     character(len=24) :: sdcont_defi
     character(len=24) :: sdcont_mailco
     character(len=24) :: sdcont_ptrdclac
-    integer, pointer :: v_sdcont_mailco(:) => null()
+    integer(kind=8), pointer :: v_sdcont_mailco(:) => null()
     character(len=16) :: modeli, nmgrma
     character(len=16), parameter :: phenom = "MECANIQUE"
-    integer :: jdecme, iContZone, i_sub_elem
-    integer :: nbContZone, model_ndim, ntElemSlav, nb_dcl_zi
-    integer :: iCellSlav, cellSlavNume, nb_elem_slav
-    integer :: jdecpa, nb_patch, i_patch, patch_type, jngrma, nupatch_zi
-    integer :: nt_sub_elem, nb_sub_elem, nbCellSlav, nb_grma, n1b
-    integer, pointer :: listCell(:) => null()
-    integer, pointer :: v_mesh_lpatch(:) => null()
-    integer, pointer :: v_mesh_patch(:) => null()
-    integer, pointer :: vi_ptrdclac(:) => null()
+    integer(kind=8) :: jdecme, iContZone, i_sub_elem
+    integer(kind=8) :: nbContZone, model_ndim, ntElemSlav, nb_dcl_zi
+    integer(kind=8) :: iCellSlav, cellSlavNume, nb_elem_slav
+    integer(kind=8) :: jdecpa, nb_patch, i_patch, patch_type, jngrma, nupatch_zi
+    integer(kind=8) :: nt_sub_elem, nb_sub_elem, nbCellSlav, nb_grma, n1b
+    integer(kind=8), pointer :: listCell(:) => null()
+    integer(kind=8), pointer :: v_mesh_lpatch(:) => null()
+    integer(kind=8), pointer :: v_mesh_patch(:) => null()
+    integer(kind=8), pointer :: vi_ptrdclac(:) => null()
     character(len=24), parameter :: listCellJv = '&&MMPREL.LISTE_MAILLES'
 !
 ! --------------------------------------------------------------------------------------------------

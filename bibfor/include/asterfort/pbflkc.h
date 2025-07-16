@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -23,7 +23,7 @@ interface
                       cf0, mcf0, icoq, imod, nbm,&
                       rkip, tcoef, s1, s2, ki,&
                       lambda, kcalcu, passag)
-        integer :: nbm
+        integer(kind=8) :: nbm
         real(kind=8) :: umoy
         real(kind=8) :: rhof
         real(kind=8) :: hmoy
@@ -31,8 +31,8 @@ interface
         real(kind=8) :: long
         real(kind=8) :: cf0
         real(kind=8) :: mcf0
-        integer :: icoq
-        integer :: imod
+        integer(kind=8) :: icoq
+        integer(kind=8) :: imod
         real(kind=8) :: rkip
         real(kind=8) :: tcoef(10, nbm)
         real(kind=8) :: s1

@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -26,7 +26,7 @@ subroutine lcroma(fami, kpg, ksp, poum, mate)
 #include "asterfort/rcvalb.h"
 #include "asterfort/rcvarc.h"
 #include "asterfort/utmess.h"
-    integer :: kpg, ksp, mate
+    integer(kind=8) :: kpg, ksp, mate
     character(len=*) :: fami, poum
 !
 ! ******************************************************
@@ -40,7 +40,7 @@ subroutine lcroma(fami, kpg, ksp, poum, mate)
 ! ----------------------------------------------------------------------
 !  COMMON LOI DE COMPORTEMENT ROUSSELIER
 !
-    integer :: itemax, jprolp, jvalep, nbvalp, iret
+    integer(kind=8) :: itemax, jprolp, jvalep, nbvalp, iret
     real(kind=8) :: prec, young, nu, sigy, sig1, rousd, f0, fcr, acce
     real(kind=8) :: pm, rpm, fonc, fcd, dfcddj, dpmaxi, typoro
     common/lcrou/prec, young, nu, sigy, sig1, rousd, f0, fcr, acce,&
@@ -48,7 +48,7 @@ subroutine lcroma(fami, kpg, ksp, poum, mate)
      &               itemax, jprolp, jvalep, nbvalp
 ! ----------------------------------------------------------------------
 ! ----------------------------------------------------------------------
-    integer :: icodre(7)
+    integer(kind=8) :: icodre(7)
     character(len=8) :: para_type
     character(len=16) :: nomres(7)
     real(kind=8) ::  valres(7), pente, aire, temp, para_vale, val(1)

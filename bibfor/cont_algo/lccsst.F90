@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -24,10 +24,8 @@ subroutine lccsst(ds_contact, vect_asse_cont)
 !
 #include "jeveux.h"
 #include "asterfort/jeveuo.h"
-#include "asterfort/jexnum.h"
 #include "asterfort/jedema.h"
 #include "asterfort/jemarq.h"
-#include "asterfort/assert.h"
 !
 !
     type(NL_DS_Contact), intent(in) :: ds_contact
@@ -46,13 +44,13 @@ subroutine lccsst(ds_contact, vect_asse_cont)
 !
 ! --------------------------------------------------------------------------------------------------
 !
-    integer :: nt_patch, i_patch, indi_cont, nume_equa
-    integer :: jv_vect_vale
+    integer(kind=8) :: nt_patch, i_patch, indi_cont, nume_equa
+    integer(kind=8) :: jv_vect_vale
     real(kind=8) :: lagc
     character(len=24) :: sdcont_stat
-    integer, pointer :: v_sdcont_stat(:) => null()
+    integer(kind=8), pointer :: v_sdcont_stat(:) => null()
     character(len=24) :: sdcont_ddlc
-    integer, pointer :: v_sdcont_ddlc(:) => null()
+    integer(kind=8), pointer :: v_sdcont_ddlc(:) => null()
     character(len=24) :: sdcont_lagc
     real(kind=8), pointer :: v_sdcont_lagc(:) => null()
 !

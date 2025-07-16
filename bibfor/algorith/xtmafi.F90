@@ -32,14 +32,12 @@ subroutine xtmafi(ndim, fiss, nfiss, lismai, &
 #include "asterfort/jeexin.h"
 #include "asterfort/jelira.h"
 #include "asterfort/jemarq.h"
-#include "asterfort/jenuno.h"
 #include "asterfort/jeveuo.h"
-#include "asterfort/jexnum.h"
 #include "asterfort/wkvect.h"
 #include "asterfort/as_deallocate.h"
 #include "asterfort/as_allocate.h"
 #include "asterfort/int_to_char8.h"
-    integer :: nfiss, nbma, ndim
+    integer(kind=8) :: nfiss, nbma, ndim
     character(len=8) :: fiss(nfiss)
     character(len=24) :: lismai, mesmai
     character(len=8), optional, intent(in) :: mesh, model
@@ -76,16 +74,16 @@ subroutine xtmafi(ndim, fiss, nfiss, lismai, &
 ! - si typ_enr present (parmi 'HEAV', 'CTIP', 'HECT'), on ne garde que
 !   les mailles de types typ_enr
 !
-    integer :: ifiss, kk, jgrp, nmaenr, i, ima, cpt, iret
-    integer ::   ndime, jmad, mxstac
+    integer(kind=8) :: ifiss, kk, jgrp, nmaenr, i, ima, cpt, iret
+    integer(kind=8) ::   ndime, jmad, mxstac
     character(len=8) :: noma, nomafi, nomail, k8_typ_enr, vk8_typ_enr(3)
     character(len=8) :: k8_test
     character(len=24) :: grp(nfiss, 3)
-    integer, pointer :: temi(:) => null()
+    integer(kind=8), pointer :: temi(:) => null()
     character(len=8), pointer :: temp(:) => null()
-    integer, pointer :: tmdim(:) => null()
-    integer, pointer :: typmail(:) => null()
-    integer, pointer :: p_mail_affe(:) => null()
+    integer(kind=8), pointer :: tmdim(:) => null()
+    integer(kind=8), pointer :: typmail(:) => null()
+    integer(kind=8), pointer :: p_mail_affe(:) => null()
     aster_logical :: lmesh, lmodel, l_mail_affe, l_group_ok
 !
     parameter(mxstac=100)

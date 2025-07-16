@@ -81,7 +81,6 @@ subroutine gcour2(resu, noma, nomno, coorn, nbnoeu, &
 #include "asterfort/utmess.h"
 #include "asterfort/wkvect.h"
 #include "asterfort/char8_to_int.h"
-#include "blas/dcopy.h"
 !
     character(len=24) :: trav1, trav2, trav3, fonoeu
     character(len=24) :: obj3, norm, numgam, chamno, chfond, basfon
@@ -92,10 +91,10 @@ subroutine gcour2(resu, noma, nomno, coorn, nbnoeu, &
     character(len=6) :: kiord
     character(len=1), parameter :: base = 'G'
 !
-    integer :: nbnoeu, iadrt1, iadrt2, iadrt3, itheta, ifon
-    integer :: in2, iadrco, jmin, ielinf, iadnum, jvect
-    integer :: iadrno, num, indic, iadrtt, nbre, nbptfd
-    integer :: iret, numa, ndimte, iebas, iftyp, nec
+    integer(kind=8) :: nbnoeu, iadrt1, iadrt2, iadrt3, itheta, ifon
+    integer(kind=8) :: in2, iadrco, jmin, ielinf, iadnum, jvect
+    integer(kind=8) :: iadrno, num, indic, iadrtt, nbre, nbptfd
+    integer(kind=8) :: iret, numa, ndimte, iebas, iftyp, nec
 !
     real(kind=8) :: xi1, yi1, zi1, xj1, yj1, zj1
     real(kind=8) :: xij, yij, zij, eps, d, tei, tej
@@ -105,8 +104,8 @@ subroutine gcour2(resu, noma, nomno, coorn, nbnoeu, &
     aster_logical :: milieu, connex
 !
 !-----------------------------------------------------------------------
-    integer :: i, idesc, inorfon
-    integer :: ienorm, irefe, j, jresu, k, nbel
+    integer(kind=8) :: i, idesc, inorfon
+    integer(kind=8) :: ienorm, irefe, j, jresu, k, nbel
 !-----------------------------------------------------------------------
     call jemarq()
 !

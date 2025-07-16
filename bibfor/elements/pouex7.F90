@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -52,10 +52,10 @@ subroutine pouex7(sk, ey, ez)
 ! LOC R*8 ! SKP    !   105   ! MATRICE DE TRAVAIL
 !     ------------------------------------------------------------------
     real(kind=8) :: skp(105)
-    integer :: ip(14)
+    integer(kind=8) :: ip(14)
 !
 !-----------------------------------------------------------------------
-    integer :: i
+    integer(kind=8) :: i
 !-----------------------------------------------------------------------
     data ip/0, 1, 3, 6, 10, 15, 21, 28, 36, 45, 55, 66, 78, 91/
 ! ---------------------------------------------------------------------

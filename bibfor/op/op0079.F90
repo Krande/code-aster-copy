@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -55,13 +55,13 @@ subroutine op0079()
 #include "blas/dcopy.h"
 #include "blas/ddot.h"
 !
-    integer :: jsmde, nbmode, nbo, ii, iret, nbsym, idbase
+    integer(kind=8) :: jsmde, nbmode, nbo, ii, iret, nbsym, idbase
 !
 !-----------------------------------------------------------------------
-    integer :: ibid, icod, iadref
-    integer :: iddeeq, imod, ind, iord, isym
-    integer :: jmod, n0, n1, n2, n4
-    integer :: nbid, neq, tmod(1)
+    integer(kind=8) :: ibid, icod, iadref
+    integer(kind=8) :: iddeeq, imod, ind, iord, isym
+    integer(kind=8) :: jmod, n0, n1, n2, n4
+    integer(kind=8) :: nbid, neq, tmod(1)
     real(kind=8) :: bid, ebid, pij
 !-----------------------------------------------------------------------
     parameter(nbsym=3)
@@ -80,8 +80,8 @@ subroutine op0079()
     real(kind=8), pointer :: vectasse(:) => null()
     real(kind=8), pointer :: vale(:) => null()
     character(len=24), pointer :: refa(:) => null()
-    integer, pointer :: ordr(:) => null()
-    integer, pointer :: nequ(:) => null()
+    integer(kind=8), pointer :: ordr(:) => null()
+    integer(kind=8), pointer :: nequ(:) => null()
     blas_int :: b_incx, b_incy, b_n
     data nosyin/'DEPL', 'VITE', 'ACCE'/
     data nosyou/'DEPL', 'VITE', 'ACCE'/

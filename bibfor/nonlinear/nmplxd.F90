@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -48,13 +48,13 @@ subroutine nmplxd(FECell, FEBasis, FEQuad, nno, npg, ndim, &
     type(FE_Cell), intent(in) :: FECell
     type(FE_Quadrature), intent(in) :: FEQuad
     type(FE_basis), intent(in) :: FEBasis
-    integer, intent(in) :: nno, npg, ndim
+    integer(kind=8), intent(in) :: nno, npg, ndim
     character(len=8), intent(in) :: typmod(2)
     character(len=16), intent(in) :: option
-    integer, intent(in) :: imate
+    integer(kind=8), intent(in) :: imate
     character(len=16), intent(in) :: compor(COMPOR_SIZE), mult_comp
     real(kind=8), intent(in) :: carcri(CARCRI_SIZE)
-    integer, intent(in) :: lgpg
+    integer(kind=8), intent(in) :: lgpg
     real(kind=8), intent(in) :: instam, instap
     real(kind=8), intent(inout) :: dispPrev(ndim, nno), dispIncr(ndim, nno)
     real(kind=8), intent(in) :: angmas(*)
@@ -62,7 +62,7 @@ subroutine nmplxd(FECell, FEBasis, FEQuad, nno, npg, ndim, &
     aster_logical, intent(in) :: matsym
     real(kind=8), intent(inout) :: sigmCurr(2*ndim, npg), vip(lgpg, npg)
     real(kind=8), intent(inout) :: matuu(*), vectu(ndim, nno)
-    integer, intent(inout) :: codret
+    integer(kind=8), intent(inout) :: codret
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -103,10 +103,10 @@ subroutine nmplxd(FECell, FEBasis, FEQuad, nno, npg, ndim, &
 !
 ! --------------------------------------------------------------------------------------------------
 !
-    integer, parameter :: ksp = 1
+    integer(kind=8), parameter :: ksp = 1
     aster_logical :: lVect, lMatr, lSigm
-    integer :: kpg, i_tens, ipoids, ivf, idfde
-    integer :: cod(MAX_QP)
+    integer(kind=8) :: kpg, i_tens, ipoids, ivf, idfde
+    integer(kind=8) :: cod(MAX_QP)
     real(kind=8) :: BGSEval(3, MAX_BS)
     real(kind=8) :: def(6, MAX_BS, 3)
     real(kind=8) :: coorpg(3)

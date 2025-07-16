@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -46,17 +46,17 @@ subroutine xfem_calc_diag(matass, nonu, neq, deeq, nbnomax, &
 !
     character(len=19) :: matass
     character(len=14) :: nonu
-    integer :: neq, nbnomax, nbnoxfem, deca
-    integer :: deeq(*), ino_xfem(nbnomax)
-    integer :: ieq_loc(neq)
+    integer(kind=8) :: neq, nbnomax, nbnoxfem, deca
+    integer(kind=8) :: deeq(*), ino_xfem(nbnomax)
+    integer(kind=8) :: ieq_loc(neq)
     aster_logical :: is_xfem(nbnomax)
     real(kind=8) :: tab_mloc(deca*nbnoxfem), scal
     character(len=8) :: k8cmp(*)
 !
 !-----------------------------------------------------------------------
 !
-    integer :: jcoll, iligl, nunoj, nunoi, kterm, nnz, jvale, jval2, jsmhc, ipos, jpos, nvale
-    integer, pointer :: smdi(:) => null()
+   integer(kind=8) :: jcoll, iligl, nunoj, nunoi, kterm, nnz, jvale, jval2, jsmhc, ipos, jpos, nvale
+    integer(kind=8), pointer :: smdi(:) => null()
     aster_logical :: lsym
     real(kind=8) :: valei, valej, rcoef
 !

@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -30,9 +30,9 @@ subroutine cfsuex(sdcont_defi, v_list_excl, nb_excl, nb_cont_zone)
 ! person_in_charge: mickael.abbas at edf.fr
 !
     character(len=24), intent(in) :: sdcont_defi
-    integer, pointer :: v_list_excl(:)
-    integer, intent(in) :: nb_excl
-    integer, intent(in) :: nb_cont_zone
+    integer(kind=8), pointer :: v_list_excl(:)
+    integer(kind=8), intent(in) :: nb_excl
+    integer(kind=8), intent(in) :: nb_cont_zone
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -49,14 +49,14 @@ subroutine cfsuex(sdcont_defi, v_list_excl, nb_excl, nb_cont_zone)
 !
 ! --------------------------------------------------------------------------------------------------
 !
-    integer :: i_node, i_zone, i_excl, i_node_new
-    integer :: nb_node_old, nb_node_new, nb_sans
+    integer(kind=8) :: i_node, i_zone, i_excl, i_node_new
+    integer(kind=8) :: nb_node_old, nb_node_new, nb_sans
     character(len=24) :: sdcont_ssnoco
-    integer, pointer :: v_sdcont_ssnoco(:) => null()
+    integer(kind=8), pointer :: v_sdcont_ssnoco(:) => null()
     character(len=24) :: sdcont_pssnoco
-    integer, pointer :: v_sdcont_pssnoco(:) => null()
-    integer, pointer :: v_ssnoco(:) => null()
-    integer, pointer :: v_pssnoco(:) => null()
+    integer(kind=8), pointer :: v_sdcont_pssnoco(:) => null()
+    integer(kind=8), pointer :: v_ssnoco(:) => null()
+    integer(kind=8), pointer :: v_pssnoco(:) => null()
 !
 ! --------------------------------------------------------------------------------------------------
 !

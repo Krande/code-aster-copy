@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -50,17 +50,17 @@ subroutine betmat(fami, kpg, ksp, mod, imat, &
 #include "asterfort/betnvi.h"
 #include "asterfort/r8inir.h"
 #include "asterfort/rcvalb.h"
-    integer :: nmat, ndt, ndi, nr, nvi, kpg, ksp
+    integer(kind=8) :: nmat, ndt, ndi, nr, nvi, kpg, ksp
     real(kind=8) :: materd(nmat, 2), materf(nmat, 2), tempd, tempf
     real(kind=8) :: valpaf
     real(kind=8) :: epsi, theta
     character(len=8) :: mod, nompar
     character(len=16) :: nomc(14)
-    integer :: cerr(14)
+    integer(kind=8) :: cerr(14)
     character(len=3) :: matcst
     character(len=*) :: fami
 !-----------------------------------------------------------------------
-    integer :: i, imat
+    integer(kind=8) :: i, imat
 !-----------------------------------------------------------------------
     data epsi/1.d-15/
 !       ----------------------------------------------------------------

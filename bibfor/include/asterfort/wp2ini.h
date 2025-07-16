@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -24,22 +24,22 @@ interface
                       prorto, nborto, nbvect, neq, lbloq,&
                       lddl, alpha, beta, signe, yh,&
                       yb, solveu)
-        integer :: neq
+        integer(kind=8) :: neq
         character(len=1) :: appr
-        integer :: lmasse
-        integer :: lamor
-        integer :: lraide
-        integer :: lmatra
-        integer :: lmtpsc
+        integer(kind=8) :: lmasse
+        integer(kind=8) :: lamor
+        integer(kind=8) :: lraide
+        integer(kind=8) :: lmatra
+        integer(kind=8) :: lmtpsc
         complex(kind=8) :: sigma
         real(kind=8) :: xh(*)
         real(kind=8) :: xb(*)
         character(len=*) :: optiof
         real(kind=8) :: prorto
-        integer :: nborto
-        integer :: nbvect
-        integer :: lbloq(*)
-        integer :: lddl(*)
+        integer(kind=8) :: nborto
+        integer(kind=8) :: nbvect
+        integer(kind=8) :: lbloq(*)
+        integer(kind=8) :: lddl(*)
         real(kind=8) :: alpha(*)
         real(kind=8) :: beta(*)
         real(kind=8) :: signe(*)

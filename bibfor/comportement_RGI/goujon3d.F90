@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -30,11 +30,11 @@ subroutine goujon3d(endo, nbrenf, numr, numf, vecr, &
 !incluant l effet goujon : sortie=sigrfissp(numr,numf,direction)
 !en base principale de fissuration
 
-    integer      :: i, k
+    integer(kind=8)      :: i, k
 
 ! Variable externes
     aster_logical :: endo
-    integer :: nbrenf, numr, numf
+    integer(kind=8) :: nbrenf, numr, numf
     real(kind=8) :: vecr(nbrenf, 3), deq(nbrenf), rhor(nbrenf)
 !     real(kind=8) :: wplt6(6)
     real(kind=8) :: wpl3(3), vwpl33(3, 3), vwpl33t(3, 3)
@@ -200,4 +200,3 @@ subroutine goujon3d(endo, nbrenf, numr, numf, vecr, &
     end if
 
 end subroutine
-

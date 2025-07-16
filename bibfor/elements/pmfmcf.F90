@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -35,7 +35,7 @@ subroutine pmfmcf(ip, nbgf, nbfib, nugf, sdcomp, &
 #include "MultiFiber_type.h"
 #include "asterfort/pmfcom.h"
 !
-    integer :: ip, nbgf, nbfib, nbvalc, nugf(*), icdmat, codret
+    integer(kind=8) :: ip, nbgf, nbfib, nbvalc, nugf(*), icdmat, codret
     character(len=16) :: option
     character(len=24) :: sdcomp(*)
     real(kind=8) :: varim(*), varimp(*), varip(*), contm(*), defm(*), defp(*)
@@ -44,10 +44,10 @@ subroutine pmfmcf(ip, nbgf, nbfib, nugf, sdcomp, &
 !
 ! --------------------------------------------------------------------------------------------------
 !
-    integer :: ig, ngf, nbfig
-    integer :: idcipv, idcipc, idecc, idecv, icp
-    integer :: iposv, iposc
-    integer :: codrep
+    integer(kind=8) :: ig, ngf, nbfig
+    integer(kind=8) :: idcipv, idcipc, idecc, idecv, icp
+    integer(kind=8) :: iposv, iposc
+    integer(kind=8) :: codrep
 !
 ! --------------------------------------------------------------------------------------------------
 !

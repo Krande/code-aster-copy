@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -21,7 +21,6 @@ subroutine aplcno(mesh, newgeo, sdcont_defi, sdappa, err_appa)
     implicit none
 !
 #include "asterfort/jeveuo.h"
-#include "asterfort/jexnum.h"
 #include "asterfort/cfdisi.h"
 #include "asterfort/mminfi.h"
 #include "asterfort/aptgnn.h"
@@ -35,7 +34,7 @@ subroutine aplcno(mesh, newgeo, sdcont_defi, sdappa, err_appa)
     character(len=19), intent(in) :: newgeo
     character(len=24), intent(in) :: sdcont_defi
     character(len=19), intent(in) :: sdappa
-    integer, intent(inout) :: err_appa
+    integer(kind=8), intent(inout) :: err_appa
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -52,13 +51,13 @@ subroutine aplcno(mesh, newgeo, sdcont_defi, sdappa, err_appa)
 !
 ! --------------------------------------------------------------------------------------------------
 !
-    integer :: model_ndim, nb_cont_zone, nt_node, nt_node_slav, nt_node_mast
-    integer :: nb_node_mast, nb_node_slav, nb_elem_mast, nb_elem_slav
-    integer :: i_zone
-    integer :: jdecnm, jdecmm, jdecne, jdecme
+    integer(kind=8) :: model_ndim, nb_cont_zone, nt_node, nt_node_slav, nt_node_mast
+    integer(kind=8) :: nb_node_mast, nb_node_slav, nb_elem_mast, nb_elem_slav
+    integer(kind=8) :: i_zone
+    integer(kind=8) :: jdecnm, jdecmm, jdecne, jdecme
     character(len=4) :: zone_type
     real(kind=8) :: norm_vect(3), epsi_maxi
-    integer :: norm_type
+    integer(kind=8) :: norm_type
     character(len=16), pointer :: valk(:) => null()
 !
 ! --------------------------------------------------------------------------------------------------

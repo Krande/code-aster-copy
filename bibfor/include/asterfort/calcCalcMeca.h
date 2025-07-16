@@ -28,10 +28,10 @@ interface
                             nb_obje_maxi, obje_name, obje_sdname, nb_obje, &
                             l_pred)
         use NonLin_Datastructure_type
-        integer, intent(in) :: nb_option
+        integer(kind=8), intent(in) :: nb_option
         character(len=16), intent(in) :: list_option(:)
         aster_logical, intent(in) :: l_elem_nonl
-        integer, intent(in) :: nume_harm
+        integer(kind=8), intent(in) :: nume_harm
         character(len=*), intent(in) :: listLoadZ, modelZ, caraElemZ
         type(NL_DS_Constitutive), intent(in) :: ds_constitutive
         type(NL_DS_Material), intent(in) :: ds_material
@@ -39,10 +39,10 @@ interface
         character(len=19), intent(in) :: hval_incr(:), hval_algo(:)
         character(len=19), intent(in) :: vediri, vefnod
         character(len=19), intent(in) :: vevarc_prev, vevarc_curr
-        integer, intent(in) :: nb_obje_maxi
+        integer(kind=8), intent(in) :: nb_obje_maxi
         character(len=16), intent(inout) :: obje_name(nb_obje_maxi)
         character(len=24), intent(inout) :: obje_sdname(nb_obje_maxi)
-        integer, intent(out) ::  nb_obje
+        integer(kind=8), intent(out) ::  nb_obje
         aster_logical, intent(in) :: l_pred
     end subroutine calcCalcMeca
 end interface

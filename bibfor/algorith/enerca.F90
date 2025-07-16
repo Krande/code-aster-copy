@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -100,12 +100,12 @@ subroutine enerca(valinc, dep0, vit0, depl1, vite1, &
 ! IO  ds_energy        : datastructure for energy management
 !  IN  : SCHEMA    : NOM DU SCHEMA POUR DYNA_VIBRA//TRAN/PHYS
 !
-    integer :: iaux, neq, nbcol, long
-    integer :: jdeeq, icvmoz
-    integer :: imasse, iamort, irigid, ier
-    integer :: iumoy, iupmum, iumoyz, iupmuz
-    integer :: ivmoy, ivpmvm
-    integer :: ikumoy, imumoy, idesc
+    integer(kind=8) :: iaux, neq, nbcol, long
+    integer(kind=8) :: jdeeq, icvmoz
+    integer(kind=8) :: imasse, iamort, irigid, ier
+    integer(kind=8) :: iumoy, iupmum, iumoyz, iupmuz
+    integer(kind=8) :: ivmoy, ivpmvm
+    integer(kind=8) :: ikumoy, imumoy, idesc
     character(len=24) :: numedd
     character(len=19) :: depplu
     character(len=11) :: forma

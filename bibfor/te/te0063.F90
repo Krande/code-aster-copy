@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -40,11 +40,11 @@ subroutine te0063(nomopt, nomte)
 !
 ! --------------------------------------------------------------------------------------------------
 !
-    integer :: nbsig
+    integer(kind=8) :: nbsig
     parameter(nbsig=6)
 !
-    integer :: jsiefr, jmatpas, jcontpr, iret, kpg, ksp, iposin, iposout
-    integer :: nbpg, nbspoint, itabp(7), nbcmp
+    integer(kind=8) :: jsiefr, jmatpas, jcontpr, iret, kpg, ksp, iposin, iposout
+    integer(kind=8) :: nbpg, nbspoint, itabp(7), nbcmp
     real(kind=8) :: pglul(3, 3), sigma(nbsig)
 !
 ! --------------------------------------------------------------------------------------------------

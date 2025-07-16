@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -57,17 +57,14 @@ subroutine gver2d(nocc, noeud, rinf, rsup)
 #include "asterfort/jelira.h"
 #include "asterfort/jemarq.h"
 #include "asterfort/jeveuo.h"
-#include "asterfort/jexnom.h"
-#include "asterfort/jexnum.h"
-#include "asterfort/lxlgut.h"
 #include "asterfort/utmess.h"
 !
     character(len=8) :: config, noeud, fond, kfon
     character(len=24) :: chfond, taillr
 !
-    integer :: iocc, nocc, n1
-    integer :: nbm, n2, lnoff, numfon, ibid
-    integer :: iatmno
+    integer(kind=8) :: iocc, nocc, n1
+    integer(kind=8) :: nbm, n2, lnoff, numfon, ibid
+    integer(kind=8) :: iatmno
 !
     real(kind=8) :: rbid, rinf, rsup, valr(2)
 !

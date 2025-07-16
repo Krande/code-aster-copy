@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -22,7 +22,7 @@ subroutine mahsf(ind1, nb1, xi, ksi3s2, intsn, &
     implicit none
 #include "asterfort/hfmss.h"
 #include "asterfort/vectgt.h"
-    integer :: nb1, intsn
+    integer(kind=8) :: nb1, intsn
     real(kind=8) :: xi(3, *), xr(*), vectn(9, 3), ksi3s2
     real(kind=8) :: vectg(2, 3), vectt(3, 3), hsf(3, 9), hss(2, 9)
 !
@@ -43,7 +43,7 @@ subroutine mahsf(ind1, nb1, xi, ksi3s2, intsn, &
 !     IND1= 1      1 : CALCULS AUX PTS D'INTEGRATION NORMAL
 !
 !-----------------------------------------------------------------------
-    integer :: ind1, ind2
+    integer(kind=8) :: ind1, ind2
     real(kind=8) :: epais
 !-----------------------------------------------------------------------
     call vectgt(ind1, nb1, xi, ksi3s2, intsn, &

@@ -56,17 +56,16 @@ subroutine ctetax(basmod, numa, nbsec, teta, nbtet)
 #include "asterfort/jedema.h"
 #include "asterfort/jelira.h"
 #include "asterfort/jemarq.h"
-#include "asterfort/jenuno.h"
 #include "asterfort/jeveuo.h"
 #include "asterfort/jexnum.h"
 #include "asterfort/utmess.h"
 #include "asterfort/int_to_char8.h"
 !
 !-----------------------------------------------------------------------
-    integer :: i, ibid(1), icomp, iloci, ilocj, inoa
-    integer :: j, k, lldesc, llnoa, nbcmp
-    integer :: nbcpmx, nbdax, nbdcou, nbec, nbnoa, nbnot, nbsec
-    integer :: nbtet, noer, nta, numa
+    integer(kind=8) :: i, ibid(1), icomp, iloci, ilocj, inoa
+    integer(kind=8) :: j, k, lldesc, llnoa, nbcmp
+    integer(kind=8) :: nbcpmx, nbdax, nbdcou, nbec, nbnoa, nbnot, nbsec
+    integer(kind=8) :: nbtet, noer, nta, numa
     real(kind=8) :: angle, pi, x
 !-----------------------------------------------------------------------
     parameter(nbcpmx=300)
@@ -75,8 +74,8 @@ subroutine ctetax(basmod, numa, nbsec, teta, nbtet)
     character(len=8) :: basmod, mailla, typddl(6), nomnoe, tyd, intf, kbid
     real(kind=8) :: xa(10), xta(10), tet0(10, 10), teta(nbtet, nbtet)
     aster_logical :: nook
-    integer :: ideca(nbcpmx)
-    integer :: vali(2)
+    integer(kind=8) :: ideca(nbcpmx)
+    integer(kind=8) :: vali(2)
 !
 !-----------------------------------------------------------------------
 !

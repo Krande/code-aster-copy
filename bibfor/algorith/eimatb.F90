@@ -33,7 +33,7 @@ subroutine eimatb(nomte, ndim, axi, nno1, nno2, npg, &
 !
     character(len=16) :: nomte
     aster_logical, intent(in):: axi
-    integer, intent(in)      :: ndim, nno1, nno2, npg
+    integer(kind=8), intent(in)      :: ndim, nno1, nno2, npg
     real(kind=8), intent(in) :: vff1(nno1, npg), vff2(nno2, npg), geom(ndim, nno2)
     real(kind=8), intent(in) :: wref(npg)
     real(kind=8), intent(in) :: dffr2(ndim-1, nno2, npg), ang(merge(1, 3, ndim .eq. 2), nno2)
@@ -61,8 +61,8 @@ subroutine eimatb(nomte, ndim, axi, nno1, nno2, npg, &
 ! out b       : matrice b
 ! out wg      : poids des points de gauss
 ! --------------------------------------------------------------------------------------------------
-    integer :: n, i, j, nang, g
-    integer :: iu(ndim, 2*nno1), il(ndim, nno2)
+    integer(kind=8) :: n, i, j, nang, g
+    integer(kind=8) :: iu(ndim, 2*nno1), il(ndim, nno2)
     real(kind=8) :: cova(3, 3), metr(2, 2), dfdx(9), cour, jac, cosa, sina
     real(kind=8) :: angloc(3), rot(3, 3), w
 ! --------------------------------------------------------------------------------------------------

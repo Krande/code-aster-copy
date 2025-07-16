@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -34,9 +34,9 @@ subroutine xstam1(noma, nbma, nmafis, mafis, stano, &
 #include "asterfort/jexnum.h"
 #include "asterfort/panbno.h"
 !
-    integer :: nmafis, nmafon, nmaen1, nmaen2, nmaen3, nbma
-    integer :: stano(*), mafis(nmafis)
-    integer :: mafon(nmafis), maen1(nbma), maen2(nbma), maen3(nbma)
+    integer(kind=8) :: nmafis, nmafon, nmaen1, nmaen2, nmaen3, nbma
+    integer(kind=8) :: stano(*), mafis(nmafis)
+    integer(kind=8) :: mafon(nmafis), maen1(nbma), maen2(nbma), maen3(nbma)
     character(len=8) :: noma
     character(len=16) :: typdis
     character(len=19) :: cnslt
@@ -67,14 +67,14 @@ subroutine xstam1(noma, nbma, nmafis, mafis, stano, &
 !
 !
 !
-    integer :: jma, nuno, jconx2, jltsv
-    integer :: i, im1, im2, im3, ima, itypma, in, imae, nunop
-    integer :: em, em1, em2, nmaabs, nbnott(3), nno, en
-    integer :: ndim, dime_topo
+    integer(kind=8) :: jma, nuno, jconx2, jltsv
+    integer(kind=8) :: i, im1, im2, im3, ima, itypma, in, imae, nunop
+    integer(kind=8) :: em, em1, em2, nmaabs, nbnott(3), nno, en
+    integer(kind=8) :: ndim, dime_topo
     character(len=8) :: typma
     character(len=19) :: mai
     aster_logical :: lstch
-    integer, pointer :: connex(:) => null()
+    integer(kind=8), pointer :: connex(:) => null()
 !
     call jemarq()
 !

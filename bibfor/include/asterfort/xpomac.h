@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -28,8 +28,8 @@ interface
         character(len=8) :: malini
         character(len=24) :: mailc
         character(len=24) :: listno
-        integer :: nbnoc
-        integer :: nbmac
+        integer(kind=8) :: nbnoc
+        integer(kind=8) :: nbmac
         character(len=8) :: maxfem
         character(len=24) :: nivgrm
         character(len=19) :: cns1

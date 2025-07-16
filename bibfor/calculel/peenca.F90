@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -31,7 +31,7 @@ subroutine peenca(champ, long, vr, nbmail, nummai)
 #include "asterfort/scalai.h"
 #include "asterfort/utmess.h"
     character(len=*) :: champ
-    integer :: long, nbmail, nummai(*)
+    integer(kind=8) :: long, nbmail, nummai(*)
     real(kind=8) :: vr(long)
 !     FAIRE DES OPERATIONS SUR UN CHAM_ELEM DE TYPE ENERGIE
 !            (NOTION D'INTEGRALE DU CHAMP SUR LE MODELE)
@@ -44,20 +44,20 @@ subroutine peenca(champ, long, vr, nbmail, nummai)
 ! IN  : NUMMAI : NUMEROS DES MAILLES
 !     ------------------------------------------------------------------
 !     ------------------------------------------------------------------
-    integer :: longt, mode
+    integer(kind=8) :: longt, mode
     real(kind=8) :: rzero, ztot
     character(len=4) :: docu
     character(len=8) :: scal
     character(len=19) :: champ2, ligrel
 !     ------------------------------------------------------------------
 !-----------------------------------------------------------------------
-    integer :: i, ibid, icoef, idecgr, iel, im, inum
-    integer :: j, k, nbgr
-    integer :: nel
+    integer(kind=8) :: i, ibid, icoef, idecgr, iel, im, inum
+    integer(kind=8) :: j, k, nbgr
+    integer(kind=8) :: nel
     character(len=24), pointer :: celk(:) => null()
     real(kind=8), pointer :: celv(:) => null()
-    integer, pointer :: liel(:) => null()
-    integer, pointer :: celd(:) => null()
+    integer(kind=8), pointer :: liel(:) => null()
+    integer(kind=8), pointer :: celd(:) => null()
 !-----------------------------------------------------------------------
     call jemarq()
     champ2 = champ

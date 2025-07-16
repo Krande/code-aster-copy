@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -52,14 +52,14 @@ subroutine utintc(zrino2, zrino1, zrjno2, zrjno1, x3, &
 ! DECLARATION PARAMETRES D'APPELS
 #include "asterf_types.h"
 #include "asterfort/fointe.h"
-    integer :: nsomm, ifm, niv, option
+    integer(kind=8) :: nsomm, ifm, niv, option
     real(kind=8) :: zrino2, zrino1, zrjno2, zrjno1, x3, y3, inst, insold
     real(kind=8) :: valfp(9), valfm(9)
     character(len=8) :: k8cart
     aster_logical :: ltheta
 !
 ! DECLARATION VARIABLES LOCALES
-    integer :: icode
+    integer(kind=8) :: icode
     real(kind=8) :: valpar(3)
     character(len=8) :: nompar(3)
 !

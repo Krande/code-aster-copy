@@ -20,7 +20,6 @@ subroutine asmasu(ma1, ma2, mag)
     implicit none
 #include "jeveux.h"
 #include "asterfort/codent.h"
-#include "asterfort/codlet.h"
 #include "asterfort/infniv.h"
 #include "asterfort/jecrec.h"
 #include "asterfort/jecreo.h"
@@ -47,23 +46,21 @@ subroutine asmasu(ma1, ma2, mag)
 !-----------------------------------------------------------------------
 !
     character(len=1) :: kkk
-    character(len=8) :: kind
     character(len=19) :: coordo
-    character(len=8) :: noma, nono
     character(len=24) :: nogma, nogmab, nogno, nognob
-    integer :: nbma, nbm1, nbm2, nbno, nbn1, nbn2, nbgma, nbgm1, nbgm2
-    integer :: i1, icompt, ino, l1, l2, l3, i, n, ncoor, k, ifm, niv
-    integer :: iadime
-    integer :: iagma1, iagma2, iagmax
-    integer :: iacon1, iacon2, iaconx
-    integer :: iagno1, iagno2, iagnox
-    integer :: iatyp1, iatyp2, iatypx
-    integer :: nbgno, nbgn1, nbgn2, ii, igeomr, iadesc, ibid
-    integer :: iatyma, iavale, iret, iret1, iret2
+    integer(kind=8) :: nbma, nbm1, nbm2, nbno, nbn1, nbn2, nbgma, nbgm1, nbgm2
+    integer(kind=8) :: i1, icompt, ino, l1, l2, l3, i, n, ncoor, k, ifm, niv
+    integer(kind=8) :: iadime
+    integer(kind=8) :: iagma1, iagma2, iagmax
+    integer(kind=8) :: iacon1, iacon2, iaconx
+    integer(kind=8) :: iagno1, iagno2, iagnox
+    integer(kind=8) :: iatyp1, iatyp2, iatypx
+    integer(kind=8) :: nbgno, nbgn1, nbgn2, ii, igeomr, iadesc, ibid
+    integer(kind=8) :: iatyma, iavale, iret, iret1, iret2
     real(kind=8), pointer :: coo1(:) => null()
     real(kind=8), pointer :: coo2(:) => null()
-    integer, pointer :: dim1(:) => null()
-    integer, pointer :: dim2(:) => null()
+    integer(kind=8), pointer :: dim1(:) => null()
+    integer(kind=8), pointer :: dim2(:) => null()
 !
 !     ------------------------------------------------------------------
 !
@@ -147,16 +144,16 @@ subroutine asmasu(ma1, ma2, mag)
     call jeveuo(ma2//'.COORDO    .VALE', 'L', vr=coo2)
     call wkvect(coordo//'.VALE', 'G V R', 3*nbno, iavale)
 !     -- COORDONNEES DES NOEUDS :
-    do 51, ino = 1, nbn1
-    do k = 1, 3
-        zr(iavale-1+3*(ino-1)+k) = coo1(3*(ino-1)+k)
+    do ino = 1, nbn1
+        do k = 1, 3
+            zr(iavale-1+3*(ino-1)+k) = coo1(3*(ino-1)+k)
+        end do
     end do
-51  end do
-    do 52, ino = 1, nbn2
-    do k = 1, 3
-        zr(iavale-1+3*(nbn1+ino-1)+k) = coo2(3*(ino-1)+k)
+    do ino = 1, nbn2
+        do k = 1, 3
+            zr(iavale-1+3*(nbn1+ino-1)+k) = coo2(3*(ino-1)+k)
+        end do
     end do
-52  end do
 !
 !
 !     --OBJET .TYPMAIL:

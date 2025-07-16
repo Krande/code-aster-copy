@@ -50,10 +50,8 @@ subroutine preflx(graexc, mailla, chamat, celem, npdsc3, &
 #include "asterfort/jeecra.h"
 #include "asterfort/jelira.h"
 #include "asterfort/jemarq.h"
-#include "asterfort/jenonu.h"
 #include "asterfort/jeveuo.h"
 #include "asterfort/jeveut.h"
-#include "asterfort/jexnom.h"
 #include "asterfort/jexnum.h"
 #include "asterfort/rccome.h"
 #include "asterfort/reseci.h"
@@ -66,18 +64,18 @@ subroutine preflx(graexc, mailla, chamat, celem, npdsc3, &
     character(len=24) :: lifex2, lifex3
     character(len=11) :: k11
 !-----------------------------------------------------------------------
-    integer :: iad1, iaddx, iadfx2, iadfx3, iadlma, iadr
-    integer :: iadrho, iadsc3, iadsec, iapp1, iapp1b, iapp2, iapp2b
-    integer :: icode, idec1, iexc1, ifreq1, igrma1, igrma2, ij1
-    integer :: ij2, ilfex2, ilfex3, ilien1, ilien2, ilima, ilnoex
-    integer :: ima1, imai1, imai2, imai3, inbfx3, inbmai, inbnoe
-    integer :: ingrma, inlien, inoe1, inoe2, inuno1, inuno2, inuno3
-    integer :: inuno4, inurho, invalk, ipar1, ipar2, ivalk1, nindex
-    integer :: nmalim, npdsc3, iret
+    integer(kind=8) :: iad1, iaddx, iadfx2, iadfx3, iadlma, iadr
+    integer(kind=8) :: iadrho, iadsc3, iadsec, iapp1, iapp1b, iapp2, iapp2b
+    integer(kind=8) :: icode, idec1, iexc1, ifreq1, igrma1, igrma2, ij1
+    integer(kind=8) :: ij2, ilfex2, ilfex3, ilien1, ilien2, ilima, ilnoex
+    integer(kind=8) :: ima1, imai1, imai2, imai3, inbfx3, inbmai, inbnoe
+    integer(kind=8) :: ingrma, inlien, inoe1, inoe2, inuno1, inuno2, inuno3
+    integer(kind=8) :: inuno4, inurho, invalk, ipar1, ipar2, ivalk1, nindex
+    integer(kind=8) :: nmalim, npdsc3, iret
     real(kind=8) :: dx, dx1, dx2, omega, pi, rho
     real(kind=8) :: rho1, rho2, sect1, sect2, sign, x1, x2
     real(kind=8) :: y1, y2, z1, z2
-    integer, pointer :: desc(:) => null()
+    integer(kind=8), pointer :: desc(:) => null()
 !-----------------------------------------------------------------------
     call jemarq()
     if (graexc(1:5) .ne. 'SOUR_') goto 999

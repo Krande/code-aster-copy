@@ -21,7 +21,6 @@ subroutine matr_asse_scale(matasz, lvect, rvect)
     implicit none
 #include "jeveux.h"
 #include "asterfort/assert.h"
-#include "asterfort/dismoi.h"
 #include "asterfort/jedema.h"
 #include "asterfort/jedetr.h"
 #include "asterfort/jeexin.h"
@@ -48,10 +47,10 @@ subroutine matr_asse_scale(matasz, lvect, rvect)
     character(len=1) :: ktyp
     character(len=14) :: nonu
     character(len=19) :: matass, kstoc
-    integer :: n, n1, nz, kterm, jnlogl, nsmdi, jsmhc, nsmhc, jcolg
-    integer :: jprddl, nvale, jvale, nlong, coltmp, ier, iligg, jcoll, iligl, jval2
+    integer(kind=8) :: n, n1, nz, kterm, jnlogl, nsmdi, jsmhc, nsmhc, jcolg
+    integer(kind=8) :: jprddl, nvale, jvale, nlong, coltmp, ier, iligg, jcoll, iligl, jval2
     character(len=24), pointer :: refa(:) => null()
-    integer, pointer :: smdi(:) => null()
+    integer(kind=8), pointer :: smdi(:) => null()
     !-------------------------------------------------------------------
     call jemarq()
 !
@@ -123,7 +122,7 @@ subroutine matr_asse_scale(matasz, lvect, rvect)
 
     ! scale the matrix
     jcoll = 1
-    do 1 kterm = 1, nz
+    do kterm = 1, nz
 !
 !       --- PARTIE TRIANGULAIRE SUPERIEURE
         if (smdi(jcoll) .lt. kterm) jcoll = jcoll+1
@@ -147,7 +146,7 @@ subroutine matr_asse_scale(matasz, lvect, rvect)
             zr(jval2-1+kterm) = zr(jval2-1+kterm)*rvect(iligl)*lvect(jcoll)
         end if
 !
-1   end do
+    end do
 !
 !
     call jedema()

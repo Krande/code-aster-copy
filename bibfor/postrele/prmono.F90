@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -32,14 +32,14 @@ subroutine prmono(champ, ioc, som, nbcmp, nocmp)
 #include "asterfort/jedetr.h"
 #include "asterfort/jeveuo.h"
 #include "asterfort/reliem.h"
-    integer :: ioc, nbcmp
+    integer(kind=8) :: ioc, nbcmp
     real(kind=8) :: som(1)
     character(len=8) :: nocmp(1)
     character(len=*) :: champ
 !
-    integer :: jcnsl, nbno, ncmp, nbn
-    integer :: ibid, nbnoeu, idnoeu, nbc
-    integer :: i100, i110, icp, ino
+    integer(kind=8) :: jcnsl, nbno, ncmp, nbn
+    integer(kind=8) :: ibid, nbnoeu, idnoeu, nbc
+    integer(kind=8) :: i100, i110, icp, ino
     real(kind=8) :: x
     character(len=8) :: ma
     character(len=16) :: motcle(4), typmcl(4)
@@ -49,7 +49,7 @@ subroutine prmono(champ, ioc, som, nbcmp, nocmp)
     character(len=8), pointer :: cnsc(:) => null()
     character(len=8), pointer :: cnsk(:) => null()
     real(kind=8), pointer :: cnsv(:) => null()
-    integer, pointer :: cnsd(:) => null()
+    integer(kind=8), pointer :: cnsd(:) => null()
 ! ---------------------------------------------------------------------
 !
     motcle(1) = 'GROUP_NO'

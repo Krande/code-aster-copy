@@ -30,11 +30,11 @@ subroutine fonoda(ds_thm, &
 #include "asterfort/thmEvalGravity.h"
 !
     type(THM_DS), intent(in) :: ds_thm
-    integer, intent(in) :: jv_mater
-    integer, intent(in) :: ndim
+    integer(kind=8), intent(in) :: jv_mater
+    integer(kind=8), intent(in) :: ndim
     aster_logical, intent(in) :: fnoevo
-    integer, intent(in) :: mecani(5), press1(7), press2(7), tempe(5), second(5)
-    integer, intent(in) :: dimdef, dimcon
+    integer(kind=8), intent(in) :: mecani(5), press1(7), press2(7), tempe(5), second(5)
+    integer(kind=8), intent(in) :: dimdef, dimcon
     real(kind=8), intent(in) :: dt
     real(kind=8), intent(inout) :: congem(dimcon)
     real(kind=8), intent(inout) :: congep(dimcon)
@@ -68,10 +68,10 @@ subroutine fonoda(ds_thm, &
 !
 ! --------------------------------------------------------------------------------------------------
 !
-    integer :: nbpha1, nbpha2
-    integer :: addeme, addete, addep1, addep2, adde2nd
-    integer :: adcome, adcote, adcp11, adcp12, adcp21, adcp22, adco2nd
-    integer :: i_dim
+    integer(kind=8) :: nbpha1, nbpha2
+    integer(kind=8) :: addeme, addete, addep1, addep2, adde2nd
+    integer(kind=8) :: adcome, adcote, adcp11, adcp12, adcp21, adcp22, adco2nd
+    integer(kind=8) :: i_dim
     real(kind=8), parameter :: rac2 = sqrt(2.d0)
     real(kind=8) :: gravity(3)
 !

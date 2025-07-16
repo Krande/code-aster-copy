@@ -104,8 +104,6 @@ subroutine sandcas4(effrts, ht, enrobi, enrobs, facier, fbeton, gammas, gammac, 
 #include "asterc/r8rddg.h"
 #include "asterfort/wkvect.h"
 #include "asterfort/jedetr.h"
-#include "asterfort/juveca.h"
-#include "asterfort/jeveuo.h"
 #include "asterfort/mgauss.h"
 
 !VARIABLES PRINCIPALES
@@ -120,20 +118,20 @@ subroutine sandcas4(effrts, ht, enrobi, enrobs, facier, fbeton, gammas, gammac, 
     real(kind=8) :: gammac
     real(kind=8) :: thiter
     real(kind=8) :: epiter
-    integer :: cond109
-    integer :: ferrcomp
-    integer :: ferrsyme
+    integer(kind=8) :: cond109
+    integer(kind=8) :: ferrcomp
+    integer(kind=8) :: ferrsyme
     real(kind=8) :: slsyme
-    integer :: uc
-    integer :: um
+    integer(kind=8) :: uc
+    integer(kind=8) :: um
     real(kind=8) :: dnsxi
     real(kind=8) :: dnsxs
     real(kind=8) :: dnsyi
     real(kind=8) :: dnsys
-    integer :: etsxi
-    integer :: etsxs
-    integer :: etsyi
-    integer :: etsys
+    integer(kind=8) :: etsxi
+    integer(kind=8) :: etsxs
+    integer(kind=8) :: etsyi
+    integer(kind=8) :: etsys
     real(kind=8) :: snsxi
     real(kind=8) :: snsxs
     real(kind=8) :: snsyi
@@ -146,15 +144,15 @@ subroutine sandcas4(effrts, ht, enrobi, enrobs, facier, fbeton, gammas, gammac, 
     real(kind=8) :: t_sup
     real(kind=8) :: theta_inf
     real(kind=8) :: theta_sup
-    integer :: ierr
+    integer(kind=8) :: ierr
 
 !Variables de calcul
     real(kind=8) :: pi, fcd, fyd, ySUP, yINF, Z, fcd2, fc
     real(kind=8) :: Nxx, Nxy, Nyy, Mxx, Mxy, Myy
     real(kind=8) :: Ds(6, 6), SOL(6)
     real(kind=8) :: unite_m, det, nctot_opt, Calc, alpha
-    integer :: N_IV, N_TOT, i, j, count_sol, iret
-    integer :: indx, indx1, indx2, indx3, indx4, indx5
+    integer(kind=8) :: N_IV, N_TOT, i, j, count_sol, iret
+    integer(kind=8) :: indx, indx1, indx2, indx3, indx4, indx5
     logical :: cond_inf, cond_sup
     character(20) :: p(10)
     real(kind=8) :: ncX_SUP, ncY_SUP, ncXY_SUP, ncX_INF, ncY_INF, ncXY_INF

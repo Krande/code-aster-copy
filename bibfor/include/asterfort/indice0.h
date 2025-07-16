@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2018 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -20,8 +20,8 @@
 #include "asterf_types.h"
 interface 
     subroutine indice0(i, k, l)
-        integer :: i
-        integer :: k
-        integer :: l
+        integer(kind=8) :: i
+        integer(kind=8) :: k
+        integer(kind=8) :: l
     end subroutine indice0
 end interface 

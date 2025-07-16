@@ -64,24 +64,24 @@ subroutine te0435(option, nomte)
 !
 ! --------------------------------------------------------------------------------------------------
 !
-    integer :: mxnpg, mxvect, mxmatr
+    integer(kind=8) :: mxnpg, mxvect, mxmatr
     parameter(mxnpg=27, mxvect=3*9, mxmatr=3*9*3*9)
-    integer :: mxpara
+    integer(kind=8) :: mxpara
     parameter(mxpara=7)
 !
     character(len=8) :: nompar(mxpara)
     real(kind=8) :: valpar(mxpara)
-    integer :: ier
+    integer(kind=8) :: ier
     real(kind=8) :: x, y, z, xf, yf, zf
 !
     character(len=4) :: fami
-    integer :: nddl, nno, nnos, npg, ndim, ncomp, nvari
-    integer :: n, kpg, iret, cod(9)
-    integer :: ipoids, ivf, idfde, jgano, jtab(7)
-    integer :: igeom, icacoq, imate, icompo, icarcr
-    integer :: iinstm, iinstp, icontm, ideplm, ideplp, ivarim, ivarix
-    integer :: ivectu, icontp, ivarip, jcret, imatuu, imatun, icontx, i_pres
-    integer :: i_temp, kdec, i, j, k, iddl, ino, ndofbynode
+    integer(kind=8) :: nddl, nno, nnos, npg, ndim, ncomp, nvari
+    integer(kind=8) :: n, kpg, iret, cod(9)
+    integer(kind=8) :: ipoids, ivf, idfde, jgano, jtab(7)
+    integer(kind=8) :: igeom, icacoq, imate, icompo, icarcr
+    integer(kind=8) :: iinstm, iinstp, icontm, ideplm, ideplp, ivarim, ivarix
+    integer(kind=8) :: ivectu, icontp, ivarip, jcret, imatuu, imatun, icontx, i_pres
+    integer(kind=8) :: i_temp, kdec, i, j, k, iddl, ino, ndofbynode
     real(kind=8) :: pres, pres_point(mxnpg)
     real(kind=8) :: matr(mxmatr), geom_reac(mxvect)
     real(kind=8) :: dff(2, 9), alpha, beta, h, preten

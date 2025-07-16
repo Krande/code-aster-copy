@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -54,11 +54,11 @@ subroutine evali2(isz, pg, nma, phi, valpar, &
 #include "asterfort/jemarq.h"
 #include "asterfort/jeveuo.h"
 !
-    integer :: icmpi, icmpj, ier, ifo
-    integer :: ili, nbpara, ipara, nbl, ipg, jpg, nbpg, jma
-    integer :: modj, nbcmp, nbm, nbsp, nma, iphi, posma, idfi, ilfi
-    integer :: ikfi, icmp, iret, ivpg, isphi, posmai, posmaj
-    integer :: jcmp
+    integer(kind=8) :: icmpi, icmpj, ier, ifo
+    integer(kind=8) :: ili, nbpara, ipara, nbl, ipg, jpg, nbpg, jma
+    integer(kind=8) :: modj, nbcmp, nbm, nbsp, nma, iphi, posma, idfi, ilfi
+    integer(kind=8) :: ikfi, icmp, iret, ivpg, isphi, posmai, posmaj
+    integer(kind=8) :: jcmp
     real(kind=8) :: valpar(7), pdgj, pdgi, valphi, zerod
     real(kind=8) :: resur, resui
     complex(kind=8) :: resu, valsph
@@ -66,8 +66,8 @@ subroutine evali2(isz, pg, nma, phi, valpar, &
     character(len=24) :: k24, cmpis, cmpjs, nofos
     character(len=8) :: nompar(7), fonc, cmpi, cmpj, nocmpi, nocmpj
     character(len=8) :: isz
-    integer, pointer :: tbnp(:) => null()
-    integer, pointer :: vpg(:) => null()
+    integer(kind=8), pointer :: tbnp(:) => null()
+    integer(kind=8), pointer :: vpg(:) => null()
     character(len=8), pointer :: cesc(:) => null()
     character(len=24), pointer :: tblp(:) => null()
     real(kind=8), pointer :: vfi(:) => null()

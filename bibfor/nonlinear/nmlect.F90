@@ -23,7 +23,6 @@ subroutine nmlect(result, model, materField, mateco, caraElem, solver_)
 #include "asterc/getres.h"
 #include "asterfort/cresol.h"
 #include "asterfort/medomm.h"
-#include "asterfort/nmdoch.h"
 !
     character(len=*), intent(out) :: result
     character(len=*), intent(out) :: model

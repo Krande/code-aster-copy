@@ -32,7 +32,6 @@ subroutine aptgnn(sdappa, mesh, sdcont_defi, model_ndim, jdecno, &
 #include "asterfort/assert.h"
 #include "asterfort/jedema.h"
 #include "asterfort/jemarq.h"
-#include "asterfort/jenuno.h"
 #include "asterfort/jeveuo.h"
 #include "asterfort/jexnum.h"
 #include "asterfort/mmmron.h"
@@ -49,10 +48,10 @@ subroutine aptgnn(sdappa, mesh, sdcont_defi, model_ndim, jdecno, &
     character(len=19), intent(in) :: sdappa
     character(len=8), intent(in) :: mesh
     character(len=24), intent(in) :: sdcont_defi
-    integer, intent(in) :: model_ndim
-    integer, intent(in) :: jdecno
-    integer, intent(in) :: nb_node
-    integer, intent(in) :: norm_type
+    integer(kind=8), intent(in) :: model_ndim
+    integer(kind=8), intent(in) :: jdecno
+    integer(kind=8), intent(in) :: nb_node
+    integer(kind=8), intent(in) :: norm_type
     real(kind=8), intent(in) :: norm_vect(3)
 !
 ! --------------------------------------------------------------------------------------------------
@@ -76,12 +75,12 @@ subroutine aptgnn(sdappa, mesh, sdcont_defi, model_ndim, jdecno, &
 !
     character(len=8) :: node_name, elem_name, valk(2)
     mpi_int :: i_proc, nb_proc, mpicou
-    integer :: nb_poin_mpi, nbr_poin_mpi, idx_start, idx_end
-    integer :: elem_indx, elem_nume, node_indx(1), node_nume(1)
-    integer :: node_nbelem, elem_nbnode
-    integer :: jdeciv
-    integer :: i_node, i_elem, i_node_curr, i_elem_node
-    integer :: niverr
+    integer(kind=8) :: nb_poin_mpi, nbr_poin_mpi, idx_start, idx_end
+    integer(kind=8) :: elem_indx, elem_nume, node_indx(1), node_nume(1)
+    integer(kind=8) :: node_nbelem, elem_nbnode
+    integer(kind=8) :: jdeciv
+    integer(kind=8) :: i_node, i_elem, i_node_curr, i_elem_node
+    integer(kind=8) :: niverr
     aster_logical :: one_proc
     real(kind=8) :: tau1(3), tau2(3), normal(3), normn
     real(kind=8) :: tau1_node(3), tau2_node(3)
@@ -89,7 +88,7 @@ subroutine aptgnn(sdappa, mesh, sdcont_defi, model_ndim, jdecno, &
     character(len=24) :: sdappa_tgel, sdappa_tgno
     real(kind=8), pointer :: v_sdappa_tgel(:) => null()
     real(kind=8), pointer :: v_sdappa_tgno(:) => null()
-    integer, pointer :: v_mesh_connex(:) => null()
+    integer(kind=8), pointer :: v_mesh_connex(:) => null()
     blas_int :: b_incx, b_incy, b_n
 !
 ! --------------------------------------------------------------------------------------------------

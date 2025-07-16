@@ -52,10 +52,10 @@ subroutine te0414(option, nomte)
 !
 ! --------------------------------------------------------------------------------------------------
 !
-    integer :: nb1, jcret, codret
+    integer(kind=8) :: nb1, jcret, codret
     real(kind=8) :: matloc(51, 51), plg(9, 3, 3)
-    integer :: i, i1, i2, ibid, ideplm, ideplp
-    integer :: jgeom, jmatr, lzr, nb2, nddlet, lzi
+    integer(kind=8) :: i, i1, i2, ibid, ideplm, ideplp
+    integer(kind=8) :: jgeom, jmatr, lzr, nb2, nddlet, lzi
     character(len=16), pointer :: compor(:) => null()
     character(len=16) :: defo_comp, rela_comp
     aster_logical :: lVect, lMatr, lVari, lSigm

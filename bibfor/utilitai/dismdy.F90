@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -43,18 +43,18 @@ subroutine dismdy(questi, nomobz, repi, repkz, ierd)
 !       IERD   : CODE RETOUR (0--> OK, 1 --> PB)
 ! ----------------------------------------------------------------------
 !
-    integer :: repi, ierd
+    integer(kind=8) :: repi, ierd
     character(len=*) :: questi, nomobz, repkz
 !
     aster_logical :: oktref
-    integer :: corent(6), ibid, jref, intyre, nbrefs, inddeb, indfin, senpar, numocc
-    integer :: indcha, ir, index, l1, l2, l3, nbcham, jdesc
+    integer(kind=8) :: corent(6), ibid, jref, intyre, nbrefs, inddeb, indfin, senpar, numocc
+    integer(kind=8) :: indcha, ir, index, l1, l2, l3, nbcham, jdesc
     character(len=4) :: accref(6), typref, indref
     character(len=8) :: resdyn, numcha, intf, k8bid, basemo
     character(len=16) :: typrep
     character(len=24) :: numddl, cortre(6), questl, typcon, nomcha, nomgd
     character(len=32) :: repk
-    integer, pointer :: indi(:) => null()
+    integer(kind=8), pointer :: indi(:) => null()
 !
 !     --- TYPE DE REFERENCES QUE NOUS POUVONS RECUPERER [REF_XXXX_****]
     data accref/'RIGI', 'MASS', 'AMOR', 'INTD', 'INTS', 'MESU'/

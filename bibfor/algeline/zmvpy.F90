@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -22,7 +22,7 @@ subroutine zmvpy(uplo, n, alpha, a, lda, &
 #include "asterfort/vecinc.h"
 #include "asterfort/zmult.h"
 #include "blas/zaxpy.h"
-    integer :: n, lda, incx, incy
+    integer(kind=8) :: n, lda, incx, incy
     complex(kind=8) :: alpha, beta, a(lda, *), x(*), y(*)
     character(len=*) :: uplo
 !  PRODUIT D'UNE MATRICE HERMITIENNE PAR UN VECTEUR SUIVANT OPTION
@@ -42,7 +42,7 @@ subroutine zmvpy(uplo, n, alpha, a, lda, &
 !     : Y    : VECTEUR COMPLEXE DE LONGUEUR (N-1)*IABS(INCY)+1.
 !     : INCY : DEPLACEMENT ENTRE LES ELEMENTS DE Y.
 !-----------------------------------------------------------------------
-    integer :: i, ix, iy, j, ky
+    integer(kind=8) :: i, ix, iy, j, ky
     complex(kind=8) :: temp
     real(kind=8) :: dble
     blas_int :: b_incx, b_incy, b_n

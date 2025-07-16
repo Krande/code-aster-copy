@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -38,10 +38,10 @@ subroutine arlcp3(nbma1, nbma2, numno1, numno2, m3dea, &
 !     ARGUMENTS:
 !     ----------
 !
-    integer :: nbnomx
+    integer(kind=8) :: nbnomx
     parameter(nbnomx=27)
-    integer :: nbma1, nbma2
-    integer :: len1, len2
+    integer(kind=8) :: nbma1, nbma2
+    integer(kind=8) :: len1, len2
     real(kind=8) :: m3dea(12, 3*nbnomx, nbma1), m1dea(12, 12, nbma2)
     character(len=19) :: lisrel
     character(len=8) :: charge
@@ -51,13 +51,13 @@ subroutine arlcp3(nbma1, nbma2, numno1, numno2, m3dea, &
     character(len=5), dimension(2*nbma2) :: numn2t
 !
 !-----------------------------------------------------------------------
-    integer :: nbterm
+    integer(kind=8) :: nbterm
     complex(kind=8) :: betac, coefc(3*len1+6*len2)
     character(len=4) :: typcoe, typval
-    integer :: jdime(3*len1+6*len2, 3)
+    integer(kind=8) :: jdime(3*len1+6*len2, 3)
     real(kind=8) :: beta, direct(3*len1+6*len2, 3)
     real(kind=8) :: coefri(3*len1+6*len2)
-    integer :: i, j, k, m, n, p, q
+    integer(kind=8) :: i, j, k, m, n, p, q
     real(kind=8) :: m1dass(6*len2, 6*len2), m3dass(6*len2, 3*len1)
     character(len=8) :: ddl1(3*len1+6*len2)
     real(kind=8) :: mmixe1(6*len2, 3*len1+6*len2)

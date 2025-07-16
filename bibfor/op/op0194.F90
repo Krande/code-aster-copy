@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -23,7 +23,6 @@ subroutine op0194()
 !
     implicit none
 !
-#include "asterfort/assert.h"
 #include "asterfort/infmaj.h"
 #include "asterfort/jedema.h"
 #include "asterfort/jemarq.h"
@@ -34,7 +33,7 @@ subroutine op0194()
 !
 ! --------------------------------------------------------------------------------------------------
 !
-    integer :: iOption
+    integer(kind=8) :: iOption
     character(len=16) :: option
     type(META_ParaOperator) :: metaParaOperator
 !

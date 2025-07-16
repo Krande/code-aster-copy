@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -28,17 +28,17 @@ interface
                       vectu, codret)
         use Behaviour_type
         type(Behaviour_Integ), intent(in) :: BEHinteg
-        integer :: lgpg
-        integer :: nbpg1
-        integer :: nno
+        integer(kind=8) :: lgpg
+        integer(kind=8) :: nbpg1
+        integer(kind=8) :: nno
         character(len=*) :: fami
-        integer :: ipoids
-        integer :: ivf
-        integer :: idfde
+        integer(kind=8) :: ipoids
+        integer(kind=8) :: ivf
+        integer(kind=8) :: idfde
         real(kind=8) :: geom(3, nno)
         character(len=8) :: typmod(*)
         character(len=16) :: option
-        integer :: imate
+        integer(kind=8) :: imate
         character(len=16), intent(in) :: compor(*)
         character(len=16), intent(in) :: mult_comp
         real(kind=8), intent(in) :: carcri(*)
@@ -55,6 +55,6 @@ interface
         real(kind=8) :: vip(lgpg, nbpg1)
         real(kind=8) :: matuu(*)
         real(kind=8) :: vectu(3, nno)
-        integer :: codret
+        integer(kind=8) :: codret
     end subroutine nmas3d
 end interface

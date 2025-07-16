@@ -30,16 +30,14 @@ subroutine cgnoxf(mofaz, iocc, nomaz, lisnoz, nbno)
 #include "asterfort/jedetr.h"
 #include "asterfort/jeexin.h"
 #include "asterfort/jemarq.h"
-#include "asterfort/jenuno.h"
 #include "asterfort/jeveuo.h"
-#include "asterfort/jexnum.h"
 #include "asterfort/utmess.h"
 #include "asterfort/wkvect.h"
 #include "asterfort/as_deallocate.h"
 #include "asterfort/as_allocate.h"
 #include "asterfort/int_to_char8.h"
 !
-    integer :: iocc, nbno
+    integer(kind=8) :: iocc, nbno
     character(len=*) :: mofaz, nomaz, lisnoz
 !
 !       CGNOXF -- TRAITEMENT DE L'OPTION FISS_XFEM
@@ -63,10 +61,10 @@ subroutine cgnoxf(mofaz, iocc, nomaz, lisnoz, nbno)
 !
 !
 ! --------- VARIABLES LOCALES ---------------------------
-    integer :: ibid
-    integer :: n1, ifiss, nfiss
-    integer :: ino, valeno, nbnot
-    integer :: idlist, jstno
+    integer(kind=8) :: ibid
+    integer(kind=8) :: n1, ifiss, nfiss
+    integer(kind=8) :: ino, valeno, nbnot
+    integer(kind=8) :: idlist, jstno
     character(len=8) :: noma, nomnoe, fiss, nomafi
     character(len=8) :: nomagr, valk(2), ma
     character(len=16) :: motfac, typgrp
@@ -76,7 +74,7 @@ subroutine cgnoxf(mofaz, iocc, nomaz, lisnoz, nbno)
     aster_logical :: grille
     real(kind=8) :: rayon, dist
     character(len=8), pointer :: vfiss(:) => null()
-    integer, pointer :: noeu(:) => null()
+    integer(kind=8), pointer :: noeu(:) => null()
     real(kind=8), pointer :: lsn(:) => null()
     real(kind=8), pointer :: lst(:) => null()
 !

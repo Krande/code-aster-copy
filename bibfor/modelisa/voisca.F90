@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -51,17 +51,17 @@ subroutine voisca(mailla, nbnobe, nunobe, comima, nbnobi, &
     character(len=8) :: mailla
     character(len=19) :: nunobe, nunobi
     character(len=24) :: comima
-    integer :: nbnobe, nbnobi
+    integer(kind=8) :: nbnobe, nbnobi
 !
 ! VARIABLES LOCALES
 ! -----------------
 !
-    integer :: jcoor
+    integer(kind=8) :: jcoor
     real(kind=8) :: xmin, xmax, ymin, ymax, zmin, zmax, x, y, z
 !
     character(len=24) :: coorno
 !
-    integer :: inube, inubi, icomm, noebe, i, j
+    integer(kind=8) :: inube, inubi, icomm, noebe, i, j
 !
 !
 !-------------------   DEBUT DU CODE EXECUTABLE    ---------------------

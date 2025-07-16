@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -43,20 +43,20 @@ subroutine xfnohm(ds_thm, &
 
     type(THM_DS), intent(inout) :: ds_thm
     aster_logical :: fnoevo, axi
-    integer :: nno, npg, imate, dimenr, dimcon, nddls, nddlm
-    integer :: dimuel, nmec, np1, ndim, ipoids, ivf, kpi, i, n
-    integer :: idfde, mecani(5), press1(7)
-    integer :: addeme, addep1, nfiss, nfh, jfisno
+    integer(kind=8) :: nno, npg, imate, dimenr, dimcon, nddls, nddlm
+    integer(kind=8) :: dimuel, nmec, np1, ndim, ipoids, ivf, kpi, i, n
+    integer(kind=8) :: idfde, mecani(5), press1(7)
+    integer(kind=8) :: addeme, addep1, nfiss, nfh, jfisno
     real(kind=8) :: poids, dt, deltat
     real(kind=8) :: vectu(dimuel), b(dimenr, dimuel), r(1:dimenr)
 !
 ! DECLARATIONS POUR XFEM
-    integer :: nnop, nnopm, nnops, in, j
-    integer :: yaenrm, adenme, nse, ise, ino, enrmec(3)
-    integer :: yaenrh, enrhyd(3), adenhy, ncomp, ifiss
-    integer :: igeom, jpintt, jpmilt, jheavn, iret, jtab(7)
-    integer :: lonch(10), cnset(*), heavt(*), fisno(nnop, nfiss)
-    integer :: heavn(nnop, 5), ig, ncompn
+    integer(kind=8) :: nnop, nnopm, nnops, in, j
+    integer(kind=8) :: yaenrm, adenme, nse, ise, ino, enrmec(3)
+    integer(kind=8) :: yaenrh, enrhyd(3), adenhy, ncomp, ifiss
+    integer(kind=8) :: igeom, jpintt, jpmilt, jheavn, iret, jtab(7)
+    integer(kind=8) :: lonch(10), cnset(*), heavt(*), fisno(nnop, nfiss)
+    integer(kind=8) :: heavn(nnop, 5), ig, ncompn
     real(kind=8) :: coorse(81), he(nfiss), xg(ndim), xe(ndim), bid3(ndim)
     real(kind=8) :: ff(nnop), ff2(nnops), geom(ndim, nnop)
     real(kind=8) :: dfdi(nnop, ndim), dfdi2(nnops, ndim)

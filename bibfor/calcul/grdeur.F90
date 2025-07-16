@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -29,14 +29,14 @@ function grdeur(nompar)
 #include "asterfort/utmess.h"
 
     character(len=8) :: nompar
-    integer :: grdeur
+    integer(kind=8) :: grdeur
 !-----------------------------------------------------------------------
 !   entrees:
 !      nompar : nom d'1 parametre de l'option que l'on calcule.
 !   sorties:
 !      grdeur : grandeur associee au parametre
 !-----------------------------------------------------------------------
-    integer :: jpar, nbpar
+    integer(kind=8) :: jpar, nbpar
 !-------------------------------------------------------------------
 
     nbpar = zi(ca_iaopds_-1+2)+zi(ca_iaopds_-1+3)+zi(ca_iaopds_-1+4)

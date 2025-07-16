@@ -1,6 +1,6 @@
 ! --------------------------------------------------------------------
 ! Copyright (C) LAPACK
-! Copyright (C) 2007 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 2007 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -118,7 +118,7 @@ subroutine ar_dtrexc(compq, n, t, ldt, q, &
 #include "asterfort/xerbla.h"
 #include "blas/lsame.h"
     character(len=1) :: compq
-    integer :: ifst, ilst, info, ldq, ldt, n
+    integer(kind=8) :: ifst, ilst, info, ldq, ldt, n
 !     ..
 !     .. ARRAY ARGUMENTS ..
     real(kind=8) :: q(ldq, *), t(ldt, *), work(*)
@@ -129,7 +129,7 @@ subroutine ar_dtrexc(compq, n, t, ldt, q, &
 !     ..
 !     .. LOCAL SCALARS ..
     aster_logical :: wantq
-    integer :: here, nbf, nbl, nbnext
+    integer(kind=8) :: here, nbf, nbl, nbnext
 !     ..
 !     .. EXTERNAL FUNCTIONS ..
 !     ..

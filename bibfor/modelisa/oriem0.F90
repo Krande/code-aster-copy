@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -30,14 +30,14 @@ subroutine oriem0(kdim, type, coor, lino1, nbno1, &
     character(len=2), intent(in) :: kdim
     character(len=8), intent(in) :: type
     real(kind=8), intent(in) :: coor(*)
-    integer, intent(in) :: lino1(*)
-    integer, intent(in) :: nbno1
-    integer, intent(in) :: lino2(*)
-    integer, intent(in) :: nbno2
-    integer, intent(in) :: lino3(*)
-    integer, intent(in) :: nbno3
-    integer, intent(out) :: ipos
-    integer, intent(out) :: indmai
+    integer(kind=8), intent(in) :: lino1(*)
+    integer(kind=8), intent(in) :: nbno1
+    integer(kind=8), intent(in) :: lino2(*)
+    integer(kind=8), intent(in) :: nbno2
+    integer(kind=8), intent(in) :: lino3(*)
+    integer(kind=8), intent(in) :: nbno3
+    integer(kind=8), intent(out) :: ipos
+    integer(kind=8), intent(out) :: indmai
 ! But :  Determiner la position relative de 2 mailles "volumiques"
 !        (lino1 et lino2) par rapport a une maille de "peau" (lino3)
 !        On suppose que les noeuds de la maille de peau appartiennent
@@ -70,7 +70,7 @@ subroutine oriem0(kdim, type, coor, lino1, nbno1, &
 !                    ou la maille 2, ou les deux mailles 1 et 2 sont degenerees.
 ! ======================================================================
 !
-    integer :: ino, n1, n2, n3, ic, indi
+    integer(kind=8) :: ino, n1, n2, n3, ic, indi
     real(kind=8) :: nor1(3), n1n2(3), n1n3(3), ps1, ps2
     blas_int :: b_incx, b_incy, b_n
 !

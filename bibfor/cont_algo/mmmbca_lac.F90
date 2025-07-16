@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -25,11 +25,8 @@ subroutine mmmbca_lac(mesh, disp_curr, ds_contact)
 !
 #include "asterf_types.h"
 #include "jeveux.h"
-#include "asterc/r8nnem.h"
 #include "asterc/r8prem.h"
-#include "asterfort/assert.h"
 #include "asterfort/jexatr.h"
-#include "asterfort/aptype.h"
 #include "asterfort/cfdisi.h"
 #include "asterfort/jeveuo.h"
 #include "asterfort/infdbg.h"
@@ -62,30 +59,30 @@ subroutine mmmbca_lac(mesh, disp_curr, ds_contact)
 !
 ! --------------------------------------------------------------------------------------------------
 !
-    integer :: ifm, niv
-    integer :: i_cont_zone, i_patch, nb_patch, nb_cont_zone
-    integer :: j_patch
-    integer :: indi_cont_curr, indi_cont_prev, node_nume
+    integer(kind=8) :: ifm, niv
+    integer(kind=8) :: i_cont_zone, i_patch, nb_patch, nb_cont_zone
+    integer(kind=8) :: j_patch
+    integer(kind=8) :: indi_cont_curr, indi_cont_prev, node_nume
     real(kind=8) :: tole_inter, gap
-    integer :: loop_cont_vali
+    integer(kind=8) :: loop_cont_vali
     aster_logical :: loop_cont_conv
     real(kind=8) :: lagc, coefint, loop_cont_vale
-    integer :: jacobian_type
-    integer :: loop_geom_count, iter_newt
+    integer(kind=8) :: jacobian_type
+    integer(kind=8) :: loop_geom_count, iter_newt
     character(len=19) :: sdappa, newgeo, cnscon
-    integer, pointer :: v_pa_lcum(:) => null()
-    integer, pointer :: v_mesh_patch(:) => null()
+    integer(kind=8), pointer :: v_pa_lcum(:) => null()
+    integer(kind=8), pointer :: v_mesh_patch(:) => null()
     character(len=24) :: sdcont_stat
-    integer, pointer :: v_sdcont_stat(:) => null()
+    integer(kind=8), pointer :: v_sdcont_stat(:) => null()
     character(len=24) :: sdcont_lagc
     real(kind=8), pointer :: v_sdcont_lagc(:) => null()
     character(len=24) :: sdappa_gapi
     real(kind=8), pointer :: v_sdappa_gapi(:) => null()
     character(len=24) :: sdappa_coef
     real(kind=8), pointer :: v_sdappa_coef(:) => null()
-    integer :: jv_geom
+    integer(kind=8) :: jv_geom
     real(kind=8), pointer :: v_disp_curr(:) => null()
-    integer, pointer :: v_mesh_lpatch(:) => null()
+    integer(kind=8), pointer :: v_mesh_lpatch(:) => null()
     real(kind=8), pointer :: v_cnscon_cnsv(:) => null()
 !
 ! --------------------------------------------------------------------------------------------------

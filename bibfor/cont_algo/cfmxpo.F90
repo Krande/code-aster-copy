@@ -24,7 +24,6 @@ subroutine cfmxpo(mesh, model_, ds_contact, nume_inst, sddisc, &
     implicit none
 !
 #include "asterf_types.h"
-#include "asterfort/assert.h"
 #include "asterfort/cfdeco.h"
 #include "asterfort/cfdisl.h"
 #include "asterfort/cfmxre.h"
@@ -36,7 +35,7 @@ subroutine cfmxpo(mesh, model_, ds_contact, nume_inst, sddisc, &
     character(len=*), intent(in) :: model_
     type(NL_DS_Measure), intent(inout) :: ds_measure
     type(NL_DS_Contact), intent(inout) :: ds_contact
-    integer, intent(in) :: nume_inst
+    integer(kind=8), intent(in) :: nume_inst
     character(len=19), intent(in) :: sddisc
     character(len=19), intent(in) :: hval_algo(*)
     character(len=19), intent(in) :: hval_incr(*)

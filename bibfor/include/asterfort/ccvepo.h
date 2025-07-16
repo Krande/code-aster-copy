@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -26,14 +26,14 @@ interface
                       nbchre, ioccur, suropt, ligrel, exipou)
         character(len=8) :: modele
         character(len=8) :: resuin
-        integer :: nbordr
+        integer(kind=8) :: nbordr
         character(len=19) :: lisord
         character(len=16) :: typesd
         character(len=16) :: option
-        integer :: ioccur
+        integer(kind=8) :: ioccur
         character(len=24) :: suropt
         character(len=24) :: ligrel
         aster_logical :: exipou
-        integer :: nbchre
+        integer(kind=8) :: nbchre
     end subroutine ccvepo
 end interface

@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2020 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -24,14 +24,14 @@ interface
                       storeIndxNb, storeTimeNb,&
                       storeIndx  , storeTime  ,&
                       storeCrit  , storeEpsi)
-        integer, intent(in) :: fileUnit
+        integer(kind=8), intent(in) :: fileUnit
         character(len=8), intent(in) :: resultName
         character(len=16), intent(in) :: resultType
         character(len=8), intent(in) :: meshAst
-        integer, intent(in) :: fieldNb
+        integer(kind=8), intent(in) :: fieldNb
         character(len=16), intent(in) :: fieldList(100)
         character(len=10), intent(in) :: storeAccess
-        integer, intent(in) :: storeIndxNb, storeTimeNb
+        integer(kind=8), intent(in) :: storeIndxNb, storeTimeNb
         character(len=19), intent(in) :: storeIndx, storeTime
         real(kind=8), intent(in) :: storeEpsi
         character(len=8), intent(in) :: storeCrit

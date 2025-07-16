@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -22,7 +22,7 @@ subroutine utpslg(nn, nc, p, sl, sg)
 #include "asterfort/mavec.h"
 #include "asterfort/vecma.h"
 !
-    integer      :: nn, nc
+    integer(kind=8)      :: nn, nc
     real(kind=8) :: p(3, 3), sl(*), sg(*)
 !
 ! --------------------------------------------------------------------------------------------------
@@ -42,7 +42,7 @@ subroutine utpslg(nn, nc, p, sl, sg)
 !
 ! --------------------------------------------------------------------------------------------------
 !
-    integer      :: in(3)
+    integer(kind=8)      :: in(3)
 !
     real(kind=8) :: r(9)
     real(kind=8) :: ml14(14, 14), mr14(14, 14), mtr14(14, 14), mv14(14, 14)
@@ -50,7 +50,7 @@ subroutine utpslg(nn, nc, p, sl, sg)
 !
 ! --------------------------------------------------------------------------------------------------
 !
-    integer :: i, j, k, l, m, n, nb
+    integer(kind=8) :: i, j, k, l, m, n, nb
 !
     if (mod(nc, 3) .eq. 0) then
         nb = nn*nc/3

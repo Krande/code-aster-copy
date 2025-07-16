@@ -54,7 +54,7 @@ subroutine ascoma(hval_meelem, numeDof, listLoad, matrAsse)
 !
 ! --------------------------------------------------------------------------------------------------
 !
-    integer :: nbCoef, iret, iCoef
+    integer(kind=8) :: nbCoef, iret, iCoef
     character(len=24) :: coefJvName
     character(len=19) :: mesuiv
     character(len=24), pointer :: relr(:) => null()

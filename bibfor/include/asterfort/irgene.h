@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2020 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -22,8 +22,8 @@ interface
                       nosy, nbcmpg, cmpg, paraInNb, paraInName,&
                       nbordr, ordr, nbdisc, disc, nume,&
                       lhist)
-        integer :: iocc, nbcmpg, nbnosy, cmpg(*), nbordr, nbdisc, ordr(*), nume(*)
-        integer, intent(in) :: paraInNb, fileUnit
+        integer(kind=8) :: iocc, nbcmpg, nbnosy, cmpg(*), nbordr, nbdisc, ordr(*), nume(*)
+        integer(kind=8), intent(in) :: paraInNb, fileUnit
         character(len=*), intent(out) :: resultName
         character(len=*), intent(in) :: paraInName(*), fileFormat
         real(kind=8) :: disc(*)

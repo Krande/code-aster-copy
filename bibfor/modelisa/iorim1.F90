@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -19,7 +19,7 @@
 function iorim1(num1, num2, reorie)
     implicit none
 #include "asterf_types.h"
-    integer :: iorim1, num1(2), num2(2)
+    integer(kind=8) :: iorim1, num1(2), num2(2)
     aster_logical :: reorie
 !     IORIM1  --  ORIENTATION D'UNE MAILLE PAR RAPPORT A UNE VOISINE
 !
@@ -31,7 +31,7 @@ function iorim1(num1, num2, reorie)
 !                       -1 OU 1 SINON (SELON QU'IL AIT OU NON
 !                                      FALLU REORIENTER)
 !
-    integer :: i1, j1, k, l
+    integer(kind=8) :: i1, j1, k, l
 #define egal(i1,j1) num1(i1).eq.num2(j1)
 !
 !.========================= DEBUT DU CODE EXECUTABLE ==================

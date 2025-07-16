@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -43,14 +43,14 @@ subroutine te0101(option, nomte)
 ! ......................................................................
 !
 !-----------------------------------------------------------------------
-    integer :: i, ind, itemps, j, l, nbddl, nbnoso
-    integer :: nbres, nbv, nbvar, ndimax
+    integer(kind=8) :: i, ind, itemps, j, l, nbddl, nbnoso
+    integer(kind=8) :: nbres, nbv, nbvar, ndimax
     real(kind=8) :: un
 !-----------------------------------------------------------------------
     parameter(ndimax=27)
     parameter(nbres=24)
     parameter(nbvar=2)
-    integer :: icodre(nbres), kpg, spt
+    integer(kind=8) :: icodre(nbres), kpg, spt
     character(len=2) :: num
     character(len=8) :: nompar(nbvar), alias8, fami, poum
     character(len=16) :: nomres(nbres)
@@ -64,10 +64,10 @@ subroutine te0101(option, nomte)
     real(kind=8) :: matref(3), matele(3)
     real(kind=8) :: valpar(nbvar), tempe, instan
     real(kind=8) :: rigith(ndimax, ndimax)
-    integer :: imate, icacoq, ibid
-    integer :: nno, kp, npg1, npg2, gi, pi, gj, pj, k, imattt, ndim, nnos
-    integer :: ipoids, ivf, idfde, igeom, jgano, jgano2
-    integer :: ndim2, nno2, nnos2
+    integer(kind=8) :: imate, icacoq, ibid
+    integer(kind=8) :: nno, kp, npg1, npg2, gi, pi, gj, pj, k, imattt, ndim, nnos
+    integer(kind=8) :: ipoids, ivf, idfde, igeom, jgano, jgano2
+    integer(kind=8) :: ndim2, nno2, nnos2
 !
 !
     call elrefe_info(fami='RIGI', ndim=ndim, nno=nno, nnos=nnos, npg=npg1, &

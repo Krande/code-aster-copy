@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -32,7 +32,6 @@ subroutine rvgarg(nxdnom, nxdnum, nvchef, nvcodo, nxdvar)
 #include "asterfort/jedema.h"
 #include "asterfort/jedetr.h"
 #include "asterfort/jeecra.h"
-#include "asterfort/jeexin.h"
 #include "asterfort/jeimpo.h"
 #include "asterfort/jelira.h"
 #include "asterfort/jemarq.h"
@@ -70,10 +69,10 @@ subroutine rvgarg(nxdnom, nxdnum, nvchef, nvcodo, nxdvar)
     character(len=8) :: k8b, nresu, nchgd, granch, nomcp(50), nomail
     character(len=4) :: typech
     aster_logical :: existe, parMesh
-    integer :: anomcp, anumcp, ancpu1, ancpu2, acpgd, avchef
-    integer :: n1, n2, i, iocc, gd, n3, adr, nbelp, nbinv, ibid, avcodo
-    integer :: nbpost, nbchgd, nbcpgd, nbcmp, nbresu, nbtcp, nbsom
-    integer :: ifr, j, jordr, jxvar, n4, nbc, nbnc, numecp(50), tord(1)
+    integer(kind=8) :: anomcp, anumcp, ancpu1, ancpu2, acpgd, avchef
+    integer(kind=8) :: n1, n2, i, iocc, gd, n3, adr, nbelp, nbinv, ibid, avcodo
+    integer(kind=8) :: nbpost, nbchgd, nbcpgd, nbcmp, nbresu, nbtcp, nbsom
+    integer(kind=8) :: ifr, j, jordr, jxvar, n4, nbc, nbnc, numecp(50), tord(1)
     real(kind=8) :: rbid
     complex(kind=8) :: cbid
 !

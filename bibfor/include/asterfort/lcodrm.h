@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -20,9 +20,9 @@
 !
 interface
     subroutine lcodrm(elem_dime, pair_tole, nb_poin_inte, poin_inte, poin_inte2)
-        integer, intent(in) :: elem_dime
+        integer(kind=8), intent(in) :: elem_dime
         real(kind=8), intent(in) :: pair_tole
-        integer, intent(inout) :: nb_poin_inte
+        integer(kind=8), intent(inout) :: nb_poin_inte
         real(kind=8), intent(inout) :: poin_inte(elem_dime-1,nb_poin_inte)
         real(kind=8),optional ,intent(inout) :: poin_inte2(elem_dime-1,nb_poin_inte)
     end subroutine lcodrm

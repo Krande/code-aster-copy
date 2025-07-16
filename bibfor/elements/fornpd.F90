@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -46,12 +46,12 @@ subroutine fornpd(option, nomte)
 !     OPTION : FORC_NODA (REPRISE)
 !
 !
-    integer :: icodre(26)
+    integer(kind=8) :: icodre(26)
     character(len=10) :: phenom
 !
-    integer :: i, ib, icou, inte, intsn, intsr, j, k1, kpgs, kwgt, itab(7), iret
-    integer :: icontm, jvDisp, imate, ivectu, jcara, jgeom, lzi, lzr
-    integer :: nb1, nb2, npge, npgsr, npgsn, jnbspi, nbcou, nval, nbsp
+    integer(kind=8) :: i, ib, icou, inte, intsn, intsr, j, k1, kpgs, kwgt, itab(7), iret
+    integer(kind=8) :: icontm, jvDisp, imate, ivectu, jcara, jgeom, lzi, lzr
+    integer(kind=8) :: nb1, nb2, npge, npgsr, npgsn, jnbspi, nbcou, nval, nbsp
 !
     real(kind=8) :: vecta(9, 2, 3), vectn(9, 3), vectpt(9, 2, 3), vecpt(9, 3, 3)
     real(kind=8) :: vectg(2, 3), vectt(3, 3)

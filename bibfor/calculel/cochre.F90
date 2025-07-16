@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -22,7 +22,7 @@ subroutine cochre(kchar, nbchar, nbchre, iocc)
 #include "asterfort/jedema.h"
 #include "asterfort/jeexin.h"
 #include "asterfort/jemarq.h"
-    integer :: nbchar, nbchre, iocc
+    integer(kind=8) :: nbchar, nbchre, iocc
     character(len=*) :: kchar(*)
 !     ROUTINE QUI VERIFIE SUR UNE LISTE DE CHARGE LA PRESENCE D'UNE
 !     SEULE CHARGE REPARTIE ET FOURNIT LE NUMERO D'OCCURENCE QUI
@@ -38,7 +38,7 @@ subroutine cochre(kchar, nbchar, nbchre, iocc)
     character(len=19) :: chrrep, chpesa
 ! DEB-------------------------------------------------------------------
 !-----------------------------------------------------------------------
-    integer :: i, iret1, iret2
+    integer(kind=8) :: i, iret1, iret2
 !-----------------------------------------------------------------------
     call jemarq()
     nbchre = 0

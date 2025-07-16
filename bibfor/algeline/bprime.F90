@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -26,7 +26,7 @@ function bprime(nbmat, mater, parame, invar1, s, &
 #include "asterfort/lglord.h"
 #include "asterfort/utmess.h"
 #include "blas/ddot.h"
-    integer :: nbmat
+    integer(kind=8) :: nbmat
     real(kind=8) :: mater(nbmat, 2), parame(5), invar1, s(6), epssig, bprime
 ! --- BUT : CALCUL DU PARAMETRE BPRIME ---------------------------------
 ! ======================================================================
@@ -40,7 +40,7 @@ function bprime(nbmat, mater, parame, invar1, s, &
 ! OUT : BPRIME : PARAMETRE CONTROLANT LE COMPORTEMENT VOLUMIQUE --------
 ! ------------ : DU MATERIAU -------------------------------------------
 ! ======================================================================
-    integer :: ndt, ndi
+    integer(kind=8) :: ndt, ndi
     real(kind=8) :: mun, un, deux, trois, six, epstol, un_m_rcos2
     real(kind=8) :: mult, sigc, gamma, ksi, pref, prec
     real(kind=8) :: sgamp, agamp, mgamp, sii, fact1, fact2

@@ -40,10 +40,8 @@ subroutine cafaci(load, mesh, model, valeType)
 #include "asterfort/jedetr.h"
 #include "asterfort/jelira.h"
 #include "asterfort/jemarq.h"
-#include "asterfort/jenuno.h"
 #include "asterfort/jeveuo.h"
 #include "asterfort/jexnom.h"
-#include "asterfort/jexnum.h"
 #include "asterfort/utmess.h"
 #include "asterfort/wkvect.h"
 #include "asterfort/xddlim.h"
@@ -69,27 +67,27 @@ subroutine cafaci(load, mesh, model, valeType)
 !
 ! --------------------------------------------------------------------------------------------------
 !
-    integer, parameter :: n_max_keyword = 300
-    integer :: nbterm(n_max_keyword)
+    integer(kind=8), parameter :: n_max_keyword = 300
+    integer(kind=8) :: nbterm(n_max_keyword)
     real(kind=8) :: vale_real(n_max_keyword)
     complex(kind=8) :: vale_cplx(n_max_keyword)
     character(len=8) :: vale_func(n_max_keyword)
     character(len=16) :: keywordlist(n_max_keyword)
 !
-    integer :: iocc
-    integer :: nbnoeu, jdirec
-    integer :: idim, nume_node, nfaci
-    integer :: ibid, geomDime
-    integer :: ino, jprnm, nbec
-    integer :: nbcmp, inom
+    integer(kind=8) :: iocc
+    integer(kind=8) :: nbnoeu, jdirec
+    integer(kind=8) :: idim, nume_node, nfaci
+    integer(kind=8) :: ibid, geomDime
+    integer(kind=8) :: ino, jprnm, nbec
+    integer(kind=8) :: nbcmp, inom
     real(kind=8) :: repe_defi(3)
-    integer :: repe_type
+    integer(kind=8) :: repe_type
     real(kind=8) :: coef_real_unit
     complex(kind=8) :: coef_cplx_unit
-    integer :: i_keyword, n_keyword
+    integer(kind=8) :: i_keyword, n_keyword
     character(len=24) :: list_node, list_elem
-    integer :: jlino, jlima
-    integer :: nb_node, nb_elem
+    integer(kind=8) :: jlino, jlima
+    integer(kind=8) :: nb_node, nb_elem
     character(len=4) :: coef_type
     character(len=8) :: nomg
     character(len=8) :: name_node, dof_name, rota_name
@@ -97,17 +95,17 @@ subroutine cafaci(load, mesh, model, valeType)
     character(len=19) :: list_rela
     character(len=19) :: connex_inv, modelLigrel
     character(len=19) :: ch_xfem_stat, ch_xfem_node, ch_xfem_lnno, ch_xfem_ltno, ch_xfem_heav
-    integer :: jnoxfl, jnoxfv
+    integer(kind=8) :: jnoxfl, jnoxfv
     aster_logical :: lxfem, l_ocmp
     aster_logical :: l_dtan, l_dnor, l_drnor
-    integer :: val_nb_dnor, val_nb_dtan, val_nb_drnor
+    integer(kind=8) :: val_nb_dnor, val_nb_dtan, val_nb_drnor
     real(kind=8) :: val_r_dnor, val_r_dtan, val_r_drnor
     character(len=8) :: val_f_dnor, val_f_dtan, val_f_drnor
     complex(kind=8) :: val_c_dnor, val_c_dtan, val_c_drnor
     character(len=16) :: val_t_dnor, val_t_dtan, val_t_drnor
     character(len=24) :: keywordexcl
-    integer :: n_keyexcl
-    integer, pointer :: icompt(:) => null()
+    integer(kind=8) :: n_keyexcl
+    integer(kind=8), pointer :: icompt(:) => null()
     real(kind=8), pointer :: tangent(:) => null()
     real(kind=8), pointer :: normale(:) => null()
 !

@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -23,14 +23,14 @@ interface
                      rot0, rotk, granc, imate, gn,&
                      gm, pn, pm)
         character(len=*) :: fami
-        integer :: kpg
-        integer :: ksp
+        integer(kind=8) :: kpg
+        integer(kind=8) :: ksp
         real(kind=8) :: x0pg(3)
         real(kind=8) :: petik(3)
         real(kind=8) :: rot0(3, 3)
         real(kind=8) :: rotk(3, 3)
         real(kind=8) :: granc(6)
-        integer :: imate
+        integer(kind=8) :: imate
         real(kind=8) :: gn(3)
         real(kind=8) :: gm(3)
         real(kind=8) :: pn(3)

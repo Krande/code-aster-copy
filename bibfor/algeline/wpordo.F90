@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -20,7 +20,7 @@ subroutine wpordo(type, shift, vpr, vpi, x, &
                   m, neq)
     implicit none
 #include "asterfort/utmess.h"
-    integer :: type, neq, m
+    integer(kind=8) :: type, neq, m
     real(kind=8) :: vpr(*), vpi(*)
     complex(kind=8) :: x(neq, m), shift
 !     TRI DES VALEURS (ET DES VECTEURS) PROPRES
@@ -39,7 +39,7 @@ subroutine wpordo(type, shift, vpr, vpi, x, &
 ! IN  NEQ    : IS : NOMBRE D'EQUATIONS
 !                 SI NEQ < NBPRO ALORS ON NE TRIE PAS DE VECTEURS
 !     ------------------------------------------------------------------
-    integer :: i, j, k
+    integer(kind=8) :: i, j, k
     real(kind=8) :: p, om
     complex(kind=8) :: c
 !

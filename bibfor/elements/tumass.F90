@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -31,7 +31,7 @@ subroutine tumass(nomte, nbrddl, mass)
 #include "asterfort/promat.h"
 #include "asterfort/rcvala.h"
     character(len=16) :: nomte
-    integer :: nbrddl
+    integer(kind=8) :: nbrddl
     real(kind=8) :: mass(nbrddl, nbrddl)
 ! ......................................................................
 !
@@ -47,11 +47,11 @@ subroutine tumass(nomte, nbrddl, mass)
 !
 !
 !     VARIABLES LOCALES
-    integer :: nbres, icoude, nbsecm, nbcoum, nspg
+    integer(kind=8) :: nbres, icoude, nbsecm, nbcoum, nspg
     parameter(nbres=9)
     character(len=8) :: nompar
     character(len=16) :: nomres(nbres)
-    integer :: icodre(nbres)
+    integer(kind=8) :: icodre(nbres)
     parameter(nbsecm=32, nbcoum=10)
     real(kind=8) :: poicou(2*nbcoum+1), poisec(2*nbsecm+1)
     real(kind=8) :: valres(nbres), valpar, theta
@@ -60,16 +60,16 @@ subroutine tumass(nomte, nbrddl, mass)
     real(kind=8) :: poids, r, rayon, xpg(4), r1
     real(kind=8) :: pgl(3, 3), ck, sk, pgl4(3, 3)
     real(kind=8) :: pgl1(3, 3), pgl2(3, 3), pgl3(3, 3), omega, tk(4)
-    integer :: nno, npg, nbcou, nbsec, m, ino, i1, n
-    integer :: ipoids, ivf, ibloc, icolon
-    integer :: imate, igeom, nbpar, icoud2, mmt
-    integer :: igau, icou, isect, i, j, lorien
-    integer :: jcoopg, jnbspi, iret
-    integer :: ndim, nnos, idfdk, jdfd2, jgano
+    integer(kind=8) :: nno, npg, nbcou, nbsec, m, ino, i1, n
+    integer(kind=8) :: ipoids, ivf, ibloc, icolon
+    integer(kind=8) :: imate, igeom, nbpar, icoud2, mmt
+    integer(kind=8) :: igau, icou, isect, i, j, lorien
+    integer(kind=8) :: jcoopg, jnbspi, iret
+    integer(kind=8) :: ndim, nnos, idfdk, jdfd2, jgano
     real(kind=8) :: nvec(6, nbrddl), tnvec(nbrddl, 6)
     real(kind=8) :: mass1(nbrddl, nbrddl)
 ! --------------------------------------------------------------------
-    integer, parameter :: nb_cara1 = 2
+    integer(kind=8), parameter :: nb_cara1 = 2
     real(kind=8) :: vale_cara1(nb_cara1)
     character(len=8) :: noms_cara1(nb_cara1)
     data noms_cara1/'R1', 'EP1'/

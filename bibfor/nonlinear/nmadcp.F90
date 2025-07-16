@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -35,10 +35,10 @@ subroutine nmadcp(sddisc, ds_contact, i_event_acti, retpen)
 !
 ! person_in_charge: mickael.abbas at edf.fr
 !
-    integer, intent(in) :: i_event_acti
+    integer(kind=8), intent(in) :: i_event_acti
     type(NL_DS_Contact), intent(in) :: ds_contact
     character(len=19), intent(in) :: sddisc
-    integer, intent(out) :: retpen
+    integer(kind=8), intent(out) :: retpen
 !
 ! ----------------------------------------------------------------------
 !
@@ -60,12 +60,12 @@ subroutine nmadcp(sddisc, ds_contact, i_event_acti, retpen)
     real(kind=8) :: pene_maxi, coefpn, newcoe
     real(kind=8) :: coef_maxi
     real(kind=8) :: jeumin, jeumax, jeufin
-    integer :: nbliai, nb_cont_zone
-    integer :: iliai, i_zone
+    integer(kind=8) :: nbliai, nb_cont_zone
+    integer(kind=8) :: iliai, i_zone
     character(len=24) :: jeuite, numlia
-    integer :: jjeuit, jnumli
+    integer(kind=8) :: jjeuit, jnumli
     character(len=24) :: ctevpe
-    integer :: jctevp
+    integer(kind=8) :: jctevp
 !
 ! ----------------------------------------------------------------------
 !

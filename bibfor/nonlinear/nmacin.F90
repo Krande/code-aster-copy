@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -28,7 +28,7 @@ subroutine nmacin(fonact, matass, deppla, cncind)
 #include "asterfort/jemarq.h"
 #include "asterfort/jeveuo.h"
 #include "asterfort/nmpcin.h"
-    integer :: fonact(*)
+    integer(kind=8) :: fonact(*)
     character(len=19) :: matass, deppla, cncind
 !
 ! ----------------------------------------------------------------------
@@ -50,9 +50,9 @@ subroutine nmacin(fonact, matass, deppla, cncind)
 !
 !
 !
-    integer :: neq, i
+    integer(kind=8) :: neq, i
     aster_logical :: lcine
-    integer, pointer :: ccid(:) => null()
+    integer(kind=8), pointer :: ccid(:) => null()
     real(kind=8), pointer :: cind(:) => null()
     real(kind=8), pointer :: depla(:) => null()
 !

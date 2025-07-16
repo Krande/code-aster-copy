@@ -29,13 +29,11 @@ subroutine caimch(chargz)
 #include "asterfort/getvr8.h"
 #include "asterfort/jedema.h"
 #include "asterfort/jedetr.h"
-#include "asterfort/jeexin.h"
+#include "asterfort/exisd.h"
 #include "asterfort/jelira.h"
 #include "asterfort/jemarq.h"
-#include "asterfort/jenuno.h"
 #include "asterfort/jeveuo.h"
 #include "asterfort/jexnom.h"
-#include "asterfort/jexnum.h"
 #include "asterfort/utmess.h"
 #include "asterfort/wkvect.h"
 #include "asterfort/int_to_char8.h"
@@ -58,18 +56,18 @@ subroutine caimch(chargz)
 ! -------------------------------------------------------
 !
     character(len=4) :: tych, typval, typcoe
-    character(len=8) :: chamno, noma, nomcmp, nomnoe, betaf
+    character(len=8) :: noma, nomcmp, nomnoe, betaf
     character(len=8) :: charge, nomgd
     character(len=16) :: motfac
-    character(len=19) :: lisrel, cham19, numeq
+    character(len=19) :: lisrel, numeq, chamno
     real(kind=8) :: beta, coef_impo
     complex(kind=8) :: betac
-    integer :: idcoec, idcoer, idddl, idimen, idirec
-    integer :: idnoeu, iequa, ino, inocmp, iocc
-    integer :: iret, k, nb, nbcmp, nbec, nbnoeu, nbterm
-    integer :: nequa, nliai, nucmp
+    integer(kind=8) :: idcoec, idcoer, idddl, idimen, idirec
+    integer(kind=8) :: idnoeu, iequa, ino, inocmp, iocc
+    integer(kind=8) :: iret, k, nb, nbcmp, nbec, nbnoeu, nbterm
+    integer(kind=8) :: nequa, nliai, nucmp
     real(kind=8) :: vale, zero
-    integer, pointer :: deeq(:) => null()
+    integer(kind=8), pointer :: deeq(:) => null()
     real(kind=8), pointer :: vvale(:) => null()
 !-----------------------------------------------------------------------
     call jemarq()
@@ -91,7 +89,6 @@ subroutine caimch(chargz)
     betac = (0.0d0, 0.0d0)
     betaf = '&FOZERO'
 !
-    cham19 = '                   '
     charge = chargz
 !
 ! --- TYPE DES VALEURS AU SECOND MEMBRE DE LA RELATION
@@ -117,11 +114,9 @@ subroutine caimch(chargz)
             call utmess('F', 'MODELISA2_83')
         end if
 !
-        cham19(1:8) = chamno
-!
 ! ---   VERIFICATION DE L'EXISTENCE DU CHAMNO
 !       -------------------------------------
-        call jeexin(cham19//'.VALE', iret)
+        call exisd("CHAM_NO", chamno, iret)
         if (iret .eq. 0) then
             call utmess('F', 'MODELISA2_84')
         end if
@@ -180,7 +175,7 @@ subroutine caimch(chargz)
 !
 ! ---   RECUPERATION DU .VALE DU CHAM_NO
 !       --------------------------------
-        call jeveuo(cham19//'.VALE', 'E', vr=vvale)
+        call jeveuo(chamno//'.VALE', 'E', vr=vvale)
 !
 ! ---   RECUPERATION DU .DEEQ DU NUME_EQUA
 !       ----------------------------------

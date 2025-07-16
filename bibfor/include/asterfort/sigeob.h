@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -24,7 +24,7 @@ interface
         real(kind=8) :: eps(6)
         real(kind=8) :: bt(6)
         real(kind=8) :: endo
-        integer :: ndim
+        integer(kind=8) :: ndim
         real(kind=8) :: lambda
         real(kind=8) :: mu
         real(kind=8) :: sigm(6)

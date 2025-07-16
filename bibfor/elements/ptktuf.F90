@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -73,7 +73,7 @@ subroutine ptktuf(sk, e, rof, c, a, &
 ! LOC R*8 ! ASZ    !   -     ! AIRE REDUITE CISAILLEE SUIVANT Z
 ! LOC I   ! IP     !   16    ! POINTEUR SUR L'ELEMENT DIAGONAL PRECEDENT
 !     ------------------------------------------------------------------
-    integer :: ip(16), i
+    integer(kind=8) :: ip(16), i
     real(kind=8) :: zero
     real(kind=8) :: c1, c2, c3, c4, c6, c12
     real(kind=8) :: xl2, xl3, phiy, phiz, eiy, eiz, asy, asz

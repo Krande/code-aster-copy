@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -49,8 +49,8 @@ subroutine te0342(option, nomte)
 !
 ! --------------------------------------------------------------------------------------------------
 !
-    integer :: i, igau, j, jdepl, jeffo, k, lmater, iret
-    integer :: lorien, nbpar, nbres, nc, nno, npg
+    integer(kind=8) :: i, igau, j, jdepl, jeffo, k, lmater, iret
+    integer(kind=8) :: lorien, nbpar, nbres, nc, nno, npg
     real(kind=8) :: a, alfay, alfaz, e, g, nu
     real(kind=8) :: phiy, phiz, valpar, xiy, xiz, xjg, xjx, xl, xl2
 ! --------------------------------------------------------------------------------------------------
@@ -59,12 +59,12 @@ subroutine te0342(option, nomte)
     character(len=8) :: nompar
 ! --------------------------------------------------------------------------------------------------
     parameter(nbres=2)
-    integer :: codres(nbres)
+    integer(kind=8) :: codres(nbres)
     real(kind=8) :: valres(nbres)
     character(len=16) :: nomres(nbres)
     data nomres/'E', 'NU'/
 ! --------------------------------------------------------------------------------------------------
-    integer, parameter :: nb_cara = 7
+    integer(kind=8), parameter :: nb_cara = 7
     real(kind=8) :: vale_cara(nb_cara)
     character(len=8) :: noms_cara(nb_cara)
     data noms_cara/'A1', 'IY1', 'IZ1', 'AY1', 'AZ1', 'JX1', 'JG1'/

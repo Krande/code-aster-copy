@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -40,7 +40,7 @@ subroutine rc3601(ig, iocs, seisme, npass, ima, &
 #include "asterfort/rcma01.h"
 #include "asterfort/rcmo01.h"
 !
-    integer :: ig, iocs, npass, ima, ipt, nbm, adrm(*)
+    integer(kind=8) :: ig, iocs, npass, ima, ipt, nbm, adrm(*)
     real(kind=8) :: c(*), k(*), cara(*), snmax, samax, utot, sm, factus(*)
     aster_logical :: seisme
     character(len=8) :: nommat
@@ -62,22 +62,22 @@ subroutine rc3601(ig, iocs, seisme, npass, ima, &
 !
 !     ------------------------------------------------------------------
 !
-    integer :: nbsigr, jnsg, is1, ioc1, is2, ioc2, inds, ifm, niv, jcombi
-    integer :: nbth1, jth1, nbth2, jth2
-    integer :: ndim, nscy, ns, nbsig2, i1, i2, indi
-    integer :: nbsitu
+    integer(kind=8) :: nbsigr, jnsg, is1, ioc1, is2, ioc2, inds, ifm, niv, jcombi
+    integer(kind=8) :: nbth1, jth1, nbth2, jth2
+    integer(kind=8) :: ndim, nscy, ns, nbsig2, i1, i2, indi
+    integer(kind=8) :: nbsitu
     real(kind=8) :: ppi, ppj, pqi, pqj, saltij, ug, sn, sp, smm, mpi(3), mpj(3)
     real(kind=8) :: mqi(3), mqj(3), mse(3), matpi(14), matpj(14), matqi(14)
     real(kind=8) :: matqj(14), matse(14)
     character(len=24) :: momepi, momepj, momeqi, momeqj, matepi, matepj, mateqi
     character(len=24) :: mateqj
     real(kind=8) :: typeke, spmeca, spther
-    integer, pointer :: situ_numero(:) => null()
-    integer, pointer :: impr_situ(:) => null()
+    integer(kind=8), pointer :: situ_numero(:) => null()
+    integer(kind=8), pointer :: impr_situ(:) => null()
     real(kind=8), pointer :: matrice_salt(:) => null()
     real(kind=8), pointer :: matrice_sn(:) => null()
-    integer, pointer :: nb_occurr(:) => null()
-    integer, pointer :: situ_nb_occur(:) => null()
+    integer(kind=8), pointer :: nb_occurr(:) => null()
+    integer(kind=8), pointer :: situ_nb_occur(:) => null()
     real(kind=8), pointer :: situ_pres_b(:) => null()
     character(len=24), pointer :: situ_moment_b(:) => null()
     character(len=24), pointer :: situ_moment_a(:) => null()

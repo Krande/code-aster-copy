@@ -72,20 +72,20 @@ subroutine pmfd00()
 !
 ! --------------------------------------------------------------------------------------------------
 !
-    integer :: nbocc0, nbocc1, nbocc2, nbocc3, nbocc4
-    integer :: iret, ibid, ifm, niv, iasbon, iasedi, iasmax, ncarfi, ncarfimax
-    integer :: nbvm, nmailp, numail, nbfib, icode, igrand, ima, inomcp
-    integer :: ii, jj, ioc, ipos, izone, nbcmp, nbec
-    integer :: ira1, iriy1, iriz1, irva1, irviy1, irviz1
-    integer :: jdnm, jmailfib
-    integer :: jnbfig, nbgf, jngf, jcafig, jpofig, jsdfig, jtyfig, ipoint, ngf, ig, ng, ig1
-    integer :: nummai, nbmaza, ilima, nbfig, tyfib
+    integer(kind=8) :: nbocc0, nbocc1, nbocc2, nbocc3, nbocc4
+    integer(kind=8) :: iret, ibid, ifm, niv, iasbon, iasedi, iasmax, ncarfi, ncarfimax
+    integer(kind=8) :: nbvm, nmailp, numail, nbfib, icode, igrand, ima, inomcp
+    integer(kind=8) :: ii, jj, ioc, ipos, izone, nbcmp, nbec
+    integer(kind=8) :: ira1, iriy1, iriz1, irva1, irviy1, irviz1
+    integer(kind=8) :: jdnm, jmailfib
+    integer(kind=8) :: jnbfig, nbgf, jngf, jcafig, jpofig, jsdfig, jtyfig, ipoint, ngf, ig, ng, ig1
+    integer(kind=8) :: nummai, nbmaza, ilima, nbfig, tyfib
 !
 !   Nb de groupes max par élément. Ce nombre doit etre en accord avec les catalogues
 !       grandeur_simple__.cata   NBSP_I ==> NUG[ngmxel]
 !       gener_mepmf1.cata        NBSP_I ==> NUG[ngmxel]
-    integer, parameter ::ngmxel = 10
-    integer :: nugrp(ngmxel)
+    integer(kind=8), parameter ::ngmxel = 10
+    integer(kind=8) :: nugrp(ngmxel)
 !
     real(kind=8) :: casect(6), carg(6)
     real(kind=8) :: airpou, moinoy, moinoz, erre, precai
@@ -96,12 +96,12 @@ subroutine pmfd00()
     character(len=24) :: modnom, mommai, vpofig, vmailfib, vcafig, vnbfig, vnmfig, vsdfig, vtyfig
     character(len=24) :: k24bid
 !
-    integer :: valmi
+    integer(kind=8) :: valmi
     real(kind=8) :: valmr(4)
     character(len=80) :: valmk(2)
 !
-    integer, pointer :: maillsep(:) => null()
-    integer, pointer :: desc(:) => null()
+    integer(kind=8), pointer :: maillsep(:) => null()
+    integer(kind=8), pointer :: desc(:) => null()
     real(kind=8), pointer :: vale(:) => null()
 !
     data ltymcl/'MAILLE', 'GROUP_MA', 'TOUT'/

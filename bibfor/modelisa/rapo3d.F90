@@ -82,7 +82,7 @@ subroutine rapo3d(numdlz, iocc, fonrez, lisrez, chargz)
 !
 !
 ! --------- VARIABLES LOCALES ---------------------------
-    integer :: nmocl
+    integer(kind=8) :: nmocl
     parameter(nmocl=300)
     aster_logical :: vexcen, lcolle
     character(len=4) :: typval, typcoe
@@ -95,27 +95,27 @@ subroutine rapo3d(numdlz, iocc, fonrez, lisrez, chargz)
     character(len=19) :: ligrmo, ligrel
     character(len=24) :: lchin(2), lchout(2), nolili, lismai, valk(2)
     character(len=24) :: lisnoe, vale1, vale2, grnoma
-    integer :: ntypel(nmocl), dg, icmp(6), niv, ifm, vali(2)
-    integer :: iop, nliai, i, narl, ibid, inom
-    integer :: nbcmp, nddla, nbec, nlili, k, iaprno, lonlis, ilisno
-    integer :: jlisma, nbma, nbno, numnop
-    integer :: ino, j, idch1, idch2, nbterm, jno2
-    integer :: ival, ier
-    integer :: ncara, iocc
+    integer(kind=8) :: ntypel(nmocl), dg, icmp(6), niv, ifm, vali(2)
+    integer(kind=8) :: iop, nliai, i, narl, ibid, inom
+    integer(kind=8) :: nbcmp, nddla, nbec, nlili, k, iaprno, lonlis, ilisno
+    integer(kind=8) :: jlisma, nbma, nbno, numnop
+    integer(kind=8) :: ino, j, idch1, idch2, nbterm, jno2
+    integer(kind=8) :: ival, ier
+    integer(kind=8) :: ncara, iocc
     real(kind=8) :: ig(6), coorig(3), angt, beta, eps, un, vtang(6)
     real(kind=8) :: xpou, ypou, zpou, s, s1, xg, yg, zg, dnorme, pi
     real(kind=8) :: ax, ay, az, axx, ayy, azz, axy, axz, ayz, valr(9)
     complex(kind=8) :: betac, ccmp(3)
     complex(kind=8), pointer :: coec(:) => null()
     real(kind=8), pointer :: coer(:) => null()
-    integer, pointer :: dime(:) => null()
+    integer(kind=8), pointer :: dime(:) => null()
     real(kind=8), pointer :: direct(:) => null()
     real(kind=8), pointer :: inertie_raccord(:) => null()
     character(len=8), pointer :: lisddl(:) => null()
     character(len=8), pointer :: lisno(:) => null()
     real(kind=8), pointer :: vale(:) => null()
     character(len=8), pointer :: lgrf(:) => null()
-    integer, pointer :: prnm(:) => null()
+    integer(kind=8), pointer :: prnm(:) => null()
 ! --------- FIN  DECLARATIONS  VARIABLES LOCALES --------
 !
     call jemarq()

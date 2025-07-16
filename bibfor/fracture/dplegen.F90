@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -30,7 +30,7 @@ subroutine dplegen(degre, s, l, dlegen)
 !
 #include "asterfort/assert.h"
 !
-    integer, intent(in) :: degre
+    integer(kind=8), intent(in) :: degre
     real(kind=8), intent(in) :: s, l
     real(kind=8), intent(out) :: dlegen
 !

@@ -57,10 +57,8 @@ subroutine cgmafn(mofaz, iocc, nomaz, lismaz, nbma)
 #include "asterfort/jedema.h"
 #include "asterfort/jelira.h"
 #include "asterfort/jemarq.h"
-#include "asterfort/jenonu.h"
 #include "asterfort/jenuno.h"
 #include "asterfort/jeveuo.h"
-#include "asterfort/jexnom.h"
 #include "asterfort/jexnum.h"
 #include "asterfort/utmess.h"
 #include "asterfort/wkvect.h"
@@ -79,14 +77,14 @@ subroutine cgmafn(mofaz, iocc, nomaz, lismaz, nbma)
     character(len=24) :: valk
 !
     real(kind=8) :: angle(3), vecnor(3), coor(3, 9)
-    integer :: vali(3)
+    integer(kind=8) :: vali(3)
 !.========================= DEBUT DU CODE EXECUTABLE ==================
 !
 !-----------------------------------------------------------------------
-    integer :: iatyma, ibid, idlima, idnoeu, ima
-    integer :: ino1, ino2, ino3, iocc, ityp, jtyp, nangle
-    integer :: nb, nbang, nbma, nbmai, nbno, nbo, nboui
-    integer :: ndim, ndim1, nv, nvect
+    integer(kind=8) :: iatyma, ibid, idlima, idnoeu, ima
+    integer(kind=8) :: ino1, ino2, ino3, iocc, ityp, jtyp, nangle
+    integer(kind=8) :: nb, nbang, nbma, nbmai, nbno, nbo, nboui
+    integer(kind=8) :: ndim, ndim1, nv, nvect
     real(kind=8) :: a, ang, angpre, b, c, eps, psca
     real(kind=8) :: un, undemi, xnorel, xnorm
     real(kind=8) :: xnorm2, zero

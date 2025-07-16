@@ -1,0 +1,222 @@
+# coding=utf-8
+# --------------------------------------------------------------------
+# Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
+# This file is part of code_aster.
+#
+# code_aster is free software: you can redistribute it and/or modify
+# it under the terms of the GNU General Public License as published by
+# the Free Software Foundation, either version 3 of the License, or
+# (at your option) any later version.
+#
+# code_aster is distributed in the hope that it will be useful,
+# but WITHOUT ANY WARRANTY; without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+# GNU General Public License for more details.
+#
+# You should have received a copy of the GNU General Public License
+# along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
+# --------------------------------------------------------------------
+
+DEBUT(CODE="OUI", ERREUR=_F(ALARME="EXCEPTION"), DEBUG=_F(SDVERI="OUI"))
+
+### >>>>>>>>>>>>>
+### Read the mesh
+### <<<<<<<<<<<<<
+
+MAIL = LIRE_MAILLAGE(FORMAT="MED")
+
+MAIL = DEFI_GROUP(reuse=MAIL, MAILLAGE=MAIL, CREA_GROUP_NO=_F(TOUT_GROUP_MA="OUI"))
+
+### >>>>>>>>>>>>>>>>>
+### Model affectation
+### <<<<<<<<<<<<<<<<<
+
+MODELE = AFFE_MODELE(
+    MAILLAGE=MAIL, AFFE=_F(TOUT="OUI", PHENOMENE="MECANIQUE", MODELISATION="D_PLAN_HHMS")
+)
+
+### >>>>>>>>>>>>>>>>>>>
+### Material properties
+### <<<<<<<<<<<<<<<<<<<
+
+# Liquid properties
+VISCO_LIQ = 1e-3
+RHO_LIQ = 1e3
+UN_K_LIQ = 0
+
+# Gas properties
+VISCO_GAS = 1e-5
+MASS_MOL_GAS = 0.03
+
+# Solid properties
+KINT_SOL = 1e-16
+E_SOL = 0.5e9
+NU_SOL = 0.3
+BIOT_SOL = 1
+RHO_SOL = 2700
+PORO = 0.3
+VG_PR_SOL = 10e6
+VG_N_SOL = 1.5
+
+# Reference state
+TEMP_ref = 273
+PRE1_ref = 0
+PRE2_ref = 100e3
+
+# Van Genuchten saturation -- capillary pressure relationship
+SL = FORMULE(
+    NOM_PARA="PC", VALE="(1 + (PC/PR)**n)**(-m)", PR=VG_PR_SOL, n=VG_N_SOL, m=1 - 1 / VG_N_SOL
+)
+
+DSL = FORMULE(
+    NOM_PARA="PC",
+    VALE="-m * (1 + (PC/PR)**n)**(-m-1) * n / PR * (PC/PR)**(n-1)",
+    PR=VG_PR_SOL,
+    n=VG_N_SOL,
+    m=1 - 1 / VG_N_SOL,
+)
+
+LI_INTER = DEFI_LIST_REEL(
+    DEBUT=0, INTERVALLE=(_F(JUSQU_A=1e6, NOMBRE=50), _F(JUSQU_A=100e6, NOMBRE=50))
+)
+
+SL_INTER = CALC_FONC_INTERP(
+    FONCTION=SL, LIST_PARA=LI_INTER, NOM_PARA="PCAP", PROL_GAUCHE="CONSTANT", PROL_DROITE="CONSTANT"
+)
+
+DSL_INTER = CALC_FONC_INTERP(
+    FONCTION=DSL,
+    LIST_PARA=LI_INTER,
+    NOM_PARA="PCAP",
+    PROL_GAUCHE="CONSTANT",
+    PROL_DROITE="CONSTANT",
+)
+
+MATERIAU = DEFI_MATERIAU(
+    ELAS=_F(E=E_SOL, NU=NU_SOL, ALPHA=0),
+    COMP_THM="LIQU_GAZ",
+    THM_LIQU=_F(
+        RHO=RHO_LIQ,
+        UN_SUR_K=UN_K_LIQ,
+        ALPHA=DEFI_CONSTANTE(VALE=0),
+        VISC=DEFI_CONSTANTE(VALE=VISCO_LIQ),
+        D_VISC_TEMP=DEFI_CONSTANTE(VALE=0),
+    ),
+    THM_GAZ=_F(
+        MASS_MOL=MASS_MOL_GAS,
+        VISC=DEFI_CONSTANTE(VALE=VISCO_GAS),
+        D_VISC_TEMP=DEFI_CONSTANTE(VALE=0),
+    ),
+    THM_DIFFU=_F(
+        R_GAZ=8.316,
+        RHO=PORO * RHO_LIQ + (1 - PORO) * RHO_SOL,
+        PESA_X=0,
+        PESA_Y=0,
+        PESA_Z=0,
+        BIOT_COEF=BIOT_SOL,
+        PERM_IN=DEFI_CONSTANTE(VALE=KINT_SOL),
+        PERM_LIQU=DEFI_CONSTANTE(VALE=1),
+        PERM_GAZ=DEFI_CONSTANTE(VALE=1),
+        D_PERM_LIQU_SATU=DEFI_CONSTANTE(VALE=0),
+        D_PERM_SATU_GAZ=DEFI_CONSTANTE(VALE=0),
+        D_PERM_PRES_GAZ=DEFI_CONSTANTE(VALE=0),
+        SATU_PRES=SL_INTER,
+        D_SATU_PRES=DSL_INTER,
+    ),
+    THM_INIT=_F(TEMP=TEMP_ref, PRE1=PRE1_ref, PRE2=PRE2_ref, PORO=PORO),
+)
+
+### >>>>>>>>>>>>>>>>>>>>
+### Material affectation
+### <<<<<<<<<<<<<<<<<<<<
+
+CHMAT = AFFE_MATERIAU(MAILLAGE=MAIL, AFFE=_F(TOUT="OUI", MATER=MATERIAU))
+
+### >>>>>>>>>>>>>
+### Initial state
+### <<<<<<<<<<<<<
+
+
+def SL_to_PC(SL, PR, n):
+    m = 1 - 1 / n
+    return PR * (SL ** (-1 / m) - 1) ** (1 / n)
+
+
+SL_0 = 0.5
+PRE1_0 = SL_to_PC(SL_0, VG_PR_SOL, VG_N_SOL)
+
+DEPL_INIT = CREA_CHAMP(
+    TYPE_CHAM="NOEU_DEPL_R",
+    OPERATION="AFFE",
+    MAILLAGE=MAIL,
+    AFFE=(_F(TOUT="OUI", NOM_CMP=("PRE1", "PRE2", "DX", "DY"), VALE=(PRE1_0, 0, 0, 0))),
+)
+
+### >>>>>>>>>>>>>>>>>>>
+### Boundary conditions
+### <<<<<<<<<<<<<<<<<<<
+
+CL_DEPL = AFFE_CHAR_CINE(
+    MODELE=MODELE,
+    MECA_IMPO=(
+        _F(GROUP_MA=("MGAUCHE", "MDROIT"), DX=0),
+        _F(GROUP_MA=("MBAS", "MHAUT"), DY=0),
+        _F(GROUP_MA="MDROIT", PRE1=0),
+        _F(GROUP_MA="MDROIT", PRE2=0),
+    ),
+)
+
+### >>>>>>>>>>
+### Time steps
+### <<<<<<<<<<
+
+day = 3600 * 24
+year = 365 * day
+nb = 10
+INST = DEFI_LIST_REEL(DEBUT=0, INTERVALLE=(_F(JUSQU_A=day, NOMBRE=nb), _F(JUSQU_A=year, NOMBRE=nb)))
+
+### >>>>>>>>
+### Solution
+### <<<<<<<<
+
+RESU = STAT_NON_LINE(
+    MODELE=MODELE,
+    CHAM_MATER=CHMAT,
+    EXCIT=(_F(CHARGE=CL_DEPL)),
+    ETAT_INIT=_F(DEPL=DEPL_INIT),
+    COMPORTEMENT=_F(
+        RELATION="KIT_HHM", RELATION_KIT=("ELAS", "LIQU_GAZ", "HYDR_UTIL"), RESI_INTE=1e-10
+    ),
+    INCREMENT=_F(LIST_INST=INST),
+    SOLVEUR=_F(METHODE="MUMPS"),
+    NEWTON=_F(MATRICE="TANGENTE", REAC_ITER=1),
+    CONVERGENCE=_F(RESI_GLOB_RELA=1e-8, ITER_GLOB_MAXI=10),
+)
+
+### >>>>>>>>>>>>>>
+### Postprocessing
+### <<<<<<<<<<<<<<
+
+RESU = CALC_CHAMP(reuse=RESU, RESULTAT=RESU, FORCE="FORC_NODA")
+
+TAB = POST_RELEVE_T(
+    ACTION=_F(
+        OPERATION="EXTRACTION",
+        INTITULE="FORC_NODA--PRE1--PRE2",
+        GROUP_NO="MDROIT",
+        RESULTAT=RESU,
+        NOM_CHAM="FORC_NODA",
+        TOUT_ORDRE="OUI",
+        RESULTANTE=("PRE1", "PRE2"),
+    )
+)
+
+TEST_TABLE(
+    VALE_CALC=-11.568145445500335, NOM_PARA="PRE1", TABLE=TAB, FILTRE=_F(NOM_PARA="INST", VALE=day)
+)
+
+TEST_TABLE(
+    VALE_CALC=0.007210348212682248, NOM_PARA="PRE2", TABLE=TAB, FILTRE=_F(NOM_PARA="INST", VALE=day)
+)
+
+FIN()

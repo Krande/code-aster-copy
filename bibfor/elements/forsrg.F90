@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -20,7 +20,7 @@ subroutine forsrg(intsn, nb1, nb2, xr, chgsrg, &
                   rnormc, vectpt, vecl1)
     implicit none
 !
-    integer :: intsn, nb1, nb2, intsx1
+    integer(kind=8) :: intsn, nb1, nb2, intsx1
     real(kind=8) :: wgt, rnormc
     real(kind=8) :: xr(*), vecl1(42), chg(6), chgsrg(6, 8)
     real(kind=8) :: vectpt(9, 3, 3)
@@ -28,8 +28,8 @@ subroutine forsrg(intsn, nb1, nb2, xr, chgsrg, &
 !     EFFORTS SURFACIQUES DONNES DANS LE REPERE GLOBAL
 !
 !-----------------------------------------------------------------------
-    integer :: i, i1, i2, i3, i4, i5, in
-    integer :: intsx2, j, k, l1, l2
+    integer(kind=8) :: i, i1, i2, i3, i4, i5, in
+    integer(kind=8) :: intsx2, j, k, l1, l2
 !-----------------------------------------------------------------------
     wgt = xr(127-1+intsn)
 !

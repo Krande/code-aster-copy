@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -21,11 +21,11 @@
 interface
     subroutine jjecrs(iadmi, iclas, idos, idco, cus,&
                       jmarq)
-        integer :: iadmi
-        integer :: iclas
-        integer :: idos
-        integer :: idco
+        integer(kind=8) :: iadmi
+        integer(kind=8) :: iclas
+        integer(kind=8) :: idos
+        integer(kind=8) :: idco
         character(len=*) :: cus
-        integer :: jmarq(2)
+        integer(kind=8) :: jmarq(2)
     end subroutine jjecrs
 end interface

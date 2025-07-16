@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -22,7 +22,6 @@ subroutine get_patchzi_num(mesh, nmgrma, num)
 !
 #include "asterf_types.h"
 #include "jeveux.h"
-#include "asterfort/assert.h"
 #include "asterfort/jeveuo.h"
 #include "asterfort/jelira.h"
 #include "asterfort/utmess.h"
@@ -31,7 +30,7 @@ subroutine get_patchzi_num(mesh, nmgrma, num)
 !
     character(len=8), intent(in) :: mesh
     character(len=24), intent(in) :: nmgrma
-    integer, intent(out) :: num
+    integer(kind=8), intent(out) :: num
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -47,7 +46,7 @@ subroutine get_patchzi_num(mesh, nmgrma, num)
 !
 ! --------------------------------------------------------------------------------------------------
 !
-    integer :: i_patchzi, nb_patchzi
+    integer(kind=8) :: i_patchzi, nb_patchzi
     aster_logical :: find
     character(len=24), pointer:: nm_patchzi(:) => null()
 !

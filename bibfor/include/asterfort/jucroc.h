@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -22,8 +22,8 @@ interface
     subroutine jucroc(nomc, nooc, nuoc, dim, ldec)
         character(len=*) :: nomc
         character(len=*) :: nooc
-        integer :: nuoc
-        integer :: dim
-        integer :: ldec
+        integer(kind=8) :: nuoc
+        integer(kind=8) :: dim
+        integer(kind=8) :: ldec
     end subroutine jucroc
 end interface

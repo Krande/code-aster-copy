@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -17,17 +17,18 @@
 ! --------------------------------------------------------------------
 !
 interface
-    subroutine pj0dco(typeSelect   ,&
-                      entity1      , entity2        ,&
-                      nbCellSelect1, listCellSelect1,&
-                      nbNodeSelect2, listNodeSelect2,&
-                      geom1        , geom2, corrMesh,&
+    subroutine pj0dco(typeSelect, &
+                      entity1, entity2, &
+                      nbCellSelect1, listCellSelect1, &
+                      nbNodeSelect2, listNodeSelect2, &
+                      geom1, geom2, corrMesh, &
                       dmax0d)
         character(len=*), intent(in) :: typeSelect
         character(len=8), intent(in) :: entity1, entity2
-        integer, intent(in) :: nbCellSelect1, listCellSelect1(*), nbNodeSelect2, listNodeSelect2(*)
+        integer(kind=8), intent(in) :: nbCellSelect1, listCellSelect1(*)
+        integer(kind=8), intent(in) :: nbNodeSelect2, listNodeSelect2(*)
         character(len=*), intent(in) :: geom1, geom2
         character(len=16), intent(in)  :: corrMesh
         real(kind=8), intent(in) :: dmax0d
     end subroutine pj0dco
-end interface 
+end interface

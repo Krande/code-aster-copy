@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -21,13 +21,13 @@
 interface
     subroutine mtcrog(a, b, nmax, n, nbsc,&
                       c, wks, ier)
-        integer :: nbsc
-        integer :: n
-        integer :: nmax
+        integer(kind=8) :: nbsc
+        integer(kind=8) :: n
+        integer(kind=8) :: nmax
         real(kind=8) :: a(nmax, n)
         real(kind=8) :: b(nmax, nbsc)
         real(kind=8) :: c(nmax, nbsc)
         real(kind=8) :: wks(nmax)
-        integer :: ier
+        integer(kind=8) :: ier
     end subroutine mtcrog
 end interface

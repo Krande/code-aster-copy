@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -46,6 +46,17 @@ très faiblement négative ( > -1.d-6 * X_MAX)
   * Vérifiez votre maillage.
   * Vous pouvez utiliser MODI_MAILLAGE / DEFORME pour repositionner votre maillage
     dans le demi espace  X >= 0
+"""
+    ),
+    4: _(
+        """
+Il y a des noeuds doubles à l'interface de deux sous-domaines.
+Il n'est pas possible de créer les joints avec.
+
+ Conseils :
+  * Supprimer les noeuds doubles.
+  * Utiliser un nombre différents de processus MPI pour ne plus avoir de noeuds doubles
+  à une interface.
 """
     ),
 }

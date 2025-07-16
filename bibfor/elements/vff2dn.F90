@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -21,7 +21,7 @@ subroutine vff2dn(ndim, nno, ipg, ipoids, idfde, &
     implicit none
 #include "jeveux.h"
 #include "asterfort/assert.h"
-    integer, intent(in) :: ndim, nno, ipoids, idfde, ipg
+    integer(kind=8), intent(in) :: ndim, nno, ipoids, idfde, ipg
     real(kind=8), intent(in) :: coor(*)
     real(kind=8), intent(out) :: nx, ny, jac
 ! ......................................................................
@@ -45,7 +45,7 @@ subroutine vff2dn(ndim, nno, ipg, ipoids, idfde, &
 !    - LES SEGMENTS DOIVENT ETRE "PLANS" (DANS OXY)
 ! ......................................................................
 !
-    integer :: i, k
+    integer(kind=8) :: i, k
     real(kind=8) :: dx, dxds, dyds
 !
     ASSERT(ndim .eq. 1)

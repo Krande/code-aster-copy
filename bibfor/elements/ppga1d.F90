@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -20,7 +20,7 @@ subroutine ppga1d(ndim, nno, npg, poids, vff, &
                   dff, geom, pg)
     implicit none
 #include "jeveux.h"
-    integer :: ndim, nno, npg
+    integer(kind=8) :: ndim, nno, npg
     real(kind=8) :: poids(npg), vff(nno, npg), dff(nno, npg), geom(ndim, nno)
     real(kind=8) :: pg(ndim+1, npg)
 ! ----------------------------------------------------------------------
@@ -36,7 +36,7 @@ subroutine ppga1d(ndim, nno, npg, poids, vff, &
 ! OUT PG      COORDONNEES DES POINTS DE GAUSS + POIDS
 ! ----------------------------------------------------------------------
 !
-    integer :: g, i, j
+    integer(kind=8) :: g, i, j
     real(kind=8) :: dxdk, dydk, dzdk
     real(kind=8) :: jac
 !

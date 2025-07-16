@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -20,10 +20,10 @@
 !
 interface 
     subroutine mnlind(n, deb, cle, vect, ind)
-        integer :: n
-        integer :: deb
+        integer(kind=8) :: n
+        integer(kind=8) :: deb
         real(kind=8) :: cle
         real(kind=8) :: vect(n)
-        integer :: ind
+        integer(kind=8) :: ind
     end subroutine mnlind
 end interface 

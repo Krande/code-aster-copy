@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -21,13 +21,13 @@
 interface
     subroutine raire2(noma, rigi, nbgr, ligrma, nbnoeu,&
                       nbno, tabnoe, rignoe)
-        integer :: nbnoeu
-        integer :: nbgr
+        integer(kind=8) :: nbnoeu
+        integer(kind=8) :: nbgr
         character(len=8) :: noma
         real(kind=8) :: rigi(6)
         character(len=24) :: ligrma(nbgr)
-        integer :: nbno
-        integer :: tabnoe(nbnoeu)
+        integer(kind=8) :: nbno
+        integer(kind=8) :: tabnoe(nbnoeu)
         real(kind=8) :: rignoe(6*nbnoeu)
     end subroutine raire2
 end interface

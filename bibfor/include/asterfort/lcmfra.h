@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -21,9 +21,9 @@
 
 interface 
     subroutine lcmfra(vp, itemax, precvg, chi, iret)
-        integer,intent(in)      :: itemax
+        integer(kind=8),intent(in)      :: itemax
         real(kind=8),intent(in) :: vp(3), precvg
-        integer,intent(out)     :: iret
+        integer(kind=8),intent(out)     :: iret
         real(kind=8),intent(out):: chi
     end subroutine lcmfra
 end interface 

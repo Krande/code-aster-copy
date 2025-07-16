@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -21,12 +21,12 @@
 interface
     subroutine rc36cm(iocc, etat, nbma, listma, nbchar,&
                       lichar, chmome)
-        integer :: iocc
+        integer(kind=8) :: iocc
         character(len=1) :: etat
-        integer :: nbma
-        integer :: listma(*)
-        integer :: nbchar
-        integer :: lichar(*)
+        integer(kind=8) :: nbma
+        integer(kind=8) :: listma(*)
+        integer(kind=8) :: nbchar
+        integer(kind=8) :: lichar(*)
         character(len=24) :: chmome
     end subroutine rc36cm
 end interface

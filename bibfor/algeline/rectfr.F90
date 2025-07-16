@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -19,8 +19,8 @@
 subroutine rectfr(nbmode, nbvect, omeshi, npivot, nblagr, &
                   valpro, nvpro, resufi, resufr, nfreq)
     implicit none
-    integer :: nbmode, nbvect, npivot, nblagr, nvpro, nfreq
-    integer :: resufi(nfreq, *)
+    integer(kind=8) :: nbmode, nbvect, npivot, nblagr, nvpro, nfreq
+    integer(kind=8) :: resufi(nfreq, *)
     real(kind=8) :: valpro(nvpro), resufr(nfreq, *)
 !     RECTIFIE LES VALEURS PROPRES
 !     ------------------------------------------------------------------
@@ -36,7 +36,7 @@ subroutine rectfr(nbmode, nbvect, omeshi, npivot, nblagr, &
 !     OUT : RESUFR  : ON RANGE DANS LA STRUCTURE RESULTAT
 !     IN  : NFREQ   : PREMIERE DIMENSION DU TABLEAU RESUFR
 !     ------------------------------------------------------------------
-    integer :: ineg, ip, im, in, ivec, ifreq
+    integer(kind=8) :: ineg, ip, im, in, ivec, ifreq
     real(kind=8) :: om, omeshi
 !     ------------------------------------------------------------------
 !

@@ -30,7 +30,6 @@ subroutine te0460(nomopt, nomte)
 #include "asterf_types.h"
 #include "asterfort/HHO_size_module.h"
 #include "asterfort/assert.h"
-#include "asterfort/writeMatrix.h"
 #include "jeveux.h"
 !
 ! --------------------------------------------------------------------------------------------------
@@ -44,7 +43,7 @@ subroutine te0460(nomopt, nomte)
 !
 ! --- Local variables
 !
-    integer :: cbs, fbs, total_dofs, gbs
+    integer(kind=8) :: cbs, fbs, total_dofs, gbs
     type(HHO_Data) :: hhoData
     type(HHO_Cell) :: hhoCell
     type(HHO_matrix) :: gradfullvec, stabscal, gradrec_scal

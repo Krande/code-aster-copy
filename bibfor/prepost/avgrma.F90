@@ -45,8 +45,8 @@ subroutine avgrma(vwork, tdisp, vnbpg, nbpgt, nbordr, &
 #include "asterfort/utmess.h"
 #include "asterfort/vecnuv.h"
 #include "asterfort/wkvect.h"
-    integer :: tdisp, nbmap, vnbpg(nbmap), nbpgt, nbordr, nmaini
-    integer :: numpaq, tspaq
+    integer(kind=8) :: tdisp, nbmap, vnbpg(nbmap), nbpgt, nbordr, nmaini
+    integer(kind=8) :: numpaq, tspaq
     real(kind=8) :: vwork(tdisp)
     character(len=16) :: nomcri, proaxe, nomfor, forvie, grdvie
     character(len=19) :: cesr
@@ -82,14 +82,14 @@ subroutine avgrma(vwork, tdisp, vnbpg, nbpgt, nbordr, &
 !    MAILLES DIVISEE PAR LE NOMBRE DE NUMERO D'ORDRE (NBORDR).
 !-----------------------------------------------------------------------
 !-----------------------------------------------------------------------
-    integer :: nbvecm
-    integer :: jcerd, jcerl, iret, icesd, icesl, icesv, ibid
-    integer :: tneces, tdisp2(1), jvecpg, n, k
-    integer :: ideb, dim, j, ngam, tab2(18), ifin
-    integer :: l, nbpg, nbpgp, kwork, sompgw, imap
-    integer :: ipg
-    integer :: icmp, jad
-    integer :: vali(2)
+    integer(kind=8) :: nbvecm
+    integer(kind=8) :: jcerd, jcerl, iret, icesd, icesl, icesv, ibid
+    integer(kind=8) :: tneces, tdisp2(1), jvecpg, n, k
+    integer(kind=8) :: ideb, dim, j, ngam, tab2(18), ifin
+    integer(kind=8) :: l, nbpg, nbpgp, kwork, sompgw, imap
+    integer(kind=8) :: ipg
+    integer(kind=8) :: icmp, jad
+    integer(kind=8) :: vali(2)
 !
     real(kind=8) :: fatsoc, dgam, gamma, pi, dphi, tab1(18), phi0
     real(kind=8) :: vala, valb, coefpa, cudomx

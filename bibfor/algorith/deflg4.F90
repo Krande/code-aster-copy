@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -36,7 +36,7 @@ subroutine deflg4(gn, lamb, logl, F, pe)
     real(kind=8), intent(out) :: pe(3, 3, 3, 3)
     real(kind=8) :: di(3), theta(3, 3), fgn(3, 3)
     real(kind=8) :: me(3, 3, 3, 3)
-    integer :: nbvec, i, icas, j, k, l, a, b
+    integer(kind=8) :: nbvec, i, icas, j, k, l, a, b
 ! ----------------------------------------------------------------------
 !
     nbvec = 3

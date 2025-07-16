@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -82,7 +82,7 @@ subroutine op0151()
 #include "asterfort/wkvect.h"
 !
 !       ---------------------------------------------------------------
-    integer :: icodre, icodwo, icodba, icodhs, icodma
+    integer(kind=8) :: icodre, icodwo, icodba, icodhs, icodma
     character(len=8) :: nomu, nomres, nommai, nommat
     character(len=8) :: nomfon, nomnap, nommod, inscri
     character(len=16) :: concep, cmd, pheno, typcal, nomcri, nommet, cara
@@ -94,14 +94,14 @@ subroutine op0151()
     aster_logical :: fordef, crsigm, crepst, crepse, crepsp
     real(kind=8) :: prec, instic
 !
-    integer :: nval, impr, ifm, jordr, jcoef, jcelk
-    integer :: nbpt, nbord, nbcmp, numcmp(6), ntcmp, ibid
-    integer :: ivdmg, numsym, nbpt2, nbord2, iret, ivch
-    integer :: vali(2), paract(35)
+    integer(kind=8) :: nval, impr, ifm, jordr, jcoef, jcelk
+    integer(kind=8) :: nbpt, nbord, nbcmp, numcmp(6), ntcmp, ibid
+    integer(kind=8) :: ivdmg, numsym, nbpt2, nbord2, iret, ivch
+    integer(kind=8) :: vali(2), paract(35)
 !
 ! ------------
 !-----------------------------------------------------------------------
-    integer :: i
+    integer(kind=8) :: i
     real(kind=8), pointer :: celv(:) => null()
 !-----------------------------------------------------------------------
     call jemarq()

@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -38,16 +38,16 @@ subroutine elrefe_info(elrefe, fami, ndim, nno, &
 !
     character(len=*), intent(in), optional :: elrefe
     character(len=*), intent(in) :: fami
-    integer, intent(out), optional :: ndim
-    integer, intent(out), optional  :: nno
-    integer, intent(out), optional  :: nnos
-    integer, intent(out), optional  :: npg
-    integer, intent(out), optional  :: jpoids
-    integer, intent(out), optional  :: jcoopg
-    integer, intent(out), optional  :: jvf
-    integer, intent(out), optional  :: jdfde
-    integer, intent(out), optional  :: jdfd2
-    integer, intent(out), optional  :: jgano
+    integer(kind=8), intent(out), optional :: ndim
+    integer(kind=8), intent(out), optional  :: nno
+    integer(kind=8), intent(out), optional  :: nnos
+    integer(kind=8), intent(out), optional  :: npg
+    integer(kind=8), intent(out), optional  :: jpoids
+    integer(kind=8), intent(out), optional  :: jcoopg
+    integer(kind=8), intent(out), optional  :: jvf
+    integer(kind=8), intent(out), optional  :: jdfde
+    integer(kind=8), intent(out), optional  :: jdfd2
+    integer(kind=8), intent(out), optional  :: jgano
 ! ----------------------------------------------------------------------
 ! but: recuperer des informations sur l'element de reference :
 !      - dimension de l'espace, nombre de noeuds, de points de Gauss, ...
@@ -78,14 +78,14 @@ subroutine elrefe_info(elrefe, fami, ndim, nno, &
     character(len=8) :: elrf, famil, fapg(MT_NBFAMX)
     character(len=16) :: nofgpg
     character(len=32) :: noflpg
-    integer :: nbfpg, nbpg(MT_NBFAMX), jvr, decal, ifam, lonfam
-    integer :: nufpg, nufgpg, nuflpg, jdfd2l, jganol
-    integer :: ndiml, nnosl, nnol, npgl, jpoidl, jcoopl, jvfl, jdfdel
+    integer(kind=8) :: nbfpg, nbpg(MT_NBFAMX), jvr, decal, ifam, lonfam
+    integer(kind=8) :: nufpg, nufgpg, nuflpg, jdfd2l, jganol
+    integer(kind=8) :: ndiml, nnosl, nnol, npgl, jpoidl, jcoopl, jvfl, jdfdel
 
 !   -- pour faire des "save" et gagner du temps CPU :
-    integer :: maxsav
+    integer(kind=8) :: maxsav
     parameter(maxsav=5)
-    integer :: addsav(5, 10), k1, k2, nusav
+    integer(kind=8) :: addsav(5, 10), k1, k2, nusav
     character(len=32) :: nomsav(maxsav)
     save nomsav, addsav
 

@@ -23,7 +23,6 @@ subroutine medomp(result, modele, mater, mateco, carele, nh)
 #include "asterf_types.h"
 #include "jeveux.h"
 #include "asterc/getexm.h"
-#include "asterfort/assert.h"
 #include "asterfort/dismoi.h"
 #include "asterfort/getvid.h"
 #include "asterfort/getvis.h"
@@ -44,7 +43,7 @@ subroutine medomp(result, modele, mater, mateco, carele, nh)
     character(len=8), intent(out) :: modele
     character(len=24), optional, intent(out) :: mateco, mater
     character(len=8), optional, intent(out) :: carele
-    integer, optional, intent(out) ::  nh
+    integer(kind=8), optional, intent(out) ::  nh
 !
 ! ----------------------------------------------------------------------
 !
@@ -63,9 +62,9 @@ subroutine medomp(result, modele, mater, mateco, carele, nh)
 !
 ! ----------------------------------------------------------------------
 !
-    integer :: iret
-    integer :: nbordr, numord, inuord, numlu
-    integer :: n1, n2, n3
+    integer(kind=8) :: iret
+    integer(kind=8) :: nbordr, numord, inuord, numlu
+    integer(kind=8) :: n1, n2, n3
     real(kind=8) :: prec
     character(len=8) :: materi, carel
     character(len=16) :: repons
@@ -73,8 +72,8 @@ subroutine medomp(result, modele, mater, mateco, carele, nh)
     character(len=8) :: crit
     character(len=5) :: phen
     aster_logical :: lrdm, lmater, l_ther
-    integer :: lfour
-    integer, pointer :: v_list_store(:) => null()
+    integer(kind=8) :: lfour
+    integer(kind=8), pointer :: v_list_store(:) => null()
 !
 ! ----------------------------------------------------------------------
 !

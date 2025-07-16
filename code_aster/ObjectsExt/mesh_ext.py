@@ -26,11 +26,12 @@
 import os
 import subprocess
 import tempfile
+
 from ..CodeCommands import CREA_MAILLAGE
-from ..Objects import Mesh, PythonBool, MeshReader
+from ..MedUtils.MedConverter import convertMesh2MedCoupling
+from ..Objects import Mesh, MeshReader, PythonBool
 from ..Objects.Serialization import InternalStateBuilder
 from ..Utilities import ExecutionParameter, force_list, injector
-from ..Utilities.MedUtils.MEDConverter import convertMesh2MedCoupling
 from . import mesh_builder
 
 

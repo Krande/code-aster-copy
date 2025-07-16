@@ -54,19 +54,19 @@ subroutine vethbt(model, loadNameJv, loadInfoJv, &
 !
 ! --------------------------------------------------------------------------------------------------
 !
-    integer, parameter :: nbin = 2
-    integer, parameter :: nbout = 1
+    integer(kind=8), parameter :: nbin = 2
+    integer(kind=8), parameter :: nbout = 1
     character(len=8) :: lpain(nbin), lpaout(nbout)
     character(len=19) :: lchin(nbin), lchout(nbout)
     character(len=16) :: option
     character(len=24) :: ligrch
     character(len=8) :: load_name, newnom
     character(len=19) :: resu_elem
-    integer :: load_nume
+    integer(kind=8) :: load_nume
     aster_logical :: load_empty
-    integer :: i_load, nb_load
+    integer(kind=8) :: i_load, nb_load
     character(len=24), pointer :: listLoadName(:) => null()
-    integer, pointer :: listLoadInfo(:) => null()
+    integer(kind=8), pointer :: listLoadInfo(:) => null()
 !
 ! --------------------------------------------------------------------------------------------------
 !

@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -24,7 +24,7 @@ subroutine dpvpdb(nbmat, mater, crit, dt, vinm, &
 #include "asterfort/dpvpdv.h"
 #include "asterfort/dpvpeq.h"
 #include "asterfort/dpvpva.h"
-    integer :: nbmat, nvi, nbre, retcom
+    integer(kind=8) :: nbmat, nvi, nbre, retcom
     real(kind=8) :: mater(nbmat, 2)
     real(kind=8) :: crit(3), dt
     real(kind=8) :: vinm(nvi), vinp(nvi)
@@ -51,8 +51,8 @@ subroutine dpvpdb(nbmat, mater, crit, dt, vinm, &
 ! --- RESOLUTION NUMERIQUE DE L EQ NON LINEAIRE AVEC BRACKETING ET ----
 ! --------------LA METHODE DES CORDES
 ! =====================================================================
-    integer :: niter, i
-    integer :: signf, signfi
+    integer(kind=8) :: niter, i
+    integer(kind=8) :: signf, signfi
     real(kind=8) :: mu, k
     real(kind=8) :: trois, neuf, zero
     real(kind=8) :: pref, a, n, const

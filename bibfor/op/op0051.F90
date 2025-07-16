@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -65,9 +65,9 @@ subroutine op0051()
     character(len=6) :: nompro
     parameter(nompro='OP0051')
 !
-    integer :: ifm, niv
-    integer :: ichef, iocc, iret, ivchf, jacc, jaccis, jaccr8, jchef, jtac
-    integer :: jvac, n1, nbacce, nbchef, nbpost, nbresu, nbvchf
+    integer(kind=8) :: ifm, niv
+    integer(kind=8) :: ichef, iocc, iret, ivchf, jacc, jaccis, jaccr8, jchef, jtac
+    integer(kind=8) :: jvac, n1, nbacce, nbchef, nbpost, nbresu, nbvchf, iexi1, iexi2
 !
     real(kind=8) :: epsi
 !
@@ -294,32 +294,37 @@ subroutine op0051()
                 call rvouex(mcf, iocc, nch24, xnomcp, nlsmac, &
                             nlsnac, iret)
 !
-                if (iret .eq. 0) then
-                    call utmess('F', 'POSTRELE_3', si=iocc)
+                call jeexin(nlsmac, iexi1)
+                call jeexin(nlsnac, iexi2)
 !
-                else
+                if (iexi1 .ne. 0 .or. iexi2 .ne. 0) then
+                    if (iret .eq. 0) then
+                        call utmess('F', 'POSTRELE_3', si=iocc)
 !
-                    call jeveuo(ncheff//'.TYPACCE', 'L', jtac)
-                    call jeveuo(ncheff//'.VALACCE', 'L', jvac)
+                    else
 !
-                    do ivchf = 1, nbvchf, 1
+                        call jeveuo(ncheff//'.TYPACCE', 'L', jtac)
+                        call jeveuo(ncheff//'.VALACCE', 'L', jvac)
 !
-                        call jelira(jexnum(ncheff//'.LSCHEFF', ivchf), 'LONMAX', nbchef)
-                        call jeveuo(jexnum(ncheff//'.LSCHEFF', ivchf), 'L', jchef)
+                        do ivchf = 1, nbvchf, 1
+!
+                            call jelira(jexnum(ncheff//'.LSCHEFF', ivchf), 'LONMAX', nbchef)
+                            call jeveuo(jexnum(ncheff//'.LSCHEFF', ivchf), 'L', jchef)
 !
 !
-                        do ichef = 1, nbchef
+                            do ichef = 1, nbchef
 !
-                            nch19 = zk24(jchef+ichef-1) (1:19)
+                                nch19 = zk24(jchef+ichef-1) (1:19)
 !
-                            call rvpost(mcf, iocc, dim, ivchf, ichef, &
-                                        ncheff, xnomcp, resuco, nch19, nlsmac, &
-                                        nlsnac, latabl, xnovar)
+                                call rvpost(mcf, iocc, dim, ivchf, ichef, &
+                                            ncheff, xnomcp, resuco, nch19, nlsmac, &
+                                            nlsnac, latabl, xnovar)
+!
+                            end do
 !
                         end do
 !
-                    end do
-!
+                    end if
                 end if
 !
                 call jeexin(nlsmac, n1)

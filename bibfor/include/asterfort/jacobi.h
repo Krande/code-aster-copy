@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -22,8 +22,8 @@ interface
     subroutine jacobi(nbvec, nperm, tol, toldyn, ar,&
                       br, vecpro, valpro, valaux, nitjac,&
                       type, iordre)
-        integer :: nbvec
-        integer :: nperm
+        integer(kind=8) :: nbvec
+        integer(kind=8) :: nperm
         real(kind=8) :: tol
         real(kind=8) :: toldyn
         real(kind=8) :: ar(nbvec)
@@ -31,8 +31,8 @@ interface
         real(kind=8) :: vecpro(nbvec, nbvec)
         real(kind=8) :: valpro(nbvec)
         real(kind=8) :: valaux(nbvec)
-        integer :: nitjac
-        integer :: type
-        integer :: iordre
+        integer(kind=8) :: nitjac
+        integer(kind=8) :: type
+        integer(kind=8) :: iordre
     end subroutine jacobi
 end interface

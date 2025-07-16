@@ -47,16 +47,16 @@ subroutine didashpot(for_discret, iret)
 #include "asterfort/Behaviour_type.h"
 !
     type(te0047_dscr), intent(in) :: for_discret
-    integer, intent(out) :: iret
+    integer(kind=8), intent(out) :: iret
 !
 ! --------------------------------------------------------------------------------------------------
 !
-    integer :: imat, jdc, irep, neq, ii, ifono, icontp, icontm
+    integer(kind=8) :: imat, jdc, irep, neq, ii, ifono, icontp, icontm
     real(kind=8) :: r8bid, klv(78), klc(144), fl(12)
     character(len=16), pointer :: compor(:) => null()
     character(len=8) :: k8bid
 !
-    integer :: iadzi, iazk24
+    integer(kind=8) :: iadzi, iazk24
     character(len=24) :: messak(5)
     blas_int :: b_incx, b_incy, b_n
 !

@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -23,7 +23,7 @@ subroutine rcmo01(chmome, ima, ipt, vale)
 #include "asterfort/jemarq.h"
 #include "asterfort/jeveuo.h"
 #include "asterfort/utmess.h"
-    integer :: ima, ipt
+    integer(kind=8) :: ima, ipt
     real(kind=8) :: vale(*)
     character(len=24) :: chmome
 !
@@ -39,10 +39,10 @@ subroutine rcmo01(chmome, ima, ipt, vale)
 !     ------------------------------------------------------------------
     character(len=24) :: valk
 !
-    integer :: jcesl, nbcmp, decal, icmp, iad
-    integer :: vali(2)
+    integer(kind=8) :: jcesl, nbcmp, decal, icmp, iad
+    integer(kind=8) :: vali(2)
     real(kind=8), pointer :: cesv(:) => null()
-    integer, pointer :: cesd(:) => null()
+    integer(kind=8), pointer :: cesd(:) => null()
 ! DEB ------------------------------------------------------------------
     call jemarq()
 !

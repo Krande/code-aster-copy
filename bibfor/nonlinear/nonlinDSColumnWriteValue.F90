@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -30,11 +30,11 @@ subroutine nonlinDSColumnWriteValue(length, output_string_, &
 #include "asterc/r8vide.h"
 #include "asterfort/assert.h"
 !
-    integer, intent(in) :: length
+    integer(kind=8), intent(in) :: length
     character(len=*), optional, intent(out) :: output_string_
-    integer, optional, intent(in) :: output_unit_
+    integer(kind=8), optional, intent(in) :: output_unit_
     real(kind=8), optional, intent(in) :: value_r_
-    integer, optional, intent(in) :: value_i_
+    integer(kind=8), optional, intent(in) :: value_i_
     character(len=*), optional, intent(in) :: value_k_
     real(kind=8), optional, intent(in) :: time_
 !
@@ -56,16 +56,16 @@ subroutine nonlinDSColumnWriteValue(length, output_string_, &
 !
 ! --------------------------------------------------------------------------------------------------
 !
-    integer, parameter :: prec_local = 5
+    integer(kind=8), parameter :: prec_local = 5
     character(len=8) :: for8
     character(len=9) :: for9
     character(len=4) :: for4
     character(len=5) :: for5
     character(len=1) :: for1
-    integer :: form_length, output_unit
-    integer, parameter :: zlig = 512
+    integer(kind=8) :: form_length, output_unit
+    integer(kind=8), parameter :: zlig = 512
     character(len=6) :: forma
-    integer :: minut, heure, second
+    integer(kind=8) :: minut, heure, second
     character(len=zlig) :: output_string
 !
 ! --------------------------------------------------------------------------------------------------

@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -38,21 +38,21 @@ subroutine te0214(nomopt, nomte)
 !                      NOMTE        -->  NOM DU TYPE ELEMENT
 ! ......................................................................
 !
-    integer :: nbres, nbpar
+    integer(kind=8) :: nbres, nbpar
     parameter(nbres=4)
     parameter(nbpar=3)
 !
-    integer :: iret, nbval, nbddl
-    integer :: i, j, irigi, jma, i2, i3
-    integer :: iresu, ins, irns, ivari
-    integer :: idresu(5), idrigi(2)
-    integer :: igeom
+    integer(kind=8) :: iret, nbval, nbddl
+    integer(kind=8) :: i, j, irigi, jma, i2, i3
+    integer(kind=8) :: iresu, ins, irns, ivari
+    integer(kind=8) :: idresu(5), idrigi(2)
+    integer(kind=8) :: igeom
 !
     real(kind=8) :: valres(nbres), valpar(nbpar)
 !
     real(kind=8) :: x(4), y(4), z(4), c1(3), c2(3)
     real(kind=8) :: surf
-    integer :: icodre(nbres)
+    integer(kind=8) :: icodre(nbres)
     character(len=16) :: nomres(nbres)
     aster_logical :: ljfr
     blas_int :: b_incx, b_incy, b_n

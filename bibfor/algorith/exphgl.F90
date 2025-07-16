@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -70,17 +70,17 @@ subroutine exphgl(nomres, typsd, modcyc, profno, indirf, &
     character(len=19) :: chamva, profno, chamno
     character(len=24) :: indirf, crefe(2), nomchc, pfchno, nomchs
     real(kind=8) :: depi, genek, beta
-    integer :: nbmode, ibid, iret, neqsec, llfreq, ltveco, ldfreq, ldkge
-    integer :: ldmge, ldom2, ldomo, nbnot, nbcmp, nbsec, neq, ires2
-    integer :: numdia
+    integer(kind=8) :: nbmode, ibid, iret, neqsec, llfreq, ltveco, ldfreq, ldkge
+    integer(kind=8) :: ldmge, ldom2, ldomo, nbnot, nbcmp, nbsec, neq, ires2
+    integer(kind=8) :: numdia
 !
 !-----------------------------------------------------------------------
 !
 !-----------------------------------------------------------------------
-    integer :: i, icomp, ieqf, ieqi, ier, j, k
-    integer :: ldtyd, ltinds, n1, nddcou
+    integer(kind=8) :: i, icomp, ieqf, ieqi, ier, j, k
+    integer(kind=8) :: ldtyd, ltinds, n1, nddcou
     real(kind=8), pointer :: teta_secteur(:) => null()
-    integer, pointer :: skeleton(:) => null()
+    integer(kind=8), pointer :: skeleton(:) => null()
     real(kind=8), pointer :: nllcham(:) => null()
     real(kind=8), pointer :: nltvesi(:) => null()
 !-----------------------------------------------------------------------

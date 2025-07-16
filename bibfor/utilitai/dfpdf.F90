@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -25,7 +25,7 @@ subroutine dfpdf(dim, f, dsidep)
 #include "asterfort/diago2.h"
 #include "asterfort/diago3.h"
 #include "asterfort/r8inir.h"
-    integer :: dim
+    integer(kind=8) :: dim
     real(kind=8) :: f(dim), dsidep(dim, dim)
 !
 ! ----------------------------------------------------------------------
@@ -55,7 +55,7 @@ subroutine dfpdf(dim, f, dsidep)
 !    OUT      : DFP/DF
 !
 ! ----------------------------------------------------------------------
-    integer :: i, j, k, l, m, n, t(3, 3), t2(2, 2), ordre(2)
+    integer(kind=8) :: i, j, k, l, m, n, t(3, 3), t2(2, 2), ordre(2)
     real(kind=8) :: rtemp, rtemp2, dspdep(3, 3), epsp(3), vecp(3, 3), rigmin
     real(kind=8) :: sigp(3)
     real(kind=8) :: dspdeb(2, 2), epsp2(2), vecp2(2, 2), sigp2(2)

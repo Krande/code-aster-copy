@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -74,13 +74,13 @@ subroutine ircmpn(nofimd, ncmprf, ncmpve, numcmp, exicmp, &
 #include "asterfort/infniv.h"
 #include "asterfort/ircmpf.h"
 #include "asterfort/jeveuo.h"
-    integer :: nbvato, ncmprf, ncmpve
-    integer :: numcmp(ncmprf), innoce(nbvato)
-    integer :: nbnoec
-    integer :: linoec(*)
-    integer :: adsl
-    integer :: caimpi(10)
-    integer :: profas(nbvato)
+    integer(kind=8) :: nbvato, ncmprf, ncmpve
+    integer(kind=8) :: numcmp(ncmprf), innoce(nbvato)
+    integer(kind=8) :: nbnoec
+    integer(kind=8) :: linoec(*)
+    integer(kind=8) :: adsl
+    integer(kind=8) :: caimpi(10)
+    integer(kind=8) :: profas(nbvato)
 !
     character(len=*) :: nofimd
     character(len=80) :: caimpk(3)
@@ -102,18 +102,18 @@ subroutine ircmpn(nofimd, ncmprf, ncmpve, numcmp, exicmp, &
     parameter(ednoga=' ')
 !                         12345678901234567890123456789012
 !
-    integer :: typnoe
+    integer(kind=8) :: typnoe
     parameter(typnoe=0)
-    integer :: ednopg
+    integer(kind=8) :: ednopg
     parameter(ednopg=1)
 !
     character(len=64) :: noprof
 !
-    integer :: ifm, nivinf
+    integer(kind=8) :: ifm, nivinf
 !
-    integer :: iaux, jaux
-    integer :: nrcmp
-    integer :: nval, rang, nbproc, jnbno, jno, nbnov, nbnoect(1)
+    integer(kind=8) :: iaux, jaux
+    integer(kind=8) :: nrcmp
+    integer(kind=8) :: nval, rang, nbproc, jnbno, jno, nbnov, nbnoect(1)
     mpi_int :: mrank, msize
     aster_logical :: lficUniq, lnbnol, lnoec
     real(kind=8) :: start_time, end_time

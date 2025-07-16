@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -40,7 +40,7 @@ subroutine meceuc(stop, option, caraez, ligrel, &
 #include "asterfort/jemarq.h"
 #include "asterfort/sepach.h"
 !
-    integer :: nin, nou
+    integer(kind=8) :: nin, nou
     character(len=1) :: stop
     character(len=8) :: carael
     character(len=*) :: base, option
@@ -82,8 +82,8 @@ subroutine meceuc(stop, option, caraez, ligrel, &
     character(len=19) :: lchinr(nin), lchini(nin)
     character(len=16) :: optio2
     character(len=8) :: nomgd
-    integer :: k, iexi, iexi1, iexi2
-    integer :: inddec(nin)
+    integer(kind=8) :: k, iexi, iexi1, iexi2
+    integer(kind=8) :: inddec(nin)
     aster_logical :: lcmplx, lsspt, ldbg, lopdec
 !
 ! --------------------------------------------------------------------------------------------------

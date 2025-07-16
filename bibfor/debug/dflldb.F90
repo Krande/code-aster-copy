@@ -44,8 +44,8 @@ subroutine dflldb(sdlist)
 !
 ! --------------------------------------------------------------------------------------------------
 !
-    integer :: i_fail, nb_fail, nb_inst, i_adap, nb_adap
-    integer :: nb_pas_maxi
+    integer(kind=8) :: i_fail, nb_fail, nb_inst, i_adap, nb_adap
+    integer(kind=8) :: nb_pas_maxi
     real(kind=8) :: dtmin, step_mini, step_maxi
     character(len=24) :: sdlist_eevenr
     real(kind=8), pointer :: v_sdlist_eevenr(:) => null()
@@ -59,8 +59,8 @@ subroutine dflldb(sdlist)
     real(kind=8), pointer :: v_sdlist_aevenr(:) => null()
     real(kind=8) :: vale_ref, pene_maxi, resi_glob_maxi, pcent_iter_plus, coef_maxi
     character(len=16):: nom_cham, nom_cmp, crit_cmp
-    integer :: nb_incr_seuil, nb_iter_newt, crit_compi
-    integer :: eventType, action_type
+    integer(kind=8) :: nb_incr_seuil, nb_iter_newt, crit_compi
+    integer(kind=8) :: eventType, action_type
 !
 ! --------------------------------------------------------------------------------------------------
 !

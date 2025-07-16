@@ -138,6 +138,7 @@ class THER3DH27_HHO111(Element):
                 (OP.FLUX_ELGA.PVARCPR, LC.ZVARCPG),
                 (OP.FLUX_ELGA.PCHHOGT, CHHOGT),
                 (OP.FLUX_ELGA.PCHHOST, CHHOST),
+                (OP.FLUX_ELGA.PCHHOBS, CHHOBS),
             ),
             para_out=((OP.FLUX_ELGA.PFLUXPG, LC.EFLUX3R),),
         ),

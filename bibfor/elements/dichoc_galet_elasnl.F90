@@ -53,13 +53,13 @@ subroutine dichoc_galet_elasnl(for_discret, iret)
 #include "asterfort/Behaviour_type.h"
 !
     type(te0047_dscr), intent(in) :: for_discret
-    integer, intent(out) :: iret
+    integer(kind=8), intent(out) :: iret
 !
 ! --------------------------------------------------------------------------------------------------
 !
-    integer :: jdc, irep, imat, ivarim, ii, igeom, ivarip
-    integer :: ifono, imatri
-    integer :: icontp, icontm, iadzi, iazk24
+    integer(kind=8) :: jdc, irep, imat, ivarim, ii, igeom, ivarip
+    integer(kind=8) :: ifono, imatri
+    integer(kind=8) :: icontp, icontm, iadzi, iazk24
 !
     real(kind=8) :: klc(for_discret%neq*for_discret%neq)
     real(kind=8) :: klv(for_discret%nbt), fl(for_discret%neq), raide(6)
@@ -69,17 +69,17 @@ subroutine dichoc_galet_elasnl(for_discret, iret)
     character(len=24) :: messak(6)
 !
 ! --------------------------------------------------------------------------------------------------
-    integer, parameter :: nbres = 3
+    integer(kind=8), parameter :: nbres = 3
     real(kind=8) :: valres(nbres)
-    integer :: codres(nbres)
+    integer(kind=8) :: codres(nbres)
     character(len=8) :: nomres(nbres)
-    integer :: nbpar
+    integer(kind=8) :: nbpar
     real(kind=8) :: valpar
     character(len=8) :: nompar
 !
 ! --------------------------------------------------------------------------------------------------
 !   Variables internes
-    integer, parameter :: nbvari = 1
+    integer(kind=8), parameter :: nbvari = 1
     real(kind=8) :: varmo(nbvari), varpl(nbvari)
 ! --------------------------------------------------------------------------------------------------
     real(kind=8) :: xl(6), xd(3), ld0, ldm, ldp, forcem, forcep, raidemp, ktang

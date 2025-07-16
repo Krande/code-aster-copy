@@ -48,7 +48,6 @@ module HHO_postpro_module
 #include "asterfort/utmess.h"
 #include "asterfort/readVector.h"
 #include "asterfort/writeVector.h"
-#include "blas/dcopy.h"
 #include "jeveux.h"
 !
 ! --------------------------------------------------------------------------------------------------
@@ -73,7 +72,7 @@ contains
 !
         type(HHO_Cell), intent(in) :: hhoCell
         type(HHO_Data), intent(in) :: hhoData
-        integer, intent(in) :: nbnodes
+        integer(kind=8), intent(in) :: nbnodes
 !
 ! --------------------------------------------------------------------------------------------------
 !   HHO - mechanics
@@ -84,9 +83,9 @@ contains
 !   In nbnodes         : number of nodes
 ! --------------------------------------------------------------------------------------------------
 !
-        integer, parameter :: max_comp = 81
+        integer(kind=8), parameter :: max_comp = 81
         type(HHO_basis_cell) :: hhoBasisCell
-        integer :: total_dofs, cbs, fbs, jvect, i, ino, ndim, idim, comp_dim
+        integer(kind=8) :: total_dofs, cbs, fbs, jvect, i, ino, ndim, idim, comp_dim
         real(kind=8), dimension(MSIZE_CELL_VEC) :: sol_T
         real(kind=8), dimension(MSIZE_CELL_SCAL) :: sol_T_dim
         real(kind=8), dimension(3, max_comp) :: post_sol
@@ -145,7 +144,7 @@ contains
 !
         type(HHO_Cell), intent(in) :: hhoCell
         type(HHO_Data), intent(in) :: hhoData
-        integer, intent(in) :: nbnodes
+        integer(kind=8), intent(in) :: nbnodes
 !
 ! --------------------------------------------------------------------------------------------------
 !   HHO - mechanics - GRAD_VARI
@@ -157,8 +156,8 @@ contains
 ! --------------------------------------------------------------------------------------------------
 !
         type(HHO_basis_cell) :: hhoBasisCell
-        integer :: mk_total_dofs, mk_cbs, mk_fbs, jvect, i, ino, ndim, idim, comp_dim
-        integer :: faces_dofs, gv_cbs, gv_fbs, gv_total_dofs
+        integer(kind=8) :: mk_total_dofs, mk_cbs, mk_fbs, jvect, i, ino, ndim, idim, comp_dim
+        integer(kind=8) :: faces_dofs, gv_cbs, gv_fbs, gv_total_dofs
         real(kind=8), dimension(MSIZE_CELL_VEC) :: sol_U
         real(kind=8), dimension(MSIZE_CELL_SCAL) :: sol_U_dim, sol_V, sol_L
         real(kind=8), dimension(5, 27) :: post_sol
@@ -249,9 +248,9 @@ contains
 !
 ! --------------------------------------------------------------------------------------------------
 !
-        integer :: ifm, niv
-        integer, parameter :: nbin = 3
-        integer, parameter :: nbout = 1
+        integer(kind=8) :: ifm, niv
+        integer(kind=8), parameter :: nbin = 3
+        integer(kind=8), parameter :: nbout = 1
         character(len=8) :: lpain(nbin), lpaout(nbout)
         character(len=19) :: lchin(nbin), lchout(nbout)
         character(len=19) :: ligrel_model, field_elno, celmod, field_noeu
@@ -323,7 +322,7 @@ contains
 !
         character(len=24), intent(in) :: model_hho
         character(len=8), intent(in) :: result_hho
-        integer, intent(in) :: nume_store
+        integer(kind=8), intent(in) :: nume_store
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -339,7 +338,7 @@ contains
 !
 ! --------------------------------------------------------------------------------------------------
 !
-        integer :: ifm, niv, iret
+        integer(kind=8) :: ifm, niv, iret
         character(len=24) :: cham_hho, cham
 !
 ! --------------------------------------------------------------------------------------------------
@@ -402,7 +401,7 @@ contains
 !
         type(HHO_Cell), intent(in) :: hhoCell
         type(HHO_Data), intent(in) :: hhoData
-        integer, intent(in) :: nbnodes
+        integer(kind=8), intent(in) :: nbnodes
 !
 ! --------------------------------------------------------------------------------------------------
 !   HHO - thermics
@@ -413,9 +412,9 @@ contains
 !   In nbnodes         : number of nodes
 ! --------------------------------------------------------------------------------------------------
 !
-        integer, parameter :: max_comp = 27
+        integer(kind=8), parameter :: max_comp = 27
         type(HHO_basis_cell) :: hhoBasisCell
-        integer :: total_dofs, cbs, fbs, ino
+        integer(kind=8) :: total_dofs, cbs, fbs, ino
         real(kind=8), dimension(MSIZE_CELL_SCAL) :: sol_T
         real(kind=8), dimension(max_comp) :: post_sol
 !
@@ -471,7 +470,7 @@ contains
 ! --------------------------------------------------------------------------------------------------
 !
         type(HHO_basis_cell) :: hhoBasisCell
-        integer :: total_dofs, cbs, fbs, ipg
+        integer(kind=8) :: total_dofs, cbs, fbs, ipg
         real(kind=8), dimension(MSIZE_CELL_SCAL) :: sol_T
         real(kind=8), dimension(MAX_QP_CELL) :: post_sol
 !

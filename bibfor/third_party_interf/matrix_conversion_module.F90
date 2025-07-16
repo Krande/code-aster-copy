@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -25,7 +25,6 @@ module matrix_conversion_module
 !
     private
 #include "asterf_petsc.h"
-#include "asterc/asmpi_comm.h"
 #include "asterfort/assert.h"
 #include "asterfort/dismoi.h"
 #include "asterfort/jedema.h"
@@ -339,7 +338,7 @@ contains
         PetscReal :: info(MAT_INFO_SIZE)
         !
         call MatGetInfo(a_mat, MAT_GLOBAL_SUM, info, ierr)
-        nnz = info(MAT_INFO_NZ_USED)
+        nnz = to_petsc_int(info(MAT_INFO_NZ_USED))
         call MatGetSize(a_mat, mm, nn, ierr)
         ASSERT(ierr == 0)
         allocate (ia(mm+1), stat=ierr)

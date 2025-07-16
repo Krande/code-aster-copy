@@ -23,9 +23,7 @@ subroutine dbrInitAlgoTrunc(paraTrunc)
     implicit none
 !
 #include "asterf_types.h"
-#include "asterfort/as_allocate.h"
 #include "asterfort/as_deallocate.h"
-#include "asterfort/assert.h"
 #include "asterfort/dismoi.h"
 #include "asterfort/gnomsd.h"
 #include "asterfort/infniv.h"
@@ -49,13 +47,13 @@ subroutine dbrInitAlgoTrunc(paraTrunc)
 !
 ! --------------------------------------------------------------------------------------------------
 !
-    integer :: nbLigr
+    integer(kind=8) :: nbLigr
     character(len=24), pointer :: listLigr(:) => null()
-    integer :: ifm, niv
-    integer :: nbEquaRom, nbNodeRom
+    integer(kind=8) :: ifm, niv
+    integer(kind=8) :: nbEquaRom, nbNodeRom
     character(len=8) :: modelRom, modelDom
     character(len=24) :: numeRom, numeDom, noojb
-    integer, pointer :: numeNodeRom(:) => null()
+    integer(kind=8), pointer :: numeNodeRom(:) => null()
     type(ROM_DS_Field) :: mode
 !
 ! --------------------------------------------------------------------------------------------------

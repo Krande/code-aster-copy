@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -37,8 +37,8 @@ subroutine te0330(option, nomte)
 #include "asterfort/jevech.h"
 !
     real(kind=8) :: k(10, 10), valpar(4), result
-    integer :: i, ier, j, ndl, ip, jmat, jdimp, jdmul, jgeom, jlagr
-    integer :: jvec, jtime, nbpar
+    integer(kind=8) :: i, ier, j, ndl, ip, jmat, jdimp, jdmul, jgeom, jlagr
+    integer(kind=8) :: jvec, jtime, nbpar
     complex(kind=8) :: kc(10, 10)
 !
     character(len=8) :: nompar(4)

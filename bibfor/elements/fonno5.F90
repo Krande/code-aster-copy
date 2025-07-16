@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -27,7 +27,7 @@ subroutine fonno5(noma, indic, noe, na, nb, &
 #include "asterfort/normev.h"
 #include "asterfort/provec.h"
     character(len=8) :: noma
-    integer :: indic(4), noe(4, 4), na, nb, ndim, nbnoel, indr(2)
+    integer(kind=8) :: indic(4), noe(4, 4), na, nb, ndim, nbnoel, indr(2)
     real(kind=8) :: vnor(2, 3), vdir(2, 3)
 !
 !
@@ -58,9 +58,9 @@ subroutine fonno5(noma, indic, noe, na, nb, &
 !
 !     ----------------------------------------------------
 !
-    integer :: compte
-    integer :: indice, inp, ino1, ino2, ico
-    integer :: m(8)
+    integer(kind=8) :: compte
+    integer(kind=8) :: indice, inp, ino1, ino2, ico
+    integer(kind=8) :: m(8)
     real(kind=8) :: vect1(3), vect2(3), vect3(3), vect4(3), norm1
     real(kind=8) :: coord(3, 4)
     real(kind=8), pointer :: vale(:) => null()

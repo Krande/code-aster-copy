@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -21,12 +21,12 @@ subroutine rsadpa_zr_wrap(nomsd, nuordr, value, typesd)
 #include "jeveux.h"
 #include "asterfort/rsadpa.h"
 ! ----------------------------------------------------------------------
-    integer, intent(in) :: nuordr
+    integer(kind=8), intent(in) :: nuordr
     character(len=*), intent(in) :: typesd
     character(len=8), intent(in) :: nomsd
     real(kind=8) :: value
 !
-    integer :: jpara
+    integer(kind=8) :: jpara
 ! ----------------------------------------------------------------------
     call rsadpa(nomsd, 'E', 1, typesd, nuordr, &
                 0, sjv=jpara)

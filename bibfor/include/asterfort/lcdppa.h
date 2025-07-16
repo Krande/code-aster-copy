@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -22,7 +22,7 @@ interface
     subroutine lcdppa(mod, nvi, option, materf, compor,&
                       sigm, deps, vim, vip, sig,&
                       dsidep, iret)
-        integer :: nvi
+        integer(kind=8) :: nvi
         character(len=8) :: mod
         character(len=16) :: option
         real(kind=8) :: materf(5, 2)
@@ -33,6 +33,6 @@ interface
         real(kind=8) :: vip(nvi)
         real(kind=8) :: sig(6)
         real(kind=8) :: dsidep(6, 6)
-        integer :: iret
+        integer(kind=8) :: iret
     end subroutine lcdppa
 end interface

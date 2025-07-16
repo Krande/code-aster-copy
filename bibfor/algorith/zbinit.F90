@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -23,7 +23,7 @@ subroutine zbinit(f0, coef, dimmem, mem)
     implicit none
 #include "asterf_types.h"
 #include "asterfort/assert.h"
-    integer :: dimmem
+    integer(kind=8) :: dimmem
     real(kind=8) :: f0, coef, mem(2, dimmem)
 !
 ! ----------------------------------------------------------------------
@@ -44,7 +44,7 @@ subroutine zbinit(f0, coef, dimmem, mem)
 !
     real(kind=8) :: rhoneg, rhopos
     real(kind=8) :: parmul, fneg, fpos
-    integer :: dimcpl, nbcpl
+    integer(kind=8) :: dimcpl, nbcpl
     aster_logical :: bpos, lopti
     common/zbpar/rhoneg, rhopos,&
      &               parmul, fneg, fpos,&

@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -52,8 +52,8 @@ subroutine nmrest_ecro(model_, mate_, ds_constitutive, hval_incr)
 !
 ! --------------------------------------------------------------------------------------------------
 !
-    integer, parameter :: nbin = 8
-    integer, parameter :: nbout = 1
+    integer(kind=8), parameter :: nbin = 8
+    integer(kind=8), parameter :: nbout = 1
     character(len=8)   :: lpaout(nbout), lpain(nbin)
     character(len=19)  :: lchout(nbout), lchin(nbin)
 !

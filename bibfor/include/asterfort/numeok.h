@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2020 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -25,11 +25,11 @@ interface
                       fileIndx   , fileTime   ,&
                       astock)
         character(len=10), intent(in) :: storeAccess
-        integer, intent(in) :: storeIndxNb, storeTimeNb
+        integer(kind=8), intent(in) :: storeIndxNb, storeTimeNb
         character(len=19), intent(in) :: storeIndx, storeTime
         real(kind=8), intent(in) :: storeEpsi
         character(len=8), intent(in) :: storeCrit
-        integer, intent(in) :: fileIndx
+        integer(kind=8), intent(in) :: fileIndx
         real(kind=8), intent(in) :: fileTime
         aster_logical, intent(out) :: astock
     end subroutine numeok

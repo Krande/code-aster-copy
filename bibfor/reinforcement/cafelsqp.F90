@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -89,12 +89,12 @@ subroutine cafelsqp(cequi, effm, effn, ht, bw, &
     real(kind=8) :: enrobs
     real(kind=8) :: wmaxi
     real(kind=8) :: wmaxs
-    integer :: ferrcomp
-    integer :: precs
-    integer :: ferrsyme
+    integer(kind=8) :: ferrcomp
+    integer(kind=8) :: precs
+    integer(kind=8) :: ferrsyme
     real(kind=8) :: slsyme
-    integer :: uc
-    integer :: um
+    integer(kind=8) :: uc
+    integer(kind=8) :: um
     real(kind=8) :: kt
     real(kind=8) :: facier
     real(kind=8) :: fbeton
@@ -109,12 +109,12 @@ subroutine cafelsqp(cequi, effm, effn, ht, bw, &
     real(kind=8) :: sigmci
     real(kind=8) :: sigmcs
     real(kind=8) :: alpha
-    integer :: pivot
-    integer :: etat
+    integer(kind=8) :: pivot
+    integer(kind=8) :: etat
     real(kind=8) :: wfini
     real(kind=8) :: wfins
     real(kind=8) :: kvarf
-    integer :: ierr
+    integer(kind=8) :: ierr
 
 !   COEFFICIENTS LIE A L'UNITE CHOISIE
     real(kind=8) :: unite_pa, unite_m
@@ -132,9 +132,9 @@ subroutine cafelsqp(cequi, effm, effn, ht, bw, &
     real(kind=8) :: hceff, rhoeff, SrmaxSUP, SrmaxINF, DESUP, DEINF
     logical :: COND_SUP, COND_INF
     real(kind=8) :: kVAR_A, kVAR_B, kVAR_NEW
-    integer :: COUNT_B
+    integer(kind=8) :: COUNT_B
     logical :: COND_A, COND_B, CONSTAT, COND_FISS, COND_NEW
-    integer :: Niter
+    integer(kind=8) :: Niter
 
 !   INITIALISATION DU CODE RETOUR
     ierr = 0

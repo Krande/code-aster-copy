@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -19,7 +19,7 @@
 subroutine vpzech(d, z, low, high, mm, &
                   neq, iz)
     implicit none
-    integer :: low, high, mm, neq, iz
+    integer(kind=8) :: low, high, mm, neq, iz
     real(kind=8) :: d(1), z(iz, 1)
 !     MISE A L'ECHELLE (NORMALISATION) DE LA COLONNE Z PAR LA BONNE
 !     VALEUR DE "D"
@@ -31,7 +31,7 @@ subroutine vpzech(d, z, low, high, mm, &
 !        HANDBOOK FOR AUTOMATIC COMPUTATION - LINEAR ALGEBRA - VOL.2
 !        PAGE 321 (ROUTINE BALBAK)
 !     ------------------------------------------------------------------
-    integer :: i, j, ii, jj
+    integer(kind=8) :: i, j, ii, jj
     real(kind=8) :: s
 !     ------------------------------------------------------------------
     do i = low, high

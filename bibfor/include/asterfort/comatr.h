@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -22,19 +22,19 @@ interface
     subroutine comatr(option, typev, nbproc, rang, vnconv,&
                       dim1i, dim2i, vecti, dim1r, dim2r,&
                       vectr, dim1c, dim2c, vectc)
-        integer :: dim1c
-        integer :: dim1r
-        integer :: dim1i
-        integer :: nbproc
+        integer(kind=8) :: dim1c
+        integer(kind=8) :: dim1r
+        integer(kind=8) :: dim1i
+        integer(kind=8) :: nbproc
         character(len=1) :: option
         character(len=1) :: typev
-        integer :: rang
-        integer :: vnconv(nbproc)
-        integer :: dim2i
-        integer :: vecti(dim1i, *)
-        integer :: dim2r
+        integer(kind=8) :: rang
+        integer(kind=8) :: vnconv(nbproc)
+        integer(kind=8) :: dim2i
+        integer(kind=8) :: vecti(dim1i, *)
+        integer(kind=8) :: dim2r
         real(kind=8) :: vectr(dim1r, *)
-        integer :: dim2c
+        integer(kind=8) :: dim2c
         complex(kind=8) :: vectc(dim1c, *)
     end subroutine comatr
 end interface

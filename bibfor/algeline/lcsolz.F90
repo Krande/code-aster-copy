@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -34,12 +34,12 @@ subroutine lcsolz(a, b, ndim, n, nbscmb, &
 !     ------------------------------------------------------------------
 #include "asterc/r8miem.h"
 #include "asterfort/dcabs2.h"
-    integer :: n, nbscmb, ndim
+    integer(kind=8) :: n, nbscmb, ndim
     complex(kind=8) :: a(ndim, ndim), b(ndim, nbscmb)
     !
 !-----------------------------------------------------------------------
-    integer :: ipivot
-    integer :: i, ic, il, iret, iscmb, j, k
+    integer(kind=8) :: ipivot
+    integer(kind=8) :: i, ic, il, iret, iscmb, j, k
     real(kind=8) :: apivot, zero, rmin
     complex(kind=8) :: ak, bk
 !-----------------------------------------------------------------------

@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -25,12 +25,11 @@ subroutine varpi(ds_thm, j_mater, p1, p1m, dp1, dp2, &
 !
     implicit none
 !
-#include "asterfort/assert.h"
 #include "asterfort/THM_type.h"
 #include "asterfort/rcvala.h"
 !
     type(THM_DS), intent(in) :: ds_thm
-    integer, intent(in) :: j_mater
+    integer(kind=8), intent(in) :: j_mater
     real(kind=8), intent(in) :: p1, p1m, dp1, dp2
     real(kind=8), intent(in) :: phi0
     real(kind=8), intent(in) :: ep, surf, shut, sbjh, wbjh
@@ -61,9 +60,9 @@ subroutine varpi(ds_thm, j_mater, p1, p1m, dp1, dp2, &
 ! In  epm              : thickness of the adsorbed water layer  - At beginning of step
 ! Out dpi              : variation of the hydraulic pressure at end of current time
 ! --------------------------------------------------------------------------------------------------
-    integer, parameter :: nb_para_bjh = 5
+    integer(kind=8), parameter :: nb_para_bjh = 5
     real(kind=8) :: para_vale_bjh(nb_para_bjh)
-    integer :: icodre_bjh(nb_para_bjh)
+    integer(kind=8) :: icodre_bjh(nb_para_bjh)
     character(len=16), parameter :: para_name_bjh(nb_para_bjh) = (/'A0     ', &
                                                                    'SHUTTLE', &
                                                                    'EPAI   ', &

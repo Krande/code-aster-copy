@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -49,20 +49,20 @@ subroutine op0146()
 #include "asterfort/utmess.h"
 #include "asterfort/wkvect.h"
 !
-    integer :: lvmoy, n1, n2, nb, nbm
-    integer :: dim, ij, nbabs
+    integer(kind=8) :: lvmoy, n1, n2, nb, nbm
+    integer(kind=8) :: dim, ij, nbabs
 !-----------------------------------------------------------------------
-    integer :: ideb, idisc, ifreq, ik, im1, im2
-    integer :: inumo, ipf, ipv, is, ispect, iv, ivali
-    integer :: ivite, iz, js, lbaref, lfsvi
-    integer :: lfsvk, linds, lnoe, lnozo, lpasf, lspec
-    integer :: nbpf, nbspec, nff, nfi, nmodf, nmodi, npoi
-    integer :: npv, nspelo, nuzo, nzex
+    integer(kind=8) :: ideb, idisc, ifreq, ik, im1, im2
+    integer(kind=8) :: inumo, ipf, ipv, is, ispect, iv, ivali
+    integer(kind=8) :: ivite, iz, js, lbaref, lfsvi
+    integer(kind=8) :: lfsvk, linds, lnoe, lnozo, lpasf, lspec
+    integer(kind=8) :: nbpf, nbspec, nff, nfi, nmodf, nmodi, npoi
+    integer(kind=8) :: npv, nspelo, nuzo, nzex
     real(kind=8) :: aire, alonto, freqf, freqi, pas, pui, pui2
     real(kind=8) :: pui2d, pui3d, vmoy, vmoyto, x1, x2, epsi
 !-----------------------------------------------------------------------
     parameter(nb=1024)
-    integer :: i3, ivitef, lfreq, lnumi, lnumj, lrefe
+    integer(kind=8) :: i3, ivitef, lfreq, lnumi, lnumj, lrefe
     real(kind=8) :: val, vitef
     aster_logical :: casint
     character(len=8) :: nomu, option, nomzon, nompro
@@ -72,7 +72,7 @@ subroutine op0146()
     character(len=24) :: fsvi, fsvk, basref, pvite
     character(len=24) :: valk(3)
     character(len=24) :: chnumi, chnumj, chfreq, chvale
-    integer :: mxval
+    integer(kind=8) :: mxval
     character(len=16), pointer :: vate(:) => null()
 !
 !-----------------------------------------------------------------------

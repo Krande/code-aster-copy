@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -19,7 +19,7 @@
 function iorim2(num1, n1, num2, n2, reorie)
     implicit none
 #include "asterf_types.h"
-    integer :: iorim2, n1, n2, num1(n1), num2(n2)
+    integer(kind=8) :: iorim2, n1, n2, num1(n1), num2(n2)
     aster_logical :: reorie
 !     IORIM2  --  ORIENTATION D'UNE MAILLE PAR RAPPORT A UNE VOISINE
 !
@@ -35,7 +35,7 @@ function iorim2(num1, n1, num2, n2, reorie)
 !
 !     DONNEES POUR TRIA3,TRIA6,TRIA7,QUAD4,QUAD8,QUAD9
 !     NOMBRE DE SOMMETS EN FONCTION DU NOMBRE DE NOEUDS DE L'ELEMENT
-    integer :: nso(9), nso1, nso2, i1, j1, i2, j2, i, k, l
+    integer(kind=8) :: nso(9), nso1, nso2, i1, j1, i2, j2, i, k, l
     data nso/0, 0, 3, 4, 0, 3, 3, 4, 4/
 !
 #define egal(i1,j1,i2,j2) (num1(i1).eq.num2(i2)).and. \

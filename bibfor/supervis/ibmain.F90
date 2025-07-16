@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -33,12 +33,11 @@ subroutine ibmain()
 #include "asterfort/jeinif.h"
 #include "asterfort/lxinit.h"
 #include "asterfort/ststat.h"
-#include "asterfort/utgtme.h"
 #include "asterfort/utmess.h"
 
     character(len=8) :: nomf
-    integer :: unmega, idebug, iret, lois
-    integer :: mxdyn
+    integer(kind=8) :: unmega, idebug, iret, lois
+    integer(kind=8) :: mxdyn
     real(kind=8) :: valr(2), moctet, memory
 
 !   Initialization of loggers

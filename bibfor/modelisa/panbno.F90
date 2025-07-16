@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -26,7 +26,7 @@ subroutine panbno(ityp, nbnott)
 #include "asterfort/jexnum.h"
 #include "asterfort/utmess.h"
 !
-    integer :: ityp, nbnott(3)
+    integer(kind=8) :: ityp, nbnott(3)
 !     BUT: CALCULER LE NOMBRE DE NOEUDS SOMMETS,ARRETES,INTERIEURS
 !     D'UNE MAILLE D'UN TYPE DONNE.
 !
@@ -36,7 +36,7 @@ subroutine panbno(ityp, nbnott)
 !                   (2) NBRE DE NOEUDS ARRETES
 !                   (3) NBRE DE NOEUDS INTERIEURS
     character(len=8) :: nomtm
-    integer :: idnbno, nbntot
+    integer(kind=8) :: idnbno, nbntot
 ! --- DEBUT
 !-----------------------------------------------------------------------
 !-----------------------------------------------------------------------

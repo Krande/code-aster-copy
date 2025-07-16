@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -20,11 +20,11 @@
 !
           interface 
             subroutine rcadma(jmat,phenom,nomres,valres,icodre,iarret)
-              integer :: jmat
+              integer(kind=8) :: jmat
               character(len=*) :: phenom
               character(len=*) :: nomres
-              integer :: valres
-              integer :: icodre
-              integer :: iarret
+              integer(kind=8) :: valres
+              integer(kind=8) :: icodre
+              integer(kind=8) :: iarret
             end subroutine rcadma
           end interface 

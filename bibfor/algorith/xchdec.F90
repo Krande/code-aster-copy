@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -50,11 +50,11 @@ subroutine xchdec(modelx, decou, chdec)
 ! IN/OUT  TRAV   : TABLE TO BE FILLED ON FINDING EPSI
 ! OUT CHAM_ELEM :
 !
-    integer :: nncp, ibid
+    integer(kind=8) :: nncp, ibid
     character(len=19) :: ligrel, cham_elem_s
-    integer :: nute, igr, nbgrel
-    integer :: nel, jliel, jcesd, jcesl
-    integer :: ima, iad, iel
+    integer(kind=8) :: nute, igr, nbgrel
+    integer(kind=8) :: nel, jliel, jcesd, jcesl
+    integer(kind=8) :: ima, iad, iel
     character(len=8) :: noma
     character(len=16) :: nomte
     character(len=8), pointer :: cesv(:) => null()

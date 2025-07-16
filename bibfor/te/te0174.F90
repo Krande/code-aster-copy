@@ -53,13 +53,13 @@ subroutine te0174(option, nomte)
     real(kind=8) :: nx, ny, nz
     real(kind=8) :: sx(9, 9), sy(9, 9), sz(9, 9), jac, d(45), us(9), e(9, 9)
     real(kind=8) :: rho, alpha, r_impe, rhon, q_alpha, q_c
-    integer :: ipoids, ivf, idfdx, idfdy
-    integer :: jv_geom, jv_mate, jv_matr
-    integer :: jvVect, jvDisp, jvDispM, jvDispP
-    integer :: ndim, nno, ndi, ipg, npg, n1, n2, nn
-    integer :: idec, jdec, kdec, ldec
-    integer :: i, ij, ino, j, jno
-    integer :: j_mater, iret, codret
+    integer(kind=8) :: ipoids, ivf, idfdx, idfdy
+    integer(kind=8) :: jv_geom, jv_mate, jv_matr
+    integer(kind=8) :: jvVect, jvDisp, jvDispM, jvDispP
+    integer(kind=8) :: ndim, nno, ndi, ipg, npg, n1, n2, nn
+    integer(kind=8) :: idec, jdec, kdec, ldec
+    integer(kind=8) :: i, ij, ino, j, jno
+    integer(kind=8) :: j_mater, iret, codret
     character(len=16) :: FEForm, rela_comp
     character(len=16), pointer :: compor(:) => null()
     aster_logical :: lVect, lMatr, lVari, lSigm

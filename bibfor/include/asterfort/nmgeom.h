@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -25,15 +25,15 @@ interface
                       kpg, ipoids, ivf, idfde, depl,&
                       ldfdi, poids, dfdi, f, eps,&
                       r)
-        integer :: nno
-        integer :: ndim
+        integer(kind=8) :: nno
+        integer(kind=8) :: ndim
         aster_logical :: axi
         aster_logical :: grand
         real(kind=8) :: geom(ndim, nno)
-        integer :: kpg
-        integer :: ipoids
-        integer :: ivf
-        integer :: idfde
+        integer(kind=8) :: kpg
+        integer(kind=8) :: ipoids
+        integer(kind=8) :: ivf
+        integer(kind=8) :: idfde
         real(kind=8) :: depl(ndim, nno)
         aster_logical :: ldfdi
         real(kind=8) :: poids

@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -36,7 +36,7 @@ subroutine xcatls(ndim, geofis, callst, jltsv, jltsl, &
 #include "asterfort/normev.h"
 #include "asterfort/provec.h"
 #include "asterfort/utmess.h"
-    integer :: ndim, jltsv, jltsl, jlnsv, jlnsl
+    integer(kind=8) :: ndim, jltsv, jltsl, jlnsv, jlnsl
     character(len=8) :: noma, cote
     character(len=16) :: geofis
     aster_logical :: callst
@@ -62,7 +62,7 @@ subroutine xcatls(ndim, geofis, callst, jltsv, jltsl, &
 !            QUANTITES DEFINISSANT LA GEO DE LA FISS
 !     ------------------------------------------------------------------
 !
-    integer :: ino, nbno, i, j
+    integer(kind=8) :: ino, nbno, i, j
     real(kind=8) :: p2d(2), p3d(3), norme, vect3(3), mat(3, 3), ploc(3)
     real(kind=8) :: h
     real(kind=8) :: nori(3), next(3), nmil(3), vseg(3), nseg

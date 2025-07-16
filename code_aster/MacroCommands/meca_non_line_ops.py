@@ -58,6 +58,8 @@ def _keywords_check(keywords):
         for load in keywords["EXCIT"]:
             if load["TYPE_CHARGE"] not in ("FIXE_CSTE", "DIDI"):
                 raise RuntimeError("TYPE_CHARGE not supported")
+            if load["TYPE_CHARGE"] == "DIDI" and isinstance(load["CHARGE"], MechanicalDirichletBC):
+                UTMESS("F", "CHARGES9_8")
 
     if "CONVERGENCE" in keywords:
         for key in keywords["CONVERGENCE"]:

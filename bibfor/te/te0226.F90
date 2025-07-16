@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -43,12 +43,12 @@ subroutine te0226(option, nomte)
 ! person_in_charge: ayaovi-dzifa.kudawoo at edf.fr
 !
     character(len=8) :: elrefe, fami, poum
-    integer :: icodre(1), kpg, spt
+    integer(kind=8) :: icodre(1), kpg, spt
     real(kind=8) :: dfdx(3), r, rm, rf, rmf, poids, cour, nx, ny, h, vfi, vfj
     real(kind=8) :: matp(9, 9), matv(45), rho(1)
-    integer :: nno, nnos, jgano, ndim, ipoids, ivf, idfdk, igeom, imate, icaco
-    integer :: kp, npg, ii, jj, i, j, k, imatuu, kd1, kd2, kd3, ij1, ij2, ij3
-    integer :: nddl, nvec, iacce, ivect
+    integer(kind=8) :: nno, nnos, jgano, ndim, ipoids, ivf, idfdk, igeom, imate, icaco
+    integer(kind=8) :: kp, npg, ii, jj, i, j, k, imatuu, kd1, kd2, kd3, ij1, ij2, ij3
+    integer(kind=8) :: nddl, nvec, iacce, ivect
 ! ......................................................................
 !
     call elref1(elrefe)

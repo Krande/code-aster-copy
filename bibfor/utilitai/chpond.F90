@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -64,17 +64,17 @@ subroutine chpond(tych, dejain, chin, cesout, cespoi, &
 !                 mais il faut penser a le detruire quand on change de ligrel.
 !-------------------------------------------------------------------------------
 !
-    integer :: iret, nbchin, nbma, nbpt, nbsp, nbcmp, joutl, joutd
-    integer :: nbspmx
-    integer :: iad1, iad2, iad3, isp, ima, icmp, ipt, jchsl, jchsd, iexi
-    integer :: jpoid, jpoil, jpoic, jch2, jch1, iret1, iret2, jpdsm
+    integer(kind=8) :: iret, nbchin, nbma, nbpt, nbsp, nbcmp, joutl, joutd
+    integer(kind=8) :: nbspmx
+    integer(kind=8) :: iad1, iad2, iad3, isp, ima, icmp, ipt, jchsl, jchsd, iexi
+    integer(kind=8) :: jpoid, jpoil, jpoic, jch2, jch1, iret1, iret2, jpdsm
     real(kind=8) :: poids, rvid
     parameter(nbchin=6)
     character(len=8) :: lpain(nbchin), lpaout(1), noma
     character(len=19) :: chins, ligr19
     character(len=24) :: chgeom, lchin(nbchin), lchout(2), vefch1
     character(len=24) :: vefch2
-    integer, pointer :: repe(:) => null()
+    integer(kind=8), pointer :: repe(:) => null()
     real(kind=8), pointer :: chsv(:) => null()
     real(kind=8), pointer :: outv(:) => null()
     real(kind=8), pointer :: poiv(:) => null()

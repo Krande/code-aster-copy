@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -21,7 +21,7 @@ interface
                   geom,ddl, vff, vffb, idff, idffb,&
                   iw, sief,fint)
         aster_logical :: refe,axi
-        integer       :: ndim, nno, nnob, npg, nddl, idff, idffb, iw
+        integer(kind=8)       :: ndim, nno, nnob, npg, nddl, idff, idffb, iw
         real(kind=8)  :: geom(ndim,nno),ddl(nddl),vff(nno, npg), vffb(nnob, npg)
         real(kind=8)  :: sief(3*ndim+2,npg)
         real(kind=8)  :: fint(nddl)

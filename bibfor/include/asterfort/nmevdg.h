@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -20,7 +20,7 @@
 !
 interface
     subroutine nmevdg(sddisc, vale, i_echec, i_echec_acti)
-        integer :: i_echec, i_echec_acti
+        integer(kind=8) :: i_echec, i_echec_acti
         character(len=19) :: sddisc, vale(*)
     end subroutine nmevdg
 end interface

@@ -29,7 +29,6 @@ subroutine laMatr_ct_std(parameters, geom, matr_cont, matr_fric)
 #include "asterfort/getInterCont.h"
 #include "asterfort/getQuadCont.h"
 #include "asterfort/laElemCont.h"
-#include "blas/dgemm.h"
 #include "blas/dger.h"
 #include "contact_module.h"
 !
@@ -58,7 +57,7 @@ subroutine laMatr_ct_std(parameters, geom, matr_cont, matr_fric)
 ! --------------------------------------------------------------------------------------------------
 !
     aster_logical :: l_cont_qp, l_fric_qp
-    integer :: i_qp, nb_qp, nbPoinInte
+    integer(kind=8) :: i_qp, nb_qp, nbPoinInte
     real(kind=8) :: weight_sl_qp, coeff, hF
     real(kind=8) :: coor_qp_sl(2)
     real(kind=8) :: coor_qp(2, MAX_NB_QUAD), weight_qp(MAX_NB_QUAD)

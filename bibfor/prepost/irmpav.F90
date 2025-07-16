@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -26,7 +26,6 @@ subroutine irmpav(nomcon, ifichi, paraListNb, paraListName, numdt, numit, dt)
 #include "asterfort/as_mficom.h"
 #include "asterfort/as_mficlo.h"
 #include "asterfort/as_mprrvw.h"
-#include "asterfort/assert.h"
 #include "asterfort/codent.h"
 #include "asterfort/jedema.h"
 #include "asterfort/jemarq.h"
@@ -34,10 +33,10 @@ subroutine irmpav(nomcon, ifichi, paraListNb, paraListName, numdt, numit, dt)
 #include "asterfort/ulisog.h"
 #include "asterfort/utmess.h"
 !
-    integer, intent(in) :: paraListNb
+    integer(kind=8), intent(in) :: paraListNb
     character(len=16), pointer :: paraListName(:)
     character(len=*) :: nomcon
-    integer :: ifichi, numdt, numit
+    integer(kind=8) :: ifichi, numdt, numit
     real(kind=8) :: dt
 !
 ! --------------------------------------------------------------------------------------------------
@@ -58,8 +57,8 @@ subroutine irmpav(nomcon, ifichi, paraListNb, paraListName, numdt, numit, dt)
 ! --------------------------------------------------------------------------------------------------
 !
     med_idt :: idfimd
-    integer :: edleaj, codret, hdfok, medok
-    integer :: iPara, iaux
+    integer(kind=8) :: edleaj, codret, hdfok, medok
+    integer(kind=8) :: iPara, iaux
     character(len=1) :: saux01
     character(len=8) :: saux08
     character(len=16) :: paraName

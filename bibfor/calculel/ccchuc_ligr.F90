@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -23,7 +23,6 @@ subroutine ccchuc_ligr(model, list_elem_stor, nb_elem_old, nb_elem_new, list_ele
 !
 #include "asterf_types.h"
 #include "jeveux.h"
-#include "asterfort/assert.h"
 #include "asterfort/exlim1.h"
 #include "asterfort/gnomsd.h"
 #include "asterfort/jeveuo.h"
@@ -33,9 +32,9 @@ subroutine ccchuc_ligr(model, list_elem_stor, nb_elem_old, nb_elem_new, list_ele
 !
     character(len=8), intent(in) :: model
     character(len=24), intent(in) :: list_elem_stor
-    integer, intent(in) :: nb_elem_old
+    integer(kind=8), intent(in) :: nb_elem_old
     character(len=24), intent(in) :: list_elem_new
-    integer, intent(in) :: nb_elem_new
+    integer(kind=8), intent(in) :: nb_elem_new
     character(len=19), intent(in) :: ligrel_old
     character(len=19), intent(out) :: ligrel_new
 !
@@ -57,8 +56,8 @@ subroutine ccchuc_ligr(model, list_elem_stor, nb_elem_old, nb_elem_new, list_ele
 !
 ! --------------------------------------------------------------------------------------------------
 !
-    integer :: jelem, jlist, nb_elem
-    integer :: iret, ima
+    integer(kind=8) :: jelem, jlist, nb_elem
+    integer(kind=8) :: iret, ima
     aster_logical :: same, force_new_ligrel
     character(len=24) :: noojb
 !

@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -21,10 +21,10 @@
 interface
     subroutine sspmvc(n, m, mat, ad, t1,&
                       y)
-        integer :: n
-        integer :: m
+        integer(kind=8) :: n
+        integer(kind=8) :: m
         complex(kind=8) :: mat(*)
-        integer :: ad(*)
+        integer(kind=8) :: ad(*)
         complex(kind=8) :: t1(*)
         complex(kind=8) :: y(*)
     end subroutine sspmvc

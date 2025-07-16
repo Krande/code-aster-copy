@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -42,13 +42,13 @@ function lonele(dime, igeom)
 #include "asterfort/tecael.h"
 #include "asterfort/utmess.h"
 !
-    integer, optional, intent(in)  :: dime
-    integer, optional, intent(out) :: igeom
+    integer(kind=8), optional, intent(in)  :: dime
+    integer(kind=8), optional, intent(out) :: igeom
     real(kind=8) :: lonele
 !
 ! --------------------------------------------------------------------------------------------------
 !
-    integer             :: iadzi, iazk24, igeomloc, idimloc
+    integer(kind=8)             :: iadzi, iazk24, igeomloc, idimloc
     real(kind=8)        :: r8bid, xl
     character(len=8)    :: nomail
 !

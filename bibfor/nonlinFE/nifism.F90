@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -40,16 +40,15 @@ subroutine nifism(ndim, nnod, nnog, nnop, npg, &
 #include "asterfort/nmcomp.h"
 #include "asterfort/nmepsi.h"
 #include "asterfort/nmmalu.h"
-#include "asterfort/r8inir.h"
 #include "asterfort/rcvala.h"
 #include "blas/dcopy.h"
 #include "blas/ddot.h"
 #include "blas/dscal.h"
 !
-    integer :: ndim, nnod, nnog, nnop, npg, iw, idffd, idffg, lgpg
-    integer :: mate
-    integer :: vu(3, 27), vg(27), vp(27)
-    integer :: codret
+    integer(kind=8) :: ndim, nnod, nnog, nnop, npg, iw, idffd, idffg, lgpg
+    integer(kind=8) :: mate
+    integer(kind=8) :: vu(3, 27), vg(27), vp(27)
+    integer(kind=8) :: codret
     real(kind=8) :: vffd(nnod, npg), vffg(nnog, npg), vffp(nnop, npg)
     real(kind=8) :: instm, instp
     real(kind=8) :: geomi(ndim, nnod), ddlm(*), ddld(*), angmas(*)
@@ -107,16 +106,16 @@ subroutine nifism(ndim, nnod, nnog, nnop, npg, &
 !
 ! --------------------------------------------------------------------------------------------------
 !
-    integer, parameter :: ksp = 1
+    integer(kind=8), parameter :: ksp = 1
     character(len=4), parameter :: fami = 'RIGI'
     aster_logical, parameter :: grand = ASTER_TRUE
-    integer, parameter :: ndimBizarre = 3
+    integer(kind=8), parameter :: ndimBizarre = 3
     aster_logical :: axi, nonloc
-    integer :: kpg, nddl, ndu, iret
-    integer :: ia, na, ra, sa, ib, nb, rb, sb, ja, jb
-    integer :: k2ret(1), lij(3, 3), os, kk
-    integer :: viaja
-    integer :: cod(27)
+    integer(kind=8) :: kpg, nddl, ndu, iret
+    integer(kind=8) :: ia, na, ra, sa, ib, nb, rb, sb, ja, jb
+    integer(kind=8) :: k2ret(1), lij(3, 3), os, kk
+    integer(kind=8) :: viaja
+    integer(kind=8) :: cod(27)
     real(kind=8), parameter :: rac2 = sqrt(2.d0)
     real(kind=8) :: geomm(3*27), geomp(3*27), deplm(3*27), depld(3*27)
     real(kind=8) :: r, w, wm, wp, dffd(nnod, 4), dff2(nnog, 3)
@@ -138,7 +137,7 @@ subroutine nifism(ndim, nnod, nnog, nnop, npg, &
     real(kind=8), parameter :: id(3, 3) = reshape((/1.d0, 0.d0, 0.d0, &
                                                     0.d0, 1.d0, 0.d0, &
                                                     0.d0, 0.d0, 1.d0/), (/3, 3/))
-    integer, parameter :: vij(3, 3) = reshape((/1, 4, 5, 4, 2, 6, 5, 6, 3/), (/3, 3/))
+    integer(kind=8), parameter :: vij(3, 3) = reshape((/1, 4, 5, 4, 2, 6, 5, 6, 3/), (/3, 3/))
 !
 ! --------------------------------------------------------------------------------------------------
 !

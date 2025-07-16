@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -21,12 +21,12 @@
 interface
     subroutine zmout(lout, m, n, a, lda,&
                      idigit, ifmt)
-        integer :: lda
-        integer :: lout
-        integer :: m
-        integer :: n
+        integer(kind=8) :: lda
+        integer(kind=8) :: lout
+        integer(kind=8) :: m
+        integer(kind=8) :: n
         complex(kind=8) :: a(lda, *)
-        integer :: idigit
+        integer(kind=8) :: idigit
         character(len=*) :: ifmt
     end subroutine zmout
 end interface

@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -23,13 +23,12 @@ subroutine thmGetParaBJH(ds_thm, j_mater, p1)
     implicit none
 !
 #include "asterf_types.h"
-#include "asterfort/assert.h"
 #include "asterfort/rcvala.h"
 #include "asterfort/utmess.h"
 #include "asterfort/THM_type.h"
 !
     type(THM_DS), intent(inout) :: ds_thm
-    integer, intent(in) :: j_mater
+    integer(kind=8), intent(in) :: j_mater
     real(kind=8), intent(in) :: p1
 !
 ! --------------------------------------------------------------------------------------------------
@@ -45,9 +44,9 @@ subroutine thmGetParaBJH(ds_thm, j_mater, p1)
 !
 ! --------------------------------------------------------------------------------------------------
 !
-    integer, parameter :: nb_para_bjh = 5
+    integer(kind=8), parameter :: nb_para_bjh = 5
     real(kind=8) :: para_vale_bjh(nb_para_bjh)
-    integer :: icodre_bjh(nb_para_bjh)
+    integer(kind=8) :: icodre_bjh(nb_para_bjh)
     character(len=16), parameter :: para_name_bjh(nb_para_bjh) = (/'A0     ', &
                                                                    'SHUTTLE', &
                                                                    'EPAI   ', &

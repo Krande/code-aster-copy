@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -25,13 +25,13 @@ interface
         character(len=24) :: nom1
         character(len=24) :: nom2
         character(len=24) :: nom3
-        integer :: ncdmax
-        integer :: ipas
-        integer :: ires
+        integer(kind=8) :: ncdmax
+        integer(kind=8) :: ipas
+        integer(kind=8) :: ires
         real(kind=8) :: borncd(20)
-        integer :: nborcd
+        integer(kind=8) :: nborcd
         real(kind=8) :: coefcd(20, 11)
-        integer :: ipas1
-        integer :: ires1
+        integer(kind=8) :: ipas1
+        integer(kind=8) :: ires1
     end subroutine coefal
 end interface

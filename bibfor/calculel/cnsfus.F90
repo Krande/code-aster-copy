@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -37,7 +37,7 @@ subroutine cnsfus(nbchs, lichs, lcumul, lcoefr, lcoefc, &
 #include "asterfort/as_deallocate.h"
 #include "asterfort/as_allocate.h"
 !
-    integer :: nbchs
+    integer(kind=8) :: nbchs
     character(len=*) :: lichs(nbchs), cns3z, base
     aster_logical :: lcumul(nbchs), lcoc
     real(kind=8) :: lcoefr(nbchs)
@@ -70,11 +70,11 @@ subroutine cnsfus(nbchs, lichs, lcumul, lcoefr, lcoefc, &
 !-----------------------------------------------------------------------
 !
 !     ------------------------------------------------------------------
-    integer :: jcn1k, jcn1d, jcn1v, jcn1l, jcn1c, nbno
-    integer :: jcn3d, jcn3v, jcn3l
-    integer :: jcmpgd, ichs, icmp, icmp3, ncmp3
-    integer :: ncmpmx, ncmp1, icmp1
-    integer :: ino, coefi, k1, k3
+    integer(kind=8) :: jcn1k, jcn1d, jcn1v, jcn1l, jcn1c, nbno
+    integer(kind=8) :: jcn3d, jcn3v, jcn3l
+    integer(kind=8) :: jcmpgd, ichs, icmp, icmp3, ncmp3
+    integer(kind=8) :: ncmpmx, ncmp1, icmp1
+    integer(kind=8) :: ino, coefi, k1, k3
     character(len=8) :: ma, nomgd, nocmp
     character(len=3) :: tsca
     character(len=19) :: cns1, cns3
@@ -83,7 +83,7 @@ subroutine cnsfus(nbchs, lichs, lcumul, lcoefr, lcoefc, &
     aster_logical :: cumul
     character(len=8), pointer :: cn3c(:) => null()
     character(len=8), pointer :: licmp(:) => null()
-    integer, pointer :: nucmp(:) => null()
+    integer(kind=8), pointer :: nucmp(:) => null()
 !     ------------------------------------------------------------------
     call jemarq()
 !

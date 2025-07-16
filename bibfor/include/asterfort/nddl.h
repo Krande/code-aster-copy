@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -20,11 +20,11 @@
 !
 interface
     function nddl(ili, nunoel, nec, idprn1, idprn2)
-        integer :: ili
-        integer :: nunoel
-        integer :: nec
-        integer :: idprn1
-        integer :: idprn2
-        integer :: nddl
+        integer(kind=8) :: ili
+        integer(kind=8) :: nunoel
+        integer(kind=8) :: nec
+        integer(kind=8) :: idprn1
+        integer(kind=8) :: idprn2
+        integer(kind=8) :: nddl
     end function nddl
 end interface

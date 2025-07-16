@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -85,12 +85,12 @@ subroutine tstbar(nbsom, x3d1, x3d2, x3d3, x3d4, &
 #include "asterfort/mtcrog.h"
 #include "asterfort/rslsvd.h"
 #include "blas/dcopy.h"
-    integer :: nbsom, itest
+    integer(kind=8) :: nbsom, itest
     real(kind=8) :: x3d1(*), x3d2(*), x3d3(*), x3d4(*), x3dp(*), xbar(*)
 !
 ! VARIABLES LOCALES
 ! -----------------
-    integer :: ierr
+    integer(kind=8) :: ierr
     real(kind=8) :: a(4, 4), b(4), eps, epsg, s(3), u(4, 4), v(4, 3), work(4)
     blas_int :: b_incx, b_incy, b_n
 !

@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -38,15 +38,15 @@ subroutine te0387(option, nomte)
 ! ......................................................................
 !
 !-----------------------------------------------------------------------
-    integer :: icode, igeom2, ihechp, jgano, nbres, ndim, nnos
+    integer(kind=8) :: icode, igeom2, ihechp, jgano, nbres, ndim, nnos
 !
 !-----------------------------------------------------------------------
     parameter(nbres=3)
     character(len=8) :: nompar(nbres)
     real(kind=8) :: valpar(nbres), poids, poids1, poids2, r, r1, r2
     real(kind=8) :: z, z1, z2, hechp, nx, ny, mat(6)
-    integer :: nno, kp, npg, ipoids, ivf, idfde, igeom
-    integer :: itemps, imatt, k, i, j, l, li, lj
+    integer(kind=8) :: nno, kp, npg, ipoids, ivf, idfde, igeom
+    integer(kind=8) :: itemps, imatt, k, i, j, l, li, lj
     aster_logical :: laxi
 !-----------------------------------------------------------------------
 !

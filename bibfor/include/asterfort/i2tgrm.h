@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -21,11 +21,11 @@
 interface
     subroutine i2tgrm(voisn1, voisn2, nbm, stchm, ptchm,&
                       nbchm)
-        integer :: voisn1(*)
-        integer :: voisn2(*)
-        integer :: nbm
-        integer :: stchm(*)
-        integer :: ptchm(*)
-        integer :: nbchm
+        integer(kind=8) :: voisn1(*)
+        integer(kind=8) :: voisn2(*)
+        integer(kind=8) :: nbm
+        integer(kind=8) :: stchm(*)
+        integer(kind=8) :: ptchm(*)
+        integer(kind=8) :: nbchm
     end subroutine i2tgrm
 end interface

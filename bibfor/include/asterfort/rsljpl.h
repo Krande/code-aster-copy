@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -22,12 +22,12 @@ interface
     subroutine rsljpl(fami, kpg, ksp, loi, imat,&
                       nmat, mater, sig, vin, vind,&
                       deps, theta, dt, dsde)
-        integer :: nmat
+        integer(kind=8) :: nmat
         character(len=*) :: fami
-        integer :: kpg
-        integer :: ksp
+        integer(kind=8) :: kpg
+        integer(kind=8) :: ksp
         character(len=16) :: loi
-        integer :: imat
+        integer(kind=8) :: imat
         real(kind=8) :: mater(nmat, 2)
         real(kind=8) :: sig(6)
         real(kind=8) :: vin(*)

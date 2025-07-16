@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -21,11 +21,11 @@
           interface 
             subroutine getcara_lisno(noma,nno,lisno,dist_mini,dim,      &
      &linocara)
-              integer, intent(in) :: nno
+              integer(kind=8), intent(in) :: nno
               character(len=8), intent(in) :: noma
-              integer, intent(in) :: lisno(nno)
+              integer(kind=8), intent(in) :: lisno(nno)
               real(kind=8), intent(in) :: dist_mini
-              integer, intent(out) :: dim
-              integer, intent(out) :: linocara(*)
+              integer(kind=8), intent(out) :: dim
+              integer(kind=8), intent(out) :: linocara(*)
             end subroutine getcara_lisno
           end interface 

@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -41,7 +41,7 @@ subroutine irgmsh(nomcon, partie, ifi, nbcham, cham, &
 #include "asterfort/utmess.h"
 #include "asterfort/wkvect.h"
 !
-    integer :: ifi, nbcham, nbordr, nbcmp, ordr(*), nbmat, nummai(*), versio
+    integer(kind=8) :: ifi, nbcham, nbordr, nbcmp, ordr(*), nbmat, nummai(*), versio
     aster_logical :: lresu, lFirstOcc
     character(len=*) :: nomcon
     character(len=*) :: cham(*), nomcmp(*), partie
@@ -68,20 +68,20 @@ subroutine irgmsh(nomcon, partie, ifi, nbcham, cham, &
 !                    = SCALAIRE/VECT_2D/VECT_3D/TENS_2D/TENS_3D
 !
 !     ------------------------------------------------------------------
-    integer :: ior, ich, iret, nbma, i
-    integer :: typpoi, typseg, typtri, typtet, typqua, typpyr, typpri, typhex
-    integer :: jpoin, jpara, iad
+    integer(kind=8) :: ior, ich, iret, nbma, i
+    integer(kind=8) :: typpoi, typseg, typtri, typtet, typqua, typpyr, typpri, typhex
+    integer(kind=8) :: jpoin, jpara, iad
     character(len=8) :: tych, noma, k8b, nomaou, valk(2)
     character(len=16) :: valk2(2)
     character(len=19) :: noch19, noco19
 !
 !     --- TABLEAU DE DECOUPAGE
-    integer :: ntyele
+    integer(kind=8) :: ntyele
     parameter(ntyele=28)
 !     NBRE, NOM D'OBJET POUR CHAQUE TYPE D'ELEMENT
-    integer :: nbel(ntyele)
+    integer(kind=8) :: nbel(ntyele)
     character(len=24) :: nobj(ntyele)
-    integer, pointer :: connex(:) => null()
+    integer(kind=8), pointer :: connex(:) => null()
     real(kind=8), pointer :: vale(:) => null()
 !     ------------------------------------------------------------------
 !

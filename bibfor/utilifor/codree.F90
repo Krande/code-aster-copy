@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -42,12 +42,12 @@ subroutine codree(reel, mode, chaine)
 !     ------------------------------------------------------------------
     character(len=2) :: p
     character(len=10) :: format
-    integer :: long, nbchif
+    integer(kind=8) :: long, nbchif
     real(kind=8) :: valeur
     aster_logical :: marktr
 !     ------------------------------------------------------------------
 !-----------------------------------------------------------------------
-    integer :: ient, ii, il, im, ndec
+    integer(kind=8) :: ient, ii, il, im, ndec
 !-----------------------------------------------------------------------
     long = len(chaine)
     if (long .lt. 2) goto 900

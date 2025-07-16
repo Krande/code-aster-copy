@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -22,7 +22,7 @@ subroutine gmsast(nfie, nfis)
 #include "asterfort/pregms.h"
 #include "asterfort/ulisop.h"
 #include "asterfort/ulopen.h"
-    integer :: nfie, nfis
+    integer(kind=8) :: nfie, nfis
 !
 !      GMSAST --   INTERFACE GMSH-->ASTER
 !                  OUVERTURE ET LECTURE DU FICHIER GMSH

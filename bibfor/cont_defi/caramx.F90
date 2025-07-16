@@ -27,8 +27,8 @@ subroutine caramx(sdcont, cont_form, nb_cont_zone)
 #include "asterfort/caracp.h"
 !
     character(len=8), intent(in) :: sdcont
-    integer, intent(in) :: cont_form
-    integer, intent(in) :: nb_cont_zone
+    integer(kind=8), intent(in) :: cont_form
+    integer(kind=8), intent(in) :: nb_cont_zone
 !
 ! --------------------------------------------------------------------------------------------------
 !

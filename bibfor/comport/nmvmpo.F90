@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -23,7 +23,7 @@ subroutine nmvmpo(fami, npg, nno, option, nc, &
 !
     implicit none
     character(len=*) :: fami, option
-    integer :: npg, nno, nc, icodma
+    integer(kind=8) :: npg, nno, nc, icodma
     real(kind=8) :: xl, sect(*), u(nno*nc), du(nno*nc), fl(nno*nc), klv(*)
     real(kind=8) :: contm(npg*nc), contp(npg*nc), wgauss(npg)
 !
@@ -62,10 +62,10 @@ subroutine nmvmpo(fami, npg, nno, option, nc, &
 !
 ! --------------------------------------------------------------------------------------------------
 !
-    integer :: codres(2), itemp, iret
+    integer(kind=8) :: codres(2), itemp, iret
     character(len=2) :: nomres(2)
     aster_logical :: vecteu, matric
-    integer :: dimklv, kp, kk, i, j, k
+    integer(kind=8) :: dimklv, kp, kk, i, j, k
     real(kind=8) :: eps(nc), deps(nc), fg(nno*nc), sigp(nc), sigm(nc)
     real(kind=8) :: e, nu, g, phiy, phiz, xls2, epsthf, epsthd
     real(kind=8) :: aa, xiy, xiz, alfay, alfaz, xjx, xjg

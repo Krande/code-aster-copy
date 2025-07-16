@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -56,18 +56,18 @@ subroutine xsifl2(basloc, coeff, coeff3, ddld, ddlm, &
 !
 !
 !
-    integer :: ndim, nnop
+    integer(kind=8) :: ndim, nnop
     real(kind=8) :: am(3), basloc(9*nnop), coeff, coeff3
-    integer :: ddld, ddlm, ddls
+    integer(kind=8) :: ddld, ddlm, ddls
     real(kind=8) :: dfdi(nnop, ndim)
     real(kind=8) :: e1(3), e2(3), e3(3), ff(27), g, g1, g2, g3
     real(kind=8) :: grde1, grde2, grde3, grdep(3, 3)
     real(kind=8) :: gs2, gs3, cmp_hp
-    integer :: i, idepl, ier, igthet, ii, ino, ithet
-    integer :: j, l
+    integer(kind=8) :: i, idepl, ier, igthet, ii, ino, ithet
+    integer(kind=8) :: j, l
     real(kind=8) :: jac, k1, k2, k3, lamb(3), lamb1, lamb2
     real(kind=8) :: lamb3, lambl(3), norme_theta
-    integer :: nnos
+    integer(kind=8) :: nnos
     real(kind=8) :: norme, pm(3, 3), ptr(3, 3), theta(3)
     real(kind=8) :: tau1(3), tau2(3), nd(3), temp(3), xg(3)
     real(kind=8) :: ptp(3), vec(3), sens

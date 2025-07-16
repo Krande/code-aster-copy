@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2019 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -20,7 +20,7 @@
 !
 interface
     subroutine gver2d(nocc, noeud,rinf, rsup)
-        integer :: nocc
+        integer(kind=8) :: nocc
         character(len=8) :: noeud
         real(kind=8) :: rinf
         real(kind=8) :: rsup

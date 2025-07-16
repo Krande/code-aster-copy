@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -24,7 +24,6 @@ subroutine caliso(load, mesh, model, valeType)
 #include "jeveux.h"
 #include "asterc/getfac.h"
 #include "asterc/indik8.h"
-#include "asterc/r8gaem.h"
 #include "asterfort/aflrch.h"
 #include "asterfort/armin.h"
 #include "asterfort/assert.h"
@@ -42,7 +41,6 @@ subroutine caliso(load, mesh, model, valeType)
 #include "asterfort/jemarq.h"
 #include "asterfort/jeveuo.h"
 #include "asterfort/jexnom.h"
-#include "asterfort/jexnum.h"
 #include "asterfort/utmess.h"
 #include "asterfort/codent.h"
 #include "asterfort/detrsd.h"
@@ -66,27 +64,27 @@ subroutine caliso(load, mesh, model, valeType)
 ! --------------------------------------------------------------------------------------------------
 !
     character(len=16), parameter :: keywordFact = 'LIAISON_SOLIDE'
-    integer :: iocc
-    integer :: jnom, n1
-    integer :: i_no
-    integer :: nb_cmp, nbec, geomDime, nbocc
+    integer(kind=8) :: iocc
+    integer(kind=8) :: jnom, n1
+    integer(kind=8) :: i_no
+    integer(kind=8) :: nb_cmp, nbec, geomDime, nbocc
     character(len=24) :: list_node
-    integer :: jlino, numnoe
-    integer :: nb_node
+    integer(kind=8) :: jlino, numnoe
+    integer(kind=8) :: nb_node
     character(len=8) :: nomg
     real(kind=8) :: dist_mini, dist
-    integer :: dim, k
+    integer(kind=8) :: dim, k
     character(len=1) :: kdim
     character(len=8) :: cmp_name, type_rela, nom_noeuds_tmp(4)
     character(len=8), pointer :: prdso(:) => null()
-    integer, pointer :: prnm(:) => null()
-    integer, pointer :: prnm1(:) => null()
+    integer(kind=8), pointer :: prnm(:) => null()
+    integer(kind=8), pointer :: prnm1(:) => null()
     character(len=19) :: list_rela
     character(len=19) :: modelLigrel
     character(len=24) :: keywordexcl
-    integer :: n_keyexcl, nuti
-    integer :: cmp_index_dx, cmp_index_dy, cmp_index_dz
-    integer :: cmp_index_drx, cmp_index_dry, cmp_index_drz
+    integer(kind=8) :: n_keyexcl, nuti
+    integer(kind=8) :: cmp_index_dx, cmp_index_dy, cmp_index_dz
+    integer(kind=8) :: cmp_index_drx, cmp_index_dry, cmp_index_drz
     aster_logical :: l_rota_2d, l_rota_3d
 !
 ! --------------------------------------------------------------------------------------------------

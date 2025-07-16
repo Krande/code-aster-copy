@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -22,7 +22,7 @@ interface
     subroutine vp2tru(method, ty, alpha, beta, signes,&
                       a, nbvect, w, z, wk,&
                       mxiter, ier, nitqr)
-        integer :: nbvect
+        integer(kind=8) :: nbvect
         character(len=8) :: method
         character(len=1) :: ty
         real(kind=8) :: alpha(nbvect)
@@ -32,8 +32,8 @@ interface
         real(kind=8) :: w(*)
         real(kind=8) :: z(*)
         real(kind=8) :: wk(*)
-        integer :: mxiter
-        integer :: ier
-        integer :: nitqr
+        integer(kind=8) :: mxiter
+        integer(kind=8) :: ier
+        integer(kind=8) :: nitqr
     end subroutine vp2tru
 end interface

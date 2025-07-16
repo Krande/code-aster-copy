@@ -1,6 +1,6 @@
 ! --------------------------------------------------------------------
 ! Copyright (C) LAPACK
-! Copyright (C) 2007 - 2024 - EDF R&D - www.code-aster.org
+! Copyright (C) 2007 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -171,18 +171,14 @@ subroutine ar_ztrsen(select, n, t, ldt, q, &
 #include "asterc/matfpe.h"
 #include "asterfort/ar_ztrexc.h"
 #include "asterfort/xerbla.h"
-#include "blas/lsame.h"
-#include "blas/zlacon.h"
-#include "blas/zlacpy.h"
-#include "blas/zlange.h"
-    integer :: info, ldq, ldt, m, n
+    integer(kind=8) :: info, ldq, ldt, m, n
 !     ..
 !     .. ARRAY ARGUMENTS ..
     aster_logical :: select(*)
     complex(kind=8) :: q(ldq, *), t(ldt, *), w(*)
 !     ..
 !     .. LOCAL SCALARS ..
-    integer :: ierr, k, ks, n1, n2, nn
+    integer(kind=8) :: ierr, k, ks, n1, n2, nn
 !     ..
 !     .. EXECUTABLE STATEMENTS ..
 !

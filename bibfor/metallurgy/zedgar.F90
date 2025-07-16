@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -28,15 +28,14 @@ subroutine zedgar(jv_mater, nb_phase, &
 #include "asterf_types.h"
 #include "asterc/r8prem.h"
 #include "asterc/r8t0.h"
-#include "asterfort/assert.h"
 #include "asterfort/utmess.h"
 #include "asterfort/zevolu.h"
 #include "asterfort/metaZircGetParameters.h"
 #include "asterfort/metaZircGetTime.h"
 #include "asterfort/Metallurgy_type.h"
 !
-    integer, intent(in) :: jv_mater
-    integer, intent(in) :: nb_phase
+    integer(kind=8), intent(in) :: jv_mater
+    integer(kind=8), intent(in) :: nb_phase
     real(kind=8), intent(in) :: tm, tp
     real(kind=8), intent(in) :: time_curr, time_incr
     real(kind=8), intent(in) :: meta_prev(5)
@@ -61,14 +60,14 @@ subroutine zedgar(jv_mater, nb_phase, &
 !
 ! --------------------------------------------------------------------------------------------------
 !
-    integer :: iter
+    integer(kind=8) :: iter
     real(kind=8) :: tdeq, tfeq, k, n, t1c, t2c, ac, m, qsr, coeffc
     real(kind=8) :: t1r, t2r, ar, br, tabs
     real(kind=8) :: zbetap, zbetam, zalphm, zalphp, zalph1p, zalph2p
     real(kind=8) :: zeq, zinf, zsup
     real(kind=8) :: g, dg
     real(kind=8) :: zero, time_tran, time_tran_p
-    integer :: kine_type
+    integer(kind=8) :: kine_type
     aster_logical :: l_integ
     type(META_ZircParameters) :: metaZircPara
 !

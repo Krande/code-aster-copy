@@ -33,15 +33,11 @@ module HHO_init_module
 #include "asterfort/assert.h"
 #include "asterfort/Behaviour_type.h"
 #include "asterfort/HHO_size_module.h"
-#include "asterfort/infniv.h"
-#include "asterfort/jelira.h"
 #include "asterfort/jevech.h"
-#include "asterfort/jeveuo.h"
 #include "asterfort/lteatt.h"
 #include "asterfort/rcvala.h"
 #include "asterfort/teattr.h"
 #include "asterfort/tecach.h"
-#include "asterfort/utmess.h"
 #include "jeveux.h"
 #include "MeshTypes_type.h"
 !
@@ -68,9 +64,9 @@ contains
         implicit none
 !
         real(kind=8), dimension(3, 27), intent(out)  :: nodes_coor
-        integer, intent(out)                        :: nbnodes
+        integer(kind=8), intent(out)                        :: nbnodes
         character(len=8), intent(out)               :: typma
-        integer, intent(out)                        :: elem_dim
+        integer(kind=8), intent(out)                        :: elem_dim
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -87,8 +83,8 @@ contains
 ! --------------------------------------------------------------------------------------------------
 !
         aster_logical, parameter :: l_debug = ASTER_FALSE
-        integer :: jv_geom
-        integer :: inode, idim, iret
+        integer(kind=8) :: jv_geom
+        integer(kind=8) :: inode, idim, iret
 ! --------------------------------------------------------------------------------------------------
 !
 ! --- Init
@@ -170,9 +166,9 @@ contains
         implicit none
 !
         real(kind=8), dimension(3, 9), intent(out)  :: nodes_coor
-        integer, intent(out)                        :: nbnodes
+        integer(kind=8), intent(out)                        :: nbnodes
         character(len=8), intent(out)               :: typma
-        integer, intent(out)                        :: elem_dim
+        integer(kind=8), intent(out)                        :: elem_dim
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -189,8 +185,8 @@ contains
 ! --------------------------------------------------------------------------------------------------
 !
         aster_logical, parameter :: l_debug = ASTER_FALSE
-        integer :: jv_geom
-        integer :: inode, idim, iret
+        integer(kind=8) :: jv_geom
+        integer(kind=8) :: inode, idim, iret
 !
 ! --- Init
         nodes_coor = 0.d0
@@ -251,12 +247,12 @@ contains
 !
         implicit none
 !
-        integer, intent(in)                             :: typma
-        integer, intent(in)                             :: ndim
+        integer(kind=8), intent(in)                             :: typma
+        integer(kind=8), intent(in)                             :: ndim
         real(kind=8), dimension(3, 4), intent(in)       :: nodes_coor
-        integer, intent(in)                             :: nbnodes
-        integer, dimension(5), intent(in)               :: num_nodes_loc
-        integer, intent(in)                             :: num_face_loc
+        integer(kind=8), intent(in)                             :: nbnodes
+        integer(kind=8), dimension(5), intent(in)               :: num_nodes_loc
+        integer(kind=8), intent(in)                             :: num_face_loc
         real(kind=8), dimension(3), optional, intent(in):: barycenter_cell
         type(HHO_Face), intent(out)                     :: hhoFace
 !
@@ -276,7 +272,7 @@ contains
 ! Out hhoFace           : a HHO Face
 ! --------------------------------------------------------------------------------------------------
 !
-        integer :: numsorted(4), ino
+        integer(kind=8) :: numsorted(4), ino
         ASSERT(nbnodes .le. 4)
 !
 ! --- Init: be carefull the order to call the functions is important
@@ -330,13 +326,13 @@ contains
 ! --------------------------------------------------------------------------------------------------
 !
         aster_logical, parameter :: l_debug = ASTER_FALSE
-        integer, parameter                      :: max_faces = 6
-        integer, parameter                      :: max_nodes = 5
-        integer, dimension(max_nodes, max_faces) :: nodes_faces
-        integer, dimension(max_faces)           :: nbnodes_faces
-        integer, dimension(max_faces)           :: type_faces
+        integer(kind=8), parameter                      :: max_faces = 6
+        integer(kind=8), parameter                      :: max_nodes = 5
+        integer(kind=8), dimension(max_nodes, max_faces) :: nodes_faces
+        integer(kind=8), dimension(max_faces)           :: nbnodes_faces
+        integer(kind=8), dimension(max_faces)           :: type_faces
         real(kind=8), dimension(3, max_nodes)    :: coor_face
-        integer :: i_face, i_node
+        integer(kind=8) :: i_face, i_node
         aster_logical :: l_jaco
 ! --------------------------------------------------------------------------------------------------
 ! --- Init
@@ -585,8 +581,8 @@ contains
 !
         aster_logical, parameter :: l_debug = ASTER_FALSE
         aster_logical :: l_adapt_coeff
-        integer :: grad_deg, face_deg, cell_deg, jv_mater
-        integer ::  jtab(1), iret, icodre(1)
+        integer(kind=8) :: grad_deg, face_deg, cell_deg, jv_mater
+        integer(kind=8) ::  jtab(1), iret, icodre(1)
         real(kind=8) :: coef_stab
         real(kind=8) :: resu_vale(1)
         character(len=16), parameter :: resu_name(1) = (/"COEF_STAB"/)
@@ -682,7 +678,7 @@ contains
 !
         type(HHO_Cell), intent(out)                 :: hhoCell
         type(HHO_Data), intent(out)                 :: hhoData
-        integer, intent(in), optional               :: npg
+        integer(kind=8), intent(in), optional               :: npg
         type(HHO_Quadrature), optional, intent(out) :: hhoQuad
 
 !
@@ -701,7 +697,7 @@ contains
 !   In npg (optional)      : number of quadrature point for the face
 ! --------------------------------------------------------------------------------------------------
 !
-        integer :: nbnodes, elem_dim
+        integer(kind=8) :: nbnodes, elem_dim
         character(len=8) :: typma
         real(kind=8) :: coor(3, 27)
         aster_logical :: laxis
@@ -740,7 +736,7 @@ contains
 !
         type(HHO_Face), intent(out)   :: hhoFace
         type(HHO_Data), intent(out)   :: hhoData
-        integer, intent(in), optional :: npg
+        integer(kind=8), intent(in), optional :: npg
         type(HHO_Quadrature), intent(out), optional :: hhoQuadFace
 !
 ! --------------------------------------------------------------------------------------------------
@@ -758,7 +754,7 @@ contains
 !   In npg (optional)      : number of quadrature point for the face
 ! --------------------------------------------------------------------------------------------------
 !
-        integer :: nbnodes, elem_dim, numnodes(5), enumf
+        integer(kind=8) :: nbnodes, elem_dim, numnodes(5), enumf
         real(kind=8) :: nodes_coor(3, 9)
         character(len=8) :: typma
         aster_logical :: laxis

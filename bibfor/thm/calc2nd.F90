@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -35,8 +35,8 @@ subroutine calc2nd(ds_thm, j_mater, &
 
     type(THM_DS), intent(inout) :: ds_thm
     aster_logical, intent(in) :: lMatr, lSigm
-    integer, intent(in) :: j_mater, ndim, dimdef, dimcon
-    integer, intent(in) :: adde2nd, adco2nd
+    integer(kind=8), intent(in) :: j_mater, ndim, dimdef, dimcon
+    integer(kind=8), intent(in) :: adde2nd, adco2nd
     real(kind=8), intent(in) :: defgem(dimdef)
     real(kind=8), intent(in) :: defgep(dimdef)
     real(kind=8), intent(in) :: congem(dimcon)
@@ -66,7 +66,7 @@ subroutine calc2nd(ds_thm, j_mater, &
 !
 ! --------------------------------------------------------------------------------------------------
 !
-    integer :: i_dim
+    integer(kind=8) :: i_dim
     real(kind=8) :: rpena
     real(kind=8) :: eplcp(ndim), silcp(ndim)
     real(kind=8) :: dsde2g(ndim, ndim)

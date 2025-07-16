@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -35,7 +35,7 @@ subroutine cfparz(ds_contact, iliai, coefff, coefpn, coefpt, &
 !
     type(NL_DS_Contact), intent(in) :: ds_contact
     real(kind=8) :: coefff, coefpn, coefpt, coefte, dissup
-    integer :: iliai, ip, izone, numnoe, posnoe
+    integer(kind=8) :: iliai, ip, izone, numnoe, posnoe
 !
 ! ----------------------------------------------------------------------
 !
@@ -57,12 +57,12 @@ subroutine cfparz(ds_contact, iliai, coefff, coefpn, coefpt, &
 ! IN  IP     : INDICE DU POINT DANS LA SD APPARIEMENT
 ! IN  IZONE  : NUMERO DE LA ZONE DE CONTACT
 !
-    integer :: ifm, niv
-    integer :: ztacf
+    integer(kind=8) :: ifm, niv
+    integer(kind=8) :: ztacf
     character(len=24) :: tacfin, jeusup
-    integer :: jtacf, jjsup
+    integer(kind=8) :: jtacf, jjsup
     character(len=24) :: jeuite, numlia
-    integer :: jjeuit, jnumli
+    integer(kind=8) :: jjeuit, jnumli
 !
 ! ----------------------------------------------------------------------
 !

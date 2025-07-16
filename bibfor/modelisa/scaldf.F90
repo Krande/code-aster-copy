@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -36,10 +36,10 @@ subroutine scaldf(nbfonc, nbp, nbmr, disc, vale, &
 !
 !
 #include "jeveux.h"
-    integer :: nbfonc, nbp, nbmr
+    integer(kind=8) :: nbfonc, nbp, nbmr
     real(kind=8) :: disc(nbp), vale(nbp, nbfonc), defm(nbp, nbmr)
     real(kind=8) :: b(nbfonc, nbmr)
-    integer :: ifo, imr, ip
+    integer(kind=8) :: ifo, imr, ip
     real(kind=8) :: dx, y1, y2, yy
 !-----------------------------------------------------------------------
 !

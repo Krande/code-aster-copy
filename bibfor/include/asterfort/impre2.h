@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -25,11 +25,11 @@ interface
         character(len=24) :: liddl
         character(len=24) :: linoeu
         character(len=24) :: libeta
-        integer :: indsur
-        integer :: ipntrl
-        integer :: nbterm
+        integer(kind=8) :: indsur
+        integer(kind=8) :: ipntrl
+        integer(kind=8) :: nbterm
         character(len=4) :: typcoe
         character(len=4) :: typval
-        integer :: irela
+        integer(kind=8) :: irela
     end subroutine impre2
 end interface

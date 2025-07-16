@@ -33,19 +33,19 @@ subroutine te0415(optioz, nomtz)
 !          -----------------------------------------------------------
 !
 !-----------------------------------------------------------------------
-    integer :: i, i1, ic, ichg
-    integer :: ino, inp, iret
-    integer :: j, j1
-    integer :: jvari, k1, k2, l, lgpg
-    integer :: lzi, lzr, nbcou, nbvari, nep, np1
-    integer :: np2, np3, np4, npge, npo, npp
-    integer :: nso
+    integer(kind=8) :: i, i1, ic, ichg
+    integer(kind=8) :: ino, inp, iret
+    integer(kind=8) :: j, j1
+    integer(kind=8) :: jvari, k1, k2, l, lgpg
+    integer(kind=8) :: lzi, lzr, nbcou, nbvari, nep, np1
+    integer(kind=8) :: np2, np3, np4, npge, npo, npp
+    integer(kind=8) :: nso
     real(kind=8) :: s
 !-----------------------------------------------------------------------
     character(len=16), pointer :: compor(:) => null()
     parameter(npge=3)
-    integer :: icou, jmat, jnbspi
-    integer :: nb2, npgsn, jtab(7)
+    integer(kind=8) :: icou, jmat, jnbspi
+    integer(kind=8) :: nb2, npgsn, jtab(7)
 !
     option = optioz
     nomte = nomtz

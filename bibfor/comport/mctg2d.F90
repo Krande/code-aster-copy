@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -59,8 +59,8 @@ subroutine mctg2d(stress, strain, rprops, dsidep, ii, jj, mm, &
     aster_logical :: outofp
 !
 ! Declaration of integer type variables
-    integer :: itri, iorder, mmax, nmax, mxiter
-    integer :: ii, jj, mm, itjac1
+    integer(kind=8) :: itri, iorder, mmax, nmax, mxiter
+    integer(kind=8) :: ii, jj, mm, itjac1
 !
 ! Declaration of integer type variables
 !     aster_logical :: epflag

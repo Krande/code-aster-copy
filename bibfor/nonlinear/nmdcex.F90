@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -35,7 +35,7 @@ subroutine nmdcex(sddisc, insref, durdec, ievdac, deltac, &
 #include "asterfort/utmess.h"
 !
     character(len=19), intent(in) :: sddisc
-    integer :: ievdac, retdex
+    integer(kind=8) :: ievdac, retdex
     real(kind=8) :: durdec, insref, deltac
 !
 ! ----------------------------------------------------------------------
@@ -60,12 +60,12 @@ subroutine nmdcex(sddisc, insref, durdec, ievdac, deltac, &
 !
 !
 !
-    integer :: numins
+    integer(kind=8) :: numins
     aster_logical :: lstop
     real(kind=8) :: instam, instap, deltat, insfin
     real(kind=8) :: dtmin, ratio
     real(kind=8) :: valr(2)
-    integer :: nbrpas
+    integer(kind=8) :: nbrpas
     aster_logical :: ldeco
     character(len=4) :: typdec
     character(len=24) :: nomlis

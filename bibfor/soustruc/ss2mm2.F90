@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -61,11 +61,11 @@ subroutine ss2mm2(mo, vecel, nomcas)
 !
 !
 !-----------------------------------------------------------------------
-    integer :: i, ialsch
-    integer :: iret, nbsma, nbssa
+    integer(kind=8) :: i, ialsch
+    integer(kind=8) :: iret, nbsma, nbssa
     character(len=24), pointer :: rerr(:) => null()
     character(len=8), pointer :: vnomacr(:) => null()
-    integer, pointer :: sssa(:) => null()
+    integer(kind=8), pointer :: sssa(:) => null()
 !-----------------------------------------------------------------------
     call jemarq()
     call dismoi('NOM_MAILLA', mo, 'MODELE', repk=ma)

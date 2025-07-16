@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -21,13 +21,13 @@
           interface 
             subroutine pjloin(nbnod,nbnodm,m2,geom2,nbmax,tino2m,tdmin2,&
      &lino_loin)
-              integer, intent(in) :: nbmax
-              integer, intent(in) :: nbnod
-              integer, intent(in) :: nbnodm
+              integer(kind=8), intent(in) :: nbmax
+              integer(kind=8), intent(in) :: nbnod
+              integer(kind=8), intent(in) :: nbnodm
               character(len=8), intent(in) :: m2
               real(kind=8), intent(in) :: geom2(*)
-              integer, intent(in) :: tino2m(nbmax)
+              integer(kind=8), intent(in) :: tino2m(nbmax)
               real(kind=8), intent(in) :: tdmin2(nbmax)
-              integer, intent(in) :: lino_loin(*)
+              integer(kind=8), intent(in) :: lino_loin(*)
             end subroutine pjloin
           end interface 

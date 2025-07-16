@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -29,7 +29,6 @@ subroutine cfresu(time_incr, sddisc, ds_contact, disp_cumu_inst, disp_iter, &
 #include "jeveux.h"
 #include "asterc/r8miem.h"
 #include "asterc/r8prem.h"
-#include "asterfort/assert.h"
 #include "asterfort/apinfi.h"
 #include "asterfort/caladu.h"
 #include "asterfort/cfdisd.h"
@@ -71,12 +70,12 @@ subroutine cfresu(time_incr, sddisc, ds_contact, disp_cumu_inst, disp_iter, &
 ! --------------------------------------------------------------------------------------------------
 !
     real(kind=8), parameter :: eps = 1.d-6
-    integer :: zresu, zperc, ztacf
-    integer :: node_slav_nume, iliac, icmp, iliai
-    integer :: model_ndim, nbliai, nb_dof, nb_equa
-    integer :: nbliac
-    integer :: jdecal, lliac
-    integer :: nesmax, pair_type
+    integer(kind=8) :: zresu, zperc, ztacf
+    integer(kind=8) :: node_slav_nume, iliac, icmp, iliai
+    integer(kind=8) :: model_ndim, nbliai, nb_dof, nb_equa
+    integer(kind=8) :: nbliac
+    integer(kind=8) :: jdecal, lliac
+    integer(kind=8) :: nesmax, pair_type
     real(kind=8) :: glix, gliy, glit
     real(kind=8) :: testmu, testcf, coefpt
     real(kind=8) :: val1, val2, node_status
@@ -86,9 +85,9 @@ subroutine cfresu(time_incr, sddisc, ds_contact, disp_cumu_inst, disp_iter, &
     real(kind=8) :: tau1(3), tau2(3), norm(3), proj(3)
     character(len=19) :: sdappa
     character(len=19) :: sdcont_liac, sdcont_atmu, sdcont_afmu, sdcont_mu
-    integer :: jatmu, jafmu
+    integer(kind=8) :: jatmu, jafmu
     character(len=24) :: sdcont_apddl, sdcont_apcofr
-    integer :: japddl, japcof
+    integer(kind=8) :: japddl, japcof
     character(len=24) :: sdcont_tangco, sdcont_tacfin
     character(len=24) :: sdcont_appoin, sdcont_numlia, sdcont_approj
     character(len=24) :: sdcont_jeuite
@@ -98,9 +97,9 @@ subroutine cfresu(time_incr, sddisc, ds_contact, disp_cumu_inst, disp_iter, &
     real(kind=8) :: valras
     real(kind=8), pointer :: v_disp_iter(:) => null()
     real(kind=8), pointer :: v_disp_cumu(:) => null()
-    integer, pointer :: v_sdcont_liac(:) => null()
-    integer, pointer :: v_sdcont_appoin(:) => null()
-    integer, pointer :: v_sdcont_numlia(:) => null()
+    integer(kind=8), pointer :: v_sdcont_liac(:) => null()
+    integer(kind=8), pointer :: v_sdcont_appoin(:) => null()
+    integer(kind=8), pointer :: v_sdcont_numlia(:) => null()
     real(kind=8), pointer :: v_sdcont_tangco(:) => null()
     real(kind=8), pointer :: v_sdcont_jeuite(:) => null()
     real(kind=8), pointer :: v_sdcont_tacfin(:) => null()

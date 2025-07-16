@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -66,14 +66,14 @@ subroutine gesdef(nomres, numddl)
     character(len=8) :: nomres
     character(len=19) :: numddl
     character(len=24) :: desdef, deeq, temmat, temidc
-    integer :: ikyp(4)
+    integer(kind=8) :: ikyp(4)
 !
 !-----------------------------------------------------------------------
 !-----------------------------------------------------------------------
-    integer :: i, iad1, iad2, ik, lldeeq
-    integer :: lldes, ltidec, ltmat, nbcmp, nbdef, nbec, nbno
-    integer :: nbnot, nbtem, neq, nomax
-    integer, pointer :: idc_desc(:) => null()
+    integer(kind=8) :: i, iad1, iad2, ik, lldeeq
+    integer(kind=8) :: lldes, ltidec, ltmat, nbcmp, nbdef, nbec, nbno
+    integer(kind=8) :: nbnot, nbtem, neq, nomax
+    integer(kind=8), pointer :: idc_desc(:) => null()
 !-----------------------------------------------------------------------
     data pgc/'GESDEF'/
 !-----------------------------------------------------------------------

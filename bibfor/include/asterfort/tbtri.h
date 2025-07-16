@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -20,10 +20,10 @@
 !
 interface
     subroutine tbtri(ndim, tabint, tabchi, tabchr, tabchk)
-        integer, intent(in) :: ndim
-        integer, intent(in), optional, target :: tabchi(*)
+        integer(kind=8), intent(in) :: ndim
+        integer(kind=8), intent(in), optional, target :: tabchi(*)
         real(kind=8), intent(in), optional, target :: tabchr(*)
         character(len=*), intent(in), optional, target :: tabchk(*)
-        integer, intent(out), optional, target :: tabint(*)
+        integer(kind=8), intent(out), optional, target :: tabint(*)
     end subroutine tbtri
 end interface

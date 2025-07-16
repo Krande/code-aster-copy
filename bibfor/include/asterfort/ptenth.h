@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -20,7 +20,7 @@
 !
 interface
     subroutine ptenth(ul, xl, f, n, mat,  enerth)
-        integer :: n
+        integer(kind=8) :: n
         real(kind=8) :: ul(12)
         real(kind=8) :: xl
         real(kind=8) :: f

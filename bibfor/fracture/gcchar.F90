@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -41,8 +41,8 @@ subroutine gcchar(ichar, iprec, time, carteo, lfchar, &
     character(len=24) :: oldfon
     character(len=8) :: nomfct
     character(len=8) :: newfct
-    integer :: ichar
-    integer :: iprec
+    integer(kind=8) :: ichar
+    integer(kind=8) :: iprec
     real(kind=8) :: time
     character(len=19) :: cartei
     character(len=19) :: carteo
@@ -78,7 +78,7 @@ subroutine gcchar(ichar, iprec, time, carteo, lfchar, &
 !
     character(len=19) :: chtmp1, chtmp2
     aster_logical :: fonc1, fonc2
-    integer :: jfonci
+    integer(kind=8) :: jfonci
 !
 ! ----------------------------------------------------------------------
 !

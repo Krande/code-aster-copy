@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2020 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -26,7 +26,7 @@ interface
                       ligrel, ligmod, codret,&
                       nochou, ideb, ifin, vcham)
         character(len=16) :: option
-        integer :: numord
+        integer(kind=8) :: numord
         character(len=8) :: resuin
         character(len=8) :: resuou
         character(len=24) :: lichou(2)
@@ -37,10 +37,10 @@ interface
         character(len=1) :: basopt
         character(len=24) :: ligrel
         aster_logical :: ligmod
-        integer :: codret
+        integer(kind=8) :: codret
         character(len=19), optional :: nochou
-        integer,           optional :: ideb
-        integer,           optional :: ifin
+        integer(kind=8),           optional :: ideb
+        integer(kind=8),           optional :: ifin
         character(len=24), optional :: vcham
     end subroutine ccchno
 end interface

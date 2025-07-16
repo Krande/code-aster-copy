@@ -71,9 +71,7 @@ subroutine trajca(tablca, mailla, icabl, nbnoca, xnoca, &
 #include "asterfort/jedetr.h"
 #include "asterfort/jeecra.h"
 #include "asterfort/jemarq.h"
-#include "asterfort/jenonu.h"
 #include "asterfort/jeveuo.h"
-#include "asterfort/jexnom.h"
 #include "asterfort/splin1.h"
 #include "asterfort/splin2.h"
 #include "asterfort/spline.h"
@@ -86,13 +84,13 @@ subroutine trajca(tablca, mailla, icabl, nbnoca, xnoca, &
     character(len=8) :: mailla
     character(len=19) :: xnoca, ynoca, znoca, tablca
     character(len=24) :: comima, gromai
-    integer :: icabl, nbnoca(*)
+    integer(kind=8) :: icabl, nbnoca(*)
 !
 ! VARIABLES LOCALES
 ! -----------------
-    integer :: ibid, idecal, ino, ipara, iret, isub, jalph, jcoor
-    integer :: jnoca, jx, jy, jz, nblign, nbno
-    integer :: nbpara, numnoe, icmima, nbvar, nbvar2, svar, vali(3)
+    integer(kind=8) :: ibid, idecal, ino, ipara, iret, isub, jalph, jcoor
+    integer(kind=8) :: jnoca, jx, jy, jz, nblign, nbno
+    integer(kind=8) :: nbpara, numnoe, icmima, nbvar, nbvar2, svar, vali(3)
     real(kind=8) :: absc, alpha, corde, alphcu, d1m, d1p, dcp, d1x, d1x1
     real(kind=8) :: d1xn, d1y, d1y1, d1yn, d1z, d1z1, d1zn, d2x, d2y, d2z, dc
     real(kind=8) :: dc1, dcn, det1, det2, det3, du, dx, dy, dz, normv2
@@ -103,7 +101,7 @@ subroutine trajca(tablca, mailla, icabl, nbnoca, xnoca, &
     character(len=24) :: coorno, nonoca
     aster_logical :: lsplin
 !
-    integer :: nbsub, jgmai
+    integer(kind=8) :: nbsub, jgmai
     parameter(nbsub=5)
     character(len=24) :: param(2), parcr
     real(kind=8), pointer :: absc_curv(:) => null()
@@ -113,7 +111,7 @@ subroutine trajca(tablca, mailla, icabl, nbnoca, xnoca, &
     real(kind=8), pointer :: vd2y(:) => null()
     real(kind=8), pointer :: vd2z(:) => null()
     character(len=24), pointer :: tblp(:) => null()
-    integer, pointer :: tbnp(:) => null()
+    integer(kind=8), pointer :: tbnp(:) => null()
     data param/'ABSC_CURV               ',&
      &                     'ALPHA                   '/
     data parcr/'NOEUD_CABLE             '/

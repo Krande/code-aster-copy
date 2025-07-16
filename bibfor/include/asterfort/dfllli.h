@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -22,6 +22,6 @@ interface
     subroutine dfllli(listr8_sdaster, dtmin, nb_inst)
         character(len=19), intent(in) :: listr8_sdaster
         real(kind=8), intent(out) :: dtmin
-        integer, intent(out) :: nb_inst
+        integer(kind=8), intent(out) :: nb_inst
     end subroutine dfllli
 end interface

@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -53,10 +53,10 @@ subroutine refe99(nomres)
 !
 !
 !
-    integer :: i, ioc1, ioc3, ioc4, ioc5, ier, ibid, ibmo, imint, inmax
-    integer :: ltmome, nbg, nbmome, ltnbmo, ltnbmax, nbli, nbmax, vali(2)
-    integer :: nbtot, nbold(1), nbmod1, nbmod2, nbmout, nbmodo(1)
-    integer :: nbmm, nbbm, nbmi, ioccmi, ioccbase
+    integer(kind=8) :: i, ioc1, ioc3, ioc4, ioc5, ier, ibid, ibmo, imint, inmax
+    integer(kind=8) :: ltmome, nbg, nbmome, ltnbmo, ltnbmax, nbli, nbmax, vali(2)
+    integer(kind=8) :: nbtot, nbold(1), nbmod1, nbmod2, nbmout, nbmodo(1)
+    integer(kind=8) :: nbmm, nbbm, nbmi, ioccmi, ioccbase
 !
     real(kind=8) :: rbid
     complex(kind=8) :: cbid
@@ -212,6 +212,7 @@ subroutine refe99(nomres)
         call getvid('  ', 'INTERF_DYNA', iocc=1, nbval=0, nbret=ier)
         if (ier .lt. 0) then
             call getvid('  ', 'INTERF_DYNA', iocc=1, scal=intf, nbret=ier)
+            call dismoi('NOM_NUME_DDL', intf, 'INTERF_DYNA', repk=numddl)
         end if
 !
         call getvid('RITZ', 'BASE_MODALE', iocc=ioccbase, scal=resul1, nbret=ibmo)

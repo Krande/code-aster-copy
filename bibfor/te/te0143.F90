@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -59,8 +59,8 @@ subroutine te0143(option, nomte)
 !
 ! --------------------------------------------------------------------------------------------------
 !
-    integer :: lorien, nno, nc, i, lmat, ncomp, itype
-    integer :: ldep, kp, adr, npg, istrxr, jacf
+    integer(kind=8) :: lorien, nno, nc, i, lmat, ncomp, itype
+    integer(kind=8) :: ldep, kp, adr, npg, istrxr, jacf
     real(kind=8) :: a, xiy, xiz, ez, ey, a2, xiy2, xiz2, xl
     real(kind=8) :: xfly, xflz
     real(kind=8) :: pgl(3, 3), mat(105)
@@ -68,23 +68,23 @@ subroutine te0143(option, nomte)
     real(kind=8) :: sigma(14), carsec(6)
     character(len=16) :: ch16
 !
-    integer :: nbfibr, nbgrfi, tygrfi, nbcarm, nug(10)
+    integer(kind=8) :: nbfibr, nbgrfi, tygrfi, nbcarm, nug(10)
 !
 ! --------------------------------------------------------------------------------------------------
 !
-    integer, parameter :: nb_cara1 = 11
+    integer(kind=8), parameter :: nb_cara1 = 11
     real(kind=8) :: vale_cara1(nb_cara1)
     character(len=8) :: noms_cara1(nb_cara1)
     data noms_cara1/'A1', 'IY1', 'IZ1', 'EY1', 'EZ1', 'A2', 'IY2', 'IZ2', 'EY2', 'EZ2', 'TVAR'/
 !
 ! --------------------------------------------------------------------------------------------------
 !
-    integer, parameter :: nb_cara2 = 7
+    integer(kind=8), parameter :: nb_cara2 = 7
     real(kind=8) :: vale_cara2(nb_cara2)
     character(len=8) :: noms_cara2(nb_cara2)
     data noms_cara2/'A1', 'IY1', 'IZ1', 'EY1', 'EZ1', 'IYR21', 'IZR21'/
 !
-    integer             :: retp(2), iret
+    integer(kind=8)             :: retp(2), iret
     real(kind=8)        :: valr(2)
     character(len=8)    :: valp(2)
 !

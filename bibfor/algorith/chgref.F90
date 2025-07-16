@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -44,7 +44,7 @@ subroutine chgref(geomi, x, y, bidim)
 #include "asterfort/utmess.h"
 #include "blas/ddot.h"
 #include "blas/dnrm2.h"
-    integer :: n1, i, iadcoo
+    integer(kind=8) :: n1, i, iadcoo
     aster_logical :: bidim
     character(len=19) :: geomi
     character(len=24) :: coorjv

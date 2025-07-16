@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -20,9 +20,9 @@
 !
 interface
     subroutine cetule(model0, tbgrca, codret)
-    integer, parameter :: nbmcle=3
+    integer(kind=8), parameter :: nbmcle=3
         character(len=*) :: model0
         real(kind=8) :: tbgrca(nbmcle)
-        integer :: codret
+        integer(kind=8) :: codret
     end subroutine cetule
 end interface

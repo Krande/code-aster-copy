@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -54,7 +54,7 @@ subroutine lcumsd(vari, nvari, cmat, nmat, nstrs, &
     implicit none
 #include "asterfort/lcumfd.h"
 #include "asterfort/lcumfs.h"
-    integer :: i, ifou, isph, nmat, nstrs, nvari
+    integer(kind=8) :: i, ifou, isph, nmat, nstrs, nvari
     real(kind=8) :: vari(nvari), cmat(nmat)
 ! MODIFI DU 6 JANVIER 2003 - YLP SUPPRESSION DES DECLARATIONS
 ! IMPLICITES DES TABLEAUX

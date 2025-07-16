@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2020 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -22,13 +22,13 @@ interface
     subroutine fonno62(resu, noma, ndim, &
                       iseg, noe, indr, nbnoel,&
                       vnor, vdir, basseg, vect, sens)
-        integer          :: ndim
+        integer(kind=8)          :: ndim
         character(len=8) :: resu
         character(len=8) :: noma
-        integer          :: iseg
-        integer          :: noe(4, 4)
-        integer          :: indr(2)
-        integer          :: nbnoel
+        integer(kind=8)          :: iseg
+        integer(kind=8)          :: noe(4, 4)
+        integer(kind=8)          :: indr(2)
+        integer(kind=8)          :: nbnoel
         real(kind=8)     :: vnor(2, 3)
         real(kind=8)     :: vdir(2, 3)
         character(len=19):: basseg

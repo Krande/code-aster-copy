@@ -28,14 +28,14 @@ subroutine acemmt(noma, nmmt)
 #include "asterfort/jeveuo.h"
 #include "asterfort/reliem.h"
     character(len=8) :: noma
-    integer :: nmmt(*)
+    integer(kind=8) :: nmmt(*)
 !     AFFE_CARA_ELEM
 !     LECTURE DE MODI_METRIQUE POUR LES TUYAUX
 !     REMPLISSAGE DU TABLEAU NMMT CONTENANT POUR CHAQUE MAILLE
 !        0 : SI MODI_METRIQUE : NON
 !        1 : SI MODI_METRIQUE : OUI
 ! ----------------------------------------------------------------------
-    integer :: nbocpo, iocc, ibid, immt, nbma, jma, i, ima
+    integer(kind=8) :: nbocpo, iocc, ibid, immt, nbma, jma, i, ima
     character(len=8) :: mmt, typmcl(2)
     character(len=16) :: motfac, motcls(2)
     character(len=24) :: mesmai

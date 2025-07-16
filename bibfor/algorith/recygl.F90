@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -61,11 +61,11 @@ subroutine recygl(nmresz, typsdz, mdcycz, maillz, profno)
 !
 !-----------------------------------------------------------------------
 !-----------------------------------------------------------------------
-    integer :: i, icomp, idia, iret
-    integer :: llref, mdiapa, nbdia, nbmcal, nbmor, nbsec
-    integer, pointer :: cycl_desc(:) => null()
-    integer, pointer :: cycl_nbsc(:) => null()
-    integer, pointer :: cycl_diam(:) => null()
+    integer(kind=8) :: i, icomp, idia, iret
+    integer(kind=8) :: llref, mdiapa, nbdia, nbmcal, nbmor, nbsec
+    integer(kind=8), pointer :: cycl_desc(:) => null()
+    integer(kind=8), pointer :: cycl_nbsc(:) => null()
+    integer(kind=8), pointer :: cycl_diam(:) => null()
     character(len=8), pointer :: cycl_type(:) => null()
 !
 !-----------------------------------------------------------------------

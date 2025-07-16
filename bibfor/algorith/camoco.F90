@@ -50,18 +50,17 @@ subroutine camoco(nomres, numref, intf, raid, raildl, &
 #include "asterfort/jelibe.h"
 #include "asterfort/jelira.h"
 #include "asterfort/jemarq.h"
-#include "asterfort/jenuno.h"
 #include "asterfort/jeveuo.h"
 #include "asterfort/jexnum.h"
 #include "asterfort/wkvect.h"
 #include "asterfort/int_to_char8.h"
 !
 !-----------------------------------------------------------------------
-    integer :: i, iad, ier, ik, ino, inord
-    integer :: j, jj, lldeeq, lldes, llncmp, llnoin
-    integer ::  ltddl, ltpar, nbcb, nbcmp, nbcont, nbcpmx
-    integer :: nbdeb, nbec, nbfin, nbint, nbnoe, nbnot, neq
-    integer :: ntail1, ntail2, numgd
+    integer(kind=8) :: i, iad, ier, ik, ino, inord
+    integer(kind=8) :: j, jj, lldeeq, lldes, llncmp, llnoin
+    integer(kind=8) ::  ltddl, ltpar, nbcb, nbcmp, nbcont, nbcpmx
+    integer(kind=8) :: nbdeb, nbec, nbfin, nbint, nbnoe, nbnot, neq
+    integer(kind=8) :: ntail1, ntail2, numgd
 !-----------------------------------------------------------------------
     parameter(nbcpmx=300)
     character(len=6) :: pgc
@@ -70,7 +69,7 @@ subroutine camoco(nomres, numref, intf, raid, raildl, &
     character(len=19) :: raildl, raid
     character(len=16) :: typdef
     character(len=24) :: desdef, deeq, temddl, tempar
-    integer :: idec(nbcpmx)
+    integer(kind=8) :: idec(nbcpmx)
     character(len=8), pointer :: idc_type(:) => null()
 !
 !-----------------------------------------------------------------------

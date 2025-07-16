@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -23,24 +23,24 @@ interface
                       jcoord, adcar1, adcar2, ialpha, ibeta,&
                       iepais, jalpha, jbeta, jgamma, ligrmo,&
                       ino, pgl, modeli, codret)
-        integer :: jcesdd
-        integer :: numma
-        integer :: jrepe
-        integer :: jconx2
-        integer :: jconx1
-        integer :: jcoord
-        integer :: adcar1(3)
-        integer :: adcar2(3)
-        integer :: ialpha
-        integer :: ibeta
-        integer :: iepais
-        integer :: jalpha
-        integer :: jbeta
-        integer :: jgamma
+        integer(kind=8) :: jcesdd
+        integer(kind=8) :: numma
+        integer(kind=8) :: jrepe
+        integer(kind=8) :: jconx2
+        integer(kind=8) :: jconx1
+        integer(kind=8) :: jcoord
+        integer(kind=8) :: adcar1(3)
+        integer(kind=8) :: adcar2(3)
+        integer(kind=8) :: ialpha
+        integer(kind=8) :: ibeta
+        integer(kind=8) :: iepais
+        integer(kind=8) :: jalpha
+        integer(kind=8) :: jbeta
+        integer(kind=8) :: jgamma
         character(len=19) :: ligrmo
-        integer :: ino
+        integer(kind=8) :: ino
         real(kind=8) :: pgl(3, 3)
         character(len=16) :: modeli
-        integer :: codret
+        integer(kind=8) :: codret
     end subroutine cccmcr
 end interface

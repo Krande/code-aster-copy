@@ -98,11 +98,8 @@ subroutine breselsqp(cequi, effmy, effmz, effn, ht, bw, &
 !
     implicit none
 !
-#include "asterfort/utmess.h"
 #include "asterfort/wkvect.h"
 #include "asterfort/jedetr.h"
-#include "asterfort/juveca.h"
-#include "asterfort/jeveuo.h"
 #include "asterfort/cafelsqp.h"
 #include "extern/dintels.h"
 #include "asterc/r8prem.h"

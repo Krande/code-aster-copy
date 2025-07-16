@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -24,7 +24,7 @@ subroutine calcms(nbphas, nbcomm, cpmono, nmat, pgl2, &
 #include "asterfort/matrot.h"
 #include "asterfort/promat.h"
 #include "asterfort/utmess.h"
-    integer :: nmat, nbcomm(nmat, 3), nfs, nbphas, nsg
+    integer(kind=8) :: nmat, nbcomm(nmat, 3), nfs, nbphas, nsg
     real(kind=8) :: pgl(3, 3), toutms(nbphas, nfs, nsg, 7), coeft(nmat)
     real(kind=8) :: q(3, 3)
 !
@@ -45,8 +45,8 @@ subroutine calcms(nbphas, nbcomm, cpmono, nmat, pgl2, &
     character(len=24) :: cpmono(5*nmat+1)
     real(kind=8) :: ang(3), angmas(3), pgl1(3, 3), pgl2(3, 3)
     real(kind=8) :: ms(6), ng(3), lg(3)
-    integer :: nbfsys, i, ifa, nbsys, is, indori, indcp, ir
-    integer :: indpha, iphas
+    integer(kind=8) :: nbfsys, i, ifa, nbsys, is, indori, indcp, ir
+    integer(kind=8) :: indpha, iphas
 !     ----------------------------------------------------------------
     ir = 0
 !         CALCUl DES TENSEURS MS POUR GAGNER DU TEMPS

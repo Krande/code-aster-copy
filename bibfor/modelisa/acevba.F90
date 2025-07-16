@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -30,7 +30,7 @@ subroutine acevba(nbocc, nlg, ier)
 #include "asterfort/jedema.h"
 #include "asterfort/jemarq.h"
 #include "asterfort/utmess.h"
-    integer :: nbocc, nlg, ier
+    integer(kind=8) :: nbocc, nlg, ier
 !     AFFE_CARA_ELEM
 !     VERIFICATION DES MOTS CLES POUR L'ELEMENT BARRE
 ! ----------------------------------------------------------------------
@@ -47,17 +47,17 @@ subroutine acevba(nbocc, nlg, ier)
 !     ------------------------------------------------------------------
 !
 !-----------------------------------------------------------------------
-    integer :: i, ioc, irece, irech
-    integer :: l, nbcar
-    integer :: nbo, nbval, nc, ncar, ncara, ncmax, ndim
-    integer :: ng, ns, nsec, nsecba, ntypse
-    integer :: nv, nval
+    integer(kind=8) :: i, ioc, irece, irech
+    integer(kind=8) :: l, nbcar
+    integer(kind=8) :: nbo, nbval, nc, ncar, ncara, ncmax, ndim
+    integer(kind=8) :: ng, ns, nsec, nsecba, ntypse
+    integer(kind=8) :: nv, nval
     character(len=8), pointer :: cara(:) => null()
     character(len=8), pointer :: carbar(:) => null()
     character(len=8), pointer :: expbar(:) => null()
-    integer, pointer :: ncp(:) => null()
+    integer(kind=8), pointer :: ncp(:) => null()
     character(len=8), pointer :: tabbar(:) => null()
-    integer, pointer :: tab_para(:) => null()
+    integer(kind=8), pointer :: tab_para(:) => null()
     character(len=16), pointer :: typ_sect(:) => null()
     real(kind=8), pointer :: vale(:) => null()
 !-----------------------------------------------------------------------

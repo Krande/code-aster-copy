@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -37,8 +37,8 @@ subroutine nmveei(fami, kpg, ksp, ndim, typmod, &
 #include "asterfort/rcvarc.h"
 #include "asterfort/utmess.h"
 !
-    integer :: ndim, imate, iret, kpg, ksp
-    integer, intent(in):: nvi
+    integer(kind=8) :: ndim, imate, iret, kpg, ksp
+    integer(kind=8), intent(in):: nvi
     character(len=16) :: compor(*), option
     character(len=8) :: typmod(*)
     character(len=*) :: fami
@@ -112,7 +112,7 @@ subroutine nmveei(fami, kpg, ksp, ndim, typmod, &
 !     ATTENTION LES TENSEURS ET MATRICES SONT RANGES DANS
 !     L'ORDRE :  XX YY ZZ XY XZ YZ         RR ZZ TT RZ
 ! ----------------------------------------------------------------------
-    integer :: nb, np, ni, nr, nmat, un, nt, iret1
+    integer(kind=8) :: nb, np, ni, nr, nmat, un, nt, iret1
     real(kind=8) :: zero, dammax, det, epsthp, epsthm
     parameter(nb=6, np=2, ni=9, nr=8, nt=3*nb)
 !     NOMBRE DE COEF MATERIAU MAXIMUM
@@ -123,8 +123,8 @@ subroutine nmveei(fami, kpg, ksp, ndim, typmod, &
 !
     aster_logical :: cplan
 !
-    integer :: itmax, i, ier, iter, iret2, iret3, iret4
-    integer :: ndt, nrv, ndi, k, l, isimp
+    integer(kind=8) :: itmax, i, ier, iter, iret2, iret3, iret4
+    integer(kind=8) :: ndt, nrv, ndi, k, l, isimp
 !
     real(kind=8) :: pgl(3, 3), angmas(3), toler, deltx, sumx, dt, se2
     real(kind=8) :: vind(ni), matm(nmat, 2), a(6, 6), b(6)
@@ -143,8 +143,8 @@ subroutine nmveei(fami, kpg, ksp, ndim, typmod, &
     character(len=7) :: etatf(3)
 !
 !     POUR LCMATE (MONOCRISTAL)
-    integer :: nbcomm(1), nfs, nsg
-    integer :: numhsr(1)
+    integer(kind=8) :: nbcomm(1), nfs, nsg
+    integer(kind=8) :: numhsr(1)
     real(kind=8) :: toutms(1), hsr(1)
     character(len=24) :: cpmono(1)
 !

@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -23,7 +23,7 @@ interface
                       chno2)
         character(len=*) :: chno1
         character(len=*) :: numdd2
-        integer :: ncorr
+        integer(kind=8) :: ncorr
         character(len=*) :: tcorr(*)
         character(len=*) :: base
         character(len=*) :: chno2

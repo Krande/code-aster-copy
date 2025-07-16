@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -23,8 +23,8 @@ interface
                       epm, dp, sp, xi, f,&
                       g, fds, gds, fdp, gdp,&
                       fdx, gdx, dpmax, sig, tang)
-        integer :: ndimsi
-        integer :: mode
+        integer(kind=8) :: ndimsi
+        integer(kind=8) :: mode
         real(kind=8) :: mat(14)
         real(kind=8) :: sigel(ndimsi)
         real(kind=8) :: vim(9)

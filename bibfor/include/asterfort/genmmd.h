@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -23,25 +23,25 @@ interface
                       maxint, delta, invp, perm, nbsn,&
                       supnd, adress, parent, gssubs, fctnzs,&
                       fctops, dhead, qsize, llist, marker)
-        integer :: nadj
-        integer :: neqp1
-        integer :: neqns
-        integer :: xadj(neqp1)
-        integer :: adjncy(nadj)
-        integer :: maxint
-        integer :: delta
-        integer :: invp(neqns)
-        integer :: perm(neqns)
-        integer :: nbsn
-        integer :: supnd(neqp1)
-        integer :: adress(neqp1)
-        integer :: parent(neqns)
-        integer :: gssubs
-        integer :: fctnzs
+        integer(kind=8) :: nadj
+        integer(kind=8) :: neqp1
+        integer(kind=8) :: neqns
+        integer(kind=8) :: xadj(neqp1)
+        integer(kind=8) :: adjncy(nadj)
+        integer(kind=8) :: maxint
+        integer(kind=8) :: delta
+        integer(kind=8) :: invp(neqns)
+        integer(kind=8) :: perm(neqns)
+        integer(kind=8) :: nbsn
+        integer(kind=8) :: supnd(neqp1)
+        integer(kind=8) :: adress(neqp1)
+        integer(kind=8) :: parent(neqns)
+        integer(kind=8) :: gssubs
+        integer(kind=8) :: fctnzs
         real(kind=8) :: fctops
-        integer :: dhead(neqns)
-        integer :: qsize(neqns)
-        integer :: llist(neqns)
-        integer :: marker(neqns)
+        integer(kind=8) :: dhead(neqns)
+        integer(kind=8) :: qsize(neqns)
+        integer(kind=8) :: llist(neqns)
+        integer(kind=8) :: marker(neqns)
     end subroutine genmmd
 end interface

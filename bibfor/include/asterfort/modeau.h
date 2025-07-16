@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -23,15 +23,15 @@ interface
                       freqi, nbm, nuor, vicoq, torco,&
                       tcoef, amor, masg, fact, amfr,&
                       vecpr, maj)
-        integer :: nbm
+        integer(kind=8) :: nbm
         character(len=19) :: melflu
         character(len=8) :: noma
         real(kind=8) :: geom(9)
         real(kind=8) :: fsvr(7)
         character(len=8) :: base
         real(kind=8) :: freqi(*)
-        integer :: nuor(nbm)
-        integer :: vicoq(nbm)
+        integer(kind=8) :: nuor(nbm)
+        integer(kind=8) :: vicoq(nbm)
         real(kind=8) :: torco(4, nbm)
         real(kind=8) :: tcoef(10, nbm)
         real(kind=8) :: amor(nbm)

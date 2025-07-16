@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -45,14 +45,14 @@ subroutine get_med_connectivity(mesh, med_connect)
 !
 ! ------------------------------------------------------------------------------
 
-    integer :: modnum(MT_NTYMAX)
-    integer :: nuanom(MT_NTYMAX, MT_NNOMAX)
+    integer(kind=8) :: modnum(MT_NTYMAX)
+    integer(kind=8) :: nuanom(MT_NTYMAX, MT_NNOMAX)
     character(len=24) :: connex
-    integer :: i, j, ityp
-    integer :: nbcell, nbnode, size
-    integer, pointer :: dime(:) => null()
-    integer, pointer :: p_elt(:) => null(), m_elt(:) => null()
-    integer, pointer :: typmast(:) => null()
+    integer(kind=8) :: i, j, ityp
+    integer(kind=8) :: nbcell, nbnode, size
+    integer(kind=8), pointer :: dime(:) => null()
+    integer(kind=8), pointer :: p_elt(:) => null(), m_elt(:) => null()
+    integer(kind=8), pointer :: typmast(:) => null()
 
     call jemarq()
 

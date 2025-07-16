@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -21,8 +21,8 @@
 interface
     subroutine lecojb(ob, unite, base, iret)
         character(len=*) :: ob
-        integer :: unite
+        integer(kind=8) :: unite
         character(len=1) :: base
-        integer :: iret
+        integer(kind=8) :: iret
     end subroutine lecojb
 end interface

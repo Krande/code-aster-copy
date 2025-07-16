@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -20,7 +20,7 @@
 !
 interface
     subroutine ante2d(itria, xbar, ksi1, ksi2)
-        integer :: itria
+        integer(kind=8) :: itria
         real(kind=8) :: xbar(*)
         real(kind=8) :: ksi1
         real(kind=8) :: ksi2

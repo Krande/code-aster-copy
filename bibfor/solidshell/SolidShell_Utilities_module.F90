@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -31,7 +31,6 @@ module SolidShell_Utilities_module
 ! ==================================================================================================
     private
 #include "asterf_types.h"
-#include "asterfort/assert.h"
 ! ==================================================================================================
 contains
 ! --------------------------------------------------------------------------------------------------
@@ -44,11 +43,11 @@ contains
     subroutine prodBTDB(matrD, nls, ncb, matrB, tBDB)
 !   ------------------------------------------------------------------------------------------------
 ! - Parameters
-        integer, intent(in) :: nls, ncb
+        integer(kind=8), intent(in) :: nls, ncb
         real(kind=8), intent(in) :: matrD(nls, nls), matrB(nls, ncb)
         real(kind=8), intent(out) :: tBDB(ncb, ncb)
 ! - Local
-        integer :: i, j, k
+        integer(kind=8) :: i, j, k
         real(kind=8) :: aux, DB(nls, ncb)
 !   ------------------------------------------------------------------------------------------------
 !

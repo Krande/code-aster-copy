@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -37,11 +37,11 @@ subroutine statpu(nbobst, nbpt, temps, fcho, vgli, &
 #include "asterfort/pusure.h"
 #include "blas/dcopy.h"
     real(kind=8) :: temps(*), fcho(*), vgli(*), wk1(*), wk2(*), wk3(*)
-    integer :: iwk4(*), iadh(*)
+    integer(kind=8) :: iwk4(*), iadh(*)
 !
 !-----------------------------------------------------------------------
-    integer :: i, ibl, idebut, ifires, impr, inoe, nbloc
-    integer :: nbobst, nbpt, nbval
+    integer(kind=8) :: i, ibl, idebut, ifires, impr, inoe, nbloc
+    integer(kind=8) :: nbobst, nbpt, nbval
     real(kind=8) :: pusee, pusurn
     blas_int :: b_incx, b_incy, b_n
 !-----------------------------------------------------------------------

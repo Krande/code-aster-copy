@@ -40,7 +40,6 @@ subroutine nminit(mesh, model, mater, mateco, cara_elem, &
 !
 #include "asterf_types.h"
 #include "asterfort/accel0.h"
-#include "asterfort/assert.h"
 #include "asterfort/cfmxsd.h"
 #include "asterfort/cucrsd.h"
 #include "asterfort/diinit.h"
@@ -106,12 +105,12 @@ subroutine nminit(mesh, model, mater, mateco, cara_elem, &
     type(NL_DS_Constitutive), intent(inout) :: ds_constitutive
     character(len=19) :: maprec
     character(len=19), intent(in) :: solver
-    integer :: numins
+    integer(kind=8) :: numins
     character(len=19) :: sddisc
     character(len=19) :: sdnume
     character(len=19) :: sdcrit
     type(NL_DS_Material), intent(inout) :: ds_material
-    integer, intent(inout) :: listFuncActi(*)
+    integer(kind=8), intent(inout) :: listFuncActi(*)
     character(len=19) :: sdpilo
     character(len=19), intent(in) :: sddyna
     type(NLDYNA_DAMPING), intent(in) :: nlDynaDamping
@@ -179,7 +178,7 @@ subroutine nminit(mesh, model, mater, mateco, cara_elem, &
 !
 ! --------------------------------------------------------------------------------------------------
 !
-    integer :: ifm, niv
+    integer(kind=8) :: ifm, niv
     real(kind=8) :: instin
     character(len=19) :: varc_prev, disp_prev, strx_prev, varc_curr, disp_curr, strx_curr
     aster_logical :: lacc0, lpilo, lmpas, lsstf, lviss, lrefe, ldidi, l_obsv, l_ener, l_dyna

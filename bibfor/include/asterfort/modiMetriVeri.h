@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -21,8 +21,8 @@
 interface
     subroutine modiMetriVeri(noma, ioc, modmai, nutyptu)
         character(len=8), intent(in) :: noma
-        integer, intent(in) :: ioc
+        integer(kind=8), intent(in) :: ioc
         character(len=24), intent(in) :: modmai
-        integer, intent(in) :: nutyptu(3)
+        integer(kind=8), intent(in) :: nutyptu(3)
     end subroutine modiMetriVeri
 end interface

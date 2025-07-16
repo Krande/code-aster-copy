@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -20,8 +20,8 @@
 !
 interface
     subroutine jedebu(nbfi, mxzon, idb)
-        integer :: nbfi
-        integer :: mxzon
-        integer :: idb
+        integer(kind=8) :: nbfi
+        integer(kind=8) :: mxzon
+        integer(kind=8) :: idb
     end subroutine jedebu
 end interface

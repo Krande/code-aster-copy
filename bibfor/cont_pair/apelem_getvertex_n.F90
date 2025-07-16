@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -23,12 +23,11 @@ subroutine apelem_getvertex_n(elem_dime, elem_code, &
 !
 #include "asterf_types.h"
 #include "asterfort/assert.h"
-#include "asterfort/mmnewt.h"
 !
-    integer, intent(in) :: elem_dime
+    integer(kind=8), intent(in) :: elem_dime
     character(len=8), intent(in) :: elem_code
     real(kind=8), intent(out) :: para_coor(elem_dime-1, 4)
-    integer, intent(out) :: nb_vertex
+    integer(kind=8), intent(out) :: nb_vertex
     character(len=8), intent(out) :: para_code
 !
 ! --------------------------------------------------------------------------------------------------

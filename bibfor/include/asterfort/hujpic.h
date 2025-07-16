@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -22,10 +22,10 @@ interface
     subroutine hujpic(kk, k, tin, vin, mater,&
                       yf, pc)
         common/tdim/ ndt,ndi
-        integer :: ndt
-        integer :: ndi
-        integer :: kk
-        integer :: k
+        integer(kind=8) :: ndt
+        integer(kind=8) :: ndi
+        integer(kind=8) :: kk
+        integer(kind=8) :: k
         real(kind=8) :: tin(ndt)
         real(kind=8) :: vin(*)
         real(kind=8) :: mater(22, 2)

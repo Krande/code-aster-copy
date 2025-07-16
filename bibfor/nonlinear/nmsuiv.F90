@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -43,7 +43,7 @@ subroutine nmsuiv(meshz, sd_suiv, ds_print, cara_elemz, modelz, &
     type(NL_DS_Material), intent(in) :: ds_material
     character(len=*), intent(in) :: modelz
     type(NL_DS_Constitutive), intent(in) :: ds_constitutive
-    integer, intent(in) :: nume_inst
+    integer(kind=8), intent(in) :: nume_inst
     character(len=19), intent(in) :: valinc(*)
 !
 ! --------------------------------------------------------------------------------------------------
@@ -69,10 +69,10 @@ subroutine nmsuiv(meshz, sd_suiv, ds_print, cara_elemz, modelz, &
 !
     character(len=24) :: list_node, list_elem, list_poin, list_spoi, list_cmp
     character(len=14) :: sdextr_suiv
-    integer :: nb_cmp, nb_node, nb_elem, nb_field, nb_field_comp
-    integer :: nb_poin, nb_spoi
-    integer :: i_keyw_fact, nb_keyw_fact
-    integer :: i_dof_monitor, i_field, i_field_comp
+    integer(kind=8) :: nb_cmp, nb_node, nb_elem, nb_field, nb_field_comp
+    integer(kind=8) :: nb_poin, nb_spoi
+    integer(kind=8) :: i_keyw_fact, nb_keyw_fact
+    integer(kind=8) :: i_dof_monitor, i_field, i_field_comp
     real(kind=8) :: time
     character(len=2) :: chaine
     character(len=19) :: disp_curr, strx_curr, varc_curr
@@ -82,7 +82,7 @@ subroutine nmsuiv(meshz, sd_suiv, ds_print, cara_elemz, modelz, &
     character(len=8) :: type_extr_cmp, type_extr, type_extr_elem, type_sele_cmp, mesh
     character(len=19) :: work_poin, work_node, work_elem
     character(len=24) :: extr_info, extr_type, extr_field, extr_comp
-    integer, pointer :: v_extr_info(:) => null()
+    integer(kind=8), pointer :: v_extr_info(:) => null()
     character(len=8), pointer :: v_extr_type(:) => null()
     character(len=24), pointer :: v_extr_field(:) => null()
     character(len=24), pointer :: v_extr_comp(:) => null()

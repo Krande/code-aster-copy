@@ -67,8 +67,8 @@ subroutine op0197()
 #include "asterfort/rs_getlast.h"
 #include "asterfort/rs_getfirst.h"
 !
-    integer :: nbparr, nbpark, nbpars, nbpart, info
-    integer :: valii
+    integer(kind=8) :: nbparr, nbpark, nbpars, nbpart, info
+    integer(kind=8) :: valii
     parameter(nbparr=4, nbpark=3, nbpars=3, nbpart=3)
     character(len=6) :: chtemp
     character(len=8) :: tapait, k8bid, cara, typarr(nbparr), typars(nbpars)
@@ -80,18 +80,18 @@ subroutine op0197()
     character(len=16) :: nopart(nbpart)
     character(len=19) :: nomres
     character(len=24) :: collec, mateco, noobj
-    integer :: nbresu, ifm, n1, niv, itemp, ichmat, iresu, imod, nbins, iinst
-    integer :: itabw, nbite, nitmax, isig, i, ibid, nbmtcm, nbmtrc, nbcal, nbval
-    integer :: it, iseg, nchar, jcha, itabr, vali(nbparr), ix, iy
-    integer :: nrupt, iweik, iweir, ipro, irent, isigk, isigkp, isigi, ntemp
-    integer :: itpsi, itpre, ntpsi, ipth, inopa, itypa, ivapa, ikval, ikvak, imc
-    integer :: nume_first, nume_last, nbold, anomm1, anomm2, iret
+    integer(kind=8) :: nbresu, ifm, n1, niv, itemp, ichmat, iresu, imod, nbins, iinst
+    integer(kind=8) :: itabw, nbite, nitmax, isig, i, ibid, nbmtcm, nbmtrc, nbcal, nbval
+    integer(kind=8) :: it, iseg, nchar, jcha, itabr, vali(nbparr), ix, iy
+    integer(kind=8) :: nrupt, iweik, iweir, ipro, irent, isigk, isigkp, isigi, ntemp
+    integer(kind=8) :: itpsi, itpre, ntpsi, ipth, inopa, itypa, ivapa, ikval, ikvak, imc
+    integer(kind=8) :: nume_first, nume_last, nbold, anomm1, anomm2, iret
     real(kind=8) :: mini, minip, vini, epsi, mk, mkp, sigint, r8bid
     real(kind=8) :: valr(nbparr), test, proint, maxcs, tpsmin, tpsmax
     real(kind=8) :: valrr(3), inst_last, inst_first
     complex(kind=8) :: c16b
     aster_logical :: calm, cals, impr, dept, recm, recs
-    integer, pointer :: nom_nures(:) => null()
+    integer(kind=8), pointer :: nom_nures(:) => null()
     real(kind=8), pointer :: nom_inssig(:) => null()
     character(len=8), pointer :: vale(:) => null()
 !

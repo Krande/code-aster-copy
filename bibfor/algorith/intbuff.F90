@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -27,7 +27,6 @@ subroutine intbuff(sd_int, addrs, level)
 #include "jeveux.h"
 #include "asterfort/codent.h"
 #include "asterfort/crevec.h"
-#include "asterfort/intget.h"
 #include "asterfort/jedetr.h"
 #include "asterfort/jeexin.h"
 #include "asterfort/jelibe.h"
@@ -41,16 +40,16 @@ subroutine intbuff(sd_int, addrs, level)
 !
 !   -0.1- Input/output arguments
     character(len=*), intent(in)  :: sd_int
-    integer, pointer :: addrs(:)
-    integer, optional, intent(in)  :: level
+    integer(kind=8), pointer :: addrs(:)
+    integer(kind=8), optional, intent(in)  :: level
 !
 !   -0.2- Local variables
 !   --- For strings copying
     character(len=8) :: sd_int_
 
 !   --- For general usage
-    integer           :: ip, iret, addr, long, jbuff
-    integer           :: ilev, lvl, dec
+    integer(kind=8)           :: ip, iret, addr, long, jbuff
+    integer(kind=8)           :: ilev, lvl, dec
     character(len=6)  :: k_iocc
     character(len=24) :: savename
     type(c_ptr) :: pc

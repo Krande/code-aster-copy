@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2020 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -26,7 +26,7 @@ interface
                       storeCrit   , storeEpsi    , storePara   ,&
                       cmpNb       , cmpAstName   , cmpMedName  ,&
                       fieldStoreNb)
-        integer, intent(in) :: fileUnit, storeLast
+        integer(kind=8), intent(in) :: fileUnit, storeLast
         character(len=8), intent(in) :: resultName
         character(len=8), intent(in) :: meshAst
         character(len=16), intent(in) :: fieldType
@@ -37,13 +37,13 @@ interface
         character(len=8), intent(in) :: param
         character(len=3), intent(in) :: prolz
         character(len=10), intent(in) :: storeAccess
-        integer, intent(in) :: storeCreaNb, storeIndxNb, storeTimeNb
+        integer(kind=8), intent(in) :: storeCreaNb, storeIndxNb, storeTimeNb
         character(len=19), intent(in) :: storeIndx, storeTime
         character(len=8), intent(in) :: storeCrit
         real(kind=8), intent(in) :: storeEpsi
         character(len=4) , intent(in):: storePara
-        integer, intent(in) :: cmpNb
+        integer(kind=8), intent(in) :: cmpNb
         character(len=24), intent(in) :: cmpAstName, cmpMedName
-        integer, intent(out) :: fieldStoreNb
+        integer(kind=8), intent(out) :: fieldStoreNb
     end subroutine lrfmed
 end interface

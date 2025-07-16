@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -35,7 +35,7 @@ subroutine caelec(load, mesh, nbOcc)
 #include "asterfort/getelem.h"
 !
     character(len=8), intent(in) :: load, mesh
-    integer, intent(in) :: nbOcc
+    integer(kind=8), intent(in) :: nbOcc
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -54,13 +54,13 @@ subroutine caelec(load, mesh, nbOcc)
     character(len=16), parameter :: keywordfact = 'FORCE_ELEC'
     character(len=4), parameter :: valeType = 'REEL'
     character(len=24), parameter :: listCell = '&&CAELEC.LIST_ELEM'
-    integer :: jvCell, nbCell
-    integer :: nbRet, iocc
+    integer(kind=8) :: jvCell, nbCell
+    integer(kind=8) :: nbRet, iocc
     real(kind=8) :: p1(3), p2(3), zcod, d
     character(len=8) :: code
     real(kind=8), pointer :: valv(:) => null()
     character(len=19) :: map(LOAD_MAP_NBMAX)
-    integer :: nbMap, nbCmp(LOAD_MAP_NBMAX)
+    integer(kind=8) :: nbMap, nbCmp(LOAD_MAP_NBMAX)
 !
 ! --------------------------------------------------------------------------------------------------
 !

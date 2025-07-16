@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -47,13 +47,12 @@ subroutine xxnmpl(elrefp, elrese, ndim, coorse, igeom, &
 #include "asterfort/xkamat.h"
 #include "asterfort/iimatu.h"
 #include "asterfort/xnbddl.h"
-#include "asterfort/iselli.h"
 #include "asterfort/Behaviour_type.h"
 !
-    integer :: ndim, igeom, imate, lgpg, codret, nnop, npg
-    integer :: nfh, ddlc, ddlm, nfe, idepl, ivectu, ideplp
-    integer :: nfiss, heavn(nnop, 5), idecpg
-    integer :: jstno
+    integer(kind=8) :: ndim, igeom, imate, lgpg, codret, nnop, npg
+    integer(kind=8) :: nfh, ddlc, ddlm, nfe, idepl, ivectu, ideplp
+    integer(kind=8) :: nfiss, heavn(nnop, 5), idecpg
+    integer(kind=8) :: jstno
     character(len=8) :: elrefp, elrese
     real(kind=8) :: basloc(3*ndim*nnop), he(nfiss)
     real(kind=8) :: lsn(nnop), lst(nnop), coorse(*)
@@ -101,12 +100,12 @@ subroutine xxnmpl(elrefp, elrese, ndim, coorse, igeom, &
 !
 ! --------------------------------------------------------------------------------------------------
 !
-    integer, parameter :: ksp = 1
+    integer(kind=8), parameter :: ksp = 1
     character(len=4), parameter :: fami = "XFEM"
-    integer :: i, ig, j, j1, kkd, kl, kpg, l, m, n, nn, mn
-    integer :: ddls, ddld, cpt, idfde, ipoids, ivf, dec(nnop)
-    integer :: ndimb, nno, nnops, npgbis, hea_se
-    integer :: singu, alp, ii, jj
+    integer(kind=8) :: i, ig, j, j1, kkd, kl, kpg, l, m, n, nn, mn
+    integer(kind=8) :: ddls, ddld, cpt, idfde, ipoids, ivf, dec(nnop)
+    integer(kind=8) :: ndimb, nno, nnops, npgbis, hea_se
+    integer(kind=8) :: singu, alp, ii, jj
     real(kind=8) :: dsidep(6, 6), f(3, 3), deps(6), sigma(6)
     real(kind=8) :: eps(6), sigp(6)
     real(kind=8) :: tmp2

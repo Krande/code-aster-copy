@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -21,15 +21,15 @@
 interface
     subroutine jjalls(lonoi, ic, genri, typei, lty,&
                       ci, itab, jitab, iadmi, iadyn)
-        integer :: lonoi
-        integer :: ic
+        integer(kind=8) :: lonoi
+        integer(kind=8) :: ic
         character(len=*) :: genri
         character(len=*) :: typei
-        integer :: lty
+        integer(kind=8) :: lty
         character(len=*) :: ci
-        integer :: itab(*)
-        integer :: jitab
-        integer :: iadmi
-        integer :: iadyn
+        integer(kind=8) :: itab(*)
+        integer(kind=8) :: jitab
+        integer(kind=8) :: iadmi
+        integer(kind=8) :: iadyn
     end subroutine jjalls
 end interface

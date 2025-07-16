@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -23,11 +23,11 @@ subroutine cuimp2(ifm, iliai, typope, typeou, resocu)
 #include "jeveux.h"
 #include "asterfort/assert.h"
 #include "asterfort/jeveuo.h"
-    integer :: ifm
+    integer(kind=8) :: ifm
     character(len=24) :: resocu
     character(len=1) :: typope
     character(len=3) :: typeou
-    integer :: iliai
+    integer(kind=8) :: iliai
 !
 ! ----------------------------------------------------------------------
 ! ROUTINE APPELEE PAR : ALGOCU
@@ -45,7 +45,7 @@ subroutine cuimp2(ifm, iliai, typope, typeou, resocu)
     character(len=8) :: noe, cmp
     character(len=20) :: chaiac
     character(len=24) :: nomnoe, nomcmp
-    integer :: jnomno, jnomcm
+    integer(kind=8) :: jnomno, jnomcm
 !
 ! ----------------------------------------------------------------------
 !

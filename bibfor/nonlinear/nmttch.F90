@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -30,7 +30,7 @@ subroutine nmttch(result, inst, nume)
 #include "asterfort/utacli.h"
 #include "asterfort/utmess.h"
     real(kind=8) :: inst
-    integer :: nume
+    integer(kind=8) :: nume
     character(len=8) :: result
 !
 ! ----------------------------------------------------------------------
@@ -51,8 +51,8 @@ subroutine nmttch(result, inst, nume)
 !
 !
     character(len=24) :: nomobj
-    integer :: jtemps
-    integer :: nbinst, i, nbintv
+    integer(kind=8) :: jtemps
+    integer(kind=8) :: nbinst, i, nbintv
     real(kind=8) :: tole
     real(kind=8) :: dtmin, ins, dt
 !

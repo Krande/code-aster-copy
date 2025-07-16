@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -22,7 +22,7 @@ interface
     subroutine epsett(applic, nbrddl, depl, btild, sgmtd,&
                       epsi, wgt, effint)
         character(len=6) :: applic
-        integer :: nbrddl
+        integer(kind=8) :: nbrddl
         real(kind=8) :: depl(*)
         real(kind=8) :: btild(4, *)
         real(kind=8) :: sgmtd(*)

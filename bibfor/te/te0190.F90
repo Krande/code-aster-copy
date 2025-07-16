@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -44,13 +44,13 @@ subroutine te0190(option, nomte)
 !
 ! --------------------------------------------------------------------------------------------------
 !
-    integer :: i, igau, igeom, iharmo, imate, imatuu, j
-    integer :: k, nbinco, nbsig, nh
+    integer(kind=8) :: i, igau, igeom, iharmo, imate, imatuu, j
+    integer(kind=8) :: k, nbinco, nbsig, nh
     character(len=4) :: fami
     real(kind=8) :: b(486), btdb(81, 81), d(36), jacgau
     real(kind=8) :: angl_naut(3), instan, nharm
-    integer :: ndim, nno, nnos, npg1, ipoids, ivf, idfde, dimmod
-    integer :: elas_id
+    integer(kind=8) :: ndim, nno, nnos, npg1, ipoids, ivf, idfde, dimmod
+    integer(kind=8) :: elas_id
 !
 ! --------------------------------------------------------------------------------------------------
 !

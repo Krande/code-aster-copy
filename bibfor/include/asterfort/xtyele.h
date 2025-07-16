@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -23,12 +23,12 @@
 interface
     subroutine xtyele(model, trav, nfiss, fiss, contac,&
                       ndim, linter)
-        integer :: ndim
-        integer :: nfiss
+        integer(kind=8) :: ndim
+        integer(kind=8) :: nfiss
         character(len=8) :: model
         character(len=24) :: trav
         character(len=8) :: fiss(nfiss)
-        integer :: contac
+        integer(kind=8) :: contac
         aster_logical :: linter
     end subroutine xtyele
 end interface

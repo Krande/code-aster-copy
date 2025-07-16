@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -22,8 +22,8 @@ interface
     subroutine nmext2(mesh         , field    , nb_cmp  , nb_node  , type_extr,&
                       type_extr_cmp, list_node, list_cmp, work_node)
         character(len=8), intent(in) :: mesh
-        integer, intent(in) :: nb_node
-        integer, intent(in) :: nb_cmp
+        integer(kind=8), intent(in) :: nb_node
+        integer(kind=8), intent(in) :: nb_cmp
         character(len=8), intent(in) :: type_extr
         character(len=8), intent(in) :: type_extr_cmp
         character(len=24), intent(in) :: list_node

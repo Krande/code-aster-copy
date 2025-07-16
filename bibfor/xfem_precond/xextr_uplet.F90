@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -31,10 +31,10 @@ function xextr_uplet(n, id)
 !-----------------------------------------------------------------------
 #include "jeveux.h"
 !-----------------------------------------------------------------------
-    integer :: n, id
-    integer :: xextr_uplet(n)
+    integer(kind=8) :: n, id
+    integer(kind=8) :: xextr_uplet(n)
 !-----------------------------------------------------------------------
-    integer :: base_codage, idigi, res, p
+    integer(kind=8) :: base_codage, idigi, res, p
     parameter(base_codage=4)
 !-----------------------------------------------------------------------
 !

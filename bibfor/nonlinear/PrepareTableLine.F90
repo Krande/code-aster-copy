@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -44,7 +44,7 @@ subroutine PrepareTableLine(table, col_sep, table_line)
 !
 ! --------------------------------------------------------------------------------------------------
 !
-    integer :: i_col, nb_cols, width, total_width, line_width
+    integer(kind=8) :: i_col, nb_cols, width, total_width, line_width
 !
 ! --------------------------------------------------------------------------------------------------
 !

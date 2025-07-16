@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -22,8 +22,8 @@ interface
     subroutine rschor(noresz, nomsyz, nbordr, tabord, codret)
         character(len=*) :: noresz
         character(len=*) :: nomsyz
-        integer :: nbordr
+        integer(kind=8) :: nbordr
         character(len=*) :: tabord
-        integer :: codret
+        integer(kind=8) :: codret
     end subroutine rschor
 end interface

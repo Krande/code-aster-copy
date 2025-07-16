@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -23,14 +23,14 @@
 interface
     subroutine zreord(zmat, nbddg, nbmod, nbmob, nbddr,&
                       axok, liax, nbliax, zvec)
-        integer :: nbliax
-        integer :: nbmod
-        integer :: nbddg
+        integer(kind=8) :: nbliax
+        integer(kind=8) :: nbmod
+        integer(kind=8) :: nbddg
         complex(kind=8) :: zmat(nbddg, nbmod)
-        integer :: nbmob
-        integer :: nbddr
+        integer(kind=8) :: nbmob
+        integer(kind=8) :: nbddr
         aster_logical :: axok
-        integer :: liax(nbliax)
+        integer(kind=8) :: liax(nbliax)
         complex(kind=8) :: zvec(nbddg)
     end subroutine zreord
 end interface

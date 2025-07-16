@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2018 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -20,7 +20,7 @@
 #include "asterf_types.h"
 interface 
     subroutine transpos1(xt, x, jdim)
-        integer :: jdim
+        integer(kind=8) :: jdim
         real(kind=8) :: xt(jdim, jdim)
         real(kind=8) :: x(jdim, jdim)
     end subroutine transpos1

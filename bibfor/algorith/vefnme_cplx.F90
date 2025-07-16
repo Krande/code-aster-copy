@@ -55,7 +55,7 @@ subroutine vefnme_cplx(option, base, &
     character(len=8), intent(in) :: carael
     character(len=24), intent(in) :: mate
     character(len=*), intent(in) :: ligrelz
-    integer, intent(in) :: nh
+    integer(kind=8), intent(in) :: nh
     character(len=*), intent(in) :: comporZ
     character(len=*), intent(in) :: sigmaz, sigmaPrev
     character(len=*), intent(in) :: varicomz
@@ -90,8 +90,8 @@ subroutine vefnme_cplx(option, base, &
 !
 ! --------------------------------------------------------------------------------------------------
 !
-    integer, parameter :: nbout = 1
-    integer, parameter :: nbxin = 35
+    integer(kind=8), parameter :: nbout = 1
+    integer(kind=8), parameter :: nbxin = 35
     character(len=8) :: lpaout(nbout), lpain(nbxin)
     character(len=19) :: lchout(nbout), lchin(nbxin)
 !
@@ -101,14 +101,14 @@ subroutine vefnme_cplx(option, base, &
     character(len=19) :: chgeom, chcara(18), vecele, veceli, compor
     character(len=19) :: lchinr(nbxin), lchini(nbxin)
     character(len=16) :: optio2
-    integer :: iret, inddec(nbxin), iexi, k, nbin
+    integer(kind=8) :: iret, inddec(nbxin), iexi, k, nbin
     character(len=19) :: pintto, cnseto, heavto, loncha, basloc, lsn, lst, stano
     character(len=19) :: pmilto, fissno, hea_no
     character(len=19) :: sigma, varicom, strx
     character(len=19) :: depl
     character(len=19) :: chdecr(nbxin), chdeci(nbxin), ch19, chr, chi, ch1(nbout), ch2(nbout)
     aster_logical :: debug, lcmplx, lsspt
-    integer :: ifmdbg, nivdbg
+    integer(kind=8) :: ifmdbg, nivdbg
 !
 ! --------------------------------------------------------------------------------------------------
 !

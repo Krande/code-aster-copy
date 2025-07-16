@@ -25,9 +25,7 @@ subroutine cesver(cesz)
 #include "asterfort/dismoi.h"
 #include "asterfort/jedema.h"
 #include "asterfort/jemarq.h"
-#include "asterfort/jenuno.h"
 #include "asterfort/jeveuo.h"
-#include "asterfort/jexnum.h"
 #include "asterfort/utmess.h"
 #include "asterfort/int_to_char8.h"
 !
@@ -53,8 +51,8 @@ subroutine cesver(cesz)
 !-----------------------------------------------------------------------
 !
 !     ------------------------------------------------------------------
-    integer :: jcesd, jcesv, jcesl, iad
-    integer :: nbma, ima, ncmp, ipt, isp, nbpt, icmp, ima1
+    integer(kind=8) :: jcesd, jcesv, jcesl, iad
+    integer(kind=8) :: nbma, ima, ncmp, ipt, isp, nbpt, icmp, ima1
     character(len=24) :: valk(3)
     character(len=8) :: ma, nomgd, nomma, typces
     character(len=3) :: tsca

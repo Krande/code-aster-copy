@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -22,6 +22,6 @@ interface
     subroutine mgis_set_integer_parameter(extern_addr, nopara, valeur)
         character(len=16), intent(in) :: extern_addr
         character(len=*), intent(in) :: nopara
-        integer, intent(in) :: valeur
+        integer(kind=8), intent(in) :: valeur
     end subroutine mgis_set_integer_parameter
 end interface

@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -51,7 +51,6 @@ subroutine mnllec(imat, numedd, ordman, epsman, pasman, &
 ! ----------------------------------------------------------------------
 !
 #include "jeveux.h"
-#include "asterfort/assert.h"
 #include "asterfort/dismoi.h"
 #include "asterfort/getvid.h"
 #include "asterfort/getvis.h"
@@ -64,13 +63,13 @@ subroutine mnllec(imat, numedd, ordman, epsman, pasman, &
 ! --- DECLARATION DES ARGUMENTS DE LA ROUTINE
 ! ----------------------------------------------------------------------
 !
-    integer :: imat(2), ordman, pasman, h, hf, itemax, nbran, nextr
+    integer(kind=8) :: imat(2), ordman, pasman, h, hf, itemax, nbran, nextr
     real(kind=8) :: epsman, epscor, epsbif
     character(len=24) :: numedd
 ! ----------------------------------------------------------------------
 ! --- DECLARATION DES VARIABLES LOCALES
 ! ----------------------------------------------------------------------
-    integer :: imeth
+    integer(kind=8) :: imeth
     character(len=8) :: masse, rigid
     character(len=16) :: method
 !

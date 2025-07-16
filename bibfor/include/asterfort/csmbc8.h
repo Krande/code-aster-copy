@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -22,9 +22,9 @@ interface
     subroutine csmbc8(nommat, ccll, ccii, neq, vcine,&
                       vsmb)
         character(len=*) :: nommat
-        integer :: ccll(*)
-        integer :: ccii(*)
-        integer :: neq
+        integer(kind=8) :: ccll(*)
+        integer(kind=8) :: ccii(*)
+        integer(kind=8) :: neq
         complex(kind=8) :: vcine(*)
         complex(kind=8) :: vsmb(*)
     end subroutine csmbc8

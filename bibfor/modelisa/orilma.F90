@@ -38,8 +38,8 @@ subroutine orilma(noma, ndim, listCellNume, nbCell, norien, &
 #include "asterfort/utmess.h"
 #include "asterfort/int_to_char8.h"
 !
-    integer :: ndim, nbCell, norien, ntrait, nbmavo, mailvo(*)
-    integer, pointer :: listCellNume(:)
+    integer(kind=8) :: ndim, nbCell, norien, ntrait, nbmavo, mailvo(*)
+    integer(kind=8), pointer :: listCellNume(:)
     character(len=8) :: noma
     aster_logical :: reorie
 !.======================================================================
@@ -68,18 +68,18 @@ subroutine orilma(noma, ndim, listCellNume, nbCell, norien, &
 !    NBMAVO         IN    I       NB DE MAILLES DE MAILVO
 !.========================= DEBUT DES DECLARATIONS ====================
 ! -----  VARIABLES LOCALES
-    integer :: ifm, niv, iCell, cellNume, cellTypeNume, nbnmai, numa3d, noriem, norieg
-    integer :: p1, p2, jm3d, jdesm, jdes3d, ier
+    integer(kind=8) :: ifm, niv, iCell, cellNume, cellTypeNume, nbnmai, numa3d, noriem, norieg
+    integer(kind=8) :: p1, p2, jm3d, jdesm, jdes3d, ier
     aster_logical :: hasSkin1D, hasSkin2D, lcolle
     character(len=2) :: kdim
     character(len=8) :: cellTypeName, nomail, typ3d
     character(len=24) :: nomob1
     character(len=24) :: valk(2)
-    integer, pointer :: ori1(:) => null()
-    integer, pointer :: ori2(:) => null()
+    integer(kind=8), pointer :: ori1(:) => null()
+    integer(kind=8), pointer :: ori2(:) => null()
     character(len=8), pointer :: ori3(:) => null()
     character(len=8), pointer :: ori4(:) => null()
-    integer, pointer :: typmail(:) => null()
+    integer(kind=8), pointer :: typmail(:) => null()
     real(kind=8), pointer :: vale(:) => null()
 !
 !.========================= DEBUT DU CODE EXECUTABLE ==================

@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -20,6 +20,6 @@ interface
     subroutine capesa(load, mesh, valeType, nbOcc)
         character(len=8), intent(in) :: load, mesh
         character(len=4), intent(in) :: valeType
-        integer, intent(in) :: nbOcc
+        integer(kind=8), intent(in) :: nbOcc
     end subroutine capesa
 end interface

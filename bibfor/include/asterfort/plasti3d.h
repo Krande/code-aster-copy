@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -24,8 +24,8 @@ interface
                     A, B, X, ngf, varf, ipzero,&
                     outputR, outputVR6, outputMat33,&
                     outputI)
-        integer, intent(in) :: inputI(*)
-        integer, intent(in) :: ngf
+        integer(kind=8), intent(in) :: inputI(*)
+        integer(kind=8), intent(in) :: ngf
         aster_logical, intent(in) :: inputL(*)
         real(kind=8), intent(in) :: xmat(*)
         real(kind=8), intent(in) :: var0(*)
@@ -41,7 +41,7 @@ interface
         real(kind=8), intent(out) :: outputR(*)
         real(kind=8), intent(out) :: outputVR6(6,*)
         real(kind=8), intent(out) :: outputMat33(3,3,*)
-        integer, intent(out) :: outputI(*)
-        integer, intent(inout) :: ipzero(ngf)
+        integer(kind=8), intent(out) :: outputI(*)
+        integer(kind=8), intent(inout) :: ipzero(ngf)
     end subroutine plasti3d
 end interface

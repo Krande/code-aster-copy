@@ -36,7 +36,7 @@ subroutine ntarch(numins, model, materField, caraElem, para, &
 #include "asterfort/uttcpg.h"
 #include "asterfort/romAlgoNLTableSave.h"
 !
-    integer, intent(in) :: numins
+    integer(kind=8), intent(in) :: numins
     character(len=8), intent(in) :: model, materField, caraElem
     real(kind=8), intent(in) :: para(*)
     character(len=19), intent(in) :: sddisc
@@ -58,8 +58,8 @@ subroutine ntarch(numins, model, materField, caraElem, para, &
 ! --------------------------------------------------------------------------------------------------
 !
     real(kind=8) :: instan
-    integer :: iret
-    integer :: nume_store
+    integer(kind=8) :: iret
+    integer(kind=8) :: nume_store
     character(len=19) :: k19bid
     character(len=8) :: result
     character(len=24) :: listLoadResu

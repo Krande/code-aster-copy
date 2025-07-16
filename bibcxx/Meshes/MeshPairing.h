@@ -28,13 +28,12 @@
 #include "DataFields/FieldOnNodes.h"
 #include "DataFields/MeshCoordinatesField.h"
 #include "DataStructures/DataStructure.h"
-#include "DataStructures/UseCppPickling.h"
 #include "MemoryManager/JeveuxVector.h"
 #include "Meshes/Mesh.h"
 #include "Meshes/MeshEnum.h"
 #include "Supervis/ResultNaming.h"
 
-class MeshPairing : public DataStructure, public UseCppPickling {
+class MeshPairing : public DSWithCppPickling {
   private:
     /** @brief Mesh */
     BaseMeshPtr _mesh;

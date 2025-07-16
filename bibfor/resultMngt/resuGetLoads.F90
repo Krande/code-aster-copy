@@ -48,7 +48,7 @@ subroutine resuGetLoads(model, resultType, listLoadResu)
 ! --------------------------------------------------------------------------------------------------
 !
     character(len=24), parameter :: jvBase = "V"
-    integer :: nbOcc
+    integer(kind=8) :: nbOcc
     character(len=24), parameter :: listLoad = '&&LRCOMM.LISTLOAD'
     type(ListLoad_Prep) :: listLoadPrep
 !

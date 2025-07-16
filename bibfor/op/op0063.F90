@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -36,10 +36,10 @@ subroutine op0063()
 #include "asterfort/tbliva.h"
 #include "asterfort/transft.h"
 #include "asterfort/vprecu.h"
-    integer :: iordr, ival(1), ibid, iret, neq
-    integer :: nbpara, nbtrou, nbmode, npari, nparr, npark, lvect
-    integer ::  nblig
-    integer :: inbpt
+    integer(kind=8) :: iordr, ival(1), ibid, iret, neq
+    integer(kind=8) :: nbpara, nbtrou, nbmode, npari, nparr, npark, lvect
+    integer(kind=8) ::  nblig
+    integer(kind=8) :: inbpt
     character(len=4) :: nomsym(1)
     character(len=8) :: k8b, modein, nomres, modenl, kvide
     character(len=16) :: lipar(1), typres, nomcmd, k16bid, tres
@@ -48,7 +48,7 @@ subroutine op0063()
     real(kind=8) :: rvide
     real(kind=8) :: r8b
     complex(kind=8) :: c16b, cvide
-    integer, pointer :: tbnp(:) => null()
+    integer(kind=8), pointer :: tbnp(:) => null()
 !
     call jemarq()
     call getres(nomres, typres, nomcmd)

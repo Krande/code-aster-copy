@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -22,10 +22,10 @@ interface
     subroutine vpbosc(typres, nbmode, nbvect, omeshi, valpro,&
                       nvpro, vpinf, vpmax, precdc, method,&
                       omecor)
-        integer :: nvpro
+        integer(kind=8) :: nvpro
         character(len=16) :: typres
-        integer :: nbmode
-        integer :: nbvect
+        integer(kind=8) :: nbmode
+        integer(kind=8) :: nbvect
         complex(kind=8) :: omeshi
         complex(kind=8) :: valpro(nvpro)
         real(kind=8) :: vpinf

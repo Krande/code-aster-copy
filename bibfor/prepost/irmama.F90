@@ -23,23 +23,21 @@ subroutine irmama(meshNameZ, &
 !
     implicit none
 !
-#include "asterfort/assert.h"
 #include "asterfort/jedema.h"
 #include "asterfort/jeexin.h"
 #include "asterfort/jelira.h"
 #include "asterfort/jemarq.h"
-#include "asterfort/jenonu.h"
 #include "asterfort/jeveuo.h"
 #include "asterfort/jexnom.h"
 #include "asterfort/utmess.h"
 #include "asterfort/char8_to_int.h"
 !
     character(len=*), intent(in) :: meshNameZ
-    integer, intent(in) :: nbCell
+    integer(kind=8), intent(in) :: nbCell
     character(len=8), pointer :: cellName(:)
-    integer, intent(in) :: nbGrCell
+    integer(kind=8), intent(in) :: nbGrCell
     character(len=24), pointer :: grCellName(:)
-    integer, intent(out) :: nbCellSelect
+    integer(kind=8), intent(out) :: nbCellSelect
     aster_logical, pointer :: cellFlag(:)
     aster_logical, intent(in) :: lfichUniq
 !
@@ -53,8 +51,8 @@ subroutine irmama(meshNameZ, &
 !
     character(len=8) :: meshName
     character(len=11) :: vecGrpName
-    integer :: iCell, cellNume, iGrCell, iret, grCellNbCell
-    integer, pointer :: listCell(:) => null()
+    integer(kind=8) :: iCell, cellNume, iGrCell, iret, grCellNbCell
+    integer(kind=8), pointer :: listCell(:) => null()
 !
 ! --------------------------------------------------------------------------------------------------
 !

@@ -33,11 +33,7 @@ subroutine mpjeft(corres)
 #include "asterfort/jedema.h"
 #include "asterfort/jedetr.h"
 #include "asterfort/jemarq.h"
-#include "asterfort/jenonu.h"
-#include "asterfort/jenuno.h"
 #include "asterfort/jeveuo.h"
-#include "asterfort/jexnom.h"
-#include "asterfort/jexnum.h"
 #include "asterfort/pacoa2.h"
 #include "asterfort/pj2dco.h"
 #include "asterfort/pj3dco.h"
@@ -58,15 +54,15 @@ subroutine mpjeft(corres)
     character(len=8) :: noma1, noma2, model1, model2, labk8
     character(len=8) :: lisin1, lisin2, lisou1, lisou2
     character(len=16) :: tymocl(2), motcle(2)
-    integer :: ndim, ncas, n1, nbocc, iocc, nbno2, nuno1, nuno2
-    integer ::  idecal, ino, irep
-    integer :: llin1, llin2, llou2, nbncal, nbnlis
-    integer :: kk, nbnmes, nbno1, jxxk1, iaconb, iaconu, iacocf, i
-    integer :: nbold
-    integer :: ndecal, it1, it2, it3, ifres
+    integer(kind=8) :: ndim, ncas, n1, nbocc, iocc, nbno2, nuno1, nuno2
+    integer(kind=8) ::  idecal, ino, irep
+    integer(kind=8) :: llin1, llin2, llou2, nbncal, nbnlis
+    integer(kind=8) :: kk, nbnmes, nbno1, jxxk1, iaconb, iaconu, iacocf, i
+    integer(kind=8) :: nbold
+    integer(kind=8) :: ndecal, it1, it2, it3, ifres
     real(kind=8) :: coef, rbid
-    integer, pointer :: linonu1(:) => null()
-    integer, pointer :: linonu2(:) => null()
+    integer(kind=8), pointer :: linonu1(:) => null()
+    integer(kind=8), pointer :: linonu2(:) => null()
     aster_logical :: l_dmax
 !----------------------------------------------------------------------
 !       DESCRIPTION DE LA SD CORRESP_2_MAILLA : CORRES

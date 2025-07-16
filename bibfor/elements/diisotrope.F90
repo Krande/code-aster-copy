@@ -54,29 +54,29 @@ subroutine diisotrope(for_discret, iret)
 #include "blas/dcopy.h"
 !
     type(te0047_dscr), intent(in) :: for_discret
-    integer, intent(out) :: iret
+    integer(kind=8), intent(out) :: iret
 !
 ! --------------------------------------------------------------------------------------------------
 !
-    integer :: imat, ivarim, jdc, irep, jtp, jtm, ifono, icontp, ivarip, iadzi, iazk24
-    integer :: icarcr, idf, ipi, imate, imater, jmat, nbmat, nbvale, jvale, jprol, tecro
-    integer :: icontm, ii, neq, kk
+    integer(kind=8) :: imat, ivarim, jdc, irep, jtp, jtm, ifono, icontp, ivarip, iadzi, iazk24
+    integer(kind=8) :: icarcr, idf, ipi, imate, imater, jmat, nbmat, nbvale, jvale, jprol, tecro
+    integer(kind=8) :: icontm, ii, neq, kk
     real(kind=8) :: r8bid, fl(12), klv(78), klc(144), raide(6)
     character(len=8) :: k8bid
     character(len=24) :: messak(6)
 !   pour le matériau
-    integer :: codret(1)
+    integer(kind=8) :: codret(1)
     real(kind=8) :: valres(1)
     character(len=16) :: materiau
 !   pour la loi de comportement
-    integer, parameter :: nbpara = 2, nbfct = 1*5
-    integer :: ldcfct(nbfct)
+    integer(kind=8), parameter :: nbpara = 2, nbfct = 1*5
+    integer(kind=8) :: ldcfct(nbfct)
     real(kind=8) :: ldcpar(nbpara)
-    integer :: iloi
+    integer(kind=8) :: iloi
     real(kind=8) :: temps0, temps1, dtemps
     character(len=8) :: ldccar(1)
 !   Équations du système
-    integer :: nbequa, nbdecp
+    integer(kind=8) :: nbequa, nbdecp
     parameter(nbequa=14)
     real(kind=8) :: y0(nbequa), dy0(nbequa), resu(nbequa*2), ynorme(nbequa)
     real(kind=8) :: errmax
@@ -86,7 +86,7 @@ subroutine diisotrope(for_discret, iret)
 !
 ! --------------------------------------------------------------------------------------------------
 !   Paramètres associés au matériau codé
-    integer :: lmat, lfct
+    integer(kind=8) :: lmat, lfct
     blas_int :: b_incx, b_incy, b_n
     parameter(lmat=9, lfct=10)
 ! --------------------------------------------------------------------------------------------------

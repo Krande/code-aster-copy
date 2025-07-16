@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -20,10 +20,10 @@
 !
 interface
     subroutine disexc(nindex, ilfex1, illex, npdsc3, iadsc3)
-        integer :: nindex
-        integer :: ilfex1
-        integer :: illex
-        integer :: npdsc3
-        integer :: iadsc3
+        integer(kind=8) :: nindex
+        integer(kind=8) :: ilfex1
+        integer(kind=8) :: illex
+        integer(kind=8) :: npdsc3
+        integer(kind=8) :: iadsc3
     end subroutine disexc
 end interface

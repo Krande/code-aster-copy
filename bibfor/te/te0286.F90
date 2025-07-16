@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -52,9 +52,9 @@ subroutine te0286(option, nomte)
 ! ---- GEOMETRIE ET INTEGRATION
 !      ------------------------
 !-----------------------------------------------------------------------
-    integer :: i, idepl, idfde, iener, igeom, iharmo, imate
-    integer :: ipoids, iret, ivf, jgano, nbsig, ndim, ndim2
-    integer :: nh, nno, nnos, npg
+    integer(kind=8) :: i, idepl, idfde, iener, igeom, iharmo, imate
+    integer(kind=8) :: ipoids, iret, ivf, jgano, nbsig, ndim, ndim2
+    integer(kind=8) :: nh, nno, nnos, npg
     real(kind=8) :: enthth, epot, undemi, zero
 !-----------------------------------------------------------------------
     fami = 'RIGI'

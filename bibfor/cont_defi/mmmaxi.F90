@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -58,15 +58,15 @@ function mmmaxi(sdcont_defi, model, mesh)
 ! --------------------------------------------------------------------------------------------------
 !
     character(len=16) :: elem_type_name, list_elem_supp
-    integer :: elem_nume, elem_type_nume
-    integer :: i_elem, nb_cont_elem
-    integer :: elem_supp_nume, nb_elem_axis, ivdummy(1)
+    integer(kind=8) :: elem_nume, elem_type_nume
+    integer(kind=8) :: i_elem, nb_cont_elem
+    integer(kind=8) :: elem_supp_nume, nb_elem_axis, ivdummy(1)
     real(kind=8), pointer :: v_geom_vale(:) => null()
     character(len=24) :: model_maille
-    integer, pointer :: v_model_maille(:) => null()
-    integer, pointer :: v_list_elem_supp(:) => null()
+    integer(kind=8), pointer :: v_model_maille(:) => null()
+    integer(kind=8), pointer :: v_list_elem_supp(:) => null()
     character(len=24) :: sdcont_mailco
-    integer, pointer :: v_sdcont_mailco(:) => null()
+    integer(kind=8), pointer :: v_sdcont_mailco(:) => null()
 !
 ! --------------------------------------------------------------------------------------------------
 !

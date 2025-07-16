@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -66,13 +66,13 @@ subroutine pmfdgedef(typfib, b, gg, depl, alicom, nbfibr, nbcarm, &
 #include "asterfort/r8inir.h"
 !
 
-    integer :: typfib, nbfibr, nbcarm, nbassepou, nbfipoutre(*), maxfipoutre
+    integer(kind=8) :: typfib, nbfibr, nbcarm, nbassepou, nbfipoutre(*), maxfipoutre
     real(kind=8) :: vf(nbcarm, nbfibr), dege(6), b(4), gg, depl(*)
     real(kind=8) :: alicom, deffib(nbfibr)
 !
 ! --------------------------------------------------------------------------------------------------
 !
-    integer :: ii, i, pos, posfib
+    integer(kind=8) :: ii, i, pos, posfib
     real(kind=8) :: dege2(6), deffibasse(*), vfv(7, *)
     real(kind=8) :: yj(*), zj(*), depl2(12)
 !

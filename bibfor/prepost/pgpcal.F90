@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -29,7 +29,6 @@ subroutine pgpcal(sd_pgp)
 ! ----------------------------------------------------------------------
 ! person_in_charge: hassan.berro at edf.fr
 #include "jeveux.h"
-#include "asterfort/assert.h"
 #include "asterfort/jedema.h"
 #include "asterfort/jelibe.h"
 #include "asterfort/jemarq.h"
@@ -45,19 +44,19 @@ subroutine pgpcal(sd_pgp)
 !   -0.2- Local variables
     real(kind=8)      :: physvalr
     complex(kind=8)   :: physvalc
-    integer           :: nbobs, iobs, physlen, length, nbmodes
-    integer           :: i, j, iord, dec1, nord
-    integer           :: jevol, jvecr, jvecc, jtblp, lc, shift, i_chreco
+    integer(kind=8)           :: nbobs, iobs, physlen, length, nbmodes
+    integer(kind=8)           :: i, j, iord, dec1, nord
+    integer(kind=8)           :: jevol, jvecr, jvecc, jtblp, lc, shift, i_chreco
     character(len=4)  :: chreco, typcha, typsc, typres
     character(len=8)  :: resin, result
     character(len=12) :: bl11pt
     character(len=16) :: champ
     character(len=24) :: nomjv
 
-    integer, pointer :: lordr(:) => null()
+    integer(kind=8), pointer :: lordr(:) => null()
     real(kind=8), pointer :: vectr(:) => null()
     complex(kind=8), pointer :: vectc(:) => null()
-    integer, pointer :: desc(:) => null()
+    integer(kind=8), pointer :: desc(:) => null()
     real(kind=8), pointer :: v_resu(:) => null()
     type(DynaGene) :: dyna_gene
 

@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2018 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -22,13 +22,13 @@ interface
     subroutine connor(melflu, typflu, freq, base, nuor,&
                       amoc, carac, lnoe, nbm, vite, &
                       rho, abscur, mailla)
-        integer :: nbm
-        integer :: lnoe
+        integer(kind=8) :: nbm
+        integer(kind=8) :: lnoe
         character(len=19) :: melflu
         character(len=8) :: typflu
         real(kind=8) :: freq(nbm)
         character(len=8) :: base
-        integer :: nuor(nbm)
+        integer(kind=8) :: nuor(nbm)
         real(kind=8) :: amoc(nbm)
         real(kind=8) :: carac(2)
         real(kind=8) :: vite(lnoe)

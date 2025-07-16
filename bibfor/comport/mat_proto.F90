@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -35,12 +35,12 @@ subroutine mat_proto(BEHinteg, &
 !
     type(Behaviour_Integ), intent(in) :: BEHinteg
     character(len=*), intent(in) :: fami
-    integer, intent(in)          :: kpg
-    integer, intent(in)          :: ksp
+    integer(kind=8), intent(in)          :: kpg
+    integer(kind=8), intent(in)          :: ksp
     character(len=1), intent(in) :: poum
-    integer, intent(in)          :: imate
+    integer(kind=8), intent(in)          :: imate
     character(len=*), intent(in) :: itface
-    integer, intent(inout)       :: nprops
+    integer(kind=8), intent(inout)       :: nprops
     real(kind=8), intent(out)    :: props(*)
 !
 ! --------------------------------------------------------------------------------------------------
@@ -62,11 +62,11 @@ subroutine mat_proto(BEHinteg, &
 !
 ! --------------------------------------------------------------------------------------------------
 !
-    integer      :: i, jadr, icodre, ncoef
+    integer(kind=8)      :: i, jadr, icodre, ncoef
     real(kind=8) :: phase(5), zalpha
-    integer      :: meta_type, nb_phasis
+    integer(kind=8)      :: meta_type, nb_phasis
     character(len=16) :: elas_keyword
-    integer, parameter :: nb_para = 3
+    integer(kind=8), parameter :: nb_para = 3
     real(kind=8) :: para_vale(nb_para)
     character(len=16), parameter :: para_name(nb_para) = (/'X', 'Y', 'Z'/)
 !

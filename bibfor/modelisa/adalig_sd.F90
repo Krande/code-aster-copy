@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -42,10 +42,10 @@ subroutine adalig_sd(ligr, partsd, ntliel, nbtype, clas, teut, nteut)
 !
     character(len=19), intent(in) :: ligr, partsd
     character(len=24), intent(in) :: ntliel
-    integer, intent(in) :: nbtype
+    integer(kind=8), intent(in) :: nbtype
     character(len=1), intent(in) :: clas
-    integer, pointer :: nteut(:)
-    integer, pointer :: teut(:)
+    integer(kind=8), pointer :: nteut(:)
+    integer(kind=8), pointer :: teut(:)
 !----------------------------------------------------------------------
 ! But: Reorganiser la collection .LIEL de ligrz afin de regrouper
 !      les elements de meme TYPE_ELEM dans un meme GREL
@@ -74,26 +74,26 @@ subroutine adalig_sd(ligr, partsd, ntliel, nbtype, clas, teut, nteut)
 !----------------------------------------------------------------------
     character(len=24) :: liel
     character(len=8) :: noma
-    integer :: i, jliel
-    integer ::  igrel, itype, nbma, ksd, kproc
-    integer :: nbel, nbgrel, kgre1, nbgre1
-    integer :: nbelmx, npaq, nbelgr, nel1, nel2, nel3, decal
-    integer :: ktype, lont, nbgrel_av, rang, nbproc
-    integer :: nbsd, igr, ktyp1, ktyp2, iel, numa, ngrmx, ngr1, ipaq
-    integer, pointer :: traite_par(:) => null()
-    integer, pointer :: nbel1(:) => null()
-    integer, pointer :: gteut(:) => null()
-    integer, pointer :: nbelgrel(:) => null()
-    integer, pointer :: utilise(:) => null()
-    integer, pointer :: utilise_1(:) => null()
-    integer, pointer :: utilise_2(:) => null()
-    integer, pointer :: ordre_stockage(:) => null()
+    integer(kind=8) :: i, jliel
+    integer(kind=8) ::  igrel, itype, nbma, ksd, kproc
+    integer(kind=8) :: nbel, nbgrel, kgre1, nbgre1
+    integer(kind=8) :: nbelmx, npaq, nbelgr, nel1, nel2, nel3, decal
+    integer(kind=8) :: ktype, lont, nbgrel_av, rang, nbproc
+    integer(kind=8) :: nbsd, igr, ktyp1, ktyp2, iel, numa, ngrmx, ngr1, ipaq
+    integer(kind=8), pointer :: traite_par(:) => null()
+    integer(kind=8), pointer :: nbel1(:) => null()
+    integer(kind=8), pointer :: gteut(:) => null()
+    integer(kind=8), pointer :: nbelgrel(:) => null()
+    integer(kind=8), pointer :: utilise(:) => null()
+    integer(kind=8), pointer :: utilise_1(:) => null()
+    integer(kind=8), pointer :: utilise_2(:) => null()
+    integer(kind=8), pointer :: ordre_stockage(:) => null()
     mpi_int :: mrank, msize
 
-    integer, pointer :: feta(:) => null()
-    integer, pointer :: tliel(:) => null()
-    integer, pointer :: lctliel(:) => null()
-    integer, pointer :: sdloc(:) => null()
+    integer(kind=8), pointer :: feta(:) => null()
+    integer(kind=8), pointer :: tliel(:) => null()
+    integer(kind=8), pointer :: lctliel(:) => null()
+    integer(kind=8), pointer :: sdloc(:) => null()
 #define numail(igr,iel) tliel(lctliel(igr)+iel-1)
 !----------------------------------------------------------------------
 

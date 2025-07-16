@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -28,9 +28,9 @@ subroutine cfposn(defico, posmai, posnno, nnomai)
 #include "asterfort/jemarq.h"
 #include "asterfort/jeveuo.h"
     character(len=24) :: defico
-    integer :: posmai
-    integer :: posnno(9)
-    integer :: nnomai
+    integer(kind=8) :: posmai
+    integer(kind=8) :: posnno(9)
+    integer(kind=8) :: nnomai
 !
 ! ----------------------------------------------------------------------
 !
@@ -49,12 +49,12 @@ subroutine cfposn(defico, posmai, posnno, nnomai)
 !
 !
 !
-    integer :: nbnmax
+    integer(kind=8) :: nbnmax
     parameter(nbnmax=9)
 !
     character(len=24) :: nomaco, pnoma
-    integer :: jnoma, jpono
-    integer :: ino, jdec
+    integer(kind=8) :: jnoma, jpono
+    integer(kind=8) :: ino, jdec
 !
 ! ----------------------------------------------------------------------
 !

@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -24,12 +24,12 @@ interface
     function meiden(scal, ncmp, i1, i3, nec,&
                     i2, i4)
         character(len=4) :: scal
-        integer :: ncmp
-        integer :: i1
-        integer :: i3
-        integer :: nec
-        integer :: i2
-        integer :: i4
+        integer(kind=8) :: ncmp
+        integer(kind=8) :: i1
+        integer(kind=8) :: i3
+        integer(kind=8) :: nec
+        integer(kind=8) :: i2
+        integer(kind=8) :: i4
         aster_logical :: meiden
     end function meiden
 end interface

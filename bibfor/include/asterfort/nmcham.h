@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -23,16 +23,16 @@ interface
                       matel, mat, nbvar, memo, visc,&
                       idelta, coef)
         character(len=*) :: fami
-        integer :: kpg
-        integer :: ksp
-        integer :: imate
+        integer(kind=8) :: kpg
+        integer(kind=8) :: ksp
+        integer(kind=8) :: imate
         character(len=16) :: compor(3)
         real(kind=8) :: matel(4)
         real(kind=8) :: mat(18)
-        integer :: nbvar
-        integer :: memo
-        integer :: visc
-        integer :: idelta
+        integer(kind=8) :: nbvar
+        integer(kind=8) :: memo
+        integer(kind=8) :: visc
+        integer(kind=8) :: idelta
         real(kind=8) :: coef
     end subroutine nmcham
 end interface

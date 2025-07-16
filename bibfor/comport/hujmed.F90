@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -29,7 +29,7 @@ subroutine hujmed(k, mater, vin, sig)
 !   --------------------------------------------------------------------
 #include "asterf_types.h"
 #include "asterc/r8prem.h"
-    integer :: ndt, ndi, k, i, j, kp
+    integer(kind=8) :: ndt, ndi, k, i, j, kp
     real(kind=8) :: dd, beta, b, m, pcr, rc
     real(kind=8) :: sig(6), phi, pcref, ptrac
     real(kind=8) :: vin(*), tou(3), p, d12

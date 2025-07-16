@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -27,7 +27,7 @@ subroutine wp2bry(ldrf, lmasse, lamor, lraide, sr, &
 !
     real(kind=8) :: u1(*), u2(*), u3(*), u4(*), yh(*), yb(*), zh(*), zb(*), sr
     real(kind=8) :: si2
-    integer :: ldrf, lmasse, lamor, lraide, n
+    integer(kind=8) :: ldrf, lmasse, lamor, lraide, n
     character(len=19) :: solveu
 !                    T               T
 !     CALCUL (ZH  ZB)   = B * (YH YB)
@@ -54,12 +54,12 @@ subroutine wp2bry(ldrf, lmasse, lamor, lraide, sr, &
 !     ------------------------------------------------------------------
 !
 !
-    integer :: i
+    integer(kind=8) :: i
     real(kind=8) :: zero
     complex(kind=8) :: cbid
     character(len=1) :: kbid
     character(len=19) :: k19bid, matass, chcine, criter
-    integer :: iret
+    integer(kind=8) :: iret
     cbid = dcmplx(0.d0, 0.d0)
 !     -----------------------------------------------------------------
 ! INIT. OBJETS ASTER

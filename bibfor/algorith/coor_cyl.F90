@@ -28,9 +28,8 @@ subroutine coor_cyl(ndim, nnop, basloc, geom, ff, &
 #include "asterfort/assert.h"
 #include "asterfort/xbasgl.h"
 #include "asterfort/xcoocy.h"
-#include "asterc/r8prem.h"
 !
-    integer :: ndim, nnop
+    integer(kind=8) :: ndim, nnop
     real(kind=8) :: basloc(*), ff(*), geom(*)
     real(kind=8) :: p_g(3, 3), invp_g(3, 3), rg, tg
     aster_logical :: l_not_zero
@@ -54,7 +53,7 @@ subroutine coor_cyl(ndim, nnop, basloc, geom, ff, &
 !
 !----------------------------------------------------------------
 !
-    integer :: i, ino
+    integer(kind=8) :: i, ino
     real(kind=8) :: baslog(3*ndim)
     real(kind=8) :: pt(ndim)
 !

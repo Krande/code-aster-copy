@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -45,12 +45,12 @@ subroutine ante2d(itria, xbar, ksi1, ksi2)
 !
 ! ARGUMENTS
 ! ---------
-    integer :: itria
+    integer(kind=8) :: itria
     real(kind=8) :: xbar(*), ksi1, ksi2
 !
 ! VARIABLES LOCALES
 ! -----------------
-    integer :: i, isom(3), j
+    integer(kind=8) :: i, isom(3), j
 !
     real(kind=8) :: ksi1el(4), ksi2el(4)
     data ksi1el/-1.0d0, -1.0d0, 1.0d0, 1.0d0/

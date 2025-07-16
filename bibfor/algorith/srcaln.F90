@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -37,14 +37,14 @@ subroutine srcaln(s, b, vecn, retcom)
     !!! Variables globales
     !!!
 
-    integer :: retcom
+    integer(kind=8) :: retcom
     real(kind=8) :: b, s(6), vecn(6)
 
     !!!
     !!! Variables locales
     !!!
 
-    integer :: i, ndt, ndi
+    integer(kind=8) :: i, ndt, ndi
     real(kind=8) :: sii, racine, kron(6), ptit
     common/tdim/ndt, ndi
 

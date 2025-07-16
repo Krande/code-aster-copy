@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2020 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -24,11 +24,11 @@ interface
         character(len=*) :: nomma
         character(len=*) :: nomail
         character(len=*) :: nonoeu
-        integer :: nupo
-        integer :: nusp
-        integer :: ivari
+        integer(kind=8) :: nupo
+        integer(kind=8) :: nusp
+        integer(kind=8) :: ivari
         character(len=*) :: nocmp1
-        integer :: iddl
+        integer(kind=8) :: iddl
         aster_logical, intent(in), optional :: nogranz
     end subroutine utchdl
 end interface

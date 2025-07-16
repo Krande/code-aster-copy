@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -39,12 +39,12 @@ subroutine matrn(nb1, nb2, xr, ksi3s2, epais, &
     real(kind=8) :: xr(*)
     real(kind=8) :: vectn(9, 3)
 !
-    integer :: jn
+    integer(kind=8) :: jn
 !
-    integer :: intsn
+    integer(kind=8) :: intsn
 !
-    integer :: nb1, nb2
-    integer :: ii, jj
+    integer(kind=8) :: nb1, nb2
+    integer(kind=8) :: ii, jj
 !
     real(kind=8) :: vecnj(3), antnj(3, 3)
     real(kind=8) :: ksi3s2

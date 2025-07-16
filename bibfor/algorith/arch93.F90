@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -60,12 +60,12 @@ subroutine arch93(resultName, concep, nume, raide, nbmodd, &
 !
 ! --------------------------------------------------------------------------------------------------
 !
-    integer :: neq, ifm, niv, lmoad, lmoda, vali, iret, nbmodi, lddld
-    integer :: lmodd, lddlf, lmodf, lvale, ind, ie, i, ia, id, ieq
-    integer :: ierd, ifin, im, imoad, imoda, imode, imodf, mesgUnit, jaxe
-    integer :: lcoef, lddad, lfreq, lnom, lnume, ltype, na, nbmoad, nbmoda
-    integer :: ladpa, nbmodd, modeNb, nbmodf, paraNb, nbpsmo, nnaxe, nnd
-    integer :: lnumm
+    integer(kind=8) :: neq, ifm, niv, lmoad, lmoda, vali, iret, nbmodi, lddld
+    integer(kind=8) :: lmodd, lddlf, lmodf, lvale, ind, ie, i, ia, id, ieq
+    integer(kind=8) :: ierd, ifin, im, imoad, imoda, imode, imodf, mesgUnit, jaxe
+    integer(kind=8) :: lcoef, lddad, lfreq, lnom, lnume, ltype, na, nbmoad, nbmoda
+    integer(kind=8) :: ladpa, nbmodd, modeNb, nbmodf, paraNb, nbpsmo, nnaxe, nnd
+    integer(kind=8) :: lnumm
     real(kind=8) :: zero, un, coef(3), xnorm
     character(len=1) :: tyddl
     character(len=8) :: k8b, monaxe, chmat, carael
@@ -76,7 +76,7 @@ subroutine arch93(resultName, concep, nume, raide, nbmodd, &
     character(len=24) :: vale, valk, mocb, moatta, moaimp, moauni, mointf, ddlcb
     character(len=24) :: ddlmn, vefreq, ddlac, modele
     aster_logical :: direct
-    integer, pointer :: modeList(:) => null()
+    integer(kind=8), pointer :: modeList(:) => null()
     character(len=16), pointer :: paraName(:) => null()
 !
 ! --------------------------------------------------------------------------------------------------

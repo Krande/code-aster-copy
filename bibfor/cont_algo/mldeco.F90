@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -23,8 +23,6 @@ subroutine mldeco(ds_contact)
     implicit none
 !
 #include "jeveux.h"
-#include "asterfort/cfdisi.h"
-#include "asterfort/cfmmvd.h"
 #include "asterfort/jedema.h"
 #include "asterfort/jemarq.h"
 #include "asterfort/jeveuo.h"
@@ -47,16 +45,16 @@ subroutine mldeco(ds_contact)
     character(len=19) :: sdcont_zpoi, sdcont_znmc, sdcont_zcoe
     character(len=19) :: sdappa
     character(len=24) :: sdappa_gapi, sdappa_poid, sdappa_nmcp, sdappa_coef
-    integer, pointer :: v_sdcont_stat(:) => null()
-    integer, pointer :: v_sdcont_zeta(:) => null()
+    integer(kind=8), pointer :: v_sdcont_stat(:) => null()
+    integer(kind=8), pointer :: v_sdcont_zeta(:) => null()
     real(kind=8), pointer :: v_sdappa_gapi(:) => null()
     real(kind=8), pointer :: v_sdcont_zgpi(:) => null()
     real(kind=8), pointer :: v_sdappa_poid(:) => null()
     real(kind=8), pointer :: v_sdcont_zpoi(:) => null()
     real(kind=8), pointer :: v_sdappa_coef(:) => null()
     real(kind=8), pointer :: v_sdcont_zcoe(:) => null()
-    integer, pointer :: v_sdappa_nmcp(:) => null()
-    integer, pointer :: v_sdcont_znmc(:) => null()
+    integer(kind=8), pointer :: v_sdappa_nmcp(:) => null()
+    integer(kind=8), pointer :: v_sdcont_znmc(:) => null()
 !
 ! ----------------------------------------------------------------------
 !

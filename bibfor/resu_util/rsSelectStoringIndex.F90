@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -35,7 +35,7 @@ subroutine rsSelectStoringIndex(resultZ, lFromField, &
 !
     character(len=*), intent(in) :: resultZ
     aster_logical, intent(in) :: lFromField
-    integer, intent(out) :: nbStore
+    integer(kind=8), intent(out) :: nbStore
     character(len=24), intent(out) :: numeStoreJv, timeStoreJv
 !
 ! --------------------------------------------------------------------------------------------------
@@ -52,14 +52,14 @@ subroutine rsSelectStoringIndex(resultZ, lFromField, &
 !
     complex(kind=8) :: cdummy
     character(len=19) :: listTime, listNume
-    integer :: iret, jvPara, iStore, tord(1)
+    integer(kind=8) :: iret, jvPara, iStore, tord(1)
     real(kind=8) :: time, prec
     aster_logical :: lSelectByIndex
     character(len=8) :: kdummy, crit
-    integer:: keywNbTime, keywNbTimeList, keywNbStore, keywNbStoreList
-    integer, pointer :: listNumeStore(:) => null()
+    integer(kind=8):: keywNbTime, keywNbTimeList, keywNbStore, keywNbStoreList
+    integer(kind=8), pointer :: listNumeStore(:) => null()
     real(kind=8), pointer :: listTimeStore(:) => null()
-    integer, pointer :: listNumeRead(:) => null()
+    integer(kind=8), pointer :: listNumeRead(:) => null()
     real(kind=8), pointer :: listTimeRead(:) => null()
 !
 ! --------------------------------------------------------------------------------------------------

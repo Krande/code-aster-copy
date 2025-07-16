@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -73,13 +73,13 @@ subroutine prere1(solvez, base, iret, matpre, matass, &
 #include "asterfort/utmess.h"
 #include "asterfort/isParallelMatrix.h"
 !
-    integer :: npvneg, istop, iret
+    integer(kind=8) :: npvneg, istop, iret
     character(len=1) :: base
     character(len=*) :: matass, matpre, solvez
 !
-    integer :: idbgav, ifm, niv, islvk, ibid
-    integer :: islvi, lmat, nprec, ndeci, isingu, niremp
-    integer :: istopz, iretgc, n1
+    integer(kind=8) :: idbgav, ifm, niv, islvk, ibid
+    integer(kind=8) :: islvi, lmat, nprec, ndeci, isingu, niremp
+    integer(kind=8) :: istopz, iretgc, n1
     character(len=24) :: metres, precon
     character(len=19) :: matas, maprec, matas1, solveu
     character(len=8) :: renum, kmpic, kmatd, ksym

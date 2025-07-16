@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -52,14 +52,14 @@ subroutine utin3d(igeom, nsomm, ino, ityp, inst, &
 #include "asterf_types.h"
 #include "jeveux.h"
 #include "asterfort/fointe.h"
-    integer :: igeom, nsomm, ino, ityp, ifm, niv, option, noe(9, 6, 3)
+    integer(kind=8) :: igeom, nsomm, ino, ityp, ifm, niv, option, noe(9, 6, 3)
     real(kind=8) :: inst, insold, valfp(9), valfm(9)
     character(len=8) :: k8cart
     aster_logical :: ltheta
 !
 !
 ! DECLARATION VARIABLES LOCALES
-    integer :: icode, in, iino, iaux, jaux, kaux
+    integer(kind=8) :: icode, in, iino, iaux, jaux, kaux
     real(kind=8) :: valpar(4)
     character(len=8) :: nompar(4)
 !

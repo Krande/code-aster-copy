@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2020 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -19,7 +19,7 @@
 interface
     subroutine dbr_calcpod_rate(s, nb_sing, rate)
         real(kind=8), pointer, intent(in) :: s(:)
-        integer, intent(in) :: nb_sing
+        integer(kind=8), intent(in) :: nb_sing
         real(kind=8), intent(out) :: rate
     end subroutine dbr_calcpod_rate
 end interface

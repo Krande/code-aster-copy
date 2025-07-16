@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -32,9 +32,7 @@ module MetallurgyOperator_module
 #include "jeveux.h"
 #include "asterc/getfac.h"
 #include "asterc/r8nnem.h"
-#include "asterc/r8vide.h"
 #include "asterf_types.h"
-#include "asterfort/alchml.h"
 #include "asterfort/assert.h"
 #include "asterfort/calcop.h"
 #include "asterfort/calcul.h"
@@ -86,12 +84,12 @@ contains
 ! ----- Parameters
         character(len=8), intent(in) :: resultName
         character(len=24), intent(out) :: metaInit
-        integer, intent(out) :: numeFieldInit
+        integer(kind=8), intent(out) :: numeFieldInit
 ! ----- Local
         character(len=8) :: resultInit
         character(len=24) :: selectCrit, metaFieldUser
         character(len=16), parameter :: factorKeyword = "ETAT_INIT"
-        integer :: nbRet, iret, nbtrou, numeStoreInit
+        integer(kind=8) :: nbRet, iret, nbtrou, numeStoreInit
         real(kind=8) :: timeInit, selectTole
 !   ------------------------------------------------------------------------------------------------
 !
@@ -141,13 +139,13 @@ contains
 ! ----- Parameters
         type(META_ParaOperator), intent(inout) :: metaParaOperator
 ! ----- Local
-        integer :: iMaterVale, materValeLen
+        integer(kind=8) :: iMaterVale, materValeLen
         character(len=8), pointer :: materVale(:) => null()
-        integer :: nbhist, icodre
+        integer(kind=8) :: nbhist, icodre
         character(len=8) :: materPara
-        integer, parameter :: nbPara = 2
+        integer(kind=8), parameter :: nbPara = 2
         character(len=8), parameter :: paraName(nbPara) = (/'I1  ', 'I2  '/)
-        integer :: iadtrc(nbPara), adrsJv(nbPara)
+        integer(kind=8) :: iadtrc(nbPara), adrsJv(nbPara)
 !   ------------------------------------------------------------------------------------------------
 !
 
@@ -204,7 +202,7 @@ contains
         character(len=24), intent(in) :: temp, metaInitUser
         character(len=24), intent(in) :: metaInit
 ! ----- Local
-        integer, parameter :: nbout = 1, nbInMax = 4
+        integer(kind=8), parameter :: nbout = 1, nbInMax = 4
         character(len=8) :: lpaout(nbout), lpain(nbInMax)
         character(len=24) :: lchin(nbInMax)
         character(len=1), parameter :: base = "V"
@@ -241,10 +239,10 @@ contains
 !   ------------------------------------------------------------------------------------------------
 ! ----- Parameters
         type(META_ParaOperator), intent(in) :: metaParaOperator
-        integer, intent(in) :: numeStore
+        integer(kind=8), intent(in) :: numeStore
         character(len=24), intent(in) :: metaInitUser
 ! ----- Local
-        integer :: iret, jvPara
+        integer(kind=8) :: iret, jvPara
         character(len=24), parameter :: metaInit = '&&SMEVOL.PHAS_META1'
         character(len=24) :: temp, resultField
         real(kind=8) :: time
@@ -314,14 +312,14 @@ contains
         real(kind=8), optional, intent(in) :: time_0_
         character(len=24), optional, intent(in) :: temp_0_
 ! ----- Local
-        integer, parameter :: nbOutMax = 2, nbInMax = 9
+        integer(kind=8), parameter :: nbOutMax = 2, nbInMax = 9
         character(len=8) :: lpaout(nbOutMax), lpain(nbInMax)
         character(len=24) :: lchin(nbInMax), lchout(nbOutMax)
-        integer :: nbOut, nbIn
+        integer(kind=8) :: nbOut, nbIn
         character(len=1), parameter :: base = "V"
         character(len=16), parameter :: option = "META_ELNO"
         character(len=24), parameter :: chtime = '&&SMEVOL.CH_INST_R'
-        integer, parameter :: nbTimePara = 3
+        integer(kind=8), parameter :: nbTimePara = 3
         character(len=8), parameter :: timeParaName(nbTimePara) = &
                                        (/'INST    ', 'DELTA01 ', 'DELTA12 '/)
         real(kind=8) :: timeParaVale(nbTimePara)
@@ -412,13 +410,13 @@ contains
 !   ------------------------------------------------------------------------------------------------
 ! ----- Parameters
         type(META_ParaOperator), intent(in) :: metaParaOperator
-        integer, intent(in) :: numphi
+        integer(kind=8), intent(in) :: numphi
 ! ----- Local
         aster_logical, parameter :: forTemper = ASTER_FALSE
         character(len=24) :: resultField
-        integer :: iStore, jvPara, iret
+        integer(kind=8) :: iStore, jvPara, iret
         character(len=24) :: metaIn, metaOut
-        integer :: numeStore_0, numeStore_1, numeStore_2
+        integer(kind=8) :: numeStore_0, numeStore_1, numeStore_2
         character(len=24) :: temp_0, temp_1, temp_2
         real(kind=8) :: time_0, time_1, time_2
 !   ------------------------------------------------------------------------------------------------
@@ -493,9 +491,9 @@ contains
 ! ----- Local
         aster_logical, parameter :: forTemper = ASTER_TRUE
         character(len=24) :: resultField
-        integer :: iStore, jvPara, iret
+        integer(kind=8) :: iStore, jvPara, iret
         character(len=24) :: metaIn, metaOut, metaPrev
-        integer :: numeStore_1, numeStore_2
+        integer(kind=8) :: numeStore_1, numeStore_2
         character(len=24) :: temp_1, temp_2
         real(kind=8) :: time_1, time_2
 !   ------------------------------------------------------------------------------------------------
@@ -564,11 +562,11 @@ contains
 ! ----- Parameters
         type(META_ParaOperator), intent(out) :: metaParaOperator
 ! ----- Local
-        integer :: nbOption, nbStore, numeStore0
+        integer(kind=8) :: nbOption, nbStore, numeStore0
         character(len=8) :: resultName, model, materialField
         character(len=16) :: resultType
         character(len=24) :: materialCoding
-        integer :: nbocc, nbRet
+        integer(kind=8) :: nbocc, nbRet
 !   ------------------------------------------------------------------------------------------------
 !
 
@@ -659,10 +657,10 @@ contains
         type(META_ParaOperator), intent(inout) :: metaParaOperator
 ! ----- Local
         character(len=24) :: metaInitUser
-        integer :: numeFieldInit
+        integer(kind=8) :: numeFieldInit
         character(len=16), parameter :: factorKeyword = "COMPORTEMENT"
         character(len=16), parameter :: factorKeywordTemper = "REVENU"
-        integer :: numphi, numeStore_1, numeStore_2, iStore
+        integer(kind=8) :: numphi, numeStore_1, numeStore_2, iStore
 !   ------------------------------------------------------------------------------------------------
 !
         call dismoi('NOM_LIGREL', metaParaOperator%model, 'MODELE', &
@@ -739,7 +737,7 @@ contains
 ! ----- Local
         character(len=16), parameter :: factorKeyword = "COMPORTEMENT"
         character(len=16), parameter :: resultType = "EVOL_THER"
-        integer :: nbComp, iComp, nbRet, iret
+        integer(kind=8) :: nbComp, iComp, nbRet, iret
         character(len=16) :: metaType
 !   ------------------------------------------------------------------------------------------------
 !

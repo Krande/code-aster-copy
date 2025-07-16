@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -28,7 +28,7 @@ subroutine cjsdtd(mod, q, dtddq)
 !          DTDDQ(I,J) = D TD(I) / D Q(J)
 !     ------------------------------------------------------------------
 !
-    integer :: ndt, ndi
+    integer(kind=8) :: ndt, ndi
     real(kind=8) :: q(6), dtddq(6, 6)
     real(kind=8) :: zero, deux, trois, quatre, rc2
 !

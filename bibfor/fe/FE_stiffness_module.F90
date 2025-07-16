@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -109,7 +109,7 @@ contains
 ! --------------------------------------------------------------------------------------------------
 !
 ! ----- Local variables
-        integer :: ipg
+        integer(kind=8) :: ipg
         real(kind=8), dimension(3, MAX_BS) :: BSEval
 !
         vec = 0.d0
@@ -150,7 +150,7 @@ contains
 ! --------------------------------------------------------------------------------------------------
 !
 ! ----- Local variables
-        integer :: j
+        integer(kind=8) :: j
         real(kind=8) :: Kgradj(3)
 !
         do j = 1, FEBasis%size
@@ -192,7 +192,7 @@ contains
 ! --------------------------------------------------------------------------------------------------
 !
 ! ----- Local variables
-        integer :: ipg
+        integer(kind=8) :: ipg
         real(kind=8), dimension(3, MAX_BS) :: BSEval
 !
         mat = 0.d0
@@ -279,7 +279,7 @@ contains
 !
 ! --------------------------------------------------------------------------------------------------
 !
-        integer :: i_n, i_d, j_d, kkd
+        integer(kind=8) :: i_n, i_d, j_d, kkd
         real(kind=8) :: sig_w(6)
 !
         select case (FEBasis%ndim)
@@ -373,7 +373,7 @@ contains
 !
 ! --------------------------------------------------------------------------------------------------
 !
-        integer :: i_n, kkd, j_n, i_d
+        integer(kind=8) :: i_n, kkd, j_n, i_d
         real(kind=8) :: stress_w(6), tmp(MAX_BS)
 !
         stress_w = weight*stress

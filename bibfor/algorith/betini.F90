@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -45,7 +45,7 @@ subroutine betini(materf, nmat, sig, sigeq, sigh, &
 !       ----------------------------------------------------------------
 #include "asterfort/lcdevi.h"
 #include "asterfort/lchydr.h"
-    integer :: nmat
+    integer(kind=8) :: nmat
     real(kind=8) :: materf(nmat, 2)
     real(kind=8) :: coefa(2, 2), coefb(2), coefar(2, 2), coefbr(2)
     real(kind=8) :: mun, un, d23, d13, rac2, deux, trois, zero
@@ -61,7 +61,7 @@ subroutine betini(materf, nmat, sig, sigeq, sigh, &
     real(kind=8) :: k, lambda, mu, e, nu, beta
     real(kind=8) :: a, b, c, d
 !       ----------------------------------------------------------------
-    integer :: ndt, ndi
+    integer(kind=8) :: ndt, ndi
     common/tdim/ndt, ndi
 !       ----------------------------------------------------------------
 !

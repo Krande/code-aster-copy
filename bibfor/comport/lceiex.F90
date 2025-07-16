@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -29,7 +29,7 @@ subroutine lceiex(fami, kpg, ksp, mat, option, &
 #include "asterfort/utmess.h"
 
     character(len=16) :: option
-    integer :: mat, kpg, ksp, i, codret
+    integer(kind=8) :: mat, kpg, ksp, i, codret
     real(kind=8), intent(in) :: carcri(*)
     real(kind=8) :: mu(3), su(3), de(6), ddedt(6, 6), vim(*), vip(*), bmin, bmax, res, deriv
     character(len=*) :: fami
@@ -88,10 +88,10 @@ subroutine lceiex(fami, kpg, ksp, mat, option, &
 !-----------------------------------------------------------------------
 !
     aster_logical :: resi, rigi, elas
-    integer :: regime
+    integer(kind=8) :: regime
     real(kind=8) :: sc, gc, dc, dc1, c, h, ka, sk, val(4), tmp, ga, kap, gap, r
     real(kind=8) :: dn, tn, t(3), ddndtn, resi_inte
-    integer :: cod(4), iter_inte_maxi
+    integer(kind=8) :: cod(4), iter_inte_maxi
     character(len=16) :: nom(4)
     character(len=1) :: poum
     data nom/'GC', 'SIGM_C', 'PENA_LAGR', 'RIGI_GLIS'/

@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -32,7 +32,7 @@ subroutine lcmazarsmu(fami, kpg, ksp, dimepb, imate, model, epsm, &
     character(len=6)    :: model
     character(len=16)   :: option
     character(len=*)    :: fami
-    integer             :: imate, kpg, ksp, dimepb
+    integer(kind=8)             :: imate, kpg, ksp, dimepb
     real(kind=8)        :: epsm(*), deps(*), varim(*), sigp(*), varip(*), dsidep(6, 6)
 !
 ! --------------------------------------------------------------------------------------------------
@@ -73,8 +73,8 @@ subroutine lcmazarsmu(fami, kpg, ksp, dimepb, imate, model, epsm, &
 !
 ! --------------------------------------------------------------------------------------------------
 !
-    integer, parameter   :: nbval = 10
-    integer             :: icodre(nbval)
+    integer(kind=8), parameter   :: nbval = 10
+    integer(kind=8)             :: icodre(nbval)
     character(len=16)   :: nomres(nbval)
     character(len=8), parameter :: mazars(nbval) = ['EPSD0   ', 'K       ', 'AC      ', &
                                                     'BC      ', 'AT      ', 'BT      ', &
@@ -85,16 +85,16 @@ subroutine lcmazarsmu(fami, kpg, ksp, dimepb, imate, model, epsm, &
 !           iepsd0   =  1, ik       = 2, iac    = 3, ibc    =  4, iat = 5, ibt = 6
 !           isigmlim =  7, iepsilim = 8, iepsc0 = 9, iepst0 = 10
 !           iyoung   = 11, inu      = 12
-    integer, parameter :: iepsd0 = 1
-    integer, parameter :: isigmlim = 7, iepsilim = 8, iepsc0 = 9, iepst0 = 10
-    integer, parameter :: iyoung = 11, inu = 12
+    integer(kind=8), parameter :: iepsd0 = 1
+    integer(kind=8), parameter :: isigmlim = 7, iepsilim = 8, iepsc0 = 9, iepst0 = 10
+    integer(kind=8), parameter :: iyoung = 11, inu = 12
 !
-    integer, parameter   :: itemp = 7, nbvarint = 8
+    integer(kind=8), parameter   :: itemp = 7, nbvarint = 8
 ! --------------------------------------------------------------------------------------------------
 !
     real(kind=8), parameter :: rac2 = 1.4142135623731d0
 !
-    integer             :: iret, nbres, dimloc
+    integer(kind=8)             :: iret, nbres, dimloc
     real(kind=8)        :: epsthe, kdess, bendo, epsane, epsmldc(6), depsldc(6), ee, nu
     real(kind=8)        :: valpar, tempm, tempp, tempref, tempmax, valhydr, valsech, valsechref
     character(len=1)    :: poum

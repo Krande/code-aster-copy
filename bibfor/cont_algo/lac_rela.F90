@@ -27,11 +27,9 @@ subroutine lac_rela(mesh, ds_contact, iden_rela, l_iden_rela)
 #include "asterfort/jecrec.h"
 #include "asterfort/jecroc.h"
 #include "asterfort/jeexin.h"
-#include "asterfort/jenuno.h"
 #include "asterfort/jeecra.h"
 #include "asterfort/jexnum.h"
 #include "asterfort/jeveuo.h"
-#include "asterfort/cfdisi.h"
 #include "asterfort/wkvect.h"
 #include "asterfort/int_to_char8.h"
 !
@@ -56,16 +54,16 @@ subroutine lac_rela(mesh, ds_contact, iden_rela, l_iden_rela)
 !
 ! --------------------------------------------------------------------------------------------------
 !
-    integer :: node_nume(4)
+    integer(kind=8) :: node_nume(4)
     character(len=8) :: node_name(4), cmp_name
-    integer :: iret
-    integer :: nt_patch, nb_node, nb_iden_rela, nb_iden_term, nb_iden_dof
-    integer :: i_rela, i_node, i_patch
+    integer(kind=8) :: iret
+    integer(kind=8) :: nt_patch, nb_node, nb_iden_rela, nb_iden_term, nb_iden_dof
+    integer(kind=8) :: i_rela, i_node, i_patch
     character(len=24) :: mesh_patch
     character(len=8), pointer :: v_sdiden_term(:) => null()
-    integer, pointer :: v_sdiden_info(:) => null()
-    integer, pointer :: v_sdiden_dime(:) => null()
-    integer, pointer :: v_mesh_patch(:) => null()
+    integer(kind=8), pointer :: v_sdiden_info(:) => null()
+    integer(kind=8), pointer :: v_sdiden_dime(:) => null()
+    integer(kind=8), pointer :: v_mesh_patch(:) => null()
 !
 !
 ! --------------------------------------------------------------------------------------------------

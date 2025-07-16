@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -22,20 +22,20 @@ interface
     subroutine dnaitr(ido, bmat, n, k, np,&
                       resid, rnorm, v, ldv, h,&
                       ldh, ipntr, workd, info, alpha)
-        integer :: ldh
-        integer :: ldv
-        integer :: np
-        integer :: k
-        integer :: n
-        integer :: ido
+        integer(kind=8) :: ldh
+        integer(kind=8) :: ldv
+        integer(kind=8) :: np
+        integer(kind=8) :: k
+        integer(kind=8) :: n
+        integer(kind=8) :: ido
         character(len=1) :: bmat
         real(kind=8) :: resid(n)
         real(kind=8) :: rnorm
         real(kind=8) :: v(ldv, k+np)
         real(kind=8) :: h(ldh, k+np)
-        integer :: ipntr(3)
+        integer(kind=8) :: ipntr(3)
         real(kind=8) :: workd(3*n)
-        integer :: info
+        integer(kind=8) :: info
         real(kind=8) :: alpha
     end subroutine dnaitr
 end interface

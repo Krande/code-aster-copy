@@ -29,9 +29,7 @@ subroutine nmvcmx(mate, mailla, comref, comval)
 #include "asterfort/jedetr.h"
 #include "asterfort/jelira.h"
 #include "asterfort/jemarq.h"
-#include "asterfort/jenuno.h"
 #include "asterfort/jeveuo.h"
-#include "asterfort/jexnum.h"
 #include "asterfort/nmvcex.h"
 #include "asterfort/utmess.h"
 #include "asterfort/int_to_char8.h"
@@ -56,13 +54,13 @@ subroutine nmvcmx(mate, mailla, comref, comval)
 !
 !
 !
-    integer :: nbcmp, nbcmp2
+    integer(kind=8) :: nbcmp, nbcmp2
     character(len=8) :: valk(5)
     character(len=19) :: chsref, chscom
     character(len=24) :: vrcplu, vrcref
-    integer :: jcesd, jcesl, nbma, nbpt, nbsp, icmp
-    integer :: jcrsd, jcrsl, ima, ipt, isp, iad, iad2
-    integer :: imamax, imamin, iref
+    integer(kind=8) :: jcesd, jcesl, nbma, nbpt, nbsp, icmp
+    integer(kind=8) :: jcrsd, jcrsl, ima, ipt, isp, iad, iad2
+    integer(kind=8) :: imamax, imamin, iref
     real(kind=8) :: valmin, valmax, valr(2)
     real(kind=8) :: valeur, valref
     character(len=8), pointer :: cvrcvarc(:) => null()

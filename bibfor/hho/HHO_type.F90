@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -41,7 +41,7 @@ module HHO_type
         aster_logical      :: l_cine_f = ASTER_FALSE
         character(len=19)  :: fieldCineFunc = ''
         character(len=19)  :: fieldCineVale = ''
-        integer, pointer :: v_info_cine(:) => null()
+        integer(kind=8), pointer :: v_info_cine(:) => null()
 !
     end type HHO_Field
 !
@@ -52,11 +52,11 @@ module HHO_type
     type HHO_Data
         aster_logical      :: l_debug = ASTER_FALSE
 ! ----- Ordre inconnues face
-        integer            :: m_face_degree
+        integer(kind=8)            :: m_face_degree
 ! ----- Ordre inconnues cellule
-        integer            :: m_cell_degree
+        integer(kind=8)            :: m_cell_degree
 ! ----- Ordre inconnues grad
-        integer            :: m_grad_degree
+        integer(kind=8)            :: m_grad_degree
 ! ----- Adapt stabilization coefficient ?
         aster_logical      :: l_adapt_coef
 ! ----- Coefficient stabilisation
@@ -81,11 +81,11 @@ module HHO_type
 !
     type HHO_Face
 ! ----- Dimension topologique
-        integer                     :: ndim = 0
+        integer(kind=8)                     :: ndim = 0
 ! ----- Type maille
-        integer                     :: typema = 0
+        integer(kind=8)                     :: typema = 0
 ! ----- Nombre de noeuds
-        integer                     :: nbnodes = 0
+        integer(kind=8)                     :: nbnodes = 0
 ! ----- Coordonnees des noeuds   (max 4 noeuds pour quad)
         real(kind=8), dimension(3, 4):: coorno = 0.d0
 ! ----- Coordonnees du barycentre de la face
@@ -99,10 +99,10 @@ module HHO_type
 ! ----- Axes locaux de la cellule
         real(kind=8), dimension(3, 2) :: axes = 0.d0
 ! ----- Index locale des noeuds de la face
-        integer, dimension(4)       :: nodes_loc = 0
-        integer                     :: node_bar_loc = 0
+        integer(kind=8), dimension(4)       :: nodes_loc = 0
+        integer(kind=8)                     :: node_bar_loc = 0
 ! ----- Index locale de la face pour une cellule
-        integer                     :: face_loc = 0
+        integer(kind=8)                     :: face_loc = 0
 ! ----- Jacobien is constant
         aster_logical               :: l_jaco_cst = ASTER_FALSE
 ! ----- member function
@@ -116,11 +116,11 @@ module HHO_type
 !
     type HHO_Cell
 ! ----- Dimension topologique
-        integer                     :: ndim = 0
+        integer(kind=8)                     :: ndim = 0
 ! ----- Type maille
-        integer                     :: typema = 0
+        integer(kind=8)                     :: typema = 0
 ! ----- Nombre de noeuds
-        integer                     :: nbnodes = 0
+        integer(kind=8)                     :: nbnodes = 0
 ! ----- Coordonnees des noeuds   (max 27 noeuds pour hexa)
         real(kind=8), dimension(3, 27):: coorno = 0.d0
 ! ----- Coordonnees du barycentre de la cellule
@@ -132,11 +132,11 @@ module HHO_type
 ! ----- Volume ou Surface de la cellule
         real(kind=8)                :: measure = 0.d0
 ! ----- Nombre de faces de la cellule
-        integer                     :: nbfaces = 0
+        integer(kind=8)                     :: nbfaces = 0
 ! ----- Donnees sur les faces (max 6 faces pour hexa)
         type(HHO_Face), dimension(6):: faces
 ! ----- Index locale des noeuds de la cellule
-        integer                     :: node_bar_loc = 0
+        integer(kind=8)                     :: node_bar_loc = 0
 ! ----- Jacobien is constant
         aster_logical               :: l_jaco_cst = ASTER_FALSE
 ! ----- member function
@@ -160,9 +160,9 @@ contains
         implicit none
 !
         class(HHO_Data), intent(inout)  :: this
-        integer, intent(in)             :: face_degree
-        integer, intent(in)             :: cell_degree
-        integer, intent(in)             :: grad_degree
+        integer(kind=8), intent(in)             :: face_degree
+        integer(kind=8), intent(in)             :: cell_degree
+        integer(kind=8), intent(in)             :: grad_degree
         aster_logical, intent(in)       :: l_adapt_coef
         real(kind=8), intent(in)        :: coeff
         aster_logical, intent(in)       :: l_debug
@@ -197,7 +197,7 @@ contains
         implicit none
 !
         class(HHO_Data), intent(in) :: this
-        integer                     :: degree
+        integer(kind=8)                     :: degree
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -219,7 +219,7 @@ contains
         implicit none
 !
         class(HHO_Data), intent(in) :: this
-        integer                     :: degree
+        integer(kind=8)                     :: degree
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -241,7 +241,7 @@ contains
         implicit none
 !
         class(HHO_Data), intent(in) :: this
-        integer                     :: degree
+        integer(kind=8)                     :: degree
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -315,7 +315,7 @@ contains
 !   In this     : a HHo Data
 ! --------------------------------------------------------------------------------------------------
 !
-        integer :: iret, jtab(1)
+        integer(kind=8) :: iret, jtab(1)
 
         call tecach('NNO', 'PCHHOGT', 'L', iret, nval=1, itab=jtab)
         precomp = iret == 0
@@ -409,7 +409,7 @@ contains
 ! In this              : a HHO Face
 ! --------------------------------------------------------------------------------------------------
 !
-        integer :: inode
+        integer(kind=8) :: inode
 ! --------------------------------------------------------------------------------------------------
         write (6, *) "Informations on HHO Face"
         write (6, *) "Type maille: ", this%typema
@@ -450,7 +450,7 @@ contains
 ! In this              : a HHO Cell
 ! --------------------------------------------------------------------------------------------------
 !
-        integer :: inode, iface
+        integer(kind=8) :: inode, iface
 !
         write (6, *) "Informations on HHO Cell"
         write (6, *) "Type maille: ", this%typema

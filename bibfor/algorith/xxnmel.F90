@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -35,7 +35,6 @@ subroutine xxnmel(elrefp, elrese, ndim, coorse, &
 #include "jeveux.h"
 #include "asterc/r8vide.h"
 #include "asterfort/assert.h"
-#include "asterfort/iselli.h"
 #include "asterfort/dfdm2d.h"
 #include "asterfort/dfdm3d.h"
 #include "asterfort/dmatmc.h"
@@ -44,7 +43,6 @@ subroutine xxnmel(elrefp, elrese, ndim, coorse, &
 #include "asterfort/nmcomp.h"
 #include "asterfort/getElemOrientation.h"
 #include "asterfort/reeref.h"
-#include "asterfort/utmess.h"
 #include "asterfort/xcinem.h"
 #include "asterfort/xcalc_heav.h"
 #include "asterfort/xcalc_code.h"
@@ -54,10 +52,10 @@ subroutine xxnmel(elrefp, elrese, ndim, coorse, &
 #include "asterfort/xnbddl.h"
 #include "asterfort/Behaviour_type.h"
 !
-    integer :: nnop, nfiss, codret, ddlc, ddlm
-    integer :: idecpg, idepl, igeom, imate, ivectu, nnops
-    integer :: lgpg, ndim, nfe, nfh, npg, heavn(nnop, 5)
-    integer :: jstno
+    integer(kind=8) :: nnop, nfiss, codret, ddlc, ddlm
+    integer(kind=8) :: idecpg, idepl, igeom, imate, ivectu, nnops
+    integer(kind=8) :: lgpg, ndim, nfe, nfh, npg, heavn(nnop, 5)
+    integer(kind=8) :: jstno
     real(kind=8) :: basloc(3*ndim*nnop), coorse(*), he(nfiss)
     real(kind=8) :: lsn(nnop), lst(nnop), sig(2*ndim, npg), instam, instap
     real(kind=8) :: matuu(*), vi(lgpg, npg)
@@ -107,12 +105,12 @@ subroutine xxnmel(elrefp, elrese, ndim, coorse, &
 !
 ! --------------------------------------------------------------------------------------------------
 !
-    integer, parameter :: ksp = 1
+    integer(kind=8), parameter :: ksp = 1
     character(len=4), parameter :: fami = "XFEM"
-    integer :: kpg, i, ig, n, nn, m, mn, j, j1, kl, l, kkd, ipg
-    integer :: ddld, ddls, nno, npgbis, cpt, ndimb, dec(nnop)
-    integer :: idfde, ipoids, ivf, hea_se
-    integer :: singu, alp, ii, jj
+    integer(kind=8) :: kpg, i, ig, n, nn, m, mn, j, j1, kl, l, kkd, ipg
+    integer(kind=8) :: ddld, ddls, nno, npgbis, cpt, ndimb, dec(nnop)
+    integer(kind=8) :: idfde, ipoids, ivf, hea_se
+    integer(kind=8) :: singu, alp, ii, jj
     real(kind=8) :: dsidep(6, 6), eps(6), sigma(6)
     real(kind=8) :: tmp2, sigp(6, 3*(1+nfh+nfe*ndim)), rbid33(3, 3)
     real(kind=8) :: xg(ndim), xe(ndim), ff(nnop), jac
@@ -120,7 +118,7 @@ subroutine xxnmel(elrefp, elrese, ndim, coorse, &
     real(kind=8) :: def(6, ndim*(1+nfh+ndim), nnop)
     real(kind=8) :: r
     real(kind=8) :: fk(27, 3, 3), dkdgl(27, 3, 3, 3), ka, mu
-    integer :: nbsig
+    integer(kind=8) :: nbsig
     real(kind=8) :: angl_naut(3), d(36), instan
     aster_logical :: axi, cplan
     type(Behaviour_Integ) :: BEHinteg

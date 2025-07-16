@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -28,9 +28,9 @@ subroutine rs_get_caraelem(result_, nume, cara_elem, codret)
 ! person_in_charge: mickael.abbas at edf.fr
 !
     character(len=*), intent(in) :: result_
-    integer, intent(in) :: nume
+    integer(kind=8), intent(in) :: nume
     character(len=*), intent(out) :: cara_elem
-    integer, intent(out) :: codret
+    integer(kind=8), intent(out) :: codret
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -53,7 +53,7 @@ subroutine rs_get_caraelem(result_, nume, cara_elem, codret)
 ! --------------------------------------------------------------------------------------------------
 !
     character(len=8) :: result, cara_elem_resu, cara_elem_comm
-    integer :: nocc, jv_para
+    integer(kind=8) :: nocc, jv_para
 !
 ! --------------------------------------------------------------------------------------------------
 !

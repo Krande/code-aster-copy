@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -21,8 +21,8 @@
 interface
     subroutine teneps(jrwork, adr, sig, eps, epse,&
                       epsp)
-        integer, intent(in) :: jrwork
-        integer, intent(in) :: adr
+        integer(kind=8), intent(in) :: jrwork
+        integer(kind=8), intent(in) :: adr
         real(kind=8), intent(out) :: sig(6)
         real(kind=8), intent(out) :: eps(6)
         real(kind=8), intent(out) :: epse(6)

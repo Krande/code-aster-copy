@@ -28,8 +28,6 @@ subroutine typeco(char, noma)
 #include "asterfort/cfnumm.h"
 #include "asterfort/jedema.h"
 #include "asterfort/jemarq.h"
-#include "asterfort/jenuno.h"
-#include "asterfort/jexnum.h"
 #include "asterfort/mmelin.h"
 #include "asterfort/mmelty.h"
 #include "asterfort/mminfi.h"
@@ -55,17 +53,17 @@ subroutine typeco(char, noma)
 ! ----------------------------------------------------------------------
 !
     character(len=24) :: typeno, typema, maescl
-    integer :: jtypno, jtypma, jmaesc
-    integer :: ztypm, ztypn, zmaes
-    integer :: nzoco, nnoco, nmaco, ntmae, iform
-    integer :: izone
-    integer :: jdecnm, jdecne, inoe, inom, nbnoe, nbnom
-    integer :: jdecmm, jdecme, imae, imam, nbmae, nbmam
-    integer :: posnom, posnoe
-    integer :: posmam, posmae, nummae, nummam
-    integer :: indmae, indmam
-    integer :: ino, ima, posno, posma
-    integer :: ndexfr(1), typint, nptm
+    integer(kind=8) :: jtypno, jtypma, jmaesc
+    integer(kind=8) :: ztypm, ztypn, zmaes
+    integer(kind=8) :: nzoco, nnoco, nmaco, ntmae, iform
+    integer(kind=8) :: izone
+    integer(kind=8) :: jdecnm, jdecne, inoe, inom, nbnoe, nbnom
+    integer(kind=8) :: jdecmm, jdecme, imae, imam, nbmae, nbmam
+    integer(kind=8) :: posnom, posnoe
+    integer(kind=8) :: posmam, posmae, nummae, nummam
+    integer(kind=8) :: indmae, indmam
+    integer(kind=8) :: ino, ima, posno, posma
+    integer(kind=8) :: ndexfr(1), typint, nptm
     character(len=24) :: defico
     character(len=8) :: alias, nommae, nommam
 !

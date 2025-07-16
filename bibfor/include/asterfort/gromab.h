@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -25,7 +25,7 @@ interface
                       gromai)
         character(len=8) :: mailla
         character(len=24) :: nmabet
-        integer :: nbmabe
+        integer(kind=8) :: nbmabe
         aster_logical :: mail2d
         character(len=8) :: caelem
         character(len=24) :: gromai

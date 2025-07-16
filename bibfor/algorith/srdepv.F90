@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -48,7 +48,7 @@ subroutine srdepv(depsv, ddepsv, dgamv, ddgamv)
     !!! Variables locales
     !!!
 
-    integer :: i, k, ndi, ndt
+    integer(kind=8) :: i, k, ndi, ndt
     real(kind=8) :: devia(6, 6), deviat(6, 6)
     common/tdim/ndt, ndi
 

@@ -30,7 +30,7 @@ subroutine trigd(dg1, deb1, dg2, deb2, cumul, ino, nno)
 #include "asterfort/assert.h"
 #include "asterfort/exisdg.h"
 
-    integer :: dg1(*), dg2(*), deb1, deb2, ino, nno
+    integer(kind=8) :: dg1(*), dg2(*), deb1, deb2, ino, nno
     aster_logical :: cumul
 !-----------------------------------------------------------------------
 !     entrees:
@@ -52,13 +52,13 @@ subroutine trigd(dg1, deb1, dg2, deb2, cumul, ino, nno)
 !                et pour l'element suivant si excart ou exchno.
 !-----------------------------------------------------------------------
     aster_logical :: change
-    integer :: cmp, ind1, nec2, nsav, ksav, nmax
+    integer(kind=8) :: cmp, ind1, nec2, nsav, ksav, nmax
     parameter(nec2=120)
     parameter(nsav=5)
     parameter(nmax=13)
-    integer :: ind2(nsav), necold(nsav)
-    integer :: dg1old(nec2, nsav), dg2old(nec2, nsav), poscmp(nec2*nmax, nsav)
-    integer :: ieq, i, k
+    integer(kind=8) :: ind2(nsav), necold(nsav)
+    integer(kind=8) :: dg1old(nec2, nsav), dg2old(nec2, nsav), poscmp(nec2*nmax, nsav)
+    integer(kind=8) :: ieq, i, k
     save dg1old, dg2old, poscmp, ind2, necold
     data necold/nsav*0/
 

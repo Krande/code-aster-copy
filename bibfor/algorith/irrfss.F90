@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -41,7 +41,7 @@ subroutine irrfss(sig, ddfdds)
     parameter(zero=0.d0)
     parameter(un=1.d0)
     real(kind=8) :: dev(6), dfds(6), dfds2(6, 6)
-    integer :: ndt, ndi
+    integer(kind=8) :: ndt, ndi
     common/tdim/ndt, ndi
     data id/d23, d13, d13, zero, zero, zero,&
      &                  d13, d23, d13, zero, zero, zero,&

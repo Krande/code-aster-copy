@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -26,11 +26,11 @@ interface
         aster_logical, intent(in) :: ldistme, lmasym
         character(len=2), intent(in) :: tt
         character(len=14), intent(in) :: nu14
-        integer, intent(in) :: ncmp
+        integer(kind=8), intent(in) :: ncmp
         character(len=19), intent(in) :: matel
         real(kind=8), intent(in) :: c1
-        integer :: jvalm(2)
-        integer :: jtmp2
-        integer :: lgtmp2
+        integer(kind=8) :: jvalm(2)
+        integer(kind=8) :: jtmp2
+        integer(kind=8) :: lgtmp2
     end subroutine assma2
 end interface

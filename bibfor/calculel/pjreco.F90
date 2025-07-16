@@ -49,20 +49,20 @@ subroutine pjreco(listNodeOcc, nbNodeOcc, numOcc, finalOcc, nameLNodeInterc, &
 #include "asterfort/jeveuo.h"
 #include "asterfort/utlisi.h"
 #include "asterfort/wkvect.h"
-    integer, intent(in) :: listNodeOcc(*)
-    integer, intent(in) :: nbNodeOcc
-    integer, intent(in) :: numOcc
+    integer(kind=8), intent(in) :: listNodeOcc(*)
+    integer(kind=8), intent(in) :: nbNodeOcc
+    integer(kind=8), intent(in) :: numOcc
     aster_logical, intent(in) ::finalOcc, parallelMesh
     character(len=16) :: nameLNodeInterc
-    integer, intent(out) :: nbNodeInterc
+    integer(kind=8), intent(out) :: nbNodeInterc
 ! --------------------------------------------------------------------------------------------------
 ! --------------------------------------------------------------------------------------------------
     character(len=16) :: nameLNodeVerif
-    integer :: nbNodeVerif, lonListInterc, lonListVerif
-    integer :: nbNodeUnion, iexi
-    integer, pointer :: listNodeVerif(:) => null()
-    integer, pointer :: listNodeCopy(:) => null()
-    integer, pointer :: listNodeInterc(:) => null()
+    integer(kind=8) :: nbNodeVerif, lonListInterc, lonListVerif
+    integer(kind=8) :: nbNodeUnion, iexi
+    integer(kind=8), pointer :: listNodeVerif(:) => null()
+    integer(kind=8), pointer :: listNodeCopy(:) => null()
+    integer(kind=8), pointer :: listNodeInterc(:) => null()
 ! --------------------------------------------------------------------------------------------------
 !
     call jemarq()

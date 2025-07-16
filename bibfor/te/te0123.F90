@@ -57,24 +57,24 @@ subroutine te0123(option, nomte)
 !
 ! --------------------------------------------------------------------------------------------------
 !
-    integer :: dlns
-    integer :: nno, nnob, nnos, npg, imatuu, lgpg, lgpg2
-    integer :: ipoids, ivf, idfde, igeom, imate
-    integer :: ivfb, idfdeb
-    integer :: icontm, ivarim
-    integer :: iinstm, iinstp, idplgm, iddplg, icarcr
-    integer :: ivectu, icontp, ivarip
-    integer :: ivarix
-    integer :: jtab(7), iadzi, iazk24, icoret, codret
-    integer :: ndim, iret, ntrou, vali(2)
+    integer(kind=8) :: dlns
+    integer(kind=8) :: nno, nnob, nnos, npg, imatuu, lgpg, lgpg2
+    integer(kind=8) :: ipoids, ivf, idfde, igeom, imate
+    integer(kind=8) :: ivfb, idfdeb
+    integer(kind=8) :: icontm, ivarim
+    integer(kind=8) :: iinstm, iinstp, idplgm, iddplg, icarcr
+    integer(kind=8) :: ivectu, icontp, ivarip
+    integer(kind=8) :: ivarix
+    integer(kind=8) :: jtab(7), iadzi, iazk24, icoret, codret
+    integer(kind=8) :: ndim, iret, ntrou, vali(2)
     real(kind=8) :: angl_naut(3)
     character(len=16) :: codvoi
-    integer :: nvoima, nscoma, nbvois
+    integer(kind=8) :: nvoima, nscoma, nbvois
     parameter(nvoima=12, nscoma=4)
-    integer :: livois(1:nvoima), tyvois(1:nvoima), nbnovo(1:nvoima)
-    integer :: nbsoco(1:nvoima), lisoco(1:nvoima, 1:nscoma, 1:2)
-    integer :: numa
-    integer :: icodr1(1)
+    integer(kind=8) :: livois(1:nvoima), tyvois(1:nvoima), nbnovo(1:nvoima)
+    integer(kind=8) :: nbsoco(1:nvoima), lisoco(1:nvoima, 1:nscoma, 1:2)
+    integer(kind=8) :: numa
+    integer(kind=8) :: icodr1(1)
     character(len=8) :: typmod(2), lielrf(10), nomail
     character(len=16) :: phenom, rela_comp, defo_comp
     character(len=16), pointer :: compor(:) => null()

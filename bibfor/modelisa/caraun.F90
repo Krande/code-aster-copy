@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -33,9 +33,9 @@ subroutine caraun(sdcont, nzocu, nbgdcu, coefcu, &
 #include "asterfort/wkvect.h"
 !
     character(len=8), intent(in) :: sdcont
-    integer, intent(in) :: nzocu
+    integer(kind=8), intent(in) :: nzocu
     character(len=24), intent(in) :: nbgdcu, coefcu, compcu, multcu, penacu
-    integer, intent(out) :: ntcmp
+    integer(kind=8), intent(out) :: ntcmp
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -75,17 +75,17 @@ subroutine caraun(sdcont, nzocu, nbgdcu, coefcu, &
 !
 ! --------------------------------------------------------------------------------------------------
 !
-    integer, parameter :: zmax = 30
+    integer(kind=8), parameter :: zmax = 30
     character(len=8) :: cmpgd(zmax), k8bid, ccoef, ccmult(zmax)
-    integer :: noc, nbcmp, nbcmul
-    integer :: i_zone, icmp, iform
+    integer(kind=8) :: noc, nbcmp, nbcmul
+    integer(kind=8) :: i_zone, icmp, iform
     character(len=16) :: s_algo_cont, keywf
     real(kind=8) :: pena
     character(len=24) :: sdcont_paraci
-    integer, pointer :: v_sdcont_paraci(:) => null()
+    integer(kind=8), pointer :: v_sdcont_paraci(:) => null()
     real(kind=8), pointer :: v_sdunil_penacu(:) => null()
     character(len=8), pointer :: v_sdunil_coefcu(:) => null()
-    integer, pointer :: v_sdunil_nbgdcu(:) => null()
+    integer(kind=8), pointer :: v_sdunil_nbgdcu(:) => null()
     character(len=8), pointer :: v_sdunil_compcu(:) => null()
     character(len=8), pointer :: v_sdunil_multcu(:) => null()
 !

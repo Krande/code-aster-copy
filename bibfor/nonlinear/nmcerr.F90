@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -37,8 +37,8 @@ subroutine nmcerr(sddisc, iter_glob_maxi, iter_glob_elas, pas_mini_elas, resi_gl
 ! person_in_charge: mickael.abbas at edf.fr
 !
     character(len=19), intent(in) :: sddisc
-    integer, intent(in) :: iter_glob_maxi
-    integer, intent(in) :: iter_glob_elas
+    integer(kind=8), intent(in) :: iter_glob_maxi
+    integer(kind=8), intent(in) :: iter_glob_elas
     real(kind=8), intent(in) :: pas_mini_elas
     real(kind=8), intent(in) :: inikry
     real(kind=8), intent(in) :: resi_glob_maxi
@@ -66,12 +66,12 @@ subroutine nmcerr(sddisc, iter_glob_maxi, iter_glob_elas, pas_mini_elas, resi_gl
 !
     real(kind=8) :: r8bid
     real(kind=8) :: pcplus
-    integer :: typres, ibid, nbiter, iter_maxi, iter_mini
-    integer :: maxgeo, nbreag
-    integer :: nmax, nplus
-    integer :: i_echec, nb_echec, itesup, nbitct
+    integer(kind=8) :: typres, ibid, nbiter, iter_maxi, iter_mini
+    integer(kind=8) :: maxgeo, nbreag
+    integer(kind=8) :: nmax, nplus
+    integer(kind=8) :: i_echec, nb_echec, itesup, nbitct
     character(len=24) :: infocv, infore
-    integer :: jifcv, jifre
+    integer(kind=8) :: jifcv, jifre
 !
 ! --------------------------------------------------------------------------------------------------
 !

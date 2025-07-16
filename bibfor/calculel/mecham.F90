@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -32,7 +32,7 @@ subroutine mecham(optionZ, modelZ, cara, nh, chgeoz, &
 #include "asterfort/utmess.h"
 #include "asterfort/checkSuperElement.h"
 !
-    integer :: iret, nh
+    integer(kind=8) :: iret, nh
     character(len=*), intent(in) :: optionZ, modelZ
     character(len=*) :: cara
     character(len=*) :: chgeoz, chcara(*), chharz
@@ -61,7 +61,7 @@ subroutine mecham(optionZ, modelZ, cara, nh, chgeoz, &
     character(len=8) :: model, exiele
     character(len=24) :: chgeom, chharm
     character(len=16) :: option
-    integer :: nbSuperElement
+    integer(kind=8) :: nbSuperElement
 !
 ! --------------------------------------------------------------------------------------------------
 !

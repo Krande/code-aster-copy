@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2018 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -23,6 +23,6 @@ interface
         character(len=*)      , intent(in)  :: sd_dtm_
         real(kind=8)          , intent(out) :: time
         real(kind=8), pointer :: fext(:)
-        integer     , pointer  :: buffdtm(:)
+        integer(kind=8)     , pointer  :: buffdtm(:)
     end subroutine dtmfext
 end interface

@@ -54,13 +54,13 @@ subroutine adaptVari(comporZ, variZ, ligrelZ)
     character(len=19), parameter :: comporS = '&&VRCOM2.COTO'
     character(len=19), parameter :: comporSR = '&&VRCOM2.COPP'
     character(len=1), parameter :: base = 'G'
-    integer :: iad1, iad2, nbCell, nbpg2, nbsp1, nbsp2, nbVari2, ipg, isp, iVari
-    integer :: nbVari1
-    integer :: iCell, iret
-    integer :: iadp, jcoppl, jcoppd, jcoppv
-    integer :: action
-    integer :: jcev1d, jcev1l
-    integer :: jcev2d, jcev2l, nncp, ibid
+    integer(kind=8) :: iad1, iad2, nbCell, nbpg2, nbsp1, nbsp2, nbVari2, ipg, isp, iVari
+    integer(kind=8) :: nbVari1
+    integer(kind=8) :: iCell, iret
+    integer(kind=8) :: iadp, jcoppl, jcoppd, jcoppv
+    integer(kind=8) :: action
+    integer(kind=8) :: jcev1d, jcev1l
+    integer(kind=8) :: jcev2d, jcev2l, nncp, ibid
     real(kind=8), pointer :: cev1v(:) => null()
     real(kind=8), pointer :: cev2v(:) => null()
 !

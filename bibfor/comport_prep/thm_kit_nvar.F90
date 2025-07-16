@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -31,14 +31,14 @@ subroutine thm_kit_nvar(rela_thmc, rela_hydr, rela_meca, rela_ther, &
     character(len=16), intent(in) :: rela_hydr
     character(len=16), intent(in) :: rela_meca
     character(len=16), intent(in) :: rela_ther
-    integer, intent(out) :: nb_vari_thmc
-    integer, intent(out) :: nb_vari_hydr
-    integer, intent(out) :: nb_vari_meca
-    integer, intent(out) :: nb_vari_ther
-    integer, intent(out) :: nume_comp_thmc
-    integer, intent(out) :: nume_comp_hydr
-    integer, intent(out) :: nume_comp_meca
-    integer, intent(out) :: nume_comp_ther
+    integer(kind=8), intent(out) :: nb_vari_thmc
+    integer(kind=8), intent(out) :: nb_vari_hydr
+    integer(kind=8), intent(out) :: nb_vari_meca
+    integer(kind=8), intent(out) :: nb_vari_ther
+    integer(kind=8), intent(out) :: nume_comp_thmc
+    integer(kind=8), intent(out) :: nume_comp_hydr
+    integer(kind=8), intent(out) :: nume_comp_meca
+    integer(kind=8), intent(out) :: nume_comp_ther
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -64,7 +64,7 @@ subroutine thm_kit_nvar(rela_thmc, rela_hydr, rela_meca, rela_ther, &
 ! --------------------------------------------------------------------------------------------------
 !
     character(len=16) :: rela_thmc_py, rela_ther_py, rela_hydr_py, rela_meca_py
-    integer :: ibid
+    integer(kind=8) :: ibid
 !
 ! --------------------------------------------------------------------------------------------------
 !

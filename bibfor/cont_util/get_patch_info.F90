@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -21,15 +21,14 @@ subroutine get_patch_info(sdappa, patch_indx, nb_elem_patch, list_elem)
     implicit none
 !
 #include "asterf_types.h"
-#include "asterfort/assert.h"
 #include "asterfort/jeveuo.h"
 !
 ! person_in_charge: mickael.abbas at edf.fr
 !
     character(len=19), intent(in) :: sdappa
-    integer, intent(in) :: patch_indx
-    integer, intent(out) :: nb_elem_patch
-    integer, intent(out) :: list_elem(5)
+    integer(kind=8), intent(in) :: patch_indx
+    integer(kind=8), intent(out) :: nb_elem_patch
+    integer(kind=8), intent(out) :: list_elem(5)
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -46,9 +45,9 @@ subroutine get_patch_info(sdappa, patch_indx, nb_elem_patch, list_elem)
 !
 ! --------------------------------------------------------------------------------------------------
 !
-    integer :: i_elem_patch
+    integer(kind=8) :: i_elem_patch
     character(len=24) :: sdappa_info
-    integer, pointer :: v_sdappa_info(:) => null()
+    integer(kind=8), pointer :: v_sdappa_info(:) => null()
 !
 ! --------------------------------------------------------------------------------------------------
 !

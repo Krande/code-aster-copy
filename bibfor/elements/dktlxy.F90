@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -21,7 +21,7 @@ subroutine dktlxy(codi, lcot, hlt2, depf, lambda)
     real(kind=8) :: hlt2(4, 6), depf(9), codi(*), lcot(*), lambda(4)
 !     'LAMBDA' DE L'ELEMENT DE PLAQUE DKT
 !     ------------------------------------------------------------------
-    integer :: i, j, k, nno, nc
+    integer(kind=8) :: i, j, k, nno, nc
     real(kind=8) :: tkt(6, 9), bl(4, 9)
     real(kind=8) :: cl(3), sl(3), cs(3), cu(3), su(3)
 !     ------------------------------------------------------------------

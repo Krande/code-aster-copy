@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2020 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -27,21 +27,21 @@ interface
                       vip, vect, matr,&
                       matsym, codret,&
                       lVect, lMatr)
-        integer :: lgpg
-        integer :: npg
-        integer :: nnop
-        integer :: nnod
-        integer :: ndim
-        integer :: iw
+        integer(kind=8) :: lgpg
+        integer(kind=8) :: npg
+        integer(kind=8) :: nnop
+        integer(kind=8) :: nnod
+        integer(kind=8) :: ndim
+        integer(kind=8) :: iw
         real(kind=8) :: vffd(nnod, npg)
         real(kind=8) :: vffp(nnop, npg)
-        integer :: idffd
-        integer :: vu(3, 27)
-        integer :: vp(27)
+        integer(kind=8) :: idffd
+        integer(kind=8) :: vu(3, 27)
+        integer(kind=8) :: vp(27)
         real(kind=8) :: geomi(ndim, nnod)
         character(len=8) :: typmod(*)
         character(len=16) :: option
-        integer :: mate
+        integer(kind=8) :: mate
         character(len=16) :: compor(*)
         real(kind=8) :: carcri(*)
         real(kind=8) :: instm
@@ -56,7 +56,7 @@ interface
         real(kind=8) :: vect(*)
         real(kind=8) :: matr(*)
         aster_logical :: matsym
-        integer :: codret
+        integer(kind=8) :: codret
         aster_logical, intent(in) :: lVect, lMatr
     end subroutine nufilg
 end interface

@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -42,7 +42,7 @@ subroutine extdch(typext, valinc, nocham, nocmp, dval, lst_loca)
     character(len=16), intent(in) :: nocham
     character(len=16), intent(in) :: nocmp
     real(kind=8), intent(out) :: dval
-    integer, optional, intent(in) :: lst_loca(:)
+    integer(kind=8), optional, intent(in) :: lst_loca(:)
 !
 ! ----------------------------------------------------------------------
 !
@@ -65,11 +65,11 @@ subroutine extdch(typext, valinc, nocham, nocmp, dval, lst_loca)
 !
 !
 !
-    integer :: jcnsl
-    integer :: nbno, ino
-    integer :: nbma, ima, ipt, isp, icmp, nbpt, nbsp, nbcmp, idx, nb_idx
-    integer :: jmoid, jmoil, jmoiv, imoiad
-    integer :: jplud, jplul, jpluv, ipluad
+    integer(kind=8) :: jcnsl
+    integer(kind=8) :: nbno, ino
+    integer(kind=8) :: nbma, ima, ipt, isp, icmp, nbpt, nbsp, nbcmp, idx, nb_idx
+    integer(kind=8) :: jmoid, jmoil, jmoiv, imoiad
+    integer(kind=8) :: jplud, jplul, jpluv, ipluad
     real(kind=8) :: valeur, vmoi, vplu
     character(len=6) :: nompro
     character(len=16) :: typch
@@ -77,7 +77,7 @@ subroutine extdch(typext, valinc, nocham, nocmp, dval, lst_loca)
     parameter(nompro='EXTDCH')
     aster_logical :: bool, filtered
     real(kind=8), pointer :: cnsv(:) => null()
-    integer, pointer :: cnsd(:) => null()
+    integer(kind=8), pointer :: cnsd(:) => null()
 !
 !      REAL*8  TMP
 !

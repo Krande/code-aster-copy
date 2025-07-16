@@ -30,9 +30,7 @@ subroutine rco3d_infos(typmaco, typma3d, epai, j_geom, nb_gauss, gauss_coor, &
 #include "asterfort/elrfd2.h"
 #include "asterfort/elrfdf.h"
 #include "asterfort/elrfvf.h"
-#include "asterfort/reerel.h"
 #include "asterfort/elrfno.h"
-#include "asterfort/mmproj.h"
 #include "asterfort/provec.h"
 #include "jeveux.h"
 !
@@ -40,8 +38,8 @@ subroutine rco3d_infos(typmaco, typma3d, epai, j_geom, nb_gauss, gauss_coor, &
 !
     character(len=8), intent(in) :: typmaco, typma3d
     real(kind=8), intent(in) :: epai
-    integer, intent(in) :: j_geom
-    integer, intent(out) :: nb_gauss
+    integer(kind=8), intent(in) :: j_geom
+    integer(kind=8), intent(out) :: nb_gauss
     real(kind=8), intent(out) :: gauss_coor(2, NB_GAUSS_MAX)
     real(kind=8), intent(out) :: jac_det(NB_GAUSS_MAX)
     real(kind=8), intent(out) :: gauss_weight(NB_GAUSS_MAX)
@@ -97,7 +95,7 @@ subroutine rco3d_infos(typmaco, typma3d, epai, j_geom, nb_gauss, gauss_coor, &
     real(kind=8) :: coor_gp_cartesian(3, NB_GAUSS_MAX)
     real(kind=8) :: v1(3), v2(3), v3(3)
     real(kind=8) :: magnitude, eps
-    integer :: i, j, k, l, idx, ndim, nbg, nno_co, nno_3d, nno, dim, dimd
+    integer(kind=8) :: i, j, k, l, idx, ndim, nbg, nno_co, nno_3d, nno, dim, dimd
     character(len=8) :: elrefa_co, elrefa_3d
 
     real(kind=8) :: res(3)

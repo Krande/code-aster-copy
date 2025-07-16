@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -42,9 +42,9 @@ subroutine calcft(ds_thm, lMatr, lSigm, angl_naut, &
     type(THM_DS), intent(in) :: ds_thm
     aster_logical, intent(in) :: lMatr, lSigm
     real(kind=8), intent(in) :: angl_naut(3)
-    integer, intent(in) :: ndim, dimdef, dimcon
-    integer, intent(in) :: adcote
-    integer, intent(in) :: addeme, addete, addep1, addep2
+    integer(kind=8), intent(in) :: ndim, dimdef, dimcon
+    integer(kind=8), intent(in) :: adcote
+    integer(kind=8), intent(in) :: addeme, addete, addep1, addep2
     real(kind=8), intent(in) :: temp, grad_temp(3)
     real(kind=8), intent(in) :: tbiot(6)
     real(kind=8), intent(in) :: phi, rho11, satur_, dsatur_
@@ -96,8 +96,8 @@ subroutine calcft(ds_thm, lMatr, lSigm, angl_naut, &
 !
 ! --------------------------------------------------------------------------------------------------
 !
-    integer :: nume_thmc
-    integer :: i, j, k
+    integer(kind=8) :: nume_thmc
+    integer(kind=8) :: i, j, k
     real(kind=8) :: biot(3, 3)
     real(kind=8) :: rgaz, rho12, mamolv
     real(kind=8) :: alphfi, cs, kron(ndim, ndim)

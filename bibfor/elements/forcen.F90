@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -20,13 +20,13 @@ subroutine forcen(rnormc, intsn, nb1, xi, xr, &
                   rho, epais, vomega, vecl1, xa)
     implicit none
 !
-    integer :: intsn, nb1, intsx, ie(3, 3, 3)
+    integer(kind=8) :: intsn, nb1, intsx, ie(3, 3, 3)
     real(kind=8) :: wgt, rho
     real(kind=8) :: xi(3, *), xr(*), vomega(3), vecl1(42), xa(3)
 !
 !-----------------------------------------------------------------------
-    integer :: i, i1, i2, ib, ik, ip, iq
-    integer :: ir, j, jb, k, l1
+    integer(kind=8) :: i, i1, i2, ib, ik, ip, iq
+    integer(kind=8) :: ir, j, jb, k, l1
     real(kind=8) :: epais, rnormc
 !-----------------------------------------------------------------------
     wgt = xr(127-1+intsn)

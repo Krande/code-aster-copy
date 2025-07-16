@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -30,7 +30,7 @@ subroutine rslpli(typ, mod, mater, hook, nmat, &
 !       ----------------------------------------------------------------
 !
 #include "asterfort/lcopli.h"
-    integer :: nmat, ndt, ndi
+    integer(kind=8) :: nmat, ndt, ndi
 !
     real(kind=8) :: un, rho, f, f0
     real(kind=8) :: hook(6, 6)

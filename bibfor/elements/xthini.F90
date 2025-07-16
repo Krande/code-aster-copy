@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -28,7 +28,7 @@ subroutine xthini(nomte, nfh, nfe)
 #include "asterfort/tecach.h"
 !
     character(len=16) :: nomte
-    integer :: nfh, nfe
+    integer(kind=8) :: nfh, nfe
 !
 !
 !          BUT : INITIALISER LES DIMENSIONS DES DDL DANS UN TE
@@ -41,8 +41,8 @@ subroutine xthini(nomte, nfh, nfe)
 ! OUT  NDDL   : NOMBRE DE DDL TOTAL DE L'ÉLÉMENT
 !     ------------------------------------------------------------------
 !
-    integer :: nno, ier, nnos, nfiss
-    integer :: jtab(7), iret
+    integer(kind=8) :: nno, ier, nnos, nfiss
+    integer(kind=8) :: jtab(7), iret
     character(len=8) :: enr
 !
 ! ----------------------------------------------------------------------

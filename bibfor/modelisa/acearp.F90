@@ -33,7 +33,7 @@ subroutine acearp(infdonn, lmax, noemaf, nbocc, infcarte, ivr, zjdlm)
     use cara_elem_carte_type
     implicit none
     type(cara_elem_info) :: infdonn
-    integer :: lmax, noemaf, nbocc, ivr(*), zjdlm(*)
+    integer(kind=8) :: lmax, noemaf, nbocc, ivr(*), zjdlm(*)
     type(cara_elem_carte) :: infcarte(*)
 !
 #include "asterf_types.h"
@@ -49,7 +49,6 @@ subroutine acearp(infdonn, lmax, noemaf, nbocc, infcarte, ivr, zjdlm)
 #include "asterfort/jedetr.h"
 #include "asterfort/jelira.h"
 #include "asterfort/jemarq.h"
-#include "asterfort/jenuno.h"
 #include "asterfort/jeveuo.h"
 #include "asterfort/jexnom.h"
 #include "asterfort/jexnum.h"
@@ -61,17 +60,17 @@ subroutine acearp(infdonn, lmax, noemaf, nbocc, infcarte, ivr, zjdlm)
 #include "asterfort/int_to_char8.h"
 !&<
 ! --------------------------------------------------------------------------------------------------
-    integer :: nbcar, nbval, nrd
+    integer(kind=8) :: nbcar, nbval, nrd
     parameter(nbcar=100, nbval=12, nrd=2)
-    integer :: jdc(3), jdv(3), iunite, ifm, iretour
-    integer :: jdcinf, jdvinf
-    integer :: ii, idecal, in, inbn, ino, inoe, ioc, irep
-    integer :: irgno, isym, itbmp, itbno, iv, nummail
-    integer :: jd, jdls, jj, jn
-    integer :: ll, ldgm, ldnm, lokm, lorep, nbnma
-    integer :: nbno, nbnoeu, nc, ncar, ncmp
-    integer :: ndim, ng, ngp, nma, nrep, nval, dimcar
-    integer :: vali(2)
+    integer(kind=8) :: jdc(3), jdv(3), iunite, ifm, iretour
+    integer(kind=8) :: jdcinf, jdvinf
+    integer(kind=8) :: ii, idecal, in, inbn, ino, inoe, ioc, irep
+    integer(kind=8) :: irgno, isym, itbmp, itbno, iv, nummail
+    integer(kind=8) :: jd, jdls, jj, jn
+    integer(kind=8) :: ll, ldgm, ldnm, lokm, lorep, nbnma
+    integer(kind=8) :: nbno, nbnoeu, nc, ncar, ncmp
+    integer(kind=8) :: ndim, ng, ngp, nma, nrep, nval, dimcar
+    integer(kind=8) :: vali(2)
 ! --------------------------------------------------------------------------------------------------
     real(kind=8)      :: val(nbval), eta, vale(nbval), rirot(3)
     character(len=1)  :: kma(3)

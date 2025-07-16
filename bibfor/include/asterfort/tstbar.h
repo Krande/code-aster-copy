@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -21,13 +21,13 @@
 interface
     subroutine tstbar(nbsom, x3d1, x3d2, x3d3, x3d4,&
                       x3dp, xbar, itest)
-        integer :: nbsom
+        integer(kind=8) :: nbsom
         real(kind=8) :: x3d1(*)
         real(kind=8) :: x3d2(*)
         real(kind=8) :: x3d3(*)
         real(kind=8) :: x3d4(*)
         real(kind=8) :: x3dp(*)
         real(kind=8) :: xbar(*)
-        integer :: itest
+        integer(kind=8) :: itest
     end subroutine tstbar
 end interface

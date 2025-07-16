@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -48,13 +48,13 @@ subroutine facmtr(matin, matout, ier)
     character(len=19) :: matin, matout, matpre, solveu
     character(len=24) :: valk
     aster_logical :: hplog
-    integer :: ibid
+    integer(kind=8) :: ibid
 !
 !-----------------------------------------------------------------------
 !-----------------------------------------------------------------------
 !
 !-----------------------------------------------------------------------
-    integer :: ier, ire
+    integer(kind=8) :: ier, ire
 !-----------------------------------------------------------------------
     call jemarq()
     if (matin .eq. ' ') goto 9999

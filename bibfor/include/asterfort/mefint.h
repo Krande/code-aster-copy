@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -22,19 +22,19 @@ interface
     subroutine mefint(nbz, nbgrp, nbmod, nbnoe, nbddl,&
                       irot, numnog, nbnog, zint, defm,&
                       phix, phiy, z, num)
-        integer :: nbnoe
-        integer :: nbmod
-        integer :: nbgrp
-        integer :: nbz
-        integer :: nbddl
-        integer :: irot(3)
-        integer :: numnog(nbgrp)
-        integer :: nbnog(nbgrp)
+        integer(kind=8) :: nbnoe
+        integer(kind=8) :: nbmod
+        integer(kind=8) :: nbgrp
+        integer(kind=8) :: nbz
+        integer(kind=8) :: nbddl
+        integer(kind=8) :: irot(3)
+        integer(kind=8) :: numnog(nbgrp)
+        integer(kind=8) :: nbnog(nbgrp)
         real(kind=8) :: zint(nbz, nbgrp)
         real(kind=8) :: defm(6*nbnoe, nbmod)
         real(kind=8) :: phix(nbz, nbgrp, nbmod)
         real(kind=8) :: phiy(nbz, nbgrp, nbmod)
         real(kind=8) :: z(*)
-        integer :: num(nbz)
+        integer(kind=8) :: num(nbz)
     end subroutine mefint
 end interface

@@ -314,7 +314,7 @@ class RunAster:
         # ign = [sys.prefix, sys.exec_prefix, "$HOME/.local", os.getenv("PYTHONPATH")]
         # cmd.extend(["-m", "trace", "--trace",
         #             "--ignore-dir=" + ":".join(ign)])
-        cmd.append(commfile)
+        cmd.append(f'"{commfile}"')
         if wrapped:
             cmd.append("--")
         # remaining arguments are treated by code_aster script

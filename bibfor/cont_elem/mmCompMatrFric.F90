@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -46,9 +46,9 @@ subroutine mmCompMatrFric(phase, l_large_slip, &
 !
     character(len=4), intent(in) :: phase
     aster_logical, intent(in) :: l_large_slip, l_pena_fric
-    integer, intent(in) :: i_reso_geom, i_reso_fric
-    integer, intent(in) :: nbdm, nbcps, ndexfr
-    integer, intent(in) :: ndim, nne, nnm, nnl
+    integer(kind=8), intent(in) :: i_reso_geom, i_reso_fric
+    integer(kind=8), intent(in) :: nbdm, nbcps, ndexfr
+    integer(kind=8), intent(in) :: ndim, nne, nnm, nnl
     real(kind=8), intent(in) :: wpg, jacobi, coefac, coefaf
     real(kind=8), intent(in) :: ffe(9), ffm(9), ffl(9), dffm(2, 9), ddffm(3, 9)
     real(kind=8), intent(in) :: tau1(3), tau2(3), mprojt(3, 3)
@@ -129,8 +129,8 @@ subroutine mmCompMatrFric(phase, l_large_slip, &
     real(kind=8) :: matrec(27, 9), matrmc(27, 9)
     real(kind=8) :: matref(27, 18), matrmf(27, 18)
     real(kind=8) :: matrff(18, 18), matrfe(18, 27), matrfm(18, 27)
-    integer :: inoc, inoe, inof, inom, idim, nbcpf, icmp
-    integer :: i, j, k, l, ii, jj
+    integer(kind=8) :: inoc, inoe, inof, inom, idim, nbcpf, icmp
+    integer(kind=8) :: i, j, k, l, ii, jj
     real(kind=8) :: e(3, 3), a(2, 3), b(2, 3)
     real(kind=8) :: d(3, 3), r(2, 2), tt(3, 3)
     real(kind=8) :: dlagft(3), pdlaft(3), pdjeut(3), prese(3)

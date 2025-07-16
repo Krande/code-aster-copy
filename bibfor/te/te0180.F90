@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -37,14 +37,14 @@ subroutine te0180(option, nomte)
 !
     character(len=16) :: nomte, option
     real(kind=8) :: dfdx(27), dfdy(27), dfdz(27), poids
-    integer :: ipoids, ivf, idfde, igeom
-    integer :: jgano, nno, kp, npg1, i, j, imattt, ndi
+    integer(kind=8) :: ipoids, ivf, idfde, igeom
+    integer(kind=8) :: jgano, nno, kp, npg1, i, j, imattt, ndi
 !
 !
 !
 !
 !-----------------------------------------------------------------------
-    integer :: ij, ndim, nnos
+    integer(kind=8) :: ij, ndim, nnos
 !-----------------------------------------------------------------------
     call elrefe_info(fami='RIGI', ndim=ndim, nno=nno, nnos=nnos, npg=npg1, &
                      jpoids=ipoids, jvf=ivf, jdfde=idfde, jgano=jgano)

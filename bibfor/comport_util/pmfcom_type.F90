@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -30,9 +30,9 @@ module pmfcom_type
         ! icdmat  : code matériau
         ! epsm    : déformation a l'instant précédent sur l'élément de structure
         !
-        integer             :: kpg
-        integer             :: debsp
-        integer             :: icdmat
+        integer(kind=8)             :: kpg
+        integer(kind=8)             :: debsp
+        integer(kind=8)             :: icdmat
         real(kind=8)        :: instam
         real(kind=8)        :: instap
         real(kind=8)        :: epsm

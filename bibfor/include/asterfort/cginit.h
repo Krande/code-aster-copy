@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -21,8 +21,8 @@
 interface
     subroutine cginit(nomte, iu, iuc, im)
         character(len=16) :: nomte
-        integer :: iu(3, 3)
-        integer :: iuc(3)
-        integer :: im(3)
+        integer(kind=8) :: iu(3, 3)
+        integer(kind=8) :: iuc(3)
+        integer(kind=8) :: im(3)
     end subroutine cginit
 end interface

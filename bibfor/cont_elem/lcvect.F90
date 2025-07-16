@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -36,14 +36,14 @@ subroutine lcvect(elem_dime, l_axis, l_upda_jaco, l_norm_smooth, &
 #include "asterfort/lctrco.h"
 #include "asterfort/lctria.h"
 !
-    integer, intent(in) :: elem_dime
+    integer(kind=8), intent(in) :: elem_dime
     aster_logical, intent(in) :: l_axis, l_upda_jaco, l_norm_smooth
-    integer, intent(in) :: nb_lagr, indi_lagc(10)
+    integer(kind=8), intent(in) :: nb_lagr, indi_lagc(10)
     real(kind=8), intent(in) :: lagrc, gapi
     character(len=8), intent(in) :: elem_slav_code, elem_mast_code
-    integer, intent(in) :: nb_node_slav, nb_node_mast
-    integer, intent(in) :: nmcp
-    integer, intent(in) :: nb_poin_inte
+    integer(kind=8), intent(in) :: nb_node_slav, nb_node_mast
+    integer(kind=8), intent(in) :: nmcp
+    integer(kind=8), intent(in) :: nb_poin_inte
     real(kind=8), intent(in) :: poin_inte_sl(16), poin_inte_ma(16)
     real(kind=8), intent(in) :: elem_mast_init(nb_node_mast, elem_dime)
     real(kind=8), intent(in) :: elem_slav_init(nb_node_slav, elem_dime)
@@ -78,12 +78,12 @@ subroutine lcvect(elem_dime, l_axis, l_upda_jaco, l_norm_smooth, &
 !
 ! --------------------------------------------------------------------------------------------------
 !
-    integer :: i_node, i_dime, i_tria, i_gauss
-    integer :: nb_tria
-    integer :: tria_node(6, 3)
+    integer(kind=8) :: i_node, i_dime, i_tria, i_gauss
+    integer(kind=8) :: nb_tria
+    integer(kind=8) :: tria_node(6, 3)
     real(kind=8) :: tria_coot_sl(2, 3), tria_coor_sl(16)
     real(kind=8) :: tria_coot_ma(2, 3), tria_coor_ma(16)
-    integer :: nb_gauss
+    integer(kind=8) :: nb_gauss
     real(kind=8) :: poidpg_sl, poidpg_ma, jacobian_ma, jacobian_sl
     real(kind=8) :: gauss_weight_sl(12), gauss_coor_sl(2, 12), gauss_coot_sl(2)
     real(kind=8) :: gauss_weight_ma(12), gauss_coor_ma(2, 12), gauss_coot_ma(2)

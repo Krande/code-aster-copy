@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -79,9 +79,9 @@ subroutine op0010()
 #include "asterfort/xprfastmarching.h"
 #include "asterfort/xprupw_fmm.h"
 #include "asterfort/xprvit.h"
-    integer :: ifm, niv, ibid, ndim, iret, jcaraf, clsm, jma, jconx1, jconx2, nbma, i, ima
-    integer :: j, nbrinit
-    integer :: iadrma
+    integer(kind=8) :: ifm, niv, ibid, ndim, iret, jcaraf, clsm, jma, jconx1, jconx2, nbma, i, ima
+    integer(kind=8) :: j, nbrinit
+    integer(kind=8) :: iadrma
     real(kind=8) :: lcmin
     character(len=8) :: k8bid, noma, nomo, fiss, fispre, method, fisini, ncrack
     character(len=8) :: ma_grill_pre
@@ -99,12 +99,12 @@ subroutine op0010()
     real(kind=8) :: damax, dttot, vmax, rayon, dafiss, bmax
     character(len=24) :: vvit, vbeta, vgamma
     character(len=19) :: cnsbet, listp
-    integer :: crack, jbeta, jgamma, jvit, nbval, nfiss
-    integer :: numfis
+    integer(kind=8) :: crack, jbeta, jgamma, jvit, nbval, nfiss
+    integer(kind=8) :: numfis
 !
 !     LEVELSET AUXILIARY MESH
     character(len=8) :: unoma
-    integer :: jlisno
+    integer(kind=8) :: jlisno
     character(len=19) :: ucnslt, ucnsln, ugrlt, ugrln, ucnxin, disfr, nodtor
     character(len=19) :: eletor, liggrd, ligr_dnoma, ligr_noma
     aster_logical :: grille, locdom
@@ -122,7 +122,7 @@ subroutine op0010()
     real(kind=8) :: dist, distol
 !
 !     DOMAINE LOCALISATION
-    integer :: nbno, jgltl, jglnl
+    integer(kind=8) :: nbno, jgltl, jglnl
     character(len=19) :: grltc, grlnc
     aster_logical :: ldpre
     real(kind=8) :: radimp, radlim

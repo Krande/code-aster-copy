@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -21,6 +21,6 @@
 interface
     subroutine nmacto(sddisc, i_echec_acti)
         character(len=19), intent(in) :: sddisc
-        integer, intent(out) :: i_echec_acti
+        integer(kind=8), intent(out) :: i_echec_acti
     end subroutine nmacto
 end interface

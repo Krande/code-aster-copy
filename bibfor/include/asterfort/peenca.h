@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -20,10 +20,10 @@
 !
 interface
     subroutine peenca(champ, long, vr, nbmail, nummai)
-        integer :: long
+        integer(kind=8) :: long
         character(len=*) :: champ
         real(kind=8) :: vr(long)
-        integer :: nbmail
-        integer :: nummai(*)
+        integer(kind=8) :: nbmail
+        integer(kind=8) :: nummai(*)
     end subroutine peenca
 end interface

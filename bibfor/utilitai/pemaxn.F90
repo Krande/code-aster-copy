@@ -40,7 +40,6 @@ subroutine pemaxn(resu, nomcha, lieu, nomlie, modele, &
 #include "asterfort/jedetr.h"
 #include "asterfort/jelira.h"
 #include "asterfort/jemarq.h"
-#include "asterfort/jenuno.h"
 #include "asterfort/jeveuo.h"
 #include "asterfort/jexnum.h"
 #include "asterfort/tbajli.h"
@@ -49,7 +48,7 @@ subroutine pemaxn(resu, nomcha, lieu, nomlie, modele, &
 #include "asterfort/wkvect.h"
 #include "asterfort/int_to_char8.h"
 !
-    integer :: nbcmp, nuord, nbmail, numemail(*)
+    integer(kind=8) :: nbcmp, nuord, nbmail, numemail(*)
     character(len=8) :: nomcmp(nbcmp), modele, lieu
     character(len=19) :: chpost, resu
     character(len=24) :: nomcha, nomlie
@@ -75,9 +74,9 @@ subroutine pemaxn(resu, nomcha, lieu, nomlie, modele, &
 !     IN  INST    : INSTANT
 !     ------------------------------------------------------------------
 !
-    integer :: i, jcesl, jcmpgd, ncmpm, nbnoma
-    integer :: icmp, nbpara, nbno, numno, iacnex, iproc
-    integer :: ino, nmin, nmax, npara, nbcmpm, rank, nbproc
+    integer(kind=8) :: i, jcesl, jcmpgd, ncmpm, nbnoma
+    integer(kind=8) :: icmp, nbpara, nbno, numno, iacnex, iproc
+    integer(kind=8) :: ino, nmin, nmax, npara, nbcmpm, rank, nbproc
     real(kind=8) :: vmin, vmax, inst
     complex(kind=8) :: cbid
     character(len=7) :: chnuno
@@ -87,9 +86,9 @@ subroutine pemaxn(resu, nomcha, lieu, nomlie, modele, &
 ! Tableaux automatiques F90
     real(kind=8) :: mima(2*nbcmp+2)
     character(len=24) :: nompar(4*nbcmp+5), nomax(2*nbcmp+3)
-    integer, pointer :: list_no(:) => null()
-    integer, pointer :: cnsd(:) => null()
-    integer, pointer :: nulg(:) => null()
+    integer(kind=8), pointer :: list_no(:) => null()
+    integer(kind=8), pointer :: cnsd(:) => null()
+    integer(kind=8), pointer :: nulg(:) => null()
     character(len=8), pointer :: cnsk(:) => null()
     character(len=8), pointer :: cesc(:) => null()
     character(len=8), pointer :: v_name(:) => null()

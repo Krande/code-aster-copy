@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -23,6 +23,6 @@ interface
         use NonLin_Datastructure_type
         type(NL_DS_InOut), intent(in) :: ds_inout
         character(len=24), intent(in) :: field_type
-        integer, intent(out) :: i_field_obsv
+        integer(kind=8), intent(out) :: i_field_obsv
     end subroutine nmetob
 end interface

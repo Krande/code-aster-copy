@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -28,7 +28,7 @@ subroutine cfcpes(resoco, jsecmb)
 #include "asterfort/jemarq.h"
 #include "asterfort/jeveuo.h"
     character(len=24) :: resoco
-    integer :: jsecmb
+    integer(kind=8) :: jsecmb
 !
 ! ----------------------------------------------------------------------
 !
@@ -45,17 +45,17 @@ subroutine cfcpes(resoco, jsecmb)
 !
 !
 !
-    integer :: iliac
+    integer(kind=8) :: iliac
     character(len=19) :: mu
-    integer :: jmu
+    integer(kind=8) :: jmu
     character(len=24) :: apcoef, apddl, appoin
-    integer :: japcoe, japddl, japptr
+    integer(kind=8) :: japcoe, japddl, japptr
     character(len=24) :: tacfin
-    integer :: jtacf
+    integer(kind=8) :: jtacf
     character(len=24) :: jeux
-    integer :: jjeux
-    integer :: ztacf
-    integer :: nbliai, neq
+    integer(kind=8) :: jjeux
+    integer(kind=8) :: ztacf
+    integer(kind=8) :: nbliai, neq
 !
 ! ----------------------------------------------------------------------
 !

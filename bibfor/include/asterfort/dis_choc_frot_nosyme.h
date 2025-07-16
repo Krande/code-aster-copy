@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -22,7 +22,7 @@ interface
                              varmo, force, varpl)
         use te0047_type
         type(te0047_dscr), intent(in) :: for_discret
-        integer         :: icodma
+        integer(kind=8)         :: icodma
         real(kind=8)    :: ulp(*), klv(*), xg(*), varmo(*), varpl(*), force(*)
     end subroutine dis_choc_frot_nosyme
 end interface

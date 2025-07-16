@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -20,8 +20,8 @@
 !
           interface 
             subroutine tecael(iadzi,iazk24,noms)
-              integer, intent(out) :: iadzi
-              integer, intent(out) :: iazk24
-              integer ,optional, intent(in) :: noms
+              integer(kind=8), intent(out) :: iadzi
+              integer(kind=8), intent(out) :: iazk24
+              integer(kind=8) ,optional, intent(in) :: noms
             end subroutine tecael
           end interface 

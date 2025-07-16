@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -21,15 +21,15 @@
 interface
     subroutine sleelt(iunv, maxnod, nbtyma, indic, permut,&
                       nbmail, mint, mant, datset, inum)
-        integer :: nbtyma
-        integer :: maxnod
-        integer :: iunv
-        integer :: indic(nbtyma)
-        integer :: permut(maxnod, nbtyma)
-        integer :: nbmail(nbtyma)
-        integer :: mint(nbtyma)
-        integer :: mant(nbtyma)
-        integer :: datset
-        integer :: inum
+        integer(kind=8) :: nbtyma
+        integer(kind=8) :: maxnod
+        integer(kind=8) :: iunv
+        integer(kind=8) :: indic(nbtyma)
+        integer(kind=8) :: permut(maxnod, nbtyma)
+        integer(kind=8) :: nbmail(nbtyma)
+        integer(kind=8) :: mint(nbtyma)
+        integer(kind=8) :: mant(nbtyma)
+        integer(kind=8) :: datset
+        integer(kind=8) :: inum
     end subroutine sleelt
 end interface

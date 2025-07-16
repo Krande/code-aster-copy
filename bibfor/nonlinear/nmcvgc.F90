@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -31,9 +31,9 @@ subroutine nmcvgc(sddisc, sderro, numins, fonact)
 #include "asterfort/nmfinp.h"
 #include "asterfort/nmleeb.h"
 !
-    integer :: fonact(*)
+    integer(kind=8) :: fonact(*)
     character(len=19) :: sddisc
-    integer :: numins
+    integer(kind=8) :: numins
     character(len=24) :: sderro
 !
 ! ----------------------------------------------------------------------

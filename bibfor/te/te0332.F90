@@ -51,10 +51,10 @@ subroutine te0332(option, nomte)
     real(kind=8) :: poids, r, volume, dvol, sigm, sigeq
     real(kind=8) :: dfdx(9), dfdy(9)
     real(kind=8) :: cong(4), varigp, varigm, sdrsrp, sdrsrm, crois
-    integer :: nno, kp, npg, k, iritra, jtab(7)
-    integer :: issopt, ima, nbvari, ipopp, ndim, nnos, jgano
-    integer :: ipoids, ivf, idfde, ii, iret, iadzi, ivarmg, iazk24
-    integer :: igeom, icong, ivarpg, isdrmr, isdrpr, kq
+    integer(kind=8) :: nno, kp, npg, k, iritra, jtab(7)
+    integer(kind=8) :: issopt, ima, nbvari, ipopp, ndim, nnos, jgano
+    integer(kind=8) :: ipoids, ivf, idfde, ii, iret, iadzi, ivarmg, iazk24
+    integer(kind=8) :: igeom, icong, ivarpg, isdrmr, isdrpr, kq
     aster_logical :: laxi
 !     ------------------------------------------------------------------
 !

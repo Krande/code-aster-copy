@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -26,7 +26,7 @@ subroutine lisllc(lischa, ichar, prefob)
 #include "asterfort/jeveuo.h"
 #include "asterfort/lisnnb.h"
     character(len=19) :: lischa
-    integer :: ichar
+    integer(kind=8) :: ichar
     character(len=13) :: prefob
 !
 ! ----------------------------------------------------------------------
@@ -46,8 +46,8 @@ subroutine lisllc(lischa, ichar, prefob)
 !
 !
     character(len=24) :: precha
-    integer :: jprec
-    integer :: nbchar
+    integer(kind=8) :: jprec
+    integer(kind=8) :: nbchar
 !
 ! ----------------------------------------------------------------------
 !

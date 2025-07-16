@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -29,13 +29,13 @@ interface
         character(len=24) , intent(in)    :: vecrei
         character(len=24) , intent(in)    :: vecrek
         character(len=24) , intent(in)    :: vecvp
-        integer           , intent(in)    :: nbpark
-        integer           , intent(in)    :: nbpari
-        integer           , intent(in)    :: nbparr
-        integer           , intent(in)    :: mxresf
-        integer           , intent(in)    :: nconv
-        integer           , intent(in)    :: nblagr
-        integer           , intent(in)    :: nfreqg
+        integer(kind=8)           , intent(in)    :: nbpark
+        integer(kind=8)           , intent(in)    :: nbpari
+        integer(kind=8)           , intent(in)    :: nbparr
+        integer(kind=8)           , intent(in)    :: mxresf
+        integer(kind=8)           , intent(in)    :: nconv
+        integer(kind=8)           , intent(in)    :: nblagr
+        integer(kind=8)           , intent(in)    :: nfreqg
         character(len=8)  , intent(in)    :: modes
         character(len=16) , intent(in)    :: typcon
         character(len=16) , intent(in)    :: compex
@@ -47,8 +47,8 @@ interface
         character(len=24) , intent(in)    :: veclag
         aster_logical     , intent(in)    :: flage
 !!
-        integer           , intent(inout) :: icom1
-        integer           , intent(inout) :: icom2
+        integer(kind=8)           , intent(inout) :: icom1
+        integer(kind=8)           , intent(inout) :: icom2
         mpi_int           , intent(inout) :: mpicou
         mpi_int           , intent(inout) :: mpicow
         real(kind=8)      , intent(inout) :: omemax

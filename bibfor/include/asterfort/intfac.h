@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -23,22 +23,22 @@ interface
                       lst, lsn, ndim, grad, jglsn,&
                       jglst, igeom, m, indptf, gln,&
                       glt, codret)
-        integer :: ndim
-        integer :: nno
+        integer(kind=8) :: ndim
+        integer(kind=8) :: nno
         character(len=8) :: noma
-        integer :: nmaabs
-        integer :: ifq
-        integer :: fa(6, 8)
+        integer(kind=8) :: nmaabs
+        integer(kind=8) :: ifq
+        integer(kind=8) :: fa(6, 8)
         real(kind=8) :: lst(nno)
         real(kind=8) :: lsn(nno)
         character(len=3) :: grad
-        integer :: jglsn
-        integer :: jglst
-        integer :: igeom
+        integer(kind=8) :: jglsn
+        integer(kind=8) :: jglst
+        integer(kind=8) :: igeom
         real(kind=8) :: m(ndim)
-        integer :: indptf(3)
+        integer(kind=8) :: indptf(3)
         real(kind=8) :: gln(ndim)
         real(kind=8) :: glt(ndim)
-        integer :: codret
+        integer(kind=8) :: codret
     end subroutine intfac
 end interface

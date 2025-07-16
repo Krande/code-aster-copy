@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -27,9 +27,9 @@ subroutine cfnben(sdcont_defi, enti_indx, enti_type, enti_nb_, enti_jdec_)
 !
     character(len=24), intent(in) :: sdcont_defi
     character(len=6), intent(in) :: enti_type
-    integer, intent(in) :: enti_indx
-    integer, optional, intent(out) :: enti_nb_
-    integer, optional, intent(out) :: enti_jdec_
+    integer(kind=8), intent(in) :: enti_indx
+    integer(kind=8), optional, intent(out) :: enti_nb_
+    integer(kind=8), optional, intent(out) :: enti_jdec_
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -48,11 +48,11 @@ subroutine cfnben(sdcont_defi, enti_indx, enti_type, enti_nb_, enti_jdec_)
 !
 ! --------------------------------------------------------------------------------------------------
 !
-    integer :: enti_nb, enti_jdec
+    integer(kind=8) :: enti_nb, enti_jdec
     character(len=24) :: sdcont_pnomaco
-    integer, pointer :: p_sdcont_pnomaco(:) => null()
+    integer(kind=8), pointer :: p_sdcont_pnomaco(:) => null()
     character(len=24) :: sdcont_pmanoco
-    integer, pointer :: p_sdcont_pmanoco(:) => null()
+    integer(kind=8), pointer :: p_sdcont_pmanoco(:) => null()
 !
 ! --------------------------------------------------------------------------------------------------
 !

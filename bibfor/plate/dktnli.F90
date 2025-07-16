@@ -50,14 +50,13 @@ subroutine dktnli(option, xyzl, pgl, uml, dul, &
 #include "asterfort/tecach.h"
 #include "asterfort/utbtab.h"
 #include "asterfort/utctab.h"
-#include "blas/dcopy.h"
 #include "jeveux.h"
 !
     character(len=16), intent(in) :: option
     real(kind=8), intent(in) :: xyzl(3, 4), uml(6, 4), dul(6, 4)
     real(kind=8), intent(in) :: pgl(3, 3)
     real(kind=8), intent(out) :: ktan(576), btsig(6, 4)
-    integer, intent(out) :: codret
+    integer(kind=8), intent(out) :: codret
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -85,7 +84,7 @@ subroutine dktnli(option, xyzl, pgl, uml, dul, &
 !
     character(len=16) :: defo_comp, incr_elas
     character(len=8) :: typmod(2)
-    integer, parameter :: nbNodeMaxi = 4
+    integer(kind=8), parameter :: nbNodeMaxi = 4
     real(kind=8) :: distn, angmas(3)
 !  CMPS DE DEPLACEMENT :
 !   - MEMBRANE : DX(N1), DY(N1), DX(N2), ..., DY(NNO)
@@ -103,13 +102,13 @@ subroutine dktnli(option, xyzl, pgl, uml, dul, &
 !   - MEMBRANE : NXX,NYY,NXY
 !   - FLEXION  : MXX,MYY,MXY
 ! --------------------------------------------------------------------
-    integer :: nbcou, jnbspi
+    integer(kind=8) :: nbcou, jnbspi
 !            NBCOU:  NOMBRE DE COUCHES (INTEGRATION DE LA PLASTICITE)
 !            NPG:    NOMBRE DE POINTS DE GAUSS PAR ELEMENT
 !            NC :    NOMBRE DE COTES DE L'ELEMENT
-    integer, parameter :: npgh = 3
+    integer(kind=8), parameter :: npgh = 3
 !            NPGH:   NOMBRE DE POINT D'INTEGRATION PAR COUCHE
-    integer, parameter :: nbcon = 6
+    integer(kind=8), parameter :: nbcon = 6
 !            NBCON:  number of compoennts in stress tensor
     real(kind=8) :: poids, hic, h, zic, zmin, instm, instp, coef
 !            POIDS:  POIDS DE GAUSS (Y COMPRIS LE JACOBIEN)
@@ -158,12 +157,12 @@ subroutine dktnli(option, xyzl, pgl, uml, dul, &
 !             LE MATERIAU EST SUPPOSE HOMOGENE
 !             IL PEUT NEANMOINS Y AVOIR COUPLAGE PAR LA PLASTICITE
 !     ------------------ PARAMETRAGE ELEMENT ---------------------------
-    integer, parameter :: ndimLdc = 2
-    integer :: ndim, nbNode, npg, ipoids, icoopg
-    integer :: jtab(7), codkpg, i, ksp
-    integer :: icacoq, icarcr, icontm, icontp, icou, icpg, igauh, iinstm
-    integer :: iinstp, imate, ino, ipg, iret, isp, ivarim, ivarip, ivarix, ivpg
-    integer :: j, k, nbsp, nbvar
+    integer(kind=8), parameter :: ndimLdc = 2
+    integer(kind=8) :: ndim, nbNode, npg, ipoids, icoopg
+    integer(kind=8) :: jtab(7), codkpg, i, ksp
+    integer(kind=8) :: icacoq, icarcr, icontm, icontp, icou, icpg, igauh, iinstm
+    integer(kind=8) :: iinstp, imate, ino, ipg, iret, isp, ivarim, ivarip, ivarix, ivpg
+    integer(kind=8) :: j, k, nbsp, nbvar
     real(kind=8), parameter :: deux = 2.d0, rac2 = sqrt(2.d0)
     real(kind=8) :: qsi, eta, cara(25), jacob(5)
     real(kind=8) :: ctor, coehsd, zmax, quotient, a, b, c
@@ -176,8 +175,8 @@ subroutine dktnli(option, xyzl, pgl, uml, dul, &
     real(kind=8) :: hft2el(2, 6)
     real(kind=8) :: t2iuel(4), t2uiel(4), t1veel(9)
     aster_logical :: coupmfel, l_matr_symm
-    integer :: multicel
-    integer :: lg_varip
+    integer(kind=8) :: multicel
+    integer(kind=8) :: lg_varip
     real(kind=8), allocatable :: varip(:)
     character(len=4), parameter :: fami = 'RIGI'
     type(Behaviour_Integ) :: BEHinteg

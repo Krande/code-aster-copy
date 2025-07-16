@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -33,8 +33,8 @@ subroutine nmdeca(sddisc, iterat, ievdac, nomlis, instam, &
 #include "asterfort/nmdecp.h"
     character(len=19) :: sddisc
     character(len=24) :: nomlis
-    integer :: nbrpas
-    integer :: ievdac, iterat, retdec
+    integer(kind=8) :: nbrpas
+    integer(kind=8) :: ievdac, iterat, retdec
     real(kind=8) :: instam, deltat, dtmin, durdec
     aster_logical :: ldcext
 !

@@ -25,14 +25,12 @@ subroutine utcono(mcfac, mocle, iocc, nomail, ndim, &
 #include "asterfort/getvtx.h"
 #include "asterfort/jedema.h"
 #include "asterfort/jemarq.h"
-#include "asterfort/jenonu.h"
 #include "asterfort/jeveuo.h"
-#include "asterfort/jexnom.h"
 #include "asterfort/utmess.h"
 #include "asterfort/utnono.h"
 #include "asterfort/char8_to_int.h"
 !
-    integer :: iocc, ndim, iret
+    integer(kind=8) :: iocc, ndim, iret
     real(kind=8) :: coor(*)
     character(len=8) :: nomail
     character(len=*) :: mcfac, mocle(3)
@@ -40,8 +38,8 @@ subroutine utcono(mcfac, mocle, iocc, nomail, ndim, &
 !
 ! ----------------------------------------------------------------------
 !     ------------------------------------------------------------------
-    integer :: n1, n2, n3, numno, i, ier, jcoor
-    integer :: vali(2)
+    integer(kind=8) :: n1, n2, n3, numno, i, ier, jcoor
+    integer(kind=8) :: vali(2)
     character(len=8) :: k8b, noeud
     character(len=16) :: concep, cmd
     character(len=24) :: coord, nomgrn

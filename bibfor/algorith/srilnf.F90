@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -52,14 +52,12 @@ subroutine srilnf(nvi, vind, nmat, materf, dt, nr, yf, deps, vinf)
 #include "asterfort/srds2h.h"
 #include "asterfort/srvacp.h"
 #include "asterfort/srvarp.h"
-#include "asterfort/cos3t.h"
-#include "asterc/r8pi.h"
 
     !!!
     !!! Variables globales
     !!!
 
-    integer :: val, ndt, nvi, nmat, ndi, nr
+    integer(kind=8) :: val, ndt, nvi, nmat, ndi, nr
     real(kind=8) :: materf(nmat, 2)
     real(kind=8) :: vind(nvi), dt, deps(6)
     real(kind=8) :: yf(nr), vinf(nvi)
@@ -68,7 +66,7 @@ subroutine srilnf(nvi, vind, nmat, materf, dt, nr, yf, deps, vinf)
     !!! Variables locales
     !!!
 
-    integer :: retcom, i
+    integer(kind=8) :: retcom, i
     real(kind=8) :: devsig(6), i1, xi1, ucriv, seuilv
     real(kind=8) :: depsv(6), dgamv, seuilp, ucrip
     real(kind=8) :: varv, seuivm, dhds(6), ds2hds(6)

@@ -38,9 +38,7 @@ subroutine extche(nchme2, nmaile, nummai, ncmp, nbm, &
 #include "asterfort/jeecra.h"
 #include "asterfort/jelira.h"
 #include "asterfort/jemarq.h"
-#include "asterfort/jenonu.h"
 #include "asterfort/jeveuo.h"
-#include "asterfort/jexnom.h"
 #include "asterfort/jexnum.h"
 #include "asterfort/matrot.h"
 #include "asterfort/numek8.h"
@@ -51,7 +49,7 @@ subroutine extche(nchme2, nmaile, nummai, ncmp, nbm, &
 #include "asterfort/wkvect.h"
 #include "asterfort/char8_to_int.h"
 !
-    integer :: nbm, nbc, nummai(*), iocc, nbnac, nnoeud(*)
+    integer(kind=8) :: nbm, nbc, nummai(*), iocc, nbnac, nnoeud(*)
     character(len=6) :: indic
     character(len=8) :: nmaile(*), ncmp(*)
     character(len=19) :: nchmel, nssche, nchme2
@@ -175,7 +173,7 @@ subroutine extche(nchme2, nmaile, nummai, ncmp, nbm, &
 !
     character(len=3) :: type
     character(len=24) :: ndesc, nvale, ncelk, nomvec
-    integer :: jceld, avale, acelk
+    integer(kind=8) :: jceld, avale, acelk
 !
 !   NOMS ET ADRESSES DES OJB ASSOCIES AU LIGREL SOUS-JACENT
 !   -------------------------------------------------------
@@ -183,39 +181,39 @@ subroutine extche(nchme2, nmaile, nummai, ncmp, nbm, &
     character(len=24) :: nrepe, nnoma
     character(len=19) :: nligrl
     character(len=8) :: nmaila, nomgd
-    integer :: arepe, anoma
+    integer(kind=8) :: arepe, anoma
 !
 !   NOMS ET ADRESSES DES OJB ASSOCIES AU SOUS CHAM_ELEM
 !   --------------------------------------------------
 !
     character(len=24) :: npnbn, npadr, npcmp, nvalcp, nnugd, nperr, npnco, npnsp
-    integer :: apnbn, apadr, apcmp, avalcp, anugd, aperr, apnco, apnsp
+    integer(kind=8) :: apnbn, apadr, apcmp, avalcp, anugd, aperr, apnco, apnsp
 !
 !   ENTIER REPERANT UNE MAILLE DANS UN LIGREL
 !   -----------------------------------------
 !
-    integer :: grel, posm
+    integer(kind=8) :: grel, posm
 !
 !   ADRESSES DES SEGMENTS DE VALEURS DANS LE '.CELV'
 !   ------------------------------------------------
 !
-    integer :: agrel, asgtm
+    integer(kind=8) :: agrel, asgtm
 !
 !   ADRESSES LIEES AUX MODE LOCAUX
 !   ------------------------------
 !
-    integer :: amodlo, mod
+    integer(kind=8) :: amodlo, mod
 !
 !   ADRESSE DE NUMERO DE CMP CONCERNEES PAR L' EXTRACTION
 !   -----------------------------------------------------
 !
-    integer :: anumcp
+    integer(kind=8) :: anumcp
 !
 !   DIVERS
 !   ------
 !
-    integer :: i, m, nbscal, numm, nbtmai, gd, acmpgd, nbtcmp, adesgd
-    integer :: nbval, nbn, nbco, nbsp, n1, kk
+    integer(kind=8) :: i, m, nbscal, numm, nbtmai, gd, acmpgd, nbtcmp, adesgd
+    integer(kind=8) :: nbval, nbn, nbco, nbsp, n1, kk
     real(kind=8) :: angl(3), pgl(3, 3), orig(3), axez(3)
     real(kind=8) :: zero, xnormz, epsi
     aster_logical :: utili

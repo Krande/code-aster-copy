@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -25,7 +25,7 @@ subroutine detefa(nnose, pi1, pi2, it, typma, &
 #include "asterfort/assert.h"
 #include "asterfort/conare.h"
 # include "asterfort/xxmmvd.h"
-    integer :: nnose, it, pi1, pi2, cnset(*), n(3)
+    integer(kind=8) :: nnose, it, pi1, pi2, cnset(*), n(3)
     real(kind=8) :: ainter(*)
     character(len=8) :: typma
 ! person_in_charge: samuel.geniaut at edf.fr
@@ -45,8 +45,8 @@ subroutine detefa(nnose, pi1, pi2, it, typma, &
 !       N       : LES INDICES DES NOEUX D'UNE FACE DANS L'ELEMENT PARENT
 !-----------------------------------------------------------------------
 !
-    integer :: ar(12, 3), nbar, a1, a2, n1, n2, n3
-    integer :: i, j, zxain
+    integer(kind=8) :: ar(12, 3), nbar, a1, a2, n1, n2, n3
+    integer(kind=8) :: i, j, zxain
     aster_logical :: found
 !-----------------------------------------------------------------------
     zxain = xxmmvd('ZXAIN')

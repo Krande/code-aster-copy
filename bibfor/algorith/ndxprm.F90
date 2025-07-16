@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -36,7 +36,6 @@ subroutine ndxprm(modelz, ds_material, carele, ds_constitutive, ds_algopara, &
 #include "asterfort/asmari.h"
 #include "asterfort/diinst.h"
 #include "asterfort/infdbg.h"
-#include "asterfort/isfonc.h"
 #include "asterfort/ndxmat.h"
 #include "asterfort/ndynlo.h"
 #include "asterfort/nmchex.h"
@@ -47,7 +46,7 @@ subroutine ndxprm(modelz, ds_material, carele, ds_constitutive, ds_algopara, &
 #include "asterfort/utmess.h"
 !
     type(NL_DS_AlgoPara), intent(in) :: ds_algopara
-    integer, intent(in) :: list_func_acti(*), nume_inst
+    integer(kind=8), intent(in) :: list_func_acti(*), nume_inst
     character(len=*) :: modelz
     type(NL_DS_Material), intent(in) :: ds_material
     character(len=24) :: carele
@@ -61,7 +60,7 @@ subroutine ndxprm(modelz, ds_material, carele, ds_constitutive, ds_algopara, &
     character(len=19) :: solalg(*), valinc(*)
     character(len=19) :: meelem(*), measse(*)
     character(len=19) :: maprec, matass
-    integer :: faccvg, ldccvg
+    integer(kind=8) :: faccvg, ldccvg
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -107,14 +106,14 @@ subroutine ndxprm(modelz, ds_material, carele, ds_constitutive, ds_algopara, &
 !
 ! --------------------------------------------------------------------------------------------------
 !
-    integer, parameter :: iterNewtPred = 0
+    integer(kind=8), parameter :: iterNewtPred = 0
     character(len=16), parameter :: nonLinearOption = 'RIGI_MECA_TANG'
     aster_logical, parameter :: l_renumber = ASTER_FALSE
     aster_logical :: l_update_matr, l_first_step
     aster_logical :: lRigiCompute, lDampMatrUpdate, lRigiAssemble
     aster_logical :: lshima, lprmo
     character(len=16) :: explMatrType
-    integer :: ifm, niv, ibid
+    integer(kind=8) :: ifm, niv, ibid
     character(len=19) :: rigid
     real(kind=8) :: time
 !

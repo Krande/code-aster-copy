@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -32,10 +32,10 @@ subroutine thmevc(option, l_axi, &
 !
     character(len=16), intent(in) :: option
     aster_logical, intent(in) :: l_axi
-    integer, intent(in) :: nno, nnos
-    integer, intent(in) :: npg
-    integer, intent(in) :: nddls, nddlm
-    integer, intent(in) :: jv_poids, jv_func, jv_dfunc
+    integer(kind=8), intent(in) :: nno, nnos
+    integer(kind=8), intent(in) :: npg
+    integer(kind=8), intent(in) :: nddls, nddlm
+    integer(kind=8), intent(in) :: jv_poids, jv_func, jv_dfunc
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -59,7 +59,7 @@ subroutine thmevc(option, l_axi, &
 ! --------------------------------------------------------------------------------------------------
 !
     real(kind=8) :: poids
-    integer :: i_node, jv_forc, jv_geom, jv_vect, ii, kp, k, nnom
+    integer(kind=8) :: i_node, jv_forc, jv_geom, jv_vect, ii, kp, k, nnom
     real(kind=8) :: fx, fy, fz
     real(kind=8) :: rx
 !

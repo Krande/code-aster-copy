@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -35,7 +35,7 @@ subroutine romSaveBaseStableIFS(l_ortho_base, ds_multipara, ds_algoGreedy, ds_em
     type(ROM_DS_MultiPara), intent(in) :: ds_multipara
     type(ROM_DS_AlgoGreedy), intent(in) :: ds_algoGreedy
     type(ROM_DS_Empi), intent(inout) :: ds_empi
-    integer, intent(in) :: i_mode
+    integer(kind=8), intent(in) :: i_mode
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -61,7 +61,7 @@ subroutine romSaveBaseStableIFS(l_ortho_base, ds_multipara, ds_algoGreedy, ds_em
     real(kind=8), pointer :: vr_base_3(:) => null()
     real(kind=8), pointer :: vr_syst_solu(:) => null()
     character(len=1)  :: syst_type
-    integer :: i_equa, nb_equa, nume_pres, nume_phi
+    integer(kind=8) :: i_equa, nb_equa, nume_pres, nume_phi
     type(ROM_DS_Field) :: field
     type(ROM_DS_Solve) :: ds_solve
 !

@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2019 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -22,17 +22,17 @@ interface
     subroutine vpmpi(option, eigsol, icom1_, icom2_, lcomod_,&
                      mpicou_, mpicow_, nbvecg_, nfreqg_, rangl_,&
                      omemax_, omemin_, vpinf_, vpmax_)
-        integer, intent(in) :: option
+        integer(kind=8), intent(in) :: option
         character(len=19), optional, intent(in) :: eigsol
 !!
-        integer, optional, intent(out) :: icom1_
-        integer, optional, intent(out) :: icom2_
+        integer(kind=8), optional, intent(out) :: icom1_
+        integer(kind=8), optional, intent(out) :: icom2_
         aster_logical, optional, intent(inout) :: lcomod_
         mpi_int, optional, intent(inout) :: mpicou_
         mpi_int, optional, intent(inout) :: mpicow_
-        integer, optional, intent(out) :: nbvecg_
-        integer, optional, intent(out) :: nfreqg_
-        integer, optional, intent(inout) :: rangl_
+        integer(kind=8), optional, intent(out) :: nbvecg_
+        integer(kind=8), optional, intent(out) :: nfreqg_
+        integer(kind=8), optional, intent(inout) :: rangl_
         real(kind=8), optional, intent(inout) :: omemax_
         real(kind=8), optional, intent(inout) :: omemin_
         real(kind=8), optional, intent(inout) :: vpinf_

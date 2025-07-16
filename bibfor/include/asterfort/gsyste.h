@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -20,8 +20,8 @@
 !
 interface
     subroutine gsyste(matr, nchthe, nnoff, gthi, gi)
-        integer :: nnoff
-        integer :: nchthe
+        integer(kind=8) :: nnoff
+        integer(kind=8) :: nchthe
         character(len=24) :: matr
         real(kind=8) :: gthi(nnoff)
         real(kind=8) :: gi(nchthe)

@@ -56,10 +56,10 @@ contains
 !   ------------------------------------------------------------------------------------------------
 ! ----- Parameters
         character(len=16), intent(in) :: metaType
-        integer, intent(in) :: jvPhaseIn
+        integer(kind=8), intent(in) :: jvPhaseIn
         real(kind=8), intent(out) :: phase_tot
 ! ----- Local
-        integer :: iPhase
+        integer(kind=8) :: iPhase
 !   ------------------------------------------------------------------------------------------------
 !
         phase_tot = 0.d0
@@ -93,7 +93,7 @@ contains
     subroutine metaInitSteelCheckGrainSize(nbPhase, jvPhaseIn)
 !   ------------------------------------------------------------------------------------------------
 ! ----- Parameters
-        integer, intent(in) :: nbPhase, jvPhaseIn
+        integer(kind=8), intent(in) :: nbPhase, jvPhaseIn
 !   ------------------------------------------------------------------------------------------------
 !
         if (zr(jvPhaseIn-1+nbPhase+SIZE_GRAIN) .eq. r8vide() .or. &
@@ -114,7 +114,7 @@ contains
 !   ------------------------------------------------------------------------------------------------
 ! ----- Parameters
         character(len=16), intent(in) :: metaType
-        integer, intent(in) :: jvPhaseIn
+        integer(kind=8), intent(in) :: jvPhaseIn
         real(kind=8), intent(in) :: phase_tot
         real(kind=8), intent(out) :: phase_ucold
 ! ----- Local
@@ -152,13 +152,13 @@ contains
     subroutine metaInitSteelGetMartensite(jvMater, ms0)
 !   ------------------------------------------------------------------------------------------------
 ! ----- Parameters
-        integer, intent(in) :: jvMater
+        integer(kind=8), intent(in) :: jvMater
         real(kind=8), intent(out) :: ms0
 ! ----- Local
-        integer, parameter :: kpg = 1, spt = 1
+        integer(kind=8), parameter :: kpg = 1, spt = 1
         character(len=8), parameter :: fami = 'FPG1', poum = '+'
         character(len=24), parameter :: paraName = "MS0"
-        integer :: codret(1)
+        integer(kind=8) :: codret(1)
         real(kind=8) :: paraVale(1)
 !   ------------------------------------------------------------------------------------------------
 !
@@ -183,12 +183,12 @@ contains
 !   ------------------------------------------------------------------------------------------------
 ! ----- Parameters
         character(len=16), intent(in) :: metaType
-        integer, intent(in) :: nbPhase, nbNode, nbVari
-        integer, intent(in) :: nbNodeMaxi, nbVariSteel
-        integer, intent(in) :: jvTemp, jvPhaseIn, jvPhaseOut
+        integer(kind=8), intent(in) :: nbPhase, nbNode, nbVari
+        integer(kind=8), intent(in) :: nbNodeMaxi, nbVariSteel
+        integer(kind=8), intent(in) :: jvTemp, jvPhaseIn, jvPhaseOut
         real(kind=8), intent(in) :: ms0, phase_ucold
 ! ----- Local
-        integer :: iNode, iVari, iPhase
+        integer(kind=8) :: iNode, iVari, iPhase
         real(kind=8) :: metaSteel(nbNodeMaxi*nbVariSteel), temp0
 !   ------------------------------------------------------------------------------------------------
 !
@@ -241,10 +241,10 @@ contains
 !   ------------------------------------------------------------------------------------------------
 ! ----- Parameters
         character(len=16), intent(in) :: metaType
-        integer, intent(in) :: jvPhaseIn
+        integer(kind=8), intent(in) :: jvPhaseIn
 ! ----- Local
-        integer, parameter :: sizeFieldMaxi = 9
-        integer :: iVari, fieldSize
+        integer(kind=8), parameter :: sizeFieldMaxi = 9
+        integer(kind=8) :: iVari, fieldSize
 !   ------------------------------------------------------------------------------------------------
 !
         fieldSize = 0
@@ -275,14 +275,14 @@ contains
     subroutine metaSteelGetParameters(jvMaterCode, metaSteelPara)
 !   ------------------------------------------------------------------------------------------------
 ! ----- Parameters
-        integer, intent(in) :: jvMaterCode
+        integer(kind=8), intent(in) :: jvMaterCode
         type(META_SteelParameters), intent(inout) :: metaSteelPara
 ! ----- Local
-        integer, parameter :: kpg = 1, spt = 1
+        integer(kind=8), parameter :: kpg = 1, spt = 1
         character(len=8), parameter :: fami = 'FPG1', poum = '+'
-        integer, parameter :: nbParaSteel = 7
+        integer(kind=8), parameter :: nbParaSteel = 7
         real(kind=8) :: paraSteelVale(nbParaSteel)
-        integer :: codretSteel(nbParaSteel)
+        integer(kind=8) :: codretSteel(nbParaSteel)
         character(len=16), parameter :: paraSteelName(nbParaSteel) = (/'AR3   ', &
                                                                        'ALPHA ', &
                                                                        'MS0   ', &
@@ -290,9 +290,9 @@ contains
                                                                        'AC3   ', &
                                                                        'TAUX_1', &
                                                                        'TAUX_3'/)
-        integer, parameter :: nbParaAuste = 4
+        integer(kind=8), parameter :: nbParaAuste = 4
         real(kind=8) :: paraAusteVale(nbParaAuste)
-        integer :: codretAuste(nbParaAuste)
+        integer(kind=8) :: codretAuste(nbParaAuste)
         character(len=16), parameter :: paraAusteName(nbParaAuste) = (/'LAMBDA0', &
                                                                        'QSR_K  ', &
                                                                        'D10    ', &
@@ -349,14 +349,14 @@ contains
     subroutine metaSteelTemperGetParameters(jvMaterCode, metaSteelPara)
 !   ------------------------------------------------------------------------------------------------
 ! ----- Parameters
-        integer, intent(in) :: jvMaterCode
+        integer(kind=8), intent(in) :: jvMaterCode
         type(META_SteelParameters), intent(inout) :: metaSteelPara
 ! ----- Local
-        integer, parameter :: kpg = 1, spt = 1
+        integer(kind=8), parameter :: kpg = 1, spt = 1
         character(len=8), parameter :: fami = 'FPG1', poum = '+'
-        integer, parameter :: nbParaTemper = 6
+        integer(kind=8), parameter :: nbParaTemper = 6
         real(kind=8) :: paraTemperVale(nbParaTemper)
-        integer :: codretTemper(nbParaTemper)
+        integer(kind=8) :: codretTemper(nbParaTemper)
         character(len=16), parameter :: paraTemperName(nbParaTemper) = (/'BAINITE_B    ', &
                                                                          'BAINITE_N    ', &
                                                                          'MARTENSITE_B ', &
@@ -396,15 +396,15 @@ contains
     subroutine metaSteelTRCGetParameters(jvMaterCode, metaSteelPara)
 !   ------------------------------------------------------------------------------------------------
 ! ----- Parameters
-        integer, intent(in) :: jvMaterCode
+        integer(kind=8), intent(in) :: jvMaterCode
         type(META_SteelParameters), intent(inout) :: metaSteelPara
 ! ----- Local
         real(kind=8), parameter :: toleTemp = 10.
-        integer :: jvPftrc
-        integer :: nbcb1, nbcb2, nblexp
-        integer :: codret, nbTrc, nbHist, nbExp, iHist, iExp
-        integer :: jftrc, jtrc
-        integer :: iadexp, iadckm, iadtrc, shift
+        integer(kind=8) :: jvPftrc
+        integer(kind=8) :: nbcb1, nbcb2, nblexp
+        integer(kind=8) :: codret, nbTrc, nbHist, nbExp, iHist, iExp
+        integer(kind=8) :: jftrc, jtrc
+        integer(kind=8) :: iadexp, iadckm, iadtrc, shift
         real(kind=8) :: tempAR3FromMate, tempAR3FromTRC
         real(kind=8) :: tempPrev, tempCurr
         aster_logical :: lCooling
@@ -476,23 +476,23 @@ contains
     subroutine metaHardnessGetParameters(jvMaterCode, metaType, metaHardnessPara)
 !   ------------------------------------------------------------------------------------------------
 ! ----- Parameters
-        integer, intent(in) :: jvMaterCode
+        integer(kind=8), intent(in) :: jvMaterCode
         character(len=16), intent(in) :: metaType
         type(META_HardnessParameters), intent(inout) :: metaHardnessPara
 ! ----- Local
-        integer, parameter :: kpg = 1, spt = 1
+        integer(kind=8), parameter :: kpg = 1, spt = 1
         character(len=8), parameter :: fami = 'FPG1', poum = '+'
-        integer, parameter :: nbParaHard = PSTEEL_NB
+        integer(kind=8), parameter :: nbParaHard = PSTEEL_NB
         real(kind=8) :: paraHardVale(nbParaHard)
-        integer :: codretHard(nbParaHard)
+        integer(kind=8) :: codretHard(nbParaHard)
         character(len=16), parameter :: paraHardName(nbParaHard) = (/'F1_DURT', &
                                                                      'F2_DURT', &
                                                                      'F3_DURT', &
                                                                      'F4_DURT', &
                                                                      'C_DURT '/)
-        integer, parameter :: nbParaHardTemp = PRSTEEL_NB
+        integer(kind=8), parameter :: nbParaHardTemp = PRSTEEL_NB
         real(kind=8) :: paraHardTempVale(nbParaHardTemp)
-        integer :: codretHardTemp(nbParaHardTemp)
+        integer(kind=8) :: codretHardTemp(nbParaHardTemp)
         character(len=16), parameter :: paraHardTempName(nbParaHardTemp) = (/'F1_DURT       ', &
                                                                              'F2_DURT       ', &
                                                                              'F3_DURT       ', &
@@ -532,16 +532,16 @@ contains
                                 metaPrev, metaCurr)
 !   ------------------------------------------------------------------------------------------------
 ! ----- Parameters
-        integer, intent(in) :: nbStep
+        integer(kind=8), intent(in) :: nbStep
         real(kind=8), intent(in) :: temp0, temp1, temp2
         real(kind=8), intent(in) :: deltaTime01, deltaTime12
-        integer, intent(in) :: nbVari, nbPhase, nbHist
+        integer(kind=8), intent(in) :: nbVari, nbPhase, nbHist
         type(META_SteelParameters), intent(in) :: metaSteelPara
         real(kind=8), intent(in) :: metaPrev(nbVari)
         real(kind=8), intent(out) :: metaCurr(nbVari)
 ! ----- Local
         real(kind=8) :: tempStep, metaDumm(9), deltaTimeStep, tPoint
-        integer :: iStep
+        integer(kind=8) :: iStep
 !   ------------------------------------------------------------------------------------------------
 !
         ASSERT(nbVari .eq. 9)
@@ -584,7 +584,7 @@ contains
                                 dPrev, dCurr, zAustCurr)
 !   ------------------------------------------------------------------------------------------------
 ! ----- Parameters
-        integer, intent(in) :: nbStep
+        integer(kind=8), intent(in) :: nbStep
         real(kind=8), intent(in) :: temp0, temp1, temp2
         real(kind=8), intent(in) :: deltaTime01, deltaTime12
         real(kind=8), intent(inout) :: zAustPrev
@@ -594,7 +594,7 @@ contains
 ! ----- Local
         real(kind=8) :: ti1, ti2, deltaTimeStep, tPoint
         real(kind=8) :: zeq1, zeq2, taux, coef_phase, dStep
-        integer :: iStep
+        integer(kind=8) :: iStep
         real(kind=8), parameter :: un = 1.d0, zero = 0.d0
         real(kind=8), parameter :: epsi = 1.d-10
 !   ------------------------------------------------------------------------------------------------
@@ -663,10 +663,10 @@ contains
     subroutine metaSteelCheckPhases(nbVari, metaCurr)
 !   ------------------------------------------------------------------------------------------------
 ! ----- Parameters
-        integer, intent(in) :: nbVari
+        integer(kind=8), intent(in) :: nbVari
         real(kind=8), intent(in) :: metaCurr(nbVari)
 ! ----- Local
-        integer :: iPhase
+        integer(kind=8) :: iPhase
 !   ------------------------------------------------------------------------------------------------
 !
         ASSERT(nbVari .ge. PSTEEL_NB)

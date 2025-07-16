@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -35,9 +35,9 @@ subroutine renfort3d(istep, nbrenf, numr, epstf33, vecr, &
 !
 !     calcul de la deformation et de la contrainte axiale dans un renfort
 !
-    integer :: i, j
+    integer(kind=8) :: i, j
 !
-    integer :: istep, nbrenf, numr
+    integer(kind=8) :: istep, nbrenf, numr
     aster_logical :: plast_seule
 !     def finale, orientation
     real(kind=8) :: epstf33(3, 3), vecr(nbrenf, 3), epspmf33(3, 3)
@@ -50,9 +50,9 @@ subroutine renfort3d(istep, nbrenf, numr, epstf33, vecr, &
     real(kind=8) :: eprm0, eprmf, ttaref, rhor, mu00, eprk0, eprkf, tokr, kr, k
     aster_logical :: fl3d, errr
     real(kind=8) :: xnr, xmuthr
-    integer :: ngf, errgauss
+    integer(kind=8) :: ngf, errgauss
     real(kind=8) :: ann(ngf, ngf+1), bn(ngf), xn(ngf), spref
-    integer :: ipzero(ngf)
+    integer(kind=8) :: ipzero(ngf)
 !
 !     variables locales
     real(kind=8) :: epsrf3(3), gamr3(3)

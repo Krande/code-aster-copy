@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -25,7 +25,7 @@ subroutine hujrmo(mater, sig, vin, riso)
 !
 !   OUT RISO   : FACTEUR DE MOBILISATION ACTUEL DU MECANISME ISOTROPE
 !   ------------------------------------------------------------------
-    integer :: ndt, ndi, i
+    integer(kind=8) :: ndt, ndi, i
     real(kind=8) :: mater(22, 2), riso, i1, sig(6), vin(*)
     real(kind=8) :: d, pco, beta, pc, epsvpm
     real(kind=8) :: d13, zero, aexp, exptol

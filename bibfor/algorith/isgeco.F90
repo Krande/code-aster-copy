@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -38,11 +38,11 @@ subroutine isgeco(icod1, icod2, ndim, iopt, icod)
 !-----------------------------------------------------------------------
 #include "asterfort/iscode.h"
 #include "asterfort/isdeco.h"
-    integer :: i, ik, iopt, nbcpmx, ndim
+    integer(kind=8) :: i, ik, iopt, nbcpmx, ndim
 !-----------------------------------------------------------------------
     parameter(nbcpmx=300)
-    integer :: icod1(1), icod2(1), icod(1)
-    integer :: idec1(nbcpmx), idec2(nbcpmx), idec(nbcpmx)
+    integer(kind=8) :: icod1(1), icod2(1), icod(1)
+    integer(kind=8) :: idec1(nbcpmx), idec2(nbcpmx), idec(nbcpmx)
 !
 !-----------------------------------------------------------------------
 !

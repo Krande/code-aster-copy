@@ -27,7 +27,7 @@ interface
         character(len=8), intent(in) :: carael
         character(len=24), intent(in) :: mate
         character(len=*), intent(in) :: ligrelz
-        integer, intent(in) :: nh
+        integer(kind=8), intent(in) :: nh
         character(len=*), intent(in) :: comporZ
         character(len=*), intent(in) :: sigmaz, sigmaPrev
         character(len=*), intent(in) :: varicomz

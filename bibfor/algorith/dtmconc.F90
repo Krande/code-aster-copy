@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -28,10 +28,7 @@ subroutine dtmconc(sd_dtm_)
 #include "asterfort/assert.h"
 #include "asterfort/codent.h"
 #include "asterfort/dtmget.h"
-#include "asterfort/jacopo.h"
 #include "asterfort/jedema.h"
-#include "asterfort/jedetr.h"
-#include "asterfort/jedetc.h"
 #include "asterfort/jelibe.h"
 #include "asterfort/jelira.h"
 #include "asterfort/jemarq.h"
@@ -44,19 +41,19 @@ subroutine dtmconc(sd_dtm_)
     character(len=*), intent(in) :: sd_dtm_
 !
 !   -0.2- Local variables
-    integer           :: iarch_sd, i_bloc, nbmode, nbnoli, nbvint, l_disc, l_ordr, i_disc
-    integer           :: ordr, ordr_prec
+    integer(kind=8)           :: iarch_sd, i_bloc, nbmode, nbnoli, nbvint, l_disc, l_ordr, i_disc
+    integer(kind=8)           :: ordr, ordr_prec
     real(kind=8)      :: disc, disc_prec
     character(len=7)  :: intk7
     character(len=8)  :: sd_dtm
     character(len=8)  :: nomres, sd_nl
     character(len=16) :: nomres16
-    integer, pointer  :: isto(:) => null()
-    integer, pointer :: vindx(:) => null()
+    integer(kind=8), pointer  :: isto(:) => null()
+    integer(kind=8), pointer :: vindx(:) => null()
     real(kind=8), pointer  :: v_bloc(:) => null()
     real(kind=8), pointer  :: v_disc(:) => null()
-    integer, pointer  :: v_blo2(:) => null()
-    integer, pointer  :: v_ordr(:) => null()
+    integer(kind=8), pointer  :: v_blo2(:) => null()
+    integer(kind=8), pointer  :: v_ordr(:) => null()
 !
 !   0 - Initializations
     call jemarq()

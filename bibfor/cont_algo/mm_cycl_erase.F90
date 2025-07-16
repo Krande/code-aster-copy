@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -32,8 +32,8 @@ subroutine mm_cycl_erase(ds_contact, cycl_type, point_curr)
 ! person_in_charge: ayaovi-dzifa.kudawoo at edf.fr
 !
     type(NL_DS_Contact), intent(in) :: ds_contact
-    integer, intent(in) :: cycl_type
-    integer, intent(in) :: point_curr
+    integer(kind=8), intent(in) :: cycl_type
+    integer(kind=8), intent(in) :: point_curr
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -52,13 +52,13 @@ subroutine mm_cycl_erase(ds_contact, cycl_type, point_curr)
 ! --------------------------------------------------------------------------------------------------
 !
     character(len=24) :: sdcont_cyclis
-    integer, pointer :: p_sdcont_cyclis(:) => null()
+    integer(kind=8), pointer :: p_sdcont_cyclis(:) => null()
     character(len=24) :: sdcont_cycnbr
-    integer, pointer :: p_sdcont_cycnbr(:) => null()
+    integer(kind=8), pointer :: p_sdcont_cycnbr(:) => null()
     character(len=24) :: sdcont_cyceta
-    integer, pointer :: p_sdcont_cyceta(:) => null()
-    integer :: nt_cont_poin, i_cont_poin
-    integer :: cycl_index
+    integer(kind=8), pointer :: p_sdcont_cyceta(:) => null()
+    integer(kind=8) :: nt_cont_poin, i_cont_poin
+    integer(kind=8) :: cycl_index
 !
 ! --------------------------------------------------------------------------------------------------
 !

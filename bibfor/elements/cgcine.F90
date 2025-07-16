@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -23,7 +23,7 @@ subroutine cgcine(ndim, nno1, vff1, wref, dffr1, &
     implicit none
 #include "asterfort/dfdm1b.h"
 #include "asterfort/r8inir.h"
-    integer :: nno1, ndim
+    integer(kind=8) :: nno1, ndim
     real(kind=8) :: wref, vff1(nno1), geom(ndim, nno1), tang(3, 3)
     real(kind=8) :: dffr1(nno1), wg, dfdx(3), b(4, nno1), l(nno1)
 !-----------------------------------------------------------------------
@@ -42,7 +42,7 @@ subroutine cgcine(ndim, nno1, vff1, wref, dffr1, &
 ! OUT B      MATRICE DE PASSAGE UNODAL -> U GAINE TANGENTIEL ET U CABLE
 ! OUT NORNOR RAYON DE COURBURE
 !-----------------------------------------------------------------------
-    integer :: n, i
+    integer(kind=8) :: n, i
     real(kind=8) :: tanloc(3), norloc(3)
     real(kind=8) :: norm, nornor
 !-----------------------------------------------------------------------

@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2018 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -21,12 +21,12 @@
 interface 
        subroutine gauss3d(n,a,x,b,ngf,&
               err1,ipzero)
-        integer :: n
+        integer(kind=8) :: n
         real(kind=8) :: a(ngf,ngf+1)
         real(kind=8) :: x(ngf)
         real(kind=8) :: b(ngf)
-        integer :: ngf
-        integer :: err1
-        integer :: ipzero(ngf)
+        integer(kind=8) :: ngf
+        integer(kind=8) :: err1
+        integer(kind=8) :: ipzero(ngf)
     end subroutine gauss3d
 end interface

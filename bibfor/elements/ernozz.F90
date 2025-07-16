@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -22,7 +22,7 @@ subroutine ernozz(modele, sigma, mateco, signo, chvarc, &
     implicit none
 #include "asterfort/erglob.h"
 #include "asterfort/zzloca.h"
-    integer :: iordr
+    integer(kind=8) :: iordr
     character(len=*) :: modele, sigma, mateco, signo, option, ligrel
     character(len=*) :: champ, resuco
     character(len=19) :: resuc1, chvarc

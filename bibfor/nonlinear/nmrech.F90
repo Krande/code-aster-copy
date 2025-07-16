@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -31,8 +31,8 @@ subroutine nmrech(fm, f, fopt, fcvg, rhomin, &
     real(kind=8) :: rhom, rho, rhoopt
     real(kind=8) :: fm, f, fopt, fcvg
     aster_logical :: stite
-    integer :: ldcopt, ldccvg
-    integer :: opt, act
+    integer(kind=8) :: ldcopt, ldccvg
+    integer(kind=8) :: opt, act
 !
 ! ----------------------------------------------------------------------
 !

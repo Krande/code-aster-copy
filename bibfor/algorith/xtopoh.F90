@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -56,7 +56,7 @@ subroutine xtopoh(noma, modele)
 !
 !  IN  MODELE : NOM DE L'OBJET MODELE
 !
-    integer :: nbout, nbin
+    integer(kind=8) :: nbout, nbin
     parameter(nbout=3, nbin=8)
     character(len=8) :: lpaout(nbout), lpain(nbin), licmp(2)
     character(len=19) :: lchout(nbout), lchin(nbin)
@@ -64,11 +64,11 @@ subroutine xtopoh(noma, modele)
     character(len=19) :: cnseto, heavto, loncha, heavtn, ligrel
     character(len=19) ::  heavts, heavtf, heavfa, longco, lnno, fisno, fissco
     aster_logical :: debug
-    integer :: ifm, niv, ifmdbg, nivdbg, ima, nbma
-    integer :: jcesd, jcesl, iad
+    integer(kind=8) :: ifm, niv, ifmdbg, nivdbg, ima, nbma
+    integer(kind=8) :: jcesd, jcesl, iad
     character(len=16) :: option
-    integer, pointer :: nbsp(:) => null()
-    integer, pointer :: cesv(:) => null()
+    integer(kind=8), pointer :: nbsp(:) => null()
+    integer(kind=8), pointer :: cesv(:) => null()
 !
 ! ----------------------------------------------------------------------
 !

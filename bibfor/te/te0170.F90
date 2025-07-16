@@ -50,21 +50,21 @@ subroutine te0170(option, nomte)
 !
 ! --------------------------------------------------------------------------------------------------
 !
-    integer :: i, j, k, l
-    integer :: n1, n2
-    integer :: nn, nno2, nt1, nt2
-    integer :: ipg, ij, ik, ijkl
-    integer :: jvDisp, jvDispM, jvDispP
-    integer :: jv_geom, jv_mate
-    integer :: jvVect, jv_codret, jv_matr
+    integer(kind=8) :: i, j, k, l
+    integer(kind=8) :: n1, n2
+    integer(kind=8) :: nn, nno2, nt1, nt2
+    integer(kind=8) :: ipg, ij, ik, ijkl
+    integer(kind=8) :: jvDisp, jvDispM, jvDispP
+    integer(kind=8) :: jv_geom, jv_mate
+    integer(kind=8) :: jvVect, jv_codret, jv_matr
     character(len=16) :: rela_comp
     real(kind=8) :: a(2, 2, 27, 27), mmat(27, 27)
     real(kind=8) :: b(54, 54), e(27, 27), ul(54), us(27), c(1485), d(378)
     real(kind=8) :: dfdx(27), dfdy(27), dfdz(27)
     real(kind=8) :: poids, rho, celer
-    integer :: ipoids, ivf, idfde
-    integer :: nno, npg
-    integer :: j_mater, iret, codret
+    integer(kind=8) :: ipoids, ivf, idfde
+    integer(kind=8) :: nno, npg
+    integer(kind=8) :: j_mater, iret, codret
     character(len=16), pointer :: compor(:) => null()
     character(len=16) :: FEForm
     aster_logical :: lVect, lMatr, lVari, lSigm

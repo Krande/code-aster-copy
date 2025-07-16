@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -46,13 +46,13 @@ subroutine te0257(option, nomte)
     real(kind=8) :: a(3, 3, 3, 3), mmat(9, 9)
     real(kind=8) :: nx, ny, norm(2)
     real(kind=8) :: poids, rho
-    integer :: jv_geom, jv_mate, jv_matr
-    integer :: ipoids, ivf, idfde
-    integer :: nno, npg, ndim
-    integer :: ij, ik, ijkl
-    integer :: ino1, ino2, k, l, ipg, ind1, ind2, idim
-    integer :: ldec
-    integer :: j_mater, iret
+    integer(kind=8) :: jv_geom, jv_mate, jv_matr
+    integer(kind=8) :: ipoids, ivf, idfde
+    integer(kind=8) :: nno, npg, ndim
+    integer(kind=8) :: ij, ik, ijkl
+    integer(kind=8) :: ino1, ino2, k, l, ipg, ind1, ind2, idim
+    integer(kind=8) :: ldec
+    integer(kind=8) :: j_mater, iret
     character(len=16) :: FEForm
     aster_logical :: l_axis
     real(kind=8) :: r

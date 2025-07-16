@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -20,10 +20,10 @@ subroutine eclaco(ipg, mxnbn2, connx, nbno2, i1, &
                   i2, i3, i4, i5, i6, &
                   i7, i8)
     implicit none
-    integer :: mxnbn2
-    integer :: connx(mxnbn2, *)
-    integer :: nbno2(*), work(8), k
-    integer :: ipg, i1, i2, i3, i4, i5, i6, i7, i8
+    integer(kind=8) :: mxnbn2
+    integer(kind=8) :: connx(mxnbn2, *)
+    integer(kind=8) :: nbno2(*), work(8), k
+    integer(kind=8) :: ipg, i1, i2, i3, i4, i5, i6, i7, i8
 !
     work(1) = i1
     work(2) = i2

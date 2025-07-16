@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -22,12 +22,12 @@ interface
     subroutine zzcalb(igr, iel, npg, nno, wi,&
                       desc, sig, x, y, xmin,&
                       xmax, ymin, ymax, f)
-        integer :: igr
-        integer :: iel
-        integer :: npg
-        integer :: nno
+        integer(kind=8) :: igr
+        integer(kind=8) :: iel
+        integer(kind=8) :: npg
+        integer(kind=8) :: nno
         real(kind=8) :: wi(1)
-        integer :: desc(1)
+        integer(kind=8) :: desc(1)
         real(kind=8) :: sig(1)
         real(kind=8) :: x(1)
         real(kind=8) :: y(1)

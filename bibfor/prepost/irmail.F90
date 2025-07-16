@@ -57,7 +57,7 @@ subroutine irmail(form, ifi, versio, noma, lmod, &
 #include "asterfort/int_to_char8.h"
 !
 !---------------- ARGUMENTS --------------------------------------------
-    integer             :: versio, infmai
+    integer(kind=8)             :: versio, infmai
     aster_logical       :: lmod
     character(len=8)    :: noma, nomo, modele
     character(len=16)   :: formar
@@ -66,14 +66,14 @@ subroutine irmail(form, ifi, versio, noma, lmod, &
     character(len=8), optional :: nosdfu
 !---------------- VARIABLES LOCALES ------------------------------------
 !
-    integer :: ifi, igm, ign
-    integer :: ima, ino, iret
-    integer :: jnogm, jnogn
-    integer :: jnomai, jnonoe, jpoin
-    integer :: jtitr, jtypl
+    integer(kind=8) :: ifi, igm, ign
+    integer(kind=8) :: ima, ino, iret
+    integer(kind=8) :: jnogm, jnogn
+    integer(kind=8) :: jnomai, jnonoe, jpoin
+    integer(kind=8) :: jtitr, jtypl
 !
-    integer :: lon1, maxnod, nbgrm, nbgrn
-    integer :: nbmai, nbnoe, nbtitr, ndim, repi
+    integer(kind=8) :: lon1, maxnod, nbgrm, nbgrn
+    integer(kind=8) :: nbmai, nbnoe, nbtitr, ndim, repi
 !
     aster_logical :: lmasu, lgmsh
 !
@@ -82,12 +82,12 @@ subroutine irmail(form, ifi, versio, noma, lmod, &
     character(len=11) :: nojgrp
     character(len=80)       :: titmai
     real(kind=8), pointer   :: vale(:) => null()
-    integer, pointer        :: connex(:) => null()
-    integer, pointer        :: codegra(:) => null()
-    integer, pointer        :: codephd(:) => null()
-    integer, pointer        :: codephy(:) => null()
-    integer, pointer        :: permuta(:) => null()
-    integer, pointer        :: typmail(:) => null()
+    integer(kind=8), pointer        :: connex(:) => null()
+    integer(kind=8), pointer        :: codegra(:) => null()
+    integer(kind=8), pointer        :: codephd(:) => null()
+    integer(kind=8), pointer        :: codephy(:) => null()
+    integer(kind=8), pointer        :: permuta(:) => null()
+    integer(kind=8), pointer        :: typmail(:) => null()
     aster_logical :: lfu
 !     ------------------------------------------------------------------
 !

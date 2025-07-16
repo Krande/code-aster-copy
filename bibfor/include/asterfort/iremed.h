@@ -1,10 +1,10 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org 
 ! This file is part of code_aster.
 !
-! code_aster is free software: you can redistribute it and/or modify
-! it under the terms of the GNU General Public License as published by
-! the Free Software Foundation, either version 3 of the License, or
+! code_aster is free software: you can redistribute it and/or modify 
+! it under the terms of the GNU General Public License as published by 
+! the Free Software Foundation, either version 3 of the License, or 
 ! (at your option) any later version.
 !
 ! code_aster is distributed in the hope that it will be useful,
@@ -26,26 +26,26 @@ interface
                       cellUserNb , cellUserNume ,&
                       nodeUserNb , nodeUserNume ,&
                       cplxFormat , lVariName    , caraElem,&
-                      lfichUniq)
-        integer, intent(in) :: fileUnit
+                      lfichUniq, lNomCas)
+        integer(kind=8), intent(in) :: fileUnit
         character(len=19), intent(in) :: dsNameZ
         aster_logical, intent(in) :: lResu
-        integer, intent(in) :: fieldListNb
+        integer(kind=8), intent(in) :: fieldListNb
         character(len=16), pointer :: fieldListType(:)
         character(len=80), pointer :: fieldMedListType(:)
-        integer, intent(in) :: storeListNb
-        integer, pointer :: storeListIndx(:)
-        integer, intent(in) :: paraListNb
+        integer(kind=8), intent(in) :: storeListNb
+        integer(kind=8), pointer :: storeListIndx(:)
+        integer(kind=8), intent(in) :: paraListNb
         character(len=16), pointer :: paraListName(:)
-        integer, intent(in) :: cmpListNb
+        integer(kind=8), intent(in) :: cmpListNb
         character(len=8), pointer :: cmpListName(:)
-        integer, intent(in) :: cellUserNb
-        integer, pointer :: cellUserNume(:)
-        integer, intent(in) :: nodeUserNb
-        integer, pointer :: nodeUserNume(:)
+        integer(kind=8), intent(in) :: cellUserNb
+        integer(kind=8), pointer :: cellUserNume(:)
+        integer(kind=8), intent(in) :: nodeUserNb
+        integer(kind=8), pointer :: nodeUserNume(:)
         character(len=*), intent(in) ::  cplxFormat
         aster_logical, intent(in) :: lVariName
         character(len=8), intent(in) :: caraElem
-        aster_logical, intent(in) :: lfichUniq
+        aster_logical, intent(in) :: lfichUniq, lNomCas
     end subroutine iremed
 end interface

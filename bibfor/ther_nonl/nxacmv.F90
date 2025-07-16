@@ -35,7 +35,6 @@ subroutine nxacmv(model, materField, mateco, caraElem, listLoad, nume_dof, &
 #include "asterfort/ascavc.h"
 #include "asterfort/ascova.h"
 #include "asterfort/asmatr.h"
-#include "asterfort/assert.h"
 #include "asterfort/detrsd.h"
 #include "asterfort/jedema.h"
 #include "asterfort/jedetr.h"
@@ -88,8 +87,8 @@ subroutine nxacmv(model, materField, mateco, caraElem, listLoad, nume_dof, &
 !
 ! --------------------------------------------------------------------------------------------------
 !
-    integer :: ibid, ierr, iret
-    integer :: jtn, i_vect
+    integer(kind=8) :: ibid, ierr, iret
+    integer(kind=8) :: jtn, i_vect
     character(len=2) :: codret
     real(kind=8) :: timeCurr
     character(len=8), parameter :: nomcmp(6) = (/'INST    ', 'DELTAT  ', &
@@ -111,8 +110,8 @@ subroutine nxacmv(model, materField, mateco, caraElem, listLoad, nume_dof, &
     real(kind=8) :: timePara(6)
     character(len=24) :: loadNameJv, loadInfoJv, loadFuncJv
     character(len=24), pointer :: v_resu_elem(:) => null()
-    integer, parameter :: nb_max = 9
-    integer :: nb_vect, nb_matr
+    integer(kind=8), parameter :: nb_max = 9
+    integer(kind=8) :: nb_vect, nb_matr
     real(kind=8) :: vect_coef(nb_max)
     character(len=19) :: vect_name(nb_max), matr_name(nb_max)
 !

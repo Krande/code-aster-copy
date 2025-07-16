@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -69,9 +69,9 @@ subroutine erhms2(ino, nbs, theta, jac, &
 #include "asterf_types.h"
 #include "jeveux.h"
 #include "asterfort/indiis.h"
-    integer :: ino, nbs
-    integer :: ivois, nbcmp, adsip
-    integer :: tbref1(12), tbref2(12)
+    integer(kind=8) :: ino, nbs
+    integer(kind=8) :: ivois, nbcmp, adsip
+    integer(kind=8) :: tbref1(12), tbref2(12)
     character(len=8) :: typmav
     real(kind=8) :: theta, jac(3), nx(3), ny(3)
     real(kind=8) :: sielnp(140), sielnm(140), tm2h1s(3)
@@ -95,11 +95,11 @@ subroutine erhms2(ino, nbs, theta, jac, &
     real(kind=8) :: intme1(3), intme2(3), inthyd(3)
     real(kind=8) :: ta1
 !
-    integer :: iarepe, jceldp, jcelvp, jceldm, jcelvm, imav, igrel, iel, iavalp, iavalm, iconx1
-    integer :: iconx2, admavp, admavm, adinov, adjnov, admnov
-    integer :: jad, jadv, ncher
-    integer :: nbnv, i, jno, mno, inov, jnov, mnov
-    integer :: iaux
+ integer(kind=8) :: iarepe, jceldp, jcelvp, jceldm, jcelvm, imav, igrel, iel, iavalp, iavalm, iconx1
+    integer(kind=8) :: iconx2, admavp, admavm, adinov, adjnov, admnov
+    integer(kind=8) :: jad, jadv, ncher
+    integer(kind=8) :: nbnv, i, jno, mno, inov, jnov, mnov
+    integer(kind=8) :: iaux
     character(len=2) :: formv, noeuv
 ! =====================================================================
 ! 1.  RECUPERATION SUR LA MAILLE COURANTE AUX NOEUDS INO ET JNO DE :

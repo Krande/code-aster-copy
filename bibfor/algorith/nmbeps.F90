@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -34,7 +34,7 @@ subroutine nmbeps(axi, r, vff, dff, b)
 ! ----------------------------------------------------------------------
     real(kind=8), parameter:: r2 = sqrt(2.d0)/2
 ! ----------------------------------------------------------------------
-    integer:: ndim, nno, ndimsi
+    integer(kind=8):: ndim, nno, ndimsi
 ! ----------------------------------------------------------------------
 
     ! Initialisation

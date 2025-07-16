@@ -55,9 +55,9 @@ subroutine romAlgoNLInit(phenom, model, mesh, numeDof, resultName, paraAlgo, lLi
 !
 ! --------------------------------------------------------------------------------------------------
 !
-    integer :: ifm, niv
+    integer(kind=8) :: ifm, niv
     aster_logical :: l_hrom, l_hrom_corref
-    integer :: nbMode
+    integer(kind=8) :: nbMode
     real(kind=8), pointer :: v_gamma(:) => null()
     type(ROM_DS_Field) :: mode
 !

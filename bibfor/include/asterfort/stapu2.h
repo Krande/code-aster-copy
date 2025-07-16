@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -25,10 +25,10 @@ interface
                       idebut, nbloc, nbval, inoe, isupp,&
                       nbinst, tmpvu, pusurn, vustub, vusob,&
                       pus, pmoye, pourpu, poupre)
-        integer :: nbinst
-        integer :: nbpair
-        integer :: nbobst
-        integer :: nbpt
+        integer(kind=8) :: nbinst
+        integer(kind=8) :: nbpair
+        integer(kind=8) :: nbobst
+        integer(kind=8) :: nbpt
         real(kind=8) :: temps(*)
         real(kind=8) :: fcho(*)
         real(kind=8) :: vgli(*)
@@ -41,11 +41,11 @@ interface
         real(kind=8) :: wk4(*)
         real(kind=8) :: wk5(*)
         real(kind=8) :: wk6(*)
-        integer :: idebut
-        integer :: nbloc
-        integer :: nbval
-        integer :: inoe
-        integer :: isupp
+        integer(kind=8) :: idebut
+        integer(kind=8) :: nbloc
+        integer(kind=8) :: nbval
+        integer(kind=8) :: inoe
+        integer(kind=8) :: isupp
         real(kind=8) :: tmpvu(*)
         real(kind=8) :: pusurn
         real(kind=8) :: vustub(nbpair, nbinst)

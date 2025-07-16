@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -32,8 +32,8 @@ interface
         character(len=*) :: basez
         character(len=*) :: cnoz
         character(len=1) :: kstop
-        integer          :: iret
-        integer,            optional :: nbz
+        integer(kind=8)          :: iret
+        integer(kind=8),            optional :: nbz
         character(len=24),  optional :: vchamz
         aster_logical,      optional :: lprofconst
         type(prolongation), optional :: prolong

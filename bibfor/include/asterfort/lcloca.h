@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -22,13 +22,13 @@ interface
     subroutine lcloca(coeft, nmat, nbcomm,&
                       nphas, sigi, vini, iphas, granb,&
                       loca, sigg)
-        integer :: nmat
+        integer(kind=8) :: nmat
         real(kind=8) :: coeft(nmat)
-        integer :: nbcomm(nmat, 3)
-        integer :: nphas
+        integer(kind=8) :: nbcomm(nmat, 3)
+        integer(kind=8) :: nphas
         real(kind=8) :: sigi(6)
         real(kind=8) :: vini(*)
-        integer :: iphas
+        integer(kind=8) :: iphas
         real(kind=8) :: granb(6)
         character(len=16) :: loca
         real(kind=8) :: sigg(6)

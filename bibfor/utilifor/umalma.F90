@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -30,9 +30,9 @@ subroutine umalma(mesh, list_grpma, nb_grpma, list_ma, nb_ma)
 !
     character(len=8), intent(in) :: mesh
     character(len=24), intent(in) :: list_grpma(*)
-    integer, intent(in) :: nb_grpma
-    integer, pointer :: list_ma(:)
-    integer, intent(out) :: nb_ma
+    integer(kind=8), intent(in) :: nb_grpma
+    integer(kind=8), pointer :: list_ma(:)
+    integer(kind=8), intent(out) :: nb_ma
 !     ------------------------------------------------------------------
 !
 !     Etablir la liste (sans doublons) des mailles d’une liste de
@@ -44,9 +44,9 @@ subroutine umalma(mesh, list_grpma, nb_grpma, list_ma, nb_ma)
 ! Out nb_ma      : nombre de mailles
 !     ------------------------------------------------------------------
 !
-    integer :: nbma, nbmatot, igr, iret, ima, jma
+    integer(kind=8) :: nbma, nbmatot, igr, iret, ima, jma
     character(len=24) :: mlggma, grpma
-    integer, pointer :: v_lma(:) => null(), v_allma(:) => null()
+    integer(kind=8), pointer :: v_lma(:) => null(), v_allma(:) => null()
     aster_logical :: l_keep
 !-----------------------------------------------------------------------
     nb_ma = 0

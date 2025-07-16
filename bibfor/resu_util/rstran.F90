@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -65,7 +65,7 @@ subroutine rstran(interp, resu, motcle, iocc, kdisc, &
 !                             = 110  : AUCUN CHAMP TROUVE
 !                             SINON  : NOOK
 !     ------------------------------------------------------------------
-    integer :: vali
+    integer(kind=8) :: vali
     real(kind=8) :: valr
     character(len=4) :: type
     character(len=8) :: k8b, crit
@@ -78,14 +78,14 @@ subroutine rstran(interp, resu, motcle, iocc, kdisc, &
 !------------------------------------------------------------------
 !
 !-----------------------------------------------------------------------
-    integer :: i, ier, ier1, iocc, iord, iret
-    integer :: ival, jdisc, jordr, jrang, l, laccr
-    integer :: ldisc, lli, lt, n, nbi, nbi2, nbdisc
-    integer :: nbtrou, nno, nto, nutrou(1)
+    integer(kind=8) :: i, ier, ier1, iocc, iord, iret
+    integer(kind=8) :: ival, jdisc, jordr, jrang, l, laccr
+    integer(kind=8) :: ldisc, lli, lt, n, nbi, nbi2, nbdisc
+    integer(kind=8) :: nbtrou, nno, nto, nutrou(1)
     real(kind=8) :: epsi, tusr, epsi2
-    integer, pointer :: nume(:) => null()
-    integer :: i_bloc, shift
-    integer, pointer :: ordr(:) => null()
+    integer(kind=8), pointer :: nume(:) => null()
+    integer(kind=8) :: i_bloc, shift
+    integer(kind=8), pointer :: ordr(:) => null()
     real(kind=8), pointer :: disc(:) => null()
     type(DynaGene) :: dyna_gene
     type(c_ptr) :: pc

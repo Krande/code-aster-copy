@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -56,11 +56,11 @@ subroutine excygl(nmresz, typsdz, mdcycz, maillz, profno)
     character(len=16) :: typsd
     character(len=19) :: profno
     character(len=24) :: indirf
-    integer :: numdia, nbsec
+    integer(kind=8) :: numdia, nbsec
 !
 !-----------------------------------------------------------------------
 !-----------------------------------------------------------------------
-    integer :: ibid, iret, nbmcal
+    integer(kind=8) :: ibid, iret, nbmcal
 !-----------------------------------------------------------------------
     data pgc/'EXCYGL'/
 !-----------------------------------------------------------------------

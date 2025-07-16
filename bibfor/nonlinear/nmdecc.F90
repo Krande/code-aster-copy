@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -35,7 +35,7 @@ subroutine nmdecc(nomlis, linfo, optdez, deltat, instam, &
     character(len=*) :: optdez
     character(len=24) :: nomlis
     character(len=4) :: typdec
-    integer :: nbrpas, retdec
+    integer(kind=8) :: nbrpas, retdec
     real(kind=8) :: instam, deltat, ratio, dtmin, deltac
     aster_logical :: linfo
 !
@@ -85,7 +85,7 @@ subroutine nmdecc(nomlis, linfo, optdez, deltat, instam, &
 !
 !
     real(kind=8) :: inst, pasdt, premie, suivan, valr(3)
-    integer :: ipas, jinst
+    integer(kind=8) :: ipas, jinst
     character(len=16) :: optdec
 !
 ! ----------------------------------------------------------------------

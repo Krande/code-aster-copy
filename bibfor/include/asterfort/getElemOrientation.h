@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2019 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -18,8 +18,8 @@
 
 interface
     subroutine getElemOrientation(ndim, nno, jv_geom, angl_naut)
-        integer, intent(in) :: ndim, nno
-        integer, intent(in) :: jv_geom
+        integer(kind=8), intent(in) :: ndim, nno
+        integer(kind=8), intent(in) :: jv_geom
         real(kind=8), intent(out) :: angl_naut(3)
     end subroutine getElemOrientation
 end interface

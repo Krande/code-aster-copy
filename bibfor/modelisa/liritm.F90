@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -45,7 +45,7 @@ subroutine liritm(ifl, icl, iv, rv, cv, &
 !       ----------------------------------------------------------------
 #include "asterfort/lirlig.h"
 #include "asterfort/lxscan.h"
-    integer :: ifl, icl, iv, ideb, deblig, ilec
+    integer(kind=8) :: ifl, icl, iv, ideb, deblig, ilec
     real(kind=8) :: rv
     character(len=*) :: cv
     character(len=80) :: lig

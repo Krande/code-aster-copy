@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -22,7 +22,7 @@ interface
     subroutine recu_cara_ma(mailla, carte, numa, cara, vale)
         character(len=8) :: mailla
         character(len=19) :: carte
-        integer :: numa
+        integer(kind=8) :: numa
         character(len=8) :: cara
         real(kind=8) :: vale
     end subroutine recu_cara_ma

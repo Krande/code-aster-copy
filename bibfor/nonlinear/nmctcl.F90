@@ -26,7 +26,6 @@ subroutine nmctcl(model, mesh, ds_contact)
 #include "asterf_types.h"
 #include "asterfort/assert.h"
 #include "asterfort/cfdisi.h"
-#include "asterfort/cfdisl.h"
 #include "asterfort/mmligr.h"
 !
     character(len=8), intent(in) :: model, mesh
@@ -46,7 +45,7 @@ subroutine nmctcl(model, mesh, ds_contact)
 !
 ! --------------------------------------------------------------------------------------------------
 !
-    integer :: cont_form
+    integer(kind=8) :: cont_form
 !
 ! --------------------------------------------------------------------------------------------------
 !

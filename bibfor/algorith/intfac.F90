@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -36,8 +36,8 @@ subroutine intfac(noma, nmaabs, ifq, fa, nno, &
 #include "asterfort/jexatr.h"
 #include "asterfort/reereg.h"
 !
-    integer :: ifq, fa(6, 8), nno, ndim, jglsn, jglst, igeom, codret
-    integer :: indptf(3), nmaabs
+    integer(kind=8) :: ifq, fa(6, 8), nno, ndim, jglsn, jglst, igeom, codret
+    integer(kind=8) :: indptf(3), nmaabs
     real(kind=8) :: lsn(nno), lst(nno), m(ndim), gln(ndim), glt(ndim)
     character(len=3) :: grad
     character(len=8) :: noma
@@ -69,13 +69,13 @@ subroutine intfac(noma, nmaabs, ifq, fa, nno, &
 !
 !     ------------------------------------------------------------------
 !
-    integer :: nnof, i, j, k, ino, iret, jconx2, numnoa, numnob
+    integer(kind=8) :: nnof, i, j, k, ino, iret, jconx2, numnoa, numnob
     real(kind=8) :: coorma(8), prec, mp(2), epsi(2), ff(nno), lsta, lsna, lstb
     real(kind=8) :: lsnb, solsn, a(ndim), b(ndim), mem(3), memo, normab, coeffk
     real(kind=8) :: prec2, length(12)
     character(len=8) :: alias
     aster_logical :: chgsgn, c1, c2
-    integer, pointer :: connex(:) => null()
+    integer(kind=8), pointer :: connex(:) => null()
 ! ----------------------------------------------------------------------
 !
     call jemarq()

@@ -51,11 +51,11 @@ subroutine te0531(option, nomte)
 !              ---> NOMTE  : NOM DU TYPE ELEMENT
 !.......................................................................
 
-    integer :: npg
-    integer :: nbcmp, jnbspi, idefo, nbcou, icomp, imate, iret
-    integer :: nbsp, ipg, ksp, i, idefto, icomp2, idsig, icomp3
-    integer :: nbgf, icp, isdcom, ig, nbfig, ifib, icaba
-    integer :: nbsec, iret1, nbpar, nbv, icodre(2), tygrfi, nbcarm, nug(10)
+    integer(kind=8) :: npg
+    integer(kind=8) :: nbcmp, jnbspi, idefo, nbcou, icomp, imate, iret
+    integer(kind=8) :: nbsp, ipg, ksp, i, idefto, icomp2, idsig, icomp3
+    integer(kind=8) :: nbgf, icp, isdcom, ig, nbfig, ifib, icaba
+    integer(kind=8) :: nbsec, iret1, nbpar, nbv, icodre(2), tygrfi, nbcarm, nug(10)
     real(kind=8) :: epsth, sigma(6), trsig, temp, valres(2), e, nu, c1, c2, a
     character(len=4)  :: fami
     character(len=8)  :: materi, nompar, nomres(2)

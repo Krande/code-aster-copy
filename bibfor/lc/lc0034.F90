@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -26,14 +26,13 @@ subroutine lc0034(fami, kpg, ksp, imate, &
 !
 #include "jeveux.h"
 #include "asterfort/nmhuj.h"
-#include "asterfort/plasti.h"
 #include "asterfort/utlcal.h"
 #include "asterfort/tecael.h"
 !
     character(len=*), intent(in) :: fami
-    integer, intent(in) :: kpg
-    integer, intent(in) :: ksp
-    integer, intent(in) :: imate
+    integer(kind=8), intent(in) :: kpg
+    integer(kind=8), intent(in) :: ksp
+    integer(kind=8), intent(in) :: imate
     real(kind=8) :: carcri(*)
     real(kind=8), intent(in) :: epsm(*)
     real(kind=8), intent(in) :: deps(*)
@@ -44,12 +43,12 @@ subroutine lc0034(fami, kpg, ksp, imate, &
     real(kind=8), intent(out) :: sigp(6)
     real(kind=8) :: vip(50)
     character(len=8), intent(in) :: typmod(*)
-    integer, intent(in) :: icomp
+    integer(kind=8), intent(in) :: icomp
     real(kind=8), intent(out) :: dsidep(6, 6)
-    integer, intent(out) :: codret
+    integer(kind=8), intent(out) :: codret
     real(kind=8)     :: npal, crit
     character(len=8) :: nomail
-    integer          :: iadzi, iazk24, ndt, ndi
+    integer(kind=8)          :: iadzi, iazk24, ndt, ndi
     aster_logical    :: debug, redec
 ! ----------------------------------------------------------------
     common/meshuj/debug

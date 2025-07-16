@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2020 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -29,20 +29,20 @@ interface
                       lsup     , borsup      ,&
                       linf     , borinf      ,&
                       vale)
-        integer, intent(in) :: fileUnit
+        integer(kind=8), intent(in) :: fileUnit
         character(len=8), intent(in) :: realFormat, cplxFormat
-        integer, intent(in) :: nodeListNb
-        integer, pointer :: nodeListNume(:)
+        integer(kind=8), intent(in) :: nodeListNb
+        integer(kind=8), pointer :: nodeListNume(:)
         character(len=8), pointer :: nodeListName(:)
         aster_logical, intent(in) :: lMeshCoor
-        integer, intent(in) :: meshDime
+        integer(kind=8), intent(in) :: meshDime
         real(kind=8), pointer :: meshCoor(:)
-        integer, intent(in) :: cmpCataNb
+        integer(kind=8), intent(in) :: cmpCataNb
         character(len=8), pointer :: cmpCataName(:)
-        integer, intent(in) :: cmpListNb
-        integer, pointer :: cmpListIndx(:)
-        integer, intent(in) :: nec
-        integer, pointer :: nueq(:), prno(:), codeInte(:)
+        integer(kind=8), intent(in) :: cmpListNb
+        integer(kind=8), pointer :: cmpListIndx(:)
+        integer(kind=8), intent(in) :: nec
+        integer(kind=8), pointer :: nueq(:), prno(:), codeInte(:)
         aster_logical, intent(in) :: lsup, linf, lmax, lmin
         real(kind=8),  intent(in) :: borsup, borinf
         complex(kind=8), pointer  :: vale(:)

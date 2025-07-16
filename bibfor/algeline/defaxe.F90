@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -32,11 +32,11 @@ function defaxe(icoq, imod, z, long, nbm, &
 !  IN : TCOEF : TABLEAU CONTENANT LES COEFFICIENTS DES DEFORMEES AXIALES
 !-----------------------------------------------------------------------
     real(kind=8) :: defaxe
-    integer :: icoq, imod, nbm
+    integer(kind=8) :: icoq, imod, nbm
     real(kind=8) :: z, long, tcoef(10, nbm)
 !-----------------------------------------------------------------------
 !-----------------------------------------------------------------------
-    integer :: itab
+    integer(kind=8) :: itab
     real(kind=8) :: zz
 !-----------------------------------------------------------------------
     itab = 0

@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -23,7 +23,7 @@ interface
                       xl, xiy, xiz, alfinv, ey,&
                       ez, ist)
         real(kind=8) :: sk(*)
-        integer :: nl
+        integer(kind=8) :: nl
         real(kind=8) :: xnu
         real(kind=8) :: rho
         real(kind=8) :: a
@@ -33,6 +33,6 @@ interface
         real(kind=8) :: alfinv
         real(kind=8) :: ey
         real(kind=8) :: ez
-        integer :: ist
+        integer(kind=8) :: ist
     end subroutine ptgy01
 end interface

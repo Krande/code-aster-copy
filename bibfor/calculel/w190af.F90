@@ -44,13 +44,13 @@ subroutine w190af(modele, chmar1)
 ! BUT : CREER LE CHAMP DE DONNEES POUR CALC_FERRAILLAGE
 !
 !-------------------------------------------------------------------------------------------------
-    integer :: gd, nocc, ncmpmx, nbtou
-    integer :: n1, n2, n3, n4, n5, n6, n7, n8, n9, n10, n11, n12, n13, n14, n15
-    integer :: n16, n17, n18, n19, n20
-    integer ::   jmail, iocc, nbmail
-    real(kind=8) :: valrcb, valrco, valruc, valrud
+    integer(kind=8) :: gd, nocc, ncmpmx, nbtou
+    integer(kind=8) :: n1, n2, n3, n4, n5, n6, n7, n8, n9, n10, n11, n12, n13, n14, n15
+    integer(kind=8) :: n16, n17, n18, n20
+    integer(kind=8) ::   jmail, iocc, nbmail
+    real(kind=8) :: valrcb, valrco, valruc
     character(len=8) :: k8b, typmcl(2), noma, typcb, clacier
-    character(len=8) :: typdiag, typstru, unitm, unitc
+    character(len=8) :: typdiag, typstru, unitc
     character(len=16) :: motcls(2), typco
     character(len=24) :: mesmai
     character(len=8), pointer :: ncmp(:) => null()
@@ -126,12 +126,9 @@ subroutine w190af(modele, chmar1)
     if (unitc .eq. 'Pa') valruc = 0.d0
     if (unitc .eq. 'MPa') valruc = 1.d0
     valv(18) = valruc
-    call getvtx(' ', 'UNITE_DIMENSION', scal=unitm, nbret=n19)
-!        UM = 0 DIMENSIONS EN m
-!        UM = 1 DIMENSIONS EN mm
-    if (unitc .eq. 'm') valrud = 0.d0
-    if (unitc .eq. 'mm') valrud = 1.d0
-    valv(19) = valrud
+!   Pa avec m
+!   MPa avec mm
+    valv(19) = valruc
 
 !     3- BOUCLE SUR LES OCCURENCES DU MOT CLE AFFE
 !     --------------------------------------------

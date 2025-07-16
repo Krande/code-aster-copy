@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -24,7 +24,6 @@ subroutine rrcComp(cmdPara)
     implicit none
 !
 #include "asterf_types.h"
-#include "asterfort/assert.h"
 #include "asterfort/infniv.h"
 #include "asterfort/romFieldBuildComp.h"
 #include "asterfort/rrcResultCopyParameters.h"
@@ -44,8 +43,8 @@ subroutine rrcComp(cmdPara)
 !
 ! --------------------------------------------------------------------------------------------------
 !
-    integer :: ifm, niv
-    integer :: iFieldBuild, nbFieldBuild, nbStore
+    integer(kind=8) :: ifm, niv
+    integer(kind=8) :: iFieldBuild, nbFieldBuild, nbStore
     character(len=8) :: resultDomName, resultRomName
     type(ROM_DS_FieldBuild) :: fieldBuild
 !

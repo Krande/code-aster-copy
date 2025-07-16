@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -30,7 +30,7 @@ subroutine irparb(resu, nbin, parin, nomjv, nbout)
 #include "asterfort/utmess.h"
 #include "asterfort/wkvect.h"
     character(len=*) :: resu, parin(*), nomjv
-    integer :: nbin, nbout
+    integer(kind=8) :: nbin, nbout
 !     DETERMINATION / VERIFICATION DES PARAMETRES
 !     ------------------------------------------------------------------
 ! IN  RESU   : K8  : NOM DU CONCEPT
@@ -42,12 +42,12 @@ subroutine irparb(resu, nbin, parin, nomjv, nbout)
 !     ------------------------------------------------------------------
     character(len=24) :: valk(2)
 !     ------------------------------------------------------------------
-    integer :: nbac, nbpa
+    integer(kind=8) :: nbac, nbpa
     character(len=8) :: resu8
     character(len=16) :: cbid, nomcmd
 !
 !-----------------------------------------------------------------------
-    integer :: i, iret, lpout
+    integer(kind=8) :: i, iret, lpout
 !-----------------------------------------------------------------------
     call jemarq()
     resu8 = resu

@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -27,7 +27,7 @@ subroutine xverm2(nfiss, fiss, mod)
 #include "asterfort/jeexin.h"
 #include "asterfort/jemarq.h"
 #include "asterfort/utmess.h"
-    integer :: nfiss
+    integer(kind=8) :: nfiss
     character(len=8) :: fiss(nfiss), mod
 !
 ! ----------------------------------------------------------------------
@@ -44,7 +44,7 @@ subroutine xverm2(nfiss, fiss, mod)
 ! in  fiss   : liste des noms des fissures
 ! in  mod    : nom du modele sain en entree de MODI_MODELE_XFEM
 !
-    integer :: ifiss, iexi
+    integer(kind=8) :: ifiss, iexi
     character(len=16) :: typdis, pheno, exithm
 !
 ! ----------------------------------------------------------------------

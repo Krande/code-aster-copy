@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -33,9 +33,9 @@ subroutine jecreo(nomlu, listat)
     character(len=*), intent(in) :: nomlu, listat
 !     ==================================================================
 !-----------------------------------------------------------------------
-    integer :: iv, jcara, jdate, jdocu, jgenr, jhcod, jiadd
-    integer :: jiadm, jlong, jlono, jltyp, jluti, jmarq, jorig
-    integer :: jrnom, jtype, n
+    integer(kind=8) :: iv, jcara, jdate, jdocu, jgenr, jhcod, jiadd
+    integer(kind=8) :: jiadm, jlong, jlono, jltyp, jluti, jmarq, jorig
+    integer(kind=8) :: jrnom, jtype, n
 !-----------------------------------------------------------------------
     parameter(n=5)
 !
@@ -49,16 +49,16 @@ subroutine jecreo(nomlu, listat)
      &                 jlono(n), jhcod(n), jcara(n), jluti(n), jmarq(n)
     common/jkatje/jgenr(n), jtype(n), jdocu(n), jorig(n), jrnom(n)
 !     ------------------------------------------------------------------
-    integer :: iclas, iclaos, iclaco, idatos, idatco, idatoc
+    integer(kind=8) :: iclas, iclaos, iclaco, idatos, idatco, idatoc
     common/iatcje/iclas, iclaos, iclaco, idatos, idatco, idatoc
 !     ------------------------------------------------------------------
-    integer :: lbis, lois, lols, lor8, loc8
+    integer(kind=8) :: lbis, lois, lols, lor8, loc8
     common/ienvje/lbis, lois, lols, lor8, loc8
 !     ------------------------------------------------------------------
     character(len=1) :: typei, genri
-    integer :: nv, icre, iret
+    integer(kind=8) :: nv, icre, iret
     parameter(nv=3)
-    integer :: lval(nv)
+    integer(kind=8) :: lval(nv)
     character(len=8) :: cval(nv)
     character(len=32) :: noml32
     character(len=4) :: ifmt

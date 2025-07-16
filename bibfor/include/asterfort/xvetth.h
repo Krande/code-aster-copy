@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -23,23 +23,23 @@ interface
                       igeom, temper, lonch, cnset, jpintt,&
                       lsn, lst, heavn, basloc, heavt, nfh,&
                       nfe, vectt)
-        integer :: nfe
-        integer :: nfh
-        integer :: nnop
-        integer :: ndim
+        integer(kind=8) :: nfe
+        integer(kind=8) :: nfh
+        integer(kind=8) :: nnop
+        integer(kind=8) :: ndim
         character(len=8) :: elrefp
-        integer :: imate
-        integer :: itps
-        integer :: igeom
+        integer(kind=8) :: imate
+        integer(kind=8) :: itps
+        integer(kind=8) :: igeom
         real(kind=8) :: temper(nnop*(1+nfh+nfe))
-        integer :: lonch(10)
-        integer :: cnset(128)
-        integer :: heavn(27,5)
-        integer :: jpintt
+        integer(kind=8) :: lonch(10)
+        integer(kind=8) :: cnset(128)
+        integer(kind=8) :: heavn(27,5)
+        integer(kind=8) :: jpintt
         real(kind=8) :: lsn(nnop)
         real(kind=8) :: lst(nnop)
         real(kind=8) :: basloc(*)
-        integer :: heavt(36)
+        integer(kind=8) :: heavt(36)
         real(kind=8) :: vectt(*)
     end subroutine xvetth
 end interface

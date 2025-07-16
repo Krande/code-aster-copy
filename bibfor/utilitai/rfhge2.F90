@@ -32,7 +32,6 @@ subroutine rfhge2(harmge)
 #include "asterfort/jelira.h"
 #include "asterfort/jemarq.h"
 #include "asterfort/jenonu.h"
-#include "asterfort/jenuno.h"
 #include "asterfort/jeveuo.h"
 #include "asterfort/jexnom.h"
 #include "asterfort/jexnum.h"
@@ -62,15 +61,15 @@ subroutine rfhge2(harmge)
 !     ------------------------------------------------------------------
 !
 !-----------------------------------------------------------------------
-    integer :: iagno, idbase, iddl
-    integer :: ie, ierd, ign2, ii, ino, inoeud, iordr
-    integer :: iret, itresu, jinst, jj, lfon, lg1, lg2
-    integer :: lordr, lpro, lvar, n1, n2
-    integer :: n3, nbinsg, nbmode, nbordr
-    integer :: neq, ngn, numcmp
+    integer(kind=8) :: iagno, idbase, iddl
+    integer(kind=8) :: ie, ierd, ign2, ii, ino, inoeud, iordr
+    integer(kind=8) :: iret, itresu, jinst, jj, lfon, lg1, lg2
+    integer(kind=8) :: lordr, lpro, lvar, n1, n2
+    integer(kind=8) :: n3, nbinsg, nbmode, nbordr
+    integer(kind=8) :: neq, ngn, numcmp
     real(kind=8) :: epsi
     complex(kind=8), pointer :: vectgene(:) => null()
-    integer, pointer :: desc(:) => null()
+    integer(kind=8), pointer :: desc(:) => null()
     real(kind=8), pointer :: disc(:) => null()
     cbid = dcmplx(0.d0, 0.d0)
 !-----------------------------------------------------------------------

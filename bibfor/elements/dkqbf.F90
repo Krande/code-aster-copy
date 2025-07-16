@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -21,7 +21,7 @@ subroutine dkqbf(qsi, eta, jacob, caraq4, bf)
     real(kind=8) :: qsi, eta, jacob(*), caraq4(*), bf(3, 12)
 !     MATRICE B(3,12) AU POINT QSI ETA POUR L'ELEMENT DKQ
 !     ---------------------------------------------------
-    integer :: i
+    integer(kind=8) :: i
     real(kind=8) :: vj11, vj12, vj21, vj22
     real(kind=8) :: peta, meta, pqsi, mqsi, qsic, etac
     real(kind=8) :: l5, l6, l7, l8, c5, c6, c7, c8, s5, s6, s7, s8

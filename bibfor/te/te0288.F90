@@ -21,14 +21,12 @@ subroutine te0288(option, nomte)
 #include "asterf_types.h"
 #include "jeveux.h"
 #include "asterc/r8prem.h"
-#include "asterfort/assert.h"
 #include "asterfort/elref1.h"
 #include "asterfort/elrefe_info.h"
 #include "asterfort/fointe.h"
 #include "asterfort/iselli.h"
 #include "asterfort/jevecd.h"
 #include "asterfort/jevech.h"
-#include "asterfort/lteatt.h"
 #include "asterfort/ltequa.h"
 #include "asterfort/rcvad2.h"
 #include "asterfort/teattr.h"
@@ -57,15 +55,15 @@ subroutine te0288(option, nomte)
 !
 !
 !
-    integer :: ndim, nno, nnop, npg, nptf, jbasec, nfiss
-    integer :: nfh, nfe, ddlc, nse, ise, in, ino
-    integer :: jpintt, jcnset, jheavt, jlonch, jbaslo, igeom, idepl
-    integer :: ipres, ipref, itemps, jptint, jcface, jlongc, imate, jheavn
-    integer :: ithet, i, j, compt, igthet, ibid, jlsn, jlst, icode
-    integer :: ninter, nface, cface(30, 6), ifa, singu, jpmilt, irese, ddlm
+    integer(kind=8) :: ndim, nno, nnop, npg, nptf, jbasec, nfiss
+    integer(kind=8) :: nfh, nfe, ddlc, nse, ise, in, ino
+    integer(kind=8) :: jpintt, jcnset, jheavt, jlonch, jbaslo, igeom, idepl
+    integer(kind=8) :: ipres, ipref, itemps, jptint, jcface, jlongc, imate, jheavn
+    integer(kind=8) :: ithet, i, j, compt, igthet, ibid, jlsn, jlst, icode
+    integer(kind=8) :: ninter, nface, cface(30, 6), ifa, singu, jpmilt, irese, ddlm
     real(kind=8) :: thet, valres(3), devres(3), presn(27), valpar(4)
     real(kind=8) :: pres, fno(81), coorse(81)
-    integer :: icodre(3), contac, iadzi, iazk24, jstno
+    integer(kind=8) :: icodre(3), contac, iadzi, iazk24, jstno
     character(len=8) :: elrefp, elrese(6), fami(6), fami_se, nompar(4), enr
     character(len=16) :: nomres(3)
     character(len=16), pointer :: compor(:) => null()

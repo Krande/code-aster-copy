@@ -26,7 +26,6 @@ subroutine cmcrea(main, maout, nbocc)
 #include "asterfort/copisd.h"
 #include "asterfort/cpclma.h"
 #include "asterfort/dismoi.h"
-#include "asterfort/getvis.h"
 #include "asterfort/getvtx.h"
 #include "asterfort/jeccta.h"
 #include "asterfort/jecrec.h"
@@ -46,7 +45,7 @@ subroutine cmcrea(main, maout, nbocc)
 #include "asterfort/utmess.h"
 #include "asterfort/wkvect.h"
 !
-    integer :: nbocc
+    integer(kind=8) :: nbocc
     character(len=8) :: main, maout
 !
 ! ----------------------------------------------------------------------
@@ -59,16 +58,16 @@ subroutine cmcrea(main, maout, nbocc)
 !
 !
     character(len=16), parameter :: keywfact = 'CREA_FISS'
-    integer :: nbnomx, nbmain, nbgmin, nbmaaj, nbgmaj, nbmato, nbgmto
-    integer :: numare, numaco, numa, nbma, nbgm, nbno, ma, no, gm
-    integer :: jadin, jadout
-    integer :: jlnoma, jlconn, jltyma, jlngma, jlgpma
-    integer :: jnoma, jtyma, jconn, jngma, jgpma
-    integer :: jdim, ityin, ityout
-    integer :: iret, iOcc, ib
+    integer(kind=8) :: nbnomx, nbmain, nbgmin, nbmaaj, nbgmaj, nbmato, nbgmto
+    integer(kind=8) ::  numaco, numa, nbma, nbgm, nbno, ma, no, gm
+    integer(kind=8) :: jadin, jadout
+    integer(kind=8) :: jlnoma, jlconn, jltyma, jlngma, jlgpma
+    integer(kind=8) :: jnoma, jtyma, jconn, jngma, jgpma
+    integer(kind=8) :: jdim, ityin, ityout
+    integer(kind=8) :: iret, iOcc, ib
     aster_logical :: false
 !
-    character(len=8) :: knum8, prefix, nomma
+    character(len=8) :: knum8
     character(len=24) :: linoma, liconn, lityma, lingma, ligpma
     character(len=24) :: valk, gno1, gno2
     character(len=24) :: dimin, dimout, tmain, tmaout, conin
@@ -130,14 +129,12 @@ subroutine cmcrea(main, maout, nbocc)
 ! ----------------------------------------------------------------------
 !
     do iOcc = 1, nbocc
-        call getvtx(keywfact, 'PREF_MAILLE', iocc=iOcc, scal=prefix, nbret=ib)
-        call getvis(keywfact, 'PREF_NUME', iocc=iOcc, scal=numare, nbret=ib)
         call getvtx(keywfact, 'GROUP_NO_1', iocc=iOcc, scal=gno1, nbret=ib)
         call getvtx(keywfact, 'GROUP_NO_2', iocc=iOcc, scal=gno2, nbret=ib)
         call getvtx(keywfact, 'NOM', iocc=iOcc, scal=nomgma, nbret=ib)
 !
-        call cmfiss(main, gno1, gno2, prefix, numare, &
-                    nomgma, zk24(jlnoma-1+iOcc), zk24(jlconn-1+iOcc), zk24(jltyma-1+iOcc), &
+        call cmfiss(main, gno1, gno2, nomgma, zk24(jlnoma-1+iOcc), &
+                    zk24(jlconn-1+iOcc), zk24(jltyma-1+iOcc), &
                     zk24(jlngma-1+iOcc), zk24(jlgpma-1+iOcc))
     end do
 !

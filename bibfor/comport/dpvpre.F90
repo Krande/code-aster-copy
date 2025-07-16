@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -33,7 +33,7 @@ subroutine dpvpre(mod, nvi, option, crit, instam, &
 #include "asterfort/lcopil.h"
 #include "asterfort/lcopli.h"
 #include "asterfort/trace.h"
-    integer :: iret, nvi, nbmat
+    integer(kind=8) :: iret, nvi, nbmat
     real(kind=8) :: deps(6), vim(nvi), vip(nvi), sig(6)
     real(kind=8) :: sigm(6), materf(nbmat, 2), dsidep(6, 6), crit(3)
     real(kind=8) :: instam, instap
@@ -44,7 +44,7 @@ subroutine dpvpre(mod, nvi, option, crit, instam, &
 ! --- VISC_DRUC_PRAG --------------------------------------------------
 ! ----RESOLUTION -----------------------------------------------------
     aster_logical :: resi
-    integer :: ndt, ndi, ii, pos, nbre
+    integer(kind=8) :: ndt, ndi, ii, pos, nbre
     real(kind=8) :: deux, trois
     real(kind=8) :: ppic, pult
     real(kind=8) :: dp

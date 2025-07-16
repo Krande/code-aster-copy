@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -29,7 +29,7 @@ subroutine rlbfr8(nommat, neq, xsol, nbsm, typsym)
 #include "asterfort/mlnmin.h"
 #include "asterfort/mltdrb.h"
 #include "asterfort/wkvect.h"
-    integer :: neq, nbsm, typsym
+    integer(kind=8) :: neq, nbsm, typsym
 !
     character(len=*) :: nommat
     real(kind=8) :: xsol(neq, *)
@@ -62,13 +62,13 @@ subroutine rlbfr8(nommat, neq, xsol, nbsm, typsym)
     character(len=24) :: nomp08, nomp09, nomp10, nomp11, nomp12, nomp13, nomp14
     character(len=24) :: nomp15, nomp16, nomp17, nomp18, nomp19, nomp20
 !     -------------------------------------------------- POINTEURS
-    integer :: pointr, desc
-    integer :: nouv, anc, supnd
-    integer :: seq, adress, lgsn
-    integer :: decal, global
-    integer :: ncbloc, lgbloc, nbloc, nbsn, ad, trav, som
+    integer(kind=8) :: pointr, desc
+    integer(kind=8) :: nouv, anc, supnd
+    integer(kind=8) :: seq, adress, lgsn
+    integer(kind=8) :: decal, global
+    integer(kind=8) :: ncbloc, lgbloc, nbloc, nbsn, ad, trav, som
     character(len=14) :: nu
-    integer :: ifm, niv
+    integer(kind=8) :: ifm, niv
 !
 !     ------------------------------------------------------------------
     data factol/'                   .VALF'/

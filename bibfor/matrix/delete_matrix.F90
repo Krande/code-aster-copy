@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -40,7 +40,7 @@ subroutine delete_matrix(matas, typsol)
 #include "jeveux.h"
 
     character(len=19) :: matas2, solveu2
-    integer :: iexi, ibid, iret, iexi2
+    integer(kind=8) :: iexi, ibid, iret, iexi2
     complex(kind=8) :: cbid
     aster_logical :: lbid
     character(len=24), pointer :: refa(:) => null()

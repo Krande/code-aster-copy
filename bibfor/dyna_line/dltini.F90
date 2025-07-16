@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -67,10 +67,10 @@ subroutine dltini(lcrea, nume, result, depini, vitini, &
     real(kind=8) :: fexini(*), famini(*), fliini(*)
     character(len=24) :: numedd
     aster_logical :: lcrea
-    integer :: nume, neq, inchac
-    integer :: ire, iret, jvale
-    integer :: nai, ndi, ndy, nvi
-    integer :: ierr
+    integer(kind=8) :: nume, neq, inchac
+    integer(kind=8) :: ire, iret, jvale
+    integer(kind=8) :: nai, ndi, ndy, nvi
+    integer(kind=8) :: ierr
     character(len=8) :: reuse, dep, vit
     character(len=19) :: champ, cham2
     blas_int :: b_incx, b_incy, b_n
@@ -182,7 +182,10 @@ subroutine dltini(lcrea, nume, result, depini, vitini, &
             inchac = 1
             cham2 = '&&COMDLT.DEPINI'
             call vtcreb(cham2, 'V', 'R', nume_ddlz=numedd, nb_equa_outz=neq)
-            call vtcopy(champ, cham2, ' ', iret)
+            call vtcopy(champ, cham2, iret)
+            if (iret .ne. 0) then
+                call utmess("A", "FIELD0_6", sk='DEPL')
+            end if
             call jeveuo(cham2//'.VALE', 'L', jvale)
             b_n = to_blas_int(neq)
             b_incx = to_blas_int(1)
@@ -199,7 +202,10 @@ subroutine dltini(lcrea, nume, result, depini, vitini, &
             inchac = 1
             cham2 = '&&COMDLT.VITINI'
             call vtcreb(cham2, 'V', 'R', nume_ddlz=numedd, nb_equa_outz=neq)
-            call vtcopy(champ, cham2, ' ', iret)
+            call vtcopy(champ, cham2, iret)
+            if (iret .ne. 0) then
+                call utmess("F", "FIELD0_6", sk='VITE')
+            end if
             call jeveuo(cham2//'.VALE', 'L', jvale)
             b_n = to_blas_int(neq)
             b_incx = to_blas_int(1)
@@ -218,7 +224,10 @@ subroutine dltini(lcrea, nume, result, depini, vitini, &
             inchac = 0
             cham2 = '&&COMDLT.ACCINI'
             call vtcreb(cham2, 'V', 'R', nume_ddlz=numedd, nb_equa_outz=neq)
-            call vtcopy(champ, cham2, ' ', iret)
+            call vtcopy(champ, cham2, iret)
+            if (iret .ne. 0) then
+                call utmess("F", "FIELD0_6", sk='ACCE')
+            end if
             call jeveuo(cham2//'.VALE', 'L', jvale)
             b_n = to_blas_int(neq)
             b_incx = to_blas_int(1)

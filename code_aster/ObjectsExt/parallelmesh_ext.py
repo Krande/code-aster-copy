@@ -26,27 +26,25 @@
 import os
 import os.path as osp
 import subprocess
-import tempfile
 
 import numpy as np
 
 from ..CodeCommands import CREA_MAILLAGE
+from ..MedUtils import splitMeshFromMedFile
+from ..MedUtils.MedConverter import convertMesh2MedCoupling
 from ..Messages import UTMESS
 from ..Objects import (
     CommGraph,
     ConnectionMesh,
     IncompleteMesh,
     Mesh,
+    MeshReader,
     ParallelMesh,
     PythonBool,
     ResultNaming,
-    MeshReader,
 )
 from ..Objects.Serialization import InternalStateBuilder
-from ..Utilities import MPI, ExecutionParameter, Options, force_list, injector, SharedTmpdir
-from ..Utilities.MedUtils.MEDConverter import convertMesh2MedCoupling
-from ..Utilities.MedUtils.MedMeshAndFieldsSplitter import splitMeshFromMedFile
-from . import mesh_builder
+from ..Utilities import MPI, ExecutionParameter, Options, SharedTmpdir, force_list, injector
 from .simplefieldonnodes_ext import SimpleFieldOnNodesReal
 
 

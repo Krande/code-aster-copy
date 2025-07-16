@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -30,7 +30,7 @@ subroutine crsvfm(solvbz, matasz, prec, rank, pcpiv, usersmz, blreps, renumz, re
 #include "asterfort/wkvect.h"
     character(len=*) :: solvbz, matasz
     character        :: prec, rank
-    integer          :: pcpiv, redmpi
+    integer(kind=8)          :: pcpiv, redmpi
     character(len=*) :: usersmz, renumz
     real(kind=8)     :: blreps
 !-----------------------------------------------------------------------
@@ -49,8 +49,8 @@ subroutine crsvfm(solvbz, matasz, prec, rank, pcpiv, usersmz, blreps, renumz, re
 !-----------------------------------------------------------------------
 !     VARIABLES LOCALES
 !----------------------------------------------------------------------
-    integer :: zslvk, zslvr, zslvi, zslvo
-    integer :: jslvk, jslvr, jslvi, jslvo, iret
+    integer(kind=8) :: zslvk, zslvr, zslvi, zslvo
+    integer(kind=8) :: jslvk, jslvr, jslvi, jslvo, iret
     character(len=19) :: matass, solvbd
     character(len=24) :: usersm, renum
     character(len=8) :: symk, kacmum

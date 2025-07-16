@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -27,8 +27,8 @@ subroutine cg_kit_nvar(rela_comp_cg, nb_vari_cg, numeCompCG)
 #include "asterc/lcdiscard.h"
 !
     character(len=16), intent(in) :: rela_comp_cg(2)
-    integer, intent(out) :: nb_vari_cg(2)
-    integer, intent(out) :: numeCompCG(2)
+    integer(kind=8), intent(out) :: nb_vari_cg(2)
+    integer(kind=8), intent(out) :: numeCompCG(2)
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -44,7 +44,7 @@ subroutine cg_kit_nvar(rela_comp_cg, nb_vari_cg, numeCompCG)
 ! --------------------------------------------------------------------------------------------------
 !
     character(len=16) :: rela_py
-    integer :: numlc, nbvari_ext
+    integer(kind=8) :: numlc, nbvari_ext
 !
 ! --------------------------------------------------------------------------------------------------
 !

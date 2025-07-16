@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -22,7 +22,7 @@ subroutine calcmm(nbcomm, cpmono, nmat, pgl, nfs, &
     implicit none
 #include "asterfort/lcmmsg.h"
 #include "asterfort/utmess.h"
-    integer :: nmat, nbcomm(nmat, 3), nvi, irota, nfs, nsg
+    integer(kind=8) :: nmat, nbcomm(nmat, 3), nvi, irota, nfs, nsg
     real(kind=8) :: pgl(3, 3), toutms(nfs, nsg, 6), vind(*)
     character(len=24) :: cpmono(5*nmat+1)
 !
@@ -43,8 +43,8 @@ subroutine calcmm(nbcomm, cpmono, nmat, pgl, nfs, &
 !     ----------------------------------------------------------------
     character(len=16) :: nomfam
     real(kind=8) :: ms(6), ng(3), q(3, 3), lg(3), iden(3, 3)
-    integer :: nbfsys, i, ifa, nbsys, is, j, ir
-    integer :: irr, decirr, nbsyst, decal, gdef
+    integer(kind=8) :: nbfsys, i, ifa, nbsys, is, j, ir
+    integer(kind=8) :: irr, decirr, nbsyst, decal, gdef
     common/polycr/irr, decirr, nbsyst, decal, gdef
     data iden/1.d0, 0.d0, 0.d0, 0.d0, 1.d0, 0.d0, 0.d0, 0.d0, 1.d0/
 !     ----------------------------------------------------------------

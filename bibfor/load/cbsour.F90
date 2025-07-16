@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -27,18 +27,15 @@ subroutine cbsour(load, mesh, model, geomDime, valeType)
 #include "asterfort/getvid.h"
 #include "asterfort/getvr8.h"
 #include "asterfort/utmess.h"
-#include "asterfort/celces.h"
-#include "asterfort/cescar.h"
-#include "asterfort/detrsd.h"
 #include "asterfort/dismoi.h"
 #include "asterfort/convertFieldNodeToFieldElga.h"
 
 !
     character(len=8), intent(in) :: load, mesh, model
-    integer, intent(in) :: geomDime
+    integer(kind=8), intent(in) :: geomDime
     character(len=4), intent(in) :: valeType
 !
-    integer :: nbcalc, icalc, nbfac, isour, iocc
+    integer(kind=8) :: nbcalc, icalc, nbfac, isour, iocc
     real(kind=8) :: r8bid
     character(len=4) :: tych
     character(len=8) :: scalc

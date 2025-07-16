@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -29,12 +29,11 @@ subroutine thmFlh002(ds_thm, lMatr, lSigm, ndim, &
     implicit none
 !
 #include "asterf_types.h"
-#include "asterfort/assert.h"
 !
     type(THM_DS), intent(in) :: ds_thm
     aster_logical, intent(in) :: lMatr, lSigm
-    integer, intent(in) :: ndim, dimdef, dimcon
-    integer, intent(in) :: addeme, addep1, addete, adcp11
+    integer(kind=8), intent(in) :: ndim, dimdef, dimcon
+    integer(kind=8), intent(in) :: addeme, addep1, addete, adcp11
     real(kind=8), intent(in) :: rho11, grap1(3), t, p1
     real(kind=8), intent(in) :: gravity(3), tperm(ndim, ndim)
     real(kind=8), intent(inout) :: congep(1:dimcon)
@@ -64,7 +63,7 @@ subroutine thmFlh002(ds_thm, lMatr, lSigm, ndim, &
 !
 ! --------------------------------------------------------------------------------------------------
 !
-    integer :: i, j, k
+    integer(kind=8) :: i, j, k
     real(kind=8) :: lambd1(5)
     real(kind=8) :: krel1, dkrel1
     real(kind=8) :: dr11p1, dr11t

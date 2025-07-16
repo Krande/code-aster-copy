@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -25,8 +25,8 @@ interface
         real(kind=8) :: coor(*)
         real(kind=8) :: ff(*)
         real(kind=8) :: rho
-        integer :: nno
-        integer :: npg
+        integer(kind=8) :: nno
+        integer(kind=8) :: npg
         real(kind=8) :: frx(27)
         real(kind=8) :: fry(27)
         real(kind=8) :: frz(27)

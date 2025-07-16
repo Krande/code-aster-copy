@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -24,7 +24,7 @@ subroutine raxini(vsec1, vsec2, vsec3, vsec4, nptsec, &
 #include "asterfort/jedema.h"
 #include "asterfort/jemarq.h"
 #include "asterfort/proax0.h"
-    integer :: nptsec(4), nbordr
+    integer(kind=8) :: nptsec(4), nbordr
     real(kind=8) :: vsec1(2*nbordr), vsec2(2*nbordr), vsec3(2*nbordr)
     real(kind=8) :: vsec4(2*nbordr), umin, umax, vmin, vmax
     character(len=4) :: axeini
@@ -55,7 +55,7 @@ subroutine raxini(vsec1, vsec2, vsec3, vsec4, nptsec, &
 ! AXEINI    OUT  K4 : AXE INITIAL.
 !
 !-----------------------------------------------------------------------
-    integer :: i
+    integer(kind=8) :: i
     real(kind=8) :: u0, v0, csta, cstb, a1, b1, ui, vi
     real(kind=8) :: amaxs1, amaxs2, amaxs3, amaxs4, rpax1, rpax2
     real(kind=8) :: amp1, amp2

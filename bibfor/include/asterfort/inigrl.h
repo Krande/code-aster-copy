@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -21,11 +21,11 @@
 interface
     subroutine inigrl(ligrel, igrel, nmax, adtabl, k24tab,&
                       nval)
-        integer :: nmax
+        integer(kind=8) :: nmax
         character(len=*) :: ligrel
-        integer :: igrel
-        integer :: adtabl(nmax)
+        integer(kind=8) :: igrel
+        integer(kind=8) :: adtabl(nmax)
         character(len=24) :: k24tab(nmax)
-        integer :: nval
+        integer(kind=8) :: nval
     end subroutine inigrl
 end interface

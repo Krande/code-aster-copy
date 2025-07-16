@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -44,8 +44,8 @@ subroutine inmat6(elrefa, fapg, mganos)
 !
 ! --------------------------------------------------------------------------------------------------
 !
-    integer :: ndim, nno, nnos
-    integer :: i, kp, kdim, ln, j, lm, npg, iret
+    integer(kind=8) :: ndim, nno, nnos
+    integer(kind=8) :: i, kp, kdim, ln, j, lm, npg, iret
     real(kind=8) :: ff(MT_NNOMAX), m(MT_NBPGMX*MT_NNOMAX)
     real(kind=8) :: p(MT_NBPGMX*MT_NNOMAX)
     real(kind=8) :: xpg(3*MT_NBPGMX), poipg(MT_NBPGMX), xg(3), det

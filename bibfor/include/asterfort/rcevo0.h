@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -23,9 +23,9 @@
 interface
     subroutine rcevo0(intitu, nbinti, lsn, lfatig, nbtran)
         character(len=24) :: intitu
-        integer :: nbinti
+        integer(kind=8) :: nbinti
         aster_logical :: lsn
         aster_logical :: lfatig
-        integer :: nbtran
+        integer(kind=8) :: nbtran
     end subroutine rcevo0
 end interface

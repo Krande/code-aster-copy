@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -25,11 +25,10 @@ subroutine mmmvcc(phase, l_pena_cont, &
     implicit none
 !
 #include "asterf_types.h"
-#include "asterfort/assert.h"
 !
     character(len=4), intent(in) :: phase
     aster_logical, intent(in) :: l_pena_cont
-    integer, intent(in) :: nnl
+    integer(kind=8), intent(in) :: nnl
     real(kind=8), intent(in) :: wpg, ffl(9), jacobi
     real(kind=8), intent(in) :: jeu, dlagrc, coefac
     real(kind=8), intent(out) :: vectcc(9)
@@ -58,7 +57,7 @@ subroutine mmmvcc(phase, l_pena_cont, &
 !
 ! --------------------------------------------------------------------------------------------------
 !
-    integer :: inoc
+    integer(kind=8) :: inoc
 !
 ! --------------------------------------------------------------------------------------------------
 !

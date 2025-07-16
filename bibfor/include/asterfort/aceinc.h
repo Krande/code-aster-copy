@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -25,14 +25,14 @@ interface
                       locaco, locagb, locamb, zjdlm, lmax, ier)
         character(len=8) :: noma
         character(len=8) :: nomo
-        integer :: ntyele(*)
-        integer :: nbocc(*)
-        integer :: ivr(*)
+        integer(kind=8) :: ntyele(*)
+        integer(kind=8) :: nbocc(*)
+        integer(kind=8) :: ivr(*)
         aster_logical :: locaco
         aster_logical :: locagb
         aster_logical :: locamb
-        integer :: zjdlm(*)
-        integer :: lmax
-        integer :: ier
+        integer(kind=8) :: zjdlm(*)
+        integer(kind=8) :: lmax
+        integer(kind=8) :: ier
     end subroutine aceinc
 end interface

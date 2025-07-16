@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -22,7 +22,6 @@ subroutine mm_cycl_t2(pres_frot_prev, dist_frot_prev, coef_frot_prev, cycl_stat_
 !
     implicit none
 !
-#include "asterc/r8prem.h"
 #include "asterfort/mm_cycl_adaf.h"
 #include "asterfort/mm_cycl_laugf.h"
 #include "asterfort/mm_cycl_zonf.h"
@@ -32,11 +31,11 @@ subroutine mm_cycl_t2(pres_frot_prev, dist_frot_prev, coef_frot_prev, cycl_stat_
     real(kind=8), intent(in) :: pres_frot_prev(3)
     real(kind=8), intent(in) :: dist_frot_prev(3)
     real(kind=8), intent(in) :: coef_frot_prev
-    integer, intent(in) :: cycl_stat_prev
+    integer(kind=8), intent(in) :: cycl_stat_prev
     real(kind=8), intent(in) :: pres_frot_curr(3)
     real(kind=8), intent(in) :: dist_frot_curr(3)
     real(kind=8), intent(out) :: coef_frot_curr
-    integer, intent(out) :: cycl_stat_curr
+    integer(kind=8), intent(out) :: cycl_stat_curr
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -60,8 +59,8 @@ subroutine mm_cycl_t2(pres_frot_prev, dist_frot_prev, coef_frot_prev, cycl_stat_
 !
 ! --------------------------------------------------------------------------------------------------
 !
-    integer :: cycl_type, stat_adap
-    integer :: zone_frot_curr, zone_frot_prev
+    integer(kind=8) :: cycl_type, stat_adap
+    integer(kind=8) :: zone_frot_curr, zone_frot_prev
     real(kind=8) :: tole_stick, tole_slide
     real(kind=8) :: nrese_curr, nrese_prev, coef_adap
     real(kind=8) :: pres_frot_adap(3), dist_frot_adap(3)

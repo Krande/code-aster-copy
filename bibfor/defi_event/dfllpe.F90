@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -33,14 +33,14 @@ subroutine dfllpe(keywf, i_fail, event_typek, &
 #include "asterfort/utmess.h"
 !
     character(len=16), intent(in) :: keywf
-    integer, intent(in) :: i_fail
+    integer(kind=8), intent(in) :: i_fail
     character(len=16), intent(in) :: event_typek
     real(kind=8), intent(out) :: vale_ref
     character(len=16), intent(out) :: nom_cham
     character(len=16), intent(out) :: nom_cmp
     character(len=16), intent(out) :: crit_cmp
     character(len=24), intent(out) :: lst_loca
-    integer, intent(out):: etat_loca
+    integer(kind=8), intent(out):: etat_loca
     real(kind=8), intent(out) :: pene_maxi
     real(kind=8), intent(out) :: resi_glob_maxi
 !
@@ -66,8 +66,8 @@ subroutine dfllpe(keywf, i_fail, event_typek, &
 !
 ! --------------------------------------------------------------------------------------------------
 !
-    integer :: nocc
-    integer           :: nb_loca
+    integer(kind=8) :: nocc
+    integer(kind=8)           :: nb_loca
     character(len=8)  :: mesh
     character(len=24) :: model
 !

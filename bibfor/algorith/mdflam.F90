@@ -47,7 +47,7 @@ subroutine mdflam(dnorm, vitloc, cost, sint, &
     real(kind=8) :: cost, sint, dnorm, vnorm
     real(kind=8) :: defpla, critfl, rigifl, amorfl
     real(kind=8) :: amorfl2
-    integer :: critamor
+    integer(kind=8) :: critamor
 
 !-----------------------------------------------------------------------
 ! --- Calcul de la vitesse normale

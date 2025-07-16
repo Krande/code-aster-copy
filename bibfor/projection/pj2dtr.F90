@@ -27,7 +27,6 @@ subroutine pj2dtr(corrMeshTemp, corrMesh, &
 #include "MeshTypes_type.h"
 #include "asterf_types.h"
 #include "jeveux.h"
-#include "asterc/getres.h"
 #include "asterfort/assert.h"
 #include "asterfort/dismoi.h"
 #include "asterfort/elrfno.h"
@@ -36,10 +35,8 @@ subroutine pj2dtr(corrMeshTemp, corrMesh, &
 #include "asterfort/inslri.h"
 #include "asterfort/jedema.h"
 #include "asterfort/jemarq.h"
-#include "asterfort/jenuno.h"
 #include "asterfort/jeveuo.h"
 #include "asterfort/jexatr.h"
-#include "asterfort/jexnum.h"
 #include "asterfort/pj4d2d.h"
 #include "asterfort/pjeflo.h"
 #include "asterfort/pjefmi.h"
@@ -53,11 +50,11 @@ subroutine pj2dtr(corrMeshTemp, corrMesh, &
 !
     character(len=16), intent(in) :: corrMesh, corrMeshTemp
     character(len=8), intent(in) :: cellListCode(MT_NTYMAX)
-    integer, intent(in) :: cellListType(MT_NTYMAX), spacedim
+    integer(kind=8), intent(in) :: cellListType(MT_NTYMAX), spacedim
     real(kind=8), intent(in) :: geom1(*), geom2(*)
     real(kind=8), intent(in) :: dala
     character(len=16), optional, intent(in)  :: listInterc_
-    integer, optional, intent(in)  :: nbInterc_
+    integer(kind=8), optional, intent(in)  :: nbInterc_
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -79,32 +76,32 @@ subroutine pj2dtr(corrMeshTemp, corrMesh, &
 !
     aster_logical :: lext
     character(len=8) :: mesh1, mesh2, elrefa, nodeName2
-    integer :: cnquad(3, 2)
+    integer(kind=8) :: cnquad(3, 2)
     real(kind=8) :: crrefe(3, MT_NNOMAX), ff(MT_NNOMAX), cooele(3*MT_NNOMAX)
-    integer :: nunos(MT_NNOMAX)
+    integer(kind=8) :: nunos(MT_NNOMAX)
     real(kind=8) :: ksi, eta
     real(kind=8) :: x1, x2
     real(kind=8) :: xr1(2), xr2(2), xr3(2)
     real(kind=8) :: xg(2)
-    integer :: nbCell1, nbCell2, nbNode1, nbNode2
-    integer :: i2cocf, i2coco
-    integer :: i2com1, i2conb, j2xxk1, i2conu
-    integer :: ideca1, ideca2, ilcnx1
-    integer :: ima1, ino, iNode2, kk, itypm, nbno, nno, itr
-    integer :: iret, kdim, ndim
-    integer :: nuno, nutm, nuno2
-    integer, parameter :: nbmax = 5
-    integer :: tino2m(nbmax), nbnod, nbnodm
+    integer(kind=8) :: nbCell1, nbCell2, nbNode1, nbNode2
+    integer(kind=8) :: i2cocf, i2coco
+    integer(kind=8) :: i2com1, i2conb, j2xxk1, i2conu
+    integer(kind=8) :: ideca1, ideca2, ilcnx1
+    integer(kind=8) :: ima1, ino, iNode2, kk, itypm, nbno, nno, itr
+    integer(kind=8) :: iret, kdim, ndim
+    integer(kind=8) :: nuno, nutm, nuno2
+    integer(kind=8), parameter :: nbmax = 5
+    integer(kind=8) :: tino2m(nbmax), nbnod, nbnodm
     real(kind=8) :: tdmin2(nbmax), disprj, distv
     aster_logical :: loin2
-    integer, pointer :: typmail(:) => null()
-    integer, pointer :: connex(:) => null()
-    integer, pointer :: pjef_tr(:) => null()
+    integer(kind=8), pointer :: typmail(:) => null()
+    integer(kind=8), pointer :: connex(:) => null()
+    integer(kind=8), pointer :: pjef_tr(:) => null()
     real(kind=8), pointer :: pjef_cf(:) => null()
     character(len=24), pointer :: pjxx_k1(:) => null()
-    integer, pointer :: tria3(:) => null()
-    integer, pointer :: vinterc(:) => null()
-    integer, pointer :: lino_loin(:) => null()
+    integer(kind=8), pointer :: tria3(:) => null()
+    integer(kind=8), pointer :: vinterc(:) => null()
+    integer(kind=8), pointer :: lino_loin(:) => null()
 !
 ! --------------------------------------------------------------------------------------------------
 !

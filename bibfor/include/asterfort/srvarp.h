@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -20,8 +20,8 @@
 !
 interface
     subroutine srvarp(vin, nvi, nbmat, mater, tmp, paraep)
-        integer :: nbmat
-        integer :: nvi
+        integer(kind=8) :: nbmat
+        integer(kind=8) :: nvi
         real(kind=8) :: vin(nvi)
         real(kind=8) :: mater(nbmat, 2)
         real(kind=8) :: tmp

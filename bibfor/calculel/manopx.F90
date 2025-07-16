@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -74,21 +74,21 @@ subroutine manopx(model, ligrel, option, param, chsgeo, exixfm, &
 !
 !     ------------------------------------------------------------------
 !
-    integer :: nbout, nbin
+    integer(kind=8) :: nbout, nbin
     parameter(nbout=1, nbin=6)
     character(len=8) :: lpaout(nbout), lpain(nbin)
     character(len=19) :: lchout(nbout), lchin(nbin)
 !
-    integer :: iopt, iopt1, nute, numc, igr, nbgrel
-    integer :: jecono, imolo, jmolo, nec, kfpg
-    integer :: igd, nblfpg, nbfam, jfpgl
-    integer :: k, nuflpg, nufgpg
+    integer(kind=8) :: iopt, iopt1, nute, numc, igr, nbgrel
+    integer(kind=8) :: jecono, imolo, jmolo, nec, kfpg
+    integer(kind=8) :: igd, nblfpg, nbfam, jfpgl
+    integer(kind=8) :: k, nuflpg, nufgpg
     character(len=8) :: nomgd, elrefe, ma
     character(len=16) :: nofpg, nomte
     character(len=19) :: chgeom
     character(len=32) :: noflpg
     character(len=32), pointer :: pnlocfpg(:) => null()
-    integer, pointer :: nolocfpg(:) => null()
+    integer(kind=8), pointer :: nolocfpg(:) => null()
 !     ------------------------------------------------------------------
     call jemarq()
 !

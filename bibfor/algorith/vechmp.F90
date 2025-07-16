@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -29,7 +29,7 @@ subroutine vechmp(nomo, mate, mateco, carele, varplu, lxfem, &
 #include "asterfort/mecact.h"
 #include "asterfort/mecara.h"
 #include "asterfort/mecoor.h"
-    integer :: nbin_maxi, lastin
+    integer(kind=8) :: nbin_maxi, lastin
     character(len=8) :: lpain(nbin_maxi)
     character(len=19) :: lchin(nbin_maxi)
     character(len=8) :: nomo

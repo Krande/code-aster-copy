@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -44,8 +44,8 @@ subroutine addGrpMa(mesh, group_ma, listCells, nbCells, l_added_grpma)
 !
     character(len=8), intent(in)  :: mesh
     character(len=24), intent(in) :: group_ma
-    integer, intent(in)           :: listCells(*)
-    integer, intent(in)           :: nbCells
+    integer(kind=8), intent(in)           :: listCells(*)
+    integer(kind=8), intent(in)           :: nbCells
     aster_logical, intent(out), optional :: l_added_grpma
 !
 !---------------------------------------------------------------------------------------------------
@@ -63,9 +63,9 @@ subroutine addGrpMa(mesh, group_ma, listCells, nbCells, l_added_grpma)
 !
 !---------------------------------------------------------------------------------------------------
     character(len=24) :: grmama, grmamap, nomgrp
-    integer :: nbGrp, iaux, iret
+    integer(kind=8) :: nbGrp, iaux, iret
     aster_logical :: l_parallel_mesh, l_exi_in_grp, l_exi_in_grp_p, l_added
-    integer, pointer :: v_cells(:) => null()
+    integer(kind=8), pointer :: v_cells(:) => null()
     character(len=24), pointer :: v_grpp(:) => null()
 !-----------------------------------------------------------------------
 !
@@ -82,7 +82,7 @@ subroutine addGrpMa(mesh, group_ma, listCells, nbCells, l_added_grpma)
 !
     if (l_exi_in_grp) then
         l_added = ASTER_FALSE
-        call utmess('A', 'SOUSTRUC_88', sk=group_ma)
+        call utmess('F', 'SOUSTRUC_88', sk=group_ma)
     elseif (nbCells <= 0) then
         l_added = ASTER_FALSE
         call utmess('A', 'SOUSTRUC_36', sk=group_ma)

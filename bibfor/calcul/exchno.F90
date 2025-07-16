@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -32,13 +32,8 @@ subroutine exchno(imodat, iparg)
 #include "jeveux.h"
 #include "asterfort/assert.h"
 #include "asterfort/trigd.h"
-#include "asterfort/utmess.h"
-#include "asterfort/jenonu.h"
-#include "asterfort/jexnom.h"
-#include "asterfort/jexnum.h"
-#include "asterfort/jenuno.h"
 !
-    integer :: imodat, iparg
+    integer(kind=8) :: imodat, iparg
 !----------------------------------------------------------------------
 !     entrees:
 !        imodat  : indice dans la collection modeloc
@@ -47,10 +42,10 @@ subroutine exchno(imodat, iparg)
 !        ecriture dans le champ local
 !----------------------------------------------------------------------
 !
-    integer :: ima, ino, nno, nugl
-    integer :: prno1, prno2, modloc, ityplo
-    integer :: deb1, deb2, idg1, idg2, nbpt, nbpt2, lgcata, ncmp
-    integer :: iaux1, k, debugr
+    integer(kind=8) :: ima, ino, nno, nugl
+    integer(kind=8) :: prno1, prno2, modloc, ityplo
+    integer(kind=8) :: deb1, deb2, idg1, idg2, nbpt, nbpt2, lgcata, ncmp
+    integer(kind=8) :: iaux1, k, debugr
     aster_logical :: diff, moyenn
 !
 ! --------------------------------------------------------------------------------------------------

@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -25,27 +25,25 @@ subroutine mdinit(basemo, nbmode, nbnoli, depgen, vitgen, &
     implicit none
 #include "asterf_types.h"
 #include "jeveux.h"
-#include "asterfort/assert.h"
 #include "asterfort/extrac.h"
 #include "asterfort/getvid.h"
 #include "asterfort/getvr8.h"
 #include "asterfort/getvtx.h"
 #include "asterfort/jedema.h"
-#include "asterfort/jelira.h"
 #include "asterfort/jemarq.h"
 #include "asterfort/jeveuo.h"
 #include "asterfort/nlget.h"
 #include "asterfort/nltype.h"
 #include "asterfort/utmess.h"
     character(len=8) :: basemo
-    integer :: nbmode, nbnoli
+    integer(kind=8) :: nbmode, nbnoli
     real(kind=8) :: depgen(*), vitgen(*)
     real(kind=8), pointer :: vint(:)
-    integer :: ier
+    integer(kind=8) :: ier
     real(kind=8) :: tinit
     aster_logical, optional, intent(out) :: reprise
     real(kind=8), optional, intent(out) :: accgen(*)
-    integer, optional, intent(out) :: index
+    integer(kind=8), optional, intent(out) :: index
 !
 !
 ! DONNEES INITIALES
@@ -60,16 +58,16 @@ subroutine mdinit(basemo, nbmode, nbnoli, depgen, vitgen, &
 !                 EST DANS UN CAS DE REPRISE)
 ! OUT : IER    : CODE RETOUR
 ! --------------------------------------------------------------------------------------------------
-    integer :: im, ic
+    integer(kind=8) :: im, ic
     character(len=19) :: nomdep, nomvit
     character(len=8) :: tran, crit, inter
 ! --------------------------------------------------------------------------------------------------
-    integer               :: jdesc, jrefe, n1, jvind, vmessi(2)
-    integer               :: nbinst, nc, ni, np, nt, nbvint, nbnoli0, nl_type, i_bloc, shift
+    integer(kind=8)               :: jdesc, jrefe, n1, jvind, vmessi(2)
+    integer(kind=8)               :: nbinst, nc, ni, np, nt, nbvint, nbnoli0, nl_type, i_bloc, shift
     real(kind=8)          :: prec
     character(len=8)      :: sd_nl
     character(len=24)     :: no1_name, no2_name, vmessk(6), nltype_k0, nltype_k1
-    integer, pointer :: types(:) => null()
+    integer(kind=8), pointer :: types(:) => null()
     real(kind=8), pointer :: acce(:) => null()
     real(kind=8), pointer :: disc(:) => null()
     real(kind=8), pointer :: depl(:) => null()

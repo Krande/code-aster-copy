@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -23,16 +23,15 @@ subroutine gtlmex(v_cninv, v_cninv_lcum, nume_node_cl, nb_elem_mast, list_elem_m
 !
 #include "asterf_types.h"
 #include "jeveux.h"
-#include "asterfort/assert.h"
 
 !
-    integer, pointer :: v_cninv(:)
-    integer, pointer :: v_cninv_lcum(:)
-    integer, intent(in) :: nume_node_cl
-    integer, intent(in) :: nb_elem_mast
-    integer, intent(in) :: list_elem_mast(nb_elem_mast)
-    integer, intent(out) :: list_el_ma_ax(nb_elem_mast)
-    integer, intent(out) :: nb_el_ma_ax
+    integer(kind=8), pointer :: v_cninv(:)
+    integer(kind=8), pointer :: v_cninv_lcum(:)
+    integer(kind=8), intent(in) :: nume_node_cl
+    integer(kind=8), intent(in) :: nb_elem_mast
+    integer(kind=8), intent(in) :: list_elem_mast(nb_elem_mast)
+    integer(kind=8), intent(out) :: list_el_ma_ax(nb_elem_mast)
+    integer(kind=8), intent(out) :: nb_el_ma_ax
 
 !
 ! -------------------------------------------------------------------------------------------------
@@ -54,7 +53,7 @@ subroutine gtlmex(v_cninv, v_cninv_lcum, nume_node_cl, nb_elem_mast, list_elem_m
 !
 ! -------------------------------------------------------------------------------------------------
 !
-    integer :: i_elem
+    integer(kind=8) :: i_elem
 !
 ! -------------------------------------------------------------------------------------------------
 !

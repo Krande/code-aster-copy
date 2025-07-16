@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -35,8 +35,8 @@ subroutine turigi(nomte, nbrddl, k)
 #include "asterfort/rcvala.h"
 #include "asterfort/utmess.h"
     character(len=16) :: nomte
-    integer :: nbrddl, nc
-    integer :: ndim, nnos, idfdk, jdfd2, jgano
+    integer(kind=8) :: nbrddl, nc
+    integer(kind=8) :: ndim, nnos, idfdk, jdfd2, jgano
     real(kind=8) :: b(4, nbrddl), k(nbrddl, nbrddl)
 ! ......................................................................
 !
@@ -53,11 +53,11 @@ subroutine turigi(nomte, nbrddl, k)
 !
 !     VARIABLES LOCALES
 !
-    integer :: nbres, icoude, jnbspi, nbsecm, nbcoum, nspg
+    integer(kind=8) :: nbres, icoude, jnbspi, nbsecm, nbcoum, nspg
     parameter(nbres=9)
     character(len=8) :: nompar
     character(len=16) :: nomres(nbres)
-    integer :: icodre(nbres)
+    integer(kind=8) :: icodre(nbres)
     parameter(nbsecm=32, nbcoum=10)
     real(kind=8) :: poicou(2*nbcoum+1), poisec(2*nbsecm+1)
     real(kind=8) :: valres(nbres), valpar, theta
@@ -67,13 +67,13 @@ subroutine turigi(nomte, nbrddl, k)
     real(kind=8) :: c(4, 4), xpg(4)
     real(kind=8) :: pgl(3, 3), pgl4(3, 3)
     real(kind=8) :: pgl1(3, 3), pgl2(3, 3), pgl3(3, 3), omega
-    integer :: nno, npg, nbcou, nbsec, m
-    integer :: ipoids, ivf, iret
-    integer :: imate, imatuu, igeom, nbpar
-    integer :: igau, icou, isect, i, j, lorien, icoud2, mmt
-    integer :: jcoopg
+    integer(kind=8) :: nno, npg, nbcou, nbsec, m
+    integer(kind=8) :: ipoids, ivf, iret
+    integer(kind=8) :: imate, imatuu, igeom, nbpar
+    integer(kind=8) :: igau, icou, isect, i, j, lorien, icoud2, mmt
+    integer(kind=8) :: jcoopg
 !
-    integer, parameter :: nb_cara1 = 2
+    integer(kind=8), parameter :: nb_cara1 = 2
     real(kind=8) :: vale_cara1(nb_cara1)
     character(len=8) :: noms_cara1(nb_cara1)
     data noms_cara1/'R1', 'EP1'/

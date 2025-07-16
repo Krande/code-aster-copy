@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -27,7 +27,7 @@ subroutine agligr(long, ligrch)
 #include "asterfort/jedupo.h"
 #include "asterfort/jelira.h"
 #include "asterfort/juveca.h"
-    integer :: long
+    integer(kind=8) :: long
     character(len=19) :: ligrch
 ! --------------------------------------------------------------------
 !   AGRANDISSEMENT DU LIGREL DE CHARGE LIGRCH, LONG ETANT SON NOUVEAU-
@@ -52,8 +52,8 @@ subroutine agligr(long, ligrch)
     character(len=24) :: ligr1, ligr2
 !
 !-----------------------------------------------------------------------
-    integer ::  lon1, lon2, long1, long2, long3, nmax1
-    integer :: nmax2
+    integer(kind=8) ::  lon1, lon2, long1, long2, long3, nmax1
+    integer(kind=8) :: nmax2
 !-----------------------------------------------------------------------
     ligr1 = ligrch//'.TRA1'
     ligr2 = ligrch//'.TRA2'

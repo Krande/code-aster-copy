@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -38,18 +38,18 @@ subroutine elno_coq3d(option, nomte, nb1, nb2, npgsr, &
 !          -----------------------------------------------------------
 !
 !-----------------------------------------------------------------------
-    integer :: i, ic, icmp, ii, ino
-    integer :: inte, intsn, intsr, isp, j
-    integer :: jj, k, k1, kpgs, l
-    integer :: nbcou, ncmp, npge, npgt, nso
+    integer(kind=8) :: i, ic, icmp, ii, ino
+    integer(kind=8) :: inte, intsn, intsr, isp, j
+    integer(kind=8) :: jj, k, k1, kpgs, l
+    integer(kind=8) :: nbcou, ncmp, npge, npgt, nso
 !
     real(kind=8) :: s, zero
 !-----------------------------------------------------------------------
     parameter(npge=3)
     parameter(npgt=10)
 !
-    integer :: icou, nordo
-    integer :: nb1, nb2, npgsr, npgsn
+    integer(kind=8) :: icou, nordo
+    integer(kind=8) :: nb1, nb2, npgsr, npgsn
 !
     real(kind=8) :: vecta(9, 2, 3), vectn(9, 3), vectpt(9, 2, 3)
     real(kind=8) :: vectg(2, 3), vectt(3, 3)

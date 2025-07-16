@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -27,10 +27,10 @@ subroutine btldth(fami, xi3, nb1, kpg, btild, &
 #include "asterfort/jevech.h"
 #include "asterfort/rcvarc.h"
 #include "asterfort/utmess.h"
-    integer :: nb1, kpg
+    integer(kind=8) :: nb1, kpg
     real(kind=8) :: wgt, young, nu, alpha, xi3
     real(kind=8) :: btild(5, 42), forthi(1), vecthr(2)
-    integer :: jcou, imoy
+    integer(kind=8) :: jcou, imoy
     character(len=4) :: fami
     real(kind=8) :: p1xi3, p2xi3, p3xi3
 !
@@ -39,7 +39,7 @@ subroutine btldth(fami, xi3, nb1, kpg, btild, &
 !
 !
 !-----------------------------------------------------------------------
-    integer :: i, indic, iret1, iret2, iret3, iret4, k
+    integer(kind=8) :: i, indic, iret1, iret2, iret3, iret4, k
 !
     real(kind=8) :: temper, tinf, tmoy, tref, tsup
 !-----------------------------------------------------------------------

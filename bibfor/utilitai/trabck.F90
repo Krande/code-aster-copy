@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -42,7 +42,7 @@ subroutine trabck(cmess, iexit)
     character(len=*) :: cmess
     integer(kind=4) :: iexit
 !   Dummy argument if ASTER_HAVE_TRACEBACKQQ is not defined
-    integer :: dummy
+    integer(kind=8) :: dummy
     dummy = len(cmess)+iexit
 !
     call print_trace()
@@ -52,7 +52,7 @@ subroutine trabck(cmess, iexit)
     character(len=*) :: cmess
     integer(kind=4) :: iexit
 !   Dummy argument if ASTER_HAVE_TRACEBACKQQ is not defined
-    integer :: dummy
+    integer(kind=8) :: dummy
     dummy = len(cmess)+iexit
 !   do not call utmess (recursivity)
     write (6, *) 'Traceback is not provided by the compiler'

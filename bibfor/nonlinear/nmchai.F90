@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -26,7 +26,7 @@ subroutine nmchai(tychap, tyvarz, vali, tychap_out)
     !
     character(len=6), intent(in) :: tychap
     character(len=*), intent(in) :: tyvarz
-    integer :: vali
+    integer(kind=8) :: vali
     character(len=6), optional, intent(out) :: tychap_out
     !
     ! ----------------------------------------------------------------------
@@ -53,12 +53,12 @@ subroutine nmchai(tychap, tyvarz, vali, tychap_out)
     !
     ! ----------------------------------------------------------------------
     !
-    integer, parameter :: zmeelm = 8
-    integer, parameter :: zmeass = 4
-    integer, parameter :: zveelm = 12
-    integer, parameter :: zveass = 19
-    integer, parameter :: zsolal = 17
-    integer, parameter :: zvalin = 28
+    integer(kind=8), parameter :: zmeelm = 8
+    integer(kind=8), parameter :: zmeass = 4
+    integer(kind=8), parameter :: zveelm = 12
+    integer(kind=8), parameter :: zveass = 19
+    integer(kind=8), parameter :: zsolal = 17
+    integer(kind=8), parameter :: zvalin = 28
     !
     character(len=8) :: lmeelm(zmeelm), lmeass(zmeass)
     character(len=8) :: lveelm(zveelm), lveass(zveass)

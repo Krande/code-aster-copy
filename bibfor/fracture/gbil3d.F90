@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -41,7 +41,7 @@ subroutine gbil3d(dudm, dvdm, dtdm, dfudm, dfvdm, &
     real(kind=8) :: somm1u, somm2u, somm1v, somm2v, prod, siginv(3, 3)
     real(kind=8) :: s2th1u, s2th2u, s2th3u, s2th1v, s2th2v, s2th3v
     real(kind=8) :: s1th, s2th, tther, tfor, tdyn, r8tmp33(3, 3)
-    integer :: i, j, k, p, l, m
+    integer(kind=8) :: i, j, k, p, l, m
 !
     divt = dtdm(1, 1)+dtdm(2, 2)+dtdm(3, 3)
 !
@@ -127,8 +127,8 @@ subroutine gbil3d(dudm, dvdm, dtdm, dfudm, dfvdm, &
           )
 !
   s21 = dudm(1, 1)*dvdm(1, 1)*dtdm(1, 1)+dudm(2, 2)*dvdm(2, 2)*dtdm(2, 2)+dudm(3, 3)*dvdm(3, 3)*dtd&
-            &m(3, 3)+vect(5)*dtdm(1, 2)+vect(2)*dtdm(2, 1)+vect(7)*dtdm(1, 3)+vect(8)*dtdm(3, 1)&
-            & +vect(9)*dtdm(2, 3)+vect(10)*dtdm(3, 2)
+              &m(3, 3)+vect(5)*dtdm(1, 2)+vect(2)*dtdm(2, 1)+vect(7)*dtdm(1, 3)+vect(8)*dtdm(3, 1)&
+              & +vect(9)*dtdm(2, 3)+vect(10)*dtdm(3, 2)
 !
     s22 = vect(1)*(dtdm(1, 1)+dtdm(2, 2))+vect(11)*(dtdm(1, 1)+dtdm(3, 3))+vect(12)*(dtdm(2, 2)+dt&
           &dm(3, 3))+(vect(3)+vect(14))*dtdm(1, 2)+(vect(4)+vect(13))*dtdm(2, 1)+(vect(15)+vec&

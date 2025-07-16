@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -58,16 +58,16 @@ subroutine ssdmdm(mag)
     real(kind=8) :: lisr8(9), dist, a1, a2, a3, dmin, dmax, r1
 ! ----------------------------------------------------------------------
 !-----------------------------------------------------------------------
-    integer :: i, i1noe, i1nol, iacoo2, iacoor
-    integer :: iadim2, iadime, ianmcr, iaparr, iasupm
-    integer :: idim, idimto, ino, inold, iocc
-    integer :: iret, isma, itrou, j, jno, k, n1
-    integer :: n2, n3, n4, n5, nbnoe, nbnoet, nbnol
-    integer :: nbsma, nnnoe, nnnol, nocc
+    integer(kind=8) :: i, i1noe, i1nol, iacoo2, iacoor
+    integer(kind=8) :: iadim2, iadime, ianmcr, iaparr, iasupm
+    integer(kind=8) :: idim, idimto, ino, inold, iocc
+    integer(kind=8) :: iret, isma, itrou, j, jno, k, n1
+    integer(kind=8) :: n2, n3, n4, n5, nbnoe, nbnoet, nbnol
+    integer(kind=8) :: nbsma, nnnoe, nnnol, nocc
     character(len=8), pointer :: lk81(:) => null()
     character(len=8), pointer :: lk82(:) => null()
-    integer, pointer :: desm(:) => null()
-    integer, pointer :: conx(:) => null()
+    integer(kind=8), pointer :: desm(:) => null()
+    integer(kind=8), pointer :: conx(:) => null()
 !-----------------------------------------------------------------------
     call jemarq()
     r1 = r8dgrd()

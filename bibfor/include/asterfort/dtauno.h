@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -25,14 +25,14 @@ interface
                       nnoini, nbnop, tspaq, nommet, nomcri,&
                       nomfor, grdvie, forvie,forcri, nommai, cnsr,&
                       nommap, post, valpar, vresu)
-        integer :: nbnot
-        integer :: jrwork
-        integer :: lisnoe(nbnot)
-        integer :: nbordr
-        integer :: ordini
-        integer :: nnoini
-        integer :: nbnop
-        integer :: tspaq
+        integer(kind=8) :: nbnot
+        integer(kind=8) :: jrwork
+        integer(kind=8) :: lisnoe(nbnot)
+        integer(kind=8) :: nbordr
+        integer(kind=8) :: ordini
+        integer(kind=8) :: nnoini
+        integer(kind=8) :: nbnop
+        integer(kind=8) :: tspaq
         character(len=16) :: nommet
         character(len=16) :: nomcri
         character(len=16) :: nomfor

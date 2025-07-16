@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -48,14 +48,14 @@ subroutine nm3dco(fami, kpg, ksp, ndim, option, &
     real(kind=8) :: sigp(6), vip(*), dsidep(6, 6), crildc(3)
     character(len=16) :: option
     character(len=*) :: fami
-    integer :: ndim, imate, codret, kpg, ksp
+    integer(kind=8) :: ndim, imate, codret, kpg, ksp
 !
     real(kind=8) :: young, nu, kcoef, mcoef, coefdc, limit
     real(kind=8) :: valres(4)
-    integer :: codres(4)
+    integer(kind=8) :: codres(4)
     character(len=16) :: nomres(4)
 !
-    integer :: iter, itemax, ndimsi, i, k, l, m, itd, ibid
+    integer(kind=8) :: iter, itemax, ndimsi, i, k, l, m, itd, ibid
 !
     real(kind=8) :: resi, ecum, ecumm, dcoef, plas
     real(kind=8) :: defe, defc, nuetoi, defpc(3), ecumc, ecumd

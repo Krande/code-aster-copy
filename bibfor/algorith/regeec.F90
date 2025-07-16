@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -71,10 +71,10 @@ subroutine regeec(nomres, resgen, nomsst)
 !
 !
 !
-    integer :: i, iad, ibid, ieq, ier, iord, j, jbid, k, llchab, i_ligr_ss
-    integer :: llchol, llors, llprs, vali(2), nbbas, nbddg, nbmod(1), nbsst
-    integer :: neq, nno, numo, nusst, nutars, iadpar(8)
-    integer :: elim, neqet, neqred, lmapro, lsilia, lsst, lmoet, i1, k1
+    integer(kind=8) :: i, iad, ibid, ieq, ier, iord, j, jbid, k, llchab, i_ligr_ss
+    integer(kind=8) :: llchol, llors, llprs, vali(2), nbbas, nbddg, nbmod(1), nbsst
+    integer(kind=8) :: neq, nno, numo, nusst, nutars, iadpar(8)
+    integer(kind=8) :: elim, neqet, neqred, lmapro, lsilia, lsst, lmoet, i1, k1
     real(kind=8) :: freq, genek, genem, omeg2, rbid, genec, amor
     character(len=8) :: kbid, basmod, mailla, lint, model_gene
     character(len=16) :: depl, nompar(8), typres, quamod
@@ -85,7 +85,7 @@ subroutine regeec(nomres, resgen, nomsst)
     character(len=3) :: typesca
     complex(kind=8) :: cbid
     character(len=24), pointer :: refa(:) => null()
-    integer, pointer :: nueq(:) => null()
+    integer(kind=8), pointer :: nueq(:) => null()
     character(len=24), pointer :: refn(:) => null()
     real(kind=8), pointer :: vale(:) => null()
 !

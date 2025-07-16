@@ -29,7 +29,7 @@ subroutine nmetl1(i_field, ds_inout)
 #include "asterfort/utmess.h"
 #include "asterfort/vtcopy.h"
 !
-    integer, intent(in) :: i_field
+    integer(kind=8), intent(in) :: i_field
     type(NL_DS_InOut), intent(inout) :: ds_inout
 !
 ! --------------------------------------------------------------------------------------------------
@@ -46,7 +46,7 @@ subroutine nmetl1(i_field, ds_inout)
 ! --------------------------------------------------------------------------------------------------
 !
     character(len=8) :: stin_evol
-    integer :: ievol, iret, init_nume
+    integer(kind=8) :: ievol, iret, init_nume
     character(len=24) :: field_resu, field_algo
     character(len=16) :: fieldType
     character(len=24) :: algo_name, init_name
@@ -83,9 +83,9 @@ subroutine nmetl1(i_field, ds_inout)
 ! ----- Copy field
         if (ievol .eq. 0) then
             if (disc_type .eq. 'NOEU') then
-                call vtcopy(field_resu, field_algo, ' ', iret)
+                call vtcopy(field_resu, field_algo, iret)
                 if (iret .ne. 0) then
-                    call utmess('A', 'MECANONLINE_2', sk=fieldType)
+                    call utmess('A', 'MECANONLINE5_80', sk=fieldType)
                 end if
             elseif ((disc_type .eq. 'ELGA') .or. &
                     (disc_type .eq. 'ELNO') .or. &

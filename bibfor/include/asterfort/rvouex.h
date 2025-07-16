@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -22,11 +22,11 @@ interface
     subroutine rvouex(mcf, iocc, nchpt, lstcmp, lstmac,&
                       lstnac, iret)
         character(len=*) :: mcf
-        integer :: iocc
+        integer(kind=8) :: iocc
         character(len=*) :: nchpt
         character(len=24) :: lstcmp
         character(len=24) :: lstmac
         character(len=24) :: lstnac
-        integer :: iret
+        integer(kind=8) :: iret
     end subroutine rvouex
 end interface

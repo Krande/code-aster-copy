@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -102,11 +102,11 @@ subroutine erhmv2(ds_thm, axi, deltat, dimdep, dimdef, &
 !
     type(THM_DS), intent(inout) :: ds_thm
     aster_logical :: axi
-    integer :: dimuel
-    integer :: ndim, nno, nnos, dimdep, dimdef, nmec, np1, np2, n2nd
-    integer :: nbcmp, npg, nddls, nddlm, ipoids, ivf, idfde
-    integer :: ipoid2, ivf2, idfde2
-    integer :: addeme, addete, addep1, addep2, adde2nd
+    integer(kind=8) :: dimuel
+    integer(kind=8) :: ndim, nno, nnos, dimdep, dimdef, nmec, np1, np2, n2nd
+    integer(kind=8) :: nbcmp, npg, nddls, nddlm, ipoids, ivf, idfde
+    integer(kind=8) :: ipoid2, ivf2, idfde2
+    integer(kind=8) :: addeme, addete, addep1, addep2, adde2nd
     real(kind=8) :: deltat, biot, unsurm
     real(kind=8) :: deplp(nno*dimdep), deplm(nno*dimdep)
     real(kind=8) :: fovo(ndim)
@@ -130,7 +130,7 @@ subroutine erhmv2(ds_thm, axi, deltat, dimdep, dimdef, &
     real(kind=8) :: dsxxxp, dsxyyp, dsxyxp, dsyyyp, dsxxxm, dsxyym, dsxyxm, dsyyym
     real(kind=8) :: divuxp, divuyp, divuxm, divuym
     real(kind=8) :: divup, divum, ter11, ter12
-    integer :: ipi, kpi, nn, ii, iaux, jaux
+    integer(kind=8) :: ipi, kpi, nn, ii, iaux, jaux
 !
 ! --------------------------------------------------------------------------------------------------
 !

@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -37,7 +37,7 @@ subroutine gdmups(ne, kp, ajacob, en, enprim, &
     real(kind=8) :: en(3, 2), enprim(3, 2), ups(9, 6)
 !
 !-----------------------------------------------------------------------
-    integer :: i, j, kp, ne
+    integer(kind=8) :: i, j, kp, ne
     real(kind=8) :: ajacob, form, formpr, un, unsurj, zero
 !-----------------------------------------------------------------------
     zero = 0.d0

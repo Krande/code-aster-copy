@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -20,7 +20,7 @@ subroutine vpzbal(mat, neq, mxeq, d, k, &
                   l)
     implicit none
 #include "asterc/r8baem.h"
-    integer :: neq, mxeq, k, l
+    integer(kind=8) :: neq, mxeq, k, l
     real(kind=8) :: mat(mxeq, 1), d(1)
 !     REDUCTION DE LA NORME DE LA MATRICE PAR LA TRANSFORMATION DE
 !     SIMILITUDE STOCKEE DANS "D"
@@ -29,7 +29,7 @@ subroutine vpzbal(mat, neq, mxeq, d, k, &
 !        HANDBOOK FOR AUTOMATIC COMPUTATION - LINEAR ALGEBRA - VOL.2
 !        PAGE 320
 !     ------------------------------------------------------------------
-    integer :: l1, k1, j, i, ll, noconv
+    integer(kind=8) :: l1, k1, j, i, ll, noconv
     real(kind=8) :: b, b2, r, c, f, g, s
 !     ------------------------------------------------------------------
 !     --- RECUPERATION DE LA BASE DE NUMEROTATION DE LA MACHINE

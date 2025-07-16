@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -46,10 +46,10 @@ subroutine nuendo(modelz, nume_ddl, sdnuen)
 !
 ! --------------------------------------------------------------------------------------------------
 !
-    integer :: nb_elem_type, nb_node_found, nbEqua, nb_cmp
-    integer, pointer :: listNode(:) => null()
+    integer(kind=8) :: nb_elem_type, nb_node_found, nbEqua, nb_cmp
+    integer(kind=8), pointer :: listNode(:) => null()
     character(len=8), pointer :: listCmp(:) => null()
-    integer, pointer :: listEqua(:) => null()
+    integer(kind=8), pointer :: listEqua(:) => null()
     character(len=16), pointer :: list_elem_type(:) => null()
 !
 ! --------------------------------------------------------------------------------------------------

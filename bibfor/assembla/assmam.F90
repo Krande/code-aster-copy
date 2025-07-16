@@ -29,7 +29,6 @@ subroutine assmam(jvBase, matrAsseZ, &
 #include "asterf_types.h"
 #include "jeveux.h"
 #include "asterc/cheksd.h"
-#include "asterc/getres.h"
 #include "asterfort/asmpi_barrier.h"
 #include "asterfort/asmpi_comm_vect.h"
 #include "asterfort/assert.h"
@@ -60,7 +59,6 @@ subroutine assmam(jvBase, matrAsseZ, &
 #include "asterfort/jexnum.h"
 #include "asterfort/nbec.h"
 #include "asterfort/nbno.h"
-#include "asterfort/parti0.h"
 #include "asterfort/typmat.h"
 #include "asterfort/utmess.h"
 #include "asterfort/uttcpr.h"
@@ -72,9 +70,9 @@ subroutine assmam(jvBase, matrAsseZ, &
 #include "asterfort/isParallelMatrix.h"
 !
     character(len=1), intent(in) :: jvBase
-    integer, intent(in) :: nbMatrElem
+    integer(kind=8), intent(in) :: nbMatrElem
     character(len=*), intent(in) :: matrAsseZ, listMatrElem(nbMatrElem), numeDofZ
-    integer, intent(in) :: matrScalType
+    integer(kind=8), intent(in) :: matrScalType
     real(kind=8), intent(in) :: coefMatrElem(*)
     character(len=4), intent(in) :: motcle
 !-----------------------------------------------------------------------
@@ -101,42 +99,41 @@ subroutine assmam(jvBase, matrAsseZ, &
     character(len=16) :: optio, optio2
     character(len=1) :: typsca
     character(len=2) :: tt
-    character(len=3) :: mathpc
     character(len=8) ::  nogdco, nogdsi, mesh, mesh2, model, mo2
     character(len=8) :: symel, kempic
     character(len=14) :: numeDof, nu14
     character(len=19) :: matrAsse, mat19, resu, matel, ligre1
-    character(len=21) :: cMeshName
+    character(len=24) :: cMeshName
     character(len=1) :: matsym
     character(len=3) :: matd, answer
     real(kind=8) :: c1, temps(7)
     aster_logical :: acreer, cumul, ldistme, lmatd, l_parallel_matrix
     aster_logical :: lmasym, lmesym, ldgrel, lparallel_mesh, lligrel_cp
-    integer :: admodl, i, nbi1mx
-    integer :: jdesc
-    integer :: jadli, jadne, jnueq, jnulo1
-    integer :: jposd1, jtmp2, lgtmp2
-    integer :: ibid, iconx1, iconx2, idbgav
-    integer :: jprn1, jprn2, jresl, maxDDLMa
-    integer :: iel, ier, ifm, igr
-    integer :: ilima, ilimat, ilimo, ilinu
-    integer :: imat, iresu
-    integer :: iret, itbloc
-    integer :: jrefa, jsmdi, jsmhc, jvalm(2)
-    integer :: lcmodl, mode, n1, nbelm
-    integer :: nblc, nbnomx, nbnoss, nbresu
-    integer :: ncmp, nbvel, nec, nel, nequ, nbproc
-    integer :: niv, nlili, nmxcmp, nnoe
-    integer :: nugd, rang, ieq, idia, ellagr, iexi, ilinu2
-    integer, pointer :: smde(:) => null()
+    integer(kind=8) :: admodl, i, nbi1mx
+    integer(kind=8) :: jdesc
+    integer(kind=8) :: jadli, jadne, jnueq, jnulo1
+    integer(kind=8) :: jposd1, jtmp2, lgtmp2
+    integer(kind=8) :: ibid, iconx1, iconx2, idbgav
+    integer(kind=8) :: jprn1, jprn2, jresl, maxDDLMa
+    integer(kind=8) :: iel, ier, ifm, igr
+    integer(kind=8) :: ilima, ilimo, ilinu
+    integer(kind=8) :: imat, iresu
+    integer(kind=8) :: iret, itbloc
+    integer(kind=8) :: jrefa, jsmdi, jsmhc, jvalm(2)
+    integer(kind=8) :: lcmodl, mode, n1, nbelm
+    integer(kind=8) :: nblc, nbnomx, nbnoss, nbresu
+    integer(kind=8) :: ncmp, nbvel, nec, nel, nequ, nbproc
+    integer(kind=8) :: niv, nlili, nmxcmp, nnoe
+    integer(kind=8) :: nugd, rang, ieq, idia, ellagr, iexi, ilinu2
+    integer(kind=8), pointer :: smde(:) => null()
     character(len=24), pointer :: noli(:) => null()
     character(len=24), pointer :: relr(:) => null()
     character(len=24), pointer :: tco(:) => null()
     character(len=24), pointer :: v_cmno(:) => null()
-    integer, pointer :: assma3_tab1(:) => null(), assma3_tab2(:) => null()
-    integer, pointer :: numsd(:) => null()
-    integer, pointer :: v_crco(:) => null()
-    integer, pointer :: v_refp(:) => null()
+    integer(kind=8), pointer :: assma3_tab1(:) => null(), assma3_tab2(:) => null()
+    integer(kind=8), pointer :: numsd(:) => null()
+    integer(kind=8), pointer :: v_crco(:) => null()
+    integer(kind=8), pointer :: v_refp(:) => null()
 
 !-----------------------------------------------------------------------
 !     FONCTIONS FORMULES :

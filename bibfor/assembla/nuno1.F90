@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -22,7 +22,7 @@ subroutine nuno1(i, iligr, nunoel, n, inum21, &
 !
 #include "jeveux.h"
 #include "asterfort/assert.h"
-    integer :: i, iligr
+    integer(kind=8) :: i, iligr
 !
 !
 ! ---- OBJET : FONCTION INVERSE DU CHAMP .NUNO D'UNE S.D. NUME_DDL
@@ -41,8 +41,8 @@ subroutine nuno1(i, iligr, nunoel, n, inum21, &
 !----------------------------------------------------------------------
 !
 !-----------------------------------------------------------------------
-    integer :: i1, i2, ili, ili1, inum21, inuno2, j
-    integer :: jli, n, nlili, nunoel
+    integer(kind=8) :: i1, i2, ili, ili1, inum21, inuno2, j
+    integer(kind=8) :: jli, n, nlili, nunoel
 !-----------------------------------------------------------------------
     ASSERT((i .gt. 0) .and. (i .le. n))
     j = zi(inum21+i)

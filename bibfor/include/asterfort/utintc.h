@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -35,11 +35,11 @@ interface
         real(kind=8) :: insold
         character(len=8) :: k8cart
         aster_logical :: ltheta
-        integer :: nsomm
+        integer(kind=8) :: nsomm
         real(kind=8) :: valfp(9)
         real(kind=8) :: valfm(9)
-        integer :: ifm
-        integer :: niv
-        integer :: option
+        integer(kind=8) :: ifm
+        integer(kind=8) :: niv
+        integer(kind=8) :: option
     end subroutine utintc
 end interface

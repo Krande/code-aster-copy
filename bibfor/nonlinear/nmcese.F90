@@ -36,11 +36,9 @@ subroutine nmcese(modele, numedd, ds_material, carele, &
 #include "asterfort/nmcere.h"
 #include "asterfort/nmchex.h"
 #include "asterfort/nmrcyc.h"
-#include "asterfort/utdidt.h"
-#include "asterfort/utmess.h"
 !
-    integer :: fonact(*)
-    integer :: iterat
+    integer(kind=8) :: fonact(*)
+    integer(kind=8) :: iterat
     real(kind=8) :: rho, offset, eta(2)
     character(len=19) :: lischa, sdnume, sdpilo, sddisc, matass
     character(len=24) :: modele, numedd, carele
@@ -51,8 +49,8 @@ subroutine nmcese(modele, numedd, ds_material, carele, &
     character(len=19) :: veelem(*), veasse(*)
     character(len=19) :: solalg(*), valinc(*)
     character(len=24) :: typsel
-    integer :: licite(2)
-    integer :: ldccvg, pilcvg
+    integer(kind=8) :: licite(2)
+    integer(kind=8) :: ldccvg, pilcvg
     real(kind=8) :: etaf, criter
     type(NL_DS_System), intent(in) :: ds_system
 !
@@ -109,7 +107,7 @@ subroutine nmcese(modele, numedd, ds_material, carele, &
 !
 ! --------------------------------------------------------------------------------------------------
 !
-    integer :: ldccv(2), indic, sel
+    integer(kind=8) :: ldccv(2), indic, sel
     real(kind=8) :: f(2)
     character(len=19) :: depold, depdel, deppr1, deppr2
     character(len=24) :: typpil
@@ -149,10 +147,10 @@ subroutine nmcese(modele, numedd, ds_material, carele, &
                     sdpilo, rho, eta(2), f(2), &
                     indic)
         if (indic .eq. 0) then
-            call nmceni(numedd, depdel, deppr1, deppr2, rho, &
-                        eta(1), f(1))
-            call nmceni(numedd, depdel, deppr1, deppr2, rho, &
-                        eta(2), f(2))
+            ! on ne peut pas calculer l'angle, on prend la
+            ! racine qui augmente le chargement
+            f(1) = -1.0
+            f(2) = 0.0
         end if
         goto 500
     end if
@@ -220,6 +218,7 @@ subroutine nmcese(modele, numedd, ds_material, carele, &
     if ((f(1) .le. f(2) .and. .not. switch) .or. (f(1) .gt. f(2) .and. switch)) then
         sel = 1
     end if
+
     etaf = eta(sel)
     pilcvg = licite(sel)
     ldccvg = ldccv(sel)

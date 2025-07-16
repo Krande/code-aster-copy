@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -24,37 +24,37 @@
      &optiof,omemin,omemax,omeshi,ddlexc,nfreq,lmasse,lraide,lamor,     &
      &numedd,sigma,icscal,ivscal,iiscal,bwork,flage)
               character(len=16) :: typeqz
-              integer :: qrn
-              integer :: iqrn
-              integer :: lqrn
-              integer :: qrar
-              integer :: qrai
-              integer :: qrba
-              integer :: qrvl
-              integer :: lvec
-              integer :: kqrn
-              integer :: lvalpr
-              integer :: nconv
+              integer(kind=8) :: qrn
+              integer(kind=8) :: iqrn
+              integer(kind=8) :: lqrn
+              integer(kind=8) :: qrar
+              integer(kind=8) :: qrai
+              integer(kind=8) :: qrba
+              integer(kind=8) :: qrvl
+              integer(kind=8) :: lvec
+              integer(kind=8) :: kqrn
+              integer(kind=8) :: lvalpr
+              integer(kind=8) :: nconv
               real(kind=8) :: omecor
               character(len=1) :: ktyp
-              integer :: kqrnr
-              integer :: neqact
-              integer :: ilscal
-              integer :: irscal
+              integer(kind=8) :: kqrnr
+              integer(kind=8) :: neqact
+              integer(kind=8) :: ilscal
+              integer(kind=8) :: irscal
               character(len=16) :: optiof
               real(kind=8) :: omemin
               real(kind=8) :: omemax
               real(kind=8) :: omeshi
-              integer :: ddlexc(*)
-              integer :: nfreq
-              integer :: lmasse
-              integer :: lraide
-              integer :: lamor
+              integer(kind=8) :: ddlexc(*)
+              integer(kind=8) :: nfreq
+              integer(kind=8) :: lmasse
+              integer(kind=8) :: lraide
+              integer(kind=8) :: lamor
               character(len=19) :: numedd
               complex(kind=8) :: sigma
-              integer :: icscal
-              integer :: ivscal
-              integer :: iiscal
+              integer(kind=8) :: icscal
+              integer(kind=8) :: ivscal
+              integer(kind=8) :: iiscal
               logical(kind=4) :: bwork(*)
               aster_logical :: flage
             end subroutine vpqzla

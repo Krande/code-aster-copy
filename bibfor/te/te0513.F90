@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -65,12 +65,12 @@ subroutine te0513(option, nomte)
     real(kind=8) :: sigau, axgau, aygau, azgau, xgau, ygau, zgau
     real(kind=8) :: axxgau, ayygau, azzgau, axygau, axzgau, ayzgau
     real(kind=8) :: vt1(3), vt2(3), vnn(3)
-    integer :: ipoids, ivf, idfdx, idfdy, igeom
-    integer :: ndim, nno, ipg, npg1, nnos, jgano
-    integer :: idec, jdec, kdec, ldec
-    integer :: ino, jno, nddlno
-    integer :: i, j, isect, iorig
-    integer :: ivect1, ivect2
+    integer(kind=8) :: ipoids, ivf, idfdx, idfdy, igeom
+    integer(kind=8) :: ndim, nno, ipg, npg1, nnos, jgano
+    integer(kind=8) :: idec, jdec, kdec, ldec
+    integer(kind=8) :: ino, jno, nddlno
+    integer(kind=8) :: i, j, isect, iorig
+    integer(kind=8) :: ivect1, ivect2
 !
 !
     zero = 0.0d0

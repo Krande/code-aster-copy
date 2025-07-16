@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -22,13 +22,13 @@ interface
     subroutine lcummd(vari, nvari, cmat, nmat, sigm,&
                       nstrs, isph, tdt, hini, hfin,&
                       an, bn, cn, cfps, cfpd)
-        integer :: nmat
-        integer :: nvari
+        integer(kind=8) :: nmat
+        integer(kind=8) :: nvari
         real(kind=8) :: vari(nvari)
         real(kind=8) :: cmat(nmat)
         real(kind=8) :: sigm(6)
-        integer :: nstrs
-        integer :: isph
+        integer(kind=8) :: nstrs
+        integer(kind=8) :: isph
         real(kind=8) :: tdt
         real(kind=8) :: hini
         real(kind=8) :: hfin

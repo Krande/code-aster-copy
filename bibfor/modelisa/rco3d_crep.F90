@@ -23,27 +23,21 @@ subroutine rco3d_crep(cara_elem, noma, &
     implicit none
 !
 #include "jeveux.h"
-#include "asterfort/as_deallocate.h"
-#include "asterfort/as_allocate.h"
 #include "asterfort/assert.h"
 #include "asterfort/carces.h"
 #include "asterfort/cesexi.h"
 #include "asterfort/jedetr.h"
 #include "asterfort/detrsd.h"
 #include "asterc/indik8.h"
-#include "asterfort/jelira.h"
-#include "asterfort/jemarq.h"
-#include "asterfort/jenuno.h"
 #include "asterfort/jeveuo.h"
 #include "asterfort/jexatr.h"
-#include "asterfort/jexnum.h"
 #include "asterfort/utmavo.h"
 #include "asterfort/utmess.h"
 
     character(len=8), intent(in) :: noma
     character(len=8), intent(in) :: cara_elem
     character(len=24), intent(in) :: lismaco
-    integer, intent(in) :: nbmaco
+    integer(kind=8), intent(in) :: nbmaco
     real(kind=8), pointer ::  v_epai(:)
 
 ! -------------------------------------------------------
@@ -63,16 +57,16 @@ subroutine rco3d_crep(cara_elem, noma, &
 !                                   CHAQUE MAILLE.
 ! -------------------------------------------------------
 
-    integer :: p3, p4, iret, nb_para_maxi
-    integer :: iad1, shell_ep_indx
+    integer(kind=8) :: p3, p4, iret, nb_para_maxi
+    integer(kind=8) :: iad1, shell_ep_indx
     real(kind=8) :: shell_ep
     character(len=24)  :: nomavo
     character(len=2)   :: kdim
-    integer :: ibid(1), i, j, k, numa
-    integer, pointer :: v_lmaco(:) => null()
+    integer(kind=8) :: ibid(1), i, j, k, numa
+    integer(kind=8), pointer :: v_lmaco(:) => null()
     real(kind=8), pointer :: v_caraelem_cesv(:) => null()
     character(len=8), pointer :: v_caraelem_cesc(:) => null()
-    integer :: j_caraelem_cesd, j_caraelem_cesl
+    integer(kind=8) :: j_caraelem_cesd, j_caraelem_cesl
     character(len=19) :: cara_elem_s
 
     ! retrieve some informations

@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2020 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -36,9 +36,9 @@ interface
         real(kind=8) :: insold
         real(kind=8) :: inst
         character(len=24) :: resu
-        integer :: niveau
-        integer :: ifm
-        integer :: niv
+        integer(kind=8) :: niveau
+        integer(kind=8) :: ifm
+        integer(kind=8) :: niv
         character(len=8) :: ma
         character(len=19) :: cartef
         character(len=19) :: nomgdf
@@ -51,6 +51,6 @@ interface
         character(len=24) :: chgeom
         character(len=24) :: chsour
         character(len=8) :: psourc
-        integer :: iaux
+        integer(kind=8) :: iaux
     end subroutine resthe
 end interface

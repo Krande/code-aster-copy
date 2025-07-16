@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -44,11 +44,11 @@ subroutine tuforc(option, nomte, nbrddl, b, f, &
     character(len=*) :: option
 !    - FONCTION REALISEE:  CALCUL DES OPTIONS FORC_NODA ET
 !      EFGE_ELNO ELEMENT: MET3SEG3 MET6SEG3 MET3SEG4
-    integer :: nbres, nbrddl, nbsecm, nbcoum, nval
+    integer(kind=8) :: nbres, nbrddl, nbsecm, nbcoum, nval
     parameter(nbres=9)
     character(len=16) :: nomres(nbres)
     character(len=8) :: nompar
-    integer :: icodre(nbres)
+    integer(kind=8) :: icodre(nbres)
     real(kind=8) :: valres(nbres), valpar, h, a, l, e, nu, r1
     parameter(nbsecm=32, nbcoum=10)
     real(kind=8) :: poicou(2*nbcoum+1), poisec(2*nbsecm+1)
@@ -60,19 +60,19 @@ subroutine tuforc(option, nomte, nbrddl, b, f, &
     real(kind=8) :: beta, cisail, fi, g, poids, r, omega, xpg(4)
     real(kind=8) :: pgl1(3, 3), pgl2(3, 3), pgl3(3, 3), rayon, theta
     real(kind=8) :: cp(2, 2), cv(2, 2), co(4, 4), si(4, 4), tk(4), pgl4(3, 3)
-    integer :: nno, npg, nbcou, nbsec, m, nspg
-    integer :: ipoids, ivf, icoude, icoud2
-    integer :: imate, igeom, nbpar, i1, i2, ih, mmt
-    integer :: igau, icou, isect, i, j, jin, jout, iret, ino, kpgs, itab(7)
-    integer :: lorien, indice, k
-    integer :: ip, ic, kp
-    integer :: jnbspi, iret2, nbsp
-    integer :: ndim, nnos, jcoopg, idfdk, jdfd2, jgano
+    integer(kind=8) :: nno, npg, nbcou, nbsec, m, nspg
+    integer(kind=8) :: ipoids, ivf, icoude, icoud2
+    integer(kind=8) :: imate, igeom, nbpar, i1, i2, ih, mmt
+    integer(kind=8) :: igau, icou, isect, i, j, jin, jout, iret, ino, kpgs, itab(7)
+    integer(kind=8) :: lorien, indice, k
+    integer(kind=8) :: ip, ic, kp
+    integer(kind=8) :: jnbspi, iret2, nbsp
+    integer(kind=8) :: ndim, nnos, jcoopg, idfdk, jdfd2, jgano
     real(kind=8) :: epsthe, alphaf, betaf
     real(kind=8) :: alpham, betam, xa, xb, xc, xd
     real(kind=8) :: sigtmp(4), sigref
 !
-    integer, parameter :: nb_cara1 = 2
+    integer(kind=8), parameter :: nb_cara1 = 2
     real(kind=8) :: vale_cara1(nb_cara1)
     character(len=8) :: noms_cara1(nb_cara1)
     blas_int :: b_incx, b_incy, b_n

@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -23,7 +23,7 @@ interface
                       nu2, mu2, dxu2, dryu2, ky,&
                       kz, krx, krz, k01, k02,&
                       rbid)
-        integer :: nbt
+        integer(kind=8) :: nbt
         real(kind=8) :: nu1
         real(kind=8) :: mu1
         real(kind=8) :: dxu1

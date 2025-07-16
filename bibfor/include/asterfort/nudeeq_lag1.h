@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2019 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -22,11 +22,11 @@ interface
     subroutine nudeeq_lag1(mesh, nb_node_mesh, nb_node_subs, nume_ddl, nb_equa,&
                            igds, iddlag)
         character(len=8), intent(in) :: mesh
-        integer, intent(in) :: nb_node_mesh
-        integer, intent(in) :: nb_node_subs
+        integer(kind=8), intent(in) :: nb_node_mesh
+        integer(kind=8), intent(in) :: nb_node_subs
         character(len=14), intent(in) :: nume_ddl
-        integer, intent(in) :: nb_equa
-        integer, intent(in) :: igds
-        integer, intent(in) :: iddlag
+        integer(kind=8), intent(in) :: nb_equa
+        integer(kind=8), intent(in) :: igds
+        integer(kind=8), intent(in) :: iddlag
     end subroutine nudeeq_lag1
 end interface

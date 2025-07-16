@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -38,7 +38,7 @@ subroutine lccong(nr, itmax, toler, iter, r, &
 !     ----------------------------------------------------------------
     implicit none
 #include "asterc/r8prem.h"
-    integer :: nr, itmax, iter, irtet, i
+    integer(kind=8) :: nr, itmax, iter, irtet, i
     real(kind=8) :: toler, r(nr), e1, e2, e1ini, e2ini, errr(2), rini(*)
     real(kind=8) :: yd(*), dy(*), err
 !     ----------------------------------------------------------------

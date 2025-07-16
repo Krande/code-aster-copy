@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -22,13 +22,13 @@ subroutine xelrex(elrefp, nno, xref, ndime)
 #include "asterfort/elraca.h"
 #include "asterfort/elrfno.h"
     character(len=8):: elrefp
-    integer :: nno
-    integer, optional :: ndime
+    integer(kind=8) :: nno
+    integer(kind=8), optional :: ndime
     real(kind=8) :: xref(81)
 !   BUT: INTERFACE VERS ELRACA :
 !         RETOURNE LES COORDONNEES DE REFERENCE DE
 !             L ELEMENT PARENT COMPLET
-    integer :: ndim
+    integer(kind=8) :: ndim
     character(len=8) :: elp
     aster_logical :: transfert
 !=======================================================================

@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -48,7 +48,7 @@ subroutine u195tb(chou)
 !
 !      ==> VARIABLES LOCALES
 !
-    integer :: n1, n2, ibid, nncp
+    integer(kind=8) :: n1, n2, ibid, nncp
     character(len=3) :: prol0
     character(len=8) :: nomgd, ma, mo
     character(len=16) :: tychlu, option, typchs, typch2

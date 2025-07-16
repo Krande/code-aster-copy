@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -30,7 +30,7 @@ function lisexi(prefob, indxch)
 #include "asterfort/lisdef.h"
     aster_logical :: lisexi
     character(len=13) :: prefob
-    integer :: indxch
+    integer(kind=8) :: indxch
 !
 ! ----------------------------------------------------------------------
 !
@@ -48,9 +48,9 @@ function lisexi(prefob, indxch)
 !
 !
     character(len=24) :: nomobj
-    integer :: itypob(2)
+    integer(kind=8) :: itypob(2)
     character(len=19) :: carte
-    integer :: iret
+    integer(kind=8) :: iret
 !
 ! ----------------------------------------------------------------------
 !

@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -21,11 +21,11 @@
 interface
     subroutine lcsolz(a, b, ndim, n, nbscmb,&
                       iret)
-        integer :: nbscmb
-        integer :: ndim
+        integer(kind=8) :: nbscmb
+        integer(kind=8) :: ndim
         complex(kind=8) :: a(ndim, ndim)
         complex(kind=8) :: b(ndim, nbscmb)
-        integer :: n
-        integer :: iret
+        integer(kind=8) :: n
+        integer(kind=8) :: iret
     end subroutine lcsolz
 end interface

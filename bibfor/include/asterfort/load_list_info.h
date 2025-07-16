@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2018 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -23,14 +23,14 @@ interface
                               lload_name_ , lload_info_,&
                               list_load_  ,&
                               list_nbload_, list_name_)
-        integer, intent(out) :: nb_load
+        integer(kind=8), intent(out) :: nb_load
         aster_logical, intent(out) :: load_empty
         character(len=24), pointer :: v_load_name(:)
-        integer, pointer :: v_load_info(:)
+        integer(kind=8), pointer :: v_load_info(:)
         character(len=19), optional, intent(in) :: list_load_
         character(len=*), optional, intent(in) :: lload_name_
         character(len=*), optional, intent(in) :: lload_info_
         character(len=*), optional, target, intent(in) :: list_name_(*)
-        integer, optional, intent(in) :: list_nbload_
+        integer(kind=8), optional, intent(in) :: list_nbload_
     end subroutine load_list_info
 end interface

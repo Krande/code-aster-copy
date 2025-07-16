@@ -6,7 +6,7 @@
  * @brief Fichier entete de la classe MedProfile
  * @author Nicolas Sellenet
  * @section LICENCE
- *   Copyright (C) 1991 - 2023  EDF R&D                www.code-aster.org
+ *   Copyright (C) 1991 - 2025  EDF R&D                www.code-aster.org
  *
  *   This file is part of Code_Aster.
  *
@@ -32,9 +32,9 @@
 #include "med.h"
 
 /** @brief med types used in code_aster */
-constexpr std::array< med_geometry_type, 20 > medTypes = {1,   102, 103, 104, 203, 206, 207,
-                                                          204, 208, 209, 304, 310, 306, 315,
-                                                          318, 305, 313, 308, 320, 327};
+constexpr std::array< med_geometry_type, 20 > medTypes = { 1,   102, 103, 104, 203, 206, 207,
+                                                           204, 208, 209, 304, 310, 306, 315,
+                                                           318, 305, 313, 308, 320, 327 };
 
 #endif
 #endif /* MEDTYPES_H_ */

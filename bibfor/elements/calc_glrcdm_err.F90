@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -23,7 +23,6 @@ subroutine calc_glrcdm_err(l_calc, commax, flexmax, gamma_f, &
 !
 ! PARAMETRES ENTRANTS
 #include "asterf_types.h"
-#include "asterfort/assert.h"
 #include "asterfort/calc_axe_neutre.h"
 #include "asterfort/calc_moment.h"
     real(kind=8) :: commax, flexmax, gamma_f, gamma_c, epsi_c
@@ -37,7 +36,7 @@ subroutine calc_glrcdm_err(l_calc, commax, flexmax, gamma_f, &
     real(kind=8) :: rx, omx, ea, sya, ftj, fcj, nyc, ey, area1, area2
     real(kind=8) :: omy, b, a, ry, pentelf, kappay, e_t, dkappa, kappa
     real(kind=8) :: e0, c, effort, moment, coef, em, ef, myf
-    integer :: nb_decoup, cas, i
+    integer(kind=8) :: nb_decoup, cas, i
 
     rx = valpar(1)
     omx = valpar(2)

@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -57,16 +57,16 @@ subroutine strmag(nugene, typrof)
 !-----------------------------------------------------------------------
 !
 !-----------------------------------------------------------------------
-    integer :: i, iad1, iad1c, iad1l, iad2l, iadc, iadcou
-    integer :: iadl, ibid, ieq, ifimes, ilig, j, jschc, jsmde
-    integer :: jsmdi, jsmhc, k, kterm, l, lc, lcolmx
-    integer :: lcomoy, lh, ll, lldefl, llorl
-    integer :: llors, llprl, llprs, nbcol, nblig, nbloc
-    integer :: nbprno, nbsst, neq, nsstar, ntbloc, nterm
-    integer :: ntprno, nuant, nulia, nusst, hcol
+    integer(kind=8) :: i, iad1, iad1c, iad1l, iad2l, iadc, iadcou
+    integer(kind=8) :: iadl, ibid, ieq, ifimes, ilig, j, jschc, jsmde
+    integer(kind=8) :: jsmdi, jsmhc, k, kterm, l, lc, lcolmx
+    integer(kind=8) :: lcomoy, lh, ll, lldefl, llorl
+    integer(kind=8) :: llors, llprl, llprs, nbcol, nblig, nbloc
+    integer(kind=8) :: nbprno, nbsst, neq, nsstar, ntbloc, nterm
+    integer(kind=8) :: ntprno, nuant, nulia, nusst, hcol
     real(kind=8) :: rtbloc
-    integer, pointer :: nueq(:) => null()
-    integer, pointer :: nequ(:) => null()
+    integer(kind=8), pointer :: nueq(:) => null()
+    integer(kind=8), pointer :: nequ(:) => null()
     character(len=24), pointer :: refn(:) => null()
 !-----------------------------------------------------------------------
     call jemarq()

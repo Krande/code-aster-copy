@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -34,7 +34,7 @@ subroutine ssvau1(nomacr, iavein, iaveou)
 #include "asterfort/rldlr8.h"
 !
     character(len=8) :: nomacr
-    integer :: iavein, iaveou
+    integer(kind=8) :: iavein, iaveou
 ! ----------------------------------------------------------------------
 !     BUT:
 !         "CONDENSER" UN  VECTEUR CHARGEMENT D'UN MACR_ELEM_STAT :
@@ -58,17 +58,17 @@ subroutine ssvau1(nomacr, iavein, iaveou)
 ! ----------------------------------------------------------------------
 !
 !
-    integer :: scdi, schc, iblo
+    integer(kind=8) :: scdi, schc, iblo
     character(len=19) :: matas, stock, nu
 !
 !-----------------------------------------------------------------------
-    integer :: iascbl, iascdi, iblold, j
-    integer :: jualf, k, kk, lmat, nbbloc, nddle
-    integer :: nddli, nddlt
-    integer, pointer :: desm(:) => null()
-    integer, pointer :: vschc(:) => null()
+    integer(kind=8) :: iascbl, iascdi, iblold, j
+    integer(kind=8) :: jualf, k, kk, lmat, nbbloc, nddle
+    integer(kind=8) :: nddli, nddlt
+    integer(kind=8), pointer :: desm(:) => null()
+    integer(kind=8), pointer :: vschc(:) => null()
     character(len=24), pointer :: refa(:) => null()
-    integer, pointer :: scib(:) => null()
+    integer(kind=8), pointer :: scib(:) => null()
 !-----------------------------------------------------------------------
     call jemarq()
 !

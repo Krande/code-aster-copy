@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -32,7 +32,6 @@ subroutine te0304(option, nomte)
 !
 #include "jeveux.h"
 !
-#include "asterfort/assert.h"
 #include "asterfort/elrefe_info.h"
 #include "asterfort/fointe.h"
 #include "asterfort/jevech.h"
@@ -40,9 +39,9 @@ subroutine te0304(option, nomte)
     character(len=16) :: nomte, option
     real(kind=8) :: nx, ny, nz, sx(9, 9), sy(9, 9), sz(9, 9), xx, yy, zz, jac
     real(kind=8) :: tem, theta, hechp, valpar(4)
-    integer :: ipoids, ivf, idfdx, idfdy, igeom, i, itemp, itemps, ndim, nno
-    integer :: ipg, npg1, ivectt, ihechp, ino, jno, idec, jdec, kdec, ldec, ier
-    integer :: j, nnos, jgano
+    integer(kind=8) :: ipoids, ivf, idfdx, idfdy, igeom, i, itemp, itemps, ndim, nno
+    integer(kind=8) :: ipg, npg1, ivectt, ihechp, ino, jno, idec, jdec, kdec, ldec, ier
+    integer(kind=8) :: j, nnos, jgano
 !
 !====
 ! 1.1 PREALABLES: RECUPERATION ADRESSES FONCTIONS DE FORMES...

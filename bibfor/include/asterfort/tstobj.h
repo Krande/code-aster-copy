@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -23,13 +23,13 @@ interface
                       lonuti, lonmax, type, iret, ni)
         character(len=*) :: ob
         character(len=*) :: perm
-        integer :: resume
-        integer :: sommi
+        integer(kind=8) :: resume
+        integer(kind=8) :: sommi
         real(kind=8) :: sommr
-        integer :: lonuti
-        integer :: lonmax
+        integer(kind=8) :: lonuti
+        integer(kind=8) :: lonmax
         character(len=3) :: type
-        integer :: iret
-        integer :: ni
+        integer(kind=8) :: iret
+        integer(kind=8) :: ni
     end subroutine tstobj
 end interface

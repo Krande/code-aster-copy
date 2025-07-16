@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -42,7 +42,7 @@ subroutine ccpoux(resuin, typesd, nordre, nbchre, ioccur, &
 #include "asterfort/rsadpa.h"
 #include "asterfort/rsexch.h"
 #include "asterfort/utmess.h"
-    integer :: nbpain, nordre, nbchre, ioccur, iret
+    integer(kind=8) :: nbpain, nordre, nbchre, ioccur, iret
     character(len=8) :: resuin, lipain(*)
     character(len=16) :: typesd
     character(len=19) :: kcharg
@@ -72,8 +72,8 @@ subroutine ccpoux(resuin, typesd, nordre, nbchre, ioccur, &
 ! person_in_charge: nicolas.sellenet at edf.fr
     aster_logical :: exif1d
 !
-    integer :: ltymo, lfreq, neq, lvale, lacce, ii, i
-    integer :: l1, l3, n1, ipara, ier, linst
+    integer(kind=8) :: ltymo, lfreq, neq, lvale, lacce, ii, i
+    integer(kind=8) :: l1, l3, n1, ipara, ier, linst
 !
     real(kind=8) :: zero, un, coeff, valres
     real(kind=8) :: alpha, tps(11), freq, inst

@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -39,18 +39,18 @@ subroutine coefra(ipas, ires, x, xsi0, ck)
 #include "asterfort/jemarq.h"
 #include "asterfort/jeveuo.h"
 #include "asterfort/utmess.h"
-    integer :: ipas, ires
-    integer :: jborne, jcoeff, jvired
+    integer(kind=8) :: ipas, ires
+    integer(kind=8) :: jborne, jcoeff, jvired
     real(kind=8) :: ck, xsi0
 !
-    integer :: nborck, nckmax, iret
+    integer(kind=8) :: nborck, nckmax, iret
     real(kind=8) :: zero, bornck(20), coefck(20, 11)
     character(len=24) :: nom1, nom2, nom3
 !
 !-----------------------------------------------------------------------
 !
 !-----------------------------------------------------------------------
-    integer :: i, ipas1, ires1, j, k
+    integer(kind=8) :: i, ipas1, ires1, j, k
     real(kind=8) :: x
 !-----------------------------------------------------------------------
     call jemarq()

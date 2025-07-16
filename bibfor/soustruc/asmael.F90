@@ -27,7 +27,6 @@ subroutine asmael(ma1, ma2, mag)
 #include "asterfort/jeexin.h"
 #include "asterfort/jelira.h"
 #include "asterfort/jemarq.h"
-#include "asterfort/jenonu.h"
 #include "asterfort/jenuno.h"
 #include "asterfort/jeveuo.h"
 #include "asterfort/jexnom.h"
@@ -45,27 +44,27 @@ subroutine asmael(ma1, ma2, mag)
 !
 !-----------------------------------------------------------------------
 !
-    character(len=8) :: noma, nono, nosma, nomacr
+    character(len=8) ::  nono, nosma, nomacr
     character(len=24) :: valk(3), nogma, nogno
     real(kind=8) :: x, y, z, drefe, dij
 !     ------------------------------------------------------------------
 !
 !-----------------------------------------------------------------------
-    integer :: i, i1, i1noe, i1nol, iacon1, iacon2, iaconx
-    integer :: iacoo2, iacoor, iadime, iadimp
-    integer :: iagma1, iagma2, iagmax, iagno1, iagno2, iagnox, iancnf
-    integer :: ianmcr, ianon2, iaparr
-    integer :: iasup1, iasup2, iasupm, iatyma, iatyp1, iatyp2, iatypx
-    integer :: ibid, ico, icompt, ii, iret, iret1, iret2
-    integer :: itrou, j, l1, l2, l3, n, nbgm1
-    integer :: nbgm2, nbgma, nbgn1, nbgn2, nbgno, nbl1, nbm1
-    integer :: nbm2, nbma, nbn1, nbn2, nbno, nbnoe, nbnol
-    integer :: nbsm1, nbsm2, nbsma, ncoor, ier
-    integer, pointer :: dim1(:) => null()
-    integer, pointer :: dim2(:) => null()
+    integer(kind=8) :: i, i1, i1noe, i1nol, iacon1, iacon2, iaconx
+    integer(kind=8) :: iacoo2, iacoor, iadime, iadimp
+    integer(kind=8) :: iagma1, iagma2, iagmax, iagno1, iagno2, iagnox, iancnf
+    integer(kind=8) :: ianmcr, ianon2, iaparr
+    integer(kind=8) :: iasup1, iasup2, iasupm, iatyma, iatyp1, iatyp2, iatypx
+    integer(kind=8) :: ibid, icompt, ii, iret, iret1, iret2
+    integer(kind=8) :: itrou, j, l1, l2, l3, n, nbgm1
+    integer(kind=8) :: nbgm2, nbgma, nbgn1, nbgn2, nbgno, nbl1, nbm1
+    integer(kind=8) :: nbm2, nbma, nbn1, nbn2, nbno, nbnoe, nbnol
+    integer(kind=8) :: nbsm1, nbsm2, nbsma, ncoor, ier
+    integer(kind=8), pointer :: dim1(:) => null()
+    integer(kind=8), pointer :: dim2(:) => null()
     real(kind=8), pointer :: par1(:) => null()
     real(kind=8), pointer :: par2(:) => null()
-    integer, pointer :: desm(:) => null()
+    integer(kind=8), pointer :: desm(:) => null()
     character(len=8), pointer :: nmc1(:) => null()
     character(len=8), pointer :: nmc2(:) => null()
     aster_logical :: lcolle, lcolle2

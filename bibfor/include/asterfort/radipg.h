@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -24,14 +24,14 @@ interface
                       vari1, vari2)
         real(kind=8) :: sig1(*)
         real(kind=8) :: sig2(*)
-        integer :: npg
-        integer :: nbsig
+        integer(kind=8) :: npg
+        integer(kind=8) :: nbsig
         real(kind=8) :: radia(*)
         real(kind=8) :: cosang(*)
-        integer :: ind
+        integer(kind=8) :: ind
         character(len=16) :: compor
-        integer :: imate
-        integer :: nvi
+        integer(kind=8) :: imate
+        integer(kind=8) :: nvi
         real(kind=8) :: vari1(*)
         real(kind=8) :: vari2(*)
     end subroutine radipg

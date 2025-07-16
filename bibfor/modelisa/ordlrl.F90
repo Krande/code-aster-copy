@@ -69,7 +69,7 @@ subroutine ordlrl(charge, lisrel, nomgd)
 !
 ! --------- VARIABLES LOCALES ---------------------------
     character(len=24) :: valk(2)
-    integer :: nmocl
+    integer(kind=8) :: nmocl
     parameter(nmocl=300)
     complex(kind=8) :: coproc, rapcoc, dcmplx
     character(len=4) :: typcoe
@@ -79,26 +79,26 @@ subroutine ordlrl(charge, lisrel, nomgd)
     character(len=19) :: ligrmo
 ! --------- FIN  DECLARATIONS  VARIABLES LOCALES --------
     real(kind=8) :: copror, difrel, eps1, eps2, epsrel, rapcoe, coemax
-    integer :: i, icmp, icomp, iddl, iddl1, iddl2, ideca1, ideca2
-    integer :: idecal, in, indmax, ino, ier
-    integer ::  inom, ipntr1, ipntr2, ipntrl, irela, irela1
-    integer :: irela2
-    integer ::  jprnm, jrlco, jrlco1, jrlco2, jrlcof
-    integer :: jrldd
-    integer :: jrlno, idnoe1, idnoe2, idnoeu
-    integer :: nbcmp, nbec, nbrela, nbtema, nbter1, nbter2, nbterm
-    integer :: nddla, nidrel
-    integer, pointer :: rlnt(:) => null()
+    integer(kind=8) :: i, icmp, icomp, iddl, iddl1, iddl2, ideca1, ideca2
+    integer(kind=8) :: idecal, in, indmax, ino, ier
+    integer(kind=8) ::  inom, ipntr1, ipntr2, ipntrl, irela, irela1
+    integer(kind=8) :: irela2
+    integer(kind=8) ::  jprnm, jrlco, jrlco1, jrlco2, jrlcof
+    integer(kind=8) :: jrldd
+    integer(kind=8) :: jrlno, idnoe1, idnoe2, idnoeu
+    integer(kind=8) :: nbcmp, nbec, nbrela, nbtema, nbter1, nbter2, nbterm
+    integer(kind=8) :: nddla, nidrel
+    integer(kind=8), pointer :: rlnt(:) => null()
     character(len=8), pointer :: rltc(:) => null()
-    integer, pointer :: rlsu(:) => null()
-    integer, pointer :: rlpo(:) => null()
-    integer, pointer :: rlnr(:) => null()
+    integer(kind=8), pointer :: rlsu(:) => null()
+    integer(kind=8), pointer :: rlpo(:) => null()
+    integer(kind=8), pointer :: rlnr(:) => null()
     character(len=8), pointer :: lgrf(:) => null()
     complex(kind=8), pointer :: coef_c(:) => null()
-    integer, pointer :: coefmax(:) => null()
+    integer(kind=8), pointer :: coefmax(:) => null()
     real(kind=8), pointer :: coef_r(:) => null()
-    integer, pointer :: noeud_occ(:) => null()
-    integer, pointer :: noeud_rela(:) => null()
+    integer(kind=8), pointer :: noeud_occ(:) => null()
+    integer(kind=8), pointer :: noeud_rela(:) => null()
     aster_logical :: lcolle
 !
     call jemarq()

@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2018 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -30,7 +30,7 @@ interface
                       vectce, vectcm, vectfe, vectfm)
         character(len=4), intent(in) :: phase
         aster_logical, intent(in) :: l_pena_cont, l_pena_fric, l_large_slip
-        integer, intent(in) :: ndim, nne, nnm
+        integer(kind=8), intent(in) :: ndim, nne, nnm
         real(kind=8), intent(in) :: norm(3), tau1(3), tau2(3), mprojt(3, 3)
         real(kind=8), intent(in) :: wpg, ffe(9), ffm(9), dffm(2,9), jacobi, jeu
         real(kind=8), intent(in) :: coefac, coefaf, lambda, coefff

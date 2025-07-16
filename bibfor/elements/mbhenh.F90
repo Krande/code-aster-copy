@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -20,7 +20,6 @@ subroutine mbhenh(imate, kpg, fami, aini, adef, jacini, jacdef, sigpk2, dsigpk2)
 !
     implicit none
 #include "asterf_types.h"
-#include "asterfort/assert.h"
 #include "asterfort/fctlam.h"
 #include "jeveux.h"
 #include "asterfort/rccoma.h"
@@ -28,7 +27,7 @@ subroutine mbhenh(imate, kpg, fami, aini, adef, jacini, jacdef, sigpk2, dsigpk2)
 #include "asterfort/utmess.h"
 !
     character(len=4) :: fami
-    integer :: kpg, imate
+    integer(kind=8) :: kpg, imate
     real(kind=8) :: aini(2, 2), jacini
     real(kind=8) :: adef(2, 2), jacdef
     real(kind=8) :: sigpk2(2, 2), dsigpk2(2, 2, 2, 2)
@@ -52,9 +51,9 @@ subroutine mbhenh(imate, kpg, fami, aini, adef, jacini, jacdef, sigpk2, dsigpk2)
 !
     character(len=16) :: nomres(26)
     character(len=32) :: phenom
-    integer :: icodre(26)
-    integer :: nbv
-    integer :: alpha, beta, gamma, delta
+    integer(kind=8) :: icodre(26)
+    integer(kind=8) :: nbv
+    integer(kind=8) :: alpha, beta, gamma, delta
     real(kind=8) :: valres(26)
     real(kind=8) :: young, nu, lambda, mu, c33
     real(kind=8) :: xfctlam, wfctlam

@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -46,14 +46,14 @@ subroutine nonlinDSPrintInit(ds_print, sdsuiv_)
 !
 ! --------------------------------------------------------------------------------------------------
 !
-    integer :: ifm, niv
-    integer :: i_col, i_dof_monitor, nb_dof_monitor, nb_cols, i_col_name
+    integer(kind=8) :: ifm, niv
+    integer(kind=8) :: i_col, i_dof_monitor, nb_dof_monitor, nb_cols, i_col_name
     type(NL_DS_Table) :: table_cvg
     type(NL_DS_Column) :: col
     character(len=24) :: col_name
     character(len=1) :: indsui
     character(len=24) :: sdsuiv_info
-    integer, pointer :: v_sdsuiv_info(:) => null()
+    integer(kind=8), pointer :: v_sdsuiv_info(:) => null()
     character(len=24) :: sdsuiv_titr
     character(len=16), pointer :: v_sdsuiv_titr(:) => null()
 !

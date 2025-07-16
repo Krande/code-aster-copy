@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -21,14 +21,14 @@
 interface
     subroutine irgmm3(nomain, nomaou, nbmat, nummai, basz,&
                       nobj, nbel, versio)
-        integer, parameter :: ntyele=28
+        integer(kind=8), parameter :: ntyele=28
         character(len=8) :: nomain
         character(len=8) :: nomaou
-        integer :: nbmat
-        integer :: nummai(*)
+        integer(kind=8) :: nbmat
+        integer(kind=8) :: nummai(*)
         character(len=*) :: basz
         character(len=24) :: nobj(ntyele)
-        integer :: nbel(ntyele)
-        integer :: versio
+        integer(kind=8) :: nbel(ntyele)
+        integer(kind=8) :: versio
     end subroutine irgmm3
 end interface

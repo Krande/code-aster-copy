@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -25,11 +25,10 @@ subroutine dbr_calcpod_savel(base, nbMode, nbSnapRedu, baseSing, baseValeR)
 !
 #include "asterfort/as_allocate.h"
 #include "asterfort/as_deallocate.h"
-#include "asterfort/assert.h"
 #include "asterfort/romBaseSave.h"
 !
     type(ROM_DS_Empi), intent(in) :: base
-    integer, intent(in) :: nbMode, nbSnapRedu
+    integer(kind=8), intent(in) :: nbMode, nbSnapRedu
     real(kind=8), pointer :: baseValeR(:), baseSing(:)
 !
 ! --------------------------------------------------------------------------------------------------
@@ -48,11 +47,11 @@ subroutine dbr_calcpod_savel(base, nbMode, nbSnapRedu, baseSing, baseValeR)
 !
 ! --------------------------------------------------------------------------------------------------
 !
-    integer :: iSlice, iMode, nodeNume, cmpNume, i_2d, iEqua
-    integer :: nbSlice, n_2d, nbCmp, nbLineMode, nbEqua
+    integer(kind=8) :: iSlice, iMode, nodeNume, cmpNume, i_2d, iEqua
+    integer(kind=8) :: nbSlice, n_2d, nbCmp, nbLineMode, nbEqua
     real(kind=8), pointer :: lineModesVale(:) => null()
     real(kind=8), pointer :: lineModesSing(:) => null()
-    integer, pointer :: numeSlice(:) => null()
+    integer(kind=8), pointer :: numeSlice(:) => null()
     type(ROM_DS_LineicNumb) :: lineicNume
 !
 ! --------------------------------------------------------------------------------------------------

@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -50,8 +50,8 @@ subroutine calirc(phenomZ, load, model)
     character(len=4), parameter :: valeType = 'REEL'
     character(len=16), parameter :: factorKeyword = 'LIAISON_MAIL'
     character(len=19) :: listLineRela
-    integer :: ifm, niv
-    integer :: nbOcc
+    integer(kind=8) :: ifm, niv
+    integer(kind=8) :: nbOcc
     aster_logical :: lVerbose
 !
 ! --------------------------------------------------------------------------------------------------

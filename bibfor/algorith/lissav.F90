@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -28,13 +28,13 @@ subroutine lissav(lischa, ichar, charge, typech, genrec, &
 #include "asterfort/jeveuo.h"
     character(len=19) :: lischa
     character(len=13) :: prefob
-    integer :: ichar
+    integer(kind=8) :: ichar
     character(len=8) :: charge
     character(len=16) :: typapp, typfct
-    integer :: genrec, motclc(2)
+    integer(kind=8) :: genrec, motclc(2)
     character(len=8) :: typech, nomfct
     real(kind=8) :: phase
-    integer :: npuis
+    integer(kind=8) :: npuis
 !
 ! ----------------------------------------------------------------------
 !
@@ -73,9 +73,9 @@ subroutine lissav(lischa, ichar, charge, typech, genrec, &
 ! ----------------------------------------------------------------------
 !
     character(len=24) :: nomcha, genrch, typcha, typeap, precha, mocfch
-    integer :: jncha, jgenc, jtypc, jtypa, jprec, jmcfc
+    integer(kind=8) :: jncha, jgenc, jtypc, jtypa, jprec, jmcfc
     character(len=24) :: nomfon, typfon, valfon
-    integer :: jnfon, jtfon, jvfon
+    integer(kind=8) :: jnfon, jtfon, jvfon
 !
 ! ----------------------------------------------------------------------
 !

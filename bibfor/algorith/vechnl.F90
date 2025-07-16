@@ -59,8 +59,8 @@ subroutine vechnl(model, loadNameJv, loadInfoJv, time, &
 !
 ! --------------------------------------------------------------------------------------------------
 !
-    integer, parameter :: nbin = 4
-    integer, parameter :: nbout = 1
+    integer(kind=8), parameter :: nbin = 4
+    integer(kind=8), parameter :: nbout = 1
     character(len=8) :: lpain(nbin), lpaout(nbout)
     character(len=19) :: lchin(nbin), lchout(nbout)
     character(len=1) :: c1
@@ -68,11 +68,11 @@ subroutine vechnl(model, loadNameJv, loadInfoJv, time, &
     character(len=16) :: option
     character(len=19) :: resu_elem
     character(len=24) :: ligrmo, chgeom
-    integer :: iret, load_nume
+    integer(kind=8) :: iret, load_nume
     aster_logical :: load_empty
-    integer :: i_load, nb_load
+    integer(kind=8) :: i_load, nb_load
     character(len=24), pointer :: v_load_name(:) => null()
-    integer, pointer :: v_load_info(:) => null()
+    integer(kind=8), pointer :: v_load_info(:) => null()
 !
 ! --------------------------------------------------------------------------------------------------
 !

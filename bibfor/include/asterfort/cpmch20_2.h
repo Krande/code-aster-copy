@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -20,10 +20,10 @@
 !
 interface
     subroutine cpmch20_2(conloc, jmacsu, indno, indma, conneo)
-        integer, intent(in) :: indma
-        integer, intent(in) :: indno
-        integer, intent(in) :: jmacsu
-        integer, intent(in) :: conneo(*)
+        integer(kind=8), intent(in) :: indma
+        integer(kind=8), intent(in) :: indno
+        integer(kind=8), intent(in) :: jmacsu
+        integer(kind=8), intent(in) :: conneo(*)
         character(len=24), intent(in) :: conloc
     end subroutine cpmch20_2
 end interface

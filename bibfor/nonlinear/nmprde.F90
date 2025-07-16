@@ -15,7 +15,6 @@
 ! You should have received a copy of the GNU General Public License
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
-! person_in_charge: mickael.abbas at edf.fr
 ! aslint: disable=W1504
 !
 subroutine nmprde(modele, numedd, numfix, ds_material, carele, &
@@ -39,11 +38,12 @@ subroutine nmprde(modele, numedd, numfix, ds_material, carele, &
 #include "asterfort/nmprca.h"
 #include "asterfort/nmprdc.h"
 #include "asterfort/nmprex.h"
+#include "asterfort/utmess.h"
 #include "asterfort/vtcopy.h"
 #include "asterfort/vtzero.h"
 !
-    integer :: fonact(*)
-    integer :: numins, ldccvg, faccvg, rescvg
+    integer(kind=8) :: fonact(*)
+    integer(kind=8) :: numins, ldccvg, faccvg, rescvg
     type(NL_DS_AlgoPara), intent(in) :: ds_algopara
     character(len=19) :: maprec, matass
     type(NL_DS_Measure), intent(inout) :: ds_measure
@@ -117,7 +117,7 @@ subroutine nmprde(modele, numedd, numfix, ds_material, carele, &
     character(len=19) :: incest, depest, depmoi
     character(len=19) :: depso1, depso2
     aster_logical :: lproj
-    integer :: iret
+    integer(kind=8) :: iret
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -150,11 +150,13 @@ subroutine nmprde(modele, numedd, numfix, ds_material, carele, &
     else
         ASSERT(.false.)
     end if
-!
+
 ! --- RECOPIE DE LA SOLUTION
-!
     if (numins .eq. 1) then
-        call vtcopy(incest, depso1, 'F', iret)
+        call vtcopy(incest, depso1, iret)
+        if (iret .ne. 0) then
+            call utmess('F', 'MECANONLINE2_29')
+        end if
     else
         call copisd('CHAMP_GD', 'V', incest, depso1)
     end if

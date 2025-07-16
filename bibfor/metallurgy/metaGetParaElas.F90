@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -22,14 +22,13 @@ subroutine metaGetParaElas(poum, fami, kpg, ksp, j_mater, &
 !
     implicit none
 !
-#include "asterfort/assert.h"
 #include "asterfort/rcvalb.h"
 #include "asterfort/Metallurgy_type.h"
 !
     character(len=1), intent(in) :: poum
     character(len=*), intent(in) :: fami
-    integer, intent(in) :: kpg, ksp
-    integer, intent(in) :: j_mater
+    integer(kind=8), intent(in) :: kpg, ksp
+    integer(kind=8), intent(in) :: j_mater
     real(kind=8), optional, intent(out) :: e_, deuxmu_, mu_, troisk_
     real(kind=8), optional, intent(out) :: em_, deuxmum_, mum_, troiskm_
 !
@@ -57,11 +56,11 @@ subroutine metaGetParaElas(poum, fami, kpg, ksp, j_mater, &
 !
 ! --------------------------------------------------------------------------------------------------
 !
-    integer, parameter :: nb_resu_max = 2
+    integer(kind=8), parameter :: nb_resu_max = 2
     real(kind=8) :: resu_vale(nb_resu_max)
-    integer :: codret(nb_resu_max)
+    integer(kind=8) :: codret(nb_resu_max)
     character(len=16) :: resu_name(nb_resu_max)
-    integer :: nb_resu
+    integer(kind=8) :: nb_resu
     real(kind=8) :: em, num, deuxmum, mum, troiskm
     real(kind=8) :: e, nu, deuxmu, mu, troisk
 !

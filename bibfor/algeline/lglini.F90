@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -39,7 +39,7 @@ subroutine lglini(yd, nbmat, mater, f0, sigd, &
 #include "asterfort/varecr.h"
 #include "asterfort/wkvect.h"
 #include "blas/ddot.h"
-    integer :: nbmat, codret
+    integer(kind=8) :: nbmat, codret
     real(kind=8) :: yd(10), mater(nbmat, 2), f0, sigd(6), deps(6)
     real(kind=8) :: devg(6), devgii, traceg, dy(10)
 ! --- BUT : CALCUL INITIAL POUR LE PREMIER MULTIPLICATEUR PLASTIQUE ----
@@ -57,7 +57,7 @@ subroutine lglini(yd, nbmat, mater, f0, sigd, &
 ! ======================================================================
 ! ======================================================================
     aster_logical :: teste
-    integer :: jpara, jderiv, ii, ndt, ndi
+    integer(kind=8) :: jpara, jderiv, ii, ndt, ndi
     real(kind=8) :: se(6), gamp, delta, siie, pref, epssig
     real(kind=8) :: gamcjs, rcos3t, re, ge
     real(kind=8) :: q(6), vecn(6), ie

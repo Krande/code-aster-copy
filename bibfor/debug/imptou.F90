@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -44,8 +44,8 @@ subroutine imptou(base, tous, mess)
     character(len=1) :: bas1
     character(len=8) :: kbid
     character(len=24) :: obj, dejavu
-    integer :: i, iret, nbval, nbobj
-    integer :: nuobj
+    integer(kind=8) :: i, iret, nbval, nbobj
+    integer(kind=8) :: nuobj
     character(len=24), pointer :: liste(:) => null()
 !
     call jemarq()

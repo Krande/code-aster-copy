@@ -47,7 +47,7 @@ subroutine nmpipe(modele, ligrpi, cartyp, careta, ds_material, &
 #include "asterfort/sdmpic.h"
 #include "asterfort/wkvect.h"
 !
-    integer :: pilcvg, nbeffe
+    integer(kind=8) :: pilcvg, nbeffe
     real(kind=8) :: tau, eta(2)
     character(len=24) :: typpil
     character(len=19) :: ddepl0, ddepl1
@@ -88,14 +88,14 @@ subroutine nmpipe(modele, ligrpi, cartyp, careta, ds_material, &
 !
 ! --------------------------------------------------------------------------------------------------
 !
-    integer :: nbout, nbin
+    integer(kind=8) :: nbout, nbin
     parameter(nbout=1, nbin=24)
     character(len=8) :: lpaout(nbout), lpain(nbin)
     character(len=19) :: lchout(nbout), lchin(nbin)
 !
-    integer :: nbma, nbpt, icmp, ma, pt, npg, nbgmax
-    integer :: jcesd, jcesl, ja0a1, ja0, ja1, ja2, ja3, jtrav
-    integer :: iret, ja4
+    integer(kind=8) :: nbma, nbpt, icmp, ma, pt, npg, nbgmax
+    integer(kind=8) :: jcesd, jcesl, ja0a1, ja0, ja1, ja2, ja3, jtrav
+    integer(kind=8) :: iret, ja4
     character(len=8) :: cpar
     character(len=19) :: copilo, copils, ctau
     character(len=24) :: a0a1, trav
@@ -103,7 +103,7 @@ subroutine nmpipe(modele, ligrpi, cartyp, careta, ds_material, &
     character(len=19) :: depmoi, sigmoi, varmoi, commoi
     character(len=19) :: depplu
     character(len=16) :: option
-    integer :: ifmdbg, nivdbg
+    integer(kind=8) :: ifmdbg, nivdbg
     aster_logical :: debug
     real(kind=8), pointer :: cesv(:) => null()
 !

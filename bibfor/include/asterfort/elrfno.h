@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -20,7 +20,7 @@
 interface
     subroutine elrfno(elrefz, nno, nnos, ndim, nodeCoor, cellVolu)
         character(len=*), intent(in)        :: elrefz
-        integer, optional, intent(out)      :: nno, ndim, nnos
+        integer(kind=8), optional, intent(out)      :: nno, ndim, nnos
         real(kind=8), optional, intent(out) :: nodeCoor(3, MT_NNOMAX), cellVolu
     end subroutine elrfno
 end interface

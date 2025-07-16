@@ -27,12 +27,11 @@ subroutine ngpipe(typilo, npg, neps, nddl, b, &
 #include "asterc/r8vide.h"
 #include "asterfort/assert.h"
 #include "asterfort/pil000.h"
-#include "asterfort/r8inir.h"
 #include "blas/dgemv.h"
     character(len=8) :: typmod(*)
     character(len=16) :: typilo, compor(*)
 !
-    integer :: npg, neps, nddl, mat, lgpg
+    integer(kind=8) :: npg, neps, nddl, mat, lgpg
     real(kind=8) :: ddlm(nddl), ddld(nddl), ddl0(nddl), ddl1(nddl)
     real(kind=8) :: sigm(neps, npg), vim(lgpg, npg), tau
     real(kind=8) :: copilo(5, npg), etamin, etamax
@@ -60,7 +59,7 @@ subroutine ngpipe(typilo, npg, neps, nddl, b, &
 ! IN  DDL1   : CORRECTION DE DDL U,ALPHA,MU POUR FORCES PILOTEES
 ! OUT COPILO : COEFFICIENTS A0 ET A1 POUR CHAQUE POINT DE GAUSS
 ! ----------------------------------------------------------------------
-    integer :: g, nepg
+    integer(kind=8) :: g, nepg
     real(kind=8) :: sigmam(neps, npg)
     real(kind=8) :: epsm(neps, npg), epsd_pilo(neps, npg)
     real(kind=8) :: epsd_cste(neps, npg)

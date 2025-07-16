@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -46,7 +46,7 @@ subroutine srd2fs(nmat, materf, para, vara, varh, i1, devsig, ds2hds, d2shds, d2
     !!! Variable globale
     !!!
 
-    integer :: nmat
+    integer(kind=8) :: nmat
     real(kind=8) :: d2fds2(6, 6), para(3), vara(4), materf(nmat, 2)
     real(kind=8) :: devsig(6), i1, ds2hds(6), varh(2), d2shds(6, 6)
 
@@ -54,7 +54,7 @@ subroutine srd2fs(nmat, materf, para, vara, varh, i1, devsig, ds2hds, d2shds, d2
     !!! Variables locales
     !!!
 
-    integer :: ndi, ndt, i
+    integer(kind=8) :: ndi, ndt, i
     real(kind=8) :: sigc, sii, coef1, coef2, vident(6), vect1(6)
     real(kind=8) :: mat1(6, 6), mat2(6, 6), mat3(6, 6), ucri
     common/tdim/ndt, ndi

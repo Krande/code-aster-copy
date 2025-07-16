@@ -25,9 +25,9 @@ interface
                      dnsinf_crit, dnssup_crit, effn0_crit, effm0_crit, effn_crit, effm_crit, &
                      myNrd_crit, myMrd_crit, bw, tau_crit, c0c_crit, c0crd_crit)
 
-      integer ::typcmb
-      integer :: typco
-      integer :: nb
+      integer(kind=8) ::typcmb
+      integer(kind=8) :: typco
+      integer(kind=8) :: nb
       real(kind=8) :: cequi
       real(kind=8) :: alphacc
       real(kind=8) :: ht
@@ -40,10 +40,10 @@ interface
       real(kind=8) :: fbeton
       real(kind=8) :: gammas
       real(kind=8) :: gammac
-      integer :: clacier
+      integer(kind=8) :: clacier
       real(kind=8) :: eys
-      integer :: typdiag
-      integer :: uc
+      integer(kind=8) :: typdiag
+      integer(kind=8) :: uc
       real(kind=8) :: effrts(8)
       real(kind=8) :: effref(8)
       real(kind=8) :: dnsxi

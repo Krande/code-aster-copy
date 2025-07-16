@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -26,7 +26,6 @@ subroutine compEnergyPotential(option, modelz, ligrel, compor, l_temp, &
 !
 #include "asterf_types.h"
 #include "asterfort/ajchca.h"
-#include "asterfort/assert.h"
 #include "asterfort/detrsd.h"
 #include "asterfort/exisd.h"
 #include "asterfort/meceuc.h"
@@ -38,7 +37,7 @@ subroutine compEnergyPotential(option, modelz, ligrel, compor, l_temp, &
     character(len=*), intent(in) :: chharm, chgeom, chmate, chcara(*), chtime
     character(len=*), intent(in) :: chvarc, chvref
     character(len=*), intent(in) :: chelemz, basez
-    integer, intent(out) :: codret
+    integer(kind=8), intent(out) :: codret
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -51,14 +50,14 @@ subroutine compEnergyPotential(option, modelz, ligrel, compor, l_temp, &
 !
 ! --------------------------------------------------------------------------------------------------
 !
-    integer, parameter :: maxin = 65, maxout = 1
+    integer(kind=8), parameter :: maxin = 65, maxout = 1
     character(len=8) :: lpain(maxin), lpaout(maxout)
     character(len=24) :: lchin(maxin), lchout(maxout)
     character(len=1) :: base
     character(len=8) :: model, cara_elem
     character(len=24) :: chdisp, chelem, chtemp
-    integer :: iret
-    integer :: nbin, nbout
+    integer(kind=8) :: iret
+    integer(kind=8) :: nbin, nbout
 !
 ! --------------------------------------------------------------------------------------------------
 !

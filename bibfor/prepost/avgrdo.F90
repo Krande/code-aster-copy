@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -33,16 +33,16 @@ subroutine avgrdo(nbvec, nbordr, vectn, vwork, tdisp, &
 #include "asterfort/jedetr.h"
 #include "asterfort/wkvect.h"
 !
-    integer :: nbvec, nbordr, tdisp, kwork, sommw, tspaq, i
+    integer(kind=8) :: nbvec, nbordr, tdisp, kwork, sommw, tspaq, i
     real(kind=8) :: vectn(3*nbvec)
     real(kind=8) :: vwork(tdisp)
     character(len=16) :: nomcri, forvie, nomfor, grdvie
     character(len=8) :: nommat
 !    integer :: omin(nbvec*(nbordr+2)), omax(nbvec*(nbordr+2))
-    integer :: jomin, jomax, jvmin, jvmax
+    integer(kind=8) :: jomin, jomax, jvmin, jvmax
     real(kind=8) :: vala, coefpa
 !    real(kind=8) :: vmin(nbvec*(nbordr+2)), vmax(nbvec*(nbordr+2))
-    integer :: vnormx(2), ncycl(nbvec), nbplan
+    integer(kind=8) :: vnormx(2), ncycl(nbvec), nbplan
     aster_logical :: post
     real(kind=8) :: cudomx
 !
@@ -111,7 +111,7 @@ subroutine avgrdo(nbvec, nbordr, vectn, vwork, tdisp, &
 !         DE CHAQUE VECTEUR NORMAL
 !
 !    real(kind=8) :: gdreq(nbvec*nbordr)
-    integer :: jgdreq, jnrupt, jdomel
+    integer(kind=8) :: jgdreq, jnrupt, jdomel
     real(kind=8) :: domtot(nbvec)
 !    real(kind=8) :: nrupt(nbvec*nbordr), domel(nbvec*nbordr), domtot(nbvec)
 !  ------------------------------------------------------------------

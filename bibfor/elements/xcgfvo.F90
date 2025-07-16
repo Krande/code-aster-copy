@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -29,7 +29,7 @@ subroutine xcgfvo(option, ndim, nnop, fno)
 #include "asterfort/rcvalb.h"
 #include "asterfort/tecach.h"
     character(len=16) :: option
-    integer :: ndim, nnop
+    integer(kind=8) :: ndim, nnop
     real(kind=8) :: fno(ndim*nnop)
 !
 ! person_in_charge: samuel.geniaut at edf.fr
@@ -45,12 +45,12 @@ subroutine xcgfvo(option, ndim, nnop, fno)
 !
 !
 !
-    integer :: igeom, imate, iforc, iforf, itemps, ipesa, irota
-    integer :: iret, ino, j, kk
-    integer, parameter :: mxstac = 1000
+    integer(kind=8) :: igeom, imate, iforc, iforf, itemps, ipesa, irota
+    integer(kind=8) :: iret, ino, j, kk
+    integer(kind=8), parameter :: mxstac = 1000
     aster_logical :: fonc
     real(kind=8) :: valpar(4), rbid, om, omo, val(1), rhocst
-    integer :: icodre(1)
+    integer(kind=8) :: icodre(1)
     character(len=8) :: nompar(4)
     character(len=16) :: phenom
 !

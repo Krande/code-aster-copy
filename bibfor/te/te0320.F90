@@ -27,12 +27,10 @@ subroutine te0320(option, nomte)
     implicit none
 !
 #include "jeveux.h"
-#include "asterc/r8vide.h"
 #include "asterfort/assert.h"
 #include "asterfort/elrefe_info.h"
 #include "asterfort/jevech.h"
 #include "asterfort/Metallurgy_type.h"
-#include "asterfort/rcvalb.h"
 #include "asterfort/utmess.h"
 #include "MeshTypes_type.h"
 !
@@ -52,12 +50,12 @@ subroutine te0320(option, nomte)
 !
 ! --------------------------------------------------------------------------------------------------
 !
-    integer, parameter :: nbVariSteel = 9, nbVariZirc = 5
+    integer(kind=8), parameter :: nbVariSteel = 9, nbVariZirc = 5
     character(len=16), pointer :: comporMeta(:) => null()
     character(len=16) :: metaType
     real(kind=8) :: ms0, phase_tot, phase_ucold
-    integer :: nbNode, nbPhase, nbVari
-    integer :: jvMater, jvTemp, jvPhaseIn, jvPhaseOut
+    integer(kind=8) :: nbNode, nbPhase, nbVari
+    integer(kind=8) :: jvMater, jvTemp, jvPhaseIn, jvPhaseOut
 !
 ! --------------------------------------------------------------------------------------------------
 !

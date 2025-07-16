@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -25,11 +25,10 @@ subroutine romGreedyResiMaxi(ds_multipara, ds_algoGreedy, i_coef_maxi)
 !
 #include "asterf_types.h"
 #include "asterc/r8gaem.h"
-#include "asterfort/assert.h"
 !
     type(ROM_DS_MultiPara), intent(in) :: ds_multipara
     type(ROM_DS_AlgoGreedy), intent(in) :: ds_algoGreedy
-    integer, intent(out) :: i_coef_maxi
+    integer(kind=8), intent(out) :: i_coef_maxi
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -45,7 +44,7 @@ subroutine romGreedyResiMaxi(ds_multipara, ds_algoGreedy, i_coef_maxi)
 !
 ! --------------------------------------------------------------------------------------------------
 !
-    integer :: i_coef, nb_coef
+    integer(kind=8) :: i_coef, nb_coef
     real(kind=8) :: vale_maxi
 !
 ! --------------------------------------------------------------------------------------------------

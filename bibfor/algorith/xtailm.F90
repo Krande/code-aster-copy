@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -25,7 +25,7 @@ subroutine xtailm(ndim, vecdir, numa, typma, jcoor, &
 #include "asterfort/jedema.h"
 #include "asterfort/jemarq.h"
 #include "blas/ddot.h"
-    integer :: ndim, numa, jcoor, jconx1, jconx2, ipt, jtail
+    integer(kind=8) :: ndim, numa, jcoor, jconx1, jconx2, ipt, jtail
     real(kind=8) :: vecdir(ndim)
     character(len=8) :: typma
 !
@@ -48,8 +48,8 @@ subroutine xtailm(ndim, vecdir, numa, typma, jcoor, &
 !                CONNECTEES AUX NOEUDS DU FOND DE FISSURE
 !
 !
-    integer :: ar(12, 3)
-    integer :: iar, ino1, ino2, k, nbar, nno1, nno2
+    integer(kind=8) :: ar(12, 3)
+    integer(kind=8) :: iar, ino1, ino2, k, nbar, nno1, nno2
     real(kind=8) :: arete(3), p
     blas_int :: b_incx, b_incy, b_n
 !     -----------------------------------------------------------------

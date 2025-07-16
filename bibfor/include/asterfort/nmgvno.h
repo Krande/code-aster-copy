@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -24,21 +24,21 @@ interface
                       lgpg, carcri, instam, instap, ddlm, &
                       ddld, angmas, sigm, vim, sigp, &
                       vip, matr, vect, codret)
-        integer :: lgpg
-        integer :: npg
-        integer :: nno2
-        integer :: nno1
-        integer :: ndim
+        integer(kind=8) :: lgpg
+        integer(kind=8) :: npg
+        integer(kind=8) :: nno2
+        integer(kind=8) :: nno1
+        integer(kind=8) :: ndim
         character(len=*) :: fami
-        integer :: iw
+        integer(kind=8) :: iw
         real(kind=8) :: vff1(nno1, npg)
         real(kind=8) :: vff2(nno2, npg)
-        integer :: idfde1
-        integer :: idfde2
+        integer(kind=8) :: idfde1
+        integer(kind=8) :: idfde2
         real(kind=8) :: geom(ndim, nno1)
         character(len=8) :: typmod(2)
         character(len=16) :: option
-        integer :: mat
+        integer(kind=8) :: mat
         character(len=16) :: compor(COMPOR_SIZE)
         real(kind=8) :: carcri(CARCRI_SIZE)
         real(kind=8) :: instam
@@ -52,6 +52,6 @@ interface
         real(kind=8) :: vip(lgpg, npg)
         real(kind=8) :: matr(*)
         real(kind=8) :: vect(*)
-        integer :: codret
+        integer(kind=8) :: codret
     end subroutine nmgvno
 end interface

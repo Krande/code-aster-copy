@@ -37,9 +37,7 @@ subroutine te0437(nomopt, nomte)
 #include "asterfort/foderi.h"
 #include "asterfort/HHO_size_module.h"
 #include "asterfort/jevech.h"
-#include "asterfort/lteatt.h"
 #include "asterfort/readVector.h"
-#include "asterfort/writeMatrix.h"
 #include "jeveux.h"
 !
 ! --------------------------------------------------------------------------------------------------
@@ -57,7 +55,7 @@ subroutine te0437(nomopt, nomte)
     type(HHO_Data) :: hhoData
     type(HHO_Cell) :: hhoCell
     type(HHO_basis_cell) :: hhoBasisCell
-    integer :: cbs, fbs, total_dofs, npg, isour, ipg, itime, faces_dofs
+    integer(kind=8) :: cbs, fbs, total_dofs, npg, isour, ipg, itime, faces_dofs
     character(len=8), parameter :: fami = 'RIGI'
     real(kind=8) :: VoluValuesQP(MAX_QP_CELL)
     real(kind=8) :: theta, sour, dsdt, temp_eval

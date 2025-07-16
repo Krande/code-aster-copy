@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -32,10 +32,10 @@ subroutine utflmd(mailla, limail, nbmail, dim, typmai, &
 #include "asterfort/wkvect.h"
     character(len=8), intent(in) :: mailla
     character(len=*), intent(in) :: limail
-    integer, intent(in) :: nbmail
-    integer, intent(in) :: dim
+    integer(kind=8), intent(in) :: nbmail
+    integer(kind=8), intent(in) :: dim
     character(len=*), intent(in) :: typmai
-    integer, intent(out) :: nbtrou
+    integer(kind=8), intent(out) :: nbtrou
     character(len=*), intent(out) :: litrou
 ! person_in_charge: josselin.delmas at edf.fr
 !
@@ -69,7 +69,7 @@ subroutine utflmd(mailla, limail, nbmail, dim, typmai, &
 !
 !
 !
-    integer :: ilimai, lonmax, itrma
+    integer(kind=8) :: ilimai, lonmax, itrma
 !
 !
 ! ----------------------------------------------------------------------

@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -73,8 +73,8 @@ subroutine uteref(chanom, typech, tyelas, nomte, lfichUniq, &
 #include "asterfort/utmess.h"
 #include "asterfort/asmpi_comm_vect.h"
 !
-    integer :: tyelas
-    integer :: nnos, nno, nbpg, ndim
+    integer(kind=8) :: tyelas
+    integer(kind=8) :: nnos, nno, nbpg, ndim
 !
     real(kind=8) :: refcoo(*), gscoo(*), wg(*)
 !
@@ -85,19 +85,19 @@ subroutine uteref(chanom, typech, tyelas, nomte, lfichUniq, &
     character(len=64) :: nochmd
     aster_logical :: lfichUniq
 !
-    integer :: codret
+    integer(kind=8) :: codret
 !
 !
 ! 0.3. ==> VARIABLES LOCALES
 !
-    integer :: nbpg00(MT_NBFAMX), imolo, nec, kfpg, nbfpg, nbfpg2, ifam
-    integer :: itype, nb1, nbelr, jmolo, idime, ipg
-    integer :: ifm, nivinf, igrel
-    integer :: ierd, jliel, nbgrel
-    integer :: iaux, dimtopo, vimolo(1)
+    integer(kind=8) :: nbpg00(MT_NBFAMX), imolo, nec, kfpg, nbfpg, nbfpg2, ifam
+    integer(kind=8) :: itype, nb1, nbelr, jmolo, idime, ipg
+    integer(kind=8) :: ifm, nivinf, igrel
+    integer(kind=8) :: ierd, jliel, nbgrel
+    integer(kind=8) :: iaux, dimtopo, vimolo(1)
     aster_logical :: ljoint, lpenta
 !
-    integer, parameter:: lgmax = 1000
+    integer(kind=8), parameter:: lgmax = 1000
 !
     real(kind=8) :: gscoo2(3*lgmax)
 !
@@ -109,7 +109,7 @@ subroutine uteref(chanom, typech, tyelas, nomte, lfichUniq, &
     character(len=19) :: ligrel, resu
 !
     real(kind=8) :: vol
-    integer, pointer :: celd(:) => null()
+    integer(kind=8), pointer :: celd(:) => null()
     character(len=24), pointer :: celk(:) => null()
 !-----------------------------------------------------------------------
 !     1- PREALABLES

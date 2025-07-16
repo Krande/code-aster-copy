@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -25,16 +25,15 @@ subroutine romModeParaRead(resultName, numeMode, &
     implicit none
 !
 #include "jeveux.h"
-#include "asterfort/assert.h"
 #include "asterfort/rsadpa.h"
 !
     character(len=8), intent(in) :: resultName
-    integer, intent(in) :: numeMode
+    integer(kind=8), intent(in) :: numeMode
     character(len=8), optional, intent(out)  :: model_
     character(len=24), optional, intent(out) :: modeSymbName_
-    integer, optional, intent(out)           :: numeSlice_
+    integer(kind=8), optional, intent(out)           :: numeSlice_
     real(kind=8), optional, intent(out)      :: modeSing_
-    integer, optional, intent(out)           :: nbSnap_
+    integer(kind=8), optional, intent(out)           :: nbSnap_
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -54,8 +53,8 @@ subroutine romModeParaRead(resultName, numeMode, &
 !
 ! --------------------------------------------------------------------------------------------------
 !
-    integer :: jvPara
-    integer :: numeSlice, nbSnap
+    integer(kind=8) :: jvPara
+    integer(kind=8) :: numeSlice, nbSnap
     character(len=24) :: modeSymbName
     real(kind=8) :: modeSing
     character(len=8) :: model

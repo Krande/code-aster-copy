@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -20,8 +20,8 @@
 !
 interface
     subroutine xellin(elref1, nno1, elref2, nno2)
-        integer :: nno1
-        integer :: nno2
+        integer(kind=8) :: nno1
+        integer(kind=8) :: nno2
         character(len=8) :: elref1
         character(len=8) :: elref2
     end subroutine xellin

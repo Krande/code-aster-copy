@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -20,11 +20,11 @@
 interface
     subroutine xdelt0(elrefp, ndime, tabls, ptxx, ksi, delta, arete)
         character(len=8) :: elrefp
-        integer :: ndime
+        integer(kind=8) :: ndime
         real(kind=8) :: ksi
         real(kind=8) :: tabls(*)
         real(kind=8) :: delta
         real(kind=8) :: ptxx(*)
-        integer, intent(in), optional :: arete
+        integer(kind=8), intent(in), optional :: arete
     end subroutine xdelt0
 end interface

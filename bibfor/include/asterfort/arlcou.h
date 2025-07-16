@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -22,8 +22,8 @@ interface
     subroutine arlcou(mail  ,iocc,  nomo  ,typmai,         &
                       nom1  ,nom2  ,cine  , &
                       dime, lisrel, charge)
-        integer :: dime
-        integer :: iocc
+        integer(kind=8) :: dime
+        integer(kind=8) :: iocc
         character(len=24) :: typmai
         character(len=8) :: mail
         character(len=8) :: nomo

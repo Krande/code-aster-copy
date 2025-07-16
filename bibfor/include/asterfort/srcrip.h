@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -22,8 +22,8 @@ interface
     subroutine srcrip(invar, s, vin, nvi, nbmat, mater, tmp, ucrip, seuil)
         real(kind=8) :: invar
         real(kind=8) :: s(6)
-        integer :: nvi
-        integer :: nbmat
+        integer(kind=8) :: nvi
+        integer(kind=8) :: nbmat
         real(kind=8) :: vin(nvi)
         real(kind=8) :: mater(nbmat,2)
         real(kind=8) :: tmp

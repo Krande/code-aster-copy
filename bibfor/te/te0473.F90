@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -45,7 +45,7 @@ subroutine te0473(option, nomte)
 !
     type(HHO_Data) :: hhoData
     type(HHO_Cell) :: hhoCell
-    integer :: cbs, fbs, total_dofs, jvale, jfunc
+    integer(kind=8) :: cbs, fbs, total_dofs, jvale, jfunc
     real(kind=8) :: time
     character(len=8) :: func
     real(kind=8), dimension(MSIZE_TDOFS_VEC) :: coeff_L2Proj

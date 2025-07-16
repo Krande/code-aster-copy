@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -22,13 +22,12 @@ subroutine zgauss(v_matr, v_2mbr, dim, nb, v_solu)
 !
 #include "asterf_types.h"
 #include "asterc/matfpe.h"
-#include "asterfort/assert.h"
 #include "blas/zgesvx.h"
 !
 ! aslint: disable=W1306
 !
-    integer, intent(in) :: dim
-    integer, intent(in) :: nb
+    integer(kind=8), intent(in) :: dim
+    integer(kind=8), intent(in) :: nb
     complex(kind=8), pointer :: v_matr(:)
     complex(kind=8), pointer :: v_2mbr(:)
     complex(kind=8), pointer :: v_solu(:)

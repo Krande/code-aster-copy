@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -20,9 +20,9 @@
 !
 interface
     subroutine i2trgi(t1, t2, n2, pt)
-        integer :: t1(*)
-        integer :: t2(*)
-        integer :: n2
-        integer :: pt
+        integer(kind=8) :: t1(*)
+        integer(kind=8) :: t2(*)
+        integer(kind=8) :: n2
+        integer(kind=8) :: pt
     end subroutine i2trgi
 end interface

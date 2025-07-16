@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -22,11 +22,11 @@ interface
     subroutine infted(nomte, symetr, nbterm, nbnoeu, nbcomp,&
                       ndimen, itype)
         character(len=*) :: nomte
-        integer :: symetr
-        integer :: nbterm
-        integer :: nbnoeu
-        integer :: nbcomp
-        integer :: ndimen
-        integer :: itype
+        integer(kind=8) :: symetr
+        integer(kind=8) :: nbterm
+        integer(kind=8) :: nbnoeu
+        integer(kind=8) :: nbcomp
+        integer(kind=8) :: ndimen
+        integer(kind=8) :: itype
     end subroutine infted
 end interface

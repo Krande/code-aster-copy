@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -20,14 +20,12 @@ subroutine utncmp3(nume_equa, ncmp, list_cmp, list_name)
     implicit none
 #include "jeveux.h"
 #include "asterfort/assert.h"
-#include "asterfort/dgmode.h"
 #include "asterfort/dismoi.h"
 #include "asterfort/exisdg.h"
 #include "asterfort/jedema.h"
 #include "asterfort/jelira.h"
 #include "asterfort/jemarq.h"
 #include "asterfort/jeveuo.h"
-#include "asterfort/jexatr.h"
 #include "asterfort/jexnum.h"
 #include "asterfort/nbec.h"
 #include "asterfort/utmess.h"
@@ -35,19 +33,19 @@ subroutine utncmp3(nume_equa, ncmp, list_cmp, list_name)
 #include "asterfort/as_deallocate.h"
 #include "asterfort/as_allocate.h"
 !
-    integer :: ncmp
+    integer(kind=8) :: ncmp
     character(len=*) :: nume_equa, list_cmp, list_name
 !
 !     RENVOIE UN LIEN iCMP -> NOM
 !
 !     ------------------------------------------------------------------
 !
-    integer :: jprno, gd, nec, tabec(10), j, ino, iec, icmp, ncmpmx
-    integer ::  iad, kcmp, nnoe, ncmpt
-    integer :: jcmp
+    integer(kind=8) :: jprno, gd, nec, tabec(10), j, ino, iec, icmp, ncmpmx
+    integer(kind=8) ::  iad, kcmp, nnoe, ncmpt
+    integer(kind=8) :: jcmp
     character(len=8) :: noma, exilag
     character(len=19) :: nume_equa19
-    integer, pointer :: vicmp(:) => null()
+    integer(kind=8), pointer :: vicmp(:) => null()
 !     ------------------------------------------------------------------
     call jemarq()
 !

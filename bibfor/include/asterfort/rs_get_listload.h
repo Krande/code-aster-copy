@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -21,8 +21,8 @@
 interface
     subroutine rs_get_listload(result_, nume, list_load, iexcit)
         character(len=*), intent(in) :: result_
-        integer, intent(in) :: nume
+        integer(kind=8), intent(in) :: nume
         character(len=*), intent(out) :: list_load
-        integer, intent(out) :: iexcit
+        integer(kind=8), intent(out) :: iexcit
     end subroutine rs_get_listload
 end interface

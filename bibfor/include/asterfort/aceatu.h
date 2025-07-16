@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -22,10 +22,10 @@ interface
     subroutine aceatu(noma, nomo, nbepo, ntyele, ivr, nbocc)
         character(len=8) :: noma
         character(len=8) :: nomo
-        integer :: nbepo
-        integer :: ntyele(*)
-        integer :: ivr(*)
-        integer :: ifm
-        integer :: nbocc(*)
+        integer(kind=8) :: nbepo
+        integer(kind=8) :: ntyele(*)
+        integer(kind=8) :: ivr(*)
+        integer(kind=8) :: ifm
+        integer(kind=8) :: nbocc(*)
     end subroutine aceatu
 end interface

@@ -34,19 +34,17 @@ subroutine ornorm(mesh, listCellNume, nbCell, reorie, norien, nconex, &
 #include "asterfort/jedema.h"
 #include "asterfort/jedetr.h"
 #include "asterfort/jemarq.h"
-#include "asterfort/jenuno.h"
 #include "asterfort/jeveuo.h"
 #include "asterfort/jexatr.h"
-#include "asterfort/jexnum.h"
 #include "asterfort/utmavo.h"
 #include "asterfort/utmess.h"
 #include "asterfort/int_to_char8.h"
 !
     character(len=8), intent(in) :: mesh
-    integer, intent(in) :: nbCell
-    integer, pointer :: listCellNume(:)
+    integer(kind=8), intent(in) :: nbCell
+    integer(kind=8), pointer :: listCellNume(:)
     aster_logical, intent(in) :: reorie
-    integer, intent(out) :: norien, nconex
+    integer(kind=8), intent(out) :: norien, nconex
     aster_logical, intent(in), optional :: onlySkin1D_
 !.======================================================================
 !
@@ -60,24 +58,24 @@ subroutine ornorm(mesh, listCellNume, nbCell, reorie, norien, nconex, &
 !    NORIEN        VAR            NOMBRE DE MAILLES REORIENTEES
 !.========================= DEBUT DES DECLARATIONS ====================
 ! -----  VARIABLES LOCALES
-    integer :: iliste
-    integer :: iCell, cellNume, norieg, lliste
-    integer :: im1, im2, ico, ibid(1)
-    integer :: p1, p2, ifm, niv, p3, p4
-    integer :: jdesm1, jdesm2
-    integer :: nbmavo, indi, im3
-    integer, parameter :: zero = 0
+    integer(kind=8) :: iliste
+    integer(kind=8) :: iCell, cellNume, norieg, lliste
+    integer(kind=8) :: im1, im2, ico, ibid(1)
+    integer(kind=8) :: p1, p2, ifm, niv, p3, p4
+    integer(kind=8) :: jdesm1, jdesm2
+    integer(kind=8) :: nbmavo, indi, im3
+    integer(kind=8), parameter :: zero = 0
     aster_logical :: hasSkin1D, hasSkin2D, onlySkin1D
     character(len=1) :: lect
     character(len=2) :: kdim
     character(len=8) :: cellName
     character(len=24) :: nomavo
-    integer, pointer :: ori1(:) => null()
-    integer, pointer :: ori2(:) => null()
-    integer, pointer :: ori3(:) => null()
-    integer, pointer :: ori4(:) => null()
+    integer(kind=8), pointer :: ori1(:) => null()
+    integer(kind=8), pointer :: ori2(:) => null()
+    integer(kind=8), pointer :: ori3(:) => null()
+    integer(kind=8), pointer :: ori4(:) => null()
     character(len=8), pointer :: ori5(:) => null()
-    integer, pointer :: typmail(:) => null()
+    integer(kind=8), pointer :: typmail(:) => null()
 !
 #define pasori(iCell) ori1(iCell).eq.0
 !

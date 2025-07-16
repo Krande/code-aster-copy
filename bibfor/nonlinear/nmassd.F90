@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -24,7 +24,6 @@ subroutine nmassd(list_func_acti, hval_veasse, cnpilo, cndonn)
     implicit none
 !
 #include "asterf_types.h"
-#include "asterfort/assert.h"
 #include "asterfort/infdbg.h"
 #include "asterfort/utmess.h"
 #include "asterfort/isfonc.h"
@@ -33,7 +32,7 @@ subroutine nmassd(list_func_acti, hval_veasse, cnpilo, cndonn)
 #include "asterfort/nonlinDSVectCombCompute.h"
 #include "asterfort/nonlinDSVectCombAddHat.h"
 !
-    integer, intent(in) :: list_func_acti(*)
+    integer(kind=8), intent(in) :: list_func_acti(*)
     character(len=19), intent(in) :: hval_veasse(*)
     character(len=19), intent(in) :: cnpilo, cndonn
 !
@@ -52,7 +51,7 @@ subroutine nmassd(list_func_acti, hval_veasse, cnpilo, cndonn)
 !
 ! --------------------------------------------------------------------------------------------------
 !
-    integer :: ifm, niv
+    integer(kind=8) :: ifm, niv
     aster_logical :: l_didi, l_pilo
     type(NL_DS_VectComb) :: ds_vectcomb
 !

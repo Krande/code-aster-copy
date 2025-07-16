@@ -97,10 +97,8 @@ subroutine projkm(nmabet, nbmabe, nbnobe, mailla, caelem, &
 #include "asterfort/jeecra.h"
 #include "asterfort/jelibe.h"
 #include "asterfort/jemarq.h"
-#include "asterfort/jenuno.h"
 #include "asterfort/jeveuo.h"
 #include "asterfort/jexatr.h"
-#include "asterfort/jexnum.h"
 #include "asterfort/normev.h"
 #include "asterfort/projsg.h"
 #include "asterfort/projtq.h"
@@ -114,17 +112,17 @@ subroutine projkm(nmabet, nbmabe, nbnobe, mailla, caelem, &
 #include "asterfort/int_to_char8.h"
 !
     character(len=8) :: mailla, caelem, nnoeca
-    integer :: noebe, numail, nbcnx, cxma(*), itria, iproj, nbmabe, nbnobe
+    integer(kind=8) :: noebe, numail, nbcnx, cxma(*), itria, iproj, nbmabe, nbnobe
     real(kind=8) :: x3dca(*), xyzma(3, *), normal(*), xbar(*), excent
     real(kind=8) :: dmax_cable
     character(len=24) :: nmabet
 !
 ! VARIABLES LOCALES
 ! -----------------
-    integer :: icnx, imail, inoma, jcoor, jlnuma, jnumab, jtyma
-    integer :: nbmaok, noe, ntyma, jconx1, jconx2, nblinobet2, jlinob2
-    integer :: nblinoold, nblinobet1, jlinob1, inob, imabok, jno, kno
-    integer :: nbmaok1, jliproj, jlinoma, inoeu, icote, inoeu2, n1, n2, iproj2
+    integer(kind=8) :: icnx, imail, inoma, jcoor, jlnuma, jnumab, jtyma
+    integer(kind=8) :: nbmaok, noe, ntyma, jconx1, jconx2, nblinobet2, jlinob2
+    integer(kind=8) :: nblinoold, nblinobet1, jlinob1, inob, imabok, jno, kno
+    integer(kind=8) :: nbmaok1, jliproj, jlinoma, inoeu, icote, inoeu2, n1, n2, iproj2
     real(kind=8) :: d, dmax, dx, dy, dz, epsg, x3dp(3), ep_ma, exc_ma, xbar2(2)
     real(kind=8) :: xbetp(3), exc_max
     character(len=8) :: nomma

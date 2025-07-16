@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -47,9 +47,9 @@ subroutine titreb(donnee, iligd, icold, nbtitr, sortie, &
 #include "asterfort/utmess.h"
 #include "asterfort/utremt.h"
     character(len=*) :: donnee(*), sortie(*), formr
-    integer :: iligd, icold, nbtitr, iligs, icols
+    integer(kind=8) :: iligd, icold, nbtitr, iligs, icols
     character(len=*), optional, intent(in) :: nomsym
-    integer, optional, intent(in) :: iordr
+    integer(kind=8), optional, intent(in) :: iordr
 !     TRAITEMENT DE DEMONS
 !     ------------------------------------------------------------------
 ! IN DONNEE : K : TABLEAU DES DONNEES
@@ -58,10 +58,10 @@ subroutine titreb(donnee, iligd, icold, nbtitr, sortie, &
 ! IN NBTITR : I : NOMBRE MAXIMUM DE LIGNES DE TITRE EN ENTREE
 !     ------------------------------------------------------------------
 !
-    integer :: ival, igen, iposa, iposb, iposc, mxdemo, iacc, iad, lenf
-    integer :: ibid, iclass, ideb, ierd, ilg, iplace, iret, itit, iuti, jad
-    integer :: jpara, nbacce, nbpa, nbpara, nl, itmp
-    integer :: deb, fin, leng
+    integer(kind=8) :: ival, igen, iposa, iposb, iposc, mxdemo, iacc, iad, lenf
+    integer(kind=8) :: ibid, iclass, ideb, ierd, ilg, iplace, iret, itit, iuti, jad
+    integer(kind=8) :: jpara, nbacce, nbpa, nbpara, nl, itmp
+    integer(kind=8) :: deb, fin, leng
 !
     real(kind=8) :: rval, rbid
     character(len=4) :: ctype
@@ -76,7 +76,7 @@ subroutine titreb(donnee, iligd, icold, nbtitr, sortie, &
     parameter(mxdemo=20)
     character(len=16) :: demons(mxdemo), cbid, tysd
     character(len=24) :: para(2)
-    integer :: mxpara(mxdemo)
+    integer(kind=8) :: mxpara(mxdemo)
     character(len=80), pointer :: titr(:) => null()
 !     ------------------------------------------------------------------
 !     --- LISTE DES DEMONS RECONNUS ---

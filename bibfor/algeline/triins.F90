@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -36,8 +36,8 @@ subroutine triins(clef, tab, ntab, n)
 !
 ! --- VARIABLES
 !
-    integer :: n, ntab, clef(*), tab(n, *)
-    integer :: g, d, i, j, inser
+    integer(kind=8) :: n, ntab, clef(*), tab(n, *)
+    integer(kind=8) :: g, d, i, j, inser
 !
 ! --- TRI PAR INSERTION
 !

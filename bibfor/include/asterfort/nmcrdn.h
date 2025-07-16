@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -22,7 +22,7 @@ interface
     subroutine nmcrdn(sd_suiv, keyw_fact, nb_dof_monitor, nb_keyw_fact)
         character(len=24), intent(in) :: sd_suiv
         character(len=16), intent(in) :: keyw_fact
-        integer, intent(in) :: nb_dof_monitor
-        integer, intent(in) :: nb_keyw_fact
+        integer(kind=8), intent(in) :: nb_dof_monitor
+        integer(kind=8), intent(in) :: nb_keyw_fact
     end subroutine nmcrdn
 end interface

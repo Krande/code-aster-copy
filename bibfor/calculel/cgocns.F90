@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -29,11 +29,9 @@ subroutine cgocns(cnoz, basez, cnsz, meshz, undf0_)
 #include "asterfort/cnscre.h"
 #include "asterfort/detrsd.h"
 #include "asterfort/dismoi.h"
-#include "asterfort/exisdg.h"
 #include "asterfort/jedema.h"
 #include "asterfort/jemarq.h"
 #include "asterfort/jeveuo.h"
-#include "asterfort/jexnum.h"
 !
 ! person_in_charge: jacques.pellet at edf.fr
 !
@@ -60,13 +58,13 @@ subroutine cgocns(cnoz, basez, cnsz, meshz, undf0_)
     character(len=3) :: tsca
     character(len=8) :: mesh, gran_name
     character(len=19) :: cno, cns
-    integer :: nb_ec, idx_gd, nb_cmp_mx, nb_node, jvale, ierr, nb_node2
-    integer :: i_node, nb_cmp, jcnsl, jcnsv
-    integer :: ieq, i_cmp_field
+    integer(kind=8) :: nb_ec, idx_gd, nb_cmp_mx, nb_node, jvale, ierr, nb_node2
+    integer(kind=8) :: i_node, nb_cmp, jcnsl, jcnsv
+    integer(kind=8) :: ieq, i_cmp_field
     logical :: sdveri
-    integer, pointer :: desc(:) => null()
-    integer, pointer :: cata_to_field(:) => null()
-    integer, pointer :: field_to_cata(:) => null()
+    integer(kind=8), pointer :: desc(:) => null()
+    integer(kind=8), pointer :: cata_to_field(:) => null()
+    integer(kind=8), pointer :: field_to_cata(:) => null()
     character(len=8), pointer :: cmp_name(:) => null()
     aster_logical :: undf0
 !

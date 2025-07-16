@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -37,14 +37,14 @@ subroutine tirViscoElas(fl3d, var0, xmat, inputR, inputVR6, ngf, &
 #include "asterfort/getR6Mat6.h"
     aster_logical, intent(in) :: fl3d
     real(kind=8), intent(in) :: inputR(*), inputVR6(6, *), raideur66(6, 6)
-    integer, intent(in) :: ngf
-    integer, intent(inout) :: ipzero(ngf)
+    integer(kind=8), intent(in) :: ngf
+    integer(kind=8), intent(inout) :: ipzero(ngf)
     real(kind=8), intent(in) :: var0(*), xmat(*)
     real(kind=8), intent(out) :: deltam, avean, epsk16(6), epsm16(6)
     real(kind=8), intent(out) :: epse16(6), sig16(6), sigke16(6), we1
     real(kind=8), intent(inout) :: A(ngf, ngf+1), B(ngf), X(ngf)
 !-----------------------------------------------------------------------
-    integer :: i, j, errgauss
+    integer(kind=8) :: i, j, errgauss
     real(kind=8) :: bw0, pw0, bg0, pg0, CMp0, dfin0, xflu, dfmx, psik
     real(kind=8) :: ccmin0, ccmax0, cc03(3), vcc33(3, 3), vcc33t(3, 3)
     real(kind=8) :: kveve66(6, 6), kvem66(6, 6), kmve66(6, 6), kmm66(6, 6)

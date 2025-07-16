@@ -23,23 +23,21 @@ subroutine irnono(meshNameZ, &
 !
     implicit none
 !
-#include "asterfort/assert.h"
 #include "asterfort/jedema.h"
 #include "asterfort/jeexin.h"
 #include "asterfort/jelira.h"
 #include "asterfort/jemarq.h"
-#include "asterfort/jenonu.h"
 #include "asterfort/jeveuo.h"
 #include "asterfort/jexnom.h"
 #include "asterfort/utmess.h"
 #include "asterfort/char8_to_int.h"
 !
     character(len=*), intent(in) :: meshNameZ
-    integer, intent(in) :: nbNode
+    integer(kind=8), intent(in) :: nbNode
     character(len=8), pointer :: nodeName(:)
-    integer, intent(in) :: nbGrNode
+    integer(kind=8), intent(in) :: nbGrNode
     character(len=24), pointer :: grNodeName(:)
-    integer, intent(out) :: nbNodeSelect
+    integer(kind=8), intent(out) :: nbNodeSelect
     aster_logical, pointer :: nodeFlag(:)
     aster_logical, intent(in) :: lfichUniq
 !
@@ -53,8 +51,8 @@ subroutine irnono(meshNameZ, &
 !
     character(len=8) :: meshName
     character(len=11) :: vecGrpName
-    integer :: iNode, nodeNume, iGrNode, iret, grNodeNbNode
-    integer, pointer :: listNode(:) => null()
+    integer(kind=8) :: iNode, nodeNume, iGrNode, iret, grNodeNbNode
+    integer(kind=8), pointer :: listNode(:) => null()
 !
 ! --------------------------------------------------------------------------------------------------
 !

@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -35,13 +35,13 @@ function xcalc_code(nfiss, he_inte, he_real)
 #include "jeveux.h"
 #include "asterfort/assert.h"
 !-----------------------------------------------------------------------
-    integer :: nfiss, xcalc_code
-    integer, optional :: he_inte(*)
+    integer(kind=8) :: nfiss, xcalc_code
+    integer(kind=8), optional :: he_inte(*)
     real(kind=8), optional :: he_real(*)
 !-----------------------------------------------------------------------
-    integer :: base_codage
+    integer(kind=8) :: base_codage
     parameter(base_codage=4)
-    integer :: ifiss
+    integer(kind=8) :: ifiss
 !-----------------------------------------------------------------------
 !
     ASSERT(nfiss .le. 4)

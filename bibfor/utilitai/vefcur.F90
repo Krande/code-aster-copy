@@ -30,15 +30,13 @@ subroutine vefcur(vec1, nbn, knom, vec2, nbvale, &
 !  IN : NBVALE  :    DIMENSION DES VECTEURS KNOM ET VEC2
 ! ----------------------------------------------------------------------
 #include "jeveux.h"
-#include "asterfort/jenonu.h"
-#include "asterfort/jexnom.h"
 #include "asterfort/utmess.h"
 #include "asterfort/char8_to_int.h"
 !
-    integer :: nbn, vec1(nbn), nbvale, vec2(nbvale)
+    integer(kind=8) :: nbn, vec1(nbn), nbvale, vec2(nbvale)
     character(len=8) :: knom(nbvale), nomnd
     character(len=24) :: nomnoe
-    integer :: i, it, ji, jj, jp, numn
+    integer(kind=8) :: i, it, ji, jj, jp, numn
 !     ------------------------------------------------------------------
 !
 !

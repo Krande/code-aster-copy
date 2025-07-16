@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -33,7 +33,7 @@ subroutine cfgcpr(resoco, matass, solveu, neq, nbliai, &
 #include "blas/dcopy.h"
     character(len=24) :: resoco
     character(len=16) :: search
-    integer :: neq, nbliai
+    integer(kind=8) :: neq, nbliai
     character(len=19) :: matass, solveu
     real(kind=8) :: alpha
 !
@@ -59,20 +59,20 @@ subroutine cfgcpr(resoco, matass, solveu, neq, nbliai, &
 !
 !
 !
-    integer :: ifm, niv
-    integer :: iliai, jdecal, nbddl
+    integer(kind=8) :: ifm, niv
+    integer(kind=8) :: iliai, jdecal, nbddl
     complex(kind=8) :: c16bid
     character(len=19) :: k19bla
     character(len=24) :: apcoef, apddl, appoin
-    integer :: japcoe, japddl, japptr
+    integer(kind=8) :: japcoe, japddl, japptr
     character(len=19) :: direct
-    integer :: jdirec
+    integer(kind=8) :: jdirec
     character(len=19) :: ddeplc, ddepl0, ddelt
     character(len=24) :: secmbr, cncin0
-    integer :: jsecmb
+    integer(kind=8) :: jsecmb
     character(len=19) :: mu
-    integer :: jmu
-    integer :: iret
+    integer(kind=8) :: jmu
+    integer(kind=8) :: iret
     real(kind=8), pointer :: vddelt(:) => null()
     real(kind=8), pointer :: ddep0(:) => null()
     real(kind=8), pointer :: ddepc(:) => null()

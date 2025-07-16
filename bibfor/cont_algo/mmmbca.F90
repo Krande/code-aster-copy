@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -57,13 +57,12 @@ subroutine mmmbca(mesh, iter_newt, nume_inst, &
 #include "asterfort/mmstac.h"
 #include "asterfort/mmstaf.h"
 #include "asterfort/mreacg.h"
-#include "asterfort/ndynlo.h"
 #include "Contact_type.h"
 #include "jeveux.h"
 !
     character(len=8), intent(in) :: mesh
-    integer, intent(in) :: iter_newt
-    integer, intent(in) :: nume_inst
+    integer(kind=8), intent(in) :: iter_newt
+    integer(kind=8), intent(in) :: nume_inst
     character(len=19), intent(in) :: sddisc
     character(len=19), intent(in) :: disp_curr
     character(len=19), intent(in) :: disp_cumu_inst
@@ -87,14 +86,14 @@ subroutine mmmbca(mesh, iter_newt, nume_inst, &
 !
 ! --------------------------------------------------------------------------------------------------
 !
-    integer :: ztabf
-    integer :: ifm, niv
-    integer :: jdecme, elem_slav_indx, elem_slav_nume, elem_mast_nume
-    integer :: indi_cont_curr, indi_cont_prev, indi_frot_prev, indi_frot_curr
-    integer :: i_zone, i_elem_slav, i_cont_poin, i_poin_elem
-    integer :: model_ndim, nb_cont_zone, loop_cont_vali
-    integer :: elem_slav_nbno, nb_poin_elem, nb_elem_slav
-    integer :: indi_cont_eval, indi_frot_eval
+    integer(kind=8) :: ztabf
+    integer(kind=8) :: ifm, niv
+    integer(kind=8) :: jdecme, elem_slav_indx, elem_slav_nume, elem_mast_nume
+    integer(kind=8) :: indi_cont_curr, indi_cont_prev, indi_frot_prev, indi_frot_curr
+    integer(kind=8) :: i_zone, i_elem_slav, i_cont_poin, i_poin_elem
+    integer(kind=8) :: model_ndim, nb_cont_zone, loop_cont_vali
+    integer(kind=8) :: elem_slav_nbno, nb_poin_elem, nb_elem_slav
+    integer(kind=8) :: indi_cont_eval, indi_frot_eval
     real(kind=8) :: ksipr1, ksipr2, ksipc1, ksipc2
     real(kind=8) :: ksipr1_old, ksipr2_old, ksipc1_old, ksipc2_old, resi_geom
     real(kind=8) :: norm(3), tau1(3), tau2(3)
@@ -112,12 +111,12 @@ subroutine mmmbca(mesh, iter_newt, nume_inst, &
     aster_logical :: l_glis_init, l_veri, l_exis_glis, loop_cont_conv, l_loop_cont
     aster_logical :: l_frot_zone, l_pena_frot, l_frot
     aster_logical :: l_pena_cont
-    integer :: loop_geom_count, loop_fric_count, loop_cont_count
-    integer :: type_adap
+    integer(kind=8) :: loop_geom_count, loop_fric_count, loop_cont_count
+    integer(kind=8) :: type_adap
     character(len=24) :: sdcont_cychis, sdcont_cyccoe, sdcont_cyceta
     real(kind=8), pointer :: v_sdcont_cychis(:) => null()
     real(kind=8), pointer :: v_sdcont_cyccoe(:) => null()
-    integer, pointer :: v_sdcont_cyceta(:) => null()
+    integer(kind=8), pointer :: v_sdcont_cyceta(:) => null()
     character(len=24) :: sdcont_tabfin, sdcont_jsupco, sdcont_apjeu
     real(kind=8), pointer :: v_sdcont_tabfin(:) => null()
     real(kind=8), pointer :: v_sdcont_jsupco(:) => null()
@@ -128,7 +127,7 @@ subroutine mmmbca(mesh, iter_newt, nume_inst, &
     real(kind=8)  :: wpg_old
     aster_logical :: l_coef_adap
     character(len=8) :: iptxt
-    integer :: hist_index, coun_bcle_geom, nb_cont_poin
+    integer(kind=8) :: hist_index, coun_bcle_geom, nb_cont_poin
     aster_logical :: l_granglis
 !
 ! --------------------------------------------------------------------------------------------------
@@ -466,6 +465,7 @@ subroutine mmmbca(mesh, iter_newt, nume_inst, &
 !
 ! ------------- Save status
 !
+
                 v_sdcont_tabfin(ztabf*(i_cont_poin-1)+23) = indi_cont_curr
                 if (l_frot_zone) then
                     v_sdcont_tabfin(ztabf*(i_cont_poin-1)+24) = indi_frot_curr
@@ -474,6 +474,8 @@ subroutine mmmbca(mesh, iter_newt, nume_inst, &
 ! ------------- Print status
 !
                 if (niv .ge. 2) then
+                    indi_cont_prev = nint(v_sdcont_tabfin(ztabf*(i_cont_poin-1)+23))
+                    indi_frot_prev = nint(v_sdcont_tabfin(ztabf*(i_cont_poin-1)+24))
                     call mmimp4(ifm, mesh, elem_slav_nume, i_poin_elem, indi_cont_prev, &
                                 indi_cont_curr, indi_frot_prev, indi_frot_curr, l_frot, &
                                 l_glis, gap, lagr_cont_poin)

@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -26,9 +26,9 @@ interface
         character(len=19) :: ligrel
         character(len=19) :: chextr
         character(len=16) :: motfac
-        integer :: nucou
+        integer(kind=8) :: nucou
         character(len=3) :: nicou
-        integer :: nangl
-        integer :: nufib
+        integer(kind=8) :: nangl
+        integer(kind=8) :: nufib
     end subroutine w155ch
 end interface

@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -27,7 +27,7 @@ subroutine matect(materd, materf, nmat, macst)
 !                   'NON' SINON
 !     ----------------------------------------------------------------
 #include "asterc/r8prem.h"
-    integer :: nmat, i
+    integer(kind=8) :: nmat, i
     real(kind=8) :: materd(nmat, 2), materf(nmat, 2), epsi
     character(len=3) :: macst
 !     ----------------------------------------------------------------

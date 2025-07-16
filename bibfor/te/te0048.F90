@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -39,7 +39,6 @@ subroutine te0048(option, nomte)
 #include "asterfort/tecach.h"
 #include "asterfort/tecael.h"
 #include "asterfort/utmess.h"
-#include "asterfort/lteatt.h"
 #include "asterfort/xcalc_code.h"
 #include "asterfort/xcalc_heav.h"
 #include "asterfort/xcalfev_wrap.h"
@@ -62,29 +61,29 @@ subroutine te0048(option, nomte)
 !
 !   nno_par_max = nombre max de noeuds pour l'element de reference parent
 !   -> te dedie aux elements de bords, max atteint en 3D pour les QUAD8
-    integer :: nno_par_max
+    integer(kind=8) :: nno_par_max
     parameter(nno_par_max=8)
 !
 !   nno_se_max = nombre max de noeuds pour le sous-element de reference
 !   -> te dedie aux elements de bords, max atteint en 3D pour les TRIA6
-    integer :: nno_se_max
+    integer(kind=8) :: nno_se_max
     parameter(nno_se_max=6)
 !
-    integer :: ndime, ndim, nnop, nnops, cpt, nno, nnos, npg, nfe, nfh
-    integer :: nfiss, ncomp, ncompn, nse, hea_se
-    integer :: ipoids, ivf, idfde, ipres, iadzi, iazk24, igeom, idepl
-    integer :: jlsn, jlst, jpintt, jcnset, jheavt, jlonch, ibalo
-    integer :: jpmilt, jheavn, iforc, imate
-    integer :: ino, j, ise, ifiss, in, inop, kpg, ig, k
-    integer :: nlong_ddl, ddld, ddls, ddlm, indeni
-    integer :: ithet, igthet
-    integer :: ier, iret, irese, jtab(7), icodre(3)
+    integer(kind=8) :: ndime, ndim, nnop, nnops, cpt, nno, nnos, npg, nfe, nfh
+    integer(kind=8) :: nfiss, ncomp, ncompn, nse, hea_se
+    integer(kind=8) :: ipoids, ivf, idfde, ipres, iadzi, iazk24, igeom, idepl
+    integer(kind=8) :: jlsn, jlst, jpintt, jcnset, jheavt, jlonch, ibalo
+    integer(kind=8) :: jpmilt, jheavn, iforc, imate
+    integer(kind=8) :: ino, j, ise, ifiss, in, inop, kpg, ig, k
+    integer(kind=8) :: nlong_ddl, ddld, ddls, ddlm, indeni
+    integer(kind=8) :: ithet, igthet
+    integer(kind=8) :: ier, iret, irese, jtab(7), icodre(3)
     real(kind=8) :: th1, th2, dth1d1, dth2d2, divt, pres, tcla
     real(kind=8) :: tcla1, tcla2, tcla3, g, k1, k2, k3
     real(kind=8) :: r8pre, sum_teth, sum_forc, r8bit2(2)
     real(kind=8) :: poids, norme, vf, rg, phig
     real(kind=8) :: fk(27, 3, 3)
-    integer :: alp, jstno
+    integer(kind=8) :: alp, jstno
     real(kind=8) :: e, nu, mu, depi, ka, coeff, coeff3
     real(kind=8) :: coorse(3*nno_se_max), geoloc(2*nno_par_max)
     real(kind=8) :: td1(3), td2(3), nd(3), xg(3), xg_loc(2), he(1), oprim(3)

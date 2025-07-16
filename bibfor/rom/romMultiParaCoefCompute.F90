@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -34,8 +34,8 @@ subroutine romMultiParaCoefCompute(ds_empi, ds_multipara, ds_algoGreedy, &
     type(ROM_DS_Empi), intent(in) :: ds_empi
     type(ROM_DS_MultiPara), intent(inout) :: ds_multipara
     type(ROM_DS_AlgoGreedy), intent(in) :: ds_algoGreedy
-    integer, intent(in) :: i_mode_until, i_mode_coef
-    integer, optional, intent(in) :: i_coef_
+    integer(kind=8), intent(in) :: i_mode_until, i_mode_coef
+    integer(kind=8), optional, intent(in) :: i_coef_
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -56,8 +56,8 @@ subroutine romMultiParaCoefCompute(ds_empi, ds_multipara, ds_algoGreedy, &
 !
 ! --------------------------------------------------------------------------------------------------
 !
-    integer :: ifm, niv
-    integer :: i_coef_b, i_coef_e, nb_mode, i_mode, i_coef, nb_vari_coef
+    integer(kind=8) :: ifm, niv
+    integer(kind=8) :: i_coef_b, i_coef_e, nb_mode, i_mode, i_coef, nb_vari_coef
     character(len=1) :: syst_2mbr_type
     character(len=24) :: coef_redu, syst_solu
     complex(kind=8), pointer :: vc_coef_redu(:) => null()

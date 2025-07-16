@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -37,12 +37,12 @@ subroutine inigms(nomail, nbnoma, nuconn)
 #include "asterfort/jeveuo.h"
 #include "asterfort/jexnom.h"
 !
-    integer :: nuconn(19, 32), nbnoma(19)
+    integer(kind=8) :: nuconn(19, 32), nbnoma(19)
     character(len=8) :: nomail(*)
 !
 !
 !
-    integer :: m, jnbno, i, j
+    integer(kind=8) :: m, jnbno, i, j
 !.========================= DEBUT DU CODE EXECUTABLE ==================
 !
 !

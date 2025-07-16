@@ -23,7 +23,6 @@ subroutine te0064(option, nomte)
     implicit none
 !
 #include "jeveux.h"
-#include "asterc/r8nnem.h"
 #include "asterfort/assert.h"
 #include "asterfort/elrefe_info.h"
 #include "asterfort/jevech.h"
@@ -52,16 +51,16 @@ subroutine te0064(option, nomte)
 !
     real(kind=8) :: deltaTime01, deltaTime12, time2
     real(kind=8) :: temp1, tempInit, temp2
-    integer :: nbNode, iNode, itempe, jvTempInit, jvTime
-    integer :: jvMater
+    integer(kind=8) :: nbNode, iNode, itempe, jvTempInit, jvTime
+    integer(kind=8) :: jvMater
     character(len=16) :: metaType
-    integer :: numeComp
-    integer :: nbVari, nbPhase
-    integer :: nbVariTemper, nbPhaseTemper, nbVariPrev
-    integer :: itempi
-    integer :: jvPhaseIn, jvPhaseOut, jvPhasePrev
-    integer :: jvMaterCode
-    integer :: itab(7), iret, jvComporMetaTemper
+    integer(kind=8) :: numeComp
+    integer(kind=8) :: nbVari, nbPhase
+    integer(kind=8) :: nbVariTemper, nbPhaseTemper, nbVariPrev
+    integer(kind=8) :: itempi
+    integer(kind=8) :: jvPhaseIn, jvPhaseOut, jvPhasePrev
+    integer(kind=8) :: jvMaterCode
+    integer(kind=8) :: itab(7), iret, jvComporMetaTemper
     character(len=16), pointer :: comporMeta(:) => null()
     aster_logical :: hasTemper, prevMetaIsTemper
     type(META_MaterialParameters) :: metaPara

@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -37,13 +37,13 @@ subroutine tresu_champ_val(cham19, nomail, nonoeu, nupo, nusp, &
     character(len=*), intent(in) :: cham19
     character(len=*), intent(in) :: nomail
     character(len=*), intent(in) :: nonoeu
-    integer, intent(in) :: nupo
-    integer, intent(in) :: nusp
-    integer, intent(in) :: ivari
+    integer(kind=8), intent(in) :: nupo
+    integer(kind=8), intent(in) :: nusp
+    integer(kind=8), intent(in) :: ivari
     character(len=*), intent(in) :: nocmp
-    integer, intent(in) :: nbref
+    integer(kind=8), intent(in) :: nbref
     character(len=16), intent(in) :: tbtxt(2)
-    integer, intent(in) :: refi(nbref)
+    integer(kind=8), intent(in) :: refi(nbref)
     real(kind=8), intent(in) :: refr(nbref)
     complex(kind=8), intent(in) :: refc(nbref)
     character(len=*), intent(in) :: typres
@@ -71,7 +71,7 @@ subroutine tresu_champ_val(cham19, nomail, nonoeu, nupo, nusp, &
 ! IN  : LLAB   : FLAG D IMPRESSION DE LABELS
 ! OUT : IMPRESSION SUR LISTING
 ! ----------------------------------------------------------------------
-    integer :: vali, ier, rank
+    integer(kind=8) :: vali, ier, rank
     real(kind=8) :: valr
     complex(kind=8) :: valc
     character(len=8) :: nomma

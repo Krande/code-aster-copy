@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -23,14 +23,14 @@
 interface
     subroutine ar_ztrsen(select, n, t, ldt, q,&
                       ldq, w, m, info)
-        integer :: ldq
-        integer :: ldt
+        integer(kind=8) :: ldq
+        integer(kind=8) :: ldt
         aster_logical :: select(*)
-        integer :: n
+        integer(kind=8) :: n
         complex(kind=8) :: t(ldt, *)
         complex(kind=8) :: q(ldq, *)
         complex(kind=8) :: w(*)
-        integer :: m
-        integer :: info
+        integer(kind=8) :: m
+        integer(kind=8) :: info
     end subroutine ar_ztrsen
 end interface

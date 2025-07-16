@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -20,7 +20,7 @@
 !
 interface
     subroutine vexpan(nb1, vecl1, vecl)
-        integer :: nb1
+        integer(kind=8) :: nb1
         real(kind=8) :: vecl1(42)
         real(kind=8) :: vecl(48)
     end subroutine vexpan

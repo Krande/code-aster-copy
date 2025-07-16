@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -25,7 +25,6 @@ module FE_mechanics_module
     private
 #include "asterf_types.h"
 #include "FE_module.h"
-#include "blas/dgemv.h"
 #include "asterfort/assert.h"
 #include "jeveux.h"
 !
@@ -66,7 +65,7 @@ contains
 !
 ! ----- Local variables
 !
-        integer :: i, i_dim
+        integer(kind=8) :: i, i_dim
         real(kind=8), parameter :: rac2 = sqrt(2.d0)
         real(kind=8) :: funcEF(MAX_BS), r
 !
@@ -129,7 +128,7 @@ contains
 !
 ! ----- Local variables
 !
-        integer :: i, j
+        integer(kind=8) :: i, j
         real(kind=8), parameter :: rac2 = sqrt(2.d0)
 !
         matBB = 0.d0
@@ -197,7 +196,7 @@ contains
 !
 ! ----- Local variables
 !
-        integer :: i
+        integer(kind=8) :: i
         real(kind=8), parameter :: rac2 = sqrt(2.d0)
         real(kind=8) :: funcEF(MAX_BS), r
 !
@@ -286,7 +285,7 @@ contains
 ! --------------------------------------------------------------------------------------------------
 !
 !
-        integer :: i, j, k
+        integer(kind=8) :: i, j, k
         real(kind=8) :: c(3, 3), tmp
         real(kind=8), parameter :: rac2 = sqrt(2.d0)
 !

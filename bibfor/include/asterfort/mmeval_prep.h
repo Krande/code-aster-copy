@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2019 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -35,20 +35,20 @@ interface
         use NonLin_Datastructure_type
         character(len=8), intent(in) :: mesh
         real(kind=8), intent(in) :: time_curr
-        integer, intent(in) :: model_ndim
+        integer(kind=8), intent(in) :: model_ndim
         type(NL_DS_Contact), intent(in) :: ds_contact
-        integer, intent(in) :: i_zone
+        integer(kind=8), intent(in) :: i_zone
         real(kind=8), intent(in) :: ksipc1
         real(kind=8), intent(in) :: ksipc2
         real(kind=8), intent(in) :: ksipr1
         real(kind=8), intent(in) :: ksipr2
         real(kind=8), intent(in) :: tau1(3)
         real(kind=8), intent(in) :: tau2(3)
-        integer, intent(in) :: elem_slav_nbno
-        integer, intent(in) :: elem_slav_indx
+        integer(kind=8), intent(in) :: elem_slav_nbno
+        integer(kind=8), intent(in) :: elem_slav_indx
         character(len=8), intent(in) :: elem_slav_type
         real(kind=8), intent(in) :: elem_slav_coor(27)
-        integer, intent(in) :: elem_mast_nume
+        integer(kind=8), intent(in) :: elem_mast_nume
         real(kind=8), intent(in) :: lagr_cont_node(9)
         real(kind=8), intent(out) :: norm(3)
         real(kind=8), intent(out) :: gap

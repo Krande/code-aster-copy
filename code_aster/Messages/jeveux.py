@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -278,21 +278,6 @@ Contactez le support technique.
     48: _(
         """
  Erreur lors de l'écriture d'un enregistrement sur le fichier d'accès direct.
-"""
-    ),
-    51: _(
-        """
- Relecture au format HDF impossible.
-"""
-    ),
-    52: _(
-        """
- Erreur de relecture des paramètres du DATASET HDF.
-"""
-    ),
-    53: _(
-        """
- Relecture au format HDF impossible.
 """
     ),
     58: _(

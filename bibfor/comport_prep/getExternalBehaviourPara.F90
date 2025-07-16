@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -38,14 +38,14 @@ subroutine getExternalBehaviourPara(mesh, v_model_elem, rela_comp, defo_comp, &
 #include "asterfort/getExternalStrainModel.h"
 !
     character(len=8), intent(in) :: mesh
-    integer, pointer :: v_model_elem(:)
+    integer(kind=8), pointer :: v_model_elem(:)
     character(len=16), intent(in) :: rela_comp
     character(len=16), intent(in) :: defo_comp
     character(len=16), intent(in) :: kit_comp(4)
     type(BehaviourPrep_Exte), intent(inout) :: prepExte
     character(len=16), optional, intent(in) :: keywf_
-    integer, optional, intent(in) :: i_comp_
-    integer, optional, intent(in) :: elem_type_
+    integer(kind=8), optional, intent(in) :: i_comp_
+    integer(kind=8), optional, intent(in) :: elem_type_
     character(len=16), optional, intent(in) :: type_cpla_in_
     character(len=16), optional, intent(out) :: type_cpla_out_
 !
@@ -73,12 +73,12 @@ subroutine getExternalBehaviourPara(mesh, v_model_elem, rela_comp, defo_comp, &
 !
     aster_logical :: l_kit_thm
     character(len=16) :: relaMeca, keywf
-    integer :: i_comp
+    integer(kind=8) :: i_comp
     aster_logical :: l_mfront_proto, l_mfront_offi, l_umat
     character(len=255) :: libr_name, subr_name
-    integer :: model_mfront, nbVariUMAT
+    integer(kind=8) :: model_mfront, nbVariUMAT
     character(len=16) :: type_cpla_out, type_cpla_in, extern_addr
-    integer :: extern_ptr, extern_type, elem_type, strain_model
+    integer(kind=8) :: extern_ptr, extern_type, elem_type, strain_model
 !
 ! --------------------------------------------------------------------------------------------------
 !

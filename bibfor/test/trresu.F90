@@ -24,7 +24,6 @@ subroutine trresu(ific, nocc)
 !
 #include "asterf_types.h"
 #include "jeveux.h"
-#include "asterc/r8prem.h"
 #include "asterfort/assert.h"
 #include "asterfort/codent.h"
 #include "asterfort/dismoi.h"
@@ -40,9 +39,6 @@ subroutine trresu(ific, nocc)
 #include "asterfort/jemarq.h"
 #include "asterfort/jeveuo.h"
 #include "asterfort/jexnom.h"
-#include "asterfort/jexnum.h"
-#include "asterfort/jenonu.h"
-#include "asterfort/jenuno.h"
 #include "asterfort/lxlgut.h"
 #include "asterfort/lxliis.h"
 #include "asterfort/rsadpa.h"
@@ -66,17 +62,17 @@ subroutine trresu(ific, nocc)
 #include "asterfort/isParallelMesh.h"
 #include "asterfort/char8_to_int.h"
 #include "asterfort/int_to_char8.h"
-    integer, intent(in) :: ific, nocc
+    integer(kind=8), intent(in) :: ific, nocc
 !     COMMANDE:  TEST_RESU
 !                MOT CLE FACTEUR "RESU"
 ! ----------------------------------------------------------------------
 !
 !
-    integer :: vali, iocc, iret, ivari, jvPara, jordr, n1, n2, n3, n4, ng
-    integer :: nbStore, numeStore, nupo, nbcmp
-    integer :: n1r, n2r, n3r, irefrr, irefir, irefcr, n1a, n1b, cellNume
-    integer :: nusp, irefr, irefi, irefc, nref, nl1, nl2, nl11, nl22
-    integer :: jnuma, nbVari
+    integer(kind=8) :: vali, iocc, iret, ivari, jvPara, jordr, n1, n2, n3, n4, ng
+    integer(kind=8) :: nbStore, numeStore, nupo, nbcmp
+    integer(kind=8) :: n1r, n2r, n3r, irefrr, irefir, irefcr, n1a, n1b, cellNume
+    integer(kind=8) :: nusp, irefr, irefi, irefc, nref, nl1, nl2, nl11, nl22
+    integer(kind=8) :: jnuma, nbVari
     real(kind=8) :: valr, epsi, epsir, prec, ordgrd
     complex(kind=8) :: valc
     character(len=1) :: typres

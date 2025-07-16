@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -28,15 +28,15 @@ subroutine apelem_inside_n(pair_tole, elem_dime, elem_code, &
 !
 !
     real(kind=8), intent(in) :: pair_tole
-    integer, intent(in) :: elem_dime
+    integer(kind=8), intent(in) :: elem_dime
     character(len=8), intent(in) :: elem_code
-    integer, intent(in) :: nb_poin_coor
+    integer(kind=8), intent(in) :: nb_poin_coor
     real(kind=8), intent(in) :: poin_coor(elem_dime-1, 4)
     real(kind=8), intent(in) :: poin_coor_ori(elem_dime-1, 4)
-    integer, intent(inout) :: nb_poin_inte
+    integer(kind=8), intent(inout) :: nb_poin_inte
     real(kind=8), intent(inout) :: poin_inte(elem_dime-1, 16)
     real(kind=8), intent(inout) :: poin_inte_ori(elem_dime-1, 16)
-    integer, intent(inout) :: inte_neigh(4)
+    integer(kind=8), intent(inout) :: inte_neigh(4)
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -56,8 +56,8 @@ subroutine apelem_inside_n(pair_tole, elem_dime, elem_code, &
 !
 ! --------------------------------------------------------------------------------------------------
 !
-    integer :: i_node, iret
-    integer :: prev(nb_poin_coor)
+    integer(kind=8) :: i_node, iret
+    integer(kind=8) :: prev(nb_poin_coor)
 !
 ! --------------------------------------------------------------------------------------------------
 !

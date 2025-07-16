@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -25,7 +25,6 @@ subroutine xprfastmarching(cmnd, noma, cnxinv, noesom, &
 !
 #include "jeveux.h"
 #include "asterc/r8gaem.h"
-#include "asterfort/assert.h"
 #include "asterfort/calcul.h"
 #include "asterfort/celces.h"
 #include "asterfort/cescns.h"
@@ -37,8 +36,6 @@ subroutine xprfastmarching(cmnd, noma, cnxinv, noesom, &
 #include "asterfort/jedetr.h"
 #include "asterfort/jelira.h"
 #include "asterfort/jemarq.h"
-#include "asterfort/jexatr.h"
-#include "asterfort/jexnum.h"
 #include "asterfort/jeveuo.h"
 #include "asterfort/wkvect.h"
 #include "asterfort/xprls0.h"
@@ -104,12 +101,12 @@ subroutine xprfastmarching(cmnd, noma, cnxinv, noesom, &
     character(len=2)  :: levset
 
 !     MESH INFORMATION RETREIVING AND GENERAL PURPOSE VARIABLES
-    integer      :: nbno, nbnoma, jcnsls, jgrls
-    integer      :: node, ndim
-    integer      :: jbl, jbeta, jlistp, jvp, jltno
-    integer      :: ifm, niv, jnodto, ibid
-    integer      :: inar, jconx1, jconx2
-    integer      :: jzero, jcopiels, jvtemp, jcalculs
+    integer(kind=8)      :: nbno, nbnoma, jcnsls, jgrls
+    integer(kind=8)      :: node, ndim
+    integer(kind=8)      :: jbl, jbeta, jlistp, jvp, jltno
+    integer(kind=8)      :: ifm, niv, jnodto, ibid
+    integer(kind=8)      :: inar, jconx1, jconx2
+    integer(kind=8)      :: jzero, jcopiels, jvtemp, jcalculs
 
 !     EVALUATION OF THE GRADIENT OF THE LEVEL SET
     character(len=8)  :: lpain(4), lpaout(2)

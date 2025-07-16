@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -35,8 +35,8 @@ subroutine te0451(option, nomte)
 !        ON PART DE SIEF_ELGA ET ON INTEGRE DANS L'EPAISSEUR
 ! ......................................................................
 !
-    integer :: j1, nbcou, npgh, jsigm, idec, jeff, npg, itab(7), iret
-    integer :: nbsp, kpg, ibid, nbsig, nbeff, icou, jmate, icodre(1), j2
+    integer(kind=8) :: j1, nbcou, npgh, jsigm, idec, jeff, npg, itab(7), iret
+    integer(kind=8) :: nbsp, kpg, ibid, nbsig, nbeff, icou, jmate, icodre(1), j2
     real(kind=8) :: nxx, nyy, mxx, myy, nxy, mxy, qx, qy, excen
     real(kind=8) :: r8bid, cb, cm, ch, h, hb, hm, hh
     real(kind=8) :: siyyb, siyym, siyyh, sixxb, sixxm, sixxh, sixyb, sixym

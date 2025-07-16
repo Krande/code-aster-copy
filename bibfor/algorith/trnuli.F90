@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -41,8 +41,8 @@ subroutine trnuli(itab, nblig, nbcol, icol, nures)
 !
 !-----------------------------------------------------------------------
 !
-    integer :: i, j, nbcol, nblig, nures
-    integer :: itab(nblig, nbcol), icol(nbcol)
+    integer(kind=8) :: i, j, nbcol, nblig, nures
+    integer(kind=8) :: itab(nblig, nbcol), icol(nbcol)
     aster_logical :: ok
 !-----------------------------------------------------------------------
     i = 0

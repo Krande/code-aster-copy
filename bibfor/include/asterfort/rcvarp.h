@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -23,7 +23,7 @@ interface
         character(len=1), intent(in) :: arret
         character(len=*), intent(in) :: varc_name_
         character(len=*), intent(in) :: poum
-        integer, intent(out) :: iret
+        integer(kind=8), intent(out) :: iret
         real(kind=8), intent(out) :: varc_vale
     end subroutine rcvarp
 end interface

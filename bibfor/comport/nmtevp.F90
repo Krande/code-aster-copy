@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -33,7 +33,7 @@ subroutine nmtevp(fami, kpg, ksp, ndim, typmod, &
 #include "asterfort/utmess.h"
 #include "asterfort/verift.h"
 #include "asterfort/zerofr.h"
-    integer :: ndim, imate, kpg, ksp, iret
+    integer(kind=8) :: ndim, imate, kpg, ksp, iret
 !
     real(kind=8) :: crit(6), instam, instap
     real(kind=8) :: deps(6), deuxmu, demu, cinco
@@ -76,9 +76,9 @@ subroutine nmtevp(fami, kpg, ksp, ndim, typmod, &
 !
     aster_logical :: plasti, inco, dech
 !
-    integer :: ndimsi
-    integer :: k, l, niter, i
-    integer :: iret3, iret4, iret5
+    integer(kind=8) :: ndimsi
+    integer(kind=8) :: k, l, niter, i
+    integer(kind=8) :: iret3, iret4, iret5
 !
     real(kind=8) :: depsth(6), valres(8), epsthe, pm, co, dp0, tm, rprim0, precr
     real(kind=8) :: depsmo, sigmmo, e, nu, troisk, rprim, rp
@@ -91,7 +91,7 @@ subroutine nmtevp(fami, kpg, ksp, ndim, typmod, &
     real(kind=8) :: acook, bcook, ccook, npuis, mpuis, epsp0, troom, tmelt
     real(kind=8) :: alpha, dirr, dte, dgdtsg, dkdtsk, khi, tpdsdt, epspet
 !
-    integer :: codret(8), iter
+    integer(kind=8) :: codret(8), iter
     character(len=16) :: nomres(8)
     character(len=16) :: meth
 !

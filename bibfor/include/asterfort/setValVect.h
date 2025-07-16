@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -42,7 +42,7 @@ interface
         real(kind=8), optional, intent(in) :: x15
         real(kind=8), optional, intent(in) :: x16
         real(kind=8), optional, intent(in) :: x17
-        integer, optional, intent(in) :: ind1
-        integer, optional, intent(in) :: vectInd(:)
+        integer(kind=8), optional, intent(in) :: ind1
+        integer(kind=8), optional, intent(in) :: vectInd(:)
     end subroutine setValVect
 end interface

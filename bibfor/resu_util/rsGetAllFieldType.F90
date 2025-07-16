@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -33,9 +33,9 @@ subroutine rsGetAllFieldType(resultNameZ, nbField, listField, listStoreRefe)
 #include "asterfort/rs_get_liststore.h"
 !
     character(len=*), intent(in) :: resultNameZ
-    integer, intent(out) :: nbField
+    integer(kind=8), intent(out) :: nbField
     character(len=16), pointer :: listField(:)
-    integer, pointer :: listStoreRefe(:)
+    integer(kind=8), pointer :: listStoreRefe(:)
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -54,8 +54,8 @@ subroutine rsGetAllFieldType(resultNameZ, nbField, listField, listStoreRefe)
 !
     character(len=19) :: resultName
     character(len=16) :: fieldName
-    integer :: nbFieldMaxi, nbStore, iStore, iField, fieldNume
-    integer, pointer :: numeStore(:) => null()
+    integer(kind=8) :: nbFieldMaxi, nbStore, iStore, iField, fieldNume
+    integer(kind=8), pointer :: numeStore(:) => null()
     character(len=24), pointer :: tach(:) => null()
 !
 ! --------------------------------------------------------------------------------------------------

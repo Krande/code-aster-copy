@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -49,10 +49,10 @@ module cara_elem_info_type
         character(len=16)   :: commande
         character(len=8)   :: modele
         character(len=8)   :: maillage
-        integer             :: nbmail
-        integer             :: nbnoeu
-        integer             :: dimmod
-        integer             :: ivr(4)
+        integer(kind=8)             :: nbmail
+        integer(kind=8)             :: nbnoeu
+        integer(kind=8)             :: dimmod
+        integer(kind=8)             :: ivr(4)
     end type cara_elem_info
 !
 end module

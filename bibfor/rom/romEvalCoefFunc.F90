@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -31,7 +31,7 @@ subroutine romEvalCoefFunc(ds_evalcoef, ds_multicoef, i_coef_list)
 !
     type(ROM_DS_EvalCoef), intent(in) :: ds_evalcoef
     type(ROM_DS_MultiCoef), intent(inout) :: ds_multicoef
-    integer, intent(in) :: i_coef_list
+    integer(kind=8), intent(in) :: i_coef_list
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -50,7 +50,7 @@ subroutine romEvalCoefFunc(ds_evalcoef, ds_multicoef, i_coef_list)
     aster_logical :: l_func, l_real, l_cplx, l_cste
     real(kind=8) :: cplx_real, cplx_imag, real_real
     character(len=8) :: func_name
-    integer :: iret
+    integer(kind=8) :: iret
 !
 ! --------------------------------------------------------------------------------------------------
 !

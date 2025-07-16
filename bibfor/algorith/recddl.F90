@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -40,9 +40,9 @@ subroutine recddl(nbcmp, lino, nbno, nbec, ideeq, &
 !-----------------------------------------------------------------------
 !
 #include "asterfort/iscode.h"
-    integer :: nbec, nbno, neq, nbcmp
-    integer :: lino(nbno), ideeq(2, neq), mcoddl(nbno*nbec, 2), idec(nbcmp, 2)
-    integer :: i, ino, ityp, j, jno, k
+    integer(kind=8) :: nbec, nbno, neq, nbcmp
+    integer(kind=8) :: lino(nbno), ideeq(2, neq), mcoddl(nbno*nbec, 2), idec(nbcmp, 2)
+    integer(kind=8) :: i, ino, ityp, j, jno, k
 !-----------------------------------------------------------------------
 !
 !-----------------------------------------------------------------------

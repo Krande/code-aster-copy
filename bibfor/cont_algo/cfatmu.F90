@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -21,15 +21,14 @@ subroutine cfatmu(neq, nbliac, sdcont_solv)
     implicit none
 !
 #include "jeveux.h"
-#include "asterfort/assert.h"
 #include "asterfort/calatm.h"
 #include "asterfort/jedema.h"
 #include "asterfort/jemarq.h"
 #include "asterfort/jeveuo.h"
 !
 !
-    integer :: neq
-    integer :: nbliac
+    integer(kind=8) :: neq
+    integer(kind=8) :: nbliac
     character(len=24) :: sdcont_solv
 !
 ! ----------------------------------------------------------------------
@@ -48,12 +47,12 @@ subroutine cfatmu(neq, nbliac, sdcont_solv)
 !
 !
 !
-    integer :: iliac, lliac, jdecal, compts
-    integer :: nbddl, kk
+    integer(kind=8) :: iliac, lliac, jdecal, compts
+    integer(kind=8) :: nbddl, kk
     character(len=19) :: liac, mu, atmu
-    integer :: jliac, jmu, jatmu
+    integer(kind=8) :: jliac, jmu, jatmu
     character(len=24) :: appoin, apddl, apcoef
-    integer :: japptr, japddl, japcoe
+    integer(kind=8) :: japptr, japddl, japcoe
 !
     call jemarq()
 !

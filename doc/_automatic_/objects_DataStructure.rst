@@ -299,6 +299,15 @@ Subclasses of :py:class:`~code_aster.Objects.DataStructure`
 
 
 ********************************************************************************
+:py:class:`~code_aster.Objects.DSWithCppPickling` object
+********************************************************************************
+
+.. autoclass:: code_aster.Objects.DSWithCppPickling
+   :show-inheritance:
+   :members:
+
+
+********************************************************************************
 :py:class:`~code_aster.Objects.DataField` object
 ********************************************************************************
 

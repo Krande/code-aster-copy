@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -43,8 +43,6 @@ subroutine rfrgen(trange)
 #include "asterfort/jelira.h"
 #include "asterfort/jemarq.h"
 #include "asterfort/jeveuo.h"
-#include "asterfort/jexnom.h"
-#include "asterfort/jexnum.h"
 #include "asterfort/lxlgut.h"
 #include "asterfort/mdgep2.h"
 #include "asterfort/mdgep4.h"
@@ -64,8 +62,8 @@ subroutine rfrgen(trange)
 !
 !     OPERATEUR "RECU_FONCTION"  MOT CLE "RESU_GENE"
 !     ------------------------------------------------------------------
-    integer :: ibid
-    integer :: ifm, niv
+    integer(kind=8) :: ibid
+    integer(kind=8) :: ifm, niv
     character(len=24) :: valk(2), nogno
     character(len=4) :: interp(2), intres
     character(len=8) :: k8b, crit, noeud, cmp, noma, nomacc, basemo
@@ -76,17 +74,17 @@ subroutine rfrgen(trange)
 !     ------------------------------------------------------------------
 !
 !-----------------------------------------------------------------------
-    integer :: i, idbase, iddl, ie, shift
-    integer :: ier, ierd, ii, inoeud, iordr
-    integer :: iret, jfon, jinst
-    integer ::  lfon, lg1, lg2, lordr, lpro
-    integer :: lvar, n1, n2, n3, nbexci, nbinsg
-    integer :: nbmode, nbordr, neq
-    integer :: nfonct, ngn, numcmp, i_cham, i_bloc
+    integer(kind=8) :: i, idbase, iddl, ie, shift
+    integer(kind=8) :: ier, ierd, ii, inoeud, iordr
+    integer(kind=8) :: iret, jfon, jinst
+    integer(kind=8) ::  lfon, lg1, lg2, lordr, lpro
+    integer(kind=8) :: lvar, n1, n2, n3, nbexci, nbinsg
+    integer(kind=8) :: nbmode, nbordr, neq
+    integer(kind=8) :: nfonct, ngn, numcmp, i_cham, i_bloc
     real(kind=8) :: alpha, epsi, rep, rep1(1)
     complex(kind=8) :: cbid
     real(kind=8), pointer :: vectgene(:) => null()
-    integer, pointer :: desc(:) => null()
+    integer(kind=8), pointer :: desc(:) => null()
     real(kind=8), pointer :: ipsd(:) => null()
     real(kind=8), pointer :: disc(:) => null()
     real(kind=8), pointer :: resu(:) => null()

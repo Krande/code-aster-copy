@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -49,7 +49,7 @@ subroutine sdmpic(typesd, nomsd)
     character(len=19) :: k19
     character(len=24) :: k24
     character(len=8) :: kmpic, kbid, mesh
-    integer :: ifm, niv, iexi, nbrel, i
+    integer(kind=8) :: ifm, niv, iexi, nbrel, i
     character(len=24), pointer :: noli(:) => null()
     character(len=24), pointer :: refa(:) => null()
     character(len=24), pointer :: celk(:) => null()

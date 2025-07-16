@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -31,7 +31,7 @@ subroutine gdecva(kp, ca, vari)
     real(kind=8) :: ca(3), vari(*)
 !
 !-----------------------------------------------------------------------
-    integer :: i, k, kp
+    integer(kind=8) :: i, k, kp
 !-----------------------------------------------------------------------
     k = (kp-1)*3
     do i = 1, 3

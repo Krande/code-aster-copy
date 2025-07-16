@@ -34,17 +34,12 @@ subroutine mmeval_prep(mesh, time_curr, model_ndim, ds_contact, &
 !
 #include "asterc/r8prem.h"
 #include "asterf_types.h"
-#include "asterfort/cfdisi.h"
-#include "asterfort/cfdisl.h"
 #include "asterfort/cfdist.h"
-#include "asterfort/cfmmvd.h"
 #include "asterfort/mmvalp.h"
 #include "asterfort/mmvalp_scal.h"
 #include "asterfort/mcopco.h"
 #include "asterfort/mmnorm.h"
 #include "asterfort/utmess.h"
-#include "asterfort/jenuno.h"
-#include "asterfort/jexnum.h"
 #include "asterfort/mmnewj.h"
 #include "asterfort/int_to_char8.h"
 !
@@ -53,20 +48,20 @@ subroutine mmeval_prep(mesh, time_curr, model_ndim, ds_contact, &
 !
     character(len=8), intent(in) :: mesh
     real(kind=8), intent(in) :: time_curr
-    integer, intent(in) :: model_ndim
+    integer(kind=8), intent(in) :: model_ndim
     type(NL_DS_Contact), intent(in) :: ds_contact
-    integer, intent(in) :: i_zone
+    integer(kind=8), intent(in) :: i_zone
     real(kind=8), intent(in) :: ksipc1
     real(kind=8), intent(in) :: ksipc2
     real(kind=8), intent(in) :: ksipr1
     real(kind=8), intent(in) :: ksipr2
     real(kind=8), intent(in) :: tau1(3)
     real(kind=8), intent(in) :: tau2(3)
-    integer, intent(in) :: elem_slav_nbno
-    integer, intent(in) :: elem_slav_indx
+    integer(kind=8), intent(in) :: elem_slav_nbno
+    integer(kind=8), intent(in) :: elem_slav_indx
     character(len=8), intent(in) :: elem_slav_type
     real(kind=8), intent(in) :: elem_slav_coor(27)
-    integer, intent(in) :: elem_mast_nume
+    integer(kind=8), intent(in) :: elem_mast_nume
     real(kind=8), intent(in) :: lagr_cont_node(9)
     real(kind=8), intent(out) :: norm(3)
     real(kind=8), intent(out) :: gap

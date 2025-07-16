@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -31,7 +31,7 @@ subroutine romNormalize(vect_type, vect_vale, nb_equa)
 !
     character(len=1), intent(in) :: vect_type
     character(len=19), intent(in) :: vect_vale
-    integer, intent(in) :: nb_equa
+    integer(kind=8), intent(in) :: nb_equa
 !
 ! --------------------------------------------------------------------------------------------------
 !

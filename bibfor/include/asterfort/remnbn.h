@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -22,10 +22,10 @@ interface
     subroutine remnbn(basmod, nbmod, nbddr, nbdax, flexdr,&
                       flexga, flexax, tetgd, tetax, cmode,&
                       vecmod, neq, beta)
-        integer :: neq
-        integer :: nbdax
-        integer :: nbddr
-        integer :: nbmod
+        integer(kind=8) :: neq
+        integer(kind=8) :: nbdax
+        integer(kind=8) :: nbddr
+        integer(kind=8) :: nbmod
         character(len=8) :: basmod
         character(len=24) :: flexdr
         character(len=24) :: flexga

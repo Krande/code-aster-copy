@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -21,11 +21,11 @@
 interface
     subroutine cclni1(col, n, d1, t, eps,&
                       ier)
-        integer :: n
+        integer(kind=8) :: n
         complex(kind=8) :: col(n)
         complex(kind=8) :: d1
         complex(kind=8) :: t(n)
         real(kind=8) :: eps
-        integer :: ier
+        integer(kind=8) :: ier
     end subroutine cclni1
 end interface

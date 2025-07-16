@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -22,16 +22,16 @@ interface
     subroutine nmnet1(zimat, nmnbn, cnbn, cplas, czef,&
                       czeg, cief, cdeps, cdtg, cier,&
                       cdepsp, dc, normm)
-        integer :: zimat
+        integer(kind=8) :: zimat
         real(kind=8) :: nmnbn(6)
         real(kind=8) :: cnbn(6)
         real(kind=8) :: cplas(2, 3)
         real(kind=8) :: czef
         real(kind=8) :: czeg
-        integer :: cief
+        integer(kind=8) :: cief
         real(kind=8) :: cdeps(6)
         real(kind=8) :: cdtg(6, 6)
-        integer :: cier
+        integer(kind=8) :: cier
         real(kind=8) :: cdepsp(6)
         real(kind=8) :: dc(6, 6)
         real(kind=8) :: normm

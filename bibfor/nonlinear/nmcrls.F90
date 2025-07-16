@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -26,12 +26,11 @@ subroutine nmcrls(sddisc, listInstJv, numeInit, numeEnd, &
 #include "asterfort/assert.h"
 #include "asterfort/jeveuo.h"
 #include "asterfort/utdidt.h"
-#include "asterfort/utmess.h"
 #include "asterfort/wkvect.h"
 !
     character(len=19), intent(in) :: sddisc, listInstJv
-    integer, intent(in) :: numeInit, numeEnd
-    integer, intent(out) :: nbInstNew
+    integer(kind=8), intent(in) :: numeInit, numeEnd
+    integer(kind=8), intent(out) :: nbInstNew
     real(kind=8), intent(out) :: dtmin
 !
 ! --------------------------------------------------------------------------------------------------
@@ -51,7 +50,7 @@ subroutine nmcrls(sddisc, listInstJv, numeInit, numeEnd, &
 !
 ! --------------------------------------------------------------------------------------------------
 !
-    integer :: pos, iInst, nbInst
+    integer(kind=8) :: pos, iInst, nbInst
     real(kind=8) :: deltat
     real(kind=8), pointer :: listInst(:) => null()
     character(len=24) :: sddiscDITRJv

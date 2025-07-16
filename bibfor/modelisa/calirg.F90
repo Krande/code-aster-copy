@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -23,7 +23,6 @@ subroutine calirg(mesh, nbno, list_node, tran, cent, &
 !
 #include "asterf_types.h"
 #include "jeveux.h"
-#include "asterc/r8dgrd.h"
 #include "asterfort/dismoi.h"
 #include "asterfort/jedema.h"
 #include "asterfort/jemarq.h"
@@ -34,7 +33,7 @@ subroutine calirg(mesh, nbno, list_node, tran, cent, &
 !
 !
     character(len=8), intent(in) :: mesh
-    integer, intent(in) :: nbno
+    integer(kind=8), intent(in) :: nbno
     character(len=24), intent(in) :: list_node
     aster_logical, intent(in) :: l_angl_naut
     real(kind=8), intent(in) :: angl_naut(3)
@@ -70,9 +69,9 @@ subroutine calirg(mesh, nbno, list_node, tran, cent, &
 !
 ! --------------------------------------------------------------------------------------------------
 !
-    integer :: jgeom_init, jgeom_defo
-    integer :: nnomx, nume_node, jlino
-    integer :: i, j, ino, idim
+    integer(kind=8) :: jgeom_init, jgeom_defo
+    integer(kind=8) :: nnomx, nume_node, jlino
+    integer(kind=8) :: i, j, ino, idim
     real(kind=8) :: coor2(3), zero, un
 !
 ! --------------------------------------------------------------------------------------------------

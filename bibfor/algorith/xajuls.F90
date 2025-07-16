@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -32,7 +32,7 @@ subroutine xajuls(noma, nbma, cnslt, cnsln, jconx1, &
 #include "asterfort/utmess.h"
 #include "asterfort/xajuls_stop.h"
 !
-    integer :: nbma, jconx1, jconx2, clsm
+    integer(kind=8) :: nbma, jconx1, jconx2, clsm
     character(len=8) :: noma
     character(len=16) :: typdis
     character(len=19) :: cnslt, cnsln
@@ -61,9 +61,9 @@ subroutine xajuls(noma, nbma, cnslt, cnsln, jconx1, &
 !
 !     ------------------------------------------------------------------
 !
-    integer :: jma, ima, itypma, ar(12, 3), nbar, ia
-    integer :: na, nb, nm, nunoa, nunob, nunom
-    integer :: nmaabs, ndime, ndim
+    integer(kind=8) :: jma, ima, itypma, ar(12, 3), nbar, ia
+    integer(kind=8) :: na, nb, nm, nunoa, nunob, nunom
+    integer(kind=8) :: nmaabs, ndime, ndim
     real(kind=8) :: d1, lsna, lsnb, crilsn, lsta, lstb, crilst, d2, r8pre, crlst
     real(kind=8) :: lsnm, lstm, lsnmax, lstmax, penal, d3, fit_to_vertex(2)
     character(len=19) :: mai

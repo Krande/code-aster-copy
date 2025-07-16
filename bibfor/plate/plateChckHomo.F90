@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -46,9 +46,9 @@ subroutine plateChckHomo(l_nonlin, option, lcqhom)
 !
 ! --------------------------------------------------------------------------------------------------
 !
-    integer :: codret(1), kpg, spt, iret
-    integer :: jv_mate, jv_cacoqu, jv_pnbsp
-    integer :: i_layer, nb_layer, vali(2)
+    integer(kind=8) :: codret(1), kpg, spt, iret
+    integer(kind=8) :: jv_mate, jv_cacoqu, jv_pnbsp
+    integer(kind=8) :: i_layer, nb_layer, vali(2)
     real(kind=8) :: thick_lay(1), thick_tot, valr(2), thick
     character(len=2) :: layer_name
     character(len=3) :: layer_nume

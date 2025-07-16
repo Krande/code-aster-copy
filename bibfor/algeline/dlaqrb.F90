@@ -1,6 +1,6 @@
 ! --------------------------------------------------------------------
 ! Copyright (C) LAPACK
-! Copyright (C) 2007 - 2024 - EDF R&D - www.code-aster.org
+! Copyright (C) 2007 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -142,7 +142,7 @@ subroutine dlaqrb(wantt, n, ilo, ihi, h, &
 #include "blas/dlanhs.h"
 #include "blas/drot.h"
     aster_logical :: wantt
-    integer :: ihi, ilo, info, ldh, n
+    integer(kind=8) :: ihi, ilo, info, ldh, n
 !
 !     %-----------------%
 !     | ARRAY ARGUMENTS |
@@ -162,7 +162,7 @@ subroutine dlaqrb(wantt, n, ilo, ihi, h, &
 !     | LOCAL SCALARS & ARRAYS |
 !     %------------------------%
 !
-    integer :: i, i1, i2, itn, its, j, k, l, m, nh, nr
+    integer(kind=8) :: i, i1, i2, itn, its, j, k, l, m, nh, nr
     real(kind=8) :: cs, h00, h10, h11, h12, h21, h22, h33, h33s, h43h34, h44
     real(kind=8) :: h44s, s, smlnum, sn, sum, t1, t2, t3, tst1, ulp, unfl, v1
     real(kind=8) :: v2, v3

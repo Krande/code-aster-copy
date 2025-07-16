@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -24,7 +24,6 @@ subroutine caprec(load, loadLigrel, mesh, model, valeType)
 #include "jeveux.h"
 #include "asterc/getfac.h"
 #include "asterc/indik8.h"
-#include "asterc/r8gaem.h"
 #include "asterfort/aflrch.h"
 #include "asterfort/armin.h"
 #include "asterfort/assert.h"
@@ -80,51 +79,51 @@ subroutine caprec(load, loadLigrel, mesh, model, valeType)
 ! --------------------------------------------------------------------------------------------------
 !
     character(len=16), parameter :: keywordFact = 'RELA_CINE_BP'
-    integer :: nliai, geomDime
+    integer(kind=8) :: nliai, geomDime
     real(kind=8) :: dist_mini, dist
     complex(kind=8) :: cbid
     character(len=8) :: k8bid, answer
-    integer :: n1, iocc, iret, ibid
-    integer :: nbrela
+    integer(kind=8) :: n1, iocc, iret, ibid
+    integer(kind=8) :: nbrela
     character(len=19) :: list_rela, list_rela_tmp, list_rela_old
     character(len=8) :: cmp_name
-    integer :: dim
-    integer :: cmp_index_dx, cmp_index_dy, cmp_index_dz
-    integer :: cmp_index_drx, cmp_index_dry, cmp_index_drz
+    integer(kind=8) :: dim
+    integer(kind=8) :: cmp_index_dx, cmp_index_dy, cmp_index_dz
+    integer(kind=8) :: cmp_index_drx, cmp_index_dry, cmp_index_drz
     character(len=8) :: nomg_depl, nomg_sief, nom_noeuds_tmp(4)
-    integer :: nb_cmp_depl, nb_cmp_sief
-    integer :: j_cmp_depl, j_cmp_sief
-    integer :: nbec_depl, nbec_sief
+    integer(kind=8) :: nb_cmp_depl, nb_cmp_sief
+    integer(kind=8) :: j_cmp_depl, j_cmp_sief
+    integer(kind=8) :: nbec_depl, nbec_sief
     aster_logical :: l_sigm_bpel, l_rela_cine
     character(len=24) :: list_cabl, list_anc1, list_anc2
-    integer :: nb_cabl, nb_anc1, nb_anc2
-    integer :: jlicabl, jlianc1, jlianc2
+    integer(kind=8) :: nb_cabl, nb_anc1, nb_anc2
+    integer(kind=8) :: jlicabl, jlianc1, jlianc2
     character(len=24) :: list_node
-    integer :: nb_node, jlino
+    integer(kind=8) :: nb_node, jlino
     character(len=8) :: cabl_prec
     character(len=19) :: cabl_sigm, modelLigrel
     aster_logical :: l_rota_2d, l_rota_3d
-    integer :: i_cabl, i_ancr, i_no, nume_node
-    integer :: nb_elem
-    integer :: jprnm
+    integer(kind=8) :: i_cabl, i_ancr, i_no, nume_node
+    integer(kind=8) :: nb_elem
+    integer(kind=8) :: jprnm
     character(len=24) :: name_ancr, name_anc1, name_anc2
-    integer :: nume_cabl, nume_cabl0
-    integer :: jlces, jll, jlr, nbchs
-    integer, pointer :: rlnr(:) => null()
-    integer, pointer :: rlpo(:) => null()
+    integer(kind=8) :: nume_cabl, nume_cabl0
+    integer(kind=8) :: jlces, jll, jlr, nbchs
+    integer(kind=8), pointer :: rlnr(:) => null()
+    integer(kind=8), pointer :: rlpo(:) => null()
     character(len=8), pointer :: rltc(:) => null(), rltv(:) => null()
-    integer :: nbteli, nbteli_total
-    integer :: pass
+    integer(kind=8) :: nbteli, nbteli_total
+    integer(kind=8) :: pass
     character(len=4) :: typval, typcoe
-    integer :: nbcmp, numa, iivale, nma, icmp, ima, nbma, nbval
-    integer :: jsief, nsief
-    integer, pointer :: sigmnuma(:) => null()
+    integer(kind=8) :: nbcmp, numa, iivale, nma, icmp, ima, nbma, nbval
+    integer(kind=8) :: jsief, nsief
+    integer(kind=8), pointer :: sigmnuma(:) => null()
     aster_logical :: l_prealloc
     real(kind=8), pointer :: sigmvale(:) => null()
     character(len=8), pointer :: ncmp(:) => null()
     character(len=8), dimension(3) :: sigmcmp
-    integer :: jdesc, jnoma, jncmp, jnoli, jvale, jvalv, jnocmp, ncmpmx, nec
-    integer :: jlima0, jlimac, lontav, gd, nedit
+    integer(kind=8) :: jdesc, jnoma, jncmp, jnoli, jvale, jvalv, jnocmp, ncmpmx, nec
+    integer(kind=8) :: jlima0, jlimac, lontav, gd, nedit
     character(len=8) :: ctype
     cbid = dcmplx(0.d0, 0.d0)
 

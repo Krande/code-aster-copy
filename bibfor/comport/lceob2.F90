@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -35,7 +35,7 @@ subroutine lceob2(intmax, tole, eps, bm, dm, &
     real(kind=8) :: lambda, mu, alpha, seuil, ecrob, ecrod
     real(kind=8) :: tole
 !
-    integer :: intmax, iret, bdim
+    integer(kind=8) :: intmax, iret, bdim
 !
     aster_logical :: elas, dbloq
 ! ----------------------------------------------------------------------
@@ -67,7 +67,7 @@ subroutine lceob2(intmax, tole, eps, bm, dm, &
 ! OUT IRET    : CODE RETOUR
 ! ----------------------------------------------------------------------
 !
-    integer :: i, j, k, compte, iret1
+    integer(kind=8) :: i, j, k, compte, iret1
 !
     real(kind=8) :: bs(3), bms(3), dbs(3)
     real(kind=8) :: fb(6), fd, dd, ddg, resb(3)

@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2018 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -22,9 +22,9 @@ interface
     subroutine rs_paraonce(result   , nb_para      , list_para,&
                            nb_store_, v_list_store_)
         character(len=8), intent(in) :: result
-        integer, intent(in) :: nb_para
+        integer(kind=8), intent(in) :: nb_para
         character(len=*), intent(in) :: list_para(*)
-        integer, optional, intent(in) :: nb_store_
-        integer, pointer, optional :: v_list_store_(:)
+        integer(kind=8), optional, intent(in) :: nb_store_
+        integer(kind=8), pointer, optional :: v_list_store_(:)
     end subroutine rs_paraonce
 end interface 

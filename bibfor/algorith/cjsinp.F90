@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -71,7 +71,7 @@ subroutine cjsinp(mater, epsd, deps, sigf, vinf, &
 #include "asterfort/jedema.h"
 #include "asterfort/jemarq.h"
 #include "asterfort/trace.h"
-    integer :: ndt, ndi, nvi, niter, ndec, i
+    integer(kind=8) :: ndt, ndi, nvi, niter, ndec, i
     real(kind=8) :: epsd(6), deps(6), sigf(6), vinf(nvi), epscon
     real(kind=8) :: mater(14, 2), rm, rc, pco, pa, pc
     real(kind=8) :: gamma, mucjs, epssig, pref, qinit

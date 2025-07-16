@@ -37,30 +37,30 @@ module contact_type
 !
     type ContactParameters
     !! Contact parameters
-        integer                             :: algo_cont = 0
-        integer                             :: type_cont = 0
-        integer                             :: vari_cont = 0
-        integer                             :: jac_type = 0
+        integer(kind=8)                             :: algo_cont = 0
+        integer(kind=8)                             :: type_cont = 0
+        integer(kind=8)                             :: vari_cont = 0
+        integer(kind=8)                             :: jac_type = 0
         real(kind=8)                        :: vari_cont_coef = 0.d0
         real(kind=8), dimension(9)          :: coef_cont = 0.d0
 
     !! Friction paramaters
         aster_logical                       :: l_fric = ASTER_FALSE
-        integer                             :: algo_fric = 0
-        integer                             :: type_fric = 0
+        integer(kind=8)                             :: algo_fric = 0
+        integer(kind=8)                             :: type_fric = 0
         real(kind=8), dimension(9)          :: coef_fric = 0.d0
         real(kind=8), dimension(9)          :: threshold = 0.d0
         real(kind=8)                        :: threshold_given = 0.d0
 
     !! Other
         real(kind=8)                        :: proj_tole = 0.d0
-        integer                             :: cont_init = PAIR_CONT_INTE
+        integer(kind=8)                             :: cont_init = PAIR_CONT_INTE
         real(kind=8)                        :: E = 0.d0
     end type
 !
     type ContactGeom
     !! Slave side parameters
-        integer                             :: nb_node_slav = 0
+        integer(kind=8)                             :: nb_node_slav = 0
         character(len=8)                    :: elem_slav_code = " "
         real(kind=8), dimension(3, 9)        :: coor_slav_init = 0.d0
         real(kind=8), dimension(3, 9)        :: coor_slav_prev = 0.d0
@@ -69,21 +69,21 @@ module contact_type
         real(kind=8), dimension(3, 9)        :: depl_slav_curr = 0.d0
         real(kind=8), dimension(4)          :: lagc_slav_curr = 0.d0
         real(kind=8), dimension(2, 4)        :: lagf_slav_curr = 0.d0
-        integer                             :: nb_lagr_c = 0
-        integer, dimension(9)               :: indi_lagc = 0
+        integer(kind=8)                             :: nb_lagr_c = 0
+        integer(kind=8), dimension(9)               :: indi_lagc = 0
 
     !! Slave cell volu
-        integer                             :: nb_node_volu = 0
+        integer(kind=8)                             :: nb_node_volu = 0
         character(len=8)                    :: elem_volu_code = " "
         real(kind=8), dimension(3, 27)        :: coor_volu_init = 0.d0
         real(kind=8), dimension(3, 27)        :: coor_volu_prev = 0.d0
         real(kind=8), dimension(3, 27)        :: coor_volu_curr = 0.d0
         real(kind=8), dimension(3, 27)        :: coor_volu_pair = 0.d0
         real(kind=8), dimension(3, 27)        :: depl_volu_curr = 0.d0
-        integer, dimension(9)                :: mapVolu2Surf = 0
+        integer(kind=8), dimension(9)                :: mapVolu2Surf = 0
 
     !! Master side paramaters
-        integer                             :: nb_node_mast = 0
+        integer(kind=8)                             :: nb_node_mast = 0
         character(len=8)                    :: elem_mast_code = " "
         real(kind=8), dimension(3, 9)        :: coor_mast_init = 0.d0
         real(kind=8), dimension(3, 9)        :: coor_mast_prev = 0.d0
@@ -95,21 +95,21 @@ module contact_type
         real(kind=8) :: time_prev = 0.d0, time_curr = 0.d0
 
     !! Other
-        integer                             :: elem_dime = 0
+        integer(kind=8)                             :: elem_dime = 0
         aster_logical                       :: l_axis = ASTER_FALSE
-        integer                             :: nb_dofs = 0
+        integer(kind=8)                             :: nb_dofs = 0
     end type
 
     type Cell_Geom
-        integer :: cellDime = 0
-        integer :: nbNode = 0
+        integer(kind=8) :: cellDime = 0
+        integer(kind=8) :: nbNode = 0
         character(len=8) :: cellCode = " "
         real(kind=8), dimension(3, 9) :: coorNodeGlob = 0.d0
         real(kind=8), dimension(2, 9) :: coorNodePara = 0.d0
     end type Cell_Geom
 
     type Contact_CellGeom
-        integer :: cellDime = 0
+        integer(kind=8) :: cellDime = 0
 ! ----- Slave side
         type(Cell_Geom) :: slav
 ! ----- Master side
@@ -120,21 +120,21 @@ module contact_type
     type Contact_ProjAlgoPara
         aster_logical :: withPrepLine = ASTER_FALSE
         aster_logical :: newtDebug = ASTER_FALSE
-        integer :: newtIterMaxi = 0
+        integer(kind=8) :: newtIterMaxi = 0
         real(kind=8) :: newtTole = 0.d0
     end type Contact_ProjAlgoPara
 
 ! - Type for parameters of projection
     type Contact_ProjPara
         real(kind=8) :: pointCoor(3) = 0.d0
-        integer :: modelDime = 0
+        integer(kind=8) :: modelDime = 0
         type(Cell_Geom) :: geomTarget
         type(Cell_Geom) :: geomTargetLine
         real(kind=8):: projVect(3) = 0.d0
         real(kind=8) :: ksi(2) = 0.d0
         real(kind=8) :: tau1(3) = 0.d0
         real(kind=8) :: tau2(3) = 0.d0
-        integer:: errorCode = 0
+        integer(kind=8):: errorCode = 0
     end type Contact_ProjPara
 
 !

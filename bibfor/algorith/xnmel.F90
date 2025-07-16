@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -37,11 +37,11 @@ subroutine xnmel(nnop, nfh, nfe, ddlc, &
 #include "asterfort/tecach.h"
 #include "asterfort/xxnmel.h"
 !
-    integer :: nnop, imate, lgpg, codret, igeom, nfiss, jheavn
-    integer :: cnset(4*32), heavt(*), lonch(10), ndim
-    integer :: nfh, nfe, ddlc, ddlm
-    integer :: ivectu, idepl, jpintt, jpmilt
-    integer :: jstno
+    integer(kind=8) :: nnop, imate, lgpg, codret, igeom, nfiss, jheavn
+    integer(kind=8) :: cnset(4*32), heavt(*), lonch(10), ndim
+    integer(kind=8) :: nfh, nfe, ddlc, ddlm
+    integer(kind=8) :: ivectu, idepl, jpintt, jpmilt
+    integer(kind=8) :: jstno
     character(len=8) :: typmod(*)
     character(len=16) :: option, compor(*)
     real(kind=8) :: instam, instap
@@ -93,12 +93,12 @@ subroutine xnmel(nnop, nfh, nfe, ddlc, &
 !
     character(len=8) :: elrefp, fami_se
     real(kind=8) :: coorse(81), he(nfiss)
-    integer :: nse, npg
-    integer :: nnops, ibid, ibid2
-    integer :: j, ise, in, ino, idebs, idebv
-    integer :: nbsig, idecpg, jtab(7), ncomp, iret
-    integer :: ncompn, heavn(nnop, 5)
-    integer :: irese, nno, ig, ifiss
+    integer(kind=8) :: nse, npg
+    integer(kind=8) :: nnops, ibid, ibid2
+    integer(kind=8) :: j, ise, in, ino, idebs, idebv
+    integer(kind=8) :: nbsig, idecpg, jtab(7), ncomp, iret
+    integer(kind=8) :: ncompn, heavn(nnop, 5)
+    integer(kind=8) :: irese, nno, ig, ifiss
     character(len=8), parameter :: elrese(6) = (/'SE2', 'TR3', 'TE4', 'SE3', 'TR6', 'T10'/)
     character(len=8), parameter :: fami(6) = (/'BID ', 'XINT', 'XINT', 'BID ', 'XINT', 'XINT'/)
 !

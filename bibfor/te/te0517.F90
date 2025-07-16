@@ -48,14 +48,13 @@ subroutine te0517(option, nomte)
 #include "asterfort/terefe.h"
 #include "asterfort/utmess.h"
 #include "asterfort/utpvlg.h"
-#include "blas/ddot.h"
 #include "asterfort/Behaviour_type.h"
 !
 ! --------------------------------------------------------------------------------------------------
 !
-    integer :: nc, nno, kp, ncomp, i, jacf, icompo, iorien, ivectu
-    integer :: jtab(7), ino, istrxm, nbsp
-    integer :: igeom, iret, imate, k, npg, ifgm, iretc
+    integer(kind=8) :: nc, nno, kp, ncomp, i, jacf, icompo, iorien, ivectu
+    integer(kind=8) :: jtab(7), ino, istrxm, nbsp
+    integer(kind=8) :: igeom, iret, imate, k, npg, ifgm, iretc
 !
     real(kind=8) :: pgl(3, 3), fl(18), xiy, xiz
     real(kind=8) :: ey, ez, temp, xl, gamma
@@ -65,8 +64,8 @@ subroutine te0517(option, nomte)
     character(len=24) :: mator
 !
 ! --------------------------------------------------------------------------------------------------
-    integer :: nbfibr, nbgrfi, tygrfi, nbcarm, nug(10)
-    integer, parameter :: nb_cara = 4
+    integer(kind=8) :: nbfibr, nbgrfi, tygrfi, nbcarm, nug(10)
+    integer(kind=8), parameter :: nb_cara = 4
     real(kind=8) :: vale_cara(nb_cara)
     character(len=8) :: noms_cara(nb_cara)
     data noms_cara/'AY1', 'AZ1', 'EY1', 'EZ1'/

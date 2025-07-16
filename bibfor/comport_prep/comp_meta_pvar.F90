@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -40,7 +40,6 @@ subroutine comp_meta_pvar(model, comporMeta, comporMetaInfo)
 #include "asterfort/jemarq.h"
 #include "asterfort/jeveuo.h"
 #include "asterfort/jexnum.h"
-#include "asterfort/jexatr.h"
 #include "asterfort/wkvect.h"
 !
     character(len=8), intent(in) :: model
@@ -64,21 +63,21 @@ subroutine comp_meta_pvar(model, comporMeta, comporMetaInfo)
     aster_logical :: l_zone_read
     character(len=8) :: mesh
     character(len=19) :: modelLigrel
-    integer, pointer :: comporInfoInfo(:) => null()
-    integer, pointer :: comporInfoZone(:) => null()
-    integer, pointer :: zoneRead(:) => null()
-    integer, pointer :: modelCell(:) => null()
+    integer(kind=8), pointer :: comporInfoInfo(:) => null()
+    integer(kind=8), pointer :: comporInfoZone(:) => null()
+    integer(kind=8), pointer :: zoneRead(:) => null()
+    integer(kind=8), pointer :: modelCell(:) => null()
     character(len=16), pointer :: comporInfoVari(:) => null()
     character(len=16), pointer :: comporInfoRela(:) => null()
     character(len=16), pointer :: comporMetaVale(:) => null()
-    integer, pointer :: comporMetaDesc(:) => null()
-    integer, pointer :: comporMetaPtma(:) => null()
-    integer :: iret, iDummy, idummy2
-    integer :: nbVale, mapNbCmpMax, mapNbZone, nbZoneActi
-    integer :: mapZoneNume, iCellMesh, nbCellMesh, numeComp
-    integer :: nbVari, ntVari, nbVariMaxi, nbPhase
+    integer(kind=8), pointer :: comporMetaDesc(:) => null()
+    integer(kind=8), pointer :: comporMetaPtma(:) => null()
+    integer(kind=8) :: iret, iDummy, idummy2
+    integer(kind=8) :: nbVale, mapNbCmpMax, mapNbZone, nbZoneActi
+    integer(kind=8) :: mapZoneNume, iCellMesh, nbCellMesh, numeComp
+    integer(kind=8) :: nbVari, ntVari, nbVariMaxi, nbPhase
     character(len=16) :: metaType, metaLaw
-    integer :: nbCompElem
+    integer(kind=8) :: nbCompElem
     character(len=16) :: compElem(2), compCodePY, metaCodePY
 !
 ! --------------------------------------------------------------------------------------------------

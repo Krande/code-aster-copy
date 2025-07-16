@@ -47,7 +47,7 @@ subroutine nueffe_lag1(nbLigr, listLigr, base, numeDofZ, renumZ, &
 #include "asterfort/wkvect.h"
 #include "jeveux.h"
 !
-    integer, intent(in) :: nbLigr
+    integer(kind=8), intent(in) :: nbLigr
     character(len=24), pointer :: listLigr(:)
     character(len=2), intent(in) :: base
     character(len=*), intent(in) :: numeDofZ, renumZ, modelZ
@@ -94,7 +94,7 @@ subroutine nueffe_lag1(nbLigr, listLigr, base, numeDofZ, renumZ, &
     character(len=24) :: modeLoc, idenRela
     character(len=8) :: gran_name, kbid
     character(len=3) :: kret
-    integer :: n, igds, nec, nlili
+    integer(kind=8) :: n, igds, nec, nlili
     character(len=8) :: nomcmp
     character(len=8) :: mesh
     character(len=14) :: numeDof
@@ -104,29 +104,29 @@ subroutine nueffe_lag1(nbLigr, listLigr, base, numeDofZ, renumZ, &
     character(len=19) :: nume_equa
     character(len=24) :: nequ, refn
     character(len=24) :: lili, prno, nueq, deeq, delg
-    integer :: nb_node_mesh, ilim, itypel, nb_dof, jdeeq, jdelg, nb_equa
-    integer :: nb_iden_rela, nb_iden_dof, nb_iden_term
-    integer :: i, iad, ianueq, icddlb
-    integer :: iconx1, iconx2, iddlag, iderli
-    integer :: idnocm, idprn1, idprn2, idref
-    integer :: iec, iel, iexi1, ifm, igr, ilag, n0, n1, n2, nn, n22
-    integer :: ili, inewn, ino, inum21
-    integer :: inuno2, ioldn, iprnm, ire, iret
-    integer :: j, jprno, k, l
-    integer :: nbcmp, nbn, nb_node_subs
-    integer :: nb_node, nbnonu, nbnore, nddl1, nddlb
-    integer :: nel, niv, nlag, nno, nblag
-    integer :: numa, nunoel, nume_late_node, nunoel_save
-    integer :: vali(5)
+    integer(kind=8) :: nb_node_mesh, ilim, itypel, nb_dof, jdeeq, jdelg, nb_equa
+    integer(kind=8) :: nb_iden_rela, nb_iden_dof, nb_iden_term
+    integer(kind=8) :: i, iad, ianueq, icddlb
+    integer(kind=8) :: iconx1, iconx2, iddlag, iderli
+    integer(kind=8) :: idnocm, idprn1, idprn2, idref
+    integer(kind=8) :: iec, iel, iexi1, ifm, igr, ilag, n0, n1, n2, nn, n22
+    integer(kind=8) :: ili, inewn, ino, inum21
+    integer(kind=8) :: inuno2, ioldn, iprnm, ire, iret
+    integer(kind=8) :: j, jprno, k, l
+    integer(kind=8) :: nbcmp, nbn, nb_node_subs
+    integer(kind=8) :: nb_node, nbnonu, nbnore, nddl1, nddlb
+    integer(kind=8) :: nel, niv, nlag, nno, nblag
+    integer(kind=8) :: numa, nunoel, nume_late_node, nunoel_save
+    integer(kind=8) :: vali(5)
     aster_logical :: lparallel_mesh
-    integer, pointer :: v_nnli(:) => null()
-    integer, pointer :: adli(:) => null()
-    integer, pointer :: bid(:) => null()
-    integer, pointer :: adne(:) => null()
-    integer, pointer :: qrns(:) => null()
-    integer, pointer :: p_nequ(:) => null()
-    integer, pointer :: idenRelaInfo(:) => null()
-    integer, pointer :: lagr_mult(:) => null()
+    integer(kind=8), pointer :: v_nnli(:) => null()
+    integer(kind=8), pointer :: adli(:) => null()
+    integer(kind=8), pointer :: bid(:) => null()
+    integer(kind=8), pointer :: adne(:) => null()
+    integer(kind=8), pointer :: qrns(:) => null()
+    integer(kind=8), pointer :: p_nequ(:) => null()
+    integer(kind=8), pointer :: idenRelaInfo(:) => null()
+    integer(kind=8), pointer :: lagr_mult(:) => null()
 !
 ! --------------------------------------------------------------------------------------------------
 !

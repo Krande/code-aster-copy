@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -25,11 +25,11 @@ interface
         character(len=*) :: typcez
         character(len=*) :: maz
         character(len=*) :: nomgdz
-        integer :: ncmpg
+        integer(kind=8) :: ncmpg
         character(len=*) :: licmp(*)
-        integer :: npg(*)
-        integer :: nspt(*)
-        integer :: ncmp(*)
+        integer(kind=8) :: npg(*)
+        integer(kind=8) :: nspt(*)
+        integer(kind=8) :: ncmp(*)
         aster_logical, optional, intent(in) :: undf0_
     end subroutine cescre
 end interface

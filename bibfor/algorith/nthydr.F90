@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -22,7 +22,7 @@ subroutine nthydr(hydrat)
 #include "asterc/getfac.h"
 #include "asterfort/getvtx.h"
     aster_logical :: hydrat
-    integer :: nbocc, n1, i
+    integer(kind=8) :: nbocc, n1, i
     character(len=16) :: comp
 !     ------------------------------------------------------------------
 !

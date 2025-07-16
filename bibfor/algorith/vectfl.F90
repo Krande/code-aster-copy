@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -50,7 +50,7 @@ subroutine vectfl(opt, modele, carele, mate, mateco, templu, &
     character(len=19) :: vecel
     character(len=24) :: chgeom, chtime
     character(len=24) :: ligrmo, lchin(4), lchout(1), ve2
-    integer :: jlve
+    integer(kind=8) :: jlve
 !-----------------------------------------------------------------------
     call jemarq()
 !

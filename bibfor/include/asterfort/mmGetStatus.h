@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2018 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -22,8 +22,8 @@ interface
     subroutine mmGetStatus(indco       ,&
                            l_prev_cont_, l_prev_fric_ ,&
                            indco_prev_ , indadhe_prev_, indadhe2_prev_)
-        integer, intent(out) :: indco
+        integer(kind=8), intent(out) :: indco
         aster_logical, optional, intent(out) :: l_prev_cont_, l_prev_fric_
-        integer, optional, intent(out) :: indco_prev_, indadhe_prev_, indadhe2_prev_
+        integer(kind=8), optional, intent(out) :: indco_prev_, indadhe_prev_, indadhe2_prev_
     end subroutine mmGetStatus
 end interface

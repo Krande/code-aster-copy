@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -21,7 +21,7 @@ function xxmmvd(vect)
 ! person_in_charge: mickael.abbas at edf.fr
 !
     implicit none
-    integer :: xxmmvd
+    integer(kind=8) :: xxmmvd
 #include "asterf_types.h"
 #include "asterfort/assert.h"
     character(len=5) :: vect
@@ -39,11 +39,11 @@ function xxmmvd(vect)
 !
 ! ----------------------------------------------------------------------
 !
-    integer :: zxcar
+    integer(kind=8) :: zxcar
     parameter(zxcar=12)
-    integer :: zxbas, zxedg
+    integer(kind=8) :: zxbas, zxedg
     parameter(zxbas=14, zxedg=25)
-    integer :: zxain
+    integer(kind=8) :: zxain
     parameter(zxain=5)
     aster_logical :: lvect
 !

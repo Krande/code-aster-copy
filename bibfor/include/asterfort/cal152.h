@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -31,15 +31,15 @@ interface
         character(len=19) :: maz
         character(len=2) :: model
         character(len=24) :: phib24
-        integer :: iphi1
-        integer :: iphi2
-        integer :: imade
+        integer(kind=8) :: iphi1
+        integer(kind=8) :: iphi2
+        integer(kind=8) :: imade
         character(len=8) :: modmec
         character(len=19) :: chamno
         character(len=14) :: num
         aster_logical :: vrai
-        integer :: i
-        integer :: j
+        integer(kind=8) :: i
+        integer(kind=8) :: j
         real(kind=8) :: mij
         real(kind=8) :: cij
         real(kind=8) :: kij

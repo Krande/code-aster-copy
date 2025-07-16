@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -33,14 +33,14 @@ subroutine pcfact(matas, nequ, in, ip, ac, &
 !
 !  REMARQUE: A L'APPEL AC ET PRC PEUVENT ETRE CONFONDUS
 !-----------------------------------------------------------------------
-    integer :: nequ
+    integer(kind=8) :: nequ
     real(kind=8) :: ac(*), prc(*), vect(nequ)
     character(len=19) :: matas
-    integer :: in(nequ)
+    integer(kind=8) :: in(nequ)
     integer(kind=4) :: ip(*)
-    integer :: vali
-    integer :: i, j, jdeb, jfin, jj, kdeb, kfin
-    integer :: ki, kk, jrefa
+    integer(kind=8) :: vali
+    integer(kind=8) :: i, j, jdeb, jfin, jj, kdeb, kfin
+    integer(kind=8) :: ki, kk, jrefa
     character(len=24) numedd
     character(len=8) name_node, name_cmp, valk(2)
     real(kind=8) :: cumul, epsi

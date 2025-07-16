@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -22,9 +22,9 @@ interface
     subroutine elref7(elrefv, tymvol, ndegre, nbf, elref1,&
                       elref2)
         character(len=8) :: elrefv
-        integer :: tymvol
-        integer :: ndegre
-        integer :: nbf
+        integer(kind=8) :: tymvol
+        integer(kind=8) :: ndegre
+        integer(kind=8) :: nbf
         character(len=8) :: elref1
         character(len=8) :: elref2
     end subroutine elref7

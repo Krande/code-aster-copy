@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -25,6 +25,6 @@ interface
         character(len=16),intent(in) :: nocham
         character(len=16),intent(in) :: nocmp
         real(kind=8),intent(out) :: dval
-        integer,optional,intent(in) :: lst_loca(:)
+        integer(kind=8),optional,intent(in) :: lst_loca(:)
     end subroutine extdch
 end interface

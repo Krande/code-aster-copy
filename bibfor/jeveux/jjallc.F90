@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -23,36 +23,36 @@ subroutine jjallc(iclasi, idatci, cel, ibacol)
 #include "asterfort/jjecrs.h"
 #include "asterfort/jxliro.h"
 #include "asterfort/utmess.h"
-    integer :: iclasi, idatci, ibacol
+    integer(kind=8) :: iclasi, idatci, ibacol
     character(len=*) :: cel
 ! ----------------------------------------------------------------------
-    integer :: lk1zon, jk1zon, liszon, jiszon
+    integer(kind=8) :: lk1zon, jk1zon, liszon, jiszon
     common/izonje/lk1zon, jk1zon, liszon, jiszon
 ! ----------------------------------------------------------------------
 !-----------------------------------------------------------------------
-    integer :: iadml, iadyn, ic, icel, id, ipgcex, is
-    integer :: ix, jcara, jctab, jdate, jdocu, jgenr, jhcod
-    integer :: jiadd, jiadm, jlong, jlono, jltyp, jluti, jmarq
-    integer :: jorig, jrnom, jtype, k, n
+    integer(kind=8) :: iadml, iadyn, ic, icel, id, ipgcex, is
+    integer(kind=8) :: ix, jcara, jctab, jdate, jdocu, jgenr, jhcod
+    integer(kind=8) :: jiadd, jiadm, jlong, jlono, jltyp, jluti, jmarq
+    integer(kind=8) :: jorig, jrnom, jtype, k, n
 !-----------------------------------------------------------------------
     parameter(n=5)
     common/jiatje/jltyp(n), jlong(n), jdate(n), jiadd(n), jiadm(n),&
      &                 jlono(n), jhcod(n), jcara(n), jluti(n), jmarq(n)
     common/jkatje/jgenr(n), jtype(n), jdocu(n), jorig(n), jrnom(n)
 ! ----------------------------------------------------------------------
-    integer :: istat
+    integer(kind=8) :: istat
     common/istaje/istat(4)
-    integer :: ipgc, kdesma(2), lgd, lgduti, kposma(2), lgp, lgputi
+    integer(kind=8) :: ipgc, kdesma(2), lgd, lgduti, kposma(2), lgp, lgputi
     common/iadmje/ipgc, kdesma, lgd, lgduti, kposma, lgp, lgputi
 ! ----------------------------------------------------------------------
-    integer :: iddeso, idiadm, idmarq, idnom, idlong, idlono, idluti, idnum
+    integer(kind=8) :: iddeso, idiadm, idmarq, idnom, idlong, idlono, idluti, idnum
     parameter(iddeso=1, idiadm=3,&
      &               idmarq=4, idnom=5, idlong=7,&
      &               idlono=8, idluti=9, idnum=10)
 !     ------------------------------------------------------------------
     character(len=1) :: genri, typei
-    integer :: col(1), jcol, itab(1)
-    integer :: iadmi, iaddi(2), ltypi, lonoi, ista1, ista2
+    integer(kind=8) :: col(1), jcol, itab(1)
+    integer(kind=8) :: iadmi, iaddi(2), ltypi, lonoi, ista1, ista2
 ! DEB ------------------------------------------------------------------
     ipgcex = ipgc
     ic = iclasi

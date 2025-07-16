@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -113,8 +113,8 @@ subroutine nmhuj(fami, kpg, ksp, typmod, imat, &
 #include "asterfort/Behaviour_type.h"
 #include "asterfort/trace.h"
 #include "asterfort/get_varc.h"
-    integer      :: imat, ndt, ndi, nvi, iret, iret1, kpg, ksp
-    integer      :: i, inc, incmax, ndtt, limsup
+    integer(kind=8)      :: imat, ndt, ndi, nvi, iret, iret1, kpg, ksp
+    integer(kind=8)      :: i, inc, incmax, ndtt, limsup
     real(kind=8) :: carcri(*), vind(50), vinf(50), vind0(50), variTmp(50)
     real(kind=8) :: epsd(6), deps(6), deps0(6)
     real(kind=8) :: sigd(6), sigf(6), dsde(6, 6), seuil

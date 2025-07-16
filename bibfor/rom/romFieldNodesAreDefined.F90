@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -34,11 +34,11 @@ subroutine romFieldNodesAreDefined(field, listEqua, numeDof, &
 #include "asterfort/utmess.h"
 !
     type(ROM_DS_Field), intent(in) :: field
-    integer, pointer :: listEqua(:)
+    integer(kind=8), pointer :: listEqua(:)
     character(len=24), intent(in) :: numeDof
     character(len=24), optional, intent(in) :: grnode_
-    integer, optional, intent(in) :: nbNode_
-    integer, pointer, optional :: listNode_(:)
+    integer(kind=8), optional, intent(in) :: nbNode_
+    integer(kind=8), pointer, optional :: listNode_(:)
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -60,11 +60,11 @@ subroutine romFieldNodesAreDefined(field, listEqua, numeDof, &
 !
 ! --------------------------------------------------------------------------------------------------
 !
-    integer :: ifm, niv
-    integer :: nbNode, nbEqua
+    integer(kind=8) :: ifm, niv
+    integer(kind=8) :: nbNode, nbEqua
     character(len=24) :: fieldRefe
     character(len=8) :: mesh
-    integer, pointer :: listNodeFromGroup(:) => null()
+    integer(kind=8), pointer :: listNodeFromGroup(:) => null()
     character(len=4) :: fieldSupp
 !
 ! --------------------------------------------------------------------------------------------------

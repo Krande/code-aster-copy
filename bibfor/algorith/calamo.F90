@@ -50,7 +50,7 @@ subroutine calamo(nomres, classe, basmod)
 #include "asterfort/rsadpa.h"
 #include "asterfort/utmess.h"
 #include "asterfort/wkvect.h"
-    integer :: vali(3)
+    integer(kind=8) :: vali(3)
 !
 !
     real(kind=8) :: pi
@@ -61,9 +61,9 @@ subroutine calamo(nomres, classe, basmod)
 !
 !-----------------------------------------------------------------------
 !-----------------------------------------------------------------------
-    integer :: i, iad, iam, idiff, ioc, lamo2
-    integer :: lamor, lddes, ldref, ldres, lfreq, lmgen, nbamor
-    integer :: nbdef, nbmod, ntail
+    integer(kind=8) :: i, iad, iam, idiff, ioc, lamo2
+    integer(kind=8) :: lamor, lddes, ldref, ldres, lfreq, lmgen, nbamor
+    integer(kind=8) :: nbdef, nbmod, ntail
     real(kind=8) :: coeff
 !-----------------------------------------------------------------------
     data blanc/'        '/

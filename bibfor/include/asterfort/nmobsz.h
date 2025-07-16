@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2020 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -38,8 +38,8 @@ interface
         real(kind=8), intent(in) :: valr
         character(len=8), optional, intent(in) :: node_namez
         character(len=8), optional, intent(in) :: elem_namez
-        integer, optional, intent(in) :: poin_numez
-        integer, optional, intent(in) :: glob_numez
-        integer, optional, intent(in) :: spoi_numez
+        integer(kind=8), optional, intent(in) :: poin_numez
+        integer(kind=8), optional, intent(in) :: glob_numez
+        integer(kind=8), optional, intent(in) :: spoi_numez
     end subroutine nmobsz
 end interface

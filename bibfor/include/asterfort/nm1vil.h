@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -24,11 +24,11 @@ interface
                       tref, deps, sigm, vim, option,&
                       defam, defap, angmas, sigp, vip,&
                       dsidep, iret, compo, nbvalc)
-        integer :: nbvalc
+        integer(kind=8) :: nbvalc
         character(len=*) :: fami
-        integer :: kpg
-        integer :: ksp
-        integer :: icdmat
+        integer(kind=8) :: kpg
+        integer(kind=8) :: ksp
+        integer(kind=8) :: icdmat
         character(len=8) :: materi
         real(kind=8) :: crit(*)
         real(kind=8) :: instam
@@ -46,7 +46,7 @@ interface
         real(kind=8) :: sigp
         real(kind=8) :: vip(nbvalc)
         real(kind=8) :: dsidep
-        integer :: iret
+        integer(kind=8) :: iret
         character(len=16) :: compo
     end subroutine nm1vil
 end interface

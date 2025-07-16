@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -36,7 +36,7 @@ subroutine nmecmi(fami, kpg, ksp, ndim, typmod, &
 #include "asterfort/verift.h"
 #include "asterfort/zerofr.h"
 !
-    integer :: kpg, ksp, ndim, imate, iret, iret1, iret2
+    integer(kind=8) :: kpg, ksp, ndim, imate, iret, iret1, iret2
     character(len=*) :: fami
     character(len=8) :: typmod(*)
     character(len=16) :: compor(*), option
@@ -87,9 +87,9 @@ subroutine nmecmi(fami, kpg, ksp, ndim, typmod, &
     real(kind=8) :: depsdv(6), sigmdv(6), sigpdv(6), sigdv(6), cc
     real(kind=8) :: em, num, troikm, deumum, sigmp(6), sigel(6)
     real(kind=8) :: hsg, pp, prag, pragm, precr, tm, tp, epsthe
-    integer :: ndimsi, jprolm, jvalem, nbvalm, jprol2, jvale2, nbval2
-    integer :: jprolp, jvalep, nbvalp, k, l, niter, imate2, ibid
-    integer :: icodre(3)
+    integer(kind=8) :: ndimsi, jprolm, jvalem, nbvalm, jprol2, jvale2, nbval2
+    integer(kind=8) :: jprolp, jvalep, nbvalp, k, l, niter, imate2, ibid
+    integer(kind=8) :: icodre(3)
     character(len=16) :: nomres(3)
     character(len=8) :: para_type
 !-----------------------------------------------------------------------

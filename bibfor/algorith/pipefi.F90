@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -31,7 +31,7 @@ subroutine pipefi(npg, lgpg, mate, geom, vim, &
 #include "asterfort/utmess.h"
 #include "blas/daxpy.h"
 #include "blas/dcopy.h"
-    integer :: mate, npg, lgpg
+    integer(kind=8) :: mate, npg, lgpg
     real(kind=8) :: geom(2, 4), vim(lgpg, npg), ddepl(2, 4), deplm(2, 4)
     real(kind=8) :: ddepl0(2, 4), ddepl1(2, 4), dtau
     character(len=8) :: typmod(2)
@@ -46,7 +46,7 @@ subroutine pipefi(npg, lgpg, mate, geom, vim, &
 !-----------------------------------------------------------------------
 !
     aster_logical :: axi
-    integer :: i, j, kpg
+    integer(kind=8) :: i, j, kpg
     real(kind=8) :: up(8), ud(8), sup(2), sud(2), b(2, 8), poids
     blas_int :: b_incx, b_incy, b_n
 !-----------------------------------------------------------------------

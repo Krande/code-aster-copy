@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -22,14 +22,14 @@ interface
     subroutine mnlqd1(ind, imat, neq, ninc, nd,&
                       nchoc, h, hf, parcho, xcdl,&
                       adime, xvect, xtemp)
-        integer :: hf
-        integer :: h
-        integer :: ninc
-        integer :: neq
-        integer :: ind
-        integer :: imat(2)
-        integer :: nd
-        integer :: nchoc
+        integer(kind=8) :: hf
+        integer(kind=8) :: h
+        integer(kind=8) :: ninc
+        integer(kind=8) :: neq
+        integer(kind=8) :: ind
+        integer(kind=8) :: imat(2)
+        integer(kind=8) :: nd
+        integer(kind=8) :: nchoc
         character(len=14) :: parcho
         character(len=14) :: xcdl
         character(len=14) :: adime

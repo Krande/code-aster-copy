@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -24,12 +24,12 @@ interface
         character(len=8) :: typflu
         character(len=8) :: base
         character(len=8) :: noma
-        integer :: nbm
-        integer :: lnoe
-        integer :: nuor(*)
-        integer :: iimpr
-        integer :: indic
-        integer :: veci1(*)
+        integer(kind=8) :: nbm
+        integer(kind=8) :: lnoe
+        integer(kind=8) :: nuor(*)
+        integer(kind=8) :: iimpr
+        integer(kind=8) :: indic
+        integer(kind=8) :: veci1(*)
         real(kind=8) :: vecr1(*)
         real(kind=8) :: vecr2(*)
         real(kind=8) :: vecr3(*)

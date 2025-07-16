@@ -106,21 +106,20 @@ subroutine clcplq(typcmb, typco, nb, precs, &
 #include "asterfort/cftelu.h"
 #include "asterfort/cftels.h"
 #include "asterfort/trgfct.h"
-#include "asterfort/utmess.h"
 !
 !
-    integer :: typcmb
-    integer :: typco
-    integer :: nb
-    integer :: precs
-    integer :: ferrsyme
+    integer(kind=8) :: typcmb
+    integer(kind=8) :: typco
+    integer(kind=8) :: nb
+    integer(kind=8) :: precs
+    integer(kind=8) :: ferrsyme
     real(kind=8) :: slsyme
-    integer :: ferrcomp
-    integer :: epucisa
-    integer :: ferrmin
+    integer(kind=8) :: ferrcomp
+    integer(kind=8) :: epucisa
+    integer(kind=8) :: ferrmin
     real(kind=8) :: rholmin
     real(kind=8) :: rhotmin
-    integer :: compress
+    integer(kind=8) :: compress
     real(kind=8) :: cequi
     real(kind=8) :: enrobi
     real(kind=8) :: enrobs
@@ -132,11 +131,11 @@ subroutine clcplq(typcmb, typco, nb, precs, &
     real(kind=8) :: gammac
     real(kind=8) :: facier
     real(kind=8) :: eys
-    integer :: typdiag
+    integer(kind=8) :: typdiag
     real(kind=8) :: fbeton
-    integer :: clacier
-    integer :: uc
-    integer :: um
+    integer(kind=8) :: clacier
+    integer(kind=8) :: uc
+    integer(kind=8) :: um
     real(kind=8) :: wmaxi
     real(kind=8) :: wmaxs
     real(kind=8) :: sigelsqp
@@ -148,8 +147,8 @@ subroutine clcplq(typcmb, typco, nb, precs, &
     real(kind=8) :: ht
     real(kind=8) :: effrts(8)
     real(kind=8) :: dnsits(6)
-    integer :: ierrl
-    integer :: ierrt
+    integer(kind=8) :: ierrl
+    integer(kind=8) :: ierrt
 !
 !       NOMBRE DE DIVISIONS ENTRE -PI/2 ET +PI/2
     real(kind=8) :: fcttab(nb, 6)
@@ -174,12 +173,12 @@ subroutine clcplq(typcmb, typco, nb, precs, &
 !       CONTRAINTE DANS L'ACIER DE TRACTION A L'ELS QP
     real(kind=8) :: Sacier
 !       VARIABLE D'ITERATION
-    integer :: i
+    integer(kind=8) :: i
 !       AUTRES VARIABLES
     real(kind=8) :: fctm, unite_m, unite_pa, d, ak, uk, alpha, thetab
     real(kind=8) :: Asl, ecinf, ecsup, kvarf, sigmci, sigmcs, sigmsi, sigmss
     real(kind=8) :: wfini, wfins
-    integer :: etat, pivot, ierr, ierrlG, ierrtG
+    integer(kind=8) :: etat, pivot, ierr, ierrlG, ierrtG
 !
 !   INITIALISATION DES VARIABLES
 !

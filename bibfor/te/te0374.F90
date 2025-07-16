@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -41,15 +41,15 @@ subroutine te0374(option, nomte)
 !
 ! --------------------------------------------------------------------------------------------------
 !
-    integer :: jv_geom, jv_mate, jv_onde, jv_matr
+    integer(kind=8) :: jv_geom, jv_mate, jv_onde, jv_matr
     real(kind=8) :: nx, ny, nz, sx(9, 9), sy(9, 9), sz(9, 9)
     real(kind=8) :: jac, rho, celer
-    integer :: ipoids, ivf, idfdx, idfdy
-    integer :: nno, ndi, npg, ndim
-    integer :: idec, jdec, kdec, ldec
-    integer :: i, ii, ij, ino, j, jj, ipg
-    integer :: jno
-    integer :: j_mater, iret
+    integer(kind=8) :: ipoids, ivf, idfdx, idfdy
+    integer(kind=8) :: nno, ndi, npg, ndim
+    integer(kind=8) :: idec, jdec, kdec, ldec
+    integer(kind=8) :: i, ii, ij, ino, j, jj, ipg
+    integer(kind=8) :: jno
+    integer(kind=8) :: j_mater, iret
     character(len=16) :: FEForm
 !
 ! --------------------------------------------------------------------------------------------------

@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -22,7 +22,7 @@ interface
     subroutine mocon2(dir, sigb, siga, hh, nlit,&
                       om, rr, nufsup, nufinf, nufsd1,&
                       nufid1, nufsd2, nufid2, prec)
-        integer :: nlit
+        integer(kind=8) :: nlit
         character(len=1) :: dir
         real(kind=8) :: sigb
         real(kind=8) :: siga(nlit)

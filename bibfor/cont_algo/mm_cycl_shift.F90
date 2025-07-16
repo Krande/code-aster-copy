@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -25,9 +25,9 @@ subroutine mm_cycl_shift(cycl_long_acti, cycl_ecod, cycl_long)
 !
 ! person_in_charge: mickael.abbas at edf.fr
 !
-    integer, intent(in) :: cycl_long_acti
-    integer, intent(inout) :: cycl_ecod
-    integer, intent(inout) :: cycl_long
+    integer(kind=8), intent(in) :: cycl_long_acti
+    integer(kind=8), intent(inout) :: cycl_ecod
+    integer(kind=8), intent(inout) :: cycl_long
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -43,9 +43,9 @@ subroutine mm_cycl_shift(cycl_long_acti, cycl_ecod, cycl_long)
 !
 ! --------------------------------------------------------------------------------------------------
 !
-    integer :: statut(30)
-    integer :: cycl_index
-    integer :: cycl_ecodi(1)
+    integer(kind=8) :: statut(30)
+    integer(kind=8) :: cycl_index
+    integer(kind=8) :: cycl_ecodi(1)
 !
 ! --------------------------------------------------------------------------------------------------
 !

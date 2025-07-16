@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -24,7 +24,7 @@ subroutine fcepai(zr)
 !---  COUCHE
 !
 !-----------------------------------------------------------------------
-    integer :: i, i1, j, l, ll
+    integer(kind=8) :: i, i1, j, l, ll
     real(kind=8) :: xi3
 !-----------------------------------------------------------------------
     j = 1500

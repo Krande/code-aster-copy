@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -20,9 +20,9 @@
 !
 interface
     function blimax(n, dx, incx)
-        integer :: n
-        integer :: dx(1)
-        integer :: incx
-        integer :: blimax
+        integer(kind=8) :: n
+        integer(kind=8) :: dx(1)
+        integer(kind=8) :: incx
+        integer(kind=8) :: blimax
     end function blimax
 end interface

@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -24,7 +24,7 @@ subroutine pjeflo(elrefa, ndim, ipb, xr2, disprj)
 !
 #include "asterfort/assert.h"
 !
-    integer :: ipb, ndim
+    integer(kind=8) :: ipb, ndim
     real(kind=8) :: xr2(ndim), disprj
     character(len=*) :: elrefa
 ! ----------------------------------------------------------------------

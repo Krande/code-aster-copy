@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -23,7 +23,7 @@ subroutine hatSmooth(nno, nnos, v_basf, vector)
 !
     implicit none
 !
-    integer, intent(in) :: nno, nnos
+    integer(kind=8), intent(in) :: nno, nnos
     real(kind=8), intent(in), pointer, dimension(:) :: v_basf
     real(kind=8), intent(inout), dimension(nno) :: vector
 ! --------------------------------------------------------------------------------------------------

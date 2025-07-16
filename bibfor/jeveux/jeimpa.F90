@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -26,25 +26,25 @@ subroutine jeimpa(unit, nomlu, com)
 #include "asterfort/jjlide.h"
 #include "asterfort/jjvern.h"
 #include "asterfort/utmess.h"
-    integer :: unit
+    integer(kind=8) :: unit
     character(len=*) :: nomlu, com
 !
-    integer :: lk1zon, jk1zon, liszon, jiszon
+    integer(kind=8) :: lk1zon, jk1zon, liszon, jiszon
     common/izonje/lk1zon, jk1zon, liszon, jiszon
 !
-    integer :: ipgc, kdesma(2), lgd, lgduti, kposma(2), lgp, lgputi
+    integer(kind=8) :: ipgc, kdesma(2), lgd, lgduti, kposma(2), lgp, lgputi
     common/iadmje/ipgc, kdesma, lgd, lgduti, kposma, lgp, lgputi
 !
-    integer :: numec
+    integer(kind=8) :: numec
     common/inumje/numec
     character(len=24) :: nomec
     common/knomje/nomec
 !     ------------------------------------------------------------------
 !-----------------------------------------------------------------------
-    integer :: i, ibacol, ic, icol, id, ilon, ipgcex
-    integer :: ixiadd, ixlong, j, jcol, jdocu, jgenr, jlon
-    integer :: jorig, jrnom, jtype, k, n, nnac, nnaci
-    integer :: nnao
+    integer(kind=8) :: i, ibacol, ic, icol, id, ilon, ipgcex
+    integer(kind=8) :: ixiadd, ixlong, j, jcol, jdocu, jgenr, jlon
+    integer(kind=8) :: jorig, jrnom, jtype, k, n, nnac, nnaci
+    integer(kind=8) :: nnao
 !-----------------------------------------------------------------------
     parameter(n=5)
 !
@@ -52,23 +52,23 @@ subroutine jeimpa(unit, nomlu, com)
 !
     character(len=8) :: nume, nome
 !
-    integer :: iclas, iclaos, iclaco, idatos, idatco, idatoc
+    integer(kind=8) :: iclas, iclaos, iclaco, idatos, idatco, idatoc
     common/iatcje/iclas, iclaos, iclaco, idatos, idatco, idatoc
 !     -----------------------------------------------------------------
-    integer :: iddeso, idiadd, idlong
+    integer(kind=8) :: iddeso, idiadd, idlong
     parameter(iddeso=1, idiadd=2,&
      &                            idlong=7)
 !
     character(len=72) :: coml
     character(len=32) :: noml32
     character(len=33) :: cval
-    integer :: icre, iret, ival
+    integer(kind=8) :: icre, iret, ival
 !
     parameter(nnao=15)
     parameter(nnac=6)
     character(len=8) :: nac(nnac), nao(nnao)
     character(len=1) :: tac(nnac), tao(nnao), genri
-    integer :: lac(nnac), lao(nnao)
+    integer(kind=8) :: lac(nnac), lao(nnao)
     aster_logical :: tab1(5, 4), tab2(5, 4), tab3(2, 3)
     aster_logical :: lconst, lconti, lcol
 !

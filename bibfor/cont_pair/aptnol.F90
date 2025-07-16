@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -25,8 +25,8 @@ subroutine aptnol(sdappa, model_ndim, nt_node)
 !
 !
     character(len=19), intent(in) :: sdappa
-    integer, intent(in) :: model_ndim
-    integer, intent(in) :: nt_node
+    integer(kind=8), intent(in) :: model_ndim
+    integer(kind=8), intent(in) :: nt_node
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -45,7 +45,7 @@ subroutine aptnol(sdappa, model_ndim, nt_node)
     character(len=24) :: sdappa_tgno, sdappa_norl
     real(kind=8), pointer :: v_sdappa_tgno(:) => null()
     real(kind=8), pointer :: v_sdappa_norl(:) => null()
-    integer :: i_node
+    integer(kind=8) :: i_node
     real(kind=8) :: tau1(3), tau2(3), norm(3), noor
 !
 ! --------------------------------------------------------------------------------------------------

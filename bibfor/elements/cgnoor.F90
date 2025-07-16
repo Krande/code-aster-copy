@@ -30,13 +30,10 @@ subroutine cgnoor(mafour, nomail, motfac, iocc, nbmc, &
 #include "asterfort/i2extf.h"
 #include "asterfort/jedema.h"
 #include "asterfort/jedetr.h"
-#include "asterfort/jeexin.h"
 #include "asterfort/jelira.h"
 #include "asterfort/jemarq.h"
-#include "asterfort/jenonu.h"
 #include "asterfort/jenuno.h"
 #include "asterfort/jeveuo.h"
-#include "asterfort/jexnom.h"
 #include "asterfort/jexnum.h"
 #include "asterfort/reliem.h"
 #include "asterfort/utmess.h"
@@ -48,7 +45,7 @@ subroutine cgnoor(mafour, nomail, motfac, iocc, nbmc, &
 #include "asterfort/int_to_char8.h"
 #include "asterfort/char8_to_int.h"
 !
-    integer :: iocc, nbmc, nbma
+    integer(kind=8) :: iocc, nbmc, nbma
     character(len=*) :: typlig
     character(len=24) :: mafour
     character(len=8) :: nomail, ndorig, ndextr, typm
@@ -95,19 +92,19 @@ subroutine cgnoor(mafour, nomail, motfac, iocc, nbmc, &
 !-----------------------------------------------------------------------
 !
 !
-    integer :: jmail, jtypm, iatyma
-    integer :: ier, im, n1, n2, n3, nid, nig, nbnot
-    integer :: nunori, trouv, ibid, in, nd
-    integer :: iret, ima, nbmato
-    integer :: jcour2
+    integer(kind=8) :: jmail, jtypm, iatyma
+    integer(kind=8) :: ier, im, n1, n2, n3, nid, nig, nbnot
+    integer(kind=8) :: nunori, trouv, ibid, in, nd
+    integer(kind=8) :: iret, ima, nbmato
+    integer(kind=8) :: jcour2
     character(len=8) :: k8b, nomma, typmp
     character(len=16) :: k16bid, nomcmd, orig
     character(len=24) :: conec, typp, mesmai, valk(2), nogrp
     aster_logical :: bug, erreur, lexist
-    integer, pointer :: noeud_apparies(:) => null()
-    integer, pointer :: noeuds_extrem(:) => null()
-    integer, pointer :: compteur(:) => null()
-    integer, pointer :: type_noeud(:) => null()
+    integer(kind=8), pointer :: noeud_apparies(:) => null()
+    integer(kind=8), pointer :: noeuds_extrem(:) => null()
+    integer(kind=8), pointer :: compteur(:) => null()
+    integer(kind=8), pointer :: type_noeud(:) => null()
 ! DEB-------------------------------------------------------------------
     call jemarq()
 !

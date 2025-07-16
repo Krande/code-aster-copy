@@ -26,7 +26,6 @@ subroutine mat152(option, modelDime, modelInterface, ivalk, &
 #include "asterfort/ca2mam.h"
 #include "asterfort/calmaa.h"
 #include "asterfort/codent.h"
-#include "asterfort/dismoi.h"
 #include "asterfort/getvid.h"
 #include "asterfort/jedema.h"
 #include "asterfort/jemarq.h"
@@ -37,7 +36,7 @@ subroutine mat152(option, modelDime, modelInterface, ivalk, &
     character(len=9), intent(in) :: option
     character(len=2), intent(in) :: modelDime
     character(len=8), intent(in) :: modelInterface
-    integer, intent(in) :: ivalk, nbMode
+    integer(kind=8), intent(in) :: ivalk, nbMode
     character(len=14), intent(out) :: numeDof
     character(len=19), intent(out) :: matrAsseX, matrAsseY, matrAsseZ
 !
@@ -59,8 +58,8 @@ subroutine mat152(option, modelDime, modelInterface, ivalk, &
 !
 ! --------------------------------------------------------------------------------------------------
 !
-    integer :: imode, imade, iret
-    integer :: n5, n6, n7
+    integer(kind=8) :: imode, imade, iret
+    integer(kind=8) :: n5, n6, n7
     character(len=1) :: dir
     character(len=3) :: incr
     character(len=8) :: modeMeca

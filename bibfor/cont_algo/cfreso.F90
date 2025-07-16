@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -28,8 +28,8 @@ subroutine cfreso(sdcont_solv, ldscon, nbliac)
 !
 !
     character(len=24) :: sdcont_solv
-    integer :: nbliac
-    integer :: ldscon
+    integer(kind=8) :: nbliac
+    integer(kind=8) :: ldscon
 !
 ! ----------------------------------------------------------------------
 !
@@ -48,10 +48,10 @@ subroutine cfreso(sdcont_solv, ldscon, nbliac)
 !
 !
 !
-    integer :: ilifin, neqmax
+    integer(kind=8) :: ilifin, neqmax
     complex(kind=8) :: c16bid
     character(len=19) :: mu
-    integer :: jmu
+    integer(kind=8) :: jmu
 !
 ! ----------------------------------------------------------------------
 !

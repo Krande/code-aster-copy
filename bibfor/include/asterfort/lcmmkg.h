@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -22,13 +22,13 @@ interface
     subroutine lcmmkg(zinv, nvi, vind, vinf, nmat,&
                       materf, mod, nr, dsde)
         real(kind=8) :: zinv(6, 6)
-        integer :: nvi
+        integer(kind=8) :: nvi
         real(kind=8) :: vind(*)
         real(kind=8) :: vinf(*)
-        integer :: nmat
+        integer(kind=8) :: nmat
         real(kind=8) :: materf(*)
         character(len=8) :: mod
-        integer :: nr
+        integer(kind=8) :: nr
         real(kind=8) :: dsde(6, 3, 3)
     end subroutine lcmmkg
 end interface

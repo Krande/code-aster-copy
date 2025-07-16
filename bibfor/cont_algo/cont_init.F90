@@ -29,15 +29,14 @@ subroutine cont_init(mesh, ds_contact, nume_inst, ds_measure, &
 #include "asterfort/mminit.h"
 #include "asterfort/mminit_lac.h"
 #include "asterfort/cfinit.h"
-#include "asterfort/ndynlo.h"
 !
     character(len=8), intent(in) :: mesh
     type(NL_DS_Contact), intent(inout) :: ds_contact
     type(NL_DS_Measure), intent(inout) :: ds_measure
-    integer, intent(in) :: nume_inst
+    integer(kind=8), intent(in) :: nume_inst
     character(len=19), intent(in) :: hval_incr(*)
     character(len=19), intent(in) :: sddyna
-    integer, intent(in) :: list_func_acti(*)
+    integer(kind=8), intent(in) :: list_func_acti(*)
     character(len=19), intent(in) :: sdnume
 !
 ! --------------------------------------------------------------------------------------------------

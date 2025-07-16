@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -35,7 +35,7 @@ subroutine dxtfor(global, xyzl, pgl, for, vecl)
 !     OUT VECL   : CHARGEMENT NODAL RESULTANT
 !     ------------------------------------------------------------------
 !
-    integer :: i, nno, jcara
+    integer(kind=8) :: i, nno, jcara
     real(kind=8) :: aire, alpha, beta
     real(kind=8) :: fx, fy, carat3(21), t2iu(4), t2ui(4), c, s
 !     ------------------------------------------------------------------

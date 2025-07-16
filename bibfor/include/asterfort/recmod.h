@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -22,8 +22,8 @@ interface
     subroutine recmod(modmec, nbmode, nbamor, bande, tymmec,&
                       grdmod)
         character(len=8) :: modmec
-        integer :: nbmode
-        integer :: nbamor
+        integer(kind=8) :: nbmode
+        integer(kind=8) :: nbamor
         real(kind=8) :: bande(2)
         character(len=8) :: tymmec
         character(len=16) :: grdmod

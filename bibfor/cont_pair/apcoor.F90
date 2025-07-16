@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -24,12 +24,10 @@ subroutine apcoor(v_connex, v_connex_lcum, jv_geom, &
 !
 #include "asterf_types.h"
 #include "jeveux.h"
-#include "asterfort/assert.h"
-#include "asterfort/jexnum.h"
 !
-    integer, pointer :: v_connex(:)
-    integer, pointer :: v_connex_lcum(:)
-    integer, intent(in) :: jv_geom, elem_nume, elem_nbnode, elem_dime
+    integer(kind=8), pointer :: v_connex(:)
+    integer(kind=8), pointer :: v_connex_lcum(:)
+    integer(kind=8), intent(in) :: jv_geom, elem_nume, elem_nbnode, elem_dime
     real(kind=8), intent(out) :: elem_coor(27)
 !
 ! --------------------------------------------------------------------------------------------------
@@ -50,7 +48,7 @@ subroutine apcoor(v_connex, v_connex_lcum, jv_geom, &
 !
 ! --------------------------------------------------------------------------------------------------
 !
-    integer :: node_nume, i_node, i_dime
+    integer(kind=8) :: node_nume, i_node, i_dime
     aster_logical:: debug
 !
 ! --------------------------------------------------------------------------------------------------

@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -61,19 +61,19 @@ subroutine calicp(load, mesh, model, valeType)
     character(len=16), parameter :: keywordFact = 'LIAISON_COQUE'
     character(len=8) :: k8dummy, nom_noeuds(3)
     character(len=19) :: list_rela, modelLigrel
-    integer :: iocc, i_error, icoupl
-    integer :: geomDime, nliai, nbec
+    integer(kind=8) :: iocc, i_error, icoupl
+    integer(kind=8) :: geomDime, nliai, nbec
     character(len=8) :: cmp_name, nomg
-    integer :: jnom, nb_cmp
-    integer :: cmp_index_dx, cmp_index_dy, cmp_index_dz
-    integer :: cmp_index_drx, cmp_index_dry, cmp_index_drz
+    integer(kind=8) :: jnom, nb_cmp
+    integer(kind=8) :: cmp_index_dx, cmp_index_dy, cmp_index_dz
+    integer(kind=8) :: cmp_index_drx, cmp_index_dry, cmp_index_drz
     character(len=8) :: suffix
     character(len=24) :: list_node_o1, list_node_o2, list_node_i1, list_node_i2
-    integer :: nb_node, nb_node_1, nb_node_2
-    integer :: j_node_o1, j_node_o2
-    integer :: nume_node_1, nume_node_2
+    integer(kind=8) :: nb_node, nb_node_1, nb_node_2
+    integer(kind=8) :: j_node_o1, j_node_o2
+    integer(kind=8) :: nume_node_1, nume_node_2
     character(len=24) :: list_pair
-    integer :: j_list_pair
+    integer(kind=8) :: j_list_pair
 !
 ! --------------------------------------------------------------------------------------------------
 !

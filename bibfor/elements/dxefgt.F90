@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -38,19 +38,19 @@ subroutine dxefgt(pgl, sigt)
 !                        LOCAL
 !     OUT SIGT(32)     : EFFORTS  GENERALISES D'ORIGINE THERMIQUE
 !                        AUX POINTS D'INTEGRATION
-    integer :: ndim, nno, nnos, npg, ipoids, icoopg, ivf, idfdx, idfd2, jgano
-    integer :: multic, ipg, nbcou, npgh, somire
+    integer(kind=8) :: ndim, nno, nnos, npg, ipoids, icoopg, ivf, idfdx, idfd2, jgano
+    integer(kind=8) :: multic, ipg, nbcou, npgh, somire
     real(kind=8) :: df(3, 3), dm(3, 3), dmf(3, 3)
     real(kind=8) :: tmoypg, tsuppg, tinfpg
     real(kind=8) :: t2iu(4), t2ui(4), t1ve(9)
-    integer :: icodre(56)
+    integer(kind=8) :: icodre(56)
     character(len=4) :: fami
     character(len=10) :: phenom
 !     ------------------------------------------------------------------
 !
 !-----------------------------------------------------------------------
-    integer :: igau, indith, iret1, iret2, iret3, iret4, jcara
-    integer :: jcou, jmate
+    integer(kind=8) :: igau, indith, iret1, iret2, iret3, iret4, jcara
+    integer(kind=8) :: jcou, jmate
     real(kind=8) :: coe1, coe2, epais, tref
 !-----------------------------------------------------------------------
     fami = 'RIGI'

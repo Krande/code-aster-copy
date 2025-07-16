@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -30,7 +30,7 @@ subroutine romMultiParaDOM2mbrCreate(ds_multipara, i_coef, ds_solve)
 #include "asterfort/vtcmbl.h"
 !
     type(ROM_DS_MultiPara), intent(in) :: ds_multipara
-    integer, intent(in) :: i_coef
+    integer(kind=8), intent(in) :: i_coef
     type(ROM_DS_Solve), intent(in) :: ds_solve
 !
 ! --------------------------------------------------------------------------------------------------
@@ -47,14 +47,14 @@ subroutine romMultiParaDOM2mbrCreate(ds_multipara, i_coef, ds_solve)
 !
 ! --------------------------------------------------------------------------------------------------
 !
-    integer :: ifm, niv
-    integer, parameter :: nb_vect_maxi = 8
+    integer(kind=8) :: ifm, niv
+    integer(kind=8), parameter :: nb_vect_maxi = 8
     character(len=1) :: type_comb(nb_vect_maxi)
     real(kind=8) :: coef_comb(2*nb_vect_maxi)
     character(len=24) :: vect_comb(nb_vect_maxi)
     character(len=1)  :: type_vect_comb(nb_vect_maxi)
     character(len=8)  :: vect_name
-    integer :: i_coef_comb, i_vect, nb_vect
+    integer(kind=8) :: i_coef_comb, i_vect, nb_vect
     aster_logical :: l_coefv_cplx
     character(len=1) :: syst_2mbr_type
     character(len=19) :: syst_2mbr

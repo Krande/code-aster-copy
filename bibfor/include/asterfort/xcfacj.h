@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -22,18 +22,18 @@ interface
     subroutine xcfacj(ptint, ptmax, ipt, ainter, lsn,&
                       igeom, nno, ndim, nfiss, ifiss,&
                       fisco, nfisc, typma)
-        integer :: nno
+        integer(kind=8) :: nno
         real(kind=8) :: ptint(*)
-        integer :: ptmax
-        integer :: ipt
+        integer(kind=8) :: ptmax
+        integer(kind=8) :: ipt
         real(kind=8) :: ainter(*)
         real(kind=8) :: lsn(*)
-        integer :: igeom
-        integer :: ndim
-        integer :: nfiss
-        integer :: ifiss
-        integer :: fisco(*)
-        integer :: nfisc
+        integer(kind=8) :: igeom
+        integer(kind=8) :: ndim
+        integer(kind=8) :: nfiss
+        integer(kind=8) :: ifiss
+        integer(kind=8) :: fisco(*)
+        integer(kind=8) :: nfisc
         character(len=8) :: typma
     end subroutine xcfacj
 end interface

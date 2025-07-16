@@ -104,9 +104,6 @@ VERI_FERRAILLAGE = OPER(
     UNITE_CONTRAINTE=SIMP(
         statut="o", typ="TXM", into=("MPa", "Pa"), fr=tr("Unité des contraintes du problème")
     ),
-    UNITE_DIMENSION=SIMP(
-        statut="o", typ="TXM", into=("mm", "m"), fr=tr("Unité des dimensions du problème")
-    ),
     b_BAEL91=BLOC(
         condition=""" equal_to("CODIFICATION", 'BAEL91')""",
         fr=tr("utilisation du BAEL91"),
@@ -188,6 +185,9 @@ VERI_FERRAILLAGE = OPER(
             regles=(UN_PARMI("TOUT", "GROUP_MA"),),
             TOUT=SIMP(statut="f", typ="TXM", into=("OUI",)),
             GROUP_MA=SIMP(statut="f", typ=grma, validators=NoRepeat(), max="**"),
+            TYPE_STRUCTURE=SIMP(
+                statut="f", typ="TXM", into=("2D",), fr=tr("Type de Structure 2D"), defaut="2D"
+            ),
             C_INF=SIMP(
                 statut="o", typ="R", fr=tr("Enrobage des armatures inférieures pour la section 2D")
             ),

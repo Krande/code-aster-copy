@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -26,7 +26,6 @@ subroutine duplisp(celssp, celasp, carel, base)
 #include "asterfort/cesvar.h"
 #include "asterfort/detrsd.h"
 #include "asterfort/dismoi.h"
-#include "asterfort/exisdg.h"
 #include "asterfort/jedema.h"
 #include "asterfort/jemarq.h"
 #include "asterfort/jeveuo.h"
@@ -54,14 +53,14 @@ subroutine duplisp(celssp, celasp, carel, base)
     character(len=19) :: cel1, cel2, canbsp, ligrel
     character(len=16) :: option
     character(len=8) :: nompar, mailla, nomgd, tsca
-    integer :: igr, numa, icmp, ipt, nbpt
-    integer ::  illiel, mxnbsp, mxvari, nbspt1, nbspt2
-    integer :: ispt1, ispt2, iret, nbgr, imolo, lgcata, jmolo, iel, ncdyn
-    integer :: ieq1, ieq2, adiel1, adiel2, jcelv1, jcelv2
-    integer :: nbel, nbcmp
-    integer, pointer :: liel(:) => null()
-    integer, pointer :: celd1(:) => null()
-    integer, pointer :: celd2(:) => null()
+    integer(kind=8) :: igr, numa, icmp, ipt, nbpt
+    integer(kind=8) ::  illiel, mxnbsp, mxvari, nbspt1, nbspt2
+    integer(kind=8) :: ispt1, ispt2, iret, nbgr, imolo, lgcata, jmolo, iel, ncdyn
+    integer(kind=8) :: ieq1, ieq2, adiel1, adiel2, jcelv1, jcelv2
+    integer(kind=8) :: nbel, nbcmp
+    integer(kind=8), pointer :: liel(:) => null()
+    integer(kind=8), pointer :: celd1(:) => null()
+    integer(kind=8), pointer :: celd2(:) => null()
     aster_logical :: diff
 
 #   define numail(igr,iel) liel(zi(illiel+igr-1)+iel-1)

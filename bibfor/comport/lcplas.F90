@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -75,8 +75,8 @@ subroutine lcplas(BEHinteg, &
 #include "asterfort/lcpllg.h"
 #include "asterfort/lcplnl.h"
 #include "asterfort/lcrous.h"
-    integer :: itmax, icomp, codret, irtet, kpg, ksp
-    integer :: imat, nmat, nvi, nr
+    integer(kind=8) :: itmax, icomp, codret, irtet, kpg, ksp
+    integer(kind=8) :: imat, nmat, nvi, nr
 !
 !
     real(kind=8) :: timed, timef, deltat, crit(*)
@@ -91,7 +91,7 @@ subroutine lcplas(BEHinteg, &
     character(len=8) :: mod
     character(len=16) :: loi
 !
-    integer :: nbcomm(nmat, 3), nfs, nsg
+    integer(kind=8) :: nbcomm(nmat, 3), nfs, nsg
     real(kind=8) :: pgl(3, 3)
     real(kind=8) :: toutms(nfs, nsg, 6), hsr(nsg, nsg)
     character(len=16) :: comp(*)

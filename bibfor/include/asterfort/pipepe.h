@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2019 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -25,17 +25,17 @@ interface
                       iborne, ictau)
         use Behaviour_type
         type(Behaviour_Integ), intent(in) :: BEHinteg
-        integer :: lgpg
-        integer :: npg
-        integer :: ndim
+        integer(kind=8) :: lgpg
+        integer(kind=8) :: npg
+        integer(kind=8) :: ndim
         character(len=16) :: pilo
-        integer :: nno
-        integer :: ipoids
-        integer :: ivf
-        integer :: idfde
+        integer(kind=8) :: nno
+        integer(kind=8) :: ipoids
+        integer(kind=8) :: ivf
+        integer(kind=8) :: idfde
         real(kind=8) :: geom(ndim, *)
         character(len=8) :: typmod(*)
-        integer :: mate
+        integer(kind=8) :: mate
         character(len=16) :: compor(*)
         real(kind=8) :: deplm(*)
         real(kind=8) :: sigm(2*ndim, npg)
@@ -44,7 +44,7 @@ interface
         real(kind=8) :: depl0(*)
         real(kind=8) :: depl1(*)
         real(kind=8) :: copilo(5, npg)
-        integer :: iborne
-        integer :: ictau
+        integer(kind=8) :: iborne
+        integer(kind=8) :: ictau
     end subroutine pipepe
 end interface

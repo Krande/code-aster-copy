@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -28,10 +28,10 @@ interface
         use NonLin_Datastructure_type
         character(len=8) :: noma
         type(NL_DS_Contact), intent(in) :: ds_contact
-        integer :: ndimg
-        integer :: posnoe
+        integer(kind=8) :: ndimg
+        integer(kind=8) :: posnoe
         character(len=4) :: typenm
-        integer :: numenm
+        integer(kind=8) :: numenm
         aster_logical :: lmait
         aster_logical :: lescl
         aster_logical :: lmfixe

@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -31,7 +31,6 @@ module HHO_rhs_module
 #include "asterf_types.h"
 #include "asterfort/HHO_size_module.h"
 #include "blas/daxpy.h"
-#include "blas/dscal.h"
 #include "blas/dcopy.h"
 #include "jeveux.h"
 !
@@ -61,7 +60,7 @@ contains
         type(HHO_Face), intent(in) :: hhoFace
         type(HHO_Quadrature), intent(in) :: hhoQuad
         real(kind=8), intent(in) :: ValuesQP(MAX_QP_FACE)
-        integer, intent(in) :: degree
+        integer(kind=8), intent(in) :: degree
         real(kind=8), intent(out) :: rhs(MSIZE_FACE_SCAL)
 ! --------------------------------------------------------------------------------------------------
 !   HHO
@@ -76,7 +75,7 @@ contains
 ! --------------------------------------------------------------------------------------------------
 !
 ! ----- Local variables
-        integer :: ipg, size
+        integer(kind=8) :: ipg, size
         type(HHO_basis_face) :: hhoBasisFace
         real(kind=8), dimension(MSIZE_FACE_SCAL) :: BSFEval
         real(kind=8) :: coeff
@@ -110,7 +109,7 @@ contains
         type(HHO_Face), intent(in) :: hhoFace
         type(HHO_Quadrature), intent(in) :: hhoQuad
         real(kind=8), intent(in) :: ValuesQP(3, MAX_QP_FACE)
-        integer, intent(in) :: degree
+        integer(kind=8), intent(in) :: degree
         real(kind=8), intent(out) :: rhs(MSIZE_FACE_VEC)
 !
 !
@@ -127,7 +126,7 @@ contains
 ! --------------------------------------------------------------------------------------------------
 !
         type(HHO_basis_face) :: hhoBasisFace
-        integer :: size, idir, begin, i
+        integer(kind=8) :: size, idir, begin, i
         real(kind=8) :: Values(MAX_QP_FACE), rhs_dir(MSIZE_FACE_SCAL)
         blas_int :: b_incx, b_incy, b_n
 !
@@ -164,7 +163,7 @@ contains
         type(HHO_Cell), intent(in) :: hhoCell
         type(HHO_Quadrature), intent(in) :: hhoQuad
         real(kind=8), intent(in) :: ValuesQP(MAX_QP_CELL)
-        integer, intent(in) :: degree
+        integer(kind=8), intent(in) :: degree
         real(kind=8), intent(out) :: rhs(MSIZE_CELL_SCAL)
 !
 ! --------------------------------------------------------------------------------------------------
@@ -180,7 +179,7 @@ contains
 ! --------------------------------------------------------------------------------------------------
 !
 ! ----- Local variables
-        integer :: ipg, size
+        integer(kind=8) :: ipg, size
         type(HHO_basis_cell) :: hhoBasisCell
         real(kind=8), dimension(MSIZE_CELL_SCAL) :: BSCEval
         real(kind=8) :: coeff
@@ -214,7 +213,7 @@ contains
         type(HHO_Cell), intent(in) :: hhoCell
         type(HHO_Quadrature), intent(in) :: hhoQuad
         real(kind=8), intent(in) :: ValuesQP(3, MAX_QP_CELL)
-        integer, intent(in) :: degree
+        integer(kind=8), intent(in) :: degree
         real(kind=8), intent(out) :: rhs(MSIZE_CELL_VEC)
 !
 ! --------------------------------------------------------------------------------------------------
@@ -230,7 +229,7 @@ contains
 ! --------------------------------------------------------------------------------------------------
 !
         type(HHO_basis_cell) :: hhoBasisCell
-        integer :: size, idir, begin, i
+        integer(kind=8) :: size, idir, begin, i
         real(kind=8) :: Values(MAX_QP_CELL), rhs_dir(MSIZE_CELL_SCAL)
         blas_int :: b_incx, b_incy, b_n
 !

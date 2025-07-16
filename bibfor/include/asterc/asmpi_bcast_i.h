@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -21,7 +21,7 @@
 #include "asterf_types.h"
 interface
     subroutine asmpi_bcast_i(buffer, count, root, comm)
-        integer, intent(inout) :: buffer(*)
+        integer(kind=8), intent(inout) :: buffer(*)
         mpi_int, intent(in) :: count
         mpi_int, intent(in) :: root
         mpi_int, intent(in) :: comm

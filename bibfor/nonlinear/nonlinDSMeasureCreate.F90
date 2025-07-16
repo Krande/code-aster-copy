@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -41,9 +41,9 @@ subroutine nonlinDSMeasureCreate(ds_measure)
 !
 ! --------------------------------------------------------------------------------------------------
 !
-    integer, parameter :: nb_device_defi = 24
-    integer, parameter :: nb_timer_defi = 8
-    integer :: i_device, i_timer, i_col
+    integer(kind=8), parameter :: nb_device_defi = 24
+    integer(kind=8), parameter :: nb_timer_defi = 8
+    integer(kind=8) :: i_device, i_timer, i_col
     aster_logical :: l_time, l_count
     type(NL_DS_Table) :: table
     type(NL_DS_Column) :: column
@@ -101,27 +101,27 @@ subroutine nonlinDSMeasureCreate(ds_measure)
 !
 ! - Flag for time measure: 2 by device - First = Step / Second = Total computation
 !
-    integer, parameter :: time_indi(2*nb_device_defi) = (/ &
-                          0, 2, 0, 3, 1, 0, &
-                          0, 0, 0, 16, 0, 15, &
-                          7, 7, 6, 6, 11, 11, &
-                          8, 8, 10, 10, 9, 9, &
-                          13, 13, 14, 14, 12, 12, &
-                          0, 0, 0, 0, 0, 0, &
-                          0, 0, 0, 0, 0, 0, &
-                          0, 0, 0, 29, 17, 0/)
+    integer(kind=8), parameter :: time_indi(2*nb_device_defi) = (/ &
+                                  0, 2, 0, 3, 1, 0, &
+                                  0, 0, 0, 16, 0, 15, &
+                                  7, 7, 6, 6, 11, 11, &
+                                  8, 8, 10, 10, 9, 9, &
+                                  13, 13, 14, 14, 12, 12, &
+                                  0, 0, 0, 0, 0, 0, &
+                                  0, 0, 0, 0, 0, 0, &
+                                  0, 0, 0, 29, 17, 0/)
 !
 ! - Flag for count measure: 2 by device - First = Step / Second = Total computation
 !
-    integer, parameter :: count_indi(2*nb_device_defi) = (/ &
-                          0, 0, 0, 0, 0, 25, &
-                          26, 26, 0, 0, 0, 0, &
-                          7, 7, 6, 6, 0, 0, &
-                          8, 8, 10, 10, 9, 9, &
-                          13, 13, 0, 0, 0, 0, &
-                          18, 18, 19, 19, 24, 24, &
-                          20, 20, 21, 21, 22, 22, &
-                          23, 23, 0, 0, 0, 0/)
+    integer(kind=8), parameter :: count_indi(2*nb_device_defi) = (/ &
+                                  0, 0, 0, 0, 0, 25, &
+                                  26, 26, 0, 0, 0, 0, &
+                                  7, 7, 6, 6, 0, 0, &
+                                  8, 8, 10, 10, 9, 9, &
+                                  13, 13, 0, 0, 0, 0, &
+                                  18, 18, 19, 19, 24, 24, &
+                                  20, 20, 21, 21, 22, 22, &
+                                  23, 23, 0, 0, 0, 0/)
 !
 ! --------------------------------------------------------------------------------------------------
 !

@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -37,7 +37,7 @@ subroutine cgReadCompor(result_in, compor, iord0, l_incr)
 !
     character(len=8), intent(in)  :: result_in
     character(len=19), intent(inout) :: compor
-    integer, intent(in) :: iord0
+    integer(kind=8), intent(in) :: iord0
     aster_logical, intent(out) :: l_incr
 !
 ! --------------------------------------------------------------------------------------------------
@@ -52,12 +52,12 @@ subroutine cgReadCompor(result_in, compor, iord0, l_incr)
 ! Out l_incr   : Incremental behavior or not ?
 ! --------------------------------------------------------------------------------------------------
 !
-    integer :: iret, nbetin, ier
-    integer :: nb_vale, nb_zone, nb_cmp_max, i_zone
+    integer(kind=8) :: iret, nbetin, ier
+    integer(kind=8) :: nb_vale, nb_zone, nb_cmp_max, i_zone
     character(len=8) :: mesh, repk, model, discretization
     character(len=16) :: defo_comp
     aster_logical :: l_etat_init, l_impel, l_disc
-    integer, pointer :: v_compor_desc(:) => null()
+    integer(kind=8), pointer :: v_compor_desc(:) => null()
     character(len=16), pointer :: v_compor_vale(:) => null()
 !
 ! --------------------------------------------------------------------------------------------------

@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -31,7 +31,7 @@ subroutine nmdcdc(sddisc, numins, nomlis, nbrpas)
 #include "asterfort/utdidt.h"
     character(len=19) :: sddisc
     character(len=24) :: nomlis
-    integer :: nbrpas, numins
+    integer(kind=8) :: nbrpas, numins
 !
 ! ----------------------------------------------------------------------
 !
@@ -50,8 +50,8 @@ subroutine nmdcdc(sddisc, numins, nomlis, nbrpas)
 !
 !
 !
-    integer :: jinst
-    integer :: nb_inst_ins, nb_inst_ini
+    integer(kind=8) :: jinst
+    integer(kind=8) :: nb_inst_ins, nb_inst_ini
     real(kind=8) :: dt0
     character(len=16) :: metlis
 !

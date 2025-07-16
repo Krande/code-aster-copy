@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -33,14 +33,14 @@ subroutine mnlcir(xdep, ydep, omega, alpha, eta, &
 ! --- DECLARATION DES ARGUMENTS DE LA ROUTINE
 ! ----------------------------------------------------------------------
 !
-    integer :: h, hf, nt
+    integer(kind=8) :: h, hf, nt
     real(kind=8) :: omega, alpha, eta
     character(len=14) :: xdep, ydep, xsort
 ! ----------------------------------------------------------------------
 ! --- DECLARATION DES VARIABLES LOCALES
 ! ----------------------------------------------------------------------
     real(kind=8) :: depi, xt, yt, rk
-    integer :: k, j, ix, iy, isor
+    integer(kind=8) :: k, j, ix, iy, isor
     real(kind=8), pointer :: fn(:) => null()
     real(kind=8), pointer :: fx(:) => null()
     real(kind=8), pointer :: fy(:) => null()

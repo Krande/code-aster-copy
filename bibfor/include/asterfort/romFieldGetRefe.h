@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2020 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -22,9 +22,9 @@ interface
                                fieldName    , field)
         use Rom_Datastructure_type
         character(len=*), intent(in) :: resultNameZ, modelZ
-        integer, intent(in)  :: nbFieldResult
+        integer(kind=8), intent(in)  :: nbFieldResult
         character(len=16), pointer :: resultField(:)
-        integer, pointer :: resultFieldNume(:)
+        integer(kind=8), pointer :: resultFieldNume(:)
         character(len=24), intent(in)  :: fieldName
         type(ROM_DS_Field), intent(inout) :: field
     end subroutine romFieldGetRefe

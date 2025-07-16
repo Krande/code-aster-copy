@@ -1,6 +1,6 @@
 ! --------------------------------------------------------------------
 ! Copyright (C) LAPACK / BLAS
-! Copyright (C) 2007 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 2007 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -58,8 +58,8 @@ subroutine xerbla(srname, info)
 !     .. SCALAR ARGUMENTS ..
     character(len=6) :: srname
     character(len=24) :: valk
-    integer :: info
-    integer :: vali(2)
+    integer(kind=8) :: info
+    integer(kind=8) :: vali(2)
 !     ..
 !     .. EXECUTABLE STATEMENTS ..
 !

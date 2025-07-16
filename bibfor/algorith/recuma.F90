@@ -41,13 +41,12 @@ subroutine recuma(mailla, nbma, nbgr, nomma, nomgr, &
 #include "asterfort/jedema.h"
 #include "asterfort/jelira.h"
 #include "asterfort/jemarq.h"
-#include "asterfort/jenonu.h"
 #include "asterfort/jeveuo.h"
 #include "asterfort/jexnom.h"
 #include "asterfort/utmess.h"
 #include "asterfort/char8_to_int.h"
 !
-    integer :: nbma, nbgr, nbto, numnot(nbto)
+    integer(kind=8) :: nbma, nbgr, nbto, numnot(nbto)
     character(len=8) :: mailla, nomma(nbma)
     character(len=24) :: valk(2), nomgr(nbgr), nomcou
 !
@@ -56,7 +55,7 @@ subroutine recuma(mailla, nbma, nbgr, nomma, nomgr, &
 !-----------------------------------------------------------------------
 !
 !-----------------------------------------------------------------------
-    integer :: i, iadg, icomp, j, nb, numa
+    integer(kind=8) :: i, iadg, icomp, j, nb, numa
 !-----------------------------------------------------------------------
     call jemarq()
     icomp = 0

@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -38,7 +38,7 @@ subroutine xpomac(malini, mailc, listno, nbnoc, nbmac, &
 #include "asterfort/wkvect.h"
 #include "asterfort/xpoco1.h"
 #include "asterfort/xpoco2.h"
-    integer :: nbnoc, nbmac
+    integer(kind=8) :: nbnoc, nbmac
     character(len=8) :: malini, maxfem, resuco
     character(len=19) :: cns1, cns2, ces1, ces2, cesvi1, cesvi2
     character(len=19) :: comps1, comps2
@@ -73,8 +73,8 @@ subroutine xpomac(malini, mailc, listno, nbnoc, nbmac, &
 !
 !
 !
-    integer :: jdirma, jmac, iret, nbno, jdirno, ino, i
-    integer :: nbma, ima, jno, ier, jnivgr
+    integer(kind=8) :: jdirma, jmac, iret, nbno, jdirno, ino, i
+    integer(kind=8) :: nbma, ima, jno, ier, jnivgr
     aster_logical :: pre1
     character(len=8) :: k8b
     character(len=16) :: k16b, nomcmd

@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2019 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -24,13 +24,13 @@ interface
                       tau, copilo)
         use Behaviour_type
         type(Behaviour_Integ), intent(in) :: BEHinteg
-        integer :: lgpg
-        integer :: npg
-        integer :: ndim
-        integer :: kpg
+        integer(kind=8) :: lgpg
+        integer(kind=8) :: npg
+        integer(kind=8) :: ndim
+        integer(kind=8) :: kpg
         character(len=16) :: compor(*)
         character(len=8) :: typmod(*)
-        integer :: mate
+        integer(kind=8) :: mate
         real(kind=8) :: vim(lgpg, npg)
         real(kind=8) :: epsm(6)
         real(kind=8) :: epsp(6)

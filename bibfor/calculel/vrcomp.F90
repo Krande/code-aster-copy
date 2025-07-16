@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -24,20 +24,18 @@ subroutine vrcomp(comporCurrZ, variZ, ligrelCurrZ, iret, &
 !
 #include "asterf_types.h"
 #include "jeveux.h"
-#include "asterfort/assert.h"
 #include "asterfort/detrsd.h"
 #include "asterfort/dismoi.h"
 #include "asterfort/jeveuo.h"
 #include "asterfort/jemarq.h"
 #include "asterfort/jedema.h"
 #include "asterfort/utmess.h"
-#include "asterfort/vrcom2.h"
 #include "asterfort/vrcomp_chck_cmp.h"
 #include "asterfort/vrcomp_chck_rela.h"
 #include "asterfort/vrcomp_prep.h"
 !
     character(len=*), intent(in) :: comporCurrZ, variZ, ligrelCurrZ
-    integer, intent(out) :: iret
+    integer(kind=8), intent(out) :: iret
     character(len=*), optional, intent(in) :: comporPrevZ_
     character(len=1), optional, intent(in) :: typeStop_
     aster_logical, intent(in), optional :: verbose_
@@ -118,9 +116,9 @@ subroutine vrcomp(comporCurrZ, variZ, ligrelCurrZ, iret, &
     character(len=19) :: ligrelCurr, ligrelPrev
     aster_logical :: verbose
     character(len=8) :: meshCompor, meshField, mesh
-    integer :: nbCell
+    integer(kind=8) :: nbCell
     character(len=8), pointer :: cesk(:) => null()
-    integer, pointer :: cesd(:) => null()
+    integer(kind=8), pointer :: cesd(:) => null()
 !
 ! --------------------------------------------------------------------------------------------------
 !

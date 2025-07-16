@@ -26,15 +26,13 @@ subroutine cfnomm(noma, defico, typent, posent, noment)
 #include "asterfort/cfnumn.h"
 #include "asterfort/jedema.h"
 #include "asterfort/jemarq.h"
-#include "asterfort/jenuno.h"
-#include "asterfort/jexnum.h"
 #include "asterfort/int_to_char8.h"
 !
 ! person_in_charge: mickael.abbas at edf.fr
 !
     character(len=8), intent(in) :: noma
     character(len=24), intent(in) :: defico
-    integer, intent(in) :: posent
+    integer(kind=8), intent(in) :: posent
     character(len=4), intent(in) :: typent
     character(len=8), intent(out) :: noment
 !
@@ -57,8 +55,8 @@ subroutine cfnomm(noma, defico, typent, posent, noment)
 !
 ! ----------------------------------------------------------------------
 !
-    integer :: nummai, numnoe(1)
-    integer :: posmai, posnoe(1)
+    integer(kind=8) :: nummai, numnoe(1)
+    integer(kind=8) :: posmai, posnoe(1)
 !
 ! ----------------------------------------------------------------------
 !

@@ -50,10 +50,7 @@ subroutine cgmaba(mofaz, iocc, nomaz, lismaz, nbma)
 #include "asterfort/jedema.h"
 #include "asterfort/jelira.h"
 #include "asterfort/jemarq.h"
-#include "asterfort/jenonu.h"
-#include "asterfort/jenuno.h"
 #include "asterfort/jeveuo.h"
-#include "asterfort/jexnom.h"
 #include "asterfort/jexnum.h"
 #include "asterfort/utcono.h"
 #include "asterfort/utmess.h"
@@ -66,7 +63,7 @@ subroutine cgmaba(mofaz, iocc, nomaz, lismaz, nbma)
     character(len=*) :: mofaz, nomaz, lismaz
 !
 ! --------- VARIABLES LOCALES ---------------------------
-    integer :: vali(2)
+    integer(kind=8) :: vali(2)
     character(len=8) :: noma, k8bid, nomail
     character(len=16) :: motfac, mocle(3)
     character(len=24) :: lismai
@@ -77,9 +74,9 @@ subroutine cgmaba(mofaz, iocc, nomaz, lismaz, nbma)
 !.========================= DEBUT DU CODE EXECUTABLE ==================
 !
 !-----------------------------------------------------------------------
-    integer :: ibid, idlima, idnoeu, ima, ino
-    integer :: iocc, iret, nangle, nb, nbma, nbmai, nbno
-    integer :: nbnod, ndim, ndim1, ndist, numnoe, nv, nvect
+    integer(kind=8) :: ibid, idlima, idnoeu, ima, ino
+    integer(kind=8) :: iocc, iret, nangle, nb, nbma, nbmai, nbno
+    integer(kind=8) :: nbnod, ndim, ndim1, ndist, numnoe, nv, nvect
 !
     real(kind=8) :: d, dist, xnorm, xnorm2, zero
     real(kind=8), pointer :: vale(:) => null()

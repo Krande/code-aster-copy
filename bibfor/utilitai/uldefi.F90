@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -24,7 +24,7 @@ subroutine uldefi(unit, ficnom, ddnom, typf, acces, &
 #include "asterfort/ulinit.h"
 #include "asterfort/ulopen.h"
 #include "asterfort/utmess.h"
-    integer :: unit
+    integer(kind=8) :: unit
     character(len=*) :: ficnom, ddnom, typf, acces, autor
 !     ------------------------------------------------------------------
 !     DEFINITION DE LA CORRESPONDANCE UN NOM UTILISATEUR ET UN NUMERO
@@ -59,12 +59,12 @@ subroutine uldefi(unit, ficnom, ddnom, typf, acces, &
 !         MODIFI = O -> MODIFIABLE PAR L'UTILISATEUR, N -> NON
 !     ------------------------------------------------------------------
 !
-    integer :: mxf
+    integer(kind=8) :: mxf
     parameter(mxf=100)
     character(len=1) :: typefi(mxf), accefi(mxf), etatfi(mxf), modifi(mxf)
     character(len=16) :: ddname(mxf)
     character(len=255) :: namefi(mxf)
-    integer :: first, unitfi(mxf), nbfile
+    integer(kind=8) :: first, unitfi(mxf), nbfile
     common/asgfi1/first, unitfi, nbfile
     common/asgfi2/namefi, ddname, typefi, accefi, etatfi, modifi
 !
@@ -72,7 +72,7 @@ subroutine uldefi(unit, ficnom, ddnom, typf, acces, &
     character(len=16) :: name16
     character(len=8) :: k8b
     character(len=1) :: k1typ, k1acc, k1aut
-    integer :: ifile, ilibre
+    integer(kind=8) :: ifile, ilibre
 !     ------------------------------------------------------------------
 !
 !     --- INITIALISATION (SI NECESSAIRE) ---

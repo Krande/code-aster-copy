@@ -42,7 +42,6 @@ subroutine te0096(option, nomte)
 #include "asterf_types.h"
 #include "jeveux.h"
 #include "asterc/r8prem.h"
-#include "asterfort/assert.h"
 #include "asterfort/elrefe_info.h"
 #include "asterfort/fointe.h"
 #include "asterfort/jevech.h"
@@ -61,7 +60,7 @@ subroutine te0096(option, nomte)
 !
 ! DECLARATION VARIABLES LOCALES
 !
-    integer :: icodre(1), kpg, spt
+    integer(kind=8) :: icodre(1), kpg, spt
     character(len=4) :: fami
     character(len=8) :: nompar(3), typmod(2), famil, poum
     character(len=16) :: phenom
@@ -78,14 +77,14 @@ subroutine te0096(option, nomte)
     real(kind=8) :: vepscp
     real(kind=8) :: ecin, prod3, prod4, nu(1), accele(3)
 !
-    integer :: ipoids, ivf, idfde
-    integer :: igeom, itemps, idepl, imate
-    integer :: iepsr, iepsf, isigi, isigm
-    integer :: iforc, iforf, ithet, igthet, irota, ipesa, ier
-    integer :: ivites, iaccel, j1, j2
-    integer :: nno, nnos, ncmp, jgano
-    integer :: i, j, k, kk, l, m, kp, ndim, compt
-    integer :: ij, ij1, matcod, i1, iret, iret1, npg1
+    integer(kind=8) :: ipoids, ivf, idfde
+    integer(kind=8) :: igeom, itemps, idepl, imate
+    integer(kind=8) :: iepsr, iepsf, isigi, isigm
+    integer(kind=8) :: iforc, iforf, ithet, igthet, irota, ipesa, ier
+    integer(kind=8) :: ivites, iaccel, j1, j2
+    integer(kind=8) :: nno, nnos, ncmp, jgano
+    integer(kind=8) :: i, j, k, kk, l, m, kp, ndim, compt
+    integer(kind=8) :: ij, ij1, matcod, i1, iret, iret1, npg1
     character(len=16), pointer :: compor(:) => null()
     type(Behaviour_Integ) :: BEHinteg
 !

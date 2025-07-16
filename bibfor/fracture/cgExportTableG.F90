@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -49,26 +49,26 @@ subroutine cgExportTableG(cgField, cgTheta, cgTable, cgStat)
 ! --------------------------------------------------------------------------------------------------
 !
 !
-    integer, parameter :: nb_objet = 2
+    integer(kind=8), parameter :: nb_objet = 2
     character(len=16) :: obje_name(nb_objet)
     character(len=24) :: obje_sdname(nb_objet)
 !
-    integer, parameter :: nbpara = 3
+    integer(kind=8), parameter :: nbpara = 3
     character(len=19), parameter :: nompar(nbpara) = (/ &
                                     'NOM_OBJET ', 'TYPE_OBJET', 'NOM_SD    '/)
     character(len=19), parameter :: typpar(nbpara) = (/ &
                                     'K16', 'K16', 'K24'/)
 !
-    integer, parameter :: l_nb_obje = 2
+    integer(kind=8), parameter :: l_nb_obje = 2
     character(len=16), parameter :: l_obje_name(l_nb_obje) = (/ &
                                     'TABLE_G         ', 'CHAM_THETA      '/)
     character(len=16), parameter :: l_obje_type(l_nb_obje) = (/ &
                                     'TABLE_SDASTER   ', 'CHAM_NO_SDASTER '/)
     character(len=80), parameter :: def_title = &
                             'CALCUL DES FACTEURS D''INTENSITE DES CONTRAINTES PAR LA METHODE CALC_G'
-    integer, parameter :: l_def_title = 70
+    integer(kind=8), parameter :: l_def_title = 70
 !
-    integer :: i_l_obj, i_obj
+    integer(kind=8) :: i_l_obj, i_obj
     character(len=24) :: vk(3)
     character(len=16) :: obje_type
     aster_logical, parameter :: debug = ASTER_FALSE

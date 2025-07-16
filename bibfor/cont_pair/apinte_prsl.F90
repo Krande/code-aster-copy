@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -27,14 +27,14 @@ subroutine apinte_prsl(proj_tole, elem_dime, &
 #include "asterfort/mmnewt.h"
 !
     real(kind=8), intent(in) :: proj_tole
-    integer, intent(in) :: elem_dime
-    integer, intent(in) :: elem_mast_nbnode
+    integer(kind=8), intent(in) :: elem_dime
+    integer(kind=8), intent(in) :: elem_mast_nbnode
     real(kind=8), intent(in) :: elem_mast_coor(3, 9)
-    integer, intent(in) :: elem_slav_nbnode
+    integer(kind=8), intent(in) :: elem_slav_nbnode
     real(kind=8), intent(in) :: elem_slav_coor(3, 9)
     character(len=8), intent(in) :: elem_slav_code
     real(kind=8), intent(out) :: proj_coor(elem_dime-1, 4)
-    integer, intent(out) :: iret
+    integer(kind=8), intent(out) :: iret
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -56,11 +56,11 @@ subroutine apinte_prsl(proj_tole, elem_dime, &
 ! --------------------------------------------------------------------------------------------------
 !
     aster_logical :: debug, l_reli
-    integer :: i_node, i_dime
+    integer(kind=8) :: i_node, i_dime
     real(kind=8) :: noma_coor(3)
     real(kind=8) :: ksi1, ksi2, tau1(3), tau2(3)
     character(len=8) :: elin_slav_code
-    integer :: elin_slav_nbnode
+    integer(kind=8) :: elin_slav_nbnode
 !
 ! --------------------------------------------------------------------------------------------------
 !

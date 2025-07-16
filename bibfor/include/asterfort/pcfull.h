@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -21,14 +21,14 @@
 interface
     subroutine pcfull(n, icpl, icpc, icpd, icplp,&
                       icpcp, ind, lca, ier)
-        integer :: n
-        integer :: icpl(0:n)
+        integer(kind=8) :: n
+        integer(kind=8) :: icpl(0:n)
         integer(kind=4) :: icpc(*)
-        integer :: icpd(n)
-        integer :: icplp(0:n)
-        integer :: icpcp(*)
-        integer :: ind(n)
-        integer :: lca
-        integer :: ier
+        integer(kind=8) :: icpd(n)
+        integer(kind=8) :: icplp(0:n)
+        integer(kind=8) :: icpcp(*)
+        integer(kind=8) :: ind(n)
+        integer(kind=8) :: lca
+        integer(kind=8) :: ier
     end subroutine pcfull
 end interface

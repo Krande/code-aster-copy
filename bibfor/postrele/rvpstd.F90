@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -23,10 +23,10 @@ subroutine rvpstd(valee, type, codir, valdir, valeq)
 #include "asterc/r8vide.h"
     real(kind=8) :: valee(*), valeq(*), valdir(*)
     character(len=2) :: type
-    integer :: codir, indir1(3), indir2(4), indir3(3)
+    integer(kind=8) :: codir, indir1(3), indir2(4), indir3(3)
 !
 !-----------------------------------------------------------------------
-    integer :: i
+    integer(kind=8) :: i
 !-----------------------------------------------------------------------
     data indir1/2, 1, 3/
     data indir2/2, 1, 4, 3/

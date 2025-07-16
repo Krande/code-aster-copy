@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -27,7 +27,6 @@ subroutine comp_nbvari(rela_comp, defo_comp, type_cpla, kit_comp, &
 !
 #include "asterc/mgis_get_sizeof_isvs.h"
 #include "asterf_types.h"
-#include "asterfort/assert.h"
 #include "asterfort/comp_meca_l.h"
 #include "asterfort/comp_nbvari_kit.h"
 #include "asterfort/comp_nbvari_std.h"
@@ -36,9 +35,9 @@ subroutine comp_nbvari(rela_comp, defo_comp, type_cpla, kit_comp, &
     character(len=16), intent(in) :: rela_comp, defo_comp, type_cpla
     character(len=16), intent(in) :: kit_comp(4), post_iter
     character(len=16), intent(in) :: mult_comp, regu_visc, post_incr, extern_addr
-    integer, intent(in) :: extern_type
-    integer, intent(in) :: nbVariUMAT
-    integer, intent(out) :: nbVari, numeLaw, nbVariKit(4), numeLawKit(4)
+    integer(kind=8), intent(in) :: extern_type
+    integer(kind=8), intent(in) :: nbVariUMAT
+    integer(kind=8), intent(out) :: nbVari, numeLaw, nbVariKit(4), numeLawKit(4)
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -66,9 +65,9 @@ subroutine comp_nbvari(rela_comp, defo_comp, type_cpla, kit_comp, &
 !
 ! --------------------------------------------------------------------------------------------------
 !
-    integer :: nbVariExte, nbVariFromKit, nbVariCrystal
+    integer(kind=8) :: nbVariExte, nbVariFromKit, nbVariCrystal
     aster_logical :: l_cristal, l_kit_meta, l_kit_thm, l_kit_ddi, l_kit_cg, l_kit
-    integer, pointer :: cpri(:) => null()
+    integer(kind=8), pointer :: cpri(:) => null()
 !
 ! --------------------------------------------------------------------------------------------------
 !

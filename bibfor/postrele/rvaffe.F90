@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -34,7 +34,7 @@ subroutine rvaffe(mcf, iocc, sdlieu, sdeval, sdmail, &
 #include "asterfort/rvtecn.h"
 #include "asterfort/wkvect.h"
 !
-    integer :: iocc, isd
+    integer(kind=8) :: iocc, isd
     character(len=1) :: typaff
     character(len=16) :: ncheff
     character(len=19) :: sdeval, nomtab
@@ -49,11 +49,11 @@ subroutine rvaffe(mcf, iocc, sdlieu, sdeval, sdmail, &
 ! IN  QUANT  : K : NOM DE LA QUANTITE TRAITEE
 ! IN  OPTION : K : NOM DE L' OPTION   TRAITEE
 !     ------------------------------------------------------------------
-    integer :: avale, apnbn, apadr, anocp, nbcp, ioc, aabsc, nbpt, nboc
-    integer :: apnsp, apnco, acoor, nbco, nbsp, apnca, apnsa, i1
-    integer :: i, deb, fin, adr1, ifm, anomnd, j, k, adri, deci, nbni, avaux
-    integer :: l, lci, ln, lni, nbsi, niv
-    integer :: lll, indic, indi1, indi2
+    integer(kind=8) :: avale, apnbn, apadr, anocp, nbcp, ioc, aabsc, nbpt, nboc
+    integer(kind=8) :: apnsp, apnco, acoor, nbco, nbsp, apnca, apnsa, i1
+    integer(kind=8) :: i, deb, fin, adr1, ifm, anomnd, j, k, adri, deci, nbni, avaux
+    integer(kind=8) :: l, lci, ln, lni, nbsi, niv
+    integer(kind=8) :: lll, indic, indi1, indi2
     real(kind=8) :: ax, s1, s2
     character(len=4) :: docul, docu
     character(len=16) :: oper

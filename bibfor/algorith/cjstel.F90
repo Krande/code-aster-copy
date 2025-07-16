@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -26,12 +26,12 @@ subroutine cjstel(mod, mater, sig, hook)
 !     OUT  HOOK    :  OPERATEUR RIGIDITE ELASTIQUE
 !       ----------------------------------------------------------------
 !
-    integer :: ndt, ndi
+    integer(kind=8) :: ndt, ndi
 !
     real(kind=8) :: sig(6), hook(6, 6), mater(14, 2), i1, coef
     real(kind=8) :: e, nu, al, la, mu
     real(kind=8) :: un, d12, zero, deux, trois, qinit
-    integer :: i, j
+    integer(kind=8) :: i, j
 !
     character(len=8) :: mod
 !

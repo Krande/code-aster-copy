@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -23,13 +23,13 @@ interface
                       intf1, intf2, nbmod, nl, nc)
         character(len=8) :: resgen
         character(len=8) :: modgen
-        integer :: numlia
+        integer(kind=8) :: numlia
         character(len=8) :: sst1
         character(len=8) :: sst2
         character(len=8) :: intf1
         character(len=8) :: intf2
-        integer :: nbmod
-        integer :: nl
-        integer :: nc
+        integer(kind=8) :: nbmod
+        integer(kind=8) :: nl
+        integer(kind=8) :: nc
     end subroutine traint
 end interface

@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -26,11 +26,7 @@ subroutine ibdbgs()
 !     ------------------------------------------------------------------
 !     ----- DEBUT COMMON DE DEBUG JEVEUX
 #include "jeveux.h"
-#include "asterc/getfac.h"
 #include "asterc/gtopti.h"
-#include "asterc/jdcget.h"
-#include "asterc/jdcset.h"
-#include "asterfort/assert.h"
 #include "asterfort/getvis.h"
 #include "asterfort/getvr8.h"
 #include "asterfort/getvtx.h"
@@ -38,22 +34,22 @@ subroutine ibdbgs()
 #include "asterfort/iunifi.h"
 #include "asterfort/jedema.h"
 #include "asterfort/jemarq.h"
-    integer :: lundef, idebug
+    integer(kind=8) :: lundef, idebug
     common/undfje/lundef, idebug
     real(kind=8) :: tbloc, tgrel
     common/rtblje/tbloc, tgrel
 !
 !     -- COMMON MESTP1 POUR MESURE_TEMPS
-    integer :: mtpniv, mtpsta
+    integer(kind=8) :: mtpniv, mtpsta
     common/mestp1/mtpniv, mtpsta
 !
 ! ----------------------------------------------------------------------
     character(len=3) :: repons
-    integer :: l, i1, iret
+    integer(kind=8) :: l, i1, iret
 !
 !     --- OPTIONS PAR DEFAUT ---
 !-----------------------------------------------------------------------
-    integer :: ifi
+    integer(kind=8) :: ifi
 !-----------------------------------------------------------------------
     call jemarq()
     tbloc = 800.d0

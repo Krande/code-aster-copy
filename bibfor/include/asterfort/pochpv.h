@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -24,12 +24,12 @@ interface
     subroutine pochpv(trange, nbbloc, tdebut, tfin, offset,&
                       trepos, nbclas, nomres, loptio)
         character(len=*) :: trange
-        integer :: nbbloc
+        integer(kind=8) :: nbbloc
         real(kind=8) :: tdebut
         real(kind=8) :: tfin
         real(kind=8) :: offset
         real(kind=8) :: trepos
-        integer :: nbclas
+        integer(kind=8) :: nbclas
         character(len=*) :: nomres
         aster_logical :: loptio
     end subroutine pochpv

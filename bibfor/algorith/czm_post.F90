@@ -22,13 +22,13 @@ subroutine czm_post(ndim, lSigm, lMatr, r, mu, su, delta, dsde, sigp, dsidep)
 #include "asterf_types.h"
 
     aster_logical, intent(in) :: lMatr, lSigm
-    integer, intent(in):: ndim
+    integer(kind=8), intent(in):: ndim
     real(kind=8), intent(in):: r, mu(1:ndim), su(1:ndim), delta(1:ndim), dsde(:, :)
     real(kind=8), intent(out):: sigp(:), dsidep(:, :)
 ! --------------------------------------------------------------------------------------------------
 !  Rangement des contraintes et des matrices tangentes pour les elements d'interface
 ! --------------------------------------------------------------------------------------------------
-    integer:: i
+    integer(kind=8):: i
     real(kind=8):: iden(ndim, ndim), k(ndim, ndim), m(ndim, ndim)
 ! --------------------------------------------------------------------------------------------------
 

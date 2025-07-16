@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -24,11 +24,11 @@ interface
         character(len=16), intent(in) :: rela_plas
         character(len=16), intent(in) :: rela_cpla
         character(len=16), intent(in) :: rela_coup
-        integer, intent(out) :: nb_vari_flua
-        integer, intent(out) :: nb_vari_plas
-        integer, intent(out) :: nb_vari_cpla
-        integer, intent(out) :: nb_vari_coup
-        integer, intent(out) :: nume_comp_plas
-        integer, intent(out) :: nume_comp_flua
+        integer(kind=8), intent(out) :: nb_vari_flua
+        integer(kind=8), intent(out) :: nb_vari_plas
+        integer(kind=8), intent(out) :: nb_vari_cpla
+        integer(kind=8), intent(out) :: nb_vari_coup
+        integer(kind=8), intent(out) :: nume_comp_plas
+        integer(kind=8), intent(out) :: nume_comp_flua
     end subroutine ddi_kit_nvar
 end interface

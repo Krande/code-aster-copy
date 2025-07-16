@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -38,9 +38,9 @@ subroutine onerrf(set, get, long)
 #include "asterfort/lxlgut.h"
     character(len=*) :: set
     character(len=16) :: get
-    integer :: long
+    integer(kind=8) :: long
 !     ----------------------------------------------------------------
-    integer :: vexcf, vini
+    integer(kind=8) :: vexcf, vini
     save vexcf, vini
     data vexcf/0/
     data vini/-1/

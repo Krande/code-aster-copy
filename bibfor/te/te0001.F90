@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -39,8 +39,8 @@ subroutine te0001(option, nomte)
     aster_logical :: langl
 !     -----------------------------------------------------------------
 !-----------------------------------------------------------------------
-    integer :: i, ier, j, jdimp, jgeom, jtime, jvec
-    integer :: nbpar, nddl, nddl1
+    integer(kind=8) :: i, ier, j, jdimp, jgeom, jtime, jvec
+    integer(kind=8) :: nbpar, nddl, nddl1
 !-----------------------------------------------------------------------
     if (nomte .eq. 'FORCE_NOD_6DDL') nddl1 = 6
     if (nomte .eq. 'FORCE_NOD_3DDL') nddl1 = 3

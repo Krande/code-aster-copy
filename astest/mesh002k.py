@@ -27,7 +27,7 @@ CA.init("--test", ERREUR=_F(ALARME="EXCEPTION"))
 
 test = CA.TestCase()
 
-from code_aster.Utilities.MedUtils.MedMeshAndFieldsSplitter import splitMeshAndFieldsFromMedFile
+from code_aster.MedUtils import splitMeshAndFieldsFromMedFile
 
 ret = splitMeshAndFieldsFromMedFile("fort.20", deterministic=True)
 pMesh = ret[0]

@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -21,13 +21,13 @@ interface
                                 keywf, i_comp, rela_comp, type_cpla_in, &
                                 model_mfront, type_cpla_out)
         character(len=8), intent(in) :: mesh
-        integer, pointer :: v_model_elem(:)
-        integer, intent(in) :: elem_type
+        integer(kind=8), pointer :: v_model_elem(:)
+        integer(kind=8), intent(in) :: elem_type
         character(len=16), intent(in) :: keywf
-        integer, intent(in) :: i_comp
+        integer(kind=8), intent(in) :: i_comp
         character(len=16), intent(in) :: rela_comp
         character(len=16), intent(in) :: type_cpla_in
-        integer, intent(out) :: model_mfront
+        integer(kind=8), intent(out) :: model_mfront
         character(len=16), intent(out) :: type_cpla_out
     end subroutine comp_read_typmod
 end interface

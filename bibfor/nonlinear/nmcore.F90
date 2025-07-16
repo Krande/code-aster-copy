@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -38,10 +38,10 @@ subroutine nmcore(sdcrit, sderro, list_func_acti, nume_inst, iter_newt, &
 !
     character(len=19), intent(in) :: sdcrit
     character(len=24), intent(in) :: sderro
-    integer, intent(in) :: list_func_acti(*)
-    integer, intent(in) :: nume_inst
-    integer, intent(in) :: iter_newt
-    integer, intent(in) :: line_sear_iter
+    integer(kind=8), intent(in) :: list_func_acti(*)
+    integer(kind=8), intent(in) :: nume_inst
+    integer(kind=8), intent(in) :: iter_newt
+    integer(kind=8), intent(in) :: line_sear_iter
     real(kind=8), intent(in) :: eta
     real(kind=8), intent(in) :: resi_norm
     real(kind=8), intent(in) :: load_norm
@@ -72,7 +72,7 @@ subroutine nmcore(sdcrit, sderro, list_func_acti, nume_inst, iter_newt, &
     real(kind=8), pointer :: v_sdcrit_crtr(:) => null()
     character(len=16) :: eventType
     real(kind=8) :: load_mini, last_resi_conv, user_para, vale_calc
-    integer :: i_resi, nb_resi
+    integer(kind=8) :: i_resi, nb_resi
     aster_logical :: l_resi_test, l_conv, l_swap_rela_maxi, l_swap_comp_rela
     aster_logical :: cvresi
 !

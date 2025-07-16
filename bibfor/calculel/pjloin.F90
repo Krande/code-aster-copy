@@ -19,26 +19,22 @@
 subroutine pjloin(nbnod, nbnodm, m2, geom2, nbmax, tino2m, tdmin2, lino_loin)
     implicit none
 
-    integer, intent(in) :: nbnod, nbnodm, nbmax, tino2m(nbmax), lino_loin(*)
+    integer(kind=8), intent(in) :: nbnod, nbnodm, nbmax, tino2m(nbmax), lino_loin(*)
     real(kind=8), intent(in) :: tdmin2(nbmax)
     real(kind=8), intent(in) :: geom2(*)
     character(len=8), intent(in) :: m2
 
 #include "asterc/getres.h"
 #include "asterf_types.h"
-#include "asterfort/assert.h"
 #include "asterfort/codent.h"
 #include "asterfort/crea_maillage.h"
 #include "asterfort/detrsd.h"
 #include "asterfort/gcncon.h"
 #include "asterfort/getvtx.h"
-#include "asterfort/indiis.h"
 #include "asterfort/infniv.h"
 #include "asterfort/irmail.h"
 #include "asterfort/jedema.h"
 #include "asterfort/jemarq.h"
-#include "asterfort/jenuno.h"
-#include "asterfort/jexnum.h"
 #include "asterfort/ulaffe.h"
 #include "asterfort/ulnume.h"
 #include "asterfort/ulopen.h"
@@ -56,8 +52,8 @@ subroutine pjloin(nbnod, nbnodm, m2, geom2, nbmax, tino2m, tdmin2, lino_loin)
     character(len=8) ::  madebug, k8bid, kico
     character(len=16) :: alarm, k16bid, nomcmd, formar
 !
-    integer :: vali(2)
-    integer :: ii, ino2m, unite, ico, iret, ifm, info, ivers
+    integer(kind=8) :: vali(2)
+    integer(kind=8) :: ii, ino2m, unite, ico, iret, ifm, info, ivers
     real(kind=8) :: valr(4)
     character(len=80) :: valk(2)
     character(len=8) :: nono2

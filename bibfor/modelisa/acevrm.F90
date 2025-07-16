@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -26,7 +26,7 @@ subroutine acevrm(nbocc, noma, noemax, noemaf)
 #include "asterfort/jeveuo.h"
 #include "asterfort/jexnom.h"
 !
-    integer :: nbocc, noemax
+    integer(kind=8) :: nbocc, noemax
     character(len=8) :: noma
 ! ----------------------------------------------------------------------
 !     AFFE_CARA_ELEM
@@ -39,7 +39,7 @@ subroutine acevrm(nbocc, noma, noemax, noemaf)
     character(len=24) :: magrma
     character(len=24) :: nogp, nogl
 !-----------------------------------------------------------------------
-    integer :: in, ioc, ldgm, ngl, ngp, nma, noemaf
+    integer(kind=8) :: in, ioc, ldgm, ngl, ngp, nma, noemaf
 !
 !-----------------------------------------------------------------------
     call jemarq()

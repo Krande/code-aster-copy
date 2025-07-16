@@ -32,7 +32,7 @@ subroutine te0416(option, nomte)
 !
 !
     character(len=16), pointer :: compor(:) => null()
-    integer :: ibid, iret, icompo
+    integer(kind=8) :: ibid, iret, icompo
 !
 !
 ! DEB

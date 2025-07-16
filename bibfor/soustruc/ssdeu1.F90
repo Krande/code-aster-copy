@@ -27,7 +27,6 @@ subroutine ssdeu1(motcle, noma, nbno, iliste)
 #include "asterfort/jeexin.h"
 #include "asterfort/jelira.h"
 #include "asterfort/jemarq.h"
-#include "asterfort/jenonu.h"
 #include "asterfort/jeveuo.h"
 #include "asterfort/jexnom.h"
 #include "asterfort/utmess.h"
@@ -36,7 +35,7 @@ subroutine ssdeu1(motcle, noma, nbno, iliste)
 !
     character(len=*) :: motcle
     character(len=8) :: noma
-    integer :: nbno, iliste(*)
+    integer(kind=8) :: nbno, iliste(*)
 ! ----------------------------------------------------------------------
 !     BUT:
 !        - TRAITER LES MOTS CLEFS "GROUP_NO" ET "NOEUD" DE
@@ -57,8 +56,8 @@ subroutine ssdeu1(motcle, noma, nbno, iliste)
 ! ----------------------------------------------------------------------
 !
 !-----------------------------------------------------------------------
-    integer :: i, iagpno, iawk1, ibid, ico, ii, iret
-    integer :: n1, n2, n3, n4, ndim
+    integer(kind=8) :: i, iagpno, iawk1, ibid, ico, ii, iret
+    integer(kind=8) :: n1, n2, n3, n4, ndim
 !-----------------------------------------------------------------------
     call jemarq()
     nbno = 0

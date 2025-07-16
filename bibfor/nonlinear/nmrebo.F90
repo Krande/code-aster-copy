@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -29,9 +29,9 @@ subroutine nmrebo(f, mem, sens, rho, rhoopt, &
     real(kind=8) :: mem(2, *), sens
     real(kind=8) :: rho, rhoopt
     aster_logical :: echec, stite
-    integer :: ldcopt, ldccvg
+    integer(kind=8) :: ldcopt, ldccvg
     real(kind=8) :: f, fopt, fcvg
-    integer :: opt, act
+    integer(kind=8) :: opt, act
     real(kind=8) :: rhomin, rhomax, rhoexm, rhoexp
 !
 !
@@ -56,7 +56,7 @@ subroutine nmrebo(f, mem, sens, rho, rhoopt, &
 !
     real(kind=8) :: rhoneg, rhopos
     real(kind=8) :: parmul, fneg, fpos
-    integer :: dimcpl, nbcpl
+    integer(kind=8) :: dimcpl, nbcpl
     aster_logical :: bpos, lopti
     common/zbpar/rhoneg, rhopos,&
      &               parmul, fneg, fpos,&

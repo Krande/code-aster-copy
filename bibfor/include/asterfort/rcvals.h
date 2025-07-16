@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -20,9 +20,9 @@
 !
 interface
     subroutine rcvals(iarret, icodre, nbres, nomres)
-        integer, intent(in) :: nbres
-        integer, intent(in) :: iarret
-        integer, intent(in) :: icodre(nbres)
+        integer(kind=8), intent(in) :: nbres
+        integer(kind=8), intent(in) :: iarret
+        integer(kind=8), intent(in) :: icodre(nbres)
         character(len=*), intent(in) :: nomres(nbres)
     end subroutine rcvals
 end interface

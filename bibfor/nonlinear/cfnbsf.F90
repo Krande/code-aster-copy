@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -28,8 +28,8 @@ subroutine cfnbsf(defico, isurf, typent, nbent, jdec)
 #include "asterfort/jeveuo.h"
     character(len=24) :: defico
     character(len=4) :: typent
-    integer :: isurf, jdec
-    integer :: nbent
+    integer(kind=8) :: isurf, jdec
+    integer(kind=8) :: nbent
 !
 ! ----------------------------------------------------------------------
 !
@@ -54,7 +54,7 @@ subroutine cfnbsf(defico, isurf, typent, nbent, jdec)
 !
 !
     character(len=24) :: psurno, psurma
-    integer :: jsuno, jsuma
+    integer(kind=8) :: jsuno, jsuma
 !
 ! ----------------------------------------------------------------------
 !

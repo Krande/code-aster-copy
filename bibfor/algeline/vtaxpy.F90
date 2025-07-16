@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -38,7 +38,7 @@ subroutine vtaxpy(alpha, chamna, chamnb)
     real(kind=8) :: alpha
 !
 !
-    integer :: neq1, neq2, ival1, ival2
+    integer(kind=8) :: neq1, neq2, ival1, ival2
     character(len=24) :: kval1, kval2, chamn1, chamn2
     blas_int :: b_incx, b_incy, b_n
 !

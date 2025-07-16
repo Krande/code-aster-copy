@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -28,7 +28,7 @@ subroutine calc_axe_neutre(e_b, f_t, f_c, c, h, e_a, s_a, &
 !
 ! PARAMETRES SORTANTS
     real(kind=8) :: e0
-    integer :: cas
+    integer(kind=8) :: cas
 
 ! PARAMETRES D'ENTREE
 !     e_b   MODULE DU BETON MODIFIE
@@ -60,7 +60,7 @@ subroutine calc_axe_neutre(e_b, f_t, f_c, c, h, e_a, s_a, &
 
 ! PARAMETRES INTERNES
     real(kind=8) :: e_t, e_c, e_u, e_ta, a, b, s, d, f
-    integer :: action
+    integer(kind=8) :: action
 
 !     valeurs intermediaires
     e_t = f_t/e_b
@@ -140,8 +140,9 @@ subroutine calc_axe_neutre(e_b, f_t, f_c, c, h, e_a, s_a, &
             a = -(e_b/(2.d0*kappa))*(1.d0+(1.d0/c))+(e_b/(2.d0*kappa))
             b = e_b*((1.d0/kappa)*(1.d0+(1.d0/c))*e_t+0.5d0*h*(1.d0-(1.d0/c))) &
                 +2.d0*e_a*s_a+(f_c/kappa)-0.5d0*h*e_b
-           s = (1.d0+(1.d0/c))*(0.5d0*h*e_t-(1.d0/(2.d0*kappa))*(e_t**2)-0.125d0*kappa*(h**2))*e_b &
-                +0.125d0*kappa*e_b*h**2+(0.5d0*f_c**2)/(e_b*kappa)-0.5d0*h*f_c
+            s = (1.d0+(1.d0/c))*(0.5d0*h*e_t-(1.d0/(2.d0*kappa))* &
+                                 (e_t**2)-0.125d0*kappa*(h**2))*e_b+ &
+                0.125d0*kappa*e_b*h**2+(0.5d0*f_c**2)/(e_b*kappa)-0.5d0*h*f_c
             d = (b**2)-4.d0*a*s
             if (d .ge. 0.d0) then
                 f = (-b+sqrt(d))/(2.d0*a)

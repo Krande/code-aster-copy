@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -47,7 +47,7 @@ subroutine lcdvin(fami, kpg, ksp, rela_comp, mod, &
 #include "asterfort/rkdcha.h"
 #include "asterfort/rkdhay.h"
 #include "asterfort/rkdvec.h"
-    integer :: kpg, ksp, imat, nmat, nvi, iret
+    integer(kind=8) :: kpg, ksp, imat, nmat, nvi, iret
     character(len=16) :: rela_comp
     character(len=8) :: mod
     character(len=*) :: fami

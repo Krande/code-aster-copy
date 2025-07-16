@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -30,7 +30,7 @@ subroutine mmgtmm(ndim, nnm, &
 !
 #include "asterf_types.h"
 !
-    integer, intent(in) :: ndim, nnm
+    integer(kind=8), intent(in) :: ndim, nnm
     real(kind=8), intent(in) :: wpg, ffm(9), dffm(2, 9), ddffm(3, 9)
     real(kind=8), intent(in) :: jacobi, coefac, jeu, dlagrc
     real(kind=8), intent(in) :: mprt1n(3, 3), mprt2n(3, 3), mprnt1(3, 3), mprnt2(3, 3)
@@ -78,7 +78,7 @@ subroutine mmgtmm(ndim, nnm, &
 !
 ! --------------------------------------------------------------------------------------------------
 !
-    integer :: i, j, k, l, ii, jj
+    integer(kind=8) :: i, j, k, l, ii, jj
     real(kind=8) :: g(3, 3), e(3, 3), d(3, 3), f(3, 3)
 !
 ! --------------------------------------------------------------------------------------------------

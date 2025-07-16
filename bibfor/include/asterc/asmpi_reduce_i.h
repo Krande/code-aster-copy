@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -22,8 +22,8 @@
 interface
     subroutine asmpi_reduce_i(sendbuf, recvbuf, count, op, root,&
                               comm)
-        integer, intent(in) :: sendbuf(*)
-        integer, intent(out) :: recvbuf(*)
+        integer(kind=8), intent(in) :: sendbuf(*)
+        integer(kind=8), intent(out) :: recvbuf(*)
         mpi_int, intent(in) :: count
         mpi_int, intent(in) :: op
         mpi_int, intent(in) :: root

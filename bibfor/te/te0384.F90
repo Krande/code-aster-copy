@@ -46,19 +46,19 @@ subroutine te0384(option, nomte)
 ! --------------------------------------------------------------------------------------------------
 !
     aster_logical :: lFunc, lTime
-    integer :: jvGeom, jvMate, jvLoad, jvTime, jvVect
+    integer(kind=8) :: jvGeom, jvMate, jvLoad, jvTime, jvVect
     aster_logical :: lReal
     real(kind=8) :: x, y, speedDire
     real(kind=8) :: nx, ny
     real(kind=8) :: rho, poids
     real(kind=8) :: time, speedVale
-    integer :: jvWeight, jvShape, jvDShape
-    integer :: nbNode, npg, cellDime, ndofbynode
-    integer :: ldec
-    integer :: i, ii, ipg
+    integer(kind=8) :: jvWeight, jvShape, jvDShape
+    integer(kind=8) :: nbNode, npg, cellDime, ndofbynode
+    integer(kind=8) :: ldec
+    integer(kind=8) :: i, ii, ipg
     aster_logical :: l_axis
     real(kind=8) :: r
-    integer :: j_mater, iret
+    integer(kind=8) :: j_mater, iret
     character(len=16) :: FEForm
 !
 ! --------------------------------------------------------------------------------------------------

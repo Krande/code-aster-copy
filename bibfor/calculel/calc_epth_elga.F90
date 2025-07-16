@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -26,16 +26,15 @@ subroutine calc_epth_elga(fami, ndim, poum, kpg, ksp, &
 #include "asterfort/matrot.h"
 #include "asterfort/get_elas_id.h"
 #include "asterfort/utpslg.h"
-#include "asterfort/utrcyl.h"
 #include "asterfort/verift.h"
 !
 !
     character(len=*), intent(in) :: fami
-    integer, intent(in) :: ndim
+    integer(kind=8), intent(in) :: ndim
     character(len=*), intent(in) :: poum
-    integer, intent(in) :: kpg
-    integer, intent(in) :: ksp
-    integer, intent(in) :: j_mater
+    integer(kind=8), intent(in) :: kpg
+    integer(kind=8), intent(in) :: ksp
+    integer(kind=8), intent(in) :: j_mater
     real(kind=8), intent(in) :: angl_naut(3)
     real(kind=8), intent(out) :: epsi_ther(6)
 !
@@ -62,7 +61,7 @@ subroutine calc_epth_elga(fami, ndim, poum, kpg, ksp, &
 ! --------------------------------------------------------------------------------------------------
 !
     character(len=16) :: elas_keyword
-    integer :: elas_id
+    integer(kind=8) :: elas_id
     real(kind=8) :: p_glob_loca(3, 3), epsi_ther_vect(6)
     real(kind=8) :: epsth, epsth_anis(3)
     real(kind=8) :: vepst1(6), vepst2(6)

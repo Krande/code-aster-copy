@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -33,9 +33,9 @@ subroutine thmComputeResidual(ds_thm, parm_theta, gravity, &
 !
     type(THM_DS), intent(in) :: ds_thm
     real(kind=8), intent(in)  :: parm_theta, gravity(3)
-    integer, intent(in) :: ndim
-    integer, intent(in) :: dimdef, dimcon
-    integer, intent(in) :: mecani(5), press1(7), press2(7), tempe(5), second(5)
+    integer(kind=8), intent(in) :: ndim
+    integer(kind=8), intent(in) :: dimdef, dimcon
+    integer(kind=8), intent(in) :: mecani(5), press1(7), press2(7), tempe(5), second(5)
     real(kind=8), intent(in) :: congem(dimcon), congep(dimcon)
     real(kind=8), intent(in) :: time_incr
     real(kind=8), intent(out) :: r(dimdef+1)
@@ -66,10 +66,10 @@ subroutine thmComputeResidual(ds_thm, parm_theta, gravity, &
 !
 ! --------------------------------------------------------------------------------------------------
 !
-    integer :: i
-    integer :: nbpha1, nbpha2
-    integer :: addeme, addete, addep1, addep2, adde2nd
-    integer :: adcome, adcote, adcp11, adcp12, adcp21, adcp22, adco2nd
+    integer(kind=8) :: i
+    integer(kind=8) :: nbpha1, nbpha2
+    integer(kind=8) :: addeme, addete, addep1, addep2, adde2nd
+    integer(kind=8) :: adcome, adcote, adcp11, adcp12, adcp21, adcp22, adco2nd
 !
 ! --------------------------------------------------------------------------------------------------
 !

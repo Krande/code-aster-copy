@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -44,7 +44,7 @@ subroutine nmevr0(sddisc)
 !
 !
 !
-    integer :: itesup, i_fail, nb_fail, action_type
+    integer(kind=8) :: itesup, i_fail, nb_fail, action_type
     real(kind=8) :: r8bid
     aster_logical :: lacti
 !

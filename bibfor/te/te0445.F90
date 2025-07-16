@@ -52,7 +52,7 @@ subroutine te0445(nomopt, nomte)
 ! --- Local variables
 !
     type(HHO_Quadrature) :: hhoQuadCellRigi, hhoQuadCellMass
-    integer :: cbs, fbs, total_dofs, npg_rigi, npg_mass, itemps
+    integer(kind=8) :: cbs, fbs, total_dofs, npg_rigi, npg_mass, itemps
     character(len=8), parameter :: fami_rigi = 'RIGI', fami_mass = 'MASS'
     type(HHO_Data) :: hhoData
     type(HHO_Cell) :: hhoCell

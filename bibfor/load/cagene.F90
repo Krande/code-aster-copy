@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -30,7 +30,7 @@ subroutine cagene(load, command, model, mesh, geomDime)
 !
     character(len=8), intent(in) :: load
     character(len=16), intent(in) :: command
-    integer, intent(out) :: geomDime
+    integer(kind=8), intent(out) :: geomDime
     character(len=8), intent(out) :: mesh
     character(len=8), intent(out) :: model
 !

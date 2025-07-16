@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -34,7 +34,7 @@ subroutine reslo2(modele, ligrel, chvois, cvoisx, tabido)
 #include "asterfort/utmess.h"
 #include "asterfort/wkvect.h"
 !
-    integer :: tabido(5)
+    integer(kind=8) :: tabido(5)
     character(len=8) :: modele
     character(len=24) :: chvois
     character(len=*) :: ligrel
@@ -73,13 +73,13 @@ subroutine reslo2(modele, ligrel, chvois, cvoisx, tabido)
     character(len=6) :: nompro
     parameter(nompro='RESLO2')
 !
-    integer :: nbpin
+    integer(kind=8) :: nbpin
     parameter(nbpin=2)
-    integer :: nbpout
+    integer(kind=8) :: nbpout
     parameter(nbpout=1)
 !
-    integer :: iret, nbtm, ity, nbgd, igd, ncmp
-    integer :: iacmp, iagd, iatyma, iconx1, iconx2
+    integer(kind=8) :: iret, nbtm, ity, nbgd, igd, ncmp
+    integer(kind=8) :: iacmp, iagd, iatyma, iconx1, iconx2
     character(len=1) :: base
     character(len=8) :: lpain(nbpin), lpaout(nbpout), ma, typema, gd
     character(len=16) :: opt

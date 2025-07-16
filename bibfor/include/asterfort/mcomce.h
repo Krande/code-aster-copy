@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -23,9 +23,9 @@ interface
                       nno)
         character(len=8) :: noma
         character(len=19) :: newgeo
-        integer :: nummai
+        integer(kind=8) :: nummai
         real(kind=8) :: coor(27)
         character(len=8) :: alias
-        integer :: nno
+        integer(kind=8) :: nno
     end subroutine mcomce
 end interface

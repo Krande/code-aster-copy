@@ -20,7 +20,7 @@ interface
     subroutine rigflu(modelZ, matecoZ, &
                       nbLoad, loadNameZ, &
                       solverZ, numeDof, matrAsse)
-        integer, intent(in) :: nbLoad
+        integer(kind=8), intent(in) :: nbLoad
         character(len=*), intent(in) :: modelZ, loadNameZ, matecoZ, solverZ
         character(len=14), intent(out) :: numeDof
         character(len=8), intent(out) :: matrAsse

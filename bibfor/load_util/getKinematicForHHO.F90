@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -43,7 +43,6 @@ subroutine getKinematicForHHO(valeType, model, keywordFact, cnsForCharci)
 #include "asterfort/jexatr.h"
 #include "asterfort/jexnum.h"
 #include "asterfort/megeom.h"
-#include "asterfort/imprsd.h"
 #include "jeveux.h"
 !
     character(len=1), intent(in) :: valeType
@@ -66,38 +65,38 @@ subroutine getKinematicForHHO(valeType, model, keywordFact, cnsForCharci)
     character(len=8) :: mesh
     character(len=16) :: phenom
     character(len=24) :: modelLigrel
-    integer :: iocc, nocc, nbret, iad, nncp, iret, modelDime, ibid, cmpNume
-    integer :: iCell, iNode, iCellNode, iKeywordLieu, iUserDOF
-    integer :: userNodeNb, userDOFNb, nbin
-    integer :: cellTypeNume, cellDime, cellNume, cellNbNode
-    integer :: nodeNume, nodeNbCell, nodeNumeLoca, nbCmpVale
-    integer, pointer :: userNodeNume(:) => null()
-    integer, pointer :: meshTypmail(:) => null()
+    integer(kind=8) :: iocc, nocc, nbret, iad, nncp, iret, modelDime, ibid, cmpNume
+    integer(kind=8) :: iCell, iNode, iCellNode, iKeywordLieu, iUserDOF
+    integer(kind=8) :: userNodeNb, userDOFNb, nbin
+    integer(kind=8) :: cellTypeNume, cellDime, cellNume, cellNbNode
+    integer(kind=8) :: nodeNume, nodeNbCell, nodeNumeLoca, nbCmpVale
+    integer(kind=8), pointer :: userNodeNume(:) => null()
+    integer(kind=8), pointer :: meshTypmail(:) => null()
     real(kind=8) :: userDOFVale
     character(len=16) :: currentDOF
-    integer, parameter :: mxcmp = 100
+    integer(kind=8), parameter :: mxcmp = 100
     character(len=16) :: userDOFName(mxcmp)
     character(len=8) :: chcity(mxcmp), physQuanVale
-    integer, parameter :: npg = -1, nspt = -1
+    integer(kind=8), parameter :: npg = -1, nspt = -1
     character(len=8), parameter ::  paraNameVale = "PCMPVALE"
     character(len=16) :: cmpNameVale(3)
-    integer :: jvElnoSValeL, jvElnoSValeD, jvElnoSValeV
-    integer, parameter :: nbKeywordLieu = 5
+    integer(kind=8) :: jvElnoSValeL, jvElnoSValeD, jvElnoSValeV
+    integer(kind=8), parameter :: nbKeywordLieu = 5
     character(len=16), parameter :: keywordLieu(nbKeywordLieu) = (/'GROUP_MA', 'MAILLE  ', &
                                                                    'GROUP_NO', 'NOEUD   ', &
                                                                    'TOUT    '/)
     character(len=16) :: option
-    integer, parameter :: nbxin = 5
-    integer, parameter :: nbxout = 1
+    integer(kind=8), parameter :: nbxin = 5
+    integer(kind=8), parameter :: nbxout = 1
     character(len=8) :: lpaout(nbxout), lpain(nbxin)
     character(len=24) :: lchout(nbxout), lchin(nbxin)
     character(len=24) :: chgeom
     character(len=24), parameter :: elnoHHO = "&HHOELNO.CINE"
     character(len=24), parameter :: elnoHHOS = "&HHOELNS.CINE"
     character(len=19), parameter :: connexInvName = '&&HHOMEC.CONINV'
-    integer, pointer :: connexInv(:) => null(), connexInvLongCum(:) => null()
-    integer, pointer :: connex(:) => null()
-    integer, pointer :: cataTmTmdim(:) => null()
+    integer(kind=8), pointer :: connexInv(:) => null(), connexInvLongCum(:) => null()
+    integer(kind=8), pointer :: connex(:) => null()
+    integer(kind=8), pointer :: cataTmTmdim(:) => null()
 !
 ! --------------------------------------------------------------------------------------------------
 !

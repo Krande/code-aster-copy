@@ -26,8 +26,6 @@ subroutine mmmcrf(noma, ddepla, depplu, nfrot, vfrot)
 #include "asterfort/cnomax.h"
 #include "asterfort/jedema.h"
 #include "asterfort/jemarq.h"
-#include "asterfort/jenuno.h"
-#include "asterfort/jexnum.h"
 #include "asterfort/int_to_char8.h"
     character(len=8) :: noma
     character(len=19) :: depplu, ddepla
@@ -51,14 +49,14 @@ subroutine mmmcrf(noma, ddepla, depplu, nfrot, vfrot)
 !
 ! ----------------------------------------------------------------------
 !
-    integer :: ncmp
+    integer(kind=8) :: ncmp
     parameter(ncmp=1)
     character(len=8) :: liscmp(ncmp)
 !
     real(kind=8) :: vmax1, vmax2, vmaxi
     real(kind=8) :: crilbd
     character(len=8) :: nomnoe
-    integer :: numno1, numno2, numnoe
+    integer(kind=8) :: numno1, numno2, numnoe
 !
     data liscmp/'LAGS_C'/
 !

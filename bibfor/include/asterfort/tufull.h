@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2020 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -19,7 +19,7 @@
 interface
     subroutine tufull(option, nFourier, nbrddl, deplm, deplp,&
                       b, ktild, effint, pass, vtemp)
-        integer :: nbrddl
+        integer(kind=8) :: nbrddl
         character(len=16) :: option
         character(len=16) :: nomte
         real(kind=8) :: deplm(nbrddl)
@@ -29,6 +29,6 @@ interface
         real(kind=8) :: effint(nbrddl)
         real(kind=8) :: pass(nbrddl, nbrddl)
         real(kind=8) :: vtemp(nbrddl)
-        integer :: nFourier
+        integer(kind=8) :: nFourier
     end subroutine tufull
 end interface

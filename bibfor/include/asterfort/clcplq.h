@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -27,18 +27,18 @@ interface
                       fbeton, clacier, uc, um,&
                       wmaxi, wmaxs, sigelsqp, kt, phixi, phixs, phiyi, phiys,&
                       ht, effrts, dnsits, ierrl, ierrt)
-        integer :: typcmb
-        integer :: typco
-        integer :: nb
-        integer :: precs
-        integer :: ferrsyme
+        integer(kind=8) :: typcmb
+        integer(kind=8) :: typco
+        integer(kind=8) :: nb
+        integer(kind=8) :: precs
+        integer(kind=8) :: ferrsyme
         real(kind=8) :: slsyme
-        integer :: ferrcomp
-        integer :: epucisa
-        integer :: ferrmin
+        integer(kind=8) :: ferrcomp
+        integer(kind=8) :: epucisa
+        integer(kind=8) :: ferrmin
         real(kind=8) :: rholmin
         real(kind=8) :: rhotmin
-        integer :: compress
+        integer(kind=8) :: compress
         real(kind=8) :: cequi
         real(kind=8) :: enrobi
         real(kind=8) :: enrobs
@@ -50,11 +50,11 @@ interface
         real(kind=8) :: gammac
         real(kind=8) :: facier
         real(kind=8) :: eys
-        integer :: typdiag
+        integer(kind=8) :: typdiag
         real(kind=8) :: fbeton
-        integer :: clacier
-        integer :: uc
-        integer :: um
+        integer(kind=8) :: clacier
+        integer(kind=8) :: uc
+        integer(kind=8) :: um
         real(kind=8) :: wmaxi
         real(kind=8) :: wmaxs
         real(kind=8) :: sigelsqp
@@ -66,7 +66,7 @@ interface
         real(kind=8) :: ht
         real(kind=8) :: effrts(8)
         real(kind=8) :: dnsits(6)
-        integer :: ierrl
-        integer :: ierrt
+        integer(kind=8) :: ierrl
+        integer(kind=8) :: ierrt
     end subroutine clcplq
 end interface

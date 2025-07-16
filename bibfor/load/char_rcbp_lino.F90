@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -21,13 +21,11 @@ subroutine char_rcbp_lino(mesh, name_ancr, list_node, nb_node)
     implicit none
 !
 #include "jeveux.h"
-#include "asterfort/assert.h"
 #include "asterfort/jedema.h"
 #include "asterfort/jedetr.h"
 #include "asterfort/jemarq.h"
 #include "asterfort/jeveuo.h"
 #include "asterfort/jexnom.h"
-#include "asterfort/jexnum.h"
 #include "asterfort/jelira.h"
 #include "asterfort/wkvect.h"
 !
@@ -35,7 +33,7 @@ subroutine char_rcbp_lino(mesh, name_ancr, list_node, nb_node)
     character(len=8), intent(in) :: mesh
     character(len=24), intent(in) :: name_ancr
     character(len=24), intent(in) :: list_node
-    integer, intent(out) :: nb_node
+    integer(kind=8), intent(out) :: nb_node
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -52,9 +50,9 @@ subroutine char_rcbp_lino(mesh, name_ancr, list_node, nb_node)
 !
 ! --------------------------------------------------------------------------------------------------
 !
-    integer :: jgro, jlino_old, jind, jlino_new
+    integer(kind=8) :: jgro, jlino_old, jind, jlino_new
     character(len=8) :: k8bid
-    integer :: ino, nbno, numnoe, indnoe, ino_1, indlis
+    integer(kind=8) :: ino, nbno, numnoe, indnoe, ino_1, indlis
 !
 ! --------------------------------------------------------------------------------------------------
 !

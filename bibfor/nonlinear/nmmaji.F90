@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -34,7 +34,7 @@ subroutine nmmaji(numedd, lgrot, lendo, sdnume, coef, &
     character(len=*) :: incplz, incmoz, ddincz
     character(len=24) :: numedd
     character(len=19) :: sdnume
-    integer :: ordre
+    integer(kind=8) :: ordre
 !
 ! ----------------------------------------------------------------------
 !
@@ -59,7 +59,7 @@ subroutine nmmaji(numedd, lgrot, lendo, sdnume, coef, &
 !
 !
 !
-    integer :: neq
+    integer(kind=8) :: neq
     character(len=24) :: incplu, incmoi
     character(len=24) :: ddincc
     real(kind=8), pointer :: ddepl(:) => null()

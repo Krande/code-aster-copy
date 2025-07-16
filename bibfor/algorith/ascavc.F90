@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -26,7 +26,6 @@ subroutine ascavc(lchar, infcha, fomult, numedd, vpara, vci, dlci_, &
 #include "asterf_types.h"
 #include "jeveux.h"
 #include "asterfort/ascova.h"
-#include "asterfort/assert.h"
 #include "asterfort/calvci.h"
 #include "asterfort/corich.h"
 #include "asterfort/detrsd.h"
@@ -70,15 +69,15 @@ subroutine ascavc(lchar, infcha, fomult, numedd, vpara, vci, dlci_, &
 !----------------------------------------------------------------------
 !     VARIABLES LOCALES
 !----------------------------------------------------------------------
-    integer :: idchar, jinfc, idfomu, nchtot, nchci, ichar, icine, ilchno
-    integer :: ichci, ifm, niv, neq, ieq, jdlci2, ieqmul, genrec
+    integer(kind=8) :: idchar, jinfc, idfomu, nchtot, nchci, ichar, icine, ilchno
+    integer(kind=8) :: ichci, ifm, niv, neq, ieq, jdlci2, ieqmul, genrec
     character(len=1) :: base, typval
     character(len=8) :: newnom, npara
     character(len=19) :: charci, chamno, vci2, nume_equa, listLoad
     character(len=24) :: vachci, dlci
     character(len=8) :: charge
     aster_logical :: l_hho, l_new_sd_load
-    integer, pointer :: v_dlci(:) => null()
+    integer(kind=8), pointer :: v_dlci(:) => null()
     aster_logical, pointer :: v_kine(:) => null()
 
     data chamno/'&&ASCAVC.???????'/

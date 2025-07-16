@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -54,17 +54,16 @@ subroutine te0579(option, nomte)
 #include "asterfort/xcalc_heav.h"
 #include "asterfort/xhmddl.h"
 #include "asterfort/xlinhm.h"
-#include "blas/ddot.h"
 !
     character(len=8) :: noma, elrefp, enr, elref
     character(len=16) :: nomte, option
-    integer :: jpintt, jcnset, jheavt, jlonch, kk
-    integer :: jpmilt, nfiss, ifiss, jtab(7), ncomp, contac
-    integer :: ier, ndim, nno, nnop, nnops, npg, nnos, kpg
-    integer :: ipoids, ivf, idfde, igeom, ires, i, j, jfisno
-    integer :: nfh, nse, ise, iret, pos, ndime, nddl, ifh
-    integer :: in, ino, iadzi, iazk24, jstno, itemps, jlsn, jheavn, ncompn, jheavs
-    integer :: iflux, idec, nddls, nddlm, nnopm, ifluxf
+    integer(kind=8) :: jpintt, jcnset, jheavt, jlonch, kk
+    integer(kind=8) :: jpmilt, nfiss, ifiss, jtab(7), ncomp, contac
+    integer(kind=8) :: ier, ndim, nno, nnop, nnops, npg, nnos, kpg
+    integer(kind=8) :: ipoids, ivf, idfde, igeom, ires, i, j, jfisno
+    integer(kind=8) :: nfh, nse, ise, iret, pos, ndime, nddl, ifh
+    integer(kind=8) :: in, ino, iadzi, iazk24, jstno, itemps, jlsn, jheavn, ncompn, jheavs
+    integer(kind=8) :: iflux, idec, nddls, nddlm, nnopm, ifluxf
     real(kind=8) :: ff(27), dfdi(27, 3)
     real(kind=8) :: rb1(1), rb2, nbid(3), rb3, rb4, rbid(3)
     real(kind=8) :: poids, valpar(4), xg(3)

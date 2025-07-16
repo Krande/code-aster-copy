@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -24,7 +24,7 @@ subroutine mmmvas(ndim, nne, nnm, nnl, nbdm, nbcps, &
 !
     implicit none
 !
-    integer, intent(in) :: nbdm, ndim, nnl, nne, nnm, nbcps
+    integer(kind=8), intent(in) :: nbdm, ndim, nnl, nne, nnm, nbcps
     real(kind=8), intent(in) :: vectce(27), vectcm(27)
     real(kind=8), intent(in) :: vectfe(27), vectfm(27)
     real(kind=8), intent(in) :: vectcc(9), vectff(18)
@@ -55,9 +55,9 @@ subroutine mmmvas(ndim, nne, nnm, nnl, nbdm, nbcps, &
 !
 ! --------------------------------------------------------------------------------------------------
 !
-    integer :: ii, jj
-    integer :: inoe, inom, inoc, inof, idim, icmp
-    integer :: nbcpf
+    integer(kind=8) :: ii, jj
+    integer(kind=8) :: inoe, inom, inoc, inof, idim, icmp
+    integer(kind=8) :: nbcpf
 !
 ! --------------------------------------------------------------------------------------------------
 !

@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -20,7 +20,7 @@ subroutine lglpmv(cumul, n, a, x, y)
 !
     implicit none
     character(len=*) :: cumul
-    integer :: n
+    integer(kind=8) :: n
     real(kind=8) :: a(6, 6), x(6), y(6)
 ! --- BUT : CALCUL DU PRODUIT MATRICE-VECTEUR --------------------------
 ! ======================================================================
@@ -33,7 +33,7 @@ subroutine lglpmv(cumul, n, a, x, y)
 ! --- : X      : VECTEUR X ---------------------------------------------
 ! OUT : Y      : VECTEUR Y = A * X -------------------------------------
 ! ======================================================================
-    integer :: i, j
+    integer(kind=8) :: i, j
 ! ======================================================================
     if (cumul .eq. 'ZERO') then
         do i = 1, n

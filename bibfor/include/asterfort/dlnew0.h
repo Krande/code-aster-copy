@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -37,28 +37,28 @@ interface
                       theta, tempm, temps, iforc2, tabwk1,&
                       tabwk2, archiv, nbtyar, typear, numrep, ds_energy, kineLoad)
         use NonLin_Datastructure_type
-        integer :: nbtyar
-        integer :: nondp
-        integer :: nbexci
-        integer :: neq
+        integer(kind=8) :: nbtyar
+        integer(kind=8) :: nondp
+        integer(kind=8) :: nbexci
+        integer(kind=8) :: neq
         character(len=8) :: result
         character(len=19) :: force0
         character(len=19) :: force1
-        integer :: iinteg
-        integer :: istoc
-        integer :: iarchi
-        integer :: ifm
-        integer :: nmodam
+        integer(kind=8) :: iinteg
+        integer(kind=8) :: istoc
+        integer(kind=8) :: iarchi
+        integer(kind=8) :: ifm
+        integer(kind=8) :: nmodam
         aster_logical :: lamort
         aster_logical :: limped
         aster_logical :: lmodst
-        integer :: imat(3)
+        integer(kind=8) :: imat(3)
         character(len=8) :: masse
         character(len=8) :: rigid
         character(len=8) :: amort
-        integer :: nchar
-        integer :: nveca
-        integer :: liad(*)
+        integer(kind=8) :: nchar
+        integer(kind=8) :: nveca
+        integer(kind=8) :: liad(*)
         character(len=24) :: lifo(*)
         character(len=24) :: modele
         character(len=24) :: mate, mateco
@@ -86,7 +86,7 @@ interface
         real(kind=8) :: vien(neq)
         real(kind=8) :: vite(neq)
         real(kind=8) :: vita1(neq)
-        integer :: mltap(nbexci)
+        integer(kind=8) :: mltap(nbexci)
         real(kind=8) :: a0
         real(kind=8) :: a2
         real(kind=8) :: a3
@@ -121,12 +121,12 @@ interface
         real(kind=8) :: theta
         real(kind=8) :: tempm
         real(kind=8) :: temps
-        integer :: iforc2
+        integer(kind=8) :: iforc2
         real(kind=8) :: tabwk1(neq)
         real(kind=8) :: tabwk2(neq)
-        integer :: archiv
+        integer(kind=8) :: archiv
         character(len=16) :: typear(nbtyar)
-        integer :: numrep
+        integer(kind=8) :: numrep
         type(NL_DS_Energy), intent(inout) :: ds_energy
     end subroutine dlnew0
 end interface

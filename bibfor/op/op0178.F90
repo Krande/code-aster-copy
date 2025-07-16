@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -39,7 +39,7 @@ subroutine op0178()
 #include "asterfort/ulexis.h"
 #include "asterfort/ulopen.h"
 #include "asterfort/wkvect.h"
-    integer :: resume, sommi, lonuti, lonmax, ni
+    integer(kind=8) :: resume, sommi, lonuti, lonmax, ni
     real(kind=8) :: sommr
     character(len=3) :: type
     character(len=8) :: kbid, form0, typtes
@@ -50,8 +50,8 @@ subroutine op0178()
 !
 !
 !-----------------------------------------------------------------------
-    integer :: i, ialico, ialiob, ico, ific, iret
-    integer :: n1, nbobj, nbval, nco
+    integer(kind=8) :: i, ialico, ialiob, ico, ific, iret
+    integer(kind=8) :: n1, nbobj, nbval, nco
 !-----------------------------------------------------------------------
     call jemarq()
     call infmaj()

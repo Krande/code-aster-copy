@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -42,7 +42,7 @@ subroutine dxmate(fami, df, dm, dmf, dc, &
 #include "asterfort/utmess.h"
 #include "asterfort/assert.h"
     aster_logical :: coupmf
-    integer :: nno, multic
+    integer(kind=8) :: nno, multic
     real(kind=8) :: df(3, 3), dm(3, 3), dmf(3, 3), dc(2, 2), dci(2, 2)
     real(kind=8) :: dmc(3, 2), dfc(3, 2)
     real(kind=8) :: pgl(3, 3), t2iu(4), t2ui(4), t1ve(9)
@@ -57,10 +57,10 @@ subroutine dxmate(fami, df, dm, dmf, dc, &
 !        .TRUE. POUR UN MATERIAU AVEC COUPLAGE MEMBRANE-FLEXION
 !  ------------------------------------------------------------------
 ! aslint: disable=W1501
-    integer :: jcoqu, jmate, nbv, i, j, k, nbpar, elasco, c_elasco(45)
-    integer :: iazi, iazk24, npg, jcou, ncou, iret, npgh, iret1
-    integer :: ndim, nnos, ipoids, ivf, idfde, jgano
-    integer :: icodre(33), icodre1, jadr, n1
+    integer(kind=8) :: jcoqu, jmate, nbv, i, j, k, nbpar, elasco, c_elasco(45)
+    integer(kind=8) :: iazi, iazk24, npg, jcou, ncou, iret, npgh, iret1
+    integer(kind=8) :: ndim, nnos, ipoids, ivf, idfde, jgano
+    integer(kind=8) :: icodre(33), icodre1, jadr, n1
     real(kind=8) :: kcis, cdf, cdm, cdc, gcis, valres(33), v_elasco(45)
     real(kind=8) :: young, nu, epais, temp, excent
     real(kind=8) :: xab1(3, 3), xab2(2, 2), xab3(3, 2)

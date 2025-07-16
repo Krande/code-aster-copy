@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -21,7 +21,7 @@ subroutine lkelas(ndi, ndt, nmat, mater, deps, &
     implicit none
 #include "asterfort/r8inir.h"
 #include "asterfort/trace.h"
-    integer :: ndi, ndt, nmat
+    integer(kind=8) :: ndi, ndt, nmat
     real(kind=8) :: mater(nmat, 2)
     real(kind=8) :: sigd(6)
     real(kind=8) :: deps(6), de(6, 6), mu, k
@@ -38,7 +38,7 @@ subroutine lkelas(ndi, ndt, nmat, mater, deps, &
 !            K     :  MODULE DE COMPRESSIBILITE
 !            G     :  MODULE DE CISAILLEMENT
 !       -----------------------------------------------------------
-    integer :: i, j
+    integer(kind=8) :: i, j
     real(kind=8) :: mue, ke, pa, nelas
     real(kind=8) :: invar1
     real(kind=8) :: deux, trois

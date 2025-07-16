@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -19,7 +19,6 @@
 subroutine vlaxpy(alpha, chamna, chamnb)
     implicit none
 #include "jeveux.h"
-#include "asterfort/assert.h"
 #include "asterfort/dismoi.h"
 #include "asterfort/jedema.h"
 #include "asterfort/jelira.h"
@@ -36,10 +35,10 @@ subroutine vlaxpy(alpha, chamna, chamnb)
 !     IN  CHAMNA    :  K*  : CHAM_NO MAITRE 1
 !     IN/OUT CHAMNB :  K*  : CHAM_NO MAITRE 2
 !----------------------------------------------------------------------
-    integer :: neq, i
+    integer(kind=8) :: neq, i
     character(len=19) :: nume_equa
     character(len=24) :: chamn1, chamn2
-    integer, pointer :: delg(:) => null()
+    integer(kind=8), pointer :: delg(:) => null()
     real(kind=8), pointer :: val1(:) => null()
     real(kind=8), pointer :: val2(:) => null()
 !----------------------------------------------------------------------

@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -40,16 +40,16 @@ subroutine te0418(option, nomte)
 !
     character(len=8) :: elrefe
     real(kind=8) :: fx, fy, fz, mx, my, mz, jac, jacp, effglb(18)
-    integer :: i
+    integer(kind=8) :: i
 !
     real(kind=8) :: valpar(4)
     character(len=8) :: nompar(4)
 !
 !-----------------------------------------------------------------------
-    integer :: i1, icod1, icod2, icod3, icod4, icod5, icod6
-    integer :: idfdk, iforc, igeom, ino, ipoids, itpsr, ivectu
-    integer :: ivf, jgano, k, kp, ndim, nno, nnos
-    integer :: npg
+    integer(kind=8) :: i1, icod1, icod2, icod3, icod4, icod5, icod6
+    integer(kind=8) :: idfdk, iforc, igeom, ino, ipoids, itpsr, ivectu
+    integer(kind=8) :: ivf, jgano, k, kp, ndim, nno, nnos
+    integer(kind=8) :: npg
     real(kind=8) :: dxdk, dydk, dzdk, x, y, z, zero
 !
 !-----------------------------------------------------------------------

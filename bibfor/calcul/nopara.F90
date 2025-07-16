@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -27,7 +27,7 @@ function nopara(opt, te, statut, ipar)
 #include "jeveux.h"
 #include "asterfort/assert.h"
 
-    integer :: opt, te, ipar
+    integer(kind=8) :: opt, te, ipar
     character(len=3) :: statut
     character(len=8) :: nopara
 !-----------------------------------------------------------------------
@@ -40,8 +40,8 @@ function nopara(opt, te, statut, ipar)
 !     sorties:
 !        nopara : nom du parametre dans l'option
 !-----------------------------------------------------------------------
-    integer :: nbin, optmod, optnom
-    integer ::   jj
+    integer(kind=8) :: nbin, optmod, optnom
+    integer(kind=8) ::   jj
 !-----------------------------------------------------------------------
 
 !     jj = ioptte(opt,te)

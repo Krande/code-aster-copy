@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -66,21 +66,21 @@ subroutine dicrgr(DD, icodma, varim, klv, varip, fono, sip)
 #include "asterfort/assert.h"
 !
     type(te0047_dscr), intent(in) :: DD
-    integer :: icodma
+    integer(kind=8) :: icodma
     real(kind=8) :: varim(*)
     real(kind=8) :: klv(78), varip(*), fono(*), sip(*)
 !
 ! --------------------------------------------------------------------------------------------------
 !
     character(len=16) :: option
-    integer :: neq
+    integer(kind=8) :: neq
 !
 ! --------------------------------------------------------------------------------------------------
 !
     character(len=8), parameter :: fami = "RIGI"
     character(len=8) :: nompar(2)
 !
-    integer :: npg, nno, nbpar, iretp, iretm, iret2
+    integer(kind=8) :: npg, nno, nbpar, iretp, iretm, iret2
     real(kind=8) :: valpar(2), irram, irrap
     real(kind=8) :: fser, h1
     real(kind=8) :: dux, duy, duz, dph, dth
@@ -98,7 +98,7 @@ subroutine dicrgr(DD, icodma, varim, klv, varip, fono, sip)
     real(kind=8) :: tempp, tempm
     real(kind=8) :: fl(12), raideldc(6), kp
 !
-    integer             :: codre1(6), codre2(1), codre3(1), codre4(7), codre5(7)
+    integer(kind=8)             :: codre1(6), codre2(1), codre3(1), codre4(7), codre5(7)
     real(kind=8)        :: valp_fix(6), valp_tr(1), valp_rot(7)
     character(len=8)    :: nomre1(6), nomre2, nomre3, nomre4(7), nomre5(7)
 !

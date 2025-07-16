@@ -28,10 +28,8 @@ subroutine solide_tran_maj(load_name, disp)
 #include "asterfort/detrsd.h"
 #include "asterfort/jelira.h"
 #include "asterfort/jemarq.h"
-#include "asterfort/jenonu.h"
 #include "asterfort/char8_to_int.h"
 #include "asterfort/jeveuo.h"
-#include "asterfort/jexnom.h"
 #include "asterfort/jexnum.h"
 !
 !
@@ -54,29 +52,29 @@ subroutine solide_tran_maj(load_name, disp)
 !
 ! --------------------------------------------------------------------------------------------------
 
-    integer :: numnoe_a, numnoe_b, kdx, kdy, kdz, ncmp1
+    integer(kind=8) :: numnoe_a, numnoe_b, kdx, kdy, kdz, ncmp1
     character(len=8) :: nomnoe_a, nomnoe_b
-    integer :: gd1, gd2, ncmpmx1, ncmpmx2, dim, ka, kb, nb_term
+    integer(kind=8) :: gd1, gd2, ncmpmx1, ncmpmx2, dim, ka, kb, nb_term
     real(kind=8) :: coer(6)
     real(kind=8) :: xa, ya, za, xb, yb, zb
     real(kind=8) :: ua, va, wa, ub, vb, wb
     real(kind=8) :: c01
-    integer :: i_link, nb_link, ideb, nbterm1, k, ico
+    integer(kind=8) :: i_link, nb_link, ideb, nbterm1, k, ico
     character(len=8)  :: mesh
     character(len=13)  :: load_dual
     character(len=19)  :: deplas
     aster_logical :: l3d
-    integer, pointer :: dual_prdi(:) => null()
+    integer(kind=8), pointer :: dual_prdi(:) => null()
     character(len=8), pointer :: dual_prdk(:) => null()
     character(len=8), pointer :: load_type(:) => null()
     character(len=8), pointer :: dual_prdso(:) => null()
     character(len=8), pointer :: deplc(:) => null()
     real(kind=8), pointer :: deplv(:) => null()
-    integer, pointer :: depld(:) => null()
+    integer(kind=8), pointer :: depld(:) => null()
     aster_logical, pointer :: depll(:) => null()
     real(kind=8), pointer :: mesh_coor(:) => null()
-    integer, pointer :: cmult_d(:) => null()
-    integer, pointer :: cimpo_d(:) => null()
+    integer(kind=8), pointer :: cmult_d(:) => null()
+    integer(kind=8), pointer :: cimpo_d(:) => null()
     real(kind=8), pointer :: cmult_v(:) => null()
     real(kind=8), pointer :: cimpo_v(:) => null()
 !

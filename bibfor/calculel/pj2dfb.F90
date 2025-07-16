@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -30,7 +30,7 @@ subroutine pj2dfb(boite, tria3, geom1, geom2)
 #include "asterfort/utimsd.h"
 #include "asterfort/wkvect.h"
     real(kind=8) :: geom1(*), geom2(*)
-    integer :: tria3(*)
+    integer(kind=8) :: tria3(*)
     character(len=14) :: boite
 !     BUT :
 !       CONSTRUIRE LA STRUCTURE DE DONNEES BOITE_2D QUI PERMET DE SAVOIR
@@ -46,16 +46,16 @@ subroutine pj2dfb(boite, tria3, geom1, geom2)
     real(kind=8) :: stotal, sboite, dx, dy, ddx, ddy, rbig, xxmax, xxmin, xmax
     real(kind=8) :: xmin
     real(kind=8) :: yymax, yymin, ymax, ymin
-    integer :: p1, q1, p2, q2, p, q, nx, ny
+    integer(kind=8) :: p1, q1, p2, q2, p, q, nx, ny
     aster_logical :: dbg
 !
 ! DEB ------------------------------------------------------------------
 !-----------------------------------------------------------------------
-    integer :: i, iabtco, iabtdi, iabtlc, iabtnb, iabtvr
-    integer :: ib, ifm, ino, iposi, k
-    integer :: lont, nno1, nno2, ntr3
-    integer, pointer :: lino2(:) => null()
-    integer, pointer :: lino1(:) => null()
+    integer(kind=8) :: i, iabtco, iabtdi, iabtlc, iabtnb, iabtvr
+    integer(kind=8) :: ib, ifm, ino, iposi, k
+    integer(kind=8) :: lont, nno1, nno2, ntr3
+    integer(kind=8), pointer :: lino2(:) => null()
+    integer(kind=8), pointer :: lino1(:) => null()
 !-----------------------------------------------------------------------
     call jemarq()
     ntr3 = tria3(1)

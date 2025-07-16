@@ -61,15 +61,15 @@ subroutine te0590(option, nomte)
 !
 ! --------------------------------------------------------------------------------------------------
 !
-    integer :: ndim, nno1, nno2, nno3, npg, nb_elrefe
-    integer :: icoret, codret, iret
-    integer :: iw, ivf1, ivf2, ivf3, idf1, idf2
-    integer :: jtab(7), lgpg
-    integer :: vu(3, 27), vg(27), vp(27), vpi(3, 27)
-    integer :: igeom, imate, icontm, ivarim, iuse
-    integer :: iinstm, iinstp, iddlm, iddld, icarcr, ivarix
-    integer :: ivectu, icontp, ivarip, imatuu
-    integer :: idbg, nddl, ia, ja
+    integer(kind=8) :: ndim, nno1, nno2, nno3, npg, nb_elrefe
+    integer(kind=8) :: icoret, codret, iret
+    integer(kind=8) :: iw, ivf1, ivf2, ivf3, idf1, idf2
+    integer(kind=8) :: jtab(7), lgpg
+    integer(kind=8) :: vu(3, 27), vg(27), vp(27), vpi(3, 27)
+    integer(kind=8) :: igeom, imate, icontm, ivarim, iuse
+    integer(kind=8) :: iinstm, iinstp, iddlm, iddld, icarcr, ivarix
+    integer(kind=8) :: ivectu, icontp, ivarip, imatuu
+    integer(kind=8) :: idbg, nddl, ia, ja
     real(kind=8) :: angl_naut(3)
     character(len=8) :: list_elrefe(10), typmod(2)
     aster_logical :: matsym
@@ -81,7 +81,7 @@ subroutine te0590(option, nomte)
     real(kind=8) :: tab_out(27*3*27*3)
     real(kind=8), pointer :: varia(:) => null(), smatr(:) => null()
     character(len=16), pointer :: compor(:) => null()
-    integer :: na, os, nb, ib, kk
+    integer(kind=8) :: na, os, nb, ib, kk
     blas_int :: b_incx, b_incy, b_n
 !
 ! --------------------------------------------------------------------------------------------------

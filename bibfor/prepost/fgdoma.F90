@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -26,7 +26,7 @@ subroutine fgdoma(nommat, nbcycl, epsmin, epsmax, dom)
     character(len=*) :: nommat
     real(kind=8) :: epsmin(*), epsmax(*)
     real(kind=8) :: dom(*)
-    integer :: nbcycl
+    integer(kind=8) :: nbcycl
 !     CALCUL DU DOMMAGE ELEMENTAIRE PAR INTERPOLATION SUR
 !     UNE COURBE DE MANSON_COFFIN DONNEE POINT PAR POINT
 !     ------------------------------------------------------------------
@@ -37,14 +37,14 @@ subroutine fgdoma(nommat, nbcycl, epsmin, epsmax, dom)
 ! OUT DOM    : R   : VALEURS DES DOMMAGES ELEMENTAIRES
 !     ------------------------------------------------------------------
 !
-    integer :: icodre(1)
+    integer(kind=8) :: icodre(1)
     character(len=8) :: nompar
     character(len=16) :: nomres
     character(len=32) :: pheno
     real(kind=8) :: nrupt(1), delta
 !
 !-----------------------------------------------------------------------
-    integer :: i, nbpar
+    integer(kind=8) :: i, nbpar
 !-----------------------------------------------------------------------
     call jemarq()
     nomres = 'MANSON_COFFIN'

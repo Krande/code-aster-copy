@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2019 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -25,17 +25,17 @@ interface
                       nb_node_mast, elem_mast_code, elem_mast_init, elem_mast_coor,&
                       nb_poin_inte, poin_inte_sl  , poin_inte_ma  ,&
                       vect, gapi, nmcp)
-        integer, intent(in) :: elem_dime
+        integer(kind=8), intent(in) :: elem_dime
         aster_logical, intent(in) :: l_axis
         aster_logical, intent(in) :: l_upda_jaco
         aster_logical, intent(in) :: l_norm_smooth
-        integer, intent(in) :: nb_lagr
-        integer, intent(in) :: indi_lagc(10)
+        integer(kind=8), intent(in) :: nb_lagr
+        integer(kind=8), intent(in) :: indi_lagc(10)
         real(kind=8), intent(in) :: lagrc, gapi
         character(len=8), intent(in) :: elem_slav_code, elem_mast_code
-        integer, intent(in) :: nb_node_slav, nb_node_mast
-        integer, intent(in) :: nmcp
-        integer, intent(in) :: nb_poin_inte
+        integer(kind=8), intent(in) :: nb_node_slav, nb_node_mast
+        integer(kind=8), intent(in) :: nmcp
+        integer(kind=8), intent(in) :: nb_poin_inte
         real(kind=8), intent(in):: poin_inte_sl(16)
         real(kind=8), intent(in):: poin_inte_ma(16)
         character(len=8), intent(in) :: elga_fami

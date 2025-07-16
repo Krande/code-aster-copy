@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -61,7 +61,7 @@ subroutine cfconv(mesh, ds_measure, sderro, hval_algo, ds_print, &
 ! --------------------------------------------------------------------------------------------------
 !
     character(len=16) :: loop_geom_node
-    integer :: nb_cont_iter
+    integer(kind=8) :: nb_cont_iter
     real(kind=8) :: loop_geom_vale
     aster_logical :: l_resi_conv
     aster_logical :: l_all_verif, l_eval_geom, loop_geom_error

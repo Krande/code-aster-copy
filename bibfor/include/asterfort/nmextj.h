@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -23,19 +23,19 @@ interface
                       poin_nume , spoi_nume, nb_vale , i_elem       , elem_nume    ,&
                       jcesd     , jcesv    , jcesl   , jcesc        , vale_resu)
         character(len=24), intent(in) :: field_type
-        integer, intent(in) :: nb_cmp
+        integer(kind=8), intent(in) :: nb_cmp
         character(len=24), intent(in) :: list_cmp
         character(len=8), intent(in) :: type_extr_cmp
         character(len=8), intent(in) :: type_sele_cmp
-        integer, intent(in) :: poin_nume
-        integer, intent(in):: i_elem
-        integer, intent(in):: elem_nume
-        integer, intent(in) :: spoi_nume
-        integer, intent(in) :: jcesd
-        integer, intent(in) :: jcesv
-        integer, intent(in) :: jcesl
-        integer, intent(in) :: jcesc
-        integer, intent(out) :: nb_vale
+        integer(kind=8), intent(in) :: poin_nume
+        integer(kind=8), intent(in):: i_elem
+        integer(kind=8), intent(in):: elem_nume
+        integer(kind=8), intent(in) :: spoi_nume
+        integer(kind=8), intent(in) :: jcesd
+        integer(kind=8), intent(in) :: jcesv
+        integer(kind=8), intent(in) :: jcesl
+        integer(kind=8), intent(in) :: jcesc
+        integer(kind=8), intent(out) :: nb_vale
         real(kind=8), intent(out) :: vale_resu(*)
     end subroutine nmextj
 end interface

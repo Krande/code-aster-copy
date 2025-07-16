@@ -195,13 +195,12 @@ Returns:
 
             Arguments:
                 desc [EquationNumbering]: description of equations
-                raiseError [bool]: If set to true, raises an error if the copy fails.
-                Otherwise, nothing happens. Defaults to true.
+                warn [bool]: If set to true, raises a warning if values are set to zero
 
             Returns:
                 FieldOnNodesReal: field using new description.
             )",
-              py::arg( "desc" ), py::arg( "raiseError" ) = true )
+              py::arg( "desc" ), py::arg( "warn" ) = true )
         .def( "updateValuePointers", &FieldOnNodesReal::updateValuePointers )
         .def( "getComponents", &FieldOnNodesReal::getComponents, R"(
             Get list of components

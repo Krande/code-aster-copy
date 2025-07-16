@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -26,7 +26,7 @@ subroutine cjsqij(s, i1, x, q)
 !       OUT Q      :  TENSEUR RESULTAT
 !       ----------------------------------------------------------------
 !
-    integer :: ndt, ndi, i
+    integer(kind=8) :: ndt, ndi, i
     real(kind=8) :: s(6), i1, x(6), q(6)
 !
     common/tdim/ndt, ndi

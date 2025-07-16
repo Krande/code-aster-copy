@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -37,16 +37,16 @@ subroutine te0493(option, nomte)
 !
     real(kind=8) :: nx, ny, nz, flx, fly, flz, flun, s, t, u, jac
     real(kind=8) :: sx(4, 4), sy(4, 4), sz(4, 4)
-    integer :: nno, kp, npg, ipoids, ivf, idfdx, idfdy, igeom
-    integer :: iflux, ivectu, k, i, iad
-    integer :: idec, jdec, kdec
+    integer(kind=8) :: nno, kp, npg, ipoids, ivf, idfdx, idfdy, igeom
+    integer(kind=8) :: iflux, ivectu, k, i, iad
+    integer(kind=8) :: idec, jdec, kdec
     character(len=24) :: valkm(3)
     aster_logical :: tria
 !
 !
 !-----------------------------------------------------------------------
-    integer :: ifl, ino, j, jgano, jno, nbflux, ndim
-    integer :: nnos
+    integer(kind=8) :: ifl, ino, j, jgano, jno, nbflux, ndim
+    integer(kind=8) :: nnos
 !-----------------------------------------------------------------------
     tria = .false.
 !  CALCUL DU NBRE DE CMP CALCULEES DU FLUX

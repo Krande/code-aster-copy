@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -26,8 +26,8 @@ interface
         character(len=16), intent(in) :: rela_comp, defo_comp, type_cpla
         character(len=16), intent(in) :: kit_comp(4), post_iter
         character(len=16), intent(in) :: mult_comp, regu_visc, extern_addr, post_incr
-        integer, intent(in) :: extern_type
-        integer, intent(in) :: nbVariUMAT
-        integer, intent(out) :: nbVari, numeLaw, nbVariKit(4), numeLawKit(4)
+        integer(kind=8), intent(in) :: extern_type
+        integer(kind=8), intent(in) :: nbVariUMAT
+        integer(kind=8), intent(out) :: nbVari, numeLaw, nbVariKit(4), numeLawKit(4)
     end subroutine comp_nbvari
 end interface

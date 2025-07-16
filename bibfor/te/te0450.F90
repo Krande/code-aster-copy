@@ -56,8 +56,8 @@ subroutine te0450(nomopt, nomte)
     type(HHO_Cell) :: hhoCell
     type(HHO_Meca_State) :: hhoMecaState
 !
-    integer :: cbs, fbs, total_dofs, npg, i, isig, cbs_cmp, j, fbs_cmp, ipg
-    integer :: faces_dofs
+    integer(kind=8) :: cbs, fbs, total_dofs, npg, i, isig, cbs_cmp, j, fbs_cmp, ipg
+    integer(kind=8) :: faces_dofs
     aster_logical :: l_largestrains
     character(len=4), parameter :: fami = "RIGI"
     real(kind=8) :: rhs(MSIZE_TDOFS_VEC), refe_rhs(MSIZE_TDOFS_VEC)

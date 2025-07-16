@@ -29,22 +29,20 @@ subroutine cfnors(noma, ds_contact, posmai, typent, &
 #include "asterfort/assert.h"
 #include "asterfort/cfnord.h"
 #include "asterfort/copnor.h"
-#include "asterfort/jenuno.h"
-#include "asterfort/jexnum.h"
 #include "asterfort/utmess.h"
 #include "asterfort/int_to_char8.h"
 !
 ! person_in_charge: mickael.abbas at edf.fr
 !
-    integer :: posmai
+    integer(kind=8) :: posmai
     type(NL_DS_Contact), intent(in) :: ds_contact
     real(kind=8) :: ksi1, ksi2
     character(len=8) :: noma
     character(len=4) :: typent
-    integer :: nument
+    integer(kind=8) :: nument
     real(kind=8) :: tau1(3), tau2(3)
     real(kind=8) :: vector(3)
-    integer :: itype
+    integer(kind=8) :: itype
     aster_logical :: lnfixe, lliss, lpoutr, lpoint
 !
 ! ----------------------------------------------------------------------

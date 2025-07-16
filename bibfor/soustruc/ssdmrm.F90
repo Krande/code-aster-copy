@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -59,20 +59,20 @@ subroutine ssdmrm(mag)
     character(len=24) :: valk(2), nognoi, nognoj
 ! ----------------------------------------------------------------------
 !-----------------------------------------------------------------------
-    integer :: i, iacoo2, iagno, ialiii, ialiij
-    integer :: ibid(1), ico, iconf, ii, inoi
-    integer :: inoii, inoj, inojj, iocc, ismai, ismaj, j
-    integer :: jj, kk, longi, longj, n1, n2, n3
-    integer :: nbexti, nbextj, nbid, nbngno, nbnore, nbnori, nbnorj
-    integer :: nbsma, nbsmar, nocc
+    integer(kind=8) :: i, iacoo2, iagno, ialiii, ialiij
+    integer(kind=8) :: ibid(1), ico, iconf, ii, inoi
+    integer(kind=8) :: inoii, inoj, inojj, iocc, ismai, ismaj, j
+    integer(kind=8) :: jj, kk, longi, longj, n1, n2, n3
+    integer(kind=8) :: nbexti, nbextj, nbid, nbngno, nbnore, nbnori, nbnorj
+    integer(kind=8) :: nbsma, nbsmar, nocc
     character(len=24), pointer :: likg(:) => null()
     character(len=8), pointer :: likm(:) => null()
-    integer, pointer :: noeud_conf(:) => null()
+    integer(kind=8), pointer :: noeud_conf(:) => null()
     real(kind=8), pointer :: para_r(:) => null()
-    integer, pointer :: dime(:) => null()
-    integer, pointer :: dime_2(:) => null()
-    integer, pointer :: lini(:) => null()
-    integer, pointer :: linj(:) => null()
+    integer(kind=8), pointer :: dime(:) => null()
+    integer(kind=8), pointer :: dime_2(:) => null()
+    integer(kind=8), pointer :: lini(:) => null()
+    integer(kind=8), pointer :: linj(:) => null()
     character(len=8), pointer :: vnomacr(:) => null()
 !-----------------------------------------------------------------------
     call jemarq()

@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -19,7 +19,6 @@
 subroutine te0302(option, nomte)
     implicit none
 #include "jeveux.h"
-#include "asterfort/assert.h"
 #include "asterfort/elrefe_info.h"
 #include "asterfort/fointe.h"
 #include "asterfort/jevech.h"
@@ -39,14 +38,14 @@ subroutine te0302(option, nomte)
     character(len=8) ::  nompar(4)
     real(kind=8) :: nx, ny, nz, sx(9, 9), sy(9, 9), sz(9, 9), jac
     real(kind=8) :: valpar(4), hechp, xx, yy, zz, mat(45)
-    integer :: ipoids, ivf, idfdx, idfdy, igeom
-    integer :: ndim, nno, ndi, ipg, npg1, imattt, ihechp
-    integer :: idec, jdec, kdec, ldec
-    integer ::  nnos, jgano
+    integer(kind=8) :: ipoids, ivf, idfdx, idfdy, igeom
+    integer(kind=8) :: ndim, nno, ndi, ipg, npg1, imattt, ihechp
+    integer(kind=8) :: idec, jdec, kdec, ldec
+    integer(kind=8) ::  nnos, jgano
 !--- DEBUT--------------------------------------------------------------
 !-----------------------------------------------------------------------
-    integer :: i, ier, ij, ino, itemps, j, jno
-    integer :: k1, k2, k3, k4
+    integer(kind=8) :: i, ier, ij, ino, itemps, j, jno
+    integer(kind=8) :: k1, k2, k3, k4
 !-----------------------------------------------------------------------
 !
     call elrefe_info(fami='RIGI', ndim=ndim, nno=nno, nnos=nnos, &

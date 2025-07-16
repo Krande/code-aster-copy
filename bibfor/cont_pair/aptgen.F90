@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -25,7 +25,6 @@ subroutine aptgen(sdappa, mesh, sdcont_defi, newgeo, err_appa)
 #include "asterfort/cfdisr.h"
 #include "asterfort/aptgem.h"
 #include "asterfort/mminfi.h"
-#include "asterfort/mminfr.h"
 #include "asterfort/cfcald.h"
 #include "asterfort/infdbg.h"
 #include "asterfort/jelira.h"
@@ -37,7 +36,7 @@ subroutine aptgen(sdappa, mesh, sdcont_defi, newgeo, err_appa)
     character(len=8), intent(in) :: mesh
     character(len=24), intent(in) :: sdcont_defi
     character(len=19), intent(in) :: newgeo
-    integer, intent(inout) :: err_appa
+    integer(kind=8), intent(inout) :: err_appa
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -54,15 +53,15 @@ subroutine aptgen(sdappa, mesh, sdcont_defi, newgeo, err_appa)
 !
 ! --------------------------------------------------------------------------------------------------
 !
-    integer :: nb_cont_zone, model_ndim
-    integer :: ifm, niv
-    integer :: i_zone, length
-    integer :: jdecmm, nb_elem_mast
-    integer :: jdecme, nb_elem_slav
+    integer(kind=8) :: nb_cont_zone, model_ndim
+    integer(kind=8) :: ifm, niv
+    integer(kind=8) :: i_zone, length
+    integer(kind=8) :: jdecmm, nb_elem_mast
+    integer(kind=8) :: jdecme, nb_elem_slav
     character(len=4) :: zone_type
     aster_logical :: apcald
     real(kind=8) :: epsi_maxi
-    integer :: iter_maxi
+    integer(kind=8) :: iter_maxi
     character(len=24) :: sdappa_tgel
 !
 ! --------------------------------------------------------------------------------------------------

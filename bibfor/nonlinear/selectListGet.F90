@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -24,11 +24,10 @@ subroutine selectListGet(selectList, nume_inst, inst, l_select)
     implicit none
 !
 #include "asterf_types.h"
-#include "asterfort/assert.h"
 #include "asterfort/utacli.h"
 !
     type(NL_DS_SelectList), intent(in) :: selectList
-    integer, intent(in) :: nume_inst
+    integer(kind=8), intent(in) :: nume_inst
     real(kind=8), intent(in) :: inst
     aster_logical, intent(out) :: l_select
 !
@@ -48,7 +47,7 @@ subroutine selectListGet(selectList, nume_inst, inst, l_select)
 ! --------------------------------------------------------------------------------------------------
 !
     real(kind=8) :: tolerance, precision
-    integer :: nb_value, freq_step, nb_found
+    integer(kind=8) :: nb_value, freq_step, nb_found
     aster_logical :: l_abso, l_by_freq
     real(kind=8) :: reste
 !

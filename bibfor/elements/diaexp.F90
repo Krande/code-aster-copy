@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -20,7 +20,7 @@ subroutine diaexp(nno, nddl, ldim, masco, masdi)
     implicit none
 #include "asterfort/r8inir.h"
     real(kind=8) :: masco(*), masdi(*)
-    integer :: nno, nddl, ldim
+    integer(kind=8) :: nno, nddl, ldim
 !     ------------------------------------------------------------------
 !     PASSAGE D'UNE MATRICE MASSE CONSISTANTE A UNE MATRICE MASSE
 !     DIAGONALE SUIVANT LA TECHNIQUE DE SOMMATION PAR COLONNE
@@ -32,7 +32,7 @@ subroutine diaexp(nno, nddl, ldim, masco, masdi)
 !     OUT MASDI : MATRICE DE MASSE DIAGONALE
 !     ------------------------------------------------------------------
 !
-    integer :: idiag, i, k, i0, k0
+    integer(kind=8) :: idiag, i, k, i0, k0
 !
     call r8inir(ldim*(ldim+1)/2, 0.d0, masdi, 1)
     do i = 1, ldim

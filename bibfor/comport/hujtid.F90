@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -37,8 +37,8 @@ subroutine hujtid(fami, kpg, ksp, mod, imat, &
 #include "asterfort/mgauss.h"
 #include "asterfort/trace.h"
 #include "asterfort/utmess.h"
-    integer :: ndt, ndi, i, j, k, kk, l, ll, nvi
-    integer :: nbmeca, ind(7), iret, imat, nbmect, kpg, ksp
+    integer(kind=8) :: ndt, ndi, i, j, k, kk, l, ll, nvi
+    integer(kind=8) :: nbmeca, ind(7), iret, imat, nbmect, kpg, ksp
     real(kind=8) :: n, beta, dhuj, m, pco, pref, pc
     real(kind=8) :: phi, angdil, mdil, degr, bhuj
     real(kind=8) :: rc(7), yd(18), dpsids(6, 6), p(7), q(7)

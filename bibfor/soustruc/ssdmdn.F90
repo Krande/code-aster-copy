@@ -53,22 +53,22 @@ subroutine ssdmdn(mag)
 !        MAG : NOM DU MAILLAGE QUE L'ON DEFINIT.
 !
     character(len=8) :: nomacr, nosma, kbid, mal, pref, nomnol, nomnog
-    integer :: indi(4)
+    integer(kind=8) :: indi(4)
     character(len=24) :: valk(2)
 ! ----------------------------------------------------------------------
 !
 !-----------------------------------------------------------------------
-    integer :: i, i1
-    integer ::  ianon2, iasupm, ino, ino1
-    integer :: inol, iocc, isma, kk, lmail, lnoeu, longt
-    integer :: lpref, n1, n2, n3, nbnoe, nbnoet, nbnoex, lpr(1)
-    integer :: nbnol, nbsma, nnnoe, nocc, exinno, ier
+    integer(kind=8) :: i, i1
+    integer(kind=8) ::  ianon2, iasupm, ino, ino1
+    integer(kind=8) :: inol, iocc, isma, kk, lmail, lnoeu, longt
+    integer(kind=8) :: lpref, n1, n2, n3, nbnoe, nbnoet, nbnoex, lpr(1)
+    integer(kind=8) :: nbnol, nbsma, nnnoe, nocc, exinno, ier
     character(len=8), pointer :: vnomacr(:) => null()
-    integer, pointer :: dime_2(:) => null()
-    integer, pointer :: conx(:) => null()
-    integer, pointer :: dime(:) => null()
-    integer, pointer :: lino(:) => null()
-    integer, pointer :: noeud_conf(:) => null()
+    integer(kind=8), pointer :: dime_2(:) => null()
+    integer(kind=8), pointer :: conx(:) => null()
+    integer(kind=8), pointer :: dime(:) => null()
+    integer(kind=8), pointer :: lino(:) => null()
+    integer(kind=8), pointer :: noeud_conf(:) => null()
     aster_logical :: lcolle
 !-----------------------------------------------------------------------
     call jemarq()

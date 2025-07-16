@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -26,10 +26,10 @@ subroutine cnomax(cnoz, ncmp, licmp, rmax, numno)
 #include "asterfort/jemarq.h"
 #include "asterfort/jeveuo.h"
     character(len=*) :: cnoz
-    integer :: ncmp
+    integer(kind=8) :: ncmp
     character(len=8) :: licmp(ncmp)
     real(kind=8) :: rmax
-    integer :: numno
+    integer(kind=8) :: numno
 !
 ! ======================================================================
 ! ROUTINE APPELEE PAR : CVGCNT
@@ -46,11 +46,11 @@ subroutine cnomax(cnoz, ncmp, licmp, rmax, numno)
 !
 !
 !
-    integer :: jcnsl
-    integer :: nbno, k, ino
+    integer(kind=8) :: jcnsl
+    integer(kind=8) :: nbno, k, ino
     character(len=19) :: cno, cns1, cns
     real(kind=8) :: norme
-    integer, pointer :: cnsd(:) => null()
+    integer(kind=8), pointer :: cnsd(:) => null()
     real(kind=8), pointer :: cnsv(:) => null()
 !
 ! ----------------------------------------------------------------------

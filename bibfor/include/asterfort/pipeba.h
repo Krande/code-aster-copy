@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -20,8 +20,8 @@
 interface
     subroutine pipeba(ndim, mate, sup, sud, vim,&
                       dtau, copilo)
-        integer, intent(in) :: ndim
-        integer, intent(in) :: mate
+        integer(kind=8), intent(in) :: ndim
+        integer(kind=8), intent(in) :: mate
         real(kind=8), intent(in) :: sup(ndim)
         real(kind=8), intent(in) :: sud(ndim)
         real(kind=8), intent(in) :: vim

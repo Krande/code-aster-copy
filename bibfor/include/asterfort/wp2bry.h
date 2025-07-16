@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -23,10 +23,10 @@ interface
                       si2, yh, yb, zh, zb,&
                       u1, u2, u3, u4, n,&
                       solveu)
-        integer :: ldrf
-        integer :: lmasse
-        integer :: lamor
-        integer :: lraide
+        integer(kind=8) :: ldrf
+        integer(kind=8) :: lmasse
+        integer(kind=8) :: lamor
+        integer(kind=8) :: lraide
         real(kind=8) :: sr
         real(kind=8) :: si2
         real(kind=8) :: yh(*)
@@ -37,7 +37,7 @@ interface
         real(kind=8) :: u2(*)
         real(kind=8) :: u3(*)
         real(kind=8) :: u4(*)
-        integer :: n
+        integer(kind=8) :: n
         character(len=19) :: solveu
     end subroutine wp2bry
 end interface

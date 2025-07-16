@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -52,11 +52,11 @@ subroutine algocu(ds_contact, solver, lmat, ldscon, cncine, &
 !
     type(NL_DS_Contact), intent(in) :: ds_contact
     character(len=19), intent(in) :: solver
-    integer, intent(in) :: lmat
-    integer, intent(in) :: ldscon
+    integer(kind=8), intent(in) :: lmat
+    integer(kind=8), intent(in) :: ldscon
     character(len=19), intent(in) :: cncine
     character(len=19), intent(in) :: disp_iter
-    integer, intent(out) :: ctccvg
+    integer(kind=8), intent(out) :: ctccvg
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -82,23 +82,23 @@ subroutine algocu(ds_contact, solver, lmat, ldscon, cncine, &
 !
     complex(kind=8) :: cbid
     aster_logical :: trouac, delpos, lelpiv
-    integer :: ier, ifm, niv, ndeci, isingu, npvneg
-    integer :: ii, kk, iter, iliac, neqmax
-    integer :: indic, kkmin, llmin
-    integer :: lliac, jdecal, posnbl
-    integer :: indfac, ajliai, spliai, posit, spavan
-    integer :: neq, nbliac, nbliai, nbddl
+    integer(kind=8) :: ier, ifm, niv, ndeci, isingu, npvneg
+    integer(kind=8) :: ii, kk, iter, iliac, neqmax
+    integer(kind=8) :: indic, kkmin, llmin
+    integer(kind=8) :: lliac, jdecal, posnbl
+    integer(kind=8) :: indfac, ajliai, spliai, posit, spavan
+    integer(kind=8) :: neq, nbliac, nbliai, nbddl
     real(kind=8) :: ajeu, rho, rhorho, aadelt, rminmu, val
     real(kind=8) :: xjvmax, x1
     character(len=1) :: typeaj, typesp
     character(len=24) :: apcoef, apjeu, apddl, coco
-    integer :: japcoe, japjeu, japddl, jcoco
+    integer(kind=8) :: japcoe, japjeu, japddl, jcoco
     character(len=24) :: poinoe
-    integer :: jpoi
-    integer :: nnocu
+    integer(kind=8) :: jpoi
+    integer(kind=8) :: nnocu
     character(len=19) :: liac, mu, delt0, delta, cm1a, atmu
-    integer :: jliac, jmu, jdelt0, jdelta, jcm1a, jatmu
-    integer :: itemax, compts
+    integer(kind=8) :: jliac, jmu, jdelt0, jdelta, jcm1a, jatmu
+    integer(kind=8) :: itemax, compts
     real(kind=8), pointer :: vale(:) => null()
     blas_int :: b_incx, b_incy, b_n
 !

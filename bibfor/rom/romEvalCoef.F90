@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -33,8 +33,8 @@ subroutine romEvalCoef(ds_multipara, l_init, i_mode_coef_, i_coef_)
 !
     type(ROM_DS_MultiPara), intent(inout) :: ds_multipara
     aster_logical, intent(in) :: l_init
-    integer, optional, intent(in) :: i_mode_coef_
-    integer, optional, intent(in) :: i_coef_
+    integer(kind=8), optional, intent(in) :: i_mode_coef_
+    integer(kind=8), optional, intent(in) :: i_coef_
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -51,8 +51,9 @@ subroutine romEvalCoef(ds_multipara, l_init, i_mode_coef_, i_coef_)
 !
 ! --------------------------------------------------------------------------------------------------
 !
-    integer :: ifm, niv
-    integer :: i_matr, i_vect, nb_matr, nb_vect, i_coef_list, nb_vari_coef, i_coef, i_mode_coef
+    integer(kind=8) :: ifm, niv
+    integer(kind=8) :: i_matr, i_vect, nb_matr, nb_vect, i_coef_list, nb_vari_coef
+    integer(kind=8) ::  i_coef, i_mode_coef
 !
 ! --------------------------------------------------------------------------------------------------
 !

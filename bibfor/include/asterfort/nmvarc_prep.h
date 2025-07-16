@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2020 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -32,18 +32,18 @@ interface
         character(len=24), intent(in) :: cara_elem
         character(len=24), intent(in) :: compor
         aster_logical, intent(in) :: exis_temp
-        integer, intent(in) :: mxchin
+        integer(kind=8), intent(in) :: mxchin
         character(len=8), intent(inout) :: lpain(mxchin)
         character(len=19), intent(inout) :: lchin(mxchin)
-        integer, intent(out) :: nbin
-        integer, intent(in) :: mxchout
+        integer(kind=8), intent(out) :: nbin
+        integer(kind=8), intent(in) :: mxchout
         character(len=8), intent(inout) :: lpaout(mxchout)
         character(len=19), intent(inout) :: lchout(mxchout)
-        integer, intent(out) :: nbout
+        integer(kind=8), intent(out) :: nbout
         character(len=19), intent(in) :: sigm_prev
         character(len=19), intent(in) :: vari_prev
         character(len=19), intent(in) :: varc_prev
         character(len=19), intent(in) :: varc_curr
-        integer, intent(in) :: nume_harm
+        integer(kind=8), intent(in) :: nume_harm
     end subroutine nmvarc_prep
 end interface

@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -53,18 +53,18 @@ subroutine sigmca(tablca, icabl, nbnoca, numaca, &
 #include "asterfort/jeveuo.h"
     aster_logical :: quad
     character(len=19) :: numaca, tablca, sigmcabl
-    integer :: icabl, nbnoca(*), prem
+    integer(kind=8) :: icabl, nbnoca(*), prem
 !
 ! VARIABLES LOCALES
 ! -----------------
-    integer :: idecma, idecno, imail, ipara, jnumac, jtens, nblign, nbmaca
-    integer :: nbno, nbpara, numail, nbma, mma
-    integer :: iinuma, iivale, nbcmp, lonuti
+    integer(kind=8) :: idecma, idecno, imail, ipara, jnumac, jtens, nblign, nbmaca
+    integer(kind=8) :: nbno, nbpara, numail, nbma, mma
+    integer(kind=8) :: iinuma, iivale, nbcmp, lonuti
     character(len=24) :: tens, parcr
     real(kind=8) :: rtens
     aster_logical :: trouve
     real(kind=8), pointer :: sigmvale(:) => null()
-    integer, pointer :: tbnp(:) => null(), sigmnuma(:) => null()
+    integer(kind=8), pointer :: tbnp(:) => null(), sigmnuma(:) => null()
     character(len=24), pointer :: tblp(:) => null()
     data parcr/'TENSION                 '/
 !

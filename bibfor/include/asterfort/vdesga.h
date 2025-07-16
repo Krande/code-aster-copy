@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -22,12 +22,12 @@ interface
     subroutine vdesga(kwgt, nb1, nb2, depl, btild,&
                       indith, alpha, tempga, epsiln, sigma,&
                       vectt)
-        integer :: kwgt
-        integer :: nb1
-        integer :: nb2
+        integer(kind=8) :: kwgt
+        integer(kind=8) :: nb1
+        integer(kind=8) :: nb2
         real(kind=8) :: depl(*)
         real(kind=8) :: btild(5, 42)
-        integer :: indith
+        integer(kind=8) :: indith
         real(kind=8) :: alpha
         real(kind=8) :: tempga(*)
         real(kind=8) :: epsiln(6, *)

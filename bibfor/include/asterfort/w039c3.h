@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -22,7 +22,7 @@ interface
     subroutine w039c3(carele, modele, ifi, form, titre, aunoeud)
         character(len=8) :: carele
         character(len=8) :: modele
-        integer :: ifi
+        integer(kind=8) :: ifi
         character(len=*) :: form
         character(len=80) :: titre
         logical :: aunoeud

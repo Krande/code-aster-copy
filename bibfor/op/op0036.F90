@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -22,7 +22,6 @@ subroutine op0036()
 #include "jeveux.h"
 #include "asterc/getfac.h"
 #include "asterc/getres.h"
-#include "asterfort/assert.h"
 #include "asterfort/ctresu.h"
 #include "asterfort/gettco.h"
 #include "asterfort/getvid.h"
@@ -41,11 +40,11 @@ subroutine op0036()
 #include "asterfort/titre.h"
 #include "asterfort/utmess.h"
 #include "asterfort/wkvect.h"
-    integer :: iocc, ni, nr, nk, ir, jvale, jp, ndim, jt
-    integer :: nocc, nocc2, nindi, iii, dimmax, jy, jlng, jd
-    integer :: jtrav1, jtrav2, jtrav3, jtrav4, jtrav5, jtrav6, npar
-    integer :: nocc3, nco
-    integer :: icol, ncol, nval, iligmax, ii, jj, length
+    integer(kind=8) :: iocc, ni, nr, nk, ir, jvale, jp, ndim, jt
+    integer(kind=8) :: nocc, nocc2, nindi, iii, dimmax, jy, jlng, jd
+    integer(kind=8) :: jtrav1, jtrav2, jtrav3, jtrav4, jtrav5, jtrav6, npar
+    integer(kind=8) :: nocc3, nco
+    integer(kind=8) :: icol, ncol, nval, iligmax, ii, jj, length
     aster_logical :: is_list_co, is_tab_conteneur
     complex(kind=8) :: cbid
     character(len=1) :: kbid
@@ -55,7 +54,7 @@ subroutine op0036()
     character(len=19) :: nfct
     character(len=24) :: trav, ldbl, indic, ltyp, work, typco, typtab
     character(len=24) :: vectcr, vectci, nmpar, nmpar1, nmparf(2), nmparc(3)
-    integer :: ivcr, ivci
+    integer(kind=8) :: ivcr, ivci
     character(len=24), pointer :: prol(:) => null()
     character(len=8), parameter :: typarr(2) = (/'R', 'R'/)
     character(len=8), parameter :: typarc(3) = (/'R', 'R', 'R'/)

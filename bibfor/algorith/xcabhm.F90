@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -92,12 +92,12 @@ subroutine xcabhm(ds_thm, &
 ! =====================================================================================
     type(THM_DS), intent(in) :: ds_thm
     aster_logical :: axi
-    integer :: nddls, nddlm, nmec, np1, ndim, nnop, i, n, kk
-    integer :: nnops, nnopm, kpi, dimuel, heavn(nnop, 5)
-    integer :: addeme, addep1
-    integer :: yaenrm, adenme, dimenr
-    integer :: yaenrh, adenhy, nfiss, nfh, ifh
-    integer :: ipoids, idfde, ivf, nno, hea_se
+    integer(kind=8) :: nddls, nddlm, nmec, np1, ndim, nnop, i, n, kk
+    integer(kind=8) :: nnops, nnopm, kpi, dimuel, heavn(nnop, 5)
+    integer(kind=8) :: addeme, addep1
+    integer(kind=8) :: yaenrm, adenme, dimenr
+    integer(kind=8) :: yaenrh, adenhy, nfiss, nfh, ifh
+    integer(kind=8) :: ipoids, idfde, ivf, nno, hea_se
     real(kind=8) :: dfdi(nnop, ndim), dfdi2(nnops, ndim)
     real(kind=8) :: ff(nnop), ff2(nnops)
     real(kind=8) :: b(dimenr, dimuel), rac, r, geom(ndim, nnop)

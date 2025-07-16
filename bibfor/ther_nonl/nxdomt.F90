@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -24,7 +24,6 @@ subroutine nxdomt(ds_algopara, ds_algorom)
 !
     implicit none
 !
-#include "asterc/getfac.h"
 #include "asterfort/assert.h"
 #include "asterfort/getvis.h"
 #include "asterfort/getvr8.h"
@@ -48,8 +47,8 @@ subroutine nxdomt(ds_algopara, ds_algorom)
 !
 ! --------------------------------------------------------------------------------------------------
 !
-    integer :: ifm, niv
-    integer :: reac_iter, iter_line_maxi
+    integer(kind=8) :: ifm, niv
+    integer(kind=8) :: reac_iter, iter_line_maxi
     real(kind=8) :: resi_line_rela
     character(len=16) :: keywf, algo_meth
 !

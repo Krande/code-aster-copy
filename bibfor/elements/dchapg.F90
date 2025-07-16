@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -20,7 +20,7 @@ subroutine dchapg(sig1, sig2, npg, nbsig, decha)
     implicit none
 #include "asterc/r8prem.h"
 #include "asterfort/norsig.h"
-    integer :: npg, nbsig
+    integer(kind=8) :: npg, nbsig
     real(kind=8) :: sig1(*), sig2(*), decha(*)
 !
 !     BUT:
@@ -42,7 +42,7 @@ subroutine dchapg(sig1, sig2, npg, nbsig, decha)
 !
 ! ......................................................................
 !
-    integer :: igau
+    integer(kind=8) :: igau
 !
     real(kind=8) :: zero, un, norm1, norm2, zernor
 !

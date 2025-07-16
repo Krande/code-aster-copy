@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -24,7 +24,6 @@ subroutine matr_asse_compute_kinematic_rhs(matasz, vcinez, vrhsz)
 #include "asterfort/csmbgg.h"
 #include "asterfort/dismoi.h"
 #include "asterfort/jedema.h"
-#include "asterfort/jedetr.h"
 #include "asterfort/jemarq.h"
 #include "asterfort/jeveuo.h"
 #include "asterfort/jelira.h"
@@ -45,7 +44,7 @@ subroutine matr_asse_compute_kinematic_rhs(matasz, vcinez, vrhsz)
 
     character(len=19) :: matas, vcine, vrhs
     character(len=1) :: rouc
-    integer :: lmat, neq0, neq1, neq2
+    integer(kind=8) :: lmat, neq0, neq1, neq2
     real(kind=8), pointer :: cine(:) => null()
     real(kind=8), pointer :: rhs(:) => null()
     complex(kind=8) :: cbid

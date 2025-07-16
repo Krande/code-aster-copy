@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -64,8 +64,8 @@ subroutine lcjacp(fami, kpg, ksp, rela_comp, toler, &
 #include "asterc/r8miem.h"
 #include "asterfort/lcresi.h"
 #include "asterfort/utmess.h"
-    integer :: nmat, nbcomm(nmat, 3), nr, impr, vali(2), nfs, nsg
-    integer :: imat, i, j, itmax, iret, kpg, ksp, nvi, verjac
+    integer(kind=8) :: nmat, nbcomm(nmat, 3), nr, impr, vali(2), nfs, nsg
+    integer(kind=8) :: imat, i, j, itmax, iret, kpg, ksp, nvi, verjac
 !
     real(kind=8) :: toler, epsd(6), deps(6), vind(nvi), vinf(nvi), timed, timef
     real(kind=8) :: err

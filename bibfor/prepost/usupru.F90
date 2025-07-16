@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -39,8 +39,8 @@ subroutine usupru(vusurt, vusuro, nbinst, prust)
     character(len=24) :: type, typ1, typ2
 !
 !-----------------------------------------------------------------------
-    integer :: i, ire1, ire2, iret, n0, n1, n2, n3
-    integer :: n4, n5, nbinst, n6
+    integer(kind=8) :: i, ire1, ire2, iret, n0, n1, n2, n3
+    integer(kind=8) :: n4, n5, nbinst, n6
     real(kind=8) :: aimp, angl, cst1, cst2, de, depi, des3
     real(kind=8) :: des5, df, epsi, rapp, rayo
     real(kind=8) :: rayt, resu, un, uns3, uns5, v1, v2

@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -57,13 +57,13 @@ subroutine utno3d(ifm, niv, nsomm, ifa, tymvol, &
 #include "asterc/r8miem.h"
 #include "asterfort/assert.h"
 #include "asterfort/uthk.h"
-    integer :: ifm, niv, nsomm, ifa, tymvol, igeom, idfdx, idfdy, npgf
-    integer :: noe(9, 6, 4)
+    integer(kind=8) :: ifm, niv, nsomm, ifa, tymvol, igeom, idfdx, idfdy, npgf
+    integer(kind=8) :: noe(9, 6, 4)
     real(kind=8) :: jac(9), xn(9), yn(9), zn(9), hf, poids3(9)
 !
 !
 ! DECLARATION VARIABLES LOCALES
-    integer :: in, jn, iino, jjno, i, j, ipg, kdec, idec, jdec, ixk, iyk
+    integer(kind=8) :: in, jn, iino, jjno, i, j, ipg, kdec, idec, jdec, ixk, iyk
     real(kind=8) :: sx(9, 9), sy(9, 9), sz(9, 9), aux, ovfl
     character(len=16) :: nomteb
 !

@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -54,8 +54,8 @@ subroutine mdnoma(nomamd, lnomam, nomast, codret)
     character(len=64) :: nomamd
     character(len=8) :: nomast
 !
-    integer :: lnomam
-    integer :: codret
+    integer(kind=8) :: lnomam
+    integer(kind=8) :: codret
 !
 ! 0.2. ==> COMMUNS
 !
@@ -63,7 +63,7 @@ subroutine mdnoma(nomamd, lnomam, nomast, codret)
 !
 !
 !
-    integer :: iaux
+    integer(kind=8) :: iaux
 !
 !====
 ! 1. PREALABLES

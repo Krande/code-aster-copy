@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -68,15 +68,15 @@ subroutine asgeel(nomres, option, nugene)
     character(len=24) :: k24bid, seliai, sizlia, sst, nomsst
     real(kind=8) :: temp
 !
-    integer :: ibid, i1, j1, k1, l1, n1, lres, neq, lneq, lproj, nbddl, indsst
-    integer :: lsst, llref, nbmacr, exist, lmacr, indmcr, lresi
-    integer :: decal, ddlcp, lselia, nlt, ind, ldconl, iret, nmaddl, ltemp
-    integer :: jrefa, nbsst, lsilia, iadesc, ntria, lmacri
+    integer(kind=8) :: ibid, i1, j1, k1, l1, n1, lres, neq, lneq, lproj, nbddl, indsst
+    integer(kind=8) :: lsst, llref, nbmacr, exist, lmacr, indmcr, lresi
+    integer(kind=8) :: decal, ddlcp, lselia, nlt, ind, ldconl, iret, nmaddl, ltemp
+    integer(kind=8) :: jrefa, nbsst, lsilia, iadesc, ntria, lmacri
     character(len=8) :: kbid, k8bid
-    integer, pointer :: indices_macro(:) => null()
+    integer(kind=8), pointer :: indices_macro(:) => null()
     character(len=8), pointer :: noms_macro(:) => null()
-    integer, pointer :: pointeurs_macro(:) => null()
-    integer, pointer :: pointeurs_macroi(:) => null()
+    integer(kind=8), pointer :: pointeurs_macro(:) => null()
+    integer(kind=8), pointer :: pointeurs_macroi(:) => null()
     aster_logical :: lsym
     aster_logical, pointer :: syme_macro(:) => null()
     blas_int :: b_incx, b_incy, b_n

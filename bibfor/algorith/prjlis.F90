@@ -64,7 +64,6 @@ subroutine prjlis(moda, maa, modb, mab, nbnoa, &
 #include "asterfort/jelira.h"
 #include "asterfort/jemarq.h"
 #include "asterfort/jenonu.h"
-#include "asterfort/jenuno.h"
 #include "asterfort/jeveuo.h"
 #include "asterfort/jexnom.h"
 #include "asterfort/jexnum.h"
@@ -81,20 +80,20 @@ subroutine prjlis(moda, maa, modb, mab, nbnoa, &
     character(len=8) :: matprj, nonob, nonoa, nomg, modgen, ssta, sstb
     character(len=16) :: tymocl(2), motcle(2), motfac, corres
     character(len=24) :: inta, intb, fpliao, fplibo, toto, geoma, geomb
-    integer :: ibid, nbnoa, nbnob, llinta, llintb, nbmaa, ndim
-    integer ::    nbnob2, idecal, inoa, inob, nbterm
-    integer :: itemcm, itemtm, nnoa, nunoa, nunob, nunoa2, nunoai, nunobi, i, j
-    integer :: iinob, llplia, llplib, icompa, icompb, iadoa, iadob, nbec
-    integer :: numlis, iada(3), iadb(3), nbcmpm, ifm, niv
+    integer(kind=8) :: ibid, nbnoa, nbnob, llinta, llintb, nbmaa, ndim
+    integer(kind=8) ::    nbnob2, idecal, inoa, inob, nbterm
+    integer(kind=8) :: itemcm, itemtm, nnoa, nunoa, nunob, nunoa2, nunoai, nunobi, i, j
+    integer(kind=8) :: iinob, llplia, llplib, icompa, icompb, iadoa, iadob, nbec
+    integer(kind=8) :: numlis, iada(3), iadb(3), nbcmpm, ifm, niv
     parameter(nbcmpm=10)
-    integer :: idecoa(nbcmpm), idecob(nbcmpm)
+    integer(kind=8) :: idecoa(nbcmpm), idecob(nbcmpm)
     real(kind=8) :: rbid, beta, coefa
-    integer, pointer :: pjef_nb(:) => null()
+    integer(kind=8), pointer :: pjef_nb(:) => null()
     real(kind=8), pointer :: pjef_cf(:) => null()
-    integer, pointer :: limanua(:) => null()
-    integer, pointer :: nldesca(:) => null()
-    integer, pointer :: nldescb(:) => null()
-    integer, pointer :: pjef_nu(:) => null()
+    integer(kind=8), pointer :: limanua(:) => null()
+    integer(kind=8), pointer :: nldesca(:) => null()
+    integer(kind=8), pointer :: nldescb(:) => null()
+    integer(kind=8), pointer :: pjef_nu(:) => null()
 !
 !-----------------------------------------------------------------------
 !

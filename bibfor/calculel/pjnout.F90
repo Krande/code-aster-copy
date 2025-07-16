@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -38,13 +38,13 @@ subroutine pjnout(modele)
 !     ------------------------------------------------------------------
 !
     character(len=8) :: noma
-    integer :: nbnoeu, jnout, ima, nbno, j, nbmail
+    integer(kind=8) :: nbnoeu, jnout, ima, nbno, j, nbmail
 !     ------------------------------------------------------------------
 !
 !     FONCTIONS "FORMULES" POUR ACCEDER RAPIDEMENT A LA CONNECTIVITE :
-    integer ::  iconx2
-    integer, pointer :: connex(:) => null()
-    integer, pointer :: maille(:) => null()
+    integer(kind=8) ::  iconx2
+    integer(kind=8), pointer :: connex(:) => null()
+    integer(kind=8), pointer :: maille(:) => null()
 #define zzconx(imail,j) connex(zi(iconx2+imail-1)+j-1)
 #define zznbne(imail) zi(iconx2+imail) - zi(iconx2+imail-1)
 !     ------------------------------------------------------------------

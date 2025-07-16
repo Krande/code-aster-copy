@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -21,13 +21,13 @@
 interface
     subroutine rkdhay(mod, nvi, vini, coeft, nmat,&
                       sigi, dvin, iret)
-        integer :: nmat
-        integer :: nvi
+        integer(kind=8) :: nmat
+        integer(kind=8) :: nvi
         character(len=8) :: mod
         real(kind=8) :: vini(nvi)
         real(kind=8) :: coeft(nmat)
         real(kind=8) :: sigi(*)
         real(kind=8) :: dvin(nvi)
-        integer :: iret
+        integer(kind=8) :: iret
     end subroutine rkdhay
 end interface

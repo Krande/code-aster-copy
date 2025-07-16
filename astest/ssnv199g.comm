@@ -50,7 +50,6 @@ MA = DEFI_GROUP(
         _F(GROUP_MA="JOINT_BP"),
         _F(GROUP_MA="JOINT_BI"),
         _F(GROUP_MA="JOINT_H"),
-        _F(GROUP_MA="NO7"),
         _F(GROUP_MA="DCB_GB"),
     ),
 )

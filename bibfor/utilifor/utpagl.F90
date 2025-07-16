@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -20,7 +20,7 @@ subroutine utpagl(nn, nc, p, sg, sl)
 !
     implicit none
     real(kind=8) :: p(3, 3), sl(*), sg(*)
-    integer :: nn, nc
+    integer(kind=8) :: nn, nc
 !     ------------------------------------------------------------------
 !     PASSAGE D'UNE MATRICE TRIANGULAIRE ANTISYMETRIQUE DE NN*NC LIGNES
 !     DU REPERE GLOBAL AU REPERE LOCAL (3D)
@@ -32,7 +32,7 @@ subroutine utpagl(nn, nc, p, sg, sl)
 !OUT  R   SG   NN*NC COMPOSANTES DE LA TRIANGULAIRE SG DANS GLOBAL
 !     ------------------------------------------------------------------
     real(kind=8) :: r(9), zero
-    integer :: in(3), i, j, m, n, nb, k, l
+    integer(kind=8) :: in(3), i, j, m, n, nb, k, l
     data zero/0.d0/
 !
     if (mod(nc, 3) .eq. 0) then

@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -21,13 +21,13 @@
 interface
     subroutine ermes2(ino, typema, typmav, iref1, ivois,&
                       isig, nbcmp, dsg11, dsg22, dsg12)
-        integer :: ino
+        integer(kind=8) :: ino
         character(len=8) :: typema
         character(len=8) :: typmav
-        integer :: iref1
-        integer :: ivois
-        integer :: isig
-        integer :: nbcmp
+        integer(kind=8) :: iref1
+        integer(kind=8) :: ivois
+        integer(kind=8) :: isig
+        integer(kind=8) :: nbcmp
         real(kind=8) :: dsg11(3)
         real(kind=8) :: dsg22(3)
         real(kind=8) :: dsg12(3)

@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -42,7 +42,7 @@ subroutine rvtec0(t, co, sp, absc, x, &
 #include "asterfort/tbexip.h"
 #include "asterfort/utmess.h"
 !
-    integer :: co(*), sp(*), nbpoin, nbcmp, padr(*), iocc, i1
+    integer(kind=8) :: co(*), sp(*), nbpoin, nbcmp, padr(*), iocc, i1
     real(kind=8) :: t(*), absc(*), x(*)
     character(len=4) :: docu
     character(len=8) :: cmp(*), nd(*)
@@ -64,9 +64,9 @@ subroutine rvtec0(t, co, sp, absc, x, &
 ! IN  DOCU : K4 : TYPE DE LIEU
 ! IN  NBCMP : I  : NOMBRE TOTAL DE CMP
 !     ------------------------------------------------------------------
-    integer :: nbpar, ilign, nbsp, i, ikk, l, jam, nbco, lc, is, ic, valei(1052), n1, adrval
-    integer :: nbmail, j, adracc, jacc, ik, ir, ii, ivari(1000), nbcmp2, jvari, ico, lm, im
-    integer :: nbvari, nbacc, nbpr, jaces, iac, iadr, iord(1)
+    integer(kind=8) :: nbpar, ilign, nbsp, i, ikk, l, jam, nbco, lc, is, ic, valei(1052), n1, adrval
+    integer(kind=8) :: nbmail, j, adracc, jacc, ik, ir, ii, ivari(1000), nbcmp2, jvari, ico, lm, im
+    integer(kind=8) :: nbvari, nbacc, nbpr, jaces, iac, iadr, iord(1)
     real(kind=8) :: prec, valer(1050)
     complex(kind=8) :: c16b
     aster_logical :: exist, erreur

@@ -21,13 +21,13 @@ subroutine rsadpa_zk8_wrap(nomsd, nuordr, value, typesd, cel)
 #include "jeveux.h"
 #include "asterfort/rsadpa.h"
 ! ----------------------------------------------------------------------
-    integer, intent(in) :: nuordr
+    integer(kind=8), intent(in) :: nuordr
     character(len=*), intent(in) :: typesd
     character(len=8), intent(in) :: nomsd
     character(len=*), intent(inout) :: value
     character(len=1), intent(in) :: cel
 !
-    integer :: jpara
+    integer(kind=8) :: jpara
 ! ----------------------------------------------------------------------
     call rsadpa(nomsd, cel, 1, [typesd], nuordr, 0, sjv=jpara)
     if (cel .eq. 'E') then

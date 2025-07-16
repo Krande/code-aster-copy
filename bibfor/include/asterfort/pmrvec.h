@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -21,8 +21,8 @@
 interface
     subroutine pmrvec(cumul, n, m, a, x,&
                       y)
-        integer :: m
-        integer :: n
+        integer(kind=8) :: m
+        integer(kind=8) :: n
         character(len=*) :: cumul
         real(kind=8) :: a(n, m)
         real(kind=8) :: x(m)

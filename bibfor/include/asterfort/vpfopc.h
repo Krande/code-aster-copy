@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -23,8 +23,8 @@
 interface
     subroutine vpfopc(lmasse, lraide, fmin, sigma, matopa,&
                       raide, lqz, solveu)
-        integer :: lmasse
-        integer :: lraide
+        integer(kind=8) :: lmasse
+        integer(kind=8) :: lraide
         real(kind=8) :: fmin
         complex(kind=8) :: sigma
         character(len=*) :: matopa

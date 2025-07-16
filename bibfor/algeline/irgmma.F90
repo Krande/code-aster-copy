@@ -15,7 +15,6 @@
 ! You should have received a copy of the GNU General Public License
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
-! aslint: disable=C0110
 !
 subroutine irgmma(nomain, nomaou, nbmat, nummai, basz, &
                   nobj, nbel, versio)
@@ -26,32 +25,28 @@ subroutine irgmma(nomain, nomaou, nbmat, nummai, basz, &
 #include "asterfort/infniv.h"
 #include "asterfort/irgmtb.h"
 #include "asterfort/jecrec.h"
-#include "asterfort/jecreo.h"
-#include "asterfort/jecroc.h"
 #include "asterfort/jedema.h"
 #include "asterfort/jedetr.h"
 #include "asterfort/jedupo.h"
 #include "asterfort/jeecra.h"
 #include "asterfort/jemarq.h"
-#include "asterfort/jenonu.h"
 #include "asterfort/jenuno.h"
 #include "asterfort/jeveuo.h"
-#include "asterfort/jexnom.h"
 #include "asterfort/jexnum.h"
 #include "asterfort/utmess.h"
 #include "asterfort/wkvect.h"
 !
     character(len=8) :: nomain, nomaou
-    integer :: nbmat, nummai(*), versio
+    integer(kind=8) :: nbmat, nummai(*), versio
     character(len=*) :: basz
 !     TRANSFORME LE MAILLAGE "NOMAIN" EN UN MAILLAGE "NOMAOU"
 !     LE MAILLAGE "NOMAOU" NE POSSEDE QUE DES MAILLES DE TYPE
 !     POI1, SEG2, TRIA3, TETRA4 EN VERSION 1.0
 !     + QUAD4, PENTA6, PYRAM5, HEXA8 EN VERSIO 1.2 (VOIR IRGMTB)
 !     ------------------------------------------------------------------
-    integer :: i, ima, nbma, nbmail, ifm, niv, ino, ima2, imav, iatyma
-    integer :: jtitr
-    integer :: jtypm, jdime, jopt, jnpt, nbmac, jmail, im, jnumol
+    integer(kind=8) :: i, ima, nbma, nbmail, ifm, niv, ino, ima2, imav, iatyma
+    integer(kind=8) :: jtitr
+    integer(kind=8) :: jtypm, jdime, jopt, jnpt, nbmac, jmail, im, jnumol
     aster_logical :: logic
     character(len=1) :: base
     character(len=8) :: k8b, typm, typm2
@@ -59,24 +54,25 @@ subroutine irgmma(nomain, nomaou, nbmat, nummai, basz, &
     character(len=24) :: titre, numold
     character(len=24) :: typmav, connev, nodimv, coovav, coodsv
     character(len=24) :: valk(2)
-    integer :: ind, numel, nbcr, nbp
-    integer :: nbmmax
+    integer(kind=8) :: ind, numel, nbcr, nbp
+    integer(kind=8) :: nbmmax
     parameter(nbmmax=9999999)
 !     --- TABLEAU DE DECOUPAGE
-    integer :: ntyele, maxel, maxno
+    integer(kind=8) :: ntyele, maxel, maxno
     parameter(ntyele=28)
     parameter(maxel=48)
     parameter(maxno=8)
-    integer :: tdec(ntyele, maxel, maxno)
-    integer :: typd(ntyele, 3)
-    integer :: vali(3)
+    integer(kind=8), allocatable :: tdec(:, :, :)
+    integer(kind=8) :: typd(ntyele, 3)
+    integer(kind=8) :: vali(3)
 !     NBRE, POINTEURS, NOM D'OBJET POUR CHAQUE TYPE D'ELEMENT
-    integer :: nbel(ntyele), jel(ntyele), impr
+    integer(kind=8) :: nbel(ntyele), jel(ntyele), impr
     character(len=24) :: nobj(ntyele)
 !     ------------------------------------------------------------------
 !
     call infniv(ifm, niv)
     call jemarq()
+    allocate (tdec(ntyele, maxel, maxno))
 !
 ! --- INIT
     do i = 1, ntyele
@@ -233,6 +229,7 @@ subroutine irgmma(nomain, nomaou, nbmat, nummai, basz, &
     end do
 !
     call jedetr('&&IRGMMA.NUME_MAILLE')
+    deallocate (tdec)
 !
     call jedema()
 !

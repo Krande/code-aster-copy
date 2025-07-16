@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -21,10 +21,10 @@
 interface
     subroutine nmimin(list_func_acti, sddisc, sdsuiv, nume_inst, ds_print)
         use NonLin_Datastructure_type
-        integer, intent(in) :: list_func_acti(*)
+        integer(kind=8), intent(in) :: list_func_acti(*)
         character(len=19), intent(in) :: sddisc
         character(len=24), intent(in) :: sdsuiv
-        integer, intent(in) :: nume_inst
+        integer(kind=8), intent(in) :: nume_inst
         type(NL_DS_Print), intent(inout) :: ds_print
     end subroutine nmimin
 end interface

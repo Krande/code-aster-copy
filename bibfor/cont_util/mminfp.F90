@@ -29,9 +29,9 @@ subroutine mminfp(i_zone, sdcont_defi, question_, vale_i_, vale_r_, &
 !
     character(len=24), intent(in) :: sdcont_defi
     character(len=*), intent(in) :: question_
-    integer, intent(in) :: i_zone
+    integer(kind=8), intent(in) :: i_zone
     real(kind=8), optional, intent(out) :: vale_r_
-    integer, optional, intent(out) :: vale_i_
+    integer(kind=8), optional, intent(out) :: vale_i_
     aster_logical, optional, intent(out) :: vale_l_
 !
 ! --------------------------------------------------------------------------------------------------
@@ -51,11 +51,11 @@ subroutine mminfp(i_zone, sdcont_defi, question_, vale_i_, vale_r_, &
 !
 ! --------------------------------------------------------------------------------------------------
 !
-    integer :: cont_form, nb_cont_zone
-    integer :: zcmcf, zmeth, ztole, zexcl, zdirn, zcmdf
+    integer(kind=8) :: cont_form, nb_cont_zone
+    integer(kind=8) :: zcmcf, zmeth, ztole, zexcl, zdirn, zcmdf
     character(len=24) :: sdcont_caracf, sdcont_caradf, sdcont_dirnor, sdcont_methco
     real(kind=8), pointer :: v_sdcont_dirnor(:) => null()
-    integer, pointer :: v_sdcont_methco(:) => null()
+    integer(kind=8), pointer :: v_sdcont_methco(:) => null()
     real(kind=8), pointer :: v_sdcont_caracf(:) => null()
     real(kind=8), pointer :: v_sdcont_caradf(:) => null()
     character(len=24) :: sdcont_toleco, sdcont_dirapp, sdcont_exclfr
@@ -68,7 +68,7 @@ subroutine mminfp(i_zone, sdcont_defi, question_, vale_i_, vale_r_, &
     character(len=8) :: jeuf1, jeuf2
     character(len=24) :: question
     real(kind=8) :: vale_r
-    integer :: vale_i
+    integer(kind=8) :: vale_i
     aster_logical :: vale_l
 !
 ! --------------------------------------------------------------------------------------------------

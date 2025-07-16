@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -24,18 +24,18 @@ interface
                       typgeo, nomtyp, nmatyp, infmed, nosdfu)
         med_idt :: fid
         character(len=*) :: nomamd
-        integer :: nbnoeu
-        integer :: nbmail
+        integer(kind=8) :: nbnoeu
+        integer(kind=8) :: nbmail
         character(len=8) :: nomast
-        integer :: nbgrno
+        integer(kind=8) :: nbgrno
         character(len=24) :: nomgno(*)
-        integer :: nbgrma
+        integer(kind=8) :: nbgrma
         character(len=24) :: nomgma(*)
         character(len=6) :: prefix
-        integer :: typgeo(*)
+        integer(kind=8) :: typgeo(*)
         character(len=8) :: nomtyp(*)
-        integer :: nmatyp(*)
-        integer :: infmed
+        integer(kind=8) :: nmatyp(*)
+        integer(kind=8) :: infmed
         character(len=8) :: nosdfu
     end subroutine irmmfa
 end interface

@@ -26,7 +26,6 @@ subroutine mmlige(mesh, ds_contact, &
     implicit none
 !
 #include "asterf_types.h"
-#include "asterfort/assert.h"
 #include "asterfort/as_allocate.h"
 #include "asterfort/as_deallocate.h"
 #include "asterfort/cfdisi.h"
@@ -37,7 +36,6 @@ subroutine mmlige(mesh, ds_contact, &
 #include "asterfort/jenuno.h"
 #include "asterfort/jeveuo.h"
 #include "asterfort/jexnum.h"
-#include "asterfort/jexnom.h"
 #include "asterfort/liglma.h"
 #include "asterfort/mmelem_data_c.h"
 #include "asterfort/mmelem_data_l.h"
@@ -47,12 +45,12 @@ subroutine mmlige(mesh, ds_contact, &
 !
     character(len=8), intent(in) :: mesh
     type(NL_DS_Contact), intent(in) :: ds_contact
-    integer, intent(out) :: nb_cont_pair
-    integer, pointer :: v_list_pair(:)
-    integer, intent(out) :: nb_type
-    integer, pointer :: v_list_type(:)
-    integer, intent(out) :: nt_node
-    integer, intent(out) :: nb_grel
+    integer(kind=8), intent(out) :: nb_cont_pair
+    integer(kind=8), pointer :: v_list_pair(:)
+    integer(kind=8), intent(out) :: nb_type
+    integer(kind=8), pointer :: v_list_type(:)
+    integer(kind=8), intent(out) :: nt_node
+    integer(kind=8), intent(out) :: nb_grel
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -80,29 +78,29 @@ subroutine mmlige(mesh, ds_contact, &
 !
 ! --------------------------------------------------------------------------------------------------
 !
-    integer :: ifm, niv
-    integer :: i_cont_pair, i_cont_type, i_cont_poin, i_zone, i_elem_slav
-    integer :: nb_node_elem, nb_cont_poin, nb_elem_slav
-    integer :: elem_mast_nume, elem_slav_nume
-    integer :: model_ndim, vali(6)
-    integer :: typg_cont_nume, elem_indx, typf_cont_nume, typf_frot_nume, typf_slav_nume
+    integer(kind=8) :: ifm, niv
+    integer(kind=8) :: i_cont_pair, i_cont_type, i_cont_poin, i_zone, i_elem_slav
+    integer(kind=8) :: nb_node_elem, nb_cont_poin, nb_elem_slav
+    integer(kind=8) :: elem_mast_nume, elem_slav_nume
+    integer(kind=8) :: model_ndim, vali(6)
+    integer(kind=8) :: typg_cont_nume, elem_indx, typf_cont_nume, typf_frot_nume, typf_slav_nume
     character(len=19) :: ligrel_elem_slav
-    integer :: typg_slav_nume, typg_mast_nume
+    integer(kind=8) :: typg_slav_nume, typg_mast_nume
     character(len=8) :: typg_slav_name, typg_mast_name, elem_slav_name, elem_mast_name
     character(len=16) :: typf_slav_name, typg_cont_name, typf_cont_name, valk(6)
     character(len=24), parameter :: linuma = '&&MMLIGE.LINUMA'
-    integer, pointer :: v_linuma(:) => null()
+    integer(kind=8), pointer :: v_linuma(:) => null()
     character(len=24), parameter :: linute = '&&MMLIGE.LINUTE'
-    integer, pointer :: v_linute(:) => null()
+    integer(kind=8), pointer :: v_linute(:) => null()
     aster_logical :: l_frot, l_cont_cont, l_cont_lac, l_axi
-    integer, pointer :: v_mesh_typmail(:) => null()
-    integer :: ztabf
-    integer :: indx_slav_name, linuma_max, linuma_min
+    integer(kind=8), pointer :: v_mesh_typmail(:) => null()
+    integer(kind=8) :: ztabf
+    integer(kind=8) :: indx_slav_name, linuma_max, linuma_min
     character(len=16), pointer :: v_tp_slav_name(:) => null()
     character(len=24) :: sdcont_tabfin
     real(kind=8), pointer :: v_sdcont_tabfin(:) => null()
     character(len=24) :: sdappa_apli
-    integer, pointer :: v_sdappa_apli(:) => null()
+    integer(kind=8), pointer :: v_sdappa_apli(:) => null()
 !
 ! --------------------------------------------------------------------------------------------------
 !

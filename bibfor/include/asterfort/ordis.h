@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -20,7 +20,7 @@
 !
 interface
     subroutine ordis(listis, nbterm)
-        integer :: listis(*)
-        integer :: nbterm
+        integer(kind=8) :: listis(*)
+        integer(kind=8) :: nbterm
     end subroutine ordis
 end interface

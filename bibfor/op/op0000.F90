@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -22,7 +22,6 @@ subroutine op0000()
 !
 #include "asterc/getres.h"
 #include "asterc/jdcget.h"
-#include "asterc/prhead.h"
 #include "asterf_types.h"
 #include "asterfort/adjust_memlimit.h"
 #include "asterfort/dbg_base.h"
@@ -39,8 +38,8 @@ subroutine op0000()
 #include "asterfort/utmess.h"
     character(len=8) :: k8b
     character(len=16) :: nomcmd, k16b
-    integer :: icode, ier, n, dummy
-    integer, save :: ipass = 0
+    integer(kind=8) :: icode, ier, n, dummy
+    integer(kind=8), save :: ipass = 0
 !
     if (ipass .ne. 0) then
         call utmess('F', 'SUPERVIS_2')

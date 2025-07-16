@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -21,12 +21,12 @@
 interface
     subroutine xvoise(nnotot, nse, nnop, nno, jcnset,&
                       cninv, cvoise)
-        integer :: nse
-        integer :: nnotot
-        integer :: nnop
-        integer :: nno
-        integer :: jcnset
-        integer :: cninv(nnotot, nse+1)
-        integer :: cvoise(3, nse)
+        integer(kind=8) :: nse
+        integer(kind=8) :: nnotot
+        integer(kind=8) :: nnop
+        integer(kind=8) :: nno
+        integer(kind=8) :: jcnset
+        integer(kind=8) :: cninv(nnotot, nse+1)
+        integer(kind=8) :: cvoise(3, nse)
     end subroutine xvoise
 end interface

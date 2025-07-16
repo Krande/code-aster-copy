@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -21,13 +21,13 @@
 interface
     subroutine dimax2(jdom, nbpt, cuon, cvon, rayon,&
                       cupn, cvpn, iret)
-        integer :: jdom
-        integer :: nbpt
+        integer(kind=8) :: jdom
+        integer(kind=8) :: nbpt
         real(kind=8) :: cuon
         real(kind=8) :: cvon
         real(kind=8) :: rayon
         real(kind=8) :: cupn
         real(kind=8) :: cvpn
-        integer :: iret
+        integer(kind=8) :: iret
     end subroutine dimax2
 end interface

@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -58,8 +58,8 @@ subroutine gcharm(lfchar, cartei, nomfct, newfct, time, &
 !
 ! ----------------------------------------------------------------------
 !
-    integer :: jvalin, jvalou
-    integer :: nbvale, iret, in, k, i, nb, npt
+    integer(kind=8) :: jvalin, jvalou
+    integer(kind=8) :: nbvale, iret, in, k, i, nb, npt
     real(kind=8) :: const
     character(len=8) :: charge
     character(len=19) :: nch19

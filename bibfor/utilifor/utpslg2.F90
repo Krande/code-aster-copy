@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -21,7 +21,7 @@ subroutine utpslg2(nn, nc, p, sl, sg)
 !
 #include "asterfort/assert.h"
 !
-    integer      :: nn, nc
+    integer(kind=8)      :: nn, nc
     real(kind=8) :: p(3, 3), sl(*), sg(*)
 !
 ! --------------------------------------------------------------------------------------------------
@@ -41,12 +41,12 @@ subroutine utpslg2(nn, nc, p, sl, sg)
 !
 ! --------------------------------------------------------------------------------------------------
 !
-    integer      :: in(3)
+    integer(kind=8)      :: in(3)
 !
 !
 ! --------------------------------------------------------------------------------------------------
 !
-    integer :: i, j, l, m, n, nb
+    integer(kind=8) :: i, j, l, m, n, nb
 !
     ASSERT(mod(nc, 3) .eq. 0)
     nb = nn*nc/3

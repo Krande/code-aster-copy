@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -25,9 +25,9 @@ interface
         character(len=*) :: nomcmd
         character(len=*) :: masse
         character(len=*) :: modsta
-        integer :: nbdir
+        integer(kind=8) :: nbdir
         real(kind=8) :: dir(*)
         character(len=*) :: nomnoe(*)
-        integer :: nbno
+        integer(kind=8) :: nbno
     end subroutine simul2
 end interface

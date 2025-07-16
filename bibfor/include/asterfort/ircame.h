@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -22,29 +22,29 @@ interface
                       instan, numord, adsk, adsd, adsc,&
                       adsv, adsl, nbenec, lienec, sdcarm,&
                       carael, field_type, nbCmpDyna, lfichUniq, codret)
-        integer :: ifi
+        integer(kind=8) :: ifi
         character(len=64) :: nochmd
         character(len=19) :: chanom
         character(len=8) :: typech
         character(len=8) :: modele
-        integer :: nbcmp
+        integer(kind=8) :: nbcmp
         character(len=*) :: nomcmp(*)
         character(len=*) :: etiqcp
         character(len=*) :: partie
-        integer :: numpt
+        integer(kind=8) :: numpt
         real(kind=8) :: instan
-        integer :: numord
-        integer :: adsk
-        integer :: adsd
-        integer :: adsc
-        integer :: adsv
-        integer :: adsl
-        integer :: nbenec
-        integer :: lienec(*)
+        integer(kind=8) :: numord
+        integer(kind=8) :: adsk
+        integer(kind=8) :: adsd
+        integer(kind=8) :: adsc
+        integer(kind=8) :: adsv
+        integer(kind=8) :: adsl
+        integer(kind=8) :: nbenec
+        integer(kind=8) :: lienec(*)
         character(len=8) :: sdcarm, carael
         character(len=16), intent(in) :: field_type
-        integer, intent(inout) :: nbCmpDyna
+        integer(kind=8), intent(inout) :: nbCmpDyna
         aster_logical :: lfichUniq
-        integer :: codret
+        integer(kind=8) :: codret
     end subroutine ircame
 end interface

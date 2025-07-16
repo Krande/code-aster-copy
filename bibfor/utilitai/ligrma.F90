@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -47,8 +47,8 @@ subroutine ligrma(ma, listgr)
 !   OUT
 !       LISTGR  : LISTE DES GROUPES DE MAILLES
 !
-    integer :: nbma, iret, nbgma, i, iagma, n, ii, ima, jlong, jlist
-    integer :: nbmat, jcpt
+    integer(kind=8) :: nbma, iret, nbgma, i, iagma, n, ii, ima, jlong, jlist
+    integer(kind=8) :: nbmat, jcpt
     character(len=24) :: long, vcpt
 !
 !

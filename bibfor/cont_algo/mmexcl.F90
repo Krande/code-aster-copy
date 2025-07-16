@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -27,10 +27,10 @@ subroutine mmexcl(type_inte, pair_type, i_poin_elem, ndexfr, &
 !
 ! person_in_charge: mickael.abbas at edf.fr
 !
-    integer, intent(in) :: type_inte
-    integer, intent(in) :: pair_type
-    integer, intent(in) :: i_poin_elem
-    integer, intent(in) :: ndexfr
+    integer(kind=8), intent(in) :: type_inte
+    integer(kind=8), intent(in) :: pair_type
+    integer(kind=8), intent(in) :: i_poin_elem
+    integer(kind=8), intent(in) :: ndexfr
     aster_logical, intent(out) :: l_node_excl
     aster_logical, intent(out) :: l_excl_frot
 !
@@ -51,7 +51,7 @@ subroutine mmexcl(type_inte, pair_type, i_poin_elem, ndexfr, &
 !
 ! --------------------------------------------------------------------------------------------------
 !
-    integer :: lnexfr(9)
+    integer(kind=8) :: lnexfr(9)
     aster_logical :: l_tole_appa, l_tole_exte
 !
 ! --------------------------------------------------------------------------------------------------

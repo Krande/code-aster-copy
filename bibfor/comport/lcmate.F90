@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -73,8 +73,8 @@ subroutine lcmate(fami, kpg, ksp, comp, mod, &
 !                    UTILISEE SEULEMENT POUR LE MONOCRISTAL IMPLICITE
 !       ----------------------------------------------------------------
 
-    integer, intent(in):: nvi
-    integer :: imat, nmat, ndt, ndi, nr, i, itmax, kpg, ksp, impexp
+    integer(kind=8), intent(in):: nvi
+    integer(kind=8) :: imat, nmat, ndt, ndi, nr, i, itmax, kpg, ksp, impexp
     real(kind=8) :: materd(nmat, 2), materf(nmat, 2), tempd, tempf, tref
     real(kind=8) :: vind(*), pgl(3, 3), angmas(3), toler, crit(*), sigd(6)
     character(len=16) :: rela_comp, comp(*), mult_comp
@@ -82,7 +82,7 @@ subroutine lcmate(fami, kpg, ksp, comp, mod, &
     character(len=3) :: matcst
     character(len=*) :: fami
 !     SPECIFIQUE MONOCRISTAL
-    integer :: numhsr(*), nbcomm(*), nfs, nsg, nhsr
+    integer(kind=8) :: numhsr(*), nbcomm(*), nfs, nsg, nhsr
     real(kind=8) :: hsr(*), toutms(*)
     character(len=24) :: cpmono(*)
     character(len=16), optional, intent(in) :: mult_comp_

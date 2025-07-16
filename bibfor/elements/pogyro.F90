@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -28,7 +28,7 @@ subroutine pogyro(nomte, rho, xnu, icdmat, klv, &
 #include "asterfort/utmess.h"
 #include "asterfort/lteatt.h"
 !
-    integer :: icdmat
+    integer(kind=8) :: icdmat
     character(len=*) :: nomte
     real(kind=8) :: rho, xnu, klv(*)
 !     CALCULE LA MATRICE GYROSCOPIQUE DES ELEMENTS DE POUTRE
@@ -37,17 +37,17 @@ subroutine pogyro(nomte, rho, xnu, icdmat, klv, &
 !             'MECA_POU_D_E'  'MECA_POU_D_T'  'MECA_POU_D_TG'
 !             'MECA_POU_D_EM' 'MECA_POU_D_TGM'
 !     ------------------------------------------------------------------
-    integer :: nl
+    integer(kind=8) :: nl
 !
     character(len=16) :: ch16
-    integer :: istruc, itype
+    integer(kind=8) :: istruc, itype
     real(kind=8) :: rbid, casect(6)
     real(kind=8) :: ey, ez, xl
     real(kind=8) :: a, xiy, xiz, alfay, alfaz, alfinv
     real(kind=8) :: a2, xiy2, xiz2, alfay2, alfaz2
     aster_logical :: euler
 !     ------------------------------------------------------------------
-    integer, parameter :: nb_cara = 15
+    integer(kind=8), parameter :: nb_cara = 15
     real(kind=8) :: vale_cara(nb_cara)
     character(len=8) :: noms_cara(nb_cara)
     data noms_cara/'A1', 'IY1', 'IZ1', 'AY1', 'AZ1', 'EY1', 'EZ1', &

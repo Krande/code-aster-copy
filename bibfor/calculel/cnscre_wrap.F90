@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -24,7 +24,7 @@ subroutine cnscre_wrap(maz, nomgdz, ncmp, licmp, basez, cnsz, undf0)
 #include "jeveux.h"
 #include "asterfort/cnscre.h"
     character(len=*) :: maz, nomgdz, cnsz, basez
-    integer :: ncmp
+    integer(kind=8) :: ncmp
     character(len=8) :: licmp(ncmp)
     aster_logical, intent(in) :: undf0
 

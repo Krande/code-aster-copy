@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -31,9 +31,9 @@ interface
         real(kind=8) :: instam
         real(kind=8) :: ratio
         character(len=4) :: typdec
-        integer :: nbrpas
+        integer(kind=8) :: nbrpas
         real(kind=8) :: deltac
         real(kind=8) :: dtmin
-        integer :: retdec
+        integer(kind=8) :: retdec
     end subroutine nmdecc
 end interface

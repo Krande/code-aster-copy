@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -25,7 +25,7 @@ subroutine nmdcco(sddisc, i_event_acti, typdec, nbrpas, deltac, &
 #include "asterf_types.h"
 #include "asterfort/utdidt.h"
     character(len=19) :: sddisc
-    integer :: i_event_acti, nbrpas, retdec
+    integer(kind=8) :: i_event_acti, nbrpas, retdec
     real(kind=8) :: ratio, deltac, subdur
     aster_logical :: ldcext
     character(len=4) :: typdec

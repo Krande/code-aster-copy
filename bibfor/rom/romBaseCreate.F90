@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -23,13 +23,12 @@ subroutine romBaseCreate(base, nbMode_)
 !
     implicit none
 !
-#include "asterfort/assert.h"
 #include "asterfort/rscrsd.h"
 #include "asterfort/infniv.h"
 #include "asterfort/utmess.h"
 !
     type(ROM_DS_Empi), intent(in) :: base
-    integer, intent(in), optional :: nbMode_
+    integer(kind=8), intent(in), optional :: nbMode_
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -44,7 +43,7 @@ subroutine romBaseCreate(base, nbMode_)
 !
 ! --------------------------------------------------------------------------------------------------
 !
-    integer :: nbMode, ifm, niv
+    integer(kind=8) :: nbMode, ifm, niv
 !
 ! --------------------------------------------------------------------------------------------------
 !

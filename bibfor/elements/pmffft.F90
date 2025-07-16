@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -41,7 +41,7 @@ subroutine pmffft(fv, sv)
 ! LOC ------------------------------------------------------------------
 ! LOC I   ! IP     !   12    ! POINTEUR SUR L'ELEMENT DIAGONAL PRECEDENT
 !
-    integer :: ip(12), i, j
+    integer(kind=8) :: ip(12), i, j
     real(kind=8) :: fv(12), sv(78)
     data ip/0, 1, 3, 6, 10, 15, 21, 28, 36, 45, 55, 66/
 !

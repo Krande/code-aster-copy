@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -23,11 +23,11 @@ subroutine mltcmj(nb, n, p, front, frn, &
     implicit none
 ! aslint: disable=C1513
 #include "blas/zgemm.h"
-    integer :: n, p, adper(*)
+    integer(kind=8) :: n, p, adper(*)
     complex(kind=8) :: front(*), frn(*)
-    integer :: nb, decal, add, ind, nmb, i, j, kb, ia, ib, restm
+    integer(kind=8) :: nb, decal, add, ind, nmb, i, j, kb, ia, ib, restm
     character(len=1) :: tra, trb
-    integer :: i1, j1, k, m, it, numpro
+    integer(kind=8) :: i1, j1, k, m, it, numpro
     complex(kind=8) :: s, trav(p, nb, *)
     complex(kind=8) :: c(nb, nb, *), alpha, beta
     blas_int :: b_k, b_lda, b_ldb, b_ldc, b_m, b_n

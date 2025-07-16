@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -19,7 +19,7 @@
 subroutine lkdepp(vin, nbmat, mater, paraep, derpar)
 !
     implicit none
-    integer :: nbmat
+    integer(kind=8) :: nbmat
     real(kind=8) :: vin(7), paraep(3), mater(nbmat, 2), derpar(3)
 ! --- MODELE LETK : LAIGLE VISCOPLASTIQUE----------------------------
 ! ===================================================================

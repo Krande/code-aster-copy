@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -23,11 +23,11 @@
 interface
     subroutine mcmmvc(cumul, lmat, smdi, smhc, neq,&
                       vect, xsol, nbvect, vectmp, prepos)
-        integer :: nbvect
-        integer :: neq
+        integer(kind=8) :: nbvect
+        integer(kind=8) :: neq
         character(len=*) :: cumul
-        integer :: lmat
-        integer :: smdi(*)
+        integer(kind=8) :: lmat
+        integer(kind=8) :: smdi(*)
         integer(kind=4) :: smhc(*)
         complex(kind=8) :: vect(neq, nbvect)
         complex(kind=8) :: xsol(neq, nbvect)

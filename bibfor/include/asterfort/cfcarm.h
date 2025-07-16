@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -25,13 +25,13 @@ interface
         character(len=8) :: noma
         character(len=24) :: defico
         character(len=19) :: newgeo
-        integer :: posmai
+        integer(kind=8) :: posmai
         character(len=4) :: typmai
-        integer :: nummai
+        integer(kind=8) :: nummai
         character(len=8) :: alias
         character(len=8) :: nommai
-        integer :: ndim
-        integer :: nnomam
+        integer(kind=8) :: ndim
+        integer(kind=8) :: nnomam
         real(kind=8) :: coorma(27)
     end subroutine cfcarm
 end interface

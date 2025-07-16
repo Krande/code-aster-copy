@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -21,13 +21,13 @@
 interface
     subroutine mltblc(nbsn, debfsn, mxbloc, seq, nbloc,&
                       decal, lgbloc, ncbloc)
-        integer :: nbsn
-        integer :: debfsn(nbsn+1)
-        integer :: mxbloc
-        integer :: seq(nbsn)
-        integer :: nbloc
-        integer :: decal(nbsn)
-        integer :: lgbloc(*)
-        integer :: ncbloc(*)
+        integer(kind=8) :: nbsn
+        integer(kind=8) :: debfsn(nbsn+1)
+        integer(kind=8) :: mxbloc
+        integer(kind=8) :: seq(nbsn)
+        integer(kind=8) :: nbloc
+        integer(kind=8) :: decal(nbsn)
+        integer(kind=8) :: lgbloc(*)
+        integer(kind=8) :: ncbloc(*)
     end subroutine mltblc
 end interface

@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -36,11 +36,8 @@ module kichenin_nl_module
 
 #include "asterf_types.h"
 #include "asterc/r8gaem.h"
-#include "asterc/r8nnem.h"
 #include "asterfort/assert.h"
 #include "asterfort/rcvalb.h"
-#include "asterc/r8pi.h"
-#include "asterc/r8prem.h"
 
 ! --------------------------------------------------------------------------------------------------
 
@@ -53,9 +50,9 @@ module kichenin_nl_module
 
     ! VMIS_ISOT_NL class
     type CONSTITUTIVE_LAW
-        integer       :: exception = 0
+        integer(kind=8)       :: exception = 0
         aster_logical :: elas, rigi, resi, vari, pred, visc_lin
-        integer       :: ndimsi, itemax
+        integer(kind=8)       :: ndimsi, itemax
         real(kind=8)  :: cvuser, small
         type(MATERIAL):: mat
     end type CONSTITUTIVE_LAW
@@ -71,7 +68,7 @@ contains
 
         implicit none
 
-        integer, intent(in)          :: kpg, ksp, imate, itemax, ndimsi
+        integer(kind=8), intent(in)          :: kpg, ksp, imate, itemax, ndimsi
         real(kind=8), intent(in)    :: precvg, deltat
         character(len=16), intent(in):: option
         character(len=*), intent(in) :: fami
@@ -87,9 +84,9 @@ contains
 ! precvg    required accuracy (with respect to stress level)
 ! deltat    time-increment duration
 ! --------------------------------------------------------------------------------------------------
-        integer, parameter   :: nbel = 2, nbki = 7
+        integer(kind=8), parameter   :: nbel = 2, nbki = 7
 ! --------------------------------------------------------------------------------------------------
-        integer             :: okel(nbel), okki(nbki)
+        integer(kind=8)             :: okel(nbel), okki(nbki)
         real(kind=8)        :: valel(nbel), valki(nbki)
         character(len=16)   :: nomel(nbel), nomki(nbki)
 ! --------------------------------------------------------------------------------------------------
@@ -219,14 +216,14 @@ contains
 ! sig       ontrainte en fin de pas de temps (resi) ou au debut du pas de temps (not resi)
 ! deps_sig  derivee dsig / deps
 ! --------------------------------------------------------------------------------------------------
-        integer, parameter:: ELAS = 0
-        integer, parameter:: PLAS = 1
+        integer(kind=8), parameter:: ELAS = 0
+        integer(kind=8), parameter:: PLAS = 1
 ! --------------------------------------------------------------------------------------------------
         real(kind=8)    :: krn(self%ndimsi), pdev(self%ndimsi, self%ndimsi)
         real(kind=8)    :: sige(self%ndimsi), ne(self%ndimsi), neq
-        integer         :: state
+        integer(kind=8)         :: state
         real(kind=8)    :: n(self%ndimsi), dep(self%ndimsi)
-        integer         :: matr
+        integer(kind=8)         :: matr
         real(kind=8)    :: coef
 ! --------------------------------------------------------------------------------------------------
 
@@ -309,24 +306,24 @@ contains
 ! sig       ontrainte en fin de pas de temps (resi) ou au debut du pas de temps (not resi)
 ! deps_sig  derivee dsig / deps
 ! --------------------------------------------------------------------------------------------------
-        integer, parameter:: SING = -1
-        integer, parameter:: REGU = 0
-        integer, parameter:: LINE = 1
-        integer, parameter:: ELAS = 2
-        integer, parameter:: NONLIN = 3
+        integer(kind=8), parameter:: SING = -1
+        integer(kind=8), parameter:: REGU = 0
+        integer(kind=8), parameter:: LINE = 1
+        integer(kind=8), parameter:: ELAS = 2
+        integer(kind=8), parameter:: NONLIN = 3
 ! --------------------------------------------------------------------------------------------------
         real(kind=8)      :: krn(self%ndimsi), pdev(self%ndimsi, self%ndimsi)
         real(kind=8)      :: v_h, v_d, c_h, c_d
         real(kind=8)      :: sigi(self%ndimsi), sigi_h, sigi_d(self%ndimsi), nori
-        integer           :: state
+        integer(kind=8)           :: state
         real(kind=8)      :: sign_h, sign_d(self%ndimsi)
         real(kind=8)      :: a1, a2, b0, b1, b2
         real(kind=8)      :: dev(self%ndimsi)
         real(kind=8)      :: xmin, xgmin, xmax, x, xg, equ, xm, xp, xgm, xgp, equm, equp
         real(kind=8)      :: equmin, equmax, dx_xg, dxg_equ, dx_equ
-        integer           :: ite
+        integer(kind=8)           :: ite
         type(newton_state):: mem
-        integer           :: matr
+        integer(kind=8)           :: matr
         real(kind=8)      :: c_v_sign(self%ndimsi), h(self%ndimsi)
         real(kind=8)      :: ca1(self%ndimsi), ca2(self%ndimsi)
         real(kind=8)      :: cb0(self%ndimsi), cb1(self%ndimsi), cb2(self%ndimsi)

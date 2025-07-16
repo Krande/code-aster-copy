@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -61,9 +61,9 @@ subroutine rcmfmc(chmatz, chmacz, l_thm_, l_ther_, basename_, base)
 !
 ! --------------------------------------------------------------------------------------------------
 !
-    integer :: nbval, iret, jvale, igd, kk
-    integer :: nbgrp, i, icompt, igrp, ingrp, nbcmp, j, k, nbmat
-    integer :: inbmat
+    integer(kind=8) :: nbval, iret, jvale, igd, kk
+    integer(kind=8) :: nbgrp, i, icompt, igrp, ingrp, nbcmp, j, k, nbmat
+    integer(kind=8) :: inbmat
     character(len=1) :: bas
     character(len=4) :: knumat
     character(len=8) :: chmat, nomgd, basename
@@ -71,7 +71,7 @@ subroutine rcmfmc(chmatz, chmacz, l_thm_, l_ther_, basename_, base)
     character(len=19) :: chemat, chmace
     character(len=24) :: chmacegrp, chmacengrp
     character(len=8), pointer :: v_vale(:) => null()
-    integer, pointer :: v_desc(:) => null()
+    integer(kind=8), pointer :: v_desc(:) => null()
     aster_logical :: l_thm, l_ther
 !
 ! --------------------------------------------------------------------------------------------------

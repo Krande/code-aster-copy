@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -21,12 +21,12 @@
 interface
     subroutine mltacf(n, ncol, adper, matper, matfi,&
                       local, p)
-        integer :: n
-        integer :: ncol
-        integer :: adper(*)
+        integer(kind=8) :: n
+        integer(kind=8) :: ncol
+        integer(kind=8) :: adper(*)
         complex(kind=8) :: matper(*)
         complex(kind=8) :: matfi(*)
         integer(kind=4) :: local(*)
-        integer :: p
+        integer(kind=8) :: p
     end subroutine mltacf
 end interface

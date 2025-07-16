@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -41,7 +41,7 @@ subroutine stktit(ifl, icl, iv, rv, cv, &
 #include "asterfort/lxscan.h"
 #include "asterfort/tesfin.h"
 #include "asterfort/tesmcl.h"
-    integer :: nbm
+    integer(kind=8) :: nbm
     real(kind=8) :: rv
     character(len=8) :: mcl(nbm)
     character(len=14) :: cnl
@@ -51,8 +51,8 @@ subroutine stktit(ifl, icl, iv, rv, cv, &
 !
 !
 !-----------------------------------------------------------------------
-    integer :: iad, icl, ideb, ifl, irtet, irteti, iv
-    integer :: nlt
+    integer(kind=8) :: iad, icl, ideb, ifl, irtet, irteti, iv
+    integer(kind=8) :: nlt
 !-----------------------------------------------------------------------
     call jemarq()
     irteti = 0

@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -39,11 +39,11 @@ subroutine lkdbds(nmat, mater, i1, devsig, nvi, &
 #include "asterfort/cos3t.h"
 #include "asterfort/lkdhds.h"
 #include "asterfort/lkhtet.h"
-    integer :: nmat, nvi, iret, val
+    integer(kind=8) :: nmat, nvi, iret, val
     real(kind=8) :: mater(nmat, 2), devsig(6), i1, para(3)
     real(kind=8) :: vint(nvi), dbetds(6), dbetdi
 !
-    integer :: i, ndt, ndi
+    integer(kind=8) :: i, ndt, ndi
     real(kind=8) :: pi, pref, sigc, h0ext, s0, mult, xie, mvmax
     real(kind=8) :: mu0v, xi0v, mu1, alres, rcos3t, lgleps, htheta, fact1
     real(kind=8) :: zero, un, deux, trois, c, phi, xip, troisd, tiers, fact2

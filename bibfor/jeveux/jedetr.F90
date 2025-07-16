@@ -35,39 +35,39 @@ subroutine jedetr(nomlu)
 !
 ! IN  NOMLU  : NOM D'OBJET JEVEUX
 ! ----------------------------------------------------------------------
-    integer :: lk1zon, jk1zon, liszon, jiszon
+    integer(kind=8) :: lk1zon, jk1zon, liszon, jiszon
     common/izonje/lk1zon, jk1zon, liszon, jiszon
-    integer :: iclas, iclaos, iclaco, idatos, idatco, idatoc
+    integer(kind=8) :: iclas, iclaos, iclaco, idatos, idatco, idatoc
     common/iatcje/iclas, iclaos, iclaco, idatos, idatco, idatoc
     character(len=24) :: nomco
     character(len=32) :: nomuti, nomos, nomoc, bl32
     common/nomcje/nomuti, nomos, nomco, nomoc, bl32
 !-----------------------------------------------------------------------
-    integer :: iadmar, iadmi, iadmoc, iadyn, iadyoc, ibacol, ibiadd
-    integer :: ibiadm, iblong, iblono, ibmarq, ic, ixdeso, ixiadd
-    integer :: ixiadm, ixlong, ixlono, ixmarq, ixnom, jcara, jdate
-    integer :: jdocu, jgenr, jhcod, jiadd, jiadm, jlong, jlono
-    integer :: jltyp, jluti, jmarq, jorig, jrnom, jtype, k
-    integer :: lonoi, n, nmax
+    integer(kind=8) :: iadmar, iadmi, iadmoc, iadyn, iadyoc, ibacol, ibiadd
+    integer(kind=8) :: ibiadm, iblong, iblono, ibmarq, ic, ixdeso, ixiadd
+    integer(kind=8) :: ixiadm, ixlong, ixlono, ixmarq, ixnom, jcara, jdate
+    integer(kind=8) :: jdocu, jgenr, jhcod, jiadd, jiadm, jlong, jlono
+    integer(kind=8) :: jltyp, jluti, jmarq, jorig, jrnom, jtype, k
+    integer(kind=8) :: lonoi, n, nmax
 !-----------------------------------------------------------------------
     parameter(n=5)
     common/jiatje/jltyp(n), jlong(n), jdate(n), jiadd(n), jiadm(n),&
      &                 jlono(n), jhcod(n), jcara(n), jluti(n), jmarq(n)
 !
     common/jkatje/jgenr(n), jtype(n), jdocu(n), jorig(n), jrnom(n)
-    integer :: ipgc, kdesma(2), lgd, lgduti, kposma(2), lgp, lgputi
+    integer(kind=8) :: ipgc, kdesma(2), lgd, lgduti, kposma(2), lgp, lgputi
     common/iadmje/ipgc, kdesma, lgd, lgduti, kposma, lgp, lgputi
-    integer :: nivo
+    integer(kind=8) :: nivo
     common/jvnivo/nivo
 !     ------------------------------------------------------------------
-    integer :: ivnmax, iddeso, idiadd, idiadm, idmarq, idnom, idlong, idlono
-    integer :: idnum
+    integer(kind=8) :: ivnmax, iddeso, idiadd, idiadm, idmarq, idnom, idlong, idlono
+    integer(kind=8) :: idnum
     parameter(ivnmax=0, iddeso=1, idiadd=2, idiadm=3,&
      &               idmarq=4, idnom=5, idlong=7,&
      &               idlono=8, idnum=10)
 !     ------------------------------------------------------------------
     character(len=32) :: noml32, nom32
-    integer :: icre, iret, id(idnum), iaddi(2)
+    integer(kind=8) :: icre, iret, id(idnum), iaddi(2)
 ! DEB ------------------------------------------------------------------
     noml32 = nomlu
     icre = 0

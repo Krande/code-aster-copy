@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -26,6 +26,6 @@ interface
         real(kind=8) :: prec
         real(kind=8) :: geo1(3)
         real(kind=8) :: geo2(3)
-        integer :: iconf
+        integer(kind=8) :: iconf
     end subroutine ssdmu1
 end interface

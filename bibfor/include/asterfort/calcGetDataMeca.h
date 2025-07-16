@@ -34,6 +34,6 @@ interface
         character(len=19), intent(out) :: sigm_prev
         type(NL_DS_Constitutive), intent(out) :: ds_constitutive
         aster_logical, intent(out) :: l_elem_nonl
-        integer, intent(out) :: nume_harm
+        integer(kind=8), intent(out) :: nume_harm
     end subroutine calcGetDataMeca
 end interface

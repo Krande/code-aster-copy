@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -27,10 +27,10 @@ subroutine lklini(sigf, nr, yd, dy)
 !           YD     : VALEUR DES INCONNUES A T
 !       OUT DY     :  SOLUTION ESSAI  = ( DSIG DLAMBDA DXIP DXIVP )
 !       ----------------------------------------------------------------
-    integer :: nr
+    integer(kind=8) :: nr
     real(kind=8) :: sigf(6), yd(nr), dy(nr)
 !
-    integer :: ndi, ndt, i
+    integer(kind=8) :: ndi, ndt, i
 !       --------------------------------------------------------------
     common/tdim/ndt, ndi
 !       --------------------------------------------------------------

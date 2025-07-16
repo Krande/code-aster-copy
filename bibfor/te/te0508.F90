@@ -22,7 +22,6 @@ subroutine te0508(option, nomte)
 !
 #include "asterf_types.h"
 #include "jeveux.h"
-#include "asterfort/assert.h"
 #include "asterfort/Behaviour_type.h"
 #include "asterfort/elrefv.h"
 #include "asterfort/jevech.h"
@@ -57,9 +56,9 @@ subroutine te0508(option, nomte)
     character(len=16) :: defo_comp
     character(len=8) :: typmod(2)
     aster_logical :: axi, grand, inco, refe
-    integer :: nnoQ, nnoL, npg, ndim, nddl, neps, itab(2)
-    integer :: iret, nnos, jv_ganoQ, jv_poids, jv_vfQ, jv_dfdeQ, jv_vfL, jv_dfdeL, jv_ganoL
-    integer :: igeom, icont, ivectu, idepl
+    integer(kind=8) :: nnoQ, nnoL, npg, ndim, nddl, neps, itab(2)
+    integer(kind=8) :: iret, nnos, jv_ganoQ, jv_poids, jv_vfQ, jv_dfdeQ, jv_vfL, jv_dfdeL, jv_ganoL
+    integer(kind=8) :: igeom, icont, ivectu, idepl
     character(len=16), pointer :: compor(:) => null()
     real(kind=8) :: sigref, varref, lagref, epsref
     real(kind=8), allocatable:: b(:, :, :), w(:, :), ni2ldc(:, :)

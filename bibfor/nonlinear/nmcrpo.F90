@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -29,7 +29,7 @@ subroutine nmcrpo(nomsd, nume, inst, lselec)
 #include "asterfort/nmcrit.h"
     character(len=19) :: nomsd
     real(kind=8) :: inst
-    integer :: nume
+    integer(kind=8) :: nume
     aster_logical :: lselec
 !
 ! ----------------------------------------------------------------------
@@ -52,9 +52,9 @@ subroutine nmcrpo(nomsd, nume, inst, lselec)
 !
 !
     real(kind=8) :: tole, tolr
-    integer :: nbinst, freq
+    integer(kind=8) :: nbinst, freq
     character(len=24) :: sdinfl
-    integer :: jinfl
+    integer(kind=8) :: jinfl
     character(len=4) :: typsel
 !
 ! ----------------------------------------------------------------------

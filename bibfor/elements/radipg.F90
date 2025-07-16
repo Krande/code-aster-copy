@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -27,7 +27,7 @@ subroutine radipg(sig1, sig2, npg, nbsig, radia, &
 #include "blas/daxpy.h"
 #include "blas/dcopy.h"
 #include "blas/dscal.h"
-    integer :: npg, nbsig, ind, nvi, imate
+    integer(kind=8) :: npg, nbsig, ind, nvi, imate
     real(kind=8) :: sig1(*), sig2(*), radia(*), cosang(*)
     real(kind=8) :: vari1(*), vari2(*)
     character(len=16) :: compor
@@ -59,10 +59,10 @@ subroutine radipg(sig1, sig2, npg, nbsig, radia, &
 !
 ! ......................................................................
 !
-    integer :: mxcmel
+    integer(kind=8) :: mxcmel
     parameter(mxcmel=162)
 !
-    integer :: i, k, igau, icine, nbvar, memo, visc, iradi, idelta
+    integer(kind=8) :: i, k, igau, icine, nbvar, memo, visc, iradi, idelta
 !
     real(kind=8) :: dsigma(mxcmel), zero, deux, s1dsig, norm, dnorm, matel(20)
     real(kind=8) :: zernor, tensm(6), tensp(6), indm, indp, xm(6), xp(6)

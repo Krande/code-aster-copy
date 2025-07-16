@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -38,7 +38,7 @@ subroutine pmdrdy(dsidep, coef, cimpo, valimp, y, &
     real(kind=8) :: y(12), id(6, 6), sigp(6), dsidep(6, 6), cimpo(6, 12)
     real(kind=8) :: valimp(6)
     real(kind=8) :: r(12), drdy(12, 12), coef
-    integer :: i, j, idbg, ifm, niv
+    integer(kind=8) :: i, j, idbg, ifm, niv
 !
     idbg = 0
 !

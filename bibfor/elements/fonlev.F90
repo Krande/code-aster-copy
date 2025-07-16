@@ -27,7 +27,6 @@ subroutine fonlev(resu, noma, nbnoff)
 #include "asterfort/jeexin.h"
 #include "asterfort/jelira.h"
 #include "asterfort/jemarq.h"
-#include "asterfort/jenonu.h"
 #include "asterfort/jenuno.h"
 #include "asterfort/jeveuo.h"
 #include "asterfort/jexnom.h"
@@ -39,7 +38,7 @@ subroutine fonlev(resu, noma, nbnoff)
 #include "asterfort/char8_to_int.h"
 !
     character(len=8) :: resu, noma
-    integer :: nbnoff
+    integer(kind=8) :: nbnoff
 ! FONCTION REALISEE:
 !
 !     VERIFICATION DES LEVRES ET DE LEUR CONNEXITE
@@ -51,12 +50,12 @@ subroutine fonlev(resu, noma, nbnoff)
 !
 !     -----------------------------------------------------------------
 !
-    integer :: jmai1, jadr, jnoe1, jmai2, jmaii, jjj, iatyma
-    integer ::   iamase, ityp
-    integer :: igr, ngr, i, j, k, ibid, k2, j2
-    integer :: nbmai, indice
-    integer :: nn, compta, nbmas1, nbmas2, nbmal
-    integer :: iret, iret1, iret2, jjj2
+    integer(kind=8) :: jmai1, jadr, jnoe1, jmai2, jmaii, jjj, iatyma
+    integer(kind=8) ::   iamase, ityp
+    integer(kind=8) :: igr, ngr, i, j, k, ibid, k2, j2
+    integer(kind=8) :: nbmai, indice
+    integer(kind=8) :: nn, compta, nbmas1, nbmas2, nbmal
+    integer(kind=8) :: iret, iret1, iret2, jjj2
     character(len=4) :: typma
     character(len=6) :: nompro
     character(len=8) :: maille, type, noeug, typmcl(2), motcle(2)

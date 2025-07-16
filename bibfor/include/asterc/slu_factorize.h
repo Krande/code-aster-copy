@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2018 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -27,7 +27,7 @@ interface
         real(kind=8)    :: values(*)
         integer(kind=4) :: rowind(*)
         integer(kind=4) :: colptr(*)
-        integer         :: f_factors
+        integer(kind=8)         :: f_factors
         integer(kind=4) :: info
     end subroutine slu_factorize
 end interface

@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -21,21 +21,19 @@ subroutine dimecz(sdcont, mesh, nb_cont_zone)
     implicit none
 !
 #include "asterf_types.h"
-#include "asterfort/assert.h"
 #include "asterfort/cfdisi.h"
 #include "asterfort/cfmmvd.h"
 #include "asterfort/cfnbsf.h"
 #include "asterfort/cfzone.h"
 #include "asterfort/jeveuo.h"
 #include "asterfort/mmnbnz.h"
-#include "asterfort/mminfi.h"
 #include "asterfort/mminfl.h"
 !
 ! person_in_charge: mickael.abbas at edf.fr
 !
     character(len=8), intent(in) :: sdcont
     character(len=8), intent(in) :: mesh
-    integer, intent(in) :: nb_cont_zone
+    integer(kind=8), intent(in) :: nb_cont_zone
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -52,18 +50,18 @@ subroutine dimecz(sdcont, mesh, nb_cont_zone)
 ! --------------------------------------------------------------------------------------------------
 !
     character(len=24) :: sdcont_methco
-    integer, pointer :: v_sdcont_methco(:) => null()
-    integer :: zmeth
-    integer :: i_zone
-    integer :: jdecme, jdecmm, jdecne, jdecnm
-    integer :: i_surf_escl, i_surf_mast
-    integer :: nb_node_mast, nb_node_slav, nb_elem_mast, nb_elem_slav
-    integer :: nb_node_mastc, nb_node_slavc, nb_elem_mastc, nb_elem_slavc
-    integer :: nb_cont_poin
+    integer(kind=8), pointer :: v_sdcont_methco(:) => null()
+    integer(kind=8) :: zmeth
+    integer(kind=8) :: i_zone
+    integer(kind=8) :: jdecme, jdecmm, jdecne, jdecnm
+    integer(kind=8) :: i_surf_escl, i_surf_mast
+    integer(kind=8) :: nb_node_mast, nb_node_slav, nb_elem_mast, nb_elem_slav
+    integer(kind=8) :: nb_node_mastc, nb_node_slavc, nb_elem_mastc, nb_elem_slavc
+    integer(kind=8) :: nb_cont_poin
     character(len=24) :: sdcont_defi
-    integer :: cont_form
+    integer(kind=8) :: cont_form
     aster_logical :: l_verif
-    integer :: nb_cont_poinc
+    integer(kind=8) :: nb_cont_poinc
 !
 ! ----------------------------------------------------------------------
 !

@@ -259,7 +259,8 @@ ASTERDOUBLE Result::getTime( ASTERINTEGER storageIndex ) const {
         _calculationParameter->build( true );
     }
 
-    for ( const auto &[i, item] : *_calculationParameter ) {
+    int i = 1;
+    for ( const auto &item : *_calculationParameter ) {
         item->updateValuePointer();
         auto typevar = strip( ( *item )[3].toString() );
 
@@ -280,6 +281,7 @@ ASTERDOUBLE Result::getTime( ASTERINTEGER storageIndex ) const {
                 return ( *_rspr )[nmax * internalIndex + ivar - 1];
             }
         }
+        ++i;
     }
     UTMESS( "F", "RESULT2_9" );
     return 0.0;
@@ -300,7 +302,8 @@ void Result::_listOfParameters() {
 
     _calculationParameter->updateValuePointer();
 
-    for ( const auto &[i, item] : *_calculationParameter ) {
+    int i = 1;
+    for ( const auto &item : *_calculationParameter ) {
         item->updateValuePointer();
         auto objectSuffix = strip( ( *item )[0].toString() );
         auto paraName = strip( _accessVariables->getStringFromIndex( i ) );
@@ -319,6 +322,7 @@ void Result::_listOfParameters() {
             AS_ABORT( "Unknown type" );
         }
         _dictParameters.insert( std::make_pair( paraName, paraType ) );
+        ++i;
     }
 }
 
@@ -934,15 +938,17 @@ void Result::printMedFile( const std::filesystem::path &fileName, std::string me
     ASTERINTEGER retour = -1;
     // In case that the print file (single and absolute path) is unique between processors,
     // it must only be created on proc 0.
-    if ( getMesh()->isParallel() || ( !getMesh()->isParallel() && rank == 0 ) ) {
+    if ( getMesh()->isParallel() || rank == 0 ) {
         if ( rank == 0 )
             a.openFile( fileName, Binary, New );
         if ( getMesh()->isParallel() ) {
 #ifdef ASTER_HAVE_MPI
             AsterMPI::barrier();
 #endif /* ASTER_HAVE_MPI */
-            if ( rank != 0 )
-                a.openFile( fileName, Binary, Old );
+            if ( rank != 0 ) {
+                auto mode = local ? New : Old;
+                a.openFile( fileName, Binary, mode );
+            }
         }
         retour = a.getLogicalUnit();
     }
@@ -1002,7 +1008,7 @@ bool Result::build( const std::vector< FiniteElementDescriptorPtr > feds,
     }
 
     ASTERINTEGER cmpt = 1;
-    for ( const auto &[key, obj] : _namesOfFields ) {
+    for ( const auto &obj : _namesOfFields ) {
         obj->updateValuePointer();
         auto nomSymb = strip( _symbolicNamesOfFields->getStringFromIndex( cmpt ) );
         AS_ASSERT( nbIndexes <= obj->size() );

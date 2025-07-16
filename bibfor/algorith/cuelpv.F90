@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -24,8 +24,8 @@ subroutine cuelpv(numlia, resocu, nbliai, lelpiv)
 #include "jeveux.h"
 #include "asterfort/jeveuo.h"
     aster_logical :: lelpiv
-    integer :: numlia
-    integer :: nbliai
+    integer(kind=8) :: numlia
+    integer(kind=8) :: nbliai
     character(len=24) :: resocu
 !
 ! ----------------------------------------------------------------------
@@ -43,9 +43,9 @@ subroutine cuelpv(numlia, resocu, nbliai, lelpiv)
 !
 !
 !
-    integer :: iote
+    integer(kind=8) :: iote
     character(len=19) :: liot
-    integer :: jliot
+    integer(kind=8) :: jliot
 ! ======================================================================
     liot = resocu(1:14)//'.LIOT'
     call jeveuo(liot, 'L', jliot)

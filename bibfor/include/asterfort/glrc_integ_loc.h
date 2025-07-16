@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -45,9 +45,9 @@ interface
         real(kind=8) :: dksi2
         real(kind=8) :: da1
         real(kind=8) :: da2
-        integer :: kdmax
+        integer(kind=8) :: kdmax
         real(kind=8) :: told
-        integer :: codret
+        integer(kind=8) :: codret
         real(kind=8) :: emp(2)
     end subroutine glrc_integ_loc
 end interface

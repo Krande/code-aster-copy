@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -21,10 +21,10 @@
 interface
     subroutine rvinfo(ifm, iocc, i1, i2, c,&
                       sdchef)
-        integer :: ifm
-        integer :: iocc
-        integer :: i1
-        integer :: i2
+        integer(kind=8) :: ifm
+        integer(kind=8) :: iocc
+        integer(kind=8) :: i1
+        integer(kind=8) :: i2
         character(len=1) :: c
         character(len=16) :: sdchef
     end subroutine rvinfo

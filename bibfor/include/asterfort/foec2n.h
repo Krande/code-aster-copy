@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -21,11 +21,11 @@
 interface
     subroutine foec2n(iuni, vecpro, valpar, chval, nbfonc,&
                       impr)
-        integer :: nbfonc
-        integer :: iuni
+        integer(kind=8) :: nbfonc
+        integer(kind=8) :: iuni
         character(len=*) :: vecpro(*)
         real(kind=8) :: valpar(nbfonc)
         character(len=*) :: chval
-        integer :: impr
+        integer(kind=8) :: impr
     end subroutine foec2n
 end interface

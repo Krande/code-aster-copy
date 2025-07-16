@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -52,14 +52,14 @@ subroutine slecol(imod, nbmail)
     character(len=4) :: kbid
     character(len=8) :: chmail, chgrou
     aster_logical :: logiq(256)
-    integer :: jpo(256), jnomb(256), jmax(256)
+    integer(kind=8) :: jpo(256), jnomb(256), jmax(256)
 !  ------------ FIN DECLARATION -------------
 !
 !  -->N  D'UNITE LOGIQUE ASSOCIE AUX FICHIERS
 !-----------------------------------------------------------------------
-    integer :: i, ic, icmax, icol, imod, inum, ipos
-    integer :: j, nbma, nbmail, nbmax, nbtot
-    integer, pointer :: maille(:) => null()
+    integer(kind=8) :: i, ic, icmax, icol, imod, inum, ipos
+    integer(kind=8) :: j, nbma, nbmail, nbmax, nbtot
+    integer(kind=8), pointer :: maille(:) => null()
 !-----------------------------------------------------------------------
     call jemarq()
 !

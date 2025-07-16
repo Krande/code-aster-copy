@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -25,7 +25,6 @@ module csc_matrix_type
 !
     private
 #include "asterf_petsc.h"
-#include "asterc/asmpi_comm.h"
 #include "asterc/r8prem.h"
 #include "asterfort/as_deallocate.h"
 #include "asterfort/as_allocate.h"

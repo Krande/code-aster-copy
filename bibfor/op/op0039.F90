@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -25,6 +25,7 @@ subroutine op0039()
 #include "asterc/getfac.h"
 #include "asterfort/assert.h"
 #include "asterfort/dismoi.h"
+#include "asterfort/gettco.h"
 #include "asterfort/getvid.h"
 #include "asterfort/getvis.h"
 #include "asterfort/getvr8.h"
@@ -48,19 +49,19 @@ subroutine op0039()
 !
     mpi_int :: mrank, msize
     character(len=16), parameter :: keywf = 'RESU'
-    integer :: keywfNb, keywfIocc
-    integer :: fileUnit, fileVersion
+    integer(kind=8) :: keywfNb, keywfIocc
+    integer(kind=8) :: fileUnit, fileVersion
     character(len=1) :: fileType
     character(len=3) :: fichierUnique
     character(len=8) :: fileFormat
-    character(len=16) :: fileName
-    integer :: nbMesh, nbResu, nbField, nbRet, nbNodeCmp
-    integer :: nn, rank, nbprocs
+    character(len=16) :: fileName, resuType
+    integer(kind=8) :: nbMesh, nbResu, nbField, nbRet, nbNodeCmp
+    integer(kind=8) :: nn, rank, nbprocs
     real(kind=8) :: fileVersionR
     real(kind=8), parameter :: eps = 1.0d-6
-    character(len=8) :: model, mesh, resultMesh, proc0, ispar
+    character(len=8) :: model, mesh, resultMesh, proc0, ispar, nameType
     character(len=19) :: result
-    aster_logical :: lResu, lMesh, lfichUniq
+    aster_logical :: lResu, lMesh, lfichUniq, lNomCas
 !
 ! ------------------------------------------------------------------------------
 !
@@ -78,6 +79,7 @@ subroutine op0039()
         proc0 = 'OUI'
     end if
     lfichUniq = .false._1
+    lNomCas = ASTER_FALSE
 !
 !XX if (nbIndexes .eq. 0) then
     call getfac(keywf, keywfNb)
@@ -209,7 +211,19 @@ subroutine op0039()
     end if
 ! ----- Loop on factor keywords
     do keywfIocc = 1, keywfNb
-        call irmfac(keywfIocc, fileFormat, fileUnit, fileVersion, model, lfichUniq)
+        if (fileFormat .eq. 'MED') then
+            call gettco(result, resuType)
+            if (resuType .eq. "MULT_ELAS") then
+                call getvtx(keywf, 'TYPE_NOM', iocc=keywfIocc, nbval=0, nbret=nbRet)
+                if (nbRet .ne. 0) then
+                    call getvtx(keywf, 'TYPE_NOM', iocc=keywfIocc, scal=nameType)
+                    if (nameType .eq. "NOM_CAS") then
+                        lNomCas = ASTER_TRUE
+                    end if
+                end if
+            end if
+        end if
+        call irmfac(keywfIocc, fileFormat, fileUnit, fileVersion, model, lfichUniq, lNomCas)
     end do
     if (fileFormat .ne. 'MED') then
         flush (fileUnit)

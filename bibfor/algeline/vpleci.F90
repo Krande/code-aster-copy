@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -35,13 +35,13 @@ subroutine vpleci(eigsol, ktype, indice, &
 !
 ! --- INPUT
 !
-    integer, intent(in) :: indice
+    integer(kind=8), intent(in) :: indice
     character(len=1), intent(in) :: ktype
     character(len=19), intent(in) :: eigsol
 !
 ! --- OUTPUT
 !
-    integer, intent(out) :: vali
+    integer(kind=8), intent(out) :: vali
     real(kind=8), intent(out) :: valr
     character(len=24), intent(out) :: valk
 !
@@ -50,7 +50,7 @@ subroutine vpleci(eigsol, ktype, indice, &
 !
 ! --- VARIABLES LOCALES
 !
-    integer           :: eislvi, eislvk, eislvr
+    integer(kind=8)           :: eislvi, eislvk, eislvr
 !
 ! -----------------------
 ! --- CORPS DE LA ROUTINE

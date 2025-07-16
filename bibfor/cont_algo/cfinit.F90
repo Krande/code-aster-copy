@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -25,14 +25,13 @@ subroutine cfinit(ds_contact, nume_inst)
 !
 #include "asterf_types.h"
 #include "asterfort/cfdisl.h"
-#include "asterfort/isfonc.h"
 #include "asterfort/infdbg.h"
 #include "asterfort/mmbouc.h"
 #include "asterfort/utmess.h"
 #include "asterfort/vtzero.h"
 !
     type(NL_DS_Contact), intent(inout) :: ds_contact
-    integer, intent(in) :: nume_inst
+    integer(kind=8), intent(in) :: nume_inst
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -47,7 +46,7 @@ subroutine cfinit(ds_contact, nume_inst)
 !
 ! --------------------------------------------------------------------------------------------------
 !
-    integer :: ifm, niv
+    integer(kind=8) :: ifm, niv
     character(len=24) :: sdcont_autoc1, sdcont_autoc2
 !
 ! --------------------------------------------------------------------------------------------------

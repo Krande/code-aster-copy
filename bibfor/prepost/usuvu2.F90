@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -41,16 +41,16 @@ subroutine usuvu2(puusur, vusur, nbinst, temps, isupp, &
 #include "asterfort/usupu2.h"
 #include "asterfort/utmess.h"
     real(kind=8) :: vusur(*), temps(*), para(7), fn(*), vg(*), coef(*), ang(*)
-    integer :: nbinst, nbpair
+    integer(kind=8) :: nbinst, nbpair
     real(kind=8) :: vustub(nbpair, nbinst), vusob(nbpair, nbinst)
     real(kind=8) :: pus(*), pmoye, pourpu(*), poupre(*)
     character(len=8) :: k8b
     character(len=24) :: loi, mate
 !
 !-----------------------------------------------------------------------
-    integer :: i, ifires, iret, isupp, n1, n2
-    integer :: n3, n4, n5, n6, nbpt
-    integer :: nn
+    integer(kind=8) :: i, ifires, iret, isupp, n1, n2
+    integer(kind=8) :: n3, n4, n5, n6, nbpt
+    integer(kind=8) :: nn
     real(kind=8) :: puusu2, puusur, t, v0, w, x1, xa
     real(kind=8) :: xb, xd, xn, xs
 !-----------------------------------------------------------------------

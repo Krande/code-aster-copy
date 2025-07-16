@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -25,10 +25,9 @@ subroutine mmmjeu(ndim, i_reso_geom, jeusup, &
 !
     implicit none
 !
-#include "asterfort/assert.h"
 #include "Contact_type.h"
 !
-    integer, intent(in) :: ndim, i_reso_geom
+    integer(kind=8), intent(in) :: ndim, i_reso_geom
     real(kind=8), intent(in) :: jeusup, norm(3)
     real(kind=8), intent(in):: geomm(3), geome(3)
     real(kind=8), intent(in) :: ddeple(3), ddeplm(3)
@@ -58,7 +57,7 @@ subroutine mmmjeu(ndim, i_reso_geom, jeusup, &
 !
 ! --------------------------------------------------------------------------------------------------
 !
-    integer :: idim, i, j
+    integer(kind=8) :: idim, i, j
     real(kind=8) :: ppe
 !
 ! --------------------------------------------------------------------------------------------------

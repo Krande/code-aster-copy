@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -20,10 +20,10 @@ subroutine zaddrc(m, n, alpha, x, incx, &
                   y, incy, a, lda)
     implicit none
 #include "blas/zaxpy.h"
-    integer :: m, n, incx, incy, lda
+    integer(kind=8) :: m, n, incx, incy, lda
     complex(kind=8) :: alpha, x(*), y(*)
     complex(kind=8) :: a(*)
-    integer :: i1x
+    integer(kind=8) :: i1x
 !    CALCUL DE ALPHA*CONJG(Y)'
 !-----------------------------------------------------------------------
 ! IN  : M    : NOMBRE DE LIGNE DE A.
@@ -36,7 +36,7 @@ subroutine zaddrc(m, n, alpha, x, incx, &
 ! I/O : A    : MATRICE COMPLEXE DE DIMENSION M*N.
 ! IN  : LDA  : DIMENSION DE A.
 !-----------------------------------------------------------------------
-    integer :: iy, j
+    integer(kind=8) :: iy, j
     blas_int :: b_incx, b_incy, b_n
     if (m .eq. 0 .or. n .eq. 0 .or. alpha .eq. (0.0d0, 0.0d0)) goto 9000
 !

@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -25,7 +25,7 @@ subroutine nmveso(rb, nb, rp, np, drbdb, &
 #include "asterfort/lceqvn.h"
 #include "asterfort/lcicma.h"
 #include "asterfort/mgauss.h"
-    integer :: nb, np, nr
+    integer(kind=8) :: nb, np, nr
     aster_logical :: cplan
     real(kind=8) :: rb(nb), rp(np), drbdb(nb, nb), drbdp(nb, np)
     real(kind=8) :: dp(np), dbeta(nb), drpdp(np, np), drpdb(np, nb)
@@ -36,7 +36,7 @@ subroutine nmveso(rb, nb, rp, np, drbdb, &
 !
 !     GENERATION ET RESOLUTION DU SYSTEME LINEAIRE DRDY(DY).DDY = -R(DY)
 !-----------------------------------------------------------------------
-    integer :: nmod, i, iret
+    integer(kind=8) :: nmod, i, iret
     real(kind=8) :: zero, un, mun, det
     parameter(nmod=25)
     parameter(zero=0.d0)

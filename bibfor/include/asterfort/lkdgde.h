@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -22,8 +22,8 @@ interface
     subroutine lkdgde(val, vintr, dt, seuive, ucrim,&
                       im, sm, vinm, nbmat, mater,&
                       depsv, dgamv, retcom)
-        integer :: nbmat
-        integer :: val
+        integer(kind=8) :: nbmat
+        integer(kind=8) :: val
         real(kind=8) :: vintr
         real(kind=8) :: dt
         real(kind=8) :: seuive
@@ -34,6 +34,6 @@ interface
         real(kind=8) :: mater(nbmat, 2)
         real(kind=8) :: depsv(6)
         real(kind=8) :: dgamv
-        integer :: retcom
+        integer(kind=8) :: retcom
     end subroutine lkdgde
 end interface

@@ -28,30 +28,22 @@ subroutine aplcpgn(mesh, newgeo, &
 !
     implicit none
 !
-#include "asterc/r8nnem.h"
 #include "asterf_types.h"
 #include "asterfort/ap_infast_n.h"
 #include "asterfort/apcoor.h"
-#include "asterfort/aprtpm.h"
-#include "asterfort/apsave_pair.h"
 #include "asterfort/aptype.h"
 #include "asterfort/as_allocate.h"
 #include "asterfort/as_deallocate.h"
 #include "asterfort/assert.h"
-#include "asterfort/clpoma.h"
-#include "asterfort/codent.h"
 #include "asterfort/jedema.h"
-#include "asterfort/jedetr.h"
 #include "asterfort/jemarq.h"
 #include "asterfort/jenuno.h"
 #include "asterfort/jeveuo.h"
 #include "asterfort/jexatr.h"
 #include "asterfort/jexnum.h"
 #include "asterfort/prjint_ray.h"
-#include "asterfort/reerel.h"
 #include "asterfort/testvois.h"
 #include "asterfort/utmess.h"
-#include "asterfort/wkvect.h"
 #include "jeveux.h"
 #include "Contact_type.h"
 #include "asterfort/int_to_char8.h"
@@ -61,12 +53,12 @@ subroutine aplcpgn(mesh, newgeo, &
     character(len=24), intent(in) :: mastConxInvName
     character(len=24), intent(in) :: mastNeighName, slavNeighName
     real(kind=8), intent(in) :: pair_tole, dist_ratio
-    integer, intent(in) :: nb_elem_slav
-    integer, intent(in) :: nb_elem_mast
-    integer, intent(in) :: nb_node_mast
-    integer, intent(in) :: list_elem_mast(nb_elem_mast)
-    integer, intent(in) :: list_elem_slav(nb_elem_slav)
-    integer, intent(in) :: list_node_mast(nb_node_mast)
+    integer(kind=8), intent(in) :: nb_elem_slav
+    integer(kind=8), intent(in) :: nb_elem_mast
+    integer(kind=8), intent(in) :: nb_node_mast
+    integer(kind=8), intent(in) :: list_elem_mast(nb_elem_mast)
+    integer(kind=8), intent(in) :: list_elem_slav(nb_elem_slav)
+    integer(kind=8), intent(in) :: list_node_mast(nb_node_mast)
     type(MESH_PAIRING), intent(inout) :: meshPairing
 !
 ! --------------------------------------------------------------------------------------------------
@@ -95,43 +87,43 @@ subroutine aplcpgn(mesh, newgeo, &
 !
 ! --------------------------------------------------------------------------------------------------
 !
-    integer :: iret, vali(2)
-    integer :: elem_slav_nbnode, elem_slav_nume, elem_slav_dime, elem_slav_indx
-    integer :: elem_mast_nbnode, elem_mast_nume, elem_mast_dime, elem_mast_indx
+    integer(kind=8) :: iret, vali(2)
+    integer(kind=8) :: elem_slav_nbnode, elem_slav_nume, elem_slav_dime, elem_slav_indx
+    integer(kind=8) :: elem_mast_nbnode, elem_mast_nume, elem_mast_dime, elem_mast_indx
     character(len=8) :: elem_mast_code, elem_slav_code
     character(len=8) :: elem_slav_type, elem_mast_type
     real(kind=8) :: elem_mast_coor(27), elem_slav_coor(27)
-    integer :: nb_pair, nb_poin_inte
-    integer :: i_mast_neigh, i_slav_start, i_mast_start, i_find_mast
-    integer :: i_slav_neigh
+    integer(kind=8) :: nb_pair, nb_poin_inte
+    integer(kind=8) :: i_mast_neigh, i_slav_start, i_mast_start, i_find_mast
+    integer(kind=8) :: i_slav_neigh
     real(kind=8) :: inte_weight
     real(kind=8) :: poin_inte_sl(SIZE_MAX_INTE_SL)
     real(kind=8) :: poin_inte_ma(SIZE_MAX_INTE_SL)
     character(len=8) :: elem_slav_name, elem_name
-    integer :: nb_slav_start, nb_find_mast, nb_mast_start
-    integer :: elem_start, elem_nume
-    integer :: slav_indx_mini, mast_indx_mini, slav_indx_maxi, mast_indx_maxi
-    integer :: elem_neigh_indx, mast_find_indx, elem_slav_neigh, elem_mast_neigh
+    integer(kind=8) :: nb_slav_start, nb_find_mast, nb_mast_start
+    integer(kind=8) :: elem_start, elem_nume
+    integer(kind=8) :: slav_indx_mini, mast_indx_mini, slav_indx_maxi, mast_indx_maxi
+    integer(kind=8) :: elem_neigh_indx, mast_find_indx, elem_slav_neigh, elem_mast_neigh
     aster_logical :: l_recup, debug, pair_exist
-    integer, pointer :: mast_find_flag(:) => null()
-    integer, pointer :: elem_slav_flag(:) => null()
-    integer, pointer :: v_sdappa_slne(:) => null()
-    integer, pointer :: v_sdappa_mane(:) => null()
-    integer :: list_slav_master(4)
-    integer :: nb_mast_neigh, nb_slav_neigh
-    integer :: inte_neigh(4)
-    integer :: jv_geom, elem_type_nume
+    integer(kind=8), pointer :: mast_find_flag(:) => null()
+    integer(kind=8), pointer :: elem_slav_flag(:) => null()
+    integer(kind=8), pointer :: v_sdappa_slne(:) => null()
+    integer(kind=8), pointer :: v_sdappa_mane(:) => null()
+    integer(kind=8) :: list_slav_master(4)
+    integer(kind=8) :: nb_mast_neigh, nb_slav_neigh
+    integer(kind=8) :: inte_neigh(4)
+    integer(kind=8) :: jv_geom, elem_type_nume
     real(kind=8) :: list_slav_weight(4), weight_test, tole_weight
-    integer, pointer :: v_mesh_typmail(:) => null()
-    integer, pointer :: v_mesh_connex(:) => null()
-    integer, pointer :: v_connex_lcum(:) => null()
+    integer(kind=8), pointer :: v_mesh_typmail(:) => null()
+    integer(kind=8), pointer :: v_mesh_connex(:) => null()
+    integer(kind=8), pointer :: v_connex_lcum(:) => null()
     real(kind=8), pointer :: li_pt_inte_sl(:) => null()
     real(kind=8), pointer :: li_pt_inte_ma(:) => null()
-    integer, pointer :: list_pair(:) => null()
-    integer, pointer :: li_nb_pt_inte_sl(:) => null()
-    integer, pointer :: list_find_mast(:) => null()
-    integer, pointer :: elem_slav_start(:) => null()
-    integer, pointer :: elem_mast_start(:) => null()
+    integer(kind=8), pointer :: list_pair(:) => null()
+    integer(kind=8), pointer :: li_nb_pt_inte_sl(:) => null()
+    integer(kind=8), pointer :: list_find_mast(:) => null()
+    integer(kind=8), pointer :: elem_slav_start(:) => null()
+    integer(kind=8), pointer :: elem_mast_start(:) => null()
 !
 ! --------------------------------------------------------------------------------------------------
 !

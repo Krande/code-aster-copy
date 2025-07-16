@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -25,23 +25,23 @@ interface
                       ldt, q, ldq, wr, wi,&
                       m, s, sep, work, lwork,&
                       iwork, liwork, info)
-        integer :: ldq
-        integer :: ldt
+        integer(kind=8) :: ldq
+        integer(kind=8) :: ldt
         character(len=1) :: job
         character(len=1) :: compq
         aster_logical :: select(*)
-        integer :: n
+        integer(kind=8) :: n
         real(kind=8) :: t(ldt, *)
         real(kind=8) :: q(ldq, *)
         real(kind=8) :: wr(*)
         real(kind=8) :: wi(*)
-        integer :: m
+        integer(kind=8) :: m
         real(kind=8) :: s
         real(kind=8) :: sep
         real(kind=8) :: work(*)
-        integer :: lwork
-        integer :: iwork(*)
-        integer :: liwork
-        integer :: info
+        integer(kind=8) :: lwork
+        integer(kind=8) :: iwork(*)
+        integer(kind=8) :: liwork
+        integer(kind=8) :: info
     end subroutine ar_dtrsen
 end interface

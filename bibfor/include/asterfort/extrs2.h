@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -32,14 +32,14 @@ interface
         character(len=8), intent(in) :: modele
         character(len=8), intent(in) :: cara
         character(len=8), intent(in) :: chmat
-        integer :: nbordr
-        integer :: nuordr(*)
-        integer :: nbacc
+        integer(kind=8) :: nbordr
+        integer(kind=8) :: nuordr(*)
+        integer(kind=8) :: nbacc
         character(len=16) :: nomacc(*)
-        integer :: nbarch
-        integer :: nuarch(*)
-        integer :: nbexcl
+        integer(kind=8) :: nbarch
+        integer(kind=8) :: nuarch(*)
+        integer(kind=8) :: nbexcl
         character(len=16) :: chexcl(*)
-        integer :: nbnosy
+        integer(kind=8) :: nbnosy
     end subroutine extrs2
 end interface

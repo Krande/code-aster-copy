@@ -21,7 +21,7 @@ subroutine lc9058(BEHinteg, fami, kpg, ksp, ndim, &
                   typmod, imate, compor, carcri, instam, &
                   instap, neps, epsm, deps, nsig, &
                   sigm, nvi, vim, option, angmas, &
-                  sigp, vip, ndsidep_loc, dsidep, codret)
+                  sigp, vip, ndsde, dsidep, codret)
 !
     use Behaviour_type
     use BehaviourMGIS_module
@@ -29,22 +29,15 @@ subroutine lc9058(BEHinteg, fami, kpg, ksp, ndim, &
 !
     implicit none
 !
-#include "asterc/mgis_debug.h"
 #include "asterc/mgis_get_number_of_props.h"
 #include "asterc/mgis_integrate.h"
-#include "asterc/mgis_set_external_state_variables.h"
 #include "asterc/mgis_set_gradients.h"
 #include "asterc/mgis_set_internal_state_variables.h"
 #include "asterc/mgis_set_material_properties.h"
-#include "asterc/mgis_set_rotation_matrix.h"
-#include "asterc/mgis_set_thermodynamic_forces.h"
-#include "asterc/r8maem.h"
 #include "asterfort/assert.h"
 #include "asterfort/Behaviour_type.h"
 #include "asterfort/BehaviourMGIS_type.h"
 #include "asterfort/czm_post.h"
-#include "asterfort/lcicma.h"
-#include "asterfort/matrot.h"
 #include "asterfort/mfront_get_mater_value.h"
 #include "asterfort/mfrontPrepareStrain.h"
 #include "asterfort/rcvalb.h"
@@ -53,26 +46,26 @@ subroutine lc9058(BEHinteg, fami, kpg, ksp, ndim, &
 !
     type(Behaviour_Integ), intent(in) :: BEHinteg
     character(len=*), intent(in) :: fami
-    integer, intent(in) :: kpg, ksp, ndim
+    integer(kind=8), intent(in) :: kpg, ksp, ndim
     character(len=8), intent(in) :: typmod(*)
-    integer, intent(in) :: imate
+    integer(kind=8), intent(in) :: imate
     character(len=16), intent(in) :: compor(COMPOR_SIZE)
     real(kind=8), intent(in) :: carcri(CARCRI_SIZE)
     real(kind=8), intent(in) :: instam, instap
-    integer, intent(in) :: neps
+    integer(kind=8), intent(in) :: neps
     real(kind=8), intent(in) :: epsm(neps), deps(neps)
-    integer, intent(in) :: nsig
+    integer(kind=8), intent(in) :: nsig
     real(kind=8), intent(in) :: sigm(nsig)
-    integer, intent(in) :: nvi
+    integer(kind=8), intent(in) :: nvi
     real(kind=8), intent(in) :: vim(nvi)
     character(len=16), intent(in) :: option
     real(kind=8), intent(in) :: angmas(*)
     real(kind=8), intent(out) :: sigp(nsig)
     real(kind=8), intent(out) :: vip(nvi)
-    integer, intent(in) :: ndsidep_loc
-    real(kind=8), intent(out) :: dsidep(merge(nsig, 6, nsig*neps .eq. ndsidep_loc), &
-                                        merge(neps, 6, nsig*neps .eq. ndsidep_loc))
-    integer, intent(out) :: codret
+    integer(kind=8), intent(in) :: ndsde
+    real(kind=8), intent(out) :: dsidep(merge(nsig, 6, nsig*neps .eq. ndsde), &
+                                        merge(neps, 6, nsig*neps .eq. ndsde))
+    integer(kind=8), intent(out) :: codret
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -110,18 +103,21 @@ subroutine lc9058(BEHinteg, fami, kpg, ksp, ndim, &
 ! --------------------------------------------------------------------------------------------------
 !
     aster_logical :: lMatr, lSigm, lVari
-    integer :: i, j
-    integer :: nstran, nforc, nstatv, nmatr
-    integer, parameter :: s0 = 0, s1 = 1
-    real(kind=8) :: dstran(3), stran(3), dsidepMGIS(36)
+    integer(kind=8) :: i, j
+    integer(kind=8) :: nstran, nforc, nstatv, nmatr
+    integer(kind=8), parameter :: s0 = 0, s1 = 1
+    real(kind=8) :: dstran(ndim), stran(ndim)
+    real(kind=8) :: dsidepMGIS(merge(nsig, 6, nsig*neps .eq. ndsde)* &
+                               merge(neps, 6, nsig*neps .eq. ndsde))
     real(kind=8) :: dtime, pnewdt, rdt
     character(len=16) :: rela_comp, defo_comp, extern_addr
     aster_logical :: lGreenLagr, lCZM, lGradVari
-    real(kind=8) :: sigp_loc(6), dsidep_loc(6, 6), vi_loc(nvi)
+    real(kind=8) :: sigp_loc(ndim), vi_loc(nvi)
+    real(kind=8) :: dsidep_loc(ndim, ndim)
     real(kind=8) :: props(MGIS_MAX_PROPS)
-    integer :: nprops, retcode
+    integer(kind=8) :: nprops, retcode
     aster_logical :: dbg
-    integer :: cod(1)
+    integer(kind=8) :: cod(1)
     real(kind=8) :: val(1)
 !
 ! --------------------------------------------------------------------------------------------------
@@ -158,7 +154,7 @@ subroutine lc9058(BEHinteg, fami, kpg, ksp, ndim, &
 
 ! - Management of dimensions
     call getMGISDime(lGreenLagr, lCZM, lGradVari, ndim, &
-                     neps, nsig, nvi, ndsidep_loc, &
+                     neps, nsig, nvi, ndsde, &
                      nstran, nforc, nstatv, nmatr)
 
 ! - Get and set the material properties
@@ -170,7 +166,7 @@ subroutine lc9058(BEHinteg, fami, kpg, ksp, ndim, &
 ! - Prepare strains
     call rcvalb(fami, kpg, ksp, '+', imate, ' ', rela_comp, 0, ' ', [0.d0], &
                 1, 'PENA_LAGR', val, cod, 2)
-    call mfrontPrepareStrain(lGreenLagr, neps, &
+    call mfrontPrepareStrain(lGreenLagr, ndim, &
                              epsm(ndim+1:2*ndim)+val(1)*epsm(1:ndim), &
                              deps(ndim+1:2*ndim)+val(1)*deps(1:ndim), &
                              stran, dstran)

@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2019 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -24,7 +24,7 @@ interface
                       tau1  , tau2  ,&
                       norm  , mprojn, mprojt,&
                       geome , geomm )
-        integer, intent(in) :: ndim, nne, nnm
+        integer(kind=8), intent(in) :: ndim, nne, nnm
         real(kind=8), intent(in) :: ffe(9), ffm(9)
         real(kind=8), intent(in) :: elem_slav_coor(9, 3), elem_mast_coor(9, 3)
         real(kind=8), intent(in) :: tau1(3), tau2(3)

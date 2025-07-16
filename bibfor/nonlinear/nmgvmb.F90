@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -23,15 +23,12 @@ subroutine nmgvmb(ndim, nno1, nno2, npg, axi, &
 !
     implicit none
 #include "asterf_types.h"
-#include "asterfort/assert.h"
 #include "asterfort/dfdmip.h"
-#include "blas/daxpy.h"
-#include "blas/dcopy.h"
     aster_logical, intent(in) :: axi
-    integer, intent(in) :: ndim, nno1, nno2, npg, idfde1, idfde2, iw
+    integer(kind=8), intent(in) :: ndim, nno1, nno2, npg, idfde1, idfde2, iw
     real(kind=8), intent(in) :: geoi(ndim, nno1)
     real(kind=8), intent(in) :: vff1(nno1, npg), vff2(nno2, npg)
-    integer, intent(out) :: nddl, neps
+    integer(kind=8), intent(out) :: nddl, neps
     real(kind=8), intent(out), allocatable :: b(:, :, :)
     real(kind=8), intent(out), allocatable :: w(:, :), ni2ldc(:, :)
 ! ----------------------------------------------------------------------
@@ -57,7 +54,7 @@ subroutine nmgvmb(ndim, nno1, nno2, npg, axi, &
     real(kind=8), parameter :: rac2 = sqrt(2.d0), r2 = 0.5*rac2
     real(kind=8), parameter :: vrac2(6) = [1.d0, 1.d0, 1.d0, rac2, rac2, rac2]
 ! ----------------------------------------------------------------------
-    integer :: g, n
+    integer(kind=8) :: g, n
     real(kind=8) :: r, unsurr, w0
     real(kind=8), allocatable :: dff1(:, :), dff2(:, :)
 ! ----------------------------------------------------------------------

@@ -44,7 +44,7 @@
 class DataStructure {
   public:
     /** @typedef shared_ptr d'une DataStructure */
-    typedef std::shared_ptr< DataStructure > DataStructurePtr;
+    using DataStructurePtr = std::shared_ptr< DataStructure >;
 
   private:
     /** @brief Nom de la sd */
@@ -196,6 +196,15 @@ class DataStructure {
     void setType( const std::string newType );
 };
 using DataStructurePtr = std::shared_ptr< DataStructure >;
+
+class DSWithCppPickling : public DataStructure {
+  public:
+    using DSWithCppPicklingPtr = std::shared_ptr< DSWithCppPickling >;
+
+    using DataStructure::DataStructure; // Inherit all constructors from DataStructure
+};
+
+using DSWithCppPicklingPtr = std::shared_ptr< DSWithCppPickling >;
 
 #endif
 

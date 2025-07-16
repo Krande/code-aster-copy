@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -61,8 +61,8 @@ subroutine betimp(BEHinteg, &
 !       IN  SIGD   :  CONTRAINTE A L'INSTANT PRECEDENT
 !       ----------------------------------------------------------------
     type(Behaviour_Integ), intent(in) :: BEHinteg
-    integer :: nmat, nseui4, ifm, niv
-    integer :: nseui1, nseui2, nseui3
+    integer(kind=8) :: nmat, nseui4, ifm, niv
+    integer(kind=8) :: nseui1, nseui2, nseui3
     real(kind=8) :: pc, pt, sig(6), sige(6), sigd(6), dev(6), lc
     real(kind=8) :: mater(nmat, 2), vind(*), vinf(*)
     real(kind=8) :: fc, ft, beta
@@ -71,10 +71,10 @@ subroutine betimp(BEHinteg, &
     real(kind=8) :: a, b, c, d
     real(kind=8) :: sigeq, sigh, dfcdlc, dftdlt, kuc, kut
     real(kind=8) :: d13, dlambc, dlambt
-    integer :: iadzi, iazk24
+    integer(kind=8) :: iadzi, iazk24
     character(len=8) :: nomail
 !       ---------------------------------------------------------------
-    integer :: ndt, ndi
+    integer(kind=8) :: ndt, ndi
     common/tdim/ndt, ndi
 !       ----------------------------------------------------------------
 !

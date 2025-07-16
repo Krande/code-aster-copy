@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -98,13 +98,13 @@ subroutine immeno(ncncin, nmabet, mailla, x3dca, noebe, &
 ! ---------
     character(len=8) :: mailla
     character(len=24) :: ncncin, nmabet
-    integer :: noebe, numail, numai0, nbcnx, cxma(*), itetra, immer
+    integer(kind=8) :: noebe, numail, numai0, nbcnx, cxma(*), itetra, immer
     real(kind=8) :: x3dca(*), xyzma(3, *), xbar(*)
 !
 ! VARIABLES LOCALES
 ! -----------------
-    integer :: imail, inoma, jcoor, jcxma, noe, jdrvlc, jcncin, iadr, nbm
-    integer :: jlimab
+    integer(kind=8) :: imail, inoma, jcoor, jcxma, noe, jdrvlc, jcncin, iadr, nbm
+    integer(kind=8) :: jlimab
     character(len=24) :: conxma, coorno
 !
 !-------------------   DEBUT DU CODE EXECUTABLE    ---------------------

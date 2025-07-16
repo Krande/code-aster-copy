@@ -25,27 +25,15 @@ subroutine cgComputeLayers(cgField, cgTheta, cnstet, v_numc)
     implicit none
 !
 #include "asterf_types.h"
-#include "asterfort/assert.h"
-#include "asterfort/cnscno.h"
-#include "asterfort/cnscre.h"
-#include "asterfort/detrsd.h"
 #include "asterfort/dismoi.h"
-#include "asterfort/fointe.h"
-#include "asterfort/imprsd.h"
-#include "asterfort/ismali.h"
-#include "asterfort/jedema.h"
-#include "asterfort/jemarq.h"
 #include "asterfort/jeveuo.h"
-#include "asterfort/jexnom.h"
 #include "asterfort/jexnum.h"
-#include "asterfort/utmess.h"
 
 #include "asterfort/as_allocate.h"
 #include "asterfort/as_deallocate.h"
 #include "asterfort/cncinv.h"
 #include "asterfort/jexatr.h"
 #include "asterfort/jenuno.h"
-#include "asterfort/jenonu.h"
 #include "asterfort/conare.h"
 #include "asterfort/char8_to_int.h"
 
@@ -56,23 +44,23 @@ subroutine cgComputeLayers(cgField, cgTheta, cnstet, v_numc)
     character(len=24), intent(in) :: cnstet
     real(kind=8), intent(inout), pointer :: v_numc(:)
 
-    integer :: nbel, i
+    integer(kind=8) :: nbel, i
 
-    integer, pointer :: fondNoeudNume(:) => null()
-    integer, pointer :: connex(:) => null()
-    integer, pointer :: v_l_no_cm(:) => null()
-    integer, pointer :: v_l_no_cp(:) => null()
+    integer(kind=8), pointer :: fondNoeudNume(:) => null()
+    integer(kind=8), pointer :: connex(:) => null()
+    integer(kind=8), pointer :: v_l_no_cm(:) => null()
+    integer(kind=8), pointer :: v_l_no_cp(:) => null()
 
     real(kind=8), pointer :: v_theta(:) => null()
     character(len=8), pointer   :: fondNoeud(:) => null()
 
-    integer :: nume, num_fr, num_c, num_no, iar, iatyma, ima, na, nbar, ndime
-    integer :: ino1, ino2, ino3, i_node
-    integer :: nno1, nno2, nno3, numac
-    integer :: nno_cm, nno_cp
-    integer :: adra, nbmaca, ar(12, 3)
-    integer :: ibid, ityp
-    integer :: jdrvlc, jcncin, jconx2
+    integer(kind=8) :: nume, num_fr, num_c, num_no, iar, iatyma, ima, na, nbar, ndime
+    integer(kind=8) :: ino1, ino2, ino3, i_node
+    integer(kind=8) :: nno1, nno2, nno3, numac
+    integer(kind=8) :: nno_cm, nno_cp
+    integer(kind=8) :: adra, nbmaca, ar(12, 3)
+    integer(kind=8) :: ibid, ityp
+    integer(kind=8) :: jdrvlc, jcncin, jconx2
     character(len=24) :: cnxinv
     character(len=8) :: type
 

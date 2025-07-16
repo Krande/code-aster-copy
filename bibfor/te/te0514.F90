@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -30,7 +30,6 @@ subroutine te0514(option, nomte)
 #include "asterfort/iselli.h"
 #include "asterfort/jevech.h"
 #include "asterfort/loncar.h"
-#include "asterfort/lteatt.h"
 #include "asterfort/ltequa.h"
 #include "asterfort/ndcent.h"
 #include "asterfort/padist.h"
@@ -66,24 +65,24 @@ subroutine te0514(option, nomte)
 !
 !
     character(len=8) :: elp, noma, typma, enr, enr2, elrese(3), typsma
-    integer :: igeom, jlsn, ifisc, nfisc, ptmaxi, pmmaxi
-    integer :: jpintt, jcnset, jheavt, jlonch, jpmilt, zintmx, nfimax
-    integer :: iadzi, iazk24, nno, nnn, jfisco, nsemax, jout6
-    integer :: ninter, nit, nse, nnose, ise2, ncomph, ncompp, ncompc
-    integer :: npts, cnse(6, 10), i, j, k, it, npi, ipt, ise, in, ni, cpt
-    integer :: ndim, ibid, ndime, iad, jtab(7), jtab2(2), vali(2)
-    integer :: nnc, npm, nmilie, nmfis, nbar, ar(12, 3)
-    integer :: iret, nfiss, ifiss, ncomb, ninmax, nmmax, nbars, ars(12, 3)
-    integer :: a1, a2, b1, b2, ncompm, iexit(2), joncno, jonact(8)
+    integer(kind=8) :: igeom, jlsn, ifisc, nfisc, ptmaxi, pmmaxi
+    integer(kind=8) :: jpintt, jcnset, jheavt, jlonch, jpmilt, zintmx, nfimax
+    integer(kind=8) :: iadzi, iazk24, nno, nnn, jfisco, nsemax, jout6
+    integer(kind=8) :: ninter, nit, nse, nnose, ise2, ncomph, ncompp, ncompc
+    integer(kind=8) :: npts, cnse(6, 10), i, j, k, it, npi, ipt, ise, in, ni, cpt
+    integer(kind=8) :: ndim, ibid, ndime, iad, jtab(7), jtab2(2), vali(2)
+    integer(kind=8) :: nnc, npm, nmilie, nmfis, nbar, ar(12, 3)
+    integer(kind=8) :: iret, nfiss, ifiss, ncomb, ninmax, nmmax, nbars, ars(12, 3)
+    integer(kind=8) :: a1, a2, b1, b2, ncompm, iexit(2), joncno, jonact(8)
     parameter(ptmaxi=6, zintmx=5, pmmaxi=17, nsemax=6, nfimax=10)
     real(kind=8) :: nmil(3, 7), txlsn(28), ainter(ptmaxi*zintmx), rainter(4)
     real(kind=8) :: newpt(3), p(3), lonref, pinter(3*ptmaxi), lsn(3)
     real(kind=8) :: pmilie(3*pmmaxi), heav(nsemax*nfimax), u(3), v(3), normal(3)
     real(kind=8) :: xg(3), cridist, xref(81), ff(27), ptref(3), norme
-    integer :: fisco(2*nfimax), fisc(2*nfimax), coupe(nfimax), zxain, ai, nnos
+    integer(kind=8) :: fisco(2*nfimax), fisc(2*nfimax), coupe(nfimax), zxain, ai, nnos
     parameter(ninmax=44, nmmax=264)
 !
-    integer, dimension(:), allocatable :: ndoubl, ndoub2, ndoub3
+    integer(kind=8), dimension(:), allocatable :: ndoubl, ndoub2, ndoub3
 !
     parameter(cridist=1.d-9)
     aster_logical :: deja, ajn, cut, lconnec_ok, pre1, jonc, condition_joncno
@@ -443,7 +442,8 @@ subroutine te0514(option, nomte)
                 do in = 1, nnose
                     lconnec_ok = lconnec_ok .and. &
                                  ((cnse(ise, in) .gt. 0 .and. cnse(ise, in) .le. nno+nnc) .or. &
-                               (cnse(ise, in) .gt. 1000 .and. cnse(ise, in) .le. 1000+ncompp) .or. &
+                                  (cnse(ise, in) .gt. 1000 .and. cnse(ise, in) .le. 1000+ncompp) &
+                                  .or. &
                                   (cnse(ise, in) .gt. 2000 .and. cnse(ise, in) .le. 2000+ncompm))
                     zi(jcnset-1+nnose*(ise2-1)+in) = cnse(ise, in)
                 end do

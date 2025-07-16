@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -42,7 +42,7 @@ subroutine rsutnu(resu, motcle, iocc, knum, nbordr, &
 #include "asterfort/rsorac.h"
 #include "asterfort/utmess.h"
 #include "asterfort/wkvect.h"
-    integer :: iocc, nbordr, ier
+    integer(kind=8) :: iocc, nbordr, ier
     real(kind=8) :: prec
     character(len=*) :: resu, motcle, knum, crit
 ! person_in_charge: nicolas.sellenet at edf.fr
@@ -61,11 +61,11 @@ subroutine rsutnu(resu, motcle, iocc, knum, nbordr, &
 ! IN  : CRIT   : CRITERE DEMANDE
 ! OUT : IER    : CODE RETOUR, = 0 : OK
 !     ------------------------------------------------------------------
-    integer :: ibid, n1, n2, nbacc, iret, jpara, iacc, iad, iut, nbval
-    integer :: vali(4)
-    integer :: jval, nbva2, jnch, ii, ival, nbtrou, lg, laccr
-    integer :: iord, jordr, jord1, jord2, nbordt, nbinst, nbfreq
-    integer :: nbtrop, indi, jordr3, long1, jordr1, jordr2, itrou, i
+    integer(kind=8) :: ibid, n1, n2, nbacc, iret, jpara, iacc, iad, iut, nbval
+    integer(kind=8) :: vali(4)
+    integer(kind=8) :: jval, nbva2, jnch, ii, ival, nbtrou, lg, laccr
+    integer(kind=8) :: iord, jordr, jord1, jord2, nbordt, nbinst, nbfreq
+    integer(kind=8) :: nbtrop, indi, jordr3, long1, jordr1, jordr2, itrou, i
     real(kind=8) :: r8b
     real(kind=8) :: valr
     character(len=4) :: ctyp
@@ -74,7 +74,7 @@ subroutine rsutnu(resu, motcle, iocc, knum, nbordr, &
     character(len=16) :: concep, nomcmd, nomacc
     character(len=19) :: knacc, kvacc, knmod, listr, resuin, knum2
     complex(kind=8) :: c16b
-    integer :: tord(1)
+    integer(kind=8) :: tord(1)
     aster_logical :: verifi
 !     ------------------------------------------------------------------
     call jemarq()

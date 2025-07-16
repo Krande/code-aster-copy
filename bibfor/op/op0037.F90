@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -68,21 +68,21 @@ subroutine op0037()
 #include "asterfort/wkvect.h"
 #include "asterfort/wpnorm.h"
 !-----------------------------------------------------------------------
-    integer :: i, ib, ic, ideb, ie, ieq, ierd
-    integer :: iex, ifin, ilgcon, im, ind, iprec, isign
-    integer :: ival, l, ladpa, lcmp, lcoef, lg, lmod, lgr, ln
-    integer :: lnorm, lnumor, lprod, lvali, lvalk, lvalr
-    integer :: mosign, nbmod, nbmode, nbpafi, nbpafk, nbpafr
-    integer :: nbpaft, nbpami, nbpamk, nbpamr, nbpamt, nbpara, nbpari
-    integer :: nbpark, nbparr, nbtrou, ncmp, ncmpac, neq, npari
-    integer :: npark, nparr, numddl, numnoe, tmod(1)
+    integer(kind=8) :: i, ib, ic, ideb, ie, ieq, ierd
+    integer(kind=8) :: iex, ifin, ilgcon, im, ind, iprec, isign
+    integer(kind=8) :: ival, l, ladpa, lcmp, lcoef, lg, lmod, lgr, ln
+    integer(kind=8) :: lnorm, lnumor, lprod, lvali, lvalk, lvalr
+    integer(kind=8) :: mosign, nbmod, nbmode, nbpafi, nbpafk, nbpafr
+    integer(kind=8) :: nbpaft, nbpami, nbpamk, nbpamr, nbpamt, nbpara, nbpari
+    integer(kind=8) :: nbpark, nbparr, nbtrou, ncmp, ncmpac, neq, npari
+    integer(kind=8) :: npark, nparr, numddl, numnoe, tmod(1)
     real(kind=8) :: dir(3), xmastr(3), maxmas, dmass
 !-----------------------------------------------------------------------
     parameter(nbpami=1, nbpamr=15, nbpamk=1, nbpamt=17)
 !     PARAMETRES "MODE_FLAMB"
     parameter(nbpafi=1, nbpafr=1, nbpafk=1, nbpaft=3)
-    integer :: lmat(2), ibid, ifm, niv, lddl2, vali, iret
-    integer :: l1, l2, l3, lmasse, lraide, lamor, lddl, exmasse
+    integer(kind=8) :: lmat(2), ibid, ifm, niv, lddl2, vali, iret
+    integer(kind=8) :: l1, l2, l3, lmasse, lraide, lamor, lddl, exmasse
     real(kind=8) :: r8b
     complex(kind=8) :: c16b
     aster_logical :: lrefe, lbasm, lamo, lcmplx, lparam

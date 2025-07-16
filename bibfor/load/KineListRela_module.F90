@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -58,7 +58,7 @@ contains
 !   ------------------------------------------------------------------------------------------------
 ! - Parameters
         character(len=*), intent(in) :: relaTypeZ
-        integer, intent(in) :: nbTermMaxi
+        integer(kind=8), intent(in) :: nbTermMaxi
         character(len=19), intent(in) :: listLineRela
         type(KINE_LIST_RELA), intent(out) :: kineListRela
         character(len=4), intent(in), optional :: coefImpoType_
@@ -138,7 +138,7 @@ contains
     subroutine kineListRelaSave(titleZ, nbTerm, kineListRela, epsiDebg_)
 ! - Parameters
         character(len=*), intent(in) :: titleZ
-        integer, intent(in) :: nbTerm
+        integer(kind=8), intent(in) :: nbTerm
         type(KINE_LIST_RELA), intent(in) :: kineListRela
         aster_logical, optional, intent(in) :: epsiDebg_
 ! - Local
@@ -163,11 +163,13 @@ contains
 ! ----- Print linear relation (for debug)
             if (present(epsiDebg_)) then
                 call imprel(titleZ, nbTerm, &
-                           kineListRela%coefMultReal, kineListRela%dofName, kineListRela%nodeName, &
+                            kineListRela%coefMultReal, kineListRela%dofName, &
+                            kineListRela%nodeName, &
                             realZero, kineListRela%coefMultTole)
             else
                 call imprel(titleZ, nbTerm, &
-                           kineListRela%coefMultReal, kineListRela%dofName, kineListRela%nodeName, &
+                            kineListRela%coefMultReal, kineListRela%dofName, &
+                            kineListRela%nodeName, &
                             realZero)
             end if
 

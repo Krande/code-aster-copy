@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -27,7 +27,6 @@ subroutine comp_ntvari(model_, comporMap_, comporList_, comporInfo, &
 #include "asterf_types.h"
 #include "asterfort/assert.h"
 #include "asterfort/Behaviour_type.h"
-#include "asterfort/comp_meca_l.h"
 #include "asterfort/dismoi.h"
 #include "asterfort/getExternalBehaviourPara.h"
 #include "asterfort/jelira.h"
@@ -41,7 +40,7 @@ subroutine comp_ntvari(model_, comporMap_, comporList_, comporInfo, &
     character(len=19), optional, intent(in) :: comporMap_
     character(len=16), optional, intent(in) :: comporList_(COMPOR_SIZE)
     character(len=19), intent(in) :: comporInfo
-    integer, intent(out) :: nt_vari, nb_vari_maxi, mapNbZone
+    integer(kind=8), intent(out) :: nt_vari, nb_vari_maxi, mapNbZone
     type(BehaviourPrep_Exte), pointer :: prepExte(:)
 !
 ! --------------------------------------------------------------------------------------------------
@@ -63,16 +62,16 @@ subroutine comp_ntvari(model_, comporMap_, comporList_, comporInfo, &
 !
 ! --------------------------------------------------------------------------------------------------
 !
-    integer, pointer :: modelCell(:) => null()
+    integer(kind=8), pointer :: modelCell(:) => null()
     character(len=16), pointer :: comporVale(:) => null()
-    integer, pointer :: comporInfoZone(:) => null()
-    integer, pointer :: comporDesc(:) => null()
-    integer, pointer :: comporLima(:) => null()
-    integer, pointer :: comporLimaCumu(:) => null()
-    integer :: nbVale, mapNbCmpMax, nb_vari, nbCell, nbCellMesh
-    integer :: iMapZone, iret, iCell, posit
-    integer :: affeZoneType, affeZoneNume, cellTypeNume, cellNume
-    integer :: iocc
+    integer(kind=8), pointer :: comporInfoZone(:) => null()
+    integer(kind=8), pointer :: comporDesc(:) => null()
+    integer(kind=8), pointer :: comporLima(:) => null()
+    integer(kind=8), pointer :: comporLimaCumu(:) => null()
+    integer(kind=8) :: nbVale, mapNbCmpMax, nb_vari, nbCell, nbCellMesh
+    integer(kind=8) :: iMapZone, iret, iCell, posit
+    integer(kind=8) :: affeZoneType, affeZoneNume, cellTypeNume, cellNume
+    integer(kind=8) :: iocc
     character(len=16), parameter:: factorKeyword = 'COMPORTEMENT'
     character(len=16) :: cellTypeName
     character(len=16) :: post_iter

@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -28,19 +28,19 @@ interface
                       ddlexc, ddllag, neqact, maxitr, ifm,&
                       niv, priram, alpha, nconv, flage,&
                       vaur, vauc, vaul, solveu)
-        integer :: nfreq
-        integer :: nbeq
+        integer(kind=8) :: nfreq
+        integer(kind=8) :: nbeq
         character(len=1) :: appr
-        integer :: lmasse
-        integer :: lamor
-        integer :: lmatra
-        integer :: nbvect
+        integer(kind=8) :: lmasse
+        integer(kind=8) :: lamor
+        integer(kind=8) :: lmatra
+        integer(kind=8) :: nbvect
         real(kind=8) :: tolsor
         complex(kind=8) :: vect(nbeq, *)
         real(kind=8) :: resid(*)
         real(kind=8) :: workd(*)
         real(kind=8) :: workl(*)
-        integer :: lonwl
+        integer(kind=8) :: lonwl
         aster_logical :: selec(*)
         real(kind=8) :: dsor(nfreq+1, *)
         real(kind=8) :: vpr(*)
@@ -48,15 +48,15 @@ interface
         complex(kind=8) :: sigma
         real(kind=8) :: vaux(*)
         real(kind=8) :: workv(*)
-        integer :: ddlexc(*)
-        integer :: ddllag(*)
-        integer :: neqact
-        integer :: maxitr
-        integer :: ifm
-        integer :: niv
-        integer :: priram(8)
+        integer(kind=8) :: ddlexc(*)
+        integer(kind=8) :: ddllag(*)
+        integer(kind=8) :: neqact
+        integer(kind=8) :: maxitr
+        integer(kind=8) :: ifm
+        integer(kind=8) :: niv
+        integer(kind=8) :: priram(8)
         real(kind=8) :: alpha
-        integer :: nconv
+        integer(kind=8) :: nconv
         aster_logical :: flage
         real(kind=8) :: vaur(2*nbeq, *)
         complex(kind=8) :: vauc(2*nbeq, *)

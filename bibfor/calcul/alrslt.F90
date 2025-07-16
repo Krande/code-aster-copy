@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -34,11 +34,10 @@ subroutine alrslt(nout, lchout, lpaout, base)
 #include "asterfort/grdeur.h"
 #include "asterfort/jeexin.h"
 #include "asterfort/jeveuo.h"
-#include "asterfort/jexatr.h"
 #include "asterfort/jexnum.h"
 #include "asterfort/wkvect.h"
 
-    integer :: nout
+    integer(kind=8) :: nout
     character(len=*) :: base, lchout(*)
     character(len=8) :: lpaout(*)
 ! ----------------------------------------------------------------------
@@ -50,7 +49,7 @@ subroutine alrslt(nout, lchout, lpaout, base)
 !     sorties:
 !       creation des champs globaux resultats
 ! ----------------------------------------------------------------------
-    integer :: gd, descgd, code, i, iret1, iret2, iret
+    integer(kind=8) :: gd, descgd, code, i, iret1, iret2, iret
     character(len=19) :: nochou, dcel
     character(len=8) :: nompar
     character(len=8) :: nomgd, tsca, tych

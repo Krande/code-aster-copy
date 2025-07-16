@@ -27,11 +27,9 @@ subroutine ndassp(listFuncActi, ds_contact, ds_system, &
     implicit none
 !
 #include "asterf_types.h"
-#include "asterfort/assert.h"
 #include "asterfort/cfdisl.h"
 #include "asterfort/isfonc.h"
 #include "asterfort/ndasva.h"
-#include "asterfort/ndynin.h"
 #include "asterfort/ndynre.h"
 #include "asterfort/nmasdi.h"
 #include "asterfort/nmasfi.h"
@@ -39,13 +37,12 @@ subroutine ndassp(listFuncActi, ds_contact, ds_system, &
 #include "asterfort/infdbg.h"
 #include "asterfort/utmess.h"
 #include "asterfort/nmdebg.h"
-#include "asterfort/jeveuo.h"
 #include "asterfort/nonlinDSVectCombInit.h"
 #include "asterfort/nonlinDSVectCombCompute.h"
 #include "asterfort/nonlinDSVectCombAddAny.h"
 #include "asterfort/nonlinDSVectCombAddHat.h"
 !
-    integer, intent(in) :: listFuncActi(*)
+    integer(kind=8), intent(in) :: listFuncActi(*)
     type(NL_DS_Contact), intent(in) :: ds_contact
     type(NL_DS_System), intent(in) :: ds_system
     character(len=19), intent(in) :: sddyna
@@ -70,7 +67,7 @@ subroutine ndassp(listFuncActi, ds_contact, ds_system, &
 !
 ! --------------------------------------------------------------------------------------------------
 !
-    integer :: ifm, niv
+    integer(kind=8) :: ifm, niv
     character(len=19) :: cnffdo, cndfdo, cnfvdo, cnvady
     aster_logical :: lSuperElement
     real(kind=8) :: coeequ

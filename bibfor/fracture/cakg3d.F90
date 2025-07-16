@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -63,7 +63,7 @@ subroutine cakg3d(option, result, modele, depla, thetai, &
 #include "asterfort/vrcref.h"
 #include "asterfort/wkvect.h"
 !
-    integer :: iord, nbprup, ndimte, coor, iadnoe
+    integer(kind=8) :: iord, nbprup, ndimte, coor, iadnoe
     real(kind=8) :: puls
     character(len=8) :: modele, thetai, fiss
     character(len=8) :: result, symech
@@ -104,19 +104,19 @@ subroutine cakg3d(option, result, modele, depla, thetai, &
 !  IN    TYPDIS --> TYPE DE DISCONTINUITE SI FISSURE XFEM
 !                   'FISSURE' OU 'COHESIF'
 ! ======================================================================
-    integer :: nbmxpa
+    integer(kind=8) :: nbmxpa
     parameter(nbmxpa=20)
 !
-    integer :: nbinmx, nboumx, numfon
+    integer(kind=8) :: nbinmx, nboumx, numfon
     parameter(nbinmx=50, nboumx=1)
     character(len=8) :: lpain(nbinmx), lpaout(nboumx)
     character(len=24) :: lchin(nbinmx), lchout(nboumx)
 !
-    integer :: i, j, ibid, iadrgk, iadgks, iret, jresu, nchin
-    integer :: nnoff, num, ino1, ino2, inga
+    integer(kind=8) :: i, j, ibid, iadrgk, iadgks, iret, jresu, nchin
+    integer(kind=8) :: nnoff, num, ino1, ino2, inga
 !     integer :: incr, nres
-    integer :: ndeg, nsig, livi(nbmxpa), pbtype
-    integer :: iadgki, iadabs, ifm, niv
+    integer(kind=8) :: ndeg, nsig, livi(nbmxpa), pbtype
+    integer(kind=8) :: iadgki, iadabs, ifm, niv
     real(kind=8) :: gkthi(8), time, livr(nbmxpa), diff2g, difrel
 !    real(kind=8) :: xi(nnoff-1), yi(nnoff-1), zi(nnoff-1)
     complex(kind=8) :: livc(nbmxpa)

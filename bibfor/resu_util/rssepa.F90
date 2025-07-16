@@ -24,7 +24,7 @@ subroutine rssepa(resultZ, numeStore, modelZ, materFieldZ, caraElemZ, listLoadZ)
 #include "asterfort/rsadpa.h"
 
     character(len=*), intent(in) :: resultZ
-    integer, intent(in)  :: numeStore
+    integer(kind=8), intent(in)  :: numeStore
     character(len=*), intent(in) :: modelZ, caraElemZ, materFieldZ, listLoadZ
 !----------------------------------------------------------------------
 !     BUT: ECRIRE DANS LA SD RESULTAT LES PARAMETRES MODELE, MATE,
@@ -39,7 +39,7 @@ subroutine rssepa(resultZ, numeStore, modelZ, materFieldZ, caraElemZ, listLoadZ)
 !
 !
     character(len=19) :: listLoad
-    integer :: jvPara
+    integer(kind=8) :: jvPara
 ! ----------------------------------------------------------------------
 !
     listLoad = listLoadZ(1:19)

@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -29,7 +29,6 @@ subroutine xgelem(elrefp, ndim, coorse, igeom, jheavt, &
 #include "asterf_types.h"
 #include "jeveux.h"
 #include "asterfort/nmplru.h"
-#include "asterc/r8prem.h"
 #include "asterfort/assert.h"
 #include "asterfort/dfdm2d.h"
 #include "asterfort/dfdm3d.h"
@@ -51,8 +50,8 @@ subroutine xgelem(elrefp, ndim, coorse, igeom, jheavt, &
 #include "asterfort/xnbddl.h"
 !
     character(len=8) :: elrefp
-    integer :: igeom, ndim, nfh, ddlc, nfe, nnop, ddlm, jheavn
-    integer :: idepl, nfiss, jheavt, ise, jstno
+    integer(kind=8) :: igeom, ndim, nfh, ddlc, nfe, nnop, ddlm, jheavn
+    integer(kind=8) :: idepl, nfiss, jheavt, ise, jstno
     real(kind=8) :: basloc(3*ndim*nnop), lsn(nnop), lst(nnop)
     real(kind=8) :: fno(ndim*nnop), coorse(*)
 !
@@ -81,12 +80,12 @@ subroutine xgelem(elrefp, ndim, coorse, igeom, jheavt, &
 ! OUT IGTHET  : G
 !
 !
-    integer :: ithet, imate, icomp, igthet, jtab(7), ncomp, idecpg, idebs
-    integer :: ipoids, jcoopg, ivf, idfde, jdfd2, jgano, jsigse
-    integer :: i, j, k, kpg, n, ino, iret, cpt, ig, in, mxstac, isigi, isigm
-    integer :: ndimb, nno, nnos, npgbis, ddld, ddls, matcod, m, irett
-    integer :: ncompn, heavn(nnop, 5), hea_se
-    integer :: singu, alp
+    integer(kind=8) :: ithet, imate, icomp, igthet, jtab(7), ncomp, idecpg, idebs
+    integer(kind=8) :: ipoids, jcoopg, ivf, idfde, jdfd2, jgano, jsigse
+    integer(kind=8) :: i, j, k, kpg, n, ino, iret, cpt, ig, in, mxstac, isigi, isigm
+    integer(kind=8) :: ndimb, nno, nnos, npgbis, ddld, ddls, matcod, m, irett
+    integer(kind=8) :: ncompn, heavn(nnop, 5), hea_se
+    integer(kind=8) :: singu, alp
     real(kind=8) :: xg(ndim), he(nfiss)
     real(kind=8) :: xe(ndim), ff(nnop), dfdi(nnop, ndim), f(3, 3)
     real(kind=8) :: eps(6)
@@ -103,13 +102,13 @@ subroutine xgelem(elrefp, ndim, coorse, igeom, jheavt, &
     character(len=8) :: elrese(6), fami(6), typmod(2)
     character(len=16) :: compor(4)
     aster_logical :: cp, axi, l_temp_noeu
-    integer :: irese, ddli, nnoi, indeni, nnops, ifiss
-    integer :: iret1, iret2, iret3
+    integer(kind=8) :: irese, ddli, nnoi, indeni, nnops, ifiss
+    integer(kind=8) :: iret1, iret2, iret3
     type(Behaviour_Integ) :: BEHinteg
 !
     real(kind=8) :: tini, prod1, dsigin(6, 3), sigin(6), epsref(6), epsp(6)
     real(kind=8) :: mu, nu(1), e(1)
-    integer ::  icodre(1), ncmp
+    integer(kind=8) ::  icodre(1), ncmp
     character(len=16) :: phenom
 !
 !

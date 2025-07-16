@@ -51,17 +51,17 @@ subroutine xpoajm(maxfem, jtypm2, itypse, jcnse, im, &
 #include "asterfort/xpoajn.h"
 #include "asterfort/xpolsn.h"
 !
-    integer :: nfiss, nnn, inn, inntot, ndim, jconx1, jconx2
-    integer :: jconq1, jconq2, iacoo1, iacoo2, jcnsl2, fisco(*)
-    integer :: nbnoc, nbnofi, inofi, heavno(20, 3)
-    integer :: ima, iad1, jlsn, jlst, igeom, ndime, iad9
-    integer :: jheavn, ncompn, cmp(*), nbcmp, nfh, nfe, ddlc, jcnsv1, jcnsv2
-    integer :: ninter(4), iainc, ncompa, contac, nlachm(2), lacthm(16)
+    integer(kind=8) :: nfiss, nnn, inn, inntot, ndim, jconx1, jconx2
+    integer(kind=8) :: jconq1, jconq2, iacoo1, iacoo2, jcnsl2, fisco(*)
+    integer(kind=8) :: nbnoc, nbnofi, inofi, heavno(20, 3)
+    integer(kind=8) :: ima, iad1, jlsn, jlst, igeom, ndime, iad9
+    integer(kind=8) :: jheavn, ncompn, cmp(*), nbcmp, nfh, nfe, ddlc, jcnsv1, jcnsv2
+    integer(kind=8) :: ninter(4), iainc, ncompa, contac, nlachm(2), lacthm(16)
     character(len=2) :: prefno(4)
     character(len=8) :: maxfem, elrefp, typma
-    integer :: jtypm2, itypse, nnm, inm, inmtot, nbmac, jdirgr
-    integer :: jcnse, im, n, nnose, jdirno, he(nfiss), jnivgr, iagma, ngrm
-    integer :: jbaslo, jstno
+    integer(kind=8) :: jtypm2, itypse, nnm, inm, inmtot, nbmac, jdirgr
+    integer(kind=8) :: jcnse, im, n, nnose, jdirno, he(nfiss), jnivgr, iagma, ngrm
+    integer(kind=8) :: jbaslo, jstno
     real(kind=8) :: ka, mu
     aster_logical :: opmail, lmeca, pre1
 !
@@ -126,8 +126,8 @@ subroutine xpoajm(maxfem, jtypm2, itypse, jcnse, im, &
 !     JCNSL2 : ADRESSE DU CNSL DU CHAM_NO DE DEPLACEMENT 2
 !
 !
-    integer :: iacon2, j, ino, ig1, ig2, iagma2, i
-    integer :: ifiss, iad
+    integer(kind=8) :: iacon2, j, ino, ig1, ig2, iagma2, i
+    integer(kind=8) :: ifiss, iad
     real(kind=8) :: lsn(nfiss), lst(nfiss), co(3)
     character(len=6) :: chn
     character(len=8) :: valk(2)

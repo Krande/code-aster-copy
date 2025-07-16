@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -26,7 +26,7 @@ subroutine crsdfi(linoch, nbnoch, noidez)
 #include "asterfort/jemarq.h"
 #include "asterfort/wkvect.h"
     character(len=*) :: linoch(1), noidez
-    integer :: nbnoch
+    integer(kind=8) :: nbnoch
 !
 !
 !     CREATION DE LA SD "FORMAT_IDEAS"
@@ -42,10 +42,10 @@ subroutine crsdfi(linoch, nbnoch, noidez)
     character(len=16) :: param
 !
 !
-    integer :: posi(2), nposi
-    integer :: lfinom, lfinum, lfipar, lfiloc, lfinbc, lficmp
-    integer :: iocc, nbocc, nval, nch, rec(20)
-    integer :: i, ich, ival, nb, nbcmp
+    integer(kind=8) :: posi(2), nposi
+    integer(kind=8) :: lfinom, lfinum, lfipar, lfiloc, lfinbc, lficmp
+    integer(kind=8) :: iocc, nbocc, nval, nch, rec(20)
+    integer(kind=8) :: i, ich, ival, nb, nbcmp
     character(len=8) :: cmp(1000)
     character(len=16) :: blanc, nocham, noidea
     data blanc/'                '/

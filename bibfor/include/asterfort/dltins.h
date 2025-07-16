@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -21,11 +21,11 @@
 interface
     subroutine dltins(nbgrpa, lispas, libint, linbpa, npatot,&
                       tinit, lisins)
-        integer :: nbgrpa
+        integer(kind=8) :: nbgrpa
         character(len=24) :: lispas
         character(len=24) :: libint
         character(len=24) :: linbpa
-        integer :: npatot
+        integer(kind=8) :: npatot
         real(kind=8) :: tinit
         character(len=24) :: lisins
     end subroutine dltins

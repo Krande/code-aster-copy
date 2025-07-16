@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -23,23 +23,23 @@ interface
                       igeom, jpintt, cnset, heavt, lonch,&
                       basloc, lsn, lst, sig, matuu,&
                       jpmilt, heavn, jstno, imate)
-        integer :: nnop
-        integer :: ddlh
-        integer :: nfe
-        integer :: ddlc
-        integer :: igeom
-        integer :: jpintt
-        integer :: cnset(128)
-        integer :: heavt(36)
-        integer :: lonch(10)
-        integer :: heavn(27,5)
-        integer :: jstno
-        integer :: imate
+        integer(kind=8) :: nnop
+        integer(kind=8) :: ddlh
+        integer(kind=8) :: nfe
+        integer(kind=8) :: ddlc
+        integer(kind=8) :: igeom
+        integer(kind=8) :: jpintt
+        integer(kind=8) :: cnset(128)
+        integer(kind=8) :: heavt(36)
+        integer(kind=8) :: lonch(10)
+        integer(kind=8) :: heavn(27,5)
+        integer(kind=8) :: jstno
+        integer(kind=8) :: imate
         real(kind=8) :: basloc(*)
         real(kind=8) :: lsn(nnop)
         real(kind=8) :: lst(nnop)
         real(kind=8) :: sig(*)
         real(kind=8) :: matuu(*)
-        integer :: jpmilt
+        integer(kind=8) :: jpmilt
     end subroutine xrigel
 end interface

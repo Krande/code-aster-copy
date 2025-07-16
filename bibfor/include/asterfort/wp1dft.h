@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -21,13 +21,13 @@
 interface
     subroutine wp1dft(lmat, imode, zeropo, z, detnor,&
                       det, idet, isturm)
-        integer :: lmat
-        integer :: imode
+        integer(kind=8) :: lmat
+        integer(kind=8) :: imode
         complex(kind=8) :: zeropo(*)
         complex(kind=8) :: z
         complex(kind=8) :: detnor
         real(kind=8) :: det
-        integer :: idet
-        integer :: isturm
+        integer(kind=8) :: idet
+        integer(kind=8) :: isturm
     end subroutine wp1dft
 end interface

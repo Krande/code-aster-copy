@@ -41,8 +41,8 @@ subroutine aceaba(noma, nomo, lmax, nbarre, nbocc, &
 ! person_in_charge: jean-luc.flejou at edf.fr
 !
     implicit none
-    integer :: lmax, nbarre, nbocc, nbtel, ifm, zjdlm(*)
-    integer :: ntyele(*), ivr(*)
+    integer(kind=8) :: lmax, nbarre, nbocc, nbtel, ifm, zjdlm(*)
+    integer(kind=8) :: ntyele(*), ivr(*)
     character(len=8) :: noma, nomo
     character(len=*) :: mclf
 !
@@ -68,7 +68,6 @@ subroutine aceaba(noma, nomo, lmax, nbarre, nbocc, &
 #include "asterfort/jeexin.h"
 #include "asterfort/jelira.h"
 #include "asterfort/jemarq.h"
-#include "asterfort/jenonu.h"
 #include "asterfort/jenuno.h"
 #include "asterfort/jeveuo.h"
 #include "asterfort/jexnom.h"
@@ -78,14 +77,14 @@ subroutine aceaba(noma, nomo, lmax, nbarre, nbocc, &
 #include "asterfort/char8_to_int.h"
 #include "asterfort/int_to_char8.h"
 ! --------------------------------------------------------------------------------------------------
-    integer :: i, idw, ier, iisec, ioc, isec, itabl
-    integer :: ivect, ixma, j
-    integer :: jdcba, jdcbaf, jdge, jdgef, jdgm
-    integer :: jdme, jdvba, jdvbaf
-    integer :: k, nbaaff, nbcar, nbcolo, nblign
-    integer :: nbmagr, nbmail, nbo, nbval, ncar, ndim, nfcx
-    integer :: ng, nnosec, nsec, ntab, ntypse, nummai
-    integer :: nutyel, nval
+    integer(kind=8) :: i, idw, ier, iisec, ioc, isec, itabl
+    integer(kind=8) :: ivect, ixma, j
+    integer(kind=8) :: jdcba, jdcbaf, jdge, jdgef, jdgm
+    integer(kind=8) :: jdme, jdvba, jdvbaf
+    integer(kind=8) :: k, nbaaff, nbcar, nbcolo, nblign
+    integer(kind=8) :: nbmagr, nbmail, nbo, nbval, ncar, ndim, nfcx
+    integer(kind=8) :: ng, nnosec, nsec, ntab, ntypse, nummai
+    integer(kind=8) :: nutyel, nval
 ! --------------------------------------------------------------------------------------------------
     character(len=6) :: kioc
     character(len=8) :: k8b, nomu, nommai, fcx
@@ -97,8 +96,8 @@ subroutine aceaba(noma, nomo, lmax, nbarre, nbocc, &
 ! --------------------------------------------------------------------------------------------------
     aster_logical :: l_parallel_mesh
 ! --------------------------------------------------------------------------------------------------
-    integer, pointer :: tab_para(:) => null()
-    integer, pointer :: tbnp(:) => null()
+    integer(kind=8), pointer :: tab_para(:) => null()
+    integer(kind=8), pointer :: tbnp(:) => null()
     real(kind=8), pointer :: vale(:) => null()
     character(len=8), pointer :: expbar(:) => null()
     character(len=8), pointer :: carbar(:) => null()

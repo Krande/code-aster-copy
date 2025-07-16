@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -23,7 +23,7 @@ interface
         character(len=*), intent(in) :: modelz
         character(len=*), intent(in) :: meshz
         character(len=*), intent(in) :: sdextrz
-        integer, intent(in) :: nb_keyw_fact
-        integer, intent(in) :: nb_field_comp
+        integer(kind=8), intent(in) :: nb_keyw_fact
+        integer(kind=8), intent(in) :: nb_field_comp
     end subroutine nmextr_ligr
 end interface

@@ -22,7 +22,6 @@ subroutine chckVari(comporPrevZ, comporCurrZ, variZ, ligrelZ)
 !
 #include "asterf_types.h"
 #include "asterfort/adaptVari.h"
-#include "asterfort/assert.h"
 #include "asterfort/detrsd.h"
 #include "asterfort/dismoi.h"
 #include "asterfort/jedema.h"
@@ -32,7 +31,6 @@ subroutine chckVari(comporPrevZ, comporCurrZ, variZ, ligrelZ)
 #include "asterfort/vrcomp_chck_cmp.h"
 #include "asterfort/vrcomp_chck_rela.h"
 #include "asterfort/vrcomp_prep.h"
-#include "asterfort/vrcom2.h"
 #include "jeveux.h"
 !
     character(len=*), intent(in) :: comporPrevZ, comporCurrZ, variZ, ligrelZ
@@ -65,9 +63,9 @@ subroutine chckVari(comporPrevZ, comporCurrZ, variZ, ligrelZ)
     aster_logical :: inconsistentBehaviour, nbVariDifferent, hasPreviousBehaviour
     character(len=19) :: ligrel, ligrelPrev
     character(len=8) :: meshCompor, meshField, mesh
-    integer :: nbCell
+    integer(kind=8) :: nbCell
     character(len=8), pointer :: cesk(:) => null()
-    integer, pointer :: cesd(:) => null()
+    integer(kind=8), pointer :: cesd(:) => null()
 !
 ! --------------------------------------------------------------------------------------------------
 !

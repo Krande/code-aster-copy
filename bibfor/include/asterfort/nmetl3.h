@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -23,7 +23,7 @@ interface
         character(len=24), intent(in) :: model
         character(len=24), intent(in) :: compor
         type(NL_DS_InOut), intent(in) :: ds_inout
-        integer, intent(in) :: i_field
+        integer(kind=8), intent(in) :: i_field
         aster_logical, intent(in) :: verbose
     end subroutine nmetl3
 end interface

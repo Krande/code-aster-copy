@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -27,7 +27,6 @@ subroutine mmapre(mesh, ds_contact)
 #include "asterfort/apinfi.h"
 #include "asterfort/apinfr.h"
 #include "asterfort/apvect.h"
-#include "asterfort/armin.h"
 #include "asterfort/assert.h"
 #include "asterfort/cfdisi.h"
 #include "asterfort/cfnumm.h"
@@ -43,8 +42,6 @@ subroutine mmapre(mesh, ds_contact)
 #include "asterfort/mminfi.h"
 #include "asterfort/mminfl.h"
 #include "asterfort/mminfm.h"
-#include "asterfort/mminfr.h"
-#include "blas/ddot.h"
 !
 ! person_in_charge: mickael.abbas at edf.fr
 !
@@ -64,23 +61,23 @@ subroutine mmapre(mesh, ds_contact)
 !
 ! --------------------------------------------------------------------------------------------------
 !
-    integer :: ifm, niv
+    integer(kind=8) :: ifm, niv
     character(len=19) :: sdappa
-    integer :: nzoco, ndimg
+    integer(kind=8) :: nzoco, ndimg
     character(len=24) :: tabfin
-    integer :: jtabf
-    integer :: izone, ip, imae, iptm, ztabf
-    integer :: iptc
-    integer :: ntpc, nbpt, nbmae, nptm, nnomae
+    integer(kind=8) :: jtabf
+    integer(kind=8) :: izone, ip, imae, iptm, ztabf
+    integer(kind=8) :: iptc
+    integer(kind=8) :: ntpc, nbpt, nbmae, nptm, nnomae
     real(kind=8) :: tau1m(3), tau2m(3), norm(3)
     real(kind=8) :: ksipr1, ksipr2
     character(len=8) :: aliase, nommam
     aster_logical :: lveri
-    integer :: jdecme
-    integer :: typint, typapp, entapp
-    integer :: posmae, nummae, posmam, nummam
+    integer(kind=8) :: jdecme
+    integer(kind=8) :: typint, typapp, entapp
+    integer(kind=8) :: posmae, nummae, posmam, nummam
     aster_logical :: lappar, l_excl_frot, l_node_excl
-    integer :: ndexfr
+    integer(kind=8) :: ndexfr
 !
 ! --------------------------------------------------------------------------------------------------
 !

@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -21,7 +21,6 @@ subroutine vfgetr(xs, t, xg, &
 !
     implicit none
 !
-#include "asterfort/assert.h"
 #include "asterfort/provec.h"
 !
     real(kind=8), intent(in) :: xs(3, 3), t(3, 2), xg(3)
@@ -45,7 +44,7 @@ subroutine vfgetr(xs, t, xg, &
 !
 ! --------------------------------------------------------------------------------------------------
 !
-    integer :: idim, is
+    integer(kind=8) :: idim, is
     real(kind=8) :: xnorm
 !
 ! --------------------------------------------------------------------------------------------------

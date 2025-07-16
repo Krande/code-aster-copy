@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -21,7 +21,7 @@
 interface
     subroutine btsig(lonlig, loncol, jacgau, bmat, sigma,&
                      bsigma)
-        integer, intent(in) :: loncol, lonlig 
+        integer(kind=8), intent(in) :: loncol, lonlig 
         real(kind=8), intent(in) :: jacgau, bmat(loncol, 81), sigma(1)
         real(kind=8), intent(out) :: bsigma(1)
     end subroutine btsig

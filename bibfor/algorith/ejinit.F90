@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -24,7 +24,7 @@ subroutine ejinit(nomte, iu, ip)
 #include "asterf_types.h"
 #include "asterfort/assert.h"
     character(len=16) :: nomte
-    integer :: iu(3, 16), ip(8)
+    integer(kind=8) :: iu(3, 16), ip(8)
 ! ----------------------------------------------------------------------
 !            DECALAGE D'INDICE POUR LES ELEMENTS DE JOINT HM
 ! ----------------------------------------------------------------------
@@ -52,10 +52,10 @@ subroutine ejinit(nomte, iu, ip)
 !          IP(1:2)   => PRESS (NOEUDS 8 et 6)
 ! ----------------------------------------------------------------------
 !
-    integer :: n, offset
-    integer :: uh20(16), ph20(8)
-    integer :: up15(12), pp15(6)
-    integer :: uq8(6), pq8(3)
+    integer(kind=8) :: n, offset
+    integer(kind=8) :: uh20(16), ph20(8)
+    integer(kind=8) :: up15(12), pp15(6)
+    integer(kind=8) :: uq8(6), pq8(3)
     aster_logical :: ifqu8, ifh20, ifp15
 ! ----------------------------------------------------------------------
     data uh20/1, 2, 3, 4, 9, 10, 11, 12, 5, 6, 7, 8, 17, 18, 19, 20/

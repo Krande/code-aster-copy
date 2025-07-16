@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -21,10 +21,10 @@
 interface
     subroutine matbmr(nb1, vectt, dudxri, intsr, jdn1ri,&
                       b1mri, b2mri)
-        integer :: nb1
+        integer(kind=8) :: nb1
         real(kind=8) :: vectt(3, 3)
         real(kind=8) :: dudxri(9)
-        integer :: intsr
+        integer(kind=8) :: intsr
         real(kind=8) :: jdn1ri(9, 51)
         real(kind=8) :: b1mri(3, 51, 4)
         real(kind=8) :: b2mri(3, 51, 4)

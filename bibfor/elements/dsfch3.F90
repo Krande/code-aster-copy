@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -26,7 +26,7 @@ subroutine dsfch3(nno, nnf, poids, dpdef, dpdnf, &
     implicit none
 #include "asterfort/utmess.h"
     real(kind=8) :: valr
-    integer :: nno, nnf
+    integer(kind=8) :: nno, nnf
     real(kind=8) :: poids, dpdeg(1), dpdng(1), dpdkg(1), dsdeeg(1), dsdnng(1)
     real(kind=8) :: dsdkkg(1), dsdeng(1), dsdnkg(1), dsdekg(1), coor(1)
     real(kind=8) :: dpdef(1), dpdnf(1), dpdkf(1), dsdeef(1), dsdnnf(1)
@@ -59,7 +59,7 @@ subroutine dsfch3(nno, nnf, poids, dpdef, dpdnf, &
 !          JAC           <--  JACOBIEN AU POINT DE GAUSS
 ! ......................................................................
 !
-    integer :: i, j, k, ii
+    integer(kind=8) :: i, j, k, ii
     real(kind=8) :: g(3, 3), de, dk, dn, jac2iv, j11, j12, j13, j21, j22, j23
     real(kind=8) :: j31, j32, j33, t2(6, 6), t1(6, 3), cj(6, 3), c2(6, 3)
 !
@@ -202,29 +202,29 @@ subroutine dsfch3(nno, nnf, poids, dpdef, dpdnf, &
 !
     do i = 1, nnf
 !
-       dsdxxf(i) = t1(1, 1)*dpdef(i)+t1(1, 2)*dpdnf(i)+t1(1, 3)*dpdkf(i)+t2(1, 1)*dsdeef(i)+t2(1, 2&
-             &)*dsdnnf(i)+t2(1, 3)*dsdkkf(i)+t2(1, 4)*dsdenf(i)+t2(1, 5)*dsdnkf(i)+t2(1, 6)*&
-             &dsdekf(i)
+        dsdxxf(i) = t1(1, 1)*dpdef(i)+t1(1, 2)*dpdnf(i)+t1(1, 3)* &
+                    dpdkf(i)+t2(1, 1)*dsdeef(i)+t2(1, 2)*dsdnnf(i)+t2(1, 3)* &
+                    dsdkkf(i)+t2(1, 4)*dsdenf(i)+t2(1, 5)*dsdnkf(i)+t2(1, 6)*dsdekf(i)
 !
-       dsdyyf(i) = t1(2, 1)*dpdef(i)+t1(2, 2)*dpdnf(i)+t1(2, 3)*dpdkf(i)+t2(2, 1)*dsdeef(i)+t2(2, 2&
-             &)*dsdnnf(i)+t2(2, 3)*dsdkkf(i)+t2(2, 4)*dsdenf(i)+t2(2, 5)*dsdnkf(i)+t2(2, 6)*&
-             &dsdekf(i)
+        dsdyyf(i) = t1(2, 1)*dpdef(i)+t1(2, 2)*dpdnf(i)+t1(2, 3)* &
+                    dpdkf(i)+t2(2, 1)*dsdeef(i)+t2(2, 2)*dsdnnf(i)+t2(2, 3)* &
+                    dsdkkf(i)+t2(2, 4)*dsdenf(i)+t2(2, 5)*dsdnkf(i)+t2(2, 6)*dsdekf(i)
 !
-       dsdzzf(i) = t1(3, 1)*dpdef(i)+t1(3, 2)*dpdnf(i)+t1(3, 3)*dpdkf(i)+t2(3, 1)*dsdeef(i)+t2(3, 2&
-             &)*dsdnnf(i)+t2(3, 3)*dsdkkf(i)+t2(3, 4)*dsdenf(i)+t2(3, 5)*dsdnkf(i)+t2(3, 6)*&
-             &dsdekf(i)
+        dsdzzf(i) = t1(3, 1)*dpdef(i)+t1(3, 2)*dpdnf(i)+t1(3, 3)* &
+                    dpdkf(i)+t2(3, 1)*dsdeef(i)+t2(3, 2)*dsdnnf(i)+t2(3, 3)* &
+                    dsdkkf(i)+t2(3, 4)*dsdenf(i)+t2(3, 5)*dsdnkf(i)+t2(3, 6)*dsdekf(i)
 !
-       dsdxyf(i) = t1(4, 1)*dpdef(i)+t1(4, 2)*dpdnf(i)+t1(4, 3)*dpdkf(i)+t2(4, 1)*dsdeef(i)+t2(4, 2&
-             &)*dsdnnf(i)+t2(4, 3)*dsdkkf(i)+t2(4, 4)*dsdenf(i)+t2(4, 5)*dsdnkf(i)+t2(4, 6)*&
-             &dsdekf(i)
+        dsdxyf(i) = t1(4, 1)*dpdef(i)+t1(4, 2)*dpdnf(i)+t1(4, 3)* &
+                    dpdkf(i)+t2(4, 1)*dsdeef(i)+t2(4, 2)*dsdnnf(i)+t2(4, 3)* &
+                    dsdkkf(i)+t2(4, 4)*dsdenf(i)+t2(4, 5)*dsdnkf(i)+t2(4, 6)*dsdekf(i)
 !
-       dsdyzf(i) = t1(5, 1)*dpdef(i)+t1(5, 2)*dpdnf(i)+t1(5, 3)*dpdkf(i)+t2(5, 1)*dsdeef(i)+t2(5, 2&
-             &)*dsdnnf(i)+t2(5, 3)*dsdkkf(i)+t2(5, 4)*dsdenf(i)+t2(5, 5)*dsdnkf(i)+t2(5, 6)*&
-             &dsdekf(i)
+        dsdyzf(i) = t1(5, 1)*dpdef(i)+t1(5, 2)*dpdnf(i)+t1(5, 3)* &
+                    dpdkf(i)+t2(5, 1)*dsdeef(i)+t2(5, 2)*dsdnnf(i)+t2(5, 3)* &
+                    dsdkkf(i)+t2(5, 4)*dsdenf(i)+t2(5, 5)*dsdnkf(i)+t2(5, 6)*dsdekf(i)
 !
-       dsdxzf(i) = t1(6, 1)*dpdef(i)+t1(6, 2)*dpdnf(i)+t1(6, 3)*dpdkf(i)+t2(6, 1)*dsdeef(i)+t2(6, 2&
-             &)*dsdnnf(i)+t2(6, 3)*dsdkkf(i)+t2(6, 4)*dsdenf(i)+t2(6, 5)*dsdnkf(i)+t2(6, 6)*&
-             &dsdekf(i)
+        dsdxzf(i) = t1(6, 1)*dpdef(i)+t1(6, 2)*dpdnf(i)+t1(6, 3)* &
+                    dpdkf(i)+t2(6, 1)*dsdeef(i)+t2(6, 2)*dsdnnf(i)+t2(6, 3)* &
+                    dsdkkf(i)+t2(6, 4)*dsdenf(i)+t2(6, 5)*dsdnkf(i)+t2(6, 6)*dsdekf(i)
 !
     end do
 !

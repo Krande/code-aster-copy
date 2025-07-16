@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2020 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -29,10 +29,10 @@ interface
         character(len=8) :: mater, mateco
         character(len=8) :: carael
         character(len=24) :: ligrel
-        integer :: numord
-        integer :: nbpain
+        integer(kind=8) :: numord
+        integer(kind=8) :: nbpain
         character(len=8) :: lipain(*)
         character(len=24) :: lichin(*)
-        integer :: codret
+        integer(kind=8) :: codret
     end subroutine cclpci
 end interface

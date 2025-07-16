@@ -47,8 +47,8 @@ subroutine te0338(option, nomte)
 !
 !-DEL CHARACTER*32 JEXNUM,JEXNOM,JEXATR,JEXR8
 !
-    integer :: icodre(4)
-    integer :: codres
+    integer(kind=8) :: icodre(4)
+    integer(kind=8) :: codres
     character(len=4) :: fami
     character(len=32) :: phenom
     character(len=16) :: optcal(12), nomres(4)
@@ -58,10 +58,10 @@ subroutine te0338(option, nomte)
     real(kind=8) :: equi(6), pp, ppt, vkpact
     real(kind=8) :: sigold, signew, tg, tmoy
 !
-    integer :: i, kp, ndim, nbvari, ipopp, ipoppt
-    integer :: jgano, ipoids, ivf, idfde, npg, nno, nnos
-    integer :: imate, igeom, icong, ivarig, issopt, iweib, idefg, nbvp
-    integer :: isigie, isigis, jtab(7), iret
+    integer(kind=8) :: i, kp, ndim, nbvari, ipopp, ipoppt
+    integer(kind=8) :: jgano, ipoids, ivf, idfde, npg, nno, nnos
+    integer(kind=8) :: imate, igeom, icong, ivarig, issopt, iweib, idefg, nbvp
+    integer(kind=8) :: isigie, isigis, jtab(7), iret
     character(len=16), pointer :: compor(:) => null()
     character(len=16) :: rela_comp
 !

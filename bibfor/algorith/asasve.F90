@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -41,7 +41,6 @@ subroutine asasve(vechar, numedd, typres, vachar)
 !
     character(len=*) :: numedd, typres, vechar
     character(len=24) :: vachar
-! person_in_charge: jacques.pellet at edf.fr
 !
 ! BUT : ASSEMBLER UN VECT_ELEM RESPECTANT CERTAINES CONVENTIONS
 !  =============================================================
@@ -76,12 +75,12 @@ subroutine asasve(vechar, numedd, typres, vachar)
 !
 !
 !
-    integer :: nbvec, ityp, jass, i, iret, icha
-    integer :: n1, jvacha
+    integer(kind=8) :: nbvec, ityp, jass, i, iret, icha
+    integer(kind=8) :: n1, jvacha
     aster_logical :: bidon
     character(len=4) :: tych
     character(len=8) :: modele, newnom, vacha8
-    character(len=19) :: chamno, resuel, vecele
+    character(len=19) :: chamno, resuElem, vecele
     character(len=24), pointer :: relr(:) => null()
 !
 ! DEB ------------------------------------------------------------------
@@ -143,8 +142,8 @@ subroutine asasve(vechar, numedd, typres, vachar)
     if (typres .eq. 'C') ityp = 2
 !
     do i = 1, nbvec
-        resuel = relr(i) (1:19)
-        call corich('L', resuel, ichout_=icha)
+        resuElem = relr(i) (1:19)
+        call corich('L', resuElem, ichout_=icha)
         ASSERT((icha .ne. 0) .and. (icha .ge. -2))
 !
         call gcnco2(newnom)
@@ -153,19 +152,21 @@ subroutine asasve(vechar, numedd, typres, vachar)
         zk24(jass+i-1) = chamno
 !
 !       -- SI LE RESUELEM EST UN RESUELEM !
-        call dismoi('TYPE_CHAMP', resuel, 'CHAMP', repk=tych)
+        call dismoi('TYPE_CHAMP', resuElem, 'CHAMP', repk=tych)
         if (tych .eq. 'RESL') then
             call jedetr('&&ASASVE           .RELR')
-            call reajre('&&ASASVE', resuel, 'V')
+            call reajre('&&ASASVE', resuElem, 'V')
             call assvec('V', chamno, 1, '&&ASASVE           .RELR', [1.d0], &
                         numedd, vectScalType_=ityp)
 !
 !
 !       -- SI LE RESUELEM N'EST PAS UN RESUELEM !(CHAM_NO)
         else if (tych .eq. 'NOEU') then
-            call vtcreb(chamno, 'V', typres, &
-                        nume_ddlz=numedd)
-            call vtcopy(resuel, chamno, ' ', iret)
+            call vtcreb(chamno, 'V', typres, nume_ddlz=numedd)
+            call vtcopy(resuElem, chamno, iret)
+            if (iret .ne. 0) then
+                call utmess("A", "FIELD0_16")
+            end if
 !
         else
             ASSERT(.false.)

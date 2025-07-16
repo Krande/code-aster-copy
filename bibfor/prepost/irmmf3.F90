@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -28,8 +28,6 @@ subroutine irmmf3(fid, nomamd, typent, nbrent, nbgrou, &
 #include "MeshTypes_type.h"
 #include "jeveux.h"
 #include "asterc/asmpi_comm.h"
-#include "asterc/asmpi_bcast_char80.h"
-#include "asterc/asmpi_bcast_i.h"
 #include "asterc/asmpi_allgatherv_i.h"
 #include "asterc/asmpi_allgatherv_char80.h"
 #include "asterc/asmpi_allgather_i.h"
@@ -46,7 +44,6 @@ subroutine irmmf3(fid, nomamd, typent, nbrent, nbgrou, &
 #include "asterfort/jelira.h"
 #include "asterfort/jeveuo.h"
 #include "asterfort/jexnom.h"
-#include "asterfort/jexnum.h"
 #include "asterfort/mdnofa.h"
 #include "asterfort/nomgfa.h"
 #include "asterfort/setgfa.h"
@@ -54,12 +51,12 @@ subroutine irmmf3(fid, nomamd, typent, nbrent, nbgrou, &
 #include "asterfort/wkvect.h"
 !
     med_idt :: fid
-    integer :: typgeo(*), nmatyp(*)
-    integer :: typent, nbrent, nbgrou
-    integer :: nbec
-    integer :: nufaen(nbrent), nufacr(nbrent), tabaux(*)
-    integer :: infmed
-    integer :: ifm
+    integer(kind=8) :: typgeo(*), nmatyp(*)
+    integer(kind=8) :: typent, nbrent, nbgrou
+    integer(kind=8) :: nbec
+    integer(kind=8) :: nufaen(nbrent), nufacr(nbrent), tabaux(*)
+    integer(kind=8) :: infmed
+    integer(kind=8) :: ifm
     character(len=6) :: prefix
     character(len=8) :: nomast
     character(len=24) :: nomgen(*)
@@ -69,11 +66,11 @@ subroutine irmmf3(fid, nomamd, typent, nbrent, nbgrou, &
     character(len=*) :: nomamd
     character(len=8) :: nosdfu
 !
-! --------------------------------------------------------------------------------------------------
+! -----------------------------------------------------------------------------------------------
 !
 !     ECRITURE DU MAILLAGE - FORMAT MED - LES FAMILLES - 2
 !
-! --------------------------------------------------------------------------------------------------
+! -----------------------------------------------------------------------------------------------
 !
 !     L'ENSEMBLE DES FAMILLES EST L'INTERSECTION DE L'ENSEMBLE
 !     DES GROUPES : UN NOEUD/MAILLE APPARAIT AU PLUS DANS 1 FAMILLE
@@ -108,37 +105,37 @@ subroutine irmmf3(fid, nomamd, typent, nbrent, nbgrou, &
 !   NIVINF : NIVEAU DES INFORMATIONS GENERALES
 !   IFM    : UNITE LOGIQUE DU FICHIER DE MESSAGE
 !
-! --------------------------------------------------------------------------------------------------
+! -----------------------------------------------------------------------------------------------
 !
     character(len=6), parameter :: nompro = 'IRMMF3'
-    integer, parameter :: edmail = 0, ednoeu = 3, tygeno = 0
-    integer :: edfuin
+    integer(kind=8), parameter :: edmail = 0, ednoeu = 3, tygeno = 0
+    integer(kind=8) :: edfuin
     parameter(edfuin=0)
-    integer :: codret
-    integer :: iaux, jaux, kaux
-    integer :: numfam, nfam, cmpt, ii
-    integer :: ityp, jnbno, jno, jma, nbnot, nbnol, start, filter(1)
-    integer :: nbeg, ige, ient, entfam, nbgnof, natt, nbmal, nbmat, jtyp
-    integer :: jgren, jtest4, i_fama, kfama
-    integer :: nbgr, nfam_max, nbbloc, nbfam_tot, nbgr_tot
-    integer :: rang, nbproc, jgrou, jnufa, numgrp, jnofa, jnbgr, jtest, jtest12
+    integer(kind=8) :: codret
+    integer(kind=8) :: iaux, jaux, kaux
+    integer(kind=8) :: numfam, nfam, cmpt, ii
+    integer(kind=8) :: ityp, jnbno, jno, jma, nbnot, nbnol, start, filter(1)
+    integer(kind=8) :: nbeg, ige, ient, entfam, nbgnof, natt, nbmal, nbmat, jtyp
+    integer(kind=8) :: jgren, jtest4, i_fama, kfama
+    integer(kind=8) :: nbgr, nfam_max, nbbloc, nbfam_tot, nbgr_tot
+    integer(kind=8) :: rang, nbproc, jgrou, jnufa, numgrp, jnofa, jnbgr, jtest, jtest12
     character(len=8) :: saux08
     character(len=9) :: saux09
-    character(len=80) :: nomfam
+    character(len=64) :: nomfam
     aster_logical :: lfamtr
     real(kind=8) :: start_time, end_time, start1, end1, start2, end2
     mpi_int :: mrank, msize, world, taille, one4
     character(len=80), pointer :: v_nomfag(:) => null()
     character(len=80), pointer :: v_nomgfag(:) => null()
     character(len=80), pointer :: v_fama(:) => null()
-    integer, pointer :: v_nbgrg(:) => null()
+    integer(kind=8), pointer :: v_nbgrg(:) => null()
     mpi_int, pointer :: v_count(:) => null()
     mpi_int, pointer :: v_displ(:) => null()
     mpi_int, pointer :: v_count2(:) => null()
     mpi_int, pointer :: v_displ2(:) => null()
 
 !
-! --------------------------------------------------------------------------------------------------
+! ----------------------------------------------------------------------------------------------
 !
 !
     if (typent .eq. tygeno) then
@@ -151,7 +148,8 @@ subroutine irmmf3(fid, nomamd, typent, nbrent, nbgrou, &
 
     if (infmed .gt. 1) then
         call cpu_time(start_time)
-     write (ifm, *) '<', nompro, '> DEBUT ECRITURE DES FAMILLES DE '//saux08//' MED EN PARALLELE : '
+        write (ifm, *) '<', nompro, '> DEBUT ECRITURE DES FAMILLES DE ' &
+            //saux08//' MED EN PARALLELE : '
     end if
 !
 !     NATT = NOMBRE D'ATTRIBUTS DANS UNE FAMILLE : JAMAIS. ELLES NE SONT
@@ -361,8 +359,8 @@ subroutine irmmf3(fid, nomamd, typent, nbrent, nbgrou, &
 !
             call cpu_time(end2)
             if (infmed .gt. 1) then
-                write (ifm, *) '<', nompro, '> ** Création des noms de familles en ', end2-start2, &
-                    ' sec'
+                write (ifm, *) '<', nompro, '> ** Création des ' &
+                    //'noms de familles en ', end2-start2, ' sec'
             end if
             call cpu_time(start1)
 !
@@ -392,7 +390,8 @@ subroutine irmmf3(fid, nomamd, typent, nbrent, nbgrou, &
             call wkvect('&&IRMMF2.NOMGFAG', 'V V K80', nbgr_tot, vk80=v_nomgfag)
             ! Allgather des groupes
             taille = to_mpi_int(numgrp)
-            call asmpi_allgatherv_char80(zk80(jgrou), taille, v_nomgfag, v_count2, v_displ2, world)
+            call asmpi_allgatherv_char80(zk80(jgrou), taille, v_nomgfag, v_count2, &
+                                         v_displ2, world)
 !
             call cpu_time(end1)
             if (infmed .gt. 1) then
@@ -589,8 +588,8 @@ subroutine irmmf3(fid, nomamd, typent, nbrent, nbgrou, &
 !
     if (infmed .gt. 1) then
         call cpu_time(end_time)
-   write (ifm, *) '<', nompro, '> FIN ECRITURE DES FAMILLES DE '//saux08//' MED EN PARALLELE EN ', &
-            end_time-start_time, "sec."
+        write (ifm, *) '<', nompro, '> FIN ECRITURE DES FAMILLES DE ' &
+            //saux08//' MED EN PARALLELE EN ', end_time-start_time, "sec."
     end if
 !
 end subroutine

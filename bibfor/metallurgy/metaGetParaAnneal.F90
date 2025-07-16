@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -28,8 +28,8 @@ subroutine metaGetParaAnneal(poum, fami, kpg, ksp, j_mater, &
 !
     character(len=1), intent(in) :: poum
     character(len=*), intent(in) :: fami
-    integer, intent(in) :: kpg, ksp, j_mater
-    integer, intent(in) :: meta_type, nb_phase
+    integer(kind=8), intent(in) :: kpg, ksp, j_mater
+    integer(kind=8), intent(in) :: meta_type, nb_phase
     real(kind=8), intent(out) :: theta(*)
 !
 ! --------------------------------------------------------------------------------------------------
@@ -51,11 +51,11 @@ subroutine metaGetParaAnneal(poum, fami, kpg, ksp, j_mater, &
 !
 ! --------------------------------------------------------------------------------------------------
 !
-    integer, parameter :: nb_resu_max = 8
+    integer(kind=8), parameter :: nb_resu_max = 8
     real(kind=8) :: resu_vale(nb_resu_max)
-    integer :: codret(nb_resu_max)
+    integer(kind=8) :: codret(nb_resu_max)
     character(len=16) :: resu_name(nb_resu_max)
-    integer :: nb_resu, i_resu
+    integer(kind=8) :: nb_resu, i_resu
 !
 ! --------------------------------------------------------------------------------------------------
 !

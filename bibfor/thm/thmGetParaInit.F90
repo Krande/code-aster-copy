@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -24,12 +24,11 @@ subroutine thmGetParaInit(j_mater, ds_thm, l_check_)
 !
 #include "asterf_types.h"
 #include "asterc/r8nnem.h"
-#include "asterc/r8prem.h"
 #include "asterfort/rcvala.h"
 #include "asterfort/utmess.h"
 #include "asterfort/THM_type.h"
 !
-    integer, intent(in) :: j_mater
+    integer(kind=8), intent(in) :: j_mater
     type(THM_DS), intent(inout) :: ds_thm
     aster_logical, optional, intent(in) :: l_check_
 !
@@ -48,15 +47,15 @@ subroutine thmGetParaInit(j_mater, ds_thm, l_check_)
 ! --------------------------------------------------------------------------------------------------
 !
     aster_logical :: l_temp_init, l_pre2_init
-    integer :: nume_thmc, nume_init
-    integer, parameter :: nb_para = 5
-    integer :: icodre(nb_para)
+    integer(kind=8) :: nume_thmc, nume_init
+    integer(kind=8), parameter :: nb_para = 5
+    integer(kind=8) :: icodre(nb_para)
     real(kind=8) :: para_vale(nb_para)
     character(len=16), parameter :: para_name(nb_para) = (/'TEMP     ', 'PRE1     ', &
                                                            'PRE2     ', 'PORO     ', &
                                                            'PRES_VAPE'/)
     real(kind=8) :: para_vale2(1)
-    integer :: icodre2(1)
+    integer(kind=8) :: icodre2(1)
 !
 ! --------------------------------------------------------------------------------------------------
 !

@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -21,11 +21,11 @@
 interface
     subroutine jxecrb(ic, iaddi, iadmo, lso, idco,&
                       idos)
-        integer :: ic
-        integer :: iaddi
-        integer :: iadmo
-        integer :: lso
-        integer :: idco
-        integer :: idos
+        integer(kind=8) :: ic
+        integer(kind=8) :: iaddi
+        integer(kind=8) :: iadmo
+        integer(kind=8) :: lso
+        integer(kind=8) :: idco
+        integer(kind=8) :: idos
     end subroutine jxecrb
 end interface

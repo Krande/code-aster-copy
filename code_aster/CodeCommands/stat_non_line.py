@@ -40,7 +40,7 @@ class NonLinearStaticAnalysis(ExecuteCommand):
         # because MNL support SUBD_NIVEAU={0, 1} and SNL does not
         stepper = keywords["INCREMENT"][0]["LIST_INST"]
         try:
-            stepper.checkMaxLevel(min=2)
+            stepper.checkMaxLevel(min=0)
         except AttributeError:
             pass
         except ValueError as exc:
@@ -83,7 +83,7 @@ class NonLinearStaticAnalysis(ExecuteCommand):
         if contact:
             result.setContact(contact)
 
-        if self.exception and self.exception.id_message in ("MECANONLINE5_2",):
+        if self.exception and self.exception.id_message in ("MECANONLINE5_82",):
             return
 
         feds = []

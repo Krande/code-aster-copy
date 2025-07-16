@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -23,13 +23,13 @@ interface
                       nbnoff, jborl, jdirol, jnvdir, iseg)
         character(len=8) :: noma
         character(len=19) :: cnxinv
-        integer :: jbasno
-        integer :: inoext
-        integer :: inoseg
-        integer :: nbnoff
-        integer :: jborl
-        integer :: jdirol
-        integer :: jnvdir
-        integer :: iseg
+        integer(kind=8) :: jbasno
+        integer(kind=8) :: inoext
+        integer(kind=8) :: inoseg
+        integer(kind=8) :: nbnoff
+        integer(kind=8) :: jborl
+        integer(kind=8) :: jdirol
+        integer(kind=8) :: jnvdir
+        integer(kind=8) :: iseg
     end subroutine fonext
 end interface

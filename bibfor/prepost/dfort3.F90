@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -60,17 +60,17 @@ subroutine dfort3(nsommx, icnc, noeu1, noeu2, tbelzo, &
 #include "asterfort/dvolu2.h"
 #include "asterfort/dvolu3.h"
 #include "asterfort/dvolu4.h"
-    integer :: nsommx, icnc(nsommx+2, *), noeu1, noeu2
-    integer :: nbelt, nbnoe
-    integer :: tbelzo(nbelt), tbnozo(nbnoe)
+    integer(kind=8) :: nsommx, icnc(nsommx+2, *), noeu1, noeu2
+    integer(kind=8) :: nbelt, nbnoe
+    integer(kind=8) :: tbelzo(nbelt), tbnozo(nbnoe)
     real(kind=8) :: xy(3, *), volume(*), energi(*), pe
 !
 ! DECLARATION LOCALE
 !
-    integer :: i, inno, nuef, iint, inel, noeud
-    integer :: nbint
+    integer(kind=8) :: i, inno, nuef, iint, inel, noeud
+    integer(kind=8) :: nbint
     parameter(nbint=6)
-    integer :: nint, nhop, npir, next, nbi, norm(2, 4)
+    integer(kind=8) :: nint, nhop, npir, next, nbi, norm(2, 4)
     real(kind=8) :: coord1(3), coord2(3), coorn(3, 12)
     real(kind=8) :: xao1, yao1, zao1, xo1o2, yo1o2, zo1o2
     real(kind=8) :: do1o2

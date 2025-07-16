@@ -28,10 +28,8 @@ subroutine acevtr(noma, nomo, ityp, noms, itab, &
 #include "asterfort/jeexin.h"
 #include "asterfort/jelira.h"
 #include "asterfort/jemarq.h"
-#include "asterfort/jenonu.h"
 #include "asterfort/jenuno.h"
 #include "asterfort/jeveuo.h"
-#include "asterfort/jexnom.h"
 #include "asterfort/jexnum.h"
 #include "asterfort/testli.h"
 #include "asterfort/utmess.h"
@@ -39,20 +37,20 @@ subroutine acevtr(noma, nomo, ityp, noms, itab, &
 !
     character(len=24) :: noms(*)
     character(len=8) :: nomo, noma
-    integer :: ityp, nn, idim, itab(*)
+    integer(kind=8) :: ityp, nn, idim, itab(*)
 !
 !   ARGUMENT        E/S  TYPE         ROLE
 !.========================= DEBUT DES DECLARATIONS ====================
 ! -----  VARIABLES LOCALES
-    integer :: repi
+    integer(kind=8) :: repi
     character(len=16) :: nomte, nomodl, chaine
     character(len=19) :: nolig
     character(len=24) :: repk
 !.========================= DEBUT DU CODE EXECUTABLE ==================
 !
 !-----------------------------------------------------------------------
-    integer :: ialiel, ierr, igrel, ima, iret, itypel
-    integer :: kma, kmai, nbgrel, nel
+    integer(kind=8) :: ialiel, ierr, igrel, ima, iret, itypel
+    integer(kind=8) :: kma, kmai, nbgrel, nel
 !-----------------------------------------------------------------------
     call jemarq()
 !

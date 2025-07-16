@@ -28,12 +28,10 @@ subroutine dismco(questi, nomob, repi, repk, ierd)
 #include "asterfort/detrsd.h"
 #include "asterfort/jedema.h"
 #include "asterfort/jemarq.h"
-#include "asterfort/jenuno.h"
 #include "asterfort/jeveuo.h"
-#include "asterfort/jexnum.h"
 #include "asterfort/int_to_char8.h"
 !
-    integer :: repi, ierd
+    integer(kind=8) :: repi, ierd
     character(len=*) :: nomob, repk
     character(len=*) :: questi
 !
@@ -51,7 +49,7 @@ subroutine dismco(questi, nomob, repi, repk, ierd)
 ! ======================================================================
 !
     character(len=19) :: chtmp, chcalc
-    integer :: iret, jcald, jcall, nbma, ima, iadc
+    integer(kind=8) :: iret, jcald, jcall, nbma, ima, iadc
     character(len=6) :: lcham(3)
     character(len=8) :: noma, nomail
     aster_logical :: incr, elas

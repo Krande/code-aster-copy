@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -21,14 +21,14 @@
 interface
     subroutine rms(imatr, vect1, long1, vect2, long2,&
                    nbpts, nfcod, df, nfonc)
-        integer :: long2
-        integer :: long1
-        integer :: imatr
+        integer(kind=8) :: long2
+        integer(kind=8) :: long1
+        integer(kind=8) :: imatr
         real(kind=8) :: vect1(long1)
         real(kind=8) :: vect2(long2)
-        integer :: nbpts
-        integer :: nfcod
+        integer(kind=8) :: nbpts
+        integer(kind=8) :: nfcod
         real(kind=8) :: df
-        integer :: nfonc
+        integer(kind=8) :: nfonc
     end subroutine rms
 end interface

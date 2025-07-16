@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -23,9 +23,9 @@ interface
                       deps, sigm, vinm,&
                       option, sigp, vinp, dside, retcom,&
                       invi)
-        integer :: invi
+        integer(kind=8) :: invi
         character(len=8) :: mod(*)
-        integer :: imate
+        integer(kind=8) :: imate
         real(kind=8) :: instam
         real(kind=8) :: instap
         real(kind=8) :: deps(6)
@@ -35,6 +35,6 @@ interface
         real(kind=8) :: sigp(6)
         real(kind=8) :: vinp(invi)
         real(kind=8) :: dside(6, 6)
-        integer :: retcom
+        integer(kind=8) :: retcom
     end subroutine srcomp
 end interface

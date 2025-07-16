@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -23,19 +23,19 @@ interface
                       jinter, ifa, cface, ipg, nnop,&
                       nnops, igeom, jbasec, xg, jac, ffp,&
                       ffpc, dfdi, nd, tau1, tau2, dfdic)
-        integer :: ndim
+        integer(kind=8) :: ndim
         character(len=8) :: elrefp
         character(len=8) :: elrefc
         character(len=8) :: elc
         character(len=8) :: fpg
-        integer :: jinter
-        integer :: ifa
-        integer :: cface(30, 6)
-        integer :: ipg
-        integer :: nnop
-        integer :: nnops
-        integer :: igeom
-        integer :: jbasec
+        integer(kind=8) :: jinter
+        integer(kind=8) :: ifa
+        integer(kind=8) :: cface(30, 6)
+        integer(kind=8) :: ipg
+        integer(kind=8) :: nnop
+        integer(kind=8) :: nnops
+        integer(kind=8) :: igeom
+        integer(kind=8) :: jbasec
         real(kind=8) :: xg(3)
         real(kind=8) :: jac
         real(kind=8) :: ffp(27)

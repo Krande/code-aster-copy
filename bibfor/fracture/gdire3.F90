@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -43,7 +43,7 @@ subroutine gdire3(coord, a, b, c, m)
     real(kind=8) :: coord(3, *), a, b, c, x1, x2, x3, y1, y2, y3, z1, z2, z3
     real(kind=8) :: x12, y12, z12, x13, y13, z13, norm1, norm2, norm3, pscal, prod
 !
-    integer :: m
+    integer(kind=8) :: m
 !
 !-----------------------------------------------------------------------
 !-----------------------------------------------------------------------

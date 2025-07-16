@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2020 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -20,8 +20,8 @@
 !
 interface
     subroutine fft(s, n, ifft)
-        integer :: n
+        integer(kind=8) :: n
         complex(kind=8) :: s(n)
-        integer :: ifft
+        integer(kind=8) :: ifft
     end subroutine fft
 end interface

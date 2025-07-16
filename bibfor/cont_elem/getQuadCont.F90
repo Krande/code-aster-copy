@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -35,13 +35,13 @@ subroutine getQuadCont(elem_dime, &
 #include "asterfort/mmnonf.h"
 #include "jeveux.h"
 !
-    integer, intent(in) :: elem_dime
+    integer(kind=8), intent(in) :: elem_dime
     character(len=8), intent(in) :: elem_slav_code, elem_mast_code
-    integer, intent(in) :: nbPoinInte
+    integer(kind=8), intent(in) :: nbPoinInte
     real(kind=8), intent(in) :: poinInteSlav(2, MAX_NB_INTE)
     real(kind=8), intent(out) :: coor_qp(2, MAX_NB_QUAD)
-    integer, intent(out) :: nb_qp
-    integer, optional, intent(in) :: nb_node_slav_
+    integer(kind=8), intent(out) :: nb_qp
+    integer(kind=8), optional, intent(in) :: nb_node_slav_
     real(kind=8), optional, intent(in) :: elem_slav_coor_(3, 9)
     aster_logical, optional, intent(in) :: l_axis_
     real(kind=8), optional, intent(out) :: weight_qp_(MAX_NB_QUAD)
@@ -66,8 +66,8 @@ subroutine getQuadCont(elem_dime, &
 ! --------------------------------------------------------------------------------------------------
 !
     aster_logical :: l_slav_line, l_mast_line
-    integer :: iTria, iGauss
-    integer :: nbTria, nbGauss
+    integer(kind=8) :: iTria, iGauss
+    integer(kind=8) :: nbTria, nbGauss
     real(kind=8) :: triaCoorSlav(2, 3)
     real(kind=8) :: gausWeightSlav(12), gausCoorSlav(2, 12)
     real(kind=8) :: shape_func(9), shape_dfunc(2, 9), jacobian_sl

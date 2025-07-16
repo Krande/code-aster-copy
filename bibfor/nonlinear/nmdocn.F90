@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -24,8 +24,6 @@ subroutine nmdocn(ds_conv)
     implicit none
 !
 #include "asterf_types.h"
-#include "asterc/r8nnem.h"
-#include "asterc/r8vide.h"
 #include "asterfort/assert.h"
 #include "asterfort/getvis.h"
 #include "asterfort/getvr8.h"
@@ -49,9 +47,9 @@ subroutine nmdocn(ds_conv)
 !
 ! --------------------------------------------------------------------------------------------------
 !
-    integer :: ifm, niv
+    integer(kind=8) :: ifm, niv
     character(len=16), parameter :: factorKeyword = 'CONVERGENCE'
-    integer :: iret, iret_rela, iret_maxi, iret_refe, iret_comp, para_inte, iret_iter
+    integer(kind=8) :: iret, iret_rela, iret_maxi, iret_refe, iret_comp, para_inte, iret_iter
     real(kind=8) :: para_real
     character(len=24) :: answer
 !

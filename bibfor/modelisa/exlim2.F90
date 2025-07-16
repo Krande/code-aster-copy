@@ -30,7 +30,6 @@ subroutine exlim2(lismai, nbmail, ligrmoz, basez, ligrez)
 #include "asterfort/jedupo.h"
 #include "asterfort/jeecra.h"
 #include "asterfort/jemarq.h"
-#include "asterfort/jenuno.h"
 #include "asterfort/jeveuo.h"
 #include "asterfort/jexatr.h"
 #include "asterfort/jexnum.h"
@@ -41,7 +40,7 @@ subroutine exlim2(lismai, nbmail, ligrmoz, basez, ligrez)
 #include "asterfort/assert.h"
 #include "asterfort/int_to_char8.h"
 !
-    integer :: lismai(*), nbmail
+    integer(kind=8) :: lismai(*), nbmail
     character(len=*) :: ligrmoz, basez, ligrez
 
 ! But : Creer le ligrel "reduit" correspondant au ligrel donné
@@ -62,12 +61,12 @@ subroutine exlim2(lismai, nbmail, ligrmoz, basez, ligrez)
     character(len=8) :: noma, nomail
     character(len=19) :: ligrel, ligrmo
     character(len=24) :: cptlie
-    integer :: i, j, lont, numvec, numail, igrel, nbmam, k
-    integer :: lcliel, jdnb, iadm, jdli
-    integer :: jtyp, jnel, typele, typel1, nbtyel, itype, nmel, nbmail_nz
-    integer, pointer :: lismai_nz(:) => null()
-    integer, pointer :: liel(:) => null()
-    integer, pointer :: repe(:) => null()
+    integer(kind=8) :: i, j, lont, numvec, numail, igrel, nbmam, k
+    integer(kind=8) :: lcliel, jdnb, iadm, jdli
+    integer(kind=8) :: jtyp, jnel, typele, typel1, nbtyel, itype, nmel, nbmail_nz
+    integer(kind=8), pointer :: lismai_nz(:) => null()
+    integer(kind=8), pointer :: liel(:) => null()
+    integer(kind=8), pointer :: repe(:) => null()
 !     ------------------------------------------------------------------
 !
     call jemarq()

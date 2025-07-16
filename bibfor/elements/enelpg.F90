@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -59,7 +59,7 @@ subroutine enelpg(fami, iadmat, instan, igau, angl_naut, &
 #include "asterfort/verift.h"
 #include "asterfort/zerop3.h"
 #include "blas/dcopy.h"
-    integer :: nbsig, nbvari, nsol, i, iadmat, igau, icodre(2), isig, jsig
+    integer(kind=8) :: nbsig, nbvari, nsol, i, iadmat, igau, icodre(2), isig, jsig
     real(kind=8) :: c1, c2, deux, vari(*), enelas, trt, un, undemi, zero
     real(kind=8) :: sol(3), sigma(6), jzero, uzero, mzero, instan, epsi(6)
     real(kind=8) :: mjac, ujac, wbe, be(6), e, nu, f(3, 3), angl_naut(3)

@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -29,8 +29,8 @@ subroutine gcfonc(ichar, iord, cartei, lfchar, lfmult, &
 !
     aster_logical, intent(in) :: lfmult
     aster_logical, intent(in) :: lfchar
-    integer, intent(in) :: ichar
-    integer, intent(in) :: iord
+    integer(kind=8), intent(in) :: ichar
+    integer(kind=8), intent(in) :: iord
     character(len=8), intent(out) :: newfct
     character(len=19), intent(in) :: cartei
     aster_logical, intent(out) :: lformu
@@ -55,7 +55,7 @@ subroutine gcfonc(ichar, iord, cartei, lfchar, lfmult, &
 !
 ! --------------------------------------------------------------------------------------------------
 !
-    integer :: iret
+    integer(kind=8) :: iret
     character(len=8) :: nomchf
 !
 ! --------------------------------------------------------------------------------------------------

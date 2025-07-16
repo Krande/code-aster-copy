@@ -30,20 +30,18 @@ subroutine nbnlma(noma, nbm, limanu, nbtyp, lityp, &
 #include "asterfort/jelira.h"
 #include "asterfort/jemarq.h"
 #include "asterfort/jenonu.h"
-#include "asterfort/jenuno.h"
 #include "asterfort/jeveuo.h"
 #include "asterfort/jexatr.h"
 #include "asterfort/jexnom.h"
-#include "asterfort/jexnum.h"
 #include "asterfort/wkvect.h"
 #include "asterfort/int_to_char8.h"
 !
     character(len=8), intent(in) :: noma
-    integer, intent(in) :: nbm
-    integer, intent(in) :: limanu(*)
-    integer, intent(in) :: nbtyp
+    integer(kind=8), intent(in) :: nbm
+    integer(kind=8), intent(in) :: limanu(*)
+    integer(kind=8), intent(in) :: nbtyp
     character(len=8), intent(in) :: lityp(*)
-    integer, intent(out) :: nbn
+    integer(kind=8), intent(out) :: nbn
     aster_logical, intent(out) :: l_error
     character(len=8), intent(out) :: elem_error
 !
@@ -71,10 +69,10 @@ subroutine nbnlma(noma, nbm, limanu, nbtyp, lityp, &
 !
 ! --------------------------------------------------------------------------------------------------
 !
-    integer :: iatyma, iret, it, itrou, j, jln, jnbn, jtyp, m, mi, n, nbna, nbnm
-    integer :: nn, numtyp, p2
+    integer(kind=8) :: iatyma, iret, it, itrou, j, jln, jnbn, jtyp, m, mi, n, nbna, nbnm
+    integer(kind=8) :: nn, numtyp, p2
     character(len=8) :: mk, valk
-    integer, pointer :: connex(:) => null()
+    integer(kind=8), pointer :: connex(:) => null()
 !
 ! --------------------------------------------------------------------------------------------------
 !

@@ -68,7 +68,6 @@ subroutine rotlir(nomres, sst1, intf1, lino1, codret, &
 #include "asterfort/jelira.h"
 #include "asterfort/jemarq.h"
 #include "asterfort/jenonu.h"
-#include "asterfort/jenuno.h"
 #include "asterfort/jeveuo.h"
 #include "asterfort/jexnom.h"
 #include "asterfort/jexnum.h"
@@ -91,12 +90,12 @@ subroutine rotlir(nomres, sst1, intf1, lino1, codret, &
     character(len=8) :: sst1, intf1, lint1, bamo1, kbid, nmacr1, temp
     character(len=8) :: sst2, mailla, nomnoe
     character(len=4) :: nliai
-    integer :: ibid, nbno1, llint1, nbeq1, lmod1, numlia, lonmod, i1, j1, k1, l1
-    integer :: m1, n1, lindi1, lnoeu1, nbnoe, nbec, ipos1, ipos2, lmain1, nbcmpm
-    integer :: leuler, lresmo, codret, lmacr1, nbddl1, imast, ddla1, lact1, iret
-    integer :: lmarot, length, nbcmp, jnocmp, noer
+    integer(kind=8) :: ibid, nbno1, llint1, nbeq1, lmod1, numlia, lonmod, i1, j1, k1, l1
+    integer(kind=8) :: m1, n1, lindi1, lnoeu1, nbnoe, nbec, ipos1, ipos2, lmain1, nbcmpm
+    integer(kind=8) :: leuler, lresmo, codret, lmacr1, nbddl1, imast, ddla1, lact1, iret
+    integer(kind=8) :: lmarot, length, nbcmp, jnocmp, noer
     parameter(nbcmpm=300)
-    integer :: deco(nbcmpm)
+    integer(kind=8) :: deco(nbcmpm)
     real(kind=8) :: euler(3), rota(3, 3), norme, nortot
     logical :: nook
     blas_int :: b_incx, b_incy, b_n

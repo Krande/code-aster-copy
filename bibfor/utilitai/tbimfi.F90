@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -32,21 +32,21 @@ subroutine tbimfi(nparfi, table, newtab, iret)
 #include "asterfort/jeveuo.h"
 #include "asterfort/tbextb.h"
 #include "asterfort/wkvect.h"
-    integer :: nparfi, iret
+    integer(kind=8) :: nparfi, iret
     character(len=19) :: table, newtab
 !     OPERATEUR  IMPR_TABLE , TRAITEMENT DU MOT CLE FACTEUR "FILTRE"
 !     ------------------------------------------------------------------
 !
-    integer :: jtitr, ititr, ii, ir, ic, ik, ioc, lonmax, lonma1
-    integer :: l, l1, l2
-    integer :: l3, l4, irt
+    integer(kind=8) :: jtitr, ititr, ii, ir, ic, ik, ioc, lonmax, lonma1
+    integer(kind=8) :: l, l1, l2
+    integer(kind=8) :: l3, l4, irt
     character(len=80) :: montit
     character(len=8), pointer :: critere(:) => null()
     character(len=8), pointer :: crit_para(:) => null()
     character(len=24), pointer :: noms_para(:) => null()
     real(kind=8), pointer :: precision(:) => null()
     complex(kind=8), pointer :: vale_c(:) => null()
-    integer, pointer :: vale_i(:) => null()
+    integer(kind=8), pointer :: vale_i(:) => null()
     character(len=80), pointer :: vale_k(:) => null()
     real(kind=8), pointer :: vale_r(:) => null()
     character(len=80), pointer :: titr(:) => null()
@@ -134,9 +134,9 @@ subroutine tbimfi(nparfi, table, newtab, iret)
 !
 1010 format('FILTRE -> NOM_PARA: ', a16, ' CRIT_COMP: ', a4, ' VALE: ', i12)
 1020 format('FILTRE -> NOM_PARA: ', a16, ' CRIT_COMP: ', a4,&
-    &                                ' VALE: ', 1pe12.5)
+   &                                ' VALE: ', 1pe12.5)
 1030 format('FILTRE -> NOM_PARA: ', a16, ' CRIT_COMP: ', a4,&
-    &                                ' VALE: ', 1pe12.5, 1x, 1pe12.5)
+   &                                ' VALE: ', 1pe12.5, 1x, 1pe12.5)
 1040 format('FILTRE -> NOM_PARA: ', a16, ' CRIT_COMP: ', a4, ' VALE: ', a8)
 !
     call jedema()

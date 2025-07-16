@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2020 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -23,13 +23,13 @@ interface
                       nb, ndim, nbnoel, indr, vnor,&
                       vdir)
         character(len=8) :: noma
-        integer :: indic(4)
-        integer :: noe(4, 4)
-        integer :: na
-        integer :: nb
-        integer :: ndim
-        integer :: nbnoel
-        integer :: indr(2)
+        integer(kind=8) :: indic(4)
+        integer(kind=8) :: noe(4, 4)
+        integer(kind=8) :: na
+        integer(kind=8) :: nb
+        integer(kind=8) :: ndim
+        integer(kind=8) :: nbnoel
+        integer(kind=8) :: indr(2)
         real(kind=8) :: vnor(2, 3)
         real(kind=8) :: vdir(2, 3)
     end subroutine fonno5

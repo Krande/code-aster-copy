@@ -22,7 +22,7 @@ interface
         use NonLin_Datastructure_type
         use NonLinearDyna_type
         character(len=24), intent(in) :: numeDof
-        integer, intent(in) :: listFuncActi(*)
+        integer(kind=8), intent(in) :: listFuncActi(*)
         character(len=19), intent(in) :: sddyna
         type(NLDYNA_DAMPING), intent(in) :: nlDynaDamping
         character(len=19), intent(in) :: hval_incr(*), hval_algo(*), hval_veasse(*)

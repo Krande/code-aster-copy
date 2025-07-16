@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -81,8 +81,8 @@ subroutine te0047(optioz, nomtez)
 !
 ! --------------------------------------------------------------------------------------------------
 !
-    integer :: jcret, lorien
-    integer :: iadzi, iazk24, ibid, infodi, codret
+    integer(kind=8) :: jcret, lorien
+    integer(kind=8) :: iadzi, iazk24, ibid, infodi, codret
     !
     real(kind=8) :: r8bid
     !

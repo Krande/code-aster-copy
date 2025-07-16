@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -24,11 +24,11 @@ interface
                           coef_frot_curr, cycl_stat_curr)
         real(kind=8), intent(in) :: pres_frot_prev(3)
         real(kind=8), intent(in) :: dist_frot_prev(3)
-        integer, intent(in) :: cycl_stat_prev
+        integer(kind=8), intent(in) :: cycl_stat_prev
         real(kind=8), intent(in) :: coef_frot_prev
         real(kind=8), intent(in) :: pres_frot_curr(3)
         real(kind=8), intent(in) :: dist_frot_curr(3)
         real(kind=8), intent(out) :: coef_frot_curr
-        integer, intent(out) :: cycl_stat_curr
+        integer(kind=8), intent(out) :: cycl_stat_curr
     end subroutine mm_cycl_t2
 end interface

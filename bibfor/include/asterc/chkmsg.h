@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -20,7 +20,7 @@
 !
 interface
     subroutine chkmsg(i1, iret)
-        integer :: i1
-        integer :: iret
+        integer(kind=8) :: i1
+        integer(kind=8) :: iret
     end subroutine chkmsg
 end interface

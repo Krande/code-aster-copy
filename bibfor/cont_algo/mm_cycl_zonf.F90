@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -20,7 +20,6 @@ subroutine mm_cycl_zonf(lagr_frot_norm, tole_stick, tole_slide, zone_frot)
 !
     implicit none
 !
-#include "asterc/r8prem.h"
 #include "asterfort/assert.h"
 !
 ! person_in_charge: mickael.abbas at edf.fr
@@ -28,7 +27,7 @@ subroutine mm_cycl_zonf(lagr_frot_norm, tole_stick, tole_slide, zone_frot)
     real(kind=8), intent(in) :: lagr_frot_norm
     real(kind=8), intent(in) :: tole_stick
     real(kind=8), intent(in) :: tole_slide
-    integer, intent(out) :: zone_frot
+    integer(kind=8), intent(out) :: zone_frot
 !
 ! --------------------------------------------------------------------------------------------------
 !

@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -27,7 +27,7 @@ subroutine ppgan2(jgano, nbsp, ncmp, vpg, vno)
 #include "asterfort/utmess.h"
 #include "asterc/r8vide.h"
 !
-    integer :: jgano, nbsp, ncmp
+    integer(kind=8) :: jgano, nbsp, ncmp
     real(kind=8) :: vno(*), vpg(*)
 ! person_in_charge: jacques.pellet at edf.fr
 !
@@ -40,12 +40,12 @@ subroutine ppgan2(jgano, nbsp, ncmp, vpg, vno)
 !            VPG    VECTEUR DES VALEURS AUX POINTS DE GAUSS
 !     OUT    VNO    VECTEUR DES VALEURS AUX NOEUDS
 !----------------------------------------------------------------------
-    integer :: ino, isp, ipg, icmp, nno, nno2, iadzi, iazk24, npg, jmat, ima
-    integer :: vali(2)
+    integer(kind=8) :: ino, isp, ipg, icmp, nno, nno2, iadzi, iazk24, npg, jmat, ima
+    integer(kind=8) :: vali(2)
     real(kind=8) :: s
     character(len=8) :: ma, typema
     character(len=24) :: valk(2)
-    integer, pointer :: typmail(:) => null()
+    integer(kind=8), pointer :: typmail(:) => null()
 !
 ! DEB ------------------------------------------------------------------
 !

@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -25,9 +25,9 @@ interface
                              poin_coor,&
                              iret)
         real(kind=8), intent(in) :: pair_tole
-        integer, intent(in) :: elem_dime
+        integer(kind=8), intent(in) :: elem_dime
         character(len=8), intent(in) :: elem_code
         real(kind=8), intent(in) :: poin_coor(elem_dime-1)
-        integer, intent(out) :: iret
+        integer(kind=8), intent(out) :: iret
     end subroutine projInsideCell
 end interface

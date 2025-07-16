@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -26,7 +26,7 @@ subroutine decod2(rec, irec, ifield, itype, ilu, &
 #include "asterfort/lxlir8.h"
 #include "asterfort/trfmot.h"
     character(len=*) :: rec(20)
-    integer :: irec, ifield, itype, ilu
+    integer(kind=8) :: irec, ifield, itype, ilu
     real(kind=8) :: rlu
     aster_logical :: trouve
 !
@@ -47,7 +47,7 @@ subroutine decod2(rec, irec, ifield, itype, ilu, &
 !
 !---------------------------------------------------------------------
     character(len=80) :: field
-    integer :: ier
+    integer(kind=8) :: ier
 !
 !- INITIALISATION
     trouve = .true.

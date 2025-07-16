@@ -69,13 +69,13 @@ subroutine nxnewt(model, mateco, caraElem, listLoad, nume_dof, &
     real(kind=8) :: tpsthe(6)
     character(len=24), intent(in) :: timeMap
     character(len=19), intent(in) :: varc_curr, sddisc
-    integer, intent(in) :: iter_newt
+    integer(kind=8), intent(in) :: iter_newt
     aster_logical, intent(out) :: conver
     aster_logical :: reasma
     character(len=19) :: maprec
     character(len=24) :: matass, cnchci, cnresi, temp_prev, temp_iter, vtempp, vec2nd, cn2mbr
     character(len=24) :: hydr_prev, hydr_curr, comporTher, dry_curr
-    integer :: ther_crit_i(*)
+    integer(kind=8) :: ther_crit_i(*)
     real(kind=8) :: ther_crit_r(*)
     type(ROM_DS_AlgoPara), intent(in) :: ds_algorom
     type(NL_DS_Print), intent(inout) :: ds_print
@@ -95,8 +95,8 @@ subroutine nxnewt(model, mateco, caraElem, listLoad, nume_dof, &
 !
 ! --------------------------------------------------------------------------------------------------
 !
-    integer :: ibid, ieq_rela, ieq_maxi
-    integer :: jmed, jmer, nbmat, ierr, iret
+    integer(kind=8) :: ibid, ieq_rela, ieq_maxi
+    integer(kind=8) :: jmed, jmer, nbmat, ierr, iret
     real(kind=8) :: r8bid
     character(len=1) :: typres
     character(len=19) :: chsol

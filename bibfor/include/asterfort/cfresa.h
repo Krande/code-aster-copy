@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -21,7 +21,7 @@
 interface
     subroutine cfresa(ndim, fctc, norm, rnx, rny,&
                       rnz, rn)
-        integer :: ndim
+        integer(kind=8) :: ndim
         real(kind=8) :: fctc(3)
         real(kind=8) :: norm(3)
         real(kind=8) :: rnx

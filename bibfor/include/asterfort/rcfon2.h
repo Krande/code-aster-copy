@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -23,9 +23,9 @@ interface
                       e    , nu    , p    , rp    , rprim,&
                       c    , sieleq, dp)
         character(len=1), intent(in) :: quest
-        integer, intent(in) :: jprol
-        integer, intent(in) :: jvale
-        integer, intent(in) :: nbvale
+        integer(kind=8), intent(in) :: jprol
+        integer(kind=8), intent(in) :: jvale
+        integer(kind=8), intent(in) :: nbvale
         real(kind=8), optional, intent(in) :: sieleq
         real(kind=8), optional, intent(in) :: e
         real(kind=8), optional, intent(in) :: nu

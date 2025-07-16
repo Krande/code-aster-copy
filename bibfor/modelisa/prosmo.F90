@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -74,7 +74,7 @@ subroutine prosmo(matrez, limat, nbmat, basez, numedd, &
 !
     real(kind=8) :: tmax
 ! -----  ARGUMENTS
-    integer :: nbmat
+    integer(kind=8) :: nbmat
     aster_logical :: lsym
     character(len=*) :: matrez, basez, numedd
     character(len=*) :: limat(nbmat)
@@ -85,14 +85,14 @@ subroutine prosmo(matrez, limat, nbmat, basez, numedd, &
     character(len=19) :: matres, mat1, mati, nume_equa1, nume_equal
     character(len=24) :: ksmhc, ksmdi, krefa, kconl, kvalm
     character(len=24) :: krefi, kliste
-    integer :: lgbl, jhtc, i, iadi, jeq, nbter, ibl1, lcumu, kbl
-    integer :: jbl1
-    integer :: iblav, idhcoi, icum, ismdi, lsmhc, nterm, idsmhc, l, jsmde
-    integer :: itbloc, nbloc, kbloc, jrefa, idrefi, idconl, ieq
-    integer :: ier, neq, k, htc
-    integer, pointer :: ibl(:) => null()
-    integer, pointer :: pbl(:) => null()
-    integer, pointer :: smde(:) => null()
+    integer(kind=8) :: lgbl, jhtc, i, iadi, jeq, nbter, ibl1, lcumu, kbl
+    integer(kind=8) :: jbl1
+    integer(kind=8) :: iblav, idhcoi, icum, ismdi, lsmhc, nterm, idsmhc, l, jsmde
+    integer(kind=8) :: itbloc, nbloc, kbloc, jrefa, idrefi, idconl, ieq
+    integer(kind=8) :: ier, neq, k, htc
+    integer(kind=8), pointer :: ibl(:) => null()
+    integer(kind=8), pointer :: pbl(:) => null()
+    integer(kind=8), pointer :: smde(:) => null()
 !
 !.========================= DEBUT DU CODE EXECUTABLE ==================
 !

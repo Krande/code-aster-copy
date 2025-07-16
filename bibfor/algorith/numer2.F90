@@ -34,7 +34,7 @@ subroutine numer2(nbLigr, listLigr, base, numeDofZ, &
 #include "asterfort/nugllo.h"
 #include "asterfort/promor.h"
 !
-    integer, intent(in) :: nbLigr
+    integer(kind=8), intent(in) :: nbLigr
     character(len=24), pointer :: listLigr(:)
     character(len=2), intent(in) :: base
     character(len=*), intent(inout) :: numeDofZ
@@ -73,7 +73,7 @@ subroutine numer2(nbLigr, listLigr, base, numeDofZ, &
     character(len=3) :: matd
     character(len=8) :: model
     aster_logical :: l_matr_dist, printt
-    integer :: iret
+    integer(kind=8) :: iret
 !
 ! --------------------------------------------------------------------------------------------------
 !

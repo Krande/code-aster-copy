@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -68,7 +68,7 @@ subroutine infted(nomte, symetr, nbterm, nbnoeu, nbcomp, ndimen, itype)
 !
 !
     character(len=*) :: nomte
-    integer :: symetr, nbterm, nbnoeu, nbcomp, ndimen, itype
+    integer(kind=8) :: symetr, nbterm, nbnoeu, nbcomp, ndimen, itype
 !
 #include "jeveux.h"
 #include "asterfort/assert.h"
@@ -79,7 +79,7 @@ subroutine infted(nomte, symetr, nbterm, nbnoeu, nbcomp, ndimen, itype)
 ! --------------------------------------------------------------------------------------------------
 !
     character(len=24) :: kmess(5)
-    integer :: iadzi, iazk24, iret
+    integer(kind=8) :: iadzi, iazk24, iret
     real(kind=8) :: tvar
 !
 ! --------------------------------------------------------------------------------------------------

@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -62,14 +62,14 @@ subroutine ircmec(idfimd, nochmd, nomprf, nolopg, numpt, &
     character(len=8) :: nosdfu
 !
     med_idt :: idfimd
-    integer :: numpt, numord
-    integer :: ncmpve, nbenty, nbrepg, nvalec
-    integer :: typent, typgeo, tymast
+    integer(kind=8) :: numpt, numord
+    integer(kind=8) :: ncmpve, nbenty, nbrepg, nvalec
+    integer(kind=8) :: typent, typgeo, tymast
 !
     real(kind=8) :: instan
     real(kind=8) :: val(*)
 !
-    integer :: codret
+    integer(kind=8) :: codret
 !
 ! 0.2. ==> COMMUNS
 !
@@ -83,22 +83,22 @@ subroutine ircmec(idfimd, nochmd, nomprf, nolopg, numpt, &
     character(len=32) :: ednopf
 !                         12345678901234567890123456789012
     parameter(ednopf='                                ')
-    integer :: edfuin
+    integer(kind=8) :: edfuin
     parameter(edfuin=0)
-    integer :: edall
+    integer(kind=8) :: edall
     parameter(edall=0)
-    integer :: ednopt
+    integer(kind=8) :: ednopt
     parameter(ednopt=-1)
-    integer :: ednopg
+    integer(kind=8) :: ednopg
     parameter(ednopg=1)
-    integer :: edcomp
+    integer(kind=8) :: edcomp
     parameter(edcomp=2)
     character(len=32) :: ednoga
     parameter(ednoga='                                ')
 !
-    integer :: ifm, nivinf
-    integer :: iaux, jnbno, nbentl, nbentt, start, filter(1)
-    integer :: jnbma, nbbloc
+    integer(kind=8) :: ifm, nivinf
+    integer(kind=8) :: iaux, jnbno, nbentl, nbentt, start, filter(1)
+    integer(kind=8) :: jnbma, nbbloc
     real(kind=8) :: start_time, end_time
 !
     character(len=8) :: saux08

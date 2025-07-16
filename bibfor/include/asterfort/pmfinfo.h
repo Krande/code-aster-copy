@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -20,12 +20,12 @@
 !
 interface
     subroutine pmfinfo(nbfibr, nbgrfi, tygrfi, nbcarm, nug, jacf, nbassfi)
-        integer,intent(out) :: nbfibr
-        integer,intent(out) :: nbgrfi
-        integer,intent(out) :: tygrfi
-        integer,intent(out) :: nbcarm
-        integer,intent(out) :: nug(*)
-        integer,intent(out), optional :: jacf
-        integer,intent(out), optional :: nbassfi
+        integer(kind=8),intent(out) :: nbfibr
+        integer(kind=8),intent(out) :: nbgrfi
+        integer(kind=8),intent(out) :: tygrfi
+        integer(kind=8),intent(out) :: nbcarm
+        integer(kind=8),intent(out) :: nug(*)
+        integer(kind=8),intent(out), optional :: jacf
+        integer(kind=8),intent(out), optional :: nbassfi
     end subroutine pmfinfo
 end interface

@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -39,8 +39,8 @@ subroutine te0362(option, nomte)
 !
 !
     character(len=8) :: lielrf(10)
-    integer :: jgn, nno, g, iw, ivf, igeom, ntrou
-    integer :: npg, nnos, icopg, ndim, idf, i, n
+    integer(kind=8) :: jgn, nno, g, iw, ivf, igeom, ntrou
+    integer(kind=8) :: npg, nnos, icopg, ndim, idf, i, n
 !
     real(kind=8) :: cova(3, 3), metr(2, 2), jac, x(3)
     real(kind=8) :: wg, dfdx(9), cour, cosa, sina, wref

@@ -33,14 +33,12 @@ subroutine sgcomp(compor_curr, sigm, ligrel_currz, iret, &
 #include "asterfort/cestas.h"
 #include "asterfort/celces.h"
 #include "asterfort/cesexi.h"
-#include "asterfort/jenuno.h"
-#include "asterfort/jexnum.h"
 #include "asterfort/int_to_char8.h"
 !
     character(len=*), intent(in) :: compor_curr
     character(len=*), intent(in) :: sigm
     character(len=*), intent(in) :: ligrel_currz
-    integer, intent(out) :: iret
+    integer(kind=8), intent(out) :: iret
     character(len=1), optional, intent(in) :: type_stop
 !
 ! --------------------------------------------------------------------------------------------------
@@ -71,19 +69,19 @@ subroutine sgcomp(compor_curr, sigm, ligrel_currz, iret, &
     character(len=19) :: dcel
     character(len=8), pointer :: dcelk(:) => null()
     character(len=8) :: mesh
-    integer :: nb_elem
-    integer, pointer :: cesd(:) => null()
-    integer :: iad1, iad2
-    integer :: i_elem, vali(3)
+    integer(kind=8) :: nb_elem
+    integer(kind=8), pointer :: cesd(:) => null()
+    integer(kind=8) :: iad1, iad2
+    integer(kind=8) :: i_elem, vali(3)
     aster_logical :: elem_in_curr, elem_in_prev
-    integer :: nb_spg_prev
-    integer :: nb_spg_curr
+    integer(kind=8) :: nb_spg_prev
+    integer(kind=8) :: nb_spg_curr
     character(len=8) :: name_elem
-    integer, pointer :: repm(:) => null()
-    integer, pointer :: repp(:) => null()
-    integer :: jdceld, jdcell
-    integer, pointer :: dcelv(:) => null()
-    integer :: jce2d
+    integer(kind=8), pointer :: repm(:) => null()
+    integer(kind=8), pointer :: repp(:) => null()
+    integer(kind=8) :: jdceld, jdcell
+    integer(kind=8), pointer :: dcelv(:) => null()
+    integer(kind=8) :: jce2d
 !
 ! --------------------------------------------------------------------------------------------------
 !

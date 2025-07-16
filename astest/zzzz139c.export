@@ -1,0 +1,19 @@
+P time_limit 60
+P memory_limit 512
+P ncpus 1
+P mpi_nbcpu 1
+P mpi_nbnoeud 1
+P testlist verification sequential
+
+
+F comm zzzz139c.comm  D  1
+F libr zzzz139b.mmed D  20
+F libr zzzz139c.10 D  10
+F libr zzzz139c.11 D  11
+F libr zzzz139c.12 D  12
+F libr zzzz139c.13 D  13
+F libr zzzz139c.14 D  14
+F libr zzzz139c.16 D  16
+F libr zzzz139c.17 D  17
+F libr zzzz139c.18 D  18
+F libr zzzz139c.19 D  19

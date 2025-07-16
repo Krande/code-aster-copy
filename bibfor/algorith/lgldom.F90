@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -31,7 +31,7 @@ subroutine lgldom(nbmat, mater, yf, fiter)
 #include "asterfort/varecr.h"
 #include "asterfort/wkvect.h"
 #include "blas/ddot.h"
-    integer :: nbmat
+    integer(kind=8) :: nbmat
     real(kind=8) :: mater(nbmat, 2), yf(10), fiter
 ! --- BUT : VALEUR DE F POUR LE CONVEXE ELASTO-PLASTIQUE ----------
 ! =================================================================
@@ -42,7 +42,7 @@ subroutine lgldom(nbmat, mater, yf, fiter)
 ! OUT : FITER : VALEUR DE F(S) A L'INSTANT COURANT ----------------
 ! =================================================================
 ! =================================================================
-    integer :: ndt, ndi, jpara
+    integer(kind=8) :: ndt, ndi, jpara
     real(kind=8) :: sn(6), i1n, gampn, snii, lgleps, gamcjs, pref
     real(kind=8) :: rcos3t, rhlode, rgdev, sigc
     real(kind=8) :: rucpla

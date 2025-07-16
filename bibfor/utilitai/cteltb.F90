@@ -64,20 +64,18 @@ subroutine cteltb(nbma, mesmai, noma, nbval, nkcha, &
 #include "asterfort/jedema.h"
 #include "asterfort/jeexin.h"
 #include "asterfort/jemarq.h"
-#include "asterfort/jenuno.h"
 #include "asterfort/jelira.h"
 #include "asterfort/jeveuo.h"
 #include "asterfort/jexatr.h"
-#include "asterfort/jexnum.h"
 #include "asterfort/tbajli.h"
 #include "asterfort/utmess.h"
 #include "asterfort/as_deallocate.h"
 #include "asterfort/as_allocate.h"
 #include "asterfort/int_to_char8.h"
 !
-    integer, parameter :: ndim = 3
+    integer(kind=8), parameter :: ndim = 3
 
-    integer :: nbcmp, nbval, nbma
+    integer(kind=8) :: nbcmp, nbval, nbma
     character(len=4) :: tych
     character(len=8) :: typac, noma, resu, nomtb
     character(len=16) :: nsymb
@@ -88,19 +86,19 @@ subroutine cteltb(nbma, mesmai, noma, nbval, nkcha, &
 !
 ! --------------------------------------------------------------------------------------------------
 !
-    integer :: jcmp, jkcha, jlma, jrval, jival, jniord, jconx2, ierr
-    integer :: jcpgaussl, jcpgaussd, jcpsuppol, jcpsuppod
-    integer :: i, j, jcesl, jcesd, nbmax, nbcmpx
-    integer :: n, ima, ipt, ispt, icmp, indma, nbpt, kk
-    integer :: nbcmpt, nbspt, inot, kcp, indcmp, iad, ni, nk, nr
-    integer :: nbpara, iret, jvari, iexi, nbvari, nbspt_coord
+    integer(kind=8) :: jcmp, jkcha, jlma, jrval, jival, jniord, jconx2, ierr
+    integer(kind=8) :: jcpgaussl, jcpgaussd, jcpsuppol, jcpsuppod
+    integer(kind=8) :: i, j, jcesl, jcesd, nbmax, nbcmpx
+    integer(kind=8) :: n, ima, ipt, ispt, icmp, indma, nbpt, kk
+    integer(kind=8) :: nbcmpt, nbspt, inot, kcp, indcmp, iad, ni, nk, nr
+    integer(kind=8) :: nbpara, iret, jvari, iexi, nbvari, nbspt_coord
     complex(kind=8) :: cbid
     character(len=8) :: kma, kno
     character(len=19) :: chames
     logical :: au_sous_point
 !
-    integer, pointer :: table_vali(:) => null()
-    integer, pointer :: connex(:) => null()
+    integer(kind=8), pointer :: table_vali(:) => null()
+    integer(kind=8), pointer :: connex(:) => null()
     character(len=8), pointer :: cesc(:) => null()
     character(len=16), pointer :: nom_cmp(:) => null()
     character(len=16), pointer :: table_parak(:) => null()
@@ -236,8 +234,6 @@ subroutine cteltb(nbma, mesmai, noma, nbval, nkcha, &
 !
 !               ON PARCOURT LES POINTS DE LA MAILLE IMA
                 do ipt = 1, nbpt
-!                   NUMERO DU POINT (DU MAILLAGE GLOBAL): INOT
-                    inot = connex(zi(jconx2-1+ima)+ipt-1)
 !                   ON PARCOURT LES SOUS-POINTS DE LA MAILLE IMA
                     cyispt: do ispt = 1, nbspt
                         kcp = 0
@@ -309,6 +305,8 @@ subroutine cteltb(nbma, mesmai, noma, nbval, nkcha, &
                             kk = kk+1
                         end if
                         if (tych .eq. 'ELNO') then
+!                           NUMERO DU POINT (DU MAILLAGE GLOBAL): INOT
+                            inot = connex(zi(jconx2-1+ima)+ipt-1)
                             do j = 1, ndim
                                 table_valr(kk+1) = vale(1+3*(inot-1)+j-1)
                                 kk = kk+1

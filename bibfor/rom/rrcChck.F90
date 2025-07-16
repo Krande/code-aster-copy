@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -25,7 +25,6 @@ subroutine rrcChck(cmdPara)
 !
 #include "asterf_types.h"
 #include "asterfort/as_deallocate.h"
-#include "asterfort/assert.h"
 #include "asterfort/dismoi.h"
 #include "asterfort/romModeChck.h"
 #include "asterfort/romTableChck.h"
@@ -52,12 +51,12 @@ subroutine rrcChck(cmdPara)
     character(len=8) :: resultRomName
     character(len=24) :: fieldName, fieldResultName
     type(ROM_DS_Field) :: mode
-    integer :: nbMode, nbStore
-    integer :: iFieldResult, iFieldBuild
-    integer :: nbFieldResult, nbFieldBuild
+    integer(kind=8) :: nbMode, nbStore
+    integer(kind=8) :: iFieldResult, iFieldBuild
+    integer(kind=8) :: nbFieldResult, nbFieldBuild
     type(ROM_DS_FieldBuild) ::fieldBuild
     character(len=16), pointer :: resultField(:) => null()
-    integer, pointer :: resultFieldNume(:) => null()
+    integer(kind=8), pointer :: resultFieldNume(:) => null()
     aster_logical :: lInResult, lLinearSolve, lTablFromResu, lBuild, lRIDTrunc
 !
 ! --------------------------------------------------------------------------------------------------

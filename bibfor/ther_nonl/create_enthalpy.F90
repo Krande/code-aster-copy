@@ -40,7 +40,7 @@ subroutine create_enthalpy(rhocp, enthalpy)
     character(len=19), intent(in) :: rhocp, enthalpy
 
     real(kind=8) :: rhomoy, beta0
-    integer :: nbval
+    integer(kind=8) :: nbval
     real(kind=8), pointer :: values(:) => null()
     character(len=24), pointer :: prol1(:) => null(), prol2(:) => null()
     aster_logical :: is_cste

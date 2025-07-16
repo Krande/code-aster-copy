@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -47,10 +47,10 @@ subroutine reajre(matr_vect_elemz, resu_elemz, base)
 !
 ! --------------------------------------------------------------------------------------------------
 !
-    integer :: ndim
+    integer(kind=8) :: ndim
     parameter(ndim=10)
 !
-    integer :: iret, nlmax, nluti, iret1, iret2
+    integer(kind=8) :: iret, nlmax, nluti, iret1, iret2
     character(len=19) :: matr_vect_elem, resu_elem
     character(len=24), pointer :: p_relr(:) => null()
 !

@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -28,7 +28,7 @@ subroutine dfllne(keywf, nb_fail, l_fail_error)
 #include "asterfort/utmess.h"
 !
     character(len=16), intent(in) :: keywf
-    integer, intent(out) :: nb_fail
+    integer(kind=8), intent(out) :: nb_fail
     aster_logical, intent(out) :: l_fail_error
 !
 ! --------------------------------------------------------------------------------------------------
@@ -45,9 +45,9 @@ subroutine dfllne(keywf, nb_fail, l_fail_error)
 !
 ! --------------------------------------------------------------------------------------------------
 !
-    integer :: i_fail_read, i_event, i_event_acti
+    integer(kind=8) :: i_fail_read, i_event, i_event_acti
     character(len=16) :: event_typek
-    integer :: nb_evt_count(FAIL_EVT_NB)
+    integer(kind=8) :: nb_evt_count(FAIL_EVT_NB)
 !
 ! --------------------------------------------------------------------------------------------------
 !

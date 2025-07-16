@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -21,12 +21,12 @@
 interface
     subroutine mltcmj(nb, n, p, front, frn,&
                       adper, trav, c)
-        integer :: p
-        integer :: nb
-        integer :: n
+        integer(kind=8) :: p
+        integer(kind=8) :: nb
+        integer(kind=8) :: n
         complex(kind=8) :: front(*)
         complex(kind=8) :: frn(*)
-        integer :: adper(*)
+        integer(kind=8) :: adper(*)
         complex(kind=8) :: trav(p, nb, *)
         complex(kind=8) :: c(nb, nb, *)
     end subroutine mltcmj

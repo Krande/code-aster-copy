@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -28,7 +28,7 @@ interface
         character(len=8), intent(in) :: result
         character(len=19), intent(in) :: sddisc
         real(kind=8), intent(in) :: time
-        integer, intent(in) :: nume_store
+        integer(kind=8), intent(in) :: nume_store
         aster_logical, intent(in) :: force
         type(NL_DS_Print), optional, intent(in) :: ds_print_
     end subroutine nmarce

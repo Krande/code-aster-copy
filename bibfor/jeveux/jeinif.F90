@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -38,7 +38,7 @@ subroutine jeinif(sti, sto, nomf, clas, nrep, &
 #include "asterfort/jxouvr.h"
 #include "asterfort/lxmins.h"
 #include "asterfort/utmess.h"
-    integer :: nrep, nbloc, lbloc
+    integer(kind=8) :: nrep, nbloc, lbloc
     character(len=*) :: sti, sto, nomf, clas
 ! ----------------------------------------------------------------------
 ! ROUTINE UTILISATEUR D'OUVERTURE D'UNE CLASSE
@@ -54,7 +54,7 @@ subroutine jeinif(sti, sto, nomf, clas, nrep, &
 !              CETTE LONGUEUR EST DONNEE EN KILO (1024) MOT (ENTIER)
 !
 ! ----------------------------------------------------------------------
-    integer :: iclas, iclaos, iclaco, idatos, idatco, idatoc
+    integer(kind=8) :: iclas, iclaos, iclaco, idatos, idatco, idatoc
     common/iatcje/iclas, iclaos, iclaco, idatos, idatco, idatoc
 !
     character(len=24) :: nomco
@@ -63,13 +63,13 @@ subroutine jeinif(sti, sto, nomf, clas, nrep, &
 ! ----------------------------------------------------------------------
 ! ----------------------------------------------------------------------
 !-----------------------------------------------------------------------
-    integer :: i, iadrs, ic, icre, ipgca
-    integer :: iret, jcara, jdate, jdocu, jgenr, jhcod
-    integer :: jiacce, jiadd, jiadm, jindir, jlong, jlono, jltyp
-    integer :: jluti, jmarq, jorig, jrnom, jtype, jusadi, k
-    integer :: l, lcarao, ldynol, lloc, lmarq, lon, lon1
-    integer :: lon2, n, nbacce, nbext, nbgros, nblim, nblma1
-    integer :: nblma2, nbloco, nbpeti, nrepo, mfic_prev
+    integer(kind=8) :: i, iadrs, ic, icre, ipgca
+    integer(kind=8) :: iret, jcara, jdate, jdocu, jgenr, jhcod
+    integer(kind=8) :: jiacce, jiadd, jiadm, jindir, jlong, jlono, jltyp
+    integer(kind=8) :: jluti, jmarq, jorig, jrnom, jtype, jusadi, k
+    integer(kind=8) :: l, lcarao, ldynol, lloc, lmarq, lon, lon1
+    integer(kind=8) :: lon2, n, nbacce, nbext, nbgros, nblim, nblma1
+    integer(kind=8) :: nblma2, nbloco, nbpeti, nrepo, mfic_prev
 !-----------------------------------------------------------------------
     parameter(n=5)
     common/jiatje/jltyp(n), jlong(n), jdate(n), jiadd(n), jiadm(n),&
@@ -81,13 +81,13 @@ subroutine jeinif(sti, sto, nomf, clas, nrep, &
     common/jindir/jindir(n)
     common/inbdet/nblim(n), nbgros(n), nbpeti(n)
 ! ----------------------------------------------------------------------
-    integer :: nblmax, nbluti, longbl, kitlec, kitecr, kiadm, iitlec, iitecr
-    integer :: nitecr, kmarq
+    integer(kind=8) :: nblmax, nbluti, longbl, kitlec, kitecr, kiadm, iitlec, iitecr
+    integer(kind=8) :: nitecr, kmarq
     common/ificje/nblmax(n), nbluti(n), longbl(n),&
      &                 kitlec(n), kitecr(n), kiadm(n),&
      &                 iitlec(n), iitecr(n), nitecr(n), kmarq(n)
 !
-    integer :: nrhcod, nremax, nreuti
+    integer(kind=8) :: nrhcod, nremax, nreuti
     common/icodje/nrhcod(n), nremax(n), nreuti(n)
 !
     character(len=2) :: dn2
@@ -97,22 +97,22 @@ subroutine jeinif(sti, sto, nomf, clas, nrep, &
      &                 dn2(n)
     character(len=8) :: nombas
     common/kbasje/nombas(n)
-    integer :: idn, iext, nbenrg
+    integer(kind=8) :: idn, iext, nbenrg
     common/iextje/idn(n), iext(n), nbenrg(n)
-    integer :: nbcla
+    integer(kind=8) :: nbcla
     common/nficje/nbcla
 ! ----------------------------------------------------------------------
-    integer :: igenr(1), itype(1), idocu(1), iorig(1), irnom(4)
+    integer(kind=8) :: igenr(1), itype(1), idocu(1), iorig(1), irnom(4)
     equivalence(igenr, genr), (itype, type),&
      &                 (idocu, docu), (iorig, orig), (irnom, rnom)
-    integer :: lbis, lois, lols, lor8, loc8
+    integer(kind=8) :: lbis, lois, lols, lor8, loc8
     common/ienvje/lbis, lois, lols, lor8, loc8
-    integer :: lfic, mfic
+    integer(kind=8) :: lfic, mfic
     common/fenvje/lfic(n), mfic
 !
-    integer :: ipgc, kdesma(2), lgd, lgduti, kposma(2), lgp, lgputi
+    integer(kind=8) :: ipgc, kdesma(2), lgd, lgduti, kposma(2), lgp, lgputi
     common/iadmje/ipgc, kdesma, lgd, lgduti, kposma, lgp, lgputi
-    integer :: ldyn, lgdyn, nbdyn, nbfree
+    integer(kind=8) :: ldyn, lgdyn, nbdyn, nbfree
     common/idynje/ldyn, lgdyn, nbdyn, nbfree
 ! ----------------------------------------------------------------------
     character(len=1) :: kclas
@@ -120,15 +120,15 @@ subroutine jeinif(sti, sto, nomf, clas, nrep, &
     parameter(z='INIT')
     character(len=8) :: knom, knomf, kstin, kstou, cversb, cversu
     character(len=24) :: valk(3)
-    integer :: ncar, itlec(1), itecr(1), iadadd(2), lgbl
-    integer :: vali(7), irt, ind, iesup
+    integer(kind=8) :: ncar, itlec(1), itecr(1), iadadd(2), lgbl
+    integer(kind=8) :: vali(7), irt, ind, iesup
     parameter(ncar=13)
 ! ----------------------------------------------------------------------
     aster_logical :: lenrg
-    integer :: lidbas, lideff
+    integer(kind=8) :: lidbas, lideff
     parameter(lidbas=20, lideff=15)
     character(len=8) :: cidbas(lidbas)
-    integer :: kat(lidbas), lso(lidbas), kdy(lidbas)
+    integer(kind=8) :: kat(lidbas), lso(lidbas), kdy(lidbas)
     data cidbas/'$$CARA  ', '$$IADD  ', '$$GENR  ', '$$TYPE  ',&
      &               '$$DOCU  ', '$$ORIG  ', '$$RNOM  ', '$$LTYP  ',&
      &               '$$LONG  ', '$$LONO  ', '$$DATE  ', '$$LUTI  ',&

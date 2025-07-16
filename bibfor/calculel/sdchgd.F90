@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -48,8 +48,8 @@ subroutine sdchgd(fieldz, type_scalz)
 !
     character(len=19) :: field
     character(len=8) :: gd_name_old, gd_name_new
-    integer :: i_exi, i_gd_old, i_gd_new
-    integer, pointer :: p_desc(:) => null()
+    integer(kind=8) :: i_exi, i_gd_old, i_gd_new
+    integer(kind=8), pointer :: p_desc(:) => null()
     character(len=3) :: type_scal, typ
 !
 ! --------------------------------------------------------------------------------------------------

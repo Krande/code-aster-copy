@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -71,7 +71,7 @@ subroutine ermeb2(ino, iref1, iref2, ivois, igeom, &
 #include "jeveux.h"
 #include "asterfort/fointe.h"
 #include "asterfort/r8inir.h"
-    integer :: ino, iref1, iref2, ivois, igeom, isig, nbcmp
+    integer(kind=8) :: ino, iref1, iref2, ivois, igeom, isig, nbcmp
     real(kind=8) :: inst, nx(3), ny(3), tx(3), ty(3), sig11(3), sig22(3)
     real(kind=8) :: sig12(3)
     real(kind=8) :: chx(3), chy(3)
@@ -82,11 +82,11 @@ subroutine ermeb2(ino, iref1, iref2, ivois, igeom, &
 !
 ! DECLARATION VARIABLES LOCALES
 !
-    integer :: iagd, iade1, iade2, iava1, iava2, iaptm1, iaptm2, igd1, igd2
-    integer :: iacmp
-    integer :: ncmpm1, ncmpm2, nbs, nbna, jno, mno, imav
-    integer :: ier1, ier2, ier3, ier4, ier5, ier6
-    integer :: ient1, ient2, numgd1, numgd2
+    integer(kind=8) :: iagd, iade1, iade2, iava1, iava2, iaptm1, iaptm2, igd1, igd2
+    integer(kind=8) :: iacmp
+    integer(kind=8) :: ncmpm1, ncmpm2, nbs, nbna, jno, mno, imav
+    integer(kind=8) :: ier1, ier2, ier3, ier4, ier5, ier6
+    integer(kind=8) :: ient1, ient2, numgd1, numgd2
 !
     real(kind=8) :: pr, ci, fx, fy, valpar(3), prc(3), cic(3), fxc(3), fyc(3)
 !

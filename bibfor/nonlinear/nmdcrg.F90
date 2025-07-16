@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -25,7 +25,7 @@ subroutine nmdcrg(depart, iterat, vresi, xa0, xa1, &
 #include "jeveux.h"
 #include "asterfort/jedema.h"
 #include "asterfort/jemarq.h"
-    integer :: depart, iterat
+    integer(kind=8) :: depart, iterat
     real(kind=8) :: vresi(*)
     real(kind=8) :: xa0, xa1, xdet
 !
@@ -56,7 +56,7 @@ subroutine nmdcrg(depart, iterat, vresi, xa0, xa1, &
     real(kind=8) :: zero, un, deux
     parameter(zero=0.0d0, un=1.0d0, deux=2.0d0)
 !
-    integer :: i
+    integer(kind=8) :: i
     real(kind=8) :: sx, sy, sx2, syx
     real(kind=8) :: xn, xx
 !

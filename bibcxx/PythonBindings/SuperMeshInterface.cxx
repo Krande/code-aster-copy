@@ -2,7 +2,7 @@
  * @file SuperMeshInterface.cxx
  * @brief Interface python de SuperMesh
  * @section LICENCE
- *   Copyright (C) 1991 - 2023  EDF R&D                www.code-aster.org
+ *   Copyright (C) 1991 - 2025  EDF R&D                www.code-aster.org
  *
  *   This file is part of Code_Aster.
  *
@@ -22,7 +22,7 @@
 
 #include "PythonBindings/SuperMeshInterface.h"
 
-//#include "aster_pybind.h"
+// #include "aster_pybind.h"
 
 #include "Modal/DynamicMacroElement.h"
 #include "Modal/StaticMacroElement.h"

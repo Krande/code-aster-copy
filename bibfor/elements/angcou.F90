@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -60,7 +60,7 @@ subroutine angcou(coor, zk1, izk, icoude, zk2, &
 !                      ZK2        -->  VECTEUR ZK AU NOEUD MILIEU
 ! ......................................................................
 !
-    integer :: icoude, i, izk
+    integer(kind=8) :: icoude, i, izk
     real(kind=8) :: test
     blas_int :: b_incx, b_incy, b_n
 !-----------------------------------------------------------------------

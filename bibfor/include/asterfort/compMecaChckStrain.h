@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -24,14 +24,14 @@ interface
                                   lTotalStrain, lMfront, exteDefo, &
                                   defoComp, defoCompPY, &
                                   relaComp, relaCompPY)
-        integer, intent(in) :: iComp
+        integer(kind=8), intent(in) :: iComp
         character(len=8), intent(in) :: model
         character(len=19), intent(in) :: fullElemField
         aster_logical, intent(in) :: lAllCellAffe
         character(len=24), intent(in) :: cellAffe
-        integer, intent(in) :: nbCellAffe
+        integer(kind=8), intent(in) :: nbCellAffe
         aster_logical, intent(in) :: lTotalStrain, lMfront
-        integer, intent(in) :: exteDefo
+        integer(kind=8), intent(in) :: exteDefo
         character(len=16), intent(in) :: defoComp, defoCompPY
         character(len=16), intent(in) :: relaComp, relaCompPY
     end subroutine compMecaChckStrain

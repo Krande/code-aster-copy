@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -26,8 +26,8 @@ subroutine usukwu(nbpt, fn, vg, para, w, &
     real(kind=8) :: fn(*), vg(*), para(*)
 !
 !-----------------------------------------------------------------------
-    integer :: i, if, ifn0, iret, n1, n2
-    integer :: nbpt
+    integer(kind=8) :: i, if, ifn0, iret, n1, n2
+    integer(kind=8) :: nbpt
     real(kind=8) :: de, fn1, fn2, fn3, fn4, fn5, fnm
     real(kind=8) :: sphi, spwi, un, vg0, vgm, w, xc
     real(kind=8) :: xfn, xi11, xi12, xi13, xi14, xi15, xi21
@@ -334,11 +334,11 @@ subroutine usukwu(nbpt, fn, vg, para, w, &
 2030 format(/, '===> POURCENTAGES OBTENUS POUR CHAQUE CLASSE :')
 2040 format(/, '===> FACTEUR DE PONDERATION :')
 2050 format(/, 1p, '===> SOMME DE LA CATEGORIE "IMPACTS-ECROUISSAGE" : '&
-    &           , e12.5)
+   &           , e12.5)
 2060 format(1p, 5x, 'SOMME DE LA CATEGORIE "GLISSEMENT"          : '&
-    &         , e12.5)
+   &         , e12.5)
 2070 format(1p, 5x, 'FACTEUR GLOBAL INTENSITE D''USURE            : '&
-    &         , e12.5)
+   &         , e12.5)
 !
 999 continue
 end subroutine

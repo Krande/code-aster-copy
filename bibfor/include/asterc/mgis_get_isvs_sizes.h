@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -19,6 +19,6 @@
 interface
     subroutine mgis_get_isvs_sizes(extern_addr, sizes)
         character(len=16), intent(in) :: extern_addr
-        integer, intent(out) :: sizes(*)
+        integer(kind=8), intent(out) :: sizes(*)
     end subroutine mgis_get_isvs_sizes
 end interface

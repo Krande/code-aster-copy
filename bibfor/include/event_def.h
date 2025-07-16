@@ -46,7 +46,7 @@
 #define LOCA_PARTIEL 1
 #define LOCA_TOUT    2
 !
-integer, parameter :: failEventMaxi(FAIL_EVT_NB) = (/1, 99, 1, &
+integer(kind=8), parameter :: failEventMaxi(FAIL_EVT_NB) = (/1, 99, 1, &
                                                      1, 99, 1, &
                                                      1, 1/)
 

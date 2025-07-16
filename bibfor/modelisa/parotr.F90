@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -22,7 +22,7 @@ subroutine parotr(nomma, iageom, ima, nbno, o, &
 #include "jeveux.h"
 #include "asterfort/pacoor.h"
     character(len=8) :: nomma
-    integer :: ima, nbno
+    integer(kind=8) :: ima, nbno
     real(kind=8) :: o(3), mrot(3, 3), t(3), coor(*)
 !     BUT: DONNER LA LISTE DES COORDONNEES DES NBNO 1ERS NOEUDS DE LA
 !          MAILLE IMA DU MAILLAGE NOMMA APRES UNE ROTATION (O,MROT)
@@ -45,7 +45,7 @@ subroutine parotr(nomma, iageom, ima, nbno, o, &
     real(kind=8) :: x(3)
 ! --- DEBUT
 !-----------------------------------------------------------------------
-    integer :: i, iageom, icoor, ino, j, nbnot
+    integer(kind=8) :: i, iageom, icoor, ino, j, nbnot
 !-----------------------------------------------------------------------
     if (nbno .eq. 0) then
         nbnot = 1

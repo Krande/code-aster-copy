@@ -27,14 +27,13 @@ subroutine rigflu(modelZ, matecoZ, &
 #include "asterfort/addModelLigrel.h"
 #include "asterfort/as_deallocate.h"
 #include "asterfort/asmatr.h"
-#include "asterfort/assert.h"
 #include "asterfort/mecact.h"
 #include "asterfort/merith.h"
 #include "asterfort/numero.h"
 #include "asterfort/preres.h"
 #include "jeveux.h"
 !
-    integer, intent(in) :: nbLoad
+    integer(kind=8), intent(in) :: nbLoad
     character(len=*), intent(in) :: modelZ, loadNameZ, matecoZ, solverZ
     character(len=14), intent(out) :: numeDof
     character(len=8), intent(out) :: matrAsse
@@ -55,14 +54,14 @@ subroutine rigflu(modelZ, matecoZ, &
 ! --------------------------------------------------------------------------------------------------
 !
     character(len=24), parameter :: listLoad = '&&OP0152.INFCHA', timeMap = '&TIME'
-    integer :: ibid, ierr
+    integer(kind=8) :: ibid, ierr
     character(len=8) :: matrElem, model, loadName
     character(len=24) :: mateco
     character(len=19) :: solver, matrElem19
-    integer :: nbLigr
+    integer(kind=8) :: nbLigr
     character(len=24), pointer :: listLigr(:) => null()
     character(len=19), parameter :: maprec = "&&OP0152.MAPREC"
-    integer, parameter :: nbCmp = 6
+    integer(kind=8), parameter :: nbCmp = 6
     character(len=8), parameter :: cmpName(nbCmp) = (/ &
                                    'INST    ', 'DELTAT  ', 'THETA   ', &
                                    'KHI     ', 'R       ', 'RHO     '/)

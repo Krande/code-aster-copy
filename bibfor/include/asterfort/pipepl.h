@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -22,11 +22,11 @@ interface
     subroutine pipepl(ndim, compor, typmod, tau, mate,&
                       sigm, vim, epsp, epsd, a0,&
                       a1, a2, a3, etas)
-        integer :: ndim
+        integer(kind=8) :: ndim
         character(len=16) :: compor
         character(len=8) :: typmod(*)
         real(kind=8) :: tau
-        integer :: mate
+        integer(kind=8) :: mate
         real(kind=8) :: sigm(6)
         real(kind=8) :: vim(2)
         real(kind=8) :: epsp(6)

@@ -23,13 +23,11 @@ subroutine fonfis2(noma, nbnoff, fonoeu, absfon, coorfond)
 #include "jeveux.h"
 #include "asterfort/jedema.h"
 #include "asterfort/jemarq.h"
-#include "asterfort/jenonu.h"
 #include "asterfort/jeveuo.h"
-#include "asterfort/jexnom.h"
 #include "asterfort/wkvect.h"
 #include "asterfort/char8_to_int.h"
 !
-    integer :: nbnoff
+    integer(kind=8) :: nbnoff
 
     character(len=8) :: noma
     character(len=24) :: absfon, fonoeu, coorfond
@@ -55,7 +53,7 @@ subroutine fonfis2(noma, nbnoff, fonoeu, absfon, coorfond)
 !     ------------------------------------------------------------------
 !
 !
-    integer :: i, iabsfon, jnoe, ni, nj, coorfd
+    integer(kind=8) :: i, iabsfon, jnoe, ni, nj, coorfd
     real(kind=8) :: absci, coori(3), coorj(3), norm, xij, yij, zij
     real(kind=8), pointer :: vale(:) => null()
 !

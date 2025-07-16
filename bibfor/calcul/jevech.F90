@@ -43,9 +43,9 @@ subroutine jevech(nmparz, louez, itab, vl, vi, &
 #include "asterfort/jgetptc.h"
 !
     character(len=*), intent(in) :: nmparz, louez
-    integer, optional :: itab
+    integer(kind=8), optional :: itab
     aster_logical, pointer, optional :: vl(:)
-    integer, pointer, optional :: vi(:)
+    integer(kind=8), pointer, optional :: vi(:)
     integer(kind=4), pointer, optional :: vi4(:)
     real(kind=8), pointer, optional :: vr(:)
     complex(kind=8), pointer, optional :: vc(:)
@@ -62,12 +62,12 @@ subroutine jevech(nmparz, louez, itab, vl, vi, &
 !  sorties:
 !     itab     : adresse du champ local correspondant a nompar
 !-----------------------------------------------------------------
-    integer :: iachlo, jtab
-    integer :: ilchlo, k, kk, debugr
-    integer :: iparg, lgcata
-    integer :: jceld, adiel, numCell
-    integer :: debgr2, lonchl, decael, iadzi, iazk24
-    integer :: opt, iaopd2, iaoplo, iapara, ipara, npari2
+    integer(kind=8) :: iachlo, jtab
+    integer(kind=8) :: ilchlo, k, kk, debugr
+    integer(kind=8) :: iparg, lgcata
+    integer(kind=8) :: jceld, adiel, numCell
+    integer(kind=8) :: debgr2, lonchl, decael, iadzi, iazk24
+    integer(kind=8) :: opt, iaopd2, iaoplo, iapara, ipara, npari2
     aster_logical :: etendu
     character(len=8) :: nompar
     character(len=1) :: loue

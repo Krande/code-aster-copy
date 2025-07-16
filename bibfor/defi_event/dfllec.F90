@@ -52,28 +52,28 @@ subroutine dfllec(sdlist, dtmin)
 ! --------------------------------------------------------------------------------------------------
 !
     character(len=16), parameter :: factorKeyword = 'ECHEC'
-    integer :: event_list(FAIL_EVT_NB)
+    integer(kind=8) :: event_list(FAIL_EVT_NB)
     character(len=16) :: nom_cham, nom_cmp, crit_cmp
     character(len=24)  :: lst_loca
-    integer:: etat_loca
+    integer(kind=8):: etat_loca
     real(kind=8) :: vale_ref, subd_pas_mini
-    integer :: nb_fail_read, nb_fail
-    integer :: i_fail, i_event, i_fail_save
+    integer(kind=8) :: nb_fail_read, nb_fail
+    integer(kind=8) :: i_fail, i_event, i_fail_save
     character(len=16) :: event_typek, action_typek, event_curr
     character(len=16) :: subd_method, subd_auto
-    integer :: subd_pas, subd_niveau
+    integer(kind=8) :: subd_pas, subd_niveau
     real(kind=8) :: subd_niveau_r, subd_niveau_maxi
     real(kind=8) :: pcent_iter_plus, pene_maxi, resi_glob_maxi
     real(kind=8) :: coef_maxi, subd_inst, subd_duree
     aster_logical :: l_save, l_fail_error
-    integer :: i_last, iplus
-    integer, pointer :: v_work(:) => null()
+    integer(kind=8) :: i_last, iplus
+    integer(kind=8), pointer :: v_work(:) => null()
     character(len=24) :: sdlist_eevenr
     real(kind=8), pointer :: v_sdlist_eevenr(:) => null()
     character(len=24) :: sdlist_eevenk
     character(len=16), pointer :: v_sdlist_eevenk(:) => null()
     character(len=24) :: sdlist_loca
-    integer, pointer :: v_sdlist_loca(:) => null()
+    integer(kind=8), pointer :: v_sdlist_loca(:) => null()
     character(len=24) :: sdlist_esubdr
     real(kind=8), pointer :: v_sdlist_esubdr(:) => null()
     character(len=24) :: sdlist_linfor

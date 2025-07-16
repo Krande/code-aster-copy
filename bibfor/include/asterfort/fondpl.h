@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2020 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -22,8 +22,8 @@ interface
     subroutine fondpl(modele, mate, mateco, numedd, neq, chondp,&
                       nchond, vecond, veonde, vaonde, temps,&
                       foonde)
-        integer :: nchond
-        integer :: neq
+        integer(kind=8) :: nchond
+        integer(kind=8) :: neq
         character(len=24) :: modele
         character(len=8) :: mate
         character(len=24) :: mateco

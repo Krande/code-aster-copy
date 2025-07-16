@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -122,7 +122,7 @@ subroutine te0509(option, nomte)
 !                      NOMTE        -->  NOM DU TYPE ELEMENT
 ! ......................................................................
 !
-    integer :: ndim, nno, nnos, npg, ipoids, ivf, idfde, jgano
+    integer(kind=8) :: ndim, nno, nnos, npg, ipoids, ivf, idfde, jgano
     real(kind=8) :: mx0y, mx0z
     real(kind=8) :: dfdx(9), dfdy(9)
 !
@@ -130,8 +130,8 @@ subroutine te0509(option, nomte)
 ! --- INITIALISATIONS :
 !     ---------------
 !-----------------------------------------------------------------------
-    integer :: i, icase, igau, igeom, ino, itemp1, itemp2
-    integer :: itempe, k
+    integer(kind=8) :: i, icase, igau, igeom, ino, itemp1, itemp2
+    integer(kind=8) :: itempe, k
     real(kind=8) :: dpsydy, dpsydz, dpszdy, dpszdz, ey, ez, poids
     real(kind=8) :: sigmxy, sigmxz, someg2, sphids, u1y, u1z, xgau
     real(kind=8) :: ygau, zero

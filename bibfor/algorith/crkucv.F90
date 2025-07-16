@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -38,7 +38,6 @@ subroutine crkucv()
 #include "asterfort/jemarq.h"
 #include "asterfort/jerecu.h"
 #include "asterfort/jeveuo.h"
-#include "asterfort/jexnom.h"
 #include "asterfort/mrmult.h"
 #include "asterfort/mtdscr.h"
 #include "asterfort/refdaj.h"
@@ -55,14 +54,14 @@ subroutine crkucv()
 #include "asterfort/vtcreb.h"
 #include "asterfort/wkvect.h"
 !
-    integer :: ibid, ier, icompt, iret, numini, numfin
-    integer :: n1, nis, nbinst, nbval, nume, j
-    integer :: iad, jinst, jchin, jchout
-    integer :: nbv(1), jrefe
-    integer :: jcpt, nbr, ivmx, k, iocc, nboini
-    integer :: tnum(1)
-    integer :: nbordr1, nbordr2, numei
-    integer :: lmat, lma2, nr, neq
+    integer(kind=8) :: ibid, ier, icompt, iret, numini, numfin
+    integer(kind=8) :: n1, nis, nbinst, nbval, nume, j
+    integer(kind=8) :: iad, jinst, jchin, jchout
+    integer(kind=8) :: nbv(1), jrefe
+    integer(kind=8) :: jcpt, nbr, ivmx, k, iocc, nboini
+    integer(kind=8) :: tnum(1)
+    integer(kind=8) :: nbordr1, nbordr2, numei
+    integer(kind=8) :: lmat, lma2, nr, neq
 !
     real(kind=8) :: rbid, tps, prec
     complex(kind=8) :: cbid
@@ -236,12 +235,18 @@ subroutine crkucv()
         call rsorac(resui, typabs, ibid, tps, k8b, cbid, prec, criter, tnum, 1, nbr)
         numei = tnum(1)
         call rsexch(' ', resui, 'VITE', numei, chamno, iret)
-        call vtcopy(chamno, chamn2, ' ', ier)
+        call vtcopy(chamno, chamn2, ier)
+        if (ier .ne. 0) then
+            call utmess("A", "FIELD0_3", sk='VITE')
+        end if
         call jeveuo(chamn2//'.VALE', 'L', jchin)
         call mrmult('ZERO', lmat, zr(jchin), zr(jchout), 1, .true._1)
         if (nr .ne. 0) then
             call rsexch(' ', resui, 'DEPL', numei, chamno, iret)
-            call vtcopy(chamno, chamn2, ' ', ier)
+            call vtcopy(chamno, chamn2, ier)
+            if (ier .ne. 0) then
+                call utmess("A", "FIELD0_3", sk='DEPL')
+            end if
             call jeveuo(chamn2//'.VALE', 'L', jchin)
             call mrmult('CUMU', lma2, zr(jchin), zr(jchout), 1, .true._1)
         end if

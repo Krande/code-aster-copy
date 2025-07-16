@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -31,18 +31,18 @@ subroutine xcinem(axi, igeom, nnop, nnos, idepl, &
 #include "asterfort/xcalc_heav.h"
 !
     aster_logical, intent(in) :: axi
-    integer, intent(in) :: igeom
-    integer, intent(in) :: nnop
-    integer, intent(in) :: nnos
-    integer, intent(in) :: idepl
-    integer, intent(in) :: ndim
-    integer, intent(in) :: nfiss
+    integer(kind=8), intent(in) :: igeom
+    integer(kind=8), intent(in) :: nnop
+    integer(kind=8), intent(in) :: nnos
+    integer(kind=8), intent(in) :: idepl
+    integer(kind=8), intent(in) :: ndim
+    integer(kind=8), intent(in) :: nfiss
     real(kind=8), intent(in) :: he(nfiss)
-    integer, intent(in) :: nfh
-    integer, intent(in) :: nfe
-    integer, intent(in) :: ddls
-    integer, intent(in) :: ddlm
-    integer, intent(in) :: heavn(nnop, 5)
+    integer(kind=8), intent(in) :: nfh
+    integer(kind=8), intent(in) :: nfe
+    integer(kind=8), intent(in) :: ddls
+    integer(kind=8), intent(in) :: ddlm
+    integer(kind=8), intent(in) :: heavn(nnop, 5)
     real(kind=8), intent(in) :: fk(27, 3, 3)
     real(kind=8), intent(in) :: dkdgl(27, 3, 3, 3)
     real(kind=8), intent(in) :: ff(nnop)
@@ -80,7 +80,7 @@ subroutine xcinem(axi, igeom, nnop, nnos, idepl, &
 ! IN  HEAVN  : DEFINITION DES DOMAINES DES FONCTIONS HEAVISIDES
 !
     real(kind=8) :: zero, un, rac2, r, ur
-    integer :: i, j, n, p, ig, cpt, nn, hea_se, alp
+    integer(kind=8) :: i, j, n, p, ig, cpt, nn, hea_se, alp
     real(kind=8) :: kron(3, 3), tmp, epstab(3, 3)
     aster_logical :: ldec
 !

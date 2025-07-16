@@ -52,7 +52,7 @@ subroutine nxrech(model, mateco, caraElem, listLoad, nume_dof, &
     real(kind=8), intent(in) :: tpsthe(6)
     character(len=24), intent(in) :: timeMap
     character(len=19), intent(in) :: varc_curr
-    integer :: lonch
+    integer(kind=8) :: lonch
     real(kind=8) :: rho
     character(len=24) :: temp_prev, vtempr, vtempp, temp_iter, cnvabt, cnresi, vec2nd
     character(len=24) :: hydr_prev, hydr_curr, comporTher, dry_curr
@@ -69,7 +69,7 @@ subroutine nxrech(model, mateco, caraElem, listLoad, nume_dof, &
 !
 ! --------------------------------------------------------------------------------------------------
 !
-    integer :: j2nd, jvare, jbtla, rang, i
+    integer(kind=8) :: j2nd, jvare, jbtla, rang, i
     real(kind=8) :: rho0, rhot, f0, f1, rhomin, rhomax
     real(kind=8) :: rhof, ffinal
     real(kind=8) :: testm, r8bid, resi_i
@@ -77,13 +77,13 @@ subroutine nxrech(model, mateco, caraElem, listLoad, nume_dof, &
     character(len=1) :: typres
     character(len=8) :: mesh
     character(len=19) :: nume_equa
-    integer :: itrmax, iterho
+    integer(kind=8) :: itrmax, iterho
     real(kind=8) :: time_curr
     real(kind=8), pointer :: tempm(:) => null()
     real(kind=8), pointer :: tempp(:) => null()
     real(kind=8), pointer :: tempr(:) => null()
     aster_logical, pointer :: v_pddl(:) => null()
-    integer, pointer :: v_posdd(:) => null()
+    integer(kind=8), pointer :: v_posdd(:) => null()
     character(len=24) :: loadNameJv, loadInfoJv
     parameter(rhomin=-2.d0, rhomax=2.d0)
     mpi_int :: mrank

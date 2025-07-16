@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -50,8 +50,8 @@ subroutine pjngco(corres, noma1, noma2, method, cnref, &
     character(len=24) :: lno1, lno2
     character(len=4) :: num
     character(len=1) :: bas1
-    integer :: nbocc, jngi1, jngi2, ioc, jnb12, lon1, lon2, nb1, nb2, idec1
-    integer :: idec2, jlno1, jlno2, jxxk1
+    integer(kind=8) :: nbocc, jngi1, jngi2, ioc, jnb12, lon1, lon2, nb1, nb2, idec1
+    integer(kind=8) :: idec2, jlno1, jlno2, jxxk1
 !----------------------------------------------------------------------
 !
     call jemarq()

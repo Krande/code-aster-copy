@@ -57,32 +57,32 @@ subroutine te0313(option, nomte)
 !
 ! --------------------------------------------------------------------------------------------------
 !
-    integer :: jgano, imatuu, ndim, imate, iinstm, jcret, nb_strain_meca
-    integer :: iret, ichg, ichn, itabin(7), itabou(7)
-    integer :: ivf2
-    integer :: idf2, npi, npg
-    integer :: codret
-    integer :: ipoids, ivf1, idf1, igeom
-    integer :: iinstp, ideplm, ideplp, icamas
-    integer :: icontm, ivarip, ivarim, ivectu, icontp, jvSief
-    integer :: mecani(8), press1(9), press2(9), tempe(5), dimuel
-    integer :: dimdef, dimcon, nbvari, nb_vari_meca
-    integer :: nno1, nno2
-    integer :: iadzi, iazk24
+    integer(kind=8) :: jgano, imatuu, ndim, imate, iinstm, jcret, nb_strain_meca
+    integer(kind=8) :: iret, ichg, ichn, itabin(7), itabou(7)
+    integer(kind=8) :: ivf2
+    integer(kind=8) :: idf2, npi, npg
+    integer(kind=8) :: codret
+    integer(kind=8) :: ipoids, ivf1, idf1, igeom
+    integer(kind=8) :: iinstp, ideplm, ideplp, icamas
+    integer(kind=8) :: icontm, ivarip, ivarim, ivectu, icontp, jvSief
+    integer(kind=8) :: mecani(8), press1(9), press2(9), tempe(5), dimuel
+    integer(kind=8) :: dimdef, dimcon, nbvari, nb_vari_meca
+    integer(kind=8) :: nno1, nno2
+    integer(kind=8) :: iadzi, iazk24
     aster_logical :: lVect, lMatr, lVari, lSigm
-    integer :: iu(3, 18), ip(2, 9), ipf(2, 2, 9), iq(2, 2, 9)
+    integer(kind=8) :: iu(3, 18), ip(2, 9), ipf(2, 2, 9), iq(2, 2, 9)
     real(kind=8) :: r(22)
     real(kind=8) :: ang(24)
     character(len=3) :: modint
     character(len=8) :: nomail
     type(THM_DS) :: ds_thm
-    integer :: li
+    integer(kind=8) :: li
     aster_logical :: axi
     aster_logical :: fnoevo
     real(kind=8) :: dt
     character(len=16), pointer :: compor(:) => null()
     character(len=16) :: compor_copy(COMPOR_SIZE)
-    integer :: iCompor
+    integer(kind=8) :: iCompor
 !
 ! --------------------------------------------------------------------------------------------------
 !

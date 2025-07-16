@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -59,7 +59,7 @@ subroutine ssmage(nomu, option)
     character(len=14) :: nu
     character(len=19) :: matas
     character(len=24) :: mateco, mater
-    integer :: iarefm
+    integer(kind=8) :: iarefm
     real(kind=8), pointer :: varm(:) => null()
     character(len=24) :: listElemCalc
 !-----------------------------------------------------------------------

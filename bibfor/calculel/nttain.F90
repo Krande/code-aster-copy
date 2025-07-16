@@ -41,7 +41,7 @@ subroutine nttain(model, mateco, caraElem, listLoad, nume_dof, &
     character(len=24), intent(in) :: nume_dof
     character(len=19), intent(in) :: solver
     character(len=24), intent(in) :: time
-    integer :: lonch
+    integer(kind=8) :: lonch
     real(kind=8) :: epsr, testi
     character(len=1) :: ci1, ci2
     character(len=19) :: maprec
@@ -61,13 +61,13 @@ subroutine nttain(model, mateco, caraElem, listLoad, nume_dof, &
 ! --------------------------------------------------------------------------------------------------
 !
     complex(kind=8) :: cbid
-    integer :: k, j2nd, jtempp
+    integer(kind=8) :: k, j2nd, jtempp
     real(kind=8) :: r8bid, testn
     character(len=1) :: typres
     character(len=19) :: chsol
     character(len=24) :: bidon, veresi, varesi, criter
     character(len=24) :: loadNameJv, loadInfoJv
-    integer :: iret
+    integer(kind=8) :: iret
     real(kind=8), pointer :: tempm(:) => null()
     real(kind=8), pointer :: temp(:) => null()
     real(kind=8), pointer :: vare(:) => null()

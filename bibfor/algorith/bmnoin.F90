@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -59,7 +59,7 @@ subroutine bmnoin(basmdz, intfz, nmintz, numint, nbnoi, &
 !
     character(len=24) :: noeint
     character(len=24) :: valk(2)
-    integer :: nbnoi, numnoe(nbnoi)
+    integer(kind=8) :: nbnoi, numnoe(nbnoi)
 !
 !-----------------------------------------------------------------------
 !
@@ -68,9 +68,9 @@ subroutine bmnoin(basmdz, intfz, nmintz, numint, nbnoi, &
 !                 SI DONNEE BASE MODALE OU INTERF_DYNA
 !
 !-----------------------------------------------------------------------
-    integer :: i, inoe, llint, nbdif, nbeffi
-    integer :: nbnoe, numcou, numint
-    integer, pointer :: idc_defo(:) => null()
+    integer(kind=8) :: i, inoe, llint, nbdif, nbeffi
+    integer(kind=8) :: nbnoe, numcou, numint
+    integer(kind=8), pointer :: idc_defo(:) => null()
 !-----------------------------------------------------------------------
     call jemarq()
     intf = intfz

@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2018 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -25,10 +25,10 @@ interface
         character(len=8), intent(in) :: mesh
         type(NL_DS_Contact), intent(in) :: ds_contact
         real(kind=8), intent(in) :: time_curr
-        integer, intent(in) :: nt_ncomp_poin
+        integer(kind=8), intent(in) :: nt_ncomp_poin
         real(kind=8), pointer :: v_ncomp_jeux(:)
-        integer, pointer :: v_ncomp_loca(:)
+        integer(kind=8), pointer :: v_ncomp_loca(:)
         character(len=16), pointer :: v_ncomp_enti(:)
-        integer, pointer :: v_ncomp_zone(:) 
+        integer(kind=8), pointer :: v_ncomp_zone(:) 
     end subroutine mmveri
 end interface

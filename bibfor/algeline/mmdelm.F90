@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -52,12 +52,12 @@ subroutine mmdelm(mdnode, xadj, adjncy, dhead, dforw, &
 !
 !***************************************************************
 !
-    integer :: adjncy(*), dbakw(*), dforw(*)
-    integer :: llist(*), marker(*), qsize(*), dhead(*)
-    integer :: xadj(*), parent(*)
-    integer :: elmnt, i, istop, istrt, j, jstop, jstrt, link, maxint, mdnode
-    integer :: nabor, node, npv, nqnbrs, nxnode, pvnode, rlmt, rloc, rnode, tag
-    integer :: xqnbr
+    integer(kind=8) :: adjncy(*), dbakw(*), dforw(*)
+    integer(kind=8) :: llist(*), marker(*), qsize(*), dhead(*)
+    integer(kind=8) :: xadj(*), parent(*)
+    integer(kind=8) :: elmnt, i, istop, istrt, j, jstop, jstrt, link, maxint, mdnode
+    integer(kind=8) :: nabor, node, npv, nqnbrs, nxnode, pvnode, rlmt, rloc, rnode, tag
+    integer(kind=8) :: xqnbr
 !
 !***************************************************************
 !

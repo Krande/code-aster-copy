@@ -34,14 +34,8 @@ subroutine te0449(nomopt, nomte)
 #include "asterfort/HHO_size_module.h"
 #include "asterfort/assert.h"
 #include "asterfort/elrefe_info.h"
-#include "asterfort/jevech.h"
-#include "asterfort/writeMatrix.h"
-#include "asterfort/rccoma.h"
-#include "asterfort/utmess.h"
-#include "asterfort/rcvalb.h"
 #include "asterfort/lteatt.h"
 #include "jeveux.h"
-#include "blas/dsyr.h"
 !
 !
 ! --------------------------------------------------------------------------------------------------
@@ -58,7 +52,7 @@ subroutine te0449(nomopt, nomte)
     type(HHO_Quadrature) :: hhoQuadCellMass
     type(HHO_Data) :: hhoData
     type(HHO_Cell) :: hhoCell
-    integer :: npg
+    integer(kind=8) :: npg
     character(len=8), parameter :: fami = 'MASS'
     type(HHO_matrix) :: lhs
 !

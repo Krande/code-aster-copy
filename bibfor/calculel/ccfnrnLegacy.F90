@@ -51,7 +51,7 @@ subroutine ccfnrnLegacy(option, postComp)
 !
 ! --------------------------------------------------------------------------------------------------
 !
-    integer :: iStore, numeStore, iret
+    integer(kind=8) :: iStore, numeStore, iret
     character(len=24) :: fieldOut
     character(len=14) :: numeDof
 !

@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -26,9 +26,9 @@ interface
                       sp3, spmeca3)
         aster_logical :: ze200
         character(len=4) :: lieu
-        integer :: iocc1
-        integer :: iocc2
-        integer :: ns
+        integer(kind=8) :: iocc1
+        integer(kind=8) :: iocc2
+        integer(kind=8) :: ns
         real(kind=8) :: sn
         real(kind=8) :: instsn(4)
         real(kind=8) :: snet

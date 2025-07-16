@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -21,8 +21,8 @@ subroutine zzcalb(igr, iel, npg, nno, wi, &
                   xmax, ymin, ymax, f)
     implicit none
 !-----------------------------------------------------------------------
-    integer :: i, iad, iadiel, ideb, iel, igr, ino
-    integer :: ipg, j, nno, npg
+    integer(kind=8) :: i, iad, iadiel, ideb, iel, igr, ino
+    integer(kind=8) :: ipg, j, nno, npg
     real(kind=8) :: xmax, xmin, ymax, ymin
 !-----------------------------------------------------------------------
 !
@@ -39,7 +39,7 @@ subroutine zzcalb(igr, iel, npg, nno, wi, &
 !     L'ELEMENT COURANT IMA
 !
     real(kind=8) :: wi(1), x(1), y(1), f(9, 4), xx, yy, sig(1), b(9)
-    integer :: desc(1)
+    integer(kind=8) :: desc(1)
     do ipg = 1, npg
         xx = 0.d0
         yy = 0.d0

@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -39,30 +39,30 @@ subroutine vpmpi(option, eigsol, icom1_, icom2_, lcomod_, &
 !
 ! --- INPUT
 !
-    integer, intent(in) :: option
+    integer(kind=8), intent(in) :: option
     character(len=19), optional, intent(in) :: eigsol
 !
 ! --- OUTPUT
 !
-    integer, optional, intent(out) :: icom1_, icom2_, nbvecg_, nfreqg_
+    integer(kind=8), optional, intent(out) :: icom1_, icom2_, nbvecg_, nfreqg_
 !
 ! --- INPUT/OUTPUT
 !
     mpi_int, optional, intent(inout) :: mpicou_, mpicow_
-    integer, optional, intent(inout) :: rangl_
+    integer(kind=8), optional, intent(inout) :: rangl_
     aster_logical, optional, intent(inout) :: lcomod_
     real(kind=8), optional, intent(inout) :: omemax_, omemin_, vpinf_, vpmax_
 !
 ! --- VARIABLES LOCALES
 !
     mpi_int :: mrang, mnbproc
-    integer :: l1, l2, l3, nbvect, nbproc, nfreq, rang, typeco, vali(5)
+    integer(kind=8) :: l1, l2, l3, nbvect, nbproc, nfreq, rang, typeco, vali(5)
     real(kind=8) :: rbid
     character(len=24) :: k24bid, valk(5)
 
-    integer :: icom1, icom2, nbvecg, nfreqg
+    integer(kind=8) :: icom1, icom2, nbvecg, nfreqg
     mpi_int :: mpicou, mpicow
-    integer :: rangl
+    integer(kind=8) :: rangl
     aster_logical :: lcomod
     real(kind=8) :: omemax, omemin, vpinf, vpmax
 !

@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -21,9 +21,9 @@
 interface
     subroutine foimpr(nomf, impr, iul, ind, fonins)
         character(len=*) :: nomf
-        integer :: impr
-        integer :: iul
-        integer :: ind
+        integer(kind=8) :: impr
+        integer(kind=8) :: iul
+        integer(kind=8) :: ind
         character(len=*) :: fonins
     end subroutine foimpr
 end interface

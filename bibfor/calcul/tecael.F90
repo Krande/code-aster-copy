@@ -28,13 +28,11 @@ subroutine tecael(iadzi, iazk24, noms)
 !
 #include "jeveux.h"
 #include "asterfort/assert.h"
-#include "asterfort/jenuno.h"
-#include "asterfort/jexnum.h"
 #include "asterfort/int_to_char8.h"
 !
-    integer, intent(out) :: iadzi
-    integer, intent(out) :: iazk24
-    integer, intent(in), optional :: noms
+    integer(kind=8), intent(out) :: iadzi
+    integer(kind=8), intent(out) :: iazk24
+    integer(kind=8), intent(in), optional :: noms
 !----------------------------------------------------------------------
 ! Entree:
 !     noms=1/0
@@ -70,7 +68,7 @@ subroutine tecael(iadzi, iazk24, noms)
 !     si un noeud est tardif   son nom est conventionellement : ' '
 !----------------------------------------------------------------------
 !
-    integer :: ima, ino, nno, nuno, noms2
+    integer(kind=8) :: ima, ino, nno, nuno, noms2
 !
     character(len=8) :: ma, nomma, nomno
 !----------------------------------------------------------------------

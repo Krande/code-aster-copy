@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -21,7 +21,7 @@
 interface
     subroutine lcelin(mod, nmat, materd, materf, deps,&
                       sigd, sigf)
-        integer :: nmat
+        integer(kind=8) :: nmat
         character(len=8) :: mod
         real(kind=8) :: materd(nmat, 2)
         real(kind=8) :: materf(nmat, 2)

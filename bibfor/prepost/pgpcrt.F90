@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -43,18 +43,18 @@ subroutine pgpcrt(sd_pgp)
     character(len=8)  :: sd_pgp
 !   -0.2- Local variables
     aster_logical :: exist_complex
-    integer :: nbparams
+    integer(kind=8) :: nbparams
     parameter(nbparams=10)
-    integer :: iobs, ipar, nbobs, nblines, nord
-    integer :: i, iord, physlen, dec1, lc, dec
-    integer :: jtab, jvec, jlog, jlogr, jlogc, jdsc
-    integer :: lgnoeu, lgmail, lgpoin
+    integer(kind=8) :: iobs, ipar, nbobs, nblines, nord
+    integer(kind=8) :: i, iord, physlen, dec1, lc, dec
+    integer(kind=8) :: jtab, jvec, jlog, jlogr, jlogc, jdsc
+    integer(kind=8) :: lgnoeu, lgmail, lgpoin
     character(len=4)  :: typcha, typresin, typsc
     character(len=8)  :: result, partyp(nbparams)
     character(len=16) :: params(nbparams), champ
     character(len=24) :: nomjv, discjv, nomlgs(nbparams), nomjvs(nbparams)
 
-    integer, pointer :: indic(:) => null()
+    integer(kind=8), pointer :: indic(:) => null()
     character(len=8), pointer :: lcmp(:) => null()
     character(len=8), pointer :: nomnoeu(:) => null()
     character(len=8), pointer :: nommail(:) => null()

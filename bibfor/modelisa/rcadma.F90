@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -25,9 +25,9 @@ subroutine rcadma(jmat, phenom, nomres, valres, icodre, &
 #include "asterfort/tecael.h"
 #include "asterfort/utmess.h"
     character(len=*) :: phenom, nomres
-    integer :: iarret
-    integer :: icodre
-    integer :: jmat, valres
+    integer(kind=8) :: iarret
+    integer(kind=8) :: icodre
+    integer(kind=8) :: jmat, valres
 !
 !     obtention des adresses des composantes d'un materiau metallurgique
 !               de l'adresse d'une texture
@@ -43,8 +43,8 @@ subroutine rcadma(jmat, phenom, nomres, valres, icodre, &
 !       icodre  : 0 si on a trouve, 1 sinon
 ! ----------------------------------------------------------------------
 !
-    integer :: lmat, icomp, ipi, ipif, iadzi, iazk24, nbk, ivalk, ik, nbr, nbc
-    integer :: lfct, imate, nbmat
+    integer(kind=8) :: lmat, icomp, ipi, ipif, iadzi, iazk24, nbk, ivalk, ik, nbr, nbc
+    integer(kind=8) :: lfct, imate, nbmat
     parameter(lmat=9, lfct=10)
     character(len=24) :: valk
     character(len=32) :: nomphe

@@ -29,15 +29,20 @@ subroutine lcvalp(t, valp)
 ! --------------------------------------------------------------------------------------------------
     real(kind=8), parameter, dimension(6):: kr = (/1.d0, 1.d0, 1.d0, 0.d0, 0.d0, 0.d0/)
 ! --------------------------------------------------------------------------------------------------
-    real(kind=8) :: p, d(6), s, s3, quatj3, ratio, th, pi
+    real(kind=8) :: p, d(6), s, s3, quatj3, ratio, th, pi, norm, t_norm(6)
 ! --------------------------------------------------------------------------------------------------
 !
     pi = r8pi()
+
+!  Normalisation du tenseur T pour des questions de robustesse par rapport aux valeurs elevees
+    norm = max(1.d0, maxval(abs(t)))
+    t_norm = t/norm
+
 !  PREMIER INVARIANT
-    p = (t(1)+t(2)+t(3))/3
+    p = sum(t_norm(1:3))/3.d0
 !
 !  DEVIATEUR ET SECOND INVARIANT (2/3 VON MISES)
-    d = t-p*kr
+    d = t_norm-p*kr
     s = sqrt(2.d0*dot_product(d, d)/3.d0)
     s3 = s**3
 !
@@ -59,5 +64,9 @@ subroutine lcvalp(t, valp)
     valp(1) = p+s*cos(th)
     valp(2) = p+s*cos(th-2*pi/3.d0)
     valp(3) = p+s*cos(th+2*pi/3.d0)
+
+!  Scaling post-normalisation
+    valp = valp*norm
+
 !
 end subroutine

@@ -6,7 +6,7 @@
  * @brief Fichier entete de la classe ModalBasis
  * @author Nicolas Sellenet
  * @section LICENCE
- *   Copyright (C) 1991 - 2023  EDF R&D                www.code-aster.org
+ *   Copyright (C) 1991 - 2025  EDF R&D                www.code-aster.org
  *
  *   This file is part of Code_Aster.
  *
@@ -210,7 +210,7 @@ class StandardModalBasis : public GenericModalBasis {
 
     void setModalBasis( const StructureInterfacePtr &structInterf, const ModeResultPtr &mechaMode,
                         const VectorInt &vecOfInt = {} ) {
-        setModalBasis( structInterf, VectorOfMechaModePtr {mechaMode}, vecOfInt );
+        setModalBasis( structInterf, VectorOfMechaModePtr( { mechaMode } ), vecOfInt );
     };
 };
 
@@ -240,8 +240,8 @@ class RitzBasis : public GenericModalBasis {
      */
 
     RitzBasis( const std::string name ) : GenericModalBasis( name ), _reortho( false ) {
-        _container.add( new CapyConvertibleValue< bool >( false, "ORTHO", _reortho, {true, false},
-                                                          {"OUI", "NON"}, true ) );
+        _container.add( new CapyConvertibleValue< bool >( false, "ORTHO", _reortho, { true, false },
+                                                          { "OUI", "NON" }, true ) );
     };
 
     void addModalBasis( const GenericModalBasisPtr &basis, const VectorInt &vecOfInt = {} ) {

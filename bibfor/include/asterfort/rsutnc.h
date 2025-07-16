@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -22,9 +22,9 @@ interface
                       nbtrou)
         character(len=*), intent(in) :: nomsd
         character(len=*), intent(in) :: nomsy
-        integer, intent(in) :: nbvale
+        integer(kind=8), intent(in) :: nbvale
         character(len=*), intent(out) :: tabnom(*)
-        integer, intent(out) :: tabord(*)
-        integer, intent(out) :: nbtrou
+        integer(kind=8), intent(out) :: tabord(*)
+        integer(kind=8), intent(out) :: nbtrou
     end subroutine rsutnc
 end interface

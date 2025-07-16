@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -34,7 +34,6 @@ module constraint_module
 #include "asterc/slu_get_nnz_of_lower_factor.h"
 #include "asterc/slu_get_perm_col.h"
 #include "asterc/slu_get_perm_row.h"
-#include "asterc/slu_get_upper_factor.h"
 #include "asterc/slu_solve.h"
 #include "asterfort/assert.h"
 #include "asterfort/as_deallocate.h"
@@ -60,7 +59,7 @@ contains
 #ifdef ASTER_PETSC_HAVE_SUPERLU
         ! Local variables
         type(csc_matrix) :: l, l1, l2, l2t, t, id
-        integer :: nnz_l, ldrhs, nrhs
+        integer(kind=8) :: nnz_l, ldrhs, nrhs
         integer(kind=4):: info, trans
         integer(kind=4):: m_4, n_4, nnz_4
         integer(kind=4), dimension(:), pointer :: perm_r => null()
@@ -68,10 +67,10 @@ contains
         real(kind=8), dimension(:), pointer    :: diag_u => null()
         real(kind=8), dimension(:), pointer    :: rhs => null()
         real(kind=8) :: tol, tolref, valref
-        integer ::  step, ifm, niv
-        integer ::  jj, blocksize
+        integer(kind=8) ::  step, ifm, niv
+        integer(kind=8) ::  jj, blocksize
         integer(kind=8) :: factors
-        integer, dimension(:), pointer :: icol => null()
+        integer(kind=8), dimension(:), pointer :: icol => null()
         type(csc_store) :: cs
         integer(kind=4), parameter :: un = 1
         aster_logical :: debug
@@ -87,7 +86,8 @@ contains
         call slu_factorize(m_4, n_4, nnz_4, b%values, b%rowind, b%colptr, factors, info)
         ASSERT(info == 0)
         if (debug) then
-       print *, "ELG Factorisation LU (SuperLU dgtrf) de la matrice C^T de taille : ", b%m, "x", b%n
+            print *, "ELG Factorisation LU (SuperLU dgtrf) de la matrice C^T de taille : ", &
+                b%m, "x", b%n
         end if
 !  Récupération de L à partir de factors
         call slu_get_nnz_of_lower_factor(factors, nnz_l, info)
@@ -233,12 +233,12 @@ contains
 #ifdef ASTER_PETSC_HAVE_SUPERLU
         ! Local variables
         !
-        integer                                :: n_b, nnz_b
+        integer(kind=8)                                :: n_b, nnz_b
         integer(kind=4)                        :: m_4, n_4, nnz_4
         integer(kind=4)                        :: info
         real(kind=8)                           :: tol, valref, tolref
-        integer                                :: pass, ii, jj, nnz_col, pos
-        integer                                :: ifm, niv, nindep
+        integer(kind=8)                                :: pass, ii, jj, nnz_col, pos
+        integer(kind=8)                                :: ifm, niv, nindep
         integer(kind=8)                        :: factors
         integer(kind=4), dimension(:), pointer :: perm_c => null(), permc_inv => null()
         real(kind=8), dimension(:), pointer    :: diag_u => null()

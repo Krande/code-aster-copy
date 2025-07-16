@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -45,12 +45,12 @@ subroutine cjsmid(mod, crit, mater, nvi, epsd, &
 #include "asterfort/cjsnor.h"
 #include "asterfort/iunifi.h"
 #include "asterfort/mgauss.h"
-    integer :: ndt, ndi, nvi, nr, nmod, niter, iret
-    integer :: nitimp
+    integer(kind=8) :: ndt, ndi, nvi, nr, nmod, niter, iret
+    integer(kind=8) :: nitimp
     parameter(nmod=16)
     parameter(nitimp=200)
 !
-    integer :: iter
+    integer(kind=8) :: iter
     aster_logical :: noconv, aredec, stopnc
 !
     real(kind=8) :: epsd(6), deps(6)
@@ -61,9 +61,9 @@ subroutine cjsmid(mod, crit, mater, nvi, epsd, &
     real(kind=8) :: ddy(nmod), dy(nmod), yd(nmod), yf(nmod)
     real(kind=8) :: err, err1, err2, signe
     real(kind=8) :: det, pa, qinit
-    integer :: umess
+    integer(kind=8) :: umess
 !
-    integer :: essai, essmax
+    integer(kind=8) :: essai, essmax
     parameter(essmax=10)
 !
 !    SI ABS(COS_NORMALES) < TOLROT RELAX = RELAX*DECREL
@@ -76,7 +76,7 @@ subroutine cjsmid(mod, crit, mater, nvi, epsd, &
     real(kind=8) :: erimp(nitimp, 4)
 !
     aster_logical :: devnu1, devnu2, tra1, tra2
-    integer :: i, j
+    integer(kind=8) :: i, j
 !
     character(len=8) :: mod
 !

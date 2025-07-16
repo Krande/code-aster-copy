@@ -32,7 +32,6 @@ subroutine te0539(option, nomte)
 #include "asterfort/jevech.h"
 #include "asterfort/lteatt.h"
 #include "asterfort/nmtstm.h"
-#include "asterfort/rcangm.h"
 #include "asterfort/teattr.h"
 #include "asterfort/tecach.h"
 #include "asterfort/utmess.h"
@@ -63,15 +62,15 @@ subroutine te0539(option, nomte)
 !
     character(len=8) :: typmod(2), enr, lag
     character(len=16) :: compor(4), elref
-    integer :: jgano, nno, npg, i, imatuu, lgpg, ndim, iret, nfiss
-    integer :: ipoids, ivf, idfde, igeom, imate
-    integer :: icontm, ivarim
-    integer :: iinstm, iinstp, ideplm, ideplp, icarcr
-    integer :: ivectu, icontp, ivarip, li, jcret, codret
-    integer :: ivarix
-    integer :: jpintt, jcnset, jheavt, jlonch, jbaslo, jlsn, jlst, jstno, jpmilt, jheavn
-    integer :: jtab(7), nnos, idim, jfisno
-    integer :: nfh, ddlc, nddl, nnom, nfe, ibid, ddls, ddlm
+    integer(kind=8) :: jgano, nno, npg, i, imatuu, lgpg, ndim, iret, nfiss
+    integer(kind=8) :: ipoids, ivf, idfde, igeom, imate
+    integer(kind=8) :: icontm, ivarim
+    integer(kind=8) :: iinstm, iinstp, ideplm, ideplp, icarcr
+    integer(kind=8) :: ivectu, icontp, ivarip, li, jcret, codret
+    integer(kind=8) :: ivarix
+    integer(kind=8) :: jpintt, jcnset, jheavt, jlonch, jbaslo, jlsn, jlst, jstno, jpmilt, jheavn
+    integer(kind=8) :: jtab(7), nnos, idim, jfisno
+    integer(kind=8) :: nfh, ddlc, nddl, nnom, nfe, ibid, ddls, ddlm
     aster_logical :: matsym, l_nonlin, l_line
     real(kind=8) :: bary(3), crit(1), sig(1), vi(1)
     character(len=16), pointer :: ccompor(:) => null()

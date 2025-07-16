@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -85,7 +85,7 @@ subroutine glrc_sig_mat(lambda, deuxmu, lamf, deumuf, alf, &
 !          DSIDEP(6,6) : MATRICE TANGENTE
 !----------------------------------------------------------------------
 !
-    integer :: k, l, i
+    integer(kind=8) :: k, l, i
 !
     real(kind=8) :: lambdd, lamfd, dlmd1, dlmd2, dlmfd1, dlmfd2
     real(kind=8) :: treps2, gf1, gf2, mu, fd1, fd2
@@ -275,10 +275,10 @@ subroutine glrc_sig_mat(lambda, deuxmu, lamf, deumuf, alf, &
                     do k = 1, 2
                         do l = 1, 2
                           dspdep(l, k) = dspdep(l, k)-dndd(l, i)*(dndd(k, 1)*ainv(i, 1)+dndd(k, 2)*&
-                                            &ainv(i, 2))
+                                              &ainv(i, 2))
 !
                            dspdep(l+3, k+3) = dspdep(l+3, k+3)-dmdd(l, i)*(dmdd(k, 1)*ainv(i, 1)+dm&
-                                               &dd(k, 2)*ainv(i, 2))
+                                                &dd(k, 2)*ainv(i, 2))
 !
                             dspdep(l+3, k) = dspdep(l+3, k)-dmdd(l, i)*(dndd(k, 1)*ainv(i, 1)+dndd(&
                                             &k, 2)*ainv(i, 2))

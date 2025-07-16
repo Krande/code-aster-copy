@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -19,7 +19,7 @@
 subroutine cgtang(ndim, nno, npg, geom, dffr, &
                   t)
     implicit none
-    integer :: nno, ndim, npg
+    integer(kind=8) :: nno, ndim, npg
     real(kind=8) :: geom(ndim, nno), dffr(nno, npg), t(3, 3)
 !
 !--------------------------------------------------
@@ -32,7 +32,7 @@ subroutine cgtang(ndim, nno, npg, geom, dffr, &
 !        DFFR : DERIVEES DES FONCTIONS DE FORME
 !  OUT : T    : TANGENTE AUX NOEUDS
 !--------------------------------------------------
-    integer :: ig, i, n
+    integer(kind=8) :: ig, i, n
     real(kind=8) :: nor
 !
 !

@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -50,8 +50,8 @@ subroutine detgnm(ma)
 !     ------------------------------------------------------------------
 !
 !
-    integer :: n1, iocc, maxval, nbval, iret, nbtgp, numgm, nbgmde
-    integer :: nbgp, nbmagp, jgm, i, j, j1, j2, ngp, ig
+    integer(kind=8) :: n1, iocc, maxval, nbval, iret, nbtgp, numgm, nbgmde
+    integer(kind=8) :: nbgp, nbmagp, jgm, i, j, j1, j2, ngp, ig
     parameter(ngp=2)
     character(len=8) :: k8b
     character(len=16) :: detr(2), group(2), ptrn(2)

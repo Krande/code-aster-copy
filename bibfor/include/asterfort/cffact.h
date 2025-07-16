@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -23,10 +23,10 @@
 interface
     subroutine cffact(ldscon, isto, nbliac, &
                       indfac, lechec)
-        integer :: ldscon
-        integer :: isto
-        integer :: nbliac
-        integer :: indfac
+        integer(kind=8) :: ldscon
+        integer(kind=8) :: isto
+        integer(kind=8) :: nbliac
+        integer(kind=8) :: indfac
         aster_logical :: lechec
     end subroutine cffact
 end interface

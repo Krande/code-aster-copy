@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -24,8 +24,6 @@ subroutine mmopti_lac(mesh, ds_contact)
     implicit none
 !
 #include "asterf_types.h"
-#include "asterc/r8prem.h"
-#include "asterc/r8nnem.h"
 #include "asterfort/assert.h"
 #include "asterfort/cfdisi.h"
 #include "asterfort/infdbg.h"
@@ -36,7 +34,6 @@ subroutine mmopti_lac(mesh, ds_contact)
 #include "asterfort/jedema.h"
 #include "asterfort/mminfi.h"
 #include "asterfort/utmess.h"
-#include "asterfort/aptype.h"
 #include "asterfort/as_deallocate.h"
 #include "asterfort/as_allocate.h"
 #include "asterfort/lac_gapi.h"
@@ -57,27 +54,27 @@ subroutine mmopti_lac(mesh, ds_contact)
 !
 ! --------------------------------------------------------------------------------------------------
 !
-    integer :: ifm, niv
-    integer :: i_cont_zone, i_patch, nb_patch, nb_cont_zone
-    integer :: j_patch
-    integer :: indi_cont_curr, indi_cont_prev
+    integer(kind=8) :: ifm, niv
+    integer(kind=8) :: i_cont_zone, i_patch, nb_patch, nb_cont_zone
+    integer(kind=8) :: j_patch
+    integer(kind=8) :: indi_cont_curr, indi_cont_prev
     real(kind=8) :: tole_inter, gap
-    integer :: nb_cont_init, cont_init
+    integer(kind=8) :: nb_cont_init, cont_init
     real(kind=8) :: epsint
     character(len=19) :: sdappa, newgeo
     character(len=24) :: sdcont_stat
-    integer, pointer :: v_sdcont_stat(:) => null()
+    integer(kind=8), pointer :: v_sdcont_stat(:) => null()
     character(len=24) :: sdappa_gapi
     real(kind=8), pointer :: v_sdappa_gapi(:) => null()
     character(len=24) :: sdappa_coef
     real(kind=8), pointer :: v_sdappa_coef(:) => null()
-    integer, pointer :: v_mesh_lpatch(:) => null()
-    integer :: nb_pair, jv_geom
-    integer, pointer :: v_mesh_connex(:) => null()
-    integer, pointer :: v_connex_lcum(:) => null()
+    integer(kind=8), pointer :: v_mesh_lpatch(:) => null()
+    integer(kind=8) :: nb_pair, jv_geom
+    integer(kind=8), pointer :: v_mesh_connex(:) => null()
+    integer(kind=8), pointer :: v_connex_lcum(:) => null()
     real(kind=8), pointer :: patch_weight_c(:) => null()
-    integer, pointer :: v_mesh_comapa(:) => null()
-    integer, pointer :: v_mesh_typmail(:) => null()
+    integer(kind=8), pointer :: v_mesh_comapa(:) => null()
+    integer(kind=8), pointer :: v_mesh_typmail(:) => null()
     real(kind=8) ::  pair_tole
     aster_logical :: l_axis
 !

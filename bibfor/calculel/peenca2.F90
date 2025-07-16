@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -23,7 +23,6 @@ subroutine peenca2(champ, long, vr, nbmail, nummai, &
 #include "jeveux.h"
 #include "asterc/r8prem.h"
 #include "asterfort/asmpi_comm_vect.h"
-#include "asterfort/assert.h"
 #include "asterfort/digdel.h"
 #include "asterfort/jedema.h"
 #include "asterfort/jedetr.h"
@@ -34,7 +33,7 @@ subroutine peenca2(champ, long, vr, nbmail, nummai, &
 #include "asterfort/wkvect.h"
 !
     character(len=*) :: champ
-    integer :: long, nbmail, nummai(*), nbgr, option
+    integer(kind=8) :: long, nbmail, nummai(*), nbgr, option
     real(kind=8) :: vr(long), ztot
     character(len=19) :: ligrel
 !     FAIRE DES OPERATIONS SUR UN CHAM_ELEM DE TYPE ENERGIE
@@ -48,13 +47,13 @@ subroutine peenca2(champ, long, vr, nbmail, nummai, &
 ! IN  : NUMMAI : NUMEROS DES MAILLES
 !
 !-----------------------------------------------------------------------
-    integer :: icoef, idecgr, iel, im, inum, j, k, nel, longt, mode
-    integer :: ind, iaux, nbproc, rang, nbpas2, jldist2, iaux1, numim, ind1
-    integer :: jad, jnbgr
+    integer(kind=8) :: icoef, idecgr, iel, im, inum, j, k, nel, longt, mode
+    integer(kind=8) :: ind, iaux, nbproc, rang, nbpas2, jldist2, iaux1, numim, ind1
+    integer(kind=8) :: jad, jnbgr
     aster_logical :: ldist2, lluck
     real(kind=8), pointer :: celv(:) => null()
-    integer, pointer :: liel(:) => null()
-    integer, pointer :: celd(:) => null()
+    integer(kind=8), pointer :: liel(:) => null()
+    integer(kind=8), pointer :: celd(:) => null()
 !-----------------------------------------------------------------------
 ! Init.
     call jemarq()

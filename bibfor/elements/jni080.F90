@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -33,7 +33,7 @@ subroutine jni080(elrefe, nmaxob, liobj, nbobj)
 #include "asterfort/wkvect.h"
 !
     character(len=8) :: elrefe
-    integer :: nmaxob, nbobj
+    integer(kind=8) :: nmaxob, nbobj
 !
 !.......................................................................
 !
@@ -295,9 +295,9 @@ subroutine jni080(elrefe, nmaxob, liobj, nbobj)
 ! ======================================================================
     character(len=16) :: elrefl
     character(len=24) :: desi, desr
-    integer :: iret, ndim, nbpg, npgcou, npgsn, npgsr, nso, ino
-    integer :: lzi, lzr, i1, i2, i3, i4, i5, k, l, ll, m, nbn1, nbn2, kompt
-    integer :: jmas, ldesi, ldesr, ljmas
+    integer(kind=8) :: iret, ndim, nbpg, npgcou, npgsn, npgsr, nso, ino
+    integer(kind=8) :: lzi, lzr, i1, i2, i3, i4, i5, k, l, ll, m, nbn1, nbn2, kompt
+    integer(kind=8) :: jmas, ldesi, ldesr, ljmas
     real(kind=8) :: a, b, aa
     real(kind=8) :: vfesnd(45)
     real(kind=8) :: xpg(81), poipg(27), x(2), ff(9), dff(3, 9), xi1, xi2, xi3
@@ -305,7 +305,7 @@ subroutine jni080(elrefe, nmaxob, liobj, nbobj)
 ! DEB ------------------------------------------------------------------
 !
 !-----------------------------------------------------------------------
-    integer :: l1
+    integer(kind=8) :: l1
 !-----------------------------------------------------------------------
     nbobj = 3
     ASSERT(nmaxob .gt. nbobj)

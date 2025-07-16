@@ -44,25 +44,25 @@ subroutine crnlgn(nume_equa)
 #ifdef ASTER_HAVE_MPI
 #include "mpif.h"
 !
-    integer :: ili, idprn1, idprn2, ntot, lonmax, nbno_prno
-    integer :: nbddll, i_proc, ino, iret, nbcmp, nlili
-    integer :: numero_noeud, numero_cmp, rang, nbproc, jrefn
-    integer :: nec, numloc, nbddl_lag
-    integer :: pos, i_ddl, jnbddl, gd, nec_max
+    integer(kind=8) :: ili, idprn1, idprn2, ntot, lonmax, nbno_prno
+    integer(kind=8) :: nbddll, i_proc, ino, iret, nbcmp, nlili
+    integer(kind=8) :: numero_noeud, numero_cmp, rang, nbproc, jrefn
+    integer(kind=8) :: nec, numloc, nbddl_lag
+    integer(kind=8) :: pos, i_ddl, jnbddl, gd, nec_max
     mpi_int :: mrank, msize, mpicou
     mpi_int, parameter :: one4 = to_mpi_int(1)
-    integer, pointer :: v_noext(:) => null()
-    integer, pointer :: v_deeq(:) => null()
-    integer, pointer :: v_nequ(:) => null()
-    integer, pointer :: v_delg(:) => null()
-    integer, pointer :: v_nugll(:) => null()
-    integer, pointer :: v_posdd(:) => null()
-    integer, pointer :: v_mult(:) => null()
-    integer, pointer :: v_mults(:) => null()
-    integer, pointer :: v_owner(:) => null()
-    integer, pointer :: v_mult1(:) => null()
-    integer, pointer :: v_mult2(:) => null()
-    integer, pointer :: v_mdlag(:) => null()
+    integer(kind=8), pointer :: v_noext(:) => null()
+    integer(kind=8), pointer :: v_deeq(:) => null()
+    integer(kind=8), pointer :: v_nequ(:) => null()
+    integer(kind=8), pointer :: v_delg(:) => null()
+    integer(kind=8), pointer :: v_nugll(:) => null()
+    integer(kind=8), pointer :: v_posdd(:) => null()
+    integer(kind=8), pointer :: v_mult(:) => null()
+    integer(kind=8), pointer :: v_mults(:) => null()
+    integer(kind=8), pointer :: v_owner(:) => null()
+    integer(kind=8), pointer :: v_mult1(:) => null()
+    integer(kind=8), pointer :: v_mult2(:) => null()
+    integer(kind=8), pointer :: v_mdlag(:) => null()
 !
     character(len=8) :: k8bid, mesh
     character(len=19) :: nomlig

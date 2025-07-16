@@ -33,9 +33,7 @@ subroutine te0477(nomopt, nomte)
 #include "asterfort/HHO_size_module.h"
 #include "asterfort/assert.h"
 #include "asterfort/elrefe_info.h"
-#include "asterfort/jevech.h"
 #include "asterfort/writeVector.h"
-#include "asterfort/teattr.h"
 #include "jeveux.h"
 !
 ! --------------------------------------------------------------------------------------------------
@@ -50,7 +48,7 @@ subroutine te0477(nomopt, nomte)
 ! --- Local variables
 !
     type(HHO_Quadrature) :: hhoQuadCellRigi
-    integer :: cbs, fbs, total_dofs, npg
+    integer(kind=8) :: cbs, fbs, total_dofs, npg
     character(len=8), parameter :: fami = 'RIGI'
     type(HHO_Data) :: hhoData
     type(HHO_Cell) :: hhoCell

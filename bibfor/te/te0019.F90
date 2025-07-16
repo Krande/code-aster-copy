@@ -48,15 +48,15 @@ subroutine te0019(option, nomte)
     real(kind=8) :: mmat(36, 36)
     real(kind=8) :: sx(27, 27), sy(27, 27), sz(27, 27), norm(3), ul(36)
     real(kind=8) :: celer
-    integer :: jv_geom, jv_mate, jv_matr
-    integer :: ipoids, ivf, idfdx, idfdy
-    integer :: jvVect, jvDisp, jv_codret, jvDispM, jvDispP
-    integer :: ndim, nno, npg
-    integer :: ij, i
-    integer :: n1, n2
-    integer :: ino1, ino2, ipg, ino, jno, ind1, ind2, idim
-    integer :: idec, jdec, ldec, kdec
-    integer :: j_mater, iret, codret
+    integer(kind=8) :: jv_geom, jv_mate, jv_matr
+    integer(kind=8) :: ipoids, ivf, idfdx, idfdy
+    integer(kind=8) :: jvVect, jvDisp, jv_codret, jvDispM, jvDispP
+    integer(kind=8) :: ndim, nno, npg
+    integer(kind=8) :: ij, i
+    integer(kind=8) :: n1, n2
+    integer(kind=8) :: ino1, ino2, ipg, ino, jno, ind1, ind2, idim
+    integer(kind=8) :: idec, jdec, ldec, kdec
+    integer(kind=8) :: j_mater, iret, codret
     character(len=16) :: FEForm, rela_comp
     aster_logical :: lVect, lMatr, lVari, lSigm
     character(len=16), pointer :: compor(:) => null()

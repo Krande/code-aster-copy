@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -40,9 +40,9 @@ subroutine mmCompMatrCont(phase, l_pena_cont, i_reso_geom, &
 !
     character(len=4), intent(in) :: phase
     aster_logical, intent(in) :: l_pena_cont
-    integer, intent(in) :: i_reso_geom
-    integer, intent(in) :: nbdm
-    integer, intent(in) :: ndim, nne, nnm, nnl
+    integer(kind=8), intent(in) :: i_reso_geom
+    integer(kind=8), intent(in) :: nbdm
+    integer(kind=8), intent(in) :: ndim, nne, nnm, nnl
     real(kind=8), intent(in) :: wpg, jacobi, coefac
     real(kind=8), intent(in) :: ffe(9), ffm(9), ffl(9), dffm(2, 9)
     real(kind=8), intent(in) :: norm(3), mprojn(3, 3)
@@ -107,8 +107,8 @@ subroutine mmCompMatrCont(phase, l_pena_cont, i_reso_geom, &
     real(kind=8) :: matrcc(9, 9), matree(27, 27), matrmm(27, 27)
     real(kind=8) :: matrem(27, 27), matrme(27, 27), matrce(9, 27), matrcm(9, 27)
     real(kind=8) :: matrec(27, 9), matrmc(27, 9)
-    integer :: inoc, inoe, inom, idim, inoc1, inoc2
-    integer :: i, j, k, l, ii, jj, nbcps
+    integer(kind=8) :: inoc, inoe, inom, idim, inoc1, inoc2
+    integer(kind=8) :: i, j, k, l, ii, jj, nbcps
     character(len=4) :: phase_cont
 !
 ! --------------------------------------------------------------------------------------------------

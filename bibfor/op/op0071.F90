@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -25,7 +25,6 @@ subroutine op0071()
 !
 #include "jeveux.h"
 #include "asterc/getres.h"
-#include "asterfort/gettco.h"
 #include "asterfort/dismoi.h"
 #include "asterfort/getvid.h"
 #include "asterfort/infmaj.h"
@@ -36,7 +35,7 @@ subroutine op0071()
 #include "asterfort/projmr.h"
 #include "asterfort/rsorac.h"
 #include "asterfort/utmess.h"
-    integer :: ibid, n1, n2, n3, n4, nbmode(1), neq
+    integer(kind=8) :: ibid, n1, n2, n3, n4, nbmode(1), neq
     real(kind=8) :: rbid
     complex(kind=8) :: cbid
     character(len=1) :: typmat
@@ -45,7 +44,7 @@ subroutine op0071()
     character(len=16) :: typres, nomcom
     character(len=14) :: nugene
     character(len=24) :: matric
-    integer, pointer :: smde(:) => null()
+    integer(kind=8), pointer :: smde(:) => null()
 !-----------------------------------------------------------------------
 !
     call jemarq()

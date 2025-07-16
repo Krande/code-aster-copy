@@ -101,9 +101,6 @@ subroutine sandcas2(effrts, ht, enrobi, enrobs, facier, fbeton, gammas, gammac, 
 #include "asterc/r8dgrd.h"
 #include "asterfort/wkvect.h"
 #include "asterfort/jedetr.h"
-#include "asterfort/juveca.h"
-#include "asterfort/jeveuo.h"
-#include "asterfort/mgauss.h"
 
 !VARIABLES PRINCIPALES
 !------------------------------
@@ -116,19 +113,19 @@ subroutine sandcas2(effrts, ht, enrobi, enrobs, facier, fbeton, gammas, gammac, 
     real(kind=8) :: gammas
     real(kind=8) :: gammac
     real(kind=8) :: thiter
-    integer :: cond109
-    integer :: ferrcomp
-    integer :: ferrsyme
+    integer(kind=8) :: cond109
+    integer(kind=8) :: ferrcomp
+    integer(kind=8) :: ferrsyme
     real(kind=8) :: slsyme
-    integer :: uc
+    integer(kind=8) :: uc
     real(kind=8) :: dnsxi
     real(kind=8) :: dnsxs
     real(kind=8) :: dnsyi
     real(kind=8) :: dnsys
-    integer :: etsxi
-    integer :: etsxs
-    integer :: etsyi
-    integer :: etsys
+    integer(kind=8) :: etsxi
+    integer(kind=8) :: etsxs
+    integer(kind=8) :: etsyi
+    integer(kind=8) :: etsys
     real(kind=8) :: snsxi
     real(kind=8) :: snsxs
     real(kind=8) :: snsyi
@@ -141,12 +138,12 @@ subroutine sandcas2(effrts, ht, enrobi, enrobs, facier, fbeton, gammas, gammac, 
     real(kind=8) :: t_sup
     real(kind=8) :: theta_inf
     real(kind=8) :: theta_sup
-    integer :: ierr
+    integer(kind=8) :: ierr
 
 !Variables de calcul
     real(kind=8) :: fcd, fyd, ySUP, yINF, Z, fcd1, fc, pi, vect(20), my_epsi
     real(kind=8) :: Nxx, Nyy, Nxy, Mxx, Myy, Mxy
-    integer :: N_SUP, N_INF, N_TOT, i
+    integer(kind=8) :: N_SUP, N_INF, N_TOT, i
     real(kind=8) :: unite_pa, Calc1, Calc2
     character(20) :: p(15)
     real(kind=8), pointer :: nSX_SUP(:) => null(), nSX_INF(:) => null()
@@ -390,10 +387,10 @@ subroutine sandcas2(effrts, ht, enrobi, enrobs, facier, fbeton, gammas, gammac, 
     dnsxs = vect(2)
     dnsyi = vect(3)
     dnsys = vect(4)
-    etsxi = vect(5)
-    etsxs = vect(6)
-    etsyi = vect(7)
-    etsys = vect(8)
+    etsxi = to_aster_int(vect(5))
+    etsxs = to_aster_int(vect(6))
+    etsyi = to_aster_int(vect(7))
+    etsys = to_aster_int(vect(8))
     snsxi = vect(9)
     snsxs = vect(10)
     snsyi = vect(11)

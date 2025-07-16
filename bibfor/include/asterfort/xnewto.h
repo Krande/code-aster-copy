@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -23,20 +23,20 @@ interface
                        ptxx, ndim, tabco, tabls,&
                        ipp, ip, itemax,&
                        epsmax, ksi, exit, dekker)
-        integer :: ndime
-        integer :: ndim
+        integer(kind=8) :: ndime
+        integer(kind=8) :: ndim
         character(len=8) :: elrefp
         character(len=6) :: name
-        integer :: n(3)
+        integer(kind=8) :: n(3)
         real(kind=8) :: ptxx(*)
         real(kind=8) :: tabls(*)
         real(kind=8) :: tabco(*)
-        integer :: ipp
-        integer :: ip
-        integer :: itemax
+        integer(kind=8) :: ipp
+        integer(kind=8) :: ip
+        integer(kind=8) :: itemax
         real(kind=8) :: epsmax
         real(kind=8) :: ksi(ndime)
-        integer, intent(inout), optional :: exit(2)
+        integer(kind=8), intent(inout), optional :: exit(2)
         real(kind=8), intent(in), optional :: dekker(4*ndime)
     end subroutine xnewto
 end interface

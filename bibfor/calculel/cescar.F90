@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -47,9 +47,9 @@ subroutine cescar(cesz, cartz, basz)
 !-----------------------------------------------------------------------
 !
 !     ------------------------------------------------------------------
-    integer :: jce1d, jce1l, jce1v, nbmam, ncmp, ncmpmx
-    integer :: jvalv, iad1, kcmp, ncmpma, nbpt, nbsp, ima
-    integer :: k, jvals, nbpaqu, nbcmps, vali(3)
+    integer(kind=8) :: jce1d, jce1l, jce1v, nbmam, ncmp, ncmpmx
+    integer(kind=8) :: jvalv, iad1, kcmp, ncmpma, nbpt, nbsp, ima
+    integer(kind=8) :: k, jvals, nbpaqu, nbcmps, vali(3)
     aster_logical :: idprec, premie
     character(len=1) :: base
     character(len=8) :: ma, nomgd
@@ -59,7 +59,7 @@ subroutine cescar(cesz, cartz, basz)
     character(len=8), pointer :: vncmp(:) => null()
     character(len=8), pointer :: cesk(:) => null()
     character(len=8), pointer :: cesc(:) => null()
-    integer, pointer :: lima(:) => null()
+    integer(kind=8), pointer :: lima(:) => null()
     character(len=8), pointer :: noms(:) => null()
 !     ------------------------------------------------------------------
     call jemarq()

@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -24,7 +24,7 @@ subroutine jedup1(o1z, base, o2z)
 ! ----------------------------------------------------------------------
 !     RECOPIE L'OBJET JEVEUX "O1" SUR LA BASE "BASE" SOUS LE NOM "O2"
 ! ----------------------------------------------------------------------
-    integer :: iret
+    integer(kind=8) :: iret
     character(len=24) :: o1, o2
 !
 ! DEB ------------------------------------------------------------------

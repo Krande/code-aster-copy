@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -24,7 +24,7 @@ interface
     subroutine nd_mstp_time(ds_inout, list_func_acti, time_prev_step, l_comp_mstp)
         use NonLin_Datastructure_type
         type(NL_DS_InOut), intent(in) :: ds_inout
-        integer, intent(in) :: list_func_acti(*)
+        integer(kind=8), intent(in) :: list_func_acti(*)
         real(kind=8), intent(out) :: time_prev_step
         aster_logical, intent(out) :: l_comp_mstp
     end subroutine nd_mstp_time

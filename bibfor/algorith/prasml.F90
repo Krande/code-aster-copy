@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -93,20 +93,20 @@ subroutine prasml(option, nugene, tminbl, nomprn, modgen, &
     character(len=24) :: tmadbl, tmnobl, tminbl
     character(len=24) :: nomlia, knombl(*)
     real(kind=8) :: zero, conlbl(*), conleq(*)
-    integer :: inumbl(*), ibl(3)
+    integer(kind=8) :: inumbl(*), ibl(3)
 !
 !-----------------------------------------------------------------------
 !-----------------------------------------------------------------------
-    integer :: iad, ibid, iblc, ieqc, ieql, inuc, inul
-    integer :: ivc, ivl, j, k, l, lc, ll, i_ligr_ss, i_ligr
-    integer ::  lldefl, llorl, llors, llprl
-    integer ::  llprs, ltadbl, ltinbl, ltnobl, nbcol, nblig
-    integer :: nbsst, ntail, ntprno, nuant, nublo, nulia, nusst
-    integer :: nutars
+    integer(kind=8) :: iad, ibid, iblc, ieqc, ieql, inuc, inul
+    integer(kind=8) :: ivc, ivl, j, k, l, lc, ll, i_ligr_ss, i_ligr
+    integer(kind=8) ::  lldefl, llorl, llors, llprl
+    integer(kind=8) ::  llprs, ltadbl, ltinbl, ltnobl, nbcol, nblig
+    integer(kind=8) :: nbsst, ntail, ntprno, nuant, nublo, nulia, nusst
+    integer(kind=8) :: nutars
     real(kind=8) :: sconl
-    integer, pointer :: nueq(:) => null()
-    integer, pointer :: lipr(:) => null()
-    integer, pointer :: smdi(:) => null()
+    integer(kind=8), pointer :: nueq(:) => null()
+    integer(kind=8), pointer :: lipr(:) => null()
+    integer(kind=8), pointer :: smdi(:) => null()
 !-----------------------------------------------------------------------
     data rigopt, ricopt/'RIGI_GENE', 'RIGI_GENE_C'/
     data zero/0.0d+00/

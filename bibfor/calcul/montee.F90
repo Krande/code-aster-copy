@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -26,7 +26,7 @@ subroutine montee(nout, lchout, lpaout, fin)
 #include "asterfort/monte1.h"
 #include "asterfort/typele.h"
 !
-    integer :: nout
+    integer(kind=8) :: nout
     character(len=*) :: lchout(*), fin
     character(len=8) :: lpaout(*)
 !-----------------------------------------------------------------------
@@ -36,7 +36,7 @@ subroutine montee(nout, lchout, lpaout, fin)
 ! Sorties:
 !     met a jour les champs globaux de sortie de l option ca_nuop_
 !-----------------------------------------------------------------------
-    integer :: igr2, te2
+    integer(kind=8) :: igr2, te2
 !-----------------------------------------------------------------------
 !
     if (ca_calvoi_ .eq. 0) then

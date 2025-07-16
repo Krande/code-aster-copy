@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -23,14 +23,14 @@ interface
                       compor, f, sigma, nbvari,&
                       vari, enelas)
         character(len=4) :: fami
-        integer :: iadmat
+        integer(kind=8) :: iadmat
         real(kind=8) :: instan
-        integer :: igau
+        integer(kind=8) :: igau
         real(kind=8) :: angl_naut(3)
         character(len=16) :: compor(*)
         real(kind=8) :: f(3, 3)
         real(kind=8) :: sigma(6)
-        integer :: nbvari
+        integer(kind=8) :: nbvari
         real(kind=8) :: vari(*)
         real(kind=8) :: enelas
     end subroutine enelpg

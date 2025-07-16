@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -29,11 +29,11 @@ function in_liste_entier(val, liste, indx)
 ! person_in_charge: jean-luc.flejou at edf.fr
 !
     implicit none
-    integer :: val, liste(:)
-    integer, intent(out), optional :: indx
+    integer(kind=8) :: val, liste(:)
+    integer(kind=8), intent(out), optional :: indx
     logical :: in_liste_entier
 ! --------------------------------------------------------------------------------------------------
-    integer :: ii, indx0
+    integer(kind=8) :: ii, indx0
 ! --------------------------------------------------------------------------------------------------
     in_liste_entier = .false.
     indx0 = 0

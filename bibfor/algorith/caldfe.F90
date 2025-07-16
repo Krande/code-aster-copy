@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -37,7 +37,7 @@ subroutine caldfe(df, nr, nvi, vind, dfpds, &
 #include "blas/daxpy.h"
 #include "blas/dcopy.h"
 #include "blas/dscal.h"
-    integer :: nr, ndt, ndi, ns, i, j, k, l, m, ind(3, 3), nvi
+    integer(kind=8) :: nr, ndt, ndi, ns, i, j, k, l, m, ind(3, 3), nvi
     real(kind=8) :: fe(3, 3), df(3, 3), dfpds(3, 3, 3, 3), msdgdt(6, 6)
     real(kind=8) :: dfefdt(3, 3, 3, 3)
     real(kind=8) :: vind(*), dfeds(3, 3, 3, 3), dfefds(3, 3, 3, 3), dffe(3, 3)

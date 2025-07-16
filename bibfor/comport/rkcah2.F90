@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -29,7 +29,7 @@ subroutine rkcah2(rela_comp, y, pas, nvi, w, &
 !
 #include "asterc/r8prem.h"
 #include "asterfort/utmess.h"
-    integer :: ne, ny, na, nvi, iret
+    integer(kind=8) :: ne, ny, na, nvi, iret
     character(len=16) :: rela_comp
     real(kind=8) :: y(*), h, w, dmg0, dmg1, maxout, maxdom, wk(*), eps
     real(kind=8) :: prec, coef, pas

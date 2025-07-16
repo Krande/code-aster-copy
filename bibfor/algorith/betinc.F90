@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -38,7 +38,7 @@ subroutine betinc(materf, nmat, sige, nseuil, dpc, &
 !       ----------------------------------------------------------------
 #include "asterfort/lcdevi.h"
 #include "asterfort/lchydr.h"
-    integer :: nmat, nseuil, i
+    integer(kind=8) :: nmat, nseuil, i
     real(kind=8) :: materf(nmat, 2), dpc, dpt
     real(kind=8) :: un, d23, rac2, deux, trois
     real(kind=8) :: sige(6), sigf(6)
@@ -51,7 +51,7 @@ subroutine betinc(materf, nmat, sige, nseuil, dpc, &
     real(kind=8) :: a, b, c, d
     real(kind=8) :: verifc, verift
 !       ----------------------------------------------------------------
-    integer :: ndt, ndi
+    integer(kind=8) :: ndt, ndi
     common/tdim/ndt, ndi
 !       ----------------------------------------------------------------
 !

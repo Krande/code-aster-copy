@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -66,15 +66,15 @@ subroutine irceme(ifi, nochmd, chanom, typech, modele, &
     character(len=*) :: nomcmp(*), partie, etiqcp
     character(len=16), intent(in) :: field_type
 !
-    integer :: nbcmp, numpt, numord
-    integer :: nbmaec, cret
-    integer :: ifi, limaec(*)
+    integer(kind=8) :: nbcmp, numpt, numord
+    integer(kind=8) :: nbmaec, cret
+    integer(kind=8) :: ifi, limaec(*)
 !
     real(kind=8) :: instan
 !
-    integer, intent(inout) :: nbCmpDyna
+    integer(kind=8), intent(inout) :: nbCmpDyna
     aster_logical :: lfichUniq
-    integer :: codret
+    integer(kind=8) :: codret
 !
 ! 0.2. ==> COMMUNS
 ! 0.3. ==> VARIABLES LOCALES
@@ -84,7 +84,7 @@ subroutine irceme(ifi, nochmd, chanom, typech, modele, &
 !
     character(len=19) :: chamns
 !
-    integer :: jcesk, jcesd, jcesc, jcesv, jcesl
+    integer(kind=8) :: jcesk, jcesd, jcesc, jcesv, jcesl
 !     ------------------------------------------------------------------
 !
     call jemarq()

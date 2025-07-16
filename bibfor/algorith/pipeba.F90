@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -26,8 +26,8 @@ subroutine pipeba(ndim, mate, sup, sud, vim, &
 #include "asterfort/rcvalb.h"
 #include "asterfort/zerop2.h"
 #include "blas/ddot.h"
-    integer, intent(in) :: ndim
-    integer, intent(in) :: mate
+    integer(kind=8), intent(in) :: ndim
+    integer(kind=8), intent(in) :: mate
     real(kind=8), intent(in) :: sup(ndim)
     real(kind=8), intent(in) :: sud(ndim)
     real(kind=8), intent(in) :: vim
@@ -41,10 +41,10 @@ subroutine pipeba(ndim, mate, sup, sud, vim, &
 !
 !-----------------------------------------------------------------------
 !
-    integer :: i, j, nrac, ok(4), nsol
+    integer(kind=8) :: i, j, nrac, ok(4), nsol
     real(kind=8) :: p0, p1, p2, rac(2), eta(4), a0(4), a1(4), tmp
     real(kind=8) :: lc, k0, ka, kref, c, val(3), etasol(4), xn
-    integer :: cod(3), kpg, spt
+    integer(kind=8) :: cod(3), kpg, spt
     character(len=16) :: nom(3)
     character(len=8) :: fami, poum
     blas_int :: b_incx, b_incy, b_n

@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -40,23 +40,23 @@ subroutine te0221(option, nomte)
 ! ......................................................................
 !
 !-----------------------------------------------------------------------
-    integer :: jgano, nbres, ndim, nnos
+    integer(kind=8) :: jgano, nbres, ndim, nnos
     real(kind=8) :: gss
 !-----------------------------------------------------------------------
     parameter(nbres=2)
     character(len=16) :: nomres(nbres)
     character(len=8) :: elrefe, nompar
-    integer :: icodre(nbres)
+    integer(kind=8) :: icodre(nbres)
     real(kind=8) :: valres(nbres), valpar
     real(kind=8) :: dfdx(3), zero, un, deux, trois, douze
     real(kind=8) :: test, test2, eps, nu, h, cosa, sina, cour, r
     real(kind=8) :: coefxx, coefyy, coefxy, coeff1, coeff2
     real(kind=8) :: css, ctt, cts, dss, dts, dtt, bss, btt, bts, vfi, vfj
     real(kind=8) :: c1, c2, c3, cons, cons2, jacp, kappa, correc
-    integer :: nno, kp, npg, imatuu, icaco
-    integer :: ii, jj, i, j, k, ij1, ij2, ij3, kd1, kd2, kd3
-    integer :: ipoids, ivf, idfdk, igeom, imate
-    integer :: nbpar, iret
+    integer(kind=8) :: nno, kp, npg, imatuu, icaco
+    integer(kind=8) :: ii, jj, i, j, k, ij1, ij2, ij3, kd1, kd2, kd3
+    integer(kind=8) :: ipoids, ivf, idfdk, igeom, imate
+    integer(kind=8) :: nbpar, iret
 !
 !
     data zero, un, deux, trois, douze/0.d0, 1.d0, 2.d0, 3.d0, 12.d0/

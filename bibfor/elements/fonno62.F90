@@ -30,10 +30,8 @@ subroutine fonno62(resu, noma, ndim, iseg, noe, &
 #include "asterfort/jeexin.h"
 #include "asterfort/jelira.h"
 #include "asterfort/jemarq.h"
-#include "asterfort/jenonu.h"
 #include "asterfort/jenuno.h"
 #include "asterfort/jeveuo.h"
-#include "asterfort/jexnom.h"
 #include "asterfort/jexnum.h"
 #include "asterfort/trigom.h"
 #include "asterfort/utmess.h"
@@ -41,8 +39,8 @@ subroutine fonno62(resu, noma, ndim, iseg, noe, &
 #include "blas/ddot.h"
 !
     character(len=8) :: resu, noma
-    integer :: ndim, iseg, noe(4, 4)
-    integer :: indr(2), nbnoel
+    integer(kind=8) :: ndim, iseg, noe(4, 4)
+    integer(kind=8) :: indr(2), nbnoel
     real(kind=8) :: vdir(2, 3), vnor(2, 3), vect(3), sens
     character(len=19) :: basseg
 !
@@ -70,10 +68,10 @@ subroutine fonno62(resu, noma, ndim, iseg, noe, &
 !
 !       ----------------------------------------------------
 !
-    integer :: iamase, ityp, iatyma, jbasse
-    integer :: i, j, iret, inp, compt, ino, ifl
-    integer :: ilev, inor
-    integer :: nblev, nn
+    integer(kind=8) :: iamase, ityp, iatyma, jbasse
+    integer(kind=8) :: i, j, iret, inp, compt, ino, ifl
+    integer(kind=8) :: ilev, inor
+    integer(kind=8) :: nblev, nn
     real(kind=8) :: s, ndir, nnor, alpha, angmax, beta
     real(kind=8) :: vecdir(ndim), vecnor(ndim), vnprec(ndim)
     real(kind=8) :: p, prvd1, prvd2

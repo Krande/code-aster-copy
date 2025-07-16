@@ -26,7 +26,6 @@ subroutine nsassp(list_func_acti, ds_contact, ds_system, &
     implicit none
 !
 #include "asterf_types.h"
-#include "asterfort/assert.h"
 #include "asterfort/isfonc.h"
 #include "asterfort/cfdisl.h"
 #include "asterfort/nmasdi.h"
@@ -40,7 +39,7 @@ subroutine nsassp(list_func_acti, ds_contact, ds_system, &
 #include "asterfort/nonlinDSVectCombAddAny.h"
 #include "asterfort/nonlinDSVectCombAddHat.h"
 !
-    integer, intent(in) :: list_func_acti(*)
+    integer(kind=8), intent(in) :: list_func_acti(*)
     type(NL_DS_Contact), intent(in) :: ds_contact
     type(NL_DS_System), intent(in) :: ds_system
     character(len=19), intent(in) :: hval_veasse(*)
@@ -63,7 +62,7 @@ subroutine nsassp(list_func_acti, ds_contact, ds_system, &
 !
 ! --------------------------------------------------------------------------------------------------
 !
-    integer :: ifm, niv
+    integer(kind=8) :: ifm, niv
     character(len=19) :: cnffdo, cndfdo, cnfvdo, cnffpi, cndfpi
     aster_logical :: l_macr, l_pilo
     type(NL_DS_VectComb) :: ds_vectcomb

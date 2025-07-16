@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -44,7 +44,7 @@ subroutine alresl(opt, ligrel, nochou, nompar, base)
 #include "asterfort/typele.h"
 #include "asterfort/wkvect.h"
 
-    integer :: opt
+    integer(kind=8) :: opt
     character(len=19) :: ligrel, nochou
     character(len=8) :: nompar
     character(len=*) :: base
@@ -63,9 +63,9 @@ subroutine alresl(opt, ligrel, nochou, nompar, base)
     character(len=1) :: bas1
     character(len=16) :: nomopt
 
-    integer :: ngrel, igr, te, nel, mode, ncmpel, ipar
-    integer :: desc, gd, jnoli, idesc
-    integer ::  iparmx
+    integer(kind=8) :: ngrel, igr, te, nel, mode, ncmpel, ipar
+    integer(kind=8) :: desc, gd, jnoli, idesc
+    integer(kind=8) ::  iparmx
     character(len=8) :: scal, nomgd, tymat
 ! ----------------------------------------------------------------------
 

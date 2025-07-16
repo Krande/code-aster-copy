@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -25,13 +25,13 @@ subroutine ccchcf(name_form, nb_val_in, val_in, cmp_in, nb_cmp_out, &
 !
 ! person_in_charge: mathieu.courtois at edf.fr
 !
-    integer, intent(in) :: nb_cmp_out
+    integer(kind=8), intent(in) :: nb_cmp_out
     character(len=8), intent(in) :: name_form(nb_cmp_out)
-    integer, intent(in) :: nb_val_in
+    integer(kind=8), intent(in) :: nb_val_in
     real(kind=8), intent(in) :: val_in(nb_val_in)
     character(len=8), intent(in) :: cmp_in(nb_val_in)
     real(kind=8), intent(out) :: val_out(nb_cmp_out)
-    integer, intent(out) :: ichk
+    integer(kind=8), intent(out) :: ichk
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -51,7 +51,7 @@ subroutine ccchcf(name_form, nb_val_in, val_in, cmp_in, nb_cmp_out, &
 !
 ! --------------------------------------------------------------------------------------------------
 !
-    integer :: i
+    integer(kind=8) :: i
     character(len=1) :: codmes
     character(len=8) :: nomf
 !

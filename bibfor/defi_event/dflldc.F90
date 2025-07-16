@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -32,13 +32,13 @@ subroutine dflldc(keywf, i_fail, dtmin, event_typek, &
 #include "asterfort/utmess.h"
 !
     character(len=16), intent(in) :: keywf
-    integer, intent(in) :: i_fail
+    integer(kind=8), intent(in) :: i_fail
     real(kind=8), intent(in) :: dtmin
     character(len=16), intent(in) :: event_typek
     character(len=16), intent(out) :: subd_methode
     real(kind=8), intent(out) :: subd_pas_mini
-    integer, intent(out) :: subd_niveau
-    integer, intent(out) :: subd_pas
+    integer(kind=8), intent(out) :: subd_niveau
+    integer(kind=8), intent(out) :: subd_pas
     character(len=16), intent(out) :: subd_auto
     real(kind=8), intent(out) :: subd_inst
     real(kind=8), intent(out) :: subd_duree
@@ -65,13 +65,13 @@ subroutine dflldc(keywf, i_fail, dtmin, event_typek, &
 !
 ! --------------------------------------------------------------------------------------------------
 !
-    integer :: nbret
+    integer(kind=8) :: nbret
 !
 ! --------------------------------------------------------------------------------------------------
 !
     subd_methode = ' '
     subd_auto = ' '
-    subd_niveau = 0
+    subd_niveau = -1
     subd_pas = 0
     subd_pas_mini = 0.d0
     subd_inst = 0.d0

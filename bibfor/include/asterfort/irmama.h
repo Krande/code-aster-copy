@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -22,11 +22,11 @@ interface
                       nbGrCell  , grCellName  ,&
                       nbCellSelect, cellFlag  , lfichUniq)
         character(len=*), intent(in) :: meshNameZ
-        integer, intent(in) :: nbCell
+        integer(kind=8), intent(in) :: nbCell
         character(len=8), pointer :: cellName(:)
-        integer, intent(in) :: nbGrCell
+        integer(kind=8), intent(in) :: nbGrCell
         character(len=24), pointer :: grCellName(:)
-        integer, intent(out) :: nbCellSelect
+        integer(kind=8), intent(out) :: nbCellSelect
         aster_logical, pointer :: cellFlag(:)
         aster_logical, intent(in) :: lfichUniq
     end subroutine irmama

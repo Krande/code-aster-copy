@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -21,7 +21,7 @@
 interface
     subroutine cftypm(defico, posma, typma)
         character(len=24) :: defico
-        integer :: posma
+        integer(kind=8) :: posma
         character(len=4) :: typma
     end subroutine cftypm
 end interface

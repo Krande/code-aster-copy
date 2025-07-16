@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -23,7 +23,6 @@ subroutine sele_elem_comp(modelz, compor, defo_comp, list_elem_comp)
 #include "asterfort/assert.h"
 #include "asterfort/nbelem.h"
 #include "asterfort/nbgrel.h"
-#include "asterfort/typele.h"
 #include "asterfort/as_allocate.h"
 #include "asterfort/exisdg.h"
 #include "asterfort/jeveuo.h"
@@ -38,7 +37,7 @@ subroutine sele_elem_comp(modelz, compor, defo_comp, list_elem_comp)
     character(len=*), intent(in) :: modelz
     character(len=24), intent(in) :: compor
     character(len=16), intent(in) :: defo_comp
-    integer, pointer :: list_elem_comp(:)
+    integer(kind=8), pointer :: list_elem_comp(:)
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -57,14 +56,14 @@ subroutine sele_elem_comp(modelz, compor, defo_comp, list_elem_comp)
     character(len=16) :: grandeur_name, defo_comp_f
     character(len=19) :: ligrmo
     character(len=24) :: name_liel
-    integer :: nume_elem
-    integer :: idx_gd, idx_cmp, nb_gd_max, iret, nb_cmp_max, nb_elem_mesh
-    integer :: nb_elem_grel, nb_grel, nb_ec
-    integer :: i_elem_grel, i_grel
-    integer, pointer :: comp_ptma(:) => null()
-    integer, pointer :: comp_desc(:) => null()
+    integer(kind=8) :: nume_elem
+    integer(kind=8) :: idx_gd, idx_cmp, nb_gd_max, iret, nb_cmp_max, nb_elem_mesh
+    integer(kind=8) :: nb_elem_grel, nb_grel, nb_ec
+    integer(kind=8) :: i_elem_grel, i_grel
+    integer(kind=8), pointer :: comp_ptma(:) => null()
+    integer(kind=8), pointer :: comp_desc(:) => null()
     character(len=16), pointer :: comp_vale(:) => null()
-    integer, pointer :: list_elem_grel(:) => null()
+    integer(kind=8), pointer :: list_elem_grel(:) => null()
 !
 ! --------------------------------------------------------------------------------------------------
 !

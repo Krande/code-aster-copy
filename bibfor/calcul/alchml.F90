@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -51,7 +51,7 @@ subroutine alchml(ligrel_, option_, nompar_, base_, cel_, &
     character(len=16) :: option
     character(len=8) :: nompar
     character(len=1) :: base
-    integer :: iret
+    integer(kind=8) :: iret
 !----------------------------------------------------------------------
 !  But : Creer un cham_elem "vierge"
 
@@ -90,15 +90,15 @@ subroutine alchml(ligrel_, option_, nompar_, base_, cel_, &
     character(len=16) :: nomte1, nomte, ma, ma2, kbid
     character(len=24) :: nomolo
     character(len=24) :: valk(3)
-    integer :: ngrel, igrel, te, te1, mode, long, jceld, ncmpv, debgrl
-    integer :: gd, jcelk, iopt, iprem, nel, iel, lgcata, nbspt
-    integer :: ncdyn, lgchel, numc
-    integer :: ibid, modmx, iamolo, itych, itych1
-    integer :: illiel, jdcesd, jdcesl
-    integer :: ima, ncmpv2, kk, ityplo
+    integer(kind=8) :: ngrel, igrel, te, te1, mode, long, jceld, ncmpv, debgrl
+    integer(kind=8) :: gd, jcelk, iopt, iprem, nel, iel, lgcata, nbspt
+    integer(kind=8) :: ncdyn, lgchel, numc
+    integer(kind=8) :: ibid, modmx, iamolo, itych, itych1
+    integer(kind=8) :: illiel, jdcesd, jdcesl
+    integer(kind=8) :: ima, ncmpv2, kk, ityplo
     aster_logical :: letendu
-    integer, pointer :: liel(:) => null()
-    integer, pointer :: cesv(:) => null()
+    integer(kind=8), pointer :: liel(:) => null()
+    integer(kind=8), pointer :: cesv(:) => null()
     character(len=8), pointer :: cesk(:) => null()
     character(len=8), pointer :: cesc(:) => null()
 !   ------------------------------------------------------------------

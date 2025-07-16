@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -29,7 +29,7 @@ subroutine irvgen(genein, ifi, nbcmpg, cmpg, lhist)
 #include "asterfort/mgutdm.h"
 #include "asterfort/rsadpa.h"
 #include "asterfort/utmess.h"
-    integer :: cmpg(*)
+    integer(kind=8) :: cmpg(*)
     character(len=*) :: genein
     aster_logical :: lhist
 !     IMPRESSION D'UN "VECT_ASSE_GENE"
@@ -45,12 +45,12 @@ subroutine irvgen(genein, ifi, nbcmpg, cmpg, lhist)
     aster_logical :: lbase
 !     ------------------------------------------------------------------
 !-----------------------------------------------------------------------
-    integer :: i, iad, ib, ifi, im, imode
-    integer :: ir, istru, j, jdesc, jfreq, jnume
-    integer :: jordr, jpara, jvale, nbcmpg, nbmode
+    integer(kind=8) :: i, iad, ib, ifi, im, imode
+    integer(kind=8) :: ir, istru, j, jdesc, jfreq, jnume
+    integer(kind=8) :: jordr, jpara, jvale, nbcmpg, nbmode
 !
     real(kind=8) :: ximag, xreal
-    integer, pointer :: deeq(:) => null()
+    integer(kind=8), pointer :: deeq(:) => null()
     character(len=24), pointer :: refe(:) => null()
 !-----------------------------------------------------------------------
     call jemarq()
@@ -260,9 +260,9 @@ subroutine irvgen(genein, ifi, nbcmpg, cmpg, lhist)
 999 continue
 !
 1010 format(/, ' NUME_CMP   VALEUR        BASE_MODALE  ',&
-    &         'TYPE_MODE     FREQUENCE    APPLICATION')
+   &         'TYPE_MODE     FREQUENCE    APPLICATION')
 1040 format(/, ' NUME_CMP          VALEUR              BASE_MODALE  ',&
-    &         'TYPE_MODE     FREQUENCE    APPLICATION')
+   &         'TYPE_MODE     FREQUENCE    APPLICATION')
 1012 format(1p, 3x, i5, 3x, d12.5, 4x, a8, 4x, a9, 3x, d12.5, 3x, a8, a8)
 1013 format(1p, 3x, i5, 3x, d12.5, 4x, a8, 4x, a9, 3x, 3x, a8, 3x, a8, a8)
 1042 format(1p, 3x, i5, 3x, d12.5, 1x, d12.5, 4x, a8, 4x, a9, 3x, d12.5, 3x, a8, a8)

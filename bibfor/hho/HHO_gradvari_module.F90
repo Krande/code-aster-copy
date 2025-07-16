@@ -62,7 +62,6 @@ module HHO_GV_module
 #include "asterfort/rcvalb.h"
 #include "asterfort/deflg4.h"
 #include "asterfort/prodmt.h"
-#include "asterfort/readMatrix.h"
 #include "blas/dsyr.h"
 #include "jeveux.h"
 !
@@ -144,7 +143,7 @@ contains
 !   (c_phi, c_phi), (c_phi, g_phi), (g_phi, g_phi)
 ! --------------------------------------------------------------------------------------------------
 !
-        integer, parameter :: ksp = 1
+        integer(kind=8), parameter :: ksp = 1
         type(HHO_basis_cell) :: hhoBasisCell
         type(Behaviour_Integ) :: BEHinteg
         real(kind=8), dimension(MSIZE_CELL_MAT) :: mk_bT, G_prev_coeff, G_curr_coeff
@@ -164,10 +163,11 @@ contains
         type(HHO_matrix) :: lhs_mv, lhs_ml, lhs_mm, lhs_ll, lhs_vm, lhs_vv, lhs_vl, lhs_lm, lhs_lv
         real(kind=8) :: rhs_vari(MSIZE_TDOFS_SCAL), rhs_lagv(MSIZE_CELL_SCAL)
         real(kind=8) :: rhs_mk(MSIZE_TDOFS_VEC)
-        integer :: mapMeca(MSIZE_TDOFS_VEC), mapVari(MSIZE_TDOFS_SCAL), mapLagv(MSIZE_CELL_SCAL)
-        integer :: mk_cbs, mk_fbs, mk_total_dofs, mk_gbs, mk_gbs_sym, mk_gbs_cmp
-        integer :: gv_cbs, gv_fbs, gv_total_dofs, gv_gbs, gv_faces_dofs, gv_cell_offset
-        integer :: cod(27), ipg, mk_gbs_tot
+        integer(kind=8) :: mapMeca(MSIZE_TDOFS_VEC), mapVari(MSIZE_TDOFS_SCAL)
+        integer(kind=8) :: mapLagv(MSIZE_CELL_SCAL)
+        integer(kind=8) :: mk_cbs, mk_fbs, mk_total_dofs, mk_gbs, mk_gbs_sym, mk_gbs_cmp
+        integer(kind=8) :: gv_cbs, gv_fbs, gv_total_dofs, gv_gbs, gv_faces_dofs, gv_cell_offset
+        integer(kind=8) :: cod(27), ipg, mk_gbs_tot
         aster_logical :: l_lhs, l_rhs, forc_noda
         blas_int :: b_n
         blas_int, parameter :: b_one = to_blas_int(1)
@@ -554,8 +554,8 @@ contains
 !
         type(Behaviour_Integ), intent(inout) :: BEHinteg
         type(HHO_Compor_State), intent(inout) :: hhoCS
-        integer, intent(in) :: ndim
-        integer, intent(in) :: ipg
+        integer(kind=8), intent(in) :: ndim
+        integer(kind=8), intent(in) :: ipg
         real(kind=8), intent(in) :: time_prev
         real(kind=8), intent(in) :: time_curr
         real(kind=8), intent(in) :: F_prev(3, 3)
@@ -568,7 +568,7 @@ contains
         real(kind=8), intent(out) :: dsv_dv, dsv_dl, dsl_dl, dsgv_dgv(3, 3)
         real(kind=8), intent(out) :: dPK1_dF(3, 3, 3, 3), dPK1_dv(3, 3), dPK1_dl(3, 3)
         real(kind=8), intent(out) :: dsv_dF(3, 3), dsl_dF(3, 3)
-        integer, intent(out) :: cod
+        integer(kind=8), intent(out) :: cod
 !
 ! --------------------------------------------------------------------------------------------------
 !   HHO - mechanics
@@ -610,7 +610,7 @@ contains
         real(kind=8) :: dT_dv(6), dT_dl(6)
         real(kind=8) :: dsv_de(6), dsl_de(6)
         real(kind=8) :: dsl_dv, norm, pe(3, 3, 3, 3)
-        integer :: lgpg, imate, neu, neg, ntot
+        integer(kind=8) :: lgpg, imate, neu, neg, ntot
         aster_logical :: lCorr, lMatr, lSigm, lVari
 !
         lCorr = L_CORR(hhoCS%option)
@@ -785,8 +785,8 @@ contains
 !
         type(Behaviour_Integ), intent(inout) :: BEHinteg
         type(HHO_Compor_State), intent(inout) :: hhoCS
-        integer, intent(in) :: ndim
-        integer, intent(in) :: ipg
+        integer(kind=8), intent(in) :: ndim
+        integer(kind=8), intent(in) :: ipg
         real(kind=8), intent(in) :: time_prev
         real(kind=8), intent(in) :: time_curr
         real(kind=8), intent(in) :: Eps_prev(6)
@@ -799,7 +799,7 @@ contains
         real(kind=8), intent(out) :: dsv_dv, dsv_dl, dsl_dl, dsgv_dgv(3, 3)
         real(kind=8), intent(out) :: dSig_dEps(6, 6), dSig_dv(6), dSig_dl(6)
         real(kind=8), intent(out) :: dsv_dEps(6), dsl_dEps(6)
-        integer, intent(out) :: cod
+        integer(kind=8), intent(out) :: cod
 !
 ! --------------------------------------------------------------------------------------------------
 !   HHO - mechanics
@@ -836,7 +836,7 @@ contains
         real(Kind=8) :: silcm(3*ndim+2), silcp(3*ndim+2), dsde(3*ndim+2, 3*ndim+2)
         real(kind=8) :: sigPrev(11), viPrev(hhoCS%lgpg), viCurr(hhoCS%lgpg)
         real(kind=8) :: dsl_dv, norm
-        integer :: lgpg, imate, neu, neg, ntot
+        integer(kind=8) :: lgpg, imate, neu, neg, ntot
         aster_logical :: lCorr, lMatr, lSigm, lVari
 !
         lCorr = L_CORR(hhoCS%option)
@@ -963,16 +963,16 @@ contains
         implicit none
         type(HHO_Cell), intent(in) :: hhoCell
         type(HHO_Data), intent(in) :: hhoData
-        integer, intent(out) :: mapMeca(MSIZE_TDOFS_VEC)
-        integer, intent(out) :: mapVari(MSIZE_TDOFS_SCAL)
-        integer, intent(out) :: mapLagv(MSIZE_CELL_SCAL)
+        integer(kind=8), intent(out) :: mapMeca(MSIZE_TDOFS_VEC)
+        integer(kind=8), intent(out) :: mapVari(MSIZE_TDOFS_SCAL)
+        integer(kind=8), intent(out) :: mapLagv(MSIZE_CELL_SCAL)
 !
 !--------------------------------------------------------------------------------------------------
 ! Numbering map for GRAD_VARI
 !
 !--------------------------------------------------------------------------------------------------
-        integer :: mk_cbs, mk_fbs, mk_total_dofs, gv_cbs, gv_fbs, gv_total_dofs
-        integer :: i_face, i_dof, num_tot, num_gv, num_vari, num_mk
+        integer(kind=8) :: mk_cbs, mk_fbs, mk_total_dofs, gv_cbs, gv_fbs, gv_total_dofs
+        integer(kind=8) :: i_face, i_dof, num_tot, num_gv, num_vari, num_mk
 !
 !
         call hhoMecaDofs(hhoCell, hhoData, mk_cbs, mk_fbs, mk_total_dofs)
@@ -1027,9 +1027,9 @@ contains
         implicit none
         type(HHO_Cell), intent(in) :: hhoCell
         type(HHO_Data), intent(in) :: hhoData
-        integer, intent(in) :: mapMeca(MSIZE_TDOFS_VEC)
-        integer, intent(in) :: mapVari(MSIZE_TDOFS_SCAL)
-        integer, intent(in) :: mapLagv(MSIZE_CELL_SCAL)
+        integer(kind=8), intent(in) :: mapMeca(MSIZE_TDOFS_VEC)
+        integer(kind=8), intent(in) :: mapVari(MSIZE_TDOFS_SCAL)
+        integer(kind=8), intent(in) :: mapLagv(MSIZE_CELL_SCAL)
         real(kind=8), intent(in) :: rhs_meca(MSIZE_TDOFS_VEC)
         real(kind=8), intent(in) :: rhs_vari(MSIZE_TDOFS_SCAL)
         real(kind=8), intent(in) :: rhs_lagv(MSIZE_CELL_SCAL)
@@ -1038,8 +1038,8 @@ contains
 ! Assembly RHS for GRAD_VARI
 !
 !--------------------------------------------------------------------------------------------------
-        integer :: mk_cbs, mk_fbs, mk_total_dofs, gv_cbs, gv_fbs, gv_total_dofs
-        integer :: i_dof
+        integer(kind=8) :: mk_cbs, mk_fbs, mk_total_dofs, gv_cbs, gv_fbs, gv_total_dofs
+        integer(kind=8) :: i_dof
 !
         call hhoMecaDofs(hhoCell, hhoData, mk_cbs, mk_fbs, mk_total_dofs)
         call hhoTherDofs(hhoCell, hhoData, gv_cbs, gv_fbs, gv_total_dofs)
@@ -1069,9 +1069,9 @@ contains
         implicit none
         type(HHO_Cell), intent(in) :: hhoCell
         type(HHO_Data), intent(in) :: hhoData
-        integer, intent(in) :: mapMeca(MSIZE_TDOFS_VEC)
-        integer, intent(in) :: mapVari(MSIZE_TDOFS_SCAL)
-        integer, intent(in) :: mapLagv(MSIZE_CELL_SCAL)
+        integer(kind=8), intent(in) :: mapMeca(MSIZE_TDOFS_VEC)
+        integer(kind=8), intent(in) :: mapVari(MSIZE_TDOFS_SCAL)
+        integer(kind=8), intent(in) :: mapLagv(MSIZE_CELL_SCAL)
         type(HHO_matrix), intent(in) :: lhs_mv, lhs_ml, lhs_mm, lhs_ll, lhs_vm
         type(HHO_matrix), intent(in) :: lhs_vv, lhs_vl, lhs_lm, lhs_lv
         type(HHO_matrix), intent(out) :: lhs
@@ -1079,8 +1079,8 @@ contains
 ! Assembly LHS for GRAD_VARI
 !
 !--------------------------------------------------------------------------------------------------
-        integer :: mk_cbs, mk_fbs, mk_total_dofs, gv_cbs, gv_fbs, gv_total_dofs
-        integer :: i_row, i_col, total_dofs
+        integer(kind=8) :: mk_cbs, mk_fbs, mk_total_dofs, gv_cbs, gv_fbs, gv_total_dofs
+        integer(kind=8) :: i_row, i_col, total_dofs
 !
         call hhoMecaDofs(hhoCell, hhoData, mk_cbs, mk_fbs, mk_total_dofs)
         call hhoTherDofs(hhoCell, hhoData, gv_cbs, gv_fbs, gv_total_dofs)
@@ -1147,9 +1147,9 @@ contains
 !  initialize HHO_GV_STATE
 ! --------------------------------------------------------------------------------------------------
 !
-        integer :: num_tot, num_gv, iFace, idof
-        integer :: mk_cbs, mk_fbs, mk_total_dofs
-        integer :: gv_cbs, gv_fbs, gv_total_dofs, total_dofs
+        integer(kind=8) :: num_tot, num_gv, iFace, idof
+        integer(kind=8) :: mk_cbs, mk_fbs, mk_total_dofs
+        integer(kind=8) :: gv_cbs, gv_fbs, gv_total_dofs, total_dofs
         real(kind=8) :: tmp_prev(MSIZE_TDOFS_MIX), tmp_incr(MSIZE_TDOFS_MIX)
         aster_logical :: forc_noda
 !
@@ -1261,7 +1261,7 @@ contains
 ! Out stab            : stabilization for mechanics
 ! --------------------------------------------------------------------------------------------------
 !
-        integer :: gv_cbs, gv_fbs, gv_total_dofs, gv_gbs
+        integer(kind=8) :: gv_cbs, gv_fbs, gv_total_dofs, gv_gbs
 !
         if (ASTER_TRUE) then
 !
@@ -1297,7 +1297,7 @@ contains
         real(kind=8), intent(in) :: weight
         real(kind=8), intent(in) :: BSCEval(MSIZE_CELL_SCAL)
         real(kind=8), intent(in) :: BSCEvalG(MSIZE_CELL_SCAL)
-        integer, intent(in) :: gv_cbs, mk_gbs
+        integer(kind=8), intent(in) :: gv_cbs, mk_gbs
         type(HHO_matrix), intent(inout) :: AT
 !
 ! --------------------------------------------------------------------------------------------------
@@ -1314,7 +1314,7 @@ contains
 ! --------------------------------------------------------------------------------------------------
 !
         real(kind=8) :: qp_Acphi(3, 3, MSIZE_CELL_SCAL)
-        integer :: i, j, k, row, gbs_cmp, offset
+        integer(kind=8) :: i, j, k, row, gbs_cmp, offset
 ! --------------------------------------------------------------------------------------------------
 !
 ! --------- Eval (dPK1_dv : scphi)_T
@@ -1351,7 +1351,7 @@ contains
         real(kind=8), intent(in) :: weight
         real(kind=8), intent(in) :: BSCEval(MSIZE_CELL_SCAL)
         real(kind=8), intent(in) :: BSCEvalG(MSIZE_CELL_SCAL)
-        integer, intent(in) :: gv_cbs, mk_gbs
+        integer(kind=8), intent(in) :: gv_cbs, mk_gbs
         type(HHO_matrix), intent(inout) :: AT
 !
 ! --------------------------------------------------------------------------------------------------
@@ -1368,7 +1368,7 @@ contains
 ! --------------------------------------------------------------------------------------------------
 !
         real(kind=8) :: qp_Agphi(3, 3, MSIZE_CELL_SCAL)
-        integer :: i, j, k, col, gbs_cmp, offset
+        integer(kind=8) :: i, j, k, col, gbs_cmp, offset
 ! --------------------------------------------------------------------------------------------------
 !
 ! --------- Eval (dsv_dF : sgphi)_T
@@ -1405,7 +1405,7 @@ contains
         real(kind=8), intent(in) :: weight
         real(kind=8), intent(in) :: BSCEval(MSIZE_CELL_SCAL)
         real(kind=8), intent(in) :: BSCEvalG(MSIZE_CELL_SCAL)
-        integer, intent(in) :: gv_cbs, mk_gbs
+        integer(kind=8), intent(in) :: gv_cbs, mk_gbs
         type(HHO_matrix), intent(inout) :: AT
 !
 ! --------------------------------------------------------------------------------------------------
@@ -1422,7 +1422,7 @@ contains
 ! --------------------------------------------------------------------------------------------------
 !
         real(kind=8) :: qp_Acphi(3, 3, MSIZE_CELL_SCAL)
-        integer :: i, j, k, row, gbs_cmp
+        integer(kind=8) :: i, j, k, row, gbs_cmp
 ! --------------------------------------------------------------------------------------------------
 !
 ! --------- Eval (dPK1_dl : scphi)_T
@@ -1458,7 +1458,7 @@ contains
         real(kind=8), intent(in) :: weight
         real(kind=8), intent(in) :: BSCEval(MSIZE_CELL_SCAL)
         real(kind=8), intent(in) :: BSCEvalG(MSIZE_CELL_SCAL)
-        integer, intent(in) :: gv_cbs, mk_gbs
+        integer(kind=8), intent(in) :: gv_cbs, mk_gbs
         type(HHO_matrix), intent(inout) :: AT
 !
 ! --------------------------------------------------------------------------------------------------
@@ -1475,7 +1475,7 @@ contains
 ! --------------------------------------------------------------------------------------------------
 !
         real(kind=8) :: qp_Agphi(3, 3, MSIZE_CELL_SCAL)
-        integer :: i, j, k, col, gbs_cmp
+        integer(kind=8) :: i, j, k, col, gbs_cmp
 ! --------------------------------------------------------------------------------------------------
 !
 ! --------- Eval (dsl_dF : sgphi)_T
@@ -1511,7 +1511,7 @@ contains
         real(kind=8), intent(in) :: weight
         real(kind=8), intent(in) :: BSCEval(MSIZE_CELL_SCAL)
         real(kind=8), intent(in) :: BSCEvalG(MSIZE_CELL_SCAL)
-        integer, intent(in) :: gv_cbs, mk_gbs_cmp
+        integer(kind=8), intent(in) :: gv_cbs, mk_gbs_cmp
         type(HHO_matrix), intent(inout) :: AT
 !
 ! --------------------------------------------------------------------------------------------------
@@ -1528,7 +1528,7 @@ contains
 ! --------------------------------------------------------------------------------------------------
 !
         real(kind=8) :: qp_Acphi(6)
-        integer :: i, k, col, deca
+        integer(kind=8) :: i, k, col, deca
 ! --------------------------------------------------------------------------------------------------
 !
 ! -------- Compute scalar_product of (qp_Acphi, sgphi)_T
@@ -1576,7 +1576,7 @@ contains
         real(kind=8), intent(in) :: weight
         real(kind=8), intent(in) :: BSCEval(MSIZE_CELL_SCAL)
         real(kind=8), intent(in) :: BSCEvalG(MSIZE_CELL_SCAL)
-        integer, intent(in) :: gv_cbs, mk_gbs_sym, mk_gbs_cmp
+        integer(kind=8), intent(in) :: gv_cbs, mk_gbs_sym, mk_gbs_cmp
         type(HHO_matrix), intent(inout) :: AT
 !
 ! --------------------------------------------------------------------------------------------------
@@ -1593,7 +1593,7 @@ contains
 ! --------------------------------------------------------------------------------------------------
 !
         real(kind=8) :: qp_Agphi(MSIZE_CELL_MAT), qp_dsv_dEps(6)
-        integer :: i, offset, deca
+        integer(kind=8) :: i, offset, deca
 ! --------------------------------------------------------------------------------------------------
 !
 ! -------- Compute (dsv_dEps : gs_phi)
@@ -1643,7 +1643,7 @@ contains
         real(kind=8), intent(in) :: weight
         real(kind=8), intent(in) :: BSCEval(MSIZE_CELL_SCAL)
         real(kind=8), intent(in) :: BSCEvalG(MSIZE_CELL_SCAL)
-        integer, intent(in) :: gv_cbs, mk_gbs_cmp
+        integer(kind=8), intent(in) :: gv_cbs, mk_gbs_cmp
         type(HHO_matrix), intent(inout) :: AT
 !
 ! --------------------------------------------------------------------------------------------------
@@ -1660,7 +1660,7 @@ contains
 ! --------------------------------------------------------------------------------------------------
 !
         real(kind=8) :: qp_Acphi(6)
-        integer :: i, k, deca
+        integer(kind=8) :: i, k, deca
 ! --------------------------------------------------------------------------------------------------
 !
 ! -------- Compute scalar_product of (qp_Acphi, sgphi)_T
@@ -1704,7 +1704,7 @@ contains
         real(kind=8), intent(in) :: weight
         real(kind=8), intent(in) :: BSCEval(MSIZE_CELL_SCAL)
         real(kind=8), intent(in) :: BSCEvalG(MSIZE_CELL_SCAL)
-        integer, intent(in) :: gv_cbs, mk_gbs_sym, mk_gbs_cmp
+        integer(kind=8), intent(in) :: gv_cbs, mk_gbs_sym, mk_gbs_cmp
         type(HHO_matrix), intent(inout) :: AT
 !
 ! --------------------------------------------------------------------------------------------------
@@ -1721,7 +1721,7 @@ contains
 ! --------------------------------------------------------------------------------------------------
 !
         real(kind=8) :: qp_Agphi(MSIZE_CELL_MAT), qp_dsl_dEps(6)
-        integer :: i, deca
+        integer(kind=8) :: i, deca
 ! --------------------------------------------------------------------------------------------------
 !
 ! -------- Compute (dsl_dEps : gsphi)
@@ -1765,8 +1765,8 @@ contains
         implicit none
 !
         type(HHO_Compor_State), intent(inout) :: hhoCS
-        integer, intent(in) :: ndim
-        integer, intent(in) :: ipg
+        integer(kind=8), intent(in) :: ndim
+        integer(kind=8), intent(in) :: ipg
         real(kind=8), intent(in) :: F_curr(3, 3)
         real(kind=8), intent(out) :: PK1_curr(3, 3), Cauchy_curr(6)
         real(kind=8), intent(out) :: sig_vari, sig_lagv, sig_gv(3)
@@ -1777,7 +1777,7 @@ contains
 !   Get stress for FORC_NODA
 ! --------------------------------------------------------------------------------------------------
 !
-        integer :: neu, neg, ntot
+        integer(kind=8) :: neu, neg, ntot
         real(kind=8) :: sigPrev(11)
 ! --------------------------------------------------------------------------------------------------
 !
@@ -1809,7 +1809,7 @@ contains
         implicit none
 !
         character(len=4) :: fami
-        integer, intent(in) :: npg
+        integer(kind=8), intent(in) :: npg
 !
 ! --------------------------------------------------------------------------------------------------
 !  HHO
@@ -1818,8 +1818,8 @@ contains
 !
 ! --- Local variables
 !
-        integer :: jmate, imate
-        integer :: ipg, iok(1)
+        integer(kind=8) :: jmate, imate
+        integer(kind=8) :: ipg, iok(1)
         real(kind=8) :: vale(1)
 !
         call jevech('PMATERC', 'L', jmate)

@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -21,15 +21,15 @@
 interface
     subroutine mltflm(nb, n, p, front, adper,&
                       t1, ad, eps, ier, c)
-        integer :: nb
-        integer :: n
-        integer :: p
+        integer(kind=8) :: nb
+        integer(kind=8) :: n
+        integer(kind=8) :: p
         real(kind=8) :: front(*)
-        integer :: adper(*)
+        integer(kind=8) :: adper(*)
         real(kind=8) :: t1(*)
-        integer :: ad(*)
+        integer(kind=8) :: ad(*)
         real(kind=8) :: eps
-        integer :: ier
+        integer(kind=8) :: ier
         real(kind=8) :: c(nb, nb, *)
     end subroutine mltflm
 end interface

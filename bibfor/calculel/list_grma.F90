@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -28,17 +28,15 @@ subroutine list_grma(mailla, ima, n1, lgrma, nbgrma)
 #include "asterfort/jeveuo.h"
 #include "asterfort/jeexin.h"
 #include "asterfort/jelira.h"
-#include "asterfort/assert.h"
 #include "asterfort/jenuno.h"
 #include "asterfort/jexnum.h"
-#include "asterfort/jexnom.h"
 !
 
     character(len=8), intent(in) :: mailla
-    integer, intent(in) :: ima
-    integer, intent(in) :: n1
+    integer(kind=8), intent(in) :: ima
+    integer(kind=8), intent(in) :: n1
     character(len=*), intent(out) :: lgrma(n1)
-    integer, intent(out) :: nbgrma
+    integer(kind=8), intent(out) :: nbgrma
 !
 !-----------------------------------------------------------------------
 !   But :
@@ -54,7 +52,7 @@ subroutine list_grma(mailla, ima, n1, lgrma, nbgrma)
 !
 !-----------------------------------------------------------------------
     character(len=24) :: nomgrma
-    integer :: nbgroup, igrma, jgrma, nbma, kma, iexi
+    integer(kind=8) :: nbgroup, igrma, jgrma, nbma, kma, iexi
 
 !-----------------------------------------------------------------------
 !

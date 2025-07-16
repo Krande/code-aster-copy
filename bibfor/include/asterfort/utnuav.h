@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -21,8 +21,8 @@
 interface
     subroutine utnuav(noma, k, iocc, lno)
         character(len=*) :: noma
-        integer :: k
-        integer :: iocc
+        integer(kind=8) :: k
+        integer(kind=8) :: iocc
         character(len=*) :: lno
     end subroutine utnuav
 end interface

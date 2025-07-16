@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -24,7 +24,7 @@ interface
                     prevMetaIsTemper, &
                     metaPrev, metaCurr, metaCurrTemper)
         use Metallurgy_type
-        integer, intent(in) :: nbVari, nbVariTemper
+        integer(kind=8), intent(in) :: nbVari, nbVariTemper
         type(META_SteelParameters), intent(in) :: metaSteelPara
         real(kind=8), intent(in) :: deltaTime12, temp1, temp2
         aster_logical, intent(in) :: prevMetaIsTemper

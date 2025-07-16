@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -21,13 +21,13 @@ subroutine mlncld(n, frontl, frontu, adper, t1, &
     implicit none
 #include "asterfort/sspmvc.h"
 #include "blas/zgemv.h"
-    integer :: n, adper(*), ad(*), ier
+    integer(kind=8) :: n, adper(*), ad(*), ier
     real(kind=8) :: eps
     complex(kind=8) :: frontl(*), t1(*), frontu(*), t2(*), alpha, beta
-    integer :: i, k, incx, incy
-    integer :: seuin, seuik
+    integer(kind=8) :: i, k, incx, incy
+    integer(kind=8) :: seuin, seuik
     parameter(seuin=1500, seuik=300)
-    integer :: nn, kk, lda
+    integer(kind=8) :: nn, kk, lda
     character(len=1) :: tra
     blas_int :: b_incx, b_incy, b_lda, b_m, b_n
 !

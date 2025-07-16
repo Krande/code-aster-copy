@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -23,7 +23,7 @@
 interface
     subroutine lobs(sd_obsv, nume_time, time, l_obsv)
         character(len=19), intent(in) :: sd_obsv
-        integer, intent(in) :: nume_time
+        integer(kind=8), intent(in) :: nume_time
         real(kind=8), intent(in) :: time
         aster_logical, intent(out) :: l_obsv
     end subroutine lobs

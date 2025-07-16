@@ -75,9 +75,9 @@ subroutine detrsd(typesd, nomsd)
     complex(kind=8) :: cbid
 !
     mpi_int :: mrank, msize
-    integer :: iret, iad, long, i, nbch, ibid, nbproc, num
-    integer :: ityobj, inomsd, nblg, nbpa, nblp, n1, nbjoin
-    integer :: iexi, iexi2
+    integer(kind=8) :: iret, iad, long, i, nbch, ibid, nbproc, num
+    integer(kind=8) :: ityobj, inomsd, nblg, nbpa, nblp, n1, nbjoin
+    integer(kind=8) :: iexi, iexi2
     character(len=8) :: metres, k8
     character(len=4) :: chnbjo
     character(len=12) :: vge

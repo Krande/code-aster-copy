@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -22,7 +22,7 @@ interface
     subroutine oriem1(ma,kdim,numa2d,numa3d)
     character(len=8),intent(in) :: ma
     character(len=2),intent(in) :: kdim
-    integer,intent(in) :: numa2d
-    integer,intent(inout) :: numa3d
+    integer(kind=8),intent(in) :: numa2d
+    integer(kind=8),intent(inout) :: numa3d
     end subroutine oriem1
 end interface

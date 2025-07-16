@@ -22,7 +22,6 @@ subroutine cargeo(meshZ)
     implicit none
 !
 #include "jeveux.h"
-#include "asterc/r8gaem.h"
 #include "asterfort/asmpi_comm_vect.h"
 #include "asterfort/assert.h"
 #include "asterfort/detrsd.h"
@@ -31,12 +30,9 @@ subroutine cargeo(meshZ)
 #include "asterfort/jeexin.h"
 #include "asterfort/jelira.h"
 #include "asterfort/jemarq.h"
-#include "asterfort/jenuno.h"
 #include "asterfort/jeveuo.h"
-#include "asterfort/jexnum.h"
 #include "asterfort/ltcrsd.h"
 #include "asterfort/ltnotb.h"
-#include "asterfort/rminsp.h"
 #include "asterfort/tbajli.h"
 #include "asterfort/tbajpa.h"
 #include "asterfort/tbcrsd.h"
@@ -51,8 +47,8 @@ subroutine cargeo(meshZ)
 !
 ! --------------------------------------------------------------------------------------------------
 !
-    integer :: nbNode, jvale, jdime, iNode, nbParaTable, ibid
-    integer :: iret
+    integer(kind=8) :: nbNode, jvale, jdime, iNode, nbParaTable, ibid
+    integer(kind=8) :: iret
     real(kind=8) :: xmax, ymax, zmax, xmin, ymin, zmin
     real(kind=8) :: armin, armax
     complex(kind=8) :: c16b
@@ -62,7 +58,7 @@ subroutine cargeo(meshZ)
     character(len=24) :: nodime, connex, coordo
     aster_logical :: l_pmesh
 
-    integer, parameter :: nbPara = 8
+    integer(kind=8), parameter :: nbPara = 8
     character(len=8), parameter :: paraName(nbPara) = (/'X_MIN ', 'X_MAX ', &
                                                         'Y_MIN ', 'Y_MAX ', &
                                                         'Z_MIN ', 'Z_MAX ', &

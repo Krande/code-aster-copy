@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -53,12 +53,12 @@ subroutine argu80(nomres)
     character(len=8) :: nomres, intf
     character(len=8) :: blanc
     character(len=8) :: kar8
-    integer :: vali
+    integer(kind=8) :: vali
 !
 !-----------------------------------------------------------------------
 !-----------------------------------------------------------------------
-    integer :: ibaxe, ibid, lddnbs, lddnin, lddtyp
-    integer :: nbsec, ndist, numa, numd, numg, nveri
+    integer(kind=8) :: ibaxe, ibid, lddnbs, lddnin, lddtyp
+    integer(kind=8) :: nbsec, ndist, numa, numd, numg, nveri
     real(kind=8) :: dist, prec
     character(len=24), pointer :: cycl_refe(:) => null()
     character(len=8), pointer :: idc_type(:) => null()

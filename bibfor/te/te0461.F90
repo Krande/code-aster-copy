@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -37,8 +37,6 @@ subroutine te0461(option, nomte)
 #include "asterfort/jevech.h"
 #include "asterfort/readVector.h"
 #include "asterfort/writeVector.h"
-#include "blas/daxpy.h"
-#include "blas/dcopy.h"
 #include "jeveux.h"
 !
     character(len=16), intent(in) :: option, nomte
@@ -63,7 +61,7 @@ subroutine te0461(option, nomte)
 !
 !---------------------------------------------------------------------------------------------------
 !
-    integer, parameter :: maxpara = 4
+    integer(kind=8), parameter :: maxpara = 4
     real(kind=8) :: valpar(maxpara)
     character(len=8) :: nompar(maxpara)
     type(HHO_Data) :: hhoData
@@ -76,8 +74,8 @@ subroutine te0461(option, nomte)
     real(kind=8) :: NeumValuesQP(MAX_QP_FACE)
     real(kind=8) :: time_curr, theta, temp_eval_curr, tz0
     real(kind=8) :: sigma(MAX_QP_FACE), epsil(MAX_QP_FACE), rbid
-    integer :: fbs, celldim, ipg, nbpara, npg
-    integer :: j_time, j_coefh, j_para
+    integer(kind=8) :: fbs, celldim, ipg, nbpara, npg
+    integer(kind=8) :: j_time, j_coefh, j_para
 !
 !
 ! -- Get number of Gauss points

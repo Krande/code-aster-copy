@@ -41,19 +41,19 @@ subroutine rvche2(chelez, nomjv, nbel, numail, orig, &
 #include "asterfort/utpsgl.h"
 #include "asterfort/int_to_char8.h"
 !
-    integer :: nbel, numail(*), nbnac, nnoeud(*)
+    integer(kind=8) :: nbel, numail(*), nbnac, nnoeud(*)
     character(len=*) :: chelez, nomjv
     real(kind=8) :: orig(3), axez(3)
 !
 ! ----------------------------------------------------------------------
 ! ----------------------------------------------------------------------
-    integer :: debugr
-    integer :: gd, iad, ncmpmx, nec, tabec(10), iavale
-    integer :: im, imail, igrel, ielg, mode, nscal, icoef, nsca, nnoe
-    integer :: ncmpp, icmp, npcalc, iel, ncou, iachml, icou, ino, icmpt, nbgrel
-    integer :: numxx, numyy, numzz, numxy, numxz, numyz, nuddl, i, jlongr
-    integer :: jpnt, ipoin, nunoe, imodel, ilong
-    integer :: ind, ier
+    integer(kind=8) :: debugr
+    integer(kind=8) :: gd, iad, ncmpmx, nec, tabec(10), iavale
+    integer(kind=8) :: im, imail, igrel, ielg, mode, nscal, icoef, nsca, nnoe
+    integer(kind=8) :: ncmpp, icmp, npcalc, iel, ncou, iachml, icou, ino, icmpt, nbgrel
+    integer(kind=8) :: numxx, numyy, numzz, numxy, numxz, numyz, nuddl, i, jlongr
+    integer(kind=8) :: jpnt, ipoin, nunoe, imodel, ilong
+    integer(kind=8) :: ind, ier
     real(kind=8) :: sg(6), sl(6), pgl(3, 3), pscal
     real(kind=8) :: valr
     real(kind=8) :: xnormr, epsi, axer(3), axet(3)
@@ -62,12 +62,12 @@ subroutine rvche2(chelez, nomjv, nbel, numail, orig, &
     character(len=16) :: option
     character(len=19) :: chelm, noligr
     aster_logical :: inivid, lnommai, lnomnoe
-    integer, pointer :: connex(:) => null()
-    integer, pointer :: repe(:) => null()
+    integer(kind=8), pointer :: connex(:) => null()
+    integer(kind=8), pointer :: repe(:) => null()
     character(len=24), pointer :: celk(:) => null()
-    integer, pointer :: liel(:) => null()
+    integer(kind=8), pointer :: liel(:) => null()
     character(len=8), pointer :: lgrf(:) => null()
-    integer, pointer :: celd(:) => null()
+    integer(kind=8), pointer :: celd(:) => null()
     real(kind=8), pointer :: vale(:) => null()
 !     ------------------------------------------------------------------
     call jemarq()

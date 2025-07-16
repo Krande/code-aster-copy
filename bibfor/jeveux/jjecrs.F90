@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -23,7 +23,7 @@ subroutine jjecrs(iadmi, iclas, idos, idco, cus, &
 #include "jeveux_private.h"
 #include "asterfort/jjalls.h"
 #include "asterfort/jjlidy.h"
-    integer :: iadmi, iclas, idos, idco, jmarq(2)
+    integer(kind=8) :: iadmi, iclas, idos, idco, jmarq(2)
     character(len=*) :: cus
 ! ----------------------------------------------------------------------
 ! ACTUALISE LES ENTIERS ENCADRANT UN SEGMENT DE VALEURS
@@ -36,23 +36,23 @@ subroutine jjecrs(iadmi, iclas, idos, idco, cus, &
 ! OUT JMARQ  : JMARQ(1) MARQUE AFFECTEE AU SEGMENT DE VALEUR ASSOCIE
 !              JMARQ(2) ADRESSE DE L'OBJET DANS LE DESCRIPTEUR DESMA
 ! ----------------------------------------------------------------------
-    integer :: lk1zon, jk1zon, liszon, jiszon
+    integer(kind=8) :: lk1zon, jk1zon, liszon, jiszon
     common/izonje/lk1zon, jk1zon, liszon, jiszon
 ! ----------------------------------------------------------------------
-    integer :: lbis, lois, lols, lor8, loc8
+    integer(kind=8) :: lbis, lois, lols, lor8, loc8
     common/ienvje/lbis, lois, lols, lor8, loc8
-    integer :: istat
+    integer(kind=8) :: istat
     common/istaje/istat(4)
 ! ---                  ISTAT(1)->X , (2)->U , (3)->A , (4)->D
-    integer :: ipgc, kdesma(2), lgd, lgduti, kposma(2), lgp, lgputi
+    integer(kind=8) :: ipgc, kdesma(2), lgd, lgduti, kposma(2), lgp, lgputi
     common/iadmje/ipgc, kdesma, lgd, lgduti, kposma, lgp, lgputi
     real(kind=8) :: svuse, smxuse
     common/statje/svuse, smxuse
 ! ----------------------------------------------------------------------
-    integer :: ista1, ista2, is, ktempo(2)
+    integer(kind=8) :: ista1, ista2, is, ktempo(2)
 ! DEB ------------------------------------------------------------------
 !-----------------------------------------------------------------------
-    integer :: iadma(1), iadrs, k, lsi
+    integer(kind=8) :: iadma(1), iadrs, k, lsi
 !-----------------------------------------------------------------------
     ista1 = iszon(jiszon+iadmi-1)
     is = jiszon+iszon(jiszon+iadmi-4)

@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -41,7 +41,7 @@ subroutine calcdp(crit, seuil, dt, rprim, mutrbe, &
 !-------------------------------------------------------------
     real(kind=8) :: fprim, fplas, dfprim, dpnew, fpnew, test, arg
     real(kind=8) :: r0, dpplas, dpmin, dpmax, x(4), y(4)
-    integer :: iter, iret
+    integer(kind=8) :: iter, iret
 !
 ! INITIALISATION
     r0 = mutrbe+rprim

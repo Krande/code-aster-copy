@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2018 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -22,7 +22,7 @@ interface
                       kappa , vech1 , vech2 , h     , hah   ,&
                       mprt11, mprt12, mprt21, mprt22,&
                       matree)
-        integer, intent(in) :: ndim, nne
+        integer(kind=8), intent(in) :: ndim, nne
         real(kind=8), intent(in) :: ffe(9)
         real(kind=8), intent(in) :: wpg, jacobi, coefac, jeu, dlagrc
         real(kind=8), intent(in) :: vech1(3), vech2(3), h(2,2), hah(2,2), kappa(2,2)

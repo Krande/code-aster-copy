@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -24,7 +24,7 @@ subroutine ccnett(nobase, nopout)
 #include "asterfort/jedema.h"
 #include "asterfort/jedetr.h"
 #include "asterfort/jemarq.h"
-    integer :: nopout
+    integer(kind=8) :: nopout
     character(len=8) :: nobase
 !  CALC_CHAMP - NETTOYAGE
 !  -    -       ----
@@ -37,7 +37,7 @@ subroutine ccnett(nobase, nopout)
 ! ----------------------------------------------------------------------
 ! person_in_charge: nicolas.sellenet at edf.fr
 !
-    integer :: iop
+    integer(kind=8) :: iop
 !
     character(len=5) :: numopt
     character(len=11) :: nobaop

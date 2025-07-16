@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -54,7 +54,7 @@ subroutine ircmpf(nofimd, nvalty, profil, noprof, nosdfu, &
 #include "asterfort/wkvect.h"
 #include "asterc/asmpi_bcast_char80.h"
 #include "asterc/asmpi_comm.h"
-    integer :: nvalty, profil(nvalty), typent, typmai
+    integer(kind=8) :: nvalty, profil(nvalty), typent, typmai
 !
     character(len=*) :: nofimd
     character(len=*) :: noprof
@@ -67,23 +67,23 @@ subroutine ircmpf(nofimd, nvalty, profil, noprof, nosdfu, &
 !
     character(len=6) :: nompro
     parameter(nompro='IRCMPF')
-    integer :: edlect
+    integer(kind=8) :: edlect
     parameter(edlect=0)
-    integer :: edleaj
+    integer(kind=8) :: edleaj
     parameter(edleaj=1)
 !
-    integer :: ifm, nivinf
+    integer(kind=8) :: ifm, nivinf
 !
     med_idt :: idfimd
-    integer :: nbprof, lgprof, adprof, adnopf, nrprty, jprof
-    integer :: iaux, jaux, jent, jproc
-    integer :: codret, decal, nvalty2, jdecal
+    integer(kind=8) :: nbprof, lgprof, adprof, adnopf, nrprty, jprof
+    integer(kind=8) :: iaux, jaux, jent, jproc
+    integer(kind=8) :: codret, decal, nvalty2, jdecal
 !
     character(len=8) :: saux08
     character(len=24) :: ntprof, ntnopf
     character(len=64) :: nopr64
     character(len=80) :: comprf(1)
-    integer :: rang, nbproc
+    integer(kind=8) :: rang, nbproc
     mpi_int :: mrank, msize, world, proc, taille
     real(kind=8) :: start_time, end_time
 !
@@ -196,8 +196,8 @@ subroutine ircmpf(nofimd, nvalty, profil, noprof, nosdfu, &
             write (ifm, 4101) iaux, noprof, lgprof
         end if
 4101    format(5x, 'LECTURE DU PROFIL NUMERO', i8,&
-            &     /, 5x, '...NOM       : ', a,&
-            &     /, 5x, '... LONGUEUR : ', i8)
+               &     /, 5x, '...NOM       : ', a,&
+               &     /, 5x, '... LONGUEUR : ', i8)
 !
         zk80(adnopf+iaux-1) = noprof
 !
@@ -316,9 +316,9 @@ subroutine ircmpf(nofimd, nvalty, profil, noprof, nosdfu, &
         if (nivinf .gt. 1) then
             write (ifm, 6301) noprof, nvalty2, profil(1), profil(nvalty2)
 6301        format(4x, 'PROFIL A CREER :',&
-            &         /, 4x, '. NOM                      = ', a,&
-            &         /, 4x, '. LONGUEUR                 = ', i8,&
-            &         /, 4x, '. 1ERE ET DERNIERE VALEURS = ', 2i8)
+                   &         /, 4x, '. NOM                      = ', a,&
+                   &         /, 4x, '. LONGUEUR                 = ', i8,&
+                   &         /, 4x, '. 1ERE ET DERNIERE VALEURS = ', 2i8)
         end if
         if (nosdfu .eq. ' ') then
             call as_mpfprw(idfimd, profil, nvalty2, noprof, codret)

@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -57,7 +57,7 @@ subroutine gbilin(fami, kp, imate, dudm, dvdm, &
 #include "asterfort/rcvalb.h"
 #include "asterfort/verift.h"
     character(len=*) :: fami
-    integer :: kp, imate
+    integer(kind=8) :: kp, imate
     real(kind=8) :: dudm(3, 4), dvdm(3, 4), dtdm(3, 4), dfdm(3, 4), tgdm(2), temp1(4)
     real(kind=8) :: sigin(6), dsigin(6, 3), epsref(6), epsu(4), epsv(4), rac2, temp2(4)
     real(kind=8) :: c1, c2, c3, cs, th, poids, g, bil(3, 3, 3, 3), coef
@@ -69,9 +69,9 @@ subroutine gbilin(fami, kp, imate, dudm, dvdm, &
 !     (DEFORMATIONS OU CONTRAINTES PLANES)
 ! ----------------------------------------------------------------------
 !
-    integer :: i, j, k, p, l, m, iret
+    integer(kind=8) :: i, j, k, p, l, m, iret
 !
-    integer :: icodre(3)
+    integer(kind=8) :: icodre(3)
     character(len=16) :: nomres(3)
     real(kind=8) :: valres(3)
     real(kind=8) :: vect(7), s11, s12, s13, s21, s22, s23, s1, s2, puls, rho

@@ -33,7 +33,6 @@ subroutine romFieldGetComponents(field)
 #include "asterfort/dismoi.h"
 #include "asterfort/infniv.h"
 #include "asterfort/jelira.h"
-#include "asterfort/jenuno.h"
 #include "asterfort/jeveuo.h"
 #include "asterfort/jexnom.h"
 #include "asterfort/jexnum.h"
@@ -55,18 +54,18 @@ subroutine romFieldGetComponents(field)
 !
 ! --------------------------------------------------------------------------------------------------
 !
-    integer :: ifm, niv
+    integer(kind=8) :: ifm, niv
     character(len=8) :: physName, mesh, elemName, cmpName
     character(len=19) :: pfchno, ligrName
     character(len=24) :: fieldRefe
     character(len=4) :: fieldSupp
-    integer :: iEqua, iGrel, iPt, iElem, iCmpName
-    integer :: nbEqua, nbGrel, nbPt, nbElem, nbLagr, nbCmpMaxi, nbEquaCmp
-    integer :: cmpNume, cmpIndx, elemNume, equaNume, locaNume, addr
-    integer, pointer :: deeq(:) => null()
+    integer(kind=8) :: iEqua, iGrel, iPt, iElem, iCmpName
+    integer(kind=8) :: nbEqua, nbGrel, nbPt, nbElem, nbLagr, nbCmpMaxi, nbEquaCmp
+    integer(kind=8) :: cmpNume, cmpIndx, elemNume, equaNume, locaNume, addr
+    integer(kind=8), pointer :: deeq(:) => null()
     character(len=8), pointer :: physCmpName(:) => null()
-    integer, pointer :: cataToField(:) => null(), fieldToCata(:) => null()
-    integer, pointer :: celd(:) => null(), modloc(:) => null(), liel(:) => null()
+    integer(kind=8), pointer :: cataToField(:) => null(), fieldToCata(:) => null()
+    integer(kind=8), pointer :: celd(:) => null(), modloc(:) => null(), liel(:) => null()
     real(kind=8), pointer :: celv(:) => null()
     aster_logical :: diff
 !

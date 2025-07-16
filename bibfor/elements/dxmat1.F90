@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -27,7 +27,7 @@ subroutine dxmat1(fami, epais, df, dm, dmf, pgl, indith, npg)
 #include "asterfort/rccoma.h"
 #include "asterfort/rcvalb.h"
 #include "asterfort/utmess.h"
-    integer :: indith, npg
+    integer(kind=8) :: indith, npg
     real(kind=8) :: df(3, 3), dm(3, 3), dmf(3, 3), dmc(3, 2), dfc(3, 2)
     real(kind=8) :: pgl(3, 3)
     character(len=4) :: fami
@@ -38,8 +38,8 @@ subroutine dxmat1(fami, epais, df, dm, dmf, pgl, indith, npg)
 !     PAS ETE DONNE, INDITH VAUT -1 ET ON  NE CALCULE PAS LES
 !     CONTRAINTES THERMIQUES
 !     ------------------------------------------------------------------
-    integer :: jcoqu, jmate, iret
-    integer :: nbpar
+    integer(kind=8) :: jcoqu, jmate, iret
+    integer(kind=8) :: nbpar
     real(kind=8) :: cdf, cdm, valres(21)
     real(kind=8) :: young, nu, epais, valpar
     real(kind=8) :: dh(3, 3)
@@ -47,7 +47,7 @@ subroutine dxmat1(fami, epais, df, dm, dmf, pgl, indith, npg)
     real(kind=8) :: ps, pjdx, pjdy, pjdz, alphat
     real(kind=8) :: alpha, beta
     real(kind=8) :: em, ef, num, nuf
-    integer :: icodre(21)
+    integer(kind=8) :: icodre(21)
     character(len=16) :: nomres(21)
     character(len=8) :: nompar
     character(len=32) :: phenom

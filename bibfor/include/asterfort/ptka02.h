@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -23,7 +23,7 @@ interface
                       xl, xiy, xiy2, xiz, xiz2,&
                       xjx, xjx2, g, alfay1, alfay2,&
                       alfaz1, alfaz2, ey, ez, ist)
-        integer :: id
+        integer(kind=8) :: id
         real(kind=8) :: sk(*)
         real(kind=8) :: e
         real(kind=8) :: a1
@@ -42,6 +42,6 @@ interface
         real(kind=8) :: alfaz2
         real(kind=8) :: ey
         real(kind=8) :: ez
-        integer :: ist
+        integer(kind=8) :: ist
     end subroutine ptka02
 end interface

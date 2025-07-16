@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -44,14 +44,14 @@ subroutine redetr(matelz)
 !     IN/OUT  : MATELZ = NOM DE LA SD MATR_ELEM A NETTOYER
 !
 !
-    integer :: iret1, iexi, iexiav
-    integer :: izero, ico, k, nb1, nbdet, nb1av
+    integer(kind=8) :: iret1, iexi, iexiav
+    integer(kind=8) :: izero, ico, k, nb1, nbdet, nb1av
     aster_logical :: ldetr
     character(len=3) :: kret
     character(len=8) :: noma
     character(len=19) :: matele, resuel
     character(len=24), pointer :: relr(:) => null()
-    integer, pointer :: adetr(:) => null()
+    integer(kind=8), pointer :: adetr(:) => null()
     character(len=24), pointer :: tempor(:) => null()
 !
     call jemarq()

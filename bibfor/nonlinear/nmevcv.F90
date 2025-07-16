@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -31,7 +31,7 @@ subroutine nmevcv(sderro, list_func_acti, loopName)
 #include "asterfort/nmlecv.h"
 #include "asterfort/NonLinear_type.h"
 !
-    integer, intent(in) :: list_func_acti(*)
+    integer(kind=8), intent(in) :: list_func_acti(*)
     character(len=24), intent(in) :: sderro
     character(len=4), intent(in) :: loopName
 !
@@ -55,7 +55,7 @@ subroutine nmevcv(sderro, list_func_acti, loopName)
 ! --------------------------------------------------------------------------------------------------
 !
     aster_logical :: cveven
-    integer :: iEvent
+    integer(kind=8) :: iEvent
     character(len=24) :: eventENIVJv, eventENOMJv, eventEFCTJv
     character(len=9) :: eventName, eventLevel
     character(len=24) :: eventActiFunc
@@ -67,7 +67,7 @@ subroutine nmevcv(sderro, list_func_acti, loopName)
     character(len=16), pointer :: eventENOM(:) => null()
     character(len=24), pointer :: eventEFCT(:) => null()
     character(len=24) :: eventCONVJv
-    integer, pointer :: eventCONV(:) => null()
+    integer(kind=8), pointer :: eventCONV(:) => null()
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -86,6 +86,15 @@ subroutine nmevcv(sderro, list_func_acti, loopName)
 ! - Evaluate convergence
     cveven = ASTER_TRUE
     convEqui = ASTER_TRUE
+!
+    if (eventCONV(NB_LOOP+1) .eq. 1) then
+        withAnd = ASTER_FALSE
+        withOr = ASTER_TRUE
+    else
+        withAnd = ASTER_TRUE
+        withOr = ASTER_FALSE
+    end if
+!
     do iEvent = 1, ZEVEN
         eventLevel = eventENIV(iEvent) (1:9)
         eventName = eventENOM(iEvent) (1:9)
@@ -100,7 +109,6 @@ subroutine nmevcv(sderro, list_func_acti, loopName)
             end if
             if (eventName(1:4) .eq. 'DIVE') then
                 call nmerge(sderro, eventName, dv)
-                dv = dv .and. lfonc
                 cv = ASTER_TRUE
             else if (eventName(1:4) .eq. 'CONV') then
                 call nmerge(sderro, eventName, cv)
@@ -113,28 +121,27 @@ subroutine nmevcv(sderro, list_func_acti, loopName)
                 eventName .eq. 'DIVE_MAXI' .or. &
                 eventName .eq. 'DIVE_REFE' .or. &
                 eventName .eq. 'DIVE_COMP') then
-                if (eventCONV(NB_LOOP+1) .eq. 1) then
-                    withAnd = ASTER_FALSE
-                    withOr = ASTER_TRUE
-                else
-                    withAnd = ASTER_TRUE
-                    withOr = ASTER_FALSE
-                end if
+
                 if (eventName .eq. 'DIVE_RELA') then
-                    convEqui = (.not. dv) .and. cv
+                    if (withAnd) then
+                        convEqui = (.not. dv) .and. cv
+                    else if (withOr) then
+                        convEqui = (.not. dv) .and. lfonc .and. cv
+                    end if
                 else
                     if (withAnd) then
                         convEqui = convEqui .and. (.not. dv) .and. cv
                     else if (withOr) then
-                        convEqui = convEqui .or. (.not. dv) .or. cv
+                        convEqui = convEqui .or. ((.not. dv) .and. lfonc .and. cv)
                     end if
                 end if
             else
                 cveven = cveven .and. (.not. dv) .and. cv
             end if
-            cveven = cveven .and. convEqui
         end if
+
     end do
+    cveven = cveven .and. convEqui
 
 ! - Get state of previous loops
     call nmlecv(sderro, 'RESI', cvresi)

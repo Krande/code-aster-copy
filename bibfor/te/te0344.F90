@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -57,24 +57,24 @@ subroutine te0344(option, nomte)
 !
 ! --------------------------------------------------------------------------------------------------
 !
-    integer :: lmater, jmat, nbmat, imat, icomp, nbpar, i, npg, nno, nc
-    integer :: ncc, jeffo, iret, itype
-    integer :: lorien, jdepl, lforcr, lforcf
+    integer(kind=8) :: lmater, jmat, nbmat, imat, icomp, nbpar, i, npg, nno, nc
+    integer(kind=8) :: ncc, jeffo, iret, itype
+    integer(kind=8) :: lorien, jdepl, lforcr, lforcf
     real(kind=8) :: valpar, zero, e, g, a, xl, epsith
     real(kind=8) :: nu, fe(12), fi(12), flr(14), klv(105)
     real(kind=8) :: ulr(14), ugr(14), pgl(14, 14), klc(14, 14)
     character(len=32) :: messk(2)
     aster_logical :: okopt
 ! --------------------------------------------------------------------------------------------------
-    integer :: nbres
+    integer(kind=8) :: nbres
     parameter(nbres=2)
-    integer :: codres(nbres)
+    integer(kind=8) :: codres(nbres)
     real(kind=8) :: valres(nbres)
     character(len=16) :: nomres(nbres)
     character(len=8) :: nompar
     data nomres/'E', 'NU'/
 ! --------------------------------------------------------------------------------------------------
-    integer, parameter :: nb_cara = 2
+    integer(kind=8), parameter :: nb_cara = 2
     real(kind=8) :: vale_cara(nb_cara)
     character(len=8) :: noms_cara(nb_cara)
     data noms_cara/'A1', 'TVAR'/

@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -75,26 +75,26 @@ subroutine lipsrb(nomres, sst1, sst2, intf1, intf2, &
 !
 !
 !-- VARIABLES EN ENTREES / SORTIE
-    integer :: ddlmas, ddlsla, nbmoma, imast
+    integer(kind=8) :: ddlmas, ddlsla, nbmoma, imast
     character(len=8) :: nomres, sst1, sst2, intf1, intf2
     character(len=24) :: lino1, lino2, indin1, indin2
 !
 !-- VARIABLES DE LA ROUTINE
-    integer :: ibid, i1, j1, k1, l1, lrot1, lrot2, ltran1, ltran2, nbno1, nbno2
-    integer :: lcoor1, lcoor2, numno, lno1, lno2, dima
-    integer :: nbmast, nbslav, lnomas, lnosla, indmin
-    integer :: ltramo, lprojt, decal, lmats, lmatv, lmsm1u
-    integer :: lindma, lindsl, lwork, possla, posmas, indsla
+    integer(kind=8) :: ibid, i1, j1, k1, l1, lrot1, lrot2, ltran1, ltran2, nbno1, nbno2
+    integer(kind=8) :: lcoor1, lcoor2, numno, lno1, lno2, dima
+    integer(kind=8) :: nbmast, nbslav, lnomas, lnosla, indmin
+    integer(kind=8) :: ltramo, lprojt, decal, lmats, lmatv, lmsm1u
+    integer(kind=8) :: lindma, lindsl, lwork, possla, posmas, indsla
     integer(kind=4) :: info
-    integer :: indmas
+    integer(kind=8) :: indmas
     character(len=8) :: kbid, mail1, mail2
     real(kind=8) :: tr1(3), tr2(3), ang1(3), ang2(3), rot1(3, 3), rot2(3, 3)
     real(kind=8) :: dismax, dismin, dx, dy, dz, swork(1)
     character(len=24) :: int1, int2, k24bid, tramod
-    integer, pointer :: depend_noeuds(:) => null()
+    integer(kind=8), pointer :: depend_noeuds(:) => null()
     real(kind=8), pointer :: dist_noeuds(:) => null()
-    integer, pointer :: ind_int_mast(:) => null()
-    integer, pointer :: ind_int_slav(:) => null()
+    integer(kind=8), pointer :: ind_int_mast(:) => null()
+    integer(kind=8), pointer :: ind_int_slav(:) => null()
     real(kind=8), pointer :: mat_phir(:) => null()
     real(kind=8), pointer :: mat_svd_work(:) => null()
     real(kind=8), pointer :: mat_u(:) => null()

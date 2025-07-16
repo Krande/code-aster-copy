@@ -157,6 +157,15 @@ def rebuild_with_groups(m0, l0groups):
             MEDFileUMesh: The new mesh with preserved and newly created groups.
     """
 
+    try:
+        m0.orientCorrectly3DCells()
+        raise RuntimeError("FIXME : remove the try except since function exists now.")
+    except AttributeError:
+        ids = m0.getMeasureField(False).getArray().findIdsLowerThan(0.0)
+        meshToInvert = m0[ids]
+        meshToInvert.invertOrientationOfAllCells()
+        m0[ids] = meshToInvert
+
     skin = m0.computeSkin()
 
     newmesh = mc.MEDFileUMesh()

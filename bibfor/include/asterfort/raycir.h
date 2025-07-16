@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -21,11 +21,11 @@
 interface
     subroutine raycir(jvecpg, jdtau, jvecn, nbordr, nbvec,&
                       nommet)
-        integer :: jvecpg
-        integer :: jdtau
-        integer :: jvecn
-        integer :: nbordr
-        integer :: nbvec
+        integer(kind=8) :: jvecpg
+        integer(kind=8) :: jdtau
+        integer(kind=8) :: jvecn
+        integer(kind=8) :: nbordr
+        integer(kind=8) :: nbvec
         character(len=16) :: nommet
     end subroutine raycir
 end interface

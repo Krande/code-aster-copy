@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -22,7 +22,7 @@ interface
     subroutine codnop(nom1, nom2, ic, nc)
         character(len=*) :: nom1
         character(len=*) :: nom2
-        integer :: ic
-        integer :: nc
+        integer(kind=8) :: ic
+        integer(kind=8) :: nc
     end subroutine codnop
 end interface

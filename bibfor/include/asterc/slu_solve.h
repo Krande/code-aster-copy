@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2018 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -20,7 +20,7 @@
 !
 interface
     subroutine slu_solve( f_factors, trans_option, nrhs, b, ldb, info ) 
-        integer                       :: f_factors
+        integer(kind=8)                       :: f_factors
         integer(kind=4)               :: trans_option
         integer(kind=4)               :: nrhs
         real(kind=8)                  :: b(*)

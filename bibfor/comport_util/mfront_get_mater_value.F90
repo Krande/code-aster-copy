@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -36,7 +36,7 @@ subroutine mfront_get_mater_value(extern_addr, BEHinteg, rela_comp, fami, kpg, &
     type(Behaviour_Integ), intent(in) :: BEHinteg
     character(len=16), intent(in) :: rela_comp
     character(len=*), intent(in) :: fami
-    integer, intent(in) :: kpg, ksp, imate, nprops
+    integer(kind=8), intent(in) :: kpg, ksp, imate, nprops
     real(kind=8), intent(out) :: props(nprops)
 !
 ! --------------------------------------------------------------------------------------------------
@@ -57,12 +57,12 @@ subroutine mfront_get_mater_value(extern_addr, BEHinteg, rela_comp, fami, kpg, &
 !
 ! --------------------------------------------------------------------------------------------------
 !
-    integer, parameter :: npropmax = 197
-    integer :: codrel(npropmax), i
+    integer(kind=8), parameter :: npropmax = 197
+    integer(kind=8) :: codrel(npropmax), i
     character(len=16) :: nomres(npropmax)
     real(kind=8) :: zalpha
-    integer      :: nb_phasis, meta_type, nbcoef
-    integer, parameter :: nb_para = 3
+    integer(kind=8)      :: nb_phasis, meta_type, nbcoef
+    integer(kind=8), parameter :: nb_para = 3
     real(kind=8) :: para_vale(nb_para)
     character(len=16), parameter :: para_name(nb_para) = (/'X', 'Y', 'Z'/)
 !

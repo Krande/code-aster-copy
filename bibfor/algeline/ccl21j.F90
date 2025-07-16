@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -23,10 +23,10 @@ subroutine ccl21j(fronti, frontj, frn, j, l, &
 !     VERSION MODIFIEE POUR L' APPEL A CGEMV (PRODUITS MATRICE VECTEUR)
 !     LE STOCKAGE DES COLONNES DE LA FACTORISEE EST MODIFIE
     implicit none
-    integer :: n, n1, k
+    integer(kind=8) :: n, n1, k
     complex(kind=8) :: fronti(*), frontj(*), t1(n), t2(n), frn(*)
 !
-    integer :: i, j, l, ll, ic1, ic2, id1, id2, jd1, jd
+    integer(kind=8) :: i, j, l, ll, ic1, ic2, id1, id2, jd1, jd
     ic1 = 3
     ic2 = ic1+n
     jd1 = 0

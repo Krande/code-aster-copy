@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -65,10 +65,10 @@ subroutine thmCpl001(ds_thm, &
     type(THM_DS), intent(in) :: ds_thm
     aster_logical, intent(in) :: lMatr, lSigm, lVari
     real(kind=8), intent(in) :: angl_naut(3)
-    integer, intent(in) :: ndim, nbvari
-    integer, intent(in) :: dimdef, dimcon
-    integer, intent(in) :: adcome, adcote, adcp11
-    integer, intent(in) :: addeme, addete, addep1
+    integer(kind=8), intent(in) :: ndim, nbvari
+    integer(kind=8), intent(in) :: dimdef, dimcon
+    integer(kind=8), intent(in) :: adcome, adcote, adcp11
+    integer(kind=8), intent(in) :: addeme, addete, addep1
     real(kind=8), intent(in) :: temp
     real(kind=8), intent(in) :: dtemp, dp1
     real(kind=8), intent(in) :: epsv, depsv, deps(6), tbiot(6)
@@ -78,7 +78,7 @@ subroutine thmCpl001(ds_thm, &
     real(kind=8), intent(in) :: vintm(nbvari)
     real(kind=8), intent(inout) :: vintp(nbvari)
     real(kind=8), intent(inout) :: dsde(dimcon, dimdef)
-    integer, intent(out) :: retcom
+    integer(kind=8), intent(out) :: retcom
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -124,7 +124,7 @@ subroutine thmCpl001(ds_thm, &
 !
 ! --------------------------------------------------------------------------------------------------
 !
-    integer :: i
+    integer(kind=8) :: i
     real(kind=8), parameter :: rac2 = sqrt(2.d0)
     real(kind=8) :: phim, phi0
     real(kind=8) :: alp11, alp12
@@ -140,7 +140,7 @@ subroutine thmCpl001(ds_thm, &
     real(kind=8) :: dpad, dp2, signe
     real(kind=8) :: dmdeps(6), sigmp(6), dsdp1(6)
     real(kind=8) :: dqeps(6)
-    integer      :: advico, advihy, vihrho, vicphi
+    integer(kind=8)      :: advico, advihy, vihrho, vicphi
     real(kind=8) :: ep, surf, shut, sbjh, wbjh, dpi
 !
 ! --------------------------------------------------------------------------------------------------

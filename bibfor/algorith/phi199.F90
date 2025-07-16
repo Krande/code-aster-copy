@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -47,7 +47,7 @@ subroutine phi199(model, mate, mateco, ma, nu, num, &
 #include "asterfort/wkvect.h"
 #include "asterfort/as_deallocate.h"
 #include "asterfort/as_allocate.h"
-    integer :: nbmode, indice, tabad(*)
+    integer(kind=8) :: nbmode, indice, tabad(*)
     character(len=8) :: ma
     character(len=14) :: nu, num
     character(len=*) :: mate, mateco, solvez
@@ -65,9 +65,9 @@ subroutine phi199(model, mate, mateco, ma, nu, num, &
 !                                 : 2 : AMORTISSEMENT ET RAIDEUR
 ! IN : K* : SOLVEZ : METHODE DE RESOLUTION 'MULT_FRONT','LDLT' OU 'GCPC'
 !---------------------------------------------------------------------
-    integer :: ibid, nbvale, nbrefe, iret, nbno, id, ier
-    integer :: ilires, jref, neq, nbd, nbdir, i, jvec, in, nbsta
-    integer :: iphi1, n3, n1, icor(2), n2, ndble, iordr, nbtrou, tmod(1)
+    integer(kind=8) :: ibid, nbvale, nbrefe, iret, nbno, id, ier
+    integer(kind=8) :: ilires, jref, neq, nbd, nbdir, i, jvec, in, nbsta
+    integer(kind=8) :: iphi1, n3, n1, icor(2), n2, ndble, iordr, nbtrou, tmod(1)
     real(kind=8) :: rbid, xnorm, xd, depl(6), epsi
     complex(kind=8) :: c16b, cbid
     character(len=2) :: model
@@ -78,7 +78,7 @@ subroutine phi199(model, mate, mateco, ma, nu, num, &
     character(len=19) :: vecso1, vesto1, maprec, solveu, chsol, chamno
     character(len=24) :: nomcha, nocham, criter
     character(len=24) :: valk(3)
-    integer, pointer :: ddl(:) => null()
+    integer(kind=8), pointer :: ddl(:) => null()
     real(kind=8), pointer :: mst(:) => null()
     character(len=8), pointer :: noeud(:) => null()
 !

@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -33,8 +33,8 @@ subroutine tldlr8(nommat, hcol, adia, ablo, npivot, &
 #include "asterfort/wkvect.h"
 !
     character(len=*) :: nommat
-    integer :: hcol(*), adia(*), ablo(*)
-    integer :: npivot, neq, nbbloc, ildeb, ilfin
+    integer(kind=8) :: hcol(*), adia(*), ablo(*)
+    integer(kind=8) :: npivot, neq, nbbloc, ildeb, ilfin
     real(kind=8) :: eps
 !
 ! COMPIL PARAL
@@ -95,12 +95,12 @@ subroutine tldlr8(nommat, hcol, adia, ablo, npivot, &
 !
 !     ------------------------------------------------------------------
 !
-    integer :: ifm, niv, ldiag, ltrav
-    integer :: ibloc, il1, il2, iaa, il, kl1
-    integer :: imini, iequa, i, jblmin, jbloc, jl1, jl2
-    integer :: iab, ilong, iadia, ide, idl
-    integer :: jnmini, jequa, jlong, jadia, jde, jdl, ibcl1
-    integer :: lm, ica, icb, icd
+    integer(kind=8) :: ifm, niv, ldiag, ltrav
+    integer(kind=8) :: ibloc, il1, il2, iaa, il, kl1
+    integer(kind=8) :: imini, iequa, i, jblmin, jbloc, jl1, jl2
+    integer(kind=8) :: iab, ilong, iadia, ide, idl
+    integer(kind=8) :: jnmini, jequa, jlong, jadia, jde, jdl, ibcl1
+    integer(kind=8) :: lm, ica, icb, icd
 !
 !     ----- CNJ --------------------------------------------------------
 !     ----- CNJ --------------------------------------------------------

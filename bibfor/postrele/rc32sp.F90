@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -28,7 +28,7 @@ subroutine rc32sp(ze200, lieu, iocc1, iocc2, ns, &
 #include "asterfort/rc32spb.h"
 !
     character(len=4) :: lieu
-    integer :: iocc1, iocc2, ns, nbsscyc
+    integer(kind=8) :: iocc1, iocc2, ns, nbsscyc
     real(kind=8) :: sp(2), instsp(4), spmeca(2), spss(100)
     aster_logical :: ze200
 !     OPERATEUR POST_RCCM, TRAITEMENT DE FATIGUE_ZE200
@@ -38,7 +38,7 @@ subroutine rc32sp(ze200, lieu, iocc1, iocc2, ns, &
 ! IN  : LIEU   : ='ORIG' : ORIGINE DU SEGEMNT, ='EXTR' : EXTREMITE
 ! OUT : SN     : PARTIE B3200 du SN
 !
-    integer :: n1, k
+    integer(kind=8) :: n1, k
     character(len=8) :: methode
 !
 !

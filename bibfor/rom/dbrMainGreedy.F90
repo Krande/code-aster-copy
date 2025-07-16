@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -24,7 +24,6 @@ subroutine dbrMainGreedy(paraGreedy, baseOut)
     implicit none
 !
 #include "asterc/r8gaem.h"
-#include "asterfort/assert.h"
 #include "asterfort/infniv.h"
 #include "asterfort/romEvalCoef.h"
 #include "asterfort/romGreedyModeSave.h"
@@ -56,9 +55,9 @@ subroutine dbrMainGreedy(paraGreedy, baseOut)
 !
 ! --------------------------------------------------------------------------------------------------
 !
-    integer :: ifm, niv
-    integer, parameter :: iCoef = 1
-    integer :: iMode, iCoefMaxi, nbModeMaxi, nbEqua
+    integer(kind=8) :: ifm, niv
+    integer(kind=8), parameter :: iCoef = 1
+    integer(kind=8) :: iMode, iCoefMaxi, nbModeMaxi, nbEqua
     real(kind=8) :: tole, toleGreedy
     character(len=1) :: systType
     character(len=19) :: systSolu

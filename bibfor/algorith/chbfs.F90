@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -31,7 +31,7 @@ subroutine chbfs(sig, x1, x2, dfds)
 !       ----------------------------------------------------------------
 #include "asterfort/lcdevi.h"
 #include "asterfort/lcnrts.h"
-    integer :: n, nd
+    integer(kind=8) :: n, nd
     real(kind=8) :: dfds(6), sig(6), x1(6), x2(6), dev(6), s
     common/tdim/n, nd
 !

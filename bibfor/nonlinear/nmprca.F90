@@ -50,8 +50,8 @@ subroutine nmprca(modele, numedd, numfix, ds_material, carele, &
 #include "asterfort/nonlinLoadDirichletCompute.h"
 #include "asterfort/romCoefComputeFromField.h"
 !
-    integer :: fonact(*)
-    integer :: numins, ldccvg, faccvg, rescvg
+    integer(kind=8) :: fonact(*)
+    integer(kind=8) :: numins, ldccvg, faccvg, rescvg
     type(NL_DS_AlgoPara), intent(in) :: ds_algopara
     type(NL_DS_Material), intent(in) :: ds_material
     character(len=19) :: maprec, matass
@@ -130,7 +130,7 @@ subroutine nmprca(modele, numedd, numfix, ds_material, carele, &
 !
 ! --------------------------------------------------------------------------------------------------
 !
-    integer :: neq, i
+    integer(kind=8) :: neq, i
     character(len=19) :: depso1, depso2, cncine
     character(len=19) :: solu1, solu2, cndonn, cnpilo, cncind
     aster_logical :: l_update_redu, l_rom
@@ -139,7 +139,7 @@ subroutine nmprca(modele, numedd, numfix, ds_material, carele, &
     real(kind=8), pointer :: dep2(:) => null()
     real(kind=8), pointer :: sol1(:) => null()
     real(kind=8), pointer :: sol2(:) => null()
-    integer, pointer :: delg(:) => null()
+    integer(kind=8), pointer :: delg(:) => null()
     real(kind=8), pointer :: v_gamma(:) => null()
     real(kind=8), pointer :: v_vect(:) => null()
 !

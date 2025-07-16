@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -34,8 +34,8 @@ subroutine nmevin(sddisc, ds_contact, i_echec, i_echec_acti)
 !
     character(len=19), intent(in) :: sddisc
     type(NL_DS_Contact), intent(in) :: ds_contact
-    integer, intent(in) :: i_echec
-    integer, intent(out) :: i_echec_acti
+    integer(kind=8), intent(in) :: i_echec
+    integer(kind=8), intent(out) :: i_echec_acti
 !
 ! ----------------------------------------------------------------------
 !
@@ -53,11 +53,11 @@ subroutine nmevin(sddisc, ds_contact, i_echec, i_echec_acti)
 !
 ! ----------------------------------------------------------------------
 !
-    integer :: ifm, niv
-    integer :: nbliai
-    integer :: iliai
+    integer(kind=8) :: ifm, niv
+    integer(kind=8) :: nbliai
+    integer(kind=8) :: iliai
     character(len=24) :: jeuite
-    integer :: jjeuit
+    integer(kind=8) :: jjeuit
     real(kind=8) :: jeufin, pnmaxi
     aster_logical :: levent
     real(kind=8) :: pene_maxi

@@ -114,7 +114,7 @@ VectorLong Mesh::getCells( const VectorString &names ) const {
 
     for ( auto &name : names ) {
         if ( hasGroupOfCells( name ) ) {
-            cells.push_back( _groupsOfCells->fastAccess( name ).toVector() );
+            cells.push_back( ( *_groupsOfCells )[name]->toVector() );
         }
     }
 
@@ -137,7 +137,7 @@ VectorLong Mesh::getNodes( const VectorString &names, const bool, const ASTERINT
 
     for ( auto &name : names ) {
         if ( hasGroupOfNodes( name ) ) {
-            nodes.push_back( _groupsOfNodes->fastAccess( name ).toVector() );
+            nodes.push_back( ( *_groupsOfNodes )[name]->toVector() );
         }
     }
 

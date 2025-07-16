@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -26,14 +26,14 @@ interface
         aster_logical, intent(in) :: l_xfem, l_dyna
         character(len=24), intent(in) :: model, cara_elem
         character(len=19), intent(in) :: sddyna
-        integer, intent(in) :: iter_newt
+        integer(kind=8), intent(in) :: iter_newt
         type(NL_DS_Constitutive), intent(in) :: ds_constitutive
         type(NL_DS_Material), intent(in) :: ds_material
         character(len=19), intent(in) :: hval_incr(*), hval_algo(*)
         character(len=24), intent(in) :: caco3d
-        integer, intent(in) :: mxchin
+        integer(kind=8), intent(in) :: mxchin
         character(len=8), intent(inout) :: lpain(mxchin)
         character(len=19), intent(inout) :: lchin(mxchin)
-        integer, intent(out) :: nbin
+        integer(kind=8), intent(out) :: nbin
     end subroutine merimp
 end interface

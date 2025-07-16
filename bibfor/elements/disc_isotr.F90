@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -20,7 +20,7 @@ subroutine disc_isotr(ppr, ppi, ppc, yy0, dy0, dyy, decoup)
     implicit none
 #include "asterf_types.h"
     real(kind=8)     :: ppr(*)
-    integer          :: ppi(*)
+    integer(kind=8)          :: ppi(*)
     character(len=*) :: ppc(*)
     real(kind=8)     :: yy0(*)
     real(kind=8)     :: dy0(*)
@@ -50,10 +50,10 @@ subroutine disc_isotr(ppr, ppi, ppc, yy0, dy0, dyy, decoup)
 ! --------------------------------------------------------------------------------------------------
 !
     real(kind=8) :: vfct, dfct, seuil, raide, Fequi, dcharg, Fx, Fy, Fz
-    integer      :: tecro, iloi
+    integer(kind=8)      :: tecro, iloi
 !
 !   système d'équations : Force, Up, U , dissipation, P
-    integer :: ifx, ify, ifz, iux, iuy, iuz, iw, ip, iupx, iupy, iupz, ixx, ixy, ixz
+    integer(kind=8) :: ifx, ify, ifz, iux, iuy, iuz, iw, ip, iupx, iupy, iupz, ixx, ixy, ixz
     parameter(ifx=1, ify=2, ifz=3, iux=4, iuy=5, iuz=6, iw=7, ip=8, iupx=9, iupy=10, iupz=11)
     parameter(ixx=12, ixy=13, ixz=14)
 !
@@ -105,13 +105,13 @@ subroutine disc_isotr(ppr, ppi, ppc, yy0, dy0, dyy, decoup)
 contains
 !
     subroutine val_fct_dfct(info_fct, p, vfct, dfct)
-        integer :: info_fct(5)
+        integer(kind=8) :: info_fct(5)
         real(kind=8) :: p, vfct, dfct
 !
 #include "jeveux.h"
 #include "asterfort/utmess.h"
 !
-        integer      :: ip, jr, jp, nbvale, i0, i1
+        integer(kind=8)      :: ip, jr, jp, nbvale, i0, i1
         real(kind=8) :: raide, peq, p0, p1, f0, f1
 !
         nbvale = info_fct(1)

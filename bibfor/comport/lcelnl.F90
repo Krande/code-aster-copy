@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -45,7 +45,7 @@ subroutine lcelnl(BEHinteg, &
     character(len=*) :: fami
     character(len=8) :: typmod(*)
     character(len=16) :: compor(*), option
-    integer :: kpg, ksp, ndim, imate, codret
+    integer(kind=8) :: kpg, ksp, ndim, imate, codret
     real(kind=8) :: crit(*)
     real(kind=8) :: eps(:), sig(:), vi(1), dsidep(:, :)
 
@@ -68,15 +68,15 @@ subroutine lcelnl(BEHinteg, &
 ! ----------------------------------------------------------------------
 ! CORPS DU PROGRAMME
 
-    integer :: iret, isec, ihyd, ieps
+    integer(kind=8) :: iret, isec, ihyd, ieps
     real(kind=8) :: temp, hydr, sech
     real(kind=8) :: secref
 !
 ! DECLARATION VARIABLES LOCALES
     aster_logical :: cplan, line, nonlin, inco, puis, trac, resi, rigi
-    integer :: icodre(5)
+    integer(kind=8) :: icodre(5)
     character(len=16) :: nomres(5), epsa_data(6)
-    integer :: jprol, jvale, nbvale, ndimsi, niter, k, l, ibid
+    integer(kind=8) :: jprol, jvale, nbvale, ndimsi, niter, k, l, ibid
 !
     real(kind=8) :: valres(5), e, nu, troisk, deuxmu, sigy, dsde
     real(kind=8) :: kdess, bendo, ther, epsth(6), epsmo, epsdv(6), epseq, sieleq
@@ -84,14 +84,14 @@ subroutine lcelnl(BEHinteg, &
     real(kind=8) :: approx, prec, x, kron(6), rac2
     real(kind=8) :: coco, dp0, rprim0, xap, precr
     real(kind=8) :: epsa(6)
-    integer, parameter :: elas_id = 1
+    integer(kind=8), parameter :: elas_id = 1
     character(len=16), parameter :: elas_keyword = 'ELAS'
     character(len=1) :: poum
 !
 !====================================================================
 !---COMMONS NECESSAIRES A HENCKY C_PLAN (NMCRI1)
 !====================================================================
-    integer :: imate2, jprol2, jvale2, nbval2
+    integer(kind=8) :: imate2, jprol2, jvale2, nbval2
     real(kind=8) :: pm, sigel(6), lin, epsthe
     common/rconm1/deuxmu, nu, e, sigy, rprim, pm, sigel, lin
     common/kconm1/imate2, jprol2, jvale2, nbval2

@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -32,7 +32,7 @@ subroutine kpouli(e, a, nx, l0, l1, &
     real(kind=8) :: e, a, nx, l1(3), l2(3), c123(3), c456(3)
     real(kind=8) :: norml1, norml2, l0, coef1, coef2, coef3, coef4, coef5
     real(kind=8) :: amat(*)
-    integer :: i, j, imat
+    integer(kind=8) :: i, j, imat
 !
 !
 !-----------------------------------------------------------------------

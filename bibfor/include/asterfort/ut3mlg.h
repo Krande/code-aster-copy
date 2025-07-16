@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -20,7 +20,7 @@
 !
 interface
     subroutine ut3mlg(nno, nnc, pgl, matl, matg)
-      integer      :: nno, nnc
+      integer(kind=8)      :: nno, nnc
       real(kind=8) :: matl(nno*nnc, nno*nnc), pgl(3,3), matg(nno*nnc, nno*nnc)
     end subroutine ut3mlg
 end interface

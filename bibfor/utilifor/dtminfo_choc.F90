@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -28,11 +28,11 @@ subroutine dtminfo_choc(nlcase, nbnoli)
 #include "asterfort/codent.h"
 !
 !   -0.1- Input/output arguments
-    integer, intent(in)   :: nlcase
-    integer, intent(in)   :: nbnoli
+    integer(kind=8), intent(in)   :: nlcase
+    integer(kind=8), intent(in)   :: nbnoli
 !
 !   -0.2- Local variables
-    integer                      :: input, ind, base, digit, decal
+    integer(kind=8)                      :: input, ind, base, digit, decal
     character(len=(13+4*nbnoli)) :: line, chaine
 
 !

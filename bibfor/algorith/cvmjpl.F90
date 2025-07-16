@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -58,8 +58,8 @@ subroutine cvmjpl(mod, nmat, mater, timed, timef, &
 #include "asterfort/lcprte.h"
 #include "asterfort/mgauss.h"
 #include "blas/daxpy.h"
-    integer :: ndt, ndi, nmat, nr, nvi, iret
-    integer :: ioptio, idnr, nopt
+    integer(kind=8) :: ndt, ndi, nmat, nr, nvi, iret
+    integer(kind=8) :: ioptio, idnr, nopt
     real(kind=8) :: un, zero, det
     parameter(un=1.d0)
     parameter(zero=0.d0)
@@ -93,7 +93,7 @@ subroutine cvmjpl(mod, nmat, mater, timed, timef, &
     real(kind=8) :: dkdset(6), dkdx1e(6), dkdx2e(6)
     real(kind=8) :: const1, const2, xx
 !
-    integer :: n1, n2, n3, n4, n5, n6, n7, n8, k
+    integer(kind=8) :: n1, n2, n3, n4, n5, n6, n7, n8, k
 !
     character(len=8) :: mod
 !

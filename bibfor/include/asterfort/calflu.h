@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -26,8 +26,8 @@ interface
         character(len=*) :: mateco, mate
         character(len=*) :: nu
         character(len=*) :: vectas
-        integer :: nr
-        integer :: nv
+        integer(kind=8) :: nr
+        integer(kind=8) :: nv
         character(len=*) :: opt
     end subroutine calflu
 end interface

@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -19,7 +19,7 @@
 ! Parameters definitions
 ! -------------------------------------------------------------------------
 !
-    integer :: parind(_DTM_NBPAR)
+    integer(kind=8) :: parind(_DTM_NBPAR)
     character(len=3)  :: partyp(_DTM_NBPAR)
     character(len=8)  :: params(_DTM_NBPAR)
 

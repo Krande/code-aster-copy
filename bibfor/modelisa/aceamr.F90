@@ -41,7 +41,7 @@ subroutine aceamr(infdonn, lmax, nbocc, infcarte, ivr)
     implicit none
     type(cara_elem_info) :: infdonn
     type(cara_elem_carte) :: infcarte(*)
-    integer :: lmax, nbocc, ivr(*)
+    integer(kind=8) :: lmax, nbocc, ivr(*)
 !
 #include "asterf_types.h"
 #include "jeveux.h"
@@ -53,7 +53,6 @@ subroutine aceamr(infdonn, lmax, nbocc, infcarte, ivr)
 #include "asterfort/jedetr.h"
 #include "asterfort/jelira.h"
 #include "asterfort/jemarq.h"
-#include "asterfort/jenuno.h"
 #include "asterfort/jeveuo.h"
 #include "asterfort/jexnom.h"
 #include "asterfort/jexnum.h"
@@ -65,17 +64,17 @@ subroutine aceamr(infdonn, lmax, nbocc, infcarte, ivr)
 #include "asterfort/int_to_char8.h"
 !
 ! --------------------------------------------------------------------------------------------------
-    integer :: nbcar, nbval, nrd
+    integer(kind=8) :: nbcar, nbval, nrd
     parameter(nbcar=100, nbval=6, nrd=2)
-    integer :: jdc(3), jdv(3), ifm
-    integer :: jdcinf, jdvinf
-    integer :: i, ii, in, inbn, ino, inoe, ioc, irep
-    integer :: irgno, isym, itbmp, itbno, iv
-    integer :: jd, jdls, jj, jn
-    integer :: ikma, ldgm, ldnm, lokm, lorep, nbnma
-    integer :: nbno, nbnoeu, nc, ncarac, ncmp
-    integer :: ndim, ng, ngp, nma, dimcar
-    integer :: vali(2), nbval2
+    integer(kind=8) :: jdc(3), jdv(3), ifm
+    integer(kind=8) :: jdcinf, jdvinf
+    integer(kind=8) :: i, ii, in, inbn, ino, inoe, ioc, irep
+    integer(kind=8) :: irgno, isym, itbmp, itbno, iv
+    integer(kind=8) :: jd, jdls, jj, jn
+    integer(kind=8) :: ikma, ldgm, ldnm, lokm, lorep, nbnma
+    integer(kind=8) :: nbno, nbnoeu, nc, ncarac, ncmp
+    integer(kind=8) :: ndim, ng, ngp, nma, dimcar
+    integer(kind=8) :: vali(2), nbval2
 ! --------------------------------------------------------------------------------------------------
     real(kind=8) :: eta, vale(nbval)
 ! --------------------------------------------------------------------------------------------------

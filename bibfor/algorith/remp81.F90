@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -47,8 +47,8 @@ subroutine remp81(nomres, lpar, basmod, nbmod)
 !
 !-----------------------------------------------------------------------
 !-----------------------------------------------------------------------
-    integer :: ldres, ldref, lddes, nbmod, imod
-    integer ::  ntail, lpar, i, iad
+    integer(kind=8) :: ldres, ldref, lddes, nbmod, imod
+    integer(kind=8) ::  ntail, lpar, i, iad
 !-----------------------------------------------------------------------
     data blanc/'        '/
 !-----------------------------------------------------------------------

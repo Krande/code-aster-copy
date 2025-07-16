@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -20,7 +20,7 @@
 !
 interface
     subroutine utpplg(nn, nc, p, sl, sg)
-        integer, intent(in) :: nn, nc
+        integer(kind=8), intent(in) :: nn, nc
         real(kind=8), intent(in) :: p(3, 3), sl(*)
         real(kind=8), intent(out) :: sg(*)
     end subroutine utpplg

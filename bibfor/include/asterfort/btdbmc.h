@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -21,10 +21,10 @@
 interface
     subroutine btdbmc(b, d, jacob, ndim, nno,&
                       nbsig, elas_type, btdb)
-        integer, intent(in) :: nbsig
-        integer, intent(in) :: ndim
-        integer, intent(in) :: nno
-        integer, intent(in) :: elas_type
+        integer(kind=8), intent(in) :: nbsig
+        integer(kind=8), intent(in) :: ndim
+        integer(kind=8), intent(in) :: nno
+        integer(kind=8), intent(in) :: elas_type
         real(kind=8), intent(in) :: b(nbsig, *)
         real(kind=8), intent(in) :: d(nbsig, *)
         real(kind=8), intent(in) :: jacob

@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2018 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -23,10 +23,10 @@ interface
                            proj_coor       , mast_norm     , slav_norm     ,&
                            l_inter)
         real(kind=8), intent(in) :: proj_tole
-        integer, intent(in) :: elem_dime
-        integer, intent(in) :: elem_mast_nbnode
+        integer(kind=8), intent(in) :: elem_dime
+        integer(kind=8), intent(in) :: elem_mast_nbnode
         real(kind=8), intent(in) :: elem_mast_coor(3,9)
-        integer, intent(in) :: elem_slav_nbnode
+        integer(kind=8), intent(in) :: elem_slav_nbnode
         real(kind=8), intent(in) :: elem_slav_coor(3,9)
         character(len=8), intent(in) :: elem_slav_code
         real(kind=8), intent(in) :: proj_coor(elem_dime-1,4)

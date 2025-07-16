@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -22,19 +22,19 @@ interface
     subroutine mmdupd(ehead, neqns, xadj, adjncy, delta,&
                       mdeg, dhead, dforw, dbakw, qsize,&
                       llist, marker, maxint, tag)
-        integer :: ehead
-        integer :: neqns
-        integer :: xadj(*)
-        integer :: adjncy(*)
-        integer :: delta
-        integer :: mdeg
-        integer :: dhead(*)
-        integer :: dforw(*)
-        integer :: dbakw(*)
-        integer :: qsize(*)
-        integer :: llist(*)
-        integer :: marker(*)
-        integer :: maxint
-        integer :: tag
+        integer(kind=8) :: ehead
+        integer(kind=8) :: neqns
+        integer(kind=8) :: xadj(*)
+        integer(kind=8) :: adjncy(*)
+        integer(kind=8) :: delta
+        integer(kind=8) :: mdeg
+        integer(kind=8) :: dhead(*)
+        integer(kind=8) :: dforw(*)
+        integer(kind=8) :: dbakw(*)
+        integer(kind=8) :: qsize(*)
+        integer(kind=8) :: llist(*)
+        integer(kind=8) :: marker(*)
+        integer(kind=8) :: maxint
+        integer(kind=8) :: tag
     end subroutine mmdupd
 end interface

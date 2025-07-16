@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -117,8 +117,8 @@ subroutine zngets(ishift, which, kev, np, ritz, &
 #include "asterfort/ivout.h"
 #include "asterfort/zsortc.h"
 #include "asterfort/zvout.h"
-    integer :: logfil, ndigit, mgetv0, mnaupd, mnaup2, mnaitr, mneigh, mnapps
-    integer :: mngets, mneupd
+    integer(kind=8) :: logfil, ndigit, mgetv0, mnaupd, mnaup2, mnaitr, mneigh, mnapps
+    integer(kind=8) :: mngets, mneupd
     common/debug/&
      &  logfil, ndigit, mgetv0,&
      &  mnaupd, mnaup2, mnaitr, mneigh, mnapps, mngets, mneupd
@@ -128,7 +128,7 @@ subroutine zngets(ishift, which, kev, np, ritz, &
 !     %------------------%
 !
     character(len=2) :: which
-    integer :: ishift, kev, np
+    integer(kind=8) :: ishift, kev, np
 !
 !     %-----------------%
 !     | ARRAY ARGUMENTS |
@@ -145,7 +145,7 @@ subroutine zngets(ishift, which, kev, np, ritz, &
 !     | LOCAL SCALARS |
 !     %---------------%
 !
-    integer :: msglvl
+    integer(kind=8) :: msglvl
 !
 !
 !     %-----------------------%

@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -30,7 +30,7 @@ interface
         real(kind=8) :: mater(14, 2)
         real(kind=8) :: seuili
         real(kind=8) :: seuild
-        integer :: nvi
+        integer(kind=8) :: nvi
         real(kind=8) :: epsd(6)
         real(kind=8) :: deps(6)
         real(kind=8) :: sigd(6)
@@ -39,10 +39,10 @@ interface
         real(kind=8) :: vinf(*)
         character(len=6) :: mecani
         character(len=4) :: nivcjs
-        integer :: niter
-        integer :: ndec
+        integer(kind=8) :: niter
+        integer(kind=8) :: ndec
         real(kind=8) :: epscon
-        integer :: iret
+        integer(kind=8) :: iret
         aster_logical :: trac
     end subroutine cjspla
 end interface

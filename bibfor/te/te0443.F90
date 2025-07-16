@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -45,12 +45,12 @@ subroutine te0443(option, nomte)
 ! ......................................................................
 !
 !
-    integer :: ndim, nno, nnos, npg, ipoids, ivf, idfdx, jgano, iret(4)
-    integer :: jgeom, jin, jout, jang, np, i, itab(7), iret1, iret2, nbsp
-    integer :: vali(2)
+    integer(kind=8) :: ndim, nno, nnos, npg, ipoids, ivf, idfdx, jgano, iret(4)
+    integer(kind=8) :: jgeom, jin, jout, jang, np, i, itab(7), iret1, iret2, nbsp
+    integer(kind=8) :: vali(2)
 !-----------------------------------------------------------------------
-    integer :: intsn, j, jcara, k, lzi, lzr, nb1
-    integer :: nb2, ncmp, ncpmax, npgsn, nptmax, nspmax
+    integer(kind=8) :: intsn, j, jcara, k, lzi, lzr, nb1
+    integer(kind=8) :: nb2, ncmp, ncpmax, npgsn, nptmax, nspmax
     real(kind=8) :: epais, zero
 !-----------------------------------------------------------------------
     parameter(nptmax=9, ncpmax=8, nspmax=162)
@@ -59,7 +59,7 @@ subroutine te0443(option, nomte)
     real(kind=8) :: matvn2(2, 2, 10), matvg2(2, 2, 10)
     real(kind=8) :: vecta(9, 2, 3), vectn(9, 3), vectpt(9, 2, 3)
     real(kind=8) :: vectg(2, 3), vectt(3, 3), conin(nptmax*ncpmax*nspmax)
-    integer      :: repere_nature
+    integer(kind=8)      :: repere_nature
     character(len=8) :: pain, paout
     character(len=24) :: messk(2)
 ! --------------------------------------------------------------------------------------------------

@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -58,11 +58,11 @@ subroutine phi2el(modele, carele, mate, mateco, accel, phibar, &
     character(len=19) :: vecel
     character(len=24) :: chgeom, chtime
     character(len=24) :: ligrmo, lchin(5), lchout(1), phib24, ve2
-    integer :: iret
+    integer(kind=8) :: iret
     aster_logical :: prem
 !
 !-----------------------------------------------------------------------
-    integer :: jlve, nbchte
+    integer(kind=8) :: jlve, nbchte
 !-----------------------------------------------------------------------
     call jemarq()
 !

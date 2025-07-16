@@ -31,9 +31,7 @@ subroutine nmextk(mesh, model, &
 #include "asterfort/cesexi.h"
 #include "asterfort/exisd.h"
 #include "asterfort/getvtx.h"
-#include "asterfort/jenuno.h"
 #include "asterfort/jeveuo.h"
-#include "asterfort/jexnum.h"
 #include "asterfort/lxliis.h"
 #include "asterfort/posddl.h"
 #include "asterfort/utmess.h"
@@ -43,17 +41,17 @@ subroutine nmextk(mesh, model, &
 !
     character(len=8), intent(in) :: mesh, model
     character(len=16), intent(in) :: keyw_fact
-    integer, intent(in) :: i_keyw_fact
+    integer(kind=8), intent(in) :: i_keyw_fact
     character(len=19), intent(in) :: field
     character(len=24), intent(in) :: field_type
     character(len=24), intent(in) :: field_s
     character(len=4), intent(in) :: field_disc
-    integer, intent(in) :: nb_node, nb_elem, nb_poin, nb_spoi
+    integer(kind=8), intent(in) :: nb_node, nb_elem, nb_poin, nb_spoi
     character(len=24), intent(in) :: list_node, list_elem, list_poin, list_spoi
     character(len=19), optional, intent(in) :: compor
     character(len=24), intent(in) :: list_cmp
     character(len=24), intent(in) :: list_vari
-    integer, intent(out) :: nb_cmp
+    integer(kind=8), intent(out) :: nb_cmp
     character(len=8), intent(out) :: type_sele_cmp
 !
 ! --------------------------------------------------------------------------------------------------
@@ -88,26 +86,26 @@ subroutine nmextk(mesh, model, &
 !
 ! --------------------------------------------------------------------------------------------------
 !
-    integer, parameter :: nb_para_maxi = 20
-    integer :: n1
-    integer :: iret, iad
-    integer :: i_node, i_elem, i_cmp, ipi, ispi, ipar, i_cmp_maxi
-    integer :: nb_cmp_maxi, nuno, nuddl
-    integer :: nb_elem_poin, nb_elem_spoi, npi, nspi
-    integer :: node_nume, elem_nume, num, snum
+    integer(kind=8), parameter :: nb_para_maxi = 20
+    integer(kind=8) :: n1
+    integer(kind=8) :: iret, iad
+    integer(kind=8) :: i_node, i_elem, i_cmp, ipi, ispi, ipar, i_cmp_maxi
+    integer(kind=8) :: nb_cmp_maxi, nuno, nuddl
+    integer(kind=8) :: nb_elem_poin, nb_elem_spoi, npi, nspi
+    integer(kind=8) :: node_nume, elem_nume, num, snum
     character(len=8) :: node_name, elem_name, cmp_name
     character(len=8) :: cmp_vari_name
-    integer :: i_vari
+    integer(kind=8) :: i_vari
     character(len=16) :: valk(2)
-    integer :: jcesd, jcesl, jcesv
-    integer :: vali(4)
+    integer(kind=8) :: jcesd, jcesl, jcesv
+    integer(kind=8) :: vali(4)
     character(len=8), pointer :: cesc(:) => null()
     character(len=8), pointer :: v_list_cmp(:) => null()
     character(len=16), pointer :: v_list_vari(:) => null()
-    integer, pointer :: v_list_node(:) => null()
-    integer, pointer :: v_list_elem(:) => null()
-    integer, pointer :: v_list_poin(:) => null()
-    integer, pointer :: v_list_spoi(:) => null()
+    integer(kind=8), pointer :: v_list_node(:) => null()
+    integer(kind=8), pointer :: v_list_elem(:) => null()
+    integer(kind=8), pointer :: v_list_poin(:) => null()
+    integer(kind=8), pointer :: v_list_spoi(:) => null()
 !
 ! --------------------------------------------------------------------------------------------------
 !

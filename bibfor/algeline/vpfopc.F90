@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -33,7 +33,7 @@ subroutine vpfopc(lmasse, lraide, fmin, sigma, matopa, &
 #include "asterfort/utmess.h"
 !
     character(len=*) :: matopa, raide
-    integer :: lmasse, lraide
+    integer(kind=8) :: lmasse, lraide
     real(kind=8) :: fmin
     complex(kind=8) :: sigma
     aster_logical :: lqz
@@ -50,7 +50,7 @@ subroutine vpfopc(lmasse, lraide, fmin, sigma, matopa, &
 !     ------------------------------------------------------------------
 !
 !
-    integer :: lmat(2), lmatra, ibid
+    integer(kind=8) :: lmat(2), lmatra, ibid
     character(len=24) :: nmat(2), nmatra
     real(kind=8) :: ashift, constc(3), fshift, valr(2)
     character(len=1) :: typcst(2)

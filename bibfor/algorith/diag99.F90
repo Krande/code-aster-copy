@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -55,9 +55,9 @@ subroutine diag99(nomres)
 !----------------------------------------------------------------------
 !
 !
-    integer :: iad, jiad, ier, idmode, lmasse, idstat
-    integer :: jnsta, i, j, k, ieq, nbord
-    integer :: nbmode, nbstat, neq, n1, iorne, iorol
+    integer(kind=8) :: iad, jiad, ier, idmode, lmasse, idstat
+    integer(kind=8) :: jnsta, i, j, k, ieq, nbord
+    integer(kind=8) :: nbmode, nbstat, neq, n1, iorne, iorol
     real(kind=8) :: alpha, r8scal
     complex(kind=8) :: cbid
     character(len=8) :: k8b, meca, stat
@@ -67,10 +67,10 @@ subroutine diag99(nomres)
     real(kind=8), pointer :: trav1(:) => null()
     real(kind=8), pointer :: trav2(:) => null()
     real(kind=8), pointer :: trav3(:) => null()
-    integer, pointer :: trav4(:) => null()
+    integer(kind=8), pointer :: trav4(:) => null()
     real(kind=8), pointer :: vale(:) => null()
-    integer, pointer :: ordm(:) => null()
-    integer, pointer :: ords(:) => null()
+    integer(kind=8), pointer :: ordm(:) => null()
+    integer(kind=8), pointer :: ords(:) => null()
     blas_int :: b_incx, b_incy, b_n
     cbid = dcmplx(0.d0, 0.d0)
 !----------------------------------------------------------------------

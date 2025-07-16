@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -50,11 +50,11 @@ subroutine op0143()
 #include "asterfort/utmess.h"
 #include "asterfort/wkvect.h"
 !
-    integer :: ocvect, ocprho, ocpvis, ocpesa, ocrugo, occapa, ocgril, iret, ifm
-    integer :: niv, nbno, jno
-    integer :: dimvi, dimvk, dimvr, dimgm, dimgr
-    integer :: iunit, unit1, unit2, ibid1, ibid2
-    integer :: irho, jrho
+    integer(kind=8) :: ocvect, ocprho, ocpvis, ocpesa, ocrugo, occapa, ocgril, iret, ifm
+    integer(kind=8) :: niv, nbno, jno
+    integer(kind=8) :: dimvi, dimvk, dimvr, dimgm, dimgr
+    integer(kind=8) :: iunit, unit1, unit2, ibid1, ibid2
+    integer(kind=8) :: irho, jrho
     character(len=2) :: carapa(4)
     character(len=3) :: ouinon
     character(len=9) :: typas(2), tpas
@@ -65,13 +65,13 @@ subroutine op0143()
     real(kind=8) :: vect(3), valepa(4)
 !
 !-----------------------------------------------------------------------
-    integer :: i, ibid, icael, icar, icara, icm, icmp
-    integer :: icoor, icoup, ideccr, idecvr, ience, iequiv, iocc
-    integer :: ipas, ipesa, iprho, ipvis, irhoe, irhoi, irugo
-    integer :: itpas, itres, itypf2, itypfl, ivect, j, jcm
-    integer :: jcoup, jpas, jtpas, lfscr, lfsgm, lfsgr, lfsic
-    integer :: lfsvi, lfsvk, lfsvr, lnbcr, nbangl, nbcara, nbcoor
-    integer :: nbcr, nbgrma, nbgtot, nbocc, ntypg, nzex
+    integer(kind=8) :: i, ibid, icael, icar, icara, icm, icmp
+    integer(kind=8) :: icoor, icoup, ideccr, idecvr, ience, iequiv, iocc
+    integer(kind=8) :: ipas, ipesa, iprho, ipvis, irhoe, irhoi, irugo
+    integer(kind=8) :: itpas, itres, itypf2, itypfl, ivect, j, jcm
+    integer(kind=8) :: jcoup, jpas, jtpas, lfscr, lfsgm, lfsgr, lfsic
+    integer(kind=8) :: lfsvi, lfsvk, lfsvr, lnbcr, nbangl, nbcara, nbcoor
+    integer(kind=8) :: nbcr, nbgrma, nbgtot, nbocc, ntypg, nzex
     real(kind=8) :: pas, pi, y
 !-----------------------------------------------------------------------
     data typas/'CARRE_LIG', 'TRIA_LIGN'/

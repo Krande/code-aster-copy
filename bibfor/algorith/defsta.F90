@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -64,13 +64,13 @@ subroutine defsta(nmresz, numrfz, raildz, lddl, nocmp, &
 #include "asterfort/vtcrea.h"
 #include "asterfort/wkvect.h"
 !-----------------------------------------------------------------------
-    integer :: i, iadval, ier, inord, lmat
-    integer :: ltcham, ltcvn, nbdef, nbfor, nbpabm, neq, neqr
+    integer(kind=8) :: i, iadval, ier, inord, lmat
+    integer(kind=8) :: ltcham, ltcvn, nbdef, nbfor, nbpabm, neq, neqr
 !
 !-----------------------------------------------------------------------
     parameter(nbpabm=9)
 !
-    integer :: lddl(nbfor, nbdef), ldpar(nbpabm)
+    integer(kind=8) :: lddl(nbfor, nbdef), ldpar(nbpabm)
     character(len=6) :: pgc
     character(len=8) :: nomres, mailla, kbid
     character(len=16) :: bmpara(nbpabm), depl, tydef, nocmp(nbdef)
@@ -78,7 +78,7 @@ subroutine defsta(nmresz, numrfz, raildz, lddl, nocmp, &
     character(len=24) :: chamno, nomcvn, crefe(2), blanc
     character(len=*) :: nmresz, numrfz, raildz
     complex(kind=8) :: cbid
-    integer :: iret
+    integer(kind=8) :: iret
     cbid = dcmplx(0.d0, 0.d0)
 !
 !-----------------------------------------------------------------------

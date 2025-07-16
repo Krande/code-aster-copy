@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -35,17 +35,17 @@ subroutine pacou0(x, fvec, qt, r, c, &
 #include "asterfort/pacou4.h"
 #include "asterfort/pacou5.h"
 #include "asterfort/pacou7.h"
-    integer :: nbm, nmode, nt
+    integer(kind=8) :: nbm, nmode, nt
     real(kind=8) :: qt(nt, *), r(nt, *), x(*), fvec(*)
     real(kind=8) :: c(*), d(*), fvcold(*), g(*), p(*)
     real(kind=8) :: s(*), t(*), w(*), xold(*), work(*)
     real(kind=8) :: masg(*), amor(*)
     real(kind=8) :: vecr1(*), vecr2(*), vecr3(*), vecr4(*), vecr5(*)
-    integer :: veci1(*)
+    integer(kind=8) :: veci1(*)
     aster_logical :: restrt, sing, skip, check
     character(len=8) :: typflu
 !-----------------------------------------------------------------------
-    integer :: i, indic, its, j, k, maxits, n
+    integer(kind=8) :: i, indic, its, j, k, maxits, n
     real(kind=8) :: den, eps, f, fold, stpmax, stpmx, sum
     real(kind=8) :: temp, test, tolf, tolmin, tolx, vg
 !-----------------------------------------------------------------------

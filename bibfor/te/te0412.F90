@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -70,11 +70,11 @@ subroutine te0412(option, nomte)
 !          ---> NOMTE  : NOM DU TYPE ELEMENT
 !.......................................................................
 !
-    integer :: nnomx
+    integer(kind=8) :: nnomx
     parameter(nnomx=4)
-    integer :: nbsm, nbsig
+    integer(kind=8) :: nbsm, nbsig
     parameter(nbsm=3)
-    integer :: npgmx
+    integer(kind=8) :: npgmx
     parameter(npgmx=4)
 !
     real(kind=8) :: pgl(3, 3)
@@ -95,11 +95,11 @@ subroutine te0412(option, nomte)
     real(kind=8) :: t1ve(9)
 !
 !
-    integer :: ndim, nno, nnoel, npg, ipoids, icoopg, ivf, idfdx, idfd2, jgano
-    integer :: jgeom, ipg, ino, jdepm, isig, jsig, idener, iret
-    integer :: icompo, icontp, jvari, nbvar, ivpg
-    integer :: multic
-    integer :: jcara
+    integer(kind=8) :: ndim, nno, nnoel, npg, ipoids, icoopg, ivf, idfdx, idfd2, jgano
+    integer(kind=8) :: jgeom, ipg, ino, jdepm, isig, jsig, idener, iret
+    integer(kind=8) :: icompo, icontp, jvari, nbvar, ivpg
+    integer(kind=8) :: multic
+    integer(kind=8) :: jcara
 !
     character(len=16) :: valk(3), optio2, rela_comp, rela_flua
     aster_logical :: dkq, dkg, lkit, coupmf

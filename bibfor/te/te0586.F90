@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -42,8 +42,8 @@ subroutine te0586(option, nomte)
 !
 ! --------------------------------------------------------------------------------------------------
 !
-    integer, parameter :: nbrddm = 156
-    integer :: nFourier, nbrddl, nno
+    integer(kind=8), parameter :: nbrddm = 156
+    integer(kind=8) :: nFourier, nbrddl, nno
     real(kind=8) :: deplm(nbrddm), deplp(nbrddm), vtemp(nbrddm)
     real(kind=8) :: b(4, nbrddm)
     real(kind=8) :: ktild(nbrddm, nbrddm), effint(nbrddm)

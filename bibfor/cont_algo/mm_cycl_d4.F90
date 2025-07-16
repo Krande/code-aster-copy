@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -26,7 +26,6 @@ subroutine mm_cycl_d4(ds_contact, i_cont_poin, indi_cont_eval, indi_cont_prev, &
 #include "asterf_types.h"
 #include "asterc/r8miem.h"
 #include "asterfort/assert.h"
-#include "asterfort/iscycl.h"
 #include "asterfort/jedema.h"
 #include "asterfort/jemarq.h"
 #include "asterfort/jeveuo.h"
@@ -35,9 +34,9 @@ subroutine mm_cycl_d4(ds_contact, i_cont_poin, indi_cont_eval, indi_cont_prev, &
 ! person_in_charge: mickael.abbas at edf.fr
 !
     type(NL_DS_Contact), intent(inout) :: ds_contact
-    integer, intent(in) :: i_cont_poin
-    integer, intent(in) :: indi_cont_eval
-    integer, intent(in) :: indi_cont_prev
+    integer(kind=8), intent(in) :: i_cont_poin
+    integer(kind=8), intent(in) :: indi_cont_eval
+    integer(kind=8), intent(in) :: indi_cont_prev
     real(kind=8), intent(in) :: pres_cont_curr
     real(kind=8), intent(in) :: pres_cont_prev
 !
@@ -56,17 +55,17 @@ subroutine mm_cycl_d4(ds_contact, i_cont_poin, indi_cont_eval, indi_cont_prev, &
 ! -----------------------------------------------------------------------
 !
     character(len=24) :: sdcont_cyclis
-    integer, pointer :: p_sdcont_cyclis(:) => null()
+    integer(kind=8), pointer :: p_sdcont_cyclis(:) => null()
     character(len=24) :: sdcont_cycnbr
-    integer, pointer :: p_sdcont_cycnbr(:) => null()
+    integer(kind=8), pointer :: p_sdcont_cycnbr(:) => null()
     character(len=24) :: sdcont_cyceta
-    integer, pointer :: p_sdcont_cyceta(:) => null()
-    integer :: cycl_type, cycl_long_acti
-    integer :: cycl_ecod, cycl_long, cycl_stat
+    integer(kind=8), pointer :: p_sdcont_cyceta(:) => null()
+    integer(kind=8) :: cycl_type, cycl_long_acti
+    integer(kind=8) :: cycl_ecod, cycl_long, cycl_stat
     aster_logical :: detect
     real(kind=8)  :: pres_near_zero
     real(kind=8)  :: coef_refe, F_refe, resi_press_curr
-    integer  :: nb_cont_poin
+    integer(kind=8)  :: nb_cont_poin
 !
 ! -----------------------------------------------------------------------
 !

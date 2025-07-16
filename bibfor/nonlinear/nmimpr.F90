@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -42,7 +42,7 @@ subroutine nmimpr(ds_print)
 ! --------------------------------------------------------------------------------------------------
 !
     aster_logical :: l_csv
-    integer :: unit_mess, unit_csv
+    integer(kind=8) :: unit_mess, unit_csv
     character(len=1) :: row_sep
     type(NL_DS_Table) :: table_cvg
 !

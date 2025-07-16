@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2019 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -23,10 +23,10 @@ interface
                       nbtv, codret)
         med_idt :: idfimd
         character(len=*) :: nochmd
-        integer :: typent
-        integer :: typgeo
+        integer(kind=8) :: typent
+        integer(kind=8) :: typgeo
         character(len=19) :: prefix
-        integer :: nbtv
-        integer :: codret
+        integer(kind=8) :: nbtv
+        integer(kind=8) :: codret
     end subroutine mdchii
 end interface

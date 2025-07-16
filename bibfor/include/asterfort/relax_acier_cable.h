@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -23,9 +23,9 @@ interface
                   materi, sigp, vip, dsde)
         character(len=*)  :: fami
         character(len=*)  :: materi
-        integer           :: kpg
-        integer           :: ksp
-        integer           :: imate
+        integer(kind=8)           :: kpg
+        integer(kind=8)           :: ksp
+        integer(kind=8)           :: imate
         real(kind=8)      :: sigm
         real(kind=8)      :: epsm
         real(kind=8)      :: deps
@@ -36,5 +36,3 @@ interface
         character(len=16) :: option
     end subroutine relax_acier_cable
 end interface
-
-

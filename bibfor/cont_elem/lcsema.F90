@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -27,11 +27,10 @@ subroutine lcsema(elem_dime, nb_node_mast, nb_node_slav, nb_lagr, &
 !
 #include "asterf_types.h"
 #include "jeveux.h"
-#include "asterfort/assert.h"
 #include "asterfort/jevech.h"
 !
-    integer, intent(in) :: elem_dime
-    integer, intent(in) :: nb_node_mast, nb_node_slav, nb_lagr
+    integer(kind=8), intent(in) :: elem_dime
+    integer(kind=8), intent(in) :: nb_node_mast, nb_node_slav, nb_lagr
     aster_logical, intent(in) :: l_norm_smooth
     real(kind=8), intent(in) :: shape_mast_func(9)
     real(kind=8), intent(in) :: poidspg
@@ -61,7 +60,7 @@ subroutine lcsema(elem_dime, nb_node_mast, nb_node_slav, nb_lagr, &
 !
 ! --------------------------------------------------------------------------------------------------
 !
-    integer :: i_node_mast, i_dime, jj, jv_norm
+    integer(kind=8) :: i_node_mast, i_dime, jj, jv_norm
     real(kind=8) :: r_nb_lagr
 !
 ! --------------------------------------------------------------------------------------------------
@@ -75,7 +74,8 @@ subroutine lcsema(elem_dime, nb_node_mast, nb_node_slav, nb_lagr, &
             do i_dime = 1, elem_dime
                 jj = (i_node_mast-1)*elem_dime+nb_node_slav*elem_dime+nb_lagr+i_dime
                 vtmp(jj) = vtmp(jj)+ &
-                          (zr(jv_norm+nb_node_slav*elem_dime+(i_node_mast-1)*elem_dime+i_dime-1))* &
+                           (zr(jv_norm+nb_node_slav*elem_dime+ &
+                               (i_node_mast-1)*elem_dime+i_dime-1))* &
                            jaco_upda*poidspg*shape_mast_func(i_node_mast)*lagrc
             end do
         end do

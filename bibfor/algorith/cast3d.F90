@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -28,7 +28,7 @@ subroutine cast3d(proj, gamma, dh, def, nno, &
 #include "asterf_types.h"
 #include "asterfort/caatdb.h"
     aster_logical :: calbn
-    integer :: kpg, i, j, k, nno, proj, ic, iadpg
+    integer(kind=8) :: kpg, i, j, k, nno, proj, ic, iadpg
     real(kind=8) :: dsidep(6, 6), bn(6, 3, 8)
     real(kind=8) :: gamma(4, 8), dh(4, 24)
     real(kind=8) :: jac, xf(8), yf(8), zf(8)

@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -34,7 +34,7 @@ subroutine rsnoch(nomsd, nomsy, iordr)
 #include "asterfort/sdmpic.h"
 #include "asterfort/utmess.h"
 !
-    integer :: iordr
+    integer(kind=8) :: iordr
     character(len=*) :: nomsd, nomsy
 ! person_in_charge: jacques.pellet at edf.fr
 !
@@ -54,8 +54,8 @@ subroutine rsnoch(nomsd, nomsy, iordr)
     character(len=19) :: nomd2, chnote
     character(len=24) :: valk(2)
     character(len=8) :: repk
-    integer :: normax, iretou, nordr, irang, iret, ibid, jtach
-    integer, pointer :: ordr(:) => null()
+    integer(kind=8) :: normax, iretou, nordr, irang, iret, ibid, jtach
+    integer(kind=8), pointer :: ordr(:) => null()
 ! ----------------------------------------------------------------------
 !
     call jemarq()

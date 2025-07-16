@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -21,7 +21,7 @@ subroutine dxhmft(dmf, jacob, hmft2)
     real(kind=8) :: dmf(3, 3), jacob(*), hmft2(2, 6)
 !     MATRICE PRODUIT HMF.T2(2,6)
 !     -----------------------------------------------------------------
-    integer :: j, k
+    integer(kind=8) :: j, k
     real(kind=8) :: vj11, vj12, vj21, vj22, hmf(2, 6), t2(3, 3)
 !     ---------------------------------------------------------------
     vj11 = jacob(1)

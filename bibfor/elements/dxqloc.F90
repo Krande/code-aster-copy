@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -33,16 +33,16 @@ subroutine dxqloc(flex, memb, mefl, ctor, matloc)
 !                      96 TERMES DE MEMBRANE/FLEXION
 !                       4 TERMES DE ROTATION DRZ
 !----------------------------------------------------------
-    integer :: if(78), jf(78)
-    integer :: im(36), jm(36)
-    integer :: ifm(60), jfm(60)
-    integer :: imf(36), jmf(36)
-    integer :: jz(4)
+    integer(kind=8) :: if(78), jf(78)
+    integer(kind=8) :: im(36), jm(36)
+    integer(kind=8) :: ifm(60), jfm(60)
+    integer(kind=8) :: imf(36), jmf(36)
+    integer(kind=8) :: jz(4)
     real(kind=8) :: coef
     real(kind=8) :: cf(78), cfm(60), cmf(36)
 !     ------------------------------------------------------------------
 !-----------------------------------------------------------------------
-    integer :: i, k
+    integer(kind=8) :: i, k
 !-----------------------------------------------------------------------
     data cf/1.d0, -1.d0, 2*1.d0, -1.d0, 2*1.d0,&
      &                -1.d0, 2*1.d0, -1.d0, 1.d0, 2*-1.d0,&

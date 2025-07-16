@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -32,7 +32,7 @@ function biline(nordre, vect1, amat, vect2)
 ! ---------------------------------------------
 !
 !-----------------------------------------------------------------------
-    integer :: i, j, k, nordre
+    integer(kind=8) :: i, j, k, nordre
     real(kind=8) :: biline, produi, zero
 !-----------------------------------------------------------------------
     zero = 0.d0

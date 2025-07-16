@@ -1,6 +1,6 @@
 ! --------------------------------------------------------------------
 ! Copyright (C) 2016 Stefan H. Reiterer               WWW.CODE-ASTER.ORG
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -22,7 +22,6 @@ subroutine nmresx(sddisc, sderro, iter_newt)
 !
     implicit none
 !
-#include "asterc/r8prem.h"
 #include "asterf_types.h"
 #include "event_def.h"
 #include "asterfort/nmcrel.h"
@@ -32,7 +31,7 @@ subroutine nmresx(sddisc, sderro, iter_newt)
 !
     character(len=19), intent(in) :: sddisc
     character(len=24), intent(in) :: sderro
-    integer, intent(in) :: iter_newt
+    integer(kind=8), intent(in) :: iter_newt
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -50,8 +49,8 @@ subroutine nmresx(sddisc, sderro, iter_newt)
 !
     real(kind=8) :: r(1), vale_resi
     aster_logical :: l_resi_maxi
-    integer :: nb_fail, i_fail, i_fail_acti
-    integer :: eventType
+    integer(kind=8) :: nb_fail, i_fail, i_fail_acti
+    integer(kind=8) :: eventType
 !
 ! --------------------------------------------------------------------------------------------------
 !

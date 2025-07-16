@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -22,9 +22,9 @@ subroutine piesfg(lcesga, eta, g, dg)
 
     interface
         subroutine lcesga(mode, eps, gameps, dgamde, itemax, precvg, iret)
-            integer, intent(in) :: mode, itemax
+            integer(kind=8), intent(in) :: mode, itemax
             real(kind=8), intent(in) :: eps(6), precvg
-            integer, intent(out):: iret
+            integer(kind=8), intent(out):: iret
             real(kind=8), intent(out):: gameps, dgamde(6)
         end subroutine lcesga
     end interface
@@ -39,9 +39,9 @@ subroutine piesfg(lcesga, eta, g, dg)
 ! OUT G      VALEUR DE LA FONCTION SEUIL
 ! OUT DG     VALEUR DE LA DERIVEE DE LA FONCTION SEUIL
 ! --------------------------------------------------------------------------------------------------
-    integer, parameter:: itemax = 100
+    integer(kind=8), parameter:: itemax = 100
 ! --------------------------------------------------------------------------------------------------
-    integer :: iret
+    integer(kind=8) :: iret
     real(kind=8) :: eps(6), phi, gameps, dgadep(6)
 ! --------------------------------------------------------------------------------------------------
     real(kind=8) :: lambda, deuxmu, troisk, gamma, rigmin, pc, pr, epsth

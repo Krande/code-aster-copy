@@ -51,7 +51,7 @@ The lower level user interface is used as:
 
 See :py:mod:`code_aster.rc` object to adjust the initialization parameters.
 
-Here is the diagram of the package organization:
+Here is the diagram of the packages organization:
 
 .. image:: ../../img/diagr_code_aster.svg
    :align: center

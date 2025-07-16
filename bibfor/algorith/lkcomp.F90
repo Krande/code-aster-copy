@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -38,10 +38,10 @@ subroutine lkcomp(fami, kpg, ksp, typmod, imate, instam, instap, &
 #include "asterfort/trace.h"
 #include "asterfort/utmess.h"
 #include "asterfort/get_varc.h"
-    integer :: retcom, imate, invi
+    integer(kind=8) :: retcom, imate, invi
     character(len=*), intent(in) :: fami
-    integer, intent(in) :: kpg
-    integer, intent(in) :: ksp
+    integer(kind=8), intent(in) :: kpg
+    integer(kind=8), intent(in) :: ksp
     character(len=8) :: typmod(*)
     character(len=16) :: option
     real(kind=8) :: instam, instap
@@ -79,9 +79,9 @@ subroutine lkcomp(fami, kpg, ksp, typmod, imate, instam, instap, &
 ! ----DEFORMATION VOLUMIQUE POSITIVE
 !=======================================================================
 !=======================================================================
-    integer :: nbmat, ndt, ndi, nvi, val, varv, i, k, matr
-    integer :: iret
-    integer :: indal
+    integer(kind=8) :: nbmat, ndt, ndi, nvi, val, varv, i, k, matr
+    integer(kind=8) :: iret
+    integer(kind=8) :: indal
     aster_logical ::  l_temp, lVari
     real(kind=8) :: mun, un, zero, deux, trois
 !      REAL*8        LGLEPS

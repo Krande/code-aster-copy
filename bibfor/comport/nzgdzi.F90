@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -45,10 +45,10 @@ subroutine nzgdzi(fami, kpg, ksp, ndim, imat, &
 #include "asterfort/Behaviour_type.h"
 !
     character(len=*), intent(in) :: fami
-    integer, intent(in) :: kpg
-    integer, intent(in) :: ksp
-    integer, intent(in) :: ndim
-    integer, intent(in) :: imat
+    integer(kind=8), intent(in) :: kpg
+    integer(kind=8), intent(in) :: ksp
+    integer(kind=8), intent(in) :: ndim
+    integer(kind=8), intent(in) :: imat
     character(len=16), intent(in) :: compor(COMPOR_SIZE)
     real(kind=8), intent(in) :: carcri(CARCRI_SIZE)
     real(kind=8), intent(in) :: instam
@@ -61,7 +61,7 @@ subroutine nzgdzi(fami, kpg, ksp, ndim, imat, &
     real(kind=8), intent(out) :: sigp(*)
     real(kind=8), intent(out) :: vip(*)
     real(kind=8), intent(out) :: dsigdf(6, 3, 3)
-    integer, intent(out) :: iret
+    integer(kind=8), intent(out) :: iret
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -90,9 +90,9 @@ subroutine nzgdzi(fami, kpg, ksp, ndim, imat, &
 !
 ! --------------------------------------------------------------------------------------------------
 !
-    integer :: maxval, nb_phase, meta_type
-    integer :: i, j, k, l, mode
-    integer :: ind(3, 3), nbr, iret1
+    integer(kind=8) :: maxval, nb_phase, meta_type
+    integer(kind=8) :: i, j, k, l, mode
+    integer(kind=8) :: ind(3, 3), nbr, iret1
     real(kind=8) :: phase(5), phasm(5), zalpha, deltaz(5)
     real(kind=8) :: temp, dt, coef_hard
     real(kind=8) :: epsth, e, mu, mum, troisk
@@ -113,7 +113,7 @@ subroutine nzgdzi(fami, kpg, ksp, ndim, imat, &
     real(kind=8) :: coeff8, coeff9, dv, rb, n0(3)
     real(kind=8) :: mat0(3, 3), mat1(3, 3), mat2(6, 3, 3), mat3(3, 3)
     character(len=1) :: poum
-    integer :: test
+    integer(kind=8) :: test
     real(kind=8), parameter :: kr(6) = (/1.d0, 1.d0, 1.d0, 0.d0, 0.d0, 0.d0/)
     real(kind=8), parameter :: pdtsca(6) = (/1.d0, 1.d0, 1.d0, 2.d0, 2.d0, 2.d0/)
     aster_logical :: resi, rigi, l_temp

@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -60,8 +60,8 @@ subroutine chprec(chou)
     character(len=6) :: nompro
     parameter(nompro='CHPREC')
 !
-    integer :: ibid, icoret, iret, jordr, n1, n2, n3, n4, n5, nbordr, nc, np
-    integer :: ifm, niv, iexi
+    integer(kind=8) :: ibid, icoret, iret, jordr, n1, n2, n3, n4, n5, nbordr, nc, np
+    integer(kind=8) :: ifm, niv, iexi
     real(kind=8) :: inst, epsi
     character(len=1) :: base
     character(len=8) :: resuco, interp, crit, proldr, prolga, typmax, cara

@@ -701,12 +701,6 @@ L'opération ASSE_DEPL de l'opérateur CREA_CHAMP ne doit pas être utilisée si
 L'opération ASSE_DEPL de l'opérateur CREA_CHAMP ne prend pas en charge les éléments HM."
 """
     ),
-    94: _(
-        """
-     --> L algorithme de détection a détecté un front qui va au delà de
-         la zone de fissuration potentielle. Il faut agrandir celle-ci.
-"""
-    ),
     95: _(
         """
   -> Le mot-clé CRITERE de PROPA_FISS vaut 'ANGLE_IMPO_GAMMA' ou 'ANGLE_IMPO_BETA_GAMMA' et le tableau

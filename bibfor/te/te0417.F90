@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -21,11 +21,9 @@ subroutine te0417(option, nomte)
     implicit none
 !
 #include "jeveux.h"
-#include "asterc/r8prem.h"
 #include "asterfort/dxroep.h"
 #include "asterfort/jevech.h"
 #include "asterfort/jevete.h"
-#include "asterfort/utmess.h"
 #include "asterfort/vectan.h"
 #include "asterfort/vectci.h"
 !
@@ -39,8 +37,8 @@ subroutine te0417(option, nomte)
 !
     real(kind=8) :: xi(3, 9), xg(3), ix2(3), ix1x2, ix1x3, ix2x3, matine(6)
     real(kind=8) :: vecta(9, 2, 3), vectn(9, 3), vectpt(9, 2, 3)
-    integer :: i, intsn, intsx, j, jgeom, k, l1
-    integer :: l2, lcastr, lzi, lzr, nb1, nb2, npgsn
+    integer(kind=8) :: i, intsn, intsx, j, jgeom, k, l1
+    integer(kind=8) :: l2, lcastr, lzi, lzr, nb1, nb2, npgsn
     real(kind=8) :: epais, epais2, epais3, rho, rnormc, volume, wgt
     real(kind=8) :: xx, xy, xz, yy, yz, zz
 !
@@ -113,14 +111,14 @@ subroutine te0417(option, nomte)
                              l2+i)*vectn(i, k)
                 end do
 !
-                ix1x2 = ix1x2+epais*wgt*zr(l2+j)*xi(1, j)*zr(l2+i)*xi(2, &
-                                                i)+epais3/12.d0*wgt*zr(l2+j)*vectn(j, 1)*zr(l2+i)* &
+                ix1x2 = ix1x2+epais*wgt*zr(l2+j)*xi(1, j)*zr(l2+i)*xi(2, i)+ &
+                        epais3/12.d0*wgt*zr(l2+j)*vectn(j, 1)*zr(l2+i)* &
                         vectn(i, 2)
-                ix1x3 = ix1x3+epais*wgt*zr(l2+j)*xi(1, j)*zr(l2+i)*xi(3, &
-                                                i)+epais3/12.d0*wgt*zr(l2+j)*vectn(j, 1)*zr(l2+i)* &
+                ix1x3 = ix1x3+epais*wgt*zr(l2+j)*xi(1, j)*zr(l2+i)*xi(3, i)+ &
+                        epais3/12.d0*wgt*zr(l2+j)*vectn(j, 1)*zr(l2+i)* &
                         vectn(i, 3)
-                ix2x3 = ix2x3+epais*wgt*zr(l2+j)*xi(2, j)*zr(l2+i)*xi(3, &
-                                                i)+epais3/12.d0*wgt*zr(l2+j)*vectn(j, 2)*zr(l2+i)* &
+                ix2x3 = ix2x3+epais*wgt*zr(l2+j)*xi(2, j)*zr(l2+i)*xi(3, i)+ &
+                        epais3/12.d0*wgt*zr(l2+j)*vectn(j, 2)*zr(l2+i)* &
                         vectn(i, 3)
             end do
 !

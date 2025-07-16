@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -23,7 +23,7 @@ interface
         real(kind=8), intent(in) :: dist_cont
         real(kind=8), intent(in) :: pres_cont
         real(kind=8), intent(in) :: coef_cont
-        integer, intent(out) :: indi_cont_eval
-        integer, intent(in), optional :: cycling_type
+        integer(kind=8), intent(out) :: indi_cont_eval
+        integer(kind=8), intent(in), optional :: cycling_type
     end subroutine mmstac
 end interface

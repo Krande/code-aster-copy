@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -44,7 +44,7 @@ subroutine glrc_calc_eps33(lambda, deuxmu, alfmc, gmt, gmc, &
 !       DKSI2  : DERIVEE DE KSI PAR RAPPORT A D2
 ! ----------------------------------------------------------------------
     implicit none
-    integer :: k
+    integer(kind=8) :: k
     real(kind=8) :: tr2d, da1, da2, gmt, gmc, eps33, de33d1, de33d2
     real(kind=8) :: ksi2d, dksi1, dksi2, lambda, deuxmu, emp(2)
     real(kind=8) :: alfmc, mu

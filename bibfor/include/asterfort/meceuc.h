@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2018 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -20,14 +20,14 @@ interface
     subroutine meceuc(stop, option, caraez, ligrel,&
                       nin, lchin, lpain, nou, lchou,&
                       lpaou, base)
-        integer :: nin
+        integer(kind=8) :: nin
         character(len=1) :: stop
         character(len=*) :: option
         character(len=*) :: caraez
         character(len=*) :: ligrel
         character(len=*) :: lchin(*)
         character(len=*) :: lpain(*)
-        integer :: nou
+        integer(kind=8) :: nou
         character(len=*) :: lchou(*)
         character(len=*) :: lpaou(*)
         character(len=*) :: base

@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -38,7 +38,7 @@ subroutine lcelas(loi, mod, &
 #include "asterfort/lksige.h"
 #include "asterfort/srsige.h"
 #include "asterfort/rsllin.h"
-    integer :: nmat
+    integer(kind=8) :: nmat
 !
     real(kind=8) :: materd(nmat, 2), materf(nmat, 2)
     real(kind=8) :: theta

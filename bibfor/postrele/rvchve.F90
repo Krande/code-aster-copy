@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -27,7 +27,7 @@ subroutine rvchve(iocc, xpi, ypi, zpi)
 #include "asterfort/getvr8.h"
 #include "asterfort/getvtx.h"
 !
-    integer, intent(in) :: iocc
+    integer(kind=8), intent(in) :: iocc
     real(kind=8), intent(inout) :: xpi, ypi, zpi
 ! ----------------------------------------------------------------------
 !
@@ -41,7 +41,7 @@ subroutine rvchve(iocc, xpi, ypi, zpi)
 !     zpi    in/out  r    : 3eme coordonnee du vecteur
 ! ---------------------------------------------------------------------
 !
-    integer ::  n1
+    integer(kind=8) ::  n1
     real(kind=8) :: angnot(3), pgl(3, 3), pm(3), pm2(3)
     character(len=16) ::  repere
 ! ---------------------------------------------------------------------

@@ -28,15 +28,14 @@ subroutine nzcomp(jvMaterCode, metaPara, numeComp, &
     implicit none
 !
 #include "asterf_types.h"
-#include "asterfort/assert.h"
 #include "asterfort/utmess.h"
 #include "asterfort/zacier.h"
 #include "asterfort/zedgar.h"
 #include "asterfort/Metallurgy_type.h"
 !
-    integer, intent(in) :: jvMaterCode
+    integer(kind=8), intent(in) :: jvMaterCode
     type(META_MaterialParameters), intent(inout) :: metaPara
-    integer, intent(in) :: numeComp, nbPhase, nbVari
+    integer(kind=8), intent(in) :: numeComp, nbPhase, nbVari
     real(kind=8), intent(in) :: deltaTime01, deltaTime12, time2
     real(kind=8), intent(in) :: tempInit, temp1, temp2
     real(kind=8), intent(in) :: metaPrev(nbVari)

@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -26,7 +26,7 @@ subroutine lisnch(lischa, nchar)
 #include "asterfort/jelira.h"
 #include "asterfort/jemarq.h"
     character(len=19) :: lischa
-    integer :: nchar
+    integer(kind=8) :: nchar
 !
 ! ----------------------------------------------------------------------
 !
@@ -44,7 +44,7 @@ subroutine lisnch(lischa, nchar)
 !
 !
     character(len=24) :: charge
-    integer :: iret
+    integer(kind=8) :: iret
 !
 ! ----------------------------------------------------------------------
 !

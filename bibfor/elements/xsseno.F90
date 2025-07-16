@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -31,18 +31,18 @@ subroutine xsseno(nno, nbsig, nse, npg, jgano, &
 !
 #include "jeveux.h"
 #include "asterfort/ppgan2.h"
-    integer :: mxval
+    integer(kind=8) :: mxval
     parameter(mxval=32*10*6)
 !     EN 2D :
 !     MXVAL =  6 (NBSE MAX) * 6 (NBNOSE MAX) * 4 (NBCMP MAX)
 !     EN 3D :
 !     MXVAL = 32 (NBSE MAX) * 10 (NBNOSE MAX) * 6 (NBCMP MAX)
 !
-    integer :: nno, npg, jgano
-    integer :: nbsig
-    integer :: jsigpg
-    integer :: idecpg
-    integer :: nse, ise, in, kpg, ic
+    integer(kind=8) :: nno, npg, jgano
+    integer(kind=8) :: nbsig
+    integer(kind=8) :: jsigpg
+    integer(kind=8) :: idecpg
+    integer(kind=8) :: nse, ise, in, kpg, ic
 !
     real(kind=8) :: vpg(15), vno(27)
 !

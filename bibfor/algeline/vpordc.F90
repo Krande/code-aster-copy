@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -19,7 +19,7 @@
 subroutine vpordc(type, iordre, nbpro, valpro, vecpro, &
                   neq)
     implicit none
-    integer :: type, nbpro, neq
+    integer(kind=8) :: type, nbpro, neq
     complex(kind=8) :: valpro(*), vecpro(neq, nbpro)
 !     TRIE DES VALEURS (ET DES VECTEURS) PROPRES COMPLEXES
 !     PAR ORDRE CROISSANT
@@ -36,7 +36,7 @@ subroutine vpordc(type, iordre, nbpro, valpro, vecpro, &
 !     NEQ    : IS : NOMBRE D'EQUATIONS
 !                 SI NEQ < NBPRO ALORS ON NE TRIE PAS DE VECTEURS
 !     ------------------------------------------------------------------
-    integer :: iperm, i, iordre, j
+    integer(kind=8) :: iperm, i, iordre, j
     real(kind=8) :: rperm, eps
     complex(kind=8) :: cperm
 !

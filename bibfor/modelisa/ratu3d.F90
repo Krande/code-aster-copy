@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -36,7 +36,7 @@ subroutine ratu3d(iprno, lonlis, klisno, noepou, noma, &
 #include "asterfort/reajre.h"
 #include "asterfort/as_deallocate.h"
 #include "asterfort/as_allocate.h"
-    integer :: lonlis, iprno(*)
+    integer(kind=8) :: lonlis, iprno(*)
     character(len=8) :: klisno(lonlis), noepou, noma, cara, mod
     character(len=14) :: numddl
     character(len=19) :: ligrel, lisrel
@@ -44,13 +44,13 @@ subroutine ratu3d(iprno, lonlis, klisno, noepou, noma, &
 !     RACCORD 3D_TUYAU PAR DES RELATIONS LINEAIRES
 !     ECRITURE DES RELATIONS SUR LES DDLS DE FOURIER
 !
-    integer :: nbcmp, nbmode
+    integer(kind=8) :: nbcmp, nbmode
     parameter(nbmode=3, nbcmp=6*(nbmode-1))
     character(len=8) :: nocmp(nbcmp), lpain(5), lpaout(6), nomddl(4)
     character(len=24) :: lchin(5), lchout(6), valech
     real(kind=8) :: coef(4), eg1(3), eg2(3), eg3(3), sectio
-    integer :: imod, info, ifm
-    integer :: nbcoef, idec
+    integer(kind=8) :: imod, info, ifm
+    integer(kind=8) :: nbcoef, idec
     real(kind=8), pointer :: rayon_raccord(:) => null()
 !
     call jemarq()

@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -24,7 +24,6 @@ subroutine nmstat_table(ds_measure)
     implicit none
 !
 #include "asterf_types.h"
-#include "asterfort/assert.h"
 #include "asterfort/tbajli.h"
 !
     type(NL_DS_Measure), intent(in) :: ds_measure
@@ -41,9 +40,9 @@ subroutine nmstat_table(ds_measure)
 !
 ! --------------------------------------------------------------------------------------------------
 !
-    integer :: nb_cols, nb_device
-    integer :: i_col, i_para_real, i_para_inte, i_device
-    integer :: vali(40)
+    integer(kind=8) :: nb_cols, nb_device
+    integer(kind=8) :: i_col, i_para_real, i_para_inte, i_device
+    integer(kind=8) :: vali(40)
     character(len=8) :: k8bid
     complex(kind=8), parameter :: c16bid = (0.d0, 0.d0)
     real(kind=8) :: valr(40), vale_r
@@ -51,7 +50,7 @@ subroutine nmstat_table(ds_measure)
     type(NL_DS_Column) :: column
     type(NL_DS_Device) :: device
     aster_logical :: l_acti, l_vale_inte, l_vale_real
-    integer :: vale_i
+    integer(kind=8) :: vale_i
     character(len=10) :: device_type
 !
 ! --------------------------------------------------------------------------------------------------

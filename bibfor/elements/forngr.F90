@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -61,7 +61,7 @@ subroutine forngr(option, nomte)
 !
 !---- DECLARATIONS LOCALES
 !
-    integer :: i, j, in, ii, nval, k1, iret, itab(7)
+    integer(kind=8) :: i, j, in, ii, nval, k1, iret, itab(7)
 !
 !---- DECLARATIONS RIGIDITE GEOMETRIQUE
 !
@@ -69,15 +69,15 @@ subroutine forngr(option, nomte)
 !
 !---- DECLARATIONS STANDARDS
 !
-    integer :: igeom, icontm, ivectu
-    integer :: lzi, lzr, jcara
-    integer :: nb1, nb2
+    integer(kind=8) :: igeom, icontm, ivectu
+    integer(kind=8) :: lzi, lzr, jcara
+    integer(kind=8) :: nb1, nb2
 !
 !---- DECLARATIONS PROPRES COQUE_3D NON LINEAIRE
 !
-    integer :: inte, intsr, intsn
+    integer(kind=8) :: inte, intsr, intsn
     real(kind=8) :: eptot
-    integer :: npge, npgsr, npgsn
+    integer(kind=8) :: npge, npgsr, npgsn
     parameter(npge=3)
     real(kind=8) :: vecta(9, 2, 3)
     real(kind=8) :: vectn(9, 3), vectpt(9, 2, 3)
@@ -92,15 +92,15 @@ subroutine forngr(option, nomte)
 !
 !---- DECLARATIONS COUCHES
 !
-    integer :: nbcou, nbsp
-    integer :: icou
+    integer(kind=8) :: nbcou, nbsp
+    integer(kind=8) :: icou
     real(kind=8) :: zic, zmin, epais, coef
 ! --- CONTRAINTE DE REFERENCE POUR REFE_FORC_NODA
     real(kind=8) :: sigref
 !
 !---- DECLARATIONS COQUE NON LINEAIRE
 !
-    integer :: jvDisp
+    integer(kind=8) :: jvDisp
     real(kind=8) :: b1su(5, 51), b2su(5, 51)
     real(kind=8) :: b1src(2, 51, 4)
     real(kind=8) :: b2src(2, 51, 4)
@@ -118,7 +118,7 @@ subroutine forngr(option, nomte)
 !
 !---- DECLARATIONS ROTATION GLOBAL LOCAL AU NOEUDS
 !
-    integer :: jnbspi
+    integer(kind=8) :: jnbspi
 !
     real(kind=8) :: blam(9, 3, 3)
     blas_int :: b_incx, b_incy, b_n

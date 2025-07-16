@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -47,10 +47,10 @@ subroutine te0481(option, nomte)
 !
     character(len=8) :: elrefp, elrese(6), fami(6), enr
     real(kind=8) :: xg(3), coorse(81), jac, r
-    integer :: ibid, ndim, nnop, nno, npg, ivf, ipoids
-    integer :: jpmilt, irese
-    integer :: jpintt, jcnset, jlonch, igeom, jcopg
-    integer :: i, j, nse, ise, in, ino, ipg, kpg, idfde
+    integer(kind=8) :: ibid, ndim, nnop, nno, npg, ivf, ipoids
+    integer(kind=8) :: jpmilt, irese
+    integer(kind=8) :: jpintt, jcnset, jlonch, igeom, jcopg
+    integer(kind=8) :: i, j, nse, ise, in, ino, ipg, kpg, idfde
     aster_logical :: axi
 !
     data elrese/'SE2', 'TR3', 'TE4', 'SE3', 'TR6', 'T10'/

@@ -50,15 +50,15 @@ subroutine pcptcc(option, ldist, dbg_ob, dbgv_ob, lcpu, &
 #include "asterfort/vecink.h"
 #include "asterfort/vecint.h"
 #include "asterfort/wkvect.h"
-    integer :: option, nbordr, i, ipas, lonnew, lonch
+    integer(kind=8) :: option, nbordr, i, ipas, lonnew, lonch
     character(len=1) :: ktyp
     character(len=19) :: lisord, partsd
     character(len=*), intent(in) :: modelZ
     character(len=24) :: vldist, vcham, lisori, chamno, vcnoch
     aster_logical :: ldist, dbg_ob, lsdpar
     aster_logical :: dbgv_ob, lcpu, ltest
-    integer :: rang, nbpas, nbproc, ideb, ifin, irelat
-    integer :: nbordi
+    integer(kind=8) :: rang, nbpas, nbproc, ideb, ifin, irelat
+    integer(kind=8) :: nbordi
     mpi_int :: mpicou
     real(kind=8), pointer :: noch(:)
     complex(kind=8), pointer :: nochc(:)
@@ -68,8 +68,8 @@ subroutine pcptcc(option, ldist, dbg_ob, dbgv_ob, lcpu, &
 !  P______________C___________P_______________T__________C____C____
 ! ----------------------------------------------------------------------
     mpi_int :: mpicow, mrang, mnbproc
-    integer :: ifm, niv, iret, jldist, iaux1, k, jvcham, jordi, compt, jordr, p
-    integer :: lonmax, lonmin, jcnoch, jval
+    integer(kind=8) :: ifm, niv, iret, jldist, iaux1, k, jvcham, jordi, compt, jordr, p
+    integer(kind=8) :: lonmax, lonmin, jcnoch, jval
     real(kind=8) :: rzero
     complex(kind=8) :: czero
     character(len=6) :: k6

@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -25,7 +25,7 @@ subroutine redrpr(mod, imate, sigp, vip, dsde, &
 #include "asterfort/dppatg.h"
 #include "asterfort/lcdevi.h"
 #include "blas/ddot.h"
-    integer :: imate, icode
+    integer(kind=8) :: imate, icode
     real(kind=8) :: vip(*), sigp(*), dsde(6, 6)
     character(len=8) :: mod
 ! =====================================================================
@@ -34,7 +34,7 @@ subroutine redrpr(mod, imate, sigp, vip, dsde, &
 ! --- ICODE = 0 CORRESPONDT AU CAS ELASTIQUE --------------------------
 ! --- ICODE = 1 SINON -------------------------------------------------
 ! =====================================================================
-    integer :: ndt, ndi, nvi, typedp
+    integer(kind=8) :: ndt, ndi, nvi, typedp
     real(kind=8) :: pplus, materf(5, 2), hookf(6, 6), dpdeno, dp
     real(kind=8) :: se(6), seq, plas, alpha, phi
     real(kind=8) :: siie, deux, trois

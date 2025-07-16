@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -18,7 +18,7 @@
 !
 subroutine cvrmzm(n, a, lda, b, ldb)
     implicit none
-    integer :: n, lda, ldb
+    integer(kind=8) :: n, lda, ldb
     real(kind=8) :: a(lda, *)
     complex(kind=8) :: b(ldb, *)
 !   COPIE UNE MATRICE REELLE DANS UNE MATRICE COMPLEXE.
@@ -29,7 +29,7 @@ subroutine cvrmzm(n, a, lda, b, ldb)
 !     : LDB  : DIMENSION DE B.
 ! OUT : B    : MATRICE COMPLEXE D'ORDRE N CONTENANT UNE COPIE DE A.
 !-----------------------------------------------------------------------
-    integer :: i, j
+    integer(kind=8) :: i, j
 !
 !-----------------------------------------------------------------------
 !-----------------------------------------------------------------------

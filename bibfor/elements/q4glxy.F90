@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -21,7 +21,7 @@ subroutine q4glxy(hlt2, depf, lambda)
     real(kind=8) :: hlt2(4, 6), depf(12), lambda(4)
 !     'LAMBDA' DE L'ELEMENT DE PLAQUE Q4G
 !     ------------------------------------------------------------------
-    integer :: i, j, k
+    integer(kind=8) :: i, j, k
     real(kind=8) :: tb(6, 12)
     real(kind=8) :: blb(4, 12)
 !     ------------------------------------------------------------------

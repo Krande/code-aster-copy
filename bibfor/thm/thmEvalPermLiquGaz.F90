@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -33,7 +33,7 @@ subroutine thmEvalPermLiquGaz(ds_thm, &
 #include "asterfort/THM_type.h"
 !
     type(THM_DS), intent(in) :: ds_thm
-    integer, intent(in) :: j_mater
+    integer(kind=8), intent(in) :: j_mater
     real(kind=8), intent(in) :: satur, p2, temp
     real(kind=8), intent(out) :: krl, dkrl_dsatur
     real(kind=8), optional, intent(out) :: krg_, dkrg_dsatur_, dkrg_dp2_
@@ -60,11 +60,11 @@ subroutine thmEvalPermLiquGaz(ds_thm, &
 ! --------------------------------------------------------------------------------------------------
 !
     real(kind=8) :: krg, dkrg_dsatur, dkrg_dp2
-    integer, parameter :: nb_para = 3
+    integer(kind=8), parameter :: nb_para = 3
     real(kind=8) :: para_vale(nb_para)
     character(len=4), parameter :: para_name(nb_para) = (/'SAT ', 'PGAZ', 'TEMP'/)
-    integer, parameter :: nb_resu = 5
-    integer :: icodre(nb_resu)
+    integer(kind=8), parameter :: nb_resu = 5
+    integer(kind=8) :: icodre(nb_resu)
     real(kind=8) :: resu_vale(nb_resu)
     character(len=16), parameter :: resu_name(nb_resu) = (/'PERM_LIQU       ', 'D_PERM_LIQU_SATU', &
                                                            'PERM_GAZ        ', 'D_PERM_SATU_GAZ ', &

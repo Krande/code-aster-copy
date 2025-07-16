@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -45,7 +45,7 @@ subroutine nmgvno(fami, ndim, nno1, nno2, npg, &
     character(len=8) :: typmod(2)
     character(len=*) :: fami
     character(len=16) :: option, compor(COMPOR_SIZE)
-    integer :: ndim, nno1, nno2, npg, idfde1, idfde2, iw, mat, lgpg, codret
+    integer(kind=8) :: ndim, nno1, nno2, npg, idfde1, idfde2, iw, mat, lgpg, codret
     real(kind=8) :: vff1(nno1, npg), vff2(nno2, npg)
     real(kind=8) :: geom(ndim, nno1)
     real(kind=8) :: carcri(CARCRI_SIZE), instam, instap
@@ -93,15 +93,15 @@ subroutine nmgvno(fami, ndim, nno1, nno2, npg, &
 !
 ! --------------------------------------------------------------------------------------------------
 !
-    integer, parameter :: ksp = 1
-    integer :: k2(1)
+    integer(kind=8), parameter :: ksp = 1
+    integer(kind=8) :: k2(1)
     character(len=16), parameter :: nom(1) = (/'C_GRAD_VARI'/)
     character(len=8), parameter ::  famiNonLocal = "FPG1"
     character(len=8) :: poum
     aster_logical :: grand, axi, lElas, lMatrPred
     aster_logical :: lVect, lMatr, lVari, lSigm
-    integer :: nddl, ndimsi, kpg, cod(27), n, i, m, j, kl, pq, os, osa, kk
-    integer :: iu(3*27), ia(8), spt
+    integer(kind=8) :: nddl, ndimsi, kpg, cod(27), n, i, m, j, kl, pq, os, osa, kk
+    integer(kind=8) :: iu(3*27), ia(8), spt
     real(kind=8) :: rac2, c, val(1)
     real(kind=8) :: deplm(3*27), depld(3*27), dfdi1(27, 3)
     real(kind=8) :: avm, avd, avp, agm(3), agd(3), agp(3), bp

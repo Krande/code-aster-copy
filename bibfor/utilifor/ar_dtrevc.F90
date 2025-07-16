@@ -1,6 +1,6 @@
 ! --------------------------------------------------------------------
 ! Copyright (C) LAPACK
-! Copyright (C) 2007 - 2024 - EDF R&D - www.code-aster.org
+! Copyright (C) 2007 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -198,7 +198,7 @@ subroutine ar_dtrevc(side, howmny, select, n, t, &
 #include "blas/idamax.h"
 #include "blas/lsame.h"
     character(len=1) :: howmny, side
-    integer :: info, ldt, ldvl, ldvr, m, mm, n
+    integer(kind=8) :: info, ldt, ldvl, ldvr, m, mm, n
 !     ..
 !     .. ARRAY ARGUMENTS ..
     aster_logical :: select(*)
@@ -209,7 +209,7 @@ subroutine ar_dtrevc(side, howmny, select, n, t, &
 !     ..
 !     .. LOCAL SCALARS ..
     aster_logical :: allv, bothv, leftv, over, pair, rightv, somev
-    integer :: i, ierr, ii, ip, is, j, j1, j2, jnxt, k, ki, n2
+    integer(kind=8) :: i, ierr, ii, ip, is, j, j1, j2, jnxt, k, ki, n2
     real(kind=8) :: beta, bignum, emax, rec, remax, scale, smin, smlnum, ulp
     real(kind=8) :: unfl, vcrit, vmax, wi, wr, xnorm
 ! DUE TO CRS512       REAL*8 OVFL

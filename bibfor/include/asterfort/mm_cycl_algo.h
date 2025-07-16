@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2019 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -33,25 +33,25 @@ interface
         type(NL_DS_Contact), intent(inout) :: ds_contact
         aster_logical, intent(in) :: l_frot_zone
         aster_logical, intent(in) :: l_glis_init
-        integer, intent(inout) :: type_adap
-        integer, intent(in) :: i_cont_poin
-        integer, intent(in) :: zone_index
+        integer(kind=8), intent(inout) :: type_adap
+        integer(kind=8), intent(in) :: i_cont_poin
+        integer(kind=8), intent(in) :: zone_index
         real(kind=8), intent(in) :: vale_pene
         real(kind=8), intent(in) :: glis_maxi
         aster_logical, intent(in) :: l_pena_frot
         aster_logical, intent(in) :: l_pena_cont
-        integer, intent(inout) :: indi_cont_eval
-        integer, intent(inout) :: indi_frot_eval
+        integer(kind=8), intent(inout) :: indi_cont_eval
+        integer(kind=8), intent(inout) :: indi_frot_eval
         real(kind=8), intent(inout) :: dist_cont_curr
         real(kind=8), intent(inout) :: pres_cont_curr
         real(kind=8), intent(inout) :: dist_frot_curr(3)
         real(kind=8), intent(in) :: pres_frot_curr(3)
         real(kind=8), pointer :: v_sdcont_cychis(:)
         real(kind=8), pointer :: v_sdcont_cyccoe(:)
-        integer, pointer :: v_sdcont_cyceta(:)
-        integer, intent(out) :: indi_cont_curr
-        integer, intent(out) :: indi_frot_curr
-        integer, intent(out) :: ctcsta
+        integer(kind=8), pointer :: v_sdcont_cyceta(:)
+        integer(kind=8), intent(out) :: indi_cont_curr
+        integer(kind=8), intent(out) :: indi_frot_curr
+        integer(kind=8), intent(out) :: ctcsta
         aster_logical, intent(out) :: mmcvca
     end subroutine mm_cycl_algo
 end interface

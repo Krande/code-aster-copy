@@ -28,7 +28,6 @@ MA = DEFI_GROUP(
     CREA_GROUP_NO=(
         _F(GROUP_MA="L_depl_sup"),
         _F(GROUP_MA="L_depl_inf"),
-        _F(GROUP_MA="BORDS"),
         _F(DIFFE=("BORDS", "L_blocage_y"), NOM="CL_IMPOS"),
     ),
 )

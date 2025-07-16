@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -19,7 +19,7 @@
 function typele(ligrez, igrel, icalc)
     use calcul_module, only: ca_ialiel_, ca_illiel_
     implicit none
-    integer :: typele
+    integer(kind=8) :: typele
 
 ! person_in_charge: jacques.pellet at edf.fr
 
@@ -32,8 +32,8 @@ function typele(ligrez, igrel, icalc)
 #include "asterfort/assert.h"
 
     character(len=*), intent(in) :: ligrez
-    integer, intent(in) :: igrel
-    integer, intent(in), optional :: icalc
+    integer(kind=8), intent(in) :: igrel
+    integer(kind=8), intent(in), optional :: icalc
 !-----------------------------------------------------------------------
 !     entrees:
 !       ligrel (o) : nom d'1 ligrel
@@ -45,7 +45,7 @@ function typele(ligrez, igrel, icalc)
 !       typele : type_element associe au grel
 !-----------------------------------------------------------------------
     character(len=19) :: ligrel
-    integer :: liel, n1
+    integer(kind=8) :: liel, n1
 ! ----------------------------------------------------------------------
     ligrel = ligrez
 

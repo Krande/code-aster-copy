@@ -26,10 +26,8 @@ subroutine nmfocc(phase, model, ds_material, nume_dof, list_func_acti, &
 #include "asterf_types.h"
 #include "asterfort/assvec.h"
 #include "asterfort/cfdisl.h"
-#include "asterfort/dismoi.h"
 #include "asterfort/infdbg.h"
 #include "asterfort/isfonc.h"
-#include "asterfort/jeveuo.h"
 #include "asterfort/lccsst.h"
 #include "asterfort/nmchex.h"
 #include "asterfort/nmdebg.h"
@@ -43,7 +41,7 @@ subroutine nmfocc(phase, model, ds_material, nume_dof, list_func_acti, &
     character(len=24), intent(in) :: model
     type(NL_DS_Material), intent(in) :: ds_material
     character(len=24), intent(in) :: nume_dof
-    integer, intent(in) :: list_func_acti(*)
+    integer(kind=8), intent(in) :: list_func_acti(*)
     type(NL_DS_Contact), intent(in) :: ds_contact
     type(NL_DS_Measure), intent(inout) :: ds_measure
     character(len=19), intent(in) :: hval_algo(*)
@@ -74,7 +72,7 @@ subroutine nmfocc(phase, model, ds_material, nume_dof, list_func_acti, &
 !
 ! --------------------------------------------------------------------------------------------------
 !
-    integer :: ifm, niv
+    integer(kind=8) :: ifm, niv
     aster_logical :: l_cont_elem, l_fric, l_all_verif, l_newt_cont, l_newt_geom, l_cont_lac
     character(len=19) :: vect_elem_cont, vect_elem_fric
     character(len=19) :: vect_asse_cont, vect_asse_fric

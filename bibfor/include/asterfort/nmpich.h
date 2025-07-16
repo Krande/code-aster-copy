@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2019 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -29,12 +29,12 @@ interface
         character(len=24) :: carele
         type(NL_DS_Constitutive), intent(in) :: ds_constitutive
         character(len=19) :: lischa
-        integer :: fonact(*)
+        integer(kind=8) :: fonact(*)
         type(NL_DS_Measure), intent(inout) :: ds_measure
         type(NL_DS_Contact), intent(in) :: ds_contact
         type(NL_DS_System), intent(in) :: ds_system
         character(len=19) :: sdpilo
-        integer :: iterat
+        integer(kind=8) :: iterat
         character(len=19) :: sdnume
         real(kind=8) :: deltat
         character(len=19) :: valinc(*)
@@ -45,8 +45,8 @@ interface
         real(kind=8) :: eta
         real(kind=8) :: rho
         real(kind=8) :: offset
-        integer :: ldccvg
-        integer :: pilcvg
+        integer(kind=8) :: ldccvg
+        integer(kind=8) :: pilcvg
         character(len=19) :: matass
     end subroutine nmpich
 end interface

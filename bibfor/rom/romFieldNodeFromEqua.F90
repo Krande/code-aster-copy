@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -32,8 +32,8 @@ subroutine romFieldNodeFromEqua(field, nbNodeMesh, listNode)
 #include "asterfort/utmess.h"
 !
     type(ROM_DS_Field), intent(in) :: field
-    integer, intent(in) :: nbNodeMesh
-    integer, pointer :: listNode(:)
+    integer(kind=8), intent(in) :: nbNodeMesh
+    integer(kind=8), pointer :: listNode(:)
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -52,14 +52,14 @@ subroutine romFieldNodeFromEqua(field, nbNodeMesh, listNode)
 !
 ! --------------------------------------------------------------------------------------------------
 !
-    integer :: ifm, niv
-    integer, pointer :: deeq(:) => null()
+    integer(kind=8) :: ifm, niv
+    integer(kind=8), pointer :: deeq(:) => null()
     character(len=19) :: nume_equa
     character(len=16) :: fieldSupp
     character(len=24) :: fieldRefe
-    integer :: iEqua, iNodeMesh
-    integer :: numeEqua, numeNode, numeCmp
-    integer :: nbEquaChck, nbCmpOnNode, nbEqua
+    integer(kind=8) :: iEqua, iNodeMesh
+    integer(kind=8) :: numeEqua, numeNode, numeCmp
+    integer(kind=8) :: nbEquaChck, nbCmpOnNode, nbEqua
 !
 ! --------------------------------------------------------------------------------------------------
 !

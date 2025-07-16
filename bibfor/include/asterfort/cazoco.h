@@ -23,8 +23,8 @@ interface
                       nb_cont_zone)
         character(len=8), intent(in) :: sdcont
         character(len=16), intent(in) :: keywf
-        integer, intent(in) :: nb_cont_zone
-        integer, intent(in) :: cont_form
-        integer, intent(in) :: i_zone
+        integer(kind=8), intent(in) :: nb_cont_zone
+        integer(kind=8), intent(in) :: cont_form
+        integer(kind=8), intent(in) :: i_zone
     end subroutine cazoco
 end interface

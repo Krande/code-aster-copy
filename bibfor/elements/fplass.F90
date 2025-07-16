@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -29,7 +29,7 @@ function fplass(nmnbn, nmplas, bend)
 !
 ! OUT FPLASS : CALCUL DES CRITERES DE PLASTICITE F
 !
-    integer :: bend
+    integer(kind=8) :: bend
 !
     real(kind=8) :: fplass, nmnbn(6), nmplas(2, 3)
 !

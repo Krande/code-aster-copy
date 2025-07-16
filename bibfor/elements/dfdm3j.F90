@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -19,7 +19,7 @@
 subroutine dfdm3j(nno, ipg, idfde, coor, jac)
     implicit none
 #include "jeveux.h"
-    integer :: ipg, idfde, nno
+    integer(kind=8) :: ipg, idfde, nno
     real(kind=8) :: coor(1), jac
 ! ......................................................................
 !    - FONCTION REALISEE:  CALCUL DU JACOBIEN (AVEC SIGNE)
@@ -33,7 +33,7 @@ subroutine dfdm3j(nno, ipg, idfde, coor, jac)
 !        RESULTATS:  JAC           <--  JACOBIEN AU POINT DE GAUSS
 ! ......................................................................
 !
-    integer :: i, j, ii, k
+    integer(kind=8) :: i, j, ii, k
     real(kind=8) :: g(3, 3)
     real(kind=8) :: de, dn, dk, j11, j21, j31
 !

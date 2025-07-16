@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -21,10 +21,10 @@
 interface
     subroutine cesred(ces1z, nbma, lima, nbcmp, licmp,&
                       base, ces2z)
-        integer :: nbma
+        integer(kind=8) :: nbma
         character(len=*) :: ces1z
-        integer :: lima(nbma)
-        integer :: nbcmp
+        integer(kind=8) :: lima(nbma)
+        integer(kind=8) :: nbcmp
         character(len=*) :: licmp(*)
         character(len=*) :: base
         character(len=*) :: ces2z

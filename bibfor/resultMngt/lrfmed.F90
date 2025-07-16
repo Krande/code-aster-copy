@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -60,7 +60,7 @@ subroutine lrfmed(fileUnit, resultName, meshAst, storeLast, &
 #include "asterfort/utmess.h"
 #include "asterfort/wkvect.h"
 !
-    integer, intent(in) :: fileUnit, storeLast
+    integer(kind=8), intent(in) :: fileUnit, storeLast
     character(len=8), intent(in) :: resultName, meshAst
     character(len=16), intent(in) :: fieldType
     character(len=8), intent(in) :: fieldQuantity
@@ -70,14 +70,14 @@ subroutine lrfmed(fileUnit, resultName, meshAst, storeLast, &
     character(len=8), intent(in) :: param
     character(len=3), intent(in) :: prolz
     character(len=10), intent(in) :: storeAccess
-    integer, intent(in) :: storeCreaNb, storeIndxNb, storeTimeNb
+    integer(kind=8), intent(in) :: storeCreaNb, storeIndxNb, storeTimeNb
     character(len=19), intent(in) :: storeIndx, storeTime
     character(len=8), intent(in) :: storeCrit
     real(kind=8), intent(in) :: storeEpsi
     character(len=4), intent(in):: storePara
-    integer, intent(in) :: cmpNb
+    integer(kind=8), intent(in) :: cmpNb
     character(len=24), intent(in) :: cmpAstName, cmpMedName
-    integer, intent(out) :: fieldStoreNb
+    integer(kind=8), intent(out) :: fieldStoreNb
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -115,18 +115,18 @@ subroutine lrfmed(fileUnit, resultName, meshAst, storeLast, &
 ! --------------------------------------------------------------------------------------------------
 !
     character(len=6), parameter :: nompro = 'LRFMED'
-    integer :: vali(2)
-    integer :: ndim, typgeo(MT_NTYMAX), letype
-    integer :: nbtyp, nnotyp(MT_NTYMAX)
-    integer :: renumd(MT_NTYMAX), nuanom(MT_NTYMAX, MT_NNOMAX)
-    integer :: modnum(MT_NTYMAX), numnoa(MT_NTYMAX, MT_NNOMAX)
-    integer :: sequenceNb, major, minor, rel
+    integer(kind=8) :: vali(2)
+    integer(kind=8) :: ndim, typgeo(MT_NTYMAX), letype
+    integer(kind=8) :: nbtyp, nnotyp(MT_NTYMAX)
+    integer(kind=8) :: renumd(MT_NTYMAX), nuanom(MT_NTYMAX, MT_NNOMAX)
+    integer(kind=8) :: modnum(MT_NTYMAX), numnoa(MT_NTYMAX, MT_NNOMAX)
+    integer(kind=8) :: sequenceNb, major, minor, rel, iver
     med_idt :: fid, ifimed
-    integer :: iret
-    integer :: iSequence, iStore, ipas
-    integer :: jvPara
-    integer :: ifm, niv, jnuom
-    integer :: nbma, jnbpgm, jnbpmm, ordins, jnbsmm
+    integer(kind=8) :: iret
+    integer(kind=8) :: iSequence, iStore, ipas
+    integer(kind=8) :: jvPara
+    integer(kind=8) :: ifm, niv, jnuom
+    integer(kind=8) :: nbma, jnbpgm, jnbpmm, ordins, jnbsmm
     character(len=8) :: nomtyp(MT_NTYMAX)
     character(len=19) :: nomch
     character(len=19) :: prefix, fieldNameAst, pchn1
@@ -135,18 +135,18 @@ subroutine lrfmed(fileUnit, resultName, meshAst, storeLast, &
     character(len=64) :: meshMed, fieldNameMed
     character(len=200) :: fileName
     character(len=255) :: kfic
-    integer :: typent, typgom
-    integer, parameter :: edlect = 0, ednoeu = 3, edmail = 0, ednoma = 4, ednono = -1, typnoe = 0
+    integer(kind=8) :: typent, typgom
+    integer(kind=8), parameter :: edlect = 0, ednoeu = 3, edmail = 0, ednoma = 4, ednono = -1, typnoe = 0
     character(len=1) :: saux01
     character(len=8) :: saux08
-    integer :: numeStep, numeStore, inum
-    integer :: iaux, itps0
-    integer :: iinst
+    integer(kind=8) :: numeStep, numeStore, inum
+    integer(kind=8) :: iaux, itps0
+    integer(kind=8) :: iinst
     real(kind=8) :: timeCurr
     character(len=64) :: k64b
     aster_logical :: existm, timeExist
     character(len=24), pointer :: refe(:) => null()
-    integer, pointer :: vStoreIndx(:) => null()
+    integer(kind=8), pointer :: vStoreIndx(:) => null()
     real(kind=8), pointer :: vStoreTime(:) => null()
 !
 ! --------------------------------------------------------------------------------------------------
@@ -170,6 +170,7 @@ subroutine lrfmed(fileUnit, resultName, meshAst, storeLast, &
 !
     call as_med_open(fid, fileName, edlect, iret)
     call as_mfinvr(fid, major, minor, rel, iret)
+    iver = major*100+minor*10+rel
     fieldNameMed = fieldNameMed_
     if (major .lt. 3) then
         fieldNameMed(33:64) = '                                '
@@ -207,7 +208,14 @@ subroutine lrfmed(fileUnit, resultName, meshAst, storeLast, &
         call lrmtyp(nbtyp, nomtyp, nnotyp, typgeo, renumd, &
                     modnum, nuanom, numnoa)
         if (fieldSupport(1:4) .eq. 'ELNO') then
-            typent = ednoma
+!         CAS PARTICULIER: LECTURE DU FICHIER MED DONT L'ENTITE
+!         DES CHAMPS ELNO EST ENCORE 'MED_MAILLE'
+            if (iver .lt. 233) then
+                typent = edmail
+                call utmess('A', 'MED_53', sk=fieldNameMed)
+            else
+                typent = ednoma
+            end if
         else
             typent = edmail
         end if
@@ -224,25 +232,6 @@ subroutine lrfmed(fileUnit, resultName, meshAst, storeLast, &
                 goto 240
             end if
         end do
-!
-!         CAS PARTICULIER: LECTURE DU FICHIER MED DONT L'ENTITE
-!         DES CHAMPS ELNO EST ENCORE 'MED_MAILLE'
-        if (fieldSupport .eq. 'ELNO') then
-            typent = edmail
-            call utmess('A', 'MED_53', sk=fieldNameMed)
-            do letype = 1, nbtyp
-                iaux = renumd(letype)
-                typgom = typgeo(iaux)
-                ifimed = 0
-                call mdchin(fileName, ifimed, fieldNameMed, typent, typgom, &
-                            prefix, sequenceNb, iret)
-                if (sequenceNb .ne. 0) then
-                    call jeveuo(prefix//'.INST', 'L', ipas)
-                    call jeveuo(prefix//'.NUME', 'L', inum)
-                    goto 240
-                end if
-            end do
-        end if
 !
     end if
 240 continue

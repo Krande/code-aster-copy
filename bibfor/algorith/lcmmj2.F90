@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -51,8 +51,8 @@ subroutine lcmmj2(taur, materf, cpmono, ifa, nmat, &
 !       ----------------------------------------------------------------
 #include "asterfort/lcmmfe.h"
 #include "asterfort/lcmmjf.h"
-    integer :: nmat, nuvr, nbcomm(nmat, 3), nuvi, ifa, nbsys, is, iret, nfs, nsg
-    integer :: ir, nsfa, nsfv
+    integer(kind=8) :: nmat, nuvr, nbcomm(nmat, 3), nuvi, ifa, nbsys, is, iret, nfs, nsg
+    integer(kind=8) :: ir, nsfa, nsfv
     real(kind=8) :: vind(*), dgdtau, hsr(nsg, nsg), dgsdts, dksdts, dgrdbs
     real(kind=8) :: dksdbr
     real(kind=8) :: dhdalr, hs, taur, dp, dy(*), materf(nmat*2), dt, rp, dgdalr
@@ -61,7 +61,7 @@ subroutine lcmmj2(taur, materf, cpmono, ifa, nmat, &
     real(kind=8) :: sgnr
     character(len=16) :: necoul
     character(len=24) :: cpmono(5*nmat+1)
-    integer :: irr, decirr, nbsyst, decal, gdef
+    integer(kind=8) :: irr, decirr, nbsyst, decal, gdef
     common/polycr/irr, decirr, nbsyst, decal, gdef
 !     ----------------------------------------------------------------
 !

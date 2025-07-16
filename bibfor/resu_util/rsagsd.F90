@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -38,7 +38,7 @@ subroutine rsagsd(nomsd, ilong)
 #include "asterfort/as_deallocate.h"
 #include "asterfort/as_allocate.h"
 !
-    integer :: ilong
+    integer(kind=8) :: ilong
     character(len=*) :: nomsd
 ! person_in_charge: jacques.pellet at edf.fr
 !       REDIMENSIONNEMENT D'UNE STRUCTURE DE DONNEES "RESULTAT-COMPOSE"
@@ -50,10 +50,10 @@ subroutine rsagsd(nomsd, ilong)
 ! IN  : ILONG  : NOUVELLE LONGUEUR DE LA S.D.
 ! ----------------------------------------------------------------------
 ! ----------------------------------------------------------------------
-    integer :: iundef, iret, nbcham, nbordr, nborlu, newnb, neword, neworl
-    integer :: jtachg, jordrg, i, j, k, jordrv, jpara
+    integer(kind=8) :: iundef, iret, nbcham, nbordr, nborlu, newnb, neword, neworl
+    integer(kind=8) :: jtachg, jordrg, i, j, k, jordrv, jpara
     real(kind=8) :: rundef
-    integer :: n1, n2, kk, ier1
+    integer(kind=8) :: n1, n2, kk, ier1
     character(len=24) :: nomobj
     character(len=19) :: nomd2
     character(len=24), pointer :: tach(:) => null()

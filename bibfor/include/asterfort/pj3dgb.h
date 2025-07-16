@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -23,21 +23,21 @@ interface
                       btdi, btvr, btnb, btlc, btco,&
                       p1, q1, r1, p2, q2,&
                       r2)
-        integer :: ino2
+        integer(kind=8) :: ino2
         real(kind=8) :: geom2(*)
         real(kind=8) :: geom1(*)
-        integer :: tetr4(*)
-        integer :: ndec
-        integer :: btdi(*)
+        integer(kind=8) :: tetr4(*)
+        integer(kind=8) :: ndec
+        integer(kind=8) :: btdi(*)
         real(kind=8) :: btvr(*)
-        integer :: btnb(*)
-        integer :: btlc(*)
-        integer :: btco(*)
-        integer :: p1
-        integer :: q1
-        integer :: r1
-        integer :: p2
-        integer :: q2
-        integer :: r2
+        integer(kind=8) :: btnb(*)
+        integer(kind=8) :: btlc(*)
+        integer(kind=8) :: btco(*)
+        integer(kind=8) :: p1
+        integer(kind=8) :: q1
+        integer(kind=8) :: r1
+        integer(kind=8) :: p2
+        integer(kind=8) :: q2
+        integer(kind=8) :: r2
     end subroutine pj3dgb
 end interface

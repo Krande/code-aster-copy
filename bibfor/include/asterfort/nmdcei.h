@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -21,7 +21,7 @@
 interface
     subroutine nmdcei(sddisc, nume_inst, newins, nb_inst_ini, nb_inst_ins,&
                       typext, dt0)
-        integer :: nb_inst_ins, nume_inst, nb_inst_ini
+        integer(kind=8) :: nb_inst_ins, nume_inst, nb_inst_ini
         character(len=19) :: sddisc
         real(kind=8) :: newins(nb_inst_ins)
         real(kind=8) :: dt0

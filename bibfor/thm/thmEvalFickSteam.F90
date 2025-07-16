@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -24,10 +24,9 @@ subroutine thmEvalFickSteam(j_mater, &
 !
 #include "asterf_types.h"
 #include "asterc/r8nnem.h"
-#include "asterfort/assert.h"
 #include "asterfort/rcvala.h"
 !
-    integer, intent(in) :: j_mater
+    integer(kind=8), intent(in) :: j_mater
     real(kind=8), intent(in) :: satur, pgaz, psteam, temp
     real(kind=8), intent(out) :: fick, dfickt, dfickpg
 !
@@ -52,21 +51,21 @@ subroutine thmEvalFickSteam(j_mater, &
 !
     real(kind=8) :: fickv_t, fickv_pv, fickv_pg, fickv_s
     real(kind=8) :: dfickv_dt, dfickv_dpg, resu_vale(1)
-    integer :: icodret(1)
-    integer, parameter :: nb_para1 = 3
+    integer(kind=8) :: icodret(1)
+    integer(kind=8), parameter :: nb_para1 = 3
     real(kind=8) :: para_vale1(nb_para1)
     character(len=4), parameter :: para_name1(nb_para1) = (/'SAT ', 'PGAZ', 'PVAP'/)
-    integer, parameter :: nb_resu1 = 3
+    integer(kind=8), parameter :: nb_resu1 = 3
     real(kind=8) :: resu_vale1(nb_resu1)
     character(len=16), parameter :: resu_name1(nb_resu1) = (/'FICKV_PV', 'FICKV_PG', 'FICKV_S '/)
-    integer :: icodre1(nb_resu1)
-    integer, parameter :: nb_para2 = 2
+    integer(kind=8) :: icodre1(nb_resu1)
+    integer(kind=8), parameter :: nb_para2 = 2
     real(kind=8) :: para_vale2(nb_para2)
     character(len=4), parameter :: para_name2(nb_para2) = (/'TEMP', 'PGAZ'/)
-    integer, parameter :: nb_resu2 = 2
+    integer(kind=8), parameter :: nb_resu2 = 2
     real(kind=8) :: resu_vale2(nb_resu2)
     character(len=16), parameter :: resu_name2(nb_resu2) = (/'D_FV_T ', 'D_FV_PG'/)
-    integer :: icodre2(nb_resu2)
+    integer(kind=8) :: icodre2(nb_resu2)
 !
 ! --------------------------------------------------------------------------------------------------
 !

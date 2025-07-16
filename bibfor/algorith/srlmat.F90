@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -52,7 +52,7 @@ subroutine srlmat(mod, imat, nbmat, tempd, tempf, tempr, materd, &
     !!! Variables globales
     !!!
 
-    integer :: ndt, ndi, nvi, imat, nbmat
+    integer(kind=8) :: ndt, ndi, nvi, imat, nbmat
     real(kind=8) :: materd(nbmat, 2), materf(nbmat, 2), tempd, tempf, tempr
     character(len=3) :: matcst
     character(len=8) :: mod
@@ -61,10 +61,10 @@ subroutine srlmat(mod, imat, nbmat, tempd, tempf, tempr, materd, &
     !!! Variables locales
     !!!
 
-    integer :: ii, indal
+    integer(kind=8) :: ii, indal
     real(kind=8) :: e, nu, mu, k
     real(kind=8) :: dtempm, dtempp, dtemp
-    integer :: cerr(31)
+    integer(kind=8) :: cerr(31)
     character(len=13) :: nomc(31)
 
     !!!

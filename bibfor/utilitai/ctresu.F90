@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -36,7 +36,7 @@ subroutine ctresu(nomtb)
 !        IN/OUT : NOMTB (K8) : NOM DE LA TABLE
 !
 ! ----------------------------------------------------------------------
-    integer :: nbcmp, nbno, nbma, nbval
+    integer(kind=8) :: nbcmp, nbno, nbma, nbval
     aster_logical :: toucmp
     character(len=1) :: tygd
     character(len=4) :: tych

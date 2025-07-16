@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -22,7 +22,7 @@ interface
     subroutine foc2in(method, nbpts, var, fon, cste,&
                       res)
         character(len=*) :: method
-        integer :: nbpts
+        integer(kind=8) :: nbpts
         real(kind=8) :: var(*)
         real(kind=8) :: fon(*)
         real(kind=8) :: cste

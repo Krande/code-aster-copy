@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -37,8 +37,8 @@ subroutine xdecqv(nnose, it, cnset, heavt, lsn, &
 #include "asterfort/xpente.h"
 #include "asterfort/xxmmvd.h"
 #include "blas/ddot.h"
-    integer :: nnose, it, cnset(*), igeom, ninter, npts, nse, cnse(6, 10)
-    integer :: nsemax, heavt(*), nfisc, nfiss, ncomp, fisco(*), ifiss, ndim
+    integer(kind=8) :: nnose, it, cnset(*), igeom, ninter, npts, nse, cnse(6, 10)
+    integer(kind=8) :: nsemax, heavt(*), nfisc, nfiss, ncomp, fisco(*), ifiss, ndim
     real(kind=8) :: lsn(*), ainter(*), heav(*), pinter(*), pintt(*), pmitt(*), lonref
     real(kind=8) :: pmilie(*), txlsn(28), tx(3, 7)
     character(len=8) :: elp
@@ -70,11 +70,11 @@ subroutine xdecqv(nnose, it, cnset, heavt, lsn, &
 !
     real(kind=8) :: xyz(4, 3), ab(3), ac(3), ad(3), vn(3), ps, somlsn(nfisc+1)
     real(kind=8) :: geom(3), rbid2(3), ff(27), bary(3), lsno(nnose), abslsn
-    integer :: in, inh, i, j, ar(12, 3), nbar, ise
-    integer :: a1, a2, a3, a4, a, b, c, iadzi, iazk24, ndime, n(18)
-    integer :: d, e, f, g, h, l, ip1
-    integer :: nnop
-    integer :: zxain
+    integer(kind=8) :: in, inh, i, j, ar(12, 3), nbar, ise
+    integer(kind=8) :: a1, a2, a3, a4, a, b, c, iadzi, iazk24, ndime, n(18)
+    integer(kind=8) :: d, e, f, g, h, l, ip1
+    integer(kind=8) :: nnop
+    integer(kind=8) :: zxain
     character(len=8) :: typma, elrese(3)
     blas_int :: b_incx, b_incy, b_n
 !

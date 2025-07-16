@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -23,11 +23,11 @@ interface
                       ideb, jdeb, x)
         character(len=*) :: nmcolz
         character(len=*) :: nomobz
-        integer :: nob
+        integer(kind=8) :: nob
         complex(kind=8) :: cmat(*)
-        integer :: ndim
-        integer :: ideb
-        integer :: jdeb
+        integer(kind=8) :: ndim
+        integer(kind=8) :: ideb
+        integer(kind=8) :: jdeb
         real(kind=8) :: x
     end subroutine acyelt
 end interface

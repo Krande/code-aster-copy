@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -61,11 +61,11 @@ subroutine lect82(iunv, node, nbnode, inum)
 !  --> DECLARATION DES ARGUMENTS
 !     ============================================================
 !
-    integer :: node(*), nbnode, inum, idro, iunv
+    integer(kind=8) :: node(*), nbnode, inum, idro, iunv
 !  --> DECLARATION DES VARIABLES LOCALES
-    integer :: nodlu(nbnode)
+    integer(kind=8) :: nodlu(nbnode)
 !  --> DECLARATION DES INDICES DE BOUCLES
-    integer :: i, j
+    integer(kind=8) :: i, j
 !
 !     ---------- FIN DECLARATIONS -----------
 !

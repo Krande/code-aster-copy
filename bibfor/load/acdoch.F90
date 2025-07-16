@@ -50,8 +50,8 @@ subroutine acdoch(listLoadPrep, listLoadZ, jvBase)
 ! --------------------------------------------------------------------------------------------------
 !
     character(len=4), parameter :: phenom = "ACOU"
-    integer :: iLoadList, iKeyword, indxLoadInList
-    integer :: nbLoadList
+    integer(kind=8) :: iLoadList, iKeyword, indxLoadInList
+    integer(kind=8) :: nbLoadList
     character(len=24) :: listLoad
     character(len=8), parameter :: funcCste = '&&ACDOCH'
     character(len=16) :: loadKeyword, loadCommand

@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -21,15 +21,15 @@
 interface
     subroutine rc36f6(nbp12, nbp23, nbp13, nbsigr, nbsg1,&
                       nbsg2, nbsg3, sigr, nocc, saltij)
-        integer :: nbp12
-        integer :: nbp23
-        integer :: nbp13
-        integer :: nbsigr
-        integer :: nbsg1
-        integer :: nbsg2
-        integer :: nbsg3
-        integer :: sigr(*)
-        integer :: nocc(*)
+        integer(kind=8) :: nbp12
+        integer(kind=8) :: nbp23
+        integer(kind=8) :: nbp13
+        integer(kind=8) :: nbsigr
+        integer(kind=8) :: nbsg1
+        integer(kind=8) :: nbsg2
+        integer(kind=8) :: nbsg3
+        integer(kind=8) :: sigr(*)
+        integer(kind=8) :: nocc(*)
         real(kind=8) :: saltij(*)
     end subroutine rc36f6
 end interface

@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -44,7 +44,7 @@ subroutine matcod(chmat, indmat, nbmat, imate, igrp, &
 !
     character(len=8) :: chmat, basename
     character(len=19) :: codi
-    integer :: indmat, nbmat, imate, igrp
+    integer(kind=8) :: indmat, nbmat, imate, igrp
     aster_logical, intent(in) :: l_ther
     character(len=1), intent(in), optional :: base_
 !
@@ -103,12 +103,12 @@ subroutine matcod(chmat, indmat, nbmat, imate, igrp, &
 !
 !
 !
-    integer :: iret, iretf, irett, iretlr, iretlf, nbcm, jnomrc, lmat, lfct, lsup
-    integer :: jnbcm, l, nbv, nbtt, nbcot, nbcmt, nbco, iexi1, iexi2
-    integer :: nbt, jdim, k, kk, nbk, lgcodi, isundf, idma, kr, nbreel
-    integer :: imat, ipi, ipif, nbpts, ipifc, m, iretc
-    integer :: jlisvr8, jlisvfo, jlisvi, jlisvr, code, iexi
-    integer :: jcodi, jnomr, jjdim, jlcod, ipi0, nbfonc, kfonc, ipif2
+    integer(kind=8) :: iret, iretf, irett, iretlr, iretlf, nbcm, jnomrc, lmat, lfct, lsup
+    integer(kind=8) :: jnbcm, l, nbv, nbtt, nbcot, nbcmt, nbco, iexi1, iexi2
+    integer(kind=8) :: nbt, jdim, k, kk, nbk, lgcodi, isundf, idma, kr, nbreel
+    integer(kind=8) :: imat, ipi, ipif, nbpts, ipifc, m, iretc
+    integer(kind=8) :: jlisvr8, jlisvfo, jlisvi, jlisvr, code, iexi
+    integer(kind=8) :: jcodi, jnomr, jjdim, jlcod, ipi0, nbfonc, kfonc, ipif2
     real(kind=8) :: tdef, prec
     character(len=4) :: knuma1
     character(len=3) :: knuma2

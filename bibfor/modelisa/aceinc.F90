@@ -23,7 +23,7 @@ subroutine aceinc(noma, nomo, ntyele, nbocc, ivr, &
     use cara_elem_parameter_module
     implicit none
 #include "asterf_types.h"
-    integer :: ntyele(*), nbocc(*), ivr(*), zjdlm(*), lmax, ier
+    integer(kind=8) :: ntyele(*), nbocc(*), ivr(*), zjdlm(*), lmax, ier
     aster_logical :: locaco, locagb, locamb
     character(len=8) :: noma, nomo
 !
@@ -48,11 +48,8 @@ subroutine aceinc(noma, nomo, ntyele, nbocc, ivr, &
 #include "asterfort/jeexin.h"
 #include "asterfort/jelira.h"
 #include "asterfort/jemarq.h"
-#include "asterfort/jenonu.h"
-#include "asterfort/jenuno.h"
 #include "asterfort/jeveuo.h"
 #include "asterfort/jexnom.h"
-#include "asterfort/jexnum.h"
 #include "asterfort/utmess.h"
 #include "asterfort/vafcar.h"
 #include "asterfort/wkvect.h"
@@ -60,13 +57,13 @@ subroutine aceinc(noma, nomo, ntyele, nbocc, ivr, &
 #include "asterfort/int_to_char8.h"
 !
 ! -----------------------------------------------------------------------------------------------
-    integer :: ii, ioc, ixma, jj, iid, iif
-    integer :: jdgm, jdls, jdme
-    integer :: mcl, nbmagr, nbmail
-    integer :: ncar, ncara, ng, nm
-    integer :: nummai, nutyel
+    integer(kind=8) :: ii, ioc, ixma, jj, iid, iif
+    integer(kind=8) :: jdgm, jdls, jdme
+    integer(kind=8) :: mcl, nbmagr, nbmail
+    integer(kind=8) :: ncar, ncara, ng, nm
+    integer(kind=8) :: nummai, nutyel
 ! -----------------------------------------------------------------------------------------------
-    integer, parameter :: nbcar = 100
+    integer(kind=8), parameter :: nbcar = 100
     character(len=6) :: kioc
     character(len=8) :: car(nbcar)
     character(len=24) :: mlgnma, mlggma

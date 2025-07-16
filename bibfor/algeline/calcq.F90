@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -28,7 +28,7 @@ subroutine calcq(s, gamcjs, pref, epssig, q, &
 #include "asterfort/jemarq.h"
 #include "asterfort/lcdevi.h"
 #include "blas/ddot.h"
-    integer :: codret
+    integer(kind=8) :: codret
     real(kind=8) :: s(6), gamcjs, pref, epssig, q(6)
 ! --- BUT : CALCUL DE Q = DG/DSIG --------------------------------------
 ! ======================================================================
@@ -41,7 +41,7 @@ subroutine calcq(s, gamcjs, pref, epssig, q, &
 ! ------------ :    ((1+GAMCJS*RCOS3T/2)*S/SII + -----------------------
 ! ------------ :  + GAMCJS*RAC(54)/(6*SII**2)*DEV(D(DET(S))/D(S))) -----
 ! ======================================================================
-    integer :: ii, ndt, ndi
+    integer(kind=8) :: ii, ndt, ndi
     real(kind=8) :: sii, t(6), devt(6), invh5, fact1, fact2
     real(kind=8) :: rhlode, rcos3t
     real(kind=8) :: un, deux, cinq, six

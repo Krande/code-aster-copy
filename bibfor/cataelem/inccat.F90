@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -48,7 +48,7 @@ subroutine inccat()
 !     INCLUDE($CDEBUG)
     character(len=8) :: cledbg
     character(len=24) :: objdmp
-    integer :: pasdmp, tyobdm
+    integer(kind=8) :: pasdmp, tyobdm
     common/cmodbg/cledbg
     common/cdebug/iccdbg
     common/cbdmpc/objdmp(30)
@@ -74,7 +74,7 @@ subroutine inccat()
 ! &CATA.CO.CHMOD  ! MR(IS)              !  CHMOD      ! IDCHMO(I,J)    !
 !                 !                     !             !                !
 !-----------------!---------------------!-------------!-----------------
-    integer :: chmod
+    integer(kind=8) :: chmod
     common/cocaco/chmod(2)
 !     EXCLUDE($OCATCO)
 !     INCLUDE($OCATEL)
@@ -126,9 +126,9 @@ subroutine inccat()
 !-----------------!---------------------!-------------!-----------------
 ! &CATA.TE.MODEFNO!  MR(IS)             !  MODFNO     ! IDMDFN(I,J)    !
 !-----------------!---------------------!-------------!-----------------
-    integer :: typema, optnom
-    integer :: numini, plmolc, modelo, optte
-    integer :: plopmd, optmod, plopno, plconv, conver, modfca, modfno
+    integer(kind=8) :: typema, optnom
+    integer(kind=8) :: numini, plmolc, modelo, optte
+    integer(kind=8) :: plopmd, optmod, plopno, plconv, conver, modfca, modfno
 !
     common/cocate/typema(2), optnom(2), numini(2), plmolc(2), modelo(2),&
      &       optte(2), plopmd(2), optmod(2), plopno(2), plconv(2), conver(2),&
@@ -163,8 +163,8 @@ subroutine inccat()
 ! &CATA.GD.DESCRIGD   C(V(IS)) POINTEE PAR! DGD       ! IDDGDK(GD,J)   !
 !                 !          NOMGD      !             !                !
 !-----------------!---------------------!-------------!----------------!
-    integer :: dgd, lnocmp
-    integer :: nomgd, nomcmp, typegd
+    integer(kind=8) :: dgd, lnocmp
+    integer(kind=8) :: nomgd, nomcmp, typegd
 !
     common/cocagd/dgd(2), lnocmp(2), nomgd(2), nomcmp(2), typegd(2)
 !
@@ -191,9 +191,9 @@ subroutine inccat()
 !                 ! NOMOPT ( NOMS )     !             ! IDOPAK(OPT,J)  !
 !                 ! LOPARA ( LONG )     !             !                !
 !-----------------!---------------------!-------------!-----------------
-    integer :: nomopt
-    integer :: optpar
-    integer :: ldcopt, descop, lopara
+    integer(kind=8) :: nomopt
+    integer(kind=8) :: optpar
+    integer(kind=8) :: ldcopt, descop, lopara
 !
     common/cocaop/nomopt(2), optpar(2), ldcopt(2), descop(2), lopara(2)
 !
@@ -212,7 +212,7 @@ subroutine inccat()
 !                 ! &CATA.TM.NOMTM      !             !                !
 !                 !     ( NOMS )        !             !                !
 !-----------------!---------------------!-------------!-----------------
-    integer :: nbno
+    integer(kind=8) :: nbno
     common/cocatm/nbno(2)
 !     EXCLUDE($OCATTM)
 !     INCLUDE($OCATPH)
@@ -229,7 +229,7 @@ subroutine inccat()
 ! &CATA.PHENOMENE ! C(V(IS))       !PHMOTE(2,PH)!IDPHMO(PH,IPH,IMD,ITM)!
 !                 !                !             !                     !
 !-----------------!----------------!-------------!----------------------
-    integer :: phmote
+    integer(kind=8) :: phmote
     common/cocaph/nphemx, phmote(2, 10)
 !
 !  PHEMOM EST UN REPERTOIRE CONTENANT LES DIFFERENTS PHENOMENS
@@ -244,8 +244,8 @@ subroutine inccat()
 !     EXCLUDE($OCATPH)
 !
 !-----------------------------------------------------------------------
-    integer :: i, iccdbg, idmp, nclele, ncleph, nclopt, ndmp
-    integer :: nphemx
+    integer(kind=8) :: i, iccdbg, idmp, nclele, ncleph, nclopt, ndmp
+    integer(kind=8) :: nphemx
 !-----------------------------------------------------------------------
     nclele = 9
     clele(1) = 'ELEMENT         '

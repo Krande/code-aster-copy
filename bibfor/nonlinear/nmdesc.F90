@@ -50,7 +50,7 @@ subroutine nmdesc(modele, numedd, &
 #include "asterfort/nmresd.h"
 #include "asterfort/vtzero.h"
 !
-    integer :: numins, iterat
+    integer(kind=8) :: numins, iterat
     type(NL_DS_AlgoPara), intent(in) :: ds_algopara
     character(len=19) :: matass, maprec
     type(NL_DS_Measure), intent(inout) :: ds_measure
@@ -65,7 +65,7 @@ subroutine nmdesc(modele, numedd, &
     type(ROM_DS_AlgoPara), intent(in) :: ds_algorom
     type(NL_DS_System), intent(in) :: ds_system
     character(len=24) :: sderro
-    integer :: fonact(*)
+    integer(kind=8) :: fonact(*)
     character(len=19) :: meelem(*)
     character(len=19) :: solalg(*), valinc(*)
     character(len=19) :: measse(*), veasse(*)
@@ -110,9 +110,9 @@ subroutine nmdesc(modele, numedd, &
 ! --------------------------------------------------------------------------------------------------
 !
     character(len=19) :: cncine, depdel, cndonn, cnpilo, cncind
-    integer :: faccvg, rescvg, ldccvg
+    integer(kind=8) :: faccvg, rescvg, ldccvg
     real(kind=8) :: r8bid
-    integer :: ifm, niv
+    integer(kind=8) :: ifm, niv
 !
 ! --------------------------------------------------------------------------------------------------
 !

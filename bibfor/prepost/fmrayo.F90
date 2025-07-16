@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -22,7 +22,7 @@ subroutine fmrayo(nbfonc, nbptot, sigm, rayon)
 #include "asterfort/as_allocate.h"
 #include "asterfort/as_deallocate.h"
 #include "asterfort/fmdevi.h"
-    integer :: nbfonc, nbptot
+    integer(kind=8) :: nbfonc, nbptot
     real(kind=8) :: sigm(*), rayon
 !     NBFONC  : IN  : NOMBRE DE FONCTIONS (6 EN 3D 4 EN 2D)
 !     NBPTOT  : IN  : NOMBRE DE PAS DE TEMPS DE CALCUL
@@ -30,7 +30,7 @@ subroutine fmrayo(nbfonc, nbptot, sigm, rayon)
 !     RAYON   : OUT : VALEUR RAYON SPHERE CIRCONSCRITE AU CHARGEMENT
 !     -----------------------------------------------------------------
 !     ------------------------------------------------------------------
-    integer :: nbr, i, j, n2
+    integer(kind=8) :: nbr, i, j, n2
     real(kind=8) :: eps, x, sig(6), rau(6), p, pmac, a
     real(kind=8), pointer :: deviat(:) => null()
 !     ------------------------------------------------------------------

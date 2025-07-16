@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -28,7 +28,7 @@ subroutine lcopli(typ, mod, mater, hook)
 !       OUT HOOK   :  OPERATEUR RIGIDITE ELASTIQUE LINEAIRE
 !       ----------------------------------------------------------------
 !
-    integer :: ndt, ndi, i, j
+    integer(kind=8) :: ndt, ndi, i, j
     real(kind=8) :: un, d12, zero, deux
     parameter(d12=.5d0)
     parameter(un=1.d0)

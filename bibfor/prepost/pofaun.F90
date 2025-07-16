@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -61,11 +61,11 @@ subroutine pofaun()
 #include "asterfort/utmess.h"
 #include "asterfort/wkvect.h"
 !
-    integer :: nbocc, ifonc, nbpts, i, n1, nbpapf, ifm, niv, nbp
-    integer :: ivke, ivcorr, ivpoin, nbpoin, ivmax, ivmin, ivtrav
-    integer :: ibid, intrav, ivpics, nbpics, nbcycl, nbpar, ivdome
-    integer :: icodre(3), icodwo
-    integer :: icodba, icodhs, icodma
+    integer(kind=8) :: nbocc, ifonc, nbpts, i, n1, nbpapf, ifm, niv, nbp
+    integer(kind=8) :: ivke, ivcorr, ivpoin, nbpoin, ivmax, ivmin, ivtrav
+    integer(kind=8) :: ibid, intrav, ivpics, nbpics, nbcycl, nbpar, ivdome
+    integer(kind=8) :: icodre(3), icodwo
+    integer(kind=8) :: icodba, icodhs, icodma
     character(len=8) :: nomfon, result, txcum, k8b, nommat, kcorre
     character(len=8) :: method, nompar
     character(len=16) :: kdomm, nomcmd, methd1, nomres(3), cara

@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -22,7 +22,6 @@ subroutine comp_comp_save(mesh, compor, v_info_valk, v_info_vali)
 !
 #include "asterf_types.h"
 #include "asterc/getfac.h"
-#include "asterfort/assert.h"
 #include "asterfort/jedetr.h"
 #include "asterfort/jeveuo.h"
 #include "asterfort/nocart.h"
@@ -32,7 +31,7 @@ subroutine comp_comp_save(mesh, compor, v_info_valk, v_info_vali)
     character(len=8), intent(in) :: mesh
     character(len=19), intent(in) :: compor
     character(len=16), intent(in) :: v_info_valk(:)
-    integer, intent(in) :: v_info_vali(:)
+    integer(kind=8), intent(in) :: v_info_vali(:)
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -51,15 +50,15 @@ subroutine comp_comp_save(mesh, compor, v_info_valk, v_info_vali)
 !
     character(len=24), parameter :: list_elem_affe = '&&COMPCOMPSAVE.LIST'
     aster_logical :: l_affe_all
-    integer :: nb_elem_affe
-    integer :: iFactorKeyword, nbFactorKeyword
+    integer(kind=8) :: nb_elem_affe
+    integer(kind=8) :: iFactorKeyword, nbFactorKeyword
     character(len=16) :: rela_comp, defo_comp, type_comp, type_cpla, mult_comp, kit_comp(4)
     character(len=16) :: post_iter
-    integer :: nb_vari, nume_comp(4), nb_vari_exte, unit_comp, nb_vari_comp(4)
+    integer(kind=8) :: nb_vari, nume_comp(4), nb_vari_exte, unit_comp, nb_vari_comp(4)
     character(len=16), parameter :: factorKeyword = 'AFFE_COMPOR'
     character(len=16), pointer :: comporValv(:) => null()
-    integer, pointer :: v_elem_affe(:) => null()
-    integer, parameter :: nbCmp = COMPOR_SIZE
+    integer(kind=8), pointer :: v_elem_affe(:) => null()
+    integer(kind=8), parameter :: nbCmp = COMPOR_SIZE
 !
 ! --------------------------------------------------------------------------------------------------
 !

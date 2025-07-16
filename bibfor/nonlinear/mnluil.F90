@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -31,14 +31,14 @@ subroutine mnluil(x, omega, alpha, eta, h, &
 ! ----------------------------------------------------------------------
 ! --- DECLARATION DES ARGUMENTS DE LA ROUTINE
 ! ----------------------------------------------------------------------
-    integer :: h, hf, nt
+    integer(kind=8) :: h, hf, nt
     real(kind=8) :: x(2*h+1), omega, alpha, eta, sort(2*hf+1)
 ! ----------------------------------------------------------------------
 ! --- DECLARATION DES VARIABLES LOCALES
 ! ----------------------------------------------------------------------
     real(kind=8) :: depi, xt
-    integer :: it, iif
-    integer :: k, j
+    integer(kind=8) :: it, iif
+    integer(kind=8) :: k, j
 !
     call jemarq()
 !

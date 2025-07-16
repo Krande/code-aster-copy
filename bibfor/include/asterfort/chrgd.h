@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -22,12 +22,12 @@ interface
                      ipt, isp, type_gd, rc, p,&
                      permvec)
 !
-        integer, intent(in) :: nbcmp, jcesd, jcesl, jcesv, imai, ipt
-        integer, intent(in) :: isp
+        integer(kind=8), intent(in) :: nbcmp, jcesd, jcesl, jcesv, imai, ipt
+        integer(kind=8), intent(in) :: isp
         character(len=*), intent(in) :: type_gd
         character, intent(in) :: rc
         real(kind=8), dimension(:, :), intent(in) :: p
-        integer, dimension(:), intent(in), optional :: permvec
+        integer(kind=8), dimension(:), intent(in), optional :: permvec
 !
     end subroutine 
 end interface 

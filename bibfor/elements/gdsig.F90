@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -45,10 +45,10 @@ subroutine gdsig(fami, kpg, ksp, x0pg, petik, &
     real(kind=8) :: x0pg(3), petik(3), rot0(3, 3), rotk(3, 3), granc(6), pn(3)
     real(kind=8) :: pm(3), gn(3), gm(3), rotabs(3, 3), rotabt(3, 3), granga(3)
     real(kind=8) :: grank(3)
-    integer :: imate
+    integer(kind=8) :: imate
 !
 !-----------------------------------------------------------------------
-    integer :: i, kpg, ksp
+    integer(kind=8) :: i, kpg, ksp
     real(kind=8) :: epsthe, un
 !-----------------------------------------------------------------------
     un = 1.d0

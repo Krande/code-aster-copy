@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -18,7 +18,7 @@
 
 function nbec(gd)
     implicit none
-    integer :: nbec
+    integer(kind=8) :: nbec
 !
 ! person_in_charge: jacques.pellet at edf.fr
 !
@@ -35,7 +35,7 @@ function nbec(gd)
 #include "asterfort/jexnum.h"
 #include "asterfort/utmess.h"
 !
-    integer :: gd, code
+    integer(kind=8) :: gd, code
     character(len=8) :: nomgd, nomgd1, nomgd2
 !     INCLUDE($FUNJEV)
 !
@@ -43,12 +43,12 @@ function nbec(gd)
 !
 !
 !
-    integer :: vali(3)
+    integer(kind=8) :: vali(3)
     character(len=32) :: valk(3)
 !
 !     EXCLUDE($FUNJEV)
 !-----------------------------------------------------------------------
-    integer :: iddgd, iddgd1, igd1, igd2
+    integer(kind=8) :: iddgd, iddgd1, igd1, igd2
 !-----------------------------------------------------------------------
     call jemarq()
     call jeveuo(jexnum('&CATA.GD.DESCRIGD', gd), 'L', iddgd)

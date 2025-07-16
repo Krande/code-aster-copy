@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -24,33 +24,33 @@ interface
                       ntncmp, ntucmp, ntproa, nbimpr, caimpi,&
                       caimpk, typech, nomamd, nomtyp, modnum,&
                       nuanom, lfichUniq, nosdfu, codret)
-        integer :: nbimpr
+        integer(kind=8) :: nbimpr
         character(len=*) :: nofimd
         character(len=64) :: nochmd
-        integer :: existc
-        integer :: ncmprf
-        integer :: numpt
+        integer(kind=8) :: existc
+        integer(kind=8) :: ncmprf
+        integer(kind=8) :: numpt
         real(kind=8) :: instan
-        integer :: numord
-        integer :: adsd
-        integer :: adsv
-        integer :: adsl
-        integer :: adsk
+        integer(kind=8) :: numord
+        integer(kind=8) :: adsd
+        integer(kind=8) :: adsv
+        integer(kind=8) :: adsl
+        integer(kind=8) :: adsk
         character(len=*) :: partie
-        integer :: ncmpve
+        integer(kind=8) :: ncmpve
         character(len=24) :: ntlcmp
         character(len=24) :: ntncmp
         character(len=24) :: ntucmp
         character(len=24) :: ntproa
         character(len=24) :: indcmp
-        integer :: caimpi(10, nbimpr)
+        integer(kind=8) :: caimpi(10, nbimpr)
         character(len=*) :: caimpk(3, nbimpr)
         character(len=8) :: typech
         character(len=*) :: nomamd
         character(len=8) :: nomtyp(*)
-        integer :: modnum(MT_NTYMAX), nuanom(MT_NTYMAX, *)
+        integer(kind=8) :: modnum(MT_NTYMAX), nuanom(MT_NTYMAX, *)
         aster_logical :: lfichUniq
         character(len=8) :: nosdfu
-        integer :: codret
+        integer(kind=8) :: codret
     end subroutine ircam1
 end interface

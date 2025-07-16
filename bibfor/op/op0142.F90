@@ -44,7 +44,6 @@ subroutine op0142()
 #include "asterfort/jemarq.h"
 #include "asterfort/jenuno.h"
 #include "asterfort/jeveuo.h"
-#include "asterfort/jexnom.h"
 #include "asterfort/jexnum.h"
 #include "asterfort/lxlgut.h"
 #include "asterfort/ordonn.h"
@@ -54,7 +53,7 @@ subroutine op0142()
 #include "asterfort/utmess.h"
 #include "asterfort/wkvect.h"
 !
-    integer :: pnoe, ptch
+    integer(kind=8) :: pnoe, ptch
     character(len=2) :: prolgd
     character(len=4) :: interp(2)
     character(len=8) :: nommai
@@ -67,14 +66,14 @@ subroutine op0142()
 !     ------------------------------------------------------------------
 !
 !-----------------------------------------------------------------------
-    integer :: i, iabs, iach, iacnex, iagm, iav1, iav2
-    integer :: ibid, iexi, ifm, ij, im, ima1, ima2
-    integer :: ind, ing, ino, iplac1, iplac2, iseg2, isens
-    integer :: itp, itym, itypm, jgcnx, jnof, jnoi, kseg, l, labs
-    integer :: lnoe, lpro, lval, mi, n3, nbbav, nbchm, nbno
-    integer :: nbnoma, nbpoi1, nbrm21, nbrma, nbrma1, nbrma2, nbrse1
-    integer :: nbrse2, nbrseg, nbseg2, niv, nnoe, num1, num2
-    integer :: numno
+    integer(kind=8) :: i, iabs, iach, iacnex, iagm, iav1, iav2
+    integer(kind=8) :: ibid, iexi, ifm, ij, im, ima1, ima2
+    integer(kind=8) :: ind, ing, ino, iplac1, iplac2, iseg2, isens
+    integer(kind=8) :: itp, itym, itypm, jgcnx, jnof, jnoi, kseg, l, labs
+    integer(kind=8) :: lnoe, lpro, lval, mi, n3, nbbav, nbchm, nbno
+    integer(kind=8) :: nbnoma, nbpoi1, nbrm21, nbrma, nbrma1, nbrma2, nbrse1
+    integer(kind=8) :: nbrse2, nbrseg, nbseg2, niv, nnoe, num1, num2
+    integer(kind=8) :: numno
     real(kind=8) :: rvale
 !-----------------------------------------------------------------------
 !

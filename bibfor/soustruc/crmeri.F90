@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -53,7 +53,7 @@ subroutine crmeri(promes, iakpee)
 #include "asterfort/wkvect.h"
 !
     character(len=8) :: promes
-    integer :: iakpee
+    integer(kind=8) :: iakpee
 !
 !
 !
@@ -65,20 +65,20 @@ subroutine crmeri(promes, iakpee)
     character(len=24) :: vnoeud, vrange, basepr, noeums, baseit, vsu, mesint
     character(len=24) :: modid, mestit, vref, refms
 !
-    integer :: nbmesu, nbvecb, nbord, isol, affici(2)
-    integer ::  lred, lrange, lint, ier, iposi, ipuls, ltitp, lmasg
-    integer :: imod, jmod, iret, llncmp, iddl, lmesu, jddl, iexist, lomeg2
-    integer :: iposj, ino, nddle, nddli, ico, ipos, ifres
-    integer :: lnoeud, ltrav, lredi, lwks, lrefms, lref
-    integer ::  jcnsc
-    integer :: ibid, nbcmpi, numgd, lmaelr
-    integer :: lu, lvals, lv, lvsu
+    integer(kind=8) :: nbmesu, nbvecb, nbord, isol, affici(2)
+    integer(kind=8) ::  lred, lrange, lint, ier, iposi, ipuls, ltitp, lmasg
+    integer(kind=8) :: imod, jmod, iret, llncmp, iddl, lmesu, jddl, iexist, lomeg2
+    integer(kind=8) :: iposj, ino, nddle, nddli, ico, ipos, ifres
+    integer(kind=8) :: lnoeud, ltrav, lredi, lwks, lrefms, lref
+    integer(kind=8) ::  jcnsc
+    integer(kind=8) :: ibid, nbcmpi, numgd, lmaelr
+    integer(kind=8) :: lu, lvals, lv, lvsu
 !
     real(kind=8) :: omega2, masg, eps, eps1
-    integer, pointer :: desm(:) => null()
-    integer, pointer :: deeq(:) => null()
-    integer, pointer :: ordr(:) => null()
-    integer, pointer :: cnsd(:) => null()
+    integer(kind=8), pointer :: desm(:) => null()
+    integer(kind=8), pointer :: deeq(:) => null()
+    integer(kind=8), pointer :: ordr(:) => null()
+    integer(kind=8), pointer :: cnsd(:) => null()
     real(kind=8), pointer :: cnsv(:) => null()
     character(len=8), pointer :: cnsk(:) => null()
 !

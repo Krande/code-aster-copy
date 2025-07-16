@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -21,12 +21,12 @@
 interface
     subroutine wpnorm(norm, para, lmatr, neq, nbmode,&
                       ddlexc, vecpro, resufr, coef)
-        integer :: nbmode
-        integer :: neq
+        integer(kind=8) :: nbmode
+        integer(kind=8) :: neq
         character(len=*) :: norm
         character(len=*) :: para
-        integer :: lmatr(*)
-        integer :: ddlexc(*)
+        integer(kind=8) :: lmatr(*)
+        integer(kind=8) :: ddlexc(*)
         complex(kind=8) :: vecpro(neq, *)
         real(kind=8) :: resufr(nbmode, *)
         real(kind=8) :: coef(*)

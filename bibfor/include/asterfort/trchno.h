@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -20,7 +20,7 @@
 !
 interface
     subroutine trchno(ific, nocc)
-        integer, intent(in) :: ific
-        integer, intent(in) :: nocc
+        integer(kind=8), intent(in) :: ific
+        integer(kind=8), intent(in) :: nocc
     end subroutine trchno
 end interface

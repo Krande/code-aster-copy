@@ -71,9 +71,9 @@ module endo_loca_module
 
     ! Shared attibutes through the global variable self
     type CONSTITUTIVE_LAW
-        integer       :: exception = 0
+        integer(kind=8)       :: exception = 0
         aster_logical :: elas, rigi, resi, pilo
-        integer       :: ndimsi, itemax
+        integer(kind=8)       :: ndimsi, itemax
         real(kind=8)  :: cvuser, deltat
         type(MATERIAL):: mat
         type(UNILATERAL):: unil
@@ -97,7 +97,7 @@ contains
 
         implicit none
 
-        integer, intent(in)          :: kpg, ksp, imate, itemax, ndimsi
+        integer(kind=8), intent(in)          :: kpg, ksp, imate, itemax, ndimsi
         real(kind=8), intent(in)    :: precvg, deltat
         character(len=16), intent(in):: option
         character(len=*), intent(in) :: fami
@@ -154,7 +154,7 @@ contains
 ! vip   internal variables at the end of the time step
 ! dsde  tangent matrix (ndimsi,ndimsi)
 ! ----------------------------------------------------------------------
-        integer             :: state
+        integer(kind=8)             :: state
         real(kind=8)        :: be
         real(kind=8)        :: eps(self%ndimsi)
         type(POST_TREATMENT):: post
@@ -195,7 +195,7 @@ contains
         implicit none
 
         type(CONSTITUTIVE_LAW), intent(inout):: self
-        integer, intent(in)                   :: kpg, ksp, imate
+        integer(kind=8), intent(in)                   :: kpg, ksp, imate
         character(len=*), intent(in)          :: fami
         type(MATERIAL)                       :: mat
 ! ---------------------------------------------------------------------
@@ -204,9 +204,9 @@ contains
 ! ksp       Layer number (for structure elements)
 ! imate     material pointer
 ! ---------------------------------------------------------------------
-        integer, parameter:: nbel = 2, nben = 6
+        integer(kind=8), parameter:: nbel = 2, nben = 6
 ! ----------------------------------------------------------------------
-        integer :: iok(nbel+nben)
+        integer(kind=8) :: iok(nbel+nben)
         real(kind=8) :: valel(nbel), valen(nben)
         character(len=16) :: nomel(nbel), nomen(nben)
         real(kind=8):: lambda, deuxmu, nu, ec, sc, s0, b0, tx, ty, ex, ey, g0, p, pi, m0, d1, r, cf
@@ -277,7 +277,7 @@ contains
 
         type(CONSTITUTIVE_LAW), intent(inout):: self
         real(kind=8), intent(in)             :: eps(:)
-        integer, intent(inout)                :: state
+        integer(kind=8), intent(inout)                :: state
         real(kind=8), intent(inout)           :: be
         real(kind=8), intent(out)             :: sig(:), dsde(:, :)
 ! ---------------------------------------------------------------------
@@ -288,7 +288,7 @@ contains
 ! dsde  tangent matrix (ndimsi,ndimsi)
 ! ---------------------------------------------------------------------
         real(kind=8), parameter:: cvtole = 1.d-3
-        integer     :: iter
+        integer(kind=8)     :: iter
         real(kind=8), dimension(self%ndimsi):: sigpos, signeg, deps_quad
         real(kind=8), dimension(self%ndimsi, self%ndimsi):: deps_sigpos, deps_signeg
         real(kind=8):: cvsig, cveps, cvbe, cvquad, cvequ, norpos, hn, db_hn
@@ -416,7 +416,7 @@ contains
         implicit none
         type(CONSTITUTIVE_LAW), intent(inout):: self
         real(kind=8), intent(in) :: targetDamage, eps0(:), eps1(:), etamin, etamax, cvb
-        integer, intent(out)     :: nsol, sgn(2)
+        integer(kind=8), intent(out)     :: nsol, sgn(2)
         real(kind=8), intent(out):: sol(2)
 ! ---------------------------------------------------------------------
 ! targetDamage  damage to be reached
@@ -431,7 +431,7 @@ contains
 ! sgn           for each solution, -1 if decreasing function, +1 otherwise
 ! ---------------------------------------------------------------------
         aster_logical         :: empty, croiss, gauche, droite
-        integer               :: n
+        integer(kind=8)               :: n
         real(kind=8)          :: lcst, cvequ, cvquad, etam, etap, etal
         real(kind=8)          :: gm, dgm, gp, dgp, gl, dgl
         type(CRITERION)       :: crit

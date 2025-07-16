@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -20,8 +20,8 @@
 !
 interface
     subroutine fointa(ipif, nbpu, nompu, valpu, resu)
-        integer :: ipif
-        integer :: nbpu
+        integer(kind=8) :: ipif
+        integer(kind=8) :: nbpu
         character(len=*) :: nompu(*)
         real(kind=8) :: valpu(*)
         real(kind=8) :: resu

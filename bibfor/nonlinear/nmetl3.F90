@@ -32,13 +32,12 @@ subroutine nmetl3(model, compor, i_field, ds_inout, verbose)
 #include "asterfort/utmess.h"
 #include "asterfort/vrcomp.h"
 #include "asterfort/vrcom2.h"
-#include "asterfort/sgcomp.h"
 #include "asterfort/stressChck.h"
 !
     character(len=24), intent(in) :: model
     character(len=24), intent(in) :: compor
     type(NL_DS_InOut), intent(in) :: ds_inout
-    integer, intent(in) :: i_field
+    integer(kind=8), intent(in) :: i_field
     aster_logical, intent(in) :: verbose
 !
 ! --------------------------------------------------------------------------------------------------
@@ -56,7 +55,7 @@ subroutine nmetl3(model, compor, i_field, ds_inout, verbose)
 !
 ! --------------------------------------------------------------------------------------------------
 !
-    integer :: iret
+    integer(kind=8) :: iret
     character(len=24) :: fieldType, algo_name, fieldRefe
     character(len=4) :: fieldDisc
     character(len=8) :: gran_name
@@ -64,7 +63,7 @@ subroutine nmetl3(model, compor, i_field, ds_inout, verbose)
     character(len=24) :: modelLigrel, comporPrev
     character(len=4) :: init_type
     aster_logical :: l_state_init, l_stin_evol, l_acti, lModiVari
-    integer :: init_nume
+    integer(kind=8) :: init_nume
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -124,13 +123,9 @@ subroutine nmetl3(model, compor, i_field, ds_inout, verbose)
 !  -------- Check stresses
             if (fieldType .eq. 'SIEF_ELGA') then
                 if (l_state_init) then
-                    call stressChck(fieldRefe, field_algo, iret)
+                    call stressChck(fieldRefe, field_algo, ASTER_TRUE, iret)
                     if (iret .eq. 1) then
-                        call utmess('F', 'MECANONLINE5_57')
-                    end if
-                    call sgcomp(compor, field_algo, modelLigrel, iret)
-                    if (iret .eq. 1) then
-                        call utmess('F', 'MECANONLINE5_58')
+                        call utmess('A', 'MECANONLINE5_81')
                     end if
                 end if
             end if
@@ -160,7 +155,7 @@ subroutine nmetl3(model, compor, i_field, ds_inout, verbose)
                                     lModiVari_=lModiVari)
                     end if
                     if (iret .eq. 1) then
-                        call utmess('F', 'MECANONLINE5_2')
+                        call utmess('F', 'MECANONLINE5_82')
                     end if
                     if (lModiVari) then
                         call vrcom2(compor, field_algo, modelLigrel, ASTER_FALSE)

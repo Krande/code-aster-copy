@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -24,7 +24,6 @@ subroutine nonlinDSConvergenceInitCtc(ds_conv, list_func_acti, ds_contact)
     implicit none
 !
 #include "asterf_types.h"
-#include "asterfort/assert.h"
 #include "asterfort/cfdisr.h"
 #include "asterfort/cfdisl.h"
 #include "asterfort/infdbg.h"
@@ -33,7 +32,7 @@ subroutine nonlinDSConvergenceInitCtc(ds_conv, list_func_acti, ds_contact)
 #include "asterfort/utmess.h"
 !
     type(NL_DS_Conv), intent(inout) :: ds_conv
-    integer, intent(in) :: list_func_acti(*)
+    integer(kind=8), intent(in) :: list_func_acti(*)
     type(NL_DS_Contact), intent(in) :: ds_contact
 !
 ! --------------------------------------------------------------------------------------------------
@@ -50,7 +49,7 @@ subroutine nonlinDSConvergenceInitCtc(ds_conv, list_func_acti, ds_contact)
 !
 ! --------------------------------------------------------------------------------------------------
 !
-    integer :: ifm, niv
+    integer(kind=8) :: ifm, niv
     character(len=24) :: sdcont_defi
     real(kind=8) ::resi_frot, resi_geom, pene_maxi_user
     aster_logical :: l_newt_frot, l_newt_geom

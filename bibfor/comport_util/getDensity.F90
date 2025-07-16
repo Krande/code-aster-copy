@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -22,13 +22,11 @@ subroutine getDensity(jvMater, rho, elasKeywordZ_)
 !
     implicit none
 !
-#include "asterc/r8vide.h"
-#include "asterfort/assert.h"
 #include "asterfort/rcvalb.h"
 #include "asterfort/utmess.h"
 #include "asterfort/get_elas_id.h"
 !
-    integer, intent(in) :: jvMater
+    integer(kind=8), intent(in) :: jvMater
     real(kind=8), intent(out) :: rho
     character(len=*), optional, intent(in) :: elasKeywordZ_
 !
@@ -46,11 +44,11 @@ subroutine getDensity(jvMater, rho, elasKeywordZ_)
 ! --------------------------------------------------------------------------------------------------
 !
     character(len=1), parameter :: poum = '+'
-    integer, parameter :: kpg = 1, kspg = 1
+    integer(kind=8), parameter :: kpg = 1, kspg = 1
     real(kind=8) :: valeResu(1)
-    integer :: valeIret(1)
+    integer(kind=8) :: valeIret(1)
     character(len=4), parameter :: inteFami = 'FPG1'
-    integer :: elasType
+    integer(kind=8) :: elasType
     character(len=16) :: elasKeyword
     real(kind=8), parameter :: r8Dummy = 0.d0
 !

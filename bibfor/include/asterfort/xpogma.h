@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -20,10 +20,10 @@
 !
 interface
     subroutine xpogma(nbgma, nb, listgr, ima, jlogma)
-        integer :: nbgma
-        integer :: nb
+        integer(kind=8) :: nbgma
+        integer(kind=8) :: nb
         character(len=24) :: listgr
-        integer :: ima
-        integer :: jlogma
+        integer(kind=8) :: ima
+        integer(kind=8) :: jlogma
     end subroutine xpogma
 end interface

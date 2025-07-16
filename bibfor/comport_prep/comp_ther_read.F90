@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -26,7 +26,6 @@ subroutine comp_ther_read(list_vale)
 #include "asterc/lccree.h"
 #include "asterc/lcinfo.h"
 #include "asterc/lcdiscard.h"
-#include "asterfort/assert.h"
 #include "asterfort/wkvect.h"
 #include "asterfort/jedetr.h"
 !
@@ -48,9 +47,9 @@ subroutine comp_ther_read(list_vale)
 !
     character(len=16) :: keywordfact
     character(len=16) :: comp_code, rela_comp
-    integer :: iocc, nocc, idummy
-    integer :: nume_comp, nb_vari
-    integer :: j_lvali, j_lvalk
+    integer(kind=8) :: iocc, nocc, idummy
+    integer(kind=8) :: nume_comp, nb_vari
+    integer(kind=8) :: j_lvali, j_lvalk
 !
 ! --------------------------------------------------------------------------------------------------
 !

@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -34,9 +34,7 @@ subroutine nmflam(optionSpec, &
 !
 #include "asterf_types.h"
 #include "jeveux.h"
-#include "asterc/isnnem.h"
 #include "asterc/r8maem.h"
-#include "asterc/r8vide.h"
 #include "asterfort/assert.h"
 #include "asterfort/detrsd.h"
 #include "asterfort/diinst.h"
@@ -48,7 +46,6 @@ subroutine nmflam(optionSpec, &
 #include "asterfort/nmflin.h"
 #include "asterfort/nmflma.h"
 #include "asterfort/nmop45.h"
-#include "asterfort/omega2.h"
 #include "asterfort/rsadpa.h"
 #include "asterfort/utmess.h"
 #include "asterfort/vpSorensen.h"
@@ -59,11 +56,11 @@ subroutine nmflam(optionSpec, &
     character(len=24), intent(in) :: model, caraElem
     type(NL_DS_Material), intent(in) :: ds_material
     character(len=19), intent(in) :: listLoad
-    integer, intent(in) :: listFuncActi(*)
+    integer(kind=8), intent(in) :: listFuncActi(*)
     character(len=24), intent(in) :: numeDof
     type(NL_DS_Constitutive), intent(in) :: ds_constitutive
     character(len=19), intent(in) :: sddisc
-    integer, intent(in) :: numeTime
+    integer(kind=8), intent(in) :: numeTime
     character(len=19), intent(in) :: sddyna
     character(len=24), intent(in) :: sderro
     type(NL_DS_AlgoPara), intent(in) :: ds_algopara
@@ -106,9 +103,9 @@ subroutine nmflam(optionSpec, &
 ! --------------------------------------------------------------------------------------------------
 !
     aster_logical :: linsta, l_hpp, lModiRigi
-    integer :: nbFreq, nbFreqCalc
-    integer :: nbDofExcl, nbDofStab, coefDimSpace
-    integer :: jvPara, iFreq, nfreq_calibr
+    integer(kind=8) :: nbFreq, nbFreqCalc
+    integer(kind=8) :: nbDofExcl, nbDofStab, coefDimSpace
+    integer(kind=8) :: jvPara, iFreq, nfreq_calibr
     real(kind=8) :: freq_calc, freq_mini_abso, freq_abso, freq_mini
     real(kind=8) :: bande(2), r8bid, timeCurr
     character(len=4) :: mod45

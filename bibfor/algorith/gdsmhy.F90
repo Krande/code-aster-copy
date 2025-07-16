@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -33,7 +33,7 @@ subroutine gdsmhy(je, e)
 ! IN  JE      DETERMINANT DE E CIBLE
 ! VAR E       DEFORMATION ELASTIQUE (XX,YY,ZZ,RAC2*XY,RAC2*XZ,RAC2*YZ)
 ! ----------------------------------------------------------------------
-    integer :: nrac, i, iopt
+    integer(kind=8) :: nrac, i, iopt
     real(kind=8) :: dve(6), eh, eqe2, detdve, p0, p1, p2, rac(3), dismin
     blas_int :: b_incx, b_incy, b_n
 ! ----------------------------------------------------------------------

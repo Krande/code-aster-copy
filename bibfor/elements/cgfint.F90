@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -31,7 +31,6 @@ subroutine cgfint(ndim, nno1, nno2, npg, wref, &
     implicit none
 !
 #include "asterf_types.h"
-#include "asterc/r8nnem.h"
 #include "asterfort/assert.h"
 #include "asterfort/cgcine.h"
 #include "asterfort/codere.h"
@@ -44,8 +43,8 @@ subroutine cgfint(ndim, nno1, nno2, npg, wref, &
     character(len=8) :: typmod(2)
     character(len=16) :: option, comporKit(COMPOR_SIZE)
 !
-    integer :: ndim, nno1, nno2, npg, mat, lgpg, iu(3, 3), iuc(3), im(3)
-    integer :: codret
+    integer(kind=8) :: ndim, nno1, nno2, npg, mat, lgpg, iu(3, 3), iuc(3), im(3)
+    integer(kind=8) :: codret
     real(kind=8) :: vff1(nno1, npg), vff2(nno2, npg), geom(ndim, nno1), wref(npg)
     real(kind=8) :: carcri(CARCRI_SIZE), instam, instap, sigm(3, npg)
     real(kind=8) :: ddlm(nno1*(ndim+1)+nno2), ddld(nno1*(ndim+1)+nno2)
@@ -90,16 +89,16 @@ subroutine cgfint(ndim, nno1, nno2, npg, wref, &
 ! OUT VECT    : FORCES INTERIEURES    (RAPH_MECA   ET FULL_MECA_*)
 ! OUT CODRET  : CODE RETOUR
 ! --------------------------------------------------------------------------------------------------
-    integer, parameter:: nepsSheath = 2, nsigSheath = 1, ndsdeSheath = 2
-    integer, parameter :: ksp = 1
+    integer(kind=8), parameter:: nepsSheath = 2, nsigSheath = 1, ndsdeSheath = 2
+    integer(kind=8), parameter :: ksp = 1
     character(len=4), parameter :: fami = "RIGI"
 ! --------------------------------------------------------------------------------------------------
     aster_logical     :: lMatr, lSigm, lVari
     character(len=16) :: relaSheath, relaCable
-    integer :: numeSheath, nbviSheath, nbviCable
+    integer(kind=8) :: numeSheath, nbviSheath, nbviCable
     aster_logical :: resi, rigi
-    integer :: nddl, g, cod(npg), n, i, m, j, kk, codm(1)
-    integer :: nume
+    integer(kind=8) :: nddl, g, cod(npg), n, i, m, j, kk, codm(1)
+    integer(kind=8) :: nume
     real(kind=8) :: r, mu, epsm, deps, wg, l(3), de, ddedt, t1
     real(kind=8) :: epsmSheath(nepsSheath), depsSheath(nepsSheath)
     real(kind=8) :: sigmSheath(nsigSheath), sigpSheath(nsigSheath)

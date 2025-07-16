@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -44,9 +44,9 @@ subroutine multResuElem(resu_elem, coef_mult)
 !
 ! --------------------------------------------------------------------------------------------------
 !
-    integer :: iret, nb_gr, nb_vale, igr
+    integer(kind=8) :: iret, nb_gr, nb_vale, igr
     real(kind=8), pointer :: v_vale(:) => null()
-    integer, pointer :: v_desc(:) => null()
+    integer(kind=8), pointer :: v_desc(:) => null()
 !
 ! --------------------------------------------------------------------------------------------------
 !

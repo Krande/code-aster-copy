@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -68,13 +68,13 @@ subroutine creprn(ligrez, molocz, basez, prnmz, prnsz)
 !
 ! -----  VARIABLES LOCALES
     character(len=*) :: ligrez, molocz, basez, prnmz, prnsz
-    integer :: gd, i, iamaco, iamail, iamsco, jmoloc, iancmp
-    integer ::  iaprnm, iaprno, iaprns, icmp
-    integer :: icodla, iec, igr, illiel, ilmaco, ilmsco
-    integer :: ima, imode, ino, inold, iret, ite, j, k, l, lgncmp, nbnm
-    integer :: nbnoms, nbsma, nbssa, nec, nel, nl, nm, nnoe, numa, nunoel
-    integer :: admodl, lcmodl
-    integer :: lshift
+    integer(kind=8) :: gd, i, iamaco, iamail, iamsco, jmoloc, iancmp
+    integer(kind=8) ::  iaprnm, iaprno, iaprns, icmp
+    integer(kind=8) :: icodla, iec, igr, illiel, ilmaco, ilmsco
+    integer(kind=8) :: ima, imode, ino, inold, iret, ite, j, k, l, lgncmp, nbnm
+    integer(kind=8) :: nbnoms, nbsma, nbssa, nec, nel, nl, nm, nnoe, numa, nunoel
+    integer(kind=8) :: admodl, lcmodl
+    integer(kind=8) :: lshift
     character(len=1) :: base
     character(len=8) :: noma, nomgd, exiel, nomacr, moloc
     character(len=16) :: nomte
@@ -82,10 +82,10 @@ subroutine creprn(ligrez, molocz, basez, prnmz, prnsz)
     character(len=16) :: phenom
     character(len=19) :: ligrel
     character(len=24) :: prnm, prns
-    integer, pointer :: liel(:) => null()
+    integer(kind=8), pointer :: liel(:) => null()
     character(len=8), pointer :: vnomacr(:) => null()
-    integer, pointer :: sssa(:) => null()
-    integer, pointer :: conx(:) => null()
+    integer(kind=8), pointer :: sssa(:) => null()
+    integer(kind=8), pointer :: conx(:) => null()
 !
 ! -----  FONCTIONS FORMULES
 !     NUMAIL(IGR,IEL)=NUMERO DE LA MAILLE ASSOCIEE A L'ELEMENT IEL

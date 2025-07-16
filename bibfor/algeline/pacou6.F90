@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -23,12 +23,12 @@ subroutine pacou6(r, qt, n, i, a, &
 ! ARGUMENTS
 ! ---------
 #include "jeveux.h"
-    integer :: n, i
+    integer(kind=8) :: n, i
     real(kind=8) :: a, b, r(n, *), qt(n, *)
 ! ---------------------------------------------------------------------
 !
 !-----------------------------------------------------------------------
-    integer :: j
+    integer(kind=8) :: j
     real(kind=8) :: c, fact, s, w, y
 !-----------------------------------------------------------------------
     if (abs(a) .le. 1.0d-30) then

@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -23,24 +23,24 @@ interface
                       anc, nouv, seq, global, adress,&
                       nblign, lgsn, nbloc, ncbloc, lgbloc,&
                       diag, col, lmat, place)
-        integer :: nbsn
-        integer :: nbnd
-        integer :: supnd(nbsn+1)
-        integer :: xadj(nbnd+1)
-        integer :: adjncy(*)
-        integer :: anc(nbnd)
-        integer :: nouv(nbnd)
-        integer :: seq(nbsn)
+        integer(kind=8) :: nbsn
+        integer(kind=8) :: nbnd
+        integer(kind=8) :: supnd(nbsn+1)
+        integer(kind=8) :: xadj(nbnd+1)
+        integer(kind=8) :: adjncy(*)
+        integer(kind=8) :: anc(nbnd)
+        integer(kind=8) :: nouv(nbnd)
+        integer(kind=8) :: seq(nbsn)
         integer(kind=4) :: global(*)
-        integer :: adress(nbsn+1)
-        integer :: nblign(nbsn)
-        integer :: lgsn(nbsn)
-        integer :: nbloc
-        integer :: ncbloc(*)
-        integer :: lgbloc(*)
-        integer :: diag(0:nbnd)
-        integer :: col(*)
-        integer :: lmat
-        integer :: place(nbnd)
+        integer(kind=8) :: adress(nbsn+1)
+        integer(kind=8) :: nblign(nbsn)
+        integer(kind=8) :: lgsn(nbsn)
+        integer(kind=8) :: nbloc
+        integer(kind=8) :: ncbloc(*)
+        integer(kind=8) :: lgbloc(*)
+        integer(kind=8) :: diag(0:nbnd)
+        integer(kind=8) :: col(*)
+        integer(kind=8) :: lmat
+        integer(kind=8) :: place(nbnd)
     end subroutine mltpas
 end interface

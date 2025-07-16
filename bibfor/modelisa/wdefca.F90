@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -51,12 +51,12 @@ function wdefca(ino, s, alpha, f0, frco, &
 !
 ! ARGUMENTS
 ! ---------
-    integer :: ino
+    integer(kind=8) :: ino
     real(kind=8) :: s(*), alpha(*), f0, frco, frli
 !
 ! VARIABLES LOCALES
 ! -----------------
-    integer :: i
+    integer(kind=8) :: i
     real(kind=8) :: xi, xip1, xref
 !
 !-------------------   DEBUT DU CODE EXECUTABLE    ---------------------

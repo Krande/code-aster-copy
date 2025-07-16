@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -24,7 +24,7 @@ subroutine initia(neq, lgrot, indro, chamro, chamin)
 #include "asterf_types.h"
 #include "asterfort/assert.h"
     aster_logical :: lgrot
-    integer :: neq, indro(*)
+    integer(kind=8) :: neq, indro(*)
     real(kind=8) :: chamro(*), chamin(*)
 !
 ! ----------------------------------------------------------------------
@@ -54,7 +54,7 @@ subroutine initia(neq, lgrot, indro, chamro, chamin)
 ! ----------------------------------------------------------------------
 !
     real(kind=8) :: zero
-    integer :: i
+    integer(kind=8) :: i
 !
 ! ----------------------------------------------------------------------
 !

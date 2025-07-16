@@ -26,8 +26,6 @@ subroutine te0588(option, nomte)
 !
 #include "asterf_types.h"
 #include "asterfort/assert.h"
-#include "asterfort/eulnau.h"
-#include "asterc/r8dgrd.h"
 #include "asterfort/elref1.h"
 #include "asterfort/iselli.h"
 #include "asterc/ismaem.h"
@@ -43,7 +41,6 @@ subroutine te0588(option, nomte)
 #include "asterfort/xhmddl.h"
 #include "asterfort/xhmini.h"
 #include "asterfort/xpeshm.h"
-#include "asterfort/utmess.h"
 #include "jeveux.h"
 #include "asterfort/thmGetElemModel.h"
 #include "asterfort/Behaviour_type.h"
@@ -66,16 +63,16 @@ subroutine te0588(option, nomte)
 !
 ! --------------------------------------------------------------------------------------------------
 !
-    integer :: nno, imatuu, ndim, imate, iinstm, jcret
-    integer :: dimmat, npi, npg, li, ibid, yaenrm
-    integer :: codret, icodre(1)
-    integer :: ipoids, ivf, idfde, igeom
-    integer :: iinstp, ideplm, ideplp, icarcr, ipesa
-    integer :: icontm, ivarip, ivarim, ivectu, icontp
-    integer :: mecani(5), press1(7), press2(7), tempe(5), dimuel
-    integer :: dimdef, dimcon, nbvari, nddls, nddlm
-    integer :: nmec, np1, np2, nnos
-    integer :: nnom
+    integer(kind=8) :: nno, imatuu, ndim, imate, iinstm, jcret
+    integer(kind=8) :: dimmat, npi, npg, li, ibid, yaenrm
+    integer(kind=8) :: codret, icodre(1)
+    integer(kind=8) :: ipoids, ivf, idfde, igeom
+    integer(kind=8) :: iinstp, ideplm, ideplp, icarcr, ipesa
+    integer(kind=8) :: icontm, ivarip, ivarim, ivectu, icontp
+    integer(kind=8) :: mecani(5), press1(7), press2(7), tempe(5), dimuel
+    integer(kind=8) :: dimdef, dimcon, nbvari, nddls, nddlm
+    integer(kind=8) :: nmec, np1, np2, nnos
+    integer(kind=8) :: nnom
     real(kind=8) :: defgep(13), defgem(13)
     real(kind=8) :: dfdi(20, 3), dfdi2(20, 3)
     real(kind=8) :: drds(25, 11+5), drdsr(25, 11+5), dsde(11+5, 25)
@@ -142,17 +139,17 @@ subroutine te0588(option, nomte)
 ! =====================================================================
 ! DECLARATION POUR XFEM
 !
-    integer :: nfh, nfiss, jfisno, ddlc, contac
-    integer :: ddld, ddlm, ddlp, nnop, nnops, nnopm
-    integer :: enrmec(3), nenr, dimenr, enrhyd(3)
-    integer :: jpintt, jcnset, jheavt, jpmilt, jheavn
-    integer :: jlonch, jlst, jstno
+    integer(kind=8) :: nfh, nfiss, jfisno, ddlc, contac
+    integer(kind=8) :: ddld, ddlm, ddlp, nnop, nnops, nnopm
+    integer(kind=8) :: enrmec(3), nenr, dimenr, enrhyd(3)
+    integer(kind=8) :: jpintt, jcnset, jheavt, jpmilt, jheavn
+    integer(kind=8) :: jlonch, jlst, jstno
     character(len=8) :: enr
     aster_logical :: lVect, lMatr, lVari, lSigm
     character(len=16) :: compor_copy(COMPOR_SIZE)
     character(len=16), pointer :: compor(:) => null()
-    integer :: iCompor
-    integer :: itabin(2), iSigm, iret
+    integer(kind=8) :: iCompor
+    integer(kind=8) :: itabin(2), iSigm, iret
 !
 ! --------------------------------------------------------------------------------------------------
 !

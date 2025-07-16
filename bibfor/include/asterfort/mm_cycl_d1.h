@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2018 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -25,12 +25,12 @@ interface
                           alpha_cont_matr,alpha_cont_vect)
         use NonLin_Datastructure_type
         type(NL_DS_Contact), intent(in) :: ds_contact
-        integer, intent(in) :: i_cont_poin
+        integer(kind=8), intent(in) :: i_cont_poin
         real(kind=8), intent(in) :: coef_cont
         real(kind=8), intent(in) :: pres_cont_prev
         real(kind=8), intent(in) :: dist_cont_prev
-        integer, intent(in) :: indi_cont_eval
-        integer, intent(in) :: indi_cont_prev
+        integer(kind=8), intent(in) :: indi_cont_eval
+        integer(kind=8), intent(in) :: indi_cont_prev
         real(kind=8), intent(in) :: dist_cont
         real(kind=8), intent(in) :: pres_cont
         real(kind=8), intent(out) :: alpha_cont_matr

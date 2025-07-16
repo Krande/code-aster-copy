@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -58,7 +58,7 @@ subroutine romAlgoNLTherResidual(ds_algorom, vec2nd, cnvabt, cnresi, cn2mbr, &
     character(len=8) :: resultName
     character(len=19) :: mode
     character(len=24) :: fieldName
-    integer :: iEqua, nbEqua, nbMode, iMode, iret
+    integer(kind=8) :: iEqua, nbEqua, nbMode, iMode, iret
     real(kind=8) :: vnorm, resi
     real(kind=8), pointer :: v_mode(:) => null()
     real(kind=8), pointer :: v_cn2mbr(:) => null()

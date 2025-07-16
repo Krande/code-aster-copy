@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -21,24 +21,24 @@ subroutine rk5adp(nbeq, param_real, param_int, param_car, t0, dt0, nbmax, &
     implicit none
 #include "asterf_types.h"
 #include "asterfort/rk5app.h"
-    integer          :: nbeq
+    integer(kind=8)          :: nbeq
     real(kind=8)     :: param_real(*)
-    integer          :: param_int(*)
+    integer(kind=8)          :: param_int(*)
     character(len=*) :: param_car(*)
     real(kind=8)     :: t0
     real(kind=8)     :: dt0
-    integer          :: nbmax
+    integer(kind=8)          :: nbmax
     real(kind=8)     :: errmax
     real(kind=8)     :: y0(nbeq)
     real(kind=8)     :: dy0(nbeq)
     real(kind=8)     :: resu(2*nbeq)
-    integer          :: iret
+    integer(kind=8)          :: iret
     real(kind=8), intent(in), optional :: ynorme(nbeq)
 !
     interface
         subroutine rk5fct(ppr, ppi, ppc, yy0, dy0, dyy, decoup)
             real(kind=8)     :: ppr(*)
-            integer          :: ppi(*)
+            integer(kind=8)          :: ppi(*)
             character(len=*) :: ppc(*)
             real(kind=8)     :: yy0(*)
             real(kind=8)     :: dy0(*)
@@ -79,7 +79,7 @@ subroutine rk5adp(nbeq, param_real, param_int, param_car, t0, dt0, nbmax, &
 !
 ! --------------------------------------------------------------------------------------------------
 !
-    integer :: nbbou, ii
+    integer(kind=8) :: nbbou, ii
     real(kind=8) :: t9, dt9, y9(nbeq), norme(nbeq), erreur, xbid1, solu(3*nbeq)
     aster_logical :: decoup
 !

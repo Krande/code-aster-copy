@@ -36,7 +36,6 @@ subroutine chflch(rigthe, vec2nd, listLoad)
 #include "asterfort/vechth.h"
 #include "asterfort/vedith.h"
 #include "asterfort/vtcreb.h"
-#include "asterfort/wkvect.h"
 #include "jeveux.h"
 !   ------------------------------------------------------------------------------------
 !   *** Subroutine arguments
@@ -50,7 +49,7 @@ subroutine chflch(rigthe, vec2nd, listLoad)
 !   ------------------------------------------------------------------------------------
 !   *** Definition of local variables
 !   ------------------------------------------------------------------------------------
-    integer :: neq, jnchtp, j2nd, nbEqua, iEqua, jndirp
+    integer(kind=8) :: neq, jnchtp, j2nd, nbEqua, iEqua, jndirp
     real(kind=8) :: timeCurr
     character(len=8) :: numedd, model
     character(len=24) :: vechtp, cncine

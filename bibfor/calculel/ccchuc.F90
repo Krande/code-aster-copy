@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -59,12 +59,12 @@ subroutine ccchuc(sdresu_in, sdresu_out, field_type, nume_field_out, type_comp, 
     character(len=16), intent(in) :: type_comp
     character(len=16), intent(in) :: crit
     character(len=16), intent(in) :: norm
-    integer, intent(in) :: nb_form
+    integer(kind=8), intent(in) :: nb_form
     character(len=8), intent(in) :: name_form(nb_form)
-    integer, intent(in) :: nume_field_out
+    integer(kind=8), intent(in) :: nume_field_out
     character(len=19), intent(in) :: list_ordr
-    integer, intent(in) :: nb_ordr
-    integer, intent(in) :: iocc
+    integer(kind=8), intent(in) :: nb_ordr
+    integer(kind=8), intent(in) :: iocc
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -89,15 +89,15 @@ subroutine ccchuc(sdresu_in, sdresu_out, field_type, nume_field_out, type_comp, 
 !
 ! --------------------------------------------------------------------------------------------------
 !
-    integer :: jordr, numord
-    integer :: iord, icmp
-    integer :: jchsd
-    integer :: ibid, jcmp, ichk, iret
-    integer :: nb_node_new, nb_elem_new, nb_elem_in, nb_node_in
-    integer :: nb_elem, nb_node, n0, n1, n2, n3
-    integer :: nb_cmp
-    integer :: nb_cmp_resu
-    integer :: vali(4)
+    integer(kind=8) :: jordr, numord
+    integer(kind=8) :: iord, icmp
+    integer(kind=8) :: jchsd
+    integer(kind=8) :: ibid, jcmp, ichk, iret
+    integer(kind=8) :: nb_node_new, nb_elem_new, nb_elem_in, nb_node_in
+    integer(kind=8) :: nb_elem, nb_node, n0, n1, n2, n3
+    integer(kind=8) :: nb_cmp
+    integer(kind=8) :: nb_cmp_resu
+    integer(kind=8) :: vali(4)
     character(len=2) :: cnum
     character(len=4) :: type_field_in, type_field_out
     character(len=8) :: ma, model, nomgd, nomail
@@ -106,7 +106,7 @@ subroutine ccchuc(sdresu_in, sdresu_out, field_type, nume_field_out, type_comp, 
     character(len=19) :: ligrel_old, ligrel_new
     character(len=24) :: list_elem_new, work_out_val, wkcmp, list_elem_stor
     character(len=24) :: list_elem, list_node
-    integer :: j_elem, j_resu
+    integer(kind=8) :: j_elem, j_resu
     character(len=24) :: field_in, field_out, field_out_sd
 !
 ! --------------------------------------------------------------------------------------------------

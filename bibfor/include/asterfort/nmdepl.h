@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -28,8 +28,8 @@ interface
                       eta, ds_conv, ds_system, lerrit)
         use NonLin_Datastructure_type
         use NonLinearDyna_type
-        integer :: fonact(*)
-        integer :: iterat, numins
+        integer(kind=8) :: fonact(*)
+        integer(kind=8) :: iterat, numins
         real(kind=8) :: eta
         character(len=8) :: noma
         type(NL_DS_Conv), intent(inout) :: ds_conv

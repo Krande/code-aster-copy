@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -35,32 +35,32 @@ subroutine jelgdq(nomlu, rlong, nbsv)
 #include "asterfort/utmess.h"
     character(len=*) :: nomlu
     real(kind=8) :: rlong
-    integer :: nbsv
+    integer(kind=8) :: nbsv
 !     ------------------------------------------------------------------
-    integer :: lk1zon, jk1zon, liszon, jiszon
+    integer(kind=8) :: lk1zon, jk1zon, liszon, jiszon
     common/izonje/lk1zon, jk1zon, liszon, jiszon
-    integer :: n
+    integer(kind=8) :: n
     parameter(n=5)
-    integer :: jltyp, jlong, jdate, jiadd, jiadm, jlono, jhcod, jcara, jluti
-    integer :: jmarq
+    integer(kind=8) :: jltyp, jlong, jdate, jiadd, jiadm, jlono, jhcod, jcara, jluti
+    integer(kind=8) :: jmarq
     common/jiatje/jltyp(n), jlong(n), jdate(n), jiadd(n), jiadm(n),&
      &                 jlono(n), jhcod(n), jcara(n), jluti(n), jmarq(n)
 !
-    integer :: jgenr, jtype, jdocu, jorig, jrnom
+    integer(kind=8) :: jgenr, jtype, jdocu, jorig, jrnom
     common/jkatje/jgenr(n), jtype(n), jdocu(n), jorig(n), jrnom(n)
 !
-    integer :: ipgc, kdesma(2), lgd, lgduti, kposma(2), lgp, lgputi
+    integer(kind=8) :: ipgc, kdesma(2), lgd, lgduti, kposma(2), lgp, lgputi
     common/iadmje/ipgc, kdesma, lgd, lgduti, kposma, lgp, lgputi
-    integer :: iclas, iclaos, iclaco, idatos, idatco, idatoc
+    integer(kind=8) :: iclas, iclaos, iclaco, idatos, idatco, idatoc
     common/iatcje/iclas, iclaos, iclaco, idatos, idatco, idatoc
 !     ------------------------------------------------------------------
-    integer :: ivnmax, iddeso, idiadd, idlono, idnum
+    integer(kind=8) :: ivnmax, iddeso, idiadd, idlono, idnum
     parameter(ivnmax=0, iddeso=1, idiadd=2,&
      &               idlono=8, idnum=10)
 !     ------------------------------------------------------------------
     character(len=32) :: noml32
-    integer :: ipgcex, icre, iret, ic, id, ibacol, k, ix
-    integer :: ltypi, ixlono, ixiadd, iblono, nmax
+    integer(kind=8) :: ipgcex, icre, iret, ic, id, ibacol, k, ix
+    integer(kind=8) :: ltypi, ixlono, ixiadd, iblono, nmax
 !
     ipgcex = ipgc
     ipgc = -2

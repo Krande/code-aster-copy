@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -35,7 +35,7 @@ subroutine moco99(nomres, resul, nbmod, lrang, iorne, seul)
 #include "asterfort/rsorac.h"
 #include "asterfort/utmess.h"
 !
-    integer :: nbmod, lrang(nbmod), iorne
+    integer(kind=8) :: nbmod, lrang(nbmod), iorne
     character(len=8) :: nomres, resul
     aster_logical :: seul
 !
@@ -66,12 +66,12 @@ subroutine moco99(nomres, resul, nbmod, lrang, iorne, seul)
 !
 !
 !
-    integer :: nbpabm
+    integer(kind=8) :: nbpabm
     parameter(nbpabm=10)
-    integer :: ldpar(nbpabm), ldpa2(nbpabm)
-    integer :: nbcham, nbold(1), nbtrou, nnum, vali
-    integer :: i, ii, jtyp, ier, iorol, ire, ibid, lpain(3), lpaou(3)
-    integer :: llkge, llmge, llncp, llom2, lltmo, llval2, llvalo
+    integer(kind=8) :: ldpar(nbpabm), ldpa2(nbpabm)
+    integer(kind=8) :: nbcham, nbold(1), nbtrou, nnum, vali
+    integer(kind=8) :: i, ii, jtyp, ier, iorol, ire, ibid, lpain(3), lpaou(3)
+    integer(kind=8) :: llkge, llmge, llncp, llom2, lltmo, llval2, llvalo
 !
     aster_logical :: has_numref
 !
@@ -86,7 +86,7 @@ subroutine moco99(nomres, resul, nbmod, lrang, iorne, seul)
     character(len=24) :: type, typeba, valk(4)
 !
     complex(kind=8) :: cbid
-    integer, pointer :: ordr(:) => null()
+    integer(kind=8), pointer :: ordr(:) => null()
 !-----------------------------------------------------------------------
 !
     data bmpara/'NUME_MODE', 'FREQ', 'NORME', 'NOEUD_CMP', 'TYPE_DEFO',&

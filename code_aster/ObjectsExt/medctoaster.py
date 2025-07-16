@@ -21,17 +21,17 @@ import os
 
 import numpy as np
 
-from ..Messages import UTMESS
-from ..Utilities import MPI, Timer, config, no_new_attributes
-from ..Utilities import medcoupling as medc
-from ..Utilities.MedUtils import MedFileAccessType, MedFileReader
-from ..Utilities.MedUtils.medtoasterconnectivity import (
+from ..MedUtils.medtoasterconnectivity import (
     ASTER_TYPES,
     MED2ASTER_CONNECT,
     MED_TYPES,
     MYMED2ASTER_CONNECT,
     toAsterGeoType,
 )
+from ..Messages import UTMESS
+from ..Objects import MedFileAccessType, MedFileReader
+from ..Utilities import MPI, Timer, config, no_new_attributes
+from ..Utilities import medcoupling as medc
 
 
 def sorted_as_aster(fmt, types):

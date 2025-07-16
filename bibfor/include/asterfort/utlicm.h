@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2020 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -23,11 +23,11 @@ interface
                       cmpValidNb  , numcmp     ,&
                       ntncmp      , ntucmp)
         character(len=8), intent(in):: quantityName
-        integer, intent(in) :: cmpUserNb
+        integer(kind=8), intent(in) :: cmpUserNb
         character(len=8), pointer :: cmpUserName(:)
-        integer, intent(in) :: cmpCataNb
+        integer(kind=8), intent(in) :: cmpCataNb
         character(len=8), pointer :: cmpCataName(:)
-        integer, intent(out) :: cmpValidNb
+        integer(kind=8), intent(out) :: cmpValidNb
         character(len=*), intent(in) :: numcmp, ntncmp, ntucmp
     end subroutine utlicm
 end interface

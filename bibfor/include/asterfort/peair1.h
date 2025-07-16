@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -19,8 +19,8 @@
 interface
     subroutine peair1(mesh, nbma, lisma, aire, long)
         character(len=8), intent(in) :: mesh
-        integer :: nbma
-        integer :: lisma(*)
+        integer(kind=8) :: nbma
+        integer(kind=8) :: lisma(*)
         real(kind=8) :: aire
         real(kind=8) :: long
     end subroutine peair1

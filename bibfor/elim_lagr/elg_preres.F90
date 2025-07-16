@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -25,7 +25,6 @@ subroutine elg_preres(solve1, base, iret, matpre, matas1, &
     implicit none
 #include "asterf_types.h"
 #include "jeveux.h"
-#include "asterfort/assert.h"
 #include "asterfort/copisd.h"
 #include "asterfort/detrsd.h"
 #include "asterfort/dismoi.h"
@@ -42,12 +41,12 @@ subroutine elg_preres(solve1, base, iret, matpre, matas1, &
     character(len=19) :: matas1, solve1
     character(len=8) :: metres
     character(len=*) :: base, matpre
-    integer :: istop, iret
+    integer(kind=8) :: istop, iret
     character(len=19) :: matas2, solve2
-    integer ::   npvneg, iexi
+    integer(kind=8) ::   npvneg, iexi
     character(len=24), pointer :: slvk(:) => null()
     character(len=24), pointer :: refa(:) => null()
-    integer :: nlag1, nlag2, nphys
+    integer(kind=8) :: nlag1, nlag2, nphys
     aster_logical :: elg_is_ok
 !
 !

@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -25,7 +25,6 @@ subroutine thmCompVariElno(ds_thm)
 !
 #include "jeveux.h"
 #include "asterf_types.h"
-#include "asterfort/assert.h"
 #include "asterfort/thmGetElemRefe.h"
 #include "asterfort/elrefe_info.h"
 #include "asterfort/jevech.h"
@@ -50,11 +49,11 @@ subroutine thmCompVariElno(ds_thm)
 !
     character(len=16), parameter :: option = 'VARI_ELNO'
     character(len=8) :: elrefe, elref2
-    integer :: jv_gano, jv_compo, jv_varielga, jv_varielno
-    integer :: ncmp, nvim
+    integer(kind=8) :: jv_gano, jv_compo, jv_varielga, jv_varielno
+    integer(kind=8) :: ncmp, nvim
     aster_logical :: l_axi, l_vf
     character(len=3) :: inte_type
-    integer :: ndim
+    integer(kind=8) :: ndim
 !
 ! --------------------------------------------------------------------------------------------------
 !

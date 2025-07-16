@@ -32,7 +32,7 @@ subroutine nminmc(listFuncActi, &
 #include "asterfort/utmess.h"
 #include "asterfort/nmchex.h"
 !
-    integer, intent(in) :: listFuncActi(*)
+    integer(kind=8), intent(in) :: listFuncActi(*)
     character(len=24), intent(in) :: model
     character(len=19), intent(in) :: listLoad
     character(len=24), intent(in) :: numfix
@@ -64,7 +64,7 @@ subroutine nminmc(listFuncActi, &
 ! ----------------------------------------------------------------------
 !
     aster_logical :: lSuperElement
-    integer :: ifm, niv
+    integer(kind=8) :: ifm, niv
     character(len=24) :: diriElem
     character(len=24) :: superElem, superAsse
 !

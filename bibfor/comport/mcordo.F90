@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -51,10 +51,10 @@ subroutine mcordo(dpstrs, pstrs, pstra, dirprj, &
     real(kind=8) :: dirprj(3, 3)
     real(kind=8) :: edge
     real(kind=8) :: apex
-    integer :: codret
+    integer(kind=8) :: codret
 !
 ! Declaration of integer type variables
-    integer :: i, j, mdim, ndim
+    integer(kind=8) :: i, j, mdim, ndim
 !
 ! Declaration of integer type variables
 !     aster_logical :: epflag
@@ -63,7 +63,7 @@ subroutine mcordo(dpstrs, pstrs, pstra, dirprj, &
     parameter(mdim=3, ndim=6)
 !
 ! Declaration of vector and matrix type variables
-    integer :: iorder(mdim)
+    integer(kind=8) :: iorder(mdim)
     real(kind=8) :: pst1, pst2, pst3, refe, tbidon(ndim, mdim), vbidon(mdim), r0, r1, r2
     real(kind=8) :: r3, r4, small, tol, dmax1, pstmin, pstmax
 !

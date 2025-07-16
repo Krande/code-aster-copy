@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -22,7 +22,7 @@ interface
     subroutine deelpo(caelem, noma, numail, phie)
         character(len=8) :: caelem
         character(len=8) :: noma
-        integer :: numail
+        integer(kind=8) :: numail
         real(kind=8) :: phie
     end subroutine deelpo
 end interface

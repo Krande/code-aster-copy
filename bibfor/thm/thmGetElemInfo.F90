@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -31,12 +31,12 @@ subroutine thmGetElemInfo(l_vf, elrefe, elref2, &
     aster_logical, intent(in) :: l_vf
     character(len=8), intent(in) :: elrefe
     character(len=8), intent(in) :: elref2
-    integer, intent(out) :: nno, nnos, nnom
-    integer, intent(out) :: jv_gano
-    integer, intent(out) :: jv_poids, jv_poids2
-    integer, intent(out) :: jv_func, jv_func2, jv_dfunc, jv_dfunc2
+    integer(kind=8), intent(out) :: nno, nnos, nnom
+    integer(kind=8), intent(out) :: jv_gano
+    integer(kind=8), intent(out) :: jv_poids, jv_poids2
+    integer(kind=8), intent(out) :: jv_func, jv_func2, jv_dfunc, jv_dfunc2
     character(len=3), optional, intent(in) :: inte_type_
-    integer, optional, intent(out):: npi_, npi2_, npg_
+    integer(kind=8), optional, intent(out):: npi_, npi2_, npg_
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -66,8 +66,8 @@ subroutine thmGetElemInfo(l_vf, elrefe, elref2, &
 !
 ! --------------------------------------------------------------------------------------------------
 !
-    integer :: nno2, nnos2
-    integer :: npi, npi2, npg
+    integer(kind=8) :: nno2, nnos2
+    integer(kind=8) :: npi, npi2, npg
 !
 ! --------------------------------------------------------------------------------------------------
 !

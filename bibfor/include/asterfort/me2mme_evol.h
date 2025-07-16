@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -24,9 +24,9 @@ interface
         character(len=*), intent(in) :: caraElemZ
         character(len=*), intent(in) :: mateZ
         character(len=*), intent(in) :: matecoZ
-        integer, intent(in) :: nharm
+        integer(kind=8), intent(in) :: nharm
         character(len=1), intent(in) :: jvBase
-        integer, intent(in) :: iLoad
+        integer(kind=8), intent(in) :: iLoad
         character(len=8), intent(in) :: loadName
         character(len=*), intent(in) :: ligrel_calcZ
         real(kind=8), intent(in) :: inst_prev

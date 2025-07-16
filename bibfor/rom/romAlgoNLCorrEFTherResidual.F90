@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -52,7 +52,7 @@ subroutine romAlgoNLCorrEFTherResidual(ds_algorom, vec2nd, cnvabt, cnresi, cn2mb
 ! --------------------------------------------------------------------------------------------------
 !
     aster_logical :: l_hrom
-    integer :: iEqua, nbEqua
+    integer(kind=8) :: iEqua, nbEqua
     real(kind=8) :: vnorm
     real(kind=8), pointer :: v_cn2mbr(:) => null()
     real(kind=8), pointer :: v_cn2mbrr(:) => null()

@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -23,18 +23,18 @@ interface
                       rval, kval, cval, epsi, crit,&
                       nbordr, nbtrou, nutrou, ndim)
         character(len=4) :: tysca
-        integer :: iaobj
-        integer :: paobj
-        integer :: jordr
-        integer :: ival
+        integer(kind=8) :: iaobj
+        integer(kind=8) :: paobj
+        integer(kind=8) :: jordr
+        integer(kind=8) :: ival
         real(kind=8) :: rval
         character(len=*) :: kval
         complex(kind=8) :: cval
         real(kind=8) :: epsi
         character(len=*) :: crit
-        integer :: nbordr
-        integer :: nbtrou
-        integer :: nutrou(*)
-        integer :: ndim
+        integer(kind=8) :: nbordr
+        integer(kind=8) :: nbtrou
+        integer(kind=8) :: nutrou(*)
+        integer(kind=8) :: ndim
     end subroutine rsindi
 end interface

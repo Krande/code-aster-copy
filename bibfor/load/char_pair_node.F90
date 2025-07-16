@@ -22,14 +22,11 @@ subroutine char_pair_node(mesh, nb_node, &
     implicit none
 !
 #include "jeveux.h"
-#include "asterc/r8dgrd.h"
 #include "asterc/r8gaem.h"
 #include "asterfort/jedema.h"
 #include "asterfort/jedetr.h"
 #include "asterfort/jemarq.h"
-#include "asterfort/jenuno.h"
 #include "asterfort/jeveuo.h"
-#include "asterfort/jexnum.h"
 #include "asterfort/matrot.h"
 #include "asterfort/padist.h"
 #include "asterfort/parotr.h"
@@ -40,12 +37,12 @@ subroutine char_pair_node(mesh, nb_node, &
 ! Person in charge: mickael.abbas at edf.fr
 !
     character(len=8), intent(in) :: mesh
-    integer, intent(in) :: nb_node
+    integer(kind=8), intent(in) :: nb_node
     character(len=24), intent(in) :: list_node_i1
     character(len=24), intent(in) :: list_node_i2
     character(len=24), intent(in) :: list_node_o1
     character(len=24), intent(in) :: list_node_o2
-    integer, intent(out) :: i_error
+    integer(kind=8), intent(out) :: i_error
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -65,15 +62,15 @@ subroutine char_pair_node(mesh, nb_node, &
 !
 ! --------------------------------------------------------------------------------------------------
 !
-    integer :: ino_1, ino_2, i_no
-    integer :: j_node_i1, j_node_i2
-    integer :: j_node_o1, j_node_o2, j_node_o3, j_node_o4
-    integer :: j_node_inv
-    integer :: jgeom_init
-    integer :: ier, iexcor
-    integer :: nume_node_1, nume_node_2, nume_node_3, nume_node_4, nume_node_a
+    integer(kind=8) :: ino_1, ino_2, i_no
+    integer(kind=8) :: j_node_i1, j_node_i2
+    integer(kind=8) :: j_node_o1, j_node_o2, j_node_o3, j_node_o4
+    integer(kind=8) :: j_node_inv
+    integer(kind=8) :: jgeom_init
+    integer(kind=8) :: ier, iexcor
+    integer(kind=8) :: nume_node_1, nume_node_2, nume_node_3, nume_node_4, nume_node_a
     character(len=8) :: name_node_1, name_node_2, name_node_3, name_node_4, name_node_a
-    integer :: ino_mini
+    integer(kind=8) :: ino_mini
     real(kind=8) :: dist, dist_mini, cent(3), tran(3)
     real(kind=8) :: matr_rota(3, 3), x1(3), x2(3)
     character(len=24) :: valk(3)

@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2020 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -27,7 +27,7 @@ interface
         character(len=*) :: strx
         character(len=19) :: matel
         character(len=1) :: base
-        integer :: nh
+        integer(kind=8) :: nh
         character(len=*), optional, intent(in) :: deplr
         character(len=*), optional, intent(in) :: mateco
     end subroutine merige

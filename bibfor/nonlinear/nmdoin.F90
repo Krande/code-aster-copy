@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -46,11 +46,11 @@ subroutine nmdoin(ds_inout)
 !
 ! --------------------------------------------------------------------------------------------------
 !
-    integer :: last_nume, user_nume, init_nume
+    integer(kind=8) :: last_nume, user_nume, init_nume
     real(kind=8) :: last_time, user_time, init_time, stin_time
     character(len=8) :: criterion
     real(kind=8) :: precision
-    integer :: iret
+    integer(kind=8) :: iret
     aster_logical :: l_user_time, l_stin_time, l_user_nume
 !
 ! --------------------------------------------------------------------------------------------------

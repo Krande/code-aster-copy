@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -65,7 +65,7 @@ subroutine op0099()
 ! --- PHASE DE VERIFICATION
 !
 !-----------------------------------------------------------------------
-    integer :: ifm, ioc1, ioc3, ioc4, ioc5, niv
+    integer(kind=8) :: ifm, ioc1, ioc3, ioc4, ioc5, niv
 !-----------------------------------------------------------------------
     call infmaj()
     call infniv(ifm, niv)

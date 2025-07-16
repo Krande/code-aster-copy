@@ -31,8 +31,6 @@ subroutine te0246(option, nomte)
 #include "asterfort/ntfcma.h"
 #include "asterfort/rccoma.h"
 #include "asterfort/rcfode.h"
-#include "asterfort/rcvalb.h"
-#include "asterfort/utmess.h"
 #include "asterfort/writeMatrix.h"
 #include "FE_module.h"
 #include "jeveux.h"
@@ -51,12 +49,12 @@ subroutine te0246(option, nomte)
     type(FE_Quadrature) :: FEQuadCell
     type(FE_basis) :: FEBasis
 !
-    integer :: icodre(1)
+    integer(kind=8) :: icodre(1)
     character(len=16) :: phenom, rela_name
     real(kind=8) :: valQP(MAX_QP), tpgi, r8bid
     real(kind=8) :: mass(MAX_BS, MAX_BS)
-    integer :: kp, imate
-    integer :: ifon(6)
+    integer(kind=8) :: kp, imate
+    integer(kind=8) :: ifon(6)
     aster_logical :: aniso
     character(len=16), pointer :: compor(:) => null()
     real(kind=8), pointer :: tempi(:) => null()

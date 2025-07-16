@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -30,15 +30,15 @@ function ioriv2(num, n, noeud, vect, coor)
 !   CODE RETOUR IORIV2 : 0 SI LA MAILLE NE CONTIENT PAS LE NOEUD
 !                       -1 OU 1 SINON (SELON QU'IL AIT OU NON
 !                                      FALLU REORIENTER)
-    integer :: n, num(n)
+    integer(kind=8) :: n, num(n)
     real(kind=8) :: vect(3), coor(3, *)
 !
 !     DONNEES POUR TRIA3,TRIA6,TRIA7,QUAD4,QUAD8,QUAD9
 !     NOMBRE DE SOMMETS EN FONCTION DU NOMBRE DE NOEUDS DE L'ELEMENT
-    integer :: nsom(9)
+    integer(kind=8) :: nsom(9)
 !-----------------------------------------------------------------------
-    integer :: i, i1, i2, i3, ioriv2, k, l
-    integer :: n1, n2, n3, noeud, nso
+    integer(kind=8) :: i, i1, i2, i3, ioriv2, k, l
+    integer(kind=8) :: n1, n2, n3, noeud, nso
     real(kind=8) :: scal, x1, x2, x3, xa, xb, xn
     real(kind=8) :: y1, y2, y3, ya, yb, yn, z1
     real(kind=8) :: z2, z3, za, zb, zn

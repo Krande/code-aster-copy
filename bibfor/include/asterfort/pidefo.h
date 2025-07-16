@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -21,9 +21,9 @@
 interface
     subroutine pidefo(ndim, npg, kpg, compor, fm,&
                       epsm, epsp, epsd, copilo)
-        integer :: npg
-        integer :: ndim
-        integer :: kpg
+        integer(kind=8) :: npg
+        integer(kind=8) :: ndim
+        integer(kind=8) :: kpg
         character(len=16) :: compor(*)
         real(kind=8) :: fm(3, 3)
         real(kind=8) :: epsm(6)

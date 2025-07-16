@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -42,8 +42,8 @@ subroutine op0156()
 #include "asterfort/utmess.h"
 #include "asterfort/vtcopy.h"
 #include "asterfort/vtcreb.h"
-    integer :: n1, iret, ier
-    integer :: lmat, jchin, jchout
+    integer(kind=8) :: n1, iret, ier
+    integer(kind=8) :: lmat, jchin, jchout
     character(len=1) :: typmat, typres
     character(len=24) :: valk(2)
     character(len=14) :: numem
@@ -90,12 +90,13 @@ subroutine op0156()
 !        LA MATRICE, ON CHANGE LA NUMEROTATION DE CHAM_NO.
 !        EN APPELANT VTCOPY, ON PERD LA VALEUR DES LAGRANGES
     if (.not. idensd('NUME_EQUA', pfchn1, pfchn2)) then
-        valk(1) = pfchn1
-        valk(2) = pfchn2
-        call utmess('A', 'CALCULEL3_46', nk=2, valk=valk)
+        call utmess('A', 'CALCULEL3_46')
         chamn2 = '&&OP0156.CHAM_NO'
         call vtcreb(chamn2, 'V', typres, nume_ddlz=numem)
-        call vtcopy(chamno, chamn2, 'F', ier)
+        call vtcopy(chamno, chamn2, ier)
+        if (ier .ne. 0) then
+            call utmess('F', 'FIELD0_15')
+        end if
         chamno = chamn2
     end if
     call jeveuo(chamno//'.VALE', 'L', jchin)

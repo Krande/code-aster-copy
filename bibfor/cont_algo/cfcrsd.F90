@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -61,29 +61,29 @@ subroutine cfcrsd(mesh, nume_dof, ds_contact)
 !
 ! --------------------------------------------------------------------------------------------------
 !
-    integer :: ifm, niv
-    integer :: ztacf
-    integer :: model_ndim, nt_cont_poin, nb_cont_node, nb_equa
-    integer :: nbliai, ii
+    integer(kind=8) :: ifm, niv
+    integer(kind=8) :: ztacf
+    integer(kind=8) :: model_ndim, nt_cont_poin, nb_cont_node, nb_equa
+    integer(kind=8) :: nbliai, ii
     character(len=19) :: sdcont_mu, sdcont_atmu, sdcont_afmu
-    integer :: jv_sdcont_mu, jv_sdcont_atmu, jv_sdcont_afmu
+    integer(kind=8) :: jv_sdcont_mu, jv_sdcont_atmu, jv_sdcont_afmu
     character(len=19) :: sdcont_copo
     real(kind=8), pointer :: v_sdcont_copo(:) => null()
     character(len=19) :: sdcont_del0, sdcont_ddel, sdcont_delc, sdcont_dep0, sdcont_depc
     character(len=19) :: sdcont_cm1a, sdcont_enat, sdcont_fro1, sdcont_fro2
     character(len=19) :: sdcont_cin0
     character(len=19) :: sdcont_sgdm, sdcont_sgdp, sdcont_sgpm, sdcont_sgpp
-    integer :: jv_sdcont_sgdm, jv_sdcont_sgdp, jv_sdcont_sgpm, jv_sdcont_sgpp
+    integer(kind=8) :: jv_sdcont_sgdm, jv_sdcont_sgdp, jv_sdcont_sgpm, jv_sdcont_sgpp
     character(len=19) :: sdcont_dire, sdcont_mum, sdcont_secm
-    integer :: jv_sdcont_dire, jv_sdcont_mum
+    integer(kind=8) :: jv_sdcont_dire, jv_sdcont_mum
     character(len=19) :: sdcont_pcrs, sdcont_pcdr, sdcont_pcuu
-    integer :: jv_sdcont_pcrs, jv_sdcont_pcdr, jv_sdcont_pcuu
+    integer(kind=8) :: jv_sdcont_pcrs, jv_sdcont_pcdr, jv_sdcont_pcuu
     character(len=19) :: sdcont_svm0, sdcont_svmu
-    integer :: jv_sdcont_svm0, jv_sdcont_svmu
-    integer :: nbcm1a, nbenat, nbfro1, nbfro2
+    integer(kind=8) :: jv_sdcont_svm0, jv_sdcont_svmu
+    integer(kind=8) :: nbcm1a, nbenat, nbfro1, nbfro2
     character(len=24) :: sdcont_rea1, sdcont_rea2
     character(len=24) :: sdcont_tacfin, sdcont_tangco
-    integer :: jv_sdcont_tacfin, jv_sdcont_tangco
+    integer(kind=8) :: jv_sdcont_tacfin, jv_sdcont_tangco
     aster_logical :: l_frot, l_pena_cont, l_pena_frot, l_matr_cont, l_gcp, l_pre_cond
 !
 ! --------------------------------------------------------------------------------------------------

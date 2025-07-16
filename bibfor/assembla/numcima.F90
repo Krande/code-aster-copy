@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -22,7 +22,6 @@ subroutine numcima(infcha, nu, ccid, base)
 #include "jeveux.h"
 !
 #include "asterfort/asschc.h"
-#include "asterfort/assert.h"
 #include "asterfort/jedema.h"
 #include "asterfort/jedetr.h"
 #include "asterfort/jeexin.h"
@@ -51,9 +50,9 @@ subroutine numcima(infcha, nu, ccid, base)
 !     VARIABLES LOCALES
 !----------------------------------------------------------------------
     character(len=19) :: infch2
-    integer :: iret, iret1, iret2, iret3, ich, ncharg, jlchci
-    integer :: nchci
-    integer, pointer :: infc(:) => null()
+    integer(kind=8) :: iret, iret1, iret2, iret3, ich, ncharg, jlchci
+    integer(kind=8) :: nchci
+    integer(kind=8), pointer :: infc(:) => null()
     character(len=24), pointer :: lcha(:) => null()
 !-----------------------------------------------------------------------
     call jemarq()

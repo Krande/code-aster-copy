@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -21,7 +21,7 @@
 interface
     subroutine xvelfm(nb_cracks, cracks, model_xfem)
         character(len=8), intent(in) :: model_xfem
-        integer, intent(in) :: nb_cracks
+        integer(kind=8), intent(in) :: nb_cracks
         character(len=8), intent(in) :: cracks(nb_cracks)
     end subroutine xvelfm
 end interface

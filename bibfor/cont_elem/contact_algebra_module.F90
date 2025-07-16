@@ -29,7 +29,6 @@ module contact_algebra_module
 #include "asterf_types.h"
 #include "asterfort/apnorm.h"
 #include "asterfort/mmtang.h"
-#include "asterfort/assert.h"
 #include "asterfort/matinv.h"
 #include "blas/dgemm.h"
 #include "blas/dgemv.h"
@@ -118,7 +117,7 @@ contains
 !
 ! --------------------------------------------------------------------------------------------------
 !
-        integer :: i, j
+        integer(kind=8) :: i, j
 !
         do j = 1, 3
             do i = 1, 3
@@ -195,7 +194,7 @@ contains
 ! --------------------------------------------------------------------------------------------------
 !
         real(kind=8) :: dns_du_(MAX_LAGA_DOFS, 3)
-        integer :: i_dof
+        integer(kind=8) :: i_dof
 !
         dns_du_ = dNs_du(geom, tau_slav, dTs_ns)
 !
@@ -268,7 +267,7 @@ contains
 !
         implicit none
 !
-        integer, intent(in) :: elem_dime, nb_node
+        integer(kind=8), intent(in) :: elem_dime, nb_node
         real(kind=8), intent(in) :: elem_coor(3, 9), norm(3), ddff(3, 9)
         real(kind=8) :: secondFundForm(2, 2)
 !
@@ -278,7 +277,7 @@ contains
 !
 ! --------------------------------------------------------------------------------------------------
 !
-        integer :: idim, ino
+        integer(kind=8) :: idim, ino
         real(kind=8) :: ddgeo1(3), ddgeo2(3), ddgeo3(3)
 !
         secondFundForm = 0.d0
@@ -508,7 +507,7 @@ contains
 !
 ! --------------------------------------------------------------------------------------------------
 !
-        integer :: i_dof
+        integer(kind=8) :: i_dof
         real(kind=8) :: norm_xT, Tn(3, 3), xT_uni(3), xT(3), coeff, TnoT(3, 3)
         real(kind=8) :: dTn(MAX_LAGA_DOFS, 3, 3)
         blas_int :: b_MAX_LAGA_DOFS, b_3, b_1
@@ -621,7 +620,7 @@ contains
 !
 ! --------------------------------------------------------------------------------------------------
 !
-        integer :: i_dof
+        integer(kind=8) :: i_dof
         real(kind=8) :: norm_xT, Tn(3, 3), xT_uni(3), xT(3), coeff, TnoT(3, 3)
         blas_int :: b_MAX_LAGA_DOFS, b_3, b_1
 !
@@ -780,7 +779,7 @@ contains
 !
         real(kind=8) :: invA_dT_ns(MAX_LAGA_DOFS, 2), metricTens(2, 2), invMetricTens(2, 2)
         real(kind=8) :: ts_nm(2), invA_ts_nm(2), dinvMetric(MAX_LAGA_DOFS, 3, 2)
-        integer :: i_tau
+        integer(kind=8) :: i_tau
         blas_int :: b_dime_m1, b_MAX_LAGA_DOFS, b_2, b_nb_dofs, b_dime
 !
         b_dime_m1 = to_blas_int(geom%elem_dime-1)
@@ -838,7 +837,7 @@ contains
 !
         implicit none
 !
-        integer, intent(in) :: elem_dime, nb_node
+        integer(kind=8), intent(in) :: elem_dime, nb_node
         real(kind=8), intent(in) :: dfunc(2, 9)
         real(kind=8) :: dT_du(27, 3, 2)
 !
@@ -849,7 +848,7 @@ contains
 !   D t^a = dfunc_dzeta^a * e_j
 ! --------------------------------------------------------------------------------------------------
 !
-        integer :: i_node, i_dim, index, i_tau
+        integer(kind=8) :: i_node, i_dim, index, i_tau
 !
         dT_du = 0.d0
 !
@@ -884,7 +883,7 @@ contains
 ! --------------------------------------------------------------------------------------------------
 !
         real(kind=8) :: dT(27, 3, 2)
-        integer :: i_node, i_dim, index, index2
+        integer(kind=8) :: i_node, i_dim, index, index2
 !
         dTs_du = 0.d0
 !
@@ -928,7 +927,7 @@ contains
 ! --------------------------------------------------------------------------------------------------
 !
         real(kind=8) :: dT(27, 3, 2)
-        integer :: i_node, i_dim, index, index2
+        integer(kind=8) :: i_node, i_dim, index, index2
 !
         dTm_du = 0.d0
 !
@@ -959,7 +958,7 @@ contains
 !
         implicit none
 !
-        integer, intent(in) :: elem_dime, nb_node
+        integer(kind=8), intent(in) :: elem_dime, nb_node
         real(kind=8), intent(in) :: dfunc(2, 9), norm(3)
         real(kind=8) :: dT_du_norm(27, 2)
 !
@@ -970,7 +969,7 @@ contains
 !   D t^a . n = dfunc_dzeta^a * e_j . norm
 ! --------------------------------------------------------------------------------------------------
 !
-        integer :: i_node, i_dim, index, i_tau
+        integer(kind=8) :: i_node, i_dim, index, i_tau
 !
         dT_du_norm = 0.d0
 !
@@ -1005,7 +1004,7 @@ contains
 ! --------------------------------------------------------------------------------------------------
 !
         real(kind=8) :: dT_n(27, 2)
-        integer :: i_node, i_dim, index, index2
+        integer(kind=8) :: i_node, i_dim, index, index2
 !
         dTs_du_ns = 0.d0
 !
@@ -1068,7 +1067,7 @@ contains
 ! --------------------------------------------------------------------------------------------------
 !
         real(kind=8) :: dT_n(27, 2)
-        integer :: i_node, i_dim, index, index2
+        integer(kind=8) :: i_node, i_dim, index, index2
 !
         dTm_du_nm = 0.d0
 !
@@ -1231,7 +1230,7 @@ contains
 !
 ! --------------------------------------------------------------------------------------------------
 !
-        integer :: i_dof
+        integer(kind=8) :: i_dof
         real(kind=8) :: dv_du_(MAX_LAGA_DOFS, 3), Tn(3, 3), dTn(MAX_LAGA_DOFS, 3, 3)
         real(kind=8) :: dvT_g(MAX_LAGA_DOFS, 3)
 !
@@ -1277,9 +1276,8 @@ contains
 !
 ! --------------------------------------------------------------------------------------------------
 !
-        integer :: i_dof
+        integer(kind=8) :: i_dof
         real(kind=8) :: dv_du_(MAX_LAGA_DOFS, 3), Tn(3, 3), dTn(MAX_LAGA_DOFS, 3, 3)
-        real(kind=8) :: dvT_g(MAX_LAGA_DOFS, 3)
 !
 ! ------ First derivative of tangential speed
 !
@@ -1316,11 +1314,9 @@ contains
 ! --------------------------------------------------------------------------------------------------
 !
         real(kind=8) :: norm_slav_prev(3)
-        real(kind=8) :: tau_slav_prev(3, 2)
         real(kind=8) :: dGap_du_ns(MAX_LAGA_DOFS, 3)
-        real(kind=8) :: norm_mast_prev(3), tau_mast_prev(3, 2), tau_dZeta(3), coor_mast_prev(2)
-        real(kind=8) :: gap_prev
-        integer :: i_dof
+        real(kind=8) :: tau_mast_prev(3, 2), tau_dZeta(3)
+        integer(kind=8) :: i_dof
 !
 ! ------ Compute outward previous slave normal
         call apnorm(geom%nb_node_slav, geom%elem_slav_code, geom%elem_dime, geom%coor_slav_prev, &
@@ -1452,7 +1448,7 @@ contains
 !
 ! --------------------------------------------------------------------------------------------------
 !
-        integer :: i_node, i_dim, index
+        integer(kind=8) :: i_node, i_dim, index
 !
         jump = 0.d0
         index = 0
@@ -1499,7 +1495,7 @@ contains
 !
 ! --------------------------------------------------------------------------------------------------
 !
-        integer :: i_node, i_dim, index, j_dim
+        integer(kind=8) :: i_node, i_dim, index, j_dim
         real(kind=8) :: Tn(3, 3)
 !
         jump_tang = 0.d0

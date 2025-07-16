@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -26,12 +26,12 @@ interface
         character(len=24) :: tmpf
         character(len=8) :: fcx
         character(len=8) :: nommai
-        integer :: isec
+        integer(kind=8) :: isec
         character(len=8) :: car(*)
         real(kind=8) :: val(*)
         character(len=8) :: exp(*)
-        integer :: ncar
+        integer(kind=8) :: ncar
         character(len=6) :: kioc
-        integer :: ier
+        integer(kind=8) :: ier
     end subroutine affbar
 end interface

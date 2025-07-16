@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -22,7 +22,6 @@ subroutine te0285(option, nomte)
 !
 #include "jeveux.h"
 #include "asterc/r8depi.h"
-#include "asterc/r8prem.h"
 #include "asterfort/assert.h"
 #include "asterfort/dfdm2d.h"
 #include "asterfort/elrefe_info.h"
@@ -42,8 +41,8 @@ subroutine te0285(option, nomte)
 !
 ! --------------------------------------------------------------------------------------------------
 !
-    integer :: nno, kp, npg, i, j, k, lcastr
-    integer :: ipoids, ivf, idfde, igeom, imate
+    integer(kind=8) :: nno, kp, npg, i, j, k, lcastr
+    integer(kind=8) :: ipoids, ivf, idfde, igeom, imate
     real(kind=8) :: rho, xg, yg, depi
     real(kind=8) :: dfdx(9), dfdy(9), poids, r, x(9), y(9)
     real(kind=8) :: matine(6), xxi, xyi, yyi, volume

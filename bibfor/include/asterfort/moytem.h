@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -21,10 +21,10 @@ interface
     subroutine moytem(fami, npg, nspg, poum, temp,&
                       iret)
         character(len=*), intent(in) :: fami
-        integer, intent(in) :: npg
-        integer, intent(in) :: nspg
+        integer(kind=8), intent(in) :: npg
+        integer(kind=8), intent(in) :: nspg
         character(len=*), intent(in) :: poum
         real(kind=8), intent(out) :: temp
-        integer, intent(out) :: iret
+        integer(kind=8), intent(out) :: iret
     end subroutine moytem
 end interface

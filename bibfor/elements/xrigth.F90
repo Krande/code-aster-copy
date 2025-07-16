@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -68,8 +68,8 @@ subroutine xrigth(ndim, elrefp, nnop, imate, itemps, &
 !-----------------------------------------------------------------------
 !
     character(len=8) :: elrefp
-    integer :: ndim, nnop, imate, itemps, igeom, nfh, nfe, jpintt
-    integer :: lonch(10), cnset(4*32), heavt(36), heavn(27, 5)
+    integer(kind=8) :: ndim, nnop, imate, itemps, igeom, nfh, nfe, jpintt
+    integer(kind=8) :: lonch(10), cnset(4*32), heavt(36), heavn(27, 5)
     real(kind=8) :: lsn(nnop), lst(nnop), basloc(*), mattt(*)
 !
 !-----------------------------------------------------------------------
@@ -84,11 +84,11 @@ subroutine xrigth(ndim, elrefp, nnop, imate, itemps, &
     real(kind=8) :: r, he
     real(kind=8) :: jac, dgdth(ndim), dffenr(nnop, 1+nfh+nfe, ndim)
     real(kind=8) :: pdscal
-    integer :: ivf, kpg, nno, npg, j, iret, nse, ise, inp, in, ino, kddl
-    integer :: nbddl, hea_se
-    integer :: mxstac, icodre(1), spt, ipoids, idfde, nosema, ind1, lddl, jnp
-    integer :: iddlma
-    integer :: idim, ind2
+    integer(kind=8) :: ivf, kpg, nno, npg, j, iret, nse, ise, inp, in, ino, kddl
+    integer(kind=8) :: nbddl, hea_se
+    integer(kind=8) :: mxstac, icodre(1), spt, ipoids, idfde, nosema, ind1, lddl, jnp
+    integer(kind=8) :: iddlma
+    integer(kind=8) :: idim, ind2
 !
     parameter(mxstac=1000)
 !     NBRE MAX DE NOEUDS D'UN SOUS-ELEMENT (TRIA3,TETRA4,TRIA6 -> 6)

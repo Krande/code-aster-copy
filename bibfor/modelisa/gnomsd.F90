@@ -38,7 +38,7 @@ subroutine gnomsd(nomres, noojb, k1, k2)
 #include "asterfort/codlet.h"
 #include "asterfort/jeexin.h"
 #include "asterfort/utmess.h"
-    integer :: iret, k1, k2, nmaxsd, ndigit, iessai, inum, n1, n2
+    integer(kind=8) :: iret, k1, k2, nmaxsd, ndigit, iessai, inum, n1, n2
     character(len=*) :: nomres
     character(len=8) :: nomu, nomre2
     character(len=16) :: concep, cmd

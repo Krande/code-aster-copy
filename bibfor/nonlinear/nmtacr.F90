@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -23,7 +23,7 @@ subroutine nmtacr(mode, ndimsi, mat, sigel, vim, &
 !
     implicit none
 #include "blas/ddot.h"
-    integer :: mode, ndimsi
+    integer(kind=8) :: mode, ndimsi
     real(kind=8) :: mat(14), sigel(ndimsi), vim(9), epm(6), dp, sp, xi
     real(kind=8) :: f, g, fdp, fds, fdx, gdp, gds, gdx, dpmax, sig(ndimsi)
     real(kind=8) :: tang(6, 6)
@@ -61,7 +61,7 @@ subroutine nmtacr(mode, ndimsi, mat, sigel, vim, &
 ! OUT TANG   VARIATION :  DEP/SIGEL * PROJDEV
 ! ----------------------------------------------------------------------
 !
-    integer :: n, i, j
+    integer(kind=8) :: n, i, j
     real(kind=8) :: epndx(6), epn(6)
     real(kind=8) :: c, d, a(6), b(6), se(6), s0(6), seeq
     real(kind=8) :: v(6), semax

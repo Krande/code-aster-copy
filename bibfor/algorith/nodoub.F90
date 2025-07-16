@@ -38,16 +38,14 @@ subroutine nodoub(nbl, nbb, nol, nob, typl, &
 !
 #include "asterf_types.h"
 #include "jeveux.h"
-#include "asterfort/jenuno.h"
-#include "asterfort/jexnum.h"
 #include "asterfort/utmess.h"
 #include "asterfort/int_to_char8.h"
 !
     aster_logical :: double
-    integer :: i, jf, lcou, lp, nbb, nbl
+    integer(kind=8) :: i, jf, lcou, lp, nbb, nbl
     character(len=24) :: valk(3)
     character(len=8) :: nomnoe, mailla, typl, typb
-    integer :: nol(nbl), nob(nbb)
+    integer(kind=8) :: nol(nbl), nob(nbb)
 !-----------------------------------------------------------------------
 !
 !

@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2018 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -23,9 +23,9 @@ interface
                       nb_cmp_mxz)
         character(len=*), intent(in) :: fieldz
         character(len=8), pointer :: cmp_name(:)
-        integer, pointer :: cata_to_field(:)
-        integer, pointer :: field_to_cata(:)
-        integer, optional, intent(out) :: nb_cmpz
-        integer, optional, intent(out) :: nb_cmp_mxz
+        integer(kind=8), pointer :: cata_to_field(:)
+        integer(kind=8), pointer :: field_to_cata(:)
+        integer(kind=8), optional, intent(out) :: nb_cmpz
+        integer(kind=8), optional, intent(out) :: nb_cmp_mxz
     end subroutine cmpcha
 end interface

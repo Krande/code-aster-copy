@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -27,7 +27,7 @@ function cudisi(deficz, questz)
 #include "asterfort/jedema.h"
 #include "asterfort/jemarq.h"
 #include "asterfort/jeveuo.h"
-    integer :: cudisi
+    integer(kind=8) :: cudisi
     character(len=*) :: deficz
     character(len=*) :: questz
 !
@@ -47,7 +47,7 @@ function cudisi(deficz, questz)
 !
 !
     character(len=24) :: ndimcu
-    integer :: jdim
+    integer(kind=8) :: jdim
     character(len=24) :: deficu, questi
 !
 ! ----------------------------------------------------------------------

@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -22,21 +22,22 @@ subroutine asseVectField(vectAsse, numeDof, vectScalType, &
     implicit none
 !
 #include "asterf_types.h"
-#include "jeveux.h"
 #include "asterfort/assert.h"
-#include "asterfort/jeexin.h"
-#include "asterfort/jeveuo.h"
-#include "asterfort/jelira.h"
-#include "asterfort/vtcreb.h"
-#include "asterfort/vtcopy.h"
 #include "asterfort/detrsd.h"
-#include "asterfort/jemarq.h"
 #include "asterfort/jedema.h"
+#include "asterfort/jeexin.h"
+#include "asterfort/jelira.h"
+#include "asterfort/jemarq.h"
+#include "asterfort/jeveuo.h"
+#include "asterfort/utmess.h"
+#include "asterfort/vtcopy.h"
+#include "asterfort/vtcreb.h"
+#include "jeveux.h"
 !
     character(len=19), intent(in) :: vectAsse
     character(len=14), intent(in) :: numeDof
-    integer, intent(in) :: vectScalType
-    integer, intent(in) :: nbVectElem
+    integer(kind=8), intent(in) :: vectScalType
+    integer(kind=8), intent(in) :: nbVectElem
     character(len=*), intent(in) :: listVectElem(nbVectElem)
 !
 ! --------------------------------------------------------------------------------------------------
@@ -46,9 +47,9 @@ subroutine asseVectField(vectAsse, numeDof, vectScalType, &
 ! --------------------------------------------------------------------------------------------------
 !
     character(len=19), parameter :: vectAsseWork = '&&ASSVEC.CHAMNO'
-    integer :: iVectElem, iNode, iEqua
-    integer :: iexi, iret
-    integer :: nbNode, nbEqua
+    integer(kind=8) :: iVectElem, iNode, iEqua
+    integer(kind=8) :: iexi, iret
+    integer(kind=8) :: nbNode, nbEqua
     character(len=19) :: vectElem, nodeField
     character(len=24), pointer :: relr(:) => null()
     character(len=1) :: ktyp
@@ -77,7 +78,10 @@ subroutine asseVectField(vectAsse, numeDof, vectScalType, &
                 call vtcreb(vectAsseWork, 'V', ktyp, &
                             nume_ddlz=numeDof, &
                             nb_equa_outz=nbEqua)
-                call vtcopy(nodeField, vectAsseWork, 'F', iret)
+                call vtcopy(nodeField, vectAsseWork, iret)
+                if (iret .ne. 0) then
+                    call utmess("F", "FIELD0_5")
+                end if
                 call jeveuo(vectAsseWork//'.VALE', 'L', vr=valeWork)
                 do iEqua = 1, nbEqua
                     vale(iEqua) = vale(iEqua)+valeWork(iEqua)

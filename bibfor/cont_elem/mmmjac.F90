@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -31,7 +31,7 @@ subroutine mmmjac(l_axis, nb_node, elem_dime, &
 !
     aster_logical, intent(in) :: l_axis
     character(len=8), intent(in) :: elem_code
-    integer, intent(in) :: elem_dime, nb_node
+    integer(kind=8), intent(in) :: elem_dime, nb_node
     real(kind=8), intent(in) :: elem_coor(3, 9)
     real(kind=8), intent(in) :: ff(9), dff(2, 9)
     real(kind=8), intent(out) :: jacobi
@@ -57,7 +57,7 @@ subroutine mmmjac(l_axis, nb_node, elem_dime, &
 !
 ! --------------------------------------------------------------------------------------------------
 !
-    integer :: i_node
+    integer(kind=8) :: i_node
     real(kind=8) :: dxdk, dydk, dzdk
     real(kind=8) :: r
     real(kind=8) :: cova(3, 3), metr(2, 2)

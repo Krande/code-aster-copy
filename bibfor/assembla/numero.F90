@@ -32,7 +32,7 @@ subroutine numero(numeDofZ, base, &
 !
     character(len=*), intent(inout) :: numeDofZ
     character(len=2), intent(in) :: base
-    integer, intent(in) :: nbLigr
+    integer(kind=8), intent(in) :: nbLigr
     character(len=24), pointer :: listLigr(:)
     character(len=*), optional, intent(in) :: numeDofOldZ_
     character(len=*), optional, intent(in) :: modeLocZ_, idenRelaZ_, modelZ_
@@ -62,7 +62,7 @@ subroutine numero(numeDofZ, base, &
 !
 ! --------------------------------------------------------------------------------------------------
 !
-    integer :: iLigr
+    integer(kind=8) :: iLigr
     character(len=8) :: mesh, model, modelInList
     character(len=14) :: numeDof
     character(len=16) :: typsd

@@ -59,7 +59,7 @@ subroutine laVect_cf_std(parameters, geom, vect_cont, vect_fric, k_diff)
 ! --------------------------------------------------------------------------------------------------
 !
     aster_logical :: l_cont_qp, l_fric_qp
-    integer :: i_qp, nb_qp, nbPoinInte
+    integer(kind=8) :: i_qp, nb_qp, nbPoinInte
     real(kind=8) :: weight_sl_qp, coeff, hF, lagr_f3(3), mu_f3(MAX_LAGA_DOFS, 3)
     real(kind=8) :: coor_qp_sl(2), metricTens(2, 2)
     real(kind=8) :: coor_qp(2, MAX_NB_QUAD), weight_qp(MAX_NB_QUAD)

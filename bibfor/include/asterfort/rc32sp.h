@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -25,13 +25,13 @@ interface
                       sp, spmeca, instsp, nbsscyc, spss)
         aster_logical :: ze200
         character(len=4) :: lieu
-        integer :: iocc1
-        integer :: iocc2
-        integer :: ns
+        integer(kind=8) :: iocc1
+        integer(kind=8) :: iocc2
+        integer(kind=8) :: ns
         real(kind=8) :: sp(2)
         real(kind=8) :: spmeca(2)
         real(kind=8) :: instsp(4)
-        integer :: nbsscyc
+        integer(kind=8) :: nbsscyc
         real(kind=8) :: spss(100)
     end subroutine rc32sp
 end interface

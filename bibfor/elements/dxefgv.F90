@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -57,7 +57,7 @@ subroutine dxefgv(nomte, option, xyzl, pgl, depl, effgt)
 ! --- AUX POINTS DE CALCUL
 !     --------------------
 !-----------------------------------------------------------------------
-    integer :: i
+    integer(kind=8) :: i
     character(len=16) :: opti16
 !
     opti16 = option

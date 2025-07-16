@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -23,20 +23,20 @@ interface
                       is, nbsys, vind, nsfv, dy,&
                       nfs, nsg, hsr, iexp, expbp,&
                       rp)
-        integer :: nsg
-        integer :: nmat
+        integer(kind=8) :: nsg
+        integer(kind=8) :: nmat
         real(kind=8) :: coeft(nmat)
-        integer :: ifa
-        integer :: nbcomm(nmat, 3)
+        integer(kind=8) :: ifa
+        integer(kind=8) :: nbcomm(nmat, 3)
         character(len=16) :: necris
-        integer :: is
-        integer :: nbsys
+        integer(kind=8) :: is
+        integer(kind=8) :: nbsys
         real(kind=8) :: vind(*)
-        integer :: nsfv
+        integer(kind=8) :: nsfv
         real(kind=8) :: dy(*)
-        integer :: nfs
+        integer(kind=8) :: nfs
         real(kind=8) :: hsr(nsg, nsg)
-        integer :: iexp
+        integer(kind=8) :: iexp
         real(kind=8) :: expbp(*)
         real(kind=8) :: rp
     end subroutine lcmmfi

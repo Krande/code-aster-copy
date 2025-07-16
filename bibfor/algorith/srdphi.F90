@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -45,7 +45,7 @@ subroutine srdphi(nbmat, mater, de, seuilv, dfdsv, dphi)
     !!! Variables globales
     !!!
 
-    integer :: nbmat
+    integer(kind=8) :: nbmat
     real(kind=8) :: mater(nbmat, 2), de(6, 6)
     real(kind=8) :: dphi(6), dfdsv(6), seuilv
 
@@ -53,7 +53,7 @@ subroutine srdphi(nbmat, mater, de, seuilv, dfdsv, dphi)
     !!! Variables locales
     !!!
 
-    integer :: i, ndi, ndt
+    integer(kind=8) :: i, ndi, ndt
     real(kind=8) :: pa, a, n, aa(6), a0, r, z
     real(kind=8) :: tpp, trr
 

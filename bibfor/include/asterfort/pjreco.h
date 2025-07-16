@@ -21,11 +21,11 @@
 interface
     subroutine pjreco(listNodeOcc, nbNodeOcc, numOcc, finalOcc, nameLNodeInterc, &
                       nbNodeInterc, parallelMesh)
-        integer, intent(in) :: listNodeOcc(*)
-        integer, intent(in) :: nbNodeOcc
-        integer, intent(in) :: numOcc
+        integer(kind=8), intent(in) :: listNodeOcc(*)
+        integer(kind=8), intent(in) :: nbNodeOcc
+        integer(kind=8), intent(in) :: numOcc
         aster_logical, intent(in) ::finalOcc, parallelMesh
         character(len=16) :: nameLNodeInterc
-        integer, intent(out) :: nbNodeInterc
+        integer(kind=8), intent(out) :: nbNodeInterc
     end subroutine pjreco
 end interface

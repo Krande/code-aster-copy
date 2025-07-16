@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -46,7 +46,7 @@ subroutine nmvcd2(name_varcz, matez, exis_varc)
 !
 ! --------------------------------------------------------------------------------------------------
 !
-    integer :: nmax, i, iret
+    integer(kind=8) :: nmax, i, iret
     character(len=8) :: mate
     character(len=8) :: name_varc
     character(len=8), pointer :: cvrcvarc(:) => null()

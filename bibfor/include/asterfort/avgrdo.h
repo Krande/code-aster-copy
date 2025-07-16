@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -26,15 +26,15 @@ interface
                       nomcri, nomfor, grdvie, forvie, vala,&
                       coefpa, ncycl, jvmin, jvmax, jomin,&
                       jomax, post, cudomx, vnormx, nbplan)
-        integer :: tdisp
-        integer :: nbordr
-        integer :: nbvec
+        integer(kind=8) :: tdisp
+        integer(kind=8) :: nbordr
+        integer(kind=8) :: nbvec
         real(kind=8) :: vectn(3*nbvec)
         real(kind=8) :: vwork(tdisp)
-        integer :: kwork
-        integer :: sommw
-        integer :: tspaq
-        integer :: i
+        integer(kind=8) :: kwork
+        integer(kind=8) :: sommw
+        integer(kind=8) :: tspaq
+        integer(kind=8) :: i
         character(len=8) :: nommat
         character(len=16) :: nomcri
         character(len=16) :: nomfor
@@ -42,14 +42,14 @@ interface
         character(len=16) :: forvie
         real(kind=8) :: vala
         real(kind=8) :: coefpa
-        integer :: ncycl(nbvec)
-        integer :: jvmin
-        integer :: jvmax
-        integer :: jomin
-        integer :: jomax
+        integer(kind=8) :: ncycl(nbvec)
+        integer(kind=8) :: jvmin
+        integer(kind=8) :: jvmax
+        integer(kind=8) :: jomin
+        integer(kind=8) :: jomax
         aster_logical :: post
         real(kind=8) :: cudomx
-        integer :: vnormx(2)
-        integer :: nbplan
+        integer(kind=8) :: vnormx(2)
+        integer(kind=8) :: nbplan
     end subroutine avgrdo
 end interface

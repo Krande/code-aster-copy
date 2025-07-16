@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -30,7 +30,6 @@ subroutine assma2(ldistme, lmasym, tt, nu14, ncmp, matel, &
 #include "asterc/indik8.h"
 #include "asterfort/ascopr.h"
 #include "asterfort/asretm.h"
-#include "asterfort/assert.h"
 #include "asterfort/cordd2.h"
 #include "asterfort/dismoi.h"
 #include "asterfort/jedema.h"
@@ -47,32 +46,32 @@ subroutine assma2(ldistme, lmasym, tt, nu14, ncmp, matel, &
     aster_logical, intent(in) :: ldistme, lmasym
     character(len=2), intent(in) :: tt
     character(len=14), intent(in) :: nu14
-    integer, intent(in) :: ncmp
+    integer(kind=8), intent(in) :: ncmp
     character(len=19), intent(in) :: matel
     real(kind=8), intent(in) :: c1
-    integer :: jvalm(2)
-    integer :: jtmp2
-    integer :: lgtmp2
+    integer(kind=8) :: jvalm(2)
+    integer(kind=8) :: jtmp2
+    integer(kind=8) :: lgtmp2
 !-----------------------------------------------------------------------
     character(len=16) :: optio
     aster_logical :: lmesym
     character(len=8) :: mo, ma, nogdco, nogdsi, nomacr
     character(len=14) :: num2
-    integer :: nbecmx
+    integer(kind=8) :: nbecmx
     parameter(nbecmx=10)
-    integer :: icodla(nbecmx), icodge(nbecmx)
-    integer :: i1, i2, iad1, iad11, iad2, iad21
-    integer :: jsupma, jnulo1, jprno, jposd1
-    integer :: iec, ima, inold, nbterm, jprn1, jprn2
-    integer :: jresl, jsmdi, jsmhc, k1
-    integer :: k2, n1, nugd, iancmp, lgncmp, icmp
-    integer :: nbsma, nbssa, nbvel, nddl1, nddl2
-    integer :: nec, nm, nmxcmp, nnoe, i, jec, rang
-    integer :: lshift
-    integer, pointer :: conx(:) => null()
+    integer(kind=8) :: icodla(nbecmx), icodge(nbecmx)
+    integer(kind=8) :: i1, i2, iad1, iad11, iad2, iad21
+    integer(kind=8) :: jsupma, jnulo1, jprno, jposd1
+    integer(kind=8) :: iec, ima, inold, nbterm, jprn1, jprn2
+    integer(kind=8) :: jresl, jsmdi, jsmhc, k1
+    integer(kind=8) :: k2, n1, nugd, iancmp, lgncmp, icmp
+    integer(kind=8) :: nbsma, nbssa, nbvel, nddl1, nddl2
+    integer(kind=8) :: nec, nm, nmxcmp, nnoe, i, jec, rang
+    integer(kind=8) :: lshift
+    integer(kind=8), pointer :: conx(:) => null()
     character(len=8), pointer :: vnomacr(:) => null()
-    integer, pointer :: sssa(:) => null()
-    integer, pointer :: nueq(:) => null()
+    integer(kind=8), pointer :: sssa(:) => null()
+    integer(kind=8), pointer :: nueq(:) => null()
     mpi_int :: mrank, msize
 
 !-----------------------------------------------------------------------

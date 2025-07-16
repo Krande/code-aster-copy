@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2020 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -23,6 +23,6 @@ interface
         character(len=*) :: nomfcz
         character(len=*) :: nomclz
         character(len=*) :: nomrz
-        integer :: nbmax
+        integer(kind=8) :: nbmax
     end subroutine rcstoc_verif
 end interface

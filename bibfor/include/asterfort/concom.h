@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -21,11 +21,11 @@
 interface
     subroutine concom(macor, nblir, macoc, nblic, nbnoco,&
                       nococ)
-        integer :: nblic
-        integer :: nblir
+        integer(kind=8) :: nblic
+        integer(kind=8) :: nblir
         character(len=8) :: macor(nblir+2)
         character(len=8) :: macoc(nblic+2)
-        integer :: nbnoco
-        integer :: nococ(*)
+        integer(kind=8) :: nbnoco
+        integer(kind=8) :: nococ(*)
     end subroutine concom
 end interface

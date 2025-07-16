@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -50,8 +50,8 @@ subroutine nmcere(model, nume_dof, ds_material, cara_elem, ds_constitutive, &
 #include "asterfort/r8inir.h"
 #include "blas/daxpy.h"
 !
-    integer :: list_func_acti(*)
-    integer :: iter_newt, ldccvg
+    integer(kind=8) :: list_func_acti(*)
+    integer(kind=8) :: iter_newt, ldccvg
     real(kind=8) :: eta, rho, offset, residu
     character(len=19) :: list_load, sdnume, matr_asse
     type(NL_DS_Constitutive), intent(in) :: ds_constitutive
@@ -102,11 +102,11 @@ subroutine nmcere(model, nume_dof, ds_material, cara_elem, ds_constitutive, &
 !
 ! --------------------------------------------------------------------------------------------------
 !
-    integer, parameter :: phaseType = CORR_NEWTON
-    integer :: ifm, niv
-    integer, parameter :: zvalin = 28, zsolal = 17
+    integer(kind=8), parameter :: phaseType = CORR_NEWTON
+    integer(kind=8) :: ifm, niv
+    integer(kind=8), parameter :: zvalin = 28, zsolal = 17
     aster_logical :: lgrot, lendo
-    integer :: neq, nmax
+    integer(kind=8) :: neq, nmax
     character(len=19) :: cnfext
     character(len=19) :: valint(zvalin)
     character(len=19) :: solalt(zsolal)

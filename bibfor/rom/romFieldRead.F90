@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -35,7 +35,7 @@ subroutine romFieldRead(operation, field, fieldObject, &
     type(ROM_DS_Field), intent(in) :: field
     character(len=24), intent(inout) :: fieldObject
     character(len=8), optional, intent(in) :: resultName_
-    integer, optional, intent(in) :: numeStore_
+    integer(kind=8), optional, intent(in) :: numeStore_
     real(kind=8), optional, pointer :: fieldVale_(:)
 !
 ! --------------------------------------------------------------------------------------------------
@@ -57,7 +57,7 @@ subroutine romFieldRead(operation, field, fieldObject, &
 !
 ! --------------------------------------------------------------------------------------------------
 !
-    integer :: iret, iEqua, nbEqua
+    integer(kind=8) :: iret, iEqua, nbEqua
     character(len=24) :: fieldName
     character(len=4) :: fieldSupp
     aster_logical :: lFilter

@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -40,15 +40,15 @@ subroutine op0073()
 #include "asterfort/utmess.h"
 #include "asterfort/wkvect.h"
     character(len=8) :: nomres
-    integer :: nbpara, nbinfo
+    integer(kind=8) :: nbpara, nbinfo
     parameter(nbpara=3)
     character(len=8) :: typara(nbpara)
     character(len=16) :: typres, nomcom, nopara(nbpara)
     character(len=24) :: type, tabk(nbpara)
     character(len=19) :: nomfon
-    integer :: lval, lpro, lfon, nbval, nbpair
-    integer :: ibid, idtemp, i
-    integer :: ifm, niv
+    integer(kind=8) :: lval, lpro, lfon, nbval, nbpair
+    integer(kind=8) :: ibid, idtemp, i
+    integer(kind=8) :: ifm, niv
     real(kind=8) :: r8bid, rad
     complex(kind=8) :: cbid
     aster_logical :: crprol

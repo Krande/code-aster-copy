@@ -62,7 +62,7 @@ subroutine numecn(modelZ, champZ, numeEquaZ)
     character(len=24), pointer :: listLigr(:) => null()
     character(len=19) :: prfchn, ligrelName
     character(len=24) :: numeEquaSave
-    integer :: nbLili, iLili, i2, iret, nb2, iexi, nbLigr
+    integer(kind=8) :: nbLili, iLili, i2, iret, nb2, iexi, nbLigr
     character(len=14) :: numeDof
     aster_logical :: newnum
     save numeEquaSave

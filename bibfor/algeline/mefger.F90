@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -22,7 +22,7 @@ subroutine mefger(ndim, som, xint, yint, rint, &
 !
 #include "asterc/r8pi.h"
 #include "asterfort/trigom.h"
-    integer :: ndim(14), sgn(*), orig(*)
+    integer(kind=8) :: ndim(14), sgn(*), orig(*)
     real(kind=8) :: som(9), xint(*), yint(*), rint(*), beta(*)
 !     MISE EN FORME DES DONNEES POUR LA PRISE EN COMPTE DES CONDITIONS
 !     AUX LIMITES PAR UNE METHODE DERIVEE DE LA METHODE DES IMAGES
@@ -57,8 +57,8 @@ subroutine mefger(ndim, som, xint, yint, rint, &
 !
 ! --- LECTURE DES DIMENSIONS
 !-----------------------------------------------------------------------
-    integer :: i, iencei, j, k, nbcyl, nbtot, nima
-    integer :: nima2, nj, np
+    integer(kind=8) :: i, iencei, j, k, nbcyl, nbtot, nima
+    integer(kind=8) :: nima2, nj, np
 !-----------------------------------------------------------------------
     nbcyl = ndim(3)
     iencei = ndim(6)

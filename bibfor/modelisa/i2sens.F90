@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -19,16 +19,15 @@
 subroutine i2sens(chemin, nbrma2, limail, nbrma, connex, &
                   typmai, abscis)
     implicit none
-#include "asterfort/assert.h"
 #include "asterfort/i2extf.h"
-    integer :: nbrma, nbrma2
-    integer :: chemin(nbrma2), limail(nbrma)
+    integer(kind=8) :: nbrma, nbrma2
+    integer(kind=8) :: chemin(nbrma2), limail(nbrma)
     character(len=*) :: connex, typmai
     real(kind=8) :: abscis(2), delta
 !
 !-----------------------------------------------------------------------
-    integer :: j, mi, mj, nid, nig, njd
-    integer :: njg
+    integer(kind=8) :: j, mi, mj, nid, nig, njd
+    integer(kind=8) :: njg
 !-----------------------------------------------------------------------
 !
     mi = limail(chemin(1))

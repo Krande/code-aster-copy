@@ -40,9 +40,7 @@ subroutine dtmprep_noli_rotf(sd_dtm_, sd_nl_, icomp)
 #include "asterfort/jedema.h"
 #include "asterfort/jelira.h"
 #include "asterfort/jemarq.h"
-#include "asterfort/jenonu.h"
 #include "asterfort/jeveuo.h"
-#include "asterfort/jexnom.h"
 #include "asterfort/jexnum.h"
 #include "asterfort/mdchdl.h"
 #include "asterfort/nlget.h"
@@ -62,17 +60,17 @@ subroutine dtmprep_noli_rotf(sd_dtm_, sd_nl_, icomp)
 !   -0.1- Input/output arguments
     character(len=*), intent(in) :: sd_dtm_
     character(len=*), intent(in) :: sd_nl_
-    integer, intent(in) :: icomp
+    integer(kind=8), intent(in) :: icomp
 !
 !   -0.2- Local variables
     aster_logical     :: lnoeu2, memail
-    integer           :: ibid, iret, ier, ino1, ino2
-    integer           :: ind1, ind2, inod, gnod, inog
-    integer           :: gnog, bono1, bono2, compt1, compt2
-    integer           :: ipat, j1, j2, nbmail
-    integer           :: nbno, nddl1, nddl2, nbmode
-    integer           :: j, neq, mxlevel, nbrfis, nn1
-    integer           :: nn2, numai, i
+    integer(kind=8)           :: ibid, iret, ier, ino1, ino2
+    integer(kind=8)           :: ind1, ind2, inod, gnod, inog
+    integer(kind=8)           :: gnog, bono1, bono2, compt1, compt2
+    integer(kind=8)           :: ipat, j1, j2, nbmail
+    integer(kind=8)           :: nbno, nddl1, nddl2, nbmode
+    integer(kind=8)           :: j, neq, mxlevel, nbrfis, nn1
+    integer(kind=8)           :: nn2, numai, i
 !
     real(kind=8)      :: angini, rad, alpha, beta, axe(3)
 !
@@ -84,7 +82,7 @@ subroutine dtmprep_noli_rotf(sd_dtm_, sd_nl_, icomp)
     character(len=16) :: typnum, valk(2), motfac
     character(len=24) :: nomgr1, nomgr2, nl_title
 !
-    integer, pointer       :: ddlcho(:) => null()
+    integer(kind=8), pointer       :: ddlcho(:) => null()
     real(kind=8), pointer       :: vale(:) => null()
     real(kind=8), pointer       :: defmod1(:) => null()
     real(kind=8), pointer       :: defmod2(:) => null()

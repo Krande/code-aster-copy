@@ -33,12 +33,11 @@ subroutine ajellt(ligretZ, meshZ, nbCell, listCell, &
 #include "asterfort/jexnum.h"
 #include "asterfort/juveca.h"
 #include "asterfort/ligretDebug.h"
-#include "asterfort/wkvect.h"
 #include "jeveux.h"
 !
     character(len=*), intent(in) :: ligretZ, meshZ
-    integer, intent(in) :: nbCell
-    integer, intent(in) :: listCell(nbCell)
+    integer(kind=8), intent(in) :: nbCell
+    integer(kind=8), intent(in) :: listCell(nbCell)
     character(len=*), intent(in) :: phenomZ, modelisaZ
 !
 ! --------------------------------------------------------------------------------------------------
@@ -55,23 +54,23 @@ subroutine ajellt(ligretZ, meshZ, nbCell, listCell, &
 ! --------------------------------------------------------------------------------------------------
 !
     aster_logical, parameter :: debug = ASTER_FALSE
-    integer :: iCell, idlima, idlino, idlity
-    integer :: idpoma, idpono, modelisaNume
-    integer :: iret, elemTypeNume, jdpm
-    integer :: jdtm, nbCellAffe, nbCellMaxi, lopomx
-    integer :: matard, nbCellAvail, nbmail, nbmax
-    integer :: nlolim, cellNume, cellTypeNume
+    integer(kind=8) :: iCell, idlima, idlino, idlity
+    integer(kind=8) :: idpoma, idpono, modelisaNume
+    integer(kind=8) :: iret, elemTypeNume, jdpm
+    integer(kind=8) :: jdtm, nbCellAffe, nbCellMaxi, lopomx
+    integer(kind=8) :: matard, nbCellAvail, nbmail, nbmax
+    integer(kind=8) :: nlolim, cellNume, cellTypeNume
     parameter(nbmail=10000)
     character(len=8) :: mesh
     character(len=16) :: phenom, modelisa
     character(len=19) :: ligret
     character(len=24) :: typmai
-    integer, pointer :: apma(:) => null()
+    integer(kind=8), pointer :: apma(:) => null()
     character(len=16), pointer :: phen(:) => null()
-    integer, pointer :: apno(:) => null()
+    integer(kind=8), pointer :: apno(:) => null()
     character(len=8), pointer :: lgrf(:) => null()
-    integer, pointer :: vnbma(:) => null()
-    integer, pointer :: mata(:) => null()
+    integer(kind=8), pointer :: vnbma(:) => null()
+    integer(kind=8), pointer :: mata(:) => null()
     character(len=16), pointer :: mode(:) => null()
 !
 ! --------------------------------------------------------------------------------------------------

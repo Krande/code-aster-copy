@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -25,7 +25,6 @@ subroutine te0530(option, nomte)
 #include "asterc/r8vide.h"
 #include "asterfort/assert.h"
 #include "asterfort/elrefe_info.h"
-#include "asterfort/jevech.h"
 #include "asterfort/rcvarc.h"
 #include "asterfort/tecach.h"
     character(len=16) :: option, nomte
@@ -36,10 +35,10 @@ subroutine te0530(option, nomte)
 ! ......................................................................
 !
     real(kind=8) :: r1, rvid
-    integer :: ndim, nno, nnos, npg, ipoids, ivf, idfde, jgano, ipg, iret
-    integer :: jpvarc, ivrc
-    integer :: nbvarc
-    integer :: jtab(7), idx, nbsp, isp
+    integer(kind=8) :: ndim, nno, nnos, npg, ipoids, ivf, idfde, jgano, ipg, iret
+    integer(kind=8) :: jpvarc, ivrc
+    integer(kind=8) :: nbvarc
+    integer(kind=8) :: jtab(7), idx, nbsp, isp
     parameter(nbvarc=8)
     character(len=8) :: nomvrc(nbvarc)
 !

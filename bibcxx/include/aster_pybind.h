@@ -39,7 +39,7 @@ static std::shared_ptr< DSType > initFactoryPtr( Args... args ) {
 };
 
 /** @brief Defines pickling functions */
-/* If the object inherits from DataStructure, it must inherit from UseCppPickling too.
+/* If the object is a DataStructure, it must inherit from DSWithCppPickling.
  */
 template < typename DSType >
 static auto define_pickling() {
@@ -114,8 +114,7 @@ struct type_caster< JeveuxCollection< T > > {
         if ( !coll->build() || coll->size() < 0 ) {
             return pylist.inc_ref();
         }
-        for ( const auto &pair : coll ) {
-            const auto &obj = pair.second;
+        for ( const auto &obj : coll ) {
             obj->updateValuePointer();
             py::list items;
             for ( const auto &val : obj ) {
@@ -143,8 +142,7 @@ struct type_caster< JeveuxCollection< T, ASTERINTEGER, Contiguous > > {
         if ( !coll->build() || coll->size() < 0 ) {
             return pylist.inc_ref();
         }
-        for ( const auto &pair : coll ) {
-            const auto &obj = pair.second;
+        for ( const auto &obj : coll ) {
             obj->updateValuePointer();
             py::list items;
             for ( const auto &val : obj ) {

@@ -55,17 +55,17 @@ subroutine dichoc_endo_ldc(for_discret, iret)
 #include "blas/dcopy.h"
 !
     type(te0047_dscr), intent(in) :: for_discret
-    integer, intent(out) :: iret
+    integer(kind=8), intent(out) :: iret
 !
 ! --------------------------------------------------------------------------------------------------
 !
-    integer :: imatri, ivarim, irep, ifono, icontp, ivarip, iadzi, iazk24, iiter, iterat
-    integer :: icarcr, idf, ipi, imate, jmater, nbmater
-    integer :: ii, kk
+    integer(kind=8) :: imatri, ivarim, irep, ifono, icontp, ivarip, iadzi, iazk24, iiter, iterat
+    integer(kind=8) :: icarcr, idf, ipi, imate, jmater, nbmater
+    integer(kind=8) :: ii, kk
     character(len=24) :: messak(6)
 !
-    integer :: imater, igeom, icontm, jdc, ivitp, idepen, iviten, jtm, jtp
-    integer :: iretlc
+    integer(kind=8) :: imater, igeom, icontm, jdc, ivitp, idepen, iviten, jtm, jtp
+    integer(kind=8) :: iretlc
     real(kind=8) :: klc(for_discret%neq*for_discret%neq), klv(for_discret%nbt)
     real(kind=8) :: dvl(for_discret%neq), dpe(for_discret%neq), dve(for_discret%neq)
     real(kind=8) :: fl(for_discret%neq)
@@ -76,33 +76,33 @@ subroutine dichoc_endo_ldc(for_discret, iret)
     aster_logical :: rigi, resi, Prediction, Dynamique
 ! --------------------------------------------------------------------------------------------------
 !   Pour le matériau
-    integer, parameter :: nbre1 = 3
+    integer(kind=8), parameter :: nbre1 = 3
     real(kind=8) :: valre1(nbre1)
-    integer :: codre1(nbre1)
+    integer(kind=8) :: codre1(nbre1)
     character(len=16) :: materiau
 ! --------------------------------------------------------------------------------------------------
 !   Pour l'intégration de la loi de comportement
     real(kind=8) :: temps0, temps1, dtemps
 !   Paramètres de la loi :     jeu
-    integer, parameter :: ijeu = 1
-    integer, parameter :: nbpara = 1, nbpain = 2*3+3
+    integer(kind=8), parameter :: ijeu = 1
+    integer(kind=8), parameter :: nbpara = 1, nbpain = 2*3+3
     real(kind=8) :: ldcpar(nbpara)
-    integer :: ldcpai(nbpain)
+    integer(kind=8) :: ldcpai(nbpain)
     character(len=8) :: ldccar(1)
 !   Équations du système
-    integer, parameter :: nbequa = 6
+    integer(kind=8), parameter :: nbequa = 6
     real(kind=8) :: y0(nbequa), dy0(nbequa), resu(nbequa*2), errmax, ynorme(nbequa)
-    integer :: nbdecp
+    integer(kind=8) :: nbdecp
 !   Variables internes
-    integer, parameter :: nbvari = 5, nbcorr = 4, idebut = nbvari
-    integer :: Correspond(nbcorr)
+    integer(kind=8), parameter :: nbvari = 5, nbcorr = 4, idebut = nbvari
+    integer(kind=8) :: Correspond(nbcorr)
     real(kind=8) :: varmo(nbvari), varpl(nbvari)
 ! --------------------------------------------------------------------------------------------------
     real(kind=8) :: xl(6), xd(3), rignor, deplac, evoljeu0, evoljeu1, xjeu
     real(kind=8) :: LongDist, Dist12, forceref, rigidref, deplaref
 ! --------------------------------------------------------------------------------------------------
 !   Paramètres associés au matériau codé
-    integer, parameter :: lmat = 9, lfct = 10
+    integer(kind=8), parameter :: lmat = 9, lfct = 10
     blas_int :: b_incx, b_incy, b_n
 ! --------------------------------------------------------------------------------------------------
 !   RIGI_MECA_TANG ->        DSIDEP        -->  RIGI

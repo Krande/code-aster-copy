@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -36,7 +36,7 @@ subroutine rcevol(typtab, nommat, symax, nbopt, option, lsymm)
 #include "asterfort/rcevsn.h"
 #include "asterfort/rcevsp.h"
 #include "asterfort/utmess.h"
-    integer :: nbopt
+    integer(kind=8) :: nbopt
     real(kind=8) :: symax
     character(len=8) :: nommat
     character(len=16) :: typtab, option(*)
@@ -47,7 +47,7 @@ subroutine rcevol(typtab, nommat, symax, nbopt, option, lsymm)
 !
 !     ------------------------------------------------------------------
 !
-    integer :: i, j, n1, nbinti, jinti, nbtran
+    integer(kind=8) :: i, j, n1, nbinti, jinti, nbtran
     real(kind=8) :: para(3), sm
     aster_logical :: lpmpb, lsn, lfatig, flexio, lrocht, lamorc, kemixt
     character(len=8) :: typeke

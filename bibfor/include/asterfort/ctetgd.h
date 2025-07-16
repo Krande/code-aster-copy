@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -21,11 +21,11 @@
 interface
     subroutine ctetgd(basmod, numd, numg, nbsec, teta,&
                       nbtet)
-        integer :: nbtet
+        integer(kind=8) :: nbtet
         character(len=8) :: basmod
-        integer :: numd
-        integer :: numg
-        integer :: nbsec
+        integer(kind=8) :: numd
+        integer(kind=8) :: numg
+        integer(kind=8) :: nbsec
         real(kind=8) :: teta(nbtet, nbtet)
     end subroutine ctetgd
 end interface

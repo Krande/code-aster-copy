@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -38,11 +38,11 @@ subroutine cupivo(xjvmax, indic, nbliac, ajliai, spliai, &
     character(len=24) :: resocu
     character(len=24) :: deficu
     real(kind=8) :: xjvmax
-    integer :: nbliac
-    integer :: indic
-    integer :: ajliai
-    integer :: spliai
-    integer :: spavan
+    integer(kind=8) :: nbliac
+    integer(kind=8) :: indic
+    integer(kind=8) :: ajliai
+    integer(kind=8) :: spliai
+    integer(kind=8) :: spavan
 !
 ! ----------------------------------------------------------------------
 !
@@ -73,17 +73,17 @@ subroutine cupivo(xjvmax, indic, nbliac, ajliai, spliai, &
 !
     character(len=1) :: typesp
     character(len=19) :: liac, liot, matr, stoc, ouvert
-    integer :: jliac, jliot, jvale, jva, jouv
-    integer :: nbbloc
+    integer(kind=8) :: jliac, jliot, jvale, jva, jouv
+    integer(kind=8) :: nbbloc
     real(kind=8) :: copmax
-    integer :: kk1, kk2, kk1f, kk2f
-    integer :: nbote, pivot, nbliai, lliac, ii
-    integer :: niv, ifm
-    integer :: bloc, dercol
-    integer :: nnocu
-    integer, pointer :: scbl(:) => null()
-    integer, pointer :: scib(:) => null()
-    integer, pointer :: scde(:) => null()
+    integer(kind=8) :: kk1, kk2, kk1f, kk2f
+    integer(kind=8) :: nbote, pivot, nbliai, lliac, ii
+    integer(kind=8) :: niv, ifm
+    integer(kind=8) :: bloc, dercol
+    integer(kind=8) :: nnocu
+    integer(kind=8), pointer :: scbl(:) => null()
+    integer(kind=8), pointer :: scib(:) => null()
+    integer(kind=8), pointer :: scde(:) => null()
 !
 ! ----------------------------------------------------------------------
 !

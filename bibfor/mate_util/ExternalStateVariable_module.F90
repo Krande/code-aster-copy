@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -51,7 +51,6 @@ module ExternalStateVariable_module
 #include "asterfort/exisd.h"
 #include "asterfort/ExternalStateVariable_type.h"
 #include "asterfort/getelem.h"
-#include "asterfort/getvtx.h"
 #include "asterfort/jedetr.h"
 #include "asterfort/jelira.h"
 #include "asterfort/jenuno.h"
@@ -81,7 +80,7 @@ contains
 ! ----- Parameters
         type(EXTE_VARI_CATA), pointer :: exteVariCata(:)
 ! ----- Locals
-        integer :: iExteStatVari, nbCmp, iCmp
+        integer(kind=8) :: iExteStatVari, nbCmp, iCmp
         character(len=8) :: exteVariName, physQuantity
 !   ------------------------------------------------------------------------------------------------
 !
@@ -274,7 +273,7 @@ contains
         character(len=8), intent(in) :: mateField
         type(EXTE_VARI_AFFE), intent(in) :: exteVariAffe
 ! ----- Locals
-        integer :: jvDummy, nbCmpTotal
+        integer(kind=8) :: jvDummy, nbCmpTotal
         character(len=24) :: jvNameCVRCNom, jvNameCVRCVarc, jvNameCVRCGd, jvNameCVRCCmp
 !   ------------------------------------------------------------------------------------------------
 !
@@ -315,7 +314,7 @@ contains
         type(EXTE_VARI_CATA), pointer :: exteVariCata(:)
         type(EXTE_VARI_AFFE), intent(in) :: exteVariAffe
 ! ----- Locals
-        integer :: iAffe, nbAffe, cataIndx, iret, iCmp
+        integer(kind=8) :: iAffe, nbAffe, cataIndx, iret, iCmp
         character(len=8) :: exteVariName, cmpName
         character(len=19) :: exteVariMap1, exteVariMap2
         character(len=8), pointer :: mapNcmp(:) => null()
@@ -370,7 +369,7 @@ contains
 ! ----- Parameters
         type(EXTE_VARI_CATA), pointer :: exteVariCata(:)
 ! ----- Locals
-        integer :: iExteStatVari
+        integer(kind=8) :: iExteStatVari
 !   ------------------------------------------------------------------------------------------------
 !
         do iExteStatVari = 1, EXTEVARI_NB_MAXI
@@ -401,9 +400,9 @@ contains
         character(len=24) :: jvNameCVRCNom, jvNameCVRCVarc, jvNameCVRCGd, jvNameCVRCCmp
         character(len=8), pointer :: CVRCVarc(:) => null(), CVRCNom(:) => null()
         character(len=8), pointer :: CVRCGd(:) => null(), CVRCCmp(:) => null()
-        integer :: cataIndx, indxCmp
-        integer :: iCmp, iAffe
-        integer :: nbCmp, nbCmpTotal, nbAffe
+        integer(kind=8) :: cataIndx, indxCmp
+        integer(kind=8) :: iCmp, iAffe
+        integer(kind=8) :: nbCmp, nbCmpTotal, nbAffe
         character(len=8) :: exteVariName, physQuantity
         aster_logical, pointer :: v_active(:) => null()
 !   ------------------------------------------------------------------------------------------------
@@ -472,10 +471,10 @@ contains
 ! ----- Locals
         character(len=16), parameter :: factorKeyword = "AFFE_VARC"
         character(len=19) :: exteVariMap1, exteVariMap2
-        integer :: cataIndx
-        integer :: iCmp, iAffe
-        integer :: nbCmp, nbAffe, nbCellAffe, iCellAffe
-        integer :: jvCell
+        integer(kind=8) :: cataIndx
+        integer(kind=8) :: iCmp, iAffe
+        integer(kind=8) :: nbCmp, nbAffe, nbCellAffe, iCellAffe
+        integer(kind=8) :: jvCell
         character(len=8) :: exteVariName, affeType, answer
         real(kind=8), pointer :: map1Valv(:) => null()
         character(len=16), pointer :: map2Valv(:) => null()
@@ -485,8 +484,8 @@ contains
         character(len=24), parameter :: listCell = '&&AFVARC.LIST_CELL'
         aster_logical :: onAllCells, hasTHM
         character(len=16) :: elemTypeName
-        integer :: elemTypeNume, cellNume
-        integer, pointer :: cellAffectedByModel(:) => null()
+        integer(kind=8) :: elemTypeNume, cellNume
+        integer(kind=8), pointer :: cellAffectedByModel(:) => null()
 !   ------------------------------------------------------------------------------------------------
 !
         nbAffe = exteVariAffe%nbAffe
@@ -608,14 +607,14 @@ contains
         character(len=24) :: jvNameCVRCNom, jvNameCVRCVarc, jvNameCVRCGd, jvNameCVRCCmp
         character(len=8), pointer :: CVRCVarc(:) => null(), CVRCNom(:) => null()
         character(len=8), pointer :: CVRCGd(:) => null(), CVRCCmp(:) => null()
-        integer :: nbAffe, nbCmp, nbCmpTotal, nbCmpToDelete, physNbCmpMaxi
-        integer :: iCmpNew, iCmp
-        integer, pointer :: cmpToDelete(:) => null()
+        integer(kind=8) :: nbAffe, nbCmp, nbCmpTotal, nbCmpToDelete, physNbCmpMaxi
+        integer(kind=8) :: iCmpNew, iCmp
+        integer(kind=8), pointer :: cmpToDelete(:) => null()
         character(len=8) :: exteVariName, affeType, dsName, nameCmp
         character(len=16) :: fieldType
         character(len=19) :: exteVariMap2
         character(len=16), pointer :: map2Vale(:) => null()
-        integer, pointer :: map2Desc(:) => null()
+        integer(kind=8), pointer :: map2Desc(:) => null()
         aster_logical :: lCmpToDelete, l_other
 !   ------------------------------------------------------------------------------------------------
 !
@@ -714,12 +713,12 @@ contains
 ! ----- Parameters
         character(len=8), intent(in) :: mateField, exteVariName
         character(len=19), intent(in) :: map2S
-        integer, intent(out) :: map2SJvCESD, map2SJvCESL
+        integer(kind=8), intent(out) :: map2SJvCESD, map2SJvCESL
         character(len=16), pointer :: map2SCESV(:)
         character(len=8), pointer :: map2SCESK(:)
 ! ----- Locals
         character(len=19) :: exteVariMap2
-        integer :: iret
+        integer(kind=8) :: iret
 !   ------------------------------------------------------------------------------------------------
 !
         exteVariMap2 = mateField//'.'//exteVariName//'.2'
@@ -743,14 +742,14 @@ contains
                                    exteVariName, exteVariDesc, noValue)
 !   ------------------------------------------------------------------------------------------------
 ! ----- Parameters
-        integer, intent(in) :: map2SJvCESD, map2SJvCESL
+        integer(kind=8), intent(in) :: map2SJvCESD, map2SJvCESL
         character(len=16), pointer :: map2SCESV(:)
-        integer, intent(in) :: numeCell
+        integer(kind=8), intent(in) :: numeCell
         character(len=8), intent(in) :: exteVariName
         type(EXTE_VARI_DESC), intent(out) :: exteVariDesc
         aster_logical, intent(out) :: noValue
 ! ----- Locals
-        integer :: jvAdrs
+        integer(kind=8) :: jvAdrs
 !   ------------------------------------------------------------------------------------------------
 !
         call cesexi('C', map2SJvCESD, map2SJvCESL, numeCell, 1, 1, 1, jvAdrs)
@@ -818,10 +817,10 @@ contains
 ! ----- Parameters
         type(EXTE_VARI_DESC), intent(in) :: exteVariDesc
         type(EXTE_VARI_DESC), pointer :: exteVariList(:)
-        integer, intent(in) :: listSize
+        integer(kind=8), intent(in) :: listSize
         aster_logical, intent(out) :: exists
 ! ----- Locals
-        integer :: iVari
+        integer(kind=8) :: iVari
         aster_logical :: same
 !   ------------------------------------------------------------------------------------------------
 !
@@ -851,8 +850,8 @@ contains
 !   ------------------------------------------------------------------------------------------------
 ! ----- Parameters
         type(EXTE_VARI_DESC), pointer :: exteVariList(:)
-        integer, intent(in) :: listSize
-        integer, intent(out) :: newListSize
+        integer(kind=8), intent(in) :: listSize
+        integer(kind=8), intent(out) :: newListSize
 ! ----- Locals
         type(EXTE_VARI_DESC), pointer :: exteVariCopy(:) => null()
 !   ------------------------------------------------------------------------------------------------
@@ -882,7 +881,7 @@ contains
 !   ------------------------------------------------------------------------------------------------
 ! ----- Parameters
         character(len=16), pointer :: listSD(:)
-        integer, intent(in) :: indxExteVari
+        integer(kind=8), intent(in) :: indxExteVari
         type(EXTE_VARI_DESC), intent(out) :: exteVariDesc
 !   ------------------------------------------------------------------------------------------------
 !
@@ -913,7 +912,7 @@ contains
         character(len=24) :: jvNameCVRCNom, jvNameCVRCVarc, jvNameCVRCGd, jvNameCVRCCmp
         character(len=8), pointer :: CVRCVarc(:) => null(), CVRCNom(:) => null()
         character(len=8), pointer :: CVRCGd(:) => null(), CVRCCmp(:) => null()
-        integer :: nbCmpTotal, iCmpTotal
+        integer(kind=8) :: nbCmpTotal, iCmpTotal
 !   ------------------------------------------------------------------------------------------------
 !
 

@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -57,9 +57,9 @@ subroutine mdchin(nofimd, idfimd, nochmd, typent, typgeo, &
 #include "asterfort/as_mficlo.h"
 #include "asterfort/mdchii.h"
 #include "asterfort/utmess.h"
-    integer :: nbtv
-    integer :: typent, typgeo
-    integer :: codret
+    integer(kind=8) :: nbtv
+    integer(kind=8) :: typent, typgeo
+    integer(kind=8) :: codret
 !
     character(len=19) :: prefix
     character(len=*) :: nochmd
@@ -69,7 +69,7 @@ subroutine mdchin(nofimd, idfimd, nochmd, typent, typgeo, &
 !
     character(len=8) :: saux08
 !
-    integer :: edlect
+    integer(kind=8) :: edlect
     parameter(edlect=0)
 !
     med_idt :: idfimd

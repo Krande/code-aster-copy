@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -30,7 +30,7 @@ subroutine diago2(tens, vecp, valp)
 !                     (XX YY XY)
 ! ----------------------------------------------------------------------
 !
-    integer :: i, nrac, ind
+    integer(kind=8) :: i, nrac, ind
 !
     real(kind=8) :: trace, y(2), det(2)
     real(kind=8) :: a, dev(3)

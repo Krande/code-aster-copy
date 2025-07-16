@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -36,9 +36,9 @@ subroutine paligi(modelisa, ligrch, idx_grel, idx_nema, list_elem)
 !
     character(len=24), intent(in) :: modelisa
     character(len=*), intent(in) :: ligrch
-    integer, intent(in) :: idx_grel
-    integer, intent(inout) :: idx_nema
-    integer, intent(in) :: list_elem(*)
+    integer(kind=8), intent(in) :: idx_grel
+    integer(kind=8), intent(inout) :: idx_nema
+    integer(kind=8), intent(in) :: list_elem(*)
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -65,16 +65,16 @@ subroutine paligi(modelisa, ligrch, idx_grel, idx_nema, list_elem)
 !
 ! --------------------------------------------------------------------------------------------------
 !
-    integer :: nmaxob
+    integer(kind=8) :: nmaxob
     parameter(nmaxob=30)
 !
     character(len=16) :: type_elem
     character(len=24) :: liel
-    integer, pointer :: p_liel(:) => null()
+    integer(kind=8), pointer :: p_liel(:) => null()
     character(len=24) :: nema
-    integer, pointer :: p_nema(:) => null()
-    integer :: ielem, ino, type_nume, jma, nb_elem
-    integer :: nb_node
+    integer(kind=8), pointer :: p_nema(:) => null()
+    integer(kind=8) :: ielem, ino, type_nume, jma, nb_elem
+    integer(kind=8) :: nb_node
 !
 ! --------------------------------------------------------------------------------------------------
 !

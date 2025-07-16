@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -26,7 +26,7 @@ interface
         use NonLin_Datastructure_type
         use NonLinearDyna_type
         type(NL_DS_AlgoPara), intent(in) :: ds_algopara
-        integer, intent(in) :: list_func_acti(*), nume_inst
+        integer(kind=8), intent(in) :: list_func_acti(*), nume_inst
         character(len=*) :: modelz
         type(NL_DS_Material), intent(in) :: ds_material
         character(len=24) :: carele
@@ -40,6 +40,6 @@ interface
         character(len=19) :: solalg(*), valinc(*)
         character(len=19) :: meelem(*), measse(*)
         character(len=19) :: maprec, matass
-        integer :: faccvg, ldccvg
+        integer(kind=8) :: faccvg, ldccvg
     end subroutine ndxprm
 end interface

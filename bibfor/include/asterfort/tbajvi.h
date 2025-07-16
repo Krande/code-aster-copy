@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -21,9 +21,9 @@
 interface
     subroutine tbajvi(table, nbpara, nompar, vi, livi)
         character(len=*) :: table
-        integer :: nbpara
+        integer(kind=8) :: nbpara
         character(len=*) :: nompar
-        integer :: vi
-        integer :: livi(*)
+        integer(kind=8) :: vi
+        integer(kind=8) :: livi(*)
     end subroutine tbajvi
 end interface

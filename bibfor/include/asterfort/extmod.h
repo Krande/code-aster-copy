@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -20,14 +20,14 @@
 interface
     subroutine extmod(basemo, numddl, nume, nbnumo, dmode,&
                       nbeq, nbnoe, iddl, nbddl)
-        integer :: nbddl
-        integer :: nbnoe
-        integer :: nbnumo
+        integer(kind=8) :: nbddl
+        integer(kind=8) :: nbnoe
+        integer(kind=8) :: nbnumo
         character(len=8) :: basemo
         character(len=14) :: numddl
-        integer :: nume(nbnumo)
+        integer(kind=8) :: nume(nbnumo)
         real(kind=8) :: dmode(nbddl*nbnoe*nbnumo)
-        integer :: nbeq
-        integer :: iddl(nbddl)
+        integer(kind=8) :: nbeq
+        integer(kind=8) :: iddl(nbddl)
     end subroutine extmod
 end interface

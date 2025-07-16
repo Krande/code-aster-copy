@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -41,15 +41,15 @@ subroutine pmfasseinfo(tygrfi, nbfibr, nbcarm, cara, mxfiass, nbfiass, gxjxpou)
 #include "asterfort/assert.h"
 #include "asterfort/utmess.h"
 !
-    integer, intent(in) :: nbfibr, tygrfi, nbcarm
+    integer(kind=8), intent(in) :: nbfibr, tygrfi, nbcarm
     real(kind=8), intent(in) :: cara(nbcarm, nbfibr)
-    integer, intent(out):: mxfiass
-    integer, pointer :: nbfiass(:)
+    integer(kind=8), intent(out):: mxfiass
+    integer(kind=8), pointer :: nbfiass(:)
     real(kind=8), pointer :: gxjxpou(:)
 !
 ! --------------------------------------------------------------------------------------------------
 !
-    integer :: ii, numgr, nbassfi
+    integer(kind=8) :: ii, numgr, nbassfi
 !
 ! --------------------------------------------------------------------------------------------------
 !

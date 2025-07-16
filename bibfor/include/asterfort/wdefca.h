@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -21,7 +21,7 @@
 interface
     function wdefca(ino, s, alpha, f0, frco,&
                     frli)
-        integer :: ino
+        integer(kind=8) :: ino
         real(kind=8) :: s(*)
         real(kind=8) :: alpha(*)
         real(kind=8) :: f0

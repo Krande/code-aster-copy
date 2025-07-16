@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -20,8 +20,8 @@
 !
 interface
     subroutine rrldc(a, nordre, x, nves)
-        integer :: nves
-        integer :: nordre
+        integer(kind=8) :: nves
+        integer(kind=8) :: nordre
         complex(kind=8) :: a(*)
         complex(kind=8) :: x(nordre, nves)
     end subroutine rrldc

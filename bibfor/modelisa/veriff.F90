@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -53,7 +53,7 @@ subroutine veriff(nbfonc, nomfon, nbp1, nbp2, long)
 #include "asterfort/jeveuo.h"
 #include "asterfort/utmess.h"
 #include "asterfort/wkvect.h"
-    integer :: nbfonc, nbp1, nbp2
+    integer(kind=8) :: nbfonc, nbp1, nbp2
     character(len=8) :: nomfon(nbfonc)
     real(kind=8) :: long
 !
@@ -63,8 +63,8 @@ subroutine veriff(nbfonc, nomfon, nbp1, nbp2, long)
 !
 !-----------------------------------------------------------------------
 !-----------------------------------------------------------------------
-    integer :: ifo, ilexc, inbp1, inbp2, ivale1, ivale2
-    integer :: itbnp, itblp, ilfon, vali(1)
+    integer(kind=8) :: ifo, ilexc, inbp1, inbp2, ivale1, ivale2
+    integer(kind=8) :: itbnp, itblp, ilfon, vali(1)
 !-----------------------------------------------------------------------
     call jemarq()
 !

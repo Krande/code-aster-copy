@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -35,7 +35,7 @@ subroutine ltnotb(result, table_iden, table_name, iret_)
     character(len=*), intent(in) :: result
     character(len=*), intent(in) :: table_iden
     character(len=*), intent(out) :: table_name
-    integer, optional, intent(out) :: iret_
+    integer(kind=8), optional, intent(out) :: iret_
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -56,7 +56,7 @@ subroutine ltnotb(result, table_iden, table_name, iret_)
 ! --------------------------------------------------------------------------------------------------
 !
     character(len=24) :: noojb
-    integer :: nb_table_maxi, nb_table_curr, i_table, iret_obj, iret
+    integer(kind=8) :: nb_table_maxi, nb_table_curr, i_table, iret_obj, iret
     character(len=16) :: table_iden_k16
     character(len=16), pointer :: v_tabl_ltnt(:) => null()
     character(len=24), pointer :: v_tabl_ltns(:) => null()

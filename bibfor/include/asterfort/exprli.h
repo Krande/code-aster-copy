@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -24,9 +24,9 @@ interface
         character(len=*) :: basmdz
         character(len=*) :: lintfz
         character(len=*) :: nmintz
-        integer :: numint
+        integer(kind=8) :: numint
         character(len=*) :: famprz
-        integer :: ii
-        integer :: ordo
+        integer(kind=8) :: ii
+        integer(kind=8) :: ordo
     end subroutine exprli
 end interface

@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -24,9 +24,9 @@ interface
                       pj, mj, mse, nbthp, nbthq,&
                       ioc1, ioc2, spij, typeke, spmeca,&
                       spther)
-        integer :: nbm
-        integer :: ima(*)
-        integer :: ipt
+        integer(kind=8) :: nbm
+        integer(kind=8) :: ima(*)
+        integer(kind=8) :: ipt
         real(kind=8) :: c(*)
         real(kind=8) :: k(*)
         real(kind=8) :: cara(*)
@@ -37,10 +37,10 @@ interface
         real(kind=8) :: pj
         real(kind=8) :: mj(*)
         real(kind=8) :: mse(*)
-        integer :: nbthp
-        integer :: nbthq
-        integer :: ioc1
-        integer :: ioc2
+        integer(kind=8) :: nbthp
+        integer(kind=8) :: nbthq
+        integer(kind=8) :: ioc1
+        integer(kind=8) :: ioc2
         real(kind=8) :: spij
         real(kind=8) :: typeke
         real(kind=8) :: spmeca

@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -30,7 +30,6 @@ subroutine modelCheckFSINormals(model)
 #include "asterfort/dismoi.h"
 #include "asterfort/infniv.h"
 #include "asterfort/utmess.h"
-#include "asterfort/jexnum.h"
 !
     character(len=8), intent(in) :: model
 !
@@ -46,16 +45,16 @@ subroutine modelCheckFSINormals(model)
 !
 ! --------------------------------------------------------------------------------------------------
 !
-    integer :: ifm, niv
+    integer(kind=8) :: ifm, niv
     character(len=8) :: mesh
-    integer :: nbCell, modelDime
-    integer :: nbCellFSI, nbCellFluid
-    integer, pointer :: cellFSI(:) => null()
-    integer, pointer :: cellFluid(:) => null()
+    integer(kind=8) :: nbCell, modelDime
+    integer(kind=8) :: nbCellFSI, nbCellFluid
+    integer(kind=8), pointer :: cellFSI(:) => null()
+    integer(kind=8), pointer :: cellFluid(:) => null()
     aster_logical :: lCellSurf, lCellLine
-    integer, pointer :: cellFSINbNode(:) => null()
-    integer, pointer :: cellFSINodeIndx(:) => null()
-    integer, pointer :: cellFSISupport(:) => null()
+    integer(kind=8), pointer :: cellFSINbNode(:) => null()
+    integer(kind=8), pointer :: cellFSINodeIndx(:) => null()
+    integer(kind=8), pointer :: cellFSISupport(:) => null()
     aster_logical :: lMisoriented
 !
 ! --------------------------------------------------------------------------------------------------

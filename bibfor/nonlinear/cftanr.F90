@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -43,9 +43,9 @@ subroutine cftanr(noma, ndimg, ds_contact, izone, &
 ! person_in_charge: mickael.abbas at edf.fr
 !
     character(len=8) :: noma
-    integer :: posenm, posnoe, numenm
-    integer :: izone
-    integer :: ndimg
+    integer(kind=8) :: posenm, posnoe, numenm
+    integer(kind=8) :: izone
+    integer(kind=8) :: ndimg
     real(kind=8) :: ksipr1, ksipr2
     character(len=4) :: typenm
     type(NL_DS_Contact), intent(in) :: ds_contact
@@ -89,14 +89,14 @@ subroutine cftanr(noma, ndimg, ds_contact, izone, &
 !
     aster_logical :: lliss, lmfixe, lefixe, lmait, lescl
     aster_logical :: lpoutr, lpoint
-    integer :: ima
-    integer :: posmam, posmae, nummae, nummam
-    integer :: itypem, itypee
+    integer(kind=8) :: ima
+    integer(kind=8) :: posmam, posmae, nummae, nummam
+    integer(kind=8) :: itypem, itypee
     character(len=8) :: aliase, aliasm, nommam, nommae
     real(kind=8) :: r8bid, vector(3)
     real(kind=8) :: tau1e(3), tau2e(3)
     character(len=19) :: sdappa
-    integer :: nbma, jdeciv
+    integer(kind=8) :: nbma, jdeciv
 !
 ! ----------------------------------------------------------------------
 !

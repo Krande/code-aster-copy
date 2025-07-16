@@ -20,7 +20,7 @@ interface
 subroutine rco3d_elem(nomte, ndim, nddl, &
     typmaco, nnco, typma3d, nn3d)
     character(len=16), intent(in) :: nomte
-    integer, intent(out) :: ndim, nddl, nnco, nn3d
+    integer(kind=8), intent(out) :: ndim, nddl, nnco, nn3d
     character(len=8), intent(out) :: typmaco, typma3d
     end subroutine rco3d_elem
 end interface

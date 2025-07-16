@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -34,11 +34,11 @@ subroutine ut2mgl(nn, nc, p, sg, sl)
     real(kind=8) :: r(4)
     real(kind=8) :: ml6(6, 6), mr6(6, 6), mtr6(6, 6), mv6(6, 6)
     real(kind=8) :: ml3(3, 3), mr3(3, 3), mtr3(3, 3), mv3(3, 3)
-    integer :: in(2)
+    integer(kind=8) :: in(2)
 !
 !-----------------------------------------------------------------------
-    integer :: i, j, k, l, m, n, nb
-    integer :: nc, nn
+    integer(kind=8) :: i, j, k, l, m, n, nb
+    integer(kind=8) :: nc, nn
     real(kind=8) :: un, zero
 !-----------------------------------------------------------------------
     zero = 0.0d0

@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -22,9 +22,9 @@ interface
     subroutine vpecri(eigsol, ktype, indice, valk, valr, vali)
         character(len=19) , intent(in)  :: eigsol
         character(len=1)  , intent(in)  :: ktype
-        integer           , intent(in)  :: indice
+        integer(kind=8)           , intent(in)  :: indice
         character(len=24) , intent(in)  :: valk
         real(kind=8)      , intent(in)  :: valr
-        integer           , intent(in)  :: vali
+        integer(kind=8)           , intent(in)  :: vali
     end subroutine vpecri
 end interface

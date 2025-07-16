@@ -22,7 +22,6 @@ function char8_to_int(to_convert, lcolle, nommai, typent)
 #include "asterf_types.h"
 #include "asterfort/assert.h"
 #include "asterfort/is_numeric.h"
-#include "asterfort/jeexin.h"
 #include "asterfort/jenonu.h"
 #include "asterfort/jexnom.h"
 !
@@ -30,7 +29,7 @@ function char8_to_int(to_convert, lcolle, nommai, typent)
     aster_logical, optional, intent(in) :: lcolle
     character(len=8), optional, intent(in) :: nommai
     character(len=*), optional, intent(in) :: typent
-    integer :: char8_to_int
+    integer(kind=8) :: char8_to_int
 !
     character(len=16) nomobj
     aster_logical :: lcolle2

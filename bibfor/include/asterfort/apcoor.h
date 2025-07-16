@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2019 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -20,9 +20,9 @@ interface
     subroutine apcoor(v_connex , v_connex_lcum, jv_geom  ,&
                       elem_nume, elem_nbnode  , elem_dime,&
                       elem_coor)
-        integer, pointer :: v_connex(:)
-        integer, pointer :: v_connex_lcum(:) 
-        integer, intent(in) :: jv_geom, elem_nume, elem_nbnode, elem_dime
+        integer(kind=8), pointer :: v_connex(:)
+        integer(kind=8), pointer :: v_connex_lcum(:) 
+        integer(kind=8), intent(in) :: jv_geom, elem_nume, elem_nbnode, elem_dime
         real(kind=8), intent(out) :: elem_coor(27)
     end subroutine apcoor
 end interface

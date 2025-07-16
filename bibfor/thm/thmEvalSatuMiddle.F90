@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -29,10 +29,10 @@ subroutine thmEvalSatuMiddle(ds_thm, j_mater, p1, temp, &
 #include "asterfort/THM_type.h"
 !
     type(THM_DS), intent(in) :: ds_thm
-    integer, intent(in) :: j_mater
+    integer(kind=8), intent(in) :: j_mater
     real(kind=8), intent(in) :: p1, temp
     real(kind=8), intent(out) :: satur, dsatur
-    integer, intent(out) :: retcom
+    integer(kind=8), intent(out) :: retcom
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -52,9 +52,9 @@ subroutine thmEvalSatuMiddle(ds_thm, j_mater, p1, temp, &
 !
 ! --------------------------------------------------------------------------------------------------
 !
-    integer, parameter :: nb_para = 2
+    integer(kind=8), parameter :: nb_para = 2
     real(kind=8) :: para_vale(nb_para)
-    integer :: icodre(nb_para)
+    integer(kind=8) :: icodre(nb_para)
     character(len=16), parameter :: para_name(nb_para) = (/'SATU_PRES  ', 'D_SATU_PRES'/)
     character(len=16), parameter :: npar(2) = (/'PCAP', 'TEMP'/)
 !

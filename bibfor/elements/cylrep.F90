@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -21,14 +21,13 @@ subroutine cylrep(ndim, x, axe_z, orig, pgcyl, &
 !
     implicit none
 #include "asterc/r8prem.h"
-#include "asterfort/assert.h"
 #include "asterfort/normev.h"
 #include "asterfort/provec.h"
 !
-    integer, intent(in) :: ndim
+    integer(kind=8), intent(in) :: ndim
     real(kind=8), dimension(:), intent(in) :: x, axe_z, orig
     real(kind=8), dimension(:, :), intent(inout) :: pgcyl
-    integer, intent(inout), optional :: ipaxe
+    integer(kind=8), intent(inout), optional :: ipaxe
 !   ---------------------------------------------------------------------
 !         CALCUL DE LA MATRICE DE PASSAGE DU REPERE GLOBAL AU REPERE CYLINDRIQUE
 !         AU POINT X

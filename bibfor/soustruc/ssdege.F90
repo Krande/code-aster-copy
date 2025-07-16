@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -54,10 +54,10 @@ subroutine ssdege(nomu)
 ! ----------------------------------------------------------------------
 !
 !-----------------------------------------------------------------------
-    integer :: iaexte, ialino, iarefm, ibid(1), iec
-    integer :: ier, ii, ino, jdesm, jvarm, n1, nbc
-    integer :: nbec, nbnoto, nch, nchar, nvalap
-    integer, pointer :: prnm(:) => null()
+    integer(kind=8) :: iaexte, ialino, iarefm, ibid(1), iec
+    integer(kind=8) :: ier, ii, ino, jdesm, jvarm, n1, nbc
+    integer(kind=8) :: nbec, nbnoto, nch, nchar, nvalap
+    integer(kind=8), pointer :: prnm(:) => null()
 !-----------------------------------------------------------------------
     call jemarq()
     call getvid('DEFINITION', 'CHAR_MACR_ELEM', iocc=1, nbval=0, nbret=n1)

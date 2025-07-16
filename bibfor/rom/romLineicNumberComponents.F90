@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -26,8 +26,8 @@ subroutine romLineicNumberComponents(nb_node, nb_equa, nb_cmp)
 #include "asterf_types.h"
 #include "asterfort/utmess.h"
 !
-    integer, intent(in) :: nb_node, nb_equa
-    integer, intent(out) :: nb_cmp
+    integer(kind=8), intent(in) :: nb_node, nb_equa
+    integer(kind=8), intent(out) :: nb_cmp
 !
 ! --------------------------------------------------------------------------------------------------
 !

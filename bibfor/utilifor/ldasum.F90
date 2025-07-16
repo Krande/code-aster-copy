@@ -1,6 +1,6 @@
 ! --------------------------------------------------------------------
 ! Copyright (C) LINPACK
-! Copyright (C) 2007 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 2007 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -38,7 +38,7 @@ function ldasum(n, dx, incx)
     real(kind=8) :: ldasum
 !
     real(kind=8) :: dx(1), dtemp
-    integer :: i, incx, ix, m, mp1, n
+    integer(kind=8) :: i, incx, ix, m, mp1, n
 !
     ldasum = 0.0d0
     dtemp = 0.0d0

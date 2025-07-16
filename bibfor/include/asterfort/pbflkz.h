@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -20,7 +20,7 @@
 !
 interface
     function pbflkz(i, z, long, ln, kcalcu)
-        integer :: i
+        integer(kind=8) :: i
         real(kind=8) :: z
         real(kind=8) :: long
         real(kind=8) :: ln

@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -31,7 +31,6 @@ subroutine crnustd(numddl)
 #include "asterfort/asmpi_info.h"
 #include "asterfort/create_graph_comm.h"
 #include "asterfort/assert.h"
-#include "asterfort/codlet.h"
 #include "asterfort/dismoi.h"
 #include "asterfort/isdeco.h"
 #include "asterfort/jedema.h"
@@ -65,36 +64,36 @@ subroutine crnustd(numddl)
 #ifdef ASTER_HAVE_MPI
 #include "mpif.h"
 !
-    integer :: ili, idprn1, idprn2, ntot, lonmax, nbno_prno
-    integer :: nbddll, ino, iret, nbcmp, iec, iret1, iret2, jjoine
-    integer :: numero_noeud, numero_cmp, rang, nbproc, jrefn
-    integer :: nec, numloc, dime, nbddl_lag, i_ddl, nddl, nddlg, nddll
-    integer :: nbno, nbno_lc, nbno_gl, nbno_max, nbddll_gl, numnoe
-    integer :: nbddl_phys_gl, nbddl_lag_gl, i_join, jnujoi1, jnujoi2
-    integer :: numpro, nbnoee, nbnoer, jjoinr, poscom, numno1, numno2
-    integer :: lgenve1, lgenvr1, jencod, jenco2, lgenve2, lgenvr2
-    integer :: jaux, nb_ddl_envoi, jrecep1, jenvoi1, jenvoi2, jrecep2
-    integer :: nbddl, ncmpmx, iad, jcpnec, jcpne2, ico2, icmp, curpos
-    integer :: nbno_lili_lc, nbno_lili_gl, nb_comm, domj_i, numpr2
+    integer(kind=8) :: ili, idprn1, idprn2, ntot, lonmax, nbno_prno
+    integer(kind=8) :: nbddll, ino, iret, nbcmp, iec, iret1, iret2, jjoine
+    integer(kind=8) :: numero_noeud, numero_cmp, rang, nbproc, jrefn
+    integer(kind=8) :: nec, numloc, dime, nbddl_lag, i_ddl, nddl, nddlg, nddll
+    integer(kind=8) :: nbno, nbno_lc, nbno_gl, nbno_max, nbddll_gl, numnoe
+    integer(kind=8) :: nbddl_phys_gl, nbddl_lag_gl, i_join, jnujoi1, jnujoi2
+    integer(kind=8) :: numpro, nbnoee, nbnoer, jjoinr, poscom, numno1, numno2
+    integer(kind=8) :: lgenve1, lgenvr1, jencod, jenco2, lgenve2, lgenvr2
+    integer(kind=8) :: jaux, nb_ddl_envoi, jrecep1, jenvoi1, jenvoi2, jrecep2
+    integer(kind=8) :: nbddl, ncmpmx, iad, jcpnec, jcpne2, ico2, icmp, curpos
+    integer(kind=8) :: nbno_lili_lc, nbno_lili_gl, nb_comm, domj_i, numpr2
     mpi_int :: mrank, msize, mpicou, nbno4
     mpi_int :: tag4, numpr4, n4e, n4r
-    integer, pointer :: v_noext(:) => null()
-    integer, pointer :: v_deeq(:) => null()
-    integer, pointer :: v_nequ(:) => null()
-    integer, pointer :: v_delg(:) => null()
-    integer, pointer :: v_owner(:) => null()
-    integer, pointer :: v_nulg(:) => null()
-    integer, pointer :: v_nuls(:) => null()
-    integer, pointer :: v_ddlc(:) => null()
-    integer, pointer :: v_nddl(:) => null()
-    integer, pointer :: v_gddl(:) => null()
-    integer, pointer :: v_tddl(:) => null()
-    integer, pointer :: v_deeg(:) => null()
-    integer, pointer :: v_linulg(:) => null()
-    integer, pointer :: v_comm(:) => null()
-    integer, pointer :: v_tag(:) => null()
-    integer, pointer :: v_dom(:) => null()
-    integer, pointer :: v_gco(:) => null()
+    integer(kind=8), pointer :: v_noext(:) => null()
+    integer(kind=8), pointer :: v_deeq(:) => null()
+    integer(kind=8), pointer :: v_nequ(:) => null()
+    integer(kind=8), pointer :: v_delg(:) => null()
+    integer(kind=8), pointer :: v_owner(:) => null()
+    integer(kind=8), pointer :: v_nulg(:) => null()
+    integer(kind=8), pointer :: v_nuls(:) => null()
+    integer(kind=8), pointer :: v_ddlc(:) => null()
+    integer(kind=8), pointer :: v_nddl(:) => null()
+    integer(kind=8), pointer :: v_gddl(:) => null()
+    integer(kind=8), pointer :: v_tddl(:) => null()
+    integer(kind=8), pointer :: v_deeg(:) => null()
+    integer(kind=8), pointer :: v_linulg(:) => null()
+    integer(kind=8), pointer :: v_comm(:) => null()
+    integer(kind=8), pointer :: v_tag(:) => null()
+    integer(kind=8), pointer :: v_dom(:) => null()
+    integer(kind=8), pointer :: v_gco(:) => null()
     integer(kind=4), pointer :: v_pgid(:) => null()
 !
     character(len=8) :: k8bid, mesh, nomgdr
@@ -125,12 +124,12 @@ subroutine crnustd(numddl)
 !
     nume_equa = numddl//".NUME"
     call jeveuo(nume_equa//'.REFN', 'L', jrefn)
-    mesh = zk24(jrefn)
-    nomgdr = zk24(jrefn+1)
+    mesh = zk24(jrefn) (1:8)
+    nomgdr = zk24(jrefn+1) (1:8)
     meshj = mesh//".JOIN"
     call jeveuo(meshj//'.GCOM', 'L', vi=v_gco)
     call jeveuo(meshj//'.PGID', 'L', vi4=v_pgid)
-    mpicou = v_gco(1)
+    mpicou = to_mpi_int(v_gco(1))
 !
     call jeveuo(mesh//'.DIME', 'L', dime)
     call jeveuo(mesh//'.NUNOLG', 'L', vi=v_nulg)
@@ -291,8 +290,8 @@ subroutine crnustd(numddl)
                 nb_ddl_envoi = nb_ddl_envoi+zzprno(1, numno1, 2)
             end do
             zi(jenvoi1) = nb_ddl_envoi
-            n4e = lgenvr1
-            n4r = lgenve1
+            n4e = to_mpi_int(lgenvr1)
+            n4r = to_mpi_int(lgenve1)
             call asmpi_sendrecv_i(zi(jenvoi1), n4e, numpr4, tag4, &
                                   zi(jrecep1), n4r, numpr4, tag4, mpicou)
 !
@@ -330,8 +329,8 @@ subroutine crnustd(numddl)
                 end do
 !
                 ASSERT(zi(jrecep1) .eq. nbddl)
-                n4e = nbddl
-                n4r = nb_ddl_envoi
+                n4e = to_mpi_int(nbddl)
+                n4r = to_mpi_int(nb_ddl_envoi)
                 call asmpi_sendrecv_i(zi(jenvoi2), n4e, numpr4, tag4, &
                                       zi(jrecep2), n4r, numpr4, tag4, mpicou)
 !
@@ -420,7 +419,7 @@ subroutine crnustd(numddl)
             call jeveuo(joints//".DOMJ", 'L', vi=v_dom)
             call jeveuo(joints//".PGID", 'L', vi4=v_pgid)
             call jeveuo(joints//".GCOM", 'L', vi=v_gco)
-            mpicou = v_gco(1)
+            mpicou = to_mpi_int(v_gco(1))
             do i_join = 1, nb_comm
                 domj_i = v_comm(i_join)
                 numpro = v_dom(domj_i)
@@ -442,7 +441,7 @@ subroutine crnustd(numddl)
                             nddll = zzprno(ili, numnoe, 1)
                             zi(jnujoi1+jaux-1) = v_nuls(nddll)
                         end do
-                        n4e = nbnoee
+                        n4e = to_mpi_int(nbnoee)
                     end if
 
                     call jeexin(nojoir, iret2)
@@ -450,7 +449,7 @@ subroutine crnustd(numddl)
                         call jeveuo(nojoir, 'L', jjoinr)
                         call jelira(nojoir, 'LONMAX', nbnoer, k8bid)
                         call wkvect('&&CRNSTD.NUM_DDL_GLOB_R', 'V V I', nbnoer, jnujoi2)
-                        n4r = nbnoer
+                        n4r = to_mpi_int(nbnoer)
                     end if
 
                     if (rang .lt. numpro) then

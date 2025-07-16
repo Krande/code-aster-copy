@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -38,8 +38,8 @@ subroutine numel2(cham, ima, igrel, iel)
     character(len=19) :: cham19, noligr
 !
 !-----------------------------------------------------------------------
-    integer :: i, iacelk, ialiel, iel, igr, igrel, ima
-    integer :: nbgrel, nel
+    integer(kind=8) :: i, iacelk, ialiel, iel, igr, igrel, ima
+    integer(kind=8) :: nbgrel, nel
 !-----------------------------------------------------------------------
     call jemarq()
     igrel = 0

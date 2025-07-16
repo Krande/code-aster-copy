@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -59,12 +59,12 @@ subroutine mnlru(imat, xcdl, parcho, adime, xvect, &
 #include "asterfort/mnline.h"
 #include "asterfort/mnlqnl.h"
 #include "asterfort/wkvect.h"
-    integer :: imat(2), ninc, nd, nchoc, h, hf
+    integer(kind=8) :: imat(2), ninc, nd, nchoc, h, hf
     character(len=14) :: xcdl, parcho, adime, xvect, xru
 ! ----------------------------------------------------------------------
 ! --- DECLARATION DES VARIABLES LOCALES
 ! ----------------------------------------------------------------------
-    integer :: iru, ivint
+    integer(kind=8) :: iru, ivint
     character(len=14) :: xvint
     blas_int :: b_incx, b_incy, b_n
 !

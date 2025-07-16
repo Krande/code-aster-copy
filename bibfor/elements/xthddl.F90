@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -27,7 +27,7 @@ subroutine xthddl(nfh, nddlno, nno, stano, option, &
 #include "asterfort/assert.h"
 #include "asterfort/indent.h"
 #include "asterfort/teattr.h"
-    integer, intent(in) :: nfh, nddlno, nno, stano(*)
+    integer(kind=8), intent(in) :: nfh, nddlno, nno, stano(*)
     character(len=16), intent(in) :: option, nomte
     real(kind=8), optional, intent(inout) :: mat(*)
     real(kind=8), optional, intent(out) :: vect(*)
@@ -49,11 +49,11 @@ subroutine xthddl(nfh, nddlno, nno, stano, option, &
 !-----------------------------------------------------------------------
 !---------------- DECLARATION DES VARIABLES LOCALES  -------------------
 !
-    integer :: ier, istatu, ino, i, j, ielim, in, ddlmax
-    integer :: nddl
+    integer(kind=8) :: ier, istatu, ino, i, j, ielim, in, ddlmax
+    integer(kind=8) :: nddl
 !      AU PLUS 8*3=24 DDL (MAX ATTEINT POUR L'HEXA8 XHT)
     parameter(ddlmax=24)
-    integer :: posddl(ddlmax)
+    integer(kind=8) :: posddl(ddlmax)
     character(len=8) :: tyenel
     aster_logical :: lelim, lmat, lvec
     real(kind=8) :: dmax, dmin, codia

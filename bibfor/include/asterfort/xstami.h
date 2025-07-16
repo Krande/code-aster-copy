@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -22,13 +22,13 @@ interface
     subroutine xstami(noma, nmafon, nmaen1, nmaen2, nmaen3,&
                       jmafon, jmaen1, jmaen2, jmaen3)
         character(len=8) :: noma
-        integer :: nmafon
-        integer :: nmaen1
-        integer :: nmaen2
-        integer :: nmaen3
-        integer :: jmafon
-        integer :: jmaen1
-        integer :: jmaen2
-        integer :: jmaen3
+        integer(kind=8) :: nmafon
+        integer(kind=8) :: nmaen1
+        integer(kind=8) :: nmaen2
+        integer(kind=8) :: nmaen3
+        integer(kind=8) :: jmafon
+        integer(kind=8) :: jmaen1
+        integer(kind=8) :: jmaen2
+        integer(kind=8) :: jmaen3
     end subroutine xstami
 end interface

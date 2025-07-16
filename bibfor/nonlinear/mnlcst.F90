@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -46,19 +46,19 @@ subroutine mnlcst(parcho, adime, ninc, nd, nchoc, &
 ! ----------------------------------------------------------------------
 ! --- DECLARATION DES ARGUMENTS DE LA ROUTINE
 ! ----------------------------------------------------------------------
-    integer :: ninc, nd, nchoc, h, hf
+    integer(kind=8) :: ninc, nd, nchoc, h, hf
     character(len=14) :: parcho, adime, xcst
 ! ----------------------------------------------------------------------
 ! --- DECLARATION DES VARIABLES LOCALES
 ! ----------------------------------------------------------------------
     real(kind=8) :: alpha, eta, jeu
-    integer :: iadim, icst, neqs, i
+    integer(kind=8) :: iadim, icst, neqs, i
     real(kind=8), pointer :: jeumax(:) => null()
     real(kind=8), pointer :: raid(:) => null()
     character(len=8), pointer :: type(:) => null()
     real(kind=8), pointer :: orig(:) => null()
     real(kind=8), pointer :: vjeu(:) => null()
-    integer, pointer :: vneqs(:) => null()
+    integer(kind=8), pointer :: vneqs(:) => null()
     real(kind=8), pointer :: reg(:) => null()
     blas_int :: b_incx, b_n
 !

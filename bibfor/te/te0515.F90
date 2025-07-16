@@ -49,18 +49,18 @@ subroutine te0515(option, nomte)
 !
 ! --------------------------------------------------------------------------------------------------
 !
-    integer :: nno, imatuu, ndim, imate, iinstm, jcret
-    integer :: retloi
-    integer :: igeom
-    integer :: iinstp, ideplm, ideplp, icarcr
-    integer :: icontm, ivarip, ivarim, ivectu, icontp
-    integer :: mecani(5), press1(7), press2(7), tempe(5), dimuel
-    integer :: dimdef, dimcon, nbvari
-    integer :: nnos, nface
+    integer(kind=8) :: nno, imatuu, ndim, imate, iinstm, jcret
+    integer(kind=8) :: retloi
+    integer(kind=8) :: igeom
+    integer(kind=8) :: iinstp, ideplm, ideplp, icarcr
+    integer(kind=8) :: icontm, ivarip, ivarim, ivectu, icontp
+    integer(kind=8) :: mecani(5), press1(7), press2(7), tempe(5), dimuel
+    integer(kind=8) :: dimdef, dimcon, nbvari
+    integer(kind=8) :: nnos, nface
     real(kind=8) :: defgep(21), defgem(21)
     character(len=16), pointer :: compor(:) => null()
     character(len=8) :: type_elem(2)
-    integer :: li
+    integer(kind=8) :: li
     aster_logical :: l_axi, l_vf
     aster_logical :: lVect, lMatr, lVari, lSigm, lMatrPred
     type(THM_DS) :: ds_thm

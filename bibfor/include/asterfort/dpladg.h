@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2019 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -27,9 +27,9 @@ interface
                       dp11t , dp21t)
         use THM_type
         type(THM_DS), intent(in) :: ds_thm
-        integer, intent(in) :: ndim, dimcon
+        integer(kind=8), intent(in) :: ndim, dimcon
         real(kind=8), intent(in) :: rgaz, kh
-        integer, intent(in) :: adcp11
+        integer(kind=8), intent(in) :: adcp11
         real(kind=8), intent(in) :: congem(dimcon), temp, pad
         real(kind=8), intent(out) :: dp11p1, dp11p2
         real(kind=8), intent(out) :: dp21p1, dp21p2

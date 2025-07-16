@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -24,7 +24,6 @@ subroutine te0164(option, nomte)
 #include "asterfort/jevech.h"
 #include "asterfort/jevete.h"
 #include "asterfort/matvec.h"
-#include "asterfort/tecach.h"
 #include "asterfort/terefe.h"
 !
     character(len=16) :: option, nomte
@@ -38,9 +37,9 @@ subroutine te0164(option, nomte)
 ! ......................................................................
 !
     real(kind=8) :: coef, jacobi, nx, ytywpq(9), w(9), forref
-    integer :: nno, kp, i, ipoids, ivf, igeom, nc, nordre, k
-    integer :: ivectu, ino, ndim, nnos, npg
-    integer :: idfdk, jgano, iyty, jvDisp, jvSief, jefint
+    integer(kind=8) :: nno, kp, i, ipoids, ivf, igeom, nc, nordre, k
+    integer(kind=8) :: ivectu, ino, ndim, nnos, npg
+    integer(kind=8) :: idfdk, jgano, iyty, jvDisp, jvSief, jefint
 ! ----------------------------------------------------------------------
 !
     if (option .eq. 'REFE_FORC_NODA') then

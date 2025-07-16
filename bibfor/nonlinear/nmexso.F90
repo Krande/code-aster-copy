@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -65,21 +65,21 @@ subroutine nmexso(mesh, ds_inout, sddyna, nume_dof)
     character(len=8) :: cnfsol, result, nomacr
     character(len=24) :: magrno, maille, nprno
     character(len=24) :: tabequ, tabfrq, tabinf, nomres
-    integer :: ieqint, jfrq, iddint, jnomre
+    integer(kind=8) :: ieqint, jfrq, iddint, jnomre
     character(len=24) :: gnintf, tabrig, tabmas, tabamo
-    integer :: jrig, jmas, jamo
-    integer :: gd, aprno
+    integer(kind=8) :: jrig, jmas, jamo
+    integer(kind=8) :: gd, aprno
     real(kind=8) :: pasa, pasm, pas, ainst, rinst, nbm
-    integer :: idno
-    integer :: ibid
-    integer :: ifreq, i1, i2, inoe, ino, ima, iddl, icmp
+    integer(kind=8) :: idno
+    integer(kind=8) :: ibid
+    integer(kind=8) :: ifreq, i1, i2, inoe, ino, ima, iddl, icmp
     character(len=24) :: uniamo, unirig, unimas, unifor, ipasm
-    integer :: unitea, uniter, unitem, unitef, npasm, ibin
-    integer :: unifrq
-    integer :: nfreq, nfreqm, nfreqa
-    integer :: nbmode, nbmod2, nbno, nddint, ncmp, nec, neq
+    integer(kind=8) :: unitea, uniter, unitem, unitef, npasm, ibin
+    integer(kind=8) :: unifrq
+    integer(kind=8) :: nfreq, nfreqm, nfreqa
+    integer(kind=8) :: nbmode, nbmod2, nbno, nddint, ncmp, nec, neq
     character(len=24) :: nchsol
-    integer :: jchsol
+    integer(kind=8) :: jchsol
     character(len=8), pointer :: vnomacr(:) => null()
     character(len=24), pointer :: veiss(:) => null()
 !

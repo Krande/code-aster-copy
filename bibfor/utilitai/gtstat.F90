@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -26,14 +26,14 @@ function gtstat(istat)
 #include "asterf_types.h"
     aster_logical :: gtstat
 !     ARGUMENT IN
-    integer :: istat
+    integer(kind=8) :: istat
 !-----------------------------------------------------------------------
 !     FONCTION "GeT STATus" : DIT SI LE STATUT ISTAT EST ACTUELLEMENT
 !     ACTIVE OU NON.
 !
 !     LA VALEUR DU STATUT GLOBAL IGLBST EST STOCKE DANS LE COMMON CGLBST
 !-----------------------------------------------------------------------
-    integer :: iglbst
+    integer(kind=8) :: iglbst
     common/cglbst/iglbst
 !
     if (istat .eq. ST_OK) then

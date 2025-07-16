@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -30,7 +30,7 @@ subroutine mtdete(option, method, lmat, mantis, expo, &
 #include "asterfort/jemarq.h"
 #include "asterfort/jeveuo.h"
 #include "asterfort/utmess.h"
-    integer :: lmat, expo, option
+    integer(kind=8) :: lmat, expo, option
     real(kind=8) :: mantis
     complex(kind=8) :: cmod
     character(len=24) :: method
@@ -51,8 +51,8 @@ subroutine mtdete(option, method, lmat, mantis, expo, &
 !     ------------------------------------------------------------------
 !
 !     ------------------------------------------------------------------
-    integer :: i, neq, iret, ldiag, nbneg, ibid, ipiv, itrent, info34, ifm, niv
-    integer :: ie
+    integer(kind=8) :: i, neq, iret, ldiag, nbneg, ibid, ipiv, itrent, info34, ifm, niv
+    integer(kind=8) :: ie
     real(kind=8) :: trent, trent1, rinf12, rinf13, rmin, rauxx, rauxy, rauxm
     complex(kind=8) :: cun, caux
     character(len=24) :: nomdia, kpiv

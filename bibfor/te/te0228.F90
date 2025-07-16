@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -38,8 +38,8 @@ subroutine te0228(option, nomte)
 ! ......................................................................
 !
 ! person_in_charge: ayaovi-dzifa.kudawoo at edf.fr
-    integer :: i, k, kp, igeom, idepl, idefor, nno, nnos, jgano, ndim, npg
-    integer :: ivf, idfdk, ipoids, idefpg
+    integer(kind=8) :: i, k, kp, igeom, idepl, idefor, nno, nnos, jgano, ndim, npg
+    integer(kind=8) :: ivf, idfdk, ipoids, idefpg
     character(len=8) :: elrefe
     real(kind=8) :: dfdx(3), degepg(24)
     real(kind=8) :: cosa, sina, cour, r, zero, jac

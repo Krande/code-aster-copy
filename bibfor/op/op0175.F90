@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -41,13 +41,13 @@ subroutine op0175()
 #include "asterfort/w175ca.h"
 #include "asterfort/utmess.h"
 !
-    integer :: ifm, niv, n0, nuord
-    integer :: iret, jpara, ie, nbordr, i, nuordr
+    integer(kind=8) :: ifm, niv, n0, nuord
+    integer(kind=8) :: iret, jpara, ie, nbordr, i, nuordr
     character(len=8) :: resu, model, caraElem
     character(len=16) :: crit, concep, nomcmd
     character(len=19) :: chfer1, chfer2, chefge, resu19, resuc1
     real(kind=8) :: prec
-    integer, pointer :: nume_ordre(:) => null()
+    integer(kind=8), pointer :: nume_ordre(:) => null()
 !     ------------------------------------------------------------------
 !
     call jemarq()

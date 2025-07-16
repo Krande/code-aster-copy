@@ -24,7 +24,7 @@ subroutine lcmmkr(taus, coeft, cisa2, ifa, nmat, &
     implicit none
 #include "asterc/r8t0.h"
 #include "asterc/r8miem.h"
-    integer :: ifa, nmat, nbcomm(nmat, 3), iret, nfs, nsg
+    integer(kind=8) :: ifa, nmat, nbcomm(nmat, 3), iret, nfs, nsg
     real(kind=8) :: taus, coeft(nmat), dgamma, dp, dt, taumu, tauv
     real(kind=8) :: sgns, hsr(nsg, nsg), dy(*)
     real(kind=8) :: vind(*), dalpha
@@ -61,7 +61,7 @@ subroutine lcmmkr(taus, coeft, cisa2, ifa, nmat, &
     real(kind=8) :: tempf, tabs, deltag, ptit
     real(kind=8) :: taur, tau0, tauef, bsd, gcb, alphar, kdcs, som, deltgg
     real(kind=8) :: aux, cisa2, alphas, terme, petith, petitg
-    integer :: ifl, is, iu, nbsys
+    integer(kind=8) :: ifl, is, iu, nbsys
 !     ----------------------------------------------------------------
 !     DANS VIS : 1 = ALPHA, 2=GAMMA, 3=P
 !

@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -22,7 +22,6 @@ subroutine te0436(option, nomte)
 !
 #include "jeveux.h"
 #include "asterc/r8dgrd.h"
-#include "asterc/r8prem.h"
 #include "asterfort/elrefe_info.h"
 #include "asterfort/jevech.h"
 #include "asterfort/mbcine.h"
@@ -50,10 +49,10 @@ subroutine te0436(option, nomte)
 ! --------------------------------------------------------------------------------------------------
 !
     character(len=4), parameter :: fami = 'RIGI'
-    integer :: nddl, nno, npg, ncomp
-    integer :: i, j, n, c, cc, kpg, j1, j2, k
-    integer :: ipoids, ivf, idfde, iret
-    integer :: igeom, icacoq, imate, idepl, icontp, inr, idefo, imass, icompo
+    integer(kind=8) :: nddl, nno, npg, ncomp
+    integer(kind=8) :: i, j, n, c, cc, kpg, j1, j2, k
+    integer(kind=8) :: ipoids, ivf, idfde, iret
+    integer(kind=8) :: igeom, icacoq, imate, idepl, icontp, inr, idefo, imass, icompo
     real(kind=8) :: dff(2, 9), vff(9), b(3, 3, 9), jac
     real(kind=8) :: alpha, beta, epot
     real(kind=8) :: epsm(3), epsg(3, 9), epsthe, sig(3), sigg(3, 9), rig(3, 3)

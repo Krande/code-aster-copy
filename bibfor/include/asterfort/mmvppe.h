@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2019 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -31,8 +31,8 @@ interface
                       kappa    ,&
                       taujeu1  , taujeu2  ,&
                       dnepmait1, dnepmait2)
-        integer, intent(in) :: ndim, nne, nnm, nnl, nbdm
-        integer, intent(in) :: i_reso_geom
+        integer(kind=8), intent(in) :: ndim, nne, nnm, nnl, nbdm
+        integer(kind=8), intent(in) :: i_reso_geom
         aster_logical, intent(in) :: l_large_slip
         real(kind=8), intent(in) :: jeusup
         real(kind=8), intent(in) :: tau1(3), tau2(3)

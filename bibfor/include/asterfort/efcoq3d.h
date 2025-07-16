@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -23,7 +23,7 @@ interface
                    chg,matr,effg,                   &
                    nbcou,npgsn,npgsr,npge,nso,npgt)
         character(len=16) :: nomte
-        integer :: nb1,nb2,npgsn,nso,nbcou,npgt,npgsr,npge
+        integer(kind=8) :: nb1,nb2,npgsn,nso,nbcou,npgt,npgsr,npge
         real(kind=8) :: geom(*),cara(*),lzr(*),matr(*),chg(*),effg(*)
     end subroutine efcoq3d
 end interface

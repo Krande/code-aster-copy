@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2018 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -18,7 +18,7 @@
 !
 interface
     subroutine mmmvex(nnl, nbcps, ndexfr, vectff)
-        integer, intent(in) :: nnl, nbcps, ndexfr
+        integer(kind=8), intent(in) :: nnl, nbcps, ndexfr
         real(kind=8), intent(inout) :: vectff(18)
     end subroutine mmmvex
 end interface

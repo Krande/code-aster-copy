@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2020 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -23,8 +23,8 @@ interface
         use iso_c_binding, only:  c_loc, c_ptr, c_f_pointer
         character(len=*) :: nomc
         character(len=*) :: nooc
-        integer :: nuoc
-        integer :: dim
+        integer(kind=8) :: nuoc
+        integer(kind=8) :: dim
         type(c_ptr) :: pc
     end subroutine jucroc_wrap
 end interface

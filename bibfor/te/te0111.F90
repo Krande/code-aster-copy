@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -30,16 +30,15 @@ subroutine te0111(option, nomte)
 ! --------------------------------------------------------------------------------------------------
 !
 #include "jeveux.h"
-#include "asterc/r8prem.h"
 #include "asterfort/jevech.h"
 #include "asterfort/lonele.h"
 #include "asterfort/rcvalb.h"
 !
-    integer ::          icodre(1)
+    integer(kind=8) ::          icodre(1)
     real(kind=8) ::     valres(1)
     character(len=16) :: nomres(1)
 !
-    integer :: imater, igeom, lsect, lcastr
+    integer(kind=8) :: imater, igeom, lsect, lcastr
     real(kind=8) :: r8bid, rho, xl, aire
 ! --------------------------------------------------------------------------------------------------
 !

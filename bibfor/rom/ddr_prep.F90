@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -33,10 +33,10 @@ subroutine ddr_prep(cmdPara, v_equa_prim, v_equa_dual, v_node_rid, nbNodeRID)
 #include "asterfort/romConvertEquaToNode.h"
 !
     type(ROM_DS_ParaDDR), intent(in) :: cmdPara
-    integer, pointer :: v_equa_prim(:)
-    integer, pointer :: v_equa_dual(:)
-    integer, pointer :: v_node_rid(:)
-    integer, intent(out) :: nbNodeRID
+    integer(kind=8), pointer :: v_equa_prim(:)
+    integer(kind=8), pointer :: v_equa_dual(:)
+    integer(kind=8), pointer :: v_node_rid(:)
+    integer(kind=8), intent(out) :: nbNodeRID
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -54,15 +54,15 @@ subroutine ddr_prep(cmdPara, v_equa_prim, v_equa_dual, v_node_rid, nbNodeRID)
 !
 ! --------------------------------------------------------------------------------------------------
 !
-    integer :: ifm, niv
-    integer :: nbModePrim, nbModeDual, nbModeTotal
-    integer :: nbRidMini
-    integer :: iNodeRID
-    integer, pointer :: v_list_unio1(:) => null()
-    integer, pointer :: v_list_unio2(:) => null()
+    integer(kind=8) :: ifm, niv
+    integer(kind=8) :: nbModePrim, nbModeDual, nbModeTotal
+    integer(kind=8) :: nbRidMini
+    integer(kind=8) :: iNodeRID
+    integer(kind=8), pointer :: v_list_unio1(:) => null()
+    integer(kind=8), pointer :: v_list_unio2(:) => null()
     character(len=24) :: modePrimRefe, modeDualRefe
-    integer, pointer :: v_node_prim(:) => null()
-    integer, pointer :: v_node_dual(:) => null()
+    integer(kind=8), pointer :: v_node_prim(:) => null()
+    integer(kind=8), pointer :: v_node_dual(:) => null()
 !
 ! --------------------------------------------------------------------------------------------------
 !

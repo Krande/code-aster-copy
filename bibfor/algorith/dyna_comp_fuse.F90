@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -21,7 +21,6 @@ subroutine dyna_comp_fuse(mesh, comp_noli, comp_fuse)
     implicit none
 !
 #include "asterf_types.h"
-#include "asterfort/assert.h"
 #include "asterfort/comp_meca_elas.h"
 #include "asterfort/comp_init.h"
 #include "asterfort/carces.h"
@@ -47,13 +46,13 @@ subroutine dyna_comp_fuse(mesh, comp_noli, comp_fuse)
 !
 ! --------------------------------------------------------------------------------------------------
 !
-    integer, parameter :: nc = 2
+    integer(kind=8), parameter :: nc = 2
     character(len=19) :: chs(nc)
     aster_logical :: l_cumu(nc)
     real(kind=8) :: coef_real(nc)
     complex(kind=8) :: coef_cplx(nc)
 !
-    integer :: ibid
+    integer(kind=8) :: ibid
     character(len=19) :: comp_elas
     character(len=19) :: comp_elas_s, comp_noli_s, comp_fuse_s
     aster_logical :: l_cplx, l_etat_init

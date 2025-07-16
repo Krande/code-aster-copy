@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -61,12 +61,12 @@ subroutine lkilnf(nvi, vind, nmat, materf, dt, &
 #include "asterfort/lkds2h.h"
 #include "asterfort/lkvacp.h"
 #include "asterfort/lkvarp.h"
-    integer :: val, ndt, nvi, nmat, ndi, nr
+    integer(kind=8) :: val, ndt, nvi, nmat, ndi, nr
     real(kind=8) :: materf(nmat, 2)
     real(kind=8) :: yd(*), vind(*), dt, deps(6)
     real(kind=8) :: yf(*), vinf(*), sigd(6)
 !
-    integer :: retcom, i
+    integer(kind=8) :: retcom, i
     real(kind=8) :: devsig(6), i1, xivmax, xippic, ucriv, seuilv
     real(kind=8) :: depsv(6), dgamv, seuilp, ucrip
     real(kind=8) :: varv, zero, seuivm, dhds(6), ds2hds(6)

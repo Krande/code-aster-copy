@@ -44,11 +44,11 @@ subroutine op0199()
 #include "asterfort/rsexch.h"
 #include "asterfort/rsorac.h"
 #include "asterfort/wkvect.h"
-    integer :: ibid, nbmo, nbmode(1), ndble, indice, ifm, niv
-    integer :: tabad(5), iadesc, iarefe, i, iadirg, imade
-    integer :: iphi1, iphi2, iprsto, iret, itxsto
-    integer :: itysto, itzsto, ivalk, ivale
-    integer :: n1, nbLoad, n3, n4, n5, n6, n7, n8, n9
+    integer(kind=8) :: ibid, nbmo, nbmode(1), ndble, indice, ifm, niv
+    integer(kind=8) :: tabad(5), iadesc, iarefe, i, iadirg, imade
+    integer(kind=8) :: iphi1, iphi2, iprsto, iret, itxsto
+    integer(kind=8) :: itysto, itzsto, ivalk, ivale
+    integer(kind=8) :: n1, nbLoad, n3, n4, n5, n6, n7, n8, n9
     real(kind=8) :: rbid, mij, cij, kij
     complex(kind=8) :: cbid
     aster_logical :: vrai

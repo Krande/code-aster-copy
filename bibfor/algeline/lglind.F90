@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -27,7 +27,7 @@ subroutine lglind(nbmat, mater, parame, ge, q, &
 #include "asterfort/hlode.h"
 #include "asterfort/jedema.h"
 #include "asterfort/jemarq.h"
-    integer :: nbmat
+    integer(kind=8) :: nbmat
     real(kind=8) :: mater(nbmat, 2), parame(5), q(6), vecn(6), ge
     real(kind=8) :: deps(6), devg(6), devgii, traceg, dy(10)
 ! --- BUT : CALCUL DU PREMIER MULTIPLICATEUR PLASTIQUE (CAS GAMP = 0) --
@@ -47,7 +47,7 @@ subroutine lglind(nbmat, mater, parame, ge, q, &
 ! --- : TRACEG : TRACE DU TENSEUR G ------------------------------------
 ! --- : DY     : INCREMENTS (SIG, I1, GAMP, EVP, DELTA) ----------------
 ! ======================================================================
-    integer :: ii, ndt, ndi
+    integer(kind=8) :: ii, ndt, ndi
     real(kind=8) :: gammax, mu, k, gamcjs, sigc, h0, dgamp, ddelta
     real(kind=8) :: duds(6), dfds(6), g(6), ds(6), dinv, mun, deux, trois, dix
     real(kind=8) :: devp

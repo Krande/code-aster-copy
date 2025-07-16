@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -34,7 +34,7 @@ subroutine nmacex(sddisc, iterat, lextra, valext)
 #include "asterfort/as_deallocate.h"
 #include "asterfort/as_allocate.h"
     character(len=19) :: sddisc
-    integer :: iterat
+    integer(kind=8) :: iterat
     aster_logical :: lextra
     real(kind=8) :: valext(4)
 !
@@ -59,13 +59,13 @@ subroutine nmacex(sddisc, iterat, lextra, valext)
 !
 !
 !
-    integer :: ibid, regres, depart
+    integer(kind=8) :: ibid, regres, depart
     real(kind=8) :: cresi, crela, cmaxi
     real(kind=8) :: vrela(1), vmaxi(1)
     real(kind=8) :: r8bid
     real(kind=8) :: xa0, xa1, xdet
-    integer :: nbiter, mniter, mxiter
-    integer :: nbigno
+    integer(kind=8) :: nbiter, mniter, mxiter
+    integer(kind=8) :: nbigno
     real(kind=8), pointer :: erreurs(:) => null()
 !
 ! ----------------------------------------------------------------------

@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -53,11 +53,11 @@ subroutine op0060()
 #include "asterfort/utmess.h"
 #include "asterfort/wkvect.h"
 !
-    integer :: iadr1, ifm, niv
-    integer :: nbocc, nbnoff
-    integer :: ibas, ibid, iocc, idon, idonn, ifonoe, ndonn, nvenor
-    integer :: iret1, iret, irets, jnorm
-    integer :: n1, n2
+    integer(kind=8) :: iadr1, ifm, niv
+    integer(kind=8) :: nbocc, nbnoff
+    integer(kind=8) :: ibas, ibid, iocc, idon, idonn, ifonoe, ndonn, nvenor
+    integer(kind=8) :: iret1, iret, irets, jnorm
+    integer(kind=8) :: n1, n2
     character(len=6) :: nompro
     character(len=8) :: resu, noma, typfon, confin, typmp, typm
     character(len=9) :: entit(4)

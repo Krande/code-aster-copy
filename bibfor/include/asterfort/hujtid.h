@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -22,13 +22,13 @@ interface
     subroutine hujtid(fami, kpg, ksp, mod, imat,&
                       sigr, vin, dsde, iret)
         character(len=*) :: fami
-        integer :: kpg
-        integer :: ksp
+        integer(kind=8) :: kpg
+        integer(kind=8) :: ksp
         character(len=8) :: mod
-        integer :: imat
+        integer(kind=8) :: imat
         real(kind=8) :: sigr(6)
         real(kind=8) :: vin(*)
         real(kind=8) :: dsde(6, 6)
-        integer :: iret
+        integer(kind=8) :: iret
     end subroutine hujtid
 end interface

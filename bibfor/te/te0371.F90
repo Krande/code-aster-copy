@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -33,13 +33,13 @@ subroutine te0371(option, nomte)
 #include "asterfort/jevech.h"
 #include "asterfort/rcvalb.h"
 !
-    integer :: icodre(1)
+    integer(kind=8) :: icodre(1)
     character(len=8) :: fami, poum
     character(len=16) :: nomte, option
-    integer :: igeom, imate, kpg, spt
-    integer :: i, j, k, l, ik, ijkl, ldec, kdec, ino, jno
-    integer :: ndim, nno, npg2, ipg, nnos, jgano
-    integer :: ipoids, ivf, idfrde, imatuu
+    integer(kind=8) :: igeom, imate, kpg, spt
+    integer(kind=8) :: i, j, k, l, ik, ijkl, ldec, kdec, ino, jno
+    integer(kind=8) :: ndim, nno, npg2, ipg, nnos, jgano
+    integer(kind=8) :: ipoids, ivf, idfrde, imatuu
     real(kind=8) :: a(2, 2, 27, 27), rho(1)
     real(kind=8) :: poids, jac
     real(kind=8) :: dxde, dxdk, dyde, dydk

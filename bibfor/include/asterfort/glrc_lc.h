@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2019 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -46,7 +46,7 @@ interface
         real(kind=8) :: epsic
         real(kind=8) :: epsiels
         real(kind=8) :: epsilim
-        integer :: codret
+        integer(kind=8) :: codret
         real(kind=8) :: ep
         aster_logical :: is_param_opt(*)
         real(kind=8) :: val_param_opt(*)

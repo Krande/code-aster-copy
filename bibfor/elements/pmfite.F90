@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -54,12 +54,12 @@ subroutine pmfite(typfib, nf, ncarf, vf, ve, vs)
     implicit none
 #include "asterfort/utmess.h"
 !
-    integer :: typfib, nf, ncarf
+    integer(kind=8) :: typfib, nf, ncarf
     real(kind=8) :: vf(ncarf, nf), ve(nf), vs(6)
 !
 ! --------------------------------------------------------------------------------------------------
 !
-    integer :: ii
+    integer(kind=8) :: ii
     real(kind=8) :: eds, yy, zz, aire
 !
 ! --------------------------------------------------------------------------------------------------

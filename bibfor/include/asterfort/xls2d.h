@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -26,18 +26,18 @@ interface
                      jdlima, nbsef, jdlise, jconx1, jconx2)
         aster_logical :: callst
         aster_logical :: grille
-        integer :: jltsv
-        integer :: jltsl
-        integer :: jlnsv
-        integer :: jlnsl
-        integer :: nbno
-        integer :: jcoor
-        integer :: jcoorg
-        integer :: nbmaf
-        integer :: jdlima
-        integer :: nbsef
-        integer :: jdlise
-        integer :: jconx1
-        integer :: jconx2
+        integer(kind=8) :: jltsv
+        integer(kind=8) :: jltsl
+        integer(kind=8) :: jlnsv
+        integer(kind=8) :: jlnsl
+        integer(kind=8) :: nbno
+        integer(kind=8) :: jcoor
+        integer(kind=8) :: jcoorg
+        integer(kind=8) :: nbmaf
+        integer(kind=8) :: jdlima
+        integer(kind=8) :: nbsef
+        integer(kind=8) :: jdlise
+        integer(kind=8) :: jconx1
+        integer(kind=8) :: jconx2
     end subroutine xls2d
 end interface

@@ -44,7 +44,6 @@ module LoadKinematic_module
 #include "jeveux.h"
 #include "MeshTypes_type.h"
 #include "asterc/getfac.h"
-#include "asterc/indik8.h"
 #include "asterfort/as_allocate.h"
 #include "asterfort/as_deallocate.h"
 #include "asterfort/assert.h"
@@ -53,16 +52,13 @@ module LoadKinematic_module
 #include "asterfort/detrsd.h"
 #include "asterfort/dismoi.h"
 #include "asterfort/elrfvf.h"
-#include "asterfort/exisdg.h"
 #include "asterfort/jexnom.h"
 #include "asterfort/getvid.h"
 #include "asterfort/getvr8.h"
 #include "asterfort/getvtx.h"
 #include "asterfort/jedetr.h"
 #include "asterfort/jelira.h"
-#include "asterfort/jenuno.h"
 #include "asterfort/jeveuo.h"
-#include "asterfort/jexnum.h"
 #include "asterfort/pj2dco.h"
 #include "asterfort/pj3dco.h"
 #include "asterfort/pj3dcoSupInf.h"
@@ -103,20 +99,20 @@ contains
         character(len=16), parameter :: corre1 = '&&CALIRC.CORRE1'
         character(len=16), parameter :: corre2 = '&&CALIRC.CORRE2'
         character(len=16), parameter :: corre3 = '&&CALIRC.LISV1'
-        integer :: geomDime, meshNbNode
-        integer :: iOcc, nocc
+        integer(kind=8) :: geomDime, meshNbNode
+        integer(kind=8) :: iOcc, nocc
         aster_logical :: useNormal, lElimMult, lApplyRota, lMastTransf, lSlavTransf, useDisp
         real(kind=8) :: rotaMatr(3, 3)
         aster_logical :: lDistMaxi
         real(kind=8) :: distMaxi, distAlarm, thickness
-        integer :: nbCellMast, nbNodeSlav, nbCellSlav
+        integer(kind=8) :: nbCellMast, nbNodeSlav, nbCellSlav
         character(len=8), pointer :: dofName(:) => null()
-        integer, pointer :: cellMast(:) => null()
-        integer, pointer :: nodeSlav(:) => null(), cellSlav(:) => null()
-        integer, pointer :: nodeElim(:) => null(), nodeSkinToBody(:) => null()
+        integer(kind=8), pointer :: cellMast(:) => null()
+        integer(kind=8), pointer :: nodeSlav(:) => null(), cellSlav(:) => null()
+        integer(kind=8), pointer :: nodeElim(:) => null(), nodeSkinToBody(:) => null()
         real(kind=8), pointer :: normSlav(:) => null()
 !   NOMBRE MAX DE TERMES D'UNE RELATION LINEAIRE EN 3D = 2*27 + 3 = 57 and 165 for COQUE_MASSIF
-        integer, parameter :: nbTermMaxi = 165
+        integer(kind=8), parameter :: nbTermMaxi = 165
         type(KINE_LIST_RELA) :: kineListRela
 !   ------------------------------------------------------------------------------------------------
 !
@@ -288,15 +284,15 @@ contains
         character(len=8) :: mesh
         character(len=4) :: valeType
         character(len=16), parameter :: corres = '&&CALIRC.CORRES'
-        integer :: geomDime, meshNbNode
-        integer :: iOcc, nocc
+        integer(kind=8) :: geomDime, meshNbNode
+        integer(kind=8) :: iOcc, nocc
         aster_logical :: lElimMult, lDistMaxi
         real(kind=8) :: distMaxi, distAlarm
-        integer :: nbCellMast, nbNodeSlav
-        integer, pointer :: cellMast(:) => null(), nodeSlav(:) => null()
-        integer, pointer :: nodeElim(:) => null()
+        integer(kind=8) :: nbCellMast, nbNodeSlav
+        integer(kind=8), pointer :: cellMast(:) => null(), nodeSlav(:) => null()
+        integer(kind=8), pointer :: nodeElim(:) => null()
 !   NOMBRE MAX DE TERMES D'UNE RELATION LINEAIRE = 2*27 + 3 = 57
-        integer, parameter :: nbTermMaxi = 57
+        integer(kind=8), parameter :: nbTermMaxi = 57
         type(KINE_LIST_RELA) :: kineListRela
 !   ------------------------------------------------------------------------------------------------
 !
@@ -402,7 +398,7 @@ contains
 !   ------------------------------------------------------------------------------------------------
 ! - Parameters
         character(len=*), intent(in) :: factorKeywordZ
-        integer, intent(in) :: iOcc, geomDime
+        integer(kind=8), intent(in) :: iOcc, geomDime
         character(len=16), intent(out) :: linkType
         aster_logical, intent(out) :: useNormal, lElimMult
         aster_logical, intent(out) :: lMastTransf, lSlavTransf
@@ -415,7 +411,7 @@ contains
         character(len=8), pointer :: dofName(:)
 ! - Local
         character(len=8) :: answer
-        integer :: nbRet, nbDof, iDof
+        integer(kind=8) :: nbRet, nbDof, iDof
 !   ------------------------------------------------------------------------------------------------
 !
         call getvtx(factorKeywordZ, 'TYPE_RACCORD', iocc=iocc, scal=linkType, nbret=nbRet)
@@ -501,13 +497,13 @@ contains
 !   ------------------------------------------------------------------------------------------------
 ! - Parameters
         character(len=*), intent(in) :: factorKeywordZ
-        integer, intent(in) :: iOcc
+        integer(kind=8), intent(in) :: iOcc
         aster_logical, intent(out) ::  lElimMult
         aster_logical, intent(out) :: lDistMaxi
         real(kind=8), intent(out) :: distMaxi, distAlarm
 ! - Local
         character(len=8) :: answer
-        integer :: nbRet
+        integer(kind=8) :: nbRet
 !   ------------------------------------------------------------------------------------------------
 !
         call getvtx(factorKeywordZ, 'ELIM_MULT', iocc=iocc, scal=answer, nbret=nbRet)
@@ -551,16 +547,16 @@ contains
 !   ------------------------------------------------------------------------------------------------
 ! - Parameters
         character(len=*), intent(in) :: modelZ
-        integer, intent(in) :: geomDime, meshNbNode
+        integer(kind=8), intent(in) :: geomDime, meshNbNode
         aster_logical, intent(inout) :: lDistMaxi
         real(kind=8), intent(in) :: distMaxi, distAlarm
-        integer, intent(in) :: nbNodeSlav, nbCellMast
+        integer(kind=8), intent(in) :: nbNodeSlav, nbCellMast
         character(len=24), intent(in) :: geomSlavJv
-        integer, pointer :: nodeSlav(:), cellMast(:)
+        integer(kind=8), pointer :: nodeSlav(:), cellMast(:)
         character(len=16), intent(in) :: corres
 ! - Local
         character(len=8) :: model
-        integer :: nbLink
+        integer(kind=8) :: nbLink
 !   ------------------------------------------------------------------------------------------------
 !
         model = modelZ
@@ -608,16 +604,16 @@ contains
 !   ------------------------------------------------------------------------------------------------
 ! - Parameters
         character(len=*), intent(in) :: modelZ
-        integer, intent(in) :: meshNbNode
+        integer(kind=8), intent(in) :: meshNbNode
         aster_logical, intent(inout) :: lDistMaxi
         real(kind=8), intent(in) :: distMaxi, distAlarm
-        integer, intent(in) :: nbNodeSlav, nbCellMast
+        integer(kind=8), intent(in) :: nbNodeSlav, nbCellMast
         character(len=24), intent(in) :: geomSlavJv, geomMastJv
-        integer, pointer :: nodeSlav(:), cellMast(:)
+        integer(kind=8), pointer :: nodeSlav(:), cellMast(:)
         character(len=16), intent(in) :: corres
 ! - Local
         character(len=8) :: model
-        integer :: nbLink
+        integer(kind=8) :: nbLink
 !   ------------------------------------------------------------------------------------------------
 !
         model = modelZ
@@ -662,18 +658,18 @@ contains
 !   ------------------------------------------------------------------------------------------------
 ! - Parameters
         character(len=*), intent(in) :: modelZ
-        integer, intent(in):: meshNbNode
+        integer(kind=8), intent(in):: meshNbNode
         aster_logical, intent(inout) :: lDistMaxi
         real(kind=8), intent(in) :: distMaxi, distAlarm
         character(len=*), intent(in) :: chnormZ
         real(kind=8), intent(in) :: thickness
-        integer, intent(in) :: nbNodeSlav, nbCellMast
+        integer(kind=8), intent(in) :: nbNodeSlav, nbCellMast
         character(len=24), intent(in) :: geomSlavJv
-        integer, pointer :: nodeSlav(:), cellMast(:)
+        integer(kind=8), pointer :: nodeSlav(:), cellMast(:)
         character(len=16), intent(in) :: corres, corre1, corre2, corre3
 ! - Local
         character(len=8) :: model
-        integer :: nbLink
+        integer(kind=8) :: nbLink
 !   ------------------------------------------------------------------------------------------------
 !
         model = modelZ
@@ -726,16 +722,16 @@ contains
 !   ------------------------------------------------------------------------------------------------
 ! - Parameters
         character(len=*), intent(in) :: modelZ
-        integer, intent(in) :: meshNbNode
+        integer(kind=8), intent(in) :: meshNbNode
         aster_logical, intent(inout) :: lDistMaxi
         real(kind=8), intent(in) :: distMaxi, distAlarm
-        integer, intent(in) :: nbNodeSlav, nbCellMast
+        integer(kind=8), intent(in) :: nbNodeSlav, nbCellMast
         character(len=24), intent(in) :: geomSlavJv, geomMastJv
-        integer, pointer :: nodeSlav(:), cellMast(:)
+        integer(kind=8), pointer :: nodeSlav(:), cellMast(:)
         character(len=16), intent(in) :: corres
 ! - Local
         character(len=8) :: model
-        integer :: nbLink
+        integer(kind=8) :: nbLink
 !   ------------------------------------------------------------------------------------------------
 !
         model = modelZ
@@ -780,20 +776,20 @@ contains
 ! - Parameters
         character(len=16), intent(in) :: linkType
         character(len=*), intent(in) :: meshZ
-        integer, intent(in) :: geomDime
+        integer(kind=8), intent(in) :: geomDime
         aster_logical, intent(in) :: useDisp
         character(len=8), pointer :: dofName(:)
         aster_logical, intent(in) :: lApplyRota
         real(kind=8), intent(in) :: rotaMatr(3, 3)
         aster_logical, intent(in) :: useNormal
         real(kind=8), pointer :: normSlav(:)
-        integer, pointer :: nodeSkinToBody(:)
+        integer(kind=8), pointer :: nodeSkinToBody(:)
         character(len=16), intent(in) :: corres, corre1, corre2, corre3
         type(KINE_LIST_RELA), intent(inout) :: kineListRela
 ! - Local
-        integer, parameter :: nbPairMaxi = 3, nbDofMaxi = 4
+        integer(kind=8), parameter :: nbPairMaxi = 3, nbDofMaxi = 4
         character(len=8) :: mesh
-        integer :: nbDofSlav, nbDofMast, nbEqua, iDof, nbDof
+        integer(kind=8) :: nbDofSlav, nbDofMast, nbEqua, iDof, nbDof
         character(len=8), dimension(nbPairMaxi, nbDofMaxi) :: dofLinkName
 
 !   ------------------------------------------------------------------------------------------------
@@ -901,13 +897,13 @@ contains
 ! - Local
         character(len=80), parameter :: title = 'LIAISON_MAILLE'
         character(len=8) :: mesh
-        integer :: shifNodeMast, iLink, iNodeMast
-        integer :: nbLink
-        integer :: jvPjefNb, jvPjefNu, jvPjefCf
-        integer :: nodeSlavNume, nodeMastNume, nbNodeMast, nbTerm
+        integer(kind=8) :: shifNodeMast, iLink, iNodeMast
+        integer(kind=8) :: nbLink
+        integer(kind=8) :: jvPjefNb, jvPjefNu, jvPjefCf
+        integer(kind=8) :: nodeSlavNume, nodeMastNume, nbNodeMast, nbTerm
         character(len=8) :: nodeSlavName, nodeMastName
         real(kind=8) :: nodeMastCoef
-        integer, pointer :: pjefNb(:) => null(), pjefNu(:) => null()
+        integer(kind=8), pointer :: pjefNb(:) => null(), pjefNu(:) => null()
         real(kind=8), pointer :: pjefCf(:) => null()
 
 !   ------------------------------------------------------------------------------------------------
@@ -993,15 +989,15 @@ contains
                                       kineListRela)
 !   ------------------------------------------------------------------------------------------------
 ! - Parameters
-        integer, intent(in) :: geomDime, nbNodeMast
-        integer, intent(in) :: iLink
+        integer(kind=8), intent(in) :: geomDime, nbNodeMast
+        integer(kind=8), intent(in) :: iLink
         real(kind=8), pointer :: normSlav(:)
-        integer, pointer :: nodeSkinToBody(:)
+        integer(kind=8), pointer :: nodeSkinToBody(:)
         aster_logical, intent(in) :: lApplyRota
         real(kind=8), intent(in) :: rotaMatr(3, 3)
         type(KINE_LIST_RELA), intent(inout) :: kineListRela
 ! - Local
-        integer :: iNodeMast, iGeomDime, jGeomDime
+        integer(kind=8) :: iNodeMast, iGeomDime, jGeomDime
         real(kind=8) :: normal(3)
 !   ------------------------------------------------------------------------------------------------
 !
@@ -1074,26 +1070,26 @@ contains
 !   ------------------------------------------------------------------------------------------------
 ! - Parameters
         character(len=*), intent(in) :: meshZ
-        integer, intent(in) :: geomDime
+        integer(kind=8), intent(in) :: geomDime
         aster_logical, intent(in) :: lApplyRota
         real(kind=8), intent(in) :: rotaMatr(3, 3)
         aster_logical, intent(in) :: useNormal
         real(kind=8), pointer :: normSlav(:)
-        integer, pointer :: nodeSkinToBody(:)
+        integer(kind=8), pointer :: nodeSkinToBody(:)
         character(len=16), intent(in) :: corres
-        integer, intent(in) :: nbEqua, nbDofSlav, nbDofMast
+        integer(kind=8), intent(in) :: nbEqua, nbDofSlav, nbDofMast
         character(len=8), dimension(:, :) :: dofLinkName
         type(KINE_LIST_RELA), intent(inout) :: kineListRela
 ! - Local
         character(len=80), parameter :: title = 'LIAISON_MAIL'
-        integer :: iNodeMast, iLink, iTerm
-        integer :: shifNodeMast, nbLink, nodeSlavNume, nodeMastNume
+        integer(kind=8) :: iNodeMast, iLink, iTerm
+        integer(kind=8) :: shifNodeMast, nbLink, nodeSlavNume, nodeMastNume
         character(len=8) :: nodeSlavName, nodeMastName
         character(len=8) :: mesh, dofSlavName, dofMastName
         real(kind=8) :: nodeMastCoef
-        integer :: nbNodeMast, nbTerm
-        integer :: iDofMast, iDofSlav, iEqua
-        integer, pointer :: pjefNu(:) => null(), pjefNb(:) => null()
+        integer(kind=8) :: nbNodeMast, nbTerm
+        integer(kind=8) :: iDofMast, iDofSlav, iEqua
+        integer(kind=8), pointer :: pjefNu(:) => null(), pjefNb(:) => null()
         real(kind=8), pointer :: pjefCf(:) => null()
 !   ------------------------------------------------------------------------------------------------
 !
@@ -1197,7 +1193,7 @@ contains
 !   ------------------------------------------------------------------------------------------------
 ! - Parameters
         character(len=*), intent(in) :: meshZ
-        integer, intent(in) :: geomDime
+        integer(kind=8), intent(in) :: geomDime
         character(len=16), intent(in) :: corres
         type(KINE_LIST_RELA), intent(inout) :: kineListRela
 ! - Local
@@ -1207,20 +1203,21 @@ contains
                                        reshape((/'DRY', 'DRZ', &
                                                  'DRZ', 'DRX', &
                                                  'DRX', 'DRY'/), (/2, 3/))
-        integer, parameter :: dofRotaIndx(2, 3) = &
-                              reshape((/3, 2, &
-                                        1, 3, &
-                                        2, 1/), (/2, 3/))
+        integer(kind=8), parameter :: dofRotaIndx(2, 3) = &
+                                      reshape((/3, 2, &
+                                                1, 3, &
+                                                2, 1/), (/2, 3/))
         aster_logical :: lCoque3d
-        integer :: iNodeMast, iNodeMastDisp, iNodeMastRota, iLink, iDime, iTerm, shiftNodeMast
-        integer :: nbLink, nodeSlavNume, nodeMastNume, cellMastNume
+        integer(kind=8) :: iNodeMast, iNodeMastDisp, iNodeMastRota
+        integer(kind=8) :: iLink, iDime, iTerm, shiftNodeMast
+        integer(kind=8) :: nbLink, nodeSlavNume, nodeMastNume, cellMastNume
         character(len=8) :: nodeSlavName, nodeMastName, dofName
         character(len=8) :: mesh, elrefa
         real(kind=8) :: nodeMastCoef
-        integer :: nbNodeMast, nbNodeMastDisp, nbNodeMastRota, nbTerm
+        integer(kind=8) :: nbNodeMast, nbNodeMastDisp, nbNodeMastRota, nbTerm
         real(kind=8), pointer :: meshVale(:) => null()
         real(kind=8) :: a(3), n2(3), an2(3), xr3(2), ff(8)
-        integer, pointer :: pjefNu(:) => null(), pjefNb(:) => null(), pjefM1(:) => null()
+        integer(kind=8), pointer :: pjefNu(:) => null(), pjefNb(:) => null(), pjefM1(:) => null()
         real(kind=8), pointer :: pjefCf(:) => null(), pjefCo(:) => null()
 !   ------------------------------------------------------------------------------------------------
 !
@@ -1377,25 +1374,25 @@ contains
 !   ------------------------------------------------------------------------------------------------
 ! - Parameters
         character(len=*), intent(in) :: meshZ
-        integer, intent(in) :: geomDime
+        integer(kind=8), intent(in) :: geomDime
         character(len=16), intent(in) :: corres, corre1, corre2, corre3
         type(KINE_LIST_RELA), intent(inout) :: kineListRela
 ! - Local
         character(len=80), parameter :: title = 'LIAISON_MAIL-COQUE_MASSIF'
         character(len=8), parameter :: dofDispName(3) = (/'DX', 'DY', 'DZ'/)
-        integer :: iNodeMast, iNodeMastSup, iNodeMastInf, iTerm, iDime
-        integer :: shiftNodeMast, shiftNodeMastSup, shiftNodeMastInf, cellMastNume
-        integer :: iLink, nbLink, nodeSlavNume, nodeMastNume
+        integer(kind=8) :: iNodeMast, iNodeMastSup, iNodeMastInf, iTerm, iDime
+        integer(kind=8) :: shiftNodeMast, shiftNodeMastSup, shiftNodeMastInf, cellMastNume
+        integer(kind=8) :: iLink, nbLink, nodeSlavNume, nodeMastNume
         character(len=8) :: nodeSlavName, nodeMastName, dofName
         character(len=8) :: mesh
         real(kind=8) :: nodeMastCoef, thickness, normalVect(3), mat33(3, 3)
-        integer :: nbNodeMast, nbNodeMastSup, nbNodeMastInf, nbTerm
+        integer(kind=8) :: nbNodeMast, nbNodeMastSup, nbNodeMastInf, nbTerm
         real(kind=8), pointer :: meshVale(:) => null()
-        integer, pointer :: pjefNu(:) => null(), pjefNb(:) => null(), pjefM1(:) => null()
+        integer(kind=8), pointer :: pjefNu(:) => null(), pjefNb(:) => null(), pjefM1(:) => null()
         real(kind=8), pointer :: pjefCf(:) => null(), pjefCo(:) => null()
-        integer, pointer :: pjef1Nu(:) => null(), pjef1Nb(:) => null()
+        integer(kind=8), pointer :: pjef1Nu(:) => null(), pjef1Nb(:) => null()
         real(kind=8), pointer :: pjef1Cf(:) => null()
-        integer, pointer :: pjef2Nu(:) => null(), pjef2Nb(:) => null()
+        integer(kind=8), pointer :: pjef2Nu(:) => null(), pjef2Nb(:) => null()
         real(kind=8), pointer :: pjef2Cf(:) => null()
         real(kind=8), pointer :: thickNormal(:) => null()
 !   ------------------------------------------------------------------------------------------------
@@ -1632,7 +1629,7 @@ contains
 !   ------------------------------------------------------------------------------------------------
 ! - Parameters
         character(len=*), intent(in) :: meshZ
-        integer, intent(in)                 :: geomDime
+        integer(kind=8), intent(in)                 :: geomDime
         character(len=16), intent(in)       :: corres
         aster_logical, intent(in)           :: useDisp
         character(len=8), pointer           :: dofName(:)
@@ -1641,15 +1638,15 @@ contains
         character(len=80), parameter :: title = 'LIAISON_MAIL-COQUE'
         character(len=8), parameter :: dofDispName(3) = (/'DX', 'DY', 'DZ'/)
         character(len=8), parameter :: dofRotaName(3) = (/'DRX', 'DRY', 'DRZ'/)
-        integer :: iNodeMast, iTerm, iDime, iDof, nbDof
-        integer :: shiftNodeMast
-        integer :: iLink, nbLink, nodeSlavNume, nodeMastNume, cellMastNume
+        integer(kind=8) :: iNodeMast, iTerm, iDime, iDof, nbDof
+        integer(kind=8) :: shiftNodeMast
+        integer(kind=8) :: iLink, nbLink, nodeSlavNume, nodeMastNume, cellMastNume
         character(len=8) :: nodeSlavName, nodeMastName, LocDofName
         character(len=8) :: mesh
         real(kind=8) :: nodeMastCoef
-        integer :: nbNodeMast, nbTerm
+        integer(kind=8) :: nbNodeMast, nbTerm
         real(kind=8), pointer :: meshVale(:) => null()
-        integer, pointer :: pjefNu(:) => null(), pjefNb(:) => null(), pjefM1(:) => null()
+        integer(kind=8), pointer :: pjefNu(:) => null(), pjefNb(:) => null(), pjefM1(:) => null()
         real(kind=8), pointer :: pjefCf(:) => null(), pjefCo(:) => null()
         aster_logical :: TakeDof
 !   ------------------------------------------------------------------------------------------------
@@ -1821,7 +1818,7 @@ contains
         character(len=19), intent(out) :: listLineRela
 ! - Local
 !   NOMBRE MAX DE TERMES D'UNE RELATION LINEAIRE EN 3D = 1 + 3*27 (max maille: 27 noeuds)
-        integer, parameter :: nbTermMaxi = 82
+        integer(kind=8), parameter :: nbTermMaxi = 82
         character(len=80), parameter :: title = 'LIAISON_PROJ'
         character(len=16), parameter :: factorKeyword = 'LIAISON_PROJ'
         character(len=8), parameter :: physQuanName = "DEPL_R"
@@ -1829,24 +1826,24 @@ contains
         character(len=8) :: mesh
         character(len=16) :: meshLink
         character(len=4) :: valeType
-        integer :: geomDime
-        integer :: iOcc, nocc, nbDof
+        integer(kind=8) :: geomDime
+        integer(kind=8) :: iOcc, nocc, nbDof
         character(len=8), pointer :: dofName(:) => null()
-        integer :: iNode1, iNode2, iDof
-        integer :: nbNode1, nbNode2
-        integer :: cell1Nume, cell1TypeNume, node1Nume, node2Nume
-        integer :: idecal, iTerm, nbTerm
+        integer(kind=8) :: iNode1, iNode2, iDof
+        integer(kind=8) :: nbNode1, nbNode2
+        integer(kind=8) :: cell1Nume, cell1TypeNume, node1Nume, node2Nume
+        integer(kind=8) :: idecal, iTerm, nbTerm
         character(len=8) :: node1Name, node2Name, dofLocaName
         aster_logical :: hasExcent, oneDofDoesntExist
         aster_logical, pointer :: dofExist(:) => null()
-        integer, pointer :: cell1List(:) => null(), cellType(:) => null()
-        integer, pointer :: node1List(:) => null(), node2List(:) => null()
+        integer(kind=8), pointer :: cell1List(:) => null(), cellType(:) => null()
+        integer(kind=8), pointer :: node1List(:) => null(), node2List(:) => null()
         real(kind=8), pointer :: nodeCoef(:) => null(), nodeCoor(:) => null()
         real(kind=8) :: coeffi, xyzom(3), coefZero
         type(KINE_LIST_RELA) :: kineListRela
-        integer :: physQuanNbCmp, jvPhysQuanCmpName, nbec, jvPrnm
+        integer(kind=8) :: physQuanNbCmp, jvPhysQuanCmpName, nbec, jvPrnm
         character(len=1) :: dofUnknown
-        integer, parameter :: nbDofRota = 3
+        integer(kind=8), parameter :: nbDofRota = 3
         character(len=8), pointer :: dofRotaName(:) => null()
 
 !   ------------------------------------------------------------------------------------------------
@@ -2068,16 +2065,16 @@ contains
 !   ------------------------------------------------------------------------------------------------
 ! - Parameters
         character(len=*), intent(in) :: factorKeywordZ
-        integer, intent(in) :: iOcc
+        integer(kind=8), intent(in) :: iOcc
         character(len=8), intent(in) :: mesh
         character(len=16), intent(out) :: meshLink
-        integer, intent(out) :: nbDof
+        integer(kind=8), intent(out) :: nbDof
         character(len=8), pointer :: dofName(:)
         aster_logical, pointer :: dofExist(:)
         aster_logical, intent(out) :: hasExcent
         character(len=1), intent(out) :: dofUnknown
 ! - Local
-        integer :: iret
+        integer(kind=8) :: iret
         character(len=16) :: answer
         character(len=8) :: mesh1, mesh2
         character(len=24), pointer :: meshLinkPjxx(:) => null()

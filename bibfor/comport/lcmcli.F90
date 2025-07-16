@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -23,12 +23,12 @@ subroutine lcmcli(nomfam, nbsys, is, pgl, &
 !     ----------------------------------------------------------------
 #include "asterfort/lcmmsg.h"
 #include "asterfort/tnsvec.h"
-    integer :: i, nbsys, is, ir, j
+    integer(kind=8) :: i, nbsys, is, ir, j
     real(kind=8) :: sigf(6), pgl(3, 3), ms(6), ng(3), si(3, 3), sing(3), sicl, p
     real(kind=8) :: lg(3)
     real(kind=8) :: qm(3, 3)
     character(len=16) :: nomfam
-    integer :: irr, decirr, nbsyst, decal, gdef
+    integer(kind=8) :: irr, decirr, nbsyst, decal, gdef
     common/polycr/irr, decirr, nbsyst, decal, gdef
 !
     ir = 0

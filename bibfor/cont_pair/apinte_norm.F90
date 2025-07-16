@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -28,8 +28,8 @@ subroutine apinte_norm(elem_dime, &
 #include "asterfort/apelem_getcenter.h"
 #include "asterfort/apnorm.h"
 !
-    integer, intent(in) :: elem_dime
-    integer, intent(in) :: elem_mast_nbnode
+    integer(kind=8), intent(in) :: elem_dime
+    integer(kind=8), intent(in) :: elem_mast_nbnode
     real(kind=8), intent(in) :: elem_mast_coor(3, 9)
     character(len=8), intent(in) :: elem_mast_code
     real(kind=8), intent(in) :: elem_slav_coor(3, 9)
@@ -57,7 +57,7 @@ subroutine apinte_norm(elem_dime, &
 !
     aster_logical :: debug
     real(kind=8) :: ksi1_cent, ksi2_cent
-    integer :: elem_line_nbnode
+    integer(kind=8) :: elem_line_nbnode
     character(len=8) :: elem_line_code
 !
 ! --------------------------------------------------------------------------------------------------

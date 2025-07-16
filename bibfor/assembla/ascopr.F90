@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -23,8 +23,8 @@ subroutine ascopr(lmasym, lmesym, tt, jtmp2, nrmax, &
 #include "jeveux.h"
 #include "asterfort/assert.h"
     character(len=2) :: tt
-    integer :: jtmp2, nrmax, jresl
-    integer :: jvalm(2)
+    integer(kind=8) :: jtmp2, nrmax, jresl
+    integer(kind=8) :: jvalm(2)
     aster_logical :: lmasym, lmesym
     real(kind=8) :: rcoef
 !     ROUTINE QUI ACCUMULE LES TERMES ELEMENTAIRES DANS LES BLOCS DE LA
@@ -42,7 +42,7 @@ subroutine ascopr(lmasym, lmesym, tt, jtmp2, nrmax, &
 ! IN  I   JVALM  : LISTE DES ADRESSES DES BLOCS DE .VALM
 !-----------------------------------------------------------------------
 !-----------------------------------------------------------------------
-    integer :: ibloc, iadloc, j, jvalb, kfois, nbfois, permbl(2)
+    integer(kind=8) :: ibloc, iadloc, j, jvalb, kfois, nbfois, permbl(2)
 !-----------------------------------------------------------------------
 !
 !     -- SI ON ASSEMBLE UNE MATRICE ELEMENTAIRE SYMETRIQUE DANS

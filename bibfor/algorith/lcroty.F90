@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -20,7 +20,7 @@ function lcroty(t, prec, itemax)
     implicit none
 #include "asterfort/utmess.h"
     real(kind=8) :: lcroty
-    integer :: itemax
+    integer(kind=8) :: itemax
     real(kind=8) :: t, prec
 !
 ! *****************************************************
@@ -32,7 +32,7 @@ function lcroty(t, prec, itemax)
 ! IN  PREC    : PRECISION RELATIVE SOUHAITEE
 ! IN  ITEMAX  : NOMBRE MAX D'ITERATIONS
 !
-    integer :: iter
+    integer(kind=8) :: iter
     real(kind=8) :: y, u, h, dh
 !
 ! 1 - NEWTON SANS CHANGEMENT DE VARIABLE

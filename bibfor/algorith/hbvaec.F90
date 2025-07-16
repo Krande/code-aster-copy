@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -18,7 +18,7 @@
 
 subroutine hbvaec(gamma, nbmat, materf, parame)
     implicit none
-    integer :: nbmat
+    integer(kind=8) :: nbmat
     real(kind=8) :: gamma, materf(nbmat, 2), parame(4)
 ! ======================================================================
 ! --- HOEK BROWN : CALCUL DES FONCTIONS DE LA VARIABLE D ECROUISSAGE ---

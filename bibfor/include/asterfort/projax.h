@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -21,12 +21,12 @@
 interface
     subroutine projax(jvecpg, nbvec, nbordr, proaxe, iflag,&
                       rmima, jraxe)
-        integer :: nbordr
-        integer :: nbvec
-        integer :: jvecpg
+        integer(kind=8) :: nbordr
+        integer(kind=8) :: nbvec
+        integer(kind=8) :: jvecpg
         character(len=16) :: proaxe
-        integer :: iflag(nbvec)
+        integer(kind=8) :: iflag(nbvec)
         real(kind=8) :: rmima(4*nbvec)
-        integer :: jraxe
+        integer(kind=8) :: jraxe
     end subroutine projax
 end interface

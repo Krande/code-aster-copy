@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -23,16 +23,13 @@ subroutine dismcn(questi, nomobz, repi, repkz, ierd)
 !     ----------
 #include "jeveux.h"
 !
-#include "asterfort/assert.h"
 #include "asterfort/dismgd.h"
 #include "asterfort/dismeq.h"
 #include "asterfort/jedema.h"
 #include "asterfort/jelira.h"
 #include "asterfort/jemarq.h"
-#include "asterfort/jenuno.h"
 #include "asterfort/jeveuo.h"
-#include "asterfort/jexnum.h"
-    integer :: repi, ierd
+    integer(kind=8) :: repi, ierd
     character(len=*) :: questi
     character(len=*) :: nomobz, repkz
     character(len=24) :: questl
@@ -51,7 +48,7 @@ subroutine dismcn(questi, nomobz, repi, repkz, ierd)
 !     VARIABLES LOCALES:
 !     ------------------
     character(len=8) :: nogd
-    integer :: iarefe, i8
+    integer(kind=8) :: iarefe, i8
 !-----------------------------------------------------------------------
     call jemarq()
     repk = ' '

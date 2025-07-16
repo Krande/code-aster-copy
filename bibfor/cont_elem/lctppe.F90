@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -27,18 +27,16 @@ subroutine lctppe(side, l_axis, l_upda_jaco, &
 !
 #include "asterf_types.h"
 #include "jeveux.h"
-#include "asterc/r8prem.h"
 #include "asterfort/mmnonf.h"
 #include "asterfort/mmdonf.h"
 #include "asterfort/mmmjac.h"
 #include "asterfort/mmnorm.h"
 #include "asterfort/mmtang.h"
-#include "asterfort/assert.h"
 !
     character(len=*), intent(in) :: side
-    integer, intent(in) :: elem_dime
+    integer(kind=8), intent(in) :: elem_dime
     aster_logical, intent(in) :: l_axis, l_upda_jaco
-    integer, intent(in) :: nb_node
+    integer(kind=8), intent(in) :: nb_node
     real(kind=8), intent(in) :: elem_init(nb_node, elem_dime)
     real(kind=8), intent(in) :: elem_coor(nb_node, elem_dime)
     character(len=8), intent(in) :: elem_code
@@ -70,7 +68,7 @@ subroutine lctppe(side, l_axis, l_upda_jaco, &
 !
 ! --------------------------------------------------------------------------------------------------
 !
-    integer :: i_dime, i_node
+    integer(kind=8) :: i_dime, i_node
     real(kind=8) :: elem_coot(3, 9)
     real(kind=8) :: tau1(3), tau2(3), shape_dfunc(2, 9)
 !

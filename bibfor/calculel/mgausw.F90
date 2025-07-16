@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -22,7 +22,7 @@ subroutine mgausw(a, b, dim, nordre, nb, &
     implicit none
 #include "asterf_types.h"
 !
-    integer :: dim, nb, nordre
+    integer(kind=8) :: dim, nb, nordre
     real(kind=8) :: a(dim, dim), b(dim, nb), det
     aster_logical :: iret
 !
@@ -51,7 +51,7 @@ subroutine mgausw(a, b, dim, nordre, nb, &
     real(kind=8) :: condmx
     parameter(condmx=1.d16)
 !
-    integer :: i, j, k
+    integer(kind=8) :: i, j, k
     real(kind=8) :: c, d, cmin, cmax
     aster_logical :: flag, ldet
 !

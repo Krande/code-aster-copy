@@ -27,10 +27,8 @@ subroutine mmpoin(mesh, ds_contact)
 #include "asterfort/cfdisi.h"
 #include "asterfort/cfmmex.h"
 #include "asterfort/cfnumm.h"
-#include "asterfort/jenuno.h"
 #include "asterfort/jeveuo.h"
 #include "asterfort/wkvect.h"
-#include "asterfort/jexnum.h"
 #include "asterfort/mcomce.h"
 #include "asterfort/mmelin.h"
 #include "asterfort/mmgaus.h"
@@ -59,26 +57,26 @@ subroutine mmpoin(mesh, ds_contact)
 !
 ! --------------------------------------------------------------------------------------------------
 !
-    integer :: iret, length
+    integer(kind=8) :: iret, length
     character(len=19) :: sdappa, newgeo
     character(len=24) :: sdappa_poin, sdappa_infp, sdappa_noms
     character(len=24) :: sdappa_tau1, sdappa_tau2, sdappa_proj
     character(len=24) :: sdappa_dist, sdappa_appa, sdappa_tgno, sdappa_tgel
     character(len=24) :: sdappa_mpia, sdappa_mpib, sdappa_mpic
     real(kind=8), pointer :: v_sdappa_poin(:) => null()
-    integer, pointer :: v_sdappa_infp(:) => null()
+    integer(kind=8), pointer :: v_sdappa_infp(:) => null()
     character(len=16), pointer :: v_sdappa_noms(:) => null()
     character(len=16), pointer :: valk(:) => null()
-    integer :: i_node_escl, i_poin, i_poin_elem, i_zone, i_elem_slav
-    integer :: nb_elem_slav, nb_poin_elem, elem_slav_nbnode, nt_poin
-    integer :: elem_slav_indx, elem_slav_nume, node_slav_nume
-    integer :: jdecme
-    integer :: type_inte
+    integer(kind=8) :: i_node_escl, i_poin, i_poin_elem, i_zone, i_elem_slav
+    integer(kind=8) :: nb_elem_slav, nb_poin_elem, elem_slav_nbnode, nt_poin
+    integer(kind=8) :: elem_slav_indx, elem_slav_nume, node_slav_nume
+    integer(kind=8) :: jdecme
+    integer(kind=8) :: type_inte
     real(kind=8) :: poin_coor(3), elem_slav_coor(27)
     real(kind=8) :: ksi1, ksi2
     character(len=8) :: elem_slav_type, elem_slav_name
     character(len=16) :: poin_name
-    integer :: model_ndim, nb_cont_zone
+    integer(kind=8) :: model_ndim, nb_cont_zone
 !
 ! --------------------------------------------------------------------------------------------------
 !

@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -25,7 +25,6 @@ subroutine cgCreateCompIncr(compor, l_etat_init)
     implicit none
 !
 #include "asterf_types.h"
-#include "asterfort/assert.h"
 #include "asterfort/Behaviour_type.h"
 #include "asterfort/copisd.h"
 #include "asterfort/jedema.h"
@@ -46,10 +45,10 @@ subroutine cgCreateCompIncr(compor, l_etat_init)
 ! IO compor    : name of <CARTE> COMPORTEMENT
 ! --------------------------------------------------------------------------------------------------
 !
-    integer :: nb_vale, nb_zone, nb_cmp_max, i_zone
+    integer(kind=8) :: nb_vale, nb_zone, nb_cmp_max, i_zone
     character(len=16) :: rela_comp, defo_comp, rela_new
     character(len=19) :: compor_elas
-    integer, pointer :: v_compor_desc(:) => null()
+    integer(kind=8), pointer :: v_compor_desc(:) => null()
     character(len=16), pointer :: v_compor_vale(:) => null()
 !
     call jemarq()

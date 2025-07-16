@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -22,8 +22,8 @@ interface
     subroutine dpvpdb(nbmat, mater, crit, dt, vinm,&
                       vinp, nvi, seqe, i1e, seqm,&
                       i1m, dp, nbre, retcom)
-        integer :: nvi
-        integer :: nbmat
+        integer(kind=8) :: nvi
+        integer(kind=8) :: nbmat
         real(kind=8) :: mater(nbmat, 2)
         real(kind=8) :: crit(3)
         real(kind=8) :: dt
@@ -34,7 +34,7 @@ interface
         real(kind=8) :: seqm
         real(kind=8) :: i1m
         real(kind=8) :: dp
-        integer :: nbre
-        integer :: retcom
+        integer(kind=8) :: nbre
+        integer(kind=8) :: retcom
     end subroutine dpvpdb
 end interface

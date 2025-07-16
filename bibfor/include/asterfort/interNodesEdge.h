@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -25,11 +25,11 @@ interface
                               nb_poin_inte,  poin_inte, inte_neigh,&
                               poin_inte_ori)
         real(kind=8), intent(in) :: proj_tole
-        integer, intent(in) :: elem_dime
+        integer(kind=8), intent(in) :: elem_dime
         character(len=8), intent(in) :: elem_mast_code, elem_slave_code
         real(kind=8), intent(in) :: proj_coor(elem_dime-1,9)
-        integer, intent(in) :: nb_node_proj
-        integer, intent(inout) :: inte_neigh(4), nb_poin_inte
+        integer(kind=8), intent(in) :: nb_node_proj
+        integer(kind=8), intent(inout) :: inte_neigh(4), nb_poin_inte
         real(kind=8), intent(out) :: poin_inte(elem_dime-1,16)
         real(kind=8), intent(out) :: poin_inte_ori(elem_dime-1,16)
     end subroutine interNodesEdge

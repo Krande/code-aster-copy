@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -30,12 +30,12 @@ subroutine cjsnvi(mod, ndt, ndi, nvi)
 !           NDI    :  NB DE COMPOSANTES DIRECTES  TENSEURS
 !           NVI    :  NB DE VARIABLES INTERNES
 !       ----------------------------------------------------------------
-    integer :: ndt, ndi, nvi
+    integer(kind=8) :: ndt, ndi, nvi
 !
 ! VARIABLES LOALES POUR SE PREMUNIR D APPELS DU TYPE
 ! CALL CJSNVI(MOD,IBID,IBID,NVI)
 !
-    integer :: ndtloc, ndiloc
+    integer(kind=8) :: ndtloc, ndiloc
     character(len=8) :: mod
 !       ----------------------------------------------------------------
 !

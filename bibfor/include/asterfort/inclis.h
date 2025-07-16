@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -32,9 +32,9 @@ interface
         character(len=24) :: fplibn
         character(len=24) :: fpliao
         character(len=24) :: fplibo
-        integer :: iada(3)
-        integer :: iadb(3)
-        integer :: numlis
+        integer(kind=8) :: iada(3)
+        integer(kind=8) :: iadb(3)
+        integer(kind=8) :: numlis
         character(len=8) :: matprj
     end subroutine inclis
 end interface

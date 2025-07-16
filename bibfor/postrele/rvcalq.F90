@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -47,7 +47,7 @@ subroutine rvcalq(iocc, sdeval, vec1, vec2, repere, &
     character(len=19) :: sdcalq
     character(len=16) :: option
     character(len=8) :: nomcp(*), repere, courbe
-    integer :: nbcpnc, nbcpcd, codir
+    integer(kind=8) :: nbcpnc, nbcpcd, codir
     real(kind=8) :: valdir(*), vec1(*), vec2(*)
     aster_logical :: tridim
 !     CALCUL DE LA QUANTITE POST-TRAITEE
@@ -86,14 +86,14 @@ subroutine rvcalq(iocc, sdeval, vec1, vec2, repere, &
     character(len=2) :: tq
     character(len=1) :: k1
 !
-    integer :: nbpt, lpadr, lpnbn, apnbnq, avaleq, apadrq, anocpq, apncoe
-    integer :: apnbne, avalee, apadre, idecq, idece, nvp, n, nboc
-    integer :: adre, adrq, ll, i, j, k, ioc, apcmpe, anumcp, iadr, acpgd, apnspe
-    integer :: ipadr, apnspq
-    integer :: kd1, kd2, kd3, kd4, kd5, kd6, idec, ny, il
-    integer :: l, lnq, lne, m, mder, nbadrq, nbnd, nc, num, pt, apncoq
-    integer :: nperm, itype, iordre, ifm, niv
-    integer :: ico, icoef, ind, indice, iocc, isp, nbco, nbsp, nitjac
+    integer(kind=8) :: nbpt, lpadr, lpnbn, apnbnq, avaleq, apadrq, anocpq, apncoe
+    integer(kind=8) :: apnbne, avalee, apadre, idecq, idece, nvp, n, nboc
+    integer(kind=8) :: adre, adrq, ll, i, j, k, ioc, apcmpe, anumcp, iadr, acpgd, apnspe
+    integer(kind=8) :: ipadr, apnspq
+    integer(kind=8) :: kd1, kd2, kd3, kd4, kd5, kd6, idec, ny, il
+    integer(kind=8) :: l, lnq, lne, m, mder, nbadrq, nbnd, nc, num, pt, apncoq
+    integer(kind=8) :: nperm, itype, iordre, ifm, niv
+    integer(kind=8) :: ico, icoef, ind, indice, iocc, isp, nbco, nbsp, nitjac
 !
     real(kind=8) :: vp1, vp2, tr, det, a, b, c, txx, txy, tyy, txz, tyz, sxx
     real(kind=8) :: sxy, syy
@@ -101,7 +101,7 @@ subroutine rvcalq(iocc, sdeval, vec1, vec2, repere, &
     real(kind=8) :: v1x, v2x, v3x, v1y, v2y, v3y, v1z, v2z, v3z, v1n, v2n, v2p
     real(kind=8) :: ar(6), br(6), vecpro(3, 3), valpro(3), v2(2)
     real(kind=8) :: jacaux(3), tol, toldyn
-    integer :: tcoe, tcoq, tnde, tndq
+    integer(kind=8) :: tcoe, tcoq, tnde, tndq
 !
     real(kind=8), pointer :: vv1x(:) => null()
     real(kind=8), pointer :: vv1y(:) => null()

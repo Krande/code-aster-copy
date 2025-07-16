@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -55,8 +55,8 @@ subroutine rdif01(fami, kpg, ksp, rela_comp, mod, &
 #include "asterfort/lcdvin.h"
 #include "asterfort/lcmmon.h"
 #include "asterfort/lcmmop.h"
-    integer :: kpg, ksp, imat, nmat, nvi, nbcomm(nmat, 3), itens
-    integer :: nbphas, nfs, iret, itmax, nsg, nhsr, numhsr(*), neps
+    integer(kind=8) :: kpg, ksp, imat, nmat, nvi, nbcomm(nmat, 3), itens
+    integer(kind=8) :: nbphas, nfs, iret, itmax, nsg, nhsr, numhsr(*), neps
     character(len=16) :: rela_comp
     character(len=24) :: cpmono(5*nmat+1)
     character(len=8) :: mod

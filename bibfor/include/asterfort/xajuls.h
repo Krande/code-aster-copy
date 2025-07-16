@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -22,12 +22,12 @@ interface
     subroutine xajuls(noma, nbma, cnslt, cnsln, jconx1,&
                       jconx2, clsm, typdis, critlst)
         character(len=8) :: noma
-        integer :: nbma
+        integer(kind=8) :: nbma
         character(len=19) :: cnslt
         character(len=19) :: cnsln
-        integer :: jconx1
-        integer :: jconx2
-        integer :: clsm
+        integer(kind=8) :: jconx1
+        integer(kind=8) :: jconx2
+        integer(kind=8) :: clsm
         character(len=16) :: typdis
         real(kind=8), optional :: critlst
     end subroutine xajuls

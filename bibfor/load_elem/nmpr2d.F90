@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -24,14 +24,13 @@ subroutine nmpr2d(l_axis, nno, npg, &
     implicit none
 !
 #include "asterf_types.h"
-#include "asterfort/assert.h"
 #include "asterfort/subac1.h"
 #include "asterfort/subacv.h"
 #include "asterfort/sumetr.h"
 #include "asterfort/utmess.h"
 !
     aster_logical, intent(in):: l_axis
-    integer, intent(in) :: nno, npg
+    integer(kind=8), intent(in) :: nno, npg
     real(kind=8), intent(in) :: poidsg(npg), vff(nno, npg), dff(nno, npg)
     real(kind=8), intent(in) :: geom(2, nno), pres(npg), cisa(npg)
     real(kind=8), intent(out), optional :: vect_(2, nno), matr_(2, nno, 2, nno)
@@ -58,7 +57,7 @@ subroutine nmpr2d(l_axis, nno, npg, &
 !
 ! --------------------------------------------------------------------------------------------------
 !
-    integer :: kpg, ino1, idim2, ino2, idim1
+    integer(kind=8) :: kpg, ino1, idim2, ino2, idim1
     real(kind=8) :: cova(3, 3), metr(2, 2), jac, cnva(3, 2)
     real(kind=8) :: t1, t2, t, acv(2, 2), r
 !

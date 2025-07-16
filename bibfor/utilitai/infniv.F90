@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -18,7 +18,7 @@
 
 subroutine infniv(ifm, niv)
     implicit none
-    integer :: ifm, niv
+    integer(kind=8) :: ifm, niv
 !       MOT CLE INFO
 !-----------------------------------------------------------------------
 !      UTILITAIRE DE MISE A NIVEAU POUR LE MOT CLE INFO
@@ -33,7 +33,7 @@ subroutine infniv(ifm, niv)
 !      NIVPGM    :NIVEAU ACCESSIBLE AU PROGRAMMEUR  : 0 , 1 OU 2
 !      UNITE     :UNITE LOGIQUE DU FICHIER MESSAGE
 !
-    integer :: nivuti, nivpgm, unite
+    integer(kind=8) :: nivuti, nivpgm, unite
     common/inf001/nivuti, nivpgm, unite
 !-----FIN DE INF001-----------------------------------------------------
 !

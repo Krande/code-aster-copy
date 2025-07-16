@@ -22,6 +22,6 @@ interface
                       timeCurr, vectElemZ, numeHarm, jvBaseZ)
         character(len=*) :: modelZ, caraElemZ, vectElemZ, listLoadZ, materFieldZ, matecoZ, jvBaseZ
         real(kind=8) :: timeCurr
-        integer :: numeHarm
+        integer(kind=8) :: numeHarm
     end subroutine me2mme
 end interface

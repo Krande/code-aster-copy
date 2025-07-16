@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -20,9 +20,9 @@
 !
 interface
     subroutine compno(mailla, nbgr, nomgr, nbto)
-        integer :: nbgr
+        integer(kind=8) :: nbgr
         character(len=8) :: mailla
         character(len=24) :: nomgr(nbgr)
-        integer :: nbto
+        integer(kind=8) :: nbto
     end subroutine compno
 end interface

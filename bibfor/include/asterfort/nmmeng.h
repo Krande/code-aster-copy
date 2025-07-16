@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2020 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -23,7 +23,7 @@ interface
         use NonLin_Datastructure_type
         use Rom_Datastructure_type
         use HHO_type
-        integer, intent(in) :: list_func_acti(*)
+        integer(kind=8), intent(in) :: list_func_acti(*)
         type(ROM_DS_AlgoPara), intent(inout) :: ds_algorom
         type(NL_DS_Print), intent(inout) :: ds_print
         type(NL_DS_Energy), intent(inout) :: ds_energy

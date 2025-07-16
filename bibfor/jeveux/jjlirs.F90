@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -21,7 +21,7 @@ subroutine jjlirs(jadm, iclas, idos, ius, ist)
     implicit none
 #include "jeveux_private.h"
 #include "asterfort/utmess.h"
-    integer :: jadm, iclas, ius, ist
+    integer(kind=8) :: jadm, iclas, ius, ist
 ! ----------------------------------------------------------------------
 !     RELIT LES ENTIERS ENCADRANT UN SEGMENT DE VALEURS
 !
@@ -31,14 +31,14 @@ subroutine jjlirs(jadm, iclas, idos, ius, ist)
 ! OUT IUS    : USAGE DU SEGMENT DE VALEUR
 ! OUT IST    : STATUT DU SEGMENT DE VALEUR
 ! ----------------------------------------------------------------------
-    integer :: lk1zon, jk1zon, liszon, jiszon
+    integer(kind=8) :: lk1zon, jk1zon, liszon, jiszon
     common/izonje/lk1zon, jk1zon, liszon, jiszon
 ! ----------------------------------------------------------------------
-    integer :: istat
+    integer(kind=8) :: istat
     common/istaje/istat(4)
 ! DEB ------------------------------------------------------------------
 !-----------------------------------------------------------------------
-    integer :: icla2, idatoc, idos, is, ista1, ista2
+    integer(kind=8) :: icla2, idatoc, idos, is, ista1, ista2
 !
 !-----------------------------------------------------------------------
     ista1 = iszon(jiszon+jadm-1)

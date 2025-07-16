@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -19,7 +19,7 @@
 subroutine vpordi(type, iordre, nbpro, valpro, vecpro, &
                   neq, indpro)
     implicit none
-    integer :: type, nbpro, neq, indpro(*)
+    integer(kind=8) :: type, nbpro, neq, indpro(*)
     real(kind=8) :: valpro(*), vecpro(neq, nbpro)
 !     TRIE DES VALEURS (ET DES VECTEURS) PROPRES PAR ORDRE CROISSANT
 !     EN INCLUANT LES INDICES
@@ -36,13 +36,13 @@ subroutine vpordi(type, iordre, nbpro, valpro, vecpro, &
 !     NEQ    : IS : NOMBRE D'EQUATIONS
 !                 SI NEQ < NBPRO ALORS ON NE TRIE PAS DE VECTEURS
 !     ------------------------------------------------------------------
-    integer :: iperm, inperm
+    integer(kind=8) :: iperm, inperm
     real(kind=8) :: rperm, eps
 !
 !
 !     --- TRI PAR ORDRE CROISSANT ---
 !-----------------------------------------------------------------------
-    integer :: i, iordre, j
+    integer(kind=8) :: i, iordre, j
 !-----------------------------------------------------------------------
     eps = 1.d-7
     if (iordre .eq. 0) then

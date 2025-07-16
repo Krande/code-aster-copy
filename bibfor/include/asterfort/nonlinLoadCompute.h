@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2020 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -32,7 +32,7 @@ interface
 !
         character(len=4), intent(in)            :: mode
         character(len=19), intent(in)           :: list_load
-        integer, intent(in)                     :: list_func_acti(*)
+        integer(kind=8), intent(in)                     :: list_func_acti(*)
         character(len=24), intent(in)           :: model, cara_elem, nume_dof
         type(NL_DS_Material), intent(in)        :: ds_material
         type(NL_DS_Constitutive), intent(in)    :: ds_constitutive

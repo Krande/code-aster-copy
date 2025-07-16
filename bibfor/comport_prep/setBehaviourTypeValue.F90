@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -30,7 +30,7 @@ subroutine setBehaviourTypeValue(prepMapCompor, iFactorKeyword_, &
 #include "asterfort/Behaviour_type.h"
 !
     type(BehaviourPrep_MapCompor), intent(in) :: prepMapCompor
-    integer, optional, intent(in) :: iFactorKeyword_
+    integer(kind=8), optional, intent(in) :: iFactorKeyword_
     character(len=16), intent(out), optional :: comporList_(:)
     character(len=16), pointer, optional :: comporMap_(:)
 !
@@ -51,7 +51,7 @@ subroutine setBehaviourTypeValue(prepMapCompor, iFactorKeyword_, &
 !
     type(BehaviourPrep_Para) :: prepPara
     type(BehaviourPrep_Exte) :: prepExte
-    integer :: iFactorKeyword
+    integer(kind=8) :: iFactorKeyword
     aster_logical :: l_pmf, l_kit_thm, l_kit_ddi, l_kit_meta, l_kit_cg, l_exte_comp
 !
 ! --------------------------------------------------------------------------------------------------

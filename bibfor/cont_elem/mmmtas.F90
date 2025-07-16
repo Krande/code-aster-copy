@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -29,7 +29,7 @@ subroutine mmmtas(nbdm, ndim, nnl, nne, nnm, nbcps, &
 #include "asterf_types.h"
 #include "asterfort/mmmtdb.h"
 !
-    integer, intent(in) :: nbdm, ndim, nnl, nne, nnm, nbcps
+    integer(kind=8), intent(in) :: nbdm, ndim, nnl, nne, nnm, nbcps
     real(kind=8), intent(in) :: matrcc(9, 9), matree(27, 27), matrmm(27, 27)
     real(kind=8), intent(in) :: matrem(27, 27), matrme(27, 27), matrce(9, 27), matrcm(9, 27)
     real(kind=8), intent(in) :: matrec(27, 9), matrmc(27, 9)
@@ -70,11 +70,11 @@ subroutine mmmtas(nbdm, ndim, nnl, nne, nnm, nbcps, &
 !
 ! --------------------------------------------------------------------------------------------------
 !
-    integer :: ii, jj, kk, ll
-    integer :: nbcpf
-    integer :: inoc, inoe, inom, inof, icmp, idim
-    integer :: inoe1, inoe2, inom1, inom2, idim1, idim2
-    integer :: inoc1, inoc2, inof1, inof2, icmp1, icmp2
+    integer(kind=8) :: ii, jj, kk, ll
+    integer(kind=8) :: nbcpf
+    integer(kind=8) :: inoc, inoe, inom, inof, icmp, idim
+    integer(kind=8) :: inoe1, inoe2, inom1, inom2, idim1, idim2
+    integer(kind=8) :: inoc1, inoc2, inof1, inof2, icmp1, icmp2
     aster_logical :: debug
 !
 ! --------------------------------------------------------------------------------------------------

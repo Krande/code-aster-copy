@@ -52,7 +52,6 @@ subroutine ctetgd(basmod, numd, numg, nbsec, teta, &
 #include "asterfort/jedema.h"
 #include "asterfort/jelira.h"
 #include "asterfort/jemarq.h"
-#include "asterfort/jenuno.h"
 #include "asterfort/jeveuo.h"
 #include "asterfort/jexnum.h"
 #include "asterfort/jexnom.h"
@@ -60,11 +59,11 @@ subroutine ctetgd(basmod, numd, numg, nbsec, teta, &
 #include "asterfort/int_to_char8.h"
 !
 !-----------------------------------------------------------------------
-    integer :: i, ibid(1), icomp, iloci, ilocj, inod
-    integer :: inog, j, k, lldesc, llnod, llnog
-    integer :: nbcmp, nbcpmx, nbdcou, nbddr, nbdga, nbec
-    integer :: nbnod, nbnog, nbnot, nbsec, nbtet, noer, numd
-    integer :: numg
+    integer(kind=8) :: i, ibid(1), icomp, iloci, ilocj, inod
+    integer(kind=8) :: inog, j, k, lldesc, llnod, llnog
+    integer(kind=8) :: nbcmp, nbcpmx, nbdcou, nbddr, nbdga, nbec
+    integer(kind=8) :: nbnod, nbnog, nbnot, nbsec, nbtet, noer, numd
+    integer(kind=8) :: numg
     real(kind=8) :: angle, pi, x
 !-----------------------------------------------------------------------
     parameter(nbcpmx=300)
@@ -73,8 +72,8 @@ subroutine ctetgd(basmod, numd, numg, nbsec, teta, &
     real(kind=8) :: xd(10), xg(10), xtd(10), xtg(10), tet0(10, 10)
     real(kind=8) :: teta(nbtet, nbtet)
     aster_logical :: nook
-    integer :: idecd(nbcpmx), idecg(nbcpmx)
-    integer :: vali(2), jnocmp
+    integer(kind=8) :: idecd(nbcpmx), idecg(nbcpmx)
+    integer(kind=8) :: vali(2), jnocmp
 !
 !-----------------------------------------------------------------------
 !

@@ -25,11 +25,11 @@ interface
         use cara_elem_info_type
         use cara_elem_carte_type
         type (cara_elem_info) :: infdonn
-        integer :: lmax
-        integer :: noemaf
-        integer :: nbocc
+        integer(kind=8) :: lmax
+        integer(kind=8) :: noemaf
+        integer(kind=8) :: nbocc
         type (cara_elem_carte) :: infcarte(*)
-        integer :: ivr(*)
-        integer :: zjdlm(*)
+        integer(kind=8) :: ivr(*)
+        integer(kind=8) :: zjdlm(*)
    end subroutine acearp
 end interface

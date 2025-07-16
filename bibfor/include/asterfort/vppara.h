@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -30,30 +30,30 @@ interface
         character(len=8) :: modes
         character(len=16) :: typcon
         character(len=8) :: knega
-        integer :: lraide
-        integer :: lmasse
-        integer :: lamor
-        integer :: mxresf
-        integer :: neq
-        integer :: nfreq
+        integer(kind=8) :: lraide
+        integer(kind=8) :: lmasse
+        integer(kind=8) :: lamor
+        integer(kind=8) :: mxresf
+        integer(kind=8) :: neq
+        integer(kind=8) :: nfreq
         real(kind=8) :: omecor
-        integer :: dlagr(*)
-        integer :: dbloq(*)
+        integer(kind=8) :: dlagr(*)
+        integer(kind=8) :: dbloq(*)
         real(kind=8) :: vectr(*)
         complex(kind=8) :: vectc(*)
-        integer :: nbpari
-        integer :: nbparr
-        integer :: nbpark
+        integer(kind=8) :: nbpari
+        integer(kind=8) :: nbparr
+        integer(kind=8) :: nbpark
         character(len=*) :: nopara(*)
         character(len=4) :: mod45
-        integer :: resui(*)
+        integer(kind=8) :: resui(*)
         real(kind=8) :: resur(*)
         character(len=*) :: resuk(*)
         character(len=1) :: ktyp
         aster_logical :: lcomod
-        integer :: icom1
-        integer :: icom2
+        integer(kind=8) :: icom1
+        integer(kind=8) :: icom2
         character(len=16) :: typres
-        integer :: nfreqg
+        integer(kind=8) :: nfreqg
     end subroutine vppara
 end interface

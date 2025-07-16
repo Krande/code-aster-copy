@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -38,7 +38,7 @@ subroutine nmevel(sddisc, nume_inst, vale, loop_name, lsvimx, &
     character(len=19), intent(in) :: vale(*)
     character(len=19), intent(in) :: sddisc
     character(len=4), intent(in) :: loop_name
-    integer, intent(in) :: nume_inst
+    integer(kind=8), intent(in) :: nume_inst
     aster_logical, intent(in) :: lsvimx
     aster_logical, intent(in) :: ldvres
     aster_logical, intent(in) :: lresmx
@@ -80,8 +80,8 @@ subroutine nmevel(sddisc, nume_inst, vale, loop_name, lsvimx, &
 !
 ! ----------------------------------------------------------------------
 !
-    integer :: nb_fail, i_fail, i_fail_acti
-    integer :: eventType
+    integer(kind=8) :: nb_fail, i_fail, i_fail_acti
+    integer(kind=8) :: eventType
 !
 ! ----------------------------------------------------------------------
 !

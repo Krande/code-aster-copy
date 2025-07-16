@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -32,7 +32,7 @@ subroutine dflufin3d(sige6, bw, pw, bg, pg, dsw6, delta, rc, &
 
     real(kind=8) :: tauflu1, sigs, sig0, sigd6(6), sigeq, sigs3, taulim
     real(kind=8) :: taueq, tauflu0, xdenom, dfmx
-    integer i
+    integer(kind=8) i
 
 !     initialisation
     taueq = 0.d0

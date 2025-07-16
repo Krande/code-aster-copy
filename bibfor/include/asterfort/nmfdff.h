@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -24,10 +24,10 @@ interface
     subroutine nmfdff(ndim, nno, axi, g, r,&
                       rigi, matsym, fr, vff, dff,&
                       def, pff)
-        integer :: nno
-        integer :: ndim
+        integer(kind=8) :: nno
+        integer(kind=8) :: ndim
         aster_logical :: axi
-        integer :: g
+        integer(kind=8) :: g
         real(kind=8) :: r
         aster_logical :: rigi
         aster_logical :: matsym

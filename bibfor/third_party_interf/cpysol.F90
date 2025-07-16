@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -21,7 +21,6 @@ subroutine cpysol(nomat, numddl, rsolu, debglo, vecpet)
 #include "asterc/asmpi_recv_r.h"
 #include "asterc/asmpi_send_r.h"
 #include "asterc/asmpi_sendrecv_r.h"
-#include "asterc/loisem.h"
 #include "asterf_config.h"
 #include "asterf_debug.h"
 #include "asterf_petsc.h"
@@ -138,7 +137,7 @@ subroutine cpysol(nomat, numddl, rsolu, debglo, vecpet)
         call jeveuo(domj, 'L', vi=v_dom)
         call jeveuo(gcom, 'L', vi=v_gco)
         call jeveuo(pgid, 'L', vi4=v_pgid)
-        mpicou = v_gco(1)
+        mpicou = to_mpi_int(v_gco(1))
     end if
 !
     do iaux = 1, nb_comm
@@ -160,8 +159,8 @@ subroutine cpysol(nomat, numddl, rsolu, debglo, vecpet)
             end if
             ASSERT((lgenvo+lgrecep) .gt. 0)
 !
-            call wkvect('&&CPYSOL.TMP1E', 'V V R', max(1, lgenvo), jvaleue)
-            call wkvect('&&CPYSOL.TMP1R', 'V V R', max(1, lgrecep), jvaleur)
+            call wkvect('&&CPYSOL.TMP1E', 'V V R', max(1_8, lgenvo), jvaleue)
+            call wkvect('&&CPYSOL.TMP1R', 'V V R', max(1_8, lgrecep), jvaleur)
 
             if (lgenvo > 0) then
                 call jeveuo(nojoine, 'L', jjointe)
@@ -218,7 +217,7 @@ subroutine cpysol(nomat, numddl, rsolu, debglo, vecpet)
             call jeveuo(gcom, 'L', vi=v_gco)
             call jeveuo(pgid, 'L', vi4=v_pgid)
             call jeveuo(domj, 'L', vi=v_dom)
-            mpicou = v_gco(1)
+            mpicou = to_mpi_int(v_gco(1))
             do ijoin = 1, nb_comm
                 domj_i = v_comm(ijoin)
                 numpro = v_dom(domj_i)

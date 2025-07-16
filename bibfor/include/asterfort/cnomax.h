@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -20,10 +20,10 @@
 !
 interface
     subroutine cnomax(cnoz, ncmp, licmp, rmax, numno)
-        integer :: ncmp
+        integer(kind=8) :: ncmp
         character(len=*) :: cnoz
         character(len=8) :: licmp(ncmp)
         real(kind=8) :: rmax
-        integer :: numno
+        integer(kind=8) :: numno
     end subroutine cnomax
 end interface

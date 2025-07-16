@@ -42,20 +42,17 @@ subroutine op0190()
 #include "asterfort/utmess.h"
 #include "asterfort/dismoi.h"
 #include "asterfort/jecreo.h"
-#include "asterfort/jelira.h"
-#include "asterfort/tecach.h"
-#include "asterfort/cescre.h"
 #include "asterfort/exlim3.h"
 #include "asterfort/alchml.h"
 !
-    integer :: ifm, niv, n0, nuord
-    integer :: iret, jpara, ie, nbordr, i, nuordr, iret0, iret99
+    integer(kind=8) :: ifm, niv, n0, nuord
+    integer(kind=8) :: iret, jpara, ie, nbordr, i, nuordr, iret0, iret99
     character(len=8) :: resu, model, caraElem, noma, noma2, noma3, tych, nogd
     character(len=16) :: crit, concep, nomcmd, ligrel
     character(len=19) :: chmar1, chmar2, chefge, resu19, resuc1, chamfer
     character(len=24) ::chefge0
     real(kind=8) :: prec
-    integer, pointer :: nume_ordre(:) => null()
+    integer(kind=8), pointer :: nume_ordre(:) => null()
 !     ------------------------------------------------------------------
 !
     call jemarq()

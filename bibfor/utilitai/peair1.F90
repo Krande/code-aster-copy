@@ -34,7 +34,7 @@ subroutine peair1(mesh, nbma, lisma, aire, long)
 #include "blas/ddot.h"
 #include "asterfort/int_to_char8.h"
 !
-    integer :: nbma, lisma(*)
+    integer(kind=8) :: nbma, lisma(*)
     real(kind=8) :: aire, long
     character(len=8), intent(in) :: mesh
 !
@@ -45,9 +45,9 @@ subroutine peair1(mesh, nbma, lisma, aire, long)
 !     OUT : LONG : LONGUEUR DU CONTOUR
 !
 !
-    integer :: jma, ifm, niv, ima, numa
-    integer :: nutyma, nbel, jdno, nbext1, nbext2, iext1
-    integer :: iext2, ni1, ni2, nj1, nj2, nbe, nj3, nj0, jdco, i
+    integer(kind=8) :: jma, ifm, niv, ima, numa
+    integer(kind=8) :: nutyma, nbel, jdno, nbext1, nbext2, iext1
+    integer(kind=8) :: iext2, ni1, ni2, nj1, nj2, nbe, nj3, nj0, jdco, i
     real(kind=8) :: orig(3), zero, vgn1(3), vn1n2(3), aire1, aire2, vgn3(3)
     real(kind=8) :: vn1n3(3)
     real(kind=8) :: xx1(3), xx2(3), xx3(3), xn(3), pv(3), xnorm, vn3n2(3)
@@ -56,11 +56,11 @@ subroutine peair1(mesh, nbma, lisma, aire, long)
     character(len=8) :: nomail, typel
     character(len=24) :: mlgcnx, mlgcoo
     character(len=24) :: valk(2)
-    integer, pointer :: mailles(:) => null()
-    integer, pointer :: noeud1(:) => null()
-    integer, pointer :: noeud2(:) => null()
+    integer(kind=8), pointer :: mailles(:) => null()
+    integer(kind=8), pointer :: noeud1(:) => null()
+    integer(kind=8), pointer :: noeud2(:) => null()
     real(kind=8), pointer :: vale(:) => null()
-    integer, pointer :: typmail(:) => null()
+    integer(kind=8), pointer :: typmail(:) => null()
     blas_int :: b_incx, b_incy, b_n
 !
     call jemarq()

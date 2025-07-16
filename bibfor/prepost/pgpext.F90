@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -26,7 +26,6 @@ subroutine pgpext(sd_pgp)
 ! ----------------------------------------------------------------------
 ! person_in_charge: hassan.berro at edf.fr
 #include "jeveux.h"
-#include "asterfort/assert.h"
 #include "asterfort/dismoi.h"
 #include "asterfort/fointe.h"
 #include "asterfort/jedema.h"
@@ -45,10 +44,10 @@ subroutine pgpext(sd_pgp)
 !   -0.1- Input/output arguments
     character(len=8), intent(in):: sd_pgp
 !   -0.2- Local variables
-    integer           :: nbobs, iobs, physlen, nbexcit, i
-    integer           :: iinst, iex, nbinst, jvecr, iddl
-    integer           :: jtblp, lc, nbord, ier, dec
-    integer           :: inoeud, nbeq, icorrst, ifonct, nfonct
+    integer(kind=8)           :: nbobs, iobs, physlen, nbexcit, i
+    integer(kind=8)           :: iinst, iex, nbinst, jvecr, iddl
+    integer(kind=8)           :: jtblp, lc, nbord, ier, dec
+    integer(kind=8)           :: inoeud, nbeq, icorrst, ifonct, nfonct
     real(kind=8)      :: coef, cumul, dir(9), magn, acce
     character(len=4)  :: typres
     character(len=8)  :: base, result, nume, acce_mo(3)

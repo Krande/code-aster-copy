@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -44,14 +44,14 @@ subroutine srds2h(nbmat, mater, s, dhds, ds2hds, retcom)
     !!! Variables globales
     !!!
 
-    integer :: nbmat, retcom
+    integer(kind=8) :: nbmat, retcom
     real(kind=8) :: mater(nbmat, 2), s(6), dhds(6), ds2hds(6)
 
     !!!
     !!! Variables locales
     !!!
 
-    integer :: ndt, ndi, i, k
+    integer(kind=8) :: ndt, ndi, i, k
     real(kind=8) :: pref, r0c, rtheta
     real(kind=8) :: kron(6), iden6(6, 6)
     real(kind=8) :: a(6), b(6, 6), bt(6, 6)

@@ -33,7 +33,7 @@ subroutine cnscre(maz, nomgdz, ncmp, licmp, basez, &
 #include "asterfort/wkvect.h"
 #include "asterfort/isParallelMesh.h"
     character(len=*) :: maz, nomgdz, cnsz, basez
-    integer :: ncmp
+    integer(kind=8) :: ncmp
     character(len=*) :: licmp(ncmp)
     aster_logical, optional, intent(in) :: undf0_
 ! ------------------------------------------------------------------
@@ -54,8 +54,8 @@ subroutine cnscre(maz, nomgdz, ncmp, licmp, basez, &
     character(len=3) :: tsca
     character(len=8) :: ma, nomgd
     character(len=19) :: cns
-    integer :: nbno, jcnsk, jcnsd
-    integer :: jcnsc, k, jcnsl, jcnsv, iret
+    integer(kind=8) :: nbno, jcnsk, jcnsd
+    integer(kind=8) :: jcnsc, k, jcnsl, jcnsv, iret
     aster_logical :: undf0, l_pmesh, l_empty
 !     ------------------------------------------------------------------
 !

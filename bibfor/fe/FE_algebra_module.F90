@@ -236,7 +236,7 @@ contains
         real(kind=8), intent(in) :: mat(6, *)
         real(kind=8), intent(in) :: x(*)
         real(kind=8), intent(inout) :: y(*)
-        integer, intent(in) :: ncol, offset
+        integer(kind=8), intent(in) :: ncol, offset
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -257,7 +257,7 @@ contains
                    b_lda, x, b_incx, 1.d0, y, &
                    b_incy)
 #else
-        integer :: icol, ind
+        integer(kind=8) :: icol, ind
         real(kind=8) :: tmp
 !
         select case (ncol)
@@ -357,7 +357,7 @@ contains
         real(kind=8), intent(in) :: mat(6, *)
         real(kind=8), intent(in) :: x(*)
         real(kind=8), intent(inout) :: y(*)
-        integer, intent(in) :: ncol, offset
+        integer(kind=8), intent(in) :: ncol, offset
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -378,7 +378,7 @@ contains
                    b_lda, x, b_incx, 1.d0, y, &
                    b_incy)
 #else
-        integer :: icol, ind
+        integer(kind=8) :: icol, ind
         real(kind=8) :: tmp
 !
         select case (ncol)
@@ -461,7 +461,7 @@ contains
         real(kind=8), intent(in) :: mat(3, *)
         real(kind=8), intent(in) :: x(*)
         real(kind=8), intent(inout) :: y(*)
-        integer, intent(in) :: ncol
+        integer(kind=8), intent(in) :: ncol
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -482,7 +482,7 @@ contains
                    b_lda, x, b_incx, 1.d0, y, &
                    b_incy)
 #else
-        integer :: icol
+        integer(kind=8) :: icol
 !
         select case (ncol)
         case (4)
@@ -533,7 +533,7 @@ contains
         real(kind=8), intent(in) :: mat(3, *)
         real(kind=8), intent(in) :: x(*)
         real(kind=8), intent(inout) :: y(*)
-        integer, intent(in) :: ncol
+        integer(kind=8), intent(in) :: ncol
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -554,7 +554,7 @@ contains
         call dgemv('T', b_m, b_n, 1.d0, mat, &
                    b_lda, x, b_incx, 1.d0, y, b_incy)
 #else
-        integer :: icol
+        integer(kind=8) :: icol
 !
         select case (ncol)
         case (2)
@@ -609,7 +609,7 @@ contains
         real(kind=8), intent(in) :: alpha
         real(kind=8), intent(in) :: x(*)
         real(kind=8), intent(inout) :: y(*)
-        integer, intent(in) :: n
+        integer(kind=8), intent(in) :: n
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -671,7 +671,7 @@ contains
         real(kind=8), intent(in) :: alpha
         real(kind=8), intent(in) :: x(*)
         real(kind=8), intent(inout) :: y(*)
-        integer, intent(in) :: n
+        integer(kind=8), intent(in) :: n
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -733,7 +733,7 @@ contains
         real(kind=8), intent(in) :: alpha
         real(kind=8), intent(in) :: x(*)
         real(kind=8), intent(inout) :: y(*)
-        integer, intent(in) :: n
+        integer(kind=8), intent(in) :: n
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -795,7 +795,7 @@ contains
         real(kind=8), intent(in) :: alpha
         real(kind=8), intent(in) :: x(*)
         real(kind=8), intent(inout) :: y(*)
-        integer, intent(in) :: n, m
+        integer(kind=8), intent(in) :: n, m
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -841,7 +841,7 @@ contains
 !
         real(kind=8), intent(in) :: x(*)
         real(kind=8), intent(inout) :: y(*)
-        integer, intent(in) :: n
+        integer(kind=8), intent(in) :: n
 !
 ! --------------------------------------------------------------------------------------------------
 !

@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -43,20 +43,20 @@ subroutine te0471(option, nomte)
 !                      NOMTE        -->  NOM DU TYPE ELEMENT
 ! .....................................................................C
 !......................................................................C
-    integer :: nbres, nddl
+    integer(kind=8) :: nbres, nddl
     parameter(nbres=4, nddl=7)
     character(len=24) :: carac, ff
     character(len=8) :: elrefe, fami, poum
     character(len=16) :: nomres(nbres)
-    integer :: icodre(nbres)
+    integer(kind=8) :: icodre(nbres)
     real(kind=8) :: valres(nbres), tpg, pgl(3, 3)
-    integer :: nno1, nno2, npg1(2, 2), npg2(2, 2), npg, n, nbv
-    integer :: kp, k1, k2, i, j, k, l, ik, ijkl, ij, ijl, lcorr
-    integer :: imatuu, icarac, iff, imate, igeom, lorien, lsect, itype
-    integer :: ipoids, ivf1, idpdx1, idpdy1, idpdz1, idsdx1, idsdy1, idsdz1
-    integer :: idsxy1, idsxz1, idsyz1, idpdx2, idpdy2, idpdz2, idsdx2, idsdy2
-    integer :: idsdz2, idsxy2, idsxz2, idsyz2, ivf2, ivf3, ipoi3, idpdx3, idpdy3
-    integer :: idpdz3, ivf4, idpdx4, idpdy4, idpdz4, kpg, spt
+    integer(kind=8) :: nno1, nno2, npg1(2, 2), npg2(2, 2), npg, n, nbv
+    integer(kind=8) :: kp, k1, k2, i, j, k, l, ik, ijkl, ij, ijl, lcorr
+    integer(kind=8) :: imatuu, icarac, iff, imate, igeom, lorien, lsect, itype
+    integer(kind=8) :: ipoids, ivf1, idpdx1, idpdy1, idpdz1, idsdx1, idsdy1, idsdz1
+    integer(kind=8) :: idsxy1, idsxz1, idsyz1, idpdx2, idpdy2, idpdz2, idsdx2, idsdy2
+    integer(kind=8) :: idsdz2, idsxy2, idsxz2, idsyz2, ivf2, ivf3, ipoi3, idpdx3, idpdy3
+    integer(kind=8) :: idpdz3, ivf4, idpdx4, idpdy4, idpdz4, kpg, spt
     real(kind=8) :: raid(3), a(7, 7, 8, 8), poids2, poids
     real(kind=8) :: e, nu, xiy, xiz, rtor, rapp, xjx, ayz, xk(2), coord(60)
     real(kind=8) :: ycell, xlong

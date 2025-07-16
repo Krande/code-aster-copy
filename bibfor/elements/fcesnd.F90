@@ -24,7 +24,7 @@ subroutine fcesnd(nomte, ind, xi1, xi2, xi3, &
     character(len=2) :: char
     real(kind=8) :: xi1, xi2, xi3, vf(*)
     real(kind=8) :: a, b
-    integer :: ind
+    integer(kind=8) :: ind
     real(kind=8) :: a1, a2, a3, alf2, alf3, alf4, alf5
     real(kind=8) :: alf6, alf7, atild1, atild2, atild3, atild4, atild5
     real(kind=8) :: b1, b2, b3, bet2, bet3, bet4, bet5

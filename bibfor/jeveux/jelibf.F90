@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -45,28 +45,28 @@ subroutine jelibf(cond, clas, info)
 #include "asterfort/utmess.h"
     character(len=*), intent(in) :: cond
     character(len=*), intent(in) :: clas
-    integer, intent(in) :: info
+    integer(kind=8), intent(in) :: info
 ! ----------------------------------------------------------------------
-    integer :: lk1zon, jk1zon, liszon, jiszon
+    integer(kind=8) :: lk1zon, jk1zon, liszon, jiszon
     common/izonje/lk1zon, jk1zon, liszon, jiszon
-    integer :: lbis, lois, lols, lor8, loc8
+    integer(kind=8) :: lbis, lois, lols, lor8, loc8
     common/ienvje/lbis, lois, lols, lor8, loc8
 ! ----------------------------------------------------------------------
 !-----------------------------------------------------------------------
-    integer :: i, iad2, iadacc, iadacy, iadadi, iadady, infrm
-    integer :: iadmi, iadyn, ibacol, ic, idb, iret
-    integer :: jcara, jdate, jdocu, jgenr, jhcod, jiacce, jiadd
-    integer :: jiadm, jindir, jlong, jlono, jltyp, jluti, jmarq
-    integer :: jorig, jrnom, jtype, jusadi, k16, k17, k17i
-    integer :: k18, k18i, k19, k19i, k2, k20, lacc
-    integer :: ladi, ladi2, n, nbacce, iadad2
+    integer(kind=8) :: i, iad2, iadacc, iadacy, iadadi, iadady, infrm
+    integer(kind=8) :: iadmi, iadyn, ibacol, ic, idb, iret
+    integer(kind=8) :: jcara, jdate, jdocu, jgenr, jhcod, jiacce, jiadd
+    integer(kind=8) :: jiadm, jindir, jlong, jlono, jltyp, jluti, jmarq
+    integer(kind=8) :: jorig, jrnom, jtype, jusadi, k16, k17, k17i
+    integer(kind=8) :: k18, k18i, k19, k19i, k2, k20, lacc
+    integer(kind=8) :: ladi, ladi2, n, nbacce, iadad2
 !-----------------------------------------------------------------------
     parameter(n=5)
     common/jiatje/jltyp(n), jlong(n), jdate(n), jiadd(n), jiadm(n),&
      &                 jlono(n), jhcod(n), jcara(n), jluti(n), jmarq(n)
 ! ----------------------------------------------------------------------
-    integer :: nblmax, nbluti, longbl, kitlec, kitecr, kiadm, iitlec, iitecr
-    integer :: nitecr, kmarq
+    integer(kind=8) :: nblmax, nbluti, longbl, kitlec, kitecr, kiadm, iitlec, iitecr
+    integer(kind=8) :: nitecr, kmarq
     common/ificje/nblmax(n), nbluti(n), longbl(n),&
      &                 kitlec(n), kitecr(n), kiadm(n),&
      &                 iitlec(n), iitecr(n), nitecr(n), kmarq(n)
@@ -74,7 +74,7 @@ subroutine jelibf(cond, clas, info)
     common/lficje/litlec(n)
 !
     common/jkatje/jgenr(n), jtype(n), jdocu(n), jorig(n), jrnom(n)
-    integer :: nrhcod, nremax, nreuti
+    integer(kind=8) :: nrhcod, nremax, nreuti
     common/icodje/nrhcod(n), nremax(n), nreuti(n)
 !
     character(len=2) :: dn2
@@ -83,10 +83,10 @@ subroutine jelibf(cond, clas, info)
     common/kficje/classe, nomfic(n), kstout(n), kstini(n), dn2(n)
     character(len=8) :: nombas
     common/kbasje/nombas(n)
-    integer :: idn, iext, nbenrg
+    integer(kind=8) :: idn, iext, nbenrg
     common/iextje/idn(n), iext(n), nbenrg(n)
 !
-    integer :: iclas, iclaos, iclaco, idatos, idatco, idatoc
+    integer(kind=8) :: iclas, iclaos, iclaco, idatos, idatco, idatoc
     common/iatcje/iclas, iclaos, iclaco, idatos, idatco, idatoc
 !
     character(len=24) :: nomco
@@ -96,15 +96,15 @@ subroutine jelibf(cond, clas, info)
     common/jiacce/jiacce(n), nbacce(2*n)
     common/jusadi/jusadi(n)
     common/jindir/jindir(n)
-    integer :: lundef, idebug
+    integer(kind=8) :: lundef, idebug
     common/undfje/lundef, idebug
 ! ----------------------------------------------------------------------
-    integer :: lidbas, lideff
+    integer(kind=8) :: lidbas, lideff
     parameter(lidbas=20, lideff=15)
     character(len=1) :: kclas
     character(len=8) :: kcond, valk(1), nom
     character(len=32) :: nomcar
-    integer :: iadcar, iaddac(2), lgbl, vali(9), iadcdy, iaddad(2)
+    integer(kind=8) :: iadcar, iaddac(2), lgbl, vali(9), iadcdy, iaddad(2)
     real(kind=8) :: valr(2)
     aster_logical :: bool
 ! DEB ------------------------------------------------------------------

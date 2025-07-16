@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2020 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -20,11 +20,11 @@
 interface
     subroutine lrmtyp(nbtyp, nomtyp, nnotyp, typgeo, renumd,&
                       modnum, nuanom, numnoa)
-        integer, intent(out), optional :: nbtyp
+        integer(kind=8), intent(out), optional :: nbtyp
         character(len=8), intent(out), optional :: nomtyp(MT_NTYMAX)
-        integer, intent(out), optional :: nnotyp(MT_NTYMAX), typgeo(MT_NTYMAX)
-        integer, intent(out), optional :: renumd(MT_NTYMAX), modnum(MT_NTYMAX)
-        integer, intent(out), optional :: nuanom(MT_NTYMAX, MT_NNOMAX)
-        integer, intent(out), optional :: numnoa(MT_NTYMAX, MT_NNOMAX)
+        integer(kind=8), intent(out), optional :: nnotyp(MT_NTYMAX), typgeo(MT_NTYMAX)
+        integer(kind=8), intent(out), optional :: renumd(MT_NTYMAX), modnum(MT_NTYMAX)
+        integer(kind=8), intent(out), optional :: nuanom(MT_NTYMAX, MT_NNOMAX)
+        integer(kind=8), intent(out), optional :: numnoa(MT_NTYMAX, MT_NNOMAX)
     end subroutine lrmtyp
 end interface

@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -29,13 +29,13 @@ subroutine ef0410(nomte)
 !
     character(len=16) :: nomte
 !
-    integer :: npgt, ncoumx
+    integer(kind=8) :: npgt, ncoumx
 !-----------------------------------------------------------------------
-    integer :: jcou, jeffg, jgeom, lzi, nb2
-    integer :: nbcou, np, npgsr
+    integer(kind=8) :: jcou, jeffg, jgeom, lzi, nb2
+    integer(kind=8) :: nbcou, np, npgsr
 !-----------------------------------------------------------------------
     parameter(npgt=10, ncoumx=50)
-    integer :: nb1
+    integer(kind=8) :: nb1
     real(kind=8) :: effgt(8, 9), sigpg(162*ncoumx)
     real(kind=8) :: matevn(2, 2, npgt), matevg(2, 2, npgt)
 ! DEB

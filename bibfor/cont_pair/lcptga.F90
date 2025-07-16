@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -26,10 +26,10 @@ subroutine lcptga(elem_dime, tria_coor, gauss_family, &
 #include "asterfort/reerel.h"
 !
 !
-    integer, intent(in) :: elem_dime
+    integer(kind=8), intent(in) :: elem_dime
     real(kind=8), intent(in) :: tria_coor(2, 3)
     character(len=8) :: gauss_family
-    integer, intent(out) :: nb_gauss
+    integer(kind=8), intent(out) :: nb_gauss
     real(kind=8), intent(out) :: gauss_coor(2, 12)
     real(kind=8), intent(out) :: gauss_weight(12)
 !
@@ -50,7 +50,7 @@ subroutine lcptga(elem_dime, tria_coor, gauss_family, &
 !
 ! --------------------------------------------------------------------------------------------------
 !
-    integer ::i_gauss, i_dime, nb_node, model_ndim
+    integer(kind=8) ::i_gauss, i_dime, nb_node, model_ndim
     real(kind=8) :: gauxx_coor(24), gauxx_weight(12), segm_coor(2, 2)
     real(kind=8) :: area
     real(kind=8) :: xpgpa(2), xpgpr(2)

@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -48,9 +48,9 @@ subroutine op0076()
     character(len=24) :: nddlge
 !-----------------------------------------------------------------------
 !-----------------------------------------------------------------------
-    integer ::  idcham, iddesc, idrefe, idvecg
-    integer :: ierd, n1, nbinst, nbmode, nt, nf, ni, i_bloc, i_cham
-    integer, pointer :: desc(:) => null()
+    integer(kind=8) ::  idcham, iddesc, idrefe, idvecg
+    integer(kind=8) :: ierd, n1, nbinst, nbmode, nt, nf, ni, i_bloc, i_cham
+    integer(kind=8), pointer :: desc(:) => null()
     real(kind=8), pointer :: disc(:) => null()
     real(kind=8), pointer :: resu(:) => null()
 

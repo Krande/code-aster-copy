@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -28,12 +28,12 @@ interface
         character(len=16) :: parax
         character(len=16) :: paray
         character(len=1) :: base
-        integer :: int
+        integer(kind=8) :: int
         character(len=24) :: intitu
-        integer :: ind
+        integer(kind=8) :: ind
         character(len=19) :: listr
         character(len=8) :: sst
-        integer :: nsst
-        integer :: ier
+        integer(kind=8) :: nsst
+        integer(kind=8) :: ier
     end subroutine focrch
 end interface

@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -62,9 +62,9 @@ subroutine xelfis_lists(fiss, modele, elfiss_heav, &
 ! ----------------------------------------------------------------------
 !
     character(len=24) :: mafiss(3), elfiss(3)
-    integer, pointer :: p_mail_affe(:) => null()
-    integer :: iret, ima, i, k, cpt, nb_ma_lis, nb_el_lis
-    integer :: iadr_lis_ma, iadr_lis_el
+    integer(kind=8), pointer :: p_mail_affe(:) => null()
+    integer(kind=8) :: iret, ima, i, k, cpt, nb_ma_lis, nb_el_lis
+    integer(kind=8) :: iadr_lis_ma, iadr_lis_el
 !
 ! ----------------------------------------------------------------------
 !

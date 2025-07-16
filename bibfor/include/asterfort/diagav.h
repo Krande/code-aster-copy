@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -21,9 +21,9 @@
 interface
     subroutine diagav(noma19, neq, ilfin, typvar, eps)
         character(len=19) :: noma19
-        integer :: neq
-        integer :: ilfin
-        integer :: typvar
+        integer(kind=8) :: neq
+        integer(kind=8) :: ilfin
+        integer(kind=8) :: typvar
         real(kind=8) :: eps
     end subroutine diagav
 end interface

@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -24,11 +24,11 @@ interface
     subroutine aceaor(noma, nomo, lmax, nbepo, ntyele, nomele, ivr, nbocc)
         character(len=8) :: noma
         character(len=8) :: nomo
-        integer :: lmax
-        integer :: nbepo
-        integer :: ntyele(*)
+        integer(kind=8) :: lmax
+        integer(kind=8) :: nbepo
+        integer(kind=8) :: ntyele(*)
         character(len=16) :: nomele(*)
-        integer :: ivr(*)
-        integer :: nbocc(*)
+        integer(kind=8) :: ivr(*)
+        integer(kind=8) :: nbocc(*)
     end subroutine aceaor
 end interface

@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -33,17 +33,16 @@ subroutine xxbsig(elrefp, elrese, ndim, coorse, igeom, &
 #include "asterfort/indent.h"
 #include "asterfort/lteatt.h"
 #include "asterfort/reeref.h"
-#include "asterfort/xcinem.h"
 #include "asterfort/xcalc_heav.h"
 #include "asterfort/xcalc_code.h"
 #include "asterfort/xkamat.h"
 #include "asterfort/xcalfev_wrap.h"
 #include "asterfort/iimatu.h"
 #include "asterfort/xnbddl.h"
-    integer :: ndim, nfe, nfh, nfiss, nnop, npg
-    integer :: ddlc, ddlm, heavn(nnop, 5), jstno
-    integer, optional :: imate
-    integer :: codopt, igeom, ivectu
+    integer(kind=8) :: ndim, nfe, nfh, nfiss, nnop, npg
+    integer(kind=8) :: ddlc, ddlm, heavn(nnop, 5), jstno
+    integer(kind=8), optional :: imate
+    integer(kind=8) :: codopt, igeom, ivectu
     real(kind=8) :: basloc(3*ndim*nnop), coorse(*), he(nfiss)
     real(kind=8) :: lsn(nnop), lst(nnop)
     real(kind=8) :: sigma(codopt*(2*ndim-1)+1, codopt*(npg-1)+1)
@@ -78,10 +77,10 @@ subroutine xxbsig(elrefp, elrese, ndim, coorse, igeom, &
 ! OUT IVECTU  : ADRESSE DU VECTEUR BT.SIGMA
 !
 !......................................................................
-    integer :: kpg, i, ig, n, nn, m, dec(nnop)
-    integer :: ddld, ddls, nno, nnops, nnos, npgbis, cpt
-    integer :: idfde, ipoids, ivf, jcoopg, jdfd2, jgano, hea_se, i_dim
-    integer :: singu, alp, ii
+    integer(kind=8) :: kpg, i, ig, n, nn, m, dec(nnop)
+    integer(kind=8) :: ddld, ddls, nno, nnops, nnos, npgbis, cpt
+    integer(kind=8) :: idfde, ipoids, ivf, jcoopg, jdfd2, jgano, hea_se, i_dim
+    integer(kind=8) :: singu, alp, ii
     real(kind=8) :: xg(ndim), xe(ndim), ff(nnop), jac
     real(kind=8) :: dfdi(nnop, ndim), f(3, 3)
     real(kind=8) :: def(6, nnop, ndim*(1+nfh+ndim)), voigt(2*ndim)

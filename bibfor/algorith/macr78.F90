@@ -30,10 +30,7 @@ subroutine macr78(nomres, trange, typres)
 #include "asterfort/jeexin.h"
 #include "asterfort/jelira.h"
 #include "asterfort/jemarq.h"
-#include "asterfort/jenonu.h"
-#include "asterfort/jenuno.h"
 #include "asterfort/jeveuo.h"
-#include "asterfort/jexnom.h"
 #include "asterfort/jexnum.h"
 #include "asterfort/mdgeph.h"
 #include "asterfort/refdcp.h"
@@ -71,20 +68,20 @@ subroutine macr78(nomres, trange, typres)
     aster_logical :: lredu
 !     ------------------------------------------------------------------
 !-----------------------------------------------------------------------
-    integer :: i, iaprno, iarc0, iarch
-    integer :: ibid, icmp, iddl, im
-    integer :: inoe, inu0, inum, iret, iretou, ivale, j
-    integer :: jinst, jnume, k, ldnew
-    integer :: linst, lnocm2, lnocmp, lpa2, lpar, n0
-    integer :: n1, nbcham, nbec, nbinst, nbmdef, nbmdyn, nbmode
-    integer :: nbndef, nbndyn, nbnoe, nbntot, nbtdyn, nec, neq
-    integer :: nes, nmc, tmod(1)
+    integer(kind=8) :: i, iaprno, iarc0, iarch
+    integer(kind=8) :: ibid, icmp, iddl, im
+    integer(kind=8) :: inoe, inu0, inum, iret, iretou, ivale, j
+    integer(kind=8) :: jinst, jnume, k, ldnew
+    integer(kind=8) :: linst, lnocm2, lnocmp, lpa2, lpar, n0
+    integer(kind=8) :: n1, nbcham, nbec, nbinst, nbmdef, nbmdyn, nbmode
+    integer(kind=8) :: nbndef, nbndyn, nbnoe, nbntot, nbtdyn, nec, neq
+    integer(kind=8) :: nes, nmc, tmod(1)
     real(kind=8) :: rbid
     real(kind=8), pointer :: base(:) => null()
     character(len=8), pointer :: noecmp(:) => null()
     real(kind=8), pointer :: restr(:) => null()
-    integer, pointer :: lino(:) => null()
-    integer, pointer :: ordr(:) => null()
+    integer(kind=8), pointer :: lino(:) => null()
+    integer(kind=8), pointer :: ordr(:) => null()
     character(len=24), pointer :: mael_refe(:) => null()
 !-----------------------------------------------------------------------
     data nomcmp/'DX      ', 'DY      ', 'DZ      ',&

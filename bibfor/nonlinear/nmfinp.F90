@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -31,7 +31,7 @@ subroutine nmfinp(sddisc, numeInst, lastTimeStep)
 #include "jeveux.h"
 !
     character(len=19), intent(in) :: sddisc
-    integer, intent(in) :: numeInst
+    integer(kind=8), intent(in) :: numeInst
     aster_logical, intent(out) :: lastTimeStep
 !
 ! --------------------------------------------------------------------------------------------------
@@ -50,7 +50,7 @@ subroutine nmfinp(sddisc, numeInst, lastTimeStep)
 !
     real(kind=8) :: prec, jalon, timeCurr
     character(len=16) :: metlis
-    integer :: nbStepMaxi
+    integer(kind=8) :: nbStepMaxi
 !
 ! --------------------------------------------------------------------------------------------------
 !

@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -21,7 +21,6 @@ subroutine addGroupElem(mesh, nb_add)
     implicit none
 !
 #include "jeveux.h"
-#include "asterfort/assert.h"
 #include "asterfort/cpclma.h"
 #include "asterfort/jeexin.h"
 #include "asterfort/jedetr.h"
@@ -37,7 +36,7 @@ subroutine addGroupElem(mesh, nb_add)
 !
 !
     character(len=8), intent(in) :: mesh
-    integer, intent(in) :: nb_add
+    integer(kind=8), intent(in) :: nb_add
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -54,7 +53,7 @@ subroutine addGroupElem(mesh, nb_add)
 !
     character(len=24) :: grpmai, gpptnm, grpmav
     character(len=24) :: group_name
-    integer :: iret, nb_group, nb_group_new, nb_enti, i_enti, i_group, jvg, jgg
+    integer(kind=8) :: iret, nb_group, nb_group_new, nb_enti, i_enti, i_group, jvg, jgg
 !
 ! --------------------------------------------------------------------------------------------------
 !

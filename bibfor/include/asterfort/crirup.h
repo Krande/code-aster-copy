@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -22,11 +22,11 @@ interface
     subroutine crirup(fami, imat, ndim, npg, lgpg,&
                       option, compor, sigp, vip, vim,&
                       instam, instap)
-        integer :: lgpg
-        integer :: npg
-        integer :: ndim
+        integer(kind=8) :: lgpg
+        integer(kind=8) :: npg
+        integer(kind=8) :: ndim
         character(len=*) :: fami
-        integer :: imat
+        integer(kind=8) :: imat
         character(len=16) :: option
         character(len=16) :: compor(*)
         real(kind=8) :: sigp(2*ndim, npg)

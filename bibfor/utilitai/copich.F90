@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -27,11 +27,8 @@ subroutine copich(base, ch1z, ch2z)
 #include "asterfort/copisd.h"
 #include "asterfort/dismoi.h"
 #include "asterfort/gnomsd.h"
-#include "asterfort/idensd.h"
 #include "asterfort/jedema.h"
 #include "asterfort/jedup1.h"
-#include "asterfort/jeexin.h"
-#include "asterfort/jelira.h"
 #include "asterfort/jemarq.h"
 #include "asterfort/jeveuo.h"
 #include "asterfort/utmess.h"
@@ -55,7 +52,7 @@ subroutine copich(base, ch1z, ch2z)
     character(len=16) :: concep, cmd
     character(len=19) :: prno, prno2, ch1, ch2, ligr, ligr2
     character(len=24) :: noojb
-    integer :: iret
+    integer(kind=8) :: iret
     character(len=24), pointer :: refe(:) => null()
 !-----------------------------------------------------------------------
     call jemarq()

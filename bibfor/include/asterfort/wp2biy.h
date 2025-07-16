@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -23,9 +23,9 @@ interface
                       isi, yh, yb, zh, zb,&
                       lbloq, u1, u2, u3, u4,&
                       n)
-        integer :: lm
-        integer :: lc
-        integer :: lk
+        integer(kind=8) :: lm
+        integer(kind=8) :: lc
+        integer(kind=8) :: lk
         real(kind=8) :: s2
         real(kind=8) :: dsr
         real(kind=8) :: isi
@@ -33,11 +33,11 @@ interface
         real(kind=8) :: yb(*)
         real(kind=8) :: zh(*)
         real(kind=8) :: zb(*)
-        integer :: lbloq(*)
+        integer(kind=8) :: lbloq(*)
         real(kind=8) :: u1(*)
         real(kind=8) :: u2(*)
         real(kind=8) :: u3(*)
         real(kind=8) :: u4(*)
-        integer :: n
+        integer(kind=8) :: n
     end subroutine wp2biy
 end interface

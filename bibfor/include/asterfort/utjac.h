@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -25,11 +25,11 @@ interface
                      ifm, nno, jacob)
         aster_logical :: l2d
         real(kind=8) :: geom(*)
-        integer :: ipg
-        integer :: idfde
-        integer :: niv
-        integer :: ifm
-        integer :: nno
+        integer(kind=8) :: ipg
+        integer(kind=8) :: idfde
+        integer(kind=8) :: niv
+        integer(kind=8) :: ifm
+        integer(kind=8) :: nno
         real(kind=8) :: jacob
     end subroutine utjac
 end interface

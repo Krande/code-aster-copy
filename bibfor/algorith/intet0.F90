@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -35,7 +35,7 @@ subroutine intet0(angle, tet0, iax)
 !-----------------------------------------------------------------------
 !
     real(kind=8) :: tet0(10, 10)
-    integer :: i, iax, j, jj
+    integer(kind=8) :: i, iax, j, jj
     real(kind=8) :: a, angle, b
 !-----------------------------------------------------------------------
 !

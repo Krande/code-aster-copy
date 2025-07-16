@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -22,8 +22,8 @@ interface
     function indk32(lk32, k32z, rang, nbk32)
         character(len=*) :: lk32(*)
         character(len=*) :: k32z
-        integer :: rang
-        integer :: nbk32
-        integer :: indk32
+        integer(kind=8) :: rang
+        integer(kind=8) :: nbk32
+        integer(kind=8) :: indk32
     end function indk32
 end interface

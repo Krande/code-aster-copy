@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -28,7 +28,7 @@ subroutine mmfonc(fepx, fmin, fmax)
     real(kind=8) :: fmin, fmax
 !     CHARACTER*32 JEXNUM,JEXNOM,JEXR8,JEXATR
 !
-    integer :: rl, jfon, i, nf0
+    integer(kind=8) :: rl, jfon, i, nf0
     real(kind=8) :: val
 !
     call jemarq()

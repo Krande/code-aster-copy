@@ -101,10 +101,10 @@ subroutine te0053(option, nomte)
     real(kind=8) :: facier, fbeton, eys
     real(kind=8) :: dnsxi, dnsyi, dnsxs, dnsys
     real(kind=8) ::  cequi
-    integer :: jepais, jefge, jefge0, jfer0, jfer1, jfer2
-    integer :: itab(7), nno, typcmb, typco, typdiag, clacier, uc, um
-    integer :: ino, icmp, iret
-    integer :: iadzi, iazk24, typstru, nb
+    integer(kind=8) :: jepais, jefge, jefge0, jfer0, jfer1, jfer2
+    integer(kind=8) :: itab(7), nno, typcmb, typco, typdiag, clacier, uc, um
+    integer(kind=8) :: ino, icmp, iret
+    integer(kind=8) :: iadzi, iazk24, typstru, nb
     real(kind=8) :: dnsinf_crit, dnssup_crit, myNrd_crit, myMrd_crit
     real(kind=8) :: tau_crit, c0c_crit, c0crd_crit
     real(kind=8) :: theta_crit, effn_crit, effm_crit, effn0_crit, effm0_crit, bw

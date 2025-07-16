@@ -26,15 +26,13 @@ subroutine mmimp4(ifm, noma, nummae, iptm, indcoi, &
 #include "asterf_types.h"
 #include "jeveux.h"
 !
-#include "asterfort/jenuno.h"
-#include "asterfort/jexnum.h"
 #include "asterfort/int_to_char8.h"
-    integer :: ifm
-    integer :: nummae
+    integer(kind=8) :: ifm
+    integer(kind=8) :: nummae
     character(len=8) :: noma
-    integer :: iptm
-    integer :: indcoi, indcon
-    integer :: indfri, indfrn
+    integer(kind=8) :: iptm
+    integer(kind=8) :: indcoi, indcon
+    integer(kind=8) :: indfri, indfrn
     aster_logical :: lfrot, lgliss
     real(kind=8) :: jeu, lambdc
 !

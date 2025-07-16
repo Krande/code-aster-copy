@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -21,10 +21,10 @@
 interface
     subroutine matrkb(nb1, ndimx, nddlx, nddlet, ktdc,&
                       alpha, rig1, coef)
-        integer :: nddlx
-        integer :: ndimx
-        integer :: nb1
-        integer :: nddlet
+        integer(kind=8) :: nddlx
+        integer(kind=8) :: ndimx
+        integer(kind=8) :: nb1
+        integer(kind=8) :: nddlet
         real(kind=8) :: ktdc(ndimx, ndimx)
         real(kind=8) :: alpha
         real(kind=8) :: rig1(nddlx, nddlx)

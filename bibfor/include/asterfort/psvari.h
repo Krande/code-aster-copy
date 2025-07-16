@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -19,7 +19,7 @@
 interface
     subroutine psvari(rela_comp, nbvari, ipop1, ipop2)
         character(len=16), intent(in) :: rela_comp
-        integer, intent(in) :: nbvari
-        integer, intent(out) :: ipop1, ipop2
+        integer(kind=8), intent(in) :: nbvari
+        integer(kind=8), intent(out) :: ipop1, ipop2
     end subroutine psvari
 end interface

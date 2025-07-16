@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -36,7 +36,7 @@ subroutine mrmtmv(cumul, lmat, smdi, smhc, lmatd, &
 !
     character(len=*) :: cumul
     integer(kind=4) :: smhc(*)
-    integer :: smdi(*), neq, nbvect, neql, lmat
+    integer(kind=8) :: smdi(*), neq, nbvect, neql, lmat
     real(kind=8) :: vect(neq, nbvect), xsol(neq, nbvect), vectmp(neq)
     aster_logical :: lmatd, prepos
 !                   MULTIPLICATION MATRICE PAR N VECTEURS
@@ -53,9 +53,9 @@ subroutine mrmtmv(cumul, lmat, smdi, smhc, lmatd, &
     character(len=14) :: numddl
     character(len=19) :: nom19
     character(len=24) :: valm, refa, kxfem
-    integer :: kfin, jvalms, jvalmi, jvec, ki, kdeb, nbloc
-    integer :: ilig, jcol, jrefa, jnulg, iligg, jcolg, numglo, k
-    integer :: keta, iexi, jccid, ieq
+    integer(kind=8) :: kfin, jvalms, jvalmi, jvec, ki, kdeb, nbloc
+    integer(kind=8) :: ilig, jcol, jrefa, jnulg, iligg, jcolg, numglo, k
+    integer(kind=8) :: keta, iexi, jccid, ieq
     aster_logical :: nonsym
 !     ------------------------------------------------------------------
 !

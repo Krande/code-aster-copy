@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -21,11 +21,11 @@
 interface
     subroutine ndxmat(fonact, lischa, numedd, sddyna, numins,&
                       meelem, measse, matass)
-        integer :: fonact(*)
+        integer(kind=8) :: fonact(*)
         character(len=19) :: lischa
         character(len=24) :: numedd
         character(len=19) :: sddyna
-        integer :: numins
+        integer(kind=8) :: numins
         character(len=19) :: meelem(*)
         character(len=19) :: measse(*)
         character(len=19) :: matass

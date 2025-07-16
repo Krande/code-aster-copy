@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -42,7 +42,7 @@ subroutine dxefgm(nomte, option, xyzl, pgl, depl, &
 !     OUT EFFG(1)      : EFFORTS  GENERALISES D'ORIGINE MECANIQUE
 !                        AUX POINTS DE CALCUL
 !     ------------------------------------------------------------------
-    integer :: multic
+    integer(kind=8) :: multic
 !     ------------------------------------------------------------------
 !
     if (nomte .eq. 'MEDKTR3 ' .or. nomte .eq. 'MEDKTG3 ') then

@@ -32,9 +32,7 @@ subroutine getKinematicValues(keywordFact, ioc, &
 #include "asterfort/wkvect.h"
 #include "asterfort/jeveuo.h"
 #include "asterfort/jexnom.h"
-#include "asterfort/jexnum.h"
 #include "asterfort/jelira.h"
-#include "asterfort/jenuno.h"
 #include "asterfort/utmess.h"
 #include "asterfort/getvc8.h"
 #include "asterfort/getvid.h"
@@ -42,18 +40,18 @@ subroutine getKinematicValues(keywordFact, ioc, &
 #include "asterfort/int_to_char8.h"
 !
     character(len=16), intent(in) :: keywordFact
-    integer, intent(in) :: ioc
+    integer(kind=8), intent(in) :: ioc
     character(len=*), intent(in) :: mesh
     character(len=8), intent(in) :: nogdsi
     character(len=1), intent(in) :: valeType
     aster_logical, intent(in) :: lxfem
     character(len=19), intent(in) :: noxfem
-    integer, intent(in) :: userDOFNb
+    integer(kind=8), intent(in) :: userDOFNb
     character(len=16), intent(in) :: userDOFName(*)
-    integer, intent(in) :: userNodeNb
+    integer(kind=8), intent(in) :: userNodeNb
     character(len=24), intent(in) :: userNodeName
     character(len=24), intent(out) :: cnuddl, cvlddl
-    integer, intent(out) :: nbddl
+    integer(kind=8), intent(out) :: nbddl
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -63,8 +61,8 @@ subroutine getKinematicValues(keywordFact, ioc, &
 !
 ! --------------------------------------------------------------------------------------------------
 !
-    integer :: idnddl, idvddl, jcmp, idino, jnoxfl
-    integer :: iddl, i, nbcmp, i_node, nodeNume, ila, icmp
+    integer(kind=8) :: idnddl, idvddl, jcmp, idino, jnoxfl
+    integer(kind=8) :: iddl, i, nbcmp, i_node, nodeNume, ila, icmp
     character(len=16) :: currentDOF, nodeName
     character(len=2) :: typeJEVEUX
     character(len=16), parameter :: motcle(5) = (/'GROUP_MA', 'MAILLE  ', &

@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -42,9 +42,9 @@ subroutine ef0154(nomte)
 !
 ! --------------------------------------------------------------------------------------------------
 !
-    integer :: codres(1)
-    integer :: i, jdepl, jeffo
-    integer :: lmater, lorien, iret, nc, nno
+    integer(kind=8) :: codres(1)
+    integer(kind=8) :: i, jdepl, jeffo
+    integer(kind=8) :: lmater, lorien, iret, nc, nno
 
     real(kind=8) :: pgl(3, 3), klc(6, 6)
     real(kind=8) :: ugr(6), ulr(6), flr(6)

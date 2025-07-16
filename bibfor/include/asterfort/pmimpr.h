@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2019 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -20,12 +20,12 @@ interface
     subroutine pmimpr(ind, inst, indimp, valimp,&
                       iter, eps, sig, vi, nbvari,&
                       r, ee, eini)
-        integer :: nbvari
-        integer :: ind
+        integer(kind=8) :: nbvari
+        integer(kind=8) :: ind
         real(kind=8) :: inst
-        integer :: indimp(6)
+        integer(kind=8) :: indimp(6)
         real(kind=8) :: valimp(6)
-        integer :: iter
+        integer(kind=8) :: iter
         real(kind=8) :: eps(6)
         real(kind=8) :: sig(6)
         real(kind=8) :: vi(nbvari)

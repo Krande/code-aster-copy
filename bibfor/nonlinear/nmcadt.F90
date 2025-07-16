@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -27,20 +27,16 @@ subroutine nmcadt(sddisc, i_adap, nume_inst, hval_incr, dtp)
 #include "asterc/r8maem.h"
 #include "asterc/r8vide.h"
 #include "asterfort/assert.h"
-#include "asterfort/dismoi.h"
 #include "asterfort/extdch.h"
 #include "asterfort/jedema.h"
-#include "asterfort/jeexin.h"
 #include "asterfort/jemarq.h"
 #include "asterfort/jeveuo.h"
-#include "asterfort/nmchex.h"
 #include "asterfort/utdidt.h"
-#include "asterfort/wkvect.h"
 #include "asterfort/getAdapAction.h"
 !
     character(len=19), intent(in) :: sddisc
-    integer, intent(in) :: i_adap
-    integer, intent(in) :: nume_inst
+    integer(kind=8), intent(in) :: i_adap
+    integer(kind=8), intent(in) :: nume_inst
     character(len=19), intent(in) :: hval_incr(*)
     real(kind=8), intent(out) :: dtp
 !
@@ -62,16 +58,16 @@ subroutine nmcadt(sddisc, i_adap, nume_inst, hval_incr, dtp)
 !
 !
 !
-    integer :: deb, fin, etat_loca
-    integer, pointer:: loca(:) => null()
+    integer(kind=8) :: deb, fin, etat_loca
+    integer(kind=8), pointer:: loca(:) => null()
 
-    integer :: nit, nbiter, action_type
+    integer(kind=8) :: nit, nbiter, action_type
     real(kind=8) :: dtm, pcent, valref, dval
     character(len=8) :: typext
     character(len=16) :: nocham, nocmp
     real(kind=8) :: eta, etad
     character(len=24) :: tpsite
-    integer :: jiter
+    integer(kind=8) :: jiter
 !
 ! ----------------------------------------------------------------------
 !

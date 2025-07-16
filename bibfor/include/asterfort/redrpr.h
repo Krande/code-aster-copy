@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -22,10 +22,10 @@ interface
     subroutine redrpr(mod, imate, sigp, vip, dsde,&
                       icode)
         character(len=8) :: mod
-        integer :: imate
+        integer(kind=8) :: imate
         real(kind=8) :: sigp(*)
         real(kind=8) :: vip(*)
         real(kind=8) :: dsde(6, 6)
-        integer :: icode
+        integer(kind=8) :: icode
     end subroutine redrpr
 end interface

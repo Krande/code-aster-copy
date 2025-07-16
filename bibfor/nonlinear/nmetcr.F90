@@ -28,20 +28,17 @@ subroutine nmetcr(ds_inout, model, compor, list_func_acti, sddyna, &
 #include "asterfort/assert.h"
 #include "asterfort/copisd.h"
 #include "asterfort/detrsd.h"
-#include "asterfort/GetIOField.h"
 #include "asterfort/jelira.h"
 #include "asterfort/jenuno.h"
-#include "asterfort/jeveuo.h"
 #include "asterfort/jexnum.h"
 #include "asterfort/nmetac.h"
 #include "asterfort/nmetc0.h"
 #include "asterfort/nmetcc.h"
 #include "asterfort/rscrsd.h"
-#include "asterfort/SetIOField.h"
 !
     type(NL_DS_InOut), intent(inout) :: ds_inout
     character(len=24), intent(in) :: model
-    integer, intent(in) :: list_func_acti(*)
+    integer(kind=8), intent(in) :: list_func_acti(*)
     type(NL_DS_Contact), intent(in) :: ds_contact
     character(len=24), intent(in) :: compor
     character(len=19), intent(in) :: sddyna
@@ -67,8 +64,8 @@ subroutine nmetcr(ds_inout, model, compor, list_func_acti, sddyna, &
 !
 ! --------------------------------------------------------------------------------------------------
 !
-    integer :: nb_field, nb_field_resu
-    integer :: i_field, i_field_resu
+    integer(kind=8) :: nb_field, nb_field_resu
+    integer(kind=8) :: i_field, i_field_resu
     aster_logical :: l_find
     character(len=19) :: result
     character(len=24) :: field_resu, field_type, algo_name, init_name, listLoadResu

@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -53,15 +53,15 @@ subroutine op0004()
     character(len=16) :: nomcmd, typfon, verif
     character(len=19) :: nomfon
     aster_logical :: defonc
-    integer :: iret, iret2
-    integer :: vali(2)
+    integer(kind=8) :: iret, iret2
+    integer(kind=8) :: vali(2)
 !     ------------------------------------------------------------------
 !
 !-----------------------------------------------------------------------
-    integer :: i, ifm, ifonc, iocc, ival, jval, l
-    integer :: l1, ladrf, lnomf, lpar, lpar2, lpara, lparc
-    integer :: lpro, lval, mxva, n, n1, n2, n3
-    integer :: nbcoup, nbfonc, nbpara, nbval, niv, nprol, nv
+    integer(kind=8) :: i, ifm, ifonc, iocc, ival, jval, l
+    integer(kind=8) :: l1, ladrf, lnomf, lpar, lpar2, lpara, lparc
+    integer(kind=8) :: lpro, lval, mxva, n, n1, n2, n3
+    integer(kind=8) :: nbcoup, nbfonc, nbpara, nbval, niv, nprol, nv
 !
 !-----------------------------------------------------------------------
     call jemarq()

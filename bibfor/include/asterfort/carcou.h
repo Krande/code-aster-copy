@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -31,8 +31,8 @@ interface
         real(kind=8) :: pgl2(3, 3)
         real(kind=8) :: pgl3(3, 3)
         real(kind=8) :: pgl4(3, 3)
-        integer :: nno
+        integer(kind=8) :: nno
         real(kind=8) :: omega
-        integer :: icoude
+        integer(kind=8) :: icoude
     end subroutine carcou
 end interface

@@ -24,9 +24,7 @@ subroutine surfll(sdcont_defi, mesh, unit_msg, nb_cont_zone, nb_cont_elem, &
 #include "asterf_types.h"
 #include "asterfort/cfnbsf.h"
 #include "asterfort/cfzone.h"
-#include "asterfort/jenuno.h"
 #include "asterfort/jeveuo.h"
-#include "asterfort/jexnum.h"
 #include "asterfort/as_deallocate.h"
 #include "asterfort/as_allocate.h"
 #include "asterfort/int_to_char8.h"
@@ -35,10 +33,10 @@ subroutine surfll(sdcont_defi, mesh, unit_msg, nb_cont_zone, nb_cont_elem, &
 !
     character(len=24), intent(in) :: sdcont_defi
     character(len=8), intent(in) :: mesh
-    integer, intent(in) :: unit_msg
-    integer, intent(in) :: nb_cont_elem
-    integer, intent(in) :: nb_cont_node
-    integer, intent(in) :: nb_cont_zone
+    integer(kind=8), intent(in) :: unit_msg
+    integer(kind=8), intent(in) :: nb_cont_elem
+    integer(kind=8), intent(in) :: nb_cont_node
+    integer(kind=8), intent(in) :: nb_cont_zone
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -57,21 +55,21 @@ subroutine surfll(sdcont_defi, mesh, unit_msg, nb_cont_zone, nb_cont_elem, &
 !
 ! --------------------------------------------------------------------------------------------------
 !
-    integer :: nb_elem, nb_node
-    integer :: i_zone, i_surf, i_elem, i_node
-    integer :: jdecma, jdecno
-    integer :: elem_nume, node_nume
+    integer(kind=8) :: nb_elem, nb_node
+    integer(kind=8) :: i_zone, i_surf, i_elem, i_node
+    integer(kind=8) :: jdecma, jdecno
+    integer(kind=8) :: elem_nume, node_nume
     character(len=8) :: chain1, chain2
     character(len=24) :: sdcont_pzoneco
-    integer, pointer :: v_sdcont_pzoneco(:) => null()
+    integer(kind=8), pointer :: v_sdcont_pzoneco(:) => null()
     character(len=24) :: sdcont_mailco
-    integer, pointer :: v_sdcont_mailco(:) => null()
+    integer(kind=8), pointer :: v_sdcont_mailco(:) => null()
     character(len=24) :: sdcont_noeuco
-    integer, pointer :: v_sdcont_noeuco(:) => null()
+    integer(kind=8), pointer :: v_sdcont_noeuco(:) => null()
     character(len=24) :: sdcont_psumaco
-    integer, pointer :: v_sdcont_psumaco(:) => null()
+    integer(kind=8), pointer :: v_sdcont_psumaco(:) => null()
     character(len=24) :: sdcont_psunoco
-    integer, pointer :: v_sdcont_psunoco(:) => null()
+    integer(kind=8), pointer :: v_sdcont_psunoco(:) => null()
     character(len=8), pointer :: v_trav_elem(:) => null()
     character(len=8), pointer :: v_work_node(:) => null()
 !

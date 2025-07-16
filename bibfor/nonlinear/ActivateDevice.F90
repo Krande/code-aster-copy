@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -23,7 +23,6 @@ subroutine ActivateDevice(ds_measure, device_type_)
     implicit none
 !
 #include "asterf_types.h"
-#include "asterfort/assert.h"
 #include "asterfort/GetDevice.h"
 !
 ! person_in_charge: mickael.abbas at edf.fr
@@ -44,7 +43,7 @@ subroutine ActivateDevice(ds_measure, device_type_)
 !
 ! --------------------------------------------------------------------------------------------------
 !
-    integer :: device_indx
+    integer(kind=8) :: device_indx
     type(NL_DS_Device) :: device
 !
 ! --------------------------------------------------------------------------------------------------

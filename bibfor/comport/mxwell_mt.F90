@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -58,8 +58,8 @@ subroutine mxwell_mt(ndim, typmod, imate, instam, instap, nl, &
 #include "asterfort/utmess.h"
 
     aster_logical :: cplan, lTemp
-    integer :: ndim, imate, iret, ndimsi
-    integer :: k, l, icodre(5)
+    integer(kind=8) :: ndim, imate, iret, ndimsi
+    integer(kind=8) :: k, l, icodre(5)
 !
     real(kind=8) :: instam, instap, dt, nl
     real(kind=8) :: valres(5)

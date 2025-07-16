@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -37,10 +37,8 @@ subroutine nmdlog(FECell, FEBasis, FEQuad, option, typmod, &
 #include "asterf_types.h"
 #include "asterfort/assert.h"
 #include "asterfort/codere.h"
-#include "asterfort/dfdmip.h"
 #include "asterfort/elrefe_info.h"
 #include "asterfort/nmcomp.h"
-#include "asterfort/nmepsi.h"
 #include "asterfort/nmgrtg.h"
 #include "asterfort/poslog.h"
 #include "asterfort/prelog.h"
@@ -52,7 +50,7 @@ subroutine nmdlog(FECell, FEBasis, FEQuad, option, typmod, &
     type(FE_Cell), intent(in) :: FECell
     type(FE_Quadrature), intent(in) :: FEQuad
     type(FE_basis), intent(in) :: FEBasis
-    integer, intent(in) :: ndim, nno, npg
+    integer(kind=8), intent(in) :: ndim, nno, npg
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -99,12 +97,12 @@ subroutine nmdlog(FECell, FEBasis, FEQuad, option, typmod, &
 !
 ! --------------------------------------------------------------------------------------------------
 !
-    integer, parameter :: ksp = 1
+    integer(kind=8), parameter :: ksp = 1
     aster_logical :: cplan
     aster_logical :: matsym, lintbo
     aster_logical :: lVect, lMatr, lSigm, lMatrPred, lCorr, lVari
-    integer :: kpg, nddl, cod(MAX_QP), ivf
-    integer :: mate, lgpg, codret, iw, idff, iret
+    integer(kind=8) :: kpg, nddl, cod(MAX_QP), ivf
+    integer(kind=8) :: mate, lgpg, codret, iw, idff, iret
     character(len=8) :: typmod(2)
     character(len=16) :: option
     character(len=16), intent(in) :: compor(COMPOR_SIZE)

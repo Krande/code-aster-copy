@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -25,7 +25,7 @@ subroutine xajpmi(ndim, list, long, ipt, cpt, newpt, &
 #include "asterfort/assert.h"
 #include "asterfort/padist.h"
 !
-    integer :: ndim, long, ipt, cpt
+    integer(kind=8) :: ndim, long, ipt, cpt
     real(kind=8) :: newpt(3), longar, list(*)
     aster_logical :: ajout
 !
@@ -45,7 +45,7 @@ subroutine xajpmi(ndim, list, long, ipt, cpt, newpt, &
 !
     real(kind=8) :: p(3), cridist
     parameter(cridist=1.d-9)
-    integer :: i, j
+    integer(kind=8) :: i, j
     aster_logical :: deja
 !
 ! --------------------------------------------------------------------

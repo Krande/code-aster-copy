@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -20,10 +20,10 @@
 !
 interface
     subroutine nomgfa(nogr, nbgr, dgf, nogrf, nbgf)
-        integer :: nbgr
+        integer(kind=8) :: nbgr
         character(len=24) :: nogr(nbgr)
-        integer :: dgf(*)
+        integer(kind=8) :: dgf(*)
         character(len=80) :: nogrf(*)
-        integer :: nbgf
+        integer(kind=8) :: nbgf
     end subroutine nomgfa
 end interface

@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -26,8 +26,8 @@ interface
         use pmfcom_type
         type(pmfcom_user), intent(in) :: for_pmf
         !
-        integer :: nf
-        integer :: nbvalc
+        integer(kind=8) :: nf
+        integer(kind=8) :: nbvalc
         character(len=24) :: compor(*)
         real(kind=8) :: crit(*)
         real(kind=8) :: defam(*)
@@ -40,6 +40,6 @@ interface
         real(kind=8) :: modf(nf)
         real(kind=8) :: sigf(nf)
         real(kind=8) :: varip(nbvalc*nf)
-        integer :: codret
+        integer(kind=8) :: codret
     end subroutine pmf_vmis
 end interface

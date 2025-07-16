@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -29,16 +29,16 @@ subroutine xfnoda(ds_thm, imate, mecani, press1, enrmec, dimenr, &
 #include "asterfort/rcvalb.h"
     type(THM_DS), intent(inout) :: ds_thm
     aster_logical :: fnoevo
-    integer :: mecani(5), press1(7), enrmec(3), dimenr, dimcon
-    integer :: ndim, imate, yaenrm, adenme
-    integer :: enrhyd(3), yaenrh, adenhy, nfh
+    integer(kind=8) :: mecani(5), press1(7), enrmec(3), dimenr, dimcon
+    integer(kind=8) :: ndim, imate, yaenrm, adenme
+    integer(kind=8) :: enrhyd(3), yaenrh, adenhy, nfh
     real(kind=8) :: dt, congem(dimcon), r(dimenr)
 ! ======================================================================
-    integer :: nhom, addeme, adcome
-    integer :: addep1, adcp11, i, ifh
+    integer(kind=8) :: nhom, addeme, adcome
+    integer(kind=8) :: addep1, adcp11, i, ifh
     parameter(nhom=3)
     real(kind=8) :: hom(nhom), pesa(3), rac2
-    integer :: icodre(nhom)
+    integer(kind=8) :: icodre(nhom)
     character(len=8) :: ncra5(nhom)
     data ncra5/'PESA_X', 'PESA_Y', 'PESA_Z'/
 ! ======================================================================

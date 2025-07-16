@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -23,7 +23,6 @@ subroutine xcfaq2(jlsn, jlst, jgrlsn, igeom, noma, &
 !
 #include "asterf_types.h"
 #include "jeveux.h"
-#include "asterc/r8pi.h"
 #include "asterc/r8prem.h"
 #include "asterfort/abscvf.h"
 #include "asterfort/abscvl.h"
@@ -35,7 +34,6 @@ subroutine xcfaq2(jlsn, jlst, jgrlsn, igeom, noma, &
 #include "asterfort/loncar.h"
 #include "asterfort/padist.h"
 #include "asterfort/tecael.h"
-#include "asterfort/trigom.h"
 #include "asterfort/xajpin.h"
 #include "asterfort/xcfacf.h"
 #include "asterfort/xintar.h"
@@ -44,8 +42,8 @@ subroutine xcfaq2(jlsn, jlst, jgrlsn, igeom, noma, &
 #include "asterfort/xxmmvd.h"
 #include "blas/ddot.h"
 !
-    integer :: jgrlsn, igeom, nface, cface(30, 6), jlsn, jlst
-    integer :: nfiss, ifiss, nptf, nbtot, nmaabs
+    integer(kind=8) :: jgrlsn, igeom, nface, cface(30, 6), jlsn, jlst
+    integer(kind=8) :: nfiss, ifiss, nptf, nbtot, nmaabs
     real(kind=8) :: pinter(*), ainter(*)
     character(len=8) :: noma
 !                     TROUVER LES PTS D'INTERSECTION ENTRE LES ARETES,
@@ -75,11 +73,11 @@ subroutine xcfaq2(jlsn, jlst, jgrlsn, igeom, noma, &
     real(kind=8) :: eps
     real(kind=8) :: ff(27), ksic(3), sc, tabar(9), minlsn, maxlsn
     real(kind=8) :: m(3), lsnm, lstm, ksi, milfi(3), smilfi, lsnabs
-    integer :: j, ar(12, 3), nbar, na, nb, ins, n(3)
-    integer :: ia, i, ipt, nno, k
-    integer :: iadzi, iazk24, ndim, ptmax
-    integer :: zxain
-    integer :: inm, inc, nm, ninter
+    integer(kind=8) :: j, ar(12, 3), nbar, na, nb, ins, n(3)
+    integer(kind=8) :: ia, i, ipt, nno, k
+    integer(kind=8) :: iadzi, iazk24, ndim, ptmax
+    integer(kind=8) :: zxain
+    integer(kind=8) :: inm, inc, nm, ninter
     parameter(cridist=1.d-7)
     aster_logical :: cut, ajout, arete
     character(len=8) :: typma, elp, elc

@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -22,7 +22,7 @@ subroutine dracs2(a0, b0, c0, d0, e0, &
     implicit none
     real(kind=8), intent(in) :: a0(2), b0(2), c0(2)
     real(kind=8), intent(in) :: d0(2), e0(2), f0(2)
-    integer, intent(out) :: nbroot
+    integer(kind=8), intent(out) :: nbroot
     real(kind=8), intent(out) :: x(4), y(4)
 !
 !
@@ -45,7 +45,6 @@ subroutine dracs2(a0, b0, c0, d0, e0, &
 ! OUT NBROOT : NOMBRE DE COUPLES SOLUTIONS
 ! OUT X ET Y : COUPLES SOLUTIONS
 !
-#include "asterc/r8prem.h"
 #include "asterc/r8maem.h"
 #include "asterfort/assert.h"
 #include "asterfort/decompose_conic.h"
@@ -55,8 +54,8 @@ subroutine dracs2(a0, b0, c0, d0, e0, &
 #include "asterfort/mat_inv.h"
 #include "asterfort/num_rank_mat33.h"
 #include "asterfort/trace_mat.h"
-    integer :: i, rank_m1, rank_m2, nroots, nline
-    integer :: i_other, nb1, nb2
+    integer(kind=8) :: i, rank_m1, rank_m2, nroots, nline
+    integer(kind=8) :: i_other, nb1, nb2
     real(kind=8) :: ref_m1, ref_m2, m0(3, 3), m1(3, 3), m2(3, 3)
     real(kind=8) :: prec, min_m2(3, 3), inv_min_m2(3, 3)
     real(kind=8) :: matrice(3, 3), coef(4), roots(3)
@@ -64,7 +63,7 @@ subroutine dracs2(a0, b0, c0, d0, e0, &
     real(kind=8) :: mat_swap(3, 3), indic_1, indic_2, indic_min
     real(kind=8) :: degener_conic(3, 3), point1(3), point2(3)
     real(kind=8) :: line1_swap(3), line2_swap(3), indic
-    integer :: nline_swap
+    integer(kind=8) :: nline_swap
 !
 !
 !     On construit les matrices m1 et m2 representant les coniques

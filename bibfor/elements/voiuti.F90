@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -49,15 +49,15 @@ subroutine voiuti(numa, codvoi, nvoima, nscoma, iarepe, &
 #include "jeveux.h"
 #include "asterfort/lxlgut.h"
 #include "asterfort/utmess.h"
-    integer :: numa, nvoima, nscoma, iarepe, iaddvo, iadvoi, nbvois
+    integer(kind=8) :: numa, nvoima, nscoma, iarepe, iaddvo, iadvoi, nbvois
 !     PARAMETER(NVOIMA=100,NSCOMA=4)
-    integer :: livois(1:nvoima), tyvois(1:nvoima), nbnovo(1:nvoima)
-    integer :: nbsoco(1:nvoima), lisoco(1:nvoima, 1:nscoma, 1:2)
+    integer(kind=8) :: livois(1:nvoima), tyvois(1:nvoima), nbnovo(1:nvoima)
+    integer(kind=8) :: nbsoco(1:nvoima), lisoco(1:nvoima, 1:nscoma, 1:2)
     character(len=*) :: codvoi
-    integer :: iv, is, iel, ideb, ifin, icode, jcode, numav, ielv, typev
-    integer :: ntymax
+    integer(kind=8) :: iv, is, iel, ideb, ifin, icode, jcode, numav, ielv, typev
+    integer(kind=8) :: ntymax
     parameter(ntymax=3)
-    integer :: lcod, ityvo, ntyvo, lityvo(1:ntymax)
+    integer(kind=8) :: lcod, ityvo, ntyvo, lityvo(1:ntymax)
     character(len=2) :: tybase(9)
 !-----------FONCTIONS  D ACCES A VGE -----------------------------------
 !     IADDVO : ADRESSE JEVEUX DU TABLEAU DE POINTEURS DANS LA SD EL_VOIS

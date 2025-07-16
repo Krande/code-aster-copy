@@ -22,14 +22,13 @@ subroutine veripl(ma, nbma, linuma, ang, typerr)
 #include "asterc/r8dgrd.h"
 #include "asterfort/jedema.h"
 #include "asterfort/jemarq.h"
-#include "asterfort/jenuno.h"
 #include "asterfort/jeveuo.h"
 #include "asterfort/jexnum.h"
 #include "asterfort/utmess.h"
 #include "asterfort/int_to_char8.h"
 !
     character(len=*) :: ma
-    integer :: nbma, jconx, ima, k, iprem, numai1, numail, linuma(nbma)
+    integer(kind=8) :: nbma, jconx, ima, k, iprem, numai1, numail, linuma(nbma)
     real(kind=8) :: n1(3), n(3), ab(3), ac(3), nn, n1n, n1n1
     real(kind=8) :: cos2b, cos2a, a(3), b(3), c(3), ang
     character(len=1) :: typerr

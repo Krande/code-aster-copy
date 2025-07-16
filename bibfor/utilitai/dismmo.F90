@@ -36,7 +36,7 @@ subroutine dismmo(questi, nomobz, repi, repkz, ierd)
 #include "asterfort/jexnum.h"
 #include "asterfort/lteatt.h"
 !
-    integer :: repi, ierd
+    integer(kind=8) :: repi, ierd
     character(len=*) :: questi, nomobz, repkz
 !
 ! --------------------------------------------------------------------------------------------------
@@ -52,16 +52,16 @@ subroutine dismmo(questi, nomobz, repi, repkz, ierd)
 !
 ! --------------------------------------------------------------------------------------------------
 !
-    integer :: ico, igrel
-    integer :: iret, elemTypeNume, nbgrel, lielSize
+    integer(kind=8) :: ico, igrel
+    integer(kind=8) :: iret, elemTypeNume, nbgrel, lielSize
     character(len=4) :: tytm
     character(len=8) :: mesh, model
     character(len=16) :: elemTypeName, nomodl, nomod2
     character(len=19) :: modelLigrel
     character(len=32) :: repk
     character(len=8), pointer :: lgrf(:) => null(), k8cond(:) => null()
-    integer, pointer :: nfis(:) => null()
-    integer, pointer :: liel(:) => null()
+    integer(kind=8), pointer :: nfis(:) => null()
+    integer(kind=8), pointer :: liel(:) => null()
 !
 ! --------------------------------------------------------------------------------------------------
 !

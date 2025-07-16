@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2018 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -22,7 +22,7 @@ interface
         real(kind=8) :: l3(3)
         real(kind=8) :: vss33(3, 3)
         real(kind=8) :: dim3
-        integer :: ndim
-        integer :: ifour
+        integer(kind=8) :: ndim
+        integer(kind=8) :: ifour
     end subroutine tail_reel
 end interface

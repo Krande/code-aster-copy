@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -95,6 +95,12 @@ IMPR_RESU = PROC(
             ),
             CHAM_GD=SIMP(statut="f", typ=cham_gd_sdaster),
             RESULTAT=SIMP(statut="f", typ=resultat_sdaster),
+            b_rangement=BLOC(
+                condition="""is_type("RESULTAT") == mult_elas""",
+                TYPE_NOM=SIMP(
+                    statut="f", typ="TXM", defaut="NUME_ORDRE", into=("NUME_ORDRE", "NOM_CAS")
+                ),
+            ),
             INFO_MAILLAGE=SIMP(statut="f", typ="TXM", defaut="NON", into=("OUI", "NON")),
             b_partie=BLOC(
                 condition="""(is_type("RESULTAT") in (dyna_harmo, acou_harmo) or is_type("CHAM_GD") != carte_sdaster)""",

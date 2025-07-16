@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -21,10 +21,9 @@ subroutine thmEvalGravity(j_mater, time, grav)
     implicit none
 !
 #include "asterf_types.h"
-#include "asterfort/assert.h"
 #include "asterfort/rcvala.h"
 !
-    integer, intent(in) :: j_mater
+    integer(kind=8), intent(in) :: j_mater
     real(kind=8), intent(in) :: time
     real(kind=8), intent(out) :: grav(3)
 !
@@ -43,8 +42,8 @@ subroutine thmEvalGravity(j_mater, time, grav)
 ! --------------------------------------------------------------------------------------------------
 !
     real(kind=8) :: grav_func(1)
-    integer, parameter :: nb_resu = 3
-    integer :: icodre(nb_resu)
+    integer(kind=8), parameter :: nb_resu = 3
+    integer(kind=8) :: icodre(nb_resu)
     real(kind=8) :: resu_vale(nb_resu)
     character(len=16), parameter :: resu_name(nb_resu) = (/'PESA_X', 'PESA_Y', 'PESA_Z'/)
 !

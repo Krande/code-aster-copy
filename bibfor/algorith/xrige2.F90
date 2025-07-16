@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -37,8 +37,8 @@ subroutine xrige2(elrefp, elrese, ndim, coorse, igeom, &
 #include "asterfort/xnbddl.h"
 #include "asterfort/iimatu.h"
 #include "asterfort/iipff.h"
-    integer :: ndim, igeom, nnop, npg, ddlh, ddlc, nfe, heavn(27, 5)
-    integer :: jstno, imate
+    integer(kind=8) :: ndim, igeom, nnop, npg, ddlh, ddlc, nfe, heavn(27, 5)
+    integer(kind=8) :: jstno, imate
     character(len=8) :: elrefp
     character(len=8) :: elrese
     real(kind=8) :: basloc(6*nnop), he, coorse(*)
@@ -74,16 +74,16 @@ subroutine xrige2(elrefp, elrese, ndim, coorse, igeom, &
 !
 !
 !
-    integer :: kpg, kk, n, i, m, j, j1, kkd, ij
-    integer :: nno, nnos, npgbis, ddls, ddld, ddldn, cpt, ndimb
-    integer :: jcoopg, jdfd2, jgano, idfde, ivf, ipoids, hea_se, nfiss
-    integer :: alp, ii, jj, k, nfh
+    integer(kind=8) :: kpg, kk, n, i, m, j, j1, kkd, ij
+    integer(kind=8) :: nno, nnos, npgbis, ddls, ddld, ddldn, cpt, ndimb
+    integer(kind=8) :: jcoopg, jdfd2, jgano, idfde, ivf, ipoids, hea_se, nfiss
+    integer(kind=8) :: alp, ii, jj, k, nfh
     real(kind=8) :: tmp1
     real(kind=8) :: xg(ndim), xe(ndim), ff(nnop), jac
     real(kind=8) :: dfdi(nnop, ndim), pff(1+ddlh+nfe*ndim**2, nnop, ndim)
     real(kind=8) :: rac2
     real(kind=8) :: fk(27, 3, 3), dkdgl(27, 3, 3, 3), ka, mu
-    integer :: nnops
+    integer(kind=8) :: nnops
 !
     aster_logical :: axi
 !

@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -37,7 +37,7 @@ subroutine cazocm(sdcont, keywf, i_zone)
 ! person_in_charge: ayaovi-dzifa.kudawoo at edf.fr
 !
     character(len=8), intent(in) :: sdcont
-    integer, intent(in) :: i_zone
+    integer(kind=8), intent(in) :: i_zone
     character(len=16), intent(in) :: keywf
 !
 ! --------------------------------------------------------------------------------------------------
@@ -54,8 +54,8 @@ subroutine cazocm(sdcont, keywf, i_zone)
 !
 ! --------------------------------------------------------------------------------------------------
 !
-    integer :: zmeth, zdirn, ztole
-    integer :: noc, iret
+    integer(kind=8) :: zmeth, zdirn, ztole
+    integer(kind=8) :: noc, iret
     character(len=24) :: sdcont_defi
     character(len=16) :: type_pair, type_norm, type_appa_search, type_norm_mast, type_norm_slav
     character(len=16) :: type_jacobian, s_algo_cont
@@ -65,7 +65,7 @@ subroutine cazocm(sdcont, keywf, i_zone)
     real(kind=8) :: norm_dire(3), dire_appa(3), tole_proj_ext, tole_appa, tole_interp
     aster_logical :: l_liss, l_calc
     character(len=24) :: sdcont_methco
-    integer, pointer :: v_sdcont_methco(:) => null()
+    integer(kind=8), pointer :: v_sdcont_methco(:) => null()
     character(len=24) :: sdcont_dirapp
     real(kind=8), pointer :: v_sdcont_dirapp(:) => null()
     character(len=24) :: sdcont_dirnor

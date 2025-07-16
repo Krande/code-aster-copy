@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -22,12 +22,11 @@ subroutine mbpk2c(sens, alpha, beta, h, covaini, jacini, jacdef, sigin, sigout)
 #include "asterfort/assert.h"
 #include "jeveux.h"
 #include "asterfort/promat.h"
-#include "asterc/r8dgrd.h"
 #include "asterfort/r8inir.h"
 #include "asterc/r8prem.h"
 #include "asterfort/utmess.h"
 !
-    integer :: sens
+    integer(kind=8) :: sens
     real(kind=8) :: covaini(3, 3), jacini, jacdef
     real(kind=8) :: alpha, beta, h
     real(kind=8) :: sigin(3), sigout(3)
@@ -44,7 +43,7 @@ subroutine mbpk2c(sens, alpha, beta, h, covaini, jacini, jacdef, sigin, sigout)
 ! OUT SIGOUT            CONTRAINTES DE CAUCHY DANS LE REPERE GOLBAL (S11,S22,S12)
 ! ----------------------------------------------------------------------
 !
-    integer :: i, k
+    integer(kind=8) :: i, k
     real(kind=8) :: sigintemp(3, 3), sigintemp1(3, 3), sigintemp2(3, 3)
     real(kind=8) :: vdirec(3), vortho(3)
     real(kind=8) :: matpt(3, 3), matp(3, 3), matptinv(3, 3), matpinv(3, 3)

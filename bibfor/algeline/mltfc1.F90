@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -44,20 +44,20 @@ subroutine mltfc1(nbloc, ncbloc, decal, supnd, fils, &
 #include "asterfort/mltflm.h"
 #include "asterfort/mltfmj.h"
 !
-    integer :: pmin, nbb
+    integer(kind=8) :: pmin, nbb
     parameter(pmin=10)
-    integer :: nbloc, ncbloc(*), decal(*)
-    integer :: lgsn(*), lfront(*), lgpile, typsym
+    integer(kind=8) :: nbloc, ncbloc(*), decal(*)
+    integer(kind=8) :: lgsn(*), lfront(*), lgpile, typsym
     integer(kind=4) :: local(*)
-    integer :: nbass(*), adpile(*), fils(*), supnd(*)
-    integer :: adress(*), frere(*), seq(*), ad(*), ier
+    integer(kind=8) :: nbass(*), adpile(*), fils(*), supnd(*)
+    integer(kind=8) :: adress(*), frere(*), seq(*), ad(*), ier
     real(kind=8) :: pile(*), eps, cl(nbb, nbb, *), cu(nbb, nbb, *), diag(*)
     character(len=24) :: factol, factou
 !
     real(kind=8) :: t1(*), t2(*)
-    integer :: adper(*), ifacl, ifacu, lmatf
-    integer :: itemp, i, j, isnd, sni, sn, n, m, p, nl, nc, mem, adfacl, ib, nb
-    integer :: lm1, lm2, adfacu, long, iad, adfac0, adfac
+    integer(kind=8) :: adper(*), ifacl, ifacu, lmatf
+    integer(kind=8) :: itemp, i, j, isnd, sni, sn, n, m, p, nl, nc, mem, adfacl, ib, nb
+    integer(kind=8) :: lm1, lm2, adfacu, long, iad, adfac0, adfac
 !
     call jemarq()
     itemp = 1

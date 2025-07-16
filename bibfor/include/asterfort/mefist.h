@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -27,15 +27,15 @@ interface
                       dg, tg, cdg, cpg, rugg,&
                       base)
         character(len=19) :: melflu
-        integer :: ndim(14)
+        integer(kind=8) :: ndim(14)
         real(kind=8) :: som(9)
         real(kind=8) :: alpha
         real(kind=8) :: ru
         character(len=8) :: promas
         character(len=8) :: provis
         real(kind=8) :: matma(*)
-        integer :: numgrp(*)
-        integer :: nuor(*)
+        integer(kind=8) :: numgrp(*)
+        integer(kind=8) :: nuor(*)
         real(kind=8) :: freq(*)
         real(kind=8) :: masg(*)
         real(kind=8) :: fact(*)
@@ -48,7 +48,7 @@ interface
         real(kind=8) :: phix(*)
         real(kind=8) :: phiy(*)
         real(kind=8) :: defm(*)
-        integer :: itypg(*)
+        integer(kind=8) :: itypg(*)
         real(kind=8) :: zg(*)
         real(kind=8) :: hg(*)
         real(kind=8) :: dg(*)

@@ -36,7 +36,7 @@ subroutine asmatr(nbmat, tlimat, licoef, nu, &
 #include "asterfort/typmat.h"
 #include "asterfort/wkvect.h"
 !
-    integer :: nbmat, itysca
+    integer(kind=8) :: nbmat, itysca
     character(len=*) :: base, mataz, licoef, nu
     character(len=19) :: tlimat(nbmat)
     character(len=*) :: listLoadZ
@@ -69,10 +69,10 @@ subroutine asmatr(nbmat, tlimat, licoef, nu, &
 !
     character(len=1) :: matsym
     character(len=24) :: licoe2
-    integer :: k
+    integer(kind=8) :: k
     character(len=19) :: tlima2(150), matas, infc19
-    integer :: ilicoe, i, iret, ibid, idbgav
-    integer :: jrefa
+    integer(kind=8) :: ilicoe, i, iret, ibid, idbgav
+    integer(kind=8) :: jrefa
 !
 ! --------------------------------------------------------------------------------------------------
 !

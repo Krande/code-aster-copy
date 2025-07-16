@@ -40,16 +40,16 @@ subroutine nmtble(loop_exte, model, mesh, ds_contact, &
 #include "asterfort/nmleeb.h"
 #include "asterfort/nmcrel.h"
 !
-    integer, intent(inout) :: loop_exte
+    integer(kind=8), intent(inout) :: loop_exte
     character(len=24), intent(in) :: model
     character(len=8), intent(in) :: mesh
     type(NL_DS_Contact), intent(inout) :: ds_contact
-    integer, intent(in) :: list_func_acti(*)
+    integer(kind=8), intent(in) :: list_func_acti(*)
     type(NL_DS_Print), intent(inout) :: ds_print
     character(len=24), intent(in) :: sderro
     type(NL_DS_Conv), intent(in) :: ds_conv
     character(len=19), intent(in) :: sddisc
-    integer, intent(in) :: nume_inst
+    integer(kind=8), intent(in) :: nume_inst
     character(len=19), intent(in) :: hval_incr(*)
     character(len=19), intent(in) :: hval_algo(*)
     type(ROM_DS_AlgoPara), intent(inout) :: ds_algorom
@@ -87,7 +87,7 @@ subroutine nmtble(loop_exte, model, mesh, ds_contact, &
 !
     aster_logical :: loop_cont_conv, loop_fric_conv, loop_geom_conv
     aster_logical :: l_loop_frot, l_loop_geom, l_loop_cont, l_cont_cont
-    integer :: loop_geom_count, loop_fric_count, loop_cont_count, loop_cont_vali
+    integer(kind=8) :: loop_geom_count, loop_fric_count, loop_cont_count, loop_cont_vali
     character(len=4) :: state_newt
     real(kind=8) :: loop_cont_vale
 !

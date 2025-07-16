@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -25,7 +25,7 @@ subroutine dhrc_jacob(eps, vint, c, bp1, &
 !
     implicit none
 !
-    integer, intent(in) :: indi(6)
+    integer(kind=8), intent(in) :: indi(6)
     real(kind=8), intent(in) :: vint(*), eps(8)
     real(kind=8), intent(in) :: as1(6, 6), as2(6, 6)
     real(kind=8), intent(in) :: bp1(6, 2), bp2(6, 2), bs1(6, 2), bs2(6, 2)
@@ -93,7 +93,7 @@ subroutine dhrc_jacob(eps, vint, c, bp1, &
 !
 ! ----------------------------------------------------------------------
 !
-    integer :: i, j, k, l
+    integer(kind=8) :: i, j, k, l
     real(kind=8) :: jacobt(6, 6)
 !
 ! ----------------------------------------------------------------------

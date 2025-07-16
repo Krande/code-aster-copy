@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -30,7 +30,6 @@ subroutine nxnpas(sddisc, solver, nume_inst, ds_print, &
 #include "asterf_types.h"
 #include "asterc/r8vide.h"
 #include "asterfort/diinst.h"
-#include "asterfort/assert.h"
 #include "asterfort/nmnkft.h"
 #include "asterfort/dismoi.h"
 #include "asterfort/rsinch.h"
@@ -41,7 +40,7 @@ subroutine nxnpas(sddisc, solver, nume_inst, ds_print, &
 !
     character(len=19), intent(in) :: sddisc, solver
     type(NL_DS_Print), intent(inout) :: ds_print
-    integer, intent(in) :: nume_inst
+    integer(kind=8), intent(in) :: nume_inst
     aster_logical, intent(in) :: lnkry, l_evol, l_stat
     aster_logical, intent(in) :: l_dry
     character(len=8), intent(in) :: result_dry
@@ -81,7 +80,7 @@ subroutine nxnpas(sddisc, solver, nume_inst, ds_print, &
 ! --------------------------------------------------------------------------------------------------
 !
     real(kind=8) :: theta, timet, timtdt, theta_read, time_prev
-    integer :: icoret, nbcham
+    integer(kind=8) :: icoret, nbcham
     character(len=1) :: base
     real(kind=8), parameter :: prec = 1.0d-10
     character(len=8), parameter :: crit = 'ABSOLU'

@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -20,8 +20,8 @@
 !
 interface
     function somint(n, x)
-        integer :: n
-        integer :: x(n)
-        integer :: somint
+        integer(kind=8) :: n
+        integer(kind=8) :: x(n)
+        integer(kind=8) :: somint
     end function somint
 end interface

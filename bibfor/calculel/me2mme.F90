@@ -26,37 +26,24 @@ subroutine me2mme(modelZ, listLoadZ, &
 !
 #include "asterf_types.h"
 #include "jeveux.h"
-#include "asterfort/calcul.h"
 #include "asterfort/as_deallocate.h"
-#include "asterfort/codent.h"
-#include "asterfort/copisd.h"
 #include "asterfort/detrsd.h"
 #include "asterfort/dismoi.h"
-#include "asterfort/exisd.h"
-#include "asterfort/exixfe.h"
 #include "asterfort/jedema.h"
 #include "asterfort/jedetr.h"
-#include "asterfort/jeexin.h"
 #include "asterfort/jemarq.h"
-#include "asterfort/jeveuo.h"
 #include "asterfort/mecact.h"
-#include "asterfort/mecara.h"
-#include "asterfort/megeom.h"
 #include "asterfort/meharm.h"
-#include "asterfort/memare.h"
-#include "asterfort/nmvcd2.h"
-#include "asterfort/reajre.h"
 #include "asterfort/vrcins.h"
 #include "asterfort/vrcref.h"
 #include "asterfort/vechme.h"
 #include "asterfort/vedime.h"
-#include "asterfort/me2mme_evol.h"
 #include "LoadTypes_type.h"
 #include "asterfort/utmess.h"
 !
     character(len=*) :: modelZ, caraElemZ, vectElemZ, listLoadZ, materFieldZ, matecoZ, jvBaseZ
     real(kind=8) :: timeCurr
-    integer :: numeHarm
+    integer(kind=8) :: numeHarm
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -73,7 +60,7 @@ subroutine me2mme(modelZ, listLoadZ, &
     character(len=24) :: varcCurr, varcRefe
     real(kind=8) :: timePara(3)
     aster_logical, parameter :: varcLine = ASTER_TRUE
-    integer :: nbFaceVite, nbPlaneWave, nbWave
+    integer(kind=8) :: nbFaceVite, nbPlaneWave, nbWave
     character(len=8), pointer :: planeWave(:) => null()
     character(len=8), pointer :: faceVite(:) => null()
     character(len=8), pointer :: wave(:) => null()

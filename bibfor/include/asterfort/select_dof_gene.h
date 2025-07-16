@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -22,10 +22,10 @@ interface
     subroutine select_dof_gene(nume_equa_genez, nb_cmp, cata_cmp, list_cmp, list_equa,&
                                tabl_equa)
         character(len=*), intent(in) :: nume_equa_genez
-        integer, intent(in) :: nb_cmp
+        integer(kind=8), intent(in) :: nb_cmp
         character(len=8), pointer, optional :: cata_cmp(:)
         character(len=8), pointer, optional :: list_cmp(:)
-        integer, pointer, optional :: list_equa(:)
-        integer, pointer, optional :: tabl_equa(:,:)
+        integer(kind=8), pointer, optional :: list_equa(:)
+        integer(kind=8), pointer, optional :: tabl_equa(:,:)
     end subroutine select_dof_gene
 end interface

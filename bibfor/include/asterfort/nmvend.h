@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -24,25 +24,25 @@ interface
                       vim, ndim, crit, dammax, etatf,&
                       p, np, beta, nb, iter,&
                       ier)
-        integer :: nb
-        integer :: np
-        integer :: nmat
+        integer(kind=8) :: nb
+        integer(kind=8) :: np
+        integer(kind=8) :: nmat
         character(len=*) :: fami
-        integer :: kpg
-        integer :: ksp
+        integer(kind=8) :: kpg
+        integer(kind=8) :: ksp
         real(kind=8) :: materd(nmat, 2)
         real(kind=8) :: materf(nmat, 2)
         real(kind=8) :: dt1
         real(kind=8) :: deps(6)
         real(kind=8) :: sigm(6)
         real(kind=8) :: vim(*)
-        integer :: ndim
+        integer(kind=8) :: ndim
         real(kind=8) :: crit(*)
         real(kind=8) :: dammax
         character(len=7) :: etatf(3)
         real(kind=8) :: p(np)
         real(kind=8) :: beta(nb)
-        integer :: iter
-        integer :: ier
+        integer(kind=8) :: iter
+        integer(kind=8) :: ier
     end subroutine nmvend
 end interface

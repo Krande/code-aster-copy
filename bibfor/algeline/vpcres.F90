@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -45,8 +45,8 @@ subroutine vpcres(eigsol, typres, raide, masse, amor, optiof, method, modrig, ar
 !
 ! --- INPUT
 !
-    integer, intent(in) :: nfreq, nbvect, nbvec2, nbrss, nbborn, nborto, nitv, itemax
-    integer, intent(in) :: nperm, maxitr
+    integer(kind=8), intent(in) :: nfreq, nbvect, nbvec2, nbrss, nbborn, nborto, nitv, itemax
+    integer(kind=8), intent(in) :: nperm, maxitr
     real(kind=8), intent(in) :: vectf(2), precsh, omecor, precdc, seuil
     real(kind=8), intent(in) :: prorto, prsudg, tol, toldyn, tolsor, alpha
     character(len=1), intent(in) :: appr
@@ -62,7 +62,7 @@ subroutine vpcres(eigsol, typres, raide, masse, amor, optiof, method, modrig, ar
 !
 ! --- VARIABLES LOCALES
 !
-    integer           :: indf, zslvk, zslvr, zslvi, eislvk, eislvr, eislvi
+    integer(kind=8)           :: indf, zslvk, zslvr, zslvi, eislvk, eislvr, eislvi
     real(kind=8)      :: undf
     character(len=24) :: kzero
 !

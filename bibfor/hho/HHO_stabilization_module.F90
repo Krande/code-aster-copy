@@ -87,8 +87,8 @@ contains
         real(kind=8), dimension(MSIZE_FACE_SCAL, MSIZE_FACE_SCAL) :: piKF
         real(kind=8), dimension(MSIZE_FACE_SCAL, MSIZE_CELL_SCAL) :: MR1, traceMat
         real(kind=8), dimension(MSIZE_FACE_SCAL, MSIZE_TDOFS_SCAL) :: proj2, proj3, TMP
-        integer :: dimMassMat, ifromM2, itoM2, colsM2, i, j
-        integer :: cbs, fbs, total_dofs, iface, offset_face, fromFace, toFace, cell_offset
+        integer(kind=8) :: dimMassMat, ifromM2, itoM2, colsM2, i, j
+        integer(kind=8) :: cbs, fbs, total_dofs, iface, offset_face, fromFace, toFace, cell_offset
         blas_int :: b_n, b_nhrs, b_lda, b_ldb, info
         real(kind=8) :: start, end
         blas_int :: b_k, b_ldc, b_m
@@ -399,9 +399,9 @@ contains
         real(kind=8), dimension(MSIZE_FACE_SCAL, MSIZE_FACE_SCAL) :: piKF
         type(HHO_matrix) :: proj1, proj2, proj3, TMP
         real(kind=8), dimension(MSIZE_FACE_SCAL, MSIZE_CELL_SCAL) :: MR1, MR2, traceMat
-        integer :: dimMassMat, ifromM1, itoM1, ifromM2, itoM2, colsM2, i, j, idir
-        integer :: cbs, fbs, total_dofs, iface, fromFace, toFace
-        integer :: ifromGrad, itoGrad, ifromProj, itoProj, fbs_comp, faces_dofs, faces_dofs_comp
+        integer(kind=8) :: dimMassMat, ifromM1, itoM1, ifromM2, itoM2, colsM2, i, j, idir
+        integer(kind=8) :: cbs, fbs, total_dofs, iface, fromFace, toFace
+    integer(kind=8) :: ifromGrad, itoGrad, ifromProj, itoProj, fbs_comp, faces_dofs, faces_dofs_comp
         blas_int :: b_n, b_nhrs, b_lda, b_ldb, info
         real(kind=8) :: start, end
         blas_int :: b_k, b_ldc, b_m
@@ -691,7 +691,7 @@ contains
         real(kind=8), dimension(MSIZE_FACE_SCAL, MSIZE_FACE_SCAL) :: piKF
         real(kind=8), dimension(MSIZE_FACE_SCAL, MSIZE_CELL_SCAL) :: traceMat
         real(kind=8), dimension(MSIZE_FACE_SCAL, MSIZE_TDOFS_SCAL) :: proj3, TMP
-        integer :: cbs, fbs, total_dofs, iface, offset_face, fromFace, toFace, i, j, cell_offset
+    integer(kind=8) :: cbs, fbs, total_dofs, iface, offset_face, fromFace, toFace, i, j, cell_offset
         blas_int :: b_n, b_nhrs, b_lda, b_ldb, info
         real(kind=8) :: start, end
         blas_int :: b_k, b_ldc, b_m

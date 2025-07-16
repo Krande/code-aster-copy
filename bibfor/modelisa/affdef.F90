@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -26,7 +26,7 @@ subroutine affdef(tmp, nom, nel, ntel, tab, ier)
 #include "asterfort/jexnom.h"
 #include "asterfort/utmess.h"
 !
-    integer :: ntel(*)
+    integer(kind=8) :: ntel(*)
     character(len=8) :: tab(*)
     character(len=24) :: nom, tmp
 !
@@ -50,15 +50,15 @@ subroutine affdef(tmp, nom, nel, ntel, tab, ier)
 !     3    EPZ2   R1     E1     R2     E2    TSEC  AI1   AI2  JG1  JG2
 !     4    IYR21  IYR22  IZR21  IZR22
 !--- -------------------------------------------------------------------
-    integer :: ier, isec, j, jdge, nc, nd, ne
-    integer :: nel, ng, nr, nt, nx, ny, nz
+    integer(kind=8) :: ier, isec, j, jdge, nc, nd, ne
+    integer(kind=8) :: nel, ng, nr, nt, nx, ny, nz
 !--- -------------------------------------------------------------------
     parameter(nr=4, nc=2, ng=8)
     parameter(nt=4, ne=12, nd=6)
     parameter(nx=10, ny=8, nz=4)
-    integer :: ogen(ng), orec(nr), ocer(nc), otpe(nt)
-    integer :: dexc(ne), ddfx(nd), drec(nr), dcer(nc)
-    integer :: pgen(nx), prec(ny), pcer(nz)
+    integer(kind=8) :: ogen(ng), orec(nr), ocer(nc), otpe(nt)
+    integer(kind=8) :: dexc(ne), ddfx(nd), drec(nr), dcer(nc)
+    integer(kind=8) :: pgen(nx), prec(ny), pcer(nz)
     character(len=24) :: valk(3)
     real(kind=8) :: tst
 !--- -------------------------------------------------------------------

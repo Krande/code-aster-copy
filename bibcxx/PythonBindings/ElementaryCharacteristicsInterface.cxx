@@ -3,7 +3,7 @@
  * @brief Interface python de ElementaryCharacteristics
  * @author Nicolas Sellenet
  * @section LICENCE
- *   Copyright (C) 1991 - 2023  EDF R&D                www.code-aster.org
+ *   Copyright (C) 1991 - 2025  EDF R&D                www.code-aster.org
  *
  *   This file is part of Code_Aster.
  *
@@ -33,6 +33,9 @@ void exportElementaryCharacteristicsToPython( py::module_ &mod ) {
                 DataStructure >( mod, "ElementaryCharacteristics" )
         .def( py::init( &initFactoryPtr< ElementaryCharacteristics, ModelPtr > ) )
         .def( py::init( &initFactoryPtr< ElementaryCharacteristics, std::string, ModelPtr > ) )
+        .def( "containsFieldOnCells", &ElementaryCharacteristics::containsFieldOnCells, R"(
+Return True if ElementaryCharacteristics contains FieldOnCells
+        )" )
         .def( "getModel", &ElementaryCharacteristics::getModel )
         .def( "getMesh", &ElementaryCharacteristics::getMesh );
 };

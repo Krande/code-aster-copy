@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -32,12 +32,12 @@ interface
 !!
         character(len=19) , intent(inout)  :: matpsc
         character(len=19) , intent(inout)  :: matopa
-        integer           , intent(out) :: iretr
-        integer, optional , intent(out) :: nfreq_calibr_
-        integer           , intent(out) :: nblagr
-        integer           , intent(out) :: neqact
-        integer           , intent(out) :: npivot
-        integer           , intent(out) :: nstoc
+        integer(kind=8)           , intent(out) :: iretr
+        integer(kind=8), optional , intent(out) :: nfreq_calibr_
+        integer(kind=8)           , intent(out) :: nblagr
+        integer(kind=8)           , intent(out) :: neqact
+        integer(kind=8)           , intent(out) :: npivot
+        integer(kind=8)           , intent(out) :: nstoc
         real(kind=8)      , intent(out) :: omemax
         real(kind=8)      , intent(out) :: omemin
         real(kind=8)      , intent(out) :: omeshi

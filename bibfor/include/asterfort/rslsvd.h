@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -22,17 +22,17 @@ interface
     subroutine rslsvd(nm, m, n, a, w,&
                       u, v, nb, b, eps,&
                       ierr, rvnm)
-        integer :: nb
-        integer :: n
-        integer :: m
-        integer :: nm
+        integer(kind=8) :: nb
+        integer(kind=8) :: n
+        integer(kind=8) :: m
+        integer(kind=8) :: nm
         real(kind=8) :: a(nm, n)
         real(kind=8) :: w(n)
         real(kind=8) :: u(nm, m)
         real(kind=8) :: v(nm, n)
         real(kind=8) :: b(nm, nb)
         real(kind=8) :: eps
-        integer :: ierr
+        integer(kind=8) :: ierr
         real(kind=8) :: rvnm(nm)
     end subroutine rslsvd
 end interface

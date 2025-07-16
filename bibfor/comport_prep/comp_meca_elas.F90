@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -22,7 +22,6 @@ subroutine comp_meca_elas(compElas, l_etat_init)
     implicit none
 !
 #include "asterf_types.h"
-#include "asterfort/assert.h"
 #include "asterfort/jeveuo.h"
 #include "asterfort/nocart.h"
 #include "asterfort/Behaviour_type.h"
@@ -43,7 +42,7 @@ subroutine comp_meca_elas(compElas, l_etat_init)
 !
 ! --------------------------------------------------------------------------------------------------
 !
-    integer, parameter :: nbCmp = COMPOR_SIZE
+    integer(kind=8), parameter :: nbCmp = COMPOR_SIZE
     character(len=16), pointer :: compElasValv(:) => null()
 !
 ! --------------------------------------------------------------------------------------------------

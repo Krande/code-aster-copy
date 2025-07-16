@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -45,12 +45,12 @@ subroutine apvepa(ds_contact)
 !
 ! --------------------------------------------------------------------------------------------------
 !
-    integer :: ifm, niv
+    integer(kind=8) :: ifm, niv
     character(len=19) :: sdappa
-    integer :: nb_cont_zone, nt_poin, nb_poin
-    integer :: pair_type
-    integer :: i_zone, i_poin, i_poin_zone
-    integer :: nb_poin_none
+    integer(kind=8) :: nb_cont_zone, nt_poin, nb_poin
+    integer(kind=8) :: pair_type
+    integer(kind=8) :: i_zone, i_poin, i_poin_zone
+    integer(kind=8) :: nb_poin_none
 !
 ! --------------------------------------------------------------------------------------------------
 !

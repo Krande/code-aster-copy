@@ -24,7 +24,6 @@ subroutine ef0415(nomte)
 #include "asterfort/cosiro.h"
 #include "asterfort/jevech.h"
 #include "asterfort/jevete.h"
-#include "asterfort/tecach.h"
 #include "asterfort/utmess.h"
 #include "asterfort/efcoq3d.h"
 
@@ -32,17 +31,17 @@ subroutine ef0415(nomte)
     character(len=16) :: nomte
 !
 !-----------------------------------------------------------------------
-    integer ::  ichg
-    integer ::  jcara, jeffg, jgeom
-    integer :: lzi, lzr, nbcou
-    integer :: npge, npgt
-    integer :: nso
+    integer(kind=8) ::  ichg
+    integer(kind=8) ::  jcara, jeffg, jgeom
+    integer(kind=8) :: lzi, lzr, nbcou
+    integer(kind=8) :: npge, npgt
+    integer(kind=8) :: nso
 
 !-----------------------------------------------------------------------
     parameter(npge=3)
     parameter(npgt=10)
-    integer ::  jmat, jnbspi
-    integer :: nb1, nb2, npgsr, npgsn
+    integer(kind=8) ::  jmat, jnbspi
+    integer(kind=8) :: nb1, nb2, npgsr, npgsn
 
 !
 

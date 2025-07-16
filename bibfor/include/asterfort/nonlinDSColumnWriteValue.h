@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -24,11 +24,11 @@ interface
                                         value_k_    ,&
                                         time_   )
         use NonLin_Datastructure_type
-        integer, intent(in) :: length
+        integer(kind=8), intent(in) :: length
         character(len=*), optional, intent(out) :: output_string_
-        integer, optional, intent(in) :: output_unit_
+        integer(kind=8), optional, intent(in) :: output_unit_
         real(kind=8), optional, intent(in) :: value_r_
-        integer, optional, intent(in) :: value_i_
+        integer(kind=8), optional, intent(in) :: value_i_
         character(len=*), optional, intent(in) :: value_k_
         real(kind=8), optional, intent(in) :: time_
     end subroutine nonlinDSColumnWriteValue

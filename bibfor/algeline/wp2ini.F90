@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -40,11 +40,11 @@ subroutine wp2ini(appr, lmasse, lamor, lraide, lmatra, &
 #include "asterfort/wp2biy.h"
 #include "asterfort/wp2bry.h"
     character(len=1) :: appr
-    integer :: lmasse, lamor, lraide, lmatra, lmtpsc
+    integer(kind=8) :: lmasse, lamor, lraide, lmatra, lmtpsc
     complex(kind=8) :: sigma
     real(kind=8) :: xh(*), xb(*)
     character(len=*) :: optiof
-    integer :: nborto, nbvect, neq, lbloq(*), lddl(*)
+    integer(kind=8) :: nborto, nbvect, neq, lbloq(*), lddl(*)
     real(kind=8) :: prorto
     real(kind=8) :: alpha(*), beta(*), signe(*), yh(neq, *), yb(neq, *)
     character(len=19) :: solveu
@@ -96,14 +96,14 @@ subroutine wp2ini(appr, lmasse, lamor, lraide, lmatra, &
 !     ------------------------------------------------------------------
     character(len=12) :: strg
     character(len=24) :: valk
-    integer :: au1, au2, au3, au4, av, abayh, abayb, aptbyh, aptbyb
-    integer :: vali(4)
-    integer :: i, j, k, abyh, abyb, io
+    integer(kind=8) :: au1, au2, au3, au4, av, abayh, abayb, aptbyh, aptbyb
+    integer(kind=8) :: vali(4)
+    integer(kind=8) :: i, j, k, abyh, abyb, io
     real(kind=8) :: a, b, c, sr, si, deuxsr, mods2, invsi, si2, d1, d2
     aster_logical :: oc, ro
 !     ------------------------------------------------------------------
 !-----------------------------------------------------------------------
-    integer :: ii, ips
+    integer(kind=8) :: ii, ips
     real(kind=8) :: dseed
 !-----------------------------------------------------------------------
     call jemarq()

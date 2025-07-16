@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2020 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -26,16 +26,16 @@ interface
         character(len=8) :: modele
         character(len=8) :: resuin
         character(len=8) :: resuou
-        integer :: numord
-        integer :: nordm1
+        integer(kind=8) :: numord
+        integer(kind=8) :: nordm1
         character(len=24) :: mater, mateco
         character(len=8) :: carael
         character(len=16) :: typesd
         character(len=24) :: ligrel
         aster_logical, intent(in) :: l_poux, exitim
         character(len=19) :: lischa
-        integer :: nbchre
-        integer :: ioccur
+        integer(kind=8) :: nbchre
+        integer(kind=8) :: ioccur
         character(len=24) :: suropt
         character(len=1) :: basopt
         character(len=24) :: resout

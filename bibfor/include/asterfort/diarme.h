@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -22,9 +22,9 @@ interface
     subroutine diarme(nbt, neq, icodma, ul, dul,&
                       utl, sim, varim, klv, varip,&
                       kty2, duly)
-        integer :: neq
-        integer :: nbt
-        integer :: icodma
+        integer(kind=8) :: neq
+        integer(kind=8) :: nbt
+        integer(kind=8) :: icodma
         real(kind=8) :: ul(neq)
         real(kind=8) :: dul(neq)
         real(kind=8) :: utl(neq)

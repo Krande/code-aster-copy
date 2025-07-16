@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -21,13 +21,13 @@
 interface
     subroutine vpnor1(norm, neq, nbmode, ddlexc, vecpro,&
                       isign, numddl, coef)
-        integer :: neq
+        integer(kind=8) :: neq
         character(len=*) :: norm
-        integer :: nbmode
-        integer :: ddlexc(*)
+        integer(kind=8) :: nbmode
+        integer(kind=8) :: ddlexc(*)
         real(kind=8) :: vecpro(neq, *)
-        integer :: isign
-        integer :: numddl
+        integer(kind=8) :: isign
+        integer(kind=8) :: numddl
         real(kind=8) :: coef(*)
     end subroutine vpnor1
 end interface

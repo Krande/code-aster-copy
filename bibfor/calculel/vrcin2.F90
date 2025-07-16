@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -59,10 +59,10 @@ subroutine vrcin2(modele, chmat, carele, chvars, nompar)
 ! ----------------------------------------------------------------------
 !
 !
-    integer :: n1, iret, iad, ichs, nbchs, isp, ipt, jcesvi
-    integer :: k, k2, nbma, ncmp, icmp, jcesl2, jcesd2
-    integer :: jcesd, jcesl, ima, nbpt, nbsp, nbcvrc
-    integer :: jdcld, jdcll
+    integer(kind=8) :: n1, iret, iad, ichs, nbchs, isp, ipt, jcesvi
+    integer(kind=8) :: k, k2, nbma, ncmp, icmp, jcesl2, jcesd2
+    integer(kind=8) :: jcesd, jcesl, ima, nbpt, nbsp, nbcvrc
+    integer(kind=8) :: jdcld, jdcll
     character(len=16) :: tysd1, tysd2, nosd1, nosd2, nosy1, nosy2
     character(len=8) :: varc
     character(len=19) :: dceli, celmod, cart2, ces2, ligrmo
@@ -72,7 +72,7 @@ subroutine vrcin2(modele, chmat, carele, chvars, nompar)
     character(len=8), pointer :: cesk2(:) => null()
     character(len=8), pointer :: cesk(:) => null()
     character(len=16), pointer :: cesv2(:) => null()
-    integer, pointer :: dclv(:) => null()
+    integer(kind=8), pointer :: dclv(:) => null()
 ! ----------------------------------------------------------------------
 !
     call jemarq()

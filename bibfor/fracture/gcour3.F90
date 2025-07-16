@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -64,8 +64,6 @@ subroutine gcour3(resu, noma, coorn, lnoff, trav1, &
 #include "jeveux.h"
 #include "asterc/r8maem.h"
 #include "asterc/r8prem.h"
-#include "asterc/r8gaem.h"
-#include "asterfort/assert.h"
 #include "asterfort/cnocns.h"
 #include "asterfort/cnscre.h"
 #include "asterfort/cnscno.h"
@@ -76,7 +74,6 @@ subroutine gcour3(resu, noma, coorn, lnoff, trav1, &
 #include "asterfort/jedema.h"
 #include "asterfort/jemarq.h"
 #include "asterfort/jeveuo.h"
-#include "asterfort/jexnom.h"
 #include "asterfort/wkvect.h"
 !
     character(len=24) :: trav1, trav2, trav3, chfond, chamno, coorn
@@ -88,9 +85,9 @@ subroutine gcour3(resu, noma, coorn, lnoff, trav1, &
     character(len=2) :: licmp(3)
     character(len=1), parameter :: base = 'G'
 !
-    integer :: lnoff, iadrt1, iadrt2, iadrt3, itheta, iadrco, jmin
-    integer :: imodu, nbre, iret, ndimte
-    integer :: nbno, ifon, i, j, jresu, k, jgtl
+    integer(kind=8) :: lnoff, iadrt1, iadrt2, iadrt3, itheta, iadrco, jmin
+    integer(kind=8) :: imodu, nbre, iret, ndimte
+    integer(kind=8) :: nbno, ifon, i, j, jresu, k, jgtl
 !
     real(kind=8) :: xi1, yi1, zi1, xj1, yj1, zj1
     real(kind=8) :: xij, yij, zij, eps, d, grtx, grty, grtz
@@ -98,13 +95,13 @@ subroutine gcour3(resu, noma, coorn, lnoff, trav1, &
     real(kind=8) :: rii, rsi, alpha, valx, valy, valz, norm2
     real(kind=8) :: grtx0, grty0, grtz0, grtx1, grty1, grtz1
     character(len=19) :: cnsta, cnstet
-    integer :: jcnsl, jstn, jstnl, stano
+    integer(kind=8) :: jcnsl, jstn, jstnl, stano
     data licmp/'DX', 'DY', 'DZ'/
 !
     aster_logical :: milieu, debug, connex
 !
 !-----------------------------------------------------------------------
-    integer :: iadrtt, jbas
+    integer(kind=8) :: iadrtt, jbas
     real(kind=8), pointer :: cnsv(:) => null()
 !-----------------------------------------------------------------------
     call jemarq()
@@ -171,7 +168,8 @@ subroutine gcour3(resu, noma, coorn, lnoff, trav1, &
 !       VOIR RÉFÉRENCE BOOK I (05/01/2004)
         if (k .ne. (ndimte+1)) then
 !
-         if ((liss .eq. 'LAGRANGE') .or. (liss .eq. 'LAGRANGE_NO_NO') .or. (liss .eq. 'MIXTE')) then
+            if ((liss .eq. 'LAGRANGE') .or. (liss .eq. 'LAGRANGE_NO_NO') &
+                .or. (liss .eq. 'MIXTE')) then
                 zr(iadrt3-1+(k-1)*lnoff+k) = 1.d0
                 if ((k .eq. 1) .and. connex) then
                     iadrtt = iadrt3+(k-1)*lnoff+lnoff-1

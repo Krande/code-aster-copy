@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -29,7 +29,7 @@ interface
 
         use lcdp_module, only: dp_material
 
-        integer      :: imate, ndim, kpg, ksp, codret, neps
+        integer(kind=8)      :: imate, ndim, kpg, ksp, codret, neps
         real(kind=8) :: instam,instap
         real(kind=8) :: crit(*)
         real(kind=8) :: epsm(neps), deps(neps)

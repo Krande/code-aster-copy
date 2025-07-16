@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -29,45 +29,45 @@ interface
                       addep2, addete, adde2nd, tm2h1v)
         use THM_type
         type(THM_DS), intent(inout) :: ds_thm
-        integer :: dimuel
-        integer :: nnos
-        integer :: nno
-        integer :: ndim
-        integer :: dimdef
-        integer :: dimdep
+        integer(kind=8) :: dimuel
+        integer(kind=8) :: nnos
+        integer(kind=8) :: nno
+        integer(kind=8) :: ndim
+        integer(kind=8) :: dimdef
+        integer(kind=8) :: dimdep
         aster_logical :: axi
         real(kind=8) :: deltat
-        integer :: nmec
-        integer :: np1
-        integer :: np2
-        integer :: n2nd
-        integer :: npg
-        integer :: nddls
-        integer :: nddlm
-        integer :: ipoids
-        integer :: ivf
-        integer :: idfde
-        integer :: ipoid2
-        integer :: ivf2
-        integer :: idfde2
+        integer(kind=8) :: nmec
+        integer(kind=8) :: np1
+        integer(kind=8) :: np2
+        integer(kind=8) :: n2nd
+        integer(kind=8) :: npg
+        integer(kind=8) :: nddls
+        integer(kind=8) :: nddlm
+        integer(kind=8) :: ipoids
+        integer(kind=8) :: ivf
+        integer(kind=8) :: idfde
+        integer(kind=8) :: ipoid2
+        integer(kind=8) :: ivf2
+        integer(kind=8) :: idfde2
         real(kind=8) :: elem_coor(ndim, nno)
         real(kind=8) :: fovo(ndim)
         real(kind=8) :: deplp(nno*dimdep)
         real(kind=8) :: deplm(nno*dimdep)
         real(kind=8) :: sielnp(140)
         real(kind=8) :: sielnm(140)
-        integer :: nbcmp
+        integer(kind=8) :: nbcmp
         real(kind=8) :: biot
         real(kind=8) :: unsurm
         real(kind=8) :: fpx
         real(kind=8) :: fpy
         real(kind=8) :: frx(9)
         real(kind=8) :: fry(9)
-        integer :: addeme
-        integer :: addep1
-        integer :: addep2
-        integer :: addete
-        integer :: adde2nd
+        integer(kind=8) :: addeme
+        integer(kind=8) :: addep1
+        integer(kind=8) :: addep2
+        integer(kind=8) :: addete
+        integer(kind=8) :: adde2nd
         real(kind=8) :: tm2h1v(3)
     end subroutine erhmv2
 end interface

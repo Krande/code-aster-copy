@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -49,12 +49,12 @@ subroutine te0430(option, nomte)
 !                      NOMTE        -->  NOM DU TYPE ELEMENT
 ! ......................................................................
 !
-    integer :: codres(2)
+    integer(kind=8) :: codres(2)
     character(len=4) :: fami
     character(len=16) :: nomres(2)
-    integer :: nddl, nno, npg, i, kpg, n, ndim, nnos, jgano
-    integer :: ipoids, ivf, idfde, igeom, imate, icontm, ivectu, iret, ier
-    integer :: ipesa, iepsin, iadzi, iazk24, itemps
+    integer(kind=8) :: nddl, nno, npg, i, kpg, n, ndim, nnos, jgano
+    integer(kind=8) :: ipoids, ivf, idfde, igeom, imate, icontm, ivectu, iret, ier
+    integer(kind=8) :: ipesa, iepsin, iadzi, iazk24, itemps
     real(kind=8) :: dff(2, 8), vff(8), b(6, 8), p(3, 6), jac, epsthe, epsref
     real(kind=8) :: dir11(3), densit, pgl(3, 3), distn, vecn(3)
     real(kind=8) :: sig, rho(1), valres(2), b_max_rot

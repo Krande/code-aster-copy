@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -80,7 +80,7 @@ subroutine dstci2(dci, carat3, hft2, dfc, dmc, &
 !    AM(3,6)        OUT   R       MATRICE RELIANT LES ROTATIONS ALPHA
 !                                 AUX INCONNUES DE MEMBRANE UM
 !     ------------------------------------------------------------------
-    integer :: i, j, k, ic, int, iret
+    integer(kind=8) :: i, j, k, ic, int, iret
     real(kind=8) :: l(3), c(3), s(3), x(3), y(3), qsi(2), det
     real(kind=8) :: ta(6, 3), db(2, 3), aa(3, 3), aai(3, 3), aw(3, 9)
     real(kind=8) :: ab(3, 9), al(3, 6), dfcbfb(2, 9), dfcbfa(2, 3), bfa(3, 3)

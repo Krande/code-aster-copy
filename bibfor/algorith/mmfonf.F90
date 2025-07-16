@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -30,7 +30,7 @@ subroutine mmfonf(ndim, nno, alias, ksi1, ksi2, &
     real(kind=8) :: ff(9)
     real(kind=8) :: dff(2, 9)
     real(kind=8) :: ddff(3, 9)
-    integer :: nno, ndim
+    integer(kind=8) :: nno, ndim
 !
 ! ----------------------------------------------------------------------
 !

@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -44,21 +44,21 @@ subroutine dtmbuff(sd_dtm, addrs, level)
 !
 !   -0.1- Input/output arguments
     character(len=*), intent(in)  :: sd_dtm
-    integer, pointer :: addrs(:)
-    integer, optional, intent(in)  :: level
+    integer(kind=8), pointer :: addrs(:)
+    integer(kind=8), optional, intent(in)  :: level
 !
 !   -0.2- Local variables
 !   --- For strings copying
     character(len=8) :: sd_dtm_
 
 !   --- For general usage
-    integer           :: jbuff, ip, iret, addr, long
-    integer           :: ilev, lvl, dec, nbnoli, mxlevel
+    integer(kind=8)           :: jbuff, ip, iret, addr, long
+    integer(kind=8)           :: ilev, lvl, dec, nbnoli, mxlevel
     character(len=6)  :: k_iocc
     character(len=8)  :: sd_nl
     character(len=24) :: savename
     type(c_ptr) :: pc
-    integer, pointer  :: buffnl(:) => null()
+    integer(kind=8), pointer  :: buffnl(:) => null()
 !
 #include "dtminc.h"
 !

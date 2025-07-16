@@ -26,14 +26,10 @@ module HHO_utils_module
 !
     private
 #include "asterf_types.h"
-#include "asterc/r8prem.h"
 #include "asterfort/HHO_size_module.h"
 #include "asterfort/assert.h"
 #include "asterfort/dismoi.h"
-#include "asterfort/exisd.h"
 #include "asterfort/symt46.h"
-#include "asterfort/getResuElem.h"
-#include "blas/dcopy.h"
 #include "jeveux.h"
 #include "MeshTypes_type.h"
 !
@@ -63,7 +59,7 @@ contains
 !
         character(len=8), intent(in) :: model
         type(HHO_Data), intent(out) :: hhoData
-        integer, intent(out) :: ndim
+        integer(kind=8), intent(out) :: ndim
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -121,7 +117,7 @@ contains
 !
         character(len=1), intent(in) :: uplo
         real(kind=8), dimension(:, :), intent(inout) :: mat
-        integer, intent(in), optional :: size_mat
+        integer(kind=8), intent(in), optional :: size_mat
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -131,7 +127,7 @@ contains
 !   Inout mat   : matrix to copy
 ! --------------------------------------------------------------------------------------------------
 !
-        integer :: ncols, nrows, i
+        integer(kind=8) :: ncols, nrows, i
 !
         if (present(size_mat)) then
             nrows = size_mat
@@ -165,7 +161,7 @@ contains
 !
         implicit none
 !
-        integer, intent(in) :: long
+        integer(kind=8), intent(in) :: long
         character(len=8), intent(out) :: short
 !
 ! --------------------------------------------------------------------------------------------------
@@ -285,7 +281,7 @@ contains
 !   In mat   : matrix to print
 ! --------------------------------------------------------------------------------------------------
 !
-        integer :: ncols, nrows, i
+        integer(kind=8) :: ncols, nrows, i
 !
         nrows = size(mat, 1)
         ncols = size(mat, 2)
@@ -315,7 +311,7 @@ contains
 ! --------------------------------------------------------------------------------------------------
 !
 !
-        integer :: i, k
+        integer(kind=8) :: i, k
 !
 !
         write (6, *) "tensor of 9 rows x 9 cols"
@@ -371,7 +367,7 @@ contains
 !   In mat   : matrix to evaluate
 ! --------------------------------------------------------------------------------------------------
 !
-        integer :: nrows, ncols, irow, jcol
+        integer(kind=8) :: nrows, ncols, irow, jcol
 !
         nrows = size(mat, 1)
         ncols = size(mat, 2)
@@ -397,7 +393,7 @@ contains
 !
         real(kind=8), dimension(6), intent(in) :: SymMat
         real(kind=8), dimension(3), intent(in) :: vect
-        integer, intent(in) :: ndim
+        integer(kind=8), intent(in) :: ndim
         real(kind=8), dimension(3), intent(out) :: resu
 !
 ! --------------------------------------------------------------------------------------------------
@@ -450,10 +446,10 @@ contains
 !
 ! --------------------------------------------------------------------------------------------------
 !
-        integer :: cbs_comp, fbs_comp, cbs, fbs, jbeginVec, jendVec
-        integer :: total_dofs, idim, jbeginCell, jendCell, jbeginFace, jendFace, iFace
-        integer :: jFace, ibeginFace, iendFace, ibeginVec, iendVec
-        integer :: faces_dofs, faces_dofs_comp, total_dofs_comp
+        integer(kind=8) :: cbs_comp, fbs_comp, cbs, fbs, jbeginVec, jendVec
+        integer(kind=8) :: total_dofs, idim, jbeginCell, jendCell, jbeginFace, jendFace, iFace
+        integer(kind=8) :: jFace, ibeginFace, iendFace, ibeginVec, iendVec
+        integer(kind=8) :: faces_dofs, faces_dofs_comp, total_dofs_comp
 ! --------------------------------------------------------------------------------------------------
 !
 ! -- number of dofs
@@ -527,8 +523,8 @@ contains
 !
 ! --------------------------------------------------------------------------------------------------
 !
-        integer :: cbs_comp, cbs, fbs
-        integer :: total_dofs, idim, jbeginCell, jendCell
+        integer(kind=8) :: cbs_comp, cbs, fbs
+        integer(kind=8) :: total_dofs, idim, jbeginCell, jendCell
 ! --------------------------------------------------------------------------------------------------
 !
 ! -- number of dofs
@@ -558,7 +554,7 @@ contains
         implicit none
 !
         real(kind=8), dimension(:, :), intent(in) :: mat
-        integer, intent(in) :: size
+        integer(kind=8), intent(in) :: size
         aster_logical :: id
 !
 ! --------------------------------------------------------------------------------------------------
@@ -567,7 +563,7 @@ contains
 !   In mat   : matrix to evaluate
 ! --------------------------------------------------------------------------------------------------
 !
-        integer :: i, j
+        integer(kind=8) :: i, j
 !
         id = ASTER_TRUE
         do j = 1, size

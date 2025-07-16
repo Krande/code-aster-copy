@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -21,7 +21,6 @@ subroutine te0169(option, nomte)
     implicit none
 #include "jeveux.h"
 #include "asterfort/jevech.h"
-#include "asterfort/tecach.h"
 #include "asterfort/terefe.h"
 #include "blas/ddot.h"
 !
@@ -36,8 +35,8 @@ subroutine te0169(option, nomte)
 !
     real(kind=8) :: w(9), l1(3), l2(3), forref
     real(kind=8) :: norml1, norml2, coef1, coef2
-    integer :: jefint, jvSief, igeom, jvDisp, ivectu, nno, nc
-    integer :: ino, i, kc
+    integer(kind=8) :: jefint, jvSief, igeom, jvDisp, ivectu, nno, nc
+    integer(kind=8) :: ino, i, kc
     blas_int :: b_incx, b_incy, b_n
 ! ----------------------------------------------------------------------
 !

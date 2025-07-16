@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -32,18 +32,18 @@ subroutine rcadlv(fami, kpg, ksp, poum, jmat, nomat, mfact, msimp, &
 #include "asterfort/fointa.h"
 ! -----------------------------------------------------------------
     character(len=*), intent(in) :: fami
-    integer, intent(in)          :: kpg
-    integer, intent(in)          :: ksp
+    integer(kind=8), intent(in)          :: kpg
+    integer(kind=8), intent(in)          :: ksp
     character(len=1), intent(in) :: poum
-    integer, intent(in)          :: jmat
+    integer(kind=8), intent(in)          :: jmat
     character(len=*), intent(in) :: nomat, mfact, msimp
-    integer, intent(in)          :: nbpar
+    integer(kind=8), intent(in)          :: nbpar
     character(len=*), intent(in) :: nompar(nbpar)
     real(kind=8), intent(in)     :: valpar(nbpar)
-    integer, intent(out)         :: icodre
-    integer, intent(out)         :: jadr
-    integer, intent(out)         :: nbres
-    integer, intent(in)          :: iarret
+    integer(kind=8), intent(out)         :: icodre
+    integer(kind=8), intent(out)         :: jadr
+    integer(kind=8), intent(out)         :: nbres
+    integer(kind=8), intent(in)          :: iarret
 
 ! -----------------------------------------------------------------
 !  Recuperation de l'adresse jeveux (dans zr) des coefficients materiau
@@ -71,10 +71,10 @@ subroutine rcadlv(fami, kpg, ksp, poum, jmat, nomat, mfact, msimp, &
 !       out  icodre  : 0 si on a trouve, 1 sinon
 ! ----------------------------------------------------------------------
 
-    integer :: lmat, icomp, ipi, ipif, iadzi, iazk24, nbk, ivalk, ik, nbr, nbc
-    integer :: lfct, imat, nbmat, code, kv, nbv, ipif2, kmat, inom
+    integer(kind=8) :: lmat, icomp, ipi, ipif, iadzi, iazk24, nbk, ivalk, ik, nbr, nbc
+    integer(kind=8) :: lfct, imat, nbmat, code, kv, nbv, ipif2, kmat, inom
     real(kind=8) :: valres
-    integer :: nbpamx, nbpar2, nbpart, ipar, ier
+    integer(kind=8) :: nbpamx, nbpar2, nbpart, ipar, ier
     parameter(nbpamx=15)
     real(kind=8) :: valpa2(nbpamx), valvrc
     character(len=8) :: nompa2(nbpamx), novrc

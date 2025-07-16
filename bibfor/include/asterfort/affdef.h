@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -23,9 +23,9 @@ interface
                       ier)
         character(len=24) :: tmp
         character(len=24) :: nom
-        integer :: nel
-        integer :: ntel(*)
+        integer(kind=8) :: nel
+        integer(kind=8) :: ntel(*)
         character(len=8) :: tab(*)
-        integer :: ier
+        integer(kind=8) :: ier
     end subroutine affdef
 end interface

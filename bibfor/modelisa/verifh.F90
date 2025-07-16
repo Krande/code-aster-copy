@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -29,13 +29,13 @@ subroutine verifh(fami, kpg, ksp, poum, j_mater, &
 #include "asterfort/get_elas_id.h"
 !
     character(len=*), intent(in) :: fami
-    integer, intent(in) :: kpg
-    integer, intent(in) :: ksp
+    integer(kind=8), intent(in) :: kpg
+    integer(kind=8), intent(in) :: ksp
     character(len=*), intent(in) :: poum
-    integer, intent(in) :: j_mater
+    integer(kind=8), intent(in) :: j_mater
     real(kind=8), intent(out) :: epshy
     character(len=8), optional, intent(in) :: materi_
-    integer, optional, intent(out) :: ihydr_
+    integer(kind=8), optional, intent(out) :: ihydr_
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -60,10 +60,10 @@ subroutine verifh(fami, kpg, ksp, poum, j_mater, &
 ! --------------------------------------------------------------------------------------------------
 !
     character(len=8) :: materi
-    integer :: iret_hydr, iret_hydrm, iret_hydrp
+    integer(kind=8) :: iret_hydr, iret_hydrm, iret_hydrp
     real(kind=8) :: hydrm, hydrp
     real(kind=8) :: bendom, bendop
-    integer :: elas_id, iadzi, iazk24, icodrm(1), icodrp(1)
+    integer(kind=8) :: elas_id, iadzi, iazk24, icodrm(1), icodrp(1)
     character(len=8) :: nomres, valk(3)
     character(len=16) :: elas_keyword
     real(kind=8) :: valres(1)

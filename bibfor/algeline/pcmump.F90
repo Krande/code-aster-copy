@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -29,7 +29,7 @@ subroutine pcmump(matasz, solvez, iretz, new_facto)
 #include "asterfort/jeveuo.h"
 #include "asterfort/mtmchc.h"
     character(len=*) :: matasz, solvez
-    integer :: iretz
+    integer(kind=8) :: iretz
     aster_logical, intent(out), optional :: new_facto
 !-----------------------------------------------------------------------
 !
@@ -45,7 +45,7 @@ subroutine pcmump(matasz, solvez, iretz, new_facto)
 !----------------------------------------------------------------------
 !     VARIABLES LOCALES
 !----------------------------------------------------------------------
-    integer ::   iterpr, reacpr, pcpiv, iret, redmpi
+    integer(kind=8) ::   iterpr, reacpr, pcpiv, iret, redmpi
     aster_logical :: new_facto_loc
     complex(kind=8) :: cbid
     character(len=19) :: solveu, matass
@@ -53,7 +53,7 @@ subroutine pcmump(matasz, solvez, iretz, new_facto)
     character(len=24) :: usersm
     character :: prec, rank
     real(kind=8) :: blreps
-    integer, pointer           :: slvi(:) => null()
+    integer(kind=8), pointer           :: slvi(:) => null()
     character(len=24), pointer :: refa(:) => null()
     character(len=24), pointer :: slvk(:) => null()
     real(kind=8), pointer      :: slvr(:) => null()

@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -21,7 +21,7 @@
 interface
     subroutine uttrif(vale, nb, typfon)
         real(kind=8) :: vale(*)
-        integer :: nb
+        integer(kind=8) :: nb
         character(len=*) :: typfon
     end subroutine uttrif
 end interface

@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -26,10 +26,7 @@ subroutine modelCheckPlaneity(mesh, model)
 #include "asterc/asmpi_barrier_wrap.h"
 #include "asterc/asmpi_comm.h"
 #include "asterc/asmpi_split_comm.h"
-#include "asterfort/as_allocate.h"
 #include "asterfort/as_deallocate.h"
-#include "asterfort/asmpi_comm_vect.h"
-#include "asterfort/assert.h"
 #include "asterfort/calcul.h"
 #include "asterfort/dismoi.h"
 #include "asterfort/exlim2.h"
@@ -59,16 +56,16 @@ subroutine modelCheckPlaneity(mesh, model)
     aster_logical :: lparallel_mesh
     character(len=1), parameter :: base = "V"
     character(len=19), parameter :: plateLigrel = "&&OP0018.PLATES"
-    integer, pointer :: cellPlate(:) => null()
+    integer(kind=8), pointer :: cellPlate(:) => null()
     character(len=19) :: modelLigrel
-    integer :: nbCellPlate
+    integer(kind=8) :: nbCellPlate
     character(len=16), parameter :: option = "VERI_PLAN"
-    integer, parameter :: nbIn = 2, nbOut = 2
+    integer(kind=8), parameter :: nbIn = 2, nbOut = 2
     character(len=8) :: lpain(nbIn), lpaout(nbOut)
     character(len=24) :: lchin(nbIn), lchout(nbOut)
     character(len=24) :: chgeom
     character(len=24), parameter :: paraCheck = "&&OP0018.PARACHECK"
-    integer, parameter :: nbCmp = 2
+    integer(kind=8), parameter :: nbCmp = 2
     character(len=8), parameter :: cmpName(nbCmp) = (/"X1", "X2"/)
     real(kind=8) :: cmpVale(nbCmp)
     character(len=24), parameter :: codret = '&&OP0018.CODRET', indicr = '&&OP0018.INDICR'

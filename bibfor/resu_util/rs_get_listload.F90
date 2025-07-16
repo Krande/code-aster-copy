@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -33,9 +33,9 @@ subroutine rs_get_listload(result_, nume, list_load, iexcit)
 ! person_in_charge: mickael.abbas at edf.fr
 !
     character(len=*), intent(in) :: result_
-    integer, intent(in) :: nume
+    integer(kind=8), intent(in) :: nume
     character(len=*), intent(out) :: list_load
-    integer, intent(out) :: iexcit
+    integer(kind=8), intent(out) :: iexcit
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -55,12 +55,12 @@ subroutine rs_get_listload(result_, nume, list_load, iexcit)
 ! --------------------------------------------------------------------------------------------------
 !
     character(len=8) :: result, func_name, valk(4)
-    integer :: jv_para, i_load_comm, i_load_resu, n1, n2, vali(2)
-    integer :: nb_load_comm, nb_load, nb_load_resu
+    integer(kind=8) :: jv_para, i_load_comm, i_load_resu, n1, n2, vali(2)
+    integer(kind=8) :: nb_load_comm, nb_load, nb_load_resu
     character(len=19) :: list_load_r
     character(len=8), pointer :: v_loadc_name(:) => null()
     character(len=8), pointer :: v_loadc_func(:) => null()
-    integer, pointer :: v_loadr_info(:) => null()
+    integer(kind=8), pointer :: v_loadr_info(:) => null()
     character(len=24), pointer :: v_loadr_name(:) => null()
     character(len=24), pointer :: v_loadr_func(:) => null()
 !

@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2018 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -28,9 +28,9 @@ interface
                       rese         , nrese         ,&
                       l_previous_  , indco_prev_   ,&
                       indadhe_prev_, indadhe2_prev_)
-        integer, intent(in)  :: ndim
+        integer(kind=8), intent(in)  :: ndim
         aster_logical, intent(in) :: leltf
-        integer, intent(in) :: ialgoc, ialgof, indco
+        integer(kind=8), intent(in) :: ialgoc, ialgof, indco
         aster_logical, intent(in) :: lpenaf
         real(kind=8), intent(in) :: coefaf, lambda
         real(kind=8), intent(in) :: djeut(3), dlagrf(2)
@@ -38,6 +38,6 @@ interface
         aster_logical, intent(out) :: lcont, ladhe, l_fric_no
         real(kind=8), intent(out) :: rese(3), nrese
         aster_logical, optional, intent(in) :: l_previous_
-        integer, optional, intent(in) :: indco_prev_, indadhe_prev_, indadhe2_prev_
+        integer(kind=8), optional, intent(in) :: indco_prev_, indadhe_prev_, indadhe2_prev_
     end subroutine mmmsta
 end interface

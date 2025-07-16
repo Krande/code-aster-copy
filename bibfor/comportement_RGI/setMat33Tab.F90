@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -24,7 +24,6 @@ subroutine setMat33Tab(tab, x1, x2, x3, x4, x5, &
 !   récuperation des valeurs d'un tableau
 !-----------------------------------------------------------------------
     implicit none
-#include "asterfort/assert.h"
     real(kind=8), intent(inout) :: tab(3, 3, *)
     real(kind=8), intent(in) :: x1(3, 3)
     real(kind=8), optional, intent(in) :: x2(3, 3), x3(3, 3), x4(3, 3), x5(3, 3)

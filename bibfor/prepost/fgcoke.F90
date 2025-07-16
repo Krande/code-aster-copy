@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -22,7 +22,7 @@ subroutine fgcoke(nbcycl, sigmin, sigmax, n, m, &
 #include "jeveux.h"
     real(kind=8) :: sigmin(*), sigmax(*)
     real(kind=8) :: n, m, sm, rke(*)
-    integer :: nbcycl
+    integer(kind=8) :: nbcycl
 !     AMPLIFICATION DU CHARGEMENT (KE COEFFICIENT DE CORRECTION
 !     ELASTO-PLASTIQUE
 !     ------------------------------------------------------------------
@@ -38,7 +38,7 @@ subroutine fgcoke(nbcycl, sigmin, sigmax, n, m, &
     real(kind=8) :: delta
 !
 !-----------------------------------------------------------------------
-    integer :: i
+    integer(kind=8) :: i
 !-----------------------------------------------------------------------
     do i = 1, nbcycl
         delta = abs(sigmax(i)-sigmin(i))

@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -35,7 +35,7 @@ subroutine nmarnr(result, typtaz, numreu)
 #include "asterfort/tbexve.h"
     character(len=8) :: result
     character(len=*) :: typtaz
-    integer :: numreu
+    integer(kind=8) :: numreu
 !
 ! ----------------------------------------------------------------------
 !
@@ -52,14 +52,14 @@ subroutine nmarnr(result, typtaz, numreu)
 !
 ! ----------------------------------------------------------------------
 !
-    integer :: iret, nblign
+    integer(kind=8) :: iret, nblign
     character(len=19) :: nomtab
     character(len=16) :: typtab
     character(len=2) :: typvar
     aster_logical :: lexist
     character(len=19) :: lisres
-    integer :: jlisre, nval, ival, vali
-    integer, pointer :: tbnp(:) => null()
+    integer(kind=8) :: jlisre, nval, ival, vali
+    integer(kind=8), pointer :: tbnp(:) => null()
 !
 ! ----------------------------------------------------------------------
 !

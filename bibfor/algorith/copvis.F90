@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -41,8 +41,8 @@ subroutine copvis(nb, ivec1, ivec2)
 !      CHARACTER*16
 !      CHARACTER*24
 !      REAL*8
-    integer :: nb, ivec1(nb), ivec2(nb)
-    integer :: i
+    integer(kind=8) :: nb, ivec1(nb), ivec2(nb)
+    integer(kind=8) :: i
 !-----------------------------------------------------------------------
 !
     if (nb .eq. 0) goto 999

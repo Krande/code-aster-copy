@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -23,10 +23,10 @@
 interface
     subroutine dlfdyn(rigid, amort, lamort, neq, d0,&
                       v0, f, f0)
-        integer :: rigid
-        integer :: amort
+        integer(kind=8) :: rigid
+        integer(kind=8) :: amort
         aster_logical :: lamort
-        integer :: neq
+        integer(kind=8) :: neq
         real(kind=8) :: d0(*)
         real(kind=8) :: v0(*)
         real(kind=8) :: f(*)

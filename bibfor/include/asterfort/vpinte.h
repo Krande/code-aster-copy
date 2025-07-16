@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -23,20 +23,20 @@ interface
                       ieme, npas, tolf, nitf, lraide,&
                       lmasse, ldynam, resufi, resufr, nfreqb,&
                       solveu)
-        integer :: nfreqb
+        integer(kind=8) :: nfreqb
         character(len=16) :: option
-        integer :: nfreq
+        integer(kind=8) :: nfreq
         real(kind=8) :: valp(*)
         real(kind=8) :: det(*)
-        integer :: idet(*)
-        integer :: ieme(*)
-        integer :: npas(*)
+        integer(kind=8) :: idet(*)
+        integer(kind=8) :: ieme(*)
+        integer(kind=8) :: npas(*)
         real(kind=8) :: tolf
-        integer :: nitf
-        integer :: lraide
-        integer :: lmasse
-        integer :: ldynam
-        integer :: resufi(nfreqb, *)
+        integer(kind=8) :: nitf
+        integer(kind=8) :: lraide
+        integer(kind=8) :: lmasse
+        integer(kind=8) :: ldynam
+        integer(kind=8) :: resufi(nfreqb, *)
         real(kind=8) :: resufr(nfreqb, *)
         character(len=19) :: solveu
     end subroutine vpinte

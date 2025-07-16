@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -21,9 +21,9 @@
 interface
     subroutine zngets(ishift, which, kev, np, ritz,&
                       bounds)
-        integer :: np
-        integer :: kev
-        integer :: ishift
+        integer(kind=8) :: np
+        integer(kind=8) :: kev
+        integer(kind=8) :: ishift
         character(len=2) :: which
         complex(kind=8) :: ritz(kev+np)
         complex(kind=8) :: bounds(kev+np)

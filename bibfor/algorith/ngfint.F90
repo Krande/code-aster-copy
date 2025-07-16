@@ -30,7 +30,6 @@ subroutine ngfint(option, typmod, ndim, nddl, neps, &
     implicit none
 !
 #include "asterf_types.h"
-#include "asterfort/assert.h"
 #include "asterfort/codere.h"
 #include "asterfort/nmcomp.h"
 #include "asterfort/Behaviour_type.h"
@@ -40,7 +39,7 @@ subroutine ngfint(option, typmod, ndim, nddl, neps, &
     character(len=8) :: typmod(2)
     character(len=*) :: fami
     character(len=16) :: option, compor(COMPOR_SIZE)
-    integer :: ndim, nddl, neps, npg, mat, lgpg
+    integer(kind=8) :: ndim, nddl, neps, npg, mat, lgpg
     real(kind=8) :: w(neps, npg), ni2ldc(neps, npg), b(neps, npg, nddl)
     real(kind=8) :: angmas(3), carcri(*), instam, instap
     real(kind=8) :: ddlm(nddl), ddld(nddl)
@@ -49,7 +48,7 @@ subroutine ngfint(option, typmod, ndim, nddl, neps, &
     real(kind=8), intent(out):: matuu((nddl*(nddl+1))/2)
     real(kind=8), intent(out), target :: matns(nddl, nddl)
     aster_logical, intent(in) :: matsym, lMatr, lVect, lSigm
-    integer, intent(out) :: codret
+    integer(kind=8), intent(out) :: codret
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -85,8 +84,8 @@ subroutine ngfint(option, typmod, ndim, nddl, neps, &
 ! out codret  : code retour
 ! --------------------------------------------------------------------------------------------------
 !
-    integer, parameter :: ksp = 1
-    integer :: nepg, g, i, j, cod(npg)
+    integer(kind=8), parameter :: ksp = 1
+    integer(kind=8) :: nepg, g, i, j, cod(npg)
     real(kind=8) :: sigm(neps, npg), sigp(neps, npg)
     real(kind=8) :: epsm(neps, npg), epsd(neps, npg)
     real(kind=8) :: dsidep(neps, neps, npg)

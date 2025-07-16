@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -45,14 +45,14 @@ subroutine disexc(nindex, ilfex1, illex, npdsc3, iadsc3)
 #include "asterfort/jeveut.h"
 #include "asterfort/wkvect.h"
 !
-    integer :: ij1, i1, i2, ireim1, ireim2
-    integer :: ilong1
+    integer(kind=8) :: ij1, i1, i2, ireim1, ireim2
+    integer(kind=8) :: ilong1
     character(len=8) :: chlist(5)
     character(len=24) :: k24bd1
 !
 !-----------------------------------------------------------------------
-    integer :: iadsc3, ibid2, ilfex1, ilfex2
-    integer :: illex, itail1, nindex, npdsc3
+    integer(kind=8) :: iadsc3, ibid2, ilfex1, ilfex2
+    integer(kind=8) :: illex, itail1, nindex, npdsc3
 !
 !-----------------------------------------------------------------------
     call jemarq()

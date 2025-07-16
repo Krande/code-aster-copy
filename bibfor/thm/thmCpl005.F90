@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -79,10 +79,10 @@ subroutine thmCpl005(ds_thm, &
     type(THM_DS), intent(inout) :: ds_thm
     aster_logical, intent(in) :: lMatr, lSigm, lVari
     real(kind=8), intent(in) :: angl_naut(3)
-    integer, intent(in) :: j_mater, ndim, nbvari
-    integer, intent(in) :: dimdef, dimcon
-    integer, intent(in) :: adcome, adcote, adcp11, adcp21
-    integer, intent(in) :: addeme, addete, addep1, addep2
+    integer(kind=8), intent(in) :: j_mater, ndim, nbvari
+    integer(kind=8), intent(in) :: dimdef, dimcon
+    integer(kind=8), intent(in) :: adcome, adcote, adcp11, adcp21
+    integer(kind=8), intent(in) :: addeme, addete, addep1, addep2
     real(kind=8), intent(in) :: temp, p1, p2
     real(kind=8), intent(in) :: dtemp, dp1, dp2
     real(kind=8), intent(in) :: epsv, depsv, deps(6), tbiot(6)
@@ -92,7 +92,7 @@ subroutine thmCpl005(ds_thm, &
     real(kind=8), intent(in) :: vintm(nbvari)
     real(kind=8), intent(inout) :: vintp(nbvari)
     real(kind=8), intent(inout) :: dsde(dimcon, dimdef)
-    integer, intent(out)  :: retcom
+    integer(kind=8), intent(out)  :: retcom
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -142,7 +142,7 @@ subroutine thmCpl005(ds_thm, &
 !
 ! --------------------------------------------------------------------------------------------------
 !
-    integer :: i
+    integer(kind=8) :: i
     real(kind=8), parameter :: rac2 = sqrt(2.d0)
     real(kind=8) :: phim, phi0
     real(kind=8) :: alp11, alp12, alp21
@@ -160,8 +160,8 @@ subroutine thmCpl005(ds_thm, &
     real(kind=8) :: dmdeps(6), sigmp(6), dsdp1(6), dsdp2(6)
     real(kind=8) :: dqeps(6)
     real(kind=8) :: p1m
-    integer :: advihy, advico
-    integer :: vihrho, vicphi, vicsat
+    integer(kind=8) :: advihy, advico
+    integer(kind=8) :: vihrho, vicphi, vicsat
     real(kind=8) :: ep, surf, shut, sbjh, wbjh, dpi
     real(kind=8) :: sbjhm, wbjhm, epm
 !

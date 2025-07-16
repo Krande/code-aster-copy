@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -30,11 +30,11 @@ subroutine fgrmax(ncyc, sigmin, sigmax, smin, smax)
 #include "asterfort/infniv.h"
     real(kind=8) :: sigmax(*), sigmin(*)
     real(kind=8) :: ampmax, smax(*), smin(*)
-    integer :: ncyc, cycmax
+    integer(kind=8) :: ncyc, cycmax
 !       ----------------------------------------------------------------
 !
 !-----------------------------------------------------------------------
-    integer :: i, ifm, niv
+    integer(kind=8) :: i, ifm, niv
 !-----------------------------------------------------------------------
     call infniv(ifm, niv)
 !

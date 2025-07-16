@@ -15,30 +15,31 @@
 ! You should have received a copy of the GNU General Public License
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
-
-subroutine vtcop1(chin, chout, kstop, codret)
+!
+subroutine vtcop1(fieldNodeInZ, fieldNodeOutZ, codret)
+!
     implicit none
-#include "asterf_types.h"
-#include "jeveux.h"
+!
 #include "asterc/indik8.h"
+#include "asterf_types.h"
+#include "asterfort/as_allocate.h"
+#include "asterfort/as_deallocate.h"
 #include "asterfort/assert.h"
 #include "asterfort/dismoi.h"
 #include "asterfort/jedema.h"
 #include "asterfort/jelira.h"
 #include "asterfort/jemarq.h"
-#include "asterfort/jenuno.h"
 #include "asterfort/jeveuo.h"
 #include "asterfort/jexnom.h"
-#include "asterfort/jexnum.h"
 #include "asterfort/utmess.h"
 #include "asterfort/vrrefe.h"
-#include "asterfort/as_deallocate.h"
-#include "asterfort/as_allocate.h"
-#include "asterfort/int_to_char8.h"
-    character(len=*) :: chin, chout
-    character(len=1) :: kstop
-    integer :: codret
-! person_in_charge: nicolas.sellenet at edf.fr
+#include "jeveux.h"
+!
+    character(len=*), intent(in) :: fieldNodeInZ, fieldNodeOutZ
+    integer(kind=8), intent(out) :: codret
+!
+! --------------------------------------------------------------------------------------------------
+!
 !     APPELLE PAR LA ROUTINE CHAPEAU VTCOPY
 !     RECOPIE LES VALEURS DU CHAM_NO CHIN DANS LE CHAM_NO CHOUT
 !     CETTE ROUTINE PERMET DE CHANGER LA NUMEROTATION D'UN CHAM_NO
@@ -50,223 +51,181 @@ subroutine vtcop1(chin, chout, kstop, codret)
 !     - LES CHAM_NOS DOIVENT EXISTER.
 !     - LES DDLS DE "LAGRANGE" SONT MIS A ZERO DANS CHOUT.
 !
-!     ------------------------------------------------------------------
+! --------------------------------------------------------------------------------------------------
 !
-!
-!
-    integer :: iret, ieq1, ieq2, neq1, jvale1, jvale2
-    integer :: neq2
-    integer :: nnomx, ncpmx, nuno2, nucp2, nuno1, nucp1
-    integer :: jcmpgd, ncmpmx, icmp
-    character(len=1) :: typ1, typ2
-    character(len=8) :: nomgd, mesh1, mesh2
-    character(len=24) :: valk(4)
-    character(len=19) :: ch1, ch2, pfchno
-    integer, pointer :: trav1(:) => null()
+    integer(kind=8) :: iret, ieq1, ieq2, nbEquaIn, jvValeIn, jvValeOut
+    integer(kind=8) :: nbEquaOut
+    integer(kind=8) :: nnomx, ncpmx, nuno2, nucp2, nuno1, nucp1
+    integer(kind=8) :: jcmpgd, ncmpmx, cmpLagr
+    character(len=1) :: scalTypeIn, scalTypeOut
+    character(len=8) :: nomgd, meshIn, meshOut
+    character(len=19) :: fieldNodeIn, fieldNodeOut, pfchno
+    integer(kind=8), pointer :: trav1(:) => null()
     aster_logical, pointer :: trav2(:) => null()
-    character(len=24), pointer :: refe1(:) => null()
-    character(len=24), pointer :: refe2(:) => null()
-    integer, pointer :: deeq1(:) => null()
-    integer, pointer :: deeq2(:) => null()
-    integer, pointer :: deeq(:) => null()
+    character(len=24), pointer :: refeIn(:) => null()
+    character(len=24), pointer :: refeOut(:) => null()
+    integer(kind=8), pointer :: deeqIn(:) => null()
+    integer(kind=8), pointer :: deeqOut(:) => null()
+    integer(kind=8), pointer :: deeq(:) => null()
 !
-!     ------------------------------------------------------------------
+! --------------------------------------------------------------------------------------------------
 !
     call jemarq()
     codret = 0
-    ch1 = chin
-    ch2 = chout
-!
-    call vrrefe(ch1, ch2, iret)
-!
-!
-!     1. SI LES 2 CHAMPS ONT LES MEMES NUMEROTATIONS :
-!     -------------------------------------------------
+    fieldNodeIn = fieldNodeInZ
+    fieldNodeOut = fieldNodeOutZ
+
+! - Check REFE
+    call vrrefe(fieldNodeIn, fieldNodeOut, iret)
+
+! - Access to fields
+    call jelira(fieldNodeIn//'.VALE', 'TYPE', cval=scalTypeIn)
+    call jelira(fieldNodeIn//'.VALE', 'LONMAX', nbEquaIn)
+    call jeveuo(fieldNodeIn//'.REFE', 'L', vk24=refeIn)
+    call jeveuo(fieldNodeIn//'.VALE', 'L', jvValeIn)
+    call jelira(fieldNodeOut//'.VALE', 'TYPE', cval=scalTypeOut)
+    call jelira(fieldNodeOut//'.VALE', 'LONMAX', nbEquaOut)
+    call jeveuo(fieldNodeOut//'.REFE', 'L', vk24=refeOut)
+    call jeveuo(fieldNodeOut//'.VALE', 'E', jvValeOut)
+
+! - Check meshes
+    call dismoi("NOM_MAILLA", fieldNodeIn, "CHAM_NO", repk=meshIn)
+    call dismoi("NOM_MAILLA", fieldNodeOut, "CHAM_NO", repk=meshOut)
+    if (meshIn .ne. meshOut) then
+        call utmess('F', 'FIELD0_2')
+    end if
+
     if (iret .eq. 0) then
-        call jelira(ch1//'.VALE', 'TYPE', cval=typ1)
-        call jelira(ch1//'.VALE', 'LONMAX', neq1)
-        call jeveuo(ch1//'.VALE', 'L', jvale1)
-        call jelira(ch2//'.VALE', 'TYPE', cval=typ2)
-        call jeveuo(ch2//'.VALE', 'E', jvale2)
-        call dismoi('NUME_EQUA', ch2, 'CHAM_NO', repk=pfchno)
+! ----- Same numbering: copy values (set zero on Lagrange multipliers for BC)
+        call dismoi('NUME_EQUA', fieldNodeOut, 'CHAM_NO', repk=pfchno)
         call jeveuo(pfchno//'.DEEQ', 'L', vi=deeq)
-        if (typ1 .eq. typ2) then
-            if (typ1 .eq. 'R') then
-                do ieq1 = 0, neq1-1
+        if (scalTypeIn .eq. scalTypeOut) then
+            if (scalTypeIn .eq. 'R') then
+                do ieq1 = 0, nbEquaIn-1
                     if (deeq(2*ieq1+2) .le. 0) then
-                        zr(jvale2+ieq1) = 0.d0
+                        zr(jvValeOut+ieq1) = 0.d0
                     else
-                        zr(jvale2+ieq1) = zr(jvale1+ieq1)
+                        zr(jvValeOut+ieq1) = zr(jvValeIn+ieq1)
                     end if
                 end do
-            else if (typ1 .eq. 'C') then
-                do ieq1 = 0, neq1-1
+            else if (scalTypeIn .eq. 'C') then
+                do ieq1 = 0, nbEquaIn-1
                     if (deeq(2*ieq1+2) .le. 0) then
-                        zc(jvale2+ieq1) = dcmplx(0.d0, 0.d0)
+                        zc(jvValeOut+ieq1) = dcmplx(0.d0, 0.d0)
                     else
-                        zc(jvale2+ieq1) = zc(jvale1+ieq1)
+                        zc(jvValeOut+ieq1) = zc(jvValeIn+ieq1)
                     end if
                 end do
             else
-                valk(1) = ch1
-                valk(2) = ch2
-                valk(3) = typ1
-                call utmess('F', 'ALGELINE3_93', nk=3, valk=valk)
+                ASSERT(ASTER_FALSE)
             end if
         else
-            if (typ1 .eq. 'R' .and. typ2 .eq. 'C') then
-                do ieq1 = 0, neq1-1
+            if (scalTypeIn .eq. 'R' .and. scalTypeOut .eq. 'C') then
+                do ieq1 = 0, nbEquaIn-1
                     if (deeq(2*ieq1+2) .le. 0) then
-                        zc(jvale2+ieq1) = dcmplx(0.d0, 0.d0)
+                        zc(jvValeOut+ieq1) = dcmplx(0.d0, 0.d0)
                     else
-                        zc(jvale2+ieq1) = zr(jvale1+ieq1)
+                        zc(jvValeOut+ieq1) = zr(jvValeIn+ieq1)
                     end if
                 end do
             else
-                valk(1) = ch1
-                valk(2) = typ1
-                valk(3) = ch2
-                valk(4) = typ2
-                call utmess('F', 'ALGELINE3_94', nk=4, valk=valk)
+                call utmess("F", "FIELD0_1")
             end if
         end if
-        goto 999
-    end if
-!
-!
-!     2. SI LES 2 CHAMPS N'ONT PAS LES MEMES NUMEROTATIONS :
-!     ------------------------------------------------------
-    call jelira(ch1//'.VALE', 'TYPE', cval=typ1)
-    call jelira(ch1//'.VALE', 'LONMAX', neq1)
-    call jeveuo(ch1//'.VALE', 'L', jvale1)
-    call jelira(ch2//'.VALE', 'TYPE', cval=typ2)
-    call jelira(ch2//'.VALE', 'LONMAX', neq2)
-    call jeveuo(ch2//'.VALE', 'E', jvale2)
-!
-    call jeveuo(ch1//'.REFE', 'L', vk24=refe1)
-    call jeveuo(ch2//'.REFE', 'L', vk24=refe2)
-    call dismoi("NOM_MAILLA", ch1, "CHAM_NO", repk=mesh1)
-    call dismoi("NOM_MAILLA", ch2, "CHAM_NO", repk=mesh2)
-    if (mesh1 .ne. mesh2) then
-        valk(1) = ch1
-        valk(2) = ch2
-        valk(3) = mesh1
-        valk(4) = mesh2
-        call utmess('F', 'CALCULEL2_1', nk=4, valk=valk)
-    end if
-    call jeveuo(refe1(2) (1:19)//'.DEEQ', 'L', vi=deeq1)
-    call jeveuo(refe2(2) (1:19)//'.DEEQ', 'L', vi=deeq2)
+    else
+! ----- Different numbering: copy values (set zero on Lagrange multipliers for BC)
+        call jeveuo(refeIn(2) (1:19)//'.DEEQ', 'L', vi=deeqIn)
+        call jeveuo(refeOut(2) (1:19)//'.DEEQ', 'L', vi=deeqOut)
 !
 !
 !     2.1 ON CHERCHE LE NUMERO DE CMP LE PLUS GRAND ET
 !     LE NUMERO DE NOEUD LE PLUS GRAND DANS CH2->.DEEQ2 :
 !     ---------------------------------------------------------------
 !
-    nnomx = 0
-    ncpmx = 0
-    do ieq2 = 1, neq2
-        nnomx = max(nnomx, deeq2(2*(ieq2-1)+1))
-        ncpmx = max(ncpmx, deeq2(2*(ieq2-1)+2))
-    end do
+        nnomx = 0
+        ncpmx = 0
+        do ieq2 = 1, nbEquaOut
+            nnomx = max(nnomx, deeqOut(2*(ieq2-1)+1))
+            ncpmx = max(ncpmx, deeqOut(2*(ieq2-1)+2))
+        end do
 !
 !
 !     2.2 ON REMPLIT UN OBJET DE TRAVAIL :
 !     ------------------------------------
-    AS_ALLOCATE(vi=trav1, size=nnomx*ncpmx)
-    AS_ALLOCATE(vl=trav2, size=neq2)
-    do ieq2 = 1, neq2
-        nuno2 = deeq2(2*(ieq2-1)+1)
-        nucp2 = deeq2(2*(ieq2-1)+2)
-        if (nucp2 .gt. 0) trav1((nuno2-1)*ncpmx+nucp2) = ieq2
-        trav2(ieq2) = .false.
-    end do
-!
-!
-!     2.3 ON RECOPIE LES VALEURS DE CH1 DANS CH2 :
-!     -------------------------------------------
-    if (typ1 .eq. typ2) then
-        if (typ1 .eq. 'R') then
-            do ieq1 = 1, neq1
-                nuno1 = deeq1(2*(ieq1-1)+1)
-                nucp1 = deeq1(2*(ieq1-1)+2)
-                if ((nucp1 .gt. 0) .and. (nuno1 .le. nnomx) .and. (nucp1 .le. ncpmx)) then
-                    ieq2 = trav1((nuno1-1)*ncpmx+nucp1)
-                    if (ieq2 .gt. 0) then
-                        trav2(ieq2) = .true.
-                        zr(jvale2-1+ieq2) = zr(jvale1-1+ieq1)
+        AS_ALLOCATE(vi=trav1, size=nnomx*ncpmx)
+        AS_ALLOCATE(vl=trav2, size=nbEquaOut)
+        do ieq2 = 1, nbEquaOut
+            nuno2 = deeqOut(2*(ieq2-1)+1)
+            nucp2 = deeqOut(2*(ieq2-1)+2)
+            if (nucp2 .gt. 0) trav1((nuno2-1)*ncpmx+nucp2) = ieq2
+            trav2(ieq2) = .false.
+        end do
+
+!     2.3 ON RECOPIE LES VALEURS DE CH1 DANS CH2
+        if (scalTypeIn .eq. scalTypeOut) then
+            if (scalTypeIn .eq. 'R') then
+                do ieq1 = 1, nbEquaIn
+                    nuno1 = deeqIn(2*(ieq1-1)+1)
+                    nucp1 = deeqIn(2*(ieq1-1)+2)
+                    if ((nucp1 .gt. 0) .and. (nuno1 .le. nnomx) .and. (nucp1 .le. ncpmx)) then
+                        ieq2 = trav1((nuno1-1)*ncpmx+nucp1)
+                        if (ieq2 .gt. 0) then
+                            trav2(ieq2) = .true.
+                            zr(jvValeOut-1+ieq2) = zr(jvValeIn-1+ieq1)
+                        end if
                     end if
-                end if
-            end do
-        else if (typ1 .eq. 'C') then
-            do ieq1 = 1, neq1
-                nuno1 = deeq1(2*(ieq1-1)+1)
-                nucp1 = deeq1(2*(ieq1-1)+2)
+                end do
+            else if (scalTypeIn .eq. 'C') then
+                do ieq1 = 1, nbEquaIn
+                    nuno1 = deeqIn(2*(ieq1-1)+1)
+                    nucp1 = deeqIn(2*(ieq1-1)+2)
+                    if ((nucp1 .gt. 0) .and. (nuno1 .le. nnomx)) then
+                        ieq2 = trav1((nuno1-1)*ncpmx+nucp1)
+                        if (ieq2 .gt. 0) then
+                            trav2(ieq2) = .true.
+                            zc(jvValeOut-1+ieq2) = zc(jvValeIn-1+ieq1)
+                        end if
+                    end if
+                end do
+            else
+                ASSERT(ASTER_FALSE)
+            end if
+!
+        else if (scalTypeIn .eq. 'R' .and. scalTypeOut .eq. 'C') then
+            do ieq1 = 1, nbEquaIn
+                nuno1 = deeqIn(2*(ieq1-1)+1)
+                nucp1 = deeqIn(2*(ieq1-1)+2)
                 if ((nucp1 .gt. 0) .and. (nuno1 .le. nnomx)) then
                     ieq2 = trav1((nuno1-1)*ncpmx+nucp1)
                     if (ieq2 .gt. 0) then
                         trav2(ieq2) = .true.
-                        zc(jvale2-1+ieq2) = zc(jvale1-1+ieq1)
+                        zc(jvValeOut-1+ieq2) = zr(jvValeIn-1+ieq1)
                     end if
                 end if
             end do
         else
-            valk(1) = ch1
-            valk(2) = ch2
-            valk(3) = typ1
-            call utmess('F', 'ALGELINE3_93', nk=3, valk=valk)
+            call utmess("F", "FIELD0_1")
         end if
-!
-    else if (typ1 .eq. 'R' .and. typ2 .eq. 'C') then
-        do ieq1 = 1, neq1
-            nuno1 = deeq1(2*(ieq1-1)+1)
-            nucp1 = deeq1(2*(ieq1-1)+2)
-            if ((nucp1 .gt. 0) .and. (nuno1 .le. nnomx)) then
-                ieq2 = trav1((nuno1-1)*ncpmx+nucp1)
-                if (ieq2 .gt. 0) then
-                    trav2(ieq2) = .true.
-                    zc(jvale2-1+ieq2) = zr(jvale1-1+ieq1)
-                end if
-            end if
-        end do
-!
-    else
-        valk(1) = ch1
-        valk(2) = typ1
-        valk(3) = ch2
-        valk(4) = typ2
-        call utmess('F', 'ALGELINE3_94', nk=4, valk=valk)
-    end if
 !
 !     A CAUSE DE LA SOUS-STRUCTURATION STATIQUE, ON DOIT AJOUTER
 !     UNE GLUTE POUR OUBLIER LA COMPOSANTE 'LAGR' POUR LA VERIF
-    call dismoi('NOM_GD', ch2, 'CHAM_NO', repk=nomgd)
-    call jeveuo(jexnom('&CATA.GD.NOMCMP', nomgd), 'L', jcmpgd)
-    call jelira(jexnom('&CATA.GD.NOMCMP', nomgd), 'LONMAX', ncmpmx)
-    icmp = -200
-    icmp = indik8(zk8(jcmpgd), 'LAGR', 1, ncmpmx)
+        call dismoi('NOM_GD', fieldNodeOut, 'CHAM_NO', repk=nomgd)
+        call jeveuo(jexnom('&CATA.GD.NOMCMP', nomgd), 'L', jcmpgd)
+        call jelira(jexnom('&CATA.GD.NOMCMP', nomgd), 'LONMAX', ncmpmx)
+        cmpLagr = -200
+        cmpLagr = indik8(zk8(jcmpgd), 'LAGR', 1, ncmpmx)
 !
-    do ieq2 = 1, neq2
-        nuno2 = deeq2(2*(ieq2-1)+1)
-        nucp2 = deeq2(2*(ieq2-1)+2)
+        do ieq2 = 1, nbEquaOut
+            nuno2 = deeqOut(2*(ieq2-1)+1)
+            nucp2 = deeqOut(2*(ieq2-1)+2)
 !       NUCP2.NE.ICMP == GLUTE POUR LA SOUS-STRUCTURATION STATIQUE
-        if (nucp2 .gt. 0 .and. nucp2 .ne. icmp .and. .not. trav2(ieq2)) then
-
-            valk(1) = zk8(jcmpgd+nucp2-1)
-            valk(2) = int_to_char8(nuno2)
-            valk(3) = ch1
-            codret = 1
-
-            if (kstop .eq. 'F') then
-                call utmess('F', 'ALGELINE7_20', nk=3, valk=valk)
-            else
-                call utmess('A', 'ALGELINE7_20', nk=3, valk=valk)
-                exit
+            if (nucp2 .gt. 0 .and. nucp2 .ne. cmpLagr .and. .not. trav2(ieq2)) then
+                codret = 1
             end if
-        end if
-    end do
-    AS_DEALLOCATE(vi=trav1)
-    AS_DEALLOCATE(vl=trav2)
+        end do
+        AS_DEALLOCATE(vi=trav1)
+        AS_DEALLOCATE(vl=trav2)
+    end if
 !
-999 continue
     call jedema()
 end subroutine

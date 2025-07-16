@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -36,7 +36,7 @@ subroutine posipr(nomte, efge, sipo)
 !
 ! --------------------------------------------------------------------------------------------------
 !
-    integer      :: itsec
+    integer(kind=8)      :: itsec
     real(kind=8) :: a, a2, alfay, alfay2, alfaz, alfaz2, aredy
     real(kind=8) :: aredy2, aredz, aredz2, deux, hy1, hy2, hz1
     real(kind=8) :: hz2, r1, r2, rt, rt2, ry, ry2
@@ -46,7 +46,7 @@ subroutine posipr(nomte, efge, sipo)
 !
 ! --------------------------------------------------------------------------------------------------
 !
-    integer, parameter :: nb_cara = 18
+    integer(kind=8), parameter :: nb_cara = 18
     real(kind=8) :: vale_cara(nb_cara)
     character(len=8) :: noms_cara(nb_cara)
     data noms_cara/'A1', 'IY1', 'IZ1', 'AY1', 'AZ1', 'JX1', 'RY1', 'RZ1', 'RT1', &
@@ -54,12 +54,12 @@ subroutine posipr(nomte, efge, sipo)
 !
 ! --------------------------------------------------------------------------------------------------
 !
-    integer, parameter :: nb_cara1 = 7
+    integer(kind=8), parameter :: nb_cara1 = 7
     real(kind=8) :: vale_cara1(nb_cara1)
     character(len=8) :: noms_cara1(nb_cara1)
     data noms_cara1/'HY1', 'HZ1', 'HY2', 'HZ2', 'R1', 'R2', 'TSEC'/
 !
-    integer             :: retp(4), iret
+    integer(kind=8)             :: retp(4), iret
     real(kind=8)        :: valr(4)
     character(len=8)    :: valp(4)
 !

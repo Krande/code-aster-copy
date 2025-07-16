@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -30,7 +30,7 @@ subroutine elmddl(raide, option, neq, ddl, nddle, &
 #include "asterfort/pteddl.h"
     character(len=19) :: raide
     character(len=14) :: option
-    integer :: neq, nbddl, vecddl(neq), nddle
+    integer(kind=8) :: neq, nbddl, vecddl(neq), nddle
     character(len=8) :: ddl(nddle)
 !
 ! ----------------------------------------------------------------------
@@ -50,7 +50,7 @@ subroutine elmddl(raide, option, neq, ddl, nddle, &
 !
 ! ----------------------------------------------------------------------
 !
-    integer :: ieq, ifm, niv, i, inter(neq)
+    integer(kind=8) :: ieq, ifm, niv, i, inter(neq)
     character(len=14) :: nume
 !
 ! ----------------------------------------------------------------------

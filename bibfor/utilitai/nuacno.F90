@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -56,17 +56,17 @@ subroutine nuacno(nuagez, list_nodez, chnoz)
 !
 ! --------------------------------------------------------------------------------------------------
 !
-    integer :: idx_gd
+    integer(kind=8) :: idx_gd
     character(len=4) :: type_scal
     character(len=8) :: mesh, gran_name
     character(len=19) :: chno, list_node, nuage, numeequa
-    integer :: iaprno, icmp
-    integer :: icompt, i_ec, ieq, nume_pt, itype, ival, i_pt
-    integer :: j, jnuai, jnuav, k, i_ligr_mesh
-    integer :: kcomp, kvale, nc, ncmp, ncmpmx, nb_ec, nb_point
-    integer, pointer :: ent_cod(:) => null()
-    integer, pointer :: nueq(:) => null()
-    integer, pointer :: p_list_node(:) => null()
+    integer(kind=8) :: iaprno, icmp
+    integer(kind=8) :: icompt, i_ec, ieq, nume_pt, itype, ival, i_pt
+    integer(kind=8) :: j, jnuai, jnuav, k, i_ligr_mesh
+    integer(kind=8) :: kcomp, kvale, nc, ncmp, ncmpmx, nb_ec, nb_point
+    integer(kind=8), pointer :: ent_cod(:) => null()
+    integer(kind=8), pointer :: nueq(:) => null()
+    integer(kind=8), pointer :: p_list_node(:) => null()
 !
 ! --------------------------------------------------------------------------------------------------
 !

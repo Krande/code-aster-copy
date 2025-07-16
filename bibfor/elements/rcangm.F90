@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -20,13 +20,11 @@ subroutine rcangm(ndim, coor, angl_naut)
     implicit none
 #include "jeveux.h"
 #include "asterc/r8dgrd.h"
-#include "asterc/r8nnem.h"
 #include "asterfort/angvx.h"
 #include "asterfort/angvxy.h"
 #include "asterfort/tecach.h"
-#include "asterfort/utmess.h"
 #include "asterfort/utrcyl.h"
-    integer :: ndim
+    integer(kind=8) :: ndim
     real(kind=8) :: angl_naut(3), coor(3)
 ! ......................................................................
 !    - ORIENTATION DU MASSIF
@@ -36,7 +34,7 @@ subroutine rcangm(ndim, coor, angl_naut)
 !                            (CAS CYLINDRIQUE)
 !   OUT     ANGL_NAUT R    : ANGLE NAUTIQUE
 ! ......................................................................
-    integer :: icamas, iret, i
+    integer(kind=8) :: icamas, iret, i
     real(kind=8) :: p(3, 3), xg(3), yg(3), orig(3), dire(3)
     real(kind=8) :: alpha, beta, xu, yu, xnorm
 !     ------------------------------------------------------------------

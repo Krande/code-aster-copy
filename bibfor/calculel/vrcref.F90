@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -52,10 +52,10 @@ subroutine vrcref(modele, chmat, carele, chvref, basez)
 !
     character(len=8) :: models, chmats, carels
     character(len=19) :: chvres
-    integer :: n1, iad, isp, ipt
-    integer :: k, k2, nbma, ncmp, icmp, jcesl1, jcesd1
-    integer :: jcesd, jcesl, ima, nbpt, nbsp, nbcvrc, ibid
-    integer :: jdcld, jdcll, nncp, iret
+    integer(kind=8) :: n1, iad, isp, ipt
+    integer(kind=8) :: k, k2, nbma, ncmp, icmp, jcesl1, jcesd1
+    integer(kind=8) :: jcesd, jcesl, ima, nbpt, nbsp, nbcvrc, ibid
+    integer(kind=8) :: jdcld, jdcll, nncp, iret
     character(len=8) :: varc, noma1, noma2
     character(len=19) :: dceli, celmod, cart1, ces1, ligrmo, csvref
     character(len=24) :: valk(4)
@@ -63,7 +63,7 @@ subroutine vrcref(modele, chmat, carele, chvref, basez)
     aster_logical :: avrc
     real(kind=8), pointer :: cesv1(:) => null()
     real(kind=8), pointer :: cesv(:) => null()
-    integer, pointer :: dclv(:) => null()
+    integer(kind=8), pointer :: dclv(:) => null()
     character(len=8), pointer :: cvrc(:) => null()
     character(len=8), pointer :: cvvar(:) => null()
     character(len=1) :: base

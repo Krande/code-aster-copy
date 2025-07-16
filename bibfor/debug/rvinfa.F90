@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -20,7 +20,7 @@ subroutine rvinfa(ifm, mcf, iocc, qnt, opt, &
                   opr, rep)
     implicit none
 #include "asterfort/getvr8.h"
-    integer :: ifm
+    integer(kind=8) :: ifm
     character(len=*) :: mcf, qnt, opt, opr, rep
 !     AFFICHAGE DES INFO SUR LA QUANTITE TRAITE
 !     ------------------------------------------------------------------
@@ -31,7 +31,7 @@ subroutine rvinfa(ifm, mcf, iocc, qnt, opt, &
 !     ------------------------------------------------------------------
 !
     character(len=80) :: mess
-    integer :: iocc, pt, n1
+    integer(kind=8) :: iocc, pt, n1
     real(kind=8) :: poin(3)
 !
     mess = ' '
@@ -110,6 +110,6 @@ subroutine rvinfa(ifm, mcf, iocc, qnt, opt, &
 !
 1000 format(' MOMENT PAR RAPPORT AU POINT : ', 1p, e12.5, 1x, e12.5)
 1010 format(' MOMENT PAR RAPPORT AU POINT : ', 1p, e12.5, 1x, e12.5,&
-    &                                           1x, e12.5)
+   &                                           1x, e12.5)
 !
 end subroutine

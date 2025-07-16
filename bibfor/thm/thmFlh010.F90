@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -33,7 +33,6 @@ subroutine thmFlh010(ds_thm, lMatr, lSigm, ndim, j_mater, &
     implicit none
 !
 #include "asterf_types.h"
-#include "asterfort/assert.h"
 #include "asterfort/hmderp.h"
 #include "asterfort/thmEvalPermLiquGaz.h"
 #include "asterfort/thmEvalFickSteam.h"
@@ -41,9 +40,9 @@ subroutine thmFlh010(ds_thm, lMatr, lSigm, ndim, j_mater, &
 !
     type(THM_DS), intent(in) :: ds_thm
     aster_logical, intent(in) :: lMatr, lSigm
-    integer, intent(in) :: j_mater
-    integer, intent(in) :: ndim, dimdef, dimcon
-    integer, intent(in) :: addeme, addep1, addep2, addete, adcp11, adcp12, adcp21, adcp22
+    integer(kind=8), intent(in) :: j_mater
+    integer(kind=8), intent(in) :: ndim, dimdef, dimcon
+    integer(kind=8), intent(in) :: addeme, addep1, addep2, addete, adcp11, adcp12, adcp21, adcp22
     real(kind=8), intent(in) :: rho11, satur, dsatur
     real(kind=8), intent(in) :: grat(3), grap1(3), grap2(3)
     real(kind=8), intent(in) :: t, p1, p2, pvp, pad
@@ -93,7 +92,7 @@ subroutine thmFlh010(ds_thm, lMatr, lSigm, ndim, j_mater, &
 !
 ! --------------------------------------------------------------------------------------------------
 !
-    integer :: i, j, k
+    integer(kind=8) :: i, j, k
     real(kind=8) :: rgaz, cvp
     real(kind=8) :: permli, dperml
     real(kind=8) :: permgz, dperms, dpermp

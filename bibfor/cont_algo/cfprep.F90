@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -57,12 +57,12 @@ subroutine cfprep(mesh, matr_asse, disp_iter, disp_cumu_inst, ds_contact)
 !
 ! --------------------------------------------------------------------------------------------------
 !
-    integer :: ifm, niv
-    integer :: nbliai, nt_cont_poin, model_ndim
-    integer :: iliai
-    integer :: lmat
+    integer(kind=8) :: ifm, niv
+    integer(kind=8) :: nbliai, nt_cont_poin, model_ndim
+    integer(kind=8) :: iliai
+    integer(kind=8) :: lmat
     character(len=19) :: sdcont_liot
-    integer, pointer :: v_sdcont_liot(:) => null()
+    integer(kind=8), pointer :: v_sdcont_liot(:) => null()
     character(len=19) :: sdcont_mu, sdcont_copo
     real(kind=8), pointer :: v_sdcont_mu(:) => null()
     real(kind=8), pointer :: v_sdcont_copo(:) => null()

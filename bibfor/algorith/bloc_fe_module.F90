@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -40,7 +40,7 @@ contains
         real(kind=8) :: b(:, :, :), d(:, :)
         real(kind=8) :: bd(size(b, 1))
 ! -------------------------------------------------------------------------
-        integer :: neps, ndim, nno
+        integer(kind=8) :: neps, ndim, nno
         blas_int :: b_incx, b_incy, b_lda, b_m, b_n
 ! -------------------------------------------------------------------------
         neps = size(b, 1)
@@ -63,7 +63,7 @@ contains
         real(kind=8) :: s(:), b(:, :, :)
         real(kind=8) :: sb(size(b, 2), size(b, 3))
 ! -------------------------------------------------------------------------
-        integer :: ndim, nno, neu
+        integer(kind=8) :: ndim, nno, neu
         blas_int :: b_incx, b_incy, b_lda, b_m, b_n
 ! -------------------------------------------------------------------------
         ndim = size(b, 2)
@@ -85,7 +85,7 @@ contains
         real(kind=8), intent(in) :: bin(:, :, :), bjm(:, :, :), kinjm(:, :)
         real(kind=8) :: bkb(size(bin, 2), size(bin, 3), size(bjm, 2), size(bjm, 3))
 ! -------------------------------------------------------------------------
-        integer :: ndim1, ndim2, nno1, nno2, neps1, neps2
+        integer(kind=8) :: ndim1, ndim2, nno1, nno2, neps1, neps2
         real(kind=8), allocatable :: kbjm(:, :, :)
         blas_int :: b_k, b_lda, b_ldb, b_ldc, b_m, b_n
 ! -------------------------------------------------------------------------
@@ -125,11 +125,11 @@ contains
     subroutine add_fint(fint, xin, fin)
 ! Contribution d'un bloc de forces au vecteur des forces interieures
         implicit none
-        integer, intent(in) :: xin(:, :)
+        integer(kind=8), intent(in) :: xin(:, :)
         real(kind=8), intent(in) :: fin(:, :)
         real(kind=8), intent(inout) :: fint(:)
 ! -------------------------------------------------------------------------
-        integer :: ndim, nno, i, n
+        integer(kind=8) :: ndim, nno, i, n
 ! -------------------------------------------------------------------------
         ndim = size(fin, 1)
         nno = size(fin, 2)
@@ -141,11 +141,11 @@ contains
     subroutine add_matr(matr, xin, xjm, kinjm)
 ! Contribution d'un bloc de matrice a la matrice tangente (stockage j,m,i,n)
         implicit none
-        integer, intent(in) :: xin(:, :), xjm(:, :)
+        integer(kind=8), intent(in) :: xin(:, :), xjm(:, :)
         real(kind=8), intent(in) :: kinjm(:, :, :, :)
         real(kind=8), intent(inout) :: matr(:, :)
 ! -------------------------------------------------------------------------
-        integer :: ndimin, nnoin, ndimjm, nnojm, i, n, j, m
+        integer(kind=8) :: ndimin, nnoin, ndimjm, nnojm, i, n, j, m
 ! -------------------------------------------------------------------------
         ndimin = size(kinjm, 1)
         nnoin = size(kinjm, 2)

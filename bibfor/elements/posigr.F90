@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -37,7 +37,7 @@ subroutine posigr(nomte, efge, sigm)
 !
 ! --------------------------------------------------------------------------------------------------
 !
-    integer      :: itsec
+    integer(kind=8)      :: itsec
     real(kind=8) :: a, a2, hy1, hy2, hz1, hz2, r1, r2
     real(kind=8) :: zero, deux
     real(kind=8) :: smf1, smf2, smfy1, smfy2, smfz1, smfz2, sn1, sn2
@@ -46,19 +46,19 @@ subroutine posigr(nomte, efge, sigm)
 !
 ! --------------------------------------------------------------------------------------------------
 !
-    integer, parameter :: nb_cara = 6
+    integer(kind=8), parameter :: nb_cara = 6
     real(kind=8) :: vale_cara(nb_cara)
     character(len=8) :: noms_cara(nb_cara)
     data noms_cara/'A1', 'IY1', 'IZ1', 'A2', 'IY2', 'IZ2'/
 !
 ! --------------------------------------------------------------------------------------------------
 !
-    integer, parameter :: nb_cara1 = 7
+    integer(kind=8), parameter :: nb_cara1 = 7
     real(kind=8) :: vale_cara1(nb_cara1)
     character(len=8) :: noms_cara1(nb_cara1)
     data noms_cara1/'HY1', 'HZ1', 'HY2', 'HZ2', 'R1', 'R2', 'TSEC'/
 !
-    integer             :: retp(4), iret
+    integer(kind=8)             :: retp(4), iret
     real(kind=8)        :: valr(4)
     character(len=8)    :: valp(4)
 !

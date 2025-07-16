@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -54,10 +54,10 @@ subroutine nbptca(ligrel, option, param, obnbpt, obnbno)
 !  mailles du maillage : v(ima) : nbpt(maille_ima)
 !  les mailles tardives sont ignorees.
 !-----------------------------------------------------------------------
-    integer :: iret, nbma, ima, jnbpt, jnbno, iacnx1, ilcnx1, nbno
+    integer(kind=8) :: iret, nbma, ima, jnbpt, jnbno, iacnx1, ilcnx1, nbno
     character(len=8) :: ma
     character(len=19) :: cel, ces
-    integer, pointer :: cesd(:) => null()
+    integer(kind=8), pointer :: cesd(:) => null()
 !------------------------------------------------------------------
     call jemarq()
     cel = '&&NBPTCA.CEL'

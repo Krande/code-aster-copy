@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -58,8 +58,8 @@ subroutine te0149(option, nomte)
 !
 ! --------------------------------------------------------------------------------------------------
 !
-    integer :: lmater, jmat, nbmat, imat, icomp, npg, lopt, itsec
-    integer :: labsc, jeffo, iret, nbpar, isief, ino, i
+    integer(kind=8) :: lmater, jmat, nbmat, imat, icomp, npg, lopt, itsec
+    integer(kind=8) :: labsc, jeffo, iret, nbpar, isief, ino, i
     real(kind=8) :: sixx, simin, simax
     real(kind=8) :: e, nu, rho, valpar, r1, ep1, absmoy, rhos, rhofi
     real(kind=8) :: rhofe, cm, phie, phii
@@ -68,16 +68,16 @@ subroutine te0149(option, nomte)
     character(len=8) :: nompar
     character(len=24) :: suropt, messk(2)
 !
-    integer :: nbfibr, nbgrfi, tygrfi, nbcarm, nug(10)
+    integer(kind=8) :: nbfibr, nbgrfi, tygrfi, nbcarm, nug(10)
 ! --------------------------------------------------------------------------------------------------
-    integer :: nbres
+    integer(kind=8) :: nbres
     parameter(nbres=6)
-    integer :: codres(nbres)
+    integer(kind=8) :: codres(nbres)
     real(kind=8) :: valres(nbres)
     character(len=16) :: nomres(nbres)
     data nomres/'E', 'NU', 'RHO', 'PROF_RHO_F_INT', 'PROF_RHO_F_EXT', 'COEF_MASS_AJOU'/
 ! --------------------------------------------------------------------------------------------------
-    integer, parameter :: nb_cara1 = 3
+    integer(kind=8), parameter :: nb_cara1 = 3
     real(kind=8) :: vale_cara1(nb_cara1)
     character(len=8) :: noms_cara1(nb_cara1)
     data noms_cara1/'R1', 'EP1', 'TSEC'/

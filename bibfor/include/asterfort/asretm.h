@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -24,12 +24,12 @@ interface
     subroutine asretm(lmasym, jtmp2, lgtmp2, nbterm, jsmhc,&
                       jsmdi, i1, i2)
         aster_logical :: lmasym
-        integer :: jtmp2
-        integer :: lgtmp2
-        integer :: nbterm
-        integer :: jsmhc
-        integer :: jsmdi
-        integer :: i1
-        integer :: i2
+        integer(kind=8) :: jtmp2
+        integer(kind=8) :: lgtmp2
+        integer(kind=8) :: nbterm
+        integer(kind=8) :: jsmhc
+        integer(kind=8) :: jsmdi
+        integer(kind=8) :: i1
+        integer(kind=8) :: i2
     end subroutine asretm
 end interface

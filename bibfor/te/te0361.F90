@@ -51,8 +51,8 @@ subroutine te0361(option, nomte)
 ! --------------------------------------------------------------------------------------------------
     character(len=8) :: lielrf(10)
     aster_logical :: axi
-    integer :: nno1, nno2, npg, ndim, neps, nddl, ntrou, jv_vff2, jv_dff2
-    integer :: jv_w, jv_vff1, jv_geom, jv_sief, jv_vectu, jv_angmas
+    integer(kind=8) :: nno1, nno2, npg, ndim, neps, nddl, ntrou, jv_vff2, jv_dff2
+    integer(kind=8) :: jv_w, jv_vff1, jv_geom, jv_sief, jv_vectu, jv_angmas
     real(kind=8) :: sigref, depref
     real(kind=8), allocatable:: wg(:, :), ni2ldc(:, :), b(:, :, :), ang(:, :)
     real(kind=8), allocatable:: sref(:)

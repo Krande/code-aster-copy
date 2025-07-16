@@ -108,11 +108,11 @@ subroutine renuno(nu, renum)
 !     -----------------------------------------------------
 !     VARIABLES LOCALES:
 !     ------------------
-    integer :: nm, nl, nbnom, nbntt
+    integer(kind=8) :: nm, nl, nbnom, nbntt
     character(len=8) :: ma, mo
 !-----------------------------------------------------------------------
-    integer :: i, ianewn, iaoldn, ico, nlili
-    integer, pointer :: exi1(:) => null()
+    integer(kind=8) :: i, ianewn, iaoldn, ico, nlili
+    integer(kind=8), pointer :: exi1(:) => null()
 !-----------------------------------------------------------------------
     call jemarq()
 !

@@ -30,9 +30,7 @@ subroutine cacoco(sdcont, keywf, mesh)
 #include "asterfort/cfdisi.h"
 #include "asterfort/detrsd.h"
 #include "asterfort/getvid.h"
-#include "asterfort/jenuno.h"
 #include "asterfort/jeveuo.h"
-#include "asterfort/jexnum.h"
 #include "asterfort/mminfi.h"
 #include "asterfort/mminfl.h"
 #include "asterfort/utmess.h"
@@ -59,12 +57,12 @@ subroutine cacoco(sdcont, keywf, mesh)
 !
 ! --------------------------------------------------------------------------------------------------
 !
-    integer :: iret, noc
-    integer :: nb_para_maxi, nb_cont_elem, nb_cont_zone, nb_slav_elem
-    integer :: shell_ep_indx, shell_exc_indx, iad1
-    integer :: elem_slav_indx, elem_slav_nume
-    integer :: jdecme
-    integer :: i_zone, i_slav_elem
+    integer(kind=8) :: iret, noc
+    integer(kind=8) :: nb_para_maxi, nb_cont_elem, nb_cont_zone, nb_slav_elem
+    integer(kind=8) :: shell_ep_indx, shell_exc_indx, iad1
+    integer(kind=8) :: elem_slav_indx, elem_slav_nume
+    integer(kind=8) :: jdecme
+    integer(kind=8) :: i_zone, i_slav_elem
     real(kind=8) :: shell_ep, shell_excent
     aster_logical :: l_dist_exist
     character(len=8) :: cara_elem, elem_slav_name
@@ -72,10 +70,10 @@ subroutine cacoco(sdcont, keywf, mesh)
     aster_logical :: l_dist_shell
     real(kind=8), pointer :: v_caraelem_cesv(:) => null()
     character(len=8), pointer :: v_caraelem_cesc(:) => null()
-    integer :: j_caraelem_cesd, j_caraelem_cesl
+    integer(kind=8) :: j_caraelem_cesd, j_caraelem_cesl
     character(len=24) :: sdcont_defi
     character(len=24) :: sdcont_mailco
-    integer, pointer :: v_sdcont_mailco(:) => null()
+    integer(kind=8), pointer :: v_sdcont_mailco(:) => null()
     character(len=24) :: sdcont_jeucoq
     real(kind=8), pointer :: v_sdcont_jeucoq(:) => null()
 !

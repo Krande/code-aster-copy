@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -56,9 +56,9 @@ subroutine cafthm(load, mesh, model, valeType)
 ! --------------------------------------------------------------------------------------------------
 !
     character(len=16), parameter :: keywordFact = 'FLUX_THM_REP'
-    integer :: n1, n2, n3, n4, nflux, jvalv, iocc
-    integer :: nbtou, nbma, jma, ncmp
-    integer :: iret, nfiss, jnfis
+    integer(kind=8) :: n1, n2, n3, n4, nflux, jvalv, iocc
+    integer(kind=8) :: nbtou, nbma, jma, ncmp
+    integer(kind=8) :: iret, nfiss, jnfis
     character(len=8) :: k8b, typmcl(2)
     character(len=16) :: motcle(2)
     character(len=19) :: carte
@@ -153,7 +153,9 @@ subroutine cafthm(load, mesh, model, valeType)
                 if ((n2 .ne. 0) .and. (n3 .ne. 0)) call utmess('F', 'XFEM_48')
             end if
 !           LES FLUX DE FLUIDE DANS LES FRACTURES NE SONT AUTORISES QU'EN HM_XFEM
-      if ((valeType .eq. 'FONC') .and. (nfiss .eq. 0) .and. (n4 .ne. 0)) call utmess('F', 'XFEM_28')
+            if ((valeType .eq. 'FONC') .and. (nfiss .eq. 0) .and. (n4 .ne. 0)) then
+                call utmess('F', 'XFEM_28')
+            end if
             call reliem(model, mesh, 'NU_MAILLE', keywordFact, iocc, &
                         2, motcle, typmcl, mesmai, nbma)
             if (nbma .ne. 0) then

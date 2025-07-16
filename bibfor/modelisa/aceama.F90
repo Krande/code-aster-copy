@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -34,7 +34,7 @@ subroutine aceama(nomu, noma, lmax, nbocc)
 #include "asterfort/copisd.h"
 #include "asterfort/utmess.h"
 #include "asterfort/assert.h"
-    integer :: lmax, nbocc
+    integer(kind=8) :: lmax, nbocc
     character(len=8) :: nomu, noma
 !     AFFE_CARA_ELEM
 !     AFFECTATION DES CARACTERISTIQUES POUR LES ELEMENTS MASSIF
@@ -51,8 +51,8 @@ subroutine aceama(nomu, noma, lmax, nbocc)
 !
 ! --- CONSTRUCTION DES CARTES ET ALLOCATION
 !-----------------------------------------------------------------------
-    integer :: i, ioc, jdcc, jdls, jdvc, naxe, neul
-    integer :: ng, nm, norig, nrep, jdls2, ncham, ndim
+    integer(kind=8) :: i, ioc, jdcc, jdls, jdvc, naxe, neul
+    integer(kind=8) :: ng, nm, norig, nrep, jdls2, ncham, ndim
 !-----------------------------------------------------------------------
     call jemarq()
     cartma = nomu//'.CARMASSI'

@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -21,7 +21,7 @@ function mat_com(ndim, m)
     implicit none
 !
 #include "asterfort/det_mat.h"
-    integer, intent(in) :: ndim
+    integer(kind=8), intent(in) :: ndim
     real(kind=8), intent(in) :: m(ndim, ndim)
     real(kind=8) :: mat_com(ndim, ndim)
 !
@@ -31,7 +31,7 @@ function mat_com(ndim, m)
 ! IN  NDIM : DIMENSION DE LA MATRICE
 ! IN  M    : MATRICE NDIM*NDIM
 !
-    integer :: i, j, im1, ip1, jm1, jp1
+    integer(kind=8) :: i, j, im1, ip1, jm1, jp1
     real(kind=8) :: signe, signe2, mat_red(ndim-1, ndim-1)
 !
     signe = 1.d0

@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -31,8 +31,8 @@ interface
         real(kind=8) :: inst
         real(kind=8) :: sigp(6)
         real(kind=8) :: coef
-        integer :: iter
-        integer :: indimp(6)
+        integer(kind=8) :: iter
+        integer(kind=8) :: indimp(6)
         type(NL_DS_Conv), intent(in) :: ds_conv
         aster_logical :: conver
         aster_logical :: itemax

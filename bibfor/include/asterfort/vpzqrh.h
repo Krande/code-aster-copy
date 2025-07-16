@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -22,17 +22,17 @@ interface
     subroutine vpzqrh(h, neq, ih, k, l,&
                       wr, wi, z, iz, mxiter,&
                       ier, nitqr)
-        integer :: iz
-        integer :: ih
-        integer :: neq
+        integer(kind=8) :: iz
+        integer(kind=8) :: ih
+        integer(kind=8) :: neq
         real(kind=8) :: h(ih, neq)
-        integer :: k
-        integer :: l
+        integer(kind=8) :: k
+        integer(kind=8) :: l
         real(kind=8) :: wr(neq)
         real(kind=8) :: wi(neq)
         real(kind=8) :: z(iz, neq)
-        integer :: mxiter
-        integer :: ier
-        integer :: nitqr
+        integer(kind=8) :: mxiter
+        integer(kind=8) :: ier
+        integer(kind=8) :: nitqr
     end subroutine vpzqrh
 end interface

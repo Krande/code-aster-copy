@@ -24,7 +24,7 @@ function cfdisi(sdcont_defi_, question_)
 #include "asterfort/jeveuo.h"
 #include "Contact_type.h"
 !
-    integer :: cfdisi
+    integer(kind=8) :: cfdisi
     character(len=*), intent(in) :: sdcont_defi_
     character(len=*), intent(in) :: question_
 !
@@ -44,9 +44,9 @@ function cfdisi(sdcont_defi_, question_)
 !
     character(len=24) :: sdcont_defi, question
     character(len=24) :: sdcont_paraci
-    integer, pointer :: v_sdcont_paraci(:) => null()
+    integer(kind=8), pointer :: v_sdcont_paraci(:) => null()
     character(len=24) :: sdcont_ndimco
-    integer, pointer :: v_sdcont_ndimco(:) => null()
+    integer(kind=8), pointer :: v_sdcont_ndimco(:) => null()
 !
 ! --------------------------------------------------------------------------------------------------
 !

@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -24,14 +24,14 @@ interface
                       nvi, timed, timef, deps, epsd,&
                       yf, dy, r, iret, yd,&
                       crit)
-        integer :: nvi
-        integer :: nr
-        integer :: nmat
+        integer(kind=8) :: nvi
+        integer(kind=8) :: nr
+        integer(kind=8) :: nmat
         character(len=*) :: fami
-        integer :: kpg
-        integer :: ksp
+        integer(kind=8) :: kpg
+        integer(kind=8) :: ksp
         character(len=8) :: typmod
-        integer :: imat
+        integer(kind=8) :: imat
         real(kind=8) :: materd(nmat, 2)
         real(kind=8) :: materf(nmat, 2)
         character(len=16) :: rela_comp
@@ -42,7 +42,7 @@ interface
         real(kind=8) :: yf(nr)
         real(kind=8) :: dy(nr)
         real(kind=8) :: r(nr)
-        integer :: iret
+        integer(kind=8) :: iret
         real(kind=8) :: yd(*)
         real(kind=8) :: crit(*)
     end subroutine lcresa

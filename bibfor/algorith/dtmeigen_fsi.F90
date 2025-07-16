@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -25,7 +25,6 @@ subroutine dtmeigen_fsi(sd_dtm_, buffdtm)
 !                as to accomodate to the change in modal frequencies and shapes
 !
 #include "jeveux.h"
-#include "blas/dcopy.h"
 #include "asterfort/coefmo.h"
 #include "asterfort/dtmcase_coder.h"
 #include "asterfort/dtmget.h"
@@ -37,10 +36,10 @@ subroutine dtmeigen_fsi(sd_dtm_, buffdtm)
 !
 !   -0.1- Input/output arguments
     character(len=*), intent(in) :: sd_dtm_
-    integer, pointer :: buffdtm(:)
+    integer(kind=8), pointer :: buffdtm(:)
 !
 !   -0.2- Local variables
-    integer :: i, j, k, nbmode, nlcase, nbno
+    integer(kind=8) :: i, j, k, nbmode, nlcase, nbno
     real(kind=8) :: puls, xcf, vgap, x(2), tmp
     character(len=8) :: sd_dtm, tpfl
     character(len=7) :: casek7
@@ -55,9 +54,9 @@ subroutine dtmeigen_fsi(sd_dtm_, buffdtm)
     real(kind=8), pointer :: phi_v(:) => null()
     real(kind=8), pointer :: base(:) => null()
 !
-    integer, pointer :: icoupled(:) => null()
-    integer, pointer :: ires(:) => null()
-    integer, pointer :: itypfl(:) => null()
+    integer(kind=8), pointer :: icoupled(:) => null()
+    integer(kind=8), pointer :: ires(:) => null()
+    integer(kind=8), pointer :: itypfl(:) => null()
     real(kind=8), pointer :: profv(:) => null()
     real(kind=8), pointer :: rhoe(:) => null()
     real(kind=8), pointer :: phie(:) => null()

@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -27,8 +27,8 @@ interface
         character(len=19) :: profno
         character(len=24) :: indirf
         character(len=8) :: mailsk
-        integer :: nbsec
-        integer :: numdia
-        integer :: nbmode
+        integer(kind=8) :: nbsec
+        integer(kind=8) :: numdia
+        integer(kind=8) :: nbmode
     end subroutine exphgl
 end interface

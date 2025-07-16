@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -25,7 +25,7 @@ subroutine ejfono(ndim, nddl, axi, nno1, nno2, &
 #include "asterfort/ejcine.h"
 #include "asterfort/r8inir.h"
     aster_logical :: axi
-    integer :: ndim, idf2, ipg, nddl, nno1, nno2, npg, iu(3, 16), ip(8)
+    integer(kind=8) :: ndim, idf2, ipg, nddl, nno1, nno2, npg, iu(3, 16), ip(8)
     real(kind=8) :: vff1(nno1, npg), vff2(nno2, npg), geom(ndim, nno2)
     real(kind=8) :: wref(npg)
     real(kind=8) :: dffr2(ndim-1, nno2, npg)
@@ -48,7 +48,7 @@ subroutine ejfono(ndim, nddl, axi, nno1, nno2, &
 ! IN  IP      : DECALAGE D'INDICE POUR ACCEDER AUX DDL DE PRESSION
 ! OUT VECT    : FORCES INTERIEURES DE REFERENCE
 ! ----------------------------------------------------------------------
-    integer :: kpg, n, i, j, kk
+    integer(kind=8) :: kpg, n, i, j, kk
     real(kind=8) :: wg, b(2*ndim-1, ndim+1, 2*nno1+nno2), temp, rot(ndim*ndim)
 ! ----------------------------------------------------------------------
 !

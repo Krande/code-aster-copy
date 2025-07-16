@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -54,7 +54,6 @@ subroutine dlnewi(result, force0, force1, lcrea, lamort, &
 #include "asterfort/jeexin.h"
 #include "asterfort/jemarq.h"
 #include "asterfort/jeveuo.h"
-#include "asterfort/jexnum.h"
 #include "asterfort/mtcmbl.h"
 #include "asterfort/preres.h"
 #include "asterfort/sigusr.h"
@@ -109,8 +108,8 @@ subroutine dlnewi(result, force0, force1, lcrea, lamort, &
 ! --------------------------------------------------------------------------------------------------
 !
     character(len=16), parameter :: modDampFactorKeyword = "AMOR_MODAL"
-    integer :: iinteg, neq, imat(3), nchar, nveca, liad(*), nume, nondp
-    integer :: numrep, nb_matr
+    integer(kind=8) :: iinteg, neq, imat(3), nchar, nveca, liad(*), nume, nondp
+    integer(kind=8) :: numrep, nb_matr
     character(len=1) :: coef_type(3), resu_type
     real(kind=8) :: coef_vale(3)
     character(len=24) :: matr_list(3)
@@ -124,25 +123,25 @@ subroutine dlnewi(result, force0, force1, lcrea, lamort, &
     real(kind=8) :: dep0(*), vit0(*), acc0(*), t0, fexte(*), famor(*), fliai(*)
     aster_logical :: lcrea, lamort, limped, lmodst, l_harm, l_matr_impe, l_damp_modal
     type(NL_DS_Energy), intent(inout) :: ds_energy
-    integer, parameter :: nbtyar = 6
-    integer :: igrpa, ipepa, perc, freqpr, last_prperc
-    integer :: iddeeq, ierr
-    integer :: iexci, iexcl
-    integer :: ifimpe
-    integer :: idepla
-    integer :: ivite1, ivitea, ivita1
-    integer :: iacce1, iaccea
-    integer :: iarchi
-    integer :: iwk1, iwk2, iforc2
-    integer :: alarm, archiv
-    integer :: ibid, iret
-    integer :: ifm, niv
-    integer :: ifonde, imtres
-    integer :: ipas, istop, istoc, jstoc
-    integer :: jbint, jlpas, jmltap, jnbpa
-    integer :: jnoacc, jnodep, jnovit, jpsdel
-    integer :: n1, na, nbexci, nbexcl, nbgrpa, nbordr
-    integer :: nbptpa, nbv, nd, nmodam, npatot, nv, ierc
+    integer(kind=8), parameter :: nbtyar = 6
+    integer(kind=8) :: igrpa, ipepa, perc, freqpr, last_prperc
+    integer(kind=8) :: iddeeq, ierr
+    integer(kind=8) :: iexci, iexcl
+    integer(kind=8) :: ifimpe
+    integer(kind=8) :: idepla
+    integer(kind=8) :: ivite1, ivitea, ivita1
+    integer(kind=8) :: iacce1, iaccea
+    integer(kind=8) :: iarchi
+    integer(kind=8) :: iwk1, iwk2, iforc2
+    integer(kind=8) :: alarm, archiv
+    integer(kind=8) :: ibid, iret
+    integer(kind=8) :: ifm, niv
+    integer(kind=8) :: ifonde, imtres
+    integer(kind=8) :: ipas, istop, istoc, jstoc
+    integer(kind=8) :: jbint, jlpas, jmltap, jnbpa
+    integer(kind=8) :: jnoacc, jnodep, jnovit, jpsdel
+    integer(kind=8) :: n1, na, nbexci, nbexcl, nbgrpa, nbordr
+    integer(kind=8) :: nbptpa, nbv, nd, nmodam, npatot, nv
     character(len=4) :: typ1(nbtyar)
     character(len=8) :: mateFromRigid, matr_resu, modsta
     character(len=8) :: nomddl
@@ -163,7 +162,7 @@ subroutine dlnewi(result, force0, force1, lcrea, lamort, &
     real(kind=8) :: c0, c1, c2, c3, c4, c5
     real(kind=8) :: beta, gamma, dt, theta, tol, res
     real(kind=8) :: tempm, temps
-    integer :: vali(2)
+    integer(kind=8) :: vali(2)
     real(kind=8) :: valr(2)
     aster_logical :: ener, l_obsv
     real(kind=8), pointer :: epl1(:) => null()

@@ -59,12 +59,12 @@ subroutine defint(mailla, nomres)
 !
 !
 !-----------------------------------------------------------------------
-    integer :: i, ibid, ideb, iec, ifin, ioc
-    integer :: iret, k, ldact, ldfreq, llnin, lltyp
-    integer :: ltgui, ltlgr, ltlno, ltmas, maxgr, maxno, nball
-    integer :: nbbid, nbcmp, nbec, nbecmx, nbgr, nbint
-    integer :: nbno, nbtemp, nbvag, nbval, nbvan
-    integer :: numgd
+    integer(kind=8) :: i, ibid, ideb, iec, ifin, ioc
+    integer(kind=8) :: iret, k, ldact, ldfreq, llnin, lltyp
+    integer(kind=8) :: ltgui, ltlgr, ltlno, ltmas, maxgr, maxno, nball
+    integer(kind=8) :: nbbid, nbcmp, nbec, nbecmx, nbgr, nbint
+    integer(kind=8) :: nbno, nbtemp, nbvag, nbval, nbvan
+    integer(kind=8) :: numgd
     real(kind=8) :: freq
 !-----------------------------------------------------------------------
     parameter(nbecmx=10)
@@ -76,9 +76,9 @@ subroutine defint(mailla, nomres)
     character(len=24) :: valk(2)
     character(len=24) :: temgui, temlno, temlgr, temmas
     character(len=80) :: kar80
-    integer :: icodma(nbecmx), icodac(nbecmx)
-    integer :: vali, ign, ii, nbis, ntrou, nuno
-    integer :: iagm1, iagm2, ialii1, ialii2, ign1, ign2, ili1, ili2
+    integer(kind=8) :: icodma(nbecmx), icodac(nbecmx)
+    integer(kind=8) :: vali, ign, ii, nbis, ntrou, nuno
+    integer(kind=8) :: iagm1, iagm2, ialii1, ialii2, ign1, ign2, ili1, ili2
 !
 !-----------------------------------------------------------------------
 !-----------------------------------------------------------------------

@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -24,7 +24,6 @@ subroutine mtdefs(matout, matin, base, typc)
 #include "asterfort/jecroc.h"
 #include "asterfort/jedema.h"
 #include "asterfort/jeecra.h"
-#include "asterfort/jeexin.h"
 #include "asterfort/jelira.h"
 #include "asterfort/jemarq.h"
 #include "asterfort/jeveuo.h"
@@ -54,13 +53,13 @@ subroutine mtdefs(matout, matin, base, typc)
 !
 !
 !     ------------------------------------------------------------------
-    integer :: nbval, ival, jrefao, jrefai
+    integer(kind=8) :: nbval, ival, jrefao, jrefai
     character(len=1) :: classe, type
     character(len=19) :: nomout, nomin
     character(len=24) :: valm, refa
 !     ------------------------------------------------------------------
 !-----------------------------------------------------------------------
-    integer :: ibloc, jvalm, lgbloc, nbbloc
+    integer(kind=8) :: ibloc, jvalm, lgbloc, nbbloc
 !-----------------------------------------------------------------------
     call jemarq()
     classe = base(1:1)

@@ -37,10 +37,8 @@ subroutine simult()
 #include "asterfort/jedetr.h"
 #include "asterfort/jelira.h"
 #include "asterfort/jemarq.h"
-#include "asterfort/jenuno.h"
 #include "asterfort/jeveuo.h"
 #include "asterfort/jexnom.h"
-#include "asterfort/jexnum.h"
 #include "asterfort/simul2.h"
 #include "asterfort/utmess.h"
 #include "asterfort/wkvect.h"
@@ -59,8 +57,8 @@ subroutine simult()
 !     --- RECUPERATION DES ARGUMENTS DE LA COMMANDE ---
 !
 !-----------------------------------------------------------------------
-    integer :: i, idno, ii, in, ldgn
-    integer :: nb, nbd, nbdir, nbgr, nbno, nbv
+    integer(kind=8) :: i, idno, ii, in, ldgn
+    integer(kind=8) :: nb, nbd, nbdir, nbgr, nbno, nbv
     character(len=24), pointer :: group_no(:) => null()
 !-----------------------------------------------------------------------
     call jemarq()

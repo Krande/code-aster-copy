@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -22,11 +22,11 @@ subroutine impre2(licoef, liddl, linoeu, libeta, indsur, &
 #include "jeveux.h"
 #include "asterfort/iunifi.h"
 #include "asterfort/jeveuo.h"
-    integer :: indsur, ipntrl, nbterm, irela
+    integer(kind=8) :: indsur, ipntrl, nbterm, irela
     character(len=24) :: licoef, liddl, linoeu, libeta
 !
-    integer :: idecal, idcoef, idnoeu, iddl, idbeta, ifm
-    integer :: idcoe, idnoe, idl, i
+    integer(kind=8) :: idecal, idcoef, idnoeu, iddl, idbeta, ifm
+    integer(kind=8) :: idcoe, idnoe, idl, i
     real(kind=8) :: dble, dimag
     character(len=4) :: typval, typcoe
 !
@@ -97,9 +97,9 @@ subroutine impre2(licoef, liddl, linoeu, libeta, indsur, &
 20  format(2x, 1pe12.5, ' * ', 2x, a6, '(', a8, ')', '+')
 90  format(2x, 1pe12.5, ' * ', 2x, a6, '(', a8, ')')
 40  format(2x, '(', 1pe12.5, ',', 1pe12.5, ')', ' * ',&
-     &       2x, a6, '(', a8, ')', '+')
+      &       2x, a6, '(', a8, ')', '+')
 95  format(2x, '(', 1pe12.5, ',', 1pe12.5, ')', ' * ',&
-     &       2x, a6, '(', a8, ')')
+      &       2x, a6, '(', a8, ')')
 50  format(2x, '=', 1pe12.5)
 60  format(2x, '=', a19)
 70  format(2x, '=', '(', 1pe12.5, ',', 1pe12.5, ')')

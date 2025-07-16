@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -35,7 +35,7 @@ subroutine dismma(questi, nomobz, repi, repkz, ierd)
 #include "asterfort/ltnotb.h"
 #include "asterfort/tbliva.h"
 !
-    integer :: repi, ierd
+    integer(kind=8) :: repi, ierd
     character(len=*) :: questi
     character(len=32) :: repk
     character(len=8) :: nomob
@@ -57,11 +57,11 @@ subroutine dismma(questi, nomobz, repi, repkz, ierd)
     character(len=16) :: typeco
     character(len=1) :: k1bid
     real(kind=8) :: xmax, xmin, ymax, ymin, zmax, zmin
-    integer :: ibid, ier, ilmaco, ism, k, nbma, nbno
-    integer :: nbsm, nno, typv
+    integer(kind=8) :: ibid, ier, ilmaco, ism, k, nbma, nbno
+    integer(kind=8) :: nbsm, nno, typv
     character(len=8) :: typma
-    integer, pointer :: dime(:) => null()
-    integer, pointer :: typmail(:) => null()
+    integer(kind=8), pointer :: dime(:) => null()
+    integer(kind=8), pointer :: typmail(:) => null()
 !
 !
 !

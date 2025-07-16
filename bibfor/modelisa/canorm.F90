@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -25,7 +25,7 @@ subroutine canorm(coor, normal, ndim, ityp, inorm)
 #include "asterfort/provec.h"
 #include "asterfort/utmess.h"
 !
-    integer :: ndim, ityp, inorm
+    integer(kind=8) :: ndim, ityp, inorm
     real(kind=8) :: coor(*), normal(3)
 !
 !     BUT : CALCUL DE LA NORMALE A UNE MAILLE  EN UN NOEUD
@@ -52,7 +52,7 @@ subroutine canorm(coor, normal, ndim, ityp, inorm)
 ! DEBUT ----------------------------------------------------------------
 !
 !-----------------------------------------------------------------------
-    integer :: j
+    integer(kind=8) :: j
 !-----------------------------------------------------------------------
     call jenuno(jexnum('&CATA.TM.NBNO', ityp), nomtm)
     if (nomtm(1:3) .eq. 'SEG') then

@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -25,7 +25,7 @@ subroutine rsutrg(nomsd, iordr, irang, nbordr)
 #include "asterfort/jelira.h"
 #include "asterfort/jemarq.h"
 #include "asterfort/jeveuo.h"
-    integer :: iordr, irang
+    integer(kind=8) :: iordr, irang
     character(len=*) :: nomsd
 ! person_in_charge: jacques.pellet at edf.fr
 !      CORRESPONDANCE NUMERO D'ORDRE UTILISATEUR (IORDR) AVEC LE
@@ -39,8 +39,8 @@ subroutine rsutrg(nomsd, iordr, irang, nbordr)
 ! ----------------------------------------------------------------------
 !
     character(len=19) :: nomd2
-    integer :: nbordr, i, debut, milieu, fin, diff, maxit
-    integer, pointer :: ordr(:) => null()
+    integer(kind=8) :: nbordr, i, debut, milieu, fin, diff, maxit
+    integer(kind=8), pointer :: ordr(:) => null()
 ! ----------------------------------------------------------------------
 !
     call jemarq()

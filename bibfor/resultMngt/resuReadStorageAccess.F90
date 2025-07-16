@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -34,7 +34,7 @@ subroutine resuReadStorageAccess(storeAccess, &
 #include "asterfort/uttrii.h"
 #include "asterfort/wkvect.h"
 !
-    integer, intent(out) :: storeIndxNb, storeTimeNb
+    integer(kind=8), intent(out) :: storeIndxNb, storeTimeNb
     character(len=10), intent(out) :: storeAccess
     character(len=19), intent(out) :: storeIndx, storeTime
     real(kind=8), intent(out) :: storeEpsi
@@ -59,8 +59,8 @@ subroutine resuReadStorageAccess(storeAccess, &
 ! --------------------------------------------------------------------------------------------------
 !
     character(len=8) :: answer
-    integer :: nbOcc
-    integer, pointer :: vStoreIndx(:) => null()
+    integer(kind=8) :: nbOcc
+    integer(kind=8), pointer :: vStoreIndx(:) => null()
     real(kind=8), pointer :: vStoreTime(:) => null()
 !
 ! --------------------------------------------------------------------------------------------------

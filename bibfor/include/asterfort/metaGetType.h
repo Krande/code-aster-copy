@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2018 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -18,7 +18,7 @@
 !
 interface
     subroutine metaGetType(meta_type, nb_phasis)
-        integer, intent(out) :: meta_type
-        integer, intent(out) :: nb_phasis
+        integer(kind=8), intent(out) :: meta_type
+        integer(kind=8), intent(out) :: nb_phasis
     end subroutine metaGetType
 end interface

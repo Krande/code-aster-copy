@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -28,7 +28,7 @@ function mminfl(sdcont_defi_, question_, i_zone_)
     aster_logical :: mminfl
     character(len=*), intent(in) :: sdcont_defi_
     character(len=*), intent(in) :: question_
-    integer, optional, intent(in) :: i_zone_
+    integer(kind=8), optional, intent(in) :: i_zone_
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -45,7 +45,7 @@ function mminfl(sdcont_defi_, question_, i_zone_)
 !
 ! --------------------------------------------------------------------------------------------------
 !
-    integer :: i_zone
+    integer(kind=8) :: i_zone
     aster_logical :: vale_l
     character(len=24) :: sdcont_defi
 !

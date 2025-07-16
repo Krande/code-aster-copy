@@ -21,14 +21,10 @@ subroutine rvchn2(deplaz, nomjv, nbno, numnd, orig, &
     implicit none
 #include "jeveux.h"
 #include "asterfort/dismoi.h"
-#include "asterfort/exisdg.h"
 #include "asterfort/jedema.h"
 #include "asterfort/jedupo.h"
 #include "asterfort/jemarq.h"
-#include "asterfort/jenuno.h"
 #include "asterfort/jeveuo.h"
-#include "asterfort/jexnom.h"
-#include "asterfort/jexnum.h"
 #include "asterfort/select_dof.h"
 #include "asterfort/utmess.h"
 #include "asterfort/utpvgl.h"
@@ -36,22 +32,22 @@ subroutine rvchn2(deplaz, nomjv, nbno, numnd, orig, &
 #include "asterfort/as_deallocate.h"
 #include "asterfort/int_to_char8.h"
 !
-    integer :: nbno, numnd(*)
+    integer(kind=8) :: nbno, numnd(*)
     character(len=*) :: deplaz, nomjv
     real(kind=8) :: orig(3), axez(3)
 !
 ! ----------------------------------------------------------------------
 ! ----------------------------------------------------------------------
-    integer :: ino
-    integer :: iavald, nunoe, numdx, numdy, numdz, numdrx
-    integer :: numdry, numdrz, i, nbNode, nbCmp
+    integer(kind=8) :: ino
+    integer(kind=8) :: iavald, nunoe, numdx, numdy, numdz, numdrx
+    integer(kind=8) :: numdry, numdrz, i, nbNode, nbCmp
     real(kind=8) :: valed(3), vald(3), valer(3), valr(3), pscal
     real(kind=8) :: xnormr, epsi, axer(3), axet(3), pgl(3, 3)
     character(len=8) :: nomnoe, mesh
     character(len=8) :: gran_name
     character(len=19) :: depla
-    integer, pointer :: tablCmp(:) => null()
-    integer, pointer :: listNode(:) => null()
+    integer(kind=8), pointer :: tablCmp(:) => null()
+    integer(kind=8), pointer :: listNode(:) => null()
     character(len=8), pointer :: listCmp(:) => null()
     real(kind=8), pointer :: vale(:) => null()
 !     ------------------------------------------------------------------

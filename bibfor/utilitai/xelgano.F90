@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -37,7 +37,6 @@ subroutine xelgano(modele, sigelga, sigseno)
 !
 ! DECLARATION PARAMETRES D'APPELS
 #include "jeveux.h"
-#include "asterfort/assert.h"
 #include "asterfort/calcul.h"
 #include "asterfort/jedema.h"
 #include "asterfort/jemarq.h"
@@ -52,7 +51,7 @@ subroutine xelgano(modele, sigelga, sigseno)
 !
     character(len=16) :: option
 
-    integer :: nchin, nchout
+    integer(kind=8) :: nchin, nchout
     parameter(nchin=2)
     parameter(nchout=1)
     character(len=8)  :: lpain(nchin), lpaout(nchout)

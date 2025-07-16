@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -23,9 +23,9 @@ interface
                       oldn)
         character(len=8) :: mo
         character(len=8) :: ma
-        integer :: nm
-        integer :: nl
-        integer :: newn(*)
-        integer :: oldn(*)
+        integer(kind=8) :: nm
+        integer(kind=8) :: nl
+        integer(kind=8) :: newn(*)
+        integer(kind=8) :: oldn(*)
     end subroutine relagm
 end interface

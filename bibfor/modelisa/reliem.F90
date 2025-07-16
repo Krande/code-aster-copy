@@ -35,8 +35,6 @@ subroutine reliem(mo, ma, typem, motfaz, iocc, &
 #include "asterfort/jeexin.h"
 #include "asterfort/jelira.h"
 #include "asterfort/jemarq.h"
-#include "asterfort/jenonu.h"
-#include "asterfort/jenuno.h"
 #include "asterfort/jeveuo.h"
 #include "asterfort/jexnom.h"
 #include "asterfort/jexnum.h"
@@ -46,7 +44,7 @@ subroutine reliem(mo, ma, typem, motfaz, iocc, &
 #include "asterfort/int_to_char8.h"
 #include "jeveux.h"
 !
-    integer :: iocc, nbmocl, nbtrou
+    integer(kind=8) :: iocc, nbmocl, nbtrou
     character(len=8) :: ma, modele
     character(len=*) :: limocl(nbmocl), tymocl(nbmocl), mo
     character(len=*) :: litroz, typem, motfaz
@@ -92,10 +90,10 @@ subroutine reliem(mo, ma, typem, motfaz, iocc, &
 !                            FALSE : par défaut, cas normal
 ! ----------------------------------------------------------------------
     character(len=24) :: litrou
-    integer :: jno, jma, kno, kma, iacnex, iem, nem, numno, nno, nma, nbenc
-    integer :: ibid, ient, rank
-    integer ::  itrma, ima, ino, nbma, nbno, nbnoma, imo, ier
-    integer :: lma, lno, itbma, itbno, inoem, ntou, k, ifm, niv
+    integer(kind=8) :: jno, jma, kno, kma, iacnex, iem, nem, numno, nno, nma, nbenc
+    integer(kind=8) :: ibid, ient, rank
+    integer(kind=8) ::  itrma, ima, ino, nbma, nbno, nbnoma, imo, ier
+    integer(kind=8) :: lma, lno, itbma, itbno, inoem, ntou, k, ifm, niv
     character(len=8) :: type2, oui, noent, nomgd
     character(len=16) :: motfac, motcle, typmcl, phenom
     character(len=19) :: ligrel
@@ -103,10 +101,10 @@ subroutine reliem(mo, ma, typem, motfaz, iocc, &
     mpi_int :: mrank
     aster_logical :: l_parallel_mesh, l_group_ma, l_keep_prop, l_all
     aster_logical :: lcolle, lcolle2
-    integer, pointer :: maille(:) => null()
-    integer, pointer :: prnm(:) => null()
-    integer, pointer :: v_maex(:) => null()
-    integer, pointer :: v_noex(:) => null()
+    integer(kind=8), pointer :: maille(:) => null()
+    integer(kind=8), pointer :: prnm(:) => null()
+    integer(kind=8), pointer :: v_maex(:) => null()
+    integer(kind=8), pointer :: v_noex(:) => null()
     integer(kind=4), pointer :: indic_noeud(:) => null()
 !     ------------------------------------------------------------------
 !

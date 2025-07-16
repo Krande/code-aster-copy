@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -16,14 +16,16 @@
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
 !
+#include "asterf_types.h"
+
 interface
     subroutine getelem(mesh, keywordfact, iocc, stop_void, list_elem, &
                        nb_elem, suffix, model, l_keep_propz, l_allz, onAllCells_)
         character(len=8), intent(in) :: mesh
         character(len=*), intent(in) :: keywordfact
-        integer, intent(in) :: iocc
+        integer(kind=8), intent(in) :: iocc
         character(len=1), intent(in) :: stop_void
-        integer, intent(out) :: nb_elem
+        integer(kind=8), intent(out) :: nb_elem
         character(len=24), intent(in) :: list_elem
         character(len=8), optional, intent(in) :: model
         character(len=*), optional, intent(in) :: suffix

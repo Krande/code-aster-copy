@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -25,15 +25,15 @@ interface
                       nmzef, nmzeg, nmief, nmprox, depsp,&
                       ddissi, dc1, dc2, dtg, bbok,&
                       normm, normn)
-        integer :: zimat
+        integer(kind=8) :: zimat
         real(kind=8) :: nmnbn(6)
         real(kind=8) :: nmplas(2, 3)
         real(kind=8) :: nmdpla(2, 2)
         real(kind=8) :: nmddpl(2, 2)
         real(kind=8) :: nmzef
         real(kind=8) :: nmzeg
-        integer :: nmief
-        integer :: nmprox(2)
+        integer(kind=8) :: nmief
+        integer(kind=8) :: nmprox(2)
         real(kind=8) :: depsp(6)
         real(kind=8) :: ddissi
         real(kind=8) :: dc1(6, 6)

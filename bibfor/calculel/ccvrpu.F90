@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -28,7 +28,7 @@ subroutine ccvrpu(resuin, lisord, nbordr)
 #include "asterfort/rsadpa.h"
 #include "asterfort/utmess.h"
 #include "asterfort/wkvect.h"
-    integer :: nbordr
+    integer(kind=8) :: nbordr
     character(len=8) :: resuin
     character(len=19) :: lisord
 ! person_in_charge: nicolas.sellenet at edf.fr
@@ -50,15 +50,15 @@ subroutine ccvrpu(resuin, lisord, nbordr)
 !   NBORDR I    NOMBRE DE NUMEROS D'ORDRE
 ! ----------------------------------------------------------------------
 !
-    integer :: jordr, iordr, numord, jpara, n1, n2, n3, nchalu, icharg
-    integer :: lchalu, fchalu, nchasd, jfcha, ilu, isd
+    integer(kind=8) :: jordr, iordr, numord, jpara, n1, n2, n3, nchalu, icharg
+    integer(kind=8) :: lchalu, fchalu, nchasd, jfcha, ilu, isd
 !
     character(len=8) :: k8b, modelu, carelu, chmatu, modelr, carelr, chmatr
     character(len=8) :: fonclu
     character(len=16) :: valk(3)
     character(len=19) :: kcha, kfon, excit
     character(len=24) :: excisd
-    integer, pointer :: infc(:) => null()
+    integer(kind=8), pointer :: infc(:) => null()
     character(len=24), pointer :: lcha(:) => null()
 !
     kcha = '&&CCVRPU.CHARGE    '

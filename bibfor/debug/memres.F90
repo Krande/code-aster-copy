@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -59,8 +59,8 @@ subroutine memres(limpr, ldyn, titre, prec, tmax)
 !
     real(kind=8) :: rval(2)
     character(len=8) :: k8tab(2)
-    integer :: lon1, idep, incr, iret
-    integer :: k, jad, ierr, nbfree, ltot
+    integer(kind=8) :: lon1, idep, incr, iret
+    integer(kind=8) :: k, jad, ierr, nbfree, ltot
 !
     ASSERT(limpr .eq. 'OUI' .or. limpr .eq. 'NON')
     ASSERT(ldyn .eq. 'OUI' .or. ldyn .eq. 'NON')

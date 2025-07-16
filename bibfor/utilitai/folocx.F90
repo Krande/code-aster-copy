@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -21,7 +21,7 @@ subroutine folocx(vale, n, x, prolgd, i, &
     implicit none
 #include "asterfort/assert.h"
 #include "asterfort/utmess.h"
-    integer :: n, i, ier
+    integer(kind=8) :: n, i, ier
     real(kind=8) :: vale(n)
     real(kind=8) :: valr(2)
     character(len=*) :: prolgd
@@ -49,7 +49,7 @@ subroutine folocx(vale, n, x, prolgd, i, &
 !                IER = 40 --->  ON DEBORDE A DROITE
 !     ------------------------------------------------------------------
 !-----------------------------------------------------------------------
-    integer :: id, ie, ind, j
+    integer(kind=8) :: id, ie, ind, j
 !
     real(kind=8) :: epsi, tole, x
 !-----------------------------------------------------------------------

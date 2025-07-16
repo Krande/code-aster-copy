@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -24,7 +24,7 @@ interface
                      deps, sigd, vind, opt, sigf,&
                      vinf, dsde, iret)
         character(len=8) :: typmod(*)
-        integer :: imat
+        integer(kind=8) :: imat
         real(kind=8) :: crit(*)
         real(kind=8) :: instam
         real(kind=8) :: instap
@@ -36,6 +36,6 @@ interface
         real(kind=8) :: sigf(6)
         real(kind=8) :: vinf(*)
         real(kind=8) :: dsde(6, 6)
-        integer :: iret
+        integer(kind=8) :: iret
     end subroutine nmcjs
 end interface

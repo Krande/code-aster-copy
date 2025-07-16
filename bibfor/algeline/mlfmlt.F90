@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -22,12 +22,12 @@ subroutine mlfmlt(b, f, y, ldb, n, &
 !     B = B - F*Y PAR BLOCS
     implicit none
 #include "blas/dgemm.h"
-    integer :: ldb, n, p, l, nb
+    integer(kind=8) :: ldb, n, p, l, nb
     real(kind=8) :: b(ldb, l), f(n, p), y(ldb, l)
-    integer :: m, npb, restp, nlb, restl
-    integer :: i, j, ib, jb
+    integer(kind=8) :: m, npb, restp, nlb, restl
+    integer(kind=8) :: i, j, ib, jb
     real(kind=8) :: beta, alpha
-    integer :: opta, optb
+    integer(kind=8) :: opta, optb
     character(len=1) :: tra, trb
     blas_int :: b_k, b_lda, b_ldb, b_ldc, b_m, b_n
 !

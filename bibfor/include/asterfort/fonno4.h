@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -21,13 +21,13 @@
 interface
     subroutine fonno4(ndim, macofo, noma, nbmac, tablev,&
                       noe, nbnoff, indic)
-        integer :: ndim
+        integer(kind=8) :: ndim
         character(len=19) :: macofo
         character(len=8) :: noma
-        integer :: nbmac
-        integer :: tablev(2)
-        integer :: noe(4, 4)
-        integer :: nbnoff
-        integer :: indic(4)
+        integer(kind=8) :: nbmac
+        integer(kind=8) :: tablev(2)
+        integer(kind=8) :: noe(4, 4)
+        integer(kind=8) :: nbnoff
+        integer(kind=8) :: indic(4)
     end subroutine fonno4
 end interface

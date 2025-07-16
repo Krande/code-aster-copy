@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -22,11 +22,11 @@ interface
     subroutine ermev3(nno, ipg, ivf, isig, nbcmp,&
                       dfdx, dfdy, dfdz, dsx, dsy,&
                       dsz, norme)
-        integer :: nno
-        integer :: ipg
-        integer :: ivf
-        integer :: isig
-        integer :: nbcmp
+        integer(kind=8) :: nno
+        integer(kind=8) :: ipg
+        integer(kind=8) :: ivf
+        integer(kind=8) :: isig
+        integer(kind=8) :: nbcmp
         real(kind=8) :: dfdx(27)
         real(kind=8) :: dfdy(27)
         real(kind=8) :: dfdz(27)

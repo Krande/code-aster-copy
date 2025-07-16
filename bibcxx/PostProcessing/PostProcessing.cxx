@@ -133,51 +133,109 @@ PostProcessing::computeMaxResultantForPipe( const ResultPtr &resu,
 
     const auto &fieldNames = resu->getFieldsNames();
     if ( std::find( fieldNames.begin(), fieldNames.end(), name ) == fieldNames.end() ) {
-        AS_ABORT( "Error: Field  " + name + " not found in resu->getFieldsNames()" );
+        AS_ABORT( "Field " + name + " not found in resu->getFieldsNames()" );
     }
-
-    JeveuxVectorReal ptr_i;
 
     VectorLong indexes = resu->getIndexesForFieldName( name );
-    FieldOnCellsRealPtr field = resu->getFieldOnCellsReal( name, indexes[0] );
-    int nbcmp = field->getNumberOfComponents();
-
-    if ( nbcmp != 6 ) {
-        AS_ABORT( "Error: Expected number of components to be 6" );
+    if ( indexes.empty() ) {
+        AS_ABORT( "No index found for field " + name );
     }
 
-    std::shared_ptr< FieldOnCellsReal > field_out = std::make_shared< FieldOnCellsReal >( *field );
+    // Liste des champs (une par index)
+    std::vector< SimpleFieldOnCellsRealPtr > input_fields;
+    for ( auto idx : indexes ) {
+        input_fields.push_back( toSimpleFieldOnCells( *resu->getFieldOnCellsReal( name, idx ) ) );
+    }
+
+    // Champ de sortie basé sur le premier champ
+    auto field_out =
+        std::make_shared< FieldOnCellsReal >( *resu->getFieldOnCellsReal( name, indexes[0] ) );
     field_out->updateValuePointers();
-    auto ptr_out = field_out->getValues()->begin();
+    auto field_out_s = toSimpleFieldOnCells( *field_out );
 
-    ASTERINTEGER count = 0;
+    // Boucle sur les mailles
+    for ( const auto &cell : field_out_s->getMesh()->getCells() ) {
+        ASTERINTEGER npt = field_out_s->getNumberOfPointsOfCell( cell );
+        ASTERINTEGER nspt = field_out_s->getNumberOfSubPointsOfCell( cell );
 
-    for ( size_t i = 0; i < indexes.size(); i++ ) {
-        ptr_i = resu->getFieldOnCellsReal( name, indexes[i] )->getValues();
+        for ( ASTERINTEGER ipt = 0; ipt < npt; ++ipt ) {
+            for ( ASTERINTEGER ispt = 0; ispt < nspt; ++ispt ) {
 
-        auto ptr_out_1 = ptr_i->cbegin();
-        count = 0;
+                double max_fx = -1.0;
+                double max_fy = -1.0;
+                double max_fz = -1.0;
+                double max_moment = -1.0;
 
-        while ( ptr_out_1 != ptr_i->cend() ) {
-            for ( size_t j = 0; j < 3; j++ ) {
-                auto absVal = std::abs( *( ptr_out_1 + j ) );
-                *( ptr_out + count + j ) =
-                    ( i == 0 ) ? absVal : std::max( *( ptr_out + count + j ), absVal );
-            }
+                double val_fx = std::numeric_limits< double >::quiet_NaN();
+                double val_fy = std::numeric_limits< double >::quiet_NaN();
+                double val_fz = std::numeric_limits< double >::quiet_NaN();
 
-            if ( i == 0 ||
-                 std::hypot( *( ptr_out + count + 3 ), *( ptr_out + count + 4 ),
-                             *( ptr_out + count + 5 ) ) <
-                     std::hypot( *( ptr_out_1 + 3 ), *( ptr_out_1 + 4 ), *( ptr_out_1 + 5 ) ) ) {
-                for ( size_t j = 3; j < 6; j++ ) {
-                    *( ptr_out + count + j ) = std::abs( *( ptr_out_1 + j ) );
+                std::array< double, 3 > moment_vec = { std::numeric_limits< double >::quiet_NaN(),
+                                                       std::numeric_limits< double >::quiet_NaN(),
+                                                       std::numeric_limits< double >::quiet_NaN() };
+
+                for ( size_t i = 0; i < input_fields.size(); ++i ) {
+                    double val[6];
+                    bool has_moment = true;
+
+                    for ( int j = 0; j < 6; ++j ) {
+                        try {
+                            val[j] = input_fields[i]->getValue( cell, j, ipt, ispt );
+                        } catch ( ... ) {
+                            val[j] = std::numeric_limits< double >::quiet_NaN();
+                            if ( j >= 3 )
+                                has_moment = false;
+                        }
+                    }
+
+                    if ( !std::isnan( val[0] ) ) {
+                        double fx = std::abs( val[0] );
+                        if ( fx > max_fx ) {
+                            max_fx = fx;
+                            val_fx = fx;
+                        }
+                    }
+
+                    if ( !std::isnan( val[1] ) ) {
+                        double fy = std::abs( val[1] );
+                        if ( fy > max_fy ) {
+                            max_fy = fy;
+                            val_fy = fy;
+                        }
+                    }
+
+                    if ( !std::isnan( val[2] ) ) {
+                        double fz = std::abs( val[2] );
+                        if ( fz > max_fz ) {
+                            max_fz = fz;
+                            val_fz = fz;
+                        }
+                    }
+
+                    if ( has_moment && !std::isnan( val[3] ) && !std::isnan( val[4] ) &&
+                         !std::isnan( val[5] ) ) {
+                        double mx = val[3], my = val[4], mz = val[5];
+                        double norm = std::hypot( mx, my, mz );
+                        if ( norm > max_moment ) {
+                            max_moment = norm;
+                            moment_vec = { std::abs( mx ), std::abs( my ), std::abs( mz ) };
+                        }
+                    }
+                }
+
+                if ( !std::isnan( val_fx ) || !std::isnan( val_fy ) || !std::isnan( val_fz ) ) {
+                    field_out_s->setValue( cell, 0, ipt, ispt, val_fx ); // N
+                    field_out_s->setValue( cell, 1, ipt, ispt, val_fy ); // VY
+                    field_out_s->setValue( cell, 2, ipt, ispt, val_fz ); // VZ
+                }
+                if ( !std::isnan( moment_vec[0] ) ) {
+                    field_out_s->setValue( cell, 3, ipt, ispt, moment_vec[0] ); // MT
+                    field_out_s->setValue( cell, 4, ipt, ispt, moment_vec[1] ); // MFY
+                    field_out_s->setValue( cell, 5, ipt, ispt, moment_vec[2] ); // MFZ
                 }
             }
-
-            std::advance( ptr_out_1, 6 );
-            count += 6;
         }
     }
 
-    return field_out;
+    return toFieldOnCells( *field_out_s, field_out->getDescription(), "EFGE_ELNO", "PEFFORR" );
 }

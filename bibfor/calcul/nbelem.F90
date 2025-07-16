@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -30,9 +30,9 @@ function nbelem(ligrlz, igrel, icalc)
 #include "asterfort/jexnum.h"
 
     character(len=*), intent(in) :: ligrlz
-    integer, intent(in) :: igrel
-    integer, intent(in), optional :: icalc
-    integer :: nbelem
+    integer(kind=8), intent(in) :: igrel
+    integer(kind=8), intent(in), optional :: icalc
+    integer(kind=8) :: nbelem
 !-----------------------------------------------------------------------
 !     Entrees:
 !       ligrel (o) : nom d'1 ligrel
@@ -43,7 +43,7 @@ function nbelem(ligrlz, igrel, icalc)
 !     Sorties:
 !       nbelem : nombre d'elements du grel igrel
 !-----------------------------------------------------------------------
-    integer :: n1
+    integer(kind=8) :: n1
     character(len=19) :: ligrel
 !-------------------------------------------------------------------
     ligrel = ligrlz

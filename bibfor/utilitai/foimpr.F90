@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -38,21 +38,21 @@ subroutine foimpr(nomf, impr, iul, ind, fonins)
 #include "asterfort/utmess.h"
 #include "asterfort/wkvect.h"
     character(len=*) :: nomf, fonins
-    integer :: impr, iul, ind
+    integer(kind=8) :: impr, iul, ind
 !     ROUTINE D'IMPRESSION D'UNE FONCTION SUR UN FICHIER
 !     ----------------------------------------------------------------
 !
     character(len=19) :: nomfon, nomf1, listr
     character(len=24) :: prol, vale, para
     character(len=24) :: nompar, nomres, titr
-    integer :: nbpu
+    integer(kind=8) :: nbpu
     character(len=8) :: nompu
 !     ------------------------------------------------------------------
 !-----------------------------------------------------------------------
-    integer :: i, ideb, ifin, ii, iret, ival, jval
-    integer :: lfon, lfon1, lprol, lprol1, ltitr, lval
-    integer :: lval1, nbfonc, nbnova, nbtitr, nbv, nbv2
-    integer :: nbval
+    integer(kind=8) :: i, ideb, ifin, ii, iret, ival, jval
+    integer(kind=8) :: lfon, lfon1, lprol, lprol1, ltitr, lval
+    integer(kind=8) :: lval1, nbfonc, nbnova, nbtitr, nbv, nbv2
+    integer(kind=8) :: nbval
     real(kind=8) :: resuim, resure
     character(len=24), pointer :: nova(:) => null()
 !-----------------------------------------------------------------------

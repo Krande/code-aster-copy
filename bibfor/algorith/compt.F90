@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -38,9 +38,9 @@ subroutine compt(nbpt, fn, offset, t, elapse, &
     real(kind=8) :: fn(*), t(*)
 !
 !-----------------------------------------------------------------------
-    integer :: i, ichoc, idebur, idebut, idech, ifin, ifinr
-    integer :: irebo, j, jfin, nbchoc, nbinst, nbpas, nbpt
-    integer :: nbrebo
+    integer(kind=8) :: i, ichoc, idebur, idebut, idech, ifin, ifinr
+    integer(kind=8) :: irebo, j, jfin, nbchoc, nbinst, nbpas, nbpt
+    integer(kind=8) :: nbrebo
     real(kind=8) :: dt, elapse, offset, tchmax, tchmin, tchoc, tchocm
     real(kind=8) :: tchoct, trebo, trebom, zero
 !-----------------------------------------------------------------------

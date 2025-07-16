@@ -48,10 +48,10 @@ subroutine te0543(option, nomte)
     character(len=16), pointer :: compor(:) => null()
     character(len=16) :: rela_comp, pilo
     character(len=4), parameter :: fami = 'RIGI'
-    integer :: jgano, ndim, nno, nnos, npg, lgpg, jtab(7), itype
-    integer :: ipoids, ivf, idfde, igeom, imate, icarcr
-    integer :: icontm, ivarim, icopil, iborne, ictau
-    integer :: ideplm, iddepl, idepl0, idepl1, iret
+    integer(kind=8) :: jgano, ndim, nno, nnos, npg, lgpg, jtab(7), itype
+    integer(kind=8) :: ipoids, ivf, idfde, igeom, imate, icarcr
+    integer(kind=8) :: icontm, ivarim, icopil, iborne, ictau
+    integer(kind=8) :: ideplm, iddepl, idepl0, idepl1, iret
     real(kind=8) :: instam, instap
     type(Behaviour_Integ) :: BEHinteg
 

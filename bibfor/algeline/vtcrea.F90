@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -19,7 +19,6 @@
 subroutine vtcrea(champ, crefe, base, typc, neq)
     implicit none
 #include "jeveux.h"
-#include "asterfort/assert.h"
 #include "asterfort/dismoi.h"
 #include "asterfort/copisd.h"
 #include "asterfort/exisd.h"
@@ -59,7 +58,7 @@ subroutine vtcrea(champ, crefe, base, typc, neq)
 !
 !
 !     ------------------------------------------------------------------
-    integer :: lchamp, jrefn, prev, iexi
+    integer(kind=8) :: lchamp, jrefn, prev, iexi
     character(len=1) :: classe
     character(len=1) :: type, type2
     character(len=8) :: nomgd
@@ -67,7 +66,7 @@ subroutine vtcrea(champ, crefe, base, typc, neq)
     character(len=24) :: vale, refe, noojb
 !     ------------------------------------------------------------------
 !-----------------------------------------------------------------------
-    integer :: ibid, neq
+    integer(kind=8) :: ibid, neq
 !-----------------------------------------------------------------------
     data vale/'                   .VALE'/
     data refe/'                   .REFE'/

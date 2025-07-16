@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -23,7 +23,7 @@ subroutine mmmvex(nnl, nbcps, ndexfr, vectff)
 !
 #include "asterfort/isdeco.h"
 !
-    integer, intent(in) :: nnl, nbcps, ndexfr
+    integer(kind=8), intent(in) :: nnl, nbcps, ndexfr
     real(kind=8), intent(inout) :: vectff(18)
 !
 ! --------------------------------------------------------------------------------------------------
@@ -41,8 +41,8 @@ subroutine mmmvex(nnl, nbcps, ndexfr, vectff)
 !
 ! --------------------------------------------------------------------------------------------------
 !
-    integer :: i, l, ii, nbcpf
-    integer :: ndexcl(10)
+    integer(kind=8) :: i, l, ii, nbcpf
+    integer(kind=8) :: ndexcl(10)
 !
 ! --------------------------------------------------------------------------------------------------
 !

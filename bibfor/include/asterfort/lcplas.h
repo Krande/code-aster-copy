@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2019 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -28,21 +28,21 @@ interface
                       devg, devgii, drdy, crit)
         use Behaviour_type
         type(Behaviour_Integ), intent(in) :: BEHinteg
-        integer :: nsg
-        integer :: nfs
-        integer :: nr
-        integer :: nmat
+        integer(kind=8) :: nsg
+        integer(kind=8) :: nfs
+        integer(kind=8) :: nr
+        integer(kind=8) :: nmat
         character(len=*) :: fami
-        integer :: kpg
-        integer :: ksp
+        integer(kind=8) :: kpg
+        integer(kind=8) :: ksp
         character(len=16) :: loi
         real(kind=8) :: toler
-        integer :: itmax
+        integer(kind=8) :: itmax
         character(len=8) :: mod
-        integer :: imat
+        integer(kind=8) :: imat
         real(kind=8) :: materd(nmat, 2)
         real(kind=8) :: materf(nmat, 2)
-        integer :: nvi
+        integer(kind=8) :: nvi
         real(kind=8) :: timed
         real(kind=8) :: timef
         real(kind=8) :: deps(6)
@@ -52,13 +52,13 @@ interface
         real(kind=8) :: sigf(6)
         real(kind=8) :: vinf(*)
         character(len=16) :: comp(*)
-        integer :: nbcomm(nmat, 3)
+        integer(kind=8) :: nbcomm(nmat, 3)
         character(len=24) :: cpmono(5*nmat+1)
         real(kind=8) :: pgl(3, 3)
         real(kind=8) :: toutms(nfs, nsg, 6)
         real(kind=8) :: hsr(nsg, nsg)
-        integer :: icomp
-        integer :: codret
+        integer(kind=8) :: icomp
+        integer(kind=8) :: codret
         real(kind=8) :: theta
         real(kind=8) :: vp(3)
         real(kind=8) :: vecp(3, 3)

@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -54,12 +54,12 @@ subroutine mnlbra(xups, xfpnla, ninc, ordman, nbpt, &
 #include "asterfort/utmess.h"
 !
     character(len=14) :: xups, xfpnla, xus
-    integer :: ninc, ordman, nbpt
+    integer(kind=8) :: ninc, ordman, nbpt
     real(kind=8) :: epsman, amax
 ! ----------------------------------------------------------------------
 ! --- DECLARATION DES VARIABLES LOCALES
 ! ----------------------------------------------------------------------
-    integer :: ius, iups, ifpnla, i, k
+    integer(kind=8) :: ius, iups, ifpnla, i, k
     real(kind=8) :: norme, a
     blas_int :: b_incx, b_incy, b_n
 !

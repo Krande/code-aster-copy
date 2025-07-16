@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -22,7 +22,7 @@ interface
     subroutine pmvtgt(option, carcri, deps2, sigp, vip,&
                       nbvari, epsilo, varia, matper, dsidep,&
                       smatr, sdeps, ssigp, svip, iret)
-        integer :: nbvari
+        integer(kind=8) :: nbvari
         character(len=16) :: option
         real(kind=8) :: carcri(*)
         real(kind=8) :: deps2(6)
@@ -36,6 +36,6 @@ interface
         real(kind=8) :: sdeps(6)
         real(kind=8) :: ssigp(6)
         real(kind=8) :: svip(nbvari)
-        integer :: iret
+        integer(kind=8) :: iret
     end subroutine pmvtgt
 end interface

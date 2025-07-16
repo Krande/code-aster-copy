@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -35,35 +35,31 @@ subroutine preml1(neq, n2, diag, delg, col, &
 #include "asterfort/amdbar.h"
 #include "asterfort/genmmd.h"
 #include "asterfort/infniv.h"
-#include "asterfort/jedetr.h"
 #include "asterfort/prmadj.h"
 #include "asterfort/utmess.h"
-#include "asterfort/wkvect.h"
-    integer :: neq, diag(0:neq), lgind, lgadjn
-    integer :: col(*), xadj(neq+1), adjncy(lgadjn)
-    integer :: delg(neq), nbsn, adress(neq), parent(neq)
-    integer :: supnd(neq), optnum
-    integer :: invp(neq), perm(neq), ier
-    integer :: deb(*), vois(*), suit(*)
-    integer :: noeud(*), ddl(*), permnd(*), invpnd(*), spndnd(*), xadjd(*)
+    integer(kind=8) :: neq, diag(0:neq), lgind, lgadjn
+    integer(kind=8) :: col(*), xadj(neq+1), adjncy(lgadjn)
+    integer(kind=8) :: delg(neq), nbsn, adress(neq), parent(neq)
+    integer(kind=8) :: supnd(neq), optnum
+    integer(kind=8) :: invp(neq), perm(neq), ier
+    integer(kind=8) :: deb(*), vois(*), suit(*)
+    integer(kind=8) :: noeud(*), ddl(*), permnd(*), invpnd(*), spndnd(*), xadjd(*)
 !     VARIABLES LOCALES
-    integer :: i, j, idelta, maxint, nadj
-    integer :: n2, fctnzs, innz, numi, numj, numl, num, ii
+    integer(kind=8) :: i, j, idelta, maxint, nadj
+    integer(kind=8) :: n2, fctnzs, innz, numi, numj, numl, num, ii
     real(kind=8) :: nbops
-    integer :: nnz(1:neq), qsize(neq), llist(neq), suiv(neq)
-    integer :: libre, iovflo, ncmpa, ifm, niv, p(neq), q(n2), nrl
-    integer :: it
-    integer :: nec, prno(*), deeq(*), ino, nbcmp
+    integer(kind=8) :: nnz(1:neq), qsize(neq), llist(neq), suiv(neq)
+    integer(kind=8) :: libre, iovflo, ncmpa, ifm, niv, p(neq), q(n2), nrl
+    integer(kind=8) :: it
+    integer(kind=8) :: nec, prno(*), deeq(*), ino, nbcmp
     aster_logical :: matgen, liaiso
 !--------------------------------------------------------------
 !
 !     VERSION RENUMEROTATION PAR NOEUD
-    integer :: nbnd, nd, nbnd1, ddlmoy, renum
-    integer :: pas, k, ndanc, iddl, sni, ind, nddl
-    integer :: vali(2)
-    integer(kind=4) :: nbnd4, nadj4, nbsn4, fctnz4, lgind4
+    integer(kind=8) :: nbnd, nd, nbnd1, ddlmoy, renum
+    integer(kind=8) :: pas, k, ndanc, iddl, sni, ind, nddl
+    integer(kind=8) :: vali(2)
     character(len=24) :: noxadj, noadjn, noperm, noinvp, nopare, nospnd
-    integer :: xadjd4, adjnc4, invpn4, permn4, paren4, spndn4
 !
     data noxadj/'&&PREML1.NOMXADJ_PROV   '/
     data noadjn/'&&PREML1.NOMADJN_PROV   '/

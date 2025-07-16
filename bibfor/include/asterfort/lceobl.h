@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -22,9 +22,9 @@ interface
     subroutine lceobl(ndim, typmod, imate, crit, epsm,&
                       deps, vim, option, sigm, vip,&
                       dsidep, iret)
-        integer :: ndim
+        integer(kind=8) :: ndim
         character(len=8) :: typmod(*)
-        integer :: imate
+        integer(kind=8) :: imate
         real(kind=8) :: crit(*)
         real(kind=8) :: epsm(6)
         real(kind=8) :: deps(6)
@@ -33,6 +33,6 @@ interface
         real(kind=8) :: sigm(6)
         real(kind=8) :: vip(7)
         real(kind=8) :: dsidep(6, 6)
-        integer :: iret
+        integer(kind=8) :: iret
     end subroutine lceobl
 end interface

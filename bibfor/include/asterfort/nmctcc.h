@@ -25,7 +25,7 @@ interface
         use NonLin_Datastructure_type
         character(len=8), intent(in) :: mesh
         character(len=24), intent(in) :: model_
-        integer, intent(in) :: nume_inst
+        integer(kind=8), intent(in) :: nume_inst
         character(len=24), intent(in) :: sderro
         character(len=19), intent(in) :: sddisc
         character(len=19), intent(in) :: hval_incr(*)

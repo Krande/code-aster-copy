@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -21,16 +21,16 @@
 interface
     subroutine peenca2(champ, long, vr, nbmail, nummai, ligrel, nbgr, ztot,&
                       option, nbproc, rang)
-        integer :: long
+        integer(kind=8) :: long
         character(len=*) :: champ
         real(kind=8) :: vr(long)
-        integer :: nbmail
-        integer :: nummai(*)
+        integer(kind=8) :: nbmail
+        integer(kind=8) :: nummai(*)
         character(len=19) :: ligrel
-        integer :: nbgr
+        integer(kind=8) :: nbgr
         real(kind=8) :: ztot
-        integer :: option
-        integer :: nbproc
-        integer :: rang
+        integer(kind=8) :: option
+        integer(kind=8) :: nbproc
+        integer(kind=8) :: rang
     end subroutine peenca2
 end interface

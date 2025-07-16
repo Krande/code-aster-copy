@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -74,17 +74,17 @@ subroutine mdnoch(nochmd, lnochm, lresu, noresu, nomsym, &
     character(len=16) :: nomsym
     character(len=8) :: noresu
 !
-    integer :: lresu
+    integer(kind=8) :: lresu
 !
-    integer :: lnochm
-    integer :: codret
+    integer(kind=8) :: lnochm
+    integer(kind=8) :: codret
 !
 ! 0.2. ==> COMMUNS
 !
 ! 0.3. ==> VARIABLES LOCALES
 !
 !
-    integer :: iaux, jaux
+    integer(kind=8) :: iaux, jaux
 !
 !====
 ! 1. PREALABLES

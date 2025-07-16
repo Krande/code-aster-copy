@@ -30,8 +30,8 @@ subroutine utdidt(getset, sddisc, ques_type, question, index_, &
     character(len=19), intent(in) :: sddisc
     character(len=4), intent(in) :: ques_type
     character(len=*), intent(in) :: question
-    integer, intent(in), optional :: index_
-    integer, intent(inout), optional :: vali_
+    integer(kind=8), intent(in), optional :: index_
+    integer(kind=8), intent(inout), optional :: vali_
     real(kind=8), intent(inout), optional :: valr_
     character(len=*), intent(inout), optional :: valk_
 !
@@ -53,10 +53,10 @@ subroutine utdidt(getset, sddisc, ques_type, question, index_, &
 !
 ! --------------------------------------------------------------------------------------------------
 !
-    integer :: iechec, i_adap
+    integer(kind=8) :: iechec, i_adap
     character(len=16) :: valk
     real(kind=8) :: valr
-    integer :: vali
+    integer(kind=8) :: vali
     character(len=24) :: sddisc_linf
     real(kind=8), pointer :: v_sddisc_linf(:) => null()
     character(len=24) :: sddisc_eevr

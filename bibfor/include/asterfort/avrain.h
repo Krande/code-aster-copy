@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -22,17 +22,17 @@ interface
     subroutine avrain(nbvec, nbordr, jitrv, npic, jpic,&
                       jopic, fatsoc, ncycl, jvmin, jvmax,&
                       jomin, jomax)
-        integer :: nbordr
-        integer :: nbvec
-        integer :: jitrv
-        integer :: npic(nbvec)
-        integer  :: jpic
-        integer :: jopic
+        integer(kind=8) :: nbordr
+        integer(kind=8) :: nbvec
+        integer(kind=8) :: jitrv
+        integer(kind=8) :: npic(nbvec)
+        integer(kind=8)  :: jpic
+        integer(kind=8) :: jopic
         real(kind=8) :: fatsoc
-        integer :: ncycl(nbvec)
-        integer :: jvmin
-        integer :: jvmax
-        integer :: jomin
-        integer :: jomax
+        integer(kind=8) :: ncycl(nbvec)
+        integer(kind=8) :: jvmin
+        integer(kind=8) :: jvmax
+        integer(kind=8) :: jomin
+        integer(kind=8) :: jomax
     end subroutine avrain
 end interface

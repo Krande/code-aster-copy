@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -31,10 +31,10 @@ subroutine nmextr_read_2(sdextrz, ds_inout, nb_keyw_fact, list_field, rela_field
 !
     type(NL_DS_InOut), intent(in) :: ds_inout
     character(len=*), intent(in) :: sdextrz
-    integer, intent(in) :: nb_keyw_fact
+    integer(kind=8), intent(in) :: nb_keyw_fact
     character(len=24), pointer :: list_field(:)
-    integer, pointer :: rela_field_keyw(:)
-    integer, intent(in) :: nb_field_comp
+    integer(kind=8), pointer :: rela_field_keyw(:)
+    integer(kind=8), intent(in) :: nb_field_comp
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -53,7 +53,7 @@ subroutine nmextr_read_2(sdextrz, ds_inout, nb_keyw_fact, list_field, rela_field
 !
 ! --------------------------------------------------------------------------------------------------
 !
-    integer :: i_keyw_fact, i_field_comp, i_field
+    integer(kind=8) :: i_keyw_fact, i_field_comp, i_field
     aster_logical :: l_comp
     character(len=2) :: chaine
     character(len=24) :: ligrel

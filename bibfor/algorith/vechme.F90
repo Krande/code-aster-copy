@@ -30,7 +30,6 @@ subroutine vechme(stop, &
     implicit none
 !
 #include "asterf_types.h"
-#include "asterfort/assert.h"
 #include "asterfort/detrsd.h"
 #include "asterfort/jedema.h"
 #include "asterfort/jemarq.h"
@@ -45,7 +44,7 @@ subroutine vechme(stop, &
     real(kind=8), intent(in) :: timePara(3)
     character(len=*), intent(inout) :: vectElemZ
     character(len=*), optional, intent(in) :: varcCurrZ_
-    integer, optional, intent(in) :: nharm_
+    integer(kind=8), optional, intent(in) :: nharm_
     character(len=*), optional, intent(in) :: ligrelCalcZ_
     character(len=1), optional, intent(in) :: jvBase_
 !
@@ -77,15 +76,15 @@ subroutine vechme(stop, &
     character(len=24) :: lchin(LOAD_NEUM_NBMAXIN)
     aster_logical, parameter :: applyPilo = ASTER_FALSE
     aster_logical, parameter :: applySuiv = ASTER_FALSE
-    integer :: nbLoad, iLoad, loadNume, nbFieldInGene
-    integer :: nharm
+    integer(kind=8) :: nbLoad, iLoad, loadNume, nbFieldInGene
+    integer(kind=8) :: nharm
     real(kind=8) :: timePrev, timeCurr, timeTheta
     character(len=8) :: loadName, model
     character(len=13) :: loadPreObject
     character(len=24) :: ligrelCalc, loadLigrel
     character(len=24) :: vectElem, resuElem
     character(len=24), pointer :: listLoadName(:) => null()
-    integer, pointer :: listLoadInfo(:) => null()
+    integer(kind=8), pointer :: listLoadInfo(:) => null()
     aster_logical :: noLoadInList
     character(len=1) :: jvBase
     character(len=24) :: varcCurr

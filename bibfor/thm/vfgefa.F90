@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -26,10 +26,10 @@ subroutine vfgefa(nnos, xs, t, xg, &
 #include "asterfort/provec.h"
 #include "asterfort/vfgetr.h"
 !
-    integer, intent(in) :: nnos
+    integer(kind=8), intent(in) :: nnos
     real(kind=8), intent(in) :: xg(3), xs(3, nnos), t(3, nnos)
     real(kind=8), intent(out) :: surf, norm(3), xgf(3), d
-    integer, intent(out) :: iret
+    integer(kind=8), intent(out) :: iret
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -51,7 +51,7 @@ subroutine vfgefa(nnos, xs, t, xg, &
 !
 ! --------------------------------------------------------------------------------------------------
 !
-    integer :: idim, is
+    integer(kind=8) :: idim, is
     real(kind=8) :: xs1(3, 3), t1(3, 2)
     real(kind=8) :: surf1, norm1(3), xgf1(3), d1
     real(kind=8) :: xs2(3, 3), t2(3, 2)

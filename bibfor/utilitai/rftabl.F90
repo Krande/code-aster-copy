@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -40,8 +40,8 @@ subroutine rftabl(tabres)
 !
 !     OPERATEUR "RECU_FONCTION"   MOT CLE "TABLE"
 !     ------------------------------------------------------------------
-    integer :: ibid, n2, n3, n4, nparfi, iret
-    integer :: ifm, niv
+    integer(kind=8) :: ibid, n2, n3, n4, nparfi, iret
+    integer(kind=8) :: ifm, niv
     real(kind=8) :: r8b
     complex(kind=8) :: c16b
     character(len=8) :: k8b, interp, prolgd

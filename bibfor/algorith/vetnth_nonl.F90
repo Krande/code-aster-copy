@@ -24,7 +24,6 @@ subroutine vetnth_nonl(model, caraElem, mateco, time, compor, &
     implicit none
 !
 #include "asterf_types.h"
-#include "asterfort/assert.h"
 #include "asterfort/calcul.h"
 #include "asterfort/corich.h"
 #include "asterfort/inical.h"
@@ -72,10 +71,10 @@ subroutine vetnth_nonl(model, caraElem, mateco, time, compor, &
 !
 ! --------------------------------------------------------------------------------------------------
 !
-    integer, parameter :: nbin = 10, nbout = 2
+    integer(kind=8), parameter :: nbin = 10, nbout = 2
     character(len=8) :: lpain(nbin), lpaout(nbout)
     character(len=19) :: lchin(nbin), lchout(nbout)
-    integer :: iret
+    integer(kind=8) :: iret
     character(len=8) :: newnom
     character(len=16) :: option
     character(len=24) :: ligrmo

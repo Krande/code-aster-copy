@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -70,7 +70,7 @@ subroutine mtdscr(nommat)
 !
 !
 !     ----- PARAMETRES DE DEFINITION DES MATRICES ----------------------
-    integer :: imatd
+    integer(kind=8) :: imatd
     character(len=2) :: tyma
     character(len=4) :: kbid
     character(len=14) :: nu
@@ -79,13 +79,13 @@ subroutine mtdscr(nommat)
 !
 !
 !-----------------------------------------------------------------------
-    integer :: ier, iret, jnequ
-    integer :: k, lccid, lmat, lnom, nb1
-    integer :: nb2
-    integer, pointer :: ccid(:) => null()
-    integer, pointer :: scde(:) => null()
+    integer(kind=8) :: ier, iret, jnequ
+    integer(kind=8) :: k, lccid, lmat, lnom, nb1
+    integer(kind=8) :: nb2
+    integer(kind=8), pointer :: ccid(:) => null()
+    integer(kind=8), pointer :: scde(:) => null()
     character(len=24), pointer :: refa(:) => null()
-    integer, pointer :: smde(:) => null()
+    integer(kind=8), pointer :: smde(:) => null()
 !-----------------------------------------------------------------------
     call jemarq()
     mat19 = nommat

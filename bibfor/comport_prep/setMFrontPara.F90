@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -29,11 +29,10 @@ subroutine setMFrontPara(prepCrit, iFactorKeyword)
 #include "asterc/mgis_set_integer_parameter.h"
 #include "asterc/mgis_set_outofbounds_policy.h"
 #include "asterf_types.h"
-#include "asterfort/assert.h"
 #include "asterfort/utmess.h"
 !
     type(BehaviourPrep_Crit), pointer :: prepCrit(:)
-    integer, intent(in) :: iFactorKeyword
+    integer(kind=8), intent(in) :: iFactorKeyword
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -49,16 +48,10 @@ subroutine setMFrontPara(prepCrit, iFactorKeyword)
 ! --------------------------------------------------------------------------------------------------
 !
     real(kind=8) :: resi_inte_mfront_rela, valr(2)
-    integer:: extern_type, iveriborne
+    integer(kind=8):: extern_type, iveriborne
     character(len=16) :: extern_addr
     real(kind=8) :: resi_inte
-#ifdef ASTER_INT4  // Only define ASTERINTEGER4 specialization when using 64-bit integers
-    integer(kind=8) :: iter_inte_mfront_maxi
-    integer :: iter_inte_maxi, vali(2)
-#else
-    integer :: iter_inte_maxi, iter_inte_mfront_maxi, vali(2)
-#endif
-
+    integer(kind=8) :: iter_inte_maxi, iter_inte_mfront_maxi, vali(2)
 !
 ! --------------------------------------------------------------------------------------------------
 !

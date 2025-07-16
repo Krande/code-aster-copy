@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -27,16 +27,16 @@ subroutine rbph01(trange, nbcham, typea, itresu, nfonct, &
 #include "asterfort/jeveuo.h"
 #include "asterfort/rsexch.h"
 #include "asterfort/utmess.h"
-    integer :: nbcham, itresu(*), nfonct
+    integer(kind=8) :: nbcham, itresu(*), nfonct
     character(len=8) :: basemo
     character(len=16) :: typea(*), typbas(*)
     character(len=19) :: trange, typref(*)
     aster_logical :: tousno, multap
-    integer, dimension(8), intent(out), optional :: i_cham
+    integer(kind=8), dimension(8), intent(out), optional :: i_cham
 !     OPERATEUR REST_BASE_PHYS
 !               TRAITEMENT DES MOTS CLES "TOUT_CHAM" ET "NOM_CHAM"
 !     ------------------------------------------------------------------
-    integer :: n1, i, iret
+    integer(kind=8) :: n1, i, iret
     character(len=8) :: blanc, mode
     character(len=16) :: champ(8)
     character(len=19) :: nomcha

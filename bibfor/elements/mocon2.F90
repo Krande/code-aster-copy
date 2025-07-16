@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -30,13 +30,13 @@ subroutine mocon2(dir, sigb, siga, hh, nlit, &
 !
     character(len=8) :: nufsup, nufinf, nufsd1, nufid1, nufsd2, nufid2
     character(len=1) :: dir
-    integer :: nlit
+    integer(kind=8) :: nlit
     real(kind=8) :: sigb, siga(nlit), hh, om(nlit), rr(nlit), prec, e1, sigma
-    integer :: ordlu
+    integer(kind=8) :: ordlu
     parameter(ordlu=2)
     real(kind=8) :: poly(ordlu+1), xx
-    integer :: i, j, npt
-    integer :: ordok, jvale, jfon, jprol, jtab, lmax
+    integer(kind=8) :: i, j, npt
+    integer(kind=8) :: ordok, jvale, jfon, jprol, jtab, lmax
 !
 ! --- POSITIVE BENDING
     call jeveuo(nufsup//'           .VALE', 'L', jtab)

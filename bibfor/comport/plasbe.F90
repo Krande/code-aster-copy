@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -170,16 +170,16 @@ subroutine plasbe(BEHinteg, &
 !       ----------------------------------------------------------------
     type(Behaviour_Integ), intent(in) :: BEHinteg
     aster_logical, intent(in) :: l_epsi_varc
-    integer :: imat, ndt, ndi, nr, nvi
-    integer :: itmax, icomp
-    integer :: nmat, irtet, irteti, nseui4
-    integer :: nseuil, nseui1, nseui2, nseui3
-    integer :: iadzi, iazk24
+    integer(kind=8) :: imat, ndt, ndi, nr, nvi
+    integer(kind=8) :: itmax, icomp
+    integer(kind=8) :: nmat, irtet, irteti, nseui4
+    integer(kind=8) :: nseuil, nseui1, nseui2, nseui3
+    integer(kind=8) :: iadzi, iazk24
     real(kind=8) :: toler
     real(kind=8) :: epsi
 !
 !-----------------------------------------------------------------------
-    integer :: iret, kpg, ksp
+    integer(kind=8) :: iret, kpg, ksp
     real(kind=8) :: tneg, tref
 !-----------------------------------------------------------------------
     parameter(epsi=1.d-15)

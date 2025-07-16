@@ -37,11 +37,8 @@ subroutine caliai(fonree, charge, phenom)
 #include "asterfort/jeexin.h"
 #include "asterfort/jelira.h"
 #include "asterfort/jemarq.h"
-#include "asterfort/jenonu.h"
-#include "asterfort/jenuno.h"
 #include "asterfort/jeveuo.h"
 #include "asterfort/jexnom.h"
-#include "asterfort/jexnum.h"
 #include "asterfort/utmess.h"
 #include "asterfort/wkvect.h"
 #include "asterfort/as_deallocate.h"
@@ -60,7 +57,7 @@ subroutine caliai(fonree, charge, phenom)
 ! IN       : FONREE : 'REEL' OU 'FONC' OU 'COMP'
 ! IN/JXVAR : CHARGE : NOM D'UNE SD CHARGE
 ! ----------------------------------------------------------------------
-    integer :: vali(2)
+    integer(kind=8) :: vali(2)
 !
     complex(kind=8) :: betac
     character(len=4) :: typcoe, typval, typco2
@@ -75,17 +72,17 @@ subroutine caliai(fonree, charge, phenom)
     character(len=1) :: nompar(3)
     real(kind=8) :: valpar(3), vale
 !-----------------------------------------------------------------------
-    integer :: i, ier, igr, in, indnoe, ino
-    integer :: iocc, iret, j
-    integer :: jddl, jgr0
-    integer :: k, n, n1, n2, n3, nb, nbgt
-    integer :: nbno, ndim1, ndim2, nent, ng, ngr, nliai
-    integer :: nno
+    integer(kind=8) :: i, ier, igr, in, indnoe, ino
+    integer(kind=8) :: iocc, iret, j
+    integer(kind=8) :: jddl, jgr0
+    integer(kind=8) :: k, n, n1, n2, n3, nb, nbgt
+    integer(kind=8) :: nbno, ndim1, ndim2, nent, ng, ngr, nliai
+    integer(kind=8) :: nno
     real(kind=8) :: beta
     complex(kind=8), pointer :: coemuc(:) => null()
     character(len=8), pointer :: coemuf(:) => null()
     real(kind=8), pointer :: coemur(:) => null()
-    integer, pointer :: dimension(:) => null()
+    integer(kind=8), pointer :: dimension(:) => null()
     real(kind=8), pointer :: direct(:) => null()
     character(len=24), pointer :: liste1(:) => null()
     character(len=8), pointer :: liste2(:) => null()

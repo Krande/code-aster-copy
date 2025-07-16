@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -22,14 +22,13 @@ subroutine dflld3(sdlist, i_adap)
 !
 #include "asterf_types.h"
 #include "event_def.h"
-#include "asterfort/assert.h"
 #include "asterfort/jedema.h"
 #include "asterfort/jemarq.h"
 #include "asterfort/jeveuo.h"
 #include "asterfort/utmess.h"
 !
     character(len=8), intent(in) :: sdlist
-    integer, intent(in) :: i_adap
+    integer(kind=8), intent(in) :: i_adap
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -50,7 +49,7 @@ subroutine dflld3(sdlist, i_adap)
     real(kind=8), pointer :: v_sdlist_atplur(:) => null()
     character(len=24) :: sdlist_atpluk
     character(len=16), pointer :: v_sdlist_atpluk(:) => null()
-    integer :: action_type, nb_iter_newton_ref
+    integer(kind=8) :: action_type, nb_iter_newton_ref
     real(kind=8) :: pcent_augm, vale_ref
     character(len=16):: nom_cham, nom_cmp, crit_cmp
 !

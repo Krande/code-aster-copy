@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -23,7 +23,6 @@ subroutine romLineicDSCopy(lineicNumeIn, lineicNumeOut)
 !
     implicit none
 !
-#include "asterfort/assert.h"
 #include "asterfort/as_allocate.h"
 !
     type(ROM_DS_LineicNumb), intent(in) :: lineicNumeIn
@@ -42,7 +41,7 @@ subroutine romLineicDSCopy(lineicNumeIn, lineicNumeOut)
 !
 ! --------------------------------------------------------------------------------------------------
 !
-    integer :: iSlice, nbSlice
+    integer(kind=8) :: iSlice, nbSlice
 !
 ! --------------------------------------------------------------------------------------------------
 !

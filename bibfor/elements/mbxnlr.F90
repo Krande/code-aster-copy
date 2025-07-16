@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -31,10 +31,10 @@ subroutine mbxnlr(option, fami, nddl, nno, ncomp, kpg, ipoids, igeom, &
 !
     character(len=16) :: option
     character(len=4) :: fami
-    integer :: nddl, nno, ncomp
-    integer :: kpg
-    integer :: ipoids, igeom, imate, ideplm, ideplp
-    integer :: ivectu, icontp, imatuu
+    integer(kind=8) :: nddl, nno, ncomp
+    integer(kind=8) :: kpg
+    integer(kind=8) :: ipoids, igeom, imate, ideplm, ideplp
+    integer(kind=8) :: ivectu, icontp, imatuu
     real(kind=8) :: dff(2, nno), alpha, beta
     aster_logical :: vecteu, matric
 ! ----------------------------------------------------------------------
@@ -66,7 +66,7 @@ subroutine mbxnlr(option, fami, nddl, nno, ncomp, kpg, ipoids, igeom, &
 ! OUT ***          ***
 ! ----------------------------------------------------------------------
 !
-    integer :: i, j, j1, n, m, c, cc, kk, kkd
+    integer(kind=8) :: i, j, j1, n, m, c, cc, kk, kkd
     real(kind=8) :: b(3, 3, 9), jac
     real(kind=8) :: epsm(3), deps(3), epsth(3), epsthe, sigp(3), tmp, rig(3, 3)
 !

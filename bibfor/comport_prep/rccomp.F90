@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -22,7 +22,6 @@ subroutine rccomp(chmat, mesh)
 !
 #include "jeveux.h"
 #include "asterc/getfac.h"
-#include "asterfort/assert.h"
 #include "asterfort/comp_comp_read.h"
 #include "asterfort/comp_comp_save.h"
 #include "asterfort/comp_init.h"
@@ -45,11 +44,11 @@ subroutine rccomp(chmat, mesh)
 !
 ! --------------------------------------------------------------------------------------------------
 !
-    integer :: nocc
+    integer(kind=8) :: nocc
     character(len=16), parameter :: factorKeyword = 'AFFE_COMPOR'
     character(len=19) :: compor
     character(len=16), pointer :: infoValk(:) => null()
-    integer, pointer :: infoVali(:) => null()
+    integer(kind=8), pointer :: infoVali(:) => null()
 !
 ! --------------------------------------------------------------------------------------------------
 !

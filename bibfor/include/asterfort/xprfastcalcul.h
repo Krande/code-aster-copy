@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -22,17 +22,17 @@ interface
 
    subroutine xprfastcalcul(jvtemp, nbnoma, jcalculs, jnodto, nbno, jcnsls, &
                             cnxinv, jconx1, jconx2, ndim, jcopiels, noma)                           
-    integer           :: jvtemp
-    integer           :: nbnoma
-    integer           :: jcalculs
-    integer           :: jnodto
-    integer           :: nbno                    
-    integer           :: jcnsls
+    integer(kind=8)           :: jvtemp
+    integer(kind=8)           :: nbnoma
+    integer(kind=8)           :: jcalculs
+    integer(kind=8)           :: jnodto
+    integer(kind=8)           :: nbno                    
+    integer(kind=8)           :: jcnsls
     character(len=19) :: cnxinv    
-    integer           :: jconx1   
-    integer           :: jconx2        
-    integer           :: ndim
-    integer           :: jcopiels 
+    integer(kind=8)           :: jconx1   
+    integer(kind=8)           :: jconx2        
+    integer(kind=8)           :: ndim
+    integer(kind=8)           :: jcopiels 
     character(len=8) :: noma
    end subroutine
 end interface

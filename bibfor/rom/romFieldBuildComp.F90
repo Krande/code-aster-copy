@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -33,7 +33,7 @@ subroutine romFieldBuildComp(resultDomNameZ, resultRomNameZ, &
 #include "asterfort/utmess.h"
 !
     character(len=*), intent(in) :: resultDomNameZ, resultRomNameZ
-    integer, intent(in) :: nbStore
+    integer(kind=8), intent(in) :: nbStore
     type(ROM_DS_FieldBuild), intent(in) :: fieldBuild
 !
 ! --------------------------------------------------------------------------------------------------
@@ -51,13 +51,13 @@ subroutine romFieldBuildComp(resultDomNameZ, resultRomNameZ, &
 !
 ! --------------------------------------------------------------------------------------------------
 !
-    integer :: ifm, niv
-    integer, parameter :: numeStoreInit = 0
+    integer(kind=8) :: ifm, niv
+    integer(kind=8), parameter :: numeStoreInit = 0
     aster_logical :: lRIDTrunc
     character(len=24) :: fieldRomObject
-    integer :: iStore, iEqua
-    integer :: numeStore, numeEqua
-    integer :: nbEquaDom, nbEquaRID, nbEquaRIDTotal
+    integer(kind=8) :: iStore, iEqua
+    integer(kind=8) :: numeStore, numeEqua
+    integer(kind=8) :: nbEquaDom, nbEquaRID, nbEquaRIDTotal
     real(kind=8), pointer :: valeRom(:) => null(), valeDom(:) => null()
     real(kind=8), pointer :: fieldVale(:) => null()
     type(ROM_DS_Field) :: fieldDom, fieldRom

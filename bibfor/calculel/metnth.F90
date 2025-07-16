@@ -70,13 +70,13 @@ subroutine metnth(model, loadNameJv, caraElem, mateco, time, &
     character(len=16), parameter :: option = 'RIGI_THER_CONV'
     character(len=24) :: lchin(6), lchout(1), chgeom, chcara(18)
     character(len=24) :: chvite, ligrmo, convch
-    integer :: iret, ilires
-    integer :: nchar, jchar
+    integer(kind=8) :: iret, ilires
+    integer(kind=8) :: nchar, jchar
 !
 ! DEB-------------------------------------------------------------------
 !
 !-----------------------------------------------------------------------
-    integer :: ichar, iconv, jvites
+    integer(kind=8) :: ichar, iconv, jvites
 !-----------------------------------------------------------------------
     call jemarq()
 !     -- ON VERIFIE LA PRESENCE PARFOIS NECESSAIRE DE CARA_ELEM

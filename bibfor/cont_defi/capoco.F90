@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -54,12 +54,12 @@ subroutine capoco(sdcont, keywf)
 !
 ! --------------------------------------------------------------------------------------------------
 !
-    integer :: iret, noc, i_beam_sect
-    integer :: elem_slav_indx, elem_slav_nume
-    integer :: jdecme
-    integer :: i_zone, i_slav_elem
-    integer :: nb_slav_elem, nb_cont_zone, nb_cont_elem, nb_para_maxi
-    integer :: beam_tsec_indx, beam_r1_indx, beam_r2_indx, iad1, iad2
+    integer(kind=8) :: iret, noc, i_beam_sect
+    integer(kind=8) :: elem_slav_indx, elem_slav_nume
+    integer(kind=8) :: jdecme
+    integer(kind=8) :: i_zone, i_slav_elem
+    integer(kind=8) :: nb_slav_elem, nb_cont_zone, nb_cont_elem, nb_para_maxi
+    integer(kind=8) :: beam_tsec_indx, beam_r1_indx, beam_r2_indx, iad1, iad2
     real(kind=8) :: beam_radius_1, beam_radius_2, beam_radius
     aster_logical :: l_dist_exist
     character(len=8) :: cara_elem
@@ -67,10 +67,10 @@ subroutine capoco(sdcont, keywf)
     aster_logical :: l_dist_beam
     real(kind=8), pointer :: v_caraelem_cesv(:) => null()
     character(len=8), pointer :: v_caraelem_cesc(:) => null()
-    integer :: j_caraelem_cesd, j_caraelem_cesl
+    integer(kind=8) :: j_caraelem_cesd, j_caraelem_cesl
     character(len=24) :: sdcont_defi
     character(len=24) :: sdcont_mailco
-    integer, pointer :: v_sdcont_mailco(:) => null()
+    integer(kind=8), pointer :: v_sdcont_mailco(:) => null()
     character(len=24) :: sdcont_jeupou
     real(kind=8), pointer :: v_sdcont_jeupou(:) => null()
 !

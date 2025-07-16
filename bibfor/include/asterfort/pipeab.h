@@ -20,9 +20,9 @@
 !
 interface
     subroutine pipeab(mat, dtau, vim, sup, sud, mup, mud, nsol, sol, sgn)
-        integer                  :: mat
+        integer(kind=8)                  :: mat
         real(kind=8), intent(in) :: dtau, vim(:), sup(:), sud(:), mup(:), mud(:)
-        integer, intent(out)     :: nsol, sgn(2)
+        integer(kind=8), intent(out)     :: nsol, sgn(2)
         real(kind=8), intent(out):: sol(2)
     end subroutine pipeab
 end interface

@@ -50,21 +50,21 @@ subroutine modelPrint(model)
 !
 ! --------------------------------------------------------------------------------------------------
 !
-    integer ifm, niv
-    integer :: numvec, nbgrel, igrel, long_grel, nume_elem
-    integer :: nume_type_poi1, jc, j, k, ibegin, isharp
-    integer :: nume_type_elem, nume_type_geom
-    integer :: iexi, nb_type_elem
-    integer :: nb_elem_grel
+    integer(kind=8) ifm, niv
+    integer(kind=8) :: numvec, nbgrel, igrel, long_grel, nume_elem
+    integer(kind=8) :: nume_type_poi1, jc, j, k, ibegin, isharp
+    integer(kind=8) :: nume_type_elem, nume_type_geom
+    integer(kind=8) :: iexi, nb_type_elem
+    integer(kind=8) :: nb_elem_grel
     character(len=8) :: type_geom, name_entity, tabmai(8)
     character(len=19) :: ligrel_model
     character(len=8) :: mesh
     character(len=16) :: type_elem, modelisa, valk(8), formul
     character(len=32) :: phemod
-    integer, pointer :: p_mesh_typmai(:) => null()
-    integer, pointer :: p_nb_elem(:) => null()
+    integer(kind=8), pointer :: p_mesh_typmai(:) => null()
+    integer(kind=8), pointer :: p_nb_elem(:) => null()
     character(len=24) :: model_liel
-    integer, pointer :: p_model_liel(:) => null()
+    integer(kind=8), pointer :: p_model_liel(:) => null()
     character(len=8), pointer :: p_type_geom(:) => null()
     character(len=16), pointer :: p_modeli(:) => null()
     character(len=16), pointer :: p_formul(:) => null()

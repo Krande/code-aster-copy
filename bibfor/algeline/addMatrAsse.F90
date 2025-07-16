@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -24,29 +24,24 @@ subroutine addMatrAsse(mat1, mat2, coeff1, coeff2, matres)
 !
 #include "asterf_types.h"
 #include "jeveux.h"
-#include "asterfort/assert.h"
 #include "asterfort/copisd.h"
 #include "asterfort/detrsd.h"
 #include "asterfort/jedema.h"
-#include "asterfort/jedetr.h"
-#include "asterfort/jeexin.h"
 #include "asterfort/jemarq.h"
-#include "asterfort/jelira.h"
 #include "asterfort/jeveuo.h"
 #include "asterfort/mtcmbl.h"
 #include "asterfort/mtdefs.h"
 #include "asterfort/utmess.h"
 #include "asterfort/vrrefe.h"
-#include "asterfort/wkvect.h"
 !
     character(len=*), intent(in) :: mat1, mat2, matres
     real(kind=8), intent(in) :: coeff1, coeff2
 
 !
-    integer, parameter :: nbmatr = 2
+    integer(kind=8), parameter :: nbmatr = 2
     character(len=19), parameter :: nameMatr = "&MATRADD"
     character(len=19) :: listMatr(2), mat19
-    integer :: iocc, jrefe, jpomr, iret
+    integer(kind=8) :: iocc, jrefe, jpomr, iret
     aster_logical :: reuse
 ! ------------------------------------------------------------------
 !

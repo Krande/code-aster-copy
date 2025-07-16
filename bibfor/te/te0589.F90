@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -33,12 +33,12 @@ subroutine te0589(option, nomte)
 !                      NOMTE        -->  NOM DU TYPE ELEMENT
 ! ......................................................................
 !
-    integer :: nbrddm, npg, ipoids, ivf
+    integer(kind=8) :: nbrddm, npg, ipoids, ivf
     parameter(nbrddm=156)
-    integer :: ndim, nnos, nno, jcoopg, idfdk, jdfd2, jgano
+    integer(kind=8) :: ndim, nnos, nno, jcoopg, idfdk, jdfd2, jgano
     real(kind=8) :: f(nbrddm), b(4, nbrddm), vout(nbrddm)
     real(kind=8) :: vtemp(nbrddm), pass(nbrddm, nbrddm)
-    integer :: m, nbrddl
+    integer(kind=8) :: m, nbrddl
 !
     call elrefe_info(fami='RIGI', ndim=ndim, nno=nno, nnos=nnos, &
                      npg=npg, jpoids=ipoids, jcoopg=jcoopg, jvf=ivf, jdfde=idfdk, &

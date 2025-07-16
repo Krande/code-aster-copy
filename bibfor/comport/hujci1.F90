@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -43,7 +43,7 @@ subroutine hujci1(mater, deps, sigd, i1f, tract, iret)
 #include "asterfort/infniv.h"
 #include "asterfort/utmess.h"
 #include "asterfort/zeroco.h"
-    integer :: ndt, ndi, iret, ifm, niv
+    integer(kind=8) :: ndt, ndi, iret, ifm, niv
     real(kind=8) :: mater(22, 2), deps(6), sigd(6), i1d, i1f
     real(kind=8) :: trdeps, coef, prec, alpha, theta
     real(kind=8) :: x(4), y(4)
@@ -51,7 +51,7 @@ subroutine hujci1(mater, deps, sigd, i1f, tract, iret)
     real(kind=8) :: zero, un, deux, d13, c11, c12, c13, c22, c23, c33
     real(kind=8) :: e1, e2, e3, nu12, nu13, nu23, nu21, nu31, nu32, delta
     aster_logical :: tract, debug
-    integer :: i, niter, icmpt
+    integer(kind=8) :: i, niter, icmpt
 !
     common/tdim/ndt, ndi
     common/meshuj/debug

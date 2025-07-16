@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -39,20 +39,20 @@ subroutine smosli(stomoz, stolcz, basz, rtbloc)
 
     character(len=1) :: base
     character(len=19) :: stomor, stolci
-    integer ::  neq, nbloc, hcc, nnz, kterm, jcolm, jcollc, iligm, iliglc, temp
-    integer :: hc, hcmax, itbloc, ieqlc, ibloc, tcumu
-    integer, pointer :: schc(:) => null()
-    integer, pointer :: scdi(:) => null()
-    integer, pointer :: scib(:) => null()
-    integer, pointer :: scbl(:) => null()
-    integer, pointer :: scde(:) => null()
+    integer(kind=8) ::  neq, nbloc, hcc, nnz, kterm, jcolm, jcollc, iligm, iliglc, temp
+    integer(kind=8) :: hc, hcmax, itbloc, ieqlc, ibloc, tcumu
+    integer(kind=8), pointer :: schc(:) => null()
+    integer(kind=8), pointer :: scdi(:) => null()
+    integer(kind=8), pointer :: scib(:) => null()
+    integer(kind=8), pointer :: scbl(:) => null()
+    integer(kind=8), pointer :: scde(:) => null()
 
-    integer, pointer :: smde(:) => null()
-    integer, pointer :: smdi(:) => null()
+    integer(kind=8), pointer :: smde(:) => null()
+    integer(kind=8), pointer :: smdi(:) => null()
     integer(kind=4), pointer :: smhc(:) => null()
 
-    integer, pointer :: m2lc(:) => null()
-    integer, pointer :: lc2m(:) => null()
+    integer(kind=8), pointer :: m2lc(:) => null()
+    integer(kind=8), pointer :: lc2m(:) => null()
 !   ------------------------------------------------------------------
 !
 !

@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -21,7 +21,6 @@ subroutine dmatcp(fami, mater, time, poum, ipg, &
 !
     implicit none
 !
-#include "asterfort/assert.h"
 #include "asterfort/get_elas_para.h"
 #include "asterfort/get_elas_id.h"
 #include "asterfort/matrHookePlaneStress.h"
@@ -29,11 +28,11 @@ subroutine dmatcp(fami, mater, time, poum, ipg, &
 !
 !
     character(len=*), intent(in) :: fami
-    integer, intent(in) :: mater
+    integer(kind=8), intent(in) :: mater
     real(kind=8), intent(in) :: time
     character(len=*), intent(in) :: poum
-    integer, intent(in) :: ipg
-    integer, intent(in) :: ispg
+    integer(kind=8), intent(in) :: ipg
+    integer(kind=8), intent(in) :: ispg
     real(kind=8), intent(in) :: angl_naut(3)
     real(kind=8), optional, intent(out) :: dr_(4, 4)
     real(kind=8), optional, intent(out) :: di_(4, 4)
@@ -58,7 +57,7 @@ subroutine dmatcp(fami, mater, time, poum, ipg, &
 !
 ! --------------------------------------------------------------------------------------------------
 !
-    integer :: elas_id
+    integer(kind=8) :: elas_id
     real(kind=8) :: nur, nui, nu12r, nu13r, nu23r, nu12i, nu13i, nu23i
     real(kind=8) :: e1r, e2r, e3r, e1i, e2i, e3i, er, ei
     real(kind=8) :: g1r, g2r, g3r, g1i, g2i, g3i, gr, gi

@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -34,7 +34,7 @@ subroutine cuprep(mesh, nb_equa, ds_contact, disp_curr, disp_iter, time_curr)
 !
 !
     character(len=8), intent(in) :: mesh
-    integer, intent(in) :: nb_equa
+    integer(kind=8), intent(in) :: nb_equa
     type(NL_DS_Contact), intent(in) :: ds_contact
     character(len=19), intent(in) :: disp_iter
     character(len=19), intent(in) :: disp_curr
@@ -57,14 +57,14 @@ subroutine cuprep(mesh, nb_equa, ds_contact, disp_curr, disp_iter, time_curr)
 !
 ! --------------------------------------------------------------------------------------------------
 !
-    integer :: icmp, iret
+    integer(kind=8) :: icmp, iret
     real(kind=8) :: coef, val, sign
     character(len=24) :: cmpgcu, coegcu, coedcu
-    integer :: jcmpg, jcoefg, jcoefd
+    integer(kind=8) :: jcmpg, jcoefg, jcoefd
     character(len=24) :: apcoef, apjeu, poinoe, apddl, noeucu
-    integer :: japcoe, japjeu, jpoi, japddl, jnoeu
-    integer :: nnocu, ncmpg, inoe, nbddl, jdecal
-    integer :: numnoe
+    integer(kind=8) :: japcoe, japjeu, jpoi, japddl, jnoeu
+    integer(kind=8) :: nnocu, ncmpg, inoe, nbddl, jdecal
+    integer(kind=8) :: numnoe
     character(len=8) :: lispar(4)
     real(kind=8) :: valpar(4)
     real(kind=8), pointer :: coor(:) => null()

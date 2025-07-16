@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -22,7 +22,7 @@ interface
     subroutine hbmata(se, dg, etap, i1e, sigeqe,&
                       vp, vecp, parame, derive, sig3,&
                       detadg, dgdl, nbmat, materf, dsidep)
-        integer :: nbmat
+        integer(kind=8) :: nbmat
         real(kind=8) :: se(6)
         real(kind=8) :: dg
         real(kind=8) :: etap

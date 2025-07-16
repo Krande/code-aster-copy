@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -29,11 +29,11 @@ subroutine arlted(ndim, nns, jcoors, npgs, ivfs, &
 #include "asterfort/arltds.h"
 #include "asterfort/arltep.h"
 !
-    integer :: ndim
-    integer :: nns, npgs
-    integer :: ivfs, ipoids, idfdes
+    integer(kind=8) :: ndim
+    integer(kind=8) :: nns, npgs
+    integer(kind=8) :: ivfs, ipoids, idfdes
     character(len=8) :: elref1
-    integer :: ndml1, jcoor1, jcoors
+    integer(kind=8) :: ndml1, jcoor1, jcoors
     real(kind=8) :: poijcs(npgs)
     real(kind=8) :: fcpig1(npgs*ndim*ndim*ndml1)
     real(kind=8) :: dfdx1(npgs*ndim*ndim*ndml1)
@@ -69,8 +69,8 @@ subroutine arlted(ndim, nns, jcoors, npgs, ivfs, &
 ! OUT DFDZm  : DERIVEE FCT. FORME/Z EN CHAQUE PT DE GAUSS DE LA MAILLE m
 !
 !
-    integer :: kpgs
-    integer :: mtl1
+    integer(kind=8) :: kpgs
+    integer(kind=8) :: mtl1
     real(kind=8) :: fctfs(npgs*nns)
     real(kind=8) :: dfdzs(npgs*nns), dfdxs(npgs*nns), dfdys(npgs*nns)
 !

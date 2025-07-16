@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -20,11 +20,11 @@
 !
 interface
     subroutine cpncq8(main,numa,coor,ind,nomnoe, conneo)
-        integer, intent(in) :: ind
-        integer, intent(in) :: numa
+        integer(kind=8), intent(in) :: ind
+        integer(kind=8), intent(in) :: numa
         real(kind=8),intent(out) :: coor(3, *)
         character(len=8), intent(in) :: main
         character(len=24), intent(in) :: nomnoe
-        integer, intent(in) :: conneo(*)
+        integer(kind=8), intent(in) :: conneo(*)
     end subroutine cpncq8
 end interface

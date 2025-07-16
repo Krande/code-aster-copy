@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -23,14 +23,14 @@
 interface
     subroutine asret2(lmasym, jtmp2, lgtmp2, nbterm, jsmhc,&
                       jsmdi, nbi1, ti1, ti2)
-        integer :: nbi1
+        integer(kind=8) :: nbi1
         aster_logical :: lmasym
-        integer :: jtmp2
-        integer :: lgtmp2
-        integer :: nbterm
-        integer :: jsmhc
-        integer :: jsmdi
-        integer :: ti1(nbi1)
-        integer :: ti2(nbi1)
+        integer(kind=8) :: jtmp2
+        integer(kind=8) :: lgtmp2
+        integer(kind=8) :: nbterm
+        integer(kind=8) :: jsmhc
+        integer(kind=8) :: jsmdi
+        integer(kind=8) :: ti1(nbi1)
+        integer(kind=8) :: ti2(nbi1)
     end subroutine asret2
 end interface

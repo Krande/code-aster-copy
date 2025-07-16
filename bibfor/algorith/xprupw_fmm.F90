@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -25,7 +25,6 @@ subroutine xprupw_fmm(cmnd, noma, vcn, grlr, &
 !
 #include "jeveux.h"
 #include "asterc/r8gaem.h"
-#include "asterfort/assert.h"
 #include "asterfort/calcul.h"
 #include "asterfort/celces.h"
 #include "asterfort/cescns.h"
@@ -51,7 +50,7 @@ subroutine xprupw_fmm(cmnd, noma, vcn, grlr, &
     character(len=24) :: vcn, grlr
     real(kind=8)      :: lcmin
     real(kind=8)      :: deltat
-    integer           :: nbrinit
+    integer(kind=8)           :: nbrinit
 !
 ! person_in_charge: patrick.massin at edf.fr
 !
@@ -110,22 +109,22 @@ subroutine xprupw_fmm(cmnd, noma, vcn, grlr, &
     character(len=2) :: levset
 
 !     MESH INFORMATION RETREIVING AND GENERAL PURPOSE VARIABLES
-    integer :: nbno, nbnoma, jcnsls, jgrls
-    integer :: node, ndim, nodneg, nodpos
-    integer :: jbl, jbeta, jlistp, jvp, jltno
-    integer :: ifm, niv, jnodto
-    integer :: j, inar
-    integer :: jzero, jcopiels, jvtemp, jcalculs
-    integer :: minlo
+    integer(kind=8) :: nbno, nbnoma, jcnsls, jgrls
+    integer(kind=8) :: node, ndim, nodneg, nodpos
+    integer(kind=8) :: jbl, jbeta, jlistp, jvp, jltno
+    integer(kind=8) :: ifm, niv, jnodto
+    integer(kind=8) :: j, inar
+    integer(kind=8) :: jzero, jcopiels, jvtemp, jcalculs
+    integer(kind=8) :: minlo
 !
 !     CONNECTION TABLE OF THE NODES
-    integer :: jvcn, jvcnd, jgrlr
+    integer(kind=8) :: jvcn, jvcnd, jgrlr
 
 !     EVALUATION OF THE GRADIENT OF THE LEVEL SET
     character(len=8) :: lpain(4), lpaout(2)
     character(len=19) :: cnols, celgls, chams
     character(len=24) :: lchin(4), lchout(2)
-    integer :: ibid
+    integer(kind=8) :: ibid
     real(kind=8), pointer       :: vale(:) => null()
 !    GENERAL VARIABLES
     real(kind=8) :: newlsn, newlst

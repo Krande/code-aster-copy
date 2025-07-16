@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -23,8 +23,8 @@ interface
                       ksi2, geom)
         character(len=8) :: noma
         character(len=19) :: newgeo
-        integer :: ndim
-        integer :: nummai
+        integer(kind=8) :: ndim
+        integer(kind=8) :: nummai
         real(kind=8) :: ksi1
         real(kind=8) :: ksi2
         real(kind=8) :: geom(3)

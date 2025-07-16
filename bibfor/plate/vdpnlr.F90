@@ -60,7 +60,7 @@ subroutine vdpnlr(option, nomte, codret)
 #include "jeveux.h"
 !
     character(len=16) :: option, nomte
-    integer :: codret
+    integer(kind=8) :: codret
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -87,11 +87,11 @@ subroutine vdpnlr(option, nomte, codret)
 ! --------------------------------------------------------------------------------------------------
 !
     real(kind=8) :: bid33(3, 3)
-    integer :: i, j
-    integer :: in
-    integer :: jd
-    integer :: ii, jj
-    integer :: k1, jnbspi
+    integer(kind=8) :: i, j
+    integer(kind=8) :: in
+    integer(kind=8) :: jd
+    integer(kind=8) :: ii, jj
+    integer(kind=8) :: k1, jnbspi
     real(kind=8) :: etild(5), stild(5)
     real(kind=8) :: etildm(5)
     real(kind=8) :: eps2d(4), deps2d(4)
@@ -104,16 +104,16 @@ subroutine vdpnlr(option, nomte, codret)
     real(kind=8) :: veczn(27)
     real(kind=8) :: antzi(3, 3)
     real(kind=8) :: rignc(3, 3)
-    integer :: igeom, icontp, imatun, ivectu, ivarip, cod
-    integer :: icontm, ivarix
-    integer :: lzi, lzr, jcara
-    integer :: nb1, nb2, ndimv
+    integer(kind=8) :: igeom, icontp, imatun, ivectu, ivarip, cod
+    integer(kind=8) :: icontm, ivarix
+    integer(kind=8) :: lzi, lzr, jcara
+    integer(kind=8) :: nb1, nb2, ndimv
     real(kind=8) :: matc(5, 5)
     real(kind=8) :: dtild(5, 5)
-    integer :: inte, intsr, intsn
-    integer :: kntsr
+    integer(kind=8) :: inte, intsr, intsn
+    integer(kind=8) :: kntsr
     real(kind=8) :: eptot, kappa, ctor
-    integer :: npge, npgsr, npgsn, ksp
+    integer(kind=8) :: npge, npgsr, npgsn, ksp
     parameter(npge=3)
     real(kind=8) :: vecta(9, 2, 3)
     real(kind=8) :: vectn(9, 3), vectpt(9, 2, 3)
@@ -131,13 +131,13 @@ subroutine vdpnlr(option, nomte, codret)
     real(kind=8) :: j1dn3(9, 27)
     real(kind=8) :: btild3(5, 27)
     real(kind=8) :: ksi3s2
-    integer :: nbcou
-    integer :: icou
+    integer(kind=8) :: nbcou
+    integer(kind=8) :: icou
     real(kind=8) :: zic, zmin, epais, coef
     real(kind=8) :: vrignc(2601), vrigni(2601)
     real(kind=8) :: vrigrc(2601), vrigri(2601)
     real(kind=8) :: knn
-    integer :: iup, ium
+    integer(kind=8) :: iup, ium
     real(kind=8) :: b1su(5, 51), b2su(5, 51)
     real(kind=8) :: b1sum(5, 51), b2sum(5, 51)
     real(kind=8) :: b1src(2, 51, 4)
@@ -165,19 +165,19 @@ subroutine vdpnlr(option, nomte, codret)
     real(kind=8) :: theta(3), thetan
     real(kind=8) :: tmoin1(3, 3), tm1t(3, 3)
     real(kind=8) :: term(3)
-    integer, parameter :: nbv = 2
+    integer(kind=8), parameter :: nbv = 2
     character(len=16), parameter :: nomres(nbv) = (/'E ', 'NU'/)
-    integer :: icodre(nbv)
+    integer(kind=8) :: icodre(nbv)
     real(kind=8) :: valres(nbv)
     character(len=32) :: elasKeyword
-    integer :: imate, icarcr, iinstm, iinstp, ivarim
-    integer :: nbvari, itab(8), lgpg, k2, iret
+    integer(kind=8) :: imate, icarcr, iinstm, iinstp, ivarim
+    integer(kind=8) :: nbvari, itab(8), lgpg, k2, iret
     real(kind=8), parameter :: rac2 = sqrt(2.d0)
     real(kind=8) :: angmas(3)
     character(len=16) :: defo_comp, rela_comp
     aster_logical :: lVect, lMatr, lVari, lSigm
     real(kind=8) :: cisail
-    integer, parameter :: ndimLdc = 2
+    integer(kind=8), parameter :: ndimLdc = 2
     character(len=8), parameter :: typmod(2) = (/"C_PLAN  ", "        "/)
     type(Behaviour_Integ) :: BEHinteg
     character(len=4), parameter :: fami = "MASS"

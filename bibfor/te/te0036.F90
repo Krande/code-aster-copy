@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -38,7 +38,6 @@ subroutine te0036(option, nomte)
 !
 #include "asterf_types.h"
 #include "jeveux.h"
-#include "asterc/r8prem.h"
 #include "asterfort/assert.h"
 #include "asterfort/dfdm1d.h"
 #include "asterfort/dfdm2b.h"
@@ -66,22 +65,22 @@ subroutine te0036(option, nomte)
 !
     character(len=8) :: nompar(4), noma, elrefp, elrese(4), enr, lag
     character(len=8) :: elref
-    integer :: jpintt, jcnset, jheavt, jlonch, jlsn, jlst, k
-    integer :: jpmilt, irese, nfiss, jfisno, jtab(7), ncomp, jheavn, jheavs, ncompn
-    integer :: jbaslo, imate
-    integer :: alp
-    integer :: ibid, ier, ndim, nno, nnop, nnops, npg, nnos, kpg
-    integer :: ipoids, ivf, idfde, igeom, ipres, itemps, ires, j
-    integer :: nfh, nfe, nse, ise
-    integer :: in, ino, iadzi, iazk24, jstno
-    integer :: iforc, iret, ig, pos, ndime, nddl, ddls, contac
+    integer(kind=8) :: jpintt, jcnset, jheavt, jlonch, jlsn, jlst, k
+    integer(kind=8) :: jpmilt, irese, nfiss, jfisno, jtab(7), ncomp, jheavn, jheavs, ncompn
+    integer(kind=8) :: jbaslo, imate
+    integer(kind=8) :: alp
+    integer(kind=8) :: ibid, ier, ndim, nno, nnop, nnops, npg, nnos, kpg
+    integer(kind=8) :: ipoids, ivf, idfde, igeom, ipres, itemps, ires, j
+    integer(kind=8) :: nfh, nfe, nse, ise
+    integer(kind=8) :: in, ino, iadzi, iazk24, jstno
+    integer(kind=8) :: iforc, iret, ig, pos, ndime, nddl, ddls, contac
     real(kind=8) :: xg(4), r
     real(kind=8) :: pres, ff(27), coorse(18), cosa, sina
     real(kind=8) :: nd(3), norme, rb1(3), rb2(3), cisa
     real(kind=8) :: poids, forrep(3), vf, td(3), rbid(1)
     real(kind=8) :: fk(27, 3, 3), ka, mu
     aster_logical :: lbid, axi, pre1
-    integer :: kk, ddlm, nnopm
+    integer(kind=8) :: kk, ddlm, nnopm
     data elrese/'SE2', 'TR3', 'SE3', 'TR6'/
 !
 !-----------------------------------------------------------------------

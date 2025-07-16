@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -25,7 +25,6 @@ subroutine caliun(sdcont_, mesh_, model_)
 #include "jeveux.h"
 #include "asterc/getfac.h"
 #include "asterfort/caraun.h"
-#include "asterfort/cfmmvd.h"
 #include "asterfort/creaun.h"
 #include "asterfort/elimun.h"
 #include "asterfort/jedema.h"
@@ -54,16 +53,16 @@ subroutine caliun(sdcont_, mesh_, model_)
 !
     character(len=8) :: sdcont, mesh, model
     character(len=16) :: keywf
-    integer :: iform
-    integer :: nb_unil_zone, nnocu, ntcmp
+    integer(kind=8) :: iform
+    integer(kind=8) :: nb_unil_zone, nnocu, ntcmp
     character(len=24) :: nolino, nopono
     character(len=24) :: lisnoe, poinoe
     character(len=24) :: nbgdcu, coefcu, compcu, multcu, penacu
     character(len=24) :: sdunil_defi, sdcont_defi
     character(len=24) :: ndimcu
-    integer :: jdim
+    integer(kind=8) :: jdim
     character(len=24) :: sdcont_paraci
-    integer, pointer :: v_sdcont_paraci(:) => null()
+    integer(kind=8), pointer :: v_sdcont_paraci(:) => null()
     character(len=24) :: sdcont_paracr
     real(kind=8), pointer :: v_sdcont_paracr(:) => null()
 !

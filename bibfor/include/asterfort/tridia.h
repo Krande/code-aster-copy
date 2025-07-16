@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -21,8 +21,8 @@
 interface
     subroutine tridia(n, a, lda, d, e,&
                       tau, w)
-        integer :: lda
-        integer :: n
+        integer(kind=8) :: lda
+        integer(kind=8) :: n
         complex(kind=8) :: a(lda, *)
         real(kind=8) :: d(*)
         real(kind=8) :: e(*)

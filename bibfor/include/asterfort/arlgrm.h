@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -21,14 +21,14 @@
 interface
     subroutine arlgrm(mail  ,nomgrp,dime  ,ima  ,connex,loncum, &
                       nummai,nommai,itypm ,nbno , cxno)
-        integer :: ima
-        integer :: dime
-        integer :: connex(*)
-        integer :: loncum(*)
-        integer :: nummai
-        integer :: nbno
-        integer :: itypm
-        integer :: cxno(27)
+        integer(kind=8) :: ima
+        integer(kind=8) :: dime
+        integer(kind=8) :: connex(*)
+        integer(kind=8) :: loncum(*)
+        integer(kind=8) :: nummai
+        integer(kind=8) :: nbno
+        integer(kind=8) :: itypm
+        integer(kind=8) :: cxno(27)
         character(len=8) :: mail
         character(len=8) :: nommai
         character(len=19) :: nomgrp

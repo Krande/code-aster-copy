@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -25,10 +25,10 @@ interface
         character(len=19) :: tablca
         character(len=19) :: lirela
         character(len=8) :: mailla
-        integer :: nbnobe
+        integer(kind=8) :: nbnobe
         character(len=19) :: nunobe
-        integer :: icabl
-        integer :: nbnoca(*)
+        integer(kind=8) :: icabl
+        integer(kind=8) :: nbnoca(*)
         character(len=19) :: xnoca
         character(len=19) :: ynoca
         character(len=19) :: znoca

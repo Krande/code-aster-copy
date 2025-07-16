@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -30,14 +30,14 @@ subroutine vpwecf(option, typres, nfreq, mxfreq, resufi, &
 #include "asterfort/assert.h"
 #include "asterfort/infniv.h"
 #include "asterfort/utmess.h"
-    integer :: nfreq, mxfreq, resufi(mxfreq, *), lamor
+    integer(kind=8) :: nfreq, mxfreq, resufi(mxfreq, *), lamor
     real(kind=8) :: resufr(mxfreq, *)
     character(len=*) :: option, resufk(mxfreq, *), typres
     character(len=1) :: ktyp
     aster_logical :: lns
 !
 ! VARIABLES LOCALES
-    integer :: ifm, ifreq, indf, niv, vali(4), ideb, ifin, ipas, counter
+    integer(kind=8) :: ifm, ifreq, indf, niv, vali(4), ideb, ifin, ipas, counter
     real(kind=8) :: am, undf, erc, errmoy
     real(kind=8) :: valr(5)
     character(len=27) :: valk(4)
@@ -326,8 +326,8 @@ subroutine vpwecf(option, typres, nfreq, mxfreq, resufi, &
         end do
         write (ifm, 7777)
 !
-    elseif (resufk(nfreq, 2) .eq. 'INVERSE_C' .and. (option(1:6) &
-                                                 .eq. 'AJUSTE' .or. option(1:6) .eq. 'SEPARE')) then
+    elseif (resufk(nfreq, 2) .eq. 'INVERSE_C' &
+            .and. (option(1:6) .eq. 'AJUSTE' .or. option(1:6) .eq. 'SEPARE')) then
         if (typres .eq. 'DYNAMIQUE') then
             call utmess('I', 'ALGELINE6_86')
         else

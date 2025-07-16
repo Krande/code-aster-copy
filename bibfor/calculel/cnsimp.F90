@@ -27,14 +27,12 @@ subroutine cnsimp(cnsz, unite)
 #include "asterfort/jedema.h"
 #include "asterfort/jedetr.h"
 #include "asterfort/jemarq.h"
-#include "asterfort/jenuno.h"
 #include "asterfort/jeveuo.h"
-#include "asterfort/jexnum.h"
 #include "asterfort/wkvect.h"
 #include "asterfort/int_to_char8.h"
 !
     character(len=*) :: cnsz
-    integer :: unite
+    integer(kind=8) :: unite
 ! ---------------------------------------------------------------------
 ! BUT: IMPRIMER UN CHAM_NO_S
 ! ---------------------------------------------------------------------
@@ -47,8 +45,8 @@ subroutine cnsimp(cnsz, unite)
 !-----------------------------------------------------------------------
 !
 !     ------------------------------------------------------------------
-    integer :: jcnsv, jcnsl
-    integer :: nbno, k, ino, ncmp, ncmpu, jlval, ik, licmpu(997)
+    integer(kind=8) :: jcnsv, jcnsl
+    integer(kind=8) :: nbno, k, ino, ncmp, ncmpu, jlval, ik, licmpu(997)
     character(len=8) :: ma, nomgd, nomno
     character(len=3) :: tsca
     character(len=19) :: cns
@@ -56,7 +54,7 @@ subroutine cnsimp(cnsz, unite)
     aster_logical :: exicmp
     character(len=8), pointer :: cnsk(:) => null()
     character(len=8), pointer :: cnsc(:) => null()
-    integer, pointer :: cnsd(:) => null()
+    integer(kind=8), pointer :: cnsd(:) => null()
 !     ------------------------------------------------------------------
     call jemarq()
 !

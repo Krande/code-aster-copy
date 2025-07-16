@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -35,7 +35,7 @@ subroutine nmiclg(fami, kpg, ksp, option, rela_comp, &
 #include "asterfort/utmess.h"
 #include "asterfort/verift.h"
 #include "asterfort/Behaviour_type.h"
-    integer :: imate, kpg, ksp, codret
+    integer(kind=8) :: imate, kpg, ksp, codret
 !
     character(len=16) :: rela_comp, option
     character(len=*) :: fami
@@ -43,7 +43,7 @@ subroutine nmiclg(fami, kpg, ksp, option, rela_comp, &
     real(kind=8) :: vim(*)
     real(kind=8) :: vip(*)
     real(kind=8) :: sigy, sigm, deps, sigp
-    integer :: codres(1)
+    integer(kind=8) :: codres(1)
     real(kind=8) :: dsde, epsm
 ! -------------------------------------------------------------------
 !
@@ -69,7 +69,7 @@ subroutine nmiclg(fami, kpg, ksp, option, rela_comp, &
 !
 !----------VARIABLES LOCALES
 !
-    integer :: ncstpm
+    integer(kind=8) :: ncstpm
     parameter(ncstpm=13)
     character(len=8) :: nomasl(4)
     real(kind=8) :: cstpm(ncstpm)

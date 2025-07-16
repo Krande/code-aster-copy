@@ -21,17 +21,15 @@ subroutine aptypm(mesh, elem_nume, elem_ndim, elem_nbnode, elem_type, &
 !
     implicit none
 !
-#include "asterfort/jenuno.h"
-#include "asterfort/jexnum.h"
 #include "asterfort/mmtypm.h"
 #include "asterfort/int_to_char8.h"
 !
 ! person_in_charge: mickael.abbas at edf.fr
 !
     character(len=8), intent(in) :: mesh
-    integer, intent(in) :: elem_nume
-    integer, intent(out) :: elem_ndim
-    integer, intent(in) :: elem_nbnode
+    integer(kind=8), intent(in) :: elem_nume
+    integer(kind=8), intent(out) :: elem_ndim
+    integer(kind=8), intent(in) :: elem_nbnode
     character(len=8), intent(out) :: elem_type
     character(len=8), intent(out) :: elem_name
 !

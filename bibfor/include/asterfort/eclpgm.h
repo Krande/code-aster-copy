@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -21,7 +21,7 @@
 interface
     subroutine eclpgm(ma2, mo, cham1, ligrel, shrink,&
                       lonmin, nch, lisch)
-        integer :: nch
+        integer(kind=8) :: nch
         character(len=8) :: ma2
         character(len=8) :: mo
         character(len=19) :: cham1

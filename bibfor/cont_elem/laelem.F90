@@ -44,7 +44,7 @@ subroutine laelem(nomte, geom, param)
 !
 ! --------------------------------------------------------------------------------------------------
 !
-    integer :: mult
+    integer(kind=8) :: mult
 !
     geom%l_axis = lteatt('AXIS', 'OUI')
 !

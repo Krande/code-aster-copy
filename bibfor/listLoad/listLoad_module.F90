@@ -69,9 +69,7 @@ module listLoad_module
 #include "asterfort/getvtx.h"
 #include "asterfort/gnomsd.h"
 #include "asterfort/jedema.h"
-#include "asterfort/jedetc.h"
 #include "asterfort/jeexin.h"
-#include "asterfort/jelira.h"
 #include "asterfort/jemarq.h"
 #include "asterfort/jeveuo.h"
 #include "asterfort/utmess.h"
@@ -174,11 +172,11 @@ contains
         character(len=*), intent(in) :: loadPreObjectZ
         character(len=16), intent(in) :: loadApply
         aster_logical, intent(in) :: loadIsFunc
-        integer, intent(inout) :: nbLoadIden
+        integer(kind=8), intent(inout) :: nbLoadIden
         character(len=24), intent(inout) :: listLoadIden(LOAD_NBIDEN_MAXI)
         aster_logical, optional, intent(in) :: neumExcl_(LOAD_NEUM_NBTYPE)
 ! ----- Locals
-        integer :: iTypeNeum
+        integer(kind=8) :: iTypeNeum
         character(len=8) :: answer
         character(len=24) :: loadIden, loadField
         aster_logical :: paraIsTime, paraIsVite, paraIsAcce
@@ -299,7 +297,7 @@ contains
         character(len=16), intent(in) :: loadApply
         character(len=8), intent(in) :: loadCommand
         aster_logical, intent(in) :: loadIsFunc
-        integer, intent(inout) :: nbLoadIden
+        integer(kind=8), intent(inout) :: nbLoadIden
         character(len=24), intent(inout) :: listLoadIden(LOAD_NBIDEN_MAXI)
         aster_logical, optional, intent(in) :: kineExcl_
 ! ----- Locals
@@ -369,12 +367,12 @@ contains
         character(len=*), intent(in) :: loadPreObjectZ
         character(len=16), intent(in) :: loadApply
         aster_logical, intent(in) :: loadIsFunc
-        integer, intent(inout) :: nbLoadIden
+        integer(kind=8), intent(inout) :: nbLoadIden
         character(len=24), intent(inout) :: listLoadIden(LOAD_NBIDEN_MAXI)
         aster_logical, optional, intent(in) :: diriExcl_
 ! ----- Locals
         character(len=24) :: loadField, loadIden
-        integer :: iret
+        integer(kind=8) :: iret
         character(len=8) :: answer
         aster_logical :: paraIsTime, diriExcl
 !   ------------------------------------------------------------------------------------------------
@@ -456,11 +454,11 @@ contains
         character(len=*), intent(in) :: loadPreObjectZ
         character(len=16), intent(in) :: loadApply
         aster_logical, intent(in) :: loadIsFunc
-        integer, intent(inout) :: nbLoadIden
+        integer(kind=8), intent(inout) :: nbLoadIden
         character(len=24), intent(inout) :: listLoadIden(LOAD_NBIDEN_MAXI)
 ! ----- Locals
         character(len=24) :: loadIden, loadField
-        integer :: iret
+        integer(kind=8) :: iret
 !   ------------------------------------------------------------------------------------------------
 !
         loadIden = 'None'
@@ -513,11 +511,11 @@ contains
         character(len=*), intent(in) :: loadPreObjectZ
         character(len=16), intent(in) :: loadApply
         aster_logical, intent(in) :: loadIsFunc
-        integer, intent(inout) :: nbLoadIden
+        integer(kind=8), intent(inout) :: nbLoadIden
         character(len=24), intent(inout) :: listLoadIden(LOAD_NBIDEN_MAXI)
 ! ----- Locals
         character(len=24) :: loadIden, loadField
-        integer :: iret
+        integer(kind=8) :: iret
 !   ------------------------------------------------------------------------------------------------
 !
         loadIden = 'None'
@@ -566,7 +564,7 @@ contains
 ! ----- Parameters
         character(len=*), intent(in) :: loadPreObjectZ
         character(len=16), intent(in) :: loadApply
-        integer, intent(inout) :: nbLoadIden
+        integer(kind=8), intent(inout) :: nbLoadIden
         character(len=24), intent(inout) :: listLoadIden(LOAD_NBIDEN_MAXI)
 ! ----- Locals
         character(len=24) :: loadIden
@@ -615,10 +613,10 @@ contains
 ! ----- Parameters
         character(len=4), intent(in) :: phenom
         character(len=16), intent(in) :: loadKeyword
-        integer, intent(out) :: nbLoadList
+        integer(kind=8), intent(out) :: nbLoadList
 ! ----- Locals
-        integer :: iret_cable_cine, iret_cable, nocc
-        integer :: nbFactorKeyword, iKeyword
+        integer(kind=8) :: iret_cable_cine, iret_cable, nocc
+        integer(kind=8) :: nbFactorKeyword, iKeyword
         character(len=8) :: loadName
         character(len=24) :: preStressName, kineName
         character(len=13) :: loadPreObject
@@ -721,7 +719,7 @@ contains
         character(len=1), intent(in) :: jvBase
         character(len=8), intent(in) :: funcCste
         character(len=16), intent(in) :: loadKeyword
-        integer, intent(in) :: iKeyword
+        integer(kind=8), intent(in) :: iKeyword
         character(len=8), intent(out) :: loadFunc
         aster_logical, intent(out) :: hasMultFunc
 !   ------------------------------------------------------------------------------------------------
@@ -756,11 +754,11 @@ contains
         aster_logical, intent(in) :: funcIsCplx
         character(len=1), intent(in) :: jvBase
         character(len=16), intent(in) :: loadKeyword
-        integer, intent(in) :: iKeyword
+        integer(kind=8), intent(in) :: iKeyword
         character(len=8), intent(in) :: funcCste
         character(len=8), intent(out) :: loadFunc
 ! ----- Locals
-        integer :: nbFuncCplx, nbFuncReal, nbCoefCplx, nbCoefReal, nbCoefAcce
+        integer(kind=8) :: nbFuncCplx, nbFuncReal, nbCoefCplx, nbCoefReal, nbCoefAcce
         character(len=4) :: knum
         complex(kind=8) :: coefCplx
         character(len=19) :: funcCste19
@@ -850,7 +848,7 @@ contains
         character(len=1), intent(in) :: jvBase
         character(len=8), intent(out) :: loadFunc
 ! ----- Locals
-        integer :: iret
+        integer(kind=8) :: iret
         real(kind=8), parameter :: coefReal = 1.d0
         character(len=19) :: funcCste19
 !   ------------------------------------------------------------------------------------------------
@@ -885,12 +883,12 @@ contains
 !   ------------------------------------------------------------------------------------------------
 ! ----- Parameters
         character(len=16), intent(in) :: loadKeyword
-        integer, intent(in) :: iKeyword, iLoadList, nbLoadList
+        integer(kind=8), intent(in) :: iKeyword, iLoadList, nbLoadList
         character(len=8), pointer :: loadDble(:)
         character(len=8), intent(out) :: loadName
 ! ----- Locals
         character(len=8), pointer :: listLoadUser(:) => null()
-        integer :: iLoadDble
+        integer(kind=8) :: iLoadDble
 !   ------------------------------------------------------------------------------------------------
 !
         loadName = " "
@@ -929,9 +927,9 @@ contains
 !   ------------------------------------------------------------------------------------------------
 ! ----- Parameters
         character(len=16), intent(in) :: loadKeyword
-        integer, intent(inout) :: iKeyword
+        integer(kind=8), intent(inout) :: iKeyword
 ! ----- Locals
-        integer :: nocc
+        integer(kind=8) :: nocc
 !   ------------------------------------------------------------------------------------------------
 !
         iKeyword = iKeyword+1
@@ -962,7 +960,7 @@ contains
 !   ---------------------------------------------------------------------------------------
 ! ----- Parameters
         character(len=16), intent(in) :: loadKeyword
-        integer, intent(in) :: iKeyword
+        integer(kind=8), intent(in) :: iKeyword
         character(len=16), intent(out) :: loadApply
 !   ------------------------------------------------------------------------------------------------
 !
@@ -993,11 +991,11 @@ contains
         character(len=4), intent(in) :: phenom
         character(len=1), intent(in) :: jvBase
         character(len=*), intent(in) :: listLoadZ
-        integer, intent(in) :: nbLoad
+        integer(kind=8), intent(in) :: nbLoad
 ! ----- Locals
-        integer :: nbLoadEff
+        integer(kind=8) :: nbLoadEff
         character(len=24) :: loadNameJv, loadInfoJv, loadFuncJv
-        integer, pointer :: listLoadInfo(:) => null()
+        integer(kind=8), pointer :: listLoadInfo(:) => null()
         character(len=24), pointer :: listLoadName(:) => null(), listLoadFunc(:) => null()
 !   ------------------------------------------------------------------------------------------------
 !
@@ -1048,12 +1046,12 @@ contains
 !   ------------------------------------------------------------------------------------------------
 ! ----- Parameters
         character(len=*), intent(in) :: listLoadZ
-        integer, intent(out) :: nbLoad
+        integer(kind=8), intent(out) :: nbLoad
 ! ----- Locals
-        integer :: iret
+        integer(kind=8) :: iret
         character(len=19) :: listLoad
         character(len=24) :: loadInfoJv
-        integer, pointer :: listLoadInfo(:) => null()
+        integer(kind=8), pointer :: listLoadInfo(:) => null()
 !   ------------------------------------------------------------------------------------------------
 !
         nbLoad = 0
@@ -1093,11 +1091,11 @@ contains
         character(len=*), intent(in) :: listLoadZ
         character(len=1), intent(in) :: jvBase
         character(len=*), intent(in) :: loadNameZ, loadFuncZ
-        integer, intent(in) :: nbLoadIden
+        integer(kind=8), intent(in) :: nbLoadIden
         character(len=24), intent(in) :: listLoadIden(LOAD_NBIDEN_MAXI)
 ! ----- Locals
-        integer, parameter :: nbLoadToAdd = 1
-        integer :: nbLoad, indxLoad
+        integer(kind=8), parameter :: nbLoadToAdd = 1
+        integer(kind=8) :: nbLoad, indxLoad
 !   ------------------------------------------------------------------------------------------------
 !
 
@@ -1130,10 +1128,10 @@ contains
 ! ----- Parameters
         character(len=4), intent(in) :: phenom
         character(len=1), intent(in) :: jvBase
-        integer, intent(in) :: nbLoadToAdd
+        integer(kind=8), intent(in) :: nbLoadToAdd
         character(len=*), intent(in) :: listLoadZ
 ! ----- Locals
-        integer :: nbLoadOld, nbLoadNew
+        integer(kind=8) :: nbLoadOld, nbLoadNew
         character(len=24), parameter :: listLoadNew = "&&LISTCHAR"
 !   ------------------------------------------------------------------------------------------------
 !
@@ -1167,11 +1165,11 @@ contains
 !   ------------------------------------------------------------------------------------------------
 ! ----- Parameters
         character(len=*), intent(in) :: listLoadZ, loadIdenZ
-        integer, intent(out) :: nbLoadIden
+        integer(kind=8), intent(out) :: nbLoadIden
 ! ----- Locals
-        integer :: nbLoad, iLoad
+        integer(kind=8) :: nbLoad, iLoad
         character(len=24) :: loadIden, loadInfoJv
-        integer, pointer :: listLoadInfo(:) => null()
+        integer(kind=8), pointer :: listLoadInfo(:) => null()
 !   ------------------------------------------------------------------------------------------------
 !
         nbLoadIden = 0
@@ -1221,12 +1219,12 @@ contains
 ! ----- Parameters
         character(len=*), intent(in) :: listLoadZ
 ! ----- Locals
-        integer :: nbLoad, iLoad
+        integer(kind=8) :: nbLoad, iLoad
         character(len=8) :: loadName, loadFunc
-        integer :: loadNumeKine, loadNumeNeum
+        integer(kind=8) :: loadNumeKine, loadNumeNeum
         character(len=24) :: listLoad
         character(len=24) :: loadInfoJv, loadNameJv, loadFuncJv
-        integer, pointer :: listLoadInfo(:) => null()
+        integer(kind=8), pointer :: listLoadInfo(:) => null()
         character(len=24), pointer :: listLoadName(:) => null(), listLoadFunc(:) => null()
 !   ------------------------------------------------------------------------------------------------
 !
@@ -1280,13 +1278,13 @@ contains
 ! ----- Parameters
         character(len=4), intent(in) :: phenom
         character(len=*), intent(in) :: listLoadZ
-        integer, intent(in) :: iLoad
-        integer, intent(out) :: nbLoadIden
+        integer(kind=8), intent(in) :: iLoad
+        integer(kind=8), intent(out) :: nbLoadIden
         character(len=24), intent(out) :: listLoadIden(LOAD_NBIDEN_MAXI)
 ! ----- Locals
-        integer :: nbLoad, iLoadIden
+        integer(kind=8) :: nbLoad, iLoadIden
         character(len=24) :: listLoad, loadInfoJv
-        integer, pointer :: listLoadInfo(:) => null()
+        integer(kind=8), pointer :: listLoadInfo(:) => null()
 !   ------------------------------------------------------------------------------------------------
 !
         listLoad = listLoadZ
@@ -1416,15 +1414,15 @@ contains
 ! ----- Parameters
         character(len=4), intent(in) :: phenom
         character(len=*), intent(in) :: listLoadZ
-        integer, intent(in) :: indxLoadInList
+        integer(kind=8), intent(in) :: indxLoadInList
         character(len=*), intent(in) :: loadNameZ, loadFuncZ
-        integer, intent(in) :: nbLoadIden
+        integer(kind=8), intent(in) :: nbLoadIden
         character(len=24), intent(in) :: listLoadIden(LOAD_NBIDEN_MAXI)
 ! ----- Locals
-        integer :: nbLoad, iLoadIden
+        integer(kind=8) :: nbLoad, iLoadIden
         character(len=24) :: loadIden
         character(len=24) :: loadNameJv, loadInfoJv, loadFuncJv
-        integer, pointer :: listLoadInfo(:) => null()
+        integer(kind=8), pointer :: listLoadInfo(:) => null()
         character(len=24), pointer :: listLoadName(:) => null(), listLoadFunc(:) => null()
 !   ------------------------------------------------------------------------------------------------
 !
@@ -1574,11 +1572,11 @@ contains
         character(len=4), intent(in) :: phenom
         character(len=*), intent(in) :: listLoadInZ, listLoadOutZ
 ! ----- Locals
-        integer :: nbLoadIn, nbLoadOut, iLoadIn
+        integer(kind=8) :: nbLoadIn, nbLoadOut, iLoadIn
         character(len=24) :: loadNameInJv, loadFuncInJv
         character(len=24), pointer :: listLoadNameIn(:) => null(), listLoadFuncIn(:) => null()
         character(len=8) :: loadName, loadFunc
-        integer :: nbLoadIden
+        integer(kind=8) :: nbLoadIden
         character(len=24) :: listLoadIden(LOAD_NBIDEN_MAXI)
 !   ------------------------------------------------------------------------------------------------
 !
@@ -1655,10 +1653,10 @@ contains
         character(len=*), intent(in) :: loadPreObjectZ
         character(len=16), intent(in) :: loadApply
         aster_logical, intent(in) :: loadIsFunc, hasMultFunc
-        integer, intent(inout) :: nbLoadIden
+        integer(kind=8), intent(inout) :: nbLoadIden
         character(len=24), intent(inout) :: listLoadIden(LOAD_NBIDEN_MAXI)
 ! ----- Locals
-        integer :: iTypeNeut
+        integer(kind=8) :: iTypeNeut
         character(len=8) :: answer
         character(len=24) :: loadIden, loadField
         aster_logical :: paraIsTime, paraIsTemp, loadExist
@@ -1746,11 +1744,11 @@ contains
         character(len=*), intent(in) :: listLoad1Z, listload2Z
         aster_logical, intent(out) :: lConsistent
 ! ----- Locals
-        integer :: nbLoad1, nbLoad2, iLoad1, iLoad2
+        integer(kind=8) :: nbLoad1, nbLoad2, iLoad1, iLoad2
         character(len=8) :: loadFunc
-        integer, pointer :: listLoadInfo1(:) => null()
+        integer(kind=8), pointer :: listLoadInfo1(:) => null()
         character(len=24), pointer :: listLoadName1(:) => null(), listLoadFunc1(:) => null()
-        integer, pointer :: listLoadInfo2(:) => null()
+        integer(kind=8), pointer :: listLoadInfo2(:) => null()
         character(len=24), pointer :: listLoadName2(:) => null(), listLoadFunc2(:) => null()
 !   ------------------------------------------------------------------------------------------------
 !
@@ -1824,8 +1822,8 @@ contains
 !   ------------------------------------------------------------------------------------------------
 ! ----- Parameters
         character(len=*), intent(in) :: listLoadZ
-        integer, intent(out) :: nbLoad
-        integer, pointer :: listLoadInfo(:)
+        integer(kind=8), intent(out) :: nbLoad
+        integer(kind=8), pointer :: listLoadInfo(:)
         character(len=24), pointer :: listLoadName(:), listLoadFunc(:)
 ! ----- Locals
         character(len=24) :: loadNameJv, loadInfoJv, loadFuncJv
@@ -1943,12 +1941,12 @@ contains
         character(len=*), intent(in) :: loadNameZ, loadFuncZ
         character(len=*), intent(in) :: loadApplyZ, loadCommandZ, loadPreObjectZ
         aster_logical, intent(in) :: loadIsFunc
-        integer, intent(inout) :: indxLoadInList
+        integer(kind=8), intent(inout) :: indxLoadInList
         aster_logical, optional, intent(in) :: kineExcl_, diriExcl_, neumExcl_(LOAD_NEUM_NBTYPE)
 ! ----- Locals
         character(len=4), parameter :: phenom = "MECA"
         character(len=24) :: loadIden, listLoadIden(LOAD_NBIDEN_MAXI)
-        integer :: nbLoadIden
+        integer(kind=8) :: nbLoadIden
         aster_logical :: kineExcl, diriExcl, neumExcl(LOAD_NEUM_NBTYPE)
 !   ------------------------------------------------------------------------------------------------
 !
@@ -2039,11 +2037,11 @@ contains
         character(len=*), intent(in) :: loadNameZ, loadFuncZ
         character(len=*), intent(in) :: loadApplyZ, loadCommandZ, loadPreObjectZ
         aster_logical, intent(in) :: loadIsFunc, hasMultFunc
-        integer, intent(inout) :: indxLoadInList
+        integer(kind=8), intent(inout) :: indxLoadInList
 ! ----- Locals
         character(len=4), parameter :: phenom = "THER"
         character(len=24) :: loadIden, listLoadIden(LOAD_NBIDEN_MAXI)
-        integer :: nbLoadIden
+        integer(kind=8) :: nbLoadIden
 !   ------------------------------------------------------------------------------------------------
 !
         nbLoadIden = 0
@@ -2094,14 +2092,14 @@ contains
     subroutine creaListLoadFSIOne(modelZ, nbLoad, loadNameZ, listLoadZ)
 !   ------------------------------------------------------------------------------------------------
 ! ----- Parameters
-        integer, intent(in) :: nbLoad
+        integer(kind=8), intent(in) :: nbLoad
         character(len=*), intent(in) :: modelZ, loadNameZ, listLoadZ
 ! ----- Locals
         character(len=4), parameter :: phenom = "THER"
         character(len=16), parameter :: loadApply = 'FIXE_CSTE'
         character(len=8), parameter :: funcCste = '&&NTDOCH'
         aster_logical, parameter :: hasMultFunc = ASTER_FALSE
-        integer :: indxLoadInList
+        integer(kind=8) :: indxLoadInList
         character(len=13) :: loadPreObject
         character(len=16) :: loadCommand
         character(len=8) :: loadFunc
@@ -2159,11 +2157,11 @@ contains
         character(len=*), intent(in) :: loadNameZ, loadFuncZ
         character(len=*), intent(in) :: loadApplyZ, loadCommandZ, loadPreObjectZ
         aster_logical, intent(in) :: loadIsFunc
-        integer, intent(inout) :: indxLoadInList
+        integer(kind=8), intent(inout) :: indxLoadInList
 ! ----- Locals
         character(len=4), parameter :: phenom = "THER"
         character(len=24) :: loadIden, listLoadIden(LOAD_NBIDEN_MAXI)
-        integer :: nbLoadIden
+        integer(kind=8) :: nbLoadIden
 !   ------------------------------------------------------------------------------------------------
 !
         nbLoadIden = 0
@@ -2215,10 +2213,10 @@ contains
         character(len=*), intent(in) :: loadPreObjectZ
         character(len=16), intent(in) :: loadApply
         aster_logical, intent(in) :: loadIsFunc
-        integer, intent(inout) :: nbLoadIden
+        integer(kind=8), intent(inout) :: nbLoadIden
         character(len=24), intent(inout) :: listLoadIden(LOAD_NBIDEN_MAXI)
 ! ----- Locals
-        integer :: iTypeNeua
+        integer(kind=8) :: iTypeNeua
         character(len=8) :: answer
         character(len=24) :: loadIden, loadField
         aster_logical :: paraIsTime, loadExist
@@ -2279,11 +2277,11 @@ contains
         type(ListLoad_Prep), intent(in) :: listLoadPrep
         character(len=*), intent(in) :: listLoadZ
         character(len=1), intent(in) :: jvBase
-        integer, intent(in) :: nbLoadList
+        integer(kind=8), intent(in) :: nbLoadList
         character(len=8), pointer :: loadList(:)
         aster_logical, intent(in) :: kineExcl, diriExcl
 ! ----- Locals
-        integer :: iLoadList, indxLoadInList, iLoadDble
+        integer(kind=8) :: iLoadList, indxLoadInList, iLoadDble
         character(len=24) :: listLoad
         character(len=8), parameter :: funcCste = '&&SSCHGE'
         character(len=16), parameter :: loadApply = 'FIXE_CSTE'
@@ -2369,12 +2367,12 @@ contains
 !   ------------------------------------------------------------------------------------------------
 ! ----- Parameters
         character(len=*), intent(in) :: listLoadZ
-        integer, intent(in) :: indxNeumType
-        integer, intent(out) :: nbLoadDetect
+        integer(kind=8), intent(in) :: indxNeumType
+        integer(kind=8), intent(out) :: nbLoadDetect
         character(len=8), pointer :: listLoadDetect(:)
 ! ----- Locals
         character(len=24) :: listLoad
-        integer :: iLoad, nbLoad
+        integer(kind=8) :: iLoad, nbLoad
         character(len=8) :: loadName
         character(len=24) :: loadNameJv
         character(len=24), pointer :: listLoadName(:) => null()
@@ -2433,12 +2431,12 @@ contains
 !   ------------------------------------------------------------------------------------------------
 ! ----- Parameters
         character(len=*), intent(in) :: listLoadZ
-        integer, intent(inout) :: nbLigr
+        integer(kind=8), intent(inout) :: nbLigr
         character(len=24), pointer :: listLigr(:)
 ! ----- Locals
         character(len=8) :: loadCommand, loadName
         character(len=24) :: listLoad, loadLigrel, loadNameJv
-        integer :: iLoad, nbLoad, nbLigrNew, nbLigrLoad, iret
+        integer(kind=8) :: iLoad, nbLoad, nbLigrNew, nbLigrLoad, iret
         character(len=24), pointer :: listLigrSave(:) => null(), listLoadName(:) => null()
         character(len=13) :: loadPreObject
 !   ------------------------------------------------------------------------------------------------

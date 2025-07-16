@@ -37,10 +37,8 @@ subroutine crprol()
 #include "asterfort/jedema.h"
 #include "asterfort/jedetr.h"
 #include "asterfort/jemarq.h"
-#include "asterfort/jenuno.h"
 #include "asterfort/jerecu.h"
 #include "asterfort/jeveuo.h"
-#include "asterfort/jexnum.h"
 #include "asterfort/normev.h"
 #include "asterfort/rsadpa.h"
 #include "asterfort/rscrsd.h"
@@ -56,12 +54,12 @@ subroutine crprol()
 #include "asterfort/int_to_char8.h"
 #include "blas/ddot.h"
 !
-    integer :: ibid, ndimf, nbnoi, nbnof, nbinst, iad
-    integer :: vali, iret
-    integer :: jinst, iord, jcnsvl, jcnsle, nbval
-    integer :: axyzmf, jtbcor, jtbres
-    integer :: imin, imax, inoi, inof, indice, jtbpdg
-    integer :: jtbnoe, ordef, ino, inomin, inomax
+    integer(kind=8) :: ibid, ndimf, nbnoi, nbnof, nbinst, iad
+    integer(kind=8) :: vali, iret
+    integer(kind=8) :: jinst, iord, jcnsvl, jcnsle, nbval
+    integer(kind=8) :: axyzmf, jtbcor, jtbres
+    integer(kind=8) :: imin, imax, inoi, inof, indice, jtbpdg
+    integer(kind=8) :: jtbnoe, ordef, ino, inomin, inomax
     real(kind=8) :: xnormr, prec, rmin, rmax
     real(kind=8) :: rval, max, min, prosca, rref, rpro
     real(kind=8) :: lambda, orig(3), axer(3), axet(3), axez(3)

@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -23,11 +23,11 @@
 interface
     subroutine mgausw(a, b, dim, nordre, nb,&
                       det, iret)
-        integer :: nb
-        integer :: dim
+        integer(kind=8) :: nb
+        integer(kind=8) :: dim
         real(kind=8) :: a(dim, dim)
         real(kind=8) :: b(dim, nb)
-        integer :: nordre
+        integer(kind=8) :: nordre
         real(kind=8) :: det
         aster_logical :: iret
     end subroutine mgausw

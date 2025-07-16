@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -27,18 +27,17 @@ subroutine testvois(jv_geom, elem_slav_type, &
 #include "asterfort/apcoor.h"
 #include "asterfort/aptype.h"
 #include "asterfort/prjint.h"
-#include "asterfort/assert.h"
 #include "asterfort/dctest.h"
 !
-    integer, intent(in) :: jv_geom
+    integer(kind=8), intent(in) :: jv_geom
     character(len=8), intent(in) :: elem_slav_type
     real(kind=8), intent(in) :: elem_mast_coor(27)
     character(len=8), intent(in) :: elem_mast_code
-    integer, intent(in) :: elem_slav_nume
+    integer(kind=8), intent(in) :: elem_slav_nume
     real(kind=8), intent(in) :: pair_tole
     real(kind=8), intent(out) :: inte_weight
-    integer, pointer :: v_mesh_connex(:)
-    integer, pointer :: v_connex_lcum(:)
+    integer(kind=8), pointer :: v_mesh_connex(:)
+    integer(kind=8), pointer :: v_connex_lcum(:)
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -59,16 +58,16 @@ subroutine testvois(jv_geom, elem_slav_type, &
 !
 ! --------------------------------------------------------------------------------------------------
 !
-    integer :: i_elin_mast, i_node, i_elin_slav, i_dime
-    integer :: elem_slav_nbnode, elem_dime
+    integer(kind=8) :: i_elin_mast, i_node, i_elin_slav, i_dime
+    integer(kind=8) :: elem_slav_nbnode, elem_dime
     real(kind=8) :: elem_slav_coor(27)
     character(len=8) :: elem_slav_code
-    integer :: elin_slav_sub(1, 4), elin_mast_sub(1, 4)
-    integer :: elin_slav_nbnode(1), elin_mast_nbnode(1)
-    integer :: elin_slav_nbsub, elin_mast_nbsub
+    integer(kind=8) :: elin_slav_sub(1, 4), elin_mast_sub(1, 4)
+    integer(kind=8) :: elin_slav_nbnode(1), elin_mast_nbnode(1)
+    integer(kind=8) :: elin_slav_nbsub, elin_mast_nbsub
     real(kind=8) :: elin_slav_coor(27), elin_mast_coor(27)
     character(len=8) :: elin_slav_code, elin_mast_code
-    integer :: nb_poin_inte
+    integer(kind=8) :: nb_poin_inte
     real(kind=8) :: ints_weight
     real(kind=8) :: poin_inte(32)
 !

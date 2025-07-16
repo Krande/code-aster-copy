@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -20,6 +20,6 @@ interface
     subroutine setMFrontPara(prepCrit, iFactorKeyword)
         use BehaviourPrepare_type
         type(BehaviourPrep_Crit), pointer :: prepCrit(:)
-        integer, intent(in) :: iFactorKeyword
+        integer(kind=8), intent(in) :: iFactorKeyword
     end subroutine setMfrontPara
 end interface

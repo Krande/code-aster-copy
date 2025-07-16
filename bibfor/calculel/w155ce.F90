@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -41,16 +41,16 @@ subroutine w155ce(nomres, resu, nbordr, liordr)
 #include "asterfort/rsnoch.h"
 #include "asterfort/utmess.h"
     character(len=8) :: nomres, resu
-    integer :: nbordr, liordr(nbordr)
+    integer(kind=8) :: nbordr, liordr(nbordr)
 !
-    integer :: ifm, niv
-    integer :: iret, i, nuordr, ibid, nocc, iocc
+    integer(kind=8) :: ifm, niv
+    integer(kind=8) :: iret, i, nuordr, ibid, nocc, iocc
     character(len=8) :: modele, carele, mplan
     character(len=8) :: modeav, lpain(2), lpaout(1)
     character(len=4) :: tsca
     character(len=16) :: motfac, nomsym
     character(len=19) :: chin, chextr, ligrel, resu19, lchin(2), lchout(1)
-    integer :: vali(2), iexi
+    integer(kind=8) :: vali(2), iexi
     aster_logical :: lreel, lnoeu, ldetli, lvide
 !     ------------------------------------------------------------------
 !

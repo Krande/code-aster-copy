@@ -124,7 +124,6 @@ Solution = CALC_FERRAILLAGE(
     CARA_ELEM=AFFECARA,
     TYPE_COMB="ELS",
     UNITE_CONTRAINTE="Pa",
-    UNITE_DIMENSION="m",
     INST=(0.0),
     AFFE=(
         _F(

@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -43,7 +43,6 @@ subroutine xasshm(ds_thm, &
 #include "jeveux.h"
 #include "asterfort/assert.h"
 #include "asterfort/pmathm.h"
-#include "asterc/r8prem.h"
 #include "asterfort/reeref.h"
 #include "asterfort/tecach.h"
 #include "asterfort/xcabhm.h"
@@ -58,14 +57,14 @@ subroutine xasshm(ds_thm, &
 #include "asterfort/Behaviour_type.h"
 !
     type(THM_DS), intent(inout) :: ds_thm
-    integer :: dimmat, npg, dimuel
-    integer :: npi, ipoids, ivf, idfde, j_mater, dimdef, dimcon, nnop
-    integer :: nbvari, nddls, nddlm, nmec, np1, ndim, codret
-    integer :: mecani(5), press1(7), press2(7), tempe(5)
-    integer ::  nfiss, nfh, jfisno
-    integer :: addeme, addep1, ii, jj, in, jheavn
-    integer :: kpi, ipi
-    integer :: i, j, n, k, kji, nb_vari_meca
+    integer(kind=8) :: dimmat, npg, dimuel
+    integer(kind=8) :: npi, ipoids, ivf, idfde, j_mater, dimdef, dimcon, nnop
+    integer(kind=8) :: nbvari, nddls, nddlm, nmec, np1, ndim, codret
+    integer(kind=8) :: mecani(5), press1(7), press2(7), tempe(5)
+    integer(kind=8) ::  nfiss, nfh, jfisno
+    integer(kind=8) :: addeme, addep1, ii, jj, in, jheavn
+    integer(kind=8) :: kpi, ipi
+    integer(kind=8) :: i, j, n, k, kji, nb_vari_meca
     real(kind=8) :: geom(ndim, nnop), carcri(*), poids
     real(kind=8) :: deplp(dimuel), deplm(dimuel)
     real(kind=8) :: matuu(dimuel*dimuel), matri(dimmat, dimmat)
@@ -124,14 +123,14 @@ subroutine xasshm(ds_thm, &
 !
 ! --------------------------------------------------------------------------------------------------
 !
-    integer :: nnops, nnopm
-    integer :: nno, ncomp
-    integer :: heavt(*), enrmec(3), dimenr, enrhyd(3)
-    integer :: ise, yaenrm, adenme, nse
-    integer :: adenhy, yaenrh, ifiss, fisno(nnop, nfiss)
-    integer :: lonch(10), ino, cnset(*)
-    integer :: jpintt, jpmilt, igeom, iret, jtab(7)
-    integer :: heavn(nnop, 5), ig, ncompn
+    integer(kind=8) :: nnops, nnopm
+    integer(kind=8) :: nno, ncomp
+    integer(kind=8) :: heavt(*), enrmec(3), dimenr, enrhyd(3)
+    integer(kind=8) :: ise, yaenrm, adenme, nse
+    integer(kind=8) :: adenhy, yaenrh, ifiss, fisno(nnop, nfiss)
+    integer(kind=8) :: lonch(10), ino, cnset(*)
+    integer(kind=8) :: jpintt, jpmilt, igeom, iret, jtab(7)
+    integer(kind=8) :: heavn(nnop, 5), ig, ncompn
     real(kind=8) ::  coorse(81), xg(ndim), xe(ndim), bid3(ndim)
     real(kind=8) :: dfdi(nnop, ndim), dfdi2(nnops, ndim)
     real(kind=8) :: ff(nnop), ff2(nnops), he(nfiss), congem(dimcon)

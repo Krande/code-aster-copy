@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -29,7 +29,7 @@ subroutine calpim(graexc, excmod, napexc, nbmode, tymmec, &
 #include "asterfort/mtdscr.h"
 #include "asterfort/posddl.h"
 #include "asterfort/wkvect.h"
-    integer :: napexc, nbmode, nbddl, nvasex
+    integer(kind=8) :: napexc, nbmode, nbddl, nvasex
     character(len=4) :: excmod
     character(len=8) :: mtrmas, numer, tymmec, vecass(*), noexit(*), cpexit(*)
     character(len=16) :: graexc
@@ -52,14 +52,14 @@ subroutine calpim(graexc, excmod, napexc, nbmode, tymmec, &
 ! IN  : VECASS : NOMS DES VECTEURS ASSEM  APPUIS
 !-----------------------------------------------------------------------
 !
-    integer :: iadpim, itrav1, iad, iret, i, ibid
-    integer :: idlre1, i4, i3, i2, i1
+    integer(kind=8) :: iadpim, itrav1, iad, iret, i, ibid
+    integer(kind=8) :: idlre1, i4, i3, i2, i1
     real(kind=8) :: valfi
     character(len=8) :: veass1
-    integer, pointer :: listadrmodsta(:) => null()
+    integer(kind=8), pointer :: listadrmodsta(:) => null()
     real(kind=8), pointer :: vale(:) => null()
     real(kind=8), pointer :: massegene(:) => null()
-    integer, pointer :: listadrmode(:) => null()
+    integer(kind=8), pointer :: listadrmode(:) => null()
 !     ------------------------------------------------------------------
 !
     call jemarq()

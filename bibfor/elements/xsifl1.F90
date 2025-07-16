@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -32,7 +32,6 @@ subroutine xsifl1(elrefp, angl, basloc, coeff, coeff3, &
 #include "asterfort/coor_cyl.h"
 #include "asterfort/fointe.h"
 #include "asterfort/indent.h"
-#include "asterfort/iselli.h"
 #include "asterfort/lteatt.h"
 #include "asterfort/utmess.h"
 #include "asterfort/xcalc_code.h"
@@ -44,30 +43,30 @@ subroutine xsifl1(elrefp, angl, basloc, coeff, coeff3, &
 !   de la fissure
 !
     character(len=8) :: elrefp
-    integer :: nnop, ndim, heavn(nnop, 5)
-    integer :: jstno, jlsn
+    integer(kind=8) :: nnop, ndim, heavn(nnop, 5)
+    integer(kind=8) :: jstno, jlsn
     real(kind=8) :: angl(2), basloc(9*nnop), cisa, coeff, coeff3
-    integer :: cpt, ddlm, ddls
+    integer(kind=8) :: cpt, ddlm, ddls
     real(kind=8) :: depla(3), dfdi(nnop, ndim), dfor(3), divt
     real(kind=8) :: dtdm(3, 3), ff(27)
     real(kind=8) :: forrep(3, 2), g, he(2)
-    integer :: i, idepl, ier, igthet, ilev, indi, ino, ig, hea_fa(2)
-    integer :: ipref, ipres, ithet, j
+    integer(kind=8) :: i, idepl, ier, igthet, ilev, indi, ino, ig, hea_fa(2)
+    integer(kind=8) :: ipref, ipres, ithet, j
     real(kind=8) :: jac
-    integer :: jlst
+    integer(kind=8) :: jlst
     real(kind=8) :: jm, var(ndim+1)
     real(kind=8) :: k1, k2, k3, ka, mu, nd(3)
-    integer :: nfh, nnops, itemps
+    integer(kind=8) :: nfh, nnops, itemps
     character(len=8) :: nompar(4)
     character(len=16) :: option
     real(kind=8) :: p(3, 3), pres, invp(3, 3)
     real(kind=8) :: pres_test, cisa_test, r8pre
-    integer :: singu
+    integer(kind=8) :: singu
     real(kind=8) :: theta(3), u1(3), u2(3), u3(3)
     real(kind=8) :: xg(3), r
     aster_logical :: axi, l_pres_var, l_cisa_var, l_not_zero
     real(kind=8) :: fk(27, 3, 3), fkpo(3, 3)
-    integer :: alp, igeom
+    integer(kind=8) :: alp, igeom
     real(kind=8) :: rg, tg
 !
 !

@@ -44,15 +44,15 @@ subroutine te0030(option, nomte)
 ! =====================================================================
 ! =====================================================================
     aster_logical :: logthm
-    integer :: imate, ivarip, icontp, ilocal, ibid
-    integer :: nbvari, nbrac4, kpg, ii, nbsig
-    integer :: icode, iret, tabthm(3), dimmax, npgu
-    integer :: ndim, nno, nnos, npg, ipoids, ivf, idfde, jgano
+    integer(kind=8) :: imate, ivarip, icontp, ilocal, ibid
+    integer(kind=8) :: nbvari, nbrac4, kpg, ii, nbsig
+    integer(kind=8) :: icode, iret, tabthm(3), dimmax, npgu
+    integer(kind=8) :: ndim, nno, nnos, npg, ipoids, ivf, idfde, jgano
     real(kind=8) :: vbifur, racine(4), dsde(6, 6)
     character(len=8) :: mod, alias8
     character(len=16) :: relcom
     character(len=16), pointer :: compor(:) => null()
-    integer, parameter :: rindic = 5
+    integer(kind=8), parameter :: rindic = 5
 ! =====================================================================
 ! --- RINDIC EST LE NOMBRE DE PARAMETRE DE LOCALISATION DEFINIT -------
 ! --- SOUS LE MOT-CLE INDL_R DANS GRANDEUR_SIMPLE.CATA --------------

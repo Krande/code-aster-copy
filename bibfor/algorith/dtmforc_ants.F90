@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -50,11 +50,11 @@ subroutine dtmforc_ants(nl_ind, sd_dtm_, sd_nl_, buffdtm, buffnl, &
 
 !
 !   -0.1- Input/output arguments
-    integer, intent(in)  :: nl_ind
+    integer(kind=8), intent(in)  :: nl_ind
     character(len=*), intent(in)  :: sd_dtm_
     character(len=*), intent(in)  :: sd_nl_
-    integer, pointer  :: buffdtm(:)
-    integer, pointer  :: buffnl(:)
+    integer(kind=8), pointer  :: buffdtm(:)
+    integer(kind=8), pointer  :: buffnl(:)
     real(kind=8), intent(in)  :: time
     real(kind=8), pointer  :: depl(:)
     real(kind=8), pointer  :: vite(:)
@@ -62,8 +62,8 @@ subroutine dtmforc_ants(nl_ind, sd_dtm_, sd_nl_, buffdtm, buffnl, &
 !
 !   -0.2- Local variables
     aster_logical     :: multi_support
-    integer           :: i, iex, nbexci, ier, par_coorno(2), nbno
-    integer           :: ino, start, finish
+    integer(kind=8)           :: i, iex, nbexci, ier, par_coorno(2), nbno
+    integer(kind=8)           :: ino, start, finish
     real(kind=8)      :: sina, cosa, sinb, cosb, sing
     real(kind=8)      :: cosg, depglo(3), vitglo(3), deploc(6), vitloc(6)
     real(kind=8)      :: dvitlo(3), xjeu, coefk1, coefk2
@@ -73,7 +73,7 @@ subroutine dtmforc_ants(nl_ind, sd_dtm_, sd_nl_, buffdtm, buffnl, &
     character(len=8)  :: sd_dtm, sd_nl, monmot, obst_typ
     character(len=19) :: nomres
 !
-    integer, pointer :: vindx(:) => null()
+    integer(kind=8), pointer :: vindx(:) => null()
     real(kind=8), pointer :: coor_no(:) => null()
     real(kind=8), pointer :: origob(:) => null()
     real(kind=8), pointer :: coedep(:) => null()

@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -34,10 +34,10 @@ subroutine dinuar(result, sddisc, numeInst, force, &
 !
     character(len=8), intent(in) :: result
     character(len=19), intent(in) :: sddisc
-    integer, intent(in) :: numeInst
+    integer(kind=8), intent(in) :: numeInst
     aster_logical, intent(in) :: force
-    integer, intent(out) :: numeStoring
-    integer, optional, intent(out) :: nume_reuse_
+    integer(kind=8), intent(out) :: numeStoring
+    integer(kind=8), optional, intent(out) :: nume_reuse_
     aster_logical, intent(in), optional :: lStoringInitState_
 !
 ! --------------------------------------------------------------------------------------------------
@@ -58,8 +58,8 @@ subroutine dinuar(result, sddisc, numeInst, force, &
 ! --------------------------------------------------------------------------------------------------
 !
     character(len=24) :: sdarchAinfJv
-    integer, pointer :: sdarchAinf(:) => null()
-    integer :: numeReuseCalc, jv_para
+    integer(kind=8), pointer :: sdarchAinf(:) => null()
+    integer(kind=8) :: numeReuseCalc, jv_para
     real(kind=8) :: time_curr, time_prev
     aster_logical :: l_store, lStoringInitState
     character(len=19) :: sdarch

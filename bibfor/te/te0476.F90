@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -30,12 +30,10 @@ subroutine te0476(option, nomte)
 !
 #include "jeveux.h"
 #include "asterfort/assert.h"
-#include "asterfort/elrefe_info.h"
 #include "asterfort/jevech.h"
 #include "asterfort/tefrep.h"
 #include "asterfort/HHO_size_module.h"
 #include "asterfort/writeVector.h"
-#include "blas/dcopy.h"
 !
     character(len=16), intent(in) :: option, nomte
 !
@@ -54,15 +52,15 @@ subroutine te0476(option, nomte)
 !
 !---------------------------------------------------------------------------------------------------
 !
-    integer, parameter :: maxpara = 4
+    integer(kind=8), parameter :: maxpara = 4
     real(kind=8) :: valpar(maxpara)
     character(len=8) :: nompar(maxpara)
     type(HHO_Data) :: hhoData
     type(HHO_Cell) :: hhoCell
     type(HHO_Quadrature) :: hhoQuadCell
     real(kind=8) :: rhs_forces(MSIZE_CELL_VEC), rhs(MSIZE_TDOFS_VEC), VoluValQP(3, MAX_QP_CELL)
-    integer :: fbs, total_dofs, cbs, nbpara, idim
-    integer :: j_time, j_forc
+    integer(kind=8) :: fbs, total_dofs, cbs, nbpara, idim
+    integer(kind=8) :: j_time, j_forc
 !
 ! -- Retrieve HHO informations
 !

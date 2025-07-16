@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -63,13 +63,13 @@ subroutine cmphii(ck, cm, ndim, nbmod, niter, &
 #include "asterfort/trldc.h"
 #include "asterfort/utmess.h"
 #include "blas/zcopy.h"
-    integer :: vali(2), nbmod, ndim, ndimax
+    integer(kind=8) :: vali(2), nbmod, ndim, ndimax
     complex(kind=8) :: ck(*), cm(*), ceigen(nbmod)
     complex(kind=8) :: cmod(ndimax, nbmod), cprod, cmod0(ndim)
     complex(kind=8) :: cmat1(*), cmat2(ndim, ndim), cvec(ndim), cvec0(ndim)
     aster_logical :: convok
-    integer :: i, idiag, ific, ipivo, iv, ivdiag, j
-    integer :: k, niter
+    integer(kind=8) :: i, idiag, ific, ipivo, iv, ivdiag, j
+    integer(kind=8) :: k, niter
     real(kind=8) :: valr(3), xcrit, xer
     character(len=6) :: valk
     blas_int :: b_incx, b_incy, b_n

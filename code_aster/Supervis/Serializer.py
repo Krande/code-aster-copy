@@ -48,9 +48,9 @@ from io import IOBase
 import libaster
 import numpy
 
-from ..Objects import DataStructure, ResultNaming, UseCppPickling
+from ..Objects import DataStructure, DSWithCppPickling, ResultNaming
 from ..Utilities import (
-    DEBUG,
+    # DEBUG,
     MPI,
     ExecutionParameter,
     Options,
@@ -375,7 +375,7 @@ class PicklingHelper:
 
     @classmethod
     def reducer(cls, obj):
-        use_cpp = isinstance(obj, UseCppPickling)
+        use_cpp = isinstance(obj, DSWithCppPickling)
         logger.debug("+ reducing (c++: %s) %s '%s'...", use_cpp, type(obj).__name__, obj.getName())
         initargs = obj.__getinitargs__()
         state = obj.__getstate__()

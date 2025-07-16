@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -53,7 +53,7 @@ subroutine rvinvt(tensor, vonm, tres, trac, detr)
 !
 !*********************************************************************
 !
-    integer :: i, nbvp
+    integer(kind=8) :: i, nbvp
     real(kind=8) :: t(6), equi(6), unsur3
 !
     vonm = 0.0d0

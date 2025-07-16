@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -39,12 +39,12 @@ subroutine irmmf2(fid, nomamd, typent, nbrent, nbgrou, &
 #include "asterfort/utmess.h"
 !
     med_idt :: fid
-    integer :: typgeo(*), nmatyp(*)
-    integer :: typent, nbrent, nbgrou
-    integer :: nbec
-    integer :: nufaen(nbrent), nufacr(nbrent), tabaux(*)
-    integer :: infmed
-    integer :: ifm
+    integer(kind=8) :: typgeo(*), nmatyp(*)
+    integer(kind=8) :: typent, nbrent, nbgrou
+    integer(kind=8) :: nbec
+    integer(kind=8) :: nufaen(nbrent), nufacr(nbrent), tabaux(*)
+    integer(kind=8) :: infmed
+    integer(kind=8) :: ifm
     character(len=6) :: prefix
     character(len=8) :: nomast
     character(len=24) :: nomgen(*)
@@ -94,14 +94,14 @@ subroutine irmmf2(fid, nomamd, typent, nbrent, nbgrou, &
 !
 ! --------------------------------------------------------------------------------------------------
 !
-    integer, parameter :: edmail = 0, ednoeu = 3, tygeno = 0
-    integer :: codret
-    integer :: iaux, jaux, kaux
-    integer :: numfam, nfam
-    integer :: ityp
-    integer :: nbeg, ige, ient, entfam, nbgnof, natt
-    integer :: jgren
-    integer :: tbaux(1)
+    integer(kind=8), parameter :: edmail = 0, ednoeu = 3, tygeno = 0
+    integer(kind=8) :: codret
+    integer(kind=8) :: iaux, jaux, kaux
+    integer(kind=8) :: numfam, nfam
+    integer(kind=8) :: ityp
+    integer(kind=8) :: nbeg, ige, ient, entfam, nbgnof, natt
+    integer(kind=8) :: jgren
+    integer(kind=8) :: tbaux(1)
     character(len=7) :: saux07
     character(len=8) :: saux08
     character(len=9) :: saux09

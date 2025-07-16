@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -63,8 +63,8 @@ subroutine unista(h, ldh, v, ldv, ddlsta, &
 #include "asterfort/wkvect.h"
 #include "blas/dnrm2.h"
 #include "blas/dscal.h"
-    integer :: n, ldh, ldv
-    integer :: ddlsta(n), ddlexc(n)
+    integer(kind=8) :: n, ldh, ldv
+    integer(kind=8) :: ddlsta(n), ddlexc(n)
     real(kind=8) :: h(ldh, ldh), v(ldv, ldh)
     real(kind=8) :: vectp(ldv)
 !
@@ -72,8 +72,8 @@ subroutine unista(h, ldh, v, ldv, ddlsta, &
 !     | SCALAR ARGUMENTS |
 !     %------------------%
 !
-    integer :: etat, ldynfa
-    integer :: redem
+    integer(kind=8) :: etat, ldynfa
+    integer(kind=8) :: redem
     real(kind=8) :: beta, csta
 !
 !
@@ -81,10 +81,10 @@ subroutine unista(h, ldh, v, ldv, ddlsta, &
 !     | LOCAL SCALARS & ARRAYS |
 !     %------------------------%
 !
-    integer :: i, j, iret, indico, proj
-    integer :: vectt, xsol, vect2
-    integer :: ifm, niv
-    integer :: q, b
+    integer(kind=8) :: i, j, iret, indico, proj
+    integer(kind=8) :: vectt, xsol, vect2
+    integer(kind=8) :: ifm, niv
+    integer(kind=8) :: q, b
     real(kind=8) :: gama, det
     real(kind=8) :: vtest, err
     real(kind=8) :: zero, one

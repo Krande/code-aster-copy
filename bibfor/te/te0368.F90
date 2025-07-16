@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -64,30 +64,30 @@ subroutine te0368(option, nomte)
 !
 ! DECLARATION VARIABLES LOCALES
 !
-    integer :: ifm, niv
-    integer :: iadzi, iazk24
-    integer :: ibid, iaux, iret, itab(7)
-    integer :: noe(9, 6, 4)
-    integer :: igeom, jtime
-    integer :: ierr, ivois
-    integer :: imate
-    integer :: iadp
-    integer :: iadd
-    integer :: ifovrp, ifovfp
-    integer :: ifovrd, ifovfd
-    integer :: ipesp, irotp
-    integer :: ipesd, irotd
-    integer :: irefp1, irefp2
-    integer :: irefd1, irefd2
-    integer :: ndim
-    integer :: nno, nnos, npg, ipoids, ivf, idfde, jgano
-    integer :: ndimf
-    integer :: nnof, nnosf, npgf, ipoidf, ivff, idfdxf, jganof
-    integer :: nno2, nnos2, npg2, ipoid2, ivf2, idfdx2, jgano2
-    integer :: nbcmp
-    integer :: ipg, in
-    integer :: nbf
-    integer :: tymvol, ndegre, ifa, tyv
+    integer(kind=8) :: ifm, niv
+    integer(kind=8) :: iadzi, iazk24
+    integer(kind=8) :: ibid, iaux, iret, itab(7)
+    integer(kind=8) :: noe(9, 6, 4)
+    integer(kind=8) :: igeom, jtime
+    integer(kind=8) :: ierr, ivois
+    integer(kind=8) :: imate
+    integer(kind=8) :: iadp
+    integer(kind=8) :: iadd
+    integer(kind=8) :: ifovrp, ifovfp
+    integer(kind=8) :: ifovrd, ifovfd
+    integer(kind=8) :: ipesp, irotp
+    integer(kind=8) :: ipesd, irotd
+    integer(kind=8) :: irefp1, irefp2
+    integer(kind=8) :: irefd1, irefd2
+    integer(kind=8) :: ndim
+    integer(kind=8) :: nno, nnos, npg, ipoids, ivf, idfde, jgano
+    integer(kind=8) :: ndimf
+    integer(kind=8) :: nnof, nnosf, npgf, ipoidf, ivff, idfdxf, jganof
+    integer(kind=8) :: nno2, nnos2, npg2, ipoid2, ivf2, idfdx2, jgano2
+    integer(kind=8) :: nbcmp
+    integer(kind=8) :: ipg, in
+    integer(kind=8) :: nbf
+    integer(kind=8) :: tymvol, ndegre, ifa, tyv
 !
     real(kind=8) :: r8bid, r8bid2, r8bid3(3), r8bid4(3)
     real(kind=8) :: dfdx(27), dfdy(27), dfdz(27), hk, poids
@@ -123,7 +123,7 @@ subroutine te0368(option, nomte)
     real(kind=8) :: nuplus, numoin
     real(kind=8) :: rho, valres(1)
 !
-    integer :: icodre(2), kpg, spt
+    integer(kind=8) :: icodre(2), kpg, spt
     character(len=8) :: fami, poum
     character(len=8) :: typmav, elrefe
     character(len=8) :: elreff, elrefb

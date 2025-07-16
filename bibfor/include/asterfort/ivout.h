@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -19,10 +19,10 @@
 !
 interface
     subroutine ivout(lout, n, ix, idigit, ifmt)
-        integer :: lout
-        integer :: n
-        integer :: ix(*)
-        integer :: idigit
+        integer(kind=8) :: lout
+        integer(kind=8) :: n
+        integer(kind=8) :: ix(*)
+        integer(kind=8) :: idigit
         character(len=*) :: ifmt
     end subroutine ivout
 end interface

@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -60,10 +60,10 @@ subroutine op0157()
     character(len=19) :: gene, knum, kdisc, krang
     character(len=80) :: titre
     aster_logical :: lhist, lResu, lField
-    integer :: ifi, iocc, ire2, iret, isy, jcmpg
-    integer :: jdisc, jnosy, jordr, jpara, jrang, n, n01
-    integer :: n10, n11, n21, n22, nbcmpg, nbdisc, nbnosy
-    integer :: nbordr, nbpara, nc, nocc, np, nr
+    integer(kind=8) :: ifi, iocc, ire2, iret, isy, jcmpg
+    integer(kind=8) :: jdisc, jnosy, jordr, jpara, jrang, n, n01
+    integer(kind=8) :: n10, n11, n21, n22, nbcmpg, nbdisc, nbnosy
+    integer(kind=8) :: nbordr, nbpara, nc, nocc, np, nr
     real(kind=8) :: prec
 !
 ! --------------------------------------------------------------------------------------------------

@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -21,8 +21,8 @@
 #include "asterf_types.h"
 interface
     subroutine asmpi_allgather_i(sendbuf, sendcnt, recvbuf, recvcnt, comm)
-        integer, intent(in) :: sendbuf(*)
-        integer, intent(out) :: recvbuf(*)
+        integer(kind=8), intent(in) :: sendbuf(*)
+        integer(kind=8), intent(out) :: recvbuf(*)
         mpi_int, intent(in) :: sendcnt
         mpi_int, intent(in) :: recvcnt
         mpi_int, intent(in) :: comm

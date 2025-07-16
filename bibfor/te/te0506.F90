@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -38,7 +38,6 @@ subroutine te0506(option, nomte)
 !
 #include "asterf_types.h"
 #include "jeveux.h"
-#include "asterfort/assert.h"
 #include "asterfort/jevech.h"
 #include "asterfort/writeVector.h"
 #include "asterfort/foderi.h"
@@ -50,7 +49,7 @@ subroutine te0506(option, nomte)
 !
     character(len=16) :: option, nomte
     real(kind=8) :: alpha, dalpha, tpg
-    integer :: iflux, kp
+    integer(kind=8) :: iflux, kp
     character(len=8) :: coef
     real(kind=8) :: rhs(MAX_BS), valQP(MAX_QP)
     real(kind=8), pointer :: tempi(:) => null()

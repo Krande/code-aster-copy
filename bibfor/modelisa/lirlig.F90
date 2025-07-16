@@ -20,7 +20,7 @@ subroutine lirlig(ifl, cnl, lig, ilec)
     implicit none
 #include "asterfort/codent.h"
 #include "asterfort/utmess.h"
-    integer :: ifl, ilec
+    integer(kind=8) :: ifl, ilec
     character(len=14) :: cnl
     character(len=80) :: lig
 !       LECTURE DE LA LIGNE SUIVANTE ET STOCKAGE DANS LE BUFFER LIG
@@ -31,7 +31,7 @@ subroutine lirlig(ifl, cnl, lig, ilec)
 !       OUT     CNL     = NUMERO LIGNE LUE (CHAINE)
 !               LIG     = LIGNE LUE
 !       ----------------------------------------------------------------
-    integer :: nl, nl1, nl2, i
+    integer(kind=8) :: nl, nl1, nl2, i
     save nl1, nl2
     character(len=255) :: lirlg
     data nl1, nl2/0, 0/

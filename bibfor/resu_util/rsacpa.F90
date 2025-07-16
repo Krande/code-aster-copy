@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -29,7 +29,7 @@ subroutine rsacpa(nomsdz, numva, icode, nomva, ctype, &
 #include "asterfort/rsadpa.h"
 #include "asterfort/rsexpa.h"
 !
-    integer :: numva, icode, ctype, ival(*), ier
+    integer(kind=8) :: numva, icode, ctype, ival(*), ier
     real(kind=8) :: rval(*)
     character(len=80) :: kval(*)
     character(len=16) :: nomva
@@ -51,7 +51,7 @@ subroutine rsacpa(nomsdz, numva, icode, nomva, ctype, &
 ! ---------------------------------------------------------------------
 !
 !
-    integer :: iret, iord, nbord, i, iad, numord
+    integer(kind=8) :: iret, iord, nbord, i, iad, numord
     character(len=8) :: ktype
     character(len=19) :: nomsd
 ! ---------------------------------------------------------------------

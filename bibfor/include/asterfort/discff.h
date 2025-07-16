@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -21,9 +21,9 @@
 interface
     subroutine discff(nbfonc, nomfon, nbp1, nbp2, disc,&
                       vale)
-        integer :: nbp2
-        integer :: nbp1
-        integer :: nbfonc
+        integer(kind=8) :: nbp2
+        integer(kind=8) :: nbp1
+        integer(kind=8) :: nbfonc
         character(len=8) :: nomfon(nbfonc)
         real(kind=8) :: disc(nbp1+nbp2)
         real(kind=8) :: vale(nbp1+nbp2, nbfonc)

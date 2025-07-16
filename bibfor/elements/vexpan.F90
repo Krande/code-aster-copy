@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -18,13 +18,13 @@
 !
 subroutine vexpan(nb1, vecl1, vecl)
     implicit none
-    integer :: nb1, kompt
+    integer(kind=8) :: nb1, kompt
     real(kind=8) :: vecl1(42), vecl(48)
 !
 !     EXPANSION DU VECTEUR VECL1 : DUE A L'AJOUT DE LA ROTATION FICTIVE
 !
 !-----------------------------------------------------------------------
-    integer :: i, i1, i2, ib
+    integer(kind=8) :: i, i1, i2, ib
 !-----------------------------------------------------------------------
     kompt = -1
     do ib = 1, nb1

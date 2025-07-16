@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -26,7 +26,7 @@ subroutine iseven(sddisc, event_type_in, lacti)
 #include "asterfort/getFailEvent.h"
 !
     character(len=19), intent(in) :: sddisc
-    integer, intent(in) :: event_type_in
+    integer(kind=8), intent(in) :: event_type_in
     aster_logical :: lacti
 !
 ! ----------------------------------------------------------------------
@@ -45,8 +45,8 @@ subroutine iseven(sddisc, event_type_in, lacti)
 !
 ! ----------------------------------------------------------------------
 !
-    integer :: i_fail, nb_fail
-    integer :: eventType
+    integer(kind=8) :: i_fail, nb_fail
+    integer(kind=8) :: eventType
 !
 ! ----------------------------------------------------------------------
 !

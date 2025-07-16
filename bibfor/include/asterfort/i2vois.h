@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -23,9 +23,9 @@ interface
                       v2)
         character(len=24) :: conec
         character(len=24) :: type
-        integer :: maille(*)
-        integer :: n
-        integer :: v1(*)
-        integer :: v2(*)
+        integer(kind=8) :: maille(*)
+        integer(kind=8) :: n
+        integer(kind=8) :: v1(*)
+        integer(kind=8) :: v2(*)
     end subroutine i2vois
 end interface

@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -20,12 +20,12 @@
 interface
     subroutine bmnoin(basmdz, intfz, nmintz, numint, nbnoi,&
                       numnoe, nbdif)
-        integer :: nbnoi
+        integer(kind=8) :: nbnoi
         character(len=*) :: basmdz
         character(len=*) :: intfz
         character(len=*) :: nmintz
-        integer :: numint
-        integer :: numnoe(nbnoi)
-        integer :: nbdif
+        integer(kind=8) :: numint
+        integer(kind=8) :: numnoe(nbnoi)
+        integer(kind=8) :: nbdif
     end subroutine bmnoin
 end interface

@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -24,10 +24,10 @@ interface
         use NonLin_Datastructure_type
         character(len=19), intent(in) :: sddisc
         character(len=24), intent(in) :: sderro
-        integer, intent(in) :: i_fail_acti
-        integer, intent(in) :: nume_inst
-        integer, intent(in) :: iterat
-        integer, intent(out) :: retact
+        integer(kind=8), intent(in) :: i_fail_acti
+        integer(kind=8), intent(in) :: nume_inst
+        integer(kind=8), intent(in) :: iterat
+        integer(kind=8), intent(out) :: retact
         type(NL_DS_Print), optional, intent(in) :: ds_print_
         type(NL_DS_Contact), optional, intent(in) :: ds_contact_
     end subroutine nmevac

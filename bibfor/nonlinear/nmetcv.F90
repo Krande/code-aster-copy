@@ -21,10 +21,8 @@ subroutine nmetcv(model, fieldRefe, fieldType, &
 !
     implicit none
 !
-#include "asterfort/assert.h"
 #include "asterfort/chpchd.h"
 #include "asterfort/copisd.h"
-#include "asterfort/dismoi.h"
 #include "asterfort/utmess.h"
 !
     character(len=8), intent(in) :: model

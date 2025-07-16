@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -24,11 +24,9 @@ subroutine crcnct(base, nomch, mailla, gd, nbcmp, &
 !     ----------
 #include "jeveux.h"
 #include "asterc/indik8.h"
-#include "asterfort/assert.h"
 #include "asterfort/afchno.h"
 #include "asterfort/dismoi.h"
 #include "asterfort/jedema.h"
-#include "asterfort/jeecra.h"
 #include "asterfort/jelira.h"
 #include "asterfort/jemarq.h"
 #include "asterfort/jenonu.h"
@@ -39,7 +37,7 @@ subroutine crcnct(base, nomch, mailla, gd, nbcmp, &
 #include "asterfort/wkvect.h"
 #include "asterfort/jedetr.h"
 !
-    integer :: nbcmp
+    integer(kind=8) :: nbcmp
     character(len=*) :: base, nomch, mailla, gd
     character(len=*) :: licmp(nbcmp)
     real(kind=8) :: rcmp(nbcmp)
@@ -73,11 +71,11 @@ subroutine crcnct(base, nomch, mailla, gd, nbcmp, &
 !
 !
 !-----------------------------------------------------------------------
-    integer :: iancmp, iavale, icmp, iec
-    integer :: igd, ino, itrou, nbcmp2, nbno
-    integer :: nec, jj
-    integer, pointer :: desc(:) => null()
-    integer, pointer :: nbca(:) => null()
+    integer(kind=8) :: iancmp, iavale, icmp, iec
+    integer(kind=8) :: igd, ino, itrou, nbcmp2, nbno
+    integer(kind=8) :: nec, jj
+    integer(kind=8), pointer :: desc(:) => null()
+    integer(kind=8), pointer :: nbca(:) => null()
 !-----------------------------------------------------------------------
     call jemarq()
     gd2 = gd

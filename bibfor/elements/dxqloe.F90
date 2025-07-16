@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -36,19 +36,19 @@ subroutine dxqloe(flex, memb, mefl, ctor, coupmf, &
 !     OUT ENER   : 3 TERMES POUR ENER_POT (EPOT_ELEM) OU
 !                           POUR ENER_CIN (ECIN_ELEM)
 !----------------------------------------------------------
-    integer :: if(78), jf(78)
-    integer :: im(36), jm(36)
-    integer :: ifm(60), jfm(60)
-    integer :: imf(36), jmf(36)
-    integer :: jz(4)
-    integer :: km(8), kf(12)
+    integer(kind=8) :: if(78), jf(78)
+    integer(kind=8) :: im(36), jm(36)
+    integer(kind=8) :: ifm(60), jfm(60)
+    integer(kind=8) :: imf(36), jmf(36)
+    integer(kind=8) :: jz(4)
+    integer(kind=8) :: km(8), kf(12)
     real(kind=8) :: coef
     real(kind=8) :: cf(78), cfm(60), cmf(36)
     real(kind=8) :: deplm(8), deplf(12)
     real(kind=8) :: matloc(300), matf(78), matm(36)
 !     ------------------------------------------------------------------
 !-----------------------------------------------------------------------
-    integer :: i, k
+    integer(kind=8) :: i, k
 !-----------------------------------------------------------------------
     data cf/1.d0, -1.d0, 2*1.d0, -1.d0, 2*1.d0, -1.d0, 2*1.d0, -1.d0, 1.d0,&
      &     2*-1.d0, 2*1.d0, -1.d0, 2*1.d0, -1.d0, 2*1.d0, -1.d0, 2*1.d0, -1.d0,&

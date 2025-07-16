@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -33,13 +33,13 @@ subroutine titre1(st, nomobj, base, nbtitr, titdon, &
 #include "asterfort/wkvect.h"
     character(len=1) :: st
     character(len=*) :: nomobj, base, titdon(*), formr
-    integer :: nbtitr, lgdon(*)
+    integer(kind=8) :: nbtitr, lgdon(*)
     character(len=*), optional, intent(in) :: nomsym
-    integer, optional, intent(in) :: iordr
+    integer(kind=8), optional, intent(in) :: iordr
 !                           MXLIGS MAX DE LIGNES EN SORTIE
 !-----------------------------------------------------------------------
-    integer :: i, icold, icols, ideb, ierx, ilig, iligd, vali(2)
-    integer :: iligs, ldons, ldons1, lonmax, lsort, mxcold, mxligs
+    integer(kind=8) :: i, icold, icols, ideb, ierx, ilig, iligd, vali(2)
+    integer(kind=8) :: iligs, ldons, ldons1, lonmax, lsort, mxcold, mxligs
     aster_logical :: lDefault
 !
 !-----------------------------------------------------------------------

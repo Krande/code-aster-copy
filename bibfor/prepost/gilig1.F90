@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -23,7 +23,7 @@ subroutine gilig1(nfic, ndim, nbval, nbpoin)
 #include "asterfort/jedetr.h"
 #include "asterfort/jemarq.h"
 #include "asterfort/wkvect.h"
-    integer :: nfic, ndim, nbval, nbpoin
+    integer(kind=8) :: nfic, ndim, nbval, nbpoin
 !
 !     BUT: LIRE LES N LIGNES DES POINTS DU MAILLAGE GIBI :
 !                 ( PROCEDURE SAUVER)
@@ -34,7 +34,7 @@ subroutine gilig1(nfic, ndim, nbval, nbpoin)
 !
 ! ----------------------------------------------------------------------
 !
-    integer :: iacoor, iacoo1, nbfois, nbrest, icoj, i, j
+    integer(kind=8) :: iacoor, iacoo1, nbfois, nbrest, icoj, i, j
     real(kind=8) :: rbid(3)
 !     ------------------------------------------------------------------
 !

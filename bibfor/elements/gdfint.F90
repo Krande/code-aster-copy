@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -40,7 +40,7 @@ subroutine gdfint(kp, nno, ajacob, pjacob, en, &
 #include "asterfort/transp.h"
     real(kind=8) :: en(3, 2), enprim(3, 2), x0pg(3), pn(3), pm(3), fint(6, 3)
     real(kind=8) :: b(6, 6), bt(6, 6), vect(6), fors(6)
-    integer :: i, k, kp, ne, nno
+    integer(kind=8) :: i, k, kp, ne, nno
     real(kind=8) :: ajacob, pjacob
 !-----------------------------------------------------------------------
 !

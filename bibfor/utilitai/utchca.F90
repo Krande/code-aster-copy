@@ -27,13 +27,11 @@ subroutine utchca(cartez, maz, nomaiz, nocmp, typrez, &
 #include "asterfort/jedema.h"
 #include "asterfort/jelira.h"
 #include "asterfort/jemarq.h"
-#include "asterfort/jenonu.h"
 #include "asterfort/jeveuo.h"
-#include "asterfort/jexnom.h"
 #include "asterfort/utmess.h"
 #include "asterfort/char8_to_int.h"
 !
-    integer :: vali, ier
+    integer(kind=8) :: vali, ier
     real(kind=8) :: valr
     complex(kind=8) :: valc
     character(len=*) :: cartez, maz, nomaiz, nocmp, typrez
@@ -54,8 +52,8 @@ subroutine utchca(cartez, maz, nomaiz, nocmp, typrez, &
 !             ELLE NE DOIT ETRE APPELEE QUE DANS TEST_RESU
 ! ----------------------------------------------------------------------
 !
-    integer :: iret, numa, iad1, jcesd, jcesl
-    integer :: jcesv, kcmp, nbcmp
+    integer(kind=8) :: iret, numa, iad1, jcesd, jcesl
+    integer(kind=8) :: jcesv, kcmp, nbcmp
     character(len=1) :: typsca
     character(len=4) :: type
     character(len=19) :: cart19, ces

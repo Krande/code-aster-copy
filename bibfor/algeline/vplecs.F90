@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -52,8 +52,8 @@ subroutine vplecs(eigsol, itemax_, maxitr_, nbborn_, nitv_, &
 !
 ! --- OUTPUT
 !
-    integer, optional, intent(out) :: itemax_, maxitr_, nbborn_, nitv_, nborto_
-    integer, optional, intent(out) :: nbvec2_, nbvect_, nbrss_, nfreq_, nperm_
+    integer(kind=8), optional, intent(out) :: itemax_, maxitr_, nbborn_, nitv_, nborto_
+    integer(kind=8), optional, intent(out) :: nbvec2_, nbvect_, nbrss_, nfreq_, nperm_
     real(kind=8), optional, intent(out) :: alpha_, omecor_, freq1_, freq2_, precdc_
     real(kind=8), optional, intent(out) :: precsh_, prorto_, prsudg_
     real(kind=8), optional, intent(out) :: seuil_, tol_, toldyn_, tolsor_
@@ -71,13 +71,13 @@ subroutine vplecs(eigsol, itemax_, maxitr_, nbborn_, nitv_, &
 !
 ! --- VARIABLES LOCALES
 !
-    integer :: eislvi, eislvk, eislvr, jrefa, indf
+    integer(kind=8) :: eislvi, eislvk, eislvr, jrefa, indf
     real(kind=8) :: undf
     character(len=1) :: ktyp
     aster_logical :: lnsc, lnsk, lnsm
 !
-    integer :: itemax, maxitr, nbborn, nitv, nborto
-    integer :: nbvec2, nbvect, nbrss, nfreq, nperm
+    integer(kind=8) :: itemax, maxitr, nbborn, nitv, nborto
+    integer(kind=8) :: nbvec2, nbvect, nbrss, nfreq, nperm
     real(kind=8) :: alpha, omecor, freq1, freq2, precdc
     real(kind=8) :: precsh, prorto, prsudg
     real(kind=8) :: seuil, tol, toldyn, tolsor

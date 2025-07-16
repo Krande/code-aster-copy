@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -33,9 +33,9 @@ subroutine arltep(ndim, coors, npgs, &
 #include "asterfort/arljac.h"
 #include "asterfort/jedema.h"
 !
-    integer :: nns, npgs, kpgs
+    integer(kind=8) :: nns, npgs, kpgs
     character(len=8) :: elrefc
-    integer :: nnc, ndim
+    integer(kind=8) :: nnc, ndim
     real(kind=8) ::  coors(ndim*nns), coorc(ndim*nnc)
     real(kind=8) ::  fctfs(nns*npgs)
     real(kind=8) ::  fctfc(ndim*ndim*nnc)
@@ -77,10 +77,10 @@ subroutine arltep(ndim, coors, npgs, &
 
     real(kind=8) ::  coorr(3), coorpc(3)
     real(kind=8) :: zero
-    integer ::  idim, jdim, ino, ibid, jdecal
+    integer(kind=8) ::  idim, jdim, ino, ibid, jdecal
     real(kind=8) ::  dfr(3, nnc)
     real(kind=8) ::  invjac(3, 3)
-    integer ::  iret
+    integer(kind=8) ::  iret
 
 ! ----------------------------------------------------------------------
     call jemarq()

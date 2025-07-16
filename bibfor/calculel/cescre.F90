@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -43,7 +43,7 @@ subroutine cescre(basez, cesz, typcez, maz, nomgdz, &
 #include "asterfort/wkvect.h"
 !
     character(len=*) :: maz, nomgdz, cesz, basez, typcez
-    integer :: npg(*), nspt(*), ncmp(*)
+    integer(kind=8) :: npg(*), nspt(*), ncmp(*)
     character(len=*) :: licmp(*)
     aster_logical, optional, intent(in) :: undf0_
 ! ------------------------------------------------------------------
@@ -105,9 +105,9 @@ subroutine cescre(basez, cesz, typcez, maz, nomgdz, &
     character(len=8) :: ma, nomgd, nomcmp
     character(len=19) :: ces
     character(len=24) :: valk(2)
-    integer :: gd, ncmpmx, nbma, jcmpgd, icmp, jcmp, jcesk, jcesd
-    integer :: jcesc, k, jcesl, jcesv, ncmpg, ima, jlconx, decal
-    integer :: nptma, nsptma, ncmpma, ncmp2, jlicmp, iret
+    integer(kind=8) :: gd, ncmpmx, nbma, jcmpgd, icmp, jcmp, jcesk, jcesd
+    integer(kind=8) :: jcesc, k, jcesl, jcesv, ncmpg, ima, jlconx, decal
+    integer(kind=8) :: nptma, nsptma, ncmpma, ncmp2, jlicmp, iret
     aster_logical :: undf0
 !
 !     FONCTION FORMULE:

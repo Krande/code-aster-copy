@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -45,11 +45,11 @@ subroutine te0498(option, nomte)
 !
 ! --------------------------------------------------------------------------------------------------
 !
-    integer :: ipoids, ivf, idfdx, idfdy, igeom, i, j
-    integer :: ndim, nno, ipg, npg1, ino, jno
-    integer :: idec, jdec, kdec, ldec, ires, imate
-    integer :: ii, mater, jinst, indic1, indic2
-    integer :: ionde, iondc, ier, nnos, jgano
+    integer(kind=8) :: ipoids, ivf, idfdx, idfdy, igeom, i, j
+    integer(kind=8) :: ndim, nno, ipg, npg1, ino, jno
+    integer(kind=8) :: idec, jdec, kdec, ldec, ires, imate
+    integer(kind=8) :: ii, mater, jinst, indic1, indic2
+    integer(kind=8) :: ionde, iondc, ier, nnos, jgano
     real(kind=8) :: jac, nx, ny, nz, sx(9, 9), sy(9, 9), sz(9, 9)
     real(kind=8) :: valres(5), e, nu, lambda, mu, cp, cs, rho, typer
     real(kind=8) :: taux, tauy, tauz, dirx, diry, dirz
@@ -63,14 +63,14 @@ subroutine te0498(option, nomte)
     real(kind=8) :: a2, b2, sina, cosa, cosg, sing, sinb2, cosb2, rc1c2, ra12, ra13, kr, nr
     real(kind=8) :: xsv, zsv, ysv, dist1, dist2, instd1, instd2, x0, y0, z0, x1, y1, z1
     real(kind=8) :: valfon1, valfon2, param1, param2
-    integer :: icodre(5), ndim2
+    integer(kind=8) :: icodre(5), ndim2
     character(len=2) :: type
     character(len=8) :: fami, poum
     character(len=8) :: nompar(3)
     character(len=8) :: lpar2(2)
     real(kind=8) :: vpar2(2)
     real(kind=8) :: xyzgau(3)
-    integer :: idecpg, idecno
+    integer(kind=8) :: idecpg, idecno
     character(len=16), parameter :: nomres(5) = (/'E        ', 'NU       ', &
                                                   'RHO      ', &
                                                   'COEF_AMOR', 'LONG_CARA'/)

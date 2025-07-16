@@ -22,20 +22,20 @@ interface
     subroutine stkmai(ifl, icl, iv, rv, cv,&
                       cnl, mcl, nbm, nume, numn,&
                       cnx, typ, fmt, irteti, nommai)
-        integer :: nbm
-        integer :: ifl
-        integer :: icl
-        integer :: iv
+        integer(kind=8) :: nbm
+        integer(kind=8) :: ifl
+        integer(kind=8) :: icl
+        integer(kind=8) :: iv
         real(kind=8) :: rv
         character(len=*) :: cv
         character(len=14) :: cnl
         character(len=8) :: mcl(nbm)
-        integer :: nume
-        integer :: numn
+        integer(kind=8) :: nume
+        integer(kind=8) :: numn
         character(len=24) :: cnx
         character(len=24) :: typ
-        integer :: fmt(nbm)
-        integer :: irteti
+        integer(kind=8) :: fmt(nbm)
+        integer(kind=8) :: irteti
         character(len=24) :: nommai
     end subroutine stkmai
 end interface

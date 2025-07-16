@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -31,11 +31,11 @@ subroutine ut2agl(nn, nc, p, sg, sl)
 !OUT  R   SG   NN*NC COMPOSANTES DE LA TRIANGULAIRE SG DANS GLOBAL
 !     ------------------------------------------------------------------
     real(kind=8) :: r(4)
-    integer :: in(2)
+    integer(kind=8) :: in(2)
 !
 !-----------------------------------------------------------------------
-    integer :: i, j, k, l, m, n, nb
-    integer :: nc, nn
+    integer(kind=8) :: i, j, k, l, m, n, nb
+    integer(kind=8) :: nc, nn
     real(kind=8) :: zero
 !-----------------------------------------------------------------------
     zero = 0.0d0

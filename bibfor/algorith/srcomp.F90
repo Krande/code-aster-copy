@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -71,14 +71,13 @@ subroutine srcomp(mod, imate, instam, instap, &
 #include "asterfort/r8inir.h"
 #include "asterfort/trace.h"
 #include "asterfort/utmess.h"
-#include "asterfort/cos3t.h"
 #include "asterfort/get_varc.h"
 
     !!!
     !!! Variables globales
     !!!
 
-    integer :: retcom, imate, invi
+    integer(kind=8) :: retcom, imate, invi
     character(len=8) :: mod(*)
     character(len=16) :: option
     real(kind=8) :: instam, instap, tm, tp, tref
@@ -92,7 +91,7 @@ subroutine srcomp(mod, imate, instam, instap, &
     !!! Variables locales
     !!!
 
-    integer :: nbmat, ndt, ndi, nvi, val, varv, i, k, matr, iret, indal
+    integer(kind=8) :: nbmat, ndt, ndi, nvi, val, varv, i, k, matr, iret, indal
 
     parameter(nbmat=90)
 

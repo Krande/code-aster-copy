@@ -41,16 +41,16 @@ subroutine op0026()
 !
 ! --------------------------------------------------------------------------------------------------
 !
-    integer, parameter :: zsolal = 17, zvalin = 28
+    integer(kind=8), parameter :: zsolal = 17, zvalin = 28
     character(len=19) :: hval_incr(zvalin), hval_algo(zsolal)
-    integer :: nb_obje
-    integer, parameter :: nb_obje_maxi = 9
+    integer(kind=8) :: nb_obje
+    integer(kind=8), parameter :: nb_obje_maxi = 9
     character(len=16) :: obje_name(nb_obje_maxi)
     character(len=24) :: obje_sdname(nb_obje_maxi)
-    integer :: nb_option
+    integer(kind=8) :: nb_option
     character(len=16) :: list_option(6)
-    integer :: nume_inst, nume_harm
-    integer :: long
+    integer(kind=8) :: nume_inst, nume_harm
+    integer(kind=8) :: long
     real(kind=8) :: time_prev, time_curr
     real(kind=8) :: deltat, khi
     character(len=8) :: table_new, table_old

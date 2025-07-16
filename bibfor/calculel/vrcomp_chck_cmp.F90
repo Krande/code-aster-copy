@@ -32,14 +32,12 @@ subroutine vrcomp_chck_cmp(mesh, nbCell, &
 #include "jeveux.h"
 #include "asterfort/assert.h"
 #include "asterfort/cesexi.h"
-#include "asterfort/jenuno.h"
 #include "asterfort/jeveuo.h"
-#include "asterfort/jexnum.h"
 #include "asterfort/utmess.h"
 #include "asterfort/int_to_char8.h"
 !
     character(len=8), intent(in) :: mesh
-    integer, intent(in) :: nbCell
+    integer(kind=8), intent(in) :: nbCell
     character(len=*), intent(in) :: comporCurrZ
     character(len=19), intent(in) :: comporCurr, comporPrev
     character(len=19), intent(in) :: variRedu
@@ -71,28 +69,28 @@ subroutine vrcomp_chck_cmp(mesh, nbCell, &
 !
 ! --------------------------------------------------------------------------------------------------
 !
-    integer :: iad1, iad2, iadp, iadm
-    integer :: iCell, k, vali(3)
+    integer(kind=8) :: iad1, iad2, iadp, iadm
+    integer(kind=8) :: iCell, k, vali(3)
     aster_logical :: lCellCurr, lCellPrev
-    integer :: idxPrev, idxCurr
+    integer(kind=8) :: idxPrev, idxCurr
     aster_logical :: all_is_zero
-    integer :: nbPgPrev, nbSpgPrev, nbVariPrev
-    integer :: nbSpgCurr, nbVariCurr
+    integer(kind=8) :: nbPgPrev, nbSpgPrev, nbVariPrev
+    integer(kind=8) :: nbSpgCurr, nbVariCurr
     character(len=16) :: relaCompPrev, relaCompCurr
     character(len=8) :: cellName
     character(len=19) :: dcel
-    integer, pointer :: repePrev(:) => null()
-    integer, pointer :: repeCurr(:) => null()
-    integer :: jvDcelCesd, jvDcelCesl
-    integer, pointer :: dcelCesv(:) => null()
-    integer :: jvCompCurrCesl, jvCompCurrCesd
+    integer(kind=8), pointer :: repePrev(:) => null()
+    integer(kind=8), pointer :: repeCurr(:) => null()
+    integer(kind=8) :: jvDcelCesd, jvDcelCesl
+    integer(kind=8), pointer :: dcelCesv(:) => null()
+    integer(kind=8) :: jvCompCurrCesl, jvCompCurrCesd
     character(len=16), pointer :: compCurrCesv(:) => null()
-    integer :: jvCompPrevCesd, jvCompPrevCesl
+    integer(kind=8) :: jvCompPrevCesd, jvCompPrevCesl
     character(len=16), pointer :: compPrevCesv(:) => null()
-    integer :: jvVariCesd, jvVariCesl
+    integer(kind=8) :: jvVariCesd, jvVariCesl
     real(kind=8), pointer :: variCesv(:) => null()
     character(len=24) :: groupCell(4), valk(7)
-    integer :: nbGroupCell
+    integer(kind=8) :: nbGroupCell
 !
 ! --------------------------------------------------------------------------------------------------
 !

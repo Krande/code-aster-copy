@@ -25,6 +25,6 @@ interface
         real(kind=8), intent(out) :: ddsdde(*)
         real(kind=8), intent(in) :: rdt, dtime
         real(kind=8), intent(out) :: pnewdt
-        integer, intent(out) :: retcode
+        integer(kind=8), intent(out) :: retcode
     end subroutine mgis_integrate
 end interface

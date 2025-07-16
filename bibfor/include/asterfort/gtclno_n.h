@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -20,10 +20,10 @@
 !
 interface
     subroutine gtclno_n(jv_geom, list_node, nb_node, testnode ,nume_node_cl)
-        integer, intent(in) :: jv_geom
-        integer, intent(in) :: list_node(*)
-        integer, intent(in) :: nb_node
+        integer(kind=8), intent(in) :: jv_geom
+        integer(kind=8), intent(in) :: list_node(*)
+        integer(kind=8), intent(in) :: nb_node
         real(kind=8), intent(in) :: testnode(3)
-        integer, intent(out) :: nume_node_cl
+        integer(kind=8), intent(out) :: nume_node_cl
     end subroutine gtclno_n
 end interface

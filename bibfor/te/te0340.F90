@@ -55,17 +55,17 @@ subroutine te0340(option, nomte)
     character(len=16), pointer :: compor(:) => null()
     character(len=16) :: comporKit(COMPOR_SIZE)
     character(len=8) :: typmod(2), lielrf(10)
-    integer :: nno1, nno2, npg, imatuu, lgpg, lgpg1, lgpg2
-    integer :: iw, ivf1, idf1, igeom, imate
-    integer :: npgn, idf1n
-    integer :: ivf2, ino, i, nddl1
-    integer :: ivarim, ivarip, iinstm, iinstp
-    integer :: iddlm, iddld, icarcr
-    integer :: ivectu, icontp
-    integer :: ivarix
-    integer :: jtab(7), jcret, codret
-    integer :: ndim, iret, ntrou
-    integer :: iu(3, 3), iuc(3), im(3), isect, icontm
+    integer(kind=8) :: nno1, nno2, npg, imatuu, lgpg, lgpg1, lgpg2
+    integer(kind=8) :: iw, ivf1, idf1, igeom, imate
+    integer(kind=8) :: npgn, idf1n
+    integer(kind=8) :: ivf2, ino, i, nddl1
+    integer(kind=8) :: ivarim, ivarip, iinstm, iinstp
+    integer(kind=8) :: iddlm, iddld, icarcr
+    integer(kind=8) :: ivectu, icontp
+    integer(kind=8) :: ivarix
+    integer(kind=8) :: jtab(7), jcret, codret
+    integer(kind=8) :: ndim, iret, ntrou
+    integer(kind=8) :: iu(3, 3), iuc(3), im(3), isect, icontm
     real(kind=8) :: tang(3, 3), a, geom(3, 3)
     character(len=16) :: defo_comp, rela_comp, rela_cpla
     aster_logical :: lVect, lMatr, lVari, lSigm

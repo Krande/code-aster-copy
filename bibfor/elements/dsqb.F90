@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -32,7 +32,7 @@ subroutine dsqb(caraq4, xyzl, pgl, igau, jacgau, &
 #include "asterfort/dxqbm.h"
 #include "asterfort/elrefe_info.h"
 #include "asterfort/jquad4.h"
-    integer :: igau
+    integer(kind=8) :: igau
     real(kind=8) :: xyzl(3, 1), pgl(3, 3), bmat(8, 1), jacgau, caraq4(*)
 ! --- CALCUL DE LA MATRICE (B) RELIANT LES DEFORMATIONS DU PREMIER
 ! --- ORDRE AUX DEPLACEMENTS AU POINT D'INTEGRATION D'INDICE IGAU
@@ -54,8 +54,8 @@ subroutine dsqb(caraq4, xyzl, pgl, igau, jacgau, &
     real(kind=8) :: bcb(2, 12), bca(2, 4), bcn(2, 12), bc(2, 12), bcm(2, 8)
     real(kind=8) :: hft2(2, 6), an(4, 12), hmft2(2, 6)
     real(kind=8) :: bm(3, 8), qsi, eta, jacob(5), t2iu(4), t2ui(4), t1ve(9)
-    integer :: ndim, nno, nnos, npg, ipoids, icoopg, ivf, idfdx, idfd2, jgano
-    integer :: multic, i, j, k
+    integer(kind=8) :: ndim, nno, nnos, npg, ipoids, icoopg, ivf, idfdx, idfd2, jgano
+    integer(kind=8) :: multic, i, j, k
     aster_logical :: coupmf
 !     ------------------------------------------------------------------
 !

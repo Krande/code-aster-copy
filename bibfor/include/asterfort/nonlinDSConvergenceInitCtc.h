@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -20,7 +20,7 @@ interface
     subroutine nonlinDSConvergenceInitCtc(ds_conv, list_func_acti, ds_contact)
         use NonLin_Datastructure_type
         type(NL_DS_Conv), intent(inout) :: ds_conv
-        integer, intent(in) :: list_func_acti(*)
+        integer(kind=8), intent(in) :: list_func_acti(*)
         type(NL_DS_Contact), intent(in) :: ds_contact
     end subroutine nonlinDSConvergenceInitCtc
 end interface

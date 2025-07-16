@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -46,8 +46,8 @@ subroutine dbrInitBaseGreedy(resultName, paraGreedy, base)
 !
 ! --------------------------------------------------------------------------------------------------
 !
-    integer :: ifm, niv
-    integer :: nbEqua, nbModeMaxi
+    integer(kind=8) :: ifm, niv
+    integer(kind=8) :: nbEqua, nbModeMaxi
     character(len=8)  :: model, mesh, matrName
     character(len=24) :: fieldRefe, fieldName
     character(len=4) :: fieldSupp

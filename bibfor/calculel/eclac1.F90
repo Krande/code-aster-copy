@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -20,11 +20,11 @@ subroutine eclac1(ipoini, mxnbpi, csomm1, nterm1, i1, &
                   i2, i3, i4, i5, i6, &
                   i7, i8)
     implicit none
-    integer :: mxnbpi
+    integer(kind=8) :: mxnbpi
 !
     real(kind=8) :: csomm1(mxnbpi, *)
-    integer :: nterm1(mxnbpi), work(8), k, ptot
-    integer :: ipoini, i1, i2, i3, i4, i5, i6, i7, i8
+    integer(kind=8) :: nterm1(mxnbpi), work(8), k, ptot
+    integer(kind=8) :: ipoini, i1, i2, i3, i4, i5, i6, i7, i8
 !
     work(1) = i1
     work(2) = i2

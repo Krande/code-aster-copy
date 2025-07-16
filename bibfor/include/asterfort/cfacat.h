@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -23,15 +23,15 @@ interface
                       indfac,&
                       sdcont_defi, sdcont_solv, solveu, lmat, &
                       xjvmax)
-        integer :: indic
-        integer :: nbliac
-        integer :: ajliai
-        integer :: spliai
-        integer :: indfac
+        integer(kind=8) :: indic
+        integer(kind=8) :: nbliac
+        integer(kind=8) :: ajliai
+        integer(kind=8) :: spliai
+        integer(kind=8) :: indfac
         character(len=24) :: sdcont_defi
         character(len=24) :: sdcont_solv
         character(len=19) :: solveu
-        integer :: lmat
+        integer(kind=8) :: lmat
         real(kind=8) :: xjvmax
     end subroutine cfacat
 end interface

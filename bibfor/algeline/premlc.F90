@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -30,18 +30,18 @@ subroutine premlc(n1, diag, col, parent, parend, &
     implicit none
 #include "asterfort/infniv.h"
 #include "asterfort/utmess.h"
-    integer :: n1, diag(0:*), col(*), lgind, ddlmoy
-    integer :: parent(*)
-    integer :: nbsn, parend(*)
-    integer :: anc(n1), nouv(n1), supnd(n1), supnd2(n1), lbd1(n1), lbd2(n1)
-    integer :: invp(n1), perm(n1)
-    integer :: rl(4, *), rl1(*), rl2(*)
+    integer(kind=8) :: n1, diag(0:*), col(*), lgind, ddlmoy
+    integer(kind=8) :: parent(*)
+    integer(kind=8) :: nbsn, parend(*)
+    integer(kind=8) :: anc(n1), nouv(n1), supnd(n1), supnd2(n1), lbd1(n1), lbd2(n1)
+    integer(kind=8) :: invp(n1), perm(n1)
+    integer(kind=8) :: rl(4, *), rl1(*), rl2(*)
 !     VARIABLES LOCALES
-    integer :: i, j, ier, ifm, niv
-    integer :: i1, i2, iddl, iddl1, iddl2, num, isn
-    integer :: nouvsn(0:n1), ancsn(*), p(*), q(*)
-    integer :: nrl, maxrl, minrl, nbsnd, j1, j2, ianc, ip, ipp
-    integer :: vali(3)
+    integer(kind=8) :: i, j, ier, ifm, niv
+    integer(kind=8) :: i1, i2, iddl, iddl1, iddl2, num, isn
+    integer(kind=8) :: nouvsn(0:n1), ancsn(*), p(*), q(*)
+    integer(kind=8) :: nrl, maxrl, minrl, nbsnd, j1, j2, ianc, ip, ipp
+    integer(kind=8) :: vali(3)
 !--------------------------------------------------------------
 !      5) POUR LES REL.LIN.,ON FAIT RL1(I)=LAMBD1,I ETANT LE
 !        DDL DE REL.LIN.

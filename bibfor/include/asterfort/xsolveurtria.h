@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -22,7 +22,7 @@ interface
 
     subroutine xsolveurtria(coor_nod, x, y, z, D, indmax, solution )
     
-        integer                           ::  indmax    
+        integer(kind=8)                           ::  indmax    
         real(kind=8),dimension(3,3)       ::  coor_nod
         real(kind=8)                      ::  D(:)
         real(kind=8)                      ::  x(:)

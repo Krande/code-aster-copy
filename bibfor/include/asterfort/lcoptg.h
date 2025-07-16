@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -22,15 +22,15 @@ interface
     subroutine lcoptg(nmat, mater, nr, nvi, drdy,&
                       sigeps, dsde, iret)
         common/tdim/ ndt,ndi
-        integer :: ndt
-        integer :: ndi
-        integer :: nvi
-        integer :: nr
-        integer :: nmat
+        integer(kind=8) :: ndt
+        integer(kind=8) :: ndi
+        integer(kind=8) :: nvi
+        integer(kind=8) :: nr
+        integer(kind=8) :: nmat
         real(kind=8) :: mater(nmat, 2)
         real(kind=8) :: drdy(nr, nr)
-        integer :: sigeps
+        integer(kind=8) :: sigeps
         real(kind=8) :: dsde(6, 6)
-        integer :: iret
+        integer(kind=8) :: iret
     end subroutine lcoptg
 end interface

@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -23,12 +23,12 @@ interface
                       time  , comporMultz  , matrElemz       , modeFourier,&
                       basez , listElemCalcz, hasExteStatVari_, onlyDirichlet_)
         character(len=*), intent(in) :: modelz
-        integer, intent(in) :: nbLoad
+        integer(kind=8), intent(in) :: nbLoad
         character(len=24), pointer :: listLoadK24(:) 
         character(len=*), intent(in) :: matez, matecoz, caraElemz
         real(kind=8), intent(in) :: time
         character(len=*), intent(in) :: comporMultz, matrElemz
-        integer, intent(in) :: modeFourier
+        integer(kind=8), intent(in) :: modeFourier
         character(len=*), intent(in) :: basez, listElemCalcz
         aster_logical, intent(in), optional :: hasExteStatVari_, onlyDirichlet_
     end subroutine merime

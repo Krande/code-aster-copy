@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -44,8 +44,8 @@ subroutine te0080(option, nomte)
     type(FE_Quadrature) :: FEQuadCell
     type(FE_basis) :: FEBasis
 !
-    integer ::  kp, itemps, isour, icode
-    integer :: nbDof, nbres
+    integer(kind=8) ::  kp, itemps, isour, icode
+    integer(kind=8) :: nbDof, nbres
     parameter(nbres=4)
     character(len=8) :: nompar(nbres)
     real(kind=8) :: valpar(nbres), sour, valQP(MAX_QP)

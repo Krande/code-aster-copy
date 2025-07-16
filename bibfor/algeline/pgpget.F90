@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -64,15 +64,15 @@ subroutine pgpget(sd_pgp, param, iobs, lonvec, savejv, &
 !   -0.1- Input/output arguments
     character(len=*), intent(in) :: sd_pgp
     character(len=*), intent(in) :: param
-    integer, optional, intent(in) :: iobs
+    integer(kind=8), optional, intent(in) :: iobs
     character(len=24), optional, intent(out) :: savejv
-    integer, optional, intent(out) :: lonvec
+    integer(kind=8), optional, intent(out) :: lonvec
     character(len=*), optional, intent(out) :: kscal
-    integer, optional, intent(out) :: iscal
+    integer(kind=8), optional, intent(out) :: iscal
     real(kind=8), optional, intent(out) :: rscal
     complex(kind=8), optional, intent(out) :: cscal
     character(len=*), optional, intent(out) :: kvect(*)
-    integer, optional, intent(out) :: ivect(*)
+    integer(kind=8), optional, intent(out) :: ivect(*)
     real(kind=8), optional, intent(out) :: rvect(*)
     complex(kind=8), optional, intent(out) :: cvect(*)
 !
@@ -83,11 +83,11 @@ subroutine pgpget(sd_pgp, param, iobs, lonvec, savejv, &
     character(len=8) :: param_
 !
 !   --- For general usage
-    integer :: nbparams
+    integer(kind=8) :: nbparams
     parameter(nbparams=24)
 !
     aster_logical :: output_test
-    integer :: parind(nbparams), ip, i, jvect, jscal, lvec
+    integer(kind=8) :: parind(nbparams), ip, i, jvect, jscal, lvec
     character(len=3) :: partyp(nbparams)
     character(len=6) :: k_iobs
     character(len=8) :: params(nbparams)

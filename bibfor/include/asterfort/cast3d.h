@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -24,12 +24,12 @@ interface
     subroutine cast3d(proj, gamma, dh, def, nno,&
                       kpg, nub, nu, dsidep, calbn,&
                       bn, jac, matuu)
-        integer :: proj
+        integer(kind=8) :: proj
         real(kind=8) :: gamma(4, 8)
         real(kind=8) :: dh(4, 24)
         real(kind=8) :: def(6, 3, 8)
-        integer :: nno
-        integer :: kpg
+        integer(kind=8) :: nno
+        integer(kind=8) :: kpg
         real(kind=8) :: nub
         real(kind=8) :: nu
         real(kind=8) :: dsidep(6, 6)

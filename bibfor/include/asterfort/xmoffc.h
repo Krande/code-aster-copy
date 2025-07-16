@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -20,9 +20,9 @@
 !
 interface
     subroutine xmoffc(lact, nlact, nno, ffe, ffc)
-        integer :: lact(*)
-        integer :: nlact
-        integer :: nno
+        integer(kind=8) :: lact(*)
+        integer(kind=8) :: nlact
+        integer(kind=8) :: nno
         real(kind=8) :: ffe(*)
         real(kind=8) :: ffc(*)
     end subroutine xmoffc

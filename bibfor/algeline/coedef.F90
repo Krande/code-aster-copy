@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -65,8 +65,8 @@ subroutine coedef(imod, fremod, nbm, young, poiss, &
 #include "asterfort/mgauss.h"
 #include "asterfort/utmess.h"
 #include "asterfort/wkvect.h"
-    integer :: imod, nbm, icoq, nbno, numno(nbno), nunoe0, nbnoto, iaxe, kec
-    integer :: iret
+    integer(kind=8) :: imod, nbm, icoq, nbno, numno(nbno), nunoe0, nbnoto, iaxe, kec
+    integer(kind=8) :: iret
     real(kind=8) :: fremod, young, poiss, rho, coordo(3, nbnoto), geom(9), det
     real(kind=8) :: defm(2, nbnoto, nbm), drmax, torco(4, nbm), tcoef(10, nbm)
 !
@@ -74,9 +74,9 @@ subroutine coedef(imod, fremod, nbm, young, poiss, &
 !
 !-----------------------------------------------------------------------
 !-----------------------------------------------------------------------
-    integer :: ib, ic, icoea, idec, idec1, idir1, idir2
-    integer :: idr, il, iligne, imata, ino, inogen, itab
-    integer :: ivecb, iz, izaxe, nbnoge, numnoe
+    integer(kind=8) :: ib, ic, icoea, idec, idec1, idir1, idir2
+    integer(kind=8) :: idr, il, iligne, imata, ino, inogen, itab
+    integer(kind=8) :: ivecb, iz, izaxe, nbnoge, numnoe
     real(kind=8) :: a, b, coshiz, cosiz, deltai, difx, dify
     real(kind=8) :: dr, drnoe0, dx, dy, epais, err, fonc
     real(kind=8) :: orcoq, orcq2, orcq4, pi, rapsi, rayo2

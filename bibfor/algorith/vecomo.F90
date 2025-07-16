@@ -55,7 +55,6 @@ subroutine vecomo(modgen, sst1, sst2, intf1, intf2, &
 #include "asterfort/jelira.h"
 #include "asterfort/jemarq.h"
 #include "asterfort/jenonu.h"
-#include "asterfort/jenuno.h"
 #include "asterfort/jeveuo.h"
 #include "asterfort/jexnom.h"
 #include "asterfort/jexnum.h"
@@ -74,11 +73,11 @@ subroutine vecomo(modgen, sst1, sst2, intf1, intf2, &
 !   SOUS-JACENTE TRAITEE
 !
     aster_logical :: saut, ordre
-    integer :: nbno, icrit, nliais, ldlid, llint3, llint4, iret, nbec, nbcmpm
-    integer :: ival, nusst1, nusst2, llrot1, llrot2, lltra1, lltra2, i, j, k, l
-    integer :: ibid, nbno1, nbno2, llint1, llint2
-    integer :: llistb, inu1, nuno1, inu2, nuno2, jnode, ip, inu
-    integer :: nuno, ldac2
+    integer(kind=8) :: nbno, icrit, nliais, ldlid, llint3, llint4, iret, nbec, nbcmpm
+    integer(kind=8) :: ival, nusst1, nusst2, llrot1, llrot2, lltra1, lltra2, i, j, k, l
+    integer(kind=8) :: ibid, nbno1, nbno2, llint1, llint2
+    integer(kind=8) :: llistb, inu1, nuno1, inu2, nuno2, jnode, ip, inu
+    integer(kind=8) :: nuno, ldac2
     parameter(nbcmpm=10)
     character(len=4) :: nliai
     character(len=8) :: modgen, lint1, lint2, criter, temp
@@ -91,11 +90,11 @@ subroutine vecomo(modgen, sst1, sst2, intf1, intf2, &
     real(kind=8) :: mat3(nbcmpm, nbcmpm), zero, dxrm, lcaram, tra2(3)
     real(kind=8) :: mattmp(nbcmpm, nbcmpm), difmax, lcara1, lcara2
     real(kind=8) :: matro1(nbcmpm, nbcmpm), matro2(nbcmpm, nbcmpm), seuil, dxrij
-    integer, pointer :: lista(:) => null()
+    integer(kind=8), pointer :: lista(:) => null()
     real(kind=8), pointer :: nllcoo1(:) => null()
     real(kind=8), pointer :: nllcoo2(:) => null()
-    integer, pointer :: nldesc1(:) => null()
-    integer, pointer :: nldesc2(:) => null()
+    integer(kind=8), pointer :: nldesc1(:) => null()
+    integer(kind=8), pointer :: nldesc2(:) => null()
 !
 !-----------------------------------------------------------------------
     data zero/0.0d+00/

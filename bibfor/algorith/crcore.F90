@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -63,16 +63,16 @@ subroutine crcore()
 #include "asterfort/as_allocate.h"
 #include "blas/daxpy.h"
 !
-    integer :: ibid, ier, icompt, iret, numini, numfin
-    integer :: n1, nis, nbinst, nbval, nume, j
-    integer :: iad, jinst, jchin, jchout, iddl, icmp, aprno
-    integer :: nbv(1), jrefe
-    integer :: jcpt, nbr, ivmx, k, iocc, nboini, inoe, ncmp, nbr0
-    integer :: tnum(1)
-    integer :: nbordr1, nbordr2, numei, neq, nbnoeu, gd, nec, iec
-    integer :: ngn, nbno, ino, in, nbd, jchi1, ldgn, jdist
-    integer :: nfx, nfy, nfz, jncmp, tabec(10), ncmpmx, iad2, ncmp0, j2
-    integer :: nfrx, nfry, nfrz
+    integer(kind=8) :: ibid, ier, icompt, iret, numini, numfin
+    integer(kind=8) :: n1, nis, nbinst, nbval, nume, j
+    integer(kind=8) :: iad, jinst, jchin, jchout, iddl, icmp, aprno
+    integer(kind=8) :: nbv(1), jrefe
+    integer(kind=8) :: jcpt, nbr, ivmx, k, iocc, nboini, inoe, ncmp, nbr0
+    integer(kind=8) :: tnum(1)
+    integer(kind=8) :: nbordr1, nbordr2, numei, neq, nbnoeu, gd, nec, iec
+    integer(kind=8) :: ngn, nbno, ino, in, nbd, jchi1, ldgn, jdist
+    integer(kind=8) :: nfx, nfy, nfz, jncmp, tabec(10), ncmpmx, iad2, ncmp0, j2
+    integer(kind=8) :: nfrx, nfry, nfrz
 !
     real(kind=8) :: rbid, tps, prec, coefr
     real(kind=8) :: dist, dire(3), coorre(3), vs, delay, dt, tp2
@@ -97,7 +97,7 @@ subroutine crcore()
     character(len=24), pointer :: refn(:) => null()
     real(kind=8), pointer :: val(:) => null()
     real(kind=8), pointer :: vale(:) => null()
-    integer, pointer :: vicmp(:) => null()
+    integer(kind=8), pointer :: vicmp(:) => null()
     blas_int :: b_incx, b_incy, b_n
 !
     data linst, listr8, lcpt, ldist/'&&CRCORE_LINST', '&&CRCORE_LISR8',&
@@ -323,8 +323,7 @@ subroutine crcore()
                         0, sjv=iad, styp=k8b)
         else if (iret .eq. 110) then
             call rsagsd(resu, 0)
-            call rsexch(' ', resu, nsymb, icompt, nomch, &
-                        iret)
+            call rsexch(' ', resu, nsymb, icompt, nomch, iret)
         else if (iret .eq. 100) then
             call vtcreb(nomch, 'G', 'R', nume_ddlz=numedd)
         end if
@@ -334,9 +333,11 @@ subroutine crcore()
                     nbr)
         numei = tnum(1)
         nbr0 = nbr
-        call rsexch(' ', resui, nsymb0, numei, chamno, &
-                    iret)
-        call vtcopy(chamno, chamn2, ' ', ier)
+        call rsexch(' ', resui, nsymb0, numei, chamno, iret)
+        call vtcopy(chamno, chamn2, ier)
+        if (ier .ne. 0) then
+            call utmess("A", "FIELD0_3", sk=nsymb0)
+        end if
 !
         call jeveuo(chamn2//'.VALE', 'L', jchin)
         if (lddlex) then

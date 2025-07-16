@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -19,7 +19,7 @@
 interface
     subroutine cmmoma(meshOutZ, nbCellModi, modiCellNume, modiCellType, nbNodeIn)
         character(len=*), intent(in) :: meshOutZ
-        integer, intent(in) :: nbNodeIn, nbCellModi
-        integer, pointer :: modiCellNume(:), modiCellType(:)
+        integer(kind=8), intent(in) :: nbNodeIn, nbCellModi
+        integer(kind=8), pointer :: modiCellNume(:), modiCellType(:)
     end subroutine cmmoma
 end interface

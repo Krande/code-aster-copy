@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -21,7 +21,7 @@ subroutine rcfodi(ifon, beta, f, df)
 #include "asterf_types.h"
 #include "jeveux.h"
 #include "asterfort/utmess.h"
-    integer :: ifon
+    integer(kind=8) :: ifon
     real(kind=8) :: beta, f, df
 ! ......................................................................
 !     ROUTINE INVERSE DE RCFODE :
@@ -38,8 +38,8 @@ subroutine rcfodi(ifon, beta, f, df)
 !
 !
 !
-    integer :: jpro, jvalf, jv, jp, nbvf
-    integer :: isave, ideb, ifin, incr, indfct
+    integer(kind=8) :: jpro, jvalf, jv, jp, nbvf
+    integer(kind=8) :: isave, ideb, ifin, incr, indfct
     aster_logical :: tesinf, tessup, entre, deja, avant
 ! ----------------------------------------------------------------------
 ! PARAMETER ASSOCIE AU MATERIAU CODE

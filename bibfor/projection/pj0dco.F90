@@ -30,16 +30,13 @@ subroutine pj0dco(typeSelect, &
 #include "asterc/r8maem.h"
 #include "MeshTypes_type.h"
 #include "asterfort/assert.h"
-#include "asterfort/detrsd.h"
 #include "asterfort/dismoi.h"
 #include "asterfort/infniv.h"
 #include "asterfort/jedema.h"
 #include "asterfort/jedetr.h"
 #include "asterfort/jemarq.h"
-#include "asterfort/jenuno.h"
 #include "asterfort/jeveuo.h"
 #include "asterfort/jexatr.h"
-#include "asterfort/jexnum.h"
 #include "asterfort/pjxxut.h"
 #include "asterfort/utimsd.h"
 #include "asterfort/utmess.h"
@@ -48,7 +45,8 @@ subroutine pj0dco(typeSelect, &
 !
     character(len=*), intent(in) :: typeSelect
     character(len=8), intent(in) :: entity1, entity2
-    integer, intent(in) :: nbCellSelect1, listCellSelect1(*), nbNodeSelect2, listNodeSelect2(*)
+    integer(kind=8), intent(in) :: nbCellSelect1, listCellSelect1(*)
+    integer(kind=8), intent(in) :: nbNodeSelect2, listNodeSelect2(*)
     character(len=*), intent(in) :: geom1, geom2
     character(len=16), intent(in)  :: corrMesh
     real(kind=8), intent(in) :: dmax0d
@@ -77,20 +75,20 @@ subroutine pj0dco(typeSelect, &
 !
 !    aster_logical, parameter :: dbg = ASTER_FALSE
     character(len=8) :: mesh1, mesh2, nodeName2, cdim1
-    integer :: nbCellType
-    integer :: cellListType(MT_NTYMAX)
+    integer(kind=8) :: nbCellType
+    integer(kind=8) :: cellListType(MT_NTYMAX)
     character(len=8) :: cellListCode(MT_NTYMAX)
-    integer :: ifm, niv, nbNode2, nbCell1, k
-    integer :: nbPoi, iase2, ndim, INode1, iPoi
-    integer :: iCell1, iNode2
-    integer :: iacoo1, iacoo2
-    integer :: jxxk1, iaconu, iacocf, iacom1
-    integer :: ilcnx1
-    integer :: iaconb, cellTypeNume, idecal, cellLink1, nodeLink1
+    integer(kind=8) :: ifm, niv, nbNode2, nbCell1, k
+    integer(kind=8) :: nbPoi, iase2, ndim, INode1, iPoi
+    integer(kind=8) :: iCell1, iNode2
+    integer(kind=8) :: iacoo1, iacoo2
+    integer(kind=8) :: jxxk1, iaconu, iacocf, iacom1
+    integer(kind=8) :: ilcnx1
+    integer(kind=8) :: iaconb, cellTypeNume, idecal, cellLink1, nodeLink1
     real(kind=8) :: d2, dp, coor2(3), coor1(3), v12(3)
-    integer, pointer :: listCell1(:) => null(), listNode2(:) => null()
-    integer, pointer :: connex(:) => null()
-    integer, pointer :: typmail(:) => null()
+    integer(kind=8), pointer :: listCell1(:) => null(), listNode2(:) => null()
+    integer(kind=8), pointer :: connex(:) => null()
+    integer(kind=8), pointer :: typmail(:) => null()
 !
 ! --------------------------------------------------------------------------------------------------
 !

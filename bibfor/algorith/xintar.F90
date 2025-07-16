@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -23,7 +23,7 @@ subroutine xintar(lsna, lsnb, lsnm, a, b, &
 #include "jeveux.h"
 #include "asterfort/reerel.h"
 #include "asterfort/xnewto.h"
-    integer :: ndim
+    integer(kind=8) :: ndim
     real(kind=8) :: lsna, lsnb, lsnm, a(3), b(3), m(3), intar(3)
 !
 !                      TROUVER LE PT D'INTERSECTION ENTRE L'ARETE
@@ -45,7 +45,7 @@ subroutine xintar(lsna, lsnb, lsnm, a, b, &
     character(len=6) :: name
     real(kind=8) :: lsnl(3), col(ndim*3)
     real(kind=8) :: epsmax, rbid, xe(ndim)
-    integer :: nno, itemax, i, ibid, n(3)
+    integer(kind=8) :: nno, itemax, i, ibid, n(3)
     parameter(elp='SE3')
 !
 !---------------------------------------------------------------------

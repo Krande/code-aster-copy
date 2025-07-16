@@ -23,7 +23,6 @@ subroutine caddlp(load, mesh, model, valeType)
 !
 #include "jeveux.h"
 #include "asterc/getfac.h"
-#include "asterc/getres.h"
 #include "asterfort/afddli.h"
 #include "asterfort/aflrch.h"
 #include "asterfort/assert.h"
@@ -38,10 +37,8 @@ subroutine caddlp(load, mesh, model, valeType)
 #include "asterfort/jeexin.h"
 #include "asterfort/jelira.h"
 #include "asterfort/jemarq.h"
-#include "asterfort/jenuno.h"
 #include "asterfort/jeveuo.h"
 #include "asterfort/jexnom.h"
-#include "asterfort/jexnum.h"
 #include "asterfort/utmess.h"
 #include "asterfort/wkvect.h"
 #include "asterfort/as_deallocate.h"
@@ -66,40 +63,40 @@ subroutine caddlp(load, mesh, model, valeType)
 !
 ! --------------------------------------------------------------------------------------------------
 !
-    integer, parameter :: n_max_keyword = 300
-    integer :: ddlimp(n_max_keyword)
+    integer(kind=8), parameter :: n_max_keyword = 300
+    integer(kind=8) :: ddlimp(n_max_keyword)
     real(kind=8) :: valimr(n_max_keyword)
     complex(kind=8) :: valimc(n_max_keyword)
     character(len=8) :: valimf(n_max_keyword)
     character(len=16) :: keywordlist(n_max_keyword)
 !
 !
-    integer :: cmp_nb_glo
+    integer(kind=8) :: cmp_nb_glo
     parameter(cmp_nb_glo=6)
-    integer :: cmp_acti_glo(cmp_nb_glo)
+    integer(kind=8) :: cmp_acti_glo(cmp_nb_glo)
     real(kind=8) :: cmp_valr_glo(cmp_nb_glo)
     complex(kind=8) :: cmp_valc_glo(cmp_nb_glo)
     character(len=8) :: cmp_valf_glo(cmp_nb_glo)
     character(len=16) :: cmp_name_glo(cmp_nb_glo)
 !
-    integer :: nddli, iocc, ibid, ino
-    integer :: ier, nbec, nbnoeu, n_keyword
-    integer :: jdirec, nume_node
-    integer :: jnom, nbcmp, jprnm
+    integer(kind=8) :: nddli, iocc, ibid, ino
+    integer(kind=8) :: ier, nbec, nbnoeu, n_keyword
+    integer(kind=8) :: jdirec, nume_node
+    integer(kind=8) :: jnom, nbcmp, jprnm
     real(kind=8) :: zero
     character(len=24) :: keywordexcl
     character(len=4) :: coef_type
-    integer :: n_keyexcl
-    integer :: i_keyword
+    integer(kind=8) :: n_keyexcl
+    integer(kind=8) :: i_keyword
     character(len=24) :: list_node
-    integer :: jlino
-    integer :: nb_node, geomDime
+    integer(kind=8) :: jlino
+    integer(kind=8) :: nb_node, geomDime
     character(len=8) :: k8bid, nomg, name_node
     character(len=16) :: keywordfact, keyword
     character(len=19) :: lisrel, k19bid, modelLigrel
     character(len=19) :: ncncin
-    integer, pointer :: dimension(:) => null()
-    integer, pointer :: icompt(:) => null()
+    integer(kind=8), pointer :: dimension(:) => null()
+    integer(kind=8), pointer :: icompt(:) => null()
 !
 ! --------------------------------------------------------------------------------------------------
 !

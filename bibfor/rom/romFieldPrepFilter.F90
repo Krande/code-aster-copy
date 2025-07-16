@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -25,12 +25,11 @@ subroutine romFieldPrepFilter(nbCmpToFilter, cmpToFilter, &
     implicit none
 !
 #include "asterf_types.h"
-#include "asterfort/assert.h"
 #include "asterfort/as_allocate.h"
 #include "asterfort/as_deallocate.h"
 #include "asterfort/utmess.h"
 !
-    integer, intent(in) :: nbCmpToFilter
+    integer(kind=8), intent(in) :: nbCmpToFilter
     character(len=8), pointer :: cmpToFilter(:)
     type(ROM_DS_Field), intent(inout) :: field
 !
@@ -49,11 +48,11 @@ subroutine romFieldPrepFilter(nbCmpToFilter, cmpToFilter, &
 ! --------------------------------------------------------------------------------------------------
 !
     aster_logical :: lFilter, lFound
-    integer :: iCmpToFilter, iCmpName, iEqua
-    integer :: nbCmpName, nbEqua
-    integer :: cmpNume
+    integer(kind=8) :: iCmpToFilter, iCmpName, iEqua
+    integer(kind=8) :: nbCmpName, nbEqua
+    integer(kind=8) :: cmpNume
     character(len=8) :: cmpName, cmpFilterName
-    integer, pointer :: cmpRefe(:) => null()
+    integer(kind=8), pointer :: cmpRefe(:) => null()
 !
 ! --------------------------------------------------------------------------------------------------
 !

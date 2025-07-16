@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -27,6 +27,7 @@ subroutine usupus(puusur, kforn, kvgli, nbpt)
 ! OUT : PUUSUR : PUISSANCE USURE
 !-----------------------------------------------------------------------
 #include "jeveux.h"
+#include "nldef.h"
 #include "asterfort/as_allocate.h"
 #include "asterfort/as_deallocate.h"
 #include "asterfort/dismoi.h"
@@ -42,7 +43,6 @@ subroutine usupus(puusur, kforn, kvgli, nbpt)
 #include "asterfort/jemarq.h"
 #include "asterfort/jeveuo.h"
 #include "asterfort/lxlgut.h"
-#include "asterfort/nlget.h"
 #include "asterfort/reliem.h"
 #include "asterfort/statpu.h"
 #include "asterfort/utmess.h"
@@ -53,30 +53,31 @@ subroutine usupus(puusur, kforn, kvgli, nbpt)
     character(len=19) :: trange, kforn, kvgli
 !
 !-----------------------------------------------------------------------
-    integer :: i, ichoc, idebut, idwk4, ifin, ifires, nbvint, ifl, nbtot, nbflam, ic, dec, nbchoc
-    integer :: impr, j, jfn, jnomno, nbno
-    integer :: jvg, jwk1, jwk2, jwk3, lg
-    integer :: n1, n2, n3, nbnoli, nbloc
-    integer :: nbpas, nbpt, nbval, nt, shift, long
+    integer(kind=8) :: i, ichoc, idebut, idwk4, ifin, ifires, nbvint
+    integer(kind=8) :: ifl, nbtot, nbflam, ic, dec, nbchoc
+    integer(kind=8) :: impr, j, jfn, jnomno, nbno
+    integer(kind=8) :: jvg, jwk1, jwk2, jwk3, lg
+    integer(kind=8) :: n1, n2, n3, nbnoli, nbloc
+    integer(kind=8) :: nbpas, nbpt, nbval, nt, shift, long
     character(len=8) :: maillage, modele, base
     character(len=24) :: nomno
     character(len=16) :: motcle(2), typmcl(2)
     real(kind=8) :: puusur, tdebut, tfin, tmax, tmin
 !-----------------------------------------------------------------------
-    integer, pointer :: desc(:) => null()
+    integer(kind=8), pointer :: desc(:) => null()
     real(kind=8), pointer :: disc(:) => null()
-    integer, pointer :: nltype(:) => null()
-    integer, pointer :: vindx(:) => null()
+    integer(kind=8), pointer :: nltype(:) => null()
+    integer(kind=8), pointer :: vindx(:) => null()
     character(len=24), pointer :: nlname(:) => null()
     real(kind=8), pointer :: vint(:) => null()
 !-----------------------------------------------------------------------
-    integer, pointer :: chindx(:) => null()
-    integer, pointer :: flindx(:) => null()
+    integer(kind=8), pointer :: chindx(:) => null()
+    integer(kind=8), pointer :: flindx(:) => null()
     real(kind=8), pointer :: vcho(:) => null()
     real(kind=8), pointer :: fcho(:) => null()
     real(kind=8), pointer :: dloc(:) => null()
     character(len=8), pointer :: inti(:) => null()
-    integer, pointer :: icho(:) => null()
+    integer(kind=8), pointer :: icho(:) => null()
     character(len=8), pointer :: ncho(:) => null()
     real(kind=8), pointer :: v_disc(:) => null()
     type(DynaGene) :: dyna_gene

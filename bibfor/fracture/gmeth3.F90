@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -32,7 +32,7 @@ subroutine gmeth3(nnoff, gthi, milieu, gs, &
 #include "asterfort/jedema.h"
 #include "asterfort/jemarq.h"
 
-    integer           :: nnoff, num
+    integer(kind=8)           :: nnoff, num
     real(kind=8)      :: gthi(1), gs(1), gi(1)
     character(len=24) :: objcur
     aster_logical     :: milieu, connex
@@ -56,8 +56,8 @@ subroutine gmeth3(nnoff, gthi, milieu, gs, &
 !              --> 4 (NOEUD-NOEUD)
 
 !......................................................................
-    integer           :: i, iabsc
-    integer           :: ivect, ibid
+    integer(kind=8)           :: i, iabsc
+    integer(kind=8)           :: ivect, ibid
     character(len=24) :: vect, matr, lissg
 !......................................................................
     call jemarq()

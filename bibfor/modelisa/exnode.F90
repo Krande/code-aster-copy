@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -29,9 +29,9 @@ subroutine exnode(noma, motfac, nzocu, nnocu, nolino)
 #include "asterfort/wkvect.h"
     character(len=8) :: noma
     character(len=16) :: motfac
-    integer :: nzocu
+    integer(kind=8) :: nzocu
     character(len=24) :: nolino
-    integer :: nnocu
+    integer(kind=8) :: nnocu
 !
 ! ----------------------------------------------------------------------
 !
@@ -52,12 +52,12 @@ subroutine exnode(noma, motfac, nzocu, nnocu, nolino)
 !
 !
     character(len=8) :: k8bla
-    integer :: izone, ino, jdecal, jlist
-    integer :: jnl
-    integer :: nbmocl
+    integer(kind=8) :: izone, ino, jdecal, jlist
+    integer(kind=8) :: jnl
+    integer(kind=8) :: nbmocl
     character(len=16) :: limocl(2), tymocl(2)
     character(len=24) :: listmn, listnn
-    integer :: nbmano, nbnono
+    integer(kind=8) :: nbmano, nbnono
 !
 !
 ! ----------------------------------------------------------------------

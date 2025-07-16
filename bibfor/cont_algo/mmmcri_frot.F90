@@ -23,15 +23,11 @@ subroutine mmmcri_frot(mesh, loop_fric_disp, disp_curr, ds_contact)
     implicit none
 !
 #include "asterf_types.h"
-#include "asterc/r8prem.h"
 #include "asterc/r8vide.h"
-#include "asterfort/assert.h"
 #include "asterfort/cfdisr.h"
 #include "asterfort/cnomax.h"
 #include "asterfort/copisd.h"
 #include "asterfort/detrsd.h"
-#include "asterfort/jenuno.h"
-#include "asterfort/jexnum.h"
 #include "asterfort/mmbouc.h"
 #include "asterfort/vtaxpy.h"
 #include "asterfort/int_to_char8.h"
@@ -57,14 +53,14 @@ subroutine mmmcri_frot(mesh, loop_fric_disp, disp_curr, ds_contact)
 !
 ! --------------------------------------------------------------------------------------------------
 !
-    integer, parameter :: nb_cmp_lagc = 1
+    integer(kind=8), parameter :: nb_cmp_lagc = 1
     character(len=8), parameter :: list_cmp_lagc(nb_cmp_lagc) = (/'LAGS_C'/)
     real(kind=8) :: frot_diff_maxi, disp_curr_maxi
     real(kind=8) :: loop_fric_vale, alpha, frot_epsi_maxi
     character(len=24) :: frot_diff
     character(len=16) :: loop_fric_node
     character(len=8) :: node_name
-    integer :: frot_diff_node, disp_curr_node
+    integer(kind=8) :: frot_diff_node, disp_curr_node
     aster_logical :: loop_fric_conv
 !
 ! --------------------------------------------------------------------------------------------------

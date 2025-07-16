@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -46,13 +46,13 @@ subroutine te0140(option, nomte)
 !     ------------------------------------------------------------------
 !
 !
-    integer :: imate, lmat, lorien
-    integer :: nbpar, nbres, nc, nno, iret
+    integer(kind=8) :: imate, lmat, lorien
+    integer(kind=8) :: nbpar, nbres, nc, nno, iret
     parameter(nbres=2)
     real(kind=8) :: valres(nbres)
     real(kind=8) :: deux, e
     real(kind=8) :: valpar, xnu, g, un, zero
-    integer :: codres(nbres), kpg, spt
+    integer(kind=8) :: codres(nbres), kpg, spt
     character(len=8) :: nompar, fami, poum
     character(len=16) :: nomres(nbres)
     character(len=16) :: opti

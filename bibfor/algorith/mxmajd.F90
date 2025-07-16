@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -48,12 +48,12 @@ subroutine mxmajd(deltat, sddyna)
 !
 !
     character(len=19) :: depgep, vitgep, accgep
-    integer :: jdepgp, jvitgp, jaccgp
+    integer(kind=8) :: jdepgp, jvitgp, jaccgp
     character(len=19) :: depgem, vitgem, accgem
-    integer :: jdepgm, jvitgm, jaccgm
-    integer :: imode
+    integer(kind=8) :: jdepgm, jvitgm, jaccgm
+    integer(kind=8) :: imode
     real(kind=8) :: coevi1, coevi2
-    integer :: nbmodp
+    integer(kind=8) :: nbmodp
 !
 ! ----------------------------------------------------------------------
 !

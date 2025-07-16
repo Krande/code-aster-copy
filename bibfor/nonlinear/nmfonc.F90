@@ -30,7 +30,6 @@ subroutine nmfonc(ds_conv, ds_algopara, solver, model, ds_contact, &
 #include "asterf_types.h"
 #include "asterc/getfac.h"
 #include "asterc/getres.h"
-#include "asterc/r8vide.h"
 #include "asterfort/assert.h"
 #include "asterfort/cfdisi.h"
 #include "asterfort/cfdisl.h"
@@ -62,7 +61,7 @@ subroutine nmfonc(ds_conv, ds_algopara, solver, model, ds_contact, &
     type(NL_DS_Energy), intent(in) :: ds_energy
     type(ROM_DS_AlgoPara), intent(in) :: ds_algorom
     type(NL_DS_PostTimeStep), intent(in) :: ds_posttimestep
-    integer, intent(inout) :: list_func_acti(*)
+    integer(kind=8), intent(inout) :: list_func_acti(*)
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -93,12 +92,12 @@ subroutine nmfonc(ds_conv, ds_algopara, solver, model, ds_contact, &
 !
 ! --------------------------------------------------------------------------------------------------
 !
-    integer :: ifm, niv
-    integer :: nocc, iret, nb_subs_stat, nb_sst
-    integer :: i_cont_form
+    integer(kind=8) :: ifm, niv
+    integer(kind=8) :: nocc, iret, nb_subs_stat, nb_sst
+    integer(kind=8) :: i_cont_form
     aster_logical :: l_deborst, l_frot, l_dis_choc, l_all_verif, l_refe, l_comp, lAnnealing
-    aster_logical :: l_loop_geom, l_loop_frot, l_loop_cont, l_pena
-    integer :: ixfem
+    aster_logical :: l_loop_geom, l_loop_frot, l_loop_cont, l_pena, l_rela, l_maxi
+    integer(kind=8) :: ixfem
     aster_logical :: l_load_undead, l_load_elim, l_load_didi
     character(len=8) :: k8bid, repk
     character(len=16) :: command, k16bid
@@ -201,6 +200,20 @@ subroutine nmfonc(ds_conv, ds_algopara, solver, model, ds_contact, &
     call GetResi(ds_conv, type='RESI_COMP_RELA', l_resi_test_=l_comp)
     if (l_comp) then
         list_func_acti(35) = 1
+    end if
+!
+! - Global relative criterion RESI_GLOB_RELA
+!
+    call GetResi(ds_conv, type='RESI_GLOB_RELA', l_resi_test_=l_rela)
+    if (l_rela) then
+        list_func_acti(70) = 1
+    end if
+!
+! - Global maximal criterion RESI_GLOB_MAXI
+!
+    call GetResi(ds_conv, type='RESI_GLOB_MAXI', l_resi_test_=l_maxi)
+    if (l_maxi) then
+        list_func_acti(71) = 1
     end if
 !
 ! - X-FEM

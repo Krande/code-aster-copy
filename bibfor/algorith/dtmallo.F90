@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -27,13 +27,9 @@ subroutine dtmallo(sd_dtm_)
 #include "asterc/r8prem.h"
 #include "asterfort/as_allocate.h"
 #include "asterfort/as_deallocate.h"
-#include "asterfort/codent.h"
 #include "asterfort/dtmget.h"
 #include "asterfort/dtmsav.h"
 #include "asterfort/getvr8.h"
-#include "asterfort/jedema.h"
-#include "asterfort/jelira.h"
-#include "asterfort/jemarq.h"
 #include "asterfort/mdallo.h"
 #include "asterfort/mdlibe.h"
 #include "asterfort/nlget.h"
@@ -43,10 +39,10 @@ subroutine dtmallo(sd_dtm_)
     character(len=*), intent(in) :: sd_dtm_
 !
 !   -0.2- Local variables
-    integer           :: nbsauv, nbmode, iret, nbnli, nbvint, nbsteps
-    integer           :: jordr, jdisc, jptem, jdepl
-    integer           :: jvite, jacce, jvint
-    integer           :: adapt, iarch_sd, iret1, iret2, nltreat
+    integer(kind=8)           :: nbsauv, nbmode, iret, nbnli, nbvint, nbsteps
+    integer(kind=8)           :: jordr, jdisc, jptem, jdepl
+    integer(kind=8)           :: jvite, jacce, jvint
+    integer(kind=8)           :: adapt, iarch_sd, iret1, iret2, nltreat
     real(kind=8)      :: dt, dtmin, dtmax, deltadt, epsi, taille, taille2
     character(len=8)  :: sd_dtm, nomres, basemo, riggen, masgen
     character(len=8)  :: amogen, sd_nl
@@ -57,9 +53,9 @@ subroutine dtmallo(sd_dtm_)
     character(len=8), pointer :: fonred(:) => null()
     character(len=8), pointer :: fonrev(:) => null()
     character(len=8), target  :: blanc(1)
-    integer, pointer :: vindx(:) => null()
-    integer, pointer :: allocs(:) => null()
-    integer :: ordr
+    integer(kind=8), pointer :: vindx(:) => null()
+    integer(kind=8), pointer :: allocs(:) => null()
+    integer(kind=8) :: ordr
     real(kind=8) :: disc, ptem
     real(kind=8), pointer :: v_depl(:) => null()
     real(kind=8), pointer :: v_vite(:) => null()

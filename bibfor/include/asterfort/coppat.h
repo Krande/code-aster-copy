@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2018 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -22,9 +22,9 @@ interface
     subroutine coppat(main, maout, nbma, nbpain, lenpat,same_zone)
         character(len=8), intent(in) :: main
         character(len=8), intent(in) :: maout
-        integer, intent(in) :: nbma
-        integer, intent(out) :: nbpain
-        integer, intent(in) :: lenpat
+        integer(kind=8), intent(in) :: nbma
+        integer(kind=8), intent(out) :: nbpain
+        integer(kind=8), intent(in) :: lenpat
         aster_logical, intent(in) :: same_zone
     end subroutine coppat
 end interface

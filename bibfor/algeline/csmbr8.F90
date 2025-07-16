@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -28,7 +28,7 @@ subroutine csmbr8(nommat, ccll, ccii, neq, vcine, &
 #include "asterfort/utmess.h"
     character(len=*) :: nommat
     real(kind=8) :: vsmb(*), vcine(*)
-    integer :: ccll(*), ccii(*), neq
+    integer(kind=8) :: ccll(*), ccii(*), neq
 ! BUT : CALCUL DE LA CONTRIBUTION AU SECOND MEMBRE DES DDLS IMPOSES
 !       LORSQU'ILS SONT TRAITEES PAR ELIMINATION (CAS REEL)
 ! C.F. EXPLICATIONS DANS LA ROUTINE CSMBGG
@@ -48,16 +48,16 @@ subroutine csmbr8(nommat, ccll, ccii, neq, vcine, &
 !-----------------------------------------------------------------------
 !     VARIABLES LOCALES
 !-----------------------------------------------------------------------
-    integer :: nelim, ielim, ieq, j, ieqg
-    integer :: deciel, kterm, nterm, imatd
+    integer(kind=8) :: nelim, ielim, ieq, j, ieqg
+    integer(kind=8) :: deciel, kterm, nterm, imatd
     real(kind=8) :: coef
     character(len=14) :: nu
     character(len=19) :: mat
-    integer, pointer :: ccid(:) => null()
-    integer, pointer :: nugl(:) => null()
+    integer(kind=8), pointer :: ccid(:) => null()
+    integer(kind=8), pointer :: nugl(:) => null()
     real(kind=8), pointer :: ccva(:) => null()
     character(len=24), pointer :: refa(:) => null()
-    integer, pointer :: nulg(:) => null()
+    integer(kind=8), pointer :: nulg(:) => null()
 !-----------------------------------------------------------------------
 !     DEBUT
     call jemarq()

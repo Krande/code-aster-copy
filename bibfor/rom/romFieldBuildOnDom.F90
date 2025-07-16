@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -24,7 +24,6 @@ subroutine romFieldBuildOnDom(resultRom, fieldBuild)
     implicit none
 !
 #include "asterfort/as_allocate.h"
-#include "asterfort/assert.h"
 #include "asterfort/infniv.h"
 #include "asterfort/utmess.h"
 #include "blas/dgemm.h"
@@ -46,9 +45,9 @@ subroutine romFieldBuildOnDom(resultRom, fieldBuild)
 !
 ! --------------------------------------------------------------------------------------------------
 !
-    integer :: ifm, niv
+    integer(kind=8) :: ifm, niv
     type(ROM_DS_Empi) :: base
-    integer :: nbMode, nbEqua, nbStore
+    integer(kind=8) :: nbMode, nbEqua, nbStore
     blas_int :: b_k, b_lda, b_ldb, b_ldc, b_m, b_n
 !
 ! --------------------------------------------------------------------------------------------------

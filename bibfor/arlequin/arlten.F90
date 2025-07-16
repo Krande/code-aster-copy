@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -30,8 +30,8 @@ subroutine arlten(coorc1, coorc2, npgs, ndim, poijcs, &
 #include "asterfort/matrot.h"
 #include "asterfort/utpvgl.h"
 !
-    integer :: npgs, ndim
-    integer :: ndml1, ndml2
+    integer(kind=8) :: npgs, ndim
+    integer(kind=8) :: ndml1, ndml2
     real(kind=8) :: poijcs(npgs), coorc1(ndim*ndml1), coorc2(6)
     real(kind=8) :: fcpig1(npgs*ndim*ndim*ndml1)
     real(kind=8) :: dfdx1(npgs*ndim*ndim*ndml1)
@@ -68,7 +68,7 @@ subroutine arlten(coorc1, coorc2, npgs, ndim, poijcs, &
 !
     real(kind=8) :: poids, xl, un, deux, c012, e, rho, xnu, g, a
     real(kind=8) :: phiy, phiz, alfay, alfaz, xiy, xiz
-    integer :: kpgs, jaux, jinfor
+    integer(kind=8) :: kpgs, jaux, jinfor
     real(kind=8) :: xg(3), xgl(3), pgl(3, 3), alpha, beta, gamma, angle(3)
     real(kind=8) :: B3d(ndim, ndim*ndml1), B1d(ndim, 2*ndim*ndml2)
     real(kind=8) :: B1dnrj(2*ndim, 2*ndim*ndml2)

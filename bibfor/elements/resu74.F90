@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -29,7 +29,6 @@ subroutine resu74(tran, nomres)
 #include "jeveux.h"
 #include "asterfort/assert.h"
 #include "asterfort/codent.h"
-#include "asterfort/copvis.h"
 #include "asterfort/getvr8.h"
 #include "asterfort/getvtx.h"
 #include "asterfort/jedema.h"
@@ -50,20 +49,20 @@ subroutine resu74(tran, nomres)
 !
 !
 !
-    integer :: nbmode, nc, np, ni, nbsto1, nbinst
-    integer :: nbnoli, iret
+    integer(kind=8) :: nbmode, nc, np, ni, nbsto1, nbinst
+    integer(kind=8) :: nbnoli, iret
     real(kind=8) :: prec, tinit, prec2
     character(len=8) :: resu, crit
 !     ------------------------------------------------------------------
 !
 !-----------------------------------------------------------------------
-    integer :: i, nbvint, jdesc
+    integer(kind=8) :: i, nbvint, jdesc
     real(kind=8), pointer :: inst1(:) => null()
-    integer, pointer :: ordr1(:) => null()
+    integer(kind=8), pointer :: ordr1(:) => null()
     real(kind=8), pointer :: v_bloc(:) => null()
-    integer, pointer :: v_blo2(:) => null()
+    integer(kind=8), pointer :: v_blo2(:) => null()
     character(len=16) :: tran16, nomres16
-    integer :: shift, last_bloc, i_bloc, n_bloc
+    integer(kind=8) :: shift, last_bloc, i_bloc, n_bloc
     character(len=7) :: intk7
     type(DynaGene) :: dyna_gene
 !

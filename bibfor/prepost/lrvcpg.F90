@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -66,18 +66,18 @@ subroutine lrvcpg(idfimd, nbpgm, nbpga, nomtm, typgeo, &
 #include "asterfort/wkvect.h"
 #include "asterfort/irnbsp.h"
 !
-    integer :: tygeos, nbpgm, nbpga, nloc, nutyma
+    integer(kind=8) :: tygeos, nbpgm, nbpga, nloc, nutyma
     med_idt :: idfimd
-    integer :: permu(nbpgm), codret, nbsp
+    integer(kind=8) :: permu(nbpgm), codret, nbsp
     character(len=8) :: elrefa, fapg, nomtm
     character(len=64) :: locnam
 !
-    integer :: vali(2), jcopga, jwpga, ndim, nbfpg, iloc, dime, nbpgm2
-    integer :: typgeo, nbpg, iret, nnoref, npgref, jrefco, jgscoo, jwg, jcorre
-    integer :: ncorre, igau, idim, ad, ipgm, ipga, ada, im, ifm, nivinf
+    integer(kind=8) :: vali(2), jcopga, jwpga, ndim, nbfpg, iloc, dime, nbpgm2
+    integer(kind=8) :: typgeo, nbpg, iret, nnoref, npgref, jrefco, jgscoo, jwg, jcorre
+    integer(kind=8) :: ncorre, igau, idim, ad, ipgm, ipga, ada, im, ifm, nivinf
     character(len=8), parameter :: valk(3) = ['X', 'Y', 'Z']
     character(len=64) :: locnam2, nomasu
-    integer :: edfuin
+    integer(kind=8) :: edfuin
     parameter(edfuin=0)
     real(kind=8) :: xpgm, ypgm, zpgm, xpga, ypga, zpga, valr(2)
 !

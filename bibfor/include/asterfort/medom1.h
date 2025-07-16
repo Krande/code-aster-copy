@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -23,8 +23,8 @@ interface
         character(len=24) :: mater, mateco
         character(len=8) :: cara
         character(len=19) :: kcha
-        integer :: ncha
+        integer(kind=8) :: ncha
         character(len=8) :: result
-        integer :: nuord
+        integer(kind=8) :: nuord
     end subroutine medom1
 end interface

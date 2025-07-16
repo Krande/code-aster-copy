@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -27,8 +27,8 @@ subroutine xhmini(nomte, nfh, ddld, ddlm, ddlp, nfiss, ddlc, contac)
 #   include "jeveux.h"
 !
     character(len=16) :: nomte
-    integer :: nfh, ddlm, ddlp, ddlc
-    integer :: nfiss, contac
+    integer(kind=8) :: nfh, ddlm, ddlp, ddlc
+    integer(kind=8) :: nfiss, contac
 !
 ! person_in_charge: daniele.colombo at ifpen.fr
 !
@@ -47,8 +47,8 @@ subroutine xhmini(nomte, nfh, ddld, ddlm, ddlp, nfiss, ddlc, contac)
 ! OUT  NFH    : NOMBRE DE DDL HEAVISIDE PAR NOEUD
 !     ------------------------------------------------------------------
 !
-    integer :: ndim, nnop, ier, nnops
-    integer :: ddld, jtab(7), iret
+    integer(kind=8) :: ndim, nnop, ier, nnops
+    integer(kind=8) :: ddld, jtab(7), iret
     character(len=8) :: elrefp, enr
 !
 ! ----------------------------------------------------------------------

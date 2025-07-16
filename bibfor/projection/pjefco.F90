@@ -30,7 +30,6 @@ subroutine pjefco(moa1, moa2, corres, base)
 #include "asterf_types.h"
 #include "jeveux.h"
 #include "asterc/getfac.h"
-#include "asterc/r8maem.h"
 #include "asterfort/assert.h"
 #include "asterfort/copisd.h"
 #include "asterfort/detrsd.h"
@@ -72,16 +71,16 @@ subroutine pjefco(moa1, moa2, corres, base)
     character(len=16) :: tymocl(5), motcle(5), nameListInterc
     character(len=24) :: geom2, geom1
     character(len=2) :: dim
-    integer :: n1, nbocc, iocc, nbno2, nbma1, nbma2
-    integer :: iexi, nbNodeInterc, nbnoma2, nbnono2
+    integer(kind=8) :: n1, nbocc, iocc, nbno2, nbma1, nbma2
+    integer(kind=8) :: iexi, nbNodeInterc, nbnoma2, nbnono2
 !
     aster_logical :: l_dmax, dbg, final_occ, parallelMesh
     real(kind=8) :: dmax, dala, dmax0d
-    integer, pointer :: limanu1(:) => null()
-    integer, pointer :: linonu2(:) => null()
-    integer, pointer :: limanu2(:) => null()
-    integer, pointer :: linotmp(:) => null()
-    integer, pointer :: linotm2(:) => null()
+    integer(kind=8), pointer :: limanu1(:) => null()
+    integer(kind=8), pointer :: linonu2(:) => null()
+    integer(kind=8), pointer :: limanu2(:) => null()
+    integer(kind=8), pointer :: linotmp(:) => null()
+    integer(kind=8), pointer :: linotm2(:) => null()
 !----------------------------------------------------------------------
     call jemarq()
     ASSERT(base .eq. 'V')

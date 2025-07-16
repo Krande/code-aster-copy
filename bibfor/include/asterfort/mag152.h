@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -21,13 +21,13 @@
 interface
     subroutine mag152(n9, n10, nomres, nugene, modmec,&
                       modgen, nbloc, indice)
-        integer :: n9
-        integer :: n10
+        integer(kind=8) :: n9
+        integer(kind=8) :: n10
         character(len=8) :: nomres
         character(len=14) :: nugene
         character(len=8) :: modmec
         character(len=8) :: modgen
-        integer :: nbloc
-        integer :: indice
+        integer(kind=8) :: nbloc
+        integer(kind=8) :: indice
     end subroutine mag152
 end interface

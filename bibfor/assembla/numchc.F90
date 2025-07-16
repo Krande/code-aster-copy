@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -19,7 +19,6 @@
 subroutine numchc(nu, ccid, nbchc, lchci, base)
     implicit none
 #include "jeveux.h"
-#include "asterfort/assert.h"
 #include "asterfort/dismoi.h"
 #include "asterfort/jedema.h"
 #include "asterfort/jemarq.h"
@@ -31,7 +30,7 @@ subroutine numchc(nu, ccid, nbchc, lchci, base)
 !
     character(len=*) :: lchci(*), nu, ccid
     character(len=1) :: base
-    integer :: nbchc
+    integer(kind=8) :: nbchc
 !-----------------------------------------------------------------------
 ! person_in_charge: jacques.pellet at edf.fr
 !  BUT : ON NOTE LES DDLS ELIMINES PAR LES CHARGES CINEMATIQUES
@@ -51,9 +50,9 @@ subroutine numchc(nu, ccid, nbchc, lchci, base)
     character(len=8) :: gd
     character(len=14) :: num_ddl
     character(len=19) :: nomch
-    integer :: neq, numgd, iddes, nec, jccid, idprno
-    integer :: nelim, jafci, nimp, imp, ino, iddl, ieq, ich
-    integer, pointer :: nequ(:) => null()
+    integer(kind=8) :: neq, numgd, iddes, nec, jccid, idprno
+    integer(kind=8) :: nelim, jafci, nimp, imp, ino, iddl, ieq, ich
+    integer(kind=8), pointer :: nequ(:) => null()
 !----------------------------------------------------------------------
 !
     call jemarq()

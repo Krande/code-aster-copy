@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -21,10 +21,10 @@
 interface
     subroutine refode(nbcmb, angle, nomch, nuharm, tyharm,&
                       coef, basz, chpres)
-        integer :: nbcmb
+        integer(kind=8) :: nbcmb
         real(kind=8) :: angle
         character(len=*) :: nomch(*)
-        integer :: nuharm(*)
+        integer(kind=8) :: nuharm(*)
         character(len=*) :: tyharm(*)
         real(kind=8) :: coef(*)
         character(len=*) :: basz

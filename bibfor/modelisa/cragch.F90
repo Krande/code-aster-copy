@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -35,7 +35,7 @@ subroutine cragch(long, typcoe, typval, ligrch)
 #include "asterfort/jeveuo.h"
 !
 !
-    integer, intent(in) :: long
+    integer(kind=8), intent(in) :: long
     character(len=4), intent(in) :: typcoe
     character(len=4), intent(in) :: typval
     character(len=19), intent(in) :: ligrch
@@ -65,8 +65,8 @@ subroutine cragch(long, typcoe, typval, ligrch)
 ! --------- VARIABLES LOCALES ------------------------------------------
     character(len=8) :: noma, mod, base
     character(len=19) :: ca1, ca2
-    integer :: iret, longut, ngdmx, nedit, ndisp
-    integer, pointer :: desc(:) => null()
+    integer(kind=8) :: iret, longut, ngdmx, nedit, ndisp
+    integer(kind=8), pointer :: desc(:) => null()
     character(len=8), pointer :: lgrf(:) => null()
 ! --------- FIN  DECLARATIONS  VARIABLES LOCALES ----------------------
 !

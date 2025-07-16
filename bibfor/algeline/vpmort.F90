@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -18,12 +18,12 @@
 !
 subroutine vpmort(neq, x, y, my, imode)
     implicit none
-    integer :: neq, imode
+    integer(kind=8) :: neq, imode
     real(kind=8) :: x(neq), y(neq, *), my(neq, *)
 !     M-ORTHOGONALISATION DU VECTEUR X AVEC LES PRECEDENTS
 !     ------------------------------------------------------------------
     real(kind=8) :: r8val, r8norm
-    integer :: ieq, iprec
+    integer(kind=8) :: ieq, iprec
 !     ------------------------------------------------------------------
     do iprec = 1, imode-1
         r8val = 0.d0

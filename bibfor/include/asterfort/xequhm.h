@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2019 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -27,36 +27,36 @@ interface
                       dsde, retcom, angmas, enrhyd, nfh)
         use THM_type
         type(THM_DS), intent(inout) :: ds_thm
-        integer :: nbvari
-        integer :: dimcon
-        integer :: dimdef
-        integer :: dimenr
-        integer :: imate
+        integer(kind=8) :: nbvari
+        integer(kind=8) :: dimcon
+        integer(kind=8) :: dimdef
+        integer(kind=8) :: dimenr
+        integer(kind=8) :: imate
         character(len=16) :: option
         real(kind=8) :: ta
         real(kind=8) :: ta1
-        integer :: ndim
-        integer :: kpi
-        integer :: npg
-        integer :: enrmec(3)
+        integer(kind=8) :: ndim
+        integer(kind=8) :: kpi
+        integer(kind=8) :: npg
+        integer(kind=8) :: enrmec(3)
         real(kind=8) :: defgem(dimdef)
         real(kind=8) :: congem(dimcon)
         real(kind=8) :: vintm(nbvari)
         real(kind=8) :: defgep(dimdef)
         real(kind=8) :: congep(dimcon)
         real(kind=8) :: vintp(nbvari)
-        integer :: mecani(5)
-        integer :: press1(7)
-        integer :: press2(7)
-        integer :: tempe(5)
+        integer(kind=8) :: mecani(5)
+        integer(kind=8) :: press1(7)
+        integer(kind=8) :: press2(7)
+        integer(kind=8) :: tempe(5)
         real(kind=8) :: rinstp
         real(kind=8) :: dt
         real(kind=8) :: r(dimenr)
         real(kind=8) :: drds(dimenr, dimcon)
         real(kind=8) :: dsde(dimcon, dimenr)
-        integer :: retcom
+        integer(kind=8) :: retcom
         real(kind=8) :: angmas(3)
-        integer :: enrhyd(3)
-        integer :: nfh
+        integer(kind=8) :: enrhyd(3)
+        integer(kind=8) :: nfh
     end subroutine xequhm
 end interface 

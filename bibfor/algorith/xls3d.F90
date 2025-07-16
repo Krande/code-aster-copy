@@ -32,9 +32,7 @@ subroutine xls3d(callst, grille, jltsv, jltsl, jlnsv, &
 #include "asterfort/jedema.h"
 #include "asterfort/jedetr.h"
 #include "asterfort/jemarq.h"
-#include "asterfort/jenuno.h"
 #include "asterfort/jeveuo.h"
-#include "asterfort/jexnum.h"
 #include "asterfort/normev.h"
 #include "asterfort/padist.h"
 #include "asterfort/panbno.h"
@@ -45,18 +43,18 @@ subroutine xls3d(callst, grille, jltsv, jltsl, jlnsv, &
 #include "blas/ddot.h"
 !
     character(len=8) :: noma
-    integer :: jltsv, jltsl, jlnsv, jlnsl, nbno, jcoor, jcoorg
+    integer(kind=8) :: jltsv, jltsl, jlnsv, jlnsl, nbno, jcoor, jcoorg
     aster_logical :: callst, grille
 !
 ! person_in_charge: samuel.geniaut at edf.fr
 !
 !
     real(kind=8) :: dmin, eps, eps1, eps2, eps3
-    integer :: imafis, inoma, inose, isefis, itri, jconx1, jconx2, jma
-    integer :: jdlima, jdlise, n1, n2, nbnoma, nbsef, nmaabs
-    integer :: nseabs, ntri, num, nunoc, itypma, jcrd
+    integer(kind=8) :: imafis, inoma, inose, isefis, itri, jconx1, jconx2, jma
+    integer(kind=8) :: jdlima, jdlise, n1, n2, nbnoma, nbsef, nmaabs
+    integer(kind=8) :: nseabs, ntri, num, nunoc, itypma, jcrd
     real(kind=8) :: xln, xlt
-    integer :: ino, nbmaf, nuno(4), nunose(2), i, nbnott(3)
+    integer(kind=8) :: ino, nbmaf, nuno(4), nunose(2), i, nbnott(3)
     real(kind=8) :: ab(3), ac(3), ap(3), vn(3), vnt(3), bc(3)
     real(kind=8) :: a(3), p(3), b(3), c(3), m(3), pm(3)
     real(kind=8) :: norme, ps, ps1, ps2, d
@@ -67,8 +65,8 @@ subroutine xls3d(callst, grille, jltsv, jltsl, jlnsv, &
     real(kind=8) :: anglem
 !
 !-----------------------------------------------------------------------
-    integer :: jsens
-    integer, pointer :: nbno_ma_fondfiss(:) => null()
+    integer(kind=8) :: jsens
+    integer(kind=8), pointer :: nbno_ma_fondfiss(:) => null()
     blas_int :: b_incx, b_incy, b_n
 !-----------------------------------------------------------------------
     call jemarq()

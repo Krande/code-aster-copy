@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -22,16 +22,16 @@ interface
     subroutine haymat(fami, kpg, ksp, mod, imat,&
                       nmat, poum, coefel, coefpl, nvi,&
                       nr)
-        integer :: nmat
+        integer(kind=8) :: nmat
         character(len=*) :: fami
-        integer :: kpg
-        integer :: ksp
+        integer(kind=8) :: kpg
+        integer(kind=8) :: ksp
         character(len=8) :: mod
-        integer :: imat
+        integer(kind=8) :: imat
         character(len=*) :: poum
         real(kind=8) :: coefel(nmat)
         real(kind=8) :: coefpl(nmat)
-        integer :: nvi
-        integer :: nr
+        integer(kind=8) :: nvi
+        integer(kind=8) :: nr
     end subroutine haymat
 end interface

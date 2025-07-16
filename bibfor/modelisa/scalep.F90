@@ -47,13 +47,11 @@ subroutine scalep(spectr, noma, base, nuor, nbm, &
 #include "asterfort/jedetr.h"
 #include "asterfort/jelibe.h"
 #include "asterfort/jemarq.h"
-#include "asterfort/jenonu.h"
 #include "asterfort/jeveuo.h"
-#include "asterfort/jexnom.h"
 #include "asterfort/wkvect.h"
 #include "asterfort/char8_to_int.h"
 !
-    integer :: nbm, nuor(nbm), imodi, nbmr, nbexcp, iaxe
+    integer(kind=8) :: nbm, nuor(nbm), imodi, nbmr, nbexcp, iaxe
     aster_logical :: ltable
     character(len=8) :: noma
     character(len=19) :: spectr, base
@@ -64,9 +62,9 @@ subroutine scalep(spectr, noma, base, nuor, nbm, &
 !
 !-----------------------------------------------------------------------
 !-----------------------------------------------------------------------
-    integer :: idec, idefm, idir1, idir2, iex, imod, imodf
-    integer :: imr, inat, inatu, inuno, irot1, irot2, ispno
-    integer :: ispre, ispte, iteta, iv, ivale, nuno
+    integer(kind=8) :: idec, idefm, idir1, idir2, iex, imod, imodf
+    integer(kind=8) :: imr, inat, inatu, inuno, irot1, irot2, ispno
+    integer(kind=8) :: ispre, ispte, iteta, iv, ivale, nuno
     real(kind=8) :: theta
 !-----------------------------------------------------------------------
     call jemarq()

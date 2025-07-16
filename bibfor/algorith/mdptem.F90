@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -36,7 +36,7 @@ subroutine mdptem(nbmode, masgen, pulsat, nbchoc, dt, &
 #include "asterfort/nlget.h"
 #include "asterfort/utmess.h"
 #include "asterfort/wkvect.h"
-    integer :: nbchoc, nbpas, ier, nbmode
+    integer(kind=8) :: nbchoc, nbpas, ier, nbmode
     real(kind=8) :: masgen(*), pulsat(*)
     real(kind=8) :: dt, tinit, tfin, dtmax, dtmin
     character(len=24) :: lisins
@@ -57,11 +57,11 @@ subroutine mdptem(nbmode, masgen, pulsat, nbchoc, dt, &
 ! OUT : IER    : CODE RETOUR
 ! OUT : LISINS : LISTE DES INSTANTS POUR L'ARCHIVAGE
 ! ----------------------------------------------------------------------
-    integer :: ic, i, j, iveri, ibid, iret
-    integer :: jbint, jvale, jvalr
-    integer :: n1, n2, n3, n4, n5, n6, nr, nt, nni
-    integer :: nbgrpa, nbinst, nbinsr, numef, nbordr
-    integer :: vali
+    integer(kind=8) :: ic, i, j, iveri, ibid, iret
+    integer(kind=8) :: jbint, jvale, jvalr
+    integer(kind=8) :: n1, n2, n3, n4, n5, n6, nr, nt, nni
+    integer(kind=8) :: nbgrpa, nbinst, nbinsr, numef, nbordr
+    integer(kind=8) :: vali
     real(kind=8) :: dts, dtu, knorm, ktang, r8bid
     real(kind=8) :: valr(3)
     real(kind=8) :: zero, deuxpi, dti, dtp, eps
@@ -70,8 +70,8 @@ subroutine mdptem(nbmode, masgen, pulsat, nbchoc, dt, &
 !     ------------------------------------------------------------------
 !
 !-----------------------------------------------------------------------
-    integer :: k, n7, nume, nbcomps, nbno, shift, i_bloc
-    integer, pointer :: ordr(:) => null()
+    integer(kind=8) :: k, n7, nume, nbcomps, nbno, shift, i_bloc
+    integer(kind=8), pointer :: ordr(:) => null()
     real(kind=8), pointer :: lpas(:) => null()
 !
     real(kind=8), pointer :: dplmod(:) => null()

@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -23,7 +23,7 @@ subroutine dfdm1b(nno, poids, dfrdk, coor, dfdx, &
 #include "asterc/r8gaem.h"
 #include "asterfort/tecael.h"
 #include "asterfort/utmess.h"
-    integer :: nno
+    integer(kind=8) :: nno
     real(kind=8) :: dfrdk(1), coor(*), dfdx(1)
     real(kind=8) :: jacp, poids
 ! ......................................................................
@@ -43,7 +43,7 @@ subroutine dfdm1b(nno, poids, dfrdk, coor, dfdx, &
 !
 !-----------------------------------------------------------------------
     character(len=8) :: nomail
-    integer :: iadzi, iazk24, i
+    integer(kind=8) :: iadzi, iazk24, i
     real(kind=8) :: jac, dxdk, dydk, dzdk
 !-----------------------------------------------------------------------
     dxdk = 0.d0

@@ -61,7 +61,7 @@ subroutine xpodim(malini, mailc, modvis, licham, nsetot, &
 #include "asterfort/as_deallocate.h"
 #include "asterfort/as_allocate.h"
 !
-    integer :: nsetot, nnntot, ncotot, nbnoc, ior, ngfon
+    integer(kind=8) :: nsetot, nnntot, ncotot, nbnoc, ior, ngfon
     character(len=8) :: maxfem, malini, resuco, modvis, mo
     character(len=19) :: cns1, cns2, ces1, ces2, cel2, cesvi1, cesvi2
     character(len=19) :: comps1, comps2
@@ -100,12 +100,12 @@ subroutine xpodim(malini, mailc, modvis, licham, nsetot, &
 !
 !
 !
-    integer :: ier, nbmac, nbma2, nbno, nbno2, iret, igeomr, nbid
-    integer :: iadesc, iacoo2, jtypm2, jno, jmac
-    integer :: ndim, jord, iord, i, ifm, niv, nmaxsp, nmaxcm, nbcham
-    integer :: jdirgr, jxc, contac
-    integer :: igma1, nbgma, n, jlogma, nbgma1, nbgma2, cptgr2, jlicha
-    integer :: jresc1, nbcmp
+    integer(kind=8) :: ier, nbmac, nbma2, nbno, nbno2, iret, igeomr, nbid
+    integer(kind=8) :: iadesc, iacoo2, jtypm2, jno, jmac
+    integer(kind=8) :: ndim, jord, iord, i, ifm, niv, nmaxsp, nmaxcm, nbcham
+    integer(kind=8) :: jdirgr, jxc, contac
+    integer(kind=8) :: igma1, nbgma, n, jlogma, nbgma1, nbgma2, cptgr2, jlicha
+    integer(kind=8) :: jresc1, nbcmp
     aster_logical :: pre1
     character(len=3) :: tsca
     character(len=8) :: k8b, ldep3(12), ldep2(8), ltemp(1), ldep1(12), ldep4(16)
@@ -114,16 +114,16 @@ subroutine xpodim(malini, mailc, modvis, licham, nsetot, &
     character(len=19) :: nomgd
     character(len=24) :: ordr, gpptnm, nogma
     character(len=24) :: comp1
-    integer, pointer :: litrav(:) => null()
-    integer, pointer :: nbpt(:) => null()
-    integer, pointer :: dime(:) => null()
-    integer, pointer :: cesd2(:) => null()
-    integer, pointer :: cvid1(:) => null()
-    integer, pointer :: resd1(:) => null()
+    integer(kind=8), pointer :: litrav(:) => null()
+    integer(kind=8), pointer :: nbpt(:) => null()
+    integer(kind=8), pointer :: dime(:) => null()
+    integer(kind=8), pointer :: cesd2(:) => null()
+    integer(kind=8), pointer :: cvid1(:) => null()
+    integer(kind=8), pointer :: resd1(:) => null()
     character(len=8), pointer :: cnsc(:) => null()
     character(len=8), pointer :: cnsk1(:) => null()
     character(len=8), pointer :: cnsk2(:) => null()
-    integer, pointer :: cnsd(:) => null()
+    integer(kind=8), pointer :: cnsd(:) => null()
     data ldep3/'DX', 'DY', 'DZ', 'LAGS_C', 'LAGS_F1', 'LAGS_F2', &
         'LAG2_C', 'LAG2_F1', 'LAG2_F2', 'LAG3_C', 'LAG3_F1', 'LAG3_F2'/
     data ldep2/'DX', 'DY', 'LAGS_C', 'LAGS_F1', 'LAG2_C', 'LAG2_F1', &

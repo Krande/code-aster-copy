@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -21,11 +21,11 @@
 interface
     subroutine knincl(long, lk1, l1, lk2, l2,&
                       iret)
-        integer :: l2
-        integer :: l1
-        integer :: long
+        integer(kind=8) :: l2
+        integer(kind=8) :: l1
+        integer(kind=8) :: long
         character(len=*) :: lk1(l1)
         character(len=*) :: lk2(l2)
-        integer :: iret
+        integer(kind=8) :: iret
     end subroutine knincl
 end interface

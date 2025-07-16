@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -44,7 +44,7 @@ subroutine te0492(nomopt, nomte)
     type(HHO_Data) :: hhoData
     type(HHO_Cell) :: hhoCell
     real(kind=8) :: rhs_cine(MSIZE_TDOFS_SCAL)
-    integer :: cbs, fbs, total_dofs
+    integer(kind=8) :: cbs, fbs, total_dofs
     real(kind=8), pointer :: r_vale(:) => null()
 !
 ! --- Retrieve HHO informations

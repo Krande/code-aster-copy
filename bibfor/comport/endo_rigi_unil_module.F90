@@ -29,7 +29,6 @@ module endo_rigi_unil_module
 #include "asterfort/assert.h"
 #include "asterfort/lcvalp.h"
 #include "asterfort/lcesme.h"
-#include "asterc/r8vide.h"
 
 ! --------------------------------------------------------------------------------------------------
 
@@ -42,7 +41,7 @@ module endo_rigi_unil_module
     ! Unilateral treatment
     type UNILATERAL
         type(MATERIAL)                           :: mat
-        integer                                  :: ndimsi
+        integer(kind=8)                                  :: ndimsi
         real(kind=8), dimension(3)             :: eps_eig, sigall_eig, sigpos_eig, signeg_eig
         real(kind=8)                             :: treps
         real(kind=8)                             :: unitr
@@ -69,7 +68,7 @@ contains
 ! eps       Current strain state
 ! prece     relative accuracy with respect to the strain components
 ! --------------------------------------------------------------------------------------------------
-        integer:: i
+        integer(kind=8):: i
         real(kind=8):: para(2), rdum
         real(kind=8), dimension(size(eps)):: kr
         real(kind=8), dimension(3)::eps_eig, negeps_eig
@@ -134,7 +133,7 @@ contains
 ! wpos      (regularised) tensile contribution to the energy
 ! wneg      (regularised) compressive contribution to the energy
 ! --------------------------------------------------------------------------------------------------
-        integer     :: i
+        integer(kind=8)     :: i
         real(kind=8):: para(1)
         real(kind=8):: trNhs, wall
         real(kind=8), dimension(3):: eigNhs
@@ -205,7 +204,7 @@ contains
 ! de_spos   derivee de la contrainte sigpos / deformation
 ! de_sneg   derivee de la contrainte signeg / deformation
 ! --------------------------------------------------------------------------------------------------
-        integer:: i
+        integer(kind=8):: i
         real(kind=8), dimension(self%ndimsi, self%ndimsi):: de_sall
         real(kind=8), dimension(self%ndimsi):: kr
 ! --------------------------------------------------------------------------------------------------

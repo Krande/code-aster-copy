@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -60,21 +60,21 @@ subroutine erglth(champ, inst, niveau, iordr, resuco)
 #include "asterfort/nbgrel.h"
 #include "asterfort/utmess.h"
     real(kind=8) :: inst
-    integer :: niveau, iordr
+    integer(kind=8) :: niveau, iordr
     character(len=8) :: resuco
     character(len=*) :: champ
 !
 ! ------------------------------------------------------------------
 !
 ! DECLARATION VARIABLES LOCALES
-    integer :: ifi, longt, long2, mode, j, ibid, nbgr, icoef, nel
-    integer :: idecgr, k, iad, iavale, nbel
+    integer(kind=8) :: ifi, longt, long2, mode, j, ibid, nbgr, icoef, nel
+    integer(kind=8) :: idecgr, k, iad, iavale, nbel
     real(kind=8) :: termvo, termsa, termfl, termec, ovfl, terms1, termf1, terme1
     real(kind=8) :: termv1, termv2, terms2, termf2, terme2, err0, nors, nu0
     character(len=4) :: docu
     character(len=19) :: champ2, ligrel
     aster_logical :: first
-    integer, pointer :: celd(:) => null()
+    integer(kind=8), pointer :: celd(:) => null()
     character(len=24), pointer :: celk(:) => null()
 !
 ! INIT.

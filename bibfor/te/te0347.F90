@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -60,16 +60,15 @@ subroutine te0347(option, nomte)
 #include "asterfort/tecach.h"
 #include "asterfort/terefe.h"
 #include "asterfort/utpvlg.h"
-#include "blas/ddot.h"
 !
     character(len=16) :: option, nomte
 !
 ! --------------------------------------------------------------------------------------------------
 !
-    integer :: jtab(7), nno, nc, ichg, icompo, ichn, lgpg, nbvar, i, k, npg
-    integer :: lorien, icgp, icontn, jvSief, ivectu, in, iret(2)
-    integer :: igeom, kp, kk, imate
-    integer :: istrxm, iretc
+    integer(kind=8) :: jtab(7), nno, nc, ichg, icompo, ichn, lgpg, nbvar, i, k, npg
+    integer(kind=8) :: lorien, icgp, icontn, jvSief, ivectu, in, iret(2)
+    integer(kind=8) :: igeom, kp, kk, imate
+    integer(kind=8) :: istrxm, iretc
 !
     real(kind=8) :: pgl(3, 3), fs(14), d1b3(2, 3), ksi1, forref, momref
     real(kind=8) :: sigp(7), d1b(7, 14), co(3), ey, ez, xl, temp
@@ -82,7 +81,7 @@ subroutine te0347(option, nomte)
     aster_logical :: lefgno, reactu, okelem
 ! --------------------------------------------------------------------------------------------------
 !
-    integer, parameter :: nb_cara = 7
+    integer(kind=8), parameter :: nb_cara = 7
     real(kind=8) :: vale_cara(nb_cara)
     character(len=8) :: noms_cara(nb_cara)
     data noms_cara/'A1', 'IY1', 'IZ1', 'AY1', 'AZ1', 'EY1', 'EZ1'/

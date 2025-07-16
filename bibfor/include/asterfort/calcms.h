@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -21,11 +21,11 @@
 interface
     subroutine calcms(nbphas, nbcomm, cpmono, nmat, pgl2,&
                       coeft, angmas, nfs, nsg, toutms)
-        integer :: nsg
-        integer :: nfs
-        integer :: nmat
-        integer :: nbphas
-        integer :: nbcomm(nmat, 3)
+        integer(kind=8) :: nsg
+        integer(kind=8) :: nfs
+        integer(kind=8) :: nmat
+        integer(kind=8) :: nbphas
+        integer(kind=8) :: nbcomm(nmat, 3)
         character(len=24) :: cpmono(5*nmat+1)
         real(kind=8) :: pgl2(3, 3)
         real(kind=8) :: coeft(nmat)

@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -27,17 +27,17 @@ subroutine jgetlmx(nomlu, ival)
 #include "asterfort/jjvern.h"
 #include "asterfort/utmess.h"
     character(len=*), intent(in) :: nomlu
-    integer, intent(out) :: ival
+    integer(kind=8), intent(out) :: ival
 !     ------------------------------------------------------------------
-    integer :: lk1zon, jk1zon, liszon, jiszon
+    integer(kind=8) :: lk1zon, jk1zon, liszon, jiszon
     common/izonje/lk1zon, jk1zon, liszon, jiszon
 !     ------------------------------------------------------------------
-    integer :: ib, ibacol, ic, id, ipgcex
-    integer :: ixdeso, ixiadd
-    integer :: ixlong, ixlono, ixluti, ixnom, ixnum, jcara
-    integer :: jdate, jdocu, jgenr, jhcod, jiadd, jiadm, jlong
-    integer :: jlono, jltyp, jluti, jmarq, jorig, jrnom, jtype
-    integer :: ltypi, n
+    integer(kind=8) :: ib, ibacol, ic, id, ipgcex
+    integer(kind=8) :: ixdeso, ixiadd
+    integer(kind=8) :: ixlong, ixlono, ixluti, ixnom, ixnum, jcara
+    integer(kind=8) :: jdate, jdocu, jgenr, jhcod, jiadd, jiadm, jlong
+    integer(kind=8) :: jlono, jltyp, jluti, jmarq, jorig, jrnom, jtype
+    integer(kind=8) :: ltypi, n
 !-----------------------------------------------------------------------
     parameter(n=5)
     common/jiatje/jltyp(n), jlong(n), jdate(n), jiadd(n), jiadm(n),&
@@ -45,21 +45,21 @@ subroutine jgetlmx(nomlu, ival)
 !
     common/jkatje/jgenr(n), jtype(n), jdocu(n), jorig(n), jrnom(n)
 !     ------------------------------------------------------------------
-    integer :: iclas, iclaos, iclaco, idatos, idatco, idatoc
+    integer(kind=8) :: iclas, iclaos, iclaco, idatos, idatco, idatoc
     common/iatcje/iclas, iclaos, iclaco, idatos, idatco, idatoc
 !
-    integer :: ipgc, kdesma(2), lgd, lgduti, kposma(2), lgp, lgputi
+    integer(kind=8) :: ipgc, kdesma(2), lgd, lgduti, kposma(2), lgp, lgputi
     common/iadmje/ipgc, kdesma, lgd, lgduti, kposma, lgp, lgputi
 !     ------------------------------------------------------------------
-    integer :: iddeso, idiadd, idnom, idlong, idlono, idluti
-    integer :: idnum
+    integer(kind=8) :: iddeso, idiadd, idnom, idlong, idlono, idluti
+    integer(kind=8) :: idnum
     parameter(iddeso=1, idiadd=2, &
      &                          idnom=5, idlong=7,&
      &             idlono=8, idluti=9, idnum=10)
 !     ------------------------------------------------------------------
     character(len=32) :: noml32
     character(len=1) :: genri
-    integer :: icre, iret
+    integer(kind=8) :: icre, iret
     aster_logical :: lconst, lcol
 ! DEB ------------------------------------------------------------------
 !

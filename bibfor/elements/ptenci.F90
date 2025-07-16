@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -41,7 +41,7 @@ subroutine ptenci(neq, x, mat, omeg, en, itype, kanl, idis)
 ! --------------------------------------------------------------------------------------------------
 !
     implicit none
-    integer :: neq, itype, kanl, idis
+    integer(kind=8) :: neq, itype, kanl, idis
     real(kind=8) :: x(*), mat(neq, neq), omeg, en(*)
 !
 #include "asterf_types.h"
@@ -49,10 +49,10 @@ subroutine ptenci(neq, x, mat, omeg, en, itype, kanl, idis)
 !
 ! --------------------------------------------------------------------------------------------------
 !
-    integer :: jcft(8), ncft(3), icft(6, 3), na(4), ia(4, 4)
+    integer(kind=8) :: jcft(8), ncft(3), icft(6, 3), na(4), ia(4, 4)
     real(kind=8) :: x2(12), mat2(144)
     aster_logical :: ltest
-    integer :: i, iform, j, kk, l, nddl, nn
+    integer(kind=8) :: i, iform, j, kk, l, nddl, nn
     real(kind=8) :: const, r, zero
 !
 ! --------------------------------------------------------------------------------------------------

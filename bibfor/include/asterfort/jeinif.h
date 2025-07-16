@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -25,8 +25,8 @@ interface
         character(len=*) :: sto
         character(len=*) :: nomf
         character(len=*) :: clas
-        integer :: nrep
-        integer :: nbloc
-        integer :: lbloc
+        integer(kind=8) :: nrep
+        integer(kind=8) :: nbloc
+        integer(kind=8) :: lbloc
     end subroutine jeinif
 end interface

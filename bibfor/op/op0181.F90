@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -37,14 +37,14 @@ subroutine op0181()
 #include "asterfort/prefft.h"
 #include "asterfort/rsexch.h"
 #include "asterfort/utmess.h"
-    integer :: nbva, nval, nsens, ngrand, i, ier, ngran0, npuis
+    integer(kind=8) :: nbva, nval, nsens, ngrand, i, ier, ngran0, npuis
     character(len=4) :: grand(3), grand0(3), cham
     character(len=16) :: type, cmd, symetr, method, kmpi
     character(len=19) :: resin, resou, vectot, k19bid
     character(len=24) :: typres
     character(len=12) :: bl11pt
     character(len=8) :: mesh
-    integer :: iret, igrand
+    integer(kind=8) :: iret, igrand
     aster_logical :: l_pmesh, l_gene
 !     ------------------------------------------------------------------
     call jemarq()

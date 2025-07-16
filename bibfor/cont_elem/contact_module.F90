@@ -25,7 +25,6 @@ module contact_module
 !
     private
 !
-#include "asterc/r8prem.h"
 #include "asterf_types.h"
 #include "asterfort/apnorm.h"
 #include "asterfort/assert.h"
@@ -35,18 +34,9 @@ module contact_module
 #include "asterfort/mmdonf.h"
 #include "asterfort/mmnewd.h"
 #include "asterfort/mmnonf.h"
-#include "asterfort/mmnorm.h"
 #include "asterfort/projInsideCell.h"
 #include "asterfort/reereg.h"
 #include "asterfort/reerel.h"
-#include "asterfort/subac1.h"
-#include "asterfort/subaco.h"
-#include "asterfort/subacv.h"
-#include "asterfort/sumetr.h"
-#include "asterfort/normev.h"
-#include "asterfort/mmmron.h"
-#include "blas/dgemv.h"
-#include "blas/dger.h"
 #include "contact_module.h"
 #include "jeveux.h"
 !
@@ -87,7 +77,7 @@ contains
 !
 ! --------------------------------------------------------------------------------------------------
 !
-        integer :: iret, iret1, iret2, elem_mast_line_nbnode
+        integer(kind=8) :: iret, iret1, iret2, elem_mast_line_nbnode
         real(kind=8) :: coor_qp_sl_re(3), tau1_mast(3), tau2_mast(3), coor_qp_ma_re(3)
         real(kind=8) :: coor_qp_sl_re_aux(3)
         real(kind=8) :: ksi_line(2)
@@ -236,7 +226,7 @@ contains
 !
 ! --------------------------------------------------------------------------------------------------
 !
-        integer :: iret
+        integer(kind=8) :: iret
         real(kind=8) :: coor_qp_sl_re(3)
 !
         coor_qp_vo = 0.d0
@@ -380,8 +370,8 @@ contains
 !
         implicit none
 !
-        integer, intent(in) :: elem_dime
-        integer, intent(in) :: elem_nbnode
+        integer(kind=8), intent(in) :: elem_dime
+        integer(kind=8), intent(in) :: elem_nbnode
         character(len=8), intent(in) :: elem_code
         real(kind=8), intent(in) :: coor_qp(2)
         real(kind=8), intent(out), optional :: shape_(9)
@@ -460,7 +450,7 @@ contains
 ! --------------------------------------------------------------------------------------------------
 !
         real(kind=8) :: g(3, 3), h(3, 3), jac
-        integer :: ino, j, k
+        integer(kind=8) :: ino, j, k
 !
         g = 0.d0
 !
@@ -506,7 +496,7 @@ contains
 !
         implicit none
 !
-        integer, intent(in) :: elem_dime
+        integer(kind=8), intent(in) :: elem_dime
         character(len=8), intent(in) :: elem_code
         real(kind=8), intent(in) :: coor_qp(2)
         real(kind=8), intent(out) :: shape_(4)
@@ -518,7 +508,7 @@ contains
 ! --------------------------------------------------------------------------------------------------
 !
         character(len=8) :: elem_code_lagr
-        integer :: elem_nbnode_lagr
+        integer(kind=8) :: elem_nbnode_lagr
         real(kind=8) :: ff(9)
 !
         if (elem_code == "SE2") then
@@ -550,7 +540,7 @@ contains
 !
         implicit none
 !
-        integer, intent(in) :: nb_node
+        integer(kind=8), intent(in) :: nb_node
         real(kind=8), intent(in) :: coeff_node(*)
         real(kind=8), intent(in) :: shape(*)
 !
@@ -560,7 +550,7 @@ contains
 !
 ! --------------------------------------------------------------------------------------------------
 !
-        integer :: i_node
+        integer(kind=8) :: i_node
 !
         evalPoly = 0.d0
         do i_node = 1, nb_node
@@ -577,7 +567,7 @@ contains
 !
         implicit none
 !
-        integer, intent(in) :: nb_node
+        integer(kind=8), intent(in) :: nb_node
         real(kind=8), intent(in) :: nodes_coor(3, 9)
 !
 ! --------------------------------------------------------------------------------------------------
@@ -586,7 +576,7 @@ contains
 !
 ! --------------------------------------------------------------------------------------------------
 !
-        integer :: i_node_i, i_node_j
+        integer(kind=8) :: i_node_i, i_node_j
         real(kind=8) :: length
 !
         diameter = 0.d0
@@ -617,7 +607,7 @@ contains
 !
 ! --------------------------------------------------------------------------------------------------
 !
-        integer :: i_node, index
+        integer(kind=8) :: i_node, index
 !
         mu_c = 0.d0
         index = 0
@@ -651,7 +641,7 @@ contains
 !
 ! --------------------------------------------------------------------------------------------------
 !
-        integer :: i_node, index
+        integer(kind=8) :: i_node, index
 !
         mu_f = 0.d0
         index = 0
@@ -688,7 +678,7 @@ contains
 !
 ! --------------------------------------------------------------------------------------------------
 !
-        integer :: j_node, index, k_zeta
+        integer(kind=8) :: j_node, index, k_zeta
 !
         evalDtestM = 0.d0
         do k_zeta = 1, 2
@@ -714,7 +704,7 @@ contains
 !
         implicit none
 !
-        integer, intent(in) :: nb_nodes
+        integer(kind=8), intent(in) :: nb_nodes
         real(kind=8), intent(in) :: coor_nodes(3, nb_nodes)
         real(kind=8) :: barycenter(3)
 !
@@ -724,7 +714,7 @@ contains
 !
 ! --------------------------------------------------------------------------------------------------
 !
-        integer :: i_node
+        integer(kind=8) :: i_node
 !
         barycenter = 0.d0
 !

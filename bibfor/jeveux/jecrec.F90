@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -27,15 +27,15 @@ subroutine jecrec(nomlu, listat, accelu, stoclu, longlu, &
 #include "asterfort/jxveuo.h"
 #include "asterfort/utmess.h"
     character(len=*), intent(in) :: nomlu, listat, accelu, stoclu, longlu
-    integer, intent(in) :: nmax
+    integer(kind=8), intent(in) :: nmax
 !     ------------------------------------------------------------------
-    integer :: lk1zon, jk1zon, liszon, jiszon
+    integer(kind=8) :: lk1zon, jk1zon, liszon, jiszon
     common/izonje/lk1zon, jk1zon, liszon, jiszon
 !-----------------------------------------------------------------------
-    integer :: iadcol, iadnum, icl, ilongu(1), ipgcex, jcara, jdate
-    integer :: jdocu, jgenr, jhcod, jiadd, jiadm, jlong, jlongu
-    integer :: jlono, jltyp, jluti, jmarq, jnom, jorig, jrnom
-    integer :: jtype, la, lenk, n, nb, nbl
+    integer(kind=8) :: iadcol, iadnum, icl, ilongu(1), ipgcex, jcara, jdate
+    integer(kind=8) :: jdocu, jgenr, jhcod, jiadd, jiadm, jlong, jlongu
+    integer(kind=8) :: jlono, jltyp, jluti, jmarq, jnom, jorig, jrnom
+    integer(kind=8) :: jtype, la, lenk, n, nb, nbl
 !-----------------------------------------------------------------------
     parameter(n=5)
     common/jiatje/jltyp(n), jlong(n), jdate(n), jiadd(n), jiadm(n),&
@@ -51,19 +51,19 @@ subroutine jecrec(nomlu, listat, accelu, stoclu, longlu, &
     character(len=32) :: nomuti, nomos, nomoc, bl32
     common/nomcje/nomuti, nomos, nomco, nomoc, bl32
 !     ------------------------------------------------------------------
-    integer :: iclas, iclaos, iclaco, idatos, idatco, idatoc
+    integer(kind=8) :: iclas, iclaos, iclaco, idatos, idatco, idatoc
     common/iatcje/iclas, iclaos, iclaco, idatos, idatco, idatoc
-    integer :: ipgc, kdesma(2), lgd, lgduti, kposma(2), lgp, lgputi
+    integer(kind=8) :: ipgc, kdesma(2), lgd, lgduti, kposma(2), lgp, lgputi
     common/iadmje/ipgc, kdesma, lgd, lgduti, kposma, lgp, lgputi
 !     ------------------------------------------------------------------
-    integer :: ivnmax, iddeso, idiadd, idiadm, idmarq, idnom, idlong, idlono
-    integer :: idluti, idnum
+    integer(kind=8) :: ivnmax, iddeso, idiadd, idiadm, idmarq, idnom, idlong, idlono
+    integer(kind=8) :: idluti, idnum
     parameter(ivnmax=0, iddeso=1, idiadd=2, idiadm=3,&
      &               idmarq=4, idnom=5, idlong=7,&
      &               idlono=8, idluti=9, idnum=10)
 !     ------------------------------------------------------------------
     character(len=8) :: stocka, cval(3)
-    integer :: ibid, iadzon, knom(1), lval(3), icre, iret, iretc, icrei
+    integer(kind=8) :: ibid, iadzon, knom(1), lval(3), icre, iret, iretc, icrei
     character(len=2) :: ta
     character(len=32) :: noml32, nom32
     character(len=24) :: nom24l

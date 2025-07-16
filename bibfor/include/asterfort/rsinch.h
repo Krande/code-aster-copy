@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -28,10 +28,10 @@ interface
         character(len=*), intent(in) :: chextr
         character(len=*), intent(in) :: proldr
         character(len=*), intent(in) :: prolga
-        integer, intent(in) :: istop
+        integer(kind=8), intent(in) :: istop
         character(len=*), intent(in) :: base
         real(kind=8), intent(in) :: prec
         character(len=8), intent(in) :: crit
-        integer, intent(out) :: ier
+        integer(kind=8), intent(out) :: ier
     end subroutine rsinch
 end interface

@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -20,7 +20,7 @@
 !
 interface
     subroutine cmbqbq(main, maout, degree, info)
-        integer, intent(in) :: degree, info
+        integer(kind=8), intent(in) :: degree, info
         character(len=8), intent(in) :: main, maout
     end subroutine cmbqbq
 end interface

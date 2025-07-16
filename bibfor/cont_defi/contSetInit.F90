@@ -24,7 +24,6 @@ subroutine contSetInit(sdcont, mesh, nbContZone)
 #include "asterf_types.h"
 #include "asterfort/as_allocate.h"
 #include "asterfort/as_deallocate.h"
-#include "asterfort/assert.h"
 #include "asterfort/cfmmvd.h"
 #include "asterfort/cfnbsf.h"
 #include "asterfort/cfzone.h"
@@ -33,7 +32,7 @@ subroutine contSetInit(sdcont, mesh, nbContZone)
 #include "asterfort/mminfr.h"
 !
     character(len=8), intent(in) :: sdcont, mesh
-    integer, intent(in) :: nbContZone
+    integer(kind=8), intent(in) :: nbContZone
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -49,14 +48,14 @@ subroutine contSetInit(sdcont, mesh, nbContZone)
 !
 ! --------------------------------------------------------------------------------------------------
 !
-    integer :: iContZone, iContSurf, contInit, jdecma, jdecsl, iCell, zcmcf
+    integer(kind=8) :: iContZone, iContSurf, contInit, jdecma, jdecsl, iCell, zcmcf
     real(kind=8) :: contInitDist, edgeMin, edgeMax
-    integer :: nbCell, nbCellMast, nbCellSlav
+    integer(kind=8) :: nbCell, nbCellMast, nbCellSlav
     character(len=24) :: sdcont_defi
     character(len=24) :: sdcont_mailco, sdcont_caracf
-    integer, pointer :: v_sdcont_mailco(:) => null()
+    integer(kind=8), pointer :: v_sdcont_mailco(:) => null()
     real(kind=8), pointer :: v_sdcont_caracf(:) => null()
-    integer, pointer :: listCellNume(:) => null()
+    integer(kind=8), pointer :: listCellNume(:) => null()
 !
 ! --------------------------------------------------------------------------------------------------
 !

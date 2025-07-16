@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -63,7 +63,7 @@ subroutine srresi(nmat, materf, timed, timef, &
     !!! Variables globales
     !!!
 
-    integer :: nmat, nr, nvi, ndi, ndt
+    integer(kind=8) :: nmat, nr, nvi, ndi, ndt
     real(kind=8) :: deps(6), vind(nvi), vinf(nvi), r(nr), yd(nr), yf(nr), materf(nmat, 2)
     real(kind=8) :: timed, timef
 
@@ -71,7 +71,7 @@ subroutine srresi(nmat, materf, timed, timef, &
     !!! Variables locales
     !!!
 
-    integer :: i, retcom, val, varv
+    integer(kind=8) :: i, retcom, val, varv
 
     real(kind=8) :: vint(nvi), devsig(6), i1, ucrip, seuilp
     real(kind=8) :: dt, seuilv, depsv(6), dgamv

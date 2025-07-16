@@ -32,9 +32,9 @@ subroutine tbcarapou(nomta, nomsec, nbcarac, nomcarac, valcarac, okcarac)
 !
 ! --------------------------------------------------------------------------------------------------
 !
-    integer, intent(in)             :: nbcarac
+    integer(kind=8), intent(in)             :: nbcarac
     character(len=*), intent(in)    :: nomta, nomsec, nomcarac(nbcarac)
-    integer, intent(out)            :: okcarac(nbcarac)
+    integer(kind=8), intent(out)            :: okcarac(nbcarac)
     real(kind=8), intent(out)       :: valcarac(nbcarac)
 !
 #include "asterf_types.h"
@@ -49,12 +49,12 @@ subroutine tbcarapou(nomta, nomsec, nbcarac, nomcarac, valcarac, okcarac)
 #include "asterfort/utmess.h"
 !
 ! --------------------------------------------------------------------------------------------------
-    integer :: nbcolo, nblign, collieu, ii, iret, jj, iisec, itabl
+    integer(kind=8) :: nbcolo, nblign, collieu, ii, iret, jj, iisec, itabl
     character(len=19) :: nomtab
     character(len=24) :: kpara, typca
 
-    integer, pointer :: colpara(:) => null()
-    integer, pointer :: tbnp(:) => null()
+    integer(kind=8), pointer :: colpara(:) => null()
+    integer(kind=8), pointer :: tbnp(:) => null()
     character(len=24), pointer :: tblp(:) => null()
 ! --------------------------------------------------------------------------------------------------
     call jemarq()

@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -29,7 +29,7 @@ subroutine nmdcae(sddisc, iterat, typdec, nbrpas, ratio, &
 #include "asterfort/utmess.h"
 !
     character(len=19) :: sddisc
-    integer :: iterat, nbrpas, retdec
+    integer(kind=8) :: iterat, nbrpas, retdec
     real(kind=8) :: ratio
     character(len=16) :: optdec
     character(len=4) :: typdec
@@ -69,7 +69,7 @@ subroutine nmdcae(sddisc, iterat, typdec, nbrpas, ratio, &
     real(kind=8) :: valext(4)
     real(kind=8) :: xxbb, xa0, xa1, xdet, cresi, ciblen
     real(kind=8) :: r8bid
-    integer :: mniter, mxiter
+    integer(kind=8) :: mniter, mxiter
 !
 ! ----------------------------------------------------------------------
 !

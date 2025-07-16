@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -23,7 +23,7 @@ interface
                       vin, dsde)
         character(len=8) :: mod
         real(kind=8) :: mater(14, 2)
-        integer :: nvi
+        integer(kind=8) :: nvi
         real(kind=8) :: eps(6)
         real(kind=8) :: sig(6)
         real(kind=8) :: vin(*)

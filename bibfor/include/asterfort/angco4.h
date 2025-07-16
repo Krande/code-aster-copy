@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -25,8 +25,8 @@ interface
                       omega, dn1n2, epsi, crit)
         real(kind=8) :: coor(*)
         real(kind=8) :: zk1(3)
-        integer :: izk
-        integer :: icoude
+        integer(kind=8) :: izk
+        integer(kind=8) :: icoude
         real(kind=8) :: zk2(3)
         real(kind=8) :: rayon
         real(kind=8) :: theta

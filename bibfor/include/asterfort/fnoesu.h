@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -21,10 +21,10 @@ interface
                       dimcon, dimuel,&
                       press1, press2,&
                       congem, vectu )
-        integer, parameter :: maxfa = 6 
-        integer, intent(in) :: nface
-        integer, intent(in) :: dimcon, dimuel
-        integer, intent(in) :: press1(7), press2(7)
+        integer(kind=8), parameter :: maxfa = 6 
+        integer(kind=8), intent(in) :: nface
+        integer(kind=8), intent(in) :: dimcon, dimuel
+        integer(kind=8), intent(in) :: press1(7), press2(7)
         real(kind=8), intent(in) :: congem(dimcon, maxfa+1)
         real(kind=8), intent(inout) :: vectu(dimuel)
     end subroutine fnoesu

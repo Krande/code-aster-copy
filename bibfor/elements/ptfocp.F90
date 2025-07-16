@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -27,7 +27,7 @@ subroutine ptfocp(itype, option, xl, nno, nc, &
 !
     implicit none
 !
-    integer :: itype, nno, nc
+    integer(kind=8) :: itype, nno, nc
     character(len=*) :: option
     real(kind=8) :: fer(12), fei(12), pgl(3, 3)
     real(kind=8) :: xl
@@ -45,7 +45,7 @@ subroutine ptfocp(itype, option, xl, nno, nc, &
 !
 ! ------------------------------------------------------------------------------
 !
-    integer :: i, icoec, icoer, iret, lforc, lx, ncc, nnoc
+    integer(kind=8) :: i, icoec, icoer, iret, lforc, lx, ncc, nnoc
     real(kind=8) :: coef1, coef2, s, s2, xxx, s3, s4, s5
     real(kind=8) :: u(3), v(3), w(6), w2(3)
     real(kind=8) :: qr(12), qqr(12), qi(12), qqi(12)

@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -57,12 +57,12 @@ subroutine comp_meca_read(l_etat_init, prepMapCompor, model)
 !
     character(len=16), parameter:: factorKeyword = 'COMPORTEMENT'
     character(len=8) :: mesh
-    integer :: iFactorKeyword, nbFactorKeyword, iret
+    integer(kind=8) :: iFactorKeyword, nbFactorKeyword, iret
     character(len=16) :: defo_comp, rela_comp, type_cpla, mult_comp, type_comp, meca_comp
     character(len=16) :: post_iter, defo_ldc, rigi_geom, regu_visc, post_incr
     character(len=16) :: kit_comp(4), answer
     aster_logical :: l_cristal, l_kit, lTotalStrain
-    integer, pointer :: modelCell(:) => null()
+    integer(kind=8), pointer :: modelCell(:) => null()
 !
 ! --------------------------------------------------------------------------------------------------
 !

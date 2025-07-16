@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -63,11 +63,11 @@ subroutine op0014()
     character(len=24) :: usersm
     character(len=16) :: concep, nomcmd, metres, renum
     character(len=19) :: mass, mfac, solveu, solvbd
-    integer :: lch, i, lslvo
-    integer :: nprec, iatfac, ibdeb, ibfin, ibid, ier1, ifm, ildeb, ilfin
-    integer :: iret, isingu, istop, jadia, pcpiv, niremp
-    integer :: ldtblo, lfnblo, ndeci, neq, niv, npvneg
-    integer :: jslvk, jslvr, jslvi, reacpr, jslvo
+    integer(kind=8) :: lch, i, lslvo
+    integer(kind=8) :: nprec, iatfac, ibdeb, ibfin, ibid, ier1, ifm, ildeb, ilfin
+    integer(kind=8) :: iret, isingu, istop, jadia, pcpiv, niremp
+    integer(kind=8) :: ldtblo, lfnblo, ndeci, neq, niv, npvneg
+    integer(kind=8) :: jslvk, jslvr, jslvi, reacpr, jslvo
     real(kind=8) :: fillin, epsmat, eps, blreps
     character(len=24), pointer :: refa(:) => null()
     character(len=2500) :: myopt

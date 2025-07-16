@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -56,8 +56,8 @@ subroutine xpraju(noma, fiss, cnslt, cnsvt, cnsvn, &
 !     ------------------------------------------------------------------
 !
 !
-    integer :: i, nbno, ifm, niv, cptzo, cptaju
-    integer :: jlisno
+    integer(kind=8) :: i, nbno, ifm, niv, cptzo, cptaju
+    integer(kind=8) :: jlisno
     real(kind=8) :: modzon, dmin
     real(kind=8), pointer :: ltno(:) => null()
     real(kind=8), pointer :: vnno(:) => null()

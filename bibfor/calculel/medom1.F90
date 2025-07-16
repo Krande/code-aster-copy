@@ -37,7 +37,7 @@ subroutine medom1(modele, mater, mateco, cara, kcha, nbLoad, &
 #include "asterfort/rslesd.h"
 #include "asterfort/utmess.h"
 #include "asterfort/wkvect.h"
-    integer :: nbLoad, nuord
+    integer(kind=8) :: nbLoad, nuord
     character(len=8) :: modele, cara, result
     character(len=24) :: mater, mateco
     character(len=19) :: kcha
@@ -54,15 +54,15 @@ subroutine medom1(modele, mater, mateco, cara, kcha, nbLoad, &
 ! IN  : RESULT : NOM DE LA SD RESULTAT
 ! IN  : NUORD  : NUMERO D'ORDRE
 ! ----------------------------------------------------------------------
-    integer :: iret
-    integer :: iexcit, i, icha, ie, ikf, in
-    integer :: n, n1, n2, n3, n5, nbLoadEff
+    integer(kind=8) :: iret
+    integer(kind=8) :: iexcit, i, icha, ie, ikf, in
+    integer(kind=8) :: n, n1, n2, n3, n5, nbLoadEff
 !-----------------------------------------------------------------------
     character(len=8) :: k8b, nomo, materi, loadType
     character(len=8) :: blan8
     character(len=16) :: concep, nomcmd, phenom
     character(len=19) :: excit
-    integer, pointer :: infc(:) => null()
+    integer(kind=8), pointer :: infc(:) => null()
     character(len=24), pointer :: fcha(:) => null()
     character(len=24), pointer :: lcha(:) => null()
     aster_logical :: l_ther

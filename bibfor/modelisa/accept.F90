@@ -39,9 +39,9 @@ subroutine accept(f, nbm, method, imode, jmode, &
 #include "asterfort/jelira.h"
 #include "asterfort/jemarq.h"
 #include "asterfort/jeveuo.h"
-    integer :: nbm, i, ind, jnd, ipg, jpg, iad1, iad2, itab, imode, jmode
-    integer :: ispe, jspe, iorig, jorig, ntail, ntail1, ntail2
-    integer :: jpgini, jpgfin
+    integer(kind=8) :: nbm, i, ind, jnd, ipg, jpg, iad1, iad2, itab, imode, jmode
+    integer(kind=8) :: ispe, jspe, iorig, jorig, ntail, ntail1, ntail2
+    integer(kind=8) :: jpgini, jpgfin
     real(kind=8) :: f, pi, deuxpi, omega, uc, kl, kt, dir(3, 3)
     real(kind=8) :: d1, d2, d3, mes(3), coeh, jc, l, local(3)
     real(kind=8) :: uct, lt, rayon, dist, dteta, jc1

@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -24,9 +24,9 @@ interface
     function lexseg(connex, typmai, nbrma, n1, n2)
         character(len=24) :: connex
         character(len=24) :: typmai
-        integer :: nbrma
-        integer :: n1
-        integer :: n2
+        integer(kind=8) :: nbrma
+        integer(kind=8) :: n1
+        integer(kind=8) :: n2
         aster_logical :: lexseg
     end function lexseg
 end interface

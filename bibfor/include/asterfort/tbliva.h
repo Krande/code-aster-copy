@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -24,9 +24,9 @@ interface
                       ctype, vali, valr, valc, valk,&
                       ier)
         character(len=*) :: nomta
-        integer :: npacri
+        integer(kind=8) :: npacri
         character(len=*) :: lipacr(*)
-        integer :: vi(*)
+        integer(kind=8) :: vi(*)
         real(kind=8) :: vr(*)
         complex(kind=8) :: vc(*)
         character(len=*) :: vk(*)
@@ -34,10 +34,10 @@ interface
         real(kind=8) :: prec(*)
         character(len=*) :: para
         character(len=*) :: ctype
-        integer :: vali
+        integer(kind=8) :: vali
         real(kind=8) :: valr
         complex(kind=8) :: valc
         character(len=*) :: valk
-        integer :: ier
+        integer(kind=8) :: ier
     end subroutine tbliva
 end interface

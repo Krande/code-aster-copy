@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -31,7 +31,7 @@ subroutine fonno2(macofo, noma, nbmac, nbnoff, nbnose, &
 !
     character(len=8) :: noma, noeu
     character(len=19) :: macofo
-    integer :: nbmac, nbnoff, nbnose, nbmax, tablev(2)
+    integer(kind=8) :: nbmac, nbnoff, nbnose, nbmax, tablev(2)
 !
 !      PARMI LES MAILLES CONNECTEES AU SEGMENT DU FOND, FILTRAGE DES
 !          MAILLES CONNECTEES A 1 LEVRE (CAD AYANT UNE FACE LIBRE)
@@ -52,9 +52,9 @@ subroutine fonno2(macofo, noma, nbmac, nbnoff, nbnose, &
 !                CONNECTEES AU NOEUD SOMMET COURANT ET AUX LEVRES
 !
 !
-    integer :: jmaco, iatyma, jno1, jno2, typ11, typ22
-    integer :: inp, inq, inr, ins, nbno1, nbno2
-    integer :: comp2, comp3, comp4
+    integer(kind=8) :: jmaco, iatyma, jno1, jno2, typ11, typ22
+    integer(kind=8) :: inp, inq, inr, ins, nbno1, nbno2
+    integer(kind=8) :: comp2, comp3, comp4
     character(len=8) :: typ1, typ2
     character(len=9) :: valk(1)
 !

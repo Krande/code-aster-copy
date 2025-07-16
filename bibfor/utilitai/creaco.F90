@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -53,15 +53,15 @@ subroutine creaco(nbmato, ma, nblien)
 #include "asterfort/uttcpu.h"
 #include "asterfort/wkvect.h"
 !
-    integer :: nbmato, renum, renum2, renum3, co, idco, nbmama
-    integer :: nblien
+    integer(kind=8) :: nbmato, renum, renum2, renum3, co, idco, nbmama
+    integer(kind=8) :: nblien
     character(len=8) :: ma
-    integer :: nbmano, idcoi, id1, typma, idno, nbno, idnoeu, nbnoeu, ima, i, j
-    integer :: mail, ino, id, nbre, id2, temp, temp1, maxi, ifm, niv, coi
-    integer :: numno, nbnoto
+    integer(kind=8) :: nbmano, idcoi, id1, typma, idno, nbno, idnoeu, nbnoeu, ima, i, j
+    integer(kind=8) :: mail, ino, id, nbre, id2, temp, temp1, maxi, ifm, niv, coi
+    integer(kind=8) :: numno, nbnoto
     real(kind=8) :: tmps(7)
     character(len=8) :: nom, typma1, typma2
-    integer, pointer :: typmail(:) => null()
+    integer(kind=8), pointer :: typmail(:) => null()
 !
 !----------------------------------------------------------------------
     call jemarq()

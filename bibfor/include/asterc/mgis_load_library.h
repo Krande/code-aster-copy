@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -19,7 +19,7 @@
 interface
     subroutine mgis_load_library(extern_addr, model, strain)
         character(len=16), intent(in) :: extern_addr
-        integer, intent(in) :: model
-        integer, intent(in) :: strain
+        integer(kind=8), intent(in) :: model
+        integer(kind=8), intent(in) :: strain
     end subroutine mgis_load_library
 end interface

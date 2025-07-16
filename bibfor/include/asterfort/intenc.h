@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -21,7 +21,7 @@
 interface
     subroutine intenc(nbna, jac, vectx, vecty, mat11,&
                       mat22, mat12, nx, ny, inte)
-        integer :: nbna
+        integer(kind=8) :: nbna
         real(kind=8) :: jac(3)
         real(kind=8) :: vectx(3)
         real(kind=8) :: vecty(3)

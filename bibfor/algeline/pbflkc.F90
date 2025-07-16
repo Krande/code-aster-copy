@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -52,7 +52,7 @@ subroutine pbflkc(umoy, rhof, hmoy, rmoy, long, &
 !-----------------------------------------------------------------------
 !
     real(kind=8) :: umoy, rhof, hmoy, rmoy, long, cf0, mcf0
-    integer :: icoq, imod, nbm
+    integer(kind=8) :: icoq, imod, nbm
     real(kind=8) :: rkip, tcoef(10, nbm), s1, s2
     complex(kind=8) :: ki(4, 3), lambda(3), kcalcu(3, 4), passag(3, 3)
 !
@@ -65,7 +65,7 @@ subroutine pbflkc(umoy, rhof, hmoy, rmoy, long, &
 !-----------------------------------------------------------------------
 !
 !-----------------------------------------------------------------------
-    integer :: itab, m1, m2
+    integer(kind=8) :: itab, m1, m2
     real(kind=8) :: a1, a2, a3, a4, b1, b2, b3
     real(kind=8) :: b4, poids, w
 !-----------------------------------------------------------------------

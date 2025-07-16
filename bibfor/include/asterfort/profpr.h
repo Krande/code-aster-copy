@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -21,7 +21,7 @@
 interface
     subroutine profpr(icoq, rki, r1, r2, coepr1,&
                       coepr2, wpr)
-        integer :: icoq
+        integer(kind=8) :: icoq
         real(kind=8) :: rki
         real(kind=8) :: r1
         real(kind=8) :: r2

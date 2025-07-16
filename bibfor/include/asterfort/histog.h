@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -21,12 +21,12 @@
 interface
     subroutine histog(nbpt, v, vmin, vmax, x,&
                       y, ndec)
-        integer :: nbpt
+        integer(kind=8) :: nbpt
         real(kind=8) :: v(*)
         real(kind=8) :: vmin
         real(kind=8) :: vmax
         real(kind=8) :: x(*)
         real(kind=8) :: y(*)
-        integer :: ndec
+        integer(kind=8) :: ndec
     end subroutine histog
 end interface

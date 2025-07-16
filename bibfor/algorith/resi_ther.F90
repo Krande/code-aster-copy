@@ -73,7 +73,7 @@ subroutine resi_ther(l_stat, &
 !
     character(len=16), parameter :: optionRigi = 'RAPH_THER', optionMass = 'MASS_THER_RESI'
     character(len=16), parameter :: optionHydr = "HYDR_ELGA"
-    integer, parameter :: nbIn = 10, nbout = 2
+    integer(kind=8), parameter :: nbIn = 10, nbout = 2
     character(len=8) :: lpain(nbIn), lpaout(nbout)
     character(len=24) :: lchin(nbIn), lchout(nbout)
     character(len=24) :: ligrel_model

@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -21,7 +21,7 @@ subroutine dsqbfb(qsi, eta, jacob, bfb)
     real(kind=8) :: qsi, eta, jacob(*), bfb(3, 12)
 !     MATRICE BFB(3,12) AU POINT QSI ETA POUR L'ELEMENT DSQ
 !     -----------------------------------------------------
-    integer :: k, j
+    integer(kind=8) :: k, j
     real(kind=8) :: vj11, vj12, vj21, vj22, peta, meta, pqsi, mqsi
 !     ------------------------------------------------------------------
     vj11 = jacob(1)

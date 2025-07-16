@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -67,23 +67,23 @@ subroutine ccchuc_norm(norm, model, name_gd, field_in, type_field_in, &
 !
 ! --------------------------------------------------------------------------------------------------
 !
-    integer :: nb_cmp_max
+    integer(kind=8) :: nb_cmp_max
     parameter(nb_cmp_max=30)
-    integer :: iexist
+    integer(kind=8) :: iexist
     character(len=19) :: modelLigrel, celmod
     character(len=19) :: field_in_s, field_neut_s, field_neut, field_neut_mod
-    integer ::  jchsc
-    integer :: nb_elem, nb_cmp, nb_cmp_act
+    integer(kind=8) ::  jchsc
+    integer(kind=8) :: nb_elem, nb_cmp, nb_cmp_act
     character(len=24) :: list_cmp, list_cmp_neut, valk(3)
-    integer :: j_liscmp_in, j_liscmp_ne
+    integer(kind=8) :: j_liscmp_in, j_liscmp_ne
     character(len=24) :: chcoef, chgaus, chgeom, chcalc
-    integer :: nb_coef_user
+    integer(kind=8) :: nb_coef_user
     real(kind=8) :: coef_user(1)
     character(len=4) :: ki
-    integer :: icmp, nncp, iret, ibid
+    integer(kind=8) :: icmp, nncp, iret, ibid
     character(len=16) :: option
     character(len=8) :: nopar
-    integer, pointer :: cesd(:) => null()
+    integer(kind=8), pointer :: cesd(:) => null()
 !
 ! --------------------------------------------------------------------------------------------------
 !

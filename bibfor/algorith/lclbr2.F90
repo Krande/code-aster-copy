@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -23,7 +23,7 @@ subroutine lclbr2(fami, kpg, ksp, imate, compor, &
 #include "asterfort/rcvalb.h"
     character(len=16) :: compor(*)
     character(len=*) :: fami
-    integer :: imate, ndim, t(3, 3), kpg, ksp
+    integer(kind=8) :: imate, ndim, t(3, 3), kpg, ksp
     real(kind=8) :: epsm(6), e, sigmt, sigmc, gamma, compn, epsic
 ! ----------------------------------------------------------------------
 !     LOI DE COMPORTEMENT BETON REGLEMENTAIRE : INITIALISATION
@@ -38,7 +38,7 @@ subroutine lclbr2(fami, kpg, ksp, imate, compor, &
 ! OUT GAMMA
 ! OUT SEUIL
 ! ----------------------------------------------------------------------
-    integer :: icodre(6)
+    integer(kind=8) :: icodre(6)
     character(len=16) :: nomres(6)
     real(kind=8) :: valres(6)
 !

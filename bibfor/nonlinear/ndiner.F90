@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -27,12 +27,11 @@ subroutine ndiner(nbEqua, sddyna, hval_incr, hval_measse, cniner)
 #include "asterfort/infdbg.h"
 #include "asterfort/jeveuo.h"
 #include "asterfort/ndynre.h"
-#include "asterfort/nmchex.h"
 #include "asterfort/nmdebg.h"
 #include "asterfort/utmess.h"
 #include "blas/dscal.h"
 !
-    integer, intent(in) :: nbEqua
+    integer(kind=8), intent(in) :: nbEqua
     character(len=19), intent(in) :: sddyna
     character(len=19), intent(in) :: hval_incr(*), hval_measse(*)
     character(len=19), intent(in) :: cniner
@@ -53,7 +52,7 @@ subroutine ndiner(nbEqua, sddyna, hval_incr, hval_measse, cniner)
 !
 ! --------------------------------------------------------------------------------------------------
 !
-    integer :: ifm, niv
+    integer(kind=8) :: ifm, niv
     real(kind=8) :: coefIner
     real(kind=8), pointer :: inerVale(:) => null()
     blas_int :: b_incx, b_n

@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -62,11 +62,11 @@ subroutine carota(load, mesh, valeType)
     character(len=8) :: k8dummy
     character(len=16) :: k16dummy
     real(kind=8) :: rota_speed, rota_axis(3), rota_cent(3), norme
-    integer :: iocc, nrota, val_nb
-    integer :: jvCell, nbCell
+    integer(kind=8) :: iocc, nrota, val_nb
+    integer(kind=8) :: jvCell, nbCell
     real(kind=8), pointer :: valv(:) => null()
     character(len=19) :: map(LOAD_MAP_NBMAX)
-    integer :: nbMap, nbCmp(LOAD_MAP_NBMAX)
+    integer(kind=8) :: nbMap, nbCmp(LOAD_MAP_NBMAX)
 !
 ! --------------------------------------------------------------------------------------------------
 !

@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -28,7 +28,7 @@ subroutine mtcopy(matin, matout, ier)
 #include "asterfort/utmess.h"
 #include "asterfort/vrrefe.h"
     character(len=*) :: matin, matout
-    integer :: ier
+    integer(kind=8) :: ier
 !     RECOPIE LES VALEURS DE LA MATRICE MATIN  DANS LA MATRICE MATOUT
 !     ------------------------------------------------------------------
 !     PRECAUTION D'EMPLOI :
@@ -44,7 +44,7 @@ subroutine mtcopy(matin, matout, ier)
 !
 !
 !     ------------------------------------------------------------------
-    integer :: lmatou, lmatin, nimpou
+    integer(kind=8) :: lmatou, lmatin, nimpou
     character(len=8) :: nomddl
     character(len=19) :: mati19, mato19
     character(len=24) :: nmatou, nmatin

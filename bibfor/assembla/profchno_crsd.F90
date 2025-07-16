@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -37,12 +37,12 @@ subroutine profchno_crsd(nume_equaz, base, nb_equa, meshz, nb_ligrz, &
 !
     character(len=*), intent(in) :: nume_equaz
     character(len=1), intent(in) :: base
-    integer, intent(in) :: nb_equa
+    integer(kind=8), intent(in) :: nb_equa
     character(len=*), optional, intent(in) :: meshz
     character(len=*), optional, intent(in) :: gran_namez
-    integer, optional, intent(in) :: nb_ecz
-    integer, optional, intent(in) :: nb_ligrz
-    integer, optional, intent(in) :: prno_lengthz
+    integer(kind=8), optional, intent(in) :: nb_ecz
+    integer(kind=8), optional, intent(in) :: nb_ligrz
+    integer(kind=8), optional, intent(in) :: prno_lengthz
     aster_logical, optional, intent(in) :: l_coll_const
 !
 ! --------------------------------------------------------------------------------------------------
@@ -68,9 +68,9 @@ subroutine profchno_crsd(nume_equaz, base, nb_equa, meshz, nb_ligrz, &
 ! --------------------------------------------------------------------------------------------------
 !
     character(len=19) :: nume_equa
-    integer :: i_equa, i_ligr_mesh, nb_node_mesh, nb_ec, nb_ligr, prno_length
-    integer, pointer :: prchno_nueq(:) => null()
-    integer, pointer :: prchno_deeq(:) => null()
+    integer(kind=8) :: i_equa, i_ligr_mesh, nb_node_mesh, nb_ec, nb_ligr, prno_length
+    integer(kind=8), pointer :: prchno_nueq(:) => null()
+    integer(kind=8), pointer :: prchno_deeq(:) => null()
     aster_logical :: l_pmesh
 !
 ! --------------------------------------------------------------------------------------------------

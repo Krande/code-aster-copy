@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -21,8 +21,8 @@
 interface
     subroutine rogllo(nb1, nb2, vrg, blam, ctor,&
                       knn)
-        integer :: nb1
-        integer :: nb2
+        integer(kind=8) :: nb1
+        integer(kind=8) :: nb2
         real(kind=8) :: vrg(2601)
         real(kind=8) :: blam(9, 3, 3)
         real(kind=8) :: ctor

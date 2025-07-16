@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -25,8 +25,8 @@ subroutine jelstc(clas, souch, ipos, maxval, klst, &
 #include "asterfort/utmess.h"
     character(len=*), intent(in) :: clas, souch
     character(len=*), intent(out) :: klst(*)
-    integer, intent(in) :: ipos, maxval
-    integer, intent(out) :: nbval
+    integer(kind=8), intent(in) :: ipos, maxval
+    integer(kind=8), intent(out) :: nbval
 ! ----------------------------------------------------------------------
 !  BUT : RETROUVER LES NOMS DES OBJETS DONT LE NOM CONTIENT UNE CHAINE
 !        DE CARATERES DONNEE, PRESENTS SUR UNE BASE JEVEUX.
@@ -41,8 +41,8 @@ subroutine jelstc(clas, souch, ipos, maxval, klst, &
 !
 ! ----------------------------------------------------------------------
 !-----------------------------------------------------------------------
-    integer :: jdocu, jgenr, jorig, jrnom, jtype, l, n
-    integer :: nbl
+    integer(kind=8) :: jdocu, jgenr, jorig, jrnom, jtype, l, n
+    integer(kind=8) :: nbl
 !-----------------------------------------------------------------------
     parameter(n=5)
 !
@@ -55,10 +55,10 @@ subroutine jelstc(clas, souch, ipos, maxval, klst, &
     character(len=8) :: nomfic, kstout, kstini
     common/kficje/classe, nomfic(n), kstout(n), kstini(n),&
      &                 dn2(n)
-    integer :: nrhcod, nremax, nreuti
+    integer(kind=8) :: nrhcod, nremax, nreuti
     common/icodje/nrhcod(n), nremax(n), nreuti(n)
 !     ==================================================================
-    integer :: ncla1, ncla2, ic, j
+    integer(kind=8) :: ncla1, ncla2, ic, j
     character(len=32) :: crnom, k32val
     character(len=1) :: kclas
 !     ==================================================================

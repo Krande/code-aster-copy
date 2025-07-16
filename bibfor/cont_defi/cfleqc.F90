@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -34,12 +34,12 @@ subroutine cfleqc(mesh, sdcont_defi, nb_cont_zone, nb_cont_node, nb_cont_surf, &
 !
     character(len=8), intent(in) :: mesh
     character(len=24), intent(in) :: sdcont_defi
-    integer, intent(in) :: nb_cont_zone
-    integer, intent(in) :: nb_cont_surf
-    integer, intent(in) :: nb_cont_node
-    integer, pointer :: v_poin_node(:)
-    integer, pointer :: v_indi_node(:)
-    integer, intent(out) :: nb_node_elim
+    integer(kind=8), intent(in) :: nb_cont_zone
+    integer(kind=8), intent(in) :: nb_cont_surf
+    integer(kind=8), intent(in) :: nb_cont_node
+    integer(kind=8), pointer :: v_poin_node(:)
+    integer(kind=8), pointer :: v_indi_node(:)
+    integer(kind=8), intent(out) :: nb_node_elim
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -60,24 +60,24 @@ subroutine cfleqc(mesh, sdcont_defi, nb_cont_zone, nb_cont_node, nb_cont_surf, &
 !
 ! --------------------------------------------------------------------------------------------------
 !
-    integer :: elem_nume, type_nume
-    integer :: i_surf_curr, i_zone, i_elem, i_node, i_node_quad, i_surf
-    integer :: nb_surf, nb_elem, nb_node_quad, nb_node
+    integer(kind=8) :: elem_nume, type_nume
+    integer(kind=8) :: i_surf_curr, i_zone, i_elem, i_node, i_node_quad, i_surf
+    integer(kind=8) :: nb_surf, nb_elem, nb_node_quad, nb_node
     character(len=8) :: type_name
     aster_logical :: l_veri
-    integer :: jdecma, jdecno, jdecqu
-    integer :: node_nume_1, node_nume_2
-    integer, pointer :: v_mesh_typmail(:) => null()
+    integer(kind=8) :: jdecma, jdecno, jdecqu
+    integer(kind=8) :: node_nume_1, node_nume_2
+    integer(kind=8), pointer :: v_mesh_typmail(:) => null()
     character(len=24) :: sdcont_mailco
-    integer, pointer :: v_sdcont_mailco(:) => null()
+    integer(kind=8), pointer :: v_sdcont_mailco(:) => null()
     character(len=24) :: sdcont_noeuco
-    integer, pointer :: v_sdcont_noeuco(:) => null()
+    integer(kind=8), pointer :: v_sdcont_noeuco(:) => null()
     character(len=24) :: sdcont_pzoneco
-    integer, pointer :: v_sdcont_pzoneco(:) => null()
+    integer(kind=8), pointer :: v_sdcont_pzoneco(:) => null()
     character(len=24) :: sdcont_pnoeuqu
-    integer, pointer :: v_sdcont_pnoeuqu(:) => null()
+    integer(kind=8), pointer :: v_sdcont_pnoeuqu(:) => null()
     character(len=24) :: sdcont_noeuqu
-    integer, pointer :: v_sdcont_noeuqu(:) => null()
+    integer(kind=8), pointer :: v_sdcont_noeuqu(:) => null()
 !
 ! --------------------------------------------------------------------------------------------------
 !

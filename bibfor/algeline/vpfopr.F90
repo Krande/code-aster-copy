@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -130,9 +130,9 @@ subroutine vpfopr(option, typres, lmasse, lraide, ldynam, &
     character(len=*) :: option
     character(len=16) :: typres
     character(len=19) :: solveu
-    integer :: lmasse, lraide, ldynam, nbrssa
+    integer(kind=8) :: lmasse, lraide, ldynam, nbrssa
     real(kind=8) :: omemin, omemax, omeshi, omecor, precsh, det(2)
-    integer :: nbfreq, npivot(2), nblagr, idet(2)
+    integer(kind=8) :: nbfreq, npivot(2), nblagr, idet(2)
 !
 !
 ! VARIABLES LOCALES
@@ -141,8 +141,8 @@ subroutine vpfopr(option, typres, lmasse, lraide, ldynam, &
     character(len=8) :: k8bid
     character(len=16) :: ch16, valk(3)
     character(len=24) :: k24c, k24par
-    integer :: niv, ifm, nbessa, ier, nbfmin, nbfmax, ibid, ibande
-    integer :: jk24c, jkpar, nbrow, frecou
+    integer(kind=8) :: niv, ifm, nbessa, ier, nbfmin, nbfmax, ibid, ibande
+    integer(kind=8) :: jk24c, jkpar, nbrow, frecou
     real(kind=8) :: valr(2), omgmin, omgmax, omgshi, rbid, prec, omgdec
     aster_logical :: caldet, ldyna
 !

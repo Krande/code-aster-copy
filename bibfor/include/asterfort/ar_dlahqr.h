@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -24,19 +24,19 @@ interface
     subroutine ar_dlahqr(wantt, wantz, n, ilo, ihi,&
                       h, ldh, wr, wi, iloz,&
                       ihiz, z, ldz, info)
-        integer :: ldz
-        integer :: ldh
+        integer(kind=8) :: ldz
+        integer(kind=8) :: ldh
         aster_logical :: wantt
         aster_logical :: wantz
-        integer :: n
-        integer :: ilo
-        integer :: ihi
+        integer(kind=8) :: n
+        integer(kind=8) :: ilo
+        integer(kind=8) :: ihi
         real(kind=8) :: h(ldh, *)
         real(kind=8) :: wr(*)
         real(kind=8) :: wi(*)
-        integer :: iloz
-        integer :: ihiz
+        integer(kind=8) :: iloz
+        integer(kind=8) :: ihiz
         real(kind=8) :: z(ldz, *)
-        integer :: info
+        integer(kind=8) :: info
     end subroutine ar_dlahqr
 end interface

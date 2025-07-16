@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -26,7 +26,6 @@ subroutine xdecqu(nnose, it, ndim, cnset, jlsn, &
 !
 #include "asterf_types.h"
 #include "jeveux.h"
-#include "asterc/r8prem.h"
 #include "asterfort/assert.h"
 #include "asterfort/conare.h"
 #include "asterfort/elref1.h"
@@ -43,8 +42,8 @@ subroutine xdecqu(nnose, it, ndim, cnset, jlsn, &
 #include "asterfort/xinter.h"
 #include "asterfort/xstjon.h"
 #include "asterfort/xxmmvd.h"
-    integer :: nnose, it, ndim, cnset(*), ninter, igeom, npts, nmilie, mfis
-    integer :: jlsn, ifiss, nfiss, nfisc, fisco(*), coupe(nfiss), exit(2), joncno
+    integer(kind=8) :: nnose, it, ndim, cnset(*), ninter, igeom, npts, nmilie, mfis
+    integer(kind=8) :: jlsn, ifiss, nfiss, nfisc, fisco(*), coupe(nfiss), exit(2), joncno
     real(kind=8) :: pinter(*), ainter(*), pmilie(*), tx(3, 7), txlsn(28)
     real(kind=8) :: pintt(*), pmitt(*)
     aster_logical :: cut
@@ -84,13 +83,13 @@ subroutine xdecqu(nnose, it, ndim, cnset, jlsn, &
     real(kind=8) :: alpha, longar, lonref, tampor(4), tabco(30), geom(81)
     real(kind=8) :: val, rbid, cref(ndim), pinref(18), lsnelp(27)
     real(kind=8) :: xref(81), ff(27), newpt(ndim), somlsn(nfisc+1)
-    integer :: ar(12, 3), nbar, nta, ntb, na, nb, ins
-    integer :: ia, i, ipi, ibid, pp, pd, k
-    integer :: ndime, noeua, noeub, noeuc, im
-    integer :: j, a1, a2, ipt, nm
-    integer :: ptmax, pmmaxi(3), pmmax
-    integer :: ntm, inm, nptm, nnop, nnops, inter
-    integer :: zxain, mxstac
+    integer(kind=8) :: ar(12, 3), nbar, nta, ntb, na, nb, ins
+    integer(kind=8) :: ia, i, ipi, ibid, pp, pd, k
+    integer(kind=8) :: ndime, noeua, noeub, noeuc, im
+    integer(kind=8) :: j, a1, a2, ipt, nm
+    integer(kind=8) :: ptmax, pmmaxi(3), pmmax
+    integer(kind=8) :: ntm, inm, nptm, nnop, nnops, inter
+    integer(kind=8) :: zxain, mxstac
     character(len=8) :: typma, elrese(3), elrefp
     aster_logical :: papillon, ajout, jonc, najonc, nbjonc, condition_joncno
 !

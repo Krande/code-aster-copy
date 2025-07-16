@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -22,14 +22,14 @@ interface
     subroutine tldur8(nommat, hcol, adia, ablo, npivot,&
                       neq, nbbloc, ildeb, ilfin, eps)
         character(len=*) :: nommat
-        integer :: hcol(*)
-        integer :: adia(*)
-        integer :: ablo(*)
-        integer :: npivot
-        integer :: neq
-        integer :: nbbloc
-        integer :: ildeb
-        integer :: ilfin
+        integer(kind=8) :: hcol(*)
+        integer(kind=8) :: adia(*)
+        integer(kind=8) :: ablo(*)
+        integer(kind=8) :: npivot
+        integer(kind=8) :: neq
+        integer(kind=8) :: nbbloc
+        integer(kind=8) :: ildeb
+        integer(kind=8) :: ilfin
         real(kind=8) :: eps
     end subroutine tldur8
 end interface

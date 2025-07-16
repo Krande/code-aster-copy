@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -72,11 +72,11 @@ subroutine dldif0(result, force1, neq, istoc, iarchi, &
 #include "asterfort/nmarpc.h"
 #include "asterfort/wkvect.h"
 #include "blas/dcopy.h"
-    integer :: neq, istoc, iarchi, ivit0r
-    integer :: ifnobi, ifcibi
-    integer :: archiv, nbtyar
-    integer :: imat(3)
-    integer :: nchar, nveca, liad(*)
+    integer(kind=8) :: neq, istoc, iarchi, ivit0r
+    integer(kind=8) :: ifnobi, ifcibi
+    integer(kind=8) :: archiv, nbtyar
+    integer(kind=8) :: imat(3)
+    integer(kind=8) :: nchar, nveca, liad(*)
 !
     real(kind=8) :: dep0(*), vit0(*), acc0(*)
     real(kind=8) :: depl1(neq), vite1(neq), acce1(neq)
@@ -92,7 +92,7 @@ subroutine dldif0(result, force1, neq, istoc, iarchi, &
     type(NL_DS_Energy), intent(inout) :: ds_energy
     character(len=8) :: result
     character(len=19) :: force1
-    integer :: numrep
+    integer(kind=8) :: numrep
 !
     aster_logical :: lamort, ener
 !
@@ -100,7 +100,7 @@ subroutine dldif0(result, force1, neq, istoc, iarchi, &
 !
 !
 !
-    integer :: iforc1, ieq, alarm
+    integer(kind=8) :: iforc1, ieq, alarm
     real(kind=8) :: r8bid
     character(len=19) :: masse1, amort1, rigid1, k19bid
     blas_int :: b_incx, b_incy, b_n

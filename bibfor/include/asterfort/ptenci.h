@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -21,13 +21,13 @@
 interface
     subroutine ptenci(neq, x, mat, omeg, en,&
                       itype, kanl, idis)
-        integer :: neq
+        integer(kind=8) :: neq
         real(kind=8) :: x(*)
         real(kind=8) :: mat(neq, neq)
         real(kind=8) :: omeg
         real(kind=8) :: en(*)
-        integer :: itype
-        integer :: kanl
-        integer :: idis
+        integer(kind=8) :: itype
+        integer(kind=8) :: kanl
+        integer(kind=8) :: idis
     end subroutine ptenci
 end interface

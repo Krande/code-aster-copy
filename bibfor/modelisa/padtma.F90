@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -23,8 +23,8 @@ subroutine padtma(coor1, coor2, nbnott, icoupl, dmin, &
 #include "asterfort/padist.h"
 #include "asterfort/utmess.h"
     real(kind=8) :: coor1(*), coor2(*), d
-    integer :: icoupl(*), nbnott(3)
-    integer, intent(out), optional :: no_err
+    integer(kind=8) :: icoupl(*), nbnott(3)
+    integer(kind=8), intent(out), optional :: no_err
 !     BUT: CALCULER LA DISTANCE ENTRE 2 MAILLES ET DONNER LE TABLEAU
 !          D'INDIRECTION ENTRE LES NUM.DES NOEUDS QUI DESCRIT LE
 !          VIS A VIS ENTRE LES 2 MAILLES REALISANT CETTE DISTANCE MINI.
@@ -55,11 +55,11 @@ subroutine padtma(coor1, coor2, nbnott, icoupl, dmin, &
 ! OUT NO_ERR    :  present no error is thrown when encoutering perpendicular
 !
     real(kind=8) :: x1(3), xn1(3), xn2(3), x2(3), x3(3), x4(3)
-    integer :: iperm(106)
+    integer(kind=8) :: iperm(106)
 ! --- DATA DES PERMUTATIONS REPRESENTANT LES VIS A VIS
 !-----------------------------------------------------------------------
-    integer :: i, ideb, j, k, kdeb, kdeb0, kdeb1
-    integer :: kdeb2, n, nbno, nbperm, nbsom, nno
+    integer(kind=8) :: i, ideb, j, k, kdeb, kdeb0, kdeb1
+    integer(kind=8) :: kdeb2, n, nbno, nbperm, nbsom, nno
     real(kind=8) :: dmin, s
 !-----------------------------------------------------------------------
     data iperm/1, 2, 3, 2, 1, 3,&

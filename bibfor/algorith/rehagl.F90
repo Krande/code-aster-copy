@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -76,19 +76,19 @@ subroutine rehagl(nomres, resgen, mailsk, profno)
     character(len=19) :: numddl, nume_equa_gene, knume, kfreq, harmge, profno
     character(len=24) :: crefe(2), chamba, indirf, chamno, seliai, sizlia, sst
     character(len=24) :: valk, nomsst
-    integer :: itresu(3), elim, neqet, neqred, lmapro, lsilia, lsst, lmoet
+    integer(kind=8) :: itresu(3), elim, neqet, neqred, lmapro, lsilia, lsst, lmoet
 !
 !-----------------------------------------------------------------------
 !-----------------------------------------------------------------------
-    integer :: i, i1, iad, iar, iarchi, ibid, ich, i_ligr_ss
-    integer :: idep, idresu, ieq, ire1
-    integer :: ire2, ire3, iret, iretou, j, jfreq, jnume
-    integer :: k, k1, l, ldnew, lfreq, llchab, llind
-    integer :: llinsk, llors, llprs
-    integer :: llrot, ltrotx, ltroty, ltrotz, ltvec, n1
-    integer :: nbbas, nbcham, nbcmp, nbcou, nbfreq, nbnot
-    integer :: nbsst, neq, neqgen, neqs, numsst, nutars
-    integer, pointer :: nueq(:) => null()
+    integer(kind=8) :: i, i1, iad, iar, iarchi, ibid, ich, i_ligr_ss
+    integer(kind=8) :: idep, idresu, ieq, ire1
+    integer(kind=8) :: ire2, ire3, iret, iretou, j, jfreq, jnume
+    integer(kind=8) :: k, k1, l, ldnew, lfreq, llchab, llind
+    integer(kind=8) :: llinsk, llors, llprs
+    integer(kind=8) :: llrot, ltrotx, ltroty, ltrotz, ltvec, n1
+    integer(kind=8) :: nbbas, nbcham, nbcmp, nbcou, nbfreq, nbnot
+    integer(kind=8) :: nbsst, neq, neqgen, neqs, numsst, nutars
+    integer(kind=8), pointer :: nueq(:) => null()
     character(len=24), pointer :: refn(:) => null()
 !-----------------------------------------------------------------------
     data pgc/'REHAGL'/

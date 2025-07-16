@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -45,7 +45,6 @@ subroutine op0176()
 #include "asterfort/as_allocate.h"
 #include "asterfort/as_deallocate.h"
 #include "asterfort/titre.h"
-#include "asterfort/utmess.h"
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -55,17 +54,17 @@ subroutine op0176()
 !
     character(len=6) :: nompro
     parameter(nompro='OP0176')
-    integer :: ibid, storeNb, nbexcl, jexcl, nbarch
-    integer :: nbac, nbpa, iret, nbnosy, paraNb, nbrest
-    integer :: mesgUnit, ifm, niv
+    integer(kind=8) :: ibid, storeNb, nbexcl, jexcl, nbarch
+    integer(kind=8) :: nbac, nbpa, iret, nbnosy, paraNb, nbrest
+    integer(kind=8) :: mesgUnit, ifm, niv
     character(len=8) :: noma, nomo, nocara, nochmat
     character(len=16) :: typcon, nomcmd
     character(len=19) :: resultOutName, resultInName
     character(len=24) :: lisarc, lichex, paraJvName
     aster_logical :: lrest
-    integer :: nmail, nmode, ncara, nchmat
-    integer, pointer :: storeIndx(:) => null()
-    integer, pointer :: archi(:) => null()
+    integer(kind=8) :: nmail, nmode, ncara, nchmat
+    integer(kind=8), pointer :: storeIndx(:) => null()
+    integer(kind=8), pointer :: archi(:) => null()
     character(len=16), pointer :: paraName(:) => null()
 !
 ! --------------------------------------------------------------------------------------------------

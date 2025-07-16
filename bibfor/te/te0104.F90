@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -35,14 +35,14 @@ subroutine te0104(option, nomte)
 !        DONNEES:      OPTION       -->  OPTION DE CALCUL
 !                      NOMTE        -->  NOM DU TYPE ELEMENT
 ! ......................................................................
-    integer :: ndimax, ind, nbddl, kp, kq
+    integer(kind=8) :: ndimax, ind, nbddl, kp, kq
     parameter(ndimax=27)
     real(kind=8) :: b(3, 3), lamb, theta, rigith(ndimax, ndimax)
     real(kind=8) :: coor2d(18), cour, cosa, sina, r, zero
     real(kind=8) :: dfdx(9), dfdy(9), poids, poi1, poi2, hplus, hmoins, pk
     real(kind=8) :: long, matn(3, 3), matp(3, 3)
-    integer :: nno, nnos, npg2, gi, pi, gj, pj, k, imattt, jgano, ndim
-    integer :: ipoids, ivf, idfde, igeom, npg1, i, j, icoefh, itemps, mzr
+    integer(kind=8) :: nno, nnos, npg2, gi, pi, gj, pj, k, imattt, jgano, ndim
+    integer(kind=8) :: ipoids, ivf, idfde, igeom, npg1, i, j, icoefh, itemps, mzr
 !
 !
     if (nomte .ne. 'THCPSE3' .and. nomte .ne. 'THCASE3' .and. nomte .ne. 'THCOSE3' .and. &

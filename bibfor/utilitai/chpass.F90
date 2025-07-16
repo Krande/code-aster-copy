@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -62,10 +62,10 @@ subroutine chpass(tychr, ma, celmod, nomgd, prol0, &
 !     -----------------------------------------------------------------
 !
 !
-    integer :: n1, ib, nbocc, iocc, nbtrou, jnutro, nbmocl, lnom, ibid
+    integer(kind=8) :: n1, ib, nbocc, iocc, nbtrou, jnutro, nbmocl, lnom, ibid
     aster_logical :: chgcmp, cumul, lcumul(2), compOK, messConseil
-    integer :: ncmp, jlicmp, gd, jcmpgd, iret, nncp, nchg
-    integer :: jcesd, jcesc, i, ncmpdisp, j
+    integer(kind=8) :: ncmp, jlicmp, gd, jcmpgd, iret, nncp, nchg
+    integer(kind=8) :: jcesd, jcesc, i, ncmpdisp, j
     real(kind=8) :: coefr, lcoefr(2)
     complex(kind=8) :: coefc, lcoefc(2)
     character(len=8) :: kbid, modele, nomcmp

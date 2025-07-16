@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -21,10 +21,10 @@ interface
                       jc, dir, uc, uct,&
                       l, lt, val_spec)
         real(kind=8) :: f
-        integer :: nbm
+        integer(kind=8) :: nbm
         character(len=8) :: method
-        integer :: imode
-        integer :: jmode
+        integer(kind=8) :: imode
+        integer(kind=8) :: jmode
         real(kind=8) :: jc
         real(kind=8) :: dir(3, 3)
         real(kind=8) :: uc

@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -21,15 +21,15 @@
 interface
     subroutine projtq(nbcnx, xyzma, icnx, x3dp, excent, &
                       itria, inoeu, icote, xbar, iproj)
-        integer :: nbcnx
+        integer(kind=8) :: nbcnx
         real(kind=8) :: xyzma(3, *)
-        integer :: icnx
+        integer(kind=8) :: icnx
         real(kind=8) :: x3dp(*)
         real(kind=8) :: excent
-        integer :: itria
-        integer :: inoeu
-        integer :: icote
+        integer(kind=8) :: itria
+        integer(kind=8) :: inoeu
+        integer(kind=8) :: icote
         real(kind=8) :: xbar(*)
-        integer :: iproj
+        integer(kind=8) :: iproj
     end subroutine projtq
 end interface

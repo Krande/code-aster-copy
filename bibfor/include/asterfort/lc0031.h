@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -23,15 +23,15 @@ interface
                       angmas, sigp, vip, typmod,&
                       nvi, dsidep, codret)
         character(len=*) :: fami
-        integer :: kpg
-        integer :: ksp
-        integer :: ndim
-        integer :: imate
+        integer(kind=8) :: kpg
+        integer(kind=8) :: ksp
+        integer(kind=8) :: ndim
+        integer(kind=8) :: imate
         character(len=16) :: compor(*)
         real(kind=8) :: carcri(*)
         real(kind=8) :: instam
         real(kind=8) :: instap
-        integer :: neps
+        integer(kind=8) :: neps
         real(kind=8) :: epsm(6)
         real(kind=8) :: deps(6)
         real(kind=8) :: sigm(6)
@@ -41,8 +41,8 @@ interface
         real(kind=8) :: sigp(6)
         real(kind=8) :: vip(*)
         character(len=8) :: typmod(*)
-        integer :: nvi
+        integer(kind=8) :: nvi
         real(kind=8) :: dsidep(6, 6)
-        integer :: codret
+        integer(kind=8) :: codret
     end subroutine lc0031
 end interface

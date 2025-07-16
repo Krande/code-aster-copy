@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -22,7 +22,7 @@ subroutine jjlidy(iadyn, iadmi)
 #include "jeveux_private.h"
 #include "asterc/hpdeallc.h"
 #include "asterfort/assert.h"
-    integer :: iadyn, iadmi
+    integer(kind=8) :: iadyn, iadmi
 ! ----------------------------------------------------------------------
 ! MISE A JOUR DU COMPTEUR DES SEGMENTS DE VALEURS U ET LIBERATION
 ! DU SEGMENT DE VALEURS
@@ -31,23 +31,23 @@ subroutine jjlidy(iadyn, iadmi)
 ! IN  IADMI  : ADRESSE DU PREMIER MOT DU SEGMENT DE VALEUR
 !
 ! ----------------------------------------------------------------------
-    integer :: lk1zon, jk1zon, liszon, jiszon
+    integer(kind=8) :: lk1zon, jk1zon, liszon, jiszon
     common/izonje/lk1zon, jk1zon, liszon, jiszon
 ! ----------------------------------------------------------------------
     real(kind=8) :: mxdyn, mcdyn, mldyn, vmxdyn, vmet, lgio, cuvtrav
     common/r8dyje/mxdyn, mcdyn, mldyn, vmxdyn, vmet, lgio(2), cuvtrav
-    integer :: ldyn, lgdyn, nbdyn, nbfree
+    integer(kind=8) :: ldyn, lgdyn, nbdyn, nbfree
     common/idynje/ldyn, lgdyn, nbdyn, nbfree
-    integer :: istat
+    integer(kind=8) :: istat
     common/istaje/istat(4)
-    integer :: lbis, lois, lols, lor8, loc8
+    integer(kind=8) :: lbis, lois, lols, lor8, loc8
     common/ienvje/lbis, lois, lols, lor8, loc8
     real(kind=8) :: svuse, smxuse
     common/statje/svuse, smxuse
-    integer :: lundef, idebug
+    integer(kind=8) :: lundef, idebug
     common/undfje/lundef, idebug
 ! ----------------------------------------------------------------------
-    integer :: iet, lgs, lgsv, k
+    integer(kind=8) :: iet, lgs, lgsv, k
 ! DEB ------------------------------------------------------------------
     if (iadyn .ne. 0) then
         iet = iszon(jiszon+iadmi-1)

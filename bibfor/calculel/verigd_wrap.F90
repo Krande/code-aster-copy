@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -21,7 +21,7 @@ subroutine verigd_wrap(nomgdz, lcmp, ncmp, iret)
     implicit none
 #include "asterfort/verigd.h"
 !
-    integer :: ncmp, iret
+    integer(kind=8) :: ncmp, iret
     character(len=*) :: nomgdz
     character(len=8) :: lcmp(ncmp)
 ! ---------------------------------------------------------------------

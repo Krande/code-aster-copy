@@ -17,9 +17,10 @@
 # along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 # --------------------------------------------------------------------
 
-# TEST MPI SUR 4 PROCESSEURS
+from code_aster.Commands import *
+from code_aster.CA import MPI
 
-# PRE-CONDITIONNEUR BOOMER
+rank = MPI.ASTER_COMM_WORLD.Get_rank()
 
 DEBUT(CODE="OUI")
 
@@ -53,6 +54,23 @@ MESTAT1 = MECA_STATIQUE(
     OPTION="SIEF_ELGA",
     INFO=2,
 )
+
+EXTR_HPC = POST_RELEVE_T(
+    ACTION=(
+        _F(
+            GROUP_NO=("N9",),
+            INTITULE="EXTR_HPC",
+            NOM_CHAM="DEPL",
+            OPERATION=("EXTRACTION",),
+            RESULTAT=MESTAT1,
+            INST=0.0,
+            NOM_CMP=("DX",),
+        )
+    )
+)
+
+if rank == 1:
+    TEST_TABLE(TABLE=EXTR_HPC, NOM_PARA="DX", VALE_CALC=0.018302360235153102)
 
 IMPR_RESU(FORMAT="RESULTAT", RESU=_F(RESULTAT=MESTAT1, NOM_CHAM="DEPL"))
 

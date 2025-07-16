@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -29,7 +29,7 @@ subroutine cacono(noma, ndim, llist1, llist2, no1, &
 #include "asterfort/panbno.h"
 #include "asterfort/utmess.h"
 !
-    integer :: ndim, no1, no2
+    integer(kind=8) :: ndim, no1, no2
     character(len=8) :: noma
     character(len=24) :: llist1, llist2
     real(kind=8) :: norm1(*), norm2(*)
@@ -58,8 +58,8 @@ subroutine cacono(noma, ndim, llist1, llist2, no1, &
 !
 !
     real(kind=8) :: vecnor(3), coor(27)
-    integer :: nbma, numma, ipoi1, inoma, i, ilist, ipoi2, ima, ityp, imad, ino
-    integer :: nbno, nbnott(3), inorm, j
+    integer(kind=8) :: nbma, numma, ipoi1, inoma, i, ilist, ipoi2, ima, ityp, imad, ino
+    integer(kind=8) :: nbno, nbnott(3), inorm, j
 ! DEBUT ----------------------------------------------------------------
 !
 !     INORM = 0 POUR VECTEUR NORMAL DE NORME "SURFACE"

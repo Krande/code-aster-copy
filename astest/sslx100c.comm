@@ -265,7 +265,6 @@ DEP = CALC_FERRAILLAGE(
     CARA_ELEM=CARA,
     TYPE_COMB="ELS",
     UNITE_CONTRAINTE="Pa",
-    UNITE_DIMENSION="m",
     INST=(0.0),
     AFFE=(
         _F(
@@ -334,7 +333,6 @@ dynaTransResu = CALC_FERRAILLAGE(
     CARA_ELEM=CARA,
     TYPE_COMB="ELS",
     UNITE_CONTRAINTE="Pa",
-    UNITE_DIMENSION="m",
     INST=(0.0),
     AFFE=(
         _F(

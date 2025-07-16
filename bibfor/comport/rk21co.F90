@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -57,8 +57,8 @@ subroutine rk21co(fami, kpg, ksp, rela_comp, mod, &
 !     ----------------------------------------------------------------
 !
 #include "asterfort/rdif01.h"
-    integer :: kpg, ksp, nmat, imat, nbcomm(nmat, 3), kp, nvi, i, nfs, nsg
-    integer :: nbphas, itmax, iret, nhsr, numhsr(*), neps
+    integer(kind=8) :: kpg, ksp, nmat, imat, nbcomm(nmat, 3), kp, nvi, i, nfs, nsg
+    integer(kind=8) :: nbphas, itmax, iret, nhsr, numhsr(*), neps
     character(len=16) :: rela_comp
     character(len=24) :: cpmono(5*nmat+1)
     character(len=8) :: mod

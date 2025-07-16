@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -24,9 +24,9 @@ interface
         character(len=8) :: resuin
         character(len=8) :: resuou
         character(len=19) :: lisord
-        integer :: nbordr
+        integer(kind=8) :: nbordr
         character(len=16) :: typesd
-        integer :: codret
+        integer(kind=8) :: codret
         character(len=1), optional, intent(in) :: base
         aster_logical, optional :: tldist
     end subroutine calcop

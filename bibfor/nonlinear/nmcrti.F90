@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -40,7 +40,7 @@ subroutine nmcrti(list_func_acti, resultName, ds_contact, ds_measure)
 #include "asterfort/ComputeTableHead.h"
 #include "asterfort/ComputeTableWidth.h"
 !
-    integer, intent(in) :: list_func_acti(*)
+    integer(kind=8), intent(in) :: list_func_acti(*)
     character(len=8), intent(in) :: resultName
     type(NL_DS_Contact), intent(in) :: ds_contact
     type(NL_DS_Measure), intent(inout) :: ds_measure
@@ -60,8 +60,8 @@ subroutine nmcrti(list_func_acti, resultName, ds_contact, ds_measure)
 !
 ! --------------------------------------------------------------------------------------------------
 !
-    integer :: ifm, niv
-    integer :: i_timer, nb_timer, i_device, i_col, line_width, nb_cols_active
+    integer(kind=8) :: ifm, niv
+    integer(kind=8) :: i_timer, nb_timer, i_device, i_col, line_width, nb_cols_active
     character(len=24) :: cpu_name
     character(len=512) :: table_head(3)
     aster_logical :: l_line_search

@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -33,7 +33,7 @@ subroutine op0022()
 #include "asterfort/infniv.h"
 #include "asterfort/liimpr.h"
 #include "asterfort/titre.h"
-    integer :: nv, niv, ifm
+    integer(kind=8) :: nv, niv, ifm
     character(len=8) :: resu
     character(len=16) :: concep, nomcmd, opera
 !     ------------------------------------------------------------------

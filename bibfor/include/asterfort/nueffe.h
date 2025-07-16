@@ -19,7 +19,7 @@
 interface
     subroutine nueffe(nbLigr, listLigr, base, numeDofZ, renumZ, &
                       modelZ, modeLocZ_, idenRelaZ_)
-        integer, intent(in) :: nbLigr
+        integer(kind=8), intent(in) :: nbLigr
         character(len=24), pointer :: listLigr(:)
         character(len=2), intent(in) :: base
         character(len=*), intent(in) :: numeDofZ, renumZ, modelZ

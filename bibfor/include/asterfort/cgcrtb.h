@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2019 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -23,12 +23,12 @@
 interface
     subroutine cgcrtb(table, option, ndim, typfis, nxpara,&
                       lmoda, nbpara, linopa, litypa)
-        integer :: nbpara
+        integer(kind=8) :: nbpara
         character(len=8) :: table
         character(len=16) :: option
-        integer :: ndim
+        integer(kind=8) :: ndim
         character(len=8) :: typfis
-        integer :: nxpara
+        integer(kind=8) :: nxpara
         aster_logical :: lmoda
         character(len=*) :: linopa(nxpara)
         character(len=*) :: litypa(nxpara)

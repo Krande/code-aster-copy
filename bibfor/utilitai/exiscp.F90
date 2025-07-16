@@ -31,7 +31,6 @@ subroutine exiscp(nomcmp, char, modele, nbnd, typend, &
 #include "asterfort/jeexin.h"
 #include "asterfort/jelira.h"
 #include "asterfort/jemarq.h"
-#include "asterfort/jenonu.h"
 #include "asterfort/jeveuo.h"
 #include "asterfort/jexnom.h"
 #include "asterfort/utmess.h"
@@ -40,11 +39,11 @@ subroutine exiscp(nomcmp, char, modele, nbnd, typend, &
     character(len=8) :: nomcmp
     character(len=8) :: char
     character(len=8) :: modele
-    integer :: nbnd
+    integer(kind=8) :: nbnd
     character(len=3) :: typend
     character(len=8) :: nomnd(*)
-    integer :: numnd(*)
-    integer :: resu(*)
+    integer(kind=8) :: numnd(*)
+    integer(kind=8) :: resu(*)
 !
 ! ----------------------------------------------------------------------
 !  CETTE ROUTINE DIT SI LA(LES) COMPOSANTE(S) EXISTE(NT) SUR UN NOEUD
@@ -69,9 +68,9 @@ subroutine exiscp(nomcmp, char, modele, nbnd, typend, &
 !
 !
 !
-    integer :: jnom, jprnm, jexis
-    integer :: i, icmp, ino
-    integer :: nbcmp, nmocl, nbec
+    integer(kind=8) :: jnom, jprnm, jexis
+    integer(kind=8) :: i, icmp, ino
+    integer(kind=8) :: nbcmp, nmocl, nbec
     parameter(nmocl=300)
     character(len=8) :: nomddl(nmocl), noma, mod
     character(len=16) :: pheno

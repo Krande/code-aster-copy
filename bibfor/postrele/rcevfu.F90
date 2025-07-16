@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -35,14 +35,14 @@ subroutine rcevfu(cnoc, cfat, fut)
 !
 !     ------------------------------------------------------------------
 !
-    integer :: nbinst, jnocr, jfu, i1, i2, ind, noc1, noc2, i1m, i2m, noc1m
-    integer :: noc2m, nbcycl
-    integer :: indi, inds, k, l, ifm, niv
+    integer(kind=8) :: nbinst, jnocr, jfu, i1, i2, ind, noc1, noc2, i1m, i2m, noc1m
+    integer(kind=8) :: noc2m, nbcycl
+    integer(kind=8) :: indi, inds, k, l, ifm, niv
     real(kind=8) :: fum, fukl
     aster_logical :: encore
     real(kind=8), pointer :: matr_fu(:) => null()
-    integer, pointer :: nb_occ_k(:) => null()
-    integer, pointer :: nb_occ_l(:) => null()
+    integer(kind=8), pointer :: nb_occ_k(:) => null()
+    integer(kind=8), pointer :: nb_occ_l(:) => null()
 ! DEB ------------------------------------------------------------------
     call jemarq()
 !

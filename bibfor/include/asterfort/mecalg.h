@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2020 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -36,13 +36,13 @@ interface
         character(len=24) :: compor
         aster_logical :: incr
         real(kind=8) :: time
-        integer :: iord
-        integer :: nbprup
+        integer(kind=8) :: iord
+        integer(kind=8) :: nbprup
         character(len=16) :: noprup(*)
         character(len=24) :: chvite
         character(len=24) :: chacce
         character(len=8) :: kcalc
-        integer :: coor
-        integer :: iadnoe
+        integer(kind=8) :: coor
+        integer(kind=8) :: iadnoe
     end subroutine mecalg
 end interface

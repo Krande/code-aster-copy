@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -19,7 +19,7 @@
 subroutine parglr(nlit, elb, ea, nua, liner, omx, omy, rx, ry, hh, &
                   bn11, bn12, bn22, bn33, bm11, bm12, bm22, bc11, bc22)
     implicit none
-    integer :: nlit
+    integer(kind=8) :: nlit
     real(kind=8) :: elb(*), ea(*), nua(*), liner(*), omx(*), omy(*), rx(*)
     real(kind=8) :: ry(*)
     real(kind=8) :: bn11, bn12, bn22, bn33, bm11, bm12, bm22, bc11, bc22, hh
@@ -27,7 +27,7 @@ subroutine parglr(nlit, elb, ea, nua, liner, omx, omy, rx, ry, hh, &
     real(kind=8) :: esn, eox, eoy, neo, eoo, erox, eroy, nero, eroo, er2ox
     real(kind=8) :: er2oy, ner2o
     real(kind=8) :: er2oo, eb, nub
-    integer :: ii
+    integer(kind=8) :: ii
 !
 !
     eb = elb(1)

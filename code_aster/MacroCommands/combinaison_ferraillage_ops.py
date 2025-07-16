@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -38,7 +38,6 @@ def combinaison_ferraillage_ops(self, **args):
     psigm = args.get("PAS_SIGM")
     cond109 = args.get("COND_109")
     uc = args.get("UNITE_CONTRAINTE")
-    um = args.get("UNITE_DIMENSION")
 
     # Retriving from RESULTAT
     modele = resu.getModel()
@@ -78,7 +77,6 @@ def combinaison_ferraillage_ops(self, **args):
     psigm = args.get("PAS_SIGM")
     cond109 = args.get("COND_109")
     uc = args.get("UNITE_CONTRAINTE")
-    um = args.get("UNITE_DIMENSION")
 
     l_info = []
     l_info.append(codification)
@@ -88,7 +86,6 @@ def combinaison_ferraillage_ops(self, **args):
     l_info.append(psigm)
     l_info.append(cond109)
     l_info.append(uc)
-    l_info.append(um)
 
     resu = algo_ferr(resu, affe, lst_inst_index, l_info, lst_type_combo, caraelem)
 
@@ -183,7 +180,6 @@ def algo_ferr(resferr, affe, lst_nume_ordre, l_info, type_combo, cara):
         # l_info.append(psigm)
         # l_info.append(cond109)
         # l_info.append(uc)
-        # l_info.append(um)
 
         dic_type_comb["CODIFICATION"] = l_info[0]
         dic_type_comb["METHODE_2D"] = l_info[1]
@@ -192,7 +188,6 @@ def algo_ferr(resferr, affe, lst_nume_ordre, l_info, type_combo, cara):
         dic_type_comb["PAS_SIGM"] = l_info[4]
         dic_type_comb["COND_109"] = l_info[5]
         dic_type_comb["UNITE_CONTRAINTE"] = l_info[6]
-        dic_type_comb["UNITE_DIMENSION"] = l_info[7]
 
         lst_tmp_affe = []
 

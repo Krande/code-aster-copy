@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -18,7 +18,7 @@
 !
 subroutine intimp(iuni, vect1, vect2, nmatr, nfcod)
     implicit none
-    integer :: iuni, nmatr, nfcod
+    integer(kind=8) :: iuni, nmatr, nfcod
     real(kind=8) :: vect1(*)
     character(len=24) :: vect2(*)
 !     IMPRESSION DES RESULTATS OBTENUS PAR L'OPERATEUR CALC_INTE_SPEC
@@ -29,7 +29,7 @@ subroutine intimp(iuni, vect1, vect2, nmatr, nfcod)
 !     IN  : VECT2 : VECTEURS DES NOMS DE FONCTIONS
 !     IN  : NMATR : NOMBRE DE TIRAGES REALISES
 !     ------------------------------------------------------------------
-    integer :: it1, it2, if, ib, l1
+    integer(kind=8) :: it1, it2, if, ib, l1
 !     ------------------------------------------------------------------
 !
     write (iuni, 101)

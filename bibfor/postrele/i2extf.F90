@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -50,16 +50,16 @@ subroutine i2extf(m, f, conec, type, n1, &
 #include "asterfort/jexnum.h"
     character(len=*) :: conec
     character(len=*) :: type
-    integer :: m, f, n1, n2
+    integer(kind=8) :: m, f, n1, n2
 !
-    integer :: adrm, atypm, nbn, nbf
+    integer(kind=8) :: adrm, atypm, nbn, nbf
     character(len=8) :: typm
 !
 !
 !
 !
 !-----------------------------------------------------------------------
-    integer :: iatyma
+    integer(kind=8) :: iatyma
 !-----------------------------------------------------------------------
     call jemarq()
     nbn = 0

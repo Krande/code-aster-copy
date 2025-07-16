@@ -52,11 +52,11 @@ subroutine te0005(option, nomte)
 ! --------------------------------------------------------------------------------------------------
 !
     aster_logical :: lSigm, lMatr, lVect
-    integer :: ivf, ivf2, idfde, idfde2, jgano, ndim, lgpg, ipoids, npi
-    integer :: ipoid2, dimdef, ichg, ichn
-    integer :: icontm, ideplm, ideplp, igeom, imate, jcret, nddls, nddlm
-    integer :: imatuu, ivectu, icontp, nnos, nnom, dimuel, dimcon
-    integer :: ivarim, ivarip, icarcr, iinstm, iinstp
+    integer(kind=8) :: ivf, ivf2, idfde, idfde2, jgano, ndim, lgpg, ipoids, npi
+    integer(kind=8) :: ipoid2, dimdef, ichg, ichn
+    integer(kind=8) :: icontm, ideplm, ideplp, igeom, imate, jcret, nddls, nddlm
+    integer(kind=8) :: imatuu, ivectu, icontp, nnos, nnom, dimuel, dimcon
+    integer(kind=8) :: ivarim, ivarip, icarcr, iinstm, iinstp
     character(len=16), pointer :: compor(:) => null()
     character(len=8) :: typmod(2)
     real(kind=8) :: sigref, lagref, epsref

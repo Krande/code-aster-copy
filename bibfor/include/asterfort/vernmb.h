@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -20,9 +20,9 @@
 !
 interface
     subroutine vernmb(icl, cnl, ier, irteti)
-        integer :: icl
+        integer(kind=8) :: icl
         character(len=14) :: cnl
-        integer :: ier
-        integer :: irteti
+        integer(kind=8) :: ier
+        integer(kind=8) :: irteti
     end subroutine vernmb
 end interface

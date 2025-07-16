@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -20,7 +20,6 @@ module parameters_module
     implicit none
 !
 ! person_in_charge: mathieu.courtois@edf.fr
-! aslint: disable=W1403
 
 ! ------------------------------------------------------------------------------
 !   Define some constant values shared by several subroutines
@@ -45,12 +44,12 @@ module parameters_module
 !
 #include "asterf_types.h"
 !
-    integer, parameter :: ST_ER = 1
-    integer, parameter :: ST_OK = 0
-    integer, parameter :: ST_ER_PR0 = 4
-    integer, parameter :: ST_ER_OTH = 8
-    integer, parameter :: ST_UN_OTH = 16
-    integer, parameter :: ST_EXCEPT = 32
+    integer(kind=8), parameter :: ST_ER = 1
+    integer(kind=8), parameter :: ST_OK = 0
+    integer(kind=8), parameter :: ST_ER_PR0 = 4
+    integer(kind=8), parameter :: ST_ER_OTH = 8
+    integer(kind=8), parameter :: ST_UN_OTH = 16
+    integer(kind=8), parameter :: ST_EXCEPT = 32
 !
     mpi_int, parameter :: ST_TAG_CHK = to_mpi_int(123111)
     mpi_int, parameter :: ST_TAG_CNT = to_mpi_int(123222)

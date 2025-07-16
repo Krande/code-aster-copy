@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -19,7 +19,7 @@
 subroutine jedbg2(dbgav, dbgap)
     implicit none
 #include "asterfort/assert.h"
-    integer :: dbgav, dbgap
+    integer(kind=8) :: dbgav, dbgap
 ! BUT :  CONSULTER ET EVENTUELLEMENT METTRE A JOUR
 !        LA VALEUR IDEBUG DE JEVEUX
 !
@@ -31,7 +31,7 @@ subroutine jedbg2(dbgav, dbgap)
 ! IN   I  DBGAP : VALEUR DE IDEBUG APRES L'APPEL A JEDBG2 (-1,0 OU 1)
 !                 SI DBGAP=-1 : ON NE MODIFIE PAS IDEBUG
 !-----------------------------------------------------------------------
-    integer :: lundef, idebug
+    integer(kind=8) :: lundef, idebug
     common/undfje/lundef, idebug
 !
     dbgav = idebug

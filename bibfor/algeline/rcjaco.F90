@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -24,8 +24,8 @@ subroutine rcjaco(ar, valpro)
 ! BUT : ROUTINE SIMPLIFIEE DE JACOBI POUR PERFORMANCE
 !
 ! ----------------------------------------------------------------------
-    integer :: nperm, i, ii, niter, j, jp1, jm1, ljk, jj, kp1, km1, jk, kk, im1
-    integer :: ij, ik, lji, lki, ji, ki, k
+    integer(kind=8) :: nperm, i, ii, niter, j, jp1, jm1, ljk, jj, kp1, km1, jk, kk, im1
+    integer(kind=8) :: ij, ik, lji, lki, ji, ki, k
     real(kind=8) :: tol, toldyn, valaux(3), eps, akk, ajj, ab, verif, br(6)
     real(kind=8) :: eptola, epcoma, eptolb, epcomb, raci, d1, d2, den, ca, cg
     real(kind=8) :: aj, bj, ak, bk, rtol, dif, epsa, compa, epsb, compb

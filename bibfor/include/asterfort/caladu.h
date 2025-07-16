@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -21,10 +21,10 @@
 interface
     subroutine caladu(neq, nbddl, coef, ddl, depl,&
                       val)
-        integer :: nbddl
-        integer :: neq
+        integer(kind=8) :: nbddl
+        integer(kind=8) :: neq
         real(kind=8) :: coef(nbddl)
-        integer :: ddl(nbddl)
+        integer(kind=8) :: ddl(nbddl)
         real(kind=8) :: depl(neq)
         real(kind=8) :: val
     end subroutine caladu

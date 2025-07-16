@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -22,8 +22,8 @@ subroutine mefint(nbz, nbgrp, nbmod, nbnoe, nbddl, &
     implicit none
 !
 #include "jeveux.h"
-    integer :: nbz, nbgrp, nbmod, nbnoe, nbddl
-    integer :: irot(3), numnog(nbgrp), nbnog(nbgrp), num(nbz)
+    integer(kind=8) :: nbz, nbgrp, nbmod, nbnoe, nbddl
+    integer(kind=8) :: irot(3), numnog(nbgrp), nbnog(nbgrp), num(nbz)
     real(kind=8) :: zint(nbz, nbgrp), defm(6*nbnoe, nbmod), z(*)
     real(kind=8) :: phix(nbz, nbgrp, nbmod), phiy(nbz, nbgrp, nbmod)
 !     INTERPOLATION DES DEFORMEES MODALES POUR TOUS LES CYLINDRES
@@ -59,7 +59,7 @@ subroutine mefint(nbz, nbgrp, nbmod, nbnoe, nbddl, &
 !                ORDRE CROISSANT SUIVANT Z, DES NOEUDS DES CYLINDRES
 ! ----------------------------------------------------------------------
 ! ----------------------------------------------------------------------
-    integer :: i, j
+    integer(kind=8) :: i, j
 ! ----------------------------------------------------------------------
 !
 !
@@ -68,8 +68,8 @@ subroutine mefint(nbz, nbgrp, nbmod, nbnoe, nbddl, &
 ! --- DETERMINATION DES COTES MAXIMALE ET MINIMALE DE L ENSEMBLE DES
 ! --- CYLINDRES
 !-----------------------------------------------------------------------
-    integer :: icomp, ind, ind1, ind2, k, nm, nn
-    integer :: nno1, nno2
+    integer(kind=8) :: icomp, ind, ind1, ind2, k, nm, nn
+    integer(kind=8) :: nno1, nno2
     real(kind=8) :: wmax, wmin, z0, zmax, zmin
 !-----------------------------------------------------------------------
     zmax = zint(1, 1)
@@ -153,24 +153,14 @@ subroutine mefint(nbz, nbgrp, nbmod, nbnoe, nbddl, &
 ! ---       INTERPOLATION DES DEFORMEES MODALES
 ! ---       DEBUT BES BOUCLES SUR LES MODES
             do nm = 1, nbmod
-                phix(j, i, nm) = defm( &
-                                 nbddl*(nno1-1)+irot(1), &
-                                 nm)+( &
-                                 defm( &
-                                 nbddl*(nno2-1)+irot(1), nm)-defm(nbddl*(nno1-1)+irot(1), &
-                                                           nm))*(z(j)-zint(ind1, i))/(zint(ind2, i &
-                                                                                    )-zint(ind1, i &
-                                                                                                 ) &
-                                                                                             )
-                phiy(j, i, nm) = defm( &
-                                 nbddl*(nno1-1)+irot(2), &
-                                 nm)+( &
-                                 defm( &
-                                 nbddl*(nno2-1)+irot(2), nm)-defm(nbddl*(nno1-1)+irot(2), &
-                                                           nm))*(z(j)-zint(ind1, i))/(zint(ind2, i &
-                                                                                    )-zint(ind1, i &
-                                                                                                 ) &
-                                                                                             )
+                phix(j, i, nm) = defm(nbddl*(nno1-1)+irot(1), nm)+ &
+                                 (defm(nbddl*(nno2-1)+irot(1), nm)- &
+                                  defm(nbddl*(nno1-1)+irot(1), nm))* &
+                                 (z(j)-zint(ind1, i))/(zint(ind2, i)-zint(ind1, i))
+                phiy(j, i, nm) = defm(nbddl*(nno1-1)+irot(2), nm)+ &
+                                 (defm(nbddl*(nno2-1)+irot(2), nm)- &
+                                  defm(nbddl*(nno1-1)+irot(2), nm))* &
+                                 (z(j)-zint(ind1, i))/(zint(ind2, i)-zint(ind1, i))
 !
 !
 ! ---       FIN BES BOUCLES SUR LES MODES

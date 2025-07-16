@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -21,10 +21,10 @@ interface
     subroutine matcod(chmat, indmat, nbmat, imate, igrp,&
                       basename, codi, l_ther, base_)
         character(len=8) :: chmat
-        integer :: indmat
-        integer :: nbmat
-        integer :: imate
-        integer :: igrp
+        integer(kind=8) :: indmat
+        integer(kind=8) :: nbmat
+        integer(kind=8) :: imate
+        integer(kind=8) :: igrp
         character(len=8) :: basename
         character(len=19) :: codi
         aster_logical, intent(in) :: l_ther

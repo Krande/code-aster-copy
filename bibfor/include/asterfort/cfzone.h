@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -21,8 +21,8 @@
 interface
     subroutine cfzone(defico, izone, typsur, isurf)
         character(len=24) :: defico
-        integer :: izone
+        integer(kind=8) :: izone
         character(len=4) :: typsur
-        integer :: isurf
+        integer(kind=8) :: isurf
     end subroutine cfzone
 end interface

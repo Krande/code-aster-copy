@@ -23,7 +23,6 @@ subroutine laQuantities(geom, param)
     implicit none
 !
 #include "asterf_types.h"
-#include "asterfort/assert.h"
 #include "asterfort/jevech.h"
 #include "asterfort/lteatt.h"
 #include "jeveux.h"
@@ -40,9 +39,9 @@ subroutine laQuantities(geom, param)
 ! --------------------------------------------------------------------------------------------------
 !
     aster_logical :: l_fric
-    integer :: i_node_slav, i_node_mast, i_dime, nb_lagr, nb_lagr_c, elem_dime, nb_node_slav
-    integer :: jv_geom, jv_disp_incr, jv_disp, jv_geom_c, index
-    integer :: jv_cont, jv_frot
+    integer(kind=8) :: i_node_slav, i_node_mast, i_dime, nb_lagr, nb_lagr_c, elem_dime, nb_node_slav
+    integer(kind=8) :: jv_geom, jv_disp_incr, jv_disp, jv_geom_c, index
+    integer(kind=8) :: jv_cont, jv_frot
     real(kind=8) :: depl_mast_incr(3, 9), depl_slav_incr(3, 9)
     real(kind=8) :: depl_mast_prev(3, 9), depl_slav_prev(3, 9)
 !

@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -20,7 +20,7 @@
 !
 interface
     subroutine rcrot(nbabsc, phi, vale, sigm)
-    integer :: nbabsc
+    integer(kind=8) :: nbabsc
     real(kind=8) :: phi, vale(4,nbabsc), sigm(4,nbabsc)
     end subroutine rcrot
 end interface

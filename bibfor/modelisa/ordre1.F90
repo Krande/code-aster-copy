@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -21,8 +21,8 @@ subroutine ordre1(numcle, nomnoe, ddl, coef, coefc, &
     implicit none
 !
 !
-    integer, intent(in) :: nbterm
-    integer, intent(inout) :: numcle(nbterm)
+    integer(kind=8), intent(in) :: nbterm
+    integer(kind=8), intent(inout) :: numcle(nbterm)
     real(kind=8), intent(inout) :: coef(nbterm)
     complex(kind=8), intent(inout) :: coefc(nbterm)
     character(len=8), intent(inout) :: nomnoe(nbterm)
@@ -53,7 +53,7 @@ subroutine ordre1(numcle, nomnoe, ddl, coef, coefc, &
 !
     complex(kind=8) :: coec
     character(len=8) :: nono, nodl
-    integer :: i, j, k
+    integer(kind=8) :: i, j, k
     real(kind=8) :: coe
 !
 ! --------- FIN  DECLARATIONS  VARIABLES LOCALES -------------------

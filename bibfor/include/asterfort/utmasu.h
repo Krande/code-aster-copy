@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -25,12 +25,12 @@ interface
                       coor, nbmavo, mailvo, coince)
         character(len=8) :: mail
         character(len=2) :: kdim
-        integer :: nbCell
-        integer, pointer :: listCellNume(:)
+        integer(kind=8) :: nbCell
+        integer(kind=8), pointer :: listCellNume(:)
         character(len=*) :: nomob1
         real(kind=8) :: coor(*)
-        integer :: nbmavo
-        integer :: mailvo(*)
+        integer(kind=8) :: nbmavo
+        integer(kind=8) :: mailvo(*)
         aster_logical :: coince
     end subroutine utmasu
 end interface

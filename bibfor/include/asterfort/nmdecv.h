@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -21,7 +21,7 @@
 interface
     subroutine nmdecv(sddisc, nume_inst, i_event_acti, dtmin, retdec)
         character(len=19) :: sddisc
-        integer :: nume_inst, i_event_acti, retdec
+        integer(kind=8) :: nume_inst, i_event_acti, retdec
         real(kind=8) :: dtmin
     end subroutine nmdecv
 end interface

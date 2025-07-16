@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -21,9 +21,9 @@
 interface
     subroutine rslnvi(elem_model, ndt_, ndi_, nr_, nvi_)
         character(len=*), intent(in) :: elem_model
-        integer, optional, intent(out) :: ndt_
-        integer, optional, intent(out) :: ndi_
-        integer, optional, intent(out) :: nr_
-        integer, optional, intent(out) :: nvi_
+        integer(kind=8), optional, intent(out) :: ndt_
+        integer(kind=8), optional, intent(out) :: ndi_
+        integer(kind=8), optional, intent(out) :: nr_
+        integer(kind=8), optional, intent(out) :: nvi_
     end subroutine rslnvi
 end interface

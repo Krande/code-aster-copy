@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -22,10 +22,10 @@
 !
 interface 
     subroutine mnlcdl(imat, numedd, xcdl, nd, lcine)
-        integer :: imat(2)
+        integer(kind=8) :: imat(2)
         character(len=14) :: numedd
         character(len=14) :: xcdl
-        integer :: nd
+        integer(kind=8) :: nd
         aster_logical :: lcine
     end subroutine mnlcdl
 end interface 

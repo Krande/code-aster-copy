@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -38,9 +38,9 @@ subroutine crsint(solveu)
 !-----------------------------------------------------------------------
 !     VARIABLES LOCALES
 !----------------------------------------------------------------------
-    integer :: zslvk, zslvr, zslvi
-    integer :: islvk, islvr, islvi
-    integer :: i, monit(12), niv, nbproc, rang, ifm, iret
+    integer(kind=8) :: zslvk, zslvr, zslvi
+    integer(kind=8) :: islvk, islvr, islvi
+    integer(kind=8) :: i, monit(12), niv, nbproc, rang, ifm, iret
     mpi_int :: mrank, msize
     character(len=24) :: kmonit(12)
 !----------------------------------------------------------------------

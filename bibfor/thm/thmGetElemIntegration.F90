@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -40,7 +40,7 @@ subroutine thmGetElemIntegration(l_vf, inte_type)
 ! --------------------------------------------------------------------------------------------------
 !
     aster_logical :: l_princ
-    integer :: iret
+    integer(kind=8) :: iret
     character(len=1) :: d1, d2
     character(len=3) :: mint
 !

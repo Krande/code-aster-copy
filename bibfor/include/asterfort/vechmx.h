@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -21,15 +21,15 @@
 interface
     subroutine vechmx(nomo, lischa, ichar, nbch, nomlis,&
                       nbin_maxi, lpain, lchin, lastin, vecele)
-        integer :: nbin_maxi
+        integer(kind=8) :: nbin_maxi
         character(len=8) :: nomo
         character(len=19) :: lischa
-        integer :: ichar
-        integer :: nbch
+        integer(kind=8) :: ichar
+        integer(kind=8) :: nbch
         character(len=24) :: nomlis
         character(len=8) :: lpain(nbin_maxi)
         character(len=19) :: lchin(nbin_maxi)
-        integer :: lastin
+        integer(kind=8) :: lastin
         character(len=19) :: vecele
     end subroutine vechmx
 end interface

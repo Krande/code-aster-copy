@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -25,10 +25,10 @@ subroutine betnvi(elem_model, ndt_, ndi_, nr_, nvi_)
 !
 !
     character(len=*), intent(in) :: elem_model
-    integer, optional, intent(out) :: ndt_
-    integer, optional, intent(out) :: ndi_
-    integer, optional, intent(out) :: nr_
-    integer, optional, intent(out) :: nvi_
+    integer(kind=8), optional, intent(out) :: ndt_
+    integer(kind=8), optional, intent(out) :: ndi_
+    integer(kind=8), optional, intent(out) :: nr_
+    integer(kind=8), optional, intent(out) :: nvi_
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -46,7 +46,7 @@ subroutine betnvi(elem_model, ndt_, ndi_, nr_, nvi_)
 !
 ! --------------------------------------------------------------------------------------------------
 !
-    integer :: ndt, ndi, nr, nvi
+    integer(kind=8) :: ndt, ndi, nr, nvi
 !
 ! --------------------------------------------------------------------------------------------------
 !

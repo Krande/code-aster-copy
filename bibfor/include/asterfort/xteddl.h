@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -24,21 +24,21 @@ interface
                       nno, nnos, stano, lcontx, matsym,&
                       option, nomte, ddlm,&
                       nfiss, jfisno, mat, vect)
-        integer, intent(in) :: nfiss
-        integer, intent(in) :: nno
-        integer, intent(in) :: ndim
-        integer, intent(in) :: nfh
-        integer, intent(in) :: nfe
-        integer, intent(in) :: ddls
-        integer, intent(in) :: nddl
-        integer, intent(in) :: nnos
-        integer, intent(in) :: stano(*)
+        integer(kind=8), intent(in) :: nfiss
+        integer(kind=8), intent(in) :: nno
+        integer(kind=8), intent(in) :: ndim
+        integer(kind=8), intent(in) :: nfh
+        integer(kind=8), intent(in) :: nfe
+        integer(kind=8), intent(in) :: ddls
+        integer(kind=8), intent(in) :: nddl
+        integer(kind=8), intent(in) :: nnos
+        integer(kind=8), intent(in) :: stano(*)
         aster_logical, intent(in) :: lcontx
         aster_logical, intent(in) :: matsym
         character(len=16), intent(in) :: option
         character(len=16), intent(in) :: nomte
-        integer, intent(in) :: ddlm
-        integer, intent(in) :: jfisno
+        integer(kind=8), intent(in) :: ddlm
+        integer(kind=8), intent(in) :: jfisno
         real(kind=8), optional, intent(inout) :: mat(*)
         real(kind=8), optional, intent(out) :: vect(*)
     end subroutine xteddl

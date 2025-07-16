@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -65,7 +65,7 @@ subroutine srgamp(val, varv, im, sm, ucrip, &
     !!! Variables globales
     !!!
 
-    integer :: nbmat, val, varv, retcom, nvi
+    integer(kind=8) :: nbmat, val, varv, retcom, nvi
     real(kind=8) :: im, sm(6), mater(nbmat, 2), vinm(nvi), depsp(6), deps(6), depsv(6)
     real(kind=8) :: dgamp, dgamv, de(6, 6), ucrip, seuilp
 
@@ -73,7 +73,7 @@ subroutine srgamp(val, varv, im, sm, ucrip, &
     !!! Variables locales
     !!!
 
-    integer :: i, ndi, ndt
+    integer(kind=8) :: i, ndi, ndt
     real(kind=8) :: paraep(3), varpl(4), dhds(6), ds2hds(6), dfdsp(6), ddepsp(6)
     real(kind=8) :: vecnp(6), gp(6), bprimp, dlam, devgii, tmm
     common/tdim/ndt, ndi

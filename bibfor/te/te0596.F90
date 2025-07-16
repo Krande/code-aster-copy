@@ -47,11 +47,11 @@ subroutine te0596(option, nomte)
 ! ----------------------------------------------------------------------
 !
     aster_logical :: mini
-    integer :: ndim, nno1, nno2, nnos, npg, jgn, ntrou
-    integer :: iw, ivf1, ivf2, idf1, idf2
-    integer :: vu(3, 27), vg(27), vp(27), vpi(3, 27)
-    integer :: igeom, jvSief, jvDisp, imate, ivectu
-    integer :: ibid
+    integer(kind=8) :: ndim, nno1, nno2, nnos, npg, jgn, ntrou
+    integer(kind=8) :: iw, ivf1, ivf2, idf1, idf2
+    integer(kind=8) :: vu(3, 27), vg(27), vp(27), vpi(3, 27)
+    integer(kind=8) :: igeom, jvSief, jvDisp, imate, ivectu
+    integer(kind=8) :: ibid
     character(len=16), pointer :: compor(:) => null()
     character(len=8) :: lielrf(10), typmod(2), alias8
     character(len=24) :: valk

@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -23,7 +23,7 @@ interface
                       vectz, mat11, mat22, mat33, mat12,&
                       mat13, mat23, nx, ny, nz,&
                       inte)
-        integer :: npgf
+        integer(kind=8) :: npgf
         real(kind=8) :: jac(9)
         real(kind=8) :: poidsf(9)
         real(kind=8) :: vectx(9)

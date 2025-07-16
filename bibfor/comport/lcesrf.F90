@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -21,7 +21,7 @@ function lcesrf(am, gameps, r, v, prec, itemax, iret)
     real(kind=8) :: lcesrf
 #include "asterfort/lcesvf.h"
 #include "asterfort/zerop3.h"
-    integer :: itemax, iret
+    integer(kind=8) :: itemax, iret
     real(kind=8) :: gameps, r, v, am, prec
 ! ----------------------------------------------------------------------
 !   ENDO_SCALAIRE:       RESOLUTION DE -DRDA(A)*GAMEPS = V + R*A
@@ -35,7 +35,7 @@ function lcesrf(am, gameps, r, v, prec, itemax, iret)
 !  OUT IRET    CONVERGENCE (0=OK, 1=PB)
 !  OUT ITER    NOMBRE D'ITERATIONS (POUR INFO)
 ! ----------------------------------------------------------------------
-    integer :: iter, nrac
+    integer(kind=8) :: iter, nrac
     real(kind=8) :: amin, amax, c1, c2, p2, p1, p0, rac(3), cmax, cmin
     real(kind=8) :: ai, an, cn, ln, sens, pente, da
     real(kind=8) :: prectr, acvg, ccvg, lcvg, small, fn, fcvg, dfn, fmin

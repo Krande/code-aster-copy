@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -43,7 +43,7 @@ subroutine asmpi_checkalarm()
 !
     mpi_int :: i, rank, nbpro4, ival(1), mpicou, mpicow, nbv
     mpi_int, parameter :: pr0 = 0
-    integer :: ia, np1, vali(2)
+    integer(kind=8) :: ia, np1, vali(2)
     aster_logical :: vu
 !
 ! --- COMMUNICATEUR MPI DE TRAVAIL

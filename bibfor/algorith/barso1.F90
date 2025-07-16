@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -18,7 +18,7 @@
 
 subroutine barso1(n1, n2, n3, coor, poin)
     implicit none
-    integer :: n1, n2, n3, poin(*)
+    integer(kind=8) :: n1, n2, n3, poin(*)
     real(kind=8) :: coor(*)
 !     BARSOUM :
 !-----------------------------------------------------------------------

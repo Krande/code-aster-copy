@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -21,15 +21,15 @@
 interface
     subroutine atasmo(neq, az, apddl, apptr, numedz,&
                       ataz, basez, nblia, nmul, numatz)
-        integer :: neq
+        integer(kind=8) :: neq
         character(len=*) :: az
-        integer :: apddl(*)
-        integer :: apptr(*)
+        integer(kind=8) :: apddl(*)
+        integer(kind=8) :: apptr(*)
         character(len=*) :: numedz
         character(len=*) :: ataz
         character(len=*) :: basez
-        integer :: nblia
-        integer :: nmul
+        integer(kind=8) :: nblia
+        integer(kind=8) :: nmul
         character(len=*) :: numatz
     end subroutine atasmo
 end interface

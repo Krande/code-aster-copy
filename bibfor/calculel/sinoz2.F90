@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -69,31 +69,31 @@ subroutine sinoz2(modele, nume_equa, sigel, signo)
     character(len=24) :: nomjv, elrfam
     real(kind=8) :: rcmp(4), eps, x(9), y(9), a(9, 9), b(9, 4), diag(9)
     real(kind=8) :: wk1(9, 9), wk2(9)
-    integer :: nno, npg, ivf
+    integer(kind=8) :: nno, npg, ivf
     aster_logical :: app
 !
 !
 !
 !
 !-----------------------------------------------------------------------
-    integer :: i, iad, iamav, ianew, ianob
-    integer :: ianov, iatyma, ibid, ic, icmp
-    integer :: ima, ino, inob, inoma, ipa
-    integer :: jcon, jconin, jelfa, jpa
-    integer :: jprno, jrefn, k
-    integer :: nb, nbcmp, nbec, nbma, nbmav, nbn, nbno
-    integer :: nbnob, nbnobp, nbnoma, nqua, ntri, num, numav
-    integer :: numc, numel, numeq, numgr, numloc
+    integer(kind=8) :: i, iad, iamav, ianew, ianob
+    integer(kind=8) :: ianov, iatyma, ibid, ic, icmp
+    integer(kind=8) :: ima, ino, inob, inoma, ipa
+    integer(kind=8) :: jcon, jconin, jelfa, jpa
+    integer(kind=8) :: jprno, jrefn, k
+    integer(kind=8) :: nb, nbcmp, nbec, nbma, nbmav, nbn, nbno
+    integer(kind=8) :: nbnob, nbnobp, nbnoma, nqua, ntri, num, numav
+    integer(kind=8) :: numc, numel, numeq, numgr, numloc
     real(kind=8) :: xino, xinob, xinomi, xmax, xmin, xnorm, yino
     real(kind=8) :: yinob, yinomi, ymax, ymin
-    integer, pointer :: indic(:) => null()
-    integer, pointer :: longconinv(:) => null()
-    integer, pointer :: nbpatchmil(:) => null()
+    integer(kind=8), pointer :: indic(:) => null()
+    integer(kind=8), pointer :: longconinv(:) => null()
+    integer(kind=8), pointer :: nbpatchmil(:) => null()
     aster_logical, pointer :: noeubord(:) => null()
-    integer, pointer :: numnb(:) => null()
-    integer, pointer :: celd(:) => null()
+    integer(kind=8), pointer :: numnb(:) => null()
+    integer(kind=8), pointer :: celd(:) => null()
     character(len=24), pointer :: refe(:) => null()
-    integer, pointer :: repe(:) => null()
+    integer(kind=8), pointer :: repe(:) => null()
     real(kind=8), pointer :: coor(:) => null()
     real(kind=8), pointer :: sig(:) => null()
     real(kind=8), pointer :: val(:) => null()

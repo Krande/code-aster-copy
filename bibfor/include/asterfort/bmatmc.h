@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -21,7 +21,7 @@
 interface
     subroutine bmatmc(igau, nbsig, xyz, ipoids, ivf,&
                       idfde, nno, nharm, jacob, b)
-       integer, intent(in) :: nbsig, igau, ipoids, ivf, idfde, nno
+       integer(kind=8), intent(in) :: nbsig, igau, ipoids, ivf, idfde, nno
        real(kind=8), intent(in) :: nharm, xyz(1)
        real(kind=8), intent(out) :: jacob, b(nbsig, 81)
     end subroutine bmatmc

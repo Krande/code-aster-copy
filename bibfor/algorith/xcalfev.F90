@@ -31,20 +31,19 @@ subroutine xcalfev(elrefp, ndim, nnop, basloc, stano, &
 #include "asterfort/coor_cyl.h"
 #include "asterfort/elrfvf.h"
 #include "asterfort/is_enr_line.h"
-#include "asterfort/iselli.h"
 #include "asterfort/utmess.h"
 #include "asterfort/xdeffk_wrap.h"
 #include "asterfort/xderfk_wrap.h"
 #include "asterfort/xelrex.h"
 !
     character(len=8), intent(in) :: elrefp
-    integer :: ndim, nnop, stano(*)
+    integer(kind=8) :: ndim, nnop, stano(*)
     real(kind=8) :: he, basloc(*), fk(27, 3, 3)
     real(kind=8) :: kappa, ff(*), geom(*), mu
     real(kind=8), optional :: dkdgl(27, 3, 3, 3)
     real(kind=8), optional :: dfdi(nnop, ndim)
     character(len=4), optional :: face
-    integer, optional :: nnop_lin
+    integer(kind=8), optional :: nnop_lin
     real(kind=8), optional :: ff_lin(:)
     real(kind=8), optional :: dfdi_lin(:, :)
 !
@@ -64,8 +63,8 @@ subroutine xcalfev(elrefp, ndim, nnop, basloc, stano, &
 !
 !----------------------------------------------------------------
 !
-    integer :: i, j, k, ino, l, alp, nnops
-    integer :: ndime, nno
+    integer(kind=8) :: i, j, k, ino, l, alp, nnops
+    integer(kind=8) :: ndime, nno
     real(kind=8) :: p(27, 3, 3), invp(27, 3, 3), p_g(3, 3), invp_g(3, 3)
     real(kind=8) :: dkdpo(ndim, ndim, 2), dkdlo(3, 3, 2), fkpo(ndim, ndim), fk_gl(ndim, ndim)
     real(kind=8) :: rr, th, r_n(27), t_n(27), fkpo_n(27, 3, 3)

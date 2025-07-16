@@ -21,7 +21,7 @@ interface
                       model, listLoad, numfix, &
                       meelem, measse)
         use NonLin_Datastructure_type
-        integer, intent(in) :: listFuncActi(*)
+        integer(kind=8), intent(in) :: listFuncActi(*)
         character(len=24), intent(in) :: model
         character(len=19), intent(in) :: listLoad
         character(len=24), intent(in) :: numfix

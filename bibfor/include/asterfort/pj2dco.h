@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -17,21 +17,22 @@
 ! --------------------------------------------------------------------
 !
 interface
-    subroutine pj2dco(typeSelect   ,&
-                      entity1      , entity2        ,&
-                      nbCellSelect1, listCellSelect1,&
-                      nbNodeSelect2, listNodeSelect2,&
-                      geom1        , geom2, corrMesh,&
-                      l_dmax       , dmax, dala,&
-                      listInterc_  , nbInterc_)
+    subroutine pj2dco(typeSelect, &
+                      entity1, entity2, &
+                      nbCellSelect1, listCellSelect1, &
+                      nbNodeSelect2, listNodeSelect2, &
+                      geom1, geom2, corrMesh, &
+                      l_dmax, dmax, dala, &
+                      listInterc_, nbInterc_)
         character(len=*), intent(in) :: typeSelect
         character(len=8), intent(in) :: entity1, entity2
-        integer, intent(in) :: nbCellSelect1, listCellSelect1(*), nbNodeSelect2, listNodeSelect2(*)
+        integer(kind=8), intent(in) :: nbCellSelect1, listCellSelect1(*)
+        integer(kind=8), intent(in) :: nbNodeSelect2, listNodeSelect2(*)
         character(len=*), intent(in) :: geom1, geom2
         character(len=16), intent(in)  :: corrMesh
         aster_logical, intent(in) :: l_dmax
         real(kind=8), intent(in) :: dmax, dala
         character(len=16), optional, intent(in)  :: listInterc_
-        integer, optional, intent(in)  :: nbInterc_
+        integer(kind=8), optional, intent(in)  :: nbInterc_
     end subroutine pj2dco
-end interface 
+end interface

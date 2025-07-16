@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -20,10 +20,10 @@
 !
 interface
     subroutine pemima(indch, chamgd, resu, modele, nbocc)
-        integer :: indch
+        integer(kind=8) :: indch
         character(len=24) :: chamgd
         character(len=19) :: resu
         character(len=8) :: modele
-        integer :: nbocc
+        integer(kind=8) :: nbocc
     end subroutine pemima
 end interface

@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -21,7 +21,7 @@
 interface
     subroutine pidegv(neps, tau, epsm, epsp, epsd,&
                       copilo)
-        integer :: neps
+        integer(kind=8) :: neps
         real(kind=8) :: tau
         real(kind=8) :: epsm(neps)
         real(kind=8) :: epsp(neps)

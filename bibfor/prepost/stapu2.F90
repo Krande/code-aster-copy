@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -39,8 +39,8 @@ subroutine stapu2(nbobst, nbpt, nbpair, temps, fcho, &
 #include "asterc/r8rddg.h"
 #include "asterfort/pusur2.h"
 #include "blas/dcopy.h"
-    integer :: occure(100)
-    integer :: nbinst, nbloc, nbobst, nbpair, nbpt, nbval
+    integer(kind=8) :: occure(100)
+    integer(kind=8) :: nbinst, nbloc, nbobst, nbpair, nbpt, nbval
     real(kind=8) :: temps(*), fcho(*), vgli(*), wk1(*), wk2(*), wk3(*), wk4(*)
     real(kind=8) :: wk5(*), wk6(*), dloc(*), ang(*), coef(*), tmpvu(*)
     real(kind=8) :: vustub(nbpair, nbinst), vusob(nbpair, nbinst), pmoye
@@ -48,8 +48,8 @@ subroutine stapu2(nbobst, nbpt, nbpair, temps, fcho, &
     real(kind=8) :: zero, pusee
 !     REAL*8   TMPV(10)
 !-----------------------------------------------------------------------
-    integer :: ibl, idebut, in, inoe, isupp, j, jdg, k
-    integer :: noccur, ntot
+    integer(kind=8) :: ibl, idebut, in, inoe, isupp, j, jdg, k
+    integer(kind=8) :: noccur, ntot
     real(kind=8) :: pusurn, rad
     blas_int :: b_incx, b_incy, b_n
 !-----------------------------------------------------------------------

@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -60,7 +60,7 @@ subroutine fstat0(nbpt, fn, offset, fnmoyt, fnmoyc, &
 !       SMINR   SOMME DES MINIMAS RELATIFS
 !
 !-----------------------------------------------------------------------
-    integer :: i, nbmaxr, nbminr, nbpt, ncount
+    integer(kind=8) :: i, nbmaxr, nbminr, nbpt, ncount
 !-----------------------------------------------------------------------
     sfn = 0.d0
     sfn2 = 0.d0

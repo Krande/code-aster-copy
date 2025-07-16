@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -45,11 +45,11 @@ module mesh_type
         aster_logical :: isLinear = ASTER_TRUE
         aster_logical :: isSkin = ASTER_FALSE
 ! ----- Topological dimension of cell (-1, 0, 1 or 2)
-        integer :: cellDime = 0
+        integer(kind=8) :: cellDime = 0
 ! ----- Number of nodes
-        integer :: nbNode = 0
+        integer(kind=8) :: nbNode = 0
 ! ----- Number of neighbours
-        integer :: nbNeigh = 0
+        integer(kind=8) :: nbNeigh = 0
 ! ----- Diameter of cell
         real(kind=8) :: diameter = -1.d0
 ! ----- Barycenter of cell in global basis (X,Y,Z)
@@ -66,7 +66,7 @@ module mesh_type
 ! --------------------------------------------------------------------------------------------------
     type CELL_SKIN_BASE
 ! ----- Dimension of space
-        integer :: spaceDime = 0
+        integer(kind=8) :: spaceDime = 0
 ! ----- Flag for _external_ normal
         aster_logical :: normIsExte = ASTER_TRUE
 ! ----- Normal

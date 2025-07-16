@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -18,7 +18,6 @@
 
 subroutine ibtcpu(ier)
     implicit none
-#include "asterc/getres.h"
 #include "asterc/gtoptr.h"
 #include "asterc/jdcget.h"
 #include "asterc/rdtmax.h"
@@ -26,7 +25,7 @@ subroutine ibtcpu(ier)
 #include "asterfort/getvis.h"
 #include "asterfort/getvr8.h"
 #include "asterfort/utmess.h"
-    integer :: ier
+    integer(kind=8) :: ier
 !     OPTION DE MODIFICATION DE LA LIMITE DE TEMPS CPU POUR CONSERVER
 !     UNE MARGE SUFFISANTE AFIN DE TERMINER PROPREMENT UNE EXECUTION
 !     ------------------------------------------------------------------
@@ -34,7 +33,7 @@ subroutine ibtcpu(ier)
 !            1 ERREUR DANS LA LECTURE DE LA COMMANDE
 !     ------------------------------------------------------------------
 !
-    integer :: l1, l2, lcpu, iret, vali(3), itest
+    integer(kind=8) :: l1, l2, lcpu, iret, vali(3), itest
     real(kind=8) :: pccpu, tpmax, dix, ntmax
     parameter(dix=10.d0)
 !

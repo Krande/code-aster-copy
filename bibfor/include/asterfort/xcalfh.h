@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2019 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -25,20 +25,20 @@ interface
                       adenhy, nfh)
         use THM_type
         type(THM_DS), intent(in) :: ds_thm
-        integer :: dimenr
-        integer :: dimcon
+        integer(kind=8) :: dimenr
+        integer(kind=8) :: dimcon
         character(len=16) :: option
-        integer :: ndim
-        integer :: addep1
-        integer :: adcp11
-        integer :: addeme
+        integer(kind=8) :: ndim
+        integer(kind=8) :: addep1
+        integer(kind=8) :: adcp11
+        integer(kind=8) :: addeme
         real(kind=8) :: congep(1:dimcon)
         real(kind=8) :: dsde(1:dimcon, 1:dimenr)
         real(kind=8) :: grap1(3)
         real(kind=8) :: rho11
         real(kind=8) :: gravity(3)
         real(kind=8) :: tperm(ndim,ndim)
-        integer :: adenhy
-        integer :: nfh
+        integer(kind=8) :: adenhy
+        integer(kind=8) :: nfh
     end subroutine xcalfh
 end interface 

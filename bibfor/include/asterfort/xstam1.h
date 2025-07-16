@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -23,19 +23,19 @@ interface
                       stano, mafon, maen1, maen2, maen3,&
                       nmafon, nmaen1, nmaen2, nmaen3,&
                       typdis, cnslt)
-        integer :: nmafis
-        integer :: nbma
+        integer(kind=8) :: nmafis
+        integer(kind=8) :: nbma
         character(len=8) :: noma
-        integer :: mafis(nmafis)
-        integer :: stano(*)
-        integer :: mafon(nmafis)
-        integer :: maen1(nbma)
-        integer :: maen2(nbma)
-        integer :: maen3(nbma)
-        integer :: nmafon
-        integer :: nmaen1
-        integer :: nmaen2
-        integer :: nmaen3
+        integer(kind=8) :: mafis(nmafis)
+        integer(kind=8) :: stano(*)
+        integer(kind=8) :: mafon(nmafis)
+        integer(kind=8) :: maen1(nbma)
+        integer(kind=8) :: maen2(nbma)
+        integer(kind=8) :: maen3(nbma)
+        integer(kind=8) :: nmafon
+        integer(kind=8) :: nmaen1
+        integer(kind=8) :: nmaen2
+        integer(kind=8) :: nmaen3
         character(len=16) :: typdis
         character(len=19) :: cnslt
     end subroutine xstam1

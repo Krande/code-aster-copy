@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -20,10 +20,10 @@
 !
 interface
     subroutine zvout(lout, n, cx, idigit, ifmt)
-        integer, intent(in) :: lout
-        integer, intent(in) :: n
+        integer(kind=8), intent(in) :: lout
+        integer(kind=8), intent(in) :: n
         complex(kind=8), intent(in) :: cx(*)
-        integer, intent(in) :: idigit
+        integer(kind=8), intent(in) :: idigit
         character(len=*), intent(in) :: ifmt
     end subroutine zvout
 end interface

@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -20,7 +20,7 @@ subroutine btdfn(ind, nb1, nb2, ksi3s2, intsn, &
                  xr, epais, vectpt, hsj1fx, btdf)
 !
     implicit none
-    integer :: nb1, nb2, intsn
+    integer(kind=8) :: nb1, nb2, intsn
     real(kind=8) :: xr(*), epais, vectpt(9, 2, 3)
     real(kind=8) :: hsj1fx(3, 9), btdf(3, 42)
     real(kind=8) :: dnsdsf(9, 42)
@@ -28,8 +28,8 @@ subroutine btdfn(ind, nb1, nb2, ksi3s2, intsn, &
     common/dnsf/dnsdsf
 !
 !-----------------------------------------------------------------------
-    integer :: i, i3, i4, i5, ind, intsn1, j
-    integer :: j1, jb, k, l1, l2, l3
+    integer(kind=8) :: i, i3, i4, i5, ind, intsn1, j
+    integer(kind=8) :: j1, jb, k, l1, l2, l3
 !-----------------------------------------------------------------------
     if (ind .eq. 1) then
         l1 = 459

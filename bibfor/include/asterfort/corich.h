@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -19,7 +19,7 @@
 interface
     subroutine corich(actionZ, fieldZ, ichin_, ichout_)
         character(len=*), intent(in) :: actionZ, fieldZ
-        integer, optional, intent(in) :: ichin_
-        integer, optional, intent(out) :: ichout_
+        integer(kind=8), optional, intent(in) :: ichin_
+        integer(kind=8), optional, intent(out) :: ichout_
     end subroutine corich
 end interface

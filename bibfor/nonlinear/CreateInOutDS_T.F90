@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -23,7 +23,6 @@ subroutine CreateInOutDS_T(ds_inout, l_temp_nonl)
     implicit none
 !
 #include "asterf_types.h"
-#include "asterc/r8vide.h"
 #include "asterfort/assert.h"
 #include "asterfort/infniv.h"
 !
@@ -45,9 +44,9 @@ subroutine CreateInOutDS_T(ds_inout, l_temp_nonl)
 !
 ! --------------------------------------------------------------------------------------------------
 !
-    integer :: ifm, niv
-    integer, parameter :: nb_field_defi = 3
-    integer :: i_field
+    integer(kind=8) :: ifm, niv
+    integer(kind=8), parameter :: nb_field_defi = 3
+    integer(kind=8) :: i_field
 ! - Name of field (type) in results datastructure (add one -> don't forget to modify rscrsd.F90)
     character(len=16), parameter :: field_type(nb_field_defi) = &
                                     (/'TEMP            ', 'HYDR_ELGA       ', 'COMPORTHER      '/)

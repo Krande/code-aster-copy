@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -45,12 +45,12 @@ subroutine cetucr(motfac, model0)
 !
 ! DECLARATION VARIABLES LOCALES
 !
-    integer :: nbpar
+    integer(kind=8) :: nbpar
     parameter(nbpar=2)
-    integer :: nbmcle
+    integer(kind=8) :: nbmcle
     parameter(nbmcle=3)
 !     ------------------------------------------------------------------
-    integer :: n1, ibid, iaux
+    integer(kind=8) :: n1, ibid, iaux
     real(kind=8) :: vr
     complex(kind=8) :: cbid
     character(len=2) :: typpar(nbpar)

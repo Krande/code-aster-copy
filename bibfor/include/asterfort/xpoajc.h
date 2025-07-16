@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -24,26 +24,26 @@ interface
                       ima, ndim, ndime, iadc, iadv,&
                       jcesv1, jcesl2, jcesv2, jcviv1, jcvil2,&
                       jcviv2)
-        integer :: nnm
-        integer :: inm
-        integer :: inmtot
-        integer :: nbmac
-        integer :: ise
-        integer :: npg
-        integer :: jcesd1
-        integer :: jcesd2
-        integer :: jcvid1
-        integer :: jcvid2
-        integer :: ima
-        integer :: ndim
-        integer :: ndime
-        integer :: iadc
-        integer :: iadv
-        integer :: jcesv1
-        integer :: jcesl2
-        integer :: jcesv2
-        integer :: jcviv1
-        integer :: jcvil2
-        integer :: jcviv2
+        integer(kind=8) :: nnm
+        integer(kind=8) :: inm
+        integer(kind=8) :: inmtot
+        integer(kind=8) :: nbmac
+        integer(kind=8) :: ise
+        integer(kind=8) :: npg
+        integer(kind=8) :: jcesd1
+        integer(kind=8) :: jcesd2
+        integer(kind=8) :: jcvid1
+        integer(kind=8) :: jcvid2
+        integer(kind=8) :: ima
+        integer(kind=8) :: ndim
+        integer(kind=8) :: ndime
+        integer(kind=8) :: iadc
+        integer(kind=8) :: iadv
+        integer(kind=8) :: jcesv1
+        integer(kind=8) :: jcesl2
+        integer(kind=8) :: jcesv2
+        integer(kind=8) :: jcviv1
+        integer(kind=8) :: jcvil2
+        integer(kind=8) :: jcviv2
     end subroutine xpoajc
 end interface 

@@ -54,7 +54,7 @@ subroutine nmdoet(model, compor, list_func_acti, nume_ddl, sdpilo, &
     character(len=19), intent(in) :: sddyna
     character(len=19), intent(in) :: sdpilo
     character(len=19), intent(in) :: hval_algo(*)
-    integer, intent(in) :: list_func_acti(*)
+    integer(kind=8), intent(in) :: list_func_acti(*)
     aster_logical, intent(out) :: l_acce_zero
     type(NL_DS_InOut), intent(inout) :: ds_inout
     type(NL_DS_Energy), intent(inout) :: ds_energy
@@ -80,16 +80,16 @@ subroutine nmdoet(model, compor, list_func_acti, nume_ddl, sdpilo, &
 !
 ! --------------------------------------------------------------------------------------------------
 !
-    integer :: ifm, niv
-    integer :: nb_field
+    integer(kind=8) :: ifm, niv
+    integer(kind=8) :: nb_field
     character(len=24) :: field_type
     aster_logical :: l_stin_evol, l_state_init
-    integer :: nb_equa, init_nume, iret, i, i_field
+    integer(kind=8) :: nb_equa, init_nume, iret, i, i_field
     character(len=8) :: calcri, stin_evol
     character(len=24) :: typpil, typsel
     character(len=19) :: depold
     character(len=24) :: champ1, champ2, dep2, dep1
-    integer :: jv_para
+    integer(kind=8) :: jv_para
     aster_logical :: l_pilo, lpiarc, l_cont_cont
     aster_logical :: l_expl_gene, l_reuse, l_erre_thm, l_mstp
     aster_logical :: l_zero, l_acti, l_ener, l_read, verbose
@@ -232,15 +232,19 @@ subroutine nmdoet(model, compor, list_func_acti, nume_ddl, sdpilo, &
 ! - VERIFICATION COMPATIBILITE PILOTAGE
 !
     if (l_stin_evol .and. lpiarc) then
-        call rsexch(' ', stin_evol, 'DEPL', init_nume, champ1, &
-                    iret)
-        call rsexch(' ', stin_evol, 'DEPL', init_nume-1, champ2, &
-                    iret)
+        call rsexch(' ', stin_evol, 'DEPL', init_nume, champ1, iret)
+        call rsexch(' ', stin_evol, 'DEPL', init_nume-1, champ2, iret)
         if (iret .ne. 0) then
             call utmess('F', 'MECANONLINE4_47', sk=stin_evol)
         end if
-        call vtcopy(champ1, dep1, 'F', iret)
-        call vtcopy(champ2, dep2, 'F', iret)
+        call vtcopy(champ1, dep1, iret)
+        if (iret .ne. 0) then
+            call utmess("F", "FIELD0_9")
+        end if
+        call vtcopy(champ2, dep2, iret)
+        if (iret .ne. 0) then
+            call utmess("F", "FIELD0_9")
+        end if
         call jeveuo(dep1(1:19)//'.VALE', 'L', vr=vdep1)
         call jeveuo(dep2(1:19)//'.VALE', 'L', vr=vdep2)
         call jeveuo(depold(1:19)//'.VALE', 'E', vr=depol)

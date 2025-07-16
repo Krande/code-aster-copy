@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -28,8 +28,8 @@ subroutine mmdepm(nbdm, ndim, &
 !
 #include "jeveux.h"
 !
-    integer, intent(in) :: nbdm, ndim, nne, nnm
-    integer, intent(in) :: jdepde, jdepm
+    integer(kind=8), intent(in) :: nbdm, ndim, nne, nnm
+    integer(kind=8), intent(in) :: jdepde, jdepm
     real(kind=8), intent(in) :: ffe(9), ffm(9)
     real(kind=8), intent(out) :: ddeple(3), deplme(3)
     real(kind=8), intent(out) :: ddeplm(3), deplmm(3)
@@ -55,7 +55,7 @@ subroutine mmdepm(nbdm, ndim, &
 !
 ! --------------------------------------------------------------------------------------------------
 !
-    integer :: idim, inoe
+    integer(kind=8) :: idim, inoe
 !
 ! --------------------------------------------------------------------------------------------------
 !

@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -21,15 +21,15 @@
 interface
     subroutine xpocox(nbmac, ima, inmtot, nbcmpc, jresd1,&
                       jresv1, jresl1, jresd2, jresv2, jresl2)
-        integer :: nbmac
-        integer :: ima
-        integer :: inmtot
-        integer :: nbcmpc
-        integer :: jresd1
-        integer :: jresv1
-        integer :: jresl1
-        integer :: jresd2
-        integer :: jresv2
-        integer :: jresl2
+        integer(kind=8) :: nbmac
+        integer(kind=8) :: ima
+        integer(kind=8) :: inmtot
+        integer(kind=8) :: nbcmpc
+        integer(kind=8) :: jresd1
+        integer(kind=8) :: jresv1
+        integer(kind=8) :: jresl1
+        integer(kind=8) :: jresd2
+        integer(kind=8) :: jresv2
+        integer(kind=8) :: jresl2
     end subroutine xpocox
 end interface

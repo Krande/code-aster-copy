@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -21,13 +21,13 @@
 interface
     subroutine defcur(vecr1, veck1, nb, vecr2, nv,&
                       nommai, nm, prolgd, interp)
-        integer :: nv
-        integer :: nb
+        integer(kind=8) :: nv
+        integer(kind=8) :: nb
         real(kind=8) :: vecr1(nb)
         character(len=8) :: veck1(nb)
         real(kind=8) :: vecr2(nv)
         character(len=8) :: nommai
-        integer :: nm
+        integer(kind=8) :: nm
         character(len=2) :: prolgd
         character(len=8) :: interp
     end subroutine defcur

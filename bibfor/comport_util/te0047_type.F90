@@ -68,7 +68,7 @@ module te0047_type
         aster_logical       :: rigi = ASTER_FALSE
         aster_logical       :: resi = ASTER_FALSE
         !
-        integer             :: syme = 0
+        integer(kind=8)             :: syme = 0
         !
         character(len=16)   :: option = ''
         character(len=16)   :: nomte = ''
@@ -76,11 +76,11 @@ module te0047_type
         character(len=16)   :: defo_comp = ''
         character(len=16)   :: type_comp = ''
         !
-        integer             :: ndim
-        integer             :: nbt
-        integer             :: nno
-        integer             :: nc
-        integer             :: neq
+        integer(kind=8)             :: ndim
+        integer(kind=8)             :: nbt
+        integer(kind=8)             :: nno
+        integer(kind=8)             :: nc
+        integer(kind=8)             :: neq
         !
         real(kind=8)        :: ulm(12), ugm(12)
         real(kind=8)        :: dul(12), dug(12)
@@ -126,8 +126,8 @@ contains
     subroutine getDiscretInformations(D)
         type(te0047_dscr), intent(inout) :: D
         !
-        integer       :: icompo, itype, ideplm, ideplp, jtempsm, jtempsp, ii
-        integer       :: imate, codret, cod_res(1), igeom
+        integer(kind=8)       :: icompo, itype, ideplm, ideplp, jtempsm, jtempsp, ii
+        integer(kind=8)       :: imate, codret, cod_res(1), igeom
         character(len=16), pointer :: compor(:) => null()
         real(kind=8)  :: temp_moins, temp_plus, temp_refe, val_res(1), xl2
         aster_logical :: isOk, isNonLin

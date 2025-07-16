@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -30,7 +30,7 @@ subroutine mmbouc(ds_contact, loop_type, operation_, &
     type(NL_DS_Contact), intent(inout) :: ds_contact
     character(len=4), intent(in) :: loop_type
     character(len=*), intent(in) :: operation_
-    integer, intent(out), optional :: loop_counter_
+    integer(kind=8), intent(out), optional :: loop_counter_
     aster_logical, intent(out), optional :: loop_state_
     character(len=16), intent(inout), optional :: loop_locus_
     real(kind=8), intent(inout), optional :: loop_vale_
@@ -71,7 +71,7 @@ subroutine mmbouc(ds_contact, loop_type, operation_, &
 !
 ! --------------------------------------------------------------------------------------------------
 !
-    integer :: i_loop, nb_loop, loop_indx, loop_counter
+    integer(kind=8) :: i_loop, nb_loop, loop_indx, loop_counter
     character(len=16) :: operation
     aster_logical :: loop_state
 !

@@ -49,7 +49,6 @@ subroutine op0116()
 #include "asterfort/rsadpa.h"
 #include "asterfort/rsexch.h"
 #include "asterfort/tabcor.h"
-#include "asterfort/utmess.h"
 #include "asterfort/vtcmbl.h"
 #include "asterfort/wkvect.h"
 !
@@ -60,8 +59,8 @@ subroutine op0116()
 !
 !
     aster_logical :: ltrans, force
-    integer :: i, ib, imod, nbmod, j1, jdisc, dim, icor(2), iadx, iady
-    integer :: nbrefe, nbvale, nbcoefs, icoef, jcoef
+    integer(kind=8) :: i, ib, imod, nbmod, j1, jdisc, dim, icor(2), iadx, iady
+    integer(kind=8) :: nbrefe, nbvale, nbcoefs, icoef, jcoef
     real(kind=8) :: r8b, pi, freq, para(2), constant, epstol
     character(len=2) :: modelisa(2), modelis
     character(len=8) :: rigthe, modmec, nomres, potentiel

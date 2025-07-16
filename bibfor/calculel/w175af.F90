@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -44,16 +44,16 @@ subroutine w175af(modele, chfer1)
 ! BUT : CREER LE CHAMP DE DONNEES POUR CALC_FERRAILLAGE
 !
 !-------------------------------------------------------------------------------------------------
-    integer :: gd, nocc, ncmpmx, nbtou
-    integer :: n1, n2, n3, n4, n5, n6, n7, n8, n9, n10, n11, n12, n13, n14, n15
-    integer :: n16, n17, n18, n19, n20, n21, n22, n23, n24, n25, n26, n27, n28, n29, n30, n31, n32
-    integer :: n33, n34, n35, n36, n37, n38, n39, n40, n41, n42, n43, n44, n45, n46, n47, n48, n49
-    integer :: n50, n51, n52, n53, n54, n55, n56, n57, n58, n59, n60, n61, n62, n63, n64
-    integer ::   jmail, iocc, nbmail
+    integer(kind=8) :: gd, nocc, ncmpmx, nbtou
+    integer(kind=8) :: n1, n2, n3, n4, n5, n6, n7, n8, n9, n10, n11, n12, n13, n14, n15
+    integer(kind=8) :: n16, n17, n18, n19, n20, n21, n22, n23, n24, n25, n26, n27, n28, n29, n30, n31, n32
+   integer(kind=8) :: n33, n34, n35, n36, n37, n38, n39, n41, n42, n43, n44, n45, n46, n47, n48, n49
+    integer(kind=8) :: n50, n51, n52, n53, n54, n55, n56, n57, n58, n59, n60, n61
+    integer(kind=8) ::   jmail, iocc, nbmail
     real(kind=8) :: valrcb, valrco, valrmt, valrcd, valruc
     character(len=8) :: k8b, typmcl(2), noma, typcb, clacier, compress
-    character(len=8) :: epucisa, ferrcomp, ferrsyme, typdiag, typstru, cond109, unitm, unitc
-    character(len=16) :: meth2D, precs, flongi, ftrnsv
+    character(len=8) :: epucisa, ferrcomp, ferrsyme, typdiag, typstru, cond109, unitc
+    character(len=16) :: meth2D
     character(len=16) :: motcls(2), typco, ferrmin
     character(len=24) :: mesmai
     character(len=8), pointer :: ncmp(:) => null()
@@ -185,11 +185,8 @@ subroutine w175af(modele, chfer1)
     if (unitc .eq. 'Pa') valruc = 0.d0
     if (unitc .eq. 'MPa') valruc = 1.d0
     valv(39) = valruc
-    call getvtx(' ', 'UNITE_CONTRAINTE', scal=unitm, nbret=n40)
-!        UM = 0 DIMENSIONS EN m
-!        UM = 1 DIMENSIONS EN mm
-    if (unitc .eq. 'm') valruc = 0.d0
-    if (unitc .eq. 'mm') valruc = 1.d0
+!   Pa avec m
+!   MPa avec mm
     valv(40) = valruc
 
 !     3- BOUCLE SUR LES OCCURENCES DU MOT CLE AFFE

@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -48,16 +48,16 @@ subroutine d1macp(fami, mater, instan, poum, kpg, &
 #include "asterfort/utbtab.h"
 #include "asterfort/utmess.h"
     character(len=*) :: fami, poum
-    integer :: kpg, ksp
+    integer(kind=8) :: kpg, ksp
     real(kind=8) :: angl, d1(4, *), instan
 ! -----  VARIABLES LOCALES
 !-----------------------------------------------------------------------
-    integer :: i, irep, j, mater, nbres, nbv
+    integer(kind=8) :: i, irep, j, mater, nbres, nbv
     real(kind=8) :: deux, e, e1, e2, un, zero
 !-----------------------------------------------------------------------
     parameter(nbres=7)
 !
-    integer :: icodre(nbres)
+    integer(kind=8) :: icodre(nbres)
     character(len=8) :: nompar
     character(len=16) :: nomres(nbres)
     character(len=32) :: phenom

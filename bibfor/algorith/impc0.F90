@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -23,12 +23,12 @@ subroutine impc0(isor, ibl, nbc, tcm, tcmax, &
 !
 !
     implicit none
-    integer :: isor, nbc, nrebo, nbpt
+    integer(kind=8) :: isor, nbc, nrebo, nbpt
     real(kind=8) :: tcm, tcmax, tcmin, trebm, tct
     real(kind=8) :: t(*), dt, tacqui
 !
 !-----------------------------------------------------------------------
-    integer :: ibl, nrepc
+    integer(kind=8) :: ibl, nrepc
 !-----------------------------------------------------------------------
     dt = t(2)-t(1)
     tacqui = t(nbpt)-t(1)
@@ -70,7 +70,7 @@ subroutine impc0(isor, ibl, nbc, tcm, tcmax, &
      &                  (100.d0*tct/tacqui)
 !
 8   format(' !', i2, '!', i5, '   !', i5, '   !', 1pd12.5, ' !',&
-     &          1pd12.5, ' !', 1pd12.5, ' !', 1pd12.5, ' !', 1pd12.5, ' %!')
+       &          1pd12.5, ' !', 1pd12.5, ' !', 1pd12.5, ' !', 1pd12.5, ' %!')
 9   format(' !', 1pd12.5, ' !', 1pd12.5, ' !')
 !
 end subroutine

@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -62,14 +62,14 @@ subroutine pcinfe(n, icpl, icpc, icpd, icplp, &
 !+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
     implicit none
 #include "asterfort/pctrii.h"
-    integer :: n
+    integer(kind=8) :: n
     integer(kind=4) :: icpc(*)
-    integer :: icpl(0:n), icpd(n)
-    integer :: icplp(0:n), icpcp(*), ind(n)
+    integer(kind=8) :: icpl(0:n), icpd(n)
+    integer(kind=8) :: icplp(0:n), icpcp(*), ind(n)
 !-----------------------------------------------------------------------
-    integer :: i, ic1, ic2, ier, istop, j, jj
-    integer :: k, k1, k2, kp1, kp2, l, lca
-    integer :: nzero
+    integer(kind=8) :: i, ic1, ic2, ier, istop, j, jj
+    integer(kind=8) :: k, k1, k2, kp1, kp2, l, lca
+    integer(kind=8) :: nzero
 !-----------------------------------------------------------------------
     do i = 1, n
         ind(i) = 0

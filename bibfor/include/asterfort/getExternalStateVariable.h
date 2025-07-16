@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -24,6 +24,6 @@ interface
         character(len=16), intent(in) :: rela_comp, rela_code_py
         aster_logical, intent(in) :: l_mfront_offi, l_mfront_proto
         character(len=16), intent(in) :: extern_addr
-        integer, intent(out) :: variExteCode(2)
+        integer(kind=8), intent(out) :: variExteCode(2)
     end subroutine getExternalStateVariable
 end interface

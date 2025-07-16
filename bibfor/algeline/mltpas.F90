@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -23,14 +23,14 @@ subroutine mltpas(nbnd, nbsn, supnd, xadj, adjncy, &
 ! person_in_charge: olivier.boiteau at edf.fr
 !
     implicit none
-    integer :: nbnd, nbsn, nbloc, ncbloc(*), lgbloc(*)
-    integer :: supnd(nbsn+1), diag(0:nbnd), seq(nbsn)
-    integer :: col(*)
-    integer :: xadj(nbnd+1), adjncy(*), lmat
-    integer :: anc(nbnd), nouv(nbnd)
+    integer(kind=8) :: nbnd, nbsn, nbloc, ncbloc(*), lgbloc(*)
+    integer(kind=8) :: supnd(nbsn+1), diag(0:nbnd), seq(nbsn)
+    integer(kind=8) :: col(*)
+    integer(kind=8) :: xadj(nbnd+1), adjncy(*), lmat
+    integer(kind=8) :: anc(nbnd), nouv(nbnd)
     integer(kind=4) :: global(*)
-    integer :: adress(nbsn+1)
-    integer :: nblign(nbsn), lgsn(nbsn)
+    integer(kind=8) :: adress(nbsn+1)
+    integer(kind=8) :: nblign(nbsn), lgsn(nbsn)
 !
 !=========================================================
 !     CALCUL DES ADRESSES DANS LA FACTORISEE DES TERMES INITIAUX
@@ -40,9 +40,9 @@ subroutine mltpas(nbnd, nbsn, supnd, xadj, adjncy, &
 !     SONT RANGEES DANS COL, QUI NE SERT PLUS.
 !     AUPARAVANT ON UTILISAIT UN TABLEAU ADINIT
 !==========================================================
-    integer :: place(nbnd)
-    integer :: i, j, ndj, sni, andi, andj, code, haut
-    integer :: ndi, lfac, depart, ad, isn, longb, ib, ic
+    integer(kind=8) :: place(nbnd)
+    integer(kind=8) :: i, j, ndj, sni, andi, andj, code, haut
+    integer(kind=8) :: ndi, lfac, depart, ad, isn, longb, ib, ic
     isn = 0
     longb = 0
     lmat = diag(nbnd)

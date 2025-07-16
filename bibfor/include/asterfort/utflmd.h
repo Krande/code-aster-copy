@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -23,10 +23,10 @@ interface
                       nbtrou, litrou)
         character(len=8), intent(in) :: mailla
         character(len=*), intent(in) :: limail
-        integer, intent(in) :: nbmail
-        integer, intent(in) :: dim
+        integer(kind=8), intent(in) :: nbmail
+        integer(kind=8), intent(in) :: dim
         character(len=*), intent(in) :: typmai
-        integer, intent(out) :: nbtrou
+        integer(kind=8), intent(out) :: nbtrou
         character(len=*), intent(out) :: litrou
     end subroutine utflmd
 end interface

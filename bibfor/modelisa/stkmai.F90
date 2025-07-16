@@ -49,22 +49,20 @@ subroutine stkmai(ifl, icl, iv, rv, cv, &
 #include "asterfort/tesfin.h"
 #include "asterfort/tesmcl.h"
 #include "asterfort/utmess.h"
-#include "asterfort/jelira.h"
-#include "asterfort/char8_to_int.h"
 !
     real(kind=8) :: rv
-    integer :: nbm
+    integer(kind=8) :: nbm
     character(len=8) :: mcl(nbm), noma, b8
-    integer :: deblig, fmt(nbm)
+    integer(kind=8) :: deblig, fmt(nbm)
     character(len=14) :: cnl
     character(len=*) :: cv
     character(len=24) :: cnx, typ, nom, nommai
     save b8
 !
 !-----------------------------------------------------------------------
-    integer :: i, iadc, iadt, icl, ifl, iret, iret2
-    integer :: irtet, irteti, iv, nume, numn
-    integer :: numtcl
+    integer(kind=8) :: i, iadc, iadt, icl, ifl, iret
+    integer(kind=8) :: irtet, irteti, iv, nume, numn
+    integer(kind=8) :: numtcl
 !-----------------------------------------------------------------------
     data b8/'        '/
     call jemarq()

@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -27,18 +27,18 @@ interface
         character(len=*) :: nochmd
         character(len=*) :: nomprf
         character(len=*) :: nolopg
-        integer :: numpt
+        integer(kind=8) :: numpt
         real(kind=8) :: instan
-        integer :: numord
+        integer(kind=8) :: numord
         real(kind=8) :: val(*)
-        integer :: ncmpve
-        integer :: nbenty
-        integer :: nbrepg
-        integer :: nvalec
-        integer :: typent
-        integer :: typgeo
+        integer(kind=8) :: ncmpve
+        integer(kind=8) :: nbenty
+        integer(kind=8) :: nbrepg
+        integer(kind=8) :: nvalec
+        integer(kind=8) :: typent
+        integer(kind=8) :: typgeo
         character(len=8) :: nosdfu
-        integer :: tymast
-        integer :: codret
+        integer(kind=8) :: tymast
+        integer(kind=8) :: codret
     end subroutine ircmec
 end interface

@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -27,7 +27,7 @@ interface
         real(kind=8), intent(in) :: d0(2)
         real(kind=8), intent(in) :: e0(2)
         real(kind=8), intent(in) :: f0(2)
-        integer, intent(out) :: nbroot
+        integer(kind=8), intent(out) :: nbroot
         real(kind=8), intent(out) :: x(4)
         real(kind=8), intent(out) :: y(4)
     end subroutine dracs2

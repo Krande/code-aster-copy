@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -26,7 +26,7 @@ interface
                       depl, eps, epsx3)
         aster_logical :: testl1
         aster_logical :: testl2
-        integer :: nno
+        integer(kind=8) :: nno
         real(kind=8) :: r
         real(kind=8) :: x3
         real(kind=8) :: sina

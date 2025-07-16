@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -22,11 +22,11 @@ interface
                       nbGrNode  , grNodeName  ,&
                       nbNodeSelect, nodeFlag  , lfichUniq)
         character(len=*), intent(in) :: meshNameZ
-        integer, intent(in) :: nbNode
+        integer(kind=8), intent(in) :: nbNode
         character(len=8), pointer :: nodeName(:)
-        integer, intent(in) :: nbGrNode
+        integer(kind=8), intent(in) :: nbGrNode
         character(len=24), pointer :: grNodeName(:)
-        integer, intent(out) :: nbNodeSelect
+        integer(kind=8), intent(out) :: nbNodeSelect
         aster_logical, pointer :: nodeFlag(:)
         aster_logical, intent(in) :: lfichUniq
     end subroutine irnono

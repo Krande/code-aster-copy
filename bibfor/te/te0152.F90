@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -38,15 +38,15 @@ subroutine te0152(option, nomte)
 !
 ! --------------------------------------------------------------------------------------------------
 !
-    integer :: jv_geom, jv_mate, jv_mass
-    integer :: npg, nno
-    integer :: i, j, l, ipg
+    integer(kind=8) :: jv_geom, jv_mate, jv_mass
+    integer(kind=8) :: npg, nno
+    integer(kind=8) :: i, j, l, ipg
     real(kind=8) :: xxi, yyi, zzi
     real(kind=8) :: poids, volume, rho
     real(kind=8) :: x(27), y(27), z(27), xg, yg, zg
     real(kind=8) :: matine(6)
-    integer :: ipoids, ivf, idfde
-    integer :: j_mater
+    integer(kind=8) :: ipoids, ivf, idfde
+    integer(kind=8) :: j_mater
 !
 ! --------------------------------------------------------------------------------------------------
 !

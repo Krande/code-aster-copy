@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -26,19 +26,19 @@ interface
                       nbcomm, cpmono, pgl, nfs,&
                       nsg, toutms, hsr, dy, r,&
                       drdy, verjac, drdyb, iret, crit)
-        integer :: nsg
-        integer :: nfs
-        integer :: nvi
-        integer :: nr
-        integer :: nmat
+        integer(kind=8) :: nsg
+        integer(kind=8) :: nfs
+        integer(kind=8) :: nvi
+        integer(kind=8) :: nr
+        integer(kind=8) :: nmat
         character(len=*) :: fami
-        integer :: kpg
-        integer :: ksp
+        integer(kind=8) :: kpg
+        integer(kind=8) :: ksp
         character(len=16) :: rela_comp
         real(kind=8) :: toler
-        integer :: itmax
+        integer(kind=8) :: itmax
         character(len=8) :: mod
-        integer :: imat
+        integer(kind=8) :: imat
         real(kind=8) :: materd(nmat, 2)
         real(kind=8) :: materf(nmat, 2)
         real(kind=8) :: timed
@@ -48,7 +48,7 @@ interface
         real(kind=8) :: vind(nvi)
         real(kind=8) :: vinf(nvi)
         real(kind=8) :: yd(nr)
-        integer :: nbcomm(nmat, 3)
+        integer(kind=8) :: nbcomm(nmat, 3)
         character(len=24) :: cpmono(5*nmat+1)
         real(kind=8) :: pgl(3, 3)
         real(kind=8) :: toutms(nfs, nsg, 6)
@@ -56,9 +56,9 @@ interface
         real(kind=8) :: dy(nr)
         real(kind=8) :: r(nr)
         real(kind=8) :: drdy(nr, nr)
-        integer :: verjac
+        integer(kind=8) :: verjac
         real(kind=8) :: drdyb(nr, nr)
-        integer :: iret
+        integer(kind=8) :: iret
         real(kind=8) :: crit(*)
     end subroutine lcjacp
 end interface

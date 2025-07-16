@@ -26,7 +26,7 @@ subroutine lcmmjf(taus, coeft, materf, ifa, nmat, &
     implicit none
 #include "asterc/r8t0.h"
 #include "asterc/r8miem.h"
-    integer :: ifa, nmat, nbcomm(nmat, 3), nfs, nsg
+    integer(kind=8) :: ifa, nmat, nbcomm(nmat, 3), nfs, nsg
     real(kind=8) :: taus, coeft(nmat), rp, dt, alphap, dalpha, gammap, dgamma
     real(kind=8) :: dgdtau
     real(kind=8) :: dgdal, dfdr, hsr(nsg, nsg), dy(*), vind(*), materf(nmat)
@@ -69,7 +69,7 @@ subroutine lcmmjf(taus, coeft, materf, ifa, nmat, &
     real(kind=8) :: som, cisa2, deltgg, terme, petitg, cs
     real(kind=8) :: dtedto, dggdto, dtedal, dggdal, deltsr, dhdal, petith
 !
-    integer :: ifl, is, nbsys, iu, ir, iret, nuecou
+    integer(kind=8) :: ifl, is, nbsys, iu, ir, iret, nuecou
 !     ----------------------------------------------------------------
 !
 !     DANS VIS : 1 = ALPHA, 2=GAMMA, 3=P

@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -67,7 +67,7 @@ subroutine gdmine(kp, nno, pjacob, en, grani, &
     real(kind=8) :: amat7(3, 3), vect1(3), vect2(3)
 !
 !-----------------------------------------------------------------------
-    integer :: i, j, kp, nno
+    integer(kind=8) :: i, j, kp, nno
     real(kind=8) :: alfnmk, coef, delnmk, pas, pjacob, un, zero
 !
 !-----------------------------------------------------------------------

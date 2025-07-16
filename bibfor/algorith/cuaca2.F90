@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -32,10 +32,10 @@ subroutine cuaca2(deficu, resocu, nbliac, spliai, indfac, &
 #include "asterfort/wkvect.h"
 !
     character(len=24) :: deficu, resocu
-    integer :: nbliac
-    integer :: spliai
-    integer :: indfac
-    integer :: lmat
+    integer(kind=8) :: nbliac
+    integer(kind=8) :: spliai
+    integer(kind=8) :: indfac
+    integer(kind=8) :: lmat
     real(kind=8) :: xjvmax
 !
 ! ----------------------------------------------------------------------
@@ -60,18 +60,18 @@ subroutine cuaca2(deficu, resocu, nbliac, spliai, indfac, &
 !
 !
 !
-    integer :: jdecal
-    integer :: nbddl, jva, jvale, jpoi, neq
-    integer :: iliac, jj, lliac, lljac, ii, dercol, bloc
-    integer :: jouv, nbbloc
+    integer(kind=8) :: jdecal
+    integer(kind=8) :: nbddl, jva, jvale, jpoi, neq
+    integer(kind=8) :: iliac, jj, lliac, lljac, ii, dercol, bloc
+    integer(kind=8) :: jouv, nbbloc
     real(kind=8) :: val
     character(len=19) :: liac, cm1a, matr, stoc, ouvert
-    integer :: jliac, jcm1a
+    integer(kind=8) :: jliac, jcm1a
     character(len=24) :: apddl, apcoef, poinoe
-    integer :: japddl, japcoe
-    integer, pointer :: scbl(:) => null()
-    integer, pointer :: scde(:) => null()
-    integer, pointer :: scib(:) => null()
+    integer(kind=8) :: japddl, japcoe
+    integer(kind=8), pointer :: scbl(:) => null()
+    integer(kind=8), pointer :: scde(:) => null()
+    integer(kind=8), pointer :: scib(:) => null()
 !
 ! ----------------------------------------------------------------------
 !

@@ -22,7 +22,6 @@ subroutine rapo2d(numdlz, iocc, fonrez, lisrez, chargz)
     implicit none
 #include "jeveux.h"
 #include "asterc/getfac.h"
-#include "asterc/r8prem.h"
 #include "asterfort/afrela.h"
 #include "asterfort/assert.h"
 #include "asterfort/assvec.h"
@@ -70,7 +69,7 @@ subroutine rapo2d(numdlz, iocc, fonrez, lisrez, chargz)
 !
 !
 ! --------- VARIABLES LOCALES ---------------------------
-    integer :: nmocl
+    integer(kind=8) :: nmocl
     parameter(nmocl=300)
     character(len=4) :: typval, typcoe
     character(len=8) :: betaf, mod, nomg
@@ -85,20 +84,20 @@ subroutine rapo2d(numdlz, iocc, fonrez, lisrez, chargz)
     character(len=8) :: charge
     character(len=14) :: numddl
     character(len=19) :: lisrel
-    integer :: ntypel(nmocl), icmp(6), niv, ifm, vali(2)
-    integer :: iop, nliai, i, inom
-    integer :: nbcmp, nddla, nbec, jprnm, nlili, k, iaprno, lonlis, ilisno
-    integer :: jlisma, nbma, nbno, numnop
-    integer :: ino, idch1, idch2, nbterm, jno2
-    integer ::       ival
-    integer :: iocc
+    integer(kind=8) :: ntypel(nmocl), icmp(6), niv, ifm, vali(2)
+    integer(kind=8) :: iop, nliai, i, inom
+    integer(kind=8) :: nbcmp, nddla, nbec, jprnm, nlili, k, iaprno, lonlis, ilisno
+    integer(kind=8) :: jlisma, nbma, nbno, numnop
+    integer(kind=8) :: ino, idch1, idch2, nbterm, jno2
+    integer(kind=8) ::       ival
+    integer(kind=8) :: iocc
     real(kind=8) :: igzz, coorig(3), beta, eps, un
     real(kind=8) :: xpou, ypou, s, s1, xg, yg, dnorme
     real(kind=8) :: ax, ay, axx, ayy, valr(9)
     complex(kind=8) :: betac, ccmp(3)
     complex(kind=8), pointer :: coec(:) => null()
     real(kind=8), pointer :: coer(:) => null()
-    integer, pointer :: dime(:) => null()
+    integer(kind=8), pointer :: dime(:) => null()
     real(kind=8), pointer :: direct(:) => null()
     real(kind=8), pointer :: inertie_raccord(:) => null()
     character(len=8), pointer :: lisddl(:) => null()

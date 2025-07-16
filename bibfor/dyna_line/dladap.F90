@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -32,7 +32,6 @@ subroutine dladap(result, tinit, lcrea, lamort, neq, &
 #include "asterf_types.h"
 #include "jeveux.h"
 #include "asterc/etausr.h"
-#include "asterc/getfac.h"
 #include "asterc/getres.h"
 #include "asterc/r8prem.h"
 #include "asterfort/dismoi.h"
@@ -100,7 +99,7 @@ subroutine dladap(result, tinit, lcrea, lamort, neq, &
 !
 ! --------------------------------------------------------------------------------------------------
 !
-    integer :: neq, imat(*), liad(*), nchar, nveca, nume, numrep
+    integer(kind=8) :: neq, imat(*), liad(*), nchar, nveca, nume, numrep
     character(len=8) :: masse, rigid, amort, result
     character(len=24) :: modele, carele, charge, fomult, mate, mateco, numedd
     character(len=24) :: infoch, lifo(*)
@@ -108,19 +107,19 @@ subroutine dladap(result, tinit, lcrea, lamort, neq, &
     real(kind=8) :: fexte(*), famor(*), fliai(*)
     aster_logical :: lamort, lcrea
     type(NL_DS_Energy), intent(inout) :: ds_energy
-    integer, parameter :: nbtyar = 6
-    integer :: ifm, niv, alarm
-    integer :: iv1, iv2, ieq, perc, last_prperc, freqpr
-    integer :: jdepl
-    integer :: jvite, jvit2
-    integer :: jacce, jacc2
-    integer :: jind1, jind2
-    integer :: jvip1, jvip2
-    integer :: jvmin, jvmin1, jvmin2
-    integer :: istoc
-    integer :: nddl
-    integer :: iwk0
-    integer :: vali(3)
+    integer(kind=8), parameter :: nbtyar = 6
+    integer(kind=8) :: ifm, niv, alarm
+    integer(kind=8) :: iv1, iv2, ieq, perc, last_prperc, freqpr
+    integer(kind=8) :: jdepl
+    integer(kind=8) :: jvite, jvit2
+    integer(kind=8) :: jacce, jacc2
+    integer(kind=8) :: jind1, jind2
+    integer(kind=8) :: jvip1, jvip2
+    integer(kind=8) :: jvmin, jvmin1, jvmin2
+    integer(kind=8) :: istoc
+    integer(kind=8) :: nddl
+    integer(kind=8) :: iwk0
+    integer(kind=8) :: vali(3)
     character(len=4) :: typ1(nbtyar)
     character(len=8) :: k8b
     character(len=8) :: vvar
@@ -136,18 +135,18 @@ subroutine dladap(result, tinit, lcrea, lamort, neq, &
     real(kind=8) :: tjob
     real(kind=8) :: pas2
     real(kind=8) :: valr(3)
-    integer :: iwk1, iwk2, iforc1, iexcl
-    integer :: nper, nrmax, nr, npas, ipas, iparch, iarchi
-    integer :: nnc, nbexcl, nbipas, iveri, nbordr, nbiter
-    integer :: nbpasc, ifnobi, ifcibi
-    integer :: adeeq
-    integer :: ibid
+    integer(kind=8) :: iwk1, iwk2, iforc1, iexcl
+    integer(kind=8) :: nper, nrmax, nr, npas, ipas, iparch, iarchi
+    integer(kind=8) :: nnc, nbexcl, nbipas, iveri, nbordr, nbiter
+    integer(kind=8) :: nbpasc, ifnobi, ifcibi
+    integer(kind=8) :: adeeq
+    integer(kind=8) :: ibid
     aster_logical :: ener, l_obsv
     real(kind=8), pointer :: vale(:) => null()
     character(len=19), intent(inout) :: sd_obsv
     character(len=*), intent(in) :: mesh
-    integer :: ipas_obs
-    integer :: idepmoi, ivitmoi, iaccmoi
+    integer(kind=8) :: ipas_obs
+    integer(kind=8) :: idepmoi, ivitmoi, iaccmoi
     blas_int :: b_incx, b_incy, b_n
 !
 ! --------------------------------------------------------------------------------------------------

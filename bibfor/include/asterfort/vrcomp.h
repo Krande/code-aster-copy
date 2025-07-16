@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -21,7 +21,7 @@ interface
                       comporPrevZ_, typeStop_,  verbose_,&
                       lModiVari_)
         character(len=*), intent(in) :: comporCurrZ, variZ, ligrelCurrZ
-        integer, intent(out) :: iret
+        integer(kind=8), intent(out) :: iret
         character(len=*), optional, intent(in) :: comporPrevZ_
         character(len=1), optional, intent(in) :: typeStop_
         aster_logical, intent(in), optional :: verbose_

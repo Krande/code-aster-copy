@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -23,7 +23,7 @@ interface
               wbjhm,epm,sbjh,wbjh)
             use THM_type
         type(THM_DS), intent(in) :: ds_thm
-        integer, intent(in) :: j_mater
+        integer(kind=8), intent(in) :: j_mater
         real(kind=8), intent(in) :: p1, p1m, dp2,dp1
         real(kind=8), intent(in) :: phi0
         real(kind=8), intent(in) :: ep, surf, shut,sbjh,wbjh

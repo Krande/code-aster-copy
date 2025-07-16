@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -26,22 +26,22 @@ interface
                       jfon, jnofaf, nbfond, jbas, jtail, jfonmu,&
                       ndim, goinop)
         character(len=8) :: fiss
-        integer :: nmaen1
-        integer :: nmaen2
-        integer :: nmaen3
-        integer :: nmafon
-        integer :: jmaen1
-        integer :: jmaen2
-        integer :: jmaen3
-        integer :: jmafon
-        integer :: nfon
-        integer :: jfon
-        integer :: jnofaf
-        integer :: nbfond
-        integer :: jbas
-        integer :: jtail
-        integer :: jfonmu
-        integer :: ndim
+        integer(kind=8) :: nmaen1
+        integer(kind=8) :: nmaen2
+        integer(kind=8) :: nmaen3
+        integer(kind=8) :: nmafon
+        integer(kind=8) :: jmaen1
+        integer(kind=8) :: jmaen2
+        integer(kind=8) :: jmaen3
+        integer(kind=8) :: jmafon
+        integer(kind=8) :: nfon
+        integer(kind=8) :: jfon
+        integer(kind=8) :: jnofaf
+        integer(kind=8) :: nbfond
+        integer(kind=8) :: jbas
+        integer(kind=8) :: jtail
+        integer(kind=8) :: jfonmu
+        integer(kind=8) :: ndim
         aster_logical :: goinop
     end subroutine xlmail
 end interface

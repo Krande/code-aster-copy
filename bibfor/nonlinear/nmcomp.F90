@@ -15,7 +15,7 @@
 ! You should have received a copy of the GNU General Public License
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
-! aslint: disable=W1504,C1505,W1306
+! aslint: disable=W1504,C1505,W1306,W0413
 !
 subroutine nmcomp(BEHinteg, &
                   fami, kpg, ksp, ndim, typmod, &
@@ -30,7 +30,7 @@ subroutine nmcomp(BEHinteg, &
     implicit none
 !
 #include "asterc/r8vide.h"
-#include "asterc/r8gaem.h"
+#include "asterc/r8prem.h"
 #include "asterf_types.h"
 #include "asterfort/assert.h"
 #include "asterfort/Behaviour_type.h"
@@ -38,7 +38,7 @@ subroutine nmcomp(BEHinteg, &
 #include "asterfort/redece.h"
 !
     type(Behaviour_Integ) :: BEHinteg
-    integer :: kpg, ksp, ndim, imate, codret, neps, nsig, ndsde
+    integer(kind=8) :: kpg, ksp, ndim, imate, codret, neps, nsig, ndsde
     character(len=*)    :: fami
     character(len=8)    :: typmod(*)
     character(len=16)   :: compor(*), option
@@ -116,8 +116,8 @@ subroutine nmcomp(BEHinteg, &
 ! --------------------------------------------------------------------------------------------------
     aster_logical :: conv_cp, l_epsi_varc, lMatr, lVari, lSigm, lMatrPred, lPred, invert
     aster_logical :: l_defo_meca, l_czm, l_large, l_deborst, l_grad_vari
-    integer :: icp, numlc, nvi_all, nvi, k, l, ndimsi
-    integer :: codret_vali, codret_ldc, codret_cp
+    integer(kind=8) :: icp, numlc, nvi_all, nvi, k, l, ndimsi
+    integer(kind=8) :: codret_vali, codret_ldc, codret_cp
     real(kind=8):: prec
     real(kind=8):: epsm_meca(neps), deps_meca(neps), epsm(neps), deps(neps)
     real(kind=8) :: dsidep_cp(merge(nsig, 6, nsig*neps .eq. ndsde), &
@@ -284,7 +284,7 @@ subroutine nmcomp(BEHinteg, &
                 else if (abs(dsidep_cp(3, 3)) .gt. abs(sigp(3))) then
                     invert = ASTER_TRUE
                 else
-                    invert = abs(dsidep_cp(3, 3))/abs(sigp(3)) .gt. 1.d0/r8gaem()
+                    invert = abs(dsidep_cp(3, 3))/abs(sigp(3)) .gt. r8prem()
                 end if
 
                 if (invert) then
@@ -329,7 +329,7 @@ subroutine nmcomp(BEHinteg, &
             else if (abs(dsidep(3, 3)) .gt. c_min) then
                 invert = ASTER_TRUE
             else
-                invert = abs(dsidep(3, 3))/c_min .gt. 1.d0/r8gaem()
+                invert = abs(dsidep(3, 3))/c_min .gt. r8prem()
             end if
 
             if (invert) then

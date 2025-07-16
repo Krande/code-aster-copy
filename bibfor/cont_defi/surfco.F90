@@ -21,7 +21,6 @@ subroutine surfco(sdcont, mesh)
     implicit none
 !
 #include "asterf_types.h"
-#include "asterfort/assert.h"
 #include "asterfort/cfdisi.h"
 #include "asterfort/infniv.h"
 #include "asterfort/surfc1.h"
@@ -45,9 +44,9 @@ subroutine surfco(sdcont, mesh)
 !
 ! --------------------------------------------------------------------------------------------------
 !
-    integer :: unit_msg, lvel_msg
+    integer(kind=8) :: unit_msg, lvel_msg
     character(len=24) :: sdcont_defi
-    integer :: cont_form
+    integer(kind=8) :: cont_form
 !
 ! --------------------------------------------------------------------------------------------------
 !

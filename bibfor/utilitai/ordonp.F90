@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -38,8 +38,8 @@ subroutine ordonp(nomfon)
 !     PAR ORDRE CROISSANT DES PARAMETRES
     character(len=19) :: fonc0
     character(len=24) :: chval, chpar, sfval, sfpar
-    integer :: ipar, lpar, nbpara, ior, ival, lval
-    integer :: i, j, it, nbp, nbpt
+    integer(kind=8) :: ipar, lpar, nbpara, ior, ival, lval
+    integer(kind=8) :: i, j, it, nbp, nbpt
     real(kind=8) :: xt
 !     ------------------------------------------------------------------
 !

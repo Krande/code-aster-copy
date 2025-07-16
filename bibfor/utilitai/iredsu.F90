@@ -29,9 +29,7 @@ subroutine iredsu(macr, fileUnit, versio)
 #include "asterfort/jedetr.h"
 #include "asterfort/jelira.h"
 #include "asterfort/jemarq.h"
-#include "asterfort/jenonu.h"
 #include "asterfort/jeveuo.h"
-#include "asterfort/jexnom.h"
 #include "asterfort/jexnum.h"
 #include "asterfort/rsexch.h"
 #include "asterfort/rslipa.h"
@@ -39,7 +37,7 @@ subroutine iredsu(macr, fileUnit, versio)
 #include "asterfort/as_allocate.h"
 #include "asterfort/char8_to_int.h"
 !
-    integer, intent(in) :: fileUnit, versio
+    integer(kind=8), intent(in) :: fileUnit, versio
     character(len=*), intent(in) :: macr
 !
 !     BUT:
@@ -61,12 +59,12 @@ subroutine iredsu(macr, fileUnit, versio)
 !
 ! ......................................................................
 !
-    integer :: i, icol, idrx, idry, idrz, idx, idy, idz
-    integer :: ifor, im, imat
-    integer :: in, ind, inoe, inoeu, iord, iret, is, is2, ityp, i2
-    integer :: j, k, m2, nbordr, nstat
-    integer :: jnoeu
-    integer :: nbnoeu, nbmodt, nbmode, nbmods, ntriar, ntriam
+    integer(kind=8) :: i, icol, idrx, idry, idrz, idx, idy, idz
+    integer(kind=8) :: ifor, im, imat
+    integer(kind=8) :: in, ind, inoe, inoeu, iord, iret, is, is2, ityp, i2
+    integer(kind=8) :: j, k, m2, nbordr, nstat
+    integer(kind=8) :: jnoeu
+    integer(kind=8) :: nbnoeu, nbmodt, nbmode, nbmods, ntriar, ntriam
     character(len=8) :: macrel, noma, noeu, cmp
     character(len=16) :: fieldType
     character(len=19) :: basemo, noch19
@@ -82,7 +80,7 @@ subroutine iredsu(macr, fileUnit, versio)
     real(kind=8), pointer :: mael_raid_vale(:) => null()
     real(kind=8), pointer :: mael_raid_vali(:) => null()
     character(len=24), pointer :: mael_refe(:) => null()
-    integer, pointer :: ordr(:) => null()
+    integer(kind=8), pointer :: ordr(:) => null()
     real(kind=8), pointer :: mael_mass_vale(:) => null()
     real(kind=8), pointer :: mael_mass_vali(:) => null()
 !

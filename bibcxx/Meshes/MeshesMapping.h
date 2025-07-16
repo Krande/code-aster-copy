@@ -97,6 +97,12 @@ class MeshesMapping : public DataStructure {
 
     BaseMeshPtr getFirstMesh() const { return _firstBaseMesh; };
     BaseMeshPtr getSecondMesh() const { return _secondBaseMesh; };
+
+    const JeveuxVectorReal getCoefficients() const { return _pjefCf; }
+
+    const JeveuxVectorLong getNodesIds() const { return _pjefNu; }
+
+    const JeveuxVectorLong getNumberOfMasterNodes() const { return _pjefNb; }
 };
 
 /**

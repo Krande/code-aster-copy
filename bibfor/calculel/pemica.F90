@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -38,7 +38,7 @@ subroutine pemica(champ, long, vr, nbmail, nummai, &
 #include "asterfort/utmess.h"
 !
     character(len=*) :: champ
-    integer :: long, nbmail, nummai(*), iorig
+    integer(kind=8) :: long, nbmail, nummai(*), iorig
     real(kind=8) :: vr(*), orig(3)
 !     FAIRE DES OPERATIONS SUR UN CHAM_ELEM (OU D'UN RESUELEM)
 !            (NOTION D'INTEGRALE DU CHAMP SUR LE MODELE)
@@ -51,8 +51,8 @@ subroutine pemica(champ, long, vr, nbmail, nummai, &
 ! IN  : NUMMAI : NUMEROS DES MAILLES
 !     ------------------------------------------------------------------
 !     ------------------------------------------------------------------
-    integer :: longt, long2, mode, nperm
-    integer :: itype, iordre
+    integer(kind=8) :: longt, long2, mode, nperm
+    integer(kind=8) :: itype, iordre
     real(kind=8) :: masse, ixx, iyy, izz, ixy, ixz, iyz, angl(3)
     character(len=8) :: scal
     character(len=4) :: docu
@@ -62,13 +62,13 @@ subroutine pemica(champ, long, vr, nbmail, nummai, &
     real(kind=8) :: v1(3), v2(3), v3(3), jacaux(6), ixpr2, iypr2
 !     ------------------------------------------------------------------
 !-----------------------------------------------------------------------
-    integer :: i, ibid, icage, icoef, idecgr, iel, im
-    integer :: j, jgr, jligr, k
-    integer :: nbgr, nbvec, nel, nitjac
+    integer(kind=8) :: i, ibid, icage, icoef, idecgr, iel, im
+    integer(kind=8) :: j, jgr, jligr, k
+    integer(kind=8) :: nbgr, nbvec, nel, nitjac
     real(kind=8) :: dx, dy, dz, epsi, pgx, pgy, pgz
     real(kind=8) :: rddg
     character(len=24), pointer :: celk(:) => null()
-    integer, pointer :: celd(:) => null()
+    integer(kind=8), pointer :: celd(:) => null()
     real(kind=8), pointer :: celv(:) => null()
 !-----------------------------------------------------------------------
     call jemarq()

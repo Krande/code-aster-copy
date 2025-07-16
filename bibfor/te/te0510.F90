@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -60,42 +60,42 @@ subroutine te0510(option, nomte)
     character(len=8) :: elp, face
     character(len=24) :: noma, typma
     character(len=16) :: typdis
-    integer :: igeom, jlsn, jlst, jgrlsn, jgrlst
-    integer :: jcnset, jpint, jmilt, jnit, jaint, jdecou
-    integer :: jout1, jout2, jout3, jout4, jout5, jout6, jout7, jphe
-    integer :: iadzi, iazk24
-    integer :: ninter, nface, cface(30, 6), nmaabs
-    integer :: i, j, k, jj, nnop
+    integer(kind=8) :: igeom, jlsn, jlst, jgrlsn, jgrlst
+    integer(kind=8) :: jcnset, jpint, jmilt, jnit, jaint, jdecou
+    integer(kind=8) :: jout1, jout2, jout3, jout4, jout5, jout6, jout7, jphe
+    integer(kind=8) :: iadzi, iazk24
+    integer(kind=8) :: ninter, nface, cface(30, 6), nmaabs
+    integer(kind=8) :: i, j, k, jj, nnop
     real(kind=8) :: nd(3), grlt(3), tau1(3), tau2(3), norme, ps
     real(kind=8) :: norm2, ptree(3), ptref(3)
     real(kind=8) :: lsn, minlst, lonref
-    integer :: ndim, ibid, nptf, nbtot, nfiss, jtab(7), iret
+    integer(kind=8) :: ndim, ibid, nptf, nbtot, nfiss, jtab(7), iret
     aster_logical :: elim, elim2
-    integer :: zxain, ifiss, ncompp, ncompa, ncompb, ncompc, ncompg
-    integer :: ncompe, jstano
-    integer :: jfisco, jfiss, kfiss, kcoef, ncomph, he, hescl, hmait
-    integer :: nfisc, ifisc, nfisc2, nn, vali(2), jtyp
+    integer(kind=8) :: zxain, ifiss, ncompp, ncompa, ncompb, ncompc, ncompg
+    integer(kind=8) :: ncompe, jstano
+    integer(kind=8) :: jfisco, jfiss, kfiss, kcoef, ncomph, he, hescl, hmait
+    integer(kind=8) :: nfisc, ifisc, nfisc2, nn, vali(2), jtyp
     character(len=16) :: enr, motfac
     real(kind=8) :: crijonc
     parameter(crijonc=1.d-2)
 !
 !     ALLOCATION DES OBJETS TEMPORAIRES A UNE TAILLE SUFFISANTE
 !     (N'EST PAS EXACTEMENT LA TAILLE DES OBJETS EN SORTIE)
-    integer :: ptmaxi
+    integer(kind=8) :: ptmaxi
     parameter(ptmaxi=68)
     real(kind=8) :: pinter(ptmaxi*3)
 !
-    integer :: zxainx
+    integer(kind=8) :: zxainx
     parameter(zxainx=5)
     real(kind=8) :: ainter(ptmaxi*zxainx)
 !
-    integer :: nfimax
+    integer(kind=8) :: nfimax
     parameter(nfimax=10)
-    integer :: fisc(2*nfimax), fisco(2*nfimax)
+    integer(kind=8) :: fisc(2*nfimax), fisco(2*nfimax)
 !
-    integer :: pthea(nfimax*ptmaxi)
+    integer(kind=8) :: pthea(nfimax*ptmaxi)
 !
-    integer :: nnopma
+    integer(kind=8) :: nnopma
     parameter(nnopma=20)
     real(kind=8) :: ff(nnopma)
     blas_int :: b_incx, b_incy, b_n

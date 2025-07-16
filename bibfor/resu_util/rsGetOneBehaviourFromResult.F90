@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -25,7 +25,7 @@ subroutine rsGetOneBehaviourFromResult(resultZ, nbStore, listStore, compor)
 #include "asterfort/rsexch.h"
 !
     character(len=*), intent(in) :: resultZ
-    integer, intent(in) :: nbStore, listStore(nbStore)
+    integer(kind=8), intent(in) :: nbStore, listStore(nbStore)
     character(len=*), intent(out) :: compor
 !
 ! --------------------------------------------------------------------------------------------------
@@ -44,7 +44,7 @@ subroutine rsGetOneBehaviourFromResult(resultZ, nbStore, listStore, compor)
 ! --------------------------------------------------------------------------------------------------
 !
     character(len=24) :: comporRefe, comporRead
-    integer :: numeStore, iStore, icode, iret, indxCmpExcl
+    integer(kind=8) :: numeStore, iStore, icode, iret, indxCmpExcl
 !
 ! --------------------------------------------------------------------------------------------------
 !

@@ -28,8 +28,8 @@ subroutine caralv(sdcont, nb_cont_zone, cont_form)
 #include "asterfort/utmess.h"
 !
     character(len=8), intent(in) :: sdcont
-    integer, intent(in) :: cont_form
-    integer, intent(in) :: nb_cont_zone
+    integer(kind=8), intent(in) :: cont_form
+    integer(kind=8), intent(in) :: nb_cont_zone
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -45,13 +45,13 @@ subroutine caralv(sdcont, nb_cont_zone, cont_form)
 !
 ! --------------------------------------------------------------------------------------------------
 !
-    integer :: i_zone
+    integer(kind=8) :: i_zone
     aster_logical :: l_all, l_exist
     aster_logical :: l_verif, l_newt_geom, l_geom_hpp, l_pena, l_node, l_glis_zone
-    integer :: contInit
+    integer(kind=8) :: contInit
     character(len=24) :: sdcont_defi
     character(len=24) :: sdcont_paraci
-    integer, pointer :: v_sdcont_paraci(:) => null()
+    integer(kind=8), pointer :: v_sdcont_paraci(:) => null()
 !
 ! --------------------------------------------------------------------------------------------------
 !

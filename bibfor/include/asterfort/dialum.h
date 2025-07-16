@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -21,9 +21,9 @@
 interface
     subroutine dialum(nno, nddl, ldim, wgt, masco,&
                       masdi)
-        integer :: nno
-        integer :: nddl
-        integer :: ldim
+        integer(kind=8) :: nno
+        integer(kind=8) :: nddl
+        integer(kind=8) :: ldim
         real(kind=8) :: wgt
         real(kind=8) :: masco(*)
         real(kind=8) :: masdi(*)

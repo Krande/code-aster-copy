@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -60,17 +60,17 @@ subroutine mdgep3(neq, nbexci, psidel, temps, nomfon, tab, kacce, kprof, &
 #include "asterfort/utmess.h"
 #include "asterfort/vecini.h"
 ! PARAMETRES
-    integer, intent(in) :: neq, nbexci
+    integer(kind=8), intent(in) :: neq, nbexci
     real(kind=8), intent(in) :: psidel(neq, nbexci), temps
     character(len=8), intent(in) :: nomfon(2*nbexci)
     real(kind=8), intent(out) :: tab(neq)
     character(len=4), intent(in), optional :: kacce, kprof
-    integer, intent(in), optional :: inst
-    integer, intent(inout), optional :: indice, taille
+    integer(kind=8), intent(in), optional :: inst
+    integer(kind=8), intent(inout), optional :: indice, taille
 ! VARIABLES LOCALES
-    integer :: ieq, ier, iex, cntr, ietdeb, ietrat, ietmax, ietfin
-    integer :: rang, nbproc, nbloc, nrest, ifm, niv, instl, borne1, borne2
-    integer :: m, iaux
+    integer(kind=8) :: ieq, ier, iex, cntr, ietdeb, ietrat, ietmax, ietfin
+    integer(kind=8) :: rang, nbproc, nbloc, nrest, ifm, niv, instl, borne1, borne2
+    integer(kind=8) :: m, iaux
     real(kind=8) :: coef, tempsl, tempst, zero
     character(len=4) :: kaccl, kprol
     character(len=8) :: nompar, k8bid

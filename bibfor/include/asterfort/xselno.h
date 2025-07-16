@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -21,15 +21,15 @@
 interface
     subroutine xselno(nno, nnop, nbsig, nse, ndim,&
                       jcnset, siseno, jout2)
-        integer :: mxval
+        integer(kind=8) :: mxval
         parameter (mxval=32*10*6)
-        integer :: nno
-        integer :: nnop
-        integer :: nbsig
-        integer :: nse
-        integer :: ndim
-        integer :: jcnset
+        integer(kind=8) :: nno
+        integer(kind=8) :: nnop
+        integer(kind=8) :: nbsig
+        integer(kind=8) :: nse
+        integer(kind=8) :: ndim
+        integer(kind=8) :: jcnset
         real(kind=8) :: siseno(mxval)
-        integer :: jout2
+        integer(kind=8) :: jout2
     end subroutine xselno
 end interface

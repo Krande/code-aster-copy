@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -30,7 +30,7 @@ subroutine verins(sddisc, ds_posttimestep)
     character(len=19) :: sddisc
     real(kind=8) :: vibr_inst, inst_init, valr(1)
     type(NL_DS_SelectList) :: selectList
-    integer :: iinst, nb_nl_inst, nb_found, alarm(2)
+    integer(kind=8) :: iinst, nb_nl_inst, nb_found, alarm(2)
     real(kind=8), pointer :: nl_inst_val(:) => null()
     real(kind=8), pointer :: nl_inst_info(:) => null()
     character(len=15) :: mess_alarm(2)

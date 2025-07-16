@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -21,7 +21,6 @@ subroutine cazouu(keywf, nb_cont_zone, keyw_, keyw_type_)
     implicit none
 !
 #include "asterf_types.h"
-#include "asterc/getmjm.h"
 #include "asterc/r8prem.h"
 #include "asterfort/assert.h"
 #include "asterfort/getvis.h"
@@ -32,7 +31,7 @@ subroutine cazouu(keywf, nb_cont_zone, keyw_, keyw_type_)
 ! person_in_charge: mickael.abbas at edf.fr
 !
     character(len=16), intent(in) :: keywf
-    integer, intent(in) :: nb_cont_zone
+    integer(kind=8), intent(in) :: nb_cont_zone
     character(len=*), intent(in) :: keyw_
     character(len=*), intent(in) :: keyw_type_
 !
@@ -53,12 +52,12 @@ subroutine cazouu(keywf, nb_cont_zone, keyw_, keyw_type_)
 !
     character(len=16) :: keyw
     aster_logical :: l_error
-    integer :: i_zone, noc
+    integer(kind=8) :: i_zone, noc
     real(kind=8) :: vale_r
-    integer :: vale_i
+    integer(kind=8) :: vale_i
     character(len=16) :: vale_k
     real(kind=8) :: vale_refe_r
-    integer :: vale_refe_i
+    integer(kind=8) :: vale_refe_i
     character(len=16) :: vale_refe_k
     character(len=1) :: keyw_type
 !

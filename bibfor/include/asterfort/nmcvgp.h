@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -22,10 +22,10 @@ interface
     subroutine nmcvgp(sddisc    , nume_inst, sderro, valinc, fonact,&
                       ds_contact)
         use NonLin_Datastructure_type
-        integer, intent(in) :: fonact(*)
+        integer(kind=8), intent(in) :: fonact(*)
         character(len=19), intent(in) :: sddisc
         character(len=19), intent(in) :: valinc(*)
-        integer, intent(in) :: nume_inst
+        integer(kind=8), intent(in) :: nume_inst
         character(len=24), intent(in) :: sderro
         type(NL_DS_Contact), intent(in) :: ds_contact
     end subroutine nmcvgp

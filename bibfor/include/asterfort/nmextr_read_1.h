@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2018 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -23,11 +23,11 @@ interface
                              nb_field, nb_field_comp)
         use NonLin_Datastructure_type
         type(NL_DS_InOut), intent(in) :: ds_inout
-        integer, intent(in) :: nb_keyw_fact
+        integer(kind=8), intent(in) :: nb_keyw_fact
         character(len=16), intent(in) :: keyw_fact
         character(len=24), pointer :: list_field(:)
-        integer, pointer :: rela_field_keyw(:)
-        integer, intent(out) :: nb_field
-        integer, intent(out) :: nb_field_comp
+        integer(kind=8), pointer :: rela_field_keyw(:)
+        integer(kind=8), intent(out) :: nb_field
+        integer(kind=8), intent(out) :: nb_field_comp
     end subroutine nmextr_read_1
 end interface

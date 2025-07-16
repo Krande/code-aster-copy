@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -21,7 +21,7 @@ subroutine lcmmjc(coeft, ifa, nmat, nbcomm, ir, &
                   sgnr, daldgr)
     implicit none
 #include "asterc/r8prem.h"
-    integer :: ifa, nmat, nbcomm(nmat, 3), ir, is
+    integer(kind=8) :: ifa, nmat, nbcomm(nmat, 3), ir, is
     real(kind=8) :: coeft(nmat), daldgr, dgamms, alphmr, sgnr
     character(len=16) :: necrci
 ! person_in_charge: jean-michel.proix at edf.fr
@@ -44,7 +44,7 @@ subroutine lcmmjc(coeft, ifa, nmat, nbcomm, ir, &
 !
 !     ----------------------------------------------------------------
     real(kind=8) :: d, dalpha
-    integer :: iec, nuecin
+    integer(kind=8) :: iec, nuecin
 !     ----------------------------------------------------------------
 !
 !

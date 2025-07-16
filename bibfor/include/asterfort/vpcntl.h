@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -24,27 +24,27 @@ interface
                       precdc, ier, vpinf, vpmax, freq,&
                       err, charge, typres, nblagr, solveu,&
                       nbrssa, precsh)
-        integer :: nfreq
+        integer(kind=8) :: nfreq
         character(len=1) :: cty
         character(len=*) :: mode
         character(len=*) :: option
         real(kind=8) :: omemin
         real(kind=8) :: omemax
         real(kind=8) :: seuil
-        integer :: ipos(*)
-        integer :: lmat(3)
+        integer(kind=8) :: ipos(*)
+        integer(kind=8) :: lmat(3)
         real(kind=8) :: omecor
         real(kind=8) :: precdc
-        integer :: ier
+        integer(kind=8) :: ier
         real(kind=8) :: vpinf
         real(kind=8) :: vpmax
         real(kind=8) :: freq(nfreq)
         real(kind=8) :: err(nfreq)
         real(kind=8) :: charge(nfreq)
         character(len=*) :: typres
-        integer :: nblagr
+        integer(kind=8) :: nblagr
         character(len=19) :: solveu
-        integer :: nbrssa
+        integer(kind=8) :: nbrssa
         real(kind=8) :: precsh
     end subroutine vpcntl
 end interface

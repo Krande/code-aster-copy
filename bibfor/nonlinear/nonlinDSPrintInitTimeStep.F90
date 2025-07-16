@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -24,8 +24,6 @@ subroutine nonlinDSPrintInitTimeStep(ds_print)
     implicit none
 !
 #include "asterf_types.h"
-#include "asterfort/assert.h"
-#include "asterfort/isfonc.h"
 #include "asterfort/utmess.h"
 #include "asterfort/ComputeTableWidth.h"
 #include "asterfort/SetTableColumn.h"
@@ -44,7 +42,7 @@ subroutine nonlinDSPrintInitTimeStep(ds_print)
 !
 ! --------------------------------------------------------------------------------------------------
 !
-    integer :: i_col, line_width, i, nb_cols_active
+    integer(kind=8) :: i_col, line_width, i, nb_cols_active
     type(NL_DS_Table) :: table_cvg
     aster_logical :: l_info_time, l_csv, l_info_resi
     character(len=512) :: sep_line

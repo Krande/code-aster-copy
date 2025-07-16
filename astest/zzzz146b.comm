@@ -121,6 +121,7 @@ TABFS = CALC_STAB_PENTE(
     X2_MAXI=13.2,
     ALGO_EFWA=_F(ETAT_INIT=TAB_INIT, ITER_MAXI=1, A=50, N=1, M=1, MG=0, MARGE_PENTE=0.8),
     CHAM_DEFO=CO("chamdef"),
+    INIT_ALEA=70010,
 )
 
 # Indicateur de glissement sur un neoud N391 autour de la surface de rupture

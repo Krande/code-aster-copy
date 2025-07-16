@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -35,7 +35,7 @@ interface
         character(len=19), intent(in) :: hval_meelem(*), hval_measse(*)
         character(len=19), intent(in) :: hval_veasse(*), hval_veelem(*)
         character(len=19), intent(in) :: hval_algo(*), hval_incr(*)
-        integer, intent(in) :: listFuncActi(*)
+        integer(kind=8), intent(in) :: listFuncActi(*)
         type(NL_DS_System), intent(in) :: ds_system
     end subroutine accel0
 end interface

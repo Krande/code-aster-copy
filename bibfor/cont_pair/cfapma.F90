@@ -34,8 +34,6 @@ subroutine cfapma(noma, newgeo, ds_contact, lctfd, &
 #include "asterfort/cfposn.h"
 #include "asterfort/cfreli.h"
 #include "asterfort/cftanr.h"
-#include "asterfort/jenuno.h"
-#include "asterfort/jexnum.h"
 #include "asterfort/mmnorm.h"
 #include "asterfort/utmess.h"
 #include "asterfort/int_to_char8.h"
@@ -47,10 +45,10 @@ subroutine cfapma(noma, newgeo, ds_contact, lctfd, &
     character(len=19) :: newgeo
     real(kind=8) :: coorne(3), ksipr1, ksipr2
     real(kind=8) :: tau1m(3), tau2m(3)
-    integer :: izone, ndimg
-    integer :: posmam
-    integer :: posnoe, numnoe
-    integer :: iliai
+    integer(kind=8) :: izone, ndimg
+    integer(kind=8) :: posmam
+    integer(kind=8) :: posnoe, numnoe
+    integer(kind=8) :: iliai
     aster_logical :: lctfd
 !
 ! ----------------------------------------------------------------------
@@ -88,8 +86,8 @@ subroutine cfapma(noma, newgeo, ds_contact, lctfd, &
     real(kind=8) :: jeu
     real(kind=8) :: coornp(3)
     character(len=8) :: nomnoe
-    integer :: nbnom, nummam
-    integer :: posnsm(9)
+    integer(kind=8) :: nbnom, nummam
+    integer(kind=8) :: posnsm(9)
     real(kind=8) :: coefno(9)
 !
 ! ----------------------------------------------------------------------

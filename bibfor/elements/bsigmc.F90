@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -46,12 +46,12 @@ subroutine bsigmc(nno, ndim, nbsig, npg, ipoids, &
 ! -----  ARGUMENTS
 #include "asterfort/bmatmc.h"
 #include "asterfort/btsig.h"
-    integer, intent(in) :: nno, ndim, nbsig, npg, ipoids, ivf, idfde
+    integer(kind=8), intent(in) :: nno, ndim, nbsig, npg, ipoids, ivf, idfde
     real(kind=8), intent(in) :: xyz(1), nharm, sigma(1)
     real(kind=8), intent(out) :: bsigma(1)
 !
 ! -----  VARIABLES LOCALES
-    integer :: i, igau, nbinco
+    integer(kind=8) :: i, igau, nbinco
     real(kind=8) :: b(nbsig, 81), jacgau
 
 !.========================= DEBUT DU CODE EXECUTABLE ==================

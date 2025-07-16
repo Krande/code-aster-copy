@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -20,9 +20,9 @@
 !
 interface
     subroutine cvalea(ndim, cmod, ndimax, nbmod)
-        integer :: nbmod
-        integer :: ndimax
-        integer :: ndim
+        integer(kind=8) :: nbmod
+        integer(kind=8) :: ndimax
+        integer(kind=8) :: ndim
         complex(kind=8) :: cmod(ndimax, nbmod)
     end subroutine cvalea
 end interface

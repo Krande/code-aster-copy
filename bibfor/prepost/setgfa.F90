@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -18,14 +18,14 @@
 
 subroutine setgfa(dgf, ngf)
     implicit none
-    integer :: dgf(*), ngf
+    integer(kind=8) :: dgf(*), ngf
 !     MET A 1 LE BIT DE PRESENCE DUNE ENTITE DANS LE GROUPE NUMERO NGF
 !     DONT LE DESCRIPTEUR-GROUPE EST LE VECTEUR D'ENTIERS DGF
 !     DGF    = DESCRIPTEUR-GROUPE DE LA FAMILLE (VECTEUR ENTIERS)
 !     NGF    = NUMERO DU GROUPE
 !     ------------------------------------------------------------------
-    integer :: ior
-    integer :: iec, reste, code
+    integer(kind=8) :: ior
+    integer(kind=8) :: iec, reste, code
 !
 !-----------------------------------------------------------------------
 !-----------------------------------------------------------------------

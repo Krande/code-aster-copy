@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -55,7 +55,7 @@ subroutine srdlam(varv, nbmat, mater, deps, depsv, dgamv, im, sm, vinm, nvi, de,
     !!! Variables globales
     !!!
 
-    integer :: varv, nbmat, nvi
+    integer(kind=8) :: varv, nbmat, nvi
     real(kind=8) :: sm(6), deps(6), depsv(6), mater(nbmat, 2), coupl
     real(kind=8) :: dgamv, gp(6), devgii, paraep(3), varpl(4), dfdsp(6)
     real(kind=8) :: vinm(nvi), dlam, de(6, 6), ucrip, seuilp, im
@@ -64,7 +64,7 @@ subroutine srdlam(varv, nbmat, mater, deps, depsv, dgamv, im, sm, vinm, nvi, de,
     !!! Variables locales
     !!!
 
-    integer :: ndi, ndt, i
+    integer(kind=8) :: ndi, ndt, i
     real(kind=8) :: degp(6), dfdegp, derpar(3), dfdxip, dfdsig, kron(6), tdfdsp, tft
     real(kind=8) :: sigint(6), sigv(6), sigt(6), dpdt(3), dfdt, alpha, dtemp, kk
     common/tdim/ndt, ndi

@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -38,7 +38,7 @@ subroutine refdag(resin)
 !
 !   DOUBLER LA TAILLE DES OBJETS CONTENEURS DES REFERENCES DYNAMIQUES (.REFD ET INDI)
 !
-    integer :: nbrefs, ibid, jbid, jindi, jindi2, jrefe, jrefe2
+    integer(kind=8) :: nbrefs, ibid, jbid, jindi, jindi2, jrefe, jrefe2
     character(len=1) :: jvb
     character(len=8) :: restmp, k8bid
     character(len=16) :: refd, indi

@@ -47,7 +47,7 @@ subroutine medomm(model, materField, mateco, caraElem)
 !
 ! --------------------------------------------------------------------------------------------------
 !
-    integer :: nocc
+    integer(kind=8) :: nocc
     character(len=8) :: concept, answer
     aster_logical :: l_thm
 !

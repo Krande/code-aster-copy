@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -36,7 +36,7 @@ subroutine focrch(nomfon, resu, noeud, parax, paray, &
 #include "asterfort/utmess.h"
 #include "asterfort/wkvect.h"
 #include "blas/dcopy.h"
-    integer :: nsst, i0, ind, ier
+    integer(kind=8) :: nsst, i0, ind, ier
     character(len=1) :: base
     character(len=16) :: parax, paray
     character(len=8) :: sst, noeud
@@ -65,13 +65,13 @@ subroutine focrch(nomfon, resu, noeud, parax, paray, &
     character(len=19) :: fonct1, fonct2
 !     ----------------------------------------------------------------
 !-----------------------------------------------------------------------
-    integer :: ic, inl, ie, ival, jinst, iparax
-    integer :: jparx, jpary, jval, jvalx, jvaly, start, nbvint, iparay
-    integer :: lfon, lg, lpro, lval, nbnoli, nbinst, nbpara
-    integer :: nbval, jvint, i_bloc, shift, length
+    integer(kind=8) :: ic, inl, ie, ival, jinst, iparax
+    integer(kind=8) :: jparx, jpary, jval, jvalx, jvaly, start, nbvint, iparay
+    integer(kind=8) :: lfon, lg, lpro, lval, nbnoli, nbinst, nbpara
+    integer(kind=8) :: nbval, jvint, i_bloc, shift, length
     character(len=24), pointer :: nlname(:) => null()
-    integer, pointer :: desc(:) => null()
-    integer, pointer :: vindx(:) => null()
+    integer(kind=8), pointer :: desc(:) => null()
+    integer(kind=8), pointer :: vindx(:) => null()
     real(kind=8), pointer :: vr(:) => null()
     type(DynaGene) :: dyna_gene
     blas_int :: b_incx, b_incy, b_n

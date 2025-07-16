@@ -26,8 +26,8 @@
 
 void exportContactZoneToPython( py::module_ &mod ) {
 
-    py::class_< ContactZone, ContactZone::ContactZonePtr, DataStructure, UseCppPickling >(
-        mod, "ContactZone", R"(
+    py::class_< ContactZone, ContactZone::ContactZonePtr, DSWithCppPickling >( mod, "ContactZone",
+                                                                               R"(
 Object to define a zone of contact.)" )
         .def( py::init( &initFactoryPtr< ContactZone, std::string > ) )
         .def( py::init( &initFactoryPtr< ContactZone > ) )

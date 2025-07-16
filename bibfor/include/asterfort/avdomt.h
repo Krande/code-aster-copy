@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -20,10 +20,10 @@
 !
 interface
     subroutine avdomt(nbvec, nbordr, ncycl, jdomel, domtot)
-        integer :: nbordr
-        integer :: nbvec
-        integer :: ncycl(nbvec)
-        integer :: jdomel
+        integer(kind=8) :: nbordr
+        integer(kind=8) :: nbvec
+        integer(kind=8) :: ncycl(nbvec)
+        integer(kind=8) :: jdomel
         real(kind=8) :: domtot(nbvec)
     end subroutine avdomt
 end interface

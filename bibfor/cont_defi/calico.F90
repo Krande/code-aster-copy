@@ -31,8 +31,8 @@ subroutine calico(sdcont, mesh, model, &
 #include "asterfort/utmess.h"
 !
     character(len=8), intent(in) :: sdcont, mesh, model
-    integer, intent(in) :: model_ndim_
-    integer, intent(in) :: cont_form
+    integer(kind=8), intent(in) :: model_ndim_
+    integer(kind=8), intent(in) :: cont_form
     character(len=19), intent(in) :: slavElemLigr
     aster_logical, intent(out) :: lLineRela
     character(len=19), intent(out) :: listRela
@@ -57,7 +57,7 @@ subroutine calico(sdcont, mesh, model, &
 ! --------------------------------------------------------------------------------------------------
 !
     character(len=16), parameter :: zoneKeyword = "ZONE"
-    integer :: nb_cont_zone, model_ndim
+    integer(kind=8) :: nb_cont_zone, model_ndim
 !
 ! --------------------------------------------------------------------------------------------------
 !

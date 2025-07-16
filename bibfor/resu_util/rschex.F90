@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -26,7 +26,7 @@ subroutine rschex(noresz, nomsym, codret)
 #include "asterfort/jexnom.h"
 #include "asterfort/jexnum.h"
 #include "asterfort/lxlgut.h"
-    integer :: codret
+    integer(kind=8) :: codret
     character(len=*) :: noresz, nomsym
 !      RESULTAT - NOMSYM EXISTE-T-IL ?
 !
@@ -40,7 +40,7 @@ subroutine rschex(noresz, nomsym, codret)
 !
 !     ------------------------------------------------------------------
 !
-    integer :: iaux, nbtono, jordr, jtach
+    integer(kind=8) :: iaux, nbtono, jordr, jtach
     character(len=19) :: noresu
 !     ------------------------------------------------------------------
 !

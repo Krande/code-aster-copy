@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -21,11 +21,11 @@
 interface
     subroutine xpoffo(ndim, ndime, elrefp, nnop, igeom,&
                       co, ff)
-        integer :: nnop
-        integer :: ndim
-        integer :: ndime
+        integer(kind=8) :: nnop
+        integer(kind=8) :: ndim
+        integer(kind=8) :: ndime
         character(len=8) :: elrefp
-        integer :: igeom
+        integer(kind=8) :: igeom
         real(kind=8) :: co(ndim)
         real(kind=8) :: ff(nnop)
     end subroutine xpoffo

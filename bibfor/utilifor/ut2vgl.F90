@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -30,7 +30,7 @@ subroutine ut2vgl(nn, nc, p, vg, vl)
 !     ------------------------------------------------------------------
 !
 !-----------------------------------------------------------------------
-    integer :: i, nc, nn
+    integer(kind=8) :: i, nc, nn
 !-----------------------------------------------------------------------
     if (mod(nc, 2) .eq. 0) then
         do i = 1, nn*nc, 2

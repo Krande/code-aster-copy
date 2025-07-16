@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -44,13 +44,13 @@ subroutine varcCalcPrep(modelz, cara_elemz, matecoz, &
 !
     character(len=*), intent(in) :: modelz, cara_elemz, matecoz
     aster_logical, intent(in) :: l_temp, l_meta
-    integer, intent(in) :: nume_harm
+    integer(kind=8), intent(in) :: nume_harm
     character(len=1), intent(in) :: time_comp
     character(len=*), intent(in) :: varc_refez, varc_prevz, varc_currz
     character(len=*), intent(in) :: comporz, mult_compz, chsithz
     character(len=*), intent(in) :: sigmz, variz
-    integer, intent(in) :: mxchin, mxchout
-    integer, intent(out) :: nbin, nbout
+    integer(kind=8), intent(in) :: mxchin, mxchout
+    integer(kind=8), intent(out) :: nbin, nbout
     character(len=8), intent(out)  :: lpaout(mxchout), lpain(mxchin)
     character(len=19), intent(out)  :: lchout(mxchout), lchin(mxchin)
 !
@@ -90,7 +90,7 @@ subroutine varcCalcPrep(modelz, cara_elemz, matecoz, &
 !
 ! --------------------------------------------------------------------------------------------------
 !
-    integer :: iret
+    integer(kind=8) :: iret
     aster_logical :: l_xfem
     character(len=8) :: model
     character(len=24) :: cara_elem, mateco

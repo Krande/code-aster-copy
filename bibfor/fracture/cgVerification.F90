@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -31,8 +31,6 @@ subroutine cgVerification(cgField, cgTheta, cgStudy, cgStat)
 #include "asterfort/dismoi.h"
 #include "asterc/getfac.h"
 #include "asterfort/jeveuo.h"
-#include "asterfort/jenuno.h"
-#include "asterfort/jexnum.h"
 #include "jeveux.h"
 !
     type(CalcG_field), intent(in) :: cgField
@@ -51,7 +49,7 @@ subroutine cgVerification(cgField, cgTheta, cgStudy, cgStat)
 !
     character(len=8) :: model, mesh, typmo, mesh0, nomgd
     aster_logical :: lmodemeca, ldynatrans
-    integer :: nexci, nbel, i
+    integer(kind=8) :: nexci, nbel, i
     real(kind=8) :: start, finish, dirz, absccur, long
     real(kind=8), pointer :: jvale(:) => null()
 !

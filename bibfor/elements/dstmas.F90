@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -50,9 +50,9 @@ subroutine dstmas(xyzl, option, pgl, mas, ener)
 !     OUT MAS    : MATRICE DE RIGIDITE
 !     OUT ENER   : TERMES POUR ENER_CIN (ECIN_ELEM)
 !     ------------------------------------------------------------------
-    integer :: i, j, k, i1, i2, j1, j2, int, p, multic, jcoqu, jdepg
-    integer :: ndim, nno, nnos, npg, ipoids, icoopg, ivf, idfdx, idfd2, jgano
-    integer :: jvitg, iret
+    integer(kind=8) :: i, j, k, i1, i2, j1, j2, int, p, multic, jcoqu, jdepg
+    integer(kind=8) :: ndim, nno, nnos, npg, ipoids, icoopg, ivf, idfdx, idfd2, jgano
+    integer(kind=8) :: jvitg, iret
     real(kind=8) :: nfx(9), nfy(9), nmx(6), nmy(6), nmi(3)
     real(kind=8) :: df(3, 3), dm(3, 3), dmf(3, 3), dc(2, 2), dci(2, 2)
     real(kind=8) :: dmc(3, 2), dfc(3, 2)

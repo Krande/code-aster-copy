@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -37,7 +37,6 @@ subroutine te0037(option, nomte)
 #include "asterfort/utmess.h"
 #include "asterfort/xcalc_code.h"
 #include "asterfort/xcalc_heav.h"
-#include "asterfort/xcalc_saut.h"
 #include "asterfort/xcalfev_wrap.h"
 #include "asterfort/xhmddl.h"
 #include "asterfort/xhmini.h"
@@ -69,19 +68,19 @@ subroutine te0037(option, nomte)
 !
 !
     character(len=8) :: elref, typma, fpg, elc, nompar(4), lag, elrefc, enr, enr2
-    integer :: ndim, nno, nnos, npg, ipoids, ivf, idfde, jgano, fisno(27, 10)
-    integer :: nfh, nfe, singu, ddlc, nnom, ddls, nddl, ier, ddlm
-    integer :: igeom, ipres, itemps, ires, iadzi, iazk24, jheavn, ncompn, hea_fa(2)
-    integer :: jlst, jptint, jaint, jcface, jlonch, jstno, jbasec, contac
-    integer :: i, j, ninter, nface, cface(30, 6), ifa, nfiss, jfisno
-    integer :: ibid, ilev, ifiss, ncompc, jtab(7), ncompp, ino
-    integer :: imate, jlsn, jbaslo
-    integer :: alp
-    integer :: nnof, npgf, ipoidf, ivff, idfdef, ipgf, pos, zxain, nptf, ifh
+    integer(kind=8) :: ndim, nno, nnos, npg, ipoids, ivf, idfde, jgano, fisno(27, 10)
+    integer(kind=8) :: nfh, nfe, singu, ddlc, nnom, ddls, nddl, ier, ddlm
+    integer(kind=8) :: igeom, ipres, itemps, ires, iadzi, iazk24, jheavn, ncompn, hea_fa(2)
+    integer(kind=8) :: jlst, jptint, jaint, jcface, jlonch, jstno, jbasec, contac
+    integer(kind=8) :: i, j, ninter, nface, cface(30, 6), ifa, nfiss, jfisno
+    integer(kind=8) :: ibid, ilev, ifiss, ncompc, jtab(7), ncompp, ino
+    integer(kind=8) :: imate, jlsn, jbaslo
+    integer(kind=8) :: alp
+    integer(kind=8) :: nnof, npgf, ipoidf, ivff, idfdef, ipgf, pos, zxain, nptf, ifh
     real(kind=8) :: pres, cisa, forrep(3, 2), ff(27), jac, nd(3), he(2), mat(1)
     real(kind=8) :: xg(4), dfbid(27, 3), r27bid(27), r3bid(3), r
     aster_logical :: pre1, axi
-    integer :: compt, nddlm, nddls, nddlp, iret, jheafa, ncomph, ncompb
+    integer(kind=8) :: compt, nddlm, nddls, nddlp, iret, jheafa, ncomph, ncompb
     real(kind=8) :: thet
     real(kind=8) :: fk(27, 3, 3), ka, mu
     data he/-1.d0, 1.d0/

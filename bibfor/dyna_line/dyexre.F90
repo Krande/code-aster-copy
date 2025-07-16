@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -15,26 +15,27 @@
 ! You should have received a copy of the GNU General Public License
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
-
-subroutine dyexre(numddl, freq, nbexre, exreco, exresu, &
-                  j2nd)
 !
+subroutine dyexre(numddl, freq, nbexre, exreco, exresu, j2nd)
 !
     implicit none
-#include "jeveux.h"
+!
 #include "asterfort/detrsd.h"
 #include "asterfort/jedema.h"
 #include "asterfort/jemarq.h"
 #include "asterfort/jeveuo.h"
 #include "asterfort/rsexch.h"
 #include "asterfort/rsorac.h"
+#include "asterfort/utmess.h"
 #include "asterfort/vtcopy.h"
 #include "asterfort/vtcreb.h"
+#include "jeveux.h"
+!
     character(len=24) :: exreco, exresu
-    integer :: nbexre
+    integer(kind=8) :: nbexre
     character(len=14) :: numddl
     real(kind=8) :: freq
-    integer :: j2nd
+    integer(kind=8) :: j2nd
 !
 ! ----------------------------------------------------------------------
 !
@@ -58,9 +59,9 @@ subroutine dyexre(numddl, freq, nbexre, exreco, exresu, &
 !
     character(len=19) :: chamno, chamn2
     real(kind=8) :: prec, eps0
-    integer :: ieq, neq, iresu, ibid, ifreq(1), iret
+    integer(kind=8) :: ieq, neq, iresu, ibid, ifreq(1), iret
     character(len=8) :: k8bid
-    integer :: jlccre, jlresu
+    integer(kind=8) :: jlccre, jlresu
     complex(kind=8) :: c16bid
     complex(kind=8), pointer :: vale(:) => null()
 !
@@ -87,9 +88,11 @@ subroutine dyexre(numddl, freq, nbexre, exreco, exresu, &
                         c16bid, eps0, 'ABSOLU', ifreq, 1, &
                         ibid)
         end if
-        call rsexch('F', zk8(jlresu+iresu-1), 'DEPL', ifreq(1), chamno, &
-                    iret)
-        call vtcopy(chamno, chamn2, 'F', ibid)
+        call rsexch('F', zk8(jlresu+iresu-1), 'DEPL', ifreq(1), chamno, iret)
+        call vtcopy(chamno, chamn2, iret)
+        if (iret .ne. 0) then
+            call utmess("F", "FIELD0_7")
+        end if
         call jeveuo(chamn2//'.VALE', 'L', vc=vale)
         do ieq = 1, neq
             zc(j2nd-1+ieq) = zc(j2nd-1+ieq)+vale(ieq)*zc(jlccre-1+iresu)

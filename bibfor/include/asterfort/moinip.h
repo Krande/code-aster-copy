@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -21,11 +21,11 @@
 interface
     subroutine moinip(nch, ncoef, iich, iisuiv, ilig,&
                       ilig2)
-        integer :: nch
-        integer :: ncoef
-        integer :: iich(*)
-        integer :: iisuiv(*)
-        integer :: ilig(*)
+        integer(kind=8) :: nch
+        integer(kind=8) :: ncoef
+        integer(kind=8) :: iich(*)
+        integer(kind=8) :: iisuiv(*)
+        integer(kind=8) :: ilig(*)
         integer(kind=4) :: ilig2(1)
     end subroutine moinip
 end interface

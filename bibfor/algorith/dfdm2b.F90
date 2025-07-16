@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -26,7 +26,7 @@ subroutine dfdm2b(nno, poids, dfrdk, coor, jacp, normal)
 #include "asterfort/tecael.h"
 #include "asterfort/utmess.h"
 #include "asterfort/xnormv.h"
-    integer :: nno
+    integer(kind=8) :: nno
     real(kind=8) :: dfrdk(*), coor(18)
     real(kind=8) :: jacp, poids, normal(3)
 ! ......................................................................
@@ -47,8 +47,8 @@ subroutine dfdm2b(nno, poids, dfrdk, coor, jacp, normal)
 !    - LA FACE N'EST PAS NECESSAIREMENT PLANE
 !
     character(len=8) :: nomail
-    integer :: i, j
-    integer :: iadzi, iazk24
+    integer(kind=8) :: i, j
+    integer(kind=8) :: iadzi, iazk24
     real(kind=8) :: da(3), db(3), jac
 !-----------------------------------------------------------------------
     da(:) = 0.d0

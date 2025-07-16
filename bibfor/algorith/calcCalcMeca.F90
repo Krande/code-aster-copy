@@ -49,10 +49,10 @@ subroutine calcCalcMeca(nb_option, list_option, &
 #include "asterfort/vtaxpy.h"
 #include "asterfort/vtzero.h"
 !
-    integer, intent(in) :: nb_option
+    integer(kind=8), intent(in) :: nb_option
     character(len=16), intent(in) :: list_option(:)
     aster_logical, intent(in) :: l_elem_nonl
-    integer, intent(in) :: nume_harm
+    integer(kind=8), intent(in) :: nume_harm
     character(len=*), intent(in) :: listLoadZ, modelZ, caraElemZ
     type(NL_DS_Constitutive), intent(in) :: ds_constitutive
     type(NL_DS_Material), intent(in) :: ds_material
@@ -60,10 +60,10 @@ subroutine calcCalcMeca(nb_option, list_option, &
     character(len=19), intent(in) :: hval_incr(:), hval_algo(:)
     character(len=19), intent(in) :: vediri, vefnod
     character(len=19), intent(in) :: vevarc_prev, vevarc_curr
-    integer, intent(in) :: nb_obje_maxi
+    integer(kind=8), intent(in) :: nb_obje_maxi
     character(len=16), intent(inout) :: obje_name(nb_obje_maxi)
     character(len=24), intent(inout) :: obje_sdname(nb_obje_maxi)
-    integer, intent(out) ::  nb_obje
+    integer(kind=8), intent(out) ::  nb_obje
     aster_logical, intent(in) :: l_pred
 !
 ! --------------------------------------------------------------------------------------------------
@@ -101,9 +101,9 @@ subroutine calcCalcMeca(nb_option, list_option, &
     character(len=24), parameter :: disp = "&&OP0026.DISP"
     character(len=19) :: varc_curr, disp_curr, sigm_curr, vari_curr
     character(len=19) :: vari_prev, disp_prev, sigm_prev, disp_cumu_inst
-    integer :: iter_newt, ixfem, nb_subs_stat
+    integer(kind=8) :: iter_newt, ixfem, nb_subs_stat
     aster_logical :: l_meta_zirc, l_meta_acier, l_xfem, l_macr_elem
-    integer :: ldccvg
+    integer(kind=8) :: ldccvg
     character(len=19) :: ligrmo, caco3d, listLoad
     character(len=1), parameter :: jvBase = "G"
     character(len=24) :: model, caraElem

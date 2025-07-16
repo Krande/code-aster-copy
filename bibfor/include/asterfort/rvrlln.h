@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -22,8 +22,8 @@ interface
     subroutine rvrlln(xy, tn, n, repere, v1,&
                       v2)
         real(kind=8) :: xy(*)
-        integer :: tn(*)
-        integer :: n
+        integer(kind=8) :: tn(*)
+        integer(kind=8) :: n
         character(len=8) :: repere
         real(kind=8) :: v1(*)
         real(kind=8) :: v2(*)

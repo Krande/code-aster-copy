@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -19,7 +19,7 @@
 subroutine pmtvec(cumul, n, a, x, y)
     implicit none
     character(len=*) :: cumul
-    integer :: n
+    integer(kind=8) :: n
     real(kind=8) :: a(n, n), x(n), y(n)
 !       ----------------------------------------------------------------
 !       PRODUIT TRANSPOSEE D'UNE MATRICE CARREE PLEINE PAR UN VECTEUR
@@ -35,7 +35,7 @@ subroutine pmtvec(cumul, n, a, x, y)
 ! OUT   Y(N)  : R  :   VECTEUR REEL
 !       ----------------------------------------------------------------
 !-----------------------------------------------------------------------
-    integer :: i, j
+    integer(kind=8) :: i, j
 !-----------------------------------------------------------------------
     if (cumul .eq. 'ZERO') then
         do i = 1, n

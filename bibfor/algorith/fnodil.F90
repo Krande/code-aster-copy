@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -29,18 +29,15 @@ subroutine fnodil(option, typmod, ds_dil, ndim, &
     implicit none
 !
 #include "asterf_types.h"
-#include "asterfort/assert.h"
-#include "asterfort/codere.h"
 #include "asterfort/dfdmip.h"
-#include "asterfort/nmepsi.h"
 #include "asterfort/nmbeps.h"
 
 !
     character(len=8), intent(in)    :: typmod(*)
     character(len=16), intent(in)   :: option, compor(*)
     type(dil_modelisation)         :: ds_dil
-    integer, intent(in)             :: ndim, nnos, nnom, npg, nddl, dimdef
-    integer, intent(in)             :: iw, idff, idffb
+    integer(kind=8), intent(in)             :: ndim, nnos, nnom, npg, nddl, dimdef
+    integer(kind=8), intent(in)             :: iw, idff, idffb
     real(kind=8), intent(in)        :: geomi(ndim, nnos+nnom)
     real(kind=8), intent(in)        :: vff(nnos+nnom, npg), vffb(nnos, npg)
     real(kind=8), intent(in)        :: sief(dimdef*npg)
@@ -76,14 +73,10 @@ subroutine fnodil(option, typmod, ds_dil, ndim, &
     real(kind=8), dimension(6), parameter  :: kron = (/1.d0, 1.d0, 1.d0, 0.d0, 0.d0, 0.d0/)
 ! ----------------------------------------------------------------------
     aster_logical :: axi
-    type(Behaviour_Integ) :: BEHinteg
-    character(len=8) :: fami
-    integer       :: g, n, i
-    integer       :: xu(ndim, nnos+nnom), xg(1, nnos), xp(1, nnos)
-    integer       :: cod(npg)
-    integer       :: nnu, nng, nnp, ndu, ndg, ndp, neu, neg, nep
-    real(kind=8)  :: dum(ndim, nnos+nnom), dup(ndim, nnos+nnom)
-    real(kind=8)  :: dgp(1, nnos), dpp(1, nnos)
+    integer(kind=8)       :: g, n, i
+    integer(kind=8)       :: xu(ndim, nnos+nnom), xg(1, nnos), xp(1, nnos)
+    integer(kind=8)       :: cod(npg)
+    integer(kind=8)       :: nnu, nng, nnp, ndu, ndg, ndp, neu, neg, nep
     real(kind=8)  :: r, dff(nnos+nnom, ndim), dffb(nnos, ndim), poids
     real(kind=8)  :: butmp(2*ndim, ndim, nnos+nnom)
     real(kind=8)  :: bu(2*ndim+1, ndim, nnos+nnom)

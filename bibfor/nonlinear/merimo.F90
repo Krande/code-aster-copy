@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -49,13 +49,13 @@ subroutine merimo(base, &
     character(len=1), intent(in) :: base
     aster_logical, intent(in) :: l_xfem, l_macr_elem
     character(len=24), intent(in) :: model, cara_elem
-    integer, intent(in) :: iter_newt
+    integer(kind=8), intent(in) :: iter_newt
     type(NL_DS_Constitutive), intent(in) :: ds_constitutive
     type(NL_DS_Material), intent(in) :: ds_material
     type(NL_DS_System), intent(in) :: ds_system
     character(len=19), intent(in) :: hval_incr(*), hval_algo(*)
     character(len=*), intent(in) :: optioz
-    integer, intent(out) :: ldccvg
+    integer(kind=8), intent(out) :: ldccvg
     character(len=*), optional, intent(in) :: sddynz_
 !
 ! --------------------------------------------------------------------------------------------------
@@ -88,16 +88,16 @@ subroutine merimo(base, &
 ! In  sddyna           : datastructure for dynamic
 ! --------------------------------------------------------------------------------------------------
 !
-    integer, parameter :: mxchout = 11, mxchin = 57
+    integer(kind=8), parameter :: mxchout = 11, mxchin = 57
     character(len=8) :: lpaout(mxchout), lpain(mxchin)
     character(len=19) :: lchout(mxchout), lchin(mxchin)
     aster_logical :: l_merigi, l_veinte, l_sigmex
     aster_logical :: l_codret, l_codpre, l_dyna
-    integer :: ires, iret, nbin, nbout
+    integer(kind=8) :: ires, iret, nbin, nbout
     character(len=24) :: caco3d, ligrmo
     character(len=19) :: sigm_extr, sigm_curr, vari_curr, strx_curr, sddyna
     character(len=16) :: option
-    integer :: ich_matrixs, ich_matrixn, ich_veinte, ich_codret, ich_copred
+    integer(kind=8) :: ich_matrixs, ich_matrixn, ich_veinte, ich_codret, ich_copred
     character(len=24), pointer :: v_rerr(:) => null()
     aster_logical :: tabret(0:10)
 !

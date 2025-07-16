@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -54,7 +54,7 @@ subroutine gdstag(stoudy, kp, nno, ajacob, en, &
 !
 !
 !-----------------------------------------------------------------------
-    integer :: ic, kp, ne, nno
+    integer(kind=8) :: ic, kp, ne, nno
     real(kind=8) :: ajacob, demi, stoudy, un, unsurj, zero
 !-----------------------------------------------------------------------
     zero = 0.d0

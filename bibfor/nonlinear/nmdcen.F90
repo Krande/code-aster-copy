@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -27,7 +27,7 @@ subroutine nmdcen(sddisc, numins, nbini, nbins)
 #include "asterfort/jeveuo.h"
 #include "asterfort/juveca.h"
     character(len=19) :: sddisc
-    integer :: nbins, numins, nbini
+    integer(kind=8) :: nbins, numins, nbini
 !
 ! ----------------------------------------------------------------------
 !
@@ -45,9 +45,9 @@ subroutine nmdcen(sddisc, numins, nbini, nbins)
 !
 ! ----------------------------------------------------------------------
 !
-    integer :: ipas, nbnew
+    integer(kind=8) :: ipas, nbnew
     character(len=24) :: tpsdin
-    integer :: jnivtp
+    integer(kind=8) :: jnivtp, nivini
 !
 ! ----------------------------------------------------------------------
 !
@@ -68,14 +68,15 @@ subroutine nmdcen(sddisc, numins, nbini, nbins)
 !
 ! --- RECOPIE DE LA PARTIE HAUTE DE LA LISTE
 !
-    do ipas = nbnew, numins+nbins, -1
-        zi(jnivtp-1+ipas) = zi(jnivtp-1+ipas-nbins)
+    do ipas = nbini, numins+1, -1
+        zi(jnivtp-1+ipas+nbins) = zi(jnivtp-1+ipas)
     end do
 !
 ! --- INCREMENTATION DU NIVEAU SUR LA PARTIE DECOUPEE
 !
-    do ipas = numins, numins+nbins-1
-        zi(jnivtp-1+ipas) = zi(jnivtp-1+ipas)+1
+    nivini = zi(jnivtp-1+numins)
+    do ipas = numins, numins+nbins
+        zi(jnivtp-1+ipas) = nivini+1
     end do
 !
     call jedema()

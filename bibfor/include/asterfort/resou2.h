@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -27,7 +27,7 @@ interface
         character(len=*) :: matpre
         character(len=*) :: solveu
         character(len=*) :: chcine
-        integer :: nsecm
+        integer(kind=8) :: nsecm
         character(len=*) :: chsecm
         character(len=*) :: chsolu
         character(len=*) :: base
@@ -35,7 +35,7 @@ interface
         complex(kind=8) :: csolu(*)
         character(len=*) :: criter
         aster_logical :: prepos
-        integer :: istop
-        integer :: iret
+        integer(kind=8) :: istop
+        integer(kind=8) :: iret
     end subroutine resou2
 end interface

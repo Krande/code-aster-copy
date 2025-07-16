@@ -39,7 +39,6 @@ subroutine te0485(nomopt, nomte)
 #include "asterfort/jevech.h"
 #include "asterfort/nmtstm.h"
 #include "asterfort/writeVector.h"
-#include "asterfort/writeMatrix.h"
 #include "jeveux.h"
 !
 ! --------------------------------------------------------------------------------------------------
@@ -59,9 +58,9 @@ subroutine te0485(nomopt, nomte)
     type(HHO_GV_State) :: hhoGVState
     type(HHO_Compor_State) :: hhoComporState
     type(HHO_Quadrature) :: hhoQuadCellRigi
-    integer :: mk_cbs, mk_fbs, mk_total_dofs
-    integer :: gv_cbs, gv_fbs, gv_total_dofs, total_dofs
-    integer :: jmatt, npg, jcret
+    integer(kind=8) :: mk_cbs, mk_fbs, mk_total_dofs
+    integer(kind=8) :: gv_cbs, gv_fbs, gv_total_dofs, total_dofs
+    integer(kind=8) :: jmatt, npg, jcret
     aster_logical :: lMatr, lVect, lSigm, lVari, matsym
     character(len=4), parameter :: fami = 'RIGI'
     real(kind=8) :: rhs(MSIZE_TDOFS_MIX)

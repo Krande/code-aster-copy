@@ -17,11 +17,15 @@
 # along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 # --------------------------------------------------------------------
 
-import os
 
+from code_aster.CA import MPI
 from code_aster.Commands import *
 from code_aster import CA
-from code_aster.CA import MPI
+from code_aster.MedUtils import (
+    convertMedFieldToAster,
+    splitMedFileToResults,
+    splitMeshAndFieldsFromMedFile,
+)
 
 CA.init("--test", ERREUR=_F(ALARME="EXCEPTION"))
 
@@ -39,10 +43,6 @@ def splitEntitySet(nbElemT, rank, nbProcs):
         nbElemL = nbElemL - (end - nbElemT)
     return (nbElemL, start)
 
-
-from code_aster.Utilities.MedUtils.MedMeshAndFieldsSplitter import splitMeshAndFieldsFromMedFile
-from code_aster.Utilities.MedUtils.MedMeshAndFieldsSplitter import splitMedFileToResults
-from code_aster.Utilities.MedUtils.MedMeshAndFieldsSplitter import convertMedFieldToAster
 
 filename = "zzzz155d.med"
 

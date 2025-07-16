@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -22,20 +22,20 @@ interface
     subroutine irrmat(fami, kpg, ksp, model, imat,&
                       nmat, itmax, rela, materd, materf,&
                       matcst, ndt, ndi, nr, nvi)
-        integer :: nmat
+        integer(kind=8) :: nmat
         character(len=*) :: fami
-        integer :: kpg
-        integer :: ksp
+        integer(kind=8) :: kpg
+        integer(kind=8) :: ksp
         character(len=8) :: model
-        integer :: imat
-        integer :: itmax
+        integer(kind=8) :: imat
+        integer(kind=8) :: itmax
         real(kind=8) :: rela
         real(kind=8) :: materd(nmat, 2)
         real(kind=8) :: materf(nmat, 2)
         character(len=3) :: matcst
-        integer :: ndt
-        integer :: ndi
-        integer :: nr
-        integer :: nvi
+        integer(kind=8) :: ndt
+        integer(kind=8) :: ndi
+        integer(kind=8) :: nr
+        integer(kind=8) :: nvi
     end subroutine irrmat
 end interface

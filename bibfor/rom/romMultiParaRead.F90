@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -53,9 +53,9 @@ subroutine romMultiParaRead(ds_multipara)
 !
 ! --------------------------------------------------------------------------------------------------
 !
-    integer :: ifm, niv
-    integer :: nb_matr, nb_vect
-    integer :: i_matr, i_vect, i_vari_para, nbret, nb_vari_coef, nb_vari_para
+    integer(kind=8) :: ifm, niv
+    integer(kind=8) :: nb_matr, nb_vect
+    integer(kind=8) :: i_matr, i_vect, i_vari_para, nbret, nb_vari_coef, nb_vari_para
     character(len=1)  :: matr_type, vect_type, ktyp, matr_elem_type, vect_elem_type
     character(len=16) :: keywfact, type_vari_coef
     character(len=8) :: matr_asse, vect_asse, gran_name, model

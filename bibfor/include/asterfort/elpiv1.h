@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -22,11 +22,11 @@ interface
     subroutine elpiv1(xjvmax, indic, nbliac, ajliai, spliai,&
                       spavan, noma, sdcont_defi, sdcont_solv)
         real(kind=8) :: xjvmax
-        integer :: indic
-        integer :: nbliac
-        integer :: ajliai
-        integer :: spliai
-        integer :: spavan
+        integer(kind=8) :: indic
+        integer(kind=8) :: nbliac
+        integer(kind=8) :: ajliai
+        integer(kind=8) :: spliai
+        integer(kind=8) :: spavan
         character(len=8) :: noma
         character(len=24) :: sdcont_defi
         character(len=24) :: sdcont_solv

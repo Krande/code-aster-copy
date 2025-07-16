@@ -20,12 +20,11 @@ subroutine check_model(mesh, cont_form)
 !
     implicit none
 !
-#include "asterfort/exixfe.h"
 #include "asterfort/exipat.h"
 #include "asterfort/utmess.h"
 !
     character(len=8), intent(in) :: mesh
-    integer, intent(in) :: cont_form
+    integer(kind=8), intent(in) :: cont_form
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -40,7 +39,7 @@ subroutine check_model(mesh, cont_form)
 !
 ! --------------------------------------------------------------------------------------------------
 !
-    integer :: iret
+    integer(kind=8) :: iret
 !
 ! --------------------------------------------------------------------------------------------------
 !

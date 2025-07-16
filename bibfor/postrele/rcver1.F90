@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -43,8 +43,8 @@ subroutine rcver1(phenoz, tablz, tably)
 !          -> SI 'THERMIQUE': MEMES NOEUDS EXTREMITES
 !      - MEME NOMBRE DE LIGAMENTS, MEMES INSTANTS (CAS "EVOLUTION")
 !     ------------------------------------------------------------------
-    integer :: n1, nbno1, nbno2, jordo1, jordo2, nbint1, nbint2, i, j
-    integer :: vali(2), nbins1, nbins2, jinst1, jinst2
+    integer(kind=8) :: n1, nbno1, nbno2, jordo1, jordo2, nbint1, nbint2, i, j
+    integer(kind=8) :: vali(2), nbins1, nbins2, jinst1, jinst2
     real(kind=8) :: valr(2), eps, v1, v2
     parameter(eps=1.d-6)
     character(len=8) :: k8b, valk(3), tyva

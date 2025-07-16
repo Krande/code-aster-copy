@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2020 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -21,8 +21,8 @@
 interface
     subroutine ntfcma(compo, jmat, aniso, ifon)
         character(len=*) :: compo
-        integer :: jmat
+        integer(kind=8) :: jmat
         aster_logical :: aniso
-        integer :: ifon(6)
+        integer(kind=8) :: ifon(6)
     end subroutine ntfcma
 end interface

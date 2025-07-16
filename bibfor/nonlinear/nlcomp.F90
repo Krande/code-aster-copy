@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -29,17 +29,17 @@ subroutine nlcomp(phenom, fami, kpg, imate, ndim, coorpg, time, tp, Kglo, dtp_, 
 !
     character(len=16), intent(in) :: phenom
     character(len=8), intent(in) :: fami
-    integer, intent(in) :: imate, ndim, kpg
+    integer(kind=8), intent(in) :: imate, ndim, kpg
     real(kind=8), intent(in) :: coorpg(3), time, tp
     real(kind=8), intent(out) :: Kglo(3, 3)
     real(kind=8), optional, intent(in) :: dtp_(3)
     real(kind=8), optional, intent(out) :: fluglo_(3)
 !
-    integer, parameter :: spt = 1
+    integer(kind=8), parameter :: spt = 1
     character(len=8), parameter :: poum = "+"
-    integer :: j, nbres
+    integer(kind=8) :: j, nbres
     parameter(nbres=3)
-    integer :: icodre(nbres)
+    integer(kind=8) :: icodre(nbres)
     character(len=16) :: nomres(nbres)
     real(kind=8) :: lambor(3), lambda
     real(kind=8) ::  p(3, 3), Kloc(3, 3), valres(1)

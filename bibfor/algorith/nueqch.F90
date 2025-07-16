@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -21,7 +21,6 @@ subroutine nueqch(error, chamno, nume_node, cmp_name, nueq)
 !
     implicit none
 !
-#include "asterc/ismaem.h"
 #include "asterfort/select_dof.h"
 #include "asterfort/utmess.h"
 #include "asterfort/as_allocate.h"
@@ -29,9 +28,9 @@ subroutine nueqch(error, chamno, nume_node, cmp_name, nueq)
 !
     character(len=19), intent(in) :: chamno
     character(len=1), intent(in) :: error
-    integer, intent(in) :: nume_node
+    integer(kind=8), intent(in) :: nume_node
     character(len=8), intent(in) :: cmp_name
-    integer, intent(inout) :: nueq
+    integer(kind=8), intent(inout) :: nueq
 !
 ! ----------------------------------------------------------------------
 !
@@ -49,8 +48,8 @@ subroutine nueqch(error, chamno, nume_node, cmp_name, nueq)
 !
 ! --------------------------------------------------------------------------------------------------
 !
-    integer, pointer :: tablCmp(:) => null()
-    integer, pointer :: listNodeToSelect(:) => null()
+    integer(kind=8), pointer :: tablCmp(:) => null()
+    integer(kind=8), pointer :: listNodeToSelect(:) => null()
     character(len=8), pointer :: listCmpToSelect(:) => null()
 !
 ! --------------------------------------------------------------------------------------------------

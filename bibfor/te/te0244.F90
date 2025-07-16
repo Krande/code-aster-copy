@@ -37,7 +37,6 @@ subroutine te0244(option, nomte)
 #include "asterfort/rccoma.h"
 #include "asterfort/rcvalb.h"
 #include "asterfort/rcfode.h"
-#include "asterfort/utmess.h"
 #include "asterfort/ntcomp.h"
 #include "asterfort/writeVector.h"
 #include "asterfort/Behaviour_type.h"
@@ -58,9 +57,9 @@ subroutine te0244(option, nomte)
     type(FE_Quadrature) :: FEQuadRigi, FEQuadMass
     type(FE_basis) :: FEBasis
 !
-    integer :: nbres
+    integer(kind=8) :: nbres
     parameter(nbres=1)
-    integer :: icodre(nbres)
+    integer(kind=8) :: icodre(nbres)
     character(len=16) :: phenom, rela_name
     real(kind=8) :: valQPM(MAX_QP), BGSEval(3, MAX_BS)
     real(kind=8) :: valQPMP(MAX_QP)
@@ -68,7 +67,7 @@ subroutine te0244(option, nomte)
     real(kind=8) :: resi_mp(MAX_BS), resi_p(MAX_BS)
     real(kind=8) ::  deltat, theta, chal(1), diff, Kglo(3, 3)
     real(kind=8) :: beta, dbeta, tpg, dtpg(3), tpsec, flux(3)
-    integer :: kp, imate, ifon(6), itemps
+    integer(kind=8) :: kp, imate, icamas, ifon(6), itemps
     character(len=16), pointer :: compor(:) => null()
     aster_logical :: lhyd, aniso
     real(kind=8), pointer :: tempi(:) => null()
@@ -107,6 +106,10 @@ subroutine te0244(option, nomte)
             aniso = ASTER_TRUE
         end if
         call ntfcma(rela_name, zi(imate), aniso, ifon)
+!       pour stopper le calcul si PCAMASS n'est pas disponible
+        if (aniso) then
+            call jevech('PCAMASS', 'L', icamas)
+        end if
     end if
 !
     resi_f = 0.d0

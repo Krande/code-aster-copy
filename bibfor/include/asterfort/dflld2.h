@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -19,6 +19,6 @@
 interface
     subroutine dflld2(sdlist, i_fail)
         character(len=8), intent(in) :: sdlist
-        integer, intent(in) :: i_fail
+        integer(kind=8), intent(in) :: i_fail
     end subroutine dflld2
 end interface

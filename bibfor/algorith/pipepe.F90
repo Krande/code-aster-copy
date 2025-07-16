@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -39,9 +39,9 @@ subroutine pipepe(BEHinteg, pilo, ndim, nno, npg, &
 #include "blas/dcopy.h"
 !
     type(Behaviour_Integ), intent(in) :: BEHinteg
-    integer :: ndim, nno, npg
-    integer :: mate, ipoids, ivf, idfde
-    integer :: lgpg, iborne, ictau
+    integer(kind=8) :: ndim, nno, npg
+    integer(kind=8) :: mate, ipoids, ivf, idfde
+    integer(kind=8) :: lgpg, iborne, ictau
     character(len=8) :: typmod(*)
     character(len=16) :: pilo, compor(*)
     real(kind=8) :: geom(ndim, *), deplm(*), ddepl(*)
@@ -85,7 +85,7 @@ subroutine pipepe(BEHinteg, pilo, ndim, nno, npg, &
 !
 !
 !
-    integer :: kpg, k, ndimsi
+    integer(kind=8) :: kpg, k, ndimsi
     real(kind=8) :: fm(3, 3), epsm(6), epsp(6), epsd(6)
     real(kind=8) :: rac2
     real(kind=8) :: etamin, etamax, tau, sigma(6)

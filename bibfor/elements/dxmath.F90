@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -29,7 +29,7 @@ subroutine dxmath(fami, epais, df, dm, dmf, pgl, multic, indith, t2iu, t2ui, t1v
 #include "asterfort/rcvalb.h"
 #include "asterfort/utbtab.h"
 #include "asterfort/utmess.h"
-    integer :: multic, indith, npg, npgh
+    integer(kind=8) :: multic, indith, npg, npgh
     real(kind=8) :: df(3, 3), dm(3, 3), dmf(3, 3), dmc(3, 2), dfc(3, 2)
     real(kind=8) :: pgl(3, 3), t2iu(4), t2ui(4), t1ve(9)
     character(len=4) :: fami
@@ -45,8 +45,8 @@ subroutine dxmath(fami, epais, df, dm, dmf, pgl, multic, indith, t2iu, t2ui, t1v
 !     PAS ETE DONNE, INDITH VAUT -1 ET ON  NE CALCULE PAS LES
 !     CONTRAINTES THERMIQUES
 !     ------------------------------------------------------------------
-    integer :: jcoqu, jmate, iret
-    integer :: nbv, i, j, nbpar, elasco, indalf
+    integer(kind=8) :: jcoqu, jmate, iret
+    integer(kind=8) :: nbv, i, j, nbpar, elasco, indalf
     real(kind=8) :: cdf, cdm, valres(56)
     real(kind=8) :: young, nu, epais, valpar, excent
     real(kind=8) :: xab1(3, 3), dh(3, 3)
@@ -55,7 +55,7 @@ subroutine dxmath(fami, epais, df, dm, dmf, pgl, multic, indith, t2iu, t2ui, t1v
     real(kind=8) :: alpha, beta
     real(kind=8) :: em, ef, num, nuf
     real(kind=8) :: deux
-    integer :: icodre(56)
+    integer(kind=8) :: icodre(56)
     character(len=3) :: nume
     character(len=16) :: nomres(56)
     character(len=8) :: nompar

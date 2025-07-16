@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -39,9 +39,9 @@ subroutine cfaca1(nbliac, ajliai, &
 !
     character(len=24) :: sdcont_defi, sdcont_solv
     character(len=19) :: solveu
-    integer :: nbliac
-    integer :: lmat
-    integer :: ajliai
+    integer(kind=8) :: nbliac
+    integer(kind=8) :: lmat
+    integer(kind=8) :: ajliai
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -66,18 +66,18 @@ subroutine cfaca1(nbliac, ajliai, &
 !
 ! --------------------------------------------------------------------------------------------------
 !
-    integer :: lg, il
-    integer :: lliac, jdecal, nbddl
-    integer :: neq, lgbloc, tampon
-    integer :: nbsm, npas
-    integer :: nrest, ipas, kk, iliac, npast
+    integer(kind=8) :: lg, il
+    integer(kind=8) :: lliac, jdecal, nbddl
+    integer(kind=8) :: neq, lgbloc, tampon
+    integer(kind=8) :: nbsm, npas
+    integer(kind=8) :: nrest, ipas, kk, iliac, npast
     character(len=19) :: liac, cm1a
-    integer :: jliac, jcm1a
+    integer(kind=8) :: jliac, jcm1a
     character(len=24) :: appoin, apddl, apcoef
-    integer :: japptr, japddl, japcoe
+    integer(kind=8) :: japptr, japddl, japcoe
     character(len=24) :: chsecm
     character(len=19) :: cncin0
-    integer, pointer :: vect(:) => null()
+    integer(kind=8), pointer :: vect(:) => null()
 !
 ! --------------------------------------------------------------------------------------------------
 !

@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -34,7 +34,6 @@ subroutine te0441(option, nomte)
 #include "asterfort/xpesro.h"
 #include "asterfort/xteddl.h"
 #include "asterfort/xteini.h"
-#include "asterfort/lteatt.h"
     character(len=16) :: option, nomte
 !......................................................................
 !
@@ -49,15 +48,15 @@ subroutine te0441(option, nomte)
 !
 !
 !
-    integer :: j, kk, ndim, nno, nnop, nnops, nnos, nnom, nddl, npg, singu
-    integer :: nfh, ddls, nfe, ddlc, nse, ise, in, ino, ibid, ddlm
-    integer :: jpintt, jcnset, jheavt, jlonch, jlsn, jlst, jstno, jpmilt, jheavn
-    integer :: ivectu, igeom, irota, ipesa, imate
-    integer :: jbaslo
-    integer :: irese, nfiss, jfisno, kpg, spt
-    integer :: ncompn, ncomp, heavn(27, 5), iret, jtab(7), ig
+    integer(kind=8) :: j, kk, ndim, nno, nnop, nnops, nnos, nnom, nddl, npg, singu
+    integer(kind=8) :: nfh, ddls, nfe, ddlc, nse, ise, in, ino, ibid, ddlm
+    integer(kind=8) :: jpintt, jcnset, jheavt, jlonch, jlsn, jlst, jstno, jpmilt, jheavn
+    integer(kind=8) :: ivectu, igeom, irota, ipesa, imate
+    integer(kind=8) :: jbaslo
+    integer(kind=8) :: irese, nfiss, jfisno, kpg, spt
+    integer(kind=8) :: ncompn, ncomp, heavn(27, 5), iret, jtab(7), ig
     real(kind=8) :: fno(81), rho(1), om, omo, coorse(81)
-    integer :: icodre(3)
+    integer(kind=8) :: icodre(3)
     character(len=8) :: elrefp, elrese(6), fami(6), enr, lag, famil, poum
     character(len=16) :: phenom
     aster_logical :: lbid
@@ -106,8 +105,10 @@ subroutine te0441(option, nomte)
     if (enr(1:2) .eq. 'XH') call jevech('PHEA_NO', 'L', jheavn)
 !     PROPRE AUX ELEMENTS 1D ET 2D (QUADRATIQUES)
     if ((ibid .eq. 0) .and. &
-        (enr.eq.'XH' .or.enr.eq.'XHT'.or.enr.eq.'XT'.or.enr.eq.'XHC') .and. .not.iselli(elrefp)) &
+        (enr .eq. 'XH' .or. enr .eq. 'XHT' .or. enr .eq. 'XT' .or. enr .eq. 'XHC') &
+        .and. .not. iselli(elrefp)) then
         call jevech('PPMILTO', 'L', jpmilt)
+    end if
     if (nfiss .gt. 1) call jevech('PFISNO', 'L', jfisno)
 !
 !     PARAMETRE MATERIAU : RHO MASSE VOLUMIQUE

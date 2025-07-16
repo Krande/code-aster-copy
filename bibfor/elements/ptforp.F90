@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -27,7 +27,7 @@ subroutine ptforp(itype, option, nomte, a, a2, &
 !
     implicit none
 !
-    integer :: itype, ist, nno, ncf
+    integer(kind=8) :: itype, ist, nno, ncf
     real(kind=8) :: a, a2, xl
     real(kind=8) :: pgl(3, 3), fer(*), fei(*)
     character(len=*) :: option, nomte
@@ -53,10 +53,10 @@ subroutine ptforp(itype, option, nomte, a, a2, &
 !
 ! --------------------------------------------------------------------------------------------------
 !
-    integer :: icodre(1), ichamp
-    integer :: ifcx, i, ncc, lx, iorien, idepla, ideplp, lmate, lpesa
-    integer :: lforc, itemps, nbpar, ier, iret, icoer, icoec, iretr, iretc
-    integer :: lrota, istrxm, k
+    integer(kind=8) :: icodre(1), ichamp
+    integer(kind=8) :: ifcx, i, ncc, lx, iorien, idepla, ideplp, lmate, lpesa
+    integer(kind=8) :: lforc, itemps, nbpar, ier, iret, icoer, icoec, iretr, iretc
+    integer(kind=8) :: lrota, istrxm, k
 !
 ! --------------------------------------------------------------------------------------------------
 !

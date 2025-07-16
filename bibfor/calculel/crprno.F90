@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -24,14 +24,13 @@ subroutine crprno(nume_equaz, base, meshz, gran_namez, nb_equa)
 #include "asterfort/jenonu.h"
 #include "asterfort/nume_equa_crsd.h"
 #include "asterfort/jexnom.h"
-#include "asterfort/jexnum.h"
 !
 !
     character(len=*), intent(in) :: nume_equaz
     character(len=1), intent(in) :: base
     character(len=*), intent(in) :: gran_namez
     character(len=*), intent(in) :: meshz
-    integer, intent(in) :: nb_equa
+    integer(kind=8), intent(in) :: nb_equa
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -47,7 +46,7 @@ subroutine crprno(nume_equaz, base, meshz, gran_namez, nb_equa)
 !
 ! --------------------------------------------------------------------------------------------------
 !
-    integer :: i_ligr_mesh
+    integer(kind=8) :: i_ligr_mesh
     character(len=24) :: lili
 !
 ! --------------------------------------------------------------------------------------------------

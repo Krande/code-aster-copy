@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -50,14 +50,14 @@ subroutine reciex(intexc, iderex, nindex, nnoeex, ncmpex, &
 #include "asterfort/wkvect.h"
 !
 !-----------------------------------------------------------------------
-    integer :: i1, i2, ibid1, iderex, ij2, ilcmpi
-    integer :: ilcpex, ilfex, ilindi, illex, ilnoex
-    integer :: ilvaex, ivite, napexc, ncmpex
-    integer :: ndim, nindex, nnoeex, nvasex
-    integer :: vali(2)
+    integer(kind=8) :: i1, i2, ibid1, iderex, ij2, ilcmpi
+    integer(kind=8) :: ilcpex, ilfex, ilindi, illex, ilnoex
+    integer(kind=8) :: ilvaex, ivite, napexc, ncmpex
+    integer(kind=8) :: ndim, nindex, nnoeex, nvasex
+    integer(kind=8) :: vali(2)
 !
 !-----------------------------------------------------------------------
-    integer :: ibid, iret
+    integer(kind=8) :: ibid, iret
     character(len=4) :: excmod
     character(len=8) :: intexc
     character(len=16) :: graexc
@@ -66,8 +66,8 @@ subroutine reciex(intexc, iderex, nindex, nnoeex, ncmpex, &
     character(len=24) :: valk(5)
 !
     aster_logical :: lindi, exiind
-    integer :: lnumi, lnumj, mxval, num, lcmpi, lcmpj
-    integer :: nbfreq, ifreq
+    integer(kind=8) :: lnumi, lnumj, mxval, num, lcmpi, lcmpj
+    integer(kind=8) :: nbfreq, ifreq
 !
     call getvid('EXCIT', 'INTE_SPEC', iocc=1, scal=intexc, nbret=ibid)
 !

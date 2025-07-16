@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -29,20 +29,20 @@ interface
                              dsde  , retcom)
         use THM_type
         type(THM_DS), intent(in) :: ds_thm
-        integer, intent(in) :: j_mater
+        integer(kind=8), intent(in) :: j_mater
         character(len=16), intent(in) :: option
         real(kind=8), intent(in) :: p1, dp1, p2, dp2, satur, tbiot(6), nl
         character(len=8), intent(in) :: typmod(2)
         real(kind=8), intent(in) :: carcri(*)
         real(kind=8), intent(in) :: instam, instap, dtemp
-        integer, intent(in) :: ndim, dimdef, dimcon
-        integer, intent(in) :: addeme, addete, adcome, addep1, addep2
+        integer(kind=8), intent(in) :: ndim, dimdef, dimcon
+        integer(kind=8), intent(in) :: addeme, addete, adcome, addep1, addep2
         real(kind=8), intent(in) :: vintm(*)
         real(kind=8), intent(in) :: angl_naut(3)
         real(kind=8), intent(in) :: defgem(dimdef), deps(6), congem(dimcon)
         real(kind=8), intent(inout) :: congep(dimcon)
         real(kind=8), intent(inout) :: vintp(*)
         real(kind=8), intent(inout) :: dsde(dimcon, dimdef)
-        integer, intent(out) :: retcom
+        integer(kind=8), intent(out) :: retcom
     end subroutine thmSelectMeca
 end interface 

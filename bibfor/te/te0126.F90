@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -38,9 +38,9 @@ subroutine te0126(option, nomte)
 !
 ! ------------------------------------------------------------------------------
 !
-    integer         :: ndim, nno, npg
-    integer         :: nbcou, ipg, icou, sp_couche, iptc, ksp, iret4, indx
-    integer         :: jnbspi, jtherm
+    integer(kind=8)         :: ndim, nno, npg
+    integer(kind=8)         :: nbcou, ipg, icou, sp_couche, iptc, ksp, iret4, indx
+    integer(kind=8)         :: jnbspi, jtherm
 !
     real(kind=8)    :: tp
 !

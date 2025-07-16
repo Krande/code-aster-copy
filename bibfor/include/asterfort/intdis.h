@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -21,9 +21,9 @@
 interface
     subroutine intdis(coint, nnoint, noddli, ddlsst, nbsst)
         character(len=24) :: coint
-        integer :: nnoint
+        integer(kind=8) :: nnoint
         character(len=24) :: noddli
         character(len=24) :: ddlsst
-        integer :: nbsst
+        integer(kind=8) :: nbsst
     end subroutine intdis
 end interface

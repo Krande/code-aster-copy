@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -56,8 +56,8 @@ subroutine nmeceb(sderro, loopName, loopState)
 ! --------------------------------------------------------------------------------------------------
 !
     character(len=24) :: eventCONVJv
-    integer, pointer :: eventCONV(:) => null()
-    integer :: convState
+    integer(kind=8), pointer :: eventCONV(:) => null()
+    integer(kind=8) :: convState
 !
 ! --------------------------------------------------------------------------------------------------
 !

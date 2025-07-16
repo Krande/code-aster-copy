@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -31,7 +31,7 @@ subroutine porea1(nno, nc, deplm, deplp, geom, &
 #include "asterfort/tecael.h"
 #include "asterfort/utmess.h"
 #include "blas/ddot.h"
-    integer :: nno, nc
+    integer(kind=8) :: nno, nc
     real(kind=8) :: deplm(nno*nc), deplp(nno*nc), geom(3, nno), gamma
 !
     real(kind=8) :: pgl(3, 3), xl1, angp(3)
@@ -61,12 +61,12 @@ subroutine porea1(nno, nc, deplm, deplp, geom, &
 !
 ! --------------------------------------------------------------------------------------------------
 !
-    integer :: i
+    integer(kind=8) :: i
     real(kind=8) :: utg(14), xug(6), xd0(3), xd1(3), xdn0(3), xdn1(3), cosangle
     real(kind=8) :: tet1, tet2, xl0, pgl2(3, 3)
     real(kind=8) :: ang1(3), angm(3), ytrm(3), ytrp(3), vect(3), sinangle, angle
 !
-    integer :: iadzi, iazk24
+    integer(kind=8) :: iadzi, iazk24
     character(len=24) :: valkm
     real(kind=8) :: valrm
     blas_int :: b_incx, b_incy, b_n

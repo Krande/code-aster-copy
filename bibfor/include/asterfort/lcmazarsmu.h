@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -22,10 +22,10 @@ interface
     subroutine lcmazarsmu(fami, kpg, ksp, dimpb, imate, model, epsm, &
                           deps, vim,  option, sig, vip, dsidep)
         character(len=*)    :: fami
-        integer             :: kpg
-        integer             :: ksp
-        integer             :: dimpb
-        integer             :: imate
+        integer(kind=8)             :: kpg
+        integer(kind=8)             :: ksp
+        integer(kind=8)             :: dimpb
+        integer(kind=8)             :: imate
         character(len=6)    :: model
         real(kind=8)        :: epsm(*)
         real(kind=8)        :: deps(*)

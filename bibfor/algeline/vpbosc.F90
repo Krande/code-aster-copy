@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -41,7 +41,7 @@ subroutine vpbosc(typres, nbmode, nbvect, omeshi, valpro, &
 #include "asterfort/freqom.h"
 #include "asterfort/infniv.h"
 #include "asterfort/utmess.h"
-    integer :: nbmode, nbvect, nvpro
+    integer(kind=8) :: nbmode, nbvect, nvpro
     real(kind=8) :: precdc, omecor, vpinf, vpmax
     complex(kind=8) :: valpro(nvpro), omeshi
     character(len=8) :: method
@@ -50,7 +50,7 @@ subroutine vpbosc(typres, nbmode, nbvect, omeshi, valpro, &
     real(kind=8) :: vpinf2, vpmax2, tole
     real(kind=8) :: valr(2)
     aster_logical :: loginf, logmax
-    integer :: niv, ifm, i
+    integer(kind=8) :: niv, ifm, i
 !     ------------------------------------------------------------------
 !
 !     ------------------------------------------------------------------

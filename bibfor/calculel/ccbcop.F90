@@ -47,7 +47,7 @@ subroutine ccbcop(resultIn, resultOut, &
 #include "asterfort/utmess.h"
 #include "jeveux.h"
 !
-    integer, intent(in) :: nbStore, nbOption
+    integer(kind=8), intent(in) :: nbStore, nbOption
     character(len=8), intent(in) :: resultOut, resultIn
     character(len=19), intent(in) :: listStoreJv, listOptionJv
 !
@@ -68,8 +68,8 @@ subroutine ccbcop(resultIn, resultOut, &
 !
 ! --------------------------------------------------------------------------------------------------
 !
-    integer :: iret, numeStore0, iOption, codret
-    integer, pointer :: listStore(:) => null()
+    integer(kind=8) :: iret, numeStore0, iOption, codret
+    integer(kind=8), pointer :: listStore(:) => null()
     character(len=16), pointer :: listOption(:) => null()
     character(len=8) :: modelRefe, caraElemRefe, answer
     character(len=16) :: option, resultType

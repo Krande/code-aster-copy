@@ -51,7 +51,7 @@ subroutine ntnume(model, listLoad, result, numeDof)
 !
     character(len=14) :: numeDofOld
     character(len=24) :: noojb
-    integer :: nbLigr
+    integer(kind=8) :: nbLigr
     character(len=24), pointer :: listLigr(:) => null()
 !
 ! --------------------------------------------------------------------------------------------------

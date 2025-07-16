@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -23,7 +23,7 @@ subroutine ulopen(unit, fichie, name, acces, autor)
 #include "asterfort/codent.h"
 #include "asterfort/ulposi.h"
 #include "asterfort/utmess.h"
-    integer :: unit
+    integer(kind=8) :: unit
     character(len=*) :: fichie, name, acces, autor
 ! person_in_charge: j-pierre.lefebvre at edf.fr
 !
@@ -41,12 +41,12 @@ subroutine ulopen(unit, fichie, name, acces, autor)
 !     ATTENTION ecriture du NAME en minuscules.
 !     ------------------------------------------------------------------
 !
-    integer :: mxf
+    integer(kind=8) :: mxf
     parameter(mxf=100)
     character(len=1) :: typefi(mxf), accefi(mxf), etatfi(mxf), modifi(mxf)
     character(len=16) :: ddname(mxf)
     character(len=255) :: namefi(mxf)
-    integer :: first, unitfi(mxf), nbfile
+    integer(kind=8) :: first, unitfi(mxf), nbfile
     common/asgfi1/first, unitfi, nbfile
     common/asgfi2/namefi, ddname, typefi, accefi, etatfi, modifi
 !
@@ -55,14 +55,14 @@ subroutine ulopen(unit, fichie, name, acces, autor)
     character(len=8) :: k8b
     character(len=4) :: k4b
     character(len=1) :: k1acce, k1aut
-    integer :: i, ierr, ier1, ier2, ifile
+    integer(kind=8) :: i, ierr, ier1, ier2, ifile
     aster_logical :: v11
     character(len=255) :: valk(3)
 !     CONSERVER LA COHERENCE AVEC IBIMPR
-    integer :: mximpr
+    integer(kind=8) :: mximpr
     parameter(mximpr=3)
     character(len=16) :: nompr(mximpr)
-    integer :: unitpr(mximpr)
+    integer(kind=8) :: unitpr(mximpr)
     data nompr/'MESSAGE', 'RESULTAT', 'ERREUR'/
     data unitpr/6, 6, 6/
 !     ------------------------------------------------------------------

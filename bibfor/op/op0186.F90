@@ -26,13 +26,9 @@ subroutine op0186()
 #include "asterf_types.h"
 #include "jeveux.h"
 #include "asterc/etausr.h"
-#include "asterc/getres.h"
-#include "asterc/r8vide.h"
-#include "asterfort/assert.h"
 #include "asterfort/copisd.h"
 #include "asterfort/detmat.h"
 #include "asterfort/didern.h"
-#include "asterfort/diinst.h"
 #include "asterfort/nonlinDSColumnWriteValue.h"
 #include "asterfort/infmaj.h"
 #include "asterfort/infniv.h"
@@ -77,9 +73,9 @@ subroutine op0186()
     aster_logical :: l_stat, matcst, coecst, reasma, arret, conver, itemax
     aster_logical :: l_dry, l_line_search, finpas, l_evol, lnkry
     aster_logical :: force, l_rom
-    integer :: ther_crit_i(3), nume_inst, k, iterho
-    integer :: itmax, ifm, niv, neq, iter_newt, jtempp, jtemp
-    integer :: itab(2)
+    integer(kind=8) :: ther_crit_i(3), nume_inst, k, iterho
+    integer(kind=8) :: itmax, ifm, niv, neq, iter_newt, jtempp, jtemp
+    integer(kind=8) :: itab(2)
     real(kind=8) :: tpsthe(6), deltat, tps1(7)
     real(kind=8) :: tps2(4), tps3(4), tpex, ther_crit_r(2), rho
     real(kind=8) :: para(2), time_curr, tconso

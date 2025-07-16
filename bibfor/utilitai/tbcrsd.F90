@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -39,7 +39,7 @@ subroutine tbcrsd(nomta, baseta)
 ! IN  : NOMTA  : NOM DE LA STRUCTURE "TABLE" A CREER.
 ! IN  : BASETA : BASE SUR LAQUELLE ON CREE LA "TABLE".
 !     ------------------------------------------------------------------
-    integer :: jtbba, jtbnp
+    integer(kind=8) :: jtbba, jtbnp
     character(len=1) :: base
     character(len=19) :: nomtab
 ! DEB------------------------------------------------------------------

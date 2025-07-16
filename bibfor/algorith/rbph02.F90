@@ -24,7 +24,6 @@ subroutine rbph02(mailla, numddl, chamno, nomgd, neq, &
 #include "asterfort/assert.h"
 #include "asterfort/dismoi.h"
 #include "asterfort/exisdg.h"
-#include "asterfort/jenuno.h"
 #include "asterfort/jeveuo.h"
 #include "asterfort/jexnom.h"
 #include "asterfort/jexnum.h"
@@ -33,7 +32,7 @@ subroutine rbph02(mailla, numddl, chamno, nomgd, neq, &
 #include "asterfort/wkvect.h"
 #include "asterfort/int_to_char8.h"
 !
-    integer :: nbnoeu, neq
+    integer(kind=8) :: nbnoeu, neq
     character(len=8) :: mailla
     character(len=14) :: numddl
     character(len=*) :: chamno
@@ -47,8 +46,8 @@ subroutine rbph02(mailla, numddl, chamno, nomgd, neq, &
 ! ----------------------------------------------------------------------
 !
 !     ------------------------------------------------------------------
-    integer :: jprno, nec, tabec(10), i, idec, inuddl, iad, iec, ino
-    integer :: ncmpmx, jnoeu, ncmp, icmp, nunoe, jneq, jcmp, j, nbcmp
+    integer(kind=8) :: jprno, nec, tabec(10), i, idec, inuddl, iad, iec, ino
+    integer(kind=8) :: ncmpmx, jnoeu, ncmp, icmp, nunoe, jneq, jcmp, j, nbcmp
     character(len=8) :: motcls(4), typmcl(4), nomgd, nomnoe, nomcmp
     character(len=19) :: prno
 !     ------------------------------------------------------------------

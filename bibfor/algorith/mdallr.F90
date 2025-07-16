@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -48,8 +48,8 @@ subroutine mdallr(resu1, resu2, basemo, nbmode, nbsauv, &
 #include "asterfort/vtcrem.h"
 #include "asterfort/wkvect.h"
 !
-    integer :: nbmode, nbsauv, imode, ier, lvale, i, jrefa
-    integer :: jdesc, igd, iarg, jrefe
+    integer(kind=8) :: nbmode, nbsauv, imode, ier, lvale, i, jrefa
+    integer(kind=8) :: jdesc, igd, iarg, jrefe
     aster_logical :: lrefe, zcmplx
     character(len=8) :: resu1, resu2, matgen, k8b, basemo, typ
     character(len=14) :: nugene
@@ -57,7 +57,7 @@ subroutine mdallr(resu1, resu2, basemo, nbmode, nbsauv, &
     real(kind=8) :: vecpr8(nbmode, *)
     complex(kind=8) :: vecpc8(nbmode, *)
 !
-    integer :: nbmax, ipar, ipar1, ipar2
+    integer(kind=8) :: nbmax, ipar, ipar1, ipar2
     parameter(nbmax=50)
     character(len=24) :: kpar(nbmax)
 !

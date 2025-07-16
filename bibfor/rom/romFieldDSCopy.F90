@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -24,7 +24,6 @@ subroutine romFieldDSCopy(fieldIn, fieldOut)
     implicit none
 !
 #include "asterf_types.h"
-#include "asterfort/assert.h"
 #include "asterfort/as_allocate.h"
 !
     type(ROM_DS_Field), intent(in)  :: fieldIn
@@ -43,7 +42,7 @@ subroutine romFieldDSCopy(fieldIn, fieldOut)
 !
 ! --------------------------------------------------------------------------------------------------
 !
-    integer :: iCmpName, nbCmpName, iEqua, nbEqua
+    integer(kind=8) :: iCmpName, nbCmpName, iEqua, nbEqua
 !
 ! --------------------------------------------------------------------------------------------------
 !

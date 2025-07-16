@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -51,13 +51,13 @@ subroutine moin93(masse, raide, raidfa, nbmoin, matmod, &
 #include "asterfort/utmess.h"
 #include "asterfort/wkvect.h"
 !
-    integer :: neq, ieq, i1, j1, k1, l1, m1, n1, nbmoin, lindno
-    integer :: linddl, lddld, nbnoeu, lprno, nnoint, ipos1, ipos2, numno, nbcmpm
-    integer :: nbec, nddlin, lnoint, connec, lconnc, sizeco, lintrf, linlag
-    integer :: lipos, lfreq
+    integer(kind=8) :: neq, ieq, i1, j1, k1, l1, m1, n1, nbmoin, lindno
+    integer(kind=8) :: linddl, lddld, nbnoeu, lprno, nnoint, ipos1, ipos2, numno, nbcmpm
+    integer(kind=8) :: nbec, nddlin, lnoint, connec, lconnc, sizeco, lintrf, linlag
+    integer(kind=8) :: lipos, lfreq
 !
     parameter(nbcmpm=10)
-    integer :: deco(nbcmpm)
+    integer(kind=8) :: deco(nbcmpm)
     real(kind=8) :: rbid, shift
 !
     character(len=8) :: nomma

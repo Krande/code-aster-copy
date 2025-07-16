@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -26,17 +26,17 @@ subroutine insema(elem_nbnode, elem_dime, elem_coor, pair_tole, &
 !
 ! aslint: disable=W1306
 !
-    integer, intent(in) :: elem_nbnode
-    integer, intent(in) :: elem_dime
+    integer(kind=8), intent(in) :: elem_nbnode
+    integer(kind=8), intent(in) :: elem_dime
     real(kind=8), intent(in) :: elem_coor(2, elem_nbnode)
     real(kind=8) :: pair_tole
     real(kind=8), intent(in) :: xp1
     real(kind=8), intent(in) :: yp1
     real(kind=8), intent(in) :: xp2
     real(kind=8), intent(in) :: yp2
-    integer, intent(inout) :: nb_poin_inte
+    integer(kind=8), intent(inout) :: nb_poin_inte
     real(kind=8), intent(inout) :: poin_inte(elem_dime-1, 16)
-    integer, optional, intent(inout) :: inte_neigh_(4)
+    integer(kind=8), optional, intent(inout) :: inte_neigh_(4)
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -62,7 +62,7 @@ subroutine insema(elem_nbnode, elem_dime, elem_coor, pair_tole, &
 !
     real(kind=8) :: a, b, c, d, x1, y1, x2, y2
     real(kind=8) :: t1, t2, det, norm, aux(2)
-    integer :: i_node, list_node_next(elem_nbnode)
+    integer(kind=8) :: i_node, list_node_next(elem_nbnode)
 !
 ! --------------------------------------------------------------------------------------------------
 !

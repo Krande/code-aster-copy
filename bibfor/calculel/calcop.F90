@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -62,7 +62,7 @@ subroutine calcop(option, lisopt, resuin, resuou, lisord, &
 #include "asterfort/xthpos.h"
 #include "asterfort/exixfe.h"
 !
-    integer :: nbordr, codret, tbid(1)
+    integer(kind=8) :: nbordr, codret, tbid(1)
     character(len=1), optional, intent(in) :: base
     character(len=8) :: resuin, resuou
     character(len=16) :: option, typesd
@@ -100,11 +100,11 @@ subroutine calcop(option, lisopt, resuin, resuou, lisord, &
     aster_logical :: ligmod, lbid, lsdpar, l_pmesh
     mpi_int :: mpicou, mpibid
 !
-    integer :: nopout, jlisop, iop, ibid, nbord2, lres, n0, n1, n2, n3, posopt, jvcham
-    integer :: nbtrou, minord, maxord, jlinst, iordr, nbordl, rang, nbproc
-    integer :: numord, iret, npass, nbma, codre2, jliopg, nbopt, ipas, nbpas, jldist
-    integer :: jacalc, nordm1, jpara, nbchre, ioccur, ncharg, p, k, numork
-    integer :: ideb, ifin, irelat, ifm, niv, lonch, lonnew
+    integer(kind=8) :: nopout, jlisop, iop, ibid, nbord2, lres, n0, n1, n2, n3, posopt, jvcham
+    integer(kind=8) :: nbtrou, minord, maxord, jlinst, iordr, nbordl, rang, nbproc
+    integer(kind=8) :: numord, iret, npass, nbma, codre2, jliopg, nbopt, ipas, nbpas, jldist
+    integer(kind=8) :: jacalc, nordm1, jpara, nbchre, ioccur, ncharg, p, k, numork
+    integer(kind=8) :: ideb, ifin, irelat, ifm, niv, lonch, lonnew
 !
     real(kind=8) :: r8b
     real(kind=8), pointer :: noch(:) => null()

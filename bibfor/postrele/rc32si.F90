@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -34,11 +34,11 @@ subroutine rc32si()
 !     RECUPERATION DES DONNEES DU MOT CLE "SITUATION"
 !
 !     ------------------------------------------------------------------
-    integer :: nb, ndim, jinfo, iocc, nume, n1, i, numgr(20), nbocc, ibid
-    integer :: jnom, jinfor, chara, charb, ns, jinfos, jnoms, jcombi, k
-    integer :: numgr1(20), iocc1, numgr2(20), iocc2, nbgrpass, grpass(20)
-    integer :: nbgr, i1, i2, numgr1p, numgr2p, i3, i4, jpassage, compteur
-    integer :: jpartage, k1, k2, n2, nbocc1, nbocc2
+    integer(kind=8) :: nb, ndim, jinfo, iocc, nume, n1, i, numgr(20), nbocc, ibid
+    integer(kind=8) :: jnom, jinfor, chara, charb, ns, jinfos, jnoms, jcombi, k
+    integer(kind=8) :: numgr1(20), iocc1, numgr2(20), iocc2, nbgrpass, grpass(20)
+    integer(kind=8) :: nbgr, i1, i2, numgr1p, numgr2p, i3, i4, jpassage, compteur
+    integer(kind=8) :: jpartage, k1, k2, n2, nbocc1, nbocc2
     real(kind=8) :: presa, presb, tempa, tempb
     character(len=8) :: ouinon
     character(len=16) :: nom, cbid

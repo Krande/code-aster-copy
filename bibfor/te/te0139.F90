@@ -27,8 +27,6 @@ subroutine te0139(option, nomte)
     implicit none
 !
 #include "asterf_types.h"
-#include "asterfort/as_allocate.h"
-#include "asterfort/as_deallocate.h"
 #include "asterfort/assert.h"
 #include "asterfort/Behaviour_type.h"
 #include "asterfort/jevech.h"
@@ -72,21 +70,21 @@ subroutine te0139(option, nomte)
 !
     character(len=8) :: typmod(2)
     character(len=4) :: fami
-    integer :: sz_tens, ndim
-    integer :: nno, npg, imatuu, lgpg, iret
-    integer :: igeom, imate, iuse
-    integer :: icontm, ivarim
-    integer :: iinstm, iinstp, ideplm, ideplp, icarcr
-    integer :: ivectu, icontp, ivarip
-    integer :: ivarix, jv_mult_comp
-    integer :: jtab(7)
+    integer(kind=8) :: sz_tens, ndim
+    integer(kind=8) :: nno, npg, imatuu, lgpg, iret
+    integer(kind=8) :: igeom, imate, iuse
+    integer(kind=8) :: icontm, ivarim
+    integer(kind=8) :: iinstm, iinstp, ideplm, ideplp, icarcr
+    integer(kind=8) :: ivectu, icontp, ivarip
+    integer(kind=8) :: ivarix
+    integer(kind=8) :: jtab(7)
     real(kind=8) :: angl_naut(7)
     aster_logical :: matsym
     character(len=16), pointer :: compor(:) => null(), v_mult_comp(:) => null()
     character(len=16) :: mult_comp, defo_comp
     aster_logical :: lVect, lMatr, lVari, lSigm
-    integer :: codret
-    integer :: jv_codret
+    integer(kind=8) :: codret
+    integer(kind=8) :: jv_codret
 !     POUR TGVERI
     real(kind=8) :: sdepl(3*27), svect(3*27), scont(6*27)
     real(kind=8) :: epsilo, disp_curr(MAX_BV)

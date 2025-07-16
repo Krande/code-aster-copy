@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -21,9 +21,6 @@ subroutine dxqpgl(xyzg, pgl)
     implicit none
 !
 #include "jeveux.h"
-#include "asterc/r8miem.h"
-#include "asterfort/assert.h"
-#include "asterfort/utmess.h"
     real(kind=8) :: xyzg(3, *), pgl(3, 3)
 !
 !     IN  XYZG  R  12  COORDONNEES  X1 Y1 Z1 X2 Y2 ...

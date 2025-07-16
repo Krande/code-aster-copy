@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -32,7 +32,7 @@ subroutine rvchgr(mailla, nlsnac, repere, sdnewr, &
     character(len=24) :: nlsnac
     character(len=19) :: sdnewr
     character(len=8) :: mailla, repere
-    integer :: iret
+    integer(kind=8) :: iret
 !
 !
 !  OPERATION REALISEE
@@ -72,7 +72,7 @@ subroutine rvchgr(mailla, nlsnac, repere, sdnewr, &
 !  VARIABLES LOCALES
 !  -----------------
 !
-    integer :: i, nd, nbnac, ind, alsnac, ierd
+    integer(kind=8) :: i, nd, nbnac, ind, alsnac, ierd
     aster_logical :: egal
     real(kind=8) :: znd, zref, aux
     character(len=8) :: k8b

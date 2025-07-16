@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -33,7 +33,7 @@ subroutine xmilfa(elrefp, ndim, ndime, geom, cnset, &
 #include "asterfort/xxmmvd.h"
 #include "blas/ddot.h"
 !
-    integer :: ip1, ip2, pm2, cnset(*), nnose, it, ndim, ndime
+    integer(kind=8) :: ip1, ip2, pm2, cnset(*), nnose, it, ndim, ndime
     real(kind=8) :: pinref(*), geom(*), milfa(ndim), ainter(*)
     real(kind=8) :: pmiref(*), ksi(ndime), pintt(*), pmitt(*)
     character(len=8) :: elrefp, typma
@@ -59,8 +59,8 @@ subroutine xmilfa(elrefp, ndim, ndime, geom, cnset, &
 !       MILFA   : COORDONNES DU TROISIME TYPE DE PM
 !     ----------------------------------------------------------------
 !
-    integer :: a1, a2, a, b, d, ib, ar(12, 3), nbar, ia, id
-    integer :: i, j, zxain, nno
+    integer(kind=8) :: a1, a2, a, b, d, ib, ar(12, 3), nbar, ia, id
+    integer(kind=8) :: i, j, zxain, nno
     real(kind=8) :: xref(81), ptb(ndime), ptd(ndime), newpt(ndim)
     real(kind=8) :: pta(ndime), cosu, cosv, cosw
     real(kind=8) :: ff(27), t1(ndime), t2(ndime), sinu, rbid, t3(ndime)

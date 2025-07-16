@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -23,9 +23,9 @@ interface
                       lisma)
         character(len=8) :: noma
         character(len=19) :: cnsln
-        integer :: nxmafi
+        integer(kind=8) :: nxmafi
         character(len=24) :: mafis
-        integer :: nmafis
+        integer(kind=8) :: nmafis
         character(len=24) :: lisma
     end subroutine xmafis
 end interface

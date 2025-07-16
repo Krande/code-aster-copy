@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -23,7 +23,7 @@ interface
         use NonLin_Datastructure_type
         character(len=4), intent(in) :: mod45
         character(len=8), intent(in) :: sdmode, sdstab
-        integer, intent(in) :: nume_inst, nb_freq, nfreq_calibr
+        integer(kind=8), intent(in) :: nume_inst, nb_freq, nfreq_calibr
         real(kind=8), intent(in) :: inst
         type(NL_DS_PostTimeStep), intent(inout) :: ds_posttimestep
     end subroutine nonlinDSPostTimeStepSave

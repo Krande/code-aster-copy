@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -31,8 +31,8 @@ subroutine irmad1(ifi, versio, nbno, prno, nueq, &
 #include "asterfort/jemarq.h"
 #include "asterfort/jeveuo.h"
 #include "asterfort/wkvect.h"
-    integer :: ifi, nbno, prno(*), nueq(*), nec, dg(*), ncmpmx, numnoe(*)
-    integer :: versio, itype, nstat
+    integer(kind=8) :: ifi, nbno, prno(*), nueq(*), nec, dg(*), ncmpmx, numnoe(*)
+    integer(kind=8) :: versio, itype, nstat
     character(len=*) :: nomcmp(*), nomsym, chamno(*)
 !        ECRITURE D'UN CHAM_NO SUR FICHIER UNIVERSEL, DATASET TYPE 252
 !        A VALEURS REELLES OU COMPLEXES
@@ -40,17 +40,17 @@ subroutine irmad1(ifi, versio, nbno, prno, nueq, &
 !     ------------------------------------------------------------------
     character(len=4) :: nomgds(50), nomchs(50)
     character(len=19) :: chamn
-    integer :: nbchs
-    integer :: nbcmps(50), ipcmps(50, 50), impre
+    integer(kind=8) :: nbchs
+    integer(kind=8) :: nbcmps(50), ipcmps(50, 50), impre
     aster_logical :: ltabl(50), afaire
 !
 !  --- INITIALISATIONS ----
 !
 !-----------------------------------------------------------------------
-    integer :: i, iavale, ichs, icmp, icms, icmsup, icompt
-    integer :: icp, iec, imat, inno, ino, irval, ist
-    integer :: ival, k1, k2, mfor, mkey, mtyp, nbcmpt
-    integer :: ncmp, ncol, ndim, nrow
+    integer(kind=8) :: i, iavale, ichs, icmp, icms, icmsup, icompt
+    integer(kind=8) :: icp, iec, imat, inno, ino, irval, ist
+    integer(kind=8) :: ival, k1, k2, mfor, mkey, mtyp, nbcmpt
+    integer(kind=8) :: ncmp, ncol, ndim, nrow
 !-----------------------------------------------------------------------
     call jemarq()
     do i = 1, ncmpmx

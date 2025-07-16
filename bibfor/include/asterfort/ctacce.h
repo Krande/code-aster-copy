@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -23,7 +23,7 @@ interface
                       niord, nkcha, resu)
         character(len=16) :: nsymb
         character(len=8) :: typac
-        integer :: nbval
+        integer(kind=8) :: nbval
         character(len=24) :: nival
         character(len=24) :: nrval
         character(len=24) :: niord

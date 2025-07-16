@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -19,12 +19,11 @@
 subroutine intersect_conic(m, line, nb, point1, point2)
 !
     implicit none
-#include "asterc/r8prem.h"
 #include "asterfort/get_line_points.h"
 !
     real(kind=8), intent(in) :: m(3, 3)
     real(kind=8), intent(in) :: line(3)
-    integer, intent(out) :: nb
+    integer(kind=8), intent(out) :: nb
     real(kind=8), intent(out) :: point1(3)
     real(kind=8), intent(out) :: point2(3)
 !
@@ -40,7 +39,7 @@ subroutine intersect_conic(m, line, nb, point1, point2)
     real(kind=8) :: coefA, coefB, coefC, pt1(3), pt2(3)
     real(kind=8) :: prec, mult1(3), mult2(3), ref_coef
     real(kind=8) :: rac, rac1, rac2, delta, ref_delta, prec2
-    integer :: i, j
+    integer(kind=8) :: i, j
 !
     call get_line_points(line, pt1, pt2)
 !

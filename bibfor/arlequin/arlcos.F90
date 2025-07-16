@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -25,8 +25,8 @@ subroutine arlcos(numa, connex, loncum, coord, dime, &
 #include "jeveux.h"
 #include "asterfort/assert.h"
 !
-    integer :: numa, connex(*), loncum(*)
-    integer :: dime
+    integer(kind=8) :: numa, connex(*), loncum(*)
+    integer(kind=8) :: dime
     real(kind=8) :: coord(3, *), cnoeud(dime, *)
 !
 ! ----------------------------------------------------------------------
@@ -48,7 +48,7 @@ subroutine arlcos(numa, connex, loncum, coord, dime, &
 !
 ! ----------------------------------------------------------------------
 !
-    integer :: ino, idim, nuno, jdec, nbno
+    integer(kind=8) :: ino, idim, nuno, jdec, nbno
 !
 ! ----------------------------------------------------------------------
 !

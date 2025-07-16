@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -32,11 +32,11 @@ subroutine tfveri(nommcf, nbocc, itypfl)
 #include "asterfort/getvtx.h"
 #include "asterfort/tfvegr.h"
 #include "asterfort/utmess.h"
-    integer :: itypfl
+    integer(kind=8) :: itypfl
     character(len=16) :: nommcf
 ! ----------------------------------------------------------------------
-    integer :: count1, count2, count3, count4, count5
-    integer :: ocgril
+    integer(kind=8) :: count1, count2, count3, count4, count5
+    integer(kind=8) :: ocgril
     character(len=2) :: carapa(4)
     character(len=3) :: ouinon
 !      CHARACTER*9   TYPAS(2)
@@ -51,13 +51,13 @@ subroutine tfveri(nommcf, nbocc, itypfl)
 !       -----------------------
 !
 !-----------------------------------------------------------------------
-    integer :: iangl, ibid, icapa, icara, icm, icmp, icoup
-    integer :: ier2, igra2, ihy, ihz, iocc, ipas, ipesan
-    integer :: ir, irayon, irho, irhoe, irhoi, irugo, itpas
-    integer :: itres, ivapa, ivect, ivisc, jcoup, nbcoor, nbhy
-    integer :: nbhz, nbocc, nbr, nbtub, nbtub2, nbyc, nbzc
-    integer :: ncara, ncm, ncmp, ncoup, npas, nrhoe, nrhoi
-    integer :: ntpas, ntres, ntypg
+    integer(kind=8) :: iangl, ibid, icapa, icara, icm, icmp, icoup
+    integer(kind=8) :: ier2, igra2, ihy, ihz, iocc, ipas, ipesan
+    integer(kind=8) :: ir, irayon, irho, irhoe, irhoi, irugo, itpas
+    integer(kind=8) :: itres, ivapa, ivect, ivisc, jcoup, nbcoor, nbhy
+    integer(kind=8) :: nbhz, nbocc, nbr, nbtub, nbtub2, nbyc, nbzc
+    integer(kind=8) :: ncara, ncm, ncmp, ncoup, npas, nrhoe, nrhoi
+    integer(kind=8) :: ntpas, ntres, ntypg
 !-----------------------------------------------------------------------
     if (itypfl .eq. 1) then
 ! ---    VERIFICATION DE LA PRESENCE D AU MOINS UNE OCCURENCE DU

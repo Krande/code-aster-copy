@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -35,7 +35,7 @@ subroutine op0002()
 #include "asterfort/ulnume.h"
 #include "asterfort/ulopen.h"
 #include "asterfort/utmess.h"
-    integer :: unite, ifm, niv, n1, nf, nu, iret
+    integer(kind=8) :: unite, ifm, niv, n1, nf, nu, iret
     aster_logical :: sortie
     character(len=1) :: kacc, ktyp
     character(len=8) :: action, acces, type

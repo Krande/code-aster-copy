@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -23,7 +23,6 @@ subroutine mm_cycl_stat(ds_measure, ds_contact)
     implicit none
 !
 #include "asterf_types.h"
-#include "asterfort/assert.h"
 #include "asterfort/cfdisi.h"
 #include "asterfort/jeveuo.h"
 #include "asterfort/nmrvai.h"
@@ -48,10 +47,10 @@ subroutine mm_cycl_stat(ds_measure, ds_contact)
 ! --------------------------------------------------------------------------------------------------
 !
     character(len=24) :: sdcont_cyceta
-    integer, pointer :: p_sdcont_cyceta(:) => null()
-    integer :: cycl_index, cycl_stat
-    integer :: i_cont_poin, nt_cont_poin
-    integer :: cycl_nb(4)
+    integer(kind=8), pointer :: p_sdcont_cyceta(:) => null()
+    integer(kind=8) :: cycl_index, cycl_stat
+    integer(kind=8) :: i_cont_poin, nt_cont_poin
+    integer(kind=8) :: cycl_nb(4)
 !
 ! --------------------------------------------------------------------------------------------------
 !

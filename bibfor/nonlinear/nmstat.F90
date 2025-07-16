@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -24,8 +24,6 @@ subroutine nmstat(phasis, ds_measure, ds_print, sddisc, nume_inst, sderro)
     implicit none
 !
 #include "asterf_types.h"
-#include "asterc/r8prem.h"
-#include "asterfort/assert.h"
 #include "asterfort/diinst.h"
 #include "asterfort/impmem.h"
 #include "asterfort/GetDevice.h"
@@ -41,7 +39,7 @@ subroutine nmstat(phasis, ds_measure, ds_print, sddisc, nume_inst, sderro)
     type(NL_DS_Measure), intent(inout) :: ds_measure
     type(NL_DS_Print), intent(in) :: ds_print
     character(len=19), intent(in) :: sddisc
-    integer, intent(in) :: nume_inst
+    integer(kind=8), intent(in) :: nume_inst
     character(len=24), intent(in) :: sderro
 !
 ! --------------------------------------------------------------------------------------------------
@@ -67,7 +65,7 @@ subroutine nmstat(phasis, ds_measure, ds_print, sddisc, nume_inst, sderro)
     real(kind=8) :: time_other, time_curr
     real(kind=8) :: time_time_step
     real(kind=8) :: time_sub, time
-    integer :: i_device, nb_device
+    integer(kind=8) :: i_device, nb_device
     type(NL_DS_Device) :: device
     character(len=10) :: device_type
 !

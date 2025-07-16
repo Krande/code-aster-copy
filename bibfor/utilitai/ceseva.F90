@@ -31,9 +31,7 @@ subroutine ceseva(cesf, npara, lpara, cesr)
 #include "asterfort/jedema.h"
 #include "asterfort/jedetr.h"
 #include "asterfort/jemarq.h"
-#include "asterfort/jenuno.h"
 #include "asterfort/jeveuo.h"
-#include "asterfort/jexnum.h"
 #include "asterfort/juveca.h"
 #include "asterfort/utmess.h"
 #include "asterfort/wkvect.h"
@@ -41,7 +39,7 @@ subroutine ceseva(cesf, npara, lpara, cesr)
 #include "asterfort/as_allocate.h"
 #include "asterfort/int_to_char8.h"
 !
-    integer :: npara
+    integer(kind=8) :: npara
     character(len=*) :: cesf, lpara(npara), cesr
 ! ---------------------------------------------------------------------
 ! BUT: EVALUER LE CHAM_ELEM_S DE FONCTIONS CESF EN UTILISANT
@@ -61,12 +59,12 @@ subroutine ceseva(cesf, npara, lpara, cesr)
 !  ON NE TRAITE QUE LES FONCTIONS REELLES F : R * R(* R,...) -> R
 !-----------------------------------------------------------------------
 !     ------------------------------------------------------------------
-    integer :: jfd, jfl
-    integer :: jpd, jpc, jpv, jpl
-    integer :: jrd, jrc, jrl, jrk
-    integer :: nbma, k, ima, ncmp, nbpu, ier, nbpumx, ibid
-    integer :: ncmp2, ipara, ncmpmx, nspmx, nptmx
-    integer :: k2, iadf, iadr, iadp, nbpt, nbsp, ipt, isp, jnompu, jvalpu
+    integer(kind=8) :: jfd, jfl
+    integer(kind=8) :: jpd, jpc, jpv, jpl
+    integer(kind=8) :: jrd, jrc, jrl, jrk
+    integer(kind=8) :: nbma, k, ima, ncmp, nbpu, ier, nbpumx, ibid
+    integer(kind=8) :: ncmp2, ipara, ncmpmx, nspmx, nptmx
+    integer(kind=8) :: k2, iadf, iadr, iadp, nbpt, nbsp, ipt, isp, jnompu, jvalpu
     character(len=8) :: ma, nomgdf, nomgdr, fo
     character(len=8) :: ma2, nomgd2, typces
     character(len=3) :: tsca
@@ -78,7 +76,7 @@ subroutine ceseva(cesf, npara, lpara, cesr)
     character(len=8), pointer :: fc(:) => null()
     character(len=8), pointer :: fk(:) => null()
     character(len=8), pointer :: pk(:) => null()
-    integer, pointer :: vjad1(:) => null()
+    integer(kind=8), pointer :: vjad1(:) => null()
 !     ------------------------------------------------------------------
     call jemarq()
 !

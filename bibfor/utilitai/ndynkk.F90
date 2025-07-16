@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -46,11 +46,11 @@ subroutine ndynkk(sddyna, chaine, nomsd)
 ! --------------------------------------------------------------------------------------------------
 !
     character(len=24) :: nosd, tcha
-    integer :: jnosd, jtcha
+    integer(kind=8) :: jnosd, jtcha
     character(len=24) :: vecent, vecabs
-    integer :: jvecen, jvecab
+    integer(kind=8) :: jvecen, jvecab
     character(len=24) :: veol, vaol
-    integer :: jveol, jvaol
+    integer(kind=8) :: jveol, jvaol
     aster_logical :: ldyna
     character(len=24) :: cham24
     character(len=15) :: sdmuap, sdprmo, sdexso

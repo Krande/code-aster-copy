@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2020 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -31,12 +31,12 @@ interface
         character(len=8) :: ma
         character(len=*) :: mate, mateco
         character(len=8) :: moint
-        integer :: ndble
-        integer :: itxsto
-        integer :: itysto
-        integer :: itzsto
-        integer :: iprsto
-        integer :: nbmo
-        integer :: iadirg
+        integer(kind=8) :: ndble
+        integer(kind=8) :: itxsto
+        integer(kind=8) :: itysto
+        integer(kind=8) :: itzsto
+        integer(kind=8) :: iprsto
+        integer(kind=8) :: nbmo
+        integer(kind=8) :: iadirg
     end subroutine calmdg
 end interface

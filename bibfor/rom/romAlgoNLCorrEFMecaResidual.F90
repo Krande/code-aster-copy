@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -27,12 +27,11 @@ subroutine romAlgoNLCorrEFMecaResidual(v_cnequi, ds_algorom, l_cine, v_ccid, res
 #include "asterfort/as_allocate.h"
 #include "asterfort/as_deallocate.h"
 #include "asterfort/assert.h"
-#include "blas/ddot.h"
 !
     real(kind=8), pointer :: v_cnequi(:)
     type(ROM_DS_AlgoPara), intent(in) :: ds_algorom
     aster_logical, intent(in) :: l_cine
-    integer, pointer :: v_ccid(:)
+    integer(kind=8), pointer :: v_ccid(:)
     real(kind=8), intent(out) :: resi
 !
 ! --------------------------------------------------------------------------------------------------
@@ -54,7 +53,7 @@ subroutine romAlgoNLCorrEFMecaResidual(v_cnequi, ds_algorom, l_cine, v_ccid, res
     aster_logical :: l_hrom
     character(len=8) :: resultName
     character(len=24) :: fieldName
-    integer :: iEqua, nbEqua, nbMode
+    integer(kind=8) :: iEqua, nbEqua, nbMode
     real(kind=8), pointer :: v_resi(:) => null()
 !
 ! --------------------------------------------------------------------------------------------------

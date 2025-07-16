@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -36,7 +36,6 @@ subroutine xcelno(noma, modelx, cel_hno, opt, npa)
 #include "asterfort/jemarq.h"
 #include "asterfort/jeveuo.h"
 #include "asterfort/jexatr.h"
-#include "asterfort/jexnum.h"
 #include "asterfort/xcalc_code.h"
 #include "asterfort/xtest_code.h"
 !
@@ -57,20 +56,21 @@ subroutine xcelno(noma, modelx, cel_hno, opt, npa)
 !     AU SENS D HANSBO SAUF BIEN ENTENDU QUAND NFISS=1
 ! ----------------------------------------------------------------------
 !
-    integer :: nbno, nbma, ibid, ino, nuno, numa, nusd
-    integer :: nbpt, ncmp, deca, ilcnx1, ifh, nncp
-    integer :: jcesd, jcesv, jcesl, iad
-    integer :: jcesd_fno, jcesv_fno, jcesl_fno, iad_fno, jcesl_stno, jcesd_stno, jcesv_stno
-    integer :: ier, nfh, cpt, ncompn, deca_fno, iad2, pos, iad5, id1, id2, iad_stno, nfh2
+    integer(kind=8) :: nbno, nbma, ibid, ino, nuno, numa, nusd
+    integer(kind=8) :: nbpt, ncmp, deca, ilcnx1, ifh, nncp
+    integer(kind=8) :: jcesd, jcesv, jcesl, iad
+    integer(kind=8) :: jcesd_fno, jcesv_fno, jcesl_fno, iad_fno, jcesl_stno, jcesd_stno, jcesv_stno
+    integer(kind=8) :: ier, nfh, cpt, ncompn, deca_fno, iad2, pos, iad5, id1, id2, iad_stno, nfh2
     character(len=19) :: ces_hno, ces_fno, ces_stno
     aster_logical :: lfno, limpr
     aster_logical, pointer :: is_nfh_no(:) => null()
-    integer, pointer :: list_sd_no(:) => null(), count_sd_no(:) => null(), connex(:) => null()
-    integer, pointer :: tmp_fno(:) => null(), nfh_ref(:) => null()
-    integer :: nfissmax
+    integer(kind=8), pointer :: list_sd_no(:) => null(), count_sd_no(:) => null()
+    integer(kind=8), pointer :: connex(:) => null()
+    integer(kind=8), pointer :: tmp_fno(:) => null(), nfh_ref(:) => null()
+    integer(kind=8) :: nfissmax
     parameter(nfissmax=4)
-    integer :: fisno(nfissmax), ifiss
-    integer :: nbsd, i, tmp_pos(nfissmax+1), tmp_id(nfissmax+1)
+    integer(kind=8) :: fisno(nfissmax), ifiss
+    integer(kind=8) :: nbsd, i, tmp_pos(nfissmax+1), tmp_id(nfissmax+1)
     aster_logical, pointer :: is_ma_xfem(:) => null(), is_no_mono(:) => null()
 !
 ! ----------------------------------------------------------------------
@@ -304,7 +304,8 @@ subroutine xcelno(noma, modelx, cel_hno, opt, npa)
         do nuno = 1, nbno
             write (6, *) 'nuno=', nuno
             write (6, *) '   - nfh_ref=', nfh_ref(nuno)
-           write (6, *) '   - list_sd=', list_sd_no((deca*(nuno-1)+1):(deca*(nuno-1)+nfh_ref(nuno)))
+            write (6, *) '   - list_sd=', &
+                list_sd_no((deca*(nuno-1)+1):(deca*(nuno-1)+nfh_ref(nuno)))
         end do
     end if
 !

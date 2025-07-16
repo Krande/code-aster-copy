@@ -57,7 +57,7 @@ subroutine peeint(tableOut, model, nbocc)
 #include "asterfort/convertFieldNodeToNeutElem.h"
 #include "asterfort/char8_to_int.h"
 !
-    integer :: nbocc
+    integer(kind=8) :: nbocc
     character(len=8) :: model
     character(len=19) :: tableOut
 !
@@ -68,19 +68,19 @@ subroutine peeint(tableOut, model, nbocc)
 !
 ! --------------------------------------------------------------------------------------------------
 !
-    integer, parameter :: nbParaResult = 4, nbParaField = 2, nbCmpOk = 6
+    integer(kind=8), parameter :: nbParaResult = 4, nbParaField = 2, nbCmpOk = 6
     character(len=8), parameter :: paraTypeResult(nbParaResult) = (/'K16', 'I  ', 'R  ', 'R  '/)
     character(len=8), parameter :: paraTypeField(nbParaField) = (/'K16', 'R  '/)
     character(len=16), parameter :: paraNameResult(nbParaResult) = (/'NOM_CHAM  ', 'NUME_ORDRE', &
                                                                      'INST      ', 'VOL       '/)
     character(len=16), parameter :: paraNameField(nbParaField) = (/'CHAM_GD ', 'VOL     '/)
     character(len=3), parameter :: cmpNameOk(nbCmpOk) = (/'N  ', 'VY ', 'VZ ', 'MT ', 'MFY', 'MFZ'/)
-    integer :: iret, ibid, iocc, nbret
-    integer :: cellNume, cmpNume, numeStore
-    integer :: iCmp, iCellCompute, iGroup, iStore, iCell, iCmpOk
-    integer :: nbCellMesh, nbCellUser, nbCell, nbCellFilter, nbCellCompute
-    integer :: nbCmp, nbStore, nbCmpField, nbGroup, nbVari
-    integer :: pdtElemType
+    integer(kind=8) :: iret, ibid, iocc, nbret
+    integer(kind=8) :: cellNume, cmpNume, numeStore
+    integer(kind=8) :: iCmp, iCellCompute, iGroup, iStore, iCell, iCmpOk
+    integer(kind=8) :: nbCellMesh, nbCellUser, nbCell, nbCellFilter, nbCellCompute
+    integer(kind=8) :: nbCmp, nbStore, nbCmpField, nbGroup, nbVari
+    integer(kind=8) :: pdtElemType
     real(kind=8) :: inst
     character(len=8) :: mesh, resultIn, cellName, physName
     character(len=4) :: fieldSupp, lStructElem
@@ -97,14 +97,14 @@ subroutine peeint(tableOut, model, nbocc)
     character(len=24) :: fieldName, groupName
     aster_logical :: convToNeut, lFromField, lFromResult, lVariName, lCmpOk, l_pmesh, l_empty
     aster_logical :: l_newlig
-    integer :: filterTypeNume
+    integer(kind=8) :: filterTypeNume
     character(len=8) :: filterTypeName
     character(len=8), pointer :: cmpNameNode(:) => null(), cmpNameNeut(:) => null()
     character(len=8), pointer :: cmpNameInit(:) => null()
-    integer, pointer :: cellCompute(:) => null()
-    integer, pointer :: cellFilter(:) => null()
-    integer, pointer :: listNumeStore(:) => null()
-    integer, pointer :: listElemType(:) => null()
+    integer(kind=8), pointer :: cellCompute(:) => null()
+    integer(kind=8), pointer :: cellFilter(:) => null()
+    integer(kind=8), pointer :: listNumeStore(:) => null()
+    integer(kind=8), pointer :: listElemType(:) => null()
     real(kind=8), pointer :: listTimeStore(:) => null()
     character(len=16), pointer :: variName(:) => null()
     character(len=8), pointer :: cmpName(:) => null(), cellNames(:) => null()

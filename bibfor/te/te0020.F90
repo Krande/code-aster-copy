@@ -61,25 +61,25 @@ subroutine te0020(nomopt, nomte)
 !
 ! --------------------------------------------------------------------------------------------------
 !
-    integer :: lmater, jacf, idefi, ivectu
-    integer :: lorien, nno, nc, iabsc, nbpar
+    integer(kind=8) :: lmater, jacf, idefi, ivectu
+    integer(kind=8) :: lorien, nno, nc, iabsc, nbpar
     real(kind=8) :: r8bid, e, xnu, g, carsec(6), fs(14)
     real(kind=8) :: a, xiy, xiz, alfay, alfaz, xjx, a2, xiy2, xiz2
     real(kind=8) :: epx, xky, xkz, vect_y(3), norm, vect_x(3)
     real(kind=8) :: pgl(3, 3), angl(3), dgamma, vect_n(3), xkn1, xkn2
 !
-    integer :: nbres
+    integer(kind=8) :: nbres
     parameter(nbres=4)
-    integer :: codres(nbres)
+    integer(kind=8) :: codres(nbres)
     real(kind=8) :: valres(nbres)
     character(len=16) :: nomres(nbres)
 !
-    integer :: nbfibr, nbgrfi, tygrfi, nbcarm, nug(10), itemps, igeom, ier
+    integer(kind=8) :: nbfibr, nbgrfi, tygrfi, nbcarm, nug(10), itemps, igeom, ier
     character(len=8) :: nompar(5)
     real(kind=8) :: valpar(5)
 !
 ! --------------------------------------------------------------------------------------------------
-    integer, parameter :: nb_cara = 9
+    integer(kind=8), parameter :: nb_cara = 9
     real(kind=8) :: vale_cara(nb_cara)
     character(len=8) :: noms_cara(nb_cara)
     data noms_cara/'A1', 'IY1', 'IZ1', 'AY1', 'AZ1', 'JX1', 'A2', 'IY2', 'IZ2'/

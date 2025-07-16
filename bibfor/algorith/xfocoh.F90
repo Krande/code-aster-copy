@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -59,16 +59,16 @@ subroutine xfocoh(jbas, jconx1, jconx2, jcoor, jfon, &
 !
     real(kind=8) :: a(3), b(3), gln(2, 3), glt(2, 3), glna(3)
     real(kind=8) :: glnb(3), glta(3), gltb(3), beta
-    integer :: ima, indipt, ino, ipt, itypma
-    integer :: j, jbas, jconx1, jconx2, jcoor
-    integer :: jfon, jlism, k, ia, nbar, nuno_av
-    integer :: i_inter, ar(12, 3)
+    integer(kind=8) :: ima, indipt, ino, ipt, itypma
+    integer(kind=8) :: j, jbas, jconx1, jconx2, jcoor
+    integer(kind=8) :: jfon, jlism, k, ia, nbar, nuno_av
+    integer(kind=8) :: i_inter, ar(12, 3)
     character(len=19) :: lismai, listpt, listpt_temp
     character(len=19) :: chgrn, chgrt, cnsln
     real(kind=8) :: loncar, m(2, 3), mm(3)
-    integer :: nbmai, nbnoma, nbptma, ndim, ndime, nfon, nmaabs
+    integer(kind=8) :: nbmai, nbnoma, nbptma, ndim, ndime, nfon, nmaabs
     character(len=8) :: noma
-    integer :: nuno, nuno1, nuno2, nxptff, ima_eff, ninter
+    integer(kind=8) :: nuno, nuno1, nuno2, nxptff, ima_eff, ninter
     aster_logical :: orient
     real(kind=8) :: p(3), prec, lsna, lsnb, autre_lsn
     real(kind=8) :: lsn_precedente
@@ -76,9 +76,9 @@ subroutine xfocoh(jbas, jconx1, jconx2, jcoor, jfon, &
     real(kind=8), pointer :: gn(:) => null()
     real(kind=8), pointer :: gt(:) => null()
     real(kind=8), pointer :: lsnv(:) => null()
-    integer, pointer :: typmail(:) => null()
-    integer, pointer :: tab_pt(:) => null()
-    integer, pointer :: tab_pt_temp(:) => null()
+    integer(kind=8), pointer :: typmail(:) => null()
+    integer(kind=8), pointer :: tab_pt(:) => null()
+    integer(kind=8), pointer :: tab_pt_temp(:) => null()
 ! ----------------------------------------------
     call jemarq()
 !

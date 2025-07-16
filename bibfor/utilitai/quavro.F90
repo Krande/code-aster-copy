@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -44,7 +44,7 @@ subroutine quavro(quater, theta)
     real(kind=8) :: reste, zero, epsil, deux, coef
     real(kind=8) :: pi
     real(kind=8) :: prosca, anorx
-    integer :: i
+    integer(kind=8) :: i
     blas_int :: b_incx, b_incy, b_n
 !
 ! ----------------------------------------------------------------------

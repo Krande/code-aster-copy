@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -34,70 +34,70 @@ interface
                       ddlc, jcnsv1, jcnsv2, jcnsl2, lmeca,&
                       pre1, heavno, fisco,&
                       nlachm, lacthm, jbaslo, jstno, ka, mu)
-        integer :: nfiss
+        integer(kind=8) :: nfiss
         character(len=8) :: maxfem
-        integer :: jtypm2
-        integer :: itypse
-        integer :: jcnse
-        integer :: im
-        integer :: n
-        integer :: nnose
+        integer(kind=8) :: jtypm2
+        integer(kind=8) :: itypse
+        integer(kind=8) :: jcnse
+        integer(kind=8) :: im
+        integer(kind=8) :: n
+        integer(kind=8) :: nnose
         character(len=2) :: prefno(4)
-        integer :: jdirno
-        integer :: nnm
-        integer :: inm
-        integer :: inmtot
-        integer :: nbmac
-        integer :: he(nfiss)
-        integer :: jnivgr
-        integer :: iagma
-        integer :: ngrm
-        integer :: jdirgr
+        integer(kind=8) :: jdirno
+        integer(kind=8) :: nnm
+        integer(kind=8) :: inm
+        integer(kind=8) :: inmtot
+        integer(kind=8) :: nbmac
+        integer(kind=8) :: he(nfiss)
+        integer(kind=8) :: jnivgr
+        integer(kind=8) :: iagma
+        integer(kind=8) :: ngrm
+        integer(kind=8) :: jdirgr
         aster_logical :: opmail
-        integer :: ndim
-        integer :: ndime
-        integer :: jconx1
-        integer :: jconx2
-        integer :: jconq1
-        integer :: jconq2
-        integer :: ima
-        integer :: iad1
-        integer :: nnn
-        integer :: inn
-        integer :: inntot
-        integer :: nbnoc
-        integer :: nbnofi
-        integer :: inofi
-        integer :: iacoo1
-        integer :: iacoo2
-        integer :: iad9
-        integer :: ninter(4)
-        integer :: iainc
+        integer(kind=8) :: ndim
+        integer(kind=8) :: ndime
+        integer(kind=8) :: jconx1
+        integer(kind=8) :: jconx2
+        integer(kind=8) :: jconq1
+        integer(kind=8) :: jconq2
+        integer(kind=8) :: ima
+        integer(kind=8) :: iad1
+        integer(kind=8) :: nnn
+        integer(kind=8) :: inn
+        integer(kind=8) :: inntot
+        integer(kind=8) :: nbnoc
+        integer(kind=8) :: nbnofi
+        integer(kind=8) :: inofi
+        integer(kind=8) :: iacoo1
+        integer(kind=8) :: iacoo2
+        integer(kind=8) :: iad9
+        integer(kind=8) :: ninter(4)
+        integer(kind=8) :: iainc
         character(len=8) :: elrefp
-        integer :: jlsn
-        integer :: jlst
+        integer(kind=8) :: jlsn
+        integer(kind=8) :: jlst
         character(len=8) :: typma
-        integer :: igeom
-        integer :: jheavn
-        integer :: ncompn
-        integer :: contac
-        integer :: cmp(*)
-        integer :: nbcmp
-        integer :: nfh
-        integer :: nfe
-        integer :: ddlc
-        integer :: jcnsv1
-        integer :: jcnsv2
-        integer :: jcnsl2
-        integer :: jstno
+        integer(kind=8) :: igeom
+        integer(kind=8) :: jheavn
+        integer(kind=8) :: ncompn
+        integer(kind=8) :: contac
+        integer(kind=8) :: cmp(*)
+        integer(kind=8) :: nbcmp
+        integer(kind=8) :: nfh
+        integer(kind=8) :: nfe
+        integer(kind=8) :: ddlc
+        integer(kind=8) :: jcnsv1
+        integer(kind=8) :: jcnsv2
+        integer(kind=8) :: jcnsl2
+        integer(kind=8) :: jstno
         aster_logical :: lmeca
         aster_logical :: pre1
-        integer :: ncompa
-        integer :: heavno(20,3)
-        integer :: fisco(*)
-        integer :: nlachm(2)
-        integer :: lacthm(16)
-        integer :: jbaslo
+        integer(kind=8) :: ncompa
+        integer(kind=8) :: heavno(20,3)
+        integer(kind=8) :: fisco(*)
+        integer(kind=8) :: nlachm(2)
+        integer(kind=8) :: lacthm(16)
+        integer(kind=8) :: jbaslo
         real(kind=8) :: ka
         real(kind=8) :: mu
     end subroutine xpoajm

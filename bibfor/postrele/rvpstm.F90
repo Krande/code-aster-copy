@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -81,9 +81,9 @@ subroutine rvpstm(sdlieu, sdeval, sdmoye)
 !  VARIABLES LOCALES
 !  -----------------
 !
-    integer :: avale, apnbn, apadr, amoye, aabsc, atab, adr1, adr2
-    integer :: deb, fin, lmoye, nbcp, nbco, nbsp, nboc, nbsgt
-    integer :: l1, l2, l3, l5, l6, l7, ioc, ico, isgt, isp, k, i, n, inoe
+    integer(kind=8) :: avale, apnbn, apadr, amoye, aabsc, atab, adr1, adr2
+    integer(kind=8) :: deb, fin, lmoye, nbcp, nbco, nbsp, nboc, nbsgt
+    integer(kind=8) :: l1, l2, l3, l5, l6, l7, ioc, ico, isgt, isp, k, i, n, inoe
     real(kind=8) :: m1, m2, ma, mi, s1, s2, t1, t2, s12, xl, t12, smil
     aster_logical :: deja
     character(len=1) :: bl
@@ -93,7 +93,7 @@ subroutine rvpstm(sdlieu, sdeval, sdmoye)
 !==================== CORPS DE LA ROUTINE =============================
 !
 !-----------------------------------------------------------------------
-    integer :: icmp, iret, lll
+    integer(kind=8) :: icmp, iret, lll
 !-----------------------------------------------------------------------
     call jemarq()
     bl = ' '

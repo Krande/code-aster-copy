@@ -48,24 +48,24 @@ subroutine te0121(option, nomte)
 !
 ! --------------------------------------------------------------------------------------------------
 !
-    integer, parameter :: nbResu = 2
+    integer(kind=8), parameter :: nbResu = 2
     character(len=16), parameter :: resuName(nbResu) = (/'AMOR_ALPHA', &
                                                          'AMOR_BETA '/)
     real(kind=8) :: resuVale(nbResu)
-    integer :: icodre(nbResu)
-    integer :: iret, nbddl
-    integer :: i, j, kns, ks
-    integer :: jvMate, jvMateCod
-    integer :: nbNode
+    integer(kind=8) :: icodre(nbResu)
+    integer(kind=8) :: iret, nbddl
+    integer(kind=8) :: i, j, kns, ks
+    integer(kind=8) :: jvMate, jvMateCod
+    integer(kind=8) :: nbNode
     real(kind=8) :: alpha, beta
-    integer :: matrRigiSize, matrResuSize, matrMassSize
+    integer(kind=8) :: matrRigiSize, matrResuSize, matrMassSize
     aster_logical :: lAbso
     aster_logical :: lRigiSyme, lMatrRigi, lMatrMass, lMatrResuSyme
     character(len=8) ::  materPMF
     character(len=32) :: elasKeyword
-    integer, parameter :: tecachNbVal = 5
-    integer :: itab(tecachNbVal)
-    integer :: jvMass, jvRigi, jvResu
+    integer(kind=8), parameter :: tecachNbVal = 5
+    integer(kind=8) :: itab(tecachNbVal)
+    integer(kind=8) :: jvMass, jvRigi, jvResu
 !
 ! --------------------------------------------------------------------------------------------------
 !

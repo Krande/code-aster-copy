@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -22,7 +22,6 @@ subroutine ntdcom(result_dry, l_dry)
 !
 #include "asterf_types.h"
 #include "asterc/getfac.h"
-#include "asterc/getres.h"
 #include "asterfort/gettco.h"
 #include "asterfort/dismoi.h"
 #include "asterfort/getvid.h"
@@ -45,7 +44,7 @@ subroutine ntdcom(result_dry, l_dry)
 !
 ! --------------------------------------------------------------------------------------------------
 !
-    integer :: nbocc, iocc, n1, nbcham
+    integer(kind=8) :: nbocc, iocc, n1, nbcham
     character(len=16) :: comp_rela, tysd
     aster_logical :: lrela
     character(len=16), parameter :: keywfact = 'COMPORTEMENT'

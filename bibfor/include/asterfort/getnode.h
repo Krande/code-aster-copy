@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -25,9 +25,9 @@ interface
                        nb_node, model      , suffix, elem_excl)
         character(len=8), intent(in) :: mesh
         character(len=16), intent(in) :: keywordfact
-        integer, intent(in) :: iocc
+        integer(kind=8), intent(in) :: iocc
         character(len=1), intent(in) :: stop_void
-        integer, intent(out) :: nb_node
+        integer(kind=8), intent(out) :: nb_node
         character(len=24), intent(in) :: list_node
         character(len=8), intent(in), optional :: model
         character(len=*), intent(in), optional :: suffix

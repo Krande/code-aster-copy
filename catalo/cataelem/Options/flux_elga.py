@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -41,6 +41,7 @@ PVARCPR = InputParameter(
 PCHHOGT = InputParameter(phys=PHY.N1920R, comment=""" HHO - matrice du gradient local""")
 
 PCHHOST = InputParameter(phys=PHY.N1360R, comment=""" HHO - matrice de la stabilisation locale""")
+PCHHOBS = InputParameter(phys=PHY.N3600R, comment=""" HHO - coefficient base locale""")
 
 PFLUXPG = OutputParameter(
     phys=PHY.FLUX_R, type="ELGA", comment="""  PFLUXPG : FLUX AUX POINTS DE GAUSS """
@@ -60,6 +61,7 @@ FLUX_ELGA = Option(
         PVARCPR,
         PCHHOGT,
         PCHHOST,
+        PCHHOBS,
     ),
     para_out=(PFLUXPG,),
     condition=(CondCalcul("+", ((AT.PHENO, "TH"), (AT.BORD, "0"))),),

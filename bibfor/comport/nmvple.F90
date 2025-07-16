@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -23,14 +23,13 @@ subroutine nmvple(fami, kpg, ksp, ndim, imate, &
 ! aslint: disable=
     implicit none
 #include "asterfort/ggplem.h"
-#include "asterfort/iunifi.h"
 #include "asterfort/rcvalb.h"
 #include "asterfort/rcvarc.h"
 #include "asterfort/utmess.h"
 #include "asterfort/verift.h"
 #include "asterfort/vpalem.h"
 #include "asterfort/zerofr.h"
-    integer :: ndim, imate, iret, kpg, ksp
+    integer(kind=8) :: ndim, imate, iret, kpg, ksp
     character(len=*) :: fami
     character(len=8) :: typmod(*)
     character(len=16) :: compor(*), option
@@ -80,17 +79,17 @@ subroutine nmvple(fami, kpg, ksp, ndim, imate, &
     real(kind=8) :: em, num, troikm, deumum, sigmp(6)
     real(kind=8) :: deltkl, deltp2
     real(kind=8) :: degran(6)
-    integer :: k, l, iret1, ibid
-    integer :: ndimsi, iret2
+    integer(kind=8) :: k, l, iret1, ibid
+    integer(kind=8) :: ndimsi, iret2
     real(kind=8) :: a0, xap, x, tm, tp
     real(kind=8) :: fg, fdgdst, fdgdev, defam(6), defap(6)
     real(kind=8) :: coef1, coef2, deltev
-    integer :: icodre(5)
+    integer(kind=8) :: icodre(5)
     character(len=8) :: nompar(2)
     character(len=16) :: nomres(5)
     real(kind=8), parameter :: kron(6) = (/1.d0, 1.d0, 1.d0, 0.d0, 0.d0, 0.d0/)
-    character(len=6), parameter :: epsa(6) = (/'EPSAXX', 'EPSAYY', 'EPSAZZ', 'EPSAXY', 'EPSAXZ', &
-                                               'EPSAYZ'/)
+    character(len=6), parameter :: epsa(6) = (/'EPSAXX', 'EPSAYY', 'EPSAZZ', &
+                                               'EPSAXY', 'EPSAXZ', 'EPSAYZ'/)
 ! DEB ------------------------------------------------------------------
 !
     call verift(fami, kpg, ksp, 'T', imate, &
@@ -209,7 +208,8 @@ subroutine nmvple(fami, kpg, ksp, ndim, imate, &
 !
     do k = 1, ndimsi
         sigmp(k) = (theta*deuxmu+(1.d0-theta)*deumum)/deumum*(sigm(k)- &
-                                         sigmo*kron(k))+(theta*troisk+(1.d0-theta)*troikm)/troikm* &
+                                                              sigmo*kron(k))+ &
+                   (theta*troisk+(1.d0-theta)*troikm)/troikm* &
                    sigmo*kron(k)
     end do
 !

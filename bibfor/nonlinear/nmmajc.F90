@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -41,10 +41,9 @@ subroutine nmmajc(fonact, sddyna, sdnume, deltat, numedd, &
 #include "asterfort/nmmaji.h"
 #include "asterfort/vtaxpy.h"
 #include "asterfort/vtzero.h"
-#include "asterfort/jeveuo.h"
 #include "asterfort/utmess.h"
 !
-    integer :: fonact(*)
+    integer(kind=8) :: fonact(*)
     character(len=19) :: sdnume, sddyna
     character(len=24) :: numedd
     character(len=19) :: solalg(*), valinc(*)
@@ -78,7 +77,7 @@ subroutine nmmajc(fonact, sddyna, sdnume, deltat, numedd, &
     character(len=19) :: depdel, vitdel, accdel
     character(len=19) :: ddepla, dvitla, daccla
     real(kind=8) :: coevit, coefpr
-    integer :: ifm, niv
+    integer(kind=8) :: ifm, niv
 !
 ! ----------------------------------------------------------------------
 !

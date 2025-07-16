@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -15,7 +15,6 @@
 ! You should have received a copy of the GNU General Public License
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
-! person_in_charge: mickael.abbas at edf.fr
 !
 subroutine nmprdc(ds_algopara, nume_dof, disp_prev, sddisc, nume_inst, &
                   incr_esti, disp_esti)
@@ -40,7 +39,7 @@ subroutine nmprdc(ds_algopara, nume_dof, disp_prev, sddisc, nume_inst, &
     character(len=24), intent(in) :: nume_dof
     character(len=19), intent(in) :: disp_prev
     character(len=19), intent(in) :: sddisc
-    integer, intent(in) :: nume_inst
+    integer(kind=8), intent(in) :: nume_inst
     character(len=19), intent(in) :: incr_esti
     character(len=19), intent(in) :: disp_esti
 !
@@ -62,8 +61,8 @@ subroutine nmprdc(ds_algopara, nume_dof, disp_prev, sddisc, nume_inst, &
 !
 ! --------------------------------------------------------------------------------------------------
 !
-    integer :: ifm, niv
-    integer :: nb_equa, iret
+    integer(kind=8) :: ifm, niv
+    integer(kind=8) :: nb_equa, iret
     real(kind=8) :: time
     character(len=19) :: disp_extr
     character(len=8) :: result_extr
@@ -98,15 +97,17 @@ subroutine nmprdc(ds_algopara, nume_dof, disp_prev, sddisc, nume_inst, &
     if (iret .gt. 0) then
         call utmess('F', 'MECANONLINE2_27', sk=result_extr, sr=time)
     end if
-!
+
 ! - Copy displacement
-!
     if (nume_inst .eq. 1) then
-        call vtcopy(disp_extr, disp_esti, 'F', iret)
+        call vtcopy(disp_extr, disp_esti, iret)
+        if (iret .ne. 0) then
+            call utmess('F', 'MECANONLINE2_29')
+        end if
     else
         call chamnoIsSame(disp_extr, disp_esti, iret)
         if (iret .gt. 0) then
-            call utmess('F', 'MECANONLINE2_28', sk=result_extr, sr=time)
+            call utmess('F', 'MECANONLINE2_28', sr=time)
         else
             call copisd('CHAMP_GD', 'V', disp_extr, disp_esti)
         end if

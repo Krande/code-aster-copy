@@ -22,7 +22,7 @@ interface
                       sddisc, ds_inout, force, ds_algorom_)
         use NonLin_Datastructure_type
         use Rom_Datastructure_type
-        integer, intent(in) :: numins
+        integer(kind=8), intent(in) :: numins
         character(len=8), intent(in) :: model, materField, caraElem
         real(kind=8), intent(in) :: para(*)
         character(len=19), intent(in) :: sddisc

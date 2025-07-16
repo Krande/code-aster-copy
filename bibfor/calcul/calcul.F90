@@ -74,8 +74,8 @@ subroutine calcul(stop, option_, ligrel_, nin, lchin, &
 #include "asterfort/vrcdec.h"
 #include "asterfort/zechlo.h"
 
-    integer, intent(in) :: nou
-    integer, intent(in) :: nin
+    integer(kind=8), intent(in) :: nou
+    integer(kind=8), intent(in) :: nin
     character(len=1), intent(in) :: stop
     character(len=*), intent(in) :: option_
     character(len=*), intent(in) :: ligrel_
@@ -120,13 +120,13 @@ subroutine calcul(stop, option_, ligrel_, nin, lchin, &
     character(len=8) :: lpain2(nin), lpaou2(nou)
     character(len=19) :: lchin2(nin), lchou2(nou)
     character(len=24) :: valk(2)
-    integer ::   ima, ifm
-    integer :: niv
-    integer ::  iret, iuncod, j
-    integer ::  nval
-    integer :: afaire
-    integer :: numc
-    integer :: i, ipar, jpar, nin2, nin3, nou2, nou3
+    integer(kind=8) ::   ima, ifm
+    integer(kind=8) :: niv
+    integer(kind=8) ::  iret, iuncod, j
+    integer(kind=8) ::  nval
+    integer(kind=8) :: afaire
+    integer(kind=8) :: numc
+    integer(kind=8) :: i, ipar, jpar, nin2, nin3, nou2, nou3
     character(len=8) :: nompar, exiele, k8bid, tych, noma
     character(len=10) :: k10b
     character(len=16) :: k16bid, cmde

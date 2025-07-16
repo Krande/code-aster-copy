@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -21,8 +21,8 @@ interface
                             nbVectElem, listVectElem)
         character(len=19), intent(in) :: vectAsse
         character(len=14), intent(in) :: numeDof
-        integer, intent(in) :: vectScalType
-        integer, intent(in) :: nbVectElem
+        integer(kind=8), intent(in) :: vectScalType
+        integer(kind=8), intent(in) :: nbVectElem
         character(len=*), intent(in) :: listVectElem(nbVectElem)
     end subroutine asseVectField
 end interface

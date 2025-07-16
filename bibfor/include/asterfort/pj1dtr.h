@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -21,6 +21,6 @@ interface
     subroutine pj1dtr(corrMeshTemp, corrMesh, cellListType, cellListCode)
         character(len=16), intent(in) :: corrMesh, corrMeshTemp
         character(len=8), intent(in) :: cellListCode(MT_NTYMAX)
-        integer, intent(in) :: cellListType(MT_NTYMAX)
+        integer(kind=8), intent(in) :: cellListType(MT_NTYMAX)
     end subroutine pj1dtr
 end interface

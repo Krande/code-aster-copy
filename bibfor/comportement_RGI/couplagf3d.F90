@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -26,7 +26,7 @@ subroutine couplagf3d(a, b, ngf, kveve66, kmm66, &
 !   ************************************************************************
     implicit none
 
-    integer ngf, i, j
+    integer(kind=8) ngf, i, j
     real(kind=8) :: a(ngf, ngf+1), b(ngf)
     real(kind=8) :: kveve66(6, 6), kmm66(6, 6), kmve66(6, 6), kvem66(6, 6)
     real(kind=8) :: bve6(6), bm6(6)

@@ -118,7 +118,6 @@ subroutine ex0000(nuoper)
 #include "asterfort/op0134.h"
 #include "asterfort/op0136.h"
 #include "asterfort/op0137.h"
-#include "asterfort/op0139.h"
 #include "asterfort/op0140.h"
 #include "asterfort/op0141.h"
 #include "asterfort/op0142.h"
@@ -174,9 +173,9 @@ subroutine ex0000(nuoper)
 #include "asterfort/op0197.h"
 #include "asterfort/op0199.h"
 #include "asterfort/utmess.h"
-    integer, intent(in) :: nuoper
+    integer(kind=8), intent(in) :: nuoper
 !     EXECUTION DES OPERATEURS (NUMEROTES DE 0 A 199)
-    integer :: vali
+    integer(kind=8) :: vali
 !
     select case (nuoper)
     case (0)
@@ -379,8 +378,6 @@ subroutine ex0000(nuoper)
         call op0136()
     case (137)
         call op0137()
-    case (139)
-        call op0139()
     case (140)
         call op0140()
     case (141)

@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -22,12 +22,12 @@ interface
     subroutine lcdpeq(vind, vinf, rela_comp, nbcomm, cpmono,&
                       nmat, nvi, sig, detot, epsd,&
                       materf, pgl)
-        integer :: nvi
-        integer :: nmat
+        integer(kind=8) :: nvi
+        integer(kind=8) :: nmat
         real(kind=8) :: vind(nvi)
         real(kind=8) :: vinf(nvi)
         character(len=16) :: rela_comp
-        integer :: nbcomm(nmat, 3)
+        integer(kind=8) :: nbcomm(nmat, 3)
         character(len=24) :: cpmono(5*nmat+1)
         real(kind=8) :: sig(6)
         real(kind=8) :: detot(*)

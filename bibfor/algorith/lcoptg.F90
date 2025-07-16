@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -38,7 +38,7 @@ subroutine lcoptg(nmat, mater, nr, nvi, drdy, &
 #include "asterfort/r8inir.h"
     common/tdim/ndt, ndi
 !     ----------------------------------------------------------------
-    integer :: nmat, nr, iret, ndt, ndi, i, j, k, nvi, norm, sigeps
+    integer(kind=8) :: nmat, nr, iret, ndt, ndi, i, j, k, nvi, norm, sigeps
     real(kind=8) :: hook(6, 6), drdy(nr, nr), dsde(6, 6), mater(nmat, 2)
     real(kind=8) :: y0(ndt, ndt), y1(ndt, nvi), y2(nvi, ndt), y3(nvi, nvi)
     real(kind=8) :: y4(ndt, ndt), y5(ndt, ndt), det, maxi, mini

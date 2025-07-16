@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -24,8 +24,8 @@ subroutine mmtypm(noma, numma, nnosd, alias, ndim)
 !
 ! person_in_charge: mickael.abbas at edf.fr
 !
-    integer :: numma
-    integer :: nnosd, ndim
+    integer(kind=8) :: numma
+    integer(kind=8) :: nnosd, ndim
     character(len=8) :: noma
     character(len=8) :: alias
 !
@@ -52,7 +52,7 @@ subroutine mmtypm(noma, numma, nnosd, alias, ndim)
 !
 !
 !
-    integer :: nno
+    integer(kind=8) :: nno
 !
 ! ----------------------------------------------------------------------
 !

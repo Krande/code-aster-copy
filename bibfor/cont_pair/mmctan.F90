@@ -28,9 +28,9 @@ subroutine mmctan(numema, alias, nno, ndim, coorma, &
 #include "asterfort/mmdonf.h"
 #include "asterfort/mmtang.h"
 #include "asterfort/utmess.h"
-    integer :: numema
+    integer(kind=8) :: numema
     character(len=8) :: alias
-    integer :: ndim, nno, err_appa
+    integer(kind=8) :: ndim, nno, err_appa
     real(kind=8) :: epsmax, coorno(3), coorma(27)
     real(kind=8) :: tau1(3), tau2(3)
 !
@@ -55,8 +55,8 @@ subroutine mmctan(numema, alias, nno, ndim, coorma, &
 ! OUT TAU2   : SECONDE TANGENTE (NON NORMALISEE)
 !
 !
-    integer :: ifm, niv
-    integer :: niverr
+    integer(kind=8) :: ifm, niv
+    integer(kind=8) :: niverr
     real(kind=8) :: ksi(2)
     real(kind=8) :: dff(2, 9)
 !

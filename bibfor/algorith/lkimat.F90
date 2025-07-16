@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -38,12 +38,12 @@ subroutine lkimat(mod, imat, nmat, materd, materf, &
 !           NVI    :  NB DE VARIABLES INTERNES
 !       --------------------------------------------------------------
 #include "asterfort/lklmat.h"
-    integer :: imat, nmat, ndt, ndi, nr, nvi
+    integer(kind=8) :: imat, nmat, ndt, ndi, nr, nvi
     real(kind=8) :: materd(nmat, 2), materf(nmat, 2)
     character(len=8) :: mod
     character(len=3) :: matcst
 !
-    integer :: indal
+    integer(kind=8) :: indal
 !
     call lklmat(mod, imat, nmat, 0.d0, materd, &
                 materf, matcst, ndt, ndi, nvi, &

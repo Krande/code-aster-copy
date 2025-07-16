@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -41,8 +41,8 @@ subroutine te0034(option, nomte)
     character(len=8) :: nompar(4)
 !
 !-----------------------------------------------------------------------
-    integer :: icod1, icod2, icod3, icod4, icod5, icod6, iforc
-    integer :: igeom, ino, itpsr, ivectu
+    integer(kind=8) :: icod1, icod2, icod3, icod4, icod5, icod6, iforc
+    integer(kind=8) :: igeom, ino, itpsr, ivectu
 !-----------------------------------------------------------------------
     call jevech('PGEOMER', 'L', igeom)
     call jevech('PVECTUR', 'E', ivectu)

@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -21,14 +21,14 @@
 interface
     subroutine calcfe(nr, ndt, nvi, vind, df,&
                       gamsns, fe, fp, iret)
-        integer :: nr
-        integer :: ndt
-        integer :: nvi
+        integer(kind=8) :: nr
+        integer(kind=8) :: ndt
+        integer(kind=8) :: nvi
         real(kind=8) :: vind(*)
         real(kind=8) :: df(3, 3)
         real(kind=8) :: gamsns(3, 3)
         real(kind=8) :: fe(3, 3)
         real(kind=8) :: fp(3, 3)
-        integer :: iret
+        integer(kind=8) :: iret
     end subroutine calcfe
 end interface

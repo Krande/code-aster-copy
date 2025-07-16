@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -18,14 +18,14 @@
 
 function modat2(iopt, ite, nompar)
     implicit none
-    integer :: modat2
+    integer(kind=8) :: modat2
 !
 ! person_in_charge: jacques.pellet at edf.fr
 #include "jeveux.h"
 !
 #include "asterfort/jeveuo.h"
 #include "asterfort/jexnum.h"
-    integer :: iopt, ite
+    integer(kind=8) :: iopt, ite
     character(len=8) :: nompar
 ! ----------------------------------------------------------------------
 ! BUT : TROUVER LE NUMERO DU MODE LOCAL ASSOCIE A UN PARAMETRE
@@ -43,10 +43,10 @@ function modat2(iopt, ite, nompar)
 !
 !     VARIABLES LOCALES:
 !     ------------------
-    integer :: iopte, lgco
-    integer :: nucalc, nbpar, k, joptmo, joptno
-    integer, pointer :: nbligcol(:) => null()
-    integer, pointer :: optte(:) => null()
+    integer(kind=8) :: iopte, lgco
+    integer(kind=8) :: nucalc, nbpar, k, joptmo, joptno
+    integer(kind=8), pointer :: nbligcol(:) => null()
+    integer(kind=8), pointer :: optte(:) => null()
 ! ----------------------------------------------------------------------
 
     modat2 = 0

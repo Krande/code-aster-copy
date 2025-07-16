@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -20,10 +20,10 @@
 !
 interface
     subroutine xsigth(ndim, lonch, inst, nbsig, sigth)
-        integer :: ndim
-        integer :: lonch(10)
+        integer(kind=8) :: ndim
+        integer(kind=8) :: lonch(10)
         real(kind=8) :: inst
-        integer :: nbsig
+        integer(kind=8) :: nbsig
         real(kind=8) :: sigth(*)
     end subroutine xsigth
 end interface

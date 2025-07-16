@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -25,7 +25,7 @@ subroutine dktbf(qsi, eta, carat3, bf)
 !     ------------------------------------------------------------------
 !     MATRICE B(3,9) AU POINT QSI ETA POUR L'ELEMENT DKT (FLEXION)
 !     ------------------------------------------------------------------
-    integer :: i
+    integer(kind=8) :: i
     real(kind=8) :: vj11, vj12, vj21, vj22
     real(kind=8) :: lmq, lme
     real(kind=8) :: l4, l5, l6, c4, c5, c6, s4, s5, s6

@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2020 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -21,7 +21,7 @@ interface
                                      storeIndxNb, storeIndx  ,&
                                      storeTimeNb, storeTime  ,&
                                      storeEpsi  , storeCrit)
-        integer, intent(out) :: storeIndxNb, storeTimeNb
+        integer(kind=8), intent(out) :: storeIndxNb, storeTimeNb
         character(len=10), intent(out) :: storeAccess
         character(len=19), intent(out) :: storeIndx, storeTime
         real(kind=8), intent(out) :: storeEpsi
