@@ -105,7 +105,7 @@ class ParallelMesh : public BaseMesh {
      */
     const JeveuxVectorLong getCellsOwner() const { return _cellsOwners; };
 
-    bool isQuadratic() const;
+    bool isQuadratic( const bool local = false ) const;
 
     bool hasGroupOfCells( const std::string &name, const bool local = false ) const;
 

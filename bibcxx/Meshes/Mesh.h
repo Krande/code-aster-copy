@@ -150,7 +150,7 @@ class Mesh : public BaseMesh {
                                  VectorLong( getNumberOfCells(), getMPIRank() ) );
     };
 
-    bool isQuadratic() const;
+    bool isQuadratic( const bool local = false ) const;
 
     /** @brief Test if all cells in group are skin cells */
     bool isSkin( const std::string groupName ) const;
