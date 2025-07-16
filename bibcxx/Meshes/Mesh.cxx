@@ -201,7 +201,7 @@ VectorLong Mesh::getNodesFromCells( const std::string name, const bool, const AS
     return getNodesFromCells( this->getCells( name ) );
 };
 
-bool Mesh::isQuadratic() const {
+bool Mesh::isQuadratic( const bool local ) const {
     CALL_JEMARQ();
 
     auto cellsType = getMedCellsTypes();

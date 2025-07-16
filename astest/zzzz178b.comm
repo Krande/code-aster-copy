@@ -38,7 +38,9 @@ if nbproc > 1:
 else:
     MQ = CA.Mesh()
     MQ.readMedFile("zzzz178b.mmed")
-    test.assertTrue(MQ.isQuadratic())
+
+test.assertTrue(MQ.isQuadratic(local=True))
+
 
 # Create the linear mesh
 ML = CREA_MAILLAGE(MAILLAGE=MQ, QUAD_LINE=_F(TOUT="OUI"), INFO=1)

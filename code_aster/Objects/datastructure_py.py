@@ -185,3 +185,9 @@ class ElasticResultDict(DataStructureDict):
     """Set of elastic results."""
 
     object_type = "EVOL_ELAS"
+
+
+class NonLinearResultDict(DataStructureDict):
+    """Set of nonlinear results."""
+
+    object_type = "EVOL_NOLI"

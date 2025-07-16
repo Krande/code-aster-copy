@@ -44,6 +44,16 @@ Returns:
     list[str]: List of (local or global) groups names (stripped).
         )",
               py::arg( "local" ) = false )
+        .def( "isQuadratic", &ParallelMesh::isQuadratic, R"(
+Tells if the mesh contains quadratic cells.
+
+Arguments:
+    local (bool): if *True* only local cells are checked.
+
+Returns:
+    bool: *True* if the mesh contains quadratic cells, *False* otherwise.
+        )",
+              py::arg( "local" ) = false )
         .def( "hasGroupOfCells", &ParallelMesh::hasGroupOfCells, R"(
 The global group exists in the mesh
 

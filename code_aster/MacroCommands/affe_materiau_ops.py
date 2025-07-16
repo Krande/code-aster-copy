@@ -1,6 +1,6 @@
 # coding: utf-8
 
-# Copyright (C) 1991 - 2024  EDF R&D                www.code-aster.org
+# Copyright (C) 1991 - 2025  EDF R&D                www.code-aster.org
 #
 # This file is part of Code_Aster.
 #
@@ -63,7 +63,7 @@ def affe_materiau_ops(self, **args):
         if refMaterialField.hasExternalStateVariable():
             UTMESS("A", "MATERIAL2_61", valk=refMaterialField.getName())
         fkw = []
-        for (lmat, meshEntity) in refMaterialField.getMaterialsOnMeshEntities():
+        for lmat, meshEntity in refMaterialField.getMaterialsOnMeshEntities():
             entityType = meshEntity.getType()
             if entityType == EntityType.AllMeshEntitiesType:
                 fkw.append(dict(TOUT="OUI", MATER=lmat))

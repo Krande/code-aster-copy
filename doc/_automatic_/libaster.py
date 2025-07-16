@@ -906,8 +906,11 @@ class Mesh(BaseMesh):
             bool: *True* if exists, *False* otherwise.
         """
 
-    def isQuadratic(self):
-        """To know if the mesh contains quadratic cells
+    def isQuadratic(self, local=False):
+        """Tells if the mesh contains quadratic cells.
+
+        Arguments:
+            local (bool): not used (for compatibilty with ParallelMesh)
 
         Returns:
             bool: *True* if the mesh contains quadratic cells, *False* otherwise.
@@ -14997,6 +15000,16 @@ class ParallelMesh(BaseMesh):
 
         Returns:
             bool: *True* if exists, *False* otherwise.
+        """
+
+    def isQuadratic(self, local=False):
+        """Tells if the mesh contains quadratic cells.
+
+        Arguments:
+            local (bool): if *True* only local cells are checked.
+
+        Returns:
+            bool: *True* if the mesh contains quadratic cells, *False* otherwise.
         """
 
     def setGroupOfCells(self, group_name, cell_ids):

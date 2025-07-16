@@ -168,11 +168,15 @@ Returns:
         )",
               py::arg( "filename" ) )
         .def( "isQuadratic", &Mesh::isQuadratic, R"(
-To know if the mesh contains quadratic cells
+Tells if the mesh contains quadratic cells.
+
+Arguments:
+    local (bool): not used (for compatibilty with ParallelMesh)
 
 Returns:
     bool: *True* if the mesh contains quadratic cells, *False* otherwise.
-        )" )
+        )",
+              py::arg( "local" ) = false )
         .def( "_getNodesFromCells",
               py::overload_cast< const VectorString &, const bool, const ASTERINTEGER >(
                   &Mesh::getNodesFromCells, py::const_ ),
@@ -223,14 +227,14 @@ Returns:
               py::arg( "info" ) = 1 )
         .def( "addNodeLabels", &Mesh::addNodeLabels, R"(
       Add node labels.
-      
+
       Arguments:
           node_labels (list) : Node labels.
               )",
               py::arg( "node_labels" ) )
         .def( "addCellLabels", &Mesh::addCellLabels, R"(
       Add cell labels.
-      
+
       Arguments:
           cell_labels (list) : Cell labels.
               )",
