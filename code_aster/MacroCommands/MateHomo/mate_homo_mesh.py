@@ -133,6 +133,8 @@ def check_meshpara(mesh):
     """
     if mesh.isParallel():
         UTMESS("F", "HOMO1_19", valk=mesh.getName())
+    if not mesh.isQuadratic():
+        UTMESS("A", "HOMO1_21", valk=mesh.getName())
 
     return mesh
 
