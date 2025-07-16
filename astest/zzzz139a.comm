@@ -1,0 +1,377 @@
+# coding=utf-8
+# --------------------------------------------------------------------
+# Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
+# This file is part of code_aster.
+#
+# code_aster is free software: you can redistribute it and/or modify
+# it under the terms of the GNU General Public License as published by
+# the Free Software Foundation, either version 3 of the License, or
+# (at your option) any later version.
+#
+# code_aster is distributed in the hope that it will be useful,
+# but WITHOUT ANY WARRANTY; without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+# GNU General Public License for more details.
+#
+# You should have received a copy of the GNU General Public License
+# along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
+# --------------------------------------------------------------------
+#
+# Notes:
+#  - Les commentaires sont precedes du signe #
+#  - Une meme commande peut se suivre sur plusieurs lignes
+# Commande obligatoire pour commencer
+# -----------------------------------
+
+from code_aster.MacroCommands.crea_coupe_ops import TableCoupes
+
+DEBUT(CODE="OUI", DEBUG=_F(SDVERI="OUI"))
+
+# Lecture du maillage
+# ------------------
+# Lecture du maillage dans le fichier de maillage et creation du concept mail
+mail = LIRE_MAILLAGE(FORMAT="MED", NOM_MED="Plaque_Quad", UNITE=20)
+mail = DEFI_GROUP(CREA_GROUP_MA=_F(NOM="droite_haut", UNION=("droite", "haut")), MAILLAGE=mail)
+table = LIRE_TABLE(FORMAT="TABLEAU", SEPARATEUR=",", UNITE=10)
+coupes = CREA_COUPE(
+    COUPE=table, MAILLAGE=mail, NOM_AUTO="OUI", PREFIXE="section", PAS=100, NUME_INIT=1000
+)
+keyw = TableCoupes.ALL_KEYWORDS[:6]
+result = [
+    [7.682074, 6.40173, 0.0, 100.0, 100 - 100 / 6, 0.0],
+    [25 + 10 * 50 / 130, 0.0, 0.0, 75 + 50 * 30 / 130, 150.0, 0.0],
+    [0.0, 50 + 10 * 50 / 140, 0.0, 100.0, 100 - 30 * 50 / 140, 0.0],
+]
+for ipath in range(3):
+    num = 1000 + ipath * 100
+    for key, res in zip(keyw, result[ipath]):
+        if abs(res) < 1e-15:
+            TEST_TABLE(
+                CRITERE="ABSOLU",
+                REFERENCE="ANALYTIQUE",
+                VALE_REFE=res,
+                VALE_CALC=res,
+                NOM_PARA=key,
+                TABLE=coupes,
+                FILTRE=_F(NOM_PARA="NOM", VALE_K="section_%d" % num),
+                PRECISION=0.001,
+                ORDRE_GRANDEUR=1,
+            )
+
+            TEST_TABLE(
+                REFERENCE="ANALYTIQUE",
+                VALE_REFE=res,
+                VALE_CALC=res,
+                NOM_PARA=key,
+                TABLE=coupes,
+                FILTRE=_F(NOM_PARA="NOM", VALE_K="section_%d" % num),
+                PRECISION=0.001,
+                ORDRE_GRANDEUR=1,
+                CRITERE="ABSOLU",
+            )
+        else:
+            TEST_TABLE(
+                CRITERE="RELATIF",
+                REFERENCE="ANALYTIQUE",
+                VALE_REFE=res,
+                VALE_CALC=res,
+                NOM_PARA=key,
+                TABLE=coupes,
+                FILTRE=_F(NOM_PARA="NOM", VALE_K="section_%d" % num),
+                PRECISION=0.001,
+            )
+
+            TEST_TABLE(
+                REFERENCE="ANALYTIQUE",
+                VALE_REFE=res,
+                VALE_CALC=res,
+                NOM_PARA=key,
+                TABLE=coupes,
+                FILTRE=_F(NOM_PARA="NOM", VALE_K="section_%d" % num),
+                PRECISION=0.001,
+                CRITERE="RELATIF",
+            )
+
+# test REVO
+coupes = CREA_COUPE(
+    COUPE=table,
+    MAILLAGE=mail,
+    NOM_AUTO="OUI",
+    PREFIXE="section",
+    PAS=100,
+    NUME_INIT=1000,
+    REVOLUTION=_F(
+        AXE=(0, 0, 1),
+        CENTRE=(0, 0, 0),
+        NOMBRE=7,
+        ANGLE_MAX=90,
+        PREFIXE="PLAN",
+        GROUP_MA_ORIG="trou",
+        GROUP_MA_EXTR="droite_haut",
+        NOM_COUPE="section_1300",
+    ),
+)
+keyw = TableCoupes.ALL_KEYWORDS[:9]
+result = [
+    [10.0, 0.0, 0.0, 100.0, 0.0, 0.0, 53.9, 10.8, 21.7],  # P1 - 0°  # P2 - 0°  # P3 - 0°
+    [
+        9.659066,
+        2.588139,
+        0.0,  # P1 - 15°
+        100.0,
+        100.0 * tan(radians(15)),
+        0.0,  # P2 - 15°
+        53.9 * cos(radians(15)) - 10.8 * sin(radians(15)),
+        53.9 * sin(radians(15)) + 10.8 * cos(radians(15)),
+        21.7,
+    ],  # P3 - 15°
+    [
+        8.6602,
+        4.999969,
+        0.0,  # P1 - 30°
+        100.0,
+        100.0 * tan(radians(30)),
+        0.0,  # P2 - 30°
+        53.9 * cos(radians(30)) - 10.8 * sin(radians(30)),
+        53.9 * sin(radians(30)) + 10.8 * cos(radians(30)),
+        21.7,
+    ],  # P3 - 30°
+    [
+        7.0710671,
+        7.0710671,
+        0.0,  # P1 - 45°
+        100.0,
+        100.0 * tan(radians(45)),
+        0.0,  # P2 - 45°
+        53.9 * cos(radians(45)) - 10.8 * sin(radians(45)),
+        53.9 * sin(radians(45)) + 10.8 * cos(radians(45)),
+        21.7,
+    ],  # P3 - 45°
+    [
+        4.999964,
+        8.660191,
+        0.0,  # P1 - 60°
+        150.0 / tan(radians(60)),
+        150.0,
+        0.0,  # P2 - 60°
+        53.9 * cos(radians(60)) - 10.8 * sin(radians(60)),
+        53.9 * sin(radians(60)) + 10.8 * cos(radians(60)),
+        21.7,
+    ],  # P3 - 60°
+    [
+        2.5881403,
+        9.659071,
+        0.0,  # P1 - 75°
+        150.0 / tan(radians(75)),
+        150.0,
+        0.0,  # P2 - 75°
+        53.9 * cos(radians(75)) - 10.8 * sin(radians(75)),
+        53.9 * sin(radians(75)) + 10.8 * cos(radians(75)),
+        21.7,
+    ],  # P3 - 75°
+    [
+        0.0,
+        10.0,
+        0.0,  # P1 - 90°
+        150.0 / tan(radians(90)),
+        150.0,
+        0.0,  # P2 - 90°
+        53.9 * cos(radians(90)) - 10.8 * sin(radians(90)),
+        53.9 * sin(radians(90)) + 10.8 * cos(radians(90)),
+        21.7,
+    ],
+]  # P3 - 90°
+angles = [0, 15, 30, 45, 60, 75, 90]
+for i, angle in enumerate(angles):
+    if i == 0:
+        prefixe = ""
+    else:
+        prefixe = f"PLAN{int(angle)}-"
+
+    for key, res in zip(keyw, result[i]):
+        if abs(res) < 1e-15:
+            TEST_TABLE(
+                REFERENCE="ANALYTIQUE",
+                VALE_REFE=res,
+                VALE_CALC=res,
+                NOM_PARA=key,
+                TABLE=coupes,
+                FILTRE=_F(NOM_PARA="NOM", VALE_K=f"{prefixe}section_1300"),
+                PRECISION=0.001,
+                ORDRE_GRANDEUR=1,
+                CRITERE="ABSOLU",
+            )
+        else:
+            TEST_TABLE(
+                REFERENCE="ANALYTIQUE",
+                VALE_REFE=res,
+                VALE_CALC=res,
+                NOM_PARA=key,
+                TABLE=coupes,
+                FILTRE=_F(NOM_PARA="NOM", VALE_K=f"{prefixe}section_1300"),
+                PRECISION=0.001,
+                CRITERE="RELATIF",
+            )
+
+
+mail = LIRE_MAILLAGE(FORMAT="MED", NOM_MED="Plaque_Lin", UNITE=20)
+mail = DEFI_GROUP(CREA_GROUP_MA=_F(NOM="droite_haut", UNION=("droite", "haut")), MAILLAGE=mail)
+table = LIRE_TABLE(FORMAT="TABLEAU", SEPARATEUR=",", UNITE=10)
+coupes = CREA_COUPE(
+    COUPE=table, MAILLAGE=mail, NOM_AUTO="OUI", PREFIXE="section", PAS=100, NUME_INIT=1000
+)
+keyw = TableCoupes.ALL_KEYWORDS[:6]
+result = [
+    [7.620411, 6.350342, 0.0, 100.0, 100 - 100 / 6, 0.0],
+    [25 + 10 * 50 / 130, 0.0, 0.0, 75 + 50 * 30 / 130, 150.0, 0.0],
+    [0.0, 50 + 10 * 50 / 140, 0.0, 100.0, 100 - 30 * 50 / 140, 0.0],
+]
+for ipath in range(3):
+    num = 1000 + ipath * 100
+    for key, res in zip(keyw, result[ipath]):
+        if abs(res) < 1e-15:
+            TEST_TABLE(
+                REFERENCE="ANALYTIQUE",
+                VALE_REFE=res,
+                VALE_CALC=res,
+                NOM_PARA=key,
+                TABLE=coupes,
+                FILTRE=_F(NOM_PARA="NOM", VALE_K="section_%d" % num),
+                PRECISION=0.001,
+                ORDRE_GRANDEUR=1,
+                CRITERE="ABSOLU",
+            )
+        else:
+            TEST_TABLE(
+                REFERENCE="ANALYTIQUE",
+                VALE_REFE=res,
+                VALE_CALC=res,
+                NOM_PARA=key,
+                TABLE=coupes,
+                FILTRE=_F(NOM_PARA="NOM", VALE_K="section_%d" % num),
+                PRECISION=0.001,
+                CRITERE="RELATIF",
+            )
+
+# test REVO
+coupes = CREA_COUPE(
+    COUPE=table,
+    MAILLAGE=mail,
+    NOM_AUTO="OUI",
+    PREFIXE="section",
+    PAS=100,
+    NUME_INIT=1000,
+    REVOLUTION=_F(
+        AXE=(0, 0, 1),
+        CENTRE=(0, 0, 0),
+        NOMBRE=7,
+        ANGLE_MAX=90,
+        PREFIXE="PLAN",
+        GROUP_MA_ORIG="trou",
+        GROUP_MA_EXTR="droite_haut",
+        NOM_COUPE="section_1300",
+    ),
+)
+keyw = TableCoupes.ALL_KEYWORDS[:9]
+result = [
+    [10.0, 0.0, 0.0, 100.0, 0.0, 0.0, 53.9, 10.8, 21.7],  # P1 - 0°  # P2 - 0°  # P3 - 0°
+    [
+        9.5837,
+        2.567945,
+        0.0,  # P1 - 15°
+        100.0,
+        100.0 * tan(radians(15)),
+        0.0,  # P2 - 15°
+        53.9 * cos(radians(15)) - 10.8 * sin(radians(15)),
+        53.9 * sin(radians(15)) + 10.8 * cos(radians(15)),
+        21.7,
+    ],  # P3 - 15°
+    [
+        8.5660115,
+        4.945589,
+        0.0,  # P1 - 30°
+        100.0,
+        100.0 * tan(radians(30)),
+        0.0,  # P2 - 30°
+        53.9 * cos(radians(30)) - 10.8 * sin(radians(30)),
+        53.9 * sin(radians(30)) + 10.8 * cos(radians(30)),
+        21.7,
+    ],  # P3 - 30°
+    [
+        6.9825843,
+        6.9825843,
+        0.0,  # P1 - 45°
+        100.0,
+        100.0 * tan(radians(45)),
+        0.0,  # P2 - 45°
+        53.9 * cos(radians(45)) - 10.8 * sin(radians(45)),
+        53.9 * sin(radians(45)) + 10.8 * cos(radians(45)),
+        21.7,
+    ],  # P3 - 45°
+    [
+        4.9491134,
+        8.5721158,
+        0.0,  # P1 - 60°
+        150.0 / tan(radians(60)),
+        150.0,
+        0.0,  # P2 - 60°
+        53.9 * cos(radians(60)) - 10.8 * sin(radians(60)),
+        53.9 * sin(radians(60)) + 10.8 * cos(radians(60)),
+        21.7,
+    ],  # P3 - 60°
+    [
+        2.569175,
+        9.5883,
+        0,  # P1 - 75°
+        150.0 / tan(radians(75)),
+        150.0,
+        0.0,  # P2 - 75°
+        53.9 * cos(radians(75)) - 10.8 * sin(radians(75)),
+        53.9 * sin(radians(75)) + 10.8 * cos(radians(75)),
+        21.7,
+    ],  # P3 - 75°
+    [
+        0.0,
+        10.0,
+        0.0,  # P1 - 90°
+        0.0,
+        150.0,
+        0.0,  # P2 - 90°
+        53.9 * cos(radians(90)) - 10.8 * sin(radians(90)),
+        53.9 * sin(radians(90)) + 10.8 * cos(radians(90)),
+        21.7,
+    ],
+]  # P3 - 90°
+angles = [0, 15, 30, 45, 60, 75, 90]
+for i, angle in enumerate(angles):
+    if i == 0:
+        prefixe = ""
+    else:
+        prefixe = f"PLAN{int(angle)}-"
+    for key, res in zip(keyw, result[i]):
+        if abs(res) < 1e-15:
+            TEST_TABLE(
+                CRITERE="ABSOLU",
+                REFERENCE="ANALYTIQUE",
+                VALE_REFE=res,
+                VALE_CALC=res,
+                NOM_PARA=key,
+                TABLE=coupes,
+                FILTRE=_F(NOM_PARA="NOM", VALE_K=f"{prefixe}section_1300"),
+                PRECISION=0.001,
+                ORDRE_GRANDEUR=1,
+            )
+        else:
+            TEST_TABLE(
+                CRITERE="RELATIF",
+                REFERENCE="ANALYTIQUE",
+                VALE_REFE=res,
+                VALE_CALC=res,
+                NOM_PARA=key,
+                TABLE=coupes,
+                FILTRE=_F(NOM_PARA="NOM", VALE_K=f"{prefixe}section_1300"),
+                PRECISION=0.001,
+            )
+
+
+FIN()

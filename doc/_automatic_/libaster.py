@@ -17674,3 +17674,30 @@ class SyntaxSaver:
 
     def __init__(self, arg0, arg1, arg2):
         pass
+
+
+# built-in function projectionAlongDirection in libaster
+
+
+def projectionAlongDirection(
+    type_elem, nb_node, nb_dim, elem_coor, pt_coor, iter_maxi, tole_maxi, proj_dire
+):
+    """Do the intersection of a node  with a given element along a given direction
+
+    Arguments:
+        type_elem (str)         : type of the element
+        nb_node (int)           : number of nodes on element
+        nb_dim (int)            : dimension of the problem(2 or 3)
+        elem_coor (list[float]) : coordinates of nodes of element
+        pt_coor (list[flot])    : coordinates of point to project
+        iter_maxi (int)         : maximum number of ierations of the Newton algorithm
+        tole_maxi (float)       : tolerance of newton algorithm
+        proj_dire (list[float]) : direction of projection
+        tang_1 (list[float])    : first tangent of local basis for the projection of point on element
+        tang_2  (list[float])   : second tangent of local basis for the projection of point on element
+    Returns:
+        int : 1 if error detected
+        float : scalar value that multiply proj_dire to obtain the projected position
+        float : first parametric coordinate of projection of point on element
+        float : second parametric coordinate of projection of point on element
+    """

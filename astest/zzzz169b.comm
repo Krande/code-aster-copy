@@ -1,0 +1,811 @@
+# coding=utf-8
+# --------------------------------------------------------------------
+# Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
+# This file is part of code_aster.
+#
+# code_aster is free software: you can redistribute it and/or modify
+# it under the terms of the GNU General Public License as published by
+# the Free Software Foundation, either version 3 of the License, or
+# (at your option) any later version.
+#
+# code_aster is distributed in the hope that it will be useful,
+# but WITHOUT ANY WARRANTY; without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+# GNU General Public License for more details.
+#
+# You should have received a copy of the GNU General Public License
+# along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
+# --------------------------------------------------------------------
+
+DEBUT(CODE="OUI", DEBUG=_F(SDVERI="OUI"))
+
+
+#########################################################################################
+# Calcul mecanique pour creer un concept resultat
+#########################################################################################
+
+
+mesh = LIRE_MAILLAGE(UNITE=20, FORMAT="MED")
+
+
+table_coupe = LIRE_TABLE(UNITE=12, FORMAT="TABLEAU", SEPARATEUR=";")
+
+
+model = AFFE_MODELE(MAILLAGE=mesh, AFFE=_F(PHENOMENE="MECANIQUE", MODELISATION="3D", TOUT="OUI"))
+
+
+mat = DEFI_MATERIAU(ELAS=_F(E=198000.0, NU=0.3))
+
+
+field_mat = AFFE_MATERIAU(MODELE=model, AFFE=_F(TOUT="OUI", MATER=mat))
+
+
+inst = DEFI_LIST_REEL(DEBUT=0, INTERVALLE=(_F(JUSQU_A=29, PAS=1),))
+
+# Fonction d'evolution de la pression en fonction du temps
+
+pression = DEFI_FONCTION(NOM_PARA="INST", VALE=(0.0, 15.0, 15.0, 0.0, 30.0, 15.0))
+
+
+function = FORMULE(NOM_PARA="X", VALE="cos(4*3.141592*X)")
+
+
+load = AFFE_CHAR_MECA(MODELE=model, FACE_IMPO=_F(DX=0.0, DY=0.0, DZ=0.0, GROUP_MA="Dessous"))
+
+
+load_f = AFFE_CHAR_MECA_F(MODELE=model, PRES_REP=_F(PRES=pression, GROUP_MA=("Dessus")))
+
+
+resu = MECA_STATIQUE(
+    MODELE=model, CHAM_MATER=field_mat, EXCIT=(_F(CHARGE=load_f), _F(CHARGE=load)), LIST_INST=inst
+)
+
+
+resu = CALC_CHAMP(reuse=resu, RESULTAT=resu, CONTRAINTE="SIGM_NOEU")
+
+
+#########################################################################################
+# Extraction 3D sans linearisation dans le repère global pour l'ensemble des champs
+#########################################################################################
+
+
+resu_glob_1 = EXTR_COUPE(
+    RESULTAT=resu, COUPE=table_coupe, REPERE="GLOBAL", LINEARISATION="NON", REPARTITION="UNIFORME"
+)
+
+
+mesh_glob_1 = resu_glob_1.getMesh()
+
+mesh_line_gr = resu_glob_1.getMesh()
+
+
+TEST_RESU(
+    MAILLAGE=_F(
+        MAILLAGE=mesh_glob_1,
+        CARA="NB_MAILLE",
+        REFERENCE="ANALYTIQUE",
+        CRITERE="ABSOLU",
+        VALE_REFE_I=152,
+        VALE_CALC_I=152,
+    )
+)
+
+
+TEST_RESU(
+    MAILLAGE=_F(
+        MAILLAGE=mesh_glob_1,
+        CARA="NB_NOEUD",
+        REFERENCE="ANALYTIQUE",
+        CRITERE="ABSOLU",
+        VALE_REFE_I=157,
+        VALE_CALC_I=157,
+    )
+)
+
+
+TEST_RESU(
+    MAILLAGE=_F(
+        MAILLAGE=mesh_glob_1,
+        CARA="NB_NO_GROUP_NO",
+        NOM_GROUP_NO="NODES_IN",
+        REFERENCE="ANALYTIQUE",
+        CRITERE="ABSOLU",
+        VALE_REFE_I=5,
+        VALE_CALC_I=5,
+    )
+)
+
+
+TEST_RESU(
+    MAILLAGE=_F(
+        MAILLAGE=mesh_glob_1,
+        CARA="NB_NO_GROUP_NO",
+        NOM_GROUP_NO="NODES_OUT",
+        REFERENCE="ANALYTIQUE",
+        CRITERE="ABSOLU",
+        VALE_REFE_I=5,
+        VALE_CALC_I=5,
+    )
+)
+
+
+TEST_RESU(
+    MAILLAGE=_F(
+        MAILLAGE=mesh_glob_1,
+        CARA="NB_NO_GROUP_NO",
+        NOM_GROUP_NO="First",
+        REFERENCE="ANALYTIQUE",
+        CRITERE="ABSOLU",
+        VALE_REFE_I=78,
+        VALE_CALC_I=78,
+    )
+)
+
+
+TEST_RESU(
+    MAILLAGE=_F(
+        MAILLAGE=mesh_glob_1,
+        CARA="NB_MA_GROUP_MA",
+        NOM_GROUP_MA="First",
+        REFERENCE="ANALYTIQUE",
+        CRITERE="ABSOLU",
+        VALE_REFE_I=75,
+        VALE_CALC_I=75,
+    )
+)
+
+
+mesh_glob_1 = DEFI_GROUP(
+    reuse=mesh_glob_1,
+    MAILLAGE=mesh_glob_1,
+    CREA_GROUP_NO=_F(NOM="Test_no", GROUP_NO="S2", NUME_INIT=24, NUME_FIN=24),
+)
+
+
+ref_glob_1 = PROJ_CHAMP(
+    MAILLAGE_1=mesh, MAILLAGE_2=mesh_glob_1, RESULTAT=resu, TOUT_ORDRE="OUI", TOUT_CHAM="OUI"
+)
+
+
+calc_cham = CREA_CHAMP(
+    NOM_CHAM="DEPL", NUME_ORDRE=4, OPERATION="EXTR", RESULTAT=resu_glob_1, TYPE_CHAM="NOEU_DEPL_R"
+)
+
+
+ref_champ_1 = CREA_CHAMP(
+    NOM_CHAM="DEPL", NUME_ORDRE=4, OPERATION="EXTR", RESULTAT=ref_glob_1, TYPE_CHAM="NOEU_DEPL_R"
+)
+
+
+test_cham = CREA_CHAMP(
+    COMB=(_F(CHAM_GD=calc_cham, COEF_R=1.0), _F(CHAM_GD=ref_champ_1, COEF_R=-1.0)),
+    OPERATION="COMB",
+    TYPE_CHAM="NOEU_DEPL_R",
+)
+
+
+TEST_RESU(
+    CHAM_NO=_F(
+        CHAM_GD=test_cham,
+        CRITERE="ABSOLU",
+        GROUP_NO=("Test_no"),
+        NOM_CMP="DX",
+        VALE_CALC=0.0,
+        ORDRE_GRANDEUR=1e-9,
+    )
+)
+
+
+#########################################################################################
+# Extraction 3D sans linearisation dans le repère local pour l'ensemble des champs
+#########################################################################################
+
+
+resu_local_1 = EXTR_COUPE(
+    RESULTAT=resu,
+    COUPE=table_coupe,
+    REPERE="LOCAL",
+    LINEARISATION="NON",
+    REPARTITION="GAUSSIENNE",
+    MOYENNE=0.5,
+    ECART_TYPE=0.3,
+)
+
+
+mesh_local_1 = resu_local_1.getMesh()
+
+
+TEST_RESU(
+    MAILLAGE=_F(
+        MAILLAGE=mesh_local_1,
+        CARA="NB_MAILLE",
+        REFERENCE="ANALYTIQUE",
+        CRITERE="ABSOLU",
+        VALE_REFE_I=152,
+        VALE_CALC_I=152,
+    )
+)
+
+
+TEST_RESU(
+    MAILLAGE=_F(
+        MAILLAGE=mesh_local_1,
+        CARA="NB_NOEUD",
+        REFERENCE="ANALYTIQUE",
+        CRITERE="ABSOLU",
+        VALE_REFE_I=157,
+        VALE_CALC_I=157,
+    )
+)
+
+
+TEST_RESU(
+    MAILLAGE=_F(
+        MAILLAGE=mesh_local_1,
+        CARA="NB_NO_GROUP_NO",
+        NOM_GROUP_NO="NODES_IN",
+        REFERENCE="ANALYTIQUE",
+        CRITERE="ABSOLU",
+        VALE_REFE_I=5,
+        VALE_CALC_I=5,
+    )
+)
+
+
+TEST_RESU(
+    MAILLAGE=_F(
+        MAILLAGE=mesh_local_1,
+        CARA="NB_NO_GROUP_NO",
+        NOM_GROUP_NO="NODES_OUT",
+        REFERENCE="ANALYTIQUE",
+        CRITERE="ABSOLU",
+        VALE_REFE_I=5,
+        VALE_CALC_I=5,
+    )
+)
+
+
+mesh_local_1 = DEFI_GROUP(
+    reuse=mesh_local_1,
+    MAILLAGE=mesh_local_1,
+    CREA_GROUP_NO=_F(NOM="Test_no", GROUP_NO="S3", NUME_INIT=19, NUME_FIN=19),
+)
+
+
+ref_resu_1 = PROJ_CHAMP(
+    MAILLAGE_1=mesh, MAILLAGE_2=mesh_local_1, RESULTAT=resu, TOUT_ORDRE="OUI", TOUT_CHAM="OUI"
+)
+
+
+ref_local_1 = MODI_REPERE(
+    RESULTAT=ref_resu_1,
+    TOUT_ORDRE="OUI",
+    REPERE="UTILISATEUR",
+    AFFE=_F(VECT_X=(0, 0, -100), VECT_Y=(50, 25, -25), GROUP_NO="S3"),
+    MODI_CHAM=_F(TYPE_CHAM="VECT_3D", NOM_CHAM="DEPL"),
+)
+
+
+calc_cham = CREA_CHAMP(
+    NOM_CHAM="DEPL", NUME_ORDRE=12, OPERATION="EXTR", RESULTAT=resu_local_1, TYPE_CHAM="NOEU_DEPL_R"
+)
+
+
+ref_champ = CREA_CHAMP(
+    NOM_CHAM="DEPL", NUME_ORDRE=12, OPERATION="EXTR", RESULTAT=ref_local_1, TYPE_CHAM="NOEU_DEPL_R"
+)
+
+
+test_cham = CREA_CHAMP(
+    COMB=(_F(CHAM_GD=calc_cham, COEF_R=1.0), _F(CHAM_GD=ref_champ, COEF_R=-1.0)),
+    OPERATION="COMB",
+    TYPE_CHAM="NOEU_DEPL_R",
+)
+
+
+TEST_RESU(
+    CHAM_NO=_F(
+        CHAM_GD=test_cham,
+        CRITERE="ABSOLU",
+        GROUP_NO=("Test_no"),
+        NOM_CMP="DX",
+        VALE_CALC=0.0,
+        ORDRE_GRANDEUR=1e-9,
+    )
+)
+
+
+#########################################################################################
+# Extraction 3D avec linearisation des champs
+#########################################################################################
+
+resu_line_1 = EXTR_COUPE(RESULTAT=resu, COUPE=table_coupe, REPERE="GLOBAL", LINEARISATION="OUI")
+
+
+mesh_line_1 = resu_line_1.getMesh()
+
+
+TEST_RESU(
+    MAILLAGE=_F(
+        MAILLAGE=mesh_line_1,
+        CARA="NB_MAILLE",
+        REFERENCE="ANALYTIQUE",
+        CRITERE="ABSOLU",
+        VALE_REFE_I=20,
+        VALE_CALC_I=20,
+    )
+)
+
+
+TEST_RESU(
+    MAILLAGE=_F(
+        MAILLAGE=mesh_line_1,
+        CARA="NB_NOEUD",
+        REFERENCE="ANALYTIQUE",
+        CRITERE="ABSOLU",
+        VALE_REFE_I=25,
+        VALE_CALC_I=25,
+    )
+)
+
+
+TEST_RESU(
+    MAILLAGE=_F(
+        MAILLAGE=mesh_line_1,
+        CARA="NB_NO_GROUP_NO",
+        NOM_GROUP_NO="NODES_IN",
+        REFERENCE="ANALYTIQUE",
+        CRITERE="ABSOLU",
+        VALE_REFE_I=5,
+        VALE_CALC_I=5,
+    )
+)
+
+
+TEST_RESU(
+    MAILLAGE=_F(
+        MAILLAGE=mesh_line_1,
+        CARA="NB_NO_GROUP_NO",
+        NOM_GROUP_NO="NODES_OUT",
+        REFERENCE="ANALYTIQUE",
+        CRITERE="ABSOLU",
+        VALE_REFE_I=5,
+        VALE_CALC_I=5,
+    )
+)
+
+
+TEST_RESU(
+    MAILLAGE=_F(
+        MAILLAGE=mesh_line_1,
+        CARA="NB_NO_GROUP_NO",
+        NOM_GROUP_NO="First",
+        REFERENCE="ANALYTIQUE",
+        CRITERE="ABSOLU",
+        VALE_REFE_I=15,
+        VALE_CALC_I=15,
+    )
+)
+
+
+TEST_RESU(
+    MAILLAGE=_F(
+        MAILLAGE=mesh_line_1,
+        CARA="NB_MA_GROUP_MA",
+        NOM_GROUP_MA="First",
+        REFERENCE="ANALYTIQUE",
+        CRITERE="ABSOLU",
+        VALE_REFE_I=12,
+        VALE_CALC_I=12,
+    )
+)
+
+
+ref_line_1 = PROJ_CHAMP(
+    MAILLAGE_1=mesh, MAILLAGE_2=mesh_line_gr, RESULTAT=resu, TOUT_ORDRE="OUI", TOUT_CHAM="OUI"
+)
+
+
+table_line_1 = POST_RELEVE_T(
+    ACTION=_F(
+        INTITULE="resu_test",
+        OPERATION="MOYENNE",
+        GROUP_NO="S1",
+        RESULTAT=ref_line_1,
+        NOM_CHAM="SIGM_NOEU",
+        NUME_ORDRE=5,
+        TOUT_CMP="OUI",
+    )
+)
+
+
+table = table_line_1.EXTR_TABLE()
+
+
+for row_1 in table.rows:
+    if row_1["QUANTITE"] == "MOYE_INT":
+        value_ref_1 = row_1["SIXX"]
+
+
+line_1 = POST_RELEVE_T(
+    ACTION=_F(
+        INTITULE="extr_coupe",
+        OPERATION="EXTRACTION",
+        GROUP_NO="S1",
+        RESULTAT=resu_line_1,
+        NOM_CHAM="SIGM_NOEU",
+        NUME_ORDRE=5,
+        TOUT_CMP="OUI",
+    )
+)
+
+
+TEST_TABLE(
+    TABLE=line_1,
+    NOM_PARA="SIXX",
+    FILTRE=_F(NOM_PARA="NOEUD", CRIT_COMP="EQ", VALE_K="2"),
+    VALE_CALC=value_ref_1,
+)
+
+
+#########################################################################################
+# Extraction 3D sans linearisation dans le repère global pour un sélection des champs
+#########################################################################################
+
+
+resu_glob_2 = EXTR_COUPE(
+    RESULTAT=resu,
+    COUPE=table_coupe,
+    REPERE="GLOBAL",
+    LINEARISATION="NON",
+    NOM_CHAM=("DEPL", "SIGM_NOEU"),
+    REPARTITION="UTILISATEUR",
+    FORMULE=function,
+)
+
+
+mesh_glob_2 = resu_glob_2.getMesh()
+
+
+TEST_RESU(
+    MAILLAGE=_F(
+        MAILLAGE=mesh_glob_2,
+        CARA="NB_MAILLE",
+        REFERENCE="ANALYTIQUE",
+        CRITERE="ABSOLU",
+        VALE_REFE_I=152,
+        VALE_CALC_I=152,
+    )
+)
+
+
+TEST_RESU(
+    MAILLAGE=_F(
+        MAILLAGE=mesh_glob_2,
+        CARA="NB_NOEUD",
+        REFERENCE="ANALYTIQUE",
+        CRITERE="ABSOLU",
+        VALE_REFE_I=157,
+        VALE_CALC_I=157,
+    )
+)
+
+
+TEST_RESU(
+    MAILLAGE=_F(
+        MAILLAGE=mesh_glob_2,
+        CARA="NB_NO_GROUP_NO",
+        NOM_GROUP_NO="NODES_IN",
+        REFERENCE="ANALYTIQUE",
+        CRITERE="ABSOLU",
+        VALE_REFE_I=5,
+        VALE_CALC_I=5,
+    )
+)
+
+
+TEST_RESU(
+    MAILLAGE=_F(
+        MAILLAGE=mesh_glob_2,
+        CARA="NB_NO_GROUP_NO",
+        NOM_GROUP_NO="NODES_OUT",
+        REFERENCE="ANALYTIQUE",
+        CRITERE="ABSOLU",
+        VALE_REFE_I=5,
+        VALE_CALC_I=5,
+    )
+)
+
+
+mesh_glob_2 = DEFI_GROUP(
+    reuse=mesh_glob_2,
+    MAILLAGE=mesh_glob_2,
+    CREA_GROUP_NO=_F(NOM="Test_no", GROUP_NO="S4", NUME_INIT=31, NUME_FIN=31),
+)
+
+
+ref_glob_2 = PROJ_CHAMP(
+    MAILLAGE_1=mesh, MAILLAGE_2=mesh_glob_2, RESULTAT=resu, TOUT_ORDRE="OUI", TOUT_CHAM="OUI"
+)
+
+
+calc_cham_2 = CREA_CHAMP(
+    NOM_CHAM="DEPL", NUME_ORDRE=21, OPERATION="EXTR", RESULTAT=resu_glob_2, TYPE_CHAM="NOEU_DEPL_R"
+)
+
+
+ref_champ_2 = CREA_CHAMP(
+    NOM_CHAM="DEPL", NUME_ORDRE=21, OPERATION="EXTR", RESULTAT=ref_glob_2, TYPE_CHAM="NOEU_DEPL_R"
+)
+
+
+test_cham_2 = CREA_CHAMP(
+    COMB=(_F(CHAM_GD=calc_cham_2, COEF_R=1.0), _F(CHAM_GD=ref_champ_2, COEF_R=-1.0)),
+    OPERATION="COMB",
+    TYPE_CHAM="NOEU_DEPL_R",
+)
+
+
+TEST_RESU(
+    CHAM_NO=_F(
+        CHAM_GD=test_cham_2,
+        CRITERE="ABSOLU",
+        GROUP_NO=("Test_no"),
+        NOM_CMP="DX",
+        VALE_CALC=0.0,
+        ORDRE_GRANDEUR=1e-9,
+    )
+)
+
+
+#########################################################################################
+# Extraction 3D sans linearisation dans le repère local pour une sélection de champs
+#########################################################################################
+
+
+resu_local_2 = EXTR_COUPE(
+    RESULTAT=resu,
+    COUPE=table_coupe,
+    REPERE="LOCAL",
+    NOM_CHAM="SIGM_NOEU",
+    LINEARISATION="NON",
+    REPARTITION="GAUSSIENNE",
+    MOYENNE=0.5,
+    ECART_TYPE=0.3,
+)
+
+
+mesh_local_2 = resu_local_2.getMesh()
+
+
+TEST_RESU(
+    MAILLAGE=_F(
+        MAILLAGE=mesh_local_2,
+        CARA="NB_MAILLE",
+        REFERENCE="ANALYTIQUE",
+        CRITERE="ABSOLU",
+        VALE_REFE_I=152,
+        VALE_CALC_I=152,
+    )
+)
+
+
+TEST_RESU(
+    MAILLAGE=_F(
+        MAILLAGE=mesh_local_2,
+        CARA="NB_NOEUD",
+        REFERENCE="ANALYTIQUE",
+        CRITERE="ABSOLU",
+        VALE_REFE_I=157,
+        VALE_CALC_I=157,
+    )
+)
+
+
+TEST_RESU(
+    MAILLAGE=_F(
+        MAILLAGE=mesh_local_2,
+        CARA="NB_NO_GROUP_NO",
+        NOM_GROUP_NO="NODES_IN",
+        REFERENCE="ANALYTIQUE",
+        CRITERE="ABSOLU",
+        VALE_REFE_I=5,
+        VALE_CALC_I=5,
+    )
+)
+
+
+TEST_RESU(
+    MAILLAGE=_F(
+        MAILLAGE=mesh_local_2,
+        CARA="NB_NO_GROUP_NO",
+        NOM_GROUP_NO="NODES_OUT",
+        REFERENCE="ANALYTIQUE",
+        CRITERE="ABSOLU",
+        VALE_REFE_I=5,
+        VALE_CALC_I=5,
+    )
+)
+
+
+mesh_local_2 = DEFI_GROUP(
+    reuse=mesh_local_2,
+    MAILLAGE=mesh_local_2,
+    CREA_GROUP_NO=_F(NOM="Test_no", GROUP_NO="S1", NUME_INIT=9, NUME_FIN=9),
+)
+
+
+ref_resu_2 = PROJ_CHAMP(
+    MAILLAGE_1=mesh, MAILLAGE_2=mesh_local_2, RESULTAT=resu, TOUT_ORDRE="OUI", TOUT_CHAM="OUI"
+)
+
+
+ref_local_2 = MODI_REPERE(
+    RESULTAT=ref_resu_2,
+    TOUT_ORDRE="OUI",
+    REPERE="UTILISATEUR",
+    AFFE=_F(VECT_X=(0, 100, 0), VECT_Y=(0, 100, 20), GROUP_NO="S1"),
+    MODI_CHAM=_F(TYPE_CHAM="TENS_3D", NOM_CHAM="SIGM_NOEU"),
+)
+
+
+calc_cham = CREA_CHAMP(
+    NOM_CHAM="SIGM_NOEU",
+    NUME_ORDRE=17,
+    OPERATION="EXTR",
+    RESULTAT=resu_local_2,
+    TYPE_CHAM="NOEU_SIEF_R",
+)
+
+
+ref_champ = CREA_CHAMP(
+    NOM_CHAM="SIGM_NOEU",
+    NUME_ORDRE=17,
+    OPERATION="EXTR",
+    RESULTAT=ref_local_2,
+    TYPE_CHAM="NOEU_SIEF_R",
+)
+
+
+test_cham = CREA_CHAMP(
+    COMB=(_F(CHAM_GD=calc_cham, COEF_R=1.0), _F(CHAM_GD=ref_champ, COEF_R=-1.0)),
+    OPERATION="COMB",
+    TYPE_CHAM="NOEU_SIEF_R",
+)
+
+
+TEST_RESU(
+    CHAM_NO=_F(
+        CHAM_GD=test_cham,
+        CRITERE="ABSOLU",
+        GROUP_NO=("Test_no"),
+        NOM_CMP="SIYY",
+        VALE_CALC=0.0,
+        ORDRE_GRANDEUR=1e-9,
+    )
+)
+
+
+#########################################################################################
+# Extraction 3D avec linearisation des champs dans le repère local
+#########################################################################################
+
+resu_line_2 = EXTR_COUPE(
+    RESULTAT=resu,
+    COUPE=table_coupe,
+    REPERE="LOCAL",
+    NOM_CHAM=("SIGM_NOEU", "DEPL"),
+    LINEARISATION="OUI",
+)
+
+
+mesh_line_2 = resu_line_2.getMesh()
+
+
+TEST_RESU(
+    MAILLAGE=_F(
+        MAILLAGE=mesh_line_2,
+        CARA="NB_MAILLE",
+        REFERENCE="ANALYTIQUE",
+        CRITERE="ABSOLU",
+        VALE_REFE_I=20,
+        VALE_CALC_I=20,
+    )
+)
+
+
+TEST_RESU(
+    MAILLAGE=_F(
+        MAILLAGE=mesh_line_2,
+        CARA="NB_NOEUD",
+        REFERENCE="ANALYTIQUE",
+        CRITERE="ABSOLU",
+        VALE_REFE_I=25,
+        VALE_CALC_I=25,
+    )
+)
+
+
+TEST_RESU(
+    MAILLAGE=_F(
+        MAILLAGE=mesh_line_2,
+        CARA="NB_NO_GROUP_NO",
+        NOM_GROUP_NO="NODES_IN",
+        REFERENCE="ANALYTIQUE",
+        CRITERE="ABSOLU",
+        VALE_REFE_I=5,
+        VALE_CALC_I=5,
+    )
+)
+
+
+TEST_RESU(
+    MAILLAGE=_F(
+        MAILLAGE=mesh_line_2,
+        CARA="NB_NO_GROUP_NO",
+        NOM_GROUP_NO="NODES_OUT",
+        REFERENCE="ANALYTIQUE",
+        CRITERE="ABSOLU",
+        VALE_REFE_I=5,
+        VALE_CALC_I=5,
+    )
+)
+
+
+ref_line_2 = PROJ_CHAMP(
+    MAILLAGE_1=mesh, MAILLAGE_2=mesh_line_gr, RESULTAT=resu, TOUT_ORDRE="OUI", TOUT_CHAM="OUI"
+)
+
+
+ref_lineLoc_2 = MODI_REPERE(
+    RESULTAT=ref_line_2,
+    TOUT_ORDRE="OUI",
+    REPERE="UTILISATEUR",
+    AFFE=_F(VECT_X=(0, 100, 0), VECT_Y=(0, 100, 20), GROUP_NO="S1"),
+    MODI_CHAM=_F(TYPE_CHAM="TENS_3D", NOM_CHAM="SIGM_NOEU"),
+)
+
+
+table_line_2 = POST_RELEVE_T(
+    ACTION=_F(
+        INTITULE="resu_test",
+        OPERATION="MOYENNE",
+        GROUP_NO="S1",
+        RESULTAT=ref_lineLoc_2,
+        NOM_CHAM="SIGM_NOEU",
+        NUME_ORDRE=14,
+        TOUT_CMP="OUI",
+    )
+)
+
+
+table_2 = table_line_2.EXTR_TABLE()
+
+
+for row_2 in table_2.rows:
+    if row_2["QUANTITE"] == "MOYE_EXT":
+        value_ref_2 = row_2["SIYZ"]
+
+
+line_2 = POST_RELEVE_T(
+    ACTION=_F(
+        INTITULE="extr_coupe",
+        OPERATION="EXTRACTION",
+        GROUP_NO="S1",
+        RESULTAT=resu_line_2,
+        NOM_CHAM="SIGM_NOEU",
+        NUME_ORDRE=14,
+        TOUT_CMP="OUI",
+    )
+)
+
+
+TEST_TABLE(
+    TABLE=line_2,
+    NOM_PARA="SIYZ",
+    FILTRE=_F(NOM_PARA="NOEUD", CRIT_COMP="EQ", VALE_K="4"),
+    VALE_CALC=value_ref_2,
+)
+
+
+FIN()

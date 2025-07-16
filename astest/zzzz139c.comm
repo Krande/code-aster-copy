@@ -1,0 +1,242 @@
+# coding=utf-8
+# --------------------------------------------------------------------
+# Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
+# This file is part of code_aster.
+#
+# code_aster is free software: you can redistribute it and/or modify
+# it under the terms of the GNU General Public License as published by
+# the Free Software Foundation, either version 3 of the License, or
+# (at your option) any later version.
+#
+# code_aster is distributed in the hope that it will be useful,
+# but WITHOUT ANY WARRANTY; without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+# GNU General Public License for more details.
+#
+# You should have received a copy of the GNU General Public License
+# along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
+# --------------------------------------------------------------------
+#
+# Notes:
+#  - Les commentaires sont precedes du signe #
+#  - Une meme commande peut se suivre sur plusieurs lignes
+# Commande obligatoire pour commencer
+# -----------------------------------
+
+from code_aster.Commands import *
+from code_aster.MacroCommands.crea_coupe_ops import TableCoupes
+from code_aster import CA
+from code_aster.CA import AsterError
+
+DEBUT(CODE="OUI", DEBUG=_F(SDVERI="OUI"))
+
+# Lecture du maillage
+# ------------------
+# Lecture du maillage dans le fichier de maillage et creation du concept mail
+mail = LIRE_MAILLAGE(FORMAT="MED", NOM_MED="MeshCoude_Quad", UNITE=20)
+is_ok = 0
+table = LIRE_TABLE(FORMAT="TABLEAU", SEPARATEUR=",", UNITE=10)
+try:
+    coupes = CREA_COUPE(
+        COUPE=table, MAILLAGE=mail, NOM_AUTO="OUI", PREFIXE="section", PAS=100, NUME_INIT=1000
+    )
+except AsterError as err:
+    if err.id_message == "COUPE_1":
+        is_ok = 1
+
+table = LIRE_TABLE(FORMAT="TABLEAU", SEPARATEUR=",", UNITE=11)
+is_ok = 0
+try:
+    coupes = CREA_COUPE(
+        COUPE=table, MAILLAGE=mail, NOM_AUTO="OUI", PREFIXE="section", PAS=100, NUME_INIT=1000
+    )
+except AsterError as err:
+    if err.id_message == "COUPE_2":
+        is_ok = 1
+
+table = LIRE_TABLE(FORMAT="TABLEAU", SEPARATEUR=",", UNITE=12)
+is_ok = 0
+try:
+    coupes = CREA_COUPE(
+        COUPE=table, MAILLAGE=mail, NOM_AUTO="OUI", PREFIXE="section", PAS=100, NUME_INIT=1000
+    )
+except AsterError as err:
+    if err.id_message == "COUPE_3":
+        is_ok = 1
+
+table = LIRE_TABLE(FORMAT="TABLEAU", SEPARATEUR=",", UNITE=13)
+is_ok = 0
+try:
+    coupes = CREA_COUPE(
+        COUPE=table, MAILLAGE=mail, NOM_AUTO="OUI", PREFIXE="section", PAS=100, NUME_INIT=1000
+    )
+except AsterError as err:
+    if err.id_message == "COUPE_5":
+        is_ok = 1
+
+table = LIRE_TABLE(FORMAT="TABLEAU", SEPARATEUR=",", UNITE=14)
+is_ok = 0
+try:
+    coupes = CREA_COUPE(
+        COUPE=table, MAILLAGE=mail, NOM_AUTO="OUI", PREFIXE="section", PAS=100, NUME_INIT=1000
+    )
+except AsterError as err:
+    if err.id_message == "COUPE_6":
+        is_ok = 1
+
+table = LIRE_TABLE(FORMAT="TABLEAU", SEPARATEUR=",", UNITE=16)
+is_ok = 0
+try:
+    coupes = CREA_COUPE(COUPE=table, MAILLAGE=mail, NOM_AUTO="NON")
+except AsterError as err:
+    if err.id_message == "COUPE_7":
+        is_ok = 1
+
+table = LIRE_TABLE(FORMAT="TABLEAU", SEPARATEUR=",", UNITE=17)
+is_ok = 0
+try:
+    coupes = CREA_COUPE(COUPE=table, MAILLAGE=mail, NOM_AUTO="NON")
+except AsterError as err:
+    if err.id_message == "COUPE_8":
+        is_ok = 1
+
+table = LIRE_TABLE(FORMAT="TABLEAU", SEPARATEUR=",", UNITE=18)
+is_ok = 0
+try:
+    coupes = CREA_COUPE(
+        COUPE=table,
+        MAILLAGE=mail,
+        NOM_AUTO="OUI",
+        PREFIXE="section",
+        PAS=100,
+        NUME_INIT=1000,
+        REVOLUTION=_F(
+            AXE=(1, 1, 0),
+            CENTRE=(0.1757, 3.4243, 0.0),
+            ANGLE_AUTO="NON",
+            ANGLE=[15, 30, 45],
+            PREFIXE="PLAN",
+            GROUP_MA_ORIG="SURFINTE",
+            GROUP_MA_EXTR="SURFEXT",
+            GROUP_COUPE="P_1",
+        ),
+    )
+except AsterError as err:
+    if err.id_message == "COUPE_9":
+        is_ok = 1
+
+table = LIRE_TABLE(FORMAT="TABLEAU", SEPARATEUR=",", UNITE=18)
+is_ok = 0
+try:
+    coupes = CREA_COUPE(
+        COUPE=table,
+        MAILLAGE=mail,
+        NOM_AUTO="OUI",
+        PREFIXE="section",
+        PAS=100,
+        NUME_INIT=1000,
+        REVOLUTION=_F(
+            AXE=(1, 1, 0),
+            CENTRE=(0.1757, 3.4243, 0.0),
+            ANGLE_AUTO="NON",
+            ANGLE=[15, 30, 45],
+            PREFIXE="PLAN",
+            GROUP_MA_ORIG="SURFINT",
+            GROUP_MA_EXTR="SURFEXT",
+            NOM_COUPE="S500",
+        ),
+    )
+except AsterError as err:
+    if err.id_message == "COUPE_10":
+        is_ok = 1
+
+table = LIRE_TABLE(FORMAT="TABLEAU", SEPARATEUR=",", UNITE=18)
+is_ok = 0
+try:
+    coupes = CREA_COUPE(
+        COUPE=table,
+        MAILLAGE=mail,
+        NOM_AUTO="OUI",
+        PREFIXE="section",
+        PAS=100,
+        NUME_INIT=1000,
+        REVOLUTION=_F(
+            AXE=(1, 1, 0),
+            CENTRE=(0.1757, 3.4243, 0.0),
+            ANGLE_AUTO="NON",
+            ANGLE=[15, 30, 45],
+            PREFIXE="PLAN",
+            GROUP_MA_ORIG="SURFINT",
+            GROUP_MA_EXTR="SURFEXT",
+            GROUP_COUPE="P_3",
+        ),
+    )
+except AsterError as err:
+    if err.id_message == "COUPE_11":
+        is_ok = 1
+
+table = LIRE_TABLE(FORMAT="TABLEAU", SEPARATEUR=",", UNITE=18)
+is_ok = 0
+try:
+    coupes = CREA_COUPE(
+        COUPE=table,
+        MAILLAGE=mail,
+        NOM_AUTO="OUI",
+        PREFIXE="section",
+        PAS=100,
+        NUME_INIT=1000,
+        REVOLUTION=_F(
+            AXE=(1, 1, 0),
+            CENTRE=(0.1757, 3.4243, 0.0),
+            ANGLE_AUTO="NON",
+            ANGLE=[0, 15, 30, 45],
+            PREFIXE="PLAN",
+            GROUP_MA_ORIG="SURFINT",
+            GROUP_MA_EXTR="SURFEXT",
+            GROUP_COUPE="P_3",
+        ),
+    )
+except AsterError as err:
+    if err.id_message == "COUPE_13":
+        is_ok = 1
+
+table = LIRE_TABLE(FORMAT="TABLEAU", SEPARATEUR=",", UNITE=19)
+is_ok = 0
+try:
+    coupes = CREA_COUPE(
+        COUPE=table,
+        MAILLAGE=mail,
+        NOM_AUTO="OUI",
+        PREFIXE="section",
+        PAS=100,
+        NUME_INIT=1000,
+        REVOLUTION=_F(
+            AXE=(1, 1, 0),
+            CENTRE=(0.1757, 3.4243, 0.0),
+            ANGLE_AUTO="NON",
+            ANGLE=[0, 15, 30, 45],
+            PREFIXE="PLAN",
+            GROUP_MA_ORIG="SURFINT",
+            GROUP_MA_EXTR="SURFEXT",
+            GROUP_COUPE="P_3",
+        ),
+    )
+except AsterError as err:
+    if err.id_message == "COUPE_14":
+        is_ok = 1
+
+# TEST_RESU
+TAB1 = CREA_TABLE(
+    LISTE=(_F(PARA="TEST", TYPE_K="K8", LISTE_K="VALEUR  "), _F(PARA="BOOLEEN", LISTE_I=is_ok))
+)
+
+TEST_TABLE(
+    REFERENCE="ANALYTIQUE",
+    VALE_CALC_I=1,
+    VALE_REFE_I=1,
+    NOM_PARA="BOOLEEN",
+    TABLE=TAB1,
+    FILTRE=_F(NOM_PARA="TEST", VALE_K="VALEUR  "),
+)
+
+FIN()
