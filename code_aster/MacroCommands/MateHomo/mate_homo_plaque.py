@@ -33,6 +33,7 @@ from ...CodeCommands import (
 )
 from ...Messages import ASSERT
 from ...Objects import ThermalResultDict, ElasticResultDict
+from ...Utilities import logger
 
 from . import mate_homo_utilities as utilities
 
@@ -434,6 +435,8 @@ def calc_tabpara_plaque(DEPLMATE, volume_ver, ls_group_ma, varc_name, ls_varc, e
             G22_hom = (h / volume_ver) * (mu_meca_mm - work_meca_23_23_ct)
 
         else:
+            work_meca_31_31_ct = 0.0
+            work_meca_23_23_ct = 0.0
             G11_hom = 0.0
             G22_hom = 0.0
 
@@ -463,8 +466,9 @@ def calc_tabpara_plaque(DEPLMATE, volume_ver, ls_group_ma, varc_name, ls_varc, e
         work_dila_11 = utilities.cross_work(CORR_MECA11_MEMB, CORR_DILA_mm, inst_meca, ls_group_ma)
         work_dila_22 = utilities.cross_work(CORR_MECA22_MEMB, CORR_DILA_mm, inst_meca, ls_group_ma)
 
-        Bdil_11 = (h / volume_ver) * (loimel["ALPHA3K_mm"][i] - work_dila_11)
-        Bdil_22 = (h / volume_ver) * (loimel["ALPHA3K_mm"][i] - work_dila_22)
+        alpha_3k_meca_mm = loimel["ALPHA3K_mm"][i]
+        Bdil_11 = (h / volume_ver) * (alpha_3k_meca_mm - work_dila_11)
+        Bdil_22 = (h / volume_ver) * (alpha_3k_meca_mm - work_dila_22)
 
         # fmt: off
         C_hom = np.array([[C1111_hom, C1122_hom, 0         ],
@@ -488,6 +492,32 @@ def calc_tabpara_plaque(DEPLMATE, volume_ver, ls_group_ma, varc_name, ls_varc, e
         C_inv = np.linalg.inv(C_hom)
         ALPHA_L, ALPHA_T = np.dot(C_inv, (Bdil_11, Bdil_22, 0))[:2]
         ALPHA = (ALPHA_L + ALPHA_T) / 2
+
+        logger.debug(f"<HOMO-WORK><V {inst_meca}>: DILA_11 {work_dila_11}")
+        logger.debug(f"<HOMO-WORK><V {inst_meca}>: DILA_22 {work_dila_22}")
+        logger.debug(f"<HOMO-DIL><V {inst_meca}>: ALPHA_L {ALPHA_L}")
+        logger.debug(f"<HOMO-DIL><V {inst_meca}>: ALPHA_T {ALPHA_T}")
+
+        logger.debug(f"<HOMO-LOIMEL-MEMB><V {inst_meca}>: LAMBDA LAME {lambda_meca_mm}")
+        logger.debug(f"<HOMO-LOIMEL-MEMB><V {inst_meca}>: MU LAME {mu_meca_mm}")
+        logger.debug(f"<HOMO-LOIMEL-MEMB><V {inst_meca}>: ALPHA3K {alpha_3k_meca_mm}")
+
+        logger.debug(f"<HOMO-WORK-MEMB><V {inst_meca}>: MECA_11_11 {work_meca_11_11_mm}")
+        logger.debug(f"<HOMO-WORK-MEMB><V {inst_meca}>: MECA_22_22 {work_meca_22_22_mm}")
+        logger.debug(f"<HOMO-WORK-MEMB><V {inst_meca}>: MECA_11_22 {work_meca_11_22_mm}")
+        logger.debug(f"<HOMO-WORK-MEMB><V {inst_meca}>: MECA_12_12 {work_meca_12_12_mm}")
+
+        logger.debug(f"<HOMO-WORK-CT><V {inst_meca}>: MECA_31 {work_meca_31_31_ct}")
+        logger.debug(f"<HOMO-WORK-CT><V {inst_meca}>: MECA_23 {work_meca_23_23_ct}")
+
+        logger.debug(f"<HOMO-LOIMEL-FLEX><V {inst_meca}>: LAMBDA LAME {lambda_meca_ff}")
+        logger.debug(f"<HOMO-LOIMEL-FLEX><V {inst_meca}>: MU LAME {mu_meca_ff}")
+
+        logger.debug(f"<HOMO-WORK-FLEX><V {inst_meca}>: MECA_11_11 {work_meca_11_11_ff}")
+        logger.debug(f"<HOMO-WORK-FLEX><V {inst_meca}>: MECA_22_22 {work_meca_22_22_ff}")
+        logger.debug(f"<HOMO-WORK-FLEX><V {inst_meca}>: MECA_11_22 {work_meca_11_22_ff}")
+        logger.debug(f"<HOMO-WORK-FLEX><V {inst_meca}>: MECA_12_12 {work_meca_12_12_ff}")
+
         assert abs(ALPHA_L - ALPHA_T) < 1.0e-8, "Error on ALPHA"
 
         dictpara["MEMB_L"].append(C1111_hom)
