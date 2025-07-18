@@ -15,21 +15,11 @@
 ! You should have received a copy of the GNU General Public License
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
+#include "asterf_types.h"
 !
 interface
-    subroutine srmedo(modele, mate, mateco, cara, kcha, ncha,&
-                      result, nuord, nbordr, base,&
-                      npass, ligrel)
-        character(len=8) :: modele
-        character(len=24) :: mate, mateco
-        character(len=8) :: cara
-        character(len=19) :: kcha
-        integer(kind=8) :: ncha
-        character(len=8) :: result
-        integer(kind=8) :: nuord
-        integer(kind=8) :: nbordr
-        character(len=1) :: base
-        integer(kind=8) :: npass
-        character(len=24) :: ligrel
-    end subroutine srmedo
+    function callCalcul(optionZ)
+        character(len=*), intent(in) :: optionZ
+        aster_logical :: callCalcul
+    end function callCalcul
 end interface

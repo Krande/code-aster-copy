@@ -21,6 +21,11 @@ from ..Utilities import _
 
 cata_msg = {
     1: _("""Le résultat ne stocke aucun champ, on ne peut pas faire de post-traitement."""),
+    2: _(
+        """Le modèle donné dans la commande n'est pas le même que celui donné dans la structure de données résultat.
+         Il ne faut pas le renseigner dans la commande."""
+    ),
+    10: _("""Le modèle est manquant."""),
     18: _(
         """
  Vous utilisez CALC_CHAMP en reuse mais la structure de données en entrée est
@@ -29,7 +34,7 @@ cata_msg = {
     ),
     44: _(
         """
-   Le modèle n'a pas été trouvé dans CALC_CHAMP. Le calcul n'est pas possible.
+   Le modèle n'a pas été trouvé dans CALC_CHAMP (ni dans la commande, ni dans la structure de données résultats). Le calcul n'est pas possible.
 """
     ),
     45: _(

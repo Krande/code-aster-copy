@@ -15,24 +15,20 @@
 ! You should have received a copy of the GNU General Public License
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
-
-!
 !
 interface
-    subroutine cclpci(option, modele, resuin, resuou, mater , mateco, &
-                      carael, ligrel, numord, nbpain, lipain,&
-                      lichin, codret)
-        character(len=16) :: option
-        character(len=8) :: modele
-        character(len=8) :: resuin
-        character(len=8) :: resuou
-        character(len=8) :: mater, mateco
-        character(len=8) :: carael
-        character(len=24) :: ligrel
-        integer(kind=8) :: numord
-        integer(kind=8) :: nbpain
-        character(len=8) :: lipain(*)
-        character(len=24) :: lichin(*)
-        integer(kind=8) :: codret
+    subroutine cclpci(option, &
+                      modelZ, materFieldZ, materCodeZ, caraElemZ, &
+                      resultIn, resultOut, &
+                      ligrel, numeStore, &
+                      nbParaIn, lpain, lchin)
+        character(len=16), intent(in) :: option
+        character(len=*), intent(in) :: modelZ, materFieldZ, materCodeZ, caraElemZ
+        character(len=8), intent(in) :: resultIn, resultOut
+        character(len=24), intent(in) :: ligrel
+        integer(kind=8), intent(in) :: numeStore
+        integer(kind=8), intent(out) :: nbParaIn
+        character(len=8), intent(out) :: lpain(100)
+        character(len=24), intent(out) :: lchin(100)
     end subroutine cclpci
 end interface

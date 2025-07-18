@@ -927,13 +927,6 @@ PNONLIN = InputParameter(
 """,
 )
 
-PNOVARI = InputParameter(
-    phys=PHY.NEUT_K24,
-    container="VOLA!&&CCPARA.NOM_VARI",
-    comment="""  PNOVARI : CARTE DU NOM DE CHAMP A EXTRAIRE
-""",
-)
-
 PNUMMOD = InputParameter(phys=PHY.NUMMOD, comment="""""")
 
 POMEGA2 = InputParameter(

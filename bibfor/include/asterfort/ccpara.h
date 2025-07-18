@@ -15,22 +15,17 @@
 ! You should have received a copy of the GNU General Public License
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
-
-!
-!
 #include "asterf_types.h"
 !
 interface
-    subroutine ccpara(option, modele, resuin, resuou, numord,&
-                      nordm1, exitim, mater , carael)
-        character(len=16) :: option
-        character(len=8) :: modele
-        character(len=8) :: resuin
-        character(len=8) :: resuou
-        integer(kind=8) :: numord
-        integer(kind=8) :: nordm1
-        aster_logical :: exitim
-        character(len=8) :: mater
-        character(len=8) :: carael
+    subroutine ccpara(option, &
+                      modelZ, materFieldZ, caraElemZ, &
+                      resultIn, resultOut, &
+                      numeStore, numeStorePrev, isTransient)
+        character(len=16), intent(in) :: option
+        character(len=*), intent(in) :: modelZ, caraElemZ, materFieldZ
+        character(len=8), intent(in):: resultIn, resultOut
+        integer(kind=8), intent(in) :: numeStore, numeStorePrev
+        aster_logical, intent(in) :: isTransient
     end subroutine ccpara
 end interface

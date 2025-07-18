@@ -15,25 +15,16 @@
 ! You should have received a copy of the GNU General Public License
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
-
-!
-!
 #include "asterf_types.h"
 !
 interface
-    subroutine ccvepo(modele, resuin, typesd, lisord, nbordr,&
-                      option,&
-                      nbchre, ioccur, suropt, ligrel, exipou)
-        character(len=8) :: modele
-        character(len=8) :: resuin
-        integer(kind=8) :: nbordr
-        character(len=19) :: lisord
-        character(len=16) :: typesd
-        character(len=16) :: option
-        integer(kind=8) :: ioccur
-        character(len=24) :: suropt
-        character(len=24) :: ligrel
-        aster_logical :: exipou
-        integer(kind=8) :: nbchre
+    subroutine ccvepo(option, model, &
+                      postCompResu, &
+                      postCompPoux)
+        use postComp_type
+        character(len=16), intent(in) :: option
+        character(len=8), intent(in) :: model
+        type(POST_COMP_RESU), intent(in) :: postCompResu
+        type(POST_COMP_POUX), intent(out) :: postCompPoux
     end subroutine ccvepo
 end interface

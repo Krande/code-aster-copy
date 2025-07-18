@@ -15,18 +15,24 @@
 ! You should have received a copy of the GNU General Public License
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
-
-subroutine ccpoux(resuin, typesd, nordre, nbchre, ioccur, &
-                  kcharg, modele, nbpain, lipain, lichin, &
-                  suropt, iret)
+!
+subroutine ccpoux(postCompPoux, &
+                  listLoadZ, modelZ, &
+                  resultIn, resultType, numeStore, &
+                  nbParaIn, lpain, lchin, &
+                  iret)
+!
+    use postComp_type
+    use loadMecaCompute_type
+    use loadMecaCompute_module
     implicit none
-!     --- ARGUMENTS ---
+!
 #include "asterf_types.h"
-#include "jeveux.h"
 #include "asterfort/assert.h"
 #include "asterfort/codent.h"
 #include "asterfort/copisd.h"
 #include "asterfort/dismoi.h"
+#include "asterfort/exisd.h"
 #include "asterfort/focste.h"
 #include "asterfort/fointe.h"
 #include "asterfort/fozero.h"
@@ -42,16 +48,26 @@ subroutine ccpoux(resuin, typesd, nordre, nbchre, ioccur, &
 #include "asterfort/rsadpa.h"
 #include "asterfort/rsexch.h"
 #include "asterfort/utmess.h"
-    integer(kind=8) :: nbpain, nordre, nbchre, ioccur, iret
-    character(len=8) :: resuin, lipain(*)
-    character(len=16) :: typesd
-    character(len=19) :: kcharg
-    character(len=24) :: lichin(*), suropt
-!  CALC_CHAMP - POUTRES POUX
-!  -    -               ----
-! ----------------------------------------------------------------------
+#include "jeveux.h"
+#include "LoadTypes_type.h"
 !
-!  CALC_CHAMP ET POUTRE POUX
+    type(POST_COMP_POUX), intent(in) :: postCompPoux
+    character(len=*), intent(in) :: modelZ, listLoadZ
+    character(len=8), intent(in) :: resultIn
+    character(len=16), intent(in) :: resultType
+    integer(kind=8), intent(in)  :: numeStore
+    integer(kind=8), intent(in) :: nbParaIn
+    character(len=8), intent(in) :: lpain(100)
+    character(len=24), intent(inout) :: lchin(100)
+    integer(kind=8), intent(out) :: iret
+!
+! --------------------------------------------------------------------------------------------------
+!
+! CALC_CHAMP
+!
+! POUX beams
+!
+! --------------------------------------------------------------------------------------------------
 !
 ! IN  :
 !   RESUIN  K8   NOM DE LA STRUCUTRE DE DONNEES RESULTAT IN
@@ -68,198 +84,221 @@ subroutine ccpoux(resuin, typesd, nordre, nbchre, ioccur, &
 !
 ! OUT :
 !   IRET    I    CODE RETOUR (0 SI OK, 1 SINON)
-! ----------------------------------------------------------------------
-! person_in_charge: nicolas.sellenet at edf.fr
-    aster_logical :: exif1d
 !
-    integer(kind=8) :: ltymo, lfreq, neq, lvale, lacce, ii, i
-    integer(kind=8) :: l1, l3, n1, ipara, ier, linst
+! --------------------------------------------------------------------------------------------------
 !
-    real(kind=8) :: zero, un, coeff, valres
-    real(kind=8) :: alpha, tps(11), freq, inst
-    parameter(zero=0.d0, un=1.d0)
-!
-    complex(kind=8) :: czero, calpha, tpc(11)
-    parameter(czero=(0.d0, 0.d0))
-!
-    character(len=1) :: typcoe
+    integer(kind=8), parameter :: nbCmpForc = 11, nbCmpGrav = 4
+    real(kind=8) :: cmpZeroReal(nbCmpForc)
+    complex(kind=8) :: cmpZeroCplx(nbCmpForc)
+    character(len=8) :: cmpZeroFunc(nbCmpForc)
+    character(len=8), parameter :: cmpName(nbCmpForc) = (/'FX   ', 'FY   ', 'FZ   ', &
+                                                          'MX   ', 'MY   ', 'MZ   ', &
+                                                          'BX   ', 'REP  ', 'ALPHA', &
+                                                          'BETA ', 'GAMMA'/)
+    character(len=8), parameter :: ncmppe(nbCmpGrav) = (/'G ', 'AG', 'BG', 'CG'/)
+    character(len=16), parameter :: loadKeyword = "EXCIT"
+    aster_logical :: exif1d, exigrav, hasLoad
+    integer(kind=8) :: jvPara, jvMGamma, jvAcce, iEqua, nbEqua
+    integer(kind=8) :: funcFromUser, coefFromUser, loadFromUser, iParaIn, ier
+    real(kind=8) :: coefReal, funcVale, omega2
+    real(kind=8) :: freq, inst
+    complex(kind=8) :: coefCplx
+    character(len=1) :: typeScal
     character(len=5) :: ch5
-    character(len=6) :: tsca
-    character(len=8) :: k8b, curpar, ncmppe(4), tpf(11), charge, typcha
-    character(len=8) :: ncmpfo(11), modele, fmult, nomgd
-    character(len=16) :: typemo
-    character(len=19) :: chdynr, chacce
-    character(len=24) :: chamgd, nochin, nochi1, chdepl, ligrmo
-    character(len=8), pointer :: fcha(:) => null()
-    real(kind=8), pointer :: nldepl(:) => null()
-    complex(kind=8), pointer :: nldepl_c(:) => null()
-    character(len=8), pointer :: lcha(:) => null()
+    character(len=6) :: scalType
+    character(len=8) :: paraCurr, loadName, loadCommand
+    character(len=8) :: loadFunc, physQuanName
+    character(len=13) :: loadPreObject
+    character(len=16) :: modeType
+    character(len=19) :: chacce
+    character(len=24) :: fieldInName, chdepl, modelLigrel
+    character(len=24) :: loadFieldForce, loadFieldGrav
+    character(len=8), pointer :: listLoadFunc(:) => null()
+    real(kind=8), pointer :: dispValeR(:) => null()
+    complex(kind=8), pointer :: dispValeC(:) => null()
+    character(len=8), pointer :: listLoadName(:) => null()
 !
-    data ncmppe/'G', 'AG', 'BG', 'CG'/
-    data ncmpfo/'FX', 'FY', 'FZ', 'MX', 'MY', 'MZ',&
-     &                     'BX', 'REP', 'ALPHA', 'BETA', 'GAMMA'/
+! --------------------------------------------------------------------------------------------------
 !
     call jemarq()
-!
     iret = 0
-!
-    typemo = ' '
-    if (typesd .eq. 'MODE_MECA') then
-        call rsadpa(resuin, 'L', 1, 'TYPE_MODE', 1, &
-                    0, sjv=ltymo, styp=k8b)
-        typemo = zk16(ltymo)
+
+! - Initializations
+    hasLoad = postCompPoux%loadIndx .ne. 0
+    cmpZeroReal(1:nbCmpForc) = 0.d0
+    cmpZeroFunc(1:nbCmpForc) = '&FOZERO'
+    cmpZeroCplx(1:nbCmpForc) = (0.d0, 0.d0)
+    call dismoi("NOM_LIGREL", modelZ, "MODELE", repk=modelLigrel)
+
+! - Type of base
+    modeType = ' '
+    if (resultType .eq. 'MODE_MECA') then
+        call rsadpa(resultIn, 'L', 1, 'TYPE_MODE', 1, 0, sjv=jvPara)
+        modeType = zk16(jvPara)
     end if
-!
-    ligrmo = modele//'.MODELE'
-!
-    typcoe = ' '
-    alpha = zero
-    calpha = czero
-    chdynr = '&&MECALM.M.GAMMA'
-if ((typesd .eq. 'MODE_MECA' .and. typemo(1:8) .eq. 'MODE_DYN') .or. (typesd .eq. 'MODE_ACOU')) then
-        call rsexch('F', resuin, 'DEPL', nordre, chdepl, ier)
-        call dismoi('NOM_GD', chdynr, 'CHAMP', repk=nomgd)
-        call dismoi('TYPE_SCA', nomgd, 'GRANDEUR', repk=tsca)
-        call jeveuo(chdynr//'.VALE', 'E', lvale)
-        call jelira(chdepl(1:19)//'.VALE', 'LONMAX', neq)
-        call rsexch('F', resuin, 'DEPL', nordre, chamgd, &
-                    ier)
-        call rsadpa(resuin, 'L', 1, 'OMEGA2', nordre, &
-                    0, sjv=lfreq, styp=k8b)
-        if (tsca .eq. 'R') then
-            call jeveuo(chamgd(1:19)//'.VALE', 'L', vr=nldepl)
-            do ii = 0, neq-1
-                zr(lvale+ii) = -zr(lfreq)*nldepl(ii+1)
+
+! - Compute M.Gamma
+    coefReal = 0.d0
+    coefCplx = (0.d0, 0.d0)
+    if ((resultType .eq. 'MODE_MECA' .and. modeType(1:8) .eq. 'MODE_DYN') .or. &
+        (resultType .eq. 'MODE_ACOU')) then
+
+! ----- Get displacements
+        call rsexch('F', resultIn, 'DEPL', numeStore, chdepl, ier)
+        call jelira(chdepl(1:19)//'.VALE', 'LONMAX', nbEqua)
+
+! ----- Get pulsation
+        call rsadpa(resultIn, 'L', 1, 'OMEGA2', numeStore, 0, sjv=jvPara)
+        omega2 = zr(jvPara)
+
+! ----- Compute M.Gamma
+        call dismoi('NOM_GD', postCompPoux%chdynr, 'CHAMP', repk=physQuanName)
+        call dismoi('TYPE_SCA', physQuanName, 'GRANDEUR', repk=scalType)
+        call jeveuo(postCompPoux%chdynr(1:19)//'.VALE', 'E', jvMGamma)
+
+        if (scalType .eq. 'R') then
+            call jeveuo(chdepl(1:19)//'.VALE', 'L', vr=dispValeR)
+            do iEqua = 1, nbEqua
+                zr(jvMGamma-1+iEqua) = -omega2*dispValeR(iEqua)
             end do
-        elseif (tsca .eq. 'C') then
-            call jeveuo(chamgd(1:19)//'.VALE', 'L', vc=nldepl_c)
-            do ii = 0, neq-1
-                zc(lvale+ii) = -zr(lfreq)*nldepl_c(ii+1)
+        elseif (scalType .eq. 'C') then
+            call jeveuo(chdepl(1:19)//'.VALE', 'L', vc=dispValeC)
+            do iEqua = 1, nbEqua
+                zc(jvMGamma-1+iEqua) = -omega2*dispValeC(iEqua)
             end do
         else
-            ASSERT(.false.)
+            ASSERT(ASTER_FALSE)
         end if
-        call jelibe(chamgd(1:19)//'.VALE')
-    else if (typesd .eq. 'DYNA_TRANS') then
-        call rsexch('F', resuin, 'DEPL', nordre, chdepl, ier)
-        call jeveuo(chdynr//'.VALE', 'E', lvale)
-        call jelira(chdepl(1:19)//'.VALE', 'LONMAX', neq)
-        call rsexch(' ', resuin, 'ACCE', nordre, chacce, &
-                    ier)
+        call jelibe(chdepl(1:19)//'.VALE')
+
+    else if (resultType .eq. 'DYNA_TRANS') then
+! ----- Get displacements
+        call rsexch('F', resultIn, 'DEPL', numeStore, chdepl, ier)
+        call jelira(chdepl(1:19)//'.VALE', 'LONMAX', nbEqua)
+
+! ----- Get acceleration
+        call rsexch(' ', resultIn, 'ACCE', numeStore, chacce, ier)
+
+! ----- Compute M.Gamma
+        call jeveuo(postCompPoux%chdynr(1:19)//'.VALE', 'E', jvMGamma)
         if (ier .eq. 0) then
-            call jeveuo(chacce//'.VALE', 'L', lacce)
-            do ii = 0, neq-1
-                zr(lvale+ii) = zr(lacce+ii)
+            call jeveuo(chacce//'.VALE', 'L', jvAcce)
+            do iEqua = 1, nbEqua
+                zr(jvMGamma-1+iEqua) = zr(jvAcce-1+iEqua)
             end do
             call jelibe(chacce//'.VALE')
         else
             call utmess('A', 'CALCULEL3_1')
-            do ii = 0, neq-1
-                zr(lvale+ii) = zero
+            do iEqua = 1, nbEqua
+                zr(jvMGamma-1+iEqua) = 0.d0
             end do
         end if
-    else if (typesd .eq. 'DYNA_HARMO') then
-        call rsexch('F', resuin, 'DEPL', nordre, chdepl, ier)
-        call jeveuo(chdynr//'.VALE', 'E', lvale)
-        call jelira(chdepl(1:19)//'.VALE', 'LONMAX', neq)
-        call rsexch(' ', resuin, 'ACCE', nordre, chacce, &
-                    ier)
+
+    else if (resultType .eq. 'DYNA_HARMO') then
+! ----- Get displacements
+        call rsexch('F', resultIn, 'DEPL', numeStore, chdepl, ier)
+        call jelira(chdepl(1:19)//'.VALE', 'LONMAX', nbEqua)
+
+! ----- Access to M.Gamma vector
+        call jeveuo(postCompPoux%chdynr(1:19)//'.VALE', 'E', jvMGamma)
+
+! ----- Get acceleration
+        call rsexch(' ', resultIn, 'ACCE', numeStore, chacce, ier)
+
+! ----- Compute M.Gamma
         if (ier .eq. 0) then
-            call jeveuo(chacce//'.VALE', 'L', lacce)
-            do ii = 0, neq-1
-                zc(lvale+ii) = zc(lacce+ii)
+            call jeveuo(chacce//'.VALE', 'L', jvAcce)
+            do iEqua = 1, nbEqua
+                zc(jvMGamma+iEqua) = zc(jvAcce+iEqua)
             end do
             call jelibe(chacce//'.VALE')
         else
             call utmess('A', 'CALCULEL3_1')
-            do ii = 0, neq-1
-                zc(lvale+ii) = czero
+            do iEqua = 1, nbEqua
+                zc(jvMGamma+iEqua) = (0.d0, 0.d0)
             end do
         end if
     end if
-!
-! --- CALCUL DU COEFFICIENT MULTIPLICATIF DE LA CHARGE
-!     CE CALCUL N'EST EFFECTIF QUE POUR LES CONDITIONS SUIVANTES
-!        * MODELISATION POUTRE
-!        * PRESENCE D'UNE (ET D'UNE SEULE) CHARGE REPARTIE
-!
-!     IOCCUR C'EST SOIT :
-!        * L'OCCURENCE DANS LE MOT CLEF EXIT
-!        * L'INDEX DE LA CHARGE DANS KCHARG
-!     LES VERIFICATIONS D'EXISTANCE DE LA CHARGE ET DE SA FMULT SONT
-!     FAITES DANS RSLESD
-    charge = ' '
-    fmult = ' '
-    coeff = 0.0d0
-    if (nbchre .ne. 0) then
-!        LA CHARGE REPARTIE EST :
-!           SOUS EXIT DE LA COMMANDE
-!           DANS KCHARG
-        call getvid('EXCIT', 'CHARGE', iocc=ioccur, scal=charge, nbret=n1)
-        if (n1 .eq. 0) then
-            call jeveuo(kcharg//'.LCHA', 'L', vk8=lcha)
-            call jeveuo(kcharg//'.FCHA', 'L', vk8=fcha)
-            charge = lcha(ioccur)
-            fmult = fcha(ioccur)
-!           LA FONCTION PEUT AVOIR ETE CREEE, SUR LA BASE V
-!           SI C'EST LE CAS C'EST LA FONCTION UNITE
-            if (fmult(1:2) .eq. '&&') then
-!              NORMALEMENT SEUL NMDOME DOIT CREER CETTE FONCTION
-                ASSERT(fmult .eq. '&&NMDOME')
-                coeff = 1.d0
-                call focste(fmult, 'TOUTRESU', coeff, 'V')
+
+! - Get coefficient for load
+    coefReal = 0.0d0
+    coefCplx = (0.d0, 0.d0)
+    loadName = " "
+    loadFunc = " "
+    loadFieldForce = " "
+    exif1d = ASTER_FALSE
+    loadFieldGrav = " "
+    exigrav = ASTER_FALSE
+
+    if (hasLoad) then
+! ----- Get load from user
+        loadName = ' '
+        loadFunc = ' '
+        call getvid(loadKeyword, 'CHARGE', iocc=postCompPoux%loadIndx, &
+                    scal=loadName, nbret=loadFromUser)
+        call getvid(loadKeyword, 'FONC_MULT', iocc=postCompPoux%loadIndx, &
+                    scal=loadFunc, nbret=funcFromUser)
+        call getvr8(loadKeyword, 'COEF_MULT', iocc=postCompPoux%loadIndx, &
+                    scal=coefReal, nbret=coefFromUser)
+
+        if (loadFromUser .eq. 0) then
+! --------- Get load from result
+            call jeveuo(listLoadZ(1:19)//'.LCHA', 'L', vk8=listLoadName)
+            call jeveuo(listLoadZ(1:19)//'.FCHA', 'L', vk8=listLoadFunc)
+            loadName = listLoadName(postCompPoux%loadIndx)
+            loadFunc = listLoadFunc(postCompPoux%loadIndx)
+            if (loadFunc(1:2) .eq. '&&') then
+                ASSERT(loadFunc .eq. '&&NMDOME')
+                coefReal = 1.d0
+                call focste(loadFunc, 'TOUTRESU', coefReal, 'V')
             end if
-            l1 = 1
-            l3 = 0
+            funcFromUser = 1
+            coefFromUser = 0
         else
-            call getvid('EXCIT', 'FONC_MULT', iocc=ioccur, scal=fmult, nbret=l1)
-            call getvr8('EXCIT', 'COEF_MULT', iocc=ioccur, scal=coeff, nbret=l3)
-            if (l1+l3 .ne. 0) then
-                if ((typesd .ne. 'DYNA_HARMO') .and. (typesd .ne. 'DYNA_TRANS') .and. &
-                    (typesd .ne. 'EVOL_ELAS')) then
+            if (funcFromUser+coefFromUser .ne. 0) then
+                if ((resultType .ne. 'DYNA_HARMO') .and. (resultType .ne. 'DYNA_TRANS') .and. &
+                    (resultType .ne. 'EVOL_ELAS')) then
                     call utmess('A', 'CALCULEL3_4')
                     iret = 1
                     goto 999
                 end if
             end if
         end if
-!
-        if (l1 .ne. 0 .or. l3 .ne. 0) then
-            if (typesd .eq. 'DYNA_HARMO') then
-                typcoe = 'C'
-                call rsadpa(resuin, 'L', 1, 'FREQ', nordre, &
-                            0, sjv=lfreq, styp=k8b)
-                freq = zr(lfreq)
-                if (l1 .ne. 0) then
-                    call fointe('F ', fmult, 1, ['FREQ'], [freq], &
-                                valres, ier)
-                    calpha = dcmplx(valres, zero)
-                else if (l3 .ne. 0) then
-                    calpha = dcmplx(coeff, un)
+
+! ----- Get coefficient from user
+        typeScal = ' '
+        if (funcFromUser .ne. 0 .or. coefFromUser .ne. 0) then
+            if (resultType .eq. 'DYNA_HARMO') then
+                typeScal = 'C'
+                call rsadpa(resultIn, 'L', 1, 'FREQ', numeStore, 0, sjv=jvPara)
+                freq = zr(jvPara)
+                if (funcFromUser .ne. 0) then
+                    call fointe('F ', loadFunc, 1, ['FREQ'], [freq], funcVale, ier)
+                    coefCplx = dcmplx(funcVale, 0.d0)
+                else if (coefFromUser .ne. 0) then
+                    coefCplx = dcmplx(coefReal, 1.d0)
                 end if
-            else if (typesd .eq. 'DYNA_TRANS') then
-                typcoe = 'R'
-                call rsadpa(resuin, 'L', 1, 'INST', nordre, &
-                            0, sjv=linst, styp=k8b)
-                inst = zr(linst)
-                if (l1 .ne. 0) then
-                    call fointe('F ', fmult, 1, ['INST'], [inst], &
-                                alpha, ier)
-                else if (l3 .ne. 0) then
-                    alpha = coeff
+            else if (resultType .eq. 'DYNA_TRANS') then
+                typeScal = 'R'
+                call rsadpa(resultIn, 'L', 1, 'INST', numeStore, 0, sjv=jvPara)
+                inst = zr(jvPara)
+                if (funcFromUser .ne. 0) then
+                    call fointe('F ', loadFunc, 1, ['INST'], [inst], funcVale, ier)
+                    coefReal = funcVale
+                else if (coefFromUser .ne. 0) then
+
                 else
                     call utmess('A', 'CALCULEL3_2')
                     iret = 1
                     goto 999
                 end if
-            else if (typesd .eq. 'EVOL_ELAS') then
-                typcoe = 'R'
-                call rsadpa(resuin, 'L', 1, 'INST', nordre, &
-                            0, sjv=linst, styp=k8b)
-                inst = zr(linst)
-                if (l1 .ne. 0) then
-                    call fointe('F ', fmult, 1, ['INST'], [inst], &
-                                alpha, ier)
+            else if (resultType .eq. 'EVOL_ELAS') then
+                typeScal = 'R'
+                call rsadpa(resultIn, 'L', 1, 'INST', numeStore, 0, sjv=jvPara)
+                inst = zr(jvPara)
+                if (funcFromUser .ne. 0) then
+                    call fointe('F ', loadFunc, 1, ['INST'], [inst], funcVale, ier)
+                    coefReal = funcVale
                 else
                     call utmess('A', 'CALCULEL3_3')
                     iret = 1
@@ -267,124 +306,138 @@ if ((typesd .eq. 'MODE_MECA' .and. typemo(1:8) .eq. 'MODE_DYN') .or. (typesd .eq
                 end if
             end if
         end if
+
+! ----- Detect FORCE_POUTRE/PESANTEUR
+        call dismoi('TYPE_CHARGE', loadName, 'CHARGE', repk=loadCommand)
+        loadPreObject = loadName(1:8)//'.CHME'
+        call getMecaNeumField(LOAD_NEUM_FORC_BEAM, loadPreObject, loadFieldForce)
+        call exisd('CHAMP_GD', loadFieldForce, ier)
+        exif1d = ier .ne. 0
+        call getMecaNeumField(LOAD_NEUM_GRAVITY, loadPreObject, loadFieldGrav)
+        call exisd('CHAMP_GD', loadFieldGrav, ier)
+        exigrav = ier .ne. 0
     end if
-!
+
     ch5 = '.    '
-    do i = 1, 11
-        tps(i) = zero
-        tpf(i) = '&FOZERO'
-        tpc(i) = czero
-    end do
-!
-    nochi1 = charge//'.CHME.F1D1D.DESC'
-    exif1d = .false.
-    call jeexin(nochi1, ier)
-    if (ier .eq. 0) then
-        exif1d = .true.
-    else
-        call dismoi('TYPE_CHARGE', charge, 'CHARGE', repk=typcha)
-    end if
-!
-    do ipara = 1, nbpain
-        curpar = lipain(ipara)
+    do iParaIn = 1, nbParaIn
+        paraCurr = lpain(iParaIn)
         ch5 = '.    '
-        if ((curpar .eq. 'PCOEFFR') .and. (typcoe .eq. 'R')) then
-            nochin = '&&MECHPO'//ch5//'.COEFF'
-            call mecact('V', nochin, 'MODELE', ligrmo, 'IMPE_R', &
-                        ncmp=1, nomcmp='IMPE', sr=alpha)
-            lichin(ipara) = nochin
+
+! ----- Create impedance input field (real)
+        if ((paraCurr .eq. 'PCOEFFR') .and. (typeScal .eq. 'R')) then
+            fieldInName = '&&MECHPO.    .COEFF'
+            call mecact('V', fieldInName, 'MODELE', modelLigrel, 'IMPE_R', &
+                        ncmp=1, nomcmp='IMPE', sr=coefReal)
+            lchin(iParaIn) = fieldInName
         end if
-        if ((curpar .eq. 'PCOEFFC') .and. (typcoe .eq. 'C')) then
-            nochin = '&&MECHPO'//ch5//'.COEFF'
-            call mecact('V', nochin, 'MODELE', ligrmo, 'IMPE_C', &
-                        ncmp=1, nomcmp='IMPE', sc=calpha)
-            lichin(ipara) = nochin
+
+! ----- Create impedance input field (complexe)
+        if ((paraCurr .eq. 'PCOEFFC') .and. (typeScal .eq. 'C')) then
+            fieldInName = '&&MECHPO.    .COEFF'
+            call mecact('V', fieldInName, 'MODELE', modelLigrel, 'IMPE_C', &
+                        ncmp=1, nomcmp='IMPE', sc=coefCplx)
+            lchin(iParaIn) = fieldInName
         end if
-!
-        if (curpar .eq. 'PPESANR') then
-            nochin = charge//'.CHME.PESAN.DESC'
-            call jeexin(nochin, ier)
+
+! ----- Create load input field (gravity) - Set zero if no load
+        if (paraCurr .eq. 'PPESANR') then
+            if (exigrav) then
+                lchin(iParaIn) = loadFieldGrav
+            else
+                call codent(iParaIn, 'D0', ch5(2:5))
+                fieldInName = '&&MECHPO'//ch5//'.PESAN.DESC'
+                lchin(iParaIn) = fieldInName
+                call mecact('V', fieldInName, 'MODELE', modelLigrel, 'PESA_R  ', &
+                            ncmp=nbCmpGrav, lnomcmp=ncmppe, vr=cmpZeroReal)
+            end if
+        end if
+
+! ----- Create load input field (beam force, function) - Set zero if no load
+        if (paraCurr .eq. 'PFF1D1D') then
+            if (exif1d) then
+                if (loadCommand(5:7) .eq. '_FO') then
+                    lchin(iParaIn) = loadFieldForce
+                else
+                    call codent(iParaIn, 'D0', ch5(2:5))
+                    fieldInName = '&&MECHPO'//ch5//'.P1D1D'
+                    lchin(iParaIn) = fieldInName
+                    call fozero(cmpZeroFunc(1))
+                    call mecact('V', fieldInName, 'MODELE', modelLigrel, 'FORC_F  ', &
+                                ncmp=nbCmpForc, lnomcmp=cmpName, vk=cmpZeroFunc)
+                end if
+            else
+                call codent(iParaIn, 'D0', ch5(2:5))
+                fieldInName = '&&MECHPO'//ch5//'.P1D1D'
+                lchin(iParaIn) = fieldInName
+                call fozero(cmpZeroFunc(1))
+                call mecact('V', fieldInName, 'MODELE', modelLigrel, 'FORC_F  ', &
+                            ncmp=nbCmpForc, lnomcmp=cmpName, vk=cmpZeroFunc)
+            end if
+        end if
+
+! ----- Create load input field (beam force, real) - Set zero if no load
+        if (paraCurr .eq. 'PFR1D1D') then
+            if (exif1d) then
+                if ((loadCommand(5:7) .eq. '_FO') .or. (loadCommand(5:7) .eq. '_RI')) then
+                    call codent(iParaIn, 'D0', ch5(2:5))
+                    fieldInName = '&&MECHPO'//ch5//'.P1D1D'
+                    lchin(iParaIn) = fieldInName
+                    call mecact('V', fieldInName, 'MODELE', modelLigrel, 'FORC_R  ', &
+                                ncmp=nbCmpForc, lnomcmp=cmpName, vr=cmpZeroReal)
+                else
+                    lchin(iParaIn) = loadFieldForce
+                end if
+            else
+                call codent(iParaIn, 'D0', ch5(2:5))
+                fieldInName = '&&MECHPO'//ch5//'.P1D1D'
+                lchin(iParaIn) = fieldInName
+                call mecact('V', fieldInName, 'MODELE', modelLigrel, 'FORC_R  ', &
+                            ncmp=nbCmpForc, lnomcmp=cmpName, vr=cmpZeroReal)
+            end if
+        end if
+
+! ----- Create load input field (beam force, complex)  - Set zero if no load
+        if (paraCurr .eq. 'PFC1D1D') then
+            if (exif1d) then
+                if (loadCommand(5:7) .eq. '_RI') then
+                    lchin(iParaIn) = loadFieldForce
+                else
+                    call codent(iParaIn, 'D0', ch5(2:5))
+                    fieldInName = '&&MECHPO'//ch5//'.P1D1D'
+                    lchin(iParaIn) = fieldInName
+                    call mecact('V', fieldInName, 'MODELE', modelLigrel, 'FORC_C  ', &
+                                ncmp=nbCmpForc, lnomcmp=cmpName, vc=cmpZeroCplx)
+                end if
+            else
+                call codent(iParaIn, 'D0', ch5(2:5))
+                fieldInName = '&&MECHPO'//ch5//'.P1D1D'
+                lchin(iParaIn) = fieldInName
+                call mecact('V', fieldInName, 'MODELE', modelLigrel, 'FORC_C  ', &
+                            ncmp=nbCmpForc, lnomcmp=cmpName, vc=cmpZeroCplx)
+
+            end if
+        end if
+
+! ----- Create load input field (M.Gamma force)
+        if (paraCurr .eq. 'PCHDYNR') then
+            fieldInName = postCompPoux%chdynr(1:19)//'.VALE'
+            call jeexin(fieldInName, ier)
             if (ier .eq. 0) then
-                call codent(ipara, 'D0', ch5(2:5))
-                nochin = '&&MECHPO'//ch5//'.PESAN.DESC'
-                lichin(ipara) = nochin
-                call mecact('V', nochin, 'MODELE', ligrmo, 'PESA_R  ', &
-                            ncmp=4, lnomcmp=ncmppe, vr=tps)
-            else
-                lichin(ipara) = nochin
+                call codent(iParaIn, 'D0', ch5(2:5))
+                fieldInName = '&&MECHPO'//ch5//'.PCHDY'
+                call rsexch('F', resultIn, 'DEPL', numeStore, chdepl, ier)
+                call copisd('CHAMP_GD', 'V', chdepl, fieldInName)
             end if
-        else if (curpar .eq. 'PFF1D1D') then
-            if (exif1d) then
-                call codent(ipara, 'D0', ch5(2:5))
-                nochin = '&&MECHPO'//ch5//'.P1D1D.DESC'
-                lichin(ipara) = nochin
-                call fozero(tpf(1))
-                call mecact('V', nochin, 'MODELE', ligrmo, 'FORC_F  ', &
-                            ncmp=11, lnomcmp=ncmpfo, vk=tpf)
-            else
-                if (typcha(5:7) .eq. '_FO') then
-                    lichin(ipara) = nochi1
-                else
-                    call codent(ipara, 'D0', ch5(2:5))
-                    nochin = '&&MECHPO'//ch5//'.P1D1D.DESC'
-                    lichin(ipara) = nochin
-                    call fozero(tpf(1))
-                    call mecact('V', nochin, 'MODELE', ligrmo, 'FORC_F  ', &
-                                ncmp=11, lnomcmp=ncmpfo, vk=tpf)
-                end if
-            end if
-        else if (curpar .eq. 'PFR1D1D') then
-            if (exif1d) then
-                call codent(ipara, 'D0', ch5(2:5))
-                nochin = '&&MECHPO'//ch5//'.P1D1D.DESC'
-                lichin(ipara) = nochin
-                call mecact('V', nochin, 'MODELE', ligrmo, 'FORC_R  ', &
-                            ncmp=11, lnomcmp=ncmpfo, vr=tps)
-            else
-                if ((typcha(5:7) .eq. '_FO') .or. (typcha(5:7) .eq. '_RI')) then
-                    call codent(ipara, 'D0', ch5(2:5))
-                    nochin = '&&MECHPO'//ch5//'.P1D1D.DESC'
-                    lichin(ipara) = nochin
-                    call mecact('V', nochin, 'MODELE', ligrmo, 'FORC_R  ', &
-                                ncmp=11, lnomcmp=ncmpfo, vr=tps)
-                else
-                    lichin(ipara) = nochi1
-                end if
-            end if
-        else if (curpar .eq. 'PFC1D1D') then
-            if (exif1d) then
-                call codent(ipara, 'D0', ch5(2:5))
-                nochin = '&&MECHPO'//ch5//'.P1D1D.DESC'
-                lichin(ipara) = nochin
-                call mecact('V', nochin, 'MODELE', ligrmo, 'FORC_C  ', &
-                            ncmp=11, lnomcmp=ncmpfo, vc=tpc)
-            else
-                if (typcha(5:7) .eq. '_RI') then
-                    lichin(ipara) = nochi1
-                else
-                    call codent(ipara, 'D0', ch5(2:5))
-                    nochin = '&&MECHPO'//ch5//'.P1D1D.DESC'
-                    lichin(ipara) = nochin
-                    call mecact('V', nochin, 'MODELE', ligrmo, 'FORC_C  ', &
-                                ncmp=11, lnomcmp=ncmpfo, vc=tpc)
-                end if
-            end if
-        else if (curpar .eq. 'PCHDYNR') then
-            nochin = chdynr//'.VALE'
-            call jeexin(nochin, ier)
-            if (ier .eq. 0) then
-                call codent(ipara, 'D0', ch5(2:5))
-                nochin = '&&MECHPO'//ch5//'.PCHDY'
-                call rsexch('F', resuin, 'DEPL', nordre, chdepl, ier)
-                call copisd('CHAMP_GD', 'V', chdepl, nochin)
-            end if
-            lichin(ipara) = nochin
-        else if (curpar .eq. 'PSUROPT') then
-            call codent(ipara, 'D0', ch5(2:5))
-            nochin = '&&MECHPO'//ch5//'.SUR_OPTION'
-            lichin(ipara) = nochin
-            call mecact('V', nochin, 'MODELE', ligrmo, 'NEUT_K24', &
-                        ncmp=1, nomcmp='Z1', sk=suropt)
+            lchin(iParaIn) = fieldInName
+        end if
+
+! ----- Create option input field
+        if (paraCurr .eq. 'PSUROPT') then
+            call codent(iParaIn, 'D0', ch5(2:5))
+            fieldInName = '&&MECHPO'//ch5//'.SUR_OPTION'
+            lchin(iParaIn) = fieldInName
+            call mecact('V', fieldInName, 'MODELE', modelLigrel, 'NEUT_K24', &
+                        ncmp=1, nomcmp='Z1', sk=postCompPoux%optionMass)
         end if
     end do
 !
