@@ -77,8 +77,6 @@ class BaseAssemblyMatrix : public DataStructure {
     bool _isBuilt;
     /** @brief La matrice est elle vide ? */
     bool _isFactorized;
-    /** @brief Liste de charges cinematiques */
-    ListOfLoadsPtr _listOfLoads;
     /** @brief Solver name (MUMPS or PETSc) */
     std::string _solverName;
 
@@ -121,20 +119,6 @@ class BaseAssemblyMatrix : public DataStructure {
      */
 
     BaseAssemblyMatrix( BaseAssemblyMatrix &&other );
-
-    /**
-     * @brief Function d'ajout d'un chargement
-     * @param Args... Liste d'arguments template
-     */
-    template < typename... Args >
-    void addLoad( const Args &...args ) {
-        _listOfLoads->addLoad( args... );
-    };
-
-    /**
-     * @brief Assemblage de la matrice
-     */
-    virtual bool assemble( bool clean = true ) { AS_ABORT( "Not allowed" ); };
 
     /**
      * @brief Make the matrix symmetric
@@ -218,18 +202,6 @@ class BaseAssemblyMatrix : public DataStructure {
     void print( const std::string format = "ASTER", const ASTERINTEGER unit = 6 ) const {
         CALLO_MATR_ASSE_PRINT( getName(), &unit, format );
     };
-
-    /**
-     * @brief Get MaterialField
-     * @return MaterialField of the first ElementaryMatrix (all others must be the same)
-     */
-    virtual MaterialFieldPtr getMaterialField() const { AS_ABORT( "Not allowed" ); };
-
-    /**
-     * @brief Get the number of defined ElementaryMatrix
-     * @return size of vector containing ElementaryMatrix
-     */
-    virtual ASTERINTEGER getNumberOfElementaryMatrix() const { AS_ABORT( "Not allowed" ); };
 
 #ifdef ASTER_HAVE_PETSC4PY
     /**
@@ -325,22 +297,6 @@ class BaseAssemblyMatrix : public DataStructure {
      * @brief Return the scaling factor of Lagrange multipliers
      */
     ASTERDOUBLE getLagrangeScaling() const;
-
-    /**
-     * @brief Return the list of loads assigned to the matrix
-     */
-    ListOfLoadsPtr getListOfLoads() const { return _listOfLoads; }
-
-    /**
-     * @brief Methode permettant de definir la liste de chargement
-     * @param lLoads objet de type ListOfLoadsPtr
-     */
-    void setListOfLoads( const ListOfLoadsPtr load ) {
-        if ( !load )
-            raiseAsterError( "Empty load" );
-
-        _listOfLoads = load;
-    }
 
     virtual BaseAssemblyMatrixPtr getEmptyMatrix( const std::string &name ) const {
         AS_ABORT( "Not allowed" );

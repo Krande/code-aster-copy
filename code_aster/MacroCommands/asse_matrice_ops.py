@@ -1,6 +1,6 @@
 # coding: utf-8
 
-# Copyright (C) 1991 - 2022  EDF R&D                www.code-aster.org
+# Copyright (C) 1991 - 2025  EDF R&D                www.code-aster.org
 #
 # This file is part of Code_Aster.
 #
@@ -60,21 +60,17 @@ def asse_matrice_ops(self, **args):
 
     # Add MATR_ELEM
     for elem in matr_elem:
-        if isinstance(elem, type(matr_elem[0])):
-            matr.addElementaryMatrix(elem)
-        else:
+        if not isinstance(elem, type(matr_elem[0])):
             raise RuntimeError("Incompatible elementary matrices")
 
     # Add NUME_DDL
     matr.setDOFNumbering(args["NUME_DDL"])
 
-    # Add DirichletBC
-    if "CHAR_CINE" in args:
-        for cine in args["CHAR_CINE"]:
-            matr.addDirichletBC(cine)
-
     # Assemble
-    matr.assemble(False)
+    if "CHAR_CINE" in args:
+        matr.assemble(matr_elem, force_list(args["CHAR_CINE"]))
+    else:
+        matr.assemble(matr_elem)
 
     if args.get("SYME") == "OUI":
         matr.symmetrize()

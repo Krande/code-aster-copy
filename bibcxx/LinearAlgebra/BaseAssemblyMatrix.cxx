@@ -31,14 +31,12 @@ BaseAssemblyMatrix::BaseAssemblyMatrix( const std::string &name, const std::stri
       _ccii( JeveuxVectorLong( getName() + ".CCII" ) ),
       _isBuilt( false ),
       _isFactorized( false ),
-      _dofNum( nullptr ),
-      _listOfLoads( std::make_shared< ListOfLoads >() ) {};
+      _dofNum( nullptr ) {};
 
 BaseAssemblyMatrix::BaseAssemblyMatrix( const PhysicalProblemPtr phys_prob,
                                         const std::string &type )
     : BaseAssemblyMatrix( type ) {
     _dofNum = phys_prob->getDOFNumbering();
-    _listOfLoads = phys_prob->getListOfLoads();
 };
 
 BaseAssemblyMatrix::BaseAssemblyMatrix( const std::string &name, const std::string &type,
@@ -53,7 +51,6 @@ BaseAssemblyMatrix::BaseAssemblyMatrix( const std::string &name, const std::stri
     ( *_ccii ) = ( *toCopy._ccii );
     // Objects
     _dofNum = toCopy._dofNum;
-    _listOfLoads = toCopy._listOfLoads;
     _isBuilt = toCopy._isBuilt;
     _isFactorized = toCopy._isFactorized;
 }
@@ -69,7 +66,6 @@ BaseAssemblyMatrix::BaseAssemblyMatrix( BaseAssemblyMatrix &&other )
     _ccii = other._ccii;
     // Objects
     _dofNum = other._dofNum;
-    _listOfLoads = other._listOfLoads;
     _isBuilt = other._isBuilt;
     _isFactorized = other._isFactorized;
 }

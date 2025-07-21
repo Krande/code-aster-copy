@@ -7393,16 +7393,6 @@ class BaseAssemblyMatrix(DataStructure):
         3. __init__(self: libaster.BaseAssemblyMatrix, arg0: PhysicalProblem, arg1: str) -> None
         """
 
-    def addDirichletBC(self, currentLoad, func):
-        pass
-
-    def assemble(self, clean=True):
-        """Assembly matrix from elementar matrices added.
-
-        Arguments:
-            clean (bool) : Clean elementary matrices after building (default = true)
-        """
-
     def getCalculOption(self):
         """Return the option of CALCUL.
 
@@ -7429,13 +7419,6 @@ class BaseAssemblyMatrix(DataStructure):
         Returns:
             float: scaling used for Lagrange multipliers. It returns 1 if no Lagrange
             are present.
-        """
-
-    def getListOfLoads(self):
-        """Return the list of loads.
-
-        Returns:
-            ListOfLoads: a pointer to the list of loads
         """
 
     def getMesh(self):
@@ -7478,13 +7461,6 @@ class BaseAssemblyMatrix(DataStructure):
 
     def setDOFNumbering(self, arg0):
         pass
-
-    def setListOfLoads(self, load):
-        """Set the list of loads.
-
-        Arguments:
-            ListOfLoads: a pointer to the list of loads to set
-        """
 
     def setSolverName(self, arg0):
         pass
@@ -7550,14 +7526,6 @@ class AssemblyMatrixDisplacementReal(BaseAssemblyMatrix):
     def __sub__(self, arg0):
         pass
 
-    def addElementaryMatrix(self, matr_elem, coeff=1.0):
-        """Add elementary matrix to assemble such that during assembling Mat += coeff * matr_elem
-
-        Arguments:
-            matr_elem [ElementaryMatrixDisplacementReal]: elementary matrix to add
-            coeff [float]: assembling factor (default = 1.0)
-        """
-
     def applyDirichletBC(self, arg0, arg1):
         """Apply the DirichletBC into the Rhs (aka kinematic aka no Lagrange multipliers).
 
@@ -7566,8 +7534,74 @@ class AssemblyMatrixDisplacementReal(BaseAssemblyMatrix):
             Rhs [FieldOnNodes] The residual to be modified.
         """
 
-    def clearElementaryMatrix(self):
-        pass
+    def assemble(self, *args, **kwargs):
+        """Overloaded function.
+
+        1. assemble(self: libaster.AssemblyMatrixDisplacementReal, elemMatrix: ElementaryMatrix<double, (PhysicalQuantityEnum)4>, listOfLoads: libaster.ListOfLoads = None) -> None
+
+
+                        Assembly matrix from elementar matrices and list of loads.
+
+                        Arguments:
+                            elemMatrix (ElementaryMatrixReal) : elementary matrix to assemble.
+                            listOfLoads (ListOfLoads) : list of loads to assemble
+
+
+        2. assemble(self: libaster.AssemblyMatrixDisplacementReal, elemMatrix: list[ElementaryMatrix<double, (PhysicalQuantityEnum)4>], listOfLoads: libaster.ListOfLoads = None) -> None
+
+
+                        Assembly matrix from elementar matrices and list of loads.
+
+                        Arguments:
+                            elemMatrix (list[ElementaryMatrixReal]) : list elementary matrix to assemble.
+                            listOfLoads (ListOfLoads) : list of loads to assemble
+
+
+        3. assemble(self: libaster.AssemblyMatrixDisplacementReal, elemMatrix: list[tuple[ElementaryMatrix<double, (PhysicalQuantityEnum)4>, float]], listOfLoads: libaster.ListOfLoads = None) -> None
+
+
+                        Assembly matrix from elementar matrices and list of loads.
+
+                        Arguments:
+                            elemMatrix (list[ElementaryMatrixReal, float]) : list of pair composed of an
+                            elementary matrix and the multiplicatif coefficent to assemble.
+                            listOfLoads (ListOfLoads) : list of loads to assemble
+
+
+        4. assemble(self: libaster.AssemblyMatrixDisplacementReal, elemMatrix: ElementaryMatrix<double, (PhysicalQuantityEnum)4>, dirichlet: DirichletBC) -> None
+
+
+                        Assembly matrix from elementar matrices and list of loads.
+
+                        Arguments:
+                            elemMatrix (ElementaryMatrixReal) : elementary matrix to assemble.
+                            dirichlet (DirichletBC) : dirichlet BC to impose.
+
+
+        5. assemble(self: libaster.AssemblyMatrixDisplacementReal, elemMatrix: list[ElementaryMatrix<double, (PhysicalQuantityEnum)4>], dirichlet: DirichletBC) -> None
+
+
+                        Arguments:
+                            elemMatrix (list[ElementaryMatrixReal]) : list elementary matrix to assemble.
+                            dirichlet (DirichletBC) : dirichlet BC to impose.
+
+
+        6. assemble(self: libaster.AssemblyMatrixDisplacementReal, elemMatrix: list[ElementaryMatrix<double, (PhysicalQuantityEnum)4>], dirichlet: list[DirichletBC]) -> None
+
+
+                        Arguments:
+                            elemMatrix (list[ElementaryMatrixReal]) : list elementary matrix to assemble.
+                            dirichlet (list[DirichletBC]) : dirichlet BC to impose.
+
+
+        7. assemble(self: libaster.AssemblyMatrixDisplacementReal, elemMatrix: list[tuple[ElementaryMatrix<double, (PhysicalQuantityEnum)4>, float]], dirichlet: DirichletBC) -> None
+
+
+                        Arguments:
+                            elemMatrix (list[ElementaryMatrixReal, float]) : list of pair composed of an
+                            elementary matrix and the multiplicatif coefficent to assemble.
+                            dirichlet (DirichletBC) : dirichlet BC to impose.
+        """
 
     def copy(self):
         pass
@@ -7576,17 +7610,6 @@ class AssemblyMatrixDisplacementReal(BaseAssemblyMatrix):
         pass
 
     def getLowerValues(self):
-        pass
-
-    def getMaterialField(self, *args, **kwargs):
-        """Overloaded function.
-
-        1. getMaterialField(self: libaster.AssemblyMatrixDisplacementReal) -> MaterialField
-
-        2. getMaterialField(self: libaster.AssemblyMatrixDisplacementReal) -> MaterialField
-        """
-
-    def getNumberOfElementaryMatrix(self):
         pass
 
     def getUpperValues(self):
@@ -7681,16 +7704,80 @@ class AssemblyMatrixDisplacementComplex(BaseAssemblyMatrix):
     def __rmul__(self, arg0):
         pass
 
-    def addElementaryMatrix(self, matr_elem, coeff=1.0):
-        """Add elementary matrix to assemble such that during assembling Mat += coeff * matr_elem
+    def assemble(self, *args, **kwargs):
+        """Overloaded function.
 
-        Arguments:
-            matr_elem [ElementaryMatrixDisplacementComplex]: elementary matrix to add
-            coeff [float]: assembling factor (default = 1.0)
+        1. assemble(self: libaster.AssemblyMatrixDisplacementComplex, elemMatrix: ElementaryMatrix<std::complex<double>, (PhysicalQuantityEnum)4>, listOfLoads: libaster.ListOfLoads = None) -> None
+
+
+                        Assembly matrix from elementar matrices and list of loads.
+
+                        Arguments:
+                            elemMatrix (ElementaryMatrixReal) : elementary matrix to assemble.
+                            listOfLoads (ListOfLoads) : list of loads to assemble
+
+
+        2. assemble(self: libaster.AssemblyMatrixDisplacementComplex, elemMatrix: list[ElementaryMatrix<std::complex<double>, (PhysicalQuantityEnum)4>], listOfLoads: libaster.ListOfLoads = None) -> None
+
+
+                        Assembly matrix from elementar matrices and list of loads.
+
+                        Arguments:
+                            elemMatrix (list[ElementaryMatrixReal]) : list elementary matrix to assemble.
+                            listOfLoads (ListOfLoads) : list of loads to assemble
+
+
+        3. assemble(self: libaster.AssemblyMatrixDisplacementComplex, elemMatrix: list[tuple[ElementaryMatrix<std::complex<double>, (PhysicalQuantityEnum)4>, float]], listOfLoads: libaster.ListOfLoads = None) -> None
+
+
+                        Assembly matrix from elementar matrices and list of loads.
+
+                        Arguments:
+                            elemMatrix (list[ElementaryMatrixReal, float]) : list of pair composed of an
+                            elementary matrix and the multiplicatif coefficent to assemble.
+                            listOfLoads (ListOfLoads) : list of loads to assemble
+
+
+        4. assemble(self: libaster.AssemblyMatrixDisplacementComplex, elemMatrix: ElementaryMatrix<std::complex<double>, (PhysicalQuantityEnum)4>, dirichlet: DirichletBC) -> None
+
+
+                        Assembly matrix from elementar matrices and list of loads.
+
+                        Arguments:
+                            elemMatrix (ElementaryMatrixReal) : elementary matrix to assemble.
+                            dirichlet (DirichletBC) : dirichlet BC to impose.
+
+
+        5. assemble(self: libaster.AssemblyMatrixDisplacementComplex, elemMatrix: list[ElementaryMatrix<std::complex<double>, (PhysicalQuantityEnum)4>], dirichlet: DirichletBC) -> None
+
+
+                        Assembly matrix from elementar matrices and list of loads.
+
+                        Arguments:
+                            elemMatrix (list[ElementaryMatrixReal]) : list elementary matrix to assemble.
+                            dirichlet (DirichletBC) : dirichlet BC to impose.
+
+
+        6. assemble(self: libaster.AssemblyMatrixDisplacementComplex, elemMatrix: list[ElementaryMatrix<std::complex<double>, (PhysicalQuantityEnum)4>], dirichlet: list[DirichletBC]) -> None
+
+
+                        Assembly matrix from elementar matrices and list of loads.
+
+                        Arguments:
+                            elemMatrix (list[ElementaryMatrixReal]) : list elementary matrix to assemble.
+                            dirichlet (list[DirichletBC]) : dirichlet BC to impose.
+
+
+        7. assemble(self: libaster.AssemblyMatrixDisplacementComplex, elemMatrix: list[tuple[ElementaryMatrix<std::complex<double>, (PhysicalQuantityEnum)4>, float]], dirichlet: DirichletBC) -> None
+
+
+                        Assembly matrix from elementar matrices and list of loads.
+
+                        Arguments:
+                            elemMatrix (list[ElementaryMatrixReal, float]) : list of pair composed of an
+                            elementary matrix and the multiplicatif coefficent to assemble.
+                            dirichlet (DirichletBC) : dirichlet BC to impose.
         """
-
-    def clearElementaryMatrix(self):
-        pass
 
     def copy(self):
         pass
@@ -7699,12 +7786,6 @@ class AssemblyMatrixDisplacementComplex(BaseAssemblyMatrix):
         pass
 
     def getLowerValues(self):
-        pass
-
-    def getMaterialField(self):
-        pass
-
-    def getNumberOfElementaryMatrix(self):
         pass
 
     def getUpperValues(self):
@@ -7722,9 +7803,6 @@ class AssemblyMatrixDisplacementComplex(BaseAssemblyMatrix):
             jdx (list[int]): List of the column indices.
             values (list[float]): List of the values.
         """
-
-    def transposeConjugate(self):
-        pass
 
 
 # class AssemblyMatrixTemperatureReal in libaster
@@ -7776,14 +7854,6 @@ class AssemblyMatrixTemperatureReal(BaseAssemblyMatrix):
     def __sub__(self, arg0):
         pass
 
-    def addElementaryMatrix(self, matr_elem, coeff=1.0):
-        """Add elementary matrix to assemble such that during assembling Mat += coeff * matr_elem
-
-        Arguments:
-            matr_elem [ElementaryMatrixTemperatureReal]: elementary matrix to add
-            coeff [float]: assembling factor (default = 1.0)
-        """
-
     def applyDirichletBC(self, arg0, arg1):
         """Apply the DirichletBC into the Rhs (aka kinematic aka no Lagrange multipliers).
 
@@ -7792,8 +7862,74 @@ class AssemblyMatrixTemperatureReal(BaseAssemblyMatrix):
             Rhs [FieldOnNodes] The residual to be modified.
         """
 
-    def clearElementaryMatrix(self):
-        pass
+    def assemble(self, *args, **kwargs):
+        """Overloaded function.
+
+        1. assemble(self: libaster.AssemblyMatrixTemperatureReal, elemMatrix: ElementaryMatrix<double, (PhysicalQuantityEnum)6>, listOfLoads: libaster.ListOfLoads = None) -> None
+
+
+                        Assembly matrix from elementar matrices and list of loads.
+
+                        Arguments:
+                            elemMatrix (ElementaryMatrixReal) : elementary matrix to assemble.
+                            listOfLoads (ListOfLoads) : list of loads to assemble
+
+
+        2. assemble(self: libaster.AssemblyMatrixTemperatureReal, elemMatrix: list[ElementaryMatrix<double, (PhysicalQuantityEnum)6>], listOfLoads: libaster.ListOfLoads = None) -> None
+
+
+                        Assembly matrix from elementar matrices and list of loads.
+
+                        Arguments:
+                            elemMatrix (list[ElementaryMatrixReal]) : list elementary matrix to assemble.
+                            listOfLoads (ListOfLoads) : list of loads to assemble
+
+
+        3. assemble(self: libaster.AssemblyMatrixTemperatureReal, elemMatrix: list[tuple[ElementaryMatrix<double, (PhysicalQuantityEnum)6>, float]], listOfLoads: libaster.ListOfLoads = None) -> None
+
+
+                        Assembly matrix from elementar matrices and list of loads.
+
+                        Arguments:
+                            elemMatrix (list[ElementaryMatrixReal, float]) : list of pair composed of an
+                            elementary matrix and the multiplicatif coefficent to assemble.
+                            listOfLoads (ListOfLoads) : list of loads to assemble
+
+
+        4. assemble(self: libaster.AssemblyMatrixTemperatureReal, elemMatrix: ElementaryMatrix<double, (PhysicalQuantityEnum)6>, dirichlet: DirichletBC) -> None
+
+
+                       Assembly matrix from elementar matrices and list of loads.
+
+                        Arguments:
+                            elemMatrix (ElementaryMatrixReal) : elementary matrix to assemble.
+                            dirichlet (DirichletBC) : dirichlet BC to impose.
+
+
+        5. assemble(self: libaster.AssemblyMatrixTemperatureReal, elemMatrix: list[ElementaryMatrix<double, (PhysicalQuantityEnum)6>], dirichlet: DirichletBC) -> None
+
+
+                         Arguments:
+                            elemMatrix (list[ElementaryMatrixReal]) : list elementary matrix to assemble.
+                            dirichlet (DirichletBC) : dirichlet BC to impose.
+
+
+        6. assemble(self: libaster.AssemblyMatrixTemperatureReal, elemMatrix: list[ElementaryMatrix<double, (PhysicalQuantityEnum)6>], dirichlet: list[DirichletBC]) -> None
+
+
+                        Arguments:
+                            elemMatrix (list[ElementaryMatrixReal]) : list elementary matrix to assemble.
+                            dirichlet (list[DirichletBC]) : dirichlet BC to impose.
+
+
+        7. assemble(self: libaster.AssemblyMatrixTemperatureReal, elemMatrix: list[tuple[ElementaryMatrix<double, (PhysicalQuantityEnum)6>, float]], dirichlet: DirichletBC) -> None
+
+
+                        Arguments:
+                            elemMatrix (list[ElementaryMatrixReal, float]) : list of pair composed of an
+                            elementary matrix and the multiplicatif coefficent to assemble.
+                            dirichlet (DirichletBC) : dirichlet BC to impose.
+        """
 
     def copy(self):
         pass
@@ -7802,12 +7938,6 @@ class AssemblyMatrixTemperatureReal(BaseAssemblyMatrix):
         pass
 
     def getLowerValues(self):
-        pass
-
-    def getMaterialField(self):
-        pass
-
-    def getNumberOfElementaryMatrix(self):
         pass
 
     def getUpperValues(self):
@@ -7865,22 +7995,65 @@ class AssemblyMatrixTemperatureComplex(BaseAssemblyMatrix):
         2. __init__(self: libaster.AssemblyMatrixTemperatureComplex, arg0: str) -> None
         """
 
-    def addElementaryMatrix(self, matr_elem, coeff=1.0):
-        """Add elementary matrix to assemble such that during assembling Mat += coeff * matr_elem
+    def assemble(self, *args, **kwargs):
+        """Overloaded function.
 
-        Arguments:
-            matr_elem [ElementaryMatrixDisplacementReal]: elementary matrix to add
-            coeff [float]: assembling factor (default = 1.0)
+        1. assemble(self: libaster.AssemblyMatrixTemperatureComplex, elemMatrix: ElementaryMatrix<std::complex<double>, (PhysicalQuantityEnum)6>, listOfLoads: libaster.ListOfLoads = None) -> None
+
+
+                        Assembly matrix from elementar matrices and list of loads.
+
+                        Arguments:
+                            elemMatrix (ElementaryMatrixReal) : elementary matrix to assemble.
+                            listOfLoads (ListOfLoads) : list of loads to assemble
+
+
+        2. assemble(self: libaster.AssemblyMatrixTemperatureComplex, elemMatrix: list[ElementaryMatrix<std::complex<double>, (PhysicalQuantityEnum)6>], listOfLoads: libaster.ListOfLoads = None) -> None
+
+
+                        Assembly matrix from elementar matrices added.
+
+                        Arguments:
+                            clean (bool) : Clean elementary matrices after building (default = true)
+
+
+        3. assemble(self: libaster.AssemblyMatrixTemperatureComplex, elemMatrix: list[tuple[ElementaryMatrix<std::complex<double>, (PhysicalQuantityEnum)6>, float]], listOfLoads: libaster.ListOfLoads = None) -> None
+
+
+                        Assembly matrix from elementar matrices and list of loads.
+
+                        Arguments:
+                            elemMatrix (list[ElementaryMatrixReal, float]) : list of pair composed of an
+                            elementary matrix and the multiplicatif coefficent to assemble.
+                            listOfLoads (ListOfLoads) : list of loads to assemble
+
+
+        4. assemble(self: libaster.AssemblyMatrixTemperatureComplex, elemMatrix: ElementaryMatrix<std::complex<double>, (PhysicalQuantityEnum)6>, dirichlet: DirichletBC) -> None
+
+
+                       Assembly matrix from elementar matrices and list of loads.
+
+                        Arguments:
+                            elemMatrix (ElementaryMatrixReal) : elementary matrix to assemble.
+                            dirichlet (DirichletBC) : dirichlet BC to impose.
+
+
+        5. assemble(self: libaster.AssemblyMatrixTemperatureComplex, elemMatrix: list[ElementaryMatrix<std::complex<double>, (PhysicalQuantityEnum)6>], dirichlet: DirichletBC) -> None
+
+
+                         Arguments:
+                            elemMatrix (list[ElementaryMatrixReal]) : list elementary matrix to assemble.
+                            dirichlet (DirichletBC) : dirichlet BC to impose.
+
+
+        6. assemble(self: libaster.AssemblyMatrixTemperatureComplex, elemMatrix: list[tuple[ElementaryMatrix<std::complex<double>, (PhysicalQuantityEnum)6>, float]], dirichlet: DirichletBC) -> None
+
+
+                        Arguments:
+                            elemMatrix (list[ElementaryMatrixReal, float]) : list of pair composed of an
+                            elementary matrix and the multiplicatif coefficent to assemble.
+                            dirichlet (DirichletBC) : dirichlet BC to impose.
         """
-
-    def clearElementaryMatrix(self):
-        pass
-
-    def getMaterialField(self):
-        pass
-
-    def getNumberOfElementaryMatrix(self):
-        pass
 
     def transposeConjugate(self):
         pass
@@ -7933,14 +8106,6 @@ class AssemblyMatrixPressureReal(BaseAssemblyMatrix):
     def __sub__(self, arg0):
         pass
 
-    def addElementaryMatrix(self, matr_elem, coeff=1.0):
-        """Add elementary matrix to assemble such that during assembling Mat += coeff * matr_elem
-
-        Arguments:
-            matr_elem [ElementaryMatrixDisplacementReal]: elementary matrix to add
-            coeff [float]: assembling factor (default = 1.0)
-        """
-
     def applyDirichletBC(self, arg0, arg1):
         """Apply the DirichletBC into the Rhs (aka kinematic aka no Lagrange multipliers).
 
@@ -7949,16 +8114,68 @@ class AssemblyMatrixPressureReal(BaseAssemblyMatrix):
             Rhs [FieldOnNodes] The residual to be modified.
         """
 
-    def clearElementaryMatrix(self):
-        pass
+    def assemble(self, *args, **kwargs):
+        """Overloaded function.
+
+        1. assemble(self: libaster.AssemblyMatrixPressureReal, elemMatrix: ElementaryMatrix<double, (PhysicalQuantityEnum)5>, listOfLoads: libaster.ListOfLoads = None) -> None
+
+
+                        Assembly matrix from elementar matrices and list of loads.
+
+                        Arguments:
+                            elemMatrix (ElementaryMatrixReal) : elementary matrix to assemble.
+                            listOfLoads (ListOfLoads) : list of loads to assemble
+
+
+        2. assemble(self: libaster.AssemblyMatrixPressureReal, elemMatrix: list[ElementaryMatrix<double, (PhysicalQuantityEnum)5>], listOfLoads: libaster.ListOfLoads = None) -> None
+
+
+                        Assembly matrix from elementar matrices and list of loads.
+
+                        Arguments:
+                            elemMatrix (list[ElementaryMatrixReal]) : list elementary matrix to assemble.
+                            listOfLoads (ListOfLoads) : list of loads to assemble
+
+
+        3. assemble(self: libaster.AssemblyMatrixPressureReal, elemMatrix: list[tuple[ElementaryMatrix<double, (PhysicalQuantityEnum)5>, float]], listOfLoads: libaster.ListOfLoads = None) -> None
+
+
+                        Assembly matrix from elementar matrices and list of loads.
+
+                        Arguments:
+                            elemMatrix (list[ElementaryMatrixReal, float]) : list of pair composed of an
+                            elementary matrix and the multiplicatif coefficent to assemble.
+                            listOfLoads (ListOfLoads) : list of loads to assemble
+
+
+        4. assemble(self: libaster.AssemblyMatrixPressureReal, elemMatrix: ElementaryMatrix<double, (PhysicalQuantityEnum)5>, dirichlet: DirichletBC) -> None
+
+
+                       Assembly matrix from elementar matrices and list of loads.
+
+                        Arguments:
+                            elemMatrix (ElementaryMatrixReal) : elementary matrix to assemble.
+                            dirichlet (DirichletBC) : dirichlet BC to impose.
+
+
+        5. assemble(self: libaster.AssemblyMatrixPressureReal, elemMatrix: list[ElementaryMatrix<double, (PhysicalQuantityEnum)5>], dirichlet: DirichletBC) -> None
+
+
+                         Arguments:
+                            elemMatrix (list[ElementaryMatrixReal]) : list elementary matrix to assemble.
+                            dirichlet (DirichletBC) : dirichlet BC to impose.
+
+
+        6. assemble(self: libaster.AssemblyMatrixPressureReal, elemMatrix: list[tuple[ElementaryMatrix<double, (PhysicalQuantityEnum)5>, float]], dirichlet: DirichletBC) -> None
+
+
+                        Arguments:
+                            elemMatrix (list[ElementaryMatrixReal, float]) : list of pair composed of an
+                            elementary matrix and the multiplicatif coefficent to assemble.
+                            dirichlet (DirichletBC) : dirichlet BC to impose.
+        """
 
     def copy(self):
-        pass
-
-    def getMaterialField(self):
-        pass
-
-    def getNumberOfElementaryMatrix(self):
         pass
 
     def setValues(self, arg0, arg1, arg2):
@@ -8022,16 +8239,66 @@ class AssemblyMatrixPressureComplex(BaseAssemblyMatrix):
     def __sub__(self, arg0):
         pass
 
-    def addElementaryMatrix(self, matr_elem, coeff=1.0):
-        """Add elementary matrix to assemble such that during assembling Mat += coeff * matr_elem
+    def assemble(self, *args, **kwargs):
+        """Overloaded function.
 
-        Arguments:
-            matr_elem [ElementaryMatrixPressureComplex]: elementary matrix to add
-            coeff [float]: assembling factor (default = 1.0)
+        1. assemble(self: libaster.AssemblyMatrixPressureComplex, elemMatrix: ElementaryMatrix<std::complex<double>, (PhysicalQuantityEnum)5>, listOfLoads: libaster.ListOfLoads = None) -> None
+
+
+                        Assembly matrix from elementar matrices and list of loads.
+
+                        Arguments:
+                            elemMatrix (ElementaryMatrixReal) : elementary matrix to assemble.
+                            listOfLoads (ListOfLoads) : list of loads to assemble
+
+
+        2. assemble(self: libaster.AssemblyMatrixPressureComplex, elemMatrix: list[ElementaryMatrix<std::complex<double>, (PhysicalQuantityEnum)5>], listOfLoads: libaster.ListOfLoads = None) -> None
+
+
+                        Assembly matrix from elementar matrices and list of loads.
+
+                        Arguments:
+                            elemMatrix (list[ElementaryMatrixReal]) : list elementary matrix to assemble.
+                            listOfLoads (ListOfLoads) : list of loads to assemble
+
+
+        3. assemble(self: libaster.AssemblyMatrixPressureComplex, elemMatrix: list[tuple[ElementaryMatrix<std::complex<double>, (PhysicalQuantityEnum)5>, float]], listOfLoads: libaster.ListOfLoads = None) -> None
+
+
+                        Assembly matrix from elementar matrices and list of loads.
+
+                        Arguments:
+                            elemMatrix (list[ElementaryMatrixReal, float]) : list of pair composed of an
+                            elementary matrix and the multiplicatif coefficent to assemble.
+                            listOfLoads (ListOfLoads) : list of loads to assemble
+
+
+        4. assemble(self: libaster.AssemblyMatrixPressureComplex, elemMatrix: ElementaryMatrix<std::complex<double>, (PhysicalQuantityEnum)5>, dirichlet: DirichletBC) -> None
+
+
+                       Assembly matrix from elementar matrices and list of loads.
+
+                        Arguments:
+                            elemMatrix (ElementaryMatrixReal) : elementary matrix to assemble.
+                            dirichlet (DirichletBC) : dirichlet BC to impose.
+
+
+        5. assemble(self: libaster.AssemblyMatrixPressureComplex, elemMatrix: list[ElementaryMatrix<std::complex<double>, (PhysicalQuantityEnum)5>], dirichlet: DirichletBC) -> None
+
+
+                         Arguments:
+                            elemMatrix (list[ElementaryMatrixReal]) : list elementary matrix to assemble.
+                            dirichlet (DirichletBC) : dirichlet BC to impose.
+
+
+        6. assemble(self: libaster.AssemblyMatrixPressureComplex, elemMatrix: list[tuple[ElementaryMatrix<std::complex<double>, (PhysicalQuantityEnum)5>, float]], dirichlet: DirichletBC) -> None
+
+
+                        Arguments:
+                            elemMatrix (list[ElementaryMatrixReal, float]) : list of pair composed of an
+                            elementary matrix and the multiplicatif coefficent to assemble.
+                            dirichlet (DirichletBC) : dirichlet BC to impose.
         """
-
-    def clearElementaryMatrix(self):
-        pass
 
     def copy(self):
         pass
@@ -8040,12 +8307,6 @@ class AssemblyMatrixPressureComplex(BaseAssemblyMatrix):
         pass
 
     def getLowerValues(self):
-        pass
-
-    def getMaterialField(self):
-        pass
-
-    def getNumberOfElementaryMatrix(self):
         pass
 
     def getUpperValues(self):

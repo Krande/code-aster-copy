@@ -44,8 +44,7 @@ class MecaDynaOperators(BaseOperators):
     def _getMassMatrix(self):
         """Compute the mass matrix."""
         mass_matr = AssemblyMatrixDisplacementReal(self.problem)
-        mass_matr.addElementaryMatrix(self._elem_mass)
-        mass_matr.assemble()
+        mass_matr.assemble(self._elem_mass, self.problem.getListOfLoads())
         return mass_matr
 
     def getFunctional(self, t, dt, U, dU, d2U, scaling=1.0):
@@ -78,12 +77,14 @@ class MecaDynaOperators(BaseOperators):
         self.state.swap(temp_phys_state)
 
         # Assemble stiffness matrix
+        elemMatr = []
+        elemMatr.append(matr_elem_rigi)
+        elemMatr.append(matr_elem_dual)
+        elemMatr.append(matr_elem_cont)
+        elemMatr.append(matr_elem_ext)
+
         rigi_matr = AssemblyMatrixDisplacementReal(self.problem)
-        rigi_matr.addElementaryMatrix(matr_elem_rigi)
-        rigi_matr.addElementaryMatrix(matr_elem_dual)
-        rigi_matr.addElementaryMatrix(matr_elem_cont)
-        rigi_matr.addElementaryMatrix(matr_elem_ext)
-        rigi_matr.assemble()
+        rigi_matr.assemble(elemMatr, self.problem.getListOfLoads())
 
         # Assemble damping matrix
         matr_elem_damp = disc_comp.getDampingMatrix(
@@ -93,8 +94,7 @@ class MecaDynaOperators(BaseOperators):
         )
 
         damp_matr = AssemblyMatrixDisplacementReal(self.problem)
-        damp_matr.addElementaryMatrix(matr_elem_damp)
-        damp_matr.assemble()
+        damp_matr.assemble(matr_elem_damp, self.problem.getListOfLoads())
 
         return rigi_matr, damp_matr
 

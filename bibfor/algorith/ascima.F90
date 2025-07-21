@@ -95,7 +95,7 @@ subroutine ascima(infcha, nu, matass, cumul)
 !     -- CAS LISTE DE CHARGES CINEMATIQUES :
     else
         call jeveuo(infcha, 'L', jlchci)
-        call jelira(infcha, 'LONMAX', nchci)
+        call jelira(infcha, 'LONUTI', nchci)
         call asschc(matass, nchci, zk24(jlchci), nu, cumul)
     end if
 !

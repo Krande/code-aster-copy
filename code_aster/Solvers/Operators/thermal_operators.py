@@ -151,12 +151,14 @@ class ThermalOperators(BaseOperators):
 
         dt, theta = self.state.time_step, self._theta
 
+        elemMatr = []
+        elemMatr.append((rigi_ther, theta))
+        elemMatr.append((rigi_ther_ext, theta))
+        elemMatr.append((rigi_ther_dual, 1.0))
+        elemMatr.append((mass_ther, 1.0 / dt))
+
         jacobian = AssemblyMatrixTemperatureReal(self.problem)
-        jacobian.addElementaryMatrix(rigi_ther, theta)
-        jacobian.addElementaryMatrix(rigi_ther_ext, theta)
-        jacobian.addElementaryMatrix(rigi_ther_dual)
-        jacobian.addElementaryMatrix(mass_ther, 1.0 / dt)
-        jacobian.assemble()
+        jacobian.assemble(elemMatr, self.problem.getListOfLoads())
 
         return jacobian
 

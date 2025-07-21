@@ -185,7 +185,7 @@ function nbddlMaxMa(nume_ddlz, matr_assez, nbmat, v_name_mat) result(maxDDLMa)
         call jeveuo(jexatr(nume_ddl//'.NUME.PRNO', 'LONCUM'), 'L', vi=v_prn2)
     end if
 !
-! --- objet matr_asse.lili à partir de matr_asse.lime
+! --- objet matr_asse.lili
 !
     call jeveuo(matr_asse//'.ADNE', 'L', vi=v_adne)
     call jeveuo(matr_asse//'.ADLI', 'L', vi=v_adli)

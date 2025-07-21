@@ -323,7 +323,7 @@ subroutine assmam(jvBase, matrAsseZ, &
         call jedetr(mat19//'.REFA')
     end if
 !  -- calcul d un repertoire,temporaire, matrAsse.lili a partir
-!     de la liste de matrices elementaires matrAsse.lime
+!     de la liste de matrices elementaires
 
     call crelil('F', nbMatrElem, listMatrElem, matrAsse//'.LILI', 'V', &
                 '&MAILLA', matrAsse, ibid, mesh, ibid, &
