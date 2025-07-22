@@ -513,7 +513,9 @@ template < class ValueType, PhysicalQuantityEnum PhysicalQuantity >
 void AssemblyMatrix< ValueType, PhysicalQuantity >::assemble( const ElementaryMatrixPtr &elemMatrix,
                                                               const ListOfLoadsPtr &listOfLoads ) {
 
-    this->assemble( { std::make_pair( elemMatrix, 1.0 ) }, listOfLoads );
+    this->assemble( std::vector< std::pair< ElementaryMatrixPtr, ASTERDOUBLE > >(
+                        { std::make_pair( elemMatrix, 1.0 ) } ),
+                    listOfLoads );
 }
 
 template < class ValueType, PhysicalQuantityEnum PhysicalQuantity >
@@ -533,13 +535,15 @@ void AssemblyMatrix< ValueType, PhysicalQuantity >::assemble(
 template < class ValueType, PhysicalQuantityEnum PhysicalQuantity >
 void AssemblyMatrix< ValueType, PhysicalQuantity >::assemble( const ElementaryMatrixPtr &elemMatrix,
                                                               const DirichletBCPtr &diri ) {
-    this->assemble( { std::make_pair( elemMatrix, 1.0 ) }, diri );
+    this->assemble( std::vector< std::pair< ElementaryMatrixPtr, ASTERDOUBLE > >(
+                        { std::make_pair( elemMatrix, 1.0 ) } ),
+                    std::vector< DirichletBCPtr >( { diri } ) );
 }
 
 template < class ValueType, PhysicalQuantityEnum PhysicalQuantity >
 void AssemblyMatrix< ValueType, PhysicalQuantity >::assemble(
     const std::vector< ElementaryMatrixPtr > &elemMatrix, const DirichletBCPtr &diri ) {
-    this->assemble( elemMatrix, { diri } );
+    this->assemble( elemMatrix, std::vector< DirichletBCPtr >( { diri } ) );
 }
 
 template < class ValueType, PhysicalQuantityEnum PhysicalQuantity >
@@ -560,7 +564,7 @@ template < class ValueType, PhysicalQuantityEnum PhysicalQuantity >
 void AssemblyMatrix< ValueType, PhysicalQuantity >::assemble(
     const std::vector< std::pair< ElementaryMatrixPtr, ASTERDOUBLE > > &elemMatrix,
     const DirichletBCPtr &diri ) {
-    this->assemble( elemMatrix, { diri } );
+    this->assemble( elemMatrix, std::vector< DirichletBCPtr >( { diri } ) );
 }
 
 template < class ValueType, PhysicalQuantityEnum PhysicalQuantity >
