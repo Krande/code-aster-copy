@@ -63,11 +63,8 @@ class GenericElementaryVector : public BaseElementaryVector {
     /** @brief Constructor with automatic name */
     GenericElementaryVector() : GenericElementaryVector( ResultNaming::getNewResultName() ) {};
 
-    GenericElementaryVector( const ModelPtr model, const MaterialFieldPtr mater,
-                             const ElementaryCharacteristicsPtr caraElem,
-                             const ListOfLoadsPtr lLoads )
-        : GenericElementaryVector() {
-        this->setPhysicalProblem( model, mater, caraElem, lLoads );
+    GenericElementaryVector( const ModelPtr model ) : GenericElementaryVector() {
+        this->setModel( model );
     };
 
     /**
@@ -129,18 +126,6 @@ class GenericElementaryVector : public BaseElementaryVector {
 
         if ( _model ) {
             return _model->getMesh();
-        }
-
-        if ( _elemChara ) {
-            return _elemChara->getMesh();
-        }
-
-        if ( _materialField ) {
-            return _materialField->getMesh();
-        }
-
-        if ( _listOfLoads ) {
-            return _listOfLoads->getMesh();
         }
 
         return nullptr;

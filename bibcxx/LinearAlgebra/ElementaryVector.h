@@ -3,7 +3,7 @@
  * @brief Definition of elementary vectors
  * @author Nicolas Sellenet
  * @section LICENCE
- *   Copyright (C) 1991 - 2023  EDF R&D                www.code-aster.org
+ *   Copyright (C) 1991 - 2025  EDF R&D                www.code-aster.org
  *
  *   This file is part of Code_Aster.
  *
@@ -45,11 +45,7 @@ class ElementaryVector : public GenericElementaryVector< ValueType > {
     /** @brief Constructor with automatic name */
     ElementaryVector() : ElementaryVector( ResultNaming::getNewResultName() ) {};
 
-    ElementaryVector( const ModelPtr model, const MaterialFieldPtr mater,
-                      const ElementaryCharacteristicsPtr caraElem, const ListOfLoadsPtr lLoads )
-        : ElementaryVector() {
-        this->setPhysicalProblem( model, mater, caraElem, lLoads );
-    };
+    ElementaryVector( const ModelPtr model ) : ElementaryVector() { this->setModel( model ); };
 };
 
 /** @typedef Elementary vector for displacement-double */

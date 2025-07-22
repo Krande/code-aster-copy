@@ -184,9 +184,7 @@ FieldOnNodesRealPtr DiscreteComputation::getExternalStateVariablesForces(
     }
 
     // Create elementary vectors
-    auto elemVect = std::make_shared< ElementaryVectorReal >(
-        _phys_problem->getModel(), _phys_problem->getMaterialField(),
-        _phys_problem->getElementaryCharacteristics(), _phys_problem->getListOfLoads() );
+    auto elemVect = std::make_shared< ElementaryVectorReal >( _phys_problem->getModel() );
     elemVect->prepareCompute( "CHAR_VARC" );
 
     int nbExternVar = static_cast< int >( externVarEnumInt::NumberOfExternVarTypes );

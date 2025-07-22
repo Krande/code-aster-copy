@@ -48,9 +48,8 @@ ElementaryMatrixDisplacementRealPtr DiscreteComputation::getElasticStiffnessMatr
 
     const std::string option( "RIGI_MECA" );
 
-    auto elemMatr = std::make_shared< ElementaryMatrixDisplacementReal >(
-        _phys_problem->getModel(), _phys_problem->getMaterialField(),
-        _phys_problem->getElementaryCharacteristics() );
+    auto elemMatr =
+        std::make_shared< ElementaryMatrixDisplacementReal >( _phys_problem->getModel() );
     elemMatr->prepareCompute( option );
 
     // Get main parameters
@@ -126,9 +125,8 @@ ElementaryMatrixDisplacementRealPtr DiscreteComputation::getGeometricStiffnessMa
 
     const std::string option( "RIGI_GEOM" );
 
-    auto elemMatr = std::make_shared< ElementaryMatrixDisplacementReal >(
-        _phys_problem->getModel(), _phys_problem->getMaterialField(),
-        _phys_problem->getElementaryCharacteristics() );
+    auto elemMatr =
+        std::make_shared< ElementaryMatrixDisplacementReal >( _phys_problem->getModel() );
     elemMatr->prepareCompute( option );
 
     // Get main parameters
@@ -199,9 +197,8 @@ DiscreteComputation::getFluidStructureStiffnessMatrix( const ASTERINTEGER &modeF
 
     const std::string option( "RIGI_FLUI_STRU" );
 
-    auto elemMatr = std::make_shared< ElementaryMatrixDisplacementReal >(
-        _phys_problem->getModel(), _phys_problem->getMaterialField(),
-        _phys_problem->getElementaryCharacteristics() );
+    auto elemMatr =
+        std::make_shared< ElementaryMatrixDisplacementReal >( _phys_problem->getModel() );
     elemMatr->prepareCompute( option );
 
     // Get main parameters
@@ -268,9 +265,8 @@ DiscreteComputation::getMechanicalMassMatrix( const bool diagonal,
     if ( diagonal )
         option = "MASS_MECA_DIAG";
 
-    auto elemMatr = std::make_shared< ElementaryMatrixDisplacementReal >(
-        _phys_problem->getModel(), _phys_problem->getMaterialField(),
-        _phys_problem->getElementaryCharacteristics() );
+    auto elemMatr =
+        std::make_shared< ElementaryMatrixDisplacementReal >( _phys_problem->getModel() );
     elemMatr->prepareCompute( option );
 
     // Get main parameters
@@ -341,9 +337,8 @@ DiscreteComputation::getFluidStructureMassMatrix( const FieldOnCellsRealPtr varc
 
     std::string option( "MASS_FLUI_STRU" );
 
-    auto elemMatr = std::make_shared< ElementaryMatrixDisplacementReal >(
-        _phys_problem->getModel(), _phys_problem->getMaterialField(),
-        _phys_problem->getElementaryCharacteristics() );
+    auto elemMatr =
+        std::make_shared< ElementaryMatrixDisplacementReal >( _phys_problem->getModel() );
     elemMatr->prepareCompute( option );
 
     // Get main parameters
@@ -408,9 +403,8 @@ ElementaryMatrixDisplacementRealPtr DiscreteComputation::getMechanicalDampingMat
     AS_ASSERT( _phys_problem->getModel()->isMechanical() );
 
     const std::string option( "AMOR_MECA" );
-    auto elemMatr = std::make_shared< ElementaryMatrixDisplacementReal >(
-        _phys_problem->getModel(), _phys_problem->getMaterialField(),
-        _phys_problem->getElementaryCharacteristics() );
+    auto elemMatr =
+        std::make_shared< ElementaryMatrixDisplacementReal >( _phys_problem->getModel() );
     elemMatr->prepareCompute( option );
 
     // Get main parameters
@@ -515,9 +509,8 @@ ElementaryMatrixDisplacementComplexPtr DiscreteComputation::getHystereticStiffne
     AS_ASSERT( _phys_problem->getModel()->isMechanical() );
 
     const std::string option( "RIGI_MECA_HYST" );
-    auto elemMatr = std::make_shared< ElementaryMatrixDisplacementComplex >(
-        _phys_problem->getModel(), _phys_problem->getMaterialField(),
-        _phys_problem->getElementaryCharacteristics() );
+    auto elemMatr =
+        std::make_shared< ElementaryMatrixDisplacementComplex >( _phys_problem->getModel() );
     elemMatr->prepareCompute( option );
 
     // Get main parameters
@@ -679,9 +672,8 @@ ElementaryMatrixDisplacementRealPtr DiscreteComputation::getDualElasticStiffness
 
     const std::string option( "MECA_DDLM_R" );
 
-    auto elemMatr = std::make_shared< ElementaryMatrixDisplacementReal >(
-        _phys_problem->getModel(), _phys_problem->getMaterialField(),
-        _phys_problem->getElementaryCharacteristics() );
+    auto elemMatr =
+        std::make_shared< ElementaryMatrixDisplacementReal >( _phys_problem->getModel() );
     elemMatr->prepareCompute( option );
 
     // Prepare computing
@@ -734,15 +726,12 @@ DiscreteComputation::getTangentStiffnessMatrix(
     calcul->addInputField( "PVARIMP", internVarIter );
 
     // Create output matrix
-    auto elemMatr = std::make_shared< ElementaryMatrixDisplacementReal >(
-        _phys_problem->getModel(), _phys_problem->getMaterialField(),
-        _phys_problem->getElementaryCharacteristics() );
+    auto elemMatr =
+        std::make_shared< ElementaryMatrixDisplacementReal >( _phys_problem->getModel() );
     elemMatr->prepareCompute( option );
 
     // Create output vector
-    auto elemVect = std::make_shared< ElementaryVectorReal >(
-        _phys_problem->getModel(), _phys_problem->getMaterialField(),
-        _phys_problem->getElementaryCharacteristics(), _phys_problem->getListOfLoads() );
+    auto elemVect = std::make_shared< ElementaryVectorReal >( _phys_problem->getModel() );
     elemVect->prepareCompute( option );
 
     // Create output fields
@@ -828,15 +817,12 @@ DiscreteComputation::getPredictionTangentStiffnessMatrix(
     calcul->addHHOField( currModel );
 
     // Create output matrix
-    auto elemMatr = std::make_shared< ElementaryMatrixDisplacementReal >(
-        _phys_problem->getModel(), _phys_problem->getMaterialField(),
-        _phys_problem->getElementaryCharacteristics() );
+    auto elemMatr =
+        std::make_shared< ElementaryMatrixDisplacementReal >( _phys_problem->getModel() );
     elemMatr->prepareCompute( option );
 
     // Create output vector
-    auto elemVect = std::make_shared< ElementaryVectorReal >(
-        _phys_problem->getModel(), _phys_problem->getMaterialField(),
-        _phys_problem->getElementaryCharacteristics(), _phys_problem->getListOfLoads() );
+    auto elemVect = std::make_shared< ElementaryVectorReal >( _phys_problem->getModel() );
     elemVect->prepareCompute( option );
 
     // Create output fields
@@ -924,9 +910,7 @@ ElementaryMatrixDisplacementRealPtr DiscreteComputation::getContactMatrix(
     calcul->addTimeField( "PINSTPR", time_prev + time_step );
 
     // Create output vector
-    auto elemMatr = std::make_shared< ElementaryMatrixDisplacementReal >(
-        Fed_pair->getModel(), _phys_problem->getMaterialField(),
-        _phys_problem->getElementaryCharacteristics() );
+    auto elemMatr = std::make_shared< ElementaryMatrixDisplacementReal >( Fed_pair->getModel() );
     elemMatr->prepareCompute( option );
 
     // Add output elementary
@@ -962,9 +946,8 @@ DiscreteComputation::getRotationalStiffnessMatrix( const VectorString &groupOfCe
     AS_ASSERT( _phys_problem->getModel()->isMechanical() );
     const std::string option = "RIGI_MECA_RO";
 
-    auto elemMatr = std::make_shared< ElementaryMatrixDisplacementReal >(
-        _phys_problem->getModel(), _phys_problem->getMaterialField(),
-        _phys_problem->getElementaryCharacteristics() );
+    auto elemMatr =
+        std::make_shared< ElementaryMatrixDisplacementReal >( _phys_problem->getModel() );
     elemMatr->prepareCompute( option );
 
     // Prepare loads
@@ -1033,9 +1016,8 @@ DiscreteComputation::getGyroscopicStiffnessMatrix( const VectorString &groupOfCe
     AS_ASSERT( _phys_problem->getModel()->isMechanical() );
     const std::string option = "RIGI_GYRO";
 
-    auto elemMatr = std::make_shared< ElementaryMatrixDisplacementReal >(
-        _phys_problem->getModel(), _phys_problem->getMaterialField(),
-        _phys_problem->getElementaryCharacteristics() );
+    auto elemMatr =
+        std::make_shared< ElementaryMatrixDisplacementReal >( _phys_problem->getModel() );
     elemMatr->prepareCompute( option );
 
     // Prepare loads
@@ -1104,9 +1086,8 @@ DiscreteComputation::getGyroscopicDampingMatrix( const VectorString &groupOfCell
     AS_ASSERT( _phys_problem->getModel()->isMechanical() );
     const std::string option = "MECA_GYRO";
 
-    auto elemMatr = std::make_shared< ElementaryMatrixDisplacementReal >(
-        _phys_problem->getModel(), _phys_problem->getMaterialField(),
-        _phys_problem->getElementaryCharacteristics() );
+    auto elemMatr =
+        std::make_shared< ElementaryMatrixDisplacementReal >( _phys_problem->getModel() );
     elemMatr->prepareCompute( option );
 
     // Prepare loads
@@ -1177,9 +1158,8 @@ DiscreteComputation::getImpedanceBoundaryMatrix( const VectorString &groupOfCell
     AS_ASSERT( _phys_problem->getModel()->isMechanical() );
     const std::string option = "IMPE_MECA";
 
-    auto elemMatr = std::make_shared< ElementaryMatrixDisplacementReal >(
-        _phys_problem->getModel(), _phys_problem->getMaterialField(),
-        _phys_problem->getElementaryCharacteristics() );
+    auto elemMatr =
+        std::make_shared< ElementaryMatrixDisplacementReal >( _phys_problem->getModel() );
     elemMatr->prepareCompute( option );
 
     const auto model = _phys_problem->getModel();
@@ -1216,9 +1196,8 @@ DiscreteComputation::getImpedanceWaveMatrix( const VectorString &groupOfCells ) 
     AS_ASSERT( _phys_problem->getModel()->isMechanical() );
     const std::string option = "ONDE_FLUI";
 
-    auto elemMatr = std::make_shared< ElementaryMatrixDisplacementReal >(
-        _phys_problem->getModel(), _phys_problem->getMaterialField(),
-        _phys_problem->getElementaryCharacteristics() );
+    auto elemMatr =
+        std::make_shared< ElementaryMatrixDisplacementReal >( _phys_problem->getModel() );
     elemMatr->prepareCompute( option );
 
     // Prepare loads

@@ -1,6 +1,6 @@
 # coding: utf-8
 
-# Copyright (C) 1991 - 2023  EDF R&D                www.code-aster.org
+# Copyright (C) 1991 - 2025  EDF R&D                www.code-aster.org
 #
 # This file is part of Code_Aster.
 #
@@ -71,26 +71,11 @@ def calc_vect_elem_ops(self, **args):
         varc = phys_pb.getExternalStateVariables(time)
 
     if myOption == "CHAR_MECA":
-        vect_elem = ElementaryVectorDisplacementReal(
-            phys_pb.getModel(),
-            phys_pb.getMaterialField(),
-            phys_pb.getElementaryCharacteristics(),
-            phys_pb.getListOfLoads(),
-        )
+        vect_elem = ElementaryVectorDisplacementReal(phys_pb.getModel())
     elif myOption == "CHAR_THER":
-        vect_elem = ElementaryVectorTemperatureReal(
-            phys_pb.getModel(),
-            phys_pb.getMaterialField(),
-            phys_pb.getElementaryCharacteristics(),
-            phys_pb.getListOfLoads(),
-        )
+        vect_elem = ElementaryVectorTemperatureReal(phys_pb.getModel())
     elif myOption == "CHAR_ACOU":
-        vect_elem = ElementaryVectorPressureComplex(
-            phys_pb.getModel(),
-            phys_pb.getMaterialField(),
-            phys_pb.getElementaryCharacteristics(),
-            phys_pb.getListOfLoads(),
-        )
+        vect_elem = ElementaryVectorPressureComplex(phys_pb.getModel())
     else:
         raise RuntimeError("Option %s not implemented" % (myOption))
 

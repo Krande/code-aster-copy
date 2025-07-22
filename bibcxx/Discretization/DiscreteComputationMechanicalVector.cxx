@@ -49,9 +49,8 @@ FieldOnNodesRealPtr DiscreteComputation::getDifferentialDualDisplacement() const
     ConstantFieldValues< ASTERDOUBLE > b( { "X1" }, { 1.0 } );
     chalph->setValueOnZone( a, b );
 
-    auto elemVect = std::make_shared< ElementaryVectorDisplacementReal >(
-        _phys_problem->getModel(), _phys_problem->getMaterialField(),
-        _phys_problem->getElementaryCharacteristics(), _phys_problem->getListOfLoads() );
+    auto elemVect =
+        std::make_shared< ElementaryVectorDisplacementReal >( _phys_problem->getModel() );
 
     // Init
     ASTERINTEGER iload = 1;
@@ -120,9 +119,7 @@ FieldOnNodesRealPtr DiscreteComputation::getDifferentialDualDisplacement() const
 FieldOnNodesRealPtr DiscreteComputation::getDualDisplacement( FieldOnNodesRealPtr disp_curr,
                                                               ASTERDOUBLE scaling ) const {
 
-    auto elemVect = std::make_shared< ElementaryVectorReal >(
-        _phys_problem->getModel(), _phys_problem->getMaterialField(),
-        _phys_problem->getElementaryCharacteristics(), _phys_problem->getListOfLoads() );
+    auto elemVect = std::make_shared< ElementaryVectorReal >( _phys_problem->getModel() );
 
     if ( !_phys_problem->isMechanical() ) {
         AS_ABORT( "Not implemented" );
@@ -169,9 +166,8 @@ DiscreteComputation::getMechanicalNeumannForces( const ASTERDOUBLE time_curr,
 
     AS_ASSERT( _phys_problem->getModel()->isMechanical() );
 
-    auto elemVect = std::make_shared< ElementaryVectorDisplacementReal >(
-        _phys_problem->getModel(), _phys_problem->getMaterialField(),
-        _phys_problem->getElementaryCharacteristics(), _phys_problem->getListOfLoads() );
+    auto elemVect =
+        std::make_shared< ElementaryVectorDisplacementReal >( _phys_problem->getModel() );
 
     // Init
     ASTERINTEGER iload = 1;
@@ -279,8 +275,8 @@ DiscreteComputation::getMechanicalNeumannForces( const ASTERDOUBLE time_curr,
 
     if ( assembly ) {
         if ( elemVect->hasElementaryTerm() ) {
-            return elemVect->assembleWithLoadFunctions( _phys_problem->getDOFNumbering(),
-                                                        time_curr );
+            return elemVect->assembleWithLoadFunctions(
+                _phys_problem->getDOFNumbering(), _phys_problem->getListOfLoads(), time_curr );
         } else {
             FieldOnNodesRealPtr vectAsse =
                 std::make_shared< FieldOnNodesReal >( _phys_problem->getDOFNumbering() );
@@ -303,9 +299,8 @@ DiscreteComputation::getMechanicalVolumetricForces( const ASTERDOUBLE time_curr,
 
     AS_ASSERT( _phys_problem->getModel()->isMechanical() );
 
-    auto elemVect = std::make_shared< ElementaryVectorDisplacementReal >(
-        _phys_problem->getModel(), _phys_problem->getMaterialField(),
-        _phys_problem->getElementaryCharacteristics(), _phys_problem->getListOfLoads() );
+    auto elemVect =
+        std::make_shared< ElementaryVectorDisplacementReal >( _phys_problem->getModel() );
 
     // Init
     ASTERINTEGER iload = 1;
@@ -472,8 +467,8 @@ DiscreteComputation::getMechanicalVolumetricForces( const ASTERDOUBLE time_curr,
 
     if ( assembly ) {
         if ( elemVect->hasElementaryTerm() ) {
-            return elemVect->assembleWithLoadFunctions( _phys_problem->getDOFNumbering(),
-                                                        time_curr );
+            return elemVect->assembleWithLoadFunctions(
+                _phys_problem->getDOFNumbering(), _phys_problem->getListOfLoads(), time_curr );
         } else {
             FieldOnNodesRealPtr vectAsse =
                 std::make_shared< FieldOnNodesReal >( _phys_problem->getDOFNumbering() );
@@ -528,9 +523,7 @@ DiscreteComputation::getInternalMechanicalForces(
     calcul->addHHOField( currModel );
 
     // Create output vector
-    auto elemVect = std::make_shared< ElementaryVectorReal >(
-        _phys_problem->getModel(), _phys_problem->getMaterialField(),
-        _phys_problem->getElementaryCharacteristics(), _phys_problem->getListOfLoads() );
+    auto elemVect = std::make_shared< ElementaryVectorReal >( _phys_problem->getModel() );
     elemVect->prepareCompute( option );
 
     // Create output fields
@@ -575,9 +568,8 @@ DiscreteComputation::getMechanicalImposedDualBC( const ASTERDOUBLE time_curr,
 
     AS_ASSERT( _phys_problem->getModel()->isMechanical() );
 
-    auto elemVect = std::make_shared< ElementaryVectorDisplacementReal >(
-        _phys_problem->getModel(), _phys_problem->getMaterialField(),
-        _phys_problem->getElementaryCharacteristics(), _phys_problem->getListOfLoads() );
+    auto elemVect =
+        std::make_shared< ElementaryVectorDisplacementReal >( _phys_problem->getModel() );
 
     // Init
     ASTERINTEGER iload = 1;
@@ -674,8 +666,8 @@ DiscreteComputation::getMechanicalImposedDualBC( const ASTERDOUBLE time_curr,
 
     if ( assembly ) {
         if ( elemVect->hasElementaryTerm() ) {
-            return elemVect->assembleWithLoadFunctions( _phys_problem->getDOFNumbering(),
-                                                        time_curr );
+            return elemVect->assembleWithLoadFunctions(
+                _phys_problem->getDOFNumbering(), _phys_problem->getListOfLoads(), time_curr );
         } else {
             FieldOnNodesRealPtr vectAsse =
                 std::make_shared< FieldOnNodesReal >( _phys_problem->getDOFNumbering() );
@@ -794,8 +786,7 @@ DiscreteComputation::getMechanicalNodalForces( const FieldOnCellsRealPtr stress,
 
     // Preparation of elementary vector
     const std::string vect_option( "CHAR_MECA" );
-    auto elemVect = std::make_shared< ElementaryVectorDisplacementReal >(
-        currModel, currMater, currElemChara, _phys_problem->getListOfLoads() );
+    auto elemVect = std::make_shared< ElementaryVectorDisplacementReal >( currModel );
     elemVect->prepareCompute( vect_option );
 
     // Create object for calcul
@@ -943,8 +934,7 @@ DiscreteComputation::dualMechanicalVector( FieldOnNodesRealPtr lagr_curr ) const
     std::string option = "MECA_BTLA_R";
 
     // Create elementary vector
-    auto elemVect = std::make_shared< ElementaryVectorReal >( currModel, currMater, currElemChara,
-                                                              currListOfLoads );
+    auto elemVect = std::make_shared< ElementaryVectorReal >( currModel );
 
     // Setup
     const std::string calcul_option( "CHAR_MECA" );
@@ -1036,8 +1026,7 @@ FieldOnNodesRealPtr DiscreteComputation::getResidualReference(
     auto currBehaviour = _phys_problem->getBehaviourProperty();
 
     // Setup
-    auto elemVect = std::make_shared< ElementaryVectorReal >( currModel, currMater, currElemChara,
-                                                              currListOfLoads );
+    auto elemVect = std::make_shared< ElementaryVectorReal >( currModel );
     elemVect->prepareCompute( "CHAR_MECA" );
 
     // Prepare computing

@@ -1,5 +1,5 @@
 /* -------------------------------------------------------------------- */
-/* Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org             */
+/* Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org             */
 /* This file is part of code_aster.                                     */
 /*                                                                      */
 /* code_aster is free software: you can redistribute it and/or modify   */
@@ -26,9 +26,8 @@
 #include "Supervis/Exceptions.h"
 #include "Utilities/Tools.h"
 
-FieldOnNodesRealPtr
-BaseElementaryVector::assembleWithLoadFunctions( const BaseDOFNumberingPtr &dofNume,
-                                                 const ASTERDOUBLE &time ) {
+FieldOnNodesRealPtr BaseElementaryVector::assembleWithLoadFunctions(
+    const BaseDOFNumberingPtr &dofNume, const ListOfLoadsPtr &loads, const ASTERDOUBLE &time ) {
     if ( !_isBuilt )
         raiseAsterError( "The ElementaryVector is empty" );
 
@@ -45,11 +44,12 @@ BaseElementaryVector::assembleWithLoadFunctions( const BaseDOFNumberingPtr &dofN
     CALLO_ASASVE( vectElemName, dofNume->getName(), typres, name );
 
     // Get function for load
-    _listOfLoads->build();
     std::string fomult( " " );
-    const JeveuxVectorChar24 listOfLoadsFunc = _listOfLoads->getListOfFunctions();
-    if ( listOfLoadsFunc.exists() )
-        fomult = listOfLoadsFunc->getName();
+    if ( loads ) {
+        const JeveuxVectorChar24 listOfLoadsFunc = loads->getListOfFunctions();
+        if ( listOfLoadsFunc.exists() )
+            fomult = listOfLoadsFunc->getName();
+    }
 
     // Final assembling with load function
     FieldOnNodesRealPtr field = std::make_shared< FieldOnNodesReal >( dofNume );

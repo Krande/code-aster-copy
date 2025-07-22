@@ -1,5 +1,5 @@
 /* -------------------------------------------------------------------- */
-/* Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org             */
+/* Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org             */
 /* This file is part of code_aster.                                     */
 /*                                                                      */
 /* code_aster is free software: you can redistribute it and/or modify   */
@@ -22,31 +22,20 @@ BaseElementaryMatrix::BaseElementaryMatrix( const std::string name, const std::s
     : DataStructure( name, 19, type ),
       _isBuilt( true ),
       _model( nullptr ),
-      _materialField( nullptr ),
-      _elemChara( nullptr ),
       _elemComp( std::make_shared< ElementaryCompute >( getName() ) ) {};
 
 /** @brief Constructor with automatic name */
 BaseElementaryMatrix::BaseElementaryMatrix( const std::string type )
     : BaseElementaryMatrix( ResultNaming::getNewResultName(), type ) {};
 
-BaseElementaryMatrix::BaseElementaryMatrix( const ModelPtr model, const MaterialFieldPtr mater,
-                                            const ElementaryCharacteristicsPtr caraElem )
-    : BaseElementaryMatrix() {
-    this->setPhysicalProblem( model, mater, caraElem );
+BaseElementaryMatrix::BaseElementaryMatrix( const ModelPtr model ) : BaseElementaryMatrix() {
+    this->setModel( model );
 };
 
 BaseMeshPtr BaseElementaryMatrix::getMesh( void ) const {
     if ( _model )
         return _model->getMesh();
 
-    if ( _elemChara ) {
-        return _elemChara->getMesh();
-    }
-
-    if ( _materialField ) {
-        return _materialField->getMesh();
-    }
     return nullptr;
 };
 /** @brief  Prepare compute */
@@ -77,11 +66,4 @@ ASTERINTEGER BaseElementaryMatrix::numberOfSuperElement() const {
     CALLO_DISMOI( questi, getName(), typeco, &repi, repk, arret, &ier );
 
     return repi;
-};
-
-void BaseElementaryMatrix::setPhysicalProblem( const ModelPtr model, const MaterialFieldPtr mater,
-                                               const ElementaryCharacteristicsPtr caraElem ) {
-    _model = model;
-    _materialField = mater;
-    _elemChara = caraElem;
 };
