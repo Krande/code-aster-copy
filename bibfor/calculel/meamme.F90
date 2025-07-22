@@ -37,7 +37,7 @@ subroutine meamme(modelz, &
 #include "asterfort/jemarq.h"
 #include "asterfort/jeveuo.h"
 #include "asterfort/mecham.h"
-#include "asterfort/memare.h"
+#include "asterfort/vemare.h"
 #include "asterfort/mecact.h"
 #include "asterfort/ndynkk.h"
 #include "asterfort/reajre.h"
@@ -189,7 +189,7 @@ subroutine meamme(modelz, &
     end if
 
 ! - Prepare RESU_ELEM objects
-    call memare(base, matrElem, model, 'AMOR_MECA')
+    call vemare(base, matrElem, model, 'AMOR_MECA')
     call jeveuo(matrElem//'.RERR', 'E', vk24=rerr)
     call jedetr(matrElem//'.RELR')
     if (nbSubstruct .gt. 0) then

@@ -30,7 +30,7 @@ subroutine vechnl(model, loadNameJv, loadInfoJv, time, &
 #include "asterfort/reajre.h"
 #include "asterfort/inical.h"
 #include "asterfort/load_list_info.h"
-#include "asterfort/memare.h"
+#include "asterfort/vemare.h"
 #include "asterfort/detrsd.h"
 !
     character(len=8), intent(in) :: model
@@ -109,7 +109,7 @@ subroutine vechnl(model, loadNameJv, loadInfoJv, time, &
 ! - Allocate result
 !
     call detrsd('VECT_ELEM', vect_elem)
-    call memare(base, vect_elem, model, 'CHAR_THER')
+    call vemare(base, vect_elem, model, 'CHAR_THER')
     call reajre(vect_elem, ' ', base)
 !
 ! - Loop on loads

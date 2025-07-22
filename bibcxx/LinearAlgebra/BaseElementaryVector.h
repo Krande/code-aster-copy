@@ -110,11 +110,7 @@ class BaseElementaryVector : public DataStructure {
     void setModel( const ModelPtr &currModel ) { _model = currModel; };
 
     /** @brief  Prepare compute */
-    void prepareCompute( const std::string option ) {
-        if ( option != "WRAP_FORTRAN" ) {
-            _elemComp->createDescriptor( _model );
-        }
-    };
+    void prepareCompute( const std::string option ) { _elemComp->createDescriptor( _model ); };
 
     virtual bool build( std::vector< FiniteElementDescriptorPtr > FED = {} ) {
         AS_ABORT( "Not implemented" );

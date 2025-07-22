@@ -32,7 +32,7 @@ subroutine asasve(vechar, numedd, typres, vachar)
 #include "asterfort/jelira.h"
 #include "asterfort/jemarq.h"
 #include "asterfort/jeveuo.h"
-#include "asterfort/memare.h"
+#include "asterfort/vemare.h"
 #include "asterfort/reajre.h"
 #include "asterfort/utmess.h"
 #include "asterfort/vtcopy.h"
@@ -135,7 +135,7 @@ subroutine asasve(vechar, numedd, typres, vachar)
 !     3. SI IL FAUT FAIRE QUELQUE CHOSE :
 !     --------------------------------------------------------
     call dismoi('NOM_MODELE', numedd, 'NUME_DDL', repk=modele)
-    call memare('V', '&&ASASVE', modele, 'CHAR_MECA')
+    call vemare('V', '&&ASASVE', modele, 'CHAR_MECA')
     call reajre('&&ASASVE', ' ', 'V')
 !
     ityp = 1

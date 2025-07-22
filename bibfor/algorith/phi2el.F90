@@ -32,7 +32,7 @@ subroutine phi2el(modele, carele, mate, mateco, accel, phibar, &
 #include "asterfort/jeveuo.h"
 #include "asterfort/mecact.h"
 #include "asterfort/megeom.h"
-#include "asterfort/memare.h"
+#include "asterfort/vemare.h"
 #include "asterfort/wkvect.h"
     character(len=*) :: modele, carele, mate, mateco, accel, phibar, ve
     real(kind=8) :: instap
@@ -72,7 +72,7 @@ subroutine phi2el(modele, carele, mate, mateco, accel, phibar, &
 !
     if (iret .eq. 0) then
         prem = .true.
-        call memare('V', vecel, modele(1:8), 'CHAR_THER')
+        call vemare('V', vecel, modele(1:8), 'CHAR_THER')
         call wkvect(ve2, 'V V K24', 1, jlve)
         if (accel(9:14) .eq. '.BIDON') then
             call jeecra(ve2, 'LONUTI', 0)

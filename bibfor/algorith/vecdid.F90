@@ -33,7 +33,7 @@ subroutine vecdid(model, list_load, disp_didi, vect_elem_)
 #include "asterfort/jemarq.h"
 #include "asterfort/jeveuo.h"
 #include "asterfort/mecact.h"
-#include "asterfort/memare.h"
+#include "asterfort/vemare.h"
 #include "asterfort/reajre.h"
 !
 ! person_in_charge: mickael.abbas at edf.fr
@@ -116,7 +116,7 @@ subroutine vecdid(model, list_load, disp_didi, vect_elem_)
 !
     call jeexin(vect_elem(1:19)//'.RELR', iret)
     if (iret .eq. 0) then
-        call memare('V', vect_elem, model(1:8), 'CHAR_MECA')
+        call vemare('V', vect_elem, model(1:8), 'CHAR_MECA')
     end if
     call jedetr(vect_elem(1:19)//'.RELR')
     call reajre(vect_elem, ' ', 'V')

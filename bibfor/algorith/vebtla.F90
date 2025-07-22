@@ -30,7 +30,7 @@ subroutine vebtla(base, model_, mate, cara_elem, disp_, &
 #include "asterfort/jeexin.h"
 #include "asterfort/jemarq.h"
 #include "asterfort/load_list_info.h"
-#include "asterfort/memare.h"
+#include "asterfort/vemare.h"
 #include "asterfort/reajre.h"
 !
 ! person_in_charge: mickael.abbas at edf.fr
@@ -106,7 +106,7 @@ subroutine vebtla(base, model_, mate, cara_elem, disp_, &
 !
     call jeexin(vect_elem//'.RELR', iret)
     if (iret .eq. 0) then
-        call memare(base, vect_elem, model, 'CHAR_MECA')
+        call vemare(base, vect_elem, model, 'CHAR_MECA')
     else
         call jedetr(vect_elem//'.RELR')
     end if

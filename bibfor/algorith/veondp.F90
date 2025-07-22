@@ -34,7 +34,7 @@ subroutine veondp(modele, mate, mateco, sddyna, temps, vecelz)
 #include "asterfort/jemarq.h"
 #include "asterfort/jeveuo.h"
 #include "asterfort/mecact.h"
-#include "asterfort/memare.h"
+#include "asterfort/vemare.h"
 #include "asterfort/ndynin.h"
 #include "asterfort/ndynkk.h"
 #include "asterfort/reajre.h"
@@ -135,7 +135,7 @@ subroutine veondp(modele, mate, mateco, sddyna, temps, vecelz)
     lchout(1) = vecele(1:8)//'.???????'
 !
     call detrsd('VECT_ELEM', vecele)
-    call memare('V', vecele, modele(1:8), 'CHAR_MECA')
+    call vemare('V', vecele, modele(1:8), 'CHAR_MECA')
 !
 ! -- CALCUL
 !

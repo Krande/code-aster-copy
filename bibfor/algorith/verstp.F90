@@ -33,7 +33,7 @@ subroutine verstp(l_stat, &
 #include "asterfort/detrsd.h"
 #include "asterfort/gcnco2.h"
 #include "asterfort/load_list_info.h"
-#include "asterfort/memare.h"
+#include "asterfort/vemare.h"
 #include "asterfort/reajre.h"
 #include "asterfort/jemarq.h"
 #include "asterfort/jedema.h"
@@ -121,7 +121,7 @@ subroutine verstp(l_stat, &
 
 ! - Allocate result
     call detrsd('VECT_ELEM', vectElem)
-    call memare(jvBase, vectElem, modelZ, 'CHAR_THER')
+    call vemare(jvBase, vectElem, modelZ, 'CHAR_THER')
     call reajre(vectElem, ' ', jvBase)
 
 ! - Generate new RESU_ELEM name

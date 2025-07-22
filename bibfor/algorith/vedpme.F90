@@ -34,7 +34,7 @@ subroutine vedpme(modele, charge, infcha, instap, lvediz)
 #include "asterfort/jeveuo.h"
 #include "asterfort/mecact.h"
 #include "asterfort/megeom.h"
-#include "asterfort/memare.h"
+#include "asterfort/vemare.h"
 #include "asterfort/reajre.h"
     character(len=*) :: lvediz
     character(len=24) :: modele, charge, infcha
@@ -84,7 +84,7 @@ subroutine vedpme(modele, charge, infcha, instap, lvediz)
     end if
 !
     call detrsd('VECT_ELEM', lvedip)
-    call memare('V', lvedip, modele(1:8), 'CHAR_MECA')
+    call vemare('V', lvedip, modele(1:8), 'CHAR_MECA')
     call jedetr(lvedip//'.RELR')
     call reajre(lvedip, ' ', 'V')
     if (bidon) goto 20

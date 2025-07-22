@@ -37,6 +37,7 @@ subroutine merimo(base, &
 #include "asterfort/jeexin.h"
 #include "asterfort/jemarq.h"
 #include "asterfort/jeveuo.h"
+#include "asterfort/vemare.h"
 #include "asterfort/memare.h"
 #include "asterfort/merimp.h"
 #include "asterfort/nmchex.h"
@@ -191,7 +192,7 @@ subroutine merimo(base, &
     if (l_veinte) then
         call jeexin(ds_system%veinte//'.RELR', iret)
         if (iret .eq. 0) then
-            call memare(base, ds_system%veinte, model, 'CHAR_MECA')
+            call vemare(base, ds_system%veinte, model, 'CHAR_MECA')
         end if
         call jedetr(ds_system%veinte//'.RELR')
         call reajre(ds_system%veinte, ' ', base)

@@ -40,9 +40,8 @@ BaseMeshPtr BaseElementaryMatrix::getMesh( void ) const {
 };
 /** @brief  Prepare compute */
 void BaseElementaryMatrix::prepareCompute( const std::string option ) {
-    _elemComp->setOption( option );
-    if ( _elemComp->getOption() != "WRAP_FORTRAN" ) {
-        _elemComp->createDescriptor( _model );
+    if ( option != "WRAP_FORTRAN" ) {
+        _elemComp->createDescriptor( _model, option );
     }
 };
 

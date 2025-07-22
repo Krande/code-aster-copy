@@ -26,7 +26,7 @@ subroutine nmvcfo(type_comp, model, mater, mateco, cara_elem, compor, &
 #include "asterfort/jedetr.h"
 #include "asterfort/jeexin.h"
 #include "asterfort/nmvccc.h"
-#include "asterfort/memare.h"
+#include "asterfort/vemare.h"
 #include "asterfort/nmvcd2.h"
 #include "asterfort/nmchex.h"
 #include "asterfort/reajre.h"
@@ -104,7 +104,7 @@ subroutine nmvcfo(type_comp, model, mater, mateco, cara_elem, compor, &
 !
     call jeexin(vect_elem(1:19)//'.RELR', iret)
     if (iret .eq. 0) then
-        call memare('V', vect_elem, model, 'CHAR_MECA')
+        call vemare('V', vect_elem, model, 'CHAR_MECA')
     end if
     call jedetr(vect_elem(1:19)//'.RELR')
     call reajre(vect_elem, ' ', 'V')

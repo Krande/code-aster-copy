@@ -32,7 +32,7 @@ subroutine memam2(option, modele, mate, mateco, &
 #include "asterfort/jemarq.h"
 #include "asterfort/jeveuo.h"
 #include "asterfort/mecham.h"
-#include "asterfort/memare.h"
+#include "asterfort/vemare.h"
 #include "asterfort/reajre.h"
 #include "asterfort/utmess.h"
 #include "asterfort/vrcins.h"
@@ -78,7 +78,7 @@ subroutine memam2(option, modele, mate, mateco, &
     call vrcins(modele, mate, ' ', time, chvarc, &
                 codret)
 !
-    call memare(base, vecel, modele, option)
+    call vemare(base, vecel, modele, option)
     call jeveuo(vecelz(1:19)//'.RERR', 'E', vk24=rerr)
     rerr(3) (1:3) = 'OUI'
 !

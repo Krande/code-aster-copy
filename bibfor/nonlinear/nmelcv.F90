@@ -36,7 +36,7 @@ subroutine nmelcv(model, &
 #include "asterfort/jedema.h"
 #include "asterfort/jemarq.h"
 #include "asterfort/nmelco_prep.h"
-#include "asterfort/memare.h"
+#include "asterfort/vemare.h"
 #include "asterfort/reajre.h"
 #include "asterfort/utmess.h"
 !
@@ -118,9 +118,9 @@ subroutine nmelcv(model, &
 
 ! ----- Preparation of elementary vectors
         call detrsd('VECT_ELEM', vect_elem_cont)
-        call memare('V', vect_elem_cont, model, 'CHAR_MECA')
+        call vemare('V', vect_elem_cont, model, 'CHAR_MECA')
         call detrsd('VECT_ELEM', vect_elem_fric)
-        call memare('V', vect_elem_fric, model, 'CHAR_MECA')
+        call vemare('V', vect_elem_fric, model, 'CHAR_MECA')
 
 ! ----- Prepare output fields
         lpaout(1) = 'PVECTCR'
