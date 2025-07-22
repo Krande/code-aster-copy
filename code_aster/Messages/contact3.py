@@ -185,11 +185,6 @@ Avec l'option VECT_ESCL = 'VECT_Y', seule l'option NORMALE = 'ESCL' est possible
 Le LISSAGE n'est possible qu'avec des normales automatiques VECT_ESCL='AUTO' et/ou VECT_MAIT='AUTO'.
 """
     ),
-    54: _(
-        """
-Le LISSAGE n'est possible qu'avec des normales automatiques VECT_ESCL='AUTO' et/ou VECT_MAIT='AUTO'.
-"""
-    ),
     60: _(
         """
 La maille %(k1)s est de type 'POI1', elle nécessite l'utilisation de l'option
