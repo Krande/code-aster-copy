@@ -103,12 +103,10 @@ subroutine te0297(option, nomte)
 !     ------------------------------------------------------------------
 !
 !     PARAMÈTRES PROPRES À X-FEM
-    if (option .ne. 'CALC_K_G_COHE') then
-        call jevech('PPINTTO', 'L', jpintt)
-        call jevech('PCNSETO', 'L', jcnset)
-        call jevech('PHEAVTO', 'L', jheavt)
-        call jevech('PLONCHA', 'L', jlonch)
-    end if
+    call jevech('PPINTTO', 'L', jpintt)
+    call jevech('PCNSETO', 'L', jcnset)
+    call jevech('PHEAVTO', 'L', jheavt)
+    call jevech('PLONCHA', 'L', jlonch)
     call jevech('PBASLOR', 'L', jbaslo)
     call jevech('PLST', 'L', jlst)
     call jevech('PGEOMER', 'L', igeom)
@@ -120,7 +118,6 @@ subroutine te0297(option, nomte)
 !   Propre aux elements 1d et 2d (quadratiques)
     if ((ier .eq. 0) .and. ltequa(elrefp, enr)) call jevech('PPMILTO', 'L', jpmilt)
     if (nfe .gt. 0) call jevech('PSTANO', 'L', jstno)
-    if (option .eq. 'CALC_K_G_COHE') goto 98
     call jevech('PLSN', 'L', jlsn)
 !
 !   VERIFS DE COHERENCE RHO <-> PESANTEUR, ROTATION, PULSATION
@@ -210,8 +207,6 @@ subroutine te0297(option, nomte)
         if (pres .lt. r8prem()) compt = compt+1
     end do
     if (compt .eq. nnop) goto 999
-!
-98  continue
 !
 !   PARAMETRES PROPRES A X-FEM
     call jevech('PPINTER', 'L', jptint)
