@@ -17,7 +17,7 @@
 ! --------------------------------------------------------------------
 !
 subroutine dis_choc_frot_nosyme(for_discret, icodma, ulp, xg, klv, &
-                                varmo, force, varpl)
+                                dpe, varmo, force, varpl)
 !
     use te0047_type
     implicit none
@@ -28,7 +28,7 @@ subroutine dis_choc_frot_nosyme(for_discret, icodma, ulp, xg, klv, &
 !
     type(te0047_dscr), intent(in) :: for_discret
     integer(kind=8) :: icodma
-    real(kind=8) :: ulp(*), klv(*), xg(*), varmo(*), varpl(*), force(*), klvp(36)
+    real(kind=8) :: ulp(*), klv(*), xg(*), varmo(*), varpl(*), force(*), dpe(*), klvp(36)
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -38,6 +38,7 @@ subroutine dis_choc_frot_nosyme(for_discret, icodma, ulp, xg, klv, &
 ! in :
 !       icodma : adresse du materiau code
 !       ulp    : deplacement
+!       dpe    : déplacement d'entrainement (en dynamique)
 !       xg     : coordonnees des noeuds repere global
 !       varmo  : variables internes (temps moins)
 ! in/out :
@@ -105,9 +106,9 @@ subroutine dis_choc_frot_nosyme(for_discret, icodma, ulp, xg, klv, &
 !   Élément avec 2 noeuds
     if (for_discret%nno .eq. 2) then
         dist12 = valre1(6)+valre1(7)
-        utotx = ulp(1+for_discret%nc)-ulp(1)
-        utoty = ulp(2+for_discret%nc)-ulp(2)
-        utotz = ulp(3+for_discret%nc)-ulp(3)
+        utotx = ulp(1+for_discret%nc)-ulp(1)+dpe(4)-dpe(1)
+        utoty = ulp(2+for_discret%nc)-ulp(2)+dpe(5)-dpe(2)
+        utotz = ulp(3+for_discret%nc)-ulp(3)+dpe(6)-dpe(3)
         do ii = 1, 3
             xd(ii) = xl(ii+3)-xl(ii)
         end do
@@ -150,12 +151,12 @@ subroutine dis_choc_frot_nosyme(for_discret, icodma, ulp, xg, klv, &
                 varpl(iidic) = EtatAdher
             end if
         else
-            force(1) = 0.d0
-            force(2) = 0.d0
-            force(3) = 0.d0
-            fort = 0.d0
-            varpl(idepyp) = 0.d0
-            varpl(idepzp) = 0.d0
+            force(1) = 0.0
+            force(2) = 0.0
+            force(3) = 0.0
+            fort = 0.0
+            varpl(idepyp) = depy
+            varpl(idepzp) = depz
             varpl(iidic) = EtatDecol
         end if
     end if
@@ -190,38 +191,37 @@ subroutine dis_choc_frot_nosyme(for_discret, icodma, ulp, xg, klv, &
                 klv(id6(4, 1)) = -rignor
                 klv(id6(1, 4)) = -rignor
                 klv(id6(4, 4)) = rignor
-                rtmp = -rignor*rigtan*coulom/fort*(depy-varmo(idepyp))
-                klv(id6(2, 1)) = rtmp
-                klv(id6(5, 1)) = -rtmp
-                klv(id6(2, 4)) = -rtmp
-                klv(id6(5, 4)) = rtmp
-                rtmp = -rignor*rigtan*coulom/fort*(depz-varmo(idepzp))
-                klv(id6(3, 1)) = rtmp
-                klv(id6(6, 1)) = -rtmp
-                klv(id6(3, 4)) = -rtmp
-                klv(id6(6, 4)) = rtmp
-                rtmp = -coulom*force(1)*rigtan/fort*(1.0-rigtan**2*(depy-varmo(idepyp))**2/fort**&
-                       &2)
-                klv(id6(2, 2)) = rtmp
-                klv(id6(2, 5)) = -rtmp
-                klv(id6(5, 2)) = -rtmp
-                klv(id6(5, 5)) = rtmp
-                rtmp = -coulom*force(1)*rigtan/fort*(1.0-rigtan**2*(depz-varmo(idepzp))**2/fort**&
-                       &2)
-                klv(id6(3, 3)) = rtmp
-                klv(id6(3, 6)) = -rtmp
-                klv(id6(6, 3)) = -rtmp
-                klv(id6(6, 6)) = rtmp
-                rtmp = rigtan**3*coulom*force(1)/fort**3*(depy-varmo(idepyp))*(depz-varmo(idepzp)&
-                       &)
-                klv(id6(2, 3)) = rtmp
-                klv(id6(3, 2)) = rtmp
-                klv(id6(2, 6)) = -rtmp
-                klv(id6(6, 2)) = -rtmp
-                klv(id6(5, 3)) = -rtmp
-                klv(id6(3, 5)) = -rtmp
-                klv(id6(5, 6)) = rtmp
-                klv(id6(6, 5)) = rtmp
+                if ((coulom .gt. 0) .and. (fort .gt. 0)) then
+                    rtmp = -rignor*rigtan*coulom/fort*(depy-varmo(idepyp))
+                    klv(id6(2, 1)) = rtmp
+                    klv(id6(5, 1)) = -rtmp
+                    klv(id6(2, 4)) = -rtmp
+                    klv(id6(5, 4)) = rtmp
+                    rtmp = -rignor*rigtan*coulom/fort*(depz-varmo(idepzp))
+                    klv(id6(3, 1)) = rtmp
+                    klv(id6(6, 1)) = -rtmp
+                    klv(id6(3, 4)) = -rtmp
+                    klv(id6(6, 4)) = rtmp
+                 rtmp = -coulom*force(1)*rigtan/fort*(1.0-rigtan**2*(depy-varmo(idepyp))**2/fort**2)
+                    klv(id6(2, 2)) = rtmp
+                    klv(id6(2, 5)) = -rtmp
+                    klv(id6(5, 2)) = -rtmp
+                    klv(id6(5, 5)) = rtmp
+                 rtmp = -coulom*force(1)*rigtan/fort*(1.0-rigtan**2*(depz-varmo(idepzp))**2/fort**2)
+                    klv(id6(3, 3)) = rtmp
+                    klv(id6(3, 6)) = -rtmp
+                    klv(id6(6, 3)) = -rtmp
+                    klv(id6(6, 6)) = rtmp
+                  rtmp = rigtan**3*coulom*force(1)/fort**3*(depy-varmo(idepyp))*(depz-varmo(idepzp))
+                    klv(id6(2, 3)) = rtmp
+                    klv(id6(3, 2)) = rtmp
+                    klv(id6(2, 6)) = -rtmp
+                    klv(id6(6, 2)) = -rtmp
+                    klv(id6(5, 3)) = -rtmp
+                    klv(id6(3, 5)) = -rtmp
+                    klv(id6(5, 6)) = rtmp
+                    klv(id6(6, 5)) = rtmp
+                end if
             end if
             ! Elément élastique en parallèle
             klvp = 0.d0
@@ -247,20 +247,19 @@ subroutine dis_choc_frot_nosyme(for_discret, icodma, ulp, xg, klv, &
                 klv(id3(3, 3)) = rigtan
             else if (indic .eq. EtatGliss) then
                 klv(id3(1, 1)) = rignor
-                rtmp = -rignor*rigtan*coulom/fort*(depy-varmo(idepyp))
-                klv(id3(2, 1)) = rtmp
-                rtmp = -rignor*rigtan*coulom/fort*(depz-varmo(idepzp))
-                klv(id3(3, 1)) = rtmp
-                rtmp = -coulom*force(1)*rigtan/fort*(1.0-rigtan**2*(depy-varmo(idepyp))**2/fort**&
-                       &2)
-                klv(id3(2, 2)) = rtmp
-                rtmp = -coulom*force(1)*rigtan/fort*(1.0-rigtan**2*(depz-varmo(idepzp))**2/fort**&
-                       &2)
-                klv(id3(3, 3)) = rtmp
-                rtmp = rigtan**3*coulom*force(1)/fort**3*(depy-varmo(idepyp))*(depz-varmo(idepzp)&
-                       &)
-                klv(id3(2, 3)) = rtmp
-                klv(id3(3, 2)) = rtmp
+                if (coulom .gt. 0) then
+                    rtmp = -rignor*rigtan*coulom/fort*(depy-varmo(idepyp))
+                    klv(id3(2, 1)) = rtmp
+                    rtmp = -rignor*rigtan*coulom/fort*(depz-varmo(idepzp))
+                    klv(id3(3, 1)) = rtmp
+                 rtmp = -coulom*force(1)*rigtan/fort*(1.0-rigtan**2*(depy-varmo(idepyp))**2/fort**2)
+                    klv(id3(2, 2)) = rtmp
+                 rtmp = -coulom*force(1)*rigtan/fort*(1.0-rigtan**2*(depz-varmo(idepzp))**2/fort**2)
+                    klv(id3(3, 3)) = rtmp
+                  rtmp = rigtan**3*coulom*force(1)/fort**3*(depy-varmo(idepyp))*(depz-varmo(idepzp))
+                    klv(id3(2, 3)) = rtmp
+                    klv(id3(3, 2)) = rtmp
+                end if
             end if
             ! Elément élastique en parallèle
             klvp = 0.d0

@@ -177,10 +177,10 @@ subroutine dis_choc_frot(DD, iret)
     okelem = (DD%ndim .eq. 3)
     okelem = okelem .and. ((DD%nomte .eq. 'MECA_DIS_T_N') .or. (DD%nomte .eq. 'MECA_DIS_T_L'))
 !   Relation de comportement de choc
-    if (IsCoulomb .and. IsStatique .and. okelem) then
+    if (okelem) then
         IsSymetrique = ASTER_FALSE
         call dis_choc_frot_nosyme(DD, zi(imat), ulp, zr(igeom), klv, &
-                                  varmo, force, varpl)
+                                  dpe, varmo, force, varpl)
     else
         IsSymetrique = ASTER_TRUE
 ! Prédiction en dynamique, on retourne les efforts précédents
