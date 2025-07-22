@@ -7804,6 +7804,9 @@ class AssemblyMatrixDisplacementComplex(BaseAssemblyMatrix):
             values (list[float]): List of the values.
         """
 
+    def transposeConjugate(self):
+        pass
+
 
 # class AssemblyMatrixTemperatureReal in libaster
 
@@ -8298,6 +8301,14 @@ class AssemblyMatrixPressureComplex(BaseAssemblyMatrix):
                             elemMatrix (list[ElementaryMatrixReal, float]) : list of pair composed of an
                             elementary matrix and the multiplicatif coefficent to assemble.
                             dirichlet (DirichletBC) : dirichlet BC to impose.
+
+
+        7. assemble(self: libaster.AssemblyMatrixPressureComplex, elemMatrix: list[ElementaryMatrix<std::complex<double>, (PhysicalQuantityEnum)5>], dirichlet: list[DirichletBC]) -> None
+
+
+                        Arguments:
+                            elemMatrix (list[ElementaryMatrixReal]) : list elementary matrix to assemble.
+                            dirichlet (list[DirichletBC]) : dirichlet BC to impose.
         """
 
     def copy(self):
@@ -8458,22 +8469,10 @@ class BaseElementaryMatrix(DataStructure):
     def __init__(self, /, *args, **kwargs):
         """Initialize self.  See help(type(self)) for accurate signature."""
 
-    def getElementaryCharacteristics(self):
-        pass
-
-    def getMaterialField(self):
-        pass
-
     def getMesh(self):
         pass
 
     def getModel(self):
-        pass
-
-    def setElementaryCharacteristics(self, arg0):
-        pass
-
-    def setMaterialField(self, arg0):
         pass
 
     def setModel(self, arg0):
@@ -8683,16 +8682,13 @@ class BaseElementaryVector(DataStructure):
 
         2. __init__(self: libaster.BaseElementaryVector, arg0: str) -> None
 
-        3. __init__(self: libaster.BaseElementaryVector, arg0: Model, arg1: MaterialField, arg2: libaster.ElementaryCharacteristics, arg3: libaster.ListOfLoads) -> None
+        3. __init__(self: libaster.BaseElementaryVector, arg0: Model) -> None
         """
-
-    def addLoad(self, arg0):
-        pass
 
     def addSubstructuring(self, arg0):
         pass
 
-    def assembleWithLoadFunctions(self, dofNume, time=0.0):
+    def assembleWithLoadFunctions(self, dofNume, loads, time=0.0):
         pass
 
     def assembleWithMask(self, arg0, arg1, arg2):
@@ -8702,15 +8698,6 @@ class BaseElementaryVector(DataStructure):
         pass
 
     def prepareCompute(self, arg0):
-        pass
-
-    def setElementaryCharacteristics(self, arg0):
-        pass
-
-    def setListOfLoads(self, arg0):
-        pass
-
-    def setMaterialField(self, arg0):
         pass
 
     def setModel(self, arg0):
@@ -8742,7 +8729,7 @@ class ElementaryVectorReal(BaseElementaryVector):
 
         2. __init__(self: libaster.ElementaryVectorReal, arg0: str) -> None
 
-        3. __init__(self: libaster.ElementaryVectorReal, arg0: Model, arg1: MaterialField, arg2: libaster.ElementaryCharacteristics, arg3: libaster.ListOfLoads) -> None
+        3. __init__(self: libaster.ElementaryVectorReal, arg0: Model) -> None
         """
 
     def addElementaryTerm(self, *args, **kwargs):
@@ -8804,7 +8791,7 @@ class ElementaryVectorComplex(BaseElementaryVector):
 
         2. __init__(self: libaster.ElementaryVectorComplex, arg0: str) -> None
 
-        3. __init__(self: libaster.ElementaryVectorComplex, arg0: Model, arg1: MaterialField, arg2: libaster.ElementaryCharacteristics, arg3: libaster.ListOfLoads) -> None
+        3. __init__(self: libaster.ElementaryVectorComplex, arg0: Model) -> None
         """
 
     def addElementaryTerm(self, *args, **kwargs):
@@ -8864,7 +8851,7 @@ class ElementaryVectorDisplacementReal(ElementaryVectorReal):
 
         2. __init__(self: libaster.ElementaryVectorDisplacementReal, arg0: str) -> None
 
-        3. __init__(self: libaster.ElementaryVectorDisplacementReal, arg0: Model, arg1: MaterialField, arg2: libaster.ElementaryCharacteristics, arg3: libaster.ListOfLoads) -> None
+        3. __init__(self: libaster.ElementaryVectorDisplacementReal, arg0: Model) -> None
         """
 
 
@@ -8891,7 +8878,7 @@ class ElementaryVectorTemperatureReal(ElementaryVectorReal):
 
         2. __init__(self: libaster.ElementaryVectorTemperatureReal, arg0: str) -> None
 
-        3. __init__(self: libaster.ElementaryVectorTemperatureReal, arg0: Model, arg1: MaterialField, arg2: libaster.ElementaryCharacteristics, arg3: libaster.ListOfLoads) -> None
+        3. __init__(self: libaster.ElementaryVectorTemperatureReal, arg0: Model) -> None
         """
 
 
@@ -8918,7 +8905,7 @@ class ElementaryVectorPressureComplex(ElementaryVectorComplex):
 
         2. __init__(self: libaster.ElementaryVectorPressureComplex, arg0: str) -> None
 
-        3. __init__(self: libaster.ElementaryVectorPressureComplex, arg0: Model, arg1: MaterialField, arg2: libaster.ElementaryCharacteristics, arg3: libaster.ListOfLoads) -> None
+        3. __init__(self: libaster.ElementaryVectorPressureComplex, arg0: Model) -> None
         """
 
 

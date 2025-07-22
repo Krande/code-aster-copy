@@ -297,6 +297,8 @@ Arguments:
             )",
               py::arg( "elemMatrix" ), py::arg( "dirichlet" ) )
         // -----------------------------------------------------------------------------------------
+        .def( "transposeConjugate", &AssemblyMatrixDisplacementComplex::transposeConjugate )
+        // -----------------------------------------------------------------------------------------
         .def( "setValues", &AssemblyMatrixDisplacementComplex::setValues, R"(
 Erase the assembly matrix and set new values in it.
 
@@ -771,6 +773,17 @@ Arguments:
                     dirichlet (DirichletBC) : dirichlet BC to impose.
             )",
               py::arg( "elemMatrix" ), py::arg( "dirichlet" ) )
+        .def(
+            "assemble",
+            py::overload_cast<
+                const std::vector< AssemblyMatrixPressureComplex::ElementaryMatrixPtr > &,
+                const std::vector< DirichletBCPtr > & >( &AssemblyMatrixPressureComplex::assemble ),
+            R"(
+                Arguments:
+                    elemMatrix (list[ElementaryMatrixReal]) : list elementary matrix to assemble.
+                    dirichlet (list[DirichletBC]) : dirichlet BC to impose.
+            )",
+            py::arg( "elemMatrix" ), py::arg( "dirichlet" ) )
         // -----------------------------------------------------------------------------------------
         .def( "transposeConjugate", &AssemblyMatrixPressureComplex::transposeConjugate )
         // -----------------------------------------------------------------------------------------
