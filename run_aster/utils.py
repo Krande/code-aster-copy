@@ -207,6 +207,8 @@ def cmd_abspath(prog):
     if os.sep not in prog:
         for path in os.getenv("PATH").split(os.pathsep):
             if osp.isfile(osp.join(path, prog)):
+                if RUNASTER_PLATFORM == "win":
+                    path = path.replace(" ", '" "')
                 prog = osp.join(path, prog)
                 break
     return prog
