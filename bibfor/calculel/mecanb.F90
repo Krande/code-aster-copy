@@ -58,7 +58,7 @@ subroutine mecanb(modele, matel)
 !-----------------------------------------------------------------------
 !-----------------------------------------------------------------------
     call jemarq()
-    call vemare('V', matel, modele, 'CHAR_MECA')
+    call vemare('V', matel, modele)
 !
     call jedetr(matel//'.RELR')
 !

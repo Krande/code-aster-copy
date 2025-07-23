@@ -359,7 +359,7 @@ subroutine rapo2d(numdlz, iocc, fonrez, lisrez, chargz)
 !
 ! --- -----------------------------------------------------------------
 ! --- CREATION DES .RERR DES VECTEURS EN SORTIE DE CALCUL
-    call vemare('V', '&&RAPO2D', mod, 'CHAR_MECA')
+    call vemare('V', '&&RAPO2D', mod)
 !
 ! --- -----------------------------------------------------------------
 !     ASSEMBLAGE DE LCHOUT(1) DANS LE CHAMNO DE NOM 'CH_DEPL_1'

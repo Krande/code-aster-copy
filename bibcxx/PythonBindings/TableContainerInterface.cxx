@@ -3,7 +3,7 @@
  * @brief Interface python de TableContainer
  * @author Nicolas Sellenet
  * @section LICENCE
- *   Copyright (C) 1991 - 2023  EDF R&D                www.code-aster.org
+ *   Copyright (C) 1991 - 2025  EDF R&D                www.code-aster.org
  *
  *   This file is part of Code_Aster.
  *
@@ -38,13 +38,7 @@ void exportTableContainerToPython( py::module_ &mod ) {
               py::overload_cast< const std::string &, ElementaryMatrixDisplacementRealPtr >(
                   &TableContainer::addObject ) )
         .def( "addObject",
-              py::overload_cast< const std::string &, ElementaryMatrixTemperatureRealPtr >(
-                  &TableContainer::addObject ) )
-        .def( "addObject",
               py::overload_cast< const std::string &, ElementaryVectorDisplacementRealPtr >(
-                  &TableContainer::addObject ) )
-        .def( "addObject",
-              py::overload_cast< const std::string &, ElementaryVectorTemperatureRealPtr >(
                   &TableContainer::addObject ) )
         .def( "addObject", py::overload_cast< const std::string &, FieldOnCellsRealPtr >(
                                &TableContainer::addObject ) )
@@ -77,12 +71,8 @@ void exportTableContainerToPython( py::module_ &mod ) {
               py::arg( "name" ), py::arg( "object" ) )
         .def( "getElementaryMatrixDisplacementReal",
               &TableContainer::getElementaryMatrixDisplacementReal )
-        .def( "getElementaryMatrixTemperatureReal",
-              &TableContainer::getElementaryMatrixTemperatureReal )
         .def( "getElementaryVectorDisplacementReal",
               &TableContainer::getElementaryVectorDisplacementReal )
-        .def( "getElementaryVectorTemperatureReal",
-              &TableContainer::getElementaryVectorTemperatureReal )
         .def( "getFieldOnCellsReal", &TableContainer::getFieldOnCellsReal )
         .def( "getFieldOnNodesReal", &TableContainer::getFieldOnNodesReal )
         .def( "getFunction", &TableContainer::getFunction )

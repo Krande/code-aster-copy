@@ -145,7 +145,7 @@ subroutine asvepr(lischa, vecelz, typres, numedd)
 ! --- CREER L'OBJET .RERR DU VECT_ELEM
 !
     call dismoi('NOM_MODELE', numedd, 'NUME_DDL', repk=modele)
-    call vemare('V', '&&ASVEPR', modele, 'CHAR_MECA')
+    call vemare('V', '&&ASVEPR', modele)
 !
 ! --- INITIALISER L'OBJET .RELR DU VECT_ELEM
 !

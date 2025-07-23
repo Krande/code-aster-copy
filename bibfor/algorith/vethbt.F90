@@ -86,7 +86,7 @@ subroutine vethbt(model, loadNameJv, loadInfoJv, &
 ! - Allocate result
 !
     call detrsd('VECT_ELEM', vect_elem)
-    call vemare(jvBase, vect_elem, model, 'CHAR_THER')
+    call vemare(jvBase, vect_elem, model)
     call reajre(vect_elem, ' ', jvBase)
 !
 ! - Input fields

@@ -280,7 +280,7 @@ subroutine nmrelp(model, nume_dof, ds_material, cara_elem, ds_system, &
                             sdnume, ds_material, ds_constitutive, ds_system2, ds_measure, &
                             valint(1, act), solalt, ldccvg)
 ! ----- Update force for Dirichlet boundary conditions (dualized) - BT.LAMBDA
-        call nonlinRForceCompute(model, ds_material, cara_elem, list_load, nume_dof, &
+        call nonlinRForceCompute(model, list_load, nume_dof, &
                                  ds_measure, depplt, veelem, cndiri_=cndiri2(act))
         if (niv .ge. 2) then
             write (ifm, *) '<MECANONLINE> ...... FORCES INTERNES'

@@ -240,7 +240,7 @@ subroutine op0152()
 ! ET AUX EFFETS D'AMORTISSEMENT ET DE RAIDEUR DU FLUIDE
 ! SUR LA STRUCTURE
 !================================================================
-    call phi152(model, option, materField, mateco, phib24, &
+    call phi152(model, option, mateco, phib24, &
                 matrAsse, numeDof, num, nbmode, solveu, &
                 indice, tabad)
 !
@@ -285,7 +285,7 @@ subroutine op0152()
             ndble = 0
         end if
         call calmdg(model, modgen, nugene, num, numeDof, &
-                    matrAsse, materField, mateco, moint, ndble, &
+                    matrAsse, mateco, moint, ndble, &
                     itxsto, itysto, itzsto, iprsto, nbmo, &
                     iadirg)
 !

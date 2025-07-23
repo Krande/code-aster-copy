@@ -139,7 +139,7 @@ subroutine vefpme(stop, &
 
 ! - Allocate result
     call detrsd('VECT_ELEM', vectElem)
-    call vemare(jvBase, vectElem, model, 'CHAR_MECA')
+    call vemare(jvBase, vectElem, model)
     call reajre(vectElem, ' ', jvBase)
     if (noLoadInList) then
         goto 99

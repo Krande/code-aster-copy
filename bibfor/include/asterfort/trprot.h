@@ -22,7 +22,7 @@ interface
     subroutine trprot(model, bamo, tgeom, imodg, iadx,&
                       iady, iadz, isst, iadrp, norm1,&
                       norm2, ndble, num, nu, ma,&
-                      mate, mateco, moint, ilires, k, icor)
+                      mateco, moint, ilires, k, icor)
         character(len=2) :: model
         character(len=8) :: bamo
         real(kind=8) :: tgeom(6)
@@ -38,7 +38,7 @@ interface
         character(len=14) :: num
         character(len=14) :: nu
         character(len=8) :: ma
-        character(len=*) :: mate, mateco
+        character(len=*) :: mateco
         character(len=8) :: moint
         integer(kind=8) :: ilires
         integer(kind=8) :: k

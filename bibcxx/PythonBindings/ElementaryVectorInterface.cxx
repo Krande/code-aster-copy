@@ -34,23 +34,20 @@ void exportElementaryVectorToPython( py::module_ &mod ) {
 
     py::class_< BaseElementaryVector, BaseElementaryVectorPtr, DataStructure >(
         mod, "BaseElementaryVector" )
-        .def( py::init( &initFactoryPtr< BaseElementaryVector > ) )
-        .def( py::init( &initFactoryPtr< BaseElementaryVector, std::string > ) )
+        .def( py::init(
+            &initFactoryPtr< BaseElementaryVector, std::string, std::string, ModelPtr > ) )
         .def( py::init( &initFactoryPtr< BaseElementaryVector, ModelPtr > ) )
         .def( "assembleWithLoadFunctions", &BaseElementaryVector::assembleWithLoadFunctions,
               py::arg( "dofNume" ), py::arg( "loads" ), py::arg( "time" ) = 0. )
         .def( "assembleWithMask", &BaseElementaryVector::assembleWithMask )
-        .def( "setType", &BaseElementaryVector::setType )
-        .def( "setModel", &BaseElementaryVector::setModel )
-        .def( "prepareCompute", &BaseElementaryVector::prepareCompute )
         .def( "addSubstructuring", &BaseElementaryVector::addSubstructuring )
         .def( "build", &BaseElementaryVector::build,
               py::arg( "FED" ) = std::vector< FiniteElementDescriptorPtr >() );
 
     py::class_< ElementaryVectorReal, ElementaryVectorRealPtr, BaseElementaryVector >(
         mod, "ElementaryVectorReal" )
-        .def( py::init( &initFactoryPtr< ElementaryVectorReal > ) )
-        .def( py::init( &initFactoryPtr< ElementaryVectorReal, std::string > ) )
+        .def( py::init(
+            &initFactoryPtr< ElementaryVectorReal, std::string, std::string, ModelPtr > ) )
         .def( py::init( &initFactoryPtr< ElementaryVectorReal, ModelPtr > ) )
         .def( "getVeass", &ElementaryVectorReal::getVeass )
         .def( "setVeass", &ElementaryVectorReal::setVeass )
@@ -81,8 +78,8 @@ void exportElementaryVectorToPython( py::module_ &mod ) {
 
     py::class_< ElementaryVectorComplex, ElementaryVectorComplexPtr, BaseElementaryVector >(
         mod, "ElementaryVectorComplex" )
-        .def( py::init( &initFactoryPtr< ElementaryVectorComplex > ) )
-        .def( py::init( &initFactoryPtr< ElementaryVectorComplex, std::string > ) )
+        .def( py::init(
+            &initFactoryPtr< ElementaryVectorComplex, std::string, std::string, ModelPtr > ) )
         .def( py::init( &initFactoryPtr< ElementaryVectorComplex, ModelPtr > ) )
         .def( "getVeass", &ElementaryVectorComplex::getVeass )
         .def( "setVeass", &ElementaryVectorComplex::setVeass )
@@ -112,19 +109,19 @@ void exportElementaryVectorToPython( py::module_ &mod ) {
 
     py::class_< ElementaryVectorDisplacementReal, ElementaryVectorDisplacementRealPtr,
                 ElementaryVectorReal >( mod, "ElementaryVectorDisplacementReal" )
-        .def( py::init( &initFactoryPtr< ElementaryVectorDisplacementReal > ) )
-        .def( py::init( &initFactoryPtr< ElementaryVectorDisplacementReal, std::string > ) )
+        .def(
+            py::init( &initFactoryPtr< ElementaryVectorDisplacementReal, std::string, ModelPtr > ) )
         .def( py::init( &initFactoryPtr< ElementaryVectorDisplacementReal, ModelPtr > ) );
 
     py::class_< ElementaryVectorTemperatureReal, ElementaryVectorTemperatureRealPtr,
                 ElementaryVectorReal >( mod, "ElementaryVectorTemperatureReal" )
-        .def( py::init( &initFactoryPtr< ElementaryVectorTemperatureReal > ) )
-        .def( py::init( &initFactoryPtr< ElementaryVectorTemperatureReal, std::string > ) )
+        .def(
+            py::init( &initFactoryPtr< ElementaryVectorTemperatureReal, std::string, ModelPtr > ) )
         .def( py::init( &initFactoryPtr< ElementaryVectorTemperatureReal, ModelPtr > ) );
 
     py::class_< ElementaryVectorPressureComplex, ElementaryVectorPressureComplexPtr,
                 ElementaryVectorComplex >( mod, "ElementaryVectorPressureComplex" )
-        .def( py::init( &initFactoryPtr< ElementaryVectorPressureComplex > ) )
-        .def( py::init( &initFactoryPtr< ElementaryVectorPressureComplex, std::string > ) )
+        .def(
+            py::init( &initFactoryPtr< ElementaryVectorPressureComplex, std::string, ModelPtr > ) )
         .def( py::init( &initFactoryPtr< ElementaryVectorPressureComplex, ModelPtr > ) );
 };

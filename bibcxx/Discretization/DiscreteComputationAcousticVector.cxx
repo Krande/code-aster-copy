@@ -48,7 +48,6 @@ DiscreteComputation::getAcousticNeumannForces( const bool assembly ) const {
 
     // Setup
     const std::string calcul_option( "CHAR_ACOU" );
-    elemVect->prepareCompute( calcul_option );
 
     // Main parameters
     auto mesh = _phys_problem->getMesh();
@@ -115,7 +114,6 @@ DiscreteComputation::getAcousticVolumetricForces( const bool assembly ) const {
 
     // Setup
     const std::string calcul_option( "CHAR_ACOU" );
-    elemVect->prepareCompute( calcul_option );
 
     elemVect->build();
 
@@ -149,7 +147,6 @@ DiscreteComputation::getAcousticImposedDualBC( const bool assembly ) const {
 
     // Setup
     const std::string calcul_option( "CHAR_ACOU" );
-    elemVect->prepareCompute( calcul_option );
 
     // Main parameters
     auto mesh = _phys_problem->getMesh();

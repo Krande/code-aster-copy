@@ -118,9 +118,9 @@ subroutine nmelcv(model, &
 
 ! ----- Preparation of elementary vectors
         call detrsd('VECT_ELEM', vect_elem_cont)
-        call vemare('V', vect_elem_cont, model, 'CHAR_MECA')
+        call vemare('V', vect_elem_cont, model)
         call detrsd('VECT_ELEM', vect_elem_fric)
-        call vemare('V', vect_elem_fric, model, 'CHAR_MECA')
+        call vemare('V', vect_elem_fric, model)
 
 ! ----- Prepare output fields
         lpaout(1) = 'PVECTCR'

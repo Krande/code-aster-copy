@@ -19,10 +19,9 @@
 !
 !
 interface
-    subroutine vemare(base, vect_elemz, modelz, suropt)
+    subroutine vemare(base, vect_elemz, modelz)
         character(len=1), intent(in) :: base
         character(len=*), intent(in) :: vect_elemz
         character(len=*), intent(in) :: modelz
-        character(len=*), intent(in) :: suropt
     end subroutine vemare
 end interface

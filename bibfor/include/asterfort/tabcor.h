@@ -19,10 +19,10 @@
 !
 !
 interface
-    subroutine tabcor(model, mate, mateco, ma1, ma2, moint,&
+    subroutine tabcor(model, mateco, ma1, ma2, moint,&
                       num, ndble, icor)
         character(len=2) :: model
-        character(len=*) :: mate, mateco
+        character(len=*) :: mateco
         character(len=8) :: ma1
         character(len=8) :: ma2
         character(len=*) :: moint

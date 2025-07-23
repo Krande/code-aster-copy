@@ -40,6 +40,8 @@ void exportElementaryMatrixToPython( py::module_ &mod ) {
         mod, "ElementaryMatrixDisplacementReal" )
         .def( py::init( &initFactoryPtr< ElementaryMatrixDisplacementReal > ) )
         .def( py::init( &initFactoryPtr< ElementaryMatrixDisplacementReal, std::string > ) )
+        .def(
+            py::init( &initFactoryPtr< ElementaryMatrixDisplacementReal, ModelPtr, std::string > ) )
         .def( py::self *= float() )
         .def( "build", &ElementaryMatrixDisplacementReal::build )
         .def( "getFiniteElementDescriptors",
@@ -57,6 +59,8 @@ void exportElementaryMatrixToPython( py::module_ &mod ) {
         mod, "ElementaryMatrixDisplacementComplex" )
         .def( py::init( &initFactoryPtr< ElementaryMatrixDisplacementComplex > ) )
         .def( py::init( &initFactoryPtr< ElementaryMatrixDisplacementComplex, std::string > ) )
+        .def( py::init(
+            &initFactoryPtr< ElementaryMatrixDisplacementComplex, ModelPtr, std::string > ) )
         .def( "build", &ElementaryMatrixDisplacementComplex::build )
         .def( "getFiniteElementDescriptors",
               &ElementaryMatrixDisplacementComplex::getFiniteElementDescriptors )
@@ -73,6 +77,8 @@ void exportElementaryMatrixToPython( py::module_ &mod ) {
         mod, "ElementaryMatrixTemperatureReal" )
         .def( py::init( &initFactoryPtr< ElementaryMatrixTemperatureReal > ) )
         .def( py::init( &initFactoryPtr< ElementaryMatrixTemperatureReal, std::string > ) )
+        .def(
+            py::init( &initFactoryPtr< ElementaryMatrixTemperatureReal, ModelPtr, std::string > ) )
         .def( py::self *= float() )
         .def( "build", &ElementaryMatrixTemperatureReal::build )
         .def( "getFiniteElementDescriptors",
@@ -90,6 +96,8 @@ void exportElementaryMatrixToPython( py::module_ &mod ) {
         mod, "ElementaryMatrixPressureComplex" )
         .def( py::init( &initFactoryPtr< ElementaryMatrixPressureComplex > ) )
         .def( py::init( &initFactoryPtr< ElementaryMatrixPressureComplex, std::string > ) )
+        .def(
+            py::init( &initFactoryPtr< ElementaryMatrixPressureComplex, ModelPtr, std::string > ) )
         .def( "build", &ElementaryMatrixPressureComplex::build )
         .def( "getFiniteElementDescriptors",
               &ElementaryMatrixPressureComplex::getFiniteElementDescriptors )

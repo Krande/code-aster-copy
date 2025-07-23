@@ -121,7 +121,7 @@ subroutine verstp(l_stat, &
 
 ! - Allocate result
     call detrsd('VECT_ELEM', vectElem)
-    call vemare(jvBase, vectElem, modelZ, 'CHAR_THER')
+    call vemare(jvBase, vectElem, modelZ)
     call reajre(vectElem, ' ', jvBase)
 
 ! - Generate new RESU_ELEM name

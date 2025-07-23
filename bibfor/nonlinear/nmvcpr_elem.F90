@@ -90,7 +90,8 @@ subroutine nmvcpr_elem(modelz, matez, matecoz, cara_elemz, &
 !
 ! - Prepare elementary vectors
 !
-    call maveElemCreate(base, 'MECA', vect_elemz, modelz)
+    call detrsd('VECT_ELEM', vect_elemz)
+    call maveElemCreate(base, vect_elemz, modelz)
 !
 ! - Preparation
 !

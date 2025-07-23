@@ -122,7 +122,7 @@ subroutine ratu3d(iprno, lonlis, klisno, noepou, noma, &
 !
 ! --- CREATION DES .RERR DES VECTEURS EN SORTIE DE CALCUL
 !
-    call vemare('V', '&&RATU3D', mod, 'CHAR_MECA')
+    call vemare('V', '&&RATU3D', mod)
 !
 !     RELATIONS ENTRE LES NOEUDS DE SURFACE ET LE NOEUD POUTRE DDL WO
 !

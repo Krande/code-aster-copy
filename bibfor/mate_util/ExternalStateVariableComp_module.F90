@@ -153,7 +153,7 @@ contains
 ! ----- Allocate result
         if (.not. lCumul) then
             call detrsd('VECT_ELEM', vectElemZ)
-            call vemare(jvBase, vectElemZ, modelZ, 'CHAR_MECA')
+            call vemare(jvBase, vectElemZ, modelZ)
             call reajre(vectElemZ, ' ', jvBase)
         end if
         newnom = '.0000000'

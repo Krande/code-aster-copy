@@ -84,7 +84,7 @@ subroutine vedpme(modele, charge, infcha, instap, lvediz)
     end if
 !
     call detrsd('VECT_ELEM', lvedip)
-    call vemare('V', lvedip, modele(1:8), 'CHAR_MECA')
+    call vemare('V', lvedip, modele(1:8))
     call jedetr(lvedip//'.RELR')
     call reajre(lvedip, ' ', 'V')
     if (bidon) goto 20

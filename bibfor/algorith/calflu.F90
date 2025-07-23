@@ -16,7 +16,7 @@
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
 
-subroutine calflu(chamno, modele, mate, mateco, nu, vectas, &
+subroutine calflu(chamno, modele, mateco, nu, vectas, &
                   nr, nv, opt)
     implicit none
 #include "asterfort/assvec.h"
@@ -24,7 +24,7 @@ subroutine calflu(chamno, modele, mate, mateco, nu, vectas, &
 #include "asterfort/jelira.h"
 #include "asterfort/vectfl.h"
     integer(kind=8) :: nr, nv
-    character(len=*) :: chamno, modele, mate, mateco, nu, vectas, opt
+    character(len=*) :: chamno, modele, mateco, nu, vectas, opt
 !
 !------- CALCUL DES VECTEURS ASSEMBLES DE FLUX FLUIDES
 !
@@ -46,7 +46,7 @@ subroutine calflu(chamno, modele, mate, mateco, nu, vectas, &
 !-----------------------------------------------------------------------
 !-----------------------------------------------------------------------
     ve = '&&CALFLU.VE'
-    call vectfl(opt, modele, ' ', mate, mateco, chamno(1:19), &
+    call vectfl(opt, modele, mateco, chamno(1:19), &
                 r8bid, ve)
 !
 !     --- ASSEMBLAGE DU VECTEUR ELEMENTAIRE DE FLUX SUR LA

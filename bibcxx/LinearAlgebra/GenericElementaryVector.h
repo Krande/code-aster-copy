@@ -53,19 +53,23 @@ class GenericElementaryVector : public BaseElementaryVector {
 
     /** @brief Constructor with a name */
     GenericElementaryVector( const std::string name,
-                             const std::string type = "VECT_ELEM_" +
-                                                      std::string( typeid( ValueType ) ==
-                                                                           typeid( ASTERDOUBLE )
-                                                                       ? "_R"
-                                                                       : "_C" ) )
-        : BaseElementaryVector( name, type ), _veass( nullptr ) {};
+                             const std::string typ = "VECT_ELEM_" +
+                                                     std::string( typeid( ValueType ) ==
+                                                                          typeid( ASTERDOUBLE )
+                                                                      ? "_R"
+                                                                      : "_C" ),
+                             const ModelPtr model = nullptr )
+        : BaseElementaryVector( name, typ, model ), _veass( nullptr ) {};
 
     /** @brief Constructor with automatic name */
-    GenericElementaryVector() : GenericElementaryVector( ResultNaming::getNewResultName() ) {};
+    GenericElementaryVector( const ModelPtr model )
+        : GenericElementaryVector(
+              ResultNaming::getNewResultName(),
+              "VECT_ELEM_" +
+                  std::string( typeid( ValueType ) == typeid( ASTERDOUBLE ) ? "_R" : "_C" ),
+              model ) {};
 
-    GenericElementaryVector( const ModelPtr model ) : GenericElementaryVector() {
-        this->setModel( model );
-    };
+    GenericElementaryVector() = delete;
 
     /**
      * @brief Return MODE_LOCAL
@@ -124,8 +128,8 @@ class GenericElementaryVector : public BaseElementaryVector {
             }
         }
 
-        if ( _model ) {
-            return _model->getMesh();
+        if ( getModel() ) {
+            return getModel()->getMesh();
         }
 
         return nullptr;

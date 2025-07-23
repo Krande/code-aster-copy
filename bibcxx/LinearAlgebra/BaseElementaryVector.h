@@ -44,32 +44,25 @@ class BaseElementaryVector : public DataStructure {
     /** @brief Flag for empty datastructure (either built or empty)*/
     bool _isBuilt;
 
-    /** @brief Model */
-    ModelPtr _model;
-
     /** @brief Elementary compute */
     ElementaryComputePtr _elemComp;
 
   public:
     /** @brief Constructor with a name */
-    BaseElementaryVector( const std::string name, const std::string type = "VECT_ELEM" )
+    BaseElementaryVector( const std::string name, const std::string type, const ModelPtr model )
         : DataStructure( name, 19, type ),
           _isBuilt( false ),
-          _model( nullptr ),
-          _elemComp( std::make_shared< ElementaryCompute >( getName() ) ) {};
-
-    /** @brief Constructor with automatic name */
-    BaseElementaryVector() : BaseElementaryVector( ResultNaming::getNewResultName() ) {};
-
-    /** @brief Constructor with automatic name */
-    BaseElementaryVector( const ModelPtr model ) : BaseElementaryVector() {
-        this->setModel( model );
+          _elemComp( std::make_shared< ElementaryCompute >( getName() ) ) {
+        _elemComp->createDescriptor( model );
     };
 
-  public:
-    /** @brief Set type of vector */
-    void setType( const std::string newType ) { DataStructure::setType( newType ); };
+    /** @brief Constructor with automatic name */
+    BaseElementaryVector( const ModelPtr model )
+        : BaseElementaryVector( ResultNaming::getNewResultName(), "VECT_ELEM", model ) {};
 
+    BaseElementaryVector() = delete;
+
+  public:
     /**
      * @brief Assembly with dofNume and time (for load)
      * @param dofNume object DOFNumbering
@@ -79,7 +72,7 @@ class BaseElementaryVector : public DataStructure {
                                                    const ASTERDOUBLE &time = 0. );
 
     /** @brief Get the model */
-    ModelPtr getModel() const { return _model; };
+    ModelPtr getModel() const { return _elemComp->getModel(); };
 
     /**
      * @brief Assembly with dofNume and mask on cells
@@ -102,15 +95,6 @@ class BaseElementaryVector : public DataStructure {
      * @param bBuilt flag for state of datastructure
      */
     void isBuilt( bool bBuilt ) { _isBuilt = bBuilt; };
-
-    /**
-     * @brief Set the model
-     * @param currModel pointer to model
-     */
-    void setModel( const ModelPtr &currModel ) { _model = currModel; };
-
-    /** @brief  Prepare compute */
-    void prepareCompute( const std::string option ) { _elemComp->createDescriptor( _model ); };
 
     virtual bool build( std::vector< FiniteElementDescriptorPtr > FED = {} ) {
         AS_ABORT( "Not implemented" );

@@ -58,6 +58,11 @@ class ElementaryMatrix : public BaseElementaryMatrix {
 
     ElementaryMatrix( const ModelPtr model ) : ElementaryMatrix() { this->setModel( model ); };
 
+    ElementaryMatrix( const ModelPtr model, const std::string option ) : ElementaryMatrix() {
+        this->setModel( model );
+        this->prepareCompute( option );
+    };
+
     /**
      * @brief Function to update ElementaryTerm
      */

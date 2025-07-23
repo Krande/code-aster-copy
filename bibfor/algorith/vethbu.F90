@@ -84,7 +84,7 @@ subroutine vethbu(model, matasz, loadNameJv, loadInfoJv, &
     vecel = '&&VEBUEE           '
     if (iret .eq. 0) then
         vebtem = vecel//'.RELR'
-        call vemare('V', vecel, model(1:8), 'CHAR_THER')
+        call vemare('V', vecel, model(1:8))
         call wkvect(vebtem, 'V V K24', nchar, jdir)
     else
         call jeveuo(vebtem, 'E', jdir)

@@ -16,7 +16,7 @@
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
 
-subroutine vemare(base, vect_elemz, modelz, suropt)
+subroutine vemare(base, vect_elemz, modelz)
 !
     implicit none
 !
@@ -28,7 +28,6 @@ subroutine vemare(base, vect_elemz, modelz, suropt)
     character(len=1), intent(in) :: base
     character(len=*), intent(in) :: vect_elemz
     character(len=*), intent(in) :: modelz
-    character(len=*), intent(in) :: suropt
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -41,7 +40,6 @@ subroutine vemare(base, vect_elemz, modelz, suropt)
 ! In  base           : JEVEUX basis
 ! In  matr_vect_elem : name of vect_elem
 ! In  modelz         : name of model
-! In  suropt         : name of "SUR_OPTION"
 !
 ! --------------------------------------------------------------------------------------------------
 !

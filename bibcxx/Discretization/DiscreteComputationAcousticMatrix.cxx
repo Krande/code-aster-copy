@@ -65,8 +65,7 @@ DiscreteComputation::getLinearMobilityMatrix( const VectorString &groupOfCells,
     const std::string option( "RIGI_ACOU" );
 
     auto elemMatr =
-        std::make_shared< ElementaryMatrixPressureComplex >( _phys_problem->getModel() );
-    elemMatr->prepareCompute( option );
+        std::make_shared< ElementaryMatrixPressureComplex >( _phys_problem->getModel(), option );
 
     // Get main parameters
     auto currModel = _phys_problem->getModel();
@@ -106,8 +105,7 @@ ElementaryMatrixPressureComplexPtr DiscreteComputation::getDualLinearMobilityMat
     const std::string option( "ACOU_DDLM_C" );
 
     auto elemMatr =
-        std::make_shared< ElementaryMatrixPressureComplex >( _phys_problem->getModel() );
-    elemMatr->prepareCompute( option );
+        std::make_shared< ElementaryMatrixPressureComplex >( _phys_problem->getModel(), option );
 
     // Prepare computing
     auto calcul = std::make_shared< Calcul >( option );
@@ -127,8 +125,7 @@ DiscreteComputation::getCompressibilityMatrix( const VectorString &groupOfCells 
     const std::string option( "MASS_ACOU" );
 
     auto elemMatr =
-        std::make_shared< ElementaryMatrixPressureComplex >( _phys_problem->getModel() );
-    elemMatr->prepareCompute( option );
+        std::make_shared< ElementaryMatrixPressureComplex >( _phys_problem->getModel(), option );
 
     // Get main parameters
     auto currModel = _phys_problem->getModel();
@@ -166,8 +163,7 @@ DiscreteComputation::getImpedanceMatrix( const ASTERINTEGER &onde_flui ) const {
     const std::string option( "AMOR_ACOU" );
 
     auto elemMatr =
-        std::make_shared< ElementaryMatrixPressureComplex >( _phys_problem->getModel() );
-    elemMatr->prepareCompute( option );
+        std::make_shared< ElementaryMatrixPressureComplex >( _phys_problem->getModel(), option );
 
     // Get main parameters
     auto currMesh = _phys_problem->getMesh();

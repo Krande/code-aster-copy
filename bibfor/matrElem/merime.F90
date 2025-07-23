@@ -36,7 +36,6 @@ subroutine merime(modelz, nbLoad, listLoadK24, &
 #include "asterfort/jedetr.h"
 #include "asterfort/jeexin.h"
 #include "asterfort/jemarq.h"
-#include "asterfort/jeveuo.h"
 #include "asterfort/lisnnl.h"
 #include "asterfort/mecact.h"
 #include "asterfort/mecham.h"

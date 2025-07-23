@@ -16,7 +16,7 @@
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
 
-subroutine phi2el(modele, carele, mate, mateco, accel, phibar, &
+subroutine phi2el(modele, mateco, accel, phibar, &
                   instap, ve)
     implicit none
 !
@@ -34,14 +34,12 @@ subroutine phi2el(modele, carele, mate, mateco, accel, phibar, &
 #include "asterfort/megeom.h"
 #include "asterfort/vemare.h"
 #include "asterfort/wkvect.h"
-    character(len=*) :: modele, carele, mate, mateco, accel, phibar, ve
+    character(len=*) :: modele, mateco, accel, phibar, ve
     real(kind=8) :: instap
 ! ---------------------------------------------------------------------
 !     CALCUL DES VECTEURS ELEMENTAIRES DES FLUX FLUIDES
 !
 ! IN  MODELE  : NOM DU MODELE
-! IN  CARELE  : CARACTERISTIQUES DES POUTRES ET COQUES
-! IN  MATE    : MATERIAU
 ! IN  ACCEL  : CHAM_NO DE OU DE DEPL
 ! IN  INSTAP  : INSTANT DU CALCUL
 ! VAR VE  : VECTEUR ELEMENTAIRE DE CHARGEMENT THERMIQUE
@@ -72,7 +70,7 @@ subroutine phi2el(modele, carele, mate, mateco, accel, phibar, &
 !
     if (iret .eq. 0) then
         prem = .true.
-        call vemare('V', vecel, modele(1:8), 'CHAR_THER')
+        call vemare('V', vecel, modele(1:8))
         call wkvect(ve2, 'V V K24', 1, jlve)
         if (accel(9:14) .eq. '.BIDON') then
             call jeecra(ve2, 'LONUTI', 0)

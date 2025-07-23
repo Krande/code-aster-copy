@@ -17,9 +17,8 @@
 ! --------------------------------------------------------------------
 !
 interface
-    subroutine maveElemCreate(base, phenom, mave_elemz, modelz)
+    subroutine maveElemCreate(base, mave_elemz, modelz)
         character(len=1), intent(in) :: base
-        character(len=4), intent(in) :: phenom
         character(len=*), intent(in) :: mave_elemz
         character(len=*), intent(in) :: modelz
     end subroutine maveElemCreate

@@ -109,7 +109,7 @@ subroutine vedime(modelZ, loadNameJvZ, loadInfoJvZ, &
 ! - Allocate result
     if (.not. lCumul) then
         call detrsd('VECT_ELEM', vectElem)
-        call vemare(jvBase, vectElem, modelZ, 'CHAR_MECA')
+        call vemare(jvBase, vectElem, modelZ)
         call reajre(vectElem, ' ', jvBase)
     end if
     if (noLoadInList) then

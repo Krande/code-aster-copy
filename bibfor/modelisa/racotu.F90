@@ -111,7 +111,7 @@ subroutine racotu(iprno, lonlis, klisno, noepou, noma, &
     lchout(3) = '&&RAPOTU.COEF_WM'
 !
 ! --- CREATION DES .RERR DES VECTEURS EN SORTIE DE CALCUL
-    call vemare('V', '&&RAPOTU', mod, 'CHAR_MECA')
+    call vemare('V', '&&RAPOTU', mod)
 !
 ! --- CREATION DU .RELR
     call jedetr('&&RAPOTU           .RELR')

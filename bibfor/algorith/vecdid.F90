@@ -116,11 +116,11 @@ subroutine vecdid(model, list_load, disp_didi, vect_elem_)
 !
     call jeexin(vect_elem(1:19)//'.RELR', iret)
     if (iret .eq. 0) then
-        call vemare('V', vect_elem, model(1:8), 'CHAR_MECA')
+        call vemare('V', vect_elem, model(1:8))
     end if
     call jedetr(vect_elem(1:19)//'.RELR')
     call reajre(vect_elem, ' ', 'V')
-    masque = vect_elem(1:19)//'.VEXXX'
+    masque = vect_elem(1:19)//'.VEXX'
 !
 ! --- BOUCLE SUR LES CHARGES DE TYPE DIRICHLET DIFFERENTIEL
 !

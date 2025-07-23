@@ -30,7 +30,6 @@ subroutine memam2(option, modele, mate, mateco, &
 #include "asterfort/jedetr.h"
 #include "asterfort/jeexin.h"
 #include "asterfort/jemarq.h"
-#include "asterfort/jeveuo.h"
 #include "asterfort/mecham.h"
 #include "asterfort/vemare.h"
 #include "asterfort/reajre.h"
@@ -77,7 +76,7 @@ subroutine memam2(option, modele, mate, mateco, &
     call vrcins(modele, mate, ' ', time, chvarc, &
                 codret)
 !
-    call vemare(base, vecel, modele, option)
+    call vemare(base, vecel, modele)
 !
     call jeexin(vecelz(1:19)//'.RELR', iret)
     if (iret .gt. 0) call jedetr(vecelz(1:19)//'.RELR')

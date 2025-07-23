@@ -79,8 +79,6 @@ def calc_vect_elem_ops(self, **args):
     else:
         raise RuntimeError("Option %s not implemented" % (myOption))
 
-    vect_elem.prepareCompute(myOption)
-
     neum_elem = disc_comp.getNeumannForces(time, mode=fourier, varc_curr=varc, assembly=False)
     vect_elem.addElementaryTerm(neum_elem.getElementaryTerms())
 

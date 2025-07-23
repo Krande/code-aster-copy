@@ -37,15 +37,16 @@ class ElementaryVector : public GenericElementaryVector< ValueType > {
     typedef std::shared_ptr< ElementaryVector< ValueType, PhysicalQuantity > > ElementaryVectorPtr;
 
     /** @brief Constructor with a name */
-    ElementaryVector( const std::string name )
+    ElementaryVector( const std::string name, const ModelPtr model )
         : GenericElementaryVector< ValueType >(
-              name, "VECT_ELEM_" + std::string( PhysicalQuantityNames[PhysicalQuantity] ) +
-                        ( typeid( ValueType ) == typeid( ASTERDOUBLE ) ? "_R" : "_C" ) ) {};
+              name,
+              "VECT_ELEM_" + std::string( PhysicalQuantityNames[PhysicalQuantity] ) +
+                  ( typeid( ValueType ) == typeid( ASTERDOUBLE ) ? "_R" : "_C" ),
+              model ) {};
 
     /** @brief Constructor with automatic name */
-    ElementaryVector() : ElementaryVector( ResultNaming::getNewResultName() ) {};
-
-    ElementaryVector( const ModelPtr model ) : ElementaryVector() { this->setModel( model ); };
+    ElementaryVector( const ModelPtr model )
+        : ElementaryVector( ResultNaming::getNewResultName(), model ) {};
 };
 
 /** @typedef Elementary vector for displacement-double */

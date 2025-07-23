@@ -135,7 +135,7 @@ subroutine veondp(modele, mate, mateco, sddyna, temps, vecelz)
     lchout(1) = vecele(1:8)//'.???????'
 !
     call detrsd('VECT_ELEM', vecele)
-    call vemare('V', vecele, modele(1:8), 'CHAR_MECA')
+    call vemare('V', vecele, modele(1:8))
 !
 ! -- CALCUL
 !

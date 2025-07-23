@@ -4595,31 +4595,27 @@ class TableContainer(Table):
 
         1. addObject(self: libaster.TableContainer, arg0: str, arg1: ElementaryMatrix<double, (PhysicalQuantityEnum)4>) -> None
 
-        2. addObject(self: libaster.TableContainer, arg0: str, arg1: ElementaryMatrix<double, (PhysicalQuantityEnum)6>) -> None
+        2. addObject(self: libaster.TableContainer, arg0: str, arg1: ElementaryVector<double, (PhysicalQuantityEnum)4>) -> None
 
-        3. addObject(self: libaster.TableContainer, arg0: str, arg1: ElementaryVector<double, (PhysicalQuantityEnum)4>) -> None
+        3. addObject(self: libaster.TableContainer, arg0: str, arg1: libaster.FieldOnCellsReal) -> None
 
-        4. addObject(self: libaster.TableContainer, arg0: str, arg1: ElementaryVector<double, (PhysicalQuantityEnum)6>) -> None
+        4. addObject(self: libaster.TableContainer, arg0: str, arg1: libaster.FieldOnNodesReal) -> None
 
-        5. addObject(self: libaster.TableContainer, arg0: str, arg1: libaster.FieldOnCellsReal) -> None
+        5. addObject(self: libaster.TableContainer, arg0: str, arg1: FunctionComplex) -> None
 
-        6. addObject(self: libaster.TableContainer, arg0: str, arg1: libaster.FieldOnNodesReal) -> None
+        6. addObject(self: libaster.TableContainer, arg0: str, arg1: GeneralizedAssemblyMatrix<double>) -> None
 
-        7. addObject(self: libaster.TableContainer, arg0: str, arg1: FunctionComplex) -> None
+        7. addObject(self: libaster.TableContainer, arg0: str, arg1: libaster.DataField) -> None
 
-        8. addObject(self: libaster.TableContainer, arg0: str, arg1: GeneralizedAssemblyMatrix<double>) -> None
+        8. addObject(self: libaster.TableContainer, arg0: str, arg1: ModeResult) -> None
 
-        9. addObject(self: libaster.TableContainer, arg0: str, arg1: libaster.DataField) -> None
+        9. addObject(self: libaster.TableContainer, arg0: str, arg1: libaster.ConstantFieldOnCellsReal) -> None
 
-        10. addObject(self: libaster.TableContainer, arg0: str, arg1: ModeResult) -> None
+        10. addObject(self: libaster.TableContainer, arg0: str, arg1: Function2D) -> None
 
-        11. addObject(self: libaster.TableContainer, arg0: str, arg1: libaster.ConstantFieldOnCellsReal) -> None
+        11. addObject(self: libaster.TableContainer, arg0: str, arg1: libaster.Table) -> None
 
-        12. addObject(self: libaster.TableContainer, arg0: str, arg1: Function2D) -> None
-
-        13. addObject(self: libaster.TableContainer, arg0: str, arg1: libaster.Table) -> None
-
-        14. addObject(self: libaster.TableContainer, name: str, object: Function) -> None
+        12. addObject(self: libaster.TableContainer, name: str, object: Function) -> None
 
 
                     Store a *DataStructure* in the table.
@@ -4638,13 +4634,7 @@ class TableContainer(Table):
     def getElementaryMatrixDisplacementReal(self, arg0):
         pass
 
-    def getElementaryMatrixTemperatureReal(self, arg0):
-        pass
-
     def getElementaryVectorDisplacementReal(self, arg0):
-        pass
-
-    def getElementaryVectorTemperatureReal(self, arg0):
         pass
 
     def getFieldOnCellsReal(self, arg0):
@@ -8503,6 +8493,8 @@ class ElementaryMatrixDisplacementReal(BaseElementaryMatrix):
         1. __init__(self: libaster.ElementaryMatrixDisplacementReal) -> None
 
         2. __init__(self: libaster.ElementaryMatrixDisplacementReal, arg0: str) -> None
+
+        3. __init__(self: libaster.ElementaryMatrixDisplacementReal, arg0: Model, arg1: str) -> None
         """
 
     def addElementaryTerm(self, *args, **kwargs):
@@ -8547,6 +8539,8 @@ class ElementaryMatrixDisplacementComplex(BaseElementaryMatrix):
         1. __init__(self: libaster.ElementaryMatrixDisplacementComplex) -> None
 
         2. __init__(self: libaster.ElementaryMatrixDisplacementComplex, arg0: str) -> None
+
+        3. __init__(self: libaster.ElementaryMatrixDisplacementComplex, arg0: Model, arg1: str) -> None
         """
 
     def addElementaryTerm(self, *args, **kwargs):
@@ -8594,6 +8588,8 @@ class ElementaryMatrixTemperatureReal(BaseElementaryMatrix):
         1. __init__(self: libaster.ElementaryMatrixTemperatureReal) -> None
 
         2. __init__(self: libaster.ElementaryMatrixTemperatureReal, arg0: str) -> None
+
+        3. __init__(self: libaster.ElementaryMatrixTemperatureReal, arg0: Model, arg1: str) -> None
         """
 
     def addElementaryTerm(self, *args, **kwargs):
@@ -8638,6 +8634,8 @@ class ElementaryMatrixPressureComplex(BaseElementaryMatrix):
         1. __init__(self: libaster.ElementaryMatrixPressureComplex) -> None
 
         2. __init__(self: libaster.ElementaryMatrixPressureComplex, arg0: str) -> None
+
+        3. __init__(self: libaster.ElementaryMatrixPressureComplex, arg0: Model, arg1: str) -> None
         """
 
     def addElementaryTerm(self, *args, **kwargs):
@@ -8678,11 +8676,9 @@ class BaseElementaryVector(DataStructure):
     def __init__(self, *args, **kwargs):
         """Overloaded function.
 
-        1. __init__(self: libaster.BaseElementaryVector) -> None
+        1. __init__(self: libaster.BaseElementaryVector, arg0: str, arg1: str, arg2: Model) -> None
 
-        2. __init__(self: libaster.BaseElementaryVector, arg0: str) -> None
-
-        3. __init__(self: libaster.BaseElementaryVector, arg0: Model) -> None
+        2. __init__(self: libaster.BaseElementaryVector, arg0: Model) -> None
         """
 
     def addSubstructuring(self, arg0):
@@ -8695,15 +8691,6 @@ class BaseElementaryVector(DataStructure):
         pass
 
     def build(self, FED=[]):
-        pass
-
-    def prepareCompute(self, arg0):
-        pass
-
-    def setModel(self, arg0):
-        pass
-
-    def setType(self, arg0):
         pass
 
 
@@ -8725,11 +8712,9 @@ class ElementaryVectorReal(BaseElementaryVector):
     def __init__(self, *args, **kwargs):
         """Overloaded function.
 
-        1. __init__(self: libaster.ElementaryVectorReal) -> None
+        1. __init__(self: libaster.ElementaryVectorReal, arg0: str, arg1: str, arg2: Model) -> None
 
-        2. __init__(self: libaster.ElementaryVectorReal, arg0: str) -> None
-
-        3. __init__(self: libaster.ElementaryVectorReal, arg0: Model) -> None
+        2. __init__(self: libaster.ElementaryVectorReal, arg0: Model) -> None
         """
 
     def addElementaryTerm(self, *args, **kwargs):
@@ -8787,11 +8772,9 @@ class ElementaryVectorComplex(BaseElementaryVector):
     def __init__(self, *args, **kwargs):
         """Overloaded function.
 
-        1. __init__(self: libaster.ElementaryVectorComplex) -> None
+        1. __init__(self: libaster.ElementaryVectorComplex, arg0: str, arg1: str, arg2: Model) -> None
 
-        2. __init__(self: libaster.ElementaryVectorComplex, arg0: str) -> None
-
-        3. __init__(self: libaster.ElementaryVectorComplex, arg0: Model) -> None
+        2. __init__(self: libaster.ElementaryVectorComplex, arg0: Model) -> None
         """
 
     def addElementaryTerm(self, *args, **kwargs):
@@ -8847,11 +8830,9 @@ class ElementaryVectorDisplacementReal(ElementaryVectorReal):
     def __init__(self, *args, **kwargs):
         """Overloaded function.
 
-        1. __init__(self: libaster.ElementaryVectorDisplacementReal) -> None
+        1. __init__(self: libaster.ElementaryVectorDisplacementReal, arg0: str, arg1: Model) -> None
 
-        2. __init__(self: libaster.ElementaryVectorDisplacementReal, arg0: str) -> None
-
-        3. __init__(self: libaster.ElementaryVectorDisplacementReal, arg0: Model) -> None
+        2. __init__(self: libaster.ElementaryVectorDisplacementReal, arg0: Model) -> None
         """
 
 
@@ -8874,11 +8855,9 @@ class ElementaryVectorTemperatureReal(ElementaryVectorReal):
     def __init__(self, *args, **kwargs):
         """Overloaded function.
 
-        1. __init__(self: libaster.ElementaryVectorTemperatureReal) -> None
+        1. __init__(self: libaster.ElementaryVectorTemperatureReal, arg0: str, arg1: Model) -> None
 
-        2. __init__(self: libaster.ElementaryVectorTemperatureReal, arg0: str) -> None
-
-        3. __init__(self: libaster.ElementaryVectorTemperatureReal, arg0: Model) -> None
+        2. __init__(self: libaster.ElementaryVectorTemperatureReal, arg0: Model) -> None
         """
 
 
@@ -8901,11 +8880,9 @@ class ElementaryVectorPressureComplex(ElementaryVectorComplex):
     def __init__(self, *args, **kwargs):
         """Overloaded function.
 
-        1. __init__(self: libaster.ElementaryVectorPressureComplex) -> None
+        1. __init__(self: libaster.ElementaryVectorPressureComplex, arg0: str, arg1: Model) -> None
 
-        2. __init__(self: libaster.ElementaryVectorPressureComplex, arg0: str) -> None
-
-        3. __init__(self: libaster.ElementaryVectorPressureComplex, arg0: Model) -> None
+        2. __init__(self: libaster.ElementaryVectorPressureComplex, arg0: Model) -> None
         """
 
 

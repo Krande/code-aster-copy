@@ -117,7 +117,7 @@ subroutine vedimd(nomo, lischa, instan, vecele)
 !
 ! --- ALLOCATION DU VECT_ELEM RESULTAT
 !
-    call vemare('V', vecele, nomo, 'CHAR_MECA')
+    call vemare('V', vecele, nomo)
     call reajre(vecele, ' ', 'V')
 !
 ! --- CHAMP DE GEOMETRIE

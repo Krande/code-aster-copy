@@ -58,7 +58,7 @@ subroutine nmsssv(modelz, matez, caraElemz, listLoad, vesstf)
 ! - CALCUL
     call jeexin(funcMultSuper, iret)
     ASSERT(iret .ne. 0)
-    call vemare(base, vesstf, model, 'CHAR_MECA')
+    call vemare(base, vesstf, model)
     call jedetr(vesstf//'.RELC')
     call ss2mme(model, vesstf, base)
 !

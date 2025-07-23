@@ -211,8 +211,7 @@ subroutine calcCalcMeca(nb_option, list_option, &
 !
     if (l_lagr) then
         call medime(jvBase, 'CUMU', model, listLoad, ds_system%merigi)
-        call vebtla(jvBase, model, ds_material%mater, caraElem, disp_curr, &
-                    listLoad, vediri)
+        call vebtla(jvBase, model, disp_curr, listLoad, vediri)
     end if
 !
 ! - Nodal forces

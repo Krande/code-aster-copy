@@ -50,7 +50,6 @@ DiscreteComputation::getThermalNeumannForces( const ASTERDOUBLE time_curr,
 
     // Setup
     const std::string calcul_option( "CHAR_THER" );
-    elemVect->prepareCompute( calcul_option );
 
     // Main parameters
     auto currModel = _phys_problem->getModel();
@@ -184,7 +183,6 @@ DiscreteComputation::getThermalVolumetricForces( const ASTERDOUBLE time_curr,
 
     // Setup
     const std::string calcul_option( "CHAR_THER" );
-    elemVect->prepareCompute( calcul_option );
 
     // Main parameters
     auto currModel = _phys_problem->getModel();
@@ -381,7 +379,6 @@ DiscreteComputation::getThermalExchangeForces( const FieldOnNodesRealPtr temp_cu
 
     // Setup
     const std::string calcul_option( "CHAR_THER" );
-    elemVect->prepareCompute( calcul_option );
 
     // Main parameters
     auto currModel = _phys_problem->getModel();
@@ -539,7 +536,6 @@ DiscreteComputation::getThermalNonLinearNeumannForces( const FieldOnNodesRealPtr
 
     // Setup
     const std::string calcul_option( "CHAR_THER" );
-    elemVect->prepareCompute( calcul_option );
 
     // Main parameters
     auto currModel = _phys_problem->getModel();
@@ -623,7 +619,6 @@ DiscreteComputation::getThermalNonLinearVolumetricForces( const FieldOnNodesReal
 
     // Setup
     const std::string calcul_option( "CHAR_THER" );
-    elemVect->prepareCompute( calcul_option );
 
     // Main parameters
     auto currModel = _phys_problem->getModel();
@@ -700,7 +695,6 @@ DiscreteComputation::getTransientThermalLoadForces( const ASTERDOUBLE time_curr,
 
     // Setup
     const std::string calcul_option( "CHAR_THER" );
-    elemVect->prepareCompute( calcul_option );
 
     // Main parameters
     auto currModel = _phys_problem->getModel();
@@ -795,7 +789,6 @@ DiscreteComputation::getThermalImposedDualBC( const ASTERDOUBLE time_curr,
 
     // Setup
     const std::string calcul_option( "CHAR_THER" );
-    elemVect->prepareCompute( calcul_option );
 
     // Main parameters
     auto currModel = _phys_problem->getModel();
@@ -872,7 +865,6 @@ FieldOnNodesRealPtr DiscreteComputation::getTransientThermalForces(
 
     // Setup
     const std::string calcul_option( "CHAR_THER_EVOL" );
-    elemVect->prepareCompute( calcul_option );
 
     // Main parameters
     auto currModel = _phys_problem->getModel();
@@ -935,7 +927,6 @@ DiscreteComputation::getInternalThermalForces( const FieldOnNodesRealPtr temp_pr
     const std::string option( "RAPH_THER" );
 
     auto elemVect = std::make_shared< ElementaryVectorReal >( _phys_problem->getModel() );
-    elemVect->prepareCompute( option );
 
     // Get main parameters
     auto currModel = _phys_problem->getModel();
@@ -1016,7 +1007,6 @@ FieldOnNodesRealPtr DiscreteComputation::getNonLinearCapacityForces(
     const std::string option( "MASS_THER_RESI" );
 
     auto elemVect = std::make_shared< ElementaryVectorReal >( _phys_problem->getModel() );
-    elemVect->prepareCompute( option );
 
     // Get main parameters
     auto currModel = _phys_problem->getModel();
@@ -1080,8 +1070,6 @@ FieldOnNodesRealPtr DiscreteComputation::getDualTemperature( FieldOnNodesRealPtr
                                                              ASTERDOUBLE scaling ) const {
 
     auto elemVect = std::make_shared< ElementaryVectorReal >( _phys_problem->getModel() );
-
-    elemVect->prepareCompute( "THER_BU_R" );
 
     if ( !_phys_problem->isThermal() ) {
         AS_ABORT( "Not implemented" );
@@ -1167,7 +1155,6 @@ FieldOnNodesRealPtr DiscreteComputation::dualThermalVector( FieldOnNodesRealPtr 
 
     // Setup
     const std::string calcul_option( "CHAR_THER" );
-    elemVect->prepareCompute( calcul_option );
 
     // Prepare computing
     CalculPtr calcul = std::make_unique< Calcul >( option );

@@ -40,7 +40,7 @@
    * - :py:class:`~code_aster.Objects.BaseElementaryMatrix`
      - 
    * - :py:class:`~code_aster.Objects.BaseElementaryVector`
-     - ``vect_elem``
+     - 
    * - :py:class:`~code_aster.Objects.BaseFunction`
      - 
    * - :py:class:`~code_aster.Objects.BaseMesh`
@@ -108,15 +108,15 @@
    * - :py:class:`~code_aster.Objects.ElementaryTermReal`
      - ``resuelem_sdaster``
    * - :py:class:`~code_aster.Objects.ElementaryVectorComplex`
-     - ``vect_elem__c``
+     - 
    * - :py:class:`~code_aster.Objects.ElementaryVectorDisplacementReal`
-     - ``vect_elem_depl_r``
+     - 
    * - :py:class:`~code_aster.Objects.ElementaryVectorPressureComplex`
-     - ``vect_elem_pres_c``
+     - 
    * - :py:class:`~code_aster.Objects.ElementaryVectorReal`
-     - ``vect_elem__r``
+     - 
    * - :py:class:`~code_aster.Objects.ElementaryVectorTemperatureReal`
-     - ``vect_elem_temp_r``
+     - 
    * - :py:class:`~code_aster.Objects.EmpiricalModeResult`
      - ``mode_empi``
    * - :py:class:`~code_aster.Objects.EquationNumbering`

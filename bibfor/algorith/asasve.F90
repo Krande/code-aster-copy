@@ -135,7 +135,7 @@ subroutine asasve(vechar, numedd, typres, vachar)
 !     3. SI IL FAUT FAIRE QUELQUE CHOSE :
 !     --------------------------------------------------------
     call dismoi('NOM_MODELE', numedd, 'NUME_DDL', repk=modele)
-    call vemare('V', '&&ASASVE', modele, 'CHAR_MECA')
+    call vemare('V', '&&ASASVE', modele)
     call reajre('&&ASASVE', ' ', 'V')
 !
     ityp = 1

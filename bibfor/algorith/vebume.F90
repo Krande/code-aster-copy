@@ -110,7 +110,7 @@ subroutine vebume(model_, disp_, list_load, vect_elemz, scaling, base)
 ! - Allocate result
 !
     call detrsd('VECT_ELEM', vect_elem)
-    call vemare(base, vect_elem, model, 'CHAR_MECA')
+    call vemare(base, vect_elem, model)
     call reajre(vect_elem, ' ', base)
 !
 ! - Input fields

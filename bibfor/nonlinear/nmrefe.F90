@@ -132,7 +132,7 @@ subroutine nmrefe(model, compor, mate, cara_elem, nume_dof, &
 ! - Preparation of VECT_ELEM
 !
     call detrsd('VECT_ELEM', vect_elem)
-    call vemare('V', vect_elem, model, 'CHAR_MECA')
+    call vemare('V', vect_elem, model)
 !
 ! - Input fields
 !

@@ -67,7 +67,7 @@ subroutine me2zme(modelz, chsigz, vecelz)
     call megeom(modele, chgeom)
 !
     call detrsd('VECT_ELEM', vecel)
-    call vemare('V', vecel, modele, 'SECM_ZZ1')
+    call vemare('V', vecel, modele)
 !
     lpaout(1) = 'PVECTR1'
     lpaout(2) = 'PVECTR2'

@@ -97,7 +97,7 @@ subroutine vedith(model, loadNameJv, loadInfoJv, time, vect_elemz)
 ! - Allocate result
 !
     call detrsd('VECT_ELEM', vect_elem)
-    call vemare(base, vect_elem, model, 'CHAR_THER')
+    call vemare(base, vect_elem, model)
     call reajre(vect_elem, ' ', base)
     if (load_empty) then
         goto 99

@@ -40,7 +40,6 @@ module NonLinearElem_module
 #include "asterfort/asmatr.h"
 #include "asterfort/dismoi.h"
 #include "asterfort/infdbg.h"
-#include "asterfort/jeveuo.h"
 #include "asterfort/meamme.h"
 #include "asterfort/mecgme.h"
 #include "asterfort/medime.h"

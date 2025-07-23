@@ -16,15 +16,15 @@
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
 !
-subroutine maveElemCreate(base, phenom, mave_elemz, modelz)
+subroutine maveElemCreate(base, mave_elemz, modelz)
 !
     implicit none
 !
 #include "asterfort/vemare.h"
 #include "asterfort/reajre.h"
+#include "asterfort/detrsd.h"
 !
     character(len=1), intent(in) :: base
-    character(len=4), intent(in) :: phenom
     character(len=*), intent(in) :: mave_elemz
     character(len=*), intent(in) :: modelz
 !
@@ -37,7 +37,6 @@ subroutine maveElemCreate(base, phenom, mave_elemz, modelz)
 ! --------------------------------------------------------------------------------------------------
 !
 ! In  base             : JEVEUX base to create object
-! In  phenom           : phenomenon (mechanics, thermics, ...)
 ! In  mave_elem        : name of matr_elem or vect_elem
 ! In  model            : name of model
 !
@@ -49,7 +48,8 @@ subroutine maveElemCreate(base, phenom, mave_elemz, modelz)
 !
     mave_elem = mave_elemz
     model = modelz
-    call vemare(base, mave_elem, model, 'CHAR_'//phenom)
+    call detrsd("VECT_ELEM", mave_elem)
+    call vemare(base, mave_elem, model)
     call reajre(mave_elem, ' ', base)
 !
 end subroutine

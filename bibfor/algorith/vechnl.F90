@@ -109,7 +109,7 @@ subroutine vechnl(model, loadNameJv, loadInfoJv, time, &
 ! - Allocate result
 !
     call detrsd('VECT_ELEM', vect_elem)
-    call vemare(base, vect_elem, model, 'CHAR_THER')
+    call vemare(base, vect_elem, model)
     call reajre(vect_elem, ' ', base)
 !
 ! - Loop on loads
