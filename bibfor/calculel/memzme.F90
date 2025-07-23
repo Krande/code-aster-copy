@@ -40,8 +40,6 @@ subroutine memzme(modele, matel)
     character(len=24) :: ligrmo, lchin(1), lchout(1), option, chgeom
 !
 !-----------------------------------------------------------------------
-    character(len=24), pointer :: rerr(:) => null()
-!-----------------------------------------------------------------------
     call jemarq()
     if (modele(1:1) .eq. ' ') then
         call utmess('F', 'CALCULEL2_82')
@@ -50,8 +48,6 @@ subroutine memzme(modele, matel)
     call megeom(modele, chgeom)
 !
     call memare('V', matel, modele, 'MASS_ZZ1')
-    call jeveuo(matel//'.RERR', 'E', vk24=rerr)
-    rerr(3) (1:3) = 'OUI'
 !
     call jedetr(matel//'.RELR')
 !

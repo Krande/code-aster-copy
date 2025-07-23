@@ -18,7 +18,7 @@
 ! person_in_charge: mickael.abbas at edf.fr
 !
 subroutine merimo(base, &
-                  l_xfem, l_macr_elem, &
+                  l_xfem, &
                   model, cara_elem, iter_newt, &
                   ds_constitutive, ds_material, ds_system, &
                   hval_incr, hval_algo, &
@@ -48,7 +48,7 @@ subroutine merimo(base, &
 #include "asterfort/detrsd.h"
 !
     character(len=1), intent(in) :: base
-    aster_logical, intent(in) :: l_xfem, l_macr_elem
+    aster_logical, intent(in) :: l_xfem
     character(len=24), intent(in) :: model, cara_elem
     integer(kind=8), intent(in) :: iter_newt
     type(NL_DS_Constitutive), intent(in) :: ds_constitutive
@@ -69,7 +69,6 @@ subroutine merimo(base, &
 !
 ! In  base             : JEVEUX base to create objects
 ! In  l_xfem           : flag for XFEM elements
-! In  l_macr_elem      : flag for macro-elements
 ! In  model            : name of model
 ! In  cara_elem        : name of elementary characteristics (field)
 ! In  iter_newt        : index of current Newton iteration
@@ -99,7 +98,6 @@ subroutine merimo(base, &
     character(len=19) :: sigm_extr, sigm_curr, vari_curr, strx_curr, sddyna
     character(len=16) :: option
     integer(kind=8) :: ich_matrixs, ich_matrixn, ich_veinte, ich_codret, ich_copred
-    character(len=24), pointer :: v_rerr(:) => null()
     aster_logical :: tabret(0:10)
 !
 ! --------------------------------------------------------------------------------------------------
@@ -181,10 +179,6 @@ subroutine merimo(base, &
         call jeexin(ds_system%merigi//'.RERR', ires)
         if (ires .eq. 0) then
             call memare(base, ds_system%merigi, model, 'RIGI_MECA')
-        end if
-        if (l_macr_elem) then
-            call jeveuo(ds_system%merigi//'.RERR', 'E', vk24=v_rerr)
-            v_rerr(3) = 'OUI_SOUS_STRUC'
         end if
         call reajre(ds_system%merigi, ' ', base)
     end if

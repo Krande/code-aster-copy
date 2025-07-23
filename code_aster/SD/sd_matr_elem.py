@@ -25,7 +25,7 @@ from .sd_resuelem import sd_resuelem
 
 class sd_matr_elem(AsBase):
     nomj = SDNom(fin=19)
-    RERR = AsVK24(lonmax=3)
+    RERR = AsVK24(lonmax=2)
     RELR = Facultatif(AsVK24())
     TITR = AsVK80(SDNom(debut=19), optional=True)
 
@@ -47,12 +47,7 @@ class sd_matr_elem(AsBase):
 
     def check_1(self, checker):
         refe = self.RERR.get_stripped()
-        assert refe[2] in ("OUI_SOUS_STRUC", "NON_SOUS_STRUC"), refe
-
-        # existence de RELR :
-        if refe[2] == "NON_SOUS_STRUC":
-            assert self.RELR.exists
-
+        assert self.RELR.exists
         assert refe[1] != "", refe
 
         sd2 = sd_modele(refe[0])

@@ -19,14 +19,14 @@
 !
 interface
     subroutine merimo(base           ,&
-                      l_xfem         , l_macr_elem, &
+                      l_xfem         , &
                       model          , cara_elem  , iter_newt,&
                       ds_constitutive, ds_material, ds_system,&
                       hval_incr      , hval_algo  , &
                       optioz         , ldccvg     , sddynz_)
         use NonLin_Datastructure_type
         character(len=1), intent(in) :: base
-        aster_logical, intent(in) :: l_xfem, l_macr_elem
+        aster_logical, intent(in) :: l_xfem
         character(len=24), intent(in) :: model, cara_elem
         integer(kind=8), intent(in) :: iter_newt
         type(NL_DS_Constitutive), intent(in) :: ds_constitutive

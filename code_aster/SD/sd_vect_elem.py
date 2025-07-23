@@ -24,7 +24,7 @@ from .sd_modele import sd_modele
 
 class sd_vect_elem(sd_matr_elem):
     nomj = SDNom(fin=19)
-    RERR = AsVK24(lonmax=3)
+    RERR = AsVK24(lonmax=1)
     RELC = Facultatif(AsColl(acces="NO", stockage="CONTIG", modelong="CONSTANT", type="I"))
 
     def check_RELC(self, checker):
@@ -37,11 +37,6 @@ class sd_vect_elem(sd_matr_elem):
 
     def check_1(self, checker):
         refe = self.RERR.get_stripped()
-        assert refe[2] in ("OUI_SOUS_STRUC", "NON_SOUS_STRUC"), refe
-        assert refe[1] == ""
-
-        # existence de RELR :
-        if refe[2] == "NON_SOUS_STRUC":
-            assert self.RELR.exists
+        assert self.RELR.exists
         sd2 = sd_modele(refe[0])
         sd2.check(checker)

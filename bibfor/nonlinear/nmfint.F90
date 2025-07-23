@@ -74,7 +74,7 @@ subroutine nmfint(model, cara_elem, &
 ! --------------------------------------------------------------------------------------------------
 !
     integer(kind=8) :: ifm, niv
-    aster_logical :: l_xfem, l_macr_elem
+    aster_logical :: l_xfem
     character(len=1) :: base
     character(len=16) :: option
     character(len=19) :: sddyna
@@ -99,7 +99,6 @@ subroutine nmfint(model, cara_elem, &
 ! - Active functionnalities
 !
     l_xfem = isfonc(list_func_acti, 'XFEM')
-    l_macr_elem = isfonc(list_func_acti, 'MACR_ELEM_STAT')
 !
 ! - Launch timer
 !
@@ -109,7 +108,7 @@ subroutine nmfint(model, cara_elem, &
 ! - Computation
 !
     call merimo(base, &
-                l_xfem, l_macr_elem, &
+                l_xfem, &
                 model, cara_elem, iter_newt+1, &
                 ds_constitutive, ds_material, ds_system, &
                 hval_incr, hval_algo, &

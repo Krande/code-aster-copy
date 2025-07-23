@@ -23,28 +23,28 @@
 #include "Discretization/ElementaryCompute.h"
 
 void ElementaryCompute::createDescriptor( const ModelPtr &currModel, const std::string &option ) {
-    _rerr->allocate( 3 );
+    _rerr->allocate( 2 );
     _model = currModel;
     if ( currModel ) {
         ( *_rerr )[0] = currModel->getName();
-
-        if ( currModel->numberOfSuperElement() == 0 ) {
-            ( *_rerr )[2] = "NON_SOUS_STRUC";
-        } else {
-            ( *_rerr )[2] = "OUI_SOUS_STRUC";
-        }
-    } else {
-        ( *_rerr )[2] = "NON_SOUS_STRUC";
     }
 
     ( *_rerr )[1] = option;
 };
 
 void ElementaryCompute::createDescriptor( const ModelPtr &currModel ) {
-    this->createDescriptor( currModel, " " );
+    _rerr->allocate( 1 );
+    _model = currModel;
+    if ( _model ) {
+        ( *_rerr )[0] = _model->getName();
+    }
 };
 
 std::string ElementaryCompute::getOption() const {
-    _rerr->updateValuePointer();
-    return strip( ( *_rerr )[1].toString() );
+    if ( _rerr->size() > 1 ) {
+        _rerr->updateValuePointer();
+        return strip( ( *_rerr )[1].toString() );
+    }
+
+    return std::string();
 }

@@ -56,9 +56,8 @@ subroutine memare(base, matr_vect_elemz, modelz, suropt)
     ASSERT(model .ne. ' ')
 !
     call jedetr(matr_vect_elem//'.RERR')
-    call wkvect(matr_vect_elem//'.RERR', base//' V K24', 3, vk24=p_rerr)
+    call wkvect(matr_vect_elem//'.RERR', base//' V K24', 2, vk24=p_rerr)
     p_rerr(1) = model
     p_rerr(2) = suropt
-    p_rerr(3) = 'NON_SOUS_STRUC'
 !
 end subroutine

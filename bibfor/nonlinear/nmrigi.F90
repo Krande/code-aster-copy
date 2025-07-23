@@ -81,7 +81,7 @@ subroutine nmrigi(modelz, cara_elem, &
     character(len=1) :: base
     character(len=24) :: model
     character(len=16) :: optrig
-    aster_logical :: lendo, l_xfem, l_macr_elem
+    aster_logical :: lendo, l_xfem
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -100,7 +100,6 @@ subroutine nmrigi(modelz, cara_elem, &
 ! - Active functionnalities
 !
     l_xfem = isfonc(list_func_acti, 'XFEM')
-    l_macr_elem = isfonc(list_func_acti, 'MACR_ELEM_STAT')
     lendo = isfonc(list_func_acti, 'ENDO_NO')
 !
 ! --- INCREMENT DE DEPLACEMENT NUL EN PREDICTION
@@ -118,8 +117,7 @@ subroutine nmrigi(modelz, cara_elem, &
 !
 ! - Computation
 !
-    call merimo(base, &
-                l_xfem, l_macr_elem, &
+    call merimo(base, l_xfem, &
                 model, cara_elem, iter_newt+1, &
                 ds_constitutive, ds_material, ds_system, &
                 hval_incr, hval_algo, &

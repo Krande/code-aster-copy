@@ -83,7 +83,6 @@ subroutine memame(optionz, modelz, matez, matecoz, caraElemz, time, &
     character(len=19) :: matrElem
     integer(kind=8) :: nbSubstruct
     aster_logical :: lxfem, hasFiniteElement
-    character(len=24), pointer :: rerr(:) => null()
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -123,10 +122,6 @@ subroutine memame(optionz, modelz, matez, matecoz, caraElemz, time, &
         call memare(base, matrElem, model, option)
     else
         call jedetr(matrElem(1:19)//'.RELR')
-    end if
-    call jeveuo(matrElem//'.RERR', 'E', vk24=rerr)
-    if (nbSubstruct .gt. 0) then
-        rerr(3) = 'OUI_SOUS_STRUC'
     end if
 
 ! - Input fields
