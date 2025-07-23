@@ -16,23 +16,23 @@
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
 !
-subroutine maveElemCreate(base, phenom, mave_elemz, model_, mate_, cara_elem_)
+subroutine maveElemCreate(base, phenom, mave_elemz, modelz)
 !
     implicit none
 !
-#include "asterfort/memare.h"
+#include "asterfort/vemare.h"
 #include "asterfort/reajre.h"
 !
     character(len=1), intent(in) :: base
     character(len=4), intent(in) :: phenom
     character(len=*), intent(in) :: mave_elemz
-    character(len=*), optional, intent(in) :: model_, mate_, cara_elem_
+    character(len=*), intent(in) :: modelz
 !
 ! --------------------------------------------------------------------------------------------------
 !
-! Elementary vectors and matrices
+! Elementary vectors
 !
-! Create a new elementary vector/matrix
+! Create a new elementary vector
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -40,29 +40,16 @@ subroutine maveElemCreate(base, phenom, mave_elemz, model_, mate_, cara_elem_)
 ! In  phenom           : phenomenon (mechanics, thermics, ...)
 ! In  mave_elem        : name of matr_elem or vect_elem
 ! In  model            : name of model
-! In  mate             : name of material characteristics (field)
-! In  cara_elem        : name of elementary characteristics (field)
 !
 ! --------------------------------------------------------------------------------------------------
 !
-    character(len=19) :: mave_elem, mate, model, cara_elem
+    character(len=19) :: mave_elem, model
 !
 ! --------------------------------------------------------------------------------------------------
 !
     mave_elem = mave_elemz
-    mate = ' '
-    model = ' '
-    cara_elem = ' '
-    if (present(model_)) then
-        model = model_
-    end if
-    if (present(cara_elem_)) then
-        cara_elem = cara_elem_
-    end if
-    if (present(mate_)) then
-        mate = mate_
-    end if
-    call memare(base, mave_elem, model, 'CHAR_'//phenom)
+    model = modelz
+    call vemare(base, mave_elem, model, 'CHAR_'//phenom)
     call reajre(mave_elem, ' ', base)
 !
 end subroutine

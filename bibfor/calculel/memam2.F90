@@ -80,6 +80,7 @@ subroutine memam2(option, modele, mate, mateco, &
 !
     call vemare(base, vecel, modele, option)
     call jeveuo(vecelz(1:19)//'.RERR', 'E', vk24=rerr)
+    print *, "OPT: ", option
     rerr(3) (1:3) = 'OUI'
 !
     call jeexin(vecelz(1:19)//'.RELR', iret)

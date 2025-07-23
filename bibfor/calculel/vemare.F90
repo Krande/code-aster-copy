@@ -56,9 +56,9 @@ subroutine vemare(base, vect_elemz, modelz, suropt)
     ASSERT(model .ne. ' ')
 !
     call jedetr(vect_elem//'.RERR')
-    call wkvect(vect_elem//'.RERR', base//' V K24', 1, vk24=p_rerr)
+    call wkvect(vect_elem//'.RERR', base//' V K24', 3, vk24=p_rerr)
     p_rerr(1) = model
-    ! p_rerr(2) = suropt
-    ! p_rerr(3) = 'NON_SOUS_STRUC'
+    p_rerr(2) = " "
+    p_rerr(3) = 'NON_SOUS_STRUC'
 !
 end subroutine

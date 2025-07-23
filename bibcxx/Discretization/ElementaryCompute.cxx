@@ -41,11 +41,7 @@ void ElementaryCompute::createDescriptor( const ModelPtr &currModel, const std::
 };
 
 void ElementaryCompute::createDescriptor( const ModelPtr &currModel ) {
-    _rerr->allocate( 1 );
-    _model = currModel;
-    if ( currModel ) {
-        ( *_rerr )[0] = currModel->getName();
-    }
+    this->createDescriptor( currModel, " " );
 };
 
 std::string ElementaryCompute::getOption() const {
