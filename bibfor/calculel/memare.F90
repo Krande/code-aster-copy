@@ -16,7 +16,7 @@
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
 
-subroutine memare(base, matr_vect_elemz, modelz, suropt)
+subroutine memare(base, matr_vect_elemz, modelz, suropt, l_ss)
 !
     implicit none
 !
@@ -29,6 +29,7 @@ subroutine memare(base, matr_vect_elemz, modelz, suropt)
     character(len=*), intent(in) :: matr_vect_elemz
     character(len=*), intent(in) :: modelz
     character(len=*), intent(in) :: suropt
+    aster_logical, optional, intent(in) :: l_ss
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -48,6 +49,7 @@ subroutine memare(base, matr_vect_elemz, modelz, suropt)
     character(len=8) :: model
     character(len=19) :: matr_vect_elem
     character(len=24), pointer :: p_rerr(:) => null()
+    aster_logical :: lss
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -56,8 +58,17 @@ subroutine memare(base, matr_vect_elemz, modelz, suropt)
     ASSERT(model .ne. ' ')
 !
     call jedetr(matr_vect_elem//'.RERR')
-    call wkvect(matr_vect_elem//'.RERR', base//' V K24', 2, vk24=p_rerr)
+    call wkvect(matr_vect_elem//'.RERR', base//' V K24', 3, vk24=p_rerr)
     p_rerr(1) = model
     p_rerr(2) = suropt
+    p_rerr(3) = "NON_SOUS_STRUC"
+!
+    lss = ASTER_FALSE
+    if (present(l_ss)) then
+        lss = l_ss
+    end if
+    if (lss) then
+        p_rerr(3) = "OUI_SOUS_STRUC"
+    end if
 !
 end subroutine

@@ -152,7 +152,7 @@ subroutine merime(modelz, nbLoad, listLoadK24, &
     end if
 
 ! - Prepare RESU_ELEM objects
-    call memare(base, matrElem, model, option)
+    call memare(base, matrElem, model, option, to_aster_logical(nbSubstruct > 0))
     call jedetr(matrElem//'.RELR')
 
 ! - Input fields

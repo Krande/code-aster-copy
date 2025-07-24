@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -17,12 +17,14 @@
 ! --------------------------------------------------------------------
 
 !
+#include "asterf_types.h"
 !
 interface
-    subroutine memare(base  , matr_vect_elemz, modelz, suropt)
+    subroutine memare(base  , matr_vect_elemz, modelz, suropt, l_ss)
         character(len=1), intent(in) :: base
         character(len=*), intent(in) :: matr_vect_elemz
         character(len=*), intent(in) :: modelz
         character(len=*), intent(in) :: suropt
+        aster_logical, optional, intent(in) :: l_ss
     end subroutine memare
 end interface

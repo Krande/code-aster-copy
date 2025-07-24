@@ -46,7 +46,7 @@ subroutine memzme(modele, matel)
 !
     call megeom(modele, chgeom)
 !
-    call memare('V', matel, modele, 'MASS_ZZ1')
+    call memare('V', matel, modele, 'MASS_ZZ1', ASTER_TRUE)
 !
     call jedetr(matel//'.RELR')
 !

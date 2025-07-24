@@ -118,7 +118,7 @@ subroutine memame(optionz, modelz, matez, matecoz, caraElemz, time, &
 ! - Prepare RESU_ELEM objects
     call jeexin(matrElem(1:19)//'.RELR', iret)
     if (iret .eq. 0) then
-        call memare(base, matrElem, model, option)
+        call memare(base, matrElem, model, option, to_aster_logical(nbSubstruct > 0))
     else
         call jedetr(matrElem(1:19)//'.RELR')
     end if

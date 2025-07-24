@@ -18,7 +18,7 @@
 ! person_in_charge: mickael.abbas at edf.fr
 !
 subroutine merimo(base, &
-                  l_xfem, &
+                  l_xfem, l_macr_elem, &
                   model, cara_elem, iter_newt, &
                   ds_constitutive, ds_material, ds_system, &
                   hval_incr, hval_algo, &
@@ -47,7 +47,7 @@ subroutine merimo(base, &
 #include "asterfort/detrsd.h"
 !
     character(len=1), intent(in) :: base
-    aster_logical, intent(in) :: l_xfem
+    aster_logical, intent(in) :: l_xfem, l_macr_elem
     character(len=24), intent(in) :: model, cara_elem
     integer(kind=8), intent(in) :: iter_newt
     type(NL_DS_Constitutive), intent(in) :: ds_constitutive
@@ -177,7 +177,7 @@ subroutine merimo(base, &
         call detrsd('MATR_ELEM', ds_system%merigi)
         call jeexin(ds_system%merigi//'.RERR', ires)
         if (ires .eq. 0) then
-            call memare(base, ds_system%merigi, model, 'RIGI_MECA')
+            call memare(base, ds_system%merigi, model, 'RIGI_MECA', l_macr_elem)
         end if
         call reajre(ds_system%merigi, ' ', base)
     end if

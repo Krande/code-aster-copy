@@ -188,7 +188,7 @@ subroutine meamme(modelz, &
     end if
 
 ! - Prepare RESU_ELEM objects
-    call memare(base, matrElem, model, 'AMOR_MECA')
+    call memare(base, matrElem, model, 'AMOR_MECA', to_aster_logical(nbSubstruct > 0))
     call jedetr(matrElem//'.RELR')
 
 ! - Input fields

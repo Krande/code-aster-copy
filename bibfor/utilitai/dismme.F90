@@ -148,11 +148,25 @@ subroutine dismme(questi, nomobz, repi, repkz, ierd)
         call dismmo(questi, mo, repi, repk, ierd)
 !
     else if (questi .eq. 'SUR_OPTION') then
-        ASSERT(size == 2)
+        ASSERT(size == 3)
         repk = rerr(2) (1:16)
 !
     else if (questi .eq. 'NB_SS_ACTI') then
         call dismmo(questi, mo, repi, repk, ierd)
+        if (repi > 0) then
+            if (size == 1) then
+            !! Case VECT_ELEM
+                call jeexin(nomob//'.RELC', iret)
+                if (iret == 0) then
+                    repi = 0
+                end if
+            else
+            !! Case MATR_ELEM
+                if (rerr(3) (1:3) == "NON") then
+                    repi = 0
+                end if
+            end if
+        end if
     else
         ierd = 1
     end if

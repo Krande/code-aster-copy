@@ -183,7 +183,7 @@ subroutine calcCalcMeca(nb_option, list_option, &
     if (l_nonl .or. l_matr) then
         iter_newt = 1
         call merimo(jvBase, &
-                    l_xfem, &
+                    l_xfem, l_macr_elem, &
                     model, caraElem, iter_newt, &
                     ds_constitutive, ds_material, ds_system, &
                     hval_incr, hval_algo, &

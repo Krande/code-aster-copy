@@ -79,7 +79,7 @@ contains
         if (niv .ge. 2) then
             call utmess('I', 'MECANONLINE13_85')
         end if
-        call memare(jvBase, superElem, model, option)
+        call memare(jvBase, superElem, model, option, ASTER_TRUE)
 !
 !   ------------------------------------------------------------------------------------------------
     end subroutine
