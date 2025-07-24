@@ -1168,6 +1168,7 @@ class DiscreteComputation:
         vari_curr=None,
         stress_prev=None,
         mode=0,
+        assembly=True,
         mask=None,
     ):
         """Compute load from external state variables
@@ -1179,6 +1180,7 @@ class DiscreteComputation:
               vari_curr (FieldOnCellsReal): internal state variables at current time
               stress_prev (FieldOnCellsReal): stress at begin of current time
               mode (int): fourier mode
+              assembly (bool) : assemble or not
               mask (FieldOnCellsLongPtr): mask to assemble
 
         Returns:
@@ -8662,11 +8664,12 @@ class ElementaryMatrixPressureComplex(BaseElementaryMatrix):
 # class BaseElementaryVector in libaster
 
 
-class BaseElementaryVector(DataStructure):
+class BaseElementaryVector(DSWithCppPickling):
     pass
 
     # Method resolution order:
     #     BaseElementaryVector
+    #     DSWithCppPickling
     #     DataStructure
     #     pybind11_builtins.pybind11_object
     #     builtins.object
@@ -8703,6 +8706,7 @@ class ElementaryVectorReal(BaseElementaryVector):
     # Method resolution order:
     #     ElementaryVectorReal
     #     BaseElementaryVector
+    #     DSWithCppPickling
     #     DataStructure
     #     pybind11_builtins.pybind11_object
     #     builtins.object
@@ -8763,6 +8767,7 @@ class ElementaryVectorComplex(BaseElementaryVector):
     # Method resolution order:
     #     ElementaryVectorComplex
     #     BaseElementaryVector
+    #     DSWithCppPickling
     #     DataStructure
     #     pybind11_builtins.pybind11_object
     #     builtins.object
@@ -8821,19 +8826,30 @@ class ElementaryVectorDisplacementReal(ElementaryVectorReal):
     #     ElementaryVectorDisplacementReal
     #     ElementaryVectorReal
     #     BaseElementaryVector
+    #     DSWithCppPickling
     #     DataStructure
     #     pybind11_builtins.pybind11_object
     #     builtins.object
 
     # Methods defined here:
 
+    def __getstate__(self):
+        pass
+
     def __init__(self, *args, **kwargs):
         """Overloaded function.
 
-        1. __init__(self: libaster.ElementaryVectorDisplacementReal, arg0: str, arg1: Model) -> None
+        1. __init__(self: libaster.ElementaryVectorDisplacementReal) -> None
 
-        2. __init__(self: libaster.ElementaryVectorDisplacementReal, arg0: Model) -> None
+        2. __init__(self: libaster.ElementaryVectorDisplacementReal, arg0: tuple) -> None
+
+        3. __init__(self: libaster.ElementaryVectorDisplacementReal, arg0: str, arg1: Model) -> None
+
+        4. __init__(self: libaster.ElementaryVectorDisplacementReal, arg0: Model) -> None
         """
+
+    def __setstate__(self, arg0):
+        pass
 
 
 # class ElementaryVectorTemperatureReal in libaster
@@ -8846,19 +8862,30 @@ class ElementaryVectorTemperatureReal(ElementaryVectorReal):
     #     ElementaryVectorTemperatureReal
     #     ElementaryVectorReal
     #     BaseElementaryVector
+    #     DSWithCppPickling
     #     DataStructure
     #     pybind11_builtins.pybind11_object
     #     builtins.object
 
     # Methods defined here:
 
+    def __getstate__(self):
+        pass
+
     def __init__(self, *args, **kwargs):
         """Overloaded function.
 
-        1. __init__(self: libaster.ElementaryVectorTemperatureReal, arg0: str, arg1: Model) -> None
+        1. __init__(self: libaster.ElementaryVectorTemperatureReal) -> None
 
-        2. __init__(self: libaster.ElementaryVectorTemperatureReal, arg0: Model) -> None
+        2. __init__(self: libaster.ElementaryVectorTemperatureReal, arg0: tuple) -> None
+
+        3. __init__(self: libaster.ElementaryVectorTemperatureReal, arg0: str, arg1: Model) -> None
+
+        4. __init__(self: libaster.ElementaryVectorTemperatureReal, arg0: Model) -> None
         """
+
+    def __setstate__(self, arg0):
+        pass
 
 
 # class ElementaryVectorPressureComplex in libaster
@@ -8871,19 +8898,30 @@ class ElementaryVectorPressureComplex(ElementaryVectorComplex):
     #     ElementaryVectorPressureComplex
     #     ElementaryVectorComplex
     #     BaseElementaryVector
+    #     DSWithCppPickling
     #     DataStructure
     #     pybind11_builtins.pybind11_object
     #     builtins.object
 
     # Methods defined here:
 
+    def __getstate__(self):
+        pass
+
     def __init__(self, *args, **kwargs):
         """Overloaded function.
 
-        1. __init__(self: libaster.ElementaryVectorPressureComplex, arg0: str, arg1: Model) -> None
+        1. __init__(self: libaster.ElementaryVectorPressureComplex) -> None
 
-        2. __init__(self: libaster.ElementaryVectorPressureComplex, arg0: Model) -> None
+        2. __init__(self: libaster.ElementaryVectorPressureComplex, arg0: tuple) -> None
+
+        3. __init__(self: libaster.ElementaryVectorPressureComplex, arg0: str, arg1: Model) -> None
+
+        4. __init__(self: libaster.ElementaryVectorPressureComplex, arg0: Model) -> None
         """
+
+    def __setstate__(self, arg0):
+        pass
 
 
 # class GeneralizedAssemblyMatrix in libaster

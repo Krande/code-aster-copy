@@ -47,6 +47,12 @@ class ElementaryVector : public GenericElementaryVector< ValueType > {
     /** @brief Constructor with automatic name */
     ElementaryVector( const ModelPtr model )
         : ElementaryVector( ResultNaming::getNewResultName(), model ) {};
+
+    ElementaryVector() : ElementaryVector( nullptr ) {};
+
+    // /** @brief restricted constructor (Set) and method (Get) to support pickling */
+    ElementaryVector( const py::tuple &tup )
+        : ElementaryVector( tup[0].cast< std::string >(), tup[1].cast< ModelPtr >() ) {};
 };
 
 /** @typedef Elementary vector for displacement-double */

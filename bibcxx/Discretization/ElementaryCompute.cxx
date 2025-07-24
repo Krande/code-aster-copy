@@ -33,7 +33,11 @@ void ElementaryCompute::createDescriptor( const ModelPtr &currModel, const std::
 };
 
 void ElementaryCompute::createDescriptor( const ModelPtr &currModel ) {
-    _rerr->allocate( 1 );
+    if ( _rerr->exists() ) {
+        _rerr->updateValuePointer();
+    } else {
+        _rerr->allocate( 1 );
+    }
     _model = currModel;
     if ( _model ) {
         ( *_rerr )[0] = _model->getName();

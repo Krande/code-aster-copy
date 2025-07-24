@@ -192,7 +192,7 @@ class GenericElementaryVector : public BaseElementaryVector {
 
             _elemTerm = std::move( elemTermNew );
 
-            if ( !getMesh()->isParallel() && !isMPIFull() ) {
+            if ( getMesh() && !getMesh()->isParallel() && !isMPIFull() ) {
                 std::string type = "VECT_ELEM";
                 CALLO_SDMPIC( type, getName() );
             }

@@ -32,7 +32,7 @@
 
 void exportElementaryVectorToPython( py::module_ &mod ) {
 
-    py::class_< BaseElementaryVector, BaseElementaryVectorPtr, DataStructure >(
+    py::class_< BaseElementaryVector, BaseElementaryVectorPtr, DSWithCppPickling >(
         mod, "BaseElementaryVector" )
         .def( py::init(
             &initFactoryPtr< BaseElementaryVector, std::string, std::string, ModelPtr > ) )
@@ -109,19 +109,28 @@ void exportElementaryVectorToPython( py::module_ &mod ) {
 
     py::class_< ElementaryVectorDisplacementReal, ElementaryVectorDisplacementRealPtr,
                 ElementaryVectorReal >( mod, "ElementaryVectorDisplacementReal" )
+        .def( py::init( &initFactoryPtr< ElementaryVectorDisplacementReal > ) )
+        .def( py::init( &initFactoryPtr< ElementaryVectorDisplacementReal, const py::tuple & > ) )
         .def(
             py::init( &initFactoryPtr< ElementaryVectorDisplacementReal, std::string, ModelPtr > ) )
-        .def( py::init( &initFactoryPtr< ElementaryVectorDisplacementReal, ModelPtr > ) );
+        .def( py::init( &initFactoryPtr< ElementaryVectorDisplacementReal, ModelPtr > ) )
+        .def( define_pickling< ElementaryVectorDisplacementReal >() );
 
     py::class_< ElementaryVectorTemperatureReal, ElementaryVectorTemperatureRealPtr,
                 ElementaryVectorReal >( mod, "ElementaryVectorTemperatureReal" )
+        .def( py::init( &initFactoryPtr< ElementaryVectorTemperatureReal > ) )
+        .def( py::init( &initFactoryPtr< ElementaryVectorTemperatureReal, const py::tuple & > ) )
         .def(
             py::init( &initFactoryPtr< ElementaryVectorTemperatureReal, std::string, ModelPtr > ) )
-        .def( py::init( &initFactoryPtr< ElementaryVectorTemperatureReal, ModelPtr > ) );
+        .def( py::init( &initFactoryPtr< ElementaryVectorTemperatureReal, ModelPtr > ) )
+        .def( define_pickling< ElementaryVectorTemperatureReal >() );
 
     py::class_< ElementaryVectorPressureComplex, ElementaryVectorPressureComplexPtr,
                 ElementaryVectorComplex >( mod, "ElementaryVectorPressureComplex" )
+        .def( py::init( &initFactoryPtr< ElementaryVectorPressureComplex > ) )
+        .def( py::init( &initFactoryPtr< ElementaryVectorPressureComplex, const py::tuple & > ) )
         .def(
             py::init( &initFactoryPtr< ElementaryVectorPressureComplex, std::string, ModelPtr > ) )
-        .def( py::init( &initFactoryPtr< ElementaryVectorPressureComplex, ModelPtr > ) );
+        .def( py::init( &initFactoryPtr< ElementaryVectorPressureComplex, ModelPtr > ) )
+        .def( define_pickling< ElementaryVectorPressureComplex >() );
 };

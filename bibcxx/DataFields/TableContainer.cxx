@@ -265,7 +265,8 @@ bool TableContainer::build() {
                 _mapEMDD[name] = std::make_shared< ElementaryMatrixDisplacementReal >( dsName );
             }
         } else if ( type == "VECT_ELEM_DEPL_R" ) {
-            if ( _mapEVDD.at( name ) == nullptr ) {
+            if ( !_mapEVDD.contains( name ) ||
+                 ( _mapEVDD.contains( name ) && _mapEVDD.at( name ) == nullptr ) ) {
                 _mapEVDD[name] =
                     std::make_shared< ElementaryVectorDisplacementReal >( dsName, nullptr );
             }

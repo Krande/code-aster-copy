@@ -28,10 +28,8 @@
 #include "DataFields/FieldOnCells.h"
 #include "DataFields/FieldOnNodes.h"
 #include "DataStructures/DataStructure.h"
-#include "Discretization/ElementaryCharacteristics.h"
 #include "Discretization/ElementaryCompute.h"
 #include "Loads/ListOfLoads.h"
-#include "Materials/MaterialField.h"
 #include "Numbering/DOFNumbering.h"
 #include "Supervis/ResultNaming.h"
 
@@ -39,7 +37,7 @@
  * @class BaseElementaryVector
  * @brief Base class for sd_vect_elem
  */
-class BaseElementaryVector : public DataStructure {
+class BaseElementaryVector : public DSWithCppPickling {
   protected:
     /** @brief Flag for empty datastructure (either built or empty)*/
     bool _isBuilt;
@@ -50,17 +48,19 @@ class BaseElementaryVector : public DataStructure {
   public:
     /** @brief Constructor with a name */
     BaseElementaryVector( const std::string name, const std::string type, const ModelPtr model )
-        : DataStructure( name, 19, type ),
+        : DSWithCppPickling( name, 19, type ),
           _isBuilt( false ),
           _elemComp( std::make_shared< ElementaryCompute >( getName() ) ) {
-        _elemComp->createDescriptor( model );
+        if ( model ) {
+            _elemComp->createDescriptor( model );
+        }
     };
 
     /** @brief Constructor with automatic name */
     BaseElementaryVector( const ModelPtr model )
         : BaseElementaryVector( ResultNaming::getNewResultName(), "VECT_ELEM", model ) {};
 
-    BaseElementaryVector() = delete;
+    py::tuple _getState() const { return py::make_tuple( this->getName(), this->getModel() ); };
 
   public:
     /**

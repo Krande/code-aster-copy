@@ -110,13 +110,13 @@
    * - :py:class:`~code_aster.Objects.ElementaryVectorComplex`
      - 
    * - :py:class:`~code_aster.Objects.ElementaryVectorDisplacementReal`
-     - 
+     - ``vect_elem_depl_r``
    * - :py:class:`~code_aster.Objects.ElementaryVectorPressureComplex`
-     - 
+     - ``vect_elem_pres_c``
    * - :py:class:`~code_aster.Objects.ElementaryVectorReal`
      - 
    * - :py:class:`~code_aster.Objects.ElementaryVectorTemperatureReal`
-     - 
+     - ``vect_elem_temp_r``
    * - :py:class:`~code_aster.Objects.EmpiricalModeResult`
      - ``mode_empi``
    * - :py:class:`~code_aster.Objects.EquationNumbering`

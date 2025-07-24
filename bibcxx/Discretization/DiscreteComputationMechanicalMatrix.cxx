@@ -1073,7 +1073,7 @@ DiscreteComputation::getGyroscopicDampingMatrix( const VectorString &groupOfCell
     const std::string option = "MECA_GYRO";
 
     auto elemMatr =
-        std::make_shared< ElementaryMatrixDisplacementReal >( _phys_problem->getModel() );
+        std::make_shared< ElementaryMatrixDisplacementReal >( _phys_problem->getModel(), option );
 
     // Prepare loads
     const auto listOfLoads = _phys_problem->getListOfLoads();
