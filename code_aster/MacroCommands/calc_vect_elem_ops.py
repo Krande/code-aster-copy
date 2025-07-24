@@ -68,9 +68,12 @@ def calc_vect_elem_ops(self, **args):
 
     varc = None
     if mater and mater.hasExternalStateVariable():
+        # Compute reference value vector for external state variables
+        if mater.hasExternalStateVariableWithReference():
+            phys_pb.computeReferenceExternalStateVariables()
         varc = phys_pb.getExternalStateVariables(time)
 
-    if myOption == "CHAR_MECA":
+    if myOption in ("CHAR_MECA", "FORC_VARC"):
         vect_elem = ElementaryVectorDisplacementReal(phys_pb.getModel())
     elif myOption == "CHAR_THER":
         vect_elem = ElementaryVectorTemperatureReal(phys_pb.getModel())
@@ -78,6 +81,10 @@ def calc_vect_elem_ops(self, **args):
         vect_elem = ElementaryVectorPressureComplex(phys_pb.getModel())
     else:
         raise RuntimeError("Option %s not implemented" % (myOption))
+
+    if myOption == "FORC_VARC":
+        varc_elem = disc_comp.getExternalStateVariablesForces(time, varc, assembly=False)
+        vect_elem.addElementaryTerm(varc_elem.getElementaryTerms())
 
     neum_elem = disc_comp.getNeumannForces(time, mode=fourier, varc_curr=varc, assembly=False)
     vect_elem.addElementaryTerm(neum_elem.getElementaryTerms())

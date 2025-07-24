@@ -28,7 +28,7 @@ def calc_vect_elem_prod(self, OPTION, **args):
     if args.get("__all__"):
         return (vect_elem_depl_r, vect_elem_temp_r, vect_elem_pres_c)
 
-    if OPTION == "CHAR_MECA":
+    if OPTION in ("CHAR_MECA", "FORC_VARC"):
         return vect_elem_depl_r
     if OPTION == "CHAR_THER":
         return vect_elem_temp_r
@@ -43,7 +43,7 @@ CALC_VECT_ELEM = MACRO(
     sd_prod=calc_vect_elem_prod,
     reentrant="n",
     fr=tr("Calcul des seconds membres élémentaires"),
-    OPTION=SIMP(statut="o", typ="TXM", into=("CHAR_MECA", "CHAR_THER", "CHAR_ACOU")),
+    OPTION=SIMP(statut="o", typ="TXM", into=("CHAR_MECA", "CHAR_THER", "CHAR_ACOU", "FORC_VARC")),
     b_char_meca=BLOC(
         condition="""equal_to("OPTION", 'CHAR_MECA')""",
         regles=(AU_MOINS_UN("CHARGE", "MODELE"),),
@@ -69,6 +69,13 @@ CALC_VECT_ELEM = MACRO(
                 SUPER_MAILLE=SIMP(statut="f", typ=ma, validators=NoRepeat(), max="**"),
             ),
         ),
+    ),
+    b_char_varc=BLOC(
+        condition="""equal_to("OPTION", 'FORC_VARC')""",
+        MODELE=SIMP(statut="f", typ=modele_sdaster),
+        CARA_ELEM=SIMP(statut="f", typ=cara_elem),
+        CHAM_MATER=SIMP(statut="o", typ=cham_mater),
+        INST=SIMP(statut="f", typ="R", defaut=0.0e0),
     ),
     b_char_ther=BLOC(
         condition="""equal_to("OPTION", 'CHAR_THER')""",
