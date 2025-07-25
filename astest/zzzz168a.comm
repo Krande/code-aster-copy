@@ -1,0 +1,476 @@
+# coding=utf-8
+# --------------------------------------------------------------------
+# Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
+# This file is part of code_aster.
+#
+# code_aster is free software: you can redistribute it and/or modify
+# it under the terms of the GNU General Public License as published by
+# the Free Software Foundation, either version 3 of the License, or
+# (at your option) any later version.
+#
+# code_aster is distributed in the hope that it will be useful,
+# but WITHOUT ANY WARRANTY; without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+# GNU General Public License for more details.
+#
+# You should have received a copy of the GNU General Public License
+# along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
+# --------------------------------------------------------------------
+
+DEBUT(CODE="OUI", DEBUG=_F(SDVERI="OUI"))
+
+# Validation test on 3D model
+# ----------------------------
+
+# Read the mesh
+cube = LIRE_MAILLAGE(UNITE=20)
+# Mechanical model
+m_cube = AFFE_MODELE(AFFE=_F(MODELISATION="3D", PHENOMENE="MECANIQUE", TOUT="OUI"), MAILLAGE=cube)
+# Materials
+mat_m1 = DEFI_MATERIAU(ELAS=_F(ALPHA=1.2e-03, E=200000.0, NU=0.3))
+mat_m2 = DEFI_MATERIAU(ELAS=_F(ALPHA=1.2e-08, E=20000.0, NU=0.3))
+mat_m3 = DEFI_MATERIAU(ELAS=_F(ALPHA=1.2e-05, E=200000.0, NU=0.3))
+# Material fields
+fiel_f1 = AFFE_MATERIAU(AFFE=_F(MATER=(mat_m1,), TOUT="OUI"), MODELE=m_cube)
+fiel_f2 = AFFE_MATERIAU(
+    AFFE=(
+        _F(GROUP_MA=("VOLA", "VOLC"), MATER=(mat_m1,)),
+        _F(GROUP_MA=("VOLB", "VOLD"), MATER=(mat_m2,)),
+    ),
+    MODELE=m_cube,
+)
+fiel_f3 = AFFE_MATERIAU(
+    AFFE=(_F(MATER=(mat_m1,), TOUT="OUI"), _F(GROUP_MA=("VOLB", "VOLD"), MATER=(mat_m2,))),
+    MODELE=m_cube,
+)
+# Mechanical limit conditions
+BLOC = AFFE_CHAR_MECA(
+    DDL_IMPO=(
+        _F(DZ=0.0, GROUP_MA=("SBOT",)),
+        _F(DX=0.0, GROUP_NO=("P0",)),
+        _F(DY=0.0, GROUP_MA=("EX",)),
+    ),
+    MODELE=m_cube,
+)
+
+# Time stepping
+times = DEFI_LIST_INST(DEFI_LIST=_F(VALE=(0.0, 10.0)))
+listr = DEFI_LIST_REEL(VALE=(0.0, 10.0))
+
+# Thermal field creation
+# homogeneous temperatures
+T_INIT1 = CREA_CHAMP(
+    TYPE_CHAM="NOEU_TEMP_R",
+    OPERATION="AFFE",
+    MAILLAGE=cube,
+    AFFE=_F(TOUT="OUI", NOM_CMP="TEMP", VALE=0),
+)
+
+CHT1 = CREA_CHAMP(
+    TYPE_CHAM="NOEU_TEMP_R",
+    OPERATION="AFFE",
+    MAILLAGE=cube,
+    AFFE=_F(TOUT="OUI", NOM_CMP="TEMP", VALE=100),
+)
+# non homogeneous temperatures
+T_INIT2 = CREA_CHAMP(
+    TYPE_CHAM="NOEU_TEMP_R",
+    OPERATION="AFFE",
+    MAILLAGE=cube,
+    AFFE=(
+        _F(GROUP_MA=("VOLA", "VOLB", "VOLC"), NOM_CMP="TEMP", VALE=0),
+        _F(GROUP_MA=("VOLD"), NOM_CMP="TEMP", VALE=0),
+    ),
+)
+CHT2 = CREA_CHAMP(
+    TYPE_CHAM="NOEU_TEMP_R",
+    OPERATION="AFFE",
+    MAILLAGE=cube,
+    AFFE=(
+        _F(GROUP_MA=("VOLA", "VOLB", "VOLC"), NOM_CMP="TEMP", VALE=10),
+        _F(GROUP_MA=("VOLD"), NOM_CMP="TEMP", VALE=100),
+    ),
+)
+# thermal results type creation
+# homogeneous temperatures
+CRT1 = CREA_RESU(
+    AFFE=(
+        _F(CHAM_GD=T_INIT1, INST=0.0, NOM_CHAM="TEMP"),
+        _F(CHAM_GD=CHT1, INST=10.0, NOM_CHAM="TEMP"),
+    ),
+    OPERATION="AFFE",
+    TYPE_RESU="EVOL_THER",
+)
+# non homogeneous temperatures
+CRT2 = CREA_RESU(
+    AFFE=(
+        _F(CHAM_GD=T_INIT2, INST=0.0, NOM_CHAM="TEMP"),
+        _F(CHAM_GD=CHT2, INST=10.0, NOM_CHAM="TEMP"),
+    ),
+    OPERATION="AFFE",
+    TYPE_RESU="EVOL_THER",
+)
+
+# ---------------------------------------------------------------------------------------------------
+# FIRST TEST : 1 material field with 1 material
+# CALC_MECA_MULT with 2 thermal fields
+TEST1 = CALC_MECA_MULT(
+    MODELE=m_cube,
+    CHAM_MATER=fiel_f1,
+    CHAR_MECA_GLOBAL=BLOC,
+    LIST_INST=times,
+    CAS_CHARGE=(
+        _F(EVOL_THER=CRT1, NOM_CAS="CAS_1", VALE_REF=0.0),
+        _F(EVOL_THER=CRT2, NOM_CAS="CAS_2", VALE_REF=0.0),
+    ),
+    CONVERGENCE=_F(RESI_GLOB_RELA=1e-5, ITER_GLOB_MAXI=80),
+)
+
+
+# Reference cases for the 2 thermal fields (STAT_NON_LINE)
+# Reference for case 1
+fiel_f11 = AFFE_MATERIAU(
+    AFFE=_F(MATER=(mat_m1,), TOUT="OUI"),
+    AFFE_VARC=_F(EVOL=CRT1, NOM_VARC="TEMP", VALE_REF=0.0),
+    MODELE=m_cube,
+)
+REF1_C1 = STAT_NON_LINE(
+    MODELE=m_cube,
+    CHAM_MATER=fiel_f11,
+    EXCIT=(_F(CHARGE=BLOC),),
+    INCREMENT=_F(LIST_INST=times),
+    CONVERGENCE=_F(RESI_GLOB_RELA=1.0e-5, ITER_GLOB_MAXI=80),
+)
+# Reference for case 2
+fiel_f12 = AFFE_MATERIAU(
+    AFFE=_F(MATER=(mat_m1,), TOUT="OUI"),
+    AFFE_VARC=_F(EVOL=CRT2, NOM_VARC="TEMP", VALE_REF=0.0),
+    MODELE=m_cube,
+)
+REF1_C2 = STAT_NON_LINE(
+    MODELE=m_cube,
+    CHAM_MATER=fiel_f12,
+    EXCIT=(_F(CHARGE=BLOC),),
+    INCREMENT=_F(LIST_INST=times),
+    CONVERGENCE=_F(RESI_GLOB_RELA=1.0e-5, ITER_GLOB_MAXI=80),
+)
+
+# Verification process
+# Test on NUME_ORDRE 1 on case 1
+TEST1_fc1 = CREA_CHAMP(
+    NOM_CHAM="DEPL",
+    NUME_ORDRE=1,
+    OPERATION="EXTR",
+    RESULTAT=TEST1["CAS_1"],
+    TYPE_CHAM="NOEU_DEPL_R",
+)
+REF1_fc1 = CREA_CHAMP(
+    NOM_CHAM="DEPL", NUME_ORDRE=1, OPERATION="EXTR", RESULTAT=REF1_C1, TYPE_CHAM="NOEU_DEPL_R"
+)
+
+# Test on NUME_ORDRE 1 on case 2
+TEST1_fc2 = CREA_CHAMP(
+    NOM_CHAM="DEPL",
+    NUME_ORDRE=1,
+    OPERATION="EXTR",
+    RESULTAT=TEST1["CAS_2"],
+    TYPE_CHAM="NOEU_DEPL_R",
+)
+REF1_fc2 = CREA_CHAMP(
+    NOM_CHAM="DEPL", NUME_ORDRE=1, OPERATION="EXTR", RESULTAT=REF1_C2, TYPE_CHAM="NOEU_DEPL_R"
+)
+
+# ---------------------------------------------------------------------------------------------------
+# SECOND TEST : 1 material field with 2 materials
+# CALC_MECA_MULT with 2 thermal fields
+TEST2 = CALC_MECA_MULT(
+    MODELE=m_cube,
+    CHAM_MATER=fiel_f2,
+    CHAR_MECA_GLOBAL=BLOC,
+    LIST_INST=times,
+    CAS_CHARGE=(
+        _F(EVOL_THER=CRT1, NOM_CAS="CAS_1", VALE_REF=0.0),
+        _F(EVOL_THER=CRT2, NOM_CAS="CAS_2", VALE_REF=0.0),
+    ),
+)
+# Reference cases for the 2 thermal field (STAT_NON_LINE)
+# Reference for case 1
+fiel_f21 = AFFE_MATERIAU(
+    AFFE=(
+        _F(GROUP_MA=("VOLA", "VOLC"), MATER=(mat_m1,)),
+        _F(GROUP_MA=("VOLB", "VOLD"), MATER=(mat_m2,)),
+    ),
+    AFFE_VARC=_F(EVOL=CRT1, NOM_VARC="TEMP", VALE_REF=0.0),
+    MODELE=m_cube,
+)
+REF2_C1 = STAT_NON_LINE(
+    MODELE=m_cube,
+    CHAM_MATER=fiel_f21,
+    EXCIT=(_F(CHARGE=BLOC),),
+    INCREMENT=_F(LIST_INST=times),
+    CONVERGENCE=_F(RESI_GLOB_RELA=1.0e-6, ITER_GLOB_MAXI=100),
+)
+# Reference for case 2
+fiel_f22 = AFFE_MATERIAU(
+    AFFE=(
+        _F(GROUP_MA=("VOLA", "VOLC"), MATER=(mat_m1,)),
+        _F(GROUP_MA=("VOLB", "VOLD"), MATER=(mat_m2,)),
+    ),
+    AFFE_VARC=_F(EVOL=CRT2, NOM_VARC="TEMP", VALE_REF=0.0),
+    MODELE=m_cube,
+)
+REF2_C2 = STAT_NON_LINE(
+    MODELE=m_cube,
+    CHAM_MATER=fiel_f22,
+    EXCIT=(_F(CHARGE=BLOC),),
+    INCREMENT=_F(LIST_INST=times),
+    CONVERGENCE=_F(RESI_GLOB_RELA=1.0e-6, ITER_GLOB_MAXI=100),
+)
+
+# Verification process
+# Test on NUME_ORDRE 1 on case 1
+TEST2_fc1 = CREA_CHAMP(
+    NOM_CHAM="DEPL",
+    NUME_ORDRE=1,
+    OPERATION="EXTR",
+    RESULTAT=TEST2["CAS_1"],
+    TYPE_CHAM="NOEU_DEPL_R",
+)
+REF2_fc1 = CREA_CHAMP(
+    NOM_CHAM="DEPL", NUME_ORDRE=1, OPERATION="EXTR", RESULTAT=REF2_C1, TYPE_CHAM="NOEU_DEPL_R"
+)
+
+# Test on NUME_ORDRE 1on case 2
+TEST2_fc2 = CREA_CHAMP(
+    NOM_CHAM="DEPL",
+    NUME_ORDRE=1,
+    OPERATION="EXTR",
+    RESULTAT=TEST2["CAS_2"],
+    TYPE_CHAM="NOEU_DEPL_R",
+)
+REF2_fc2 = CREA_CHAMP(
+    NOM_CHAM="DEPL", NUME_ORDRE=1, OPERATION="EXTR", RESULTAT=REF2_C2, TYPE_CHAM="NOEU_DEPL_R"
+)
+
+# ---------------------------------------------------------------------------------------------------
+# THIRD TEST: 1 material field : use of "TOUT" + 2 materials (subsitution)
+# CALC_MECA_MULT with 2 thermal fields
+TEST3 = CALC_MECA_MULT(
+    MODELE=m_cube,
+    CHAM_MATER=fiel_f3,
+    CHAR_MECA_GLOBAL=BLOC,
+    LIST_INST=times,
+    CAS_CHARGE=(
+        _F(EVOL_THER=CRT1, NOM_CAS="CAS_1", VALE_REF=0.0),
+        _F(EVOL_THER=CRT2, NOM_CAS="CAS_2", VALE_REF=0.0),
+    ),
+)
+# Reference cases for the 2 thermal field (STAT_NON_LINE)
+# Reference for case 1
+fiel_f31 = AFFE_MATERIAU(
+    AFFE=(_F(MATER=(mat_m1,), TOUT="OUI"), _F(GROUP_MA=("VOLB", "VOLD"), MATER=(mat_m2,))),
+    AFFE_VARC=_F(EVOL=CRT1, NOM_VARC="TEMP", VALE_REF=0.0),
+    MODELE=m_cube,
+)
+REF3_C1 = STAT_NON_LINE(
+    MODELE=m_cube,
+    CHAM_MATER=fiel_f31,
+    EXCIT=(_F(CHARGE=BLOC),),
+    INCREMENT=_F(LIST_INST=times),
+    CONVERGENCE=_F(RESI_GLOB_RELA=1.0e-6, ITER_GLOB_MAXI=100),
+)
+# Reference for case 2
+fiel_f32 = AFFE_MATERIAU(
+    AFFE=(_F(MATER=(mat_m1,), TOUT="OUI"), _F(GROUP_MA=("VOLB", "VOLD"), MATER=(mat_m2,))),
+    AFFE_VARC=_F(EVOL=CRT2, NOM_VARC="TEMP", VALE_REF=0.0),
+    MODELE=m_cube,
+)
+REF3_C2 = STAT_NON_LINE(
+    MODELE=m_cube,
+    CHAM_MATER=fiel_f32,
+    EXCIT=(_F(CHARGE=BLOC),),
+    INCREMENT=_F(LIST_INST=times),
+    CONVERGENCE=_F(RESI_GLOB_RELA=1.0e-6, ITER_GLOB_MAXI=100),
+)
+
+# Verification process
+# Test on NUME_ORDRE 1 on case 1
+TEST3_fc1 = CREA_CHAMP(
+    NOM_CHAM="DEPL",
+    NUME_ORDRE=1,
+    OPERATION="EXTR",
+    RESULTAT=TEST3["CAS_1"],
+    TYPE_CHAM="NOEU_DEPL_R",
+)
+REF3_fc1 = CREA_CHAMP(
+    NOM_CHAM="DEPL", NUME_ORDRE=1, OPERATION="EXTR", RESULTAT=REF3_C1, TYPE_CHAM="NOEU_DEPL_R"
+)
+
+# Test on NUME_ORDRE 1 on case 2
+TEST3_fc2 = CREA_CHAMP(
+    NOM_CHAM="DEPL",
+    NUME_ORDRE=1,
+    OPERATION="EXTR",
+    RESULTAT=TEST3["CAS_2"],
+    TYPE_CHAM="NOEU_DEPL_R",
+)
+REF3_fc2 = CREA_CHAMP(
+    NOM_CHAM="DEPL", NUME_ORDRE=1, OPERATION="EXTR", RESULTAT=REF3_C2, TYPE_CHAM="NOEU_DEPL_R"
+)
+
+
+# ---------------------------------------------------------------------------------------------------
+# FOURTH TEST: 1 material field with 1 material, LIST_INST empty
+# CALC_MECA_MULT with 2 thermal fields
+TEST4 = CALC_MECA_MULT(
+    MODELE=m_cube,
+    CHAM_MATER=fiel_f1,
+    CHAR_MECA_GLOBAL=BLOC,
+    CAS_CHARGE=(
+        _F(EVOL_THER=CRT1, NOM_CAS="CAS_1", VALE_REF=0.0),
+        _F(EVOL_THER=CRT2, NOM_CAS="CAS_2", VALE_REF=0.0),
+    ),
+)
+
+# Verification process
+# Test on NUME_ORDRE 1 on case 1
+TEST4_fc1 = CREA_CHAMP(
+    NOM_CHAM="DEPL",
+    NUME_ORDRE=1,
+    OPERATION="EXTR",
+    RESULTAT=TEST4["CAS_1"],
+    TYPE_CHAM="NOEU_DEPL_R",
+)
+
+# Test on NUME_ORDRE 1 on case 2
+TEST4_fc2 = CREA_CHAMP(
+    NOM_CHAM="DEPL",
+    NUME_ORDRE=1,
+    OPERATION="EXTR",
+    RESULTAT=TEST4["CAS_2"],
+    TYPE_CHAM="NOEU_DEPL_R",
+)
+
+# ---------------------------------------------------------------------------------------------------
+# FIFTH TEST: compatibility with evol_ther_dict (CALC_THER_MULT)
+# CALC_MECA_MULT chained with CALC_THER_MULT
+
+# -----CALC_THER_MULT
+# Thermal model
+mod_th = AFFE_MODELE(
+    AFFE=(_F(TOUT="OUI", MODELISATION="3D", PHENOMENE="THERMIQUE"),), MAILLAGE=cube
+)
+# Materials
+LAMBDA = DEFI_CONSTANTE(VALE=0.003)
+RHOCP = DEFI_CONSTANTE(VALE=1e-05)
+mat = DEFI_MATERIAU(THER_NL=_F(LAMBDA=LAMBDA, RHO_CP=RHOCP))
+# Material field
+fiel1 = AFFE_MATERIAU(AFFE=_F(MATER=(mat,), TOUT="OUI"), MODELE=mod_th)
+# Common thermal loading
+CL = AFFE_CHAR_THER(MODELE=mod_th, TEMP_IMPO=_F(GROUP_MA=("SBOT",), TEMP=0))
+# CALC_THER_MULT
+calc_ther_mult = CALC_THER_MULT(
+    MODELE=mod_th,
+    CHAM_MATER=fiel1,
+    CHAR_THER_GLOBAL=CL,
+    PARM_THETA=1,
+    CAS_CHARGE=(
+        _F(COEF_H=1e-3, DUREE_CHOC=0.001, LIST_INST=times, GROUP_MA=("SY0"), NOM_CAS="CAS_1"),
+        _F(COEF_H=1e-2, DUREE_CHOC=0.009, LIST_INST=times, GROUP_MA=("SY1"), NOM_CAS="CAS_2"),
+    ),
+)
+
+
+extr_51 = EXTR_CONCEPT(NOM="CAS_1", DICT=calc_ther_mult)
+extr_52 = EXTR_CONCEPT(NOM="CAS_2", DICT=calc_ther_mult)
+
+# -----
+fiel_f51 = AFFE_MATERIAU(
+    AFFE=_F(MATER=(mat_m1,), TOUT="OUI"),
+    AFFE_VARC=_F(EVOL=extr_51, NOM_VARC="TEMP", VALE_REF=0.0),
+    MODELE=m_cube,
+)
+
+fiel_f52 = AFFE_MATERIAU(
+    AFFE=_F(MATER=(mat_m1,), TOUT="OUI"),
+    AFFE_VARC=_F(EVOL=extr_52, NOM_VARC="TEMP", VALE_REF=0.0),
+    MODELE=m_cube,
+)
+
+REF5_C1 = STAT_NON_LINE(
+    MODELE=m_cube,
+    CHAM_MATER=fiel_f51,
+    EXCIT=(_F(CHARGE=BLOC),),
+    INCREMENT=_F(LIST_INST=times),
+    CONVERGENCE=_F(RESI_GLOB_RELA=1.0e-5, ITER_GLOB_MAXI=80),
+)
+
+REF5_C2 = STAT_NON_LINE(
+    MODELE=m_cube,
+    CHAM_MATER=fiel_f52,
+    EXCIT=(_F(CHARGE=BLOC),),
+    INCREMENT=_F(LIST_INST=times),
+    CONVERGENCE=_F(RESI_GLOB_RELA=1.0e-5, ITER_GLOB_MAXI=80),
+)
+
+TEST5 = CALC_MECA_MULT(
+    MODELE=m_cube,
+    CHAM_MATER=fiel_f1,
+    CHAR_MECA_GLOBAL=BLOC,
+    CAS_CHARGE=(_F(EVOL_THER=calc_ther_mult, VALE_REF=0.0),),
+)
+
+# Verification process
+# Test on NUME_ORDRE 1 on case 1
+TEST5_fc1 = CREA_CHAMP(
+    NOM_CHAM="DEPL",
+    NUME_ORDRE=1,
+    OPERATION="EXTR",
+    RESULTAT=TEST5["CAS_1"],
+    TYPE_CHAM="NOEU_DEPL_R",
+)
+REF5_fc1 = CREA_CHAMP(
+    NOM_CHAM="DEPL", NUME_ORDRE=1, OPERATION="EXTR", RESULTAT=REF5_C1, TYPE_CHAM="NOEU_DEPL_R"
+)
+
+# Test on NUME_ORDRE 1 on case 2
+TEST5_fc2 = CREA_CHAMP(
+    NOM_CHAM="DEPL",
+    NUME_ORDRE=1,
+    OPERATION="EXTR",
+    RESULTAT=TEST5["CAS_2"],
+    TYPE_CHAM="NOEU_DEPL_R",
+)
+REF5_fc2 = CREA_CHAMP(
+    NOM_CHAM="DEPL", NUME_ORDRE=1, OPERATION="EXTR", RESULTAT=REF5_C2, TYPE_CHAM="NOEU_DEPL_R"
+)
+
+# ---------------------------------------------------------------------------------------------------
+# TEST_TABLE
+
+# Table creation : diff in norm between sequential results and CALC_MECA_MULT results
+TAB_TEST = CREA_TABLE(
+    LISTE=_F(
+        LISTE_R=(
+            (TEST1_fc1 - REF1_fc1).norm("NORM_2"),
+            (TEST1_fc2 - REF1_fc2).norm("NORM_2"),
+            (TEST2_fc1 - REF2_fc1).norm("NORM_2"),
+            (TEST2_fc2 - REF2_fc2).norm("NORM_2"),
+            (TEST3_fc1 - REF3_fc1).norm("NORM_2"),
+            (TEST3_fc2 - REF3_fc2).norm("NORM_2"),
+            (TEST3_fc1 - TEST2_fc1).norm("NORM_2"),  # TEST3 and TEST2 should be identical
+            (TEST3_fc2 - TEST2_fc2).norm("NORM_2"),
+            (TEST4_fc1 - REF1_fc1).norm("NORM_2"),
+            (TEST4_fc2 - REF1_fc2).norm("NORM_2"),
+            (TEST5_fc2 - REF5_fc2).norm("NORM_2"),
+            (TEST5_fc2 - REF5_fc2).norm("NORM_2"),
+        ),
+        PARA="TEST",
+    )
+)
+
+# Test that all the table values are equal to zero
+
+TEST_TABLE(VALE_CALC=0, NOM_PARA="TEST", TYPE_TEST="SOMM_ABS", ORDRE_GRANDEUR=1e-9, TABLE=TAB_TEST)
+
+FIN()

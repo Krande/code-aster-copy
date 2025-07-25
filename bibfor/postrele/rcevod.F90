@@ -21,7 +21,7 @@ subroutine rcevod(csigm, cinst, cnoc, sm, lfatig, &
                   csneo, csnee, cfao, cfae, cspo, &
                   cspe, cresu, kinti, it, jt, &
                   lrocht, symax, cpres, kemixt, cspto, &
-                  cspte, cspmo, cspme, lsymm)
+                  cspte, cspmo, cspme, lsymm, csiex)
 ! aslint: disable=W1504
     implicit none
 #include "asterf_types.h"
@@ -44,7 +44,7 @@ subroutine rcevod(csigm, cinst, cnoc, sm, lfatig, &
     character(len=16) :: kinti
     character(len=24) :: csigm, cinst, cnoc, csno, csne, csneo, csnee, cfao
     character(len=24) :: cfae, cspo, cspe, cresu, cpres, cspto, cspte, cspmo
-    character(len=24) :: cspme
+    character(len=24) :: cspme, csiex
 !     OPERATEUR POST_RCCM, TYPE_RESU_MECA='EVOLUTION'
 !     TYPE_RESU = 'DETAILS'
 !
@@ -53,17 +53,17 @@ subroutine rcevod(csigm, cinst, cnoc, sm, lfatig, &
     integer(kind=8) :: ncmp, jsigm, jinst, nbinst, jsno, jsne, ind, i1, i2, icmp, l1, l2
     integer(kind=8) :: l3, l4, l5, npara, ik, ir, i, vaio(5), vaie(5), npar1, jresp
     integer(kind=8) :: jsnee, jspo, jspe, jfao, jfae, jnoc, jresu, jspto, jspte, jspmo
-    integer(kind=8) :: jspme, jsneo
+    integer(kind=8) :: jspme, jsneo, jsigtot
     parameter(ncmp=6)
-    real(kind=8) :: tpm(ncmp), tpb(ncmp), tpmpbo(ncmp), tpmpbe(ncmp), dco, dce
-    real(kind=8) :: tresca, valo(39), vale(39), stlin, stpar
+    real(kind=8) :: tpm(ncmp), tpb(ncmp), tpmpbo(ncmp), tpmpbe(ncmp), dco, dce, qlin
+    real(kind=8) :: tresca, valo(39), vale(39), stlin, stpar, tfpto(ncmp), tfpte(ncmp)
     complex(kind=8) :: c16b
     character(len=8) :: nomres, typara(39)
     character(len=16) :: nomcmd, concep, nopara(39), vako(5), vake(5)
 !
     integer(kind=8) :: nparen, nparpm, nparsn, nparse, nparf1, nparf2, nparf3, nparrt
     integer(kind=8) :: ifm, niv
-    parameter(nparen=4, nparpm=5, nparsn=5, nparse=1,&
+    parameter(nparen=4, nparpm=6, nparsn=5, nparse=1,&
      &             nparf1=14, nparf2=13, nparrt=6, nparf3=17)
     character(len=8) :: typaen(nparen), typapm(nparpm), typasn(nparsn)
     character(len=8) :: typase(nparse), typaf1(nparf1), typaf2(nparf2)
@@ -77,8 +77,8 @@ subroutine rcevod(csigm, cinst, cnoc, sm, lfatig, &
     data nopart/'TABL_PRES', 'SY', 'INST', 'SIGM_M_PRES',&
      &              'VALE_MAXI_LINE', 'VALE_MAXI_PARAB'/
     data typart/'K8', 'R', 'R', 'R', 'R', 'R'/
-    data nopapm/'TABL_RESU', 'INST', 'PM', 'PB', 'PMB'/
-    data typapm/'K8', 'R', 'R', 'R', 'R'/
+    data nopapm/'TABL_RESU', 'INST', 'PM', 'PB', 'PMB', 'F'/
+    data typapm/'K8', 'R', 'R', 'R', 'R', 'R'/
     data nopasn/'TABL_RESU_1', 'INST_1',&
      &              'TABL_RESU_2', 'INST_2', 'SN'/
     data typasn/'K8', 'R', 'K8', 'R', 'R'/
@@ -260,6 +260,7 @@ subroutine rcevod(csigm, cinst, cnoc, sm, lfatig, &
         npar1 = npara+nparpm
 !
         call jeveuo(csigm, 'L', jsigm)
+        call jeveuo(csiex, 'L', jsigtot)
         do i = 1, nbinst
             vako(ik+1) = zk8(jresu+i-1)
             ir = 2+1
@@ -274,6 +275,8 @@ subroutine rcevod(csigm, cinst, cnoc, sm, lfatig, &
                     tpb(icmp) = zr(jsigm-1+l2)-zr(jsigm-1+l5)
                     tpmpbo(icmp) = zr(jsigm-1+l1)-zr(jsigm-1+l4)+(zr(jsigm-1+l2)-zr(jsigm-1&
                                    &+l5))
+                    qlin = zr(jsigm-1+l4)+zr(jsigm-1+l5)
+                    tfpto(icmp) = zr(jsigtot-1+l1)-tpmpbo(icmp)-qlin
                 end do
             else
                 do icmp = 1, ncmp
@@ -285,7 +288,10 @@ subroutine rcevod(csigm, cinst, cnoc, sm, lfatig, &
                     tpb(icmp) = zr(jsigm-1+l2)-zr(jsigm-1+l4)
                     tpmpbo(icmp) = zr(jsigm-1+l1)-zr(jsigm-1+l2)-(zr(jsigm-1+l3)-zr(jsigm-1&
                                    &+l4))
+                    qlin = zr(jsigm-1+l3)+zr(jsigm-1+l4)
+                    tfpto(icmp) = zr(jsigtot-1+l1)-tpmpbo(icmp)-qlin
                 end do
+                print *, ''
             end if
             call rctres(tpm, tresca)
             ir = ir+1
@@ -294,6 +300,9 @@ subroutine rcevod(csigm, cinst, cnoc, sm, lfatig, &
             ir = ir+1
             valo(ir) = tresca
             call rctres(tpmpbo, tresca)
+            ir = ir+1
+            valo(ir) = tresca
+            call rctres(tfpto, tresca)
             ir = ir+1
             valo(ir) = tresca
             call tbajli(nomres, npar1, nopara, vaio, valo, &
@@ -311,8 +320,10 @@ subroutine rcevod(csigm, cinst, cnoc, sm, lfatig, &
                     l5 = 5*ncmp*nbinst+ncmp*(i-1)+icmp
                     tpm(icmp) = zr(jsigm-1+l1)-zr(jsigm-1+l4)
                     tpb(icmp) = zr(jsigm-1+l2)-zr(jsigm-1+l5)
-                    tpmpbo(icmp) = zr(jsigm-1+l1)-zr(jsigm-1+l4)+(zr(jsigm-1+l2)-zr(jsigm-1&
+                    tpmpbe(icmp) = zr(jsigm-1+l1)-zr(jsigm-1+l4)+(zr(jsigm-1+l2)-zr(jsigm-1&
                                    &+l5))
+                    qlin = zr(jsigm-1+l4)+zr(jsigm-1+l5)
+                    tfpte(icmp) = zr(jsigtot-1+ncmp*nbinst+ncmp*(i-1)+icmp)-tpmpbe(icmp)-qlin
                 end do
             else
                 do icmp = 1, ncmp
@@ -324,6 +335,8 @@ subroutine rcevod(csigm, cinst, cnoc, sm, lfatig, &
                     tpb(icmp) = zr(jsigm-1+l2)-zr(jsigm-1+l4)
                     tpmpbe(icmp) = zr(jsigm-1+l1)+zr(jsigm-1+l2)-(zr(jsigm-1+l3)+zr(jsigm-1&
                                    &+l4))
+                    qlin = zr(jsigm-1+l3)+zr(jsigm-1+l4)
+                    tfpte(icmp) = zr(jsigtot-1+l2)-tpmpbe(icmp)-qlin
                 end do
             end if
             call rctres(tpm, tresca)
@@ -333,6 +346,9 @@ subroutine rcevod(csigm, cinst, cnoc, sm, lfatig, &
             ir = ir+1
             vale(ir) = tresca
             call rctres(tpmpbe, tresca)
+            ir = ir+1
+            vale(ir) = tresca
+            call rctres(tfpte, tresca)
             ir = ir+1
             vale(ir) = tresca
             call tbajli(nomres, npar1, nopara, vaie, vale, &

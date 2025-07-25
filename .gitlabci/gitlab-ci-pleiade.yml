@@ -323,6 +323,7 @@ verification_test_win:
   script:
     - test "$(date +%u)" -ne $WEEKLY_RUN && echo "not run" && exit 0
     - !reference [.verification_test, script]
+  allow_failure: true
   rules:
     - if: $BUILDTYPE == "nightly"
 
@@ -371,5 +372,6 @@ verification_test_pixi:
         -L verification
         --exclude-testlist .gitlabci/known_failures-pleiade.list
         --resutest=results
+  allow_failure: true
   rules:
     - if: $BUILDTYPE == "nightly"

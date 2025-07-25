@@ -1,0 +1,255 @@
+# coding=utf-8
+# --------------------------------------------------------------------
+# Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
+# This file is part of code_aster.
+#
+# code_aster is free software: you can redistribute it and/or modify
+# it under the terms of the GNU General Public License as published by
+# the Free Software Foundation, either version 3 of the License, or
+# (at your option) any later version.
+#
+# code_aster is distributed in the hope that it will be useful,
+# but WITHOUT ANY WARRANTY; without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+# GNU General Public License for more details.
+#
+# You should have received a copy of the GNU General Public License
+# along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
+# --------------------------------------------------------------------
+
+DEBUT(CODE="OUI", DEBUG=_F(SDVERI="OUI"))
+
+# Validation test on 2D model
+# ----------------------------
+
+# Read the mesh
+plate = LIRE_MAILLAGE(UNITE=20)
+# Mechanical model
+m_plate = AFFE_MODELE(
+    AFFE=_F(MODELISATION="DKT", PHENOMENE="MECANIQUE", TOUT="OUI"), MAILLAGE=plate
+)
+elem_m = AFFE_CARA_ELEM(COQUE=_F(EPAIS=10.0, GROUP_MA=("FACE_ALL",)), MODELE=m_plate)
+# Materials
+mat_m1 = DEFI_MATERIAU(ELAS=_F(ALPHA=1.2e-03, E=200000.0, NU=0.3))
+mat_m2 = DEFI_MATERIAU(ELAS=_F(ALPHA=1.2e-08, E=20000.0, NU=0.3))
+mat_m3 = DEFI_MATERIAU(ELAS=_F(ALPHA=1.2e-05, E=200000.0, NU=0.3))
+# Material fields
+fiel_f1 = AFFE_MATERIAU(
+    AFFE=(
+        _F(MATER=(mat_m1,), TOUT="OUI"),
+        _F(GROUP_MA=("FACEB", "FACEC"), MATER=(mat_m2,)),
+        _F(GROUP_MA=("FACED",), MATER=(mat_m3,)),
+    ),
+    MODELE=m_plate,
+)
+# Mechanical limit conditions
+
+BLOC = AFFE_CHAR_MECA(
+    DDL_IMPO=(
+        _F(DRY=0.0, DX=0.0, GROUP_MA=("EX0",)),
+        _F(DRX=0.0, DY=0.0, GROUP_MA=("EY0",)),
+        _F(DZ=0.0, GROUP_NO=("P0",)),
+    ),
+    MODELE=m_plate,
+)
+
+# Time stepping
+times = DEFI_LIST_INST(DEFI_LIST=_F(VALE=(0.0, 10.0)))
+listr = DEFI_LIST_REEL(VALE=(0.0, 10.0))
+
+# homogeneous temperatures
+
+T_INIT1 = CREA_CHAMP(
+    OPERATION="AFFE",
+    TYPE_CHAM="NOEU_TEMP_R",
+    MAILLAGE=plate,
+    AFFE=(
+        _F(TOUT="OUI", NOM_CMP="TEMP_INF", VALE=0),
+        _F(TOUT="OUI", NOM_CMP="TEMP_MIL", VALE=0),
+        _F(TOUT="OUI", NOM_CMP="TEMP_SUP", VALE=0),
+    ),
+)
+
+CHT1 = CREA_CHAMP(
+    OPERATION="AFFE",
+    TYPE_CHAM="NOEU_TEMP_R",
+    MAILLAGE=plate,
+    AFFE=(
+        _F(TOUT="OUI", NOM_CMP="TEMP_INF", VALE=100),
+        _F(TOUT="OUI", NOM_CMP="TEMP_MIL", VALE=100),
+        _F(TOUT="OUI", NOM_CMP="TEMP_SUP", VALE=100),
+    ),
+)
+
+# non homogeneous temperatures
+T_INIT2 = CREA_CHAMP(
+    OPERATION="AFFE",
+    TYPE_CHAM="CART_TEMP_R",
+    MAILLAGE=plate,
+    AFFE=(
+        _F(GROUP_MA=("FACEA", "FACEB", "FACEC"), NOM_CMP="TEMP_INF", VALE=0),
+        _F(GROUP_MA=("FACED"), NOM_CMP="TEMP_INF", VALE=0),
+        _F(GROUP_MA=("FACEA", "FACEB", "FACEC"), NOM_CMP="TEMP_MIL", VALE=0),
+        _F(GROUP_MA=("FACED"), NOM_CMP="TEMP_MIL", VALE=0),
+        _F(GROUP_MA=("FACEA", "FACEB", "FACEC"), NOM_CMP="TEMP_SUP", VALE=0),
+        _F(GROUP_MA=("FACED"), NOM_CMP="TEMP_SUP", VALE=0),
+    ),
+)
+
+CHT2 = CREA_CHAMP(
+    OPERATION="AFFE",
+    TYPE_CHAM="CART_TEMP_R",
+    MAILLAGE=plate,
+    AFFE=(
+        _F(GROUP_MA=("FACEA", "FACEB", "FACEC"), NOM_CMP="TEMP_INF", VALE=20),
+        _F(GROUP_MA=("FACED"), NOM_CMP="TEMP_INF", VALE=100),
+        _F(GROUP_MA=("FACEA", "FACEB", "FACEC"), NOM_CMP="TEMP_MIL", VALE=20),
+        _F(GROUP_MA=("FACED"), NOM_CMP="TEMP_MIL", VALE=100),
+        _F(GROUP_MA=("FACEA", "FACEB", "FACEC"), NOM_CMP="TEMP_SUP", VALE=20),
+        _F(GROUP_MA=("FACED"), NOM_CMP="TEMP_SUP", VALE=100),
+    ),
+)
+
+
+# thermal results type creation
+
+# homogeneous temperatures
+CRT_1 = CREA_RESU(
+    OPERATION="AFFE",
+    TYPE_RESU="EVOL_THER",
+    AFFE=(
+        _F(CHAM_GD=T_INIT1, INST=0.0, NOM_CHAM="TEMP"),
+        _F(CHAM_GD=CHT1, INST=10.0, NOM_CHAM="TEMP"),
+    ),
+)
+
+CRT1 = CREA_RESU(
+    OPERATION="PREP_VARC",
+    TYPE_RESU="EVOL_THER",
+    PREP_VARC=_F(MODELE=m_plate, CARA_ELEM=elem_m, EVOL_THER=CRT_1),
+)
+
+# non homogeneous temperatures
+CRT_2 = CREA_RESU(
+    OPERATION="AFFE",
+    TYPE_RESU="EVOL_THER",
+    AFFE=(
+        _F(CHAM_GD=T_INIT2, INST=0.0, NOM_CHAM="TEMP"),
+        _F(CHAM_GD=CHT2, INST=10.0, NOM_CHAM="TEMP"),
+    ),
+)
+
+CRT2 = CREA_RESU(
+    OPERATION="PREP_VARC",
+    TYPE_RESU="EVOL_THER",
+    PREP_VARC=_F(MODELE=m_plate, CARA_ELEM=elem_m, EVOL_THER=CRT_2),
+)
+
+# ---------------------------------------------------------------------------------------------------
+# FIRST TEST : 1 material field with 1 material
+# CALC_MECA_MULT with 2 thermal fields
+
+TEST1 = CALC_MECA_MULT(
+    MODELE=m_plate,
+    CHAM_MATER=fiel_f1,
+    CARA_ELEM=elem_m,
+    CHAR_MECA_GLOBAL=BLOC,
+    LIST_INST=times,
+    CAS_CHARGE=(
+        _F(EVOL_THER=CRT1, NOM_CAS="CAS_1", VALE_REF=0.0),
+        _F(EVOL_THER=CRT2, NOM_CAS="CAS_2", VALE_REF=0.0),
+    ),
+)
+
+# Reference results for the 2 thermal field (STAT_NON_LINE)
+# Reference for case 1
+
+fiel_f11 = AFFE_MATERIAU(
+    AFFE=(
+        _F(MATER=(mat_m1,), TOUT="OUI"),
+        _F(GROUP_MA=("FACEB", "FACEC"), MATER=(mat_m2,)),
+        _F(GROUP_MA=("FACED",), MATER=(mat_m3,)),
+    ),
+    AFFE_VARC=_F(EVOL=CRT1, NOM_VARC="TEMP", VALE_REF=0.0),
+    MODELE=m_plate,
+)
+
+
+REF1_C1 = STAT_NON_LINE(
+    MODELE=m_plate,
+    CARA_ELEM=elem_m,
+    CHAM_MATER=fiel_f11,
+    EXCIT=(_F(CHARGE=BLOC),),
+    INCREMENT=_F(LIST_INST=times),
+    CONVERGENCE=_F(RESI_GLOB_RELA=1.0e-6, ITER_GLOB_MAXI=100),
+)
+# Reference for case 2
+
+fiel_f12 = AFFE_MATERIAU(
+    AFFE=(
+        _F(MATER=(mat_m1,), TOUT="OUI"),
+        _F(GROUP_MA=("FACEB", "FACEC"), MATER=(mat_m2,)),
+        _F(GROUP_MA=("FACED",), MATER=(mat_m3,)),
+    ),
+    AFFE_VARC=_F(EVOL=CRT2, NOM_VARC="TEMP", VALE_REF=0.0),
+    MODELE=m_plate,
+)
+
+
+REF1_C2 = STAT_NON_LINE(
+    MODELE=m_plate,
+    CARA_ELEM=elem_m,
+    CHAM_MATER=fiel_f12,
+    EXCIT=(_F(CHARGE=BLOC),),
+    INCREMENT=_F(LIST_INST=times),
+    CONVERGENCE=_F(RESI_GLOB_RELA=1.0e-6, ITER_GLOB_MAXI=100),
+)
+
+
+# Verification process
+# Test on NUME_ORDRE 1 on case 1
+TEST1_fc1 = CREA_CHAMP(
+    NOM_CHAM="DEPL",
+    NUME_ORDRE=1,
+    OPERATION="EXTR",
+    RESULTAT=TEST1["CAS_1"],
+    TYPE_CHAM="NOEU_DEPL_R",
+)
+REF1_fc1 = CREA_CHAMP(
+    NOM_CHAM="DEPL", NUME_ORDRE=1, OPERATION="EXTR", RESULTAT=REF1_C1, TYPE_CHAM="NOEU_DEPL_R"
+)
+
+# Test on NUME_ORDRE 1 on case 2
+TEST1_fc2 = CREA_CHAMP(
+    NOM_CHAM="DEPL",
+    NUME_ORDRE=1,
+    OPERATION="EXTR",
+    RESULTAT=TEST1["CAS_2"],
+    TYPE_CHAM="NOEU_DEPL_R",
+)
+REF1_fc2 = CREA_CHAMP(
+    NOM_CHAM="DEPL", NUME_ORDRE=1, OPERATION="EXTR", RESULTAT=REF1_C2, TYPE_CHAM="NOEU_DEPL_R"
+)
+
+# ---------------------------------------------------------------------------------------------------
+# TEST_TABLE
+
+# Table creation : diff in norm between sequential results and CALC_MECA_MULT results
+TAB_TEST = CREA_TABLE(
+    LISTE=_F(
+        LISTE_R=((TEST1_fc1 - REF1_fc1).norm("NORM_2"), (TEST1_fc2 - REF1_fc2).norm("NORM_2")),
+        PARA="TEST",
+    )
+)
+
+# Test that all the table values are equal to zero
+TEST_TABLE(
+    CRITERE="ABSOLU",
+    VALE_CALC=0,
+    NOM_PARA="TEST",
+    TYPE_TEST="SOMM_ABS",
+    ORDRE_GRANDEUR=1e-6,
+    TABLE=TAB_TEST,
+)
+
+FIN()

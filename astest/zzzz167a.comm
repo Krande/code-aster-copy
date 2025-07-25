@@ -1,0 +1,282 @@
+# coding=utf-8
+# --------------------------------------------------------------------
+# Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
+# This file is part of code_aster.
+#
+# code_aster is free software: you can redistribute it and/or modify
+# it under the terms of the GNU General Public License as published by
+# the Free Software Foundation, either version 3 of the License, or
+# (at your option) any later version.
+#
+# code_aster is distributed in the hope that it will be useful,
+# but WITHOUT ANY WARRANTY; without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+# GNU General Public License for more details.
+#
+# You should have received a copy of the GNU General Public License
+# along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
+# --------------------------------------------------------------------
+
+DEBUT(CODE="OUI", DEBUG=_F(SDVERI="OUI"))
+
+# Read the quadratic mesh
+mesh_quad = LIRE_MAILLAGE(UNITE=20)
+# Linear version of the mesh
+mesh_lin = CREA_MAILLAGE(QUAD_LINE=_F(TOUT="OUI"), MAILLAGE=mesh_quad)
+# Thermal model
+mod_th = AFFE_MODELE(
+    AFFE=(_F(TOUT="OUI", MODELISATION="3D", PHENOMENE="THERMIQUE"),), MAILLAGE=mesh_lin
+)
+# Materials
+LAMBDA = DEFI_CONSTANTE(VALE=0.003)
+RHOCP = DEFI_CONSTANTE(VALE=1e-05)
+mat = DEFI_MATERIAU(THER_NL=_F(LAMBDA=LAMBDA, RHO_CP=RHOCP))
+# Material field
+fiel1 = AFFE_MATERIAU(AFFE=_F(MATER=(mat,), TOUT="OUI"), MODELE=mod_th)
+# Time stepping
+times = DEFI_LIST_INST(DEFI_LIST=_F(VALE=(0.0, 10)))
+times2 = DEFI_LIST_INST(DEFI_LIST=_F(VALE=(0.0, 3, 5, 10)))
+
+FONC_1 = DEFI_FONCTION(NOM_PARA="INST", VALE=(0.0, 0.0, 0.001, 1.0), PROL_DROITE="CONSTANT")
+FONC_2 = DEFI_FONCTION(NOM_PARA="INST", VALE=(0.0, 0.0, 0.009, 1.0), PROL_DROITE="CONSTANT")
+
+FONC_H1 = DEFI_CONSTANTE(VALE=1e-3)
+FONC_H2 = DEFI_CONSTANTE(VALE=1e-2)
+FONC_NULLE = DEFI_CONSTANTE(VALE=0)
+
+# Common thermal loading
+CL = AFFE_CHAR_THER(MODELE=mod_th, TEMP_IMPO=_F(GROUP_MA=("SBOT",), TEMP=0))
+
+# Thermal loadings
+# Thermal loading 1 (1 AFFE_CHAR_THER)
+CLTH_1 = AFFE_CHAR_THER_F(
+    MODELE=mod_th,
+    ECHANGE=(
+        _F(GROUP_MA=("STOP",), TEMP_EXT=FONC_1, COEF_H=FONC_H1),
+        _F(GROUP_MA=("SY1",), TEMP_EXT=FONC_NULLE, COEF_H=FONC_H2),
+    ),
+)
+# Thermal loading 1 (2 AFFE_CHAR_THER)
+CLTH_11 = AFFE_CHAR_THER_F(
+    MODELE=mod_th, ECHANGE=(_F(GROUP_MA=("STOP",), TEMP_EXT=FONC_1, COEF_H=FONC_H1),)
+)
+CLTH_12 = AFFE_CHAR_THER_F(
+    MODELE=mod_th, ECHANGE=(_F(GROUP_MA=("SY1",), TEMP_EXT=FONC_NULLE, COEF_H=FONC_H2))
+)
+# Thermal loading 2 (1 AFFE_CHAR_THER)
+CLTH_2 = AFFE_CHAR_THER_F(
+    MODELE=mod_th,
+    ECHANGE=(
+        _F(GROUP_MA=("SY1",), TEMP_EXT=FONC_2, COEF_H=FONC_H2),
+        _F(GROUP_MA=("STOP",), TEMP_EXT=FONC_NULLE, COEF_H=FONC_H1),
+    ),
+)
+# Thermal loading 2 (2 AFFE_CHAR_THER)
+CLTH_21 = AFFE_CHAR_THER_F(
+    MODELE=mod_th, ECHANGE=(_F(GROUP_MA=("SY1",), TEMP_EXT=FONC_2, COEF_H=FONC_H2),)
+)
+CLTH_22 = AFFE_CHAR_THER_F(
+    MODELE=mod_th, ECHANGE=(_F(GROUP_MA=("STOP",), TEMP_EXT=FONC_NULLE, COEF_H=FONC_H1))
+)
+
+# Reference cases : THER_NON_LINE
+
+THER1CC = THER_NON_LINE(
+    CHAM_MATER=fiel1,
+    EXCIT=(_F(CHARGE=CL), _F(CHARGE=CLTH_1)),
+    ETAT_INIT=_F(VALE=0),
+    INCREMENT=_F(LIST_INST=times),
+    MODELE=mod_th,
+    PARM_THETA=1,
+)
+
+THER2CC = THER_NON_LINE(
+    CHAM_MATER=fiel1,
+    EXCIT=(_F(CHARGE=CL), _F(CHARGE=CLTH_2)),
+    ETAT_INIT=_F(VALE=0),
+    INCREMENT=_F(LIST_INST=times),
+    MODELE=mod_th,
+    PARM_THETA=1,
+)
+
+THER1 = THER_NON_LINE(
+    CHAM_MATER=fiel1,
+    EXCIT=(_F(CHARGE=CL), _F(CHARGE=CLTH_11), _F(CHARGE=CLTH_12)),
+    ETAT_INIT=_F(VALE=0),
+    INCREMENT=_F(LIST_INST=times),
+    MODELE=mod_th,
+    PARM_THETA=1,
+)
+
+THER2 = THER_NON_LINE(
+    CHAM_MATER=fiel1,
+    EXCIT=(_F(CHARGE=CL), _F(CHARGE=CLTH_21), _F(CHARGE=CLTH_22)),
+    ETAT_INIT=_F(VALE=0),
+    INCREMENT=_F(LIST_INST=times),
+    MODELE=mod_th,
+    PARM_THETA=1,
+)
+
+THER3 = THER_NON_LINE(
+    CHAM_MATER=fiel1,
+    EXCIT=(_F(CHARGE=CL), _F(CHARGE=CLTH_11), _F(CHARGE=CLTH_12)),
+    ETAT_INIT=_F(VALE=0),
+    INCREMENT=_F(LIST_INST=times),
+    MODELE=mod_th,
+    PARM_THETA=0.5,
+)
+
+
+THER4 = THER_NON_LINE(
+    CHAM_MATER=fiel1,
+    EXCIT=(_F(CHARGE=CL), _F(CHARGE=CLTH_11), _F(CHARGE=CLTH_12)),
+    ETAT_INIT=_F(VALE=0),
+    INCREMENT=_F(LIST_INST=times2),
+    MODELE=mod_th,
+    PARM_THETA=1,
+)
+
+
+# CALC_THER_MULT : option CLASSIQUE
+resu_classique = CALC_THER_MULT(
+    MODELE=mod_th,
+    CHAM_MATER=fiel1,
+    CHAR_THER_GLOBAL=CL,
+    PARM_THETA=1,
+    CAS_CHARGE=(
+        _F(EXCIT=(CLTH_1), NOM_CAS="CAS_1", LIST_INST=times),
+        _F(EXCIT=(CLTH_2), NOM_CAS="CAS_2", LIST_INST=times),
+    ),
+)
+
+
+# CALC_THER_MULT : option CHOC_UNIT
+resu_choc = CALC_THER_MULT(
+    MODELE=mod_th,
+    CHAM_MATER=fiel1,
+    CHAR_THER_GLOBAL=CL,
+    PARM_THETA=1,
+    CAS_CHARGE=(
+        _F(COEF_H=1e-3, DUREE_CHOC=0.001, LIST_INST=times, GROUP_MA=("STOP"), NOM_CAS="CAS_1"),
+        _F(COEF_H=1e-2, DUREE_CHOC=0.009, LIST_INST=times, GROUP_MA=("SY1"), NOM_CAS="CAS_2"),
+    ),
+)
+
+# CALC_THER_MULT : option CHOC_UNIT + param_theta
+resu_choc_param = CALC_THER_MULT(
+    MODELE=mod_th,
+    CHAM_MATER=fiel1,
+    CHAR_THER_GLOBAL=CL,
+    PARM_THETA=0.5,
+    CAS_CHARGE=(
+        _F(COEF_H=1e-3, DUREE_CHOC=0.001, GROUP_MA=("STOP",), NOM_CAS="CAS_3", LIST_INST=times),
+        _F(COEF_H=1e-2, DUREE_CHOC=0.009, LIST_INST=times, GROUP_MA=("SY1",), NOM_CAS="CAS_4"),
+    ),
+)
+
+# CALC_THER_MULT : option CHOC_UNIT + different timesteppings
+resu_choc_times = CALC_THER_MULT(
+    MODELE=mod_th,
+    CHAM_MATER=fiel1,
+    CHAR_THER_GLOBAL=CL,
+    PARM_THETA=1,
+    CAS_CHARGE=(
+        _F(COEF_H=1e-3, DUREE_CHOC=0.001, GROUP_MA=("STOP"), NOM_CAS="CAS_1", LIST_INST=times2),
+        _F(COEF_H=1e-2, DUREE_CHOC=0.009, GROUP_MA=("SY1"), NOM_CAS="CAS_2", LIST_INST=times2),
+    ),
+)
+
+# Verification process
+# Verification on NUME_ORDRE 1
+REF1CC = CREA_CHAMP(
+    NOM_CHAM="TEMP", NUME_ORDRE=1, OPERATION="EXTR", RESULTAT=THER1CC, TYPE_CHAM="NOEU_TEMP_R"
+)
+REF2CC = CREA_CHAMP(
+    NOM_CHAM="TEMP", NUME_ORDRE=1, OPERATION="EXTR", RESULTAT=THER2CC, TYPE_CHAM="NOEU_TEMP_R"
+)
+REF1 = CREA_CHAMP(
+    NOM_CHAM="TEMP", NUME_ORDRE=1, OPERATION="EXTR", RESULTAT=THER1, TYPE_CHAM="NOEU_TEMP_R"
+)
+REF2 = CREA_CHAMP(
+    NOM_CHAM="TEMP", NUME_ORDRE=1, OPERATION="EXTR", RESULTAT=THER2, TYPE_CHAM="NOEU_TEMP_R"
+)
+REF3 = CREA_CHAMP(
+    NOM_CHAM="TEMP", NUME_ORDRE=1, OPERATION="EXTR", RESULTAT=THER3, TYPE_CHAM="NOEU_TEMP_R"
+)
+REF4 = CREA_CHAMP(
+    NOM_CHAM="TEMP", NUME_ORDRE=1, OPERATION="EXTR", RESULTAT=THER4, TYPE_CHAM="NOEU_TEMP_R"
+)
+
+CC1 = CREA_CHAMP(
+    NOM_CHAM="TEMP",
+    NUME_ORDRE=1,
+    OPERATION="EXTR",
+    RESULTAT=resu_classique["CAS_1"],
+    TYPE_CHAM="NOEU_TEMP_R",
+)
+
+CC2 = CREA_CHAMP(
+    NOM_CHAM="TEMP",
+    NUME_ORDRE=1,
+    OPERATION="EXTR",
+    RESULTAT=resu_classique["CAS_2"],
+    TYPE_CHAM="NOEU_TEMP_R",
+)
+
+FT1 = CREA_CHAMP(
+    NOM_CHAM="TEMP",
+    NUME_ORDRE=1,
+    OPERATION="EXTR",
+    RESULTAT=resu_choc["CAS_1"],
+    TYPE_CHAM="NOEU_TEMP_R",
+)
+
+FT2 = CREA_CHAMP(
+    NOM_CHAM="TEMP",
+    NUME_ORDRE=1,
+    OPERATION="EXTR",
+    RESULTAT=resu_choc["CAS_2"],
+    TYPE_CHAM="NOEU_TEMP_R",
+)
+
+FT3 = CREA_CHAMP(
+    NOM_CHAM="TEMP",
+    NUME_ORDRE=1,
+    OPERATION="EXTR",
+    RESULTAT=resu_choc_param["CAS_3"],
+    TYPE_CHAM="NOEU_TEMP_R",
+)
+
+FT4 = CREA_CHAMP(
+    NOM_CHAM="TEMP",
+    NUME_ORDRE=1,
+    OPERATION="EXTR",
+    RESULTAT=resu_choc_times["CAS_1"],
+    TYPE_CHAM="NOEU_TEMP_R",
+)
+
+# TEST_TABLE
+TAB_TEST = CREA_TABLE(
+    LISTE=_F(
+        LISTE_R=(
+            (CC1 - REF1CC).norm("NORM_2"),
+            (CC2 - REF2CC).norm("NORM_2"),
+            (FT1 - REF1).norm("NORM_2"),
+            (FT2 - REF2).norm("NORM_2"),
+            (FT3 - REF3).norm("NORM_2"),
+            (FT4 - REF4).norm("NORM_2"),
+        ),
+        PARA="TEST",
+    )
+)
+
+TEST_TABLE(
+    CRITERE="ABSOLU",
+    VALE_CALC=0,
+    NOM_PARA="TEST",
+    TYPE_TEST="SOMM_ABS",
+    ORDRE_GRANDEUR=1e-6,
+    TABLE=TAB_TEST,
+)
+
+FIN()
