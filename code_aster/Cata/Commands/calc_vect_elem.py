@@ -72,9 +72,9 @@ CALC_VECT_ELEM = MACRO(
     ),
     b_char_varc=BLOC(
         condition="""equal_to("OPTION", 'FORC_VARC')""",
-        MODELE=SIMP(statut="f", typ=modele_sdaster),
-        CARA_ELEM=SIMP(statut="f", typ=cara_elem),
+        MODELE=SIMP(statut="o", typ=modele_sdaster),
         CHAM_MATER=SIMP(statut="o", typ=cham_mater),
+        CARA_ELEM=SIMP(statut="f", typ=cara_elem),
         INST=SIMP(statut="f", typ="R", defaut=0.0e0),
     ),
     b_char_ther=BLOC(
