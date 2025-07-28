@@ -883,9 +883,10 @@ def ACCE2SROM(self, f_in, xig, l_freq, ideb, METHODE_SRO):
     return f_out
 
 
-# conversion ACCE en SRO par fft et filtrage: METHODE_SRO=HARMO
+# conversion ACCE en SRO (PSA) par fft et filtrage: METHODE_SRO=HARMO
 def ACCE2SRO(f_in, xig, l_freq, ideb=2):
     """This function computes the response spectrum of an accelerogram
+         in pseudo-acceleration/velocity and relative displacement
     Args:
         f_in(t_fonction):signal temporel (accelerogram)
         xig(float): damping ratio
@@ -915,6 +916,55 @@ def ACCE2SRO(f_in, xig, l_freq, ideb=2):
         Yw = acce_in * hw2
         acce_out = NP.fft.irfft(Yw, n=N)
         vale_sro.append(w_0**ideb * max(abs(acce_out)))
+    f_out = t_fonction(l_freq, vale_sro, para=para_sro)
+    return f_out
+
+
+# conversion ACCE en SRO (ABS) par fft et filtrage: METHODE_SRO=HARMO
+def ACCE2SRO_DIR(f_in, xig, l_freq, ideb):
+    """This function computes the response spectrum in absolute acceleration,
+      or relative velocity or displacvement  of an accelerogram
+    Args:
+        f_in(t_fonction):signal temporel (accelerogram)
+        xig(float): damping ratio
+        l_freq (list): list of frequencies for the response spectrum (Hz)
+    Returns:
+        t_fonction : the response spectrum function (as a function of freq in Hz)
+    """
+    #
+    para_sro = {
+        "INTERPOL": ["LIN", "LIN"],
+        "NOM_PARA": "FREQ",
+        "PROL_DROITE": "CONSTANT",
+        "PROL_GAUCHE": "EXCLU",
+        "NOM_RESU": "ACCE",
+    }
+    vale_t = f_in.vale_x
+    vale_acce = f_in.vale_y
+    N = len(vale_t)
+    dt = vale_t[1] - vale_t[0]
+    ws = NP.fft.rfftfreq(N, d=dt) * 2 * pi
+    vale_sro = []
+    acce_in = NP.fft.rfft(NP.array(vale_acce))
+
+    for fi in l_freq:
+        w_0 = fi * 2.0 * pi
+
+        if ideb == 2:
+            hw = (w_0**2 + 2.0 * xig * w_0 * ws * 1j) / (
+                (w_0**2 - ws**2) + 2.0 * xig * 1j * w_0 * ws
+            )
+
+        elif ideb == 1:
+            hw = 1j * ws / ((w_0**2 - ws**2) + 2.0 * xig * 1j * w_0 * ws)
+
+        elif ideb == 0:
+            hw = 1.0 / ((w_0**2 - ws**2) + 2.0 * xig * 1j * w_0 * ws)
+
+        Yw = acce_in * hw
+        acce_out = NP.fft.irfft(Yw, n=N)
+        vale_sro.append(max(abs(acce_out)))
+
     f_out = t_fonction(l_freq, vale_sro, para=para_sro)
     return f_out
 
