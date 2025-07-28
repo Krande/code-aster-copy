@@ -33,7 +33,7 @@ subroutine vebume(model_, disp_, list_load, vect_elemz, scaling, base)
 #include "asterfort/jeexin.h"
 #include "asterfort/jemarq.h"
 #include "asterfort/mecact.h"
-#include "asterfort/memare.h"
+#include "asterfort/vemare.h"
 #include "asterfort/reajre.h"
 !
 ! person_in_charge: mickael.abbas at edf.fr
@@ -110,7 +110,7 @@ subroutine vebume(model_, disp_, list_load, vect_elemz, scaling, base)
 ! - Allocate result
 !
     call detrsd('VECT_ELEM', vect_elem)
-    call memare(base, vect_elem, model, 'CHAR_MECA')
+    call vemare(base, vect_elem, model)
     call reajre(vect_elem, ' ', base)
 !
 ! - Input fields

@@ -2,7 +2,7 @@
  * @file ElementaryCompute.cxx
  * @brief Implementation of class ElementaryCompute
  * @section LICENCE
- *   Copyright (C) 1991 - 2024  EDF R&D                www.code-aster.org
+ *   Copyright (C) 1991 - 2025  EDF R&D                www.code-aster.org
  *
  *   This file is part of Code_Aster.
  *
@@ -22,8 +22,9 @@
 
 #include "Discretization/ElementaryCompute.h"
 
-void ElementaryCompute::createDescriptor( const ModelPtr &currModel ) {
+void ElementaryCompute::createDescriptor( const ModelPtr &currModel, const std::string &option ) {
     _rerr->allocate( 3 );
+    _model = currModel;
     if ( currModel ) {
         ( *_rerr )[0] = currModel->getName();
 
@@ -36,5 +37,26 @@ void ElementaryCompute::createDescriptor( const ModelPtr &currModel ) {
         ( *_rerr )[2] = "NON_SOUS_STRUC";
     }
 
-    ( *_rerr )[1] = _option;
+    ( *_rerr )[1] = option;
 };
+
+void ElementaryCompute::createDescriptor( const ModelPtr &currModel ) {
+    if ( _rerr->exists() ) {
+        _rerr->updateValuePointer();
+    } else {
+        _rerr->allocate( 1 );
+    }
+    _model = currModel;
+    if ( _model ) {
+        ( *_rerr )[0] = _model->getName();
+    }
+};
+
+std::string ElementaryCompute::getOption() const {
+    if ( _rerr->size() > 1 ) {
+        _rerr->updateValuePointer();
+        return strip( ( *_rerr )[1].toString() );
+    }
+
+    return std::string();
+}

@@ -116,7 +116,7 @@ subroutine ccvrpu(resuin, lisord, nbordr)
                 call rsadpa(resuin, 'L', 1, 'CARAELEM', numord, &
                             0, sjv=jpara, styp=k8b)
                 carelr = zk8(jpara)
-                if (carelr .ne. ' ' .and. carelr .ne. carelu) then
+                if (carelr .ne. '#AUCUN' .and. carelr .ne. ' ' .and. carelr .ne. carelu) then
                     valk(1) = 'CARA_ELEM'
                     valk(2) = carelr
                     valk(3) = carelu
@@ -130,7 +130,7 @@ subroutine ccvrpu(resuin, lisord, nbordr)
                 call rsadpa(resuin, 'L', 1, 'CHAMPMAT', numord, &
                             0, sjv=jpara, styp=k8b)
                 chmatr = zk8(jpara)
-                if (chmatr .ne. ' ' .and. chmatr .ne. chmatu) then
+                if (chmatr .ne. '#AUCUN' .and. chmatr .ne. ' ' .and. chmatr .ne. chmatu) then
                     valk(1) = 'CHAM_MATER'
                     valk(2) = chmatr
                     valk(3) = chmatu

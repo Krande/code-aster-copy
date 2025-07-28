@@ -32,6 +32,7 @@ subroutine asseVectSuper(model, mesh, vectElem, &
 #include "asterfort/dismoi.h"
 #include "asterfort/jedema.h"
 #include "asterfort/jelira.h"
+#include "asterfort/jeexin.h"
 #include "asterfort/jemarq.h"
 #include "asterfort/jenuno.h"
 #include "asterfort/jeveuo.h"
@@ -60,7 +61,7 @@ subroutine asseVectSuper(model, mesh, vectElem, &
 !
     integer(kind=8) :: iSuperCell, iLoadCase, iNode, iDofSuper
     integer(kind=8) :: nbSuperCell, nbLoadCase, nbNode, nbDofSuper
-    integer(kind=8) :: iec, iDof
+    integer(kind=8) :: iec, iDof, iret
     integer(kind=8) :: iad1
     integer(kind=8) :: nodeNume, ncmpel, nodeNumeOld
     integer(kind=8), pointer :: sssa(:) => null()
@@ -78,8 +79,15 @@ subroutine asseVectSuper(model, mesh, vectElem, &
     loadCaseName = ' '
     call ssvalv('DEBUT', loadCaseName, model, mesh, 0, jresl, ncmpel)
     call dismoi('NB_SM_MAILLA', model, 'MODELE', repi=nbSuperCell)
+    if (nbSuperCell == 0) then
+        goto 999
+    end if
     call jeveuo(model//'.MODELE    .SSSA', 'L', vi=sssa)
-    call jelira(vectElem//'.RELC', 'NUTIOC', nbLoadCase)
+    nbLoadCase = 0
+    call jeexin(vectElem//'.RELC', iret)
+    if (iret .ne. 0) then
+        call jelira(vectElem//'.RELC', 'NUTIOC', nbLoadCase)
+    end if
 
 ! - Loop on load cases
     do iLoadCase = 1, nbLoadCase
@@ -137,9 +145,11 @@ subroutine asseVectSuper(model, mesh, vectElem, &
             end do
         end do
     end do
-
+999 continue
+!
 ! - End: clean temporary objects
     call ssvalv('FIN', loadCaseName, model, mesh, 0, jresl, ncmpel)
+!
 !
     call jedema()
 end subroutine

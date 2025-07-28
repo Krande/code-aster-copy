@@ -16,7 +16,7 @@
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
 
-subroutine tabcor(model, mate, mateco, ma1, ma2, moint, &
+subroutine tabcor(model, mateco, ma1, ma2, moint, &
                   num, ndble, icor)
     implicit none
 #include "jeveux.h"
@@ -33,7 +33,7 @@ subroutine tabcor(model, mate, mateco, ma1, ma2, moint, &
 #include "asterfort/jexnom.h"
 #include "asterfort/jexnum.h"
 !
-    character(len=*) :: moint, mate, mateco
+    character(len=*) :: moint, mateco
 !     AUTEUR : G. ROUSSEAU
 !     BUT : CREER UNE TABLE DE CORRESPONDANCE ENTRE NOEUDS FLUIDES
 !           D'INTERFACE ET NOEUDS DE STRUCTURES POUR DES MAILLAGES
@@ -79,7 +79,7 @@ subroutine tabcor(model, mate, mateco, ma1, ma2, moint, &
 !
 !
     cn2 = '&&TABCOR.BIDON'
-    call calflu(chnul, moint, mate, mateco, num, cn2, &
+    call calflu(chnul, moint, mateco, num, cn2, &
                 nbrefe, nbvale, 'X')
 !
 !

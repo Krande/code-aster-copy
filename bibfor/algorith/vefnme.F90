@@ -140,8 +140,7 @@ subroutine vefnme(optionz, modelz, mate, cara_elem, &
 !
 ! - Suppress old vect_elem result
 !
-    call detrsd('VECT_ELEM', vect_elem)
-    call maveElemCreate(base, 'MECA', vect_elem, model, ' ', cara_elem)
+    call maveElemCreate(base, vect_elem, model)
 !
 ! - Input fields
 !

@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2020 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -17,10 +17,9 @@
 ! --------------------------------------------------------------------
 !
 interface
-    subroutine maveElemCreate(base, phenom, mave_elemz, model_, mate_, cara_elem_)
+    subroutine maveElemCreate(base, mave_elemz, modelz)
         character(len=1), intent(in) :: base
-        character(len=4), intent(in) :: phenom
         character(len=*), intent(in) :: mave_elemz
-        character(len=*), optional, intent(in) :: model_, mate_, cara_elem_
+        character(len=*), intent(in) :: modelz
     end subroutine maveElemCreate
 end interface

@@ -80,10 +80,8 @@ retour = dComputation.getNeumannForces(0, 0, 0)
 
 
 matrAsse = CA.AssemblyMatrixDisplacementReal()
-matrAsse.addElementaryMatrix(matr_elem)
 matrAsse.setDOFNumbering(numeDDL)
-matrAsse.addDirichletBC(charCine)
-matrAsse.assemble()
+matrAsse.assemble(matr_elem, charCine)
 test.assertEqual(matrAsse.getType(), "MATR_ASSE_DEPL_R")
 
 print("retour=", retour.getValues())

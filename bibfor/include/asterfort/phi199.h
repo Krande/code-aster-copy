@@ -19,10 +19,10 @@
 !
 !
 interface
-    subroutine phi199(model, mate, mateco, ma, nu, num,&
+    subroutine phi199(model, mateco, ma, nu, num,&
                       nbmode, solvez, indice, tabad)
         character(len=2) :: model
-        character(len=*) :: mate, mateco
+        character(len=*) :: mateco
         character(len=8) :: ma
         character(len=14) :: nu
         character(len=14) :: num

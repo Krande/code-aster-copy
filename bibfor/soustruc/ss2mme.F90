@@ -64,7 +64,6 @@ subroutine ss2mme(modelz, vesstrz, base)
     character(len=19) :: vesstr
     character(len=16) :: valk(2)
     character(len=8), pointer :: lmai(:) => null()
-    character(len=24), pointer :: rerr(:) => null()
     character(len=8), pointer :: vnomacr(:) => null()
     integer(kind=8), pointer :: sssa(:) => null()
 !
@@ -89,9 +88,6 @@ subroutine ss2mme(modelz, vesstrz, base)
 !
     call jeveuo(model//'.MODELE    .SSSA', 'L', vi=sssa)
     call jeveuo(mesh//'.NOMACR', 'L', vk8=vnomacr)
-!
-    call jeveuo(vesstr(1:19)//'.RERR', 'E', vk24=rerr)
-    rerr(3) = 'OUI_SOUS_STRUC'
 !
     call jecrec(vesstr(1:19)//'.RELC', base//' V I', 'NO', 'CONTIG', 'CONSTANT', nboc)
     call jeecra(vesstr(1:19)//'.RELC', 'LONMAX', nbsma)

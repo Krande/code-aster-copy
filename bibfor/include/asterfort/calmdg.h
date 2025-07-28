@@ -20,7 +20,7 @@
 !
 interface
     subroutine calmdg(model, modgen, nugene, num, nu,&
-                      ma, mate, mateco, moint, ndble,&
+                      ma, mateco, moint, ndble,&
                       itxsto, itysto, itzsto, iprsto, nbmo,&
                       iadirg)
         character(len=2) :: model
@@ -29,7 +29,7 @@ interface
         character(len=14) :: num
         character(len=14) :: nu
         character(len=8) :: ma
-        character(len=*) :: mate, mateco
+        character(len=*) :: mateco
         character(len=8) :: moint
         integer(kind=8) :: ndble
         integer(kind=8) :: itxsto

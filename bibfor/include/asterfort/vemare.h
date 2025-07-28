@@ -17,14 +17,11 @@
 ! --------------------------------------------------------------------
 
 !
-#include "asterf_types.h"
 !
 interface
-    subroutine memare(base  , matr_vect_elemz, modelz, suropt, l_ss)
+    subroutine vemare(base, vect_elemz, modelz)
         character(len=1), intent(in) :: base
-        character(len=*), intent(in) :: matr_vect_elemz
+        character(len=*), intent(in) :: vect_elemz
         character(len=*), intent(in) :: modelz
-        character(len=*), intent(in) :: suropt
-        aster_logical, optional, intent(in) :: l_ss
-    end subroutine memare
+    end subroutine vemare
 end interface

@@ -34,7 +34,7 @@ subroutine vechme(stop, &
 #include "asterfort/jedema.h"
 #include "asterfort/jemarq.h"
 #include "asterfort/load_list_info.h"
-#include "asterfort/memare.h"
+#include "asterfort/vemare.h"
 #include "asterfort/reajre.h"
 #include "LoadTypes_type.h"
 !
@@ -144,7 +144,7 @@ subroutine vechme(stop, &
 
 ! - Allocate result
     call detrsd('VECT_ELEM', vectElem)
-    call memare(jvBase, vectElem, model, 'CHAR_MECA')
+    call vemare(jvBase, vectElem, model)
     call reajre(vectElem, ' ', jvBase)
     if (noLoadInList) then
         goto 99

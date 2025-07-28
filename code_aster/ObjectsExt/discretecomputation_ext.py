@@ -109,8 +109,7 @@ class ExtendedDiscreteComputation:
 
             if assembly:
                 matr_asse = AssemblyMatrixDisplacementReal(self.getPhysicalProblem())
-                matr_asse.addElementaryMatrix(matr_elem)
-                matr_asse.assemble()
+                matr_asse.assemble(matr_elem, self.getPhysicalProblem().getListOfLoads())
                 return matr_asse
 
         elif phys_pb.isThermal():
@@ -120,8 +119,7 @@ class ExtendedDiscreteComputation:
 
             if assembly:
                 matr_asse = AssemblyMatrixTemperatureReal(self.getPhysicalProblem())
-                matr_asse.addElementaryMatrix(matr_elem)
-                matr_asse.assemble()
+                matr_asse.assemble(matr_elem, self.getPhysicalProblem().getListOfLoads())
                 return matr_asse
 
         elif phys_pb.isAcoustic():
@@ -129,8 +127,7 @@ class ExtendedDiscreteComputation:
 
             if assembly:
                 matr_asse = AssemblyMatrixPressureComplex(self.getPhysicalProblem())
-                matr_asse.addElementaryMatrix(matr_elem)
-                matr_asse.assemble()
+                matr_asse.assemble(matr_elem, self.getPhysicalProblem().getListOfLoads())
                 return matr_asse
         else:
             raise RuntimeError("Unknown physic")
@@ -154,8 +151,7 @@ class ExtendedDiscreteComputation:
 
             if assembly:
                 matr_asse = AssemblyMatrixDisplacementReal(self.getPhysicalProblem())
-                matr_asse.addElementaryMatrix(matr_elem)
-                matr_asse.assemble()
+                matr_asse.assemble(matr_elem, self.getPhysicalProblem().getListOfLoads())
                 return matr_asse
 
         elif phys_pb.isThermal():
@@ -163,8 +159,7 @@ class ExtendedDiscreteComputation:
 
             if assembly:
                 matr_asse = AssemblyMatrixTemperatureReal(self.getPhysicalProblem())
-                matr_asse.addElementaryMatrix(matr_elem)
-                matr_asse.assemble()
+                matr_asse.assemble(matr_elem, self.getPhysicalProblem().getListOfLoads())
                 return matr_asse
 
         elif phys_pb.isAcoustic():
@@ -172,8 +167,7 @@ class ExtendedDiscreteComputation:
 
             if assembly:
                 matr_asse = AssemblyMatrixPressureComplex(self.getPhysicalProblem())
-                matr_asse.addElementaryMatrix(matr_elem)
-                matr_asse.assemble()
+                matr_asse.assemble(matr_elem, self.getPhysicalProblem().getListOfLoads())
                 return matr_asse
 
         else:
@@ -204,8 +198,7 @@ class ExtendedDiscreteComputation:
 
             if assembly:
                 matr_asse = AssemblyMatrixDisplacementReal(self.getPhysicalProblem())
-                matr_asse.addElementaryMatrix(matr_elem)
-                matr_asse.assemble()
+                matr_asse.assemble(matr_elem, self.getPhysicalProblem().getListOfLoads())
                 return matr_asse
 
         elif phys_pb.isThermal():
@@ -213,8 +206,7 @@ class ExtendedDiscreteComputation:
 
             if assembly:
                 matr_asse = AssemblyMatrixTemperatureReal(self.getPhysicalProblem())
-                matr_asse.addElementaryMatrix(matr_elem)
-                matr_asse.assemble()
+                matr_asse.assemble(matr_elem, self.getPhysicalProblem().getListOfLoads())
                 return matr_asse
 
         elif phys_pb.isAcoustic():
@@ -222,8 +214,7 @@ class ExtendedDiscreteComputation:
 
             if assembly:
                 matr_asse = AssemblyMatrixPressureComplex(self.getPhysicalProblem())
-                matr_asse.addElementaryMatrix(matr_elem)
-                matr_asse.assemble()
+                matr_asse.assemble(matr_elem, self.getPhysicalProblem().getListOfLoads())
                 return matr_asse
         else:
             raise RuntimeError("Unknown physic")
@@ -266,8 +257,7 @@ class ExtendedDiscreteComputation:
 
             if assembly:
                 matr_asse = AssemblyMatrixDisplacementReal(self.getPhysicalProblem())
-                matr_asse.addElementaryMatrix(matr_elem)
-                matr_asse.assemble()
+                matr_asse.assemble(matr_elem, self.getPhysicalProblem().getListOfLoads())
                 return matr_asse
 
         elif phys_pb.isThermal():
@@ -278,8 +268,7 @@ class ExtendedDiscreteComputation:
 
             if assembly:
                 matr_asse = AssemblyMatrixPressureComplex(self.getPhysicalProblem())
-                matr_asse.addElementaryMatrix(matr_elem)
-                matr_asse.assemble()
+                matr_asse.assemble(matr_elem, self.getPhysicalProblem().getListOfLoads())
                 return matr_asse
 
         else:
@@ -654,11 +643,12 @@ class ExtendedDiscreteComputation:
                 raise IntegrationError("MECANONLINE10_1")
 
             # Assemble matrix
-            jacobian = AssemblyMatrixDisplacementReal(self.getPhysicalProblem())
-            jacobian.addElementaryMatrix(matr_elem_rigi)
-            jacobian.addElementaryMatrix(matr_elem_dual)
+            elemMatr = []
+            elemMatr.append(matr_elem_rigi)
+            elemMatr.append(matr_elem_dual)
 
-            jacobian.assemble()
+            jacobian = AssemblyMatrixDisplacementReal(self.getPhysicalProblem())
+            jacobian.assemble(elemMatr, self.getPhysicalProblem().getListOfLoads())
 
             return jacobian
 
@@ -768,17 +758,18 @@ class ExtendedDiscreteComputation:
         matr_elem_ext = self.getExternalTangentMatrix(phys_state)
 
         if assemble:
+            elemMatr = []
+            elemMatr.append(matr_elem_rigi)
+            elemMatr.append(matr_elem_dual)
+            elemMatr.append(matr_elem_cont)
+            elemMatr.append(matr_elem_ext)
+
             # Assemble matrix
             if phys_pb.isMechanical():
                 jacobian = AssemblyMatrixDisplacementReal(phys_pb)
             else:
                 jacobian = AssemblyMatrixTemperatureReal(phys_pb)
-            jacobian.addElementaryMatrix(matr_elem_rigi)
-            jacobian.addElementaryMatrix(matr_elem_dual)
-            jacobian.addElementaryMatrix(matr_elem_cont)
-            jacobian.addElementaryMatrix(matr_elem_ext)
-
-            jacobian.assemble()
+            jacobian.assemble(elemMatr, phys_pb.getListOfLoads())
 
             return jacobian
 

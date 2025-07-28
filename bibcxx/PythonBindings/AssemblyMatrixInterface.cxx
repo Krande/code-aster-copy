@@ -42,23 +42,95 @@ void exportAssemblyMatrixToPython( py::module_ &mod ) {
         .def( py::init( &initFactoryPtr< AssemblyMatrixDisplacementReal,
                                          const AssemblyMatrixDisplacementReal & > ) )
         // -----------------------------------------------------------------------------------------
-        .def( "addElementaryMatrix", &AssemblyMatrixDisplacementReal::addElementaryMatrix, R"(
-Add elementary matrix to assemble such that during assembling Mat += coeff * matr_elem
+        .def( "assemble",
+              py::overload_cast< const AssemblyMatrixDisplacementReal::ElementaryMatrixPtr &,
+                                 const ListOfLoadsPtr & >(
+                  &AssemblyMatrixDisplacementReal::assemble ),
+              R"(
+                Assembly matrix from elementar matrices and list of loads.
 
-Arguments:
-    matr_elem [ElementaryMatrixDisplacementReal]: elementary matrix to add
-    coeff [float]: assembling factor (default = 1.0)
-        )",
-              py::arg( "matr_elem" ), py::arg( "coeff" ) = 1.0 )
+                Arguments:
+                    elemMatrix (ElementaryMatrixReal) : elementary matrix to assemble.
+                    listOfLoads (ListOfLoads) : list of loads to assemble
+            )",
+              py::arg( "elemMatrix" ), py::arg( "listOfLoads" ) = nullptr )
         // -----------------------------------------------------------------------------------------
-        .def( "clearElementaryMatrix", &AssemblyMatrixDisplacementReal::clearElementaryMatrix )
+        .def( "assemble",
+              py::overload_cast<
+                  const std::vector< AssemblyMatrixDisplacementReal::ElementaryMatrixPtr > &,
+                  const ListOfLoadsPtr & >( &AssemblyMatrixDisplacementReal::assemble ),
+              R"(
+                Assembly matrix from elementar matrices and list of loads.
+
+                Arguments:
+                    elemMatrix (list[ElementaryMatrixReal]) : list elementary matrix to assemble.
+                    listOfLoads (ListOfLoads) : list of loads to assemble
+            )",
+              py::arg( "elemMatrix" ), py::arg( "listOfLoads" ) = nullptr )
         // -----------------------------------------------------------------------------------------
-        .def( "getMaterialField", &AssemblyMatrixDisplacementReal::getMaterialField )
+        .def( "assemble",
+              py::overload_cast<
+                  const std::vector< std::pair< AssemblyMatrixDisplacementReal::ElementaryMatrixPtr,
+                                                ASTERDOUBLE > > &,
+                  const ListOfLoadsPtr & >( &AssemblyMatrixDisplacementReal::assemble ),
+              R"(
+                Assembly matrix from elementar matrices and list of loads.
+
+                Arguments:
+                    elemMatrix (list[ElementaryMatrixReal, float]) : list of pair composed of an
+                    elementary matrix and the multiplicatif coefficent to assemble.
+                    listOfLoads (ListOfLoads) : list of loads to assemble
+            )",
+              py::arg( "elemMatrix" ), py::arg( "listOfLoads" ) = nullptr )
         // -----------------------------------------------------------------------------------------
-        .def( "getNumberOfElementaryMatrix",
-              &AssemblyMatrixDisplacementReal::getNumberOfElementaryMatrix )
+        .def( "assemble",
+              py::overload_cast< const AssemblyMatrixDisplacementReal::ElementaryMatrixPtr &,
+                                 const DirichletBCPtr & >(
+                  &AssemblyMatrixDisplacementReal::assemble ),
+              R"(
+                Assembly matrix from elementar matrices and list of loads.
+
+                Arguments:
+                    elemMatrix (ElementaryMatrixReal) : elementary matrix to assemble.
+                    dirichlet (DirichletBC) : dirichlet BC to impose.
+            )",
+              py::arg( "elemMatrix" ), py::arg( "dirichlet" ) )
         // -----------------------------------------------------------------------------------------
-        .def( "getMaterialField", &AssemblyMatrixDisplacementReal::getMaterialField )
+        .def( "assemble",
+              py::overload_cast<
+                  const std::vector< AssemblyMatrixDisplacementReal::ElementaryMatrixPtr > &,
+                  const DirichletBCPtr & >( &AssemblyMatrixDisplacementReal::assemble ),
+              R"(
+                Arguments:
+                    elemMatrix (list[ElementaryMatrixReal]) : list elementary matrix to assemble.
+                    dirichlet (DirichletBC) : dirichlet BC to impose.
+            )",
+              py::arg( "elemMatrix" ), py::arg( "dirichlet" ) )
+        // -----------------------------------------------------------------------------------------
+        .def( "assemble",
+              py::overload_cast<
+                  const std::vector< AssemblyMatrixDisplacementReal::ElementaryMatrixPtr > &,
+                  const std::vector< DirichletBCPtr > & >(
+                  &AssemblyMatrixDisplacementReal::assemble ),
+              R"(
+                Arguments:
+                    elemMatrix (list[ElementaryMatrixReal]) : list elementary matrix to assemble.
+                    dirichlet (list[DirichletBC]) : dirichlet BC to impose.
+            )",
+              py::arg( "elemMatrix" ), py::arg( "dirichlet" ) )
+        // -----------------------------------------------------------------------------------------
+        .def( "assemble",
+              py::overload_cast<
+                  const std::vector< std::pair< AssemblyMatrixDisplacementReal::ElementaryMatrixPtr,
+                                                ASTERDOUBLE > > &,
+                  const DirichletBCPtr & >( &AssemblyMatrixDisplacementReal::assemble ),
+              R"(
+                Arguments:
+                    elemMatrix (list[ElementaryMatrixReal, float]) : list of pair composed of an
+                    elementary matrix and the multiplicatif coefficent to assemble.
+                    dirichlet (DirichletBC) : dirichlet BC to impose.
+            )",
+              py::arg( "elemMatrix" ), py::arg( "dirichlet" ) )
         // -----------------------------------------------------------------------------------------
         .def( "applyDirichletBC", &AssemblyMatrixDisplacementReal::applyDirichletBC, R"(
 Apply the DirichletBC into the Rhs (aka kinematic aka no Lagrange multipliers).
@@ -129,23 +201,103 @@ Arguments:
         // -----------------------------------------------------------------------------------------
         .def( py::init( &initFactoryPtr< AssemblyMatrixDisplacementComplex, std::string > ) )
         // -----------------------------------------------------------------------------------------
-        .def( "addElementaryMatrix", &AssemblyMatrixDisplacementComplex::addElementaryMatrix, R"(
-Add elementary matrix to assemble such that during assembling Mat += coeff * matr_elem
+        .def( "assemble",
+              py::overload_cast< const AssemblyMatrixDisplacementComplex::ElementaryMatrixPtr &,
+                                 const ListOfLoadsPtr & >(
+                  &AssemblyMatrixDisplacementComplex::assemble ),
+              R"(
+                Assembly matrix from elementar matrices and list of loads.
 
-Arguments:
-    matr_elem [ElementaryMatrixDisplacementComplex]: elementary matrix to add
-    coeff [float]: assembling factor (default = 1.0)
-        )",
-              py::arg( "matr_elem" ), py::arg( "coeff" ) = 1.0 )
+                Arguments:
+                    elemMatrix (ElementaryMatrixReal) : elementary matrix to assemble.
+                    listOfLoads (ListOfLoads) : list of loads to assemble
+            )",
+              py::arg( "elemMatrix" ), py::arg( "listOfLoads" ) = nullptr )
         // -----------------------------------------------------------------------------------------
-        .def( "clearElementaryMatrix", &AssemblyMatrixDisplacementComplex::clearElementaryMatrix )
+        .def( "assemble",
+              py::overload_cast<
+                  const std::vector< AssemblyMatrixDisplacementComplex::ElementaryMatrixPtr > &,
+                  const ListOfLoadsPtr & >( &AssemblyMatrixDisplacementComplex::assemble ),
+              R"(
+                Assembly matrix from elementar matrices and list of loads.
+
+                Arguments:
+                    elemMatrix (list[ElementaryMatrixReal]) : list elementary matrix to assemble.
+                    listOfLoads (ListOfLoads) : list of loads to assemble
+            )",
+              py::arg( "elemMatrix" ), py::arg( "listOfLoads" ) = nullptr )
+        // -----------------------------------------------------------------------------------------
+        .def( "assemble",
+              py::overload_cast<
+                  const std::vector< std::pair<
+                      AssemblyMatrixDisplacementComplex::ElementaryMatrixPtr, ASTERDOUBLE > > &,
+                  const ListOfLoadsPtr & >( &AssemblyMatrixDisplacementComplex::assemble ),
+              R"(
+                Assembly matrix from elementar matrices and list of loads.
+
+                Arguments:
+                    elemMatrix (list[ElementaryMatrixReal, float]) : list of pair composed of an
+                    elementary matrix and the multiplicatif coefficent to assemble.
+                    listOfLoads (ListOfLoads) : list of loads to assemble
+            )",
+              py::arg( "elemMatrix" ), py::arg( "listOfLoads" ) = nullptr )
+        // -----------------------------------------------------------------------------------------
+        .def( "assemble",
+              py::overload_cast< const AssemblyMatrixDisplacementComplex::ElementaryMatrixPtr &,
+                                 const DirichletBCPtr & >(
+                  &AssemblyMatrixDisplacementComplex::assemble ),
+              R"(
+                Assembly matrix from elementar matrices and list of loads.
+
+                Arguments:
+                    elemMatrix (ElementaryMatrixReal) : elementary matrix to assemble.
+                    dirichlet (DirichletBC) : dirichlet BC to impose.
+            )",
+              py::arg( "elemMatrix" ), py::arg( "dirichlet" ) )
+        // -----------------------------------------------------------------------------------------
+        .def( "assemble",
+              py::overload_cast<
+                  const std::vector< AssemblyMatrixDisplacementComplex::ElementaryMatrixPtr > &,
+                  const DirichletBCPtr & >( &AssemblyMatrixDisplacementComplex::assemble ),
+              R"(
+                Assembly matrix from elementar matrices and list of loads.
+
+                Arguments:
+                    elemMatrix (list[ElementaryMatrixReal]) : list elementary matrix to assemble.
+                    dirichlet (DirichletBC) : dirichlet BC to impose.
+            )",
+              py::arg( "elemMatrix" ), py::arg( "dirichlet" ) )
+        //-----------------------------------------------------------------------------------------
+        .def( "assemble",
+              py::overload_cast<
+                  const std::vector< AssemblyMatrixDisplacementComplex::ElementaryMatrixPtr > &,
+                  const std::vector< DirichletBCPtr > & >(
+                  &AssemblyMatrixDisplacementComplex::assemble ),
+              R"(
+                Assembly matrix from elementar matrices and list of loads.
+
+                Arguments:
+                    elemMatrix (list[ElementaryMatrixReal]) : list elementary matrix to assemble.
+                    dirichlet (list[DirichletBC]) : dirichlet BC to impose.
+            )",
+              py::arg( "elemMatrix" ), py::arg( "dirichlet" ) )
+        //-----------------------------------------------------------------------------------------
+        .def( "assemble",
+              py::overload_cast<
+                  const std::vector< std::pair<
+                      AssemblyMatrixDisplacementComplex::ElementaryMatrixPtr, ASTERDOUBLE > > &,
+                  const DirichletBCPtr & >( &AssemblyMatrixDisplacementComplex::assemble ),
+              R"(
+                Assembly matrix from elementar matrices and list of loads.
+
+                Arguments:
+                    elemMatrix (list[ElementaryMatrixReal, float]) : list of pair composed of an
+                    elementary matrix and the multiplicatif coefficent to assemble.
+                    dirichlet (DirichletBC) : dirichlet BC to impose.
+            )",
+              py::arg( "elemMatrix" ), py::arg( "dirichlet" ) )
         // -----------------------------------------------------------------------------------------
         .def( "transposeConjugate", &AssemblyMatrixDisplacementComplex::transposeConjugate )
-        // -----------------------------------------------------------------------------------------
-        .def( "getMaterialField", &AssemblyMatrixDisplacementComplex::getMaterialField )
-        // -----------------------------------------------------------------------------------------
-        .def( "getNumberOfElementaryMatrix",
-              &AssemblyMatrixDisplacementComplex::getNumberOfElementaryMatrix )
         // -----------------------------------------------------------------------------------------
         .def( "setValues", &AssemblyMatrixDisplacementComplex::setValues, R"(
 Erase the assembly matrix and set new values in it.
@@ -184,18 +336,95 @@ Arguments:
         // -----------------------------------------------------------------------------------------
         .def( py::init( &initFactoryPtr< AssemblyMatrixTemperatureReal, PhysicalProblemPtr > ) )
         // -----------------------------------------------------------------------------------------
-        .def( "addElementaryMatrix", &AssemblyMatrixTemperatureReal::addElementaryMatrix, R"(
-Add elementary matrix to assemble such that during assembling Mat += coeff * matr_elem
+        .def(
+            "assemble",
+            py::overload_cast< const AssemblyMatrixTemperatureReal::ElementaryMatrixPtr &,
+                               const ListOfLoadsPtr & >( &AssemblyMatrixTemperatureReal::assemble ),
+            R"(
+                Assembly matrix from elementar matrices and list of loads.
 
-Arguments:
-    matr_elem [ElementaryMatrixTemperatureReal]: elementary matrix to add
-    coeff [float]: assembling factor (default = 1.0)
-        )",
-              py::arg( "matr_elem" ), py::arg( "coeff" ) = 1.0 )
+                Arguments:
+                    elemMatrix (ElementaryMatrixReal) : elementary matrix to assemble.
+                    listOfLoads (ListOfLoads) : list of loads to assemble
+            )",
+            py::arg( "elemMatrix" ), py::arg( "listOfLoads" ) = nullptr )
         // -----------------------------------------------------------------------------------------
-        .def( "clearElementaryMatrix", &AssemblyMatrixTemperatureReal::clearElementaryMatrix )
+        .def( "assemble",
+              py::overload_cast<
+                  const std::vector< AssemblyMatrixTemperatureReal::ElementaryMatrixPtr > &,
+                  const ListOfLoadsPtr & >( &AssemblyMatrixTemperatureReal::assemble ),
+              R"(
+                Assembly matrix from elementar matrices and list of loads.
+
+                Arguments:
+                    elemMatrix (list[ElementaryMatrixReal]) : list elementary matrix to assemble.
+                    listOfLoads (ListOfLoads) : list of loads to assemble
+            )",
+              py::arg( "elemMatrix" ), py::arg( "listOfLoads" ) = nullptr )
+        //-----------------------------------------------------------------------------------------
+        .def( "assemble",
+              py::overload_cast<
+                  const std::vector< std::pair< AssemblyMatrixTemperatureReal::ElementaryMatrixPtr,
+                                                ASTERDOUBLE > > &,
+                  const ListOfLoadsPtr & >( &AssemblyMatrixTemperatureReal::assemble ),
+              R"(
+                Assembly matrix from elementar matrices and list of loads.
+
+                Arguments:
+                    elemMatrix (list[ElementaryMatrixReal, float]) : list of pair composed of an
+                    elementary matrix and the multiplicatif coefficent to assemble.
+                    listOfLoads (ListOfLoads) : list of loads to assemble
+            )",
+              py::arg( "elemMatrix" ), py::arg( "listOfLoads" ) = nullptr )
+        //-----------------------------------------------------------------------------------------
+        .def(
+            "assemble",
+            py::overload_cast< const AssemblyMatrixTemperatureReal::ElementaryMatrixPtr &,
+                               const DirichletBCPtr & >( &AssemblyMatrixTemperatureReal::assemble ),
+            R"(
+               Assembly matrix from elementar matrices and list of loads.
+
+                Arguments:
+                    elemMatrix (ElementaryMatrixReal) : elementary matrix to assemble.
+                    dirichlet (DirichletBC) : dirichlet BC to impose.
+            )",
+            py::arg( "elemMatrix" ), py::arg( "dirichlet" ) )
+        //-----------------------------------------------------------------------------------------
+        .def( "assemble",
+              py::overload_cast<
+                  const std::vector< AssemblyMatrixTemperatureReal::ElementaryMatrixPtr > &,
+                  const DirichletBCPtr & >( &AssemblyMatrixTemperatureReal::assemble ),
+              R"(
+                 Arguments:
+                    elemMatrix (list[ElementaryMatrixReal]) : list elementary matrix to assemble.
+                    dirichlet (DirichletBC) : dirichlet BC to impose.
+            )",
+              py::arg( "elemMatrix" ), py::arg( "dirichlet" ) )
         // -----------------------------------------------------------------------------------------
-        .def( "getMaterialField", &AssemblyMatrixTemperatureReal::getMaterialField )
+        .def(
+            "assemble",
+            py::overload_cast<
+                const std::vector< AssemblyMatrixTemperatureReal::ElementaryMatrixPtr > &,
+                const std::vector< DirichletBCPtr > & >( &AssemblyMatrixTemperatureReal::assemble ),
+            R"(
+                Arguments:
+                    elemMatrix (list[ElementaryMatrixReal]) : list elementary matrix to assemble.
+                    dirichlet (list[DirichletBC]) : dirichlet BC to impose.
+            )",
+            py::arg( "elemMatrix" ), py::arg( "dirichlet" ) )
+        //-----------------------------------------------------------------------------------------
+        .def( "assemble",
+              py::overload_cast<
+                  const std::vector< std::pair< AssemblyMatrixTemperatureReal::ElementaryMatrixPtr,
+                                                ASTERDOUBLE > > &,
+                  const DirichletBCPtr & >( &AssemblyMatrixTemperatureReal::assemble ),
+              R"(
+                Arguments:
+                    elemMatrix (list[ElementaryMatrixReal, float]) : list of pair composed of an
+                    elementary matrix and the multiplicatif coefficent to assemble.
+                    dirichlet (DirichletBC) : dirichlet BC to impose.
+            )",
+              py::arg( "elemMatrix" ), py::arg( "dirichlet" ) )
         // -----------------------------------------------------------------------------------------
         .def( "applyDirichletBC", &AssemblyMatrixTemperatureReal::applyDirichletBC, R"(
 Apply the DirichletBC into the Rhs (aka kinematic aka no Lagrange multipliers).
@@ -204,9 +433,6 @@ Arguments:
     DirichletBC [FieldOnNodes] the values on the DirichletBC.
     Rhs [FieldOnNodes] The residual to be modified.
         )" )
-        // -----------------------------------------------------------------------------------------
-        .def( "getNumberOfElementaryMatrix",
-              &AssemblyMatrixTemperatureReal::getNumberOfElementaryMatrix )
         // -----------------------------------------------------------------------------------------
         .def( "setValues", &AssemblyMatrixTemperatureReal::setValues, R"(
 Erase the assembly matrix and set new values in it.
@@ -264,21 +490,84 @@ Arguments:
         // -----------------------------------------------------------------------------------------
         .def( py::init( &initFactoryPtr< AssemblyMatrixTemperatureComplex, std::string > ) )
         // -----------------------------------------------------------------------------------------
-        .def( "addElementaryMatrix", &AssemblyMatrixTemperatureComplex::addElementaryMatrix, R"(
-Add elementary matrix to assemble such that during assembling Mat += coeff * matr_elem
+        .def( "assemble",
+              py::overload_cast< const AssemblyMatrixTemperatureComplex::ElementaryMatrixPtr &,
+                                 const ListOfLoadsPtr & >(
+                  &AssemblyMatrixTemperatureComplex::assemble ),
+              R"(
+                Assembly matrix from elementar matrices and list of loads.
 
-Arguments:
-    matr_elem [ElementaryMatrixDisplacementReal]: elementary matrix to add
-    coeff [float]: assembling factor (default = 1.0)
-        )",
-              py::arg( "matr_elem" ), py::arg( "coeff" ) = 1.0 )
+                Arguments:
+                    elemMatrix (ElementaryMatrixReal) : elementary matrix to assemble.
+                    listOfLoads (ListOfLoads) : list of loads to assemble
+            )",
+              py::arg( "elemMatrix" ), py::arg( "listOfLoads" ) = nullptr )
         // -----------------------------------------------------------------------------------------
-        .def( "clearElementaryMatrix", &AssemblyMatrixTemperatureComplex::clearElementaryMatrix )
-        // -----------------------------------------------------------------------------------------
-        .def( "getMaterialField", &AssemblyMatrixTemperatureComplex::getMaterialField )
-        // -----------------------------------------------------------------------------------------
-        .def( "getNumberOfElementaryMatrix",
-              &AssemblyMatrixTemperatureComplex::getNumberOfElementaryMatrix )
+        .def( "assemble",
+              py::overload_cast<
+                  const std::vector< AssemblyMatrixTemperatureComplex::ElementaryMatrixPtr > &,
+                  const ListOfLoadsPtr & >( &AssemblyMatrixTemperatureComplex::assemble ),
+              R"(
+                Assembly matrix from elementar matrices added.
+
+                Arguments:
+                    clean (bool) : Clean elementary matrices after building (default = true)
+            )",
+              py::arg( "elemMatrix" ), py::arg( "listOfLoads" ) = nullptr )
+        //-----------------------------------------------------------------------------------------
+        .def(
+            "assemble",
+            py::overload_cast<
+                const std::vector< std::pair< AssemblyMatrixTemperatureComplex::ElementaryMatrixPtr,
+                                              ASTERDOUBLE > > &,
+                const ListOfLoadsPtr & >( &AssemblyMatrixTemperatureComplex::assemble ),
+            R"(
+                Assembly matrix from elementar matrices and list of loads.
+
+                Arguments:
+                    elemMatrix (list[ElementaryMatrixReal, float]) : list of pair composed of an
+                    elementary matrix and the multiplicatif coefficent to assemble.
+                    listOfLoads (ListOfLoads) : list of loads to assemble
+            )",
+            py::arg( "elemMatrix" ), py::arg( "listOfLoads" ) = nullptr )
+        //-----------------------------------------------------------------------------------------
+        .def( "assemble",
+              py::overload_cast< const AssemblyMatrixTemperatureComplex::ElementaryMatrixPtr &,
+                                 const DirichletBCPtr & >(
+                  &AssemblyMatrixTemperatureComplex::assemble ),
+              R"(
+               Assembly matrix from elementar matrices and list of loads.
+
+                Arguments:
+                    elemMatrix (ElementaryMatrixReal) : elementary matrix to assemble.
+                    dirichlet (DirichletBC) : dirichlet BC to impose.
+            )",
+              py::arg( "elemMatrix" ), py::arg( "dirichlet" ) )
+        //-----------------------------------------------------------------------------------------
+        .def( "assemble",
+              py::overload_cast<
+                  const std::vector< AssemblyMatrixTemperatureComplex::ElementaryMatrixPtr > &,
+                  const DirichletBCPtr & >( &AssemblyMatrixTemperatureComplex::assemble ),
+              R"(
+                 Arguments:
+                    elemMatrix (list[ElementaryMatrixReal]) : list elementary matrix to assemble.
+                    dirichlet (DirichletBC) : dirichlet BC to impose.
+            )",
+              py::arg( "elemMatrix" ), py::arg( "dirichlet" ) )
+        //-----------------------------------------------------------------------------------------
+        .def(
+            "assemble",
+            py::overload_cast<
+                const std::vector< std::pair< AssemblyMatrixTemperatureComplex::ElementaryMatrixPtr,
+                                              ASTERDOUBLE > > &,
+                const DirichletBCPtr & >( &AssemblyMatrixTemperatureComplex::assemble ),
+            R"(
+                Arguments:
+                    elemMatrix (list[ElementaryMatrixReal, float]) : list of pair composed of an
+                    elementary matrix and the multiplicatif coefficent to assemble.
+                    dirichlet (DirichletBC) : dirichlet BC to impose.
+            )",
+            py::arg( "elemMatrix" ), py::arg( "dirichlet" ) )
         // -----------------------------------------------------------------------------------------
         .def( "transposeConjugate", &AssemblyMatrixTemperatureComplex::transposeConjugate );
 
@@ -289,18 +578,81 @@ Arguments:
         // -----------------------------------------------------------------------------------------
         .def( py::init( &initFactoryPtr< AssemblyMatrixPressureReal, std::string > ) )
         // -----------------------------------------------------------------------------------------
-        .def( "addElementaryMatrix", &AssemblyMatrixPressureReal::addElementaryMatrix, R"(
-Add elementary matrix to assemble such that during assembling Mat += coeff * matr_elem
+        .def( "assemble",
+              py::overload_cast< const AssemblyMatrixPressureReal::ElementaryMatrixPtr &,
+                                 const ListOfLoadsPtr & >( &AssemblyMatrixPressureReal::assemble ),
+              R"(
+                Assembly matrix from elementar matrices and list of loads.
 
-Arguments:
-    matr_elem [ElementaryMatrixDisplacementReal]: elementary matrix to add
-    coeff [float]: assembling factor (default = 1.0)
-        )",
-              py::arg( "matr_elem" ), py::arg( "coeff" ) = 1.0 )
+                Arguments:
+                    elemMatrix (ElementaryMatrixReal) : elementary matrix to assemble.
+                    listOfLoads (ListOfLoads) : list of loads to assemble
+            )",
+              py::arg( "elemMatrix" ), py::arg( "listOfLoads" ) = nullptr )
         // -----------------------------------------------------------------------------------------
-        .def( "clearElementaryMatrix", &AssemblyMatrixPressureReal::clearElementaryMatrix )
+        .def( "assemble",
+              py::overload_cast<
+                  const std::vector< AssemblyMatrixPressureReal::ElementaryMatrixPtr > &,
+                  const ListOfLoadsPtr & >( &AssemblyMatrixPressureReal::assemble ),
+              R"(
+                Assembly matrix from elementar matrices and list of loads.
+
+                Arguments:
+                    elemMatrix (list[ElementaryMatrixReal]) : list elementary matrix to assemble.
+                    listOfLoads (ListOfLoads) : list of loads to assemble
+            )",
+              py::arg( "elemMatrix" ), py::arg( "listOfLoads" ) = nullptr )
+        //-----------------------------------------------------------------------------------------
+        .def( "assemble",
+              py::overload_cast<
+                  const std::vector<
+                      std::pair< AssemblyMatrixPressureReal::ElementaryMatrixPtr, ASTERDOUBLE > > &,
+                  const ListOfLoadsPtr & >( &AssemblyMatrixPressureReal::assemble ),
+              R"(
+                Assembly matrix from elementar matrices and list of loads.
+
+                Arguments:
+                    elemMatrix (list[ElementaryMatrixReal, float]) : list of pair composed of an
+                    elementary matrix and the multiplicatif coefficent to assemble.
+                    listOfLoads (ListOfLoads) : list of loads to assemble
+            )",
+              py::arg( "elemMatrix" ), py::arg( "listOfLoads" ) = nullptr )
         // -----------------------------------------------------------------------------------------
-        .def( "getMaterialField", &AssemblyMatrixPressureReal::getMaterialField )
+        .def( "assemble",
+              py::overload_cast< const AssemblyMatrixPressureReal::ElementaryMatrixPtr &,
+                                 const DirichletBCPtr & >( &AssemblyMatrixPressureReal::assemble ),
+              R"(
+               Assembly matrix from elementar matrices and list of loads.
+
+                Arguments:
+                    elemMatrix (ElementaryMatrixReal) : elementary matrix to assemble.
+                    dirichlet (DirichletBC) : dirichlet BC to impose.
+            )",
+              py::arg( "elemMatrix" ), py::arg( "dirichlet" ) )
+        // -----------------------------------------------------------------------------------------
+        .def( "assemble",
+              py::overload_cast<
+                  const std::vector< AssemblyMatrixPressureReal::ElementaryMatrixPtr > &,
+                  const DirichletBCPtr & >( &AssemblyMatrixPressureReal::assemble ),
+              R"(
+                 Arguments:
+                    elemMatrix (list[ElementaryMatrixReal]) : list elementary matrix to assemble.
+                    dirichlet (DirichletBC) : dirichlet BC to impose.
+            )",
+              py::arg( "elemMatrix" ), py::arg( "dirichlet" ) )
+        // -----------------------------------------------------------------------------------------
+        .def( "assemble",
+              py::overload_cast<
+                  const std::vector<
+                      std::pair< AssemblyMatrixPressureReal::ElementaryMatrixPtr, ASTERDOUBLE > > &,
+                  const DirichletBCPtr & >( &AssemblyMatrixPressureReal::assemble ),
+              R"(
+                Arguments:
+                    elemMatrix (list[ElementaryMatrixReal, float]) : list of pair composed of an
+                    elementary matrix and the multiplicatif coefficent to assemble.
+                    dirichlet (DirichletBC) : dirichlet BC to impose.
+            )",
+              py::arg( "elemMatrix" ), py::arg( "dirichlet" ) )
         // -----------------------------------------------------------------------------------------
         .def( "applyDirichletBC", &AssemblyMatrixPressureReal::applyDirichletBC, R"(
 Apply the DirichletBC into the Rhs (aka kinematic aka no Lagrange multipliers).
@@ -309,9 +661,6 @@ Arguments:
     DirichletBC [FieldOnNodes] the values on the DirichletBC.
     Rhs [FieldOnNodes] The residual to be modified.
         )" )
-        // -----------------------------------------------------------------------------------------
-        .def( "getNumberOfElementaryMatrix",
-              &AssemblyMatrixPressureReal::getNumberOfElementaryMatrix )
         // -----------------------------------------------------------------------------------------
         .def( "setValues", &AssemblyMatrixPressureReal::setValues, R"(
 Erase the assembly matrix and set new values in it.
@@ -347,21 +696,94 @@ Arguments:
         // -----------------------------------------------------------------------------------------
         .def( py::init( &initFactoryPtr< AssemblyMatrixPressureComplex, std::string > ) )
         // -----------------------------------------------------------------------------------------
-        .def( "addElementaryMatrix", &AssemblyMatrixPressureComplex::addElementaryMatrix, R"(
-Add elementary matrix to assemble such that during assembling Mat += coeff * matr_elem
+        .def(
+            "assemble",
+            py::overload_cast< const AssemblyMatrixPressureComplex::ElementaryMatrixPtr &,
+                               const ListOfLoadsPtr & >( &AssemblyMatrixPressureComplex::assemble ),
+            R"(
+                Assembly matrix from elementar matrices and list of loads.
 
-Arguments:
-    matr_elem [ElementaryMatrixPressureComplex]: elementary matrix to add
-    coeff [float]: assembling factor (default = 1.0)
-        )",
-              py::arg( "matr_elem" ), py::arg( "coeff" ) = 1.0 )
+                Arguments:
+                    elemMatrix (ElementaryMatrixReal) : elementary matrix to assemble.
+                    listOfLoads (ListOfLoads) : list of loads to assemble
+            )",
+            py::arg( "elemMatrix" ), py::arg( "listOfLoads" ) = nullptr )
         // -----------------------------------------------------------------------------------------
-        .def( "clearElementaryMatrix", &AssemblyMatrixPressureComplex::clearElementaryMatrix )
-        // -----------------------------------------------------------------------------------------
-        .def( "getMaterialField", &AssemblyMatrixPressureComplex::getMaterialField )
-        // -----------------------------------------------------------------------------------------
-        .def( "getNumberOfElementaryMatrix",
-              &AssemblyMatrixPressureComplex::getNumberOfElementaryMatrix )
+        .def( "assemble",
+              py::overload_cast<
+                  const std::vector< AssemblyMatrixPressureComplex::ElementaryMatrixPtr > &,
+                  const ListOfLoadsPtr & >( &AssemblyMatrixPressureComplex::assemble ),
+              R"(
+                Assembly matrix from elementar matrices and list of loads.
+
+                Arguments:
+                    elemMatrix (list[ElementaryMatrixReal]) : list elementary matrix to assemble.
+                    listOfLoads (ListOfLoads) : list of loads to assemble
+            )",
+              py::arg( "elemMatrix" ), py::arg( "listOfLoads" ) = nullptr )
+        //-----------------------------------------------------------------------------------------
+        .def( "assemble",
+              py::overload_cast<
+                  const std::vector< std::pair< AssemblyMatrixPressureComplex::ElementaryMatrixPtr,
+                                                ASTERDOUBLE > > &,
+                  const ListOfLoadsPtr & >( &AssemblyMatrixPressureComplex::assemble ),
+              R"(
+                Assembly matrix from elementar matrices and list of loads.
+
+                Arguments:
+                    elemMatrix (list[ElementaryMatrixReal, float]) : list of pair composed of an
+                    elementary matrix and the multiplicatif coefficent to assemble.
+                    listOfLoads (ListOfLoads) : list of loads to assemble
+            )",
+              py::arg( "elemMatrix" ), py::arg( "listOfLoads" ) = nullptr )
+        //-----------------------------------------------------------------------------------------
+        .def(
+            "assemble",
+            py::overload_cast< const AssemblyMatrixPressureComplex::ElementaryMatrixPtr &,
+                               const DirichletBCPtr & >( &AssemblyMatrixPressureComplex::assemble ),
+            R"(
+               Assembly matrix from elementar matrices and list of loads.
+
+                Arguments:
+                    elemMatrix (ElementaryMatrixReal) : elementary matrix to assemble.
+                    dirichlet (DirichletBC) : dirichlet BC to impose.
+            )",
+            py::arg( "elemMatrix" ), py::arg( "dirichlet" ) )
+        //-----------------------------------------------------------------------------------------
+        .def( "assemble",
+              py::overload_cast<
+                  const std::vector< AssemblyMatrixPressureComplex::ElementaryMatrixPtr > &,
+                  const DirichletBCPtr & >( &AssemblyMatrixPressureComplex::assemble ),
+              R"(
+                 Arguments:
+                    elemMatrix (list[ElementaryMatrixReal]) : list elementary matrix to assemble.
+                    dirichlet (DirichletBC) : dirichlet BC to impose.
+            )",
+              py::arg( "elemMatrix" ), py::arg( "dirichlet" ) )
+        //-----------------------------------------------------------------------------------------
+        .def( "assemble",
+              py::overload_cast<
+                  const std::vector< std::pair< AssemblyMatrixPressureComplex::ElementaryMatrixPtr,
+                                                ASTERDOUBLE > > &,
+                  const DirichletBCPtr & >( &AssemblyMatrixPressureComplex::assemble ),
+              R"(
+                Arguments:
+                    elemMatrix (list[ElementaryMatrixReal, float]) : list of pair composed of an
+                    elementary matrix and the multiplicatif coefficent to assemble.
+                    dirichlet (DirichletBC) : dirichlet BC to impose.
+            )",
+              py::arg( "elemMatrix" ), py::arg( "dirichlet" ) )
+        .def(
+            "assemble",
+            py::overload_cast<
+                const std::vector< AssemblyMatrixPressureComplex::ElementaryMatrixPtr > &,
+                const std::vector< DirichletBCPtr > & >( &AssemblyMatrixPressureComplex::assemble ),
+            R"(
+                Arguments:
+                    elemMatrix (list[ElementaryMatrixReal]) : list elementary matrix to assemble.
+                    dirichlet (list[DirichletBC]) : dirichlet BC to impose.
+            )",
+            py::arg( "elemMatrix" ), py::arg( "dirichlet" ) )
         // -----------------------------------------------------------------------------------------
         .def( "transposeConjugate", &AssemblyMatrixPressureComplex::transposeConjugate )
         // -----------------------------------------------------------------------------------------

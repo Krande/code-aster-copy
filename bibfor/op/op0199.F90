@@ -141,7 +141,7 @@ subroutine op0199()
 ! SUR LA STRUCTURE
 !================================================================
 !
-    call phi199(model, materField, mateco, matrAsse, numeDof, &
+    call phi199(model, mateco, matrAsse, numeDof, &
                 num, nbmo, solveu, indice, tabad)
 !
 !--------------------------------------------------------------
@@ -164,7 +164,7 @@ subroutine op0199()
 !
     if (n7 .gt. 0) then
         call calmdg(model, modgen, nugene, num, numeDof, &
-                    matrAsse, materField, mateco, moint, ndble, &
+                    matrAsse, mateco, moint, ndble, &
                     itxsto, itysto, itzsto, iprsto, nbmo, &
                     iadirg)
     end if

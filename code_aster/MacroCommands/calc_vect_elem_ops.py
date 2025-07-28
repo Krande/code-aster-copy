@@ -1,6 +1,6 @@
 # coding: utf-8
 
-# Copyright (C) 1991 - 2023  EDF R&D                www.code-aster.org
+# Copyright (C) 1991 - 2025  EDF R&D                www.code-aster.org
 #
 # This file is part of Code_Aster.
 #
@@ -68,33 +68,23 @@ def calc_vect_elem_ops(self, **args):
 
     varc = None
     if mater and mater.hasExternalStateVariable():
+        # Compute reference value vector for external state variables
+        if mater.hasExternalStateVariableWithReference():
+            phys_pb.computeReferenceExternalStateVariables()
         varc = phys_pb.getExternalStateVariables(time)
 
-    if myOption == "CHAR_MECA":
-        vect_elem = ElementaryVectorDisplacementReal(
-            phys_pb.getModel(),
-            phys_pb.getMaterialField(),
-            phys_pb.getElementaryCharacteristics(),
-            phys_pb.getListOfLoads(),
-        )
+    if myOption in ("CHAR_MECA", "FORC_VARC"):
+        vect_elem = ElementaryVectorDisplacementReal(phys_pb.getModel())
     elif myOption == "CHAR_THER":
-        vect_elem = ElementaryVectorTemperatureReal(
-            phys_pb.getModel(),
-            phys_pb.getMaterialField(),
-            phys_pb.getElementaryCharacteristics(),
-            phys_pb.getListOfLoads(),
-        )
+        vect_elem = ElementaryVectorTemperatureReal(phys_pb.getModel())
     elif myOption == "CHAR_ACOU":
-        vect_elem = ElementaryVectorPressureComplex(
-            phys_pb.getModel(),
-            phys_pb.getMaterialField(),
-            phys_pb.getElementaryCharacteristics(),
-            phys_pb.getListOfLoads(),
-        )
+        vect_elem = ElementaryVectorPressureComplex(phys_pb.getModel())
     else:
         raise RuntimeError("Option %s not implemented" % (myOption))
 
-    vect_elem.prepareCompute(myOption)
+    if myOption == "FORC_VARC":
+        varc_elem = disc_comp.getExternalStateVariablesForces(time, varc, assembly=False)
+        vect_elem.addElementaryTerm(varc_elem.getElementaryTerms())
 
     neum_elem = disc_comp.getNeumannForces(time, mode=fourier, varc_curr=varc, assembly=False)
     vect_elem.addElementaryTerm(neum_elem.getElementaryTerms())

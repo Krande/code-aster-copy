@@ -16,7 +16,7 @@
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
 
-subroutine alimrs(mate, mateco, ma1, ma2, moint, ndble, &
+subroutine alimrs(mateco, ma1, ma2, moint, ndble, &
                   nume_ddl, cn1, chno, cmp, icor)
     implicit none
 #include "asterf_types.h"
@@ -35,13 +35,12 @@ subroutine alimrs(mate, mateco, ma1, ma2, moint, ndble, &
 #include "asterfort/jexnum.h"
 #include "asterfort/nueq_chck.h"
 !
-    character(len=*) :: moint, cmp, chno, mate, mateco
+    character(len=*) :: moint, cmp, chno, mateco
 !     AUTEUR : G. ROUSSEAU
 !     BUT : IMMERGER UN CHAMP AUX NOEUDS DE DEPLACEMENT
 !           D UNE STRUCTURE APPARTENANT A UN MAILLAGE
 !           DANS UN MODELE D INTERFACE THERMIQUE APPARTENANT
 !           A UN AUTRE MAILLAGE
-!     IN: MATE: NOM DU MATERIAU FLUIDE
 !     IN: MA1 : MAILLAGE DE LA STRUCTURE
 !     IN: MA2 : MAILLAGE DU FLUIDE
 !     IN: MOINT: NOM DU MODELE THERMIQUE D INTERFACE
@@ -97,7 +96,7 @@ subroutine alimrs(mate, mateco, ma1, ma2, moint, ndble, &
     call jeveuo(chnul//'.VALE', 'E', ichnul)
 !
     cn2 = chno
-    call calflu(chnul, moint, mate, mateco, nume_ddl, cn2, &
+    call calflu(chnul, moint, mateco, nume_ddl, cn2, &
                 nbrefe, nbvale, 'X')
 !
 !

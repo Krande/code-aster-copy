@@ -124,11 +124,9 @@ test.assertEqual(numeDDL.getType(), "NUME_DDL_SDASTER")
 # test.assertFalse(numeDDL.hasDirichletBC())
 
 matrAsse = CA.AssemblyMatrixDisplacementReal()
-matrAsse.addElementaryMatrix(matr_elem)
-matrAsse.addElementaryMatrix(matr_elem_dual)
 matrAsse.setDOFNumbering(numeDDL)
 test.assertFalse(listLoads.hasDirichletBC())
-matrAsse.assemble()
+matrAsse.assemble([matr_elem, matr_elem_dual])
 
 ccid = matrAsse.getDirichletBCDOFs()
 test.assertEqual(sum(ccid), 0)

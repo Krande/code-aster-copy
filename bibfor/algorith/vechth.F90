@@ -31,11 +31,10 @@ subroutine vechth(typeTher, &
 !
 #include "asterf_types.h"
 #include "asterfort/assert.h"
-#include "asterfort/detrsd.h"
 #include "asterfort/jedema.h"
 #include "asterfort/jemarq.h"
 #include "asterfort/load_list_info.h"
-#include "asterfort/memare.h"
+#include "asterfort/vemare.h"
 #include "asterfort/reajre.h"
 #include "LoadTypes_type.h"
 !
@@ -128,8 +127,7 @@ subroutine vechth(typeTher, &
                         loadNameJvZ, loadInfoJvZ)
 
 ! - Allocate result
-    call detrsd('VECT_ELEM', vectElem)
-    call memare(jvBase, vectElem, modelZ, 'CHAR_THER')
+    call vemare(jvBase, vectElem, modelZ)
     call reajre(vectElem, ' ', jvBase)
     if (noLoadInList) then
         goto 99

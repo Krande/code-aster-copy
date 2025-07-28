@@ -32,7 +32,6 @@ subroutine memame(optionz, modelz, matez, matecoz, caraElemz, time, &
 #include "asterfort/jedetr.h"
 #include "asterfort/jeexin.h"
 #include "asterfort/jemarq.h"
-#include "asterfort/jeveuo.h"
 #include "asterfort/mecham.h"
 #include "asterfort/memare.h"
 #include "asterfort/reajre.h"
@@ -83,7 +82,6 @@ subroutine memame(optionz, modelz, matez, matecoz, caraElemz, time, &
     character(len=19) :: matrElem
     integer(kind=8) :: nbSubstruct
     aster_logical :: lxfem, hasFiniteElement
-    character(len=24), pointer :: rerr(:) => null()
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -120,13 +118,9 @@ subroutine memame(optionz, modelz, matez, matecoz, caraElemz, time, &
 ! - Prepare RESU_ELEM objects
     call jeexin(matrElem(1:19)//'.RELR', iret)
     if (iret .eq. 0) then
-        call memare(base, matrElem, model, option)
+        call memare(base, matrElem, model, option, to_aster_logical(nbSubstruct > 0))
     else
         call jedetr(matrElem(1:19)//'.RELR')
-    end if
-    call jeveuo(matrElem//'.RERR', 'E', vk24=rerr)
-    if (nbSubstruct .gt. 0) then
-        rerr(3) = 'OUI_SOUS_STRUC'
     end if
 
 ! - Input fields

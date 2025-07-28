@@ -3,7 +3,7 @@
  * @brief Interface python de ElementaryMatrix
  * @author Nicolas Sellenet
  * @section LICENCE
- *   Copyright (C) 1991 - 2023  EDF R&D                www.code-aster.org
+ *   Copyright (C) 1991 - 2025  EDF R&D                www.code-aster.org
  *
  *   This file is part of Code_Aster.
  *
@@ -31,12 +31,8 @@ void exportElementaryMatrixToPython( py::module_ &mod ) {
         mod, "BaseElementaryMatrix" )
         // fake initFactoryPtr: not buildable
         // fake initFactoryPtr: not buildable
-        .def( "getMaterialField", &BaseElementaryMatrix::getMaterialField )
-        .def( "getElementaryCharacteristics", &BaseElementaryMatrix::getElementaryCharacteristics )
         .def( "getModel", &BaseElementaryMatrix::getModel )
         .def( "getMesh", &BaseElementaryMatrix::getMesh )
-        .def( "setMaterialField", &BaseElementaryMatrix::setMaterialField )
-        .def( "setElementaryCharacteristics", &BaseElementaryMatrix::setElementaryCharacteristics )
         .def( "setModel", &BaseElementaryMatrix::setModel );
 
     py::class_< ElementaryMatrixDisplacementReal,
@@ -44,6 +40,8 @@ void exportElementaryMatrixToPython( py::module_ &mod ) {
         mod, "ElementaryMatrixDisplacementReal" )
         .def( py::init( &initFactoryPtr< ElementaryMatrixDisplacementReal > ) )
         .def( py::init( &initFactoryPtr< ElementaryMatrixDisplacementReal, std::string > ) )
+        .def(
+            py::init( &initFactoryPtr< ElementaryMatrixDisplacementReal, ModelPtr, std::string > ) )
         .def( py::self *= float() )
         .def( "build", &ElementaryMatrixDisplacementReal::build )
         .def( "getFiniteElementDescriptors",
@@ -61,6 +59,8 @@ void exportElementaryMatrixToPython( py::module_ &mod ) {
         mod, "ElementaryMatrixDisplacementComplex" )
         .def( py::init( &initFactoryPtr< ElementaryMatrixDisplacementComplex > ) )
         .def( py::init( &initFactoryPtr< ElementaryMatrixDisplacementComplex, std::string > ) )
+        .def( py::init(
+            &initFactoryPtr< ElementaryMatrixDisplacementComplex, ModelPtr, std::string > ) )
         .def( "build", &ElementaryMatrixDisplacementComplex::build )
         .def( "getFiniteElementDescriptors",
               &ElementaryMatrixDisplacementComplex::getFiniteElementDescriptors )
@@ -77,6 +77,8 @@ void exportElementaryMatrixToPython( py::module_ &mod ) {
         mod, "ElementaryMatrixTemperatureReal" )
         .def( py::init( &initFactoryPtr< ElementaryMatrixTemperatureReal > ) )
         .def( py::init( &initFactoryPtr< ElementaryMatrixTemperatureReal, std::string > ) )
+        .def(
+            py::init( &initFactoryPtr< ElementaryMatrixTemperatureReal, ModelPtr, std::string > ) )
         .def( py::self *= float() )
         .def( "build", &ElementaryMatrixTemperatureReal::build )
         .def( "getFiniteElementDescriptors",
@@ -94,6 +96,8 @@ void exportElementaryMatrixToPython( py::module_ &mod ) {
         mod, "ElementaryMatrixPressureComplex" )
         .def( py::init( &initFactoryPtr< ElementaryMatrixPressureComplex > ) )
         .def( py::init( &initFactoryPtr< ElementaryMatrixPressureComplex, std::string > ) )
+        .def(
+            py::init( &initFactoryPtr< ElementaryMatrixPressureComplex, ModelPtr, std::string > ) )
         .def( "build", &ElementaryMatrixPressureComplex::build )
         .def( "getFiniteElementDescriptors",
               &ElementaryMatrixPressureComplex::getFiniteElementDescriptors )

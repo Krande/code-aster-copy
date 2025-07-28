@@ -38,7 +38,6 @@ subroutine xsifle(ndim, ifa, jptint, cface, igeom, &
 #include "asterfort/xjacf2.h"
 #include "asterfort/xjacff.h"
 #include "asterfort/xsifl1.h"
-#include "asterfort/xsifl2.h"
 #include "asterfort/xxmmvd.h"
 !
     character(len=8) :: nompar(4)
@@ -129,8 +128,7 @@ subroutine xsifle(ndim, ifa, jptint, cface, igeom, &
 !
     if (ndim .eq. 3) then
         elc = 'TR3'
-        if (option .eq. 'CALC_K_G_COHE') fpg = 'FPG4'
-        if (option .ne. 'CALC_K_G_COHE') fpg = 'XCON'
+        fpg = 'XCON'
     else if (ndim .eq. 2) then
         elc = 'SE2'
         fpg = 'MASS'
@@ -181,21 +179,13 @@ subroutine xsifle(ndim, ifa, jptint, cface, igeom, &
                         jac, ff, r27bid, dfdi, nd, &
                         tau1)
         end if
-        if (option .ne. 'CALC_K_G_COHE') then
-            call xsifl1(elref, angl, basloc, coeff, coeff3, &
-                        ddlm, ddls, dfdi, ff, he, &
-                        heavn, idepl, igthet, ipref, ipres, &
-                        ithet, jac, jlsn, jlst, jstno, &
-                        ka, mu, nd, ndim, nfh, &
-                        nnop, nnos, itemps, nompar, option, &
-                        singu, xg, igeom)
-        end if
-        if (option .eq. 'CALC_K_G_COHE') then
-            call xsifl2(basloc, coeff, coeff3, ddld, ddlm, &
-                        ddls, dfdi, ff, idepl, igthet, &
-                        ithet, jac, ndim, nnop, nnos, &
-                        tau1, tau2, nd, xg)
-        end if
+        call xsifl1(elref, angl, basloc, coeff, coeff3, &
+                    ddlm, ddls, dfdi, ff, he, &
+                    heavn, idepl, igthet, ipref, ipres, &
+                    ithet, jac, jlsn, jlst, jstno, &
+                    ka, mu, nd, ndim, nfh, &
+                    nnop, nnos, itemps, nompar, option, &
+                    singu, xg, igeom)
     end do
 !     FIN DE BOUCLE SUR LES POINTS DE GAUSS DES FACETTES
 !     ----------------------------------------------------------------

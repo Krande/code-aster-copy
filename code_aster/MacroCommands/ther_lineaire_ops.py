@@ -211,25 +211,27 @@ def _computeMatrix(disr_comp, matrix, is_evol, time_curr, time_delta, time_theta
 
     varc = phys_pb.getExternalStateVariables(time_curr)
 
+    matrElem = []
+
     logger.debug("<THER_LINEAIRE><MATRIX>: Linear Conductivity")
     matr_elem_rigi = disr_comp.getLinearStiffnessMatrix(time_curr, varc_curr=varc, with_dual=False)
-    matrix.addElementaryMatrix(matr_elem_rigi, time_theta)
+    matrElem.append((matr_elem_rigi, time_theta))
 
     matr_elem_exch = disr_comp.getThermalExchangeMatrix(time_curr)
-    matrix.addElementaryMatrix(matr_elem_exch, time_theta)
+    matrElem.append((matr_elem_exch, time_theta))
 
     if phys_pb.getDOFNumbering().useLagrangeDOF():
         logger.debug("<THER_LINEAIRE><MATRIX>: Dual Conductivity")
         matr_elem_dual = disr_comp.getDualLinearConductivityMatrix()
-        matrix.addElementaryMatrix(matr_elem_dual)
+        matrElem.append((matr_elem_dual, 1.0))
 
     if is_evol:
         logger.debug("<THER_LINEAIRE><MATRIX>: Linear Capacity")
 
         matr_elem_capa = disr_comp.getLinearCapacityMatrix(time_curr, varc)
-        matrix.addElementaryMatrix(matr_elem_capa, 1.0 / time_delta)
+        matrElem.append((matr_elem_capa, 1.0 / time_delta))
 
-    matrix.assemble(True)
+    matrix.assemble(matrElem, phys_pb.getListOfLoads())
 
     logger.debug("<THER_LINEAIRE><MATRIX>: Finish")
 

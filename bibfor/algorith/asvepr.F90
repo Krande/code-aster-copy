@@ -35,7 +35,7 @@ subroutine asvepr(lischa, vecelz, typres, numedd)
 #include "asterfort/jemarq.h"
 #include "asterfort/jeveuo.h"
 #include "asterfort/lisltc.h"
-#include "asterfort/memare.h"
+#include "asterfort/vemare.h"
 #include "asterfort/reajre.h"
 #include "asterfort/utmess.h"
 #include "asterfort/vtcopy.h"
@@ -145,7 +145,7 @@ subroutine asvepr(lischa, vecelz, typres, numedd)
 ! --- CREER L'OBJET .RERR DU VECT_ELEM
 !
     call dismoi('NOM_MODELE', numedd, 'NUME_DDL', repk=modele)
-    call memare('V', '&&ASVEPR', modele, 'CHAR_MECA')
+    call vemare('V', '&&ASVEPR', modele)
 !
 ! --- INITIALISER L'OBJET .RELR DU VECT_ELEM
 !

@@ -150,7 +150,7 @@ subroutine op0116()
         call wkvect('&&OP0116.TYSTO', 'V V K24', nbmod, iady)
         call wkvect('&&OP0116.TZSTO', 'V V K24', nbmod, iady)
 !
-        call tabcor(modelis, mater, mateco, mailla, maflui, &
+        call tabcor(modelis, mateco, mailla, maflui, &
                     modele, nuddl, 0, icor)
 !
         call getvr8(' ', 'COEF_MULT', iocc=1, nbval=0, nbret=icoef)
@@ -186,15 +186,15 @@ subroutine op0116()
             chamny = '&&OP0116.CHAMNY'
             vesolx = '&&OP0116.VESOLX'
             vesoly = '&&OP0116.VESOLY'
-            call alimrs(mater, mateco, mailla, maflui, modele, &
+            call alimrs(mateco, mailla, maflui, modele, &
                         0, nuddl, tmpmod, chamnx, 'DX', &
                         icor)
-            call alimrs(mater, mateco, mailla, maflui, modele, &
+            call alimrs(mateco, mailla, maflui, modele, &
                         0, nuddl, tmpmod, chamny, 'DY', &
                         icor)
-            call calflu(chamnx, modele, mater, mateco, nuddl, &
+            call calflu(chamnx, modele, mateco, nuddl, &
                         vesolx, nbrefe, nbvale, 'X')
-            call calflu(chamny, modele, mater, mateco, nuddl, &
+            call calflu(chamny, modele, mateco, nuddl, &
                         vesoly, nbrefe, nbvale, 'Y')
 !
             chcomb = "&&OP0116.CHCOMB"
@@ -205,10 +205,10 @@ subroutine op0116()
             if (dim .eq. 3) then
                 chamnz = '&&OP0116.CHAMNZ'
                 vesolz = '&&OP0116.VESOLZ'
-                call alimrs(mater, mateco, mailla, maflui, modele, &
+                call alimrs(mateco, mailla, maflui, modele, &
                             0, nuddl, tmpmod, chamnz, 'DZ', &
                             icor)
-                call calflu(chamnz, modele, mater, mateco, nuddl, &
+                call calflu(chamnz, modele, mateco, nuddl, &
                             vesolz, nbrefe, nbvale, 'Z')
 !
                 chcmb2 = "&&OP0116.CHCOMB2"

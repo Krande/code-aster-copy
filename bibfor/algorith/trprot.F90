@@ -19,7 +19,7 @@
 subroutine trprot(model, bamo, tgeom, imodg, iadx, &
                   iady, iadz, isst, iadrp, norm1, &
                   norm2, ndble, num, nu, ma, &
-                  mate, mateco, moint, ilires, k, icor)
+                  mateco, moint, ilires, k, icor)
     implicit none
 !     AUTEUR : G.ROUSSEAU
 !     ROUTINE REALISANT ,
@@ -104,7 +104,7 @@ subroutine trprot(model, bamo, tgeom, imodg, iadx, &
     character(len=19), parameter :: solveu = '&&OP0152.SOLVEUR'
     character(len=24), parameter :: criter = '&&RESGRA_GCPC'
     character(len=24) :: nomcha
-    character(len=*) :: mate, mateco
+    character(len=*) :: mateco
     complex(kind=8) :: cbid
     integer(kind=8) :: iadg, iadx, iady, iadz, iaut, ichar
     integer(kind=8) :: ichav, ilires, imodg, inoe
@@ -323,15 +323,14 @@ subroutine trprot(model, bamo, tgeom, imodg, iadx, &
 !
     if (maflui .ne. mailla) then
         base = 'V'
-!          WRITE(8,*)'JE PASSE DANS ALIMRS 1 FOIS'
-        call alimrs(mate, mateco, mailla, maflui, moint, ndble, &
+        call alimrs(mateco, mailla, maflui, moint, ndble, &
                     num, newcha, chamnx, 'DX', icor)
 !
-        call alimrs(mate, mateco, mailla, maflui, moint, ndble, &
+        call alimrs(mateco, mailla, maflui, moint, ndble, &
                     num, newcha, chamny, 'DY', icor)
         if (model .eq. '3D') then
 !
-            call alimrs(mate, mateco, mailla, maflui, moint, ndble, &
+            call alimrs(mateco, mailla, maflui, moint, ndble, &
                         num, newcha, chamnz, 'DZ', icor)
         end if
         call detrsd('CHAM_NO', newcha)
@@ -412,13 +411,13 @@ subroutine trprot(model, bamo, tgeom, imodg, iadx, &
         call chtpcn(chamnx, tgeom, tailmi, tmin, epsi, &
                     base, chtmpx)
 !
-        call calflu(chtmpx, moint, mate, mateco, num, vesolx, &
+        call calflu(chtmpx, moint, mateco, num, vesolx, &
                     nbrefe, nbvale, 'X')
 !
         call chtpcn(chamny, tgeom, tailmi, tmin, epsi, &
                     base, chtmpy)
 !
-        call calflu(chtmpy, moint, mate, mateco, num, vesoly, &
+        call calflu(chtmpy, moint, mateco, num, vesoly, &
                     nbrefe, nbvale, 'Y')
 !
         ilires = ilires+1
@@ -437,7 +436,7 @@ subroutine trprot(model, bamo, tgeom, imodg, iadx, &
             call chtpcn(chamnz, tgeom, tailmi, tmin, epsi, &
                         base, chtmpz)
 !
-            call calflu(chtmpz, moint, mate, mateco, num, vesolz, &
+            call calflu(chtmpz, moint, mateco, num, vesolz, &
                         nbrefe, nbvale, 'Z')
             vestoc = '&&TRPROT.TPZSTO'
             call prstoc(chtmpz, vestoc, ilires, k, iadz, &
@@ -448,9 +447,9 @@ subroutine trprot(model, bamo, tgeom, imodg, iadx, &
 !
 !        'CAS OU T=0 ET R=0'
 !
-        call calflu(chamnx, moint, mate, mateco, num, vesolx, &
+        call calflu(chamnx, moint, mateco, num, vesolx, &
                     nbrefe, nbvale, 'X')
-        call calflu(chamny, moint, mate, mateco, num, vesoly, &
+        call calflu(chamny, moint, mateco, num, vesoly, &
                     nbrefe, nbvale, 'Y')
 !
         ilires = ilires+1
@@ -474,7 +473,7 @@ subroutine trprot(model, bamo, tgeom, imodg, iadx, &
 !
         if (model .eq. '3D') then
 !
-            call calflu(chamnz, moint, mate, mateco, num, vesolz, &
+            call calflu(chamnz, moint, mateco, num, vesolz, &
                         nbrefe, nbvale, 'Z')
             vestoc = '&&TRPROT.TPZSTO'
             call prstoc(chamnz, vestoc, ilires, k, iadz, &

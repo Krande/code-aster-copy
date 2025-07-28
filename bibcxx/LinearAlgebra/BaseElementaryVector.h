@@ -28,10 +28,8 @@
 #include "DataFields/FieldOnCells.h"
 #include "DataFields/FieldOnNodes.h"
 #include "DataStructures/DataStructure.h"
-#include "Discretization/ElementaryCharacteristics.h"
 #include "Discretization/ElementaryCompute.h"
 #include "Loads/ListOfLoads.h"
-#include "Materials/MaterialField.h"
 #include "Numbering/DOFNumbering.h"
 #include "Supervis/ResultNaming.h"
 
@@ -39,75 +37,42 @@
  * @class BaseElementaryVector
  * @brief Base class for sd_vect_elem
  */
-class BaseElementaryVector : public DataStructure {
+class BaseElementaryVector : public DSWithCppPickling {
   protected:
     /** @brief Flag for empty datastructure (either built or empty)*/
     bool _isBuilt;
 
-    /** @brief Model */
-    ModelPtr _model;
-
-    /** @brief Field of material parameters */
-    MaterialFieldPtr _materialField;
-
-    /** @brief Elementary characteristics */
-    ElementaryCharacteristicsPtr _elemChara;
-
-    /** @brief Liste de charges */
-    ListOfLoadsPtr _listOfLoads;
-
     /** @brief Elementary compute */
     ElementaryComputePtr _elemComp;
 
-    /**
-     * @brief Set the option
-     * @param currOption option
-     */
-    void setOption( const std::string option ) { _elemComp->setOption( option ); };
-
   public:
     /** @brief Constructor with a name */
-    BaseElementaryVector( const std::string name, const std::string type = "VECT_ELEM" )
-        : DataStructure( name, 19, type ),
+    BaseElementaryVector( const std::string name, const std::string type, const ModelPtr model )
+        : DSWithCppPickling( name, 19, type ),
           _isBuilt( false ),
-          _model( nullptr ),
-          _materialField( nullptr ),
-          _elemChara( nullptr ),
-          _elemComp( std::make_shared< ElementaryCompute >( getName() ) ),
-          _listOfLoads( std::make_shared< ListOfLoads >() ) {};
-
-    /** @brief Constructor with automatic name */
-    BaseElementaryVector() : BaseElementaryVector( ResultNaming::getNewResultName() ) {};
-
-    /** @brief Constructor with automatic name */
-    BaseElementaryVector( const ModelPtr model, const MaterialFieldPtr mater,
-                          const ElementaryCharacteristicsPtr caraElem, const ListOfLoadsPtr lLoads )
-        : BaseElementaryVector() {
-        this->setPhysicalProblem( model, mater, caraElem, lLoads );
+          _elemComp( std::make_shared< ElementaryCompute >( getName() ) ) {
+        if ( model ) {
+            _elemComp->createDescriptor( model );
+        }
     };
+
+    /** @brief Constructor with automatic name */
+    BaseElementaryVector( const ModelPtr model )
+        : BaseElementaryVector( ResultNaming::getNewResultName(), "VECT_ELEM", model ) {};
+
+    py::tuple _getState() const { return py::make_tuple( this->getName(), this->getModel() ); };
 
   public:
-    /** @brief Add a load to elementary vector */
-    template < typename... Args >
-    void addLoad( const Args &...a ) {
-        _listOfLoads->addLoad( a... );
-    };
-
-    /** @brief Set type of vector */
-    void setType( const std::string newType ) { DataStructure::setType( newType ); };
-
     /**
      * @brief Assembly with dofNume and time (for load)
      * @param dofNume object DOFNumbering
      */
     FieldOnNodesRealPtr assembleWithLoadFunctions( const BaseDOFNumberingPtr &dofNume,
+                                                   const ListOfLoadsPtr &loads,
                                                    const ASTERDOUBLE &time = 0. );
 
     /** @brief Get the model */
-    ModelPtr getModel() const { return _model; };
-
-    /** @brief Get option */
-    std::string getOption() const { return _elemComp->getOption(); };
+    ModelPtr getModel() const { return _elemComp->getModel(); };
 
     /**
      * @brief Assembly with dofNume and mask on cells
@@ -130,55 +95,6 @@ class BaseElementaryVector : public DataStructure {
      * @param bBuilt flag for state of datastructure
      */
     void isBuilt( bool bBuilt ) { _isBuilt = bBuilt; };
-
-    /**
-     * @brief Set physical problem
-     */
-    void setPhysicalProblem( const ModelPtr model, const MaterialFieldPtr mater,
-                             const ElementaryCharacteristicsPtr caraElem,
-                             const ListOfLoadsPtr lLoads ) {
-        _model = model;
-        _materialField = mater;
-        _elemChara = caraElem;
-        _listOfLoads = lLoads;
-    };
-
-    /**
-     * @brief Set list of loads
-     * @param currentList list of loads
-     */
-    void setListOfLoads( const ListOfLoadsPtr &currentList ) { _listOfLoads = currentList; };
-
-    /**
-     * @brief Set the field of material parameters
-     * @param currMaterialField pointer to material field
-     */
-    void setMaterialField( const MaterialFieldPtr &currMaterialField ) {
-        _materialField = currMaterialField;
-    };
-
-    /**
-     * @brief Set elementary characteristics
-     * @param currElemChara pointer to elementary characteristics
-     */
-    void setElementaryCharacteristics( const ElementaryCharacteristicsPtr &currElemChara ) {
-        _elemChara = currElemChara;
-    };
-
-    /**
-     * @brief Set the model
-     * @param currModel pointer to model
-     */
-    void setModel( const ModelPtr &currModel ) { _model = currModel; };
-
-    /** @brief  Prepare compute */
-    void prepareCompute( const std::string option ) {
-        setOption( option );
-        _elemComp->setOption( option );
-        if ( option != "WRAP_FORTRAN" ) {
-            _elemComp->createDescriptor( _model );
-        }
-    };
 
     virtual bool build( std::vector< FiniteElementDescriptorPtr > FED = {} ) {
         AS_ABORT( "Not implemented" );

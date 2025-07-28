@@ -2,7 +2,7 @@
  * @file DiscreteComputation.cxx
  * @brief Implementation of class DiscreteComputation
  * @section LICENCE
- *   Copyright (C) 1991 2023  EDF R&D                www.code-aster.org
+ *   Copyright (C) 1991 2025  EDF R&D                www.code-aster.org
  *
  *   This file is part of Code_Aster.
  *
@@ -40,16 +40,14 @@ DiscreteComputation::getAcousticNeumannForces( const bool assembly ) const {
 
     AS_ASSERT( _phys_problem->getModel()->isAcoustic() );
 
-    auto elemVect = std::make_shared< ElementaryVectorPressureComplex >(
-        _phys_problem->getModel(), _phys_problem->getMaterialField(),
-        _phys_problem->getElementaryCharacteristics(), _phys_problem->getListOfLoads() );
+    auto elemVect =
+        std::make_shared< ElementaryVectorPressureComplex >( _phys_problem->getModel() );
 
     // Init
     ASTERINTEGER iload = 1;
 
     // Setup
     const std::string calcul_option( "CHAR_ACOU" );
-    elemVect->prepareCompute( calcul_option );
 
     // Main parameters
     auto mesh = _phys_problem->getMesh();
@@ -108,16 +106,14 @@ DiscreteComputation::getAcousticVolumetricForces( const bool assembly ) const {
 
     AS_ASSERT( _phys_problem->getModel()->isAcoustic() );
 
-    auto elemVect = std::make_shared< ElementaryVectorPressureComplex >(
-        _phys_problem->getModel(), _phys_problem->getMaterialField(),
-        _phys_problem->getElementaryCharacteristics(), _phys_problem->getListOfLoads() );
+    auto elemVect =
+        std::make_shared< ElementaryVectorPressureComplex >( _phys_problem->getModel() );
 
     // Init
     ASTERINTEGER iload = 1;
 
     // Setup
     const std::string calcul_option( "CHAR_ACOU" );
-    elemVect->prepareCompute( calcul_option );
 
     elemVect->build();
 
@@ -143,16 +139,14 @@ DiscreteComputation::getAcousticImposedDualBC( const bool assembly ) const {
 
     AS_ASSERT( _phys_problem->getModel()->isAcoustic() );
 
-    auto elemVect = std::make_shared< ElementaryVectorPressureComplex >(
-        _phys_problem->getModel(), _phys_problem->getMaterialField(),
-        _phys_problem->getElementaryCharacteristics(), _phys_problem->getListOfLoads() );
+    auto elemVect =
+        std::make_shared< ElementaryVectorPressureComplex >( _phys_problem->getModel() );
 
     // Init
     ASTERINTEGER iload = 1;
 
     // Setup
     const std::string calcul_option( "CHAR_ACOU" );
-    elemVect->prepareCompute( calcul_option );
 
     // Main parameters
     auto mesh = _phys_problem->getMesh();

@@ -117,12 +117,11 @@ subroutine op0026()
 !
     if (phenom .eq. 'MECANIQUE') then
         call calcCalcMeca(nb_option, list_option, &
-                          l_elem_nonl, nume_harm, &
+                          l_elem_nonl, &
                           listLoad, model, caraElem, &
                           ds_constitutive, ds_material, ds_system, &
                           hval_incr, hval_algo, &
                           vediri, vefnod, &
-                          vevarc_prev, vevarc_curr, &
                           nb_obje_maxi, obje_name, obje_sdname, nb_obje, &
                           l_pred)
     else

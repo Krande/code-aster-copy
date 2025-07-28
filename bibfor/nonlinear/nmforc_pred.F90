@@ -180,7 +180,7 @@ subroutine nmforc_pred(list_func_acti, &
     end if
 
 ! - Compute force for Dirichlet boundary conditions (dualized) - BT.LAMBDA
-    call nonlinRForceCompute(model, ds_material, cara_elem, list_load, &
+    call nonlinRForceCompute(model, list_load, &
                              nume_dof, ds_measure, dispPrev, &
                              hval_veelem, hval_veasse)
 

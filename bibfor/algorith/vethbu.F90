@@ -31,7 +31,7 @@ subroutine vethbu(model, matasz, loadNameJv, loadInfoJv, &
 #include "asterfort/jemarq.h"
 #include "asterfort/jeveuo.h"
 #include "asterfort/mecact.h"
-#include "asterfort/memare.h"
+#include "asterfort/vemare.h"
 #include "asterfort/wkvect.h"
 !
     character(len=8), intent(in) :: model
@@ -84,7 +84,7 @@ subroutine vethbu(model, matasz, loadNameJv, loadInfoJv, &
     vecel = '&&VEBUEE           '
     if (iret .eq. 0) then
         vebtem = vecel//'.RELR'
-        call memare('V', vecel, model(1:8), 'CHAR_THER')
+        call vemare('V', vecel, model(1:8))
         call wkvect(vebtem, 'V V K24', nchar, jdir)
     else
         call jeveuo(vebtem, 'E', jdir)

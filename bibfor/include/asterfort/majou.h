@@ -20,7 +20,7 @@
 !
 interface
     subroutine majou(model, modmec, solveu, num, nu,&
-                     ma, mate, mateco, moint, ndble, icor,&
+                     ma, mateco, moint, ndble, icor,&
                      tabad)
         character(len=2) :: model
         character(len=8) :: modmec
@@ -28,7 +28,7 @@ interface
         character(len=14) :: num
         character(len=14) :: nu
         character(len=8) :: ma
-        character(len=*) :: mate, mateco
+        character(len=*) :: mateco
         character(len=8) :: moint
         integer(kind=8) :: ndble
         integer(kind=8) :: icor(2)

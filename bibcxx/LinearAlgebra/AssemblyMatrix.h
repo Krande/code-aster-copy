@@ -6,7 +6,7 @@
  * @brief Fichier entete de la classe AssemblyMatrix
  * @author Nicolas Sellenet
  * @section LICENCE
- *   Copyright (C) 1991 - 2024  EDF R&D                www.code-aster.org
+ *   Copyright (C) 1991 - 2025  EDF R&D                www.code-aster.org
  *
  *   This file is part of Code_Aster.
  *
@@ -56,8 +56,6 @@ using LinearSolverPtr = std::shared_ptr< LinearSolver >;
 template < class ValueType, PhysicalQuantityEnum PhysicalQuantity >
 class AssemblyMatrix : public BaseAssemblyMatrix {
   private:
-    typedef std::shared_ptr< ElementaryMatrix< ValueType, PhysicalQuantity > > ElementaryMatrixPtr;
-
     /** @brief Collection '.VALM' */
     JeveuxCollection< ValueType > _matrixValues;
     /** @brief Objet Jeveux '.VALF' */
@@ -70,10 +68,6 @@ class AssemblyMatrix : public BaseAssemblyMatrix {
     JeveuxVector< ValueType > _digs;
     /** @brief Objet Jeveux '.CCVA' */
     JeveuxVector< ValueType > _ccva;
-
-    /** @brief ElementaryMatrix sur lesquelles sera construit la matrice */
-    std::vector< ElementaryMatrixPtr > _elemMatrix;
-    std::map< std::string, ASTERDOUBLE > _coeffReal;
 
     /** @brief Objet Jeveux '.SOLVEUR' */
     LinearSolverPtr _solver;
@@ -94,6 +88,8 @@ class AssemblyMatrix : public BaseAssemblyMatrix {
      * @brief Pointeur intelligent vers un AssemblyMatrix
      */
     typedef std::shared_ptr< AssemblyMatrix< ValueType, PhysicalQuantity > > AssemblyMatrixPtr;
+
+    typedef std::shared_ptr< ElementaryMatrix< ValueType, PhysicalQuantity > > ElementaryMatrixPtr;
 
     /**
      * @brief Constructeur
@@ -134,32 +130,48 @@ class AssemblyMatrix : public BaseAssemblyMatrix {
     };
 
     /**
-     * @brief Methode permettant de definir les matrices elementaires
-     * @param currentElemMatrix objet ElementaryMatrix
+     * @brief Assemblage de la matrice
      */
-    void addElementaryMatrix( const ElementaryMatrixPtr &currentElemMatrix,
-                              ASTERDOUBLE coeff = 1.0 ) {
-        if ( currentElemMatrix && currentElemMatrix->isBuilt() ) {
-            if ( currentElemMatrix->hasElementaryTerms() ||
-                 currentElemMatrix->existsSuperElement() ) {
-                _elemMatrix.push_back( currentElemMatrix );
-                _coeffReal[currentElemMatrix->getName()] = coeff;
-            }
-        }
-    };
+    void assemble( const ElementaryMatrixPtr &elemMatrix, const DirichletBCPtr &diri );
 
     /**
      * @brief Assemblage de la matrice
      */
-    bool assemble( bool clean = true );
+    void assemble( const std::vector< ElementaryMatrixPtr > &elemMatrix,
+                   const std::vector< DirichletBCPtr > &diri );
 
     /**
-     * @brief Clear all ElementaryMatrixPtr
+     * @brief Assemblage de la matrice
      */
-    void clearElementaryMatrix() {
-        _elemMatrix.clear();
-        _coeffReal.clear();
-    };
+    void assemble( const std::vector< ElementaryMatrixPtr > &elemMatrix,
+                   const DirichletBCPtr &diri );
+
+    /**
+     * @brief Assemblage de la matrice
+     */
+    void assemble( const std::vector< std::pair< ElementaryMatrixPtr, ASTERDOUBLE > > &elemMatrix,
+                   const DirichletBCPtr &diri );
+
+    void assemble( const std::vector< std::pair< ElementaryMatrixPtr, ASTERDOUBLE > > &elemMatrix,
+                   const std::vector< DirichletBCPtr > &diri );
+
+    /**
+     * @brief Assemblage de la matrice
+     */
+    void assemble( const ElementaryMatrixPtr &elemMatrix,
+                   const ListOfLoadsPtr &listOfLoads = nullptr );
+
+    /**
+     * @brief Assemblage de la matrice
+     */
+    void assemble( const std::vector< ElementaryMatrixPtr > &elemMatrix,
+                   const ListOfLoadsPtr &listOfLoads = nullptr );
+
+    /**
+     * @brief Assemblage de la matrice
+     */
+    void assemble( const std::vector< std::pair< ElementaryMatrixPtr, ASTERDOUBLE > > &elemMatrix,
+                   const ListOfLoadsPtr &listOfLoads = nullptr );
 
     /**
      * @brief Set new values
@@ -178,22 +190,6 @@ class AssemblyMatrix : public BaseAssemblyMatrix {
         // Template class raises error. It must be specialized in each instanciated class.
         throw std::runtime_error( "Not implemented" );
     };
-
-    /**
-     * @brief Get MaterialField
-     * @return MaterialField of the first ElementaryMatrix (all others must be the same)
-     */
-    MaterialFieldPtr getMaterialField() const {
-        if ( _elemMatrix.size() != 0 )
-            return _elemMatrix[0]->getMaterialField();
-        throw std::runtime_error( "No ElementaryMatrix in AssemblyMatrix" );
-    };
-
-    /**
-     * @brief Get the number of defined ElementaryMatrix
-     * @return size of vector containing ElementaryMatrix
-     */
-    ASTERINTEGER getNumberOfElementaryMatrix() const { return _elemMatrix.size(); };
 
     BaseAssemblyMatrixPtr getEmptyMatrix( const std::string &name ) const {
         return std::make_shared< AssemblyMatrix< ValueType, PhysicalQuantity > >( name );
@@ -255,7 +251,6 @@ class AssemblyMatrix : public BaseAssemblyMatrix {
 
         AssemblyMatrix< ValueType, PhysicalQuantity > mat;
         mat.setDOFNumbering( mat1.getDOFNumbering() );
-        mat.setListOfLoads( mat1.getListOfLoads() );
         AS_ASSERT( mat.isSimilarTo( mat2 ) );
         const ASTERDOUBLE c1 = 1.0, c2 = 1.0;
         CALL_ADDMATRASSE( mat1.getName(), mat2.getName(), &c1, &c2, mat.getName() );
@@ -272,7 +267,6 @@ class AssemblyMatrix : public BaseAssemblyMatrix {
                const AssemblyMatrix< ValueType, PhysicalQuantity > &mat2 ) {
         AssemblyMatrix< ValueType, PhysicalQuantity > mat;
         mat.setDOFNumbering( mat1.getDOFNumbering() );
-        mat.setListOfLoads( mat1.getListOfLoads() );
         AS_ASSERT( mat.isSimilarTo( mat2 ) );
         const ASTERDOUBLE c1 = 1.0, c2 = -1.0;
         CALL_ADDMATRASSE( mat1.getName(), mat2.getName(), &c1, &c2, mat.getName() );
@@ -426,7 +420,6 @@ template < class ValueType, PhysicalQuantityEnum PhysicalQuantity >
 AssemblyMatrix< ValueType, PhysicalQuantity >::AssemblyMatrix( const PhysicalProblemPtr phys_prob )
     : AssemblyMatrix() {
     setDOFNumbering( phys_prob->getDOFNumbering() );
-    _listOfLoads = phys_prob->getListOfLoads();
 };
 
 template < class ValueType, PhysicalQuantityEnum PhysicalQuantity >
@@ -449,9 +442,6 @@ AssemblyMatrix< ValueType, PhysicalQuantity >::AssemblyMatrix( const std::string
     ( *_ualf ) = ( *toCopy._ualf );
     ( *_digs ) = ( *toCopy._digs );
     ( *_ccva ) = ( *toCopy._ccva );
-
-    _elemMatrix = toCopy._elemMatrix;
-    _coeffReal = toCopy._coeffReal;
 }
 
 template < class ValueType, PhysicalQuantityEnum PhysicalQuantity >
@@ -464,17 +454,16 @@ AssemblyMatrix< ValueType, PhysicalQuantity >::AssemblyMatrix( AssemblyMatrix &&
     _ualf = other._ualf;
     _digs = other._digs;
     _ccva = other._ccva;
-
-    _elemMatrix = std::move( other._elemMatrix );
-    _coeffReal = std::move( other._coeffReal );
 }
 
 template < class ValueType, PhysicalQuantityEnum PhysicalQuantity >
-bool AssemblyMatrix< ValueType, PhysicalQuantity >::assemble( bool clean ) {
+void AssemblyMatrix< ValueType, PhysicalQuantity >::assemble(
+    const std::vector< std::pair< ElementaryMatrixPtr, ASTERDOUBLE > > &elemMatrix,
+    const ListOfLoadsPtr &listOfLoads ) {
     if ( !_dofNum->exists() )
         throw std::runtime_error( "Numbering is empty" );
 
-    if ( getNumberOfElementaryMatrix() == 0 )
+    if ( elemMatrix.empty() )
         throw std::runtime_error( "Elementary matrix is empty" );
 
     ASTERINTEGER typscal = 2;
@@ -483,14 +472,18 @@ bool AssemblyMatrix< ValueType, PhysicalQuantity >::assemble( bool clean ) {
 
     JeveuxVectorReal list_coef( "&&AM.COEF_R" );
 
-    ASTERINTEGER nbMatrElem = _elemMatrix.size();
     VectorString names;
-    names.reserve( nbMatrElem );
-    list_coef->reserve( nbMatrElem );
-    for ( const auto elemIt : _elemMatrix ) {
-        auto matr = elemIt->getName();
-        names.push_back( matr );
-        list_coef->push_back( _coeffReal[matr] );
+    names.reserve( elemMatrix.size() );
+    list_coef->reserve( elemMatrix.size() );
+    ASTERINTEGER nbMatrElem = 0;
+    for ( const auto &[elemIt, coeff] : elemMatrix ) {
+        if ( elemIt && elemIt->isBuilt() ) {
+            if ( elemIt->hasElementaryTerms() || elemIt->existsSuperElement() ) {
+                names.push_back( elemIt->getName() );
+                list_coef->push_back( coeff );
+                nbMatrElem++;
+            }
+        }
     }
 
     char *tabNames = vectorStringAsFStrArray( names, 19 );
@@ -498,11 +491,12 @@ bool AssemblyMatrix< ValueType, PhysicalQuantity >::assemble( bool clean ) {
     std::string base( "G" );
     std::string cumul( "ZERO" );
 
-    if ( !_listOfLoads->isBuilt() && _listOfLoads->getNumberOfLoads() != 0 )
-        _listOfLoads->build();
+    std::string listOfLoadsName( " " );
+    if ( listOfLoads && listOfLoads->isBuilt() && listOfLoads->getNumberOfLoads() != 0 )
+        listOfLoadsName = listOfLoads->getName();
 
     CALL_ASMATR( &nbMatrElem, tabNames, list_coef->getName().c_str(), _dofNum->getName().c_str(),
-                 _listOfLoads->getName().c_str(), cumul.c_str(), base.c_str(), &typscal,
+                 listOfLoadsName.c_str(), cumul.c_str(), base.c_str(), &typscal,
                  getName().c_str() );
     _isBuilt = true;
 
@@ -513,12 +507,123 @@ bool AssemblyMatrix< ValueType, PhysicalQuantity >::assemble( bool clean ) {
         std::string type = "MATR_ASSE";
         CALLO_SDMPIC( type, getName() );
     }
+};
 
-    if ( clean ) {
-        clearElementaryMatrix();
+template < class ValueType, PhysicalQuantityEnum PhysicalQuantity >
+void AssemblyMatrix< ValueType, PhysicalQuantity >::assemble( const ElementaryMatrixPtr &elemMatrix,
+                                                              const ListOfLoadsPtr &listOfLoads ) {
+
+    this->assemble( std::vector< std::pair< ElementaryMatrixPtr, ASTERDOUBLE > >(
+                        { std::make_pair( elemMatrix, 1.0 ) } ),
+                    listOfLoads );
+}
+
+template < class ValueType, PhysicalQuantityEnum PhysicalQuantity >
+void AssemblyMatrix< ValueType, PhysicalQuantity >::assemble(
+    const std::vector< ElementaryMatrixPtr > &elemMatrix, const ListOfLoadsPtr &listOfLoads ) {
+
+    std::vector< std::pair< ElementaryMatrixPtr, ASTERDOUBLE > > elemMatr2;
+    ASTERINTEGER nbMatrElem = elemMatrix.size();
+    elemMatr2.reserve( nbMatrElem );
+    for ( const auto &elemIt : elemMatrix ) {
+        elemMatr2.push_back( std::make_pair( elemIt, 1.0 ) );
     }
 
-    return true;
-};
+    this->assemble( elemMatr2, listOfLoads );
+}
+
+template < class ValueType, PhysicalQuantityEnum PhysicalQuantity >
+void AssemblyMatrix< ValueType, PhysicalQuantity >::assemble( const ElementaryMatrixPtr &elemMatrix,
+                                                              const DirichletBCPtr &diri ) {
+    this->assemble( std::vector< std::pair< ElementaryMatrixPtr, ASTERDOUBLE > >(
+                        { std::make_pair( elemMatrix, 1.0 ) } ),
+                    std::vector< DirichletBCPtr >( { diri } ) );
+}
+
+template < class ValueType, PhysicalQuantityEnum PhysicalQuantity >
+void AssemblyMatrix< ValueType, PhysicalQuantity >::assemble(
+    const std::vector< ElementaryMatrixPtr > &elemMatrix, const DirichletBCPtr &diri ) {
+    this->assemble( elemMatrix, std::vector< DirichletBCPtr >( { diri } ) );
+}
+
+template < class ValueType, PhysicalQuantityEnum PhysicalQuantity >
+void AssemblyMatrix< ValueType, PhysicalQuantity >::assemble(
+    const std::vector< ElementaryMatrixPtr > &elemMatrix,
+    const std::vector< DirichletBCPtr > &diri ) {
+    std::vector< std::pair< ElementaryMatrixPtr, ASTERDOUBLE > > elemMatr2;
+    ASTERINTEGER nbMatrElem = elemMatrix.size();
+    elemMatr2.reserve( nbMatrElem );
+    for ( const auto &elemIt : elemMatrix ) {
+        elemMatr2.push_back( std::make_pair( elemIt, 1.0 ) );
+    }
+
+    this->assemble( elemMatr2, diri );
+}
+
+template < class ValueType, PhysicalQuantityEnum PhysicalQuantity >
+void AssemblyMatrix< ValueType, PhysicalQuantity >::assemble(
+    const std::vector< std::pair< ElementaryMatrixPtr, ASTERDOUBLE > > &elemMatrix,
+    const DirichletBCPtr &diri ) {
+    this->assemble( elemMatrix, std::vector< DirichletBCPtr >( { diri } ) );
+}
+
+template < class ValueType, PhysicalQuantityEnum PhysicalQuantity >
+void AssemblyMatrix< ValueType, PhysicalQuantity >::assemble(
+    const std::vector< std::pair< ElementaryMatrixPtr, ASTERDOUBLE > > &elemMatrix,
+    const std::vector< DirichletBCPtr > &diri ) {
+
+    if ( !_dofNum->exists() )
+        throw std::runtime_error( "Numbering is empty" );
+
+    if ( elemMatrix.empty() )
+        throw std::runtime_error( "Elementary matrix is empty" );
+
+    if ( diri.empty() )
+        throw std::runtime_error( "Dirichlet BC is empty" );
+
+    ASTERINTEGER typscal = 2;
+    if ( typeid( ValueType ) == typeid( ASTERDOUBLE ) )
+        typscal = 1;
+
+    JeveuxVectorReal list_coef( "&&AM.COEF_R" );
+
+    VectorString names;
+    names.reserve( elemMatrix.size() );
+    list_coef->reserve( elemMatrix.size() );
+    ASTERINTEGER nbMatrElem = 0;
+    for ( const auto &[elemIt, coeff] : elemMatrix ) {
+        if ( elemIt && elemIt->isBuilt() ) {
+            if ( elemIt->hasElementaryTerms() || elemIt->existsSuperElement() ) {
+                names.push_back( elemIt->getName() );
+                list_coef->push_back( coeff );
+                nbMatrElem++;
+            }
+        }
+    }
+
+    char *tabNames = vectorStringAsFStrArray( names, 19 );
+
+    std::string base( "G" );
+    std::string cumul( "ZERO" );
+
+    JeveuxVectorChar24 diriName( "&AM.LIST_DIRI" );
+    diriName->reserve( diri.size() );
+    for ( const auto &diriBC : diri ) {
+        diriName->push_back( diriBC->getName() );
+    }
+
+    CALL_ASMATR( &nbMatrElem, tabNames, list_coef->getName().c_str(), _dofNum->getName().c_str(),
+                 diriName->getName().c_str(), cumul.c_str(), base.c_str(), &typscal,
+                 getName().c_str() );
+    _isBuilt = true;
+
+    // free matr_elem string
+    FreeStr( tabNames );
+
+    if ( !isMPIFull() && !getMesh()->isParallel() ) {
+        std::string type = "MATR_ASSE";
+        CALLO_SDMPIC( type, getName() );
+    }
+}
 
 #endif /* ASSEMBLYMATRIX_H_ */

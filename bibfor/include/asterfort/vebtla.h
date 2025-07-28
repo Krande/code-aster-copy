@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -19,12 +19,10 @@
 !
 !
 interface
-    subroutine vebtla(base     , model_    , mate, cara_elem, disp_,&
+    subroutine vebtla(base     , model_    , disp_,&
                       list_load, vect_elemz)
         character(len=1), intent(in) :: base
         character(len=*), intent(in) :: model_
-        character(len=24), intent(in) :: mate
-        character(len=24), intent(in) :: cara_elem
         character(len=*), intent(in) :: disp_
         character(len=19), intent(in) :: list_load
         character(len=*), intent(in) :: vect_elemz

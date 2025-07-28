@@ -147,10 +147,11 @@ DiscreteComputation::getIncrementalDirichletBC( const ASTERDOUBLE &time_curr,
     return vectAsse;
 };
 
-FieldOnNodesRealPtr DiscreteComputation::getExternalStateVariablesForces(
+std::variant< ElementaryVectorRealPtr, FieldOnNodesRealPtr >
+DiscreteComputation::getExternalStateVariablesForces(
     const ASTERDOUBLE time_curr, const FieldOnCellsRealPtr varc_curr,
     const FieldOnCellsRealPtr varc_prev, const FieldOnCellsRealPtr vari_curr,
-    const FieldOnCellsRealPtr stress_prev, const ASTERINTEGER mode_fourier,
+    const FieldOnCellsRealPtr stress_prev, const ASTERINTEGER mode_fourier, const bool assembly,
     const FieldOnCellsLongPtr maskField ) const {
 
     // Get main parameters
@@ -184,10 +185,7 @@ FieldOnNodesRealPtr DiscreteComputation::getExternalStateVariablesForces(
     }
 
     // Create elementary vectors
-    auto elemVect = std::make_shared< ElementaryVectorReal >(
-        _phys_problem->getModel(), _phys_problem->getMaterialField(),
-        _phys_problem->getElementaryCharacteristics(), _phys_problem->getListOfLoads() );
-    elemVect->prepareCompute( "CHAR_VARC" );
+    auto elemVect = std::make_shared< ElementaryVectorReal >( _phys_problem->getModel() );
 
     int nbExternVar = static_cast< int >( externVarEnumInt::NumberOfExternVarTypes );
     for ( auto iExternVar = 0; iExternVar < nbExternVar; iExternVar++ ) {
@@ -240,10 +238,13 @@ FieldOnNodesRealPtr DiscreteComputation::getExternalStateVariablesForces(
     // Build elementary vectors
     elemVect->build();
 
-    // Assemble vector
-    if ( maskField ) {
-        return elemVect->assembleWithMask( _phys_problem->getDOFNumbering(), maskField, 1 );
-    } else {
-        return elemVect->assemble( _phys_problem->getDOFNumbering() );
+    if ( assembly ) { // Assemble vector
+        if ( maskField ) {
+            return elemVect->assembleWithMask( _phys_problem->getDOFNumbering(), maskField, 1 );
+        } else {
+            return elemVect->assemble( _phys_problem->getDOFNumbering() );
+        }
     }
+
+    return elemVect;
 }

@@ -32,7 +32,7 @@ subroutine vetnth_nonl(model, caraElem, mateco, time, compor, &
 #include "asterfort/jeexin.h"
 #include "asterfort/mecara.h"
 #include "asterfort/megeom.h"
-#include "asterfort/memare.h"
+#include "asterfort/vemare.h"
 #include "asterfort/reajre.h"
 !
     character(len=8), intent(in) :: model, caraElem
@@ -113,13 +113,13 @@ subroutine vetnth_nonl(model, caraElem, mateco, time, compor, &
 !
     call jeexin(vect_elem_l(1:19)//'.RELR', iret)
     if (iret .eq. 0) then
-        call memare(base, vect_elem_l, model, 'MASS_THER')
+        call vemare(base, vect_elem_l, model)
     else
         call jedetr(vect_elem_l(1:19)//'.RELR')
     end if
     call jeexin(vect_elem_nl(1:19)//'.RELR', iret)
     if (iret .eq. 0) then
-        call memare(base, vect_elem_nl, model, 'MASS_THER')
+        call vemare(base, vect_elem_nl, model)
     else
         call jedetr(vect_elem_nl(1:19)//'.RELR')
     end if

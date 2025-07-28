@@ -112,6 +112,7 @@ VE_ASS = ASSE_VECTEUR(VECT_ELEM=VCHA, NUME_DDL=NUM)
 ##################################
 
 MODE = CALC_MODES(
+    CHAM_MATER=CM,
     MATR_RIGI=RIG_ASS,
     CALC_FREQ=_F(NMAX_FREQ=n_mode),
     MATR_MASS=MA_ASS,

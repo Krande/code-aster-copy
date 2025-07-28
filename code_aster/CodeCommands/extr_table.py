@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -69,8 +69,6 @@ class ExtrTable(ExecuteCommand):
         typeResu = keywords["TYPE_RESU"]
         if typeResu == "VECT_ELEM_DEPL_R":
             self._result = ElementaryVectorDisplacementReal()
-        elif typeResu == "VECT_ELEM_TEMP_R":
-            self._result = ElementaryVectorTemperatureReal()
         elif typeResu == "FONCTION_SDASTER":
             self._result = Function()
         elif typeResu == "FONCTION_C":
@@ -81,8 +79,6 @@ class ExtrTable(ExecuteCommand):
             self._result = GeneralizedAssemblyMatrixReal()
         elif typeResu == "MATR_ELEM_DEPL_R":
             self._result = ElementaryMatrixDisplacementReal()
-        elif typeResu == "MATR_ELEM_TEMP_R":
-            self._result = ElementaryMatrixTemperatureReal()
         elif typeResu == "NAPPE_SDASTER":
             self._result = Function2D()
         elif typeResu == "MODE_MECA":

@@ -27,7 +27,7 @@ subroutine vethbt(model, loadNameJv, loadInfoJv, &
 #include "asterfort/gcnco2.h"
 #include "asterfort/inical.h"
 #include "asterfort/load_list_info.h"
-#include "asterfort/memare.h"
+#include "asterfort/vemare.h"
 #include "asterfort/reajre.h"
 #include "asterfort/detrsd.h"
 !
@@ -86,7 +86,7 @@ subroutine vethbt(model, loadNameJv, loadInfoJv, &
 ! - Allocate result
 !
     call detrsd('VECT_ELEM', vect_elem)
-    call memare(jvBase, vect_elem, model, 'CHAR_THER')
+    call vemare(jvBase, vect_elem, model)
     call reajre(vect_elem, ' ', jvBase)
 !
 ! - Input fields

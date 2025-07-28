@@ -19,9 +19,9 @@
 !
 !
 interface
-    subroutine alimrs(mate, mateco, ma1, ma2, moint, ndble,&
+    subroutine alimrs(mateco, ma1, ma2, moint, ndble,&
                       nume_ddl, cn1, chno, cmp, icor)
-        character(len=*) :: mate, mateco
+        character(len=*) :: mateco
         character(len=8) :: ma1
         character(len=8) :: ma2
         character(len=*) :: moint

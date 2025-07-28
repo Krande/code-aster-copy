@@ -140,11 +140,14 @@ for i_inst in range(1, len(l_inst)):
     RIGI_THER = disc_comp.getTangentConductivityMatrix(T, DELTA_T, with_dual=False)
     RIGI_THER_DUAL = disc_comp.getDualLinearConductivityMatrix()
 
+    elemMatr = []
+    elemMatr.append((RIGI_THER, theta))
+    elemMatr.append((RIGI_THER_DUAL, 1.0))
+    elemMatr.append((MASS_THER, 1.0 / d_inst))
+
     JABO_NW = CA.AssemblyMatrixTemperatureReal(phys_pb)
-    JABO_NW.addElementaryMatrix(RIGI_THER, theta)
-    JABO_NW.addElementaryMatrix(RIGI_THER_DUAL)
-    JABO_NW.addElementaryMatrix(MASS_THER, 1.0 / d_inst)
-    JABO_NW.assemble()
+
+    JABO_NW.assemble(elemMatr, phys_pb.getListOfLoads())
 
     # Get CHAR_EVNL
     RESI_PREV = RESI_MASS_PREV / d_inst - (1.0 - theta) * RESI_THER_PREV

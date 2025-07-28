@@ -36,7 +36,6 @@ subroutine merime(modelz, nbLoad, listLoadK24, &
 #include "asterfort/jedetr.h"
 #include "asterfort/jeexin.h"
 #include "asterfort/jemarq.h"
-#include "asterfort/jeveuo.h"
 #include "asterfort/lisnnl.h"
 #include "asterfort/mecact.h"
 #include "asterfort/mecham.h"
@@ -102,7 +101,6 @@ subroutine merime(modelz, nbLoad, listLoadK24, &
     integer(kind=8) :: iLoad, indxResuElem
     integer(kind=8) :: nbSubstruct
     aster_logical :: lxfem, hasFiniteElement, hasExteStatVari, onlyDirichlet
-    character(len=24), pointer :: rerr(:) => null()
     character(len=8) :: loadName
     character(len=13) :: loadDescBase
     character(len=19) :: loadMapName, loadLigrel
@@ -154,12 +152,8 @@ subroutine merime(modelz, nbLoad, listLoadK24, &
     end if
 
 ! - Prepare RESU_ELEM objects
-    call memare(base, matrElem, model, option)
-    call jeveuo(matrElem//'.RERR', 'E', vk24=rerr)
+    call memare(base, matrElem, model, option, to_aster_logical(nbSubstruct > 0))
     call jedetr(matrElem//'.RELR')
-    if (nbSubstruct .gt. 0) then
-        rerr(3) = 'OUI_SOUS_STRUC'
-    end if
 
 ! - Input fields
     lpain(1) = 'PGEOMER'

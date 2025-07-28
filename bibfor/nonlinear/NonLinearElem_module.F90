@@ -40,7 +40,6 @@ module NonLinearElem_module
 #include "asterfort/asmatr.h"
 #include "asterfort/dismoi.h"
 #include "asterfort/infdbg.h"
-#include "asterfort/jeveuo.h"
 #include "asterfort/meamme.h"
 #include "asterfort/mecgme.h"
 #include "asterfort/medime.h"
@@ -74,16 +73,13 @@ contains
         character(len=1), parameter :: jvBase = "V"
         character(len=16), parameter :: option = "RIGI_MECA"
         integer(kind=8) :: ifm, niv
-        character(len=24), pointer :: rerr(:) => null()
 !   ------------------------------------------------------------------------------------------------
 !
         call infdbg('MECANONLINE', ifm, niv)
         if (niv .ge. 2) then
             call utmess('I', 'MECANONLINE13_85')
         end if
-        call memare(jvBase, superElem, model, option)
-        call jeveuo(superElem(1:19)//'.RERR', 'E', vk24=rerr)
-        rerr(3) = 'OUI_SOUS_STRUC'
+        call memare(jvBase, superElem, model, option, ASTER_TRUE)
 !
 !   ------------------------------------------------------------------------------------------------
     end subroutine

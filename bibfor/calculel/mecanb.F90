@@ -27,7 +27,7 @@ subroutine mecanb(modele, matel)
 #include "asterfort/jedetr.h"
 #include "asterfort/jemarq.h"
 #include "asterfort/megeom.h"
-#include "asterfort/memare.h"
+#include "asterfort/vemare.h"
 #include "asterfort/reajre.h"
     character(len=8) :: modele
     character(len=19) :: matel
@@ -58,7 +58,7 @@ subroutine mecanb(modele, matel)
 !-----------------------------------------------------------------------
 !-----------------------------------------------------------------------
     call jemarq()
-    call memare('V', matel, modele, 'CHAR_MECA')
+    call vemare('V', matel, modele)
 !
     call jedetr(matel//'.RELR')
 !
