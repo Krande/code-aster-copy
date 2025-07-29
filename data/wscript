@@ -571,12 +571,14 @@ def check_mpiexec(self):
         ]
     else:
         mpicmd = [mpiexec]
+        narg = []
         if (
             self._call_cmd(
                 "Check for mpiexec flag '-n N'", self.env["base_mpiexec"] + ["-n", "1", "echo"]
             )
             == 0
         ):
+            narg = ["-n", "1"]
             mpicmd.extend(["-n", "{mpi_nbcpu}"])
         elif (
             self._call_cmd(
@@ -584,13 +586,14 @@ def check_mpiexec(self):
             )
             == 0
         ):
+            narg = ["-np", "1"]
             mpicmd.extend(["-np", "{mpi_nbcpu}"])
 
         for opt in ("--tag-output", "-print-rank-map", "-prepend-rank", "-ordered-output"):
             if (
                 self._call_cmd(
                     "Check for mpiexec flag '{0}'".format(opt),
-                    self.env["base_mpiexec"] + [opt, "echo"],
+                    self.env["base_mpiexec"] + narg + [opt, "echo"],
                 )
                 == 0
             ):

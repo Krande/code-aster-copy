@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -232,6 +232,12 @@ cata_msg = {
         """
 Le chargement à compter est un chargement constant. On considère tous les chargements comme un cycle
 avec valeur_max = valeur_min = valeur du chargement, i.e., amplitude = 0.
+"""
+    ),
+    53: _(
+        """
+ Dans CALC_FATIGUE/POST_FATIGUE  pour le critère d'amorçage du type plan critique, aucune grandeur
+ de la FORMULE_CRITIQUE dépend de l'orientation du plan. Veuillez vérifier et/ou enlever cet mot-clé.
 """
     ),
     63: _(
@@ -497,12 +503,6 @@ avec valeur_max = valeur_min = valeur du chargement, i.e., amplitude = 0.
     99: _(
         """
  Pour le critère utilisée, l'histoire de la tenseur de déformation plastique (EPSP_XX...) est demandée.
-"""
-    ),
-    53: _(
-        """
- Dans CALC_FATIGUE/POST_FATIGUE  pour le critère d'amorçage du type plan critique, aucune grandeur
- de la FORMULE_CRITIQUE dépend de l'orientation du plan. Veuillez vérifier et/ou enlever cet mot-clé.
 """
     ),
 }

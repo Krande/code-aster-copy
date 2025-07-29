@@ -290,7 +290,7 @@ def check_msg(checker, catamess, msg, key, lang):
     for re_unauth in RE_UNAUTH:
         mat = re_unauth.search(msg)
         if mat:
-            checker.info("unrecommanded formatting in %s : %s" % (idmess, mat.groups()))
+            checker.info("unrecommended formatting in %s : %s" % (idmess, mat.groups()))
     # check formatting
     txt = None
     try:
@@ -383,7 +383,11 @@ def check_catamess(checker, lang, l_cata):
         if catamess == "dvp":
             continue
         cata_msg = get_cata_msg(catamess)
+        prev = 0
         for key, msg in list(cata_msg.items()):
+            if key <= prev:
+                checker.error(f"message ids must be ordered: ({prev} followed by {key})")
+            prev = key
             if type(msg) is dict:
                 msg = msg["message"]
             check_msg(checker, catamess, msg, key, lang)

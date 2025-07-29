@@ -167,7 +167,7 @@ def include_materiau_ops(
         exec(compile(f.read(), fmat, "exec"), context)
     kwcata = context.get(MOTSCLES)
     if kwcata is None:
-        UTMESS("F", "SUPERVIS2_6", valk=bnmat)
+        UTMESS("F", "SUPERVIS2_5", valk=bnmat)
     # certains concepts cachés doivent être connus plus tard (au moins les
     # objets FORMULE)
     to_add = dict([(v.getName(), v) for k, v in list(context.items()) if isinstance(v, formule)])
@@ -184,7 +184,7 @@ def include_materiau_ops(
         if type(value) not in (list, tuple):
             value = [value]
         if type(value) in (list, tuple) and len(value) != 1:
-            UTMESS("F", "SUPERVIS2_7", valk=(bnmat, mcf))
+            UTMESS("F", "SUPERVIS2_6", valk=(bnmat, mcf))
         for occ in value:
             if occ.get(EXTR) in (None, extract):
                 if occ.get(EXTR) is not None:

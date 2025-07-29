@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -30,8 +30,7 @@ cata_msg = {
     important de portage si vous ne suivez pas les mises à jour.
 """
     ),
-    # 4 plus bas avec 9, 10
-    5: _(
+    3: _(
         """
 Erreur inattendue lors de l'exécution de la commande '%(k1)s'.
 Merci de signaler cette anomalie.
@@ -42,12 +41,12 @@ Erreur :
 %(k3)s
 """
     ),
-    6: _(
+    5: _(
         """
 Erreur lors du chargement du catalogue du matériau '%(k1)s'.
 """
     ),
-    7: _(
+    6: _(
         """
 Erreur dans le catalogue du matériau '%(k1)s'.
 
@@ -56,7 +55,7 @@ mot-clé facteur '%(k2)s'.
 """
     ),
     # Lignes d'entete
-    4: {
+    7: {
         "message": _(
             """
 
@@ -65,14 +64,14 @@ mot-clé facteur '%(k2)s'.
         ),
         "flags": "CENTER",
     },
-    23: {
+    8: {
         "message": _(
             """Version %(k1)s modifiée le %(k2)s
 révision %(k3)s - branche '%(k4)s'"""
         ),
         "flags": "CENTER",
     },
-    10: {
+    9: {
         "message": _(
             """Copyright EDF R&D %(k1)s - %(k2)s
 
@@ -86,7 +85,7 @@ Langue des messages : %(k8)s
         ),
         "flags": "CENTER",
     },
-    9: {
+    10: {
         "message": _(
             """Version de Python : %(k1)s
 Version de NumPy : %(k2)s"""
@@ -132,7 +131,6 @@ Limite cible du processus : %(r2).2f Mo"""
         ),
         "flags": "CENTER",
     },
-    # 23 plus haut avec 10
     24: {
         "message": _(
             """Taille limite des fichiers d'échange : %(r1).2f Go
