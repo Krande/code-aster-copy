@@ -77,7 +77,8 @@ TableContainer::getElementaryMatrixDisplacementReal( const std::string &a ) cons
 ElementaryVectorDisplacementRealPtr
 TableContainer::getElementaryVectorDisplacementReal( const std::string &a ) const {
     const auto aa = strip( a );
-    if ( _mapEVDD.contains( aa ) ) {
+    const auto iter = _mapEVDD.find( aa );
+    if ( iter != _mapEVDD.end() ) {
         return _mapEVDD.at( aa );
     }
 
@@ -265,8 +266,8 @@ bool TableContainer::build() {
                 _mapEMDD[name] = std::make_shared< ElementaryMatrixDisplacementReal >( dsName );
             }
         } else if ( type == "VECT_ELEM_DEPL_R" ) {
-            if ( !_mapEVDD.contains( name ) ||
-                 ( _mapEVDD.contains( name ) && _mapEVDD.at( name ) == nullptr ) ) {
+            const auto iter = _mapEVDD.find( name );
+            if ( ( iter == _mapEVDD.end() ) || _mapEVDD.at( name ) == nullptr ) {
                 _mapEVDD[name] =
                     std::make_shared< ElementaryVectorDisplacementReal >( dsName, nullptr );
             }
