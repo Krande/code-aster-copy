@@ -42,15 +42,12 @@ subroutine asmpi_warn(iexc)
 !-----------------------------------------------------------------------
 #ifdef ASTER_HAVE_MPI
 !
-! Si on désactive le controle des erreurs entre processeurs, on fait abort
-!
-#ifndef ASTER_ENABLE_MPI_CHECK
-    call asabrt(6)
-# else
-!
 #include "mpif.h"
 !
-    mpi_int :: iermpi, rank, nbpro4, mpicou, mpicow
+! Si on désactive le controle des erreurs entre processeurs, on fait abort
+!
+!
+    mpi_int :: rank, nbpro4, mpicou, mpicow
     integer(kind=8) :: iret, ibid
 !
 ! --- COMMUNICATEUR MPI COM_WORLD (MPICOW) ET COM COURANT (MPICOU)
@@ -67,10 +64,14 @@ subroutine asmpi_warn(iexc)
     call asmpi_info(mpicou, rank=rank)
     call asmpi_info(mpicou, size=nbpro4)
 !
-!     SI PAS 'ST_OK', IL NE FAUT PAS COMMUNIQUER ENCORE UNE FOIS
+    if (nbpro4 > 1) then
+        call asabrt(6)
+    end if
+    !     SI PAS 'ST_OK', IL NE FAUT PAS COMMUNIQUER ENCORE UNE FOIS
     if (nbpro4 .le. 1 .or. .not. gtstat(ST_OK)) then
         goto 999
     end if
+#ifdef ASTER_ENABLE_MPI_CHECK
     DEBUG_MPI('mpi_warn', rank, nbpro4)
 !
 !     SUR LES PROCESSEURS AUTRES QUE #0
@@ -93,9 +94,9 @@ subroutine asmpi_warn(iexc)
         call asmpi_check(iret)
     end if
 !     INUTILE DE TESTER IRET, ON SAIT QU'IL Y A UNE ERREUR
+#endif
 !
 999 continue
-# endif
 #else
     integer(kind=8) :: idummy
     idummy = iexc
