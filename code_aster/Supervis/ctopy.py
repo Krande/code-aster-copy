@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -55,9 +55,9 @@ def _print_header():
     la machine."""
     lang_settings = "%s (%s)" % localization.get_current_settings()
     date_build = version_info.date
-    UTMESS("I", "SUPERVIS2_4", valk=get_version_desc())
+    UTMESS("I", "SUPERVIS2_7", valk=get_version_desc())
     valk = (get_version(), date_build, version_info.parentid[:12], version_info.branch)
-    UTMESS("I", "SUPERVIS2_23", valk=valk)
+    UTMESS("I", "SUPERVIS2_8", valk=valk)
     params = ExecutionParameter()
     valk = (
         "1991",
@@ -69,9 +69,9 @@ def _print_header():
         params.get_option("osname"),
         lang_settings,
     )
-    UTMESS("I", "SUPERVIS2_10", valk=valk)
+    UTMESS("I", "SUPERVIS2_9", valk=valk)
     pyvers = "%s.%s.%s" % tuple(sys.version_info[:3])
-    UTMESS("I", "SUPERVIS2_9", valk=(pyvers, numpy.__version__))
+    UTMESS("I", "SUPERVIS2_10", valk=(pyvers, numpy.__version__))
     # avertissement si la version a plus de 15 mois
     if config["ASTER_NO_EXPIR"] == 0:
         try:

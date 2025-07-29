@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -101,6 +101,6 @@ cata_msg = {
     83: _("""  Calcul des matrices élémentaires d'amortissement."""),
     84: _("""  Calcul des matrices élémentaires pour les charges suiveuses."""),
     85: _("""  Calcul des matrices élémentaires des macro-éléments."""),
-    87: _(""" Calcul de l'indicateur d'erreur en THM."""),
     86: _(""" Initialisations pour la gestion de l'énergie."""),
+    87: _(""" Calcul de l'indicateur d'erreur en THM."""),
 }

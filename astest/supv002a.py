@@ -290,7 +290,7 @@ def check_msg(checker, catamess, msg, key, lang):
     for re_unauth in RE_UNAUTH:
         mat = re_unauth.search(msg)
         if mat:
-            checker.info("unrecommanded formatting in %s : %s" % (idmess, mat.groups()))
+            checker.info("unrecommended formatting in %s : %s" % (idmess, mat.groups()))
     # check formatting
     txt = None
     try:

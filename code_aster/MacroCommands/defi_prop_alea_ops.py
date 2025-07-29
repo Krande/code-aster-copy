@@ -43,7 +43,7 @@ def defi_prop_alea_ops(self, **kwargs):
         return generator.run()
     except Exception as err:
         trace = "".join(traceback.format_tb(sys.exc_info()[2]))
-        UTMESS("F", "SUPERVIS2_5", valk=("DEFI_PROP_ALEA", trace, str(err)))
+        UTMESS("F", "SUPERVIS2_3", valk=("DEFI_PROP_ALEA", trace, str(err)))
 
 
 def evaluate_KL1D(X1, DIM, RANGE, XLISTE, Ux, beta, mediane, pseed):
