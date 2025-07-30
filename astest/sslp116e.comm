@@ -129,6 +129,7 @@ resuLinearSNL = STAT_NON_LINE(
         METHODE="PETSC",
         # OPTION_PETSC='-ksp_monitor_true_residual -options_view',
         PRE_COND="HPDDM",
+        TYPE_RESOL="AUTO",
         RESI_RELA=1.0e-9,
     ),
     METHODE="NEWTON",
