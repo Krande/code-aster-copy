@@ -54,7 +54,7 @@ def mate_homo_ops(self, **kwargs):
     if "PLAQUE" in type_homo:
         point = [0, 0, 0]
         pmanager_z = SymmetryManager(point, "Z")
-        mm_homo, _, _ = pmanager_z.build_symmetry_mesh(mm_user)
+        mm_homo, _, _ = pmanager_z.build_symmetry_mesh_simple(mm_user)
     else:
         mm_homo = mm_user
 
