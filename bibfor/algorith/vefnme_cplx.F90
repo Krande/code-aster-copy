@@ -41,7 +41,7 @@ subroutine vefnme_cplx(option, base, &
 #include "asterfort/jemarq.h"
 #include "asterfort/mecact.h"
 #include "asterfort/mecara.h"
-#include "asterfort/memare.h"
+#include "asterfort/vemare.h"
 #include "asterfort/reajre.h"
 #include "asterfort/codent.h"
 #include "asterfort/exisd.h"
@@ -300,7 +300,7 @@ subroutine vefnme_cplx(option, base, &
 ! --- PREPARATION DU VECT_ELEM RESULTAT
 !
     call detrsd('VECT_ELEM', vecele)
-    call memare(base, vecele, model, 'CHAR_MECA')
+    call vemare(base, vecele, model)
 !
     lcmplx = .false.
     do k = 1, nbin
@@ -342,7 +342,7 @@ subroutine vefnme_cplx(option, base, &
                 lchini(k) = chdeci(k)
             end if
         end do
-        call memare(base, veceli, model, 'CHAR_MECA')
+        call vemare(base, veceli, model)
     end if
 
     if (debug) then

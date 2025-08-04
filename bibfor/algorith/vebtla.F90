@@ -16,7 +16,7 @@
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
 
-subroutine vebtla(base, model_, mate, cara_elem, disp_, &
+subroutine vebtla(base, model_, disp_, &
                   list_load, vect_elemz)
 !
     implicit none
@@ -30,15 +30,13 @@ subroutine vebtla(base, model_, mate, cara_elem, disp_, &
 #include "asterfort/jeexin.h"
 #include "asterfort/jemarq.h"
 #include "asterfort/load_list_info.h"
-#include "asterfort/memare.h"
+#include "asterfort/vemare.h"
 #include "asterfort/reajre.h"
 !
 ! person_in_charge: mickael.abbas at edf.fr
 !
     character(len=1), intent(in) :: base
     character(len=*), intent(in) :: model_
-    character(len=24), intent(in) :: mate
-    character(len=24), intent(in) :: cara_elem
     character(len=*), intent(in) :: disp_
     character(len=19), intent(in) :: list_load
     character(len=*), intent(in) :: vect_elemz
@@ -106,7 +104,7 @@ subroutine vebtla(base, model_, mate, cara_elem, disp_, &
 !
     call jeexin(vect_elem//'.RELR', iret)
     if (iret .eq. 0) then
-        call memare(base, vect_elem, model, 'CHAR_MECA')
+        call vemare(base, vect_elem, model)
     else
         call jedetr(vect_elem//'.RELR')
     end if

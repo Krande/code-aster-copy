@@ -30,7 +30,6 @@ subroutine memam2(option, modele, mate, mateco, &
 #include "asterfort/jedetr.h"
 #include "asterfort/jeexin.h"
 #include "asterfort/jemarq.h"
-#include "asterfort/jeveuo.h"
 #include "asterfort/mecham.h"
 #include "asterfort/memare.h"
 #include "asterfort/reajre.h"
@@ -61,7 +60,6 @@ subroutine memam2(option, modele, mate, mateco, &
     character(len=24) :: ligrmo, lchin(18), lchout(1), compor
     character(len=24) :: chgeom, chcara(18), chharm, vecelz
     integer(kind=8) :: icode, iret, nh
-    character(len=24), pointer :: rerr(:) => null()
 !-----------------------------------------------------------------------
     data chvarc/'&&MEMAM2.VARC'/
     call jemarq()
@@ -78,9 +76,7 @@ subroutine memam2(option, modele, mate, mateco, &
     call vrcins(modele, mate, ' ', time, chvarc, &
                 codret)
 !
-    call memare(base, vecel, modele, option)
-    call jeveuo(vecelz(1:19)//'.RERR', 'E', vk24=rerr)
-    rerr(3) (1:3) = 'OUI'
+    call memare(base, vecel, modele, option, ASTER_TRUE)
 !
     call jeexin(vecelz(1:19)//'.RELR', iret)
     if (iret .gt. 0) call jedetr(vecelz(1:19)//'.RELR')

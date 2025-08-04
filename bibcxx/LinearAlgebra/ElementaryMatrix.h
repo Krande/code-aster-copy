@@ -6,7 +6,7 @@
  * @brief Definition of elementary matrices
  * @author Nicolas Sellenet
  * @section LICENCE
- *   Copyright (C) 1991 - 2024  EDF R&D                www.code-aster.org
+ *   Copyright (C) 1991 - 2025  EDF R&D                www.code-aster.org
  *
  *   This file is part of Code_Aster.
  *
@@ -56,10 +56,11 @@ class ElementaryMatrix : public BaseElementaryMatrix {
     /** @brief Constructor with automatic name */
     ElementaryMatrix() : ElementaryMatrix( ResultNaming::getNewResultName() ) {};
 
-    ElementaryMatrix( const ModelPtr model, const MaterialFieldPtr mater,
-                      const ElementaryCharacteristicsPtr caraElem )
-        : ElementaryMatrix() {
-        this->setPhysicalProblem( model, mater, caraElem );
+    ElementaryMatrix( const ModelPtr model ) : ElementaryMatrix() { this->setModel( model ); };
+
+    ElementaryMatrix( const ModelPtr model, const std::string option ) : ElementaryMatrix() {
+        this->setModel( model );
+        this->prepareCompute( option );
     };
 
     /**

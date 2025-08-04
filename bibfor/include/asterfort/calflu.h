@@ -19,11 +19,11 @@
 !
 !
 interface
-    subroutine calflu(chamno, modele, mate, mateco, nu, vectas,&
+    subroutine calflu(chamno, modele, mateco, nu, vectas,&
                       nr, nv, opt)
         character(len=*) :: chamno
         character(len=*) :: modele
-        character(len=*) :: mateco, mate
+        character(len=*) :: mateco
         character(len=*) :: nu
         character(len=*) :: vectas
         integer(kind=8) :: nr

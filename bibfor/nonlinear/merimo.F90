@@ -36,7 +36,7 @@ subroutine merimo(base, &
 #include "asterfort/jedetr.h"
 #include "asterfort/jeexin.h"
 #include "asterfort/jemarq.h"
-#include "asterfort/jeveuo.h"
+#include "asterfort/vemare.h"
 #include "asterfort/memare.h"
 #include "asterfort/merimp.h"
 #include "asterfort/nmchex.h"
@@ -68,7 +68,6 @@ subroutine merimo(base, &
 !
 ! In  base             : JEVEUX base to create objects
 ! In  l_xfem           : flag for XFEM elements
-! In  l_macr_elem      : flag for macro-elements
 ! In  model            : name of model
 ! In  cara_elem        : name of elementary characteristics (field)
 ! In  iter_newt        : index of current Newton iteration
@@ -98,7 +97,6 @@ subroutine merimo(base, &
     character(len=19) :: sigm_extr, sigm_curr, vari_curr, strx_curr, sddyna
     character(len=16) :: option
     integer(kind=8) :: ich_matrixs, ich_matrixn, ich_veinte, ich_codret, ich_copred
-    character(len=24), pointer :: v_rerr(:) => null()
     aster_logical :: tabret(0:10)
 !
 ! --------------------------------------------------------------------------------------------------
@@ -179,11 +177,7 @@ subroutine merimo(base, &
         call detrsd('MATR_ELEM', ds_system%merigi)
         call jeexin(ds_system%merigi//'.RERR', ires)
         if (ires .eq. 0) then
-            call memare(base, ds_system%merigi, model, 'RIGI_MECA')
-        end if
-        if (l_macr_elem) then
-            call jeveuo(ds_system%merigi//'.RERR', 'E', vk24=v_rerr)
-            v_rerr(3) = 'OUI_SOUS_STRUC'
+            call memare(base, ds_system%merigi, model, 'RIGI_MECA', l_macr_elem)
         end if
         call reajre(ds_system%merigi, ' ', base)
     end if
@@ -191,7 +185,7 @@ subroutine merimo(base, &
     if (l_veinte) then
         call jeexin(ds_system%veinte//'.RELR', iret)
         if (iret .eq. 0) then
-            call memare(base, ds_system%veinte, model, 'CHAR_MECA')
+            call vemare(base, ds_system%veinte, model)
         end if
         call jedetr(ds_system%veinte//'.RELR')
         call reajre(ds_system%veinte, ' ', base)

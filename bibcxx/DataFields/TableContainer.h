@@ -6,7 +6,7 @@
  * @brief Fichier entete de la classe TableContainer
  * @author Nicolas Sellenet
  * @section LICENCE
- *   Copyright (C) 1991 - 2023  EDF R&D                www.code-aster.org
+ *   Copyright (C) 1991 - 2025  EDF R&D                www.code-aster.org
  *
  *   This file is part of Code_Aster.
  *
@@ -64,9 +64,7 @@ class TableContainer : public Table {
 
     std::map< std::string, GeneralizedAssemblyMatrixRealPtr > _mapGAMD;
     std::map< std::string, ElementaryMatrixDisplacementRealPtr > _mapEMDD;
-    std::map< std::string, ElementaryMatrixTemperatureRealPtr > _mapEMTD;
     std::map< std::string, ElementaryVectorDisplacementRealPtr > _mapEVDD;
-    std::map< std::string, ElementaryVectorTemperatureRealPtr > _mapEVTD;
     std::map< std::string, DataFieldPtr > _mapGDF;
     std::map< std::string, FieldOnNodesRealPtr > _mapFOND;
     std::map< std::string, ConstantFieldOnCellsRealPtr > _mapPCFOMD;
@@ -106,22 +104,10 @@ class TableContainer : public Table {
     void addObject( const std::string &name, ElementaryMatrixDisplacementRealPtr );
 
     /**
-     * @brief Add ElementaryMatrixTemperatureReal to TableContainer
-     * @param name key used to find object
-     */
-    void addObject( const std::string &, ElementaryMatrixTemperatureRealPtr );
-
-    /**
      * @brief Add ElementaryVectorDisplacementReal to TableContainer
      * @param name key used to find object
      */
     void addObject( const std::string &, ElementaryVectorDisplacementRealPtr );
-
-    /**
-     * @brief Add ElementaryVectorTemperatureReal to TableContainer
-     * @param name key used to find object
-     */
-    void addObject( const std::string &, ElementaryVectorTemperatureRealPtr );
 
     /**
      * @brief Add FieldOnCellsReal to TableContainer
@@ -205,25 +191,11 @@ class TableContainer : public Table {
     getElementaryMatrixDisplacementReal( const std::string &name ) const;
 
     /**
-     * @brief Get ElementaryMatrixTemperatureReal stored in TableContainer
-     * @param name key used to find object
-     */
-    ElementaryMatrixTemperatureRealPtr
-    getElementaryMatrixTemperatureReal( const std::string & ) const;
-
-    /**
      * @brief Get ElementaryVectorDisplacementReal stored in TableContainer
      * @param name key used to find object
      */
     ElementaryVectorDisplacementRealPtr
     getElementaryVectorDisplacementReal( const std::string & ) const;
-
-    /**
-     * @brief Get ElementaryVectorTemperatureReal stored in TableContainer
-     * @param name key used to find object
-     */
-    ElementaryVectorTemperatureRealPtr
-    getElementaryVectorTemperatureReal( const std::string & ) const;
 
     /**
      * @brief Get FieldOnCellsReal stored in TableContainer

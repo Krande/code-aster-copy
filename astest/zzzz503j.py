@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -77,14 +77,12 @@ phys_pb.computeDOFNumbering()
 # compute (GkT(huT), GkT(hvT))_T
 matEK = disc_comp.getLinearStiffnessMatrix()
 matK = CA.AssemblyMatrixTemperatureReal(phys_pb)
-matK.addElementaryMatrix(matEK)
-matK.assemble()
+matK.assemble(matEK, phys_pb.getListOfLoads())
 
 # compute (u_T, v_T) _T
 matEM = disc_comp.getMassMatrix()
 matM = CA.AssemblyMatrixTemperatureReal(phys_pb)
-matM.addElementaryMatrix(matEM)
-matM.assemble()
+matM.assemble(matEM, phys_pb.getListOfLoads())
 
 # compute ( H * f, v_T)_T
 form = FORMULE(VALE="X-X+Y-Y+100", NOM_PARA=["X", "Y"])

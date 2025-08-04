@@ -70,7 +70,7 @@ def pre_seisme_nonl_ops(self, **args):
         raise
     except Exception as err:
         trace = "".join(traceback.format_tb(sys.exc_info()[2]))
-        UTMESS("F", "SUPERVIS2_5", valk=("PRE_SEISME_NONL", trace, str(err)))
+        UTMESS("F", "SUPERVIS2_3", valk=("PRE_SEISME_NONL", trace, str(err)))
 
 
 class PreSeismeNonL:

@@ -250,7 +250,7 @@ subroutine nmfcor(model, nume_dof, ds_material, cara_elem, ds_system, &
         end if
 ! ----- Compute force for Dirichlet boundary conditions (dualized) - BT.LAMBDA
         if (l_comp_fint) then
-            call nonlinRForceCompute(model, ds_material, cara_elem, list_load, &
+            call nonlinRForceCompute(model, list_load, &
                                      nume_dof, ds_measure, vect_lagr, &
                                      hval_veelem, hval_veasse)
         end if

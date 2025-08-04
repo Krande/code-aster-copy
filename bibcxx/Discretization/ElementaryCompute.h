@@ -5,7 +5,7 @@
  * @file ElementaryCompute.h
  * @brief Header of class ElementaryCompute
  * @section LICENCE
- *   Copyright (C) 1991 - 2024  EDF R&D                www.code-aster.org
+ *   Copyright (C) 1991 - 2025  EDF R&D                www.code-aster.org
  *
  *   This file is part of Code_Aster.
  *
@@ -45,29 +45,26 @@ class ElementaryCompute {
     /** @brief Objet Jeveux '.RELC' : for substructering*/
     JeveuxCollectionLong _relc;
 
-    /** @brief Option to compute */
-    std::string _option;
+    /** @brief Model */
+    ModelPtr _model;
 
   public:
     /** @brief Constructor by predefined name */
-    ElementaryCompute( const std::string elemName, const std::string option ) : _option( option ) {
+    ElementaryCompute( const std::string elemName ) {
         std ::string baseName( elemName, 0, 19 );
         _rerr = JeveuxVectorChar24( baseName + ".RERR" );
         _relr = JeveuxVectorChar24( baseName + ".RELR" );
         _relc = JeveuxCollectionLong( baseName + ".RELC" );
     };
 
-    /** @brief Constructor by predefined name with calls to Fortran */
-    ElementaryCompute( const std::string baseName )
-        : ElementaryCompute( baseName, "WRAP_FORTRAN" ) {};
+    /** @brief Create descriptor */
+    void createDescriptor( const ModelPtr &currentModel, const std::string &option );
 
     /** @brief Create descriptor */
     void createDescriptor( const ModelPtr &currentModel );
 
     /** @brief Get option */
-    std::string getOption() const { return _option; }
-
-    void setOption( const std::string &option ) { _option = option; };
+    std::string getOption() const;
 
     /** @brief Get list of elementary terms */
     std::vector< JeveuxChar24 > getNameOfElementaryTerms() { return _relr->toVector(); };
@@ -84,6 +81,8 @@ class ElementaryCompute {
         _relr->updateValuePointer();
         _relr->push_back( elemTermName );
     };
+
+    ModelPtr getModel() const { return _model; };
 
     /** @brief Has elementary term ? */
     bool hasElementaryTerm() { return _relr.exists() && _relr->size() > 0; };

@@ -19,12 +19,12 @@
 !
 !
 interface
-    subroutine phi152(model, option, mate, mateco, phibar, ma,&
+    subroutine phi152(model, option, mateco, phibar, ma,&
                       nu, num, nbmode, solvez, indice,&
                       tabad)
         character(len=2) :: model
         character(len=*) :: option
-        character(len=*) :: mate, mateco
+        character(len=*) :: mateco
         character(len=*) :: phibar
         character(len=8) :: ma
         character(len=14) :: nu

@@ -19,12 +19,12 @@
 !
 !
 interface
-    subroutine cal2m(chamno, phibar, modele, mate, mateco, nu,&
+    subroutine cal2m(chamno, phibar, modele, mateco, nu,&
                      vecas2, nr, nv)
         character(len=*) :: chamno
         character(len=*) :: phibar
         character(len=*) :: modele
-        character(len=*) :: mate, mateco
+        character(len=*) :: mateco
         character(len=*) :: nu
         character(len=*) :: vecas2
         integer(kind=8) :: nr

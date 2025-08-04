@@ -16,7 +16,7 @@
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
 
-subroutine vectfl(opt, modele, carele, mate, mateco, templu, &
+subroutine vectfl(opt, modele, mateco, templu, &
                   instap, ve)
     implicit none
 !
@@ -29,16 +29,14 @@ subroutine vectfl(opt, modele, carele, mate, mateco, templu, &
 #include "asterfort/jemarq.h"
 #include "asterfort/mecact.h"
 #include "asterfort/megeom.h"
-#include "asterfort/memare.h"
+#include "asterfort/vemare.h"
 #include "asterfort/wkvect.h"
-    character(len=*) :: modele, carele, mate, mateco, templu, ve, opt
+    character(len=*) :: modele, mateco, templu, ve, opt
     real(kind=8) :: instap
 ! ---------------------------------------------------------------------
 !     CALCUL DES VECTEURS ELEMENTAIRES DES FLUX FLUIDES
 !
 ! IN  MODELE  : NOM DU MODELE
-! IN  CARELE  : CARACTERISTIQUES DES POUTRES ET COQUES
-! IN  MATE    : MATERIAU
 ! IN  TEMPLU  : CHAM_NO DE TEMPERATURE OU DE DEPL
 ! IN  INSTAP  : INSTANT DU CALCUL
 ! VAR VE  : VECT_ELEM
@@ -58,7 +56,7 @@ subroutine vectfl(opt, modele, carele, mate, mateco, templu, &
 !
     ve2 = vecel//'.RELR'
     call detrsd('VECT_ELEM', vecel)
-    call memare('V', vecel, modele(1:8), 'CHAR_THER')
+    call vemare('V', vecel, modele(1:8))
     call wkvect(ve2, 'V V K24', 1, jlve)
     if (templu(9:14) .eq. '.BIDON') then
         call jeecra(ve2, 'LONUTI', 0)

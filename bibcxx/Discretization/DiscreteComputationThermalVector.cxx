@@ -2,7 +2,7 @@
  * @file DiscreteComputation.cxx
  * @brief Implementation of class DiscreteComputation
  * @section LICENCE
- *   Copyright (C) 1991 2024  EDF R&D                www.code-aster.org
+ *   Copyright (C) 1991 2025  EDF R&D                www.code-aster.org
  *
  *   This file is part of Code_Aster.
  *
@@ -42,16 +42,14 @@ DiscreteComputation::getThermalNeumannForces( const ASTERDOUBLE time_curr,
 
     AS_ASSERT( _phys_problem->getModel()->isThermal() );
 
-    auto elemVect = std::make_shared< ElementaryVectorTemperatureReal >(
-        _phys_problem->getModel(), _phys_problem->getMaterialField(),
-        _phys_problem->getElementaryCharacteristics(), _phys_problem->getListOfLoads() );
+    auto elemVect =
+        std::make_shared< ElementaryVectorTemperatureReal >( _phys_problem->getModel() );
 
     // Init
     ASTERINTEGER iload = 1;
 
     // Setup
     const std::string calcul_option( "CHAR_THER" );
-    elemVect->prepareCompute( calcul_option );
 
     // Main parameters
     auto currModel = _phys_problem->getModel();
@@ -156,8 +154,8 @@ DiscreteComputation::getThermalNeumannForces( const ASTERDOUBLE time_curr,
 
     if ( assembly ) {
         if ( elemVect->hasElementaryTerm() ) {
-            return elemVect->assembleWithLoadFunctions( _phys_problem->getDOFNumbering(),
-                                                        time_curr );
+            return elemVect->assembleWithLoadFunctions(
+                _phys_problem->getDOFNumbering(), _phys_problem->getListOfLoads(), time_curr );
         } else {
             FieldOnNodesRealPtr vectAsse =
                 std::make_shared< FieldOnNodesReal >( _phys_problem->getDOFNumbering() );
@@ -177,16 +175,14 @@ DiscreteComputation::getThermalVolumetricForces( const ASTERDOUBLE time_curr,
 
     AS_ASSERT( _phys_problem->getModel()->isThermal() );
 
-    auto elemVect = std::make_shared< ElementaryVectorTemperatureReal >(
-        _phys_problem->getModel(), _phys_problem->getMaterialField(),
-        _phys_problem->getElementaryCharacteristics(), _phys_problem->getListOfLoads() );
+    auto elemVect =
+        std::make_shared< ElementaryVectorTemperatureReal >( _phys_problem->getModel() );
 
     // Init
     ASTERINTEGER iload = 1;
 
     // Setup
     const std::string calcul_option( "CHAR_THER" );
-    elemVect->prepareCompute( calcul_option );
 
     // Main parameters
     auto currModel = _phys_problem->getModel();
@@ -354,8 +350,8 @@ DiscreteComputation::getThermalVolumetricForces( const ASTERDOUBLE time_curr,
 
     if ( assembly ) {
         if ( elemVect->hasElementaryTerm() ) {
-            return elemVect->assembleWithLoadFunctions( _phys_problem->getDOFNumbering(),
-                                                        time_curr );
+            return elemVect->assembleWithLoadFunctions(
+                _phys_problem->getDOFNumbering(), _phys_problem->getListOfLoads(), time_curr );
         } else {
             FieldOnNodesRealPtr vectAsse =
                 std::make_shared< FieldOnNodesReal >( _phys_problem->getDOFNumbering() );
@@ -375,16 +371,14 @@ DiscreteComputation::getThermalExchangeForces( const FieldOnNodesRealPtr temp_cu
 
     AS_ASSERT( _phys_problem->getModel()->isThermal() );
 
-    auto elemVect = std::make_shared< ElementaryVectorTemperatureReal >(
-        _phys_problem->getModel(), _phys_problem->getMaterialField(),
-        _phys_problem->getElementaryCharacteristics(), _phys_problem->getListOfLoads() );
+    auto elemVect =
+        std::make_shared< ElementaryVectorTemperatureReal >( _phys_problem->getModel() );
 
     // Init
     ASTERINTEGER iload = 1;
 
     // Setup
     const std::string calcul_option( "CHAR_THER" );
-    elemVect->prepareCompute( calcul_option );
 
     // Main parameters
     auto currModel = _phys_problem->getModel();
@@ -513,8 +507,8 @@ DiscreteComputation::getThermalExchangeForces( const FieldOnNodesRealPtr temp_cu
 
     if ( assembly ) {
         if ( elemVect->hasElementaryTerm() ) {
-            return elemVect->assembleWithLoadFunctions( _phys_problem->getDOFNumbering(),
-                                                        time_curr );
+            return elemVect->assembleWithLoadFunctions(
+                _phys_problem->getDOFNumbering(), _phys_problem->getListOfLoads(), time_curr );
         } else {
             FieldOnNodesRealPtr vectAsse =
                 std::make_shared< FieldOnNodesReal >( _phys_problem->getDOFNumbering() );
@@ -534,16 +528,14 @@ DiscreteComputation::getThermalNonLinearNeumannForces( const FieldOnNodesRealPtr
 
     AS_ASSERT( _phys_problem->getModel()->isThermal() );
 
-    auto elemVect = std::make_shared< ElementaryVectorTemperatureReal >(
-        _phys_problem->getModel(), _phys_problem->getMaterialField(),
-        _phys_problem->getElementaryCharacteristics(), _phys_problem->getListOfLoads() );
+    auto elemVect =
+        std::make_shared< ElementaryVectorTemperatureReal >( _phys_problem->getModel() );
 
     // Init
     ASTERINTEGER iload = 1;
 
     // Setup
     const std::string calcul_option( "CHAR_THER" );
-    elemVect->prepareCompute( calcul_option );
 
     // Main parameters
     auto currModel = _phys_problem->getModel();
@@ -598,8 +590,8 @@ DiscreteComputation::getThermalNonLinearNeumannForces( const FieldOnNodesRealPtr
 
     if ( assembly ) {
         if ( elemVect->hasElementaryTerm() ) {
-            return elemVect->assembleWithLoadFunctions( _phys_problem->getDOFNumbering(),
-                                                        time_curr );
+            return elemVect->assembleWithLoadFunctions(
+                _phys_problem->getDOFNumbering(), _phys_problem->getListOfLoads(), time_curr );
         } else {
             FieldOnNodesRealPtr vectAsse =
                 std::make_shared< FieldOnNodesReal >( _phys_problem->getDOFNumbering() );
@@ -619,16 +611,14 @@ DiscreteComputation::getThermalNonLinearVolumetricForces( const FieldOnNodesReal
 
     AS_ASSERT( _phys_problem->getModel()->isThermal() );
 
-    auto elemVect = std::make_shared< ElementaryVectorTemperatureReal >(
-        _phys_problem->getModel(), _phys_problem->getMaterialField(),
-        _phys_problem->getElementaryCharacteristics(), _phys_problem->getListOfLoads() );
+    auto elemVect =
+        std::make_shared< ElementaryVectorTemperatureReal >( _phys_problem->getModel() );
 
     // Init
     ASTERINTEGER iload = 1;
 
     // Setup
     const std::string calcul_option( "CHAR_THER" );
-    elemVect->prepareCompute( calcul_option );
 
     // Main parameters
     auto currModel = _phys_problem->getModel();
@@ -676,8 +666,8 @@ DiscreteComputation::getThermalNonLinearVolumetricForces( const FieldOnNodesReal
 
     if ( assembly ) {
         if ( elemVect->hasElementaryTerm() ) {
-            return elemVect->assembleWithLoadFunctions( _phys_problem->getDOFNumbering(),
-                                                        time_curr );
+            return elemVect->assembleWithLoadFunctions(
+                _phys_problem->getDOFNumbering(), _phys_problem->getListOfLoads(), time_curr );
         } else {
             FieldOnNodesRealPtr vectAsse =
                 std::make_shared< FieldOnNodesReal >( _phys_problem->getDOFNumbering() );
@@ -697,16 +687,14 @@ DiscreteComputation::getTransientThermalLoadForces( const ASTERDOUBLE time_curr,
 
     AS_ASSERT( _phys_problem->getModel()->isThermal() );
 
-    auto elemVect = std::make_shared< ElementaryVectorTemperatureReal >(
-        _phys_problem->getModel(), _phys_problem->getMaterialField(),
-        _phys_problem->getElementaryCharacteristics(), _phys_problem->getListOfLoads() );
+    auto elemVect =
+        std::make_shared< ElementaryVectorTemperatureReal >( _phys_problem->getModel() );
 
     // Init
     ASTERINTEGER iload = 1;
 
     // Setup
     const std::string calcul_option( "CHAR_THER" );
-    elemVect->prepareCompute( calcul_option );
 
     // Main parameters
     auto currModel = _phys_problem->getModel();
@@ -772,8 +760,8 @@ DiscreteComputation::getTransientThermalLoadForces( const ASTERDOUBLE time_curr,
 
     if ( assembly ) {
         if ( elemVect->hasElementaryTerm() ) {
-            return elemVect->assembleWithLoadFunctions( _phys_problem->getDOFNumbering(),
-                                                        time_curr );
+            return elemVect->assembleWithLoadFunctions(
+                _phys_problem->getDOFNumbering(), _phys_problem->getListOfLoads(), time_curr );
         } else {
             FieldOnNodesRealPtr vectAsse =
                 std::make_shared< FieldOnNodesReal >( _phys_problem->getDOFNumbering() );
@@ -793,16 +781,14 @@ DiscreteComputation::getThermalImposedDualBC( const ASTERDOUBLE time_curr,
 
     AS_ASSERT( _phys_problem->getModel()->isThermal() );
 
-    auto elemVect = std::make_shared< ElementaryVectorTemperatureReal >(
-        _phys_problem->getModel(), _phys_problem->getMaterialField(),
-        _phys_problem->getElementaryCharacteristics(), _phys_problem->getListOfLoads() );
+    auto elemVect =
+        std::make_shared< ElementaryVectorTemperatureReal >( _phys_problem->getModel() );
 
     // Init
     ASTERINTEGER iload = 1;
 
     // Setup
     const std::string calcul_option( "CHAR_THER" );
-    elemVect->prepareCompute( calcul_option );
 
     // Main parameters
     auto currModel = _phys_problem->getModel();
@@ -853,8 +839,8 @@ DiscreteComputation::getThermalImposedDualBC( const ASTERDOUBLE time_curr,
 
     if ( assembly ) {
         if ( elemVect->hasElementaryTerm() ) {
-            return elemVect->assembleWithLoadFunctions( _phys_problem->getDOFNumbering(),
-                                                        time_curr );
+            return elemVect->assembleWithLoadFunctions(
+                _phys_problem->getDOFNumbering(), _phys_problem->getListOfLoads(), time_curr );
         } else {
             FieldOnNodesRealPtr vectAsse =
                 std::make_shared< FieldOnNodesReal >( _phys_problem->getDOFNumbering() );
@@ -875,13 +861,10 @@ FieldOnNodesRealPtr DiscreteComputation::getTransientThermalForces(
     AS_ASSERT( _phys_problem->getModel()->isThermal() );
     AS_ASSERT( previousPrimalField && previousPrimalField->exists() );
 
-    auto elemVect = std::make_shared< ElementaryVectorReal >(
-        _phys_problem->getModel(), _phys_problem->getMaterialField(),
-        _phys_problem->getElementaryCharacteristics(), _phys_problem->getListOfLoads() );
+    auto elemVect = std::make_shared< ElementaryVectorReal >( _phys_problem->getModel() );
 
     // Setup
     const std::string calcul_option( "CHAR_THER_EVOL" );
-    elemVect->prepareCompute( calcul_option );
 
     // Main parameters
     auto currModel = _phys_problem->getModel();
@@ -943,10 +926,7 @@ DiscreteComputation::getInternalThermalForces( const FieldOnNodesRealPtr temp_pr
     AS_ASSERT( _phys_problem->getModel()->isThermal() );
     const std::string option( "RAPH_THER" );
 
-    auto elemVect = std::make_shared< ElementaryVectorReal >(
-        _phys_problem->getModel(), _phys_problem->getMaterialField(),
-        _phys_problem->getElementaryCharacteristics(), _phys_problem->getListOfLoads() );
-    elemVect->prepareCompute( option );
+    auto elemVect = std::make_shared< ElementaryVectorReal >( _phys_problem->getModel() );
 
     // Get main parameters
     auto currModel = _phys_problem->getModel();
@@ -1026,10 +1006,7 @@ FieldOnNodesRealPtr DiscreteComputation::getNonLinearCapacityForces(
     AS_ASSERT( _phys_problem->getModel()->isThermal() );
     const std::string option( "MASS_THER_RESI" );
 
-    auto elemVect = std::make_shared< ElementaryVectorReal >(
-        _phys_problem->getModel(), _phys_problem->getMaterialField(),
-        _phys_problem->getElementaryCharacteristics(), _phys_problem->getListOfLoads() );
-    elemVect->prepareCompute( option );
+    auto elemVect = std::make_shared< ElementaryVectorReal >( _phys_problem->getModel() );
 
     // Get main parameters
     auto currModel = _phys_problem->getModel();
@@ -1092,11 +1069,7 @@ FieldOnNodesRealPtr DiscreteComputation::getNonLinearCapacityForces(
 FieldOnNodesRealPtr DiscreteComputation::getDualTemperature( FieldOnNodesRealPtr temp_curr,
                                                              ASTERDOUBLE scaling ) const {
 
-    auto elemVect = std::make_shared< ElementaryVectorReal >(
-        _phys_problem->getModel(), _phys_problem->getMaterialField(),
-        _phys_problem->getElementaryCharacteristics(), _phys_problem->getListOfLoads() );
-
-    elemVect->prepareCompute( "THER_BU_R" );
+    auto elemVect = std::make_shared< ElementaryVectorReal >( _phys_problem->getModel() );
 
     if ( !_phys_problem->isThermal() ) {
         AS_ABORT( "Not implemented" );
@@ -1178,12 +1151,10 @@ FieldOnNodesRealPtr DiscreteComputation::dualThermalVector( FieldOnNodesRealPtr 
     std::string option = "THER_BTLA_R";
 
     // Create elementary vector
-    auto elemVect = std::make_shared< ElementaryVectorReal >( currModel, currMater, currElemChara,
-                                                              currListOfLoads );
+    auto elemVect = std::make_shared< ElementaryVectorReal >( currModel );
 
     // Setup
     const std::string calcul_option( "CHAR_THER" );
-    elemVect->prepareCompute( calcul_option );
 
     // Prepare computing
     CalculPtr calcul = std::make_unique< Calcul >( option );

@@ -20,9 +20,11 @@
 import os
 
 from code_aster.Commands import *
+from code_aster import CA
 from code_aster.CA import MPI
+from code_aster.Supervis import FinalizeOptions
 
-DEBUT(CODE="OUI", ERREUR=_F(ALARME="EXCEPTION"))
+CA.init("--test")
 
 rank = MPI.ASTER_COMM_WORLD.Get_rank()
 size = MPI.ASTER_COMM_WORLD.Get_size()
@@ -70,4 +72,5 @@ TEST_TABLE(
     TABLE=tbool,
 )
 
-FIN()
+CA.saveObjects(options=FinalizeOptions.SaveBase | FinalizeOptions.OnlyProc0)
+CA.close()

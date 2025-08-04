@@ -3,7 +3,7 @@
  * @brief Interface python de AssemblyMatrix
  * @author Nicolas Sellenet
  * @section LICENCE
- *   Copyright (C) 1991 - 2024  EDF R&D                www.code-aster.org
+ *   Copyright (C) 1991 - 2025  EDF R&D                www.code-aster.org
  *
  *   This file is part of Code_Aster.
  *
@@ -37,9 +37,6 @@ void exportBaseAssemblyMatrixToPython( py::module_ &mod ) {
         // -----------------------------------------------------------------------------------------
         .def( py::init( &initFactoryPtr< BaseAssemblyMatrix, PhysicalProblemPtr, std::string > ) )
         // -----------------------------------------------------------------------------------------
-        .def( "addDirichletBC",
-              &BaseAssemblyMatrix::addLoad< const DirichletBCPtr &, const FunctionPtr & >,
-              py::arg( "currentLoad" ), py::arg( "func" ) = emptyRealFunction )
         // -----------------------------------------------------------------------------------------
         .def( "getDOFNumbering", &BaseAssemblyMatrix::getDOFNumbering )
         // -----------------------------------------------------------------------------------------
@@ -49,21 +46,7 @@ Return the mesh.
 Returns:
     Mesh: a pointer to the mesh
         )" )
-        // -----------------------------------------------------------------------------------------
-        .def( "getListOfLoads", &BaseAssemblyMatrix::getListOfLoads, R"(
-Return the list of loads.
 
-Returns:
-    ListOfLoads: a pointer to the list of loads
-        )" )
-        // -----------------------------------------------------------------------------------------
-        .def( "setListOfLoads", &BaseAssemblyMatrix::setListOfLoads, R"(
-Set the list of loads.
-
-Arguments:
-    ListOfLoads: a pointer to the list of loads to set
-        )",
-              py::arg( "load" ) )
         // -----------------------------------------------------------------------------------------
         .def( "isBuilt", &BaseAssemblyMatrix::isBuilt, R"(
 Tell if the matrix has already been built.
@@ -138,13 +121,5 @@ Returns:
                 str: Name of the option.
             )" )
         // -----------------------------------------------------------------------------------------
-        .def( "transpose", &BaseAssemblyMatrix::transpose )
-        // -----------------------------------------------------------------------------------------
-        .def( "assemble", &BaseAssemblyMatrix::assemble, R"(
-                Assembly matrix from elementar matrices added.
-
-                Arguments:
-                    clean (bool) : Clean elementary matrices after building (default = true)
-            )",
-              py::arg( "clean" ) = true );
+        .def( "transpose", &BaseAssemblyMatrix::transpose );
 };

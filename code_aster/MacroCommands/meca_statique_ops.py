@@ -1,6 +1,6 @@
 # coding: utf-8
 
-# Copyright (C) 1991 - 2024  EDF R&D                www.code-aster.org
+# Copyright (C) 1991 - 2025  EDF R&D                www.code-aster.org
 #
 # This file is part of Code_Aster.
 #
@@ -118,9 +118,8 @@ def _computeMatrix(phys_pb, disr_comp, matrix, time):
         varc = phys_pb.getExternalStateVariables(time)
 
     matr_elem = disr_comp.getLinearStiffnessMatrix(time=time, varc_curr=varc, with_dual=True)
-    matrix.addElementaryMatrix(matr_elem)
 
-    matrix.assemble(True)
+    matrix.assemble(matr_elem, phys_pb.getListOfLoads())
 
     return matrix
 

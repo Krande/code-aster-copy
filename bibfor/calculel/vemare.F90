@@ -15,53 +15,46 @@
 ! You should have received a copy of the GNU General Public License
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
-! person_in_charge: mickael.abbas at edf.fr
-!
-subroutine nmsssv(modelz, matez, caraElemz, listLoad, vesstf)
+
+subroutine vemare(base, vect_elemz, modelz)
 !
     implicit none
 !
 #include "asterfort/assert.h"
-#include "asterfort/jedema.h"
 #include "asterfort/jedetr.h"
-#include "asterfort/jeexin.h"
-#include "asterfort/jemarq.h"
-#include "asterfort/vemare.h"
-#include "asterfort/ss2mme.h"
+#include "asterfort/wkvect.h"
 !
-    character(len=*), intent(in) :: modelz, matez, caraElemz
-    character(len=19), intent(in) :: vesstf, listLoad
 !
-! --------------------------------------------------------------------------------------------------
-!
-! ROUTINE MECA_NON_LINE (CALCUL - SOUS-STRUCTURATION)
-!
-! CALCUL DU VECTEUR CHARGEMENT SUR MACRO-ELEMENTS
+    character(len=1), intent(in) :: base
+    character(len=*), intent(in) :: vect_elemz
+    character(len=*), intent(in) :: modelz
 !
 ! --------------------------------------------------------------------------------------------------
 !
-    character(len=1), parameter :: base = 'V'
-    character(len=8) :: model, mate
-    character(len=24) :: funcMultSuper, caraElem
-    integer(kind=8) :: iret
+! RESU_ELEM Management
+!
+! Create RERR object for vect_elem
 !
 ! --------------------------------------------------------------------------------------------------
 !
-    call jemarq()
-
-! - Initializations
-    mate = matez
-    caraElem = caraElemz
+! In  base           : JEVEUX basis
+! In  matr_vect_elem : name of vect_elem
+! In  modelz         : name of model
+!
+! --------------------------------------------------------------------------------------------------
+!
+    character(len=8) :: model
+    character(len=19) :: vect_elem
+    character(len=24), pointer :: p_rerr(:) => null()
+!
+! --------------------------------------------------------------------------------------------------
+!
+    vect_elem = vect_elemz
     model = modelz
-    funcMultSuper = listLoad(1:19)//'.FCSS'
-
-! - CALCUL
-    call jeexin(funcMultSuper, iret)
-    ASSERT(iret .ne. 0)
-    call vemare(base, vesstf, model)
-    call jedetr(vesstf//'.RELC')
-    call ss2mme(model, vesstf, base)
+    ASSERT(model .ne. ' ')
 !
-    call jedema()
+    call jedetr(vect_elem//'.RERR')
+    call wkvect(vect_elem//'.RERR', base//' V K24', 1, vk24=p_rerr)
+    p_rerr(1) = model
 !
 end subroutine

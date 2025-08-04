@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -52,14 +52,7 @@ CALCUL = OPER(
             validators=NoRepeat(),
             max="**",
             defaut="COMPORTEMENT",
-            into=(
-                "COMPORTEMENT",
-                "MATR_TANG_ELEM",
-                "FORC_INTE_ELEM",
-                "FORC_NODA_ELEM",
-                "FORC_VARC_ELEM_M",
-                "FORC_VARC_ELEM_P",
-            ),
+            into=("COMPORTEMENT", "MATR_TANG_ELEM", "FORC_INTE_ELEM", "FORC_NODA_ELEM"),
         ),
         EXCIT=FACT(
             statut="f",

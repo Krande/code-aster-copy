@@ -17,7 +17,7 @@
 ! --------------------------------------------------------------------
 ! person_in_charge: mickael.abbas at edf.fr
 !
-subroutine nonlinRForceCompute(model, ds_material, cara_elem, list_load, &
+subroutine nonlinRForceCompute(model, list_load, &
                                nume_dof, ds_measure, vect_lagr, &
                                hval_veelem, hval_veasse_, cndiri_)
 !
@@ -34,8 +34,7 @@ subroutine nonlinRForceCompute(model, ds_material, cara_elem, list_load, &
 #include "asterfort/utmess.h"
 #include "asterfort/nmdebg.h"
 !
-    character(len=24), intent(in) :: model, cara_elem
-    type(NL_DS_Material), intent(in) :: ds_material
+    character(len=24), intent(in) :: model
     character(len=19), intent(in) :: list_load
     character(len=24), intent(in) :: nume_dof
     type(NL_DS_Measure), intent(inout) :: ds_measure
@@ -53,8 +52,6 @@ subroutine nonlinRForceCompute(model, ds_material, cara_elem, list_load, &
 ! --------------------------------------------------------------------------------------------------
 !
 ! In  model            : name of model
-! In  cara_elem        : name of elementary characteristics (field)
-! In  ds_material      : datastructure for material parameters
 ! In  list_load        : name of datastructure for list of loads
 ! In  nume_dof         : name of numbering object (NUME_DDL)
 ! IO  ds_measure       : datastructure for measure and statistics management
@@ -91,8 +88,7 @@ subroutine nonlinRForceCompute(model, ds_material, cara_elem, list_load, &
 !
 ! - Elementary vectors
 !
-    call vebtla('V', model, ds_material%mater, cara_elem, vect_lagr, &
-                list_load, vediri)
+    call vebtla('V', model, vect_lagr, list_load, vediri)
 !
 ! - Assembling
 !

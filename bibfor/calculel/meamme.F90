@@ -100,7 +100,6 @@ subroutine meamme(modelz, &
     character(len=19) :: matrElem
     integer(kind=8) :: nbResuElem, iResuElem, idxResuElemRigi
     integer(kind=8) :: nbSubstruct
-    character(len=24), pointer :: rerr(:) => null()
     character(len=24), pointer :: listResuElem(:) => null()
     character(len=19) :: modelLigrel, modelResu
     character(len=24), parameter :: nonLinearMap = "&&MEAMMA.NONLIN"
@@ -189,12 +188,8 @@ subroutine meamme(modelz, &
     end if
 
 ! - Prepare RESU_ELEM objects
-    call memare(base, matrElem, model, 'AMOR_MECA')
-    call jeveuo(matrElem//'.RERR', 'E', vk24=rerr)
+    call memare(base, matrElem, model, 'AMOR_MECA', to_aster_logical(nbSubstruct > 0))
     call jedetr(matrElem//'.RELR')
-    if (nbSubstruct .gt. 0) then
-        rerr(3) = 'OUI_SOUS_STRUC'
-    end if
 
 ! - Input fields
     lpain(1) = 'PGEOMER'

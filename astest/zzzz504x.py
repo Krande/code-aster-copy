@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -71,8 +71,7 @@ numeDDL = study.getDOFNumbering()
 test.assertEqual(numeDDL.getType(), "NUME_DDL_P")
 
 matrAsse = CA.AssemblyMatrixDisplacementReal(study)
-matrAsse.addElementaryMatrix(matr_elem)
-matrAsse.assemble()
+matrAsse.assemble(matr_elem, study.getListOfLoads())
 test.assertEqual(matrAsse.getType(), "MATR_ASSE_DEPL_R")
 
 matrAsse *= 2.0
@@ -83,7 +82,6 @@ matrAsse2 = matrAsse.copy()
 test.assertNotEqual(matrAsse.getName(), matrAsse2.getName())
 test.assertEqual(matrAsse.isBuilt(), matrAsse2.isBuilt())
 test.assertEqual(matrAsse.getDOFNumbering(), matrAsse2.getDOFNumbering())
-test.assertEqual(matrAsse.getListOfLoads(), matrAsse2.getListOfLoads())
 test.assertAlmostEqual(matrAsse.getLagrangeScaling(), matrAsse2.getLagrangeScaling())
 petscMat2 = matrAsse2.toPetsc()
 ref_matr = 108726.49458749207
@@ -93,7 +91,6 @@ matrAsse3 = -(-1.0 * matrAsse)
 test.assertNotEqual(matrAsse.getName(), matrAsse3.getName())
 test.assertEqual(matrAsse.isBuilt(), matrAsse3.isBuilt())
 test.assertEqual(matrAsse.getDOFNumbering(), matrAsse3.getDOFNumbering())
-test.assertEqual(matrAsse.getListOfLoads(), matrAsse3.getListOfLoads())
 test.assertAlmostEqual(matrAsse.getLagrangeScaling(), matrAsse3.getLagrangeScaling())
 petscMat3 = matrAsse3.toPetsc()
 test.assertAlmostEqual(ref_matr, petscMat3.norm(), delta=ref_matr * 1.0e-6)
@@ -102,7 +99,6 @@ matrAsse4 = 3.0 * matrAsse + 2.0 * matrAsse2 - 4.0 * matrAsse3
 test.assertNotEqual(matrAsse.getName(), matrAsse4.getName())
 test.assertEqual(matrAsse.isBuilt(), matrAsse4.isBuilt())
 test.assertEqual(matrAsse.getDOFNumbering(), matrAsse4.getDOFNumbering())
-test.assertEqual(matrAsse.getListOfLoads(), matrAsse4.getListOfLoads())
 test.assertAlmostEqual(matrAsse.getLagrangeScaling(), matrAsse4.getLagrangeScaling())
 petscMat4 = matrAsse4.toPetsc()
 test.assertAlmostEqual(ref_matr, petscMat4.norm(), delta=ref_matr * 1.0e-6)
@@ -113,7 +109,6 @@ matrAsse5 -= matrAsse
 test.assertNotEqual(matrAsse.getName(), matrAsse5.getName())
 test.assertEqual(matrAsse.isBuilt(), matrAsse5.isBuilt())
 test.assertEqual(matrAsse.getDOFNumbering(), matrAsse5.getDOFNumbering())
-test.assertEqual(matrAsse.getListOfLoads(), matrAsse5.getListOfLoads())
 test.assertAlmostEqual(matrAsse.getLagrangeScaling(), matrAsse5.getLagrangeScaling())
 petscMat5 = matrAsse5.toPetsc()
 test.assertAlmostEqual(ref_matr, petscMat5.norm(), delta=ref_matr * 1.0e-6)

@@ -63,7 +63,6 @@ subroutine ss2mm2(mo, vecel, nomcas)
 !-----------------------------------------------------------------------
     integer(kind=8) :: i, ialsch
     integer(kind=8) :: iret, nbsma, nbssa
-    character(len=24), pointer :: rerr(:) => null()
     character(len=8), pointer :: vnomacr(:) => null()
     integer(kind=8), pointer :: sssa(:) => null()
 !-----------------------------------------------------------------------
@@ -76,9 +75,6 @@ subroutine ss2mm2(mo, vecel, nomcas)
 !
     call jeveuo(mo//'.MODELE    .SSSA', 'L', vi=sssa)
     call jeveuo(ma//'.NOMACR', 'L', vk8=vnomacr)
-!
-    call jeveuo(vecel//'.RERR', 'E', vk24=rerr)
-    rerr(3) (1:3) = 'OUI'
 !
     call jecrec(vecel//'.RELC', 'V V I', 'NO', 'CONTIG', 'CONSTANT', &
                 1)

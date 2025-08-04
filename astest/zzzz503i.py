@@ -59,10 +59,8 @@ matr_elem = disc_comp.getElasticStiffnessMatrix()
 matr_elem_dual = disc_comp.getDualStiffnessMatrix()
 
 matrAsse = CA.AssemblyMatrixDisplacementReal()
-matrAsse.addElementaryMatrix(matr_elem)
-matrAsse.addElementaryMatrix(matr_elem_dual)
 matrAsse.setDOFNumbering(phys_pb.getDOFNumbering())
-matrAsse.assemble()
+matrAsse.assemble([matr_elem, matr_elem_dual])
 
 
 # ------------------------------------

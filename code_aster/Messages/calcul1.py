@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -68,12 +68,6 @@ Le modèle contient des éléments qui ne supportent pas les champs de type vari
         """
 Le modèle contient des éléments qui ne supportent pas les champs de type variables internes.
 On ne peut donc pas calculer les options les réclamant.
-"""
-    ),
-    9: _(
-        """
-Le modèle contient des éléments qui ne supportent pas les champs de type variables internes.
-Or les variables de commande ont des champs métallurgiques. On ne peut pas calculer la contribution de la métallurgie.
 """
     ),
     10: _(

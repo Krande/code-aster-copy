@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -19,10 +19,12 @@
 
 from . import *
 from .sd_matr_elem import sd_matr_elem
+from .sd_modele import sd_modele
 
 
 class sd_vect_elem(sd_matr_elem):
     nomj = SDNom(fin=19)
+    RERR = AsVK24(lonmax=1)
     RELC = Facultatif(AsColl(acces="NO", stockage="CONTIG", modelong="CONSTANT", type="I"))
 
     def check_RELC(self, checker):
@@ -32,3 +34,9 @@ class sd_vect_elem(sd_matr_elem):
         for nochar in list(lchar.keys()):
             for k in lchar[nochar]:
                 assert k in (0, 1), lchar
+
+    def check_1(self, checker):
+        refe = self.RERR.get_stripped()
+        assert self.RELR.exists
+        sd2 = sd_modele(refe[0])
+        sd2.check(checker)

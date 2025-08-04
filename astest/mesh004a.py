@@ -82,10 +82,8 @@ numeDDL.computeNumbering([matr_elem])
 numeDDL.debugPrint(rank + 30)
 
 matrAsse = CA.AssemblyMatrixDisplacementReal()
-matrAsse.addElementaryMatrix(matr_elem)
 matrAsse.setDOFNumbering(numeDDL)
-matrAsse.addDirichletBC(charCine)
-matrAsse.assemble()
+matrAsse.assemble(matr_elem, charCine)
 matrAsse.debugPrint(rank + 30)
 
 ccid = matrAsse.getDirichletBCDOFs()

@@ -16,7 +16,7 @@
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
 
-subroutine cal2m(chamno, phibar, modele, mate, mateco, nu, &
+subroutine cal2m(chamno, phibar, modele, mateco, nu, &
                  vecas2, nr, nv)
     implicit none
 #include "asterfort/assvec.h"
@@ -24,7 +24,7 @@ subroutine cal2m(chamno, phibar, modele, mate, mateco, nu, &
 #include "asterfort/jelira.h"
 #include "asterfort/phi2el.h"
     integer(kind=8) :: nr, nv
-    character(len=*) :: chamno, phibar, modele, mate, mateco, nu, vecas2
+    character(len=*) :: chamno, phibar, modele, mateco, nu, vecas2
 !
 !------- CALCUL DES VECTEURS ASSEMBLES DE FLUX FLUIDES
 !
@@ -45,8 +45,7 @@ subroutine cal2m(chamno, phibar, modele, mate, mateco, nu, &
 !-----------------------------------------------------------------------
 !-----------------------------------------------------------------------
     ve2 = 'VE2'
-    call phi2el(modele, ' ', mate, mateco, chamno, phibar, &
-                r8bid, ve2)
+    call phi2el(modele, mateco, chamno, phibar, r8bid, ve2)
 !
 !     --- ASSEMBLAGE DU VECTEUR ELEMENTAIRE DE FLUX SUR LA
 !                       NUMEROTATION NU DU MODELE THERMIQUE ---

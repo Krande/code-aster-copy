@@ -6,7 +6,7 @@
  * @brief Definition of elementary matrices
  * @author Nicolas Sellenet
  * @section LICENCE
- *   Copyright (C) 1991 - 2024  EDF R&D                www.code-aster.org
+ *   Copyright (C) 1991 - 2025  EDF R&D                www.code-aster.org
  *
  *   This file is part of Code_Aster.
  *
@@ -66,16 +66,10 @@ class BaseElementaryMatrix : public DataStructure {
     /** @brief Constructor with automatic name */
     BaseElementaryMatrix( const std::string type = "MATR_ELEM" );
 
-    BaseElementaryMatrix( const ModelPtr model, const MaterialFieldPtr mater,
-                          const ElementaryCharacteristicsPtr caraElem );
-
-    /** @brief Get the field of material parameters */
-    MaterialFieldPtr getMaterialField() const { return _materialField; };
+    BaseElementaryMatrix( const ModelPtr model );
 
     /** @brief Get the model */
     ModelPtr getModel() const { return _model; };
-
-    ElementaryCharacteristicsPtr getElementaryCharacteristics() const { return _elemChara; };
 
     /** @brief Get the mesh */
     BaseMeshPtr getMesh( void ) const;
@@ -96,29 +90,10 @@ class BaseElementaryMatrix : public DataStructure {
     void isBuilt( bool bBuilt ) { _isBuilt = bBuilt; };
 
     /**
-     * @brief Set the field of material parameters
-     * @param currMaterialField pointer to material field
-     */
-    void setMaterialField( const MaterialFieldPtr &currMaterialField ) {
-        _materialField = currMaterialField;
-    };
-
-    /**
-     * @brief Set elementary characteristics
-     * @param currElemChara pointer to elementary characteristics
-     */
-    void setElementaryCharacteristics( const ElementaryCharacteristicsPtr &currElemChara ) {
-        _elemChara = currElemChara;
-    };
-
-    /**
      * @brief Set the model
      * @param currModel pointer to model
      */
     void setModel( const ModelPtr &currModel ) { _model = currModel; };
-
-    void setPhysicalProblem( const ModelPtr model, const MaterialFieldPtr mater,
-                             const ElementaryCharacteristicsPtr caraElem );
 
     /** @brief  Prepare compute */
     void prepareCompute( const std::string option );

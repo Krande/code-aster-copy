@@ -72,15 +72,15 @@ subroutine catabl(table_new, table_old, time, nume_store, nb_obje, &
                                     'K16', 'K16', 'K24', 'I  ', 'R8 ', 'I  '/)
     integer(kind=8) :: prepar(nbpara)
 !
-    integer(kind=8), parameter :: l_nb_obje = 9
+    integer(kind=8), parameter :: l_nb_obje = 7
     character(len=16), parameter :: l_obje_name(l_nb_obje) = (/ &
                                     'MATR_TANG_ELEM  ', 'SIEF_ELGA       ', 'VARI_ELGA       ', &
                                     'FORC_INTE_ELEM  ', 'FORC_DIRI_ELEM  ', 'FORC_NODA_ELEM  ', &
-                                    'CODE_RETOUR_INTE', 'FORC_VARC_ELEM_M', 'FORC_VARC_ELEM_P'/)
+                                    'CODE_RETOUR_INTE'/)
     character(len=16), parameter :: l_obje_type(l_nb_obje) = (/ &
                                     'MATR_ELEM_DEPL_R', 'CHAM_ELEM       ', 'CHAM_ELEM       ', &
                                     'VECT_ELEM_DEPL_R', 'VECT_ELEM_DEPL_R', 'VECT_ELEM_DEPL_R', &
-                                    'ENTIER          ', 'VECT_ELEM_DEPL_R', 'VECT_ELEM_DEPL_R'/)
+                                    'ENTIER          '/)
 !
     character(len=19) :: nomtab
     aster_logical :: l_new_table, l_repl_object

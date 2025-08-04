@@ -2,7 +2,7 @@
  * @file DiscreteComputation.cxx
  * @brief Implementation of class DiscreteComputation
  * @section LICENCE
- *   Copyright (C) 1991 2023  EDF R&D                www.code-aster.org
+ *   Copyright (C) 1991 2025  EDF R&D                www.code-aster.org
  *
  *   This file is part of Code_Aster.
  *
@@ -64,10 +64,8 @@ DiscreteComputation::getLinearMobilityMatrix( const VectorString &groupOfCells,
 
     const std::string option( "RIGI_ACOU" );
 
-    auto elemMatr = std::make_shared< ElementaryMatrixPressureComplex >(
-        _phys_problem->getModel(), _phys_problem->getMaterialField(),
-        _phys_problem->getElementaryCharacteristics() );
-    elemMatr->prepareCompute( option );
+    auto elemMatr =
+        std::make_shared< ElementaryMatrixPressureComplex >( _phys_problem->getModel(), option );
 
     // Get main parameters
     auto currModel = _phys_problem->getModel();
@@ -106,10 +104,8 @@ ElementaryMatrixPressureComplexPtr DiscreteComputation::getDualLinearMobilityMat
 
     const std::string option( "ACOU_DDLM_C" );
 
-    auto elemMatr = std::make_shared< ElementaryMatrixPressureComplex >(
-        _phys_problem->getModel(), _phys_problem->getMaterialField(),
-        _phys_problem->getElementaryCharacteristics() );
-    elemMatr->prepareCompute( option );
+    auto elemMatr =
+        std::make_shared< ElementaryMatrixPressureComplex >( _phys_problem->getModel(), option );
 
     // Prepare computing
     auto calcul = std::make_shared< Calcul >( option );
@@ -128,10 +124,8 @@ DiscreteComputation::getCompressibilityMatrix( const VectorString &groupOfCells 
 
     const std::string option( "MASS_ACOU" );
 
-    auto elemMatr = std::make_shared< ElementaryMatrixPressureComplex >(
-        _phys_problem->getModel(), _phys_problem->getMaterialField(),
-        _phys_problem->getElementaryCharacteristics() );
-    elemMatr->prepareCompute( option );
+    auto elemMatr =
+        std::make_shared< ElementaryMatrixPressureComplex >( _phys_problem->getModel(), option );
 
     // Get main parameters
     auto currModel = _phys_problem->getModel();
@@ -168,10 +162,8 @@ DiscreteComputation::getImpedanceMatrix( const ASTERINTEGER &onde_flui ) const {
 
     const std::string option( "AMOR_ACOU" );
 
-    auto elemMatr = std::make_shared< ElementaryMatrixPressureComplex >(
-        _phys_problem->getModel(), _phys_problem->getMaterialField(),
-        _phys_problem->getElementaryCharacteristics() );
-    elemMatr->prepareCompute( option );
+    auto elemMatr =
+        std::make_shared< ElementaryMatrixPressureComplex >( _phys_problem->getModel(), option );
 
     // Get main parameters
     auto currMesh = _phys_problem->getMesh();

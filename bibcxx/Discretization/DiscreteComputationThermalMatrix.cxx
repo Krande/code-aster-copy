@@ -2,7 +2,7 @@
  * @file DiscreteComputation.cxx
  * @brief Implementation of class DiscreteComputation
  * @section LICENCE
- *   Copyright (C) 1991 2024  EDF R&D                www.code-aster.org
+ *   Copyright (C) 1991 2025  EDF R&D                www.code-aster.org
  *
  *   This file is part of Code_Aster.
  *
@@ -45,10 +45,8 @@ ElementaryMatrixTemperatureRealPtr DiscreteComputation::getLinearConductivityMat
     AS_ASSERT( _phys_problem->getModel()->isThermal() );
     const std::string option( "RIGI_THER" );
 
-    auto elemMatr = std::make_shared< ElementaryMatrixTemperatureReal >(
-        _phys_problem->getModel(), _phys_problem->getMaterialField(),
-        _phys_problem->getElementaryCharacteristics() );
-    elemMatr->prepareCompute( option );
+    auto elemMatr =
+        std::make_shared< ElementaryMatrixTemperatureReal >( _phys_problem->getModel(), option );
 
     // Get main parameters
     auto currModel = _phys_problem->getModel();
@@ -119,10 +117,8 @@ ElementaryMatrixTemperatureRealPtr DiscreteComputation::getTangentConductivityMa
     AS_ASSERT( _phys_problem->getModel()->isThermal() );
     const std::string option( "RIGI_THER_TANG" );
 
-    auto elemMatr = std::make_shared< ElementaryMatrixTemperatureReal >(
-        _phys_problem->getModel(), _phys_problem->getMaterialField(),
-        _phys_problem->getElementaryCharacteristics() );
-    elemMatr->prepareCompute( option );
+    auto elemMatr =
+        std::make_shared< ElementaryMatrixTemperatureReal >( _phys_problem->getModel(), option );
 
     // Get main parameters
     auto currModel = _phys_problem->getModel();
@@ -195,10 +191,8 @@ DiscreteComputation::getLinearCapacityMatrix( const ASTERDOUBLE time_curr,
     AS_ASSERT( _phys_problem->getModel()->isThermal() );
     const std::string option( "MASS_THER" );
 
-    auto elemMatr = std::make_shared< ElementaryMatrixTemperatureReal >(
-        _phys_problem->getModel(), _phys_problem->getMaterialField(),
-        _phys_problem->getElementaryCharacteristics() );
-    elemMatr->prepareCompute( option );
+    auto elemMatr =
+        std::make_shared< ElementaryMatrixTemperatureReal >( _phys_problem->getModel(), option );
 
     // Get main parameters
     auto currModel = _phys_problem->getModel();
@@ -260,10 +254,8 @@ ElementaryMatrixTemperatureRealPtr DiscreteComputation::getTangentCapacityMatrix
     AS_ASSERT( _phys_problem->getModel()->isThermal() );
     const std::string option( "MASS_THER_TANG" );
 
-    auto elemMatr = std::make_shared< ElementaryMatrixTemperatureReal >(
-        _phys_problem->getModel(), _phys_problem->getMaterialField(),
-        _phys_problem->getElementaryCharacteristics() );
-    elemMatr->prepareCompute( option );
+    auto elemMatr =
+        std::make_shared< ElementaryMatrixTemperatureReal >( _phys_problem->getModel(), option );
 
     // Get main parameters
     auto currModel = _phys_problem->getModel();
@@ -365,10 +357,8 @@ ElementaryMatrixTemperatureRealPtr DiscreteComputation::getDualLinearConductivit
 
     const std::string option( "THER_DDLM_R" );
 
-    auto elemMatr = std::make_shared< ElementaryMatrixTemperatureReal >(
-        _phys_problem->getModel(), _phys_problem->getMaterialField(),
-        _phys_problem->getElementaryCharacteristics() );
-    elemMatr->prepareCompute( option );
+    auto elemMatr =
+        std::make_shared< ElementaryMatrixTemperatureReal >( _phys_problem->getModel(), option );
 
     // Prepare computing
     CalculPtr calcul = std::make_unique< Calcul >( option );
@@ -386,10 +376,8 @@ DiscreteComputation::getThermalExchangeMatrix( const ASTERDOUBLE &time_curr ) co
 
     const std::string option( "RIGI_THER" );
 
-    auto elemMatr = std::make_shared< ElementaryMatrixTemperatureReal >(
-        _phys_problem->getModel(), _phys_problem->getMaterialField(),
-        _phys_problem->getElementaryCharacteristics() );
-    elemMatr->prepareCompute( option );
+    auto elemMatr =
+        std::make_shared< ElementaryMatrixTemperatureReal >( _phys_problem->getModel(), option );
 
     // Prepare computing
     CalculPtr calcul = std::make_unique< Calcul >( option );
@@ -523,15 +511,14 @@ ElementaryMatrixTemperatureRealPtr DiscreteComputation::getThermalTangentNonLine
     const FieldOnNodesRealPtr temp_curr, const ASTERDOUBLE time_curr,
     const FieldOnCellsRealPtr varc_curr ) const {
 
+    const std::string calcul_option( "MTAN_THER" );
+
     AS_ASSERT( _phys_problem->getModel()->isThermal() );
 
-    auto elemMatr = std::make_shared< ElementaryMatrixTemperatureReal >(
-        _phys_problem->getModel(), _phys_problem->getMaterialField(),
-        _phys_problem->getElementaryCharacteristics() );
+    auto elemMatr = std::make_shared< ElementaryMatrixTemperatureReal >( _phys_problem->getModel(),
+                                                                         calcul_option );
 
     // Setup
-    const std::string calcul_option( "MTAN_THER" );
-    elemMatr->prepareCompute( calcul_option );
 
     // Main parameters
     auto currModel = _phys_problem->getModel();
@@ -595,10 +582,8 @@ ElementaryMatrixTemperatureRealPtr DiscreteComputation::getThermalTangentNonLine
     AS_ASSERT( _phys_problem->getModel()->isThermal() );
     const std::string option( "MTAN_THER_SOURNL" );
 
-    auto elemMatr = std::make_shared< ElementaryMatrixTemperatureReal >(
-        _phys_problem->getModel(), _phys_problem->getMaterialField(),
-        _phys_problem->getElementaryCharacteristics() );
-    elemMatr->prepareCompute( option );
+    auto elemMatr =
+        std::make_shared< ElementaryMatrixTemperatureReal >( _phys_problem->getModel(), option );
 
     // Get main parameters
     auto currModel = _phys_problem->getModel();

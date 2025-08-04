@@ -31,16 +31,8 @@ void TableContainer::addObject( const std::string &a, ElementaryMatrixDisplaceme
     _mapEMDD[a] = b;
 };
 
-void TableContainer::addObject( const std::string &a, ElementaryMatrixTemperatureRealPtr b ) {
-    _mapEMTD[a] = b;
-};
-
 void TableContainer::addObject( const std::string &a, ElementaryVectorDisplacementRealPtr b ) {
     _mapEVDD[a] = b;
-};
-
-void TableContainer::addObject( const std::string &a, ElementaryVectorTemperatureRealPtr b ) {
-    _mapEVTD[a] = b;
 };
 
 void TableContainer::addObject( const std::string &a, FieldOnCellsRealPtr b ) { _mapFOED[a] = b; };
@@ -82,31 +74,15 @@ TableContainer::getElementaryMatrixDisplacementReal( const std::string &a ) cons
     return curIter->second;
 };
 
-ElementaryMatrixTemperatureRealPtr
-TableContainer::getElementaryMatrixTemperatureReal( const std::string &a ) const {
-    const auto aa = strip( a );
-    const auto curIter = _mapEMTD.find( aa );
-    if ( curIter == _mapEMTD.end() )
-        return ElementaryMatrixTemperatureRealPtr( nullptr );
-    return curIter->second;
-};
-
 ElementaryVectorDisplacementRealPtr
 TableContainer::getElementaryVectorDisplacementReal( const std::string &a ) const {
     const auto aa = strip( a );
-    const auto curIter = _mapEVDD.find( aa );
-    if ( curIter == _mapEVDD.end() )
-        return ElementaryVectorDisplacementRealPtr( nullptr );
-    return curIter->second;
-};
+    const auto iter = _mapEVDD.find( aa );
+    if ( iter != _mapEVDD.end() ) {
+        return _mapEVDD.at( aa );
+    }
 
-ElementaryVectorTemperatureRealPtr
-TableContainer::getElementaryVectorTemperatureReal( const std::string &a ) const {
-    const auto aa = strip( a );
-    const auto curIter = _mapEVTD.find( aa );
-    if ( curIter == _mapEVTD.end() )
-        return ElementaryVectorTemperatureRealPtr( nullptr );
-    return curIter->second;
+    return ElementaryVectorDisplacementRealPtr( nullptr );
 };
 
 FieldOnCellsRealPtr TableContainer::getFieldOnCellsReal( const std::string &a ) const {
@@ -289,17 +265,11 @@ bool TableContainer::build() {
             if ( _mapEMDD[name] == nullptr ) {
                 _mapEMDD[name] = std::make_shared< ElementaryMatrixDisplacementReal >( dsName );
             }
-        } else if ( type == "MATR_ELEM_TEMP_R" ) {
-            if ( _mapEMTD[name] == nullptr ) {
-                _mapEMTD[name] = std::make_shared< ElementaryMatrixTemperatureReal >( dsName );
-            }
         } else if ( type == "VECT_ELEM_DEPL_R" ) {
-            if ( _mapEVDD[name] == nullptr ) {
-                _mapEVDD[name] = std::make_shared< ElementaryVectorDisplacementReal >( dsName );
-            }
-        } else if ( type == "VECT_ELEM_TEMP_R" ) {
-            if ( _mapEVTD[name] == nullptr ) {
-                _mapEVTD[name] = std::make_shared< ElementaryVectorTemperatureReal >( dsName );
+            const auto iter = _mapEVDD.find( name );
+            if ( ( iter == _mapEVDD.end() ) || _mapEVDD.at( name ) == nullptr ) {
+                _mapEVDD[name] =
+                    std::make_shared< ElementaryVectorDisplacementReal >( dsName, nullptr );
             }
         } else if ( type == "CHAM_GD" ) {
             if ( _mapGDF[name] == nullptr ) {

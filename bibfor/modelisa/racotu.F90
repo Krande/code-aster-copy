@@ -32,7 +32,7 @@ subroutine racotu(iprno, lonlis, klisno, noepou, noma, &
 #include "asterfort/jemarq.h"
 #include "asterfort/jeveuo.h"
 #include "asterfort/mecact.h"
-#include "asterfort/memare.h"
+#include "asterfort/vemare.h"
 #include "asterfort/normev.h"
 #include "asterfort/raorfi.h"
 #include "asterfort/reajre.h"
@@ -111,7 +111,7 @@ subroutine racotu(iprno, lonlis, klisno, noepou, noma, &
     lchout(3) = '&&RAPOTU.COEF_WM'
 !
 ! --- CREATION DES .RERR DES VECTEURS EN SORTIE DE CALCUL
-    call memare('V', '&&RAPOTU', mod, 'CHAR_MECA')
+    call vemare('V', '&&RAPOTU', mod)
 !
 ! --- CREATION DU .RELR
     call jedetr('&&RAPOTU           .RELR')

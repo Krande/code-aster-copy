@@ -103,7 +103,7 @@ transfertToParallelFEDesc( const ElementaryMatrixDisplacementRealPtr eMIn,
 ElementaryVectorDisplacementRealPtr
 transfertToParallelFEDesc( const ElementaryVectorDisplacementRealPtr eVIn,
                            const ParallelContactFEDescriptorPtr pFEDesc ) {
-    auto eV = std::make_shared< ElementaryVectorDisplacementReal >();
+    auto eV = std::make_shared< ElementaryVectorDisplacementReal >( eVIn->getModel() );
     auto elemTerms = eVIn->getElementaryTerms();
     const auto &fEDesc = pFEDesc->getSupportFiniteElementDescriptor();
     const auto &lielC = fEDesc->getListOfGroupsOfElementsExplorer();

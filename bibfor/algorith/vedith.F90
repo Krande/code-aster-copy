@@ -26,7 +26,7 @@ subroutine vedith(model, loadNameJv, loadInfoJv, time, vect_elemz)
 #include "asterfort/inical.h"
 #include "asterfort/load_list_info.h"
 #include "asterfort/detrsd.h"
-#include "asterfort/memare.h"
+#include "asterfort/vemare.h"
 #include "asterfort/reajre.h"
 #include "asterfort/megeom.h"
 #include "asterfort/gcnco2.h"
@@ -97,7 +97,7 @@ subroutine vedith(model, loadNameJv, loadInfoJv, time, vect_elemz)
 ! - Allocate result
 !
     call detrsd('VECT_ELEM', vect_elem)
-    call memare(base, vect_elem, model, 'CHAR_THER')
+    call vemare(base, vect_elem, model)
     call reajre(vect_elem, ' ', base)
     if (load_empty) then
         goto 99

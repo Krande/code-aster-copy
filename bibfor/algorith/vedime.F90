@@ -33,7 +33,7 @@ subroutine vedime(modelZ, loadNameJvZ, loadInfoJvZ, &
 #include "asterfort/load_list_info.h"
 #include "asterfort/mecact.h"
 #include "asterfort/megeom.h"
-#include "asterfort/memare.h"
+#include "asterfort/vemare.h"
 #include "asterfort/reajre.h"
 !
     character(len=*), intent(in) :: modelZ
@@ -109,7 +109,7 @@ subroutine vedime(modelZ, loadNameJvZ, loadInfoJvZ, &
 ! - Allocate result
     if (.not. lCumul) then
         call detrsd('VECT_ELEM', vectElem)
-        call memare(jvBase, vectElem, modelZ, 'CHAR_MECA')
+        call vemare(jvBase, vectElem, modelZ)
         call reajre(vectElem, ' ', jvBase)
     end if
     if (noLoadInList) then

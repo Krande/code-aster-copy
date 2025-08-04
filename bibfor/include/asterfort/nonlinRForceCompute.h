@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2018 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -17,12 +17,11 @@
 ! --------------------------------------------------------------------
 !
 interface
-    subroutine nonlinRForceCompute(model      , ds_material , cara_elem, list_load,&
+    subroutine nonlinRForceCompute(model      , list_load, &
                                    nume_dof   , ds_measure  , vect_lagr,&
                                    hval_veelem, hval_veasse_, cndiri_)
         use NonLin_Datastructure_type
-        character(len=24), intent(in) :: model, cara_elem
-        type(NL_DS_Material), intent(in) :: ds_material
+        character(len=24), intent(in) :: model
         character(len=19), intent(in) :: list_load
         character(len=24), intent(in) :: nume_dof
         type(NL_DS_Measure), intent(inout) :: ds_measure

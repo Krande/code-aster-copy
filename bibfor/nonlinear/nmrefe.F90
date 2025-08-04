@@ -35,7 +35,7 @@ subroutine nmrefe(model, compor, mate, cara_elem, nume_dof, &
 #include "asterfort/mecact.h"
 #include "asterfort/mecara.h"
 #include "asterfort/megeom.h"
-#include "asterfort/memare.h"
+#include "asterfort/vemare.h"
 #include "asterfort/nmchex.h"
 #include "asterfort/reajre.h"
 #include "asterfort/xajcin.h"
@@ -132,7 +132,7 @@ subroutine nmrefe(model, compor, mate, cara_elem, nume_dof, &
 ! - Preparation of VECT_ELEM
 !
     call detrsd('VECT_ELEM', vect_elem)
-    call memare('V', vect_elem, model, 'CHAR_MECA')
+    call vemare('V', vect_elem, model)
 !
 ! - Input fields
 !

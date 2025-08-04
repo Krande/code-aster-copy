@@ -182,4 +182,7 @@ def calc_modes_ops(self, TYPE_RESU, OPTION, AMELIORATION, INFO, **args):
     caraElem = args.get("CARA_ELEM")
     if caraElem is not None:
         modes.setElementaryCharacteristics(caraElem)
+    mater = args.get("CHAM_MATER")
+    if mater is not None:
+        modes.setMaterialField(mater)
     return modes

@@ -249,45 +249,29 @@ subroutine cakg3d(option, result, modele, depla, thetai, &
     call vrcref(modele, mate(1:8), '        ', chvref(1:19))
 !
 !     TRAITEMENT DES CHARGES
-!     ON SHUNTE SI COHESIF
-    if (typdisc .eq. 'COHESIF') then
-!       Parametres non utilises
-!       ms renseignes pour ne pas pourrir l'appel à calcul.F90
-!       avec des conditions partout
+
+    chvolu = '&&CAKG3D.VOLU'
+    ch1d2d = '&&CAKG3D.1D2D'
+    ch2d3d = '&&CAKG3D.2D3D'
+    chpres = '&&CAKG3D.PRES'
+    chepsi = '&&CAKG3D.EPSI'
+    chpesa = '&&CAKG3D.PESA'
+    chrota = '&&CAKG3D.ROTA'
+    call gcharg(modele, lischa, chvolu, ch1d2d, ch2d3d, &
+                chpres, chepsi, chpesa, chrota, lfonc, &
+                time, iord)
+    if (lfonc) then
+        pavolu = 'PFFVOLU'
+        pa2d3d = 'PFF2D3D'
+        papres = 'PPRESSF'
+        pepsin = 'PEPSINF'
+        opti = 'CALC_K_G_XFEM_F'
+    else
         pavolu = 'PFRVOLU'
         pa2d3d = 'PFR2D3D'
         papres = 'PPRESSR'
         pepsin = 'PEPSINR'
-!       De façon analogue à ce qui est fait pour CALC_K_G_F,
-!       on change le nom d'option: programmation plus simple.
-!       Evite de passer un champ supplementaire à calcul.F90
-!       pour porter l'info du type de discontinuite
-!       Evite egalement l'ajout d'un test de sortie pour éléments XH
-        opti = 'CALC_K_G_COHE'
-    else
-        chvolu = '&&CAKG3D.VOLU'
-        ch1d2d = '&&CAKG3D.1D2D'
-        ch2d3d = '&&CAKG3D.2D3D'
-        chpres = '&&CAKG3D.PRES'
-        chepsi = '&&CAKG3D.EPSI'
-        chpesa = '&&CAKG3D.PESA'
-        chrota = '&&CAKG3D.ROTA'
-        call gcharg(modele, lischa, chvolu, ch1d2d, ch2d3d, &
-                    chpres, chepsi, chpesa, chrota, lfonc, &
-                    time, iord)
-        if (lfonc) then
-            pavolu = 'PFFVOLU'
-            pa2d3d = 'PFF2D3D'
-            papres = 'PPRESSF'
-            pepsin = 'PEPSINF'
-            opti = 'CALC_K_G_XFEM_F'
-        else
-            pavolu = 'PFRVOLU'
-            pa2d3d = 'PFR2D3D'
-            papres = 'PPRESSR'
-            pepsin = 'PEPSINR'
-            opti = 'CALC_K_G_XFEM'
-        end if
+        opti = 'CALC_K_G_XFEM'
     end if
 !
 !     RECUPERATION DES DONNEES XFEM OU FEM (TOPOSE)

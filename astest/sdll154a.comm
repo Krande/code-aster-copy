@@ -196,7 +196,11 @@ ASSEMBLAGE(
 )
 
 modes_dyn = CALC_MODES(
-    MATR_RIGI=matrice_rigi, MATR_MASS=matrice_mass, CALC_FREQ=_F(NMAX_FREQ=4), CARA_ELEM=cara_elem
+    MATR_RIGI=matrice_rigi,
+    MATR_MASS=matrice_mass,
+    CALC_FREQ=_F(NMAX_FREQ=4),
+    CARA_ELEM=cara_elem,
+    CHAM_MATER=ch_mater,
 )
 modes_dyn = CALC_CHAMP(reuse=modes_dyn, RESULTAT=modes_dyn, CONTRAINTE="EFGE_ELNO")
 

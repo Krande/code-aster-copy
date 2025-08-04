@@ -118,8 +118,7 @@ subroutine nmrigi(modelz, cara_elem, &
 !
 ! - Computation
 !
-    call merimo(base, &
-                l_xfem, l_macr_elem, &
+    call merimo(base, l_xfem, l_macr_elem, &
                 model, cara_elem, iter_newt+1, &
                 ds_constitutive, ds_material, ds_system, &
                 hval_incr, hval_algo, &

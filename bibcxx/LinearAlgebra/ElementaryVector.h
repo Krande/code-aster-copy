@@ -3,7 +3,7 @@
  * @brief Definition of elementary vectors
  * @author Nicolas Sellenet
  * @section LICENCE
- *   Copyright (C) 1991 - 2023  EDF R&D                www.code-aster.org
+ *   Copyright (C) 1991 - 2025  EDF R&D                www.code-aster.org
  *
  *   This file is part of Code_Aster.
  *
@@ -37,19 +37,22 @@ class ElementaryVector : public GenericElementaryVector< ValueType > {
     typedef std::shared_ptr< ElementaryVector< ValueType, PhysicalQuantity > > ElementaryVectorPtr;
 
     /** @brief Constructor with a name */
-    ElementaryVector( const std::string name )
+    ElementaryVector( const std::string name, const ModelPtr model )
         : GenericElementaryVector< ValueType >(
-              name, "VECT_ELEM_" + std::string( PhysicalQuantityNames[PhysicalQuantity] ) +
-                        ( typeid( ValueType ) == typeid( ASTERDOUBLE ) ? "_R" : "_C" ) ) {};
+              name,
+              "VECT_ELEM_" + std::string( PhysicalQuantityNames[PhysicalQuantity] ) +
+                  ( typeid( ValueType ) == typeid( ASTERDOUBLE ) ? "_R" : "_C" ),
+              model ) {};
 
     /** @brief Constructor with automatic name */
-    ElementaryVector() : ElementaryVector( ResultNaming::getNewResultName() ) {};
+    ElementaryVector( const ModelPtr model )
+        : ElementaryVector( ResultNaming::getNewResultName(), model ) {};
 
-    ElementaryVector( const ModelPtr model, const MaterialFieldPtr mater,
-                      const ElementaryCharacteristicsPtr caraElem, const ListOfLoadsPtr lLoads )
-        : ElementaryVector() {
-        this->setPhysicalProblem( model, mater, caraElem, lLoads );
-    };
+    ElementaryVector() : ElementaryVector( nullptr ) {};
+
+    // /** @brief restricted constructor (Set) and method (Get) to support pickling */
+    ElementaryVector( const py::tuple &tup )
+        : ElementaryVector( tup[0].cast< std::string >(), tup[1].cast< ModelPtr >() ) {};
 };
 
 /** @typedef Elementary vector for displacement-double */

@@ -114,6 +114,7 @@ ASSEMBLAGE(
 
 modes = CALC_MODES(
     CARA_ELEM=elemprop,
+    CHAM_MATER=fieldmat,
     MATR_MASS=MASS_M,
     MATR_RIGI=RIGI_K,
     OPTION="PLUS_PETITE",

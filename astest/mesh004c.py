@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -69,10 +69,8 @@ test.assertEqual(numeDDL.getType(), "NUME_DDL_P")
 # numeDDL.debugPrint()
 
 matrAsse = CA.AssemblyMatrixTemperatureReal()
-matrAsse.addElementaryMatrix(matr_elem)
 matrAsse.setDOFNumbering(numeDDL)
-matrAsse.addDirichletBC(charCine)
-matrAsse.assemble()
+matrAsse.assemble(matr_elem, charCine)
 test.assertEqual(matrAsse.getType(), "MATR_ASSE_TEMP_R")
 # matrAsse.debugPrint()
 
@@ -113,9 +111,8 @@ numeDDL.computeNumbering([matr_elem])
 test.assertEqual(numeDDL.getType(), "NUME_DDL_P")
 
 matrAsse = CA.AssemblyMatrixTemperatureReal()
-matrAsse.addElementaryMatrix(matr_elem)
 matrAsse.setDOFNumbering(numeDDL)
-matrAsse.assemble()
+matrAsse.assemble(matr_elem)
 test.assertEqual(matrAsse.getType(), "MATR_ASSE_TEMP_R")
 
 vecass = ASSE_VECTEUR(VECT_ELEM=vect_elem, NUME_DDL=numeDDL)

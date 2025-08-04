@@ -17,7 +17,7 @@
 ! --------------------------------------------------------------------
 
 subroutine calmdg(model, modgen, nugene, num, nu, &
-                  ma, mate, mateco, moint, ndble, &
+                  ma, mateco, moint, ndble, &
                   itxsto, itysto, itzsto, iprsto, nbmo, &
                   iadirg)
 ! aslint: disable=
@@ -45,7 +45,7 @@ subroutine calmdg(model, modgen, nugene, num, nu, &
 #include "asterfort/as_deallocate.h"
 #include "asterfort/as_allocate.h"
 !
-    character(len=*) :: mate, mateco
+    character(len=*) :: mateco
 !
 ! AUTEUR : G. ROUSSEAU
 ! ROUTINE CALCULANT :
@@ -145,7 +145,7 @@ subroutine calmdg(model, modgen, nugene, num, nu, &
         call dismoi('NOM_MAILLA', nomcha(1:19), 'CHAM_NO', repk=mailla)
         call dismoi('NOM_MAILLA', moint, 'MODELE', repk=maflui)
         if (maflui .ne. mailla) then
-            call tabcor(model, mate, mateco, mailla, maflui, moint, &
+            call tabcor(model, mateco, mailla, maflui, moint, &
                         num, ndble, icor)
         end if
 !
@@ -241,7 +241,7 @@ subroutine calmdg(model, modgen, nugene, num, nu, &
             call trprot(model, bamo, tgeom, imodg, iadx, &
                         iady, iadz, isst, iadrp, norm1, &
                         norm2, ndble, num, nu, ma, &
-                        mate, mateco, moint, ilires, k, icor)
+                        mateco, moint, ilires, k, icor)
 !
 !
 2           continue

@@ -15,15 +15,13 @@
 ! You should have received a copy of the GNU General Public License
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
-! aslint: disable=W1504
 !
 subroutine calcCalcMeca(nb_option, list_option, &
-                        l_elem_nonl, nume_harm, &
+                        l_elem_nonl, &
                         listLoadZ, modelZ, caraElemZ, &
                         ds_constitutive, ds_material, ds_system, &
                         hval_incr, hval_algo, &
                         vediri, vefnod, &
-                        vevarc_prev, vevarc_curr, &
                         nb_obje_maxi, obje_name, obje_sdname, nb_obje, &
                         l_pred)
 !
@@ -52,14 +50,12 @@ subroutine calcCalcMeca(nb_option, list_option, &
     integer(kind=8), intent(in) :: nb_option
     character(len=16), intent(in) :: list_option(:)
     aster_logical, intent(in) :: l_elem_nonl
-    integer(kind=8), intent(in) :: nume_harm
     character(len=*), intent(in) :: listLoadZ, modelZ, caraElemZ
     type(NL_DS_Constitutive), intent(in) :: ds_constitutive
     type(NL_DS_Material), intent(in) :: ds_material
     type(NL_DS_System), intent(in) :: ds_system
     character(len=19), intent(in) :: hval_incr(:), hval_algo(:)
     character(len=19), intent(in) :: vediri, vefnod
-    character(len=19), intent(in) :: vevarc_prev, vevarc_curr
     integer(kind=8), intent(in) :: nb_obje_maxi
     character(len=16), intent(inout) :: obje_name(nb_obje_maxi)
     character(len=24), intent(inout) :: obje_sdname(nb_obje_maxi)
@@ -86,8 +82,6 @@ subroutine calcCalcMeca(nb_option, list_option, &
 ! In  hval_algo        : hat-variable for algorithms fields
 ! In  vediri           : name of elementary for reaction (Lagrange) vector
 ! In  vefnod           : name of elementary for forces vector (FORC_NODA)
-! In  vevarc_prev      : name of elementary for external state variables at beginning of step
-! In  vevarc_curr      : name of elementary for external state variables at end of step
 ! In  nb_obje_maxi     : maximum number of new objects to add
 ! IO  obje_name        : name of new objects to add
 ! IO  obje_sdname      : datastructure name of new objects to add
@@ -95,14 +89,14 @@ subroutine calcCalcMeca(nb_option, list_option, &
 !
 ! --------------------------------------------------------------------------------------------------
 !
-    aster_logical :: l_matr, l_nonl, l_varc_prev, l_varc_curr, l_forc_noda
+    aster_logical :: l_matr, l_nonl, l_forc_noda
     aster_logical :: l_lagr
     character(len=16) :: option
     character(len=24), parameter :: disp = "&&OP0026.DISP"
     character(len=19) :: varc_curr, disp_curr, sigm_curr, vari_curr
     character(len=19) :: vari_prev, disp_prev, sigm_prev, disp_cumu_inst
     integer(kind=8) :: iter_newt, ixfem, nb_subs_stat
-    aster_logical :: l_meta_zirc, l_meta_acier, l_xfem, l_macr_elem
+    aster_logical :: l_xfem, l_macr_elem
     integer(kind=8) :: ldccvg
     character(len=19) :: ligrmo, caco3d, listLoad
     character(len=1), parameter :: jvBase = "G"
@@ -145,8 +139,6 @@ subroutine calcCalcMeca(nb_option, list_option, &
              (knindi(16, 'COMPORTEMENT', list_option, nb_option) .gt. 0) .or. &
              (knindi(16, 'FORC_INTE_ELEM', list_option, nb_option) .gt. 0)
     l_forc_noda = (knindi(16, 'FORC_NODA_ELEM', list_option, nb_option) .gt. 0)
-    l_varc_prev = (knindi(16, 'FORC_VARC_ELEM_M', list_option, nb_option) .gt. 0)
-    l_varc_curr = (knindi(16, 'FORC_VARC_ELEM_P', list_option, nb_option) .gt. 0)
     l_lagr = l_matr
 !
 ! - Some checks
@@ -169,14 +161,6 @@ subroutine calcCalcMeca(nb_option, list_option, &
     if (l_forc_noda) then
         if (disp_prev .eq. ' ' .or. sigm_prev .eq. ' ') then
             call utmess('F', 'CALCUL1_13')
-        end if
-    end if
-!
-    if (l_varc_prev .or. l_varc_curr) then
-        call nmvcd2('M_ZIRC', ds_material%mater, l_meta_zirc)
-        call nmvcd2('M_ACIER', ds_material%mater, l_meta_acier)
-        if ((l_meta_zirc .or. l_meta_acier) .and. (.not. l_elem_nonl)) then
-            call utmess('F', 'CALCUL1_9')
         end if
     end if
 !
@@ -211,8 +195,7 @@ subroutine calcCalcMeca(nb_option, list_option, &
 !
     if (l_lagr) then
         call medime(jvBase, 'CUMU', model, listLoad, ds_system%merigi)
-        call vebtla(jvBase, model, ds_material%mater, caraElem, disp_curr, &
-                    listLoad, vediri)
+        call vebtla(jvBase, model, disp_curr, listLoad, vediri)
     end if
 !
 ! - Nodal forces
@@ -237,23 +220,6 @@ subroutine calcCalcMeca(nb_option, list_option, &
                         ds_constitutive%compor, 0, ligrmo, &
                         varc_curr, sigm_curr, ' ', disp_curr, jvBase, vefnod)
         end if
-    end if
-!
-! - State variables
-!
-    if (l_varc_prev) then
-        call nmvcpr_elem(model, ds_material%mater, ds_material%mateco, &
-                         caraElem, &
-                         nume_harm, '-', hval_incr, &
-                         ds_material%varc_refe, ds_constitutive%compor, &
-                         jvBase, vevarc_prev)
-    end if
-    if (l_varc_curr) then
-        call nmvcpr_elem(model, ds_material%mater, ds_material%mateco, &
-                         caraElem, &
-                         nume_harm, '+', hval_incr, &
-                         ds_material%varc_refe, ds_constitutive%compor, &
-                         jvBase, vevarc_curr)
     end if
 !
 ! - New objects in table
@@ -300,18 +266,6 @@ subroutine calcCalcMeca(nb_option, list_option, &
         ASSERT(nb_obje .le. nb_obje_maxi)
         obje_name(nb_obje) = 'FORC_NODA_ELEM'
         obje_sdname(nb_obje) = vefnod
-    end if
-    if (l_varc_prev) then
-        nb_obje = nb_obje+1
-        ASSERT(nb_obje .le. nb_obje_maxi)
-        obje_name(nb_obje) = 'FORC_VARC_ELEM_M'
-        obje_sdname(nb_obje) = vevarc_prev
-    end if
-    if (l_varc_curr) then
-        nb_obje = nb_obje+1
-        ASSERT(nb_obje .le. nb_obje_maxi)
-        obje_name(nb_obje) = 'FORC_VARC_ELEM_P'
-        obje_sdname(nb_obje) = vevarc_curr
     end if
 !
 end subroutine

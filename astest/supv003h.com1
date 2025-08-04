@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -66,7 +66,7 @@ def invalid():
             VECT_ASSE=_F(VECTEUR=CO("vect"), OPTION="CHAR_MECA", CHARGE=block),
         )
         # this uses the global var 'mass'
-        test.assertEqual(mass.getNumberOfElementaryMatrix(), 1)
+        test.assertTrue(mass.isBuilt())
         # this changes 'mass', so it requires to mark 'mass' as global
         mass = None
 
@@ -102,8 +102,8 @@ def using_global():
         test.assertTrue("vect" in globals(), msg="vect in globals")
         test.assertTrue("vect" not in locals(), msg="vect not in locals")
         # check "type"
-        test.assertEqual(stiffness.getNumberOfElementaryMatrix(), 1)
-        test.assertEqual(mass.getNumberOfElementaryMatrix(), 1)
+        test.assertTrue(stiffness.isBuilt())
+        test.assertTrue(mass.isBuilt())
         test.assertEqual(vect.getNumberOfComponents(), 6)
         # this requires to mark 'mass' as global
         mass = None

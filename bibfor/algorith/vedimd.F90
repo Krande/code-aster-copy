@@ -44,7 +44,7 @@ subroutine vedimd(nomo, lischa, instan, vecele)
 #include "asterfort/lisopt.h"
 #include "asterfort/mecact.h"
 #include "asterfort/mecoor.h"
-#include "asterfort/memare.h"
+#include "asterfort/vemare.h"
 #include "asterfort/reajre.h"
     character(len=19) :: lischa, vecele
     character(len=8) :: nomo
@@ -117,7 +117,7 @@ subroutine vedimd(nomo, lischa, instan, vecele)
 !
 ! --- ALLOCATION DU VECT_ELEM RESULTAT
 !
-    call memare('V', vecele, nomo, 'CHAR_MECA')
+    call vemare('V', vecele, nomo)
     call reajre(vecele, ' ', 'V')
 !
 ! --- CHAMP DE GEOMETRIE

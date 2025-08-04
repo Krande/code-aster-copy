@@ -172,7 +172,6 @@ class Serializer:
             saved.
         """
         assert self._ctxt is not None, "context is required"
-        ctxt = _filteringContext(self._ctxt)
         do_check = ExecutionParameter().option & Options.TestMode
         pyb_instance = DataStructure.mro()[1]
         saved = []
@@ -180,7 +179,7 @@ class Serializer:
             pickler = AsterPickler(pick)
             logger.info("Saving objects...")
             objList = []
-            for name, obj in ctxt.items():
+            for name, obj in self._ctxt.items():
                 if name == "CO" or obj is logger:
                     continue
                 try:
@@ -297,8 +296,7 @@ def saveObjectsFromContext(context, delete=True, options=0):
     rank = MPI.ASTER_COMM_WORLD.Get_rank()
     if options & FinalizeOptions.OnlyProc0 and rank != 0:
         logger.info("Objects not saved on processor #%d", rank)
-        libaster.jeveux_finalize(FinalizeOptions.OnlyProc0)
-        return
+        options = FinalizeOptions.Set
 
     if options & FinalizeOptions.InfoResu:
         for name, obj in context.items():
@@ -311,6 +309,8 @@ def saveObjectsFromContext(context, delete=True, options=0):
 
     # orig = logger.getEffectiveLevel()
     # logger.setLevel(DEBUG)
+    # all procs must be synced to filter context
+    context = _filteringContext(context)
     if options & FinalizeOptions.SaveBase:
         pickler = Serializer(context)
         saved = pickler.save()

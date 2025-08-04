@@ -53,22 +53,23 @@ class GenericElementaryVector : public BaseElementaryVector {
 
     /** @brief Constructor with a name */
     GenericElementaryVector( const std::string name,
-                             const std::string type = "VECT_ELEM_" +
-                                                      std::string( typeid( ValueType ) ==
-                                                                           typeid( ASTERDOUBLE )
-                                                                       ? "_R"
-                                                                       : "_C" ) )
-        : BaseElementaryVector( name, type ), _veass( nullptr ) {};
+                             const std::string typ = "VECT_ELEM_" +
+                                                     std::string( typeid( ValueType ) ==
+                                                                          typeid( ASTERDOUBLE )
+                                                                      ? "_R"
+                                                                      : "_C" ),
+                             const ModelPtr model = nullptr )
+        : BaseElementaryVector( name, typ, model ), _veass( nullptr ) {};
 
     /** @brief Constructor with automatic name */
-    GenericElementaryVector() : GenericElementaryVector( ResultNaming::getNewResultName() ) {};
+    GenericElementaryVector( const ModelPtr model )
+        : GenericElementaryVector(
+              ResultNaming::getNewResultName(),
+              "VECT_ELEM_" +
+                  std::string( typeid( ValueType ) == typeid( ASTERDOUBLE ) ? "_R" : "_C" ),
+              model ) {};
 
-    GenericElementaryVector( const ModelPtr model, const MaterialFieldPtr mater,
-                             const ElementaryCharacteristicsPtr caraElem,
-                             const ListOfLoadsPtr lLoads )
-        : GenericElementaryVector() {
-        this->setPhysicalProblem( model, mater, caraElem, lLoads );
-    };
+    GenericElementaryVector() = delete;
 
     /**
      * @brief Return MODE_LOCAL
@@ -127,20 +128,8 @@ class GenericElementaryVector : public BaseElementaryVector {
             }
         }
 
-        if ( _model ) {
-            return _model->getMesh();
-        }
-
-        if ( _elemChara ) {
-            return _elemChara->getMesh();
-        }
-
-        if ( _materialField ) {
-            return _materialField->getMesh();
-        }
-
-        if ( _listOfLoads ) {
-            return _listOfLoads->getMesh();
+        if ( getModel() ) {
+            return getModel()->getMesh();
         }
 
         return nullptr;
@@ -203,7 +192,7 @@ class GenericElementaryVector : public BaseElementaryVector {
 
             _elemTerm = std::move( elemTermNew );
 
-            if ( !getMesh()->isParallel() && !isMPIFull() ) {
+            if ( getMesh() && !getMesh()->isParallel() && !isMPIFull() ) {
                 std::string type = "VECT_ELEM";
                 CALLO_SDMPIC( type, getName() );
             }
