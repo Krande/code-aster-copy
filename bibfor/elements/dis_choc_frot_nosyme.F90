@@ -119,11 +119,11 @@ subroutine dis_choc_frot_nosyme(for_discret, icodma, ulp, xg, klv, &
 !   Élément avec 1 noeud
     else
         dist12 = valre1(6)
-        utotx = ulp(1)
-        utoty = ulp(2)
-        utotz = ulp(3)
+        utotx = ulp(1)+dpe(1)
+        utoty = ulp(2)+dpe(2)
+        utotz = ulp(3)+dpe(3)
         dist0 = valre1(8)
-        depx = utotx+dist12-dist0
+        depx = utotx+dist0-dist12
         depy = ulp(2)
         depz = ulp(3)
     end if
@@ -202,17 +202,20 @@ subroutine dis_choc_frot_nosyme(for_discret, icodma, ulp, xg, klv, &
                     klv(id6(6, 1)) = -rtmp
                     klv(id6(3, 4)) = -rtmp
                     klv(id6(6, 4)) = rtmp
-                 rtmp = -coulom*force(1)*rigtan/fort*(1.0-rigtan**2*(depy-varmo(idepyp))**2/fort**2)
+                    rtmp = -coulom*force(1)*rigtan/fort*(1.0-rigtan**2*(depy-varmo(idepyp))**2 &
+                                                         /fort**2)
                     klv(id6(2, 2)) = rtmp
                     klv(id6(2, 5)) = -rtmp
                     klv(id6(5, 2)) = -rtmp
                     klv(id6(5, 5)) = rtmp
-                 rtmp = -coulom*force(1)*rigtan/fort*(1.0-rigtan**2*(depz-varmo(idepzp))**2/fort**2)
+                    rtmp = -coulom*force(1)*rigtan/fort*(1.0-rigtan**2*(depz-varmo(idepzp))**2 &
+                                                         /fort**2)
                     klv(id6(3, 3)) = rtmp
                     klv(id6(3, 6)) = -rtmp
                     klv(id6(6, 3)) = -rtmp
                     klv(id6(6, 6)) = rtmp
-                  rtmp = rigtan**3*coulom*force(1)/fort**3*(depy-varmo(idepyp))*(depz-varmo(idepzp))
+                    rtmp = rigtan**3*coulom*force(1)/fort**3*(depy-varmo(idepyp))* &
+                           (depz-varmo(idepzp))
                     klv(id6(2, 3)) = rtmp
                     klv(id6(3, 2)) = rtmp
                     klv(id6(2, 6)) = -rtmp
@@ -252,11 +255,14 @@ subroutine dis_choc_frot_nosyme(for_discret, icodma, ulp, xg, klv, &
                     klv(id3(2, 1)) = rtmp
                     rtmp = -rignor*rigtan*coulom/fort*(depz-varmo(idepzp))
                     klv(id3(3, 1)) = rtmp
-                 rtmp = -coulom*force(1)*rigtan/fort*(1.0-rigtan**2*(depy-varmo(idepyp))**2/fort**2)
+                    rtmp = -coulom*force(1)*rigtan/fort*(1.0-rigtan**2*(depy-varmo(idepyp))**2 &
+                                                         /fort**2)
                     klv(id3(2, 2)) = rtmp
-                 rtmp = -coulom*force(1)*rigtan/fort*(1.0-rigtan**2*(depz-varmo(idepzp))**2/fort**2)
+                    rtmp = -coulom*force(1)*rigtan/fort*(1.0-rigtan**2*(depz-varmo(idepzp))**2 &
+                                                         /fort**2)
                     klv(id3(3, 3)) = rtmp
-                  rtmp = rigtan**3*coulom*force(1)/fort**3*(depy-varmo(idepyp))*(depz-varmo(idepzp))
+                    rtmp = rigtan**3*coulom*force(1)/fort**3*(depy-varmo(idepyp))* &
+                           (depz-varmo(idepzp))
                     klv(id3(2, 3)) = rtmp
                     klv(id3(3, 2)) = rtmp
                 end if
