@@ -63,13 +63,12 @@ subroutine debca1(nin)
 !
 !----------------------------------------------------------------------
     mpi_int :: mrank, msize
-    character(len=8) :: ma
+    character(len=8) :: ma, partit
     integer(kind=8) :: iret, ier, opt, nbscmx, nbpara
     integer(kind=8) :: nnomx, nbopt, nbte, i, j, vali(2)
     character(len=16) :: nomop2, nomte
     character(len=3) :: bevois, exiele
     character(len=12) :: vge
-    character(len=19) :: partit
     real(kind=8) :: rundef
     integer(kind=8), pointer :: nbligcol(:) => null()
     character(len=16), pointer :: nvge(:) => null()

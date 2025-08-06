@@ -35,8 +35,8 @@ subroutine matdis(matd, verbose)
 ! ----------------------------------------------------------------------
     integer(kind=8) :: ibid, eximc, eximo
     aster_logical :: verbose_loc
-    character(len=8) :: modele
-    character(len=19) :: ligrmo, partit
+    character(len=8) :: modele, partit
+    character(len=19) :: ligrmo
 
 !   -- MATR_DISTRIBUEE ?
     verbose_loc = .true.

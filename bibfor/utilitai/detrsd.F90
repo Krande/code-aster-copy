@@ -77,8 +77,8 @@ subroutine detrsd(typesd, nomsd)
     mpi_int :: mrank, msize
     integer(kind=8) :: iret, iad, long, i, nbch, ibid, nbproc, num
     integer(kind=8) :: ityobj, inomsd, nblg, nbpa, nblp, n1, nbjoin
-    integer(kind=8) :: iexi, iexi2
-    character(len=8) :: metres, k8
+    integer(kind=8) :: iexi, iexi2, jpart
+    character(len=8) :: metres, k8, partsd
     character(len=4) :: chnbjo
     character(len=12) :: vge
     character(len=14) :: nu, com
@@ -152,13 +152,13 @@ subroutine detrsd(typesd, nomsd)
 !     ------------------------------------------------------------------
     else if (typ2sd .eq. 'PARTITION') then
 !     -------------------------------------------
-        k19 = nomsd
-        call jedetr(k19//'.PRTI')
-        call jedetr(k19//'.PRTK')
-        call jedetr(k19//'.NUPR')
-        call jedetr(k19//'.FDIM')
-        call jedetr(k19//'.FETA')
-        call jedetr(k19//'.FREF')
+        k8 = nomsd
+        call jedetr(k8//'.PRTI')
+        call jedetr(k8//'.PRTK')
+        call jedetr(k8//'.NUPR')
+        call jedetr(k8//'.FDIM')
+        call jedetr(k8//'.FETA')
+        call jedetr(k8//'.FREF')
 !
 !     ------------------------------------------------------------------
     else if (typ2sd .eq. 'CORRESP_2_MAILLA') then
@@ -299,7 +299,13 @@ subroutine detrsd(typesd, nomsd)
 !
         call jedetr(k8//'           .TITR')
         call jedetr(k8//'.MAILLE')
-        call detrs2('PARTITION', k8//'.PARTSD')
+        call jeexin(k8//'.PARTSD', iexi)
+        if (iexi .ne. 0) then
+            call jeveuo(k8//'.PARTSD', 'L', jpart)
+            partsd = zk8(jpart)
+            call detrs2('PARTITION', partsd)
+        end if
+        call jedetr(k8//'.PARTSD')
 !
 !
 !     ------------------------------------------------------------------

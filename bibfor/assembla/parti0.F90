@@ -36,7 +36,8 @@ subroutine parti0(nbmat, tlimat, partit)
 ! Remarque : si les resuelem des matr_elem n'ont pas ete calcules avec la
 !            meme partition : erreur <F>
 !----------------------------------------------------------------------
-    character(len=19) :: matel, part1
+    character(len=19) :: matel
+    character(len=8) :: part1
     character(len=24) :: valk(5)
     integer(kind=8) :: i
 !----------------------------------------------------------------------

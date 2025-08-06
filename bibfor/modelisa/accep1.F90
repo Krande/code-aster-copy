@@ -56,8 +56,9 @@ subroutine accep1(modmec, ligrmo, nbm, dir, yang)
     real(kind=8) :: rayon, rayon2, haut, rap1, rap2
     character(len=7) :: incr, ielem, imode
     character(len=8) :: vetel, lpain(3), lpaout(1), modele, modmec, k8b, noma
+    character(len=8) :: partit
     character(len=16) :: option
-    character(len=19) :: nomcha, chgeom, chharm, partit
+    character(len=19) :: nomcha, chgeom, chharm
     character(len=24) :: ligrmo, lchin(3), lchout(1)
     aster_logical :: yang
     character(len=8), pointer :: vec(:) => null()

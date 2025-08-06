@@ -67,9 +67,9 @@ subroutine adalig(ligrz, partsdz)
 !     partsd (f) : nom de la partsd
 !----------------------------------------------------------------------
 
-    character(len=19) :: ligr, partsd
+    character(len=19) :: ligr
     character(len=1) :: clas
-    character(len=8) :: noma
+    character(len=8) :: noma, partsd
     character(len=16) :: typsd
     character(len=24) :: liel, tliel
     integer(kind=8) :: i, iret, nbtg, iad, iadp, iadt, iadtp, jliel, jtlie2

@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -20,7 +20,6 @@
 from . import *
 from .sd_l_table import sd_l_table
 from .sd_ligrel import sd_ligrel
-from .sd_partition import sd_partition
 from .sd_xfem import sd_modele_xfem
 
 
@@ -30,7 +29,7 @@ class sd_modele(AsBase):
 
     MODELE = sd_ligrel()
     MAILLE = Facultatif(AsVI())
-    PARTSD = Facultatif(sd_partition(SDNom=".PARTSD"))
+    PARTSD = Facultatif(AsVK8())
 
     # une sd_modele peut avoir une "sd_l_table" contenant des grandeurs
     # caractéristiques de l'étude :

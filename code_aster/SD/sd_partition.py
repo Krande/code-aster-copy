@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -23,7 +23,7 @@ from . import *
 class sd_partition(AsBase):
     """Included in sd_modele"""
 
-    nomj = SDNom(fin=19)
+    nomj = SDNom(fin=8)
     PRTI = AsVI(lonmax=1)
     PRTK = AsVK24(lonmax=1)
 
@@ -50,7 +50,7 @@ class sd_partition(AsBase):
 class sd_partit_domain(AsBase):
     """Objects that only exist for SOUS_DOMAINE"""
 
-    nomj = SDNom(fin=19)
+    nomj = SDNom(fin=8)
     FDIM = AsVI(lonmax=1)
     FREF = AsVK8(lonmax=1)
     FETA = AsColl(acces="NO", stockage="DISPERSE", modelong="VARIABLE", type="I")

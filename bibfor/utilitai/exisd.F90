@@ -76,9 +76,9 @@ subroutine exisd(typesd, nomsd, iret)
 !
     else if (typ2sd .eq. 'PARTITION') then
 !     ------------------------------
-        ch = nomsd
-        call jeexin(ch//'.PRTI', i1)
-        call jeexin(ch//'.PRTK', i2)
+        ch8 = nomsd
+        call jeexin(ch8//'.PRTI', i1)
+        call jeexin(ch8//'.PRTK', i2)
         if (i1*i2 .ne. 0) iret = 1
 !
     else if (typ2sd .eq. 'CARTE') then

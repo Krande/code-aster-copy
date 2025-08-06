@@ -35,6 +35,7 @@ subroutine pcptcc(option, ldist, dbg_ob, dbgv_ob, lcpu, &
 #include "asterfort/assert.h"
 #include "asterfort/codent.h"
 #include "asterfort/copisd.h"
+#include "asterfort/dismoi.h"
 #include "asterfort/detrsd.h"
 #include "asterfort/exisd.h"
 #include "asterfort/infniv.h"
@@ -52,7 +53,8 @@ subroutine pcptcc(option, ldist, dbg_ob, dbgv_ob, lcpu, &
 #include "asterfort/wkvect.h"
     integer(kind=8) :: option, nbordr, i, ipas, lonnew, lonch
     character(len=1) :: ktyp
-    character(len=19) :: lisord, partsd
+    character(len=8) :: partsdmo, partsd
+    character(len=19) :: lisord
     character(len=*), intent(in) :: modelZ
     character(len=24) :: vldist, vcham, lisori, chamno, vcnoch
     aster_logical :: ldist, dbg_ob, lsdpar
@@ -253,13 +255,14 @@ subroutine pcptcc(option, ldist, dbg_ob, dbgv_ob, lcpu, &
 ! OUTPUT: partsd, lsdpar
         partsd = ' '
         ASSERT(rang .ge. 0)
-        call exisd('PARTITION', model(1:8)//'.PARTSD', iret)
+        call dismoi('PARTITION', model, 'MODELE', repk=partsdmo)
+        call exisd('PARTITION', partsdmo, iret)
         lsdpar = iret .eq. 1
         if (lsdpar .and. ldist) then
 !         AFIN DE STOPPER PONCTUELLEMENT LE PARALLELISME EN ESPACE
-            partsd = '&&PCPTCC.PARTSD'
-            call copisd('PARTITION', 'G', model(1:8)//'.PARTSD', partsd)
-            call detrsd('PARTITION', model(1:8)//'.PARTSD')
+            partsd = '&&PARTSD'
+            call copisd('PARTITION', 'G', partsdmo, partsd)
+            call detrsd('PARTITION', partsdmo)
         end if
         if (dbg_ob) write (ifm, *) '< ', rang, 'pcptcc> lsdpar/partsd_init= ', lsdpar, partsd
 !
@@ -289,13 +292,15 @@ subroutine pcptcc(option, ldist, dbg_ob, dbgv_ob, lcpu, &
         if (ldist) then
             if (lsdpar) then
 !         it should have been previously copied
-                call exisd('PARTITION', model(1:8)//'.PARTSD', iret)
+                call dismoi('PARTITION', model, 'MODELE', repk=partsdmo)
+                call exisd('PARTITION', partsdmo, iret)
                 ASSERT(iret .eq. 0)
-                call exisd('PARTITION', '&&PCPTCC.PARTSD', iret)
+                partsd = '&&PARTSD'
+                call exisd('PARTITION', partsd, iret)
                 ASSERT(iret .eq. 1)
 !         restore PARTSD object
-                call copisd('PARTITION', 'G', '&&PCPTCC.PARTSD', model(1:8)//'.PARTSD')
-                call detrsd('PARTITION', '&&PCPTCC.PARTSD')
+                call copisd('PARTITION', 'G', partsd, partsdmo)
+                call detrsd('PARTITION', partsd)
             end if
             if (dbg_ob) write (ifm, *) '< ', rang, 'pcptcc> lsdpar/partsd_fin= ', lsdpar, partsd
         end if

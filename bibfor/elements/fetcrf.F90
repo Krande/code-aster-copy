@@ -58,8 +58,8 @@ subroutine fetcrf(nomo, nbsd)
     integer(kind=8) ::  nbmatr
     integer(kind=8) :: vali(5), iafeta, ial, ials, itma, nber, lil, lils
     integer(kind=8) :: iao, iaos, iexi
-    character(len=8) :: k8bid, ma
-    character(len=19) :: sdpart, ligrmo
+    character(len=8) :: k8bid, ma, sdpart
+    character(len=19) :: ligrmo
     character(len=24) :: nomsda, nomsdm
 
     character(len=24) ::  nomgma, nomref
@@ -72,7 +72,7 @@ subroutine fetcrf(nomo, nbsd)
 !**********************************************************************
 ! INITIALISATIONS
 !**********************************************************************
-    sdpart = nomo//'.PARTSD'
+    sdpart = nomo(5:8)//".PAR"
     nomref = sdpart//'.FREF'
     nomsdm = sdpart//'.FDIM'
     nomsda = sdpart//'.FETA'

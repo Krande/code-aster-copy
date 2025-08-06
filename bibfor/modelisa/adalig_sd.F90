@@ -40,7 +40,8 @@ subroutine adalig_sd(ligr, partsd, ntliel, nbtype, clas, teut, nteut)
 #include "asterfort/as_deallocate.h"
 #include "asterfort/as_allocate.h"
 !
-    character(len=19), intent(in) :: ligr, partsd
+    character(len=19), intent(in) :: ligr
+    character(len=8), intent(in) :: partsd
     character(len=24), intent(in) :: ntliel
     integer(kind=8), intent(in) :: nbtype
     character(len=1), intent(in) :: clas

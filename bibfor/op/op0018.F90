@@ -22,6 +22,7 @@ subroutine op0018()
 !
     implicit none
 !
+#include "jeveux.h"
 #include "asterf_types.h"
 #include "asterc/getfac.h"
 #include "asterc/getres.h"
@@ -412,7 +413,7 @@ subroutine op0018()
         call fetcrf(model, nbpart)
     end if
     if (kdis .eq. 'SOUS_DOMAINE') then
-        call adalig(ligrel, model//'.PARTSD')
+        call adalig(ligrel, model(5:8)//".PAR")
     else
         call adalig(ligrel)
     end if

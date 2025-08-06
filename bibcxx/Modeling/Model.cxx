@@ -3,7 +3,7 @@
  * @brief Implementation de Model
  * @author Nicolas Sellenet
  * @section LICENCE
- *   Copyright (C) 1991 - 2024  EDF R&D                www.code-aster.org
+ *   Copyright (C) 1991 - 2025  EDF R&D                www.code-aster.org
  *
  *   This file is part of Code_Aster.
  *
@@ -40,7 +40,7 @@ const char *const ModelSplitingMethodNames[nbModelSplitingMethod] = { "CENTRALIS
 const char *const GraphPartitionerNames[nbGraphPartitioner] = { "SCOTCH", "METIS" };
 
 Model::Partition::Partition( const std::string name )
-    : DataStructure( name, 19, "PARTITION" ),
+    : DataStructure( name, 8, "PARTITION" ),
       _prti( JeveuxVectorLong( getName() + ".PRTI" ) ),
       _prtk( JeveuxVectorChar24( getName() + ".PRTK" ) ),
       _nupr( JeveuxVectorLong( getName() + ".PRTI" ) ),
@@ -60,7 +60,8 @@ const std::string Model::Partition::getMethod() const {
 Model::Model( const std::string name, const bool is_xfem )
     : DataStructure( name, 8, "MODELE" ),
       ListOfTables( name ),
-      _partSD( std::make_shared< Partition >( getName() + ".PARTSD" ) ),
+      _partition( std::make_shared< Partition >( getName().substr( 4, 4 ) + ".PAR" ) ),
+      _partName( JeveuxVectorChar8( getName() + ".PARTSD    " ) ),
       _typeOfCells( JeveuxVectorLong( getName() + ".MAILLE    " ) ),
       _typeOfNodes( JeveuxVectorLong( getName() + ".NOEUD     " ) ),
       _baseMesh( nullptr ),
@@ -207,7 +208,7 @@ bool Model::existsPartition() const { return dismoi( "PARTITION" ) != ""; }
 
 const std::string Model::getModelisationName() const { return dismoi( "MODELISATION" ); };
 
-const std::string Model::getPartitionMethod() const { return _partSD->getMethod(); };
+const std::string Model::getPartitionMethod() const { return _partition->getMethod(); };
 
 const std::string Model::dismoi( const std::string &question, bool stop ) const {
     const std::string typeco( "MODELE" );

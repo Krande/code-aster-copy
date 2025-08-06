@@ -68,7 +68,8 @@ subroutine comp_meca_chck(model, mesh, chmate, &
     integer(kind=8) :: iFactorKeyword, nbFactorKeyword, exteDefo, lctestIret
     character(len=16) :: defoComp, relaComp, typeCpla, typeComp, reguVisc, postIncr
     character(len=16) :: relaCompPY, defoCompPY
-    character(len=19) :: partit, answer
+    character(len=8) :: partit
+    character(len=19) :: answer
     character(len=24) :: modelLigrel
     mpi_int :: nbCPU, mpiCurr
     aster_logical :: lElasByDefault, lNeedDeborst, lMfront, lDistParallel

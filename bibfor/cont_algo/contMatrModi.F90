@@ -42,8 +42,7 @@ subroutine contMatrModi(modelZ, ds_contact, matrAsse)
 !
 ! --------------------------------------------------------------------------------------------------
 !
-    character(len=3) :: mathpc
-    character(len=19) :: partit
+    character(len=8) :: partit
     aster_logical :: l_contact_adapt, ldist, l_parallel_matrix
     real(kind=8) :: minmat, maxmat, exponent_val
 !

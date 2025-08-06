@@ -26,6 +26,7 @@ subroutine ajlipa(modelz, base, kdis)
 #include "asterfort/detrsd.h"
 #include "asterc/getres.h"
 #include "asterfort/exisd.h"
+#include "asterfort/gnoms2.h"
 #include "asterfort/getvis.h"
 #include "asterfort/infniv.h"
 #include "asterfort/jedema.h"
@@ -48,9 +49,9 @@ subroutine ajlipa(modelz, base, kdis)
 !     * il faut appeler cette routine apres adalig si cette derniere
 !       est appelee (cas de op0018)
 ! ----------------------------------------------------------------------
-    character(len=8) :: modele, mopart, valk(3), nomres
+    character(len=8) :: modele, mopart, valk(3), nomres, partsd
     character(len=16) :: typres, nomcom
-    character(len=19) :: ligrmo, partsd
+    character(len=19) :: ligrmo
     character(len=24) :: k24b
     integer(kind=8) :: i, rang, nbproc, ifm, niv, ibid, nbsd, nbma
     integer(kind=8) :: nmpp, nmp0, nmp0af, ico, nbpro1, krang, nmp1
@@ -61,6 +62,7 @@ subroutine ajlipa(modelz, base, kdis)
     integer(kind=8), pointer :: fdim(:) => null()
     character(len=8), pointer :: fref(:) => null()
     integer(kind=8), pointer :: maille(:) => null()
+    character(len=8), pointer :: p_model_part(:) => null()
     mpi_int :: mrank, msize
     data k24b/' '/
 
@@ -73,7 +75,7 @@ subroutine ajlipa(modelz, base, kdis)
 ! ----------------------------------------------------------------------
     modele = modelz
     call dismoi('NOM_LIGREL', modele, 'MODELE', repk=ligrmo)
-    partsd = modele//'.PARTSD'
+    partsd = modele(5:8)//".PAR"
 
     call getres(nomres, typres, nomcom)
     ASSERT(nomres .eq. modele)
@@ -85,8 +87,14 @@ subroutine ajlipa(modelz, base, kdis)
     if (iexi .gt. 0) then
         ASSERT(nomcom .eq. 'MODI_MODELE')
         call detrsd('PARTITION', partsd)
+    else
+        call jeexin(modele//'.PARSD', iexi)
+        if (iexi .eq. 0) then
+            call wkvect(modele//'.PARSD', 'G V K8', 1, vk8=p_model_part)
+            p_model_part(1) = partsd
+        end if
     end if
-
+!
 !   -- s'il n'y a pas d'elements finis dans le modele :
 !   ---------------------------------------------------
     call jeexin(ligrmo//'.LIEL', iexi)

@@ -63,8 +63,8 @@ subroutine nugllo(nu, base)
     integer(kind=8) :: iel, igr, nel, k1, n1, j, ilib
     integer(kind=8) :: nbproc, vali(1), jnugl, ieqg
 !
-    character(len=8) :: noma, mo
-    character(len=19) :: ligrmo, nomlig, partit
+    character(len=8) :: noma, mo, partit
+    character(len=19) :: ligrmo, nomlig
 !----------------------------------------------------------------------
     aster_logical :: ldist, ldgrel
     integer(kind=8), pointer :: ddl_pres(:) => null()

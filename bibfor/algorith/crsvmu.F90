@@ -61,9 +61,9 @@ subroutine crsvmu(motfac, solveu, istop, nprec, &
     integer(kind=8) :: monit(12), vali(2), compt, nbma
     real(kind=8) :: eps, blreps
     character(len=5) :: klag2
-    character(len=8) :: ktypr, ktyps, ktyprn, ktypp, modele, matra, kacmum
+    character(len=8) :: ktypr, ktyps, ktyprn, ktypp, modele, matra, kacmum, partsd
     character(len=12) :: kooc
-    character(len=19) :: k19b, partsd
+    character(len=19) :: k19b
     character(len=24) :: kmonit(12)
     integer(kind=8) :: eximo1, eximo2, eximo3, eximod
     integer(kind=8) :: iexi, redmpi, nbrhs
@@ -126,7 +126,7 @@ subroutine crsvmu(motfac, solveu, istop, nprec, &
         end if
 !
 !       -- PARTITION POUR LE PARALLELISME :
-        partsd = modele//'.PARTSD'
+        call dismoi('PARTITION', modele, 'MODELE', repk=partsd)
         call exisd('PARTITION', partsd, iexi)
         if (iexi .eq. 1) then
 !         -- CALCUL DISTRIBUE :

@@ -76,8 +76,9 @@ subroutine exfonc(listFuncActi, ds_algopara, solver, ds_contact, &
     aster_logical :: l_state_init, l_reuse
     aster_logical :: check_frot, check_rupt, check_endo
     character(len=24) :: typilo, metres, char24
-    character(len=16) :: reli_meth, matrix_pred, matrix_corr, partit
+    character(len=16) :: reli_meth, matrix_pred, matrix_corr
     character(len=3) :: mfdet
+    character(len=8) :: partit
     character(len=24), pointer :: slvk(:) => null()
     integer(kind=8), pointer :: slvi(:) => null()
 !

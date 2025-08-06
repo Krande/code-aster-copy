@@ -60,8 +60,8 @@ subroutine nupodd(nu, base, rang, nbproc)
     integer(kind=8) :: ddl1l, ilib, neql, jconx2, idprn2
     integer(kind=8) :: nec
 !
-    character(len=8) :: noma, mo
-    character(len=19) :: ligrmo, nomlig, partit
+    character(len=8) :: noma, mo, partit
+    character(len=19) :: ligrmo, nomlig
 !
     aster_logical :: ldist, ldgrel
     integer(kind=8), pointer :: adne(:) => null()

@@ -433,7 +433,7 @@ subroutine copisd(typesd, base, sd1, sd2)
         call copis2('L_TABLE', bas2, k81, k82)
 !
         call jedup1(k81//'.MAILLE', bas2, k82//'.MAILLE')
-        call copis2('PARTITION', bas2, k81//'.PARTSD', k82//'.PARTSD')
+        call jedup1(k81//'.PARTSD', bas2, k82//'.PARTSD')
 !
 !       -- IL FAUT METTRE A JOUR LGRF(2):
         call jeexin(k82//'.MODELE    .LGRF', iexi)
@@ -444,14 +444,14 @@ subroutine copisd(typesd, base, sd1, sd2)
 !
     else if (typesd .eq. 'PARTITION') then
 !     -----------------------------------
-        k191 = sd1
-        k192 = sd2
-        call jedup1(k191//'.PRTI', bas2, k192//'.PRTI')
-        call jedup1(k191//'.PRTK', bas2, k192//'.PRTK')
-        call jedup1(k191//'.NUPR', bas2, k192//'.NUPR')
-        call jedup1(k191//'.FDIM', bas2, k192//'.FDIM')
-        call jedup1(k191//'.FREF', bas2, k192//'.FREF')
-        call jedup1(k191//'.FETA', bas2, k192//'.FETA')
+        k81 = sd1
+        k82 = sd2
+        call jedup1(k81//'.PRTI', bas2, k82//'.PRTI')
+        call jedup1(k81//'.PRTK', bas2, k82//'.PRTK')
+        call jedup1(k81//'.NUPR', bas2, k82//'.NUPR')
+        call jedup1(k81//'.FDIM', bas2, k82//'.FDIM')
+        call jedup1(k81//'.FREF', bas2, k82//'.FREF')
+        call jedup1(k81//'.FETA', bas2, k82//'.FETA')
 !
 ! ----------------------------------------------------------------------
     else if (typesd .eq. 'MATR_ELEM' .or. typesd .eq. 'VECT_ELEM') then

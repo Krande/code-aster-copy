@@ -198,6 +198,7 @@ subroutine xcpmo1(modmes, modthx, modmex)
     character(len=16) :: ele3dmec(nel3dmec)
     character(len=16) :: eleplmec(nelplmec)
     character(len=16) :: eleaxmec(nelaxmec)
+    character(len=8) :: partsd
     integer(kind=8), pointer :: mmes(:) => null()
     integer(kind=8), pointer :: mmex(:) => null()
     integer(kind=8), pointer :: mthx(:) => null()
@@ -294,9 +295,10 @@ subroutine xcpmo1(modmes, modthx, modmex)
 ! - avec mot-cle FISSURE ne recree pas cet objet s'il existe dans
 ! - le modele sain renseigne dans MODELE_IN
 !
-    call exisd('PARTITION', modmex//'.PARTSD', iexi)
+    call dismoi('PARTITION', modmex, 'MODELE', repk=partsd)
+    call exisd('PARTITION', partsd, iexi)
     if (iexi .ne. 0) then
-        call detrsd('PARTITION', modmex//'.PARTSD')
+        call detrsd('PARTITION', partsd)
     end if
 !
 ! - recuperation du '.MAILLE' de modmex

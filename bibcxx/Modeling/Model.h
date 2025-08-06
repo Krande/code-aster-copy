@@ -113,7 +113,8 @@ class Model : public DataStructure, public ListOfTables {
     JeveuxVectorLong _typeOfCells;
     /** @brief Vecteur Jeveux '.NOEUD' */
     JeveuxVectorLong _typeOfNodes;
-    /** @brief Vecteur Jeveux '.PARTIT': TODO add PARTSD objects */
+    /** @brief Vecteur Jeveux '.PARTSD' */
+    JeveuxVectorChar8 _partName;
     /** @brief Liste contenant les modelisations ajoutees par l'utilisateur */
     listOfModsAndGrps _modelisations;
     /** @brief Maillage sur lequel repose la modelisation */
@@ -141,7 +142,7 @@ class Model : public DataStructure, public ListOfTables {
     /** @brief Object .MODELE */
     FiniteElementDescriptorPtr _ligrel;
 
-    Partition::PartitionPtr _partSD;
+    Partition::PartitionPtr _partition;
 
     /**
      * @brief Ajout d'une nouvelle modelisation sur tout le maillage

@@ -55,7 +55,7 @@ subroutine promor(nuz, base, printz)
 !     ------------------------------------------------------------------
 !
 !     ------------------------------------------------------------------
-    character(len=8) :: ma, mo, exiele
+    character(len=8) :: ma, mo, exiele, partit
 !----------------------------------------------------------------------
     character(len=14) :: nu
     aster_logical :: ldist, ldgrel, lmadis, printt, lligrel_cp
@@ -70,7 +70,6 @@ subroutine promor(nuz, base, printz)
     integer(kind=8) :: ima, nddlt, jalm, jsmdi, nel, nec, nbsma
     integer(kind=8) ::  rang, imd, jsmh1, ili2
 !
-    character(len=19) :: partit
     real(kind=8) :: valr(2), rcoef, requ
     integer(kind=8) :: nbproc
     integer(kind=8), pointer :: maille(:) => null()

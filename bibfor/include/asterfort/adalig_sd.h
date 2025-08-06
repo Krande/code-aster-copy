@@ -19,9 +19,9 @@
 !
 !
           interface
-            subroutine adalig_sd(ligr,partsd,ntliel,nbtype,clas,teut,    &
-     &nteut)
-              character(len=19), intent(in) :: ligr, partsd
+            subroutine adalig_sd(ligr,partsd,ntliel,nbtype,clas,teut,nteut)
+              character(len=19), intent(in) :: ligr
+              character(len=8), intent(in) :: partsd
               character(len=24), intent(in) :: ntliel
               integer(kind=8), intent(in) :: nbtype
               character(len=1), intent(in) :: clas
