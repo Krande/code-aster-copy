@@ -24,6 +24,7 @@ subroutine promor(nuz, base, printz)
 #include "asterfort/assert.h"
 #include "asterfort/detrsd.h"
 #include "asterfort/dismoi.h"
+#include "asterfort/exisd.h"
 #include "asterfort/infniv.h"
 #include "asterfort/jedema.h"
 #include "asterfort/jedetr.h"
@@ -62,7 +63,7 @@ subroutine promor(nuz, base, printz)
     character(len=19) :: nomlig
     character(len=24) :: crco
     integer(kind=8) :: iconx2, ili, iel
-    integer(kind=8) :: idprn1
+    integer(kind=8) :: idprn1, iexi
     integer(kind=8) :: idprn2, ifm, niv, iret, nnoe, jnueq
     integer(kind=8) :: vali(3), neqx, iilib, igr, numa, k1, n1, iad1, nddl1, n12
     integer(kind=8) :: iddl, jddl, iamail, jsmhc, ncoef, jsmde, igd, nbss
@@ -173,7 +174,8 @@ subroutine promor(nuz, base, printz)
         call dismoi('NOM_LIGREL', mo, 'MODELE', repk=nomlig)
         call dismoi('PARTITION', nomlig, 'LIGREL', repk=partit)
 !
-        if (partit .ne. ' ') then
+        call exisd('PARTITION', partit, iexi)
+        if (iexi .ne. 0) then
             ldist = .true.
             call jeveuo(partit//'.PRTK', 'L', vk24=prtk)
             ldgrel = prtk(1) .eq. 'SOUS_DOMAINE' .or. prtk(1) .eq. 'GROUP_ELEM'

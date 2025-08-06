@@ -25,6 +25,7 @@ subroutine nugllo(nu, base)
 #include "asterfort/assert.h"
 #include "asterfort/detrsd.h"
 #include "asterfort/dismoi.h"
+#include "asterfort/exisd.h"
 #include "asterfort/jecrec.h"
 #include "asterfort/jedema.h"
 #include "asterfort/jeecra.h"
@@ -54,7 +55,7 @@ subroutine nugllo(nu, base)
 !----------------------------------------------------------------------
 !
 !
-    integer(kind=8) :: nbma, jconx2
+    integer(kind=8) :: nbma, jconx2, iexi
     integer(kind=8) :: rang, numa, nbnoma, nbno, ino, nuno
     integer(kind=8) :: nec, nlili, neql, idprn2, ili, ntot
     integer(kind=8) :: idpr21, idpr22, numinc, numec, nddl
@@ -177,7 +178,8 @@ subroutine nugllo(nu, base)
     call asmpi_info(rank=mrank, size=msize)
     rang = to_aster_int(mrank)
     nbproc = to_aster_int(msize)
-    if (partit .ne. ' ') then
+    call exisd('PARTITION', partit, iexi)
+    if (iexi .ne. 0) then
         ASSERT(nbproc .gt. 1)
         ldist = .true.
         call jeveuo(partit//'.PRTK', 'L', vk24=prtk)

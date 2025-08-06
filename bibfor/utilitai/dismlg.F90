@@ -61,7 +61,7 @@ subroutine dismlg(questi, nomobz, repi, repkz, ierd)
 !
     integer(kind=8) :: dimge(3)
     aster_logical :: melang
-    character(len=8) :: calcri, mailla, nomacr, modele, cellTypeName, k8bid, typmod2, typmod3
+    character(len=8) :: calcri, mailla, nomacr, cellTypeName, k8bid, typmod2, typmod3
     character(len=16) :: elemTypeName, phenom, modelization, tyvois, formul
     character(len=19) :: nomob, parsd
     character(len=32) :: repk
@@ -97,17 +97,11 @@ subroutine dismlg(questi, nomobz, repi, repkz, ierd)
         call jeveuo(nomob//'.LGRF', 'L', jlgrf)
         repk = zk8(jlgrf-1+4)
     else if (questi .eq. 'PARTITION') then
-        call jeveuo(nomob//'.LGRF', 'L', jlgrf)
-        modele = zk8(jlgrf-1+2)
-        parsd = modele//'.PARTSD'
-        call jeexin(parsd, iexi)
+        call jeexin(nomob//'.PART', iexi)
         if (iexi .ne. 0) then
-            call jeveuo(parsd, 'L', jpart)
-            repk = zk8(jpart)
-            call exisd('PARTITION', repk, iexi)
-            if (iexi .eq. 0) then
-                repk = ' '
-            end if
+            call jeveuo(nomob//'.PART', 'L', jpart)
+            parsd = zk8(jpart)
+            repk = parsd
         end if
 
     else if (questi .eq. 'BESOIN_VOISIN') then
@@ -471,6 +465,7 @@ subroutine dismlg(questi, nomobz, repi, repkz, ierd)
         repi = nbno(1)
 
     else if (questi .eq. 'NOM_MODELE') then
+        !ASSERT(ASTER_FALSE)
         call jeveuo(nomob//'.LGRF', 'L', jlgrf)
         repk = zk8(jlgrf-1+2)
 

@@ -80,7 +80,7 @@ subroutine op0018()
 !
     integer(kind=8) :: dim_topo_curr, dim_topo_init
     integer(kind=8) :: ifm, niv
-    character(len=8) :: mesh, model
+    character(len=8) :: mesh, model, partsd
     character(len=8) :: name_elem, z_quasi_zero, methode
     character(len=16) :: k16dummy, name_type_geom, repk, valk(2)
     character(len=16) :: phenom, phenomRead, modeli, list_modelisa(10), keywordfact, modeli_in
@@ -184,7 +184,7 @@ subroutine op0018()
         call jeveuo(mesh_type_geom, 'L', vi=p_mesh_type_geom)
 ! ----- Name of objects for model
         model_maille = model//'.MAILLE'
-        model_liel = model//'.MODELE    .LIEL'
+        model_liel = ligrel//'.LIEL'
 ! ----- Create main objects for model
         call wkvect(model_maille, 'G V I', nb_mesh_elem, vi=p_model_maille)
 ! ----- Working objects
@@ -413,7 +413,8 @@ subroutine op0018()
         call fetcrf(model, nbpart)
     end if
     if (kdis .eq. 'SOUS_DOMAINE') then
-        call adalig(ligrel, model(5:8)//".PAR")
+        call dismoi('PARTITION', ligrel, 'LIGREL', repk=partsd)
+        call adalig(ligrel, partsd)
     else
         call adalig(ligrel)
     end if

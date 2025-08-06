@@ -334,6 +334,7 @@ subroutine copisd(typesd, base, sd1, sd2)
         call jedup1(k191//'.PRNS', bas2, k192//'.PRNS')
         call jedup1(k191//'.REPE', bas2, k192//'.REPE')
         call jedup1(k191//'.SSSA', bas2, k192//'.SSSA')
+        call jedup1(k191//'.PART', bas2, k192//'.PART')
 !
 ! ----------------------------------------------------------------------
     else if (typesd .eq. 'CABL_PRECONT') then
@@ -433,7 +434,6 @@ subroutine copisd(typesd, base, sd1, sd2)
         call copis2('L_TABLE', bas2, k81, k82)
 !
         call jedup1(k81//'.MAILLE', bas2, k82//'.MAILLE')
-        call jedup1(k81//'.PARTSD', bas2, k82//'.PARTSD')
 !
 !       -- IL FAUT METTRE A JOUR LGRF(2):
         call jeexin(k82//'.MODELE    .LGRF', iexi)

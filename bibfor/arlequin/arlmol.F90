@@ -105,7 +105,7 @@ subroutine arlmol(nomo, mailar, modarl, tabcor)
 !
 ! --- CREATION DE .NOMA + ATTRIBUT DOCU
 !
-    call wkvect(ligarl//'.LGRF', 'V V K8', 1, jlgrf)
+    call wkvect(ligarl//'.LGRF', 'V V K8', 4, jlgrf)
     zk8(jlgrf-1+1) = mailar
     call jeecra(ligarl//'.LGRF', 'DOCU', ibid, 'MECA')
 !

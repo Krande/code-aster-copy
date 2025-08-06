@@ -32,6 +32,7 @@
 #include "Meshes/BaseMesh.h"
 #include "Meshes/MeshExplorer.h"
 #include "Modeling/Model.h"
+#include "Modeling/Partition.h"
 
 // Forward declaration
 class Model;
@@ -68,6 +69,8 @@ class FiniteElementDescriptor : public DataStructure {
     JeveuxVectorLong _superElementsDescriptor;
     /** @brief Vecteur Jeveux '.NVGE' */
     JeveuxVectorChar16 _nameOfNeighborhoodStructure;
+    /** @brief Vecteur Jeveux '.PARTSD' */
+    JeveuxVectorChar8 _partName;
     /** @brief Base mesh */
     BaseMeshPtr _mesh;
     /** @brief Object to loop over connectivity of delayed numbered cells */
@@ -77,6 +80,7 @@ class FiniteElementDescriptor : public DataStructure {
     /** @brief Model if known */
     // We use a weak_ptr to avoid circular reference
     std::weak_ptr< Model > _model;
+    PartitionPtr _partition;
 
     /**
      * @brief Constructeur
@@ -147,6 +151,9 @@ class FiniteElementDescriptor : public DataStructure {
     bool exists() const;
 
     bool build();
+
+    /**@brief patition method */
+    const std::string getPartitionMethod() const;
 
     ASTERINTEGER getNumberOfCells() const;
 

@@ -83,9 +83,9 @@ subroutine assmiv(base, vec, nbvec, tlivec, licoef, &
     character(len=24) :: valk(5)
     integer(kind=8) :: gd, nec, nlili
     integer(kind=8) :: rang, nbproc, iret, ifm, niv
-    character(len=8) :: ma, mo, mo2, nogdsi, nogdco
+    character(len=8) :: ma, mo, mo2, nogdsi, nogdco, partit
     character(len=14) :: nume_ddl
-    character(len=19) :: partit, vecas, vprof, vecel, resu
+    character(len=19) :: vecas, vprof, vecel, resu
     character(len=24) :: kmaila, k24prn, knulil, kvelil, kveref, nomli
     character(len=24) :: knequa, kvale
     integer(kind=8) :: admodl, lcmodl, iexi

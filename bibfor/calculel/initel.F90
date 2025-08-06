@@ -27,6 +27,7 @@ subroutine initel(ligrel, l_calc_rigi)
 #include "asterfort/inigrl.h"
 #include "asterfort/jedema.h"
 #include "asterfort/jelira.h"
+#include "asterfort/jeexin.h"
 #include "asterfort/jemarq.h"
 #include "asterfort/jenuno.h"
 #include "asterfort/jeveuo.h"
@@ -35,6 +36,7 @@ subroutine initel(ligrel, l_calc_rigi)
 #include "asterfort/nbelem.h"
 #include "asterfort/typele.h"
 #include "asterfort/utmess.h"
+#include "asterfort/wkvect.h"
 #include "asterfort/as_deallocate.h"
 #include "asterfort/as_allocate.h"
 #include "asterfort/int_to_char8.h"
@@ -61,7 +63,7 @@ subroutine initel(ligrel, l_calc_rigi)
 !     VARIABLES LOCALES:
 !     ------------------
     integer(kind=8) :: igr, ngr, nmaxob, nbobj, nbprin
-    integer(kind=8) :: nbno, jlliel, iconx2
+    integer(kind=8) :: nbno, jlliel, iconx2, iexi
     integer(kind=8) :: nute, nbel, iel, numa, nbnoma, ino, nuno
     parameter(nmaxob=30)
     integer(kind=8) :: adobj(nmaxob)
@@ -178,6 +180,12 @@ subroutine initel(ligrel, l_calc_rigi)
 !
 !
     AS_DEALLOCATE(vi=vprin)
+!
+    ! Create object for partition
+    call jeexin(ligrel//'.PART', iexi)
+    if (iexi .eq. 0) then
+        call wkvect(ligrel//'.PART', 'G V K8', 1, iexi)
+    end if
 !
 !
 !

@@ -35,6 +35,7 @@
 FiniteElementDescriptor::FiniteElementDescriptor( const std::string &name, const std::string &type,
                                                   const BaseMeshPtr mesh )
     : DataStructure( name, 19, type ),
+      _partName( getName() + ".PART" ),
       _numberOfDelayedNumberedConstraintNodes( getName() + ".NBNO" ),
       _parameters( getName() + ".LGRF" ),
       _dofDescriptor( getName() + ".PRNM" ),
@@ -49,7 +50,14 @@ FiniteElementDescriptor::FiniteElementDescriptor( const std::string &name, const
       _explorer(
           FiniteElementDescriptor::ConnectivityVirtualCellsExplorer( _virtualCellsDescriptor ) ),
       _explorer2(
-          FiniteElementDescriptor::ConnectivityVirtualCellsExplorer( _listOfGroupsOfElements ) ) {};
+          FiniteElementDescriptor::ConnectivityVirtualCellsExplorer( _listOfGroupsOfElements ) ) {
+    if ( _partName->exists() ) {
+        _partName->updateValuePointer();
+        if ( ( *_partName )[0] != " " ) {
+            _partition = std::make_shared< Partition >( ( *_partName )[0] );
+        }
+    };
+};
 
 FiniteElementDescriptor::FiniteElementDescriptor( const std::string &name, const BaseMeshPtr mesh )
     : FiniteElementDescriptor( name, "LIGREL", mesh ) {};
@@ -81,7 +89,7 @@ FiniteElementDescriptor::FiniteElementDescriptor( const ModelPtr model,
 }
 
 FiniteElementDescriptor::FiniteElementDescriptorPtr
-    FiniteElementDescriptor::restrict( const VectorString &groupsOfCells ) const {
+FiniteElementDescriptor::restrict( const VectorString &groupsOfCells ) const {
 
     VectorLong listOfCells = _mesh->getCells( groupsOfCells );
 
@@ -89,7 +97,7 @@ FiniteElementDescriptor::FiniteElementDescriptorPtr
 };
 
 FiniteElementDescriptor::FiniteElementDescriptorPtr
-    FiniteElementDescriptor::restrict( const VectorLong &cells ) const {
+FiniteElementDescriptor::restrict( const VectorLong &cells ) const {
 
     auto fed = std::make_shared< FiniteElementDescriptor >( getMesh() );
 
@@ -425,5 +433,9 @@ void FiniteElementDescriptor::setFrom( FiniteElementDescriptorPtr &other ) {
     // Fill 'LIEL'
     transferListOfGroupOfCellFrom( other );
 }
+
+const std::string FiniteElementDescriptor::getPartitionMethod() const {
+    return _partition->getMethod();
+};
 
 #endif /* ASTER_HAVE_MPI */

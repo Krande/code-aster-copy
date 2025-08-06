@@ -230,6 +230,13 @@ subroutine detrsd(typesd, nomsd)
         call jedetr(ligrel//'.PRNS')
         call jedetr(ligrel//'.REPE')
         call jedetr(ligrel//'.SSSA')
+        call jeexin(ligrel//'.PART', iexi)
+        if (iexi .ne. 0) then
+            call jeveuo(ligrel//'.PART', 'L', jpart)
+            partsd = zk8(jpart)
+            call detrs2('PARTITION', partsd)
+        end if
+        call jedetr(ligrel//'.PART')
 !
 !     ------------------------------------------------------------------
     else if (typ2sd .eq. 'LIGRET') then
@@ -299,13 +306,6 @@ subroutine detrsd(typesd, nomsd)
 !
         call jedetr(k8//'           .TITR')
         call jedetr(k8//'.MAILLE')
-        call jeexin(k8//'.PARTSD', iexi)
-        if (iexi .ne. 0) then
-            call jeveuo(k8//'.PARTSD', 'L', jpart)
-            partsd = zk8(jpart)
-            call detrs2('PARTITION', partsd)
-        end if
-        call jedetr(k8//'.PARTSD')
 !
 !
 !     ------------------------------------------------------------------

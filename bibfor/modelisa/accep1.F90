@@ -33,6 +33,7 @@ subroutine accep1(modmec, ligrmo, nbm, dir, yang)
 #include "asterfort/detrsd.h"
 #include "asterfort/dismoi.h"
 #include "asterfort/exlima.h"
+#include "asterfort/exisd.h"
 #include "asterfort/getvid.h"
 #include "asterfort/jedema.h"
 #include "asterfort/jelira.h"
@@ -48,7 +49,7 @@ subroutine accep1(modmec, ligrmo, nbm, dir, yang)
 #include "asterfort/as_deallocate.h"
 #include "asterfort/as_allocate.h"
 !
-    integer(kind=8) :: nbm, i
+    integer(kind=8) :: nbm, i, iexi
     integer(kind=8) :: iret, ngrel, ipg, n1
     integer(kind=8) :: ncham, nn, nbelto, nbelgr, ntail, ialiel
     integer(kind=8) :: igr, ima, ii, iel, ive, itab, imo
@@ -97,7 +98,8 @@ subroutine accep1(modmec, ligrmo, nbm, dir, yang)
     end if
 !
     call dismoi('PARTITION', ligrmo, 'LIGREL', repk=partit)
-    if (partit .ne. ' ') then
+    call exisd('PARTITION', partit, iexi)
+    if (iexi .ne. 0) then
         call utmess('F', 'CALCULEL_25', sk=ligrmo)
     end if
 !

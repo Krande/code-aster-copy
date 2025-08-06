@@ -26,7 +26,6 @@ subroutine ajlipa(modelz, base, kdis)
 #include "asterfort/detrsd.h"
 #include "asterc/getres.h"
 #include "asterfort/exisd.h"
-#include "asterfort/gnoms2.h"
 #include "asterfort/getvis.h"
 #include "asterfort/infniv.h"
 #include "asterfort/jedema.h"
@@ -62,7 +61,6 @@ subroutine ajlipa(modelz, base, kdis)
     integer(kind=8), pointer :: fdim(:) => null()
     character(len=8), pointer :: fref(:) => null()
     integer(kind=8), pointer :: maille(:) => null()
-    character(len=8), pointer :: p_model_part(:) => null()
     mpi_int :: mrank, msize
     data k24b/' '/
 
@@ -75,7 +73,7 @@ subroutine ajlipa(modelz, base, kdis)
 ! ----------------------------------------------------------------------
     modele = modelz
     call dismoi('NOM_LIGREL', modele, 'MODELE', repk=ligrmo)
-    partsd = modele(5:8)//".PAR"
+    call dismoi('PARTITION', ligrmo, 'LIGREL', repk=partsd)
 
     call getres(nomres, typres, nomcom)
     ASSERT(nomres .eq. modele)
@@ -87,12 +85,6 @@ subroutine ajlipa(modelz, base, kdis)
     if (iexi .gt. 0) then
         ASSERT(nomcom .eq. 'MODI_MODELE')
         call detrsd('PARTITION', partsd)
-    else
-        call jeexin(modele//'.PARSD', iexi)
-        if (iexi .eq. 0) then
-            call wkvect(modele//'.PARSD', 'G V K8', 1, vk8=p_model_part)
-            p_model_part(1) = partsd
-        end if
     end if
 !
 !   -- s'il n'y a pas d'elements finis dans le modele :

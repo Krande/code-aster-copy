@@ -33,9 +33,9 @@ subroutine comp_meca_chck(model, mesh, chmate, &
 #include "asterfort/compMecaSelectPlaneStressAlgo.h"
 #include "asterfort/comp_read_mesh.h"
 #include "asterfort/dismoi.h"
+#include "asterfort/exisd.h"
 #include "asterfort/utmess.h"
 #include "asterfort/nmvcd2.h"
-!
 #include "asterc/asmpi_comm.h"
 #include "asterfort/asmpi_info.h"
 !
@@ -64,7 +64,7 @@ subroutine comp_meca_chck(model, mesh, chmate, &
     character(len=16), parameter :: factorKeyword = 'COMPORTEMENT'
     character(len=24), parameter :: cellAffe = '&&COMPMECASAVE.LIST'
     aster_logical :: lAllCellAffe
-    integer(kind=8) :: nbCellAffe
+    integer(kind=8) :: nbCellAffe, iexi
     integer(kind=8) :: iFactorKeyword, nbFactorKeyword, exteDefo, lctestIret
     character(len=16) :: defoComp, relaComp, typeCpla, typeComp, reguVisc, postIncr
     character(len=16) :: relaCompPY, defoCompPY
@@ -93,7 +93,8 @@ subroutine comp_meca_chck(model, mesh, chmate, &
     call dismoi('PARTITION', modelLigrel, 'LIGREL', repk=partit)
 
 ! - Distributed parallelism
-    lDistParallel = partit .ne. ' ' .and. nbCPU .gt. 1
+    call exisd('PARTITION', partit, iexi)
+    lDistParallel = (iexi .ne. 0) .and. (nbCPU .gt. 1)
 
 ! - Loop on occurrences of COMPORTEMENT
     do iFactorKeyword = 1, nbFactorKeyword

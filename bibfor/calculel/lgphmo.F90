@@ -123,7 +123,7 @@ subroutine lgphmo(ma, ligrel, pheno, modeli)
 !
 !     -- OBJET .LGRF :
 !     ----------------
-    call wkvect(ligr19//'.LGRF', 'V V K8', 3, jlgrf)
+    call wkvect(ligr19//'.LGRF', 'V V K8', 4, jlgrf)
     zk8(jlgrf-1+1) = ma
 !
 !

@@ -27,6 +27,7 @@ subroutine fetcrf(nomo, nbsd)
 #include "asterfort/dismoi.h"
 #include "asterfort/exisdg.h"
 #include "asterfort/gmgnre.h"
+#include "asterfort/gnoms2.h"
 #include "asterfort/jecrec.h"
 #include "asterfort/jecroc.h"
 #include "asterfort/jedema.h"
@@ -61,7 +62,7 @@ subroutine fetcrf(nomo, nbsd)
     character(len=8) :: k8bid, ma, sdpart
     character(len=19) :: ligrmo
     character(len=24) :: nomsda, nomsdm
-
+    character(len=8), pointer :: p_ligrel_part(:) => null()
     character(len=24) ::  nomgma, nomref
     character(len=24) ::  k24buf
 !
@@ -72,7 +73,10 @@ subroutine fetcrf(nomo, nbsd)
 !**********************************************************************
 ! INITIALISATIONS
 !**********************************************************************
-    sdpart = nomo(5:8)//".PAR"
+    k24buf = "12345678PARTxxxx"
+    call gnoms2(k24buf, 13, 16)
+    sdpart = k24buf(9:16)
+!
     nomref = sdpart//'.FREF'
     nomsdm = sdpart//'.FDIM'
     nomsda = sdpart//'.FETA'
@@ -80,6 +84,10 @@ subroutine fetcrf(nomo, nbsd)
 !
 !   ligrel du modele
     call dismoi('NOM_LIGREL', nomo, 'MODELE', repk=ligrmo)
+!
+!   name of partition
+    call jeveuo(ligrmo//'.PART', 'E', vk8=p_ligrel_part)
+    p_ligrel_part(1) = sdpart
 
 !     VECTEUR DES NBRE DE NOEUDS
     call wkvect('&&FETCRF.NBNO     ', 'V V I', nbsd, nbno)

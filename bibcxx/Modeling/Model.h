@@ -38,6 +38,7 @@
 #include "Modeling/ElementaryModeling.h"
 #include "Modeling/FiniteElementDescriptor.h"
 #include "Modeling/HHOModel.h"
+#include "Modeling/Partition.h"
 #include "Modeling/XfemModel.h"
 #include "Supervis/ResultNaming.h"
 #include "Utilities/SyntaxDictionary.h"
@@ -47,50 +48,10 @@ class FiniteElementDescriptor;
 using FiniteElementDescriptorPtr = std::shared_ptr< FiniteElementDescriptor >;
 
 /**
- * @enum ModelSplitingMethod
- * @brief Types of partition for model
- */
-enum ModelSplitingMethod { Centralized, SubDomain, GroupOfCellsSplit };
-const int nbModelSplitingMethod = 3;
-
-/**
- * @var ModelSplitingMethodNames
- * @brief Keyword for types of partition
- */
-extern const char *const ModelSplitingMethodNames[nbModelSplitingMethod];
-
-/**
- * @enum GraphPartitioner
- * @brief Graph partitioner
- */
-enum GraphPartitioner { ScotchPartitioner, MetisPartitioner };
-const int nbGraphPartitioner = 2;
-
-/**
- * @var GraphPartitionerNames
- * @brief Keyword for graph partitioner
- */
-extern const char *const GraphPartitionerNames[nbGraphPartitioner];
-
-/**
  * @class Model
  * @brief Datastructure for model (AFFE_MODELE)
  */
 class Model : public DataStructure, public ListOfTables {
-    class Partition : public DataStructure {
-        JeveuxVectorLong _prti;
-        JeveuxVectorChar24 _prtk;
-        JeveuxVectorLong _nupr;
-        JeveuxVectorLong _fdim;
-        JeveuxVectorLong _feta;
-        JeveuxVectorChar8 _fref;
-
-      public:
-        Partition( const std::string );
-        typedef std::shared_ptr< Partition > PartitionPtr;
-        const std::string getMethod() const;
-    };
-
   public:
     typedef std::shared_ptr< Model > ModelPtr;
 
@@ -113,8 +74,6 @@ class Model : public DataStructure, public ListOfTables {
     JeveuxVectorLong _typeOfCells;
     /** @brief Vecteur Jeveux '.NOEUD' */
     JeveuxVectorLong _typeOfNodes;
-    /** @brief Vecteur Jeveux '.PARTSD' */
-    JeveuxVectorChar8 _partName;
     /** @brief Liste contenant les modelisations ajoutees par l'utilisateur */
     listOfModsAndGrps _modelisations;
     /** @brief Maillage sur lequel repose la modelisation */
@@ -141,8 +100,6 @@ class Model : public DataStructure, public ListOfTables {
     GraphPartitioner _graphPartitioner;
     /** @brief Object .MODELE */
     FiniteElementDescriptorPtr _ligrel;
-
-    Partition::PartitionPtr _partition;
 
     /**
      * @brief Ajout d'une nouvelle modelisation sur tout le maillage

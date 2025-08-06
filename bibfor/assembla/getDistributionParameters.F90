@@ -42,7 +42,7 @@ subroutine getDistributionParameters(nbElem, listElem, &
 ! --------------------------------------------------------------------------------------------------
 !
     mpi_int :: mrank, msize
-    character(len=19) :: partit
+    character(len=8) :: partit
     character(len=24), pointer :: prtk(:) => null()
     integer(kind=8), pointer :: prti(:) => null()
 !

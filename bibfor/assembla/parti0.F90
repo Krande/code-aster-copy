@@ -22,6 +22,7 @@ subroutine parti0(nbmat, tlimat, partit)
 ! person_in_charge: jacques.pellet at edf.fr
 !
 #include "asterfort/dismoi.h"
+#include "asterfort/exisd.h"
 #include "asterfort/utmess.h"
     character(len=*) :: tlimat(*), partit
     integer(kind=8) :: nbmat
@@ -39,19 +40,22 @@ subroutine parti0(nbmat, tlimat, partit)
     character(len=19) :: matel
     character(len=8) :: part1
     character(len=24) :: valk(5)
-    integer(kind=8) :: i
+    integer(kind=8) :: i, iexi
 !----------------------------------------------------------------------
 
     partit = ' '
     do i = 1, nbmat
         matel = tlimat(i)
         call dismoi('PARTITION', matel, 'MATR_ELEM', repk=part1)
-        if (partit .eq. ' ' .and. part1 .ne. ' ') partit = part1
-        if (partit .ne. ' ' .and. part1 .eq. ' ') goto 10
-        if (partit .ne. ' ' .and. partit .ne. part1) then
-            valk(1) = partit
-            valk(2) = part1
-            call utmess('F', 'CALCULEL_10', nk=2, valk=valk)
+        call exisd('PARTITION', part1, iexi)
+        if (iexi .ne. 0) then
+            if (partit .eq. ' ' .and. part1 .ne. ' ') partit = part1
+            if (partit .ne. ' ' .and. part1 .eq. ' ') goto 10
+            if (partit .ne. ' ' .and. partit .ne. part1) then
+                valk(1) = partit
+                valk(2) = part1
+                call utmess('F', 'CALCULEL_10', nk=2, valk=valk)
+            end if
         end if
 10      continue
     end do

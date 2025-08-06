@@ -29,7 +29,6 @@ class sd_modele(AsBase):
 
     MODELE = sd_ligrel()
     MAILLE = Facultatif(AsVI())
-    PARTSD = Facultatif(AsVK8())
 
     # une sd_modele peut avoir une "sd_l_table" contenant des grandeurs
     # caractéristiques de l'étude :
