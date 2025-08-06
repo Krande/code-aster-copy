@@ -101,7 +101,6 @@ subroutine calimc(chargz)
     integer(kind=8), pointer :: lino(:) => null()
     aster_logical :: lcolle
     character(len=19) :: ligrmo
-    character(len=8), pointer :: lgrf(:) => null()
 !-----------------------------------------------------------------------
     data liscmp/'DX      ', 'DY      ', 'DZ      ',&
      &               'DRX     ', 'DRY     ', 'DRZ     '/
@@ -146,8 +145,7 @@ subroutine calimc(chargz)
 !
     call dismoi('NOM_MODELE', charge, 'CHARGE', repk=mod)
     call dismoi('NOM_LIGREL', mod, 'MODELE', repk=ligrmo)
-    call jeveuo(ligrmo//'.LGRF', 'L', vk8=lgrf)
-    mailla = lgrf(1)
+    call dismoi('NOM_MAILLA', ligrmo, 'LIGREL', repk=mailla)
     lcolle = .false.
     call jeexin(mailla//'.NOMNOE', ier)
     if (ier .ne. 0) then

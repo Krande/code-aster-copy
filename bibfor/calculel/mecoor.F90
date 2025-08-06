@@ -41,16 +41,14 @@ subroutine mecoor(nomo, chgeom)
 !
 !
 !
-    character(len=19) :: ligrmo
-    character(len=8), pointer :: lgrf(:) => null()
+    character(len=8) :: ma
 !
 ! ----------------------------------------------------------------------
 !
     call jemarq()
 !
-    call dismoi('NOM_LIGREL', nomo, 'MODELE', repk=ligrmo)
-    call jeveuo(ligrmo//'.LGRF', 'L', vk8=lgrf)
-    chgeom = lgrf(1)//'.COORDO'
+    call dismoi('NOM_MAILLA', nomo, 'MODELE', repk=ma)
+    chgeom = ma//'.COORDO'
 !
     call jedema()
 !

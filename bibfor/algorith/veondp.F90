@@ -67,7 +67,7 @@ subroutine veondp(modele, mate, mateco, sddyna, temps, vecelz)
 !
     integer(kind=8) :: nbout, nbin
     parameter(nbout=1, nbin=6)
-    character(len=8) :: lpaout(nbout), lpain(nbin)
+    character(len=8) :: lpaout(nbout), lpain(nbin), noma
     character(len=19) :: lchout(nbout), lchin(nbin)
 !
     integer(kind=8) :: ibid, i, iret, iondp
@@ -80,7 +80,6 @@ subroutine veondp(modele, mate, mateco, sddyna, temps, vecelz)
     character(len=8) :: newnom
     character(len=16) :: option
     integer(kind=8) :: ifmdbg, nivdbg
-    character(len=8), pointer :: lgrf(:) => null()
     character(len=19) :: chvarc
     character(len=2) :: codret
 !
@@ -95,8 +94,8 @@ subroutine veondp(modele, mate, mateco, sddyna, temps, vecelz)
     nchond = ndynin(sddyna, 'NBRE_ONDE_PLANE')
     vecele = vecelz
     call dismoi('NOM_LIGREL', modele, 'MODELE', repk=ligrmo)
-    call jeveuo(ligrmo(1:19)//'.LGRF', 'L', vk8=lgrf)
-    chgeom = lgrf(1)//'.COORDO'
+    call dismoi('NOM_MAILLA', ligrmo, 'LIGREL', repk=noma)
+    chgeom = noma//'.COORDO'
     option = 'ONDE_PLAN'
     chinst = '&&CHINST'
     if (nivdbg .ge. 2) then

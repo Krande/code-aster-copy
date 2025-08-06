@@ -70,7 +70,6 @@ subroutine raco3d(numdlz, iocc, fonrez, lisrez, chargz)
     character(len=24) :: lismaco, lismavo, lisnoco
     character(len=8)  :: mod, noma
     integer(kind=8) :: nbmavo, nbmaco, nt_nodes
-    character(len=8), pointer :: lgrf(:) => null()
     integer(kind=8) :: nb_pairs, iret
     integer(kind=8) :: i, n1
     real(kind=8) :: epai, crig
@@ -112,8 +111,7 @@ subroutine raco3d(numdlz, iocc, fonrez, lisrez, chargz)
 !
 ! --- MAILLAGE ASSOCIE AU MODELE :
 !     --------------------------
-    call jeveuo(ligrmo//'.LGRF', 'L', vk8=lgrf)
-    noma = lgrf(1)
+    call dismoi('NOM_MAILLA', ligrmo, 'LIGREL', repk=noma)
 
 !--- RECUPERER COEF_RIGI_DRZ
 

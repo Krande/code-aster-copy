@@ -75,13 +75,19 @@ subroutine arlmol(nomo, mailar, modarl, tabcor)
 !
 ! --- INITIALISATIONS
 !
-    call dismoi('NOM_LIGREL', modarl, 'MODELE', repk=ligarl)
+    ligarl = ' '
+    call exisd('MODELE', modarl, iret)
+    if (iret .ne. 0) then
+        call dismoi('NOM_LIGREL', modarl, 'MODELE', repk=ligarl)
+    end if
 !
 ! --- DESTRUCTION DU LIGREL S'IL EXISTE
 !
     call exisd('LIGREL', ligarl, iret)
     if (iret .ne. 0) then
         call detrsd('LIGREL', ligarl)
+    else
+        ligarl = modarl(1:8)//'.MODELE'
     end if
 !
 ! --- INFORMATIONS SUR LE MODELE ORIGINAL

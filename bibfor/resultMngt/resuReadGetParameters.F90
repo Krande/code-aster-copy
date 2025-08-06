@@ -44,7 +44,6 @@ subroutine resuReadGetParameters(mesh, model, caraElem, fieldMate)
 !
     integer(kind=8) :: iret, nbOcc
     character(len=19) :: ligrel
-    character(len=8), pointer :: lgrf(:) => null()
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -65,8 +64,7 @@ subroutine resuReadGetParameters(mesh, model, caraElem, fieldMate)
     call getvid(' ', 'MAILLAGE', scal=mesh, nbret=nbOcc)
     if (nbOcc .eq. 0) then
         call dismoi('NOM_LIGREL', model, 'MODELE', repk=ligrel)
-        call jeveuo(ligrel//'.LGRF', 'L', vk8=lgrf)
-        mesh = lgrf(1)
+        call dismoi('NOM_MAILLA', ligrel, 'LIGREL', repk=mesh)
     end if
 !
 ! - Get material

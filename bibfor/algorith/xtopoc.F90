@@ -71,7 +71,6 @@ subroutine xtopoc(modele, decou)
     character(len=16) :: typdis, memtyp
     character(len=19) :: typenr, chdec
     integer(kind=8), pointer :: cesv(:) => null()
-    character(len=8), pointer :: lgrf(:) => null()
     integer(kind=8), pointer :: nbsp(:) => null()
 !
 ! ----------------------------------------------------------------------
@@ -82,8 +81,7 @@ subroutine xtopoc(modele, decou)
 ! --- INITIALISATIONS
 !
     call dismoi('NOM_LIGREL', modele, 'MODELE', repk=ligrel)
-    call jeveuo(modele//'.MODELE    .LGRF', 'L', vk8=lgrf)
-    noma = lgrf(1)
+    call dismoi('NOM_MAILLA', ligrel, 'LIGREL', repk=noma)
     chgeom = noma//'.COORDO'
     if (nivdbg .ge. 2) then
         debug = .true.

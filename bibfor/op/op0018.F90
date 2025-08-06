@@ -124,7 +124,7 @@ subroutine op0018()
 
 ! - Get command parameters
     call getres(model, k16dummy, k16dummy)
-    call dismoi('NOM_LIGREL', model, 'MODELE', repk=ligrel)
+    ligrel = model//'.MODELE'
 
 ! - Get mesh
     call getvid(' ', 'MAILLAGE', scal=mesh)

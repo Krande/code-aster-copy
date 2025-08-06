@@ -70,7 +70,6 @@ subroutine initel(ligrel, l_calc_rigi)
     character(len=8) :: exiele, ma, prin, nomail
     character(len=16) :: nomte
     integer(kind=8), pointer :: vprin(:) => null()
-    character(len=8), pointer :: lgrf(:) => null()
     integer(kind=8), pointer :: connex(:) => null()
     integer(kind=8), pointer :: liel(:) => null()
 ! ----------------------------------------------------------------------
@@ -110,10 +109,10 @@ subroutine initel(ligrel, l_calc_rigi)
 !     ------------------------------------------------------------
     if ((exiele(1:3) .ne. 'OUI') .or. (.not. present(l_calc_rigi))) goto 90
 !
-    call jeveuo(ligrel//'.LGRF', 'L', vk8=lgrf)
+    call dismoi('NOM_MAILLA', ligrel, 'LIGREL', repk=ma)
+!
     call jeveuo(ligrel//'.LIEL', 'L', vi=liel)
     call jeveuo(jexatr(ligrel//'.LIEL', 'LONCUM'), 'L', jlliel)
-    ma = lgrf(1)
     call jeveuo(ma//'.CONNEX', 'L', vi=connex)
     call jeveuo(jexatr(ma//'.CONNEX', 'LONCUM'), 'L', iconx2)
     call dismoi('NB_NO_MAILLA', ma, 'MAILLAGE', repi=nbno)

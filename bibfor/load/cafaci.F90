@@ -243,7 +243,7 @@ subroutine cafaci(load, mesh, model, valeType)
                         call xddlim(model, dof_name, name_node, nume_node, val_r_dnor, &
                                     val_c_dnor, val_f_dnor, valeType, ibid, list_rela, &
                                     geomDime, repe_defi, jnoxfv, ch_xfem_stat, ch_xfem_lnno, &
-                                    ch_xfem_ltno, connex_inv, mesh, ch_xfem_heav)
+                                    ch_xfem_ltno, connex_inv, ch_xfem_heav)
                         goto 105
                     end if
                 end if
@@ -291,7 +291,7 @@ subroutine cafaci(load, mesh, model, valeType)
                         call xddlim(model, dof_name, name_node, nume_node, val_r_dtan, &
                                     val_c_dtan, val_f_dtan, valeType, ibid, list_rela, &
                                     geomDime, repe_defi, jnoxfv, ch_xfem_stat, ch_xfem_lnno, &
-                                    ch_xfem_ltno, connex_inv, mesh, ch_xfem_heav)
+                                    ch_xfem_ltno, connex_inv, ch_xfem_heav)
                         goto 115
                     end if
                 end if

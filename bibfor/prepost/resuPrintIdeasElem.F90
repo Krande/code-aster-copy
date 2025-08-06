@@ -91,7 +91,6 @@ subroutine resuPrintIdeasElem(fileUnit, dsName, &
     character(len=19) :: liliName
     integer(kind=8), pointer :: liel(:) => null()
     integer(kind=8), pointer :: lielLen(:) => null()
-    character(len=8), pointer :: lgrf(:) => null()
     character(len=80), pointer :: meshTitle(:) => null()
     aster_logical :: lMeshIdeas
     character(len=1) :: type
@@ -175,8 +174,7 @@ subroutine resuPrintIdeasElem(fileUnit, dsName, &
 ! - Access to mesh
 !
     liliName = celk(1) (1:19)
-    call jeveuo(liliName//'.LGRF', 'L', vk8=lgrf)
-    meshName = lgrf(1)
+    call dismoi('NOM_MAILLA', liliName, 'LIGREL', repk=meshName)
     call dismoi('NB_NO_MAILLA', meshName, 'MAILLAGE', repi=meshNodeNb)
     call dismoi('NB_MA_MAILLA', meshName, 'MAILLAGE', repi=meshCellNb)
     call jeveuo(meshName//'.TYPMAIL', 'L', vi=cellType)

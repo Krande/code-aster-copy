@@ -24,7 +24,8 @@ subroutine nueffe(nbLigr, listLigr, base, numeDofZ, renumZ, &
 #include "asterc/cheksd.h"
 #include "asterf_types.h"
 #include "asterfort/assert.h"
-#include "asterfort/jeexin.h"
+#include "asterfort/dismoi.h"
+#include "asterfort/exisd.h"
 #include "asterfort/jeveuo.h"
 #include "asterfort/nueffe_lag1.h"
 #include "asterfort/nueffe_lag2.h"
@@ -103,7 +104,7 @@ subroutine nueffe(nbLigr, listLigr, base, numeDofZ, renumZ, &
     typeLagr = " "
     do iLigr = 2, nbLigr
         ligrelName = listLigr(iLigr)
-        call jeexin(ligrelName(1:19)//'.LGRF', iret)
+        call exisd('LIGREL', ligrelName, iret)
         if (iret .ne. 0) then
             call jeveuo(ligrelName(1:19)//'.LGRF', 'L', vk8=ligrelLgrf)
             if (typeLagr .eq. " ") then

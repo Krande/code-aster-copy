@@ -43,6 +43,7 @@ subroutine lrcame(nrofic, nochmd, nomamd, nomaas, ligrel, &
 #include "asterfort/cnscre.h"
 #include "asterfort/codent.h"
 #include "asterfort/dismoi.h"
+#include "asterfort/exisd.h"
 #include "asterfort/infniv.h"
 #include "asterfort/jedema.h"
 #include "asterfort/jedetr.h"
@@ -153,7 +154,6 @@ subroutine lrcame(nrofic, nochmd, nomamd, nomaas, ligrel, &
     real(kind=8) :: valr
     aster_logical :: existm, existt
     aster_logical :: logaux
-    character(len=8), pointer :: lgrf(:) => null()
     integer(kind=8), pointer :: nume(:) => null()
     integer(kind=8), pointer :: typmail(:) => null()
     real(kind=8), pointer :: vinst(:) => null()
@@ -635,10 +635,9 @@ subroutine lrcame(nrofic, nochmd, nomamd, nomaas, ligrel, &
 !
 !         ON SOUHAITE VERIFIER QUE LE MODELE ASTER ET LE PROFIL
 !         MED ONT BIEN LE MEME NOMBRE DE MAILLE DE CHAQUE TYPE
-                call jeexin(ligrel//'.LGRF', iret)
+                call exisd('LIGREL', ligrel, iret)
                 if (iret .ne. 0) then
-                    call jeveuo(ligrel//'.LGRF', 'L', vk8=lgrf)
-                    modele = lgrf(2)
+                    call dismoi('NOM_MODELE', ligrel, 'LIGREL', repk=modele)
                     call jeveuo(modele//'.MAILLE', 'L', jmaill)
                 else
                     jmaill = 0

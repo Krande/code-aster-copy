@@ -110,7 +110,6 @@ subroutine aflrch(lisrez, chargz, type_liai, elim, detr_lisrez, l_preallocz)
     aster_logical :: detr_lisrel, l_lag1, l_prealloc, lcolle
 
     integer(kind=8) :: niv, numel, nunewm, iexi, jlgns
-    character(len=8), pointer :: lgrf(:) => null()
     integer(kind=8), pointer :: rlnr(:) => null()
     character(len=8), pointer :: rltc(:) => null()
     integer(kind=8), pointer :: rlnt(:) => null()
@@ -129,8 +128,7 @@ subroutine aflrch(lisrez, chargz, type_liai, elim, detr_lisrez, l_preallocz)
 !
     call dismoi('NOM_MODELE', charge, 'CHARGE', repk=mod)
     call dismoi('NOM_LIGREL', mod, 'MODELE', repk=ligrmo)
-    call jeveuo(ligrmo//'.LGRF', 'L', vk8=lgrf)
-    noma = lgrf(1)
+    call dismoi('NOM_MAILLA', ligrmo, 'LIGREL', repk=noma)
     lcolle = .false.
     call jeexin(noma//'.NOMNOE', ier)
     if (ier .ne. 0) then

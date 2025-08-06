@@ -21,18 +21,11 @@ function mailla(ligrel)
     implicit none
     character(len=8) :: mailla
 #include "jeveux.h"
-#include "asterfort/jedema.h"
-#include "asterfort/jemarq.h"
-#include "asterfort/jeveuo.h"
+#include "asterfort/dismoi.h"
     character(len=19) :: ligrel
 !
-    character(len=8), pointer :: lgrf(:) => null()
 !
 !-----------------------------------------------------------------------
 !-----------------------------------------------------------------------
-    call jemarq()
-!
-    call jeveuo(ligrel//'.LGRF', 'L', vk8=lgrf)
-    mailla = lgrf(1)
-    call jedema()
+    call dismoi('NOM_MAILLA', ligrel, 'LIGREL', repk=mailla)
 end function

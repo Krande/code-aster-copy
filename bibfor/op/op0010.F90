@@ -262,8 +262,7 @@ subroutine op0010()
 !
 ! --- NOM DU MAILLAGE ATTACHE AU MODELE
 !
-    call jeveuo(nomo(1:8)//'.MODELE    .LGRF', 'L', iadrma)
-    noma = zk8(iadrma)
+    call dismoi('NOM_MAILLA', nomo, 'MODELE', repk=noma)
 !
 ! --- DIMENSION DU PROBLEME
 !

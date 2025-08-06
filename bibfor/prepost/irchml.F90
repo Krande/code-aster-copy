@@ -111,7 +111,6 @@ subroutine irchml(fileUnit, &
     character(len=19) :: liliName
     integer(kind=8), pointer :: liel(:) => null()
     integer(kind=8), pointer :: lielLen(:) => null()
-    character(len=8), pointer :: lgrf(:) => null()
     character(len=1) :: type
     integer(kind=8) :: fieldScalar, quantityIndx, grelNb, iCell
     character(len=24), parameter :: ncncin = '&&IRCHML.CONNECINVERSE'
@@ -236,8 +235,7 @@ subroutine irchml(fileUnit, &
 ! - Access to mesh
 !
     liliName = celk(1) (1:19)
-    call jeveuo(liliName//'.LGRF', 'L', vk8=lgrf)
-    meshName = lgrf(1)
+    call dismoi('NOM_MAILLA', liliName, 'LIGREL', repk=meshName)
     call dismoi('DIM_GEOM_B', meshName, 'MAILLAGE', repi=meshDime)
     call dismoi('NB_NO_MAILLA', meshName, 'MAILLAGE', repi=meshNodeNb)
     call dismoi('NB_MA_MAILLA', meshName, 'MAILLAGE', repi=meshCellNb)

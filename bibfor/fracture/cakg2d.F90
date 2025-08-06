@@ -102,7 +102,7 @@ subroutine cakg2d(optioz, result, modele, depla, theta, &
     character(len=8) :: lpain(nbinmx), lpaout(nboumx)
     character(len=24) :: lchin(nbinmx), lchout(nboumx)
     integer(kind=8) :: i, ibid, inorma, nsig, ifm, niv, jnor, jbasfo
-    integer(kind=8) :: iadrma, iadrff, icoode, iadrco, iadrno, ino1, ino2, inga
+    integer(kind=8) :: iadrff, icoode, iadrco, iadrno, ino1, ino2, inga
     integer(kind=8) :: lobj2, ndimte, nunoff, ndim, nchin, jfond, numfon
     integer(kind=8) :: iret, livi(nbmxpa), nbchar, pbtype
     real(kind=8) :: fic(5), rcmp(6), livr(nbmxpa), girwin
@@ -121,7 +121,7 @@ subroutine cakg2d(optioz, result, modele, depla, theta, &
     character(len=19) :: pinter, ainter, cface, longco, baseco, stano
     character(len=24) :: chgeom, chfond, celmod, sigelno, sigseno
     character(len=24) :: ligrmo, norma
-    character(len=24) :: obj1, obj2, coord, coorn, chtime
+    character(len=24) :: obj2, coord, coorn, chtime
     character(len=24) :: pavolu, pa1d2d, papres, chpuls, chsigi, livk(nbmxpa)
     real(kind=8), pointer :: valg(:) => null()
 !
@@ -235,9 +235,7 @@ subroutine cakg2d(optioz, result, modele, depla, theta, &
 !
 ! OBJET DECRIVANT LE MAILLAGE
 !
-    obj1 = modele//'.MODELE    .LGRF'
-    call jeveuo(obj1, 'L', iadrma)
-    noma = zk8(iadrma)
+    call dismoi('NOM_MAILLA', modele, 'MODELE', repk=noma)
     coorn = noma//'.COORDO    .VALE'
     coord = noma//'.COORDO    .DESC'
     call jeveuo(coorn, 'L', iadrco)

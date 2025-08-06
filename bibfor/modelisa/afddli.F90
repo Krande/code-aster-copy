@@ -138,7 +138,7 @@ subroutine afddli(model, geomDime, gran_cmp_nb, gran_cmp_name, node_nume, node_n
                                 vale_real(i_cmp), vale_cplx(i_cmp), vale_func(i_cmp), &
                                 vale_type, cmp_count(i_cmp), list_rela, geomDime, rbid, &
                                 jnoxfv, ch_xfem_stat, ch_xfem_lnno, ch_xfem_ltno, &
-                                connex_inv, mesh, ch_xfem_heav)
+                                connex_inv, ch_xfem_heav)
                     cycle
                 end if
             end if

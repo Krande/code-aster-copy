@@ -77,7 +77,6 @@ subroutine op0113()
     integer(kind=8) :: jmail2, jtab, jxc
     character(len=8) :: modelx, mod1, modthx, noma, k8cont, k8condi, decou
     aster_logical :: linter
-    character(len=8), pointer :: lgrf1(:) => null()
     character(len=8), pointer :: lgrf2(:) => null()
 !
     data motfac/' '/
@@ -104,8 +103,7 @@ subroutine op0113()
 !
 ! --- ACCES AU MAILLAGE INITIAL
 !
-    call jeveuo(ligr1//'.LGRF', 'L', vk8=lgrf1)
-    noma = lgrf1(1)
+    call dismoi('NOM_MAILLA', ligr1, 'LIGREL', repk=noma)
     call dismoi('DIM_GEOM', noma, 'MAILLAGE', repi=ndim)
 !
     call dismoi('NB_MA_MAILLA', noma, 'MAILLAGE', repi=nbma)

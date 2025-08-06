@@ -75,7 +75,7 @@ subroutine vedimd(nomo, lischa, instan, vecele)
     character(len=8) :: nomch0
     character(len=8) :: newnom
     character(len=16) :: option
-    character(len=19) :: ligrmo, ligcal
+    character(len=19) :: ligcal
     character(len=13) :: prefob
     character(len=19) :: chgeom, chtime
     character(len=19) :: carte
@@ -96,10 +96,6 @@ subroutine vedimd(nomo, lischa, instan, vecele)
     newnom = '.0000000'
     nomlis = '&&NOMLIS'
     call detrsd('VECT_ELEM', vecele)
-!
-! --- RECUPERATION DU MODELE
-!
-    call dismoi('NOM_LIGREL', nomo, 'MODELE', repk=ligrmo)
 !
 ! --- INITIALISATION DES CHAMPS POUR CALCUL
 !
@@ -128,7 +124,7 @@ subroutine vedimd(nomo, lischa, instan, vecele)
 ! --- CARTE DE L'INSTANT
 !
     chtime = '&&VEDIMD.CH_INST_R'
-    call mecact('V', chtime, 'MODELE', ligrmo, 'INST_R', &
+    call mecact('V', chtime, 'MODELE', nomo, 'INST_R', &
                 ncmp=1, nomcmp='INST', sr=instan)
 !
 ! --- CHAMPS D'ENTREES STANDARDS

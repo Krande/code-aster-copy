@@ -97,7 +97,6 @@ subroutine caliag(fonrez, chargz, phenom)
     integer(kind=8), pointer :: nbnor(:) => null()
     character(len=8), pointer :: nomddl(:) => null()
     character(len=8), pointer :: nomnoe(:) => null()
-    character(len=8), pointer :: lgrf(:) => null()
 !
 ! ----------------------------------------------------------------------
 !
@@ -122,8 +121,7 @@ subroutine caliag(fonrez, chargz, phenom)
 !
     call dismoi('NOM_MODELE', charge(1:8), 'CHARGE', repk=mod)
     call dismoi('NOM_LIGREL', mod, 'MODELE', repk=ligrmo)
-    call jeveuo(ligrmo//'.LGRF', 'L', vk8=lgrf)
-    noma = lgrf(1)
+    call dismoi('NOM_MAILLA', ligrmo, 'LIGREL', repk=noma)
 
     lcolle = .false.
     call jeexin(noma//'.NOMNOE', ier)

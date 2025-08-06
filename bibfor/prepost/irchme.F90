@@ -91,7 +91,6 @@ subroutine irchme(ifichi, chanom, partie, nochmd, noresu, &
     character(len=24) :: nocelk
     character(len=*) :: nomcmp(*), partie
     integer(kind=8), intent(in) :: paraListNb
-    character(len=8), pointer :: lgrf(:) => null()
     character(len=16), pointer :: paraListName(:)
     integer(kind=8) :: numord, nbrcmp, ifichi, iret
     integer(kind=8) :: nbnoec, nbmaec, icelk
@@ -214,8 +213,7 @@ subroutine irchme(ifichi, chanom, partie, nochmd, noresu, &
             nocelk = chanom//'.CELK'
             call jeveuo(nocelk, 'L', icelk)
             ligrel = zk24(icelk) (1:19)
-            call jeveuo(ligrel//'.LGRF', 'L', vk8=lgrf)
-            modele = lgrf(2)
+            call dismoi('NOM_MODELE', ligrel, 'LIGREL', repk=modele)
 
             call exisd('MODELE', modele, iret)
             if (iret .eq. 0) then

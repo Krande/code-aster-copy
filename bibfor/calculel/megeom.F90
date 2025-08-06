@@ -21,7 +21,7 @@ subroutine megeom(modelz, chgeoz)
     implicit none
 !
 #include "asterfort/assert.h"
-#include "asterfort/jeveuo.h"
+#include "asterfort/dismoi.h"
 !
 !
     character(len=*), intent(in) :: modelz
@@ -39,16 +39,15 @@ subroutine megeom(modelz, chgeoz)
 ! --------------------------------------------------------------------------------------------------
 !
     character(len=24) :: chgeom
-    character(len=8) :: model
-    character(len=8), pointer :: p_model_lgrf(:) => null()
+    character(len=8) :: model, ma
 !
 ! --------------------------------------------------------------------------------------------------
 !
     model = modelz
 !
     ASSERT(model .ne. ' ')
-    call jeveuo(model//'.MODELE    .LGRF', 'L', vk8=p_model_lgrf)
-    chgeom = p_model_lgrf(1)//'.COORDO'
+    call dismoi('NOM_MAILLA', model, 'MODELE', repk=ma)
+    chgeom = ma//'.COORDO'
 !
     chgeoz = chgeom
 end subroutine

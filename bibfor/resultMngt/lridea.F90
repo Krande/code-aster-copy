@@ -40,6 +40,7 @@ subroutine lridea(fileUnit, &
 #include "asterfort/decod1.h"
 #include "asterfort/decod2.h"
 #include "asterfort/dismoi.h"
+#include "asterfort/exisd.h"
 #include "asterfort/getvtx.h"
 #include "asterfort/gnomsd.h"
 #include "asterfort/iradhs.h"
@@ -437,7 +438,7 @@ subroutine lridea(fileUnit, &
                         chs)
         else
 !
-            call jeexin(ligrel//'.LGRF', iret)
+            call exisd('LIGREL', ligrel, iret)
             if (iret .eq. 0) then
                 call utmess('F', 'PREPOST3_39')
             end if

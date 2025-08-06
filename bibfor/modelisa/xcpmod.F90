@@ -62,8 +62,6 @@ subroutine xcpmod(modmes, modthx, modmex)
     character(len=8) :: noma1, noma2, valk(4), k8cont
     character(len=19) :: ligr1, ligr2
     character(len=24) :: pheno
-    character(len=8), pointer :: lgrf1(:) => null()
-    character(len=8), pointer :: lgrf2(:) => null()
     character(len=8), pointer :: p_mod_ther(:) => null()
 !
 ! ----------------------------------------------------------------------
@@ -90,12 +88,10 @@ subroutine xcpmod(modmes, modthx, modmex)
     if (pheno .ne. 'THERMIQUE') call utmess('F', 'XFEM_82', sk=modthx)
 !
 !   modmes et modthx doivent avoir ete crees a partir du meme maillage
-    ligr1 = modmes//'.MODELE'
-    ligr2 = modthx//'.MODELE'
-    call jeveuo(ligr1//'.LGRF', 'L', vk8=lgrf1)
-    call jeveuo(ligr2//'.LGRF', 'L', vk8=lgrf2)
-    noma1 = lgrf1(1)
-    noma2 = lgrf2(1)
+    call dismoi('NOM_LIGREL', modmes, 'MODELE', repk=ligr1)
+    call dismoi('NOM_LIGREL', modthx, 'MODELE', repk=ligr2)
+    call dismoi('NOM_MAILLA', ligr1, 'LIGREL', repk=noma1)
+    call dismoi('NOM_MAILLA', ligr2, 'LIGREL', repk=noma2)
     if (noma1 .ne. noma2) then
         valk(1) = modmes
         valk(2) = modthx

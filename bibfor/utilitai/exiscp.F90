@@ -76,7 +76,6 @@ subroutine exiscp(nomcmp, char, modele, nbnd, typend, &
     character(len=16) :: pheno
     character(len=19) :: ligrmo
     character(len=8) :: nomgd
-    character(len=8), pointer :: lgrf(:) => null()
 !
 ! ----------------------------------------------------------------------
 !
@@ -140,8 +139,7 @@ subroutine exiscp(nomcmp, char, modele, nbnd, typend, &
 !
 ! --- MAILLAGE DU MODELE
 !
-    call jeveuo(ligrmo//'.LGRF', 'L', vk8=lgrf)
-    noma = lgrf(1)
+    call dismoi('NOM_MAILLA', ligrmo, 'LIGREL', repk=noma)
 !
 ! --- POUR CHAQUE NOEUD, ON VERIFIE SI LE DDL EST DESSUS
 !

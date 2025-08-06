@@ -19,7 +19,7 @@
 subroutine xddlim(modele, motcle, nomn, ino, valimr, &
                   valimc, valimf, fonree, icompt, lisrel, &
                   ndim, direct, jnoxfv, ch1, ch2, &
-                  ch3, cnxinv, mesh, hea_no)
+                  ch3, cnxinv, hea_no)
     implicit none
 #include "jeveux.h"
 #include "asterc/r8maem.h"
@@ -28,6 +28,7 @@ subroutine xddlim(modele, motcle, nomn, ino, valimr, &
 #include "asterfort/afrela.h"
 #include "asterfort/celces.h"
 #include "asterfort/cesexi.h"
+#include "asterfort/dismoi.h"
 #include "asterfort/detrsd.h"
 #include "asterfort/jedema.h"
 #include "asterfort/jeexin.h"
@@ -45,7 +46,6 @@ subroutine xddlim(modele, motcle, nomn, ino, valimr, &
     real(kind=8) :: valimr, direct(3)
     character(len=4) :: fonree
     character(len=8) :: modele, nomn, valimf, motcle
-    character(len=8), intent(in) :: mesh
     character(len=19) :: lisrel, ch1, ch2, ch3, cnxinv, hea_no
 ! person_in_charge: samuel.geniaut at edf.fr
 !
@@ -65,7 +65,6 @@ subroutine xddlim(modele, motcle, nomn, ino, valimr, &
 ! IN  VALIMF : VALEUR DE BLOCAGE SUR CE DDL (FONREE = 'FONC')
 ! IN  FONREE : AFFE_CHAR_XXXX OU AFFE_CHAR_XXXX_F
 ! IN  NDIM
-! IN  MESH   : NOM DU MAILLAGE
 !
 ! IN/OUT
 !     ICOMPT : "COMPTEUR" DES DDLS AFFECTES REELLEMENT
@@ -91,7 +90,6 @@ subroutine xddlim(modele, motcle, nomn, ino, valimr, &
     complex(kind=8) :: cbid, valimc
     aster_logical :: class
     integer(kind=8), pointer :: nunotmp(:) => null()
-    character(len=8), pointer :: lgrf(:) => null()
     integer(kind=8), pointer :: connex(:) => null(), ihea_no(:) => null()
     integer(kind=8), pointer :: fisnv(:) => null()
     integer(kind=8), pointer :: fiscv(:) => null()
@@ -213,8 +211,7 @@ subroutine xddlim(modele, motcle, nomn, ino, valimr, &
                 call jelira('&&CAAREI.LIST_NODE', 'LONMAX', nbno)
             end if
 ! ---     RECUPERATION DU NOM DU MAILLAGE :
-            call jeveuo(modele//'.MODELE    .LGRF', 'L', vk8=lgrf)
-            noma = lgrf(1)
+            call dismoi('NOM_MAILLA', modele, 'MODELE', repk=noma)
 ! ---     RECUPERATION DES MAILLES CONTENANT LE NOEUD
             call jeveuo(noma//'.CONNEX', 'L', vi=connex)
             call jeveuo(jexatr(noma//'.CONNEX', 'LONCUM'), 'L', jconx2)
@@ -321,7 +318,7 @@ subroutine xddlim(modele, motcle, nomn, ino, valimr, &
 ! --- SI LA RELATION CINEMATIQUE EST IMPOSEE PAR UNE FONCTION DE L'ESPACE
         call xddlimf(modele, ino, cnxinv, jnoxfv, motcle, &
                      ch2, ndim, lsn, lst, valimr, valimf, valimc, &
-                     fonree, lisrel, nomn, direct, class, mesh, &
+                     fonree, lisrel, nomn, direct, class, &
                      hea_no)
     end if
 !     IMPOSITION DES CONDITIONS CINEMATIQUE "TOTALES" (DDL_CLASS +/- DDL_ENR)

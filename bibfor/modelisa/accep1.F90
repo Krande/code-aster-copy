@@ -55,13 +55,12 @@ subroutine accep1(modmec, ligrmo, nbm, dir, yang)
     real(kind=8) :: dir(3, 3), v1, v2, v3, w1, w2, w3, ref1, ref2, ref3, refer
     real(kind=8) :: rayon, rayon2, haut, rap1, rap2
     character(len=7) :: incr, ielem, imode
-    character(len=8) :: vetel, lpain(3), lpaout(1), modele, modmec, k8b
+    character(len=8) :: vetel, lpain(3), lpaout(1), modele, modmec, k8b, noma
     character(len=16) :: option
     character(len=19) :: nomcha, chgeom, chharm, partit
     character(len=24) :: ligrmo, lchin(3), lchout(1)
     aster_logical :: yang
     character(len=8), pointer :: vec(:) => null()
-    character(len=8), pointer :: lgrf(:) => null()
 !
 !-----------------------------------------------------------------------
     call jemarq()
@@ -102,8 +101,7 @@ subroutine accep1(modmec, ligrmo, nbm, dir, yang)
     end if
 !
 ! CALCULS ELEMENTAIRES
-    call jeveuo(ligrmo(1:19)//'.LGRF', 'L', vk8=lgrf)
-    chgeom = lgrf(1)//'.COORDO'
+    call dismoi('NOM_MAILLA', ligrmo, 'LIGREL', repk=noma)
 !
     lpain(1) = 'PGEOMER'
     lchin(1) = chgeom

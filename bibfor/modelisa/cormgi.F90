@@ -22,6 +22,7 @@ subroutine cormgi(basez, ligrez)
 #include "asterf_types.h"
 #include "jeveux.h"
 #include "asterfort/assert.h"
+#include "asterfort/dismoi.h"
 #include "asterfort/jedema.h"
 #include "asterfort/jedetr.h"
 #include "asterfort/jedup1.h"
@@ -61,7 +62,6 @@ subroutine cormgi(basez, ligrez)
 !
 !
     character(len=19) :: ligtmp
-    character(len=8), pointer :: lgrf(:) => null()
 !
     call jemarq()
     base = basez
@@ -70,8 +70,7 @@ subroutine cormgi(basez, ligrez)
     call jedetr(ligrel//'.REPE')
 !
 !
-    call jeveuo(ligrel//'.LGRF', 'L', vk8=lgrf)
-    nmaila = lgrf(1)
+    call dismoi('NOM_MAILLA', ligrel, 'LIGREL', repk=nmaila)
     ASSERT(nmaila .ne. ' ')
 !
     call jeexin(nmaila//'.CONNEX', iret)

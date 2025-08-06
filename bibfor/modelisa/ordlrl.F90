@@ -93,7 +93,6 @@ subroutine ordlrl(charge, lisrel, nomgd)
     integer(kind=8), pointer :: rlsu(:) => null()
     integer(kind=8), pointer :: rlpo(:) => null()
     integer(kind=8), pointer :: rlnr(:) => null()
-    character(len=8), pointer :: lgrf(:) => null()
     complex(kind=8), pointer :: coef_c(:) => null()
     integer(kind=8), pointer :: coefmax(:) => null()
     real(kind=8), pointer :: coef_r(:) => null()
@@ -110,8 +109,7 @@ subroutine ordlrl(charge, lisrel, nomgd)
 !
     call dismoi('NOM_MODELE', charge, 'CHARGE', repk=mod)
     call dismoi('NOM_LIGREL', mod, 'MODELE', repk=ligrmo)
-    call jeveuo(ligrmo//'.LGRF', 'L', vk8=lgrf)
-    noma = lgrf(1)
+    call dismoi('NOM_MAILLA', ligrmo, 'LIGREL', repk=noma)
     lcolle = .false.
     call jeexin(noma//'.NOMNOE', ier)
     if (ier .ne. 0) then

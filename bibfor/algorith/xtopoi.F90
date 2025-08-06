@@ -55,7 +55,7 @@ subroutine xtopoi(noma, modele)
 !
     integer(kind=8) :: nbout, nbin
     parameter(nbout=7, nbin=3)
-    character(len=8) :: lpaout(nbout), lpain(nbin), licmp(2)
+    character(len=8) :: lpaout(nbout), lpain(nbin), licmp(2), nomail
     character(len=16) :: option
     character(len=19) :: lchout(nbout), lchin(nbin)
 !
@@ -65,7 +65,6 @@ subroutine xtopoi(noma, modele)
     integer(kind=8) :: ifm, niv, ifmdbg, nivdbg, ima, nbma
     integer(kind=8) :: jcesd, jcesl, iad
     integer(kind=8), pointer :: nbsp(:) => null()
-    character(len=8), pointer :: lgrf(:) => null()
     integer(kind=8), pointer :: cesv(:) => null()
 !
 ! ----------------------------------------------------------------------
@@ -83,8 +82,8 @@ subroutine xtopoi(noma, modele)
     else
         debug = .false.
     end if
-    call jeveuo(modele//'.MODELE    .LGRF', 'L', vk8=lgrf)
-    chgeom = lgrf(1)//'.COORDO'
+    call dismoi('NOM_MAILLA', ligrel, 'LIGREL', repk=nomail)
+    chgeom = nomail//'.COORDO'
 !
 ! --- INITIALISATION DES CHAMPS POUR CALCUL
 !

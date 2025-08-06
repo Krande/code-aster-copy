@@ -64,7 +64,6 @@ subroutine fetcrf(nomo, nbsd)
 
     character(len=24) ::  nomgma, nomref
     character(len=24) ::  k24buf
-    character(len=8), pointer :: lgrf(:) => null()
 !
 !
 ! CORPS DU PROGRAMME
@@ -94,9 +93,7 @@ subroutine fetcrf(nomo, nbsd)
     zk8(jadr) = nomo
 
 !     MA: MAILLAGE ASSOCIE AU MODELE
-    call jeveuo(ligrmo//'.LGRF', 'L', vk8=lgrf)
-    ma = lgrf(1)
-
+    call dismoi('NOM_MAILLA', ligrmo, 'LIGREL', repk=ma)
     call dismoi('NB_NO_MAILLA', ma, 'MAILLAGE', repi=nbnoto)
     call dismoi('NB_MA_MAILLA', ma, 'MAILLAGE', repi=nbmato)
     nbmatr = nbmato

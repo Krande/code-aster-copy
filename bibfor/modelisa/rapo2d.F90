@@ -102,7 +102,6 @@ subroutine rapo2d(numdlz, iocc, fonrez, lisrez, chargz)
     real(kind=8), pointer :: inertie_raccord(:) => null()
     character(len=8), pointer :: lisddl(:) => null()
     character(len=8), pointer :: lisno(:) => null()
-    character(len=8), pointer :: lgrf(:) => null()
     real(kind=8), pointer :: vale(:) => null()
 ! --------- FIN  DECLARATIONS  VARIABLES LOCALES --------
 !
@@ -166,8 +165,7 @@ subroutine rapo2d(numdlz, iocc, fonrez, lisrez, chargz)
 !
 ! --- -----------------------------------------------------------------
 ! --- MAILLAGE ASSOCIE AU MODELE
-    call jeveuo(ligrmo//'.LGRF', 'L', vk8=lgrf)
-    noma = lgrf(1)
+    call dismoi('NOM_MAILLA', ligrmo, 'LIGREL', repk=noma)
     grnoma = noma//'.GROUPENO'
 !
 ! --- -----------------------------------------------------------------

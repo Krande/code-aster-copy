@@ -178,7 +178,7 @@ subroutine extche(nchme2, nmaile, nummai, ncmp, nbm, &
 !   NOMS ET ADRESSES DES OJB ASSOCIES AU LIGREL SOUS-JACENT
 !   -------------------------------------------------------
 !
-    character(len=24) :: nrepe, nnoma
+    character(len=24) :: nrepe
     character(len=19) :: nligrl
     character(len=8) :: nmaila, nomgd
     integer(kind=8) :: arepe, anoma
@@ -328,12 +328,9 @@ subroutine extche(nchme2, nmaile, nummai, ncmp, nbm, &
     nligrl = nomaux(1:19)
 !
     nrepe = nligrl//'.REPE'
-    nnoma = nligrl//'.LGRF'
 !
-    call jeveuo(nnoma, 'L', anoma)
+    call dismoi('NOM_MAILLA', nligrl, 'LIGREL', repk=nmaila)
     call jeveuo(nrepe, 'L', arepe)
-!
-    nmaila = zk8(anoma)
 !
     call wkvect(nssche//'.NOMA', 'V V K8', 1, anoma)
 !

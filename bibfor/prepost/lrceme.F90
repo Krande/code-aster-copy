@@ -158,8 +158,10 @@ subroutine lrceme(chanom, nochmd, typech, nomamd, nomaas, &
 !               1234567890123456789
     chames = '&&      .CES.MED   '
     chames(3:8) = nompro
-    call dismoi('NOM_LIGREL', nommod, 'MODELE', repk=ligrel)
-    if (nommod .eq. ' ') ligrel = ' '
+    ligrel = ' '
+    if (nommod .ne. ' ') then
+        call dismoi('NOM_LIGREL', nommod, 'MODELE', repk=ligrel)
+    end if
 !
     call jeexin(ncmpva, iret)
     if (iret .gt. 0) then
