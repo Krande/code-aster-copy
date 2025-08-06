@@ -142,7 +142,10 @@ subroutine lridea(fileUnit, &
     prolo = ' '
 !
     zcmplx = .false.
-    call dismoi('NOM_LIGREL', model, 'MODELE', repk=ligrel)
+    ligrel = ' '
+    if (model .ne. ' ') then
+        call dismoi('NOM_LIGREL', model, 'MODELE', repk=ligrel)
+    end if
 !
 ! - Open file
 !

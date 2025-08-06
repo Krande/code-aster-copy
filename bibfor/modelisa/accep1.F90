@@ -105,6 +105,7 @@ subroutine accep1(modmec, ligrmo, nbm, dir, yang)
 !
 ! CALCULS ELEMENTAIRES
     call dismoi('NOM_MAILLA', ligrmo, 'LIGREL', repk=noma)
+    chgeom = noma//".COORDO"
 !
     lpain(1) = 'PGEOMER'
     lchin(1) = chgeom
