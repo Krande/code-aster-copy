@@ -136,9 +136,9 @@ subroutine lrceme(chanom, nochmd, typech, nomamd, nomaas, &
     call infniv(ifm, nivinf)
 !
     if (nivinf .gt. 1) then
-        write (ifm, 1001) 'DEBUT DE '//nompro
+        write (ifm, 101) 'DEBUT DE '//nompro
     end if
-1001 format(/, 10('='), a, 10('='),/)
+101 format(/, 10('='), a, 10('='),/)
 !
 !====
 ! 1. ALLOCATION D'UN CHAM_ELEM_S  (CHAMES)
@@ -158,10 +158,6 @@ subroutine lrceme(chanom, nochmd, typech, nomamd, nomaas, &
 !               1234567890123456789
     chames = '&&      .CES.MED   '
     chames(3:8) = nompro
-    ligrel = ' '
-    if (nommod .ne. ' ') then
-        call dismoi('NOM_LIGREL', nommod, 'MODELE', repk=ligrel)
-    end if
 !
     call jeexin(ncmpva, iret)
     if (iret .gt. 0) then
@@ -227,7 +223,7 @@ subroutine lrceme(chanom, nochmd, typech, nomamd, nomaas, &
 ! 3. LECTURE POUR CHAQUE TYPE DE SUPPORT
 !====
 !
-    call lrcame(nrofic, nochmd, nomamd, nomaas, ligrel, &
+    call lrcame(nrofic, nochmd, nomamd, nomaas, nommod, &
                 option, param, typech, typent, nbpgma, &
                 nbpgmm, nbspmm, nbcmpv, ncmpva, ncmpvm, &
                 iinst, numpt, numord, inst, crit, &
@@ -245,6 +241,10 @@ subroutine lrceme(chanom, nochmd, typech, nomamd, nomaas, &
         call cescar(chames, chanom, 'V')
         nncp = 0
     else
+        ligrel = ' '
+        if (nommod .ne. ' ') then
+            call dismoi('NOM_LIGREL', nommod, 'MODELE', repk=ligrel)
+        end if
         call cescel(chames, ligrel, option, param, prolz, &
                     nncp, 'V', chanom, 'F', ibid)
     end if
@@ -278,7 +278,7 @@ subroutine lrceme(chanom, nochmd, typech, nomamd, nomaas, &
     call jedema()
 !
     if (nivinf .gt. 1) then
-        write (ifm, 1001) 'FIN DE '//nompro
+        write (ifm, 101) 'FIN DE '//nompro
     end if
 !
 end subroutine

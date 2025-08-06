@@ -42,10 +42,6 @@ toFieldOnNodes( const FieldOnCells< ValueType > &field ) {
     std::string type = "NOEU", celmod = " ", base = "G";
     std::string prol = "OUI", model = " ";
 
-    if ( field.getModel() ) {
-        model = field.getModel()->getName();
-    }
-
     CALLO_CHPCHD( field.getName(), type, celmod, prol, base, chamno->getName(), model );
 
     chamno->build( field.getMesh() );

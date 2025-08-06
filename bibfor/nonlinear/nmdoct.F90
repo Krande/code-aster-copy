@@ -26,6 +26,7 @@ subroutine nmdoct(listLoad, ds_contact)
 #include "asterf_types.h"
 #include "asterfort/jeexin.h"
 #include "asterfort/jeveuo.h"
+#include "asterfort/dismoi.h"
 #include "asterfort/utmess.h"
 #include "LoadTypes_type.h"
 !
@@ -53,7 +54,6 @@ subroutine nmdoct(listLoad, ds_contact)
     character(len=8) :: loadFunc, funcCste
     character(len=1), parameter :: jvBase = "V"
     character(len=4), parameter :: phenom = "MECA"
-    character(len=8), pointer :: v_lgrf(:) => null()
     character(len=24), pointer :: listLoadName(:) => null()
 !
 ! --------------------------------------------------------------------------------------------------
@@ -68,8 +68,7 @@ subroutine nmdoct(listLoad, ds_contact)
             loadName24 = listLoadName(iLoad)
             call jeexin(loadName24(1:19)//'.LGRF', iret)
             if (iret .ne. 0) then
-                call jeveuo(loadName24(1:19)//'.LGRF', 'L', vk8=v_lgrf)
-                lag12 = v_lgrf(3)
+                call dismoi('TYPE_LAGR', loadName24(1:19), 'LIGREL', repk=lag12)
                 if (lag12 .eq. 'LAG1') then
                     call utmess('F', 'MECANONLINE_5')
                 end if

@@ -31,12 +31,7 @@
 #include "MemoryManager/JeveuxVector.h"
 #include "Meshes/BaseMesh.h"
 #include "Meshes/MeshExplorer.h"
-#include "Modeling/Model.h"
 #include "Modeling/Partition.h"
-
-// Forward declaration
-class Model;
-using ModelPtr = std::shared_ptr< Model >;
 
 /**
  * @class FiniteElementDescriptor
@@ -77,9 +72,6 @@ class FiniteElementDescriptor : public DataStructure {
     const ConnectivityVirtualCellsExplorer _explorer;
     /** @brief Object to loop over list of group of cells */
     const ConnectivityVirtualCellsExplorer _explorer2;
-    /** @brief Model if known */
-    // We use a weak_ptr to avoid circular reference
-    std::weak_ptr< Model > _model;
     PartitionPtr _partition;
 
     /**
@@ -102,12 +94,8 @@ class FiniteElementDescriptor : public DataStructure {
 
     FiniteElementDescriptor( const BaseMeshPtr mesh );
 
-    FiniteElementDescriptor( const ModelPtr model );
-
     FiniteElementDescriptor( const FiniteElementDescriptorPtr FEDesc,
                              const VectorString &groupOfCells );
-
-    FiniteElementDescriptor( const ModelPtr model, const VectorString &groupOfCells );
 
     /**
      * @brief Destructor
@@ -141,10 +129,6 @@ class FiniteElementDescriptor : public DataStructure {
     const BaseMeshPtr getMesh() const;
 
     void setMesh( const BaseMeshPtr &currentMesh );
-
-    void setModel( const ModelPtr model );
-
-    ModelPtr getModel();
 
     int getPhysics( void ) const;
 

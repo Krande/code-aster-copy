@@ -213,16 +213,11 @@ subroutine irchme(ifichi, chanom, partie, nochmd, noresu, &
             nocelk = chanom//'.CELK'
             call jeveuo(nocelk, 'L', icelk)
             ligrel = zk24(icelk) (1:19)
-            call dismoi('NOM_MODELE', ligrel, 'LIGREL', repk=modele)
-
-            call exisd('MODELE', modele, iret)
-            if (iret .eq. 0) then
-                if (noresu .ne. ' ') then
-                    call rsadpa(noresu, 'L', 1, 'MODELE', numord, &
-                                0, sjv=iaux, styp=saux08, istop=0)
-                    modele = zk8(iaux)
-                    call exisd('MODELE', modele, iret)
-                end if
+            if (noresu .ne. ' ') then
+                call rsadpa(noresu, 'L', 1, 'MODELE', numord, &
+                            0, sjv=iaux, styp=saux08, istop=0)
+                modele = zk8(iaux)
+                call exisd('MODELE', modele, iret)
             end if
             if (iret .eq. 0) then
 !            -- En absence d'un modele on va en construire un faux pour l'impression.

@@ -65,9 +65,6 @@ FiniteElementDescriptor::FiniteElementDescriptor( const std::string &name, const
 FiniteElementDescriptor::FiniteElementDescriptor( const BaseMeshPtr mesh )
     : FiniteElementDescriptor( DataStructureNaming::getNewName(), mesh ) {};
 
-FiniteElementDescriptor::FiniteElementDescriptor( const ModelPtr model )
-    : FiniteElementDescriptor( model->getMesh() ) {};
-
 FiniteElementDescriptor::FiniteElementDescriptor( const FiniteElementDescriptorPtr FEDesc,
                                                   const VectorString &groupOfCells )
     : FiniteElementDescriptor( FEDesc->getMesh() ) {
@@ -81,12 +78,6 @@ FiniteElementDescriptor::FiniteElementDescriptor( const FiniteElementDescriptorP
     CALL_EXLIM2( listOfCells.data(), &nbCells, FEDesc->getName(), base, getName() );
     this->build();
 };
-
-FiniteElementDescriptor::FiniteElementDescriptor( const ModelPtr model,
-                                                  const VectorString &groupOfCells )
-    : FiniteElementDescriptor( model->getFiniteElementDescriptor(), groupOfCells ) {
-    setModel( model );
-}
 
 FiniteElementDescriptor::FiniteElementDescriptorPtr
 FiniteElementDescriptor::restrict( const VectorString &groupsOfCells ) const {
@@ -206,10 +197,6 @@ int FiniteElementDescriptor::getPhysics( void ) const {
 
     return -1;
 };
-
-void FiniteElementDescriptor::setModel( const ModelPtr model ) { _model = model; };
-
-ModelPtr FiniteElementDescriptor::getModel() { return _model.lock(); }
 
 ASTERINTEGER FiniteElementDescriptor::numberOfSuperElement() {
     const std::string typeco( "LIGREL" );

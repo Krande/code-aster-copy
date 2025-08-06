@@ -464,10 +464,12 @@ subroutine dismlg(questi, nomobz, repi, repkz, ierd)
         call jeveuo(nomob//'.NBNO', 'L', vi=nbno)
         repi = nbno(1)
 
-    else if (questi .eq. 'NOM_MODELE') then
-        !ASSERT(ASTER_FALSE)
+    else if (questi .eq. 'TYPE_LAGR') then
         call jeveuo(nomob//'.LGRF', 'L', jlgrf)
-        repk = zk8(jlgrf-1+2)
+        repk = zk8(jlgrf-1+3)
+
+    else if (questi .eq. 'NOM_MODELE') then
+        ASSERT(ASTER_FALSE)
 
     else if (questi .eq. 'PHENOMENE') then
         call jelira(nomob//'.LGRF', 'DOCU', cval=phenom)

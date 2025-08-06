@@ -137,10 +137,10 @@ void DEFSSSSSSP( NUMER3_WRAP, numer3_wrap, const char *, STRING_SIZE, const char
 void DEFSSPP( NUME_DDL_MATR, nume_ddl_matr, const char *, STRING_SIZE, const char *, STRING_SIZE,
               ASTERINTEGER *, ASTERLOGICAL * );
 
-#define CALLO_NUME_DDL_CHAMELEM( a, b, c, d, e )                                                   \
-    CALLOOOOP( NUME_DDL_CHAMELEM, nume_ddl_chamelem, a, b, c, d, e )
-void DEFSSSSP( NUME_DDL_CHAMELEM, nume_ddl_chamelem, const char *, STRING_SIZE, const char *,
-               STRING_SIZE, const char *, STRING_SIZE, const char *, STRING_SIZE, ASTERLOGICAL * );
+#define CALLO_NUME_DDL_CHAMELEM( a, b, c, d )                                                      \
+    CALLOOOP( NUME_DDL_CHAMELEM, nume_ddl_chamelem, a, b, c, d )
+void DEFSSSP( NUME_DDL_CHAMELEM, nume_ddl_chamelem, const char *, STRING_SIZE, const char *,
+              STRING_SIZE, const char *, STRING_SIZE, ASTERLOGICAL * );
 
 #define CALL_MVMULT( a, b, c ) CALLOOO( MVMULT, mvmult, a, b, c )
 void DEFSSS( MVMULT, mvmult, const char *, STRING_SIZE, const char *, STRING_SIZE, const char *,

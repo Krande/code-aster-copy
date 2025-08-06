@@ -110,9 +110,9 @@ subroutine lrcnme(chanom, nochmd, nomamd, nomaas, nomgd, &
     parameter(edlect=0)
 !
     character(len=1) :: saux01
-    character(len=8) :: saux08, parbid
+    character(len=8) :: saux08, parbid, mobid
     character(len=19) :: chamn
-    character(len=19) :: chamns, ligbid
+    character(len=19) :: chamns
     character(len=24) :: optbid
     character(len=64) :: nomcha
     character(len=200) :: nofimd
@@ -202,10 +202,10 @@ subroutine lrcnme(chanom, nochmd, nomamd, nomaas, nomgd, &
 ! 2. LECTURE
 !====
 !
-    ligbid = ' '
+    mobid = ' '
     optbid = ' '
     parbid = ' '
-    call lrcame(nrofic, nochmd, nomamd, nomaas, ligbid, &
+    call lrcame(nrofic, nochmd, nomamd, nomaas, mobid, &
                 optbid, parbid, 'NOEU', typent, unbid, &
                 unbid, unbid, nbcmpv, ncmpva, ncmpvm, &
                 iinst, numpt, numord, inst, crit, &

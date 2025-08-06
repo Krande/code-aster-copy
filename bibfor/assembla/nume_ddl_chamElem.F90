@@ -16,7 +16,7 @@
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
 !
-subroutine nume_ddl_chamElem(numeDofZ, listLigrelJvZ, modeLocZ, modelZ, verbose)
+subroutine nume_ddl_chamElem(numeDofZ, listLigrelJvZ, modeLocZ, verbose)
 !
     implicit none
 !
@@ -31,7 +31,7 @@ subroutine nume_ddl_chamElem(numeDofZ, listLigrelJvZ, modeLocZ, modelZ, verbose)
 !
     character(len=*), intent(in) :: numeDofZ
     character(len=*), intent(in) :: listLigrelJvZ
-    character(len=*), intent(in) :: modeLocZ, modelZ
+    character(len=*), intent(in) :: modeLocZ
     aster_logical, intent(in) :: verbose
 !
 ! ----------------------------------------------------------------------------------------------
@@ -52,7 +52,6 @@ subroutine nume_ddl_chamElem(numeDofZ, listLigrelJvZ, modeLocZ, modelZ, verbose)
     character(len=14) :: numeDof
     character(len=24), pointer :: listLigr(:) => null(), listLigrJv(:) => null()
     integer(kind=8) :: nbLigr, nbLigrJv
-    character(len=24) :: modelLigrel
 !
 ! ----------------------------------------------------------------------------------------------
 !
@@ -61,7 +60,6 @@ subroutine nume_ddl_chamElem(numeDofZ, listLigrelJvZ, modeLocZ, modelZ, verbose)
     end if
 !
     numeDof = numeDofZ
-    call dismoi("NOM_LIGREL", modelZ, "MODELE", repk=modelLigrel)
 
 ! - Set list of ligrel
     call jeveuo(listLigrelJvZ, 'L', vk24=listLigrJv)
@@ -75,7 +73,7 @@ subroutine nume_ddl_chamElem(numeDofZ, listLigrelJvZ, modeLocZ, modelZ, verbose)
 ! - Numbering
     call numero(numeDof, 'GG', &
                 nbLigr, listLigr, &
-                modeLocZ_=modeLocZ, modelZ_=modelZ)
+                modeLocZ_=modeLocZ)
 
     AS_DEALLOCATE(vk24=listLigr)
 !

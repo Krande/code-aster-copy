@@ -115,12 +115,6 @@ Returns:
             Returns:
                 BaseMesh: Mesh object
             )" )
-        .def( "getModel", &FieldOnCellsReal::getModel, R"(
-            Return the Model associated with the FieldOnCellsReal object
-
-            Returns:
-                Model: Model object
-            )" )
         .def( "setDescription", &FieldOnCellsReal::setDescription )
         .def( "getDescription", &FieldOnCellsReal::getDescription )
         .def( "build", &FieldOnCellsReal::build,
@@ -272,12 +266,6 @@ Returns:
             Returns:
                 BaseMesh: Mesh object
             )" )
-        .def( "getModel", &FieldOnCellsComplex::getModel, R"(
-            Return the Model associated with the FieldOnCellsReal object
-
-            Returns:
-                Model: Model object
-            )" )
         .def( "build", &FieldOnCellsComplex::build,
               py::arg( "feds" ) = std::vector< FiniteElementDescriptorPtr >() )
         .def( "setValues",
@@ -377,12 +365,6 @@ Returns:
             Returns:
                 BaseMesh: Mesh object
             )" )
-        .def( "getModel", &FieldOnCellsLong::getModel, R"(
-            Return the Model associated with the FieldOnCellsReal object
-
-            Returns:
-                Model: Model object
-            )" )
         .def( "build", &FieldOnCellsLong::build,
               py::arg( "feds" ) = std::vector< FiniteElementDescriptorPtr >() )
         .def( "setValues",
@@ -456,12 +438,6 @@ Returns:
 
             Returns:
                 BaseMesh: Mesh object
-            )" )
-        .def( "getModel", &FieldOnCellsChar8::getModel, R"(
-            Return the Model associated with the FieldOnCellsReal object
-
-            Returns:
-                Model: Model object
             )" )
         .def( "build", &FieldOnCellsChar8::build,
               py::arg( "feds" ) = std::vector< FiniteElementDescriptorPtr >() );

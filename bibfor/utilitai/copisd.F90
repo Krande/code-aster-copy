@@ -435,13 +435,6 @@ subroutine copisd(typesd, base, sd1, sd2)
 !
         call jedup1(k81//'.MAILLE', bas2, k82//'.MAILLE')
 !
-!       -- IL FAUT METTRE A JOUR LGRF(2):
-        call jeexin(k82//'.MODELE    .LGRF', iexi)
-        if (iexi .gt. 0) then
-            call jeveuo(k82//'.MODELE    .LGRF', 'E', j1)
-            zk8(j1-1+2) = k82
-        end if
-!
     else if (typesd .eq. 'PARTITION') then
 !     -----------------------------------
         k81 = sd1

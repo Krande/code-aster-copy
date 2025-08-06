@@ -43,10 +43,6 @@
 #include "Supervis/ResultNaming.h"
 #include "Utilities/SyntaxDictionary.h"
 
-class FiniteElementDescriptor;
-
-using FiniteElementDescriptorPtr = std::shared_ptr< FiniteElementDescriptor >;
-
 /**
  * @class Model
  * @brief Datastructure for model (AFFE_MODELE)

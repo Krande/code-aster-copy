@@ -77,7 +77,6 @@ subroutine op0113()
     integer(kind=8) :: jmail2, jtab, jxc
     character(len=8) :: modelx, mod1, modthx, noma, k8cont, k8condi, decou
     aster_logical :: linter
-    character(len=8), pointer :: lgrf2(:) => null()
 !
     data motfac/' '/
 !
@@ -247,8 +246,6 @@ subroutine op0113()
 !
     call jedupo(ligr1//'.NBNO', 'G', ligr2//'.NBNO', .false._1)
     call jedupo(ligr1//'.LGRF', 'G', ligr2//'.LGRF', .false._1)
-    call jeveuo(ligr2//'.LGRF', 'E', vk8=lgrf2)
-    lgrf2(2) = modelx
 !
     call jedup1(mod1//'.NEMA', 'G', modelx//'.NEMA')
     call jedup1(mod1//'.SSSA', 'G', modelx//'.SSSA')

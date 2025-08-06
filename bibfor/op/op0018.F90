@@ -165,7 +165,6 @@ subroutine op0018()
     call wkvect(model//'.MODELE    .LGRF', 'G V K8', 4, vk8=p_model_lgrf)
     call wkvect(model//'.MODELE    .NBNO', 'G V I', 1, vi=p_model_nbno)
     p_model_lgrf(1) = mesh
-    p_model_lgrf(2) = model
     p_model_nbno(1) = 0
 
 ! - Get phenomenon

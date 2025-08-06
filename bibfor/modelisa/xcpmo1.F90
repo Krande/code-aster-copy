@@ -202,7 +202,6 @@ subroutine xcpmo1(modmes, modthx, modmex)
     integer(kind=8), pointer :: mmes(:) => null()
     integer(kind=8), pointer :: mmex(:) => null()
     integer(kind=8), pointer :: mthx(:) => null()
-    character(len=8), pointer :: lgrf(:) => null()
 !
 !   elements 3D lineaires mecaniques classiques
 ! ---------------------------------------------------------------------
@@ -388,8 +387,6 @@ subroutine xcpmo1(modmes, modthx, modmex)
 !
     call jedupo(ligmex//'.NBNO', 'G', ligrtp//'.NBNO', .false._1)
     call jedupo(ligmex//'.LGRF', 'G', ligrtp//'.LGRF', .false._1)
-    call jeveuo(ligrtp//'.LGRF', 'E', vk8=lgrf)
-    lgrf(2) = modmex
 !
 ! - on ecrase ligmex avec ligrtp
 !

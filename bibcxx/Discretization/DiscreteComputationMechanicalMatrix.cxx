@@ -899,7 +899,7 @@ ElementaryMatrixDisplacementRealPtr DiscreteComputation::getContactMatrix(
 
     // Create output vector
     auto elemMatr =
-        std::make_shared< ElementaryMatrixDisplacementReal >( Fed_pair->getModel(), option );
+        std::make_shared< ElementaryMatrixDisplacementReal >( _phys_problem->getModel(), option );
 
     // Add output elementary
     calcul->addOutputElementaryTerm( "PMATUUR", std::make_shared< ElementaryTermReal >() );

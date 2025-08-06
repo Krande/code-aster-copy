@@ -43,7 +43,6 @@ class CalcChamElem(ExecuteCommand):
             keywords (dict): User's keywords.
         """
         fed = keywords["MODELE"].getFiniteElementDescriptor()
-        fed.setModel(keywords["MODELE"])
         self._result.setDescription(fed)
         self._result.build()
 

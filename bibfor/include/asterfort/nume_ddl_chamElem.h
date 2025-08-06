@@ -17,10 +17,10 @@
 ! --------------------------------------------------------------------
 !
 interface
-    subroutine nume_ddl_chamElem(numeDofZ, listLigrelJvZ, modeLocZ, modelZ, verbose)
+    subroutine nume_ddl_chamElem(numeDofZ, listLigrelJvZ, modeLocZ, verbose)
         character(len=*), intent(in) :: numeDofZ
         character(len=*), intent(in) :: listLigrelJvZ
-        character(len=*), intent(in) :: modeLocZ, modelZ
+        character(len=*), intent(in) :: modeLocZ
         aster_logical, intent(in) :: verbose
     end subroutine nume_ddl_chamElem
 end interface

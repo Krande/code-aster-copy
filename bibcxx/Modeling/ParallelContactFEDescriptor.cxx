@@ -83,7 +83,6 @@ ParallelContactFEDescriptor::ParallelContactFEDescriptor( const std::string &nam
         std::set< int > ranks;
         bool slaveDN = false;
     };
-    setModel( model );
     const int rank = getMPIRank();
     const int nbProcs = getMPISize();
 
@@ -415,7 +414,6 @@ ParallelContactFEDescriptor::ParallelContactFEDescriptor(
         std::set< int > ranks;
         bool slaveDN = false;
     };
-    setModel( model );
     const int rank = getMPIRank();
     const int nbProcs = getMPISize();
     const auto &fEType = connectionModel->getFiniteElementType();

@@ -80,9 +80,9 @@ subroutine nueffe(nbLigr, listLigr, base, numeDofZ, renumZ, &
 !
     aster_logical, parameter :: debug = ASTER_FALSE
     integer(kind=8) :: iLigr, iret
-    character(len=8) :: typeLagr, model
-    character(len=24) :: modeLoc, idenRela, ligrelName
-    character(len=8), pointer :: ligrelLgrf(:) => null()
+    character(len=8) :: typeLagr, model, typeLagrC
+    character(len=24) :: modeLoc, idenRela
+    character(len=19) :: ligrelName
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -103,14 +103,14 @@ subroutine nueffe(nbLigr, listLigr, base, numeDofZ, renumZ, &
 ! - No double Lagrange on contact virtual cells
     typeLagr = " "
     do iLigr = 2, nbLigr
-        ligrelName = listLigr(iLigr)
+        ligrelName = listLigr(iLigr) (1:19)
         call exisd('LIGREL', ligrelName, iret)
         if (iret .ne. 0) then
-            call jeveuo(ligrelName(1:19)//'.LGRF', 'L', vk8=ligrelLgrf)
+            call dismoi('TYPE_LAGR', ligrelName, 'LIGREL', repk=typeLagrC)
             if (typeLagr .eq. " ") then
-                typeLagr = ligrelLgrf(3)
+                typeLagr = typeLagrC
             end if
-            if (typeLagr .ne. ligrelLgrf(3)) then
+            if (typeLagr .ne. typeLagrC) then
                 call utmess('F', 'ASSEMBLA_6')
             end if
         end if
