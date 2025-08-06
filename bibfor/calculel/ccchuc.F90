@@ -173,8 +173,8 @@ subroutine ccchuc(sdresu_in, sdresu_out, field_type, nume_field_out, type_comp, 
             call dismoi('TYPE_CHAMP', field_in, 'CHAMP', repk=type_field_in)
             if (type_field_in .ne. 'NOEU') then
                 call dismoi('NOM_LIGREL', field_in, 'CHAMP', repk=ligrel_old)
+                call dismoi('NOM_MAILLA', field_in, 'CHAMP', repk=nomail)
                 call dismoi('NOM_MODELE', field_in, 'CHAMP', repk=model)
-                call dismoi('NOM_MAILLA', model, 'MODELE', repk=nomail)
                 n0 = getexm(' ', 'GROUP_MA')
                 n1 = getexm(' ', 'MAILLE')
                 list_elem = '&&CCCHUC.MES_MAILLES'

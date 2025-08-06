@@ -56,7 +56,7 @@ subroutine fondpl(modele, mate, mateco, numedd, neq, chondp, &
     end do
 !
     chinst = '&&CHINST'
-    call mecact('V', chinst, 'MODELE', modele(1:8)//'.MODELE', 'INST_R', &
+    call mecact('V', chinst, 'MODELE', modele, 'INST_R', &
                 ncmp=1, nomcmp='INST', sr=temps)
     call dismoi('NOM_LIGREL', modele, 'MODELE', repk=ligrel)
     call dismoi('NOM_MAILLA', ligrel, 'LIGREL', repk=noma)

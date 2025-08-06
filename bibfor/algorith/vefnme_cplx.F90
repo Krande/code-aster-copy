@@ -158,7 +158,7 @@ subroutine vefnme_cplx(option, base, &
         veceli = '&&VEFNMI'
     end if
     if (ligrel .eq. ' ') then
-        ligrel_local = model(1:8)//'.MODELE'
+        call dismoi('NOM_LIGREL', model, 'MODELE', repk=ligrel_local)
     else
         ligrel_local = ligrel
     end if

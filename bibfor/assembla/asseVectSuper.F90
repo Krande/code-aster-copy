@@ -71,6 +71,7 @@ subroutine asseVectSuper(model, mesh, vectElem, &
     integer(kind=8), pointer :: prno(:) => null()
     character(len=8) :: loadCaseName, superCellName
     character(len=14) :: superCellNume
+    character(len=19) :: ligrel
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -82,7 +83,8 @@ subroutine asseVectSuper(model, mesh, vectElem, &
     if (nbSuperCell == 0) then
         goto 999
     end if
-    call jeveuo(model//'.MODELE    .SSSA', 'L', vi=sssa)
+    call dismoi('NOM_LIGREL', model, 'MODELE', repk=ligrel)
+    call jeveuo(ligrel//'.SSSA', 'L', vi=sssa)
     nbLoadCase = 0
     call jeexin(vectElem//'.RELC', iret)
     if (iret .ne. 0) then

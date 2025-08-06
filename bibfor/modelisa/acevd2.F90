@@ -57,7 +57,6 @@ subroutine acevd2(noma, nomo, mcf, lmax, nbocc)
     integer(kind=8), parameter :: nbcar = 100
     integer(kind=8) :: ier, i3d, i2d, ndim, ioc, ng, nm, ncar, icar
     integer(kind=8) :: ii, nbma, ialima
-    character(len=1) :: foue
     character(len=8) :: nomu, car(nbcar)
     character(len=16) :: concep, cmd
     character(len=24) :: tmpdis, grpma
@@ -92,12 +91,12 @@ subroutine acevd2(noma, nomo, mcf, lmax, nbocc)
                     do ii = 1, ng
                         call jelira(jexnom(grpma, zjdls(ii)), 'LONUTI', nbma)
                         call jeveuo(jexnom(grpma, zjdls(ii)), 'L', ialima)
-                        call acevtr(noma, nomo, 2, zk24(1), zi(ialima), nbma, ndim)
+                        call acevtr(nomo, 2, zk24(1), zi(ialima), nbma, ndim)
                     end do
                 end if
 !               MAILLE = toutes les mailles  de la liste de mailles
                 if (nm .gt. 0) then
-                    call acevtr(noma, nomo, 1, zjdls, zi(1), nm, ndim)
+                    call acevtr(nomo, 1, zjdls, zi(1), nm, ndim)
                 end if
             end if
         end do

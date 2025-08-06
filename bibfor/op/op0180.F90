@@ -198,8 +198,8 @@ subroutine op0180()
                 write (k3b, '(I3)') icabl
                 call utmess('F', 'CABLE0_17', sk=k3b)
             end if
-            valk(2) = noancr(1)
-            valk(4) = noancr(2)
+            valk(2) = noancr(1) (1:8)
+            valk(4) = noancr(2) (1:8)
         end if
 !
 ! TEST DU TYPE D'ANCRAGE

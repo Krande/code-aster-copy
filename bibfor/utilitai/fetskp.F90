@@ -64,7 +64,8 @@ subroutine fetskp(mod, meth, nbpart)
     real(kind=8) :: tmps(7)
     character(len=8) :: ma
     character(len=8) :: kersco
-    character(len=24) :: k24b
+    character(len=24) :: k24b, liel
+    character(len=19) :: ligrel
     integer(kind=4), pointer :: vedlo(:) => null()
     integer(kind=8), pointer :: vrenum1(:) => null()
     integer(kind=4), pointer :: vvelo(:) => null()
@@ -92,20 +93,23 @@ subroutine fetskp(mod, meth, nbpart)
     AS_ALLOCATE(vi=vrenum1, size=nbmato)
 
     nbmato = 0
-    call jeexin(mod//'.MODELE    .LIEL', iexi)
+
+    call dismoi('NOM_LIGREL', mod, 'MODELE', repk=ligrel)
+    liel = ligrel//".LIEL"
+    call jeexin(liel, iexi)
     if (iexi .eq. 0) then
         call utmess('F', 'PARTITION_2')
     end if
-    call jelira(mod//'.MODELE    .LIEL', 'NMAXOC', nocc)
+    call jelira(liel, 'NMAXOC', nocc)
     do iocc = 1, nocc
-        call jelira(jexnum(mod//'.MODELE    .LIEL', iocc), 'LONMAX', nbma)
+        call jelira(jexnum(liel, iocc), 'LONMAX', nbma)
         nbmato = nbmato+nbma-1
     end do
     call wkvect('&&FETSKP.RENUM', 'V V I', nbmato, renum)
     id = 1
     do iocc = 1, nocc
-        call jelira(jexnum(mod//'.MODELE    .LIEL', iocc), 'LONMAX', nbma)
-        call jeveuo(jexnum(mod//'.MODELE    .LIEL', iocc), 'L', idma)
+        call jelira(jexnum(liel, iocc), 'LONMAX', nbma)
+        call jeveuo(jexnum(liel, iocc), 'L', idma)
         do ima = 1, nbma-1
             zi(renum-1+id) = zi(idma-1+ima)
 ! ----- ON VERIFIE QUE LE MODELE NE CONTIENT PAS DE MAILLES TARDIVES

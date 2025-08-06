@@ -19,9 +19,7 @@
 !
 !
 interface
-    subroutine acevtr(noma, nomo, ityp, noms, itab,&
-                      nn, idim)
-        character(len=8) :: noma
+    subroutine acevtr(nomo, ityp, noms, itab, nn, idim)
         character(len=8) :: nomo
         integer(kind=8) :: ityp
         character(len=24) :: noms(*)

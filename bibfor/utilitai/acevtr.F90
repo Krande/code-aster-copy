@@ -16,8 +16,7 @@
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
 
-subroutine acevtr(noma, nomo, ityp, noms, itab, &
-                  nn, idim)
+subroutine acevtr(nomo, ityp, noms, itab, nn, idim)
 !.======================================================================
     implicit none
 !
@@ -36,7 +35,7 @@ subroutine acevtr(noma, nomo, ityp, noms, itab, &
 #include "asterfort/char8_to_int.h"
 !
     character(len=24) :: noms(*)
-    character(len=8) :: nomo, noma
+    character(len=8) :: nomo
     integer(kind=8) :: ityp, nn, idim, itab(*)
 !
 !   ARGUMENT        E/S  TYPE         ROLE

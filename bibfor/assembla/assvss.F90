@@ -83,7 +83,7 @@ subroutine assvss(base, vec, vecel, nu, vecpro, &
     character(len=1) :: bas
     character(len=8) :: ma, mo, mo2, nogdsi, nogdco, nomcas
     character(len=14) :: nudev
-    character(len=19) :: vecas, vprof
+    character(len=19) :: vecas, vprof, ligrel
     character(len=24) :: knueq, kmaila, k24prn
     character(len=24) :: kvelil, kveref, knequa, kvale
     integer(kind=8) :: icodla(nbecmx), icodge(nbecmx)
@@ -240,7 +240,8 @@ subroutine assvss(base, vec, vecel, nu, vecpro, &
         nomcas = ' '
         call dismoi('NB_SM_MAILLA', mo, 'MODELE', repi=nbsma)
         call dismoi('NOM_MAILLA', mo, 'MODELE', repk=ma)
-        call jeveuo(mo//'.MODELE    .SSSA', 'L', vi=sssa)
+        call dismoi('NOM_LIGREL', mo, 'MODELE', repk=ligrel)
+        call jeveuo(ligrel//'.SSSA', 'L', vi=sssa)
         call ssvalv('DEBUT', nomcas, mo, ma, 0, &
                     idresl, ncmpel, instap)
         call jelira(vecel//'.RELC', 'NUTIOC', nbchar)

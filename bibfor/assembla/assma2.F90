@@ -54,6 +54,7 @@ subroutine assma2(ldistme, lmasym, tt, nu14, ncmp, matel, &
     integer(kind=8) :: lgtmp2
 !-----------------------------------------------------------------------
     character(len=16) :: optio
+    character(len=19) :: ligrel
     aster_logical :: lmesym
     character(len=8) :: mo, ma, nogdco, nogdsi, nomacr
     character(len=14) :: num2
@@ -107,7 +108,8 @@ subroutine assma2(ldistme, lmasym, tt, nu14, ncmp, matel, &
     call dismoi('NB_NO_MAILLA', mo, 'MODELE', repi=nm)
     call dismoi('NB_SM_MAILLA', mo, 'MODELE', repi=nbsma)
     call jeveuo(ma//'.NOMACR', 'L', vk8=vnomacr)
-    call jeveuo(mo//'.MODELE    .SSSA', 'L', vi=sssa)
+    call dismoi('NOM_LIGREL', mo, 'MODELE', repk=ligrel)
+    call jeveuo(ligrel//'.SSSA', 'L', vi=sssa)
 !
     call jeveuo(nu14//'.SMOS.SMDI', 'L', jsmdi)
     call jeveuo(nu14//'.SMOS.SMHC', 'L', jsmhc)
