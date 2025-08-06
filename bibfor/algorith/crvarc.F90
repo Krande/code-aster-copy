@@ -38,6 +38,7 @@ subroutine crvarc()
 #include "asterfort/assert.h"
 #include "asterfort/calcul.h"
 #include "asterfort/cesvar.h"
+#include "asterfort/dismoi.h"
 #include "asterfort/detrsd.h"
 #include "asterfort/exlima.h"
 #include "asterfort/getvid.h"
@@ -183,7 +184,7 @@ subroutine crvarc()
     lchin(2) = chcara(7)
 !
     if (LeCas .eq. 'CHAMP') then
-        ligrel = modele//'.MODELE'
+        call dismoi('NOM_LIGREL', modele, 'MODELE', repk=ligrel)
         chinst = '&&CRVRC1.CHINST'
         !
         lpain(3) = 'PTEMPEF'

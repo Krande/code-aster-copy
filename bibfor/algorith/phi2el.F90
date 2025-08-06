@@ -24,6 +24,7 @@ subroutine phi2el(modele, mateco, accel, phibar, &
 #include "jeveux.h"
 #include "asterfort/calcul.h"
 #include "asterfort/codent.h"
+#include "asterfort/dismoi.h"
 #include "asterfort/jedema.h"
 #include "asterfort/jeecra.h"
 #include "asterfort/jeexin.h"
@@ -85,7 +86,7 @@ subroutine phi2el(modele, mateco, accel, phibar, &
         call jeveuo(ve2, 'E', jlve)
     end if
 !
-    ligrmo = modele(1:8)//'.MODELE'
+    call dismoi('NOM_LIGREL', modele, 'MODELE', repk=ligrmo)
 !
     call megeom(modele(1:8), chgeom)
 !

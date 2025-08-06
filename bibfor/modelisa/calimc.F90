@@ -145,7 +145,7 @@ subroutine calimc(chargz)
 ! --- mailllage
 !
     call dismoi('NOM_MODELE', charge, 'CHARGE', repk=mod)
-    ligrmo = mod(1:8)//'.MODELE'
+    call dismoi('NOM_LIGREL', mod, 'MODELE', repk=ligrmo)
     call jeveuo(ligrmo//'.LGRF', 'L', vk8=lgrf)
     mailla = lgrf(1)
     lcolle = .false.

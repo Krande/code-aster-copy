@@ -143,7 +143,7 @@ subroutine op0183()
 ! - Get main parameters from user
     call medomm(model, materField, mateco, caraElem)
     ASSERT(model .ne. ' ')
-    ligrel = model(1:8)//'.MODELE'
+    call dismoi('NOM_LIGREL', model, 'MODELE', repk=ligrel)
 
 ! - Get loads/BC and create list of loads datastructure
     listLoadPrep%model = model(1:8)

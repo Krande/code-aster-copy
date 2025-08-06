@@ -32,6 +32,7 @@ subroutine irmeta(ifi, field_med, meta_elno, field_loca, model, &
 #include "asterfort/cesexi.h"
 #include "asterfort/cescrm.h"
 #include "asterfort/cescel.h"
+#include "asterfort/dismoi.h"
 #include "asterfort/jedetc.h"
 #include "asterfort/jedetr.h"
 #include "asterfort/jelira.h"
@@ -133,7 +134,7 @@ subroutine irmeta(ifi, field_med, meta_elno, field_loca, model, &
     field_type = 'META_ELNO'
     ASSERT(field_loca .eq. 'ELNO')
     codret = 0
-    ligrel = model//'.MODELE'
+    call dismoi('NOM_LIGREL', model, 'MODELE', repk=ligrel)
 
 ! - Get name of <CARTE> COMPORMETA
     call rsexch(' ', result, 'COMPORMETA', nume_store, comporMeta, iret)

@@ -23,6 +23,7 @@ subroutine nmvccc(model, nbin, nbout, lpain, lchin, &
     implicit none
 !
 #include "asterf_types.h"
+#include "asterfort/dismoi.h"
 #include "asterfort/calcul.h"
 #include "asterfort/codent.h"
 #include "asterfort/reajre.h"
@@ -80,7 +81,7 @@ subroutine nmvccc(model, nbin, nbout, lpain, lchin, &
 !
     nbr = 0
     masque = '.VEXXX'
-    ligrmo = model(1:8)//'.MODELE'
+    call dismoi('NOM_LIGREL', model, 'MODELE', repk=ligrmo)
 !
 ! - Temperature
 !

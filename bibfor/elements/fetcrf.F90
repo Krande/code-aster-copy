@@ -80,7 +80,7 @@ subroutine fetcrf(nomo, nbsd)
 !
 !
 !   ligrel du modele
-    ligrmo = nomo(1:8)//'.MODELE'
+    call dismoi('NOM_LIGREL', nomo, 'MODELE', repk=ligrmo)
 
 !     VECTEUR DES NBRE DE NOEUDS
     call wkvect('&&FETCRF.NBNO     ', 'V V I', nbsd, nbno)

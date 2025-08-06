@@ -26,6 +26,7 @@ subroutine veondp(modele, mate, mateco, sddyna, temps, vecelz)
 #include "asterfort/calcul.h"
 #include "asterfort/corich.h"
 #include "asterfort/dbgcal.h"
+#include "asterfort/dismoi.h"
 #include "asterfort/detrsd.h"
 #include "asterfort/exisd.h"
 #include "asterfort/gcncon.h"
@@ -93,7 +94,7 @@ subroutine veondp(modele, mate, mateco, sddyna, temps, vecelz)
     call ndynkk(sddyna, 'CHONDP', chondp)
     nchond = ndynin(sddyna, 'NBRE_ONDE_PLANE')
     vecele = vecelz
-    ligrmo = modele(1:8)//'.MODELE'
+    call dismoi('NOM_LIGREL', modele, 'MODELE', repk=ligrmo)
     call jeveuo(ligrmo(1:19)//'.LGRF', 'L', vk8=lgrf)
     chgeom = lgrf(1)//'.COORDO'
     option = 'ONDE_PLAN'

@@ -27,6 +27,7 @@ subroutine metnth(model, loadNameJv, caraElem, mateco, time, &
 #include "jeveux.h"
 #include "asterfort/calcul.h"
 #include "asterfort/codent.h"
+#include "asterfort/dismoi.h"
 #include "asterfort/jedema.h"
 #include "asterfort/jedetr.h"
 #include "asterfort/jeexin.h"
@@ -139,7 +140,7 @@ subroutine metnth(model, loadNameJv, caraElem, mateco, time, &
             lchin(6) = chtni
 !
 !
-            ligrmo = model(1:8)//'.MODELE'
+            call dismoi('NOM_LIGREL', model, 'MODELE', repk=ligrmo)
             ilires = 0
             ilires = ilires+1
             call codent(ilires, 'D0', lchout(1) (12:14))

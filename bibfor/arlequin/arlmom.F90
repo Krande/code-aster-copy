@@ -23,6 +23,7 @@ subroutine arlmom(mailar, modarl)
 !
 #include "jeveux.h"
 #include "asterfort/assert.h"
+#include "asterfort/dismoi.h"
 #include "asterfort/jedema.h"
 #include "asterfort/jedetr.h"
 #include "asterfort/jemarq.h"
@@ -73,7 +74,7 @@ subroutine arlmom(mailar, modarl)
 !
 ! --- ACCES AU LIGREL
 !
-    ligarl = modarl(1:8)//'.MODELE'
+    call dismoi('NOM_LIGREL', modarl, 'MODELE', repk=ligarl)
     call jeveuo(ligarl//'.LIEL', 'L', ialiel)
     call jeveuo(jexatr(ligarl//'.LIEL', 'LONCUM'), 'L', illiel)
 !

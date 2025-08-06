@@ -67,7 +67,7 @@ subroutine sele_elem_comp(modelz, compor, defo_comp, list_elem_comp)
 !
 ! --------------------------------------------------------------------------------------------------
 !
-    ligrmo = modelz(1:8)//'.MODELE'
+    call dismoi('NOM_LIGREL', modelz, 'MODELE', repk=ligrmo)
     call dismoi('NOM_MAILLA', modelz, 'MODELE', repk=mesh)
     call dismoi('NB_MA_MAILLA', mesh, 'MAILLAGE', repi=nb_elem_mesh)
 !

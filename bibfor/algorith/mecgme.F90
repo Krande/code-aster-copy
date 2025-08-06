@@ -32,6 +32,7 @@ subroutine mecgme(stop, &
 !
 #include "asterf_types.h"
 #include "asterfort/assert.h"
+#include "asterfort/dismoi.h"
 #include "asterfort/fointe.h"
 #include "asterfort/jedema.h"
 #include "asterfort/jedetr.h"
@@ -115,7 +116,7 @@ subroutine mecgme(stop, &
     call jemarq()
 
 ! - Initializations
-    ligrelCalc = modelZ(1:8)//'.MODELE'
+    call dismoi('NOM_LIGREL', modelZ, 'MODELE', repk=ligrelCalc)
     if (present(ligrelCalcZ_)) then
         ligrelCalc = ligrelCalcZ_
     end if

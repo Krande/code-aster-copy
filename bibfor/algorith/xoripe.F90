@@ -97,7 +97,7 @@ subroutine xoripe(modele)
 !     INITIALISATION DU NOMBRE DE SOUS-ELEMENTS RE-ORIENTES
     nseori = 0
 !
-    ligrel = modele//'.MODELE'
+    call dismoi('NOM_LIGREL', modele, 'MODELE', repk=ligrel)
 !
 !     1.RECUPERATION D'INFORMATIONS DANS MODELE
 !

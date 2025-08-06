@@ -22,6 +22,7 @@ subroutine pechli(resu, modele, mateco)
 #include "jeveux.h"
 #include "asterc/r8miem.h"
 #include "asterfort/calcul.h"
+#include "asterfort/dismoi.h"
 #include "asterfort/detrsd.h"
 #include "asterfort/getvid.h"
 #include "asterfort/getvr8.h"
@@ -118,7 +119,7 @@ subroutine pechli(resu, modele, mateco)
 !
 !
     call megeom(modele, chgeom)
-    ligrmo = modele//'.MODELE'
+    call dismoi('NOM_LIGREL', modele, 'MODELE', repk=ligrmo)
 !
 !
 ! -- EXTRACTION DES NUMEROS D'ORDRE DU CALCUL

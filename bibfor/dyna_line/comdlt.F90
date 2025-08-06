@@ -456,7 +456,7 @@ subroutine comdlt()
     call dismoi('EXI_STR2', model, 'MODELE', repk=kstr)
     if (kstr(1:3) .eq. 'OUI') then
         compor = materField(1:8)//'.COMPOR'
-        ligrel = model(1:8)//'.MODELE'
+        call dismoi('NOM_LIGREL', model, 'MODELE', repk=ligrel)
         exipou = .false.
 !
         call dismoi('EXI_POUX', model, 'MODELE', repk=k8b)

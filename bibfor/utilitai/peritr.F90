@@ -23,6 +23,7 @@ subroutine peritr(resu, modele, cara, nh, nbocc)
 #include "asterfort/calcul.h"
 #include "asterfort/chpve2.h"
 #include "asterfort/copisd.h"
+#include "asterfort/dismoi.h"
 #include "asterfort/detrsd.h"
 #include "asterfort/getvem.h"
 #include "asterfort/getvid.h"
@@ -124,7 +125,7 @@ subroutine peritr(resu, modele, cara, nh, nbocc)
 !      CALL EXLIMA ( 'RICE_TRACEY', 'V', MODELE, NOMLIG, LIGREL )
 !     IL FAUT FAIRE LE CALCUL SUR TOUT LE MODELE
 !
-    ligrel = modele//'.MODELE'
+    call dismoi('NOM_LIGREL', modele, 'MODELE', repk=ligrel)
 !
     knum = '&&PERITR.NUME_ORDRE'
     kins = '&&PERITR.INSTANT'

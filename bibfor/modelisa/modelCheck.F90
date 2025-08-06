@@ -60,7 +60,7 @@ subroutine modelCheck(model, lCheckJacobian, lCheckFSINorms, lCheckPlaneity)
 !
 ! --------------------------------------------------------------------------------------------------
 !
-    modelLigrel = model//'.MODELE'
+    call dismoi('NOM_LIGREL', model, 'MODELE', repk=modelLigrel)
 
 ! - Get mesh support
     call dismoi('NOM_MAILLA', model, 'MODELE', repk=mesh)

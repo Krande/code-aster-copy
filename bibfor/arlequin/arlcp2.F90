@@ -28,6 +28,7 @@ subroutine arlcp2(iocc, mail, nomo, typmai, nom1, &
 #include "asterfort/jemarq.h"
 #include "asterfort/arlchi.h"
 #include "asterfort/cescel.h"
+#include "asterfort/dismoi.h"
 #include "asterfort/detrsd.h"
 #include "asterfort/arlclc.h"
 #include "asterfort/jedetr.h"
@@ -69,7 +70,7 @@ subroutine arlcp2(iocc, mail, nomo, typmai, nom1, &
 !
     call jemarq()
 !
-    ligarl = modarl(1:8)//'.MODELE'
+    call dismoi('NOM_LIGREL', modarl, 'MODELE', repk=ligarl)
 !
     chames(1) = '&&'//nompro//'.ESFAMI'
     chames(2) = '&&'//nompro//'.ESINFO'

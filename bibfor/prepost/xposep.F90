@@ -101,7 +101,7 @@ subroutine xposep(mo, malini, mailc, mailx, nsetot, &
 !     LES MAILLES SANS MODELE RESTENT A 0
 !     DE PLUS, LES MAILLES POI1 SONT CONSIDEREES COMME SANS MODELE
 !     ET NE SERONT PAS POST TRAITEES
-    ligrel = mo//'.MODELE'
+    call dismoi('NOM_LIGREL', mo, 'MODELE', repk=ligrel)
     liel = ligrel//'.LIEL'
     call jelira(liel, 'NMAXOC', ngr)
     do igr = 1, ngr

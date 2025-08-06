@@ -186,7 +186,7 @@ subroutine nmdopi(modelz, numedd, ds_algopara, sdpilo)
 !
 !
         cartyp = '&&NMDOPI.TYPEPILO'
-        ligrmo = modele//'.MODELE'
+        call dismoi('NOM_LIGREL', modele, 'MODELE', repk=ligrmo)
         call mecact('V', cartyp, 'MODELE', ligrmo, 'PILO_K', &
                     ncmp=1, nomcmp='TYPE', sk=typpil)
         zk24(jpltk+2) = cartyp

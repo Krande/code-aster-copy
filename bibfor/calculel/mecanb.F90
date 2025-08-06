@@ -23,6 +23,7 @@ subroutine mecanb(modele, matel)
 !     ----------
 #include "jeveux.h"
 #include "asterfort/calcul.h"
+#include "asterfort/dismoi.h"
 #include "asterfort/jedema.h"
 #include "asterfort/jedetr.h"
 #include "asterfort/jemarq.h"
@@ -68,7 +69,7 @@ subroutine mecanb(modele, matel)
     lchin(1) = chgeom
     lpaout(1) = 'PVECTUR'
     lchout(1) = matel(1:8)//'.VE001'
-    ligrmo = modele//'.MODELE'
+    call dismoi('NOM_LIGREL', modele, 'MODELE', repk=ligrmo)
     option = 'CALC_NOEU_BORD'
     call calcul('S', option, ligrmo, 1, lchin, &
                 lpain, 1, lchout, lpaout, 'V', &

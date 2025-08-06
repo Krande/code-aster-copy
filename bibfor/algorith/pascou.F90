@@ -95,7 +95,7 @@ subroutine pascou(mate, mateco, carele, sddyna, sddisc)
 !
     call getvid(' ', 'MODELE', scal=mo, nbret=ibid)
 !
-    ligrel = mo//'.MODELE'
+    call dismoi('NOM_LIGREL', mo, 'MODELE', repk=ligrel)
 !
     lpain(1) = 'PMATERC'
     lchin(1) = mateco

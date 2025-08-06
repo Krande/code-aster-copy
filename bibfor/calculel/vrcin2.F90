@@ -25,6 +25,7 @@ subroutine vrcin2(modele, chmat, carele, chvars, nompar)
 #include "asterfort/celces.h"
 #include "asterfort/cesexi.h"
 #include "asterfort/cesvar.h"
+#include "asterfort/dismoi.h"
 #include "asterfort/detrsd.h"
 #include "asterfort/jedema.h"
 #include "asterfort/jelira.h"
@@ -84,7 +85,7 @@ subroutine vrcin2(modele, chmat, carele, chvars, nompar)
 !
     call jeveuo(chmat//'.CVRCVARC', 'L', vk8=cvrcvarc)
     call jelira(chmat//'.CVRCVARC', 'LONMAX', nbcvrc)
-    ligrmo = modele//'.MODELE'
+    call dismoi('NOM_LIGREL', modele, 'MODELE', repk=ligrmo)
 !
 !     -- CALCUL DE JLISSD ET NBCHS :
     call jelira(chmat//'.LISTE_CH', 'LONMAX', nbchs)

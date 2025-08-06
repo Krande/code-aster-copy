@@ -22,6 +22,7 @@ subroutine lislic(nomo, prefob, indxch, ligcal)
     implicit none
 #include "jeveux.h"
 #include "asterfort/assert.h"
+#include "asterfort/dismoi.h"
 #include "asterfort/jedema.h"
 #include "asterfort/jemarq.h"
 #include "asterfort/lisdef.h"
@@ -56,7 +57,7 @@ subroutine lislic(nomo, prefob, indxch, ligcal)
     call jemarq()
 !
     call lisdef('LIGC', ' ', indxch, typlig, ibid)
-    ligrmo = nomo(1:8)//'.MODELE'
+    call dismoi('NOM_LIGREL', nomo, 'MODELE', repk=ligrmo)
     if (typlig .eq. 'LIGRMO') then
         ligcal = ligrmo
     else if (typlig .eq. 'LIGRCH') then

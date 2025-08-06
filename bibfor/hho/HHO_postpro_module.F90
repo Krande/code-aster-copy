@@ -35,6 +35,7 @@ module HHO_postpro_module
 #include "asterfort/calcul.h"
 #include "asterfort/chpchd.h"
 #include "asterfort/copisd.h"
+#include "asterfort/dismoi.h"
 #include "asterfort/detrsd.h"
 #include "asterfort/HHO_size_module.h"
 #include "asterfort/infniv.h"
@@ -272,7 +273,7 @@ contains
         celmod = '&&FIELD_CELMOD'
         base = 'V'
         option = 'HHO_DEPL_MECA'
-        ligrel_model = model_hho(1:8)//'.MODELE'
+        call dismoi('NOM_LIGREL', model_hho, 'MODELE', repk=ligrel_model)
 !
 ! --- Init fields
 !

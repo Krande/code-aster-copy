@@ -35,6 +35,7 @@ subroutine nxacmv(model, materField, mateco, caraElem, listLoad, nume_dof, &
 #include "asterfort/ascavc.h"
 #include "asterfort/ascova.h"
 #include "asterfort/asmatr.h"
+#include "asterfort/dismoi.h"
 #include "asterfort/detrsd.h"
 #include "asterfort/jedema.h"
 #include "asterfort/jedetr.h"
@@ -128,7 +129,7 @@ subroutine nxacmv(model, materField, mateco, caraElem, listLoad, nume_dof, &
     cnchtp = ' '
     cnchnl = ' '
     cntnti = ' '
-    ligrmo = model(1:8)//'.MODELE'
+    call dismoi('NOM_LIGREL', model, 'MODELE', repk=ligrmo)
     vediri = '&&VEDIRI           .RELR'
     vechtp = '&&VECHTP           .RELR'
     vadiri = '&&NTACMV.VADIRI'

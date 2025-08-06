@@ -25,6 +25,7 @@ subroutine merit1(modelZ, caraElemZ, matecoZ, &
 !
 #include "asterfort/calcul.h"
 #include "asterfort/codent.h"
+#include "asterfort/dismoi.h"
 #include "asterfort/exisd.h"
 #include "asterfort/jedema.h"
 #include "asterfort/jedetr.h"
@@ -84,7 +85,7 @@ subroutine merit1(modelZ, caraElemZ, matecoZ, &
     model = modelz
     caraElem = caraElemZ
     loadName = loadNameZ
-    ligrmo = model//'.MODELE'
+    call dismoi('NOM_LIGREL', model, 'MODELE', repk=ligrmo)
 
 ! - Create input fields
     call megeom(modelZ, chgeom)

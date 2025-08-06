@@ -97,7 +97,7 @@ subroutine axdipo(noma, caelem, modele, iaxe)
     modmai = modele//'.MAILLE'
     call jeveuo(modmai, 'L', jdme)
 !
-    ligrmo = modele//'.MODELE    '
+    call dismoi('NOM_LIGREL', modele, 'MODELE', repk=ligrmo)
     modnem = ligrmo//'.NEMA'
     nbmtrd = 0
     call jeexin(modnem, ixnw)

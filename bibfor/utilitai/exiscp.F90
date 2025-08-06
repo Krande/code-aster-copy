@@ -135,7 +135,7 @@ subroutine exiscp(nomcmp, char, modele, nbnd, typend, &
 !
 ! --- LIGREL DU MODELE
 !
-    ligrmo = mod(1:8)//'.MODELE'
+    call dismoi('NOM_LIGREL', mod, 'MODELE', repk=ligrmo)
     call jeveuo(ligrmo//'.PRNM', 'L', jprnm)
 !
 ! --- MAILLAGE DU MODELE

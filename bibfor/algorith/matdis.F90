@@ -53,7 +53,7 @@ subroutine matdis(matd, verbose)
         end if
         call getvid(' ', 'MODELE', scal=modele, nbret=ibid)
         ASSERT(ibid .eq. 1)
-        ligrmo = modele//'.MODELE'
+        call dismoi('NOM_LIGREL', modele, 'MODELE', repk=ligrmo)
         call dismoi('PARTITION', ligrmo, 'LIGREL', repk=partit)
         if (partit .eq. ' ' .and. matd .eq. 'OUI') then
             matd = 'NON'

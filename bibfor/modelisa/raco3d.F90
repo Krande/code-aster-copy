@@ -108,7 +108,7 @@ subroutine raco3d(numdlz, iocc, fonrez, lisrez, chargz)
 
 ! ---  LIGREL DU MODELE :
 !      ----------------
-    ligrmo = mod(1:8)//'.MODELE'
+    call dismoi('NOM_LIGREL', mod, 'MODELE', repk=ligrmo)
 !
 ! --- MAILLAGE ASSOCIE AU MODELE :
 !     --------------------------

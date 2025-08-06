@@ -141,7 +141,7 @@ subroutine lridea(fileUnit, &
     prolo = ' '
 !
     zcmplx = .false.
-    ligrel = model//'.MODELE'
+    call dismoi('NOM_LIGREL', model, 'MODELE', repk=ligrel)
 !
 ! - Open file
 !

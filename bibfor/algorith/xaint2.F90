@@ -128,7 +128,7 @@ subroutine xaint2(noma, modele)
 ! --- CONNECTIVITE INVERSEE
     cnxinv = '&&XAINT2.CNCINV'
     call cncinv(noma, [ibid], 0, 'V', cnxinv)
-    ligrel = modele//'.MODELE'
+    call dismoi('NOM_LIGREL', modele, 'MODELE', repk=ligrel)
 !
 ! --- RECUPERATION DES DONNEES ELEMENTAIRES XFEM
 !

@@ -53,7 +53,7 @@ subroutine xthpos(resuin, resuou)
     call jemarq()
 !
     call dismoi('NOM_MODELE', resuin, 'RESULTAT', repk=modele)
-    ligrmo = modele(1:8)//'.MODELE'
+    call dismoi('NOM_LIGREL', modele, 'MODELE', repk=ligrmo)
     celtmp = '&&XTELGA.CELTMP'
 !
     ordr = resuin//'           .ORDR'

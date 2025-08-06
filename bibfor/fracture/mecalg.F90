@@ -308,7 +308,7 @@ subroutine mecalg(optioz, result, modele, depla, theta, &
     lpain(14) = 'PCOMPOR'
     lchin(14) = compor
 !
-    modelLigrel = modele//'.MODELE'
+    call dismoi('NOM_LIGREL', modele, 'MODELE', repk=modelLigrel)
     nchin = 14
 !
     if (lxfem) then

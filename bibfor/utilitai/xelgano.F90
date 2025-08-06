@@ -38,6 +38,7 @@ subroutine xelgano(modele, sigelga, sigseno)
 ! DECLARATION PARAMETRES D'APPELS
 #include "jeveux.h"
 #include "asterfort/calcul.h"
+#include "asterfort/dismoi.h"
 #include "asterfort/jedema.h"
 #include "asterfort/jemarq.h"
 
@@ -61,7 +62,7 @@ subroutine xelgano(modele, sigelga, sigseno)
     call jemarq()
 !
 !   Recuperation du LIGREL
-    ligrmo = modele//'.MODELE'
+    call dismoi('NOM_LIGREL', modele, 'MODELE', repk=ligrmo)
 
 !   Definition de l'option de calcul (anciennement SIEF_SEGA_SENO)
     option = 'SISE_ELNO'

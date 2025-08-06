@@ -22,6 +22,7 @@ subroutine ajlipa(modelz, base, kdis)
 #include "jeveux.h"
 #include "asterfort/asmpi_info.h"
 #include "asterfort/assert.h"
+#include "asterfort/dismoi.h"
 #include "asterfort/detrsd.h"
 #include "asterc/getres.h"
 #include "asterfort/exisd.h"
@@ -71,7 +72,7 @@ subroutine ajlipa(modelz, base, kdis)
 !   --  Verifications et initialisations
 ! ----------------------------------------------------------------------
     modele = modelz
-    ligrmo = modele//'.MODELE'
+    call dismoi('NOM_LIGREL', modele, 'MODELE', repk=ligrmo)
     partsd = modele//'.PARTSD'
 
     call getres(nomres, typres, nomcom)

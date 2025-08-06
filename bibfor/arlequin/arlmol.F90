@@ -25,6 +25,7 @@ subroutine arlmol(nomo, mailar, modarl, tabcor)
 #include "asterfort/adalig.h"
 #include "asterfort/assert.h"
 #include "asterfort/cormgi.h"
+#include "asterfort/dismoi.h"
 #include "asterfort/detrsd.h"
 #include "asterfort/exisd.h"
 #include "asterfort/initel.h"
@@ -74,7 +75,7 @@ subroutine arlmol(nomo, mailar, modarl, tabcor)
 !
 ! --- INITIALISATIONS
 !
-    ligarl = modarl(1:8)//'.MODELE'
+    call dismoi('NOM_LIGREL', modarl, 'MODELE', repk=ligarl)
 !
 ! --- DESTRUCTION DU LIGREL S'IL EXISTE
 !

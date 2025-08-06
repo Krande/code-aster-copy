@@ -323,7 +323,7 @@ subroutine bamo78(nomres, trange, typres)
     chvarc = '&&BAMO78.VARC'
     chvref = '&&BAMO78.VREF'
     rundf = r8vide()
-    ligrel = modele//'.MODELE'
+    call dismoi('NOM_LIGREL', modele, 'MODELE', repk=ligrel)
     call dismoi('NOM_MAILLA', modele, 'MODELE', repk=mesh)
     compor = mate(1:8)//'.COMPOR'
     call megeom(modele, chgeom)

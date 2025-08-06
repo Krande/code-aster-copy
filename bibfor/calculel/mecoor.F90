@@ -21,6 +21,7 @@ subroutine mecoor(nomo, chgeom)
 !
     implicit none
 #include "jeveux.h"
+#include "asterfort/dismoi.h"
 #include "asterfort/jedema.h"
 #include "asterfort/jemarq.h"
 #include "asterfort/jeveuo.h"
@@ -47,7 +48,7 @@ subroutine mecoor(nomo, chgeom)
 !
     call jemarq()
 !
-    ligrmo = nomo(1:8)//'.MODELE'
+    call dismoi('NOM_LIGREL', nomo, 'MODELE', repk=ligrmo)
     call jeveuo(ligrmo//'.LGRF', 'L', vk8=lgrf)
     chgeom = lgrf(1)//'.COORDO'
 !

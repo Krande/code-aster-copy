@@ -128,7 +128,7 @@ subroutine aflrch(lisrez, chargz, type_liai, elim, detr_lisrez, l_preallocz)
 !
 !
     call dismoi('NOM_MODELE', charge, 'CHARGE', repk=mod)
-    ligrmo = mod(1:8)//'.MODELE'
+    call dismoi('NOM_LIGREL', mod, 'MODELE', repk=ligrmo)
     call jeveuo(ligrmo//'.LGRF', 'L', vk8=lgrf)
     noma = lgrf(1)
     lcolle = .false.

@@ -453,7 +453,7 @@ contains
         base = 'V'
         option = 'HHO_CINE_F_MECA'
         chtime = '&&HHOCHTIME'
-        ligrel_model = model(1:8)//'.MODELE'
+        call dismoi('NOM_LIGREL', model, 'MODELE', repk=ligrel_model)
 !
 ! --- Init fields
 !

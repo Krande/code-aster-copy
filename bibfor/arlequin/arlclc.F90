@@ -24,6 +24,7 @@ subroutine arlclc(modarl, nbchel, chamel, marlel)
 #include "asterfort/jemarq.h"
 #include "asterfort/inical.h"
 #include "asterfort/jedetr.h"
+#include "asterfort/dismoi.h"
 #include "asterfort/megeom.h"
 #include "asterfort/wkvect.h"
 #include "asterfort/calcul.h"
@@ -68,7 +69,7 @@ subroutine arlclc(modarl, nbchel, chamel, marlel)
 
 ! --- INITIALISATIONS
 
-    ligarl = modarl(1:8)//'.MODELE'
+    call dismoi('NOM_LIGREL', modarl, 'MODELE', repk=ligarl)
 
     ctfami = chamel(1)
     ctinfo = chamel(2)

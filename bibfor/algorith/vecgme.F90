@@ -32,6 +32,7 @@ subroutine vecgme(stop, &
     implicit none
 !
 #include "asterf_types.h"
+#include "asterfort/dismoi.h"
 #include "asterfort/detrsd.h"
 #include "asterfort/load_list_info.h"
 #include "asterfort/jedema.h"
@@ -107,7 +108,7 @@ subroutine vecgme(stop, &
 
 ! - Initializations
     resuElem = '&&VECGME.0000000'
-    ligrelCalc = modelZ(1:8)//'.MODELE'
+    call dismoi('NOM_LIGREL', modelZ, 'MODELE', repk=ligrelCalc)
     if (present(ligrelCalcZ_)) then
         ligrelCalc = ligrelCalcZ_
     end if

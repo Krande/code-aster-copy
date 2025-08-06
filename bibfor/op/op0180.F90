@@ -281,7 +281,7 @@ subroutine op0180()
 ! --- D'ADRESSES DES CARACTERISTIQUES POINTES PAR LE NUMERO DE
 !     MAILLE
 !
-    ligrmo = modele//'.MODELE    '
+    call dismoi('NOM_LIGREL', modele, 'MODELE', repk=ligrmo)
 !
     carte = chmat//'.CHAMP_MAT '
     cadesc = carte//'.DESC'

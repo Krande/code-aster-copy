@@ -266,7 +266,7 @@ subroutine vrcins(modelz, chmatz, carelz, inst, chvarc, &
 !
 !   4. recopie du champ simple dans le champ chvarc
 !   -----------------------------------------------------
-    ligrmo = modele//'.MODELE'
+    call dismoi('NOM_LIGREL', modele, 'MODELE', repk=ligrmo)
     call cescel(chvars, ligrmo, 'INIT_VARC', nompar, 'NAN', &
                 nncp, base, chvarc, 'F', ibid)
 !

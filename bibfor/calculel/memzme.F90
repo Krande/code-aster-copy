@@ -27,6 +27,7 @@ subroutine memzme(modele, matel)
 ! ----------------------------------------------------------------------
 #include "jeveux.h"
 #include "asterfort/calcul.h"
+#include "asterfort/dismoi.h"
 #include "asterfort/jedema.h"
 #include "asterfort/jedetr.h"
 #include "asterfort/jemarq.h"
@@ -53,7 +54,7 @@ subroutine memzme(modele, matel)
     lpaout(1) = 'PMATZZR'
     lchout(1) = matel(1:8)//'.ME001'
 !
-    ligrmo = modele//'.MODELE'
+    call dismoi('NOM_LIGREL', modele, 'MODELE', repk=ligrmo)
     lpain(1) = 'PGEOMER'
     lchin(1) = chgeom
 !

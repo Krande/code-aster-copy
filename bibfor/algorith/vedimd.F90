@@ -25,6 +25,7 @@ subroutine vedimd(nomo, lischa, instan, vecele)
 #include "asterfort/assert.h"
 #include "asterfort/calcul.h"
 #include "asterfort/corich.h"
+#include "asterfort/dismoi.h"
 #include "asterfort/detrsd.h"
 #include "asterfort/exisd.h"
 #include "asterfort/gcnco2.h"
@@ -98,7 +99,7 @@ subroutine vedimd(nomo, lischa, instan, vecele)
 !
 ! --- RECUPERATION DU MODELE
 !
-    ligrmo = nomo(1:8)//'.MODELE'
+    call dismoi('NOM_LIGREL', nomo, 'MODELE', repk=ligrmo)
 !
 ! --- INITIALISATION DES CHAMPS POUR CALCUL
 !

@@ -24,6 +24,7 @@ subroutine fondpl(modele, mate, mateco, numedd, neq, chondp, &
 #include "asterfort/asasve.h"
 #include "asterfort/calcul.h"
 #include "asterfort/corich.h"
+#include "asterfort/dismoi.h"
 #include "asterfort/detrsd.h"
 #include "asterfort/exisd.h"
 #include "asterfort/jedema.h"
@@ -58,7 +59,7 @@ subroutine fondpl(modele, mate, mateco, numedd, neq, chondp, &
     chinst = '&&CHINST'
     call mecact('V', chinst, 'MODELE', modele(1:8)//'.MODELE', 'INST_R', &
                 ncmp=1, nomcmp='INST', sr=temps)
-    ligrel = modele(1:8)//'.MODELE'
+    call dismoi('NOM_LIGREL', modele, 'MODELE', repk=ligrel)
     call jeveuo(ligrel(1:19)//'.LGRF', 'L', vk8=lgrf)
     chgeom = lgrf(1)//'.COORDO'
 !

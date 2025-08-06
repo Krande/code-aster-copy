@@ -26,6 +26,7 @@ subroutine ccvrrl(mesh, model, caraElem, &
 #include "asterc/indik8.h"
 #include "asterc/r8rddg.h"
 #include "asterf_types.h"
+#include "asterfort/dismoi.h"
 #include "asterfort/angvec.h"
 #include "asterfort/as_allocate.h"
 #include "asterfort/as_deallocate.h"

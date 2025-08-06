@@ -152,7 +152,7 @@ subroutine pmfd00()
     if ((nbocc0+nbocc1+nbocc2+nbocc3+nbocc4) .eq. 0) goto 999
 !   2eme chance
     call getvid(' ', 'MODELE', scal=modele, nbret=ibid)
-    ligrmo = modele//'.MODELE'
+    call dismoi('NOM_LIGREL', modele, 'MODELE', repk=ligrmo)
     celbid = '&&PMFD00.CELBID'
     call alchml(ligrmo, 'TOU_INI_ELEM', 'PNBSP_I', 'V', celbid, iret, ' ')
     call detrsd('CHAM_ELEM', celbid)

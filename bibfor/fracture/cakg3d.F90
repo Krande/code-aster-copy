@@ -160,7 +160,7 @@ subroutine cakg3d(option, result, modele, depla, thetai, &
     call megeom(modele, chgeom)
 
 !   Recuperation du LIGREL
-    ligrmo = modele//'.MODELE'
+    call dismoi('NOM_LIGREL', modele, 'MODELE', repk=ligrmo)
 !
     chvarc = '&&CAKG3D.VARC'
     chvref = '&&CAKG3D.VARC.REF'

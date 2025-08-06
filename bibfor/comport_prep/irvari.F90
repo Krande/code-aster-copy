@@ -141,7 +141,7 @@ subroutine irvari(ifi, field_med, vari_elga, field_loca, model, &
     field_type = 'VARI_ELGA'
     ASSERT(field_loca .eq. 'ELGA')
     codret = 0
-    ligrel = model//'.MODELE'
+    call dismoi('NOM_LIGREL', model, 'MODELE', repk=ligrel)
 !
 ! - Get name of <CARTE> COMPOR
 !

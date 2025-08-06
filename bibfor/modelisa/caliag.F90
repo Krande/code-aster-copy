@@ -121,7 +121,7 @@ subroutine caliag(fonrez, chargz, phenom)
 ! --- MODELE ASSOCIE AU LIGREL DE CHARGE ---
 !
     call dismoi('NOM_MODELE', charge(1:8), 'CHARGE', repk=mod)
-    ligrmo = mod(1:8)//'.MODELE'
+    call dismoi('NOM_LIGREL', mod, 'MODELE', repk=ligrmo)
     call jeveuo(ligrmo//'.LGRF', 'L', vk8=lgrf)
     noma = lgrf(1)
 

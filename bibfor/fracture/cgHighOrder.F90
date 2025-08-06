@@ -30,6 +30,7 @@ subroutine cgHighOrder(cgField, cgTheta, cgStudy, cgStat, chscer, chseli, v_cer,
 #include "asterfort/calcG_type.h"
 #include "asterfort/cescel.h"
 #include "asterfort/cesexi.h"
+#include "asterfort/dismoi.h"
 #include "asterfort/jedema.h"
 #include "asterfort/jelira.h"
 #include "asterfort/jemarq.h"
@@ -70,7 +71,7 @@ subroutine cgHighOrder(cgField, cgTheta, cgStudy, cgStat, chscer, chseli, v_cer,
 !
     if (cgField%ndim .eq. 3) then
 !
-        ligrmo = cgStudy%model//'.MODELE'
+        call dismoi('NOM_LIGREL', cgStudy%model, 'MODELE', repk=ligrmo)
         call jelira(ligrmo//'.LIEL', 'NMAXOC', nbgrel)
 !
         do igr = 1, nbgrel

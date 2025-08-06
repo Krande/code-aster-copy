@@ -63,7 +63,7 @@ subroutine acevtr(noma, nomo, ityp, noms, itab, &
         chaine = 'DIS_TR'
     end if
 !
-    nolig = nomo//'.MODELE'
+    call dismoi('NOM_LIGREL', nomo, 'MODELE', repk=nolig)
     call jeexin(nolig//'.LIEL', iret)
     if (iret .ne. 0) then
         call jelira(nolig//'.LIEL', 'NUTIOC', nbgrel)

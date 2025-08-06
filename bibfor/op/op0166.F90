@@ -332,7 +332,7 @@ subroutine op0166()
                 call prolongation_get(prolong)
                 !
                 if (method(1:10) .eq. 'SOUS_POINT') then
-                    ligre2 = nomo2//'.MODELE'
+                    call dismoi('NOM_LIGREL', nomo2, 'MODELE', repk=ligre2)
                     call pjspma(lcorre(1), cham1, resuou, prolong, ligre2, noca, 'G', iret)
                 else
                     tychv = ' '
@@ -352,7 +352,7 @@ subroutine op0166()
                 if (n1 .eq. 0) then
                     call utmess('F', 'CALCULEL5_37')
                 end if
-                ligre2 = nomo2//'.MODELE'
+                call dismoi('NOM_LIGREL', nomo2, 'MODELE', repk=ligre2)
                 ! Quel est le type de la prolongation
                 call prolongation_get(prolong)
                 !
@@ -376,7 +376,7 @@ subroutine op0166()
                 if (n1 .eq. 0) then
                     call utmess('F', 'CALCULEL5_37')
                 end if
-                ligre2 = nomo2//'.MODELE'
+                call dismoi('NOM_LIGREL', nomo2, 'MODELE', repk=ligre2)
                 ! Quel est le type de la prolongation
                 call prolongation_get(prolong)
                 !
@@ -400,8 +400,8 @@ subroutine op0166()
                 if (n1 .eq. 0) then
                     call utmess('F', 'CALCULEL5_37')
                 end if
-                ligre1 = nomo1//'.MODELE'
-                ligre2 = nomo2//'.MODELE'
+                call dismoi('NOM_LIGREL', nomo1, 'MODELE', repk=ligre1)
+                call dismoi('NOM_LIGREL', nomo2, 'MODELE', repk=ligre2)
                 ! Quel est le type de la prolongation
                 call prolongation_get(prolong)
                 !

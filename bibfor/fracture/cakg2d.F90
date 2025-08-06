@@ -152,7 +152,7 @@ subroutine cakg2d(optioz, result, modele, depla, theta, &
     noma = chgeom(1:8)
 
 !   Recuperation du LIGREL
-    ligrmo = modele//'.MODELE'
+    call dismoi('NOM_LIGREL', modele, 'MODELE', repk=ligrmo)
 !
 !   Recuperation de l'etat initial
 !   ------------------------------

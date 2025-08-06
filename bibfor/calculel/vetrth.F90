@@ -25,6 +25,7 @@ subroutine vetrth(model, loadNameJv, loadInfoJv, caraElem, mateco, &
 #include "jeveux.h"
 #include "asterfort/calcul.h"
 #include "asterfort/corich.h"
+#include "asterfort/dismoi.h"
 #include "asterfort/gcnco2.h"
 #include "asterfort/jedema.h"
 #include "asterfort/jeexin.h"
@@ -66,7 +67,7 @@ subroutine vetrth(model, loadNameJv, loadInfoJv, caraElem, mateco, &
 !-----------------------------------------------------------------------
     call jemarq()
     newnom = '.0000000'
-    ligrmo = model(1:8)//'.MODELE'
+    call dismoi('NOM_LIGREL', model, 'MODELE', repk=ligrmo)
     call jeexin(loadNameJv, iret)
     if (iret .ne. 0) then
         call jelira(loadNameJv, 'LONMAX', nchar)

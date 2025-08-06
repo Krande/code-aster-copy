@@ -78,7 +78,7 @@ subroutine xtopoh(noma, modele)
 !
 ! --- INITIALISATIONS
 !
-    ligrel = modele//'.MODELE'
+    call dismoi('NOM_LIGREL', modele, 'MODELE', repk=ligrel)
     option = 'TOPONO'
     if (nivdbg .ge. 2) then
         debug = .true.

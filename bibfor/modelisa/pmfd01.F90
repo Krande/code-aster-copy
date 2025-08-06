@@ -80,7 +80,7 @@ subroutine pmfd01(noma, carele, vmailfib, sdgf, cesdec, ngmxel)
 !
     call dismoi('NB_MA_MAILLA', noma, 'MAILLAGE', repi=nbma)
     call getvid(' ', 'MODELE', scal=modele, nbret=ibid)
-    ligrmo = modele//'.MODELE'
+    call dismoi('NOM_LIGREL', modele, 'MODELE', repk=ligrmo)
 !
     call getfac('MULTIFIBRE', nb1)
 !

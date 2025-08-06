@@ -32,6 +32,7 @@ subroutine merimo(base, &
 #include "jeveux.h"
 #include "asterfort/assert.h"
 #include "asterfort/calcul.h"
+#include "asterfort/dismoi.h"
 #include "asterfort/jedema.h"
 #include "asterfort/jedetr.h"
 #include "asterfort/jeexin.h"
@@ -110,7 +111,7 @@ subroutine merimo(base, &
     if (present(sddynz_)) then
         sddyna = sddynz_
     end if
-    ligrmo = model(1:8)//'.MODELE'
+    call dismoi('NOM_LIGREL', model, 'MODELE', repk=ligrmo)
     caco3d = '&&MERIMO.CARA_ROTAF'
     tabret(:) = ASTER_FALSE
     ldccvg = 0

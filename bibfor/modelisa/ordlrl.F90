@@ -109,7 +109,7 @@ subroutine ordlrl(charge, lisrel, nomgd)
 ! - Mesh and model
 !
     call dismoi('NOM_MODELE', charge, 'CHARGE', repk=mod)
-    ligrmo = mod(1:8)//'.MODELE'
+    call dismoi('NOM_LIGREL', mod, 'MODELE', repk=ligrmo)
     call jeveuo(ligrmo//'.LGRF', 'L', vk8=lgrf)
     noma = lgrf(1)
     lcolle = .false.

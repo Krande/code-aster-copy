@@ -89,7 +89,7 @@ subroutine extrs2(resu0, resu1, typcon, lrest, mailla, &
         if (modele .ne. ' ') then
             call jeveuo(modele//'.MODELE    .LGRF', 'L', vk8=lgrf)
             noma2 = lgrf(1)
-            ligrel = modele//'.MODELE'
+            call dismoi('NOM_LIGREL', modele, 'MODELE', repk=ligrel)
         else
             noma2 = mailla
             ligrel = ' '

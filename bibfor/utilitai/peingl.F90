@@ -180,9 +180,9 @@ subroutine peingl(resu, modele, mate, mateco, cara, nh, &
 !
 !.========================= DEBUT DES DECLARATIONS ====================
 ! -----  VARIABLES LOCALES
- integer(kind=8) :: nbparr, nr, np, nc, iret, jord, nbordr, jins, iord, iainst, numord, nbin, nt, nm
+    integer(kind=8) :: nbparr, nr, np, nc, iret, jord, nbordr, jins, iord, iainst, numord, nbin, nt
     integer(kind=8) :: ng, nbgrma, jgr, ig, nbma, jad, nbmail, jma, im, iocc, nume, nbout, numorm
-    integer(kind=8) :: ngdmax, ncmpmx, igd, idebgd, dg, ima, iconex, nbno, nec, ivari
+    integer(kind=8) :: ngdmax, ncmpmx, igd, idebgd, dg, ima, iconex, nbno, nec, ivari, nm
     integer(kind=8) :: i, nbgrma_tot, deca, nbtot, nbMaiT
     real(kind=8) :: work(5), indic1, volume, inst, valr(6), zero, prec
     real(kind=8) :: energy_tout, energy_ma
@@ -363,7 +363,7 @@ subroutine peingl(resu, modele, mate, mateco, cara, nh, &
 !
 !CC---   RECUPERATION DU COMPOR PAR ETENCA
 !
-            ligrmo = modele//'.MODELE'
+            call dismoi('NOM_LIGREL', modele, 'MODELE', repk=ligrmo)
 !
 ! ---    CREATION DU TABLEAU DESCRIPTEUR DE LA CARTE COMPOR ---
 !

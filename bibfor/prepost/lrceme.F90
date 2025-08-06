@@ -68,6 +68,7 @@ subroutine lrceme(chanom, nochmd, typech, nomamd, nomaas, &
 #include "asterfort/cescar.h"
 #include "asterfort/cescel.h"
 #include "asterfort/codent.h"
+#include "asterfort/dismoi.h"
 #include "asterfort/detrsd.h"
 #include "asterfort/getvis.h"
 #include "asterfort/infniv.h"
@@ -157,7 +158,7 @@ subroutine lrceme(chanom, nochmd, typech, nomamd, nomaas, &
 !               1234567890123456789
     chames = '&&      .CES.MED   '
     chames(3:8) = nompro
-    ligrel = nommod//'.MODELE'
+    call dismoi('NOM_LIGREL', nommod, 'MODELE', repk=ligrel)
     if (nommod .eq. ' ') ligrel = ' '
 !
     call jeexin(ncmpva, iret)

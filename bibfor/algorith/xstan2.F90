@@ -115,7 +115,7 @@ subroutine xstan2(noma, modele, crit2, lfiss)
     cnxinv = '&&XSTAN2.CNCINV'
     call cncinv(noma, [ibid], 0, 'V', cnxinv)
     noxfem = modele//'.NOXFEM'
-    ligrel = modele//'.MODELE'
+    call dismoi('NOM_LIGREL', modele, 'MODELE', repk=ligrel)
     cns2 = '&&XCONNO.CNS2'
     geom = '&&XSTAN2.GEOM'
 !      CALL CNOCNS(MODELE//'.NOXFEM','V',NOXFEM)

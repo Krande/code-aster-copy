@@ -81,7 +81,7 @@ subroutine xtopoc(modele, decou)
 !
 ! --- INITIALISATIONS
 !
-    ligrel = modele//'.MODELE'
+    call dismoi('NOM_LIGREL', modele, 'MODELE', repk=ligrel)
     call jeveuo(modele//'.MODELE    .LGRF', 'L', vk8=lgrf)
     noma = lgrf(1)
     chgeom = noma//'.COORDO'

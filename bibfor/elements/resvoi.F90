@@ -135,7 +135,7 @@ subroutine resvoi(moz, maz, chvoiz)
 !
 ! ----------- RECHERCHE DES ADRESSES DE STOCKAGE POUR CHVOIS -------
 !
-    ligrmo = mo//'.MODELE'
+    call dismoi('NOM_LIGREL', mo, 'MODELE', repk=ligrmo)
     call jeveuo(ligrmo//'.REPE', 'L', vi=repe)
 !
 !     -- ON VERIFIE QUE LE CHAM_ELEM N'EST PAS TROP DYNAMIQUE :

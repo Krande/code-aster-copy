@@ -22,6 +22,7 @@ subroutine resuReadGetParameters(mesh, model, caraElem, fieldMate)
 !
 #include "asterf_types.h"
 #include "asterfort/getvid.h"
+#include "asterfort/dismoi.h"
 #include "asterfort/jeveuo.h"
 !
     character(len=8), intent(out) :: mesh, model, caraElem, fieldMate
@@ -63,7 +64,7 @@ subroutine resuReadGetParameters(mesh, model, caraElem, fieldMate)
 !
     call getvid(' ', 'MAILLAGE', scal=mesh, nbret=nbOcc)
     if (nbOcc .eq. 0) then
-        ligrel = model//'.MODELE'
+        call dismoi('NOM_LIGREL', model, 'MODELE', repk=ligrel)
         call jeveuo(ligrel//'.LGRF', 'L', vk8=lgrf)
         mesh = lgrf(1)
     end if

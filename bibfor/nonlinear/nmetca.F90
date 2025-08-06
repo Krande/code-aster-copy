@@ -26,6 +26,7 @@ subroutine nmetca(model, mesh, mate, hval_incr, &
 #include "asterf_types.h"
 #include "asterfort/infdbg.h"
 #include "asterfort/calcul.h"
+#include "asterfort/dismoi.h"
 #include "asterfort/detrsd.h"
 #include "asterfort/diinst.h"
 #include "asterfort/exisd.h"
@@ -92,7 +93,7 @@ subroutine nmetca(model, mesh, mate, hval_incr, &
 ! - Initializations
 !
     option = 'ERRE_TEMPS_THM'
-    ligrmo = model(1:8)//'.MODELE'
+    call dismoi('NOM_LIGREL', model, 'MODELE', repk=ligrmo)
     base = 'V'
     cartca = '&&NMETCA.GRDCA'
     chelem = '&&NMETCA.ERRE'

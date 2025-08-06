@@ -29,6 +29,7 @@ subroutine nmrefe(model, compor, mate, cara_elem, nume_dof, &
 #include "asterfort/as_deallocate.h"
 #include "asterfort/assmiv.h"
 #include "asterfort/calcul.h"
+#include "asterfort/dismoi.h"
 #include "asterfort/detrsd.h"
 #include "asterfort/exixfe.h"
 #include "asterfort/inical.h"
@@ -90,7 +91,7 @@ subroutine nmrefe(model, compor, mate, cara_elem, nume_dof, &
 !
     chrefe = '&&NMREFE.SIGERE'
     resu_elem = '&&NMREFE.VEREFE'
-    ligrmo = model(1:8)//'.MODELE'
+    call dismoi('NOM_LIGREL', model, 'MODELE', repk=ligrmo)
     option = 'REFE_FORC_NODA'
     call exixfe(model, ier)
     l_xfem = ier .ne. 0

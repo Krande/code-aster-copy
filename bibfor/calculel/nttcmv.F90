@@ -29,6 +29,7 @@ subroutine nttcmv(model, mateco, caraElem, listLoad, nume_dof, &
 #include "asterfort/ascavc.h"
 #include "asterfort/ascova.h"
 #include "asterfort/asmatr.h"
+#include "asterfort/dismoi.h"
 #include "asterfort/jedema.h"
 #include "asterfort/jeexin.h"
 #include "asterfort/jelira.h"
@@ -113,7 +114,7 @@ subroutine nttcmv(model, mateco, caraElem, listLoad, nume_dof, &
 !
 ! ----- Field for timeMap
 !
-        ligrmo = model(1:8)//'.MODELE'
+        call dismoi('NOM_LIGREL', model, 'MODELE', repk=ligrmo)
         call mecact('V', timeMap, 'MODELE', ligrmo, 'INST_R', &
                     ncmp=6, lnomcmp=nomcmp, vr=tpsthe)
 !
