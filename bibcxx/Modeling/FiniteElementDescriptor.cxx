@@ -35,7 +35,6 @@
 FiniteElementDescriptor::FiniteElementDescriptor( const std::string &name, const std::string &type,
                                                   const BaseMeshPtr mesh )
     : DataStructure( name, 19, type ),
-      _partName( getName() + ".PART" ),
       _numberOfDelayedNumberedConstraintNodes( getName() + ".NBNO" ),
       _parameters( getName() + ".LGRF" ),
       _dofDescriptor( getName() + ".PRNM" ),
@@ -47,14 +46,15 @@ FiniteElementDescriptor::FiniteElementDescriptor( const std::string &name, const
       _superElementsDescriptor( getName() + ".SSSA" ),
       _nameOfNeighborhoodStructure( getName() + ".NVGE" ),
       _mesh( mesh ),
+      _partition( nullptr ),
       _explorer(
           FiniteElementDescriptor::ConnectivityVirtualCellsExplorer( _virtualCellsDescriptor ) ),
       _explorer2(
           FiniteElementDescriptor::ConnectivityVirtualCellsExplorer( _listOfGroupsOfElements ) ) {
-    if ( _partName->exists() ) {
-        _partName->updateValuePointer();
-        if ( ( *_partName )[0] != " " ) {
-            _partition = std::make_shared< Partition >( ( *_partName )[0] );
+    if ( _parameters->exists() ) {
+        _parameters->updateValuePointer();
+        if ( ( *_parameters )[1] != " " ) {
+            _partition = std::make_shared< Partition >( ( *_parameters )[1] );
         }
     };
 };
@@ -80,7 +80,7 @@ FiniteElementDescriptor::FiniteElementDescriptor( const FiniteElementDescriptorP
 };
 
 FiniteElementDescriptor::FiniteElementDescriptorPtr
-FiniteElementDescriptor::restrict( const VectorString &groupsOfCells ) const {
+    FiniteElementDescriptor::restrict( const VectorString &groupsOfCells ) const {
 
     VectorLong listOfCells = _mesh->getCells( groupsOfCells );
 
@@ -88,7 +88,7 @@ FiniteElementDescriptor::restrict( const VectorString &groupsOfCells ) const {
 };
 
 FiniteElementDescriptor::FiniteElementDescriptorPtr
-FiniteElementDescriptor::restrict( const VectorLong &cells ) const {
+    FiniteElementDescriptor::restrict( const VectorLong &cells ) const {
 
     auto fed = std::make_shared< FiniteElementDescriptor >( getMesh() );
 

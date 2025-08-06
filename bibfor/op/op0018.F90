@@ -162,8 +162,8 @@ subroutine op0018()
     call jenonu(jexnom('&CATA.TM.NOMTM', 'POI1'), nume_type_poi1)
 
 ! - Common definition for model SD
-    call wkvect(model//'.MODELE    .LGRF', 'G V K8', 4, vk8=p_model_lgrf)
-    call wkvect(model//'.MODELE    .NBNO', 'G V I', 1, vi=p_model_nbno)
+    call wkvect(ligrel//'.LGRF', 'G V K8', 4, vk8=p_model_lgrf)
+    call wkvect(ligrel//'.NBNO', 'G V I', 1, vi=p_model_nbno)
     p_model_lgrf(1) = mesh
     p_model_nbno(1) = 0
 
@@ -173,7 +173,7 @@ subroutine op0018()
     else if (nb_affe_ss .gt. 0) then
         call getvtx('AFFE_SOUS_STRUC', 'PHENOMENE', iocc=1, scal=phenom)
     end if
-    call jeecra(model//'.MODELE    .LGRF', 'DOCU', cval=phenom(1:4))
+    call jeecra(ligrel//'.LGRF', 'DOCU', cval=phenom(1:4))
 !
     if (nb_affe .ne. 0) then
         keywordfact = 'AFFE'

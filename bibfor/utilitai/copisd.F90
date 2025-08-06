@@ -334,7 +334,6 @@ subroutine copisd(typesd, base, sd1, sd2)
         call jedup1(k191//'.PRNS', bas2, k192//'.PRNS')
         call jedup1(k191//'.REPE', bas2, k192//'.REPE')
         call jedup1(k191//'.SSSA', bas2, k192//'.SSSA')
-        call jedup1(k191//'.PART', bas2, k192//'.PART')
 !
 ! ----------------------------------------------------------------------
     else if (typesd .eq. 'CABL_PRECONT') then

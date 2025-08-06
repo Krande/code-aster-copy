@@ -64,8 +64,6 @@ class FiniteElementDescriptor : public DataStructure {
     JeveuxVectorLong _superElementsDescriptor;
     /** @brief Vecteur Jeveux '.NVGE' */
     JeveuxVectorChar16 _nameOfNeighborhoodStructure;
-    /** @brief Vecteur Jeveux '.PARTSD' */
-    JeveuxVectorChar8 _partName;
     /** @brief Base mesh */
     BaseMeshPtr _mesh;
     /** @brief Object to loop over connectivity of delayed numbered cells */

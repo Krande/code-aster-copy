@@ -63,11 +63,11 @@ subroutine dismlg(questi, nomobz, repi, repkz, ierd)
     aster_logical :: melang
     character(len=8) :: calcri, mailla, nomacr, cellTypeName, k8bid, typmod2, typmod3
     character(len=16) :: elemTypeName, phenom, modelization, tyvois, formul
-    character(len=19) :: nomob, parsd
+    character(len=19) :: nomob
     character(len=32) :: repk
     integer(kind=8) :: jlgrf, iret, nbgrel, igrel, lielSize, elemTypeNume, jsssa, n1
     integer(kind=8) :: ige2, ige1, ige3
-    integer(kind=8) :: iexi, iexi2, ico, jpart
+    integer(kind=8) :: iexi, iexi2, ico
     integer(kind=8) :: jnomac, nbsm, ism, ibid
     aster_logical :: mail_quad, mail_line, lret
     integer(kind=8) :: ndime
@@ -97,12 +97,8 @@ subroutine dismlg(questi, nomobz, repi, repkz, ierd)
         call jeveuo(nomob//'.LGRF', 'L', jlgrf)
         repk = zk8(jlgrf-1+4)
     else if (questi .eq. 'PARTITION') then
-        call jeexin(nomob//'.PART', iexi)
-        if (iexi .ne. 0) then
-            call jeveuo(nomob//'.PART', 'L', jpart)
-            parsd = zk8(jpart)
-            repk = parsd
-        end if
+        call jeveuo(nomob//'.LGRF', 'L', jlgrf)
+        repk = zk8(jlgrf-1+2)
 
     else if (questi .eq. 'BESOIN_VOISIN') then
         repk = 'NON'

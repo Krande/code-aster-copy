@@ -63,7 +63,7 @@ subroutine initel(ligrel, l_calc_rigi)
 !     VARIABLES LOCALES:
 !     ------------------
     integer(kind=8) :: igr, ngr, nmaxob, nbobj, nbprin
-    integer(kind=8) :: nbno, jlliel, iconx2, iexi
+    integer(kind=8) :: nbno, jlliel, iconx2
     integer(kind=8) :: nute, nbel, iel, numa, nbnoma, ino, nuno
     parameter(nmaxob=30)
     integer(kind=8) :: adobj(nmaxob)
@@ -180,12 +180,6 @@ subroutine initel(ligrel, l_calc_rigi)
 !
 !
     AS_DEALLOCATE(vi=vprin)
-!
-    ! Create object for partition
-    call jeexin(ligrel//'.PART', iexi)
-    if (iexi .eq. 0) then
-        call wkvect(ligrel//'.PART', 'G V K8', 1, iexi)
-    end if
 !
 !
 !

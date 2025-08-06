@@ -62,7 +62,7 @@ subroutine fetcrf(nomo, nbsd)
     character(len=8) :: k8bid, ma, sdpart
     character(len=19) :: ligrmo
     character(len=24) :: nomsda, nomsdm
-    character(len=8), pointer :: p_ligrel_part(:) => null()
+    character(len=8), pointer :: p_ligrel_lgrf(:) => null()
     character(len=24) ::  nomgma, nomref
     character(len=24) ::  k24buf
 !
@@ -86,8 +86,8 @@ subroutine fetcrf(nomo, nbsd)
     call dismoi('NOM_LIGREL', nomo, 'MODELE', repk=ligrmo)
 !
 !   name of partition
-    call jeveuo(ligrmo//'.PART', 'E', vk8=p_ligrel_part)
-    p_ligrel_part(1) = sdpart
+    call jeveuo(ligrmo//'.LGRF', 'E', vk8=p_ligrel_lgrf)
+    p_ligrel_lgrf(2) = sdpart
 
 !     VECTEUR DES NBRE DE NOEUDS
     call wkvect('&&FETCRF.NBNO     ', 'V V I', nbsd, nbno)
@@ -101,7 +101,7 @@ subroutine fetcrf(nomo, nbsd)
     zk8(jadr) = nomo
 
 !     MA: MAILLAGE ASSOCIE AU MODELE
-    call dismoi('NOM_MAILLA', ligrmo, 'LIGREL', repk=ma)
+    call dismoi('NOM_MAILLA', nomo, 'MODELE', repk=ma)
     call dismoi('NB_NO_MAILLA', ma, 'MAILLAGE', repi=nbnoto)
     call dismoi('NB_MA_MAILLA', ma, 'MAILLAGE', repi=nbmato)
     nbmatr = nbmato
