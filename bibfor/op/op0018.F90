@@ -40,6 +40,7 @@ subroutine op0018()
 #include "asterfort/getvid.h"
 #include "asterfort/getvis.h"
 #include "asterfort/getelem.h"
+#include "asterfort/gnoms3.h"
 #include "asterfort/getvtx.h"
 #include "asterfort/infmaj.h"
 #include "asterfort/infniv.h"
@@ -81,7 +82,7 @@ subroutine op0018()
 ! --------------------------------------------------------------------------------------------------
 !
     integer(kind=8) :: dim_topo_curr, dim_topo_init
-    integer(kind=8) :: ifm, niv, i, iret
+    integer(kind=8) :: ifm, niv
     character(len=8) :: mesh, model, partsd
     character(len=8) :: name_elem, z_quasi_zero, methode
     character(len=16) :: k16dummy, name_type_geom, repk, valk(2)
@@ -184,7 +185,7 @@ subroutine op0018()
         call jelira(mesh_type_geom, 'LONMAX', nb_mesh_elem)
         call jeveuo(mesh_type_geom, 'L', vi=p_mesh_type_geom)
 ! ----- Name of objects for model
-        model_maille = model//'.MAILLE'
+        model_maille = ligrel//'.TYFE'
         model_liel = ligrel//'.LIEL'
 ! ----- Create main objects for model
         call wkvect(model_maille, 'G V I', nb_mesh_elem, vi=p_model_maille)
@@ -405,14 +406,8 @@ subroutine op0018()
     end if
     if (kdis .ne. 'CENTRALISE') then
 !   name of partition
-        do i = 0, 36**4
-            partsd = "PART"
-            call codlet(i, "D0", partsd(5:8), "F")
-            call jeexin(partsd//".PRTK", iret)
-            if (iret .eq. 0) goto 20
-        end do
-        call utmess('F', 'MODELISA4_69', si=36**4)
-20      continue
+        partsd = "PART"
+        call gnoms3(partsd, 5, 8, ".PRTK")
         p_model_lgrf(2) = partsd
     end if
     if (kdis .eq. 'SOUS_DOMAINE') then

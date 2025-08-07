@@ -76,7 +76,7 @@ subroutine vechmp(nomo, mate, mateco, carele, varplu, lxfem, &
 !
 ! --- CHAMP DE GEOMETRIE
 !
-    call mecoor(nomo, chgeom)
+    call mecoor(ligrmo, chgeom)
 !
 ! --- CHAMP DE CARACTERISTIQUES ELEMENTAIRES
 !

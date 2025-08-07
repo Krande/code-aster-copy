@@ -84,7 +84,7 @@ subroutine postkutil(imater, nomres, nomfis, repmat, repmod)
     character(len=8) :: vk8_mater(5)
     character(len=8) :: k8typmo, k8mater, k8noeu, k8typma
     character(len=16) :: ktyel
-    character(len=19) :: chmat, cesmat, cnxinv
+    character(len=19) :: chmat, cesmat, cnxinv, ligrel
     character(len=24) :: mesmai, limafo
     aster_logical :: l_xfem, inco
     integer(kind=8), pointer :: vmatmp(:) => null()
@@ -109,10 +109,11 @@ subroutine postkutil(imater, nomres, nomfis, repmat, repmod)
 !   prealables
 !   --------------------------------------------------------------------
 !
-!   recup du modele et du vecteur .MAILLE
+!   recup du modele et du vecteur .TYFE
     call dismoi('NOM_MODELE', nomres, 'RESULTAT', repk=nommod)
     ASSERT((nommod .ne. '#AUCUN') .or. (nommod .ne. '#PLUSIEURS'))
-    call jeveuo(nommod//'.MAILLE', 'E', vi=vtyele)
+    call dismoi('NOM_LIGREL', nommod, 'MODELE', repk=ligrel)
+    call jeveuo(ligrel//'.TYFE', 'E', vi=vtyele)
 !
 !   recup du maillage de definition du modele
     call dismoi('NOM_MAILLA', nommod, 'MODELE', repk=noma)

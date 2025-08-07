@@ -17,7 +17,7 @@
 ! --------------------------------------------------------------------
 ! person_in_charge: mickael.abbas at edf.fr
 !
-subroutine comp_ntvari(model_, comporMap_, comporList_, comporInfo, &
+subroutine comp_ntvari(ligrel_, comporMap_, comporList_, comporInfo, &
                        nt_vari, nb_vari_maxi, mapNbZone, prepExte)
 !
     use BehaviourPrepare_type
@@ -36,7 +36,7 @@ subroutine comp_ntvari(model_, comporMap_, comporList_, comporInfo, &
 #include "asterfort/jexnum.h"
 #include "asterfort/teattr.h"
 !
-    character(len=8), optional, intent(in) :: model_
+    character(len=19), optional, intent(in) :: ligrel_
     character(len=19), optional, intent(in) :: comporMap_
     character(len=16), optional, intent(in) :: comporList_(COMPOR_SIZE)
     character(len=19), intent(in) :: comporInfo
@@ -51,7 +51,7 @@ subroutine comp_ntvari(model_, comporMap_, comporList_, comporInfo, &
 !
 ! --------------------------------------------------------------------------------------------------
 !
-! In  model            : model
+! In  ligrel           : ligrel
 ! In  comporList       : list for parameters of constitutive laws
 ! In  comporMap        : map for parameters of constitutive laws
 ! In  comporInfo       : object for information about internal state variables and behaviour
@@ -77,6 +77,7 @@ subroutine comp_ntvari(model_, comporMap_, comporList_, comporInfo, &
     character(len=16) :: post_iter
     character(len=16) :: rela_comp, defo_comp, mult_comp, kit_comp(4), type_cpla
     character(len=16) :: principal, extern_addr
+    character(len=19) :: ligrel
     character(len=8) :: mesh
 !
 ! --------------------------------------------------------------------------------------------------
@@ -85,8 +86,9 @@ subroutine comp_ntvari(model_, comporMap_, comporList_, comporInfo, &
     nb_vari_maxi = 0
     mapNbZone = 0
     prepExte => null()
-    if (present(model_)) then
-        call jeveuo(model_//'.MAILLE', 'L', vi=modelCell)
+    if (present(ligrel_)) then
+        ligrel = ligrel_
+        call jeveuo(ligrel//'.TYFE', 'L', vi=modelCell)
     end if
 
 ! - Access to map

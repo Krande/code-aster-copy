@@ -160,6 +160,9 @@ subroutine vrcins(modelz, chmatz, carelz, inst, chvarc, &
         ce1v(k) = rundef
     end do
 !
+    call dismoi('NOM_LIGREL', modele, 'MODELE', repk=ligrmo)
+    call dismoi('NOM_MAILLA', modele, 'MODELE', repk=noma)
+    call jeveuo(ligrmo//'.TYFE', 'L', jmaille)
 !
     do ichs = 1, nbchs
         chs = liste_ch(ichs) (1:19)
@@ -223,9 +226,8 @@ subroutine vrcins(modelz, chmatz, carelz, inst, chvarc, &
 !                   -- issue23456 : il peut arriver que nbsp=1 mais sans aucune valeur :
                     if (nbsp .eq. 1 .and. .not. exival) goto 70
 !
-                    call dismoi('NOM_MAILLA', modele, 'MODELE', repk=noma)
+
                     nomail = int_to_char8(ima)
-                    call jeveuo(modele//'.MAILLE', 'L', jmaille)
                     nute = zi(jmaille-1+ima)
                     call jenuno(jexnum('&CATA.TE.NOMTE', nute), nomte)
                     valk(1) = nocmp1
@@ -266,7 +268,6 @@ subroutine vrcins(modelz, chmatz, carelz, inst, chvarc, &
 !
 !   4. recopie du champ simple dans le champ chvarc
 !   -----------------------------------------------------
-    call dismoi('NOM_LIGREL', modele, 'MODELE', repk=ligrmo)
     call cescel(chvars, ligrmo, 'INIT_VARC', nompar, 'NAN', &
                 nncp, base, chvarc, 'F', ibid)
 !

@@ -17,7 +17,7 @@
 ! --------------------------------------------------------------------
 ! person_in_charge: mickael.abbas at edf.fr
 !
-subroutine irmeta(ifi, field_med, meta_elno, field_loca, model, &
+subroutine irmeta(ifi, field_med, meta_elno, field_loca, ligrel, &
                   nb_cmp_sele, cmp_name_sele, partie, numpt, instan, &
                   nume_store, nbmaec, limaec, result, cara_elem, &
                   lfichUniq, codret)
@@ -51,7 +51,7 @@ subroutine irmeta(ifi, field_med, meta_elno, field_loca, model, &
     character(len=64), intent(in) :: field_med
     character(len=19), intent(in) :: meta_elno
     character(len=8), intent(in) :: field_loca
-    character(len=8), intent(in) :: model
+    character(len=19), intent(in) :: ligrel
     integer(kind=8), intent(in) :: nb_cmp_sele
     character(len=*), intent(in) :: cmp_name_sele(*)
     character(len=*), intent(in) :: partie
@@ -78,7 +78,7 @@ subroutine irmeta(ifi, field_med, meta_elno, field_loca, model, &
 ! In  field_loca       : localization of field
 !                        /'ELNO'/'ELGA'/'ELEM'
 ! In  result           : name of results datastructure
-! In  model            : name of model
+! In  ligrel           : name of ligrel of the field
 ! Out codret           : error code
 !                        0   - Everything is OK
 !                        400 - error
@@ -104,7 +104,7 @@ subroutine irmeta(ifi, field_med, meta_elno, field_loca, model, &
     character(len=7) :: saux07
     character(len=8) :: saux08
     character(len=8), parameter :: base_name = '&&IRMETA'
-    character(len=19) :: comporMeta, ligrel
+    character(len=19) :: comporMeta
     character(len=19), parameter :: meta_elno_s = '&&IRMETA.VARIELGA_S'
     character(len=19), parameter :: meta_elnr = '&&IRMETA.VARIELGR'
     character(len=19), parameter :: meta_elnr_s = '&&IRMETA.VARIELGR_S'
@@ -134,7 +134,6 @@ subroutine irmeta(ifi, field_med, meta_elno, field_loca, model, &
     field_type = 'META_ELNO'
     ASSERT(field_loca .eq. 'ELNO')
     codret = 0
-    call dismoi('NOM_LIGREL', model, 'MODELE', repk=ligrel)
 
 ! - Get name of <CARTE> COMPORMETA
     call rsexch(' ', result, 'COMPORMETA', nume_store, comporMeta, iret)
@@ -144,7 +143,7 @@ subroutine irmeta(ifi, field_med, meta_elno, field_loca, model, &
     end if
 
 ! - Prepare informations about internal variables
-    call comp_meta_pvar(model, comporMeta, comporInfo)
+    call comp_meta_pvar(ligrel, comporMeta, comporInfo)
 
 ! - Access to informations
     call jeveuo(comporInfo(1:19)//'.INFO', 'L', vi=comporInfoInfo)
@@ -256,7 +255,7 @@ subroutine irmeta(ifi, field_med, meta_elno, field_loca, model, &
 !
 ! - Write in MED file
 !
-    call irceme(ifi, nomres, meta_elnr, field_loca, model, &
+    call irceme(ifi, nomres, meta_elnr, field_loca, ligrel, &
                 nb_cmp_sele, cmp_name_sele, label_med, partie, numpt, &
                 instan, nume_store, nbmaec, limaec, cara_elem, &
                 cara_elem, field_type, nbCmpDyna, lfichUniq, codret)

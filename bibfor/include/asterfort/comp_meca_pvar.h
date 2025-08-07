@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -18,8 +18,8 @@
 !
 #include "asterfort/Behaviour_type.h"
 interface
-    subroutine comp_meca_pvar(model_, comporMap_, comporList_, comporInfo)
-        character(len=8), optional, intent(in) :: model_
+    subroutine comp_meca_pvar(ligrel_, comporMap_, comporList_, comporInfo)
+        character(len=19), optional, intent(in) :: ligrel_
         character(len=19), optional, intent(in) :: comporMap_
         character(len=16), optional, intent(in) :: comporList_(COMPOR_SIZE)
         character(len=19), intent(in) :: comporInfo

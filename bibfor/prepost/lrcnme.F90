@@ -110,9 +110,9 @@ subroutine lrcnme(chanom, nochmd, nomamd, nomaas, nomgd, &
     parameter(edlect=0)
 !
     character(len=1) :: saux01
-    character(len=8) :: saux08, parbid, mobid
+    character(len=8) :: saux08, parbid
     character(len=19) :: chamn
-    character(len=19) :: chamns
+    character(len=19) :: chamns, mobid
     character(len=24) :: optbid
     character(len=64) :: nomcha
     character(len=200) :: nofimd

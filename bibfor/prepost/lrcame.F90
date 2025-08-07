@@ -18,7 +18,7 @@
 ! person_in_charge: nicolas.sellenet at edf.fr
 ! aslint: disable=W1504
 !
-subroutine lrcame(nrofic, nochmd, nomamd, nomaas, nommod, &
+subroutine lrcame(nrofic, nochmd, nomamd, nomaas, ligrel, &
                   option, param, typech, typen, npgma, &
                   npgmm, nspmm, nbcmpv, ncmpva, ncmpvm, &
                   iinst, numpt, numord, inst, crit, &
@@ -73,9 +73,9 @@ subroutine lrcame(nrofic, nochmd, nomamd, nomaas, nommod, &
     integer(kind=8) :: npgma(*), npgmm(*), nspmm(*)
     integer(kind=8) :: codret, codre2
     character(len=*) :: typech
-    character(len=8) :: nomgd, nomaas, nommod
+    character(len=8) :: nomgd, nomaas
     character(len=8) :: crit, param
-    character(len=19) :: chames
+    character(len=19) :: chames, ligrel
     character(len=24) :: option
     character(len=*) :: nochmd, nomamd
     character(len=*) :: ncmpva, ncmpvm
@@ -143,7 +143,7 @@ subroutine lrcame(nrofic, nochmd, nomamd, nomaas, nommod, &
     character(len=1) :: saux01
     character(len=8) :: saux08
     character(len=8) :: nomtyp(MT_NTYMAX)
-    character(len=19) :: prefix, ligrel
+    character(len=19) :: prefix
     character(len=24) :: numcmp, ntncmp, ntucmp, ntvale, nmcmfi(MT_NTYMAX)
     character(len=64) :: valk(2)
     character(len=24) :: ntproa, nmcmfl
@@ -282,10 +282,6 @@ subroutine lrcame(nrofic, nochmd, nomamd, nomaas, nommod, &
         write (ifm, *) '   DE DIMENSION ', ndim
     end if
 !
-    ligrel = ' '
-    if (nommod .ne. ' ') then
-        call dismoi('NOM_LIGREL', nommod, 'MODELE', repk=ligrel)
-    end if
 !
 ! 2.2. ==> VERIFICATIONS DES COMPOSANTES ASTER DEMANDEES
 !          EN SORTIE, ON A :
@@ -638,11 +634,11 @@ subroutine lrcame(nrofic, nochmd, nomamd, nomaas, nommod, &
 !         ON BOUCLE (72) SUR LES MAILLES DU MAILLAGE ASTER
 !         ET ON RELEVE LES MAILLES CORRESPONDANT AU TYPE LU
 !
-!         ON SOUHAITE VERIFIER QUE LE MODELE ASTER ET LE PROFIL
+!         ON SOUHAITE VERIFIER QUE LE LGREL ASTER ET LE PROFIL
 !         MED ONT BIEN LE MEME NOMBRE DE MAILLE DE CHAQUE TYPE
-                call exisd('MODELE', nommod, iret)
+                call jeexin(ligrel//'.TYFE', iret)
                 if (iret .ne. 0) then
-                    call jeveuo(nommod//'.MAILLE', 'L', jmaill)
+                    call jeveuo(ligrel//'.TYFE', 'L', jmaill)
                 else
                     jmaill = 0
                 end if

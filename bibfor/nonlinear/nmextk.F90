@@ -17,7 +17,7 @@
 ! --------------------------------------------------------------------
 ! person_in_charge: mickael.abbas at edf.fr
 !
-subroutine nmextk(mesh, model, &
+subroutine nmextk(model, &
                   keyw_fact, i_keyw_fact, &
                   field, field_type, field_s, field_disc, &
                   list_node, list_elem, list_poin, list_spoi, &
@@ -30,6 +30,7 @@ subroutine nmextk(mesh, model, &
 #include "asterfort/assert.h"
 #include "asterfort/cesexi.h"
 #include "asterfort/exisd.h"
+#include "asterfort/dismoi.h"
 #include "asterfort/getvtx.h"
 #include "asterfort/jeveuo.h"
 #include "asterfort/lxliis.h"
@@ -39,7 +40,7 @@ subroutine nmextk(mesh, model, &
 #include "asterfort/wkvect.h"
 #include "asterfort/int_to_char8.h"
 !
-    character(len=8), intent(in) :: mesh, model
+    character(len=8), intent(in) :: model
     character(len=16), intent(in) :: keyw_fact
     integer(kind=8), intent(in) :: i_keyw_fact
     character(len=19), intent(in) :: field
@@ -62,7 +63,6 @@ subroutine nmextk(mesh, model, &
 !
 ! --------------------------------------------------------------------------------------------------
 !
-! In  mesh             : name of mesh
 ! In  model            : name of model
 ! In  keyw_fact        : factor keyword to read extraction parameters
 ! In  i_keyw_fact      : index of keyword to read extraction parameters
@@ -97,6 +97,7 @@ subroutine nmextk(mesh, model, &
     character(len=8) :: cmp_vari_name
     integer(kind=8) :: i_vari
     character(len=16) :: valk(2)
+    character(len=19) :: modelLigrel
     integer(kind=8) :: jcesd, jcesl, jcesv
     integer(kind=8) :: vali(4)
     character(len=8), pointer :: cesc(:) => null()
@@ -147,7 +148,8 @@ subroutine nmextk(mesh, model, &
         call getvtx(keyw_fact, 'NOM_VARI', iocc=i_keyw_fact, nbval=nb_cmp, vect=v_list_vari, &
                     nbret=iret)
         call jeveuo(list_elem, 'L', vi=v_list_elem)
-        call varinonu(model, compor, nb_elem, v_list_elem, nb_cmp, v_list_vari, v_list_cmp)
+        call dismoi('NOM_LIGREL', model, 'MODELE', repk=modelligrel)
+        call varinonu(modelligrel, compor, nb_elem, v_list_elem, nb_cmp, v_list_vari, v_list_cmp)
         type_sele_cmp = 'NOM_VARI'
     end if
 !

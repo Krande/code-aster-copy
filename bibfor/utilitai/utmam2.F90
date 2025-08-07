@@ -22,6 +22,7 @@ subroutine utmam2(modele, nbma, nbtrou, tatrou)
 #include "asterfort/as_allocate.h"
 #include "asterfort/as_deallocate.h"
 #include "asterfort/assert.h"
+#include "asterfort/dismoi.h"
 #include "asterfort/jedema.h"
 #include "asterfort/jelira.h"
 #include "asterfort/jemarq.h"
@@ -56,14 +57,16 @@ subroutine utmam2(modele, nbma, nbtrou, tatrou)
     integer(kind=8) :: nbmail, ima, itrou
     integer(kind=8), pointer :: liste_m_temp(:) => null()
     integer(kind=8), pointer :: maille(:) => null()
+    character(len=19) :: ligrel
 !
 !
 ! ----------------------------------------------------------------------
 !
     call jemarq()
 !
-    call jeveuo(modele//'.MAILLE', 'L', vi=maille)
-    call jelira(modele//'.MAILLE', 'LONMAX', nbmail)
+    call dismoi('NOM_LIGREL', modele, 'MODELE', repk=ligrel)
+    call jeveuo(ligrel//'.TYFE', 'L', vi=maille)
+    call jelira(ligrel//'.TYFE', 'LONMAX', nbmail)
     ASSERT(nbma .eq. nbmail)
 !
     AS_ALLOCATE(vi=liste_m_temp, size=nbmail)

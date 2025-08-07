@@ -73,7 +73,7 @@ subroutine irmfac(keywfIocc, fileFormat, fileUnit, fileVersion, modelIn, &
     character(len=8) :: cplxFormat
     character(len=8) :: modelMesh, model, caraElem, meshName, visuSP
     character(len=8) :: fieldGsmh, fieldQuantity
-    character(len=19) :: dsName, resultName, fieldName, answer
+    character(len=19) :: dsName, resultName, fieldName, answer, ligrel
     character(len=16) :: realFormat, resultType
     character(len=80) :: title
     integer(kind=8) :: fieldListNb, storeListNb, paraListNb, cmpListNb, nodeListNb, cellListNb
@@ -99,10 +99,12 @@ subroutine irmfac(keywfIocc, fileFormat, fileUnit, fileVersion, modelIn, &
 ! - Has model ?
 !
     model = ' '
+    ligrel = ' '
     lModel = ASTER_FALSE
     if (modelIn .ne. ' ') then
         model = modelIn
         lModel = ASTER_TRUE
+        call dismoi('NOM_LIGREL', model, 'MODELE', repk=ligrel)
     end if
 !
 ! - Format of real numbers
@@ -174,6 +176,8 @@ subroutine irmfac(keywfIocc, fileFormat, fileUnit, fileVersion, modelIn, &
         call dismoi('MODELE', resultName, 'RESULTAT', repk=model)
         if (model(1:1) .eq. '#') then
             model = ' '
+        else
+            call dismoi('NOM_LIGREL', model, 'MODELE', repk=ligrel)
         end if
     end if
 !
@@ -232,7 +236,7 @@ subroutine irmfac(keywfIocc, fileFormat, fileUnit, fileVersion, modelIn, &
     call getvid(keywf, 'MAILLAGE', iocc=keywfIocc, scal=answer, nbret=nbOcc)
     lMesh = nbOcc .gt. 0
     if (lMesh) then
-        meshName = answer
+        meshName = answer(1:8)
     end if
 !
 ! - For fileFormat = 'ASTER' => only mesh !
@@ -282,7 +286,7 @@ subroutine irmfac(keywfIocc, fileFormat, fileUnit, fileVersion, modelIn, &
             call iremed_filtre(meshName, '&&IRMHD2', 'V', lfichUniq)
         end if
         call irmail(fileFormat, fileUnit, fileVersion, &
-                    meshName, lModel, model, &
+                    meshName, lModel, ligrel, &
                     meshMEDInfo, realFormat, lfichUniq, '&&IRMHD2')
     end if
 !

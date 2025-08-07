@@ -31,10 +31,7 @@
 #include "DataFields/ListOfTables.h"
 #include "DataStructures/DataStructure.h"
 #include "Loads/PhysicalQuantity.h"
-#include "Meshes/BaseMesh.h"
 #include "Meshes/ConnectionMesh.h"
-#include "Meshes/ParallelMesh.h"
-#include "Meshes/Skeleton.h"
 #include "Modeling/ElementaryModeling.h"
 #include "Modeling/FiniteElementDescriptor.h"
 #include "Modeling/HHOModel.h"
@@ -65,15 +62,10 @@ class Model : public DataStructure, public ListOfTables {
     typedef listOfModsAndGrps::iterator listOfModsAndGrpsIter;
     /** @brief Iterateur constant sur un listOfModsAndGrps */
     typedef listOfModsAndGrps::const_iterator listOfModsAndGrpsCIter;
-
-    /** @brief Vecteur Jeveux '.MAILLE' */
-    JeveuxVectorLong _typeOfCells;
     /** @brief Vecteur Jeveux '.NOEUD' */
     JeveuxVectorLong _typeOfNodes;
     /** @brief Liste contenant les modelisations ajoutees par l'utilisateur */
     listOfModsAndGrps _modelisations;
-    /** @brief Maillage sur lequel repose la modelisation */
-    BaseMeshPtr _baseMesh;
     /** @brief Model without XFEM */
     ModelPtr _saneModel;
     /** @brief Model with XFEM */
@@ -224,8 +216,6 @@ class Model : public DataStructure, public ListOfTables {
     ConnectionMeshPtr getConnectionMesh() const;
 #endif /* ASTER_HAVE_MPI */
 
-    JeveuxVectorLong getFiniteElementType() const { return _typeOfCells; };
-
     /**
      * @brief Get the sane base model
      */
@@ -248,7 +238,7 @@ class Model : public DataStructure, public ListOfTables {
 
     BaseMeshPtr getMesh() const;
 
-    JeveuxVectorLong getTypeOfCells() const;
+    JeveuxVectorLong getFiniteElementType() const;
 
     /**
      * @brief Methode permettant de savoir si le modele est vide

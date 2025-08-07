@@ -66,6 +66,7 @@ subroutine chpchd(chin, type, celmod, prol0, base, &
 !        /'NON' : ERREUR <F> SI IL EXISTE DES
 !         DES VALEURS DE CHOU QUI NE SONT PAS AFFECTEES DANS CHIN
 !   CELMOD IN/JXIN  K19 : NOM D'UN CHAM_ELEM "MODELE" SI TYPE='EL..'
+!                         POUR XFEM UNIQUEMENT
 !                       : NOM DU MAILLAGE SI TYPE='GEOM.'
 !
 !  LES CAS TRAITES AUJOURD'HUI SONT :

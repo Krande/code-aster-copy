@@ -61,6 +61,7 @@ subroutine comp_meca_read(l_etat_init, prepMapCompor, model)
     character(len=16) :: defo_comp, rela_comp, type_cpla, mult_comp, type_comp, meca_comp
     character(len=16) :: post_iter, defo_ldc, rigi_geom, regu_visc, post_incr
     character(len=16) :: kit_comp(4), answer
+    character(len=19) :: modelLigrel
     aster_logical :: l_cristal, l_kit, lTotalStrain
     integer(kind=8), pointer :: modelCell(:) => null()
 !
@@ -72,7 +73,8 @@ subroutine comp_meca_read(l_etat_init, prepMapCompor, model)
 
 ! - Pointer to list of elements in model
     if (present(model)) then
-        call jeveuo(model//'.MAILLE', 'L', vi=modelCell)
+        call dismoi('NOM_LIGREL', model, 'MODELE', repk=modelLigrel)
+        call jeveuo(modelLigrel//'.TYFE', 'L', vi=modelCell)
         call dismoi('NOM_MAILLA', model, 'MODELE', repk=mesh)
     end if
 

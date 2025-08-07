@@ -82,6 +82,7 @@ subroutine compMecaChckModel(iComp, &
     integer(kind=8) :: modelTypeIret, lctestIret, iCell, incoTypeIret
     integer(kind=8) :: nbCellMesh, nbCell, ibid, ier
     character(len=16), pointer :: cesv(:) => null()
+    character(len=19) :: ligrel
     integer(kind=8), pointer :: cellAffectedByModel(:) => null()
     integer(kind=8), pointer :: listCellAffe(:) => null()
     aster_logical :: lAtOneCellAffect, lAllCellAreBound, lPlStressFuncNu, l_kit_thm, l_parallel_mesh
@@ -108,7 +109,8 @@ subroutine compMecaChckModel(iComp, &
 !
 ! - Access to model
 !
-    call jeveuo(model//'.MAILLE', 'L', vi=cellAffectedByModel)
+    call dismoi('NOM_LIGREL', model, 'MODELE', repk=ligrel)
+    call jeveuo(ligrel//'.TYFE', 'L', vi=cellAffectedByModel)
 !
 ! - Access to <CHELEM_S> of FULL_MECA option
 !

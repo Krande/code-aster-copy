@@ -87,13 +87,12 @@ subroutine irchme(ifichi, chanom, partie, nochmd, noresu, &
 !
     character(len=8) :: noresu, typech, sdcarm, carael
     character(len=16) :: nomsym
-    character(len=19) :: chanom, ligrel
-    character(len=24) :: nocelk
+    character(len=19) :: chanom
     character(len=*) :: nomcmp(*), partie
     integer(kind=8), intent(in) :: paraListNb
     character(len=16), pointer :: paraListName(:)
     integer(kind=8) :: numord, nbrcmp, ifichi, iret
-    integer(kind=8) :: nbnoec, nbmaec, icelk
+    integer(kind=8) :: nbnoec, nbmaec
     integer(kind=8) :: linoec(*), limaec(*)
 !
     aster_logical :: lvarie, lfichUniq
@@ -110,10 +109,11 @@ subroutine irchme(ifichi, chanom, partie, nochmd, noresu, &
     integer(kind=8) :: ednopt
     parameter(ednopt=-1)
 !
-    integer(kind=8) :: ifm, nivinf, numpt, iaux, nbgrel, jmaille, j1, n1
-    integer(kind=8) :: nbma, igr, iel, ite, ima, codret_vari
+    integer(kind=8) :: ifm, nivinf, numpt, iaux
+    integer(kind=8) :: codret_vari
 !
-    character(len=8) :: saux08, modele, fauxmodele, ma
+    character(len=8) :: saux08
+    character(len=19) :: ligrel
     character(len=64) :: nochmd
     real(kind=8) :: start_time, end_time
 !
@@ -126,8 +126,7 @@ subroutine irchme(ifichi, chanom, partie, nochmd, noresu, &
     call infniv(ifm, nivinf)
     codret = 0
     codret_vari = 0
-    fauxmodele = ' '
-    modele = ' '
+    ligrel = ' '
 !
 100 format(/, 81('='), /, 81('='),/)
 101 format(81('-'),/)
@@ -204,44 +203,12 @@ subroutine irchme(ifichi, chanom, partie, nochmd, noresu, &
 !
     end if
 !
-! 1.3. ==> recherche du nom du modele (pour les champs ELGA) :
+! 1.3. ==> recherche du nom du ligrel (pour les champs ELGA) :
 !
     if (codret .eq. 0) then
-!
-        if (typech(1:4) .ne. 'ELGA' .and. typech(1:4) .ne. 'ELNO') then
-            modele = ' '
-        else
-            nocelk = chanom//'.CELK'
-            call jeveuo(nocelk, 'L', icelk)
-            ligrel = zk24(icelk) (1:19)
-            if (noresu .ne. ' ') then
-                call rsadpa(noresu, 'L', 1, 'MODELE', numord, &
-                            0, sjv=iaux, styp=saux08, istop=0)
-                modele = zk8(iaux)
-            end if
-            call exisd('MODELE', modele, iret)
-            if (iret .eq. 0) then
-!            -- En absence d'un modele on va en construire un faux pour l'impression.
-                fauxmodele = '&&IRCHME'
-                call dismoi('NOM_MAILLA', chanom, 'CHAMP', repk=ma)
-                call dismoi('NB_MA_MAILLA', ma, 'MAILLAGE', repi=nbma)
-                call wkvect(fauxmodele//'.MAILLE', 'V V I', nbma, jmaille)
-                call jelira(ligrel//'.LIEL', 'NUTIOC', nbgrel)
-                do igr = 1, nbgrel
-                    call jelira(jexnum(ligrel//'.LIEL', igr), 'LONMAX', n1)
-                    call jeveuo(jexnum(ligrel//'.LIEL', igr), 'L', j1)
-                    ite = zi(j1-1+n1)
-                    do iel = 1, n1-1
-                        ima = zi(j1-1+iel)
-                        ASSERT(ima .ge. 0 .and. ima .le. nbma)
-                        if (ima .gt. 0) zi(jmaille-1+ima) = ite
-                    end do
-                end do
-                call copisd('LIGREL', 'V', ligrel, fauxmodele//'.MODELE')
-                modele = fauxmodele
-            end if
+        if (typech(1:2) .eq. 'EL') then
+            call dismoi("NOM_LIGREL", chanom, "CHAM_ELEM", repk=ligrel)
         end if
-!
     end if
 !
 !====
@@ -252,24 +219,24 @@ subroutine irchme(ifichi, chanom, partie, nochmd, noresu, &
     if (codret .eq. 0) then
 !
         if (typech(1:4) .eq. 'NOEU') then
-            call ircnme(ifichi, nochmd, chanom, typech, modele, &
+            call ircnme(ifichi, nochmd, chanom, typech, ligrel, &
                         nbrcmp, nomcmp, partie, numpt, instan, &
                         numord, nbnoec, linoec, sdcarm, carael, &
                         nomsym, lfichUniq, codret)
         else if (typech(1:2) .eq. 'EL') then
             if ((nomsym .eq. 'VARI_ELGA') .and. lvarie) then
-                call irvari(ifichi, nochmd, chanom, typech, modele, &
+                call irvari(ifichi, nochmd, chanom, typech, ligrel, &
                             nbrcmp, nomcmp, partie, numpt, instan, &
                             numord, nbmaec, limaec, noresu, sdcarm, &
                             carael, lfichUniq, codret_vari)
             end if
             if ((nomsym .eq. 'META_ELNO') .and. lvarie) then
-                call irmeta(ifichi, nochmd, chanom, typech, modele, &
+                call irmeta(ifichi, nochmd, chanom, typech, ligrel, &
                             nbrcmp, nomcmp, partie, numpt, instan, &
                             numord, nbmaec, limaec, noresu, sdcarm, &
                             lfichUniq, codret_vari)
             end if
-            call irceme(ifichi, nochmd, chanom, typech, modele, &
+            call irceme(ifichi, nochmd, chanom, typech, ligrel, &
                         nbrcmp, nomcmp, ' ', partie, numpt, &
                         instan, numord, nbmaec, limaec, sdcarm, &
                         carael, nomsym, nbCmpDyna, lfichUniq, codret)
@@ -277,7 +244,7 @@ subroutine irchme(ifichi, chanom, partie, nochmd, noresu, &
                 codret = codret_vari
             end if
         else if (typech(1:4) .eq. 'CART') then
-            call irceme(ifichi, nochmd, chanom, typech, modele, &
+            call irceme(ifichi, nochmd, chanom, typech, ligrel, &
                         nbrcmp, nomcmp, ' ', partie, numpt, &
                         instan, numord, nbmaec, limaec, sdcarm, &
                         carael, nomsym, nbCmpDyna, lfichUniq, codret)
@@ -304,7 +271,5 @@ subroutine irchme(ifichi, chanom, partie, nochmd, noresu, &
         call utflsh(codret)
         write (ifm, 101)
     end if
-!
-    call detrsd('MODELE', fauxmodele)
 !
 end subroutine

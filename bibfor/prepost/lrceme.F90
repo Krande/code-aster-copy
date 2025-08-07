@@ -223,7 +223,12 @@ subroutine lrceme(chanom, nochmd, typech, nomamd, nomaas, &
 ! 3. LECTURE POUR CHAQUE TYPE DE SUPPORT
 !====
 !
-    call lrcame(nrofic, nochmd, nomamd, nomaas, nommod, &
+    ligrel = ' '
+    if (nommod .ne. ' ') then
+        call dismoi('NOM_LIGREL', nommod, 'MODELE', repk=ligrel)
+    end if
+!
+    call lrcame(nrofic, nochmd, nomamd, nomaas, ligrel, &
                 option, param, typech, typent, nbpgma, &
                 nbpgmm, nbspmm, nbcmpv, ncmpva, ncmpvm, &
                 iinst, numpt, numord, inst, crit, &
@@ -241,10 +246,6 @@ subroutine lrceme(chanom, nochmd, typech, nomamd, nomaas, &
         call cescar(chames, chanom, 'V')
         nncp = 0
     else
-        ligrel = ' '
-        if (nommod .ne. ' ') then
-            call dismoi('NOM_LIGREL', nommod, 'MODELE', repk=ligrel)
-        end if
         call cescel(chames, ligrel, option, param, prolz, &
                     nncp, 'V', chanom, 'F', ibid)
     end if

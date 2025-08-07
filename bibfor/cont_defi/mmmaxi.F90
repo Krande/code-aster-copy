@@ -24,6 +24,7 @@ function mmmaxi(sdcont_defi, model, mesh)
 #include "asterfort/cfdisi.h"
 #include "asterfort/infbav.h"
 #include "asterfort/infmue.h"
+#include "asterfort/dismoi.h"
 #include "asterfort/jedetr.h"
 #include "asterfort/jenuno.h"
 #include "asterfort/jeveuo.h"
@@ -61,6 +62,7 @@ function mmmaxi(sdcont_defi, model, mesh)
     integer(kind=8) :: elem_nume, elem_type_nume
     integer(kind=8) :: i_elem, nb_cont_elem
     integer(kind=8) :: elem_supp_nume, nb_elem_axis, ivdummy(1)
+    character(len=19) :: ligrel
     real(kind=8), pointer :: v_geom_vale(:) => null()
     character(len=24) :: model_maille
     integer(kind=8), pointer :: v_model_maille(:) => null()
@@ -85,7 +87,8 @@ function mmmaxi(sdcont_defi, model, mesh)
 !
 ! - Access to model
 !
-    model_maille = model(1:8)//'.MAILLE'
+    call dismoi('NOM_LIGREL', model, 'MODELE', repk=ligrel)
+    model_maille = ligrel//'.TYFE'
     call jeveuo(model_maille, 'L', vi=v_model_maille)
 !
 ! - Get support elements of skin elements

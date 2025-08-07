@@ -69,16 +69,16 @@ subroutine arlmom(mailar, modarl)
 !
 ! --- CREATION DES SDs DE BASE DE MODELE
 !
-    modmai = modarl(1:8)//'.MAILLE    '
+    call dismoi('NOM_LIGREL', modarl, 'MODELE', repk=ligarl)
+    modmai = ligarl//'.TYFE'
     call wkvect(modmai, 'V V I', nbma, jmoma)
 !
 ! --- ACCES AU LIGREL
 !
-    call dismoi('NOM_LIGREL', modarl, 'MODELE', repk=ligarl)
     call jeveuo(ligarl//'.LIEL', 'L', ialiel)
     call jeveuo(jexatr(ligarl//'.LIEL', 'LONCUM'), 'L', illiel)
 !
-! --- REMPLISSAGE DE LA SD MODELE//'.MAILLE'
+! --- REMPLISSAGE DE LA SD LIGREL//'.TYFE'
 !
     do igrel = 1, nbgrel(ligarl)
         nute = typele(ligarl, igrel)

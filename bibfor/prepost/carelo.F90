@@ -43,7 +43,7 @@ subroutine carelo(modele, carele, base, chrel1, chrel2, &
 !
     character(len=8) :: lpain(4), lpaou(3)
     character(len=19) :: ligrmo, lchin(4), lchou(3)
-    character(len=24) :: chgeom
+    character(len=19) :: chgeom
 ! ----------------------------------------------------------------------
 !
     call jemarq()

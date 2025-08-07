@@ -51,6 +51,7 @@ subroutine pjloin(nbnod, nbnodm, m2, geom2, nbmax, tino2m, tdmin2, lino_loin)
 !
     character(len=8) ::  madebug, k8bid, kico
     character(len=16) :: alarm, k16bid, nomcmd, formar
+    character(len=19) :: k19bid
 !
     integer(kind=8) :: vali(2)
     integer(kind=8) :: ii, ino2m, unite, ico, iret, ifm, info, ivers
@@ -100,7 +101,8 @@ subroutine pjloin(nbnod, nbnodm, m2, geom2, nbmax, tino2m, tdmin2, lino_loin)
                 call ulaffe(unite, fichier, ' ', 'N', 'O')
                 formar = ' '
                 k8bid = ' '
-                call irmail('MED', unite, ivers, madebug, ASTER_FALSE, k8bid, 1, formar)
+                k19bid = ' '
+                call irmail('MED', unite, ivers, madebug, ASTER_FALSE, k19bid, 1, formar)
                 call ulopen(-unite, k8bid, k8bid, k8bid, k8bid)
                 call detrsd('MAILLAGE', madebug)
             end if

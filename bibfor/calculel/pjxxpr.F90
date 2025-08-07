@@ -240,7 +240,7 @@ subroutine pjxxpr(resu1, resu2, moa1, moa2, corres, &
                         inst = 0.
                     end if
                     call pjxfem(corres, ch1, ch2, tychv, prfchn, &
-                                prolong%prol_vale_r, ligrel, base, moa1, inst, iret)
+                                prolong%prol_vale_r, base, moa1, inst, iret)
                 end if
             end if
             ASSERT(iret .eq. 0 .or. iret .eq. 1 .or. iret .eq. 10)

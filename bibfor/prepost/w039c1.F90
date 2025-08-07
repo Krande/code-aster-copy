@@ -59,7 +59,7 @@ subroutine w039c1(carte, ifi, form, ligrel, titre)
     integer(kind=8) :: jdesc, jvale, ngedit, nugd, ncmpmx, kgedit, kzone, kcmp
     character(len=19) :: cart1, cel2, ces2
     character(len=64) :: nommed
-    character(len=8) :: kbid, ma, tsca, nomgd, modele, typech, sdcarm
+    character(len=8) :: kbid, ma, tsca, nomgd, typech, sdcarm
     character(len=16) :: field_type
     real(kind=8), pointer :: cesv(:) => null()
     integer(kind=8), pointer :: ptma(:) => null()
@@ -195,10 +195,9 @@ subroutine w039c1(carte, ifi, form, ligrel, titre)
 !     -------------------------
         nommed = cel2
         typech = 'ELEM'
-        modele = ' '
         sdcarm = ' '
         field_type = 'Unknown'
-        call irceme(ifi, nommed, cel2, typech, modele, &
+        call irceme(ifi, nommed, cel2, typech, ligrel, &
                     0, ' ', ' ', ' ', 0, &
                     0.d0, 0, 0, [0], sdcarm, sdcarm, &
                     field_type, nbCmpDyna, .false._1, iret)

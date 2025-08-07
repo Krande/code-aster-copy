@@ -83,7 +83,7 @@ subroutine trresu(ific, nocc)
     character(len=8) :: leresu, model
     character(len=11) :: motcle
     character(len=16) :: nopara, k16b, tbtxt(2), tbref(2), fieldName, variName
-    character(len=19) :: cham19, knum
+    character(len=19) :: cham19, knum, modelligrel
     character(len=33) :: nonoeu
     character(len=24) :: travr, travi, travc, travrr, travir, travcr, nogrno, nogrma, compor
     character(len=33) :: titres, valk(3)
@@ -528,7 +528,8 @@ subroutine trresu(ific, nocc)
                             call utmess('F', "COMPOR6_6")
                         end if
                         nbVari = 1
-                        call varinonu(model, compor, &
+                        call dismoi('NOM_LIGREL', model, 'MODELE', repk=modelligrel)
+                        call varinonu(modelligrel, compor, &
                                       1, [cellNume], &
                                       nbVari, variName, noddl)
 

@@ -238,8 +238,8 @@ subroutine fetcrf(nomo, nbsd)
     end do
 !
 ! **** TEST NBRE DE MAILLES MODELE = SOMME DES MAILLES DES GROUP_MA
-    call jelira(nomo//'.MAILLE', 'LONMAX', nbma)
-    call jeveuo(nomo//'.MAILLE', 'L', ial)
+    call jelira(ligrmo//'.TYFE', 'LONMAX', nbma)
+    call jeveuo(ligrmo//'.TYFE', 'L', ial)
     nbmama = 0
     nber = 0
     do i = 1, nbma

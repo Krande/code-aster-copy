@@ -98,7 +98,7 @@ subroutine arlver(modele, lgma, nbgma, nomsd, model, &
     call dismoi('NOM_LIGREL', modele, 'MODELE', repk=ligrel)
     call jeveuo(ligrel//'.REPE', 'L', jrepe)
     call jelira(ligrel//'.LIEL', 'NMAXOC', nbligr, k8bid)
-    call jeveuo(modele(1:8)//'.MAILLE', 'L', jtyel)
+    call jeveuo(ligrel//'.TYFE', 'L', jtyel)
 !
 ! --- NOM DU MAILLAGE
 !

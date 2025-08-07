@@ -94,10 +94,10 @@ subroutine axdipo(noma, caelem, modele, iaxe)
 !
 !     RECUPERATION DE LA MODELISATION DES MAILLES
 !     VERIFICATION : PAS DE MAILLES TARDIVES
-    modmai = modele//'.MAILLE'
+    call dismoi('NOM_LIGREL', modele, 'MODELE', repk=ligrmo)
+    modmai = ligrmo//'.TYFE'
     call jeveuo(modmai, 'L', jdme)
 !
-    call dismoi('NOM_LIGREL', modele, 'MODELE', repk=ligrmo)
     modnem = ligrmo//'.NEMA'
     nbmtrd = 0
     call jeexin(modnem, ixnw)

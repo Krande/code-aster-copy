@@ -87,11 +87,11 @@ subroutine peeint(tableOut, model, nbocc)
     character(len=8), parameter :: locaNameAll = 'TOUT', locaNameGroup = 'GROUP_MA'
     character(len=24), parameter :: locaNameUnion = 'UNION_GROUP_MA', locaNameCell = 'MAILLE'
     character(len=24), parameter :: keywFact = 'INTEGRALE'
-    character(len=24), parameter :: listCellUser = '&&PEEINT.CELL_USER'
+    character(len=24), parameter :: listCellUser = '&&PEEINT.TYFE_USER'
     character(len=24) :: listCellFilter
     character(len=24) :: numeStoreJv, timeStoreJv, compor
     character(len=19) :: field, fieldFromUser
-    character(len=19) :: ligrel
+    character(len=19) :: ligrel, modelligrel
     character(len=19), parameter :: cespoi = '&&PEEINT.CESPOI'
     character(len=19) :: fieldInput
     character(len=24) :: fieldName, groupName
@@ -238,7 +238,8 @@ subroutine peeint(tableOut, model, nbocc)
             if (hasMFront(compor)) then
                 call utmess('F', "COMPOR6_6")
             end if
-            call varinonu(model, compor, &
+            call dismoi('NOM_LIGREL', model, 'MODELE', repk=modelligrel)
+            call varinonu(modelligrel, compor, &
                           nbCellFilter, cellFilter, &
                           nbVari, variName, cmpNameAll)
         else
@@ -266,7 +267,8 @@ subroutine peeint(tableOut, model, nbocc)
         end if
         if (lStructElem .eq. 'OUI') then
             call jenonu(jexnom('&CATA.TE.NOMTE', 'MECA_POU_D_T'), pdtElemType)
-            call jeveuo(model//'.MAILLE', 'L', vi=listElemType)
+            call dismoi('NOM_LIGREL', model, 'MODELE', repk=modelligrel)
+            call jeveuo(modelligrel//'.TYFE', 'L', vi=listElemType)
 !           Check components
             do iCmp = 1, nbCmp
                 lCmpOk = .false.

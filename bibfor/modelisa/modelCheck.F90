@@ -122,7 +122,7 @@ subroutine modelCheck(model, lCheckJacobian, lCheckFSINorms, lCheckPlaneity)
 ! - Check if X>0 for axis elements
 !
     if (lAxis) then
-        call jeveuo(model//'.MAILLE', 'L', vi=modelCells)
+        call jeveuo(modelLigrel//'.TYFE', 'L', vi=modelCells)
         call taxis(mesh, modelCells, nbCell)
     end if
 !

@@ -17,7 +17,7 @@
 ! --------------------------------------------------------------------
 ! person_in_charge: mickael.abbas at edf.fr
 !
-subroutine irvari(ifi, field_med, vari_elga, field_loca, model, &
+subroutine irvari(ifi, field_med, vari_elga, field_loca, ligrel, &
                   nb_cmp_sele, cmp_name_sele, partie, numpt, instan, &
                   nume_store, nbmaec, limaec, result, cara_elem, &
                   carael, lfichUniq, codret)
@@ -54,7 +54,7 @@ subroutine irvari(ifi, field_med, vari_elga, field_loca, model, &
     character(len=64), intent(in) :: field_med
     character(len=19), intent(in) :: vari_elga
     character(len=8), intent(in) :: field_loca
-    character(len=8), intent(in) :: model
+    character(len=19), intent(in) :: ligrel
     integer(kind=8), intent(in) :: nb_cmp_sele
     character(len=*), intent(in) :: cmp_name_sele(*)
     character(len=*), intent(in) :: partie
@@ -81,7 +81,7 @@ subroutine irvari(ifi, field_med, vari_elga, field_loca, model, &
 ! In  field_loca       : localization of field
 !                        /'ELNO'/'ELGA'/'ELEM'
 ! In  result           : name of results datastructure
-! In  model            : name of model
+! In  ligrel           : name of ligrel of the field
 ! Out codret           : error code
 !                        0   - Everything is OK
 !                        200 - External behaviour (MFRONT/UMAT) or multifibers
@@ -109,7 +109,7 @@ subroutine irvari(ifi, field_med, vari_elga, field_loca, model, &
     character(len=7) :: saux07
     character(len=8) :: saux08
     character(len=8), parameter :: base_name = '&&IRVARI'
-    character(len=19) :: compor, ligrel
+    character(len=19) :: compor
     character(len=19), parameter :: vari_elga_s = '&&IRVARI.VARIELGA_S'
     character(len=19), parameter :: vari_elgr = '&&IRVARI.VARIELGR'
     character(len=19), parameter :: vari_elgr_s = '&&IRVARI.VARIELGR_S'
@@ -141,7 +141,6 @@ subroutine irvari(ifi, field_med, vari_elga, field_loca, model, &
     field_type = 'VARI_ELGA'
     ASSERT(field_loca .eq. 'ELGA')
     codret = 0
-    call dismoi('NOM_LIGREL', model, 'MODELE', repk=ligrel)
 !
 ! - Get name of <CARTE> COMPOR
 !
@@ -155,7 +154,7 @@ subroutine irvari(ifi, field_med, vari_elga, field_loca, model, &
 !
 ! - Prepare informations about internal variables
 !
-    call comp_meca_pvar(model_=model, comporMap_=compor, comporInfo=comporInfo)
+    call comp_meca_pvar(ligrel, comporMap_=compor, comporInfo=comporInfo)
 
 ! - Access to informations
     call jeveuo(comporInfo(1:19)//'.INFO', 'L', vi=comporInfoInfo)
@@ -309,7 +308,7 @@ subroutine irvari(ifi, field_med, vari_elga, field_loca, model, &
 ! - Write in MED file
 !
     nbCmpDyna = 0
-    call irceme(ifi, nomres, vari_elgr, field_loca, model, &
+    call irceme(ifi, nomres, vari_elgr, field_loca, ligrel, &
                 nb_cmp_sele, cmp_name_sele, label_med, partie, numpt, &
                 instan, nume_store, nbmaec, limaec, cara_elem, &
                 carael, field_type, nbCmpDyna, lfichUniq, codret)

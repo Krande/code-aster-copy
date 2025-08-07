@@ -47,7 +47,7 @@ subroutine arlmol(nomo, mailar, modarl, tabcor)
     integer(kind=8) :: ima, nbma, ibid
     integer(kind=8) :: jnbno, jad, jlgrf, jdime, jtyel, jtabco
     character(len=8) :: k8bid
-    character(len=19) :: ligarl
+    character(len=19) :: ligarl, ligrel
     integer(kind=8) :: numori, ityel, iret
 !
 ! ----------------------------------------------------------------------
@@ -92,7 +92,8 @@ subroutine arlmol(nomo, mailar, modarl, tabcor)
 !
 ! --- INFORMATIONS SUR LE MODELE ORIGINAL
 !
-    call jeveuo(nomo(1:8)//'.MAILLE', 'L', jtyel)
+    call dismoi('NOM_LIGREL', nomo, 'MODELE', repk=ligrel)
+    call jeveuo(ligrel//'.TYFE', 'L', jtyel)
 !
 ! --- ACCES AU TABLEAU DE CORRESPONDANCE
 !

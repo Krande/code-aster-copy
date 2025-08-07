@@ -44,7 +44,8 @@ subroutine pjxxut(projDime, typeSelect, &
     character(len=2), intent(in) :: projDime
     character(len=*), intent(in) :: typeSelect
     character(len=8), intent(in) :: entity1, entity2
- integer(kind=8), intent(in) :: nbCellSelect1, listCellSelect1(*), nbNodeSelect2, listNodeSelect2(*)
+    integer(kind=8), intent(in) :: nbCellSelect1, listCellSelect1(*)
+    integer(kind=8), intent(in) :: nbNodeSelect2, listNodeSelect2(*)
     character(len=8), intent(out) :: mesh1, mesh2
     integer(kind=8), intent(out) :: nbCellType, cellListNume(MT_NTYMAX)
     character(len=8), intent(out) :: cellListCode(MT_NTYMAX)
@@ -105,8 +106,10 @@ subroutine pjxxut(projDime, typeSelect, &
     integer(kind=8) :: iCell1, iCellType, iNode, iCellModel, iCellSelect1, iNode2, iNodeSelect2
     integer(kind=8) :: nodeNume
     integer(kind=8) :: iad, ilcnx1, iexi
+    character(len=19) :: ligrel
     integer(kind=8), pointer :: connex(:) => null()
-  integer(kind=8), pointer :: listCell1(:) => null(), listNode1(:) => null(), listNode2(:) => null()
+    integer(kind=8), pointer :: listCell1(:) => null(), listNode1(:) => null()
+    integer(kind=8), pointer :: listNode2(:) => null()
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -217,8 +220,9 @@ subroutine pjxxut(projDime, typeSelect, &
             listCell1(iCell1) = 1
         end do
     else
-        call jeveuo(model1//'.MAILLE', 'L', iad)
-        call jelira(model1//'.MAILLE', 'LONMAX', nbCellModel)
+        call dismoi('NOM_LIGREL', model1, 'MODELE', repk=ligrel)
+        call jeveuo(ligrel//'.TYFE', 'L', iad)
+        call jelira(ligrel//'.TYFE', 'LONMAX', nbCellModel)
         do iCellModel = 1, nbCellModel
             if (zi(iad-1+iCellModel) .ne. 0) then
                 listCell1(iCellModel) = 1

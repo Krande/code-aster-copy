@@ -218,6 +218,7 @@ subroutine manopg(model, ligrez, optioz, paramz, mnogaz)
     call jedup1(ligrel//'.LGRF', 'V', ligre1//'.LGRF')
     call jedup1(ligrel//'.NBNO', 'V', ligre1//'.NBNO')
     call jedup1(ligrel//'.NEMA', 'V', ligre1//'.NEMA')
+    call jedup1(ligrel//'.TYFE', 'V', ligre1//'.TYFE')
     call cormgi('V', ligre1)
     call initel(ligre1)
 

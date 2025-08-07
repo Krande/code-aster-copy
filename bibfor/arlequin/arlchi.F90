@@ -34,6 +34,7 @@ subroutine arlchi(iocc, mail, nomo, nom1, nom2, &
 #include "asterfort/cesexi.h"
 #include "asterfort/cesred.h"
 #include "asterfort/codent.h"
+#include "asterfort/dismoi.h"
 #include "asterfort/exisd.h"
 #include "asterfort/getvid.h"
 #include "asterfort/getvtx.h"
@@ -78,7 +79,7 @@ subroutine arlchi(iocc, mail, nomo, nom1, nom2, &
     integer(kind=8) :: jtypmm, jtypm, jtyp, iret
     character(len=8) :: nomfam, elref1, elref2
     character(len=19) :: ctfami, ctinfo
-    character(len=19) :: ctref1, ctcoo1
+    character(len=19) :: ctref1, ctcoo1, ligrel
     character(len=19) :: ctref2, ctcoo2, carte1, cesmat, carte, carsd, carsd1
     character(len=6) :: ch2
     real(kind=8) :: cno1(3*nbnomx), cno2(3*2), cnoeud, inf, sup
@@ -110,8 +111,9 @@ subroutine arlchi(iocc, mail, nomo, nom1, nom2, &
 !
 ! --- INFO SUR LE PSEUDO-MAILLAGE
 !
+    call dismoi('NOM_LIGREL', nomo, 'MODELE', repk=ligrel)
     call jeveuo(mailar(1:8)//'.DIME', 'L', jdime)
-    call jeveuo(nomo(1:8)//'.MAILLE', 'L', jtyel)
+    call jeveuo(ligrel//'.TYFE', 'L', jtyel)
     nbma = zi(jdime-1+3)
     ndim = 3
     call jeveuo(tabcor, 'L', jtabco)

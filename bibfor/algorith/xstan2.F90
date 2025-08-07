@@ -110,12 +110,12 @@ subroutine xstan2(noma, modele, crit2, lfiss)
     call jeveuo(jexatr(noma//'.CONNEX', 'LONCUM'), 'L', jconx2)
     call dismoi('DIM_GEOM', noma, 'MAILLAGE', repi=ndim)
     call dismoi('NB_NO_MAILLA', noma, 'MAILLAGE', repi=nbno)
-    call jeveuo(modele//'.MAILLE', 'L', vi=maille)
+    call dismoi('NOM_LIGREL', modele, 'MODELE', repk=ligrel)
+    call jeveuo(ligrel//'.TYFE', 'L', vi=maille)
 !     CONNECTIVITE INVERSEE
     cnxinv = '&&XSTAN2.CNCINV'
     call cncinv(noma, [ibid], 0, 'V', cnxinv)
     noxfem = modele//'.NOXFEM'
-    call dismoi('NOM_LIGREL', modele, 'MODELE', repk=ligrel)
     cns2 = '&&XCONNO.CNS2'
     geom = '&&XSTAN2.GEOM'
 !      CALL CNOCNS(MODELE//'.NOXFEM','V',NOXFEM)

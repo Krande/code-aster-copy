@@ -96,7 +96,7 @@ subroutine comp_meta_pvar(model, comporMeta, comporMetaInfo)
     call dismoi('NOM_MAILLA', comporMeta, 'CARTE', repk=mesh)
     call dismoi('NB_MA_MAILLA', mesh, 'MAILLAGE', repi=nbCellMesh)
     call dismoi('NOM_LIGREL', model, 'MODELE', repk=modelLigrel)
-    call jeveuo(model//'.MAILLE', 'L', vi=modelCell)
+    call jeveuo(modelLigrel//'.TYFE', 'L', vi=modelCell)
     call etenca(comporMeta, modelLigrel, iret)
     call jeveuo(comporMeta(1:19)//'.PTMA', 'L', vi=comporMetaPtma)
 

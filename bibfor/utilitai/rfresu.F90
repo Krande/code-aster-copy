@@ -65,7 +65,7 @@ subroutine rfresu()
     character(len=8) :: k8b, crit, cellName, mesh, intres, model
     character(len=8) :: nodeName, cmpName, nomgd
     character(len=16) :: nomcmd, typcon, fieldName, npresu, variName
-    character(len=19) :: funcName, cham19, result
+    character(len=19) :: funcName, cham19, result, modelligrel
     character(len=24) :: valk(3), groupCellName, groupNodeName, compor
     integer(kind=8), pointer :: listStore(:) => null()
     integer(kind=8) :: nbStore
@@ -173,7 +173,8 @@ subroutine rfresu()
                 call utmess('F', "COMPOR6_6")
             end if
             cellNume = char8_to_int(cellName)
-            call varinonu(model, compor, &
+            call dismoi('NOM_LIGREL', model, 'MODELE', repk=modelligrel)
+            call varinonu(modelligrel, compor, &
                           1, [cellNume], &
                           1, variName, cmpName)
             call lxliis(cmpName(2:8), ivari, iret)

@@ -68,7 +68,7 @@ subroutine xfisno(noma, modelx)
 !
 ! --- INITIALISATIONS
 !
-    ligrel = modelx(1:8)//'.MODELE'
+    call dismoi('NOM_LIGREL', modelx, 'MODELE', repk=ligrel)
     fissno = modelx(1:8)//'.FISSNO'
     ces = '&&XFISNO.FISSNO'
     cesf = '&&XFISNO.STNO'
@@ -93,8 +93,7 @@ subroutine xfisno(noma, modelx)
 !
 ! --- RECUPERATION DE LA LISTE DES MAILLES AFFECTEES PAR DES EF
 !
-    call jeveuo(modelx//'.MAILLE', 'L', vi=p_mail_affe)
-
+    call jeveuo(ligrel//'.TYFE', 'L', vi=p_mail_affe)
 !
 ! --- RECUPERATION DU NOMBRE DE FISSURES VUES
 !

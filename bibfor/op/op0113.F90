@@ -226,12 +226,12 @@ subroutine op0113()
     ASSERT(nb1 .eq. nelt)
 !
 !-----------------------------------------------------------------------
-!     4)  CONSTRUCTION DU .MAILLE
+!     4)  CONSTRUCTION DU .TYFE
 !-----------------------------------------------------------------------
 !
-    mail2 = modelx//'.MAILLE'
+    mail2 = ligr2//'.TYFE'
     call wkvect(mail2, 'G V I', nbma, jmail2)
-!        write(6,*)'****** KORUPTION : VERIFICATION DU MODEL.MAILLE ******'
+!        write(6,*)'****** KORUPTION : VERIFICATION DU LIGREL.TYFE ******'
     do ima = 1, nbma
 !        write(6,*)ima,':',zi(jtab-1+5*(ima-1)+4),zi(jtab-1+5*(ima-1)+5)
         zi(jmail2-1+ima) = zi(jtab-1+5*(ima-1)+5)

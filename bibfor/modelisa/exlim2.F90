@@ -62,11 +62,13 @@ subroutine exlim2(lismai, nbmail, ligrmoz, basez, ligrez)
     character(len=19) :: ligrel, ligrmo
     character(len=24) :: cptlie
     integer(kind=8) :: i, j, lont, numvec, numail, igrel, nbmam, k
-    integer(kind=8) :: lcliel, jdnb, iadm, jdli
+    integer(kind=8) :: lcliel, jdnb, iadm, jdli, nbCell
     integer(kind=8) :: jtyp, jnel, typele, typel1, nbtyel, itype, nmel, nbmail_nz
     integer(kind=8), pointer :: lismai_nz(:) => null()
     integer(kind=8), pointer :: liel(:) => null()
     integer(kind=8), pointer :: repe(:) => null()
+    integer(kind=8), pointer :: cell(:) => null()
+    integer(kind=8), pointer :: mocell(:) => null()
 !     ------------------------------------------------------------------
 !
     call jemarq()
@@ -75,6 +77,7 @@ subroutine exlim2(lismai, nbmail, ligrmoz, basez, ligrez)
     ligrmo = ligrmoz
     ligrel = ligrez
     call dismoi('NOM_MAILLA', ligrmo, 'LIGREL', repk=noma)
+    call dismoi('NB_MA_MAILLA', noma, 'MAILLAGE', repi=nbCell)
 
     call jeveuo(ligrmo//'.REPE', 'L', vi=repe)
     call jeveuo(jexatr(ligrmo//'.LIEL', 'LONCUM'), 'L', lcliel)
@@ -88,6 +91,12 @@ subroutine exlim2(lismai, nbmail, ligrmoz, basez, ligrez)
 !   -- objet .LGRF
 !   --------------
     call jedupo(ligrmo//'.LGRF', base, ligrel//'.LGRF', .false._1)
+
+!   -- objet .TYFE
+!   --------------
+    call wkvect(ligrel//'.TYFE', base//' V I', nbCell, vi=cell)
+    call jeveuo(ligrmo//'.TYFE', 'L', vi=mocell)
+    cell = 0
 
 !   -- on retire les mailles 0 de lismai ainsi que les mailles qui ne
 !      font pas partie du ligrel :
@@ -105,6 +114,7 @@ subroutine exlim2(lismai, nbmail, ligrmoz, basez, ligrez)
             end if
             nbmail_nz = nbmail_nz+1
             lismai_nz(nbmail_nz) = numail
+            cell(numail) = mocell(numail)
         end if
     end do
 

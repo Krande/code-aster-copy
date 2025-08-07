@@ -709,6 +709,7 @@ contains
         character(len=80) :: fileName
         character(len=8), parameter :: k8dummy = ' '
         character(len=16), parameter :: k16dummy = ' '
+        character(len=19), parameter :: k19dummy = ' '
 !   ------------------------------------------------------------------------------------------------
 !
         fileBaseName = fileBaseNameZ
@@ -717,7 +718,7 @@ contains
         fileUnit = ulnume()
         if (fileUnit .le. 0) call utmess('F', 'UTILITAI5_10')
         call ulaffe(fileUnit, fileName, ' ', 'N', 'O')
-        call irmail('MED', fileUnit, 0, meshDebugJv, ASTER_FALSE, k8dummy, 1, k16dummy)
+        call irmail('MED', fileUnit, 0, meshDebugJv, ASTER_FALSE, k19dummy, 1, k16dummy)
         call ulopen(-fileUnit, k8dummy, k8dummy, k8dummy, k8dummy)
         call jedetr(meshDebugJv)
 !

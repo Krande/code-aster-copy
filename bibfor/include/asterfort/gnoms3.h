@@ -15,18 +15,12 @@
 ! You should have received a copy of the GNU General Public License
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
-#include "asterf_types.h"
-#include "asterfort/Behaviour_type.h"
+
+!
 !
 interface
-    subroutine comp_ntvari(ligrel_, comporMap_, comporList_, comporInfo, &
-                           nt_vari, nb_vari_maxi, mapNbZone, prepExte)
-        use BehaviourPrepare_type
-        character(len=19), optional, intent(in) :: ligrel_
-        character(len=19), optional, intent(in) :: comporMap_
-        character(len=16), optional, intent(in) :: comporList_(COMPOR_SIZE)
-        character(len=19), intent(in) :: comporInfo
-        integer(kind=8), intent(out) :: nt_vari, nb_vari_maxi, mapNbZone
-        type(BehaviourPrep_Exte), pointer :: prepExte(:)
-    end subroutine comp_ntvari
+    subroutine gnoms3(noojb, k1, k2, test)
+        character(len=*) :: noojb, test
+        integer(kind=8), intent(in) :: k1, k2
+    end subroutine gnoms3
 end interface

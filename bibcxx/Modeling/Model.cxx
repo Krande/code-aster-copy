@@ -38,9 +38,7 @@
 Model::Model( const std::string name, const bool is_xfem )
     : DataStructure( name, 8, "MODELE" ),
       ListOfTables( name ),
-      _typeOfCells( JeveuxVectorLong( getName() + ".MAILLE    " ) ),
-      _typeOfNodes( JeveuxVectorLong( getName() + ".NOEUD     " ) ),
-      _baseMesh( nullptr ),
+      _typeOfNodes( getName() + ".NOEUD     " ),
       _splitMethod( SubDomain ),
       _graphPartitioner( MetisPartitioner ),
       _ligrel( nullptr ),
@@ -56,27 +54,24 @@ Model::Model( const std::string name, const bool is_xfem )
 
 Model::Model( const std::string name, const FiniteElementDescriptorPtr fed, const bool is_xfem )
     : Model( name, is_xfem ) {
-    _baseMesh = fed->getMesh();
     _ligrel = fed;
 
-    AS_ASSERT( !_baseMesh->isEmpty() );
+    AS_ASSERT( !_ligrel->getMesh()->isEmpty() );
 };
 
 Model::Model( const BaseMeshPtr mesh, const bool is_xfem )
     : Model( DataStructureNaming::getNewName(), is_xfem ) {
-    _baseMesh = mesh;
-    _ligrel = std::make_shared< FiniteElementDescriptor >( getName() + ".MODELE", _baseMesh );
+    _ligrel = std::make_shared< FiniteElementDescriptor >( getName() + ".MODELE", mesh );
 
-    AS_ASSERT( !_baseMesh->isEmpty() );
+    AS_ASSERT( !mesh->isEmpty() );
 };
 
 #ifdef ASTER_HAVE_MPI
 Model::Model( const std::string name, const ConnectionMeshPtr mesh ) : Model( name ) {
-    _baseMesh = mesh;
     _connectionMesh = mesh;
-    _ligrel = std::make_shared< FiniteElementDescriptor >( getName() + ".MODELE", _baseMesh );
+    _ligrel = std::make_shared< FiniteElementDescriptor >( getName() + ".MODELE", mesh );
 
-    AS_ASSERT( !_baseMesh->isEmpty() );
+    AS_ASSERT( !mesh->isEmpty() );
     AS_ASSERT( !_connectionMesh->isEmpty() );
 };
 
@@ -95,9 +90,9 @@ SyntaxMapContainer Model::buildModelingsSyntaxMapContainer() const {
     SyntaxMapContainer dict;
 
     dict.container["VERI_JACOBIEN"] = "OUI";
-    if ( !_baseMesh )
+    if ( !this->getMesh() )
         throw std::runtime_error( "Mesh is undefined" );
-    dict.container["MAILLAGE"] = _baseMesh->getName();
+    dict.container["MAILLAGE"] = this->getMesh()->getName();
 
     ListSyntaxMapContainer listeAFFE;
     for ( listOfModsAndGrpsCIter curIter = _modelisations.begin(); curIter != _modelisations.end();
@@ -134,15 +129,12 @@ bool Model::buildWithSyntax( SyntaxMapContainer &dict ) {
     ASTERINTEGER op = 18;
     CALL_EXECOP( &op );
 
-    // Attention, la connection des objets a leur image JEVEUX n'est pas necessaire
-    _typeOfCells->updateValuePointer();
-
     return true;
 };
 
 bool Model::build() {
     SyntaxMapContainer dict = buildModelingsSyntaxMapContainer();
-    if ( _baseMesh->isParallel() ) {
+    if ( this->getMesh()->isParallel() ) {
         ListSyntaxMapContainer listeDISTRIBUTION;
         SyntaxMapContainer dict2;
         dict2.container["METHODE"] = ModelSplitingMethodNames[(int)Centralized];
@@ -210,9 +202,9 @@ void Model::addModelingOnMesh( Physics phys, Modelings mod, Formulation form ) {
 
 void Model::addModelingOnGroupOfCells( Physics phys, Modelings mod, std::string nameOfGroup,
                                        Formulation form ) {
-    if ( !_baseMesh )
+    if ( !this->getMesh() )
         throw std::runtime_error( "Mesh is not defined" );
-    if ( !_baseMesh->hasGroupOfCells( nameOfGroup ) )
+    if ( !this->getMesh()->hasGroupOfCells( nameOfGroup ) )
         throw std::runtime_error( nameOfGroup + " not in mesh" );
 
     _modelisations.push_back(
@@ -255,14 +247,14 @@ XfemModelPtr Model::getXfemModel() const { return _xfemModel; };
 ModelSplitingMethod Model::getSplittingMethod() const { return _splitMethod; };
 
 BaseMeshPtr Model::getMesh() const {
-    if ( ( !_baseMesh ) || _baseMesh->isEmpty() )
+    if ( ( !_ligrel ) || ( !_ligrel->getMesh() ) || _ligrel->getMesh()->isEmpty() )
         throw std::runtime_error( "Mesh of model is empty" );
-    return _baseMesh;
+    return _ligrel->getMesh();
 };
 
-JeveuxVectorLong Model::getTypeOfCells() const { return _typeOfCells; }
+JeveuxVectorLong Model::getFiniteElementType() const { return _ligrel->getFiniteElementType(); }
 
-bool Model::isEmpty() const { return !_typeOfCells.exists(); };
+bool Model::isEmpty() const { return !_ligrel->getFiniteElementType().exists(); };
 
 void Model::setSaneModel( ModelPtr saneModel ) { _saneModel = saneModel; };
 
@@ -306,41 +298,6 @@ bool Model::setFrom( const ModelPtr model ) {
     // tranfer LIGREL
     auto Fed = model->getFiniteElementDescriptor();
     this->getFiniteElementDescriptor()->setFrom( Fed );
-
-    // tranfer .MAILLE
-    const auto nbCells = connectionMesh->getNumberOfCells();
-    _typeOfCells->allocate( nbCells );
-    auto &cellsLocNum = connectionMesh->getCellsLocalNumbering();
-    auto &cellsOwner = connectionMesh->getCellsOwner();
-
-    const auto rank = getMPIRank();
-    const auto size = getMPISize();
-
-    int nbCellsLoc = 0;
-    for ( int i = 0; i < nbCells; ++i ) {
-        if ( ( *cellsOwner )[i] == rank )
-            nbCellsLoc++;
-    }
-
-    auto typeCellsOther = model->getTypeOfCells();
-    typeCellsOther->updateValuePointer();
-
-    VectorLong buffer;
-    buffer.reserve( nbCellsLoc );
-    for ( int i = 0; i < nbCells; ++i ) {
-        if ( ( *cellsOwner )[i] == rank )
-            buffer.push_back( ( *typeCellsOther )[( *cellsLocNum )[i] - 1] );
-    }
-
-    std::vector< VectorLong > gathered;
-    AsterMPI::all_gather( buffer, gathered );
-
-    VectorLong nbCellsProc( size, 0 );
-    for ( int i = 0; i < nbCells; ++i ) {
-        auto rowner = ( *cellsOwner )[i];
-        ( *_typeOfCells )[i] = gathered[rowner][nbCellsProc[rowner]];
-        nbCellsProc[rowner]++;
-    }
 
     return true;
 };

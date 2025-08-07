@@ -44,7 +44,7 @@ subroutine vedimd(nomo, lischa, instan, vecele)
 #include "asterfort/lisnol.h"
 #include "asterfort/lisopt.h"
 #include "asterfort/mecact.h"
-#include "asterfort/mecoor.h"
+#include "asterfort/megeom.h"
 #include "asterfort/vemare.h"
 #include "asterfort/reajre.h"
     character(len=19) :: lischa, vecele
@@ -119,7 +119,7 @@ subroutine vedimd(nomo, lischa, instan, vecele)
 !
 ! --- CHAMP DE GEOMETRIE
 !
-    call mecoor(nomo, chgeom)
+    call megeom(nomo, chgeom)
 !
 ! --- CARTE DE L'INSTANT
 !

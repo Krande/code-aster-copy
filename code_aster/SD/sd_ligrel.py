@@ -35,6 +35,7 @@ class sd_ligrel(AsBase):
     LGRF = AsVK8(lonmax=4, docu=Parmi("ACOU", "MECA", "THER"))
     NBNO = AsVI(lonmax=1)
     PRNM = AsVI()
+    CELL = Facultatif(AsVI())
 
     # AU_MOINS_UN : LIEL, SSSA
     # LIEL : il existe des éléments finis

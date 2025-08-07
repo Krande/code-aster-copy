@@ -49,6 +49,7 @@ subroutine acecel(noma, nomo, nbocc, ele_sup_num, ele_sup_typ, nb_ty_el, zjdlm, 
 #include "asterfort/assert.h"
 #include "asterfort/asmpi_comm_vect.h"
 #include "asterfort/iunifi.h"
+#include "asterfort/dismoi.h"
 #include "asterfort/jedema.h"
 #include "asterfort/jeexin.h"
 #include "asterfort/jelira.h"
@@ -60,13 +61,15 @@ subroutine acecel(noma, nomo, nbocc, ele_sup_num, ele_sup_typ, nb_ty_el, zjdlm, 
 ! --------------------------------------------------------------------------------------------------
     integer(kind=8) :: ii, ifm, ixma, tt, jdme, nbmail, nummai, nutyel, nb_elem_p
 !
+    character(len=19) :: ligrel
     character(len=24) :: mlgnma, modmai
     aster_logical :: l_pmesh
 ! --------------------------------------------------------------------------------------------------
 !
     call jemarq()
 !
-    modmai = nomo//'.MAILLE'
+    call dismoi('NOM_LIGREL', nomo, 'MODELE', repk=ligrel)
+    modmai = ligrel//'.TYFE'
     mlgnma = noma//'.TYPMAIL'
     call jeexin(modmai, ixma)
     call jelira(mlgnma, 'LONMAX', nbmail)

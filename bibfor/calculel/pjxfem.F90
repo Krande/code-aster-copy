@@ -17,7 +17,7 @@
 ! --------------------------------------------------------------------
 !
 subroutine pjxfem(correz, ch1z, ch2z, tychv, prfchz, &
-                  prol0, ligrez, base, modz, inst, iret)
+                  prol0, base, modz, inst, iret)
 !
     implicit none
 !
@@ -58,7 +58,7 @@ subroutine pjxfem(correz, ch1z, ch2z, tychv, prfchz, &
 #include "asterfort/fointe.h"
 #include "asterfort/xcalfev_wrap.h"
 !
-    character(len=*) :: correz, ch1z, ch2z, prfchz, ligrez, modz
+    character(len=*) :: correz, ch1z, ch2z, prfchz, modz
     integer(kind=8) :: iret
     real(kind=8) :: inst
 !
@@ -106,9 +106,9 @@ subroutine pjxfem(correz, ch1z, ch2z, tychv, prfchz, &
     ch1 = ch1z
     ch2 = ch2z
     prfchn = prfchz
-    ligrel = ligrez
     modx = modz
     ASSERT(tychv .eq. 'NOEU')
+
 !
     cns1 = '&&PJXFEM'//'.CH1S'
     cns2 = '&&PJXFEM'//'.CH2S'
@@ -190,7 +190,8 @@ subroutine pjxfem(correz, ch1z, ch2z, tychv, prfchz, &
     call dismoi('DIM_GEOM', ma1, 'MAILLAGE', repi=ndim)
     call jeveuo(ma1//'.CONNEX', 'L', jconx1)
     call jeveuo(jexatr(ma1//'.CONNEX', 'LONCUM'), 'L', jconx2)
-    call jeveuo(modx//'.MAILLE', 'L', vi=maille)
+    call dismoi('NOM_LIGREL', modx, 'MODELE', repk=ligrel)
+    call jeveuo(ligrel//'.TYFE', 'L', vi=maille)
     call jeveuo(ma1//'.COORDO    .VALE', 'L', iacoo1)
     chs_stno = '&&PJXFEM.STANO'
     call celces(modx//'.STNO', 'V', chs_stno)
@@ -300,13 +301,13 @@ subroutine pjxfem(correz, ch1z, ch2z, tychv, prfchz, &
             young = .false.
             do ik = 1, nbf
                 if (valk(nbr+nbc+ik) .eq. 'NU') then
-                call fointe('C', valk(nbr+nbc+nbf+ik), nbvarc, cvrcvarc(1:nbvarc), varc(1:nbvarc), &
-                                nu, ier)
+                    call fointe('C', valk(nbr+nbc+nbf+ik), nbvarc, cvrcvarc(1:nbvarc), &
+                                varc(1:nbvarc), nu, ier)
                     if (ier .eq. 0) poiss = .true.
                 end if
                 if (valk(nbr+nbc+ik) .eq. 'E') then
-                call fointe('C', valk(nbr+nbc+nbf+ik), nbvarc, cvrcvarc(1:nbvarc), varc(1:nbvarc), &
-                                e, ier)
+                    call fointe('C', valk(nbr+nbc+nbf+ik), nbvarc, cvrcvarc(1:nbvarc), &
+                                varc(1:nbvarc), e, ier)
                     if (ier .eq. 0) young = .true.
                 end if
             end do

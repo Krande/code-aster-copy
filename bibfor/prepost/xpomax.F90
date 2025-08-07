@@ -135,7 +135,7 @@ subroutine xpomax(mo, malini, mailx, nbnoc, nbmac, &
     character(len=8) :: k8b, typese(6), elrefp, lirefe(10), elrese(6)
     character(len=8) :: typma, noma, chmat
     character(len=16) :: tysd, k16b, nomcmd, notype
-    character(len=19) :: chs(nbch), varcns
+    character(len=19) :: chs(nbch), varcns, ligrel
     character(len=24) :: dirno, geom, linofi, grpnoe, lsn, lst, hea, nogno, heavn, basloc, stano
     character(len=32) :: noflpg
     aster_logical :: opmail, lmeca, pre1
@@ -303,7 +303,8 @@ subroutine xpomax(mo, malini, mailx, nbnoc, nbmac, &
     call jeveuo('&CATA.TM.TMDIM', 'L', vi=tmdim)
     call jeveuo(malini//'.TYPMAIL', 'L', vi=typm1)
     call jeveuo(maxfem//'.TYPMAIL', 'E', jtypm2)
-    call jeveuo(mo//'.MAILLE', 'L', vi=maille)
+    call dismoi('NOM_LIGREL', mo, 'MODELE', repk=ligrel)
+    call jeveuo(ligrel//'.TYFE', 'L', vi=maille)
 !
     if (.not. opmail) then
         call jeveuo(cns1//'.CNSK', 'L', vk8=cnsk)
@@ -860,13 +861,13 @@ subroutine xpomax(mo, malini, mailx, nbnoc, nbmac, &
             young = .false.
             do ik = 1, nbf
                 if (valk(nbr+nbc+ik) .eq. 'NU') then
-                call fointe('C', valk(nbr+nbc+nbf+ik), nbvarc, cvrcvarc(1:nbvarc), varc(1:nbvarc), &
-                                nu, ier)
+                    call fointe('C', valk(nbr+nbc+nbf+ik), nbvarc, cvrcvarc(1:nbvarc), &
+                                varc(1:nbvarc), nu, ier)
                     if (ier .eq. 0) poiss = .true.
                 end if
                 if (valk(nbr+nbc+ik) .eq. 'E') then
-                call fointe('C', valk(nbr+nbc+nbf+ik), nbvarc, cvrcvarc(1:nbvarc), varc(1:nbvarc), &
-                                e, ier)
+                    call fointe('C', valk(nbr+nbc+nbf+ik), nbvarc, cvrcvarc(1:nbvarc), &
+                                varc(1:nbvarc), e, ier)
                     if (ier .eq. 0) young = .true.
                 end if
             end do

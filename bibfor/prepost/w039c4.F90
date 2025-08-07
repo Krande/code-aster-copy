@@ -53,7 +53,7 @@ subroutine w039c4(carte, ifi, form)
     integer(kind=8) :: iret, nugd, n1, jnocmp, nbCmpDyna
     integer(kind=8) :: jcesk, jcesd, jcesc, jcesv, jcesl
     character(len=8) :: typech, tsca, nomgd, k8bid
-    character(len=19) :: cart1, chels1, chels2
+    character(len=19) :: cart1, chels1, chels2, k19bid
     character(len=16) :: field_type
     character(len=64) :: nommed
     integer(kind=8), pointer :: desc(:) => null()
@@ -110,8 +110,9 @@ subroutine w039c4(carte, ifi, form)
 !
 ! --- ECRITURE DES CHAMPS AU FORMAT MED
     k8bid = ' '
+    k19bid = ' '
     field_type = 'Unknown'
-    call ircame(ifi, nommed, chels1, typech, k8bid, &
+    call ircame(ifi, nommed, chels1, typech, k19bid, &
                 0, k8bid, k8bid, k8bid, 0, &
                 0.0d0, 0, jcesk, jcesd, jcesc, &
                 jcesv, jcesl, 0, [0], k8bid, k8bid, &

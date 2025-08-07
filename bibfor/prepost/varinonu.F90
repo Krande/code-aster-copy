@@ -16,7 +16,7 @@
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
 !
-subroutine varinonu(modelZ, comporZ, &
+subroutine varinonu(ligrelZ, comporZ, &
                     nbCell, listCell, &
                     nbVari, listVariName, listVariNume)
 !
@@ -36,7 +36,7 @@ subroutine varinonu(modelZ, comporZ, &
 #include "asterfort/comp_meca_pvar.h"
 #include "asterfort/utmess.h"
 !
-    character(len=*), intent(in) :: modelZ, comporZ
+    character(len=*), intent(in) :: ligrelZ, comporZ
     integer(kind=8), intent(in) :: nbCell, listCell(nbCell)
     integer(kind=8), intent(in) :: nbVari
     character(len=16), intent(in) :: listVariName(nbVari)
@@ -61,7 +61,7 @@ subroutine varinonu(modelZ, comporZ, &
     integer(kind=8) :: iVari, variNume
     integer(kind=8) :: iret, iCell, zoneField, jv_vari
     integer(kind=8) :: cellNume, nbVariZone
-    character(len=19) :: compor, modelLigrel
+    character(len=19) :: compor, ligrel
     character(len=19), parameter :: comporInfo = '&&NMDOCC.INFO'
     integer(kind=8), pointer :: comporPtma(:) => null()
 !
@@ -72,14 +72,14 @@ subroutine varinonu(modelZ, comporZ, &
 ! - Prepare COMPOR field
 !
     compor = comporZ
-    call dismoi('NOM_LIGREL', modelZ, 'MODELE', repk=modelLigrel)
-    call etenca(compor, modelLigrel, iret)
+    ligrel = ligrelZ
+    call etenca(compor, ligrel, iret)
     call jeveuo(compor//'.PTMA', 'L', vi=comporPtma)
 
 ! - Prepare informations about internal variables
     call jeexin(comporInfo(1:19)//'.ZONE', iret)
     if (iret .eq. 0) then
-        call comp_meca_pvar(model_=modelZ, comporMap_=compor, comporInfo=comporInfo)
+        call comp_meca_pvar(ligrel_=ligrel, comporMap_=compor, comporInfo=comporInfo)
     end if
 !
 ! - Access to informations

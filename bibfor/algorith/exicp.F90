@@ -60,6 +60,7 @@ function exicp(model, l_affe_all, list_elem_affe, nb_elem_affe)
     integer(kind=8) :: j_elem_affe
     character(len=8) :: mesh, dmo, dma
     character(len=16) :: notype, typmod
+    character(len=19) :: ligrel
     integer(kind=8), pointer :: maille(:) => null()
     aster_logical ::  l_parallel_mesh
 !
@@ -71,8 +72,9 @@ function exicp(model, l_affe_all, list_elem_affe, nb_elem_affe)
 !
 ! - Access to model and mesh
 !
-    call jeveuo(model//'.MAILLE', 'L', vi=maille)
-    call dismoi('NOM_MAILLA', model(1:8), 'MODELE', repk=mesh)
+    call dismoi('NOM_LIGREL', model, 'MODELE', repk=ligrel)
+    call dismoi('NOM_MAILLA', ligrel, 'LIGREL', repk=mesh)
+    call jeveuo(ligrel//'.TYFE', 'L', vi=maille)
     l_parallel_mesh = isParallelMesh(mesh)
     call dismoi('NB_MA_MAILLA', mesh, 'MAILLAGE', repi=nb_elem_mesh)
 !

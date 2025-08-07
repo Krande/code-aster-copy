@@ -16,7 +16,7 @@
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
 
-subroutine mecoor(nomo, chgeom)
+subroutine mecoor(ligrel, chgeom)
 !
 !
     implicit none
@@ -25,7 +25,7 @@ subroutine mecoor(nomo, chgeom)
 #include "asterfort/jedema.h"
 #include "asterfort/jemarq.h"
 #include "asterfort/jeveuo.h"
-    character(len=8) :: nomo
+    character(len=19) :: ligrel
     character(len=19) :: chgeom
 !
 ! ----------------------------------------------------------------------
@@ -35,7 +35,7 @@ subroutine mecoor(nomo, chgeom)
 ! ----------------------------------------------------------------------
 !
 !
-! IN  NOMO   : NOM DU MODELE DE REFERENCE (UNIQUE !)
+! IN  NOMO   : NOM DU LIGREL
 ! OUT CHGEOM : CHAMP DE GEOMETRIE
 !
 !
@@ -47,7 +47,7 @@ subroutine mecoor(nomo, chgeom)
 !
     call jemarq()
 !
-    call dismoi('NOM_MAILLA', nomo, 'MODELE', repk=ma)
+    call dismoi('NOM_MAILLA', ligrel, 'LIGREL', repk=ma)
     chgeom = ma//'.COORDO'
 !
     call jedema()

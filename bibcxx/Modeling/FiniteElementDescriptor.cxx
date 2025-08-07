@@ -45,6 +45,7 @@ FiniteElementDescriptor::FiniteElementDescriptor( const std::string &name, const
       _virtualNodesNumbering( getName() + ".LGNS" ),
       _superElementsDescriptor( getName() + ".SSSA" ),
       _nameOfNeighborhoodStructure( getName() + ".NVGE" ),
+      _typeOfCells( getName() + ".TYFE" ),
       _mesh( mesh ),
       _partition( nullptr ),
       _explorer(
@@ -80,7 +81,7 @@ FiniteElementDescriptor::FiniteElementDescriptor( const FiniteElementDescriptorP
 };
 
 FiniteElementDescriptor::FiniteElementDescriptorPtr
-FiniteElementDescriptor::restrict( const VectorString &groupsOfCells ) const {
+    FiniteElementDescriptor::restrict( const VectorString &groupsOfCells ) const {
 
     VectorLong listOfCells = _mesh->getCells( groupsOfCells );
 
@@ -88,7 +89,7 @@ FiniteElementDescriptor::restrict( const VectorString &groupsOfCells ) const {
 };
 
 FiniteElementDescriptor::FiniteElementDescriptorPtr
-FiniteElementDescriptor::restrict( const VectorLong &cells ) const {
+    FiniteElementDescriptor::restrict( const VectorLong &cells ) const {
 
     auto fed = std::make_shared< FiniteElementDescriptor >( getMesh() );
 
@@ -162,6 +163,8 @@ const JeveuxVectorLong &FiniteElementDescriptor::getListOfGroupsOfElementsbyElem
     _groupsOfCellsNumberByElement->updateValuePointer();
     return _groupsOfCellsNumberByElement;
 };
+
+JeveuxVectorLong FiniteElementDescriptor::getFiniteElementType() const { return _typeOfCells; }
 
 ASTERINTEGER FiniteElementDescriptor::getNumberOfCells() const {
     _groupsOfCellsNumberByElement->updateValuePointer();
@@ -252,7 +255,11 @@ ASTERINTEGER FiniteElementDescriptor::getElemTypeNume( const std::string elemTyp
 };
 
 const std::string FiniteElementDescriptor::getPartitionMethod() const {
-    return _partition->getMethod();
+    if ( _partition ) {
+        return _partition->getMethod();
+    }
+
+    return ModelSplitingMethodNames[(int)Centralized];
 };
 
 #ifdef ASTER_HAVE_MPI
@@ -423,6 +430,41 @@ void FiniteElementDescriptor::setFrom( FiniteElementDescriptorPtr &other ) {
 
     // Fill 'LIEL'
     transferListOfGroupOfCellFrom( other );
+
+    //   tranfer .TYFE
+    const auto nbCells = connectionMesh->getNumberOfCells();
+    _typeOfCells->allocate( nbCells );
+    auto &cellsLocNum = connectionMesh->getCellsLocalNumbering();
+    auto &cellsOwner = connectionMesh->getCellsOwner();
+
+    const auto rank = getMPIRank();
+    const auto size = getMPISize();
+
+    int nbCellsLoc = 0;
+    for ( int i = 0; i < nbCells; ++i ) {
+        if ( ( *cellsOwner )[i] == rank )
+            nbCellsLoc++;
+    }
+
+    auto typeCellsOther = other->getFiniteElementType();
+    typeCellsOther->updateValuePointer();
+
+    VectorLong buffer;
+    buffer.reserve( nbCellsLoc );
+    for ( int i = 0; i < nbCells; ++i ) {
+        if ( ( *cellsOwner )[i] == rank )
+            buffer.push_back( ( *typeCellsOther )[( *cellsLocNum )[i] - 1] );
+    }
+
+    std::vector< VectorLong > gathered;
+    AsterMPI::all_gather( buffer, gathered );
+
+    VectorLong nbCellsProc( size, 0 );
+    for ( int i = 0; i < nbCells; ++i ) {
+        auto rowner = ( *cellsOwner )[i];
+        ( *_typeOfCells )[i] = gathered[rowner][nbCellsProc[rowner]];
+        nbCellsProc[rowner]++;
+    }
 }
 
 #endif /* ASTER_HAVE_MPI */

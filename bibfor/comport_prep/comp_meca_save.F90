@@ -27,6 +27,7 @@ subroutine comp_meca_save(model, mesh, chmate, compor, prepMapCompor)
 #include "asterfort/comp_meca_l.h"
 #include "asterfort/comp_read_mesh.h"
 #include "asterfort/isParallelMesh.h"
+#include "asterfort/dismoi.h"
 #include "asterfort/jedetr.h"
 #include "asterfort/jeveuo.h"
 #include "asterfort/nmdpmf.h"
@@ -66,6 +67,7 @@ subroutine comp_meca_save(model, mesh, chmate, compor, prepMapCompor)
     integer(kind=8) :: iFactorKeyword, nbFactorKeyword
     character(len=16) :: rela_comp
     character(len=16), pointer :: comporValv(:) => null()
+    character(len=19) :: ligrel
     aster_logical :: l_cristal, l_pmf, l_is_pmf, l_parallel_mesh
     integer(kind=8) :: elem_nume
 !
@@ -76,7 +78,8 @@ subroutine comp_meca_save(model, mesh, chmate, compor, prepMapCompor)
     l_parallel_mesh = isParallelMesh(mesh)
 
 ! - Access to MODEL
-    call jeveuo(model//'.MAILLE', 'L', vi=modelCell)
+    call dismoi('NOM_LIGREL', model, 'MODELE', repk=ligrel)
+    call jeveuo(ligrel//'.TYFE', 'L', vi=modelCell)
 
 ! - Access map
     call jeveuo(compor//'.VALV', 'E', vk16=comporValv)

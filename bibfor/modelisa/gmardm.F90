@@ -49,6 +49,7 @@ subroutine gmardm(nomgrm, modele, ier)
     integer(kind=8) :: nma, kma, ibid, jma, ima
     character(len=24) :: karg, nomte
     integer(kind=8), pointer :: v_model_elem(:) => null()
+    character(len=19) :: ligrel
     character(len=8) :: noma
 
     call jemarq()
@@ -56,7 +57,8 @@ subroutine gmardm(nomgrm, modele, ier)
     karg = nomgrm
 
     call dismoi('NOM_MAILLA', modele, 'MODELE', repk=noma)
-    call jeveuo(modele//'.MAILLE', 'L', vi=v_model_elem)
+    call dismoi('NOM_LIGREL', modele, 'MODELE', repk=ligrel)
+    call jeveuo(ligrel//'.TYFE', 'L', vi=v_model_elem)
 
     ! nombre de mailles dans le groupe : nma
     call jelira(jexnom(noma//'.GROUPEMA', karg), 'LONUTI', nma)

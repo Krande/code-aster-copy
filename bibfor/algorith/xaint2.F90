@@ -117,7 +117,6 @@ subroutine xaint2(noma, modele)
 !
 ! --- RECUPERATION DES DONNEES SUR LE MAILLAGE
 !      CALL DISMOI('F','NB_NO_MAILLA',NOMA,'MAILLAGE',NBNO,K8BID,IBID)
-!      CALL JEVEUO(MODELE//'.MAILLE','L',JMAIL)
     call jeveuo('&CATA.TM.TMDIM', 'L', vi=tmdim)
     call dismoi('DIM_GEOM', noma, 'MAILLAGE', repi=ndim)
     call dismoi('NB_MA_MAILLA', noma, 'MAILLAGE', repi=nbma)

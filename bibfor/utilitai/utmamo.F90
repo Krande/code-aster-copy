@@ -21,6 +21,7 @@ subroutine utmamo(modele, nbtrou, litrou)
 #include "jeveux.h"
 !
 #include "asterfort/jedema.h"
+#include "asterfort/dismoi.h"
 #include "asterfort/jedetr.h"
 #include "asterfort/jelira.h"
 #include "asterfort/jemarq.h"
@@ -61,7 +62,7 @@ subroutine utmamo(modele, nbtrou, litrou)
 !
     call jemarq()
 !
-    call jelira(modele//'.MAILLE', 'LONMAX', nbmail)
+    call dismoi('NB_MA_MAILLA', modele, 'MODELE', repi=nbmail)
 !
     call wkvect(litrou, 'V V I', nbmail, itrma)
 !

@@ -56,6 +56,7 @@ subroutine aceaba(noma, nomo, lmax, nbarre, nbocc, &
 #include "asterfort/as_deallocate.h"
 #include "asterfort/assert.h"
 #include "asterfort/codent.h"
+#include "asterfort/dismoi.h"
 #include "asterfort/getvem.h"
 #include "asterfort/getvid.h"
 #include "asterfort/getvr8.h"
@@ -90,7 +91,7 @@ subroutine aceaba(noma, nomo, lmax, nbarre, nbocc, &
     character(len=8) :: k8b, nomu, nommai, fcx
     character(len=16) :: k16b, sec, concep, cmd
     character(len=16) :: vmessk(2)
-    character(len=19) :: cartba, cartbf, tabcar
+    character(len=19) :: cartba, cartbf, tabcar, ligrel
     character(len=24) :: tmpnba, tmpvba, tmpgen, nomsec, typca
     character(len=24) :: tmpnbf, tmpvbf, tmpgef, modmai, mlggma, mlgnma
 ! --------------------------------------------------------------------------------------------------
@@ -132,7 +133,8 @@ subroutine aceaba(noma, nomo, lmax, nbarre, nbocc, &
     AS_ALLOCATE(vk8=cara, size=nbcar)
     AS_ALLOCATE(vr=vale, size=nbval)
 !
-    modmai = nomo//'.MAILLE'
+    call dismoi('NOM_LIGREL', nomo, 'MODELE', repk=ligrel)
+    modmai = ligrel//'.TYFE'
     mlgnma = noma//'.TYPMAIL'
     mlggma = noma//'.GROUPEMA'
     ier = 0

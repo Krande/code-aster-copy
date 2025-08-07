@@ -24,6 +24,7 @@ subroutine ajlipa(modelz, base, kdis)
 #include "asterfort/assert.h"
 #include "asterfort/dismoi.h"
 #include "asterfort/detrsd.h"
+#include "asterfort/gnoms3.h"
 #include "asterc/getres.h"
 #include "asterfort/exisd.h"
 #include "asterfort/getvis.h"
@@ -54,7 +55,7 @@ subroutine ajlipa(modelz, base, kdis)
     character(len=24) :: k24b
     integer(kind=8) :: i, rang, nbproc, ifm, niv, ibid, nbsd, nbma
     integer(kind=8) :: nmpp, nmp0, nmp0af, ico, nbpro1, krang, nmp1
-    integer(kind=8) :: iexi
+    integer(kind=8) :: iexi, iad
     integer(kind=8) :: icobis, dist0, jnumsd, vali(3), nbmamo, ima
     integer(kind=8) ::  jprti, jprtk
     aster_logical :: plein0, exi_partsd
@@ -103,7 +104,7 @@ subroutine ajlipa(modelz, base, kdis)
 
 !   -- si le modele n'a pas de mailles, il n'y a rien a faire :
 !   -----------------------------------------------------------
-    call jeexin(modele//'.MAILLE', iexi)
+    call jeexin(ligrmo//'.TYFE', iexi)
     if (iexi .eq. 0) goto 999
 
 !   -- si l'utilisateur ne veut pas de distribution des calculs,
@@ -123,8 +124,14 @@ subroutine ajlipa(modelz, base, kdis)
 
 !   -- Creation de la sd_partition :
 !   ----------------------------------------------------
-    call jeveuo(modele//'.MAILLE', 'L', vi=maille)
-    call jelira(modele//'.MAILLE', 'LONMAX', nbma)
+    if (partsd == ' ') then
+        partsd = "PART"
+        call gnoms3(partsd, 5, 8, ".PRTK")
+        call jeveuo(ligrmo//'.LGRF', 'E', iad)
+        zk8(iad-1+2) = partsd
+    end if
+    call jeveuo(ligrmo//'.TYFE', 'L', vi=maille)
+    call jelira(ligrmo//'.TYFE', 'LONMAX', nbma)
     call wkvect(partsd//'.PRTI', base//' V I', 1, jprti)
     zi(jprti-1+1) = nbproc
     call wkvect(partsd//'.PRTK', base//' V K24', 1, jprtk)

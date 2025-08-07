@@ -78,6 +78,7 @@ subroutine xtmafi(ndim, fiss, nfiss, lismai, &
     integer(kind=8) ::   ndime, jmad, mxstac
     character(len=8) :: noma, nomafi, nomail, k8_typ_enr, vk8_typ_enr(3)
     character(len=8) :: k8_test
+    character(len=19) :: ligrel
     character(len=24) :: grp(nfiss, 3)
     integer(kind=8), pointer :: temi(:) => null()
     character(len=8), pointer :: temp(:) => null()
@@ -131,11 +132,12 @@ subroutine xtmafi(ndim, fiss, nfiss, lismai, &
     call jeveuo('&CATA.TM.TMDIM', 'L', vi=tmdim)
     call jeveuo(noma//'.TYPMAIL', 'L', vi=typmail)
 !
-! - Si model present, recuperation de l'objet '.MAILLE' pour filtrer
+! - Si model present, recuperation de l'objet '.TYFE' pour filtrer
 !   sur les mailles affectees
 !
     if (present(model)) then
-        call jeveuo(model//'.MAILLE', 'L', vi=p_mail_affe)
+        call dismoi('NOM_LIGREL', model, 'MODELE', repk=ligrel)
+        call jeveuo(ligrel//'.TYFE', 'L', vi=p_mail_affe)
     end if
 !
 ! - Dimensionnement grossier de la liste

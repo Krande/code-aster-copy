@@ -24,6 +24,7 @@ subroutine aceatu(noma, nomo, nbepo, ntyele, ivr, nbocc)
 #include "asterfort/aceat2.h"
 #include "asterfort/aceat3.h"
 #include "asterfort/acemmt.h"
+#include "asterfort/dismoi.h"
 #include "asterfort/getvem.h"
 #include "asterfort/getvr8.h"
 #include "asterfort/getvtx.h"
@@ -73,6 +74,7 @@ subroutine aceatu(noma, nomo, nbepo, ntyele, ivr, nbocc)
     character(len=8) :: nomu, car, crit
     character(len=16) :: concep, cmd, nunoel
     character(len=24) :: mlggno, mlgcoo, mlgcnx, modmai, nomlu
+    character(len=19) :: ligrel
     integer(kind=8), pointer :: eltuy(:) => null()
     integer(kind=8), pointer :: lismapart(:) => null()
     integer(kind=8), pointer :: lisnopart(:) => null()
@@ -95,7 +97,8 @@ subroutine aceatu(noma, nomo, nbepo, ntyele, ivr, nbocc)
     call jelira(noma//'.TYPMAIL', 'LONMAX', nbmail)
     call jeveuo(mlgcoo, 'L', jdco)
 !
-    modmai = nomo//'.MAILLE'
+    call dismoi('NOM_LIGREL', nomo, 'MODELE', repk=ligrel)
+    modmai = ligrel//'.TYFE'
     call jeexin(modmai, ixma)
     if (ixma .ne. 0) call jeveuo(modmai, 'L', jdme)
 !

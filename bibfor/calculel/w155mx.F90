@@ -64,7 +64,7 @@ subroutine w155mx(resultOut, resultIn, nbStore, listStore)
     character(len=4) :: fieldSupp
     character(len=16), parameter :: keywFact = 'MIN_MAX_SP'
     character(len=16) :: fieldName, nomsy2, variName
-    character(len=19) :: chin, chextr, ligrel
+    character(len=19) :: chin, chextr, ligrel, modelligrel
     character(len=24) :: nompar, compor
     character(len=24), parameter :: listCell = '&&W155MX.LISMAI'
     character(len=24), parameter :: listVariNume = '&&W155MX.CMP'
@@ -130,7 +130,8 @@ subroutine w155mx(resultOut, resultIn, nbStore, listStore)
                 call utmess('F', "COMPOR6_6")
             end if
             call wkvect(listVariNume, 'V V K8', nbCell*nbVari, jcmp)
-            call varinonu(model, compor, &
+            call dismoi('NOM_LIGREL', model, 'MODELE', repk=modelligrel)
+            call varinonu(modelligrel, compor, &
                           nbCell, cellNume, &
                           nbVari, variName, zk8(jcmp))
 

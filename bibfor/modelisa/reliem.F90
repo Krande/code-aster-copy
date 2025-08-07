@@ -170,7 +170,10 @@ subroutine reliem(mo, ma, typem, motfaz, iocc, &
     call dismoi('NB_MA_MAILLA', ma, 'MAILLAGE', repi=nbma)
     if (nbma .gt. 0) then
         call wkvect('&&RELIEM.INDIC_MAILLE', 'V V S', max(nbma, 1), itrma)
-        if (modele .ne. ' ') call jeveuo(modele//'.MAILLE', 'L', vi=maille)
+        if (modele .ne. ' ') then
+            call dismoi('NOM_LIGREL', modele, 'MODELE', repk=ligrel)
+            call jeveuo(ligrel//'.TYFE', 'L', vi=maille)
+        end if
     end if
     call dismoi('NB_NO_MAILLA', ma, 'MAILLAGE', repi=nbno)
     AS_ALLOCATE(vi4=indic_noeud, size=nbno)

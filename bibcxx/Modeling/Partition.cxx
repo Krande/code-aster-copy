@@ -31,16 +31,16 @@ const char *const GraphPartitionerNames[nbGraphPartitioner] = { "SCOTCH", "METIS
 
 Partition::Partition( const std::string name )
     : DataStructure( name, 8, "PARTITION" ),
-      _prti( JeveuxVectorLong( getName() + ".PRTI" ) ),
-      _prtk( JeveuxVectorChar24( getName() + ".PRTK" ) ),
-      _nupr( JeveuxVectorLong( getName() + ".PRTI" ) ),
-      _fdim( JeveuxVectorLong( getName() + ".FDIM" ) ),
-      _feta( JeveuxVectorLong( getName() + ".FETA" ) ),
-      _fref( JeveuxVectorChar8( getName() + ".FREF" ) ) {};
+      _prti( getName() + ".PRTI" ),
+      _prtk( getName() + ".PRTK" ),
+      _nupr( getName() + ".PRTI" ),
+      _fdim( getName() + ".FDIM" ),
+      _feta( getName() + ".FETA" ),
+      _fref( getName() + ".FREF" ) {};
 
 const std::string Partition::getMethod() const {
     if ( !_prtk.exists() )
-        return "";
+        return ModelSplitingMethodNames[(int)Centralized];
     else {
         _prtk->updateValuePointer();
         return strip( ( *_prtk )[0].toString() );

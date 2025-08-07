@@ -17,7 +17,7 @@
 ! --------------------------------------------------------------------
 
 subroutine irmail(form, ifi, versio, noma, lmod, &
-                  nomo, infmai, formar, lfichUniq, nosdfu)
+                  ligrelz, infmai, formar, lfichUniq, nosdfu)
 !
     implicit none
 !
@@ -29,7 +29,7 @@ subroutine irmail(form, ifi, versio, noma, lmod, &
 !        NOMA     : NOM UTILISATEUR DU MAILLAGE A ECRIRE
 !        LMOD     : LOGIQUE INDIQUANT SI IMPRESSION MODELE OU MAILLAGE
 !                 .TRUE. MODELE
-!        NOMO     : NOM UTILISATEUR DU MODELE ' ' SI SEULEMENT MAILLAGE
+!        LIGREL   : NOM DU LIGREL DU CHAMP ' ' SI SEULEMENT MAILLAGE
 !        INFMAI   : POUR LE FORMAT MED, NIVEAU DES INFORMATIONS A IMPRIMER
 !        FORMAR   : FORMAT REEL OU COMPLEXE
 !        LFICHUNIQ: ASTER LOGICAL, FICHIER UNIQUE
@@ -59,7 +59,8 @@ subroutine irmail(form, ifi, versio, noma, lmod, &
 !---------------- ARGUMENTS --------------------------------------------
     integer(kind=8)             :: versio, infmai
     aster_logical       :: lmod
-    character(len=8)    :: noma, nomo, modele
+    character(len=8)    :: noma
+    character(len=19)   :: ligrelz
     character(len=16)   :: formar
     character(len=*)    :: form
     aster_logical, optional :: lfichUniq
@@ -80,6 +81,7 @@ subroutine irmail(form, ifi, versio, noma, lmod, &
     character(len=6) :: nopaje
     character(len=8) :: nosdf2
     character(len=11) :: nojgrp
+    character(len=19) :: ligrel
     character(len=80)       :: titmai
     real(kind=8), pointer   :: vale(:) => null()
     integer(kind=8), pointer        :: connex(:) => null()
@@ -101,16 +103,13 @@ subroutine irmail(form, ifi, versio, noma, lmod, &
         nosdf2 = nosdfu
     end if
 !
-!   RECUPERATION DE LA DIMENSION DU PROBLEME
-    modele = ' '
+    ligrel = ' '
     if (lmod) then
-        modele = nomo
-    else
-        if (len_trim(nomo) .ne. 0) modele = nomo
+        ligrel = ligrelz
     end if
 !
-    if (modele .ne. ' ') then
-        call dismoi('DIM_GEOM', modele, 'MODELE', repi=repi)
+    if (ligrel .ne. ' ') then
+        call dismoi('DIM_GEOM', ligrel, 'LIGREL', repi=repi)
 !       avec repi   =   1  : 1D
 !                   =   2  : 2D
 !                   =   3  : 3D
@@ -222,7 +221,7 @@ subroutine irmail(form, ifi, versio, noma, lmod, &
     if (lmod) then
 !       - IMPRESSION DU MODELE
 !         --> ON RECUPERE LE TYPE D'ELEMENT FINI DES MAILLES
-        call jeveuo(nomo//'.MAILLE', 'L', jtypl)
+        call jeveuo(ligrel//'.TYFE', 'L', jtypl)
     else
         jtypl = 1
     end if

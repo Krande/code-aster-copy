@@ -53,17 +53,19 @@ subroutine modelCheckFluidFormulation(model)
     integer(kind=8), pointer :: cellFluid(:) => null()
     integer(kind=8), pointer :: modelCells(:) => null()
     integer(kind=8) :: iCellFluid, cellTypeNume
+    character(len=19) :: ligrel
     character(len=16) :: cellTypeName, FEForm, FEForm2
 !
 ! --------------------------------------------------------------------------------------------------
 !
     call infniv(ifm, niv)
     call dismoi('NOM_MAILLA', model, 'MODELE', repk=mesh)
-    call jeexin(model//'.MAILLE', iret)
+    call dismoi('NOM_LIGREL', model, 'MODELE', repk=ligrel)
+    call jeexin(ligrel//'.TYFE', iret)
     if (iret .ne. 0) then
 
 ! ----- Get list of cell in model
-        call jeveuo(model//'.MAILLE', 'L', vi=modelCells)
+        call jeveuo(ligrel//'.TYFE', 'L', vi=modelCells)
 
 ! ----- Get list of cells with fluid model (Note that FSI cells are alreary considered
 !       as Fluid cell)

@@ -135,10 +135,10 @@ subroutine op0189()
 !
     call dismoi('NOM_MODELE', nomres, 'RESULTAT', repk=modele)
     call dismoi('NOM_MAILLA', modele, 'MODELE', repk=mailla)
-
-    call jeveuo(modele//'.MAILLE', 'L', vi=tab_typel)
-    call jelira(modele//'.MAILLE', 'LONUTI', ival=nbma)
     call dismoi('NOM_LIGREL', modele, 'MODELE', repk=ligrmo)
+!
+    call jeveuo(ligrmo//'.TYFE', 'L', vi=tab_typel)
+    call jelira(ligrmo//'.TYFE', 'LONUTI', ival=nbma)
     call jeveuo(ligrmo//'.REPE', 'L', jrepmo)
 !
 ! --- recuperation de la dimension -> code des types de voisin

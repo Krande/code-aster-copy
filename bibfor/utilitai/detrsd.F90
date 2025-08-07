@@ -78,7 +78,7 @@ subroutine detrsd(typesd, nomsd)
     integer(kind=8) :: iret, iad, long, i, nbch, ibid, nbproc, num
     integer(kind=8) :: ityobj, inomsd, nblg, nbpa, nblp, n1, nbjoin
     integer(kind=8) :: iexi, iexi2
-    character(len=8) :: metres, k8, partit
+    character(len=8) :: metres, k8
     character(len=4) :: chnbjo
     character(len=12) :: vge
     character(len=14) :: nu, com
@@ -220,11 +220,6 @@ subroutine detrsd(typesd, nomsd)
     else if (typ2sd .eq. 'LIGREL') then
 !     ----------------------------------
         ligrel = nomsd
-        call jeexin(ligrel//'.LGRF', iexi)
-        if (iexi .ne. 0) then
-            call dismoi('PARTITION', ligrel, 'LIGREL', repk=partit)
-            call detrs2('PARTITION', partit)
-        end if
         call jedetr(ligrel//'.LGNS')
         call jedetr(ligrel//'.LIEL')
         call jedetr(ligrel//'.NEMA')
@@ -235,6 +230,7 @@ subroutine detrsd(typesd, nomsd)
         call jedetr(ligrel//'.PRNS')
         call jedetr(ligrel//'.REPE')
         call jedetr(ligrel//'.SSSA')
+        call jedetr(ligrel//'.TYFE')
 !
 !     ------------------------------------------------------------------
     else if (typ2sd .eq. 'LIGRET') then
@@ -303,7 +299,6 @@ subroutine detrsd(typesd, nomsd)
         call detrs2('L_TABLE', k8)
 !
         call jedetr(k8//'           .TITR')
-        call jedetr(k8//'.MAILLE')
 !
 !
 !     ------------------------------------------------------------------

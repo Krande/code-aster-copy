@@ -90,7 +90,7 @@ subroutine aceaor(noma, nomo, lmax, nbepo, ntyele, nomele, ivr, nbocc)
     character(len=8) :: nomu
     character(len=16) :: oricara
     character(len=16) :: concep, cmd, nunomel
-    character(len=19) :: cartor
+    character(len=19) :: cartor, ligrel
     character(len=24) :: tmpnor, tmpvor, tmpori, tmpini
     character(len=24) :: mlgtma, mlggno, mlggma, mlgcoo, mlgcnx
     character(len=24) :: modmai, nommai
@@ -110,7 +110,8 @@ subroutine aceaor(noma, nomo, lmax, nbepo, ntyele, nomele, ivr, nbocc)
     tmpvor = cartor//'.VALV'
 !
 !   RECONSTRUCTION DES NOMS JEVEUX DU CONCEPT MODELE
-    modmai = nomo//'.MAILLE'
+    call dismoi('NOM_LIGREL', nomo, 'MODELE', repk=ligrel)
+    modmai = ligrel//'.TYFE'
 !
 !   RECONSTRUCTION DES NOMS JEVEUX DU CONCEPT MAILLAGE ASSOCIE
     mlgtma = noma//'.TYPMAIL'

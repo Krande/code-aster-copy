@@ -64,6 +64,8 @@ class FiniteElementDescriptor : public DataStructure {
     JeveuxVectorLong _superElementsDescriptor;
     /** @brief Vecteur Jeveux '.NVGE' */
     JeveuxVectorChar16 _nameOfNeighborhoodStructure;
+    /** @brief Vecteur Jeveux '.TYFE' */
+    JeveuxVectorLong _typeOfCells;
     /** @brief Base mesh */
     BaseMeshPtr _mesh;
     /** @brief Object to loop over connectivity of delayed numbered cells */
@@ -145,6 +147,8 @@ class FiniteElementDescriptor : public DataStructure {
 
     /** @brief Get index of elem type */
     ASTERINTEGER getElemTypeNume( const std::string elemTypeName ) const;
+
+    JeveuxVectorLong getFiniteElementType() const;
 
     /**
      * @brief Number of super-elements in model

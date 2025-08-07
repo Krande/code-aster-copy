@@ -43,6 +43,7 @@ subroutine aceinc(noma, nomo, ntyele, nbocc, ivr, &
 #include "asterfort/codent.h"
 #include "asterfort/getvem.h"
 #include "asterfort/getvtx.h"
+#include "asterfort/dismoi.h"
 #include "asterfort/jedema.h"
 #include "asterfort/jedetr.h"
 #include "asterfort/jeexin.h"
@@ -66,6 +67,7 @@ subroutine aceinc(noma, nomo, ntyele, nbocc, ivr, &
     integer(kind=8), parameter :: nbcar = 100
     character(len=6) :: kioc
     character(len=8) :: car(nbcar)
+    character(len=19) :: ligrel
     character(len=24) :: mlgnma, mlggma
     character(len=24) :: modmai, nommai
 ! -----------------------------------------------------------------------------------------------
@@ -77,7 +79,8 @@ subroutine aceinc(noma, nomo, ntyele, nbocc, ivr, &
     locamb = .false.
 !
 !   reconstruction des noms jeveux du concept maillage et modele
-    modmai = nomo//'.MAILLE'
+    call dismoi('NOM_LIGREL', nomo, 'MODELE', repk=ligrel)
+    modmai = ligrel//'.TYFE'
     mlgnma = noma//'.TYPMAIL'
     mlggma = noma//'.GROUPEMA'
     call jelira(mlgnma, 'LONMAX', nbmail)

@@ -142,7 +142,8 @@ subroutine pascou(mate, mateco, carele, sddyna, sddisc)
 !
     call jeveuo(chams//'.CESD', 'L', jcesd)
 !
-    call jelira(mo//'.MAILLE', 'LONMAX', nbma)
+    call dismoi('NOM_LIGREL', mo, 'MODELE', repk=ligrel)
+    call dismoi('NB_MA_MAILLA', ligrel, 'LIGREL', repi=nbma)
     call jeveuo(chams//'.CESL', 'L', jcesl)
     call jeveuo(chams//'.CESV', 'L', vr=cesv)
 !

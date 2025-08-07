@@ -54,6 +54,7 @@ subroutine dbrInitAlgoPod(base, paraPod)
 !
     integer(kind=8) :: ifm, niv
     character(len=8) :: model, mesh
+    character(len=19) :: modelLigrel
     character(len=24) :: compor
     character(len=24), parameter :: listVariNume = '&&LIST_VARInNUME'
     integer(kind=8) :: iCell, iCmp, nbCell, nbVari
@@ -87,7 +88,8 @@ subroutine dbrInitAlgoPod(base, paraPod)
             call utmess('F', "COMPOR6_6")
         end if
         call wkvect(listVariNume, 'V V K8', nbCell*nbVari, vk8=variNume)
-        call varinonu(model, compor, &
+        call dismoi('NOM_LIGREL', model, 'MODELE', repk=modelligrel)
+        call varinonu(modelligrel, compor, &
                       nbCell, listCell, &
                       nbVari, paraPod%variToFilter, variNume)
         ASSERT(paraPod%nbCmpToFilter .eq. nbVari)

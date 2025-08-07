@@ -199,7 +199,7 @@ subroutine peecal(tych, resu, nomcha, lieu, nomlie, list_ma, nbma, &
     end if
 !
 !
-    call jeveuo(modele//'.MAILLE', 'L', vi=v_model_elem)
+    call jeveuo(ligrel//'.TYFE', 'L', vi=v_model_elem)
     call jeveuo(noma//'.TYPMAIL', 'L', vi=v_type_cell)
 ! --- CALCUL DE L'INTEGRALE ET DE LA MOYENNE(=INTEGRALE/VOLUME):
     do icmp = 1, nbcmp

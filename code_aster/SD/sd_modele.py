@@ -28,7 +28,6 @@ class sd_modele(AsBase):
     nomj = SDNom(fin=8)
 
     MODELE = sd_ligrel()
-    MAILLE = Facultatif(AsVI())
 
     # une sd_modele peut avoir une "sd_l_table" contenant des grandeurs
     # caractéristiques de l'étude :
@@ -36,13 +35,6 @@ class sd_modele(AsBase):
 
     # Si le modèle vient de MODI_MODELE_XFEM :
     xfem = Facultatif(sd_modele_xfem(SDNom(nomj="")))
-
-    def check_existence(self, _):
-        exi_liel = self.MODELE.LIEL.exists
-        exi_maille = self.MAILLE.exists
-        # si .LIEL => .MAILLE
-        if exi_liel:
-            assert exi_maille
 
     # def check_debug(self, _):
     #     print("DEBUG: model.nomj:", self.nomj())
