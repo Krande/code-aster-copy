@@ -47,6 +47,7 @@ subroutine ccchuc(sdresu_in, sdresu_out, field_type, nume_field_out, type_comp, 
 #include "asterfort/jeveuo.h"
 #include "asterfort/reliem.h"
 #include "asterfort/rsexch.h"
+#include "asterfort/rs_get_model.h"
 #include "asterfort/rsnoch.h"
 #include "asterfort/utmess.h"
 #include "asterfort/wkvect.h"
@@ -90,7 +91,7 @@ subroutine ccchuc(sdresu_in, sdresu_out, field_type, nume_field_out, type_comp, 
 ! --------------------------------------------------------------------------------------------------
 !
     integer(kind=8) :: jordr, numord
-    integer(kind=8) :: iord, icmp
+    integer(kind=8) :: iord, icmp, codret
     integer(kind=8) :: jchsd
     integer(kind=8) :: ibid, jcmp, ichk, iret
     integer(kind=8) :: nb_node_new, nb_elem_new, nb_elem_in, nb_node_in
@@ -165,6 +166,7 @@ subroutine ccchuc(sdresu_in, sdresu_out, field_type, nume_field_out, type_comp, 
                 end if
             end if
         end if
+        call rs_get_model(sdresu_in, numord, model, codret)
 !
 ! ----- Get input field properties
 !
@@ -174,7 +176,6 @@ subroutine ccchuc(sdresu_in, sdresu_out, field_type, nume_field_out, type_comp, 
             if (type_field_in .ne. 'NOEU') then
                 call dismoi('NOM_LIGREL', field_in, 'CHAMP', repk=ligrel_old)
                 call dismoi('NOM_MAILLA', field_in, 'CHAMP', repk=nomail)
-                call dismoi('NOM_MODELE', field_in, 'CHAMP', repk=model)
                 n0 = getexm(' ', 'GROUP_MA')
                 n1 = getexm(' ', 'MAILLE')
                 list_elem = '&&CCCHUC.MES_MAILLES'

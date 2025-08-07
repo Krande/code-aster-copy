@@ -80,7 +80,7 @@ FiniteElementDescriptor::FiniteElementDescriptor( const FiniteElementDescriptorP
 };
 
 FiniteElementDescriptor::FiniteElementDescriptorPtr
-    FiniteElementDescriptor::restrict( const VectorString &groupsOfCells ) const {
+FiniteElementDescriptor::restrict( const VectorString &groupsOfCells ) const {
 
     VectorLong listOfCells = _mesh->getCells( groupsOfCells );
 
@@ -88,7 +88,7 @@ FiniteElementDescriptor::FiniteElementDescriptorPtr
 };
 
 FiniteElementDescriptor::FiniteElementDescriptorPtr
-    FiniteElementDescriptor::restrict( const VectorLong &cells ) const {
+FiniteElementDescriptor::restrict( const VectorLong &cells ) const {
 
     auto fed = std::make_shared< FiniteElementDescriptor >( getMesh() );
 
@@ -249,6 +249,10 @@ ASTERINTEGER FiniteElementDescriptor::getElemTypeNume( const std::string elemTyp
     CALLO_JEXNOM( objName, name, elemTypeName );
     CALLO_JENONU( objName, &elemTypeNume );
     return elemTypeNume;
+};
+
+const std::string FiniteElementDescriptor::getPartitionMethod() const {
+    return _partition->getMethod();
 };
 
 #ifdef ASTER_HAVE_MPI
@@ -420,9 +424,5 @@ void FiniteElementDescriptor::setFrom( FiniteElementDescriptorPtr &other ) {
     // Fill 'LIEL'
     transferListOfGroupOfCellFrom( other );
 }
-
-const std::string FiniteElementDescriptor::getPartitionMethod() const {
-    return _partition->getMethod();
-};
 
 #endif /* ASTER_HAVE_MPI */

@@ -24,6 +24,7 @@ function nbddlMaxMa(nume_ddlz, matr_assez, nbmat, v_name_mat) result(maxDDLMa)
 #include "asterfort/asmpi_info.h"
 #include "asterfort/assert.h"
 #include "asterfort/dismoi.h"
+#include "asterfort/exisd.h"
 #include "asterfort/jaexin.h"
 #include "asterfort/jedema.h"
 #include "asterfort/jeexin.h"
@@ -194,7 +195,8 @@ function nbddlMaxMa(nume_ddlz, matr_assez, nbmat, v_name_mat) result(maxDDLMa)
 !
     call parti0(nbmat, v_name_mat, partition)
 !
-    if (partition .ne. ' ') then
+    call exisd("PARTITION", partition, iret)
+    if (iret .ne. 0) then
         l_distme = ASTER_TRUE
         call asmpi_info(rank=mrank, size=msize)
         rang = to_aster_int(mrank)

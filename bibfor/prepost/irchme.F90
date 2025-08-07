@@ -127,6 +127,7 @@ subroutine irchme(ifichi, chanom, partie, nochmd, noresu, &
     codret = 0
     codret_vari = 0
     fauxmodele = ' '
+    modele = ' '
 !
 100 format(/, 81('='), /, 81('='),/)
 101 format(81('-'),/)
@@ -217,8 +218,8 @@ subroutine irchme(ifichi, chanom, partie, nochmd, noresu, &
                 call rsadpa(noresu, 'L', 1, 'MODELE', numord, &
                             0, sjv=iaux, styp=saux08, istop=0)
                 modele = zk8(iaux)
-                call exisd('MODELE', modele, iret)
             end if
+            call exisd('MODELE', modele, iret)
             if (iret .eq. 0) then
 !            -- En absence d'un modele on va en construire un faux pour l'impression.
                 fauxmodele = '&&IRCHME'

@@ -33,6 +33,7 @@ subroutine op0018()
 #include "asterfort/ajlipa.h"
 #include "asterfort/assert.h"
 #include "asterfort/cetucr.h"
+#include "asterfort/codlet.h"
 #include "asterfort/cormgi.h"
 #include "asterfort/crevge.h"
 #include "asterfort/dismoi.h"
@@ -46,6 +47,7 @@ subroutine op0018()
 #include "asterfort/jecrec.h"
 #include "asterfort/jecroc.h"
 #include "asterfort/jedema.h"
+#include "asterfort/jeexin.h"
 #include "asterfort/jedetr.h"
 #include "asterfort/jeecra.h"
 #include "asterfort/jelira.h"
@@ -79,7 +81,7 @@ subroutine op0018()
 ! --------------------------------------------------------------------------------------------------
 !
     integer(kind=8) :: dim_topo_curr, dim_topo_init
-    integer(kind=8) :: ifm, niv
+    integer(kind=8) :: ifm, niv, i, iret
     character(len=8) :: mesh, model, partsd
     character(len=8) :: name_elem, z_quasi_zero, methode
     character(len=16) :: k16dummy, name_type_geom, repk, valk(2)
@@ -400,6 +402,18 @@ subroutine op0018()
     end if
     if (lparallel_mesh .and. kdis .ne. 'CENTRALISE') then
         call utmess('F', 'MODELE1_99', nk=2, valk=[kdis, mesh])
+    end if
+    if (kdis .ne. 'CENTRALISE') then
+!   name of partition
+        do i = 0, 36**4
+            partsd = "PART"
+            call codlet(i, "D0", partsd(5:8), "F")
+            call jeexin(partsd//".PRTK", iret)
+            if (iret .eq. 0) goto 20
+        end do
+        call utmess('F', 'MODELISA4_69', si=36**4)
+20      continue
+        p_model_lgrf(2) = partsd
     end if
     if (kdis .eq. 'SOUS_DOMAINE') then
         call getvtx('DISTRIBUTION', 'PARTITIONNEUR', iocc=1, scal=methode, nbret=n1)

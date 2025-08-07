@@ -605,16 +605,16 @@ class PostRocheCommon:
                 resin = charg["CHAM_GD"]
                 lresu = False
 
-            model2 = resin.getModel()
-
-            if model2 != None:
-                if model2.getName() != self.modelName:
-                    valargs = _F(
-                        vali=iocc, valk=["MODELE", self.mcf, self.modelName, model2.getName()]
-                    )
-                    UTMESS("F", "POSTROCHE_2", **valargs)
-
             if lresu:
+
+                model2 = resin.getModel()
+                if model2 != None:
+                    if model2.getName() != self.modelName:
+                        valargs = _F(
+                            vali=iocc, valk=["MODELE", self.mcf, self.modelName, model2.getName()]
+                        )
+                        UTMESS("F", "POSTROCHE_2", **valargs)
+
                 carael2 = resin.getElementaryCharacteristics()
                 if self.caraelem:
                     if carael2 != None:

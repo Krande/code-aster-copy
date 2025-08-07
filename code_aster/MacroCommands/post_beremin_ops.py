@@ -150,7 +150,6 @@ class PostBeremin:
             fed_all = self._result.getModel().getFiniteElementDescriptor()
             fed_restricted = fed_all.restrict(self._zone_ids)
             self._model_3D_zone = Model("model_3D_zone", fed_restricted)
-            fed_restricted.setModel(self._model_3D_zone)
 
             if args["METHODE_2D"]["UNITE_RESU"] != 0:
                 self._rout_2D = args["METHODE_2D"]["UNITE_RESU"]

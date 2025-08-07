@@ -465,11 +465,7 @@ subroutine dismlg(questi, nomobz, repi, repkz, ierd)
         repk = zk8(jlgrf-1+3)
 
     else if (questi .eq. 'NOM_MODELE') then
-        if (nomob(9:17) == ".MODELE") then
-            repk = nomob(1:8)
-        else
-            ASSERT(ASTER_FALSE)
-        end if
+        ASSERT(ASTER_FALSE)
     else if (questi .eq. 'PHENOMENE') then
         call jelira(nomob//'.LGRF', 'DOCU', cval=phenom)
         if (phenom(1:4) .eq. 'MECA') then
