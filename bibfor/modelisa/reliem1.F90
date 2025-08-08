@@ -46,7 +46,7 @@ subroutine reliem1(ligrel, ma, typem, motfaz, iocc, &
 !
     integer(kind=8) :: iocc, nbmocl, nbtrou
     character(len=8) :: ma
-    character(len=19) :: ligrel
+    character(len=19), intent(in) :: ligrel
     character(len=*) :: limocl(nbmocl), tymocl(nbmocl)
     character(len=*) :: litroz, typem, motfaz
     aster_logical, optional, intent(in) :: l_keep_propz

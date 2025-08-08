@@ -22,7 +22,7 @@ interface
     subroutine reliem1(ligrel, ma, typem, motfaz, iocc,&
                       nbmocl, limocl, tymocl, litroz, nbtrou, l_keep_propz, l_allz)
         integer(kind=8) :: nbmocl
-        character(len=19) :: ligrel
+        character(len=19), intent(in) :: ligrel
         character(len=8) :: ma
         character(len=*) :: typem
         character(len=*) :: motfaz

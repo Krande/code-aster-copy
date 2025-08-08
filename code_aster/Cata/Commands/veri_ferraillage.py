@@ -111,7 +111,7 @@ VERI_FERRAILLAGE = OPER(
         AFFE=FACT(
             statut="o",
             max="**",
-            regles=(UN_PARMI("TOUT", "GROUP_MA"),),
+            regles=(UN_PARMI("TOUT", "GROUP_MA", TOUT="OUI"),),
             TOUT=SIMP(statut="f", typ="TXM", into=("OUI",)),
             GROUP_MA=SIMP(statut="f", typ=grma, validators=NoRepeat(), max="**"),
             TYPE_STRUCTURE=SIMP(

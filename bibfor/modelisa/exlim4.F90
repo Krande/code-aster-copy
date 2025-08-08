@@ -102,7 +102,7 @@ subroutine exlim4(motfaz, base, ligrel, ligrelOut)
 !
     do iocc = 1, nocc
         call reliem1(ligrel, noma, 'NU_MAILLE', motfac, iocc, &
-                     2, motcle(1), typmcl(1), '&&EXLIM3.LIMA1', nbma)
+                     2, motcle, typmcl, '&&EXLIM3.LIMA1', nbma)
         ASSERT(nbma .gt. 0)
         call jeveuo('&&EXLIM3.LIMA1', 'L', vi=lima1)
         do k = 1, nbma

@@ -22,14 +22,18 @@ subroutine op0190()
     implicit none
 !
 #include "jeveux.h"
-#include "asterfort/assert.h"
 #include "asterc/getres.h"
+#include "asterfort/alchml.h"
+#include "asterfort/assert.h"
+#include "asterfort/dismoi.h"
+#include "asterfort/exlim3.h"
 #include "asterfort/getvid.h"
 #include "asterfort/getvr8.h"
 #include "asterfort/getvtx.h"
 #include "asterfort/imprsd.h"
 #include "asterfort/infmaj.h"
 #include "asterfort/infniv.h"
+#include "asterfort/jecreo.h"
 #include "asterfort/jedema.h"
 #include "asterfort/jemarq.h"
 #include "asterfort/jeveuo.h"
@@ -37,19 +41,15 @@ subroutine op0190()
 #include "asterfort/rsexch.h"
 #include "asterfort/rsnoch.h"
 #include "asterfort/rsutnu.h"
+#include "asterfort/utmess.h"
 #include "asterfort/w190af.h"
 #include "asterfort/w190ca.h"
-#include "asterfort/utmess.h"
-#include "asterfort/dismoi.h"
-#include "asterfort/jecreo.h"
-#include "asterfort/exlim3.h"
-#include "asterfort/alchml.h"
 !
     integer(kind=8) :: ifm, niv, n0, nuord
     integer(kind=8) :: iret, jpara, ie, nbordr, i, nuordr, iret0, iret99
     character(len=8) :: resu, model, caraElem, noma, noma2, noma3, tych, nogd
-    character(len=16) :: crit, concep, nomcmd, ligrel
-    character(len=19) :: chmar1, chmar2, chefge, resu19, resuc1, chamfer
+    character(len=16) :: crit, concep, nomcmd
+    character(len=19) :: chmar1, chmar2, chefge, resu19, resuc1, chamfer, ligrel
     character(len=24) ::chefge0
     real(kind=8) :: prec
     integer(kind=8), pointer :: nume_ordre(:) => null()
