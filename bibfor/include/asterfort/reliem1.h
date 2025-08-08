@@ -15,14 +15,23 @@
 ! You should have received a copy of the GNU General Public License
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
-
+#include "asterf_types.h"
 !
 !
 interface
-    subroutine rc3600_chtotab(nomtb, conceptin, nsymb, champ)
-        character(len=8) :: nomtb
-        character(len=8) :: conceptin
-        character(len=16) :: nsymb
-        character(len=19) :: champ
-    end subroutine rc3600_chtotab
+    subroutine reliem1(ligrel, ma, typem, motfaz, iocc,&
+                      nbmocl, limocl, tymocl, litroz, nbtrou, l_keep_propz, l_allz)
+        integer(kind=8) :: nbmocl
+        character(len=19) :: ligrel
+        character(len=8) :: ma
+        character(len=*) :: typem
+        character(len=*) :: motfaz
+        integer(kind=8) :: iocc
+        character(len=*) :: limocl(nbmocl)
+        character(len=*) :: tymocl(nbmocl)
+        character(len=*) :: litroz
+        integer(kind=8) :: nbtrou
+        aster_logical, optional, intent(in) :: l_keep_propz
+    aster_logical, optional, intent(in) :: l_allz
+    end subroutine reliem1
 end interface

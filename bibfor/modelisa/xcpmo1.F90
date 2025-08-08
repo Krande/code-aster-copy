@@ -387,6 +387,7 @@ subroutine xcpmo1(modmes, modthx, modmex)
 !
     call jedupo(ligmex//'.NBNO', 'G', ligrtp//'.NBNO', .false._1)
     call jedupo(ligmex//'.LGRF', 'G', ligrtp//'.LGRF', .false._1)
+    call jedupo(ligmex//'.TYFE', 'G', ligrtp//'.TYFE', .false._1)
 !
 ! - on ecrase ligmex avec ligrtp
 !

@@ -31,6 +31,7 @@ subroutine rc3600_momeq()
 #include "asterfort/dismoi.h"
 #include "asterfort/detrsd.h"
 #include "asterfort/exlima.h"
+#include "asterfort/exlim4.h"
 #include "asterfort/getvid.h"
 #include "asterfort/getvr8.h"
 #include "asterfort/getvtx.h"
@@ -70,7 +71,7 @@ subroutine rc3600_momeq()
     character(len=24) :: nompar
     character(len=16) :: nomcmd, concep, nopara, nomopt
     character(len=19) :: chin, chextr, ligrel, resu19, lchin(1), lchout(1)
-    character(len=19) :: noch19, tychlu, mcf
+    character(len=19) :: noch19, tychlu, mcf, ligrelCham
     integer(kind=8) :: iexi
     aster_logical :: lnoeu, ldetli, lvide
 
@@ -227,22 +228,22 @@ subroutine rc3600_momeq()
     else
         nomsym = ' '
         conceptin = champ
-        call dismoi('NOM_MODELE', champ, 'CHAMP', repk=modele)
+        call dismoi('NOM_LIGREL', champ, 'CHAMP', repk=ligrelCham)
         call dismoi('NOM_OPTION', champ, 'CHAMP', repk=nomopt)
         if (nomopt(1:9) .ne. 'EFGE_ELNO') call utmess('F', 'POSTRELE_23', sk=nomopt)
-        call exlima('ZONE_ANALYSE', 1, 'V', modele, ligrel)
+        call exlim4('ZONE_ANALYSE', 'V', ligrelCham, ligrel)
         noch19 = '&&RC3600_CHMEQ'
         lchin(1) = champ
         lchout(1) = noch19
 !
-        call calcul('C', 'EFEQ_ELNO', ligrel, 1, lchin, &
+        call calcul('C', 'EFEQ_ELNO', ligrelCham, 1, lchin, &
                     lpain, 1, lchout, lpaout, 'V', &
                     'OUI')
     end if
 
 !    creation de la table
 
-    call rc3600_chtotab(nomtab, conceptin, nomsym, modele, noch19)
+    call rc3600_chtotab(nomtab, conceptin, nomsym, noch19)
 !
     call jedema()
 end subroutine

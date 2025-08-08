@@ -19,10 +19,9 @@
 !
 !
 interface
-    subroutine rc3600_chtotab(nomtb, conceptin, nsymb, champ)
-        character(len=8) :: nomtb
-        character(len=8) :: conceptin
-        character(len=16) :: nsymb
-        character(len=19) :: champ
-    end subroutine rc3600_chtotab
+    subroutine checkConsistencyLigrel(model, ligrel, answer)
+        character(len=8), intent(in) :: model
+        character(len=19), intent(in) :: ligrel
+    aster_logical, intent(out) :: answer
+    end subroutine checkConsistencyLigrel
 end interface
