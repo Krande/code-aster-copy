@@ -18,21 +18,21 @@
 
 subroutine w039c3(carele, modele, ifi, form, titre, aunoeud)
     implicit none
-#include "asterf_types.h"
 #include "jeveux.h"
+#include "asterf_types.h"
 #include "asterfort/alchml.h"
 #include "asterfort/assert.h"
 #include "asterfort/carelo.h"
 #include "asterfort/chpchd.h"
-#include "asterfort/dismoi.h"
 #include "asterfort/detrsd.h"
+#include "asterfort/dismoi.h"
 #include "asterfort/imprsd.h"
 #include "asterfort/irceme.h"
 #include "asterfort/jedema.h"
 #include "asterfort/jeexin.h"
 #include "asterfort/jemarq.h"
-#include "asterfort/utmess.h"
 #include "asterfort/lxlgut.h"
+#include "asterfort/utmess.h"
 !
     integer(kind=8) :: ifi
     character(len=8) :: carele, modele

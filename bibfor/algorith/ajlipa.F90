@@ -18,16 +18,16 @@
 
 subroutine ajlipa(modelz, base, kdis)
     implicit none
-#include "asterf_types.h"
 #include "jeveux.h"
+#include "asterf_types.h"
+#include "asterc/getres.h"
 #include "asterfort/asmpi_info.h"
 #include "asterfort/assert.h"
-#include "asterfort/dismoi.h"
 #include "asterfort/detrsd.h"
-#include "asterfort/gnoms3.h"
-#include "asterc/getres.h"
+#include "asterfort/dismoi.h"
 #include "asterfort/exisd.h"
 #include "asterfort/getvis.h"
+#include "asterfort/gnoms3.h"
 #include "asterfort/infniv.h"
 #include "asterfort/jedema.h"
 #include "asterfort/jeexin.h"

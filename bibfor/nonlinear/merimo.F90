@@ -28,24 +28,24 @@ subroutine merimo(base, &
 !
     implicit none
 !
-#include "asterf_types.h"
 #include "jeveux.h"
+#include "asterf_types.h"
 #include "asterfort/assert.h"
 #include "asterfort/calcul.h"
+#include "asterfort/detrsd.h"
 #include "asterfort/dismoi.h"
 #include "asterfort/jedema.h"
 #include "asterfort/jedetr.h"
 #include "asterfort/jeexin.h"
 #include "asterfort/jemarq.h"
-#include "asterfort/vemare.h"
 #include "asterfort/memare.h"
 #include "asterfort/merimp.h"
+#include "asterfort/ndynlo.h"
 #include "asterfort/nmchex.h"
 #include "asterfort/nmiret.h"
 #include "asterfort/reajre.h"
 #include "asterfort/redetr.h"
-#include "asterfort/ndynlo.h"
-#include "asterfort/detrsd.h"
+#include "asterfort/vemare.h"
 !
     character(len=1), intent(in) :: base
     aster_logical, intent(in) :: l_xfem, l_macr_elem

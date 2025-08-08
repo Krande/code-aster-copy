@@ -20,6 +20,7 @@ function nbddlMaxMa(nume_ddlz, matr_assez, nbmat, v_name_mat) result(maxDDLMa)
 !
     implicit none
 !
+#include "jeveux.h"
 #include "asterf_types.h"
 #include "asterfort/asmpi_info.h"
 #include "asterfort/assert.h"
@@ -39,7 +40,6 @@ function nbddlMaxMa(nume_ddlz, matr_assez, nbmat, v_name_mat) result(maxDDLMa)
 #include "asterfort/nbno.h"
 #include "asterfort/parti0.h"
 #include "asterfort/utmess.h"
-#include "jeveux.h"
 !
     character(len=*), intent(in) :: nume_ddlz, matr_assez
     integer(kind=8), intent(in)  :: nbmat

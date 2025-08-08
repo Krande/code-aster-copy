@@ -20,12 +20,11 @@ subroutine vedimd(nomo, lischa, instan, vecele)
 !
 !
     implicit none
-#include "asterf_types.h"
 #include "jeveux.h"
+#include "asterf_types.h"
 #include "asterfort/assert.h"
 #include "asterfort/calcul.h"
 #include "asterfort/corich.h"
-#include "asterfort/dismoi.h"
 #include "asterfort/detrsd.h"
 #include "asterfort/exisd.h"
 #include "asterfort/gcnco2.h"
@@ -45,8 +44,8 @@ subroutine vedimd(nomo, lischa, instan, vecele)
 #include "asterfort/lisopt.h"
 #include "asterfort/mecact.h"
 #include "asterfort/megeom.h"
-#include "asterfort/vemare.h"
 #include "asterfort/reajre.h"
+#include "asterfort/vemare.h"
     character(len=19) :: lischa, vecele
     character(len=8) :: nomo
     real(kind=8) :: instan

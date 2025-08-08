@@ -36,9 +36,6 @@ class XfemModelModication(ExecuteCommand):
         """
         self._result = Model(keywords["MODELE_IN"].getMesh(), True)
 
-        # set model in FED (because of circular reference)
-        FED = self._result.getFiniteElementDescriptor()
-
     def post_exec(self, keywords):
         """Execute the command.
 

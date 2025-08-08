@@ -21,13 +21,13 @@ subroutine veondp(modele, mate, mateco, sddyna, temps, vecelz)
 ! person_in_charge: mickael.abbas at edf.fr
 !
     implicit none
-#include "asterf_types.h"
 #include "jeveux.h"
+#include "asterf_types.h"
 #include "asterfort/calcul.h"
 #include "asterfort/corich.h"
 #include "asterfort/dbgcal.h"
-#include "asterfort/dismoi.h"
 #include "asterfort/detrsd.h"
+#include "asterfort/dismoi.h"
 #include "asterfort/exisd.h"
 #include "asterfort/gcncon.h"
 #include "asterfort/infdbg.h"
@@ -35,10 +35,10 @@ subroutine veondp(modele, mate, mateco, sddyna, temps, vecelz)
 #include "asterfort/jemarq.h"
 #include "asterfort/jeveuo.h"
 #include "asterfort/mecact.h"
-#include "asterfort/vemare.h"
 #include "asterfort/ndynin.h"
 #include "asterfort/ndynkk.h"
 #include "asterfort/reajre.h"
+#include "asterfort/vemare.h"
 #include "asterfort/vrcins.h"
     character(len=*) :: vecelz
     character(len=19) :: sddyna

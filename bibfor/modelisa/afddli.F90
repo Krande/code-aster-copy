@@ -26,8 +26,8 @@ subroutine afddli(model, geomDime, gran_cmp_nb, gran_cmp_name, node_nume, node_n
 !
     implicit none
 !
-#include "asterf_types.h"
 #include "jeveux.h"
+#include "asterf_types.h"
 #include "asterc/indik8.h"
 #include "asterfort/afrela.h"
 #include "asterfort/assert.h"

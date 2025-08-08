@@ -30,13 +30,13 @@ subroutine vefpme(stop, &
     implicit none
 !
 #include "asterf_types.h"
-#include "asterfort/dismoi.h"
 #include "asterfort/detrsd.h"
+#include "asterfort/dismoi.h"
 #include "asterfort/jedema.h"
 #include "asterfort/jemarq.h"
 #include "asterfort/load_list_info.h"
-#include "asterfort/vemare.h"
 #include "asterfort/reajre.h"
+#include "asterfort/vemare.h"
 #include "LoadTypes_type.h"
 !
     character(len=1), intent(in) :: stop

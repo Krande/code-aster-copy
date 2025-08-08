@@ -20,8 +20,8 @@ subroutine matdis(matd, verbose)
     implicit none
 #include "asterc/getexm.h"
 #include "asterfort/assert.h"
-#include "asterfort/exisd.h"
 #include "asterfort/dismoi.h"
+#include "asterfort/exisd.h"
 #include "asterfort/getvid.h"
 #include "asterfort/getvtx.h"
 #include "asterfort/utmess.h"

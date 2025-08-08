@@ -35,6 +35,7 @@ subroutine modirepcham(resuou, resuin)
 #include "jeveux.h"
 #include "asterfort/calcul.h"
 #include "asterfort/cesvar.h"
+#include "asterfort/checkConsistencyLigrel.h"
 #include "asterfort/dismoi.h"
 #include "asterfort/exisd.h"
 #include "asterfort/getvid.h"
@@ -46,7 +47,6 @@ subroutine modirepcham(resuou, resuin)
 #include "asterfort/jemarq.h"
 #include "asterfort/mecoor.h"
 #include "asterfort/utmess.h"
-#include "asterfort/checkConsistencyLigrel.h"
 !
 ! --------------------------------------------------------------------------------------------------
 !

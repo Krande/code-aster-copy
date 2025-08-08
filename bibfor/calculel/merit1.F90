@@ -23,6 +23,7 @@ subroutine merit1(modelZ, caraElemZ, matecoZ, &
 !
     implicit none
 !
+#include "jeveux.h"
 #include "asterfort/calcul.h"
 #include "asterfort/codent.h"
 #include "asterfort/dismoi.h"
@@ -36,7 +37,6 @@ subroutine merit1(modelZ, caraElemZ, matecoZ, &
 #include "asterfort/meharm.h"
 #include "asterfort/memare.h"
 #include "asterfort/reajre.h"
-#include "jeveux.h"
 !
     character(len=*), intent(in) :: modelZ, caraElemZ, matecoZ
     character(len=*), intent(in) :: loadNameZ

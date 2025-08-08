@@ -44,8 +44,8 @@ subroutine pjeftg(igeom, geomi, nomai, motfac, iocc, ncas)
     integer(kind=8) :: iocc
     character(len=8) :: ncas
 !
-#include "asterf_types.h"
 #include "jeveux.h"
+#include "asterf_types.h"
 #include "asterc/getres.h"
 #include "asterfort/assert.h"
 #include "asterfort/copisd.h"

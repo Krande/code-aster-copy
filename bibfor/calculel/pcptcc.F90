@@ -26,8 +26,6 @@ subroutine pcptcc(option, ldist, dbg_ob, dbgv_ob, lcpu, &
     implicit none
 !
 #include "jeveux.h"
-#include "blas/dcopy.h"
-#include "blas/zcopy.h"
 #include "asterc/asmpi_comm.h"
 #include "asterfort/asmpi_barrier.h"
 #include "asterfort/asmpi_comm_vect.h"
@@ -35,15 +33,15 @@ subroutine pcptcc(option, ldist, dbg_ob, dbgv_ob, lcpu, &
 #include "asterfort/assert.h"
 #include "asterfort/codent.h"
 #include "asterfort/copisd.h"
-#include "asterfort/dismoi.h"
 #include "asterfort/detrsd.h"
+#include "asterfort/dismoi.h"
 #include "asterfort/exisd.h"
+#include "asterfort/getvtx.h"
 #include "asterfort/infniv.h"
 #include "asterfort/jedetr.h"
 #include "asterfort/jeimpo.h"
 #include "asterfort/jelibe.h"
 #include "asterfort/jeveuo.h"
-#include "asterfort/getvtx.h"
 #include "asterfort/utimsd.h"
 #include "asterfort/utmess.h"
 #include "asterfort/vecinc.h"
@@ -51,6 +49,8 @@ subroutine pcptcc(option, ldist, dbg_ob, dbgv_ob, lcpu, &
 #include "asterfort/vecink.h"
 #include "asterfort/vecint.h"
 #include "asterfort/wkvect.h"
+#include "blas/dcopy.h"
+#include "blas/zcopy.h"
     integer(kind=8) :: option, nbordr, i, ipas, lonnew, lonch
     character(len=1) :: ktyp
     character(len=8) :: partsdmo, partsd

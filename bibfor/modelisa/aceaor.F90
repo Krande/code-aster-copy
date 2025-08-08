@@ -50,6 +50,7 @@ subroutine aceaor(noma, nomo, lmax, nbepo, ntyele, nomele, ivr, nbocc)
 #include "asterfort/getvid.h"
 #include "asterfort/getvr8.h"
 #include "asterfort/getvtx.h"
+#include "asterfort/int_to_char8.h"
 #include "asterfort/jedema.h"
 #include "asterfort/jedetr.h"
 #include "asterfort/jeexin.h"
@@ -64,7 +65,6 @@ subroutine aceaor(noma, nomo, lmax, nbepo, ntyele, nomele, ivr, nbocc)
 #include "asterfort/tbcarapou.h"
 #include "asterfort/utmess.h"
 #include "asterfort/wkvect.h"
-#include "asterfort/int_to_char8.h"
 #include "blas/ddot.h"
 !
 ! --------------------------------------------------------------------------------------------------

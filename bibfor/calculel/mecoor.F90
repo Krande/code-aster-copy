@@ -24,7 +24,6 @@ subroutine mecoor(ligrel, chgeom)
 #include "asterfort/dismoi.h"
 #include "asterfort/jedema.h"
 #include "asterfort/jemarq.h"
-#include "asterfort/jeveuo.h"
     character(len=19) :: ligrel
     character(len=19) :: chgeom
 !

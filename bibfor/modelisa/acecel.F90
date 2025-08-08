@@ -46,16 +46,16 @@ subroutine acecel(noma, nomo, nbocc, ele_sup_num, ele_sup_typ, nb_ty_el, zjdlm, 
     integer(kind=8) :: nbocc(*), ele_sup_num(*), ele_sup_typ(*), nb_ty_el(*), zjdlm(*), ier
 !
 #include "jeveux.h"
-#include "asterfort/assert.h"
 #include "asterfort/asmpi_comm_vect.h"
-#include "asterfort/iunifi.h"
+#include "asterfort/assert.h"
 #include "asterfort/dismoi.h"
+#include "asterfort/isParallelMesh.h"
+#include "asterfort/iunifi.h"
 #include "asterfort/jedema.h"
 #include "asterfort/jeexin.h"
 #include "asterfort/jelira.h"
 #include "asterfort/jemarq.h"
 #include "asterfort/jeveuo.h"
-#include "asterfort/isParallelMesh.h"
 #include "asterfort/utmess.h"
 !
 ! --------------------------------------------------------------------------------------------------

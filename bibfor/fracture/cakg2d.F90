@@ -22,14 +22,16 @@ subroutine cakg2d(optioz, result, modele, depla, theta, &
                   lmoda, puls, compor)
     implicit none
 !
-#include "asterf_types.h"
 #include "jeveux.h"
-#include "asterfort/chpver.h"
+#include "asterf_types.h"
 #include "asterfort/alchml.h"
-#include "asterfort/chpchd.h"
-#include "asterfort/xelgano.h"
+#include "asterfort/as_allocate.h"
+#include "asterfort/as_deallocate.h"
 #include "asterfort/assert.h"
 #include "asterfort/calcul.h"
+#include "asterfort/char8_to_int.h"
+#include "asterfort/chpchd.h"
+#include "asterfort/chpver.h"
 #include "asterfort/detrsd.h"
 #include "asterfort/dismoi.h"
 #include "asterfort/gcharg.h"
@@ -55,9 +57,7 @@ subroutine cakg2d(optioz, result, modele, depla, theta, &
 #include "asterfort/vrcins.h"
 #include "asterfort/vrcref.h"
 #include "asterfort/wkvect.h"
-#include "asterfort/as_deallocate.h"
-#include "asterfort/as_allocate.h"
-#include "asterfort/char8_to_int.h"
+#include "asterfort/xelgano.h"
 !
     character(len=8) :: modele, fondf, result, symech
     character(len=8) :: noeud

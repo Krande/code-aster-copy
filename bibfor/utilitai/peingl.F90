@@ -19,21 +19,22 @@
 subroutine peingl(resu, modele, mate, mateco, cara, nh, &
                   nbocc, motfaz)
     implicit none
-#include "asterf_types.h"
 #include "jeveux.h"
-#include "asterfort/assert.h"
-#include "asterfort/as_allocate.h"
-#include "asterfort/as_deallocate.h"
-#include "asterfort/gettco.h"
+#include "asterf_types.h"
 #include "asterc/r8prem.h"
 #include "asterfort/alchml.h"
+#include "asterfort/as_allocate.h"
+#include "asterfort/as_deallocate.h"
+#include "asterfort/assert.h"
 #include "asterfort/calcul.h"
+#include "asterfort/char8_to_int.h"
 #include "asterfort/codent.h"
 #include "asterfort/detrsd.h"
 #include "asterfort/dismoi.h"
 #include "asterfort/etenca.h"
 #include "asterfort/exisdg.h"
 #include "asterfort/exlim3.h"
+#include "asterfort/gettco.h"
 #include "asterfort/getvem.h"
 #include "asterfort/getvid.h"
 #include "asterfort/getvr8.h"
@@ -61,7 +62,6 @@ subroutine peingl(resu, modele, mate, mateco, cara, nh, &
 #include "asterfort/vrcins.h"
 #include "asterfort/vrcref.h"
 #include "asterfort/wkvect.h"
-#include "asterfort/char8_to_int.h"
 !
     integer(kind=8) :: nh, nbocc
     character(len=*) :: resu, modele, mate, mateco, cara, motfaz

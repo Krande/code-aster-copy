@@ -25,6 +25,7 @@ subroutine cgHighOrder(cgField, cgTheta, cgStudy, cgStat, chscer, chseli, v_cer,
 !
     implicit none
 !
+#include "jeveux.h"
 #include "asterf_types.h"
 #include "asterfort/assert.h"
 #include "asterfort/calcG_type.h"
@@ -39,7 +40,6 @@ subroutine cgHighOrder(cgField, cgTheta, cgStudy, cgStat, chscer, chseli, v_cer,
 #include "asterfort/jexnum.h"
 #include "asterfort/nbelem.h"
 #include "asterfort/typele.h"
-#include "jeveux.h"
 !
     type(CalcG_field), intent(in) :: cgField
     type(CalcG_theta), intent(in) :: cgTheta

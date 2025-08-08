@@ -26,19 +26,19 @@ subroutine asseVectSuper(model, mesh, vectElem, &
 !
     implicit none
 !
+#include "jeveux.h"
 #include "asterf_types.h"
 #include "asterfort/assert.h"
 #include "asterfort/cordd2.h"
 #include "asterfort/dismoi.h"
 #include "asterfort/jedema.h"
-#include "asterfort/jelira.h"
 #include "asterfort/jeexin.h"
+#include "asterfort/jelira.h"
 #include "asterfort/jemarq.h"
 #include "asterfort/jenuno.h"
 #include "asterfort/jeveuo.h"
 #include "asterfort/jexnum.h"
 #include "asterfort/ssvalv.h"
-#include "jeveux.h"
 !
     character(len=8), intent(in) :: model, mesh
     character(len=19), intent(in) :: vectElem

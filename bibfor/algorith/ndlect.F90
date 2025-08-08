@@ -25,8 +25,8 @@ subroutine ndlect(model, materialField, caraElem, listLoad, &
 !
     implicit none
 !
-#include "asterf_types.h"
 #include "jeveux.h"
+#include "asterf_types.h"
 #include "asterc/getfac.h"
 #include "asterc/r8prem.h"
 #include "asterfort/assert.h"

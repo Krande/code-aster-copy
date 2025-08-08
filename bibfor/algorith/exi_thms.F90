@@ -20,8 +20,8 @@ function exi_thms(model, l_affe_all, list_elem_affe, nb_elem_affe)
 !
     implicit none
 !
-#include "asterf_types.h"
 #include "jeveux.h"
+#include "asterf_types.h"
 #include "asterfort/dismoi.h"
 #include "asterfort/jedema.h"
 #include "asterfort/jemarq.h"

@@ -26,8 +26,8 @@ subroutine nmrest_ecro(model_, mate_, ds_constitutive, hval_incr)
 #include "asterf_types.h"
 #include "asterfort/calcul.h"
 #include "asterfort/copisd.h"
-#include "asterfort/dismoi.h"
 #include "asterfort/detrsd.h"
+#include "asterfort/dismoi.h"
 #include "asterfort/nmchex.h"
 #include "asterfort/nmvcex.h"
 !

@@ -20,12 +20,13 @@ subroutine extche(nchme2, nmaile, nummai, ncmp, nbm, &
                   nbc, indic, nssche, mcf, iocc, &
                   nbnac, nnoeud)
     implicit none
-#include "asterf_types.h"
 #include "jeveux.h"
+#include "asterf_types.h"
 #include "asterc/r8dgrd.h"
 #include "asterfort/assert.h"
 #include "asterfort/celcel.h"
 #include "asterfort/celver.h"
+#include "asterfort/char8_to_int.h"
 #include "asterfort/detrsd.h"
 #include "asterfort/dismoi.h"
 #include "asterfort/exchem.h"
@@ -47,7 +48,6 @@ subroutine extche(nchme2, nmaile, nummai, ncmp, nbm, &
 #include "asterfort/rvrecu.h"
 #include "asterfort/utmess.h"
 #include "asterfort/wkvect.h"
-#include "asterfort/char8_to_int.h"
 !
     integer(kind=8) :: nbm, nbc, nummai(*), iocc, nbnac, nnoeud(*)
     character(len=6) :: indic

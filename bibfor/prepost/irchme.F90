@@ -62,28 +62,20 @@ subroutine irchme(ifichi, chanom, partie, nochmd, noresu, &
 !
 ! 0.1. ==> ARGUMENTS
 !
-#include "asterf_types.h"
 #include "jeveux.h"
+#include "asterf_types.h"
 #include "asterc/utflsh.h"
-#include "asterfort/exisd.h"
-#include "asterfort/copisd.h"
-#include "asterfort/assert.h"
 #include "asterfort/dismoi.h"
 #include "asterfort/infniv.h"
 #include "asterfort/irceme.h"
 #include "asterfort/ircnme.h"
-#include "asterfort/irmpav.h"
 #include "asterfort/irmeta.h"
+#include "asterfort/irmpav.h"
 #include "asterfort/irvari.h"
-#include "asterfort/detrsd.h"
-#include "asterfort/jelira.h"
-#include "asterfort/jexnum.h"
 #include "asterfort/jenonu.h"
-#include "asterfort/jeveuo.h"
 #include "asterfort/jexnom.h"
 #include "asterfort/rsadpa.h"
 #include "asterfort/utmess.h"
-#include "asterfort/wkvect.h"
 !
     character(len=8) :: noresu, typech, sdcarm, carael
     character(len=16) :: nomsym

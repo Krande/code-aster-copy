@@ -28,12 +28,12 @@ subroutine lridea(fileUnit, &
 !
     implicit none
 !
-#include "asterf_types.h"
 #include "jeveux.h"
-#include "asterfort/getvis.h"
+#include "asterf_types.h"
 #include "asterfort/assert.h"
 #include "asterfort/cescre.h"
 #include "asterfort/cesexi.h"
+#include "asterfort/char8_to_int.h"
 #include "asterfort/cnscre.h"
 #include "asterfort/codent.h"
 #include "asterfort/crsdfi.h"
@@ -41,8 +41,10 @@ subroutine lridea(fileUnit, &
 #include "asterfort/decod2.h"
 #include "asterfort/dismoi.h"
 #include "asterfort/exisd.h"
+#include "asterfort/getvis.h"
 #include "asterfort/getvtx.h"
 #include "asterfort/gnomsd.h"
+#include "asterfort/int_to_char8.h"
 #include "asterfort/iradhs.h"
 #include "asterfort/jedema.h"
 #include "asterfort/jedetr.h"
@@ -53,11 +55,9 @@ subroutine lridea(fileUnit, &
 #include "asterfort/numeok.h"
 #include "asterfort/rsutc2.h"
 #include "asterfort/stock.h"
-#include "asterfort/utmess.h"
 #include "asterfort/ulisop.h"
 #include "asterfort/ulopen.h"
-#include "asterfort/char8_to_int.h"
-#include "asterfort/int_to_char8.h"
+#include "asterfort/utmess.h"
 !
     integer(kind=8), intent(in) :: fileUnit
     character(len=8), intent(in) :: resultName

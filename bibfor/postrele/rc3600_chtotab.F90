@@ -36,8 +36,8 @@ subroutine rc3600_chtotab(nomtb, conceptin, nsymb, champ)
 ! --------------------------------------------------------------------------------------------------
 !
     implicit none
-#include "asterf_types.h"
 #include "jeveux.h"
+#include "asterf_types.h"
 !
 #include "asterfort/assert.h"
 #include "asterfort/carces.h"
@@ -45,6 +45,7 @@ subroutine rc3600_chtotab(nomtb, conceptin, nsymb, champ)
 #include "asterfort/cesexi.h"
 #include "asterfort/dismoi.h"
 #include "asterfort/indiis.h"
+#include "asterfort/int_to_char8.h"
 #include "asterfort/jedema.h"
 #include "asterfort/jeexin.h"
 #include "asterfort/jemarq.h"
@@ -54,7 +55,6 @@ subroutine rc3600_chtotab(nomtb, conceptin, nsymb, champ)
 #include "asterfort/tbajli.h"
 #include "asterfort/tbcrsv.h"
 #include "asterfort/utmess.h"
-#include "asterfort/int_to_char8.h"
 !
     character(len=8) :: conceptin, nomtb
     character(len=16) :: nsymb

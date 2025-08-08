@@ -24,12 +24,12 @@ subroutine modelCheck(model, lCheckJacobian, lCheckFSINorms, lCheckPlaneity)
 #include "asterfort/calcul.h"
 #include "asterfort/dismoi.h"
 #include "asterfort/jeveuo.h"
-#include "asterfort/modexi.h"
-#include "asterfort/utmess.h"
-#include "asterfort/taxis.h"
-#include "asterfort/modelCheckFSINormals.h"
 #include "asterfort/modelCheckFluidFormulation.h"
+#include "asterfort/modelCheckFSINormals.h"
 #include "asterfort/modelCheckPlaneity.h"
+#include "asterfort/modexi.h"
+#include "asterfort/taxis.h"
+#include "asterfort/utmess.h"
 !
     character(len=8), intent(in) :: model
     aster_logical, intent(in) :: lCheckJacobian, lCheckFSINorms, lCheckPlaneity

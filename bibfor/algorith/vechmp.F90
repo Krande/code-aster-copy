@@ -21,8 +21,8 @@ subroutine vechmp(nomo, mate, mateco, carele, varplu, lxfem, &
 !
 !
     implicit none
-#include "asterf_types.h"
 #include "jeveux.h"
+#include "asterf_types.h"
 #include "asterfort/assert.h"
 #include "asterfort/dismoi.h"
 #include "asterfort/jedema.h"

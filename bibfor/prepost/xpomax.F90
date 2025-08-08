@@ -26,10 +26,9 @@ subroutine xpomax(mo, malini, mailx, nbnoc, nbmac, &
 !
     implicit none
 !
-#include "asterf_types.h"
 #include "jeveux.h"
+#include "asterf_types.h"
 #include "asterc/getres.h"
-#include "asterfort/gettco.h"
 #include "asterfort/assert.h"
 #include "asterfort/celces.h"
 #include "asterfort/cesexi.h"
@@ -39,6 +38,9 @@ subroutine xpomax(mo, malini, mailx, nbnoc, nbmac, &
 #include "asterfort/elref2.h"
 #include "asterfort/elrfvf.h"
 #include "asterfort/exisd.h"
+#include "asterfort/fointe.h"
+#include "asterfort/gettco.h"
+#include "asterfort/indk32.h"
 #include "asterfort/iselli.h"
 #include "asterfort/jecrec.h"
 #include "asterfort/jecreo.h"
@@ -55,17 +57,15 @@ subroutine xpomax(mo, malini, mailx, nbnoc, nbmac, &
 #include "asterfort/jexatr.h"
 #include "asterfort/jexnom.h"
 #include "asterfort/jexnum.h"
+#include "asterfort/rccome.h"
+#include "asterfort/res2mat.h"
+#include "asterfort/rsadpa.h"
 #include "asterfort/wkvect.h"
 #include "asterfort/xismec.h"
 #include "asterfort/xpoajc.h"
 #include "asterfort/xpoajm.h"
 #include "asterfort/xpocmp.h"
 #include "asterfort/xpocox.h"
-#include "asterfort/res2mat.h"
-#include "asterfort/fointe.h"
-#include "asterfort/rccome.h"
-#include "asterfort/indk32.h"
-#include "asterfort/rsadpa.h"
 !
     integer(kind=8) :: nbnoc, nbmac, ngfon, iord
     character(len=2) :: prefno(4)

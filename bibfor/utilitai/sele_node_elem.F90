@@ -21,16 +21,16 @@ subroutine sele_node_elem(modelz, nb_elem_type, list_elem_type, list_node, nb_no
 !
     implicit none
 !
+#include "asterfort/as_allocate.h"
+#include "asterfort/as_deallocate.h"
+#include "asterfort/dismoi.h"
+#include "asterfort/jelira.h"
+#include "asterfort/jenuno.h"
+#include "asterfort/jeveuo.h"
+#include "asterfort/jexnum.h"
 #include "asterfort/nbelem.h"
 #include "asterfort/nbgrel.h"
 #include "asterfort/typele.h"
-#include "asterfort/as_allocate.h"
-#include "asterfort/as_deallocate.h"
-#include "asterfort/jenuno.h"
-#include "asterfort/jeveuo.h"
-#include "asterfort/jelira.h"
-#include "asterfort/jexnum.h"
-#include "asterfort/dismoi.h"
 !
 !
     character(len=*), intent(in) :: modelz

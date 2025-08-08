@@ -21,8 +21,8 @@ subroutine xtopoi(noma, modele)
 ! person_in_charge: samuel.geniaut at edf.fr
 !
     implicit none
-#include "asterf_types.h"
 #include "jeveux.h"
+#include "asterf_types.h"
 #include "asterfort/calcul.h"
 #include "asterfort/cescre.h"
 #include "asterfort/cesexi.h"

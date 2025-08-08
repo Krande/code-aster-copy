@@ -23,13 +23,13 @@ subroutine carc_read(prepMapCarcri, model_)
 !
     implicit none
 !
+#include "asterf_types.h"
 #include "asterc/getexm.h"
 #include "asterc/lccree.h"
 #include "asterc/lcdiscard.h"
 #include "asterc/lcsymm.h"
 #include "asterc/lctest.h"
 #include "asterc/r8vide.h"
-#include "asterf_types.h"
 #include "asterfort/assert.h"
 #include "asterfort/comp_meca_l.h"
 #include "asterfort/comp_meca_rkit.h"

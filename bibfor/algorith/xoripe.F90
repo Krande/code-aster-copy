@@ -19,8 +19,8 @@
 subroutine xoripe(modele)
     implicit none
 !
-#include "asterf_types.h"
 #include "jeveux.h"
+#include "asterf_types.h"
 #include "asterfort/assert.h"
 #include "asterfort/celces.h"
 #include "asterfort/cescel.h"

@@ -26,7 +26,6 @@ subroutine pjxxut(projDime, typeSelect, &
     implicit none
 !
 #include "jeveux.h"
-#include "MeshTypes_type.h"
 #include "asterfort/assert.h"
 #include "asterfort/dismoi.h"
 #include "asterfort/jedema.h"
@@ -40,6 +39,7 @@ subroutine pjxxut(projDime, typeSelect, &
 #include "asterfort/pjnout.h"
 #include "asterfort/utmess.h"
 #include "asterfort/wkvect.h"
+#include "MeshTypes_type.h"
 !
     character(len=2), intent(in) :: projDime
     character(len=*), intent(in) :: typeSelect

@@ -23,8 +23,8 @@ subroutine arlver(modele, lgma, nbgma, nomsd, model, &
 !
     implicit none
 !
-#include "asterf_types.h"
 #include "jeveux.h"
+#include "asterf_types.h"
 #include "asterfort/arlelt.h"
 #include "asterfort/assert.h"
 #include "asterfort/dismoi.h"

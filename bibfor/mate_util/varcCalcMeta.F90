@@ -27,12 +27,12 @@ subroutine varcCalcMeta(modelz, &
 !
 #include "asterf_types.h"
 #include "asterfort/calcul.h"
-#include "asterfort/gcnco2.h"
 #include "asterfort/corich.h"
-#include "asterfort/reajre.h"
-#include "asterfort/jelira.h"
 #include "asterfort/dismoi.h"
+#include "asterfort/gcnco2.h"
+#include "asterfort/jelira.h"
 #include "asterfort/jeveuo.h"
+#include "asterfort/reajre.h"
 !
     character(len=*), intent(in) :: modelz
     integer(kind=8), intent(in) :: nbin, nbout

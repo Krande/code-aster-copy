@@ -23,9 +23,9 @@ subroutine nmvccc(model, nbin, nbout, lpain, lchin, &
     implicit none
 !
 #include "asterf_types.h"
-#include "asterfort/dismoi.h"
 #include "asterfort/calcul.h"
 #include "asterfort/codent.h"
+#include "asterfort/dismoi.h"
 #include "asterfort/reajre.h"
 !
 ! person_in_charge: mickael.abbas at edf.fr

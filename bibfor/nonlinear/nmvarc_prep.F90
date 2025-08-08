@@ -25,8 +25,8 @@ subroutine nmvarc_prep(type_comp, model, cara_elem, mateco, varc_refe, &
 !
 #include "asterf_types.h"
 #include "asterfort/alchml.h"
-#include "asterfort/dismoi.h"
 #include "asterfort/detrsd.h"
+#include "asterfort/dismoi.h"
 #include "asterfort/exixfe.h"
 #include "asterfort/inical.h"
 #include "asterfort/jedema.h"

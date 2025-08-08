@@ -22,9 +22,9 @@ function mmmaxi(sdcont_defi, model, mesh)
 !
 #include "asterf_types.h"
 #include "asterfort/cfdisi.h"
+#include "asterfort/dismoi.h"
 #include "asterfort/infbav.h"
 #include "asterfort/infmue.h"
-#include "asterfort/dismoi.h"
 #include "asterfort/jedetr.h"
 #include "asterfort/jenuno.h"
 #include "asterfort/jeveuo.h"

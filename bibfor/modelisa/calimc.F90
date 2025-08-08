@@ -40,11 +40,15 @@ subroutine calimc(chargz)
 #include "asterc/getfac.h"
 #include "asterfort/aflrch.h"
 #include "asterfort/afrela.h"
+#include "asterfort/as_allocate.h"
+#include "asterfort/as_deallocate.h"
 #include "asterfort/assert.h"
+#include "asterfort/char8_to_int.h"
 #include "asterfort/copmod.h"
 #include "asterfort/dismoi.h"
 #include "asterfort/getvid.h"
 #include "asterfort/getvtx.h"
+#include "asterfort/int_to_char8.h"
 #include "asterfort/jedema.h"
 #include "asterfort/jedetr.h"
 #include "asterfort/jeexin.h"
@@ -55,10 +59,6 @@ subroutine calimc(chargz)
 #include "asterfort/rsorac.h"
 #include "asterfort/utmess.h"
 #include "asterfort/wkvect.h"
-#include "asterfort/as_deallocate.h"
-#include "asterfort/as_allocate.h"
-#include "asterfort/char8_to_int.h"
-#include "asterfort/int_to_char8.h"
 !
 !
 ! -----  ARGUMENTS

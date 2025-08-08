@@ -19,14 +19,15 @@
 subroutine rvche2(chelez, nomjv, nbel, numail, orig, &
                   axez, nbnac, nnoeud)
     implicit none
-#include "asterf_types.h"
 #include "jeveux.h"
+#include "asterf_types.h"
 #include "asterc/r8vide.h"
 #include "asterfort/dgmode.h"
 #include "asterfort/digdel.h"
 #include "asterfort/dismoi.h"
 #include "asterfort/exisdg.h"
 #include "asterfort/indiis.h"
+#include "asterfort/int_to_char8.h"
 #include "asterfort/jedema.h"
 #include "asterfort/jedupo.h"
 #include "asterfort/jeexin.h"
@@ -39,7 +40,6 @@ subroutine rvche2(chelez, nomjv, nbel, numail, orig, &
 #include "asterfort/nbec.h"
 #include "asterfort/utmess.h"
 #include "asterfort/utpsgl.h"
-#include "asterfort/int_to_char8.h"
 !
     integer(kind=8) :: nbel, numail(*), nbnac, nnoeud(*)
     character(len=*) :: chelez, nomjv

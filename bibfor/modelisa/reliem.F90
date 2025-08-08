@@ -20,8 +20,8 @@ subroutine reliem(mo, ma, typem, motfaz, iocc, &
                   nbmocl, limocl, tymocl, litroz, nbtrou, l_keep_propz, l_allz)
     implicit none
 #include "asterf_types.h"
-#include "asterfort/reliem1.h"
 #include "asterfort/dismoi.h"
+#include "asterfort/reliem1.h"
 !
     integer(kind=8) :: iocc, nbmocl, nbtrou
     character(len=8) :: ma

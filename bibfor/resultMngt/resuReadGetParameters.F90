@@ -21,9 +21,8 @@ subroutine resuReadGetParameters(mesh, model, caraElem, fieldMate)
     implicit none
 !
 #include "asterf_types.h"
-#include "asterfort/getvid.h"
 #include "asterfort/dismoi.h"
-#include "asterfort/jeveuo.h"
+#include "asterfort/getvid.h"
 !
     character(len=8), intent(out) :: mesh, model, caraElem, fieldMate
 !

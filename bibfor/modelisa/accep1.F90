@@ -24,16 +24,18 @@ subroutine accep1(modmec, ligrmo, nbm, dir, yang)
 !-----------------------------------------------------------------------
 !
 !
-#include "asterf_types.h"
 #include "jeveux.h"
+#include "asterf_types.h"
+#include "asterfort/as_allocate.h"
+#include "asterfort/as_deallocate.h"
 #include "asterfort/assert.h"
 #include "asterfort/calcul.h"
 #include "asterfort/codent.h"
 #include "asterfort/copisd.h"
 #include "asterfort/detrsd.h"
 #include "asterfort/dismoi.h"
-#include "asterfort/exlima.h"
 #include "asterfort/exisd.h"
+#include "asterfort/exlima.h"
 #include "asterfort/getvid.h"
 #include "asterfort/jedema.h"
 #include "asterfort/jelira.h"
@@ -46,8 +48,6 @@ subroutine accep1(modmec, ligrmo, nbm, dir, yang)
 #include "asterfort/rsexch.h"
 #include "asterfort/utmess.h"
 #include "asterfort/wkvect.h"
-#include "asterfort/as_deallocate.h"
-#include "asterfort/as_allocate.h"
 !
     integer(kind=8) :: nbm, i, iexi
     integer(kind=8) :: iret, ngrel, ipg, n1

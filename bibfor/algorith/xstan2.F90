@@ -21,8 +21,8 @@ subroutine xstan2(noma, modele, crit2, lfiss)
 ! person_in_charge: samuel.geniaut at edf.fr
 !
     implicit none
-#include "asterf_types.h"
 #include "jeveux.h"
+#include "asterf_types.h"
 #include "asterfort/assert.h"
 #include "asterfort/celces.h"
 #include "asterfort/cescel.h"
@@ -35,6 +35,7 @@ subroutine xstan2(noma, modele, crit2, lfiss)
 #include "asterfort/elref2.h"
 #include "asterfort/infdbg.h"
 #include "asterfort/ismali.h"
+#include "asterfort/isnomi.h"
 #include "asterfort/jedema.h"
 #include "asterfort/jedetr.h"
 #include "asterfort/jeexin.h"
@@ -46,7 +47,6 @@ subroutine xstan2(noma, modele, crit2, lfiss)
 #include "asterfort/jexnum.h"
 #include "asterfort/wkvect.h"
 #include "asterfort/xcrvol.h"
-#include "asterfort/isnomi.h"
 !
     character(len=8) :: modele, noma
     real(kind=8) :: crit2(2)

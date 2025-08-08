@@ -48,10 +48,9 @@ subroutine mecalg(optioz, result, modele, depla, theta, &
     implicit none
 !
 ! DECLARATION PARAMETRES D'APPELS
-#include "asterf_types.h"
 #include "jeveux.h"
+#include "asterf_types.h"
 #include "asterfort/alchml.h"
-#include "asterfort/xelgano.h"
 #include "asterfort/calcul.h"
 #include "asterfort/chpchd.h"
 #include "asterfort/chpver.h"
@@ -73,6 +72,7 @@ subroutine mecalg(optioz, result, modele, depla, theta, &
 #include "asterfort/utmess.h"
 #include "asterfort/vrcins.h"
 #include "asterfort/vrcref.h"
+#include "asterfort/xelgano.h"
 !
     character(len=8) :: modele, result, symech
     character(len=8) :: kcalc

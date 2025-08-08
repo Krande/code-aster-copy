@@ -20,15 +20,15 @@ function exicp(model, l_affe_all, list_elem_affe, nb_elem_affe)
 !
     implicit none
 !
-#include "asterf_types.h"
 #include "jeveux.h"
+#include "asterf_types.h"
 #include "asterfort/dismoi.h"
 #include "asterfort/isParallelMesh.h"
 #include "asterfort/jedema.h"
+#include "asterfort/jeexin.h"
 #include "asterfort/jemarq.h"
 #include "asterfort/jenuno.h"
 #include "asterfort/jeveuo.h"
-#include "asterfort/jeexin.h"
 #include "asterfort/jexnum.h"
 #include "asterfort/teattr.h"
 !

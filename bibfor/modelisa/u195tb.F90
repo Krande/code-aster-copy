@@ -38,7 +38,6 @@ subroutine u195tb(chou)
 #include "asterfort/getvtx.h"
 #include "asterfort/jedema.h"
 #include "asterfort/jemarq.h"
-#include "asterfort/jeveuo.h"
 #include "asterfort/tabchs.h"
 #include "asterfort/utmess.h"
     character(len=*) :: chou

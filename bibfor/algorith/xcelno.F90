@@ -21,8 +21,8 @@ subroutine xcelno(noma, modelx, cel_hno, opt, npa)
 ! person_in_charge: samuel.geniaut at edf.fr
 !
     implicit none
-#include "asterf_types.h"
 #include "jeveux.h"
+#include "asterf_types.h"
 #include "asterfort/as_allocate.h"
 #include "asterfort/as_deallocate.h"
 #include "asterfort/assert.h"

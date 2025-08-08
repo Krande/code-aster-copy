@@ -25,6 +25,7 @@ subroutine exiscp(nomcmp, char, modele, nbnd, typend, &
 #include "jeveux.h"
 #include "asterc/indik8.h"
 #include "asterfort/assert.h"
+#include "asterfort/char8_to_int.h"
 #include "asterfort/dismoi.h"
 #include "asterfort/exisdg.h"
 #include "asterfort/jedema.h"
@@ -34,7 +35,6 @@ subroutine exiscp(nomcmp, char, modele, nbnd, typend, &
 #include "asterfort/jeveuo.h"
 #include "asterfort/jexnom.h"
 #include "asterfort/utmess.h"
-#include "asterfort/char8_to_int.h"
 !
     character(len=8) :: nomcmp
     character(len=8) :: char

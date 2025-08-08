@@ -70,8 +70,9 @@ subroutine ircmpr(nofimd, typech, nbimpr, ncaimi, ncaimk, &
 !
 #include "jeveux.h"
 #include "asterf_types.h"
-#include "MeshTypes_type.h"
 #include "asterc/utflsh.h"
+#include "asterfort/as_allocate.h"
+#include "asterfort/as_deallocate.h"
 #include "asterfort/dismoi.h"
 #include "asterfort/infniv.h"
 #include "asterfort/ircmpe.h"
@@ -82,8 +83,7 @@ subroutine ircmpr(nofimd, typech, nbimpr, ncaimi, ncaimk, &
 #include "asterfort/jexatr.h"
 #include "asterfort/utmess.h"
 #include "asterfort/wkvect.h"
-#include "asterfort/as_deallocate.h"
-#include "asterfort/as_allocate.h"
+#include "MeshTypes_type.h"
 !
     integer(kind=8) :: nbvato, ncmprf, ncmpve
     integer(kind=8) :: nbenec, adtyp2

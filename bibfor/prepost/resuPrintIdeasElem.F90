@@ -24,13 +24,18 @@ subroutine resuPrintIdeasElem(fileUnit, dsName, &
 !
     implicit none
 !
-#include "asterf_types.h"
 #include "jeveux.h"
+#include "asterf_types.h"
 #include "asterfort/as_allocate.h"
 #include "asterfort/as_deallocate.h"
 #include "asterfort/assert.h"
+#include "asterfort/celcel.h"
+#include "asterfort/celver.h"
 #include "asterfort/dismoi.h"
 #include "asterfort/getvis.h"
+#include "asterfort/int_to_char8.h"
+#include "asterfort/ircecs.h"
+#include "asterfort/ircers.h"
 #include "asterfort/jedema.h"
 #include "asterfort/jedetr.h"
 #include "asterfort/jeexin.h"
@@ -38,17 +43,12 @@ subroutine resuPrintIdeasElem(fileUnit, dsName, &
 #include "asterfort/jemarq.h"
 #include "asterfort/jenuno.h"
 #include "asterfort/jeveuo.h"
-#include "asterfort/jexnum.h"
 #include "asterfort/jexatr.h"
-#include "asterfort/ircecs.h"
-#include "asterfort/ircers.h"
-#include "asterfort/celver.h"
-#include "asterfort/celcel.h"
-#include "asterfort/resuSelectCmp.h"
+#include "asterfort/jexnum.h"
 #include "asterfort/resuIdeasPermut.h"
-#include "asterfort/utmess.h"
+#include "asterfort/resuSelectCmp.h"
 #include "asterfort/utcmp3.h"
-#include "asterfort/int_to_char8.h"
+#include "asterfort/utmess.h"
 !
     integer(kind=8), intent(in) :: fileUnit
     character(len=*), intent(in) :: title, dsName

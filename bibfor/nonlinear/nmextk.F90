@@ -29,16 +29,16 @@ subroutine nmextk(model, &
 #include "jeveux.h"
 #include "asterfort/assert.h"
 #include "asterfort/cesexi.h"
-#include "asterfort/exisd.h"
 #include "asterfort/dismoi.h"
+#include "asterfort/exisd.h"
 #include "asterfort/getvtx.h"
+#include "asterfort/int_to_char8.h"
 #include "asterfort/jeveuo.h"
 #include "asterfort/lxliis.h"
 #include "asterfort/posddl.h"
 #include "asterfort/utmess.h"
 #include "asterfort/varinonu.h"
 #include "asterfort/wkvect.h"
-#include "asterfort/int_to_char8.h"
 !
     character(len=8), intent(in) :: model
     character(len=16), intent(in) :: keyw_fact

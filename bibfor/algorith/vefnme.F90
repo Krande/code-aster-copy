@@ -36,11 +36,11 @@ subroutine vefnme(optionz, modelz, mate, cara_elem, &
 #include "asterfort/gcnco2.h"
 #include "asterfort/jedema.h"
 #include "asterfort/jemarq.h"
+#include "asterfort/maveElemCreate.h"
 #include "asterfort/mecact.h"
 #include "asterfort/mecara.h"
 #include "asterfort/reajre.h"
 #include "asterfort/xajcin.h"
-#include "asterfort/maveElemCreate.h"
 !
     character(len=*), intent(in) :: optionz, modelz
     character(len=24), intent(in) :: cara_elem, mate

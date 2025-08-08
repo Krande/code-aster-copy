@@ -20,8 +20,8 @@ subroutine phi2el(modele, mateco, accel, phibar, &
                   instap, ve)
     implicit none
 !
-#include "asterf_types.h"
 #include "jeveux.h"
+#include "asterf_types.h"
 #include "asterfort/calcul.h"
 #include "asterfort/codent.h"
 #include "asterfort/dismoi.h"

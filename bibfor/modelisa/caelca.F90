@@ -70,8 +70,8 @@ subroutine caelca(modele, chmat, caelem, irana1, icabl, &
 !
 ! --------------------------------------------------------------------------------------------------
 !
-#include "asterf_types.h"
 #include "jeveux.h"
+#include "asterf_types.h"
 #include "asterc/r8prem.h"
 #include "asterfort/assert.h"
 #include "asterfort/dismoi.h"

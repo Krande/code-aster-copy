@@ -26,18 +26,20 @@ subroutine xddlimf(modele, ino, cnxinv, jnoxfv, motcle, &
     implicit none
 !
 #include "jeveux.h"
-#include "asterfort/assert.h"
+#include "asterc/getres.h"
 #include "asterfort/afrela.h"
+#include "asterfort/assert.h"
 #include "asterfort/cesexi.h"
 #include "asterfort/dismoi.h"
 #include "asterfort/elelin.h"
 #include "asterfort/elrfvf.h"
 #include "asterfort/focste.h"
 #include "asterfort/fointe.h"
-#include "asterc/getres.h"
 #include "asterfort/gnomsd.h"
+#include "asterfort/int_to_char8.h"
 #include "asterfort/ismali.h"
 #include "asterfort/jedema.h"
+#include "asterfort/jedetr.h"
 #include "asterfort/jeexin.h"
 #include "asterfort/jelira.h"
 #include "asterfort/jemarq.h"
@@ -49,8 +51,6 @@ subroutine xddlimf(modele, ino, cnxinv, jnoxfv, motcle, &
 #include "asterfort/xcalc_code.h"
 #include "asterfort/xcalc_heav.h"
 #include "asterfort/xdvois.h"
-#include "asterfort/jedetr.h"
-#include "asterfort/int_to_char8.h"
 !
     integer(kind=8) :: ino, jnoxfv, ndim
     real(kind=8) :: lsn(4), lst(4), valimr, direct(3)

@@ -20,8 +20,8 @@ subroutine extrs2(resu0, resu1, typcon, lrest, mailla, &
                   modele, cara, chmat, nbordr, nuordr, nbacc, nomacc, &
                   nbarch, nuarch, nbexcl, chexcl, nbnosy)
     implicit none
-#include "asterf_types.h"
 #include "jeveux.h"
+#include "asterf_types.h"
 #include "asterfort/copisd.h"
 #include "asterfort/dismoi.h"
 #include "asterfort/jedema.h"

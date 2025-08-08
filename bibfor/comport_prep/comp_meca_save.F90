@@ -24,17 +24,17 @@ subroutine comp_meca_save(model, mesh, chmate, compor, prepMapCompor)
     implicit none
 !
 #include "asterf_types.h"
+#include "asterfort/Behaviour_type.h"
 #include "asterfort/comp_meca_l.h"
 #include "asterfort/comp_read_mesh.h"
-#include "asterfort/isParallelMesh.h"
 #include "asterfort/dismoi.h"
+#include "asterfort/isParallelMesh.h"
 #include "asterfort/jedetr.h"
 #include "asterfort/jeveuo.h"
 #include "asterfort/nmdpmf.h"
 #include "asterfort/nocart.h"
-#include "asterfort/utmess.h"
 #include "asterfort/setBehaviourTypeValue.h"
-#include "asterfort/Behaviour_type.h"
+#include "asterfort/utmess.h"
 !
     character(len=8), intent(in) :: model, mesh, chmate
     character(len=19), intent(in) :: compor

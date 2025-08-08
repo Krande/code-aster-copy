@@ -21,9 +21,9 @@ subroutine checkConsistencyLigrel(model, ligrel, answer)
 !
 !
 #include "jeveux.h"
+#include "asterf_types.h"
 #include "asterfort/dismoi.h"
 #include "asterfort/jeveuo.h"
-#include "asterf_types.h"
 !
     character(len=8), intent(in) :: model
     character(len=19), intent(in) :: ligrel

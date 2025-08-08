@@ -37,8 +37,8 @@ module KineLoadUtility_module
     public :: kineLoadCheckCmpOnNode, kineLoadApplyEccentricity
 ! ==================================================================================================
     private
-#include "asterf_types.h"
 #include "jeveux.h"
+#include "asterf_types.h"
 #include "asterc/indik8.h"
 #include "asterfort/as_allocate.h"
 #include "asterfort/as_deallocate.h"

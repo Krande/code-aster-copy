@@ -24,9 +24,12 @@ subroutine comp_meca_pvar(ligrel_, comporMap_, comporList_, comporInfo)
     implicit none
 !
 #include "asterf_types.h"
-#include "asterfort/assert.h"
 #include "asterfort/as_allocate.h"
 #include "asterfort/as_deallocate.h"
+#include "asterfort/assert.h"
+#include "asterfort/Behaviour_type.h"
+#include "asterfort/comp_meca_exc2.h"
+#include "asterfort/comp_meca_l.h"
 #include "asterfort/comp_meca_name.h"
 #include "asterfort/comp_ntvari.h"
 #include "asterfort/dismoi.h"
@@ -40,11 +43,8 @@ subroutine comp_meca_pvar(ligrel_, comporMap_, comporList_, comporInfo)
 #include "asterfort/jenuno.h"
 #include "asterfort/jeveuo.h"
 #include "asterfort/jexnum.h"
-#include "asterfort/wkvect.h"
-#include "asterfort/comp_meca_exc2.h"
-#include "asterfort/comp_meca_l.h"
 #include "asterfort/lteatt.h"
-#include "asterfort/Behaviour_type.h"
+#include "asterfort/wkvect.h"
 !
     character(len=19), optional, intent(in) :: ligrel_
     character(len=19), optional, intent(in) :: comporMap_

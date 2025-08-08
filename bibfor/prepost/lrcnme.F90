@@ -56,8 +56,8 @@ subroutine lrcnme(chanom, nochmd, nomamd, nomaas, nomgd, &
 !
 ! 0.1. ==> ARGUMENTS
 !
-#include "asterf_types.h"
 #include "jeveux.h"
+#include "asterf_types.h"
 #include "asterfort/as_mfdfdi.h"
 #include "asterfort/as_mfdnfc.h"
 #include "asterfort/as_mfdnfd.h"

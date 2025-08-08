@@ -36,6 +36,7 @@ subroutine debca1(nin)
 
 #include "jeveux.h"
 #include "asterc/r8nnem.h"
+#include "asterfort/asmpi_info.h"
 #include "asterfort/cormgi.h"
 #include "asterfort/dismoi.h"
 #include "asterfort/jeexin.h"
@@ -46,11 +47,10 @@ subroutine debca1(nin)
 #include "asterfort/jexatr.h"
 #include "asterfort/jexnom.h"
 #include "asterfort/jexnum.h"
-#include "asterfort/nbgrel.h"
 #include "asterfort/nbelem.h"
+#include "asterfort/nbgrel.h"
 #include "asterfort/utmess.h"
 #include "asterfort/wkvect.h"
-#include "asterfort/asmpi_info.h"
 
     integer(kind=8) :: nin
 !----------------------------------------------------------------------

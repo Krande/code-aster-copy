@@ -21,8 +21,8 @@ subroutine iscoqu(nomo, numail, lcoque)
 ! person_in_charge: mickael.abbas at edf.fr
 !
     implicit none
-#include "asterf_types.h"
 #include "jeveux.h"
+#include "asterf_types.h"
 #include "asterfort/assert.h"
 #include "asterfort/dismoi.h"
 #include "asterfort/jedema.h"

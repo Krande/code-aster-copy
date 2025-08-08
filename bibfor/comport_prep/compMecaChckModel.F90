@@ -24,12 +24,14 @@ subroutine compMecaChckModel(iComp, &
 !
     implicit none
 !
-#include "asterf_types.h"
 #include "jeveux.h"
+#include "asterf_types.h"
 #include "asterc/lctest.h"
+#include "asterfort/asmpi_all.h"
+#include "asterfort/asmpi_any.h"
 #include "asterfort/cesexi.h"
-#include "asterfort/dismoi.h"
 #include "asterfort/comp_meca_l.h"
+#include "asterfort/dismoi.h"
 #include "asterfort/dismte.h"
 #include "asterfort/isParallelMesh.h"
 #include "asterfort/jedema.h"
@@ -39,8 +41,6 @@ subroutine compMecaChckModel(iComp, &
 #include "asterfort/jexnum.h"
 #include "asterfort/teattr.h"
 #include "asterfort/utmess.h"
-#include "asterfort/asmpi_any.h"
-#include "asterfort/asmpi_all.h"
 !
     integer(kind=8), intent(in) :: iComp
     character(len=8), intent(in) :: model

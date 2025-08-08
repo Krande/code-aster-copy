@@ -19,8 +19,8 @@
 subroutine xaint2(noma, modele)
 !
     implicit none
-#include "asterf_types.h"
 #include "jeveux.h"
+#include "asterf_types.h"
 #include "asterfort/assert.h"
 #include "asterfort/celces.h"
 #include "asterfort/cescel.h"
@@ -40,8 +40,8 @@ subroutine xaint2(noma, modele)
 #include "asterfort/jexatr.h"
 #include "asterfort/jexnum.h"
 #include "asterfort/wkvect.h"
-#include "asterfort/xxmmvd.h"
 #include "asterfort/xelfis_lists.h"
+#include "asterfort/xxmmvd.h"
 !
     character(len=8) :: modele, noma
 !

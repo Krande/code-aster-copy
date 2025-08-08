@@ -29,9 +29,9 @@ subroutine varcCalcComp(modelz, chsithz, &
 !
 #include "asterf_types.h"
 #include "asterfort/calcul.h"
-#include "asterfort/gcnco2.h"
 #include "asterfort/corich.h"
 #include "asterfort/dismoi.h"
+#include "asterfort/gcnco2.h"
 #include "asterfort/reajre.h"
 !
     character(len=*), intent(in) :: modelz, chsithz

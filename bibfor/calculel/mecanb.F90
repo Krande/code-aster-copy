@@ -28,8 +28,8 @@ subroutine mecanb(modele, matel)
 #include "asterfort/jedetr.h"
 #include "asterfort/jemarq.h"
 #include "asterfort/megeom.h"
-#include "asterfort/vemare.h"
 #include "asterfort/reajre.h"
+#include "asterfort/vemare.h"
     character(len=8) :: modele
     character(len=19) :: matel
 ! ----------------------------------------------------------------------

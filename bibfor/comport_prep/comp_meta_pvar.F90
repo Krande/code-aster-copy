@@ -23,13 +23,13 @@ subroutine comp_meta_pvar(model, comporMeta, comporMetaInfo)
     implicit none
 !
 #include "asterf_types.h"
-#include "asterc/lcdiscard.h"
 #include "asterc/lccree.h"
-#include "asterc/lcvari.h"
+#include "asterc/lcdiscard.h"
 #include "asterc/lcinfo.h"
-#include "asterfort/assert.h"
+#include "asterc/lcvari.h"
 #include "asterfort/as_allocate.h"
 #include "asterfort/as_deallocate.h"
+#include "asterfort/assert.h"
 #include "asterfort/dismoi.h"
 #include "asterfort/etenca.h"
 #include "asterfort/jecrec.h"

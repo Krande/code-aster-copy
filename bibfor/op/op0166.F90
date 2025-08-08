@@ -27,13 +27,14 @@ subroutine op0166()
     use proj_champ_module
     implicit none
 !
-#include "asterf_types.h"
 #include "jeveux.h"
+#include "asterf_types.h"
 #include "asterc/getfac.h"
 #include "asterc/getres.h"
 #include "asterfort/assert.h"
 #include "asterfort/detrsd.h"
 #include "asterfort/dismoi.h"
+#include "asterfort/exi_fiss.h"
 #include "asterfort/getvid.h"
 #include "asterfort/getvtx.h"
 #include "asterfort/infmaj.h"
@@ -48,7 +49,6 @@ subroutine op0166()
 #include "asterfort/pjxxpr.h"
 #include "asterfort/titre.h"
 #include "asterfort/utmess.h"
-#include "asterfort/exi_fiss.h"
 !
 ! --------------------------------------------------------------------------------------------------
 !

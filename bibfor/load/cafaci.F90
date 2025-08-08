@@ -20,12 +20,14 @@ subroutine cafaci(load, mesh, model, valeType)
 !
     implicit none
 !
-#include "asterf_types.h"
 #include "jeveux.h"
+#include "asterf_types.h"
 #include "asterc/getfac.h"
 #include "asterfort/afddli.h"
 #include "asterfort/aflrch.h"
 #include "asterfort/afrela.h"
+#include "asterfort/as_allocate.h"
+#include "asterfort/as_deallocate.h"
 #include "asterfort/assert.h"
 #include "asterfort/canort.h"
 #include "asterfort/char_excl_keyw.h"
@@ -36,6 +38,7 @@ subroutine cafaci(load, mesh, model, valeType)
 #include "asterfort/dismoi.h"
 #include "asterfort/getelem.h"
 #include "asterfort/getnode.h"
+#include "asterfort/int_to_char8.h"
 #include "asterfort/jedema.h"
 #include "asterfort/jedetr.h"
 #include "asterfort/jelira.h"
@@ -45,9 +48,6 @@ subroutine cafaci(load, mesh, model, valeType)
 #include "asterfort/utmess.h"
 #include "asterfort/wkvect.h"
 #include "asterfort/xddlim.h"
-#include "asterfort/as_deallocate.h"
-#include "asterfort/as_allocate.h"
-#include "asterfort/int_to_char8.h"
 !
     character(len=8), intent(in) :: load, mesh, model
     character(len=4), intent(in) :: valeType

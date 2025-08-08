@@ -52,11 +52,11 @@ subroutine ctdata(mesnoe, mesmai, nkcha, tych, toucmp, &
     use MGIS_module
     implicit none
 !
-#include "asterf_types.h"
 #include "jeveux.h"
-#include "asterfort/assert.h"
+#include "asterf_types.h"
 #include "asterfort/as_allocate.h"
 #include "asterfort/as_deallocate.h"
+#include "asterfort/assert.h"
 #include "asterfort/calcul.h"
 #include "asterfort/celces.h"
 #include "asterfort/cesvar.h"
@@ -67,16 +67,16 @@ subroutine ctdata(mesnoe, mesmai, nkcha, tych, toucmp, &
 #include "asterfort/getvid.h"
 #include "asterfort/getvtx.h"
 #include "asterfort/jedema.h"
+#include "asterfort/jelira.h"
 #include "asterfort/jemarq.h"
 #include "asterfort/jeveuo.h"
-#include "asterfort/jelira.h"
 #include "asterfort/mecoor.h"
 #include "asterfort/reliem.h"
+#include "asterfort/rs_get_liststore.h"
+#include "asterfort/rsGetOneBehaviourFromResult.h"
 #include "asterfort/utmess.h"
 #include "asterfort/varinonu.h"
 #include "asterfort/wkvect.h"
-#include "asterfort/rs_get_liststore.h"
-#include "asterfort/rsGetOneBehaviourFromResult.h"
 !
     integer(kind=8) :: nbcmp, nbno, nbma, nbval
     character(len=1) :: tsca

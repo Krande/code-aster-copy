@@ -20,14 +20,16 @@ subroutine initel(ligrel, l_calc_rigi)
 !
     implicit none
 !
-#include "asterf_types.h"
 #include "jeveux.h"
+#include "asterf_types.h"
+#include "asterfort/as_allocate.h"
+#include "asterfort/as_deallocate.h"
 #include "asterfort/creprn.h"
 #include "asterfort/dismoi.h"
 #include "asterfort/inigrl.h"
+#include "asterfort/int_to_char8.h"
 #include "asterfort/jedema.h"
 #include "asterfort/jelira.h"
-#include "asterfort/jeexin.h"
 #include "asterfort/jemarq.h"
 #include "asterfort/jenuno.h"
 #include "asterfort/jeveuo.h"
@@ -36,10 +38,6 @@ subroutine initel(ligrel, l_calc_rigi)
 #include "asterfort/nbelem.h"
 #include "asterfort/typele.h"
 #include "asterfort/utmess.h"
-#include "asterfort/wkvect.h"
-#include "asterfort/as_deallocate.h"
-#include "asterfort/as_allocate.h"
-#include "asterfort/int_to_char8.h"
 !
 !
     character(len=19), intent(in) :: ligrel

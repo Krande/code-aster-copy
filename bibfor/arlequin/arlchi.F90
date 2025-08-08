@@ -24,8 +24,8 @@ subroutine arlchi(iocc, mail, nomo, nom1, nom2, &
 !
     implicit none
 !
-#include "asterf_types.h"
 #include "jeveux.h"
+#include "asterf_types.h"
 #include "asterfort/arlcnn.h"
 #include "asterfort/arlcos.h"
 #include "asterfort/assert.h"

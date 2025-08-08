@@ -27,14 +27,14 @@ subroutine vetnth_nonl(model, caraElem, mateco, time, compor, &
 #include "asterfort/calcul.h"
 #include "asterfort/corich.h"
 #include "asterfort/dismoi.h"
-#include "asterfort/inical.h"
 #include "asterfort/gcnco2.h"
+#include "asterfort/inical.h"
 #include "asterfort/jedetr.h"
 #include "asterfort/jeexin.h"
 #include "asterfort/mecara.h"
 #include "asterfort/megeom.h"
-#include "asterfort/vemare.h"
 #include "asterfort/reajre.h"
+#include "asterfort/vemare.h"
 !
     character(len=8), intent(in) :: model, caraElem
     character(len=24), intent(in) :: mateco

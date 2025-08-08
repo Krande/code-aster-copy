@@ -24,12 +24,12 @@ subroutine nmetca(model, mesh, mate, hval_incr, &
     implicit none
 !
 #include "asterf_types.h"
-#include "asterfort/infdbg.h"
 #include "asterfort/calcul.h"
-#include "asterfort/dismoi.h"
 #include "asterfort/detrsd.h"
 #include "asterfort/diinst.h"
+#include "asterfort/dismoi.h"
 #include "asterfort/exisd.h"
+#include "asterfort/infdbg.h"
 #include "asterfort/jedema.h"
 #include "asterfort/jemarq.h"
 #include "asterfort/mecact.h"

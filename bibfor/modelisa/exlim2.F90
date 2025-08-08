@@ -20,9 +20,13 @@ subroutine exlim2(lismai, nbmail, ligrmoz, basez, ligrez)
     implicit none
 #include "jeveux.h"
 #include "asterfort/adalig.h"
+#include "asterfort/as_allocate.h"
+#include "asterfort/as_deallocate.h"
+#include "asterfort/assert.h"
 #include "asterfort/cormgi.h"
 #include "asterfort/dismoi.h"
 #include "asterfort/initel.h"
+#include "asterfort/int_to_char8.h"
 #include "asterfort/jecrec.h"
 #include "asterfort/jecroc.h"
 #include "asterfort/jedema.h"
@@ -35,10 +39,6 @@ subroutine exlim2(lismai, nbmail, ligrmoz, basez, ligrez)
 #include "asterfort/jexnum.h"
 #include "asterfort/utmess.h"
 #include "asterfort/wkvect.h"
-#include "asterfort/as_allocate.h"
-#include "asterfort/as_deallocate.h"
-#include "asterfort/assert.h"
-#include "asterfort/int_to_char8.h"
 !
     integer(kind=8) :: lismai(*), nbmail
     character(len=*) :: ligrmoz, basez, ligrez

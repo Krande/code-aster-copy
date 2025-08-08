@@ -24,14 +24,14 @@ subroutine modelCheckFluidFormulation(model)
 !
 #include "asterf_types.h"
 #include "asterfort/as_deallocate.h"
-#include "asterfort/jeveuo.h"
 #include "asterfort/dismoi.h"
 #include "asterfort/infniv.h"
-#include "asterfort/utmess.h"
 #include "asterfort/jeexin.h"
 #include "asterfort/jenuno.h"
+#include "asterfort/jeveuo.h"
 #include "asterfort/jexnum.h"
 #include "asterfort/teattr.h"
+#include "asterfort/utmess.h"
 !
     character(len=8), intent(in) :: model
 !

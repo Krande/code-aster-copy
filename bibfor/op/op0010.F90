@@ -34,8 +34,8 @@ subroutine op0010()
 !
 !
 !
-#include "asterf_types.h"
 #include "jeveux.h"
+#include "asterf_types.h"
 #include "asterc/getres.h"
 #include "asterfort/assert.h"
 #include "asterfort/cncinv.h"
@@ -62,21 +62,21 @@ subroutine op0010()
 #include "asterfort/pre_traitement.h"
 #include "asterfort/utmess.h"
 #include "asterfort/wkvect.h"
+#include "asterfort/x_tmp_ligr.h"
 #include "asterfort/xajuls.h"
 #include "asterfort/xbaslo.h"
 #include "asterfort/xenrch.h"
-#include "asterfort/x_tmp_ligr.h"
 #include "asterfort/xlenri.h"
 #include "asterfort/xpraju.h"
 #include "asterfort/xprdis.h"
 #include "asterfort/xprdom.h"
+#include "asterfort/xprfastmarching.h"
 #include "asterfort/xprgeo.h"
 #include "asterfort/xprini.h"
 #include "asterfort/xprls.h"
 #include "asterfort/xprmil.h"
 #include "asterfort/xprpls.h"
 #include "asterfort/xprtor.h"
-#include "asterfort/xprfastmarching.h"
 #include "asterfort/xprupw_fmm.h"
 #include "asterfort/xprvit.h"
     integer(kind=8) :: ifm, niv, ibid, ndim, iret, jcaraf, clsm, jma, jconx1, jconx2, nbma, i, ima

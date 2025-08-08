@@ -24,16 +24,15 @@ subroutine varinonu(ligrelZ, comporZ, &
 !
 #include "jeveux.h"
 #include "asterfort/codent.h"
+#include "asterfort/comp_meca_pvar.h"
 #include "asterfort/etenca.h"
-#include "asterfort/jeexin.h"
+#include "asterfort/indk16.h"
 #include "asterfort/jedema.h"
+#include "asterfort/jeexin.h"
 #include "asterfort/jelira.h"
 #include "asterfort/jemarq.h"
 #include "asterfort/jeveuo.h"
 #include "asterfort/jexnum.h"
-#include "asterfort/indk16.h"
-#include "asterfort/dismoi.h"
-#include "asterfort/comp_meca_pvar.h"
 #include "asterfort/utmess.h"
 !
     character(len=*), intent(in) :: ligrelZ, comporZ

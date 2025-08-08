@@ -22,9 +22,11 @@ subroutine assmiv(base, vec, nbvec, tlivec, licoef, &
 !
 !
 !
-#include "asterf_types.h"
 #include "jeveux.h"
+#include "asterf_types.h"
 #include "asterc/r8maem.h"
+#include "asterfort/as_allocate.h"
+#include "asterfort/as_deallocate.h"
 #include "asterfort/asmpi_comm_vect.h"
 #include "asterfort/asmpi_info.h"
 #include "asterfort/assert.h"
@@ -53,8 +55,6 @@ subroutine assmiv(base, vec, nbvec, tlivec, licoef, &
 #include "asterfort/parti0.h"
 #include "asterfort/utmess.h"
 #include "asterfort/wkvect.h"
-#include "asterfort/as_deallocate.h"
-#include "asterfort/as_allocate.h"
 !
     character(len=1) :: base
     character(len=*) :: vec

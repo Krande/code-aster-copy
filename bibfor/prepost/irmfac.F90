@@ -22,27 +22,27 @@ subroutine irmfac(keywfIocc, fileFormat, fileUnit, fileVersion, modelIn, &
     implicit none
 !
 #include "asterf_types.h"
-#include "asterfort/gettco.h"
 #include "asterfort/as_deallocate.h"
 #include "asterfort/assert.h"
 #include "asterfort/dismoi.h"
+#include "asterfort/gettco.h"
 #include "asterfort/getvid.h"
 #include "asterfort/getvtx.h"
 #include "asterfort/irchor.h"
+#include "asterfort/irdebg.h"
 #include "asterfort/irecri.h"
 #include "asterfort/iremed.h"
 #include "asterfort/iremed_filtre.h"
+#include "asterfort/irextv.h"
+#include "asterfort/irgmsh.h"
 #include "asterfort/irmail.h"
 #include "asterfort/irtitr.h"
 #include "asterfort/irtopo.h"
-#include "asterfort/irextv.h"
+#include "asterfort/isParallelMesh.h"
 #include "asterfort/jedema.h"
 #include "asterfort/jemarq.h"
-#include "asterfort/utmess.h"
 #include "asterfort/resuPrintIdeas.h"
-#include "asterfort/irgmsh.h"
-#include "asterfort/irdebg.h"
-#include "asterfort/isParallelMesh.h"
+#include "asterfort/utmess.h"
 !
     integer(kind=8), intent(in) :: keywfIocc, fileUnit, fileVersion
     character(len=8), intent(in) :: fileFormat, modelIn

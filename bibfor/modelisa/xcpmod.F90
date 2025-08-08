@@ -29,7 +29,6 @@ subroutine xcpmod(modmes, modthx, modmex)
 #include "asterfort/jedema.h"
 #include "asterfort/jeexin.h"
 #include "asterfort/jemarq.h"
-#include "asterfort/jeveuo.h"
 #include "asterfort/utmess.h"
 #include "asterfort/wkvect.h"
 #include "asterfort/xcpmo1.h"

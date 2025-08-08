@@ -24,9 +24,9 @@ subroutine nmdoct(listLoad, ds_contact)
     implicit none
 !
 #include "asterf_types.h"
+#include "asterfort/dismoi.h"
 #include "asterfort/jeexin.h"
 #include "asterfort/jeveuo.h"
-#include "asterfort/dismoi.h"
 #include "asterfort/utmess.h"
 #include "LoadTypes_type.h"
 !

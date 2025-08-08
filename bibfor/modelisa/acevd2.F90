@@ -43,6 +43,8 @@ subroutine acevd2(noma, nomo, mcf, lmax, nbocc)
 #include "jeveux.h"
 #include "asterc/getres.h"
 #include "asterfort/acevtr.h"
+#include "asterfort/as_allocate.h"
+#include "asterfort/as_deallocate.h"
 #include "asterfort/assert.h"
 #include "asterfort/getvem.h"
 #include "asterfort/getvtx.h"
@@ -50,8 +52,6 @@ subroutine acevd2(noma, nomo, mcf, lmax, nbocc)
 #include "asterfort/jeveuo.h"
 #include "asterfort/jexnom.h"
 #include "asterfort/verdis.h"
-#include "asterfort/as_deallocate.h"
-#include "asterfort/as_allocate.h"
 !
 ! --------------------------------------------------------------------------------------------------
     integer(kind=8), parameter :: nbcar = 100

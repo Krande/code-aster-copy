@@ -22,6 +22,7 @@ subroutine acevtr(nomo, ityp, noms, itab, nn, idim)
 !
 #include "jeveux.h"
 #include "asterfort/assert.h"
+#include "asterfort/char8_to_int.h"
 #include "asterfort/dismoi.h"
 #include "asterfort/jedema.h"
 #include "asterfort/jeexin.h"
@@ -32,7 +33,6 @@ subroutine acevtr(nomo, ityp, noms, itab, nn, idim)
 #include "asterfort/jexnum.h"
 #include "asterfort/testli.h"
 #include "asterfort/utmess.h"
-#include "asterfort/char8_to_int.h"
 !
     character(len=24) :: noms(*)
     character(len=8) :: nomo

@@ -32,16 +32,16 @@ subroutine varcCalcPrep(modelz, cara_elemz, matecoz, &
     implicit none
 !
 #include "asterf_types.h"
+#include "asterfort/alchml.h"
 #include "asterfort/assert.h"
+#include "asterfort/detrsd.h"
 #include "asterfort/dismoi.h"
 #include "asterfort/exixfe.h"
-#include "asterfort/megeom.h"
-#include "asterfort/nmvcex.h"
 #include "asterfort/mecara.h"
+#include "asterfort/megeom.h"
 #include "asterfort/meharm.h"
+#include "asterfort/nmvcex.h"
 #include "asterfort/xajcin.h"
-#include "asterfort/detrsd.h"
-#include "asterfort/alchml.h"
 !
     character(len=*), intent(in) :: modelz, cara_elemz, matecoz
     aster_logical, intent(in) :: l_temp, l_meta

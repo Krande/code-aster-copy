@@ -25,9 +25,11 @@ subroutine ircame(ifi, nochmd, chanom, typech, ligrel, &
 !
     implicit none
 !
-#include "asterf_types.h"
-#include "MeshTypes_type.h"
 #include "jeveux.h"
+#include "asterf_types.h"
+#include "asterc/asmpi_allgather_i.h"
+#include "asterc/asmpi_allgatherv_char16.h"
+#include "asterc/asmpi_comm.h"
 #include "asterfort/as_allocate.h"
 #include "asterfort/as_deallocate.h"
 #include "asterfort/asmpi_comm_vect.h"
@@ -63,9 +65,7 @@ subroutine ircame(ifi, nochmd, chanom, typech, ligrel, &
 #include "asterfort/utlicm.h"
 #include "asterfort/utmess.h"
 #include "asterfort/wkvect.h"
-#include "asterc/asmpi_comm.h"
-#include "asterc/asmpi_allgather_i.h"
-#include "asterc/asmpi_allgatherv_char16.h"
+#include "MeshTypes_type.h"
 !
     character(len=8) :: typech, sdcarm, carael
     character(len=19) :: chanom, ligrel

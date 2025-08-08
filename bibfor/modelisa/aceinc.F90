@@ -22,7 +22,7 @@ subroutine aceinc(noma, nomo, ntyele, nbocc, ivr, &
 !
     use cara_elem_parameter_module
     implicit none
-#include "asterf_types.h"
+#include "jeveux.h"
     integer(kind=8) :: ntyele(*), nbocc(*), ivr(*), zjdlm(*), lmax, ier
     aster_logical :: locaco, locagb, locamb
     character(len=8) :: noma, nomo
@@ -38,12 +38,14 @@ subroutine aceinc(noma, nomo, ntyele, nbocc, ivr, &
 ! -----------------------------------------------------------------------------------------------
 ! person_in_charge: jean-luc.flejou at edf.fr
 !
-#include "jeveux.h"
+#include "asterf_types.h"
 !
+#include "asterfort/char8_to_int.h"
 #include "asterfort/codent.h"
+#include "asterfort/dismoi.h"
 #include "asterfort/getvem.h"
 #include "asterfort/getvtx.h"
-#include "asterfort/dismoi.h"
+#include "asterfort/int_to_char8.h"
 #include "asterfort/jedema.h"
 #include "asterfort/jedetr.h"
 #include "asterfort/jeexin.h"
@@ -54,8 +56,6 @@ subroutine aceinc(noma, nomo, ntyele, nbocc, ivr, &
 #include "asterfort/utmess.h"
 #include "asterfort/vafcar.h"
 #include "asterfort/wkvect.h"
-#include "asterfort/char8_to_int.h"
-#include "asterfort/int_to_char8.h"
 !
 ! -----------------------------------------------------------------------------------------------
     integer(kind=8) :: ii, ioc, ixma, jj, iid, iif

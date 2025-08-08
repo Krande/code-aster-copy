@@ -23,8 +23,8 @@ subroutine arlcpl(zocc, nbma1, nbma2, mail, nomo, &
 !
     implicit none
 !
-#include "asterf_types.h"
 #include "jeveux.h"
+#include "asterf_types.h"
 #include "asterfort/arlcp2.h"
 #include "asterfort/arlcp3.h"
 #include "asterfort/arlmai.h"

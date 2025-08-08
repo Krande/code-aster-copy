@@ -28,6 +28,7 @@ subroutine exfonc(listFuncActi, ds_algopara, solver, ds_contact, &
 #include "asterf_types.h"
 #include "asterfort/assert.h"
 #include "asterfort/cfdisl.h"
+#include "asterfort/dismoi.h"
 #include "asterfort/exi_thms.h"
 #include "asterfort/exisd.h"
 #include "asterfort/getvtx.h"
@@ -37,7 +38,6 @@ subroutine exfonc(listFuncActi, ds_algopara, solver, ds_contact, &
 #include "asterfort/jeveuo.h"
 #include "asterfort/ndynlo.h"
 #include "asterfort/utmess.h"
-#include "asterfort/dismoi.h"
 !
     integer(kind=8), intent(in) :: listFuncActi(*)
     character(len=19), intent(in) :: solver, sddyna

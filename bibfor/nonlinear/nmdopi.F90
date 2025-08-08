@@ -22,8 +22,8 @@ subroutine nmdopi(modelz, numedd, ds_algopara, sdpilo)
 !
     implicit none
 !
-#include "asterf_types.h"
 #include "jeveux.h"
+#include "asterf_types.h"
 #include "asterc/r8gaem.h"
 #include "asterc/r8prem.h"
 #include "asterc/r8vide.h"

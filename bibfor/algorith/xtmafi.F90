@@ -23,20 +23,20 @@ subroutine xtmafi(ndim, fiss, nfiss, lismai, &
 !
 ! aslint: disable=W1306
     implicit none
-#include "asterf_types.h"
 #include "jeveux.h"
+#include "asterf_types.h"
 #include "asterc/indik8.h"
+#include "asterfort/as_allocate.h"
+#include "asterfort/as_deallocate.h"
 #include "asterfort/assert.h"
 #include "asterfort/dismoi.h"
+#include "asterfort/int_to_char8.h"
 #include "asterfort/jedema.h"
 #include "asterfort/jeexin.h"
 #include "asterfort/jelira.h"
 #include "asterfort/jemarq.h"
 #include "asterfort/jeveuo.h"
 #include "asterfort/wkvect.h"
-#include "asterfort/as_deallocate.h"
-#include "asterfort/as_allocate.h"
-#include "asterfort/int_to_char8.h"
     integer(kind=8) :: nfiss, nbma, ndim
     character(len=8) :: fiss(nfiss)
     character(len=24) :: lismai, mesmai

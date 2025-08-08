@@ -20,8 +20,8 @@ subroutine dismlg(questi, nomobz, repi, repkz, ierd)
 !
     implicit none
 !
-#include "asterf_types.h"
 #include "jeveux.h"
+#include "asterf_types.h"
 #include "asterfort/assert.h"
 #include "asterfort/dimge1.h"
 #include "asterfort/dismma.h"

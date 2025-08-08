@@ -52,6 +52,7 @@ subroutine pmfd00()
 #include "asterfort/getvtx.h"
 #include "asterfort/imprsd.h"
 #include "asterfort/infniv.h"
+#include "asterfort/int_to_char8.h"
 #include "asterfort/jedema.h"
 #include "asterfort/jedetr.h"
 #include "asterfort/jelira.h"
@@ -68,7 +69,6 @@ subroutine pmfd00()
 #include "asterfort/rgcmpg.h"
 #include "asterfort/utmess.h"
 #include "asterfort/wkvect.h"
-#include "asterfort/int_to_char8.h"
 !
 ! --------------------------------------------------------------------------------------------------
 !

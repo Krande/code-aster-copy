@@ -20,6 +20,7 @@ function xxishm(mailc, mailx, mo)
 ! person_in_charge: daniele.colombo at ifpen.fr
 !
     implicit none
+#include "jeveux.h"
 #include "asterf_types.h"
 #include "asterfort/dismoi.h"
 #include "asterfort/jedema.h"
@@ -28,7 +29,6 @@ function xxishm(mailc, mailx, mo)
 #include "asterfort/jenuno.h"
 #include "asterfort/jeveuo.h"
 #include "asterfort/jexnum.h"
-#include "jeveux.h"
     aster_logical :: xxishm
 !
 ! BUT : POST_CHAM_XFEM : LE RESULTAT A POST-TRAITER EST-IL HM?

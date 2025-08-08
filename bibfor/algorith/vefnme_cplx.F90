@@ -25,14 +25,17 @@ subroutine vefnme_cplx(option, base, &
 !
     implicit none
 !
-#include "asterf_types.h"
 #include "jeveux.h"
+#include "asterf_types.h"
 #include "asterfort/assert.h"
 #include "asterfort/calcul.h"
+#include "asterfort/codent.h"
+#include "asterfort/copisd.h"
 #include "asterfort/corich.h"
 #include "asterfort/dbgcal.h"
 #include "asterfort/detrsd.h"
 #include "asterfort/dismoi.h"
+#include "asterfort/exisd.h"
 #include "asterfort/exixfe.h"
 #include "asterfort/gcnco2.h"
 #include "asterfort/infdbg.h"
@@ -41,12 +44,9 @@ subroutine vefnme_cplx(option, base, &
 #include "asterfort/jemarq.h"
 #include "asterfort/mecact.h"
 #include "asterfort/mecara.h"
-#include "asterfort/vemare.h"
 #include "asterfort/reajre.h"
-#include "asterfort/codent.h"
-#include "asterfort/exisd.h"
 #include "asterfort/sepach.h"
-#include "asterfort/copisd.h"
+#include "asterfort/vemare.h"
 !
     character(len=16), intent(in) :: option
     character(len=1), intent(in) :: base

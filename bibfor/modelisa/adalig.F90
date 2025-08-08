@@ -18,12 +18,15 @@
 
 subroutine adalig(ligrz, partsdz)
     implicit none
-#include "asterf_types.h"
 #include "jeveux.h"
-#include "asterfort/asmpi_info.h"
+#include "asterf_types.h"
 #include "asterfort/adalig_sd.h"
+#include "asterfort/as_allocate.h"
+#include "asterfort/as_deallocate.h"
+#include "asterfort/asmpi_info.h"
 #include "asterfort/assert.h"
 #include "asterfort/dismoi.h"
+#include "asterfort/gettco.h"
 #include "asterfort/jecrec.h"
 #include "asterfort/jecroc.h"
 #include "asterfort/jedema.h"
@@ -37,9 +40,6 @@ subroutine adalig(ligrz, partsdz)
 #include "asterfort/jevtbl.h"
 #include "asterfort/jexatr.h"
 #include "asterfort/jexnum.h"
-#include "asterfort/gettco.h"
-#include "asterfort/as_deallocate.h"
-#include "asterfort/as_allocate.h"
 !
     character(len=*), intent(in) :: ligrz
     character(len=*), intent(in), optional :: partsdz

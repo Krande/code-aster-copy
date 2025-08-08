@@ -59,8 +59,8 @@ subroutine lrceme(chanom, nochmd, typech, nomamd, nomaas, &
 !
 ! 0.1. ==> ARGUMENTS
 !
-#include "asterf_types.h"
 #include "jeveux.h"
+#include "asterf_types.h"
 #include "asterfort/as_mfdfdi.h"
 #include "asterfort/as_mfdnfc.h"
 #include "asterfort/as_mfdnfd.h"
@@ -68,8 +68,8 @@ subroutine lrceme(chanom, nochmd, typech, nomamd, nomaas, &
 #include "asterfort/cescar.h"
 #include "asterfort/cescel.h"
 #include "asterfort/codent.h"
-#include "asterfort/dismoi.h"
 #include "asterfort/detrsd.h"
+#include "asterfort/dismoi.h"
 #include "asterfort/getvis.h"
 #include "asterfort/infniv.h"
 #include "asterfort/jedema.h"

@@ -23,8 +23,8 @@ subroutine nttcmv(model, mateco, caraElem, listLoad, nume_dof, &
 !
     implicit none
 !
-#include "asterf_types.h"
 #include "jeveux.h"
+#include "asterf_types.h"
 #include "asterfort/asasve.h"
 #include "asterfort/ascavc.h"
 #include "asterfort/ascova.h"

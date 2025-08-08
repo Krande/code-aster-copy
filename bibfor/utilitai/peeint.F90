@@ -21,17 +21,20 @@ subroutine peeint(tableOut, model, nbocc)
     use MGIS_module
     implicit none
 !
-#include "asterf_types.h"
 #include "jeveux.h"
+#include "asterf_types.h"
 #include "asterc/indik8.h"
 #include "asterfort/as_allocate.h"
 #include "asterfort/as_deallocate.h"
 #include "asterfort/assert.h"
+#include "asterfort/char8_to_int.h"
+#include "asterfort/convertFieldNodeToNeutElem.h"
 #include "asterfort/copisd.h"
 #include "asterfort/detrsd.h"
 #include "asterfort/dismlg.h"
 #include "asterfort/dismoi.h"
 #include "asterfort/exlim1.h"
+#include "asterfort/getelem.h"
 #include "asterfort/getvid.h"
 #include "asterfort/getvtx.h"
 #include "asterfort/isParallelMesh.h"
@@ -44,18 +47,15 @@ subroutine peeint(tableOut, model, nbocc)
 #include "asterfort/jeveuo.h"
 #include "asterfort/jexnom.h"
 #include "asterfort/peecal.h"
-#include "asterfort/getelem.h"
 #include "asterfort/rsexch.h"
+#include "asterfort/rsGetOneBehaviourFromResult.h"
+#include "asterfort/rsSelectStoringIndex.h"
 #include "asterfort/tbajpa.h"
 #include "asterfort/tbcrsd.h"
 #include "asterfort/umalma.h"
 #include "asterfort/utflmd.h"
 #include "asterfort/utmess.h"
 #include "asterfort/varinonu.h"
-#include "asterfort/rsSelectStoringIndex.h"
-#include "asterfort/rsGetOneBehaviourFromResult.h"
-#include "asterfort/convertFieldNodeToNeutElem.h"
-#include "asterfort/char8_to_int.h"
 !
     integer(kind=8) :: nbocc
     character(len=8) :: model

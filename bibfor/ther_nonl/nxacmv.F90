@@ -27,16 +27,14 @@ subroutine nxacmv(model, materField, mateco, caraElem, listLoad, nume_dof, &
 !
     implicit none
 !
-#include "asterf_types.h"
 #include "jeveux.h"
-#include "asterfort/vtaxpy.h"
-#include "asterfort/vtzero.h"
+#include "asterf_types.h"
 #include "asterfort/asasve.h"
 #include "asterfort/ascavc.h"
 #include "asterfort/ascova.h"
 #include "asterfort/asmatr.h"
-#include "asterfort/dismoi.h"
 #include "asterfort/detrsd.h"
+#include "asterfort/dismoi.h"
 #include "asterfort/jedema.h"
 #include "asterfort/jedetr.h"
 #include "asterfort/jeexin.h"
@@ -51,6 +49,8 @@ subroutine nxacmv(model, materField, mateco, caraElem, listLoad, nume_dof, &
 #include "asterfort/vedith.h"
 #include "asterfort/vetnth_nonl.h"
 #include "asterfort/vrcins.h"
+#include "asterfort/vtaxpy.h"
+#include "asterfort/vtzero.h"
 !
     character(len=8), intent(in) :: model, materField, caraElem
     character(len=24), intent(in) :: mateco, listLoad

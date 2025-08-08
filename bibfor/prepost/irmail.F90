@@ -35,10 +35,11 @@ subroutine irmail(form, ifi, versio, noma, lmod, &
 !        LFICHUNIQ: ASTER LOGICAL, FICHIER UNIQUE
 !        NOSDFU   : NOM STRUCTURE DONNEE
 !     ------------------------------------------------------------------
-#include "asterf_types.h"
 #include "jeveux.h"
+#include "asterf_types.h"
 #include "asterfort/assert.h"
 #include "asterfort/dismoi.h"
+#include "asterfort/int_to_char8.h"
 #include "asterfort/iradhs.h"
 #include "asterfort/irmare.h"
 #include "asterfort/irmasu.h"
@@ -54,7 +55,6 @@ subroutine irmail(form, ifi, versio, noma, lmod, &
 #include "asterfort/jexatr.h"
 #include "asterfort/jexnum.h"
 #include "asterfort/wkvect.h"
-#include "asterfort/int_to_char8.h"
 !
 !---------------- ARGUMENTS --------------------------------------------
     integer(kind=8)             :: versio, infmai

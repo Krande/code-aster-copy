@@ -22,24 +22,25 @@ subroutine rc3600_momeq()
 !     COMMANDE :  POST_RCCM / B3600 / OPTION MOMENT_EQUIVALENT
 ! ----------------------------------------------------------------------
     implicit none
-#include "asterf_types.h"
 #include "jeveux.h"
+#include "asterf_types.h"
 #include "asterc/getres.h"
 #include "asterfort/assert.h"
 #include "asterfort/calcul.h"
 #include "asterfort/chmima.h"
-#include "asterfort/dismoi.h"
 #include "asterfort/detrsd.h"
-#include "asterfort/exlima.h"
+#include "asterfort/dismoi.h"
 #include "asterfort/exlim4.h"
+#include "asterfort/exlima.h"
 #include "asterfort/getvid.h"
 #include "asterfort/getvr8.h"
 #include "asterfort/getvtx.h"
+#include "asterfort/imprsd.h"
 #include "asterfort/infmaj.h"
 #include "asterfort/infniv.h"
 #include "asterfort/jedema.h"
-#include "asterfort/jeexin.h"
 #include "asterfort/jedetr.h"
+#include "asterfort/jeexin.h"
 #include "asterfort/jelira.h"
 #include "asterfort/jemarq.h"
 #include "asterfort/jeveuo.h"
@@ -48,11 +49,10 @@ subroutine rc3600_momeq()
 #include "asterfort/rscrsd.h"
 #include "asterfort/rsexch.h"
 #include "asterfort/rslesd.h"
-#include "asterfort/rsnopa.h"
 #include "asterfort/rsnoch.h"
+#include "asterfort/rsnopa.h"
 #include "asterfort/rsutnu.h"
 #include "asterfort/utmess.h"
-#include "asterfort/imprsd.h"
     character(len=8) :: resu, champ
 
     integer(kind=8) :: ifm, niv

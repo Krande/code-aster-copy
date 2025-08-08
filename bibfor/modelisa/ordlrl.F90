@@ -24,7 +24,10 @@ subroutine ordlrl(charge, lisrel, nomgd)
 #include "asterc/indik8.h"
 #include "asterc/r8gaem.h"
 #include "asterc/r8prem.h"
+#include "asterfort/as_allocate.h"
+#include "asterfort/as_deallocate.h"
 #include "asterfort/assert.h"
+#include "asterfort/char8_to_int.h"
 #include "asterfort/dismoi.h"
 #include "asterfort/exisdg.h"
 #include "asterfort/jecreo.h"
@@ -40,9 +43,6 @@ subroutine ordlrl(charge, lisrel, nomgd)
 #include "asterfort/jexnom.h"
 #include "asterfort/ordrel.h"
 #include "asterfort/utmess.h"
-#include "asterfort/as_deallocate.h"
-#include "asterfort/as_allocate.h"
-#include "asterfort/char8_to_int.h"
 !
 ! person_in_charge: jacques.pellet at edf.fr
 !

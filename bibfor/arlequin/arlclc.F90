@@ -21,14 +21,14 @@ subroutine arlclc(modarl, nbchel, chamel, marlel)
     implicit none
 
 #include "jeveux.h"
-#include "asterfort/jemarq.h"
-#include "asterfort/inical.h"
-#include "asterfort/jedetr.h"
+#include "asterfort/calcul.h"
 #include "asterfort/dismoi.h"
+#include "asterfort/inical.h"
+#include "asterfort/jedema.h"
+#include "asterfort/jedetr.h"
+#include "asterfort/jemarq.h"
 #include "asterfort/megeom.h"
 #include "asterfort/wkvect.h"
-#include "asterfort/calcul.h"
-#include "asterfort/jedema.h"
 
 !     ARGUMENTS:
 !     ----------

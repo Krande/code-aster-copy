@@ -22,12 +22,11 @@ subroutine nume_ddl_chamElem(numeDofZ, listLigrelJvZ, modeLocZ, verbose)
 !
 #include "asterfort/as_allocate.h"
 #include "asterfort/as_deallocate.h"
-#include "asterfort/dismoi.h"
+#include "asterfort/infbav.h"
+#include "asterfort/infmue.h"
 #include "asterfort/jelira.h"
 #include "asterfort/jeveuo.h"
 #include "asterfort/numero.h"
-#include "asterfort/infbav.h"
-#include "asterfort/infmue.h"
 !
     character(len=*), intent(in) :: numeDofZ
     character(len=*), intent(in) :: listLigrelJvZ

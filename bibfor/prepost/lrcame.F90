@@ -28,9 +28,8 @@ subroutine lrcame(nrofic, nochmd, nomamd, nomaas, ligrel, &
     use as_med_module, only: as_med_open
     implicit none
 !
-#include "asterf_types.h"
-#include "MeshTypes_type.h"
 #include "jeveux.h"
+#include "asterf_types.h"
 #include "asterfort/as_allocate.h"
 #include "asterfort/as_deallocate.h"
 #include "asterfort/as_mficlo.h"
@@ -43,7 +42,6 @@ subroutine lrcame(nrofic, nochmd, nomamd, nomaas, ligrel, &
 #include "asterfort/cnscre.h"
 #include "asterfort/codent.h"
 #include "asterfort/dismoi.h"
-#include "asterfort/exisd.h"
 #include "asterfort/infniv.h"
 #include "asterfort/jedema.h"
 #include "asterfort/jedetr.h"
@@ -65,6 +63,7 @@ subroutine lrcame(nrofic, nochmd, nomamd, nomaas, ligrel, &
 #include "asterfort/utlicm.h"
 #include "asterfort/utmess.h"
 #include "asterfort/wkvect.h"
+#include "MeshTypes_type.h"
 !
     integer(kind=8) :: nrofic, typen
     integer(kind=8) :: ncmprf, jnocmp

@@ -19,8 +19,8 @@
 subroutine crsvmu(motfac, solveu, istop, nprec, &
                   epsmat, mixpre, kellag, kxfem)
     implicit none
-#include "asterf_types.h"
 #include "jeveux.h"
+#include "asterf_types.h"
 #include "asterc/getexm.h"
 #include "asterfort/asmpi_comm_jev.h"
 #include "asterfort/asmpi_info.h"

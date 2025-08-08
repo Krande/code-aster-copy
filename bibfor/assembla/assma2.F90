@@ -25,10 +25,11 @@ subroutine assma2(ldistme, lmasym, tt, nu14, ncmp, matel, &
 !-----------------------------------------------------------------------
 ! but : assembler les macro-elements dans une matr_asse
 !-----------------------------------------------------------------------
-#include "asterf_types.h"
 #include "jeveux.h"
+#include "asterf_types.h"
 #include "asterc/indik8.h"
 #include "asterfort/ascopr.h"
+#include "asterfort/asmpi_info.h"
 #include "asterfort/asretm.h"
 #include "asterfort/cordd2.h"
 #include "asterfort/dismoi.h"
@@ -41,7 +42,6 @@ subroutine assma2(ldistme, lmasym, tt, nu14, ncmp, matel, &
 #include "asterfort/jexnum.h"
 #include "asterfort/nbec.h"
 #include "asterfort/ssvalm.h"
-#include "asterfort/asmpi_info.h"
 !-----------------------------------------------------------------------
     aster_logical, intent(in) :: ldistme, lmasym
     character(len=2), intent(in) :: tt

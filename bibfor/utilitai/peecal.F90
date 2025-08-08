@@ -22,9 +22,10 @@ subroutine peecal(tych, resu, nomcha, lieu, nomlie, list_ma, nbma, &
 !
     implicit none
 !
-#include "asterf_types.h"
 #include "jeveux.h"
+#include "asterf_types.h"
 #include "asterc/indik8.h"
+#include "asterfort/asmpi_comm_vect.h"
 #include "asterfort/asmpi_info.h"
 #include "asterfort/assert.h"
 #include "asterfort/cesexi.h"
@@ -34,22 +35,21 @@ subroutine peecal(tych, resu, nomcha, lieu, nomlie, list_ma, nbma, &
 #include "asterfort/dismoi.h"
 #include "asterfort/getvtx.h"
 #include "asterfort/infniv.h"
+#include "asterfort/isParallelMesh.h"
 #include "asterfort/jedema.h"
 #include "asterfort/jedetr.h"
 #include "asterfort/jelira.h"
 #include "asterfort/jemarq.h"
+#include "asterfort/jenuno.h"
 #include "asterfort/jeveuo.h"
+#include "asterfort/jexnum.h"
+#include "asterfort/panbno.h"
 #include "asterfort/tbajli.h"
 #include "asterfort/tbajpa.h"
 #include "asterfort/tbexip.h"
+#include "asterfort/teattr.h"
 #include "asterfort/utmess.h"
 #include "asterfort/wkvect.h"
-#include "asterfort/teattr.h"
-#include "asterfort/jexnum.h"
-#include "asterfort/jenuno.h"
-#include "asterfort/panbno.h"
-#include "asterfort/isParallelMesh.h"
-#include "asterfort/asmpi_comm_vect.h"
 !
     integer(kind=8) :: nbcmp, nuord, iocc, nbma, list_ma(*)
     character(len=8) :: nomcmp(nbcmp), nomcp2(nbcmp), modele, lieu

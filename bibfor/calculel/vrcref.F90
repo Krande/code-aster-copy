@@ -18,8 +18,8 @@
 
 subroutine vrcref(modele, chmat, carele, chvref, basez)
     implicit none
-#include "asterf_types.h"
 #include "jeveux.h"
+#include "asterf_types.h"
 #include "asterfort/alchml.h"
 #include "asterfort/assert.h"
 #include "asterfort/carces.h"

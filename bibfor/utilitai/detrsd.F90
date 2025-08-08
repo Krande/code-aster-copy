@@ -22,12 +22,14 @@ subroutine detrsd(typesd, nomsd)
 !
     implicit none
 !
-#include "asterf_types.h"
 #include "jeveux.h"
+#include "asterf_types.h"
 #include "asterfort/amumph.h"
 #include "asterfort/apetsc.h"
+#include "asterfort/asmpi_info.h"
 #include "asterfort/assde1.h"
 #include "asterfort/assert.h"
+#include "asterfort/codent.h"
 #include "asterfort/detlsp.h"
 #include "asterfort/detrs2.h"
 #include "asterfort/dismoi.h"
@@ -38,8 +40,6 @@ subroutine detrsd(typesd, nomsd)
 #include "asterfort/jelira.h"
 #include "asterfort/jemarq.h"
 #include "asterfort/jeveuo.h"
-#include "asterfort/codent.h"
-#include "asterfort/asmpi_info.h"
 !
 !
     character(len=*) :: typesd, nomsd

@@ -20,8 +20,8 @@ subroutine vedpme(modele, charge, infcha, instap, lvediz)
 !
 !
     implicit none
-#include "asterf_types.h"
 #include "jeveux.h"
+#include "asterf_types.h"
 #include "asterfort/calcul.h"
 #include "asterfort/corich.h"
 #include "asterfort/detrsd.h"
@@ -34,8 +34,8 @@ subroutine vedpme(modele, charge, infcha, instap, lvediz)
 #include "asterfort/jeveuo.h"
 #include "asterfort/mecact.h"
 #include "asterfort/megeom.h"
-#include "asterfort/vemare.h"
 #include "asterfort/reajre.h"
+#include "asterfort/vemare.h"
     character(len=*) :: lvediz
     character(len=24) :: modele, charge, infcha
     real(kind=8) :: instap

@@ -25,8 +25,9 @@ subroutine op0183()
 !     COMMANDE :  CALC_FORC_NONL
 !-----------------------------------------------------------------------
 !
-#include "asterc/getres.h"
+#include "jeveux.h"
 #include "asterf_types.h"
+#include "asterc/getres.h"
 #include "asterfort/asasve.h"
 #include "asterfort/assert.h"
 #include "asterfort/codent.h"
@@ -49,8 +50,8 @@ subroutine op0183()
 #include "asterfort/jerazo.h"
 #include "asterfort/jeveuo.h"
 #include "asterfort/medomm.h"
-#include "asterfort/nmdoch.h"
 #include "asterfort/nmdocc.h"
+#include "asterfort/nmdoch.h"
 #include "asterfort/onerrf.h"
 #include "asterfort/refdcp.h"
 #include "asterfort/rsadpa.h"
@@ -62,7 +63,6 @@ subroutine op0183()
 #include "asterfort/vefnme.h"
 #include "asterfort/vrcins.h"
 #include "asterfort/vtcreb.h"
-#include "jeveux.h"
     integer(kind=8) :: ibid
     integer(kind=8) :: i, iad
     integer(kind=8) :: iordr, iret, iret2, j

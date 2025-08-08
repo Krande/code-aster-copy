@@ -29,21 +29,24 @@ subroutine fetskp(mod, meth, nbpart)
     character(len=8), intent(in) :: mod, meth
     integer(kind=8), intent(in) :: nbpart
 !
-#include "asterf_types.h"
 #include "jeveux.h"
+#include "asterf_types.h"
 #include "asterc/fetsco.h"
 #include "asterc/gpmetis_aster.h"
+#include "asterfort/as_allocate.h"
+#include "asterfort/as_deallocate.h"
 #include "asterfort/asmpi_comm_jev.h"
 #include "asterfort/asmpi_info.h"
+#include "asterfort/assert.h"
 #include "asterfort/creaco.h"
 #include "asterfort/creagm.h"
 #include "asterfort/dismoi.h"
-#include "asterfort/assert.h"
 #include "asterfort/infniv.h"
+#include "asterfort/isParallelMesh.h"
 #include "asterfort/jedema.h"
 #include "asterfort/jedetr.h"
-#include "asterfort/jelira.h"
 #include "asterfort/jeexin.h"
+#include "asterfort/jelira.h"
 #include "asterfort/jemarq.h"
 #include "asterfort/jeveuo.h"
 #include "asterfort/jexnum.h"
@@ -51,9 +54,6 @@ subroutine fetskp(mod, meth, nbpart)
 #include "asterfort/uttcpr.h"
 #include "asterfort/uttcpu.h"
 #include "asterfort/wkvect.h"
-#include "asterfort/isParallelMesh.h"
-#include "asterfort/as_deallocate.h"
-#include "asterfort/as_allocate.h"
 !
     integer(kind=8) :: nbmama, idco, nbmato, renum2, nbma, nomsdm, masd
     integer(kind=8) :: nbmasd, id, co, renum

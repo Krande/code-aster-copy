@@ -19,8 +19,8 @@
 subroutine chpchd(chin, type, celmod, prol0, base, &
                   chou, model_)
     implicit none
-#include "asterf_types.h"
 #include "jeveux.h"
+#include "asterf_types.h"
 #include "asterc/getres.h"
 #include "asterfort/assert.h"
 #include "asterfort/carces.h"
@@ -29,12 +29,12 @@ subroutine chpchd(chin, type, celmod, prol0, base, &
 #include "asterfort/cescel.h"
 #include "asterfort/cesces.h"
 #include "asterfort/cescns.h"
-#include "asterfort/cnocns.h"
 #include "asterfort/cgocns.h"
+#include "asterfort/cnocns.h"
 #include "asterfort/cnsces.h"
 #include "asterfort/cnscno.h"
-#include "asterfort/crnggn.h"
 #include "asterfort/crnggc.h"
+#include "asterfort/crnggn.h"
 #include "asterfort/detrsd.h"
 #include "asterfort/dismoi.h"
 #include "asterfort/jedetr.h"

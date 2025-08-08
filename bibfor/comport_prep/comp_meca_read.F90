@@ -24,18 +24,18 @@ subroutine comp_meca_read(l_etat_init, prepMapCompor, model)
     implicit none
 !
 #include "asterf_types.h"
-#include "asterfort/dismoi.h"
-#include "asterfort/getvid.h"
-#include "asterfort/getvtx.h"
 #include "asterfort/assert.h"
-#include "asterfort/jeveuo.h"
+#include "asterfort/comp_meca_deflc.h"
+#include "asterfort/comp_meca_incr.h"
+#include "asterfort/comp_meca_l.h"
+#include "asterfort/comp_meca_rkit.h"
 #include "asterfort/compGetMecaPart.h"
 #include "asterfort/compGetRelation.h"
-#include "asterfort/comp_meca_incr.h"
-#include "asterfort/comp_meca_deflc.h"
+#include "asterfort/dismoi.h"
 #include "asterfort/getExternalBehaviourPara.h"
-#include "asterfort/comp_meca_rkit.h"
-#include "asterfort/comp_meca_l.h"
+#include "asterfort/getvid.h"
+#include "asterfort/getvtx.h"
+#include "asterfort/jeveuo.h"
 !
     aster_logical, intent(in) :: l_etat_init
     type(BehaviourPrep_MapCompor), intent(inout) :: prepMapCompor

@@ -22,8 +22,8 @@ subroutine comdlt()
 !
     implicit none
 !
-#include "asterf_types.h"
 #include "jeveux.h"
+#include "asterf_types.h"
 #include "asterc/getfac.h"
 #include "asterc/r8prem.h"
 #include "asterc/r8vide.h"

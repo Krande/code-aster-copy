@@ -21,6 +21,8 @@ subroutine exlim4(motfaz, base, ligrel, ligrelOut)
 #include "jeveux.h"
 #include "asterc/getexm.h"
 #include "asterc/getfac.h"
+#include "asterfort/as_allocate.h"
+#include "asterfort/as_deallocate.h"
 #include "asterfort/assert.h"
 #include "asterfort/dismoi.h"
 #include "asterfort/exlim2.h"
@@ -30,8 +32,6 @@ subroutine exlim4(motfaz, base, ligrel, ligrelOut)
 #include "asterfort/jeveuo.h"
 #include "asterfort/reliem1.h"
 #include "asterfort/wkvect.h"
-#include "asterfort/as_deallocate.h"
-#include "asterfort/as_allocate.h"
     character(len=*) :: motfaz, base
     character(len=19) :: ligrel, ligrelOut
 ! person_in_charge: jacques.pellet at edf.fr

@@ -19,8 +19,10 @@
 subroutine nugllo(nu, base)
 ! person_in_charge: nicolas.sellenet at edf.fr
     implicit none
-#include "asterf_types.h"
 #include "jeveux.h"
+#include "asterf_types.h"
+#include "asterfort/as_allocate.h"
+#include "asterfort/as_deallocate.h"
 #include "asterfort/asmpi_info.h"
 #include "asterfort/assert.h"
 #include "asterfort/detrsd.h"
@@ -38,8 +40,6 @@ subroutine nugllo(nu, base)
 #include "asterfort/nupodd.h"
 #include "asterfort/utmess.h"
 #include "asterfort/wkvect.h"
-#include "asterfort/as_deallocate.h"
-#include "asterfort/as_allocate.h"
 !
     character(len=14) :: nu
     character(len=2) :: base

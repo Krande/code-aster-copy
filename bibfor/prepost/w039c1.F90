@@ -19,6 +19,8 @@
 subroutine w039c1(carte, ifi, form, ligrel, titre)
     implicit none
 #include "jeveux.h"
+#include "asterfort/as_allocate.h"
+#include "asterfort/as_deallocate.h"
 #include "asterfort/assert.h"
 #include "asterfort/cescel.h"
 #include "asterfort/cescre.h"
@@ -39,8 +41,6 @@ subroutine w039c1(carte, ifi, form, ligrel, titre)
 #include "asterfort/jexnum.h"
 #include "asterfort/w039c2.h"
 #include "asterfort/w039c4.h"
-#include "asterfort/as_deallocate.h"
-#include "asterfort/as_allocate.h"
 !
     character(len=19) :: ligrel
     character(len=*) :: carte, titre, form

@@ -19,8 +19,8 @@
 subroutine vrcins(modelz, chmatz, carelz, inst, chvarc, &
                   codret, nompaz, basez)
     implicit none
-#include "asterf_types.h"
 #include "jeveux.h"
+#include "asterf_types.h"
 #include "asterc/r8nnem.h"
 #include "asterfort/assert.h"
 #include "asterfort/cescel.h"
@@ -28,6 +28,7 @@ subroutine vrcins(modelz, chmatz, carelz, inst, chvarc, &
 #include "asterfort/detrsd.h"
 #include "asterfort/dismoi.h"
 #include "asterfort/imprsd.h"
+#include "asterfort/int_to_char8.h"
 #include "asterfort/jedema.h"
 #include "asterfort/jeexin.h"
 #include "asterfort/jelira.h"
@@ -38,7 +39,6 @@ subroutine vrcins(modelz, chmatz, carelz, inst, chvarc, &
 #include "asterfort/utmess.h"
 #include "asterfort/vrcin1.h"
 #include "asterfort/vrcin2.h"
-#include "asterfort/int_to_char8.h"
 !
     character(len=2) :: codret
     character(len=19) :: chvarc

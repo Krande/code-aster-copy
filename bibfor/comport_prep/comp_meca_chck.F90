@@ -25,19 +25,19 @@ subroutine comp_meca_chck(model, mesh, chmate, &
     implicit none
 !
 #include "asterf_types.h"
+#include "asterc/asmpi_comm.h"
 #include "asterc/lccree.h"
 #include "asterc/lcdiscard.h"
 #include "asterc/lctest.h"
+#include "asterfort/asmpi_info.h"
+#include "asterfort/comp_read_mesh.h"
 #include "asterfort/compMecaChckModel.h"
 #include "asterfort/compMecaChckStrain.h"
 #include "asterfort/compMecaSelectPlaneStressAlgo.h"
-#include "asterfort/comp_read_mesh.h"
 #include "asterfort/dismoi.h"
 #include "asterfort/exisd.h"
-#include "asterfort/utmess.h"
 #include "asterfort/nmvcd2.h"
-#include "asterc/asmpi_comm.h"
-#include "asterfort/asmpi_info.h"
+#include "asterfort/utmess.h"
 !
     character(len=8), intent(in) :: model, mesh, chmate
     character(len=19), intent(in) :: fullElemField

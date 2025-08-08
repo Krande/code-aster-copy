@@ -21,16 +21,15 @@ subroutine nueffe(nbLigr, listLigr, base, numeDofZ, renumZ, &
 !
     implicit none
 !
-#include "asterc/cheksd.h"
+#include "jeveux.h"
 #include "asterf_types.h"
+#include "asterc/cheksd.h"
 #include "asterfort/assert.h"
 #include "asterfort/dismoi.h"
 #include "asterfort/exisd.h"
-#include "asterfort/jeveuo.h"
 #include "asterfort/nueffe_lag1.h"
 #include "asterfort/nueffe_lag2.h"
 #include "asterfort/utmess.h"
-#include "jeveux.h"
 !
     integer(kind=8), intent(in) :: nbLigr
     character(len=24), pointer :: listLigr(:)

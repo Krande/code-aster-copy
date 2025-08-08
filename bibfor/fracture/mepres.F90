@@ -19,8 +19,8 @@
 subroutine mepres(nomo, chpres, fonc, pres, cisa)
     implicit none
 !
-#include "asterf_types.h"
 #include "jeveux.h"
+#include "asterf_types.h"
 #include "asterfort/dismoi.h"
 #include "asterfort/mecact.h"
     character(len=8) :: nomo

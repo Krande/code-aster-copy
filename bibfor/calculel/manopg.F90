@@ -20,25 +20,26 @@ subroutine manopg(model, ligrez, optioz, paramz, mnogaz)
 !
     implicit none
 !
-#include "MeshTypes_type.h"
-#include "asterf_types.h"
 #include "jeveux.h"
+#include "asterf_types.h"
 #include "asterfort/alchml.h"
+#include "asterfort/as_allocate.h"
+#include "asterfort/as_deallocate.h"
 #include "asterfort/assert.h"
 #include "asterfort/cescre.h"
 #include "asterfort/cesexi.h"
+#include "asterfort/cormgi.h"
 #include "asterfort/detrsd.h"
 #include "asterfort/dismoi.h"
-#include "asterfort/elrfno.h"
 #include "asterfort/elraga.h"
+#include "asterfort/elrfno.h"
 #include "asterfort/elrfvf.h"
 #include "asterfort/indk32.h"
+#include "asterfort/initel.h"
 #include "asterfort/jecrec.h"
 #include "asterfort/jecroc.h"
 #include "asterfort/jedema.h"
 #include "asterfort/jedetr.h"
-#include "asterfort/cormgi.h"
-#include "asterfort/initel.h"
 #include "asterfort/jedup1.h"
 #include "asterfort/jeecra.h"
 #include "asterfort/jelira.h"
@@ -53,8 +54,7 @@ subroutine manopg(model, ligrez, optioz, paramz, mnogaz)
 #include "asterfort/typele.h"
 #include "asterfort/utmess.h"
 #include "asterfort/wkvect.h"
-#include "asterfort/as_deallocate.h"
-#include "asterfort/as_allocate.h"
+#include "MeshTypes_type.h"
 !
     character(len=8), intent(in) :: model
     character(len=*) :: ligrez, mnogaz, optioz, paramz

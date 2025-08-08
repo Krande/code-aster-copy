@@ -20,12 +20,14 @@ subroutine caliag(fonrez, chargz, phenom)
 !
     implicit none
 !
-#include "asterf_types.h"
 #include "jeveux.h"
+#include "asterf_types.h"
 #include "asterc/getfac.h"
 #include "asterc/indik8.h"
 #include "asterfort/aflrch.h"
 #include "asterfort/afrela.h"
+#include "asterfort/as_allocate.h"
+#include "asterfort/as_deallocate.h"
 #include "asterfort/assert.h"
 #include "asterfort/caexno.h"
 #include "asterfort/calemn.h"
@@ -36,6 +38,7 @@ subroutine caliag(fonrez, chargz, phenom)
 #include "asterfort/getvr8.h"
 #include "asterfort/getvtx.h"
 #include "asterfort/infniv.h"
+#include "asterfort/int_to_char8.h"
 #include "asterfort/jecrec.h"
 #include "asterfort/jecroc.h"
 #include "asterfort/jedema.h"
@@ -50,9 +53,6 @@ subroutine caliag(fonrez, chargz, phenom)
 #include "asterfort/lxcadr.h"
 #include "asterfort/lxcaps.h"
 #include "asterfort/utmess.h"
-#include "asterfort/as_deallocate.h"
-#include "asterfort/as_allocate.h"
-#include "asterfort/int_to_char8.h"
 !
 !
     character(len=*), intent(in) :: fonrez

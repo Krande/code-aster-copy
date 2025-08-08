@@ -25,6 +25,7 @@ subroutine rfresu()
 #include "asterfort/as_allocate.h"
 #include "asterfort/as_deallocate.h"
 #include "asterfort/assert.h"
+#include "asterfort/char8_to_int.h"
 #include "asterfort/dismoi.h"
 #include "asterfort/foattr.h"
 #include "asterfort/focrr2.h"
@@ -50,7 +51,6 @@ subroutine rfresu()
 #include "asterfort/utmess.h"
 #include "asterfort/utnono.h"
 #include "asterfort/varinonu.h"
-#include "asterfort/char8_to_int.h"
 !
 ! --------------------------------------------------------------------------------------------------
 !

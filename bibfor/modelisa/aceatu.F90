@@ -24,6 +24,8 @@ subroutine aceatu(noma, nomo, nbepo, ntyele, ivr, nbocc)
 #include "asterfort/aceat2.h"
 #include "asterfort/aceat3.h"
 #include "asterfort/acemmt.h"
+#include "asterfort/as_allocate.h"
+#include "asterfort/as_deallocate.h"
 #include "asterfort/dismoi.h"
 #include "asterfort/getvem.h"
 #include "asterfort/getvr8.h"
@@ -39,8 +41,6 @@ subroutine aceatu(noma, nomo, nbepo, ntyele, ivr, nbocc)
 #include "asterfort/jexnum.h"
 #include "asterfort/utmess.h"
 #include "asterfort/wkvect.h"
-#include "asterfort/as_deallocate.h"
-#include "asterfort/as_allocate.h"
 !
     integer(kind=8) :: nbepo, ntyele(*), nbocc(*), ivr(*), ifm
     character(len=8) :: noma, nomo

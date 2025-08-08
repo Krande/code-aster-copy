@@ -29,8 +29,8 @@ subroutine op0180()
 !
 ! VARIABLES LOCALES
 ! -----------------
-#include "asterf_types.h"
 #include "jeveux.h"
+#include "asterf_types.h"
 #include "asterc/getfac.h"
 #include "asterc/getres.h"
 #include "asterc/r8prem.h"

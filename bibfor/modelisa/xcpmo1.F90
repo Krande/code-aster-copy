@@ -22,13 +22,14 @@ subroutine xcpmo1(modmes, modthx, modmex)
 #include "jeveux.h"
 #include "asterfort/adalig.h"
 #include "asterfort/assert.h"
-#include "asterfort/cormgi.h"
 #include "asterfort/copisd.h"
+#include "asterfort/cormgi.h"
 #include "asterfort/detrsd.h"
 #include "asterfort/dismoi.h"
 #include "asterfort/exisd.h"
-#include "asterfort/initel.h"
 #include "asterfort/indk16.h"
+#include "asterfort/initel.h"
+#include "asterfort/int_to_char8.h"
 #include "asterfort/jecrec.h"
 #include "asterfort/jecroc.h"
 #include "asterfort/jedema.h"
@@ -46,7 +47,6 @@ subroutine xcpmo1(modmes, modthx, modmex)
 #include "asterfort/nbgrel.h"
 #include "asterfort/utmess.h"
 #include "asterfort/xtmafi.h"
-#include "asterfort/int_to_char8.h"
 !
     character(len=8) :: modmes, modthx, modmex
 !

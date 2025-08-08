@@ -21,9 +21,9 @@ subroutine ligretDebug(ligretZ)
     implicit none
 !
 #include "jeveux.h"
-#include "asterfort/jeveuo.h"
-#include "asterfort/jelira.h"
 #include "asterfort/dismoi.h"
+#include "asterfort/jelira.h"
+#include "asterfort/jeveuo.h"
 !
     character(len=*), intent(in) :: ligretZ
 !

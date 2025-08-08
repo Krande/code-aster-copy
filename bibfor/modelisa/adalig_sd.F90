@@ -18,10 +18,12 @@
 
 subroutine adalig_sd(ligr, partsd, ntliel, nbtype, clas, teut, nteut)
     implicit none
-#include "asterf_types.h"
 #include "jeveux.h"
-#include "asterfort/asmpi_info.h"
+#include "asterf_types.h"
+#include "asterfort/as_allocate.h"
+#include "asterfort/as_deallocate.h"
 #include "asterfort/asmpi_comm_vect.h"
+#include "asterfort/asmpi_info.h"
 #include "asterfort/assert.h"
 #include "asterfort/dismoi.h"
 #include "asterfort/jecrec.h"
@@ -37,8 +39,6 @@ subroutine adalig_sd(ligr, partsd, ntliel, nbtype, clas, teut, nteut)
 #include "asterfort/jexnum.h"
 #include "asterfort/sdpart.h"
 #include "asterfort/wkvect.h"
-#include "asterfort/as_deallocate.h"
-#include "asterfort/as_allocate.h"
 !
     character(len=19), intent(in) :: ligr
     character(len=8), intent(in) :: partsd

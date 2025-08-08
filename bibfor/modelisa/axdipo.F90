@@ -18,8 +18,8 @@
 
 subroutine axdipo(noma, caelem, modele, iaxe)
     implicit none
-#include "asterf_types.h"
 #include "jeveux.h"
+#include "asterf_types.h"
 #include "asterc/indik8.h"
 #include "asterc/r8prem.h"
 #include "asterfort/dismoi.h"

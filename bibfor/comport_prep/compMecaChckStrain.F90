@@ -26,8 +26,9 @@ subroutine compMecaChckStrain(iComp, &
 !
     implicit none
 !
-#include "asterc/lctest.h"
+#include "jeveux.h"
 #include "asterf_types.h"
+#include "asterc/lctest.h"
 #include "asterfort/assert.h"
 #include "asterfort/Behaviour_type.h"
 #include "asterfort/BehaviourMGIS_type.h"
@@ -42,7 +43,6 @@ subroutine compMecaChckStrain(iComp, &
 #include "asterfort/lteatt.h"
 #include "asterfort/teattr.h"
 #include "asterfort/utmess.h"
-#include "jeveux.h"
 !
     integer(kind=8), intent(in) :: iComp
     character(len=8), intent(in) :: model

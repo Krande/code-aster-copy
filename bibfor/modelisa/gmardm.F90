@@ -20,16 +20,16 @@ subroutine gmardm(nomgrm, modele, ier)
     implicit none
 
 #include "jeveux.h"
-#include "asterfort/dismoi.h"
-#include "asterfort/jeveuo.h"
-#include "asterfort/jelira.h"
-#include "asterfort/jenuno.h"
-#include "asterfort/jexnum.h"
-#include "asterfort/jexnom.h"
-#include "asterfort/lteatt.h"
 #include "asterfort/assert.h"
+#include "asterfort/dismoi.h"
 #include "asterfort/jedema.h"
+#include "asterfort/jelira.h"
 #include "asterfort/jemarq.h"
+#include "asterfort/jenuno.h"
+#include "asterfort/jeveuo.h"
+#include "asterfort/jexnom.h"
+#include "asterfort/jexnum.h"
+#include "asterfort/lteatt.h"
 
     integer(kind=8), intent(out) :: ier
     character(len=8), intent(in) :: modele

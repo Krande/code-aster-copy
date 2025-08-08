@@ -19,16 +19,19 @@
 subroutine reliem1(ligrel, ma, typem, motfaz, iocc, &
                    nbmocl, limocl, tymocl, litroz, nbtrou, l_keep_propz, l_allz)
     implicit none
+#include "jeveux.h"
 #include "asterf_types.h"
 #include "asterfort/addPhantomNodesFromCells.h"
 #include "asterfort/as_allocate.h"
 #include "asterfort/as_deallocate.h"
 #include "asterfort/asmpi_info.h"
 #include "asterfort/assert.h"
+#include "asterfort/char8_to_int.h"
 #include "asterfort/dismoi.h"
 #include "asterfort/getvem.h"
 #include "asterfort/getvtx.h"
 #include "asterfort/infniv.h"
+#include "asterfort/int_to_char8.h"
 #include "asterfort/isParallelMesh.h"
 #include "asterfort/jedema.h"
 #include "asterfort/jedetr.h"
@@ -40,9 +43,6 @@ subroutine reliem1(ligrel, ma, typem, motfaz, iocc, &
 #include "asterfort/jexnum.h"
 #include "asterfort/utmess.h"
 #include "asterfort/wkvect.h"
-#include "asterfort/char8_to_int.h"
-#include "asterfort/int_to_char8.h"
-#include "jeveux.h"
 !
     integer(kind=8) :: iocc, nbmocl, nbtrou
     character(len=8) :: ma

@@ -21,8 +21,8 @@ subroutine pascou(mate, mateco, carele, sddyna, sddisc)
 ! person_in_charge: mickael.abbas at edf.fr
 !
     implicit none
-#include "asterf_types.h"
 #include "jeveux.h"
+#include "asterf_types.h"
 #include "asterfort/assert.h"
 #include "asterfort/calcul.h"
 #include "asterfort/celces.h"
@@ -31,8 +31,8 @@ subroutine pascou(mate, mateco, carele, sddyna, sddisc)
 #include "asterfort/dismoi.h"
 #include "asterfort/getvid.h"
 #include "asterfort/getvtx.h"
+#include "asterfort/int_to_char8.h"
 #include "asterfort/jedema.h"
-#include "asterfort/jelira.h"
 #include "asterfort/jemarq.h"
 #include "asterfort/jeveuo.h"
 #include "asterfort/mecara.h"
@@ -42,7 +42,6 @@ subroutine pascou(mate, mateco, carele, sddyna, sddisc)
 #include "asterfort/utdidt.h"
 #include "asterfort/utmess.h"
 #include "asterfort/vrcins.h"
-#include "asterfort/int_to_char8.h"
 !
     character(len=24) :: mate, mateco, carele
     character(len=19) :: sddyna, sddisc

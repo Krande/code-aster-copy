@@ -78,6 +78,7 @@ subroutine pecap1(chgeoz, tempez, ngi, lisgma, ct)
 #include "asterfort/calcul.h"
 #include "asterfort/detrsd.h"
 #include "asterfort/dismoi.h"
+#include "asterfort/int_to_char8.h"
 #include "asterfort/jeexin.h"
 #include "asterfort/jelira.h"
 #include "asterfort/jeveuo.h"
@@ -90,7 +91,6 @@ subroutine pecap1(chgeoz, tempez, ngi, lisgma, ct)
 #include "asterfort/rsutnu.h"
 #include "asterfort/tbliva.h"
 #include "asterfort/utmess.h"
-#include "asterfort/int_to_char8.h"
 !
 ! -----  ARGUMENTS
     integer(kind=8) :: ngi

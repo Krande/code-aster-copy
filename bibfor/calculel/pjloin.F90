@@ -24,14 +24,16 @@ subroutine pjloin(nbnod, nbnodm, m2, geom2, nbmax, tino2m, tdmin2, lino_loin)
     real(kind=8), intent(in) :: geom2(*)
     character(len=8), intent(in) :: m2
 
-#include "asterc/getres.h"
+#include "jeveux.h"
 #include "asterf_types.h"
+#include "asterc/getres.h"
 #include "asterfort/codent.h"
 #include "asterfort/crea_maillage.h"
 #include "asterfort/detrsd.h"
 #include "asterfort/gcncon.h"
 #include "asterfort/getvtx.h"
 #include "asterfort/infniv.h"
+#include "asterfort/int_to_char8.h"
 #include "asterfort/irmail.h"
 #include "asterfort/jedema.h"
 #include "asterfort/jemarq.h"
@@ -39,8 +41,6 @@ subroutine pjloin(nbnod, nbnodm, m2, geom2, nbmax, tino2m, tdmin2, lino_loin)
 #include "asterfort/ulnume.h"
 #include "asterfort/ulopen.h"
 #include "asterfort/utmess.h"
-#include "jeveux.h"
-#include "asterfort/int_to_char8.h"
 !
 !     BUT :
 !       Emettre (eventuellement) le message d'alarme de projection sur

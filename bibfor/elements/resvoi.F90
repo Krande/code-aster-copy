@@ -21,12 +21,13 @@ subroutine resvoi(moz, maz, chvoiz)
 !
 ! DECLARATION PARAMETRES D'APPEL
 !
-#include "asterf_types.h"
 #include "jeveux.h"
+#include "asterf_types.h"
 #include "asterfort/assert.h"
 #include "asterfort/celver.h"
 #include "asterfort/cncinv.h"
 #include "asterfort/dismoi.h"
+#include "asterfort/int_to_char8.h"
 #include "asterfort/jedema.h"
 #include "asterfort/jedetr.h"
 #include "asterfort/jelira.h"
@@ -35,7 +36,6 @@ subroutine resvoi(moz, maz, chvoiz)
 #include "asterfort/jeveuo.h"
 #include "asterfort/jexnum.h"
 #include "asterfort/utmess.h"
-#include "asterfort/int_to_char8.h"
 !
     character(len=*) :: moz, maz, chvoiz
 ! ......................................................................

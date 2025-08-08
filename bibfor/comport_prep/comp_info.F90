@@ -25,8 +25,8 @@ subroutine comp_info(modelZ, compor)
 #include "asterf_types.h"
 #include "asterfort/comp_meca_pvar.h"
 #include "asterfort/dismoi.h"
-#include "asterfort/jedetc.h"
 #include "asterfort/imvari.h"
+#include "asterfort/jedetc.h"
 !
     character(len=*), intent(in) :: modelZ
     character(len=19), intent(in) :: compor

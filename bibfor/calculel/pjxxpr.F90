@@ -39,12 +39,12 @@ subroutine pjxxpr(resu1, resu2, moa1, moa2, corres, &
     use proj_champ_module
     implicit none
 !
-#include "asterf_types.h"
 #include "jeveux.h"
+#include "asterf_types.h"
 #include "asterc/getres.h"
-#include "asterfort/gettco.h"
 #include "asterfort/assert.h"
 #include "asterfort/dismoi.h"
+#include "asterfort/gettco.h"
 #include "asterfort/getvid.h"
 #include "asterfort/getvr8.h"
 #include "asterfort/getvtx.h"
@@ -58,6 +58,7 @@ subroutine pjxxpr(resu1, resu2, moa1, moa2, corres, &
 #include "asterfort/jeveuo.h"
 #include "asterfort/jexnom.h"
 #include "asterfort/pjspma.h"
+#include "asterfort/pjxfem.h"
 #include "asterfort/pjxxch.h"
 #include "asterfort/refdaj.h"
 #include "asterfort/rsadpa.h"
@@ -70,7 +71,6 @@ subroutine pjxxpr(resu1, resu2, moa1, moa2, corres, &
 #include "asterfort/utmess.h"
 #include "asterfort/vpcrea.h"
 #include "asterfort/wkvect.h"
-#include "asterfort/pjxfem.h"
 !
 ! --------------------------------------------------------------------------------------------------
     character(len=1) :: base
