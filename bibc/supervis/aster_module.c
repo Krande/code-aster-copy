@@ -2098,7 +2098,7 @@ void DEFPSS( LCKITREAD, lckitread, _IN ASTERINTEGER *nbkit, _IN char *lkit, STRI
 void DEFPS( INT_TO_STRING_CONVERSION, int_to_string_conversion, ASTERINTEGER *value, char *out,
             STRING_SIZE sout ) {
     char tmp[9];
-    sprintf( tmp, "%-8d", *value );
+    sprintf( tmp, "%-8ld", *value );
     CopyCStrToFStr( out, tmp, 8 );
     return;
 }
