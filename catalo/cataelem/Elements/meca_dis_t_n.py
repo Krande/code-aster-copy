@@ -124,6 +124,7 @@ class MECA_DIS_T_N(Element):
                 (SP.PCINFDI, LC.CCINFDI),
                 (SP.PMATERC, LC.CMATERC),
                 (SP.PRIGIEL, MMATUUR),
+                (SP.PRIGINS, MMATUNS),
                 (OP.AMOR_MECA.PVARCPR, LC.ZVARCPG),
                 (OP.AMOR_MECA.PCOMPOR, LC.CCOMPOR),
                 (SP.PNONLIN, LC.ENONLIN),

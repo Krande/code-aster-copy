@@ -269,9 +269,9 @@ subroutine dis_choc_frot_nosyme(for_discret, icodma, ulp, xg, klv, &
             end if
             ! Elément élastique en parallèle
             klvp = 0.d0
-            klvp(id3(1, 1)) = rignor
-            klvp(id3(2, 2)) = rigtan
-            klvp(id3(3, 3)) = rigtan
+            klvp(id3(1, 1)) = kp
+            klvp(id3(2, 2)) = kt
+            klvp(id3(3, 3)) = kt
             ! Cumul des raideurs
             klv(1:9) = klv(1:9)+klvp(1:9)
 

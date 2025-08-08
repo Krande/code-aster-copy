@@ -61,6 +61,7 @@ subroutine te0041(option, nomte)
 #include "asterfort/utmess.h"
 #include "asterfort/utpplg.h"
 #include "asterfort/utpsgl.h"
+#include "asterfort/utpngl.h"
 #include "asterfort/utpslg.h"
 #include "asterfort/vecma.h"
 #include "asterfort/Behaviour_type.h"
@@ -77,7 +78,7 @@ subroutine te0041(option, nomte)
     real(kind=8)    :: eta, r8bid, xrota
     real(kind=8)    :: tempo(ntermx)
     complex(kind=8) :: hyst, dcmplx
-    aster_logical :: lNonLinear
+    aster_logical :: lNonLinear, lDisChoc
 !
     character(len=8)    :: k8bid
     character(len=24)   :: valk(2)
@@ -103,6 +104,7 @@ subroutine te0041(option, nomte)
     end if
 !
     assemble_amor = ASTER_FALSE
+    lDisChoc = ASTER_FALSE
     if (option .eq. 'AMOR_MECA') then
         call tecach('ONO', 'PNONLIN', 'L', iret, iad=jVNonLin)
         lNonLinear = ASTER_FALSE
@@ -113,7 +115,8 @@ subroutine te0041(option, nomte)
         if (lNonLinear) then
 ! --------- Nonlinear cases (=> only for DIS_CHOC)
             call jevech('PCOMPOR', 'L', vk16=compor)
-            assemble_amor = compor(RELA_NAME) .eq. 'DIS_CHOC'
+            lDisChoc = compor(RELA_NAME) .eq. 'DIS_CHOC'
+            assemble_amor = lDisChoc
         else
 ! --------- Linear case (=> for all cases)
             assemble_amor = ASTER_TRUE
@@ -210,15 +213,23 @@ subroutine te0041(option, nomte)
 !           Traitement du cas de assemble_amor
             if (assemble_amor) then
                 if (ndim .ne. 3) goto 666
-                call tecach('ONO', 'PRIGIEL', 'L', iret, iad=jdr)
-                if (jdr .eq. 0) goto 666
+                ! Cas de DIS_CHOC avec matrice tangente non symétrique
+                if ((lDisChoc) .and. (nc .eq. 3)) then
+                    call tecach('ONO', 'PRIGINS', 'L', iret, iad=jdr)
+                    if (jdr .eq. 0) goto 666
+                    call utpngl(nno, nc, pgl, zr(jdr), matv1)
+                    ! Cas d'une matrice tangente symétrique
+                else
+                    call tecach('ONO', 'PRIGIEL', 'L', iret, iad=jdr)
+                    if (jdr .eq. 0) goto 666
+                    call utpsgl(nno, nc, pgl, zr(jdr), matv1)
+                end if
                 call tecach('NNN', 'PMATERC', 'L', iret, iad=jma)
                 if ((jma .eq. 0) .or. (iret .ne. 0)) goto 666
                 nomres(1) = 'RIGI_NOR'
                 nomres(2) = 'AMOR_NOR'
                 nomres(3) = 'AMOR_TAN'
                 valres = 0.0
-                call utpsgl(nno, nc, pgl, zr(jdr), matv1)
                 call rcvala(zi(jma), ' ', 'DIS_CONTACT', 0, ' ', &
                             [0.0d0], 3, nomres, valres, icodre, 0)
                 if (icodre(1) .eq. 0) then
@@ -353,15 +364,23 @@ subroutine te0041(option, nomte)
             call jevech('PMATUNS', 'E', jdm)
             if (assemble_amor) then
                 if (ndim .ne. 3) goto 777
-                call tecach('ONO', 'PRIGIEL', 'L', iret, iad=jdr)
-                if (jdr .eq. 0) goto 777
+                ! Cas de DIS_CHOC avec matrice tangente non symétrique
+                if ((lDisChoc) .and. (nc .eq. 3)) then
+                    call tecach('ONO', 'PRIGINS', 'L', iret, iad=jdr)
+                    if (jdr .eq. 0) goto 777
+                    call utpngl(nno, nc, pgl, zr(jdr), matv1)
+                    ! Cas d'une matrice tangente symétrique
+                else
+                    call tecach('ONO', 'PRIGIEL', 'L', iret, iad=jdr)
+                    if (jdr .eq. 0) goto 777
+                    call utpsgl(nno, nc, pgl, zr(jdr), matv1)
+                end if
                 call tecach('NNN', 'PMATERC', 'L', iret, iad=jma)
                 if ((jma .eq. 0) .or. (iret .ne. 0)) goto 777
                 nomres(1) = 'RIGI_NOR'
                 nomres(2) = 'AMOR_NOR'
                 nomres(3) = 'AMOR_TAN'
                 valres = 0.0
-                call utpsgl(nno, nc, pgl, zr(jdr), matv1)
                 call rcvala(zi(jma), ' ', 'DIS_CONTACT', 0, ' ', &
                             [0.0d0], 3, nomres, valres, icodre, 0)
                 if (icodre(1) .eq. 0) then
