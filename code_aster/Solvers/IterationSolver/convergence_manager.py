@@ -430,15 +430,12 @@ class ConvergenceManager(ContextMixin):
                 self.state.getState(-1).stress,
             ).getValues()
 
-        for [iNode, cmp], ieq in cmp2dof.items():
+        for [_, cmp], ieq in cmp2dof.items():
             f_int = 0.0
             f_ext = 0.0
             f_cont = 0.0
             f_mass = 0.0
-            if varc:
-                f_varc = varc[ieq]
-            else:
-                f_varc = 0.0
+            f_varc = varc[ieq] if varc else 0.0
 
             if cmp in ("LAGR_C", "LAGR_F1", "LAGR_F2"):
                 continue
