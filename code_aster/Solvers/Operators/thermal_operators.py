@@ -184,32 +184,27 @@ class ThermalOperators(BaseOperators):
         dt, theta = self.state.time_step, self._theta
         disc_comp = DiscreteComputation(self.problem)
 
-        resi_curr, _, _ = super().getResidual(scaling=scaling)
+        resi_curr = super().getResidual(scaling=scaling)[0]
 
-        resi_mass = disc_comp.getNonLinearCapacityForces(
+        resi_curr.resi_mass = disc_comp.getNonLinearCapacityForces(
             self.state.primal_prev, self.state.primal_step, self.state.externVar
         )
 
-        EVNL_AS = (1.0 / dt) * self._resi_prev.resi_mass - (
-            1.0 - theta
-        ) * self._resi_prev.resi_stress
-
         residual = Residuals()
 
-        residual.resi_stress = -EVNL_AS + (theta * resi_curr.resi_stress + (1.0 / dt) * resi_mass)
-
-        resi_dual = resi_curr.resi_int - resi_curr.resi_stress
-
-        residual.resi_int = residual.resi_stress + resi_dual
-
-        residual.resi_dual = resi_curr.resi_dual
+        residual.resi_stress = (
+            (1.0 / dt) * (resi_curr.resi_mass - self._resi_prev.resi_mass)
+            + theta * resi_curr.resi_stress
+            + (1.0 - theta) * self._resi_prev.resi_stress
+        )
+        residual.resi_int = resi_curr.resi_int + residual.resi_stress - resi_curr.resi_stress
         residual.resi_ext = theta * resi_curr.resi_ext + (1.0 - theta) * self._resi_prev.resi_ext
-        residual.resi_cont = resi_curr.resi_cont
-        residual.resi_mass = resi_mass
-
         residual.resi = residual.resi_ext - residual.resi_int
 
-        resi_curr.resi_mass = resi_mass
+        residual.resi_mass = resi_curr.resi_mass
+        residual.resi_dual = resi_curr.resi_dual
+        residual.resi_cont = resi_curr.resi_cont
+
         self._resi_temp = resi_curr
 
         return residual
