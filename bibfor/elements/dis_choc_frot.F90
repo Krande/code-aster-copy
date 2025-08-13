@@ -69,10 +69,10 @@ subroutine dis_choc_frot(DD, iret)
     real(kind=8) :: r8bid
     character(len=8) :: k8bid
 !
-    real(kind=8) :: valre1(1)
-    integer(kind=8) :: codre1(1)
+    real(kind=8) :: valre1(2)
+    integer(kind=8) :: codre1(2)
 !
-    aster_logical :: okelem, IsSymetrique, IsCoulomb, IsDynamique, IsStatique, Prediction
+    aster_logical :: okelem, IsSymetrique, IsCoulomb, IsDynamique, IsStatique, IsCoin2D, Prediction
     blas_int :: b_incx, b_incy, b_n
 !
 ! --------------------------------------------------------------------------------------------------
@@ -162,28 +162,35 @@ subroutine dis_choc_frot(DD, iret)
     !
     ulp(:) = DD%ulm(:)+DD%dul(:)
     !
-! Traitement du cas coulomb=0
+! Verification des paramètres matériau
     IsCoulomb = ASTER_FALSE
+    IsCoin2D = ASTER_FALSE
     call rcvala(zi(imat), ' ', 'DIS_CONTACT', 0, ' ', &
-                [0.0d0], 1, ['COULOMB'], valre1, codre1, &
+                [0.0d0], 2, ['COULOMB', 'CONTACT'], valre1, codre1, &
                 0, nan='NON')
-! Coulomb existe et >0
+! --- Coulomb existe et >0
     if (codre1(1) .eq. 0) then
         if (valre1(1) .gt. r8prem()) then
             IsCoulomb = ASTER_TRUE
+        end if
+    end if
+! --- COIN_2D existe et est activé
+    if (codre1(2) .eq. 0) then
+        if (nint(valre1(2)) .ne. 0) then
+            IsCoin2D = ASTER_TRUE
         end if
     end if
 !
     okelem = (DD%ndim .eq. 3)
     okelem = okelem .and. ((DD%nomte .eq. 'MECA_DIS_T_N') .or. (DD%nomte .eq. 'MECA_DIS_T_L'))
 !   Relation de comportement de choc
-    if (okelem) then
+    if ((okelem) .and. (.not. IsCoin2D)) then
         IsSymetrique = ASTER_FALSE
         call dis_choc_frot_nosyme(DD, zi(imat), ulp, zr(igeom), klv, &
                                   dpe, varmo, force, varpl)
     else
         IsSymetrique = ASTER_TRUE
-! Prédiction en dynamique, on retourne les efforts précédents
+        ! Prédiction en dynamique, on retourne les efforts précédents
         Prediction = IsDynamique .and. (iterat .eq. 1) .and. (DD%option .eq. 'RAPH_MECA')
         call dis_choc_frot_syme(DD, zi(imat), ulp, zr(igeom), klv, &
                                 kgv, dvl, dpe, dve, Prediction, &
