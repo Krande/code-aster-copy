@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -200,8 +200,8 @@ Risques et conseils :
     ),
     52: _(
         """
- Le calcul du champ SIGM_ELNO n'a pas été fait sur la maille volumique %(k1)s qui borde
- la maille surfacique %(k2)s.
+ Le calcul du champ SIGM_ELNO n'a pas été fait sur la maille volumique %(i1)d qui borde
+ la maille surfacique %(i2)d.
 
  Conseils :
   Il faut faire le calcul du champ SIGM_ELNO sur les éléments volumiques de l'autre "coté"

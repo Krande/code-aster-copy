@@ -15,7 +15,6 @@
 ! You should have received a copy of the GNU General Public License
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
-! person_in_charge: mickael.abbas at edf.fr
 !
 subroutine nmforc_corr(list_func_acti, &
                        model, cara_elem, list_load, &
@@ -42,7 +41,6 @@ subroutine nmforc_corr(list_func_acti, &
 #include "asterfort/ndfdyn.h"
 #include "asterfort/ndynlo.h"
 #include "asterfort/nmchex.h"
-#include "asterfort/nonlinDynaImpeCompute.h"
 #include "asterfort/nonlinDynaMDampCompute.h"
 #include "asterfort/NonLinear_type.h"
 #include "asterfort/nonlinLoadCompute.h"
@@ -95,7 +93,7 @@ subroutine nmforc_corr(list_func_acti, &
     character(len=19) :: cndyna, cnsstr, cnhyst
     character(len=19) :: dispCurr
     real(kind=8) :: timePrev, timeCurr
-    aster_logical :: l_dyna, l_impe, l_mstp, lDampModal, lDampMatrix, lSuperElement
+    aster_logical :: l_dyna, l_mstp, lDampModal, lDampMatrix, lSuperElement
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -111,7 +109,6 @@ subroutine nmforc_corr(list_func_acti, &
 
 ! - Active functionnalities
     l_dyna = ndynlo(sddyna, 'DYNAMIQUE')
-    l_impe = ndynlo(sddyna, 'IMPE_ABSO')
     l_mstp = ndynlo(sddyna, 'MULTI_PAS')
     lDampModal = nlDynaDamping%lDampModal
     lDampMatrix = nlDynaDamping%hasMatrDamp
@@ -161,15 +158,5 @@ subroutine nmforc_corr(list_func_acti, &
         end if
     end if
 
-! - Compute impedance
-    if (l_dyna) then
-        if (l_impe) then
-            call nonlinDynaImpeCompute(phaseType, sddyna, &
-                                       model, nume_dof, &
-                                       ds_material, ds_measure, &
-                                       hval_incr, &
-                                       hval_veelem, hval_veasse)
-        end if
-    end if
 !
 end subroutine

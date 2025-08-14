@@ -33,7 +33,6 @@ subroutine turigi(nomte, nbrddl, k)
 #include "asterfort/moytem.h"
 #include "asterfort/poutre_modloc.h"
 #include "asterfort/rcvala.h"
-#include "asterfort/utmess.h"
     character(len=16) :: nomte
     integer(kind=8) :: nbrddl, nc
     integer(kind=8) :: ndim, nnos, idfdk, jdfd2, jgano
@@ -134,9 +133,6 @@ subroutine turigi(nomte, nbrddl, k)
     if (icoud2 .ge. 10) then
         icoude = icoud2-10
         mmt = 0
-        if (h/a .gt. (0.25d0)) then
-            call utmess('A', 'ELEMENTS4_54')
-        end if
     else
         icoude = icoud2
         mmt = 1

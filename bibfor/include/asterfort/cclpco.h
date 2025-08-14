@@ -15,17 +15,16 @@
 ! You should have received a copy of the GNU General Public License
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
-
-!
 !
 interface
-    subroutine cclpco(option, resuou, numord, nbpaou, lipaou,&
-                      lichou)
-        character(len=16) :: option
-        character(len=8) :: resuou
-        integer(kind=8) :: numord
-        integer(kind=8) :: nbpaou
-        character(len=8) :: lipaou(*)
-        character(len=24) :: lichou(*)
+    subroutine cclpco(option, &
+                      resultOut, numeStore, &
+                      nbParaOut, lpaout, lchout)
+        character(len=16), intent(in) :: option
+        character(len=8), intent(in) :: resultOut
+        integer(kind=8), intent(in) :: numeStore
+        integer(kind=8), intent(out) :: nbParaOut
+        character(len=8), intent(out) :: lpaout(1)
+        character(len=24), intent(out) :: lchout(1)
     end subroutine cclpco
 end interface

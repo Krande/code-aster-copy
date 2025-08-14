@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -17,17 +17,10 @@
 # along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 # --------------------------------------------------------------------
 
-# person_in_charge: mickael.abbas at edf.fr
+from ..Utilities import _
 
-
-from cataelem.Tools.base_objects import InputParameter, OutputParameter, Option, CondCalcul
-import cataelem.Commons.physical_quantities as PHY
-import cataelem.Commons.parameters as SP
-import cataelem.Commons.attributes as AT
-
-
-IMPE_ABSO = Option(
-    para_in=(SP.PGEOMER, SP.PMATERC, SP.PVITENT, SP.PVITPLU),
-    para_out=(SP.PVECTUR,),
-    condition=(CondCalcul("+", ((AT.FLUIDE, "OUI"), (AT.ABSO, "OUI"))),),
-)
+cata_msg = {
+    54: _(
+        """MODI_METRIQUE ne peut pas s'appliquer à cause des dimensions du tuyau, en effet, le rapport rayon sur épaisseur est supérieur à %(r1)f."""
+    )
+}

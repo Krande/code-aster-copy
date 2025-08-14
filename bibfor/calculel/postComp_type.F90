@@ -156,7 +156,35 @@ module postComp_type
 ! ----- Compute nodal quantities for post-treatment
         aster_logical :: lPostNoda = ASTER_FALSE
     end type POST_COMP
+! ==================================================================================================
+! Type: Manage the calculation of a post-processing option - Management of restricted zone
+! ==================================================================================================
+    type POST_COMP_REST
+! ----- Number of FED
+        integer(kind=8) :: nbLigrMaxi = 0
+        integer(kind=8) :: nbLigr = 0
+! ----- List of FED
+        character(len=24), pointer :: listFED(:) => null()
+! ----- List of models
+        character(len=8), pointer :: listModel(:) => null()
+! ----- List of memory base
+        character(len=8), pointer :: listJvBase(:) => null()
+    end type POST_COMP_REST
+! ==================================================================================================
+! Type: Manage the calculation of a post-processing option - Special for POUX beams
+! ==================================================================================================
+    type POST_COMP_POUX
+! ----- POUX beams in model
+        aster_logical :: lPoux = ASTER_FALSE
+! ----- Index of distributed load in list of loads for POUX
+        integer(kind=8) :: loadIndx = 0
+! ----- Name of option to compute mass matrix
+        character(len=24) :: optionMass = " "
+! ----- Name of vector for M.Gamma
+        character(len=24) :: chdynr = "&&MECALM.M.GAMMA"
+    end type POST_COMP_POUX
 !===================================================================================================
     public :: POST_COMP, POST_COMP_RESU, POST_COMP_PARA, POST_COMP_FIELDS, POST_COMP_NODA
+    public :: POST_COMP_REST, POST_COMP_POUX
 !
 end module postComp_type

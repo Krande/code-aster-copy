@@ -85,7 +85,7 @@ subroutine nmchht(model, ds_material, cara_elem, ds_constitutive, &
 ! --------------------------------------------------------------------------------------------------
 !
     integer(kind=8), parameter :: phaseType = CORR_NEWTON
-    integer(kind=8), parameter:: zveass = 19, zveelm = 12
+    integer(kind=8), parameter:: zveass = 18, zveelm = 11
     character(len=19) :: hval_veelem(zveelm)
     character(len=19) :: hval_veasse(zveass)
     aster_logical :: l_didi, l_comp_mstp, l_macr

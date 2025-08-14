@@ -15,143 +15,177 @@
 ! You should have received a copy of the GNU General Public License
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
-
-subroutine ccvepo(modele, resuin, typesd, lisord, nbordr, &
-                  option, &
-                  nbchre, ioccur, suropt, ligrel, exipou)
+!
+subroutine ccvepo(option, model, &
+                  postCompResu, &
+                  postCompPoux)
+!
+    use listLoad_module
+    use FED_module
+    use mesh_module
+    use postComp_type
+    use postComp_module
     implicit none
-!     --- ARGUMENTS ---
+!
 #include "asterf_types.h"
-#include "jeveux.h"
-#include "asterc/getexm.h"
 #include "asterfort/assert.h"
 #include "asterfort/cochre.h"
 #include "asterfort/copich.h"
 #include "asterfort/dismoi.h"
-#include "asterfort/exlim1.h"
-#include "asterfort/exlima.h"
+#include "asterfort/getelem.h"
 #include "asterfort/gnomsd.h"
 #include "asterfort/jedema.h"
 #include "asterfort/jedetr.h"
 #include "asterfort/jemarq.h"
 #include "asterfort/jeveuo.h"
+#include "asterfort/medome_once.h"
+#include "asterfort/rs_get_listload.h"
 #include "asterfort/rsadpa.h"
 #include "asterfort/rsexch.h"
-#include "asterfort/medom1.h"
-#include "asterfort/utmamo.h"
-#include "asterfort/lisnch.h"
-#include "asterfort/medome_once.h"
 #include "asterfort/utmess.h"
-    aster_logical :: exipou
-    integer(kind=8) :: nbchre, ioccur
-    character(len=8) :: modele, resuin
-    character(len=16) :: typesd, option
-    character(len=24) :: suropt, ligrel
-    integer(kind=8) :: nbordr
-    character(len=19) :: lisord
-!  CALC_CHAMP - VERIFICATION POUR LES POUTRES
-!  -    -       --                    --
-! ----------------------------------------------------------------------
+#include "jeveux.h"
+!
+    character(len=16), intent(in) :: option
+    character(len=8), intent(in) :: model
+    type(POST_COMP_RESU), intent(in) :: postCompResu
+    type(POST_COMP_POUX), intent(out) :: postCompPoux
+!
+! --------------------------------------------------------------------------------------------------
+!
+!  CALC_CHAMP
+!
+!  Specific checks for POUX beams
+!
+! --------------------------------------------------------------------------------------------------
 !
 !  ROUTINE PERMETTANT DE SAVOIR SI DES POUTRES SONT DANS LE LIGREL
-!   REDUIT ET DE VERIFIER LES CHARGES REPARTIES
+!  REDUIT ET DE VERIFIER LES CHARGES REPARTIES
 !
-! IN  :
-!   MODELE  K8   NOM DU MODELE
-!   RESUIN  K8   NOM DE LA STRUCTURE DE DONNEES RESULTAT IN
-!   TYPESD  K16  TYPE DE LA STRUCTURE DE DONNEES RESULTAT
+! In  option            : option to compute
+! In  model             : model
+! In  resultIn          : name of datastructure for input results
+! In  resultType        : type of results datastructure
+! In  nbStore           : number of storing indexes
+! In  listStore         : list of storing indexes
+! Out postCompPoux      : datastructure to manage loads for POUX beams
 !
-! OUT :
-!   NBCHRE  I    NOMBRE DE CHARGES REPARTIES (POUTRES)
-!   IOCCUR  I    NUMERO D'OCCURENCE OU SE TROUVE LE CHARGE REPARTIE
-!   SUROPT  K24  SUROPTION
-!   LIGREL  K24  NOM DU LIGREL A CREER
-!   EXIPOU  L    LOGIQUE INDIQUANT LE PRESENCE DE POUTRES
-! ----------------------------------------------------------------------
+! --------------------------------------------------------------------------------------------------
 !
-    integer(kind=8) :: ierd, ltymo, nbmaal
-    integer(kind=8) :: n1, n2
+    character(len=1), parameter :: jvBase = "V"
+    character(len=16), parameter :: factorKeyword = " "
+    integer(kind=8), parameter :: iOccZero = 0
+    integer(kind=8) :: ierd, jvPara, numeStore0
+    character(len=8) :: answer, modelOnce, mesh
+    character(len=16) :: modalType
+    character(len=19) :: massMatr, listLoad
+    character(len=24) :: ligrel, noojb, modelLigrel, chdepl, listLoad24
+    integer(kind=8) :: nbLoad, iexcit
+    character(len=24), pointer :: listLoadName(:) => null()
+    character(len=24), parameter :: listCellJv = "&&EXLIMA.LISTCELL"
+    integer(kind=8) :: nbCell
+    integer(kind=8), pointer :: listCell(:) => null()
+    integer(kind=8) :: nbPouxLoad
+    aster_logical :: partialMesh
+    aster_logical :: lLoadsFromUser, lLoadsHarmo
+    character(len=8) :: resultIn
+    character(len=16) :: resultType
 !
-    character(len=8) :: k8b, model, cara_elem
-    character(len=24) :: mater, mateco
-    character(len=16) :: typemo
-    character(len=19) :: refe, masse, chdynr, chdepl
-    character(len=24) :: noojb
-    integer(kind=8) :: nbchar
-    character(len=19) :: lischa
-    integer(kind=8), pointer :: liste_mailles(:) => null()
-    integer(kind=8), pointer :: v_list_store(:) => null()
-    character(len=8), pointer :: lcha(:) => null()
+! --------------------------------------------------------------------------------------------------
 !
     call jemarq()
-!
-    typemo = ' '
-    suropt = ' '
-    nbchar = 0
-    ioccur = 0
-    nbchre = 0
-    lischa = '&&CCVEPO.LISCHA'
-    if (typesd .eq. 'MODE_MECA') then
-        call rsadpa(resuin, 'L', 1, 'TYPE_MODE', 1, &
-                    0, sjv=ltymo)
-        typemo = zk16(ltymo)
+
+! - Initialisations
+    nbLoad = 0
+    nbPouxLoad = 0
+    listLoad = '&&CCVEPO.LISCHA'
+    numeStore0 = postCompResu%listStore(1)
+    resultIn = postCompResu%resultIn
+    resultType = postCompResu%resultType
+
+! - We need a model
+    if (model .eq. " ") then
+        call utmess('F', 'CALCCHAMP1_10')
     end if
-!
-!     REDUCTION DU LIGREL SUR LA BASE DE GROUP_MA, GROUP_NO, ETC.
-    n1 = getexm(' ', 'GROUP_MA')
-    n2 = getexm(' ', 'MAILLE')
-    if (n1+n2 .ne. 0) then
-        call exlima(' ', 0, 'V', modele, ligrel)
-    else
-        call utmamo(modele, nbmaal, '&&CCVEPO.LISTE_MAILLES')
-        call jeveuo('&&CCVEPO.LISTE_MAILLES', 'L', vi=liste_mailles)
+    call dismoi('NOM_LIGREL', model, 'MODELE', repk=modelLigrel)
+    call dismoi('NOM_MAILLA', model, 'MODELE', repk=mesh)
+
+! - Get ligrel
+    partialMesh = hasCellsDefinedFromCmd(factorKeyword, iOccZero)
+    if (partialMesh) then
+! ----- Generate name of ligrel
         noojb = '12345678.LIGR000000.LIEL'
         call gnomsd(' ', noojb, 14, 19)
         ligrel = noojb(1:19)
-        ASSERT(ligrel .ne. ' ')
-        call exlim1(liste_mailles, nbmaal, modele, 'V', ligrel)
-        call jedetr('&&CCVEPO.LISTE_MAILLES')
+
+! ----- Get list of cells from user
+        call getelem(mesh, factorKeyword, iOccZero, 'F', listCellJv, nbCell, model=model)
+        ASSERT(nbCell .ne. 0)
+        call jeveuo(listCellJv, 'L', vi=listCell)
+
+! ----- Create FED (ligrel) from list of cells
+        call createFEDFromList(model, jvBase, ligrel, &
+                               nbCell, listCell)
+
+! ----- Cleaning
+        call jedetr(listCellJv)
+
+    else
+        ligrel = modelLigrel
     end if
-!
-    call dismoi('EXI_POUX', ligrel, 'LIGREL', repk=k8b)
-    exipou = .false.
-!     SPECIAL POUTRE A LA POUX...
-    if (k8b(1:3) .eq. 'OUI') then
-        exipou = .true.
-!       ON VERIFIE SI DERIERE LE TYPESD MODE_MECA ON TROUVE UN MODE_DYN
-        if ((typesd .eq. 'MODE_MECA' .and. typemo(1:8) .eq. 'MODE_DYN') .or. typesd .eq. &
-            'DYNA_TRANS' .or. typesd .eq. 'MODE_ACOU' .or. typesd .eq. 'DYNA_HARMO') then
-            refe = resuin
-            suropt = 'MASS_MECA'
-            call dismoi('REF_MASS_PREM', refe, 'RESU_DYNA', repk=masse, arret='C', &
-                        ier=ierd)
-            if (masse .ne. ' ') then
-                call dismoi('SUR_OPTION', masse, 'MATR_ASSE', repk=suropt, arret='C', &
-                            ier=ierd)
+
+! - Modal type
+    modalType = ' '
+    if (resultType .eq. 'MODE_MECA') then
+        call rsadpa(resultIn, 'L', 1, 'TYPE_MODE', 1, 0, sjv=jvPara)
+        modalType = zk16(jvPara)
+    end if
+
+! - Detect POUX on FED
+    call dismoi('EXI_POUX', ligrel, 'LIGREL', repk=answer)
+    postCompPoux%lPoux = answer .eq. "OUI"
+
+    if (postCompPoux%lPoux) then
+! ----- Get option used to compute mass matrix
+        if ((resultType .eq. 'MODE_MECA' .and. modalType(1:8) .eq. 'MODE_DYN') .or. &
+            resultType .eq. 'DYNA_TRANS' .or. &
+            resultType .eq. 'MODE_ACOU' .or. &
+            resultType .eq. 'DYNA_HARMO') then
+            postCompPoux%optionMass = 'MASS_MECA'
+            call dismoi('REF_MASS_PREM', resultIn, 'RESU_DYNA', &
+                        repk=massMatr, arret='C', ier=ierd)
+            if (massMatr .ne. ' ') then
+                call dismoi('SUR_OPTION', massMatr, 'MATR_ASSE', &
+                            repk=postCompPoux%optionMass, arret='C', ier=ierd)
             end if
-            call rsexch('F', resuin, 'DEPL', 1, chdepl, &
-                        ierd)
-            chdynr = '&&MECALM.M.GAMMA'
-            call copich('V', chdepl(1:19), chdynr)
+
+! --------- Create M.Gamma vector
+            call rsexch('F', resultIn, 'DEPL', 1, chdepl, ierd)
+            call copich('V', chdepl, postCompPoux%chdynr)
         end if
-        call jeveuo(lisord, 'L', vi=v_list_store)
-        if (option .eq. 'REAC_NODA') then
-            call medome_once(resuin, v_list_store, nbordr, &
-                             list_load_=lischa)
-            call lisnch(lischa, nbchar)
+
+! ----- Get list of loads
+        if (option .eq. "REAC_NODA") then
+            call medome_once(resultIn, postCompResu%listStore, postCompResu%nbStore, &
+                             list_load_=listLoad, model_=modelOnce)
         else
-            call medom1(model, mater, mateco, cara_elem, lischa, nbchar, &
-                        resuin, v_list_store(1))
+            call rs_get_listload(resultIn, numeStore0, listLoad, iexcit)
+            if (iexcit .eq. 1) then
+                call getListLoadsUser(postCompResu, model, &
+                                      lLoadsFromUser, listLoad24, lLoadsHarmo)
+                listLoad = listLoad24(1:19)
+            end if
         end if
-!       VERIFIE L'UNICITE DE LA CHARGE REPARTIE
-        if (nbchar .ne. 0) then
-            call jeveuo(lischa//'.LCHA', 'L', vk8=lcha)
-            ioccur = 0
-            call cochre(lcha, nbchar, nbchre, ioccur)
-            if (nbchre .gt. 1) then
+        call getNbLoadsFromList(listLoad, nbLoad)
+
+! ----- Detect distributed load on beam
+        if (nbLoad .ne. 0) then
+            call jeveuo(listLoad(1:19)//'.LCHA', 'L', vk24=listLoadName)
+            call cochre(listLoadName, nbLoad, nbPouxLoad, postCompPoux%loadIndx)
+            if (nbPouxLoad .gt. 1) then
                 call utmess('F', 'CALCULEL2_92')
             end if
         end if
+
     end if
 !
     call jedema()

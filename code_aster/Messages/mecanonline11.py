@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -27,7 +27,6 @@ cata_msg = {
     3: _("""Préparation du second membre pour l'accélération initiale."""),
     4: _("""Calcul des chargements."""),
     5: _("""Calcul des chargements spécifiques à la dynamique."""),
-    6: _("""Calcul de l'impédance (dynamique)."""),
     7: _("""Calcul de l'effet sur le second membre des macro-éléments."""),
     8: _("""Calcul des efforts intérieurs (sans intégration de la loi de comportement)."""),
     9: _("""Calcul des forces de rappel dynamique."""),

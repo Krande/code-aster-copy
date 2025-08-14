@@ -38,9 +38,8 @@ subroutine thcalr(newcal, tysd, knum, lload_name, resuco, &
 ! ----------------------------------------------------------------------
 !
 #include "asterf_types.h"
-#include "jeveux.h"
-#include "asterc/getres.h"
 #include "asterfort/calcop.h"
+#include "asterfort/callCalcul.h"
 #include "asterfort/dismoi.h"
 #include "asterfort/erglth.h"
 #include "asterfort/exlima.h"
@@ -70,6 +69,7 @@ subroutine thcalr(newcal, tysd, knum, lload_name, resuco, &
 #include "asterfort/titre.h"
 #include "asterfort/utmess.h"
 #include "asterfort/wkvect.h"
+#include "jeveux.h"
 !
     integer(kind=8) :: nbordr, nb_load
     integer(kind=8) :: vali
@@ -79,7 +79,8 @@ subroutine thcalr(newcal, tysd, knum, lload_name, resuco, &
     character(len=24) :: mate
     aster_logical :: newcal
 !
-!     --- VARIABLES LOCALES ---
+! --------------------------------------------------------------------------------------------------
+!
     integer(kind=8) :: iaux, jordr, iordr, jcha, iret1, iret, bufin1, iad
     integer(kind=8) :: ifm, niv, linst, niveau, n2
     integer(kind=8) :: nuord, nh, nbac, nbpa, jpa, nbpara
@@ -91,32 +92,28 @@ subroutine thcalr(newcal, tysd, knum, lload_name, resuco, &
     parameter(nompro='THCALR')
     character(len=8) :: ma, k8b
     character(len=8) :: psourc
-    character(len=16) :: option, nomcmd, k16b
+    character(len=16) :: option
     character(len=19) :: cartef, nomgdf, carteh, nomgdh, cartet, nomgdt, cartes
     character(len=19) :: nomgds, leres1
     character(len=24) :: chcara(18), chelem, chtemm, chtemp
     character(len=24) :: chflum, chsour, chflup, cherre, cherrn
     character(len=24) :: chgeom, chharm, nompar, mateco
-    character(len=24) :: lesopt, blan24
+    character(len=24) :: lesopt
     character(len=24) :: ligrel, ligrmo
     aster_logical :: evol
-    real(kind=8) :: zero
-    parameter(zero=0.d0)
+    real(kind=8), parameter :: zero = 0.d0
+!
+! --------------------------------------------------------------------------------------------------
 !
     call jemarq()
-    call getres(k8b, k16b, nomcmd)
     call jerecu('V')
 !
-!            '123456789012345678901234'
-    blan24 = '                        '
-    k8b = '        '
     nh = 0
-    chgeom = blan24
-    chtemp = blan24
-    chharm = blan24
-    chelem = blan24
+    chgeom = " "
+    chtemp = " "
+    chharm = " "
+    chelem = " "
     lesopt = '&&'//nompro//'.LES_OPTION     '
-!
 !
     call infmaj()
     call infniv(ifm, niv)
@@ -152,21 +149,19 @@ subroutine thcalr(newcal, tysd, knum, lload_name, resuco, &
         call titre()
     end if
 !
-!
-!============ DEBUT DE LA BOUCLE SUR LES OPTIONS A CALCULER ============
     do iopt = 1, nbopt
         option = zk16(jopt+iopt-1)
 !
         call jeveuo(knum, 'L', jordr)
-!
-        call calcop(option, lesopt, resuco, resuc1, knum, &
-                    nbordr, tysd, iret)
-        if (iret .eq. 0) goto 120
-!
+
+        if (callCalcul(option)) then
+            call calcop(option, lesopt, resuco, resuc1, knum, &
+                        nbordr, tysd, iret)
+            if (iret .eq. 0) goto 120
+        end if
 !
         nuord = zi(jordr)
-        call medom1(modele, mate, mateco, cara, lload_name, nb_load, &
-                    resuco, nuord)
+        call medom1(modele, mate, mateco, cara, lload_name, nb_load, resuco, nuord)
         call jeveuo(lload_name//'.LCHA', 'L', jcha)
 !
         call mecham(option, modele, cara, nh, chgeom, &

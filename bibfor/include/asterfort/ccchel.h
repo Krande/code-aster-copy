@@ -18,26 +18,22 @@
 #include "asterf_types.h"
 !
 interface
-    subroutine ccchel(option, modele, resuin, resuou, numord,&
-                      nordm1, mater , mateco, carael, typesd, ligrel,&
-                      l_poux, exitim, lischa, nbchre, ioccur,&
-                      suropt, basopt, resout)
-        character(len=16) :: option
-        character(len=8) :: modele
-        character(len=8) :: resuin
-        character(len=8) :: resuou
-        integer(kind=8) :: numord
-        integer(kind=8) :: nordm1
-        character(len=24) :: mater, mateco
-        character(len=8) :: carael
-        character(len=16) :: typesd
-        character(len=24) :: ligrel
-        aster_logical, intent(in) :: l_poux, exitim
-        character(len=19) :: lischa
-        integer(kind=8) :: nbchre
-        integer(kind=8) :: ioccur
-        character(len=24) :: suropt
-        character(len=1) :: basopt
-        character(len=24) :: resout
+    subroutine ccchel(option, &
+                      modelZ, materFieldZ, materCodeZ, caraElemZ, listLoadZ, &
+                      resultIn, resultOut, resultType, &
+                      numeStore, numeStorePrev, &
+                      ligrel, isTransient, postCompPoux, jvBase, &
+                      fieldNameOut)
+        use postComp_type
+        character(len=16), intent(in) :: option
+        character(len=*), intent(in) :: modelZ, materFieldZ, materCodeZ, caraElemZ, listLoadZ
+        character(len=8), intent(in) :: resultIn, resultOut
+        character(len=16), intent(in) ::resultType
+        integer(kind=8), intent(in) :: numeStore, numeStorePrev
+        character(len=24), intent(in) :: ligrel
+        aster_logical, intent(in) :: isTransient
+        type(POST_COMP_POUX), intent(in) :: postCompPoux
+        character(len=1), intent(in) :: jvBase
+        character(len=24), intent(out) :: fieldNameOut
     end subroutine ccchel
 end interface

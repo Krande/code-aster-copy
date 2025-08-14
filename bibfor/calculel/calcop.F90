@@ -16,14 +16,17 @@
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
 !
-subroutine calcop(option, lisopt, resuin, resuou, lisord, &
-                  nbordr, typesd, codret, base, tldist)
+subroutine calcop(option, listOptJvZ, resultIn, resultOut, listStoreJv, &
+                  nbStore, resultType, codret, jvBase_, tldist_)
 !
+    use postComp_type
+    use postComp_module
     implicit none
 !
-#include "asterf_types.h"
-#include "jeveux.h"
 #include "asterc/getexm.h"
+#include "asterf_types.h"
+#include "asterfort/as_allocate.h"
+#include "asterfort/as_deallocate.h"
 #include "asterfort/assert.h"
 #include "asterfort/ccchel.h"
 #include "asterfort/ccchno.h"
@@ -36,9 +39,12 @@ subroutine calcop(option, lisopt, resuin, resuou, lisord, &
 #include "asterfort/detrsd.h"
 #include "asterfort/dismoi.h"
 #include "asterfort/exisd.h"
-#include "asterfort/infniv.h"
+#include "asterfort/exixfe.h"
+#include "asterfort/getelem.h"
+#include "asterfort/getvid.h"
 #include "asterfort/getvtx.h"
 #include "asterfort/indk16.h"
+#include "asterfort/infniv.h"
 #include "asterfort/isParallelMesh.h"
 #include "asterfort/jedema.h"
 #include "asterfort/jedetc.h"
@@ -48,256 +54,259 @@ subroutine calcop(option, lisopt, resuin, resuou, lisord, &
 #include "asterfort/jenonu.h"
 #include "asterfort/jeveuo.h"
 #include "asterfort/jexnom.h"
-#include "asterfort/medom2.h"
+#include "asterfort/medom1.h"
 #include "asterfort/pcptcc.h"
 #include "asterfort/reliem.h"
+#include "asterfort/rs_get_liststore.h"
+#include "asterfort/rs_get_model.h"
 #include "asterfort/rsadpa.h"
 #include "asterfort/rsexc1.h"
 #include "asterfort/rslesd.h"
 #include "asterfort/rsnoch.h"
-#include "asterfort/rsorac.h"
-#include "asterfort/srmedo.h"
 #include "asterfort/utmess.h"
 #include "asterfort/wkvect.h"
 #include "asterfort/xthpos.h"
-#include "asterfort/exixfe.h"
+#include "jeveux.h"
 !
-    integer(kind=8) :: nbordr, codret, tbid(1)
-    character(len=1), optional, intent(in) :: base
-    character(len=8) :: resuin, resuou
-    character(len=16) :: option, typesd
-    character(len=19) :: lisord
-    character(len=*) :: lisopt
-    aster_logical, optional :: tldist
-!  CALC_CHAMP - CALCUL D'UNE OPTION
-!               ----         --
-! ----------------------------------------------------------------------
+    character(len=16), intent(in) :: option
+    character(len=*), intent(in) :: listOptJvZ
+    character(len=8), intent(in) :: resultIn, resultOut
+    character(len=19), intent(in) :: listStoreJv
+    integer(kind=8), intent(in) :: nbStore
+    character(len=16), intent(in) :: resultType
+    integer(kind=8), intent(out) ::  codret
+    character(len=1), optional, intent(in) :: jvBase_
+    aster_logical, optional, intent(in)  :: tldist_
 !
-!  ROUTINE DE BASE DE CALC_CHAMP
+! --------------------------------------------------------------------------------------------------
 !
-! IN  :
-!   OPTION  K16  NOM DE L'OPTION A CALCULER
-!   RESUIN  K8   NOM DE LA STRUCTURE DE DONNEES RESULTAT IN
-!   RESUOU  K8   NOM DE LA STRUCTURE DE DONNEES RESULTAT OUT
-!   NBORDR  I    NOMBRE DE NUMEROS D'ORDRE
-!   LISORD  K19  LISTE DE NUMEROS D'ORDRE
-!   TYPESD  K16  TYPE DE LA STRUCTURE DE DONNEES RESULTAT
-!   BASE    K1   BASE SUR LAQUELLE SERA SAUVEGARDEE LES CHAMP
-!                DEMANDES
+!  CALC_CHAMP
 !
-! IN/OUT :
-!   LISOPT  K19  LISTE D'OPTIONS A METTRE SUR LA BASE GLOBALE
-!                ATTENTION CETTE LISTE PEUT ETRE MODIFIEE PAR CALCOP
-!                LES OPTIONS DECLENCHEES SONT SUPPRIMEES DE LA LISTE
-!   TLDIST LOG   SI PRESENT, ON CHERCHE LE MOT-CLE PARALLELISME_TEMPS
-!                ET SI POSSIBLE ON L'ACTIVE.
+!  Main subroutine to compute option
 !
-! OUT :
-!   CODRET  I    CODE RETOUR (0 SI OK, 1 SINON)
-! ----------------------------------------------------------------------
-! person_in_charge: nicolas.sellenet at edf.fr
-    aster_logical :: exitim, exipou, optdem, dbg_ob, dbgv_ob, lcpu, ltest, ldist
-    aster_logical :: ligmod, lbid, lsdpar, l_pmesh
+! --------------------------------------------------------------------------------------------------
+!
+! In  option            : option to compute
+! In  listOptionJv      : JEVEUX name object for list of options to compute
+! In  resultIn          : name of datastructure for input results
+! In  resultOut         : name of datastructure for output results
+! In  nbStore           : number of storing indexes
+! In  listStoreJv       : JEVEUX name object for list of storing indexes
+! In  resultType        : type of results datastructure
+! Out codret            : error code
+!                           0 - Everything is OK
+!                           1 - Something goes wrong
+! In  jvBase            : jeveux base to save fields
+! In  tlDist            : time distribution
+!
+! --------------------------------------------------------------------------------------------------
+!
+    character(len=8), parameter :: jvBaseName = '&&CALCOP'
+    character(len=24), parameter :: restCellJv = '&&OP0106.MES_MAILLES'
+    aster_logical :: isTransient, isOptionFromUser, dbg_ob, dbgv_ob, lcpu, ltest, ldist
+    aster_logical :: ligrelHasBeenChanged, lbid, lsdpar, l_pmesh
+    aster_logical :: lRestCell
     mpi_int :: mpicou, mpibid
-!
-    integer(kind=8) :: nopout, jlisop, iop, ibid, nbord2, lres, n0, n1, n2, n3, posopt, jvcham
-    integer(kind=8) :: nbtrou, minord, maxord, jlinst, iordr, nbordl, rang, nbproc
-    integer(kind=8) :: numord, iret, npass, nbma, codre2, jliopg, nbopt, ipas, nbpas, jldist
-    integer(kind=8) :: jacalc, nordm1, jpara, nbchre, ioccur, ncharg, p, k, numork
-    integer(kind=8) :: ideb, ifin, irelat, ifm, niv, lonch, lonnew
-!
-    real(kind=8) :: r8b
+    integer(kind=8) :: nbOptEff, iOptEff, ibid, posopt, jvcham
+    integer(kind=8) :: numeStoreMin, numeStoreMax, jlinst, iStoreToCompute, nbStoreToCompute
+    integer(kind=8) :: rang, nbproc
+    integer(kind=8) :: numeStore, iret, nbRestCell, codre2, nbOpt, ipas, nbpas, jldist
+    integer(kind=8) :: numeStorePrev, nbLoad, p, k, numork
+    integer(kind=8) :: ideb, ifin, irelat, ifm, niv, nbEqua, nbEquaNew
     real(kind=8), pointer :: noch(:) => null()
     real(kind=8), pointer :: prbid(:) => null()
-!
-    complex(kind=8) :: c16b
     complex(kind=8), pointer :: nochc(:) => null()
     complex(kind=8), pointer :: pcbid(:) => null()
+    integer(kind=8) :: nbStoreIn, nocc
+    integer(kind=8), pointer :: listStoreIn(:) => null(), listStore(:) => null()
+    integer(kind=8), pointer :: lacalc(:) => null()
+    character(len=1) :: jvBase, kbid, ktyp
+    character(len=5) :: numeOptStr
+    character(len=8) :: model, modelNew, modelCmd, modelRefe
+    character(len=8) :: caraElem, mesh
+    character(len=16) :: optionEff
+    character(len=19) :: listLoad, k19b, nochou, nochok, partsd
+    character(len=24) :: materField, materCode
+    character(len=24) :: fieldNameOut, ligrel, ligrelSave, vldist, vcham, vcnoch
+    character(len=24), parameter :: k24b = " "
+    character(len=24) :: listOptEffJv, listStoreOptJv
+    character(len=24) :: chamno
+    character(len=24) :: listOptJv
+    character(len=16), pointer :: listOpt(:) => null(), listOptEff(:) => null()
+    type(POST_COMP_REST) :: postCompRest
+    type(POST_COMP_POUX) :: postCompPoux
+    type(POST_COMP_RESU) :: postCompResu
 !
-    character(len=1) :: basopt, kbid, ktyp
-    character(len=5) :: numopt
-    character(len=8) :: modele, carael, k8b, modnew
-    character(len=8) :: nomail, nobase, modeli
-    character(len=11) :: nobaop
-    character(len=16) :: optio2, typmcl(4), motcle(4)
-    character(len=19) :: nonbor, lischa, k19b, nochou, nochok, partsd
-    character(len=24) :: chaout, ligrel, mater, ligres, mateco, k24b, vldist, vcham, vcnoch
-    character(len=24) :: noliop, lisins, mesmai, lacalc, suropt, mode24, chamno, modin
+! --------------------------------------------------------------------------------------------------
 !
     call jemarq()
-!
-!  On reporte ici un post-traitement XFEM depuis OP0025
+    call infniv(ifm, niv)
+
+! - Initializations
+    codret = 1
+    listOptJv = listOptJvZ
+    listLoad = '&&CALCOP.LISCHA'
+    nbLoad = 0
+
+! - On reporte ici un post-traitement XFEM depuis OP0025
     if (option .eq. 'TEMP_ELGA') then
-        call dismoi('NOM_MODELE', resuin, 'RESULTAT', repk=modin)
-        call exixfe(modin, iret)
+        call dismoi('NOM_MODELE', resultIn, 'RESULTAT', repk=model)
+        call exixfe(model, iret)
         if (iret .ne. 0) then
-            call xthpos(resuin, resuou)
+            call xthpos(resultIn, resultOut)
             codret = 0
             goto 999
         end if
     end if
-!
-!
-    call infniv(ifm, niv)
-    codret = 1
-    npass = 0
-    nobase = '&&CALCOP'
-    lischa = '&&CALCOP.LISCHA'
-    ncharg = 0
-!
-!     ON CONSERVE CES OPTIONS POUR PERMETTRE LE CALCUL DANS STANLEY
-    if ((option .eq. 'ERTH_ELEM') .or. (option .eq. 'ERTH_ELNO')) goto 999
-!
-  if ((option .eq. 'ERME_ELEM') .or. (option .eq. 'ERME_ELNO') .or. (option .eq. 'QIRE_ELEM') .or. &
-        (option .eq. 'QIRE_ELNO')) goto 999
-!
-  if ((option .eq. 'SIZ1_NOEU') .or. (option .eq. 'SIZ2_NOEU') .or. (option .eq. 'ERZ1_ELEM') .or. &
-        (option .eq. 'ERZ2_ELEM') .or. (option .eq. 'QIZ1_ELEM') .or. (option .eq. 'QIZ2_ELEM')) &
-        goto 999
-!
-    if ((option .eq. 'SING_ELEM') .or. (option .eq. 'SING_ELNO')) goto 999
-!
-    call ccliop('OPTION', option, nobase, noliop, nopout)
-    if (nopout .eq. 0) goto 999
-!
-    nonbor = nobase//'.NB_ORDRE'
-    lacalc = nobase//'.ACALCULER'
-!
-    call jeveuo(noliop, 'L', jlisop)
-!
-    jliopg = 0
-    nbopt = 0
-    if (lisopt .ne. ' ') then
-        call jeveuo(lisopt, 'E', jliopg)
-        call jelira(lisopt, 'LONMAX', nbopt)
-    end if
-!
-    exitim = .false.
-    call jenonu(jexnom(resuin//'           .NOVA', 'INST'), iret)
-    if (iret .ne. 0) exitim = .true.
-!
-    call rsorac(resuin, 'TOUT_ORDRE', ibid, r8b, k8b, &
-                c16b, r8b, k8b, tbid, 1, &
-                nbtrou)
-    if (nbtrou .lt. 0) nbtrou = -nbtrou
-    call wkvect(nonbor, 'V V I', nbtrou, lres)
-    call rsorac(resuin, 'TOUT_ORDRE', ibid, r8b, k8b, &
-                c16b, r8b, k8b, zi(lres), nbtrou, &
-                nbord2)
-!     ON EN EXTRAIT LE MIN ET MAX DES NUMEROS D'ORDRE DE LA SD_RESUTLAT
-    minord = zi(lres)
-    maxord = zi(lres+nbord2-1)
-!
-    call rslesd(resuin, minord, modele, mater(1:8), carael)
-    call rsadpa(resuin, 'L', 1, 'MODELE', minord, &
-                0, sjv=jpara)
-    if (zk8(jpara) .ne. modele .and. zk8(jpara) .ne. ' ') then
-        call utmess('A', 'CALCULEL_24')
-    end if
-!
-    call dismoi('NOM_MAILLA', modele, 'MODELE', repk=nomail)
-    l_pmesh = isParallelMesh(nomail)
-!
-    call dismoi('MODELISATION', modele, 'MODELE', repk=modeli)
 
-!  ROUTINE PERMETTANT DE SAVOIR SI DES POUTRES SONT DANS LE LIGREL
-!   REDUIT ET DE VERIFIER LES CHARGES REPARTIES
-    call ccvepo(modele, resuin, typesd, lisord, nbordr, &
-                option, &
-                nbchre, ioccur, suropt, ligrel, exipou)
-!
-    if (option(6:9) .eq. 'NOEU') then
-        nbma = 0
-        n0 = getexm(' ', 'GROUP_MA')
-        n1 = getexm(' ', 'MAILLE')
-        mesmai = '&&OP0106.MES_MAILLES'
-        if (n0+n1 .ne. 0) then
-            call getvtx(' ', 'MAILLE', nbval=0, nbret=n2)
-            call getvtx(' ', 'GROUP_MA', nbval=0, nbret=n3)
-            if (n2+n3 .ne. 0) then
-                motcle(1) = 'GROUP_MA'
-                motcle(2) = 'MAILLE'
-                typmcl(1) = 'GROUP_MA'
-                typmcl(2) = 'MAILLE'
-                call reliem(' ', nomail, 'NU_MAILLE', ' ', 1, &
-                            2, motcle, typmcl, mesmai, nbma)
-            end if
+! - Access to list of storing index to compute options
+    if (nbStore .lt. 1) then
+        call utmess("F", "CALCCHAMP1_1")
+    end if
+    call jeveuo(listStoreJv, 'L', vi=listStore)
+
+! - Access to list of options
+    nbOpt = 0
+    if (listOptJv .ne. ' ') then
+        call jeveuo(listOptJv, 'E', vk16=listOpt)
+        call jelira(listOptJv, 'LONMAX', nbOpt)
+    end if
+
+! - Update list of options with dependencies => effective list of options
+    call ccliop(option, jvBaseName, listOptEffJv, nbOptEff)
+    if (nbOptEff .eq. 0) goto 999
+    call jeveuo(listOptEffJv, 'L', vk16=listOptEff)
+
+! - Transient computation
+    call jenonu(jexnom(resultIn//'           .NOVA', 'INST'), iret)
+    isTransient = iret .ne. 0
+
+! - Get minimum and maximum storage index in input result
+    call rs_get_liststore(resultIn, nbStoreIn)
+    ASSERT(nbStoreIn .gt. 0)
+    AS_ALLOCATE(vi=listStoreIn, size=nbStoreIn)
+    call rs_get_liststore(resultIn, nbStoreIn, listStoreIn)
+    numeStoreMin = listStoreIn(1)
+    numeStoreMax = listStoreIn(nbStoreIn)
+    AS_DEALLOCATE(vi=listStoreIn)
+
+! - Get model from command
+    modelCmd = " "
+    call getvid(' ', 'MODELE', scal=modelCmd, nbret=nocc)
+    if (nocc .eq. 0) then
+        modelCmd = " "
+    end if
+
+! - Get model from first storing index
+    call rs_get_model(resultIn, numeStoreMin, modelRefe, codret)
+    if (codret .lt. 0) then
+        call utmess('F', 'CALCCHAMP1_44')
+    end if
+
+! - Get mesh
+    call dismoi('NOM_MAILLA', modelRefe, 'MODELE', repk=mesh)
+    l_pmesh = isParallelMesh(mesh)
+
+! - Models are not consistents
+    if (modelCmd .ne. " ") then
+        if (modelRefe .ne. modelCmd) then
+            call utmess('F', 'CALCCHAMP1_2')
         end if
     end if
-!
+    model = modelRefe
+
+! - Prepare datastructure for management of resultat parameters
+    call setResuPara(resultIn, resultOut, resultType, &
+                     nbStore, listStore, listStoreJv, &
+                     postCompResu)
+
+! - Specific checks for beams
+    call ccvepo(option, modelRefe, &
+                postCompResu, &
+                postCompPoux)
+
+! - Create restricted list of cells for nodal option
+    nbRestCell = 0
+    if (option(6:9) .eq. 'NOEU') then
+        call getelem(mesh, " ", 1, ' ', restCellJv, nbRestCell)
+    end if
+    lRestCell = nbRestCell .ne. 0
+
+! - Management of multiple FED for partial computation of options
+    call initCompRest(nbStore, postCompRest)
+
 !     PREMIER PASSAGE POUR DETERMINER LES OPTIONS REELLEMENT A CALCULER
 !     EN PRENANT EN COMPTE LA DEPENDANCE
 !     PAR EXEMPLE SI SIGM_NOEU A BESOIN DE SIGM_ELNO QUI A BESOIN DE
 !     SIGM_ELGA ET QUE SIGM_ELNO EST PRESENTE ALORS ON N'A PAS BESOIN
 !     DE CALCULER SIGM_ELGA
-    call wkvect(lacalc, 'V V I', nopout, jacalc)
-!
-!     PAR DEFAUT, ON DOIT TOUT CALCULER
-!     ON COMMENCE PAR CALCULER LA LISTE DE NUMEROS D'ORDRE
-    do iop = 1, nopout
-        optio2 = zk24(jlisop+iop-1) (1:16)
-!
-        optdem = .false.
-        if (option .eq. optio2) optdem = .true.
-!
-        call cclord(iop, nbordr, lisord, nobase, optdem, &
-                    minord, maxord, resuin, resuou, lisins)
-        zi(jacalc-1+iop) = 1
+
+! - Create list of storing index to compute all options
+    do iOptEff = 1, nbOptEff
+        optionEff = listOptEff(iOptEff)
+        isOptionFromUser = (option .eq. optionEff)
+        call cclord(iOptEff, nbStore, listStore, jvBaseName, isOptionFromUser, &
+                    numeStoreMin, numeStoreMax, resultIn, resultOut)
     end do
-!
-!     PUIS ON RETIRE LES OPTIONS DONT LE CALCUL N'EST PAS UTILE
-    do iop = nopout-1, 1, -1
-        optio2 = zk24(jlisop+iop-1) (1:16)
-!
-        call cclodr(iop, nbordr, lisord, nobase, minord, &
-                    maxord, resuin, resuou, lacalc)
+
+! - Create object of flags for options to compute
+    AS_ALLOCATE(vi=lacalc, size=nbOptEff)
+
+! - First: everything has to been compute
+    lacalc(1:nbOptEff) = 1
+
+! - PUIS ON RETIRE LES OPTIONS DONT LE CALCUL N'EST PAS UTILE
+    do iOptEff = nbOptEff-1, 1, -1
+        optionEff = listOptEff(iOptEff)
+        call cclodr(iOptEff, nbStore, listStore, jvBaseName, numeStoreMin, &
+                    numeStoreMax, resultIn, resultOut, lacalc)
     end do
-!
-!
-!     COMME ON PARCOURT LES OPTIONS DANS L'ORDRE INVERSE DES DEPENDANCES
-!     ON SAIT QUE LES LISTES D'INSTANT SERONT CORRECTEMENT CREES
-    nobaop = nobase//'.OP'
-    do iop = 1, nopout
-        if (zi(jacalc-1+iop) .eq. 0) goto 20
-        optio2 = zk24(jlisop+iop-1) (1:16)
-!
-        optdem = .false.
-        if (option .eq. optio2) optdem = .true.
-!
-!       RECUPERATION DE LA LISTE DE NUMERO D'ORDRE
-        call codent(iop, 'D0', numopt)
-        lisins = nobaop//numopt
-        call jeveuo(lisins, 'L', jlinst)
-        nbordl = zi(jlinst)
-!
-!       SI L'OPTION CALCULEE ICI EST DEMANDEE PAR
-!       L'UTILISATUER, ON LA MET SUR LA BASE GLOBALE
-        basopt = 'G'
-        if (optio2 .ne. option) then
-            basopt = 'V'
+
+! - Loop on options to compute (dependencies)
+    do iOptEff = 1, nbOptEff
+! ----- Get current option
+        optionEff = listOptEff(iOptEff)
+        isOptionFromUser = (option .eq. optionEff)
+
+! ----- This option does have to been computed ?
+        if (lacalc(iOptEff) .eq. 0) cycle
+
+! ----- Get information of storing indexes to compute
+        call codent(iOptEff, 'D0', numeOptStr)
+        listStoreOptJv = jvBaseName//'.OP'//numeOptStr
+        call jeveuo(listStoreOptJv, 'L', jlinst)
+        nbStoreToCompute = zi(jlinst)
+
+! ----- Select JEVEUX base
+        jvBase = 'G'
+        if (isOptionFromUser) then
+            if (present(jvBase_)) then
+                jvBase = jvBase_
+            end if
         else
-            if (present(base)) then
-                basopt = base
+            jvBase = 'V'
+        end if
+
+!       CE BLOC A ETE AJOUTE POUR LE CAS OU UNE OPTION1 A DECLENCHE
+!       LE CALCUL D'UNE OPTION2 MAIS QUE CETTE OPTION2 EST ENSUITE
+!       REDEMANDEE DANS LE MEME CALC_CHAMP PAR L'UTILISATEUR
+        if (nbOpt .ne. 0) then
+            posopt = indk16(listOpt, optionEff, 1, nbOpt)
+            if (posopt .ne. 0) jvBase = 'G'
+            if (.not. isOptionFromUser .and. posopt .ne. 0) then
+                listOpt(posopt) = ' '
             end if
         end if
 !
-        if (nbopt .ne. 0) then
-            posopt = indk16(zk16(jliopg), optio2, 1, nbopt)
-            if (posopt .ne. 0) basopt = 'G'
-!         CE BLOC A ETE AJOUTE POUR LE CAS OU UNE OPTION1 A DECLENCHE
-!         LE CALCUL D'UNE OPTION2 MAIS QUE CETTE OPTION2 EST ENSUITE
-!         REDEMANDEE DANS LE MEME CALC_CHAMP PAR L'UTILISATEUR
-            if (.not. optdem .and. posopt .ne. 0) zk16(jliopg+posopt-1) = ' '
+        if (isOptionFromUser .and. (nbStoreToCompute .eq. 0)) then
+            call utmess('A', 'CALCCHAMP_1', sk=optionEff)
         end if
-!
-        if (optdem .and. (nbordl .eq. 0)) then
-            call utmess('A', 'CALCCHAMP_1', sk=optio2)
-        end if
-!
+
 ! SI PARALLELISME EN TEMPS: EVENTUELLE INITIALISATION CONTEXTE
-        if (present(tldist) .and. (optio2(6:9) .eq. 'NOEU') .and. (nbordl .ge. 1)) then
+        if (present(tldist_) .and. (optionEff(6:9) .eq. 'NOEU') &
+            .and. (nbStoreToCompute .ge. 1)) then
             call pcptcc(101, ldist, dbg_ob, dbgv_ob, lcpu, ltest, rang, nbproc, mpicou, &
-                        nbordl, nbpas, vldist, vcham, k24b, ibid, k19b, &
+                        nbStoreToCompute, nbpas, vldist, vcham, k24b, ibid, k19b, &
                         k24b, k24b, lbid, &
                         ibid, ibid, ibid, ibid, ibid, &
                         k24b, ibid, ibid, kbid, k24b, prbid, pcbid)
@@ -306,225 +315,265 @@ subroutine calcop(option, lisopt, resuin, resuou, lisord, &
         else
 ! SI LA QUESTION NE SE POSE PAS (APPEL RECURSIF CCFNRN > CALCOP OU OPTION ELGA/ELNO)
             call pcptcc(102, ldist, dbg_ob, dbgv_ob, lcpu, ltest, rang, nbproc, mpicou, &
-                        nbordl, nbpas, vldist, vcham, k24b, ibid, k19b, &
+                        nbStoreToCompute, nbpas, vldist, vcham, k24b, ibid, k19b, &
                         k24b, k24b, lbid, &
                         ibid, ibid, ibid, ibid, ibid, &
                         k24b, ibid, ibid, kbid, k24b, prbid, pcbid)
             call jeveuo(vldist, 'L', jldist)
         end if
-!
-! SI PARALLELISME EN TEMPS: ON DEBRANCHE L'EVENTUEL PARALLELISME EN ESPACE
-        mode24 = ' '
-        mode24 = trim(adjustl(modele))
+
+! ----- SI PARALLELISME EN TEMPS: ON DEBRANCHE L'EVENTUEL PARALLELISME EN ESPACE
+        if (modelCmd .ne. " ") then
+            if (modelRefe .ne. modelCmd) then
+                call utmess('F', 'CALCCHAMP1_2')
+            end if
+        end if
         call pcptcc(2, ldist, dbg_ob, lbid, lbid, lbid, rang, ibid, mpibid, &
                     ibid, ibid, k24b, k24b, k24b, ibid, k19b, &
-                    mode24, partsd, lsdpar, &
+                    model, partsd, lsdpar, &
                     ibid, ibid, ibid, ibid, ibid, &
                     k24b, ibid, ibid, kbid, k24b, prbid, pcbid)
         if (nbproc .eq. 1 .and. niv > 1) then
-            call utmess('I', 'PREPOST_25', sk=optio2)
+            call utmess('I', 'PREPOST_25', sk=optionEff)
         else if (nbproc .gt. 1) then
             if (ldist) then
                 ASSERT(.not. l_pmesh)
-                call utmess('I', 'PREPOST_22', si=nbordr, sk=optio2)
+                call utmess('I', 'PREPOST_22', si=nbStore, sk=optionEff)
             elseif (.not. l_pmesh) then
                 if (lsdpar) then
-                    call utmess('I', 'PREPOST_23', sk=optio2)
+                    call utmess('I', 'PREPOST_23', sk=optionEff)
                 else
-                    call utmess('I', 'PREPOST_24', sk=optio2)
+                    call utmess('I', 'PREPOST_24', sk=optionEff)
                 end if
             end if
         end if
 !
         codre2 = 0
         ligrel = ' '
-        ligres = ' '
+        ligrelSave = ' '
 ! SI PARALLELISME EN TEMPS: GESTION DE L'INDICE DE DECALAGE
         ipas = 1
-        lonch = -9999
-        do iordr = 1, nbordl
-!
-! FILTRE POUR EVENTUEL PARALLELISME EN TEMPS
-            if (((zi(jldist+iordr-1) .eq. rang) .and. (ldist)) .or. (.not. ldist)) then
-! SI PARALLELISME EN TEMPS: CALCUL DES INDICES DE DECALAGE
+        nbEqua = -9999
+        do iStoreToCompute = 1, nbStoreToCompute
+! --------- Current storing indexes
+            numeStore = zi(jlinst+iStoreToCompute+2)
+            numeStorePrev = numeStore-1
+
+            if (((zi(jldist+iStoreToCompute-1) .eq. rang) .and. (ldist)) &
+                .or. (.not. ldist)) then
+
+! ------------- Prepare indexes for time distribution
                 call pcptcc(4, ldist, dbg_ob, lbid, lbid, lbid, rang, nbproc, mpibid, &
                             ibid, nbpas, k24b, k24b, k24b, ibid, k19b, &
                             k24b, k24b, lbid, &
-                            iordr, ipas, ideb, ifin, irelat, &
+                            iStoreToCompute, ipas, ideb, ifin, irelat, &
                             k24b, ibid, ibid, kbid, k24b, prbid, pcbid)
-!
-                ligmod = .false.
-                numord = zi(jlinst+iordr+2)
-!
-!         NORDM1 NE SERT QUE POUR ENDO_ELGA
-                nordm1 = numord-1
-!
-                if (optio2(6:9) .eq. 'NOEU') then
-!
-! VERIFICATION DU CHANGEMENT DE MODELE EVENTUEL
-! CONSTRUCTION DU NOM DU CHAM_NO PRODUIT PAR L'OPTION
+                ligrelHasBeenChanged = .false.
+
+                if (optionEff(6:9) .eq. 'NOEU') then
                     if ((ldist) .and. (ideb .ne. ifin)) then
-! SI PARALLELISME EN TEMPS ET NPAS NON ATTEINT: NBPROC CHAM_NOS SIMULTANES
+! --------------------- SI PARALLELISME EN TEMPS ET NPAS NON ATTEINT: NBPROC CHAM_NOS SIMULTANES
                         p = 1
                         do k = ideb, ifin
                             numork = zi(jlinst+k+2)
-                            k8b = ' '
-                            call medom2(k8b, mater, mateco, carael, lischa, ncharg, &
-                                        resuin, numord, nbordr, 'V', npass, ligrel)
-                            modnew = ' '
-                            modnew = trim(adjustl(k8b))
-                            if (dbg_ob) &
-                     write (ifm, *) '< ', rang, 'calcop> modele_avant/modele_apres=', modele, modnew
-! CHANGEMENT DE MODELE ENTRE PAS DE TEMPS NON PREVU POUR L'INSTANT
-                            if (modele .ne. modnew) then
-                                call utmess('F', 'PREPOST_1')
-                            else
-                                modele = modnew
+! ------------------------- Get parameters
+                            call medom1(modelNew, materField, materCode, caraElem, &
+                                        listLoad, nbLoad, resultIn, numeStore)
+
+! ------------------------- Get ligrel
+                            ASSERT(option .ne. 'SIRO_ELEM')
+                            call getLigrel(option, modelNew, resultOut, 'V', postCompRest, &
+                                           ligrel)
+
+! ------------------------- Some checks
+                            call checkOption(optionEff, ligrel, resultType)
+
+                            if (dbg_ob) then
+                                write (ifm, *) '< ', rang, &
+                                    'calcop> modele_avant/modele_apres=', model, modelNew
                             end if
-                            call rsexc1(resuou, optio2, numork, nochok)
-! CAR CES VARIABLES DOIVENT ETRE CONNUE POUR LE NUMORD COURANT
-                            if (numork .eq. numord) then
+
+                            if (model .ne. modelNew) then
+                                call utmess('F', 'PREPOST_1')
+                            end if
+                            model = modelNew
+
+! ------------------------- Get field from output result
+                            call rsexc1(resultOut, optionEff, numork, nochok)
+                            if (numork .eq. numeStore) then
                                 nochou = nochok
-                                if (ligres .ne. ligrel) ligmod = .true.
+                                ligrelHasBeenChanged = ligrelSave .ne. ligrel
                             end if
                             zk24(jvcham+p-1) = nochok
-                          if (dbg_ob) write (ifm, *) '< ', rang, 'calcop> p/k/chamnk=', p, k, nochok
+
+                            if (dbg_ob) then
+                                write (ifm, *) '< ', rang, 'calcop> p/k/chamnk=', p, k, nochok
+                            end if
                             p = p+1
                         end do
-                        call ccchno(optio2, numord, resuin, resuou, chaout(1:19), &
-                                    mesmai, nomail, modele, carael, basopt, &
-                                    ligrel, ligmod, codre2, nochou=nochou, &
-                                    ideb=ideb, ifin=ifin, vcham=vcham)
+
+! --------------------- Compute nodal field
+                        call ccchno(optionEff, numeStore, resultIn, resultOut, fieldNameOut, &
+                                    lRestCell, nbRestCell, restCellJv, &
+                                    mesh, model, caraElem, jvBase, &
+                                    ligrel, ligrelHasBeenChanged, codre2, &
+                                    nochou, &
+                                    ideb_=ideb, ifin_=ifin, vcham_=vcham)
                     else
-! SINON, 1 SEUL A LA FOIS
-! SI PARALLELISME EN TEMPS et NPAS ATTEINT (RELIQUAT DE PAS DE TEMPS)
-! OU SI NON PARALLELISME EN TEMPS
-                        k8b = ' '
-                        call medom2(k8b, mater, mateco, carael, lischa, ncharg, &
-                                    resuin, numord, nbordr, 'V', npass, ligrel)
-                        modnew = ' '
-                        modnew = trim(adjustl(k8b))
-! SI PARALLELISME EN TEMPS: CAS DE FIGURE DU RELIQUAT DE PAS DE TEMPS (AU CAS OU)
+! --------------------- SINON, 1 SEUL A LA FOIS
+! --------------------- SI PARALLELISME EN TEMPS et NPAS ATTEINT (RELIQUAT DE PAS DE TEMPS)
+! --------------------- OU SI NON PARALLELISME EN TEMPS
+! --------------------- Get parameters
+                        call medom1(modelNew, materField, materCode, caraElem, &
+                                    listLoad, nbLoad, resultIn, numeStore)
+
+! --------------------- Get ligrel
+                        ASSERT(option .ne. 'SIRO_ELEM')
+                        call getLigrel(option, modelNew, resultOut, 'V', postCompRest, &
+                                       ligrel)
+
+! --------------------- Some checks
+                        call checkOption(optionEff, ligrel, resultType)
+
+! --------------------- SI PARALLELISME EN TEMPS: CAS DE FIGURE DU RELIQUAT DE PAS DE TEMPS
+! --------------------- (AU CAS OU)
                         if (ldist) then
-                            if (dbg_ob) &
-                     write (ifm, *) '< ', rang, 'calcop> modele_avant/modele_apres=', modele, modnew
-                            if (modele .ne. modnew) call utmess('F', 'PREPOST_1')
+                            if (dbg_ob) then
+                                write (ifm, *) '< ', rang, &
+                                    'calcop> modele_avant/modele_apres=', model, modelNew
+                            end if
+                            if (model .ne. modelNew) then
+                                call utmess('F', 'PREPOST_1')
+                            end if
                         end if
-                        modele = modnew
-                        if (ligres .ne. ligrel) ligmod = .true.
-                        call rsexc1(resuou, optio2, numord, nochou)
-                        call ccchno(optio2, numord, resuin, resuou, chaout(1:19), &
-                                    mesmai, nomail, modele, carael, basopt, &
-                                    ligrel, ligmod, codre2, nochou=nochou)
+                        model = modelNew
+                        ligrelHasBeenChanged = ligrelSave .ne. ligrel
+
+                        call rsexc1(resultOut, optionEff, numeStore, nochou)
+                        call ccchno(optionEff, numeStore, resultIn, resultOut, fieldNameOut, &
+                                    lRestCell, nbRestCell, restCellJv, &
+                                    mesh, model, caraElem, jvBase, &
+                                    ligrel, ligrelHasBeenChanged, codre2, &
+                                    nochou)
                     end if
-!
-! SI PARALLELISME EN TEMPS:  COM MPI CHAM_NOS.VALE DONT LES NOMS SONT STOCKES DANS VCHAM
+! ----------------- SI PARALLELISME EN TEMPS:  COM MPI CHAM_NOS.VALE DONT LES NOMS
+! ----------------- SONT STOCKES DANS VCHAM
                     chamno = nochou(1:19)//'.VALE'
                     if (ldist) then
                         call dismoi('TYPE_SCA', chamno(1:19), 'CHAM_NO', repk=ktyp)
-                        call jelira(chamno, 'LONMAX', lonnew)
-! SI PARALLELISME EN TEMPS:
-! POUR L'INSTANT, ON SUPPOSE QUE TOUS LES CHAM_NOS SONT DE LONGUEUR IDENTIQUE
-! ON TESTE SI C'EST LE CAS SUR LES NBPROCS PAS DE TEMPS CONTIGUES ET SUR LE PAS PRECEDENT
+                        call jelira(chamno, 'LONMAX', nbEquaNew)
+! --------------------- SI PARALLELISME EN TEMPS:
+! --------------------- POUR L'INSTANT, ON SUPPOSE QUE TOUS LES CHAM_NOS SONT DE LONGUEUR IDENTIQUE
+! --------------------- ON TESTE SI C'EST LE CAS SUR LES NBPROCS PAS DE TEMPS CONTIGUES ET
+! --------------------- SUR LE PAS PRECEDENT
                         call pcptcc(6, ldist, dbg_ob, lbid, lbid, lbid, rang, ibid, mpibid, &
                                     ibid, ibid, k24b, k24b, k24b, ibid, k19b, &
                                     k24b, k24b, lbid, &
                                     ibid, ipas, ibid, ibid, ibid, &
-                                    k24b, lonnew, lonch, kbid, k24b, prbid, pcbid)
-                        lonch = lonnew
+                                    k24b, nbEquaNew, nbEqua, kbid, k24b, prbid, pcbid)
+                        nbEqua = nbEquaNew
+
+! --------------------- Access to nodal field
                         if (ktyp .eq. 'R') then
                             call jeveuo(chamno, 'L', vr=noch)
                         else if (ktyp .eq. 'C') then
                             call jeveuo(chamno, 'L', vc=nochc)
                         else
-                            ASSERT(.False.)
+                            ASSERT(ASTER_FALSE)
                         end if
-                        if (dbg_ob) &
-                        write (ifm, *) '< ', rang, 'calcop> chamno/ktyp/lonch=', chamno, ktyp, lonch
+                        if (dbg_ob) then
+                            write (ifm, *) '< ', rang, &
+                                'calcop> chamno/ktyp/nbEqua=', chamno, ktyp, nbEqua
+                        end if
                     end if
+
                     call pcptcc(7, ldist, dbg_ob, lbid, lbid, lbid, rang, nbproc, mpicou, &
                                 ibid, ibid, k24b, vcham, k24b, ibid, k19b, &
                                 k24b, k24b, lbid, &
                                 ibid, ipas, ideb, ifin, irelat, &
-                                k24b, ibid, lonch, ktyp, vcnoch, noch, nochc)
-!
-! PARALLELISME EN TEMPS: TEST DE VERIFICATION
+                                k24b, ibid, nbEqua, ktyp, vcnoch, noch, nochc)
+
+! ----------------- PARALLELISME EN TEMPS: TEST DE VERIFICATION
                     call pcptcc(8, ldist, lbid, dbgv_ob, lbid, lbid, ibid, ibid, mpibid, &
                                 ibid, ibid, k24b, vcham, k24b, ibid, k19b, &
                                 k24b, k24b, lbid, &
                                 ibid, ibid, ideb, ifin, ibid, &
                                 chamno, ibid, ibid, kbid, k24b, prbid, pcbid)
 !
-                else if (optio2(6:7) .eq. 'EL') then
-!
-                    if (option .eq. 'SIRO_ELEM') then
-                        call srmedo(modele, mater, mateco, carael, lischa, ncharg, &
-                                    resuin, numord, nbordr, basopt, &
-                                    npass, ligrel)
-                    else
-                        call medom2(modele, mater, mateco, carael, lischa, ncharg, &
-                                    resuin, numord, nbordr, basopt, &
-                                    npass, ligrel)
-                    end if
-!
-                    call ccchel(optio2, modele, resuin, resuou, numord, &
-                                nordm1, mater, mateco, carael, typesd, ligrel, &
-                                exipou, exitim, lischa, nbchre, ioccur, &
-                                suropt, basopt, chaout)
-                    if (chaout .eq. ' ') goto 20
-!
+                else if (optionEff(6:7) .eq. 'EL') then
+
+! ----------------- Get parameters
+                    call medom1(model, materField, materCode, caraElem, &
+                                listLoad, nbLoad, resultIn, numeStore)
+
+! ----------------- Get ligrel
+                    call getLigrel(option, model, resultOut, jvBase, postCompRest, &
+                                   ligrel)
+
+! ----------------- Some checks
+                    call checkOption(optionEff, ligrel, resultType)
+
+! ----------------- Compute elementary field
+                    call ccchel(optionEff, &
+                                model, materField, materCode, caraElem, listLoad, &
+                                resultIn, resultOut, resultType, &
+                                numeStore, numeStorePrev, &
+                                ligrel, isTransient, postCompPoux, jvBase, &
+                                fieldNameOut)
+                    if (fieldNameOut .eq. ' ') goto 20
+
+                else
+                    ASSERT(ASTER_FALSE)
                 end if
-!
-                call exisd('CHAMP_GD', chaout, iret)
-                if (basopt .eq. 'G') then
+
+! ------------- Save field in result datastructure
+                call exisd('CHAMP_GD', fieldNameOut, iret)
+                if (jvBase .eq. 'G') then
                     if (iret .eq. 0) then
                         codret = 1
-                        call utmess('A', 'CALCULEL2_89', sk=optio2)
+                        call utmess('A', 'CALCULEL2_89', sk=optionEff)
                     else
-! POST-TRAITEMENTS
                         if ((ldist) .and. (ideb .ne. ifin)) then
-! SI PARALLELISME EN TEMPS ET NPAS NON ATTEINT: NBPROC CHAM_NOS SIMULTANES
                             do k = ideb, ifin
                                 numork = zi(jlinst+k+2)
-                                call rsnoch(resuou, optio2, numork)
+                                call rsnoch(resultOut, optionEff, numork)
                             end do
                         else
-! SI PARALLELISME EN TEMPS et NPAS ATTEINT (RELIQUAT DE PAS DE TEMPS)
-! ET SI NON PARALLELISME EN TEMPS
-                            call rsnoch(resuou, optio2, numord)
+                            call rsnoch(resultOut, optionEff, numeStore)
                         end if
                     end if
                 end if
-!
-                if (exipou) call jedetc('V', '&&MECHPO', 1)
-                call detrsd('CHAM_ELEM_S', chaout)
-!
-                ligres = ligrel
-! SI PARALLELISME EN TEMPS: GESTION DE L'INDICE DE DECALAGE
-                if (ldist) ipas = ipas+1
+
+! ------------- Cleaning
+                if (postCompPoux%lPoux) then
+                    call jedetc('V', '&&MECHPO', 1)
+                end if
+                call detrsd('CHAM_ELEM_S', fieldNameOut)
+                ligrelSave = ligrel
+                if (ldist) then
+                    ipas = ipas+1
+                end if
             end if
-! FIN DU IF DISTRIBUTION POUR EVENTUEL PARALLELISME EN TEMPS
         end do
-!
-!
 ! SI PARALLELISME EN TEMPS: NETTOYAGE DU CONTEXTE
         call pcptcc(301, ldist, dbg_ob, lbid, lbid, lbid, rang, ibid, mpibid, &
                     ibid, ibid, vldist, vcham, k24b, ibid, k19b, &
-                    mode24, partsd, lsdpar, &
+                    model, partsd, lsdpar, &
                     ibid, ibid, ibid, ibid, ibid, &
                     k24b, ibid, ibid, kbid, vcnoch, prbid, pcbid)
 20      continue
     end do
 !
     codret = 0
-!
-!     NETTOYAGE
-    call jedetr(nonbor)
-    call jedetr(lacalc)
-    call ccnett(nobase, nopout)
-    if (option(6:9) .eq. 'NOEU' .and. nbma .ne. 0) call jedetr(mesmai)
+
+! - Clean objects
+    AS_DEALLOCATE(vi=lacalc)
+    call ccnett(jvBaseName, nbOptEff)
+    if (option(6:9) .eq. 'NOEU' .and. nbRestCell .ne. 0) call jedetr(restCellJv)
 !
 999 continue
+!
+    call deleteCompRest(postCompRest)
 !
     call jedema()
 !

@@ -17,17 +17,16 @@
 ! --------------------------------------------------------------------
 !
 interface
-    subroutine calcop(option, lisopt, resuin, resuou, lisord,&
-                      nbordr, typesd, codret, base, tldist)
-        character(len=16) :: option
-        character(len=*) :: lisopt
-        character(len=8) :: resuin
-        character(len=8) :: resuou
-        character(len=19) :: lisord
-        integer(kind=8) :: nbordr
-        character(len=16) :: typesd
-        integer(kind=8) :: codret
-        character(len=1), optional, intent(in) :: base
-        aster_logical, optional :: tldist
+    subroutine calcop(option, listOptJvZ, resultIn, resultOut, listStoreJv, &
+                      nbStore, resultType, codret, jvBase_, tldist_)
+        character(len=16), intent(in) :: option
+        character(len=*), intent(in) :: listOptJvZ
+        character(len=8), intent(in) :: resultIn, resultOut
+        character(len=19), intent(in) :: listStoreJv
+        integer(kind=8), intent(in) :: nbStore
+        character(len=16), intent(in) :: resultType
+        integer(kind=8), intent(out) ::  codret
+        character(len=1), optional, intent(in) :: jvBase_
+        aster_logical, optional, intent(in)  :: tldist_
     end subroutine calcop
 end interface

@@ -15,15 +15,12 @@
 ! You should have received a copy of the GNU General Public License
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
-
-!
 !
 interface
-    subroutine ccliop(type, option, nobase, noliop, nopout)
-        character(len=*) :: type
-        character(len=16) :: option
-        character(len=8) :: nobase
-        character(len=24) :: noliop
-        integer(kind=8) :: nopout
+    subroutine ccliop(option, jvBaseName, listOptEffJv, nbOptEff)
+        character(len=8), intent(in) :: jvBaseName
+        character(len=16), intent(in) :: option
+        character(len=24), intent(out) :: listOptEffJv
+        integer(kind=8), intent(out) :: nbOptEff
     end subroutine ccliop
 end interface

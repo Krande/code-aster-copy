@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -31,7 +31,6 @@ cata_msg = {
     13: _("""Présence d'appuis multiples."""),
     14: _("""Utilisation d'une matrice masse diagonale."""),
     15: _("""Utilisation de la projection modale."""),
-    16: _("""Présence d'éléments de type IMPE_ABSO."""),
     17: _("""Présence d'un chargement de type ONDE_PLANE."""),
     18: _("""Utilisation d'un schéma explicite en modal."""),
     19: _("""Utilisation d'un décalage de masse."""),

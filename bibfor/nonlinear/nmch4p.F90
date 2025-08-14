@@ -41,7 +41,6 @@ subroutine nmch4p(veelem)
     character(len=19) :: vedipi, vefedo, vefepi, veondp
     character(len=19) :: vedidi, vediri
     character(len=19) :: verefe
-    character(len=19) :: veimpe
 !
     data vefedo, vefsdo/'&&NMCH4P.VEFEDO', '&&NMCH4P.VEFSDO'/
     data vedido, vefepi/'&&NMCH4P.VEDIDO', '&&NMCH4P.VEFEPI'/
@@ -51,7 +50,6 @@ subroutine nmch4p(veelem)
     data vediri/'&&NMCH4P.VEDIRI'/
     data vesstf/'&&NMCH4P.VESSTF'/
     data verefe/'&&NMCH4P.VEREFE'/
-    data veimpe/'&&NMCH4P.VEIMPE'/
 !
 ! ----------------------------------------------------------------------
 !
@@ -64,7 +62,6 @@ subroutine nmch4p(veelem)
     call nmcha0('VEELEM', 'CNFEPI', vefepi, veelem)
     call nmcha0('VEELEM', 'CNONDP', veondp, veelem)
     call nmcha0('VEELEM', 'CNFSDO', vefsdo, veelem)
-    call nmcha0('VEELEM', 'CNIMPE', veimpe, veelem)
     call nmcha0('VEELEM', 'CNDIDI', vedidi, veelem)
     call nmcha0('VEELEM', 'CNSSTF', vesstf, veelem)
     call nmcha0('VEELEM', 'CNREFE', verefe, veelem)

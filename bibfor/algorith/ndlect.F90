@@ -15,7 +15,6 @@
 ! You should have received a copy of the GNU General Public License
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
-! person_in_charge: mickael.abbas at edf.fr
 !
 subroutine ndlect(model, materialField, caraElem, listLoad, &
                   sddyna, nlDynaDamping)
@@ -43,7 +42,6 @@ subroutine ndlect(model, materialField, caraElem, listLoad, &
 #include "asterfort/mxmoam.h"
 #include "asterfort/ndynlo.h"
 #include "asterfort/nmcsol.h"
-#include "asterfort/nmimpe.h"
 #include "asterfort/nmmuap.h"
 #include "asterfort/nmondp.h"
 #include "asterfort/utmess.h"
@@ -93,7 +91,7 @@ subroutine ndlect(model, materialField, caraElem, listLoad, &
     real(kind=8) :: alpha, beta, gamma, phi, vnor
     real(kind=8) :: rcmp(3), shima
     aster_logical :: lmuap, lshima, lviss
-    aster_logical :: londe, limped, ldyna, lexpl
+    aster_logical :: londe, ldyna, lexpl
     character(len=19) :: vefsdo, vefint, vedido, vesstf
     character(len=19) :: vefedo, veondp, vedidi
     character(len=19) :: cdfedo, cdfsdo, cddidi, cdfint
@@ -279,14 +277,8 @@ subroutine ndlect(model, materialField, caraElem, listLoad, &
             call utmess('F', 'MECANONLINE5_17')
         end if
     end if
-!
-! --- VERIFICATION DE LA PRESENCE D'ELEMENTS AVEC 'IMPE_ABSO'
-!
-    call nmimpe(model, limped)
-    zl(jlosd+6-1) = limped
-!
+
 ! --- NOMBRE DE CHARGEMENTS
-!
     call getfac('EXCIT', nbexci)
     zi(jncha+1-1) = nbexci
     call getfac('EXCIT_GENE', nbgene)
@@ -421,9 +413,6 @@ subroutine ndlect(model, materialField, caraElem, listLoad, &
         end if
         if (ndynlo(sddyna, 'PROJ_MODAL')) then
             call utmess('I', 'MECANONLINE15_15')
-        end if
-        if (ndynlo(sddyna, 'IMPE_ABSO')) then
-            call utmess('I', 'MECANONLINE15_16')
         end if
         if (ndynlo(sddyna, 'ONDE_PLANE')) then
             call utmess('I', 'MECANONLINE15_17')

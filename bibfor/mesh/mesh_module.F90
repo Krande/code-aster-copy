@@ -23,20 +23,27 @@ module mesh_module
 ! ==================================================================================================
     private :: getSignNormalSkinToSupport
     public :: getPropertiesOfListOfCells, getPropertiesOfCell, getSkinCellSupport
+    public :: getSkinCell
     public :: checkNormalOnSkinCell, checkInclude, getCellOptionForName, createNameOfCell
     public :: getNodeOptionForName, createNameOfNode, getGroupsFromCell, getMeshDimension
     public :: getFirstNodeFromNodeGroup, getListOfCellGroup, checkCellsAreSkin
     public :: compMinMaxEdges
     public :: getCellsFromGroup
+    public :: hasCellsDefinedFromCmd, allCellsDefinedFromCmd
 ! ==================================================================================================
     private
 #include "asterc/r8gaem.h"
 #include "asterf_types.h"
+#include "asterfort/as_allocate.h"
+#include "asterfort/as_deallocate.h"
 #include "asterfort/asmpi_comm_vect.h"
 #include "asterfort/assert.h"
+#include "asterfort/char8_to_int.h"
 #include "asterfort/codent.h"
 #include "asterfort/dismoi.h"
 #include "asterfort/getvem.h"
+#include "asterfort/getvtx.h"
+#include "asterfort/int_to_char8.h"
 #include "asterfort/isParallelMesh.h"
 #include "asterfort/jedetr.h"
 #include "asterfort/jeexin.h"
@@ -55,8 +62,6 @@ module mesh_module
 #include "asterfort/utmess.h"
 #include "asterfort/utnono.h"
 #include "blas/ddot.h"
-#include "asterfort/int_to_char8.h"
-#include "asterfort/char8_to_int.h"
 #include "jeveux.h"
 #include "MeshTypes_type.h"
 ! ==================================================================================================
@@ -121,32 +126,34 @@ contains
 ! Get "volumic" cells support of skin cells
 !
 ! In  mesh             : name of mesh
-! In  nbSkinCell       : number of skin cells
+! In  nbCellSkin       : number of skin cells
 ! Ptr cellSkinNume     : list of skin cells (number)
 ! In  lCell2d          : flag if 2d cells exist
 ! In  lCell1d          : flag if 1D cells exist
-! Ptr cellSuppNume  : volumic" cells support of skin cells
+! Ptr cellSupp         : volumic cells support of skin cells (pre-allocated before)
+! In  nbCell           : number of cells where to look for support cells
+! Ptr listCell_        : list of cells where to look for support cells
 !
 ! --------------------------------------------------------------------------------------------------
-    subroutine getSkinCellSupport(meshz, nbSkinCell, cellSkinNume, lCell2d, lCell1d, &
-                                  cellSuppNume, nbCellSupport_, suppNume_)
+    subroutine getSkinCellSupport(meshz, nbCellSkin, cellSkinNume, lCell2d, lCell1d, &
+                                  cellSupp, nbCell_, listCell_)
 !   ------------------------------------------------------------------------------------------------
-! - Parameters
+! ----- Parameters
         character(len=*), intent(in) :: meshz
-        integer(kind=8), intent(in) :: nbSkinCell
+        integer(kind=8), intent(in) :: nbCellSkin
         integer(kind=8), pointer :: cellSkinNume(:)
         aster_logical, intent(in) :: lCell2d, lCell1d
-        integer(kind=8), pointer :: cellSuppNume(:)
-        integer(kind=8), optional, intent(in) :: nbCellSupport_
-        integer(kind=8), optional, pointer :: suppNume_(:)
-! - Local
+        integer(kind=8), pointer :: cellSupp(:)
+        integer(kind=8), optional, intent(in) :: nbCell_
+        integer(kind=8), optional, pointer :: listCell_(:)
+! ----- Local
         character(len=8) :: mesh
         character(len=2) :: kdim
         real(kind=8), pointer :: meshNodeCoor(:) => null()
         integer(kind=8), parameter :: zero = 0
         aster_logical, parameter :: skinInsideVolume = ASTER_TRUE
         integer(kind=8) :: ibid(1), iSkinCell
-        character(len=24), parameter :: jvCellVolume = '&&UTMASU'
+        character(len=24), parameter :: cellSuppJv = '&&UTMASU'
         integer(kind=8), pointer :: vCellVolume(:) => null()
 !   ------------------------------------------------------------------------------------------------
         mesh = meshz
@@ -161,18 +168,18 @@ contains
         end if
 !
         call jeveuo(mesh//'.COORDO    .VALE', 'L', vr=meshNodeCoor)
-        if (present(nbCellSupport_)) then
-            call utmasu(mesh, kdim, nbSkinCell, cellSkinNume, jvCellVolume, &
-                        meshNodeCoor, nbCellSupport_, suppNume_, skinInsideVolume)
+        if (present(nbCell_)) then
+            call utmasu(mesh, kdim, nbCellSkin, cellSkinNume, cellSuppJv, &
+                        meshNodeCoor, nbCell_, listCell_, skinInsideVolume)
         else
-            call utmasu(mesh, kdim, nbSkinCell, cellSkinNume, jvCellVolume, &
+            call utmasu(mesh, kdim, nbCellSkin, cellSkinNume, cellSuppJv, &
                         meshNodeCoor, zero, ibid, skinInsideVolume)
         end if
-        call jeveuo(jvCellVolume, 'L', vi=vCellVolume)
-        do iSkinCell = 1, nbSkinCell
-            cellSuppNume(iSkinCell) = vCellVolume(iSkinCell)
+        call jeveuo(cellSuppJv, 'L', vi=vCellVolume)
+        do iSkinCell = 1, nbCellSkin
+            cellSupp(iSkinCell) = vCellVolume(iSkinCell)
         end do
-        call jedetr(jvCellVolume)
+        call jedetr(cellSuppJv)
 !   ------------------------------------------------------------------------------------------------
     end subroutine
 ! --------------------------------------------------------------------------------------------------
@@ -183,23 +190,24 @@ contains
 !
 ! In  mesh             : name of mesh
 ! In  modelDime        : global dimension of model
-! In  nbSkinCell       : number of skin cells
+! In  nbCellSkin       : number of skin cells
 ! In  cellSkinNume     : index for skin cells
 ! In  cellSkinNbNode   : number of nodes for skin cells
 ! In  cellSkinNodeIndx : index of first node for skin cells
-! In  cellSuppNume     : index for "volumic" cells support of skin cells
+! In  cellSupp         : index for "volumic" cells support of skin cells
 !
 ! --------------------------------------------------------------------------------------------------
-    subroutine checkNormalOnSkinCell(meshz, modelDime, nbSkinCell, cellSkinNume, cellSkinNbNode, &
-                                     cellSkinNodeIndx, cellSuppNume, lMisoriented)
+    subroutine checkNormalOnSkinCell(meshz, modelDime, nbCellSkin, cellSkinNume, cellSkinNbNode, &
+                                     cellSkinNodeIndx, cellSupp, lMisoriented)
 !   ------------------------------------------------------------------------------------------------
-! - Parameters
+! ----- Parameters
         character(len=*), intent(in) :: meshz
-        integer(kind=8), intent(in) :: modelDime, nbSkinCell
-        integer(kind=8), intent(in) :: cellSkinNume(nbSkinCell), cellSuppNume(nbSkinCell)
-        integer(kind=8), intent(in) :: cellSkinNbNode(nbSkinCell), cellSkinNodeIndx(nbSkinCell)
+        integer(kind=8), intent(in) :: modelDime
+        integer(kind=8), intent(in) :: nbCellSkin, cellSkinNume(nbCellSkin)
+        integer(kind=8), intent(in) :: cellSupp(nbCellSkin)
+        integer(kind=8), intent(in) :: cellSkinNbNode(nbCellSkin), cellSkinNodeIndx(nbCellSkin)
         aster_logical, intent(out) :: lMisoriented
-! - Local
+! ----- Local
         character(len=8) :: mesh, skinCellType, suppCellType, cellName
         integer(kind=8) :: iSkinCell, suppNume, nodeFirst, iNode
         integer(kind=8) :: skinNume
@@ -217,9 +225,9 @@ contains
         call jeveuo(mesh//'.CONNEX', 'E', vi=meshConnex)
         lMisoriented = ASTER_FALSE
 !
-        do iSkinCell = 1, nbSkinCell
+        do iSkinCell = 1, nbCellSkin
 ! ----- Support cell of skin
-            suppNume = cellSuppNume(iSkinCell)
+            suppNume = cellSupp(iSkinCell)
             if (suppNume .eq. 0) then
                 call utmess('A', 'FLUID1_3')
             else
@@ -881,7 +889,7 @@ contains
         character(len=8) :: mesh
         integer(kind=8) :: cellNume, iCell, cellTypeNume
         character(len=8) :: cellTypeName
-        integer(kind=8), pointer :: typmail(:) => null()
+        integer(kind=8), pointer :: meshTypmail(:) => null()
 !
 !   ------------------------------------------------------------------------------------------------
 !
@@ -890,14 +898,14 @@ contains
         hasSkin2D = ASTER_FALSE
 !
 ! ----- Access to mesh datastructures
-        call jeveuo(mesh//'.TYPMAIL', 'L', vi=typmail)
+        call jeveuo(mesh//'.TYPMAIL', 'L', vi=meshTypmail)
 !
 ! ----- Check cells
         do iCell = 1, nbCell
             cellNume = listCellNume(iCell)
 !
 ! --------- Get type of cell
-            cellTypeNume = typmail(cellNume)
+            cellTypeNume = meshTypmail(cellNume)
             call jenuno(jexnum('&CATA.TM.NOMTM', cellTypeNume), cellTypeName)
             listCellType(iCell) = cellTypeName
 !
@@ -1175,6 +1183,165 @@ contains
         else
             call utmess('F', 'MESH3_12')
         end if
+!
+!   ------------------------------------------------------------------------------------------------
+    end subroutine
+! --------------------------------------------------------------------------------------------------
+!
+! hasCellsDefinedFromCmd
+!
+! Has cells defined from command file ?
+!
+! In  factorKeyword    : factor keyword to read
+! In  iOcc             : index of factor keyword
+!
+! --------------------------------------------------------------------------------------------------
+    function hasCellsDefinedFromCmd(factorKeywordZ, iOcc)
+!   ------------------------------------------------------------------------------------------------
+! ----- Parameters
+        aster_logical :: hasCellsDefinedFromCmd
+        character(len=*), intent(in) :: factorKeywordZ
+        integer(kind=8), intent(in) :: iOcc
+! ----- Local
+        character(len=24) :: factorKeyword
+        integer(kind=8) :: iret
+!   ------------------------------------------------------------------------------------------------
+!
+        hasCellsDefinedFromCmd = ASTER_FALSE
+        factorKeyword = factorKeywordZ
+        call getvtx(factorKeyword, 'GROUP_MA', iocc=iOcc, nbval=0, nbret=iret)
+        if (iret .ne. 0) then
+            hasCellsDefinedFromCmd = ASTER_TRUE
+        end if
+!
+!   ------------------------------------------------------------------------------------------------
+    end function
+! --------------------------------------------------------------------------------------------------
+!
+! allCellsDefinedFromCmd
+!
+! All cells are selected in command file ?
+!
+! In  factorKeyword    : factor keyword to read
+! In  iOcc             : index of factor keyword
+!
+! --------------------------------------------------------------------------------------------------
+    function allCellsDefinedFromCmd(factorKeywordZ, iOcc)
+!   ------------------------------------------------------------------------------------------------
+! ----- Parameters
+        aster_logical :: allCellsDefinedFromCmd
+        character(len=*), intent(in) :: factorKeywordZ
+        integer(kind=8), intent(in) :: iOcc
+! ----- Local
+        character(len=24) :: factorKeyword
+        character(len=8) :: answer
+        integer(kind=8) :: iret
+!   ------------------------------------------------------------------------------------------------
+!
+        allCellsDefinedFromCmd = ASTER_FALSE
+        factorKeyword = factorKeywordZ
+
+        if (factorKeyword .eq. " ") then
+            call getvtx(' ', 'TOUT', nbval=0, nbret=iret)
+            if (iret .ne. 0) then
+                allCellsDefinedFromCmd = ASTER_TRUE
+            end if
+        else
+            call getvtx(factorKeyword, 'TOUT', iocc=iOcc, nbval=0, nbret=iret)
+            if (iret .ne. 0) then
+                iret = abs(iret)
+                ASSERT(iret .eq. 1)
+                call getvtx(factorKeyword, 'TOUT', iocc=iOcc, scal=answer)
+                ASSERT(answer .eq. 'OUI')
+                allCellsDefinedFromCmd = ASTER_TRUE
+            end if
+        end if
+!
+!   ------------------------------------------------------------------------------------------------
+    end function
+! --------------------------------------------------------------------------------------------------
+!
+! getSkinCell
+!
+! Get all skin cells
+!
+! In  mesh             : name of mesh
+! In  cellSkinDime     : dimension of skin cell
+! In  nbCell           : number of cells
+! Ptr listCell         : list of cells
+! Out nbCellSkin       : number of skin cells
+! Ptr listCellSkin     : list of skin cells
+!
+! --------------------------------------------------------------------------------------------------
+    subroutine getSkinCell(meshZ, cellSkinDime, &
+                           nbCell, listCell, &
+                           nbCellSkin, listCellSkin)
+!   ------------------------------------------------------------------------------------------------
+! ----- Parameters
+        character(len=*), intent(in) :: meshZ
+        integer(kind=8), intent(in) :: nbCell, cellSkinDime
+        integer(kind=8), pointer :: listCell(:)
+        integer(kind=8), intent(out) :: nbCellSkin
+        integer(kind=8), pointer :: listCellSkin(:)
+! ----- Local
+        character(len=8) :: mesh
+        integer(kind=8) :: iCellType, nbCellType, iCell
+        integer(kind=8) :: nbWorkCell, iWorkCell
+        character(len=8), pointer :: cataTypeCell(:) => null()
+        integer(kind=8), pointer :: cataDimeCell(:) => null()
+        integer(kind=8), pointer :: meshTypmail(:) => null()
+        integer(kind=8), pointer :: workCell(:) => null()
+        integer(kind=8), pointer :: listCellType(:) => null()
+!   ------------------------------------------------------------------------------------------------
+!
+        mesh = meshZ
+        ASSERT(nbCell .gt. 0)
+        ASSERT(cellSkinDime .ge. 1)
+
+! ----- Access to mesh
+        call jeveuo(mesh(1:8)//'.TYPMAIL        ', 'L', vi=meshTypmail)
+
+! ----- Access to catalog of list of type cell
+        call jelira('&CATA.TM.NOMTM', 'NOMMAX', nbCellType)
+
+! ----- Working vectors
+        AS_ALLOCATE(vk8=cataTypeCell, size=nbCellType)
+        AS_ALLOCATE(vi=cataDimeCell, size=nbCellType)
+        AS_ALLOCATE(vi=listCellType, size=nbCell)
+
+! ----- Get all type cells in catalog
+        do iCellType = 1, nbCellType
+            call jenuno(jexnum('&CATA.TM.NOMTM', iCellType), cataTypeCell(iCellType))
+            call dismoi('DIM_TOPO', cataTypeCell(iCellType), 'TYPE_MAILLE', &
+                        repi=cataDimeCell(iCellType))
+        end do
+
+! ----- Get all skin cells
+        AS_ALLOCATE(vi=workCell, size=nbCell)
+        nbWorkCell = 0
+        iWorkCell = 1
+        do iCell = 1, nbCell
+            listCellType(iCell) = meshTypmail(listCell(iCell))
+            if (cataDimeCell(listCellType(iCell)) .eq. cellSkinDime) then
+                workCell(iWorkCell) = listCell(iCell)
+                nbWorkCell = nbWorkCell+1
+                iWorkCell = iWorkCell+1
+            end if
+        end do
+
+! ----- Final copy
+        if (nbWorkCell .ne. 0) then
+            nbCellSkin = nbWorkCell
+            AS_ALLOCATE(vi=listCellSkin, size=nbCellSkin)
+            do iWorkCell = 1, nbWorkCell
+                listCellSkin(iWorkCell) = workCell(iWorkCell)
+            end do
+        end if
+!
+        AS_DEALLOCATE(vk8=cataTypeCell)
+        AS_DEALLOCATE(vi=cataDimeCell)
+        AS_DEALLOCATE(vi=workCell)
+        AS_DEALLOCATE(vi=listCellType)
 !
 !   ------------------------------------------------------------------------------------------------
     end subroutine

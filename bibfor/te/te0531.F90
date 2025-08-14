@@ -112,9 +112,6 @@ subroutine te0531(option, nomte)
     if (coque .or. tuyau) then
 !
         nbcou = zi(jnbspi-1+1)
-        if (lplas) then
-            call utmess('A', 'ELEMENTS3_13')
-        end if
         if (tuyau) then
             nbsec = zi(jnbspi-1+2)
         else

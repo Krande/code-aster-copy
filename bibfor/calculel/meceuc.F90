@@ -16,9 +16,25 @@
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
 
+! --------------------------------------------------------------------
+! This file is part of code_aster.
+!
+! code_aster is free software: you can redistribute it and/or modify
+! it under the terms of the GNU General Public License as published by
+! the Free Software Foundation, either version 3 of the License, or
+! (at your optionZ) any later version.
+!
+! code_aster is distributed in the hope that it will be useful,
+! but WITHOUT ANY WARRANTY; without even the implied warranty of
+! MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+! GNU General Public License for more details.
+!
+! You should have received a copy of the GNU General Public License
+! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
+! --------------------------------------------------------------------
 ! aslint: disable=W1306
 !
-subroutine meceuc(stop, option, caraez, ligrel, &
+subroutine meceuc(stop, optionZ, caraElemZ, ligrelZ, &
                   nin, lchin, lpain, nou, lchou, &
                   lpaou, base)
 !
@@ -42,9 +58,8 @@ subroutine meceuc(stop, option, caraez, ligrel, &
 !
     integer(kind=8) :: nin, nou
     character(len=1) :: stop
-    character(len=8) :: carael
-    character(len=*) :: base, option
-    character(len=*) :: lchin(*), lchou(*), lpain(*), lpaou(*), ligrel, caraez
+    character(len=*) :: base, optionZ
+    character(len=*) :: lchin(*), lchou(*), lpain(*), lpaou(*), ligrelZ, caraElemZ
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -80,18 +95,19 @@ subroutine meceuc(stop, option, caraez, ligrel, &
 !
     character(len=19) :: chdecr(nin), chdeci(nin), ch19, chr, chi, ch1, ch2
     character(len=19) :: lchinr(nin), lchini(nin)
-    character(len=16) :: optio2
+    character(len=16) :: option
     character(len=8) :: nomgd
     integer(kind=8) :: k, iexi, iexi1, iexi2
     integer(kind=8) :: inddec(nin)
     aster_logical :: lcmplx, lsspt, ldbg, lopdec
+    character(len=8) :: caraElem
 !
 ! --------------------------------------------------------------------------------------------------
 !
     call jemarq()
 !
-    optio2 = option
-    carael = caraez
+    option = optionZ
+    caraElem = caraElemZ
     ch1 = '&&MECEUC.CH1'
     ch2 = '&&MECEUC.CH2'
     ldbg = .false.
@@ -100,22 +116,22 @@ subroutine meceuc(stop, option, caraez, ligrel, &
 !     -- 0. LA ROUTINE N'EST UTILE QUE POUR CERTAINES OPTIONS :
 !     ---------------------------------------------------------
     lopdec = .false.
-    if (option .eq. 'ECIN_ELEM') lopdec = .true.
-    if (option .eq. 'EFGE_ELGA') lopdec = .true.
-    if (option .eq. 'EFGE_ELNO') lopdec = .true.
-    if (option .eq. 'ENEL_ELGA') lopdec = .true.
-    if (option .eq. 'ENEL_ELNO') lopdec = .true.
-    if (option .eq. 'EPOT_ELEM') lopdec = .true.
-    if (option .eq. 'EPSI_ELGA') lopdec = .true.
-    if (option .eq. 'EPSI_ELNO') lopdec = .true.
-    if (option .eq. 'SIEF_ELGA') lopdec = .true.
-    if (option .eq. 'SIEF_ELNO') lopdec = .true.
-    if (option .eq. 'SIGM_ELGA') lopdec = .true.
-    if (option .eq. 'SIGM_ELNO') lopdec = .true.
-    if (option .eq. 'SIPM_ELNO') lopdec = .true.
-    if (option .eq. 'SIPO_ELNO') lopdec = .true.
+    if (optionZ .eq. 'ECIN_ELEM') lopdec = .true.
+    if (optionZ .eq. 'EFGE_ELGA') lopdec = .true.
+    if (optionZ .eq. 'EFGE_ELNO') lopdec = .true.
+    if (optionZ .eq. 'ENEL_ELGA') lopdec = .true.
+    if (optionZ .eq. 'ENEL_ELNO') lopdec = .true.
+    if (optionZ .eq. 'EPOT_ELEM') lopdec = .true.
+    if (optionZ .eq. 'EPSI_ELGA') lopdec = .true.
+    if (optionZ .eq. 'EPSI_ELNO') lopdec = .true.
+    if (optionZ .eq. 'SIEF_ELGA') lopdec = .true.
+    if (optionZ .eq. 'SIEF_ELNO') lopdec = .true.
+    if (optionZ .eq. 'SIGM_ELGA') lopdec = .true.
+    if (optionZ .eq. 'SIGM_ELNO') lopdec = .true.
+    if (optionZ .eq. 'SIPM_ELNO') lopdec = .true.
+    if (optionZ .eq. 'SIPO_ELNO') lopdec = .true.
     if (.not. lopdec) then
-        call calcul(stop, optio2, ligrel, nin, lchin, &
+        call calcul(stop, option, ligrelZ, nin, lchin, &
                     lpain, nou, lchou, lpaou, base, &
                     'OUI')
         goto 999
@@ -144,7 +160,7 @@ subroutine meceuc(stop, option, caraez, ligrel, &
             chi = '&&MECEUC.CHXX.I'
             call codent(k, 'D0', chr(12:13))
             call codent(k, 'D0', chi(12:13))
-            call sepach(carael, ch19, 'V', chr, chi)
+            call sepach(caraElem, ch19, 'V', chr, chi)
             chdecr(k) = chr
             chdeci(k) = chi
         end if
@@ -154,7 +170,7 @@ subroutine meceuc(stop, option, caraez, ligrel, &
 !     -- 2. S'IL N'Y A AUCUN CHAMP COMPLEXE, C'EST FACILE :
 !     -------------------------------------------------------
     if (.not. lcmplx) then
-        call calcul(stop, optio2, ligrel, nin, lchin, &
+        call calcul(stop, option, ligrelZ, nin, lchin, &
                     lpain, nou, lchou, lpaou, base, &
                     'OUI')
         goto 999
@@ -184,7 +200,7 @@ subroutine meceuc(stop, option, caraez, ligrel, &
 !     -- 4.1 APPEL A CALCUL AVEC LES PARTIES REELLES :
 !     ------------------------------------------------
     if (lsspt) call copisd('CHAM_ELEM_S', 'V', lchou(1), ch1)
-    call calcul(stop, optio2, ligrel, nin, lchinr, &
+    call calcul(stop, option, ligrelZ, nin, lchinr, &
                 lpain, nou, ch1, lpaou, 'V', &
                 'OUI')
 !
@@ -192,7 +208,7 @@ subroutine meceuc(stop, option, caraez, ligrel, &
 !     -- 4.2 APPEL A CALCUL AVEC LES PARTIES IMAGINAIRES :
 !     ----------------------------------------------------
     if (lsspt) call copisd('CHAM_ELEM_S', 'V', lchou(1), ch2)
-    call calcul(stop, optio2, ligrel, nin, lchini, &
+    call calcul(stop, option, ligrelZ, nin, lchini, &
                 lpain, nou, ch2, lpaou, 'V', &
                 'OUI')
 !
@@ -211,14 +227,14 @@ subroutine meceuc(stop, option, caraez, ligrel, &
 !
 !     -- 6.  ASSEMBLAGE (R,I) OU CUMUL (R+I) :
 !     -----------------------------------------
-    if ((optio2 .eq. 'SIEF_ELNO') .or. (optio2 .eq. 'SIGM_ELGA') .or. (optio2 .eq. 'SIGM_ELNO') &
-        .or. (optio2 .eq. 'EFGE_ELGA') .or. (optio2 .eq. 'EFGE_ELNO') .or. &
-        (optio2 .eq. 'SIPM_ELNO') .or. (optio2 .eq. 'SIPO_ELNO') .or. (optio2 .eq. 'EPSI_ELNO') &
-        .or. (optio2 .eq. 'EPSI_ELGA') .or. (optio2 .eq. 'STRX_ELGA') .or. &
-        (optio2 .eq. 'SIEF_ELGA')) then
+    if ((option .eq. 'SIEF_ELNO') .or. (option .eq. 'SIGM_ELGA') .or. (option .eq. 'SIGM_ELNO') &
+        .or. (option .eq. 'EFGE_ELGA') .or. (option .eq. 'EFGE_ELNO') .or. &
+        (option .eq. 'SIPM_ELNO') .or. (option .eq. 'SIPO_ELNO') .or. (option .eq. 'EPSI_ELNO') &
+        .or. (option .eq. 'EPSI_ELGA') .or. (option .eq. 'STRX_ELGA') .or. &
+        (option .eq. 'SIEF_ELGA')) then
         call assach(ch1, ch2, base, lchou(1))
-    elseif ((optio2 .eq. 'EPOT_ELEM') .or. (optio2 .eq. 'ENEL_ELGA') .or. &
-            (optio2 .eq. 'ENEL_ELNO') .or. (optio2 .eq. 'ECIN_ELEM')) then
+    elseif ((option .eq. 'EPOT_ELEM') .or. (option .eq. 'ENEL_ELGA') .or. &
+            (option .eq. 'ENEL_ELNO') .or. (option .eq. 'ECIN_ELEM')) then
         call barych(ch1, ch2, 1.d0, 1.d0, lchou(1), &
                     'G')
     else

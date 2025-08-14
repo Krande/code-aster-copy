@@ -15,24 +15,22 @@
 ! You should have received a copy of the GNU General Public License
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
-
-!
 !
 interface
-    subroutine ccpoux(resuin, typesd, nordre, nbchre, ioccur,&
-                      kcharg, modele, nbpain, lipain, lichin,&
-                      suropt, iret)
-        character(len=8) :: resuin
-        character(len=16) :: typesd
-        integer(kind=8) :: nordre
-        integer(kind=8) :: nbchre
-        integer(kind=8) :: ioccur
-        character(len=19) :: kcharg
-        character(len=8) :: modele
-        integer(kind=8) :: nbpain
-        character(len=8) :: lipain(*)
-        character(len=24) :: lichin(*)
-        character(len=24) :: suropt
-        integer(kind=8) :: iret
+    subroutine ccpoux(postCompPoux, &
+                      listLoadZ, modelZ, &
+                      resultIn, resultType, numeStore, &
+                      nbParaIn, lpain, lchin, &
+                      iret)
+        use postComp_type
+        type(POST_COMP_POUX), intent(in) :: postCompPoux
+        character(len=*), intent(in) :: modelZ, listLoadZ
+        character(len=8), intent(in) :: resultIn
+        character(len=16), intent(in) :: resultType
+        integer(kind=8), intent(in)  :: numeStore
+        integer(kind=8), intent(in) :: nbParaIn
+        character(len=8), intent(in) :: lpain(100)
+        character(len=24), intent(inout) :: lchin(100)
+        integer(kind=8), intent(out) :: iret
     end subroutine ccpoux
 end interface

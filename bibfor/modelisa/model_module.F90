@@ -20,21 +20,25 @@ module model_module
 ! ==================================================================================================
     implicit none
 ! ==================================================================================================
-    public  :: getFSICell, getFluidCell, getPlateCell
+    public :: getFSICell, getFluidCell, getPlateCell
+    public :: getAllCellsAffectedByModel
     private :: getAccess
 ! ==================================================================================================
     private
 #include "asterf_types.h"
-#include "jeveux.h"
 #include "asterfort/as_allocate.h"
 #include "asterfort/as_deallocate.h"
 #include "asterfort/assert.h"
 #include "asterfort/dismoi.h"
+#include "asterfort/getelem.h"
 #include "asterfort/jeexin.h"
+#include "asterfort/jelira.h"
 #include "asterfort/jenuno.h"
 #include "asterfort/jeveuo.h"
+#include "asterfort/jexatr.h"
 #include "asterfort/jexnum.h"
 #include "asterfort/lteatt.h"
+#include "jeveux.h"
 ! ==================================================================================================
 contains
 ! --------------------------------------------------------------------------------------------------
@@ -240,6 +244,65 @@ contains
             end if
             AS_DEALLOCATE(vl=isCellPlate)
         end if
+!
+!   ------------------------------------------------------------------------------------------------
+    end subroutine
+! --------------------------------------------------------------------------------------------------
+!
+! getAllCellsAffectedByModel
+!
+! Get all cells affected by model
+!
+! In  model             : model
+! In  nbCellAffe        : number of cells affected by model
+! Ptr listCellAffe      : list of cells affected by model
+!
+! --------------------------------------------------------------------------------------------------
+    subroutine getAllCellsAffectedByModel(modelZ, nbCellAffe, listCellAffe)
+!   ------------------------------------------------------------------------------------------------
+! ----- Parameters
+        character(len=*), intent(in) :: modelZ
+        integer(kind=8), intent(out) :: nbCellAffe
+        integer(kind=8), pointer :: listCellAffe(:)
+! ----- Locals
+        character(len=8) :: model, mesh
+        integer(kind=8) :: nbCellInMesh, nbCell, iCellAffe, iCell
+        integer(kind=8), pointer :: modelMaille(:) => null()
+        integer(kind=8), pointer :: work(:) => null()
+!   ------------------------------------------------------------------------------------------------
+!
+        model = modelZ
+        nbCellAffe = 0
+
+! ----- Access to mesh
+        call dismoi('NOM_MAILLA', model, 'MODELE', repk=mesh)
+        call dismoi('NB_MA_MAILLA', mesh, 'MAILLAGE', repi=nbCellInMesh)
+
+! ----- Access to model
+        call jeveuo(model(1:8)//'.MAILLE', 'L', vi=modelMaille)
+        call jelira(model(1:8)//'.MAILLE', 'LONMAX', nbCell)
+        ASSERT(nbCellInMesh .eq. nbCell)
+
+! ----- Create list of affected cells
+        AS_ALLOCATE(vi=listCellAffe, size=nbCell)
+
+! ----- Get list of cells
+        AS_ALLOCATE(vi=work, size=nbCell)
+        nbCellAffe = 0
+        do iCell = 1, nbCell
+            if (modelMaille(iCell) .gt. 0) then
+                nbCellAffe = nbCellAffe+1
+                work(nbCellAffe) = iCell
+            end if
+        end do
+
+! ----- Copy list of cells
+        if (nbCellAffe .ne. 0) then
+            do iCellAffe = 1, nbCellAffe
+                listCellAffe(iCellAffe) = work(iCellAffe)
+            end do
+        end if
+        AS_DEALLOCATE(vi=work)
 !
 !   ------------------------------------------------------------------------------------------------
     end subroutine

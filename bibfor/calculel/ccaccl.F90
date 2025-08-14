@@ -16,15 +16,16 @@
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
 
-subroutine ccaccl(option, modele, mater, carael, ligrel, &
-                  typesd, nbpain, lipain, lichin, lichou, &
+subroutine ccaccl(option, &
+                  modelZ, materFieldZ, caraElemZ, ligrel, &
+                  resultType, &
+                  nbParaIn, lpain, lchin, lchout, &
                   codret)
+!
     implicit none
-!     --- ARGUMENTS ---
-#include "asterf_types.h"
-#include "jeveux.h"
-#include "asterc/getres.h"
+!
 #include "asterc/indik8.h"
+#include "asterf_types.h"
 #include "asterfort/assert.h"
 #include "asterfort/cesvar.h"
 #include "asterfort/copisd.h"
@@ -37,15 +38,25 @@ subroutine ccaccl(option, modele, mater, carael, ligrel, &
 #include "asterfort/mecact.h"
 #include "asterfort/mecara.h"
 #include "asterfort/utmess.h"
+#include "jeveux.h"
 !
-    integer(kind=8) :: nbpain, codret
-    character(len=8) :: modele, mater, carael
-    character(len=8) :: lipain(*)
-    character(len=16) :: option, typesd
-    character(len=24) :: lichin(*), ligrel, lichou(2)
-!  CALC_CHAMP - AJOUT ET CALCUL DE CHAMPS LOCAUX
-!  -    -       -        -         -      -
-! ----------------------------------------------------------------------
+    character(len=16), intent(in) :: option
+    character(len=*), intent(in) :: modelZ, materFieldZ, caraElemZ
+    character(len=24), intent(in) :: ligrel
+    character(len=16), intent(in) :: resultType
+    integer(kind=8), intent(in) :: nbParaIn
+    character(len=8), intent(in) :: lpain(100)
+    character(len=24), intent(inout) :: lchin(100)
+    character(len=24), intent(inout) :: lchout(1)
+    integer(kind=8), intent(out) :: codret
+!
+! --------------------------------------------------------------------------------------------------
+!
+! CALC_CHAMP
+!
+! Compute ELEM, ELNO and ELGA fields - Input and output fields for special cases
+!
+! --------------------------------------------------------------------------------------------------
 !
 !  ROUTINE DE GESTION DES GLUTES NECESSAIRES POUR CERTAINES OPTIONS
 !  * POUTRE POUX, DCHA_*, RADI_*, ...
@@ -67,77 +78,71 @@ subroutine ccaccl(option, modele, mater, carael, ligrel, &
 !
 ! IN/OUT :
 !   LICHIN  K24* LISTE MODIFIEE DES CHAMPS IN
-! ----------------------------------------------------------------------
-! person_in_charge: nicolas.sellenet at edf.fr
 !
-    integer(kind=8) :: iret1, iret2, kparin
-    integer(kind=8) :: ipara, inume, nbsp
-    character(len=8) :: k8b, noma, curpar, carae2, parain
-    character(len=16) :: concep, nomcmd
-    character(len=19) :: compor, compo2, canbva
-    character(len=24) :: chnlin
+! --------------------------------------------------------------------------------------------------
+!
+    character(len=24), parameter :: canbva = '&&CCACCL.CANBVA'
+    character(len=24), parameter :: chnlin = '&&CCACCL.PNONLIN'
+    integer(kind=8) :: iret, paraIndx, iParaIn, inume, nbsp
+    character(len=8) :: mesh, paraCurr, caraElemToApply, parain
+    character(len=19) :: compor, comporToApply
     character(len=24) :: chcara(18)
 !
+! --------------------------------------------------------------------------------------------------
+!
     call jemarq()
-!
+
+! - Initializations
     codret = 0
-!
-    call getres(k8b, concep, nomcmd)
-    call dismoi('NOM_MAILLA', modele, 'MODELE', repk=noma)
-!
-!
-    call mecara(carael, chcara)
-    if (carael(1:8) .ne. ' ') then
-        do ipara = 1, nbpain
-            curpar = lipain(ipara)
-            if (curpar .eq. 'PCACOQU') lichin(ipara) = chcara(7)
+
+! - Get mesh
+    call dismoi('NOM_MAILLA', modelZ, 'MODELE', repk=mesh)
+
+! - Change PCACOQU parameter (????)
+    call mecara(caraElemZ, chcara)
+    if (caraElemZ(1:8) .ne. ' ') then
+        do iParaIn = 1, nbParaIn
+            paraCurr = lpain(iParaIn)
+            if (paraCurr .eq. 'PCACOQU') then
+                lchin(iParaIn) = chcara(7)
+            end if
         end do
     end if
-!
-    if (option .eq. 'SIEQ_ELGA') then
-        if (typesd .eq. 'FOURIER_ELAS') then
-            call utmess('F', 'CALCULEL6_83', sk=option)
-        end if
-    end if
-!
-!     -- GLUTE EFGE_ELNO (J. PELLET) :
-!     --------------------------------
+
+! - Special cases
     if (option .eq. 'EFGE_ELNO') then
-        chnlin = '&&CCACCL.PNONLIN'
-!       -- INUME=0 => CALCUL LINEAIRE
-!       -- INUME=1 => CALCUL NON-LINEAIRE
+! ----- EFGE_ELNO: create map for linear or non-linear case
         inume = 0
-        if (typesd .eq. 'EVOL_NOLI') inume = 1
-        call mecact('V', chnlin, 'MAILLA', noma, 'NEUT_I', &
+        if (resultType .eq. 'EVOL_NOLI') then
+            inume = 1
+        end if
+        call mecact('V', chnlin, 'MAILLA', mesh, 'NEUT_I', &
                     ncmp=1, nomcmp='X1', si=inume)
-!       -- SI LINEAIRE, ON DOIT CHANGER PCOMPOR (POUR POU_D_EM):
         if (inume .eq. 0) then
-            kparin = indik8(lipain, 'PCOMPOR', 1, nbpain)
-            ASSERT(kparin .ge. 1)
-            lichin(kparin) = mater(1:8)//'.COMPOR'
+            paraIndx = indik8(lpain, 'PCOMPOR', 1, nbParaIn)
+            ASSERT(paraIndx .ge. 1)
+            lchin(paraIndx) = materFieldZ(1:8)//'.COMPOR'
         end if
 !
     else if (option .eq. 'VARI_ELNO') then
-!     -- POUR CETTE OPTION ON A BESOIN DE COMPOR :
-        do ipara = 1, nbpain
-            curpar = lipain(ipara)
-            if (curpar .eq. 'PCOMPOR') compor = lichin(ipara) (1:19)
-        end do
-        call exisd('CARTE', compor, iret2)
-        if (iret2 .ne. 1) then
+! ----- Behaviour map for dimensionning number of internal state variables
+        paraIndx = indik8(lpain, 'PCOMPOR', 1, nbParaIn)
+        compor = " "
+        if (paraIndx .ne. 0) then
+            compor = lchin(paraIndx) (1:19)
+        end if
+        call exisd('CARTE', compor, iret)
+        if (iret .ne. 1) then
             call utmess('A', 'CALCULEL2_86')
             codret = 1
             goto 30
-!
         end if
     end if
-!
-!
+
 !     ---------------------------------------------------------------
 !     -- AJOUT EVENTUEL DU CHAM_ELEM_S PERMETTANT LES SOUS-POINTS
 !        ET LE BON NOMBRE DE VARIABLES INTERNES
 !     ---------------------------------------------------------------
-!
     if ((option .eq. 'EPEQ_ELGA') .or. (option .eq. 'EPEQ_ELNO') .or. &
         (option .eq. 'EPSI_ELGA') .or. (option .eq. 'EPSI_ELNO') .or. &
         (option .eq. 'SIEF_ELGA') .or. (option .eq. 'SIEF_ELNO') .or. &
@@ -148,18 +153,20 @@ subroutine ccaccl(option, modele, mater, carael, ligrel, &
         (option .eq. 'EPSP_ELGA') .or. (option .eq. 'EPSP_ELNO') .or. &
         (option .eq. 'VARI_ELNO') .or. (option .eq. 'DEPL_ELGA') .or. &
         (option .eq. 'TEMP_ELGA') .or. (option .eq. 'VARC_ELGA') .or. &
-        (option .eq. 'VARC_ELNO')) then!
-!       -- CONCERNANT LES VARIABLES INTERNES :
+        (option .eq. 'VARC_ELNO')) then
+
+! ----- Internal state variables
         if (option .eq. 'VARI_ELNO') then
-            compo2 = compor
+            comporToApply = compor
         else
-            compo2 = ' '
+            comporToApply = ' '
         end if
-!
-        carae2 = carael
-!
-!       -- POUR LES OPTIONS SUIVANTES, LE NOMBRE DE SOUS-POINTS
-!          DU CHAMP "OUT" DEPEND D'UN CHAMP "IN" PARTICULIER :
+
+! ----- For "sub-points"
+        caraElemToApply = caraElemZ
+
+! ----- POUR LES OPTIONS SUIVANTES, LE NOMBRE DE SOUS-POINTS
+! ----- DU CHAMP "OUT" DEPEND D'UN CHAMP "IN" PARTICULIER :
         if (option .eq. 'EPEQ_ELGA') then
             parain = 'PDEFORR'
         else if (option .eq. 'EPEQ_ELNO') then
@@ -185,24 +192,25 @@ subroutine ccaccl(option, modele, mater, carael, ligrel, &
         end if
 !
         if (parain .ne. ' ') then
-            kparin = indik8(lipain, parain, 1, nbpain)
-            ASSERT(kparin .ge. 1)
-            call jeexin(lichin(kparin) (1:19)//'.CELD', iret1)
+            paraIndx = indik8(lpain, parain, 1, nbParaIn)
+            ASSERT(paraIndx .ge. 1)
+            call jeexin(lchin(paraIndx) (1:19)//'.CELD', iret)
             nbsp = 1
-            if (iret1 .ne. 0) then
-                call dismoi('MXNBSP', lichin(kparin), 'CHAM_ELEM', repi=nbsp)
+            if (iret .ne. 0) then
+                call dismoi('MXNBSP', lchin(paraIndx), 'CHAM_ELEM', repi=nbsp)
             end if
-            if (nbsp .le. 1) carae2 = ' '
+            if (nbsp .le. 1) then
+                caraElemToApply = ' '
+            end if
         end if
-!
-        canbva = '&&CCACCL.CANBVA'
-        if (carae2 .ne. ' ' .or. compo2 .ne. ' ') then
-            call cesvar(carae2, compo2, ligrel, canbva)
-            call copisd('CHAM_ELEM_S', 'V', canbva, lichou(1))
+
+! ----- Create object for output field
+        if (caraElemToApply .ne. ' ' .or. comporToApply .ne. ' ') then
+            call cesvar(caraElemToApply, comporToApply, ligrel, canbva)
+            call copisd('CHAM_ELEM_S', 'V', canbva, lchout(1))
             call detrsd('CHAM_ELEM_S', canbva)
         end if
     end if
-!
 !
 30  continue
     call jedema()

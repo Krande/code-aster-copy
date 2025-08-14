@@ -16,10 +16,11 @@
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
 !
-subroutine cclodr(nuoplo, nbordr, lisord, nobase, minord, &
-                  maxord, resuin, resuou, lacalc)
+subroutine cclodr(numeOptEff, nbStore, listStore, jvBaseName, numeStoreMin, &
+                  numeStoreMax, resultIn, resultOut, lacalc)
+!
     implicit none
-!     --- ARGUMENTS ---
+!
 #include "asterf_types.h"
 #include "jeveux.h"
 #include "asterfort/jedema.h"
@@ -27,75 +28,74 @@ subroutine cclodr(nuoplo, nbordr, lisord, nobase, minord, &
 #include "asterfort/jeveuo.h"
 #include "asterfort/rsexch.h"
 !
-    integer(kind=8) :: nuoplo, nbordr, minord, maxord
-    character(len=8) :: resuin, resuou, nobase
-    character(len=19) :: lisord
-    character(len=24) :: lacalc
-!  CALC_CHAMP - DETERMINATION LISTE OPTIONS AVEC DEPENDANCE REDUITE
-!  -    -                     -     -            -          -
-! ----------------------------------------------------------------------
+    integer(kind=8), intent(in) :: numeOptEff
+    integer(kind=8), intent(in) :: nbStore
+    integer(kind=8), pointer :: listStore(:)
+    character(len=8), intent(in) :: jvBaseName
+    integer(kind=8), intent(in) ::  numeStoreMin, numeStoreMax
+    character(len=8), intent(in) :: resultIn, resultOut
+    integer(kind=8), pointer :: lacalc(:)
+!
+! --------------------------------------------------------------------------------------------------
+!
+!  CALC_CHAMP
+!
+!  DETERMINATION LISTE OPTIONS AVEC DEPENDANCE REDUITE
+!
+! --------------------------------------------------------------------------------------------------
 !
 !  MODIFICATION DE LACALC EN METTANT DES 0 LORSQUE L'OPTION NE DOIT
 !   PAS ETRE CALCULEE
 !
-!  IN  :
-!   NUOPLO  I    INDICE DE L'OPTION POUR LAQUELLE ON SOUHAITE OBTENIR
-!                LA LISTE DE NUMEROS D'ORDRE
-!   NBORDR  I    NOMBRE DE NUMEROS D'ORDRE
-!   LISORD  K19  LISTE DE NUMEROS D'ORDRE
-!   NOBASE  K8   BASE DU NOM A PARTIR DE LAQUELLE LE NOM DES OBJETS DE
-!                CCLIOP SERONT CONSTRUITS
-!   MINORD  I    NUMERO D'ORDRE MIN
-!   MAXORD  I    NUMERO D'ORDRE MAX
-!   RESUIN  K8   NOM DE LA STRUCTURE DE DONNEES RESULTAT IN
-!   RESUOU  K8   NOM DE LA STRUCTURE DE DONNEES RESULTAT OUT
+! In  numeOptEff        : index of option in list of option
+! In  nbStore           : number of storing indexes
+! In  listStore         : list of storing indexes
+! In  jvBaseName        : string base for names of JEVEUX objects
+! In  numeStoreMin      : minimum storing index in list of storing indexes to compute option
+! In  numeStoreMax      : maximum storing index in list of storing indexes to compute option
+! In  resultIn          : name of datastructure for input results
+! In  resultOut         : name of datastructure for output results
+! Ptr lacalc            : pointer to list of options to have to compute
 !
-!  IN/OUT :
-!   LACALC  K24  NOM DE LA LISTE D'ENTIER QUI SERA MODIFIE
-! ----------------------------------------------------------------------
-! person_in_charge: nicolas.sellenet at edf.fr
+! --------------------------------------------------------------------------------------------------
 !
     integer(kind=8) :: jlisop, jliori, jlidep, ierd, inddeb, indfin
-    integer(kind=8) :: iordr, curmax, curmin, iter, decal, numord, jlnoin
-    integer(kind=8) :: jordo2, jlisde, jordr, jacalc
-!
+    integer(kind=8) :: iStore, curmax, curmin, iter, decal, numeStore, jlnoin
+    integer(kind=8) :: jordo2, jlisde
     character(len=1) :: isodep
     character(len=16) :: option
-    character(len=19) :: nosyou
-    character(len=24) :: noliop, nolori, noldep, noliin, nolisd
-!
+    character(len=24) :: fieldName, noliop, nolori, noldep, noliin, nolisd
     aster_logical :: exitor
 !
+! --------------------------------------------------------------------------------------------------
+!
     call jemarq()
-!
-    call jeveuo(lisord, 'L', jordr)
-!
-    isodep = ' '
-    noliop = nobase//'.LISOPT'
-    nolori = nobase//'.LISORI'
-    noldep = nobase//'.LISDEP'
-    noliin = nobase//'.LNOINS'
-    nolisd = nobase//'.ISODEP'
-!
+
+! - Access to objects
+    noliop = jvBaseName//'.LISOPT'
+    nolori = jvBaseName//'.LISORI'
+    noldep = jvBaseName//'.LISDEP'
+    noliin = jvBaseName//'.LNOINS'
+    nolisd = jvBaseName//'.ISODEP'
     call jeveuo(noliop, 'L', jlisop)
     call jeveuo(nolori, 'L', jliori)
     call jeveuo(noldep, 'L', jlidep)
     call jeveuo(noliin, 'L', jlnoin)
     call jeveuo(nolisd, 'L', jlisde)
-    call jeveuo(lacalc, 'E', jacalc)
-!
-    option = zk24(jlisop+nuoplo-1)
-    inddeb = zi(jliori+2*nuoplo-2)
-    indfin = zi(jliori+2*nuoplo-1)
-    isodep = zk8(jlisde+nuoplo-1)
+
+! - Parameters for current option
+    option = zk16(jlisop+numeOptEff-1)
+    inddeb = zi(jliori+2*numeOptEff-2)
+    indfin = zi(jliori+2*numeOptEff-1)
+    isodep = zk8(jlisde+numeOptEff-1) (1:1)
 !
     if (inddeb .ne. 0) then
 !       CAS 1 : CETTE OPTION DEPEND D'AUTRES OPTIONS A CALCULER
 !               AUQUEL CAS, IL FAUT REGARDER COMMENT ELLE EN DEPEND
 !               ET LA LISTE DES NUMEROS D'ORDRE DE SES PARENTS
         call jeveuo(noliin, 'L', jlnoin)
-        curmax = maxord
-        curmin = minord
+        curmax = numeStoreMax
+        curmin = numeStoreMin
         do iter = inddeb, indfin
             call jeveuo(zk24(jlnoin+iter-1), 'L', jordo2)
 !
@@ -114,25 +114,22 @@ subroutine cclodr(nuoplo, nbordr, lisord, nobase, minord, &
         end do
 !
         exitor = .true.
-        if (zi(jacalc+nuoplo-1) .eq. 1) then
-            do iordr = 1, nbordr
-                numord = zi(jordr-1+iordr)
-                if ((isodep .eq. '-') .and. (numord .eq. minord)) then
+        if (lacalc(numeOptEff) .eq. 1) then
+            do iStore = 1, nbStore
+                numeStore = listStore(iStore)
+                if ((isodep .eq. '-') .and. (numeStore .eq. numeStoreMin)) then
                     goto 30
-                elseif ((isodep .eq. '+') .and. (numord .eq. maxord)) &
+                elseif ((isodep .eq. '+') .and. (numeStore .eq. numeStoreMax)) &
                     then
                     goto 30
                 end if
-                if (numord .ge. curmin) then
-                    if (numord .gt. curmax) goto 40
-                    nosyou = ' '
-                    call rsexch(' ', resuin, option, numord, nosyou, &
-                                ierd)
+                if (numeStore .ge. curmin) then
+                    if (numeStore .gt. curmax) goto 40
+                    fieldName = ' '
+                    call rsexch(' ', resultIn, option, numeStore, fieldName, ierd)
                     if (ierd .ne. 0) then
-                        call rsexch(' ', resuou, option, numord, nosyou, &
-                                    ierd)
+                        call rsexch(' ', resultOut, option, numeStore, fieldName, ierd)
                     end if
-!
                     if (ierd .ne. 0) then
                         exitor = .false.
                     end if
@@ -140,13 +137,9 @@ subroutine cclodr(nuoplo, nbordr, lisord, nobase, minord, &
 30              continue
             end do
         end if
-!
 40      continue
-!
         if (exitor) then
-            do iter = inddeb, indfin
-                zi(jacalc+iter-1) = 0
-            end do
+            lacalc(inddeb:indfin) = 0
         end if
     end if
 !

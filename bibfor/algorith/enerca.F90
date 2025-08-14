@@ -15,7 +15,7 @@
 ! You should have received a copy of the GNU General Public License
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
-! person_in_charge: mickael.abbas at edf.fr
+! aslint: disable=W0413
 !
 subroutine enerca(valinc, dep0, vit0, depl1, vite1, &
                   masse, amort, rigid, fexte, famor, &
@@ -339,7 +339,6 @@ subroutine enerca(valinc, dep0, vit0, depl1, vite1, &
     wext = wext+ddot(b_n, fmoy, b_incx, zr(iupmuz), b_incy)
 ! --------------------------------------------------------------------
 ! LIAI : ENERGIE DISSIPEE PAR LES LIAISONS
-! - UNIQUEMENT IMPE_ABSO POUR DYNA_VIBRA
 ! --------------------------------------------------------------------
     do iaux = 1, neq
         fmoy(iaux) = (fliai(iaux)+fliai(iaux+neq))*5.d-1

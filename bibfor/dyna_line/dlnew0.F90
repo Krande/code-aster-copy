@@ -19,21 +19,21 @@
 !
 subroutine dlnew0(result, force0, force1, iinteg, neq, &
                   istoc, iarchi, nbexci, nondp, nmodam, &
-                  lamort, limped, lmodst, imat, masse, &
+                  lamort, lmodst, imat, masse, &
                   rigid, amort, nchar, nveca, liad, &
                   lifo, modele, mate, mateco, carele, &
                   charge, infoch, fomult, numedd, depla, &
                   vitea, accea, dep0, vit0, acc0, &
                   fexte, famor, fliai, depl1, vite1, &
-                  acce1, psdel, fammo, fimpe, fonde, &
+                  acce1, psdel, fammo, fonde, &
                   vien, vite, vita1, mltap, a0, &
                   a2, a3, a4, a5, a6, &
                   a7, a8, c0, c1, c2, &
                   c3, c4, c5, nodepl, novite, &
                   noacce, matres, maprec, solveu, criter, &
-                  chondp, vitini, vitent, valmod, basmod, &
-                  veanec, vaanec, vaonde, veonde, dt, &
-                  theta, tempm, temps, iforc2, tabwk1, &
+                  chondp, valmod, basmod, &
+                  vaonde, veonde, dt, &
+                  theta, temps, iforc2, tabwk1, &
                   tabwk2, archiv, nbtyar, typear, numrep, &
                   ds_energy, kineLoad)
 !
@@ -49,7 +49,6 @@ subroutine dlnew0(result, force0, force1, iinteg, neq, &
 !  IN  : NONDP     : NOMBRE D'ONDES PLANES
 !  IN  : NMODAM    : NOMBRE D'AMORTISSEMENTS MODAUX
 !  IN  : LAMORT    : LOGIQUE INDIQUANT SI IL Y A AMORTISSEMENT
-!  IN  : LIMPED    : LOGIQUE INDIQUANT SI
 !  IN  : LMODST    : LOGIQUE INDIQUANT SI MODE STATIQUE
 !  IN  : IMAT      : TABLEAU D'ADRESSES POUR LES MATRICES
 !  IN  : MASSE     : MATRICE DE MASSE
@@ -72,7 +71,6 @@ subroutine dlnew0(result, force0, force1, iinteg, neq, &
 !  VAR : ACC0      : TABLEAU DES ACCELERATIONS A L'INSTANT N
 !  IN  : DT        : PAS DE TEMPS
 !  IN  : THETA     : PARAMETRE DU SCHEMA TEMPOREL
-!  IN  : TEMPM     : INSTANT PRECEDENT
 !  IN  : TEMPS     : INSTANT COURANT
 ! IN  NUMREP : NUMERO DE REUSE POUR LA TABLE PARA_CALC
 !
@@ -94,7 +92,6 @@ subroutine dlnew0(result, force0, force1, iinteg, neq, &
 #include "asterfort/dlarch.h"
 #include "asterfort/dlfext.h"
 #include "asterfort/enerca.h"
-#include "asterfort/fimped.h"
 #include "asterfort/fmodam.h"
 #include "asterfort/fointe.h"
 #include "asterfort/fondpl.h"
@@ -127,12 +124,12 @@ subroutine dlnew0(result, force0, force1, iinteg, neq, &
 !
     real(kind=8) :: depla(neq), vitea(neq), accea(neq), dep0(*), vit0(*)
     real(kind=8) :: acc0(*), fexte(*), famor(*), fliai(*), depl1(neq)
-    real(kind=8) :: vite1(neq), acce1(neq), psdel(neq), fammo(neq), fimpe(neq)
+    real(kind=8) :: vite1(neq), acce1(neq), psdel(neq), fammo(neq)
     real(kind=8) :: fonde(neq), vien(neq), vite(neq), vita1(neq), a0, a2, a3
     real(kind=8) :: a4, a5, a6, a7, a8, c0, c1, c2, c3, c4, c5, tabwk1(neq)
-    real(kind=8) :: tabwk2(neq), dt, theta, tempm, temps
+    real(kind=8) :: tabwk2(neq), dt, theta, temps
 !
-    aster_logical :: lamort, limped, lmodst
+    aster_logical :: lamort, lmodst
     type(NL_DS_Energy), intent(inout) :: ds_energy
 !
     character(len=8) :: nodepl(nbexci), novite(nbexci), noacce(nbexci)
@@ -146,9 +143,9 @@ subroutine dlnew0(result, force0, force1, iinteg, neq, &
     character(len=19) :: maprec
     character(len=24) :: criter, kineLoad
     character(len=24) :: modele, mate, mateco, carele, charge, infoch, fomult, numedd
-    character(len=24) :: vitini, vitent, valmod, basmod
+    character(len=24) ::  valmod, basmod
     character(len=24) :: lifo(*)
-    character(len=24) :: veanec, vaanec, vaonde, veonde
+    character(len=24) :: vaonde, veonde
 !
 !
 ! DECLARATION VARIABLES LOCALES
@@ -233,11 +230,6 @@ subroutine dlnew0(result, force0, force1, iinteg, neq, &
             vien(ieq) = vitea(ieq)
         end do
     end if
-    if (limped) then
-        call fimped(modele, mateco, numedd, neq, vitini, &
-                    vitent, veccor, veanec, vaanec, tempm, &
-                    fimpe)
-    end if
     if (nondp .ne. 0) then
         call fondpl(modele, mate, mateco, numedd, neq, &
                     chondp, nondp, vecond, veonde, vaonde, &
@@ -281,18 +273,6 @@ subroutine dlnew0(result, force0, force1, iinteg, neq, &
             fexte(ieq) = fexte(ieq+neq)
             fexte(ieq+neq) = zr(iforc1+ieq-1)
         end do
-    end if
-!
-    if (limped) then
-        do ieq = 1, neq
-            zr(iforc1+ieq-1) = zr(iforc1+ieq-1)-fimpe(ieq)
-        end do
-        if (ds_energy%l_comp) then
-            do ieq = 1, neq
-                fliai(ieq) = fliai(ieq+neq)
-                fliai(ieq+neq) = fimpe(ieq)
-            end do
-        end if
     end if
 !
     if (nmodam .ne. 0) then

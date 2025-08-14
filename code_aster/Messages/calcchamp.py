@@ -34,14 +34,12 @@ Conseil :
     2: _(
         """
  L'option %(k1)s nécessaire au calcul de l'option %(k2)s est
- manquante dans les structures de données résultat %(k3)s et
- %(k4)s pour le numéro d'ordre %(i1)d.
+ manquante dans les structures de données résultat pour le numéro d'ordre %(i1)d.
 
  Le calcul de cette option n'est donc pas possible.
  L'option demandée n'est calculable sur les éléments du modèle.
 """
     ),
-    3: _("""L'utilisation de COEF_MULT n'est permise qu'avec des éléments de poutre."""),
     4: _(
         """
 Les contributions de l'amortissement liées à la vitesse pour les
@@ -56,7 +54,6 @@ Le champ STRX_ELGA n'est pas possible sur une modélisation XFEM.
     8: _(
         """Il y a des chargements pilotées dans le résultat, mais on ne peut pas récupérer la valeur du coefficient de pilotage."""
     ),
-    9: _("""Le champ demandé %(k1)s n'existe pas."""),
     19: _(
         """
 Problème lors de l'appel de l'option %(k1)s.

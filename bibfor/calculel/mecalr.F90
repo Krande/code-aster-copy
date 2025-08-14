@@ -35,13 +35,10 @@ subroutine mecalr(newcal, tysd, knum, kcha, resuco, &
 ! IN  NCHAR  : NOMBRE DE CHARGES
 ! ----------------------------------------------------------------------
 !
-!     --- ARGUMENTS ---
-!
 #include "asterf_types.h"
-#include "jeveux.h"
-#include "asterc/getres.h"
 #include "asterfort/assert.h"
 #include "asterfort/calcop.h"
+#include "asterfort/callCalcul.h"
 #include "asterfort/celces.h"
 #include "asterfort/cescel.h"
 #include "asterfort/cesces.h"
@@ -80,6 +77,7 @@ subroutine mecalr(newcal, tysd, knum, kcha, resuco, &
 #include "asterfort/titre.h"
 #include "asterfort/utmess.h"
 #include "asterfort/wkvect.h"
+#include "jeveux.h"
 !
     integer(kind=8) :: nbordr, nchar
     character(len=8) :: resuco, resuc1, modele, cara
@@ -112,7 +110,7 @@ subroutine mecalr(newcal, tysd, knum, kcha, resuco, &
     character(len=8) :: k8b, noma
     character(len=8) :: carele
     character(len=19) :: pfchno
-    character(len=16) :: nomcmd, option, types, k16b
+    character(len=16) :: option, types
     character(len=19) :: leres1
     character(len=19) :: cherrs, chenes, chsins, chsinn
     character(len=24) :: cheneg, chsing, cherr1, cherr2, cherr3, cherr4, mateco
@@ -123,7 +121,6 @@ subroutine mecalr(newcal, tysd, knum, kcha, resuco, &
     character(len=24) :: nompar
     character(len=24) :: lesopt
     character(len=24) :: ligrmo
-    character(len=24) :: blan24
     character(len=19) :: chvarc
 !
     real(kind=8) :: prec
@@ -135,17 +132,15 @@ subroutine mecalr(newcal, tysd, knum, kcha, resuco, &
 !
 !
     call jemarq()
-    call getres(k8b, k16b, nomcmd)
     call jerecu('V')
-!               123456789012345678901234
-    blan24 = '                        '
+
     lesopt = '&&'//nompro//'.LES_OPTION'
     nh = 0
-    chamgd = blan24
-    chgeom = blan24
-    chharm = blan24
-    chsig = blan24
-    chelem = blan24
+    chamgd = " "
+    chgeom = " "
+    chharm = " "
+    chsig = " "
+    chelem = " "
     chvarc = '&&'//nompro//'.CHVARC'
 !
     call infmaj()
@@ -237,11 +232,12 @@ subroutine mecalr(newcal, tysd, knum, kcha, resuco, &
 !
         call jeveuo(knum, 'L', jordr)
 !
-!         PASSAGE CALC_CHAMP
-        call calcop(option, lesopt, resuco, resuc1, knum, &
-                    nbordr, tysd, iret)
-        if (iret .eq. 0) goto 660
-!
+        if (callCalcul(option)) then
+            call calcop(option, lesopt, resuco, resuc1, knum, &
+                        nbordr, tysd, iret)
+            if (iret .eq. 0) goto 660
+        end if
+
         nuord = zi(jordr)
         call medom1(modele, mate, mateco, cara, kcha, nchar, &
                     resuco, nuord)

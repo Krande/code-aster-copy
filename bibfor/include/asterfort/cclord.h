@@ -15,23 +15,17 @@
 ! You should have received a copy of the GNU General Public License
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
-
-!
-!
 #include "asterf_types.h"
 !
 interface
-    subroutine cclord(nuoplo, nbordr, lisord, nobase, optdem,&
-                      minord, maxord, resuin, resuou, lisout)
-        integer(kind=8) :: nuoplo
-        integer(kind=8) :: nbordr
-        character(len=19) :: lisord
-        character(len=8) :: nobase
-        aster_logical :: optdem
-        integer(kind=8) :: minord
-        integer(kind=8) :: maxord
-        character(len=8) :: resuin
-        character(len=8) :: resuou
-        character(len=24) :: lisout
+    subroutine cclord(numeOptEff, nbStore, listStore, jvBaseName, isOptionFromUser, &
+                      numeStoreMin, numeStoreMax, resultIn, resultOut)
+        integer(kind=8), intent(in) :: numeOptEff
+        integer(kind=8), intent(in) :: nbStore
+        integer(kind=8), pointer :: listStore(:)
+        character(len=8), intent(in) :: jvBaseName
+        aster_logical, intent(in) :: isOptionFromUser
+        integer(kind=8), intent(in) ::  numeStoreMin, numeStoreMax
+        character(len=8), intent(in) :: resultIn, resultOut
     end subroutine cclord
 end interface

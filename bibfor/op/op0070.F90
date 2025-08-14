@@ -67,8 +67,8 @@ subroutine op0070()
     integer(kind=8) :: fonact(100)
     integer(kind=8), parameter :: zmeelm = 8
     integer(kind=8), parameter :: zmeass = 4
-    integer(kind=8), parameter :: zveelm = 12
-    integer(kind=8), parameter :: zveass = 19
+    integer(kind=8), parameter :: zveelm = 11
+    integer(kind=8), parameter :: zveass = 18
     integer(kind=8), parameter :: zsolal = 17
     integer(kind=8), parameter :: zvalin = 28
 !

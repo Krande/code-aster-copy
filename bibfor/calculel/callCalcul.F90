@@ -16,27 +16,37 @@
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
 !
-subroutine nmimpe(modele, limped)
+function callCalcul(optionZ)
 !
     implicit none
 !
 #include "asterf_types.h"
-#include "asterfort/dismoi.h"
-#include "asterfort/utmess.h"
+#include "asterfort/assert.h"
 !
-    character(len=24) :: modele
-    aster_logical :: limped
-!
-! --------------------------------------------------------------------------------------------------
-!
-    character(len=24) :: answer
+    character(len=*), intent(in) :: optionZ
+    aster_logical :: callCalcul
 !
 ! --------------------------------------------------------------------------------------------------
 !
-    limped = ASTER_FALSE
-    call dismoi('EXI_IMPE_ABSO', modele, 'MODELE', repk=answer)
-    limped = answer .eq. 'OUI'
-    if (limped) then
-        call utmess('I', 'DYNALINE1_23')
+! May I call CALC_CHAMP with this option
+!
+! --------------------------------------------------------------------------------------------------
+!
+    character(len=16) :: option
+!
+! --------------------------------------------------------------------------------------------------
+!
+    callCalcul = ASTER_TRUE
+    option = optionZ
+
+    if ((option .eq. 'ERTH_ELEM') .or. (option .eq. 'ERTH_ELNO') .or. &
+        (option .eq. 'ERME_ELEM') .or. (option .eq. 'ERME_ELNO') .or. &
+        (option .eq. 'QIRE_ELEM') .or. (option .eq. 'QIRE_ELNO') .or. &
+        (option .eq. 'SIZ1_NOEU') .or. (option .eq. 'SIZ2_NOEU') .or. &
+        (option .eq. 'ERZ1_ELEM') .or. (option .eq. 'ERZ2_ELEM') .or. &
+        (option .eq. 'QIZ1_ELEM') .or. (option .eq. 'QIZ2_ELEM') .or. &
+        (option .eq. 'SING_ELEM') .or. (option .eq. 'SING_ELNO')) then
+        callCalcul = ASTER_FALSE
     end if
-end subroutine
+!
+end function
