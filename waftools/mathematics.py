@@ -23,7 +23,7 @@ from functools import partial
 from subprocess import Popen, PIPE
 from waflib import Configure, Errors, Logs, Utils
 
-BLAS = ("openblas", "blas")
+BLAS = ("flexiblas", "openblas", "blas")
 BLACS = ("blacs",)
 LAPACK = ("lapack",)
 SCALAPACK = ("scalapack",)
@@ -60,6 +60,7 @@ def configure(self):
             self.detect_math_lib()
     elif self.options.maths_libs:
         self.check_opts_math_lib()
+        self.check_math_libs_call_blas_lapack("RED")
     self.check_libm_after_files()
 
 
@@ -68,14 +69,16 @@ def configure(self):
 def check_opts_math_lib(self):
     opts = self.options
     embed = opts.embed_math or opts.embed_all
-    check_lib = lambda lib: self.check_cc(
-        **{
-            "mandatory": True,
-            "uselib_store": "MATH",
-            "use": "MATH MPI",
-            ("st" * embed + "lib"): lib,
-        }
-    )
+
+    def check_lib(lib):
+        return self.check_cc(
+            **{
+                "mandatory": True,
+                "uselib_store": "MATH",
+                "use": "MATH MPI",
+                ("st" * embed + "lib"): lib,
+            }
+        )
 
     for lib in Utils.to_list(opts.maths_libs):
         check_lib(lib)
@@ -176,10 +179,11 @@ def detect_math_lib(self):
     # blas
     blaslibs, lapacklibs = self.get_mathlib_from_numpy()
     self.check_math_libs(list(BLAS) + blaslibs, embed)
+
     # lapack
     opt_lapack = False
-    if "openblas" in self.env.get_flat(varlib):
-        # check that lapack is embedded in openblas
+    if "openblas" in self.env.get_flat(varlib) or "flexiblas" in self.env.get_flat(varlib):
+        # check that lapack is embedded in openblas/flexiblas
         try:
             self.check_math_libs_call_blas_lapack(color="YELLOW")
             opt_lapack = True
@@ -253,9 +257,15 @@ def check_math_libs(self, libs, embed, optional=False):
     """Check for the first library available from 'libs'."""
     check_maths = partial(self.check_cc, uselib_store="MATH", use="MATH MPI", mandatory=False)
     if embed:
-        check_lib = lambda lib: check_maths(stlib=lib)
+
+        def check_lib(lib):
+            return check_maths(stlib=lib)
+
     else:
-        check_lib = lambda lib: check_maths(lib=lib)
+
+        def check_lib(lib):
+            return check_maths(lib=lib)
+
     found = None
     for lib in libs:
         self.start_msg("Checking for library %s" % lib)
@@ -263,10 +273,10 @@ def check_math_libs(self, libs, embed, optional=False):
             self.end_msg("yes")
             found = lib
             break
+        self.end_msg("no", color="YELLOW")
     else:
         if not optional:
             self.fatal("None of these libraries were found: %s" % libs)
-        self.end_msg("not found", "YELLOW")
     return found
 
 
@@ -283,8 +293,7 @@ def check_number_cores(self):
             raise Errors.ConfigurationError
     except Errors.ConfigurationError:
         nproc = 1
-    else:
-        self.end_msg(nproc)
+    self.end_msg(nproc)
     self.env["NPROC"] = nproc
 
 
@@ -366,7 +375,7 @@ def check_math_libs_call_blacs(self, color="RED"):
     if self.get_define("ASTER_HAVE_MPI"):
         self.start_msg("Checking for a program using blacs")
         try:
-            ret = self.check_fc(fragment=blacs_fragment, use="MPI OPENMP MATH", mandatory=True)
+            self.check_fc(fragment=blacs_fragment, use="MPI OPENMP MATH", mandatory=True)
         except Exception as exc:
             # the message must be closed
             self.end_msg("no", color=color)
