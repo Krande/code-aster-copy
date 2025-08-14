@@ -31,14 +31,15 @@ OPTIONAL_DEPS = ("cblas",)
 
 
 def options(self):
-    group = self.add_option_group("Mathematics  libraries options")
+    group = self.add_option_group("Mathematics libraries options")
     group.add_option(
         "--maths-libs",
         type=str,
         dest="maths_libs",
         default=None,
-        help="Math librairies to link with like blas and lapack. "
-        'Use None or "auto" to search them automatically.',
+        help="List of libraries that provide blas and lapack symbols. "
+        'Otherwise, one may use special values: "auto" to search them automatically, '
+        '"mkl", "flexiblas" or "openblas" to force a type of libraries.',
     )
     group.add_option(
         "--embed-maths",
@@ -54,7 +55,14 @@ def configure(self):
     self.check_cc(uselib_store="M", lib="m")
     self.check_cc(uselib_store="Z", lib="z")
     self.check_number_cores()
-    if self.options.maths_libs in (None, "auto"):
+    if self.options.maths_libs == "mkl":
+        if not self.detect_mkl():
+            raise Errors.ConfigurationError(
+                "can not find MKL libraries, try '--maths-libs=auto' instead."
+            )
+    elif self.options.maths_libs in BLAS:
+        self.detect_math_lib([self.options.maths_libs])
+    elif self.options.maths_libs in (None, "auto"):
         # try MKL first, then automatic blas/lapack
         if not self.detect_mkl():
             self.detect_math_lib()
@@ -118,10 +126,8 @@ def check_libm_after_files(self):
 def detect_mkl(self):
     """Try to detect MKL"""
     opts = self.options
-    # MKL can be installed either as a standalone package
-    # or with Intel compiler. In both cases MKLROOT is/must be defined
-    if os.environ.get("MKLROOT") is None:
-        return False
+    # MKL can be installed either as a standalone package or with Intel
+    # compiler. MKLROOT may be undefined (conda package for example)
     self.start_msg("Detecting MKL libraries")
     suffix = "_lp64" if "64" in self.env.DEST_CPU else ""
     scalapack = ""
@@ -154,31 +160,31 @@ def detect_mkl(self):
         libs.append(scalapack)
     if blacs:
         libs.append(blacs)
+    self.end_msg("trying " + str(libs))
     try:
         self.env.stash()
         self.env.append_value("LIB_MATH", libs)
-        self.env.append_value("LIBPATH_MATH", os.environ["MKLROOT"] + "/lib/intel64")
+        if "MKLROOT" in os.environ:
+            self.env.append_value("LIBPATH_MATH", os.environ["MKLROOT"] + "/lib/intel64")
         self.check_math_libs_call(color="YELLOW")
     except:
         self.env.revert()
-        self.end_msg("no", color="YELLOW")
         return False
     else:
         self.define("ASTER_HAVE_MKL", 1)
         self.env.commit()
-        self.end_msg(self.env.LIBPATH_MATH + self.env.LIB_MATH)
         return True
 
 
 @Configure.conf
-def detect_math_lib(self):
+def detect_math_lib(self, libs=BLAS):
     opts = self.options
     embed = opts.embed_math or (opts.embed_all and not self.get_define("ASTER_HAVE_MPI"))
     varlib = ("ST" if embed else "") + "LIB_MATH"
 
     # blas
     blaslibs, lapacklibs = self.get_mathlib_from_numpy()
-    self.check_math_libs(list(BLAS) + blaslibs, embed)
+    self.check_math_libs(list(libs) + blaslibs, embed)
 
     # lapack
     opt_lapack = False
