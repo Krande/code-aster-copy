@@ -93,10 +93,10 @@ class ThermalOperators(BaseOperators):
             return
 
         if residual is None:
-            timec = self.state.time_curr
+            time_curr = self.state.time_curr
             self.state.time_curr = self.state.time_prev
             self._resi_prev = super().getResidual(scaling=scaling)[0]
-            self.state.time_curr = timec
+            self.state.time_curr = time_curr
         else:
             self._resi_prev = residual
 

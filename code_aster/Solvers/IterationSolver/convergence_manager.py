@@ -23,13 +23,15 @@ from math import sqrt
 
 from ...Objects import DiscreteComputation
 from ...Utilities import MPI, logger, no_new_attributes, profile
+from ...Messages import UTMESS
 from ..Basics import ContextMixin
+import numpy as np
 
 
 class ConvergenceManager(ContextMixin):
     """Object that decides about the convergence status."""
 
-    __needs__ = ("problem", "state", "keywords")
+    __needs__ = ("problem", "state", "stepper", "keywords")
 
     _param = _residual_reference = None
     __setattr__ = no_new_attributes(object.__setattr__)
@@ -109,6 +111,15 @@ class ConvergenceManager(ContextMixin):
         def reference(self):
             """float|int: Reference value of the parameter."""
             return self._refe
+
+        @reference.setter
+        def reference(self, value):
+            """Set the parameter value.
+
+            Arguments:
+                value (float|int): Parameter value.
+            """
+            self._refe = value
 
         @property
         def value(self):
@@ -252,7 +263,7 @@ class ConvergenceManager(ContextMixin):
             instance: New object.
         """
         instance = super().builder(context)
-        for crit in ("RESI_GLOB_RELA", "RESI_GLOB_MAXI", "ITER_GLOB_MAXI", "RESI_REFE_RELA"):
+        for crit in ("ITER_GLOB_MAXI", "RESI_GLOB_RELA", "RESI_GLOB_MAXI", "RESI_REFE_RELA"):
             value = instance.get_keyword("CONVERGENCE", crit)
             if value is not None:
                 instance.setdefault(crit, value)
@@ -285,6 +296,10 @@ class ConvergenceManager(ContextMixin):
             para = self._param.get(name)
             if para:
                 para.value = -1
+
+    def isInitialTimeStep(self):
+        "Tell if it is the initial time step"
+        return self.stepper.remaining() == self.stepper.size()
 
     def hasResidual(self):
         """Tell if there is at least one residual convergence parameter.
@@ -467,20 +482,23 @@ class ConvergenceManager(ContextMixin):
         resi_maxi = self.setdefault("RESI_GLOB_MAXI")
         resi_rela = self.setdefault("RESI_GLOB_RELA")
         resi_refe = self.setdefault("RESI_REFE_RELA")
-
         resi_maxi.value = residual.norm("NORM_INFINITY")
 
         # idx = np.abs(np.asarray(residual.getValues())).argmax()
         # info = residual.getValuesWithDescription()[1]
         # print(f"MaxAbs for node {info[0][idx]+1} dof {info[1][idx]}")
         scaling = self.getRelativeScaling(residuals)
+        resi_rela.value = resi_maxi.value
         residual_rela = residual.copy()
-        if scaling == 0.0:
-            resi_rela.value = -1.0
+
+        # TODO: find a better minimum value
+        if scaling < np.finfo(float).tiny:
+            # Division by zero
+            resi_rela.value = -1
             residual_rela.setValues([-1] * residual_rela.size())
         else:
-            resi_rela.value = resi_maxi.value / scaling
-            residual_rela = residual / scaling
+            resi_rela.value /= scaling
+            residual_rela /= scaling
 
         if resi_refe.hasRef():
             residual_refe = residual.copy()
@@ -518,20 +536,77 @@ class ConvergenceManager(ContextMixin):
         Returns:
             bool: *True* if converged, *False* otherwise.
         """
+
+        def isdefined(para):
+            return para.isSet() and para.hasRef()
+
         logger.debug("isConverged ? %r", self._param)
-        defined = [para for para in self._param.values() if para.isSet() and para.hasRef()]
+        defined = [(name, para) for name, para in self._param.items() if isdefined(para)]
         if not defined:
             logger.debug("no parameter set: not converged")
             return False
-        for name in self._param:
-            para = self._param[name]
+
+        for name, para in self._param.items():
+            if name == "RESI_GLOB_RELA" and para.value == -1:
+                # See special case, pass next name, para
+                continue
             if not para.isConverged():
                 logger.debug("parameter %s is not converged", name)
                 return False
+
+        # -------- special case --------
+        name = "RESI_GLOB_RELA"
+        para = self._param[name]
+
+        if not isdefined(para):
+            # If not defined, return True
+            return True
+
+        if para.isConverged():
+            # Special case only
+            return True
+
+        # Recover RESI_GLOB_MAXI
+        name_maxi = "RESI_GLOB_MAXI"
+        resi_maxi = self._param[name_maxi]
+        resiMaxiRefeIsUndefined = False
+
+        if not isdefined(resi_maxi):
+
+            resiMaxiRefeIsUndefined = True
+
+            # TODO: verify if there is a function that returns
+            # whether it is the initial time step (or statics) or not
+            if self.isInitialTimeStep():
+
+                # the initial external force could not be zero
+                # if RESI_GLOB_MAXI is undefined
+                message = (
+                    f"{name} struggles with null initial loading."
+                    f"Try defining as well {name_maxi}."
+                    f"Verify modelisation or use another criterion."
+                )
+                raise Warning(message)
+
+            # TODO: Find a better computation of resi_maxi's reference
+            # e.g. use the history of previous solutions
+            resi_maxi.reference = para.reference if para.hasRef() else np.finfo(float).tiny
+
+            # TODO: Find a better location for the information message
+            # UTMESS("I", "MECANONLINE2_98", valr=(resi_maxi.value, resi_maxi.reference))
+
+        resiMaxiIsConverged = resi_maxi.isConverged()
+        if resiMaxiRefeIsUndefined:
+            resi_maxi.reference = ConvergenceManager.undef
+
+        if not resiMaxiIsConverged:
+            logger.debug(f"neither parameter {name} nor {name_maxi} are not converged")
+            return False
+
         return True
 
     def isPrediction(self):
-        """Tell if the current Nuewton iteration is the prediction
+        """Tell if the current Newton iteration is the prediction
         iteration.
 
         Returns:
