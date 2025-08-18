@@ -145,8 +145,6 @@ def runtest(self):
         if not exp:
             raise FileNotFoundError(test + ".export")
         cmd = [run_aster, "--test"]
-        if self.variant == "debug":
-            cmd.extend(["-g"])
         cmd.extend(args)
         cmd.append(osp.abspath(exp[0]))
         Logs.info("running %s in '%s'" % (test, self.variant))

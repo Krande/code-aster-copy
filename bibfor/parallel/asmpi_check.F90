@@ -44,7 +44,7 @@ subroutine asmpi_check(iret)
 !       EN CAS DE PROBLEME, ON RETOURNE IRET != 0, CAR IL NE FAUT ALORS
 !       PAS INITIER DE NOUVELLES COMMUNICATIONS.
 !-----------------------------------------------------------------------
-#if defined(ASTER_HAVE_MPI) && !defined(ASTER_DISABLE_MPI_CHECK)
+#if defined(ASTER_HAVE_MPI) && defined(ASTER_ENABLE_MPI_CHECK)
 
 #include "mpif.h"
 #include "asterc/asmpi_irecv_i4.h"

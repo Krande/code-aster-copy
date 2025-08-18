@@ -22,8 +22,7 @@ To tell that a feature is available, a variable ``ASTER_HAVE_<feature-name>`` is
 to ``1``.
 To tell that a feature is disabled, we set ``ASTER_HAVE_<feature-name>`` is undefined.
 
-Examples: ``ASTER_HAVE_PETSC`` (feature is installed),
-``ASTER_DISABLE_MPI_CHECK`` (in most cases it is enabled).
+Examples: ``ASTER_HAVE_PETSC`` (feature is installed).
 
 If ``ASTER_HAVE_xxx`` is defined (use ``#ifdef``, not
 ``#if ASTER_HAVE_xxx == 1``), the feature *xxx* is available.
@@ -91,7 +90,7 @@ Datatypes and adjustements to prerequisites datatypes:
 
 Advanced features:
 
-- ``ASTER_DISABLE_MPI_CHECK``: Disable checking before MPI communications.
+- ``ASTER_ENABLE_MPI_CHECK``: Enables checking before MPI communications.
 - ``ASTER_ENABLE_PROC_STATUS``: Enabled if ``/proc/status`` is available.
 - ``ASTER_HAVE_SUPPORT_FPE``: Enabled if FPE can be catched.
 - ``ASTER_HAVE_BACKTRACE``: Enabled if GNU traceback function is available.

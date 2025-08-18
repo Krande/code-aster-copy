@@ -37,7 +37,7 @@ def haveMPI():
     """Tell if the library is built with MPI support.
 
     Returns:
-        bool: *True* if use MPI librairies, *False* else
+        bool: *True* if MPI libraries are used, *False* otherwise.
     """
     return config.get("ASTER_HAVE_MPI", 0) == 1
 

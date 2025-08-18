@@ -64,5 +64,9 @@ sphinx-rtd-theme = "*"
 [feature.rtd.tasks]
 builddoc = {cmd = "python -m sphinx -T -b html -d ../build/mpidebug/doc/doctrees -D language=en . ", cwd = "doc"}
 
+[feature.mkl.dependencies]
+mkl = "*"
+
 [environments]
 rtd = {features = ["rtd"], no-default-feature = true}
+mkl = ["mkl"]
