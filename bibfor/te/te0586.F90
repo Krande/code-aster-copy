@@ -18,12 +18,13 @@
 !
 subroutine te0586(option, nomte)
 !
+    use pipeElem_module
     implicit none
 !
-#include "jeveux.h"
-#include "asterfort/elrefe_info.h"
 #include "asterfort/assert.h"
+#include "asterfort/pipeElem_type.h"
 #include "asterfort/tufull.h"
+#include "jeveux.h"
 !
     character(len=16), intent(in) :: option, nomte
 !
@@ -42,41 +43,14 @@ subroutine te0586(option, nomte)
 !
 ! --------------------------------------------------------------------------------------------------
 !
-    integer(kind=8), parameter :: nbrddm = 156
-    integer(kind=8) :: nFourier, nbrddl, nno
-    real(kind=8) :: deplm(nbrddm), deplp(nbrddm), vtemp(nbrddm)
-    real(kind=8) :: b(4, nbrddm)
-    real(kind=8) :: ktild(nbrddm, nbrddm), effint(nbrddm)
-    real(kind=8) :: pass(nbrddm, nbrddm)
+    integer(kind=8) :: nbFourier, nbDof, nbNode
 !
 ! --------------------------------------------------------------------------------------------------
 !
-    call elrefe_info(fami='RIGI', nno=nno)
-!
-! - Number of Fourier modes
-!
-    nFourier = 3
-    if (nomte .eq. 'MET6SEG3') then
-        nFourier = 6
-    end if
-!
-! - Number of DOF
-!
-    nbrddl = nno*(6+3+6*(nFourier-1))
-    ASSERT(nbrddl .le. nbrddm)
-    if (nomte .eq. 'MET3SEG3') then
-        ASSERT(nbrddl .eq. 63)
-    else if (nomte .eq. 'MET6SEG3') then
-        ASSERT(nbrddl .eq. 117)
-    else if (nomte .eq. 'MET3SEG4') then
-        ASSERT(nbrddl .eq. 84)
-    else
-        ASSERT(ASTER_FALSE)
-    end if
-!
+    call pipeGetDime(nomte, 'RIGI', &
+                     nbNode, nbFourier, nbDof)
+
 ! - Compute option
-!
-    call tufull(option, nFourier, nbrddl, deplm, deplp, &
-                b, ktild, effint, pass, vtemp)
+    call tufull(option, nbFourier, nbDof)
 !
 end subroutine

@@ -15,13 +15,12 @@
 ! You should have received a copy of the GNU General Public License
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
-
-subroutine te0185(option, nomte)
-! person_in_charge: ayaovi-dzifa.kudawoo at edf.fr
-    implicit none
-#include "asterf_types.h"
-#include "jeveux.h"
 !
+subroutine te0185(option, nomte)
+!
+    implicit none
+!
+#include "asterf_types.h"
 #include "asterfort/assert.h"
 #include "asterfort/ef0031.h"
 #include "asterfort/ef0033.h"
@@ -41,27 +40,36 @@ subroutine te0185(option, nomte)
 #include "asterfort/ef0585.h"
 #include "asterfort/ef0587.h"
 #include "asterfort/jevech.h"
+#include "asterfort/lteatt.h"
 #include "asterfort/teattr.h"
-    character(len=16) :: option, nomte
-!     ----------------------------------------------------------------
-!     CALCUL DE L'OPTION EFGE_ELNO
-!     CETTE ROUTINE NE SERT QUE D'INDIRECTION VERS LE BON TE00IJ
-!     EN FONCTION DE LA MODELISATION ET DE LA NATURE DU CALCUL :
-!     LINEAIRE OU NON-LINEAIRE
+#include "jeveux.h"
+!
+    character(len=16), intent(in) :: option, nomte
+!
+! --------------------------------------------------------------------------------------------------
+!
+! Elementary computation
+!
+! Elements: structural elements
+!
+! Option: EFGE_ELNO
+!
+! --------------------------------------------------------------------------------------------------
+!
     integer(kind=8) :: j1, inlin, ibid
-    aster_logical :: line
+    aster_logical :: line, lPipe
     character(len=3) :: cmod
     character(len=8) :: alias8
-!-----------------------------------------------------------------------
 !
-!     -- CALCUL DE LINE :
+! --------------------------------------------------------------------------------------------------
+!
     call jevech('PNONLIN', 'L', j1)
     inlin = zi(j1-1+1)
     line = (inlin .eq. 0)
-!
-!     -- CALCUL DE CMOD (CODE DE LA MODELISATION) :
+
     call teattr('S', 'ALIAS8', alias8, ibid)
     cmod = alias8(3:5)
+    lPipe = lteatt('TUYAU', 'OUI')
 !
     if (line) then
 !       -- QUAND LE CALCUL EST LINEAIRE :
@@ -120,11 +128,9 @@ subroutine te0185(option, nomte)
 !         -- MEMBRANE
             call ef0436(nomte)
         else
-            ASSERT(.false.)
+            ASSERT(ASTER_FALSE)
         end if
-!
-!
-!
+
     else
 !     -- QUAND LE CALCUL EST NON-LINEAIRE :
         if (cmod .eq. '2DB') then
@@ -185,7 +191,7 @@ subroutine te0185(option, nomte)
 !         -- MEMBRANE
             call ef0156(nomte)
         else
-            ASSERT(.false.)
+            ASSERT(ASTER_FALSE)
         end if
     end if
 !

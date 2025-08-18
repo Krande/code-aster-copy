@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -89,13 +89,6 @@ ECONTNC = LocatedComponents(phys=PHY.SIEF_C, type="ELNO", components=("SIXX",))
 ECONTPG = LocatedComponents(phys=PHY.SIEF_R, type="ELGA", location="RIGI", components=("SIXX",))
 
 ECONTNO = LocatedComponents(phys=PHY.SIEF_R, type="ELNO", components=("SIXX",))
-
-EGAMIMA = LocatedComponents(
-    phys=PHY.SPMX_R,
-    type="ELGA",
-    location="RIGI",
-    components=("VAL", "NUCOU", "NUSECT", "NUFIBR", "POSIC", "POSIS"),
-)
 
 ZVARIPG = LocatedComponents(phys=PHY.VARI_R, type="ELGA", location="RIGI", components=("VARI",))
 

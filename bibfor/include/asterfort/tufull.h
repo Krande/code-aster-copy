@@ -17,18 +17,8 @@
 ! --------------------------------------------------------------------
 !
 interface
-    subroutine tufull(option, nFourier, nbrddl, deplm, deplp,&
-                      b, ktild, effint, pass, vtemp)
-        integer(kind=8) :: nbrddl
-        character(len=16) :: option
-        character(len=16) :: nomte
-        real(kind=8) :: deplm(nbrddl)
-        real(kind=8) :: deplp(nbrddl)
-        real(kind=8) :: b(4, nbrddl)
-        real(kind=8) :: ktild(nbrddl, nbrddl)
-        real(kind=8) :: effint(nbrddl)
-        real(kind=8) :: pass(nbrddl, nbrddl)
-        real(kind=8) :: vtemp(nbrddl)
-        integer(kind=8) :: nFourier
+    subroutine tufull(option, nbFourier, nbDof)
+        character(len=16), intent(in) :: option
+        integer(kind=8), intent(in) :: nbDof, nbFourier
     end subroutine tufull
 end interface

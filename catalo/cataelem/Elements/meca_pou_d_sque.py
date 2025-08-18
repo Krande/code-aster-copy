@@ -222,15 +222,6 @@ ECOEQPG = LocatedComponents(
     ),
 )
 
-
-EGAMIMA = LocatedComponents(
-    phys=PHY.SPMX_R,
-    type="ELGA",
-    location="RIGI",
-    components=("VAL", "NUCOU", "NUSECT", "NUFIBR", "POSIC", "POSIS"),
-)
-
-
 ESTRAUX = LocatedComponents(
     phys=PHY.STRX_R,
     type="ELGA",

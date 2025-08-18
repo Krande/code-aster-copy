@@ -238,7 +238,6 @@ CINDICR = LocatedComponents(phys=PHY.NEUT_R, type="ELEM", components=("X[2]",))
 # Field for parameters of indicator (AFFE_MODELE)
 CCHCKPR = LocatedComponents(phys=PHY.NEUT_R, type="ELEM", components=("X[2]",))
 
-
 CNEUTR1 = LocatedComponents(phys=PHY.NEUT_R, type="ELEM", components=("X1",))
 
 CBORNPI = LocatedComponents(phys=PHY.PILO_R, type="ELEM", components=("A0", "A1"))
@@ -955,7 +954,7 @@ EDFEQNO = LocatedComponents(
 )
 
 # For external state variables strains (3D)
-NEPVARC = LocatedComponents(
+NVARC3D = LocatedComponents(
     phys=PHY.EPSI_R,
     type="ELNO",
     components=("EPTHER_L", "EPTHER_T", "EPTHER_N", "EPSECH", "EPHYDR", "EPPTOT"),
@@ -1103,11 +1102,6 @@ EERRENOT = LocatedComponents(
 EHYDRNO = LocatedComponents(phys=PHY.HYDR_R, type="ELNO", components=("HYDR",))
 
 ENINST_R = LocatedComponents(phys=PHY.INST_R, type="ELNO", components=("INST",))
-
-ENOMIMA = LocatedComponents(
-    phys=PHY.SPMX_R, type="ELNO", components=("VAL", "NUCOU", "NUSECT", "NUFIBR", "POSIC", "POSIS")
-)
-
 
 EPRACNO = LocatedComponents(phys=PHY.PRAC_R, type="ELNO", components=("PRES_R", "PRES_I", "DB"))
 
@@ -1286,8 +1280,8 @@ EDFEQPG = LocatedComponents(
     ),
 )
 
-# For external state variables strains
-EEPVARC = LocatedComponents(
+# For external state variables strains (3D)
+EGVARC3D = LocatedComponents(
     phys=PHY.EPSI_R,
     type="ELGA",
     location="RIGI",
@@ -1403,6 +1397,14 @@ EEFGEBC = LocatedComponents(
     phys=PHY.SIEF_C, type="ELGA", location="RIGI", components=("N", "VY", "VZ", "MT", "MFY", "MFZ")
 )
 
+# For MIN-MAX SP
+EGMINMAX = LocatedComponents(
+    phys=PHY.SPMX_R,
+    type="ELGA",
+    location="RIGI",
+    components=("VAL", "NUCOU", "NUSECT", "NUFIBR", "POSIC", "POSIS"),
+)
+
 EGMATE_R = LocatedComponents(
     phys=PHY.MATE_R,
     type="ELGA",
@@ -1433,13 +1435,6 @@ EDERAPG = LocatedComponents(
 
 EDOMGGA = LocatedComponents(phys=PHY.DOMA_R, type="ELGA", location="RIGI", components=("DOMA",))
 
-EEFGEGAC = LocatedComponents(
-    phys=PHY.SIEF_C, type="ELGA", location="RIGI", components=("N", "VY", "VZ", "MT", "MFY", "MFZ")
-)
-
-EEFGEGAR = LocatedComponents(
-    phys=PHY.SIEF_R, type="ELGA", location="RIGI", components=("N", "VY", "VZ", "MT", "MFY", "MFZ")
-)
 
 EGGEMA_R = LocatedComponents(
     phys=PHY.GEOM_R, type="ELGA", location="MATER", components=("X", "Y", "Z")

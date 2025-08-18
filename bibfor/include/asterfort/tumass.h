@@ -15,13 +15,9 @@
 ! You should have received a copy of the GNU General Public License
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
-
-!
 !
 interface
-    subroutine tumass(nomte, nbrddl, mass)
-        integer(kind=8) :: nbrddl
-        character(len=16) :: nomte
-        real(kind=8) :: mass(nbrddl, nbrddl)
+    subroutine tumass(nbNode, nbFourier, nbDof)
+        integer(kind=8), intent(in) :: nbNode, nbFourier, nbDof
     end subroutine tumass
 end interface

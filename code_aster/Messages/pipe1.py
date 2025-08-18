@@ -20,7 +20,15 @@
 from ..Utilities import _
 
 cata_msg = {
+    44: _("""Le chargement de type vent n'est pas utilisable pour les éléments tuyaux."""),
+    45: _(
+        """Le chargement défini en repère local est interdit pour les tuyaux : utiliser le repère global."""
+    ),
+    46: _("""Le comportement élastique de type %(k1)s n'est pas autorisé pour un élément tuyau."""),
+    50: _(
+        """On ne trouve pas de comportement élastique sur le tuyau. C'est nécessaire pour récupérer la masse volumique."""
+    ),
     54: _(
         """MODI_METRIQUE ne peut pas s'appliquer à cause des dimensions du tuyau, en effet, le rapport rayon sur épaisseur est supérieur à %(r1)f."""
-    )
+    ),
 }

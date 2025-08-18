@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -591,12 +591,12 @@ class MEDPQS4(Element):
                 (OP.EPVC_ELGA.PVARCPR, LC.ZVARCPG),
                 (SP.PVARCRR, LC.ZVARCPG),
             ),
-            para_out=((OP.EPVC_ELGA.PDEFOPG, LC.EEPVARC),),
+            para_out=((OP.EPVC_ELGA.PDEFOPG, LC.EGVARC3D),),
         ),
         OP.EPVC_ELNO(
             te=4,
-            para_in=((OP.EPVC_ELNO.PDEFOPG, LC.EEPVARC),),
-            para_out=((SP.PDEFONO, LC.NEPVARC),),
+            para_in=((OP.EPVC_ELNO.PDEFOPG, LC.EGVARC3D),),
+            para_out=((SP.PDEFONO, LC.NVARC3D),),
         ),
         OP.ERME_ELEM(
             te=377,
