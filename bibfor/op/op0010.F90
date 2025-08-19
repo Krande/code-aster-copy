@@ -289,8 +289,6 @@ subroutine op0010()
         end if
     end do
 !
-!!    if (quad) call utmess('F', 'XFEM_86')
-!
 ! --- CONNECTIVITE INVERSEE
 !
 !

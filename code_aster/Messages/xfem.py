@@ -674,15 +674,6 @@ Le calcul de la norme L2 de la pression de contact sur une fissure XFEM n'est pa
     ),
     86: _(
         """
-  -> Il n'est pas possible de réaliser la propagation d'une fissure en présence de mailles
-     quadratiques dans le cadre d'un modèle X-FEM.
-
-  -> Risque & Conseil:
-     Veuillez utiliser un maillage linéaire.
-"""
-    ),
-    86: _(
-        """
 Le CHAM_GD utilisé par l'opération ASSE_DEPL de l'opérateur CREA_CHAMP doit être un champ nodal."
 """
     ),
