@@ -13,20 +13,20 @@ install = {depends-on = ["build"]}
 make = {cmd = "make"}
 
 [dependencies]
-# base
+# python
 mpi4py = "4.0.*"
 numpy = "1.24.*"
 python = "3.11.*"
+scipy = ">=1.15.2,<2"
 # compilers
-gcc = "12.2.*"
-gfortran = "12.2.*"
-gxx = "12.2.*"
+gcc = "14.*"
+gfortran = "14.*"
+gxx = "14.*"
 mpi = "==1.0"
 openmpi = ">=5.0.7,<6"
 # mathematical libraries
 blas = {version = "*", build = "openblas"}
 scalapack = ">=2.2.0,<3"
-scipy = ">=1.15.2,<2"
 # libs
 hdf5 = ">=1.14,<2"
 libmed = {version = "4.1.*", build = "mpi_openmpi*"}
@@ -57,7 +57,9 @@ debugpy = "*"
 py-spy = ">=0.4.0,<0.5"
 
 [feature.rtd.dependencies]
-numpy = "1.24.*"
+mpi4py = "4.0.*"
+numpy = "<2"
+python = "3.12.*"
 sphinx = "<7"
 sphinx-rtd-theme = "*"
 
@@ -67,6 +69,47 @@ builddoc = {cmd = "python -m sphinx -T -b html -d ../build/mpidebug/doc/doctrees
 [feature.mkl.dependencies]
 mkl = "*"
 
+[feature.latest.dependencies]
+# python
+mpi4py = ">=4.1.0,<5"
+numpy = "*"
+python = "*"
+scipy = ">=1.16.0,<2"
+# mathematical libraries
+blas = {version = "*", build = "openblas"}
+scalapack = ">=2.2.0,<3"
+# compilers
+gcc = ">=15"
+gfortran = ">=15"
+gxx = ">=15"
+mpi = "==1.0"
+openmpi = ">=5.0.7,<6"
+#libs
+hdf5 = ">=1.14.3,<2"
+libmed = {version = "4.1.*", build = "mpi_openmpi*"}
+libptscotch = ">7"
+medcoupling = ">=9.12.0"
+# mgis 2 doesn't compile with gcc 15
+# mfront 5 not available
+mfront = "*"
+mgis = "*"
+mumps-mpi = ">=5.7.3,<6"
+petsc = "<3.22"
+petsc4py = "*"
+slepc = "<3.22"
+slepc4py = "*"
+zlib = "*"
+# developer tools
+black = "*"
+ccache = "*"
+clang-format = "17.*"
+ipython = "*"
+make = "*"
+pyyaml = "*"
+ruff = "*"
+sphinx = "<7"
+
 [environments]
-rtd = {features = ["rtd"], no-default-feature = true}
+latest = {features = ["latest"], no-default-feature = true}
 mkl = ["mkl"]
+rtd = {features = ["rtd"], no-default-feature = true}
