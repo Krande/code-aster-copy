@@ -229,6 +229,7 @@ subroutine ccpoux(postCompPoux, &
     exif1d = ASTER_FALSE
     loadFieldGrav = " "
     exigrav = ASTER_FALSE
+    typeScal = ' '
 
     if (hasLoad) then
 ! ----- Get load from user
@@ -266,7 +267,6 @@ subroutine ccpoux(postCompPoux, &
         end if
 
 ! ----- Get coefficient from user
-        typeScal = ' '
         if (funcFromUser .ne. 0 .or. coefFromUser .ne. 0) then
             if (resultType .eq. 'DYNA_HARMO') then
                 typeScal = 'C'
