@@ -23,8 +23,6 @@
  */
 #include "Utilities/PetscRedistribute.h"
 
-#include <petscsystypes.h>
-
 /**
  * @brief Based on a subcommunicator and the global number of rows,
  *        this function returns the rows index set of each proc.

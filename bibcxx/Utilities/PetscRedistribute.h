@@ -22,9 +22,15 @@
  *   along with Code_Aster.  If not, see <http://www.gnu.org/licenses/>.
  */
 #include "aster_pybind.h"
+#ifdef ASTER_HAVE_PETSC
 #include "petsc.h"
 #include "petscsystypes.h"
+#endif
 
+#ifdef ASTER_HAVE_PETSC
 static PetscErrorCode redistribute_petsc( Mat mat, int subCommSize, Mat *new_mat );
+#else
+void redistribute_petsc();
+#endif
 
 py::object redistributePetscMat( py::object pMat, int subCommSize );
