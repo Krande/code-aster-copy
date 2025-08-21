@@ -25,7 +25,6 @@
 #include "Utilities/PetscRedistribute.h"
 
 void exportPetscRedistributeToPython( py::module_ &mod ) {
-#ifdef ASTER_HAVE_PETSC
     mod.def( "redistributePetscMat", &redistributePetscMat,
              R"(Given a distributed matrix on an MPI communicator,
      this function returns a redistributed matrix on a subcommunicator.
@@ -38,5 +37,4 @@ void exportPetscRedistributeToPython( py::module_ &mod ) {
                  subCommSize.
    )",
              py::arg( "pMat" ), py::arg( "subCommSize" ) );
-#endif
 }
