@@ -24,10 +24,12 @@ import numpy as np
 from code_aster.Commands import *
 from code_aster import CA
 from code_aster.CA import MPI
-from code_aster.Utilities import SharedTmpdir
+from code_aster.Utilities import SharedTmpdir, petscInitialize
 
 
 CA.init("--test", ERREUR=_F(ALARME="EXCEPTION"))
+
+# petscInitialize("-start_in_debugger ")
 
 # check ParallelMesh object API
 test = CA.TestCase()
@@ -519,6 +521,17 @@ test.assertEqual(
     [3321, 3321, 3825][rank],
 )
 
+# test ghosts
+square = CA.ParallelMesh.buildSquare(refine=2, deterministic=True, ghost=2)
+
+test.assertEqual(
+    square.getNodes(localNumbering=True, same_rank=False),
+    [
+        [2, 3, 6, 7, 10, 11, 13, 14, 15, 17, 18, 19],
+        [2, 3, 4, 7, 8, 9, 13, 14, 16, 17, 18, 19, 20, 21, 22, 23],
+        [4, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 22, 23, 24],
+    ][rank],
+)
 
 test.printSummary()
 

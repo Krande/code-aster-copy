@@ -145,6 +145,7 @@
 #include "PythonBindings/ParallelMechanicalLoadInterface.h"
 #include "PythonBindings/ParallelMeshInterface.h"
 #include "PythonBindings/ParallelThermalLoadInterface.h"
+#include "PythonBindings/PetscRedistributeInterface.h"
 #include "PythonBindings/PhysicalProblemInterface.h"
 #include "PythonBindings/PhysicalQuantityInterface.h"
 #include "PythonBindings/PhysicalQuantityManagerInterface.h"
@@ -338,6 +339,9 @@ PYBIND11_MODULE( libaster, mod ) {
     exportObjectBalancerToPython( mod );
     exportMeshBalancerToPython( mod );
     exportIncompleteMeshToPython( mod );
+#ifdef ASTER_HAVE_PETSC
+    exportPetscRedistributeToPython( mod );
+#endif /* ASTER_HAVE_PETSC */
 #ifdef ASTER_HAVE_SCOTCH
     exportPtScotchPartitionerToPython( mod );
 #endif /* ASTER_HAVE_SCOTCH */

@@ -439,11 +439,10 @@ contains
 !
     end subroutine
 !
-    subroutine FEMassStiffJacoScalAdd(FEBasis, BSEval, BGSEval, weight, ValueQP, mat)
+    subroutine FEMassStiffJacoScalAdd(BSEval, BGSEval, weight, ValueQP, mat)
 !
         implicit none
 !
-        type(FE_Basis), intent(in)  :: FEBasis
         real(kind=8), intent(in)    :: BSEval(MAX_BS)
         real(kind=8), intent(in)    :: weight, BGSEval(3, MAX_BS)
         real(kind=8), intent(in)    :: ValueQP(3)
@@ -451,24 +450,21 @@ contains
 ! --------------------------------------------------------------------------------------------------
 !
 !
-!   Compute part of the tangent rigidity matrix
-!   In FEBasis      : tBasis function
-!   In BSEval       : Values of the basis function at the quadrature points
-!   In BGSEval      : Values of the derivature of the basis function at the quadrature points
-!   In weight       : weight of the quadrature point
+!   Compute the rigidity matrix
+!   In FEQuad      : Quadrature
 !   In ValuesQP     : Values of scalar function f at the quadrature points
-!   Out mat         : tangent stiffness
+!   Out rhs         : (f, grad v)
 !
 ! --------------------------------------------------------------------------------------------------
 !
 ! ----- Local variables
-        integer :: j
-        real(kind=8) :: Kgradj(3), gloDt(3, MAX_BS)
+        real(kind=8) :: gloDt(3, MAX_BS)
 
         gloDt(1, :) = ValueQP(1)*BSEval
         gloDt(2, :) = ValueQP(2)*BSEval
         gloDt(3, :) = ValueQP(3)*BSEval
         mat = mat+weight*matmul(transpose(BGSEval), gloDt)
+
 !
     end subroutine
 !

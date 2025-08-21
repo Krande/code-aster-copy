@@ -265,7 +265,10 @@ class BaseMesh : public DataStructure, public ListOfTables {
                                   const bool localNumbering = false ) {
         AS_ASSERT( false );
     };
-
+    /**
+     * @brief Steal from input vector ids in local numbering of ghost nodes on the last layer
+     */
+    virtual void setLastGhostsLayer( const VectorInt &node_ids ) { AS_ASSERT( false ); };
     /**
      * @brief Returns the cells indexes of a group of cells
      * @return VectorLong
@@ -276,6 +279,14 @@ class BaseMesh : public DataStructure, public ListOfTables {
     }
 
     virtual VectorLong getCells( const VectorString &names = {} ) const {
+        AS_ASSERT( false );
+        return {};
+    }
+
+    /**
+     * @brief Return ids in local numbering of ghost nodes on the last layer
+     */
+    virtual JeveuxVectorShort getLastGhostsLayer() const {
         AS_ASSERT( false );
         return {};
     }

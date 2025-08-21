@@ -16,7 +16,7 @@
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
 
-subroutine crnggc(chamnz)
+subroutine crnggc(chamnz, l_print)
     implicit none
 #include "asterc/asmpi_recv_i.h"
 #include "asterc/asmpi_send_i.h"
@@ -54,7 +54,8 @@ subroutine crnggc(chamnz)
 #include "jeveux.h"
 #include "MeshTypes_type.h"
 !
-    character(len=*) :: chamnz
+    character(len=*), intent(in) :: chamnz
+    aster_logical, optional, intent(in) :: l_print
 
 #ifdef ASTER_HAVE_MPI
 !
@@ -86,6 +87,7 @@ subroutine crnggc(chamnz)
     character(len=19) :: nomlig, comm_name, tag_name, nume_equa, joints, meshj, chamno
     character(len=24) :: nonulg, domj, recv, send, name, gcom, pgid
     character(len=32) :: nojoie, nojoir
+    aster_logical :: l_print_
 !
 !----------------------------------------------------------------------
 !
@@ -105,6 +107,11 @@ subroutine crnggc(chamnz)
     call infniv(ifm, niv)
 !
     chamno = chamnz
+!
+    l_print_ = ASTER_TRUE
+    if (present(l_print)) then
+        l_print_ = l_print
+    end if
 !
     call asmpi_info(rank=mrank, size=mnbproc)
     rang = to_aster_int(mrank)
@@ -388,7 +395,7 @@ subroutine crnggc(chamnz)
     end do
 !
 ! --- Affichage inconnue systeme
-    if (niv .ge. 1) then
+    if (niv .ge. 1 .and. l_print_) then
         call dismoi('NB_NO_MAILLA', mesh, 'MAILLAGE', repi=nb_node)
         nno = 0
         do ino = 1, nb_node

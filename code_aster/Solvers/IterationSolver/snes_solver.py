@@ -19,8 +19,12 @@
 
 from ...Objects import DiscreteComputation
 from ...Supervis import ConvergenceError
-from ...Utilities import PETSc, no_new_attributes, profile
+from ...Utilities.mpi_utils import MPI
+from ...Utilities import PETSc, no_new_attributes, profile, petscInitialize
 from .iteration_solver import BaseIterationSolver
+
+from time import time
+import os
 
 
 def Print(*args):
@@ -35,29 +39,78 @@ class SNESSolver(BaseIterationSolver):
     _primal_incr = _resi_comp = None
     _scaling = _options = None
     local = snes = fnorm0 = None
+    CumulLinIter = Instant = rank = 0
     __setattr__ = no_new_attributes(object.__setattr__)
 
     def __init__(self, local=False):
         super().__init__()
+        petscInitialize()
         self._primal_incr = self._resi_comp = None
         self._scaling = self._options = None
         self.local = local
         self.snes = None
         self.fnorm0 = None
+        self.rank = MPI.ASTER_COMM_WORLD.Get_rank()
+        self.CumulLinIter = 0
+        self.Instant = 0
+        self.InitializeMonitoring()
 
     def initialize(self):
         """Initialize the object for the next step."""
         self.current_incr = 0
         # self.current_matrix = None  # keep
 
-    def _evalFunction(self, snes, X, F):
+    def _assembleOperators(self, X, F=None, J=None):
+        """
+        Assembles the function and its Jacobian outside of the Newton context
+            Inputs:
+                - X : the position of the evaluation.
+            Outputs:
+                - F : if not None, it recieves the function evaluation at X.
+                - J : if not None, it recieves the Jacobian evaluation at X.
+        """
+        if not (F or J):
+            RuntimeWarning(
+                "Neither the function nor the Jacobian " + "is given to the operators assembler"
+            )
+            return
+        # step_copy = self.state.primal_step.toPetsc(local=self.local).copy()
+        self.state.primal_step.fromPetsc(X, local=self.local)
+        # prev_petsc = self.state.primal_prev.toPetsc(local=self.local)
+        # prev_copy = prev_petsc.copy()
+        # prev_petsc.set(0.)
+        # ----------------------------- Function evaluation ---------------------------
+        if F:
+            # Build initial residual
+            disc_comp = DiscreteComputation(self.problem)
+            residual = self.oper.getResidual(self._scaling)
+            # Apply Lagrange scaling
+            residual.resi.applyLagrangeScaling(1 / self._scaling)
+            # Apply DirichletBC into the residual
+            diriBCs = disc_comp.getIncrementalDirichletBC(
+                self.state.time_curr, self.state.primal_curr
+            )
+            self.current_matrix.applyDirichletBC(diriBCs, residual.resi)
+            # Copy to PETSc
+            residual.resi.toPetsc(local=self.local).copy(F)
+        # ------------------------------ Jacobian evaluation ---------------------------
+        if J:
+            _matrix = self.oper.getJacobian(self.matrix_type)
+            self.current_matrix = _matrix
+            self._scaling = self.oper.getLagrangeScaling(self.matrix_type)
+            _matrix.toPetsc(local=self.local).copy(J)
+        # Recovering aster current step
+        # self.state.primal_step.fromPetsc(step_copy,local=self.local)
+        # self.state.primal_prev.fromPetsc(prev_copy,local=self.local)
+
+    def _evalFunction(self, snes, X, F, update=True):
         # Get the solution increment from PETSc
-        if snes.getSolutionUpdate().handle:
-            self._primal_incr.fromPetsc(snes.getSolutionUpdate(), local=self.local)
-        # Increment the solution
-        self._primal_incr.applyLagrangeScaling(1 / self._scaling)
-        self.state.primal_step += self._primal_incr
-        # Build initial residual
+        if update:
+            if snes.getSolutionUpdate().handle:
+                self._primal_incr.fromPetsc(snes.getSolutionUpdate(), local=self.local)
+            # Increment the solution
+            self._primal_incr.applyLagrangeScaling(1 / self._scaling)
+            self.state.primal_step += self._primal_incr
         disc_comp = DiscreteComputation(self.problem)
         residual = self.oper.getResidual(self._scaling)
         # Apply Lagrange scaling
@@ -111,6 +164,11 @@ class SNESSolver(BaseIterationSolver):
             self.logManager.printConvTableRow(
                 [its, fgnorm / self.fnorm0, fgnorm, " - ", self.matrix_type]
             )
+            # If Aster snes monitor is enabled
+            monitor_enabled = os.getenv("ASTER_SNES_MONITOR", "false").lower() == "true"
+            if monitor_enabled:
+                # Add the linear iterations performed at this nonlinear iteration
+                self.CumulLinIter += snes.getKSP().getIterationNumber()
 
         snes.setMonitor(_monitor) if not self.local else None
 
@@ -142,7 +200,17 @@ class SNESSolver(BaseIterationSolver):
         # solve the nonlinear problem
         b, x = None, p_resi.copy()
         x.set(0)  # zero initial guess
+
+        # Solves with time monitoring
+        t = time()
         snes.solve(b, x)
+        time_exec = time() - t
+
+        # Increment instant
+        self.Instant += 1
+
+        # Write monitoring data in the log file
+        self.SnesAsterMonitor(snes, time_exec)
 
         if snes.getConvergedReason() < 0:
             raise ConvergenceError("MECANONLINE9_7")
@@ -150,3 +218,55 @@ class SNESSolver(BaseIterationSolver):
         self.oper.finalize()
 
         return self.current_matrix
+
+    def SnesAsterMonitor(self, snes, time_exec):
+        """
+        Writes monitoring data in the log file
+        """
+        nonlinear_iters = snes.getIterationNumber()
+        logFile_Path = os.getenv("ASTER_SNES_LOGFILE")
+        if logFile_Path:  # Check if logFile_Path is not None or an empty string
+            try:
+                if self.rank == 0:
+                    with open(logFile_Path, "a") as file:
+                        # Write data to the file
+                        file.write(
+                            f"{self.Instant},{nonlinear_iters},{self.CumulLinIter},{time_exec},\n"
+                        )
+            except Exception as e:
+                print(f"Error writing to log file '{logFile_Path}': {e}")
+        else:
+            print("No log filename specified; logging is disabled.")
+        self.CumulLinIter = 0
+
+    def InitializeMonitoring(self):
+        """ "
+        Monitors each SNES solve
+        """
+        monitor_enabled = os.getenv("ASTER_SNES_MONITOR", "false").lower() == "true"
+        logFile_Path = os.getenv("ASTER_SNES_LOGFILE")
+        if monitor_enabled:
+            if logFile_Path:
+                try:
+                    if self.rank == 0:
+                        with open(logFile_Path, "w") as file:
+                            # Write headers
+                            file.write(
+                                "Instant_De_Calcul,Itérations_Nonlinéaire,Itérations_Linéaire,Temps_Execution\n"
+                            )
+                except Exception as e:
+                    print(f"Error writing to log file '{logFile_Path}': {e}")
+            else:
+                print("No log filename specified; logging is disabled.")
+        else:
+            print("Monitor is disabled by environment variable.")
+
+    def _get(self, keyword, parameter=None, default=None):
+        """Return a keyword value"""
+        args = self.param
+        if parameter is not None:
+            if args.get(keyword) is None:
+                return default
+            return _F(args[keyword])[0].get(parameter, default)
+
+        return args.get(keyword, default)

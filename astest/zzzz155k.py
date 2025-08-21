@@ -23,11 +23,8 @@ from code_aster.Commands import *
 from code_aster import CA
 from code_aster.CA import MPI
 import os.path as osp, numpy as np
-from code_aster.Utilities import petscInitialize
 
 CA.init("--test", ERREUR=_F(ALARME="EXCEPTION"))
-
-petscInitialize("-ksp_monitor_true_residual -log_view")
 
 test = CA.TestCase()
 
@@ -61,6 +58,18 @@ def checkJoinSize(mesh, size, checker):
 # Mesh reading 1
 mesh1 = CA.ParallelMesh()
 mesh1.readMedFile("zzzz155k.med", ghost=2)
+
+# Check extraction of the last layer of ghosts DOFs
+model = CA.Model(mesh1)
+model.addModelingOnMesh(CA.Physics.Thermal, CA.Modelings.Planar)
+model.build()
+numeDDL = NUME_DDL(MODELE=model)
+
+test.assertEqual(
+    numeDDL.getEquationNumbering().getGhostDOFs(lastLayerOnly=True),
+    [[3, 12, 13], [10, 16, 17]][rank],
+)
+
 
 checkJoinSize(mesh1, 3 * 2, test)
 
