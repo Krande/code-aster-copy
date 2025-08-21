@@ -339,9 +339,6 @@ PYBIND11_MODULE( libaster, mod ) {
     exportObjectBalancerToPython( mod );
     exportMeshBalancerToPython( mod );
     exportIncompleteMeshToPython( mod );
-#ifdef ASTER_HAVE_PETSC
-    exportPetscRedistributeToPython( mod );
-#endif /* ASTER_HAVE_PETSC */
 #ifdef ASTER_HAVE_SCOTCH
     exportPtScotchPartitionerToPython( mod );
 #endif /* ASTER_HAVE_SCOTCH */
@@ -351,6 +348,7 @@ PYBIND11_MODULE( libaster, mod ) {
     exportMeshConnectionGraphToPython( mod );
     exportResultBalancerToPython( mod );
 #endif /* ASTER_HAVE_MPI */
+    exportPetscRedistributeToPython( mod );
 #ifdef ASTER_HAVE_MED
     exportMedFileReaderToPython( mod );
     exportMedFieldToPython( mod );

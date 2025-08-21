@@ -17102,22 +17102,6 @@ class IncompleteMesh(Mesh):
         """
 
 
-# built-in function redistributePetscMat in libaster
-
-
-def redistributePetscMat(pMat, subCommSize):
-    """Given a distributed matrix on an MPI communicator,
-    this function returns a redistributed matrix on a subcommunicator.
-
-    Arguments:
-       pMat: the petsc4py matrix to redistribute.
-       subCommSize: the size of the subcommunicator
-    Outputs:
-       outMat: the redistributed petsc4py matrix on a subcommunicator of size
-                subCommSize.
-    """
-
-
 # class PtScotchPartitioner in libaster
 
 
@@ -17303,6 +17287,22 @@ def applyBalancingStrategy(*args, **kwargs):
 
     Returns:
         mesh: PhysicalProblem
+    """
+
+
+# built-in function redistributePetscMat in libaster
+
+
+def redistributePetscMat(pMat, subCommSize):
+    """Given a distributed matrix on an MPI communicator,
+    this function returns a redistributed matrix on a subcommunicator.
+
+    Arguments:
+       pMat: the petsc4py matrix to redistribute.
+       subCommSize: the size of the subcommunicator
+    Outputs:
+       outMat: the redistributed petsc4py matrix on a subcommunicator of size
+                subCommSize.
     """
 
 

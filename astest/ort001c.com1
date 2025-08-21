@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -51,22 +51,40 @@ TEST_TABLE(
     TABLE=ttest, NOM_PARA="CALC", FILTRE=_F(NOM_PARA="SENSOR", VALE_I=3), VALE_CALC=80.69525706
 )
 TEST_TABLE(
-    TABLE=ttest, NOM_PARA="CALC", FILTRE=_F(NOM_PARA="SENSOR", VALE_I=4), VALE_CALC=81.13976119
+    TABLE=ttest,
+    NOM_PARA="CALC",
+    FILTRE=_F(NOM_PARA="SENSOR", VALE_I=4),
+    VALE_CALC=81.13988209779353,
 )
 TEST_TABLE(
-    TABLE=ttest, NOM_PARA="CALC", FILTRE=_F(NOM_PARA="SENSOR", VALE_I=5), VALE_CALC=81.57867304
+    TABLE=ttest,
+    NOM_PARA="CALC",
+    FILTRE=_F(NOM_PARA="SENSOR", VALE_I=5),
+    VALE_CALC=81.57890467331173,
 )
 TEST_TABLE(
-    TABLE=ttest, NOM_PARA="CALC", FILTRE=_F(NOM_PARA="SENSOR", VALE_I=6), VALE_CALC=81.80158302
+    TABLE=ttest,
+    NOM_PARA="CALC",
+    FILTRE=_F(NOM_PARA="SENSOR", VALE_I=6),
+    VALE_CALC=81.80188513014315,
 )
 TEST_TABLE(
-    TABLE=ttest, NOM_PARA="CALC", FILTRE=_F(NOM_PARA="SENSOR", VALE_I=7), VALE_CALC=82.02824951
+    TABLE=ttest,
+    NOM_PARA="CALC",
+    FILTRE=_F(NOM_PARA="SENSOR", VALE_I=7),
+    VALE_CALC=82.02863377584507,
 )
 TEST_TABLE(
-    TABLE=ttest, NOM_PARA="CALC", FILTRE=_F(NOM_PARA="SENSOR", VALE_I=8), VALE_CALC=82.77315812
+    TABLE=ttest,
+    NOM_PARA="CALC",
+    FILTRE=_F(NOM_PARA="SENSOR", VALE_I=8),
+    VALE_CALC=82.77389185781404,
 )
 TEST_TABLE(
-    TABLE=ttest, NOM_PARA="CALC", FILTRE=_F(NOM_PARA="SENSOR", VALE_I=9), VALE_CALC=82.96416684
+    TABLE=ttest,
+    NOM_PARA="CALC",
+    FILTRE=_F(NOM_PARA="SENSOR", VALE_I=9),
+    VALE_CALC=82.96510529770147,
 )
 
 FIN()
