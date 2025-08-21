@@ -23,8 +23,11 @@ from code_aster.Commands import *
 from code_aster import CA
 from code_aster.CA import MPI
 import os.path as osp, numpy as np
+from code_aster.Utilities import petscInitialize
 
 CA.init("--test", ERREUR=_F(ALARME="EXCEPTION"))
+
+petscInitialize("-ksp_monitor_true_residual -log_view")
 
 test = CA.TestCase()
 

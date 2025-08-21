@@ -167,12 +167,15 @@ ElementaryMatrixTemperatureRealPtr DiscreteComputation::getTangentConductivityMa
 
     // Add output elementary terms
     calcul->addOutputElementaryTerm( "PMATTTR", std::make_shared< ElementaryTermReal >() );
+    calcul->addOutputElementaryTerm( "PMATTSR", std::make_shared< ElementaryTermReal >() );
 
     // Compute elementary matrices for mass
     if ( currModel->existsFiniteElement() ) {
         calcul->compute();
         if ( calcul->hasOutputElementaryTerm( "PMATTTR" ) )
             elemMatr->addElementaryTerm( calcul->getOutputElementaryTermReal( "PMATTTR" ) );
+        if ( calcul->hasOutputElementaryTerm( "PMATTSR" ) )
+            elemMatr->addElementaryTerm( calcul->getOutputElementaryTermReal( "PMATTSR" ) );
     };
 
     if ( with_dual ) {

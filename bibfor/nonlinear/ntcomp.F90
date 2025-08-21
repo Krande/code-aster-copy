@@ -16,7 +16,7 @@
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
 
-subroutine ntcomp(rela_name, ndim, temp, dtemp, coorpg, aniso, ifon, fluxglo, Kglo)
+subroutine ntcomp(rela_name, ndim, temp, dtemp, coorpg, aniso, ifon, fluxglo, Kglo, dfluxglo)
 !.
     implicit none
 !
@@ -31,28 +31,30 @@ subroutine ntcomp(rela_name, ndim, temp, dtemp, coorpg, aniso, ifon, fluxglo, Kg
     real(kind=8), intent(in) :: temp, dtemp(3), coorpg(3)
     aster_logical, intent(in) :: aniso
     real(kind=8), intent(out) :: fluxglo(3)
-    real(kind=8), intent(out) :: Kglo(3, 3)
+    real(kind=8), intent(out) :: Kglo(3, 3), dfluxglo(3)
 !
-    integer(kind=8) :: j
-    real(kind=8) :: lambor(3), lambda, r8bid
-    real(kind=8) ::  p(3, 3), Kloc(3, 3)
+    integer :: j
+    real(kind=8) :: lambor(3), dlambor(3), lambda, dlambda
+    real(kind=8) ::  p(3, 3), Kloc(3, 3), Kloc2(3, 3)
 !
     fluxglo = 0.d0
     Kglo = 0.d0
+    dfluxglo = 0.d0
 !
     if (rela_name(1:5) .eq. 'THER_') then
 !
 ! ------- EVALUATION DE LA CONDUCTIVITE LAMBDA
 !
         lambor = 0.d0
+        dlambor = 0.d0
         if (aniso) then
-            call rcfode(ifon(4), temp, lambor(1), r8bid)
-            call rcfode(ifon(5), temp, lambor(2), r8bid)
+            call rcfode(ifon(4), temp, lambor(1), dlambor(1))
+            call rcfode(ifon(5), temp, lambor(2), dlambor(2))
             if (ndim == 3) then
-                call rcfode(ifon(6), temp, lambor(3), r8bid)
+                call rcfode(ifon(6), temp, lambor(3), dlambor(3))
             end if
         else
-            call rcfode(ifon(2), temp, lambda, r8bid)
+            call rcfode(ifon(2), temp, lambda, dlambda)
         end if
 !
 ! ------- TRAITEMENT DE L ANISOTROPIE
@@ -60,23 +62,23 @@ subroutine ntcomp(rela_name, ndim, temp, dtemp, coorpg, aniso, ifon, fluxglo, Kg
         if (aniso) then
             call matrRotLGTher(aniso, ndim, coorpg, p)
             Kloc = transpose(p)
+            Kloc2 = transpose(p)
             do j = 1, ndim
                 Kloc(j, 1:3) = lambor(j)*Kloc(j, 1:3)
+                Kloc2(j, 1:3) = dlambor(j)*Kloc2(j, 1:3)
             end do
             Kglo = matmul(p, Kloc)
-            if (ndim == 3) then
-                fluxglo(1) = Kglo(1, 1)*dtemp(1)+Kglo(1, 2)*dtemp(2)+Kglo(1, 3)*dtemp(3)
-                fluxglo(2) = Kglo(2, 1)*dtemp(1)+Kglo(2, 2)*dtemp(2)+Kglo(2, 3)*dtemp(3)
-                fluxglo(3) = Kglo(3, 1)*dtemp(1)+Kglo(3, 2)*dtemp(2)+Kglo(3, 3)*dtemp(3)
-            else
-                fluxglo(1) = Kglo(1, 1)*dtemp(1)+Kglo(1, 2)*dtemp(2)
-                fluxglo(2) = Kglo(2, 1)*dtemp(1)+Kglo(2, 2)*dtemp(2)
-            end if
+            fluxglo = matmul(Kglo, dtemp)
+!
+            Kloc2 = matmul(p, Kloc2)
+            dfluxglo = matmul(Kloc2, dtemp)
         else
             if (ndim == 3) then
                 Kglo(1, 1) = lambda
                 Kglo(2, 2) = lambda
                 Kglo(3, 3) = lambda
+!
+                dfluxglo = dlambda*dtemp
 !
                 fluxglo(1) = lambda*dtemp(1)
                 fluxglo(2) = lambda*dtemp(2)
@@ -84,6 +86,8 @@ subroutine ntcomp(rela_name, ndim, temp, dtemp, coorpg, aniso, ifon, fluxglo, Kg
             else
                 Kglo(1, 1) = lambda
                 Kglo(2, 2) = lambda
+!
+                dfluxglo = dlambda*dtemp
 !
                 fluxglo(1) = lambda*dtemp(1)
                 fluxglo(2) = lambda*dtemp(2)

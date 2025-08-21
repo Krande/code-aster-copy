@@ -40,6 +40,7 @@ module FE_stiffness_module
 ! --------------------------------------------------------------------------------------------------
 !
     public :: FEStiffResiScal, FEStiffJacoScal, FEStiffResiScalAdd, FEStiffJacoScalAdd
+    public :: FEMassStiffJacoScalAdd
     public :: FEStiffResiVectSymAdd, FEStiffJacoVectSymAdd, FEStiffGeomVectSymAdd
 !    private  ::
 !
@@ -156,10 +157,10 @@ contains
         do j = 1, FEBasis%size
             if (FEBasis%ndim == 3) then
                 call dgemv_3x3(ValueQP, BGSEval(1, j), Kgradj, weight)
-                call dgemv_T_3xn(BGSEval, j, Kgradj, mat(1, j))
+                call dgemv_T_3xn(BGSEval, FEBasis%size, Kgradj, mat(1, j))
             elseif (FEBasis%ndim == 2) then
-                call dgemv_2x2(ValueQP, BGSEval(1, j), Kgradj, weight)
-                call dgemv_T_2xn(BGSEval, j, Kgradj, mat(1, j))
+                call dgemv_2x2(ValueQP, BGSEval(:, j), Kgradj, weight)
+                call dgemv_T_2xn(BGSEval, FEBasis%size, Kgradj, mat(:, j))
             else
                 ASSERT(ASTER_FALSE)
             end if
@@ -435,6 +436,39 @@ contains
         case default
             ASSERT(ASTER_FALSE)
         end select
+!
+    end subroutine
+!
+    subroutine FEMassStiffJacoScalAdd(FEBasis, BSEval, BGSEval, weight, ValueQP, mat)
+!
+        implicit none
+!
+        type(FE_Basis), intent(in)  :: FEBasis
+        real(kind=8), intent(in)    :: BSEval(MAX_BS)
+        real(kind=8), intent(in)    :: weight, BGSEval(3, MAX_BS)
+        real(kind=8), intent(in)    :: ValueQP(3)
+        real(kind=8), intent(inout) :: mat(MAX_BS, MAX_BS)
+! --------------------------------------------------------------------------------------------------
+!
+!
+!   Compute part of the tangent rigidity matrix
+!   In FEBasis      : tBasis function
+!   In BSEval       : Values of the basis function at the quadrature points
+!   In BGSEval      : Values of the derivature of the basis function at the quadrature points
+!   In weight       : weight of the quadrature point
+!   In ValuesQP     : Values of scalar function f at the quadrature points
+!   Out mat         : tangent stiffness
+!
+! --------------------------------------------------------------------------------------------------
+!
+! ----- Local variables
+        integer :: j
+        real(kind=8) :: Kgradj(3), gloDt(3, MAX_BS)
+
+        gloDt(1, :) = ValueQP(1)*BSEval
+        gloDt(2, :) = ValueQP(2)*BSEval
+        gloDt(3, :) = ValueQP(3)*BSEval
+        mat = mat+weight*matmul(transpose(BGSEval), gloDt)
 !
     end subroutine
 !

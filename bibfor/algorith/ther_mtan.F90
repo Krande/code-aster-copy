@@ -66,7 +66,7 @@ subroutine ther_mtan(l_stat, &
 ! --------------------------------------------------------------------------------------------------
 !
     character(len=16), parameter :: optionRigi = 'RIGI_THER_TANG', optionMass = 'MASS_THER_TANG'
-    integer(kind=8), parameter :: nbIn = 7, nbout = 1
+    integer, parameter :: nbIn = 7, nbout = 1
     character(len=8) :: lpain(nbIn), lpaout(nbout)
     character(len=24) :: lchin(nbIn), lchout(nbout)
     character(len=24) :: ligrel_model
@@ -109,7 +109,7 @@ subroutine ther_mtan(l_stat, &
     lchin(7) = chcara(12)
 
 ! - Output fields
-    lpaout(1) = 'PMATTTR'
+    lpaout(1) = 'PMATTSR'
     lchout(1) = resuElemZ
 
 ! - Compute rigidity term

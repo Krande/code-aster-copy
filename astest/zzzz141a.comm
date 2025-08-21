@@ -1,0 +1,117 @@
+# coding=utf-8
+# --------------------------------------------------------------------
+# Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
+# This file is part of code_aster.
+#
+# code_aster is free software: you can redistribute it and/or modify
+# it under the terms of the GNU General Public License as published by
+# the Free Software Foundation, either version 3 of the License, or
+# (at your option) any later version.
+#
+# code_aster is distributed in the hope that it will be useful,
+# but WITHOUT ANY WARRANTY; without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+# GNU General Public License for more details.
+#
+# You should have received a copy of the GNU General Public License
+# along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
+# --------------------------------------------------------------------
+from code_aster.Commands import *
+from code_aster import CA
+from code_aster.Utilities import petscInitialize
+
+DEBUT(CODE=_F(NIV_PUB_WEB="INTERNET"), ERREUR=_F(ALARME="EXCEPTION"), DEBUG=_F(SDVERI="OUI"))
+
+test = CA.TestCase()
+
+petscInitialize("-log_view")
+
+mesh = CA.ParallelMesh.buildSquare(refine=5)
+
+model = AFFE_MODELE(MAILLAGE=mesh, AFFE=_F(TOUT="OUI", PHENOMENE="THERMIQUE", MODELISATION="PLAN"))
+
+# ------------------------------------------------------------------
+# Definition des constantes materiaux
+# ------------------------------------------------------------------
+# Le beton
+# CONDUCTION EN KJ/H/M/K
+
+coef = FORMULE(VALE="1+TEMP**2", NOM_PARA=["TEMP"])
+
+LISTE = DEFI_LIST_REEL(DEBUT=-10.0, INFO=1, INTERVALLE=_F(JUSQU_A=10.0, NOMBRE=1000))
+
+COND = CALC_FONC_INTERP(
+    FONCTION=coef,
+    LIST_PARA=LISTE,
+    NOM_PARA="TEMP",
+    # INTERPOL="LOG",
+)
+
+# ENTHALPIE EN KJ/H/M
+
+ENTH = DEFI_CONSTANTE(VALE=0.0)
+
+BETON_NL = DEFI_MATERIAU(THER_NL=_F(LAMBDA=COND, BETA=ENTH))
+
+
+# ---------------------------------------------------------------------------------
+#   Calcul Thermique
+# ---------------------------------------------------------------------------------
+# Champ de temperature
+
+CHMAT = AFFE_MATERIAU(MAILLAGE=mesh, AFFE=_F(TOUT="OUI", MATER=BETON_NL))
+
+
+CL_THER = AFFE_CHAR_CINE(
+    MODELE=model, THER_IMPO=(_F(GROUP_MA=("TOP", "BOTTOM", "LEFT", "RIGHT"), TEMP=0.0),)
+)
+
+CH = AFFE_CHAR_THER(MODELE=model, SOURCE=_F(GROUP_MA="SURFACE", SOUR=15.0))
+
+
+resu = THER_NON_LINE(
+    MODELE=model,
+    CHAM_MATER=CHMAT,
+    EXCIT=(_F(CHARGE=CL_THER), _F(CHARGE=CH)),
+    NEWTON=_F(REAC_ITER=1),
+    RECH_LINEAIRE=_F(ITER_LINE_MAXI=0),
+    INCREMENT=_F(LIST_INST=DEFI_LIST_REEL(VALE=0.0)),
+    METHODE="NEWTON",
+    CONVERGENCE=_F(RESI_GLOB_RELA=1e-6, ITER_GLOB_MAXI=20),
+    TYPE_CALCUL="STAT",
+    ARCHIVAGE=_F(CHAM_EXCLU=("FLUX_ELGA")),
+)
+
+# --------------------------------------------------------------------------------------------
+
+myOptions = (
+    "-ksp_type fgmres  -pc_type lu -ksp_monitor -pc_factor_mat_solver_type mumps "
+    # local snes
+    + "-prefix_push lsnes_ "
+    + "-snes_monitor -snes_linesearch_type basic -snes_rtol 1.e-6 -snes_atol 1.e-12 -snes_stol 1.e-24 -snes_max_it 20  "
+    + "-ksp_type preonly  -pc_type lu -pc_factor_mat_solver_type mumps "
+    + "-prefix_pop "
+    # global snes
+    + "-prefix_push gsnes_  "
+    + "-snes_linesearch_type basic -ksp_monitor -ksp_rtol 1.e-7 -ksp_atol 1.e-12  "
+    + "-prefix_pop "
+)
+
+
+resu = THER_NON_LINE(
+    MODELE=model,
+    CHAM_MATER=CHMAT,
+    EXCIT=(_F(CHARGE=CL_THER), _F(CHARGE=CH)),
+    NEWTON=_F(REAC_ITER=1),
+    RECH_LINEAIRE=_F(ITER_LINE_MAXI=0),
+    INCREMENT=_F(LIST_INST=DEFI_LIST_REEL(VALE=0.0)),
+    METHODE="RASPEN",
+    CONVERGENCE=_F(RESI_GLOB_RELA=1e-6, ITER_GLOB_MAXI=20),
+    SOLVEUR=_F(METHODE="PETSC", OPTION_PETSC=myOptions),
+    TYPE_CALCUL="STAT",
+    ARCHIVAGE=_F(CHAM_EXCLU=("FLUX_ELGA")),
+)
+
+test.assertTrue(True)
+
+FIN()

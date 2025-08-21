@@ -375,6 +375,7 @@ class _RASPENSolver:
             Print(f"self.rtol={self.rtol}")
             Print(f"self.atol={self.atol}")
             Print(f"self.Fnorm={self.Fnorm}")
+            Print(f"self.Frnorm={self.Fnorm/self.fnorm0}")
             return cvg
 
         self.glbSnes.setConvergenceTest(test_on_original_function)

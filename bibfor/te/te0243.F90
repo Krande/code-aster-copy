@@ -53,11 +53,11 @@ subroutine te0243(option, nomte)
 !
     integer(kind=8) :: icamas, nbres
     parameter(nbres=3)
-    integer(kind=8) :: icodre(nbres)
-    character(len=32) :: phenom
+    integer :: icodre(nbres)
+    character(len=32) :: phenom, rela_name
     real(kind=8) ::  tpg, dtpg(3), tpsec, diff, fluglo(3), Kglo(3, 3)
-    real(kind=8) :: resi(MAX_BS), rigi(MAX_BS, MAX_BS)
-    real(kind=8) :: BGSEval(3, MAX_BS)
+    real(kind=8) :: resi(MAX_BS), rigi(MAX_BS, MAX_BS), dfluxglo(3), resi_p(MAX_BS)
+    real(kind=8) :: BGSEval(3, MAX_BS), BSEval(MAX_BS), eps, tempi_save, delta
     real(kind=8), pointer :: flux(:) => null()
     real(kind=8), pointer :: tempi(:) => null()
     real(kind=8), pointer :: sechf(:) => null()
@@ -65,7 +65,9 @@ subroutine te0243(option, nomte)
     integer(kind=8) ::  imate, j
     character(len=16) :: rela_name
     character(len=16), pointer :: compor(:) => null()
-    aster_logical :: aniso, l_rhs
+    integer ::  kp, ifon(6)
+    integer ::  imate, j, i_dof
+    aster_logical :: aniso, l_rhs, l_diff
 ! ----------------------------------------------------------------------
     call FECell%init()
     call FEQuadCell%initCell(FECell, "RIGI")
@@ -77,12 +79,14 @@ subroutine te0243(option, nomte)
 
     rela_name = compor(RELA_NAME)
     l_rhs = option == "RAPH_THER"
+    l_diff = .false.
+    eps = 1.e-8
 
     if (l_rhs) then
         call jevech('PFLUXPR', 'E', vr=flux)
     end if
 !
-    if ((rela_name(1:5) .eq. 'SECH_')) then
+    if (rela_name(1:5) .eq. 'SECH_') then
         if (rela_name(1:12) .eq. 'SECH_GRANGER' .or. &
             rela_name(1:10) .eq. 'SECH_NAPPE' .or. &
             rela_name(1:8) .eq. 'SECH_RFT') then
@@ -106,16 +110,17 @@ subroutine te0243(option, nomte)
         end if
     end if
 !
-    resi = 0.0
+    resi = 0.d0
     rigi = 0.d0
     do kp = 1, FEQuadCell%nbQuadPoints
         tpg = FEEvalFuncRScal(FEBasis, tempi, FEQuadCell%points_param(1:3, kp))
+        BSEval = FEBasis%func(FEQuadCell%points_param(1:3, kp))
         BGSEval = FEBasis%grad(FEQuadCell%points_param(1:3, kp), FEQuadCell%jacob(1:3, 1:3, kp))
         dtpg = FEEvalGradVec(FEBasis, tempi, FEQuadCell%points_param(1:3, kp), BGSEval)
 !
         if (rela_name(1:5) .eq. 'THER_') then
             call ntcomp(rela_name, FECell%ndim, tpg, dtpg, &
-                        FEQuadCell%points(1:3, kp), aniso, ifon, fluglo, Kglo)
+                        FEQuadCell%points(1:3, kp), aniso, ifon, fluglo, Kglo, dfluxglo)
             if (l_rhs) then
                 flux(FECell%ndim*(kp-1)+1:FECell%ndim*(kp-1)+FECell%ndim) = -fluglo(1:FECell%ndim)
             end if
@@ -130,16 +135,68 @@ subroutine te0243(option, nomte)
         else
             ASSERT(ASTER_FALSE)
         end if
-        if (l_rhs) then
+        if (l_rhs .or. l_diff) then
             call FEStiffResiScalAdd(FEBasis, BGSEval, FEQuadCell%weights(kp), fluglo, resi)
-        else
+        end if
+        ! if (.not. l_diff) then
+        if (.not. l_rhs) then
             call FEStiffJacoScalAdd(FEBasis, BGSEval, FEQuadCell%weights(kp), Kglo, rigi)
+            if (rela_name(1:5) .eq. 'THER_') then
+                call FEMassStiffJacoScalAdd(FEBasis, BSEval, BGSEval, FEQuadCell%weights(kp), &
+                                            dfluxglo, rigi)
+            end if
         end if
     end do
-!
+    ! if (.not. l_rhs) then
+    !     write (6, *) '--------------'
+    !     do i_dof = 1, FEBasis%size
+    !         write (6, *) 'rigi_a(', i_dof, ',:)=', rigi(i_dof, 1:FEBasis%size)
+    !     end do
+    ! end if
+
+    if (l_diff .and. .not. l_rhs) then
+        rigi = 0.d0
+        do i_dof = 1, FEBasis%size
+            ! save value
+            tempi_save = tempi(i_dof)
+            if (abs(tempi(i_dof)) .lt. eps) then
+                tempi(i_dof) = tempi_save+eps
+            else
+                tempi(i_dof) = (1.d0+eps)*tempi_save
+            end if
+            delta = tempi(i_dof)-tempi_save
+            resi_p = 0.d0
+            do kp = 1, FEQuadCell%nbQuadPoints
+                tpg = FEEvalFuncRScal(FEBasis, tempi, FEQuadCell%points_param(1:3, kp))
+                BGSEval = FEBasis%grad(FEQuadCell%points_param(1:3, kp), &
+                                       FEQuadCell%jacob(1:3, 1:3, kp))
+                dtpg = FEEvalGradVec(FEBasis, tempi, FEQuadCell%points_param(1:3, kp), BGSEval)
+                !
+                if (rela_name(1:5) .eq. 'THER_') then
+                    call ntcomp(rela_name, FECell%ndim, tpg, dtpg, &
+                                FEQuadCell%points(1:3, kp), aniso, ifon, fluglo, Kglo, dfluxglo)
+                else if (rela_name(1:5) .eq. 'SECH_') then
+                    tpsec = FEEvalFuncRScal(FEBasis, sechf, FEQuadCell%points_param(1:3, kp))
+                    call rcdiff(zi(imate), rela_name, tpsec, tpg, diff)
+                    fluglo = diff*dtpg
+                else
+                    ASSERT(ASTER_FALSE)
+                end if
+                call FEStiffResiScalAdd(FEBasis, BGSEval, FEQuadCell%weights(kp), fluglo, resi_p)
+            end do
+            rigi(:, i_dof) = (resi_p-resi)/delta
+            ! restore value
+            tempi(i_dof) = tempi_save
+        end do
+        write (6, *) '--------------'
+        do i_dof = 1, FEBasis%size
+            write (6, *) 'rigi(', i_dof, ',:)=', rigi(i_dof, 1:FEBasis%size)
+        end do
+    end if
+    !
     if (l_rhs) then
         call writeVector("PRESIDU", FEBasis%size, resi)
     else
-        call writeMatrix("PMATTTR", FEBasis%size, FEBasis%size, ASTER_TRUE, rigi)
+        call writeMatrix("PMATTSR", FEBasis%size, FEBasis%size, ASTER_FALSE, rigi)
     end if
 end subroutine

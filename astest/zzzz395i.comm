@@ -218,7 +218,7 @@ TEST_RESU(
             NOM_CHAM="TEMP",
             GROUP_NO="N1",
             NOM_CMP="TEMP",
-            VALE_CALC=(-0.169905906144, 0.169905906144),
+            VALE_CALC=(-0.1699062462673312, 0.169905906144),
         ),
     )
 )
@@ -231,7 +231,7 @@ TEST_RESU(
             NOM_CHAM="FLUX_NOEU",
             GROUP_NO="N1",
             NOM_CMP="FLUY",
-            VALE_CALC=(0.000528821170061, -0.000528821170061),
+            VALE_CALC=(0.000528821170061, -0.0005288218171988603),
         ),
         _F(
             RESULTAT=base_d,
@@ -239,7 +239,7 @@ TEST_RESU(
             NOM_CHAM="FLUX_NOEU",
             GROUP_NO="N1",
             NOM_CMP="FLUY",
-            VALE_CALC=(-0.00865498556, +0.00865498556),
+            VALE_CALC=(-0.008654893348379825, +0.00865498556),
         ),
         _F(
             RESULTAT=base_d,
@@ -247,7 +247,7 @@ TEST_RESU(
             NOM_CHAM="FLUX_NOEU",
             GROUP_NO="N1",
             NOM_CMP="FLUX",
-            VALE_CALC=(-0.0286651427208, +0.0286651427208),
+            VALE_CALC=(-0.028665323610952656, +0.028665323610952656),
         ),
     )
 )
