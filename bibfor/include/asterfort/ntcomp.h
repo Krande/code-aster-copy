@@ -21,7 +21,7 @@
 interface
     subroutine ntcomp(rela_name, ndim, temp, dtemp, coorpg, aniso, ifon, fluxglo, Kglo, dfluxglo)
         character(len=16), intent(in) :: rela_name
-        integer, intent(in) :: ndim, ifon(6)
+        integer(kind=8), intent(in) :: ndim, ifon(6)
         real(kind=8), intent(in) :: temp, dtemp(3), coorpg(3)
         aster_logical, intent(in) :: aniso
         real(kind=8), intent(out) :: fluxglo(3)

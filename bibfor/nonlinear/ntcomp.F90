@@ -33,7 +33,7 @@ subroutine ntcomp(rela_name, ndim, temp, dtemp, coorpg, aniso, ifon, fluxglo, Kg
     real(kind=8), intent(out) :: fluxglo(3)
     real(kind=8), intent(out) :: Kglo(3, 3), dfluxglo(3)
 !
-    integer :: j
+    integer(kind=8) :: j
     real(kind=8) :: lambor(3), dlambor(3), lambda, dlambda
     real(kind=8) ::  p(3, 3), Kloc(3, 3), Kloc2(3, 3)
 !

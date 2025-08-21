@@ -1092,15 +1092,13 @@ class DomainDecomposition:
         petscVec.getArray()[self.local_ovlp_dofs] = 0.0
 
     def BuildGhostsTools(self, locVec, glbVec):
-        """
-        Builds all the tools needed for the substructuring approach:
+        """Builds all the tools needed for the substructuring approach:
 
-            *** Internal ghosts: The ghosts nodes of the other subdomains
-                                 that are on the interior of this subdomain.
+        Internal ghosts: The ghosts nodes of the other subdomains
+                            that are on the interior of this subdomain.
 
-            *** PETSc ghosts vector: A PETSc vector where each process subvector corresponds
-                                     to the internal ghosts that the subdomain owns.
-        """
+        PETSc ghosts vector: A PETSc vector where each process subvector corresponds
+                                to the internal ghosts that the subdomain owns."""
         # Preliminarly manipulations
         locVec.set(0.0)
         locVec.getArray()[self.local_boundary_dofs] = 1.0
@@ -1318,10 +1316,8 @@ class GalerkinCoarseGridCorrection:
         timings = {}
 
         assert (
-            S or L,
-            "To build prolongation, at least either large"
-            + " or small eigen pairs should be selected",
-        )
+            S or L
+        ), "To build prolongation, at least either large or small eigen pairs should be selected"
 
         start = time()
         linOp = self.BtBOperator()
@@ -1549,10 +1545,9 @@ class GalerkinCoarseGridCorrection:
 
         start = time()
         assert (
-            S or L,
-            "To build prolongation, at least either large \
-                         or small eigen pairs should be selected",
-        )
+            S or L
+        ), "To build prolongation, at least either large \
+                         or small eigen pairs should be selected"
 
         nloc = self.DDPart.getLocalSize()
         nep = len(evals)
@@ -1837,8 +1832,7 @@ class GalerkinCoarseGridCorrection:
     def BtBOperator(self):
         """
         This implements the subdomain symmetritized
-        matrix of the subdomain off-diagonal B that is:
-                            B.t B
+        matrix of the subdomain off-diagonal B that is: B.t B
         """
         # subdomain ghosts size
         ng = len(self.bdDofs)
@@ -1877,7 +1871,7 @@ class GalerkinCoarseGridCorrection:
         parameters with a smaller size
         """
         # Assertion for prolongation existence
-        assert (isinstance(self.P, PETSc.Mat), "Prolongation not built yet")
+        assert isinstance(self.P, PETSc.Mat), "Prolongation not built yet"
         # Getting a model vector for multiplication of
         # the coarse prolongation from the right side
         self.Xc = self.P.getVecRight()
@@ -1934,7 +1928,7 @@ class GalerkinCoarseGridCorrection:
         """
         Updates the prolongation operator
         """
-        assert (isinstance(P, PETSc.Mat), "P is not a PETSc mat")
+        assert isinstance(P, PETSc.Mat), "P is not a PETSc mat"
         glbSize, coarseSize = P.getSize()[1]
         assert self.glbSize == glbSize
         self.P = P
@@ -1957,7 +1951,7 @@ class GalerkinCoarseGridCorrection:
         Prolongates from coarse to fine mesh
         """
         # Ensuring prolongation operator is already built
-        assert (self.ProlongationIsBuilt, "The prolongation has not yet been built.")
+        assert self.ProlongationIsBuilt, "The prolongation has not yet been built."
         # Check is a coef is given for add mode else do insert mode
 
         if coef is None:
@@ -1994,7 +1988,7 @@ class GalerkinCoarseGridCorrection:
         in a Galerkin way R = P.T
         """
         # Ensuring prolongation operator is already built
-        assert (self.ProlongationIsBuilt, "The prolongation has not yet been built.")
+        assert self.ProlongationIsBuilt, "The prolongation has not yet been built."
         # Restrict
         # # self.P.multTranspose(fineVec,Y)
 
@@ -2232,7 +2226,7 @@ class GalerkinPcCtx:
         timings = {}
         start = time()
         # Assert that the ksp is built
-        assert (self.redKSP is not None, "Sequential KSP is not built yet")
+        assert self.redKSP is not None, "Sequential KSP is not built yet"
         # Apply the sequential LU solve
         if self.rank == 0:
             XSeq = self.redJac.getVecRight()

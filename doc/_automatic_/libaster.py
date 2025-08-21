@@ -15197,6 +15197,13 @@ class ParallelMesh(BaseMesh):
             list[int]: Indexes of the nodes.
         """
 
+    def getLastGhostsLayer(self):
+        """Return ids in local numbering of ghost nodes on the last layer
+
+        Returns:
+            list[int]: List of Nodes ids.
+        """
+
     def getNodesOwner(self):
         """Return the rank of the processor which owns the nodes
 
@@ -15292,6 +15299,13 @@ class ParallelMesh(BaseMesh):
             localNumbering=false (bool): ids are given in the local numbering ?
         """
 
+    def setLastGhostsLayer(self, node_ids):
+        """Set ids in local numbering of ghost nodes on the last layer
+
+        Arguments:
+            list[int]: List of ghost nodes ids.
+        """
+
 
 # class ParallelEquationNumbering in libaster
 
@@ -15355,11 +15369,12 @@ class ParallelEquationNumbering(EquationNumbering):
             list[int]: list of dofs.
         """
 
-    def getGhostDOFs(self, local=True):
+    def getGhostDOFs(self, local=True, lastLayerOnly=False):
         """Returns the indexes of the ghost DOFs.
 
         Arguments:
             local (bool): local or global numbering
+            lastLayerOnly (bool): last ghosts layer or all
 
         Returns:
             int: indexes of the ghost DOFs.
@@ -17085,6 +17100,22 @@ class IncompleteMesh(Mesh):
         Returns:
              list: list of ids in local numbering
         """
+
+
+# built-in function redistributePetscMat in libaster
+
+
+def redistributePetscMat(pMat, subCommSize):
+    """Given a distributed matrix on an MPI communicator,
+    this function returns a redistributed matrix on a subcommunicator.
+
+    Arguments:
+       pMat: the petsc4py matrix to redistribute.
+       subCommSize: the size of the subcommunicator
+    Outputs:
+       outMat: the redistributed petsc4py matrix on a subcommunicator of size
+                subCommSize.
+    """
 
 
 # class PtScotchPartitioner in libaster

@@ -53,7 +53,7 @@ subroutine te0243(option, nomte)
 !
     integer(kind=8) :: icamas, nbres
     parameter(nbres=3)
-    integer :: icodre(nbres)
+    integer(kind=8) :: icodre(nbres)
     character(len=32) :: phenom
     real(kind=8) ::  tpg, dtpg(3), tpsec, diff, fluglo(3), Kglo(3, 3)
     real(kind=8) :: resi(MAX_BS), rigi(MAX_BS, MAX_BS), dfluxglo(3), resi_p(MAX_BS)
