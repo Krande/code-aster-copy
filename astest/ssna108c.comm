@@ -17,7 +17,7 @@
 # along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 # --------------------------------------------------------------------
 
-DEBUT(CODE=_F(NIV_PUB_WEB="INTERNET"), DEBUG=_F(SDVERI="OUI"), IMPR_MACRO="NON")
+DEBUT(CODE="OUI", DEBUG=_F(SDVERI="OUI"), IMPR_MACRO="NON")
 # ......................................................................
 
 import numpy as np
@@ -276,9 +276,9 @@ IMPR_RESU(FORMAT="MED", RESU=_F(RESULTAT=UCORR), UNITE=80)
 BERE3 = POST_BEREMIN(
     RESULTAT=T,
     DEFORMATION="PETIT",
-    FILTRE_SIGM="SIGM_ELGA",
+    FILTRE_SIGM="SIGM_CORR",
     NUME_VARI=2,
-    CORR_PLAS=UCORR,
+    SIGM_CORR=UCORR,
     WEIBULL=_F(GROUP_MA="COUL_7", M=m, VOLU_REFE=vref, SIGM_REFE=sigm_refe),
 )
 

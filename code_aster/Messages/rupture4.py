@@ -145,10 +145,10 @@ dont la composante X1 doit être la valeur de SIGM_REFE ou SIGM_SEUIL.
     25: _(
         """
 POST_BEREMIN / SIGM_CORR : il manque le champ UT01_ELGA et/ou sa composante X1
-dans la sd résultat donnée sous le mot-clé SIGM_CORR.
+dans le concept résultat donné sous le mot-clé SIGM_CORR.
 
-Pour utiliser une contrainte corrigée dans le calcul de la contrainte de Weibull,
-l'utilisateur doit donner sous le mot-clé SIGM_CORR un résultat de type evol_noli
+Pour utiliser une contrainte effective corrigée dans le calcul de la contrainte de WEIBULL,
+l'utilisateur doit donner sous le mot-clé SIGM_CORR un concept résultat
 contenant à chaque instant le champ de contrainte corrigée aux points de Gauss.
 
 Ceci passe par la définition d'un champ de type UT01_ELGA dont la composante
