@@ -70,6 +70,25 @@ subroutine utpar1(resu_type, nb_para_maxi, para_list, nb_para)
 !
 !
 !
+    elseif (resu_type .eq. 'EVOL_SECH') then
+!     --------------------------------
+        ico = ico+1
+        para_list(ico) = 'INST#A#R'
+        ico = ico+1
+        para_list(ico) = 'MODELE#P#K8'
+        ico = ico+1
+        para_list(ico) = 'CHAMPMAT#P#K8'
+        ico = ico+1
+        para_list(ico) = 'CARAELEM#P#K8'
+        ico = ico+1
+        para_list(ico) = 'EXCIT#P#K24'
+        ico = ico+1
+        para_list(ico) = 'PARM_THETA#P#R'
+        nb_para = ico
+        ASSERT(nb_para .le. nb_para_maxi)
+!
+!
+!
     else if (resu_type .eq. 'ACOU_HARMO') then
 !     --------------------------------
         ico = ico+1

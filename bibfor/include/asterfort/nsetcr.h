@@ -18,16 +18,12 @@
 #include "asterf_types.h"
 !
 interface
-    subroutine nxnoli(model, materField, caraElem, l_stat, l_evol, &
-                      para, sddisc, ds_inout, ds_algorom, l_dry)
+    subroutine nsetcr(nume_dof, ds_inout, &
+                      listLoad_, compor_)
         use NonLin_Datastructure_type
-        use Rom_Datastructure_type
-        character(len=8), intent(in) :: model, materField, caraElem
-        aster_logical, intent(in) :: l_stat, l_evol
-        real(kind=8), intent(in) :: para(*)
-        character(len=19), intent(in) :: sddisc
+        character(len=24), intent(in) :: nume_dof
         type(NL_DS_InOut), intent(inout) :: ds_inout
-        type(ROM_DS_AlgoPara), intent(in) :: ds_algorom
-        aster_logical, intent(in) :: l_dry
-    end subroutine nxnoli
+        character(len=24), optional, intent(in) :: listLoad_
+        character(len=*), optional, intent(in) :: compor_
+    end subroutine nsetcr
 end interface

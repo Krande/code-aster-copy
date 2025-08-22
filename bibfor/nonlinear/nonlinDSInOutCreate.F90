@@ -28,6 +28,7 @@ subroutine nonlinDSInOutCreate(phenom, ds_inout)
 #include "asterfort/assert.h"
 #include "asterfort/CreateInOutDS_M.h"
 #include "asterfort/CreateInOutDS_T.h"
+#include "asterfort/CreateInOutDS_S.h"
 !
     character(len=4), intent(in) :: phenom
     type(NL_DS_InOut), intent(out) :: ds_inout
@@ -82,6 +83,8 @@ subroutine nonlinDSInOutCreate(phenom, ds_inout)
         call CreateInOutDS_T(ds_inout, ASTER_FALSE)
     elseif (phenom .eq. 'THNL') then
         call CreateInOutDS_T(ds_inout, ASTER_TRUE)
+    elseif (phenom .eq. 'SECH') then
+        call CreateInOutDS_S(ds_inout, ASTER_TRUE)
     elseif (phenom .eq. 'VIBR') then
         call CreateInOutDS_M(ds_inout)
     else

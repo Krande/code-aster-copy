@@ -15,19 +15,12 @@
 ! You should have received a copy of the GNU General Public License
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
-#include "asterf_types.h"
 !
-interface
-    subroutine nxnoli(model, materField, caraElem, l_stat, l_evol, &
-                      para, sddisc, ds_inout, ds_algorom, l_dry)
+interface 
+    subroutine nsini0(ds_algopara, ds_inout, ds_print)
         use NonLin_Datastructure_type
-        use Rom_Datastructure_type
-        character(len=8), intent(in) :: model, materField, caraElem
-        aster_logical, intent(in) :: l_stat, l_evol
-        real(kind=8), intent(in) :: para(*)
-        character(len=19), intent(in) :: sddisc
-        type(NL_DS_InOut), intent(inout) :: ds_inout
-        type(ROM_DS_AlgoPara), intent(in) :: ds_algorom
-        aster_logical, intent(in) :: l_dry
-    end subroutine nxnoli
-end interface
+        type(NL_DS_AlgoPara), intent(out) :: ds_algopara
+        type(NL_DS_InOut), intent(out) :: ds_inout
+        type(NL_DS_Print), intent(out) :: ds_print
+    end subroutine nsini0
+end interface 

@@ -39,6 +39,7 @@ subroutine op0186()
 #include "asterfort/jeveuo.h"
 #include "asterfort/medith.h"
 #include "asterfort/nmnkft.h"
+#include "asterfort/nsini0.h"
 #include "asterfort/ntdata.h"
 #include "asterfort/ntarch.h"
 #include "asterfort/ntobsv.h"
@@ -131,7 +132,11 @@ subroutine op0186()
 !
 ! - Creation of datastructures
 !
-    call nxini0(ds_algopara, ds_inout, ds_print)
+    if (l_dry) then
+        call nsini0(ds_algopara, ds_inout, ds_print)
+    else
+        call nxini0(ds_algopara, ds_inout, ds_print)
+    end if
 !
 ! - Read parameters (linear)
 !
@@ -158,7 +163,7 @@ subroutine op0186()
                 timeMap, ds_algopara, &
                 ds_algorom, ds_print, vhydr, &
                 l_stat, l_evol, l_rom, &
-                l_line_search, lnkry)
+                l_line_search, lnkry, l_dry)
 !
     if (l_stat) then
         nume_inst = 0

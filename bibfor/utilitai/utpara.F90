@@ -60,6 +60,7 @@ subroutine utpara(bas1, nomsd, typsd, nbordr)
 !
 !     -- RECUPERATION DE LA LISTE DES PARAMETRES :
 !     --------------------------------------------
+    print *, 'typsd ', typsd
     call utpar1(typsd, nbpamx, lipara, nbpara)
 !
 !

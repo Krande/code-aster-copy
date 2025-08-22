@@ -74,7 +74,7 @@ def compat_syntax(keywords):
 SECH_NON_LINE = OPER(
     nom="SECH_NON_LINE",
     op=186,
-    sd_prod=evol_ther,
+    sd_prod=evol_sech,
     compat_syntax=compat_union(compat_syntax, compat_comport),
     reentrant="f:RESULTAT",
     fr=tr(

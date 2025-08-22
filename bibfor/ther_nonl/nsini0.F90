@@ -15,51 +15,57 @@
 ! You should have received a copy of the GNU General Public License
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
+! person_in_charge: mickael.abbas at edf.fr
 !
-subroutine nmetnc(field_name_algo, field_algo)
+subroutine nsini0(ds_algopara, ds_inout, ds_print)
+!
+    use NonLin_Datastructure_type
 !
     implicit none
 !
-#include "asterfort/assert.h"
+#include "asterf_types.h"
+#include "asterfort/infniv.h"
+#include "asterfort/nonlinDSInOutCreate.h"
+#include "asterfort/nonlinDSAlgoParaCreate.h"
+#include "asterfort/nonlinDSPrintCreate.h"
 !
-    character(len=*), intent(in) :: field_name_algo
-    character(len=*), intent(out) :: field_algo
-!
-! --------------------------------------------------------------------------------------------------
-!
-! *_NON_LINE - Input/output datastructure
-!
-! Get name of datastructure for field - This utiliy is required for "hat" variables
-!
-! --------------------------------------------------------------------------------------------------
-!
-! In  field_name_algo : name of field in algorithme
-! Out field_algo      : name of datastructure for field
+    type(NL_DS_AlgoPara), intent(out) :: ds_algopara
+    type(NL_DS_InOut), intent(out) :: ds_inout
+    type(NL_DS_Print), intent(out) :: ds_print
 !
 ! --------------------------------------------------------------------------------------------------
 !
-    character(len=6) :: hat_type, hat_vari
+! SECH_NON_LINE - Init
+!
+! Creation of datastructures
 !
 ! --------------------------------------------------------------------------------------------------
 !
-    field_algo = ' '
+! Out ds_algopara      : datastructure for algorithm parameters
+! Out ds_inout         : datastructure for input/output management
+! Out ds_print         : datastructure for printing parameters
 !
-    if (field_name_algo(1:3) .eq. '#H#') then
-        hat_type = field_name_algo(4:9)
-        hat_vari = field_name_algo(11:16)
-        if (hat_type .eq. 'VALINC') then
-            if (hat_vari .eq. 'TEMP' .or. hat_vari .eq. 'SECH') then
-                field_algo = '&&NXLECTVAR_____'
-            else
-                field_algo = '&&NMCH1P.'//hat_vari
-            end if
-        else if (hat_type .eq. 'VEASSE') then
-            field_algo = '&&NMCH5P.'//hat_vari
-        else
-            ASSERT(.false.)
-        end if
-    else
-        field_algo = field_name_algo
+! --------------------------------------------------------------------------------------------------
+!
+    integer(kind=8) :: ifm, niv
+!
+! --------------------------------------------------------------------------------------------------
+!
+    call infniv(ifm, niv)
+    if (niv .ge. 2) then
+        write (ifm, *) '<SECH_NON_LINE> Create datastructures'
     end if
+!
+! - Create input/output management datastructure
+!
+    call nonlinDSInOutCreate('SECH', ds_inout)
+!
+! - Create algorithm parameters datastructure
+!
+    call nonlinDSAlgoParaCreate(ds_algopara)
+!
+! - Create printing management datastructure
+!
+    call nonlinDSPrintCreate('THNL', ds_print)
 !
 end subroutine
