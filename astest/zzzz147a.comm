@@ -305,7 +305,6 @@ COMBI = POST_COMBINAISON(
     TOUT="OUI",
     TABLE_COEF=_COEF_TAB,
     TYPE_COMB="RESULTAT",
-    TABLE_COEF_RESU=CO("COMBI_TB"),
     # Le champ de Ferraillage n'est pas combine...
     NOM_CHAM=(
         "DEPL",
