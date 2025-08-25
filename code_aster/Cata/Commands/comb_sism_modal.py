@@ -285,10 +285,6 @@ COMB_SISM_MODAL = MACRO(
                 ),
                 LIST_AXE=SIMP(statut="o", typ="TXM", into=("X", "Y", "Z"), max=3),
             ),
-            b_vale_osci=BLOC(
-                condition="""equal_to("TYPE", 'VALE_OSCI') """,
-                LIST_AXE=SIMP(statut="f", typ="TXM", into=("X", "Y", "Z"), max=3),
-            ),
             b_vale_qs=BLOC(
                 condition="""equal_to("TYPE", 'VALE_QS') """,
                 LIST_AXE=SIMP(statut="f", typ="TXM", into=("X", "Y", "Z"), max=3),
@@ -353,10 +349,6 @@ COMB_SISM_MODAL = MACRO(
                     ),
                 ),
                 LIST_AXE=SIMP(statut="o", typ="TXM", into=("X", "Y", "Z"), max=3),
-            ),
-            b_vale_osci=BLOC(
-                condition="""equal_to("TYPE", 'VALE_OSCI') """,
-                LIST_AXE=SIMP(statut="f", typ="TXM", into=("X", "Y", "Z"), max=3),
             ),
             b_vale_qs=BLOC(
                 condition="""equal_to("TYPE", 'VALE_QS') """,
@@ -430,10 +422,6 @@ COMB_SISM_MODAL = MACRO(
                 LIST_APPUI=SIMP(statut="f", typ="TXM", max="**"),
                 TOUT_APPUI=SIMP(statut="f", typ="TXM", into=("OUI",)),
                 LIST_AXE=SIMP(statut="o", typ="TXM", into=("X", "Y", "Z"), max=3),
-            ),
-            b_vale_osci=BLOC(
-                condition="""equal_to("TYPE", 'VALE_OSCI') """,
-                LIST_AXE=SIMP(statut="f", typ="TXM", into=("X", "Y", "Z"), max=3),
             ),
             b_vale_qs=BLOC(
                 condition="""equal_to("TYPE", 'VALE_QS') """,

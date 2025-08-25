@@ -147,6 +147,47 @@ Conseil:
         """         %(k1)s    %(r1)12.5e    %(r2)12.5e    %(k2)s
 """
     ),
+    58: _(
+        """"Pour la combinaison modale COMB_MODE de TYPE = 'GUPTA', FREQ_1 doit être inférieure à FREQ_2.
+"""
+    ),
+    59: _(
+        """La combinaison modale COMB_MODE de TYPE = 'GUPTA' est uniquement disponible en MONO_APPUI.
+"""
+    ),
+    60: _(
+        """Il y a au moins un noeud qui appartenant à plusieurs appuis.
+"""
+    ),
+    61: _(
+        """Avec TYPE_COMB = 'DSC', les amortissements doivent être non nuls et inférieurs à 1.
+"""
+    ),
+    62: _(
+        """On ne trouve pas le champ '%(k1)s' dans la base modale fournie sous mot clé MODE_MECA.
+"""
+    ),
+    63: _(
+        """On ne trouve pas la direction '%(k1)s' dans la base modale fournie sous mot clé PSEUDO_MODE.
+"""
+    ),
+    64: _(
+        """Pour TYPE_ANALYSE = 'MONO_APPUI', il faut renseigner au maximum un spectre par axe global X, Y, Z.
+"""
+    ),
+    65: _(
+        """Pour TYPE_ANALYSE = 'ENVELOPPE', les mots clés %(k1)s sous le mot clé facteur SPECTRE
+            doivent avoir la même valeur.
+"""
+    ),
+    66: _(
+        """On ne trouve pas NOEUD_CMP='%(k1)s' dans la base modale fournie sous le mot clé %(k2)s.
+"""
+    ),
+    67: _(
+        """Il est inutile de calculer la réponse d'entraînement pour l'option %(k1)s.
+"""
+    ),
     77: _(
         """  Les coordonnées du noeud de référence COOR_REFE sont : ( %(r1).2f   %(r2).2f   %(r3).2f )
 """
