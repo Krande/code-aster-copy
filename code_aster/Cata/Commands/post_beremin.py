@@ -39,14 +39,9 @@ POST_BEREMIN = MACRO(
     sd_prod=post_beremin_prod,
     docu="U4.81.08",
     reentrant="n",
+    regles=UN_PARMI("WEIBULL", "WEIBULL_FO"),
     fr=tr("Post-traitement de Beremin"),
     RESULTAT=SIMP(statut="o", typ=evol_noli, fr=tr("Résultat mecanique")),
-    GROUP_MA=SIMP(
-        statut="o",
-        typ=grma,
-        max=1,
-        fr=tr("Groupe de mailles sur lequel effectuer le post-traitement"),
-    ),
     DEFORMATION=SIMP(
         statut="o",
         typ="TXM",
@@ -56,7 +51,7 @@ POST_BEREMIN = MACRO(
     FILTRE_SIGM=SIMP(
         statut="o",
         typ="TXM",
-        into=("SIGM_ELGA", "SIGM_ELMOY"),
+        into=("SIGM_ELGA", "SIGM_ELMOY", "SIGM_CORR"),
         fr=tr("Option de moyennation des contraintes"),
     ),
     NUME_VARI=SIMP(
@@ -82,8 +77,19 @@ POST_BEREMIN = MACRO(
     COEF_MULT=SIMP(
         statut="f", typ="R", defaut=1.0, fr=tr("Coefficient à renseigner selon u4.81.22")
     ),
+    b_sigmcorr=BLOC(
+        condition="""equal_to("FILTRE_SIGM", 'SIGM_CORR')""",
+        SIGM_CORR=SIMP(statut="o", typ=evol_noli, fr=tr("Contrainte principale maximale corrigée")),
+    ),
     WEIBULL=FACT(
         statut="f",
+        max="**",
+        GROUP_MA=SIMP(
+            statut="o",
+            typ=grma,
+            max=1,
+            fr=tr("Groupe de mailles sur lequel effectuer le post-traitement"),
+        ),
         M=SIMP(statut="o", typ="R", max="**"),
         VOLU_REFE=SIMP(statut="o", typ="R"),
         SIGM_REFE=SIMP(statut="o", typ="R", max="**"),
@@ -91,11 +97,18 @@ POST_BEREMIN = MACRO(
     ),
     WEIBULL_FO=FACT(
         statut="f",
+        max="**",
+        GROUP_MA=SIMP(
+            statut="o",
+            typ=grma,
+            max=1,
+            fr=tr("Groupe de mailles sur lequel effectuer le post-traitement"),
+        ),
         M=SIMP(statut="o", typ="R", max="**"),
         VOLU_REFE=SIMP(statut="o", typ="R"),
         SIGM_CNV=SIMP(statut="o", typ="R"),
-        SIGM_REFE=SIMP(statut="o", typ=(fonction_sdaster, nappe_sdaster, formule)),
-        SIGM_SEUIL=SIMP(statut="f", typ="R", defaut=0.0, val_min=0.0, max="**"),
+        SIGM_REFE=SIMP(statut="o", typ=(fonction_sdaster, cham_no_sdaster, cham_elem)),
+        SIGM_SEUIL=SIMP(statut="o", typ=(fonction_sdaster, cham_no_sdaster, cham_elem)),
     ),
     METHODE_2D=FACT(
         statut="f",

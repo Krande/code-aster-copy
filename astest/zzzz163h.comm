@@ -1,0 +1,268 @@
+# coding=utf-8
+# --------------------------------------------------------------------
+# Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
+# This file is part of code_aster.
+#
+# code_aster is free software: you can redistribute it and/or modify
+# it under the terms of the GNU General Public License as published by
+# the Free Software Foundation, either version 3 of the License, or
+# (at your option) any later version.
+#
+# code_aster is distributed in the hope that it will be useful,
+# but WITHOUT ANY WARRANTY; without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+# GNU General Public License for more details.
+#
+# You should have received a copy of the GNU General Public License
+# along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
+# --------------------------------------------------------------------
+
+DEBUT(CODE="OUI", ERREUR=_F(ALARME="EXCEPTION"), DEBUG=_F(SDVERI="OUI"))
+# ......................................................................
+
+vref = 1.25e-4
+m = 8.0
+sigm_refe = 2630.0
+
+M = LIRE_MAILLAGE(FORMAT="MED")
+
+M = MODI_MAILLAGE(reuse=M, MAILLAGE=M, ORIE_PEAU=_F(GROUP_MA_PEAU="haut"))
+
+MO = AFFE_MODELE(
+    MAILLAGE=M,
+    AFFE=_F(
+        GROUP_MA=("s_droite", "s_gauche", "haut"), PHENOMENE="MECANIQUE", MODELISATION="D_PLAN"
+    ),
+)
+
+COMP = DEFI_FONCTION(
+    NOM_PARA="EPSI",
+    PROL_DROITE="LINEAIRE",
+    PROL_GAUCHE="LINEAIRE",
+    VALE=(
+        0.002775,
+        555.0,
+        0.005000,
+        588.7,
+        0.010000,
+        631.0,
+        0.0150,
+        657.0,
+        0.0200,
+        676.0,
+        0.0250,
+        691.0,
+        0.0300,
+        704.0,
+        0.0400,
+        725.0,
+        0.0500,
+        741.0,
+        0.0750,
+        772.0,
+        0.1000,
+        794.0,
+        0.1250,
+        812.0,
+        0.1500,
+        827.0,
+        0.2000,
+        851.0,
+        0.3000,
+        887.0,
+        0.4000,
+        912.0,
+        0.5000,
+        933.0,
+        0.6000,
+        950.0,
+        0.7000,
+        965.0,
+        0.8000,
+        978.0,
+        0.9000,
+        990.0,
+    ),
+)
+
+C_SIGM_REFE = DEFI_CONSTANTE(VALE=sigm_refe)
+
+ACIER = DEFI_MATERIAU(
+    ELAS=_F(E=200000.0, NU=0.3, ALPHA=0.0),
+    TRACTION=_F(SIGM=COMP),
+    WEIBULL=_F(M=m, VOLU_REFE=vref, SIGM_REFE=sigm_refe, SIGM_SEUIL=0.0),
+)
+
+L_INST = DEFI_LIST_REEL(
+    DEBUT=0.0, INTERVALLE=(_F(JUSQU_A=0.2, NOMBRE=1), _F(JUSQU_A=0.5, NOMBRE=10))
+)
+
+CM = AFFE_MATERIAU(MAILLAGE=M, AFFE=(_F(GROUP_MA="s_tout", MATER=ACIER),))
+
+ZERO = AFFE_CHAR_CINE(
+    MODELE=MO,
+    MECA_IMPO=(_F(GROUP_MA=("gauche", "droite"), DX=0.0), _F(GROUP_MA="bas", DX=0.0, DY=0.0)),
+)
+
+TRAC = DEFI_FONCTION(NOM_PARA="INST", VALE=(0.0, 0.0, 1.0, -0.5e4), PROL_DROITE="LINEAIRE")
+
+CHARG = AFFE_CHAR_MECA_F(MODELE=MO, PRES_REP=_F(GROUP_MA="haut", PRES=TRAC))
+
+# CALCUL MECANIQUE
+
+U = STAT_NON_LINE(
+    MODELE=MO,
+    CHAM_MATER=CM,
+    EXCIT=(_F(CHARGE=CHARG), _F(CHARGE=ZERO)),
+    COMPORTEMENT=_F(RELATION="VMIS_ISOT_TRAC"),
+    INCREMENT=_F(LIST_INST=L_INST, NUME_INST_FIN=10),
+    CONVERGENCE=_F(RESI_GLOB_RELA=1.0e-06, ITER_GLOB_MAXI=25),
+)
+
+
+def H(X):
+    if X < 0.0:
+        return 0.0
+    if X >= 0.0:
+        return 1.0
+
+
+def func(X, Y):
+    return H(X) * 10000.0
+
+
+form = FORMULE(VALE="func(X,Y)", func=func, NOM_PARA=("X", "Y"))
+
+CHGEOM = CREA_CHAMP(TYPE_CHAM="NOEU_GEOM_R", OPERATION="EXTR", MAILLAGE=M, NOM_CHAM="GEOMETRIE")
+
+CHGEOM2 = CREA_CHAMP(MODELE=MO, OPERATION="DISC", TYPE_CHAM="ELGA_GEOM_R", CHAM_GD=CHGEOM)
+
+CHSSPG_ = CREA_CHAMP(
+    TYPE_CHAM="ELGA_NEUT_F",
+    PROL_ZERO="OUI",
+    OPERATION="AFFE",
+    MODELE=MO,
+    AFFE=(_F(GROUP_MA="s_tout", NOM_CMP=("X1"), VALE_F=form),),
+)
+
+CHSSPG = CREA_CHAMP(
+    TYPE_CHAM="ELGA_NEUT_R", OPERATION="EVAL", CHAM_F=CHSSPG_, CHAM_PARA=CHGEOM2, INFO=1
+)
+
+# IMPR_RESU(UNITE=81, FORMAT="MED", RESU=_F(CHAM_GD=CHSSPG))
+
+WEIB = POST_ELEM(
+    WEIBULL=(
+        _F(CORR_PLAST="NON", GROUP_MA="s_tout", COEF_MULT=1.0, OPTION="SIGM_ELGA"),
+        _F(CORR_PLAST="NON", GROUP_MA="s_gauche", COEF_MULT=1.0, OPTION="SIGM_ELGA"),
+        _F(CORR_PLAST="NON", GROUP_MA="s_droite", COEF_MULT=1.0, OPTION="SIGM_ELGA"),
+    ),
+    RESULTAT=U,
+    TOUT_ORDRE="OUI",
+)
+
+IMPR_TABLE(TABLE=WEIB, UNITE=6)
+
+BERE1 = POST_BEREMIN(
+    RESULTAT=U,
+    COEF_MULT=1,
+    DEFORMATION="PETIT",
+    FILTRE_SIGM="SIGM_ELGA",
+    NUME_VARI=2,
+    WEIBULL_FO=_F(
+        GROUP_MA="s_tout",
+        M=m,
+        VOLU_REFE=vref,
+        SIGM_REFE=C_SIGM_REFE,
+        SIGM_CNV=sigm_refe,
+        SIGM_SEUIL=CHSSPG,
+    ),
+)
+
+IMPR_TABLE(TABLE=BERE1, UNITE=6)
+
+BERE2 = POST_BEREMIN(
+    RESULTAT=U,
+    COEF_MULT=1,
+    DEFORMATION="PETIT",
+    FILTRE_SIGM="SIGM_ELGA",
+    NUME_VARI=2,
+    WEIBULL=(
+        _F(GROUP_MA="s_tout", M=m, VOLU_REFE=vref, SIGM_REFE=2630.0),
+        _F(GROUP_MA="s_gauche", M=m, VOLU_REFE=vref, SIGM_REFE=2630.0),
+        _F(GROUP_MA="s_droite", M=m, VOLU_REFE=vref, SIGM_REFE=2630.0),
+    ),
+)
+
+IMPR_TABLE(TABLE=BERE2, UNITE=6)
+
+val_tout = 4459.172269
+val_moitie = val_tout * (1 / 2) ** (1 / m)
+
+TEST_TABLE(
+    CRITERE="RELATIF",
+    VALE_REFE=val_tout,
+    VALE_CALC=val_tout,
+    PRECISION=0.01,
+    REFERENCE="AUTRE_ASTER",
+    NOM_PARA="SIGMA_WEIBULL",
+    TABLE=WEIB,
+    FILTRE=(_F(NOM_PARA="NUME_ORDRE", VALE_I=4), _F(NOM_PARA="LIEU", VALE_K="s_tout")),
+)
+
+TEST_TABLE(
+    CRITERE="RELATIF",
+    VALE_REFE=val_moitie,
+    VALE_CALC=val_moitie,
+    PRECISION=0.01,
+    REFERENCE="AUTRE_ASTER",
+    NOM_PARA="SIGMA_WEIBULL",
+    TABLE=WEIB,
+    FILTRE=(_F(NOM_PARA="NUME_ORDRE", VALE_I=4), _F(NOM_PARA="LIEU", VALE_K="s_gauche")),
+)
+
+TEST_TABLE(
+    CRITERE="RELATIF",
+    VALE_REFE=val_moitie,
+    VALE_CALC=val_moitie,
+    PRECISION=0.01,
+    REFERENCE="AUTRE_ASTER",
+    NOM_PARA="SIGMA_WEIBULL",
+    TABLE=WEIB,
+    FILTRE=(_F(NOM_PARA="NUME_ORDRE", VALE_I=4), _F(NOM_PARA="LIEU", VALE_K="s_droite")),
+)
+
+TEST_TABLE(
+    CRITERE="RELATIF",
+    VALE_REFE=val_moitie,
+    VALE_CALC=val_moitie,
+    PRECISION=0.01,
+    REFERENCE="AUTRE_ASTER",
+    NOM_PARA="SIGMA_WEIBULL",
+    TABLE=BERE1,
+    FILTRE=(_F(NOM_PARA="NUME_ORDRE", VALE_I=4), _F(NOM_PARA="GROUP_MA", VALE_K="s_tout")),
+)
+
+TEST_TABLE(
+    CRITERE="RELATIF",
+    VALE_REFE=val_moitie,
+    VALE_CALC=val_moitie,
+    PRECISION=0.01,
+    REFERENCE="AUTRE_ASTER",
+    NOM_PARA="SIGMA_WEIBULL",
+    TABLE=BERE2,
+    FILTRE=(_F(NOM_PARA="NUME_ORDRE", VALE_I=4), _F(NOM_PARA="GROUP_MA", VALE_K="s_gauche")),
+)
+
+TEST_TABLE(
+    CRITERE="RELATIF",
+    VALE_REFE=val_moitie,
+    VALE_CALC=val_moitie,
+    PRECISION=0.01,
+    REFERENCE="AUTRE_ASTER",
+    NOM_PARA="SIGMA_WEIBULL",
+    TABLE=BERE2,
+    FILTRE=(_F(NOM_PARA="NUME_ORDRE", VALE_I=4), _F(NOM_PARA="GROUP_MA", VALE_K="s_droite")),
+)
+
+FIN()
