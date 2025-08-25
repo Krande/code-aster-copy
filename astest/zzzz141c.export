@@ -1,8 +1,0 @@
-P time_limit 120
-P memory_limit 512
-P ncpus 1
-P mpi_nbcpu 8
-P mpi_nbnoeud 1
-P testlist submit verification parallel
-
-F comm zzzz141c.comm D 1

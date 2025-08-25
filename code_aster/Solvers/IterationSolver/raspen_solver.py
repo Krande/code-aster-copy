@@ -900,7 +900,7 @@ class SubJacCtx:
         # Communicating Ghost values between subdomain
         locVec = self.Yloc.duplicate()
         locVec.set(0.0)
-        locVec.getArray()[self.interiorGhosts] = X.getArray()[:]
+        locVec.getArray()[self.interiorGhosts] = X.getArray(readonly=True)[:]
         if self.Sl.withCoarsePb:
             Yd = self.X
         else:
