@@ -85,7 +85,8 @@ VectorLong ParallelEquationNumbering::getPhysicalDOFs( const bool local ) const 
     return physicalRows;
 };
 
-VectorLong ParallelEquationNumbering::getGhostDOFs( const bool local ) const {
+VectorLong ParallelEquationNumbering::getGhostDOFs( const bool local,
+                                                    const bool lastLayerOnly ) const {
     auto localToRank = this->getLocalToRank();
     localToRank->updateValuePointer();
     VectorLong ghostRows;
@@ -94,7 +95,6 @@ VectorLong ParallelEquationNumbering::getGhostDOFs( const bool local ) const {
     auto loc2glo = getLocalToGlobalMapping();
     if ( !local )
         loc2glo->updateValuePointer();
-
     for ( int i = 0; i < getNumberOfDOFs( true ); i++ ) {
         dofOwner = ( *localToRank )[i];
         if ( dofOwner != rank ) {
@@ -105,7 +105,20 @@ VectorLong ParallelEquationNumbering::getGhostDOFs( const bool local ) const {
             }
         }
     }
-    return ghostRows;
+    if ( lastLayerOnly ) {
+        JeveuxVectorShort nodesids = _mesh->getLastGhostsLayer();
+        VectorLong lastLayerDofs;
+        for ( auto &dof : ghostRows ) {
+            // Node id
+            ASTERINTEGER nodeid = getNodeAndComponentIdFromDOF( dof ).first;
+            auto it = std::find( nodesids.begin(), nodesids.end(), nodeid );
+            if ( it != nodesids.end() )
+                lastLayerDofs.push_back( dof );
+        }
+        return lastLayerDofs;
+    } else {
+        return ghostRows;
+    }
 };
 
 VectorLong ParallelEquationNumbering::getNoGhostDOFs( const bool local ) const {

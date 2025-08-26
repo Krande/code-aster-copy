@@ -40,11 +40,12 @@ Returns the indexes of the ghost DOFs.
 
 Arguments:
     local (bool): local or global numbering
+    lastLayerOnly (bool): last ghosts layer or all
 
 Returns:
     int: indexes of the ghost DOFs.
         )",
-              py::arg( "local" ) = true )
+              py::arg( "local" ) = true, py::arg( "lastLayerOnly" ) = false )
         // ---------------------------------------------------------------------
         .def( "getNoGhostDOFs", &ParallelEquationNumbering::getNoGhostDOFs,
               R"(

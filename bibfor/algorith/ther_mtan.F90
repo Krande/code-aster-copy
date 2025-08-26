@@ -109,7 +109,7 @@ subroutine ther_mtan(l_stat, &
     lchin(7) = chcara(12)
 
 ! - Output fields
-    lpaout(1) = 'PMATTTR'
+    lpaout(1) = 'PMATTSR'
     lchout(1) = resuElemZ
 
 ! - Compute rigidity term

@@ -131,7 +131,7 @@ class ParallelEquationNumbering : public EquationNumbering {
     /**
      * @brief Get Rows Associated to all Ghost Dof
      */
-    VectorLong getGhostDOFs( const bool local = false ) const;
+    VectorLong getGhostDOFs( const bool local = false, const bool lastLayerOnly = false ) const;
 
     /**
      * @brief Get Rows owned locally (aka not Ghost)

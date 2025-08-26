@@ -64,6 +64,8 @@ class ParallelMesh : public BaseMesh {
     JeveuxVectorLong _globalNodeIds;
     /** @brief Global cell numbering */
     JeveuxVectorLong _globalCellIds;
+    /** @brief Objet Jeveux '.LASTGHOLAYER' */
+    JeveuxVectorShort _lastGhostsLayer;
     /** @brief List of joints */
     JointsPtr _joints;
     /** @brief Global to local node number */
@@ -126,9 +128,27 @@ class ParallelMesh : public BaseMesh {
     void setGroupOfNodes( const std::string &name, const VectorLong &node_ids,
                           const bool localNumbering = false );
 
+    /**
+     * @brief Steal from input vector ids in local numbering of ghost nodes on the last layer
+     */
+    void setLastGhostsLayer( VectorInt &node_ids ) {
+        // copy data to JeveuxVector _lastGhostsLayer
+        *_lastGhostsLayer = node_ids;
+        // reset input vector to empty state
+        node_ids = VectorInt();
+    };
+
     VectorLong getCells( const std::string name ) const;
 
     VectorLong getCells( const VectorString &names = {} ) const;
+
+    /**
+     * @brief Return ids in local numbering of ghost nodes of the last layer
+     */
+    JeveuxVectorShort getLastGhostsLayer() const {
+        _lastGhostsLayer->updateValuePointer();
+        return _lastGhostsLayer;
+    };
 
     /**
      * @brief Return list of nodes

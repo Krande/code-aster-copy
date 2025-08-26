@@ -40,9 +40,13 @@ from ..Objects import (
     Mesh,
     MeshReader,
     ParallelMesh,
+    MedFileAccessType,
+    MedFileReader,
+    MeshBalancer,
     PythonBool,
     ResultNaming,
 )
+from ..ObjectsExt import mesh_builder
 from ..Objects.Serialization import InternalStateBuilder
 from ..Utilities import MPI, ExecutionParameter, Options, SharedTmpdir, force_list, injector
 from .simplefieldonnodes_ext import SimpleFieldOnNodesReal
@@ -84,7 +88,7 @@ class ExtendedParallelMesh:
         """
         return self.getCoordinates().toFieldOnNodes(self).toSimpleFieldOnNodes()
 
-    def plot(self, command="gmsh", local=False, split=False):
+    def plot(self, command="gmsh", local=True, split=False):
         """Plot the mesh.
 
         Arguments:
@@ -93,28 +97,7 @@ class ExtendedParallelMesh:
             split (bool): Display each subdomain separately if *True*. Otherwise the global mesh is displayed.
         """
         comm = MPI.ASTER_COMM_WORLD
-        opt = "Mesh.VolumeEdges = 1;Mesh.VolumeFaces=1;Mesh.SurfaceEdges=1;Mesh.SurfaceFaces=1;"
-        if local:
-            if split:
-                with SharedTmpdir("mesh") as tmpdir:
-                    filename = osp.join(tmpdir.path, f"subd_{comm.rank}.med")
-                    self.printMedFile(filename, local=True)
-                    comm.Barrier()
-                    if comm.rank == 0:
-                        for i in range(comm.size):
-                            ff = osp.join(tmpdir.path, f"subd_{i}.med")
-                            subprocess.run(
-                                [
-                                    ExecutionParameter().get_option(f"prog:{command}"),
-                                    "-string",
-                                    opt,
-                                    ff,
-                                ]
-                            )
-            else:
-                self.getOwnerField().plot(command=command, local=local, split=split)
-        else:
-            self.getOwnerField().plot(command=command, local=local, split=split)
+        self.getOwnerField().plot(command=command, local=local, split=split)
         print("waiting for all plotting processes...")
         comm.Barrier()
 
@@ -322,7 +305,7 @@ class ExtendedParallelMesh:
         return convertMesh2MedCoupling(self, spacedim_3d)
 
     @classmethod
-    def buildSquare(cls, l=1, refine=0, info=1, deterministic=False):
+    def buildSquare(cls, l=1, refine=0, ghost=1, info=1, deterministic=False):
         """Build the quadrilateral mesh of a square.
 
         Arguments:
@@ -344,11 +327,13 @@ class ExtendedParallelMesh:
 
             # Mesh creation
             mesh_p = cls()
-            mesh_p.readMedFile(filename, deterministic=deterministic, verbose=info - 1)
+            mesh_p.readMedFile(filename, deterministic=deterministic, ghost=ghost, verbose=info - 1)
             return mesh_p.refine(refine_1, info)
 
     @classmethod
-    def buildRectangle(cls, lx=1, ly=1, nx=1, ny=1, refine=0, info=1, deterministic=False):
+    def buildRectangle(
+        cls, lx=1, ly=1, nx=1, ny=1, refine=0, ghost=1, info=1, quadratic=False, deterministic=False
+    ):
         """Build the quadrilateral mesh of a square.
 
         Arguments:
@@ -360,7 +345,7 @@ class ExtendedParallelMesh:
             info [int] : verbosity mode (0|1|2). (default 1).
         """
         # Refine some levels on whole mesh, the remaining after partitioning
-        min_level = 6
+        min_level = 9
         refine_0 = min(min_level, refine)
         refine_1 = refine - refine_0
 
@@ -368,16 +353,141 @@ class ExtendedParallelMesh:
             filename = osp.join(tmpdir.path, "buildRectangle.med")
             if MPI.ASTER_COMM_WORLD.rank == 0:
                 mesh = Mesh.buildRectangle(lx=lx, ly=ly, nx=nx, ny=ny, refine=refine_0, info=info)
+                if quadratic:
+                    mesh = mesh.convertToQuadratic()
                 mesh.printMedFile(filename)
             ResultNaming.syncCounter()
 
             # Mesh creation
             mesh_p = cls()
-            mesh_p.readMedFile(filename, deterministic=deterministic, verbose=info - 1)
+            mesh_p.readMedFile(filename, deterministic=deterministic, ghost=ghost, verbose=info - 1)
             return mesh_p.refine(refine_1, info)
 
     @classmethod
-    def buildCube(cls, l=1, refine=0, info=1, deterministic=False):
+    def buildCheckerboardRectangle(cls, lx=1, ly=1, nx_loc=1, ny_loc=1, ghost=1, info=1):
+        """Build the quadrilateral mesh of a rectangle, distributed as a checkerboard
+        (aka no use of a partitioner)
+
+        Arguments:
+            lx [float] : length along the x axis (default 1.).
+            ly [float] : length along the y axis (default 1.).
+            nx_loc [int] : number of elements along the x axis in a subdomain (default 1).
+            ny_loc [int] : number of elements along the y axis in a subdomain (default 1).
+            info [int] : verbosity mode (0|1|2). (default 1).
+        """
+        size = MPI.ASTER_COMM_WORLD.Get_size()
+        rank = MPI.ASTER_COMM_WORLD.Get_rank()
+        # number of subdomains in the x-direction
+        x_size = int(np.sqrt(size))
+        # global sizes
+        nx = nx_loc * x_size
+
+        # Compute 2D coordinates of this rank in the process grid
+        rx = rank % x_size
+        ry = rank // x_size
+        loc_nodes = []
+        for j in range(ry * ny_loc, (ry + 1) * ny_loc):
+            for i in range(rx * nx_loc, (rx + 1) * nx_loc):
+                loc_nodes.append(j * nx + i + 1)  # 1-based indexing
+
+        tmpdir = SharedTmpdir("buildRectangle")
+        filename = osp.join(tmpdir.path, "buildRectangle.med")
+        # Sequential build
+        if rank == 0:
+            seqMesh = Mesh.buildRectangle(
+                lx=lx, ly=ly, nx=x_size * nx_loc - 1, ny=x_size * ny_loc - 1
+            )
+            seqMesh.printMedFile(filename)
+        else:
+            # mandatory so that the meshes that will be created after on the other processes share the same name
+            seqMesh = Mesh()
+        MPI.ASTER_COMM_WORLD.Barrier()
+        # Parallel mesh creation
+        fr = MedFileReader()
+        fr.openParallel(filename, MedFileAccessType.MedReadOnly)
+        inComMesh = IncompleteMesh()
+        inComMesh.readMedFile(filename, verbose=0)
+        bMesh = MeshBalancer()
+        bMesh.buildFromBaseMesh(inComMesh)
+        mesh_p = ParallelMesh()
+        mesh_p = bMesh.applyBalancingStrategy(loc_nodes, mesh_p, ghost_layer=ghost)
+
+        return mesh_p
+
+    @classmethod
+    def buildCheckerboardParallelepiped(
+        cls, lx=1, ly=1, lz=1, nx_loc=1, ny_loc=1, nz_loc=1, ghost=1, info=1
+    ):
+        """Build the hexaedral mesh of a parallelepiped, distributed as a checkerboard
+        (aka no use of a partitioner)
+
+        Arguments:
+            lx [float] : length along the x axis (default 1.).
+            ly [float] : length along the y axis (default 1.).
+            lz [float] : length along the z axis (default 1.).
+            nx_loc [int] : number of elements along the x axis in a subdomain (default 1).
+            ny_loc [int] : number of elements along the y axis in a subdomain (default 1).
+            nz_loc [int] : number of elements along the z axis in a subdomain (default 1).
+            info [int] : verbosity mode (0|1|2). (default 1).
+        """
+        size = MPI.ASTER_COMM_WORLD.Get_size()
+        rank = MPI.ASTER_COMM_WORLD.Get_rank()
+        # number of subdomains in the x-direction
+        x_size = int(np.cbrt(size))
+        # global sizes
+        nx = nx_loc * x_size
+        ny = ny_loc * x_size
+        nz = nz_loc * x_size
+
+        # Compute 3D coordinates of this rank in the process grid
+        rz = rank // (x_size * x_size)
+        rem = rank % (x_size * x_size)
+        ry = rem // x_size
+        rx = rem % x_size
+
+        loc_nodes = []
+        for k in range(rz * nz_loc, (rz + 1) * nz_loc):
+            for j in range(ry * ny_loc, (ry + 1) * ny_loc):
+                for i in range(rx * nx_loc, (rx + 1) * nx_loc):
+                    node_id = k * (ny * nx) + j * nx + i + 1  # 1-based indexing
+                    loc_nodes.append(node_id)
+
+        tmpdir = SharedTmpdir("buildParallele")
+        filename = osp.join(tmpdir.path, "buildParallele.med")
+        # Sequential build
+        if rank == 0:
+            tempMesh = mesh_builder.parallelepiped(
+                xmin=0.0,
+                xmax=lx,
+                ymin=0.0,
+                ymax=ly,
+                zmin=0.0,
+                zmax=lz,
+                nx=x_size * nx_loc - 1,
+                ny=x_size * ny_loc - 1,
+                nz=x_size * nz_loc - 1,
+            )
+            seqMesh = Mesh()
+            seqMesh.buildFromMedCouplingMesh(tempMesh)
+            seqMesh.printMedFile(filename)
+        else:
+            # mandatory so that the meshes that will be created after on the other processes share the same name
+            seqMesh = Mesh()
+        MPI.ASTER_COMM_WORLD.Barrier()
+        # Parallel mesh creation
+        fr = MedFileReader()
+        fr.openParallel(filename, MedFileAccessType.MedReadOnly)
+        inComMesh = IncompleteMesh()
+        inComMesh.readMedFile(filename, verbose=0)
+        bMesh = MeshBalancer()
+        bMesh.buildFromBaseMesh(inComMesh)
+        mesh_p = ParallelMesh()
+        mesh_p = bMesh.applyBalancingStrategy(loc_nodes, mesh_p, ghost_layer=ghost)
+
+        return mesh_p
+
+    @classmethod
+    def buildCube(cls, l=1, refine=0, ghost=1, info=1, deterministic=False):
         """Build the quadrilateral mesh of a cube.
 
         Arguments:
@@ -399,11 +509,11 @@ class ExtendedParallelMesh:
 
             # Mesh creation
             mesh_p = cls()
-            mesh_p.readMedFile(filename, deterministic=deterministic, verbose=info - 1)
+            mesh_p.readMedFile(filename, deterministic=deterministic, ghost=ghost, verbose=info - 1)
             return mesh_p.refine(refine_1, info)
 
     @classmethod
-    def buildDisk(cls, radius=1, refine=0, info=1, deterministic=False):
+    def buildDisk(cls, radius=1, refine=0, ghost=1, info=1, deterministic=False):
         """Build the quadrilateral mesh of a disk.
 
         Arguments:
@@ -425,11 +535,11 @@ class ExtendedParallelMesh:
 
             # Mesh creation
             mesh_p = cls()
-            mesh_p.readMedFile(filename, deterministic=deterministic, verbose=info - 1)
+            mesh_p.readMedFile(filename, deterministic=deterministic, ghost=ghost, verbose=info - 1)
             return mesh_p.refine(refine_1, info)
 
     @classmethod
-    def buildCylinder(cls, height=3, radius=1, refine=0, info=1, deterministic=False):
+    def buildCylinder(cls, height=3, radius=1, refine=0, ghost=1, info=1, deterministic=False):
         """Build the hexaedral mesh of a cylinder.
 
         Arguments:
@@ -452,11 +562,11 @@ class ExtendedParallelMesh:
 
             # Mesh creation
             mesh_p = cls()
-            mesh_p.readMedFile(filename, deterministic=deterministic, verbose=info - 1)
+            mesh_p.readMedFile(filename, deterministic=deterministic, ghost=ghost, verbose=info - 1)
             return mesh_p.refine(refine_1, info)
 
     @classmethod
-    def buildRing(cls, rint=0.1, rext=1, refine=0, info=1, deterministic=False):
+    def buildRing(cls, rint=0.1, rext=1, refine=0, ghost=1, info=1, deterministic=False):
         """Build the mesh of a ring.
 
         Arguments:
@@ -479,11 +589,11 @@ class ExtendedParallelMesh:
 
             # Mesh creation
             mesh_p = cls()
-            mesh_p.readMedFile(filename, deterministic=deterministic, verbose=info - 1)
+            mesh_p.readMedFile(filename, deterministic=deterministic, ghost=ghost, verbose=info - 1)
             return mesh_p.refine(refine_1, info)
 
     @classmethod
-    def buildTube(cls, height=3, rint=0.1, rext=1, refine=0, info=1, deterministic=False):
+    def buildTube(cls, height=3, rint=0.1, rext=1, refine=0, ghost=1, info=1, deterministic=False):
         """Build the mesh of a tube.
 
         Arguments:
@@ -509,7 +619,7 @@ class ExtendedParallelMesh:
 
             # Mesh creation
             mesh_p = cls()
-            mesh_p.readMedFile(filename, deterministic=deterministic, verbose=info - 1)
+            mesh_p.readMedFile(filename, deterministic=deterministic, ghost=ghost, verbose=info - 1)
             return mesh_p.refine(refine_1, info)
 
     def getNodes(self, group_name=[], localNumbering=True, same_rank=None):

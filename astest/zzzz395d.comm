@@ -248,7 +248,7 @@ TEST_RESU(
             NOM_CHAM="FLUX_NOEU",
             GROUP_NO="N27",
             NOM_CMP="FLUX",
-            VALE_CALC=-0.000567335584843633,
+            VALE_CALC=-0.0005672610698578238,
         ),
         _F(
             RESULTAT=thnl,
@@ -256,7 +256,7 @@ TEST_RESU(
             NOM_CHAM="FLUX_NOEU",
             GROUP_NO="N27",
             NOM_CMP="FLUX",
-            VALE_CALC=-0.003152458125276149,
+            VALE_CALC=-0.0031525136353095728,
         ),
     )
 )
@@ -269,7 +269,7 @@ TEST_RESU(
             NOM_CHAM="FLUX_NOEU",
             GROUP_NO="N7",
             NOM_CMP="FLUX",
-            VALE_CALC=0.001135682117723514,
+            VALE_CALC=0.0011355337971430427,
         ),
         _F(
             RESULTAT=thnl,
@@ -277,7 +277,7 @@ TEST_RESU(
             NOM_CHAM="FLUX_NOEU",
             GROUP_NO="N7",
             NOM_CMP="FLUX",
-            VALE_CALC=0.006319061327729906,
+            VALE_CALC=0.00631917175695814,
         ),
     )
 )
@@ -492,7 +492,7 @@ TEST_RESU(
             GROUP_NO="N7",
             NOM_CMP="FLUX",
             VALE_REFE=0.0011356797075429094,
-            VALE_CALC=0.00140565156139239,
+            VALE_CALC=0.0014056537301055305,
             REFERENCE="AUTRE_ASTER",
             PRECISION=0.40,
         ),

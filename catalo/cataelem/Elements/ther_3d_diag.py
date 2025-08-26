@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -35,6 +35,7 @@ MVECTTR = ArrayOfComponents(phys=PHY.VTEM_R, locatedComponents=DDL_THER)
 MMATTTR = ArrayOfComponents(phys=PHY.MTEM_R, locatedComponents=DDL_THER)
 
 MMATTSR = ArrayOfComponents(phys=PHY.MTNS_R, locatedComponents=DDL_THER)
+
 
 # --------------------------------------------------------------------------------------------------
 class THER_HEXA8_D(Element):
@@ -276,7 +277,7 @@ class THER_HEXA8_D(Element):
                 (SP.PTMPCHF, DDL_THER),
                 (OP.RIGI_THER_TANG.PVARCPR, LC.ZVARCPG),
             ),
-            para_out=((OP.RIGI_THER_TANG.PMATTTR, MMATTTR),),
+            para_out=((OP.RIGI_THER_TANG.PMATTTR, MMATTTR), (OP.RIGI_THER_TANG.PMATTSR, MMATTSR)),
         ),
         OP.MASS_THER_TANG(
             te=246,

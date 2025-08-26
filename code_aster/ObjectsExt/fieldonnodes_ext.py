@@ -186,7 +186,7 @@ class ExtendedFieldOnNodesReal:
                 indir.setdefault((ldx[0][0][node], cmp), []).append(row)
         return indir
 
-    def plot(self, command="gmsh", local=False, split=False):
+    def plot(self, command="gmsh", local=True, split=False):
         """Plot the field.
 
         Arguments:
@@ -196,7 +196,7 @@ class ExtendedFieldOnNodesReal:
         """
         comm = MPI.ASTER_COMM_WORLD
         mesh = self.getMesh()
-        opt = "Mesh.VolumeEdges = 0;Mesh.VolumeFaces=0;Mesh.SurfaceEdges=0;Mesh.SurfaceFaces=0;View[0].ShowElement = 1;"
+        opt = f"Mesh.VolumeEdges=0;Mesh.VolumeFaces=0;Mesh.SurfaceEdges=0;Mesh.SurfaceFaces=0;View[0].ShowElement=1;View[0].IntervalsType=3;"
         if local and mesh.isParallel():
             with SharedTmpdir("plot") as tmpdir:
                 filename = osp.join(tmpdir.path, f"field_{comm.rank}.med")
@@ -233,6 +233,7 @@ class ExtendedFieldOnNodesReal:
                             filename,
                         ]
                     )
+                comm.Barrier()
         print("waiting for all plotting processes...")
         comm.Barrier()
 

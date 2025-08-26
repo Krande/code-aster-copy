@@ -1,0 +1,120 @@
+# coding=utf-8
+# --------------------------------------------------------------------
+# Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
+# This file is part of code_aster.
+#
+# code_aster is free software: you can redistribute it and/or modify
+# it under the terms of the GNU General Public License as published by
+# the Free Software Foundation, either version 3 of the License, or
+# (at your option) any later version.
+#
+# code_aster is distributed in the hope that it will be useful,
+# but WITHOUT ANY WARRANTY; without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+# GNU General Public License for more details.
+#
+# You should have received a copy of the GNU General Public License
+# along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
+# --------------------------------------------------------------------
+from code_aster.Commands import *
+from code_aster import CA
+
+DEBUT(CODE="OUI")
+
+test = CA.TestCase()
+
+size = CA.MPI.ASTER_COMM_WORLD.Get_size()
+rank = CA.MPI.ASTER_COMM_WORLD.Get_rank()
+
+# local subdomain sizes
+mesh = CA.ParallelMesh.buildCheckerboardRectangle(nx_loc=80, ny_loc=80, ghost=2)
+
+model = AFFE_MODELE(MAILLAGE=mesh, AFFE=_F(TOUT="OUI", PHENOMENE="THERMIQUE", MODELISATION="PLAN"))
+
+# ------------------------------------------------------------------
+# Definition des constantes materiaux
+# ------------------------------------------------------------------
+# CONDUCTION EN KJ/H/M/K
+
+
+LISTE = DEFI_LIST_REEL(DEBUT=-1e6, INFO=1, INTERVALLE=_F(JUSQU_A=1e6, NOMBRE=1e6))
+coef = FORMULE(VALE="1+TEMP**2", NOM_PARA=["TEMP"])
+COND = CALC_FONC_INTERP(FONCTION=coef, LIST_PARA=LISTE, NOM_PARA="TEMP", INTERPOL="LIN")
+
+
+f = FORMULE(VALE="A*6*pi**2*(sin(pi*X)*sin(pi*Y))**3", NOM_PARA=["X", "Y"], A=1)
+
+
+# ENTHALPIE EN KJ/H/M
+
+ENTH = DEFI_CONSTANTE(VALE=0.0)
+
+MAT_NL = DEFI_MATERIAU(THER_NL=_F(LAMBDA=COND, BETA=ENTH))
+
+
+# ---------------------------------------------------------------------------------
+#   Calcul Thermique
+# ---------------------------------------------------------------------------------
+# Champ de temperature
+
+CHMAT = AFFE_MATERIAU(MAILLAGE=mesh, AFFE=_F(TOUT="OUI", MATER=MAT_NL))
+
+
+CL_THER = AFFE_CHAR_CINE(
+    MODELE=model, THER_IMPO=(_F(GROUP_MA=("TOP", "BOTTOM", "LEFT", "RIGHT"), TEMP=0.0),)
+)
+
+CH = AFFE_CHAR_THER_F(MODELE=model, SOURCE=_F(GROUP_MA="SURFACE", SOUR=f))
+
+resu_ref = THER_NON_LINE(
+    MODELE=model,
+    CHAM_MATER=CHMAT,
+    EXCIT=(_F(CHARGE=CL_THER), _F(CHARGE=CH)),
+    RECH_LINEAIRE=_F(ITER_LINE_MAXI=0),
+    INCREMENT=_F(LIST_INST=DEFI_LIST_REEL(VALE=0.0)),
+    CONVERGENCE=_F(RESI_GLOB_RELA=1e-8, ITER_GLOB_MAXI=50),
+    NEWTON=_F(REAC_ITER=1, REAC_INCR=1, PREDICTION="TANGENTE"),
+    SOLVEUR=_F(METHODE="PETSC", PRE_COND="GAMG", OPTION_PETSC="-ksp_monitor"),
+    TYPE_CALCUL="STAT",
+    ARCHIVAGE=_F(CHAM_EXCLU=("FLUX_ELGA")),
+)
+
+ref = resu_ref.getField("TEMP", 0)
+
+# -raspen_solver_type RAS
+InternalRASPENOpts = "-raspen_monitor -raspen_with_coarse_pb -raspen_coarse_side Left -raspen_coarse_type SubdomainSVD -raspen_nb_sd_singular_vec 5 "
+
+myOptions = (
+    InternalRASPENOpts
+    # local snes
+    + "-prefix_push lsnes_ "
+    + "-snes_linesearch_type basic -snes_rtol 1.e-7 -snes_atol 1.e-12 -snes_stol 1.e-8 -snes_converged_maxits -snes_monitor -snes_max_it 50 -snes_divergence_tolerance -1 "
+    + "-ksp_type preonly  -pc_type lu -pc_factor_mat_solver_type mumps "
+    + "-prefix_pop "
+    # global snes
+    + "-prefix_push gsnes_  "
+    + "-snes_linesearch_type basic -snes_rtol 1e-7 -snes_atol 1e-12 -ksp_monitor -ksp_gmres_restart 10000 -ksp_max_it 5000 -ksp_converged_maxits -ksp_rtol 1.e-6 -ksp_atol 1.e-16 -snes_max_it 50 "
+    + "-prefix_pop "
+)
+
+
+resu = THER_NON_LINE(
+    MODELE=model,
+    CHAM_MATER=CHMAT,
+    EXCIT=(_F(CHARGE=CL_THER), _F(CHARGE=CH)),
+    NEWTON=_F(REAC_ITER=1),
+    RECH_LINEAIRE=_F(ITER_LINE_MAXI=0),
+    INCREMENT=_F(LIST_INST=DEFI_LIST_REEL(VALE=0.0)),
+    METHODE="RASPEN",
+    CONVERGENCE=_F(RESI_GLOB_RELA=1e-8, ITER_GLOB_MAXI=50),
+    SOLVEUR=_F(METHODE="PETSC", OPTION_PETSC=myOptions),
+    TYPE_CALCUL="STAT",
+    ARCHIVAGE=_F(CHAM_EXCLU=("FLUX_ELGA")),
+)
+
+calc = resu.getField("TEMP", 0)
+
+
+test.assertAlmostEqual((calc - ref).norm(), 0.0)
+
+FIN()

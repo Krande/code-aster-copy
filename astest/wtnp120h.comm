@@ -113,7 +113,8 @@ FLUGAZ = 5.57e-6 / (365.0 * 24.0 * 3600.0)  # FLUGAZ=1.766E-13KG.M^2.S^-1
 # *********************************************************
 #
 RESI_GLOB_RELA = 1.0e-05
-ITER_GLOB_MAXI = 10
+RESI_GLOB_MAXI = 1.0e-9
+ITER_GLOB_MAXI = 50
 
 FLUXG = DEFI_FONCTION(
     NOM_PARA="INST",
@@ -286,15 +287,23 @@ myOptions = "-pc_type lu -ksp_monitor -pc_factor_mat_solver_type mumps -ksp_type
 myOptions = "-pc_type lu -ksp_monitor -pc_factor_mat_solver_type mumps -ksp_type fgmres -snes_linesearch_type basic  -snes_max_it 10 -snes_monitor "
 myOptions = "-pc_type lu -ksp_monitor -pc_factor_mat_solver_type mumps -ksp_type fgmres -snes_linesearch_type basic -snes_rtol 1.e-9 -snes_atol 1.e-13 -snes_max_it 5 -snes_monitor "
 myOptions = "-pc_type lu -pc_factor_mat_solver_type mumps -ksp_type preonly -snes_linesearch_type basic  -snes_rtol 1.e-4 -snes_max_it 10  "
+
+internalRASPENOpts = "-raspen_monitor -raspen_with_coarse_pb -raspen_coarse_type InterfaceSVD -raspen_nb_sd_singular_vec 2 "
+
 myOptions = (
-    "-ksp_type fgmres  -pc_type lu -ksp_monitor -pc_factor_mat_solver_type mumps "
+    internalRASPENOpts
+    # local snes
     + "-prefix_push lsnes_ "
     + " -snes_monitor -snes_linesearch_type basic -snes_rtol 1.e-8 -snes_atol 1.e-50 -snes_max_it 5  "
+    + "-ksp_type preonly  -pc_type lu -pc_factor_mat_solver_type mumps "
     + "-prefix_pop "
+    # global snes
     + "-prefix_push gsnes_  "
     + "-snes_linesearch_type basic -ksp_monitor -ksp_rtol 1.e-7 -ksp_atol 1.e-50  -snes_max_it 20  "
+    + "-ksp_type fgmres -ksp_monitor "
     + "-prefix_pop "
 )
+
 
 U1 = MECA_NON_LINE(
     MODELE=MODELE,

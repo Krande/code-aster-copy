@@ -96,7 +96,7 @@ class BaseEquationNumbering : public DataStructure {
     /**
      * @brief Get Rows Associated to all Ghost Dof
      */
-    VectorLong getGhostDOFs( const bool local = false ) const {
+    VectorLong getGhostDOFs( const bool local = false, const bool lastLayerOnly = false ) const {
         throw std::runtime_error( "No ghost DOF in sequential" );
         return VectorLong();
     };
@@ -283,7 +283,7 @@ class EquationNumbering : public BaseEquationNumbering {
     /**
      * @brief Get Rows Associated to all Ghost Dof
      */
-    VectorLong getGhostDOFs( const bool local = false ) const {
+    VectorLong getGhostDOFs( const bool local = false, const bool lastLayerOnly = false ) const {
         // throw std::runtime_error( "No ghost DOF in sequential" );
         return VectorLong();
     };

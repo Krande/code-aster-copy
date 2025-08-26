@@ -139,8 +139,10 @@ module crea_maillage_module
         integer(kind=8) :: nb_nodes = 0, nb_edges = 0, nb_faces = 0, nb_volumes = 0, nb_cells = 0
         integer(kind=8) :: nb_total_nodes = 0, nb_total_cells = 0
         integer(kind=8) :: max_nodes = 0, max_edges = 0, max_faces = 0, max_volumes = 0
-        integer(kind=8) :: max_cells = 0, dim_mesh = 0, nb_layer = 0
+        integer(kind=8) :: max_cells = 0, dim_mesh = 0, nb_layer = 0, lastLayerSize = 0
 !
+        integer(kind=4), allocatable :: lastGhostsLayer(:)
+
         type(Mnode), allocatable :: nodes(:)
         type(Medge), allocatable :: edges(:)
         type(Mface), allocatable :: faces(:)
@@ -527,6 +529,7 @@ contains
         allocate (this%faces(this%max_faces))
         allocate (this%edges(this%max_edges))
         allocate (this%nodes(this%max_nodes))
+        allocate (this%lastGhostsLayer(this%max_nodes))
 !
         call jeveuo(mesh_in//'.TYPMAIL', 'L', vi=this%v_typema)
         call jeveuo(mesh_in//'.COORDO    .VALE', 'L', vr=v_coor)
@@ -607,6 +610,7 @@ contains
         deallocate (this%faces)
         deallocate (this%volumes)
         deallocate (this%cells)
+        deallocate (this%lastGhostsLayer)
 !
     end subroutine
 !
@@ -1397,6 +1401,7 @@ contains
         integer(kind=8), pointer :: v_nulogl(:) => null()
         integer(kind=8), pointer :: v_numagl(:) => null()
         integer(kind=8), pointer :: nbCellPerProc(:) => null()
+        integer(kind=4), pointer :: v_lastlayer(:) => null()
 !
         call jemarq()
 !
@@ -1542,6 +1547,15 @@ contains
 !
         call this%create_joints(mesh_out)
 !
+!
+! --- Create .LASTGHOLAYER
+!
+        call wkvect(mesh_out//'.LASTGHOLAYER', 'G V S', max(1, this%lastLayerSize), vi4=v_lastlayer)
+        call jeecra(mesh_out//'.LASTGHOLAYER', 'LONUTI', this%lastLayerSize)
+        do i_node = 1, this%lastLayerSize
+            v_lastlayer(i_node) = this%lastGhostsLayer(i_node)-1_4
+        end do
+
         if (this%info >= 2) then
             call cpu_time(end)
             print *, "... in ", end-start, " seconds."
@@ -2187,11 +2201,12 @@ contains
 !
         class(Mmesh), intent(inout) :: this
 ! -----------------------------------------------------------------------
-        integer(kind=8) :: i_node, i_cell, nno, node_id, rank
+        integer(kind=8) :: i_node, i_cell, nno, node_id, rank, i
         integer(kind=8) :: i_layer, nb_ghost_cell, i_ghost_cell
         integer(kind=8), pointer :: ghost_cells(:) => null()
+        integer(kind=8), pointer :: old2new(:) => null()
         mpi_int :: mrank
-        aster_logical :: keep
+        aster_logical :: keep, already_exists
 !
         call asmpi_info(rank=mrank)
         rank = to_aster_int(mrank)
@@ -2267,6 +2282,7 @@ contains
                 end do
 !
 ! --- Keep only nodes of cells
+                this%lastLayerSize = 0
                 do i_ghost_cell = 1, nb_ghost_cell
                     i_cell = ghost_cells(i_ghost_cell)
                     if (i_cell > 0) then
@@ -2280,6 +2296,25 @@ contains
 !
                             do i_node = 1, nno
                                 node_id = this%cells(i_cell)%nodes(i_node)
+                                if (i_layer == this%nb_layer .and. &
+                                    .not. this%nodes(node_id)%keep) then
+                                    ! Check if the value already exists
+                                    already_exists = .false.
+                                    do i = 1, this%lastLayerSize
+                                        if (this%lastGhostsLayer(i) == &
+                                            int(this%nodes(node_id)%id, 4)) then
+                                            already_exists = .true.
+                                            cycle
+                                        end if
+                                    end do
+
+                                    ! Insert only if it doesn't exist
+                                    if (.not. already_exists) then
+                                        this%lastLayerSize = this%lastLayerSize+1
+                                        this%lastGhostsLayer(this%lastLayerSize) = &
+                                            int(this%nodes(node_id)%id, 4)
+                                    end if
+                                end if
                                 this%nodes(node_id)%keep = ASTER_TRUE
                             end do
                             ghost_cells(i_ghost_cell) = -1
@@ -2293,12 +2328,22 @@ contains
 !
 ! --- Renumbering nodes
         this%nb_nodes = 0
+        AS_ALLOCATE(vi=old2new, size=this%nb_total_nodes)
         do i_node = 1, this%nb_total_nodes
             if (this%nodes(i_node)%keep) then
                 this%nb_nodes = this%nb_nodes+1
+                old2new(this%nodes(i_node)%id) = this%nb_nodes
                 this%nodes(i_node)%id = this%nb_nodes
             end if
         end do
+!
+! --- Renumbering last layer
+        if (this%isHPC) then
+            do i_node = 1, this%lastLayerSize
+                this%lastGhostsLayer(i_node) = int(old2new(this%lastGhostsLayer(i_node)), 4)
+            end do
+        end if
+        AS_DEALLOCATE(vi=old2new)
 !
 ! --- Renumbering cells
         this%nb_cells = 0
@@ -2801,9 +2846,11 @@ contains
         type(Mface), allocatable :: faces(:)
         type(Mvolume), allocatable :: volumes(:)
         type(Mcell), allocatable :: cells(:)
+        integer(kind=4), allocatable :: lastGhostsLayer(:)
 !
         if (object == "NODES") then
             old_size = size(this%nodes)
+            ! nodes
             allocate (nodes(old_size))
             nodes(1:old_size) = this%nodes(1:old_size)
             deallocate (this%nodes)
@@ -2811,6 +2858,13 @@ contains
             this%nodes(1:old_size) = nodes(1:old_size)
             deallocate (nodes)
             this%max_nodes = new_size
+            ! ghosts
+            allocate (lastGhostsLayer(old_size))
+            lastGhostsLayer(1:old_size) = this%lastGhostsLayer(1:old_size)
+            deallocate (this%lastGhostsLayer)
+            allocate (this%lastGhostsLayer(new_size))
+            this%lastGhostsLayer(1:old_size) = lastGhostsLayer(1:old_size)
+            deallocate (lastGhostsLayer)
         elseif (object == "EDGES") then
             old_size = size(this%edges)
             allocate (edges(old_size))
