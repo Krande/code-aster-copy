@@ -15,6 +15,7 @@ variables:
   PIXI_HOME: ${CI_PROJECT_DIR}/.pixi
   # WEEKLY_RUN should be set in scheduled pipeline
   WEEKLY_RUN: "unset"
+  TZ: "Europe/Paris"
 
 default:
   tags:
