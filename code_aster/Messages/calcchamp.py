@@ -93,12 +93,14 @@ Contactez le support technique.
     ),
     90: _(
         """
-Problème lors de l'appel de l'option %(k1)s. On a besoin du matériau et on ne le trouve pas dans le résultat.
+Lors de l'appel de l'option %(k1)s, on a potentiellement besoin du matériau et on ne le trouve pas dans le résultat.
+Si ce message est suivi par un message d'erreur du type "paramètre non trouvé", il faudra donner le matériau.
 """
     ),
     91: _(
         """
-Problème lors de l'appel de l'option %(k1)s. On a besoin des caractéristiques élémentaires et on ne les trouve pas dans le résultat.
+Lors de l'appel de l'option %(k1)s, on a potentiellement besoin des caractéristiques élémentaires et on ne les trouve pas dans le résultat.
+Si ce message est suivi par un message d'erreur du type "paramètre non trouvé", il faudra donner les caractéristiques élémentaires.
 """
     ),
 }
