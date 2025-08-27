@@ -129,6 +129,7 @@ subroutine tuforc(option, nbNode, nbDof, nbFourier)
                           sigmRefe_=sigmRefe)
 
 ! ----- Compute mean value
+        forcNodaMean = 0.d0
         nval = PIPE_TENS_SIZE*npg*(2*nbLayer+1)*(2*nbSect+1)
         b_n = to_blas_int(nbDof)
         b_incx = to_blas_int(1)
