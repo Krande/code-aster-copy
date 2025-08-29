@@ -165,13 +165,6 @@ EEFGENOR = LocatedComponents(
     phys=PHY.SIEF_R, type="ELNO", components=("NXX", "NYY", "NXY", "MXX", "MYY", "MXY", "QX", "QY")
 )
 
-EGAMIMA = LocatedComponents(
-    phys=PHY.SPMX_R,
-    type="ELGA",
-    location="RIGI",
-    components=("VAL", "NUCOU", "NUSECT", "NUFIBR", "POSIC", "POSIS"),
-)
-
 ZVARIPG = LocatedComponents(phys=PHY.VARI_R, type="ELGA", location="RIGI", components=("VARI",))
 
 MVECTAR = ArrayOfComponents(phys=PHY.VDEP_R, locatedComponents=NACCELR)
@@ -698,7 +691,7 @@ class MEDKQU4(Element):
             ),
             para_out=((SP.PMATUUR, MMATUUR),),
         ),
-        OP.MINMAX_SP(te=99, para_out=((SP.PGAMIMA, EGAMIMA), (SP.PNOMIMA, LC.ENOMIMA))),
+        OP.MINMAX_SP(te=99, para_out=((SP.PGAMIMA, LC.EGMINMAX), (SP.PNOMIMA, LC.NMINMAX))),
         OP.MODI_REPERE(
             te=63,
             para_in=((OP.MODI_REPERE.PMATPASS, ECHGREP), (SP.PSIEFR, LC.EGIG3DR)),
@@ -1017,12 +1010,14 @@ class MEDKQU4(Element):
             te=4, para_in=((SP.PVARIGR, ZVARIPG),), para_out=((OP.VARI_ELNO.PVARINR, LC.ZVARINO),)
         ),
         OP.VERI_CARA_ELEM(
-            te=119, para_in=((SP.PCACOQU, CCACOQU),), para_out=((SP.PBIDON, LC.ECOURAN),)
+            te=119,
+            para_in=((SP.PCACOQU, CCACOQU),),
+            para_out=((SP.PCODRET, LC.ECODRET), (SP.PINDICR, LC.CINDICR)),
         ),
         OP.VERI_PLAN(
             te=51,
             para_in=((SP.PGEOMER, LC.EGEOM3D), (SP.PCHCKPR, LC.CCHCKPR)),
-            para_out=((OP.VERI_PLAN.PCODRET, LC.ECODRET), (OP.VERI_PLAN.PINDICR, LC.CINDICR)),
+            para_out=((SP.PCODRET, LC.ECODRET), (SP.PINDICR, LC.CINDICR)),
         ),
     )
 

@@ -15,18 +15,16 @@
 ! You should have received a copy of the GNU General Public License
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
-
-!
 !
 interface
-    subroutine ccvrrl(nommai, modele, carael, mesmai, chames,&
-                      cmperr, codret)
-        character(len=8) :: nommai
-        character(len=8) :: modele
-        character(len=8) :: carael
-        character(len=24) :: mesmai
-        character(len=19) :: chames
-        character(len=1) :: cmperr
-        integer(kind=8) :: codret
+    subroutine ccvrrl(mesh, model, caraElem, &
+                      lRestCell, nbRestCell, restCellJv, &
+                      fieldElnoS, codret)
+        character(len=8), intent(in) :: mesh, model, caraElem
+        aster_logical, intent(in) :: lRestCell
+        integer(kind=8), intent(in) :: nbRestCell
+        character(len=24), intent(in) :: restCellJv
+        character(len=19), intent(in) :: fieldElnoS
+        integer(kind=8), intent(out) :: codret
     end subroutine ccvrrl
 end interface

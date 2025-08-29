@@ -15,7 +15,6 @@
 ! You should have received a copy of the GNU General Public License
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
-! person_in_charge: mickael.abbas at edf.fr
 !
 subroutine nmcrch(numeDof, listFuncActi, sddyna, nlDynaDamping, &
                   hval_incr, hval_algo, hval_veasse)
@@ -59,7 +58,7 @@ subroutine nmcrch(numeDof, listFuncActi, sddyna, nlDynaDamping, &
 ! --------------------------------------------------------------------------------------------------
 !
     aster_logical :: ldyna, lDampModal, lmpas, lrefe, lSuperElement, lmuap, lviss
-    aster_logical :: lsstf, limpe
+    aster_logical :: lsstf
     aster_logical :: ldidi, lpilo, lener
     character(len=19) :: depplu, vitplu, accplu
     character(len=19) :: depmoi, vitmoi, accmoi
@@ -78,7 +77,6 @@ subroutine nmcrch(numeDof, listFuncActi, sddyna, nlDynaDamping, &
     character(len=19) :: cndido, cncine, cndiri
     character(len=19) :: cnondp, cnviss, cnhyst, cnfint
     character(len=19) :: cnsstf, cnsstr
-    character(len=19) :: cnimpe
     character(len=19) :: cnfepi, cndipi, cnrefe, cneltc, cneltf
 !
 ! --------------------------------------------------------------------------------------------------
@@ -94,7 +92,6 @@ subroutine nmcrch(numeDof, listFuncActi, sddyna, nlDynaDamping, &
     lpilo = isfonc(listFuncActi, 'PILOTAGE')
     lsstf = isfonc(listFuncActi, 'SOUS_STRUC')
     lrefe = isfonc(listFuncActi, 'RESI_REFE')
-    limpe = ndynlo(sddyna, 'IMPE_ABSO')
     lviss = ndynlo(sddyna, 'VECT_ISS')
     lener = isfonc(listFuncActi, 'ENERGIE')
     lmuap = ndynlo(sddyna, 'MULTI_APPUI')
@@ -228,16 +225,8 @@ subroutine nmcrch(numeDof, listFuncActi, sddyna, nlDynaDamping, &
         call nmchex(hval_veasse, 'VEASSE', 'CNVISS', cnviss)
         call vtcreb(cnviss, 'V', 'R', nume_ddlz=numeDof)
     end if
-!
-! --- FORCES D'IMPEDANCES
-!
-    if (limpe) then
-        call nmchex(hval_veasse, 'VEASSE', 'CNIMPE', cnimpe)
-        call vtcreb(cnimpe, 'V', 'R', nume_ddlz=numeDof)
-    end if
-!
+
 ! --- SECOND MEMBRE
-!
     call nmchex(hval_veasse, 'VEASSE', 'CNFEDO', cnfedo)
     call vtcreb(cnfedo, 'V', 'R', nume_ddlz=numeDof)
     call nmchex(hval_veasse, 'VEASSE', 'CNFSDO', cnfsdo)

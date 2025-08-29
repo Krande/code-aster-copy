@@ -95,7 +95,7 @@ def check_mumps(self):
 def check_mumps_libs(self):
     opts = self.options
     check_mumps = partial(
-        self.check_fc, uselib_store="MUMPS", use="MUMPS MPI MATH OPENMP", mandatory=True
+        self.check_fc, uselib_store="MUMPS", use="MUMPS SCOTCH MPI MATH OPENMP", mandatory=True
     )
     if opts.embed_all or opts.embed_mumps:
         check = lambda lib: check_mumps(stlib=lib)

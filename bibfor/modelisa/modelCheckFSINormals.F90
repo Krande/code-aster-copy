@@ -54,7 +54,7 @@ subroutine modelCheckFSINormals(model)
     aster_logical :: lCellSurf, lCellLine
     integer(kind=8), pointer :: cellFSINbNode(:) => null()
     integer(kind=8), pointer :: cellFSINodeIndx(:) => null()
-    integer(kind=8), pointer :: cellFSISupport(:) => null()
+    integer(kind=8), pointer :: cellFSISupp(:) => null()
     aster_logical :: lMisoriented
 !
 ! --------------------------------------------------------------------------------------------------
@@ -97,24 +97,25 @@ subroutine modelCheckFSINormals(model)
         end if
 
 ! ----- Get "volumic" cells support of skin cells
-        AS_ALLOCATE(vi=cellFSISupport, size=nbCellFSI)
+        AS_ALLOCATE(vi=cellFSISupp, size=nbCellFSI)
         call getSkinCellSupport(mesh, &
                                 nbCellFSI, cellFSI, &
                                 lCellSurf, lCellLine, &
-                                cellFSISupport, &
+                                cellFSISupp, &
                                 nbCellFluid, cellFluid)
+
 ! ----- Check normals
         call checkNormalOnSkinCell(mesh, modelDime, &
                                    nbCellFSI, cellFSI, &
                                    cellFSINbNode, cellFSINodeIndx, &
-                                   cellFSISupport, lMisoriented)
+                                   cellFSISupp, lMisoriented)
         if (lMisoriented) then
             call utmess('F', 'FLUID1_4')
         end if
 !
         AS_DEALLOCATE(vi=cellFSINbNode)
         AS_DEALLOCATE(vi=cellFSINodeIndx)
-        AS_DEALLOCATE(vi=cellFSISupport)
+        AS_DEALLOCATE(vi=cellFSISupp)
     end if
 
 !

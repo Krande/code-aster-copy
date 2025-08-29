@@ -53,8 +53,7 @@ Pour obtenir le détail des mailles affectées, utilisez INFO=2.
     ),
     5: _(
         """
-Le quadrangle de nom %(k1)s est dégénéré : les cotés 1-2 et 1-3 sont colinéaires.
-Reprenez votre maillage.
+La maille quadrangulaire %(i1)d est dégénérée: les cotés 1-2 et 1-3 sont colinéaires. On ne peut pas évaluer la normale.
 """
     ),
     7: _(

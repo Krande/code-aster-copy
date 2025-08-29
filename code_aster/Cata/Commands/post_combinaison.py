@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -22,14 +22,13 @@ from ..Language.DataStructure import *
 from ..Language.Syntax import *
 
 
-def post_combinaison_prod(self, TABLE_COEF_FIN=None, **args):
+def post_combinaison_prod(self, TYPE_COMB, TABLE_COEF_RESU=None, **args):
     """Define the type of the result."""
-    if TABLE_COEF_FIN != None:
-        self.type_sdprod(TABLE_COEF_FIN, table_sdaster)
-    combination_type = args.get("TYPE_COMB")
-    if combination_type == "RESULTAT":
+    if TABLE_COEF_RESU:
+        self.type_sdprod(TABLE_COEF_RESU, table_sdaster)
+    if TYPE_COMB == "RESULTAT":
         return mult_elas
-    elif combination_type == "TABLE":
+    elif TYPE_COMB == "TABLE":
         return table_sdaster
 
 
@@ -39,7 +38,7 @@ POST_COMBINAISON = MACRO(
     sd_prod=post_combinaison_prod,
     fr=tr("Combinaison de grandeurs physiques issues de différents calculs mécaniques"),
     TABLE_COEF=SIMP(statut="o", typ=table_sdaster),
-    TABLE_COEF_RESU=SIMP(statut="f", typ=CO, defaut=None),
+    TABLE_COEF_RESU=SIMP(statut="f", typ=CO),
     TYPE_COMB=SIMP(statut="o", typ="TXM", into=("TABLE", "RESULTAT")),
     b_resultats=BLOC(
         condition="equal_to('TYPE_COMB', 'RESULTAT')",

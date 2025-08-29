@@ -23,7 +23,7 @@ from functools import partial
 from subprocess import Popen, PIPE
 from waflib import Configure, Errors, Logs, Utils
 
-BLAS = ("openblas", "blas")
+BLAS = ("flexiblas", "openblas", "blas")
 BLACS = ("blacs",)
 LAPACK = ("lapack",)
 SCALAPACK = ("scalapack",)
@@ -31,14 +31,15 @@ OPTIONAL_DEPS = ("cblas",)
 
 
 def options(self):
-    group = self.add_option_group("Mathematics  libraries options")
+    group = self.add_option_group("Mathematics libraries options")
     group.add_option(
         "--maths-libs",
         type=str,
         dest="maths_libs",
         default=None,
-        help="Math librairies to link with like blas and lapack. "
-        'Use None or "auto" to search them automatically.',
+        help="List of libraries that provide blas and lapack symbols. "
+        'Otherwise, one may use special values: "auto" to search them automatically, '
+        '"mkl", "flexiblas" or "openblas" to force a type of libraries.',
     )
     group.add_option(
         "--embed-maths",
@@ -56,12 +57,20 @@ def configure(self):
 
     self.check_cc(uselib_store="Z", lib="z")
     self.check_number_cores()
-    if self.options.maths_libs in (None, "auto"):
+    if self.options.maths_libs == "mkl":
+        if not self.detect_mkl():
+            raise Errors.ConfigurationError(
+                "can not find MKL libraries, try '--maths-libs=auto' instead."
+            )
+    elif self.options.maths_libs in BLAS:
+        self.detect_math_lib([self.options.maths_libs])
+    elif self.options.maths_libs in (None, "auto"):
         # try MKL first, then automatic blas/lapack
         if not self.detect_mkl():
             self.detect_math_lib()
     elif self.options.maths_libs:
         self.check_opts_math_lib()
+        self.check_math_libs_call_blas_lapack("RED")
     self.check_libm_after_files()
 
 
@@ -70,14 +79,16 @@ def configure(self):
 def check_opts_math_lib(self):
     opts = self.options
     embed = opts.embed_math or opts.embed_all
-    check_lib = lambda lib: self.check_cc(
-        **{
-            "mandatory": True,
-            "uselib_store": "MATH",
-            "use": "MATH MPI",
-            ("st" * embed + "lib"): lib,
-        }
-    )
+
+    def check_lib(lib):
+        return self.check_cc(
+            **{
+                "mandatory": True,
+                "uselib_store": "MATH",
+                "use": "MATH MPI",
+                ("st" * embed + "lib"): lib,
+            }
+        )
 
     for lib in Utils.to_list(opts.maths_libs):
         check_lib(lib)
@@ -117,10 +128,8 @@ def check_libm_after_files(self):
 def detect_mkl(self):
     """Try to detect MKL"""
     opts = self.options
-    # MKL can be installed either as a standalone package
-    # or with Intel compiler. In both cases MKLROOT is/must be defined
-    if os.environ.get("MKLROOT") is None:
-        return False
+    # MKL can be installed either as a standalone package or with Intel
+    # compiler. MKLROOT may be undefined (conda package for example)
     self.start_msg("Detecting MKL libraries")
     if self.get_define("ASTER_BLAS_INT_SIZE") == 8:
         suffix = "_ilp64" if "64" in self.env.DEST_CPU else ""
@@ -162,6 +171,7 @@ def detect_mkl(self):
         libs.append(scalapack)
     if blacs:
         libs.append(blacs)
+    self.end_msg("trying " + str(libs))
     try:
         self.env.stash()
         self.env.append_value("LIB_MATH", libs)
@@ -172,17 +182,15 @@ def detect_mkl(self):
         self.check_math_libs_call(color="YELLOW")
     except:
         self.env.revert()
-        self.end_msg("no", color="YELLOW")
         return False
     else:
         self.define("ASTER_HAVE_MKL", 1)
         self.env.commit()
-        self.end_msg(self.env.LIBPATH_MATH + self.env.LIB_MATH)
         return True
 
 
 @Configure.conf
-def detect_math_lib(self):
+def detect_math_lib(self, libs=BLAS):
     opts = self.options
     embed = opts.embed_math or (opts.embed_all and not self.get_define("ASTER_HAVE_MPI"))
     varlib = ("ST" if embed else "") + "LIB_MATH"
@@ -192,11 +200,11 @@ def detect_math_lib(self):
         blaslibs, lapacklibs = self.get_mathlib_from_numpy_win()
     else:
         blaslibs, lapacklibs = self.get_mathlib_from_numpy()
-    self.check_math_libs(list(BLAS) + blaslibs, embed)
+    self.check_math_libs(list(libs) + blaslibs, embed)
     # lapack
     opt_lapack = False
-    if "openblas" in self.env.get_flat(varlib):
-        # check that lapack is embedded in openblas
+    if "openblas" in self.env.get_flat(varlib) or "flexiblas" in self.env.get_flat(varlib):
+        # check that lapack is embedded in openblas/flexiblas
         try:
             self.check_math_libs_call_blas_lapack(color="YELLOW")
             opt_lapack = True
@@ -270,9 +278,15 @@ def check_math_libs(self, libs, embed, optional=False):
     """Check for the first library available from 'libs'."""
     check_maths = partial(self.check_cc, uselib_store="MATH", use="MATH MPI", mandatory=False)
     if embed:
-        check_lib = lambda lib: check_maths(stlib=lib)
+
+        def check_lib(lib):
+            return check_maths(stlib=lib)
+
     else:
-        check_lib = lambda lib: check_maths(lib=lib)
+
+        def check_lib(lib):
+            return check_maths(lib=lib)
+
     found = None
     for lib in libs:
         self.start_msg("Checking for library %s" % lib)
@@ -280,10 +294,10 @@ def check_math_libs(self, libs, embed, optional=False):
             self.end_msg("yes")
             found = lib
             break
+        self.end_msg("no", color="YELLOW")
     else:
         if not optional:
             self.fatal("None of these libraries were found: %s" % libs)
-        self.end_msg("not found", "YELLOW")
     return found
 
 
@@ -316,8 +330,7 @@ def check_number_cores(self):
             raise Errors.ConfigurationError
     except Errors.ConfigurationError:
         nproc = 1
-    else:
-        self.end_msg(nproc)
+    self.end_msg(nproc)
     self.env["NPROC"] = nproc
 
 
@@ -441,7 +454,7 @@ def check_math_libs_call_blacs(self, color="RED"):
     if self.get_define("ASTER_HAVE_MPI"):
         self.start_msg("Checking for a program using blacs")
         try:
-            ret = self.check_fc(fragment=blacs_fragment, use="MPI OPENMP MATH", mandatory=True)
+            self.check_fc(fragment=blacs_fragment, use="MPI OPENMP MATH", mandatory=True)
         except Exception as exc:
             # the message must be closed
             self.end_msg("no", color=color)

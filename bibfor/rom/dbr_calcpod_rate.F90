@@ -49,7 +49,10 @@ subroutine dbr_calcpod_rate(s, nb_sing, rate)
 !
 
     i = 1
-    do while (i <= nb_sing .and. s(i) > r8prem())
+    do while (i <= nb_sing)
+        if (s(i) <= r8prem()) then
+            exit
+        end if
         N(i) = log(real(i))
         Y(i) = log(s(i))
         i = i+1

@@ -24,16 +24,21 @@
 !
 module postComp_module
 ! ==================================================================================================
-    use postComp_type
-    use listLoad_type
+    use FED_module
     use listLoad_module
+    use listLoad_type
+    use mesh_module
+    use postComp_type
 ! ==================================================================================================
     implicit none
 ! ==================================================================================================
     public :: setResuPara, initPara, getPara, getInputFields, getNumbering
     public :: compForcNoda, compFextNoda, compMGamma
+    public :: getListLoadsUser
+    public :: getLigrel, checkOption, initCompRest, deleteCompRest
+    public :: getCellSiroElem
     private :: getScalType, getCompLigrel, getMassMatrix, getListLoads
-    private :: getListLoadsUser, getListLoadsResu, setListLoads
+    private :: getListLoadsResu, setListLoads
     private :: initParaNoda
 ! ==================================================================================================
     private
@@ -52,7 +57,9 @@ module postComp_module
 #include "asterfort/dismoi.h"
 #include "asterfort/dylach.h"
 #include "asterfort/exlima.h"
+#include "asterfort/getelem.h"
 #include "asterfort/gettco.h"
+#include "asterfort/gnomsd.h"
 #include "asterfort/ischar.h"
 #include "asterfort/jedetr.h"
 #include "asterfort/jeexin.h"
@@ -68,6 +75,7 @@ module postComp_module
 #include "asterfort/nmdoch.h"
 #include "asterfort/ntdoch.h"
 #include "asterfort/numecn.h"
+#include "asterfort/oriem1.h"
 #include "asterfort/pteddl.h"
 #include "asterfort/rcmfmc.h"
 #include "asterfort/rs_get_caraelem.h"
@@ -75,6 +83,7 @@ module postComp_module
 #include "asterfort/rs_get_model.h"
 #include "asterfort/rsadpa.h"
 #include "asterfort/rsexch.h"
+#include "asterfort/utmamo.h"
 #include "asterfort/utmess.h"
 #include "asterfort/vecgme.h"
 #include "asterfort/vechme.h"
@@ -1399,6 +1408,312 @@ contains
         postCompPara%hasPiloLoads = hasPiloLoads
         postCompPara%lLoadsFromUser = fromUser
         postCompPara%lLoadsHarmo = lLoadsHarmo
+!
+!   ------------------------------------------------------------------------------------------------
+    end subroutine
+! --------------------------------------------------------------------------------------------------
+!
+! getLigrel
+!
+! Get ligrel to compute field
+!
+! In  option            : option to compute
+! In  model             : model
+! In  result            : result datastructure
+! In  nbStore           : number of storing indexes
+! In  jvBase            : jeveux base to create ligrel
+! IO  postCompRest      : object for management of restriction
+! Out ligrel            : finite elements descriptor
+!
+! --------------------------------------------------------------------------------------------------
+    subroutine getLigrel(option, model, result, jvBaseZ, postCompRest, &
+                         ligrel)
+!   ------------------------------------------------------------------------------------------------
+! ----- Parameters
+        character(len=16), intent(in) :: option
+        character(len=8), intent(in) :: model, result
+        character(len=*), intent(in) :: jvBaseZ
+        type(POST_COMP_REST), intent(inout) :: postCompRest
+        character(len=24), intent(out) :: ligrel
+! ----- Locals
+        character(len=16), parameter :: factorKeyword = " "
+        integer(kind=8), parameter :: iOccZero = 0
+        integer(kind=8) :: nbLigr, iLigr
+        character(len=8) :: jvBaseLigrel, jvBase
+        character(len=24) :: noojb, modelLigrel
+        character(len=8) :: mesh
+        character(len=24), parameter :: listCellJv = "&&MEDOM2.LISTE_MAILLES"
+        integer(kind=8) :: nbCell
+        integer(kind=8), pointer :: listCell(:) => null()
+        integer(kind=8) :: nbCellSiro
+        integer(kind=8), pointer :: listCellSiro(:) => null()
+        aster_logical :: partialMesh, createFED, modelExist
+!   ------------------------------------------------------------------------------------------------
+!
+        nbLigr = postCompRest%nbLigr
+        createFED = ASTER_FALSE
+        jvBase = jvBaseZ
+
+! ----- Model already used ?
+        modelExist = ASTER_FALSE
+        jvBaseLigrel = ' '
+        do iLigr = 1, nbLigr
+            if (model .eq. postCompRest%listModel(iLigr)) then
+                modelExist = ASTER_TRUE
+                jvBaseLigrel = postCompRest%listJvBase(iLigr)
+            end if
+        end do
+
+! ----- Get ligrel
+        if (modelExist .and. (jvBaseLigrel .eq. jvBase)) then
+            ASSERT(nbLigr .gt. 0)
+! --------- Already used => get ligrel
+            ligrel = postCompRest%listFED(nbLigr)
+        else
+! --------- We need a model
+            if (model .eq. " ") then
+                call utmess('F', 'CALCCHAMP1_10')
+            end if
+            call dismoi('NOM_MAILLA', model, 'MODELE', repk=mesh)
+            call dismoi('NOM_LIGREL', model, 'MODELE', repk=modelLigrel)
+
+! --------- Original definition
+            partialMesh = hasCellsDefinedFromCmd(factorKeyword, iOccZero)
+            createFED = ASTER_FALSE
+
+! --------- Generate name of ligrel
+            if (partialMesh .or. option .eq. "SIRO_ELEM") then
+                noojb = '12345678.LIGR000000.LIEL'
+                call gnomsd(result, noojb, 14, 19)
+                ligrel = noojb(1:19)
+            else
+                ligrel = modelLigrel
+            end if
+
+! --------- Get list of cells
+            if (partialMesh) then
+! ------------- Get list of cells from user
+                call getelem(mesh, factorKeyword, iOccZero, 'F', listCellJv, nbCell, model=model)
+                ASSERT(nbCell .ge. 1)
+                call jeveuo(listCellJv, 'L', vi=listCell)
+                createFED = ASTER_TRUE
+            else
+                createFED = ASTER_FALSE
+            end if
+
+! --------- Create FED (ligrel) or get it from model
+            if (option .eq. "SIRO_ELEM") then
+                if (.not. partialMesh) then
+                    call utmamo(model, nbCell, listCellJv)
+                    ASSERT(nbCell .ge. 1)
+                    call jeveuo(listCellJv, 'L', vi=listCell)
+                end if
+                call getCellSiroElem(model, nbCell, listCell, &
+                                     nbCellSiro, listCellSiro)
+                call createFEDFromList(model, jvBase, ligrel, &
+                                       nbCellSiro, listCellSiro)
+                AS_DEALLOCATE(vi=listCellSiro)
+                createFED = ASTER_TRUE
+            else
+                if (createFED) then
+                    call createFEDFromList(model, jvBase, ligrel, &
+                                           nbCell, listCell)
+                end if
+            end if
+            call jedetr(listCellJv)
+
+! --------- Add new ligrel in list
+            if (createFED) then
+                nbLigr = nbLigr+1
+                postCompRest%nbLigr = nbLigr
+                ASSERT(nbLigr .le. postCompRest%nbLigrMaxi)
+                postCompRest%listFED(nbLigr) = ligrel
+                postCompRest%listModel(nbLigr) = model
+                postCompRest%listJvBase(nbLigr) = jvBase(1:1)
+            end if
+        end if
+!
+!   ------------------------------------------------------------------------------------------------
+    end subroutine
+! --------------------------------------------------------------------------------------------------
+!
+! checkOption
+!
+! Check option (error, alarm, etc.)
+!
+! In  option            : option to compute
+! In  ligrel            : finite element descriptor (ligrel)
+! In  resultType        : type of results datastructure
+!
+! --------------------------------------------------------------------------------------------------
+    subroutine checkOption(optionZ, ligrelZ, resultType)
+!   ------------------------------------------------------------------------------------------------
+! ----- Parameters
+        character(len=*), intent(in) :: optionZ, ligrelZ
+        character(len=16), intent(in) :: resultType
+! ----- Locals
+        aster_logical :: lPipe, lShell
+        character(len=8) :: answer
+!   ------------------------------------------------------------------------------------------------
+!
+        if (optionZ(1:4) .eq. "EPSP") then
+            call dismoi('EXI_TUYAU', ligrelZ, 'LIGREL', repk=answer)
+            lPipe = answer .eq. "OUI"
+            call dismoi('EXI_COQUE', ligrelZ, 'LIGREL', repk=answer)
+            lShell = answer .eq. "OUI"
+            call utmess('I', 'ELEMENTS3_13')
+        end if
+        if (optionZ .eq. 'SIEQ_ELGA') then
+            if (resultType .eq. 'FOURIER_ELAS') then
+                call utmess('F', 'CALCULEL6_83', sk=optionZ(1:16))
+            end if
+        end if
+!
+!   ------------------------------------------------------------------------------------------------
+    end subroutine
+! --------------------------------------------------------------------------------------------------
+!
+! getCellSiroElem
+!
+! Get cells only for SIRO_ELEM option
+!
+! In  model             : model
+! In  nbCell            : number of cells
+! Ptr listCell          : list of cells
+! Out nbCellSiro        : number of cells for SIRO_ELEM (skin + 3D support)
+! Ptr listCellSiro      : list of cells for SIRO_ELEM (skin + 3D support)
+!
+! --------------------------------------------------------------------------------------------------
+    subroutine getCellSiroElem(modelZ, nbCell, listCell, &
+                               nbCellSiro, listCellSiro)
+!   ------------------------------------------------------------------------------------------------
+! ----- Parameters
+        character(len=*), intent(in) :: modelZ
+        integer(kind=8), intent(in) :: nbCell
+        integer(kind=8), pointer :: listCell(:)
+        integer(kind=8), intent(out) :: nbCellSiro
+        integer(kind=8), pointer :: listCellSiro(:)
+! ----- Locals
+        character(len=16), parameter :: option = "SIGM_ELNO"
+        character(len=8), parameter :: paramIn = "PSIEFNOR"
+        character(len=8) :: model, mesh
+        integer(kind=8) :: cellDime, cellSkinDime
+        integer(kind=8) :: iCellSkin, nbCellSkin
+        character(len=24) :: modelLigrel
+        integer(kind=8), pointer :: listCellSigm(:) => null()
+        integer(kind=8), pointer :: listCellSkin(:) => null()
+        integer(kind=8) :: nbCellSigm
+        integer(kind=8), pointer :: listCellSupp(:) => null()
+        integer(kind=8) :: nbCellSupp, cellNumeSupp, cellNumeSkin
+        aster_logical :: lCell1d, lCell2d
+!   ------------------------------------------------------------------------------------------------
+!
+        model = modelZ
+
+! ----- Access to model FED
+        call dismoi('NOM_LIGREL', model, 'MODELE', repk=modelLigrel)
+
+! ----- Access to mesh
+        call dismoi('NOM_MAILLA', model, 'MODELE', repk=mesh)
+
+! ----- Prepare dimensions
+        call dismoi('DIM_GEOM', mesh, 'MAILLAGE', repi=cellDime)
+        cellSkinDime = cellDime-1
+        lCell1d = ASTER_FALSE
+        lCell2d = ASTER_FALSE
+        if (cellSkinDime .eq. 1) then
+            lCell1d = ASTER_TRUE
+        else if (cellSkinDime .eq. 2) then
+            lCell2d = ASTER_TRUE
+        else
+            ASSERT(ASTER_FALSE)
+        end if
+
+! ----- Get only skin cells
+        call getSkinCell(mesh, cellSkinDime, &
+                         nbCell, listCell, &
+                         nbCellSkin, listCellSkin)
+        if (nbCellSkin .eq. 0) then
+            call utmess('F', 'CALCULEL5_54')
+        end if
+
+! ----- Create list of cells with SIGM_ELNO option
+        call getAllCellsWithOption(modelLigrel, option, paramIn, &
+                                   nbCellSigm, listCellSigm)
+
+! ----- Get 3D support cells
+        nbCellSupp = nbCellSkin
+        AS_ALLOCATE(vi=listCellSupp, size=nbCellSupp)
+        call getSkinCellSupport(mesh, nbCellSkin, listCellSkin, lCell2d, lCell1d, &
+                                listCellSupp, &
+                                nbCellSigm, listCellSigm)
+
+! ----- Create final list of cells (skin + 3D support)
+        nbCellSiro = 2*nbCellSkin
+        AS_ALLOCATE(vi=listCellSiro, size=nbCellSiro)
+        do iCellSkin = 1, nbCellSkin
+            cellNumeSkin = listCellSkin(iCellSkin)
+            cellNumeSupp = listCellSupp(iCellSkin)
+            if (cellNumeSupp .gt. 0) then
+                if (cellDime .eq. 3) then
+                    call oriem1(mesh, '3D', cellNumeSkin, cellNumeSupp)
+                end if
+                listCellSiro(iCellSkin) = cellNumeSkin
+                listCellSiro(nbCellSkin+iCellSkin) = cellNumeSupp
+                ! listCellSupp(iCellSkin) = cellNumeSupp
+            end if
+        end do
+
+! ----- Cleaning
+        AS_DEALLOCATE(vi=listCellSkin)
+        AS_DEALLOCATE(vi=listCellSigm)
+        AS_DEALLOCATE(vi=listCellSupp)
+!
+!   ------------------------------------------------------------------------------------------------
+    end subroutine
+! --------------------------------------------------------------------------------------------------
+!
+! initCompRest
+!
+! Initialisation of datastructure for managment of restriction of computation (partial mesh)
+!
+! In  nbStore           : number of storing indexes
+! IO  postCompRest      : object for management of restriction
+!
+! --------------------------------------------------------------------------------------------------
+    subroutine initCompRest(nbStore, postCompRest)
+!   ------------------------------------------------------------------------------------------------
+! ----- Parameters
+        integer(kind=8), intent(in) :: nbStore
+        type(POST_COMP_REST), intent(inout) :: postCompRest
+!   ------------------------------------------------------------------------------------------------
+!
+        postCompRest%nbLigr = 0
+        postCompRest%nbLigrMaxi = 2*nbStore
+        AS_ALLOCATE(vk24=postCompRest%listFED, size=2*nbStore)
+        AS_ALLOCATE(vk8=postCompRest%listModel, size=2*nbStore)
+        AS_ALLOCATE(vk8=postCompRest%listJvBase, size=2*nbStore)
+!
+!   ------------------------------------------------------------------------------------------------
+    end subroutine
+! --------------------------------------------------------------------------------------------------
+!
+! deleteCompRest
+!
+! Delete of datastructure for managment of restriction of computation (partial mesh)
+!
+! IO  postCompRest      : object for management of restriction
+!
+! --------------------------------------------------------------------------------------------------
+    subroutine deleteCompRest(postCompRest)
+!   ------------------------------------------------------------------------------------------------
+! ----- Parameters
+        type(POST_COMP_REST), intent(inout) :: postCompRest
+!   ------------------------------------------------------------------------------------------------
+!
+        AS_DEALLOCATE(vk24=postCompRest%listFED)
+        AS_DEALLOCATE(vk8=postCompRest%listModel)
+        AS_DEALLOCATE(vk8=postCompRest%listJvBase)
 !
 !   ------------------------------------------------------------------------------------------------
     end subroutine

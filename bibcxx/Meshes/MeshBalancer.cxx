@@ -239,6 +239,12 @@ ParallelMeshPtr MeshBalancer::applyBalancingStrategy( const VectorInt &newLocalN
     auto globNodeNumVect2 = globNodeNumVect;
     std::for_each( globNodeNumVect2.begin(), globNodeNumVect2.end(), &decrement< long int > );
 
+    convertLastGhostLayerToLocal( globNodeNumVect2 );
+    for ( auto &id : _lastLayerGhostNodes ) {
+        std::cout << id << " ";
+    }
+    std::cout << std::endl;
+
     // create global cell numbering
     // Build a global numbering (if there is not)
     VectorLong globCellNumVect2;
@@ -284,7 +290,7 @@ ParallelMeshPtr MeshBalancer::applyBalancingStrategy( const VectorInt &newLocalN
     outMesh->buildNamesVectors();
     outMesh->create_joints( domains, globNodeNumVect2, nOwners, globCellNumVect2, graphInterfaces,
                             _ghostLayer );
-
+    outMesh->setLastGhostsLayer( _lastLayerGhostNodes );
     outMesh->updateGlobalGroupOfNodes();
     outMesh->updateGlobalGroupOfCells();
     outMesh->endDefinition();
@@ -346,6 +352,27 @@ void MeshBalancer::sortCells( VectorLong &vectIn, VectorLong &vectOut ) const {
     }
 };
 
+void MeshBalancer::convertLastGhostLayerToLocal( const VectorLong &globNodeNumVect ) {
+
+    // Create mapping from value to index
+    std::unordered_map< long, int > indexMap;
+    for ( int i = 0; i < globNodeNumVect.size(); ++i ) {
+        indexMap[globNodeNumVect[i]] = i;
+    }
+
+    // Loop  over values in _lastLayerGhostNodes
+    for ( size_t i = 0; i < _lastLayerGhostNodes.size(); ++i ) {
+        auto it = indexMap.find( _lastLayerGhostNodes[i] );
+        if ( it != indexMap.end() ) {
+            _lastLayerGhostNodes[i] = it->second;
+        } else {
+            std::cerr << "Warning: Value " << _lastLayerGhostNodes[i] << " not found " << std::endl;
+            _lastLayerGhostNodes[i] = -1;
+        }
+    }
+    std::sort( _lastLayerGhostNodes.begin(), _lastLayerGhostNodes.end() );
+}
+
 void MeshBalancer::deleteReverseConnectivity() {
     // free memory
     _reverseConnex = std::map< int, std::set< int > >();
@@ -400,6 +427,7 @@ VectorInt MeshBalancer::filterAlreadySeenNodes( const VectorInt &vec1,
 void MeshBalancer::_enrichBalancers( const VectorInt &newLocalNodesList, int iProc, int rank,
                                      VectorOfVectorsLong &procInterfaces,
                                      VectorOfVectorsLong &fastConnex ) {
+
     SetInt alreadySeenNodes( newLocalNodesList.begin(), newLocalNodesList.end() );
     SetInt alreadySeenCells;
 
@@ -417,6 +445,10 @@ void MeshBalancer::_enrichBalancers( const VectorInt &newLocalNodesList, int iPr
             break;
         }
     }
+
+    // Save last layer
+    if ( iProc == rank )
+        _lastLayerGhostNodes = iterNodeList;
 
     // And in addedNodes, ids start at 0 in local numbering
     const auto addedNodes = findNodesToSend( alreadySeenNodes );

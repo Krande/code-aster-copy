@@ -15,20 +15,16 @@
 ! You should have received a copy of the GNU General Public License
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
-
-!
 !
 interface
-    subroutine cclodr(nuoplo, nbordr, lisord, nobase, minord,&
-                      maxord, resuin, resuou, lacalc)
-        integer(kind=8) :: nuoplo
-        integer(kind=8) :: nbordr
-        character(len=19) :: lisord
-        character(len=8) :: nobase
-        integer(kind=8) :: minord
-        integer(kind=8) :: maxord
-        character(len=8) :: resuin
-        character(len=8) :: resuou
-        character(len=24) :: lacalc
+    subroutine cclodr(numeOptEff, nbStore, listStore, jvBaseName, numeStoreMin, &
+                      numeStoreMax, resultIn, resultOut, lacalc)
+        integer(kind=8), intent(in) :: numeOptEff
+        integer(kind=8), intent(in) :: nbStore
+        integer(kind=8), pointer :: listStore(:)
+        character(len=8), intent(in) :: jvBaseName
+        integer(kind=8), intent(in) ::  numeStoreMin, numeStoreMax
+        character(len=8), intent(in) :: resultIn, resultOut
+        integer(kind=8), pointer :: lacalc(:)
     end subroutine cclodr
 end interface

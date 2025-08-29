@@ -16,12 +16,13 @@
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
 
-subroutine cclpco(option, resuou, numord, nbpaou, lipaou, &
-                  lichou)
-    implicit none
-!     --- ARGUMENTS ---
-#include "jeveux.h"
+subroutine cclpco(option, &
+                  resultOut, numeStore, &
+                  nbParaOut, lpaout, lchout)
 !
+    implicit none
+!
+#include "asterfort/assert.h"
 #include "asterfort/dismoi.h"
 #include "asterfort/jedema.h"
 #include "asterfort/jemarq.h"
@@ -31,15 +32,22 @@ subroutine cclpco(option, resuou, numord, nbpaou, lipaou, &
 #include "asterfort/jexnom.h"
 #include "asterfort/jexnum.h"
 #include "asterfort/rsexch.h"
-#include "asterfort/assert.h"
-    integer(kind=8) :: nbpaou, numord
-    character(len=8) :: resuou
-    character(len=8) :: lipaou(*)
-    character(len=16) :: option
-    character(len=24) :: lichou(*)
-!  CALC_CHAMP - DETERMINATION LISTE DE PARAMETRES ET LISTE DE CHAMPS OUT
-!  -    -                     -        -                      -      -
-! ----------------------------------------------------------------------
+#include "jeveux.h"
+!
+    character(len=16), intent(in) :: option
+    character(len=8), intent(in) :: resultOut
+    integer(kind=8), intent(in) :: numeStore
+    integer(kind=8), intent(out) :: nbParaOut
+    character(len=8), intent(out) :: lpaout(1)
+    character(len=24), intent(out) :: lchout(1)
+!
+! --------------------------------------------------------------------------------------------------
+!
+! CALC_CHAMP
+!
+! Compute ELEM, ELNO and ELGA fields - Set output fields
+!
+! --------------------------------------------------------------------------------------------------
 !
 ! IN  :
 !   OPTION  K16  NOM DE L'OPTION A CALCULER
@@ -50,46 +58,55 @@ subroutine cclpco(option, resuou, numord, nbpaou, lipaou, &
 !   NBPAOU  I    NOMBRE DE PARAMETRES OUT
 !   LIPAOU  K8*  LISTE DES PARAMETRES OUT
 !   LICHOU  K8*  LISTE DES CHAMPS OUT
-! ----------------------------------------------------------------------
-! person_in_charge: nicolas.sellenet at edf.fr
-    integer(kind=8) :: opt, iaopds, iapara, nparin, ipara, ierd
-    integer(kind=8) :: nparou, kpara, nugd
 !
-    character(len=8) :: nomgd, tsca
-    character(len=19) :: nochou
-! ----------------------------------------------------------------------
+! --------------------------------------------------------------------------------------------------
+!
+    integer(kind=8) :: optionNume, cataNbIn, ipara, ierd
+    integer(kind=8) :: cataNbOut, kpara, physQuanNume
+    character(len=8) :: physQuanName, scalType
+    character(len=19) :: fieldOut
+    integer(kind=8), pointer :: cataDescopt(:) => null()
+    character(len=8), pointer :: cataOptpara(:) => null()
+!
+! --------------------------------------------------------------------------------------------------
 !
     call jemarq()
-!
-    call jenonu(jexnom('&CATA.OP.NOMOPT', option), opt)
-    call jeveuo(jexnum('&CATA.OP.DESCOPT', opt), 'L', iaopds)
-    call jeveuo(jexnum('&CATA.OP.OPTPARA', opt), 'L', iapara)
-!
-    nparin = zi(iaopds-1+2)
-    nparou = zi(iaopds-1+3)
-!
-    if (nparou .eq. 1) then
+
+! - Initializations
+    nbParaOut = 0
+    lpaout = " "
+    lchout = " "
+
+! - Access to catalog of options
+    call jenonu(jexnom('&CATA.OP.NOMOPT', option), optionNume)
+    call jeveuo(jexnum('&CATA.OP.DESCOPT', optionNume), 'L', vi=cataDescopt)
+    call jeveuo(jexnum('&CATA.OP.OPTPARA', optionNume), 'L', vk8=cataOptpara)
+    cataNbIn = cataDescopt(2)
+    cataNbOut = cataDescopt(3)
+
+! - Look for real
+    if (cataNbOut .eq. 1) then
         ipara = 1
 
-    elseif (nparou .eq. 2) then
-!       -- on cherche le parametre de type reel :
+    elseif (cataNbOut .eq. 2) then
         ipara = 0
         do kpara = 1, 2
-            nugd = zi(iaopds-1+4+nparin+kpara)
-            call jenuno(jexnum('&CATA.GD.NOMGD', nugd), nomgd)
-            call dismoi('TYPE_SCA', nomgd, 'GRANDEUR', repk=tsca)
-            if (tsca .eq. 'R') ipara = kpara
+            physQuanNume = cataDescopt(4+cataNbIn+kpara)
+            call jenuno(jexnum('&CATA.GD.NOMGD', physQuanNume), physQuanName)
+            call dismoi('TYPE_SCA', physQuanName, 'GRANDEUR', repk=scalType)
+            if (scalType .eq. 'R') ipara = kpara
         end do
         ASSERT(ipara .gt. 0)
     else
-        ASSERT(.false.)
+        ASSERT(ASTER_FALSE)
     end if
 
-    nbpaou = 1
-    lipaou(1) = zk8(iapara+nparin+ipara-1)
-    call rsexch(' ', resuou, option, numord, nochou, ierd)
-    lichou(1) = nochou
+! - Set output field
+    nbParaOut = 1
+    lpaout(1) = cataOptpara(cataNbIn+ipara)
+    call rsexch(' ', resultOut, option, numeStore, fieldOut, ierd)
+    lchout(1) = fieldOut
 
     call jedema()
-
+!
 end subroutine

@@ -145,6 +145,7 @@
 #include "PythonBindings/ParallelMechanicalLoadInterface.h"
 #include "PythonBindings/ParallelMeshInterface.h"
 #include "PythonBindings/ParallelThermalLoadInterface.h"
+#include "PythonBindings/PetscRedistributeInterface.h"
 #include "PythonBindings/PhysicalProblemInterface.h"
 #include "PythonBindings/PhysicalQuantityInterface.h"
 #include "PythonBindings/PhysicalQuantityManagerInterface.h"
@@ -347,6 +348,7 @@ PYBIND11_MODULE( libaster, mod ) {
     exportMeshConnectionGraphToPython( mod );
     exportResultBalancerToPython( mod );
 #endif /* ASTER_HAVE_MPI */
+    exportPetscRedistributeToPython( mod );
 #ifdef ASTER_HAVE_MED
     exportMedFileReaderToPython( mod );
     exportMedFieldToPython( mod );

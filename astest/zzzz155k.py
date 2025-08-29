@@ -59,6 +59,18 @@ def checkJoinSize(mesh, size, checker):
 mesh1 = CA.ParallelMesh()
 mesh1.readMedFile("zzzz155k.med", ghost=2)
 
+# Check extraction of the last layer of ghosts DOFs
+model = CA.Model(mesh1)
+model.addModelingOnMesh(CA.Physics.Thermal, CA.Modelings.Planar)
+model.build()
+numeDDL = NUME_DDL(MODELE=model)
+
+test.assertEqual(
+    numeDDL.getEquationNumbering().getGhostDOFs(lastLayerOnly=True),
+    [[3, 12, 13], [10, 16, 17]][rank],
+)
+
+
 checkJoinSize(mesh1, 3 * 2, test)
 
 test.assertTrue(mesh1.checkConsistency("zzzz155k.med"))

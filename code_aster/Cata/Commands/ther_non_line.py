@@ -96,10 +96,13 @@ THER_NON_LINE = MACRO(
     AFFICHAGE=C_AFFICHAGE(),
     # -------------------------------------------------------------------
     METHODE=SIMP(
-        statut="f", typ="TXM", defaut="NEWTON", into=("NEWTON", "MODELE_REDUIT", "NEWTON_KRYLOV")
+        statut="f",
+        typ="TXM",
+        defaut="NEWTON",
+        into=("NEWTON", "MODELE_REDUIT", "NEWTON_KRYLOV", "RASPEN"),
     ),
     b_meth_newton=BLOC(
-        condition="""equal_to("METHODE", 'NEWTON') or equal_to("METHODE", 'NEWTON_KRYLOV')""",
+        condition="""equal_to("METHODE", 'NEWTON') or equal_to("METHODE", 'NEWTON_KRYLOV') or equal_to("METHODE", 'RASPEN')""",
         NEWTON=FACT(
             statut="d",
             REAC_ITER=SIMP(statut="f", typ="I", defaut=0, val_min=0),

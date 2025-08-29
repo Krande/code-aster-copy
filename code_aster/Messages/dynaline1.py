@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -28,7 +28,7 @@ La méthode de Newmark est programmée sous sa forme implicite: le paramètre BE
     ),
     3: _(
         """
-DYNA_VIBRA : Vous n'avez pas fourni le champs de matériau (mot-clé CHAM_MATER). 
+DYNA_VIBRA : Vous n'avez pas fourni le champs de matériau (mot-clé CHAM_MATER).
 Cette information n'est donc pas stockée dans le concept résultat.
 Aucun post-traitement lié à CHAM_MATER ne sera possible.
  """
@@ -76,11 +76,6 @@ Un chargement de type Dirichlet non homogène nécessite la résolution par le s
         """
 Nombre de pas de calcul : %(i1)d
 Nombre d'itérations     : %(i2)d
-"""
-    ),
-    23: _(
-        """
-Vous calculez une impédance absorbante.
 """
     ),
     24: _(

@@ -1,0 +1,251 @@
+# coding=utf-8
+# --------------------------------------------------------------------
+# Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
+# This file is part of code_aster.
+#
+# code_aster is free software: you can redistribute it and/or modify
+# it under the terms of the GNU General Public License as published by
+# the Free Software Foundation, either version 3 of the License, or
+# (at your option) any later version.
+#
+# code_aster is distributed in the hope that it will be useful,
+# but WITHOUT ANY WARRANTY; without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+# GNU General Public License for more details.
+#
+# You should have received a copy of the GNU General Public License
+# along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
+# --------------------------------------------------------------------
+
+DEBUT(CODE="OUI", DEBUG=_F(SDVERI="OUI"), IMPR_MACRO="NON")
+# ......................................................................
+
+import numpy as np
+
+vref = 1.0e-3
+m = 8.0
+sigm_refe = 2630.0
+
+# Numero d'ordre où on fait les post-traitements
+id_pt = 10
+
+M = LIRE_MAILLAGE(FORMAT="MED")
+
+MO = AFFE_MODELE(MAILLAGE=M, AFFE=_F(TOUT="OUI", PHENOMENE="MECANIQUE", MODELISATION="AXIS"))
+
+COMP = DEFI_FONCTION(
+    NOM_PARA="EPSI",
+    PROL_DROITE="LINEAIRE",
+    PROL_GAUCHE="LINEAIRE",
+    VALE=(
+        0.002775,
+        555.0,
+        0.005000,
+        588.7,
+        0.010000,
+        631.0,
+        0.0150,
+        657.0,
+        0.0200,
+        676.0,
+        0.0250,
+        691.0,
+        0.0300,
+        704.0,
+        0.0400,
+        725.0,
+        0.0500,
+        741.0,
+        0.0750,
+        772.0,
+        0.1000,
+        794.0,
+        0.1250,
+        812.0,
+        0.1500,
+        827.0,
+        0.2000,
+        851.0,
+        0.3000,
+        887.0,
+        0.4000,
+        912.0,
+        0.5000,
+        933.0,
+        0.6000,
+        950.0,
+        0.7000,
+        965.0,
+        0.8000,
+        978.0,
+        0.9000,
+        990.0,
+    ),
+)
+
+ACIER = DEFI_MATERIAU(
+    ELAS=_F(E=200000.0, NU=0.3, ALPHA=0.0),
+    TRACTION=_F(SIGM=COMP),
+    WEIBULL=_F(M=m, VOLU_REFE=vref, SIGM_REFE=sigm_refe),
+)
+
+CM = AFFE_MATERIAU(MAILLAGE=M, AFFE=_F(TOUT="OUI", MATER=ACIER))
+
+ZERO = DEFI_FONCTION(
+    NOM_PARA="INST", PROL_DROITE="EXCLU", PROL_GAUCHE="EXCLU", VALE=(0.0, 0.0, 100.0, 0.0)
+)
+
+TRAC = DEFI_FONCTION(
+    NOM_PARA="INST", PROL_DROITE="EXCLU", PROL_GAUCHE="EXCLU", VALE=(0.0, 0.0, 100.0, 1.0)
+)
+
+CHARG = AFFE_CHAR_MECA_F(
+    MODELE=MO,
+    DDL_IMPO=(
+        _F(GROUP_NO="DEPLIMPO", DY=TRAC),
+        _F(GROUP_NO="SYMETRIE", DX=ZERO),
+        _F(GROUP_NO="LIGAMENT", DY=ZERO),
+    ),
+)
+
+L_INST = DEFI_LIST_REEL(DEBUT=0.0, INTERVALLE=_F(JUSQU_A=100.0, NOMBRE=100))
+
+# CALCUL MECANIQUE HPP
+T = STAT_NON_LINE(
+    MODELE=MO,
+    CHAM_MATER=CM,
+    EXCIT=_F(CHARGE=CHARG),
+    COMPORTEMENT=_F(RELATION="VMIS_ISOT_TRAC"),
+    INCREMENT=_F(LIST_INST=L_INST, NUME_INST_FIN=10),
+    CONVERGENCE=_F(RESI_GLOB_RELA=1.0e-04, ITER_GLOB_MAXI=25),
+)
+
+T = CALC_CHAMP(
+    reuse=T,
+    RESULTAT=T,
+    CRITERES=("SIEQ_ELGA", "EPEQ_ELGA"),
+    CONTRAINTE=("SIGM_ELNO"),
+    VARI_INTERNE=("VARI_ELNO"),
+    DEFORMATION=("EPSI_ELGA", "EPSG_ELGA", "EPSL_ELGA", "EPSP_ELGA"),
+)
+
+l_idx = T.getIndexes()
+
+# IMPR_RESU(FORMAT='MED', RESU=_F(RESULTAT=T), UNITE=70)
+
+
+# POST_BEREMIN
+
+
+### OPTION SIGM_ELGA et CORR_PLAST = OUI
+
+
+def f_epsp_eq(PRIN_3):
+    return np.exp(-PRIN_3 / 2.0)
+
+
+form_eps_eq = FORMULE(VALE="f_epsp_eq(PRIN_3)", f_epsp_eq=f_epsp_eq, NOM_PARA=("PRIN_3"))
+
+
+def f_correction(PRIN_3, V1, X1):
+    return PRIN_3 * X1
+
+
+correction = FORMULE(
+    VALE="f_correction(PRIN_3, V1, X1)", f_correction=f_correction, NOM_PARA=("PRIN_3", "V1", "X1")
+)
+
+# Calcul des invariants du champ de déformation plastique
+# --> Astuce : on remplace le champ de déformation EPSI_ELGA (à l'instant désiré)
+# --> par le champ de déformation plastique EPSP_ELGA dans la SD résultat.
+# --> Puis on fait un CALC_CHAMP / CRITERES / EPEQ_ELGA (qui utilise EPSI_ELGA)
+# --> ATTENTION A NE PLUS UTILISER EPSI_ELGA dans T APRES CES OPERATIONS
+
+t = []
+for idx in l_idx:
+    t.append(T.getTime(idx))
+    epsp = T.getField("EPSP_ELGA", idx)
+    T.setField(epsp, "EPSI_ELGA", idx)
+
+U2 = CALC_CHAMP(
+    # reuse=T2,
+    RESULTAT=T,
+    CRITERES=("EPEQ_ELGA"),
+)
+
+CHAMCORR = []
+affe = []
+for idx in l_idx:
+
+    # 1/ Evaluation de la fonction dépendant de la 1ère déf plastique principale en chaque PG
+    CHEPSP_EQ = CREA_CHAMP(
+        TYPE_CHAM="ELGA_EPSI_R", OPERATION="EXTR", RESULTAT=U2, NOM_CHAM="EPEQ_ELGA", NUME_ORDRE=idx
+    )
+
+    CHEPSP1_ = CREA_CHAMP(
+        TYPE_CHAM="ELGA_NEUT_F",
+        OPERATION="AFFE",
+        MODELE=MO,
+        PROL_ZERO="OUI",
+        AFFE=(_F(TOUT="OUI", NOM_CMP=("X1"), VALE_F=form_eps_eq),),
+    )
+
+    CHEPSP1 = CREA_CHAMP(
+        TYPE_CHAM="ELGA_NEUT_R", OPERATION="EVAL", CHAM_F=CHEPSP1_, CHAM_PARA=CHEPSP_EQ
+    )
+
+    # 2/ Dépendance de la correction au champ de contraintes équivalentes
+    CHSIEQ = CREA_CHAMP(
+        TYPE_CHAM="ELGA_SIEF_R", OPERATION="EXTR", RESULTAT=T, NOM_CHAM="SIEQ_ELGA", NUME_ORDRE=idx
+    )
+
+    # 3/ Dépendance de la correction au champ de variables internes
+    CHVARI = CREA_CHAMP(
+        TYPE_CHAM="ELGA_VARI_R", OPERATION="EXTR", RESULTAT=T, NOM_CHAM="VARI_ELGA", NUME_ORDRE=idx
+    )
+
+    # 4/ Création du champ évaluant en chaque PG la contrainte avec correction plastique à intégrer pour calculer sigW
+    CHAMCORR_ = CREA_CHAMP(
+        TYPE_CHAM="ELGA_NEUT_F",
+        OPERATION="AFFE",
+        MODELE=MO,
+        PROL_ZERO="OUI",
+        AFFE=(_F(TOUT="OUI", NOM_CMP=("X1"), VALE_F=correction),),
+    )
+
+    CHAMCORR_idx = CREA_CHAMP(
+        TYPE_CHAM="ELGA_NEUT_R",
+        OPERATION="EVAL",
+        CHAM_F=CHAMCORR_,
+        CHAM_PARA=[CHSIEQ, CHVARI, CHEPSP1],
+    )
+
+    CHAMCORR.append(CHAMCORR_idx)
+
+    affe.append({"NOM_CHAM": "UT01_ELGA", "CHAM_GD": CHAMCORR[idx], "INST": t[idx], "MODELE": MO})
+
+UCORR = CREA_RESU(OPERATION="AFFE", TYPE_RESU="EVOL_NOLI", AFFE=affe)
+
+###### REMARQUE : quand on a un résultat evol_noli obtenu avec CREA_RESU, les numéros d'ordre commenent à 1 ! (vs 0 sur un evol_noli issu de SNL)
+
+IMPR_RESU(FORMAT="MED", RESU=_F(RESULTAT=UCORR), UNITE=80)
+
+BERE5 = POST_BEREMIN(
+    RESULTAT=T,
+    DEFORMATION="PETIT",
+    FILTRE_SIGM="SIGM_CORR",
+    NUME_VARI=2,
+    SIGM_CORR=UCORR,
+    WEIBULL=_F(GROUP_MA="COUL_7", M=m, VOLU_REFE=vref, SIGM_REFE=sigm_refe),
+)
+
+IMPR_TABLE(TABLE=BERE5, UNITE=6)
+
+TEST_TABLE(
+    VALE_CALC=4023.79839182,
+    NOM_PARA="SIGMA_WEIBULL",
+    TABLE=BERE5,
+    FILTRE=(_F(NOM_PARA="NUME_ORDRE", VALE_I=id_pt), _F(NOM_PARA="GROUP_MA", VALE_K="COUL_7")),
+)
+
+FIN()

@@ -141,7 +141,6 @@ table_coef = t_coef_1.EXTR_TABLE()
 reslinok = POST_COMBINAISON(
     MODELE=model,
     TABLE_COEF=t_coef_1,
-    TABLE_COEF_RESU=CO("MA_TABLE"),
     TYPE_COMB="RESULTAT",
     TOUT="OUI",
     NOM_CHAM=("DEPL", "EFGE_ELNO"),
@@ -238,7 +237,6 @@ TEST_RESU(
 
 reslinok2 = POST_COMBINAISON(
     TABLE_COEF=t_coef_1,
-    TABLE_COEF_RESU=CO("MA_TABLE2"),
     TYPE_COMB="TABLE",
     FILTRE=(_F(NOM_PARA="NOM", VALE_K=("START")),),
     AFFE=(_F(NOM_CAS="Q", TABLE=tbcoup1), _F(NOM_CAS="G", TABLE=tbcoup2)),

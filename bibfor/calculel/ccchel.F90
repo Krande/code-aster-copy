@@ -15,18 +15,20 @@
 ! You should have received a copy of the GNU General Public License
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
-! person_in_charge: nicolas.sellenet at edf.fr
 !
-subroutine ccchel(option, modele, resuin, resuou, numord, &
-                  nordm1, mater, mateco, carael, typesd, ligrel, &
-                  l_poux, exitim, lischa, nbchre, ioccur, &
-                  suropt, basopt, resout)
+subroutine ccchel(option, &
+                  modelZ, materFieldZ, materCodeZ, caraElemZ, listLoadZ, &
+                  resultIn, resultOut, resultType, &
+                  numeStore, numeStorePrev, &
+                  ligrel, isTransient, postCompPoux, jvBase, &
+                  fieldNameOut)
 !
+    use postComp_type
     implicit none
 !
 #include "asterf_types.h"
 #include "jeveux.h"
-#include "asterc/getexm.h"
+#include "asterfort/assert.h"
 #include "asterfort/ccaccl.h"
 #include "asterfort/cclpci.h"
 #include "asterfort/cclpco.h"
@@ -37,13 +39,16 @@ subroutine ccchel(option, modele, resuin, resuou, numord, &
 #include "asterfort/meceuc.h"
 #include "asterfort/utmess.h"
 !
-    aster_logical, intent(in) :: l_poux, exitim
-    integer(kind=8) :: nbchre, ioccur, numord, nordm1
-    character(len=1) :: basopt
-    character(len=8) :: modele, resuin, resuou, carael
-    character(len=16) :: option, typesd
-    character(len=19) :: lischa
-    character(len=24) :: mater, ligrel, resout, suropt, mateco
+    character(len=16), intent(in) :: option
+    character(len=*), intent(in) :: modelZ, materFieldZ, materCodeZ, caraElemZ, listLoadZ
+    character(len=8), intent(in) :: resultIn, resultOut
+    character(len=16), intent(in) ::resultType
+    integer(kind=8), intent(in) :: numeStore, numeStorePrev
+    character(len=24), intent(in) :: ligrel
+    aster_logical, intent(in) :: isTransient
+    type(POST_COMP_POUX), intent(in) :: postCompPoux
+    character(len=1), intent(in) :: jvBase
+    character(len=24), intent(out) :: fieldNameOut
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -71,76 +76,69 @@ subroutine ccchel(option, modele, resuin, resuou, numord, &
 !   NBCHRE  I    NOMBRE DE CHARGES REPARTIES (POUTRES)
 !   IOCCUR  I    NUMERO D'OCCURENCE OU SE TROUVE LE CHARGE REPARTIE
 !   SUROPT  K24
-!   BASOPT  K1   BASE SUR LAQUELLE DOIT ETRE CREE LE CHAMP DE SORTIE
+!   jvBase  K1   BASE SUR LAQUELLE DOIT ETRE CREE LE CHAMP DE SORTIE
 !
 ! OUT :
 !   RESOUT  K24  NOM DU CHAMP OUT
 !
 ! --------------------------------------------------------------------------------------------------
 !
-    integer(kind=8) :: iret, nbpaou, nbpain, nbRet
-    character(len=8) :: lipain(100), lipaou(1)
-    character(len=24) :: lichin(100), lichou(2)
+    integer(kind=8) :: iret, nbParaOut, nbParaIn
+    character(len=8) :: lpain(100), lpaout(1)
+    character(len=24) :: lchin(100), lchout(1)
 !
 ! --------------------------------------------------------------------------------------------------
 !
-    resout = ' '
-!
+    fieldNameOut = ' '
+
 ! - Create generic input fields
-!
-    call ccpara(option, modele, resuin, resuou, numord, &
-                nordm1, exitim, mater(1:8), carael)
-!
+    call ccpara(option, &
+                modelZ, materFieldZ, caraElemZ, &
+                resultIn, resultOut, &
+                numeStore, numeStorePrev, isTransient)
+
 ! - Construct list of input fields
-!
-    call cclpci(option, modele, resuin, resuou, mater(1:8), mateco(1:8), &
-                carael, ligrel, numord, nbpain, lipain, &
-                lichin, iret)
-    if (iret .ne. 0) then
-        goto 999
-    end if
-!
+    call cclpci(option, &
+                modelZ, materFieldZ, materCodeZ, caraElemZ, &
+                resultIn, resultOut, &
+                ligrel, numeStore, &
+                nbParaIn, lpain, lchin)
+
 ! - Construct list of output fields
-!
-    call cclpco(option, resuou, numord, nbpaou, lipaou, &
-                lichou)
-!
+    call cclpco(option, &
+                resultOut, numeStore, &
+                nbParaOut, lpaout, lchout)
+    ASSERT(nbParaOut .eq. 1)
+
 ! - Special for POUX beams
-!
-    if (l_poux) then
-        call ccpoux(resuin, typesd, numord, nbchre, ioccur, &
-                    lischa, modele, nbpain, lipain, lichin, &
-                    suropt, iret)
+    if (postCompPoux%lPoux) then
+        call ccpoux(postCompPoux, &
+                    listLoadZ, modelZ, &
+                    resultIn, resultType, numeStore, &
+                    nbParaIn, lpain, lchin, &
+                    iret)
         if (iret .ne. 0) then
             goto 999
         end if
-    else
-        if ((getexm('EXCIT', 'COEF_MULT') .eq. 1) .and. (ioccur .ne. 0)) then
-            call getvr8('EXCIT', 'COEF_MULT', iocc=ioccur, nbval=0, nbret=nbRet)
-            if (nbRet .ne. 0) then
-                call utmess('F', 'CALCCHAMP_3')
-            end if
-        end if
     end if
-!
-! - Special
-!
-    call ccaccl(option, modele, mater(1:8), carael, ligrel, &
-                typesd, nbpain, lipain, lichin, lichou, &
+
+! - Change input and output parameters for special cases
+    call ccaccl(option, &
+                modelZ, materFieldZ, caraElemZ, ligrel, &
+                resultType, &
+                nbParaIn, lpain, lchin, lchout, &
                 iret)
     if (iret .ne. 0) then
         goto 999
     end if
-!
+
 ! - Compute option with complex case
-!
-    call meceuc('C', option, carael, ligrel, &
-                nbpain, lichin, lipain, nbpaou, lichou, &
-                lipaou, basopt)
-    resout = lichou(1)
-!
+    call meceuc('C', option, caraElemZ, ligrel, &
+                nbParaIn, lchin, lpain, nbParaOut, lchout, &
+                lpaout, jvBase)
+    fieldNameOut = lchout(1)
+
 ! - Clean
-!
     call detrsd('CHAM_ELEM', '&&CALCOP.INT_0')
 !
 999 continue

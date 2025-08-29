@@ -202,15 +202,6 @@ ECOEQPG = LocatedComponents(
     ),
 )
 
-
-EGAMIMA = LocatedComponents(
-    phys=PHY.SPMX_R,
-    type="ELGA",
-    location="RIGI",
-    components=("VAL", "NUCOU", "NUSECT", "NUFIBR", "POSIC", "POSIS"),
-)
-
-
 ESTRAUX = LocatedComponents(
     phys=PHY.STRX_R,
     type="ELGA",
@@ -720,7 +711,7 @@ class MECA_POU_D_EM(Element):
             ),
             para_out=((SP.PMATUNS, MMATUNS),),
         ),
-        OP.MINMAX_SP(te=99, para_out=((SP.PGAMIMA, EGAMIMA), (SP.PNOMIMA, LC.ENOMIMA))),
+        OP.MINMAX_SP(te=99, para_out=((SP.PGAMIMA, LC.EGMINMAX), (SP.PNOMIMA, LC.NMINMAX))),
         OP.M_GAMMA(
             te=141,
             para_in=(

@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -20,16 +20,6 @@
 from ..Utilities import _
 
 cata_msg = {
-    2: _(
-        """
- tuyau : le nombre de couches est limite a  %(i1)d
-"""
-    ),
-    3: _(
-        """
- tuyau : le nombre de secteurs est limite a  %(i1)d
-"""
-    ),
     4: _(
         """
  Le nombre de sous-points est limité à %(i1)d, or vous en avez définis %(i2)d !

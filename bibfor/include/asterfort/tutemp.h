@@ -15,19 +15,9 @@
 ! You should have received a copy of the GNU General Public License
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
-
-!
 !
 interface
-    subroutine tutemp(option, nomte, nbrddl, f, b,&
-                      vout, pass, vtemp)
-        integer(kind=8) :: nbrddl
-        character(len=16) :: option
-        character(len=16) :: nomte
-        real(kind=8) :: f(nbrddl)
-        real(kind=8) :: b(4, nbrddl)
-        real(kind=8) :: vout(nbrddl)
-        real(kind=8) :: pass(nbrddl, nbrddl)
-        real(kind=8) :: vtemp(nbrddl)
+    subroutine tutemp(nbNode, nbDof, nbFourier)
+        integer(kind=8), intent(in) :: nbNode, nbDof, nbFourier
     end subroutine tutemp
 end interface

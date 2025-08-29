@@ -13,7 +13,9 @@ variables:
   NPROC_MAX: 12
   FF_DISABLE_UMASK_FOR_DOCKER_EXECUTOR: "true"
   PIXI_HOME: ${CI_PROJECT_DIR}/.pixi
-  WEEKLY_RUN: 5
+  # WEEKLY_RUN should be set in scheduled pipeline
+  WEEKLY_RUN: "unset"
+  TZ: "Europe/Paris"
 
 default:
   tags:
@@ -47,13 +49,13 @@ image:
   name: ${IMAGE_URL}
 
 before_script:
+  - echo "started at $(date), day '$(date +%u)', weekly run on day '${WEEKLY_RUN}'"
   - export PATH="${PIXI_HOME}/bin:${PATH}"
 
 .prepare:
   interruptible: true
   stage: setup
   script:
-    - .gitlabci/prepare_pixi.sh
     - .gitlabci/prepare.sh
   artifacts:
     paths:
@@ -296,7 +298,7 @@ prepare_win:
     OSNAME: win
   extends: .prepare
   script:
-    - test "$(date +%u)" -ne $WEEKLY_RUN && echo "not run" && exit 0
+    - test "$(date +%u)" -ne ${WEEKLY_RUN} && echo "not run" && exit 0
     - !reference [.prepare, script]
   rules:
     - if: $BUILDTYPE == "nightly"
@@ -308,7 +310,7 @@ compile_win:
   needs:
     - prepare_win
   script:
-    - test "$(date +%u)" -ne $WEEKLY_RUN && echo "not run" && exit 0
+    - test "$(date +%u)" -ne ${WEEKLY_RUN} && echo "not run" && exit 0
     - !reference [.compile, script]
   rules:
     - if: $BUILDTYPE == "nightly"
@@ -321,7 +323,7 @@ verification_test_win:
     - prepare_win
     - compile_win
   script:
-    - test "$(date +%u)" -ne $WEEKLY_RUN && echo "not run" && exit 0
+    - test "$(date +%u)" -ne ${WEEKLY_RUN} && echo "not run" && exit 0
     - !reference [.verification_test, script]
   allow_failure: true
   rules:
@@ -335,7 +337,8 @@ prepare_pixi:
     OSNAME: pixi
   extends: .prepare
   script:
-    - test "$(date +%u)" -ne $WEEKLY_RUN && echo "not run" && exit 0
+    - test "$(date +%u)" -ne ${WEEKLY_RUN} && echo "not run" && exit 0
+    - .gitlabci/prepare_pixi.sh
     - !reference [.prepare, script]
   rules:
     - if: $BUILDTYPE == "nightly"
@@ -349,7 +352,7 @@ compile_pixi:
   needs:
     - prepare_pixi
   script:
-    - test "$(date +%u)" -ne $WEEKLY_RUN && echo "not run" && exit 0
+    - test "$(date +%u)" -ne ${WEEKLY_RUN} && echo "not run" && exit 0
     - pixi list --explicit
     - ls -la ${PIXI_HOME} || true
     - pixi run .gitlabci/compile.sh
@@ -366,7 +369,7 @@ verification_test_pixi:
     - prepare_pixi
     - compile_pixi
   script:
-    - test "$(date +%u)" -ne $WEEKLY_RUN && echo "not run" && exit 0
+    - test "$(date +%u)" -ne ${WEEKLY_RUN} && echo "not run" && exit 0
     - ls -la ${PIXI_HOME} || true
     - pixi run .gitlabci/test.sh
         -L verification

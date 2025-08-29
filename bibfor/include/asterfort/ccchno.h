@@ -15,32 +15,28 @@
 ! You should have received a copy of the GNU General Public License
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
-
-!
-!
 #include "asterf_types.h"
 !
 interface
-    subroutine ccchno(option, numord, resuin, resuou, lichou,&
-                      mesmai, nomail, modele, carael, basopt,&
-                      ligrel, ligmod, codret,&
-                      nochou, ideb, ifin, vcham)
-        character(len=16) :: option
-        integer(kind=8) :: numord
-        character(len=8) :: resuin
-        character(len=8) :: resuou
-        character(len=24) :: lichou(2)
-        character(len=24) :: mesmai
-        character(len=8) :: nomail
-        character(len=8) :: modele
-        character(len=8) :: carael
-        character(len=1) :: basopt
-        character(len=24) :: ligrel
-        aster_logical :: ligmod
-        integer(kind=8) :: codret
-        character(len=19), optional :: nochou
-        integer(kind=8),           optional :: ideb
-        integer(kind=8),           optional :: ifin
-        character(len=24), optional :: vcham
+    subroutine ccchno(option, numeStore, resultIn, resultOut, fieldNameOut, &
+                      lRestCell, nbRestCell, restCellJv, &
+                      mesh, model, caraElem, optionBase, &
+                      ligrel, ligrelHasBeenChanged, codret, &
+                      fieldNameIn, ideb_, ifin_, vcham_)
+        character(len=16), intent(in) :: option
+        integer(kind=8), intent(in) :: numeStore
+        character(len=8), intent(in) :: resultIn, resultOut
+        character(len=24), intent(out) :: fieldNameOut
+        aster_logical, intent(in) :: lRestCell
+        integer(kind=8), intent(in) :: nbRestCell
+        character(len=24), intent(in) :: restCellJv
+        character(len=8), intent(in) :: mesh, model, caraElem
+        character(len=1), intent(in) :: optionBase
+        character(len=24), intent(in) :: ligrel
+        integer(kind=8), intent(out) :: codret
+        aster_logical, intent(in) :: ligrelHasBeenChanged
+        character(len=19), intent(in) :: fieldNameIn
+        integer(kind=8), optional, intent(in) :: ideb_, ifin_
+        character(len=24), optional, intent(in) :: vcham_
     end subroutine ccchno
 end interface

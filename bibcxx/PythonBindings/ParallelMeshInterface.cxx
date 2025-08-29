@@ -73,6 +73,13 @@ Arguments:
     cell_ids (list[int]) : cell ids which are in the group
         )",
               py::arg( "group_name" ), py::arg( "cell_ids" ) )
+        .def( "setLastGhostsLayer", &ParallelMesh::setLastGhostsLayer, R"(
+Set ids in local numbering of ghost nodes on the last layer
+
+Arguments:
+    list[int]: List of ghost nodes ids.
+        )",
+              py::arg( "node_ids" ) )
         .def( "getCells",
               py::overload_cast< const std::string >( &ParallelMesh::getCells, py::const_ ),
               R"(
@@ -97,6 +104,12 @@ Returns:
     list[int]: Indexes of the cells of the local groups.
         )",
               py::arg( "groups_name" ) = VectorString() )
+        .def( "getLastGhostsLayer", &ParallelMesh::getLastGhostsLayer, R"(
+Return ids in local numbering of ghost nodes on the last layer
+
+Returns:
+    list[int]: List of Nodes ids.
+        )" )
         .def( "getGroupsOfNodes", &ParallelMesh::getGroupsOfNodes, R"(
 Return the list of the existing (local or global) groups of nodes.
 
@@ -127,6 +140,7 @@ Arguments:
     localNumbering=false (bool): ids are given in the local numbering ?
         )",
               py::arg( "group_name" ), py::arg( "node_ids" ), py::arg( "localNumbering" ) = false )
+
         .def( "_getNodes",
               py::overload_cast< const VectorString &, const bool, const ASTERINTEGER >(
                   &ParallelMesh::getNodes, py::const_ ),

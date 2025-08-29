@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -110,14 +110,6 @@ MODI_REPERE / RESULTAT / concept réentrant
     la commande MODI_REPERE pour ce type de changement de repère.
 
     Conseils : Définissez un concept résultat différent en sortie de la commande.
-"""
-    ),
-    2: _(
-        """
-  Une variable utilisée ou produite par MFront a dépassée les bornes physiques
-  ou les bornes de corrélation de la loi de comportement.
-
-  Conseils : Vérifiez les coefficients matériau donnés à la loi de comportement.
 """
     ),
     18: _(

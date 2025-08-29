@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -45,11 +45,14 @@ for cmp in ("TEMP", "TEMP_INF", "TEMP_MIL", "TEMP_SUP", "E1", "H1"):
 
     MMATTTR = ArrayOfComponents(phys=PHY.MTEM_R, locatedComponents=DDL_THER)
 
+    MMATTSR = ArrayOfComponents(phys=PHY.MTNS_R, locatedComponents=DDL_THER)
+
     #     Attention : il faut nommer explicitement TOUS les modes locaux crees dans la boucle
     #     --------------------------------------------------------------------
     DDL_THER.setName("DDL_THER")
     MVECTTR.setName("MVECTTR")
     MMATTTR.setName("MMATTTR")
+    MMATTSR.setName("MMATTSR")
 
     name = ("D_TEMP_R_" + cmp)[:16]
 

@@ -38,8 +38,8 @@ import tempfile
 
 from ..Cata.Syntax import _F
 from ..CodeCommands import CALC_CHAM_ELEM, CALC_CHAMP, CREA_TABLE, CALC_TABLE, DEFI_FICHIER
-from ..CodeCommands import IMPR_RESU, AFFE_MODELE
-from ..Objects import FieldOnCellsReal, NonLinearResult, Table, Model
+from ..CodeCommands import IMPR_RESU
+from ..Objects import FieldOnCellsReal, NonLinearResult, Table, Model, Function, FieldOnNodesReal
 from ..Utilities import logger, disable_fpe, no_new_attributes
 from ..MedUtils.MedConverter import field_converter
 from ..Utilities import medcoupling as medc
@@ -84,9 +84,12 @@ class PostBeremin:
     # data 2D and 3D
     _result = _zone = _zone_ids = _stress_option = _strain_type = None
     _intvar_idx = _stress_idx = None
-    _use_hist = _use_indiplas = _use_function = None
+    _use_hist = _use_indiplas = _use_FO = _use_function = _use_cham = None
+    _use_sigm_corr = None
+    _corr_resu = None
     _coef_mult = None
     _weib_params = None
+    _params_dependancy = None
     # data 2D only
     _method_2D = _prec_proj = _model_2D = None
     _groupno = None
@@ -110,7 +113,11 @@ class PostBeremin:
             stress_option (str): Type of stress to be used or calculated.
         """
         self._result = result
-        assert stress_option in ("SIGM_ELGA", "SIGM_ELMOY"), f"unknown value: {stress_option}"
+        assert stress_option in (
+            "SIGM_ELGA",
+            "SIGM_ELMOY",
+            "SIGM_CORR",
+        ), f"unknown value: {stress_option}"
         self._stress_option = stress_option
         self._strain_type = strain_type
 
@@ -224,6 +231,17 @@ class PostBeremin:
         """
         self._use_hist = value
 
+    def use_sigm_corr(self, args) -> None:
+        """Enable the use of a corrected stress (e.g. with plastic correction).
+
+        Args:
+            args (dict): Keywords for POST_BEREMIN.
+        """
+        self._use_sigm_corr = False
+        if "SIGM_CORR" in args:
+            self._use_sigm_corr = True
+            self._corr_resu = args["SIGM_CORR"]
+
     def set_coef_mult(self, value: float = 1.0) -> None:
         """Define the multiplicative factor to take symmetric into account.
 
@@ -232,24 +250,38 @@ class PostBeremin:
         """
         self._coef_mult = value
 
-    def set_weibull_parameters(self, args):
+    def set_weibull_parameters(self, params):
         """Define Weibull parameters.
 
         Args:
-            args (dict): Keywords for POST_BEREMIN.
+            params (dict): Weibull or Weibull_FO parameters keywords for POST_BEREMIN.
         """
-        assert not (
-            ("WEIBULL_FO" in args) and ("WEIBULL" in args)
-        ), "Cannot use both WEIBULL and WEIBULL_FO"
 
-        if "WEIBULL" in args:
-            params = args["WEIBULL"]
-            self._weib_params = params.copy()
-        else:
-            params = args["WEIBULL_FO"]
-            self._use_function = True
-            self._weib_params = params.copy()
+        self._weib_params = params.copy()
+
+        if self._use_FO:
             self._weib_params["SIGM_REFE"] = [params["SIGM_REFE"]]
+            self._weib_params["SIGM_SEUIL"] = [params["SIGM_SEUIL"]]
+
+            self._use_function = {"SIGM_REFE": False, "SIGM_SEUIL": False}
+            self._use_cham = {"SIGM_REFE": False, "SIGM_SEUIL": False}
+            for param in ["SIGM_REFE", "SIGM_SEUIL"]:
+                if type(params[param]) is Function:
+                    self._use_function[param] = True
+                    assert params[param].Parametres()["NOM_PARA"] in [
+                        "TEMP",
+                        "X",
+                        "Y",
+                        "Z",
+                        "TOUTPARA",
+                    ]
+                elif type(params[param]) in [FieldOnNodesReal, FieldOnCellsReal]:
+                    if "X1" not in params[param].getComponents():
+                        UTMESS("F", "RUPTURE4_24", valk=param)
+                    self._use_cham[param] = True
+                else:
+                    assert False
+            assert sum(self._use_function.values()) + sum(self._use_cham.values()) in [0, 2]
 
         if self._rout:
             for param in ["SIGM_REFE", "M", "SIGM_SEUIL"]:
@@ -310,6 +342,27 @@ class PostBeremin:
         sieq = sieq.toSimpleFieldOnCells()
         return sieq.PRIN_3
 
+    def get_corrected_major_stress(self, idx):
+        """Return the major principal stress corrected with a user-defined plastic correction.
+
+        Args:
+            idx (int): storage index.
+
+        Returns:
+            *ComponentOnCells*: Corrected major principal stress.
+        """
+        if "UT01_ELGA" not in self._corr_resu.getFieldsNames():
+            UTMESS("F", "RUPTURE4_25")
+        corr_sig1 = self._corr_resu.getField("UT01_ELGA", idx + 1)
+        corr_sig1 = corr_sig1.toSimpleFieldOnCells()
+        if "X1" not in corr_sig1.getComponents():
+            UTMESS("F", "RUPTURE4_25")
+        try:
+            corr_sig1.X1.restrict(self._zone_ids)
+        except:
+            UTMESS("F", "RUPTURE4_26")
+        return corr_sig1.X1
+
     def compute_sieq(self):
         """Compute SIEQ_ELGA stress."""
         # compute fields on all timesteps, add INST/NUME_ORDRE to be limited
@@ -365,23 +418,32 @@ class PostBeremin:
             sigma_refe (float): sigm_refe parameter
         """
 
-        if self._use_function and sig1.size > 0:
-            # PRIN_3 / SIGM_REFE(TEMP) * SIGM_CNV
-            temp = self.get_temperature_field(idx)
-            sigref = temp.apply(sigma_refe)
-            assert abs(sigref).min() > 0.0
-            sigref.restrict(self._zone_ids)
-            sig1 /= sigref
+        sigma_mater = {"SIGM_REFE": sigma_refe, "SIGM_SEUIL": sigma_thr}
+        sigmat = {}
+        temp = None
+        if self._use_function is not None and sig1.size > 0:
+            for param in ["SIGM_REFE", "SIGM_SEUIL"]:
+                if self._use_function[param]:
+                    if temp is None:
+                        temp = self.get_temperature_field(idx)
+                    sigmat[param] = temp.apply(sigma_mater[param])
+                    sigmat[param].restrict(self._zone_ids)
+                if self._use_cham[param]:
+                    sigmat[param] = self.build_consistant_field(idx, sigma_mater[param], sig1)
+            assert abs(sigmat["SIGM_REFE"]).min() > 0.0
+            sig1 /= sigmat["SIGM_REFE"]
             sig1 *= self._weib_params["SIGM_CNV"]
+            sig1 -= sigmat["SIGM_SEUIL"]
 
-        if sigma_thr > 0.0:
-            # apply threshold
-            sig1 -= sigma_thr
+        else:
+            if sigma_thr > 0.0:
+                # apply threshold
+                sig1 -= sigma_thr
 
-            def sig_filter(array):
-                return np.where(array < 0.0, 0.0, array)
+        def sig_filter(array):
+            return np.where(array < 0.0, 0.0, array)
 
-            sig1 = sig1.apply(sig_filter)
+        sig1 = sig1.apply(sig_filter)
 
         return sig1
 
@@ -421,6 +483,26 @@ class PostBeremin:
         varc_elga = varc_elga.toSimpleFieldOnCells()
 
         return varc_elga.TEMP
+
+    def build_consistant_field(self, idx, cham_in, sig1):
+        """Build a component field from a field on Nodes / Cells, make its support consistent
+        with the component field of major principal stress for further math operations.
+
+        Args:
+            idx (int): Timestep index
+            cham_in (*FieldOnNodesReal* or *FieldOnCellsReal*): Field of material property (SIGM_REFE or SIGM_SEUIL).
+        """
+
+        if type(cham_in) is not FieldOnCellsReal:
+            model = self._result.getModel(idx)
+            desc = model.getFiniteElementDescriptor()
+            cham_in = cham_in.toFieldOnCells(desc, "ELGA")
+        cham_out = cham_in.toSimpleFieldOnCells()
+        cham_out = cham_out.getComponentOnCells("X1")
+        cham_out.restrict(self._zone_ids)
+        cham_out = cham_out.onSupportOf(sig1)
+
+        return cham_out
 
     def compute_intsig1_3D(self, sig1, weight):
         """Compute the values to be added into the result table.
@@ -663,8 +745,11 @@ class PostBeremin:
                 if self._use_indiplas:
                     indip = self.get_internal_variables(idx)
 
-                sig1 = self.get_major_stress(idx)
-                sig1.restrict(self._zone_ids)
+                if self._use_sigm_corr:
+                    sig1 = self.get_corrected_major_stress(idx)
+                else:
+                    sig1 = self.get_major_stress(idx)
+                    sig1.restrict(self._zone_ids)
 
                 if self._use_indiplas:
                     sig1 = self.apply_threshold(sig1, indip)
@@ -696,7 +781,7 @@ class PostBeremin:
                         self._zone,
                         pow_m,
                         sigma_refe if not self._use_function else "FONCTION",
-                        sigma_thr,
+                        sigma_thr if not self._use_function else "FONCTION",
                         strwb,
                         strwb_pm,
                         proba,
@@ -731,7 +816,7 @@ class PostBeremin:
                                 mesh_2D_name,
                                 pow_m,
                                 sigma_refe if not self._use_function else "FONCTION",
-                                sigma_thr,
+                                sigma_thr if not self._use_function else "FONCTION",
                                 strwb,
                                 strwb_pm,
                                 proba,
@@ -748,7 +833,7 @@ class PostBeremin:
                                 self._dictfondfiss[mesh_2D_name][4],
                                 pow_m,
                                 sigma_refe if not self._use_function else "FONCTION",
-                                sigma_thr,
+                                sigma_thr if not self._use_function else "FONCTION",
                                 strwb,
                                 strwb_pm,
                                 proba,
@@ -759,26 +844,48 @@ class PostBeremin:
         return table
 
 
-def post_beremin_ops(self, RESULTAT, GROUP_MA, DEFORMATION, FILTRE_SIGM, **args):
+def post_beremin_ops(self, RESULTAT, DEFORMATION, FILTRE_SIGM, **args):
     """Main of POST_BEREMIN command."""
-    post = PostBeremin(result=RESULTAT, strain_type=DEFORMATION, stress_option=FILTRE_SIGM)
-    post.set_zone(GROUP_MA)
-    post.set_indexes(intvar_idx=args["NUME_VARI"])
-    if DEFORMATION == "GDEF_LOG":
-        post.set_indexes(stress_idx=args["LIST_NUME_SIEF"])
-    post.use_history(args["HIST_MAXI"] == "OUI")
-    post.set_coef_mult(args["COEF_MULT"])
-    post.set_projection_parameters(args)
 
-    if args.get("SIGM_MAXI"):
-        post._rout = NonLinearResult()
-        self.register_result(post._rout, args["SIGM_MAXI"])
+    l_use_FO = False
+    if "WEIBULL" in args:
+        fkw_weib = args.get("WEIBULL")
+    if "WEIBULL_FO" in args:
+        fkw_weib = args.get("WEIBULL_FO")
+        l_use_FO = True
 
-    post.set_weibull_parameters(args)
-    post.setup_calc_result()
+    assert not (
+        ("METHODE_2D" in args) and (len(fkw_weib) > 1)
+    ), "Only one occurrence of WEIBULL / WEIBULL_FO is allowed when METHODE_2D is used."
 
-    table = post.main()
-    sdtable = table.create_table()
+    sdtable0 = TableBeremin(False, False)
+    sdtable_ = []
+    fkw_comb = []
+
+    for iocc, occ in enumerate(fkw_weib):
+        post = PostBeremin(result=RESULTAT, strain_type=DEFORMATION, stress_option=FILTRE_SIGM)
+        post.set_zone(occ["GROUP_MA"])
+        post._use_FO = l_use_FO
+        post.set_indexes(intvar_idx=args["NUME_VARI"])
+        if DEFORMATION == "GDEF_LOG":
+            post.set_indexes(stress_idx=args["LIST_NUME_SIEF"])
+        post.use_history(args["HIST_MAXI"] == "OUI")
+        post.use_sigm_corr(args)
+        post.set_coef_mult(args["COEF_MULT"])
+        post.set_projection_parameters(args)
+
+        if args.get("SIGM_MAXI"):
+            post._rout = NonLinearResult()
+            self.register_result(post._rout, args["SIGM_MAXI"])
+
+        post.set_weibull_parameters(occ)
+        post.setup_calc_result()
+
+        table = post.main()
+        sdtable_.append(table.create_table())
+        fkw_comb.append(_F(OPERATION="COMB", TABLE=sdtable_[iocc]))
+
+    sdtable = CALC_TABLE(TABLE=sdtable0, ACTION=fkw_comb)
 
     if post._groupno:
         tri = ("NUME_ORDRE", "M", "SIGM_REFE", "SIGM_SEUIL", "ABSC_CURV_NORM")
@@ -838,12 +945,12 @@ class TableBeremin(Table):
 
         if not group_no:
             if use_function:
-                self.types = "IRKRKRRRR"
+                self.types = "IRKRKKRRR"
             else:
                 self.types = "IRKRRRRRR"
         else:
             if use_function:
-                self.types = "IRKRRRRRRKRRRR"
+                self.types = "IRKRRRRRRKKRRR"
             else:
                 self.types = "IRKRRRRRRRRRRR"
 

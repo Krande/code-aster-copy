@@ -33,7 +33,8 @@ module loadMecaCompute_module
     public :: compLoadVect, compLoadEvolVect, compLoadMatr, compLoadEvolMatr
     public :: getApplyTypeForce, getRHSOption, getLHSOption
     public :: prepGeneralFields, prepSpecificFields, isMecaLoadExist
-    private :: getMecaNeumField, getFieldFromEvol, compLoadWind, getNeumLoadType, getLigrelToUse
+    public :: getMecaNeumField
+    private :: getFieldFromEvol, compLoadWind, getNeumLoadType, getLigrelToUse
     private :: compLoadVectType, compLoadMatrType
 ! ==================================================================================================
     private

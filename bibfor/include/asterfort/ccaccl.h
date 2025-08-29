@@ -15,23 +15,21 @@
 ! You should have received a copy of the GNU General Public License
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
-
-!
 !
 interface
-    subroutine ccaccl(option, modele, mater , carael, ligrel, &
-                      typesd, nbpain, lipain, lichin, lichou, &
+    subroutine ccaccl(option, &
+                      modelZ, materFieldZ, caraElemZ, ligrel, &
+                      resultType, &
+                      nbParaIn, lpain, lchin, lchout, &
                       codret)
-        character(len=16) :: option
-        character(len=8) :: modele
-        character(len=8) :: mater
-        character(len=8) :: carael
-        character(len=24) :: ligrel
-        character(len=16) :: typesd
-        integer(kind=8) :: nbpain
-        character(len=8) :: lipain(*)
-        character(len=24) :: lichin(*)
-        character(len=24) :: lichou(2)
-        integer(kind=8) :: codret
+        character(len=16), intent(in) :: option
+        character(len=*), intent(in) :: modelZ, materFieldZ, caraElemZ
+        character(len=24), intent(in) :: ligrel
+        character(len=16), intent(in) :: resultType
+        integer(kind=8), intent(in) :: nbParaIn
+        character(len=8), intent(in) :: lpain(100)
+        character(len=24), intent(inout) :: lchin(100)
+        character(len=24), intent(inout) :: lchout(1)
+        integer(kind=8), intent(out) :: codret
     end subroutine ccaccl
 end interface

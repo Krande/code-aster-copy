@@ -15,13 +15,9 @@
 ! You should have received a copy of the GNU General Public License
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
-
-!
 !
 interface
-    subroutine turigi(nomte, nbrddl, k)
-        integer(kind=8) :: nbrddl
-        character(len=16) :: nomte
-        real(kind=8) :: k(nbrddl, nbrddl)
+    subroutine turigi(nbNode, nbFourier, nbDof)
+        integer(kind=8), intent(in) :: nbNode, nbFourier, nbDof
     end subroutine turigi
 end interface

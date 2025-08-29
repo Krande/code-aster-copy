@@ -78,16 +78,6 @@ class MEFAXSE2UPSI(Element):
             ),
             para_out=((SP.PCODRET, LC.ECODRET), (SP.PMATUUR, MMATUUR), (SP.PVECTUR, MVECTUR)),
         ),
-        OP.IMPE_ABSO(
-            te=99,
-            para_in=(
-                (SP.PGEOMER, NGEOMER),
-                (SP.PMATERC, LC.CMATERC),
-                (SP.PVITENT, DDL_MECA),
-                (SP.PVITPLU, DDL_MECA),
-            ),
-            para_out=((SP.PVECTUR, MVECTUR),),
-        ),
         OP.AMOR_MECA(
             te=258,
             para_in=(

@@ -15,123 +15,127 @@
 ! You should have received a copy of the GNU General Public License
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
-
+!
 subroutine te0531(option, nomte)
 !
+    use pipeElem_module
     implicit none
 !
-#include "jeveux.h"
-!
-#include "MultiFiber_type.h"
 #include "asterfort/assert.h"
 #include "asterfort/Behaviour_type.h"
 #include "asterfort/elrefe_info.h"
-#include "asterfort/verift.h"
-#include "asterfort/tecach.h"
+#include "asterfort/get_elas_id.h"
+#include "asterfort/get_elas_para.h"
 #include "asterfort/jevech.h"
 #include "asterfort/jeveuo.h"
 #include "asterfort/lteatt.h"
 #include "asterfort/pmfinfo.h"
-#include "asterfort/rccoma.h"
-#include "asterfort/rcvarc.h"
-#include "asterfort/rcvalb.h"
+#include "asterfort/tecach.h"
 #include "asterfort/utmess.h"
+#include "asterfort/verift.h"
+#include "jeveux.h"
+#include "MultiFiber_type.h"
 !
-    character(len=16)  :: nomte, option
-! ======================================================================
+    character(len=16), intent(in) :: nomte, option
 !
-!    OPTIONS  : 'EPVC_ELGA' 'EPME_ELGA' 'EPSP_ELGA'
-!    ELEMENTS : DKT, GRILLE, PMF, TUYAU, BARRE
+! --------------------------------------------------------------------------------------------------
 !
-!    POUR ELVC_ELGA :
-!    1 COMPOSANTES :
-!    EPTHER= DILATATION THERMIQUE (LONGI)   : ALPHA*(T-TREF)
+! Elementary computation
 !
-!     ENTREES  ---> OPTION : OPTION DE CALCUL
-!              ---> NOMTE  : NOM DU TYPE ELEMENT
-!.......................................................................
-
+! Elements: BARRE, DKT, DST, GRILLE_*, POU_D_*, Q4G, TUYAU
+!
+! Options: EPVC_ELGA, EPME_ELGA, EPSP_ELGA
+!
+! --------------------------------------------------------------------------------------------------
+!
     integer(kind=8) :: npg
-    integer(kind=8) :: nbcmp, jnbspi, idefo, nbcou, icomp, imate, iret
-    integer(kind=8) :: nbsp, ipg, ksp, i, idefto, icomp2, idsig, icomp3
+    integer(kind=8) :: nbcmp, jnbspi, jvEpsiMeca, nbLayer, icomp, jvMater, iret
+    integer(kind=8) :: nbsp, ipg, ksp, i, jvEpsi, icomp2, jvSigm, icomp3
     integer(kind=8) :: nbgf, icp, isdcom, ig, nbfig, ifib, icaba
-    integer(kind=8) :: nbsec, iret1, nbpar, nbv, icodre(2), tygrfi, nbcarm, nug(10)
-    real(kind=8) :: epsth, sigma(6), trsig, temp, valres(2), e, nu, c1, c2, a
+    integer(kind=8) :: nbsec, tygrfi, nbcarm, nug(10)
+    real(kind=8) :: epsth, sigma(6), trsig, e, nu, c1, c2, a
     character(len=4)  :: fami
-    character(len=8)  :: materi, nompar, nomres(2)
-    character(len=32) :: phenom
+    character(len=8)  :: materi
+    character(len=16) :: elasKeyword
     character(len=16), pointer :: compor(:) => null()
-    aster_logical :: lmeca, pmf, grille, tuyau, barre, coque, lplas
-
+    integer(kind=8) :: elasID
+    aster_logical :: lmeca, pmf, grille, lPipe, barre, coque, lplas
+!
+! --------------------------------------------------------------------------------------------------
+!
     nbcmp = 1
     materi = ' '
     lmeca = .false.
     lplas = .false.
     fami = 'RIGI'
-!
-    call elrefe_info(fami=fami, npg=npg)
 
+! - Get modelisation
+    call elrefe_info(fami=fami, npg=npg)
     grille = lteatt('GRILLE', 'OUI')
     pmf = lteatt('TYPMOD2', 'PMF')
-    tuyau = lteatt('TUYAU', 'OUI')
+    lPipe = lteatt('TUYAU', 'OUI')
     barre = (nomte .eq. 'MECA_BARRE')
     if (grille) then
         coque = .false.
     else
         coque = lteatt('COQUE', 'OUI')
     end if
-!
-    call tecach('NNO', 'PMATERC', 'L', iret, iad=imate)
-    call jevech('PDEFOPG', 'E', idefo)
 
+! - Get material properties
+    call tecach('NNO', 'PMATERC', 'L', iret, iad=jvMater)
+
+! - Get (mechanical) strains
+    call jevech('PDEFOPG', 'E', jvEpsiMeca)
+
+! - Get (total) strains
     if (option .eq. 'EPME_ELGA' .or. option .eq. 'EPSP_ELGA') then
         lmeca = .true.
-        call jevech('PDEFORR', 'L', idefto)
+        call jevech('PDEFORR', 'L', jvEpsi)
     end if
-!
+
+! - Get stress and access to elastic material parameters
     if (option .eq. 'EPSP_ELGA') then
         lplas = .true.
-        call jevech('PCONTRR', 'L', idsig)
-!
-        nbv = 2
-        nomres(1) = 'E'
-        nomres(2) = 'NU'
-        nbpar = 1
-        nompar = 'TEMP'
-!
-        call rccoma(zi(imate), 'ELAS', 1, phenom, icodre(1))
-        if (phenom .ne. 'ELAS') call utmess('F', 'ELEMENTS_49', valk=[phenom, option])
+        call jevech('PCONTRR', 'L', jvSigm)
+        call get_elas_id(zi(jvMater), elasID, elasKeyword)
+        if (elasKeyword .ne. 'ELAS') then
+            call utmess('F', 'ELEMENTS_49', valk=[elasKeyword, option])
+        end if
     end if
-!
-    if (.not. grille .and. .not. barre) then
+
+! - Get number of sub-points
+    nbsp = 0
+    if (coque) then
         call jevech('PNBSP_I', 'L', jnbspi)
-    else
+        nbLayer = zi(jnbspi-1+1)
+        nbsp = 3*nbLayer
+        nbsec = 3
+        nbsp = nbLayer*nbsec
+
+    elseif (lPipe) then
+        call pipeGetSubPoints(nspg_=nbsp)
+
+    elseif (grille .or. barre) then
         nbsp = 1
+
+    elseif (pmf) then
+
+    else
+        ASSERT(ASTER_FALSE)
     end if
-!
-    if (coque .or. tuyau) then
-!
-        nbcou = zi(jnbspi-1+1)
-        if (lplas) then
-            call utmess('A', 'ELEMENTS3_13')
+
+! - Compute option
+    if (coque .or. lPipe) then
+        if (lmeca) then
+            nbcmp = 6
         end if
-        if (tuyau) then
-            nbsec = zi(jnbspi-1+2)
-        else
-            nbsec = 3
-        end if
-        nbsp = nbcou*nbsec
-        if (lmeca) nbcmp = 6
-!
         do ipg = 1, npg
             do ksp = 1, nbsp
-!
-                call verift(fami, ipg, ksp, '+', zi(imate), &
+                call verift(fami, ipg, ksp, '+', zi(jvMater), &
                             epsth_=epsth)
-!
-                icomp = idefo+nbcmp*nbsp*(ipg-1)+nbcmp*(ksp-1)-1
+                icomp = jvEpsiMeca+nbcmp*nbsp*(ipg-1)+nbcmp*(ksp-1)-1
                 if (lmeca) then
-                    icomp2 = idefto+nbcmp*nbsp*(ipg-1)+nbcmp*(ksp-1)-1
+                    icomp2 = jvEpsi+nbcmp*nbsp*(ipg-1)+nbcmp*(ksp-1)-1
                     do i = 1, 2
                         zr(icomp+i) = zr(icomp2+i)-epsth
                     end do
@@ -139,25 +143,16 @@ subroutine te0531(option, nomte)
                         zr(icomp+i) = zr(icomp2+i)
                     end do
                     if (lplas) then
-                        call rcvarc(' ', 'TEMP', '+', fami, ipg, &
-                                    ksp, temp, iret1)
-                        call rcvalb(fami, ipg, ksp, '+', zi(imate), &
-                                    ' ', phenom, nbpar, nompar, [temp], &
-                                    nbv, nomres, valres, icodre, 1)
-!
-                        e = valres(1)
-                        nu = valres(2)
+                        call get_elas_para(fami, zi(jvMater), '+', ipg, ksp, &
+                                           elasID, elasKeyword, &
+                                           e_=e, nu_=nu)
                         c1 = (1.d0+nu)/e
                         c2 = nu/e
-!
-                        icomp3 = idsig+nbcmp*nbsp*(ipg-1)+nbcmp*(ksp-1)-1
-!
+                        icomp3 = jvSigm+nbcmp*nbsp*(ipg-1)+nbcmp*(ksp-1)-1
                         do i = 1, nbcmp
                             sigma(i) = zr(icomp3+i)
                         end do
-!
                         trsig = sigma(1)+sigma(2)+sigma(3)
-!
 !                       soustraction des deformations elastiques
                         do i = 1, 2
                             zr(icomp+i) = zr(icomp+i)-(c1*sigma(i)-c2*trsig)
@@ -174,54 +169,42 @@ subroutine te0531(option, nomte)
                 else
                     zr(icomp+1) = epsth
                 end if
-!
             end do
         end do
 !
     else if (grille .or. barre) then
-
         if (barre .and. lplas) then
             call jevech('PCAGNBA', 'L', icaba)
             a = zr(icaba)
         else
             a = 1.d0
         end if
-!
         do ipg = 1, npg
             do ksp = 1, nbsp
-!
-                call verift(fami, ipg, ksp, '+', zi(imate), &
+                call verift(fami, ipg, ksp, '+', zi(jvMater), &
                             epsth_=epsth)
-!
-                icomp = idefo+nbcmp*nbsp*(ipg-1)+nbcmp*(ksp-1)-1
+                icomp = jvEpsiMeca+nbcmp*nbsp*(ipg-1)+nbcmp*(ksp-1)-1
                 if (lmeca) then
-                    icomp2 = idefto+nbcmp*nbsp*(ipg-1)+nbcmp*(ksp-1)-1
+                    icomp2 = jvEpsi+nbcmp*nbsp*(ipg-1)+nbcmp*(ksp-1)-1
                     zr(icomp+1) = zr(icomp2+1)-epsth
                     if (lplas) then
-                        call rcvarc(' ', 'TEMP', '+', fami, ipg, &
-                                    ksp, temp, iret1)
-                        call rcvalb(fami, ipg, ksp, '+', zi(imate), &
-                                    ' ', phenom, nbpar, nompar, [temp], &
-                                    nbv, nomres, valres, icodre, 1)
-!
-                        e = valres(1)
+                        call get_elas_para(fami, zi(jvMater), '+', ipg, ksp, &
+                                           elasID, elasKeyword, &
+                                           e_=e)
                         c1 = 1.d0/e
-!
-                        icomp3 = idsig+nbcmp*nbsp*(ipg-1)+nbcmp*(ksp-1)-1
+                        icomp3 = jvSigm+nbcmp*nbsp*(ipg-1)+nbcmp*(ksp-1)-1
 !                       soustraction des deformations elastiques
                         zr(icomp+1) = zr(icomp+1)-c1*zr(icomp3+1)/a
                     end if
                 else
                     zr(icomp+1) = epsth
                 end if
-!
             end do
         end do
 !
     else if (pmf) then
 !       Récupération des caractéristiques des fibres
         call pmfinfo(nbsp, nbgf, tygrfi, nbcarm, nug)
-!
         call jevech('PCOMPOR', 'L', vk16=compor)
         call jeveuo(compor(MULTCOMP), 'L', isdcom)
         do ipg = 1, npg
@@ -232,41 +215,32 @@ subroutine te0531(option, nomte)
                 read (zk24(icp+MULTI_FIBER_NBFI), '(I24)') nbfig
                 materi = zk24(icp+MULTI_FIBER_MATER) (1:8)
                 do ifib = 1, nbfig
-!
                     ksp = ksp+1
                     ASSERT(ksp .le. nbsp)
 
-                    call verift(fami, ipg, ksp, '+', zi(imate), &
+                    call verift(fami, ipg, ksp, '+', zi(jvMater), &
                                 materi_=materi, epsth_=epsth)
-
-                    icomp = idefo+nbcmp*nbsp*(ipg-1)+nbcmp*(ksp-1)-1
+                    icomp = jvEpsiMeca+nbcmp*nbsp*(ipg-1)+nbcmp*(ksp-1)-1
                     if (lmeca) then
-                        icomp2 = idefto+nbcmp*nbsp*(ipg-1)+nbcmp*(ksp-1)-1
+                        icomp2 = jvEpsi+nbcmp*nbsp*(ipg-1)+nbcmp*(ksp-1)-1
                         zr(icomp+1) = zr(icomp2+1)-epsth
                         if (lplas) then
-                            call rcvarc(' ', 'TEMP', '+', fami, ipg, &
-                                        ksp, temp, iret1)
-                            call rcvalb(fami, ipg, ksp, '+', zi(imate), &
-                                        ' ', phenom, nbpar, nompar, [temp], &
-                                        nbv, nomres, valres, icodre, 1)
-!
-                            e = valres(1)
+                            call get_elas_para(fami, zi(jvMater), '+', ipg, ksp, &
+                                               elasID, elasKeyword, &
+                                               e_=e)
                             c1 = 1.d0/e
-!
-                            icomp3 = idsig+nbcmp*nbsp*(ipg-1)+nbcmp*(ksp-1)-1
-
+                            icomp3 = jvSigm+nbcmp*nbsp*(ipg-1)+nbcmp*(ksp-1)-1
 !                           soustraction des deformations elastiques
                             zr(icomp+1) = zr(icomp+1)-c1*zr(icomp3+1)
                         end if
                     else
                         zr(icomp+1) = epsth
                     end if
-!
                 end do
             end do
         end do
     else
-        ASSERT(.false.)
+        ASSERT(ASTER_FALSE)
     end if
 !
 end subroutine

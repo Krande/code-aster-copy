@@ -42,6 +42,7 @@ ParallelMesh::ParallelMesh( const std::string &name )
       _cellsOwners( getName() + ".MAEX" ),
       _globalNodeIds( getName() + ".NUNOLG" ),
       _globalCellIds( getName() + ".NUMALG" ),
+      _lastGhostsLayer( getName() + ".LASTGHOLAYER" ),
       _joints( std::make_shared< Joints >( getName() + ".JOIN" ) ) {};
 
 void ParallelMesh::_buildGlobal2LocalNodeIdsMapPtr() {

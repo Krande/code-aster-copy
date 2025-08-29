@@ -32,5 +32,5 @@ subroutine cnscno_wrap(cnsz, nume_equaz, prol0, basez, cnoz, kstop, iret)
     ! create numbering
     call crnggn(cnoz)
     ! communicate numbering
-    call crnggc(cnoz)
+    call crnggc(cnoz, l_print=ASTER_FALSE)
 end subroutine

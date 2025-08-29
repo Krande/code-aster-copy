@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -176,14 +176,6 @@ cata_msg = {
         """
  Le NUME_ORDRE_MIN %(i1)d qui correspond a l'instant %(r1)f est <= %(i2)d ]
  La convergence est forcée.
-"""
-    ),
-    34: _(
-        """
- CONVERGENCE MACR_ECREVISSE - Instant de calcul : %(r1)f
-   Erreur en Température : %(r2)f ; Écart en Température : %(r3)f
-   Erreur en Pression    : %(r4)f ; Écart en Pression    : %(r5)f
-   Erreur Température/Pression     : %(r6)f  ]
 """
     ),
     34: _(

@@ -40,6 +40,14 @@ CCACOQU = LocatedComponents(
 
 CCAORIE = LocatedComponents(phys=PHY.CAORIE_R, type="ELEM", components=("ALPHA", "BETA", "REP"))
 
+# - Warning ! non-standard / located_components.py (MASS instead of RIGI)
+EGMINMAX = LocatedComponents(
+    phys=PHY.SPMX_R,
+    type="ELGA",
+    location="MASS",
+    components=("VAL", "NUCOU", "NUSECT", "NUFIBR", "POSIC", "POSIS"),
+)
+
 NDEPLAC = LocatedComponents(
     phys=PHY.DEPL_C,
     type="ELNO",
@@ -238,14 +246,6 @@ EEFGEPGR = LocatedComponents(
     type="ELGA",
     location="MASS",
     components=("NXX", "NYY", "NXY", "MXX", "MYY", "MXY", "QX", "QY"),
-)
-
-
-EGAMIMA = LocatedComponents(
-    phys=PHY.SPMX_R,
-    type="ELGA",
-    location="MASS",
-    components=("VAL", "NUCOU", "NUSECT", "NUFIBR", "POSIC", "POSIS"),
 )
 
 
@@ -617,7 +617,7 @@ class TemplateElement(Element):
             ),
             para_out=((SP.PMATUUR, MMATUUR),),
         ),
-        OP.MINMAX_SP(te=99, para_out=((SP.PGAMIMA, EGAMIMA), (SP.PNOMIMA, LC.ENOMIMA))),
+        OP.MINMAX_SP(te=99, para_out=((SP.PGAMIMA, EGMINMAX), (SP.PNOMIMA, LC.NMINMAX))),
         OP.M_GAMMA(
             te=406,
             para_in=(
@@ -962,7 +962,9 @@ class TemplateElement(Element):
             para_out=((OP.VARI_ELNO.PVARINR, LC.ZVARINO),),
         ),
         OP.VERI_CARA_ELEM(
-            te=119, para_in=((SP.PCACOQU, CCACOQU),), para_out=((SP.PBIDON, LC.ECOURAN),)
+            te=119,
+            para_in=((SP.PCACOQU, CCACOQU),),
+            para_out=((SP.PCODRET, LC.ECODRET), (SP.PINDICR, LC.CINDICR)),
         ),
     )
 

@@ -133,14 +133,6 @@ Les champs réel et imaginaire à assembler ne contiennent pas la même grandeur
  la grandeur  %(k1)s  ne possède pas les mêmes champs que son homologue complexe  %(k2)s
 """
     ),
-    24: _(
-        """
- Le modèle donné dans le mot-clé MODELE n'est pas le même que celui présent dans la
- structure de données résultat. Ce n'est pas autorisé.
- En effet, le mot-clé MODELE de CALC_CHAMP n'est utilisable que dans le cas où le
- modèle est manquant dans la structure de données résultat.
-"""
-    ),
     25: _(
         """
 Erreur utilisateur :

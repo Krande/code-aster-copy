@@ -51,13 +51,12 @@ subroutine ndasva(sddyna, nlDynaDamping, hval_veasse, cnvady)
 !
 ! --------------------------------------------------------------------------------------------------
 !
-    aster_logical :: l_impe, l_mstp, lDampModal, lDampMatrix
+    aster_logical :: l_mstp, lDampModal, lDampMatrix
     real(kind=8) :: coeam0
     type(NL_DS_VectComb) :: ds_vectcomb
 !
 ! --------------------------------------------------------------------------------------------------
 !
-    l_impe = ndynlo(sddyna, 'IMPE_ABSO')
     l_mstp = ndynlo(sddyna, 'MULTI_PAS')
     lDampModal = nlDynaDamping%lDampModal
     lDampMatrix = nlDynaDamping%hasMatrDamp
@@ -77,9 +76,6 @@ subroutine ndasva(sddyna, nlDynaDamping, hval_veasse, cnvady)
         if (l_mstp) then
             call nonlinDSVectCombAddDyna(sddyna, 'CNHYST', -1.d0*coeam0, ds_vectcomb)
         end if
-    end if
-    if (l_impe) then
-        call nonlinDSVectCombAddHat(hval_veasse, 'CNIMPE', -1.d0, ds_vectcomb)
     end if
 
 ! - Combination

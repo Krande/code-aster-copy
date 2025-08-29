@@ -77,16 +77,6 @@ class MEFA_FACE3UP(Element):
             para_in=((SP.PDEPLAR, DDL_MECA), (SP.PGEOMER, LC.EGEOM3D), (SP.PMATERC, LC.CMATERC)),
             para_out=((SP.PVECTUR, MVECTUR),),
         ),
-        OP.IMPE_ABSO(
-            te=99,
-            para_in=(
-                (SP.PGEOMER, NGEOMER),
-                (SP.PMATERC, LC.CMATERC),
-                (SP.PVITENT, DDL_MECA),
-                (SP.PVITPLU, DDL_MECA),
-            ),
-            para_out=((SP.PVECTUR, MVECTUR),),
-        ),
         OP.AMOR_MECA(
             te=10,
             para_in=(

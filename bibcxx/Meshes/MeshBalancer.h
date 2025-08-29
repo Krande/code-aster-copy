@@ -53,6 +53,8 @@ class MeshBalancer {
     VectorLong _cellRenumbering;
     /** @brief ghost layer size */
     int _ghostLayer = 1;
+    /** @brief Ghost nodes on the last layer */
+    VectorInt _lastLayerGhostNodes;
 
     void buildBalancersAndInterfaces( VectorInt &newLocalNodesList, VectorOfVectorsLong &interfaces,
                                       VectorLong &nOwners );
@@ -75,6 +77,10 @@ class MeshBalancer {
                     JeveuxVectorLong &typeOut, JeveuxContiguousCollectionLong &connexOut );
 
     void sortCells( VectorLong &vectIn, VectorLong &vectOut ) const;
+    /**
+     * @brief Converts the last ghosts layer from global numbering to local
+     */
+    void convertLastGhostLayerToLocal( const VectorLong &globNodeNumVect );
 
     void _enrichBalancers( const VectorInt &newLocalNodesList, int iProc, int rank,
                            VectorOfVectorsLong &procInterfaces, VectorOfVectorsLong & );

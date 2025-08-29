@@ -15,23 +15,29 @@
 ! You should have received a copy of the GNU General Public License
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
+! aslint: disable=W0413
 !
-subroutine ccvrrl(nommai, modele, carael, mesmai, chames, &
-                  cmperr, codret)
+subroutine ccvrrl(mesh, model, caraElem, &
+                  lRestCell, nbRestCell, restCellJv, &
+                  fieldElnoS, codret)
+!
     implicit none
-!     --- ARGUMENTS ---
-#include "asterf_types.h"
-#include "jeveux.h"
+!
 #include "asterc/indik8.h"
 #include "asterc/r8rddg.h"
+#include "asterf_types.h"
 #include "asterfort/angvec.h"
+#include "asterfort/as_allocate.h"
+#include "asterfort/as_deallocate.h"
+#include "asterfort/assert.h"
 #include "asterfort/carces.h"
 #include "asterfort/cccmcr.h"
 #include "asterfort/cncinv.h"
 #include "asterfort/detrsd.h"
+#include "asterfort/dismoi.h"
+#include "asterfort/exisd.h"
 #include "asterfort/jedema.h"
 #include "asterfort/jedetr.h"
-#include "asterfort/jeexin.h"
 #include "asterfort/jelira.h"
 #include "asterfort/jemarq.h"
 #include "asterfort/jeveuo.h"
@@ -39,18 +45,20 @@ subroutine ccvrrl(nommai, modele, carael, mesmai, chames, &
 #include "asterfort/jexnum.h"
 #include "asterfort/utmess.h"
 #include "asterfort/utpvlg.h"
-#include "asterfort/wkvect.h"
-#include "asterfort/int_to_char8.h"
+#include "jeveux.h"
 !
-    integer(kind=8) :: codret
-    character(len=1) :: cmperr
-    character(len=8) :: nommai, modele, carael
-    character(len=19) :: chames
-    character(len=24) :: mesmai
-! ----------------------------------------------------------------------
+    character(len=8), intent(in) :: mesh, model, caraElem
+    aster_logical, intent(in) :: lRestCell
+    integer(kind=8), intent(in) :: nbRestCell
+    character(len=24), intent(in) :: restCellJv
+    character(len=19), intent(in) :: fieldElnoS
+    integer(kind=8), intent(out) :: codret
+!
+! --------------------------------------------------------------------------------------------------
+!
 !  CALC_CHAMP - VERIFICATION DES REPERES LOCAUX
-!  -    -       - -              -       -
-! ----------------------------------------------------------------------
+!
+! --------------------------------------------------------------------------------------------------
 !
 !  ROUTINE SERVANT A VERIFIER L'ORIENTATION DES REPERES LOCAUX
 !    LORS DU PASSAGE ELNO -> NOEU
@@ -71,57 +79,53 @@ subroutine ccvrrl(nommai, modele, carael, mesmai, chames, &
 !   CODRET  I    CODE RETOUR
 !     0 SI OK
 !     1 EN CAS DE PROBLEME
-! ----------------------------------------------------------------------
-! person_in_charge: nicolas.sellenet at edf.fr
-    integer(kind=8) :: jmai, nbma, ier, nbno, jconi1, jconi2, ima, ncmax, i
-    integer(kind=8) :: posit, posma, numma, ima2, numma2, ino, jcesd, jcesl
-    integer(kind=8) :: jcesv, iexori, jrepe, iepais, nbmato, jvect, idir
+!
+! --------------------------------------------------------------------------------------------------
+!
+    real(kind=8), parameter :: maxtol = 8.7266463d-2
+    integer(kind=8) :: jvRestCell, nbCell, ier, nbNodeMesh, jconi1, jconi2, iCell, ncmax
+    integer(kind=8) :: posit, posma, cellNume, iCell2, cellNume2, iNodeMesh, jcesd, jcesl
+    integer(kind=8) :: jcesv, iexori, jrepe, iepais, nbCellMesh, idir
     integer(kind=8) :: jconx1, jconx2, jcoord, jcesdc, ialpha, ibeta
     integer(kind=8) :: jalpha, jbeta, jgamma, jcesc, jcescc, jcesdd, jceslc, jcesvc
     integer(kind=8) :: adcar1(3), adcar2(3)
-!
-    real(kind=8) :: maxtol, maxdif, tabres(1), angle1, angle2
+    real(kind=8) :: maxdif, angle1, angle2
     real(kind=8) :: pgl(3, 3), vl(3), vg1(3), vg2(3), vg3(3), vg4(3)
-!
-    character(len=8) :: nomail
     character(len=16) :: modeli
-    character(len=19) :: cnxinv, carsd, ligrmo, carcc, vecsau
-    character(len=24) :: carori, carcoq
-!
-    aster_logical :: llimai, lprobm
+    character(len=19) :: cnxinv, carsd, modelLigrel, carcc
+    aster_logical :: lprobm
     integer(kind=8), pointer :: dime(:) => null()
-    parameter(maxtol=8.7266463d-2)
+    real(kind=8), pointer :: workVect(:) => null()
+!
+! --------------------------------------------------------------------------------------------------
 !
     call jemarq()
+
+! - Initializations
     codret = 0
-    ligrmo = modele//'.MODELE'
-    call jeveuo(ligrmo//'.REPE', 'L', jrepe)
-!
-!   OBJETS QUI SERONT EVENTUELLEMNT CREES :
     carsd = '&&CCVRRL.CARORIEN'
     carcc = '&&CCVRRL.CARCOQUE'
     cnxinv = '&&CCVRRL.CNCINV'
-    vecsau = '&&CCVRRL.VECT'
-!
-!   DOIT ON REDUIRE LE CALCUL SUR UNE LISTE DE MAILLES
-    call jeexin(mesmai, ier)
-    if (ier .ne. 0) then
-        call jeveuo(mesmai, 'L', jmai)
-        call jelira(mesmai, 'LONMAX', nbma)
-        llimai = .true.
+    call dismoi("NOM_LIGREL", model, "MODELE", repk=modelLigrel)
+    call jeveuo(modelLigrel//'.REPE', 'L', jrepe)
+
+! - Access to mesh
+    call jeveuo(mesh//'.DIME', 'L', vi=dime)
+    nbCellMesh = dime(3)
+
+! - Access to restricted list of cells
+    if (lRestCell) then
+        call jeveuo(restCellJv, 'L', jvRestCell)
     else
-        jmai = 1
-        nbma = 0
-        llimai = .false.
+        jvRestCell = 1
+        ASSERT(nbRestCell .eq. 0)
     end if
-    call jeveuo(chames//'.CESD', 'L', jcesdd)
-!
+    call jeveuo(fieldElnoS//'.CESD', 'L', jcesdd)
+
 !   CONVERSION DE LA CARTE D'ORIENTATION EN UN CHAM_ELEM_S
-    carori = carael//'.CARORIEN  .VALE'
-    call jeexin(carori, iexori)
-    if (iexori .ne. 0) then
-        call carces(carael//'.CARORIEN', 'ELEM', ' ', 'V', carsd, &
-                    ' ', ier)
+    call exisd('CARTE', caraElem//'.CARORIEN', iexori)
+    if (iexori .eq. 1) then
+        call carces(caraElem//'.CARORIEN', 'ELEM', ' ', 'V', carsd, ' ', ier)
         call jeveuo(carsd//'.CESD', 'L', jcesd)
         call jeveuo(carsd//'.CESL', 'L', jcesl)
         call jeveuo(carsd//'.CESV', 'L', jcesv)
@@ -136,13 +140,11 @@ subroutine ccvrrl(nommai, modele, carael, mesmai, chames, &
         jcesv = 0
         jcesc = 0
     end if
-!
+
 !   CONVERSION DE LA CARTE CARACTERISTIQUE DES COQUES EN UN CHAM_ELEM_S
-    carcoq = carael//'.CARCOQUE  .VALE'
-    call jeexin(carcoq, iexori)
-    if (iexori .ne. 0) then
-        call carces(carael//'.CARCOQUE', 'ELEM', ' ', 'V', carcc, &
-                    ' ', ier)
+    call exisd('CARTE', caraElem//'.CARCOQUE', iexori)
+    if (iexori .eq. 1) then
+        call carces(caraElem//'.CARCOQUE', 'ELEM', ' ', 'V', carcc, ' ', ier)
         call jeveuo(carcc//'.CESD', 'L', jcesdc)
         call jeveuo(carcc//'.CESL', 'L', jceslc)
         call jeveuo(carcc//'.CESV', 'L', jcesvc)
@@ -157,25 +159,22 @@ subroutine ccvrrl(nommai, modele, carael, mesmai, chames, &
         jcesvc = 0
         jcescc = 0
     end if
-!
-!   CREATION DE LA CONNECTIVITE INVERSE
-    call cncinv(nommai, zi(jmai), nbma, 'V', cnxinv)
-!
-    call jeveuo(nommai//'.DIME', 'L', vi=dime)
-    nbmato = dime(3)
-    call wkvect(vecsau, 'V V R', 6*nbmato, jvect)
-    do i = 1, 6*nbmato
-        zr(jvect+i-1) = 0.d0
-    end do
-!
-    call jelira(cnxinv, 'NUTIOC', nbno)
-!
+
+! - Working vector
+    AS_ALLOCATE(vr=workVect, size=6*nbCellMesh)
+
+! - Inverse connectivity
+    if (lRestCell) then
+        call cncinv(mesh, zi(jvRestCell), nbRestCell, 'V', cnxinv)
+    else
+        call cncinv(mesh, [0], 0, 'V', cnxinv)
+    end if
+    call jelira(cnxinv, 'NUTIOC', nbNodeMesh)
     call jeveuo(jexnum(cnxinv, 1), 'L', jconi1)
     call jeveuo(jexatr(cnxinv, 'LONCUM'), 'L', jconi2)
-!
-    call jeveuo(jexnum(nommai//'.CONNEX', 1), 'L', jconx1)
-    call jeveuo(jexatr(nommai//'.CONNEX', 'LONCUM'), 'L', jconx2)
-    call jeveuo(nommai//'.COORDO    .VALE', 'L', jcoord)
+    call jeveuo(jexnum(mesh//'.CONNEX', 1), 'L', jconx1)
+    call jeveuo(jexatr(mesh//'.CONNEX', 'LONCUM'), 'L', jconx2)
+    call jeveuo(mesh//'.COORDO    .VALE', 'L', jcoord)
 !
     adcar1(1) = jcesd
     adcar1(2) = jcesl
@@ -184,38 +183,38 @@ subroutine ccvrrl(nommai, modele, carael, mesmai, chames, &
     adcar2(2) = jceslc
     adcar2(3) = jcesvc
     lprobm = .false.
-!
+
 !   BOUCLE SUR TOUS LES NOEUDS DU MAILLAGE
     maxdif = 0.d0
-    do ino = 1, nbno
-        nbma = zi(jconi2+ino)-zi(jconi2+ino-1)
-        posit = zi(jconi2+ino-1)
-!
-!       GRACE A LA CONNECTIVITE INVERSE, ON TROUVE LES MAILLES LIEES
-        do ima = 1, nbma
-            posma = zi(jconi1+posit+ima-2)
-!           LE COMPORTEMENT DE CNCINV N'EST PAS LE MEME SUIVANT QU'ON DONNE OU NON MESMAI
-            if (posma .eq. 0) goto 20
-            if (llimai) then
-                numma = zi(jmai+posma-1)
+    do iNodeMesh = 1, nbNodeMesh
+        nbCell = zi(jconi2+iNodeMesh)-zi(jconi2+iNodeMesh-1)
+        posit = zi(jconi2+iNodeMesh-1)
+
+        do iCell = 1, nbCell
+            posma = zi(jconi1+posit+iCell-2)
+            if (posma .eq. 0) cycle
+
+! --------- Get index of cell
+            if (lRestCell) then
+                cellNume = zi(jvRestCell+posma-1)
             else
-                numma = posma
+                cellNume = posma
             end if
-            if (numma .eq. 0) goto 20
+            if (cellNume .eq. 0) cycle
 !
-            if ((zr(jvect+6*(numma-1)) .eq. 0.d0) .and. (zr(jvect+6*(numma-1)+1) .eq. 0.d0) &
-                .and. (zr(jvect+6*(numma-1)+2) .eq. 0.d0) .and. &
-                (zr(jvect+6*(numma-1)+3) .eq. 0.d0) .and. (zr(jvect+6*(numma-1)+4) .eq. 0.d0) &
-                .and. (zr(jvect+6*(numma-1)+5) .eq. 0.d0)) then
-!
-                call cccmcr(jcesdd, numma, jrepe, jconx2, jconx1, &
+            if ((workVect(6*(cellNume-1)+1) .eq. 0.d0) .and. &
+                (workVect(6*(cellNume-1)+2) .eq. 0.d0) .and. &
+                (workVect(6*(cellNume-1)+3) .eq. 0.d0) .and. &
+                (workVect(6*(cellNume-1)+4) .eq. 0.d0) .and. &
+                (workVect(6*(cellNume-1)+5) .eq. 0.d0) .and. &
+                (workVect(6*(cellNume-1)+6) .eq. 0.d0)) then
+                call cccmcr(jcesdd, cellNume, jrepe, jconx2, jconx1, &
                             jcoord, adcar1, adcar2, ialpha, ibeta, &
-                            iepais, jalpha, jbeta, jgamma, ligrmo, &
-                            ino, pgl, modeli, ier)
-                if (ier .eq. 3) goto 20
+                            iepais, jalpha, jbeta, jgamma, modelLigrel, &
+                            iNodeMesh, pgl, modeli, ier)
+                if (ier .eq. 3) cycle
                 if (ier .eq. 1) then
-                    nomail = int_to_char8(numma)
-                    call utmess('A', 'MODELISA10_5', sk=nomail)
+                    call utmess('A', 'MODELISA10_5', si=cellNume)
                 end if
 !
                 vl(1) = 1.d0
@@ -229,43 +228,43 @@ subroutine ccvrrl(nommai, modele, carael, mesmai, chames, &
 !               sauvegarde de la valeur trouvee sauf pour les coques 3d
                 if (modeli .ne. 'CQ3') then
                     do idir = 1, 3
-                        zr(jvect+6*(numma-1)+idir-1) = vg1(idir)
-                        zr(jvect+3+6*(numma-1)+idir-1) = vg2(idir)
+                        workVect(6*(cellNume-1)+idir) = vg1(idir)
+                        workVect(3+6*(cellNume-1)+idir) = vg2(idir)
                     end do
                 end if
             else
                 do idir = 1, 3
-                    vg1(idir) = zr(jvect+6*(numma-1)+idir-1)
-                    vg2(idir) = zr(jvect+3+6*(numma-1)+idir-1)
+                    vg1(idir) = workVect(6*(cellNume-1)+idir)
+                    vg2(idir) = workVect(3+6*(cellNume-1)+idir)
                 end do
             end if
 !
-!           Compare les repères des autres mailles liées au noeud ino
-            do ima2 = ima+1, nbma
-                posma = zi(jconi1+posit+ima2-2)
-                if (posma .eq. 0) goto 30
-                if (llimai) then
-                    numma2 = zi(jmai+posma-1)
+!           Compare les repères des autres mailles liées au noeud iNodeMesh
+            do iCell2 = iCell+1, nbCell
+                posma = zi(jconi1+posit+iCell2-2)
+                if (posma .eq. 0) cycle
+! ------------- Get index of cell
+                if (lRestCell) then
+                    cellNume2 = zi(jvRestCell+posma-1)
                 else
-                    numma2 = posma
+                    cellNume2 = posma
                 end if
-                if (numma2 .eq. 0) goto 30
+                if (cellNume2 .eq. 0) cycle
 !
-                if ((zr(jvect+6*(numma2-1)) .eq. 0.d0) .and. &
-                    (zr(jvect+6*(numma2-1)+1) .eq. 0.d0) .and. &
-                    (zr(jvect+6*(numma2-1)+2) .eq. 0.d0) .and. &
-                    (zr(jvect+6*(numma2-1)+3) .eq. 0.d0) .and. &
-                    (zr(jvect+6*(numma2-1)+4) .eq. 0.d0) .and. &
-                    (zr(jvect+6*(numma2-1)+5) .eq. 0.d0)) then
+                if ((workVect(6*(cellNume2-1)+1) .eq. 0.d0) .and. &
+                    (workVect(6*(cellNume2-1)+2) .eq. 0.d0) .and. &
+                    (workVect(6*(cellNume2-1)+3) .eq. 0.d0) .and. &
+                    (workVect(6*(cellNume2-1)+4) .eq. 0.d0) .and. &
+                    (workVect(6*(cellNume2-1)+5) .eq. 0.d0) .and. &
+                    (workVect(6*(cellNume2-1)+6) .eq. 0.d0)) then
 !
-                    call cccmcr(jcesdd, numma2, jrepe, jconx2, jconx1, &
+                    call cccmcr(jcesdd, cellNume2, jrepe, jconx2, jconx1, &
                                 jcoord, adcar1, adcar2, ialpha, ibeta, &
-                                iepais, jalpha, jbeta, jgamma, ligrmo, &
-                                ino, pgl, modeli, ier)
-                    if (ier .eq. 3) goto 30
+                                iepais, jalpha, jbeta, jgamma, modelLigrel, &
+                                iNodeMesh, pgl, modeli, ier)
+                    if (ier .eq. 3) cycle
                     if (ier .eq. 1) then
-                        nomail = int_to_char8(numma2)
-                        call utmess('A', 'MODELISA10_5', sk=nomail)
+                        call utmess('A', 'MODELISA10_5', si=cellNume2)
                     end if
 !
                     vl(1) = 1.d0
@@ -279,15 +278,15 @@ subroutine ccvrrl(nommai, modele, carael, mesmai, chames, &
 !                   sauvegarde de la valeur trouvee sauf pour les coques3d
                     if (modeli .ne. 'COQUE_3D') then
                         do idir = 1, 3
-                            zr(jvect+6*(numma2-1)+idir-1) = vg3(idir)
-                            zr(jvect+3+6*(numma2-1)+idir-1) = vg4(idir)
+                            workVect(6*(cellNume2-1)+idir) = vg3(idir)
+                            workVect(3+6*(cellNume2-1)+idir) = vg4(idir)
                         end do
                     end if
 !
                 else
                     do idir = 1, 3
-                        vg3(idir) = zr(jvect+6*(numma2-1)+idir-1)
-                        vg4(idir) = zr(jvect+3+6*(numma2-1)+idir-1)
+                        vg3(idir) = workVect(6*(cellNume2-1)+idir)
+                        vg4(idir) = workVect(3+6*(cellNume2-1)+idir)
                     end do
                 end if
 !
@@ -298,23 +297,17 @@ subroutine ccvrrl(nommai, modele, carael, mesmai, chames, &
                     maxdif = max(angle2, maxdif)
                     lprobm = .true.
                 end if
-!
-30              continue
             end do
-20          continue
         end do
     end do
 !
     if (lprobm) then
-        if (cmperr .ne. ' ') then
-            tabres(1) = maxdif*r8rddg()
-            call utmess(cmperr, 'UTILITAI_4', sr=tabres(1))
-        end if
+        call utmess('A', 'UTILITAI_4', sr=maxdif*r8rddg())
         codret = 1
     end if
 !
+    AS_DEALLOCATE(vr=workVect)
     call jedetr(cnxinv)
-    call jedetr(vecsau)
     call detrsd('CHAM_ELEM_S', carsd)
     call detrsd('CHAM_ELEM_S', carcc)
 !
