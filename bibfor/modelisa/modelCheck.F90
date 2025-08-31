@@ -16,7 +16,8 @@
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
 !
-subroutine modelCheck(model, lCheckJacobian, lCheckFSINorms, lCheckPlaneity)
+subroutine modelCheck(model, &
+                      lCheckJacobian, lCheckFSINorms, lCheckPlaneity, lCheckFSIFormulation)
 !
     implicit none
 !
@@ -33,6 +34,7 @@ subroutine modelCheck(model, lCheckJacobian, lCheckFSINorms, lCheckPlaneity)
 !
     character(len=8), intent(in) :: model
     aster_logical, intent(in) :: lCheckJacobian, lCheckFSINorms, lCheckPlaneity
+    aster_logical, intent(in) :: lCheckFSIFormulation
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -128,7 +130,9 @@ subroutine modelCheck(model, lCheckJacobian, lCheckFSINorms, lCheckPlaneity)
         call modelCheckFSINormals(model)
     end if
 ! - Check that we have the same formulation in fluid modelisation
-    call modelCheckFluidFormulation(model)
+    if (lCheckFSIFormulation) then
+        call modelCheckFluidFormulation(model)
+    end if
 
 ! - Check planeity of plate elements
     if (lCheckPlaneity) then
