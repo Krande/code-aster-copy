@@ -268,6 +268,7 @@ contains
         integer(kind=8), pointer :: listCellAffe(:)
 ! ----- Locals
         character(len=8) :: model, mesh
+        character(len=19) :: ligrel
         integer(kind=8) :: nbCellInMesh, nbCell, iCellAffe, iCell
         integer(kind=8), pointer :: modelMaille(:) => null()
         integer(kind=8), pointer :: work(:) => null()
@@ -281,8 +282,9 @@ contains
         call dismoi('NB_MA_MAILLA', mesh, 'MAILLAGE', repi=nbCellInMesh)
 
 ! ----- Access to model
-        call jeveuo(model(1:8)//'.MAILLE', 'L', vi=modelMaille)
-        call jelira(model(1:8)//'.MAILLE', 'LONMAX', nbCell)
+        call dismoi('NOM_LIGREL', model, 'MODELE', repk=ligrel)
+        call jeveuo(ligrel//'.TYFE', 'L', vi=modelMaille)
+        call jelira(ligrel//'.TYFE', 'LONMAX', nbCell)
         ASSERT(nbCellInMesh .eq. nbCell)
 
 ! ----- Create list of affected cells

@@ -50,6 +50,7 @@ module FED_module
 #include "asterfort/jecroc.h"
 #include "asterfort/jedetr.h"
 #include "asterfort/jedupo.h"
+#include "asterfort/jedup1.h"
 #include "asterfort/jeecra.h"
 #include "asterfort/jeveuo.h"
 #include "asterfort/jexatr.h"
@@ -83,7 +84,7 @@ contains
 ! ----- Locals
         character(len=1) :: jvBase
         character(len=8) :: model
-        character(len=24) :: modelLigrel, ligrel
+        character(len=19) :: modelLigrel, ligrel
         integer(kind=8) :: jvDummy
         integer(kind=8) :: cellNume
         integer(kind=8) :: nbElemAffe, numeElemType, nbElemType, nbElem
@@ -106,6 +107,9 @@ contains
 
 ! ----- Create .LGRF object
         call jedupo(modelLigrel(1:19)//'.LGRF', jvBase, ligrel(1:19)//'.LGRF', .false._1)
+
+! ----- Create .TYFE object
+        call jedup1(modelLigrel//'.TYFE', jvBase, ligrel//'.TYFE')
 
 ! ----- Get cells affected by a finite element
         call getCellsAffectedByFE(modelLigrel, nbCell, listCell, &
