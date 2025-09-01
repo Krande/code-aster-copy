@@ -342,7 +342,9 @@ def calc_loimel_plaque(DEPLMATE, ls_group_tout):
     return out
 
 
-def calc_tabpara_plaque(DEPLMATE, volume_ver, ls_group_ma, varc_name, ls_varc, ep_ver, **fields):
+def calc_tabpara_plaque(
+    DEPLMATE, volume_ver, ls_group_ma, varc_name, ls_varc, ep_ver, coef_cisa, **fields
+):
     """
     Compute the homogeneous properties values for a plate element.
 
@@ -361,6 +363,7 @@ def calc_tabpara_plaque(DEPLMATE, volume_ver, ls_group_ma, varc_name, ls_varc, e
         ls_varc (list[float]): List of values for the command variable at which
             parameters are computed.
         ep_ver (float): Plate thickness.
+        coef_cisa (float): Shear coefficient.
         **fields (ElasticResultDict, ThermalResultDict): Corrector fields for
             mechanical and thermal analyses.
 
@@ -439,6 +442,10 @@ def calc_tabpara_plaque(DEPLMATE, volume_ver, ls_group_ma, varc_name, ls_varc, e
             work_meca_23_23_ct = 0.0
             G11_hom = 0.0
             G22_hom = 0.0
+
+        # CORRECTION CISAILLEMENT
+        G11_hom *= coef_cisa
+        G22_hom *= coef_cisa
 
         # FLEXION
         lambda_meca_ff = loimel["LAME1_ff"][i]
