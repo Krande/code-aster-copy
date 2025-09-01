@@ -37,7 +37,7 @@ projectionAlongDirection( const std::string type_elem, const ASTERINTEGER &nb_no
                           const ASTERDOUBLE &tole_maxi, const VectorReal proj_dire ) {
     JeveuxChar8 t_elem( DataStructureNaming::getNewName( 8 ) );
     t_elem = type_elem;
-    long int err = 0;
+    ASTERINTEGER err = 0;
     ASTERDOUBLE beta = 0;
     ASTERDOUBLE ksi1 = 0;
     ASTERDOUBLE ksi2 = 0;
