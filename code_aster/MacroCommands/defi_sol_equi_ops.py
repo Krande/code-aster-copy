@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -930,8 +930,14 @@ def defi_sol_equi_ops(self, INFO=None, **args):
 
     # Lecture du maillage
     if mail0 is not None:
+        if mail0.hasGroupOfNodes(grma_droit):
+            mail0 = DEFI_GROUP(reuse=mail0, MAILLAGE=mail0, DETR_GROUP_NO=_F(NOM=grma_droit))
         __mailla = DEFI_GROUP(MAILLAGE=mail0, CREA_GROUP_NO=_F(GROUP_MA=(grma_droit,)))
 
+        if __mailla.hasGroupOfNodes(grma_gauch):
+            __mailla = DEFI_GROUP(
+                reuse=__mailla, MAILLAGE=__mailla, DETR_GROUP_NO=_F(NOM=grma_gauch)
+            )
         __mailla = DEFI_GROUP(
             reuse=__mailla, MAILLAGE=__mailla, CREA_GROUP_NO=_F(GROUP_MA=(grma_gauch,))
         )
@@ -945,6 +951,10 @@ def defi_sol_equi_ops(self, INFO=None, **args):
                 ),
             )
 
+            if __mailla.hasGroupOfNodes("PLATE"):
+                __mailla = DEFI_GROUP(
+                    reuse=__mailla, MAILLAGE=__mailla, DETR_GROUP_NO=_F(NOM="PLATE")
+                )
             __mailla = DEFI_GROUP(
                 reuse=__mailla, MAILLAGE=__mailla, CREA_GROUP_NO=_F(GROUP_MA=("PLATE",))
             )
@@ -953,10 +963,18 @@ def defi_sol_equi_ops(self, INFO=None, **args):
                 MAILLAGE=__mailla, CREA_POI1=(_F(NOM_GROUP_MA="PCOL", GROUP_MA=grma_colon),)
             )
 
+            if __mailla.hasGroupOfNodes(grma_ligne1):
+                __mailla = DEFI_GROUP(
+                    reuse=__mailla, MAILLAGE=__mailla, DETR_GROUP_NO=_F(NOM=grma_ligne1)
+                )
             __mailla = DEFI_GROUP(
                 reuse=__mailla, MAILLAGE=__mailla, CREA_GROUP_NO=_F(GROUP_MA=(grma_ligne1,))
             )
 
+            if __mailla.hasGroupOfNodes(grma_ligne2):
+                __mailla = DEFI_GROUP(
+                    reuse=__mailla, MAILLAGE=__mailla, DETR_GROUP_NO=_F(NOM=grma_ligne2)
+                )
             __mailla = DEFI_GROUP(
                 reuse=__mailla, MAILLAGE=__mailla, CREA_GROUP_NO=_F(GROUP_MA=(grma_ligne2,))
             )
@@ -1137,6 +1155,10 @@ def defi_sol_equi_ops(self, INFO=None, **args):
                     _F(NOM_GROUP_MA="PLATE", GROUP_MA=(grma_late,)),
                 ),
             )
+            if __mailla.hasGroupOfNodes("PLATE"):
+                __mailla = DEFI_GROUP(
+                    reuse=__mailla, MAILLAGE=__mailla, DETR_GROUP_NO=_F(NOM="PLATE")
+                )
             __mailla = DEFI_GROUP(
                 reuse=__mailla, MAILLAGE=__mailla, CREA_GROUP_NO=_F(GROUP_MA=("PLATE",))
             )
@@ -2108,20 +2130,36 @@ def defi_sol_equi_ops(self, INFO=None, **args):
             #
 
         if iter == 0:
+            if __mailla.hasGroupOfNodes(__TMAT["M", 1]):
+                __mailla = DEFI_GROUP(
+                    reuse=__mailla, MAILLAGE=__mailla, DETR_GROUP_NO=_F(NOM=__TMAT["M", 1])
+                )
             __mailla = DEFI_GROUP(
                 reuse=__mailla, MAILLAGE=__mailla, CREA_GROUP_NO=_F(GROUP_MA=__TMAT["M", 1])
             )
 
+            if __mailla.hasGroupOfNodes("PN0"):
+                __mailla = DEFI_GROUP(
+                    reuse=__mailla, MAILLAGE=__mailla, DETR_GROUP_NO=_F(NOM="PN0")
+                )
             __mailla = DEFI_GROUP(
                 reuse=__mailla,
                 MAILLAGE=__mailla,
                 CREA_GROUP_NO=_F(NOM="PN0", GROUP_NO=__TMAT["M", 1], POSITION="INIT"),
             )
 
+            if __mailla.hasGroupOfNodes(__TMAT["M", NCOU + 1]):
+                __mailla = DEFI_GROUP(
+                    reuse=__mailla, MAILLAGE=__mailla, DETR_GROUP_NO=_F(NOM=__TMAT["M", NCOU + 1])
+                )
             __mailla = DEFI_GROUP(
                 reuse=__mailla, MAILLAGE=__mailla, CREA_GROUP_NO=_F(GROUP_MA=__TMAT["M", NCOU + 1])
             )
 
+            if __mailla.hasGroupOfNodes("PNRA"):
+                __mailla = DEFI_GROUP(
+                    reuse=__mailla, MAILLAGE=__mailla, DETR_GROUP_NO=_F(NOM="PNRA")
+                )
             __mailla = DEFI_GROUP(
                 reuse=__mailla,
                 MAILLAGE=__mailla,
@@ -2980,12 +3018,22 @@ def defi_sol_equi_ops(self, INFO=None, **args):
         for k in range(1, NCOU + 1):
             if iter == 0:
                 if k != NCOU:
+                    if __mailla.hasGroupOfNodes(__TMAT["M", k + 1]):
+                        __mailla = DEFI_GROUP(
+                            reuse=__mailla,
+                            MAILLAGE=__mailla,
+                            DETR_GROUP_NO=_F(NOM=__TMAT["M", k + 1]),
+                        )
                     __mailla = DEFI_GROUP(
                         reuse=__mailla,
                         MAILLAGE=__mailla,
                         CREA_GROUP_NO=_F(GROUP_MA=__TMAT["M", k + 1]),
                     )
 
+                if __mailla.hasGroupOfNodes("PN" + str(k)):
+                    __mailla = DEFI_GROUP(
+                        reuse=__mailla, MAILLAGE=__mailla, DETR_GROUP_NO=_F(NOM="PN" + str(k))
+                    )
                 __mailla = DEFI_GROUP(
                     reuse=__mailla,
                     MAILLAGE=__mailla,
