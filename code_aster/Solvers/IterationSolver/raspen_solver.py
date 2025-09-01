@@ -17,35 +17,37 @@
 # along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 # --------------------------------------------------------------------
 
+import warnings
+from time import time
+
+import numpy as np
 from libaster import asmpi_free, asmpi_get, asmpi_set, asmpi_split
+from scipy.sparse.linalg import LinearOperator, eigsh, svds
 
 from ...Objects import redistributePetscMat
-
 from ...Supervis import ConvergenceError
 from ...Utilities import PETSc, no_new_attributes, profile
 from ...Utilities.mpi_utils import MPI
 from .iteration_solver import BaseIterationSolver
 from .snes_solver import SNESSolver
-import numpy as np
-from scipy.sparse.linalg import LinearOperator, svds, eigsh
-import warnings
-from time import time
 
-import os
-
-
+# FIXME write in tmp + result file?
 monitoringFilesPaths = {
-    "byRASPENSteps": os.getenv("HOME") + "/RASPENStepsData.txt",
-    "byTimeSteps": os.getenv("HOME") + "/timeStepsData.txt",
-    "byKSPSteps": os.getenv("HOME") + "/kspConvHist.txt",
+    # "byRASPENSteps": os.getenv("HOME") + "/RASPENStepsData.txt",
+    # "byTimeSteps": os.getenv("HOME") + "/timeStepsData.txt",
+    # "byKSPSteps": os.getenv("HOME") + "/kspConvHist.txt",
 }
 
 monitoringFilesHeaders = {
-    "byRASPENSteps": "# Time_Instant, Glb_Nonlin_Iterations, Loc_Nonlin_Iterations, "
-    + "Linear_Iterations, Absolute_Error, Relative_Error, "
-    + "Overlap, Number_of_Subdomains, CoarsePb_Size, Method_Name\n",
-    "byTimeSteps": "# Time_Instant, Nonlinear_Iterations, Linear_Iterations, Overlap, "
-    + "Number_of_Subdomains, Execution_Time, CoarsePb_Size, Method_Name\n",
+    "byRASPENSteps": (
+        "# Time_Instant, Glb_Nonlin_Iterations, Loc_Nonlin_Iterations, "
+        "Linear_Iterations, Absolute_Error, Relative_Error, "
+        "Overlap, Number_of_Subdomains, CoarsePb_Size, Method_Name\n"
+    ),
+    "byTimeSteps": (
+        "# Time_Instant, Nonlinear_Iterations, Linear_Iterations, Overlap, "
+        "Number_of_Subdomains, Execution_Time, CoarsePb_Size, Method_Name\n"
+    ),
 }
 
 # Valid monitoring modes: if append, it add to the existing content of files in monitoringFilesPaths
@@ -441,6 +443,8 @@ class _RASPENSolver:
             """
             Linear solver monitoring function
             """
+            if not monitoringFilesPaths.get("byKSPSteps"):
+                return
             if self.rank == 0:
                 SnesIter = glbSnes.getIterationNumber()
                 if its == 0:
@@ -468,12 +472,12 @@ class _RASPENSolver:
                     + f"   |    Global Residual Norm : {self.Fnorm:.8e}"
                     + f"   |    Relative Residual Norm : {Rnorm:.8e}"
                 )
-                if self.withMonitoring:
+                if self.withMonitoring and monitoringFilesPaths.get("byRASPENSteps"):
                     filePath = monitoringFilesPaths["byRASPENSteps"]
                     # Save data on ConvergenceHistory/data.txt
                     with open(filePath, mode="a") as file:
                         file.write(
-                            f"{self.curr_time:.3e} {its} {self.cumLocNonlinear }"
+                            f"{self.curr_time:.3e} {its} {self.cumLocNonlinear}"
                             + f" {self.cumulLinIter} {self.Fnorm:.3e} {Rnorm:.3e} {self.overlap}"
                             + f" {self.size} {self.nb_svs} {self.methodName}\n"
                         )
@@ -647,17 +651,18 @@ class _RASPENSolver:
         Saves current time performance data in monitoring file
         """
         nonlinear_iters = snes.getIterationNumber()
-        filePath = monitoringFilesPaths["byTimeSteps"]
-        try:
-            with open(filePath, "a") as file:
-                # Write data to the file
-                file.write(
-                    f"{self.curr_time:.3e} {nonlinear_iters} {self.cumulLinIter} {self.overlap} "
-                    f"{self.size} {time_exec:.3e} {self.nb_svs} {self.methodName}\n"
-                )
-                file.close()
-        except Exception as e:
-            print(f"Error writing to log file '{filePath}': {e}")
+        if monitoringFilesPaths.get("byTimeSteps"):
+            filePath = monitoringFilesPaths["byTimeSteps"]
+            try:
+                with open(filePath, "a") as file:
+                    # Write data to the file
+                    file.write(
+                        f"{self.curr_time:.3e} {nonlinear_iters} {self.cumulLinIter} {self.overlap} "
+                        f"{self.size} {time_exec:.3e} {self.nb_svs} {self.methodName}\n"
+                    )
+                    file.close()
+            except Exception as e:
+                print(f"Error writing to log file '{filePath}': {e}")
         # Reset counter
         self.cumulLinIter = 0
         self.cumLocNonlinear = 0
