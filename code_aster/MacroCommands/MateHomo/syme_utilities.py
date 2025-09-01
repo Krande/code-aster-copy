@@ -139,8 +139,39 @@ class SymmetryManager:
 
         return ret
 
-    def build_symmetry_mesh(self, meshin):
+    def build_symmetry_mesh_simple(self, meshin):
+        """
+        Returns only the full mesh built in a simple way
+        Should be removed when using medcoupling >= 9.13
 
+         Args:
+            meshin (MEDFileUMesh): The symmetric mesh of corrector fields.
+
+        Returns:
+            MEDFileUMesh: The full mesh of corrector fields.
+        """
+
+        meshinreduced0 = medc.MEDFileUMesh()
+        meshinreduced0[0] = meshin[0]
+
+        for grp in meshin.getGroupsOnSpecifiedLev(0):
+            meshinreduced0.addGroup(0, meshin.getGroupArr(0, grp))
+
+        meshinreduced1 = meshinreduced0.deepCopy()
+        coords_sym = meshinreduced1.getCoords().symmetry3DPlane(self.point, self.axis)
+        meshinreduced1.setCoords(coords_sym)
+
+        mesh_fused = medc.MEDFileUMesh.Aggregate((meshinreduced0, meshinreduced1))
+        m0_fused = mesh_fused[0]
+        m0_fused.mergeNodes(MESH_TOL)
+        mesh_fused.setCoords(m0_fused.getCoords())
+
+        l0grp = [mesh_fused.getGroupArr(0, grp) for grp in mesh_fused.getGroupsOnSpecifiedLev(0)]
+        mesh_merged = rebuild_with_groups(mesh_fused[0], l0grp)
+
+        return mesh_merged, None, None
+
+    def build_symmetry_mesh(self, meshin):
         """
         Returns the full mesh.
 
@@ -213,7 +244,7 @@ class SymmetryManager:
         mesh_fused.setName(meshin.getName())
 
         l0grp = [mesh_fused.getGroupArr(0, grp) for grp in mesh_fused.getGroupsOnSpecifiedLev(0)]
-        volume_ver, dirthick, mesh_merged = rebuild_with_groups(mesh_fused[0], l0grp)
+        mesh_merged = rebuild_with_groups(mesh_fused[0], l0grp)
 
         return mesh_merged, point_ids_to_keep_sym, point_ids_to_merge
 

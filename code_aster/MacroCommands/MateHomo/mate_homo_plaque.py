@@ -33,6 +33,7 @@ from ...CodeCommands import (
 )
 from ...Messages import ASSERT
 from ...Objects import ThermalResultDict, ElasticResultDict
+from ...Utilities import logger
 
 from . import mate_homo_utilities as utilities
 
@@ -49,14 +50,13 @@ PARAPLAQUE = [
     "FLEX_G_LT",
     "CISA_L",
     "CISA_T",
-    "ALPHA_T",
-    "ALPHA_L",
+    "ALPHA",
     "RHO",
     "TEMP_DEF_ALPHA",
 ]
 
 
-def calc_corr_plaque_syme(MODME, CHMATME, MODTH, CHMATTH, L_INST, ls_group_ma, dir_plaque):
+def calc_corr_plaque_syme(MODME, CHMATME, MODTH, CHMATTH, L_INST, alpha_calc, ls_group_ma):
     """
     Compute the elastic correctors for PLAQUE (Plate) case.
 
@@ -74,61 +74,36 @@ def calc_corr_plaque_syme(MODME, CHMATME, MODTH, CHMATTH, L_INST, ls_group_ma, d
         L_INST (list[float]): List of pseudo-time values (homogenization
             temperature values).
         ls_group_ma (list[str]): List of groups where properties are prescribed.
-        dir_plaque (str): Orientation of the normal axis of the plate element.
 
     Returns:
         ElasticResultDict: Dictionary of elastic correctors.
         ThermalResultDict: Dictionary of thermal correctors. Empty.
     """
 
-    SYME_MECA_XX_mm = AFFE_CHAR_CINE(
-        MODELE=MODME,
-        MECA_IMPO=(
-            _F(GROUP_MA="face_xmin", DX=0.0),
-            _F(GROUP_MA="face_ymin", DY=0.0),
-            _F(GROUP_MA="face_zmin", DZ=0.0),
-            _F(GROUP_MA="face_xmax", DX=0.0),
-            _F(GROUP_MA="face_ymax", DY=0.0),
-        ),
-    )
-
-    ANTI_MECA_12_mm = AFFE_CHAR_CINE(
-        MODELE=MODME,
-        MECA_IMPO=(
-            _F(GROUP_MA="face_xmin", DY=0.0),
-            _F(GROUP_MA="face_ymin", DX=0.0),
-            _F(GROUP_MA="face_zmin", DZ=0.0),
-            _F(GROUP_MA="face_xmax", DY=0.0),
-            _F(GROUP_MA="face_ymax", DX=0.0),
-        ),
-    )
-
-    SYME_MECA_XX_ff = AFFE_CHAR_CINE(
+    SYME_MECA_XX = AFFE_CHAR_CINE(
         MODELE=MODME,
         MECA_IMPO=(
             _F(GROUP_NO="lock_rigi", DZ=0.0),
             _F(GROUP_MA="face_xmin", DX=0.0),
             _F(GROUP_MA="face_ymin", DY=0.0),
-            _F(GROUP_MA="face_zmin", DX=0.0, DY=0.0),
             _F(GROUP_MA="face_xmax", DX=0.0),
             _F(GROUP_MA="face_ymax", DY=0.0),
         ),
     )
 
-    ANTI_MECA_12_ff = AFFE_CHAR_CINE(
+    ANTI_MECA_12 = AFFE_CHAR_CINE(
         MODELE=MODME,
         MECA_IMPO=(
             _F(GROUP_NO="lock_rigi", DZ=0.0),
             _F(GROUP_MA="face_xmin", DY=0.0),
             _F(GROUP_MA="face_ymin", DX=0.0),
-            _F(GROUP_MA="face_zmin", DX=0.0, DY=0.0),
             _F(GROUP_MA="face_xmax", DY=0.0),
             _F(GROUP_MA="face_ymax", DX=0.0),
         ),
     )
 
-    LOAD_ff_xx = FORMULE(VALE=f"1.0 * {dir_plaque}", NOM_PARA=[dir_plaque])
-    LOAD_ff_xy = FORMULE(VALE=f"0.5 * {dir_plaque}", NOM_PARA=[dir_plaque])
+    LOAD_ff_xx = FORMULE(VALE="1.0 * Z", NOM_PARA="Z")
+    LOAD_ff_xy = FORMULE(VALE="0.5 * Z", NOM_PARA="Z")
 
     CHAR11_mm = AFFE_CHAR_MECA(MODELE=MODME, PRE_EPSI=_F(GROUP_MA=ls_group_ma, EPXX=-1.0))
 
@@ -142,8 +117,78 @@ def calc_corr_plaque_syme(MODME, CHMATME, MODTH, CHMATTH, L_INST, ls_group_ma, d
 
     CHAR12_ff = AFFE_CHAR_MECA_F(MODELE=MODME, PRE_EPSI=_F(GROUP_MA=ls_group_ma, EPXY=LOAD_ff_xy))
 
+    CHARDIL_mm = AFFE_CHAR_MECA_F(
+        MODELE=MODME,
+        PRE_EPSI=[
+            _F(
+                GROUP_MA=item["GROUP_MA"],
+                EPXX=FORMULE(
+                    VALE="-1.0*ALPHA_DIL(INST)",
+                    NOM_PARA=("INST",),
+                    ALPHA_DIL=item["FONC_ALPHA_TIME"],
+                ),
+                EPYY=FORMULE(
+                    VALE="-1.0*ALPHA_DIL(INST)",
+                    NOM_PARA=("INST",),
+                    ALPHA_DIL=item["FONC_ALPHA_TIME"],
+                ),
+                EPZZ=FORMULE(
+                    VALE="-1.0*ALPHA_DIL(INST)",
+                    NOM_PARA=("INST",),
+                    ALPHA_DIL=item["FONC_ALPHA_TIME"],
+                ),
+            )
+            for item in alpha_calc
+        ],
+    )
+
+    CHARDIL_ff = AFFE_CHAR_MECA_F(
+        MODELE=MODME,
+        PRE_EPSI=[
+            _F(
+                GROUP_MA=item["GROUP_MA"],
+                EPXX=FORMULE(
+                    VALE="1.0*Z*ALPHA_DIL(INST)",
+                    NOM_PARA=("INST", "Z"),
+                    ALPHA_DIL=item["FONC_ALPHA_TIME"],
+                ),
+                EPYY=FORMULE(
+                    VALE="1.0*Z*ALPHA_DIL(INST)",
+                    NOM_PARA=("INST", "Z"),
+                    ALPHA_DIL=item["FONC_ALPHA_TIME"],
+                ),
+                EPZZ=FORMULE(
+                    VALE="1.0*Z*ALPHA_DIL(INST)",
+                    NOM_PARA=("INST", "Z"),
+                    ALPHA_DIL=item["FONC_ALPHA_TIME"],
+                ),
+            )
+            for item in alpha_calc
+        ],
+    )
+
     elas_fields = ElasticResultDict()
     ther_fields = ThermalResultDict()
+
+    # Calcul des correcteurs MECANIQUES de DILATATION
+    # ======================================================================
+
+    elas_fields["CORR_DILA_MEMB"] = MECA_STATIQUE(
+        MODELE=MODME,
+        CHAM_MATER=CHMATME,
+        LIST_INST=L_INST,
+        EXCIT=(_F(CHARGE=CHARDIL_mm), _F(CHARGE=SYME_MECA_XX)),
+        OPTION="SANS",
+    )
+
+    elas_fields["CORR_DILA_FLEX"] = MECA_STATIQUE(
+        MODELE=MODME,
+        CHAM_MATER=CHMATME,
+        LIST_INST=L_INST,
+        EXCIT=(_F(CHARGE=CHARDIL_ff), _F(CHARGE=SYME_MECA_XX)),
+        OPTION="SANS",
+    )
+
     # Calcul des correcteurs MECANIQUES
     # ======================================================================
 
@@ -151,7 +196,7 @@ def calc_corr_plaque_syme(MODME, CHMATME, MODTH, CHMATTH, L_INST, ls_group_ma, d
         MODELE=MODME,
         CHAM_MATER=CHMATME,
         LIST_INST=L_INST,
-        EXCIT=(_F(CHARGE=CHAR11_mm), _F(CHARGE=SYME_MECA_XX_mm)),
+        EXCIT=(_F(CHARGE=CHAR11_mm), _F(CHARGE=SYME_MECA_XX)),
         OPTION="SANS",
     )
 
@@ -159,7 +204,7 @@ def calc_corr_plaque_syme(MODME, CHMATME, MODTH, CHMATTH, L_INST, ls_group_ma, d
         MODELE=MODME,
         CHAM_MATER=CHMATME,
         LIST_INST=L_INST,
-        EXCIT=(_F(CHARGE=CHAR22_mm), _F(CHARGE=SYME_MECA_XX_mm)),
+        EXCIT=(_F(CHARGE=CHAR22_mm), _F(CHARGE=SYME_MECA_XX)),
         OPTION="SANS",
     )
 
@@ -167,7 +212,7 @@ def calc_corr_plaque_syme(MODME, CHMATME, MODTH, CHMATTH, L_INST, ls_group_ma, d
         MODELE=MODME,
         CHAM_MATER=CHMATME,
         LIST_INST=L_INST,
-        EXCIT=(_F(CHARGE=CHAR12_mm), _F(CHARGE=ANTI_MECA_12_mm)),
+        EXCIT=(_F(CHARGE=CHAR12_mm), _F(CHARGE=ANTI_MECA_12)),
         OPTION="SANS",
     )
 
@@ -175,7 +220,7 @@ def calc_corr_plaque_syme(MODME, CHMATME, MODTH, CHMATTH, L_INST, ls_group_ma, d
         MODELE=MODME,
         CHAM_MATER=CHMATME,
         LIST_INST=L_INST,
-        EXCIT=(_F(CHARGE=CHAR11_ff), _F(CHARGE=SYME_MECA_XX_ff)),
+        EXCIT=(_F(CHARGE=CHAR11_ff), _F(CHARGE=SYME_MECA_XX)),
         OPTION="SANS",
     )
 
@@ -183,7 +228,7 @@ def calc_corr_plaque_syme(MODME, CHMATME, MODTH, CHMATTH, L_INST, ls_group_ma, d
         MODELE=MODME,
         CHAM_MATER=CHMATME,
         LIST_INST=L_INST,
-        EXCIT=(_F(CHARGE=CHAR22_ff), _F(CHARGE=SYME_MECA_XX_ff)),
+        EXCIT=(_F(CHARGE=CHAR22_ff), _F(CHARGE=SYME_MECA_XX)),
         OPTION="SANS",
     )
 
@@ -191,14 +236,14 @@ def calc_corr_plaque_syme(MODME, CHMATME, MODTH, CHMATTH, L_INST, ls_group_ma, d
         MODELE=MODME,
         CHAM_MATER=CHMATME,
         LIST_INST=L_INST,
-        EXCIT=(_F(CHARGE=CHAR12_ff), _F(CHARGE=ANTI_MECA_12_ff)),
+        EXCIT=(_F(CHARGE=CHAR12_ff), _F(CHARGE=ANTI_MECA_12)),
         OPTION="SANS",
     )
 
     return elas_fields, ther_fields
 
 
-def calc_loimel_plaque(DEPLMATE, ls_group_tout, dir_plaque):
+def calc_loimel_plaque(DEPLMATE, ls_group_tout):
     """
     Compute the average value of material parameters on the VER mesh.
 
@@ -216,11 +261,8 @@ def calc_loimel_plaque(DEPLMATE, ls_group_tout, dir_plaque):
     - LAMBDA_THER: Thermal conductivity
 
     Args:
-        DEPLMATE (ElasticResult): Mechanical result from the 0-load boundary
-            condition.
-        ls_group_tout (list[str]): List of groups where properties are
-            prescribed.
-        dir_plaque (str): Orientation of the normal axis of the plate element.
+        DEPLMATE (ElasticResult): Mechanical result from the 0-load boundary condition.
+        ls_group_tout (list[str]): List of groups where properties are prescribed.
 
     Returns:
         dict: A dictionary containing the average properties values as a
@@ -229,18 +271,17 @@ def calc_loimel_plaque(DEPLMATE, ls_group_tout, dir_plaque):
 
     LAME_1_mm = FORMULE(NOM_PARA=("E", "NU"), VALE="E*NU/((1+NU)*(1-2*NU))")
     LAME_2_mm = FORMULE(NOM_PARA=("E", "NU"), VALE="E/(2*(1+NU))")
+    ALPHA_3K_mm = FORMULE(NOM_PARA=("E", "NU", "ALPHA"), VALE="ALPHA*E/(1-2*NU)")
 
-    LAME_1_ff = FORMULE(
-        NOM_PARA=("E", "NU", dir_plaque), VALE=f"{dir_plaque}**2 * E*NU/((1+NU)*(1-2*NU))"
-    )
-    LAME_2_ff = FORMULE(NOM_PARA=("E", "NU", dir_plaque), VALE=f"{dir_plaque}**2 * E/(2*(1+NU))")
+    LAME_1_ff = FORMULE(NOM_PARA=("E", "NU", "Z"), VALE="Z**2 * E*NU/((1+NU)*(1-2*NU))")
+    LAME_2_ff = FORMULE(NOM_PARA=("E", "NU", "Z"), VALE="Z**2 * E/(2*(1+NU))")
 
     RESUMATE = CALC_CHAMP(
         RESULTAT=DEPLMATE,
         GROUP_MA=ls_group_tout,
         PROPRIETES=("MATE_ELGA",),
         CHAM_UTIL=_F(
-            FORMULE=(LAME_1_mm, LAME_2_mm, LAME_1_ff, LAME_2_ff),
+            FORMULE=(LAME_1_mm, LAME_2_mm, ALPHA_3K_mm, LAME_1_ff, LAME_2_ff),
             NOM_CHAM="MATE_ELGA",
             NUME_CHAM_RESU=1,
         ),
@@ -262,7 +303,7 @@ def calc_loimel_plaque(DEPLMATE, ls_group_tout, dir_plaque):
         MODELE=RESUMATE.getModel(),
         INTEGRALE=_F(
             GROUP_MA=ls_group_tout,
-            NOM_CMP=("X1", "X2", "X3", "X4"),
+            NOM_CMP=("X1", "X2", "X3", "X4", "X5"),
             NOM_CHAM="UT01_ELGA",
             TYPE_MAILLE="3D",
         ),
@@ -286,12 +327,12 @@ def calc_loimel_plaque(DEPLMATE, ls_group_tout, dir_plaque):
         )
 
     out = {}
-    out["LAME1_mm"], out["LAME2_mm"] = [
-        LAME_INTE.EXTR_TABLE().values()["INTE_%s" % key] for key in ("X1", "X2")
+    out["LAME1_mm"], out["LAME2_mm"], out["ALPHA3K_mm"] = [
+        LAME_INTE.EXTR_TABLE().values()["INTE_%s" % key] for key in ("X1", "X2", "X3")
     ]
 
     out["LAME1_ff"], out["LAME2_ff"] = [
-        LAME_INTE.EXTR_TABLE().values()["INTE_%s" % key] for key in ("X3", "X4")
+        LAME_INTE.EXTR_TABLE().values()["INTE_%s" % key] for key in ("X4", "X5")
     ]
 
     out["RHO"], out["RHO_CP"], out["LAMBDA_THER"] = [
@@ -302,7 +343,7 @@ def calc_loimel_plaque(DEPLMATE, ls_group_tout, dir_plaque):
 
 
 def calc_tabpara_plaque(
-    DEPLMATE, volume_ver, ls_group_ma, varc_name, ls_varc, dir_plaque, dirthick, **fields
+    DEPLMATE, volume_ver, ls_group_ma, varc_name, ls_varc, ep_ver, coef_cisa, **fields
 ):
     """
     Compute the homogeneous properties values for a plate element.
@@ -321,8 +362,8 @@ def calc_tabpara_plaque(
             temperature, IRRA for irradiation).
         ls_varc (list[float]): List of values for the command variable at which
             parameters are computed.
-        dir_plaque (str): Orientation of the normal axis of the plate element.
-        dirthick (float): Plate thickness.
+        ep_ver (float): Plate thickness.
+        coef_cisa (float): Shear coefficient.
         **fields (ElasticResultDict, ThermalResultDict): Corrector fields for
             mechanical and thermal analyses.
 
@@ -343,20 +384,26 @@ def calc_tabpara_plaque(
     CORR_MECA11_FLEX = fields["CORR_MECA11_FLEX"]
     CORR_MECA22_FLEX = fields["CORR_MECA22_FLEX"]
     CORR_MECA12_FLEX = fields["CORR_MECA12_FLEX"]
+    CORR_MECA31_CT = fields.get("CORR_MECA31_CT")
+    CORR_MECA23_CT = fields.get("CORR_MECA23_CT")
+    CORR_DILA_mm = fields["CORR_DILA_MEMB"]
 
     insts_meca = CORR_MECA11_MEMB.getAccessParameters()["INST"]
 
     ASSERT(len(insts_meca) == len(ls_varc))
 
     dictpara = utilities.create_empty_dictpara([varc_name] + PARAPLAQUE)
-    loimel = calc_loimel_plaque(DEPLMATE, ls_group_ma, dir_plaque)
-    h = dirthick[dir_plaque]
+    loimel = calc_loimel_plaque(DEPLMATE, ls_group_ma)
+    h = ep_ver
     tda = utilities.get_temp_def_alpha_result(DEPLMATE)
     ls_C_hom = {}
     ls_D_hom = {}
     ls_G_hom = {}
 
     for i, inst_meca in enumerate(insts_meca):
+        # MEMBRANE
+        lambda_meca_mm = loimel["LAME1_mm"][i]
+        mu_meca_mm = loimel["LAME2_mm"][i]
 
         work_meca_11_11_mm = utilities.cross_work(
             CORR_MECA11_MEMB, CORR_MECA11_MEMB, inst_meca, ls_group_ma
@@ -371,6 +418,38 @@ def calc_tabpara_plaque(
             CORR_MECA12_MEMB, CORR_MECA12_MEMB, inst_meca, ls_group_ma
         )
 
+        C1111_hom = (h / volume_ver) * ((lambda_meca_mm + 2 * mu_meca_mm) - work_meca_11_11_mm)
+        C2222_hom = (h / volume_ver) * ((lambda_meca_mm + 2 * mu_meca_mm) - work_meca_22_22_mm)
+        C1122_hom = (h / volume_ver) * (lambda_meca_mm - work_meca_11_22_mm)
+        C1212_hom = (h / volume_ver) * (mu_meca_mm - work_meca_12_12_mm)
+
+        # CISAILLEMENT TRANSVERSE
+
+        if CORR_MECA31_CT and CORR_MECA23_CT:
+            work_meca_31_31_ct = utilities.cross_work(
+                CORR_MECA31_CT, CORR_MECA31_CT, inst_meca, ls_group_ma
+            )
+            work_meca_23_23_ct = utilities.cross_work(
+                CORR_MECA23_CT, CORR_MECA23_CT, inst_meca, ls_group_ma
+            )
+
+            G11_hom = (h / volume_ver) * (mu_meca_mm - work_meca_31_31_ct)
+            G22_hom = (h / volume_ver) * (mu_meca_mm - work_meca_23_23_ct)
+
+        else:
+            work_meca_31_31_ct = 0.0
+            work_meca_23_23_ct = 0.0
+            G11_hom = 0.0
+            G22_hom = 0.0
+
+        # CORRECTION CISAILLEMENT
+        G11_hom *= coef_cisa
+        G22_hom *= coef_cisa
+
+        # FLEXION
+        lambda_meca_ff = loimel["LAME1_ff"][i]
+        mu_meca_ff = loimel["LAME2_ff"][i]
+
         work_meca_11_11_ff = utilities.cross_work(
             CORR_MECA11_FLEX, CORR_MECA11_FLEX, inst_meca, ls_group_ma
         )
@@ -384,24 +463,18 @@ def calc_tabpara_plaque(
             CORR_MECA12_FLEX, CORR_MECA12_FLEX, inst_meca, ls_group_ma
         )
 
-        lambda_meca_mm = loimel["LAME1_mm"][i]
-        mu_meca_mm = loimel["LAME2_mm"][i]
+        D1111_hom = (h / volume_ver) * ((lambda_meca_ff + 2 * mu_meca_ff) - work_meca_11_11_ff)
+        D2222_hom = (h / volume_ver) * ((lambda_meca_ff + 2 * mu_meca_ff) - work_meca_22_22_ff)
+        D1122_hom = (h / volume_ver) * (lambda_meca_ff - work_meca_11_22_ff)
+        D1212_hom = (h / volume_ver) * (mu_meca_ff - work_meca_12_12_ff)
 
-        C1111_hom = (2 * h / volume_ver) * ((lambda_meca_mm + 2 * mu_meca_mm) - work_meca_11_11_mm)
-        C2222_hom = (2 * h / volume_ver) * ((lambda_meca_mm + 2 * mu_meca_mm) - work_meca_22_22_mm)
-        C1122_hom = (2 * h / volume_ver) * (lambda_meca_mm - work_meca_11_22_mm)
-        C1212_hom = (2 * h / volume_ver) * (mu_meca_mm - work_meca_12_12_mm)
+        # DILATATION
+        work_dila_11 = utilities.cross_work(CORR_MECA11_MEMB, CORR_DILA_mm, inst_meca, ls_group_ma)
+        work_dila_22 = utilities.cross_work(CORR_MECA22_MEMB, CORR_DILA_mm, inst_meca, ls_group_ma)
 
-        lambda_meca_ff = loimel["LAME1_ff"][i]
-        mu_meca_ff = loimel["LAME2_ff"][i]
-
-        D1111_hom = (2 * h / volume_ver) * ((lambda_meca_ff + 2 * mu_meca_ff) - work_meca_11_11_ff)
-        D2222_hom = (2 * h / volume_ver) * ((lambda_meca_ff + 2 * mu_meca_ff) - work_meca_22_22_ff)
-        D1122_hom = (2 * h / volume_ver) * (lambda_meca_ff - work_meca_11_22_ff)
-        D1212_hom = (2 * h / volume_ver) * (mu_meca_ff - work_meca_12_12_ff)
-
-        G11_hom = 0.0
-        G22_hom = 0.0
+        alpha_3k_meca_mm = loimel["ALPHA3K_mm"][i]
+        Bdil_11 = (h / volume_ver) * (alpha_3k_meca_mm - work_dila_11)
+        Bdil_22 = (h / volume_ver) * (alpha_3k_meca_mm - work_dila_22)
 
         # fmt: off
         C_hom = np.array([[C1111_hom, C1122_hom, 0         ],
@@ -422,7 +495,36 @@ def calc_tabpara_plaque(
 
         RHO = (1 / volume_ver) * loimel["RHO"][i]
 
-        ALPHA_T, ALPHA_L = [0, 0]
+        C_inv = np.linalg.inv(C_hom)
+        ALPHA_L, ALPHA_T = np.dot(C_inv, (Bdil_11, Bdil_22, 0))[:2]
+        ALPHA = (ALPHA_L + ALPHA_T) / 2
+
+        logger.debug(f"<HOMO-WORK><V {inst_meca}>: DILA_11 {work_dila_11}")
+        logger.debug(f"<HOMO-WORK><V {inst_meca}>: DILA_22 {work_dila_22}")
+        logger.debug(f"<HOMO-DIL><V {inst_meca}>: ALPHA_L {ALPHA_L}")
+        logger.debug(f"<HOMO-DIL><V {inst_meca}>: ALPHA_T {ALPHA_T}")
+
+        logger.debug(f"<HOMO-LOIMEL-MEMB><V {inst_meca}>: LAMBDA LAME {lambda_meca_mm}")
+        logger.debug(f"<HOMO-LOIMEL-MEMB><V {inst_meca}>: MU LAME {mu_meca_mm}")
+        logger.debug(f"<HOMO-LOIMEL-MEMB><V {inst_meca}>: ALPHA3K {alpha_3k_meca_mm}")
+
+        logger.debug(f"<HOMO-WORK-MEMB><V {inst_meca}>: MECA_11_11 {work_meca_11_11_mm}")
+        logger.debug(f"<HOMO-WORK-MEMB><V {inst_meca}>: MECA_22_22 {work_meca_22_22_mm}")
+        logger.debug(f"<HOMO-WORK-MEMB><V {inst_meca}>: MECA_11_22 {work_meca_11_22_mm}")
+        logger.debug(f"<HOMO-WORK-MEMB><V {inst_meca}>: MECA_12_12 {work_meca_12_12_mm}")
+
+        logger.debug(f"<HOMO-WORK-CT><V {inst_meca}>: MECA_31 {work_meca_31_31_ct}")
+        logger.debug(f"<HOMO-WORK-CT><V {inst_meca}>: MECA_23 {work_meca_23_23_ct}")
+
+        logger.debug(f"<HOMO-LOIMEL-FLEX><V {inst_meca}>: LAMBDA LAME {lambda_meca_ff}")
+        logger.debug(f"<HOMO-LOIMEL-FLEX><V {inst_meca}>: MU LAME {mu_meca_ff}")
+
+        logger.debug(f"<HOMO-WORK-FLEX><V {inst_meca}>: MECA_11_11 {work_meca_11_11_ff}")
+        logger.debug(f"<HOMO-WORK-FLEX><V {inst_meca}>: MECA_22_22 {work_meca_22_22_ff}")
+        logger.debug(f"<HOMO-WORK-FLEX><V {inst_meca}>: MECA_11_22 {work_meca_11_22_ff}")
+        logger.debug(f"<HOMO-WORK-FLEX><V {inst_meca}>: MECA_12_12 {work_meca_12_12_ff}")
+
+        assert abs(ALPHA_L - ALPHA_T) < 1.0e-8, "Error on ALPHA"
 
         dictpara["MEMB_L"].append(C1111_hom)
         dictpara["MEMB_T"].append(C2222_hom)
@@ -434,9 +536,7 @@ def calc_tabpara_plaque(
         dictpara["FLEX_G_LT"].append(D1212_hom)
         dictpara["CISA_L"].append(G11_hom)
         dictpara["CISA_T"].append(G22_hom)
-
-        dictpara["ALPHA_L"].append(ALPHA_L)
-        dictpara["ALPHA_T"].append(ALPHA_T)
+        dictpara["ALPHA"].append(ALPHA)
         dictpara["RHO"].append(RHO)
         dictpara["TEMP_DEF_ALPHA"].append(tda)
 

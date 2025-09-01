@@ -35,7 +35,8 @@ from ...Utilities import SearchList, no_new_attributes
 from .rest_homo_proj import MOCK_PROJ_CHAMP
 from .syme_homo_corr import BuildFullSymmetryMassif
 from .mate_homo_utilities import get_temp_def_alpha_material as get_tda
-from . import HomoType, check_mesh
+from .mate_homo_mesh import check_meshpara
+from . import HomoType
 
 
 class RelocManager:
@@ -290,7 +291,7 @@ class RelocManager:
         if mmeca is not None and mther is not None:
             ASSERT(mther[0] is mmeca[0])
 
-        return check_mesh(mesh)
+        return check_meshpara(mesh)
 
     def _createVerMesh(self):
         """Internal function. Creates the VER mesh used for field localisation.

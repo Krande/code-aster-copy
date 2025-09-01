@@ -57,7 +57,7 @@ CALC_MATE_HOMO = MACRO(
         NOM_VARC=SIMP(statut="o", typ="TXM", into=("TEMP", "IRRA")),
         VALE=SIMP(statut="o", typ="R", min=1, max="**"),
     ),
-    TYPE_HOMO=SIMP(statut="o", typ="TXM", into=("MASSIF", "PLAQUE")),
+    TYPE_HOMO=SIMP(statut="o", typ="TXM", into=("MASSIF", "PLAQUE", "PLAQUE_CT")),
     INFO=SIMP(statut="f", typ="I", defaut=1, into=(1, 2)),
     CORR_MECA=SIMP(statut="f", typ=CO, validators=NoRepeat()),
     b_corr_massif=BLOC(
@@ -65,7 +65,7 @@ CALC_MATE_HOMO = MACRO(
         CORR_THER=SIMP(statut="f", typ=CO, validators=NoRepeat()),
     ),
     b_corr_plaque=BLOC(
-        condition="""equal_to("TYPE_HOMO", "PLAQUE")""",
-        VECT_NORM=SIMP(statut="o", typ="TXM", into=("X", "Y", "Z")),
+        condition="""equal_to("TYPE_HOMO", "PLAQUE_CT")""",
+        CISA=SIMP(statut="f", typ="TXM", into=("REISSNER", "NAGHDI"), defaut="REISSNER"),
     ),
 )

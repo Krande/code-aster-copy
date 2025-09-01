@@ -124,4 +124,9 @@ Le maillage fourni %(k1)s est de type parallèle et n'est pas supporté par cett
 La pression fournie n'est pas une fonction du temps.
 """
     ),
+    21: _(
+        """
+Le maillage fourni, %(k1)s, est linéaire. Il est recommandé d'utiliser un maillage quadratique pour cette application.
+"""
+    ),
 }
