@@ -20,8 +20,8 @@ function exi_thms(model, l_affe_all, list_elem_affe, nb_elem_affe)
 !
     implicit none
 !
-#include "asterf_types.h"
 #include "jeveux.h"
+#include "asterf_types.h"
 #include "asterfort/dismoi.h"
 #include "asterfort/jedema.h"
 #include "asterfort/jemarq.h"
@@ -56,8 +56,9 @@ function exi_thms(model, l_affe_all, list_elem_affe, nb_elem_affe)
 !
     integer(kind=8) :: nb_elem, nb_elem_mesh, iret, ielem, nume_elem, nutyel
     integer(kind=8) :: j_elem_affe
-    character(len=8) :: mesh, rep
+    character(len=8) :: rep
     character(len=16) :: notype
+    character(len=19) :: ligrel
     integer(kind=8), pointer :: maille(:) => null()
 !
 ! --------------------------------------------------------------------------------------------------
@@ -68,9 +69,9 @@ function exi_thms(model, l_affe_all, list_elem_affe, nb_elem_affe)
 !
 ! - Access to model and mesh
 !
-    call jeveuo(model//'.MAILLE', 'L', vi=maille)
-    call dismoi('NOM_MAILLA', model(1:8), 'MODELE', repk=mesh)
-    call dismoi('NB_MA_MAILLA', mesh, 'MAILLAGE', repi=nb_elem_mesh)
+    call dismoi('NOM_LIGREL', model, 'MODELE', repk=ligrel)
+    call dismoi('NB_MA_MAILLA', ligrel, 'LIGREL', repi=nb_elem_mesh)
+    call jeveuo(ligrel//'.TYFE', 'L', vi=maille)
 !
 ! - Mesh affectation
 !

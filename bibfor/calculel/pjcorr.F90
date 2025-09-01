@@ -69,7 +69,6 @@ subroutine pjcorr(nomo2, chbid, cns1z, ces2z, ligrel, &
     integer(kind=8) :: ima, ipt, isp, jcesc
     integer(kind=8), pointer :: cnsd(:) => null()
     character(len=8), pointer :: cnsk(:) => null()
-    character(len=8), pointer :: lgrf(:) => null()
     real(kind=8), pointer :: cnsv(:) => null()
     integer(kind=8), pointer :: pjef_el(:) => null()
     character(len=8), pointer :: ce2c(:) => null()
@@ -117,8 +116,7 @@ subroutine pjcorr(nomo2, chbid, cns1z, ces2z, ligrel, &
     call jeveuo(cham1s//'.CESV', 'L', jcesv)
     call jeveuo(cham1s//'.CESL', 'L', jcesl)
 !
-    call jeveuo(ligrel//'.LGRF', 'L', vk8=lgrf)
-    ma = lgrf(1)
+    call dismoi('NOM_MAILLA', ligrel, 'LIGREL', repk=ma)
 !
 !
 !

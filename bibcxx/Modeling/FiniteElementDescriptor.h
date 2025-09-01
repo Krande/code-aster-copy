@@ -31,11 +31,7 @@
 #include "MemoryManager/JeveuxVector.h"
 #include "Meshes/BaseMesh.h"
 #include "Meshes/MeshExplorer.h"
-#include "Modeling/Model.h"
-
-// Forward declaration
-class Model;
-using ModelPtr = std::shared_ptr< Model >;
+#include "Modeling/Partition.h"
 
 /**
  * @class FiniteElementDescriptor
@@ -68,15 +64,15 @@ class FiniteElementDescriptor : public DataStructure {
     JeveuxVectorLong _superElementsDescriptor;
     /** @brief Vecteur Jeveux '.NVGE' */
     JeveuxVectorChar16 _nameOfNeighborhoodStructure;
+    /** @brief Vecteur Jeveux '.TYFE' */
+    JeveuxVectorLong _typeOfCells;
     /** @brief Base mesh */
     BaseMeshPtr _mesh;
     /** @brief Object to loop over connectivity of delayed numbered cells */
     const ConnectivityVirtualCellsExplorer _explorer;
     /** @brief Object to loop over list of group of cells */
     const ConnectivityVirtualCellsExplorer _explorer2;
-    /** @brief Model if known */
-    // We use a weak_ptr to avoid circular reference
-    std::weak_ptr< Model > _model;
+    PartitionPtr _partition;
 
     /**
      * @brief Constructeur
@@ -98,12 +94,8 @@ class FiniteElementDescriptor : public DataStructure {
 
     FiniteElementDescriptor( const BaseMeshPtr mesh );
 
-    FiniteElementDescriptor( const ModelPtr model );
-
     FiniteElementDescriptor( const FiniteElementDescriptorPtr FEDesc,
                              const VectorString &groupOfCells );
-
-    FiniteElementDescriptor( const ModelPtr model, const VectorString &groupOfCells );
 
     /**
      * @brief Destructor
@@ -138,15 +130,14 @@ class FiniteElementDescriptor : public DataStructure {
 
     void setMesh( const BaseMeshPtr &currentMesh );
 
-    void setModel( const ModelPtr model );
-
-    ModelPtr getModel();
-
     int getPhysics( void ) const;
 
     bool exists() const;
 
     bool build();
+
+    /**@brief patition method */
+    const std::string getPartitionMethod() const;
 
     ASTERINTEGER getNumberOfCells() const;
 
@@ -156,6 +147,8 @@ class FiniteElementDescriptor : public DataStructure {
 
     /** @brief Get index of elem type */
     ASTERINTEGER getElemTypeNume( const std::string elemTypeName ) const;
+
+    JeveuxVectorLong getFiniteElementType() const;
 
     /**
      * @brief Number of super-elements in model

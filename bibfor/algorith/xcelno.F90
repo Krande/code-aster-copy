@@ -21,8 +21,8 @@ subroutine xcelno(noma, modelx, cel_hno, opt, npa)
 ! person_in_charge: samuel.geniaut at edf.fr
 !
     implicit none
-#include "asterf_types.h"
 #include "jeveux.h"
+#include "asterf_types.h"
 #include "asterfort/as_allocate.h"
 #include "asterfort/as_deallocate.h"
 #include "asterfort/assert.h"
@@ -61,7 +61,7 @@ subroutine xcelno(noma, modelx, cel_hno, opt, npa)
     integer(kind=8) :: jcesd, jcesv, jcesl, iad
     integer(kind=8) :: jcesd_fno, jcesv_fno, jcesl_fno, iad_fno, jcesl_stno, jcesd_stno, jcesv_stno
     integer(kind=8) :: ier, nfh, cpt, ncompn, deca_fno, iad2, pos, iad5, id1, id2, iad_stno, nfh2
-    character(len=19) :: ces_hno, ces_fno, ces_stno
+    character(len=19) :: ces_hno, ces_fno, ces_stno, ligrel
     aster_logical :: lfno, limpr
     aster_logical, pointer :: is_nfh_no(:) => null()
     integer(kind=8), pointer :: list_sd_no(:) => null(), count_sd_no(:) => null()
@@ -464,7 +464,9 @@ subroutine xcelno(noma, modelx, cel_hno, opt, npa)
     end do
 !
     call detrsd('CHAM_ELEM', cel_hno)
-    call cescel(ces_hno, modelx//'.MODELE', opt, npa, 'OUI', &
+    call dismoi('NOM_LIGREL', modelx, 'MODELE', repk=ligrel)
+
+    call cescel(ces_hno, ligrel, opt, npa, 'OUI', &
                 nncp, 'G', cel_hno, 'F', ibid)
 !
     AS_DEALLOCATE(vl=is_ma_xfem)

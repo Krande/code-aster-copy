@@ -62,6 +62,7 @@ subroutine charme(load, valeType)
 #include "asterfort/char_crea_neum.h"
 #include "asterfort/chveno.h"
 #include "asterfort/cormgi.h"
+#include "asterfort/dismoi.h"
 #include "asterfort/getvtx.h"
 #include "asterfort/initel.h"
 #include "asterfort/jeecra.h"
@@ -335,7 +336,7 @@ subroutine charme(load, valeType)
         call jeecra(loadLigrel//'.LGRF', 'DOCU', cval=phenomS)
         call initel(loadLigrel)
         call jeveuo(loadLigrel//'.LGRF', 'E', vk8=loadLigrelLgrf)
-        loadLigrelLgrf(2) = model
+        call dismoi('PARTITION', model, "MODELE", repk=loadLigrelLgrf(2))
         call getvtx(' ', 'DOUBLE_LAGRANGE', scal=answer)
         if (answer .eq. 'NON') then
             loadLigrelLgrf(3) = 'LAG1'

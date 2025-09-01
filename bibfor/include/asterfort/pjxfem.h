@@ -20,17 +20,16 @@
 !
 interface
     subroutine pjxfem(correz, ch1z, ch2z, tychv, prfchz,&
-                      prol0, ligrez, base, modz, inst, iret)
+                      prol0, base, modz, inst, iret)
         character(len=*) :: correz
         character(len=*) :: ch1z
         character(len=*) :: ch2z
         character(len=4) :: tychv
         character(len=*) :: prfchz
         character(len=*) :: prol0
-        character(len=*) :: ligrez
         character(len=*) :: modz
         character(len=1) :: base
-        real(kind=8) :: inst        
+        real(kind=8) :: inst
         integer(kind=8) :: iret
     end subroutine pjxfem
 end interface

@@ -41,6 +41,7 @@ subroutine charth(load, valeType)
 #include "asterfort/cbsonl.h"
 #include "asterfort/cbsour.h"
 #include "asterfort/cormgi.h"
+#include "asterfort/dismoi.h"
 #include "asterfort/initel.h"
 #include "asterfort/jeecra.h"
 #include "asterfort/jeexin.h"
@@ -185,7 +186,7 @@ subroutine charth(load, valeType)
         call jeecra(loadLigrel//'.LGRF', 'DOCU', cval=phenomS)
         call initel(loadLigrel)
         call jeveuo(loadLigrel//'.LGRF', 'E', vk8=loadLigrelLgrf)
-        loadLigrelLgrf(2) = model
+        call dismoi('PARTITION', model, "MODELE", repk=loadLigrelLgrf(2))
     end if
 
 ! - Audit assignments

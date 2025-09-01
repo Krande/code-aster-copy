@@ -16,7 +16,7 @@
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
 
-subroutine rc3600_chtotab(nomtb, conceptin, nsymb, modele, champ)
+subroutine rc3600_chtotab(nomtb, conceptin, nsymb, champ)
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -27,7 +27,6 @@ subroutine rc3600_chtotab(nomtb, conceptin, nsymb, modele, champ)
 !        IN     : conceptin (K8)  : objet en entrée de POST_RCCM
 !                 nsymb     (K16) : si RESULTAT en entrée : nom du symbolique du champ
 !                                 : sinon ' '
-!                 MODELE   (K8)  : NOM DU MODELE
 !                 MESMAI (K24) : OBJET DES NOMS DE MAILLE
 !                 NBMA  (I)    : NOMBRE DE MAILLES UTILISATEUR
 !                 CHAMP : nom du champ à traiter
@@ -37,8 +36,8 @@ subroutine rc3600_chtotab(nomtb, conceptin, nsymb, modele, champ)
 ! --------------------------------------------------------------------------------------------------
 !
     implicit none
-#include "asterf_types.h"
 #include "jeveux.h"
+#include "asterf_types.h"
 !
 #include "asterfort/assert.h"
 #include "asterfort/carces.h"
@@ -46,18 +45,18 @@ subroutine rc3600_chtotab(nomtb, conceptin, nsymb, modele, champ)
 #include "asterfort/cesexi.h"
 #include "asterfort/dismoi.h"
 #include "asterfort/indiis.h"
+#include "asterfort/int_to_char8.h"
 #include "asterfort/jedema.h"
 #include "asterfort/jeexin.h"
 #include "asterfort/jemarq.h"
 #include "asterfort/jeveuo.h"
 #include "asterfort/jexatr.h"
-#include "asterfort/reliem.h"
+#include "asterfort/reliem1.h"
 #include "asterfort/tbajli.h"
 #include "asterfort/tbcrsv.h"
 #include "asterfort/utmess.h"
-#include "asterfort/int_to_char8.h"
 !
-    character(len=8) :: modele, conceptin, nomtb
+    character(len=8) :: conceptin, nomtb
     character(len=16) :: nsymb
     character(len=19) :: champ
 !
@@ -71,7 +70,7 @@ subroutine rc3600_chtotab(nomtb, conceptin, nsymb, modele, champ)
     complex(kind=8) :: cbid
     character(len=8) :: motcle(3), typmcl(3), noma, kma, kno
     character(len=16) :: table_valk(4)
-    character(len=19) :: chames, chamescurv
+    character(len=19) :: chames, chamescurv, ligrelCham
     character(len=24) :: mesmai
     aster_logical :: l_abscurv, l_alarm
 
@@ -128,9 +127,10 @@ subroutine rc3600_chtotab(nomtb, conceptin, nsymb, modele, champ)
     typmcl(1) = 'TOUT'
     typmcl(2) = 'MAILLE'
     typmcl(3) = 'GROUP_MA'
-    call dismoi('NOM_MAILLA', modele, 'MODELE', repk=noma)
-    call reliem(modele, noma, 'NU_MAILLE', 'ZONE_ANALYSE', 1, &
-                3, motcle, typmcl, mesmai, nbma)
+    call dismoi('NOM_LIGREL', champ, 'CHAMP', repk=ligrelCham)
+    call dismoi('NOM_MAILLA', ligrelCham, 'LIGREL', repk=noma)
+    call reliem1(ligrelCham, noma, 'NU_MAILLE', 'ZONE_ANALYSE', 1, &
+                 3, motcle, typmcl, mesmai, nbma)
     call jeveuo(mesmai, 'L', jlma)
 
 !   3 - Abscisses curvilignes

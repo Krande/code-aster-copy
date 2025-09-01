@@ -21,9 +21,10 @@ subroutine vechmp(nomo, mate, mateco, carele, varplu, lxfem, &
 !
 !
     implicit none
-#include "asterf_types.h"
 #include "jeveux.h"
+#include "asterf_types.h"
 #include "asterfort/assert.h"
+#include "asterfort/dismoi.h"
 #include "asterfort/jedema.h"
 #include "asterfort/jemarq.h"
 #include "asterfort/mecact.h"
@@ -71,11 +72,11 @@ subroutine vechmp(nomo, mate, mateco, carele, varplu, lxfem, &
 !
 ! --- INITIALISATIONS
 !
-    ligrmo = nomo(1:8)//'.MODELE'
+    call dismoi('NOM_LIGREL', nomo, 'MODELE', repk=ligrmo)
 !
 ! --- CHAMP DE GEOMETRIE
 !
-    call mecoor(nomo, chgeom)
+    call mecoor(ligrmo, chgeom)
 !
 ! --- CHAMP DE CARACTERISTIQUES ELEMENTAIRES
 !

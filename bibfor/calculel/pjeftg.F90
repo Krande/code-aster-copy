@@ -44,8 +44,8 @@ subroutine pjeftg(igeom, geomi, nomai, motfac, iocc, ncas)
     integer(kind=8) :: iocc
     character(len=8) :: ncas
 !
-#include "asterf_types.h"
 #include "jeveux.h"
+#include "asterf_types.h"
 #include "asterc/getres.h"
 #include "asterfort/assert.h"
 #include "asterfort/copisd.h"
@@ -75,7 +75,7 @@ subroutine pjeftg(igeom, geomi, nomai, motfac, iocc, ncas)
     character(len=8) :: lfonc(3), lparx(3), maili, k8bid
     character(len=16) :: formar, method
     character(len=16) :: concept, nomcmd
-    character(len=19) :: resout
+    character(len=19) :: resout, k19bid
     character(len=80) :: fichier
     aster_logical :: limpr
 !
@@ -166,6 +166,7 @@ subroutine pjeftg(igeom, geomi, nomai, motfac, iocc, ncas)
     if (limpr) then
         ibid = 0
         k8bid = '        '
+        k19bid = '        '
         formar = '        '
 !       Réservation d'une unité et codage du nom en dur
 !           Récupération du nom de la commande
@@ -183,9 +184,9 @@ subroutine pjeftg(igeom, geomi, nomai, motfac, iocc, ncas)
 !       On ouvre et écriture
         call ulaffe(unite, fichier, ' ', 'N', 'O')
         if (geomi .ne. ' ') then
-            call irmail('MED', unite, ibid, maili, ASTER_FALSE, k8bid, 1, formar)
+            call irmail('MED', unite, ibid, maili, ASTER_FALSE, k19bid, 1, formar)
         else
-            call irmail('MED', unite, ibid, nomai, ASTER_FALSE, k8bid, 1, formar)
+            call irmail('MED', unite, ibid, nomai, ASTER_FALSE, k19bid, 1, formar)
         end if
 !       On ferme
         call ulopen(-unite, k8bid, k8bid, k8bid, k8bid)

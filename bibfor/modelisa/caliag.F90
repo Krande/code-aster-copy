@@ -20,12 +20,14 @@ subroutine caliag(fonrez, chargz, phenom)
 !
     implicit none
 !
-#include "asterf_types.h"
 #include "jeveux.h"
+#include "asterf_types.h"
 #include "asterc/getfac.h"
 #include "asterc/indik8.h"
 #include "asterfort/aflrch.h"
 #include "asterfort/afrela.h"
+#include "asterfort/as_allocate.h"
+#include "asterfort/as_deallocate.h"
 #include "asterfort/assert.h"
 #include "asterfort/caexno.h"
 #include "asterfort/calemn.h"
@@ -36,6 +38,7 @@ subroutine caliag(fonrez, chargz, phenom)
 #include "asterfort/getvr8.h"
 #include "asterfort/getvtx.h"
 #include "asterfort/infniv.h"
+#include "asterfort/int_to_char8.h"
 #include "asterfort/jecrec.h"
 #include "asterfort/jecroc.h"
 #include "asterfort/jedema.h"
@@ -50,9 +53,6 @@ subroutine caliag(fonrez, chargz, phenom)
 #include "asterfort/lxcadr.h"
 #include "asterfort/lxcaps.h"
 #include "asterfort/utmess.h"
-#include "asterfort/as_deallocate.h"
-#include "asterfort/as_allocate.h"
-#include "asterfort/int_to_char8.h"
 !
 !
     character(len=*), intent(in) :: fonrez
@@ -97,7 +97,6 @@ subroutine caliag(fonrez, chargz, phenom)
     integer(kind=8), pointer :: nbnor(:) => null()
     character(len=8), pointer :: nomddl(:) => null()
     character(len=8), pointer :: nomnoe(:) => null()
-    character(len=8), pointer :: lgrf(:) => null()
 !
 ! ----------------------------------------------------------------------
 !
@@ -121,9 +120,8 @@ subroutine caliag(fonrez, chargz, phenom)
 ! --- MODELE ASSOCIE AU LIGREL DE CHARGE ---
 !
     call dismoi('NOM_MODELE', charge(1:8), 'CHARGE', repk=mod)
-    ligrmo = mod(1:8)//'.MODELE'
-    call jeveuo(ligrmo//'.LGRF', 'L', vk8=lgrf)
-    noma = lgrf(1)
+    call dismoi('NOM_LIGREL', mod, 'MODELE', repk=ligrmo)
+    call dismoi('NOM_MAILLA', ligrmo, 'LIGREL', repk=noma)
 
     lcolle = .false.
     call jeexin(noma//'.NOMNOE', ier)

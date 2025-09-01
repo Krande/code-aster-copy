@@ -23,15 +23,16 @@ subroutine arlcp2(iocc, mail, nomo, typmai, nom1, &
 !
 !
     implicit none
-#include "asterf_types.h"
 #include "jeveux.h"
-#include "asterfort/jemarq.h"
+#include "asterf_types.h"
 #include "asterfort/arlchi.h"
+#include "asterfort/arlclc.h"
 #include "asterfort/cescel.h"
 #include "asterfort/detrsd.h"
-#include "asterfort/arlclc.h"
-#include "asterfort/jedetr.h"
+#include "asterfort/dismoi.h"
 #include "asterfort/jedema.h"
+#include "asterfort/jedetr.h"
+#include "asterfort/jemarq.h"
 !
     aster_logical :: proj
     character(len=16) :: typmai
@@ -69,7 +70,7 @@ subroutine arlcp2(iocc, mail, nomo, typmai, nom1, &
 !
     call jemarq()
 !
-    ligarl = modarl(1:8)//'.MODELE'
+    call dismoi('NOM_LIGREL', modarl, 'MODELE', repk=ligarl)
 !
     chames(1) = '&&'//nompro//'.ESFAMI'
     chames(2) = '&&'//nompro//'.ESINFO'

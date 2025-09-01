@@ -19,8 +19,9 @@
 subroutine mefor0(nomo, chfor0, fonc)
     implicit none
 !
-#include "asterf_types.h"
 #include "jeveux.h"
+#include "asterf_types.h"
+#include "asterfort/dismoi.h"
 #include "asterfort/mecact.h"
     character(len=8) :: nomo
     character(len=*) :: chfor0
@@ -39,7 +40,7 @@ subroutine mefor0(nomo, chfor0, fonc)
 !-----------------------------------------------------------------------
     chfor0 = '&&MEFOR0.FORCE_NULLE'
     zero = '&FOZERO'
-    ligrmo = nomo//'.MODELE    '
+    call dismoi('NOM_LIGREL', nomo, 'MODELE', repk=ligrmo)
     licmp(1) = 'FX'
     licmp(2) = 'FY'
     licmp(3) = 'FZ'

@@ -2444,16 +2444,13 @@ class FiniteElementDescriptor(DataStructure):
 
         3. __init__(self: libaster.FiniteElementDescriptor, arg0: libaster.FiniteElementDescriptor, arg1: list[str]) -> None
 
-        4. __init__(self: libaster.FiniteElementDescriptor, arg0: Model, arg1: list[str]) -> None
+        4. __init__(self: libaster.FiniteElementDescriptor, model: Model, groupOfCells: list[str]) -> None
         """
 
     def getListOfGroupsOfElements(self):
         pass
 
     def getMesh(self):
-        pass
-
-    def getModel(self):
         pass
 
     def getNumberOfCells(self):
@@ -2472,9 +2469,6 @@ class FiniteElementDescriptor(DataStructure):
 
         2. restrict(self: libaster.FiniteElementDescriptor, arg0: list[str]) -> libaster.FiniteElementDescriptor
         """
-
-    def setModel(self, arg0):
-        pass
 
     def transferDofDescriptorFrom(self, arg0):
         pass
@@ -2690,13 +2684,6 @@ class FieldOnCellsReal(DataField):
             BaseMesh: Mesh object
         """
 
-    def getModel(self):
-        """Return the Model associated with the FieldOnCellsReal object
-
-        Returns:
-            Model: Model object
-        """
-
     def getNumberOfComponents(self):
         """Get number of components
 
@@ -2878,13 +2865,6 @@ class FieldOnCellsComplex(DataField):
             BaseMesh: Mesh object
         """
 
-    def getModel(self):
-        """Return the Model associated with the FieldOnCellsReal object
-
-        Returns:
-            Model: Model object
-        """
-
     def getPhysicalQuantity(self):
         """Get physical quantity
 
@@ -3026,13 +3006,6 @@ class FieldOnCellsLong(DataField):
             BaseMesh: Mesh object
         """
 
-    def getModel(self):
-        """Return the Model associated with the FieldOnCellsReal object
-
-        Returns:
-            Model: Model object
-        """
-
     def getValues(self):
         """Return a list of values as (x1, y1, z1, x2, y2, z2...)
 
@@ -3122,13 +3095,6 @@ class FieldOnCellsChar8(DataField):
 
         Returns:
             BaseMesh: Mesh object
-        """
-
-    def getModel(self):
-        """Return the Model associated with the FieldOnCellsReal object
-
-        Returns:
-            Model: Model object
         """
 
     def setDescription(self, arg0):

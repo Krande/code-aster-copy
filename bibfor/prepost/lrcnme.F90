@@ -56,8 +56,8 @@ subroutine lrcnme(chanom, nochmd, nomamd, nomaas, nomgd, &
 !
 ! 0.1. ==> ARGUMENTS
 !
-#include "asterf_types.h"
 #include "jeveux.h"
+#include "asterf_types.h"
 #include "asterfort/as_mfdfdi.h"
 #include "asterfort/as_mfdnfc.h"
 #include "asterfort/as_mfdnfd.h"
@@ -112,7 +112,7 @@ subroutine lrcnme(chanom, nochmd, nomamd, nomaas, nomgd, &
     character(len=1) :: saux01
     character(len=8) :: saux08, parbid
     character(len=19) :: chamn
-    character(len=19) :: chamns, ligbid
+    character(len=19) :: chamns, mobid
     character(len=24) :: optbid
     character(len=64) :: nomcha
     character(len=200) :: nofimd
@@ -202,10 +202,10 @@ subroutine lrcnme(chanom, nochmd, nomamd, nomaas, nomgd, &
 ! 2. LECTURE
 !====
 !
-    ligbid = ' '
+    mobid = ' '
     optbid = ' '
     parbid = ' '
-    call lrcame(nrofic, nochmd, nomamd, nomaas, ligbid, &
+    call lrcame(nrofic, nochmd, nomamd, nomaas, mobid, &
                 optbid, parbid, 'NOEU', typent, unbid, &
                 unbid, unbid, nbcmpv, ncmpva, ncmpvm, &
                 iinst, numpt, numord, inst, crit, &

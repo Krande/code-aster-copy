@@ -23,13 +23,13 @@ subroutine comp_meta_pvar(model, comporMeta, comporMetaInfo)
     implicit none
 !
 #include "asterf_types.h"
-#include "asterc/lcdiscard.h"
 #include "asterc/lccree.h"
-#include "asterc/lcvari.h"
+#include "asterc/lcdiscard.h"
 #include "asterc/lcinfo.h"
-#include "asterfort/assert.h"
+#include "asterc/lcvari.h"
 #include "asterfort/as_allocate.h"
 #include "asterfort/as_deallocate.h"
+#include "asterfort/assert.h"
 #include "asterfort/dismoi.h"
 #include "asterfort/etenca.h"
 #include "asterfort/jecrec.h"
@@ -96,7 +96,7 @@ subroutine comp_meta_pvar(model, comporMeta, comporMetaInfo)
     call dismoi('NOM_MAILLA', comporMeta, 'CARTE', repk=mesh)
     call dismoi('NB_MA_MAILLA', mesh, 'MAILLAGE', repi=nbCellMesh)
     call dismoi('NOM_LIGREL', model, 'MODELE', repk=modelLigrel)
-    call jeveuo(model//'.MAILLE', 'L', vi=modelCell)
+    call jeveuo(modelLigrel//'.TYFE', 'L', vi=modelCell)
     call etenca(comporMeta, modelLigrel, iret)
     call jeveuo(comporMeta(1:19)//'.PTMA', 'L', vi=comporMetaPtma)
 

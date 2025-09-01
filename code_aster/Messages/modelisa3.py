@@ -56,9 +56,8 @@ MODI_REPERE / CHAMP_GD
     6: _(
         """
 MODI_REPERE / CHAMP_GD
-    Les modèles doivent être identique :
-        Le CHAMP     est bâti sur le modèle %(k1)s.
-        Le CARA_ELEM est bâti sur le modèle %(k2)s.
+    Le CHAMP %(k1)s et le CARA_ELEM %(k2)s doivent être bâti sur le même modèle.
+        Le CARA_ELEM est bâti sur le modèle %(k3)s.
 """
     ),
     7: _(

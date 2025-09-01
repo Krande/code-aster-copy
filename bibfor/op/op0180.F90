@@ -29,8 +29,8 @@ subroutine op0180()
 !
 ! VARIABLES LOCALES
 ! -----------------
-#include "asterf_types.h"
 #include "jeveux.h"
+#include "asterf_types.h"
 #include "asterc/getfac.h"
 #include "asterc/getres.h"
 #include "asterc/r8prem.h"
@@ -198,8 +198,8 @@ subroutine op0180()
                 write (k3b, '(I3)') icabl
                 call utmess('F', 'CABLE0_17', sk=k3b)
             end if
-            valk(2) = noancr(1)
-            valk(4) = noancr(2)
+            valk(2) = noancr(1) (1:8)
+            valk(4) = noancr(2) (1:8)
         end if
 !
 ! TEST DU TYPE D'ANCRAGE
@@ -281,7 +281,7 @@ subroutine op0180()
 ! --- D'ADRESSES DES CARACTERISTIQUES POINTES PAR LE NUMERO DE
 !     MAILLE
 !
-    ligrmo = modele//'.MODELE    '
+    call dismoi('NOM_LIGREL', modele, 'MODELE', repk=ligrmo)
 !
     carte = chmat//'.CHAMP_MAT '
     cadesc = carte//'.DESC'

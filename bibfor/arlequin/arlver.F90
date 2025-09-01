@@ -23,10 +23,11 @@ subroutine arlver(modele, lgma, nbgma, nomsd, model, &
 !
     implicit none
 !
-#include "asterf_types.h"
 #include "jeveux.h"
+#include "asterf_types.h"
 #include "asterfort/arlelt.h"
 #include "asterfort/assert.h"
+#include "asterfort/dismoi.h"
 #include "asterfort/jedema.h"
 #include "asterfort/jedetr.h"
 #include "asterfort/jeexin.h"
@@ -72,9 +73,10 @@ subroutine arlver(modele, lgma, nbgma, nomsd, model, &
 !
     character(len=8) :: noma, k8bid
     character(len=16) :: nomte, modte, cinte
+    character(len=19) :: ligrel
     integer(kind=8) :: nbma, ntot, nbligr, numa, ninit
     integer(kind=8) :: icompt, igma, ima, iligr, iret
-    integer(kind=8) :: jmail, jrepe, jcompt, jte, jgma, jgroup, jtyel
+    integer(kind=8) :: jrepe, jcompt, jte, jgma, jgroup, jtyel
     aster_logical :: eltok
     integer(kind=8) :: liste(nbgma)
 !
@@ -93,14 +95,14 @@ subroutine arlver(modele, lgma, nbgma, nomsd, model, &
 !
 ! --- ACCES MODELE
 !
-    call jeveuo(modele(1:8)//'.MODELE    .LGRF', 'L', jmail)
-    call jeveuo(modele(1:8)//'.MODELE    .REPE', 'L', jrepe)
-    call jelira(modele(1:8)//'.MODELE    .LIEL', 'NMAXOC', nbligr, k8bid)
-    call jeveuo(modele(1:8)//'.MAILLE', 'L', jtyel)
+    call dismoi('NOM_LIGREL', modele, 'MODELE', repk=ligrel)
+    call jeveuo(ligrel//'.REPE', 'L', jrepe)
+    call jelira(ligrel//'.LIEL', 'NMAXOC', nbligr, k8bid)
+    call jeveuo(ligrel//'.TYFE', 'L', jtyel)
 !
 ! --- NOM DU MAILLAGE
 !
-    noma = zk8(jmail)
+    call dismoi('NOM_MAILLA', ligrel, 'LIGREL', repk=noma)
 !
 ! --- ALLOCATION OBJETS TEMPORAIRES
 !

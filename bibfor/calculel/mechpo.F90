@@ -64,7 +64,7 @@ subroutine mechpo(souche, charge, modele, chdep2, chdynr, &
         tpf(i) = '&FOZERO'
         tpc(i) = (0.d0, 0.d0)
     end do
-    ligrmo = modele(1:8)//'.MODELE'
+    call dismoi('NOM_LIGREL', modele, 'MODELE', repk=ligrmo)
     chdepl = chdep2
     ch5 = '.    '
 !

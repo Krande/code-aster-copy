@@ -20,10 +20,12 @@ function nbddlMaxMa(nume_ddlz, matr_assez, nbmat, v_name_mat) result(maxDDLMa)
 !
     implicit none
 !
+#include "jeveux.h"
 #include "asterf_types.h"
 #include "asterfort/asmpi_info.h"
 #include "asterfort/assert.h"
 #include "asterfort/dismoi.h"
+#include "asterfort/exisd.h"
 #include "asterfort/jaexin.h"
 #include "asterfort/jedema.h"
 #include "asterfort/jeexin.h"
@@ -38,7 +40,6 @@ function nbddlMaxMa(nume_ddlz, matr_assez, nbmat, v_name_mat) result(maxDDLMa)
 #include "asterfort/nbno.h"
 #include "asterfort/parti0.h"
 #include "asterfort/utmess.h"
-#include "jeveux.h"
 !
     character(len=*), intent(in) :: nume_ddlz, matr_assez
     integer(kind=8), intent(in)  :: nbmat
@@ -53,9 +54,9 @@ function nbddlMaxMa(nume_ddlz, matr_assez, nbmat, v_name_mat) result(maxDDLMa)
 ! IN  I   nbmat         : nombre de matr_elem dans la MATR_ASSE
 !     ------------------------------------------------------------------
     character(len=3)  :: answer
-    character(len=8)  :: mesh, model, model_elem, nogdco, nogdsi
+    character(len=8)  :: mesh, model, model_elem, nogdco, nogdsi, partition
     character(len=14) :: nume_ddl
-    character(len=19) :: nomligrel, matr_elem, resu_elem, matr_asse, partition
+    character(len=19) :: nomligrel, matr_elem, resu_elem, matr_asse
     integer(kind=8) :: iconx1, iconx2, iel, iret, nnoe
     integer(kind=8) :: igrel, numa, ino, n1, n12, nddl1, rang, jrefa, jdesc
     integer(kind=8) :: nddlt, nel, nec, mode, nugd, imat, nbssa, iamail
@@ -194,7 +195,8 @@ function nbddlMaxMa(nume_ddlz, matr_assez, nbmat, v_name_mat) result(maxDDLMa)
 !
     call parti0(nbmat, v_name_mat, partition)
 !
-    if (partition .ne. ' ') then
+    call exisd("PARTITION", partition, iret)
+    if (iret .ne. 0) then
         l_distme = ASTER_TRUE
         call asmpi_info(rank=mrank, size=msize)
         rang = to_aster_int(mrank)

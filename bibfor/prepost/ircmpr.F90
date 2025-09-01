@@ -19,7 +19,7 @@
 !
 subroutine ircmpr(nofimd, typech, nbimpr, ncaimi, ncaimk, &
                   ncmprf, ncmpve, ntlcmp, nbvato, nbenec, &
-                  lienec, adsd, adsl, nomaas, modele, &
+                  lienec, adsd, adsl, nomaas, ligrel, &
                   typgeo, nomtyp, ntproa, chanom, sdcarm, &
                   field_type, nosdfu)
 !_______________________________________________________________________
@@ -37,7 +37,7 @@ subroutine ircmpr(nofimd, typech, nbimpr, ncaimi, ncaimk, &
 !       LIENEC : LISTE DES ENTITES A ECRIRE SI EXTRAIT
 !       ADSK, D, ... : ADRESSES DES TABLEAUX DES CHAMPS SIMPLIFIES
 !       NOMAAS : SD MAILLAGE ASTER
-!       MODELE : SD MODELE
+!       LIGREL : SD LIGREL DU CHAMP
 !       TYPGEO : TYPE GEOMETRIQUE DE MAILLE ASSOCIEE AU TYPE ASTER
 !       NOMTYP : NOM DES TYPES DE MAILLES ASTER
 ! In  field_type       : type of field (symbolic name in result datastructure)
@@ -70,8 +70,9 @@ subroutine ircmpr(nofimd, typech, nbimpr, ncaimi, ncaimk, &
 !
 #include "jeveux.h"
 #include "asterf_types.h"
-#include "MeshTypes_type.h"
 #include "asterc/utflsh.h"
+#include "asterfort/as_allocate.h"
+#include "asterfort/as_deallocate.h"
 #include "asterfort/dismoi.h"
 #include "asterfort/infniv.h"
 #include "asterfort/ircmpe.h"
@@ -82,8 +83,7 @@ subroutine ircmpr(nofimd, typech, nbimpr, ncaimi, ncaimk, &
 #include "asterfort/jexatr.h"
 #include "asterfort/utmess.h"
 #include "asterfort/wkvect.h"
-#include "asterfort/as_deallocate.h"
-#include "asterfort/as_allocate.h"
+#include "MeshTypes_type.h"
 !
     integer(kind=8) :: nbvato, ncmprf, ncmpve
     integer(kind=8) :: nbenec, adtyp2
@@ -94,9 +94,9 @@ subroutine ircmpr(nofimd, typech, nbimpr, ncaimi, ncaimk, &
 !
     character(len=*) :: nofimd
     character(len=*) :: ntlcmp, ntproa
-    character(len=8) :: nomaas, modele, typech, sdcarm
+    character(len=8) :: nomaas, typech, sdcarm
     character(len=8) :: nomtyp(*), nosdfu
-    character(len=19) :: chanom
+    character(len=19) :: chanom, ligrel
     character(len=24) :: ncaimi, ncaimk
     character(len=16), intent(in) :: field_type
 !
@@ -221,7 +221,7 @@ subroutine ircmpr(nofimd, typech, nbimpr, ncaimi, ncaimk, &
             end if
         end do
         if (typech(1:4) .eq. 'ELGA') then
-            call jeveuo(modele//'.MAILLE', 'L', adefma)
+            call jeveuo(ligrel//'.TYFE', 'L', adefma)
         end if
         call wkvect(ntpror, 'V V I', nbvato, adpror)
         call wkvect(ntauxi, 'V V I', nbvato, adauxi)

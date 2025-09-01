@@ -135,7 +135,7 @@ subroutine xcourb(basloc, noma, modele, courb)
     lchin(2) = matpas
     lpaout(1) = 'PGNEUTR'
     lchout(1) = courb
-    ligrmo = modele//'.MODELE'
+    call dismoi('NOM_LIGREL', modele, 'MODELE', repk=ligrmo)
     nchin = 2
     call calcul('S', 'GRAD_NEUT9_R', ligrmo, nchin, lchin, &
                 lpain, 1, lchout, lpaout, 'V', &

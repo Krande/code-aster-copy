@@ -31,6 +31,7 @@ subroutine merimp(l_xfem, l_dyna, &
 #include "asterf_types.h"
 #include "asterfort/cesvar.h"
 #include "asterfort/copisd.h"
+#include "asterfort/dismoi.h"
 #include "asterfort/exisd.h"
 #include "asterfort/mecact.h"
 #include "asterfort/mecara.h"
@@ -99,7 +100,7 @@ subroutine merimp(l_xfem, l_dyna, &
 !
 ! --------------------------------------------------------------------------------------------------
 !
-    ligrmo = model(1:8)//'.MODELE'
+    call dismoi('NOM_LIGREL', model, 'MODELE', repk=ligrmo)
     option = 'FULL_MECA'
     chiter = '&&MERIMO.CH_ITERAT'
     vari_iter = '&&MERIMO.VARMOJ'

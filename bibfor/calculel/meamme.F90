@@ -36,9 +36,9 @@ subroutine meamme(modelz, &
 #include "asterfort/jelira.h"
 #include "asterfort/jemarq.h"
 #include "asterfort/jeveuo.h"
+#include "asterfort/mecact.h"
 #include "asterfort/mecham.h"
 #include "asterfort/memare.h"
-#include "asterfort/mecact.h"
 #include "asterfort/ndynkk.h"
 #include "asterfort/reajre.h"
 #include "asterfort/redetr.h"
@@ -101,7 +101,7 @@ subroutine meamme(modelz, &
     integer(kind=8) :: nbResuElem, iResuElem, idxResuElemRigi
     integer(kind=8) :: nbSubstruct
     character(len=24), pointer :: listResuElem(:) => null()
-    character(len=19) :: modelLigrel, modelResu
+    character(len=19) :: modelLigrel, resuLigrel
     character(len=24), parameter :: nonLinearMap = "&&MEAMMA.NONLIN"
     integer(kind=8), parameter :: nbCmp = 1
     character(len=8), parameter :: cmpName = ('X1')
@@ -158,8 +158,8 @@ subroutine meamme(modelz, &
             do iResuElem = 1, nbResuElem
                 resuElemRigi = listResuElem(iResuElem)
                 idxResuElemRigi = iResuElem
-                call dismoi('NOM_MODELE', resuElemRigi, 'RESUELEM', repk=modelResu)
-                if (modelResu .eq. model) then
+                call dismoi('NOM_LIGREL', resuElemRigi, 'RESUELEM', repk=resuLigrel)
+                if (resuLigrel .eq. modelLigrel) then
                     goto 20
                 end if
             end do
@@ -177,8 +177,8 @@ subroutine meamme(modelz, &
             call jelira(matrMass(1:19)//'.RELR', 'LONUTI', nbResuElem)
             do iResuElem = 1, nbResuElem
                 resuElemMass = listResuElem(iResuElem)
-                call dismoi('NOM_MODELE', resuElemMass, 'RESUELEM', repk=modelResu)
-                if (modelResu .eq. model) then
+                call dismoi('NOM_LIGREL', resuElemMass, 'RESUELEM', repk=resuLigrel)
+                if (resuLigrel .eq. modelLigrel) then
                     goto 40
                 end if
             end do

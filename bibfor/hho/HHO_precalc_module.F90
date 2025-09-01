@@ -113,7 +113,7 @@ contains
 !
         base = 'G'
         option = 'HHO_PRECALC_OP'
-        ligrel_model = model(1:8)//'.MODELE'
+        call dismoi('NOM_LIGREL', model, 'MODELE', repk=ligrel_model)
 !
 ! --- Init fields
 !
@@ -180,7 +180,7 @@ contains
 !
         base = 'G'
         option = 'HHO_PRECALC_BS'
-        ligrel_model = model(1:8)//'.MODELE'
+        call dismoi('NOM_LIGREL', model, 'MODELE', repk=ligrel_model)
         chelno = model(1:8)//'.HHO.TMP'
         chbase = model(1:8)//'.HHO.BASE'
 !

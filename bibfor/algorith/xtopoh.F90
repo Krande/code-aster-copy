@@ -21,13 +21,13 @@ subroutine xtopoh(noma, modele)
 ! person_in_charge: samuel.geniaut at edf.fr
 !
     implicit none
-#include "asterf_types.h"
 #include "jeveux.h"
+#include "asterf_types.h"
 #include "asterfort/calcul.h"
 #include "asterfort/cescre.h"
 #include "asterfort/cesexi.h"
-#include "asterfort/dismoi.h"
 #include "asterfort/dbgcal.h"
+#include "asterfort/dismoi.h"
 #include "asterfort/infdbg.h"
 #include "asterfort/inical.h"
 #include "asterfort/jedema.h"
@@ -78,7 +78,7 @@ subroutine xtopoh(noma, modele)
 !
 ! --- INITIALISATIONS
 !
-    ligrel = modele//'.MODELE'
+    call dismoi('NOM_LIGREL', modele, 'MODELE', repk=ligrel)
     option = 'TOPONO'
     if (nivdbg .ge. 2) then
         debug = .true.

@@ -26,19 +26,19 @@ subroutine asseVectSuper(model, mesh, vectElem, &
 !
     implicit none
 !
+#include "jeveux.h"
 #include "asterf_types.h"
 #include "asterfort/assert.h"
 #include "asterfort/cordd2.h"
 #include "asterfort/dismoi.h"
 #include "asterfort/jedema.h"
-#include "asterfort/jelira.h"
 #include "asterfort/jeexin.h"
+#include "asterfort/jelira.h"
 #include "asterfort/jemarq.h"
 #include "asterfort/jenuno.h"
 #include "asterfort/jeveuo.h"
 #include "asterfort/jexnum.h"
 #include "asterfort/ssvalv.h"
-#include "jeveux.h"
 !
     character(len=8), intent(in) :: model, mesh
     character(len=19), intent(in) :: vectElem
@@ -71,6 +71,7 @@ subroutine asseVectSuper(model, mesh, vectElem, &
     integer(kind=8), pointer :: prno(:) => null()
     character(len=8) :: loadCaseName, superCellName
     character(len=14) :: superCellNume
+    character(len=19) :: ligrel
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -82,7 +83,8 @@ subroutine asseVectSuper(model, mesh, vectElem, &
     if (nbSuperCell == 0) then
         goto 999
     end if
-    call jeveuo(model//'.MODELE    .SSSA', 'L', vi=sssa)
+    call dismoi('NOM_LIGREL', model, 'MODELE', repk=ligrel)
+    call jeveuo(ligrel//'.SSSA', 'L', vi=sssa)
     nbLoadCase = 0
     call jeexin(vectElem//'.RELC', iret)
     if (iret .ne. 0) then

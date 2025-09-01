@@ -19,16 +19,19 @@
 subroutine peritr(resu, modele, cara, nh, nbocc)
     implicit none
 #include "jeveux.h"
-#include "asterfort/gettco.h"
 #include "asterfort/calcul.h"
+#include "asterfort/char8_to_int.h"
 #include "asterfort/chpve2.h"
 #include "asterfort/copisd.h"
 #include "asterfort/detrsd.h"
+#include "asterfort/dismoi.h"
+#include "asterfort/gettco.h"
 #include "asterfort/getvem.h"
 #include "asterfort/getvid.h"
 #include "asterfort/getvr8.h"
 #include "asterfort/getvtx.h"
 #include "asterfort/infniv.h"
+#include "asterfort/int_to_char8.h"
 #include "asterfort/jedema.h"
 #include "asterfort/jedetr.h"
 #include "asterfort/jeexin.h"
@@ -51,8 +54,6 @@ subroutine peritr(resu, modele, cara, nh, nbocc)
 #include "asterfort/tbcrsd.h"
 #include "asterfort/utmess.h"
 #include "asterfort/wkvect.h"
-#include "asterfort/char8_to_int.h"
-#include "asterfort/int_to_char8.h"
 !
     integer(kind=8) :: nh, nbocc
     character(len=*) :: resu, modele, cara
@@ -124,7 +125,7 @@ subroutine peritr(resu, modele, cara, nh, nbocc)
 !      CALL EXLIMA ( 'RICE_TRACEY', 'V', MODELE, NOMLIG, LIGREL )
 !     IL FAUT FAIRE LE CALCUL SUR TOUT LE MODELE
 !
-    ligrel = modele//'.MODELE'
+    call dismoi('NOM_LIGREL', modele, 'MODELE', repk=ligrel)
 !
     knum = '&&PERITR.NUME_ORDRE'
     kins = '&&PERITR.INSTANT'

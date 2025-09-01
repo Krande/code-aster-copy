@@ -40,11 +40,15 @@ subroutine calimc(chargz)
 #include "asterc/getfac.h"
 #include "asterfort/aflrch.h"
 #include "asterfort/afrela.h"
+#include "asterfort/as_allocate.h"
+#include "asterfort/as_deallocate.h"
 #include "asterfort/assert.h"
+#include "asterfort/char8_to_int.h"
 #include "asterfort/copmod.h"
 #include "asterfort/dismoi.h"
 #include "asterfort/getvid.h"
 #include "asterfort/getvtx.h"
+#include "asterfort/int_to_char8.h"
 #include "asterfort/jedema.h"
 #include "asterfort/jedetr.h"
 #include "asterfort/jeexin.h"
@@ -55,10 +59,6 @@ subroutine calimc(chargz)
 #include "asterfort/rsorac.h"
 #include "asterfort/utmess.h"
 #include "asterfort/wkvect.h"
-#include "asterfort/as_deallocate.h"
-#include "asterfort/as_allocate.h"
-#include "asterfort/char8_to_int.h"
-#include "asterfort/int_to_char8.h"
 !
 !
 ! -----  ARGUMENTS
@@ -101,7 +101,6 @@ subroutine calimc(chargz)
     integer(kind=8), pointer :: lino(:) => null()
     aster_logical :: lcolle
     character(len=19) :: ligrmo
-    character(len=8), pointer :: lgrf(:) => null()
 !-----------------------------------------------------------------------
     data liscmp/'DX      ', 'DY      ', 'DZ      ',&
      &               'DRX     ', 'DRY     ', 'DRZ     '/
@@ -145,9 +144,8 @@ subroutine calimc(chargz)
 ! --- mailllage
 !
     call dismoi('NOM_MODELE', charge, 'CHARGE', repk=mod)
-    ligrmo = mod(1:8)//'.MODELE'
-    call jeveuo(ligrmo//'.LGRF', 'L', vk8=lgrf)
-    mailla = lgrf(1)
+    call dismoi('NOM_LIGREL', mod, 'MODELE', repk=ligrmo)
+    call dismoi('NOM_MAILLA', ligrmo, 'LIGREL', repk=mailla)
     lcolle = .false.
     call jeexin(mailla//'.NOMNOE', ier)
     if (ier .ne. 0) then

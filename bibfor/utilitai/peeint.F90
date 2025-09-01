@@ -21,17 +21,20 @@ subroutine peeint(tableOut, model, nbocc)
     use MGIS_module
     implicit none
 !
-#include "asterf_types.h"
 #include "jeveux.h"
+#include "asterf_types.h"
 #include "asterc/indik8.h"
 #include "asterfort/as_allocate.h"
 #include "asterfort/as_deallocate.h"
 #include "asterfort/assert.h"
+#include "asterfort/char8_to_int.h"
+#include "asterfort/convertFieldNodeToNeutElem.h"
 #include "asterfort/copisd.h"
 #include "asterfort/detrsd.h"
 #include "asterfort/dismlg.h"
 #include "asterfort/dismoi.h"
 #include "asterfort/exlim1.h"
+#include "asterfort/getelem.h"
 #include "asterfort/getvid.h"
 #include "asterfort/getvtx.h"
 #include "asterfort/isParallelMesh.h"
@@ -44,18 +47,15 @@ subroutine peeint(tableOut, model, nbocc)
 #include "asterfort/jeveuo.h"
 #include "asterfort/jexnom.h"
 #include "asterfort/peecal.h"
-#include "asterfort/getelem.h"
 #include "asterfort/rsexch.h"
+#include "asterfort/rsGetOneBehaviourFromResult.h"
+#include "asterfort/rsSelectStoringIndex.h"
 #include "asterfort/tbajpa.h"
 #include "asterfort/tbcrsd.h"
 #include "asterfort/umalma.h"
 #include "asterfort/utflmd.h"
 #include "asterfort/utmess.h"
 #include "asterfort/varinonu.h"
-#include "asterfort/rsSelectStoringIndex.h"
-#include "asterfort/rsGetOneBehaviourFromResult.h"
-#include "asterfort/convertFieldNodeToNeutElem.h"
-#include "asterfort/char8_to_int.h"
 !
     integer(kind=8) :: nbocc
     character(len=8) :: model
@@ -87,11 +87,11 @@ subroutine peeint(tableOut, model, nbocc)
     character(len=8), parameter :: locaNameAll = 'TOUT', locaNameGroup = 'GROUP_MA'
     character(len=24), parameter :: locaNameUnion = 'UNION_GROUP_MA', locaNameCell = 'MAILLE'
     character(len=24), parameter :: keywFact = 'INTEGRALE'
-    character(len=24), parameter :: listCellUser = '&&PEEINT.CELL_USER'
+    character(len=24), parameter :: listCellUser = '&&PEEINT.TYFE_USER'
     character(len=24) :: listCellFilter
     character(len=24) :: numeStoreJv, timeStoreJv, compor
     character(len=19) :: field, fieldFromUser
-    character(len=19) :: ligrel
+    character(len=19) :: ligrel, modelligrel
     character(len=19), parameter :: cespoi = '&&PEEINT.CESPOI'
     character(len=19) :: fieldInput
     character(len=24) :: fieldName, groupName
@@ -238,7 +238,8 @@ subroutine peeint(tableOut, model, nbocc)
             if (hasMFront(compor)) then
                 call utmess('F', "COMPOR6_6")
             end if
-            call varinonu(model, compor, &
+            call dismoi('NOM_LIGREL', model, 'MODELE', repk=modelligrel)
+            call varinonu(modelligrel, compor, &
                           nbCellFilter, cellFilter, &
                           nbVari, variName, cmpNameAll)
         else
@@ -266,7 +267,8 @@ subroutine peeint(tableOut, model, nbocc)
         end if
         if (lStructElem .eq. 'OUI') then
             call jenonu(jexnom('&CATA.TE.NOMTE', 'MECA_POU_D_T'), pdtElemType)
-            call jeveuo(model//'.MAILLE', 'L', vi=listElemType)
+            call dismoi('NOM_LIGREL', model, 'MODELE', repk=modelligrel)
+            call jeveuo(modelligrel//'.TYFE', 'L', vi=listElemType)
 !           Check components
             do iCmp = 1, nbCmp
                 lCmpOk = .false.

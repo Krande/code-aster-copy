@@ -31,8 +31,9 @@ module HHO_Dirichlet_module
     implicit none
 !
     private
-#include "asterc/indik8.h"
+#include "jeveux.h"
 #include "asterf_types.h"
+#include "asterc/indik8.h"
 #include "asterfort/alcart.h"
 #include "asterfort/as_allocate.h"
 #include "asterfort/as_deallocate.h"
@@ -65,7 +66,6 @@ module HHO_Dirichlet_module
 #include "asterfort/teattr.h"
 #include "asterfort/utmess.h"
 #include "asterfort/wkvect.h"
-#include "jeveux.h"
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -453,7 +453,7 @@ contains
         base = 'V'
         option = 'HHO_CINE_F_MECA'
         chtime = '&&HHOCHTIME'
-        ligrel_model = model(1:8)//'.MODELE'
+        call dismoi('NOM_LIGREL', model, 'MODELE', repk=ligrel_model)
 !
 ! --- Init fields
 !

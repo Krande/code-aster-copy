@@ -19,7 +19,7 @@
 interface
     subroutine ircmpr(nofimd, typech, nbimpr, ncaimi, ncaimk,&
                       ncmprf, ncmpve, ntlcmp, nbvato, nbenec,&
-                      lienec, adsd, adsl, nomaas, modele,&
+                      lienec, adsd, adsl, nomaas, ligrel,&
                       typgeo, nomtyp, ntproa, chanom, sdcarm,&
                       field_type, nosdfu)
         character(len=*) :: nofimd
@@ -36,7 +36,7 @@ interface
         integer(kind=8) :: adsd
         integer(kind=8) :: adsl
         character(len=8) :: nomaas
-        character(len=8) :: modele
+        character(len=19) :: ligrel
         integer(kind=8) :: typgeo(*)
         character(len=8) :: nomtyp(*)
         character(len=*) :: ntproa

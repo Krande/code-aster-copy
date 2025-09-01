@@ -22,6 +22,7 @@ subroutine carelo(modele, carele, base, chrel1, chrel2, &
 #include "jeveux.h"
 !
 #include "asterfort/calcul.h"
+#include "asterfort/dismoi.h"
 #include "asterfort/jedema.h"
 #include "asterfort/jemarq.h"
 #include "asterfort/megeom.h"
@@ -42,12 +43,12 @@ subroutine carelo(modele, carele, base, chrel1, chrel2, &
 !
     character(len=8) :: lpain(4), lpaou(3)
     character(len=19) :: ligrmo, lchin(4), lchou(3)
-    character(len=24) :: chgeom
+    character(len=19) :: chgeom
 ! ----------------------------------------------------------------------
 !
     call jemarq()
 !
-    ligrmo = modele//'.MODELE'
+    call dismoi('NOM_LIGREL', modele, 'MODELE', repk=ligrmo)
 !
     call megeom(modele, chgeom)
     lchin(1) = chgeom

@@ -21,12 +21,13 @@ subroutine veondp(modele, mate, mateco, sddyna, temps, vecelz)
 ! person_in_charge: mickael.abbas at edf.fr
 !
     implicit none
-#include "asterf_types.h"
 #include "jeveux.h"
+#include "asterf_types.h"
 #include "asterfort/calcul.h"
 #include "asterfort/corich.h"
 #include "asterfort/dbgcal.h"
 #include "asterfort/detrsd.h"
+#include "asterfort/dismoi.h"
 #include "asterfort/exisd.h"
 #include "asterfort/gcncon.h"
 #include "asterfort/infdbg.h"
@@ -34,10 +35,10 @@ subroutine veondp(modele, mate, mateco, sddyna, temps, vecelz)
 #include "asterfort/jemarq.h"
 #include "asterfort/jeveuo.h"
 #include "asterfort/mecact.h"
-#include "asterfort/vemare.h"
 #include "asterfort/ndynin.h"
 #include "asterfort/ndynkk.h"
 #include "asterfort/reajre.h"
+#include "asterfort/vemare.h"
 #include "asterfort/vrcins.h"
     character(len=*) :: vecelz
     character(len=19) :: sddyna
@@ -66,7 +67,7 @@ subroutine veondp(modele, mate, mateco, sddyna, temps, vecelz)
 !
     integer(kind=8) :: nbout, nbin
     parameter(nbout=1, nbin=6)
-    character(len=8) :: lpaout(nbout), lpain(nbin)
+    character(len=8) :: lpaout(nbout), lpain(nbin), noma
     character(len=19) :: lchout(nbout), lchin(nbin)
 !
     integer(kind=8) :: ibid, i, iret, iondp
@@ -79,7 +80,6 @@ subroutine veondp(modele, mate, mateco, sddyna, temps, vecelz)
     character(len=8) :: newnom
     character(len=16) :: option
     integer(kind=8) :: ifmdbg, nivdbg
-    character(len=8), pointer :: lgrf(:) => null()
     character(len=19) :: chvarc
     character(len=2) :: codret
 !
@@ -93,9 +93,9 @@ subroutine veondp(modele, mate, mateco, sddyna, temps, vecelz)
     call ndynkk(sddyna, 'CHONDP', chondp)
     nchond = ndynin(sddyna, 'NBRE_ONDE_PLANE')
     vecele = vecelz
-    ligrmo = modele(1:8)//'.MODELE'
-    call jeveuo(ligrmo(1:19)//'.LGRF', 'L', vk8=lgrf)
-    chgeom = lgrf(1)//'.COORDO'
+    call dismoi('NOM_LIGREL', modele, 'MODELE', repk=ligrmo)
+    call dismoi('NOM_MAILLA', ligrmo, 'LIGREL', repk=noma)
+    chgeom = noma//'.COORDO'
     option = 'ONDE_PLAN'
     chinst = '&&CHINST'
     if (nivdbg .ge. 2) then

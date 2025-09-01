@@ -22,7 +22,7 @@ subroutine aceinc(noma, nomo, ntyele, nbocc, ivr, &
 !
     use cara_elem_parameter_module
     implicit none
-#include "asterf_types.h"
+#include "jeveux.h"
     integer(kind=8) :: ntyele(*), nbocc(*), ivr(*), zjdlm(*), lmax, ier
     aster_logical :: locaco, locagb, locamb
     character(len=8) :: noma, nomo
@@ -38,11 +38,14 @@ subroutine aceinc(noma, nomo, ntyele, nbocc, ivr, &
 ! -----------------------------------------------------------------------------------------------
 ! person_in_charge: jean-luc.flejou at edf.fr
 !
-#include "jeveux.h"
+#include "asterf_types.h"
 !
+#include "asterfort/char8_to_int.h"
 #include "asterfort/codent.h"
+#include "asterfort/dismoi.h"
 #include "asterfort/getvem.h"
 #include "asterfort/getvtx.h"
+#include "asterfort/int_to_char8.h"
 #include "asterfort/jedema.h"
 #include "asterfort/jedetr.h"
 #include "asterfort/jeexin.h"
@@ -53,8 +56,6 @@ subroutine aceinc(noma, nomo, ntyele, nbocc, ivr, &
 #include "asterfort/utmess.h"
 #include "asterfort/vafcar.h"
 #include "asterfort/wkvect.h"
-#include "asterfort/char8_to_int.h"
-#include "asterfort/int_to_char8.h"
 !
 ! -----------------------------------------------------------------------------------------------
     integer(kind=8) :: ii, ioc, ixma, jj, iid, iif
@@ -66,6 +67,7 @@ subroutine aceinc(noma, nomo, ntyele, nbocc, ivr, &
     integer(kind=8), parameter :: nbcar = 100
     character(len=6) :: kioc
     character(len=8) :: car(nbcar)
+    character(len=19) :: ligrel
     character(len=24) :: mlgnma, mlggma
     character(len=24) :: modmai, nommai
 ! -----------------------------------------------------------------------------------------------
@@ -77,7 +79,8 @@ subroutine aceinc(noma, nomo, ntyele, nbocc, ivr, &
     locamb = .false.
 !
 !   reconstruction des noms jeveux du concept maillage et modele
-    modmai = nomo//'.MAILLE'
+    call dismoi('NOM_LIGREL', nomo, 'MODELE', repk=ligrel)
+    modmai = ligrel//'.TYFE'
     mlgnma = noma//'.TYPMAIL'
     mlggma = noma//'.GROUPEMA'
     call jelira(mlgnma, 'LONMAX', nbmail)

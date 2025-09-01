@@ -19,6 +19,8 @@
 subroutine w039c1(carte, ifi, form, ligrel, titre)
     implicit none
 #include "jeveux.h"
+#include "asterfort/as_allocate.h"
+#include "asterfort/as_deallocate.h"
 #include "asterfort/assert.h"
 #include "asterfort/cescel.h"
 #include "asterfort/cescre.h"
@@ -39,8 +41,6 @@ subroutine w039c1(carte, ifi, form, ligrel, titre)
 #include "asterfort/jexnum.h"
 #include "asterfort/w039c2.h"
 #include "asterfort/w039c4.h"
-#include "asterfort/as_deallocate.h"
-#include "asterfort/as_allocate.h"
 !
     character(len=19) :: ligrel
     character(len=*) :: carte, titre, form
@@ -59,7 +59,7 @@ subroutine w039c1(carte, ifi, form, ligrel, titre)
     integer(kind=8) :: jdesc, jvale, ngedit, nugd, ncmpmx, kgedit, kzone, kcmp
     character(len=19) :: cart1, cel2, ces2
     character(len=64) :: nommed
-    character(len=8) :: kbid, ma, tsca, nomgd, modele, typech, sdcarm
+    character(len=8) :: kbid, ma, tsca, nomgd, typech, sdcarm
     character(len=16) :: field_type
     real(kind=8), pointer :: cesv(:) => null()
     integer(kind=8), pointer :: ptma(:) => null()
@@ -195,10 +195,9 @@ subroutine w039c1(carte, ifi, form, ligrel, titre)
 !     -------------------------
         nommed = cel2
         typech = 'ELEM'
-        modele = ' '
         sdcarm = ' '
         field_type = 'Unknown'
-        call irceme(ifi, nommed, cel2, typech, modele, &
+        call irceme(ifi, nommed, cel2, typech, ligrel, &
                     0, ' ', ' ', ' ', 0, &
                     0.d0, 0, 0, [0], sdcarm, sdcarm, &
                     field_type, nbCmpDyna, .false._1, iret)

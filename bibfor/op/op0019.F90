@@ -83,7 +83,6 @@ subroutine op0019()
 #include "asterfort/jelira.h"
 #include "asterfort/jemarq.h"
 #include "asterfort/jenonu.h"
-#include "asterfort/jeveuo.h"
 #include "asterfort/jexnom.h"
 #include "asterfort/pmfd00.h"
 #include "asterfort/tecart.h"
@@ -117,7 +116,7 @@ subroutine op0019()
     integer(kind=8) :: lxmr, noemf3
     integer(kind=8) :: npoutr, ncable, nbarre, nbdisc
     integer(kind=8) :: iclf, ioc, icle, ng, nocc, nocctout, nocctot
-    integer(kind=8) :: depart, jdnm
+    integer(kind=8) :: depart
     aster_logical :: locaco, locagb, locamb, l_pmesh
     character(len=8) :: ver(3), nomu, nomo, noma
     character(len=16) :: concep, cmd, mclef, k16bid
@@ -140,11 +139,8 @@ subroutine op0019()
 !   Enregistre le nom du modèle dans la SD de AFFE_CARA_ELEM
     call wkvect(nomu//'.MODELE', 'G V K8', 1, jadr)
     zk8(jadr) = nomo
-!   Construction des noms jeveux du concept modèle
-    modnom = nomo//'.MODELE    .LGRF'
 !   Récupération du nom du maillage associé
-    call jeveuo(modnom, 'L', jdnm)
-    noma = zk8(jdnm)
+    call dismoi('NOM_MAILLA', nomo, 'MODELE', repk=noma)
     l_pmesh = isParallelMesh(noma)
 !   Construction des noms jeveux du concept maillage associé
     mlgnma = noma//'.TYPMAIL'

@@ -28,7 +28,9 @@ subroutine exfonc(listFuncActi, ds_algopara, solver, ds_contact, &
 #include "asterf_types.h"
 #include "asterfort/assert.h"
 #include "asterfort/cfdisl.h"
+#include "asterfort/dismoi.h"
 #include "asterfort/exi_thms.h"
+#include "asterfort/exisd.h"
 #include "asterfort/getvtx.h"
 #include "asterfort/isfonc.h"
 #include "asterfort/jedema.h"
@@ -36,7 +38,6 @@ subroutine exfonc(listFuncActi, ds_algopara, solver, ds_contact, &
 #include "asterfort/jeveuo.h"
 #include "asterfort/ndynlo.h"
 #include "asterfort/utmess.h"
-#include "asterfort/dismoi.h"
 !
     integer(kind=8), intent(in) :: listFuncActi(*)
     character(len=19), intent(in) :: solver, sddyna
@@ -65,7 +66,7 @@ subroutine exfonc(listFuncActi, ds_algopara, solver, ds_contact, &
 !
 ! --------------------------------------------------------------------------------------------------
 !
-    integer(kind=8) :: reac_incr, reac_iter
+    integer(kind=8) :: reac_incr, reac_iter, iexi
     aster_logical :: l_cont, lallv, l_cont_cont, l_cont_disc, lpena, leltc, l_cont_lac, l_iden_rela
     aster_logical :: l_pilo, l_line_search, lmacr, l_unil, l_diri_undead
     aster_logical :: l_vibr_mode, l_buckling, lexpl, l_xfem, lmodim, l_mult_front
@@ -76,8 +77,9 @@ subroutine exfonc(listFuncActi, ds_algopara, solver, ds_contact, &
     aster_logical :: l_state_init, l_reuse
     aster_logical :: check_frot, check_rupt, check_endo
     character(len=24) :: typilo, metres, char24
-    character(len=16) :: reli_meth, matrix_pred, matrix_corr, partit
+    character(len=16) :: reli_meth, matrix_pred, matrix_corr
     character(len=3) :: mfdet
+    character(len=8) :: partit
     character(len=24), pointer :: slvk(:) => null()
     integer(kind=8), pointer :: slvi(:) => null()
 !
@@ -224,8 +226,10 @@ subroutine exfonc(listFuncActi, ds_algopara, solver, ds_contact, &
 !
     if (l_cont) then
         if (limpl) then
-            call dismoi('PARTITION', model(1:8)//'.MODELE', 'LIGREL', repk=partit)
-            if ((partit .ne. ' ')) then
+
+            call dismoi('PARTITION', model, 'MODELE', repk=partit)
+            call exisd('PARTITION', partit, iexi)
+            if (iexi .ne. 0) then
                 call utmess('F', 'CONTACT3_46')
             end if
         end if

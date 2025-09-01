@@ -19,8 +19,8 @@
 subroutine xaint2(noma, modele)
 !
     implicit none
-#include "asterf_types.h"
 #include "jeveux.h"
+#include "asterf_types.h"
 #include "asterfort/assert.h"
 #include "asterfort/celces.h"
 #include "asterfort/cescel.h"
@@ -40,8 +40,8 @@ subroutine xaint2(noma, modele)
 #include "asterfort/jexatr.h"
 #include "asterfort/jexnum.h"
 #include "asterfort/wkvect.h"
-#include "asterfort/xxmmvd.h"
 #include "asterfort/xelfis_lists.h"
+#include "asterfort/xxmmvd.h"
 !
     character(len=8) :: modele, noma
 !
@@ -117,7 +117,6 @@ subroutine xaint2(noma, modele)
 !
 ! --- RECUPERATION DES DONNEES SUR LE MAILLAGE
 !      CALL DISMOI('F','NB_NO_MAILLA',NOMA,'MAILLAGE',NBNO,K8BID,IBID)
-!      CALL JEVEUO(MODELE//'.MAILLE','L',JMAIL)
     call jeveuo('&CATA.TM.TMDIM', 'L', vi=tmdim)
     call dismoi('DIM_GEOM', noma, 'MAILLAGE', repi=ndim)
     call dismoi('NB_MA_MAILLA', noma, 'MAILLAGE', repi=nbma)
@@ -128,7 +127,7 @@ subroutine xaint2(noma, modele)
 ! --- CONNECTIVITE INVERSEE
     cnxinv = '&&XAINT2.CNCINV'
     call cncinv(noma, [ibid], 0, 'V', cnxinv)
-    ligrel = modele//'.MODELE'
+    call dismoi('NOM_LIGREL', modele, 'MODELE', repk=ligrel)
 !
 ! --- RECUPERATION DES DONNEES ELEMENTAIRES XFEM
 !

@@ -59,8 +59,8 @@ subroutine lrceme(chanom, nochmd, typech, nomamd, nomaas, &
 !
 ! 0.1. ==> ARGUMENTS
 !
-#include "asterf_types.h"
 #include "jeveux.h"
+#include "asterf_types.h"
 #include "asterfort/as_mfdfdi.h"
 #include "asterfort/as_mfdnfc.h"
 #include "asterfort/as_mfdnfd.h"
@@ -69,6 +69,7 @@ subroutine lrceme(chanom, nochmd, typech, nomamd, nomaas, &
 #include "asterfort/cescel.h"
 #include "asterfort/codent.h"
 #include "asterfort/detrsd.h"
+#include "asterfort/dismoi.h"
 #include "asterfort/getvis.h"
 #include "asterfort/infniv.h"
 #include "asterfort/jedema.h"
@@ -135,9 +136,9 @@ subroutine lrceme(chanom, nochmd, typech, nomamd, nomaas, &
     call infniv(ifm, nivinf)
 !
     if (nivinf .gt. 1) then
-        write (ifm, 1001) 'DEBUT DE '//nompro
+        write (ifm, 101) 'DEBUT DE '//nompro
     end if
-1001 format(/, 10('='), a, 10('='),/)
+101 format(/, 10('='), a, 10('='),/)
 !
 !====
 ! 1. ALLOCATION D'UN CHAM_ELEM_S  (CHAMES)
@@ -157,8 +158,6 @@ subroutine lrceme(chanom, nochmd, typech, nomamd, nomaas, &
 !               1234567890123456789
     chames = '&&      .CES.MED   '
     chames(3:8) = nompro
-    ligrel = nommod//'.MODELE'
-    if (nommod .eq. ' ') ligrel = ' '
 !
     call jeexin(ncmpva, iret)
     if (iret .gt. 0) then
@@ -224,6 +223,11 @@ subroutine lrceme(chanom, nochmd, typech, nomamd, nomaas, &
 ! 3. LECTURE POUR CHAQUE TYPE DE SUPPORT
 !====
 !
+    ligrel = ' '
+    if (nommod .ne. ' ') then
+        call dismoi('NOM_LIGREL', nommod, 'MODELE', repk=ligrel)
+    end if
+!
     call lrcame(nrofic, nochmd, nomamd, nomaas, ligrel, &
                 option, param, typech, typent, nbpgma, &
                 nbpgmm, nbspmm, nbcmpv, ncmpva, ncmpvm, &
@@ -275,7 +279,7 @@ subroutine lrceme(chanom, nochmd, typech, nomamd, nomaas, &
     call jedema()
 !
     if (nivinf .gt. 1) then
-        write (ifm, 1001) 'FIN DE '//nompro
+        write (ifm, 101) 'FIN DE '//nompro
     end if
 !
 end subroutine

@@ -28,20 +28,23 @@ subroutine lridea(fileUnit, &
 !
     implicit none
 !
-#include "asterf_types.h"
 #include "jeveux.h"
-#include "asterfort/getvis.h"
+#include "asterf_types.h"
 #include "asterfort/assert.h"
 #include "asterfort/cescre.h"
 #include "asterfort/cesexi.h"
+#include "asterfort/char8_to_int.h"
 #include "asterfort/cnscre.h"
 #include "asterfort/codent.h"
 #include "asterfort/crsdfi.h"
 #include "asterfort/decod1.h"
 #include "asterfort/decod2.h"
 #include "asterfort/dismoi.h"
+#include "asterfort/exisd.h"
+#include "asterfort/getvis.h"
 #include "asterfort/getvtx.h"
 #include "asterfort/gnomsd.h"
+#include "asterfort/int_to_char8.h"
 #include "asterfort/iradhs.h"
 #include "asterfort/jedema.h"
 #include "asterfort/jedetr.h"
@@ -52,11 +55,9 @@ subroutine lridea(fileUnit, &
 #include "asterfort/numeok.h"
 #include "asterfort/rsutc2.h"
 #include "asterfort/stock.h"
-#include "asterfort/utmess.h"
 #include "asterfort/ulisop.h"
 #include "asterfort/ulopen.h"
-#include "asterfort/char8_to_int.h"
-#include "asterfort/int_to_char8.h"
+#include "asterfort/utmess.h"
 !
     integer(kind=8), intent(in) :: fileUnit
     character(len=8), intent(in) :: resultName
@@ -141,7 +142,10 @@ subroutine lridea(fileUnit, &
     prolo = ' '
 !
     zcmplx = .false.
-    ligrel = model//'.MODELE'
+    ligrel = ' '
+    if (model .ne. ' ') then
+        call dismoi('NOM_LIGREL', model, 'MODELE', repk=ligrel)
+    end if
 !
 ! - Open file
 !
@@ -437,7 +441,7 @@ subroutine lridea(fileUnit, &
                         chs)
         else
 !
-            call jeexin(ligrel//'.LGRF', iret)
+            call exisd('LIGREL', ligrel, iret)
             if (iret .eq. 0) then
                 call utmess('F', 'PREPOST3_39')
             end if

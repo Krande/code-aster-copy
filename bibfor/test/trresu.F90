@@ -22,9 +22,12 @@ subroutine trresu(ific, nocc)
     use MGIS_module
     implicit none
 !
-#include "asterf_types.h"
 #include "jeveux.h"
+#include "asterf_types.h"
+#include "asterfort/as_allocate.h"
+#include "asterfort/as_deallocate.h"
 #include "asterfort/assert.h"
+#include "asterfort/char8_to_int.h"
 #include "asterfort/codent.h"
 #include "asterfort/dismoi.h"
 #include "asterfort/getvc8.h"
@@ -33,6 +36,8 @@ subroutine trresu(ific, nocc)
 #include "asterfort/getvis.h"
 #include "asterfort/getvr8.h"
 #include "asterfort/getvtx.h"
+#include "asterfort/int_to_char8.h"
+#include "asterfort/isParallelMesh.h"
 #include "asterfort/jedema.h"
 #include "asterfort/jedetr.h"
 #include "asterfort/jelira.h"
@@ -44,8 +49,6 @@ subroutine trresu(ific, nocc)
 #include "asterfort/rsadpa.h"
 #include "asterfort/rsexch.h"
 #include "asterfort/rsutnu.h"
-#include "asterfort/trprec.h"
-#include "asterfort/utcmp1.h"
 #include "asterfort/tresu_champ_all.h"
 #include "asterfort/tresu_champ_cmp.h"
 #include "asterfort/tresu_champ_no.h"
@@ -53,15 +56,12 @@ subroutine trresu(ific, nocc)
 #include "asterfort/tresu_ordgrd.h"
 #include "asterfort/tresu_print_all.h"
 #include "asterfort/tresu_read_refe.h"
+#include "asterfort/trprec.h"
+#include "asterfort/utcmp1.h"
 #include "asterfort/utmess.h"
 #include "asterfort/utnono.h"
 #include "asterfort/varinonu.h"
 #include "asterfort/wkvect.h"
-#include "asterfort/as_deallocate.h"
-#include "asterfort/as_allocate.h"
-#include "asterfort/isParallelMesh.h"
-#include "asterfort/char8_to_int.h"
-#include "asterfort/int_to_char8.h"
     integer(kind=8), intent(in) :: ific, nocc
 !     COMMANDE:  TEST_RESU
 !                MOT CLE FACTEUR "RESU"
@@ -83,7 +83,7 @@ subroutine trresu(ific, nocc)
     character(len=8) :: leresu, model
     character(len=11) :: motcle
     character(len=16) :: nopara, k16b, tbtxt(2), tbref(2), fieldName, variName
-    character(len=19) :: cham19, knum
+    character(len=19) :: cham19, knum, modelligrel
     character(len=33) :: nonoeu
     character(len=24) :: travr, travi, travc, travrr, travir, travcr, nogrno, nogrma, compor
     character(len=33) :: titres, valk(3)
@@ -528,7 +528,8 @@ subroutine trresu(ific, nocc)
                             call utmess('F', "COMPOR6_6")
                         end if
                         nbVari = 1
-                        call varinonu(model, compor, &
+                        call dismoi('NOM_LIGREL', model, 'MODELE', repk=modelligrel)
+                        call varinonu(modelligrel, compor, &
                                       1, [cellNume], &
                                       nbVari, variName, noddl)
 

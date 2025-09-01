@@ -29,7 +29,6 @@ interface
         character(len=*) :: nochmd
         character(len=*) :: nomamd
         character(len=8) :: nomaas
-        character(len=19) :: ligrel
         character(len=24) :: option
         character(len=8) :: param
         character(len=*) :: typech
@@ -49,7 +48,7 @@ interface
         character(len=8) :: nomgd
         integer(kind=8) :: ncmprf
         integer(kind=8) :: jnocmp
-        character(len=19) :: chames
+        character(len=19) :: chames, ligrel
         integer(kind=8) :: codret
     end subroutine lrcame
 end interface

@@ -19,20 +19,23 @@
 !
 subroutine rapo3d(numdlz, iocc, fonrez, lisrez, chargz)
     implicit none
-#include "asterf_types.h"
 #include "jeveux.h"
+#include "asterf_types.h"
 #include "asterc/getfac.h"
 #include "asterc/indik8.h"
+#include "asterc/r8pi.h"
 #include "asterc/r8prem.h"
 #include "asterfort/afrela.h"
+#include "asterfort/as_allocate.h"
+#include "asterfort/as_deallocate.h"
 #include "asterfort/assert.h"
 #include "asterfort/assvec.h"
 #include "asterfort/calcul.h"
+#include "asterfort/char8_to_int.h"
 #include "asterfort/detrsd.h"
 #include "asterfort/dismoi.h"
 #include "asterfort/exisdg.h"
 #include "asterfort/exlim1.h"
-#include "asterfort/reliem.h"
 #include "asterfort/getvid.h"
 #include "asterfort/getvr8.h"
 #include "asterfort/getvtx.h"
@@ -50,16 +53,13 @@ subroutine rapo3d(numdlz, iocc, fonrez, lisrez, chargz)
 #include "asterfort/jexnum.h"
 #include "asterfort/malin1.h"
 #include "asterfort/mecact.h"
-#include "asterfort/vemare.h"
 #include "asterfort/mesomm.h"
 #include "asterfort/ratu3d.h"
 #include "asterfort/reajre.h"
+#include "asterfort/reliem.h"
 #include "asterfort/utmess.h"
+#include "asterfort/vemare.h"
 #include "asterfort/veripl.h"
-#include "asterfort/as_deallocate.h"
-#include "asterfort/as_allocate.h"
-#include "asterfort/char8_to_int.h"
-#include "asterc/r8pi.h"
 !
     character(len=8) :: charge
     character(len=14) :: numddl
@@ -114,7 +114,6 @@ subroutine rapo3d(numdlz, iocc, fonrez, lisrez, chargz)
     character(len=8), pointer :: lisddl(:) => null()
     character(len=8), pointer :: lisno(:) => null()
     real(kind=8), pointer :: vale(:) => null()
-    character(len=8), pointer :: lgrf(:) => null()
     integer(kind=8), pointer :: prnm(:) => null()
 ! --------- FIN  DECLARATIONS  VARIABLES LOCALES --------
 !
@@ -190,12 +189,11 @@ subroutine rapo3d(numdlz, iocc, fonrez, lisrez, chargz)
     call dismoi('NOM_MODELE', charge(1:8), 'CHARGE', repk=mod)
 ! --- -----------------------------------------------------------------
 !     LIGREL DU MODELE
-    ligrmo = mod(1:8)//'.MODELE'
+    call dismoi('NOM_LIGREL', mod, 'MODELE', repk=ligrmo)
 !
 ! --- -----------------------------------------------------------------
 ! --- MAILLAGE ASSOCIE AU MODELE
-    call jeveuo(ligrmo//'.LGRF', 'L', vk8=lgrf)
-    noma = lgrf(1)
+    call dismoi('NOM_MAILLA', ligrmo, 'LIGREL', repk=noma)
     grnoma = noma//'.GROUPENO'
 !
 ! --- -----------------------------------------------------------------

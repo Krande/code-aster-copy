@@ -26,8 +26,9 @@ subroutine compMecaChckStrain(iComp, &
 !
     implicit none
 !
-#include "asterc/lctest.h"
+#include "jeveux.h"
 #include "asterf_types.h"
+#include "asterc/lctest.h"
 #include "asterfort/assert.h"
 #include "asterfort/Behaviour_type.h"
 #include "asterfort/BehaviourMGIS_type.h"
@@ -42,7 +43,6 @@ subroutine compMecaChckStrain(iComp, &
 #include "asterfort/lteatt.h"
 #include "asterfort/teattr.h"
 #include "asterfort/utmess.h"
-#include "jeveux.h"
 !
     integer(kind=8), intent(in) :: iComp
     character(len=8), intent(in) :: model
@@ -82,6 +82,7 @@ subroutine compMecaChckStrain(iComp, &
     character(len=16) :: elemTypeName, modelType, modelType2
     integer(kind=8) :: elemTypeNume, cellNume
     character(len=8) :: grille, mesh
+    character(len=19) :: ligrel
     integer(kind=8) :: jvCesd, jvCesl, jvCesv, jvVale
     integer(kind=8) :: modelTypeIret, lctestIret, iCell, modelTypeIret2
     integer(kind=8) :: nbCellMesh, nbCell
@@ -99,7 +100,8 @@ subroutine compMecaChckStrain(iComp, &
     if (nbCellAffe == 0 .and. l_parallel_mesh) goto 999
 
 ! - Access to model
-    call jeveuo(model//'.MAILLE', 'L', vi=cellAffectedByModel)
+    call dismoi('NOM_LIGREL', model, 'MODELE', repk=ligrel)
+    call jeveuo(ligrel//'.TYFE', 'L', vi=cellAffectedByModel)
 
 ! - Access to <CHELEM_S> of FULL_MECA option
     call jeveuo(fullElemField//'.CESD', 'L', jvCesd)

@@ -27,11 +27,12 @@ subroutine varcCalcMeta(modelz, &
 !
 #include "asterf_types.h"
 #include "asterfort/calcul.h"
-#include "asterfort/gcnco2.h"
 #include "asterfort/corich.h"
-#include "asterfort/reajre.h"
+#include "asterfort/dismoi.h"
+#include "asterfort/gcnco2.h"
 #include "asterfort/jelira.h"
 #include "asterfort/jeveuo.h"
+#include "asterfort/reajre.h"
 !
     character(len=*), intent(in) :: modelz
     integer(kind=8), intent(in) :: nbin, nbout
@@ -69,7 +70,7 @@ subroutine varcCalcMeta(modelz, &
 !
 ! --------------------------------------------------------------------------------------------------
 !
-    ligrmo = modelz(1:8)//'.MODELE'
+    call dismoi('NOM_LIGREL', modelz, 'MODELE', repk=ligrmo)
     option = 'CHAR_MECA_META_Z'
 !
 ! - Get last resu_elem

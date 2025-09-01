@@ -26,14 +26,15 @@ subroutine vetnth_nonl(model, caraElem, mateco, time, compor, &
 #include "asterf_types.h"
 #include "asterfort/calcul.h"
 #include "asterfort/corich.h"
-#include "asterfort/inical.h"
+#include "asterfort/dismoi.h"
 #include "asterfort/gcnco2.h"
+#include "asterfort/inical.h"
 #include "asterfort/jedetr.h"
 #include "asterfort/jeexin.h"
 #include "asterfort/mecara.h"
 #include "asterfort/megeom.h"
-#include "asterfort/vemare.h"
 #include "asterfort/reajre.h"
+#include "asterfort/vemare.h"
 !
     character(len=8), intent(in) :: model, caraElem
     character(len=24), intent(in) :: mateco
@@ -88,7 +89,7 @@ subroutine vetnth_nonl(model, caraElem, mateco, time, compor, &
     resu_elem_nl = vect_elem_nl(1:8)//'.0000000'
     newnom = '.0000000'
     option = 'CHAR_THER_EVOLNI'
-    ligrmo = model(1:8)//'.MODELE'
+    call dismoi('NOM_LIGREL', model, 'MODELE', repk=ligrmo)
 !
 ! - Get fields
 !

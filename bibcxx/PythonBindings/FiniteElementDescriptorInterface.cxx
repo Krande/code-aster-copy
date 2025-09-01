@@ -3,7 +3,7 @@
  * @brief Interface python de FiniteElementDescriptor
  * @author Nicolas Sellenet
  * @section LICENCE
- *   Copyright (C) 1991 - 2024  EDF R&D                www.code-aster.org
+ *   Copyright (C) 1991 - 2025  EDF R&D                www.code-aster.org
  *
  *   This file is part of Code_Aster.
  *
@@ -27,6 +27,8 @@
 
 #include "aster_pybind.h"
 
+#include "Modeling/Model.h"
+
 void exportFiniteElementDescriptorToPython( py::module_ &mod ) {
 
     py::class_< FiniteElementDescriptor, FiniteElementDescriptor::FiniteElementDescriptorPtr,
@@ -35,11 +37,13 @@ void exportFiniteElementDescriptorToPython( py::module_ &mod ) {
         .def( py::init( &initFactoryPtr< FiniteElementDescriptor, std::string, BaseMeshPtr > ) )
         .def( py::init(
             &initFactoryPtr< FiniteElementDescriptor, FiniteElementDescriptorPtr, VectorString > ) )
-        .def( py::init( &initFactoryPtr< FiniteElementDescriptor, ModelPtr, VectorString > ) )
+        .def( py::init( []( const ModelPtr model, const VectorString &groupOfCells ) {
+                  return std::make_shared< FiniteElementDescriptor >(
+                      model->getFiniteElementDescriptor(), groupOfCells );
+              } ),
+              py::arg( "model" ), py::arg( "groupOfCells" ) )
         .def( "getPhysics", &FiniteElementDescriptor::getPhysics )
         .def( "getMesh", &FiniteElementDescriptor::getMesh )
-        .def( "getModel", &FiniteElementDescriptor::getModel )
-        .def( "setModel", &FiniteElementDescriptor::setModel )
         .def( "getNumberOfCells", &FiniteElementDescriptor::getNumberOfCells )
         .def( "restrict", py::overload_cast< const VectorLong & >(
                               &FiniteElementDescriptor::restrict, py::const_ ) )

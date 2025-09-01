@@ -78,6 +78,7 @@ subroutine pecap1(chgeoz, tempez, ngi, lisgma, ct)
 #include "asterfort/calcul.h"
 #include "asterfort/detrsd.h"
 #include "asterfort/dismoi.h"
+#include "asterfort/int_to_char8.h"
 #include "asterfort/jeexin.h"
 #include "asterfort/jelira.h"
 #include "asterfort/jeveuo.h"
@@ -90,7 +91,6 @@ subroutine pecap1(chgeoz, tempez, ngi, lisgma, ct)
 #include "asterfort/rsutnu.h"
 #include "asterfort/tbliva.h"
 #include "asterfort/utmess.h"
-#include "asterfort/int_to_char8.h"
 !
 ! -----  ARGUMENTS
     integer(kind=8) :: ngi
@@ -119,7 +119,6 @@ subroutine pecap1(chgeoz, tempez, ngi, lisgma, ct)
     real(kind=8) :: x1, x2, xmin, y1, y2, ymin, zero
     real(kind=8), pointer :: coor(:) => null()
     real(kind=8), pointer :: vale(:) => null()
-    character(len=8), pointer :: lgrf(:) => null()
     integer(kind=8), pointer :: connex(:) => null()
 !
 !-----------------------------------------------------------------------
@@ -196,8 +195,7 @@ subroutine pecap1(chgeoz, tempez, ngi, lisgma, ct)
 !
 ! ---   RECUPERATION DU NOM DU MAILLAGE :
 !       -------------------------------
-        call jeveuo(ligrth//'.LGRF', 'L', vk8=lgrf)
-        noma = lgrf(1)
+        call dismoi('NOM_MAILLA', ligrth, 'LIGREL', repk=noma)
 !
 ! ---   RECUPERATION DES COORDONNEES DES NOEUDS DU MAILLAGE :
 !       ---------------------------------------------------

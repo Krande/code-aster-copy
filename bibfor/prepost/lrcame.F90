@@ -28,9 +28,8 @@ subroutine lrcame(nrofic, nochmd, nomamd, nomaas, ligrel, &
     use as_med_module, only: as_med_open
     implicit none
 !
-#include "asterf_types.h"
-#include "MeshTypes_type.h"
 #include "jeveux.h"
+#include "asterf_types.h"
 #include "asterfort/as_allocate.h"
 #include "asterfort/as_deallocate.h"
 #include "asterfort/as_mficlo.h"
@@ -64,6 +63,7 @@ subroutine lrcame(nrofic, nochmd, nomamd, nomaas, ligrel, &
 #include "asterfort/utlicm.h"
 #include "asterfort/utmess.h"
 #include "asterfort/wkvect.h"
+#include "MeshTypes_type.h"
 !
     integer(kind=8) :: nrofic, typen
     integer(kind=8) :: ncmprf, jnocmp
@@ -140,7 +140,7 @@ subroutine lrcame(nrofic, nochmd, nomamd, nomaas, ligrel, &
     integer(kind=8) :: jnumty, numma, ima, hdfok, medok, jmaill
     aster_logical :: lrenum
     character(len=1) :: saux01
-    character(len=8) :: saux08, modele
+    character(len=8) :: saux08
     character(len=8) :: nomtyp(MT_NTYMAX)
     character(len=19) :: prefix
     character(len=24) :: numcmp, ntncmp, ntucmp, ntvale, nmcmfi(MT_NTYMAX)
@@ -153,7 +153,6 @@ subroutine lrcame(nrofic, nochmd, nomamd, nomaas, ligrel, &
     real(kind=8) :: valr
     aster_logical :: existm, existt
     aster_logical :: logaux
-    character(len=8), pointer :: lgrf(:) => null()
     integer(kind=8), pointer :: nume(:) => null()
     integer(kind=8), pointer :: typmail(:) => null()
     real(kind=8), pointer :: vinst(:) => null()
@@ -281,6 +280,7 @@ subroutine lrcame(nrofic, nochmd, nomamd, nomaas, ligrel, &
         write (ifm, *) '.. NOM DU MAILLAGE MED ASSOCIE : ', nomamd
         write (ifm, *) '   DE DIMENSION ', ndim
     end if
+!
 !
 ! 2.2. ==> VERIFICATIONS DES COMPOSANTES ASTER DEMANDEES
 !          EN SORTIE, ON A :
@@ -633,13 +633,11 @@ subroutine lrcame(nrofic, nochmd, nomamd, nomaas, ligrel, &
 !         ON BOUCLE (72) SUR LES MAILLES DU MAILLAGE ASTER
 !         ET ON RELEVE LES MAILLES CORRESPONDANT AU TYPE LU
 !
-!         ON SOUHAITE VERIFIER QUE LE MODELE ASTER ET LE PROFIL
+!         ON SOUHAITE VERIFIER QUE LE LGREL ASTER ET LE PROFIL
 !         MED ONT BIEN LE MEME NOMBRE DE MAILLE DE CHAQUE TYPE
-                call jeexin(ligrel//'.LGRF', iret)
+                call jeexin(ligrel//'.TYFE', iret)
                 if (iret .ne. 0) then
-                    call jeveuo(ligrel//'.LGRF', 'L', vk8=lgrf)
-                    modele = lgrf(2)
-                    call jeveuo(modele//'.MAILLE', 'L', jmaill)
+                    call jeveuo(ligrel//'.TYFE', 'L', jmaill)
                 else
                     jmaill = 0
                 end if

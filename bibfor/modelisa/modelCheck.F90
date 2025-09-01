@@ -24,12 +24,12 @@ subroutine modelCheck(model, lCheckJacobian, lCheckFSINorms, lCheckPlaneity)
 #include "asterfort/calcul.h"
 #include "asterfort/dismoi.h"
 #include "asterfort/jeveuo.h"
-#include "asterfort/modexi.h"
-#include "asterfort/utmess.h"
-#include "asterfort/taxis.h"
-#include "asterfort/modelCheckFSINormals.h"
 #include "asterfort/modelCheckFluidFormulation.h"
+#include "asterfort/modelCheckFSINormals.h"
 #include "asterfort/modelCheckPlaneity.h"
+#include "asterfort/modexi.h"
+#include "asterfort/taxis.h"
+#include "asterfort/utmess.h"
 !
     character(len=8), intent(in) :: model
     aster_logical, intent(in) :: lCheckJacobian, lCheckFSINorms, lCheckPlaneity
@@ -60,7 +60,7 @@ subroutine modelCheck(model, lCheckJacobian, lCheckFSINorms, lCheckPlaneity)
 !
 ! --------------------------------------------------------------------------------------------------
 !
-    modelLigrel = model//'.MODELE'
+    call dismoi('NOM_LIGREL', model, 'MODELE', repk=modelLigrel)
 
 ! - Get mesh support
     call dismoi('NOM_MAILLA', model, 'MODELE', repk=mesh)
@@ -122,7 +122,7 @@ subroutine modelCheck(model, lCheckJacobian, lCheckFSINorms, lCheckPlaneity)
 ! - Check if X>0 for axis elements
 !
     if (lAxis) then
-        call jeveuo(model//'.MAILLE', 'L', vi=modelCells)
+        call jeveuo(modelLigrel//'.TYFE', 'L', vi=modelCells)
         call taxis(mesh, modelCells, nbCell)
     end if
 !

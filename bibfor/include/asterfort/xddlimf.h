@@ -20,7 +20,7 @@
 interface
     subroutine xddlimf(modele, ino, cnxinv, jnoxfv, motcle,&
                        ch2, ndim, lsn, lst, valimr, valimf, valimc,&
-                       fonree, lisrel, nomn, direct, class, mesh,&
+                       fonree, lisrel, nomn, direct, class, &
                        hea_no)
         character(len=8) :: modele
         integer(kind=8) :: ino
@@ -36,7 +36,6 @@ interface
         complex(kind=8) :: valimc
         character(len=4) :: fonree
         character(len=19) :: lisrel
-        character(len=8), intent(in) :: mesh
         character(len=8) :: nomn
         real(kind=8) :: direct(3)
         aster_logical :: class

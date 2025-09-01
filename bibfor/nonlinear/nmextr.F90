@@ -27,24 +27,24 @@ subroutine nmextr(meshz, modelz, sdextrz, ds_inout, keyw_fact, &
     implicit none
 !
 #include "asterf_types.h"
-#include "asterfort/assert.h"
 #include "asterfort/as_deallocate.h"
+#include "asterfort/assert.h"
 #include "asterfort/detrsd.h"
 #include "asterfort/getvtx.h"
 #include "asterfort/isParallelMesh.h"
 #include "asterfort/jeveuo.h"
-#include "asterfort/nmextr_read_1.h"
-#include "asterfort/nmextr_read_2.h"
-#include "asterfort/nmextr_crsd.h"
-#include "asterfort/nmextr_ligr.h"
 #include "asterfort/nmextd.h"
 #include "asterfort/nmextf.h"
 #include "asterfort/nmextk.h"
 #include "asterfort/nmextl.h"
 #include "asterfort/nmextn.h"
 #include "asterfort/nmextp.h"
-#include "asterfort/nmextt.h"
 #include "asterfort/nmextr_comp.h"
+#include "asterfort/nmextr_crsd.h"
+#include "asterfort/nmextr_ligr.h"
+#include "asterfort/nmextr_read_1.h"
+#include "asterfort/nmextr_read_2.h"
+#include "asterfort/nmextt.h"
 #include "asterfort/utmess.h"
 !
     character(len=*), intent(in) :: meshz
@@ -220,7 +220,7 @@ subroutine nmextr(meshz, modelz, sdextrz, ds_inout, keyw_fact, &
 !
 ! --------- Get component(s)
 !
-            call nmextk(meshz, modelz, keyw_fact, i_keyw_fact, field, field_type, &
+            call nmextk(modelz, keyw_fact, i_keyw_fact, field, field_type, &
                         field_s, field_disc, list_node, list_elem, list_poin, &
                         list_spoi, nb_node, nb_elem, nb_poin, nb_spoi, &
                         ds_constitutive%compor, list_cmp, list_vari, nb_cmp, type_sele_cmp)

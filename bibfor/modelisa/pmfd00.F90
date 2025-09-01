@@ -52,6 +52,7 @@ subroutine pmfd00()
 #include "asterfort/getvtx.h"
 #include "asterfort/imprsd.h"
 #include "asterfort/infniv.h"
+#include "asterfort/int_to_char8.h"
 #include "asterfort/jedema.h"
 #include "asterfort/jedetr.h"
 #include "asterfort/jelira.h"
@@ -68,7 +69,6 @@ subroutine pmfd00()
 #include "asterfort/rgcmpg.h"
 #include "asterfort/utmess.h"
 #include "asterfort/wkvect.h"
-#include "asterfort/int_to_char8.h"
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -77,7 +77,7 @@ subroutine pmfd00()
     integer(kind=8) :: nbvm, nmailp, numail, nbfib, icode, igrand, ima, inomcp
     integer(kind=8) :: ii, jj, ioc, ipos, izone, nbcmp, nbec
     integer(kind=8) :: ira1, iriy1, iriz1, irva1, irviy1, irviz1
-    integer(kind=8) :: jdnm, jmailfib
+    integer(kind=8) :: jmailfib
     integer(kind=8) :: jnbfig, nbgf, jngf, jcafig, jpofig, jsdfig, jtyfig, ipoint, ngf, ig, ng, ig1
     integer(kind=8) :: nummai, nbmaza, ilima, nbfig, tyfib
 !
@@ -93,7 +93,7 @@ subroutine pmfd00()
     character(len=8) :: carele, nomo, noma, modele, sdgf, ngrand
     character(len=16) :: concep, cmd, ltymcl(3)
     character(len=19) :: cesdec, ligrmo, celbid
-    character(len=24) :: modnom, mommai, vpofig, vmailfib, vcafig, vnbfig, vnmfig, vsdfig, vtyfig
+    character(len=24) :: mommai, vpofig, vmailfib, vcafig, vnbfig, vnmfig, vsdfig, vtyfig
     character(len=24) :: k24bid
 !
     integer(kind=8) :: valmi
@@ -138,9 +138,7 @@ subroutine pmfd00()
         end do
     end if
 !
-    modnom = nomo//'.MODELE    .LGRF'
-    call jeveuo(modnom, 'L', jdnm)
-    noma = zk8(jdnm)
+    call dismoi('NOM_MAILLA', nomo, 'MODELE', repk=noma)
     mommai = noma//'.TYPMAIL'
     call jelira(mommai, 'LONMAX', nmailp)
 ! --------------------------------------------------------------------------------------------------
@@ -152,7 +150,7 @@ subroutine pmfd00()
     if ((nbocc0+nbocc1+nbocc2+nbocc3+nbocc4) .eq. 0) goto 999
 !   2eme chance
     call getvid(' ', 'MODELE', scal=modele, nbret=ibid)
-    ligrmo = modele//'.MODELE'
+    call dismoi('NOM_LIGREL', modele, 'MODELE', repk=ligrmo)
     celbid = '&&PMFD00.CELBID'
     call alchml(ligrmo, 'TOU_INI_ELEM', 'PNBSP_I', 'V', celbid, iret, ' ')
     call detrsd('CHAM_ELEM', celbid)

@@ -17,16 +17,19 @@
 ! --------------------------------------------------------------------
 ! person_in_charge: mickael.abbas at edf.fr
 !
-subroutine comp_meca_pvar(model_, comporMap_, comporList_, comporInfo)
+subroutine comp_meca_pvar(ligrel_, comporMap_, comporList_, comporInfo)
 !
     use BehaviourPrepare_type
 !
     implicit none
 !
 #include "asterf_types.h"
-#include "asterfort/assert.h"
 #include "asterfort/as_allocate.h"
 #include "asterfort/as_deallocate.h"
+#include "asterfort/assert.h"
+#include "asterfort/Behaviour_type.h"
+#include "asterfort/comp_meca_exc2.h"
+#include "asterfort/comp_meca_l.h"
 #include "asterfort/comp_meca_name.h"
 #include "asterfort/comp_ntvari.h"
 #include "asterfort/dismoi.h"
@@ -40,13 +43,10 @@ subroutine comp_meca_pvar(model_, comporMap_, comporList_, comporInfo)
 #include "asterfort/jenuno.h"
 #include "asterfort/jeveuo.h"
 #include "asterfort/jexnum.h"
-#include "asterfort/wkvect.h"
-#include "asterfort/comp_meca_exc2.h"
-#include "asterfort/comp_meca_l.h"
 #include "asterfort/lteatt.h"
-#include "asterfort/Behaviour_type.h"
+#include "asterfort/wkvect.h"
 !
-    character(len=8), optional, intent(in) :: model_
+    character(len=19), optional, intent(in) :: ligrel_
     character(len=19), optional, intent(in) :: comporMap_
     character(len=16), optional, intent(in) :: comporList_(COMPOR_SIZE)
     character(len=19), intent(in) :: comporInfo
@@ -59,7 +59,7 @@ subroutine comp_meca_pvar(model_, comporMap_, comporList_, comporInfo)
 !
 ! --------------------------------------------------------------------------------------------------
 !
-! In  model            : model
+! In  ligrel           : ligrel
 ! In  comporInfo       : object for information about internal state variables and behaviour
 ! In  comporList       : list for parameters of constitutive laws
 ! In  comporMap        : map for parameters of constitutive laws
@@ -87,7 +87,6 @@ subroutine comp_meca_pvar(model_, comporMap_, comporList_, comporInfo)
     aster_logical :: l_mfront_proto, l_mfront_offi
     aster_logical :: l_zone_read
     character(len=8) :: mesh
-    character(len=19) :: modelLigrel
     integer(kind=8), pointer :: comporInfoInfo(:) => null()
     integer(kind=8), pointer :: comporInfoZone(:) => null()
     integer(kind=8), pointer :: zoneRead(:) => null()
@@ -115,6 +114,7 @@ subroutine comp_meca_pvar(model_, comporMap_, comporList_, comporInfo)
 
 ! - Access to map
     if (present(comporMap_)) then
+        ASSERT(present(ligrel_))
         call jeveuo(comporMap_//'.DESC', 'L', vi=comporDesc)
         call jeveuo(comporMap_//'.VALE', 'L', vk16=comporVale)
         call jelira(comporMap_//'.VALE', 'LONMAX', nbVale)
@@ -122,9 +122,8 @@ subroutine comp_meca_pvar(model_, comporMap_, comporList_, comporInfo)
         mapNbCmpMax = nbVale/comporDesc(2)
         call dismoi('NOM_MAILLA', comporMap_, 'CARTE', repk=mesh)
         call dismoi('NB_MA_MAILLA', mesh, 'MAILLAGE', repi=nbCellMesh)
-        call dismoi('NOM_LIGREL', model_, 'MODELE', repk=modelLigrel)
-        call jeveuo(model_//'.MAILLE', 'L', vi=modelCell)
-        call etenca(comporMap_, modelLigrel, iret)
+        call jeveuo(ligrel_//'.TYFE', 'L', vi=modelCell)
+        call etenca(comporMap_, ligrel_, iret)
         call jeveuo(comporMap_//'.PTMA', 'L', vi=comporPtma)
     end if
 
@@ -152,7 +151,7 @@ subroutine comp_meca_pvar(model_, comporMap_, comporList_, comporInfo)
 
 ! - Count total of internal state variables
     if (present(comporMap_)) then
-        call comp_ntvari(model_=model_, comporMap_=comporMap_, comporInfo=comporInfo, &
+        call comp_ntvari(ligrel_=ligrel_, comporMap_=comporMap_, comporInfo=comporInfo, &
                          nt_vari=nt_vari, nb_vari_maxi=nb_vari_maxi, &
                          mapNbZone=nb_zone2, prepExte=prepExte)
     elseif (present(comporList_)) then

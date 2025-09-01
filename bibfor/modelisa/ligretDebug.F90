@@ -21,8 +21,9 @@ subroutine ligretDebug(ligretZ)
     implicit none
 !
 #include "jeveux.h"
-#include "asterfort/jeveuo.h"
+#include "asterfort/dismoi.h"
 #include "asterfort/jelira.h"
+#include "asterfort/jeveuo.h"
 !
     character(len=*), intent(in) :: ligretZ
 !
@@ -35,8 +36,7 @@ subroutine ligretDebug(ligretZ)
 ! --------------------------------------------------------------------------------------------------
 !
     character(len=19) :: ligret
-    character(len=8), pointer :: ligrelLgrf(:) => null()
-    character(len=8) :: docu
+    character(len=8) :: docu, ligrelLgrf(3)
     character(len=16), pointer :: ligrelPhen(:) => null()
     character(len=16), pointer :: ligrelMode(:) => null()
 !
@@ -44,7 +44,10 @@ subroutine ligretDebug(ligretZ)
 !
     ligret = ligretZ
 
-    call jeveuo(ligret//'.LGRF', 'E', vk8=ligrelLgrf)
+    call dismoi('NOM_MAILLA', ligret, "LIGREL", repk=ligrelLgrf(1))
+    call dismoi('PARTITION', ligret, "LIGREL", repk=ligrelLgrf(2))
+    call dismoi('TYPE_LAGR', ligret, "LIGREL", repk=ligrelLgrf(3))
+
     call jelira(ligret//'.LGRF', "DOCU", cval=docu)
     call jeveuo(ligret//'.MODE', 'E', vk16=ligrelMode)
     call jeveuo(ligret//'.PHEN', 'E', vk16=ligrelPhen)

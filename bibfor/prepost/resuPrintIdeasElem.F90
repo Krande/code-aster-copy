@@ -24,13 +24,18 @@ subroutine resuPrintIdeasElem(fileUnit, dsName, &
 !
     implicit none
 !
-#include "asterf_types.h"
 #include "jeveux.h"
+#include "asterf_types.h"
 #include "asterfort/as_allocate.h"
 #include "asterfort/as_deallocate.h"
 #include "asterfort/assert.h"
+#include "asterfort/celcel.h"
+#include "asterfort/celver.h"
 #include "asterfort/dismoi.h"
 #include "asterfort/getvis.h"
+#include "asterfort/int_to_char8.h"
+#include "asterfort/ircecs.h"
+#include "asterfort/ircers.h"
 #include "asterfort/jedema.h"
 #include "asterfort/jedetr.h"
 #include "asterfort/jeexin.h"
@@ -38,17 +43,12 @@ subroutine resuPrintIdeasElem(fileUnit, dsName, &
 #include "asterfort/jemarq.h"
 #include "asterfort/jenuno.h"
 #include "asterfort/jeveuo.h"
-#include "asterfort/jexnum.h"
 #include "asterfort/jexatr.h"
-#include "asterfort/ircecs.h"
-#include "asterfort/ircers.h"
-#include "asterfort/celver.h"
-#include "asterfort/celcel.h"
-#include "asterfort/resuSelectCmp.h"
+#include "asterfort/jexnum.h"
 #include "asterfort/resuIdeasPermut.h"
-#include "asterfort/utmess.h"
+#include "asterfort/resuSelectCmp.h"
 #include "asterfort/utcmp3.h"
-#include "asterfort/int_to_char8.h"
+#include "asterfort/utmess.h"
 !
     integer(kind=8), intent(in) :: fileUnit
     character(len=*), intent(in) :: title, dsName
@@ -91,7 +91,6 @@ subroutine resuPrintIdeasElem(fileUnit, dsName, &
     character(len=19) :: liliName
     integer(kind=8), pointer :: liel(:) => null()
     integer(kind=8), pointer :: lielLen(:) => null()
-    character(len=8), pointer :: lgrf(:) => null()
     character(len=80), pointer :: meshTitle(:) => null()
     aster_logical :: lMeshIdeas
     character(len=1) :: type
@@ -175,8 +174,7 @@ subroutine resuPrintIdeasElem(fileUnit, dsName, &
 ! - Access to mesh
 !
     liliName = celk(1) (1:19)
-    call jeveuo(liliName//'.LGRF', 'L', vk8=lgrf)
-    meshName = lgrf(1)
+    call dismoi('NOM_MAILLA', liliName, 'LIGREL', repk=meshName)
     call dismoi('NB_NO_MAILLA', meshName, 'MAILLAGE', repi=meshNodeNb)
     call dismoi('NB_MA_MAILLA', meshName, 'MAILLAGE', repi=meshCellNb)
     call jeveuo(meshName//'.TYPMAIL', 'L', vi=cellType)

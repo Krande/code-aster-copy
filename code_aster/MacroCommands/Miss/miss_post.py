@@ -1252,7 +1252,6 @@ class PostMissChar(PostMiss):
             self.List_Noeu_Fictif = self.param["NOEUD_AFFE"]
         elif self.param["GROUP_NO_AFFE"]:
             # récuperation du maillage
-            nom_MODELE = self.MODELE.getName()
             mail = self.MODELE.getMesh()
             list_nuno_affe = []
             for gr in self.param["GROUP_NO_AFFE"]:

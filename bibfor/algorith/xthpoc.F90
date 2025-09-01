@@ -20,6 +20,7 @@ subroutine xthpoc(modele, chtn, chtpg)
     implicit none
 #include "jeveux.h"
 #include "asterfort/calcul.h"
+#include "asterfort/dismoi.h"
 #include "asterfort/jedema.h"
 #include "asterfort/jemarq.h"
 #include "asterfort/megeom.h"
@@ -81,7 +82,7 @@ subroutine xthpoc(modele, chtn, chtpg)
     lchout(1) = chtpg
 !
     option = 'TEMP_ELGA'
-    ligrmo = modele(1:8)//'.MODELE'
+    call dismoi('NOM_LIGREL', modele, 'MODELE', repk=ligrmo)
 !
 !     RQ : LIGRMO CONTIENT TOUS LES EF DU MODELE, MAIS SEULS LES EF
 !     ---  X-FEM SAVENT CALCULER L'OPTION 'TEMP_ELGA'

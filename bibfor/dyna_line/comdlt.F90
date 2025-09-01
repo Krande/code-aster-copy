@@ -22,8 +22,8 @@ subroutine comdlt()
 !
     implicit none
 !
-#include "asterf_types.h"
 #include "jeveux.h"
+#include "asterf_types.h"
 #include "asterc/getfac.h"
 #include "asterc/r8prem.h"
 #include "asterc/r8vide.h"
@@ -456,7 +456,7 @@ subroutine comdlt()
     call dismoi('EXI_STR2', model, 'MODELE', repk=kstr)
     if (kstr(1:3) .eq. 'OUI') then
         compor = materField(1:8)//'.COMPOR'
-        ligrel = model(1:8)//'.MODELE'
+        call dismoi('NOM_LIGREL', model, 'MODELE', repk=ligrel)
         exipou = .false.
 !
         call dismoi('EXI_POUX', model, 'MODELE', repk=k8b)

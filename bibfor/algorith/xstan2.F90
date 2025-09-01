@@ -21,8 +21,8 @@ subroutine xstan2(noma, modele, crit2, lfiss)
 ! person_in_charge: samuel.geniaut at edf.fr
 !
     implicit none
-#include "asterf_types.h"
 #include "jeveux.h"
+#include "asterf_types.h"
 #include "asterfort/assert.h"
 #include "asterfort/celces.h"
 #include "asterfort/cescel.h"
@@ -35,6 +35,7 @@ subroutine xstan2(noma, modele, crit2, lfiss)
 #include "asterfort/elref2.h"
 #include "asterfort/infdbg.h"
 #include "asterfort/ismali.h"
+#include "asterfort/isnomi.h"
 #include "asterfort/jedema.h"
 #include "asterfort/jedetr.h"
 #include "asterfort/jeexin.h"
@@ -46,7 +47,6 @@ subroutine xstan2(noma, modele, crit2, lfiss)
 #include "asterfort/jexnum.h"
 #include "asterfort/wkvect.h"
 #include "asterfort/xcrvol.h"
-#include "asterfort/isnomi.h"
 !
     character(len=8) :: modele, noma
     real(kind=8) :: crit2(2)
@@ -110,12 +110,12 @@ subroutine xstan2(noma, modele, crit2, lfiss)
     call jeveuo(jexatr(noma//'.CONNEX', 'LONCUM'), 'L', jconx2)
     call dismoi('DIM_GEOM', noma, 'MAILLAGE', repi=ndim)
     call dismoi('NB_NO_MAILLA', noma, 'MAILLAGE', repi=nbno)
-    call jeveuo(modele//'.MAILLE', 'L', vi=maille)
+    call dismoi('NOM_LIGREL', modele, 'MODELE', repk=ligrel)
+    call jeveuo(ligrel//'.TYFE', 'L', vi=maille)
 !     CONNECTIVITE INVERSEE
     cnxinv = '&&XSTAN2.CNCINV'
     call cncinv(noma, [ibid], 0, 'V', cnxinv)
     noxfem = modele//'.NOXFEM'
-    ligrel = modele//'.MODELE'
     cns2 = '&&XCONNO.CNS2'
     geom = '&&XSTAN2.GEOM'
 !      CALL CNOCNS(MODELE//'.NOXFEM','V',NOXFEM)

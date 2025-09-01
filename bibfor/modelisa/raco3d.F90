@@ -24,25 +24,25 @@ subroutine raco3d(numdlz, iocc, fonrez, lisrez, chargz)
     !    VECTEUR IDENTITE. A MODIFIER
 
 #include "jeveux.h"
-#include "MeshTypes_type.h"
 #include "asterfort/alchml.h"
+#include "asterfort/as_allocate.h"
+#include "asterfort/as_deallocate.h"
 #include "asterfort/calcul.h"
 #include "asterfort/detrsd.h"
 #include "asterfort/dismoi.h"
-#include "asterfort/getvr8.h"
 #include "asterfort/getvid.h"
+#include "asterfort/getvr8.h"
 #include "asterfort/jedema.h"
 #include "asterfort/jedetr.h"
-#include "asterfort/jeveuo.h"
-#include "asterfort/reliem.h"
-#include "asterfort/as_deallocate.h"
-#include "asterfort/as_allocate.h"
 #include "asterfort/jemarq.h"
+#include "asterfort/jeveuo.h"
 #include "asterfort/rco3d_apco3d.h"
-#include "asterfort/rco3d_crch.h"
-#include "asterfort/rco3d_crep.h"
-#include "asterfort/rco3d_crealigrel.h"
 #include "asterfort/rco3d_clcrela.h"
+#include "asterfort/rco3d_crch.h"
+#include "asterfort/rco3d_crealigrel.h"
+#include "asterfort/rco3d_crep.h"
+#include "asterfort/reliem.h"
+#include "MeshTypes_type.h"
 !
     integer(kind=8) :: iocc
     character(len=8) :: charge
@@ -70,7 +70,6 @@ subroutine raco3d(numdlz, iocc, fonrez, lisrez, chargz)
     character(len=24) :: lismaco, lismavo, lisnoco
     character(len=8)  :: mod, noma
     integer(kind=8) :: nbmavo, nbmaco, nt_nodes
-    character(len=8), pointer :: lgrf(:) => null()
     integer(kind=8) :: nb_pairs, iret
     integer(kind=8) :: i, n1
     real(kind=8) :: epai, crig
@@ -108,12 +107,11 @@ subroutine raco3d(numdlz, iocc, fonrez, lisrez, chargz)
 
 ! ---  LIGREL DU MODELE :
 !      ----------------
-    ligrmo = mod(1:8)//'.MODELE'
+    call dismoi('NOM_LIGREL', mod, 'MODELE', repk=ligrmo)
 !
 ! --- MAILLAGE ASSOCIE AU MODELE :
 !     --------------------------
-    call jeveuo(ligrmo//'.LGRF', 'L', vk8=lgrf)
-    noma = lgrf(1)
+    call dismoi('NOM_MAILLA', ligrmo, 'LIGREL', repk=noma)
 
 !--- RECUPERER COEF_RIGI_DRZ
 

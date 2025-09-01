@@ -27,6 +27,7 @@ subroutine nmrest_ecro(model_, mate_, ds_constitutive, hval_incr)
 #include "asterfort/calcul.h"
 #include "asterfort/copisd.h"
 #include "asterfort/detrsd.h"
+#include "asterfort/dismoi.h"
 #include "asterfort/nmchex.h"
 #include "asterfort/nmvcex.h"
 !
@@ -71,7 +72,7 @@ subroutine nmrest_ecro(model_, mate_, ds_constitutive, hval_incr)
     base = 'V'
     model = model_
     mate = mate_
-    ligrmo = model(1:8)//'.MODELE'
+    call dismoi('NOM_LIGREL', model, 'MODELE', repk=ligrmo)
 !
 ! - Get fields from hat-variables - Begin of time step
 !

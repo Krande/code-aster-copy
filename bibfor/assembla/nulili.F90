@@ -148,8 +148,7 @@ subroutine nulili(nbLigr, listLigr, lili, base, gran_name, &
         end if
 
 ! ----- Same mesh
-        call jeveuo(ligrName(1:19)//'.LGRF', 'L', iad)
-        ligrelMesh = zk8(iad)
+        call dismoi('NOM_MAILLA', ligrName, 'LIGREL', repk=ligrelMesh)
         if (iligr .eq. 1) then
             mesh = ligrelMesh
         end if

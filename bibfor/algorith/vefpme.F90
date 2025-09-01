@@ -31,11 +31,12 @@ subroutine vefpme(stop, &
 !
 #include "asterf_types.h"
 #include "asterfort/detrsd.h"
+#include "asterfort/dismoi.h"
 #include "asterfort/jedema.h"
 #include "asterfort/jemarq.h"
 #include "asterfort/load_list_info.h"
-#include "asterfort/vemare.h"
 #include "asterfort/reajre.h"
+#include "asterfort/vemare.h"
 #include "LoadTypes_type.h"
 !
     character(len=1), intent(in) :: stop
@@ -99,7 +100,7 @@ subroutine vefpme(stop, &
 ! - Initializations
     resuElem = '&&VEFPME.0000000'
     model = modelZ(1:8)
-    ligrelCalc = model(1:8)//'.MODELE'
+    call dismoi('NOM_LIGREL', model, 'MODELE', repk=ligrelCalc)
     if (present(ligrelCalcZ_)) then
         ligrelCalc = ligrelCalcZ_(1:24)
     end if

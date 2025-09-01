@@ -41,6 +41,7 @@ subroutine op0030()
 #include "asterfort/defContactCreateObjects.h"
 #include "asterfort/detrsd.h"
 #include "asterfort/dismoi.h"
+#include "asterfort/exisd.h"
 #include "asterfort/getvid.h"
 #include "asterfort/infmaj.h"
 #include "asterfort/initel.h"
@@ -59,13 +60,13 @@ subroutine op0030()
 ! --------------------------------------------------------------------------------------------------
 !
     mpi_int :: nb_proc, mpicou
-    integer(kind=8) :: iret, geomDime
+    integer(kind=8) :: iret, geomDime, iexi
     character(len=24) :: phenomenon
     character(len=4), parameter :: valeType = 'REEL'
-    character(len=8) :: mesh, model, sdcont
+    character(len=8) :: mesh, model, sdcont, partit
     character(len=16) :: k16dummy
     character(len=19), parameter :: slavElemLigr = '&&OP0030.LIGRET', ligrelTmp = '&&OP0030.LIGREL'
-    character(len=19) :: contLigrel, partit
+    character(len=19) :: contLigrel
     integer(kind=8) :: cont_form, algo_cont
     aster_logical :: lallv
     character(len=24) :: sdcont_defi
@@ -142,7 +143,8 @@ subroutine op0030()
         algo_cont = cfdisi(sdcont_defi, 'ALGO_CONT')
         if (nb_proc .gt. 1 .and. algo_cont .ne. 2) then
             call dismoi('PARTITION', model//'.MODELE', 'LIGREL', repk=partit)
-            if (partit .ne. ' ') then
+            call exisd('PARTITION', partit, iexi)
+            if (iexi .ne. 0) then
                 call utmess('F', 'CONTACT3_45')
             end if
         end if

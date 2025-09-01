@@ -28,34 +28,34 @@ subroutine irchml(fileUnit, &
 !
     implicit none
 !
-#include "asterf_types.h"
 #include "jeveux.h"
+#include "asterf_types.h"
 #include "asterfort/as_allocate.h"
 #include "asterfort/as_deallocate.h"
 #include "asterfort/assert.h"
+#include "asterfort/celcel.h"
+#include "asterfort/celces.h"
+#include "asterfort/celver.h"
+#include "asterfort/cesimp.h"
+#include "asterfort/cncinv.h"
+#include "asterfort/detrsd.h"
 #include "asterfort/dismoi.h"
+#include "asterfort/i2trgi.h"
+#include "asterfort/int_to_char8.h"
+#include "asterfort/ircecl.h"
+#include "asterfort/ircerl.h"
+#include "asterfort/irsspt.h"
 #include "asterfort/jedema.h"
 #include "asterfort/jeexin.h"
 #include "asterfort/jelira.h"
 #include "asterfort/jemarq.h"
 #include "asterfort/jenuno.h"
 #include "asterfort/jeveuo.h"
-#include "asterfort/jexnum.h"
 #include "asterfort/jexatr.h"
-#include "asterfort/celver.h"
-#include "asterfort/celcel.h"
+#include "asterfort/jexnum.h"
 #include "asterfort/resuSelectCmp.h"
-#include "asterfort/utmess.h"
 #include "asterfort/utcmp3.h"
-#include "asterfort/celces.h"
-#include "asterfort/cesimp.h"
-#include "asterfort/cncinv.h"
-#include "asterfort/detrsd.h"
-#include "asterfort/i2trgi.h"
-#include "asterfort/ircecl.h"
-#include "asterfort/ircerl.h"
-#include "asterfort/irsspt.h"
-#include "asterfort/int_to_char8.h"
+#include "asterfort/utmess.h"
 !
     integer(kind=8), intent(in) :: fileUnit
     character(len=*), intent(in) :: fieldNameZ, fieldTypeZ
@@ -111,7 +111,6 @@ subroutine irchml(fileUnit, &
     character(len=19) :: liliName
     integer(kind=8), pointer :: liel(:) => null()
     integer(kind=8), pointer :: lielLen(:) => null()
-    character(len=8), pointer :: lgrf(:) => null()
     character(len=1) :: type
     integer(kind=8) :: fieldScalar, quantityIndx, grelNb, iCell
     character(len=24), parameter :: ncncin = '&&IRCHML.CONNECINVERSE'
@@ -236,8 +235,7 @@ subroutine irchml(fileUnit, &
 ! - Access to mesh
 !
     liliName = celk(1) (1:19)
-    call jeveuo(liliName//'.LGRF', 'L', vk8=lgrf)
-    meshName = lgrf(1)
+    call dismoi('NOM_MAILLA', liliName, 'LIGREL', repk=meshName)
     call dismoi('DIM_GEOM_B', meshName, 'MAILLAGE', repi=meshDime)
     call dismoi('NB_NO_MAILLA', meshName, 'MAILLAGE', repi=meshNodeNb)
     call dismoi('NB_MA_MAILLA', meshName, 'MAILLAGE', repi=meshCellNb)

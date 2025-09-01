@@ -16,7 +16,7 @@
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
 
-subroutine ircnme(ifi, nochmd, chanom, typech, modele, &
+subroutine ircnme(ifi, nochmd, chanom, typech, ligrel, &
                   nbcmp, nomcmp, partie, numpt, instan, &
                   numord, nbnoec, linoec, sdcarm, carael, &
                   field_type, lfichUniq, codret)
@@ -31,7 +31,7 @@ subroutine ircnme(ifi, nochmd, chanom, typech, modele, &
 !               UN CHAMP COMPLEXE
 !       CHANOM : NOM ASTER DU CHAM A ECRIRE
 !       TYPECH : TYPE DU CHAMP
-!       MODELE : MODELE ASSOCIE AU CHAMP
+!       LIGREL : LIGREL ASSOCIE AU CHAMP
 !       NBCMP  : NOMBRE DE COMPOSANTES A ECRIRE
 !       NOMCMP : NOMS DES COMPOSANTES A ECRIRE
 !       NUMPT  : NUMERO DE PAS DE TEMPS
@@ -57,8 +57,8 @@ subroutine ircnme(ifi, nochmd, chanom, typech, modele, &
 !
 ! 0.1. ==> ARGUMENTS
 !
-    character(len=8) :: typech, modele, sdcarm, carael
-    character(len=19) :: chanom
+    character(len=8) :: typech, sdcarm, carael
+    character(len=19) :: chanom, ligrel
     character(len=64) :: nochmd
     character(len=*) :: nomcmp(*), partie
 !
@@ -109,7 +109,7 @@ subroutine ircnme(ifi, nochmd, chanom, typech, modele, &
 ! 2. ECRITURE DES CHAMPS AU FORMAT MED
 !====
 !
-    call ircame(ifi, nochmd, chanom, typech, modele, &
+    call ircame(ifi, nochmd, chanom, typech, ligrel, &
                 nbcmp, nomcmp, ' ', partie, numpt, &
                 instan, numord, jcnsk, jcnsd, jcnsc, &
                 jcnsv, jcnsl, nbnoec, linoec, sdcarm, &

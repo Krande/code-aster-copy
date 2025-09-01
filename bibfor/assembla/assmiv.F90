@@ -22,9 +22,11 @@ subroutine assmiv(base, vec, nbvec, tlivec, licoef, &
 !
 !
 !
-#include "asterf_types.h"
 #include "jeveux.h"
+#include "asterf_types.h"
 #include "asterc/r8maem.h"
+#include "asterfort/as_allocate.h"
+#include "asterfort/as_deallocate.h"
 #include "asterfort/asmpi_comm_vect.h"
 #include "asterfort/asmpi_info.h"
 #include "asterfort/assert.h"
@@ -53,8 +55,6 @@ subroutine assmiv(base, vec, nbvec, tlivec, licoef, &
 #include "asterfort/parti0.h"
 #include "asterfort/utmess.h"
 #include "asterfort/wkvect.h"
-#include "asterfort/as_deallocate.h"
-#include "asterfort/as_allocate.h"
 !
     character(len=1) :: base
     character(len=*) :: vec
@@ -83,9 +83,9 @@ subroutine assmiv(base, vec, nbvec, tlivec, licoef, &
     character(len=24) :: valk(5)
     integer(kind=8) :: gd, nec, nlili
     integer(kind=8) :: rang, nbproc, iret, ifm, niv
-    character(len=8) :: ma, mo, mo2, nogdsi, nogdco
+    character(len=8) :: ma, mo, mo2, nogdsi, nogdco, partit
     character(len=14) :: nume_ddl
-    character(len=19) :: partit, vecas, vprof, vecel, resu
+    character(len=19) :: vecas, vprof, vecel, resu
     character(len=24) :: kmaila, k24prn, knulil, kvelil, kveref, nomli
     character(len=24) :: knequa, kvale
     integer(kind=8) :: admodl, lcmodl, iexi

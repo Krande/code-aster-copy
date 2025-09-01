@@ -19,8 +19,8 @@
 subroutine chpchd(chin, type, celmod, prol0, base, &
                   chou, model_)
     implicit none
-#include "asterf_types.h"
 #include "jeveux.h"
+#include "asterf_types.h"
 #include "asterc/getres.h"
 #include "asterfort/assert.h"
 #include "asterfort/carces.h"
@@ -29,12 +29,12 @@ subroutine chpchd(chin, type, celmod, prol0, base, &
 #include "asterfort/cescel.h"
 #include "asterfort/cesces.h"
 #include "asterfort/cescns.h"
-#include "asterfort/cnocns.h"
 #include "asterfort/cgocns.h"
+#include "asterfort/cnocns.h"
 #include "asterfort/cnsces.h"
 #include "asterfort/cnscno.h"
-#include "asterfort/crnggn.h"
 #include "asterfort/crnggc.h"
+#include "asterfort/crnggn.h"
 #include "asterfort/detrsd.h"
 #include "asterfort/dismoi.h"
 #include "asterfort/jedetr.h"
@@ -66,6 +66,7 @@ subroutine chpchd(chin, type, celmod, prol0, base, &
 !        /'NON' : ERREUR <F> SI IL EXISTE DES
 !         DES VALEURS DE CHOU QUI NE SONT PAS AFFECTEES DANS CHIN
 !   CELMOD IN/JXIN  K19 : NOM D'UN CHAM_ELEM "MODELE" SI TYPE='EL..'
+!                         POUR XFEM UNIQUEMENT
 !                       : NOM DU MAILLAGE SI TYPE='GEOM.'
 !
 !  LES CAS TRAITES AUJOURD'HUI SONT :

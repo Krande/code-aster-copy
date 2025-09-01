@@ -25,6 +25,7 @@ subroutine fondpl(modele, mate, mateco, numedd, neq, chondp, &
 #include "asterfort/calcul.h"
 #include "asterfort/corich.h"
 #include "asterfort/detrsd.h"
+#include "asterfort/dismoi.h"
 #include "asterfort/exisd.h"
 #include "asterfort/jedema.h"
 #include "asterfort/jedetr.h"
@@ -36,13 +37,12 @@ subroutine fondpl(modele, mate, mateco, numedd, neq, chondp, &
 !
     integer(kind=8) :: i, ibid, iret, j, jvaond
     integer(kind=8) :: nchond, neq, npain
-    character(len=8) :: lpain(6), lpaout(1), chondp(nchond)
+    character(len=8) :: lpain(6), lpaout(1), chondp(nchond), noma
     character(len=24) :: modele, mateco, numedd, vecond
     character(len=24) :: chinst
     character(len=24) :: veonde, vaonde, lchin(6), lchout(1)
     character(len=24) :: chgeom, ligrel
     real(kind=8) :: foonde(neq), temps
-    character(len=8), pointer :: lgrf(:) => null()
     real(kind=8), pointer :: vale(:) => null()
     character(len=19) :: chvarc
     character(len=2) :: codret
@@ -56,11 +56,11 @@ subroutine fondpl(modele, mate, mateco, numedd, neq, chondp, &
     end do
 !
     chinst = '&&CHINST'
-    call mecact('V', chinst, 'MODELE', modele(1:8)//'.MODELE', 'INST_R', &
+    call mecact('V', chinst, 'MODELE', modele, 'INST_R', &
                 ncmp=1, nomcmp='INST', sr=temps)
-    ligrel = modele(1:8)//'.MODELE'
-    call jeveuo(ligrel(1:19)//'.LGRF', 'L', vk8=lgrf)
-    chgeom = lgrf(1)//'.COORDO'
+    call dismoi('NOM_LIGREL', modele, 'MODELE', repk=ligrel)
+    call dismoi('NOM_MAILLA', ligrel, 'LIGREL', repk=noma)
+    chgeom = noma//'.COORDO'
 !
 ! --- CREATION CHAMP DE VARIABLES DE COMMANDE CORRESPONDANT
 !

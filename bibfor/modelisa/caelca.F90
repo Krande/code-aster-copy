@@ -70,8 +70,8 @@ subroutine caelca(modele, chmat, caelem, irana1, icabl, &
 !
 ! --------------------------------------------------------------------------------------------------
 !
-#include "asterf_types.h"
 #include "jeveux.h"
+#include "asterf_types.h"
 #include "asterc/r8prem.h"
 #include "asterfort/assert.h"
 #include "asterfort/dismoi.h"
@@ -101,7 +101,7 @@ subroutine caelca(modele, chmat, caelem, irana1, icabl, &
     character(len=3) :: k3cab, k3mai
     character(len=11) :: k11
     character(len=8) :: acier, k8b
-    character(len=19) :: carte
+    character(len=19) :: carte, ligrel
     character(len=24) :: cadesc, captma, cavalk, cavalr, modmai, rcvalk, rcvalr
     character(len=4) :: regl
 !
@@ -143,7 +143,8 @@ subroutine caelca(modele, chmat, caelem, irana1, icabl, &
     do i = 1, 2
         call jenonu(jexnom('&CATA.TE.NOMTE', nomele(i)), ntyele(i))
     end do
-    modmai = modele//'.MAILLE'
+    call dismoi('NOM_LIGREL', modele, 'MODELE', repk=ligrel)
+    modmai = ligrel//'.TYFE'
     call jeveuo(modmai, 'L', jmodma)
 !
     do imail = 1, nbma

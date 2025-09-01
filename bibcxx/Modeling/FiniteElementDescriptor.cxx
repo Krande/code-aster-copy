@@ -45,20 +45,26 @@ FiniteElementDescriptor::FiniteElementDescriptor( const std::string &name, const
       _virtualNodesNumbering( getName() + ".LGNS" ),
       _superElementsDescriptor( getName() + ".SSSA" ),
       _nameOfNeighborhoodStructure( getName() + ".NVGE" ),
+      _typeOfCells( getName() + ".TYFE" ),
       _mesh( mesh ),
+      _partition( nullptr ),
       _explorer(
           FiniteElementDescriptor::ConnectivityVirtualCellsExplorer( _virtualCellsDescriptor ) ),
       _explorer2(
-          FiniteElementDescriptor::ConnectivityVirtualCellsExplorer( _listOfGroupsOfElements ) ) {};
+          FiniteElementDescriptor::ConnectivityVirtualCellsExplorer( _listOfGroupsOfElements ) ) {
+    if ( _parameters->exists() ) {
+        _parameters->updateValuePointer();
+        if ( ( *_parameters )[1] != " " ) {
+            _partition = std::make_shared< Partition >( ( *_parameters )[1] );
+        }
+    };
+};
 
 FiniteElementDescriptor::FiniteElementDescriptor( const std::string &name, const BaseMeshPtr mesh )
     : FiniteElementDescriptor( name, "LIGREL", mesh ) {};
 
 FiniteElementDescriptor::FiniteElementDescriptor( const BaseMeshPtr mesh )
     : FiniteElementDescriptor( DataStructureNaming::getNewName(), mesh ) {};
-
-FiniteElementDescriptor::FiniteElementDescriptor( const ModelPtr model )
-    : FiniteElementDescriptor( model->getMesh() ) {};
 
 FiniteElementDescriptor::FiniteElementDescriptor( const FiniteElementDescriptorPtr FEDesc,
                                                   const VectorString &groupOfCells )
@@ -73,12 +79,6 @@ FiniteElementDescriptor::FiniteElementDescriptor( const FiniteElementDescriptorP
     CALL_EXLIM2( listOfCells.data(), &nbCells, FEDesc->getName(), base, getName() );
     this->build();
 };
-
-FiniteElementDescriptor::FiniteElementDescriptor( const ModelPtr model,
-                                                  const VectorString &groupOfCells )
-    : FiniteElementDescriptor( model->getFiniteElementDescriptor(), groupOfCells ) {
-    setModel( model );
-}
 
 FiniteElementDescriptor::FiniteElementDescriptorPtr
     FiniteElementDescriptor::restrict( const VectorString &groupsOfCells ) const {
@@ -164,6 +164,8 @@ const JeveuxVectorLong &FiniteElementDescriptor::getListOfGroupsOfElementsbyElem
     return _groupsOfCellsNumberByElement;
 };
 
+JeveuxVectorLong FiniteElementDescriptor::getFiniteElementType() const { return _typeOfCells; }
+
 ASTERINTEGER FiniteElementDescriptor::getNumberOfCells() const {
     _groupsOfCellsNumberByElement->updateValuePointer();
 
@@ -198,10 +200,6 @@ int FiniteElementDescriptor::getPhysics( void ) const {
 
     return -1;
 };
-
-void FiniteElementDescriptor::setModel( const ModelPtr model ) { _model = model; };
-
-ModelPtr FiniteElementDescriptor::getModel() { return _model.lock(); }
 
 ASTERINTEGER FiniteElementDescriptor::numberOfSuperElement() {
     const std::string typeco( "LIGREL" );
@@ -254,6 +252,14 @@ ASTERINTEGER FiniteElementDescriptor::getElemTypeNume( const std::string elemTyp
     CALLO_JEXNOM( objName, name, elemTypeName );
     CALLO_JENONU( objName, &elemTypeNume );
     return elemTypeNume;
+};
+
+const std::string FiniteElementDescriptor::getPartitionMethod() const {
+    if ( _partition ) {
+        return _partition->getMethod();
+    }
+
+    return ModelSplitingMethodNames[(int)Centralized];
 };
 
 #ifdef ASTER_HAVE_MPI
@@ -424,6 +430,41 @@ void FiniteElementDescriptor::setFrom( FiniteElementDescriptorPtr &other ) {
 
     // Fill 'LIEL'
     transferListOfGroupOfCellFrom( other );
+
+    //   tranfer .TYFE
+    const auto nbCells = connectionMesh->getNumberOfCells();
+    _typeOfCells->allocate( nbCells );
+    auto &cellsLocNum = connectionMesh->getCellsLocalNumbering();
+    auto &cellsOwner = connectionMesh->getCellsOwner();
+
+    const auto rank = getMPIRank();
+    const auto size = getMPISize();
+
+    int nbCellsLoc = 0;
+    for ( int i = 0; i < nbCells; ++i ) {
+        if ( ( *cellsOwner )[i] == rank )
+            nbCellsLoc++;
+    }
+
+    auto typeCellsOther = other->getFiniteElementType();
+    typeCellsOther->updateValuePointer();
+
+    VectorLong buffer;
+    buffer.reserve( nbCellsLoc );
+    for ( int i = 0; i < nbCells; ++i ) {
+        if ( ( *cellsOwner )[i] == rank )
+            buffer.push_back( ( *typeCellsOther )[( *cellsLocNum )[i] - 1] );
+    }
+
+    std::vector< VectorLong > gathered;
+    AsterMPI::all_gather( buffer, gathered );
+
+    VectorLong nbCellsProc( size, 0 );
+    for ( int i = 0; i < nbCells; ++i ) {
+        auto rowner = ( *cellsOwner )[i];
+        ( *_typeOfCells )[i] = gathered[rowner][nbCellsProc[rowner]];
+        nbCellsProc[rowner]++;
+    }
 }
 
 #endif /* ASTER_HAVE_MPI */

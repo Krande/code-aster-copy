@@ -23,6 +23,7 @@ subroutine merige(model_, cara_elem_, sigg, strx, matel, &
 #include "asterf_types.h"
 #include "asterfort/calcul.h"
 #include "asterfort/detrsd.h"
+#include "asterfort/dismoi.h"
 #include "asterfort/exixfe.h"
 #include "asterfort/jedema.h"
 #include "asterfort/jemarq.h"
@@ -89,7 +90,7 @@ subroutine merige(model_, cara_elem_, sigg, strx, matel, &
         lst = modele(1:8)//'.LTNO'
         stano = modele(1:8)//'.STNO'
 !
-        ligrmo = modele//'.MODELE'
+        call dismoi('NOM_LIGREL', modele, 'MODELE', repk=ligrmo)
 !
 ! ----- REMPLISSAGE DES CHAMPS D'ENTREE
 !
@@ -138,7 +139,7 @@ subroutine merige(model_, cara_elem_, sigg, strx, matel, &
         lpaout(1) = 'PMATUUR'
         lchout(1) = matel(1:8)//'.ME001'
 !
-        ligrmo = modele//'.MODELE'
+        call dismoi('NOM_LIGREL', modele, 'MODELE', repk=ligrmo)
         lpain(1) = 'PGEOMER'
         lchin(1) = chgeom
         lpain(2) = 'PCONTRR'

@@ -73,9 +73,6 @@ subroutine dismmo(questi, nomobz, repi, repkz, ierd)
     model = nomobz
     modelLigrel = model//'.MODELE'
 !
-    call jeveuo(modelLigrel//'.LGRF', 'L', vk8=lgrf)
-    mesh = lgrf(1)
-!
     if (questi .eq. 'NOM_LIGREL') then
         repk = modelLigrel
 
@@ -111,6 +108,8 @@ subroutine dismmo(questi, nomobz, repi, repkz, ierd)
         call dismqu(questi, modelLigrel, repi, repk, ierd)
 
     else if (questi .eq. 'NOM_MAILLA') then
+        call jeveuo(modelLigrel//'.LGRF', 'L', vk8=lgrf)
+        mesh = lgrf(1)
         repk = mesh
 
     else if (questi .eq. 'MODELISATION') then
@@ -154,6 +153,8 @@ subroutine dismmo(questi, nomobz, repi, repkz, ierd)
 
     elseif ((questi .eq. 'NB_NO_MAILLA') .or. (questi .eq. 'NB_MA_MAILLA') .or. &
             (questi .eq. 'NB_NO_SS_MAX')) then
+        call jeveuo(modelLigrel//'.LGRF', 'L', vk8=lgrf)
+        mesh = lgrf(1)
         call dismma(questi, mesh, repi, repk, ierd)
 
     else if (questi .eq. 'NB_FISS_XFEM') then

@@ -21,8 +21,8 @@ subroutine xtopoc(modele, decou)
 ! person_in_charge: samuel.geniaut at edf.fr
 !
     implicit none
-#include "asterf_types.h"
 #include "jeveux.h"
+#include "asterf_types.h"
 #include "asterfort/calcul.h"
 #include "asterfort/cescre.h"
 #include "asterfort/cesexi.h"
@@ -71,7 +71,6 @@ subroutine xtopoc(modele, decou)
     character(len=16) :: typdis, memtyp
     character(len=19) :: typenr, chdec
     integer(kind=8), pointer :: cesv(:) => null()
-    character(len=8), pointer :: lgrf(:) => null()
     integer(kind=8), pointer :: nbsp(:) => null()
 !
 ! ----------------------------------------------------------------------
@@ -81,9 +80,8 @@ subroutine xtopoc(modele, decou)
 !
 ! --- INITIALISATIONS
 !
-    ligrel = modele//'.MODELE'
-    call jeveuo(modele//'.MODELE    .LGRF', 'L', vk8=lgrf)
-    noma = lgrf(1)
+    call dismoi('NOM_LIGREL', modele, 'MODELE', repk=ligrel)
+    call dismoi('NOM_MAILLA', ligrel, 'LIGREL', repk=noma)
     chgeom = noma//'.COORDO'
     if (nivdbg .ge. 2) then
         debug = .true.

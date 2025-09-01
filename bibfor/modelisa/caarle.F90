@@ -23,6 +23,7 @@ subroutine caarle(numdlz, iocc, lisrez, chargz)
 #include "asterc/getfac.h"
 #include "asterfort/arlcou.h"
 #include "asterfort/arllec.h"
+#include "asterfort/dismoi.h"
 #include "asterfort/getvid.h"
 #include "asterfort/getvtx.h"
 #include "asterfort/jedema.h"
@@ -30,7 +31,6 @@ subroutine caarle(numdlz, iocc, lisrez, chargz)
 #include "asterfort/jelira.h"
 #include "asterfort/jemarq.h"
 #include "asterfort/jenuno.h"
-#include "asterfort/jeveuo.h"
 #include "asterfort/jexnum.h"
 #include "asterfort/utmess.h"
 #include "asterfort/wkvect.h"
@@ -69,7 +69,7 @@ subroutine caarle(numdlz, iocc, lisrez, chargz)
     integer(kind=8) :: dime, nocc, iop
     integer(kind=8) :: nbtyp
     integer(kind=8) :: zocc, ibid, i
-    integer(kind=8) :: jtypm, jlgrf
+    integer(kind=8) :: jtypm
     character(len=16) :: motfac, option
 !
     data typmai/'&&CAARLE.NOMTM'/
@@ -98,8 +98,8 @@ subroutine caarle(numdlz, iocc, lisrez, chargz)
 !
     call getvid(' ', 'MODELE', iocc=0, nbval=1, scal=nomo, &
                 nbret=ibid)
-    call jeveuo(nomo(1:8)//'.MODELE    .LGRF', 'L', jlgrf)
-    mail = zk8(jlgrf)
+    call dismoi('NOM_MAILLA', nomo, 'MODELE', repk=mail)
+
 !
 ! --- STRUCTURES DE DONNEES
 !

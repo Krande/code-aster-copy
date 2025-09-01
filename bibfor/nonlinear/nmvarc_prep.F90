@@ -26,6 +26,7 @@ subroutine nmvarc_prep(type_comp, model, cara_elem, mateco, varc_refe, &
 #include "asterf_types.h"
 #include "asterfort/alchml.h"
 #include "asterfort/detrsd.h"
+#include "asterfort/dismoi.h"
 #include "asterfort/exixfe.h"
 #include "asterfort/inical.h"
 #include "asterfort/jedema.h"
@@ -107,7 +108,7 @@ subroutine nmvarc_prep(type_comp, model, cara_elem, mateco, varc_refe, &
     call exixfe(model, iret)
     lxfem = iret .ne. 0
     chvref = '&&NMVCPR.VREF'
-    ligrmo = model(1:8)//'.MODELE'
+    call dismoi('NOM_LIGREL', model, 'MODELE', repk=ligrmo)
     chsith = '&&NMVCPR.CHSITH'
 !
 ! - Init fields

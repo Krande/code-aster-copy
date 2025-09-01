@@ -24,14 +24,16 @@ subroutine pjloin(nbnod, nbnodm, m2, geom2, nbmax, tino2m, tdmin2, lino_loin)
     real(kind=8), intent(in) :: geom2(*)
     character(len=8), intent(in) :: m2
 
-#include "asterc/getres.h"
+#include "jeveux.h"
 #include "asterf_types.h"
+#include "asterc/getres.h"
 #include "asterfort/codent.h"
 #include "asterfort/crea_maillage.h"
 #include "asterfort/detrsd.h"
 #include "asterfort/gcncon.h"
 #include "asterfort/getvtx.h"
 #include "asterfort/infniv.h"
+#include "asterfort/int_to_char8.h"
 #include "asterfort/irmail.h"
 #include "asterfort/jedema.h"
 #include "asterfort/jemarq.h"
@@ -39,8 +41,6 @@ subroutine pjloin(nbnod, nbnodm, m2, geom2, nbmax, tino2m, tdmin2, lino_loin)
 #include "asterfort/ulnume.h"
 #include "asterfort/ulopen.h"
 #include "asterfort/utmess.h"
-#include "jeveux.h"
-#include "asterfort/int_to_char8.h"
 !
 !     BUT :
 !       Emettre (eventuellement) le message d'alarme de projection sur
@@ -51,6 +51,7 @@ subroutine pjloin(nbnod, nbnodm, m2, geom2, nbmax, tino2m, tdmin2, lino_loin)
 !
     character(len=8) ::  madebug, k8bid, kico
     character(len=16) :: alarm, k16bid, nomcmd, formar
+    character(len=19) :: k19bid
 !
     integer(kind=8) :: vali(2)
     integer(kind=8) :: ii, ino2m, unite, ico, iret, ifm, info, ivers
@@ -100,7 +101,8 @@ subroutine pjloin(nbnod, nbnodm, m2, geom2, nbmax, tino2m, tdmin2, lino_loin)
                 call ulaffe(unite, fichier, ' ', 'N', 'O')
                 formar = ' '
                 k8bid = ' '
-                call irmail('MED', unite, ivers, madebug, ASTER_FALSE, k8bid, 1, formar)
+                k19bid = ' '
+                call irmail('MED', unite, ivers, madebug, ASTER_FALSE, k19bid, 1, formar)
                 call ulopen(-unite, k8bid, k8bid, k8bid, k8bid)
                 call detrsd('MAILLAGE', madebug)
             end if

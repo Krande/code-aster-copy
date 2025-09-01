@@ -23,13 +23,13 @@ subroutine carc_read(prepMapCarcri, model_)
 !
     implicit none
 !
+#include "asterf_types.h"
 #include "asterc/getexm.h"
 #include "asterc/lccree.h"
 #include "asterc/lcdiscard.h"
 #include "asterc/lcsymm.h"
 #include "asterc/lctest.h"
 #include "asterc/r8vide.h"
-#include "asterf_types.h"
 #include "asterfort/assert.h"
 #include "asterfort/comp_meca_l.h"
 #include "asterfort/comp_meca_rkit.h"
@@ -81,6 +81,7 @@ subroutine carc_read(prepMapCarcri, model_)
     character(len=16) :: kit_comp(4)
     character(len=16) :: extern_addr, defo_comp, rela_comp
     character(len=16) :: thmc_comp, hydr_comp, ther_comp, meca_comp
+    character(len=19) :: ligrel
     aster_logical :: l_kit_thm, l_kit_ddi, l_exist_thm
     aster_logical :: l_kit
     aster_logical :: plane_stress, l_mfront_proto, l_mfront_offi
@@ -136,7 +137,8 @@ subroutine carc_read(prepMapCarcri, model_)
 ! - Pointer to the list of cells in model
     mesh = ' '
     if (present(model_)) then
-        call jeveuo(model_//'.MAILLE', 'L', vi=modelCell)
+        call dismoi('NOM_LIGREL', model_, 'MODELE', repk=ligrel)
+        call jeveuo(ligrel//'.TYFE', 'L', vi=modelCell)
         call dismoi('NOM_MAILLA', model_, 'MODELE', repk=mesh)
     end if
 

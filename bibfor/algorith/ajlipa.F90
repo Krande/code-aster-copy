@@ -18,14 +18,16 @@
 
 subroutine ajlipa(modelz, base, kdis)
     implicit none
-#include "asterf_types.h"
 #include "jeveux.h"
+#include "asterf_types.h"
+#include "asterc/getres.h"
 #include "asterfort/asmpi_info.h"
 #include "asterfort/assert.h"
 #include "asterfort/detrsd.h"
-#include "asterc/getres.h"
+#include "asterfort/dismoi.h"
 #include "asterfort/exisd.h"
 #include "asterfort/getvis.h"
+#include "asterfort/gnoms3.h"
 #include "asterfort/infniv.h"
 #include "asterfort/jedema.h"
 #include "asterfort/jeexin.h"
@@ -47,13 +49,13 @@ subroutine ajlipa(modelz, base, kdis)
 !     * il faut appeler cette routine apres adalig si cette derniere
 !       est appelee (cas de op0018)
 ! ----------------------------------------------------------------------
-    character(len=8) :: modele, mopart, valk(3), nomres
+    character(len=8) :: modele, mopart, valk(3), nomres, partsd
     character(len=16) :: typres, nomcom
-    character(len=19) :: ligrmo, partsd
+    character(len=19) :: ligrmo
     character(len=24) :: k24b
     integer(kind=8) :: i, rang, nbproc, ifm, niv, ibid, nbsd, nbma
     integer(kind=8) :: nmpp, nmp0, nmp0af, ico, nbpro1, krang, nmp1
-    integer(kind=8) :: iexi
+    integer(kind=8) :: iexi, iad
     integer(kind=8) :: icobis, dist0, jnumsd, vali(3), nbmamo, ima
     integer(kind=8) ::  jprti, jprtk
     aster_logical :: plein0, exi_partsd
@@ -71,8 +73,8 @@ subroutine ajlipa(modelz, base, kdis)
 !   --  Verifications et initialisations
 ! ----------------------------------------------------------------------
     modele = modelz
-    ligrmo = modele//'.MODELE'
-    partsd = modele//'.PARTSD'
+    call dismoi('NOM_LIGREL', modele, 'MODELE', repk=ligrmo)
+    call dismoi('PARTITION', ligrmo, 'LIGREL', repk=partsd)
 
     call getres(nomres, typres, nomcom)
     ASSERT(nomres .eq. modele)
@@ -85,7 +87,7 @@ subroutine ajlipa(modelz, base, kdis)
         ASSERT(nomcom .eq. 'MODI_MODELE')
         call detrsd('PARTITION', partsd)
     end if
-
+!
 !   -- s'il n'y a pas d'elements finis dans le modele :
 !   ---------------------------------------------------
     call jeexin(ligrmo//'.LIEL', iexi)
@@ -102,7 +104,7 @@ subroutine ajlipa(modelz, base, kdis)
 
 !   -- si le modele n'a pas de mailles, il n'y a rien a faire :
 !   -----------------------------------------------------------
-    call jeexin(modele//'.MAILLE', iexi)
+    call jeexin(ligrmo//'.TYFE', iexi)
     if (iexi .eq. 0) goto 999
 
 !   -- si l'utilisateur ne veut pas de distribution des calculs,
@@ -122,8 +124,14 @@ subroutine ajlipa(modelz, base, kdis)
 
 !   -- Creation de la sd_partition :
 !   ----------------------------------------------------
-    call jeveuo(modele//'.MAILLE', 'L', vi=maille)
-    call jelira(modele//'.MAILLE', 'LONMAX', nbma)
+    if (partsd == ' ') then
+        partsd = "PART"
+        call gnoms3(partsd, 5, 8, ".PRTK")
+        call jeveuo(ligrmo//'.LGRF', 'E', iad)
+        zk8(iad-1+2) = partsd
+    end if
+    call jeveuo(ligrmo//'.TYFE', 'L', vi=maille)
+    call jelira(ligrmo//'.TYFE', 'LONMAX', nbma)
     call wkvect(partsd//'.PRTI', base//' V I', 1, jprti)
     zi(jprti-1+1) = nbproc
     call wkvect(partsd//'.PRTK', base//' V K24', 1, jprtk)

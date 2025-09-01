@@ -21,8 +21,8 @@ subroutine alchml(ligrel_, option_, nompar_, base_, cel_, &
     implicit none
 ! person_in_charge: jacques.pellet at edf.fr
 
-#include "asterf_types.h"
 #include "jeveux.h"
+#include "asterf_types.h"
 #include "asterfort/assert.h"
 #include "asterfort/cesexi.h"
 #include "asterfort/digdel.h"
@@ -40,17 +40,13 @@ subroutine alchml(ligrel_, option_, nompar_, base_, cel_, &
 #include "asterfort/nbelem.h"
 #include "asterfort/nbgrel.h"
 #include "asterfort/nopar2.h"
+#include "asterfort/nucalc.h"
 #include "asterfort/scalai.h"
 #include "asterfort/typele.h"
 #include "asterfort/utmess.h"
 #include "asterfort/wkvect.h"
-#include "asterfort/nucalc.h"
 
     character(len=*) :: ligrel_, dcel_, cel_, base_, option_, nompar_
-    character(len=19) :: ligrel, cel, dcel
-    character(len=16) :: option
-    character(len=8) :: nompar
-    character(len=1) :: base
     integer(kind=8) :: iret
 !----------------------------------------------------------------------
 !  But : Creer un cham_elem "vierge"
@@ -90,6 +86,10 @@ subroutine alchml(ligrel_, option_, nompar_, base_, cel_, &
     character(len=16) :: nomte1, nomte, ma, ma2, kbid
     character(len=24) :: nomolo
     character(len=24) :: valk(3)
+    character(len=19) :: ligrel, cel, dcel
+    character(len=16) :: option
+    character(len=8) :: nompar
+    character(len=1) :: base
     integer(kind=8) :: ngrel, igrel, te, te1, mode, long, jceld, ncmpv, debgrl
     integer(kind=8) :: gd, jcelk, iopt, iprem, nel, iel, lgcata, nbspt
     integer(kind=8) :: ncdyn, lgchel, numc

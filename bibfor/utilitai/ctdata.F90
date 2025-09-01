@@ -52,31 +52,31 @@ subroutine ctdata(mesnoe, mesmai, nkcha, tych, toucmp, &
     use MGIS_module
     implicit none
 !
-#include "asterf_types.h"
 #include "jeveux.h"
-#include "asterfort/assert.h"
+#include "asterf_types.h"
 #include "asterfort/as_allocate.h"
 #include "asterfort/as_deallocate.h"
+#include "asterfort/assert.h"
 #include "asterfort/calcul.h"
 #include "asterfort/celces.h"
 #include "asterfort/cesvar.h"
 #include "asterfort/detrsd.h"
 #include "asterfort/dismoi.h"
 #include "asterfort/exisd.h"
-#include "asterfort/exlim1.h"
+#include "asterfort/exlim2.h"
 #include "asterfort/getvid.h"
 #include "asterfort/getvtx.h"
 #include "asterfort/jedema.h"
+#include "asterfort/jelira.h"
 #include "asterfort/jemarq.h"
 #include "asterfort/jeveuo.h"
-#include "asterfort/jelira.h"
-#include "asterfort/megeom.h"
+#include "asterfort/mecoor.h"
 #include "asterfort/reliem.h"
+#include "asterfort/rs_get_liststore.h"
+#include "asterfort/rsGetOneBehaviourFromResult.h"
 #include "asterfort/utmess.h"
 #include "asterfort/varinonu.h"
 #include "asterfort/wkvect.h"
-#include "asterfort/rs_get_liststore.h"
-#include "asterfort/rsGetOneBehaviourFromResult.h"
 !
     integer(kind=8) :: nbcmp, nbno, nbma, nbval
     character(len=1) :: tsca
@@ -91,7 +91,7 @@ subroutine ctdata(mesnoe, mesmai, nkcha, tych, toucmp, &
     integer(kind=8) :: jkcha, i, iret, jlno, n1, jlma, n2, n3, nchi, n0, n4, ncho, ierr
     integer(kind=8) :: n5, igrel, nbVari
     integer(kind=8), pointer :: repe(:) => null()
-    character(len=8) :: model, nomgd, noca
+    character(len=8) :: nomgd, noca
     character(len=8) :: typmcl(4), lpain(6), lpaout(2), result
     character(len=16) :: motcle(4), fieldName
     character(len=19) :: ligrel, ligrmo, cel19, compor
@@ -110,7 +110,6 @@ subroutine ctdata(mesnoe, mesmai, nkcha, tych, toucmp, &
     call jeveuo(nkcha, 'L', jkcha)
     tych = ' '
     ligrel = '&&CTDATA.LIGREL'
-    model = ' '
     tsca = ' '
     result = ' '
     exicar = .false.
@@ -128,8 +127,7 @@ subroutine ctdata(mesnoe, mesmai, nkcha, tych, toucmp, &
                 call utmess('F', 'TABLE0_42')
             end if
             if (tych(1:2) .eq. 'EL') then
-                call dismoi('NOM_MODELE', zk24(jkcha+i-1) (1:19), 'CHAMP', repk=model)
-                call dismoi('NOM_LIGREL', model, 'MODELE', repk=ligrmo)
+                call dismoi('NOM_LIGREL', zk24(jkcha+i-1) (1:19), 'CHAMP', repk=ligrmo)
                 call jeveuo(ligrmo//'.REPE', 'L', vi=repe)
             end if
             if (tych .eq. 'ELGA') then
@@ -193,7 +191,7 @@ subroutine ctdata(mesnoe, mesmai, nkcha, tych, toucmp, &
                     zi(jlma+i-1) = i
                 end do
             else
-!               on ne garde que les mailles du modele :
+!               on ne garde que les mailles du ligrel :
                 do i = 1, nbma
                     igrel = repe(1+2*(i-1))
                     if (igrel .gt. 0) zi(jlma+i-1) = i
@@ -209,9 +207,9 @@ subroutine ctdata(mesnoe, mesmai, nkcha, tych, toucmp, &
 !           calcul de ligrel
             call jeveuo(mesmai, 'L', jlma)
             call jelira(mesmai, 'LONMAX', nbma)
-            call exlim1(zi(jlma), nbma, model, 'V', ligrel)
+            call exlim2(zi(jlma), nbma, ligrmo, 'V', ligrel)
 !
-            call megeom(model, chgeom)
+            call mecoor(ligrmo, chgeom)
             lchin(1) = chgeom(1:19)
             lpain(1) = 'PGEOMER'
             nchi = 1
@@ -312,7 +310,7 @@ subroutine ctdata(mesnoe, mesmai, nkcha, tych, toucmp, &
             if (hasMFront(compor)) then
                 call utmess('F', "COMPOR6_6")
             end if
-            call varinonu(model, compor, &
+            call varinonu(ligrmo, compor, &
                           nbma, zi(jlma), &
                           nbVari, variName, cmpName)
         end if

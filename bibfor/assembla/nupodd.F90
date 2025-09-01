@@ -18,11 +18,12 @@
 
 subroutine nupodd(nu, base, rang, nbproc)
     implicit none
-#include "asterf_types.h"
 #include "jeveux.h"
+#include "asterf_types.h"
 #include "asterfort/asmpi_info.h"
 #include "asterfort/assert.h"
 #include "asterfort/dismoi.h"
+#include "asterfort/exisd.h"
 #include "asterfort/jedema.h"
 #include "asterfort/jelira.h"
 #include "asterfort/jemarq.h"
@@ -54,14 +55,14 @@ subroutine nupodd(nu, base, rang, nbproc)
 !                    (SAUF LE NUME_EQUA)
 !                BASE(2:2) : BASE POUR CREER LE NUME_EQUA
 !
-    integer(kind=8) :: nbma, nbnoma, jnumsd
+    integer(kind=8) :: nbma, nbnoma, jnumsd, iexi
     integer(kind=8) :: nlili, ili, igr, nel, iel, numa, jpddl, nbno, ino
     integer(kind=8) :: nuno, iddl, nddl, ddl1g, numpro, curpro, k1, n1
     integer(kind=8) :: ddl1l, ilib, neql, jconx2, idprn2
     integer(kind=8) :: nec
 !
-    character(len=8) :: noma, mo
-    character(len=19) :: ligrmo, nomlig, partit
+    character(len=8) :: noma, mo, partit
+    character(len=19) :: ligrmo, nomlig
 !
     aster_logical :: ldist, ldgrel
     integer(kind=8), pointer :: adne(:) => null()
@@ -149,7 +150,8 @@ subroutine nupodd(nu, base, rang, nbproc)
     call asmpi_info(rank=mrank, size=msize)
     rang = to_aster_int(mrank)
     nbproc = to_aster_int(msize)
-    if (partit .ne. ' ') then
+    call exisd('PARTITION', partit, iexi)
+    if (iexi .ne. 0) then
         ASSERT(nbproc .gt. 1)
         ldist = .true.
         call jeveuo(partit//'.PRTK', 'L', vk24=prtk)

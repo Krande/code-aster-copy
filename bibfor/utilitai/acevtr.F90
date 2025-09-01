@@ -16,13 +16,13 @@
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
 
-subroutine acevtr(noma, nomo, ityp, noms, itab, &
-                  nn, idim)
+subroutine acevtr(nomo, ityp, noms, itab, nn, idim)
 !.======================================================================
     implicit none
 !
 #include "jeveux.h"
 #include "asterfort/assert.h"
+#include "asterfort/char8_to_int.h"
 #include "asterfort/dismoi.h"
 #include "asterfort/jedema.h"
 #include "asterfort/jeexin.h"
@@ -33,10 +33,9 @@ subroutine acevtr(noma, nomo, ityp, noms, itab, &
 #include "asterfort/jexnum.h"
 #include "asterfort/testli.h"
 #include "asterfort/utmess.h"
-#include "asterfort/char8_to_int.h"
 !
     character(len=24) :: noms(*)
-    character(len=8) :: nomo, noma
+    character(len=8) :: nomo
     integer(kind=8) :: ityp, nn, idim, itab(*)
 !
 !   ARGUMENT        E/S  TYPE         ROLE
@@ -63,7 +62,7 @@ subroutine acevtr(noma, nomo, ityp, noms, itab, &
         chaine = 'DIS_TR'
     end if
 !
-    nolig = nomo//'.MODELE'
+    call dismoi('NOM_LIGREL', nomo, 'MODELE', repk=nolig)
     call jeexin(nolig//'.LIEL', iret)
     if (iret .ne. 0) then
         call jelira(nolig//'.LIEL', 'NUTIOC', nbgrel)

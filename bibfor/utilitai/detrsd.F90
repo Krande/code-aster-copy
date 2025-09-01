@@ -22,12 +22,14 @@ subroutine detrsd(typesd, nomsd)
 !
     implicit none
 !
-#include "asterf_types.h"
 #include "jeveux.h"
+#include "asterf_types.h"
 #include "asterfort/amumph.h"
 #include "asterfort/apetsc.h"
+#include "asterfort/asmpi_info.h"
 #include "asterfort/assde1.h"
 #include "asterfort/assert.h"
+#include "asterfort/codent.h"
 #include "asterfort/detlsp.h"
 #include "asterfort/detrs2.h"
 #include "asterfort/dismoi.h"
@@ -38,8 +40,6 @@ subroutine detrsd(typesd, nomsd)
 #include "asterfort/jelira.h"
 #include "asterfort/jemarq.h"
 #include "asterfort/jeveuo.h"
-#include "asterfort/codent.h"
-#include "asterfort/asmpi_info.h"
 !
 !
     character(len=*) :: typesd, nomsd
@@ -152,13 +152,13 @@ subroutine detrsd(typesd, nomsd)
 !     ------------------------------------------------------------------
     else if (typ2sd .eq. 'PARTITION') then
 !     -------------------------------------------
-        k19 = nomsd
-        call jedetr(k19//'.PRTI')
-        call jedetr(k19//'.PRTK')
-        call jedetr(k19//'.NUPR')
-        call jedetr(k19//'.FDIM')
-        call jedetr(k19//'.FETA')
-        call jedetr(k19//'.FREF')
+        k8 = nomsd
+        call jedetr(k8//'.PRTI')
+        call jedetr(k8//'.PRTK')
+        call jedetr(k8//'.NUPR')
+        call jedetr(k8//'.FDIM')
+        call jedetr(k8//'.FETA')
+        call jedetr(k8//'.FREF')
 !
 !     ------------------------------------------------------------------
     else if (typ2sd .eq. 'CORRESP_2_MAILLA') then
@@ -230,6 +230,7 @@ subroutine detrsd(typesd, nomsd)
         call jedetr(ligrel//'.PRNS')
         call jedetr(ligrel//'.REPE')
         call jedetr(ligrel//'.SSSA')
+        call jedetr(ligrel//'.TYFE')
 !
 !     ------------------------------------------------------------------
     else if (typ2sd .eq. 'LIGRET') then
@@ -298,8 +299,6 @@ subroutine detrsd(typesd, nomsd)
         call detrs2('L_TABLE', k8)
 !
         call jedetr(k8//'           .TITR')
-        call jedetr(k8//'.MAILLE')
-        call detrs2('PARTITION', k8//'.PARTSD')
 !
 !
 !     ------------------------------------------------------------------

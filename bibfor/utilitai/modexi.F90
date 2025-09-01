@@ -65,7 +65,7 @@ subroutine modexi(modelz, nomodz, iexi)
     repi = 0
     l = len(nomodz)
 !
-    nolig = modele//'.MODELE'
+    call dismoi('NOM_LIGREL', modele, 'MODELE', repk=nolig)
     call jeexin(nolig//'.LIEL', iret)
     if (iret .ne. 0) then
         call jelira(nolig//'.LIEL', 'NUTIOC', nbgrel)

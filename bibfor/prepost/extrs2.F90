@@ -20,8 +20,8 @@ subroutine extrs2(resu0, resu1, typcon, lrest, mailla, &
                   modele, cara, chmat, nbordr, nuordr, nbacc, nomacc, &
                   nbarch, nuarch, nbexcl, chexcl, nbnosy)
     implicit none
-#include "asterf_types.h"
 #include "jeveux.h"
+#include "asterf_types.h"
 #include "asterfort/copisd.h"
 #include "asterfort/dismoi.h"
 #include "asterfort/jedema.h"
@@ -66,7 +66,6 @@ subroutine extrs2(resu0, resu1, typcon, lrest, mailla, &
     character(len=19) :: resuin, resuou, ligrel
     character(len=24) :: chamin, chamou, corrn, corrm
     character(len=24) :: valk(3)
-    character(len=8), pointer :: lgrf(:) => null()
     character(len=8), pointer :: maor(:) => null()
 !     ------------------------------------------------------------------
 !
@@ -87,9 +86,8 @@ subroutine extrs2(resu0, resu1, typcon, lrest, mailla, &
 !
     if (lrest) then
         if (modele .ne. ' ') then
-            call jeveuo(modele//'.MODELE    .LGRF', 'L', vk8=lgrf)
-            noma2 = lgrf(1)
-            ligrel = modele//'.MODELE'
+            call dismoi('NOM_MAILLA', modele, 'MODELE', repk=noma2)
+            call dismoi('NOM_LIGREL', modele, 'MODELE', repk=ligrel)
         else
             noma2 = mailla
             ligrel = ' '

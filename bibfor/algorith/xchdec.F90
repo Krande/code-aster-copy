@@ -62,7 +62,7 @@ subroutine xchdec(modelx, decou, chdec)
 !     ------------------------------------------------------------------
 !
     call jemarq()
-    ligrel = modelx//'.MODELE'
+    call dismoi('NOM_LIGREL', modelx, 'MODELE', repk=ligrel)
     call dismoi('NOM_MAILLA', modelx, 'MODELE', repk=noma)
 !
     call jelira(ligrel//'.LIEL', 'NMAXOC', nbgrel)

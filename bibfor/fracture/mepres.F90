@@ -19,8 +19,9 @@
 subroutine mepres(nomo, chpres, fonc, pres, cisa)
     implicit none
 !
-#include "asterf_types.h"
 #include "jeveux.h"
+#include "asterf_types.h"
+#include "asterfort/dismoi.h"
 #include "asterfort/mecact.h"
     character(len=8) :: nomo
     character(len=*) :: chpres
@@ -43,7 +44,7 @@ subroutine mepres(nomo, chpres, fonc, pres, cisa)
 !
 !-----------------------------------------------------------------------
     zero = '&FOZERO'
-    ligrmo = nomo//'.MODELE    '
+    call dismoi('NOM_LIGREL', nomo, 'MODELE', repk=ligrmo)
     licmp(1) = 'PRES'
     licmp(2) = 'CISA'
     rcmp(1) = pres
