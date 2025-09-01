@@ -1,5 +1,5 @@
 /* -------------------------------------------------------------------- */
-/* Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org             */
+/* Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org             */
 /* This file is part of code_aster.                                     */
 /*                                                                      */
 /* code_aster is free software: you can redistribute it and/or modify   */
@@ -120,7 +120,7 @@ ASTERINTEGER DEFP( MEMPID, mempid, ASTERINTEGER *val ) {
     return iret;
 
 #elif defined ASTER_PLATFORM_MINGW
-    PROCESS_MEMORY_COUNTERS_EX pmc;
+    PROCESS_MEMORY_COUNTERS pmc;
     GetProcessMemoryInfo( GetCurrentProcess(), &pmc, sizeof( pmc ) );
     /* VmSize */
     val[0] = (ASTERINTEGER)pmc.WorkingSetSize / 1024;
