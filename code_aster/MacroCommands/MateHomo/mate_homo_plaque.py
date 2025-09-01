@@ -401,7 +401,6 @@ def calc_tabpara_plaque(
     ls_G_hom = {}
 
     for i, inst_meca in enumerate(insts_meca):
-
         # MEMBRANE
         lambda_meca_mm = loimel["LAME1_mm"][i]
         mu_meca_mm = loimel["LAME2_mm"][i]

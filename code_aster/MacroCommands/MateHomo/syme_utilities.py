@@ -172,7 +172,6 @@ class SymmetryManager:
         return mesh_merged, None, None
 
     def build_symmetry_mesh(self, meshin):
-
         """
         Returns the full mesh.
 

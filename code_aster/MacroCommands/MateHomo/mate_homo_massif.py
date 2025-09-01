@@ -477,7 +477,6 @@ def calc_tabpara_massif(DEPLMATE, volume_ver, ls_group_ma, varc_name, ls_varc, *
     ls_K_hom = {}
 
     for i, (inst_meca, inst_ther) in enumerate(zip(insts_meca, insts_ther)):
-
         ASSERT(inst_meca == inst_ther)
 
         work_dila_11 = utilities.cross_work(CORR_MECA11, CORR_DILA, inst_meca, ls_group_ma)

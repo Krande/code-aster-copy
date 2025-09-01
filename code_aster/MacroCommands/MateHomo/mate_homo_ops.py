@@ -20,6 +20,7 @@
 """
 Calcul de proprietés homo
 """
+
 from ...Messages import ASSERT
 
 from .mate_homo_utilities import setup_calcul
@@ -77,7 +78,7 @@ def mate_homo_ops(self, **kwargs):
             varc_name,
             varc_values,
             **elas_fields,
-            **ther_fields
+            **ther_fields,
         )
 
     elif type_homo in ("PLAQUE",):
@@ -94,11 +95,10 @@ def mate_homo_ops(self, **kwargs):
             ep_ver,
             coef_cisa,
             **elas_fields,
-            **ther_fields
+            **ther_fields,
         )
 
     elif type_homo in ("PLAQUE_CT",):
-
         elas_fields, ther_fields = calc_corr_plaque_ct(
             MODME, CHMATME, MODTH, CHMATTH, L_INST, alpha_calc, (group_tout,)
         )
@@ -112,7 +112,7 @@ def mate_homo_ops(self, **kwargs):
             ep_ver,
             coef_cisa,
             **elas_fields,
-            **ther_fields
+            **ther_fields,
         )
     else:
         ASSERT(False)

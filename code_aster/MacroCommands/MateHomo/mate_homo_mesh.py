@@ -117,7 +117,7 @@ def get_mesh_size(mcmesh):
     volume_ver = 1.0
     dirthick = {}
 
-    for (idx, dirname) in enumerate("x y z".split()):
+    for idx, dirname in enumerate("x y z".split()):
         vmin, vmax = bounds[idx]
         volume_ver *= vmax - vmin
         dirthick[dirname.upper()] = vmax - vmin
@@ -219,7 +219,7 @@ def rebuild_with_groups(m0, l0groups):
     face_groups = []
     face_nodes = {}
 
-    for (idx, dirname) in enumerate("x y z".split()):
+    for idx, dirname in enumerate("x y z".split()):
         vmin, vmax = bounds[idx]
 
         ndsmin = m0.getCoords()[:, idx].findIdsInRange(vmin - tol, vmin + tol)

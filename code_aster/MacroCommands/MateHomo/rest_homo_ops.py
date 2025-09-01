@@ -81,7 +81,6 @@ def rest_homo_ops(self, **kwargs):
 
     resu_meca = None
     if resu_glob_meca is not None:
-
         resu_meca = createLocalElasResult(rmanager, resu_glob_meca)
 
         mod_meca = Model(rmanager.ver_mesh)
