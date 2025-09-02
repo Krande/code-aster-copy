@@ -37,7 +37,14 @@ import numpy as np
 import tempfile
 
 from ..Cata.Syntax import _F
-from ..CodeCommands import CALC_CHAM_ELEM, CALC_CHAMP, CREA_TABLE, CALC_TABLE, DEFI_FICHIER
+from ..CodeCommands import (
+    CALC_CHAM_ELEM,
+    CALC_CHAMP,
+    CREA_TABLE,
+    CALC_TABLE,
+    DEFI_FICHIER,
+    DEFI_CONSTANTE,
+)
 from ..CodeCommands import IMPR_RESU
 from ..Objects import FieldOnCellsReal, NonLinearResult, Table, Model, Function, FieldOnNodesReal
 from ..Utilities import logger, disable_fpe, no_new_attributes
@@ -259,22 +266,33 @@ class PostBeremin:
 
         self._weib_params = params.copy()
         self._type_seuil = params["TYPE_SEUIL"]
+        assert self._type_seuil in ["RESTREINT", "REDUIT"]
+
         if self._use_FO:
-            self._weib_params["SIGM_REFE"] = [params["SIGM_REFE"]]
-            self._weib_params["SIGM_SEUIL"] = [params["SIGM_SEUIL"]]
+
+            ##Set default values for SIGM_REFE and SIGM_SEUIL
+            if params["SIGM_REFE"] is None:
+                self._weib_params["SIGM_REFE"] = [DEFI_CONSTANTE(VALE=1.0)]
+            else:
+                self._weib_params["SIGM_REFE"] = [params["SIGM_REFE"]]
+            if params["SIGM_SEUIL"] is None:
+                self._weib_params["SIGM_SEUIL"] = [DEFI_CONSTANTE(VALE=0.0)]
+            else:
+                self._weib_params["SIGM_SEUIL"] = [params["SIGM_SEUIL"]]
 
             self._use_function = {"SIGM_REFE": False, "SIGM_SEUIL": False}
             self._use_cham = {"SIGM_REFE": False, "SIGM_SEUIL": False}
             for param in ["SIGM_REFE", "SIGM_SEUIL"]:
-                if type(params[param]) is Function:
+                if params[param] is None or type(params[param]) is Function:
                     self._use_function[param] = True
-                    assert params[param].Parametres()["NOM_PARA"] in [
-                        "TEMP",
-                        "X",
-                        "Y",
-                        "Z",
-                        "TOUTPARA",
-                    ]
+                    if type(params[param]) is Function:
+                        assert params[param].Parametres()["NOM_PARA"] in [
+                            "TEMP",
+                            "X",
+                            "Y",
+                            "Z",
+                            "TOUTPARA",
+                        ]
                 elif type(params[param]) in [FieldOnNodesReal, FieldOnCellsReal]:
                     if "X1" not in params[param].getComponents():
                         UTMESS("F", "RUPTURE4_24", valk=param)
@@ -440,7 +458,8 @@ class PostBeremin:
                 assert self._type_seuil != "RESTREINT"
             assert abs(sigmat["SIGM_REFE"]).min() > 0.0
             sig1 /= sigmat["SIGM_REFE"]
-            sig1 *= self._weib_params["SIGM_CNV"]
+            if self._weib_params["SIGM_CNV"] > 0.0:
+                sig1 *= self._weib_params["SIGM_CNV"]
             sig1 -= sigmat["SIGM_SEUIL"]
 
         else:
@@ -680,7 +699,10 @@ class PostBeremin:
 
         # probaw(SIGMA_WEIBULL) = 1-exp(-SIGMA_WEIBULL**bere_m/sigma_u**bere_m)
         #  avec sigma_u=SIMG_CNV ou SIGM_REFE
-        proba_weibull = 1.0 - exp(-((sigma_weibull / sigma_u) ** pow_m))
+        if sigma_u > 0.0:
+            proba_weibull = 1.0 - exp(-((sigma_weibull / sigma_u) ** pow_m))
+        else:
+            proba_weibull = 0.0
 
         return sigma_weibull, sigma_weibullpm, proba_weibull
 

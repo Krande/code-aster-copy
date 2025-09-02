@@ -243,4 +243,48 @@ TEST_TABLE(
     FILTRE=(_F(NOM_PARA="NUME_ORDRE", VALE_I=1), _F(NOM_PARA="GROUP_MA", VALE_K="Plan_0_TORE")),
 )
 
+##################################################
+# BEREMIN 3D normalisé réduction au tore uniquement, sans sigma_u
+##################################################
+beremin_3d_tore_c0_su = POST_BEREMIN(
+    RESULTAT=resu_elas,
+    COEF_MULT=2 / 3.33333,
+    DEFORMATION="PETIT",
+    FILTRE_SIGM="SIGM_ELMOY",
+    WEIBULL=_F(GROUP_MA="Couche_0_TORE", M=18.0, VOLU_REFE=1.25e-4),
+)
+
+IMPR_TABLE(TABLE=beremin_3d_tore_c0_su, UNITE=6)
+
+TEST_TABLE(
+    CRITERE="RELATIF",
+    VALE_CALC=1591.4018531,
+    NOM_PARA="SIGMA_WEIBULL",
+    TABLE=beremin_3d_tore_c0_su,
+    FILTRE=(_F(NOM_PARA="NUME_ORDRE", VALE_I=1), _F(NOM_PARA="GROUP_MA", VALE_K="Couche_0_TORE")),
+)
+
+#######################################################################
+# BEREMIN 2D réduction au tore uniquement : sans sigma_u
+#######################################################################
+
+beremin_2d_c0_tore_su = POST_BEREMIN(
+    RESULTAT=resu_elas,
+    COEF_MULT=2,
+    DEFORMATION="PETIT",
+    FILTRE_SIGM="SIGM_ELMOY",
+    WEIBULL=_F(GROUP_MA="Couche_0_TORE", M=18.0, VOLU_REFE=1.25e-4),
+    METHODE_2D=_F(GROUP_NO_PLAN="Plan_0_TORE", FISSURE=fiss),
+)
+
+IMPR_TABLE(TABLE=beremin_2d_c0_tore_su, UNITE=6)
+
+TEST_TABLE(
+    CRITERE="RELATIF",
+    VALE_CALC=1591.401764,
+    NOM_PARA="SIGMA_WEIBULL",
+    TABLE=beremin_2d_c0_tore_su,
+    FILTRE=(_F(NOM_PARA="NUME_ORDRE", VALE_I=1), _F(NOM_PARA="GROUP_MA", VALE_K="Plan_0_TORE")),
+)
+
 FIN()
