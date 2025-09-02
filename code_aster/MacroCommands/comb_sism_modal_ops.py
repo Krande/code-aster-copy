@@ -135,7 +135,7 @@ def get_group_appuis(spectres, group_appui_correle=None):
         group_appui_correle: input for operande GROUP_APPUI_CORRELE
 
     Returns:
-        group_appuis (list[dict[str, list]]): groups of appuis
+        group_appuis (dict[str, list]): groups of appuis
     """
     # preparing for group_appui_correle
     group_appuis = {}
@@ -1121,7 +1121,7 @@ class MultiAppuiRunner(BaseRunner):
         return R_m
 
     def _corr_pseudo_mode(
-        self, pr_wr2_phi, w_r, direction, pseudo_mode, s_r_freq_cut, l_group_no, mesh
+        self, pr_wr2_phi, w_r, direction, pseudo_mode, s_r_freq_cut, l_group_no, nom_appui, mesh
     ):
         """Correction by pseudo-mode/mode statique, for MULTI_APPUI
         Args:
@@ -1131,6 +1131,7 @@ class MultiAppuiRunner(BaseRunner):
             pseudo_mode (ModeResult): pseudo mode for static correction
             s_r_freq_cut (ndarray)  : value of ZPA at the cutting frequency
             l_group_no list[str]    : list of all group_no of support
+            nom_appui               : support name
             mesh (Mesh)             : mesh extracted from mode_meca
 
         Returns:
@@ -1147,6 +1148,7 @@ class MultiAppuiRunner(BaseRunner):
             l_noeud_cmp.append(noeud_cmp)
         ps_nume_modes = pseudo_mode.getAccessParameters()["NUME_MODE"]
         ps_noeud_cmps = pseudo_mode.getAccessParameters()["NOEUD_CMP"]
+        appui_cmp = nom_appui.ljust(8) + f"D{direction}"
 
         if all(noeud_cmp in ps_noeud_cmps for noeud_cmp in l_noeud_cmp):
             # ps_nume_mode = ps_nume_modes[ps_noeud_cmps.index(noeud_cmp)]
@@ -1158,19 +1160,23 @@ class MultiAppuiRunner(BaseRunner):
             for x in l_phi_ps[1:]:
                 phi_ps += x
             # get static mode for component (noeud_cmp)
-
-            if self._option == "VITE":  # pseudo-mode is not allowed
-                UTMESS("F", "SEISME_10", valk=option)
-                R_c_noeud = (phi_ps.getValues() * w_r - np.sum(pr_wr2_phi, axis=0)) * s_r_freq_cut
-            elif (
-                self._option == "ACCE_ABSOLU"
-            ):  # correction by pseudo-mode is not allowed for ACCE_ABSOLU in mutl_appui
-                UTMESS("F", "SEISME_10", valk=option)
-                R_c_noeud = np.zeros(phi_ps.size())
-            else:
-                R_c_noeud = (phi_ps.getValues() - np.sum(pr_wr2_phi, axis=0)) * s_r_freq_cut
+        elif appui_cmp in ps_noeud_cmps:
+            ps_nume_mode = ps_nume_modes[ps_noeud_cmps.index(appui_cmp)]
+            phi_ps = pseudo_mode.getField(self._option, ps_nume_mode)
         else:
+            # FIXME : noeud_cmp n'est pas correct pour ce message
             UTMESS("F", "SEISME_66", valk=(noeud_cmp, "PSEUDO_MODE"))
+
+        if self._option == "VITE":  # pseudo-mode is not allowed
+            UTMESS("F", "SEISME_10", valk=option)
+            R_c_noeud = (phi_ps.getValues() * w_r - np.sum(pr_wr2_phi, axis=0)) * s_r_freq_cut
+        elif (
+            self._option == "ACCE_ABSOLU"
+        ):  # correction by pseudo-mode is not allowed for ACCE_ABSOLU in mutl_appui
+            UTMESS("F", "SEISME_10", valk=option)
+            R_c_noeud = np.zeros(phi_ps.size())
+        else:
+            R_c_noeud = (phi_ps.getValues() - np.sum(pr_wr2_phi, axis=0)) * s_r_freq_cut
 
         return R_c_noeud
 
@@ -1301,7 +1307,14 @@ class MultiAppuiRunner(BaseRunner):
                 if mode_corr == "OUI":
                     s_r_freq_cut = self._s_r_freq_cut(spectre)
                     R_c_noeud = self._corr_pseudo_mode(
-                        pr_wr2_phi_c, w_r, direction, pseudo_mode, s_r_freq_cut, l_group_no, mesh
+                        pr_wr2_phi_c,
+                        w_r,
+                        direction,
+                        pseudo_mode,
+                        s_r_freq_cut,
+                        l_group_no,
+                        nom_appui,
+                        mesh,
                     )
                     # save for INFO
                     self._pseudo[direction][nom_appui] = s_r_freq_cut
