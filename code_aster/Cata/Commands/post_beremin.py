@@ -94,6 +94,7 @@ POST_BEREMIN = MACRO(
         VOLU_REFE=SIMP(statut="o", typ="R"),
         SIGM_REFE=SIMP(statut="o", typ="R", max="**"),
         SIGM_SEUIL=SIMP(statut="f", typ="R", defaut=0.0, val_min=0.0, max="**"),
+        TYPE_SEUIL=SIMP(statut="f", typ="TXM", into=("REDUIT", "RESTREINT"), defaut="REDUIT"),
     ),
     WEIBULL_FO=FACT(
         statut="f",
@@ -109,6 +110,7 @@ POST_BEREMIN = MACRO(
         SIGM_CNV=SIMP(statut="o", typ="R"),
         SIGM_REFE=SIMP(statut="o", typ=(fonction_sdaster, cham_no_sdaster, cham_elem)),
         SIGM_SEUIL=SIMP(statut="o", typ=(fonction_sdaster, cham_no_sdaster, cham_elem)),
+        TYPE_SEUIL=SIMP(statut="f", typ="TXM", into=("REDUIT", "RESTREINT"), defaut="REDUIT"),
     ),
     METHODE_2D=FACT(
         statut="f",

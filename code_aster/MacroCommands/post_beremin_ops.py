@@ -86,6 +86,7 @@ class PostBeremin:
     _intvar_idx = _stress_idx = None
     _use_hist = _use_indiplas = _use_FO = _use_function = _use_cham = None
     _use_sigm_corr = None
+    _type_seuil = None
     _corr_resu = None
     _coef_mult = None
     _weib_params = None
@@ -257,7 +258,7 @@ class PostBeremin:
         """
 
         self._weib_params = params.copy()
-
+        self._type_seuil = params["TYPE_SEUIL"]
         if self._use_FO:
             self._weib_params["SIGM_REFE"] = [params["SIGM_REFE"]]
             self._weib_params["SIGM_SEUIL"] = [params["SIGM_SEUIL"]]
@@ -281,6 +282,10 @@ class PostBeremin:
                 else:
                     assert False
             assert sum(self._use_function.values()) + sum(self._use_cham.values()) in [0, 2]
+            if (
+                self._use_function["SIGM_SEUIL"] or self._use_cham["SIGM_SEUIL"]
+            ) and self._type_seuil == "RESTREINT":
+                UTMESS("F", "RUPTURE4_27", valk=param)
 
         if self._rout:
             for param in ["SIGM_REFE", "M", "SIGM_SEUIL"]:
@@ -420,6 +425,8 @@ class PostBeremin:
         sigma_mater = {"SIGM_REFE": sigma_refe, "SIGM_SEUIL": sigma_thr}
         sigmat = {}
         temp = None
+        val_zone_inte = 0.0
+
         if self._use_function is not None and sig1.size > 0:
             for param in ["SIGM_REFE", "SIGM_SEUIL"]:
                 if self._use_function[param]:
@@ -429,18 +436,23 @@ class PostBeremin:
                     sigmat[param].restrict(self._zone_ids)
                 if self._use_cham[param]:
                     sigmat[param] = self.build_consistant_field(idx, sigma_mater[param], sig1)
+            if self._use_function["SIGM_SEUIL"] or self._use_cham["SIGM_SEUIL"]:
+                assert self._type_seuil != "RESTREINT"
             assert abs(sigmat["SIGM_REFE"]).min() > 0.0
             sig1 /= sigmat["SIGM_REFE"]
             sig1 *= self._weib_params["SIGM_CNV"]
             sig1 -= sigmat["SIGM_SEUIL"]
 
         else:
+            # apply stress threshold
             if sigma_thr > 0.0:
-                # apply threshold
-                sig1 -= sigma_thr
+                if self._type_seuil == "REDUIT":
+                    sig1 -= sigma_thr
+                if self._type_seuil == "RESTREINT":
+                    val_zone_inte = sigma_thr
 
         def sig_filter(array):
-            return np.where(array < 0.0, 0.0, array)
+            return np.where(array < val_zone_inte, 0.0, array)
 
         sig1 = sig1.apply(sig_filter)
 

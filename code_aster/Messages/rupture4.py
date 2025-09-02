@@ -164,4 +164,9 @@ du post-traitement de la contrainte de WEIBULL.
 Veillez à définir ce champ sur tous les groupes de mailles utilisés sous le mot-clé WEIBULL(_FO).
         """
     ),
+    27: _(
+        """
+Il n'est pas possible d'utiliser TYPE_SEUIL = "RESTREINT" avec un paramètre SIGM_SEUIL fonction ou champ.
+        """
+    ),
 }
