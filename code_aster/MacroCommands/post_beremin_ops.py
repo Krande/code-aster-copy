@@ -136,6 +136,9 @@ class PostBeremin:
             group (str): Mesh group of cells to be used.
         """
         self._zone = group
+        list_grou_ma = [x[0] for x in self._result.getMesh().LIST_GROUP_MA()]
+        if group not in list_grou_ma:
+            UTMESS("F", "RUPTURE4_28", valk=group)
         self._zone_ids = self._result.getMesh().getCells(group)
 
     def set_projection_parameters(self, args):
@@ -166,6 +169,12 @@ class PostBeremin:
             if self._l_mesh_group_no_2D:
                 self._l_mesh_proj_2D = [None] * len(self._l_mesh_group_no_2D)
                 self._l_name_mesh_2D = [x for x in self._l_mesh_group_no_2D]
+                ##Check if group_no exists
+                list_group_no = [x[0] for x in self._result.getMesh().LIST_GROUP_NO()]
+                for group_no in self._l_mesh_group_no_2D:
+                    if group_no not in list_group_no:
+                        UTMESS("F", "RUPTURE4_29", valk=group_no)
+                ##Set fond fiss info
                 self.set_fondfiss_info()
                 self._groupno = True
             else:
@@ -212,22 +221,30 @@ class PostBeremin:
     def set_fondfiss_info(self):
         """Define fondfiss information (X Y Z ABSCURV ABSCURVNORM) for table output METHODE_2D"""
 
-        frontnodes = self._fondfiss.getCrackFrontNodes()
-        frontnodes = [int(x) - 1 for x in frontnodes]
-        frontpos = self._fondfiss.getCrackFrontPosition()
-        frontabscurv = self._fondfiss.getCrackFrontAbsCurv()
-        abscurvmax = max(frontabscurv)
+        ##If no fondfiss input
+        if self._fondfiss is None:
+            if len(self._l_mesh_group_no_2D) == 1:
+                self._dictfondfiss = {}
+                self._dictfondfiss[self._l_name_mesh_2D[0]] = [0.0] * 5
+            else:
+                UTMESS("F", "RUPTURE4_30")
+        else:
+            frontnodes = self._fondfiss.getCrackFrontNodes()
+            frontnodes = [int(x) - 1 for x in frontnodes]
+            frontpos = self._fondfiss.getCrackFrontPosition()
+            frontabscurv = self._fondfiss.getCrackFrontAbsCurv()
+            abscurvmax = max(frontabscurv)
 
-        self._dictfondfiss = {}
-        for group_no, nom_group_no in zip(self._l_mesh_group_no_2D, self._l_name_mesh_2D):
-            nodes = self._result.getMesh().getNodes(group_no)
-            both = set(frontnodes).intersection(nodes)
-            both = list(both)
-            indexfrontnode = frontnodes.index(both[0])
-            pos = frontpos[3 * indexfrontnode : 3 * (indexfrontnode + 1)]
-            abscurv = frontabscurv[indexfrontnode]
-            # X Y Z ABSCURV ABSCURVNORM
-            self._dictfondfiss[nom_group_no] = pos + [abscurv, abscurv / abscurvmax]
+            self._dictfondfiss = {}
+            for group_no, nom_group_no in zip(self._l_mesh_group_no_2D, self._l_name_mesh_2D):
+                nodes = self._result.getMesh().getNodes(group_no)
+                both = set(frontnodes).intersection(nodes)
+                both = list(both)
+                indexfrontnode = frontnodes.index(both[0])
+                pos = frontpos[3 * indexfrontnode : 3 * (indexfrontnode + 1)]
+                abscurv = frontabscurv[indexfrontnode]
+                # X Y Z ABSCURV ABSCURVNORM
+                self._dictfondfiss[nom_group_no] = pos + [abscurv, abscurv / abscurvmax]
 
     def use_history(self, value: bool) -> None:
         """Enable the use of history or just the current timestep.

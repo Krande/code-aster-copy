@@ -115,7 +115,6 @@ POST_BEREMIN = MACRO(
     METHODE_2D=FACT(
         statut="f",
         regles=(
-            PRESENT_PRESENT("GROUP_NO_PLAN", "FISSURE"),
             PRESENT_PRESENT("MAILLAGE_PLAN", "NOM_MAIL_MED"),
             EXCLUS("MAILLAGE_PLAN", "GROUP_NO_PLAN"),
             EXCLUS("GROUP_NO_PLAN", "NOM_MAIL_MED"),
