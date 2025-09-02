@@ -54,7 +54,7 @@ FiniteElementDescriptor::FiniteElementDescriptor( const std::string &name, const
           FiniteElementDescriptor::ConnectivityVirtualCellsExplorer( _listOfGroupsOfElements ) ) {
     if ( _parameters->exists() ) {
         _parameters->updateValuePointer();
-        if ( ( *_parameters )[1] != " " ) {
+        if ( strip( ( *_parameters )[1] ) != "" ) {
             _partition = std::make_shared< Partition >( ( *_parameters )[1] );
         }
     };
