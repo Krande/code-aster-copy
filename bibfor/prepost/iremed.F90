@@ -125,6 +125,7 @@ subroutine iremed(fileUnit, dsNameZ, lResu, &
     dsName = dsNameZ
     lfirst = .true.
     nbCmpDyna = 0
+    codret = 0
 !
     sdcarm = ' '
     if (caraElem .ne. ' ' .and. caraElem .ne. '-') then
