@@ -418,7 +418,7 @@ subroutine op0186()
         force = .false.
     end if
     call ntarch(nume_inst, model, materField, caraElem, para, &
-                sddisc, ds_inout, force, ds_algorom)
+                sddisc, ds_inout, force, ds_algorom, l_dry_=l_dry)
 !
 ! - Make observation
 !
