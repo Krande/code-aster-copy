@@ -73,7 +73,7 @@ subroutine mstget(matrix, keywordfactz, nbocc, ddlsta)
     integer(kind=8) :: llag, na, nac, nba
     integer(kind=8) :: nbb, nbl, nbliai, ncmp, nd, nt
     integer(kind=8) :: nb_node, nsc, ntc
-    integer(kind=8) :: nb_mode_appui, idx_gd, icmp, nbcmp, nb_cmp_appui, nume_cmp(6)
+    integer(kind=8) :: nb_appui, nb_mode_appui, idx_gd, icmp, nbcmp, nb_cmp_appui, nume_cmp(6)
     character(len=8) :: nom_appui
     character(len=19) :: nume_equa
     integer(kind=8), pointer :: list_equa(:) => null()
@@ -81,6 +81,7 @@ subroutine mstget(matrix, keywordfactz, nbocc, ddlsta)
     integer(kind=8), pointer :: p_deeq(:) => null()
     integer(kind=8), pointer :: list_cmp(:) => null()
     character(len=8), pointer :: p_cata_nomcmp(:) => null()
+    character(len=8), pointer :: nom_appuis(:) => null()
     character(len=16), pointer :: nom_appui_cmp(:) => null()
 !-----------------------------------------------------------------------
     call jemarq()
@@ -112,21 +113,29 @@ subroutine mstget(matrix, keywordfactz, nbocc, ddlsta)
     else if (keywordfact .eq. 'PSEUDO_MODE') then
         jind1 = lacb
         jind2 = llag
-        nb_mode_appui = 0
+        nb_appui = 0
+        AS_ALLOCATE(vk8=nom_appuis, size=nbocc)
         do iocc = 1, nbocc
             call getvtx(keywordfact, 'NOM_APPUI', iocc=iocc, nbval=0, nbret=na)
             if (na .ne. 0) then
-                nb_mode_appui = nb_mode_appui + 6
+                call getvtx(keywordfact, 'NOM_APPUI', iocc=iocc, nbval=-na, scal=nom_appui)
+                do ic = 1, nb_appui
+                    if (nom_appui .eq. nom_appuis(ic)) then
+                        call utmess('F', 'MODESTAT1_7', sk=nom_appui)
+                    end if
+                end do
+                nb_appui = nb_appui+1
+                nom_appuis(nb_appui) = nom_appui
             end if
-            ! FIXME : vérifier que le nom appui n'apparait pas 2 fois le même
         end do
-        if ( nb_mode_appui .gt. 0) then
+        AS_DEALLOCATE(vk8=nom_appuis)
+        if (nb_appui .gt. 0) then
             call dismoi('NUME_EQUA', nume_ddl, 'NUME_DDL', repk=nume_equa)
             call dismoi('NUM_GD_SI', nume_ddl, 'NUME_DDL', repi=idx_gd)
             call jeveuo(nume_equa(1:19)//'.DEEQ', 'L', vi=p_deeq)
             call jeveuo(jexnum('&CATA.GD.NOMCMP', idx_gd), 'L', vk8=p_cata_nomcmp)
             call jelira(jexnum('&CATA.GD.NOMCMP', idx_gd), 'LONMAX', nbcmp)
-            call wkvect('&&MSTGET.NOM.APPUI_CMP', 'V V K16', nb_mode_appui, vk16=nom_appui_cmp)
+            call wkvect('&&MSTGET.NOM.APPUI_CMP', 'V V K16', 6*nb_appui, vk16=nom_appui_cmp)
             nb_mode_appui = 0
         end if
     else if (keywordfact .eq. 'MODE_INTERF') then
@@ -245,8 +254,8 @@ subroutine mstget(matrix, keywordfactz, nbocc, ddlsta)
             end do
             ic = 0
             do icmp = 1, nbcmp
-                if (list_cmp(icmp) .eq. 1 ) then
-                    ic = ic + 1
+                if (list_cmp(icmp) .eq. 1) then
+                    ic = ic+1
                     ASSERT(ic .le. 6)
                     nume_cmp(ic) = icmp
                     nom_appui_cmp(nb_mode_appui+ic) = nom_appui//p_cata_nomcmp(icmp)
@@ -281,8 +290,12 @@ subroutine mstget(matrix, keywordfactz, nbocc, ddlsta)
                 imode = 0
             end if
             if (imode .gt. 0) then
-                ! FIXME : emmettre une alarme ou une erreur si le ddl est surchargé
-                ASSERT(ddlsta(ieq) .eq. 0)
+                if (ddlsta(ieq) .ne. 0) then
+                    if (nom_appui .ne. ' ' .or. ddlsta(ieq) .lt. 0) then
+                        call rgndas(nume_ddl, ieq, l_print=.true.)
+                        call utmess('E', 'MODESTAT1_6')
+                    end if
+                end if
                 ddlsta(ieq) = imode
                 if (nom_appui .ne. ' ') then
                     icmp = p_deeq(2*(ieq-1)+2)
@@ -295,7 +308,7 @@ subroutine mstget(matrix, keywordfactz, nbocc, ddlsta)
             end if
         end do
         if (nom_appui .ne. ' ') then
-            nb_mode_appui = nb_mode_appui + nb_cmp_appui
+            nb_mode_appui = nb_mode_appui+nb_cmp_appui
         end if
 !
 !        --- NETTOYAGE ---

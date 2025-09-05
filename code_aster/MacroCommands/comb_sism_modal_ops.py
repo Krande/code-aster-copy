@@ -552,12 +552,9 @@ class Resu:
         self._field_by_option = {}
 
     def _incr_index(self):
-        # FIXME : est-ce toujours utile ?
+        """resize sd result"""
         self._nbIndexes += 1
-        if self._nbIndexes == 1:
-            self._result.allocate(self._nbIndexes)
-        else:
-            self._result.resize(self._nbIndexes)
+        self._result.resize(self._nbIndexes)
 
     def _setField(self, option, values, name):
         """Add field to result
@@ -1159,13 +1156,14 @@ class MultiAppuiRunner(BaseRunner):
             phi_ps = l_phi_ps[0].copy()
             for x in l_phi_ps[1:]:
                 phi_ps += x
-            # get static mode for component (noeud_cmp)
         elif appui_cmp in ps_noeud_cmps:
             ps_nume_mode = ps_nume_modes[ps_noeud_cmps.index(appui_cmp)]
             phi_ps = pseudo_mode.getField(self._option, ps_nume_mode)
         else:
-            # FIXME : noeud_cmp n'est pas correct pour ce message
-            UTMESS("F", "SEISME_66", valk=(noeud_cmp, "PSEUDO_MODE"))
+            for noeud_cmp in l_noeud_cmp:
+                if noeud_cmp not in ps_noeud_cmps:
+                    UTMESS("E", "SEISME_66", valk=(noeud_cmp, "PSEUDO_MODE"))
+            UTMESS("F", "SEISME_68", valk=(nom_appui, direction, appui_cmp))
 
         if self._option == "VITE":  # pseudo-mode is not allowed
             UTMESS("F", "SEISME_10", valk=option)

@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -43,6 +43,19 @@ Pour le mot clé PSEUDO_MODE, le degré de liberté défini ci-dessus est de typ
     5: _(
         """
 Pour le mot clé MODE_INTERF, le degré de liberté défini ci-dessus n'est pas bloqué.
+"""
+    ),
+    6: _(
+        """
+Pour le mot clé PSEUDO_MODE avec NOM_APPUI, le degré de liberté défini ci-dessus est présent 
+dans 2 occurrences.
+
+Vous utilisez le mot clé NOM_APPUI, un degré de liberté ne peux appartenir qu'à un seul appui.
+"""
+    ),
+    7: _(
+        """
+NOM_APPUI %(k1)s apparaît dans plusieurs occurrences du mot clé PSEUDO_MODE.
 """
     ),
 }

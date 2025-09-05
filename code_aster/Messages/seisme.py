@@ -188,6 +188,14 @@ Conseil:
         """Il est inutile de calculer la réponse d'entraînement pour l'option %(k1)s.
 """
     ),
+    68: _(
+        """Il manque des modes pour effectuer la correction statique sur l'appui %(k1)s, direction %(k2)s.
+
+Vérifiez que la base modale fournie sous le mot clé PSEUDO_MODES contient :
+    - soit un pseudo-mode pour chaque noeud de l'appui dans la direction %(k2)s (nommés ci-dessus)
+    - soit un unique pseudo-mode pour l'appui dans la direction X (nommé '%(k3)s')
+"""
+    ),
     77: _(
         """  Les coordonnées du noeud de référence COOR_REFE sont : ( %(r1).2f   %(r2).2f   %(r3).2f )
 """

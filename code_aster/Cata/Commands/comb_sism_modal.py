@@ -109,7 +109,7 @@ COMB_SISM_MODAL = MACRO(
             ECHELLE=SIMP(statut="f", typ="R", defaut=1.0),
             NATURE=SIMP(statut="f", typ="TXM", defaut="ACCE", into=("ACCE", "VITE", "DEPL")),
             CORR_FREQ=SIMP(statut="f", typ="TXM", into=("OUI", "NON"), defaut="NON"),
-            NOM_APPUI=SIMP(statut="o", typ="TXM", max=1),
+            NOM_APPUI=SIMP(statut="o", typ="TXM", max=1, validators=LongStr(1, 8)),
         ),
     ),
     b_spectre_enveloppe=BLOC(
@@ -124,7 +124,7 @@ COMB_SISM_MODAL = MACRO(
             ECHELLE=SIMP(statut="f", typ="R", defaut=1.0),
             NATURE=SIMP(statut="f", typ="TXM", defaut="ACCE", into=("ACCE", "VITE", "DEPL")),
             CORR_FREQ=SIMP(statut="f", typ="TXM", into=("OUI", "NON"), defaut="NON"),
-            NOM_APPUI=SIMP(statut="o", typ="TXM", max=1),
+            NOM_APPUI=SIMP(statut="o", typ="TXM", max=1, validators=LongStr(1, 8)),
         ),
     ),
     # ---- chargement : deplacement du support en cas de multi_appui
@@ -133,7 +133,7 @@ COMB_SISM_MODAL = MACRO(
         max="**",
         regles=(AU_MOINS_UN("DX", "DY", "DZ")),
         MODE_STAT=SIMP(statut="o", typ=mode_meca),
-        NOM_APPUI=SIMP(statut="o", typ="TXM", max=1),
+        NOM_APPUI=SIMP(statut="o", typ="TXM", max=1, validators=LongStr(1, 8)),
         DX=SIMP(statut="f", typ="R", max=1),
         DY=SIMP(statut="f", typ="R", max=1),
         DZ=SIMP(statut="f", typ="R", max=1),
