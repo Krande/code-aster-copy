@@ -40,7 +40,6 @@ def mate_homo_ops(self, **kwargs):
     ls_affe = kwargs.get("AFFE")
     ls_varc = kwargs.get("VARC")
     type_homo = kwargs.get("TYPE_HOMO")
-    coef_cisa = 5 / 6 if kwargs.get("CISA") in ("REISSNER",) else 1.0
 
     affe_all = any("TOUT" in i for i in ls_affe)
     affe_groups = list(
@@ -93,7 +92,6 @@ def mate_homo_ops(self, **kwargs):
             varc_name,
             varc_values,
             ep_ver,
-            coef_cisa,
             **elas_fields,
             **ther_fields,
         )
@@ -110,7 +108,6 @@ def mate_homo_ops(self, **kwargs):
             varc_name,
             varc_values,
             ep_ver,
-            coef_cisa,
             **elas_fields,
             **ther_fields,
         )
