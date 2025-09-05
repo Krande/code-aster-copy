@@ -140,6 +140,7 @@ module crea_maillage_module
         integer(kind=8) :: nb_total_nodes = 0, nb_total_cells = 0
         integer(kind=8) :: max_nodes = 0, max_edges = 0, max_faces = 0, max_volumes = 0
         integer(kind=8) :: max_cells = 0, dim_mesh = 0, nb_layer = 0, lastLayerSize = 0
+        integer(kind=8) :: nb_edges_dege = 0, nb_faces_dege = 0
 !
         integer(kind=4), allocatable :: lastGhostsLayer(:)
 
@@ -236,14 +237,14 @@ contains
 !
         implicit none
 !
-        class(Mmesh), intent(in) :: this
+        class(Mmesh), intent(inout) :: this
         integer(kind=8), intent(in) :: nno_sort(3), nno
         aster_logical, intent(out) :: find
         integer(kind=8), intent(out) :: edge_id
 !
 ! Find edge_id of edges
 !
-        integer(kind=8) :: i_edge, nb_edges, edge_i
+        integer(kind=8) :: i_edge, nb_edges, edge_i, i_node
         aster_logical :: ok
 !
         find = ASTER_FALSE
@@ -259,15 +260,24 @@ contains
                 else
                     if (nno_sort(2) .ne. this%edges(edge_i)%nno_sort(2)) then
                         ok = ASTER_FALSE
-                    elseif (nno > 2) then
-                        if (nno_sort(3) .ne. this%edges(edge_i)%nno_sort(3)) then
-                            ok = ASTER_FALSE
-                        end if
                     end if
                 end if
                 if (ok) then
-                    find = ASTER_TRUE
-                    edge_id = edge_i
+                    do i_node = 1, nno
+                        if (nno_sort(i_node) .ne. this%edges(edge_i)%nno_sort(i_node)) then
+                            this%nb_edges_dege = this%nb_edges_dege+1
+                            call utmess('E', 'MODELISA4_11', &
+                                        sk=this%converter%name(this%edges(edge_i)%type), &
+                                        ni=4, &
+                                        vali=[nno_sort(1:nno), this%edges(edge_i)%nno_sort(3)])
+                            ok = ASTER_FALSE
+                            exit
+                        end if
+                    end do
+                    if (ok) then
+                        find = ASTER_TRUE
+                        edge_id = edge_i
+                    end if
                     exit
                 end if
             end do
@@ -283,11 +293,12 @@ contains
 !
         implicit none
 !
-        class(Mmesh), intent(in) ::this
+        class(Mmesh), intent(inout) ::this
         integer(kind=8), intent(in) :: nnos, nno
         integer(kind=8), intent(in) :: nno_sort(9)
         aster_logical, intent(out) :: find
         integer(kind=8), intent(out) :: face_id
+        character(len=8) :: typ_ori
 !
 ! Find face_id of face
 !
@@ -303,7 +314,7 @@ contains
                 face_i = this%nodes(nno_sort(1))%faces(i_face)
                 if (nnos == this%faces(face_i)%nnos) then
                     ok = ASTER_TRUE
-                    do i_node = 1, nno
+                    do i_node = 1, nnos
                         if (nno_sort(i_node) .ne. this%faces(face_i)%nno_sort(i_node)) then
                             ok = ASTER_FALSE
                             exit
@@ -313,6 +324,31 @@ contains
                     ok = ASTER_FALSE
                 end if
                 if (ok) then
+                    do i_node = 1, nno
+                        if (nno_sort(i_node) .ne. this%faces(face_i)%nno_sort(i_node)) then
+                            this%nb_faces_dege = this%nb_faces_dege+1
+                            select case (nno)
+                            case (3)
+                                typ_ori = "TRIA3"
+                            case (4)
+                                typ_ori = "QUAD4"
+                            case (6)
+                                typ_ori = "TRIA6"
+                            case (7)
+                                typ_ori = "TRIA7"
+                            case (8)
+                                typ_ori = "QUAD8"
+                            case (9)
+                                typ_ori = "QUAD9"
+                            case default
+                                ASSERT(ASTER_FALSE)
+                            end select
+                            call utmess('E', 'MODELISA4_12', &
+                                        sk=typ_ori, ni=nnos, vali=nno_sort(1:nnos))
+                            ok = ASTER_FALSE
+                            exit
+                        end if
+                    end do
                     find = ASTER_TRUE
                     face_id = face_i
                     exit
@@ -556,7 +592,7 @@ contains
         integer(kind=8), pointer :: v_noex(:) => null()
         integer(kind=8), pointer :: v_nblg(:) => null()
         real(kind=8), pointer :: v_coor(:) => null()
-        integer(kind=8) :: nb_elem_mesh, nb_node_mesh, i_node
+        integer(kind=8) :: nb_elem_mesh, nb_node_mesh, i_node, iret
         integer(kind=8) :: i_cell, nno, node_id, owner, i_type, cell_type
         real(kind=8):: start, end
         integer(kind=8), allocatable, dimension(:, :) :: list_type_cells
@@ -602,9 +638,12 @@ contains
         if (this%isHPC) then
             call jeveuo(mesh_in//'.NOEX', 'L', vi=v_noex)
             joints = mesh_in//".JOIN"
-            call jeveuo(joints//'.NBLG', 'L', vi=v_nblg)
-            this%nb_layer = v_nblg(1)
-            ASSERT(this%nb_layer > 0)
+            call jeexin(joints//'.NBLG', iret)
+            if (iret > 0) then
+                call jeveuo(joints//'.NBLG', 'L', vi=v_nblg)
+                this%nb_layer = v_nblg(1)
+                ASSERT(this%nb_layer > 0)
+            end if
         end if
 !
 ! --- Fill mesh
@@ -690,6 +729,11 @@ contains
         if (this%info >= 2) then
             call cpu_time(end)
             print *, "... in ", end-start, " seconds."
+        end if
+!
+        if (this%nb_edges_dege > 0 .or. this%nb_faces_dege > 0) then
+            call this%clean()
+            call utmess('F', "MODELISA4_10")
         end if
 !
         call jedema()

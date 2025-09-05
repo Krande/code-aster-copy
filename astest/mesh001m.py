@@ -21,29 +21,63 @@
 from code_aster.Commands import *
 from code_aster import CA
 
-CA.init("--test", ERREUR=_F(ALARME="EXCEPTION"))
+CA.init("--test", ERREUR=_F(ALARME="EXCEPTION", ERREUR_F="EXCEPTION"))
 
 test = CA.TestCase()
 
-mesh_3d = LIRE_MAILLAGE(FORMAT="ASTER", UNITE=20)
+fmt_raison = (
+    "-" * 80
+    + """
 
-mesh_3d_raf = CREA_MAILLAGE(MAILLAGE=mesh_3d, RAFFINEMENT=_F(TOUT="OUI", NIVEAU=1), INFO=1)
+   Exception interceptee
+   Message : %s
 
-test.assertEqual(mesh_3d_raf.getDimension(), 3)
-test.assertTrue(mesh_3d_raf.isQuadratic())
-test.assertEqual(mesh_3d_raf.getNumberOfNodes(), 149)
-test.assertEqual(mesh_3d_raf.getNumberOfCells(), 88)
+"""
+    + "-" * 80
+    + "\n"
+)
 
+is_ok = 0
+try:
+    mesh_3d = LIRE_MAILLAGE(FORMAT="ASTER", UNITE=20)
+except CA.AsterError as err:
+    print(fmt_raison % str(err))
+    # on verifie que l'erreur fatale est bien celle que l'on attendait :
+    if err.id_message == "MODELISA4_10":
+        is_ok = 1
 
-mesh_2d = LIRE_MAILLAGE(FORMAT="ASTER", UNITE=21)
+TAB1 = CREA_TABLE(
+    LISTE=(_F(PARA="TEST", TYPE_K="K8", LISTE_K="VALEUR  "), _F(PARA="BOOLEEN", LISTE_I=is_ok))
+)
+TEST_TABLE(
+    REFERENCE="ANALYTIQUE",
+    VALE_CALC_I=1,
+    VALE_REFE_I=1,
+    NOM_PARA="BOOLEEN",
+    TABLE=TAB1,
+    FILTRE=_F(NOM_PARA="TEST", VALE_K="VALEUR  "),
+)
 
-mesh_2d_raf = CREA_MAILLAGE(MAILLAGE=mesh_2d, RAFFINEMENT=_F(TOUT="OUI", NIVEAU=1), INFO=1)
+is_ok = 0
+try:
+    mesh_2d = LIRE_MAILLAGE(FORMAT="ASTER", UNITE=21)
+except CA.AsterError as err:
+    print(fmt_raison % str(err))
+    # on verifie que l'erreur fatale est bien celle que l'on attendait :
+    if err.id_message == "MODELISA4_10":
+        is_ok = 1
 
-test.assertEqual(mesh_2d_raf.getDimension(), 2)
-test.assertTrue(mesh_2d_raf.isQuadratic())
-test.assertEqual(mesh_2d_raf.getNumberOfNodes(), 40)
-test.assertEqual(mesh_2d_raf.getNumberOfCells(), 20)
-
+TAB1 = CREA_TABLE(
+    LISTE=(_F(PARA="TEST", TYPE_K="K8", LISTE_K="VALEUR  "), _F(PARA="BOOLEEN", LISTE_I=is_ok))
+)
+TEST_TABLE(
+    REFERENCE="ANALYTIQUE",
+    VALE_CALC_I=1,
+    VALE_REFE_I=1,
+    NOM_PARA="BOOLEEN",
+    TABLE=TAB1,
+    FILTRE=_F(NOM_PARA="TEST", VALE_K="VALEUR  "),
+)
 
 test.printSummary()
 
