@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -252,15 +252,20 @@ Risques et conseils :
     ),
     33: _(
         """
-Le discret avec le matériau %(k1)s/CONTACT="COIN_2D" et le comportement %(k2)s n'est pas dans
-un des plans XY, XZ ou YZ.
+Le discret avec le matériau %(k1)s/CONTACT="COIN_2D" et
+le comportement %(k2)s
+n'est pas dans un des plans XY, XZ ou YZ.
 """
     ),
     34: _(
         """
-Le discret avec le matériau %(k1)s/CONTACT="COIN_2D" et le comportement %(k2)s est sur un
-des axes X, Y ou Z.
-Dans ce cas, il faut utiliser CONTACT="1D" (option par défaut)
+Le discret avec le matériau %(k1)s/CONTACT="COIN_2D" et
+le comportement %(k2)s
+est soit :
+-   Sur un des axes X, Y ou Z.
+        Dans ce cas, il faut utiliser CONTACT="1D" (option par défaut)
+-   Dans plusieurs plans.
+        Dans ce cas il faut adapter PRECISION.
 """
     ),
     35: _(
@@ -274,6 +279,15 @@ gère seulement CONTACT=%(k3)s.
 Pour le discret avec le matériau %(k1)s, le comportement %(k2)s, de CONTACT=%(k3)s.
 Les paramètres suivant ne sont pas pris en compte :
     DIST_1, DIST_2, JEU, RIGI_TAN, AMOR_NOR, AMOR_TAN, COULOMB
+"""
+    ),
+    37: _(
+        """
+Pour le discret de CONTACT=%(k3)s affecté par :
+- le matériau %(k1)s,
+- le comportement %(k2)s,
+
+Pour l'option PRECISION c'est 3 valeurs.
 """
     ),
     40: _(
