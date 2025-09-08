@@ -596,11 +596,6 @@ class _RASPENSolver:
                 self.locKsp.setOperators(self.Jloc, self.Jploc)
             Sol = self.locSol.copy()
             self.DDPart.restrict(Sol)
-            Y.set(0.0)
-            self.vecscatter(Sol, Y, mode="reverse", addv=True)
-            Yd = Y.duplicate()
-            self.originalFunction(Y, Yd)
-            print("Schwarz moved residual:", Yd.norm(), flush=True)
             # Local correction
             C = self.locSol0 - self.locSol
             # Add inner nonlinear iterations
