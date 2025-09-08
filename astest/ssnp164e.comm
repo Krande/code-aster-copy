@@ -72,19 +72,10 @@ Bn, Bt = CalcBnBt(CC, TT)
 # ----------------------------------------------------------------------------------
 ###################################################################################
 
-MA = LIRE_MAILLAGE(FORMAT="ASTER", INFO=1, UNITE=20, VERI_MAIL=_F(APLAT=0.001, VERIF="NON"))
+MA = LIRE_MAILLAGE(FORMAT="MED", INFO=1, UNITE=20, VERI_MAIL=_F(APLAT=0.001, VERIF="NON"))
 # MA_TMP=LIRE_MAILLAGE(FORMAT="ASTER",)
 # MA=CREA_MAILLAGE(MAILLAGE  = MA_TMP, LINE_QUAD = _F(TOUT='OUI'),INFO=2)
 
-MA = DEFI_GROUP(
-    reuse=MA,
-    MAILLAGE=MA,
-    CREA_GROUP_NO=(
-        _F(GROUP_MA="DROITE", NOM="DROITE"),
-        _F(GROUP_MA="ENCAS", NOM="ENCAS"),
-        _F(GROUP_MA="AVANT", NOM="AVANT"),
-    ),
-)
 
 MA = MODI_MAILLAGE(reuse=MA, MAILLAGE=MA, ORIE_PEAU=_F(GROUP_MA_PEAU=("DROITE", "HAUT", "BAS")))
 
