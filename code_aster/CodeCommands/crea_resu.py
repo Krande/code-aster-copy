@@ -1,6 +1,6 @@
 # coding: utf-8
 
-# Copyright (C) 1991 - 2024  EDF R&D                www.code-aster.org
+# Copyright (C) 1991 - 2025  EDF R&D                www.code-aster.org
 #
 # This file is part of Code_Aster.
 #
@@ -38,6 +38,7 @@ from ..Objects import (
     MultipleElasticResult,
     NonLinearResult,
     ThermalResult,
+    DryingResult,
 )
 from ..Supervis import ExecuteCommand
 from ..Utilities import force_list
@@ -64,6 +65,8 @@ class ResultCreator(ExecuteCommand):
                 self._result = LoadResult()
             elif typ == "EVOL_THER":
                 self._result = ThermalResult()
+            elif typ == "EVOL_SECH":
+                self._result = DryingResult()
             elif typ == "EVOL_NOLI":
                 self._result = NonLinearResult()
             elif typ == "EVOL_ELAS":

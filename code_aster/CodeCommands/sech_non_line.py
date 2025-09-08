@@ -19,14 +19,14 @@
 
 # person_in_charge: mickael.abbas at edf.fr
 
-from ..Objects import ThermalResult
+from ..Objects import DryingResult
 from ..Supervis import ExecuteCommand
 from ..Helpers import adapt_increment_init
 
 
-class NonLinearThermalAnalysisFort(ExecuteCommand):
-    """Command that creates the :class:`~code_aster.Objects.ThermalResult` by assigning
-    finite elements on a :class:`~code_aster.Objects.ThermalResult`."""
+class NonLinearDryingAnalysis(ExecuteCommand):
+    """Command that creates the :class:`~code_aster.Objects.DryingResult` by assigning
+    finite elements on a :class:`~code_aster.Objects.DryingResult`."""
 
     command_name = "SECH_NON_LINE"
 
@@ -38,7 +38,7 @@ class NonLinearThermalAnalysisFort(ExecuteCommand):
                 in place.
         """
         # use initial time from ETAT_INIT
-        adapt_increment_init(keywords, "EVOL_THER")
+        adapt_increment_init(keywords, "EVOL_SECH")
 
     def create_result(self, keywords):
         """Initialize the result.
@@ -49,7 +49,7 @@ class NonLinearThermalAnalysisFort(ExecuteCommand):
         if "reuse" in keywords:
             self._result = keywords["reuse"]
         else:
-            self._result = ThermalResult()
+            self._result = DryingResult()
 
     def post_exec(self, keywords):
         """Execute the command.
@@ -71,9 +71,9 @@ class NonLinearThermalAnalysisFort(ExecuteCommand):
             if field in etat:
                 fnds.append(etat[field].getDescription())
 
-            if "EVOL_THER" in etat:
-                feds += etat["EVOL_THER"].getFiniteElementDescriptors()
-                fnds += etat["EVOL_THER"].getEquationNumberings()
+            if "EVOL_SECH" in etat:
+                feds += etat["EVOL_SECH"].getFiniteElementDescriptors()
+                fnds += etat["EVOL_SECH"].getEquationNumberings()
 
         self._result.build(feds, fnds, keywords.get("EXCIT"))
 
@@ -88,8 +88,8 @@ class NonLinearThermalAnalysisFort(ExecuteCommand):
         self.remove_dependencies(keywords, "MODELE")
         self.remove_dependencies(keywords, "CHAM_MATER")
         self.remove_dependencies(keywords, "CARA_ELEM")
-        self.remove_dependencies(keywords, "ETAT_INIT", ("EVOL_THER, 'CHAM_NO"))
+        self.remove_dependencies(keywords, "ETAT_INIT", ("EVOL_SECH, 'CHAM_NO"))
         self.remove_dependencies(keywords, "EXCIT", ("CHARGE", "FONC_MULT"))
 
 
-SECH_NON_LINE = NonLinearThermalAnalysisFort.run
+SECH_NON_LINE = NonLinearDryingAnalysis.run

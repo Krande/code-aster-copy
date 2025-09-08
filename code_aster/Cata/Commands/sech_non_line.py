@@ -141,9 +141,9 @@ SECH_NON_LINE = OPER(
         # -------------------------------------------------------------------
         ETAT_INIT=FACT(
             statut="o",
-            regles=(EXCLUS("EVOL_THER", "CHAM_NO", "VALE", "STAT"),),
+            regles=(EXCLUS("EVOL_SECH", "CHAM_NO", "VALE", "STAT"),),
             STAT=SIMP(statut="f", typ="TXM", into=("OUI",)),
-            EVOL_THER=SIMP(statut="f", typ=evol_ther),
+            EVOL_SECH=SIMP(statut="f", typ=evol_sech),
             CHAM_NO=SIMP(statut="f", typ=cham_no_sdaster),
             VALE=SIMP(statut="f", typ="R"),
             b_evol=BLOC(

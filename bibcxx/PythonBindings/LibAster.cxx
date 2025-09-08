@@ -62,6 +62,7 @@
 #include "PythonBindings/DebugInterface.h"
 #include "PythonBindings/DirichletBCInterface.h"
 #include "PythonBindings/DiscreteComputationInterface.h"
+#include "PythonBindings/DryingResultInterface.h"
 #include "PythonBindings/DynamicMacroElementInterface.h"
 #include "PythonBindings/ElasticFourierResultInterface.h"
 #include "PythonBindings/ElasticResultInterface.h"
@@ -305,6 +306,7 @@ PYBIND11_MODULE( libaster, mod ) {
     exportFluidStructureModalBasisToPython( mod );
     exportGeneralizedModeResultToPython( mod );
     exportMGISBehaviourToPython( mod );
+    exportDryingResultToPython( mod );
 
 #ifdef ASTER_HAVE_MPI
     /* These objects must be declared in ObjectsExt
