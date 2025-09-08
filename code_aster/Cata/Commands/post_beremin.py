@@ -69,7 +69,7 @@ POST_BEREMIN = MACRO(
         ),
     ),
     HIST_MAXI=SIMP(
-        statut="f", typ="TXM", into=("OUI", "NON"), defaut="OUI", fr=tr("Maximum temporel ou pas")
+        statut="f", typ="TXM", into=("OUI", "NON"), defaut="NON", fr=tr("Maximum temporel ou pas")
     ),
     SIGM_MAXI=SIMP(
         statut="f", typ=CO, fr=tr("Maximum temporel de la contrainte principale majeure")
@@ -92,8 +92,9 @@ POST_BEREMIN = MACRO(
         ),
         M=SIMP(statut="o", typ="R", max="**"),
         VOLU_REFE=SIMP(statut="o", typ="R"),
-        SIGM_REFE=SIMP(statut="o", typ="R", max="**"),
+        SIGM_REFE=SIMP(statut="f", typ="R", max="**", defaut=0.0),
         SIGM_SEUIL=SIMP(statut="f", typ="R", defaut=0.0, val_min=0.0, max="**"),
+        TYPE_SEUIL=SIMP(statut="f", typ="TXM", into=("REDUIT", "RESTREINT"), defaut="REDUIT"),
     ),
     WEIBULL_FO=FACT(
         statut="f",
@@ -106,14 +107,14 @@ POST_BEREMIN = MACRO(
         ),
         M=SIMP(statut="o", typ="R", max="**"),
         VOLU_REFE=SIMP(statut="o", typ="R"),
-        SIGM_CNV=SIMP(statut="o", typ="R"),
-        SIGM_REFE=SIMP(statut="o", typ=(fonction_sdaster, cham_no_sdaster, cham_elem)),
-        SIGM_SEUIL=SIMP(statut="o", typ=(fonction_sdaster, cham_no_sdaster, cham_elem)),
+        SIGM_CNV=SIMP(statut="f", typ="R", defaut=0.0),
+        SIGM_REFE=SIMP(statut="f", typ=(fonction_sdaster, cham_no_sdaster, cham_elem)),
+        SIGM_SEUIL=SIMP(statut="f", typ=(fonction_sdaster, cham_no_sdaster, cham_elem)),
+        TYPE_SEUIL=SIMP(statut="f", typ="TXM", into=("REDUIT", "RESTREINT"), defaut="REDUIT"),
     ),
     METHODE_2D=FACT(
         statut="f",
         regles=(
-            PRESENT_PRESENT("GROUP_NO_PLAN", "FISSURE"),
             PRESENT_PRESENT("MAILLAGE_PLAN", "NOM_MAIL_MED"),
             EXCLUS("MAILLAGE_PLAN", "GROUP_NO_PLAN"),
             EXCLUS("GROUP_NO_PLAN", "NOM_MAIL_MED"),

@@ -37,7 +37,14 @@ import numpy as np
 import tempfile
 
 from ..Cata.Syntax import _F
-from ..CodeCommands import CALC_CHAM_ELEM, CALC_CHAMP, CREA_TABLE, CALC_TABLE, DEFI_FICHIER
+from ..CodeCommands import (
+    CALC_CHAM_ELEM,
+    CALC_CHAMP,
+    CREA_TABLE,
+    CALC_TABLE,
+    DEFI_FICHIER,
+    DEFI_CONSTANTE,
+)
 from ..CodeCommands import IMPR_RESU
 from ..Objects import FieldOnCellsReal, NonLinearResult, Table, Model, Function, FieldOnNodesReal
 from ..Utilities import logger, disable_fpe, no_new_attributes
@@ -86,6 +93,7 @@ class PostBeremin:
     _intvar_idx = _stress_idx = None
     _use_hist = _use_indiplas = _use_FO = _use_function = _use_cham = None
     _use_sigm_corr = None
+    _type_seuil = None
     _corr_resu = None
     _coef_mult = None
     _weib_params = None
@@ -128,6 +136,9 @@ class PostBeremin:
             group (str): Mesh group of cells to be used.
         """
         self._zone = group
+        list_grou_ma = [x[0] for x in self._result.getMesh().LIST_GROUP_MA()]
+        if group not in list_grou_ma:
+            UTMESS("F", "RUPTURE4_28", valk=group)
         self._zone_ids = self._result.getMesh().getCells(group)
 
     def set_projection_parameters(self, args):
@@ -158,6 +169,12 @@ class PostBeremin:
             if self._l_mesh_group_no_2D:
                 self._l_mesh_proj_2D = [None] * len(self._l_mesh_group_no_2D)
                 self._l_name_mesh_2D = [x for x in self._l_mesh_group_no_2D]
+                ##Check if group_no exists
+                list_group_no = [x[0] for x in self._result.getMesh().LIST_GROUP_NO()]
+                for group_no in self._l_mesh_group_no_2D:
+                    if group_no not in list_group_no:
+                        UTMESS("F", "RUPTURE4_29", valk=group_no)
+                ##Set fond fiss info
                 self.set_fondfiss_info()
                 self._groupno = True
             else:
@@ -204,22 +221,30 @@ class PostBeremin:
     def set_fondfiss_info(self):
         """Define fondfiss information (X Y Z ABSCURV ABSCURVNORM) for table output METHODE_2D"""
 
-        frontnodes = self._fondfiss.getCrackFrontNodes()
-        frontnodes = [int(x) - 1 for x in frontnodes]
-        frontpos = self._fondfiss.getCrackFrontPosition()
-        frontabscurv = self._fondfiss.getCrackFrontAbsCurv()
-        abscurvmax = max(frontabscurv)
+        ##If no fondfiss input
+        if self._fondfiss is None:
+            if len(self._l_mesh_group_no_2D) == 1:
+                self._dictfondfiss = {}
+                self._dictfondfiss[self._l_name_mesh_2D[0]] = [0.0] * 5
+            else:
+                UTMESS("F", "RUPTURE4_30")
+        else:
+            frontnodes = self._fondfiss.getCrackFrontNodes()
+            frontnodes = [int(x) - 1 for x in frontnodes]
+            frontpos = self._fondfiss.getCrackFrontPosition()
+            frontabscurv = self._fondfiss.getCrackFrontAbsCurv()
+            abscurvmax = max(frontabscurv)
 
-        self._dictfondfiss = {}
-        for group_no, nom_group_no in zip(self._l_mesh_group_no_2D, self._l_name_mesh_2D):
-            nodes = self._result.getMesh().getNodes(group_no)
-            both = set(frontnodes).intersection(nodes)
-            both = list(both)
-            indexfrontnode = frontnodes.index(both[0])
-            pos = frontpos[3 * indexfrontnode : 3 * (indexfrontnode + 1)]
-            abscurv = frontabscurv[indexfrontnode]
-            # X Y Z ABSCURV ABSCURVNORM
-            self._dictfondfiss[nom_group_no] = pos + [abscurv, abscurv / abscurvmax]
+            self._dictfondfiss = {}
+            for group_no, nom_group_no in zip(self._l_mesh_group_no_2D, self._l_name_mesh_2D):
+                nodes = self._result.getMesh().getNodes(group_no)
+                both = set(frontnodes).intersection(nodes)
+                both = list(both)
+                indexfrontnode = frontnodes.index(both[0])
+                pos = frontpos[3 * indexfrontnode : 3 * (indexfrontnode + 1)]
+                abscurv = frontabscurv[indexfrontnode]
+                # X Y Z ABSCURV ABSCURVNORM
+                self._dictfondfiss[nom_group_no] = pos + [abscurv, abscurv / abscurvmax]
 
     def use_history(self, value: bool) -> None:
         """Enable the use of history or just the current timestep.
@@ -257,23 +282,34 @@ class PostBeremin:
         """
 
         self._weib_params = params.copy()
+        self._type_seuil = params["TYPE_SEUIL"]
+        assert self._type_seuil in ["RESTREINT", "REDUIT"]
 
         if self._use_FO:
-            self._weib_params["SIGM_REFE"] = [params["SIGM_REFE"]]
-            self._weib_params["SIGM_SEUIL"] = [params["SIGM_SEUIL"]]
+
+            ##Set default values for SIGM_REFE and SIGM_SEUIL
+            if params["SIGM_REFE"] is None:
+                self._weib_params["SIGM_REFE"] = [DEFI_CONSTANTE(VALE=1.0)]
+            else:
+                self._weib_params["SIGM_REFE"] = [params["SIGM_REFE"]]
+            if params["SIGM_SEUIL"] is None:
+                self._weib_params["SIGM_SEUIL"] = [DEFI_CONSTANTE(VALE=0.0)]
+            else:
+                self._weib_params["SIGM_SEUIL"] = [params["SIGM_SEUIL"]]
 
             self._use_function = {"SIGM_REFE": False, "SIGM_SEUIL": False}
             self._use_cham = {"SIGM_REFE": False, "SIGM_SEUIL": False}
             for param in ["SIGM_REFE", "SIGM_SEUIL"]:
-                if type(params[param]) is Function:
+                if params[param] is None or type(params[param]) is Function:
                     self._use_function[param] = True
-                    assert params[param].Parametres()["NOM_PARA"] in [
-                        "TEMP",
-                        "X",
-                        "Y",
-                        "Z",
-                        "TOUTPARA",
-                    ]
+                    if type(params[param]) is Function:
+                        assert params[param].Parametres()["NOM_PARA"] in [
+                            "TEMP",
+                            "X",
+                            "Y",
+                            "Z",
+                            "TOUTPARA",
+                        ]
                 elif type(params[param]) in [FieldOnNodesReal, FieldOnCellsReal]:
                     if "X1" not in params[param].getComponents():
                         UTMESS("F", "RUPTURE4_24", valk=param)
@@ -281,6 +317,10 @@ class PostBeremin:
                 else:
                     assert False
             assert sum(self._use_function.values()) + sum(self._use_cham.values()) in [0, 2]
+            if (
+                self._use_function["SIGM_SEUIL"] or self._use_cham["SIGM_SEUIL"]
+            ) and self._type_seuil == "RESTREINT":
+                UTMESS("F", "RUPTURE4_27", valk=param)
 
         if self._rout:
             for param in ["SIGM_REFE", "M", "SIGM_SEUIL"]:
@@ -420,6 +460,8 @@ class PostBeremin:
         sigma_mater = {"SIGM_REFE": sigma_refe, "SIGM_SEUIL": sigma_thr}
         sigmat = {}
         temp = None
+        val_zone_inte = 0.0
+
         if self._use_function is not None and sig1.size > 0:
             for param in ["SIGM_REFE", "SIGM_SEUIL"]:
                 if self._use_function[param]:
@@ -429,18 +471,24 @@ class PostBeremin:
                     sigmat[param].restrict(self._zone_ids)
                 if self._use_cham[param]:
                     sigmat[param] = self.build_consistant_field(idx, sigma_mater[param], sig1)
+            if self._use_function["SIGM_SEUIL"] or self._use_cham["SIGM_SEUIL"]:
+                assert self._type_seuil != "RESTREINT"
             assert abs(sigmat["SIGM_REFE"]).min() > 0.0
             sig1 /= sigmat["SIGM_REFE"]
-            sig1 *= self._weib_params["SIGM_CNV"]
+            if self._weib_params["SIGM_CNV"] > 0.0:
+                sig1 *= self._weib_params["SIGM_CNV"]
             sig1 -= sigmat["SIGM_SEUIL"]
 
         else:
+            # apply stress threshold
             if sigma_thr > 0.0:
-                # apply threshold
-                sig1 -= sigma_thr
+                if self._type_seuil == "REDUIT":
+                    sig1 -= sigma_thr
+                if self._type_seuil == "RESTREINT":
+                    val_zone_inte = sigma_thr
 
         def sig_filter(array):
-            return np.where(array < 0.0, 0.0, array)
+            return np.where(array < val_zone_inte, 0.0, array)
 
         sig1 = sig1.apply(sig_filter)
 
@@ -668,7 +716,10 @@ class PostBeremin:
 
         # probaw(SIGMA_WEIBULL) = 1-exp(-SIGMA_WEIBULL**bere_m/sigma_u**bere_m)
         #  avec sigma_u=SIMG_CNV ou SIGM_REFE
-        proba_weibull = 1.0 - exp(-((sigma_weibull / sigma_u) ** pow_m))
+        if sigma_u > 0.0:
+            proba_weibull = 1.0 - exp(-((sigma_weibull / sigma_u) ** pow_m))
+        else:
+            proba_weibull = 0.0
 
         return sigma_weibull, sigma_weibullpm, proba_weibull
 
