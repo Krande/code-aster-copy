@@ -151,12 +151,13 @@ class RASPENSolver(BaseIterationSolver):
         opts = PETSc.Options()
         withMonitoring = opts.getBool("raspen_monitor", False)
         monitorMode = opts.getBool("raspen_monitor_mode", "append")
-        warnings.warn(
-            f"Unknown option {monitorMode} for option 'raspen_monitor_mode', "
-            + f"should be in {MonitoringModes}. Program will "
-            + f"continue with {MonitoringModes[0]}",
-            RuntimeWarning,
-        )
+        if monitorMode not in MonitoringModes:
+            warnings.warn(
+                f"Unknown option {monitorMode} for option 'raspen_monitor_mode', "
+                + f"should be in {MonitoringModes}. Program will "
+                + f"continue with {MonitoringModes[0]}",
+                RuntimeWarning,
+            )
         # Wrtie headers in case of empty files
         if withMonitoring and self.rank == 0:
             for type, filePath in monitoringFilesPaths.items():

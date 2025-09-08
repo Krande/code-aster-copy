@@ -169,12 +169,6 @@ class DataStructureDict(PyDataStructure):
         return self._store.get(key, default)
 
 
-class NonLinearResultDict(DataStructureDict):
-    """Set of thermal results."""
-
-    object_type = "EVOL_THER"
-
-
 class ThermalResultDict(DataStructureDict):
     """Set of thermal results."""
 
