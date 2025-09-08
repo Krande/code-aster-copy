@@ -24,6 +24,7 @@
 #:  <testname>      An unknown target is treated as a testname, same 'make test n=testname'
 #:
 #:Environment variables:
+#:  ASTER_CONFIG    Environment file to be sourced for building (default: automatic detection)
 #:  ASTER_BUILD     Build variant 'mpi', 'debug' (default: %ASTER_BUILD%)
 #:  DEFAULT         Default selected target (default: %DEFAULT%)
 #:  OPTS            Options passed to waf commands, example OPTS='-p'

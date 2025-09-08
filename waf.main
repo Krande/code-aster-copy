@@ -38,7 +38,7 @@ waf_main()
                 . "${WAFBUILD_ENV}"
                 echo "loading ${WAFBUILD_ENV}"
             else
-                echo "no found"
+                echo "no found: ${WAFBUILD_ENV}"
                 unset WAFBUILD_ENV
             fi
         fi
@@ -64,6 +64,10 @@ waf_main()
 # detect for supported host for automatic configuration
 detect_host()
 {
+    if [ ! -z "${ASTER_CONFIG}" ]; then
+        printf aster_config
+        return
+    fi
     if [ ! -z "${SINGULARITY_NAME}" ] || [ -f /.dockerenv ]; then
         local wbe=$(ls /opt/public/*_${WAF_SUFFIX}.sh 2> /dev/null)
         if [ ! -z "${wbe}" ]; then
@@ -76,8 +80,6 @@ detect_host()
         printf selena
     elif [ -f /software/restricted/simumeca/aster/cronos ]; then
         printf cronos
-    elif [ -f /projets/simumeca/eole ]; then
-        printf eole
     elif [ -f /projets/simumeca/gaia ]; then
         printf gaia
     elif egrep -q "Scibian 10.0" /etc/issue; then
@@ -86,8 +88,6 @@ detect_host()
         printf scibian9
     elif egrep -q "Calibre 9|Debian GNU/Linux 8" /etc/issue; then
         printf calibre9
-    elif [ -f /home/aster/clap0f0q ]; then
-        printf clap0f0q
     fi
     printf ""
 }
@@ -96,6 +96,10 @@ get_wafbuild_env()
 {
     # usage: get_wafbuild_env platform
     local plt="${1}"
+    if [ "${plt}" = "aster_config" ]; then
+        printf "${ASTER_CONFIG}"
+        return
+    fi
     local wbe="/opt/public/${plt}_${WAF_SUFFIX}.sh"
     if [ ! -f "${wbe}" ]; then
         wbe="${prefix}/env.d/${plt}_${WAF_SUFFIX}.sh"
