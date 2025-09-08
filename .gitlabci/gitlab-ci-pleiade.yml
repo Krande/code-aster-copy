@@ -292,13 +292,12 @@ verification_test_debian-12:
   rules:
     - if: $BUILDTYPE == "nightly"
 
-# --- variant win for weekly build
+# --- variant win for nightly build / weekly testing
 prepare_win:
   variables:
     OSNAME: win
   extends: .prepare
   script:
-    - test "$(date +%u)" -ne ${WEEKLY_RUN} && echo "not run" && exit 0
     - !reference [.prepare, script]
   rules:
     - if: $BUILDTYPE == "nightly"
@@ -310,7 +309,6 @@ compile_win:
   needs:
     - prepare_win
   script:
-    - test "$(date +%u)" -ne ${WEEKLY_RUN} && echo "not run" && exit 0
     - !reference [.compile, script]
   rules:
     - if: $BUILDTYPE == "nightly"
@@ -329,7 +327,7 @@ verification_test_win:
   rules:
     - if: $BUILDTYPE == "nightly"
 
-# --- variant using pixi for weekly build
+# --- variant using pixi for nightly build / weekly testing
 prepare_pixi:
   image:
     name: nexus.retd.edf.fr:5075/debian-base:bookworm
@@ -337,7 +335,6 @@ prepare_pixi:
     OSNAME: pixi
   extends: .prepare
   script:
-    - test "$(date +%u)" -ne ${WEEKLY_RUN} && echo "not run" && exit 0
     - .gitlabci/prepare_pixi.sh
     - !reference [.prepare, script]
   rules:
@@ -352,7 +349,6 @@ compile_pixi:
   needs:
     - prepare_pixi
   script:
-    - test "$(date +%u)" -ne ${WEEKLY_RUN} && echo "not run" && exit 0
     - pixi list --explicit
     - ls -la ${PIXI_HOME} || true
     - pixi run .gitlabci/compile.sh
