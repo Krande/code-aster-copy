@@ -51,6 +51,10 @@ PARAPLAQUE = [
     "CISA_L",
     "CISA_T",
     "ALPHA",
+    "MEMB_ALPHA_T",
+    "MEMB_ALPHA_L",
+    "FLEX_ALPHA_T",
+    "FLEX_ALPHA_L",
     "RHO",
     "TEMP_DEF_ALPHA",
 ]
@@ -275,13 +279,14 @@ def calc_loimel_plaque(DEPLMATE, ls_group_tout):
 
     LAME_1_ff = FORMULE(NOM_PARA=("E", "NU", "Z"), VALE="Z**2 * E*NU/((1+NU)*(1-2*NU))")
     LAME_2_ff = FORMULE(NOM_PARA=("E", "NU", "Z"), VALE="Z**2 * E/(2*(1+NU))")
+    ALPHA_3K_ff = FORMULE(NOM_PARA=("E", "NU", "ALPHA"), VALE="Z**2 * ALPHA*E/(1-2*NU)")
 
     RESUMATE = CALC_CHAMP(
         RESULTAT=DEPLMATE,
         GROUP_MA=ls_group_tout,
         PROPRIETES=("MATE_ELGA",),
         CHAM_UTIL=_F(
-            FORMULE=(LAME_1_mm, LAME_2_mm, ALPHA_3K_mm, LAME_1_ff, LAME_2_ff),
+            FORMULE=(LAME_1_mm, LAME_2_mm, ALPHA_3K_mm, LAME_1_ff, LAME_2_ff, ALPHA_3K_ff),
             NOM_CHAM="MATE_ELGA",
             NUME_CHAM_RESU=1,
         ),
@@ -303,7 +308,7 @@ def calc_loimel_plaque(DEPLMATE, ls_group_tout):
         MODELE=RESUMATE.getModel(),
         INTEGRALE=_F(
             GROUP_MA=ls_group_tout,
-            NOM_CMP=("X1", "X2", "X3", "X4", "X5"),
+            NOM_CMP=("X1", "X2", "X3", "X4", "X5", "X6"),
             NOM_CHAM="UT01_ELGA",
             TYPE_MAILLE="3D",
         ),
@@ -331,8 +336,8 @@ def calc_loimel_plaque(DEPLMATE, ls_group_tout):
         LAME_INTE.EXTR_TABLE().values()["INTE_%s" % key] for key in ("X1", "X2", "X3")
     ]
 
-    out["LAME1_ff"], out["LAME2_ff"] = [
-        LAME_INTE.EXTR_TABLE().values()["INTE_%s" % key] for key in ("X4", "X5")
+    out["LAME1_ff"], out["LAME2_ff"], out["ALPHA3K_ff"] = [
+        LAME_INTE.EXTR_TABLE().values()["INTE_%s" % key] for key in ("X4", "X5", "X6")
     ]
 
     out["RHO"], out["RHO_CP"], out["LAMBDA_THER"] = [
@@ -342,9 +347,7 @@ def calc_loimel_plaque(DEPLMATE, ls_group_tout):
     return out
 
 
-def calc_tabpara_plaque(
-    DEPLMATE, volume_ver, ls_group_ma, varc_name, ls_varc, ep_ver, coef_cisa, **fields
-):
+def calc_tabpara_plaque(DEPLMATE, volume_ver, ls_group_ma, varc_name, ls_varc, ep_ver, **fields):
     """
     Compute the homogeneous properties values for a plate element.
 
@@ -363,7 +366,6 @@ def calc_tabpara_plaque(
         ls_varc (list[float]): List of values for the command variable at which
             parameters are computed.
         ep_ver (float): Plate thickness.
-        coef_cisa (float): Shear coefficient.
         **fields (ElasticResultDict, ThermalResultDict): Corrector fields for
             mechanical and thermal analyses.
 
@@ -387,6 +389,7 @@ def calc_tabpara_plaque(
     CORR_MECA31_CT = fields.get("CORR_MECA31_CT")
     CORR_MECA23_CT = fields.get("CORR_MECA23_CT")
     CORR_DILA_mm = fields["CORR_DILA_MEMB"]
+    CORR_DILA_ff = fields["CORR_DILA_FLEX"]
 
     insts_meca = CORR_MECA11_MEMB.getAccessParameters()["INST"]
 
@@ -442,10 +445,6 @@ def calc_tabpara_plaque(
             G11_hom = 0.0
             G22_hom = 0.0
 
-        # CORRECTION CISAILLEMENT
-        G11_hom *= coef_cisa
-        G22_hom *= coef_cisa
-
         # FLEXION
         lambda_meca_ff = loimel["LAME1_ff"][i]
         mu_meca_ff = loimel["LAME2_ff"][i]
@@ -469,12 +468,27 @@ def calc_tabpara_plaque(
         D1212_hom = (h / volume_ver) * (mu_meca_ff - work_meca_12_12_ff)
 
         # DILATATION
-        work_dila_11 = utilities.cross_work(CORR_MECA11_MEMB, CORR_DILA_mm, inst_meca, ls_group_ma)
-        work_dila_22 = utilities.cross_work(CORR_MECA22_MEMB, CORR_DILA_mm, inst_meca, ls_group_ma)
+        work_dila_11_mm = utilities.cross_work(
+            CORR_MECA11_MEMB, CORR_DILA_mm, inst_meca, ls_group_ma
+        )
+        work_dila_22_mm = utilities.cross_work(
+            CORR_MECA22_MEMB, CORR_DILA_mm, inst_meca, ls_group_ma
+        )
 
         alpha_3k_meca_mm = loimel["ALPHA3K_mm"][i]
-        Bdil_11 = (h / volume_ver) * (alpha_3k_meca_mm - work_dila_11)
-        Bdil_22 = (h / volume_ver) * (alpha_3k_meca_mm - work_dila_22)
+        Bdil_11_mm = (h / volume_ver) * (alpha_3k_meca_mm - work_dila_11_mm)
+        Bdil_22_mm = (h / volume_ver) * (alpha_3k_meca_mm - work_dila_22_mm)
+
+        work_dila_11_ff = utilities.cross_work(
+            CORR_MECA11_FLEX, CORR_DILA_ff, inst_meca, ls_group_ma
+        )
+        work_dila_22_ff = utilities.cross_work(
+            CORR_MECA22_FLEX, CORR_DILA_ff, inst_meca, ls_group_ma
+        )
+
+        alpha_3k_meca_ff = loimel["ALPHA3K_ff"][i]
+        Bdil_11_ff = (h / volume_ver) * (alpha_3k_meca_ff - work_dila_11_ff)
+        Bdil_22_ff = (h / volume_ver) * (alpha_3k_meca_ff - work_dila_22_ff)
 
         # fmt: off
         C_hom = np.array([[C1111_hom, C1122_hom, 0         ],
@@ -496,13 +510,15 @@ def calc_tabpara_plaque(
         RHO = (1 / volume_ver) * loimel["RHO"][i]
 
         C_inv = np.linalg.inv(C_hom)
-        ALPHA_L, ALPHA_T = np.dot(C_inv, (Bdil_11, Bdil_22, 0))[:2]
-        ALPHA = (ALPHA_L + ALPHA_T) / 2
+        MEMB_ALPHA_L, MEMB_ALPHA_T = np.dot(C_inv, (Bdil_11_mm, Bdil_22_mm, 0))[:2]
 
-        logger.debug(f"<HOMO-WORK><V {inst_meca}>: DILA_11 {work_dila_11}")
-        logger.debug(f"<HOMO-WORK><V {inst_meca}>: DILA_22 {work_dila_22}")
-        logger.debug(f"<HOMO-DIL><V {inst_meca}>: ALPHA_L {ALPHA_L}")
-        logger.debug(f"<HOMO-DIL><V {inst_meca}>: ALPHA_T {ALPHA_T}")
+        D_inv = np.linalg.inv(D_hom)
+        FLEX_ALPHA_L, FLEX_ALPHA_T = np.dot(C_inv, (Bdil_11_ff, Bdil_22_ff, 0))[:2]
+
+        logger.debug(f"<HOMO-WORK-MEMB><V {inst_meca}>: DILA_11 {work_dila_11_mm}")
+        logger.debug(f"<HOMO-WORK-MEMB><V {inst_meca}>: DILA_22 {work_dila_22_mm}")
+        logger.debug(f"<HOMO-DIL-MEMB><V {inst_meca}>: ALPHA_L {MEMB_ALPHA_L}")
+        logger.debug(f"<HOMO-DIL-MEMB><V {inst_meca}>: ALPHA_T {MEMB_ALPHA_T}")
 
         logger.debug(f"<HOMO-LOIMEL-MEMB><V {inst_meca}>: LAMBDA LAME {lambda_meca_mm}")
         logger.debug(f"<HOMO-LOIMEL-MEMB><V {inst_meca}>: MU LAME {mu_meca_mm}")
@@ -516,15 +532,25 @@ def calc_tabpara_plaque(
         logger.debug(f"<HOMO-WORK-CT><V {inst_meca}>: MECA_31 {work_meca_31_31_ct}")
         logger.debug(f"<HOMO-WORK-CT><V {inst_meca}>: MECA_23 {work_meca_23_23_ct}")
 
+        logger.debug(f"<HOMO-WORK-FLEX><V {inst_meca}>: DILA_11 {work_dila_11_ff}")
+        logger.debug(f"<HOMO-WORK-FLEX><V {inst_meca}>: DILA_22 {work_dila_22_ff}")
+        logger.debug(f"<HOMO-DIL-FLEX><V {inst_meca}>: ALPHA_L {FLEX_ALPHA_L}")
+        logger.debug(f"<HOMO-DIL-FLEX><V {inst_meca}>: ALPHA_T {FLEX_ALPHA_T}")
+
         logger.debug(f"<HOMO-LOIMEL-FLEX><V {inst_meca}>: LAMBDA LAME {lambda_meca_ff}")
         logger.debug(f"<HOMO-LOIMEL-FLEX><V {inst_meca}>: MU LAME {mu_meca_ff}")
+        logger.debug(f"<HOMO-LOIMEL-FLEX><V {inst_meca}>: ALPHA3K {alpha_3k_meca_ff}")
 
         logger.debug(f"<HOMO-WORK-FLEX><V {inst_meca}>: MECA_11_11 {work_meca_11_11_ff}")
         logger.debug(f"<HOMO-WORK-FLEX><V {inst_meca}>: MECA_22_22 {work_meca_22_22_ff}")
         logger.debug(f"<HOMO-WORK-FLEX><V {inst_meca}>: MECA_11_22 {work_meca_11_22_ff}")
         logger.debug(f"<HOMO-WORK-FLEX><V {inst_meca}>: MECA_12_12 {work_meca_12_12_ff}")
 
-        assert abs(ALPHA_L - ALPHA_T) < 1.0e-8, "Error on ALPHA"
+        # FIXME computation of FLEX_ALPHA is not validated yet.
+        FLEX_ALPHA_L, FLEX_ALPHA_T = [0.0, 0.0]
+
+        # FIXME ELAS_COQUE has an isotropic ALPHA
+        ALPHA = (MEMB_ALPHA_L + MEMB_ALPHA_T) / 2
 
         dictpara["MEMB_L"].append(C1111_hom)
         dictpara["MEMB_T"].append(C2222_hom)
@@ -536,6 +562,10 @@ def calc_tabpara_plaque(
         dictpara["FLEX_G_LT"].append(D1212_hom)
         dictpara["CISA_L"].append(G11_hom)
         dictpara["CISA_T"].append(G22_hom)
+        dictpara["MEMB_ALPHA_L"].append(MEMB_ALPHA_L)
+        dictpara["MEMB_ALPHA_T"].append(MEMB_ALPHA_T)
+        dictpara["FLEX_ALPHA_L"].append(FLEX_ALPHA_L)
+        dictpara["FLEX_ALPHA_T"].append(FLEX_ALPHA_T)
         dictpara["ALPHA"].append(ALPHA)
         dictpara["RHO"].append(RHO)
         dictpara["TEMP_DEF_ALPHA"].append(tda)

@@ -80,6 +80,7 @@ subroutine op0039()
     end if
     lfichUniq = .false._1
     lNomCas = ASTER_FALSE
+    result = ' '
 !
 !XX if (nbIndexes .eq. 0) then
     call getfac(keywf, keywfNb)
