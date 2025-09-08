@@ -21,10 +21,15 @@
 # Based on tensor.py written by Konrad Hinsen <hinsen@cnrs-orleans.fr>
 # =====================================================================
 
+# aslint: disable=C4008
+
 import numpy as NP
 
+from ...Utilities.ExecutionParameter import disable_fpe
+
 try:
-    import sympy
+    with disable_fpe():
+        import sympy
 
     X, Y, Z = sympy.symbols("X Y Z")
     ASTER_HAVE_SYMPY = True
@@ -54,11 +59,9 @@ def flatten(x):
 
 
 class Tensor:
-
     is_tensor = 1
 
     def __init__(self, elements, nocheck=None):
-
         self.array = NP.array(elements)
         if nocheck is None:
             if not NP.logical_and.reduce(NP.equal(NP.array(self.array.shape), 3)):

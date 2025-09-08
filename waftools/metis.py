@@ -85,17 +85,20 @@ def check_metis(self):
 @Configure.conf
 def check_metis_libs(self):
     opts = self.options
-    check_metis = partial(
+    check_metis_ = partial(
         self.check_cc, uselib_store="METIS", use="PARMETIS METIS M", mandatory=True
     )
     if opts.embed_all or opts.embed_metis:
-        check = lambda lib: check_metis(stlib=lib)
+        check = lambda lib: check_metis_(stlib=lib)
     else:
-        check = lambda lib: check_metis(lib=lib)
-    # METIS is currently provided by ParMETIS
+        check = lambda lib: check_metis_(lib=lib)
     if opts.metis_libs is None:
-        if not check_metis(lib="metis", mandatory=False):
-            check_metis(lib="parmetis")
+        # METIS is currently provided by ParMETIS
+        # ParMETIS built for code_aster also provides metis symbols
+        # and exports metis.h...
+        # Use --metis-libs=metis if needed
+        libname = "parmetis" if self.env.BUILD_MPI else "metis"
+        check(lib=libname)
     else:
         list(map(check, Utils.to_list(opts.metis_libs)))
 

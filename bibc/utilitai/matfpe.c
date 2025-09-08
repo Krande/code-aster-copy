@@ -1,5 +1,5 @@
 /* -------------------------------------------------------------------- */
-/* Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org             */
+/* Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org             */
 /* This file is part of code_aster.                                     */
 /*                                                                      */
 /* code_aster is free software: you can redistribute it and/or modify   */
@@ -26,6 +26,8 @@
    Problème rencontré sur Linux ia64 avec MKL 8.0.
 */
 #include "aster.h"
+
+#include "aster_sigfpe.h"
 
 #include <stdio.h>
 
@@ -58,7 +60,7 @@ void DEFP( MATFPE, matfpe, ASTERINTEGER *enable ) {
 #if defined ASTER_PLATFORM_MINGW
         _controlfp( _MCW_EM, _MCW_EM );
 #else
-        fedisableexcept( FE_DIVBYZERO | FE_OVERFLOW | FE_INVALID );
+        fedisableexcept( ASTER_SIGFPE );
 #endif
         /* définition du handler : hanfpe appelle UTMFPE qui fait UTMESS('F') */
         signal( SIGFPE, hanfpe );
@@ -68,8 +70,8 @@ void DEFP( MATFPE, matfpe, ASTERINTEGER *enable ) {
         _clearfp();
         _controlfp( _EM_UNDERFLOW | _EM_DENORMAL | _EM_INEXACT, _MCW_EM );
 #else
-        feclearexcept( FE_DIVBYZERO | FE_OVERFLOW | FE_INVALID );
-        feenableexcept( FE_DIVBYZERO | FE_OVERFLOW | FE_INVALID );
+        feclearexcept( ASTER_SIGFPE );
+        feenableexcept( ASTER_SIGFPE );
 #endif
         /* définition du handler : hanfpe appelle UTMFPE qui fait UTMESS('F') */
         signal( SIGFPE, hanfpe );
