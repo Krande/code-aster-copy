@@ -23,9 +23,8 @@ DEBUT(CODE="OUI", ERREUR=_F(ALARME="EXCEPTION"), DEBUG=_F(SDVERI="OUI"))
 # VALIDATION DES GRILLES QUADRATIQUE QUADRANGLE
 # -----------------------------------------------------------------------
 
-MAIL1 = LIRE_MAILLAGE(FORMAT="ASTER")
+MAILTOT = LIRE_MAILLAGE(FORMAT="ASTER")
 
-MAILTOT = CREA_MAILLAGE(MAILLAGE=MAIL1, LINE_QUAD=_F(TOUT="OUI"))
 
 #
 # -----------------------------------------------------
