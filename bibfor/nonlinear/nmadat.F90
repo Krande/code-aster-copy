@@ -23,7 +23,6 @@ subroutine nmadat(sddisc, numins, nbiter, valinc)
 #include "asterc/r8maem.h"
 #include "asterc/r8vide.h"
 #include "asterf_types.h"
-#include "asterfort/asmpi_comm_vect.h"
 #include "asterfort/compr8.h"
 #include "asterfort/diadap.h"
 #include "asterfort/diinst.h"
@@ -154,7 +153,6 @@ subroutine nmadat(sddisc, numins, nbiter, valinc)
             call nmcadt(sddisc, i_adap, numins, valinc, zr(jdt-1+i_adap))
         end if
         newdt = zr(jdt-1+i_adap)
-        call asmpi_comm_vect('MPI_MIN', 'R', scr=newdt)
 !
 ! ----- AFFICHAGE
 !
