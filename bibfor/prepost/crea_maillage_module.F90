@@ -107,7 +107,7 @@ module crea_maillage_module
         integer(kind=8) :: type = 0
         integer(kind=8) :: nnos = 0
         integer(kind=8) :: nodes(9) = 0
-        integer(kind=8) :: nnos_sort(4) = 0
+        integer(kind=8) :: nno_sort(9) = 0
         integer(kind=8) :: nb_edges = 0, edges(4) = 0
         integer(kind=8) :: parent = -1
         integer(kind=8) :: isub = 0
@@ -116,7 +116,7 @@ module crea_maillage_module
     type Medge
         integer(kind=8) :: type = 0
         integer(kind=8) :: nodes(4) = 0
-        integer(kind=8) :: nnos_sort(2) = 0
+        integer(kind=8) :: nno_sort(4) = 0
         integer(kind=8) :: parent = -1
         integer(kind=8) :: isub = 0
     end type
@@ -140,6 +140,7 @@ module crea_maillage_module
         integer(kind=8) :: nb_total_nodes = 0, nb_total_cells = 0
         integer(kind=8) :: max_nodes = 0, max_edges = 0, max_faces = 0, max_volumes = 0
         integer(kind=8) :: max_cells = 0, dim_mesh = 0, nb_layer = 0, lastLayerSize = 0
+        integer(kind=8) :: nb_edges_dege = 0, nb_faces_dege = 0
 !
         integer(kind=4), allocatable :: lastGhostsLayer(:)
 
@@ -161,7 +162,7 @@ module crea_maillage_module
         integer(kind=8) :: info = 0
 ! ----- member functions
     contains
-        procedure, public, pass :: add_cell
+        procedure, public, pass :: add_initial_cell
         procedure, public, pass :: check_mesh
         procedure, public, pass :: clean => clean_mesh
         procedure, public, pass :: convert_cells
@@ -200,6 +201,7 @@ module crea_maillage_module
 !
     public :: Medge, Mface, Mcell, Mmesh, Mconverter
     private :: circ_perm, numbering_edge, numbering_face, dividing_cell, mult_elem
+    private :: circ_perm_face
 contains
 !
 !===================================================================================================
@@ -231,38 +233,51 @@ contains
 !===================================================================================================
 !
 !===================================================================================================
-    subroutine find_edge(this, nnos_sort, find, edge_id)
+    subroutine find_edge(this, nno, nno_sort, find, edge_id)
 !
         implicit none
 !
-        class(Mmesh), intent(in) :: this
-        integer(kind=8), intent(in) :: nnos_sort(2)
+        class(Mmesh), intent(inout) :: this
+        integer(kind=8), intent(in) :: nno_sort(3), nno
         aster_logical, intent(out) :: find
         integer(kind=8), intent(out) :: edge_id
 !
 ! Find edge_id of edges
 !
-        integer(kind=8) :: i_edge, nb_edges, edge_i
+        integer(kind=8) :: i_edge, nb_edges, edge_i, i_node
         aster_logical :: ok
 !
         find = ASTER_FALSE
         edge_id = 0
 !
-        nb_edges = this%nodes(nnos_sort(1))%nb_edges
+        nb_edges = this%nodes(nno_sort(1))%nb_edges
         if (nb_edges > 0) then
             do i_edge = 1, nb_edges
-                edge_i = this%nodes(nnos_sort(1))%edges(i_edge)
+                edge_i = this%nodes(nno_sort(1))%edges(i_edge)
                 ok = ASTER_TRUE
-                if (nnos_sort(1) .ne. this%edges(edge_i)%nnos_sort(1)) then
+                if (nno_sort(1) .ne. this%edges(edge_i)%nno_sort(1)) then
                     ok = ASTER_FALSE
                 else
-                    if (nnos_sort(2) .ne. this%edges(edge_i)%nnos_sort(2)) then
+                    if (nno_sort(2) .ne. this%edges(edge_i)%nno_sort(2)) then
                         ok = ASTER_FALSE
                     end if
                 end if
                 if (ok) then
-                    find = ASTER_TRUE
-                    edge_id = edge_i
+                    do i_node = 1, nno
+                        if (nno_sort(i_node) .ne. this%edges(edge_i)%nno_sort(i_node)) then
+                            this%nb_edges_dege = this%nb_edges_dege+1
+                            call utmess('E', 'MODELISA4_11', &
+                                        sk=this%converter%name(this%edges(edge_i)%type), &
+                                        ni=4, &
+                                        vali=[nno_sort(1:nno), this%edges(edge_i)%nno_sort(3)])
+                            ok = ASTER_FALSE
+                            exit
+                        end if
+                    end do
+                    if (ok) then
+                        find = ASTER_TRUE
+                        edge_id = edge_i
+                    end if
                     exit
                 end if
             end do
@@ -274,15 +289,16 @@ contains
 !===================================================================================================
 !
 !===================================================================================================
-    subroutine find_face(this, nnos, nnos_sort, find, face_id)
+    subroutine find_face(this, nno, nnos, nno_sort, find, face_id)
 !
         implicit none
 !
-        class(Mmesh), intent(in) ::this
-        integer(kind=8), intent(in) :: nnos
-        integer(kind=8), intent(in) :: nnos_sort(4)
+        class(Mmesh), intent(inout) ::this
+        integer(kind=8), intent(in) :: nnos, nno
+        integer(kind=8), intent(in) :: nno_sort(9)
         aster_logical, intent(out) :: find
         integer(kind=8), intent(out) :: face_id
+        character(len=8) :: typ_ori
 !
 ! Find face_id of face
 !
@@ -292,14 +308,14 @@ contains
         find = ASTER_FALSE
         face_id = 0
 !
-        nb_faces = this%nodes(nnos_sort(1))%nb_faces
+        nb_faces = this%nodes(nno_sort(1))%nb_faces
         if (nb_faces > 0) then
             do i_face = 1, nb_faces
-                face_i = this%nodes(nnos_sort(1))%faces(i_face)
+                face_i = this%nodes(nno_sort(1))%faces(i_face)
                 if (nnos == this%faces(face_i)%nnos) then
                     ok = ASTER_TRUE
                     do i_node = 1, nnos
-                        if (nnos_sort(i_node) .ne. this%faces(face_i)%nnos_sort(i_node)) then
+                        if (nno_sort(i_node) .ne. this%faces(face_i)%nno_sort(i_node)) then
                             ok = ASTER_FALSE
                             exit
                         end if
@@ -308,6 +324,31 @@ contains
                     ok = ASTER_FALSE
                 end if
                 if (ok) then
+                    do i_node = 1, nno
+                        if (nno_sort(i_node) .ne. this%faces(face_i)%nno_sort(i_node)) then
+                            this%nb_faces_dege = this%nb_faces_dege+1
+                            select case (nno)
+                            case (3)
+                                typ_ori = "TRIA3"
+                            case (4)
+                                typ_ori = "QUAD4"
+                            case (6)
+                                typ_ori = "TRIA6"
+                            case (7)
+                                typ_ori = "TRIA7"
+                            case (8)
+                                typ_ori = "QUAD8"
+                            case (9)
+                                typ_ori = "QUAD9"
+                            case default
+                                ASSERT(ASTER_FALSE)
+                            end select
+                            call utmess('E', 'MODELISA4_12', &
+                                        sk=typ_ori, ni=nnos, vali=nno_sort(1:nnos))
+                            ok = ASTER_FALSE
+                            exit
+                        end if
+                    end do
                     find = ASTER_TRUE
                     face_id = face_i
                     exit
@@ -319,7 +360,7 @@ contains
 !
 ! ==================================================================================================
 !
-    subroutine circ_perm(nb_nodes, nodes)
+    subroutine circ_perm(nb_nodes, nodes, revert)
 !
 ! Performs circular permutation such that the first element is the smallest and
 ! the second element is the second smallest
@@ -328,6 +369,7 @@ contains
 !
         integer(kind=8), intent(in) :: nb_nodes
         integer(kind=8), intent(inout) :: nodes(1:nb_nodes)
+        aster_logical, optional :: revert
 !
         integer(kind=8) :: tmp(27), ind_min, i_node, val_min
 !
@@ -356,15 +398,72 @@ contains
             end do
         end if
 !
-        if (nodes(nb_nodes) > nodes(2)) then
+        if (present(revert)) then
+            revert = ASTER_FALSE
+        end if
+        if (nodes(nb_nodes) < nodes(2)) then
             tmp(1:nb_nodes) = nodes(1:nb_nodes)
 
             do i_node = 2, nb_nodes
                 nodes(i_node) = tmp(nb_nodes-i_node+2)
             end do
+            if (present(revert)) then
+                revert = ASTER_TRUE
+            end if
         end if
 !
         ASSERT(nodes(1) == val_min)
+!
+    end subroutine
+!
+! ==================================================================================================
+!
+    subroutine circ_perm_face(nno, nnos, nodes)
+!
+! Performs circular permutation such that the first element is the smallest and
+! the second element is the second smallest
+!
+        implicit none
+!
+        integer(kind=8), intent(in) :: nno, nnos
+        integer(kind=8), intent(inout) :: nodes(1:nno)
+!
+        integer(kind=8) :: nodes_nnos(4), map_nnos(4), i_node, j_node, nodes_tmp(4)
+        integer(kind=8) :: tmp
+        aster_logical :: revert
+!
+        ASSERT(nno <= 9)
+!
+        nodes_nnos(1:nnos) = nodes(1:nnos)
+        call circ_perm(nnos, nodes_nnos, revert)
+!
+        if (nno > nnos) then
+            do i_node = 1, nnos
+                do j_node = 1, nnos
+                    if (nodes_nnos(i_node) == nodes(j_node)) then
+                        map_nnos(j_node) = i_node
+                        exit
+                    end if
+                end do
+            end do
+!
+            ASSERT(nno >= 2*nnos)
+            nodes_tmp(1:nnos) = nodes(nnos+1:2*nnos)
+
+            if (revert) then
+                tmp = map_nnos(1)
+                do i_node = 1, nnos-1
+                    map_nnos(i_node) = map_nnos(i_node+1)
+                end do
+                map_nnos(nnos) = tmp
+            end if
+            do i_node = 1, nnos
+                nodes(nnos+map_nnos(i_node)) = nodes_tmp(i_node)
+            end do
+
+        end if
+        nodes(1:nnos) = nodes_nnos(1:nnos)
+
 !
     end subroutine
 !
@@ -493,9 +592,12 @@ contains
         integer(kind=8), pointer :: v_noex(:) => null()
         integer(kind=8), pointer :: v_nblg(:) => null()
         real(kind=8), pointer :: v_coor(:) => null()
-        integer(kind=8) :: nb_elem_mesh, nb_node_mesh, i_node
-        integer(kind=8) :: i_cell, nno, node_id, owner
+        integer(kind=8) :: nb_elem_mesh, nb_node_mesh, i_node, iret
+        integer(kind=8) :: i_cell, nno, node_id, owner, i_type, cell_type
         real(kind=8):: start, end
+        integer(kind=8), allocatable, dimension(:, :) :: list_type_cells
+        integer(kind=8), parameter :: nb_type = 10
+        integer(kind=8) :: nb_type_cells(nb_type)
 !
         call jemarq()
         call this%converter%init()
@@ -536,9 +638,12 @@ contains
         if (this%isHPC) then
             call jeveuo(mesh_in//'.NOEX', 'L', vi=v_noex)
             joints = mesh_in//".JOIN"
-            call jeveuo(joints//'.NBLG', 'L', vi=v_nblg)
-            this%nb_layer = v_nblg(1)
-            ASSERT(this%nb_layer > 0)
+            call jeexin(joints//'.NBLG', iret)
+            if (iret > 0) then
+                call jeveuo(joints//'.NBLG', 'L', vi=v_nblg)
+                this%nb_layer = v_nblg(1)
+                ASSERT(this%nb_layer > 0)
+            end if
         end if
 !
 ! --- Fill mesh
@@ -558,9 +663,58 @@ contains
             allocate (this%nodes(node_id)%edges(this%nodes(node_id)%max_edges))
         end do
 !
+! --- Read cells
+        allocate (list_type_cells(nb_type, nb_elem_mesh))
+!
+!
+! --- Order to read cell - hard coded rule
+        nb_type_cells = 0
         do i_cell = 1, nb_elem_mesh
-            call this%add_cell(i_cell)
+            cell_type = this%converter%map_type(this%v_typema(i_cell))
+!
+            select case (cell_type)
+            case (MT_POI1)
+                nb_type_cells(1) = nb_type_cells(1)+1
+                list_type_cells(1, nb_type_cells(1)) = i_cell
+            case (MT_SEG4)
+                nb_type_cells(2) = nb_type_cells(2)+1
+                list_type_cells(2, nb_type_cells(2)) = i_cell
+            case (MT_SEG3)
+                nb_type_cells(3) = nb_type_cells(3)+1
+                list_type_cells(3, nb_type_cells(3)) = i_cell
+            case (MT_TRIA7, MT_QUAD9)
+                nb_type_cells(4) = nb_type_cells(4)+1
+                list_type_cells(4, nb_type_cells(4)) = i_cell
+            case (MT_HEXA27, MT_PENTA21, MT_PYRAM19, MT_TETRA15)
+                nb_type_cells(5) = nb_type_cells(5)+1
+                list_type_cells(5, nb_type_cells(5)) = i_cell
+            case (MT_TRIA6, MT_QUAD8)
+                nb_type_cells(6) = nb_type_cells(6)+1
+                list_type_cells(6, nb_type_cells(6)) = i_cell
+            case (MT_PENTA18, MT_HEXA20, MT_PENTA15, MT_PYRAM13, MT_TETRA10)
+                nb_type_cells(7) = nb_type_cells(7)+1
+                list_type_cells(7, nb_type_cells(7)) = i_cell
+            case (MT_SEG2)
+                nb_type_cells(8) = nb_type_cells(8)+1
+                list_type_cells(8, nb_type_cells(8)) = i_cell
+            case (MT_TRIA3, MT_QUAD4)
+                nb_type_cells(9) = nb_type_cells(9)+1
+                list_type_cells(9, nb_type_cells(9)) = i_cell
+            case (MT_HEXA9, MT_PENTA7, MT_HEXA8, MT_PENTA6, MT_PYRAM5, MT_TETRA4)
+                nb_type_cells(10) = nb_type_cells(10)+1
+                list_type_cells(10, nb_type_cells(10)) = i_cell
+            case default
+                ASSERT(ASTER_FALSE)
+            end select
         end do
+!
+        do i_type = 1, nb_type
+            do i_cell = 1, nb_type_cells(i_type)
+                call this%add_initial_cell(list_type_cells(i_type, i_cell))
+            end do
+        end do
+
+        deallocate (list_type_cells)
 !
 ! --- Search orphelan nodes - to keep at the end
         this%nb_total_cells = this%nb_cells
@@ -575,6 +729,11 @@ contains
         if (this%info >= 2) then
             call cpu_time(end)
             print *, "... in ", end-start, " seconds."
+        end if
+!
+        if (this%nb_edges_dege > 0 .or. this%nb_faces_dege > 0) then
+            call this%clean()
+            call utmess('F', "MODELISA4_10")
         end if
 !
         call jedema()
@@ -1026,7 +1185,7 @@ contains
 !
 ! ==================================================================================================
 !
-    subroutine add_cell(this, cell_id)
+    subroutine add_initial_cell(this, cell_id)
 !
         implicit none
 !
@@ -1044,10 +1203,11 @@ contains
 !
         call jeveuo(jexnum(this%connex_in, cell_id), 'L', vi=v_connex)
         nb_nodes = this%converter%nno(cell_type)
+        cell_nodes = 0
         cell_nodes(1:nb_nodes) = v_connex(1:nb_nodes)
 !
         if (this%debug) then
-            print *, "Cell ", this%nb_total_cells, ": ", cell_type, &
+            print *, "Cell ", cell_id, ": ", cell_type, &
                 this%converter%name(cell_type), cell_dim
         end if
 !
@@ -1063,11 +1223,11 @@ contains
             ASSERT(ASTER_FALSE)
         end if
 !
-        this%cells(this%nb_total_cells)%type = cell_type
-        this%cells(this%nb_total_cells)%dim = cell_dim
-        this%cells(this%nb_total_cells)%id = this%nb_total_cells
-        this%cells(this%nb_total_cells)%ss_id = cell_index
-        this%cells(this%nb_total_cells)%nodes(1:nb_nodes) = cell_nodes(1:nb_nodes)
+        this%cells(cell_id)%type = cell_type
+        this%cells(cell_id)%dim = cell_dim
+        this%cells(cell_id)%id = cell_id
+        this%cells(cell_id)%ss_id = cell_index
+        this%cells(cell_id)%nodes(1:nb_nodes) = cell_nodes(1:nb_nodes)
 !
     end subroutine
 !
@@ -1158,7 +1318,7 @@ contains
         integer(kind=8), intent(in), optional :: parent, isub
         integer(kind=8) :: face_id
 ! ----------------------------------------------------------------------
-        integer(kind=8) :: nno, nnos, nnos_sort(4), i_edge, edge_id
+        integer(kind=8) :: nno, nnos, nno_sort(9), i_edge, edge_id
         integer(kind=8) :: nb_edge, edge_type(12), edge_loc(3, 12), i_node
         integer(kind=8) :: edge_nno, edge_nodes(27), old_size
         integer(kind=8), allocatable :: new_faces(:)
@@ -1168,11 +1328,12 @@ contains
         ASSERT(this%converter%dim(face_type) == 2)
         nno = this%converter%nno(face_type)
         nnos = this%converter%nnos(face_type)
-        nnos_sort(1:nnos) = nodes(1:nnos)
+        nno_sort = 0
+        nno_sort(1:nno) = nodes(1:nno)
 !
-        call circ_perm(nnos, nnos_sort)
+        call circ_perm_face(nno, nnos, nno_sort)
 !
-        call this%find_face(nnos, nnos_sort, find, face_id)
+        call this%find_face(nno, nnos, nno_sort, find, face_id)
 !
         if (.not. find) then
             this%nb_faces = this%nb_faces+1
@@ -1184,7 +1345,7 @@ contains
             this%faces(face_id)%type = face_type
             this%faces(face_id)%nodes(1:nno) = nodes(1:nno)
             this%faces(face_id)%nnos = nnos
-            this%faces(face_id)%nnos_sort(1:nnos) = nnos_sort(1:nnos)
+            this%faces(face_id)%nno_sort(1:nno) = nno_sort(1:nno)
             if (present(parent)) then
                 this%faces(face_id)%parent = parent
             end if
@@ -1208,23 +1369,23 @@ contains
                 this%faces(face_id)%edges(i_edge) = edge_id
             end do
 !
-            if (this%nodes(nnos_sort(1))%nb_faces >= this%nodes(nnos_sort(1))%max_faces) then
-                if (this%nodes(nnos_sort(1))%max_faces > 0) then
-                    old_size = this%nodes(nnos_sort(1))%max_faces
+            if (this%nodes(nno_sort(1))%nb_faces >= this%nodes(nno_sort(1))%max_faces) then
+                if (this%nodes(nno_sort(1))%max_faces > 0) then
+                    old_size = this%nodes(nno_sort(1))%max_faces
                     allocate (new_faces(old_size))
-                    new_faces(1:old_size) = this%nodes(nnos_sort(1))%faces(1:old_size)
-                    deallocate (this%nodes(nnos_sort(1))%faces)
-                    allocate (this%nodes(nnos_sort(1))%faces(2*old_size))
-                    this%nodes(nnos_sort(1))%faces(1:old_size) = new_faces(1:old_size)
+                    new_faces(1:old_size) = this%nodes(nno_sort(1))%faces(1:old_size)
+                    deallocate (this%nodes(nno_sort(1))%faces)
+                    allocate (this%nodes(nno_sort(1))%faces(2*old_size))
+                    this%nodes(nno_sort(1))%faces(1:old_size) = new_faces(1:old_size)
                     deallocate (new_faces)
-                    this%nodes(nnos_sort(1))%max_faces = 2*old_size
+                    this%nodes(nno_sort(1))%max_faces = 2*old_size
                 else
-                    this%nodes(nnos_sort(1))%max_faces = 30
-                    allocate (this%nodes(nnos_sort(1))%faces(30))
+                    this%nodes(nno_sort(1))%max_faces = 30
+                    allocate (this%nodes(nno_sort(1))%faces(30))
                 end if
             end if
-            this%nodes(nnos_sort(1))%nb_faces = this%nodes(nnos_sort(1))%nb_faces+1
-            this%nodes(nnos_sort(1))%faces(this%nodes(nnos_sort(1))%nb_faces) = face_id
+            this%nodes(nno_sort(1))%nb_faces = this%nodes(nno_sort(1))%nb_faces+1
+            this%nodes(nno_sort(1))%faces(this%nodes(nno_sort(1))%nb_faces) = face_id
 !
             call this%convert_face(face_id)
         end if
@@ -1236,7 +1397,7 @@ contains
                 "(", this%faces(face_id)%type, ")"
             print *, "- Owner: ", this%owner_cell(nno, this%faces(face_id)%nodes)
             print *, "- Nodes: ", this%faces(face_id)%nodes
-            print *, "- NNOS: ", this%faces(face_id)%nnos_sort
+            print *, "- NNOS: ", this%faces(face_id)%nno_sort
             print *, "- Edges: ", this%faces(face_id)%edges
             if (mult_elem(nno, this%faces(face_id)%nodes)) then
                 ASSERT(ASTER_FALSE)
@@ -1256,17 +1417,17 @@ contains
         integer(kind=8), intent(in), optional :: parent, isub, face_id
         integer(kind=8) :: edge_id
 ! ----------------------------------------------------------------------
-        integer(kind=8) :: nno, nnos_sort(2), old_size
+        integer(kind=8) :: nno, nno_sort(3), old_size
         integer(kind=8), allocatable :: new_edges(:)
         aster_logical :: find
 !
         ASSERT(this%converter%dim(type) == 1)
         nno = this%converter%nno(type)
-        nnos_sort(1:2) = nodes(1:2)
+        nno_sort(1:nno) = nodes(1:nno)
 !
-        call circ_perm(2, nnos_sort)
+        call circ_perm(2, nno_sort)
 !
-        call this%find_edge(nnos_sort, find, edge_id)
+        call this%find_edge(nno, nno_sort, find, edge_id)
 !
         if (.not. find) then
             this%nb_edges = this%nb_edges+1
@@ -1277,7 +1438,7 @@ contains
             edge_id = this%nb_edges
             this%edges(edge_id)%type = type
             this%edges(edge_id)%nodes(1:nno) = nodes(1:nno)
-            this%edges(edge_id)%nnos_sort = nnos_sort
+            this%edges(edge_id)%nno_sort(1:nno) = nno_sort(1:nno)
             if (present(parent)) then
                 this%edges(edge_id)%parent = parent
             end if
@@ -1285,23 +1446,23 @@ contains
                 this%edges(edge_id)%isub = isub
             end if
 !
-            if (this%nodes(nnos_sort(1))%nb_edges >= this%nodes(nnos_sort(1))%max_edges) then
-                if (this%nodes(nnos_sort(1))%max_edges > 0) then
-                    old_size = this%nodes(nnos_sort(1))%max_edges
+            if (this%nodes(nno_sort(1))%nb_edges >= this%nodes(nno_sort(1))%max_edges) then
+                if (this%nodes(nno_sort(1))%max_edges > 0) then
+                    old_size = this%nodes(nno_sort(1))%max_edges
                     allocate (new_edges(old_size))
-                    new_edges(1:old_size) = this%nodes(nnos_sort(1))%edges(1:old_size)
-                    deallocate (this%nodes(nnos_sort(1))%edges)
-                    allocate (this%nodes(nnos_sort(1))%edges(2*old_size))
-                    this%nodes(nnos_sort(1))%edges(1:old_size) = new_edges(1:old_size)
+                    new_edges(1:old_size) = this%nodes(nno_sort(1))%edges(1:old_size)
+                    deallocate (this%nodes(nno_sort(1))%edges)
+                    allocate (this%nodes(nno_sort(1))%edges(2*old_size))
+                    this%nodes(nno_sort(1))%edges(1:old_size) = new_edges(1:old_size)
                     deallocate (new_edges)
-                    this%nodes(nnos_sort(1))%max_edges = 2*old_size
+                    this%nodes(nno_sort(1))%max_edges = 2*old_size
                 else
-                    this%nodes(nnos_sort(1))%max_edges = 30
-                    allocate (this%nodes(nnos_sort(1))%edges(30))
+                    this%nodes(nno_sort(1))%max_edges = 30
+                    allocate (this%nodes(nno_sort(1))%edges(30))
                 end if
             end if
-            this%nodes(nnos_sort(1))%nb_edges = this%nodes(nnos_sort(1))%nb_edges+1
-            this%nodes(nnos_sort(1))%edges(this%nodes(nnos_sort(1))%nb_edges) = edge_id
+            this%nodes(nno_sort(1))%nb_edges = this%nodes(nno_sort(1))%nb_edges+1
+            this%nodes(nno_sort(1))%edges(this%nodes(nno_sort(1))%nb_edges) = edge_id
 !
             if (present(face_id)) then
                 call this%convert_edge(edge_id, face_id)
@@ -1316,8 +1477,8 @@ contains
             print *, "- Type: ", this%converter%name(this%edges(edge_id)%type), &
                 "(", this%edges(edge_id)%type, ")"
             print *, "- Owner: ", this%owner_cell(3, this%edges(edge_id)%nodes)
-            print *, "- Nodes: ", this%edges(edge_id)%nodes
-            print *, "- NNOS: ", this%edges(edge_id)%nnos_sort
+            print *, "- Nodes: ", this%edges(edge_id)%nodes(1:nno)
+            print *, "- NNOS: ", this%edges(edge_id)%nno_sort(1:nno)
             if (mult_elem(nno, this%edges(edge_id)%nodes)) then
                 ASSERT(ASTER_FALSE)
             end if
@@ -1704,10 +1865,11 @@ contains
         integer(kind=8), intent(in) :: face_id
 ! ------------------------------------------------------------------
         integer(kind=8) :: face_type, face_type_end, owner
-        integer(kind=8) :: nno, nno_end, node_id, i_edge, i_node
+        integer(kind=8) :: nno, nno_end, node_id, i_edge, i_node, nnos
 !
         face_type = this%faces(face_id)%type
         nno = this%converter%nno(face_type)
+        nnos = this%converter%nnos(face_type)
         face_type_end = this%converter%convert_max(face_type)
         nno_end = this%converter%nno(face_type_end)
 !
@@ -1739,6 +1901,9 @@ contains
                 ASSERT(this%faces(face_id)%nodes(i_node) > 0)
             end do
         end if
+
+        this%faces(face_id)%nno_sort = this%faces(face_id)%nodes
+        call circ_perm_face(nno_end, nnos, this%faces(face_id)%nno_sort)
 !
     end subroutine
 !
@@ -1785,6 +1950,8 @@ contains
         end if
 !
         this%edges(edge_id)%type = edge_type_end
+        this%edges(edge_id)%nno_sort = this%edges(edge_id)%nodes
+        call circ_perm(2, this%edges(edge_id)%nno_sort)
 !
         if (this%debug) then
             do i_node = 1, nno_end
@@ -2045,7 +2212,8 @@ contains
 
             parent = this%faces(face_id)%parent
             ASSERT(parent > 0)
-            call elrfvf(this%converter%short_name(this%faces(parent)%type), coor_ref, basis, nbnode)
+            call elrfvf(this%converter%short_name(this%faces(parent)%type), coor_ref, basis, &
+                        nbnode)
             do i_node = 1, nbnode
                 node = this%faces(parent)%nodes(i_node)
                 coor(1:3) = coor(1:3)+this%nodes(node)%coor(1:3)*basis(i_node)
@@ -2516,25 +2684,26 @@ contains
 !
 ! --- we refine the face after
         if (cell_dim == 3) then
-        do i_face = 1, this%volumes(obj)%nb_faces
-            if (this%debug) then
-                print *, "Refine face", face_id, ": "
-            end if
-            face_id = this%volumes(obj)%faces(i_face)
+            do i_face = 1, this%volumes(obj)%nb_faces
+                if (this%debug) then
+                    print *, "Refine face", face_id, ": "
+                end if
+                face_id = this%volumes(obj)%faces(i_face)
 ! --- compute sub-division
-            call dividing_cell(this%faces(face_id)%type, nb_sub2, sub_type2, sub_loc2, conv_type2)
+                call dividing_cell(this%faces(face_id)%type, nb_sub2, sub_type2, sub_loc2, &
+                                   conv_type2)
 
-            do i_sub = 1, nb_sub2
-                cell_type_sub = sub_type2(i_sub)
-                nb_nodes = this%converter%nno(cell_type_sub)
-                cell_nodes = 0
+                do i_sub = 1, nb_sub2
+                    cell_type_sub = sub_type2(i_sub)
+                    nb_nodes = this%converter%nno(cell_type_sub)
+                    cell_nodes = 0
 
-                do i_node = 1, nb_nodes
-                    cell_nodes(i_node) = this%faces(face_id)%nodes(sub_loc2(i_node, i_sub))
+                    do i_node = 1, nb_nodes
+                        cell_nodes(i_node) = this%faces(face_id)%nodes(sub_loc2(i_node, i_sub))
+                    end do
+                    cell_index = this%add_face(cell_type_sub, cell_nodes, face_id, i_sub)
                 end do
-                cell_index = this%add_face(cell_type_sub, cell_nodes, face_id, i_sub)
             end do
-        end do
         end if
 !
 ! --- we refine the cell
@@ -2935,14 +3104,17 @@ contains
         aster_logical, pointer :: v_keep(:) => null()
         real(kind=8), pointer :: v_send(:) => null()
         real(kind=8), pointer :: v_recv(:) => null()
+        mpi_int, parameter :: mpi_one = to_mpi_int(1)
         mpi_int :: msize, mrank, count_send, count_recv, id, tag, mpicou
         integer(kind=8) :: nbproc, rank, ind, nb_recv, i_proc, recv1(1)
         integer(kind=8) :: n_coor_send, n_coor_recv, proc_id, i_comm, domj_i
         integer(kind=8) :: i_node, nb_nodes_keep, i_node_r, node_id, j_node
         integer(kind=8) :: i_cell, nno, nb_cells_keep, owner, cell_id, i_layer
-        real(kind=8) :: coor(3), coor_diff(3), tole_comp, start, end
+        real(kind=8) :: coor(3), coor_diff(3), tole_comp, start, end, coor_i(3), coor_j(3)
         real(kind=8), parameter :: tole = 1.d-15
         aster_logical :: find, keep
+        ! Allows to send all nodes of a mesh to seach candidates - robust bus very slow - for debug
+        aster_logical, parameter :: all_nodes = ASTER_FALSE
 !
         if (isParallelMesh(mesh_out)) then
             if (this%info >= 2) then
@@ -3041,11 +3213,9 @@ contains
                 id = to_mpi_int(proc_id)
 !
 ! --- Send and Receive size
-                count_send = to_mpi_int(1)
-                count_recv = to_mpi_int(1)
                 n_coor_send = v_rnode(proc_id+1)
-                call asmpi_sendrecv_i([n_coor_send], count_send, id, tag, &
-                                      recv1, count_recv, id, tag, mpicou)
+                call asmpi_sendrecv_i([n_coor_send], mpi_one, id, tag, &
+                                      recv1, mpi_one, id, tag, mpicou)
                 n_coor_recv = recv1(1)
 !
                 call wkvect("&&CREAMA.SCOOR", 'V V R', 4*n_coor_send, vr=v_send)
@@ -3083,7 +3253,7 @@ contains
                     nno = this%converter%nno(this%cells(cell_id)%type)
                     do i_node = 1, nno
                         owner = v_noex(this%nodes(this%cells(cell_id)%nodes(i_node))%id)
-                        if (owner == proc_id) then
+                        if (owner == proc_id .or. all_nodes) then
                             keep = ASTER_TRUE
                             exit
                         end if
@@ -3092,7 +3262,7 @@ contains
                         do i_node = 1, nno
                             node_id = this%cells(cell_id)%nodes(i_node)
                             owner = v_noex(this%nodes(node_id)%id)
-                            if (owner == rank .and. (.not. v_keep(node_id))) then
+                            if (((owner == rank .or. all_nodes) .and. (.not. v_keep(node_id)))) then
                                 v_keep(node_id) = ASTER_TRUE
                                 nb_nodes_keep = nb_nodes_keep+1
                                 v_nkeep(nb_nodes_keep) = node_id
@@ -3128,26 +3298,39 @@ contains
                         end if
                     end do
                 end do
-                ASSERT(nb_nodes_keep >= n_coor_recv)
-!
-                !  On regarde que les noeuds ne sont pas confondu.
-                do i_node = 1, nb_nodes_keep
-                    tole_comp = max(tole, tole*norm2(this%nodes(v_nkeep(i_node))%coor))
-                    do j_node = i_node+1, nb_nodes_keep
-                        coor_diff = abs(this%nodes(v_nkeep(i_node))%coor- &
-                                        this%nodes(v_nkeep(j_node))%coor)
-                        if (maxval(coor_diff) < tole_comp) then
-                            !! Verif pas de noeud double
-                            call utmess('F', 'MAILLAGE1_4')
-                        end if
-                    end do
-                end do
 !
                 if (this%info >= 2) then
                     print *, "-Domaine: ", proc_id, &
                         ", nombre de noeuds à trouver: ", n_coor_recv, &
                         " pour ", nb_nodes_keep, " candidats"
                 end if
+!
+                !  On regarde que les noeuds ne sont pas confondu.
+                do i_node = 1, nb_nodes_keep
+                    coor_i = this%nodes(v_nkeep(i_node))%coor
+                    tole_comp = max(tole, tole*norm2(coor_i))
+                    do j_node = i_node+1, nb_nodes_keep
+                        coor_j = this%nodes(v_nkeep(j_node))%coor
+                        coor_diff = abs(coor_i-coor_j)
+                        if (maxval(coor_diff) < tole_comp) then
+                            !! Verif pas de noeud double
+                            call utmess('F', 'MAILLAGE1_4')
+                        end if
+                    end do
+                end do
+
+                do i_node = 1, n_coor_recv
+                    coor_i = v_recv(4*(i_node-1)+2:4*(i_node-1)+4)
+                    tole_comp = max(tole, tole*norm2(coor_i))
+                    do j_node = i_node+1, n_coor_recv
+                        coor_j = v_recv(4*(j_node-1)+2:4*(j_node-1)+4)
+                        coor_diff = abs(coor_i-coor_j)
+                        if (maxval(coor_diff) < tole_comp) then
+                            !! Verif pas de noeud double
+                            call utmess('F', 'MAILLAGE1_4')
+                        end if
+                    end do
+                end do
 !
 ! --- Create joint .E
                 call jecroc(jexnum(send, i_comm))
@@ -3158,6 +3341,7 @@ contains
                 call wkvect("&&CREAMA.SNUME", 'V V I', 2*n_coor_recv, vi=v_snume)
 !
 ! --- Search nodes with coordinates
+                ASSERT(nb_nodes_keep >= n_coor_recv)
                 v_keep(1:nb_nodes_keep) = ASTER_TRUE
                 do i_node_r = 1, n_coor_recv
                     find = ASTER_FALSE

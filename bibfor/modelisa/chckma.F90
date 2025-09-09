@@ -17,6 +17,8 @@
 ! --------------------------------------------------------------------
 
 subroutine chckma(nomu, dtol)
+    use crea_maillage_module
+!
     implicit none
 !-----------------------------------------------------------------------
 !
@@ -66,6 +68,7 @@ subroutine chckma(nomu, dtol)
     character(len=24) :: cooval, connex, nsolo, mdoubl
     integer(kind=8) :: nbmail, nbnoeu
     integer(kind=8) :: insolo, imdoub, iatyma, nmdoub
+    type(Mmesh) :: mesh_conv
     aster_logical :: indic, alarme, erreur
 !
     call jemarq()
@@ -281,6 +284,11 @@ subroutine chckma(nomu, dtol)
     if (erreur) then
         call utmess('F', 'MODELISA4_10')
     end if
+
+! check presence of degenerated face
+    call mesh_conv%init(nomu)
+    call mesh_conv%clean()
+
 !
 !     -----------------------------------------------------------
 !     MENAGE DANS LE MAILLAGE : ON DETRUIT NOEUDS ORPHELINS ET

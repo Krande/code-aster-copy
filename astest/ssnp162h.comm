@@ -85,20 +85,7 @@ U_endo = beta * U_elas + (1 - beta) * U_max
 # VERIFICATION D'ABSENCE DE SNAP-BACK GLOBAL (U_MAX>U_ELAS)
 assert young > L_cube * k_n / pena_rupture
 
-MA0 = LIRE_MAILLAGE(FORMAT="ASTER")
-
-MA = CREA_MAILLAGE(MAILLAGE=MA0, LINE_QUAD=_F(TOUT="OUI"))
-
-MA = DEFI_GROUP(
-    reuse=MA,
-    MAILLAGE=MA,
-    CREA_GROUP_NO=(
-        _F(NOEUD=("N2", "N4", "N10", "N8", "N14", "N18", "N22", "N19"), NOM="DROITE"),
-        _F(NOEUD=("N1", "N3", "N9", "N7", "N16", "N17", "N24", "N20"), NOM="GAUCHE"),
-        _F(NOEUD=("N29"), NOM="NS17"),
-        _F(NOEUD=("N30"), NOM="NS18"),
-    ),
-)
+MA = LIRE_MAILLAGE(FORMAT="ASTER")
 
 MA = MODI_MAILLAGE(reuse=MA, MAILLAGE=MA, ORIE_FISSURE=_F(GROUP_MA="G_CUBE_D"), INFO=2)
 
