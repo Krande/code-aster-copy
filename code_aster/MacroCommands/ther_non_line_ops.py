@@ -112,16 +112,7 @@ def ther_non_line_ops(self, **args):
                     ThermalDirichletBC,
                 ),
             ):
-                if "FONC_MULT" in load:
-                    if isinstance(load["CHARGE"], ThermalDirichletBC):
-                        phys_pb.addDirichletBC(load["CHARGE"], load["FONC_MULT"])
-                    else:
-                        phys_pb.addLoad(load["CHARGE"], load["FONC_MULT"])
-                else:
-                    if isinstance(load["CHARGE"], ThermalDirichletBC):
-                        phys_pb.addDirichletBC(load["CHARGE"])
-                    else:
-                        phys_pb.addLoad(load["CHARGE"])
+                phys_pb.addLoadFromDict(load)
             else:
                 raise RuntimeError("Unknown load")
 

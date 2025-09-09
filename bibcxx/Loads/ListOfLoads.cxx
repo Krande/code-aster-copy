@@ -315,6 +315,8 @@ VectorString ListOfLoads::getListOfMechaTyp() { return _listOfMechaTyp; }
 
 VectorString ListOfLoads::getListOfMechaFuncTyp() { return _listOfMechaFuncTyp; }
 
+VectorString ListOfLoads::getListOfDiriTyp() { return _listOfDiriTyp; }
+
 void ListOfLoads::setDifferentialDisplacement(
     const FieldOnNodesRealPtr differentialDisplacement ) {
     _differentialDisplacement = differentialDisplacement;
@@ -334,6 +336,18 @@ bool ListOfLoads::hasDifferentialLoads() {
             return true;
     }
     return false;
+};
+
+bool ListOfLoads::hasDifferentialDirichletBC() {
+    for ( const auto &typ : _listOfDiriTyp ) {
+        if ( typ == "DIDI" )
+            return true;
+    }
+    return false;
+};
+
+bool ListOfLoads::hasDifferential() {
+    return hasDifferentialLoads() or hasDifferentialDirichletBC();
 };
 
 bool ListOfLoads::hasDifferentialDisplacement() { return _differentialDisplacement != nullptr; };

@@ -290,7 +290,7 @@ class NonLinearOperator(ContextMixin):
                 _msginit("VARI_ELGA", resu.userName)
 
                 list_of_loads = self.problem.getListOfLoads()
-                if list_of_loads.hasDifferentialLoads():
+                if list_of_loads.hasDifferential():
                     nume_didi = init_state.get("NUME_DIDI")
                     if nume_didi:
                         displ = resu.getField("DEPL", nume_didi).copyUsingDescription(nume_equa)
@@ -315,7 +315,7 @@ class NonLinearOperator(ContextMixin):
                     nume_equa, False
                 )
                 list_of_loads = self.problem.getListOfLoads()
-                if list_of_loads.hasDifferentialLoads():
+                if list_of_loads.hasDifferential():
                     list_of_loads.setDifferentialDisplacement(self.state.primal_curr)
                 _msginit("DEPL")
 
