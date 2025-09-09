@@ -240,10 +240,6 @@ ParallelMeshPtr MeshBalancer::applyBalancingStrategy( const VectorInt &newLocalN
     std::for_each( globNodeNumVect2.begin(), globNodeNumVect2.end(), &decrement< long int > );
 
     convertLastGhostLayerToLocal( globNodeNumVect2 );
-    for ( auto &id : _lastLayerGhostNodes ) {
-        std::cout << id << " ";
-    }
-    std::cout << std::endl;
 
     // create global cell numbering
     // Build a global numbering (if there is not)
