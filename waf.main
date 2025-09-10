@@ -32,6 +32,22 @@ waf_main()
     printf "checking environment... "
     if [ -z "${DEVTOOLS_COMPUTER_ID}" ]; then
         host=$(detect_host)
+        if [ -z "${host}" ]; then
+            echo "no preset configuration found"
+            source ${prefix}/env.d/version.sh
+            # FIXME: latest during beta test - export VERSION
+            export VERSION=latest
+            if [ ! -d ${prefix}/build/codeaster-prerequisites-${VERSION} ]; then
+                echo
+                ${prefix}/.devhelper/check_requirements.sh
+            fi
+            if [ -e ${prefix}/build/codeaster-prerequisites-${VERSION} ]; then
+                export ASTER_CONFIG=$(ls ${prefix}/build/codeaster-prerequisites-${VERSION}/*.sh)
+            else
+                echo "code_aster requirements not found, configuration may fail!"
+            fi
+            host=$(detect_host)
+        fi
         if [ ! -z "${host}" ]; then
             export WAFBUILD_ENV="$(get_wafbuild_env ${host})"
             if [ -e "${WAFBUILD_ENV}" ]; then
