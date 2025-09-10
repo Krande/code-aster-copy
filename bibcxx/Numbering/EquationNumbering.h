@@ -308,6 +308,11 @@ class EquationNumbering : public BaseEquationNumbering {
     ASTERINTEGER getNodeFromDOF( const ASTERINTEGER dof, const bool local = false ) const;
 
     /**
+     * @brief Get The Rows Associated To A Given Node Id
+     */
+    VectorLong getDOFsFromNode( const ASTERINTEGER node, const bool local = false ) const;
+
+    /**
      * @brief Return true if a physical dof is Associated To A Given Row
      */
     bool isPhysicalDOF( const ASTERINTEGER dof, const bool local = false ) const;

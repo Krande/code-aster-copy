@@ -444,6 +444,17 @@ ASTERINTEGER EquationNumbering::getNodeFromDOF( const ASTERINTEGER dof, const bo
     return nodeId;
 };
 
+VectorLong EquationNumbering::getDOFsFromNode( const ASTERINTEGER node, const bool local ) const {
+
+    ASTERINTEGER gd = PhysicalQuantityManager::getPhysicalQuantityNumber( getPhysicalQuantity() );
+    ASTERINTEGER nec = PhysicalQuantityManager::getNumberOfEncodedInteger( gd );
+
+    auto componentsOnNodes = ( *_componentsOnNodes )[1];
+    ASTERINTEGER dof = ( *componentsOnNodes )[node * ( 2 + nec )] - 1;
+    ASTERINTEGER nb_cmp = ( *componentsOnNodes )[node * ( 2 + nec ) + 1];
+    return irange( dof, dof + nb_cmp );
+}
+
 bool EquationNumbering::isPhysicalDOF( const ASTERINTEGER dof, const bool local ) const {
     auto [nodeId, cmpId] = this->getNodeAndComponentIdFromDOF( dof );
     return cmpId > 0;
@@ -525,6 +536,7 @@ EquationNumbering::getDOFsWithDescription( const VectorString &cmps, const Vecto
  */
 void EquationNumbering::updateValuePointers() {
     _componentsOnNodes->build();
+    _componentsOnNodes->updateValuePointer();
     _indexationVector->updateValuePointer();
     _nodeAndComponentsIdFromDOF->updateValuePointer();
     _lagrangianInformations->updateValuePointer();
