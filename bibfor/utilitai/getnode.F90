@@ -22,8 +22,8 @@ subroutine getnode(mesh, keywordfact, iocc, stop_void, list_node, &
     implicit none
 !
 #include "asterf_types.h"
-#include "asterfort/assert.h"
 #include "asterfort/asmpi_comm_vect.h"
+#include "asterfort/assert.h"
 #include "asterfort/jedema.h"
 #include "asterfort/jedetr.h"
 #include "asterfort/jemarq.h"
@@ -198,6 +198,7 @@ subroutine getnode(mesh, keywordfact, iocc, stop_void, list_node, &
 !
     i_node = 0
     if ((nb_node .ne. 0) .and. (nb_lect .ne. 0)) then
+        call jedetr(list_node)
         call wkvect(list_node, 'V V I', nb_node, vi=p_list_node)
         do i_lect = 1, nb_lect
             nume_lect = p_list_lect(i_lect)

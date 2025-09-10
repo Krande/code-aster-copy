@@ -3139,6 +3139,9 @@ contains
 ! --- 0: On enregiste le nombre de couches de ghost
             call wkvect(nblg, 'G V I', 1, vi=v_nblg)
             v_nblg(1) = this%nb_layer
+            call jedetr(pgin)
+            call wkvect(pgin, 'G V S', nbproc, vi4=v_pgid)
+            v_pgid(1:nbproc) = to_mpi_int(-1)
 !
 ! --- 1: On commence par compter le nombre de noeuds que l'on doit recevoir
 !
@@ -3154,6 +3157,7 @@ contains
             end do
             v_rnode(rank+1) = 0
 ! --- On compte combien on doit recevoir et envoyer
+!
             nb_recv = 0
             do i_proc = 0, nbproc-1
                 if (v_rnode(i_proc+1) > 0) then
@@ -3164,10 +3168,10 @@ contains
                 call wkvect(domj, 'G V I', nb_recv, vi=v_proc)
                 call jecrec(send, 'G V I', 'NU', 'DISPERSE', 'VARIABLE', nb_recv)
                 call jecrec(recv, 'G V I', 'NU', 'DISPERSE', 'VARIABLE', nb_recv)
-                call jedetr(pgin)
-                call wkvect(pgin, 'G V S', nbproc, vi4=v_pgid)
                 call jeveuo(gcom, 'E', vi=v_gcom)
                 v_gcom(1) = mpicou
+            else
+                goto 100
             end if
             nb_recv = 0
             do i_proc = 0, nbproc-1
@@ -3176,7 +3180,7 @@ contains
                     v_proc(nb_recv) = i_proc
                     v_pgid(i_proc+1) = to_mpi_int(i_proc)
                 else
-                    v_pgid(i_proc+1) = -1
+                    v_pgid(i_proc+1) = to_mpi_int(-1)
                 end if
             end do
             call sort_i8(v_proc, nb_recv)

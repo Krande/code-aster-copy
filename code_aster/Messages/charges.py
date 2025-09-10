@@ -20,6 +20,12 @@
 from ..Utilities import _
 
 cata_msg = {
+    2: _(
+        """
+On ne peut pas appliquer dans la même occurrence des conditions aux ddls HHO et non-HHO.
+Il faut le faire dans des occurrences séparées.
+"""
+    ),
     3: _(
         """
 La charge %(k1)s n'a pu être identifiée. Cette erreur est probablement due à l'utilisation d'un

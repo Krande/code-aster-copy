@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -17,9 +17,10 @@
 ! --------------------------------------------------------------------
 !
 interface
-    subroutine getKinematicForHHO(valeType, model, keywordFact, cnsForCharci)
+    subroutine getKinematicForHHO(valeType, model, numeddl, keywordFact, cnsForCharci)
         character(len=1), intent(in) :: valeType
         character(len=8), intent(in) :: model
+        character(len=14), intent(in) :: numeddl
         character(len=16), intent(in) :: keywordFact
         character(len=19), intent(in) :: cnsForCharci
     end subroutine getKinematicForHHO

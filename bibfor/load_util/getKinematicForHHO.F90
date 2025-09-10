@@ -16,15 +16,17 @@
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
 !
-subroutine getKinematicForHHO(valeType, model, keywordFact, cnsForCharci)
+subroutine getKinematicForHHO(valeType, model, numeddl, keywordFact, cnsForCharci)
 !
     use HHO_precalc_module, only: hhoAddInputField
+    use HHO_Dirichlet_module, only: hasHHODoFFromNodes
 !
     implicit none
 !
+#include "jeveux.h"
+#include "asterf_types.h"
 #include "asterc/getfac.h"
 #include "asterc/getmjm.h"
-#include "asterf_types.h"
 #include "asterfort/assert.h"
 #include "asterfort/calcul.h"
 #include "asterfort/celces.h"
@@ -37,16 +39,15 @@ subroutine getKinematicForHHO(valeType, model, keywordFact, cnsForCharci)
 #include "asterfort/dismoi.h"
 #include "asterfort/getnode.h"
 #include "asterfort/getvr8.h"
-#include "asterfort/jedetr.h"
 #include "asterfort/jelira.h"
 #include "asterfort/jeveuo.h"
 #include "asterfort/jexatr.h"
 #include "asterfort/jexnum.h"
 #include "asterfort/megeom.h"
-#include "jeveux.h"
 !
     character(len=1), intent(in) :: valeType
     character(len=8), intent(in) :: model
+    character(len=14), intent(in) :: numeddl
     character(len=16), intent(in) :: keywordFact
     character(len=19), intent(in) :: cnsForCharci
 !
@@ -70,6 +71,7 @@ subroutine getKinematicForHHO(valeType, model, keywordFact, cnsForCharci)
     integer(kind=8) :: userNodeNb, userDOFNb, nbin
     integer(kind=8) :: cellTypeNume, cellDime, cellNume, cellNbNode
     integer(kind=8) :: nodeNume, nodeNbCell, nodeNumeLoca, nbCmpVale
+    aster_logical :: l_hho_dofs
     integer(kind=8), pointer :: userNodeNume(:) => null()
     integer(kind=8), pointer :: meshTypmail(:) => null()
     real(kind=8) :: userDOFVale
@@ -137,6 +139,10 @@ subroutine getKinematicForHHO(valeType, model, keywordFact, cnsForCharci)
         call getnode(mesh, keywordfact, iocc, 'F', listNode, userNodeNb)
         if (userNodeNb .eq. 0) cycle
         call jeveuo(listNode, 'L', vi=userNodeNume)
+!
+! --------- Test only nodes with HHO dofs
+        l_hho_dofs = hasHHODoFFromNodes(numeddl, userNodeNb, listNode)
+        if (.not. l_hho_dofs) cycle
 
         do iNode = 1, userNodeNb
             nodeNume = userNodeNume(iNode)
@@ -217,14 +223,14 @@ subroutine getKinematicForHHO(valeType, model, keywordFact, cnsForCharci)
 110             continue
             end do
         end do
-        call jedetr(listNode)
     end do
-
+!
 ! - Conversion des CHAM_ELNO_S en CHAM_ELNO pour calcul
     call cescel(elnoSVale, modelLigrel, option, paraNameVale, prolZero, &
                 nncp, 'V', elnoVale, 'A', iret)
-    ASSERT(nncp == 0)
-
+!
+    ASSERT(nncp .eq. 0)
+!
 ! - Appel calcul élémentaire (HHO_CINE_MECA)
     call megeom(model, chgeom)
     lpain = " "

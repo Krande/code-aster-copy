@@ -18,16 +18,17 @@
 !
 subroutine charci(chcine, mfact, mo, valeType)
 !
-    use HHO_Dirichlet_module, only: hhoGetKinematicValues
+    use HHO_Dirichlet_module, only: hhoGetKinematicValues, hasHHODoFFromNodes
 !
     implicit none
 !
-#include "asterf_types.h"
 #include "jeveux.h"
+#include "asterf_types.h"
 #include "asterc/getfac.h"
 #include "asterc/getmjm.h"
-#include "asterfort/gettco.h"
 #include "asterc/indik8.h"
+#include "asterfort/addModelLigrel.h"
+#include "asterfort/as_deallocate.h"
 #include "asterfort/assert.h"
 #include "asterfort/chcsur.h"
 #include "asterfort/cnocns.h"
@@ -36,6 +37,9 @@ subroutine charci(chcine, mfact, mo, valeType)
 #include "asterfort/copisd.h"
 #include "asterfort/detrsd.h"
 #include "asterfort/dismoi.h"
+#include "asterfort/getKinematicForHHO.h"
+#include "asterfort/getKinematicValues.h"
+#include "asterfort/gettco.h"
 #include "asterfort/getvid.h"
 #include "asterfort/getvtx.h"
 #include "asterfort/imprsd.h"
@@ -47,12 +51,11 @@ subroutine charci(chcine, mfact, mo, valeType)
 #include "asterfort/jemarq.h"
 #include "asterfort/jeveuo.h"
 #include "asterfort/jexnom.h"
+#include "asterfort/numero.h"
 #include "asterfort/reliem.h"
+#include "asterfort/rs_getfirst.h"
 #include "asterfort/rsexch.h"
 #include "asterfort/wkvect.h"
-#include "asterfort/rs_getfirst.h"
-#include "asterfort/getKinematicValues.h"
-#include "asterfort/getKinematicForHHO.h"
 !
     character(len=*) :: chcine, mfact, mo
     character(len=1) :: valeType
@@ -71,7 +74,7 @@ subroutine charci(chcine, mfact, mo, valeType)
     integer(kind=8) :: ifm, niv, icmp, cmp, ier, ino, userNodeNb, nuno
     integer(kind=8) :: ioc, jcnsv, jcnsl, idino, userDOFNb
     integer(kind=8) :: idnddl, idvddl, nbddl, iddl, i, idprol
-    integer(kind=8) :: nbcmp, jcmp, noc, n1, iret, icorres
+    integer(kind=8) :: nbcmp, jcmp, noc, n1, iret, icorres, nbLigr
     integer(kind=8) :: jcnshhov, jcnshhod, jcnshhoc, i_cmp_chmx, i_cmp_hho
     integer(kind=8) :: jnoxfl, nlicmp, icmpmx, nume_first, nb_cmp_chmx
     integer(kind=8), parameter :: mxcmp = 100
@@ -83,8 +86,10 @@ subroutine charci(chcine, mfact, mo, valeType)
     character(len=16) :: keywordFact, phenom, typco, userDOFName(mxcmp)
     character(len=19) :: chci, cns, cns2, depla, noxfem, cnshho, corres
     character(len=24) :: userNodeName, cnuddl, cvlddl, nprol
+    character(len=24), pointer :: listLigr(:) => null()
+    character(len=14) :: numeddl
     character(len=80) :: titre
-    aster_logical :: lxfem, l_hho
+    aster_logical :: lxfem, l_hho, l_hho_oc
     character(len=8), pointer :: afck(:) => null()
     data nprol/'                   .PROL'/
 ! --- DEBUT -----------------------------------------------------------
@@ -107,6 +112,7 @@ subroutine charci(chcine, mfact, mo, valeType)
     corres = '&&CHARCI.COR'
     cns = '&&CHARCI.CNS'
     cnshho = '&&CHARCI.CNSHHO'
+    numeddl = '&&CHARCI.NUME'
 !
 !    --------------------------------------------------------
 !    MODELE X-FEM
@@ -123,7 +129,14 @@ subroutine charci(chcine, mfact, mo, valeType)
 !
     call dismoi('EXI_HHO', mo, 'MODELE', repk=answer)
     l_hho = answer .eq. 'OUI'
-
+!
+! - create nume_ddl for HHO
+    if (l_hho) then
+        nbLigr = 0
+        call addModelLigrel(mo, nbLigr, listLigr)
+        call numero(numeddl, 'VV', nbLigr, listLigr, modelZ_=mo)
+        AS_DEALLOCATE(vk24=listLigr)
+    end if
 !
 !     -- CAS DE EVOL_IMPO : ON IMPOSE TOUS LES DDLS DU 1ER CHAMP
 !     ------------------------------------------------------------
@@ -202,12 +215,11 @@ subroutine charci(chcine, mfact, mo, valeType)
     if (l_hho) then
         icmpmx = nbcmp
     end if
-    call cnscre(mesh, gdcns, icmpmx, zk8(jcmp), 'V', &
-                cns)
+    call cnscre(mesh, gdcns, icmpmx, zk8(jcmp), 'V', cns)
 !
     if (l_hho .and. valeType .eq. 'R') then
         ! Precompute values to apply
-        call getKinematicForHHO(valeType, mo, keywordFact, cnshho)
+        call getKinematicForHHO(valeType, mo, numeddl, keywordFact, cnshho)
         call dismoi('NOM_GD', cnshho, 'CHAM_NO_S', repk=gdhho, arret="F")
         ASSERT(gdhho == gdcns)
 !
@@ -241,8 +253,15 @@ subroutine charci(chcine, mfact, mo, valeType)
 ! ----- DDL A CONTRAINDRE :
         call getmjm(keywordFact, ioc, mxcmp, userDOFName, chcity, &
                     userDOFNb)
-! ----- Get kinematic values
+!
+! ----- Detect if current DOF are HHO or not - No mix possible for the moment
+        l_hho_oc = ASTER_FALSE
         if (l_hho) then
+            l_hho_oc = hasHHODoFFromNodes(numeddl, userNodeNb, userNodeName)
+        end if
+
+! ----- Get kinematic values
+        if (l_hho_oc) then
             call hhoGetKinematicValues(keywordFact, ioc, &
                                        mo, nogdsi, valeType, &
                                        userDOFNb, userDOFName, &
@@ -280,7 +299,7 @@ subroutine charci(chcine, mfact, mo, valeType)
             do cmp = 1, nbddl
                 k8b = zk8(idnddl-1+cmp)
                 icmp = indik8(zk8(jcmp), k8b, 1, nbcmp)
-                if (l_hho) then
+                if (l_hho_oc) then
                     i_cmp_hho = zi(icorres-1+icmp)
                     do ino = 1, userNodeNb
                         nuno = zi(idino-1+ino)
@@ -338,6 +357,7 @@ subroutine charci(chcine, mfact, mo, valeType)
     call chcsur(chci, cns, valeType, mo, nogdsi)
     call detrsd('CHAMP', cns)
     call detrsd('CHAMP', cnshho)
+    call detrsd('NUME_DDL', numeddl)
     call jedetr(corres)
 !
 !   -- si evol_impo : il ne faut pas utiliser les valeurs de chci :
