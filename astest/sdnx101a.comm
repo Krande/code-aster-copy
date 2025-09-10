@@ -77,7 +77,9 @@ BETPRE = DEFI_MATERIAU(
 #
 # ----- MATERIAU CHOC -----
 
-MAT_C = DEFI_MATERIAU(DIS_CONTACT=_F(RIGI_NOR=1.0e15, DIST_1=1.0e-6, DIST_2=1.0e-6))
+MAT_C = DEFI_MATERIAU(
+    DIS_CONTACT=_F(RIGI_NOR=1.0e15, DIST_1=1.0e-6, DIST_2=1.0e-6, KP=1.0e15, KT=1.0e15)
+)
 #
 # -----------------------------------------------------------------------
 #              AFFECTATION DES MATERIAUX AUX ELEMENTS
@@ -2451,7 +2453,7 @@ TEST_RESU(
             NOM_CHAM="DEPL",
             GROUP_NO="N739",
             NOM_CMP="DZ",
-            VALE_CALC=-5.106502140386322e-03,
+            VALE_CALC=-0.005106505359473072,
             CRITERE=("RELATIF", "RELATIF"),
         ),
         _F(
@@ -2460,7 +2462,7 @@ TEST_RESU(
             NOM_CHAM="DEPL",
             GROUP_NO="N731",
             NOM_CMP="DZ",
-            VALE_CALC=-5.114559919314128e-03,
+            VALE_CALC=-0.0051145631378339395,
             CRITERE=("RELATIF", "RELATIF"),
         ),
         _F(
@@ -2469,7 +2471,7 @@ TEST_RESU(
             NOM_CHAM="DEPL",
             GROUP_NO="N739",
             NOM_CMP="DZ",
-            VALE_CALC=-5.258443333735857e-03,
+            VALE_CALC=-0.005257621720991574,
             CRITERE=("RELATIF", "RELATIF"),
         ),
         _F(
@@ -2478,7 +2480,7 @@ TEST_RESU(
             NOM_CHAM="DEPL",
             GROUP_NO="N1",
             NOM_CMP="DX",
-            VALE_CALC=-3.5973226569627437e-04,
+            VALE_CALC=-0.0003534955280227298,
             CRITERE=("RELATIF", "RELATIF"),
         ),
     )

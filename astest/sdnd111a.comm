@@ -177,6 +177,7 @@ for ias in ListeAs:
 FreqAmp["A"]["x"] = [[1.0, 1.5, 3.0], [0.004, 0.0016, 0.00352]]
 FreqAmp["A"]["y"] = [[2.0, 3.0, 1.0], [0.006, 0.0024, 0.00528]]
 
+
 #
 def PyDepl(Ass, axe, Inst, Tf1, Tf2):
     # Pulsations des signaux
@@ -389,6 +390,32 @@ for Inst,LesValeurs in Resultat:
             )
 
 TEST_RESU(**mclf)
+
+#######
+# # The following code block enables to update non regression reference values
+# valref = []
+# for inst, values in Resultat:
+#     tmp = []
+#     for key, val in zip(LesClefs, values):
+#         if abs(val) > 0.1:
+#             TAB = POST_RELEVE_T(
+#                             ACTION=_F(
+#                                 OPERATION="EXTRACTION",
+#                                 INTITULE="RESU",
+#                                 RESULTAT=Rstnl,
+#                                 NOM_CHAM="REAC_NODA",
+#                                 INST=inst,
+#                                 GROUP_NO=key[0],
+#                                 NOM_CMP=key[1],
+#                             ),
+# )
+#             tmp.append(TAB.EXTR_TABLE().values()[key[1]][0])
+#         else:
+#             tmp.append(0.0)
+#     valref.append([inst, tmp])
+# #
+# print(valref)
+#######
 
 # fmt: on
 FIN()

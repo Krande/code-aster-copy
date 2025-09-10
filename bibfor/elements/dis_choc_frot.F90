@@ -38,6 +38,7 @@ subroutine dis_choc_frot(DD, iret)
 #include "asterfort/pmavec.h"
 #include "asterfort/rcvala.h"
 #include "asterfort/tecach.h"
+#include "asterfort/utmess.h"
 #include "asterfort/ut2mgl.h"
 #include "asterfort/ut2mlg.h"
 #include "asterfort/ut2vgl.h"
@@ -71,6 +72,8 @@ subroutine dis_choc_frot(DD, iret)
 !
     real(kind=8) :: valre1(2)
     integer(kind=8) :: codre1(2)
+!
+    character(len=32) :: messak(3)
 !
     aster_logical :: okelem, IsSymetrique, IsCoulomb, IsDynamique, IsStatique, IsCoin2D, Prediction
     blas_int :: b_incx, b_incy, b_n
@@ -180,11 +183,23 @@ subroutine dis_choc_frot(DD, iret)
             IsCoin2D = ASTER_TRUE
         end if
     end if
-!
-    okelem = (DD%ndim .eq. 3)
-    okelem = okelem .and. ((DD%nomte .eq. 'MECA_DIS_T_N') .or. (DD%nomte .eq. 'MECA_DIS_T_L'))
+!   Vérification du type d'élément discret
+    okelem = ((DD%nomte .eq. 'MECA_DIS_T_N') .or. (DD%nomte .eq. 'MECA_DIS_T_L'))
+! --- DIS_CHOC avec frottement restreint aux éléments de type DIS_T
+    if (.not. okelem) then
+        messak(1) = 'DIS_CONTACT'
+        messak(2) = 'DIS_CHOC'
+        messak(3) = 'DIS_T'
+        call utmess('F', 'DISCRETS_37', nk=3, valk=messak)
+    end if
+! --- DIS_CHOC avec frottement interdit aux éléments discrets 2D
+    if ((IsCoulomb) .and. (DD%ndim .ne. 3)) then
+        messak(1) = 'DIS_CONTACT'
+        messak(2) = 'DIS_CHOC'
+        call utmess('F', 'DISCRETS_38', nk=3, valk=messak)
+    end if
 !   Relation de comportement de choc
-    if ((okelem) .and. (.not. IsCoin2D)) then
+    if ((IsCoulomb) .and. (.not. IsCoin2D)) then
         IsSymetrique = ASTER_FALSE
         call dis_choc_frot_nosyme(DD, zi(imat), ulp, zr(igeom), klv, &
                                   dpe, varmo, force, varpl)
@@ -193,7 +208,7 @@ subroutine dis_choc_frot(DD, iret)
         ! Prédiction en dynamique, on retourne les efforts précédents
         Prediction = IsDynamique .and. (iterat .eq. 1) .and. (DD%option .eq. 'RAPH_MECA')
         call dis_choc_frot_syme(DD, zi(imat), ulp, zr(igeom), klv, &
-                                kgv, dvl, dpe, dve, Prediction, &
+                                kgv, dpe, Prediction, &
                                 force, varmo, varpl)
     end if
 !   actualisation de la matrice tangente
