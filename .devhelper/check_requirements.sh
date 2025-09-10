@@ -36,22 +36,25 @@ _test curl || exit 1
 is_intranet
 okintranet=$?
 
+mkdir -p ${prefix}/build
 echo
 if [ ${okintranet} -eq 0 ]; then
-    set -e
     echo "⏳ downloading requirements archive (it may take a few minutes)..."
     curl -fsSL https://minio.retd.edf.fr/codeaster/prereq/codeaster-prerequisites-${VERSION}-full-bin.sh \
         -o ${prefix}/build/archive.sh
-    (
-        cd ${prefix}/build
-        chmod 755 archive.sh
-        ./archive.sh
-        rm -f archive.sh
-    )
 else
     echo "❌ downloading requirements from internet is not yet supported, sorry"
     exit 1
 fi
+if [ ! -f ${prefix}/build/archive.sh ]; then
+    echo "❌ download failed"
+    exit 1
+fi
+
+cd ${prefix}/build
+chmod 755 archive.sh
+./archive.sh && rm -f archive.sh
+
 printf "✅ code_aster requirements installed\n\n"
 
 exit 0

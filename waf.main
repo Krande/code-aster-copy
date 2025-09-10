@@ -39,7 +39,7 @@ waf_main()
             export VERSION=latest
             if [ ! -d ${prefix}/build/codeaster-prerequisites-${VERSION} ]; then
                 echo
-                ${prefix}/.devhelper/check_requirements.sh
+                ${prefix}/.devhelper/check_requirements.sh || exit $?
             fi
             if [ -e ${prefix}/build/codeaster-prerequisites-${VERSION} ]; then
                 export ASTER_CONFIG=$(ls ${prefix}/build/codeaster-prerequisites-${VERSION}/*.sh)
