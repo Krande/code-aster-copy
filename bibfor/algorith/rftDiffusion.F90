@@ -23,6 +23,7 @@ subroutine rftDiffusion(fami, kpg, ksp, poum, imate, c, &
 #include "asterfort/assert.h"
 #include "asterfort/rcvalb.h"
 #include "asterfort/utmess.h"
+#include "rgi_module.h"
     character(len=*), intent(in) :: fami, poum
     integer(kind=8), intent(in) :: kpg, ksp, imate
     real(kind=8), intent(in) :: c, temp
@@ -37,21 +38,18 @@ subroutine rftDiffusion(fami, kpg, ksp, poum, imate, c, &
 !   diff (out) : coefficient de diffusion
 ! ......................................................................
     integer(kind=8)           :: codret(5), nbpar
-    real(kind=8)      :: valres(5), hygr, valpar(2), dpc
+    real(kind=8)      :: valres(5), hygr, valpar(2), dpc, tz0
     real(kind=8)      :: richardsDiffusionCoef, vapourDiffusionCoef
     real(kind=8)      :: perm_in, qsr_k, poro, a_mil, b_mil, t0_C, vg_m_p
     real(kind=8)      :: t0_K, tempK, beta, satu
     character(len=16) :: nomres(5)
     character(len=8) :: nompar(2)
-!   waterMolarMass (g/mol)
-    real(kind=8), parameter :: waterMolarMass = 18.01528d-3
-!   idealGasConstant (J/K/mol)
-    real(kind=8), parameter :: idealGasConstant = 8.314d0
 !
 !   --------------------------------------------------------------------
 !
 !
-    !   rft parameters
+    tz0 = r8t0()
+!   rft parameters
     nomres(1) = 'PERM_IN'
     nomres(2) = 'QSR_K'
     nomres(3) = 'A_MIL'
@@ -86,8 +84,8 @@ subroutine rftDiffusion(fami, kpg, ksp, poum, imate, c, &
     end if
 !
     satu = c/poro/1.d3
-    t0_K = t0_C+r8t0()
-    tempK = temp+r8t0()
+    t0_K = t0_C+tz0
+    tempK = temp+tz0
 
     call vapourDiffusion(satu, tempK, dpc, hygr, poro, a_mil, b_mil, &
                          vapourDiffusionCoef)
@@ -159,14 +157,13 @@ contains
         real(kind=8) :: fickDiff, Pv, pvs
         real(kind=8), parameter :: alpha_rankine = 13.7d0
         real(kind=8), parameter :: beta_rankine = 5120.d0
-        real(kind=8), parameter :: Pa = 101325.d0
 !
         fickDiff = fickDiffusion(satu, poro, a_mil, b_mil, tempk)
-        ! Rankine equation for calculating saturated vapor pressure
-        pvs = Pa*exp(alpha_rankine-(beta_rankine/tempK))
-        !
+!       Rankine equation for calculating saturated vapor pressure
+        pvs = AtmToPa*exp(alpha_rankine-(beta_rankine/tempK))
+!
         Pv = hygr*pvs
-        vapDiff = (fickDiff*Pv*dpc*(waterMolarMass/(idealGasConstant*TempK))**2) &
+        vapDiff = (fickDiff*Pv*dpc*(WATERMOLARMASS/(KGAZP*TempK))**2) &
                   /(poro*waterDensity(tempK)**2)
 
     end subroutine vapourDiffusion
@@ -204,7 +201,7 @@ contains
 !   Effective diffusion coefficient of concrete
 !
         ! Diffusion of water vapour in air
-        D0 = 0.217d0*1d-4*((tempk/r8t0()))**1.88
+        D0 = 0.217d0*1d-4*((tempk/tz0))**1.88
         ! Millington resistance factor
         resitanceFactor = ((poro)**a_mil)*(1.d0-satu)**b_mil
         fickDiffusion = D0*resitanceFactor
@@ -218,7 +215,7 @@ contains
 !   Density of liquid water
 !
         waterDensity = 314.4d0+685.6d0*(1.d0 &
-                                        -((tempK-r8t0())/374.14d0)**(1.d0/0.55d0))**0.55d0
+                                        -((tempK-tz0)/374.14d0)**(1.d0/0.55d0))**0.55d0
 !
     end function waterDensity
 !
