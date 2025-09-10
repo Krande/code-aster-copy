@@ -132,7 +132,7 @@ check_load_didi1 = values_depl_didi1[nodes_load].T[2].mean()
 test.assertAlmostEqual(check_load_didi1, 2.0 * DZLOAD, msg="CHAMNO_IMPO - DIDI with ETAT_INIT")
 
 # Cas EVOL_IMPO charge DIDI avec champ initial. On retrouve 2 * DZLOAD.
-issue34815_fixed = False
+issue34815_fixed = True
 if issue34815_fixed:
     RESU_DIDI2 = MECA_NON_LINE(
         MODELE=MOD,

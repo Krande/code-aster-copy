@@ -382,6 +382,7 @@ class DiscreteComputation {
      */
     template < typename T >
     std::shared_ptr< FieldOnNodes< T > > _getDirichletBC( const ASTERDOUBLE time_curr = 0.0 ) const;
+    FieldOnNodesRealPtr _getDirichletDifferentialBC() const;
     FieldOnNodesRealPtr getMechanicalDirichletBC( const ASTERDOUBLE time_curr = 0.0 ) const;
     FieldOnNodesRealPtr getThermalDirichletBC( const ASTERDOUBLE time_curr = 0.0 ) const;
     FieldOnNodesComplexPtr getAcousticDirichletBC( const ASTERDOUBLE time_curr = 0.0 ) const;
