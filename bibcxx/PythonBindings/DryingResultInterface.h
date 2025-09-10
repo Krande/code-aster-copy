@@ -1,5 +1,5 @@
-#ifndef EVOLUTIVETHERMALLOADINTERFACE_H_
-#define EVOLUTIVETHERMALLOADINTERFACE_H_
+#ifndef EVOLUTIVEDRYINGRESULTINTERFACE_H_
+#define EVOLUTIVEDRYINGRESULTINTERFACE_H_
 
 /**
  * @file DryingResultInterface.h
@@ -32,4 +32,4 @@
 
 void exportDryingResultToPython( py::module_ &mod );
 
-#endif /* EVOLUTIVETHERMALLOADINTERFACE_H_ */
+#endif /* EVOLUTIVEDRYINGLOADINTERFACE_H_ */

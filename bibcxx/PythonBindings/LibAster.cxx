@@ -284,6 +284,7 @@ PYBIND11_MODULE( libaster, mod ) {
     exportTransientResultToPython( mod );
     exportLoadResultToPython( mod );
     exportThermalResultToPython( mod );
+    exportDryingResultToPython( mod );
     exportCombinedFourierResultToPython( mod );
     exportElasticFourierResultToPython( mod );
     exportThermalFourierResultToPython( mod );
@@ -306,7 +307,6 @@ PYBIND11_MODULE( libaster, mod ) {
     exportFluidStructureModalBasisToPython( mod );
     exportGeneralizedModeResultToPython( mod );
     exportMGISBehaviourToPython( mod );
-    exportDryingResultToPython( mod );
 
 #ifdef ASTER_HAVE_MPI
     /* These objects must be declared in ObjectsExt
