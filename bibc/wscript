@@ -70,6 +70,7 @@ def configure(self):
 
     self.add_linkflags("-Wl,--no-as-needed", dest="LINKFLAGS_LIBASTER")
     self.add_linkflags("-Wl,-flto=auto", dest="LINKFLAGS")
+    self.add_linkflags("-Wl,-z,noexecstack", dest="LINKFLAGS")
 
     incpath = osp.join(self.path.get_src().abspath(), "include")
     self.env.append_value("INCLUDES_BIBC", incpath)
