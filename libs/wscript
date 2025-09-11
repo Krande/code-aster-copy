@@ -41,6 +41,7 @@ def build(self):
         features=("cxx fc" if self.env.ASTER_PLATFORM_MINGW else "cxx fc cxxshlib fcshlib"),
         name="astergc",
         target="AsterGC",
+        rpath="$ORIGIN",
         source=sources,
         use=use,
         env=env.derive(),

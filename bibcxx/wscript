@@ -64,6 +64,7 @@ def build(self):
         name="asterbibcxx",
         source=get_srcs("**/*.cxx", excl="MFront/*.cxx"),
         target="bibcxx",
+        rpath="$ORIGIN",
         use=[
             "PYEXT",
             "PYBIND11",
