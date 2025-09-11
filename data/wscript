@@ -467,6 +467,7 @@ def check_config(self):
     cfg = {}
     cfgext = self.env["CFG_EXT"]
     self.start_msg(f"Set parameters for 'config.{cfgext}'")
+    self.end_msg("...")
     tmpdir = None if self.env.ASTER_PLATFORM_MINGW else "/tmp"
     if os.environ.get("ASTER_TMPDIR"):
         tmpdir = os.environ["ASTER_TMPDIR"]
@@ -502,7 +503,6 @@ def check_config(self):
         "valgrind": "valgrind --tool=memcheck --leak-check=full --error-limit=no --track-origins=yes",
         "gdb": osp.join(self.env.ASTERDATADIR, "exectool", "gdb_wrapper"),
     }
-    self.end_msg("done")
     from_env = self.env["CONFIG_PARAMETERS"]
     for param in (
         "tmpdir",
@@ -537,6 +537,10 @@ def check_mpiexec(self):
         self.end_msg(self.env["mpiexec"])
         self.env["CFGJS_mpiexec"] = [self.env["mpiexec"]]
         return
+    # in container/minimal distribution without ssh, rsh
+    _check_prog(self, "_remote_", ["ssh", "rsh"], mandatory=False)
+    if not self.env["_remote_"]:
+        os.environ["OMPI_MCA_plm"] = "^rsh"
     # MPI norm recognizes only mpiexec as proper launcher
     _check_prog(self, "mpiexec", ["mpiexec"], var_prefix="CFGJS_")
     # do not use absolute path returned by _check_prog because it is
