@@ -88,13 +88,6 @@ Ce message est un message d'erreur développeur.
 Contactez le support technique.
 """
     ),
-    58: _(
-        """
-  le code " %(k1)s " est non prévu
-Ce message est un message d'erreur développeur.
-Contactez le support technique.
-"""
-    ),
     59: _(
         """
 Pour l'option %(k1)s, vous ne pouvez affecter qu'un seul matériau qui ne doit avoir
