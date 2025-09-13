@@ -20,16 +20,30 @@ is_intranet() {
     return ${okintranet}
 }
 
+echo
 echo "code_aster requirements not found in 'build/'."
 echo "If they are already installed, define ASTER_CONFIG environment variable" \
      "to the environment file."
-printf "✨ Do you want to download the requirements ([y]/n)? "
+printf "✨ Do you want to download the requirements ([y]/n, c to cancel)? "
 read answer
-answer=$(sed 's/^ *[nN] *$/no/' <<< "${answer}")
-if [ "${answer}" = "no" ]; then
-    exit 0
-fi
+answer=$(tr '[:upper:]' '[:lower:]' <<< "${answer}")
+[ "${answer}" = "no" ] && exit 0
+[ "${answer}" = "c" ] && echo "exiting..." && exit 1
 
+ASTER_REQS_PACKAGE=${ASTER_REQS_PACKAGE:-"gcc-ompi"}
+if [ "${ASTER_REQS_PACKAGE}" = "ask" ]; then
+    echo
+    echo "Select the package you want to download:"
+    echo "  1. full (embedding gcc & openmpi, recommended)"
+    echo "  2. with gcc, without openmpi (you must have the same version of openmpi on the host)"
+    echo "  3. without gcc, without openmpi (you must have the same version of openmpi on the host)"
+    printf "✨ your choice ([1]/2/3, 0 to cancel)? "
+    read answer
+    [ "${answer}" = "2" ] && ASTER_REQS_PACKAGE="gcc-noompi"
+    [ "${answer}" = "3" ] && ASTER_REQS_PACKAGE="nogcc-noompi"
+    [ "${answer}" = "0" ] && echo "exiting..." && exit 1
+fi
+arch="codeaster-reqs-${VERSION}-${ASTER_REQS_PACKAGE}.sh"
 
 _test curl || exit 1
 
@@ -39,21 +53,21 @@ okintranet=$?
 mkdir -p ${prefix}/build
 echo
 if [ ${okintranet} -eq 0 ]; then
-    echo "⏳ downloading requirements archive (it may take a few minutes)..."
-    curl -fsSL https://minio.retd.edf.fr/codeaster/prereq/codeaster-prerequisites-${VERSION}-full-bin.sh \
-        -o ${prefix}/build/archive.sh
+    echo "⏳ downloading requirements archive ${arch} (it may take a few minutes)..."
+    curl -fsSL https://minio.retd.edf.fr/codeaster/prereq/${arch} \
+        -o ${prefix}/build/${arch}
 else
     echo "❌ downloading requirements from internet is not yet supported, sorry"
     exit 1
 fi
-if [ ! -f ${prefix}/build/archive.sh ]; then
+if [ ! -f ${prefix}/build/${arch} ]; then
     echo "❌ download failed"
     exit 1
 fi
 
 cd ${prefix}/build
-chmod 755 archive.sh
-./archive.sh && rm -f archive.sh
+chmod 755 ${arch}
+./${arch} && rm -f ${arch}
 
 printf "✅ code_aster requirements installed\n\n"
 
