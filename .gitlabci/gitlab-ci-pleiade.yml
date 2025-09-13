@@ -374,3 +374,51 @@ verification_test_pixi:
   allow_failure: true
   rules:
     - if: $BUILDTYPE == "nightly"
+
+# --- variant using code-aster-reqs package for nightly build / weekly testing
+prepare_pkg:
+  image:
+    name: nexus.retd.edf.fr:5012/debian:trixie
+  variables:
+    OSNAME: pkg
+  extends: .prepare
+  script:
+    - apt-get update
+    - apt-get install -y binutils curl git make patch
+    - !reference [.prepare, script]
+  rules:
+    - if: $BUILDTYPE == "nightly"
+      when: on_success
+    - when: manual
+
+compile_pkg:
+  image:
+    name: nexus.retd.edf.fr:5012/debian:trixie
+  variables:
+    OSNAME: pkg
+  extends: .compile
+  needs:
+    - prepare_pkg
+  script:
+    - apt-get update
+    - apt-get install -y binutils curl git make patch
+    - !reference [.compile, script]
+  rules:
+    - if: $BUILDTYPE == "nightly"
+      when: on_success
+    - when: manual
+
+verification_test_pkg:
+  image:
+    name: nexus.retd.edf.fr:5012/debian:trixie
+  variables:
+    OSNAME: pixi
+  extends: .verification_test
+  needs:
+    - prepare_pkg
+    - compile_pkg
+  allow_failure: true
+  rules:
+    - if: $BUILDTYPE == "nightly"
+      when: on_success
+    - when: manual
