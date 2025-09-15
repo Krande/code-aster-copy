@@ -413,6 +413,7 @@ verification_test_pkg:
     name: nexus.retd.edf.fr:5012/debian:trixie
   variables:
     OSNAME: pixi
+    OMPI_MCA_plm: ^rsh
   extends: .verification_test
   needs:
     - prepare_pkg
