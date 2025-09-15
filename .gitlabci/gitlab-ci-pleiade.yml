@@ -420,7 +420,8 @@ verification_test_pkg:
     - compile_pkg
   script:
     - apt-get update
-    - apt-get install -y cmake
+    - apt-get install -y cmake git
+    - .gitlabci/add-allow-run-as-root.sh
     - !reference [.verification_test, script]
   allow_failure: true
   # rules:
