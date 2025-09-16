@@ -202,8 +202,8 @@ module crea_maillage_module
 !===================================================================================================
 !
     public :: Medge, Mface, Mcell, Mmesh, Mconverter
-    private :: circ_perm, numbering_edge, numbering_face, dividing_cell, mult_elem
-    private :: circ_perm_face
+    private :: numbering_edge, numbering_face, dividing_cell, mult_elem
+    private :: sort_nodes_face
 contains
 !
 !===================================================================================================
@@ -362,110 +362,20 @@ contains
 !
 ! ==================================================================================================
 !
-    subroutine circ_perm(nb_nodes, nodes, revert)
-!
-! Performs circular permutation such that the first element is the smallest and
-! the second element is the second smallest
-!
-        implicit none
-!
-        integer(kind=8), intent(in) :: nb_nodes
-        integer(kind=8), intent(inout) :: nodes(1:nb_nodes)
-        aster_logical, optional :: revert
-!
-        integer(kind=8) :: tmp(27), ind_min, i_node, val_min
-!
-        ASSERT(nb_nodes <= 27)
-
-        tmp(1:nb_nodes) = nodes(1:nb_nodes)
-!
-        ind_min = 1
-        val_min = nodes(1)
-        do i_node = 2, nb_nodes
-            if (nodes(i_node) == val_min) then
-                ASSERT(ASTER_FALSE)
-            else if (nodes(i_node) < val_min) then
-                ind_min = i_node
-                val_min = nodes(i_node)
-            end if
-        end do
-        ASSERT(ind_min >= 1 .and. ind_min <= nb_nodes)
-!
-        if (ind_min > 1) then
-            do i_node = ind_min, nb_nodes
-                nodes(i_node-ind_min+1) = tmp(i_node)
-            end do
-            do i_node = 1, ind_min-1
-                nodes(i_node+nb_nodes-ind_min+1) = tmp(i_node)
-            end do
-        end if
-!
-        if (present(revert)) then
-            revert = ASTER_FALSE
-        end if
-        if (nodes(nb_nodes) < nodes(2)) then
-            tmp(1:nb_nodes) = nodes(1:nb_nodes)
-
-            do i_node = 2, nb_nodes
-                nodes(i_node) = tmp(nb_nodes-i_node+2)
-            end do
-            if (present(revert)) then
-                revert = ASTER_TRUE
-            end if
-        end if
-!
-        ASSERT(nodes(1) == val_min)
-!
-    end subroutine
-!
-! ==================================================================================================
-!
-    subroutine circ_perm_face(nno, nnos, nodes)
-!
-! Performs circular permutation such that the first element is the smallest and
-! the second element is the second smallest
+    subroutine sort_nodes_face(nno, nnos, nodes)
 !
         implicit none
 !
         integer(kind=8), intent(in) :: nno, nnos
         integer(kind=8), intent(inout) :: nodes(1:nno)
 !
-        integer(kind=8) :: nodes_nnos(4), map_nnos(4), i_node, j_node, nodes_tmp(4)
-        integer(kind=8) :: tmp
-        aster_logical :: revert
-!
         ASSERT(nno <= 9)
 !
-        nodes_nnos(1:nnos) = nodes(1:nnos)
-        call circ_perm(nnos, nodes_nnos, revert)
+        call qsort(nodes(1:nnos))
 !
         if (nno > nnos) then
-            do i_node = 1, nnos
-                do j_node = 1, nnos
-                    if (nodes_nnos(i_node) == nodes(j_node)) then
-                        map_nnos(j_node) = i_node
-                        exit
-                    end if
-                end do
-            end do
-!
-            ASSERT(nno >= 2*nnos)
-            nodes_tmp(1:nnos) = nodes(nnos+1:2*nnos)
-
-            if (revert) then
-                tmp = map_nnos(1)
-                do i_node = 1, nnos-1
-                    map_nnos(i_node) = map_nnos(i_node+1)
-                end do
-                map_nnos(nnos) = tmp
-            end if
-            do i_node = 1, nnos
-                nodes(nnos+map_nnos(i_node)) = nodes_tmp(i_node)
-            end do
-
+            call qsort(nodes(nnos+1:2*nnos))
         end if
-        nodes(1:nnos) = nodes_nnos(1:nnos)
-
 !
     end subroutine
 !
@@ -628,7 +538,7 @@ contains
         this%max_volumes = max(1, nb_elem_mesh)
         this%max_faces = max(1, 6*nb_elem_mesh)
         this%max_edges = max(1, 12*nb_elem_mesh)
-        this%max_nodes = max(1, 4*nb_node_mesh)
+        this%max_nodes = max(1, 5*nb_node_mesh)
 !
         allocate (this%cells(this%max_cells))
         allocate (this%volumes(this%max_volumes))
@@ -1335,7 +1245,7 @@ contains
         nno_sort = 0
         nno_sort(1:nno) = nodes(1:nno)
 !
-        call circ_perm_face(nno, nnos, nno_sort)
+        call sort_nodes_face(nno, nnos, nno_sort)
 !
         call this%find_face(nno, nnos, nno_sort, find, face_id)
 !
@@ -1427,9 +1337,11 @@ contains
 !
         ASSERT(this%converter%dim(type) == 1)
         nno = this%converter%nno(type)
-        nno_sort(1:nno) = nodes(1:nno)
-!
-        call circ_perm(2, nno_sort)
+        nno_sort(1) = minval(nodes(1:2))
+        nno_sort(2) = maxval(nodes(1:2))
+        if (nno > 2) then
+            nno_sort(3:nno) = nodes(3:nno)
+        end if
 !
         call this%find_edge(nno, nno_sort, find, edge_id)
 !
@@ -1531,8 +1443,8 @@ contains
         this%nb_total_nodes = this%nb_total_nodes+1
         if (this%nb_nodes > this%max_nodes) then
             call this%increase_memory("NODES   ", 2*this%max_nodes)
+            ASSERT(this%nb_nodes <= this%max_nodes)
         end if
-        ASSERT(this%nb_nodes <= this%max_nodes)
         node_id = this%nb_nodes
         this%nodes(node_id)%id = node_id
         this%nodes(node_id)%keep = ASTER_TRUE
@@ -1889,6 +1801,9 @@ contains
                     this%faces(face_id)%nodes(nno+i_edge) = &
                         this%edges(this%faces(face_id)%edges(i_edge))%nodes(3)
                 end do
+                this%faces(face_id)%nno_sort(nnos+1:2*nnos) = &
+                    this%faces(face_id)%nodes(nnos+1:2*nnos)
+                call qsort(this%faces(face_id)%nno_sort(nnos+1:2*nnos))
             end if
 ! --- Add node at the barycenter
             owner = this%owner_cell(nno_end-1, this%faces(face_id)%nodes)
@@ -1905,9 +1820,6 @@ contains
                 ASSERT(this%faces(face_id)%nodes(i_node) > 0)
             end do
         end if
-
-        this%faces(face_id)%nno_sort = this%faces(face_id)%nodes
-        call circ_perm_face(nno_end, nnos, this%faces(face_id)%nno_sort)
 !
     end subroutine
 !
@@ -1942,20 +1854,22 @@ contains
                     node_id = this%add_node(this%barycenter(edge_id, 1), owner)
                 end if
                 this%edges(edge_id)%nodes(3) = node_id
+                this%edges(edge_id)%nno_sort(3) = node_id
             else
                 ASSERT(ASTER_FALSE)
                 node_id = this%add_node([0.d0, 0.d0, 0.d0], -1)
                 this%edges(edge_id)%nodes(3) = node_id
+                this%edges(edge_id)%nno_sort(3) = node_id
                 node_id = this%add_node([0.d0, 0.d0, 0.d0], -1)
                 this%edges(edge_id)%nodes(4) = node_id
+                this%edges(edge_id)%nno_sort(4) = node_id
+                call qsort(this%edges(edge_id)%nno_sort(3:4))
             end if
         else
             ASSERT(edge_type == edge_type_end)
         end if
 !
         this%edges(edge_id)%type = edge_type_end
-        this%edges(edge_id)%nno_sort = this%edges(edge_id)%nodes
-        call circ_perm(2, this%edges(edge_id)%nno_sort)
 !
         if (this%debug) then
             do i_node = 1, nno_end
