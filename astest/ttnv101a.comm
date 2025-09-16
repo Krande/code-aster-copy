@@ -64,7 +64,7 @@ C0 = 106.42
 # =========================================================================
 #  Condition limite de concentration en eau imposee
 # =========================================================================
-charsec = AFFE_CHAR_THER(MODELE=MODTHER, SECH_IMPO=_F(GROUP_MA="echange", SECH=Ceq))
+charsec = AFFE_CHAR_SECH(MODELE=MODTHER, SECH_IMPO=_F(GROUP_MA="echange", SECH=Ceq))
 # =========================================================================
 #  Resolution
 # =========================================================================
