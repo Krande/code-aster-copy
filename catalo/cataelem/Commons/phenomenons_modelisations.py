@@ -5732,6 +5732,7 @@ phen.add(
     Modelisation(
         dim=(3, 3),
         code="3DH",
+        attrs=((AT.SECH, "OUI"),),
         elements=(
             (MT.HEXA8, EL.SECH_HEXA8),
             (MT.PENTA6, EL.SECH_PENTA6),
@@ -5823,7 +5824,7 @@ phen.add(
     Modelisation(
         dim=(3, 3),
         code="3DJ",
-        attrs=((AT.LUMPE, "OUI"),),
+        attrs=((AT.LUMPE, "OUI"), (AT.SECH, "OUI")),
         elements=(
             (MT.HEXA8, EL.SECH_HEXA8_D),
             (MT.PENTA6, EL.SECH_PENTA6_D),
@@ -5867,7 +5868,7 @@ phen.add(
     Modelisation(
         dim=(2, 2),
         code="AXH",
-        attrs=((AT.AXIS, "OUI"),),
+        attrs=((AT.AXIS, "OUI"), (AT.SECH, "OUI")),
         elements=(
             (MT.TRIA3, EL.SEAXTR3),
             (MT.QUAD4, EL.SEAXQU4),
@@ -5885,7 +5886,7 @@ phen.add(
     Modelisation(
         dim=(2, 2),
         code="AXJ",
-        attrs=((AT.AXIS, "OUI"), (AT.LUMPE, "OUI")),
+        attrs=((AT.AXIS, "OUI"), (AT.LUMPE, "OUI"), (AT.SECH, "OUI")),
         elements=((MT.TRIA3, EL.SEAXTL3), (MT.QUAD4, EL.SEAXQL4), (MT.SEG2, EL.SEAXSL2)),
     ),
 )

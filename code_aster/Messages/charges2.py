@@ -88,6 +88,18 @@ Pour le chargement de type LIAISON_CHAMNO, il faut que le CHAM_NO dont les terme
 Pour le chargement de type LIAISON_CHAMNO, tous les coefficients donnés par le mot-clef CHAM_NO sont nuls.
 """
     ),
+    13: _(
+        """
+Le modèle contient des éléments spécifiques au traitement du séchage. Ils sont incompatibles avec
+la commande AFFE_CHAR_THER.
+"""
+    ),
+    14: _(
+        """
+La commande AFFE_CHAR_SECH ne fonctionne qu'avec un modèle contentant uniquement
+des éléments spécifiques au traitement du séchage.
+"""
+    ),
     17: _(
         """
  Pour le chargement courant, la liste des noeuds donnée est réduite à un seul terme et l'on ne fait aucun traitement.
