@@ -28,5 +28,7 @@ PCHHOBO = OutputParameter(
 )
 
 HHO_PRECALC_BS = Option(
-    para_in=(SP.PGEOMER,), para_out=(PCHHOBO,), condition=(CondCalcul("+", ((AT.BORD, "0"),)),)
+    para_in=(SP.PGEOMER,),
+    para_out=(PCHHOBO,),
+    condition=(CondCalcul("+", ((AT.BORD, "0"), (AT.HHO, "OUI"))),),
 )

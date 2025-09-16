@@ -37,5 +37,5 @@ PCHHOST = OutputParameter(
 HHO_PRECALC_OP = Option(
     para_in=(SP.PGEOMER, PCHHOBS),
     para_out=(PCHHOGT, PCHHOST),
-    condition=(CondCalcul("+", ((AT.BORD, "0"),)),),
+    condition=(CondCalcul("+", ((AT.BORD, "0"), (AT.HHO, "OUI"))),),
 )

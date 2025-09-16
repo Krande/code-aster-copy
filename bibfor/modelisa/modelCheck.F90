@@ -53,7 +53,7 @@ subroutine modelCheck(model, lCheckJacobian, lCheckFSINorms, lCheckPlaneity)
     character(len=16) :: repk
     integer(kind=8) :: i_disc_2d, i_disc_3d
     character(len=8) :: mesh
-    aster_logical :: lAxis, lHHO
+    aster_logical :: lAxis
     integer(kind=8) :: nbCell
     character(len=19) :: modelLigrel
     integer(kind=8), pointer :: modelCells(:) => null()
@@ -70,17 +70,6 @@ subroutine modelCheck(model, lCheckJacobian, lCheckFSINorms, lCheckPlaneity)
     call dismoi('AXIS', model, 'MODELE', repk=repk)
     lAxis = repk .eq. 'OUI'
     call dismoi('DIM_GEOM', model, 'MODELE', repi=nb_dim_geom)
-    call dismoi('EXI_HHO', modelLigrel, 'LIGREL', repk=repk)
-    lHHO = repk .eq. 'OUI'
-!
-! - HHO should be alone
-!
-    if (lHHO) then
-        call dismoi('EXI_NO_HHO', modelLigrel, 'LIGREL', repk=repk)
-        if (repk .eq. 'OUI') then
-            call utmess('F', 'MODELE1_10')
-        end if
-    end if
 !
 ! - Check topoaster_logical dimensions
 !

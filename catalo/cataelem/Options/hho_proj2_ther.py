@@ -37,5 +37,5 @@ PH1TP_R = InputParameter(phys=PHY.TEMP_R, comment="""Field to project""")
 HHO_PROJ2_THER = Option(
     para_in=(SP.PGEOMER, PH1TP_R, PCHHOBS),
     para_out=(PTEMP_R,),
-    condition=(CondCalcul("+", ((AT.PHENO, "TH"), (AT.BORD, "0"))),),
+    condition=(CondCalcul("+", ((AT.PHENO, "TH"), (AT.BORD, "0"), (AT.HHO, "OUI"))),),
 )

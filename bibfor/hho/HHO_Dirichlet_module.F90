@@ -45,6 +45,7 @@ module HHO_Dirichlet_module
 #include "asterfort/codent.h"
 #include "asterfort/detrsd.h"
 #include "asterfort/dismoi.h"
+#include "asterfort/exisdg.h"
 #include "asterfort/getvid.h"
 #include "asterfort/getvr8.h"
 #include "asterfort/HHO_size_module.h"
@@ -62,6 +63,7 @@ module HHO_Dirichlet_module
 #include "asterfort/lisnch.h"
 #include "asterfort/mecact.h"
 #include "asterfort/megeom.h"
+#include "asterfort/nbec.h"
 #include "asterfort/nocart.h"
 #include "asterfort/teattr.h"
 #include "asterfort/utmess.h"
@@ -77,7 +79,7 @@ module HHO_Dirichlet_module
 !
     public :: hhoDiriFuncPrepare, hhoDiriFuncCompute, hhoDiriFuncApply, hhoDiriMecaProjFunc
     public :: hhoGetKinematicValues, hhoDiriReadNameFunc, hhoDiriOffset
-    public :: hhoDiriMecaProjReal, hhoDiriTherProjReal
+    public :: hhoDiriMecaProjReal, hhoDiriTherProjReal, hasHHODoFFromNodes
     private :: hhoDiriNum, hhoDiriNodeType
 !
 contains
@@ -494,6 +496,76 @@ contains
         call detrsd("CARTE", chtime)
 !
     end subroutine
+!
+    !
+!===================================================================================================
+!
+!===================================================================================================
+!
+    function hasHHODoFFromNodes(numeddl, nbNodes, listNodes) result(hasHHO)
+!
+        implicit none
+!
+        character(len=14), intent(in) :: numeddl
+        character(len=24), intent(in) :: listNodes
+        integer(kind=8), intent(in) :: nbNodes
+        aster_logical:: hasHHO
+!
+! --------------------------------------------------------------------------------------------------
+!   HHO - AFFE_CHAR_CINE_F
+!
+!   Return true if nodes has HHO dofs
+!
+!   In hhoCell         : a HHO Cell
+!   In v_func          : pointer to name of the function
+!   Out nomFunc        : table with the name of the function
+!
+! --------------------------------------------------------------------------------------------------
+!
+        integer(kind=8) :: iNode, iCmp, iec, nec, tabec(30), gd, iad, ncmpmx, jprno
+        character(len=8) :: nameCmp
+        character(len=19) :: prno
+        integer(kind=8), pointer :: v_nodes(:) => null()
+        aster_logical :: hasCG
+!
+! --------------------------------------------------------------------------------------------------
+!
+! --- Initialisation
+!
+        hasHHO = ASTER_FALSE
+        hasCG = ASTER_FALSE
+!
+        call dismoi('NUME_EQUA', numeddl, 'NUME_DDL', repk=prno)
+        ASSERT(prno .ne. ' ')
+        call dismoi('NUM_GD_SI', numeddl, 'NUME_DDL', repi=gd)
+        nec = nbec(gd)
+        ASSERT(nec .le. 30)
+        call jelira(jexnum('&CATA.GD.NOMCMP', gd), 'LONMAX', ncmpmx)
+        call jeveuo(jexnum('&CATA.GD.NOMCMP', gd), 'L', iad)
+
+        call jeveuo(listNodes, 'L', vi=v_nodes)
+        call jeveuo(jexnum(prno//'.PRNO', 1), 'L', jprno)
+!
+        do iNode = 1, nbNodes
+            do iec = 1, nec
+                tabec(iec) = zi(jprno-1+(v_nodes(iNode)-1)*(nec+2)+2+iec)
+            end do
+            do iCmp = 1, ncmpmx
+                if (exisdg(tabec, iCmp)) then
+                    nameCmp = zk8(iad-1+icmp)
+                    if (nameCmp(1:3) == "HHO") then
+                        hasHHO = ASTER_TRUE
+                    else
+                        hasCG = ASTER_TRUE
+                    end if
+                end if
+            end do
+            if (hasHHO .and. hasCG) then
+                call utmess("F", "CHARGES_2")
+            end if
+        end do
+!
+    end function
 !
 !===================================================================================================
 !
