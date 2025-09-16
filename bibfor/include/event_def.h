@@ -31,28 +31,28 @@
 #define SIZE_LALOCA          3
 #define SIZE_LATPR           6
 #define SIZE_LATPK           4
+
 ! Defines for ECHEC/EVENEMENT
-#define FAIL_EVT_NB               8
+#define FAIL_EVT_NB               7
 #define FAIL_EVT_ERROR            1
 #define FAIL_EVT_INCR_QUANT       2
-#define FAIL_EVT_COLLISION        3
-#define FAIL_EVT_INTERPENE        4
-#define FAIL_EVT_DIVE_RESI        5
-#define FAIL_EVT_INSTABILITY      6
-#define FAIL_EVT_RESI_MAXI        7
-#define FAIL_EVT_NBPAS_MAXI       8
+#define FAIL_EVT_INTERPENE        3
+#define FAIL_EVT_DIVE_RESI        4
+#define FAIL_EVT_INSTABILITY      5
+#define FAIL_EVT_RESI_MAXI        6
+#define FAIL_EVT_NBPAS_MAXI       7
+
 ! Localisation
 #define LOCA_VIDE    0
 #define LOCA_PARTIEL 1
 #define LOCA_TOUT    2
 !
-integer(kind=8), parameter :: failEventMaxi(FAIL_EVT_NB) = (/1, 99, 1, &
-                                                     1, 99, 1, &
-                                                     1, 1/)
+integer(kind=8), parameter :: failEventMaxi(FAIL_EVT_NB) = (/1, 99, &
+                                                             1, 99, 1, &
+                                                             1, 1/)
 
 character(len=16), parameter :: failEventKeyword(FAIL_EVT_NB) = (/'ERREUR          ', &
                                                                   'DELTA_GRANDEUR  ', &
-                                                                  'COLLISION       ', &
                                                                   'INTERPENETRATION', &
                                                                   'DIVE_RESI       ', &
                                                                   'INSTABILITE     ', &

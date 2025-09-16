@@ -15,20 +15,16 @@
 ! You should have received a copy of the GNU General Public License
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
-
-!
-!
 #include "asterf_types.h"
 !
 interface
-    subroutine nmevel(sddisc, nume_inst  , vale  , loop_name, lsvimx,&
-                      ldvres, lresmx     , linsta, lerrcv   , lerror,&
+    subroutine nmevel(sddisc, vale, loop_name, lsvimx, &
+                      ldvres, lresmx, linsta, lerrcv, lerror, &
                       conver, ds_contact_)
         use NonLin_Datastructure_type
         character(len=19), intent(in) :: vale(*)
         character(len=19), intent(in) :: sddisc
         character(len=4), intent(in) :: loop_name
-        integer(kind=8), intent(in) :: nume_inst
         aster_logical, intent(in) :: lsvimx
         aster_logical, intent(in) :: ldvres
         aster_logical, intent(in) :: lresmx

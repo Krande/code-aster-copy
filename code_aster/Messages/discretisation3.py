@@ -36,7 +36,6 @@ Nombre de pas maximum: %(i1)d
     6: _("""Il y a %(i1)d schémas d'adaptations du pas de temps."""),
     10: _("""L'événement %(i1)d est pour capturer les erreurs."""),
     11: _("""L'événement %(i1)d est pour détecter la variation d'une grandeur."""),
-    12: _("""L'événement %(i1)d est pour détecter une collision."""),
     13: _("""L'événement %(i1)d est pour capturer une interpénétration."""),
     14: _("""L'événement %(i1)d est pour capturer la divergence du résidu."""),
     15: _("""L'événement %(i1)d est pour détecter une instabilité."""),

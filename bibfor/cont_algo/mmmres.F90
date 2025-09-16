@@ -15,13 +15,11 @@
 ! You should have received a copy of the GNU General Public License
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
-! person_in_charge: mickael.abbas at edf.fr
 !
-subroutine mmmres(mesh, time_incr, ds_contact, disp_cumu_inst, sddisc, &
+subroutine mmmres(mesh, time_incr, ds_contact, disp_cumu_inst, &
                   cnsinr, cnsper)
 !
     use NonLin_Datastructure_type
-!
     implicit none
 !
 #include "asterf_types.h"
@@ -53,9 +51,7 @@ subroutine mmmres(mesh, time_incr, ds_contact, disp_cumu_inst, sddisc, &
     real(kind=8), intent(in) :: time_incr
     type(NL_DS_Contact), intent(in) :: ds_contact
     character(len=19), intent(in) :: disp_cumu_inst
-    character(len=19), intent(in) :: sddisc
-    character(len=19), intent(in) :: cnsinr
-    character(len=19), intent(in) :: cnsper
+    character(len=19), intent(in) :: cnsinr, cnsper
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -69,7 +65,6 @@ subroutine mmmres(mesh, time_incr, ds_contact, disp_cumu_inst, sddisc, &
 ! In  time_incr        : time increment
 ! In  ds_contact       : datastructure for contact management
 ! In  disp_cumu_inst   : displacement increment from beginning of current time
-! In  sddisc           : datastructure for discretization
 ! In  cnsinr           : nodal field (CHAM_NO_S) for CONT_NOEU
 ! In  cnsper           : nodal field (CHAM_NO_S) to save percussions
 !
@@ -96,8 +91,7 @@ subroutine mmmres(mesh, time_incr, ds_contact, disp_cumu_inst, sddisc, &
     character(len=24) :: sdcont_tabfin, sdcont_apjeu
     real(kind=8), pointer :: v_sdcont_tabfin(:) => null()
     real(kind=8), pointer :: v_sdcont_apjeu(:) => null()
-    real(kind=8) :: valras
-    aster_logical :: l_frot_zone, l_veri, lcolli, laffle, l_frot
+    aster_logical :: l_frot_zone, l_veri, l_frot
     real(kind=8), pointer :: v_cnsper_cnsv(:) => null()
     real(kind=8), pointer :: v_cnsinr_cnsv(:) => null()
     aster_logical, pointer :: v_cnsper_cnsl(:) => null()
@@ -127,12 +121,7 @@ subroutine mmmres(mesh, time_incr, ds_contact, disp_cumu_inst, sddisc, &
     nb_cont_zone = cfdisi(ds_contact%sdcont_defi, 'NZOCO')
     nt_cont_poin = cfdisi(ds_contact%sdcont_defi, 'NTPC')
     model_ndim = cfdisi(ds_contact%sdcont_defi, 'NDIM')
-!
-! - Collision
-!
-    laffle = ASTER_FALSE
-    valras = 1.d-3
-    call iseven(sddisc, FAIL_EVT_COLLISION, lcolli)
+
 !
 ! - Acces to contact objects
 !
@@ -287,12 +276,6 @@ subroutine mmmres(mesh, time_incr, ds_contact, disp_cumu_inst, sddisc, &
                         end if
                     else
                         ASSERT(ASTER_FALSE)
-                    end if
-!
-! ----------------- Very near contact
-!
-                    if (rn .le. valras) then
-                        laffle = ASTER_TRUE
                     end if
 !
 ! ----------------- Friction
@@ -523,15 +506,8 @@ subroutine mmmres(mesh, time_incr, ds_contact, disp_cumu_inst, sddisc, &
     call detrsd('CHAMP', disp_cumu_s)
     AS_DEALLOCATE(vr=v_slav_slide)
     AS_DEALLOCATE(vr=v_mast_slide)
-!
-! - Alarm for COLLISION
-!
-    if (laffle .and. lcolli) then
-        call utmess('A', 'CONTACT3_98')
-    end if
-!
+
 ! - Alarm for large penetration criteria
-!
     if (nint(ds_contact%continue_pene) .eq. 1) then
         call utmess('A', 'CONTACT3_99', nr=2, valr=[ds_contact%arete_min, ds_contact%arete_max])
     end if

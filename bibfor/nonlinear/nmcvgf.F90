@@ -15,11 +15,10 @@
 ! You should have received a copy of the GNU General Public License
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
-
+!
 subroutine nmcvgf(sddisc, sderro, valinc, ds_contact)
 !
     use NonLin_Datastructure_type
-!
     implicit none
 !
 #include "asterfort/assert.h"
@@ -27,8 +26,6 @@ subroutine nmcvgf(sddisc, sderro, valinc, ds_contact)
 #include "asterfort/nmeceb.h"
 #include "asterfort/nmevev.h"
 #include "asterfort/nmleeb.h"
-!
-! person_in_charge: mickael.abbas at edf.fr
 !
     character(len=19), intent(in) :: sddisc
     character(len=19), intent(in) :: valinc(*)
@@ -84,7 +81,7 @@ subroutine nmcvgf(sddisc, sderro, valinc, ds_contact)
 !
 ! --- DETECTION DU PREMIER EVENEMENT DECLENCHE
 !
-    call nmevev(sddisc, nume_inst, valinc, sderro, ds_contact, &
+    call nmevev(sddisc, valinc, sderro, ds_contact, &
                 'FIXE')
 !
 ! --- UN EVENEMENT SE DECLENCHE

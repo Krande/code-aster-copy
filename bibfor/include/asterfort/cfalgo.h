@@ -15,26 +15,22 @@
 ! You should have received a copy of the GNU General Public License
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
-
-!
-!
 #include "asterf_types.h"
 !
 interface
-    subroutine cfalgo(mesh          , ds_measure, resi_glob_rela, iter_newt,&
-                      solver        , nume_dof  , matr_asse     , disp_iter,&
-                      disp_cumu_inst, ds_contact, ctccvg        )
+    subroutine cfalgo(mesh, ds_measure, resi_glob_rela, &
+                      solver, nume_dof, matr_asse, disp_iter, &
+                      disp_cumu_inst, ds_contact, ctccvg)
         use NonLin_Datastructure_type
         character(len=8), intent(in) :: mesh
         type(NL_DS_Measure), intent(inout) :: ds_measure
         real(kind=8), intent(in) :: resi_glob_rela
-        integer(kind=8), intent(in) :: iter_newt
         character(len=19), intent(in) :: solver
         character(len=14), intent(in) :: nume_dof
         character(len=19), intent(in) :: matr_asse
         character(len=19), intent(in) :: disp_iter
         character(len=19), intent(in) :: disp_cumu_inst
-        type(NL_DS_Contact), intent(inout) :: ds_contact 
+        type(NL_DS_Contact), intent(inout) :: ds_contact
         integer(kind=8), intent(out) :: ctccvg
     end subroutine cfalgo
 end interface

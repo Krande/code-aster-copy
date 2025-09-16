@@ -15,17 +15,13 @@
 ! You should have received a copy of the GNU General Public License
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
-
-!
 !
 interface
-    subroutine nmcvgp(sddisc    , nume_inst, sderro, valinc, fonact,&
-                      ds_contact)
+    subroutine nmcvgp(sddisc, sderro, valinc, listFuncActi, ds_contact)
         use NonLin_Datastructure_type
-        integer(kind=8), intent(in) :: fonact(*)
+        integer(kind=8), intent(in) :: listFuncActi(100)
         character(len=19), intent(in) :: sddisc
         character(len=19), intent(in) :: valinc(*)
-        integer(kind=8), intent(in) :: nume_inst
         character(len=24), intent(in) :: sderro
         type(NL_DS_Contact), intent(in) :: ds_contact
     end subroutine nmcvgp

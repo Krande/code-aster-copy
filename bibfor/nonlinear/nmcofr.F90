@@ -15,13 +15,12 @@
 ! You should have received a copy of the GNU General Public License
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
-
+!
 subroutine nmcofr(mesh, disp_curr, disp_cumu_inst, disp_iter, solver, &
                   nume_dof, matr_asse, iter_newt, time_curr, resi_glob_rela, &
                   ds_measure, ds_contact, ctccvg)
 !
     use NonLin_Datastructure_type
-!
     implicit none
 !
 #include "asterf_types.h"
@@ -30,8 +29,6 @@ subroutine nmcofr(mesh, disp_curr, disp_cumu_inst, disp_iter, solver, &
 #include "asterfort/cfgeom.h"
 #include "asterfort/infdbg.h"
 #include "asterfort/nmtime.h"
-!
-! person_in_charge: mickael.abbas at edf.fr
 !
     character(len=8), intent(in) :: mesh
     character(len=19), intent(in) :: disp_curr
@@ -83,32 +80,27 @@ subroutine nmcofr(mesh, disp_curr, disp_cumu_inst, disp_iter, solver, &
     if (niv .ge. 2) then
         write (ifm, *) '<CONTACT> DEBUT DU TRAITEMENT DES CONDITIONS DE CONTACT'
     end if
-!
+
 ! - Initializations
-!
     ctccvg = -1
-!
+
 ! - Pairing
-!
     call cfgeom(iter_newt, mesh, ds_measure, ds_contact, &
                 disp_curr, time_curr)
-!
+
 ! - Contact solving
-!
     call nmtime(ds_measure, 'Init', 'Cont_Algo')
     call nmtime(ds_measure, 'Launch', 'Cont_Algo')
-    call cfalgo(mesh, ds_measure, resi_glob_rela, iter_newt, &
+    call cfalgo(mesh, ds_measure, resi_glob_rela, &
                 solver, nume_dof, matr_asse, disp_iter, &
                 disp_cumu_inst, ds_contact, ctccvg)
     call nmtime(ds_measure, 'Stop', 'Cont_Algo')
-!
+
 ! - Pairing ended
-!
-    ds_contact%l_pair = .false._1
-    ds_contact%l_first_geom = .false._1
-!
+    ds_contact%l_pair = ASTER_FALSE
+    ds_contact%l_first_geom = ASTER_FALSE
+
 ! - Yes for computation
-!
     ASSERT(ctccvg .ge. 0)
 !
 end subroutine

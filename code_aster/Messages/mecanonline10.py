@@ -97,11 +97,6 @@ cata_msg = {
  <Évènement> Instabilité détectée.
  """
     ),
-    21: _(
-        """
- <Évènement> Collision détectée.
- """
-    ),
     22: _(
         """
  <Évènement> Interpénétration détectée.

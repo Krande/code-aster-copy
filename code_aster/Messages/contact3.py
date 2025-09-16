@@ -216,20 +216,6 @@ Contact.
        pas d'interpénétrations.
 """
     ),
-    98: _(
-        """
-Contact et détection de collision.
-    Le contact semble "rasant", c'est-à-dire que le jeu est nul mais que la pression de contact est quasiment
-    nulle également.
-    -> Risque & Conseil :
-      La découpe automatique du pas de temps ne sera probablement pas efficace. Si vous constatez de fortes oscillations
-      de la vitesse ou du déplacement au point de contact pour cet instant de calcul malgré l'activation du mode de
-      traitement automatique de la collision, vous pouvez essayer d'éviter l'instant pour lequel le contact "rasant"
-      apparaît de deux manières différentes:
-       - changer la discrétisation en temps initiale
-       - changer la valeur de SUBD_INST
-"""
-    ),
     99: _(
         """
     DEFI_CONTACT/ALGO_CONT=PENALISATION/ADAPTATION=PENE_MAXI.

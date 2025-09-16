@@ -268,11 +268,9 @@ subroutine op0070()
                 meelem, measse, veasse, &
                 ds_energy, ds_errorindic, &
                 ds_posttimestep)
-!
-! --- ETAT DE LA CONVERGENCE DU PAS DE TEMPS
-!
-    call nmcvgp(sddisc, numins, sderro, valinc, fonact, &
-                ds_contact)
+
+! - ETAT DE LA CONVERGENCE DU PAS DE TEMPS
+    call nmcvgp(sddisc, sderro, valinc, fonact, ds_contact)
 !
 ! --- AFFICHAGES PENDANT LA BOUCLE DES PAS DE TEMPS
 !

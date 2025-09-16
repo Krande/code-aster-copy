@@ -15,7 +15,7 @@
 ! You should have received a copy of the GNU General Public License
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
-
+!
 subroutine pmevdr(sddisc, tabinc, liccvg, itemax, conver, &
                   actite)
 !
@@ -25,8 +25,6 @@ subroutine pmevdr(sddisc, tabinc, liccvg, itemax, conver, &
 #include "asterfort/infniv.h"
 #include "asterfort/nmacto.h"
 #include "asterfort/nmevel.h"
-!
-! person_in_charge: mickael.abbas at edf.fr
 !
     aster_logical :: itemax, conver
     character(len=19) :: sddisc, tabinc(*)
@@ -100,7 +98,7 @@ subroutine pmevdr(sddisc, tabinc, liccvg, itemax, conver, &
 !
 ! --- DETECTION DU PREMIER EVENEMENT DECLENCHE
 !
-    call nmevel(sddisc, numins, tabinc, 'NEWT', lsvimx, &
+    call nmevel(sddisc, tabinc, 'NEWT', lsvimx, &
                 ldvres, lresmx, linsta, lcritl, lerror, conver)
 !
 ! --- UN EVENEMENT SE DECLENCHE
