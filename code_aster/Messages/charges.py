@@ -22,7 +22,7 @@ from ..Utilities import _
 cata_msg = {
     1: _(
         """
-Le pilotage est interdit avec un ParallelMesh
+Le pilotage est interdit avec un maillage parallèle découpé
 """
     ),
     2: _(
