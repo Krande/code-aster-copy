@@ -188,6 +188,11 @@ class ExtendedParallelMesh:
         return comm.bcast(test, root=0)
 
     def checkJoints(self):
+        """Check joints of parallel mesh
+
+        Returns:
+            bool: True if the partitioned mesh is ok
+        """
         comm = MPI.ASTER_COMM_WORLD
         l2G = self.getLocalToGlobalNodeIds()
         graph = CommGraph()

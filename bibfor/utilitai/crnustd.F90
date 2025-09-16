@@ -197,7 +197,11 @@ subroutine crnustd(numddl)
     call wkvect('&&CRNSTD.NLGDDL', 'V V I', 2*nbproc*nbno_max, vi=v_gddl)
 ! -- On envoie tout les ddls - on pourrait optimiser la mémoire
     nbno4 = to_mpi_int(2*nbno_max)
-    call asmpi_allgather_i(v_nddl, nbno4, v_gddl, nbno4, mpicou)
+    if (nbproc .gt. 1) then
+        call asmpi_allgather_i(v_nddl, nbno4, v_gddl, nbno4, mpicou)
+    else
+        v_gddl(:) = v_nddl(:)
+    end if
 !
 ! -- On trie les ddls par noeuds
     call wkvect('&&CRNSTD.NUMDDL', 'V V I', nbno_gl, vi=v_tddl)
@@ -246,7 +250,12 @@ subroutine crnustd(numddl)
     call create_graph_comm(mesh, "MAILLAGE_P", nb_comm, comm_name, tag_name)
     call jeveuo(comm_name, 'L', vi=v_comm)
     call jeveuo(tag_name, 'L', vi=v_tag)
-    call jeveuo(meshj//'.DOMJ', 'L', vi=v_dom)
+    call jeexin(meshj//'.DOMJ', iret)
+    if (iret .ne. 0) then
+        call jeveuo(meshj//'.DOMJ', 'L', vi=v_dom)
+    else
+        ASSERT(nb_comm .eq. 0)
+    end if
 !
 ! -- On renumerote les noeuds physiques non-proprio
 !    Il faut faire comme dans crnlgc.F90

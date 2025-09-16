@@ -25,6 +25,8 @@ subroutine cafond(load, mesh, model, geomDime, valeType)
 #include "LoadTypes_type.h"
 #include "jeveux.h"
 #include "asterc/getfac.h"
+#include "asterfort/asmpi_comm_vect.h"
+#include "asterfort/asmpi_info.h"
 #include "asterfort/assert.h"
 #include "asterfort/calcul.h"
 #include "asterfort/char_crea_cart.h"
@@ -34,6 +36,7 @@ subroutine cafond(load, mesh, model, geomDime, valeType)
 #include "asterfort/getelem.h"
 #include "asterfort/infniv.h"
 #include "asterfort/inical.h"
+#include "asterfort/isParallelMesh.h"
 #include "asterfort/jedema.h"
 #include "asterfort/jedetr.h"
 #include "asterfort/jemarq.h"
@@ -75,8 +78,10 @@ subroutine cafond(load, mesh, model, geomDime, valeType)
     character(len=24), parameter :: listCellSect = '&&CAFOND.LISTSECT'
     character(len=16), parameter :: option = 'CARA_SECT_POUT3'
     character(len=19), parameter :: ligrel = '&&CAFOND.LIGREL'
-    integer(kind=8) :: npres, iocc
+    integer(kind=8) :: npres, iocc, ii
     integer(kind=8) :: ifm, niv, val_nb, jvalv
+    integer(kind=8) :: rang
+    aster_logical :: isPMesh
     real(kind=8) :: r8dummy
     real(kind=8) :: hole_area, cara_geom(10), mate_area, coef_mult
     complex(kind=8) :: c16dummy
@@ -88,6 +93,8 @@ subroutine cafond(load, mesh, model, geomDime, valeType)
     character(len=8) :: suffix
     character(len=19) :: map(LOAD_MAP_NBMAX)
     integer(kind=8) :: nbMap, nbCmp(LOAD_MAP_NBMAX)
+    integer(kind=8), pointer :: maex(:) => null()
+    mpi_int :: mrank
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -101,6 +108,13 @@ subroutine cafond(load, mesh, model, geomDime, valeType)
     call dismoi('EXI_COQSOL', model, 'MODELE', repk=answer)
     if (answer .eq. 'OUI') then
         call utmess('F', 'SOLIDSHELL1_5')
+    end if
+
+    isPMesh = isParallelMesh(mesh)
+    if (isPMesh) then
+        call jeveuo(mesh//'.MAEX', 'L', vi=maex)
+        call asmpi_info(rank=mrank)
+        rang = to_aster_int(mrank)
     end if
 !
 ! - Creation and initialization to zero of <CARTE>
@@ -144,11 +158,14 @@ subroutine cafond(load, mesh, model, geomDime, valeType)
         call calcul('S', option, ligrel, nbin, lchin, &
                     lpain, nbout, lchout, lpaout, 'V', &
                     'OUI')
-        call mesomm(lchout(1), 10, vr=cara_geom)
+        call mesomm(lchout(1), 10, vr=cara_geom, local=isPMesh)
         call detrsd('LIGREL', ligrel)
 
 ! ----- Multiplicative ratio of pressure
         mate_area = cara_geom(1)
+        if (isPMesh) then
+            call asmpi_comm_vect('MPI_SUM', 'R', scr=mate_area)
+        end if
         coef_mult = -hole_area/mate_area
         if (niv .eq. 2) then
             write (ifm, *) 'SURFACE DU TROU    ', hole_area

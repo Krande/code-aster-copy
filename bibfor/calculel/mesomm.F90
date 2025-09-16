@@ -17,11 +17,12 @@
 ! --------------------------------------------------------------------
 
 subroutine mesomm(champ, long, vi, vr, vc, &
-                  nbma, linuma)
+                  nbma, linuma, local)
     implicit none
 #include "asterf_types.h"
 #include "jeveux.h"
 #include "asterfort/asmpi_comm_vect.h"
+#include "asterfort/asmpi_info.h"
 #include "asterfort/assert.h"
 #include "asterfort/celver.h"
 #include "asterfort/digdel.h"
@@ -42,6 +43,7 @@ subroutine mesomm(champ, long, vi, vr, vc, &
     integer(kind=8), intent(in) :: long
     integer(kind=8), intent(in), optional :: nbma
     integer(kind=8), intent(in), optional :: linuma(*)
+    aster_logical, intent(in), optional :: local
     integer(kind=8), intent(out), optional :: vi(*)
     real(kind=8), intent(out), optional :: vr(*)
     complex(kind=8), intent(out), optional :: vc(*)
@@ -76,12 +78,17 @@ subroutine mesomm(champ, long, vi, vr, vc, &
     integer(kind=8) :: longt, ncmpel, mode, j, igd
     real(kind=8) :: rzero
     character(len=4) :: typch, kmpic
-    character(len=8) :: scal
+    character(len=8) :: scal, mesh
     character(len=19) :: champ2, ligrel
     aster_logical :: first
     integer(kind=8) :: i, iavale, ibid, icoef, idecgr, iel, ier1, ier2
     integer(kind=8) :: im, inum, jceld, jligr, k, nbgr, nel, numel1, iexi, nbmail
+    integer(kind=8) :: rang, nbproc
+    integer(kind=8), pointer :: maex(:) => null()
+    character(len=8), pointer :: lgrf(:) => null()
     character(len=24), pointer :: celk(:) => null()
+    aster_logical :: b_local
+    mpi_int :: mrank, msize
 !
     call jemarq()
 !
@@ -117,6 +124,22 @@ subroutine mesomm(champ, long, vi, vr, vc, &
 !
     call jeveuo(champ2//'.CELK', 'L', vk24=celk)
     ligrel = celk(1) (1:19)
+!
+    if (present(local)) then
+        if (local) then
+            b_local = .true.
+            call jeveuo(ligrel//'.LGRF', 'L', vk8=lgrf)
+            mesh = lgrf(1)
+            call jeveuo(mesh//'.MAEX', 'L', vi=maex)
+            call asmpi_info(rank=mrank, size=msize)
+            rang = to_aster_int(mrank)
+            nbproc = to_aster_int(msize)
+        else
+            b_local = .false.
+        end if
+    else
+        b_local = .false.
+    end if
 !
     igd = zi(jceld-1+1)
     scal = scalai(igd)
@@ -174,13 +197,21 @@ subroutine mesomm(champ, long, vi, vr, vc, &
     if (typch .eq. 'CHML') then
 !        -- (CAS DES CHAM_ELEM):
         call jeveuo(champ2//'.CELV', 'L', iavale)
+        if (b_local) then
+            call jeveuo(ligrel//'.LIEL', 'L', jligr)
+        end if
         if (nbmail .eq. 0) then
+            inum = 0
             do j = 1, nbgr
                 mode = zi(jceld-1+zi(jceld-1+4+j)+2)
                 if (mode .eq. 0) goto 50
                 nel = nbelem(ligrel, j)
                 idecgr = zi(jceld-1+zi(jceld-1+4+j)+8)
                 do k = 1, nel
+                    if (b_local) then
+                        iel = zi(jligr+inum+k-1)
+                        if (maex(iel) .ne. rang) cycle
+                    end if
                     do i = 1, longt
                         if (scal(1:1) .eq. 'I') then
                             vi(i) = vi(i)+zi(iavale-1+idecgr+(k-1)*longt+i-1)
@@ -192,9 +223,13 @@ subroutine mesomm(champ, long, vi, vr, vc, &
                     end do
                 end do
 50              continue
+                inum = inum+nel+1
             end do
         else
             call jeveuo(ligrel//'.LIEL', 'L', jligr)
+            if (b_local) then
+                ASSERT(.false.)
+            end if
             do im = 1, nbmail
                 inum = 0
                 do j = 1, nbgr
@@ -225,6 +260,9 @@ subroutine mesomm(champ, long, vi, vr, vc, &
         end if
 !
     else if (typch .eq. 'RESL') then
+        if (b_local) then
+            ASSERT(.false.)
+        end if
 !        -- (CAS DES RESUELEM):
         if (nbmail .le. 0) then
             numel1 = 0
