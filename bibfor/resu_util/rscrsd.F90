@@ -81,9 +81,12 @@ subroutine rscrsd(baseZ, resultNameZ, resultTypeZ, nbStore)
 !     ------------------------------------------------------------------
 !                      For drying
 !     ------------------------------------------------------------------
-    integer(kind=8), parameter :: nbFieldDry = 4
+    integer(kind=8), parameter :: nbFieldDry = 10
     character(len=16), parameter :: fieldDry(nbFieldDry) = (/ &
-                                    'SECH            ', 'COMPORTHER      ', &
+                                    'SECH            ', &
+                                    'FLUX_ELGA       ', 'FLUX_ELNO       ', 'FLUX_NOEU       ', &
+                                    'GRAT_ELGA       ', 'GRAT_ELNO       ', 'GRAT_NOEU       ', &
+                                    'COMPORTHER      ', &
                                     'RESI_NOEU       ', 'RESI_RELA_NOEU  '/)
 
 !     ------------------------------------------------------------------
