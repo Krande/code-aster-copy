@@ -25,10 +25,11 @@ module crea_maillage_module
 !
     private
 !
+#include "jeveux.h"
+#include "asterf_types.h"
 #include "asterc/asmpi_comm.h"
 #include "asterc/asmpi_sendrecv_i.h"
 #include "asterc/asmpi_sendrecv_r.h"
-#include "asterf_types.h"
 #include "asterfort/as_allocate.h"
 #include "asterfort/as_deallocate.h"
 #include "asterfort/asmpi_comm_vect.h"
@@ -51,12 +52,12 @@ module crea_maillage_module
 #include "asterfort/jenonu.h"
 #include "asterfort/jenuno.h"
 #include "asterfort/jeveuo.h"
+#include "asterfort/jexatr.h"
 #include "asterfort/jexnom.h"
 #include "asterfort/jexnum.h"
 #include "asterfort/sdmail.h"
 #include "asterfort/utmess.h"
 #include "asterfort/wkvect.h"
-#include "jeveux.h"
 #include "MeshTypes_type.h"
 !
 ! --------------------------------------------------------------------------------------------------
@@ -154,7 +155,8 @@ module crea_maillage_module
         integer(kind=8) :: nb_level = 0
 !
         character(len=8) :: mesh_in = ' '
-        character(len=19) :: connex_in = ' '
+        integer(kind=8), pointer :: connex_in(:) => null()
+        integer(kind=8), pointer :: connex_map_in(:) => null()
 !
         integer(kind=8), pointer :: v_typema(:) => null()
         aster_logical :: debug = ASTER_FALSE
@@ -618,7 +620,9 @@ contains
         nb_elem_mesh = v_mesh_dime(3)
         nb_node_mesh = v_mesh_dime(1)
         this%mesh_in = mesh_in
-        this%connex_in = mesh_in//'.CONNEX'
+!
+        call jeveuo(mesh_in//'.CONNEX', 'L', vi=this%connex_in)
+        call jeveuo(jexatr(mesh_in//'.CONNEX', 'LONCUM'), 'L', vi=this%connex_map_in)
 !
         this%max_cells = max(1, nb_elem_mesh)
         this%max_volumes = max(1, nb_elem_mesh)
@@ -1192,8 +1196,7 @@ contains
         class(Mmesh), intent(inout) :: this
         integer(kind=8), intent(in) :: cell_id
 !
-        integer(kind=8) :: cell_type, cell_dim, cell_nodes(27), nb_nodes, cell_index
-        integer(kind=8), pointer :: v_connex(:) => null()
+        integer(kind=8) :: cell_type, cell_dim, cell_nodes(27), nb_nodes, cell_index, i_node
 !
         ASSERT(this%nb_total_cells < this%max_cells)
         this%nb_cells = this%nb_cells+1
@@ -1201,10 +1204,11 @@ contains
         cell_type = this%converter%map_type(this%v_typema(cell_id))
         cell_dim = this%converter%dim(cell_type)
 !
-        call jeveuo(jexnum(this%connex_in, cell_id), 'L', vi=v_connex)
         nb_nodes = this%converter%nno(cell_type)
         cell_nodes = 0
-        cell_nodes(1:nb_nodes) = v_connex(1:nb_nodes)
+        do i_node = 1, nb_nodes
+            cell_nodes(i_node) = this%connex_in(this%connex_map_in(cell_id)+i_node-1)
+        end do
 !
         if (this%debug) then
             print *, "Cell ", cell_id, ": ", cell_type, &
