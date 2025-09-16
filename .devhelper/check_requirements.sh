@@ -43,7 +43,7 @@ if [ "${ASTER_REQS_PACKAGE}" = "ask" ]; then
     [ "${answer}" = "3" ] && ASTER_REQS_PACKAGE="nogcc-noompi"
     [ "${answer}" = "0" ] && echo "exiting..." && exit 1
 fi
-arch="codeaster-reqs-${VERSION}-${ASTER_REQS_PACKAGE}.sh"
+arch="codeaster-prerequisites-${VERSION}-${ASTER_REQS_PACKAGE}.sh"
 
 _test curl || exit 1
 
