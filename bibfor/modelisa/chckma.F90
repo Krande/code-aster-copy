@@ -32,13 +32,14 @@ subroutine chckma(nomu, dtol)
 !
 !-----------------------------------------------------------------------
 !
-#include "asterf_types.h"
 #include "jeveux.h"
+#include "asterf_types.h"
 #include "asterc/r8maem.h"
 #include "asterc/r8miem.h"
 #include "asterfort/cncinv.h"
 #include "asterfort/dismoi.h"
 #include "asterfort/infniv.h"
+#include "asterfort/int_to_char8.h"
 #include "asterfort/jedema.h"
 #include "asterfort/jedetr.h"
 #include "asterfort/jemarq.h"
@@ -49,7 +50,7 @@ subroutine chckma(nomu, dtol)
 #include "asterfort/juveca.h"
 #include "asterfort/utmess.h"
 #include "asterfort/wkvect.h"
-#include "asterfort/int_to_char8.h"
+#include "MeshTypes_type.h"
 !
     character(len=8) :: nomu
     real(kind=8) :: dtol
@@ -58,7 +59,7 @@ subroutine chckma(nomu, dtol)
 ! ----- DECLARATIONS
 !
     integer(kind=8) :: iaconx, ilconx, ima, nbnm, nbnm2, it, jcoor, ifm, niv
-    integer(kind=8) :: jdrvlc, jcncin, numail, imail
+    integer(kind=8) :: jdrvlc, jcncin, numail, imail, cell_type
     integer(kind=8) :: iadr, iadr0, nbm, nbm0, iadtyp, nb200
     integer(kind=8) :: ja, jb, tabma(200), i, j, k1, k2, knso, kmdb, l
     character(len=8) :: noxa, noxb, tyma, mess_k8(3)
@@ -69,7 +70,9 @@ subroutine chckma(nomu, dtol)
     integer(kind=8) :: nbmail, nbnoeu
     integer(kind=8) :: insolo, imdoub, iatyma, nmdoub
     type(Mmesh) :: mesh_conv
-    aster_logical :: indic, alarme, erreur
+    type(Mconverter) :: converter
+    integer(kind=8), pointer :: v_typema(:) => null()
+    aster_logical :: indic, alarme, erreur, hasQuadraticCell
 !
     call jemarq()
     call infniv(ifm, niv)
@@ -286,9 +289,27 @@ subroutine chckma(nomu, dtol)
     end if
 
 ! check presence of degenerated face
-    call mesh_conv%init(nomu)
-    call mesh_conv%clean()
+    call converter%init()
+    call jeveuo(nomu//'.TYPMAIL', 'L', vi=v_typema)
 
+    hasQuadraticCell = ASTER_FALSE
+    do ima = 1, nbmail
+        cell_type = converter%map_type(v_typema(ima))
+!
+        select case (cell_type)
+        case (MT_SEG3, MT_SEG4, &
+              MT_TRIA6, MT_TRIA7, MT_QUAD8, MT_QUAD9, &
+              MT_HEXA20, MT_HEXA27, MT_PENTA15, MT_PENTA18, MT_PENTA21, &
+              MT_PYRAM13, MT_PYRAM19, MT_TETRA10, MT_TETRA15)
+            hasQuadraticCell = ASTER_TRUE
+            exit
+        end select
+    end do
+
+    if (hasQuadraticCell) then
+        call mesh_conv%init(nomu)
+        call mesh_conv%clean()
+    end if
 !
 !     -----------------------------------------------------------
 !     MENAGE DANS LE MAILLAGE : ON DETRUIT NOEUDS ORPHELINS ET
