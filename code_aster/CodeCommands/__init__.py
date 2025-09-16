@@ -41,6 +41,8 @@ from .affe_char_cine_f import AFFE_CHAR_CINE_F
 from .affe_char_meca import AFFE_CHAR_MECA
 from .affe_char_meca_c import AFFE_CHAR_MECA_C
 from .affe_char_meca_f import AFFE_CHAR_MECA_F
+from .affe_char_sech import AFFE_CHAR_SECH
+from .affe_char_sech_f import AFFE_CHAR_SECH_F
 from .affe_char_ther import AFFE_CHAR_THER
 from .affe_char_ther_f import AFFE_CHAR_THER_F
 from .affe_modele import AFFE_MODELE
