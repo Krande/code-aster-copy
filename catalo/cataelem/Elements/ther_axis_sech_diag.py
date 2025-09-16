@@ -277,7 +277,7 @@ class SEAXTL3(Element):
                 (SP.PTEMPEI, DDL_THER),
                 (OP.RIGI_THER_TANG.PVARCPR, LC.ZVARCPG),
             ),
-            para_out=((SP.PMATTTR, MMATTTR),),
+            para_out=((SP.PMATTTR, MMATTTR), (OP.RIGI_THER_TANG.PMATTSR, MMATTSR)),
         ),
         OP.MASS_THER_TANG(
             te=246,

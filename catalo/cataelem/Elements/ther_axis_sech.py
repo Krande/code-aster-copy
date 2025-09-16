@@ -29,7 +29,6 @@ from cataelem.Options.options import OP
 # Located components
 # --------------------------------------------------------------------------------------------------
 DDL_THER = LocatedComponents(phys=PHY.TEMP_R, type="ELNO", components=("SECH",))
-DDL_TEMP = LocatedComponents(phys=PHY.TEMP_R, type="ELNO", components=("TEMP",))
 
 MVECTTR = ArrayOfComponents(phys=PHY.VTEM_R, locatedComponents=DDL_THER)
 

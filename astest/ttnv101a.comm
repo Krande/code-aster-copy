@@ -85,7 +85,7 @@ RESUSECH = SECH_NON_LINE(
 # =========================================================================
 # Calcul de la masse d'eau moyenne a chaque instant
 CMoy = POST_ELEM(
-    INTEGRALE=_F(GROUP_MA="MAILVOL", NOM_CMP="SECH", NOM_CHAM="TEMP", TYPE_MAILLE="3D"),
+    INTEGRALE=_F(GROUP_MA="MAILVOL", NOM_CMP="SECH", NOM_CHAM="SECH", TYPE_MAILLE="3D"),
     RESULTAT=RESUSECH,
     MODELE=MODTHER,
     CHAM_MATER=CHMASECH,
