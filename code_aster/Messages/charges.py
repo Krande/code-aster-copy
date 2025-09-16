@@ -20,6 +20,11 @@
 from ..Utilities import _
 
 cata_msg = {
+    1: _(
+        """
+Le pilotage est interdit avec un ParallelMesh
+"""
+    ),
     2: _(
         """
 On ne peut pas appliquer dans la même occurrence des conditions aux ddls HHO et non-HHO.
