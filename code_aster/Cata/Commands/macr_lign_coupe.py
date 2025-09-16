@@ -40,6 +40,7 @@ MACR_LIGN_COUPE = MACRO(
             evol_elas,
             evol_noli,
             evol_ther,
+            evol_sech,
             mode_meca,
             comb_fourier,
             mult_elas,
@@ -105,8 +106,18 @@ MACR_LIGN_COUPE = MACRO(
                 "ERTH_ELEM",
                 "ERTH_ELNO",
                 "ERTH_NOEU",
-                "SECH",
             ),
+        ),
+    ),
+    b_sech=BLOC(
+        condition="""is_type("RESULTAT") in (evol_sech,)""",
+        fr=tr("résultat de séchage"),
+        NOM_CHAM=SIMP(
+            statut="f",
+            typ="TXM",
+            validators=NoRepeat(),
+            defaut="SECH",
+            into=("SECH", "FLUX_ELGA", "FLUX_ELNO", "FLUX_NOEU", "COMPORTHER"),
         ),
     ),
     b_cham=BLOC(

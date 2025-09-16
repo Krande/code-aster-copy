@@ -151,7 +151,7 @@ subroutine op0186()
                 ds_inout, ds_algopara, &
                 ds_algorom, ds_print, &
                 comporTher, &
-                mesh)
+                mesh, l_dry)
     itmax = ther_crit_i(3)
 !
 ! - Initializations

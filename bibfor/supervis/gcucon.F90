@@ -38,7 +38,8 @@ subroutine gcucon(result_name, type_name, ier)
     result = result_name
 !
     select case (type_name)
-    case ("EVOL_NOLI", "EVOL_THER", "DYNA_HARMO", "MODE_EMPI", "MODE_MECA", "MODE_MECA_C")
+    case ("EVOL_NOLI", "EVOL_THER", "DYNA_HARMO", "MODE_EMPI", &
+          "MODE_MECA", "MODE_MECA_C", "EVOL_SECH")
         call jeexin(result//".DESC", ier)
     case ("MODE_FLAMB", "HARM_GENE", "ACOU_HARMO")
         call jeexin(result//".DESC", ier)

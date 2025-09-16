@@ -83,7 +83,7 @@ SECH_NON_LINE = OPER(
     ),
     reuse=SIMP(statut="c", typ=CO),
     RESULTAT=SIMP(
-        statut="f", typ=evol_ther, fr=tr("Objet qui sera enrichi des nouveaux instants calculés")
+        statut="f", typ=evol_sech, fr=tr("Objet qui sera enrichi des nouveaux instants calculés")
     ),
     MODELE=SIMP(statut="o", typ=(modele_sdaster)),
     CHAM_MATER=SIMP(statut="o", typ=(cham_mater)),
@@ -147,7 +147,7 @@ SECH_NON_LINE = OPER(
             CHAM_NO=SIMP(statut="f", typ=cham_no_sdaster),
             VALE=SIMP(statut="f", typ="R"),
             b_evol=BLOC(
-                condition="""exists("EVOL_THER")""",
+                condition="""exists("EVOL_SECH")""",
                 NUME_ORDRE=SIMP(statut="f", typ="I"),
                 INST=SIMP(statut="f", typ="R"),
                 b_inst=BLOC(

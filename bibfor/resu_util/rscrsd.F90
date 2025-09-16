@@ -231,8 +231,6 @@ subroutine rscrsd(baseZ, resultNameZ, resultTypeZ, nbStore)
 !
 ! - Create list of parameters
 !
-    print *, 'resultNameZ ', resultNameZ
-    print *, 'resultTypeZ ', resultTypeZ
     call utpara(base, resultNameZ, resultTypeZ, nbStore)
 !
 ! - Create list of fields

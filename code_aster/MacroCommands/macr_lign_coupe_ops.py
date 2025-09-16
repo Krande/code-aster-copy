@@ -961,6 +961,7 @@ def macr_lign_coupe_ops(
 
     if RESULTAT.getType().lower() in (
         "evol_ther",
+        "evol_sech",
         "evol_elas",
         "evol_noli",
         "mode_meca",

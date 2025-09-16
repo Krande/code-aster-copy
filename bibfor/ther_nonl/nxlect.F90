@@ -21,7 +21,7 @@ subroutine nxlect(result, model, &
                   ds_inout, ds_algopara, &
                   ds_algorom, ds_print, &
                   compor, &
-                  mesh)
+                  mesh, l_dry)
 !
     use NonLin_Datastructure_type
     use Rom_Datastructure_type
@@ -46,6 +46,7 @@ subroutine nxlect(result, model, &
     type(NL_DS_Print), intent(inout) :: ds_print
     character(len=24), intent(out) :: compor
     character(len=8), intent(out) :: mesh
+    aster_logical, intent(in) :: l_dry
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -65,6 +66,7 @@ subroutine nxlect(result, model, &
 ! IO  ds_print         : datastructure for printing parameters
 ! Out compor           : name of <CARTE> COMPOR
 ! Out mesh             : name of mesh
+! In  l_dry            : .true. if drying
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -87,7 +89,11 @@ subroutine nxlect(result, model, &
 !
 ! - Read parameters for input/output management
 !
-    call nonlinDSInOutRead('THER', result, ds_inout)
+    if (l_dry) then
+        call nonlinDSInOutRead('SECH', result, ds_inout)
+    else
+        call nonlinDSInOutRead('THER', result, ds_inout)
+    end if
 !
 ! - Read parameters for printing
 !
