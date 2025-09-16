@@ -562,7 +562,6 @@ contains
 !
 ! --- Fill mesh
 !
-        this%nb_total_nodes = this%nb_nodes
         owner = 0
         do i_node = 1, nb_node_mesh
             if (this%isHPC) then
@@ -1917,19 +1916,23 @@ contains
         coor = 0.d0
 !
         if (this%edges(edge_id)%isub == 0) then
-            coor_ref = [0.d0, 0.d0, 0.d0]
-            call elrfvf("SE2", coor_ref, basis)
+            ! coor_ref = [0.d0, 0.d0, 0.d0]
+            ! call elrfvf("SE2", coor_ref, basis)
+            basis(1:2) = 0.5d0
             do i_node = 1, 2
                 node = this%edges(edge_id)%nodes(i_node)
                 coor(1:3) = coor(1:3)+this%nodes(node)%coor(1:3)*basis(i_node)
             end do
         else
             if (this%edges(edge_id)%isub == 1) then
-                coor_ref = [-0.5d0, 0.d0, 0.d0]
+                ! coor_ref = [-0.5d0, 0.d0, 0.d0]
+                ! call elrfvf("SE3", coor_ref, basis)
+                basis(1:3) = [0.375d0, -0.125d0, 0.75d0]
             else
-                coor_ref = [0.5d0, 0.d0, 0.d0]
+                ! coor_ref = [0.5d0, 0.d0, 0.d0]
+                ! call elrfvf("SE3", coor_ref, basis)
+                basis(1:3) = [-0.125, 0.375d0, 0.75d0]
             end if
-            call elrfvf("SE3", coor_ref, basis)
             ASSERT(this%edges(edge_id)%parent > 0)
             do i_node = 1, 3
                 node = this%edges(this%edges(edge_id)%parent)%nodes(i_node)
