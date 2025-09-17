@@ -744,31 +744,34 @@ subroutine op0167()
 
 ! --------- Get list of nodes to create POI1
             call getnode(meshIn, keywfact, iocc, 'F', jvNodeNume, nbNode)
-            call jeveuo(jvNodeNume, 'L', vi=listNodeNume)
-            do iNode = 1, nbNode
-                nodeNumeIn = listNodeNume(iNode)
-                if (.not. creaPoi1Flag(nodeNumeIn)) then
-                    creaPoi1Flag(nodeNumeIn) = ASTER_TRUE
-                end if
-            end do
-
-! --------- Get list of nodes to create GROUP_MA for POI1
-            call getvtx(keywfact, 'NOM_GROUP_MA', iocc=iocc, nbval=0, nbret=n1)
-            if (n1 .ne. 0) then
-                call getvtx(keywfact, 'NOM_GROUP_MA', iocc=iocc, scal=grCellName)
-                creaGrPoi1GrName(iOcc) = grCellName
-                nbGrCellFromCreaPoi1 = nbGrCellFromCreaPoi1+1
-                creaGrPoi1NbCell(iOcc) = nbNode
+            call jeexin(jvNodeNume, iret)
+            if (iret .ne. 0) then
+                call jeveuo(jvNodeNume, 'L', vi=listNodeNume)
                 do iNode = 1, nbNode
                     nodeNumeIn = listNodeNume(iNode)
-                    nodeNameIn = int_to_char8(nodeNumeIn)
-                    cellNameOut = nodeNameIn
-                    creaGrPoi1CellName(cellShift+iNode) = cellNameOut
-                    creaPoi1Ref((iocc-1)*nbNodeIn+nodeNumeIn) = cellShift+iNode
+                    if (.not. creaPoi1Flag(nodeNumeIn)) then
+                        creaPoi1Flag(nodeNumeIn) = ASTER_TRUE
+                    end if
                 end do
-                cellShift = cellShift+nbNode
+
+                ! --------- Get list of nodes to create GROUP_MA for POI1
+                call getvtx(keywfact, 'NOM_GROUP_MA', iocc=iocc, nbval=0, nbret=n1)
+                if (n1 .ne. 0) then
+                    call getvtx(keywfact, 'NOM_GROUP_MA', iocc=iocc, scal=grCellName)
+                    creaGrPoi1GrName(iOcc) = grCellName
+                    nbGrCellFromCreaPoi1 = nbGrCellFromCreaPoi1+1
+                    creaGrPoi1NbCell(iOcc) = nbNode
+                    do iNode = 1, nbNode
+                        nodeNumeIn = listNodeNume(iNode)
+                        nodeNameIn = int_to_char8(nodeNumeIn)
+                        cellNameOut = nodeNameIn
+                        creaGrPoi1CellName(cellShift+iNode) = cellNameOut
+                        creaPoi1Ref((iocc-1)*nbNodeIn+nodeNumeIn) = cellShift+iNode
+                    end do
+                    cellShift = cellShift+nbNode
+                end if
+                call jedetr(jvNodeNume)
             end if
-            call jedetr(jvNodeNume)
         end do
 ! ----- Prepare objects for POI1 to add
         do iNode = 1, nbNodeIn
