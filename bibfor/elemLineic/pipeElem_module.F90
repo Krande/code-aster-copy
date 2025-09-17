@@ -319,7 +319,7 @@ contains
             massInerLoca(4) = 0.d0
             massInerLoca(5) = 0.d0
             massInerLoca(6) = rho*xl*xa-mass*xb*xb
-            call utpslg(nbNode, 3, pgl3, massInerLoca, massInerGlob)
+            call utpslg(1, 3, pgl3, massInerLoca, massInerGlob)
         elseif (pipeElem%pipeType .eq. PIPE_TYPE_STRAIGHT) then
             massInerLoca(1) = rho*(iy1+iz1)*xl
             massInerLoca(2) = 0.d0
@@ -327,7 +327,7 @@ contains
             massInerLoca(4) = 0.d0
             massInerLoca(5) = 0.d0
             massInerLoca(6) = rho*xl*(iz1+sectPipe%area*xl*xl/12.d0)
-            call utpslg(nbNode, 3, pgl, massInerLoca, massInerGlob)
+            call utpslg(1, 3, pgl, massInerLoca, massInerGlob)
         else
             ASSERT(ASTER_FALSE)
         end if
