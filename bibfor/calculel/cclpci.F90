@@ -169,24 +169,16 @@ subroutine cclpci(option, &
 
         else if (cataInType .eq. 'CARA') then
             fieldIn = caraElemZ(1:8)//cataInName(1:16)
-            if (caraElemZ .eq. " " .or. caraElemZ(1:1) .eq. "#") then
-                call utmess('I', 'CALCCHAMP_91', sk=option)
-            end if
 
         else if (cataInType .eq. 'VOLA') then
             fieldIn = cataInName
 
         else if (cataInType .eq. 'CHMA') then
             fieldIn = materFieldZ(1:8)//cataInName(1:16)
-            if (materFieldZ .eq. " " .or. materFieldZ(1:1) .eq. "#") then
-                call utmess('I', 'CALCCHAMP_90', sk=option)
-            end if
 
         else if (cataInType .eq. 'MACO') then
             fieldIn = materCodeZ(1:8)//cataInName(1:16)
-            if (materCodeZ .eq. " " .or. materCodeZ(1:1) .eq. "#") then
-                call utmess('I', 'CALCCHAMP_90', sk=option)
-            end if
+
         end if
 
         lchin(nbParaIn) = fieldIn
