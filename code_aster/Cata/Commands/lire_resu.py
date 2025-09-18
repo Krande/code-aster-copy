@@ -38,6 +38,7 @@ def lire_resu_prod(TYPE_RESU, **args):
             mode_empi,
             mode_meca_c,
             evol_varc,
+            evol_sech,
         )
 
     if TYPE_RESU == "EVOL_CHAR":
@@ -60,6 +61,8 @@ def lire_resu_prod(TYPE_RESU, **args):
         return mode_meca_c
     if TYPE_RESU == "EVOL_VARC":
         return evol_varc
+    if TYPE_RESU == "EVOL_SECH":
+        return evol_sech
     raise CataError("type de concept resultat non prevu")
 
 
@@ -79,6 +82,7 @@ def lire_resu_type(RESULTAT, **args):
             mode_empi,
             mode_meca_c,
             evol_varc,
+            evol_sech,
         )
 
     return AsType(RESULTAT)
@@ -124,6 +128,7 @@ LIRE_RESU = OPER(
             "EVOL_CHAR",
             "EVOL_VARC",
             "MODE_EMPI",
+            "EVOL_SECH",
         ),
     ),
     FORMAT=SIMP(statut="o", typ="TXM", into=("IDEAS", "IDEAS_DS58", "MED")),
@@ -143,6 +148,7 @@ LIRE_RESU = OPER(
             dyna_harmo,
             evol_char,
             mode_empi,
+            evol_sech,
         ),
     ),
     # General parameters
@@ -182,6 +188,15 @@ LIRE_RESU = OPER(
     ),
     b_evol_ther=BLOC(
         condition="""equal_to("TYPE_RESU", 'EVOL_THER')""",
+        EXCIT=FACT(
+            statut="f",
+            max="**",
+            CHARGE=SIMP(statut="o", typ=(char_ther, char_cine_ther)),
+            FONC_MULT=SIMP(statut="f", typ=(fonction_sdaster, nappe_sdaster, formule)),
+        ),
+    ),
+    b_evol_sech=BLOC(
+        condition="""equal_to("TYPE_RESU", 'EVOL_SECH')""",
         EXCIT=FACT(
             statut="f",
             max="**",
