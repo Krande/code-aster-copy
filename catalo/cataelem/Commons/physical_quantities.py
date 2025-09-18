@@ -3707,7 +3707,7 @@ STRX_R = PhysicalQuantity(
 
 TEMP_C = PhysicalQuantity(
     type="C",
-    components=("TEMP", "TEMP_MIL", "TEMP_INF", "TEMP_SUP", "LAGR"),
+    components=("TEMP", "TEMP_MIL", "TEMP_INF", "TEMP_SUP", "LAGR", "SECH"),
     comment="""  TEMP_C Type:C Temperature inconnue du phenomene thermique
        TEMP : temperature
        TEMP_MIL : temperature sur le feuillet moyen  (coques)
@@ -3715,13 +3715,14 @@ TEMP_C = PhysicalQuantity(
        TEMP_SUP : temperature sur la face superieure (coques)
        LAGR : parametre de lagrange du a la dualisation des conditions aux
        limites
+       SECH : séchage ou concentration en eau
 """,
 )
 
 
 TEMP_F = PhysicalQuantity(
     type="K8",
-    components=("TEMP", "TEMP_MIL", "TEMP_INF", "TEMP_SUP", "LAGR"),
+    components=("TEMP", "TEMP_MIL", "TEMP_INF", "TEMP_SUP", "LAGR", "SECH"),
     comment="""  TEMP_F Type:K8 Temperature inconnue du phenomene thermique
        TEMP : temperature
        TEMP_MIL : temperature sur le feuillet moyen  (coques)
@@ -3729,6 +3730,7 @@ TEMP_F = PhysicalQuantity(
        TEMP_SUP : temperature sur la face superieure (coques)
        LAGR : parametre de lagrange du a la dualisation des
        conditions aux limites
+       SECH : séchage ou concentration en eau
 """,
 )
 
@@ -3741,6 +3743,7 @@ TEMP_R = PhysicalQuantity(
         "TEMP_INF",
         "TEMP_SUP",
         "LAGR",
+        "SECH",
         "H1",
         "E1",
         "DTX",
@@ -3748,7 +3751,6 @@ TEMP_R = PhysicalQuantity(
         "DTZ",
         "HHO_CT[10]",
         "HHO_FT[6]",
-        "SECH",
     ),
     comment="""  TEMP_R Type:R Temperature inconnue du phenomene thermique
        TEMP : temperature
@@ -3757,6 +3759,7 @@ TEMP_R = PhysicalQuantity(
        TEMP_SUP : temperature sur la face superieure (coques)
        LAGR : parametre de lagrange du a la dualisation des
        conditions aux limites
+       SECH : séchage ou concentration en eau
        H1 : ddl Heaviside X-FEM
        E1 : ddl Cracktip X-FEM
        DTX : derivee de la temperature selon x (n'est pas un ddl)
@@ -3764,7 +3767,6 @@ TEMP_R = PhysicalQuantity(
        DTZ : derivee de la temperature selon z (n'est pas un ddl)
        HHO_CT : degres de liberté HHO: 1, X, Y, Z, X2, Y2, Z2 (X, Y, Z cell)
        HHO_FT : degres de liberté HHO: 1, X, Y, X2, Y2, XY (X, Y face)
-       SECH : séchage ou concentration en eau
 """,
 )
 
