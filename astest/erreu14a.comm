@@ -58,7 +58,7 @@ CHARGT = AFFE_CHAR_MECA(
 )
 
 
-# 1. Toutes les mailles sont affectees mais la composante ne s'appelle pas TEMP
+# 1. Toutes les mailles sont affectees mais la composante ne s'appelle pas SECH
 # ------------------------------------------------------------------------------
 CH1 = CREA_CHAMP(
     OPERATION="AFFE",
@@ -102,7 +102,7 @@ CH2 = CREA_CHAMP(
     OPERATION="AFFE",
     TYPE_CHAM="CART_TEMP_R",
     MAILLAGE=MAIL,
-    AFFE=(_F(TOUT="OUI", NOM_CMP="TEMP", VALE=0.3)),
+    AFFE=(_F(TOUT="OUI", NOM_CMP="SECH", VALE=0.3)),
 )
 CHMAT2 = AFFE_MATERIAU(
     MAILLAGE=MAIL,
