@@ -142,6 +142,8 @@ module crea_maillage_module
         integer(kind=8) :: max_nodes = 0, max_edges = 0, max_faces = 0, max_volumes = 0
         integer(kind=8) :: max_cells = 0, dim_mesh = 0, nb_layer = 0, lastLayerSize = 0
         integer(kind=8) :: nb_edges_dege = 0, nb_faces_dege = 0
+        integer(kind=8) :: max_faces_dege = 0, max_edges_dege = 0
+        integer(kind=8), allocatable :: faces_dege(:), edges_dege(:)
 !
         integer(kind=4), allocatable :: lastGhostsLayer(:)
 
@@ -171,6 +173,7 @@ module crea_maillage_module
         procedure, public, pass :: copy_mesh
         procedure, public, pass :: create_joints
         procedure, public, pass :: init => init_mesh
+        procedure, public, pass :: fix => fix_mesh
         procedure, public, pass :: refine
         procedure, private, pass :: add_edge
         procedure, private, pass :: add_face
@@ -246,11 +249,12 @@ contains
 !
 ! Find edge_id of edges
 !
-        integer(kind=8) :: i_edge, nb_edges, edge_i, i_node
+        integer(kind=8) :: i_edge, nb_edges, edge_i, edge_i_error
         aster_logical :: ok
 !
         find = ASTER_FALSE
         edge_id = 0
+        edge_i_error = 0
 !
         nb_edges = this%nodes(nno_sort(1))%nb_edges
         if (nb_edges > 0) then
@@ -265,24 +269,26 @@ contains
                     end if
                 end if
                 if (ok) then
-                    do i_node = 1, nno
-                        if (nno_sort(i_node) .ne. this%edges(edge_i)%nno_sort(i_node)) then
-                            this%nb_edges_dege = this%nb_edges_dege+1
-                            call utmess('E', 'MODELISA4_11', &
-                                        sk=this%converter%name(this%edges(edge_i)%type), &
-                                        ni=4, &
-                                        vali=[nno_sort(1:nno), this%edges(edge_i)%nno_sort(3)])
-                            ok = ASTER_FALSE
-                            exit
-                        end if
-                    end do
-                    if (ok) then
-                        find = ASTER_TRUE
-                        edge_id = edge_i
+                    if (nno_sort(nno) .ne. this%edges(edge_i)%nno_sort(nno)) then
+                        edge_i_error = edge_i
+                        ok = ASTER_FALSE
                     end if
+                end if
+                if (ok) then
+                    find = ASTER_TRUE
+                    edge_id = edge_i
                     exit
                 end if
             end do
+        end if
+!
+        if (.not. find .and. edge_i_error > 0) then
+            this%nb_edges_dege = this%nb_edges_dege+1
+            if (2*this%nb_edges_dege > this%max_edges_dege) then
+                call this%increase_memory("EDGES_DEG", 2*this%max_edges_dege)
+            end if
+            this%edges_dege(2*(this%nb_edges_dege-1)+1) = edge_i_error
+            this%edges_dege(2*(this%nb_edges_dege-1)+2) = this%nb_edges+1
         end if
 !
     end subroutine
@@ -300,15 +306,15 @@ contains
         integer(kind=8), intent(in) :: nno_sort(9)
         aster_logical, intent(out) :: find
         integer(kind=8), intent(out) :: face_id
-        character(len=8) :: typ_ori
 !
 ! Find face_id of face
 !
-        integer(kind=8) :: i_face, i_node, nb_faces, face_i
+        integer(kind=8) :: i_face, i_node, nb_faces, face_i, face_i_error
         aster_logical :: ok
 !
         find = ASTER_FALSE
         face_id = 0
+        face_i_error = 0
 !
         nb_faces = this%nodes(nno_sort(1))%nb_faces
         if (nb_faces > 0) then
@@ -326,36 +332,29 @@ contains
                     ok = ASTER_FALSE
                 end if
                 if (ok) then
-                    do i_node = 1, nno
+                    do i_node = nnos+1, nno
                         if (nno_sort(i_node) .ne. this%faces(face_i)%nno_sort(i_node)) then
-                            this%nb_faces_dege = this%nb_faces_dege+1
-                            select case (nno)
-                            case (3)
-                                typ_ori = "TRIA3"
-                            case (4)
-                                typ_ori = "QUAD4"
-                            case (6)
-                                typ_ori = "TRIA6"
-                            case (7)
-                                typ_ori = "TRIA7"
-                            case (8)
-                                typ_ori = "QUAD8"
-                            case (9)
-                                typ_ori = "QUAD9"
-                            case default
-                                ASSERT(ASTER_FALSE)
-                            end select
-                            call utmess('E', 'MODELISA4_12', &
-                                        sk=typ_ori, ni=nnos, vali=nno_sort(1:nnos))
+                            face_i_error = face_i
                             ok = ASTER_FALSE
                             exit
                         end if
                     end do
+                end if
+                if (ok) then
                     find = ASTER_TRUE
                     face_id = face_i
                     exit
                 end if
             end do
+        end if
+!
+        if (.not. find .and. face_i_error > 0) then
+            this%nb_faces_dege = this%nb_faces_dege+1
+            if (2*this%nb_faces_dege > this%max_faces_dege) then
+                call this%increase_memory("FACES_DEG", 2*this%max_faces_dege)
+            end if
+            this%faces_dege(2*(this%nb_faces_dege-1)+1) = face_i_error
+            this%faces_dege(2*(this%nb_faces_dege-1)+2) = this%nb_faces+1
         end if
 !
     end subroutine
@@ -539,6 +538,8 @@ contains
         this%max_faces = max(1, 6*nb_elem_mesh)
         this%max_edges = max(1, 12*nb_elem_mesh)
         this%max_nodes = max(1, 5*nb_node_mesh)
+        this%max_faces_dege = 1000
+        this%max_edges_dege = 1000
 !
         allocate (this%cells(this%max_cells))
         allocate (this%volumes(this%max_volumes))
@@ -546,6 +547,11 @@ contains
         allocate (this%edges(this%max_edges))
         allocate (this%nodes(this%max_nodes))
         allocate (this%lastGhostsLayer(this%max_nodes))
+        allocate (this%faces_dege(this%max_faces_dege))
+        allocate (this%edges_dege(this%max_edges_dege))
+!
+        this%faces_dege = 0
+        this%edges_dege = 0
 !
         call jeveuo(mesh_in//'.TYPMAIL', 'L', vi=this%v_typema)
         call jeveuo(mesh_in//'.COORDO    .VALE', 'L', vr=v_coor)
@@ -644,12 +650,177 @@ contains
             print *, "... in ", end-start, " seconds."
         end if
 !
-        if (this%nb_edges_dege > 0 .or. this%nb_faces_dege > 0) then
-            call this%clean()
-            call utmess('F', "MODELISA4_10")
+        call jedema()
+!
+    end subroutine
+!
+! ==================================================================================================
+!
+    subroutine fix_mesh(this, remove_orphelan)
+!
+        implicit none
+!
+        class(Mmesh), intent(inout) :: this
+        aster_logical, intent(in) :: remove_orphelan
+!
+        integer(kind=8) :: i_edge, e1, e2, n1, n2, i_face, f1, f2
+        integer(kind=8) :: i, j, i_node, nno, i_volu
+        integer(kind=8), allocatable :: map_nodes(:)
+        aster_logical :: modif
+        real(kind=8) :: new_coor(3), end, start
+
+!
+        if (this%info >= 2) then
+            print *, "Fixing mesh..."
+            call cpu_time(start)
         end if
 !
-        call jedema()
+        allocate (map_nodes(this%nb_total_nodes))
+        do i_node = 1, this%nb_total_nodes
+            map_nodes(i_node) = i_node
+        end do
+!
+        do i_edge = 1, this%nb_edges_dege
+            e1 = this%edges_dege(2*(i_edge-1)+1)
+            e2 = this%edges_dege(2*(i_edge-1)+2)
+            n1 = this%edges(e1)%nno_sort(3)
+            n2 = this%edges(e2)%nno_sort(3)
+            ASSERT(n1*n2 > 0)
+!
+!           use barycenter of two middle nodes
+            new_coor = 0.5d0*(this%nodes(n1)%coor+this%nodes(n2)%coor)
+            this%nodes(n1)%coor = new_coor
+            this%nodes(n2)%keep = ASTER_FALSE
+            map_nodes(n2) = n1
+            this%nb_nodes = this%nb_nodes-1
+!
+            do i_face = 1, this%nb_faces
+                do i = 1, this%faces(i_face)%nb_edges
+                    if (e2 == this%faces(i_face)%edges(i)) then
+                        this%faces(i_face)%edges(i) = e1
+                        nno = this%converter%nno(this%faces(i_face)%type)
+                        do i_node = 1, nno
+                            if (n2 == this%faces(i_face)%nodes(i_node)) then
+                                this%faces(i_face)%nodes(i_node) = n1
+                                do j = 1, nno
+                                    if (n2 == this%faces(i_face)%nno_sort(j)) then
+                                        this%faces(i_face)%nno_sort(j) = n1
+                                        exit
+                                    end if
+                                end do
+                                exit
+                            end if
+                        end do
+                        exit
+                    end if
+                end do
+            end do
+!
+            do i_volu = 1, this%nb_volumes
+                do i = 1, this%volumes(i_volu)%nb_edges
+                    if (e2 == this%volumes(i_volu)%edges(i)) then
+                        this%volumes(i_volu)%edges(i) = e1
+                        nno = this%converter%nno(this%volumes(i_volu)%type)
+                        do i_node = 1, nno
+                            if (n2 == this%volumes(i_volu)%nodes(i_node)) then
+                                this%volumes(i_volu)%nodes(i_node) = n1
+                                exit
+                            end if
+                        end do
+                        exit
+                    end if
+                    exit
+                end do
+            end do
+!
+        end do
+!
+        do i_face = 1, this%nb_faces_dege
+            f1 = this%faces_dege(2*(i_face-1)+1)
+            f2 = this%faces_dege(2*(i_face-1)+2)
+            nno = this%converter%nno(this%faces(f1)%type)
+
+            n1 = this%faces(f1)%nodes(nno)
+            n2 = this%faces(f2)%nodes(nno)
+            ASSERT(n1*n2 > 0)
+!
+!           use barycenter of two middle nodes
+            new_coor = 0.5d0*(this%nodes(n1)%coor+this%nodes(n2)%coor)
+            this%nodes(n1)%coor = new_coor
+            this%nodes(n2)%keep = ASTER_FALSE
+            map_nodes(n2) = n1
+            this%nb_nodes = this%nb_nodes-1
+!
+            do i_volu = 1, this%nb_volumes
+                do i = 1, this%volumes(i_volu)%nb_faces
+                    if (f2 == this%volumes(i_volu)%faces(i)) then
+                        this%volumes(i_volu)%faces(i) = f1
+                        nno = this%converter%nno(this%volumes(i_volu)%type)
+                        do i_node = 1, nno
+                            if (n2 == this%volumes(i_volu)%nodes(i_node)) then
+                                this%volumes(i_volu)%nodes(i_node) = n1
+                                exit
+                            end if
+                        end do
+                        exit
+                    end if
+                    exit
+                end do
+            end do
+!
+        end do
+!
+        do i = 1, this%nb_cells
+            modif = ASTER_FALSE
+            if (this%cells(i)%keep) then
+                nno = this%converter%nno(this%cells(i)%type)
+                do i_node = 1, nno
+                    n2 = this%cells(i)%nodes(i_node)
+                    n1 = map_nodes(this%cells(i)%nodes(i_node))
+                    modif = modif .or. n1 .ne. n2
+                    this%cells(i)%nodes(i_node) = n1
+                end do
+                if (modif) then
+                if (this%cells(i)%dim == 1) then
+                    do i_edge = 1, this%nb_edges_dege
+                        e2 = this%edges_dege(2*(i_edge-1)+2)
+                        if (e2 == this%cells(i)%ss_id) then
+                            this%cells(i)%keep = ASTER_FALSE
+                            exit
+                        end if
+                    end do
+                elseif (this%cells(i)%dim == 2) then
+                    do i_face = 1, this%nb_faces_dege
+                        f2 = this%faces_dege(2*(i_face-1)+2)
+                        if (f2 == this%cells(i)%ss_id) then
+                            this%cells(i)%keep = ASTER_FALSE
+                            exit
+                        end if
+                    end do
+                end if
+                end if
+            end if
+        end do
+!
+        if (remove_orphelan) then
+            do i_node = 1, this%nb_nodes
+                if (this%nodes(i_node)%orphelan) then
+                    this%nodes(i_node)%keep = ASTER_FALSE
+                    this%nodes(i_node)%orphelan = ASTER_FALSE
+                end if
+            end do
+        end if
+!
+        deallocate (map_nodes)
+
+! --- Keep only necessary nodes
+        call this%update()
+!
+        if (this%info >= 2) then
+            call cpu_time(end)
+            print *, "... in ", end-start, " seconds."
+        end if
+!
 !
     end subroutine
 !
@@ -683,6 +854,8 @@ contains
         deallocate (this%volumes)
         deallocate (this%cells)
         deallocate (this%lastGhostsLayer)
+        deallocate (this%faces_dege)
+        deallocate (this%edges_dege)
 !
     end subroutine
 !
@@ -1911,7 +2084,7 @@ contains
         real(kind=8) :: coor(3)
 ! ---------------------------------------------------------------------------------
         integer(kind=8) :: i_node, node
-        real(kind=8) :: basis(27), coor_ref(3)
+        real(kind=8) :: basis(27)
 !
         coor = 0.d0
 !
@@ -2937,6 +3110,7 @@ contains
         type(Mvolume), allocatable :: volumes(:)
         type(Mcell), allocatable :: cells(:)
         integer(kind=4), allocatable :: lastGhostsLayer(:)
+        integer(kind=8), allocatable :: list(:)
 !
         if (object == "NODES") then
             old_size = size(this%nodes)
@@ -2964,6 +3138,16 @@ contains
             this%edges(1:old_size) = edges(1:old_size)
             deallocate (edges)
             this%max_edges = new_size
+        elseif (object == "EDGES_DE") then
+            old_size = size(this%edges_dege)
+            allocate (list(old_size))
+            list(1:old_size) = this%edges_dege(1:old_size)
+            deallocate (this%edges_dege)
+            allocate (this%edges_dege(new_size))
+            this%edges_dege(1:old_size) = list(1:old_size)
+            this%edges_dege(old_size+1:new_size) = 0
+            deallocate (list)
+            this%max_edges_dege = new_size
         elseif (object == "FACES") then
             old_size = size(this%faces)
             allocate (faces(old_size))
@@ -2973,6 +3157,16 @@ contains
             this%faces(1:old_size) = faces(1:old_size)
             deallocate (faces)
             this%max_faces = new_size
+        elseif (object == "FACES_DE") then
+            old_size = size(this%faces_dege)
+            allocate (list(old_size))
+            list(1:old_size) = this%faces_dege(1:old_size)
+            deallocate (this%faces_dege)
+            allocate (this%faces_dege(new_size))
+            this%faces_dege(1:old_size) = list(1:old_size)
+            this%faces_dege(old_size+1:new_size) = 0
+            deallocate (list)
+            this%max_faces_dege = new_size
         elseif (object == "VOLUMES") then
             old_size = size(this%volumes)
             allocate (volumes(old_size))

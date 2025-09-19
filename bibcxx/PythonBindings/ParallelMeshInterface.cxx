@@ -291,6 +291,17 @@ Arguments:
         .def( "_endDefinition", &ParallelMesh::endDefinition, R"(
 Terminate the mesh creation (*for internal use*).
         )" )
+        .def( "fix", &ParallelMesh::fix, R"(
+Remove orphelan nodes, and double edges and faces.
+
+Arguments:
+    remove_orphelan (bool) : remove orphelan nodes. Default True
+    info (int) : verbosity mode (1 or 2). Default 1.
+
+Returns:
+    ParallelMesh: fixed mesh
+        )",
+              py::arg( "remove_orphelan" ) = true, py::arg( "info" ) = 1 )
         .def( "convertToLinear", &ParallelMesh::convertToLinear, R"(
 Convert the mesh to a linear one.
 

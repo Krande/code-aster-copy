@@ -179,6 +179,8 @@ class Mesh : public BaseMesh {
 
     MeshPtr convertToBiQuadratic( const ASTERINTEGER info = 1 );
 
+    MeshPtr fix( const bool remove_orphelan, const ASTERINTEGER info = 1 );
+
     void addNodeLabels( const VectorString &labels );
 
     void addCellLabels( const VectorString &labels );

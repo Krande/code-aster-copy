@@ -221,6 +221,15 @@ bool Mesh::isQuadratic( const bool local ) const {
     return false;
 }
 
+MeshPtr Mesh::fix( const bool remove_orphelan, const ASTERINTEGER info ) {
+    auto mesh_out = std::make_shared< Mesh >();
+    ASTERINTEGER inf = info, flag;
+    flag = static_cast< int >( remove_orphelan );
+    CALL_FIX_MESH( getName(), mesh_out->getName(), &inf, &flag );
+    mesh_out->build();
+    return mesh_out;
+}
+
 MeshPtr Mesh::convertToLinear( const ASTERINTEGER info ) {
     auto mesh_out = std::make_shared< Mesh >();
     ASTERINTEGER un = 1, inf = info;
