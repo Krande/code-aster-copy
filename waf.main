@@ -37,15 +37,15 @@ waf_main()
             source ${prefix}/env.d/version.sh
             # FIXME: latest during beta test - export VERSION
             export VERSION=latest
-            found=$(find build -name "codeaster-prerequisites-${VERSION}-*" -type d)
-            if [ -z "${found}" ]; then
-                ${prefix}/.devhelper/check_requirements.sh || exit $?
-            fi
-            found=$(find build -name "codeaster-prerequisites-${VERSION}-*" -type d)
-            if [ ! -z "${found}" ]; then
-                export ASTER_CONFIG=$(ls ${prefix}/build/codeaster-prerequisites-${VERSION}-*/*.sh | head -1)
+            args=( "-v" )
+            [ "${WAF_DEFAULT_VARIANT}" = "debug" ] && args=()
+            ${prefix}/.devhelper/check_requirements.sh
+            iret=$?
+            [ ${iret} -eq 4 ] && exit ${iret}
+            if [ ${iret} -eq 0 ]; then
+                export ASTER_CONFIG=$(ls ${prefix}/build/codeaster-prerequisites-${VERSION}-*/*.sh | grep ${args[@]} debug | head -1)
             else
-                echo "code_aster requirements not found, configuration may fail!"
+                printf "⚠️  code_aster requirements not found, configuration may fail!\n\n"
             fi
             host=$(detect_host)
         fi

@@ -20,55 +20,77 @@ is_intranet() {
     return ${okintranet}
 }
 
-echo
-echo "code_aster requirements not found in 'build/'."
-echo "If they are already installed, define ASTER_CONFIG environment variable" \
-     "to the environment file."
-printf "✨ Do you want to download the requirements ([y]/n, c to cancel)? "
-read answer
-answer=$(tr '[:upper:]' '[:lower:]' <<< "${answer}")
-[ "${answer}" = "no" ] && exit 0
-[ "${answer}" = "c" ] && echo "exiting..." && exit 1
-
-ASTER_REQS_PACKAGE=${ASTER_REQS_PACKAGE:-"gcc-ompi"}
-if [ "${ASTER_REQS_PACKAGE}" = "ask" ]; then
+do_install() {
     echo
-    echo "Select the package you want to download:"
-    echo "  1. full (embedding gcc & openmpi, recommended)"
-    echo "  2. with gcc, without openmpi (you must have the same version of openmpi on the host)"
-    echo "  3. without gcc, without openmpi (you must have the same version of openmpi on the host)"
-    printf "✨ your choice ([1]/2/3, 0 to cancel)? "
+    echo "code_aster requirements not found in 'build/'."
+    echo "If they are already installed, define ASTER_CONFIG environment variable" \
+        "to the environment file."
+    printf "✨ Do you want to download the requirements ([y]/n, c to cancel)? "
     read answer
-    [ "${answer}" = "2" ] && ASTER_REQS_PACKAGE="gcc-noompi"
-    [ "${answer}" = "3" ] && ASTER_REQS_PACKAGE="nogcc-noompi"
-    [ "${answer}" = "0" ] && echo "exiting..." && exit 1
-fi
-arch="codeaster-prerequisites-${VERSION}-${ASTER_REQS_PACKAGE}.sh"
+    answer=$(tr '[:upper:]' '[:lower:]' <<< "${answer}")
+    [ "${answer}" = "n" ] && return 0
+    [ "${answer}" = "c" ] && echo "exiting..." && return 1
 
-_test curl || exit 1
+    ASTER_REQS_PACKAGE=${ASTER_REQS_PACKAGE:-"gcc-ompi"}
+    if [ "${ASTER_REQS_PACKAGE}" = "ask" ]; then
+        echo
+        echo "Select the package you want to download:"
+        echo "  1. full (embedding gcc & openmpi, recommended)"
+        echo "  2. with gcc, without openmpi (you must have the same version of openmpi on the host)"
+        echo "  3. without gcc, without openmpi (you must have the same version of openmpi on the host)"
+        printf "✨ your choice ([1]/2/3, 0 to cancel)? "
+        read answer
+        [ "${answer}" = "2" ] && ASTER_REQS_PACKAGE="gcc-noompi"
+        [ "${answer}" = "3" ] && ASTER_REQS_PACKAGE="nogcc-noompi"
+        [ "${answer}" = "0" ] && echo "exiting..." && return 1
+    fi
+    arch="codeaster-prerequisites-${VERSION}-${ASTER_REQS_PACKAGE}${VARIANT}.sh"
 
-is_intranet
-okintranet=$?
+    _test curl || return 1
 
-mkdir -p ${prefix}/build
-echo
-if [ ${okintranet} -eq 0 ]; then
-    echo "⏳ downloading requirements archive ${arch} (it may take a few minutes)..."
-    curl -fsSL https://minio.retd.edf.fr/codeaster/prereq/${arch} \
-        -o ${prefix}/build/${arch}
-else
-    echo "❌ downloading requirements from internet is not yet supported, sorry"
-    exit 1
-fi
-if [ ! -f ${prefix}/build/${arch} ]; then
-    echo "❌ download failed"
-    exit 1
-fi
+    is_intranet
+    okintranet=$?
 
-cd ${prefix}/build
-chmod 755 ${arch}
-./${arch} && rm -f ${arch}
+    mkdir -p ${prefix}/build
+    echo
+    if [ ${okintranet} -eq 0 ]; then
+        echo "⏳ downloading requirements archive ${arch} (it may take a few minutes)..."
+        curl -fsSL https://minio.retd.edf.fr/codeaster/prereq/${arch} \
+            -o ${prefix}/build/${arch}
+    else
+        echo "❌ downloading requirements from internet is not yet supported, sorry"
+        return 1
+    fi
+    if [ ! -f ${prefix}/build/${arch} ]; then
+        echo "❌ download failed"
+        return 1
+    fi
 
-printf "✅ code_aster requirements installed\n\n"
+    (
+        cd ${prefix}/build
+        chmod 755 ${arch}
+        ./${arch} && rm -f ${arch}
+    )
 
-exit 0
+    printf "✅ code_aster requirements installed\n\n"
+
+    return 0
+}
+
+check_requirements_main() {
+    args=( "-v" )
+    [ "${WAF_DEFAULT_VARIANT}" = "debug" ] && args=()
+
+    found=$(find build -name "codeaster-prerequisites-${VERSION}-*" -type d | grep ${args[@]} debug)
+    if [ -z "${found}" ]; then
+        do_install || return 4
+    fi
+    found=$(find build -name "codeaster-prerequisites-${VERSION}-*" -type d | grep ${args[@]} debug)
+    if [ -z "${found}" ]; then
+        return 1
+    fi
+    return 0
+}
+
+check_requirements_main "$@"
+exit $?
