@@ -128,9 +128,15 @@ Enable or disable floating point exceptions.
 
 Arguments:
     value (int): -1 to disable the FPE interception, 1 to enable FPE detection.
+    )",
+             py::arg( "value" ) );
 
-Returns:
-    str: Current value
+    mod.def( "fe_invalid", &aster_fe_invalid,
+             R"(
+Enable or disable FE_INVALID exception.
+
+Arguments:
+    value (int): -1 to disable the interception, 1 to enable detection.
     )",
              py::arg( "value" ) );
 

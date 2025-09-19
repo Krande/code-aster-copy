@@ -25,8 +25,7 @@ POURSUITE(CODE="OUI", DEBUG=_F(SDVERI="OUI"), IGNORE_ALARM=("MODELE1_63",))
 # ================================================================================================
 if sympy_available:
 
-    with CA.disable_fpe():
-        import sympy
+    import sympy
 
     from code_aster.MacroCommands.Contrib import TensorModule
     from code_aster.MacroCommands.Contrib import HookeTensor

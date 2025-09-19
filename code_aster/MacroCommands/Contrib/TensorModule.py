@@ -21,15 +21,10 @@
 # Based on tensor.py written by Konrad Hinsen <hinsen@cnrs-orleans.fr>
 # =====================================================================
 
-# aslint: disable=C4008
-
 import numpy as NP
 
-from ...Utilities.ExecutionParameter import disable_fpe
-
 try:
-    with disable_fpe():
-        import sympy
+    import sympy
 
     X, Y, Z = sympy.symbols("X Y Z")
     ASTER_HAVE_SYMPY = True
