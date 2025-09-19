@@ -87,6 +87,8 @@
      - 
    * - :py:class:`~code_aster.Objects.DistributedPressureReal`
      - 
+   * - :py:class:`~code_aster.Objects.DryingResult`
+     - ``evol_sech``
    * - :py:class:`~code_aster.Objects.DynamicMacroElement`
      - ``macr_elem_dyna``
    * - :py:class:`~code_aster.Objects.ElasticFourierResult`
