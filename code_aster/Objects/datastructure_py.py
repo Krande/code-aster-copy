@@ -171,7 +171,10 @@ class DataStructureDict(PyDataStructure):
 
 class DryingResultDict(DataStructureDict):
     """Set of drying results."""
+
     object_type = "EVOL_SECH"
+
+
 class ThermalResultDict(DataStructureDict):
     """Set of thermal results."""
 
