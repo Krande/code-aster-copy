@@ -4860,11 +4860,13 @@ class ListOfLoads(DataStructure):
 
         1. addDirichletBC(self: libaster.ListOfLoads, arg0: DirichletBC) -> None
 
-        2. addDirichletBC(self: libaster.ListOfLoads, arg0: DirichletBC, arg1: Function) -> None
+        2. addDirichletBC(self: libaster.ListOfLoads, arg0: DirichletBC, arg1: Function, arg2: str) -> None
 
-        3. addDirichletBC(self: libaster.ListOfLoads, arg0: DirichletBC, arg1: Formula) -> None
+        3. addDirichletBC(self: libaster.ListOfLoads, arg0: DirichletBC, arg1: Formula, arg2: str) -> None
 
-        4. addDirichletBC(self: libaster.ListOfLoads, arg0: DirichletBC, arg1: Function2D) -> None
+        4. addDirichletBC(self: libaster.ListOfLoads, arg0: DirichletBC, arg1: Function2D, arg2: str) -> None
+
+        5. addDirichletBC(self: libaster.ListOfLoads, arg0: DirichletBC, arg1: str) -> None
         """
 
     def addLoad(self, *args, **kwargs):
@@ -5006,8 +5008,8 @@ class ListOfLoads(DataStructure):
             ListParaMecaLoadReal: a list of real parallel mechanical loads
         """
 
-    def hasDifferentialLoads(self):
-        """Return True if there are DIDI loads"""
+    def hasDifferential(self):
+        """Return True if there are DIDI loads or DIDI Dirichlet BCs"""
 
     def hasDirichletBC(self):
         """Dirichlet BCs have been added or not ?
@@ -13951,11 +13953,13 @@ class PhysicalProblem:
 
         1. addDirichletBC(self: libaster.PhysicalProblem, arg0: libaster.DirichletBC) -> None
 
-        2. addDirichletBC(self: libaster.PhysicalProblem, arg0: libaster.DirichletBC, arg1: libaster.Function) -> None
+        2. addDirichletBC(self: libaster.PhysicalProblem, arg0: libaster.DirichletBC, arg1: libaster.Function, arg2: str) -> None
 
-        3. addDirichletBC(self: libaster.PhysicalProblem, arg0: libaster.DirichletBC, arg1: libaster.Formula) -> None
+        3. addDirichletBC(self: libaster.PhysicalProblem, arg0: libaster.DirichletBC, arg1: libaster.Formula, arg2: str) -> None
 
-        4. addDirichletBC(self: libaster.PhysicalProblem, arg0: libaster.DirichletBC, arg1: libaster.Function2D) -> None
+        4. addDirichletBC(self: libaster.PhysicalProblem, arg0: libaster.DirichletBC, arg1: libaster.Function2D, arg2: str) -> None
+
+        5. addDirichletBC(self: libaster.PhysicalProblem, arg0: libaster.DirichletBC, arg1: str) -> None
         """
 
     def addLoad(self, *args, **kwargs):
