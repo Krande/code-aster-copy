@@ -21,6 +21,7 @@ subroutine fix_mesh(mesh_in, mesh_out, info, remove_orphelan)
     use crea_maillage_module
 !
     implicit none
+#include "asterf_types.h"
 #include "asterfort/cargeo.h"
 #include "asterfort/infoma.h"
 !
@@ -30,7 +31,7 @@ subroutine fix_mesh(mesh_in, mesh_out, info, remove_orphelan)
     type(Mmesh) :: mesh_conv
 !
     call mesh_conv%init(mesh_in, info)
-    call mesh_conv%fix(logical(remove_orphelan == 1, kind=1))
+    call mesh_conv%fix(logical(remove_orphelan == 1, kind=1), ASTER_TRUE)
     call mesh_conv%check_mesh()
     call mesh_conv%copy_mesh(mesh_out)
     call mesh_conv%clean()

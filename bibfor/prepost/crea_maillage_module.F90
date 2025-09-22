@@ -662,18 +662,18 @@ contains
 !
 ! ==================================================================================================
 !
-    subroutine fix_mesh(this, remove_orphelan)
+    subroutine fix_mesh(this, remove_orphelan, outward_normal)
 !
         implicit none
 !
         class(Mmesh), intent(inout) :: this
-        aster_logical, intent(in) :: remove_orphelan
+        aster_logical, intent(in) :: remove_orphelan, outward_normal
 !
-        integer(kind=8) :: i_edge, e1, e2, n1, n2, i_face, f1, f2
-        integer(kind=8) :: i, j, i_node, nno, i_volu, v_id
+        integer(kind=8) :: i_edge, e1, e2, n1, n2, n3, i_face, f1, f2
+        integer(kind=8) :: i, j, i_node, nno, i_volu, v_id, nnos, c_id
         integer(kind=8), allocatable :: map_nodes(:)
-        aster_logical :: modif
-        real(kind=8) :: new_coor(3), end, start
+        real(kind=8) :: new_coor(3), end, start, v0(3), v1(3), no(3)
+        real(kind=8) :: bar_v(3), bar_f(3), nvf(3)
 
 !
         if (this%info >= 2) then
@@ -764,6 +764,10 @@ contains
             if (this%faces(f2)%cell_id > 0) then
                 this%cells(this%faces(f2)%cell_id)%keep = ASTER_FALSE
             end if
+            ASSERT(this%faces(f1)%nb_volumes == 1)
+            ASSERT(this%faces(f2)%nb_volumes == 1)
+            this%faces(f1)%nb_volumes = 2
+            this%faces(f1)%volumes(2) = this%faces(f2)%volumes(1)
 !
             do i_volu = 1, this%faces(f2)%nb_volumes
                 v_id = this%faces(f2)%volumes(i_volu)
@@ -802,6 +806,46 @@ contains
                 if (this%nodes(i_node)%orphelan) then
                     this%nodes(i_node)%keep = ASTER_FALSE
                     this%nodes(i_node)%orphelan = ASTER_FALSE
+                end if
+            end do
+        end if
+!
+        if (outward_normal) then
+            do i_face = 1, this%nb_faces
+                if (this%faces(i_face)%nb_volumes == 1) then
+                    nnos = this%converter%nnos(this%faces(i_face)%type)
+                    n1 = this%faces(i_face)%nodes(1)
+                    n2 = this%faces(i_face)%nodes(2)
+                    n3 = this%faces(i_face)%nodes(nnos)
+                    v0 = this%nodes(n2)%coor-this%nodes(n1)%coor
+                    v1 = this%nodes(n3)%coor-this%nodes(n1)%coor
+                    no(1) = v0(2)*v1(3)-v0(3)*v1(2)
+                    no(2) = v0(3)*v1(1)-v0(1)*v1(3)
+                    no(3) = v0(1)*v1(2)-v0(2)*v1(1)
+                    no = no/norm2(no)
+                    bar_f = this%barycenter_face(i_face)
+                    bar_v = this%barycenter_volume(this%faces(i_face)%volumes(1))
+                    nvf = bar_f-bar_v
+                    nvf = nvf/norm2(nvf)
+                    if (dot_product(nvf, no) <= 0.d0) then
+                        this%faces(i_face)%nodes(2) = n3
+                        this%faces(i_face)%nodes(nnos) = n2
+                        n2 = this%faces(i_face)%nodes(nnos+1)
+                        n3 = this%faces(i_face)%nodes(2*nnos)
+                        this%faces(i_face)%nodes(nnos+1) = n3
+                        this%faces(i_face)%nodes(2*nnos) = n2
+                        if (nnos == 4) then
+                            n2 = this%faces(i_face)%nodes(nnos+2)
+                            n3 = this%faces(i_face)%nodes(nnos+3)
+                            this%faces(i_face)%nodes(nnos+2) = n3
+                            this%faces(i_face)%nodes(nnos+3) = n2
+                        end if
+                        c_id = this%faces(i_face)%cell_id
+                        if (c_id > 0) then
+                            nno = this%converter%nno(this%cells(c_id)%type)
+                            this%cells(c_id)%nodes(1:nno) = this%faces(i_face)%nodes(1:nno)
+                        end if
+                    end if
                 end if
             end do
         end if
