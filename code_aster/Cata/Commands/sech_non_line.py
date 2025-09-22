@@ -181,7 +181,7 @@ SECH_NON_LINE = OPER(
     # -------------------------------------------------------------------
     ARCHIVAGE=C_ARCHIVAGE(),
     # -------------------------------------------------------------------
-    OBSERVATION=C_OBSERVATION("THERMIQUE"),
+    OBSERVATION=C_OBSERVATION("SECHAGE"),
     # -------------------------------------------------------------------
     TITRE=SIMP(statut="f", typ="TXM"),
     INFO=SIMP(statut="f", typ="I", into=(1, 2)),
