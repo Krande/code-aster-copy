@@ -56,7 +56,6 @@ def C_OBSERVATION(phys):
         into=("MIN", "MAX", "MOY", "MAXI_ABS", "MINI_ABS", "VALE"),
     )
     _Keywords["NOM_CMP"] = SIMP(statut="f", typ="TXM", max=20)
-    _Keywords["NOM_VARI"] = SIMP(statut="f", typ="TXM", max=20)
     _Keywords["EVAL_CMP"] = SIMP(
         statut="f", typ="TXM", max=1, defaut="VALE", into=("VALE", "FORMULE")
     )
@@ -97,6 +96,8 @@ def C_OBSERVATION(phys):
 
     if _meca or _dyna:
 
+        _Keywords["NOM_VARI"] = SIMP(statut="f", typ="TXM", max=20)
+
         mcfact = FACT(
             statut="f",
             max=99,
@@ -108,7 +109,7 @@ def C_OBSERVATION(phys):
             b_cham_no=BLOC(
                 condition="""is_in("NOM_CHAM", ('DEPL','VITE','ACCE','FORC_NODA','CONT_NOEU','DEPL_ABSOLU','VITE_ABSOLU','ACCE_ABSOLU'))""",
                 regles=(UN_PARMI("NOEUD", "GROUP_NO", "GROUP_MA", "MAILLE", "TOUT")),
-                **_BlocNode
+                **_BlocNode,
             ),
             b_cham_elga=BLOC(
                 condition="""is_in("NOM_CHAM", ('SIEF_ELGA','EPSI_ELGA','VARI_ELGA'))""",
@@ -121,12 +122,12 @@ def C_OBSERVATION(phys):
                     POINT=SIMP(statut="o", typ="I", validators=NoRepeat(), max="**"),
                     SOUS_POINT=SIMP(statut="f", typ="I", validators=NoRepeat(), max="**"),
                 ),
-                **_BlocElem
+                **_BlocElem,
             ),
             b_cham_elem=BLOC(
                 condition="""(equal_to("NOM_CHAM", 'CONT_ELEM'))""",
                 regles=(UN_PARMI("GROUP_MA", "MAILLE", "TOUT")),
-                **_BlocElem
+                **_BlocElem,
             ),
             b_prec_rela=BLOC(
                 condition="""(equal_to("CRITERE", 'RELATIF'))""",
@@ -135,20 +136,20 @@ def C_OBSERVATION(phys):
             b_prec_abso=BLOC(
                 condition="""(equal_to("CRITERE", 'ABSOLU'))""", PRECISION=SIMP(statut="o", typ="R")
             ),
-            **_Keywords
+            **_Keywords,
         )
 
     elif _ther or _sech:
         mcfact = FACT(
             statut="f",
             max=99,
-            regles=(UN_PARMI("NOM_CMP", "NOM_VARI"),),
+            regles=(
+                UN_PARMI("NOM_CMP", "NOM_VARI"),
+                UN_PARMI("NOEUD", "GROUP_NO", "GROUP_MA", "MAILLE", "TOUT"),
+            ),
             b_formule=BLOC(
                 condition="""(equal_to("EVAL_CMP", 'FORMULE'))""",
                 FORMULE=SIMP(statut="o", typ=formule, max=1),
-            ),
-            b_cham_no=BLOC(
-                regles=(UN_PARMI("NOEUD", "GROUP_NO", "GROUP_MA", "MAILLE", "TOUT")), **_BlocNode
             ),
             b_prec_rela=BLOC(
                 condition="""(equal_to("CRITERE", 'RELATIF'))""",
@@ -157,7 +158,8 @@ def C_OBSERVATION(phys):
             b_prec_abso=BLOC(
                 condition="""(equal_to("CRITERE", 'ABSOLU'))""", PRECISION=SIMP(statut="o", typ="R")
             ),
-            **_Keywords
+            **_Keywords,
+            **_BlocNode,
         )
 
     return mcfact

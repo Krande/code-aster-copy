@@ -99,9 +99,7 @@ SECH_NON_LINE = OPER(
     # -------------------------------------------------------------------
     AFFICHAGE=C_AFFICHAGE(),
     # -------------------------------------------------------------------
-    METHODE=SIMP(
-        statut="f", typ="TXM", defaut="NEWTON", into=("NEWTON", "MODELE_REDUIT", "NEWTON_KRYLOV")
-    ),
+    METHODE=SIMP(statut="f", typ="TXM", defaut="NEWTON", into=("NEWTON", "NEWTON_KRYLOV")),
     b_meth_newton=BLOC(
         condition="""equal_to("METHODE", 'NEWTON') or equal_to("METHODE", 'NEWTON_KRYLOV')""",
         NEWTON=FACT(
@@ -109,25 +107,6 @@ SECH_NON_LINE = OPER(
             REAC_ITER=SIMP(statut="f", typ="I", defaut=0, val_min=0),
             RESI_LINE_RELA=SIMP(statut="f", typ="R", defaut=1.0e-3),
             ITER_LINE_MAXI=SIMP(statut="f", typ="I", defaut=0),
-        ),
-    ),
-    b_meth_rom=BLOC(
-        condition="""equal_to("METHODE", 'MODELE_REDUIT')""",
-        MODELE_REDUIT=FACT(
-            statut="d",
-            REAC_ITER=SIMP(statut="f", typ="I", defaut=0, val_min=0),
-            BASE_PRIMAL=SIMP(statut="o", typ=mode_empi, max=1),
-            DOMAINE_REDUIT=SIMP(statut="f", typ="TXM", defaut="NON", into=("OUI", "NON")),
-            b_hr_cond=BLOC(
-                condition="""(equal_to("DOMAINE_REDUIT", 'OUI'))""",
-                GROUP_NO_INTERF=SIMP(statut="o", typ=grno, max=1),
-                CORR_COMPLET=SIMP(statut="f", typ="TXM", defaut="NON", into=("OUI", "NON")),
-                b_hrcoor_cond=BLOC(
-                    condition="""(equal_to("CORR_COMPLET", 'OUI'))""",
-                    GROUP_NO_ENCASTRE=SIMP(statut="o", typ=grno, max=1),
-                    COEF_PENA=SIMP(statut="f", typ="R", defaut=1.0e6),
-                ),
-            ),
         ),
     ),
     # -------------------------------------------------------------------
