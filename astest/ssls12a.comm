@@ -199,7 +199,6 @@ t_coef_1 = LIRE_TABLE(
 reslinok = POST_COMBINAISON(
     MODELE=model,
     TABLE_COEF=t_coef_1,
-    TABLE_COEF_RESU=CO("MA_TABLE"),
     TYPE_COMB="RESULTAT",
     TOUT="OUI",
     NOM_CHAM=("DEPL", "EFGE_ELNO"),
