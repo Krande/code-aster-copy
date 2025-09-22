@@ -122,22 +122,25 @@ bool ParallelMesh::updateGlobalGroupOfCells( void ) {
 };
 
 bool ParallelMesh::isQuadratic( const bool local ) const {
-    if ( local ) {
-        CALL_JEMARQ();
-        auto cellsType = getMedCellsTypes();
-        cellsType->updateValuePointer();
-        for ( auto &cellType : cellsType ) {
-            if ( cellType == 103 || cellType == 104 || cellType == 206 || cellType == 207 ||
-                 cellType == 208 || cellType == 209 || cellType == 310 || cellType == 315 ||
-                 cellType == 318 || cellType == 313 || cellType == 320 || cellType == 327 ) {
-                CALL_JEDEMA();
-                return true;
-            }
+    bool ret = false;
+    CALL_JEMARQ();
+    auto cellsType = getMedCellsTypes();
+    cellsType->updateValuePointer();
+    for ( auto &cellType : cellsType ) {
+        if ( cellType == 103 || cellType == 104 || cellType == 206 || cellType == 207 ||
+             cellType == 208 || cellType == 209 || cellType == 310 || cellType == 315 ||
+             cellType == 318 || cellType == 313 || cellType == 320 || cellType == 327 ) {
+            ret = true;
+            break;
         }
-        CALL_JEDEMA();
-        return false;
     }
-    ASTERINTEGER test = (ASTERINTEGER)isQuadratic( false );
+    CALL_JEDEMA();
+
+    if ( local ) {
+        return ret;
+    }
+
+    ASTERINTEGER test = (ASTERINTEGER)ret;
     test = AsterMPI::max( test );
     return (bool)test;
 }

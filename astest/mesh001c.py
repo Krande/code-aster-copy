@@ -39,6 +39,13 @@ pmesh = DEFI_GROUP(reuse=pmesh, MAILLAGE=pmesh, CREA_GROUP_NO=(_F(TOUT_GROUP_MA=
 
 test.assertTrue(pmesh.isParallel())
 test.assertEqual(pmesh.getDimension(), 3)
+test.assertFalse(pmesh.isQuadratic())
+
+# test COPIER on ParallelMesh
+pmesh2 = COPIER(CONCEPT=pmesh)
+test.assertTrue(pmesh2.isParallel())
+test.assertEqual(pmesh2.getDimension(), 3)
+test.assertFalse(pmesh2.isQuadratic())
 
 # test dimension
 TABG = RECU_TABLE(CO=mesh, NOM_TABLE="CARA_GEOM")
