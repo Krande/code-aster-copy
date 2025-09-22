@@ -37,7 +37,9 @@ module crea_maillage_module
 #include "asterfort/assert.h"
 #include "asterfort/build_tree_comm.h"
 #include "asterfort/codent.h"
+#include "asterfort/elraga.h"
 #include "asterfort/elrfno.h"
+#include "asterfort/elrfdf.h"
 #include "asterfort/elrfvf.h"
 #include "asterfort/isParallelMesh.h"
 #include "asterfort/jecrec.h"
@@ -212,7 +214,7 @@ module crea_maillage_module
 !
     public :: Medge, Mface, Mcell, Mmesh, Mconverter
     private :: numbering_edge, numbering_face, dividing_cell, mult_elem
-    private :: sort_nodes_face
+    private :: sort_nodes_face, fix_measure
 contains
 !
 !===================================================================================================
@@ -662,12 +664,12 @@ contains
 !
 ! ==================================================================================================
 !
-    subroutine fix_mesh(this, remove_orphelan, outward_normal)
+    subroutine fix_mesh(this, remove_orphelan, outward_normal, positive_measure)
 !
         implicit none
 !
         class(Mmesh), intent(inout) :: this
-        aster_logical, intent(in) :: remove_orphelan, outward_normal
+        aster_logical, intent(in) :: remove_orphelan, outward_normal, positive_measure
 !
         integer(kind=8) :: i_edge, e1, e2, n1, n2, n3, i_face, f1, f2
         integer(kind=8) :: i, j, i_node, nno, i_volu, v_id, nnos, c_id
@@ -801,6 +803,8 @@ contains
             end if
         end do
 !
+        deallocate (map_nodes)
+!
         if (remove_orphelan) then
             do i_node = 1, this%nb_nodes
                 if (this%nodes(i_node)%orphelan) then
@@ -850,8 +854,12 @@ contains
             end do
         end if
 !
-        deallocate (map_nodes)
-
+        if (positive_measure) then
+            do i_volu = 1, this%nb_volumes
+                call fix_measure(this, i_volu, 3)
+            end do
+        end if
+!
 ! --- Keep only necessary nodes
         call this%update()
 !
@@ -3634,5 +3642,117 @@ contains
             end do
         end do
     end function
+!
+! ==================================================================================================
+!
+    subroutine fix_measure(this, cell_id, cell_dim)
+!
+        implicit none
+!
+        type(Mmesh), intent(inout) :: this
+        integer(kind=8), intent(in) :: cell_id, cell_dim
+!
+        integer(kind=8) :: i, nodes(27), nno, nbpg, ndim
+        real(kind=8) :: jaco(3, 3), jacob, coopg(3), dbasis(3, 8), coorno(3), poipg(2)
+        character(len=3) :: typema
+! ---------------------------------------------------------------------------------
+!
+        if (cell_dim == 3) then
+            select case (this%volumes(cell_id)%type)
+            case (MT_HEXA27)
+                typema = "HE8"
+            case (MT_TETRA15)
+                typema = "TE4"
+            case (MT_PENTA21)
+                typema = "PY5"
+            case (MT_PYRAM19)
+                typema = "PE6"
+            case default
+                ASSERT(ASTER_FALSE)
+            end select
+!
+            dbasis = 0.d0
+            call elraga(typema, "FPG1", ndim, nbpg, coopg, poipg)
+            ASSERT(nbpg == 1)
+            call elrfdf(typema, coopg, dbasis, nno_=nno)
+!
+! ---  Compute the jacobienne
+            jaco = 0.d0
+            do i = 1, nno
+                coorno = this%nodes(this%volumes(cell_id)%nodes(i))%coor
+                jaco(1:3, 1) = jaco(1:3, 1)+coorno(1)*dbasis(1:3, i)
+                jaco(1:3, 2) = jaco(1:3, 2)+coorno(2)*dbasis(1:3, i)
+                jaco(1:3, 3) = jaco(1:3, 3)+coorno(3)*dbasis(1:3, i)
+            end do
+!
+            jacob = jaco(1, 1)*jaco(2, 2)*jaco(3, 3)+jaco(1, 3)*jaco(2, 1)*jaco(3, 2) &
+                    +jaco(3, 1)*jaco(1, 2)*jaco(2, 3)-jaco(3, 1)*jaco(2, 2)*jaco(1, 3) &
+                    -jaco(3, 3)*jaco(2, 1)*jaco(1, 2)-jaco(1, 1)*jaco(2, 3)*jaco(3, 2)
+!
+            if (jacob < 0.d0) then
+                nodes = this%volumes(cell_id)%nodes
+                select case (this%volumes(cell_id)%type)
+                case (MT_HEXA27)
+                    this%volumes(cell_id)%nodes(1:4) = [nodes(1), nodes(4), nodes(3), nodes(2)]
+                    this%volumes(cell_id)%nodes(5:8) = [nodes(5), nodes(8), nodes(7), nodes(6)]
+                    this%volumes(cell_id)%nodes(9:12) = [nodes(12), nodes(11), nodes(10), nodes(9)]
+                    this%volumes(cell_id)%nodes(13:16) = [nodes(13), nodes(16), nodes(15), &
+                                                          nodes(14)]
+                    this%volumes(cell_id)%nodes(17:20) = [nodes(20), nodes(19), nodes(18), &
+                                                          nodes(17)]
+                    this%volumes(cell_id)%nodes(21:26) = [nodes(21), nodes(25), nodes(24), &
+                                                          nodes(23), nodes(22), nodes(26)]
+                    this%volumes(cell_id)%nodes(27) = nodes(27)
+                case (MT_TETRA15)
+                    this%volumes(cell_id)%nodes(1:4) = [nodes(1), nodes(3), nodes(2), nodes(4)]
+                    this%volumes(cell_id)%nodes(5:7) = [nodes(7), nodes(6), nodes(5)]
+                    this%volumes(cell_id)%nodes(8:10) = [nodes(8), nodes(9), nodes(10)]
+                    this%volumes(cell_id)%nodes(11:15) = nodes(11:15)
+                case (MT_PENTA21)
+                    this%volumes(cell_id)%nodes(1:3) = [nodes(1), nodes(3), nodes(2)]
+                    this%volumes(cell_id)%nodes(4:6) = [nodes(4), nodes(6), nodes(5)]
+                    this%volumes(cell_id)%nodes(7:9) = [nodes(9), nodes(8), nodes(7)]
+                    this%volumes(cell_id)%nodes(10:12) = [nodes(10), nodes(12), nodes(11)]
+                    this%volumes(cell_id)%nodes(13:15) = [nodes(15), nodes(14), nodes(13)]
+                    this%volumes(cell_id)%nodes(16:18) = [nodes(18), nodes(17), nodes(16)]
+                    this%volumes(cell_id)%nodes(19:21) = nodes(19:21)
+                case (MT_PYRAM19)
+                    this%volumes(cell_id)%nodes(1:4) = [nodes(1), nodes(4), nodes(3), nodes(2)]
+                    this%volumes(cell_id)%nodes(5) = nodes(5)
+                    this%volumes(cell_id)%nodes(6:9) = [nodes(9), nodes(8), nodes(7), nodes(6)]
+                    this%volumes(cell_id)%nodes(7:9) = [nodes(9), nodes(8), nodes(7)]
+                    this%volumes(cell_id)%nodes(10:13) = [nodes(10), nodes(13), nodes(12), &
+                                                          nodes(11)]
+                    this%volumes(cell_id)%nodes(14) = nodes(14)
+
+                    this%volumes(cell_id)%nodes(15:18) = [nodes(18), nodes(17), nodes(16), &
+                                                          nodes(15)]
+                    this%volumes(cell_id)%nodes(19) = nodes(19)
+                case default
+                    ASSERT(ASTER_FALSE)
+                end select
+!
+                nno = this%converter%nno(this%cells(this%volumes(cell_id)%cell_id)%type)
+                this%cells(this%volumes(cell_id)%cell_id)%nodes(1:nno) = &
+                    this%volumes(cell_id)%nodes(1:nno)
+!
+! ------ Verification that volume is positive
+                jaco = 0.d0
+                do i = 1, nno
+                    coorno = this%nodes(this%volumes(cell_id)%nodes(i))%coor
+                    jaco(1:3, 1) = jaco(1:3, 1)+coorno(1)*dbasis(1:3, i)
+                    jaco(1:3, 2) = jaco(1:3, 2)+coorno(2)*dbasis(1:3, i)
+                    jaco(1:3, 3) = jaco(1:3, 3)+coorno(3)*dbasis(1:3, i)
+                end do
+                !
+                jacob = jaco(1, 1)*jaco(2, 2)*jaco(3, 3)+jaco(1, 3)*jaco(2, 1)*jaco(3, 2) &
+                        +jaco(3, 1)*jaco(1, 2)*jaco(2, 3)-jaco(3, 1)*jaco(2, 2)*jaco(1, 3) &
+                        -jaco(3, 3)*jaco(2, 1)*jaco(1, 2)-jaco(1, 1)*jaco(2, 3)*jaco(3, 2)
+                ASSERT(jacob > 0.d0)
+            end if
+        else
+            ASSERT(ASTER_FALSE)
+        end if
+    end subroutine
 !
 end module
