@@ -102,6 +102,7 @@ module crea_maillage_module
         integer(kind=8) :: nb_edges = 0, edges(12) = 0
         integer(kind=8) :: parent = -1
         integer(kind=8) :: isub = 0
+        integer(kind=8) :: cell_id = 0
     end type
 !
     type Mface
@@ -109,17 +110,22 @@ module crea_maillage_module
         integer(kind=8) :: nnos = 0
         integer(kind=8) :: nodes(9) = 0
         integer(kind=8) :: nno_sort(9) = 0
+        integer(kind=8) :: nb_volumes = 0, volumes(2) = 0
         integer(kind=8) :: nb_edges = 0, edges(4) = 0
         integer(kind=8) :: parent = -1
         integer(kind=8) :: isub = 0
+        integer(kind=8) :: cell_id = 0
     end type
 !
     type Medge
         integer(kind=8) :: type = 0
         integer(kind=8) :: nodes(4) = 0
         integer(kind=8) :: nno_sort(4) = 0
+        integer(kind=8) :: nb_faces = 0, faces(20) = 0
+        integer(kind=8) :: nb_volumes = 0, volumes(25) = 0
         integer(kind=8) :: parent = -1
         integer(kind=8) :: isub = 0
+        integer(kind=8) :: cell_id = 0
     end type
 !
     type Mnode
@@ -664,7 +670,7 @@ contains
         aster_logical, intent(in) :: remove_orphelan
 !
         integer(kind=8) :: i_edge, e1, e2, n1, n2, i_face, f1, f2
-        integer(kind=8) :: i, j, i_node, nno, i_volu
+        integer(kind=8) :: i, j, i_node, nno, i_volu, v_id
         integer(kind=8), allocatable :: map_nodes(:)
         aster_logical :: modif
         real(kind=8) :: new_coor(3), end, start
@@ -693,18 +699,22 @@ contains
             this%nodes(n2)%keep = ASTER_FALSE
             map_nodes(n2) = n1
             this%nb_nodes = this%nb_nodes-1
+            if (this%edges(e2)%cell_id > 0) then
+                this%cells(this%edges(e2)%cell_id)%keep = ASTER_FALSE
+            end if
 !
-            do i_face = 1, this%nb_faces
-                do i = 1, this%faces(i_face)%nb_edges
-                    if (e2 == this%faces(i_face)%edges(i)) then
-                        this%faces(i_face)%edges(i) = e1
-                        nno = this%converter%nno(this%faces(i_face)%type)
+            do i_face = 1, this%edges(e2)%nb_faces
+                f2 = this%edges(e2)%faces(i_face)
+                do i = 1, this%faces(f2)%nb_edges
+                    if (e2 == this%faces(f2)%edges(i)) then
+                        this%faces(f2)%edges(i) = e1
+                        nno = this%converter%nno(this%faces(f2)%type)
                         do i_node = 1, nno
-                            if (n2 == this%faces(i_face)%nodes(i_node)) then
-                                this%faces(i_face)%nodes(i_node) = n1
+                            if (n2 == this%faces(f2)%nodes(i_node)) then
+                                this%faces(f2)%nodes(i_node) = n1
                                 do j = 1, nno
-                                    if (n2 == this%faces(i_face)%nno_sort(j)) then
-                                        this%faces(i_face)%nno_sort(j) = n1
+                                    if (n2 == this%faces(f2)%nno_sort(j)) then
+                                        this%faces(f2)%nno_sort(j) = n1
                                         exit
                                     end if
                                 end do
@@ -716,14 +726,15 @@ contains
                 end do
             end do
 !
-            do i_volu = 1, this%nb_volumes
-                do i = 1, this%volumes(i_volu)%nb_edges
-                    if (e2 == this%volumes(i_volu)%edges(i)) then
-                        this%volumes(i_volu)%edges(i) = e1
-                        nno = this%converter%nno(this%volumes(i_volu)%type)
+            do i_volu = 1, this%edges(e2)%nb_volumes
+                v_id = this%edges(e2)%volumes(i_volu)
+                do i = 1, this%volumes(v_id)%nb_edges
+                    if (e2 == this%volumes(v_id)%edges(i)) then
+                        this%volumes(v_id)%edges(i) = e1
+                        nno = this%converter%nno(this%volumes(v_id)%type)
                         do i_node = 1, nno
-                            if (n2 == this%volumes(i_volu)%nodes(i_node)) then
-                                this%volumes(i_volu)%nodes(i_node) = n1
+                            if (n2 == this%volumes(v_id)%nodes(i_node)) then
+                                this%volumes(v_id)%nodes(i_node) = n1
                                 exit
                             end if
                         end do
@@ -750,15 +761,19 @@ contains
             this%nodes(n2)%keep = ASTER_FALSE
             map_nodes(n2) = n1
             this%nb_nodes = this%nb_nodes-1
+            if (this%faces(f2)%cell_id > 0) then
+                this%cells(this%faces(f2)%cell_id)%keep = ASTER_FALSE
+            end if
 !
-            do i_volu = 1, this%nb_volumes
-                do i = 1, this%volumes(i_volu)%nb_faces
-                    if (f2 == this%volumes(i_volu)%faces(i)) then
-                        this%volumes(i_volu)%faces(i) = f1
-                        nno = this%converter%nno(this%volumes(i_volu)%type)
+            do i_volu = 1, this%faces(f2)%nb_volumes
+                v_id = this%faces(f2)%volumes(i_volu)
+                do i = 1, this%volumes(v_id)%nb_faces
+                    if (f2 == this%volumes(v_id)%faces(i)) then
+                        this%volumes(v_id)%faces(i) = f1
+                        nno = this%converter%nno(this%volumes(v_id)%type)
                         do i_node = 1, nno
-                            if (n2 == this%volumes(i_volu)%nodes(i_node)) then
-                                this%volumes(i_volu)%nodes(i_node) = n1
+                            if (n2 == this%volumes(v_id)%nodes(i_node)) then
+                                this%volumes(v_id)%nodes(i_node) = n1
                                 exit
                             end if
                         end do
@@ -770,35 +785,15 @@ contains
 !
         end do
 !
+! --- Renumbering nodes
         do i = 1, this%nb_cells
-            modif = ASTER_FALSE
             if (this%cells(i)%keep) then
                 nno = this%converter%nno(this%cells(i)%type)
                 do i_node = 1, nno
                     n2 = this%cells(i)%nodes(i_node)
-                    n1 = map_nodes(this%cells(i)%nodes(i_node))
-                    modif = modif .or. n1 .ne. n2
+                    n1 = map_nodes(n2)
                     this%cells(i)%nodes(i_node) = n1
                 end do
-                if (modif) then
-                if (this%cells(i)%dim == 1) then
-                    do i_edge = 1, this%nb_edges_dege
-                        e2 = this%edges_dege(2*(i_edge-1)+2)
-                        if (e2 == this%cells(i)%ss_id) then
-                            this%cells(i)%keep = ASTER_FALSE
-                            exit
-                        end if
-                    end do
-                elseif (this%cells(i)%dim == 2) then
-                    do i_face = 1, this%nb_faces_dege
-                        f2 = this%faces_dege(2*(i_face-1)+2)
-                        if (f2 == this%cells(i)%ss_id) then
-                            this%cells(i)%keep = ASTER_FALSE
-                            exit
-                        end if
-                    end do
-                end if
-                end if
             end if
         end do
 !
@@ -1299,10 +1294,13 @@ contains
 !
         if (cell_dim == 3) then
             cell_index = this%add_volume(cell_type, cell_nodes)
+            this%volumes(cell_index)%cell_id = cell_id
         elseif (cell_dim == 2) then
             cell_index = this%add_face(cell_type, cell_nodes)
+            this%faces(cell_index)%cell_id = cell_id
         elseif (cell_dim == 1) then
             cell_index = this%add_edge(cell_type, cell_nodes)
+            this%edges(cell_index)%cell_id = cell_id
         elseif (cell_dim == 0) then
             cell_index = this%add_point1(cell_type, cell_nodes)
         else
@@ -1361,6 +1359,8 @@ contains
             end do
             edge_id = this%add_edge(edge_type(i_edge), edge_nodes)
             this%volumes(volume_id)%edges(i_edge) = edge_id
+            this%edges(edge_id)%nb_volumes = this%edges(edge_id)%nb_volumes+1
+            this%edges(edge_id)%volumes(this%edges(edge_id)%nb_volumes) = volume_id
         end do
 ! --- create faces
         call numbering_face(type, nb_faces, face_type, face_loc)
@@ -1373,6 +1373,8 @@ contains
             end do
             face_id = this%add_face(face_type(i_face), face_nodes)
             this%volumes(volume_id)%faces(i_face) = face_id
+            this%faces(face_id)%nb_volumes = this%faces(face_id)%nb_volumes+1
+            this%faces(face_id)%volumes(this%faces(face_id)%nb_volumes) = volume_id
         end do
 !
         call this%convert_volume(volume_id)
@@ -1453,6 +1455,9 @@ contains
                     edge_id = this%add_edge(edge_type(i_edge), edge_nodes)
                 end if
                 this%faces(face_id)%edges(i_edge) = edge_id
+                this%edges(edge_id)%nb_faces = this%edges(edge_id)%nb_faces+1
+                ASSERT(this%edges(edge_id)%nb_faces <= 20)
+                this%edges(edge_id)%faces(this%edges(edge_id)%nb_faces) = face_id
             end do
 !
             if (this%nodes(nno_sort(1))%nb_faces >= this%nodes(nno_sort(1))%max_faces) then
@@ -2665,6 +2670,18 @@ contains
             do i_node = 1, nno
                 ASSERT(this%edges(i_edge)%nodes(i_node) > 0)
             end do
+!
+            ASSERT(this%edges(i_edge)%nb_volumes <= 25)
+            do i_volume = 1, this%edges(i_edge)%nb_volumes
+                ASSERT(this%edges(i_edge)%volumes(i_volume) > 0)
+                ASSERT(this%edges(i_edge)%volumes(i_volume) <= this%nb_volumes)
+            end do
+!
+            ASSERT(this%edges(i_edge)%nb_faces <= 20)
+            do i_face = 1, this%edges(i_edge)%nb_faces
+                ASSERT(this%edges(i_edge)%faces(i_face) > 0)
+                ASSERT(this%edges(i_edge)%faces(i_face) <= this%nb_faces)
+            end do
         end do
 !
 ! --- Check Faces
@@ -2682,6 +2699,12 @@ contains
                 nno1 = this%converter%nno(this%edges(edge_id)%type)
                 nno2 = this%converter%nno(edges_type(i_edge))
                 ASSERT(nno1 >= nno2)
+            end do
+!
+            ASSERT(this%faces(i_face)%nb_volumes <= 2)
+            do i_volume = 1, this%faces(i_face)%nb_volumes
+                ASSERT(this%faces(i_face)%volumes(i_volume) > 0)
+                ASSERT(this%faces(i_face)%volumes(i_volume) <= this%nb_volumes)
             end do
         end do
 !
