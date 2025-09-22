@@ -388,8 +388,6 @@ prepare_pkg:
     - !reference [.prepare, script]
   rules:
     - if: $BUILDTYPE == "nightly"
-      when: on_success
-    - when: manual
 
 compile_pkg:
   image:
@@ -403,10 +401,8 @@ compile_pkg:
     - apt-get update
     - apt-get install -y binutils curl git make patch
     - !reference [.compile, script]
-  # rules:
-  #   - if: $BUILDTYPE == "nightly"
-  #     when: on_success
-  #   - when: manual
+  rules:
+    - if: $BUILDTYPE == "nightly"
 
 verification_test_pkg:
   image:
@@ -419,12 +415,11 @@ verification_test_pkg:
     - prepare_pkg
     - compile_pkg
   script:
+    - test "$(date +%u)" -ne ${WEEKLY_RUN} && echo "not run" && exit 0
     - apt-get update
     - apt-get install -y cmake git
     - .gitlabci/add-allow-run-as-root.sh
     - !reference [.verification_test, script]
   allow_failure: true
-  # rules:
-  #   - if: $BUILDTYPE == "nightly"
-  #     when: on_success
-  #   - when: manual
+  rules:
+    - if: $BUILDTYPE == "nightly"
