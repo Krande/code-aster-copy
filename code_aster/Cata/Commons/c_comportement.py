@@ -159,12 +159,11 @@ def C_COMPORTEMENT(command):
         )
     elif command == "SECH_NON_LINE":
         mcfact = FACT(
-            statut=stcom,
+            statut="o",
             max="**",
             RELATION=SIMP(
-                statut="f",
+                statut="o",
                 typ="TXM",
-                # defaut="THER_NL",
                 into=("SECH_GRANGER", "SECH_MENSI", "SECH_BAZANT", "SECH_NAPPE", "SECH_RFT"),
             ),
             regles=(UN_PARMI("TOUT", "GROUP_MA", TOUT="OUI"),),

@@ -87,7 +87,6 @@ SECH_NON_LINE = OPER(
     ),
     MODELE=SIMP(statut="o", typ=(modele_sdaster)),
     CHAM_MATER=SIMP(statut="o", typ=(cham_mater)),
-    CARA_ELEM=SIMP(statut="f", typ=(cara_elem)),
     COMPORTEMENT=C_COMPORTEMENT("SECH_NON_LINE"),
     EXCIT=FACT(
         statut="o",
