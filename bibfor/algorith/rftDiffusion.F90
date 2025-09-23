@@ -21,6 +21,7 @@ subroutine rftDiffusion(fami, kpg, ksp, poum, imate, c, &
     implicit none
 #include "asterc/r8t0.h"
 #include "asterfort/assert.h"
+#include "asterfort/leverettIsotTher.h"
 #include "asterfort/rcvalb.h"
 #include "asterfort/utmess.h"
 #include "rgi_module.h"
@@ -99,51 +100,6 @@ subroutine rftDiffusion(fami, kpg, ksp, poum, imate, c, &
 !-----------------------------------------------------------------------
 contains
 !
-!   --------------------------------------------------------------------
-    subroutine leverettIsotTher(c, temp, imate, hygr, dpc, poro, t0_C, beta)
-!
-#include "asterfort/rcvala.h"
-#include "asterfort/leverettIsot.h"
-!
-!      .................................................................
-!      evaluation of hygrometry with leverett isotherm for thermic
-!
-!      c (in) : concentration en eau
-!      temp (in) : temperature
-!
-!      hygr (out) : hygrometry
-!      dpc (out) : capillar pressure derivative
-!
-!      .................................................................
-        integer(kind=8), intent(in) :: imate
-        real(kind=8), intent(in) :: c, temp
-        real(kind=8), intent(out) :: hygr, dpc, beta, poro, t0_C
-!
-        integer(kind=8)           :: codret(5)
-        real(kind=8)      :: valres(5)
-        character(len=16) :: nomres(5)
-        real(kind=8)      :: alpha, ad, satu
-!
-        nomres(1) = 'VG_PR'
-        nomres(2) = 'VG_N'
-        nomres(3) = 'ATH'
-        nomres(4) = 'TEMP_0_C'
-        nomres(5) = 'PORO'
-!
-        call rcvala(imate, ' ', 'BETON_DESORP', 0, ' ', [0.d0], &
-                    5, nomres, valres, codret, 0)
-        ASSERT(codret(1) .eq. 0)
-        alpha = valres(1)
-        beta = valres(2)
-        ad = valres(3)
-        t0_C = valres(4)
-        poro = valres(5)
-        satu = c/poro/1.d3
-!
-        call leverettIsot(temp, satu, alpha, beta, ad, t0_C, hygr, dpc)
-
-    end subroutine leverettIsotTher
-!   --------------------------------------------------------------------
 !   --------------------------------------------------------------------
     subroutine vapourDiffusion(satu, tempK, dpc, hygr, poro, a_mil, b_mil, &
                                vapDiff)
