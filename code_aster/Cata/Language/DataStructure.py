@@ -603,6 +603,10 @@ class evol_ther(evol_sdaster):
     pass
 
 
+class evol_sech(evol_sdaster):
+    pass
+
+
 class evol_varc(evol_sdaster):
     pass
 

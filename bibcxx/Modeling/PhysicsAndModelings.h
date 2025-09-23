@@ -6,7 +6,7 @@
  * @brief Fichier definissant les physiques et les modelisations disponibles
  * @author Nicolas Sellenet
  * @section LICENCE
- *   Copyright (C) 1991 - 2024  EDF R&D                www.code-aster.org
+ *   Copyright (C) 1991 - 2025  EDF R&D                www.code-aster.org
  *
  *   This file is part of Code_Aster.
  *
@@ -90,6 +90,8 @@ enum Modelings {
     INTERFACE_S_3D,
     JOINT_3D,
     JOINT_HYME_3D,
+    SECH_3D,
+    SECH_3D_DIAG,
     SI_3D,
     THH2D_3D,
     THH2MD_3D,
@@ -135,6 +137,8 @@ enum Modelings {
     AXIS_INTERFACE_S,
     AXIS_JHMS,
     AXIS_JOINT,
+    AXIS_SECH,
+    AXIS_SECH_DIAG,
     AXIS_SI,
     AXIS_THH2D,
     AXIS_THH2MD,
@@ -238,7 +242,7 @@ enum Modelings {
     TUYAU_3M,
     TUYAU_6M,
 };
-const int nbModelings = 192;
+const int nbModelings = 196;
 /**
  * @var ModelingNames
  * @brief Nom Aster des differentes modelisations disponibles
@@ -248,7 +252,7 @@ extern const char *const ModelingNames[nbModelings];
 const int nbModelingsMechanics = 183;
 extern const Modelings MechanicsModelings[nbModelingsMechanics];
 
-const int nbModelingsThermal = 13;
+const int nbModelingsThermal = 17;
 extern const Modelings ThermalModelings[nbModelingsThermal];
 
 const int nbModelingsAcoustic = 4;

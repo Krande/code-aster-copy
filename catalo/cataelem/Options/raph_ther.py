@@ -45,7 +45,6 @@ RAPH_THER = Option(
         SP.PCAMASS,
         SP.PMATERC,
         SP.PTEMPEI,
-        SP.PTMPCHF,
         PVARCPR,
         PCHHOGT,
         PCHHOST,

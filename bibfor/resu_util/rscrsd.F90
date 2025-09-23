@@ -79,6 +79,17 @@ subroutine rscrsd(baseZ, resultNameZ, resultTypeZ, nbStore)
                                     'RESI_NOEU       ', 'RESI_RELA_NOEU  '/)
 
 !     ------------------------------------------------------------------
+!                      For drying
+!     ------------------------------------------------------------------
+    integer(kind=8), parameter :: nbFieldDry = 10
+    character(len=16), parameter :: fieldDry(nbFieldDry) = (/ &
+                                    'SECH            ', &
+                                    'FLUX_ELGA       ', 'FLUX_ELNO       ', 'FLUX_NOEU       ', &
+                                    'GRAT_ELGA       ', 'GRAT_ELNO       ', 'GRAT_NOEU       ', &
+                                    'COMPORTHER      ', &
+                                    'RESI_NOEU       ', 'RESI_RELA_NOEU  '/)
+
+!     ------------------------------------------------------------------
 !                      For external state variables
 !     ------------------------------------------------------------------
     integer(kind=8), parameter :: nbFieldVarc = 8
@@ -337,6 +348,17 @@ subroutine rscrsd(baseZ, resultNameZ, resultTypeZ, nbStore)
         call jeecra(resultName//'.DESC', 'DOCU', cval='EVTH')
         do iField = 1, nbFieldTher
             call jecroc(jexnom(resultName//'.DESC', fieldTher(iField)))
+        end do
+        do iField = 1, nbFieldUtil
+            call jecroc(jexnom(resultName//'.DESC', fieldUtil(iField)))
+        end do
+!
+    else if (resultType .eq. 'EVOL_SECH') then
+        nbField = nbFieldDry+nbFieldUtil
+        call jeecra(resultName//'.DESC', 'NOMMAX', nbField)
+        call jeecra(resultName//'.DESC', 'DOCU', cval='EVSE')
+        do iField = 1, nbFieldDry
+            call jecroc(jexnom(resultName//'.DESC', fieldDry(iField)))
         end do
         do iField = 1, nbFieldUtil
             call jecroc(jexnom(resultName//'.DESC', fieldUtil(iField)))

@@ -33,11 +33,8 @@ PVARCPR = InputParameter(phys=PHY.VARI_R, comment="""  PVARCPR : VARIABLES DE CO
 
 PCHHOBS = InputParameter(phys=PHY.N3600R, comment=""" HHO - coefficient base locale""")
 
-PMATTTR = OutputParameter(phys=PHY.MTEM_R, type="RESL")
-
-
 MASS_THER_TANG = Option(
     para_in=(PCOMPOR, SP.PGEOMER, SP.PMATERC, SP.PTEMPEI, PVARCPR, PCHHOBS),
-    para_out=(PMATTTR,),
+    para_out=(SP.PMATTTR,),
     condition=(CondCalcul("+", ((AT.PHENO, "TH"), (AT.BORD, "0"))),),
 )

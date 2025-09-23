@@ -165,10 +165,10 @@ contains
                 exteVariCata(iExteStatVari)%fieldType = 'HYDR_ELNO'
 
             elseif (exteVariName .eq. 'SECH') then
-                exteVariCata(iExteStatVari)%listCmp(1)%physQuantityCmp = "TEMP"
+                exteVariCata(iExteStatVari)%listCmp(1)%physQuantityCmp = "SECH"
                 exteVariCata(iExteStatVari)%listCmp(1)%nameCmp = "SECH"
                 ASSERT(nbCmp .eq. 1)
-                exteVariCata(iExteStatVari)%fieldType = 'TEMP'
+                exteVariCata(iExteStatVari)%fieldType = 'SECH'
 
             elseif (exteVariName .eq. 'PTOT') then
                 exteVariCata(iExteStatVari)%listCmp(1)%physQuantityCmp = "PTOT"

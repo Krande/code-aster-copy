@@ -23,7 +23,7 @@ interface
                       solver, tpsthe, timeMap, matass, cn2mbr, &
                       maprec, cnchci, varc_curr, temp_prev, temp_iter, &
                       vtempp, vec2nd, mediri, conver, hydr_prev, &
-                      hydr_curr, dry_curr, comporTher, cnvabt, &
+                      hydr_curr, comporTher, cnvabt, &
                       cnresi, ther_crit_i, ther_crit_r, reasma, ds_algorom, &
                       ds_print, sddisc, iter_newt, l_stat)
         use NonLin_Datastructure_type
@@ -49,7 +49,6 @@ interface
         aster_logical, intent(out) :: conver
         character(len=24) :: hydr_prev
         character(len=24) :: hydr_curr
-        character(len=24) :: dry_curr
         character(len=24) :: comporTher
         character(len=24) :: cnvabt
         character(len=24) :: cnresi

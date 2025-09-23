@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -21,15 +21,31 @@ POURSUITE(CODE="OUI", DEBUG=_F(SDVERI="OUI"), ERREUR=_F(ALARME="EXCEPTION"))
 
 # SECHAGE
 
-CHARSECH = AFFE_CHAR_THER(
-    MODELE=MODTHER, TEMP_IMPO=(_F(GROUP_MA="HAUT", TEMP=70), _F(GROUP_MA="BAS", TEMP=50))
+MODSECH = AFFE_MODELE(
+    MAILLAGE=MALINE,
+    AFFE=_F(
+        GROUP_MA=("BETON", "DEVANT", "COTE", "BAS", "HAUT"),
+        PHENOMENE="THERMIQUE",
+        MODELISATION="3D_SECH_DIAG",
+    ),
 )
 
-RESUSEC = THER_NON_LINE(
-    MODELE=MODTHER,
-    CHAM_MATER=MABETTH,
+SEBET = DEFI_MATERIAU(SECH_GRANGER=_F(A=3.3e-13, B=0.05, QSR_K=Ar, TEMP_0_C=20))
+
+MABETSE = AFFE_MATERIAU(
+    MAILLAGE=MALINE,
+    AFFE=_F(GROUP_MA="BETON", MATER=SEBET),
+    AFFE_VARC=_F(TOUT="OUI", EVOL=RESUTH, NOM_VARC="TEMP", NOM_CHAM="TEMP", VALE_REF=0.0),
+)
+
+CHARSECH = AFFE_CHAR_SECH(
+    MODELE=MODSECH, SECH_IMPO=(_F(GROUP_MA="HAUT", SECH=70), _F(GROUP_MA="BAS", SECH=50))
+)
+
+RESUSEC = SECH_NON_LINE(
+    MODELE=MODSECH,
+    CHAM_MATER=MABETSE,
     COMPORTEMENT=_F(RELATION="SECH_GRANGER"),
-    EVOL_THER_SECH=RESUTH,
     EXCIT=_F(CHARGE=CHARSECH),
     INCREMENT=_F(LIST_INST=LISTARCH),
     ETAT_INIT=_F(VALE=120),

@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -40,6 +40,7 @@ MACR_LIGN_COUPE = MACRO(
             evol_elas,
             evol_noli,
             evol_ther,
+            evol_sech,
             mode_meca,
             comb_fourier,
             mult_elas,
@@ -106,6 +107,17 @@ MACR_LIGN_COUPE = MACRO(
                 "ERTH_ELNO",
                 "ERTH_NOEU",
             ),
+        ),
+    ),
+    b_sech=BLOC(
+        condition="""is_type("RESULTAT") in (evol_sech,)""",
+        fr=tr("résultat de séchage"),
+        NOM_CHAM=SIMP(
+            statut="f",
+            typ="TXM",
+            validators=NoRepeat(),
+            defaut="SECH",
+            into=("SECH", "FLUX_ELGA", "FLUX_ELNO", "FLUX_NOEU", "COMPORTHER"),
         ),
     ),
     b_cham=BLOC(

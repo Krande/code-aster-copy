@@ -453,6 +453,15 @@ POUX = Attribute(
 """,
 )
 
+SECH = Attribute(
+    value=("OUI",),
+    comment="""
+  SECH =  'OUI' : l'element est un élément thermique spécifique du traitement
+          du séchage (via SECH_NON_LINE).
+
+""",
+)
+
 SIGM = Attribute(
     value=("NON",),
     comment="""

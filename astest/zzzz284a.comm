@@ -193,10 +193,24 @@ TEST_RESU(
 # 3) variable de commande : SECH
 # --------------------------------
 
+
+sechFinal = CREA_CHAMP(
+    OPERATION="ASSE",
+    MODELE=MO,
+    TYPE_CHAM="NOEU_TEMP_R",
+    ASSE=_F(CHAM_GD=tempFinal, TOUT="OUI", NOM_CMP=("TEMP"), NOM_CMP_RESU=("SECH")),
+)
+
+SECHLIN = CREA_RESU(
+    OPERATION="AFFE",
+    TYPE_RESU="EVOL_SECH",
+    AFFE=(_F(NOM_CHAM="SECH", CHAM_GD=sechFinal, INST=0.0),),
+)
+
 CHMA3 = AFFE_MATERIAU(
     MAILLAGE=MA,
     AFFE=_F(TOUT="OUI", MATER=MAT3),
-    AFFE_VARC=_F(NOM_VARC="SECH", EVOL=TEMPLIN, VALE_REF=0.0),
+    AFFE_VARC=_F(NOM_VARC="SECH", EVOL=SECHLIN, VALE_REF=0.0),
 )
 
 

@@ -55,7 +55,7 @@ subroutine caddli(keywordfact, load, mesh, model, valeType)
 !
 ! Loads affectation
 !
-! Keyword = 'DDL_IMPO/TEMP_IMPO/PRES_IMPO'
+! Keyword = 'DDL_IMPO/TEMP_IMPO/PRES_IMPO/SECH_IMPO'
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -134,6 +134,8 @@ subroutine caddli(keywordfact, load, mesh, model, valeType)
         coef_type = 'REEL'
     else if (keywordfact .eq. 'TEMP_IMPO') then
         coef_type = 'REEL'
+    else if (keywordfact .eq. 'SECH_IMPO') then
+        coef_type = 'REEL'
     else if (keywordfact .eq. 'PRES_IMPO') then
         coef_type = 'COMP'
     else
@@ -150,6 +152,8 @@ subroutine caddli(keywordfact, load, mesh, model, valeType)
     if (keywordfact .eq. 'DDL_IMPO') then
         nomg = 'DEPL_R'
     else if (keywordfact .eq. 'TEMP_IMPO') then
+        nomg = 'TEMP_R'
+    else if (keywordfact .eq. 'SECH_IMPO') then
         nomg = 'TEMP_R'
     else if (keywordfact .eq. 'PRES_IMPO') then
         nomg = 'PRES_C'

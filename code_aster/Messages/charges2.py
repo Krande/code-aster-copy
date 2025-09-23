@@ -27,7 +27,7 @@ Le modèle sur lequel est défini le chargement n'est pas cohérent avec le mod�
     ),
     3: _(
         """
- La fonction %(k1)s fournie à l'opérande FLUN de FLUX_NL doit avoir le paramètre TEMP.
+ La fonction %(k1)s fournie à l'opérande FLUN de FLUX_NL doit avoir le paramètre TEMP ou le paramètre SECH.
 """
     ),
     4: _(
@@ -86,6 +86,18 @@ Pour le chargement de type LIAISON_CHAMNO, il faut que le CHAM_NO dont les terme
     12: _(
         """
 Pour le chargement de type LIAISON_CHAMNO, tous les coefficients donnés par le mot-clef CHAM_NO sont nuls.
+"""
+    ),
+    13: _(
+        """
+Le modèle contient des éléments spécifiques au traitement du séchage. Ils sont incompatibles avec
+la commande AFFE_CHAR_THER.
+"""
+    ),
+    14: _(
+        """
+La commande AFFE_CHAR_SECH ne fonctionne qu'avec un modèle contentant uniquement
+des éléments spécifiques au traitement du séchage.
 """
     ),
     17: _(

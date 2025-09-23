@@ -3,7 +3,7 @@
  * @brief Initialisation des modelisations autorisees pour chaque physique
  * @author Nicolas Sellenet
  * @section LICENCE
- *   Copyright (C) 1991 - 2024  EDF R&D                www.code-aster.org
+ *   Copyright (C) 1991 - 2025  EDF R&D                www.code-aster.org
  *
  *   This file is part of Code_Aster.
  *
@@ -70,6 +70,8 @@ const char *const ModelingNames[nbModelings] = {
     "3D_INTERFACE_S",
     "3D_JOINT",
     "3D_JOINT_HYME",
+    "3D_SECH",
+    "3D_SECH_DIAG",
     "3D_SI",
     "3D_THH2D",
     "3D_THH2MD",
@@ -115,6 +117,8 @@ const char *const ModelingNames[nbModelings] = {
     "AXIS_INTERFACE_S",
     "AXIS_JHMS",
     "AXIS_JOINT",
+    "AXIS_SECH",
+    "AXIS_SECH_DIAG",
     "AXIS_SI",
     "AXIS_THH2D",
     "AXIS_THH2MD",
@@ -404,8 +408,9 @@ const Modelings MechanicsModelings[nbModelingsMechanics] = { PlanarBar,
                                                              TUYAU_6M };
 
 const Modelings ThermalModelings[nbModelingsThermal] = {
-    Tridimensional, DIAG_3D,    HHO_3D,     Axisymmetrical, AXIS_DIAG, AXIS_FOURIER, AXIS_HHO,
-    COQUE,          COQUE_AXIS, COQUE_PLAN, Planar,         PLAN_DIAG, PLAN_HHO
+    Tridimensional, DIAG_3D,   HHO_3D,     Axisymmetrical, AXIS_DIAG,   AXIS_FOURIER,
+    AXIS_HHO,       COQUE,     COQUE_AXIS, COQUE_PLAN,     Planar,      PLAN_DIAG,
+    PLAN_HHO,       AXIS_SECH, SECH_3D,    AXIS_SECH_DIAG, SECH_3D_DIAG
 };
 
 const Modelings AcousticModelings[nbModelingsAcoustic] = { Tridimensional,

@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -142,14 +142,10 @@ class THPLSE2(Element):
             para_out=((OP.COOR_ELGA.PCOORPG, LC.EGGAU2D),),
         ),
         OP.FLUX_FLUI_X(
-            te=309,
-            para_in=((SP.PGEOMER, LC.EGEOM2D),),
-            para_out=((OP.FLUX_FLUI_X.PMATTTR, MMATTTR),),
+            te=309, para_in=((SP.PGEOMER, LC.EGEOM2D),), para_out=((SP.PMATTTR, MMATTTR),)
         ),
         OP.FLUX_FLUI_Y(
-            te=309,
-            para_in=((SP.PGEOMER, LC.EGEOM2D),),
-            para_out=((OP.FLUX_FLUI_Y.PMATTTR, MMATTTR),),
+            te=309, para_in=((SP.PGEOMER, LC.EGEOM2D),), para_out=((SP.PMATTTR, MMATTTR),)
         ),
         OP.MTAN_THER_FLUXNL(
             te=251,
@@ -159,7 +155,7 @@ class THPLSE2(Element):
                 (SP.PTEMPEI, DDL_THER),
                 (SP.PINSTR, LC.CTIMETR),
             ),
-            para_out=((OP.MTAN_THER_FLUXNL.PMATTTR, MMATTTR),),
+            para_out=((SP.PMATTTR, MMATTTR),),
         ),
         OP.MTAN_THER_RAYO_F(
             te=251,
@@ -169,7 +165,7 @@ class THPLSE2(Element):
                 (SP.PTEMPEI, DDL_THER),
                 (SP.PINSTR, LC.CTIMETR),
             ),
-            para_out=((OP.MTAN_THER_RAYO_F.PMATTTR, MMATTTR),),
+            para_out=((SP.PMATTTR, MMATTTR),),
         ),
         OP.MTAN_THER_RAYO_R(
             te=251,
@@ -179,7 +175,7 @@ class THPLSE2(Element):
                 (SP.PTEMPEI, DDL_THER),
                 (SP.PINSTR, LC.CTIMETR),
             ),
-            para_out=((OP.MTAN_THER_RAYO_R.PMATTTR, MMATTTR),),
+            para_out=((SP.PMATTTR, MMATTTR),),
         ),
         OP.RESI_THER_COEF_F(
             te=137,
@@ -234,12 +230,12 @@ class THPLSE2(Element):
         OP.RIGI_THER_ECHA_F(
             te=251,
             para_in=((SP.PCOEFHF, LC.CHECHPF), (SP.PGEOMER, LC.EGEOM2D), (SP.PINSTR, LC.CTIMETR)),
-            para_out=((OP.RIGI_THER_ECHA_F.PMATTTR, MMATTTR),),
+            para_out=((SP.PMATTTR, MMATTTR),),
         ),
         OP.RIGI_THER_ECHA_R(
             te=251,
             para_in=((SP.PCOEFHR, LC.CHECHPR), (SP.PGEOMER, LC.EGEOM2D), (SP.PINSTR, LC.CTIMETR)),
-            para_out=((OP.RIGI_THER_ECHA_R.PMATTTR, MMATTTR),),
+            para_out=((SP.PMATTTR, MMATTTR),),
         ),
         OP.TOU_INI_ELGA(
             te=99,

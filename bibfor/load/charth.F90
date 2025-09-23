@@ -70,6 +70,7 @@ subroutine charth(load, valeType)
     character(len=4), parameter :: phenomS = 'THER'
     character(len=16), parameter :: command = 'AFFE_CHAR_THER'
     character(len=16), parameter :: keywFactEnforceDOF = 'TEMP_IMPO'
+    character(len=16), parameter :: keywFactEnforceSECH = 'SECH_IMPO'
     integer(kind=8) :: geomDime, iret
     character(len=8) :: mesh, model
     character(len=13) :: loadDescBase
@@ -118,6 +119,9 @@ subroutine charth(load, valeType)
 ! ----- TEMP_IMPO
         call caddli(keywFactEnforceDOF, load, mesh, model, valeType)
 
+! ----- SECH_IMPO
+        call caddli(keywFactEnforceSECH, load, mesh, model, valeType)
+
 ! ----- LIAISON_DDL
         call caliai(valeType, load, phenomS)
 
@@ -164,6 +168,9 @@ subroutine charth(load, valeType)
 
 ! ----- TEMP_IMPO
         call caddli(keywFactEnforceDOF, load, mesh, model, valeType)
+
+! ----- SECH_IMPO
+        call caddli(keywFactEnforceSECH, load, mesh, model, valeType)
 
 ! ----- LIAISON_DDL
         call caliai(valeType, load, phenomS)

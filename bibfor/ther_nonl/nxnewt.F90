@@ -21,7 +21,7 @@ subroutine nxnewt(model, mateco, caraElem, listLoad, nume_dof, &
                   solver, tpsthe, timeMap, matass, cn2mbr, &
                   maprec, cnchci, varc_curr, temp_prev, temp_iter, &
                   vtempp, vec2nd, mediri, conver, hydr_prev, &
-                  hydr_curr, dry_curr, comporTher, cnvabt, &
+                  hydr_curr, comporTher, cnvabt, &
                   cnresi, ther_crit_i, ther_crit_r, reasma, ds_algorom, &
                   ds_print, sddisc, iter_newt, l_stat)
 !
@@ -74,7 +74,7 @@ subroutine nxnewt(model, mateco, caraElem, listLoad, nume_dof, &
     aster_logical :: reasma
     character(len=19) :: maprec
     character(len=24) :: matass, cnchci, cnresi, temp_prev, temp_iter, vtempp, vec2nd, cn2mbr
-    character(len=24) :: hydr_prev, hydr_curr, comporTher, dry_curr
+    character(len=24) :: hydr_prev, hydr_curr, comporTher
     integer(kind=8) :: ther_crit_i(*)
     real(kind=8) :: ther_crit_r(*)
     type(ROM_DS_AlgoPara), intent(in) :: ds_algorom
@@ -136,8 +136,7 @@ subroutine nxnewt(model, mateco, caraElem, listLoad, nume_dof, &
                 loadNameJv, loadInfoJv, &
                 tpsthe, timeMap, temp_prev, temp_iter, &
                 varc_curr, comporTher, &
-                hydr_prev, hydr_curr, dry_curr, &
-                veresi, "V")
+                hydr_prev, hydr_curr, veresi, "V")
     call asasve(veresi, nume_dof, typres, varesi)
     call ascova('D', varesi, bidon, 'INST', r8bid, &
                 typres, cnresi)
@@ -210,8 +209,7 @@ subroutine nxnewt(model, mateco, caraElem, listLoad, nume_dof, &
                     model, caraElem, mateco, &
                     loadNameJv, loadInfoJv, &
                     tpsthe, timeMap, &
-                    temp_iter, comporTher, varc_curr, dry_curr, &
-                    merigi, 'V')
+                    temp_iter, comporTher, varc_curr, merigi, 'V')
 
 ! ----- Assemble tangent matrix
         nbmat = 0

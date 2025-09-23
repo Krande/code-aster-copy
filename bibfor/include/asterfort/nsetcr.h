@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2019 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -18,8 +18,12 @@
 #include "asterf_types.h"
 !
 interface
-    subroutine ntdcom(result_dry, l_dry)
-        character(len=8), intent(out) :: result_dry
-        aster_logical, intent(out) :: l_dry
-    end subroutine ntdcom
+    subroutine nsetcr(nume_dof, ds_inout, &
+                      listLoad_, compor_)
+        use NonLin_Datastructure_type
+        character(len=24), intent(in) :: nume_dof
+        type(NL_DS_InOut), intent(inout) :: ds_inout
+        character(len=24), optional, intent(in) :: listLoad_
+        character(len=*), optional, intent(in) :: compor_
+    end subroutine nsetcr
 end interface

@@ -1222,9 +1222,8 @@ PTEMP_P = InputParameter(
 
 PTHETAR = InputParameter(phys=PHY.DEPL_R, comment="""""")
 
-PTMPCHF = InputParameter(phys=PHY.TEMP_R, comment="""""")
+PTMPCHF = InputParameter(phys=PHY.TEMP_R, comment="""HHO ONLY""")
 
-PTMPCHI = InputParameter(phys=PHY.TEMP_R, comment="""""")
 
 PTRIAGM = InputParameter(
     phys=PHY.ENDO_R,
@@ -1704,6 +1703,8 @@ PLAGRP = OutputParameter(phys=PHY.NEUT_R, type="ELGA", comment="""""")
 PMASSINE = OutputParameter(phys=PHY.MASS_R, type="ELEM", comment="""""")
 
 PMATTTC = OutputParameter(phys=PHY.MPRE_C, type="RESL", comment="""""")
+
+PMATTTR = OutputParameter(phys=PHY.MTEM_R, type="RESL")
 
 PMATUN1 = OutputParameter(
     phys=PHY.MZNS_R,

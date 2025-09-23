@@ -240,6 +240,14 @@ subroutine dismlg(questi, nomobz, repi, repkz, ierd)
                             end if
                         end if
 
+                    else if (questi .eq. 'EXI_SECH') then
+                        if (lteatt('SECH', 'OUI', typel=elemTypeName)) repk = 'OUI'
+                        if (repk .eq. 'OUI') exit
+
+                    else if (questi .eq. 'EXI_NON_SECH') then
+                        if (.not. lteatt('SECH', 'OUI', typel=elemTypeName)) repk = 'OUI'
+                        if (repk .eq. 'OUI') exit
+
                     else if (questi .eq. 'EXI_HHO') then
                         call teattr('C', 'TYPMOD2', typmod2, iret, typel=elemTypeName)
                         if (typmod2(1:3) .eq. 'HHO') then

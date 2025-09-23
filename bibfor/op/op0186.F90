@@ -26,6 +26,7 @@ subroutine op0186()
 #include "asterf_types.h"
 #include "jeveux.h"
 #include "asterc/etausr.h"
+#include "asterc/getres.h"
 #include "asterfort/copisd.h"
 #include "asterfort/detmat.h"
 #include "asterfort/didern.h"
@@ -38,6 +39,7 @@ subroutine op0186()
 #include "asterfort/jeveuo.h"
 #include "asterfort/medith.h"
 #include "asterfort/nmnkft.h"
+#include "asterfort/nsini0.h"
 #include "asterfort/ntdata.h"
 #include "asterfort/ntarch.h"
 #include "asterfort/ntobsv.h"
@@ -67,6 +69,7 @@ subroutine op0186()
 ! --------------------------------------------------------------------------------------------------
 !
 ! THER_NON_LINE
+! SECH_NON_LINE
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -80,11 +83,12 @@ subroutine op0186()
     real(kind=8) :: tps2(4), tps3(4), tpex, ther_crit_r(2), rho
     real(kind=8) :: para(2), time_curr, tconso
     real(kind=8) :: rtab(2), theta_read
-    character(len=8) :: result, result_dry, mesh, model, materField, caraElem
+    character(len=8) :: result, mesh, model, materField, caraElem, k8bid
+    character(len=16) :: commandName, typesd
     character(len=19) :: sdobse
-    character(len=19) :: solver, maprec, sddisc, varc_curr
+    character(len=19) :: solver, maprec, sddisc, varc_curr, varc_prev
     character(len=24) :: mateco, listLoad
-    character(len=24) :: timeMap, dry_prev, dry_curr, comporTher, vtemp, vtempm, vtempp
+    character(len=24) :: timeMap, comporTher, vtemp, vtempm, vtempp
     character(len=24) :: vtempr, cn2mbr_stat, cn2mbr_tran, nume_dof, mediri, matass, cndiri, cn2mbr
     character(len=24) :: cncine, cnresi, vabtla, vhydr, vhydrp
     character(len=24) :: tpscvt
@@ -101,7 +105,6 @@ subroutine op0186()
     data cn2mbr_stat/'&&OP0186.2ND'/
     data cn2mbr_tran/'&&OP0186.2NI'/
     data cn2mbr/'&&OP0186.2MBRE'/
-    data dry_prev, dry_curr/'&&OP0186.TCHI', '&&OP0186.TCHF'/
     data vhydr, vhydrp/'&&OP0186.HY', '&&OP0186.HYP'/
     data mediri/'&&MEDIRI'/
     data matass/'&&MTHASS'/
@@ -116,14 +119,24 @@ subroutine op0186()
 ! - Initializations
 !
     solver = '&&OP0186.SOLVER'
-    varc_curr = '&&OP0186.CHVARC'
+    varc_curr = '&&OP0186.CHVARCP'
+    varc_prev = '&&OP0186.CHVARCM'
 ! --- CE BOOLEEN ARRET EST DESTINE AUX DEVELOPPEURS QUI VOUDRAIENT
 ! --- FORCER LE CALCUL MEME SI ON N'A PAS CONVERGENCE (ARRET=TRUE)
     arret = ASTER_FALSE
 !
+    call getres(k8bid, typesd, commandName)
+!
+    l_dry = ASTER_FALSE
+    if (commandName .eq. 'SECH_NON_LINE') l_dry = ASTER_TRUE
+!
 ! - Creation of datastructures
 !
-    call nxini0(ds_algopara, ds_inout, ds_print)
+    if (l_dry) then
+        call nsini0(ds_algopara, ds_inout, ds_print)
+    else
+        call nxini0(ds_algopara, ds_inout, ds_print)
+    end if
 !
 ! - Read parameters (linear)
 !
@@ -137,7 +150,7 @@ subroutine op0186()
                 ther_crit_i, ther_crit_r, &
                 ds_inout, ds_algopara, &
                 ds_algorom, ds_print, &
-                result_dry, comporTher, &
+                comporTher, &
                 mesh, l_dry)
     itmax = ther_crit_i(3)
 !
@@ -150,7 +163,7 @@ subroutine op0186()
                 timeMap, ds_algopara, &
                 ds_algorom, ds_print, vhydr, &
                 l_stat, l_evol, l_rom, &
-                l_line_search, lnkry)
+                l_line_search, lnkry, l_dry)
 !
     if (l_stat) then
         nume_inst = 0
@@ -217,7 +230,6 @@ subroutine op0186()
 !
     call nxnpas(sddisc, solver, nume_inst, ds_print, &
                 lnkry, l_evol, l_stat, &
-                l_dry, result_dry, dry_prev, dry_curr, &
                 para, time_curr, deltat, reasma, &
                 tpsthe)
 !
@@ -225,7 +237,7 @@ subroutine op0186()
 !
     call nxacmv(model, materField, mateco, caraElem, listLoad, nume_dof, &
                 solver, l_stat, timeMap, tpsthe, vtemp, &
-                vhydr, varc_curr, dry_prev, dry_curr, cn2mbr_stat, &
+                vhydr, varc_prev, varc_curr, cn2mbr_stat, &
                 cn2mbr_tran, matass, maprec, cndiri, cncine, &
                 mediri, comporTher, ds_algorom)
 !
@@ -241,7 +253,7 @@ subroutine op0186()
     call nxpred(model, mateco, caraElem, listLoad, nume_dof, &
                 solver, l_stat, tpsthe, timeMap, matass, &
                 neq, maprec, varc_curr, vtemp, vtempm, &
-                cn2mbr, vhydr, vhydrp, dry_curr, &
+                cn2mbr, vhydr, vhydrp, &
                 comporTher, cndiri, cncine, cn2mbr_stat, cn2mbr_tran, &
                 ds_algorom)
 !
@@ -283,7 +295,7 @@ subroutine op0186()
                 solver, tpsthe, timeMap, matass, cn2mbr, &
                 maprec, cncine, varc_curr, vtemp, vtempm, &
                 vtempp, cn2mbr_stat, mediri, conver, vhydr, &
-                vhydrp, dry_curr, comporTher, vabtla, &
+                vhydrp, comporTher, vabtla, &
                 cnresi, ther_crit_i, ther_crit_r, reasma, ds_algorom, &
                 ds_print, sddisc, iter_newt, l_stat)
 !
@@ -299,7 +311,7 @@ subroutine op0186()
             call nxrech(model, mateco, caraElem, listLoad, nume_dof, &
                         tpsthe, timeMap, neq, comporTher, varc_curr, &
                         vtempm, vtempp, vtempr, vtemp, vhydr, &
-                        vhydrp, dry_curr, cn2mbr_stat, vabtla, &
+                        vhydrp, cn2mbr_stat, vabtla, &
                         cnresi, rho, iterho, ds_algopara, l_stat)
             call nmimci(ds_print, 'RELI_NBIT', iterho, l_affe=ASTER_TRUE)
             call nmimcr(ds_print, 'RELI_COEF', rho, l_affe=ASTER_TRUE)
@@ -406,7 +418,7 @@ subroutine op0186()
         force = .false.
     end if
     call ntarch(nume_inst, model, materField, caraElem, para, &
-                sddisc, ds_inout, force, ds_algorom)
+                sddisc, ds_inout, force, ds_algorom, l_dry_=l_dry)
 !
 ! - Make observation
 !

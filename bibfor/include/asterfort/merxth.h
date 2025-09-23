@@ -22,14 +22,14 @@ interface
                       modelZ, caraElemZ, matecoZ, &
                       loadNameJvZ, loadInfoJvZ, &
                       tpsthe, timeMapZ, &
-                      tempIterZ, comporTherZ, varcCurrZ, dryCurrZ, &
+                      tempIterZ, comporTherZ, varcCurrZ, &
                       matrElemZ, jvBase)
         aster_logical, intent(in) :: l_stat
         character(len=*), intent(in) :: modelZ, caraElemZ, matecoZ
         character(len=*), intent(in) :: loadNameJvZ, loadInfoJvZ
         real(kind=8), intent(in) :: tpsthe(6)
         character(len=*), intent(in) :: comporTherZ, timeMapZ
-        character(len=*), intent(in) :: tempIterZ, varcCurrZ, dryCurrZ
+        character(len=*), intent(in) :: tempIterZ, varcCurrZ
         character(len=*), intent(in) :: matrElemZ
         character(len=1), intent(in) :: jvBase
     end subroutine merxth

@@ -19,7 +19,7 @@
 !
 subroutine nxacmv(model, materField, mateco, caraElem, listLoad, nume_dof, &
                   solver, l_stat, timeMap, timeParaIn, temp_iter, &
-                  vhydr, varc_curr, dry_prev, dry_curr, cn2mbr_stat, &
+                  vhydr, varc_prev, varc_curr, cn2mbr_stat, &
                   cn2mbr_tran, matass, maprec, cndiri, cncine, &
                   mediri, comporTher, ds_algorom_)
 !
@@ -57,12 +57,12 @@ subroutine nxacmv(model, materField, mateco, caraElem, listLoad, nume_dof, &
     character(len=24), intent(in) :: nume_dof
     character(len=19), intent(in) :: solver
     character(len=24), intent(in) :: timeMap
+    character(len=19), intent(in) :: varc_prev
     character(len=19), intent(in) :: varc_curr
     aster_logical, intent(in) :: l_stat
     real(kind=8), intent(in) :: timeParaIn(6)
     character(len=24), intent(in) :: temp_iter
     character(len=24), intent(in) :: vhydr
-    character(len=24), intent(in) :: dry_prev, dry_curr
     character(len=24), intent(in) :: cn2mbr_stat
     character(len=24), intent(in) :: cn2mbr_tran
     character(len=24), intent(in) :: matass
@@ -91,7 +91,7 @@ subroutine nxacmv(model, materField, mateco, caraElem, listLoad, nume_dof, &
     integer(kind=8) :: ibid, ierr, iret
     integer(kind=8) :: jtn, i_vect
     character(len=2) :: codret
-    real(kind=8) :: timeCurr
+    real(kind=8) :: timeCurr, timePrev
     character(len=8), parameter :: nomcmp(6) = (/'INST    ', 'DELTAT  ', &
                                                  'THETA   ', 'KHI     ', &
                                                  'R       ', 'RHO     '/)
@@ -138,6 +138,7 @@ subroutine nxacmv(model, materField, mateco, caraElem, listLoad, nume_dof, &
     vatnti = '&&NTACMV.VATNTI'
     vachtn = '&&NTACMV.VACHTN'
     timeCurr = timeParaIn(1)
+    timePrev = timeCurr-timeParaIn(2)
 
 ! - Access to datastructure of list of loads
     loadNameJv = listLoad(1:19)//'.LCHA'
@@ -146,6 +147,7 @@ subroutine nxacmv(model, materField, mateco, caraElem, listLoad, nume_dof, &
 
 ! - Construct command variables fields
     call vrcins(model, materField, caraElem, timeCurr, varc_curr, codret)
+    call vrcins(model, materField, caraElem, timePrev, varc_prev, codret)
 
 ! - Create <CARTE> for time
     timePara = timeParaIn
@@ -172,9 +174,8 @@ subroutine nxacmv(model, materField, mateco, caraElem, listLoad, nume_dof, &
 !
     if (.not. l_stat) then
         call vetnth_nonl(model, caraElem, mateco, timeMap, comporTher, &
-                         temp_iter, varc_curr, &
-                         vetntp, vetnti, 'V', &
-                         dry_prev, dry_curr, vhydr)
+                         temp_iter, varc_prev, varc_curr, &
+                         vetntp, vetnti, 'V', vhydr)
         call asasve(vetnti, nume_dof, 'R', vatnti)
         call jeveuo(vatnti, 'L', jtn)
         cntnti = zk24(jtn)
@@ -252,7 +253,7 @@ subroutine nxacmv(model, materField, mateco, caraElem, listLoad, nume_dof, &
                 model, caraElem, mateco, &
                 loadNameJv, loadInfoJv, &
                 timePara, timeMap, &
-                temp_iter, comporTher, varc_curr, dry_curr, &
+                temp_iter, comporTher, varc_curr, &
                 merigi, 'V')
     nb_matr = 0
     call jeexin(merigi(1:8)//'           .RELR', iret)

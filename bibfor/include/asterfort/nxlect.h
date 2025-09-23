@@ -22,7 +22,7 @@ interface
                       ther_crit_i, ther_crit_r, &
                       ds_inout, ds_algopara, &
                       ds_algorom, ds_print, &
-                      result_dry, compor, &
+                      compor, &
                       mesh, l_dry)
         use NonLin_Datastructure_type
         use Rom_Datastructure_type
@@ -33,9 +33,8 @@ interface
         type(NL_DS_AlgoPara), intent(inout) :: ds_algopara
         type(ROM_DS_AlgoPara), intent(inout) :: ds_algorom
         type(NL_DS_Print), intent(inout) :: ds_print
-        character(len=8), intent(out) :: result_dry
         character(len=24), intent(out) :: compor
         character(len=8), intent(out) :: mesh
-        aster_logical, intent(out) :: l_dry
+        aster_logical, intent(in) :: l_dry
     end subroutine nxlect
 end interface

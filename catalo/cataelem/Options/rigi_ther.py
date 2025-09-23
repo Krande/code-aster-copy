@@ -68,9 +68,6 @@ PCHHOGT = InputParameter(phys=PHY.N1920R, comment=""" HHO - matrice du gradient 
 PCHHOST = InputParameter(phys=PHY.N1360R, comment=""" HHO - matrice de la stabilisation locale""")
 PCHHOBS = InputParameter(phys=PHY.N3600R, comment=""" HHO - coefficient base locale""")
 
-PMATTTR = OutputParameter(phys=PHY.MTEM_R, type="RESL")
-
-
 RIGI_THER = Option(
     para_in=(
         PBASLOR,
@@ -93,6 +90,6 @@ RIGI_THER = Option(
         PCHHOST,
         PCHHOBS,
     ),
-    para_out=(PMATTTR,),
+    para_out=(SP.PMATTTR,),
     condition=(CondCalcul("+", ((AT.PHENO, "TH"), (AT.BORD, "0"))),),
 )

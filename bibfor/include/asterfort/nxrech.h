@@ -20,7 +20,7 @@ interface
     subroutine nxrech(model, mateco, caraElem, listLoad, nume_dof, &
                       tpsthe, timeMap, lonch, comporTher, varc_curr, &
                       temp_iter, vtempp, vtempr, temp_prev, hydr_prev, &
-                      hydr_curr, dry_curr, vec2nd, cnvabt, &
+                      hydr_curr, vec2nd, cnvabt, &
                       cnresi, rho, iterho, ds_algopara, l_stat)
         use NonLin_Datastructure_type
         character(len=8), intent(in) :: model, caraElem
@@ -39,7 +39,6 @@ interface
         character(len=24) :: temp_iter
         character(len=24) :: hydr_prev
         character(len=24) :: hydr_curr
-        character(len=24) :: dry_curr
         character(len=24) :: vec2nd
         character(len=24) :: cnvabt
         character(len=24) :: cnresi

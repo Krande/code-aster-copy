@@ -94,7 +94,9 @@ subroutine caflnl(load, mesh, model)
         prol = zk8(jvalv)//'           .PROL'
         call jeveuo(prol, 'L', lprol)
         nompar = zk24(lprol+2)
-        if (nompar(1:4) .ne. 'TEMP') call utmess('F', 'CHARGES2_3', sk=zk8(jvalv))
+        if (nompar(1:4) .ne. 'TEMP' .and. nompar(1:4) .ne. 'SECH') then
+            call utmess('F', 'CHARGES2_3', sk=zk8(jvalv))
+        end if
 !
         call getvtx(keywordFact, 'TOUT', iocc=iocc, scal=k8b, nbret=nbtou)
         if (nbtou .ne. 0) then

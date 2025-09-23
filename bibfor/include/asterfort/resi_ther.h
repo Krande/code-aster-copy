@@ -20,13 +20,13 @@ interface
     subroutine resi_ther(l_stat, &
                          modelZ, caraElemZ, matecoZ, &
                          timePara, timeMapZ, varcCurrZ, &
-                         comporTherZ, tempIterZ, dryCurrZ, &
+                         comporTherZ, tempIterZ, &
                          tempPrevZ, hydrPrevZ, hydrCurrZ, &
                          resuElemZ, vectElemZ, jvBase)
         aster_logical, intent(in) :: l_stat
         character(len=*), intent(in) :: modelZ, caraElemZ, matecoZ
         real(kind=8), intent(in) :: timePara(2)
-        character(len=*), intent(in) :: tempIterZ, dryCurrZ, comporTherZ, varcCurrZ
+        character(len=*), intent(in) :: tempIterZ, comporTherZ, varcCurrZ
         character(len=*), intent(in) :: tempPrevZ, hydrPrevZ, hydrCurrZ, timeMapZ
         character(len=*), intent(inout) :: resuElemZ
         character(len=*), intent(in) :: vectElemZ

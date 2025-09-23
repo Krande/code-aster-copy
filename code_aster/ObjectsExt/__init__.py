@@ -95,6 +95,7 @@ from .table_ext import Table
 from .timeslist_ext import TimesList
 from .thermalload_ext import ThermalLoadReal, ThermalLoadFunction
 from .thermalresult_ext import ThermalResult
+from .dryingresult_ext import DryingResult
 from .fullresult_ext import FullResult
 from .generalizedresults_ext import TransientGeneralizedResult, HarmoGeneralizedResult
 from .xfemcrack_ext import XfemCrack

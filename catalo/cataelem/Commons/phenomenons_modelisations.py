@@ -5728,6 +5728,31 @@ phen.add(
 )
 
 phen.add(
+    "3D_SECH",
+    Modelisation(
+        dim=(3, 3),
+        code="3DH",
+        attrs=((AT.SECH, "OUI"),),
+        elements=(
+            (MT.HEXA8, EL.SECH_HEXA8),
+            (MT.PENTA6, EL.SECH_PENTA6),
+            (MT.TETRA4, EL.SECH_TETRA4),
+            (MT.PYRAM5, EL.SECH_PYRAM5),
+            (MT.QUAD4, EL.SECH_FACE4),
+            (MT.TRIA3, EL.SECH_FACE3),
+            (MT.HEXA27, EL.SECH_HEXA27),
+            (MT.HEXA20, EL.SECH_HEXA20),
+            (MT.PENTA15, EL.SECH_PENTA15),
+            (MT.TETRA10, EL.SECH_TETRA10),
+            (MT.PYRAM13, EL.SECH_PYRAM13),
+            (MT.QUAD9, EL.SECH_FACE9),
+            (MT.QUAD8, EL.SECH_FACE8),
+            (MT.TRIA6, EL.SECH_FACE6),
+        ),
+    ),
+)
+
+phen.add(
     "3D1XH",
     Modelisation(
         dim=(3, 3),
@@ -5795,6 +5820,22 @@ phen.add(
 )
 
 phen.add(
+    "3D_SECH_DIAG",
+    Modelisation(
+        dim=(3, 3),
+        code="3DJ",
+        attrs=((AT.LUMPE, "OUI"), (AT.SECH, "OUI")),
+        elements=(
+            (MT.HEXA8, EL.SECH_HEXA8_D),
+            (MT.PENTA6, EL.SECH_PENTA6_D),
+            (MT.TETRA4, EL.SECH_TETRA4_D),
+            (MT.QUAD4, EL.SECH_FACE4_D),
+            (MT.TRIA3, EL.SECH_FACE3_D),
+        ),
+    ),
+)
+
+phen.add(
     "AXIS",
     Modelisation(
         dim=(2, 2),
@@ -5819,6 +5860,34 @@ phen.add(
         code="AXD",
         attrs=((AT.AXIS, "OUI"), (AT.LUMPE, "OUI")),
         elements=((MT.TRIA3, EL.THAXTL3), (MT.QUAD4, EL.THAXQL4), (MT.SEG2, EL.THAXSL2)),
+    ),
+)
+
+phen.add(
+    "AXIS_SECH",
+    Modelisation(
+        dim=(2, 2),
+        code="AXH",
+        attrs=((AT.AXIS, "OUI"), (AT.SECH, "OUI")),
+        elements=(
+            (MT.TRIA3, EL.SEAXTR3),
+            (MT.QUAD4, EL.SEAXQU4),
+            (MT.TRIA6, EL.SEAXTR6),
+            (MT.QUAD8, EL.SEAXQU8),
+            (MT.QUAD9, EL.SEAXQU9),
+            (MT.SEG2, EL.SEAXSE2),
+            (MT.SEG3, EL.SEAXSE3),
+        ),
+    ),
+)
+
+phen.add(
+    "AXIS_SECH_DIAG",
+    Modelisation(
+        dim=(2, 2),
+        code="AXJ",
+        attrs=((AT.AXIS, "OUI"), (AT.LUMPE, "OUI"), (AT.SECH, "OUI")),
+        elements=((MT.TRIA3, EL.SEAXTL3), (MT.QUAD4, EL.SEAXQL4), (MT.SEG2, EL.SEAXSL2)),
     ),
 )
 
