@@ -202,7 +202,7 @@ module NonLin_Datastructure_type
     type NL_DS_Field
         character(len=16) :: type = ' '
         character(len=8)  :: gran_name = ' '
-        character(len=8)  :: field_read = ' '
+        character(len=19) :: field_read = ' '
         character(len=4)  :: disc_type = ' '
         character(len=8)  :: init_keyw = ' '
         character(len=16) :: obsv_keyw = ' '
