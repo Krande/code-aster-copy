@@ -165,7 +165,7 @@ subroutine comdlt()
     end if
 !
 ! - Get kinematic loads
-    call dyGetKineLoad(masse, rigid, amort, lamort, listLoad, &
+    call dyGetKineLoad(rigid, masse, amort, lamort, listLoad, &
                        kineLoad, iinteg)
 !
     neq = zi(jvMatr(1)+2)

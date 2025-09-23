@@ -195,7 +195,7 @@ Contactez le support technique.
     ),
     75: _(
         """
- on doit donner un rayon strictement positif pour définir la cylindre.
+ on doit donner un rayon strictement positif pour définir le cylindre.
 """
     ),
     76: _(

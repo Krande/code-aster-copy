@@ -17,7 +17,7 @@
 ! --------------------------------------------------------------------
 !
 interface
-    subroutine dfllac(factorKeyword, i_fail, dtmin, event_typek, &
+    subroutine dfllac(factorKeyword, i_fail, dtmin, &
                       action_typek, &
                       subd_methode, subd_pas_mini, &
                       subd_niveau, subd_pas, &
@@ -26,7 +26,6 @@ interface
         character(len=16), intent(in) :: factorKeyword
         integer(kind=8), intent(in) :: i_fail
         real(kind=8), intent(in) :: dtmin
-        character(len=16), intent(in) :: event_typek
         character(len=16), intent(out) :: action_typek
         character(len=16), intent(out) :: subd_methode
         real(kind=8), intent(out) :: subd_pas_mini

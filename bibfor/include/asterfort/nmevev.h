@@ -15,18 +15,15 @@
 ! You should have received a copy of the GNU General Public License
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
-
-!
 !
 interface
-    subroutine nmevev(sddisc   , nume_inst, valinc, sderro, ds_contact,&
-                  loop_name)
+    subroutine nmevev(sddisc, valinc, sderro, ds_contact, &
+                      loop_name)
         use NonLin_Datastructure_type
         character(len=24), intent(in) :: sderro
         character(len=19), intent(in) :: sddisc
         character(len=4), intent(in) :: loop_name
         type(NL_DS_Contact), intent(in) :: ds_contact
-        integer(kind=8), intent(in) :: nume_inst
         character(len=19), intent(in) :: valinc(*)
     end subroutine nmevev
 end interface

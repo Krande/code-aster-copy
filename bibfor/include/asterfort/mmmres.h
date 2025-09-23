@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2018 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -17,15 +17,13 @@
 ! --------------------------------------------------------------------
 !
 interface
-    subroutine mmmres(mesh  , time_incr, ds_contact, disp_cumu_inst, sddisc, &
+    subroutine mmmres(mesh, time_incr, ds_contact, disp_cumu_inst, &
                       cnsinr, cnsper)
         use NonLin_Datastructure_type
         character(len=8), intent(in) :: mesh
         real(kind=8), intent(in) :: time_incr
         type(NL_DS_Contact), intent(in) :: ds_contact
         character(len=19), intent(in) :: disp_cumu_inst
-        character(len=19), intent(in) :: sddisc
-        character(len=19), intent(in) :: cnsinr
-        character(len=19), intent(in) :: cnsper
+        character(len=19), intent(in) :: cnsinr, cnsper
     end subroutine mmmres
 end interface

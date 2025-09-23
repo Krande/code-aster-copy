@@ -180,7 +180,7 @@ subroutine dfllec(sdlist, dtmin)
                         etat_loca, pene_maxi, resi_glob_maxi)
 
 ! --------- Get parameters of ACTION for current failure keyword
-            call dfllac(factorKeyword, i_fail, dtmin, event_typek, &
+            call dfllac(factorKeyword, i_fail, dtmin, &
                         action_typek, &
                         subd_method, subd_pas_mini, &
                         subd_niveau, subd_pas, &

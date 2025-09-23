@@ -17,8 +17,8 @@
 ! --------------------------------------------------------------------
 !
 interface
-    subroutine dflld3(sdlist, i_adap)
+    subroutine dflld3(sdlist, iAdap)
         character(len=8), intent(in) :: sdlist
-        integer(kind=8), intent(in) :: i_adap
+        integer(kind=8), intent(in) :: iAdap
     end subroutine dflld3
 end interface

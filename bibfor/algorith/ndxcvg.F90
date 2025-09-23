@@ -15,7 +15,6 @@
 ! You should have received a copy of the GNU General Public License
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
-! person_in_charge: mickael.abbas at edf.fr
 !
 subroutine ndxcvg(sddisc, sderro, valinc)
 !
@@ -89,7 +88,7 @@ subroutine ndxcvg(sddisc, sderro, valinc)
 !
 ! --- VERIFICATION DU DECLENCHEMENT DES EVENT-DRIVEN
 !
-    call nmevel(sddisc, numins, valinc, &
+    call nmevel(sddisc, valinc, &
                 'NEWT', lsvimx, ldvres, lresmx, linsta, lcritl, &
                 lerrne, conver)
 !

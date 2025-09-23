@@ -16,7 +16,7 @@
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
 !
-subroutine dflldc(keywf, i_fail, dtmin, event_typek, &
+subroutine dflldc(keywf, i_fail, dtmin, &
                   subd_methode, subd_pas_mini, &
                   subd_niveau, subd_pas, &
                   subd_auto, subd_inst, subd_duree)
@@ -34,7 +34,6 @@ subroutine dflldc(keywf, i_fail, dtmin, event_typek, &
     character(len=16), intent(in) :: keywf
     integer(kind=8), intent(in) :: i_fail
     real(kind=8), intent(in) :: dtmin
-    character(len=16), intent(in) :: event_typek
     character(len=16), intent(out) :: subd_methode
     real(kind=8), intent(out) :: subd_pas_mini
     integer(kind=8), intent(out) :: subd_niveau
@@ -76,13 +75,11 @@ subroutine dflldc(keywf, i_fail, dtmin, event_typek, &
     subd_pas_mini = 0.d0
     subd_inst = 0.d0
     subd_duree = 0.d0
-!
+
 ! - Type of step cut
-!
     call getvtx(keywf, 'SUBD_METHODE', iocc=i_fail, scal=subd_methode)
-!
+
 ! - Get parameters
-!
     call getvr8(keywf, 'SUBD_PAS_MINI', iocc=i_fail, scal=subd_pas_mini, nbret=nbret)
     ASSERT(nbret .le. 1)
     if (subd_pas_mini .gt. dtmin) then
@@ -93,15 +90,9 @@ subroutine dflldc(keywf, i_fail, dtmin, event_typek, &
         call getvis(keywf, 'SUBD_PAS', iocc=i_fail, scal=subd_pas)
         ASSERT(subd_pas .ge. 2)
     else if (subd_methode .eq. 'AUTO') then
-        if (event_typek .eq. failEventKeyword(FAIL_EVT_COLLISION)) then
-            call getvr8(keywf, 'SUBD_INST', iocc=i_fail, scal=subd_inst)
-            call getvr8(keywf, 'SUBD_DUREE', iocc=i_fail, scal=subd_duree)
-            subd_auto = 'COLLISION'
-        else
-            subd_auto = 'EXTRAPOLE'
-        end if
+        subd_auto = 'EXTRAPOLE'
     else
-        ASSERT(.false.)
+        ASSERT(ASTER_FALSE)
     end if
 !
 end subroutine

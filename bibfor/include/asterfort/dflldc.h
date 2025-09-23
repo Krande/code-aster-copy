@@ -17,14 +17,13 @@
 ! --------------------------------------------------------------------
 !
 interface
-    subroutine dflldc(keywf       , i_fail       , dtmin     , event_typek,&
-                      subd_methode, subd_pas_mini,&
-                      subd_niveau , subd_pas     ,&
-                      subd_auto   , subd_inst    , subd_duree)
+    subroutine dflldc(keywf, i_fail, dtmin, &
+                      subd_methode, subd_pas_mini, &
+                      subd_niveau, subd_pas, &
+                      subd_auto, subd_inst, subd_duree)
         character(len=16), intent(in) :: keywf
         integer(kind=8), intent(in) :: i_fail
         real(kind=8), intent(in) :: dtmin
-        character(len=16), intent(in) :: event_typek
         character(len=16), intent(out) :: subd_methode
         real(kind=8), intent(out) :: subd_pas_mini
         integer(kind=8), intent(out) :: subd_niveau

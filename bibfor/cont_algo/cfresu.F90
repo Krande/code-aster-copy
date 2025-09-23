@@ -15,13 +15,11 @@
 ! You should have received a copy of the GNU General Public License
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
-! person_in_charge: mickael.abbas at edf.fr
 !
-subroutine cfresu(time_incr, sddisc, ds_contact, disp_cumu_inst, disp_iter, &
+subroutine cfresu(time_incr, ds_contact, disp_cumu_inst, disp_iter, &
                   cnsinr, cnsper)
 !
     use NonLin_Datastructure_type
-!
     implicit none
 !
 #include "asterf_types.h"
@@ -44,12 +42,10 @@ subroutine cfresu(time_incr, sddisc, ds_contact, disp_cumu_inst, disp_iter, &
 #include "asterfort/utmess.h"
 !
     real(kind=8), intent(in) :: time_incr
-    character(len=19), intent(in) :: sddisc
     type(NL_DS_Contact), intent(in) :: ds_contact
     character(len=19), intent(in) :: disp_cumu_inst
     character(len=19), intent(in) :: disp_iter
-    character(len=19), intent(in) :: cnsinr
-    character(len=19), intent(in) :: cnsper
+    character(len=19), intent(in) :: cnsinr, cnsper
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -60,7 +56,6 @@ subroutine cfresu(time_incr, sddisc, ds_contact, disp_cumu_inst, disp_iter, &
 ! --------------------------------------------------------------------------------------------------
 !
 ! In  time_incr        : time increment
-! In  sddisc           : datastructure for discretization
 ! In  ds_contact       : datastructure for contact management
 ! In  disp_cumu_inst   : displacement increment from beginning of current time
 ! In  disp_iter        : displacement iteration
@@ -92,9 +87,7 @@ subroutine cfresu(time_incr, sddisc, ds_contact, disp_cumu_inst, disp_iter, &
     character(len=24) :: sdcont_appoin, sdcont_numlia, sdcont_approj
     character(len=24) :: sdcont_jeuite
     aster_logical :: l_cont_pena, l_frot
-    aster_logical :: lcolli, laffle
     real(kind=8) :: imp, impx, impy, impz
-    real(kind=8) :: valras
     real(kind=8), pointer :: v_disp_iter(:) => null()
     real(kind=8), pointer :: v_disp_cumu(:) => null()
     integer(kind=8), pointer :: v_sdcont_liac(:) => null()
@@ -113,12 +106,8 @@ subroutine cfresu(time_incr, sddisc, ds_contact, disp_cumu_inst, disp_iter, &
 ! --------------------------------------------------------------------------------------------------
 !
     call jemarq()
-!
-! - Initializations
-!
-!
+
 ! - Parameters
-!
     l_frot = cfdisl(ds_contact%sdcont_defi, 'FROT_DISCRET')
     l_cont_pena = cfdisl(ds_contact%sdcont_defi, 'CONT_PENA')
     nbliai = cfdisd(ds_contact%sdcont_solv, 'NBLIAI')
@@ -126,15 +115,8 @@ subroutine cfresu(time_incr, sddisc, ds_contact, disp_cumu_inst, disp_iter, &
     model_ndim = cfdisd(ds_contact%sdcont_solv, 'NDIM')
     nb_equa = cfdisd(ds_contact%sdcont_solv, 'NEQ')
     nesmax = cfdisd(ds_contact%sdcont_solv, 'NESMAX')
-!
-! - Collision
-!
-    laffle = .false.
-    valras = 1.d-3
-    call iseven(sddisc, FAIL_EVT_COLLISION, lcolli)
-!
+
 ! - Acces to contact objects
-!
     zresu = cfmmvd('ZRESU')
     zperc = cfmmvd('ZPERC')
     ztacf = cfmmvd('ZTACF')
@@ -168,9 +150,8 @@ subroutine cfresu(time_incr, sddisc, ds_contact, disp_cumu_inst, disp_iter, &
     call jeveuo(sdcont_jeuite, 'L', vr=v_sdcont_jeuite)
     call jeveuo(sdcont_approj, 'L', vr=v_sdcont_approj)
     sdappa = ds_contact%sdcont_solv(1:14)//'.APPA'
-!
+
 ! - Access to fields
-!
     call jeveuo(disp_iter(1:19)//'.VALE', 'L', vr=v_disp_iter)
     call jeveuo(disp_cumu_inst(1:19)//'.VALE', 'L', vr=v_disp_cumu)
     call jeveuo(cnsinr(1:19)//'.CNSV', 'E', vr=v_cnsinr_cnsv)
@@ -254,15 +235,8 @@ subroutine cfresu(time_incr, sddisc, ds_contact, disp_cumu_inst, disp_iter, &
             call cfresa(model_ndim, zr(jatmu+zi(japddl+jdecal)-1), norm, rnx, rny, &
                         rnz, rn)
         end if
-!
-! ----- Very near contact
-!
-        if (rn .le. valras) then
-            laffle = .true.
-        end if
-!
+
 ! ----- Compute informations for friction
-!
         if (l_frot) then
 !
             node_status = 2.d0
@@ -374,12 +348,6 @@ subroutine cfresu(time_incr, sddisc, ds_contact, disp_cumu_inst, disp_iter, &
         v_cnsinr_cnsv(zresu*(node_slav_nume-1)+29) = proj(2)
         v_cnsinr_cnsv(zresu*(node_slav_nume-1)+30) = proj(3)
     end do
-!
-! - Alarm for COLLISION
-!
-    if (laffle .and. lcolli) then
-        call utmess('A', 'CONTACT3_98')
-    end if
 !
     call jedema()
 !

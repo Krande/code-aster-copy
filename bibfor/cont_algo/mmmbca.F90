@@ -15,13 +15,11 @@
 ! You should have received a copy of the GNU General Public License
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
-! person_in_charge: ayaovi-dzifa.kudawoo at edf.fr
 !
 subroutine mmmbca(mesh, iter_newt, nume_inst, &
                   sddisc, disp_curr, disp_cumu_inst, ds_contact)
 !
     use NonLin_Datastructure_type
-!
     implicit none
 !
 #include "asterc/r8prem.h"
@@ -45,7 +43,6 @@ subroutine mmmbca(mesh, iter_newt, nume_inst, &
 #include "asterfort/mm_cycl_stat.h"
 #include "asterfort/mmbouc.h"
 #include "asterfort/mmeval_prep.h"
-#include "asterfort/mmeven.h"
 #include "asterfort/mmextm.h"
 #include "asterfort/mmfield_prep.h"
 #include "asterfort/mmglis.h"
@@ -519,18 +516,12 @@ subroutine mmmbca(mesh, iter_newt, nume_inst, &
     if (l_coef_adap) then
         call mm_cycl_prop(ds_contact)
     end if
-!
+
 ! - Event management for impact
-!
     call mmbouc(ds_contact, 'Geom', 'Read_Counter', loop_geom_count)
     call mmbouc(ds_contact, 'Fric', 'Read_Counter', loop_fric_count)
     call mmbouc(ds_contact, 'Cont', 'Read_Counter', loop_cont_count)
-    if ((iter_newt .eq. 0) .and. &
-        (loop_geom_count .eq. 1) .and. (loop_fric_count .eq. 1) .and. (loop_cont_count .eq. 1)) then
-        call mmeven('INI', ds_contact)
-    else
-        call mmeven('FIN', ds_contact)
-    end if
+
 !
 ! - Set loop values
 !
