@@ -58,6 +58,14 @@ TEST_TABLE(
     FILTRE=_F(NOM_PARA="TEST", VALE_K="VALEUR  "),
 )
 
+mesh_3d = LIRE_MAILLAGE(FORMAT="ASTER", UNITE=20, VERI_MAIL=_F(VERIF="NON"))
+
+mesh_3d_fix = mesh_3d.fix(True, 2)
+
+test.assertEqual(mesh_3d_fix.getNumberOfNodes(), mesh_3d.getNumberOfNodes() - 1)
+test.assertEqual(mesh_3d_fix.getNumberOfCells(), mesh_3d.getNumberOfCells())
+
+
 is_ok = 0
 try:
     mesh_2d = LIRE_MAILLAGE(FORMAT="ASTER", UNITE=21)
@@ -78,6 +86,15 @@ TEST_TABLE(
     TABLE=TAB1,
     FILTRE=_F(NOM_PARA="TEST", VALE_K="VALEUR  "),
 )
+
+
+mesh_2d = LIRE_MAILLAGE(FORMAT="ASTER", UNITE=21, VERI_MAIL=_F(VERIF="NON"))
+
+mesh_2d_fix = mesh_2d.fix(info=2)
+
+test.assertEqual(mesh_2d_fix.getNumberOfNodes(), mesh_2d.getNumberOfNodes() - 1)
+test.assertEqual(mesh_2d_fix.getNumberOfCells(), mesh_2d.getNumberOfCells())
+
 
 test.printSummary()
 

@@ -257,6 +257,8 @@ class ParallelMesh : public BaseMesh {
 
     ParallelMeshPtr convertToBiQuadratic( const ASTERINTEGER info = 1 );
 
+    ParallelMeshPtr fix( const bool remove_orphelan, const ASTERINTEGER info = 1 );
+
     /* Mesh builder functions */
     void create_joints( const VectorLong &domains, const VectorLong &globalNodeIds,
                         const VectorLong &nodesOwner, const VectorLong &globalCellIds,

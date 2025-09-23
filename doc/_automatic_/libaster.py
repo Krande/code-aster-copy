@@ -833,6 +833,17 @@ class Mesh(BaseMesh):
             Mesh: the quadratic mesh.
         """
 
+    def fix(self, remove_orphelan=True, info=1):
+        """Remove orphelan nodes, and double edges and faces.
+
+        Arguments:
+            remove_orphelan (bool) : remove orphelan nodes. Default True
+            info (int) : verbosity mode (1 or 2). Default 1.
+
+        Returns:
+            Mesh: fixed mesh
+        """
+
     def getCells(self, *args, **kwargs):
         """Overloaded function.
 
@@ -15071,6 +15082,17 @@ class ParallelMesh(BaseMesh):
 
         Returns:
             ParallelMesh: the quadratic mesh.
+        """
+
+    def fix(self, remove_orphelan=True, info=1):
+        """Remove orphelan nodes, and double edges and faces.
+
+        Arguments:
+            remove_orphelan (bool) : remove orphelan nodes. Default True
+            info (int) : verbosity mode (1 or 2). Default 1.
+
+        Returns:
+            ParallelMesh: fixed mesh
         """
 
     def getAllMedCellsTypes(self):
