@@ -27,6 +27,7 @@ module crea_maillage_module
 !
 #include "jeveux.h"
 #include "asterf_types.h"
+#include "asterc/r8maem.h"
 #include "asterc/asmpi_comm.h"
 #include "asterc/asmpi_sendrecv_i.h"
 #include "asterc/asmpi_sendrecv_r.h"
@@ -68,6 +69,26 @@ module crea_maillage_module
 !
 ! --------------------------------------------------------------------------------------------------
 !
+!
+    type MoctreeNode
+        integer(kind=8), allocatable :: nodes(:)
+        integer(kind=8) :: nb_nodes = 0, nb_nodes_max = 0
+! ----- member functions
+    contains
+        procedure, public, pass :: add_node => add_node_octree
+        procedure, public, pass :: free => free_octree_node
+    end type
+
+    type Moctree
+        integer(kind=8) :: nb_div(3) = 20
+        real(kind=8) :: xmin(3) = 0.d0, xmax(3) = 0.d0, dx(3) = 0.d0
+        type(MoctreeNode), allocatable :: octree_nodes(:, :, :)
+! ----- member functions
+    contains
+        procedure, public, pass :: init => init_octree
+        procedure, public, pass :: get_octree_node
+        procedure, public, pass :: free => free_octree
+    end type
 !
     type Mconverter
         aster_logical :: to_convert(MT_NTYMAX) = ASTER_FALSE
@@ -123,8 +144,6 @@ module crea_maillage_module
         integer(kind=8) :: type = 0
         integer(kind=8) :: nodes(4) = 0
         integer(kind=8) :: nno_sort(4) = 0
-        integer(kind=8) :: nb_faces = 0, faces(20) = 0
-        integer(kind=8) :: nb_volumes = 0, volumes(25) = 0
         integer(kind=8) :: parent = -1
         integer(kind=8) :: isub = 0
         integer(kind=8) :: cell_id = 0
@@ -214,7 +233,7 @@ module crea_maillage_module
 !
     public :: Medge, Mface, Mcell, Mmesh, Mconverter
     private :: numbering_edge, numbering_face, dividing_cell, mult_elem
-    private :: sort_nodes_face, fix_measure
+    private :: sort_nodes_face, fix_measure, Moctree
 contains
 !
 !===================================================================================================
@@ -383,6 +402,138 @@ contains
         if (nno > nnos) then
             call qsort(nodes(nnos+1:2*nnos))
         end if
+!
+    end subroutine
+!
+! ==================================================================================================
+!
+    subroutine init_octree(this, mesh)
+!
+        implicit none
+!
+        class(Moctree), intent(inout) :: this
+        type(Mmesh), intent(in) :: mesh
+!
+        integer(kind=8) :: i_node, i_dim, oct_id(3)
+!
+        this%xmin = R8MAEM()
+        this%xmax = -R8MAEM()
+!
+        do i_node = 1, mesh%nb_total_nodes
+            do i_dim = 1, 3
+                this%xmin(i_dim) = min(this%xmin(i_dim), mesh%nodes(i_node)%coor(i_dim))
+                this%xmax(i_dim) = max(this%xmax(i_dim), mesh%nodes(i_node)%coor(i_dim))
+            end do
+        end do
+        ! 2d - mesh
+        if (abs(this%xmax(3)-this%xmin(3)) < 1d-12) then
+            this%nb_div(3) = 1
+        end if
+        ! add offset for roundoff error
+        this%xmin = this%xmin-1d-8
+        this%xmax = this%xmax+1d-8
+        this%dx = (this%xmax-this%xmin)/real(this%nb_div, kind=8)
+        if (this%nb_div(3) == 1) then
+            this%dx(3) = 1.d0
+        end if
+!
+        allocate (this%octree_nodes(this%nb_div(1), this%nb_div(2), this%nb_div(3)))
+!
+        do i_node = 1, mesh%nb_total_nodes
+            oct_id = this%get_octree_node(mesh%nodes(i_node)%coor)
+            call this%octree_nodes(oct_id(1), oct_id(2), oct_id(3))%add_node(i_node)
+        end do
+!
+    end subroutine
+!
+! ==================================================================================================
+!
+    function get_octree_node(this, coor) result(id)
+!
+        implicit none
+!
+        class(Moctree), intent(inout) :: this
+        real(kind=8), intent(in) :: coor(3)
+!
+        integer(kind=8) :: id(3), i_dim
+!
+        id = 0
+!
+        do i_dim = 1, 3
+            id(i_dim) = ceiling((coor(i_dim)-this%xmin(i_dim))/this%dx(i_dim), kind=8)
+        end do
+!
+    end function
+!
+! ==================================================================================================
+!
+    subroutine add_node_octree(this, node_id)
+!
+        implicit none
+!
+        class(MoctreeNode), intent(inout) :: this
+        integer(kind=8), intent(in) :: node_id
+!
+        integer(kind=8), allocatable :: tmp(:)
+        integer(kind=8) :: size
+!
+        this%nb_nodes = this%nb_nodes+1
+        if (this%nb_nodes > this%nb_nodes_max) then
+            if (this%nb_nodes_max == 0) then
+                this%nb_nodes_max = 100
+                allocate (this%nodes(this%nb_nodes_max))
+                this%nodes = 0
+            else
+                size = this%nb_nodes_max
+                allocate (tmp(size))
+                tmp = this%nodes
+                deallocate (this%nodes)
+                this%nb_nodes_max = 2*size
+                allocate (this%nodes(this%nb_nodes_max))
+                this%nodes(1:size) = tmp(1:size)
+                this%nodes(size+1:this%nb_nodes_max) = 0
+                deallocate (tmp)
+            end if
+        end if
+        this%nodes(this%nb_nodes) = node_id
+!
+    end subroutine
+!
+! ==================================================================================================
+!
+    subroutine free_octree_node(this)
+!
+        implicit none
+!
+        class(MoctreeNode), intent(inout) :: this
+!
+        if (this%nb_nodes_max > 0) then
+            deallocate (this%nodes)
+        end if
+        this%nb_nodes = 0
+        this%nb_nodes_max = 0
+!
+    end subroutine
+!
+! ==================================================================================================
+!
+    subroutine free_octree(this)
+!
+        implicit none
+!
+        class(Moctree), intent(inout) :: this
+!
+        integer(kind=8) :: i, j, k
+
+        do i = 1, this%nb_div(1)
+            do j = 1, this%nb_div(2)
+                do k = 1, this%nb_div(3)
+                    call this%octree_nodes(i, j, k)%free()
+                end do
+            end do
+        end do
+!
+        deallocate (this%octree_nodes)
 !
     end subroutine
 !
@@ -584,10 +735,6 @@ contains
             node_id = this%add_node(v_coor(3*(i_node-1)+1:3*(i_node-1)+3), owner)
             ASSERT(i_node == node_id)
             this%nodes(node_id)%orphelan = ASTER_TRUE
-            this%nodes(node_id)%max_faces = 30
-            allocate (this%nodes(node_id)%faces(this%nodes(node_id)%max_faces))
-            this%nodes(node_id)%max_edges = 30
-            allocate (this%nodes(node_id)%edges(this%nodes(node_id)%max_edges))
         end do
 !
 ! --- Read cells
@@ -664,18 +811,22 @@ contains
 !
 ! ==================================================================================================
 !
-    subroutine fix_mesh(this, remove_orphelan, outward_normal, positive_measure)
+    subroutine fix_mesh(this, remove_orphelan, outward_normal, positive_measure, double_nodes, tole)
 !
         implicit none
 !
         class(Mmesh), intent(inout) :: this
         aster_logical, intent(in) :: remove_orphelan, outward_normal, positive_measure
+        aster_logical, intent(in) :: double_nodes
+        real(kind=8), intent(in) :: tole
 !
-        integer(kind=8) :: i_edge, e1, e2, n1, n2, n3, i_face, f1, f2
-        integer(kind=8) :: i, j, i_node, nno, i_volu, v_id, nnos, c_id
+        integer(kind=8) :: i_edge, e1, e2, n1, n2, n3, i_face, f1, f2, ns
+        integer(kind=8) :: i, j, i_node, j_node, nno, i_volu, v_id, nnos, c_id
+        integer(kind=8) :: oc_id(3), ocx, ocy, ocz
         integer(kind=8), allocatable :: map_nodes(:)
-        real(kind=8) :: new_coor(3), end, start, v0(3), v1(3), no(3)
-        real(kind=8) :: bar_v(3), bar_f(3), nvf(3)
+        real(kind=8) :: new_coor(3), end, start, v0(3), v1(3), no(3), tole_comp
+        real(kind=8) :: bar_v(3), bar_f(3), nvf(3), coor_i(3), coor_diff(3)
+        type(Moctree) :: octree
 
 !
         if (this%info >= 2) then
@@ -705,8 +856,9 @@ contains
                 this%cells(this%edges(e2)%cell_id)%keep = ASTER_FALSE
             end if
 !
-            do i_face = 1, this%edges(e2)%nb_faces
-                f2 = this%edges(e2)%faces(i_face)
+            ns = this%edges(e2)%nno_sort(1)
+            do i_face = 1, this%nodes(ns)%nb_faces
+                f2 = this%nodes(ns)%faces(i_face)
                 do i = 1, this%faces(f2)%nb_edges
                     if (e2 == this%faces(f2)%edges(i)) then
                         this%faces(f2)%edges(i) = e1
@@ -726,23 +878,22 @@ contains
                         exit
                     end if
                 end do
-            end do
-!
-            do i_volu = 1, this%edges(e2)%nb_volumes
-                v_id = this%edges(e2)%volumes(i_volu)
-                do i = 1, this%volumes(v_id)%nb_edges
-                    if (e2 == this%volumes(v_id)%edges(i)) then
-                        this%volumes(v_id)%edges(i) = e1
-                        nno = this%converter%nno(this%volumes(v_id)%type)
-                        do i_node = 1, nno
-                            if (n2 == this%volumes(v_id)%nodes(i_node)) then
-                                this%volumes(v_id)%nodes(i_node) = n1
-                                exit
-                            end if
-                        end do
+                do i_volu = 1, this%faces(f2)%nb_volumes
+                    v_id = this%faces(f2)%volumes(i_volu)
+                    do i = 1, this%volumes(v_id)%nb_edges
+                        if (e2 == this%volumes(v_id)%edges(i)) then
+                            this%volumes(v_id)%edges(i) = e1
+                            nno = this%converter%nno(this%volumes(v_id)%type)
+                            do i_node = 1, nno
+                                if (n2 == this%volumes(v_id)%nodes(i_node)) then
+                                    this%volumes(v_id)%nodes(i_node) = n1
+                                    exit
+                                end if
+                            end do
+                            exit
+                        end if
                         exit
-                    end if
-                    exit
+                    end do
                 end do
             end do
 !
@@ -791,6 +942,78 @@ contains
 !
         end do
 !
+        if (remove_orphelan) then
+            do i_node = 1, this%nb_total_nodes
+                if (this%nodes(i_node)%orphelan) then
+                    this%nodes(i_node)%keep = ASTER_FALSE
+                    this%nodes(i_node)%orphelan = ASTER_FALSE
+                end if
+            end do
+        end if
+!
+        if (double_nodes) then
+            call octree%init(this)
+            do i_node = 1, this%nb_total_nodes
+                if (this%nodes(i_node)%keep) then
+                    coor_i = this%nodes(i_node)%coor
+                    tole_comp = max(tole, tole*norm2(coor_i))
+                    oc_id = octree%get_octree_node(coor_i)
+                    do ocx = max(1, oc_id(1)-1), min(octree%nb_div(1), oc_id(1)+1)
+                        do ocy = max(1, oc_id(2)-1), min(octree%nb_div(2), oc_id(2)+1)
+                            do ocz = max(1, oc_id(3)-1), min(octree%nb_div(3), oc_id(3)+1)
+                                do j_node = 1, octree%octree_nodes(ocx, ocy, ocz)%nb_nodes
+                                    n1 = octree%octree_nodes(ocx, ocy, ocz)%nodes(j_node)
+                                    if (n1 .ne. i_node .and. this%nodes(n1)%keep) then
+                                        coor_diff = abs(coor_i-this%nodes(n1)%coor)
+                                        if (maxval(coor_diff) < tole_comp) then
+                                            this%nodes(n1)%keep = ASTER_FALSE
+                                            this%nodes(n1)%orphelan = ASTER_FALSE
+                                            map_nodes(n1) = i_node
+                                            this%nb_nodes = this%nb_nodes-1
+                                        end if
+                                    end if
+                                end do
+                            end do
+                        end do
+                    end do
+                end if
+            end do
+            call octree%free()
+!
+            do i_edge = 1, this%nb_edges
+                nno = this%converter%nno(this%edges(i_edge)%type)
+                do i_node = 1, nno
+                    n2 = this%edges(i_edge)%nodes(i_node)
+                    n1 = map_nodes(n2)
+                    this%edges(i_edge)%nodes(i_node) = n1
+                    n2 = this%edges(i_edge)%nno_sort(i_node)
+                    n1 = map_nodes(n2)
+                    this%edges(i_edge)%nno_sort(i_node) = n1
+                end do
+            end do
+!
+            do i_face = 1, this%nb_faces
+                nno = this%converter%nno(this%faces(i_face)%type)
+                do i_node = 1, nno
+                    n2 = this%faces(i_face)%nodes(i_node)
+                    n1 = map_nodes(n2)
+                    this%faces(i_face)%nodes(i_node) = n1
+                    n2 = this%faces(i_face)%nno_sort(i_node)
+                    n1 = map_nodes(n2)
+                    this%faces(i_face)%nno_sort(i_node) = n1
+                end do
+            end do
+!
+            do i_volu = 1, this%nb_volumes
+                nno = this%converter%nno(this%volumes(i_volu)%type)
+                do i_node = 1, nno
+                    n2 = this%volumes(i_volu)%nodes(i_node)
+                    n1 = map_nodes(n2)
+                    this%volumes(i_volu)%nodes(i_node) = n1
+                end do
+            end do
+        end if
+!
 ! --- Renumbering nodes
         do i = 1, this%nb_cells
             if (this%cells(i)%keep) then
@@ -804,15 +1027,6 @@ contains
         end do
 !
         deallocate (map_nodes)
-!
-        if (remove_orphelan) then
-            do i_node = 1, this%nb_nodes
-                if (this%nodes(i_node)%orphelan) then
-                    this%nodes(i_node)%keep = ASTER_FALSE
-                    this%nodes(i_node)%orphelan = ASTER_FALSE
-                end if
-            end do
-        end if
 !
         if (outward_normal) then
             do i_face = 1, this%nb_faces
@@ -1411,8 +1625,6 @@ contains
             end do
             edge_id = this%add_edge(edge_type(i_edge), edge_nodes)
             this%volumes(volume_id)%edges(i_edge) = edge_id
-            this%edges(edge_id)%nb_volumes = this%edges(edge_id)%nb_volumes+1
-            this%edges(edge_id)%volumes(this%edges(edge_id)%nb_volumes) = volume_id
         end do
 ! --- create faces
         call numbering_face(type, nb_faces, face_type, face_loc)
@@ -1507,9 +1719,6 @@ contains
                     edge_id = this%add_edge(edge_type(i_edge), edge_nodes)
                 end if
                 this%faces(face_id)%edges(i_edge) = edge_id
-                this%edges(edge_id)%nb_faces = this%edges(edge_id)%nb_faces+1
-                ASSERT(this%edges(edge_id)%nb_faces <= 20)
-                this%edges(edge_id)%faces(this%edges(edge_id)%nb_faces) = face_id
             end do
 !
             if (this%nodes(nno_sort(1))%nb_faces >= this%nodes(nno_sort(1))%max_faces) then
@@ -2038,6 +2247,7 @@ contains
             owner = this%owner_cell(nno_end-1, this%faces(face_id)%nodes)
             node_id = this%add_node(this%barycenter(face_id, 2), owner)
             this%faces(face_id)%nodes(nno_end) = node_id
+            this%faces(face_id)%nno_sort(nno_end) = node_id
         else
             ASSERT(face_type == face_type_end)
         end if
@@ -2721,18 +2931,6 @@ contains
             nno = this%converter%nno(this%edges(i_edge)%type)
             do i_node = 1, nno
                 ASSERT(this%edges(i_edge)%nodes(i_node) > 0)
-            end do
-!
-            ASSERT(this%edges(i_edge)%nb_volumes <= 25)
-            do i_volume = 1, this%edges(i_edge)%nb_volumes
-                ASSERT(this%edges(i_edge)%volumes(i_volume) > 0)
-                ASSERT(this%edges(i_edge)%volumes(i_volume) <= this%nb_volumes)
-            end do
-!
-            ASSERT(this%edges(i_edge)%nb_faces <= 20)
-            do i_face = 1, this%edges(i_edge)%nb_faces
-                ASSERT(this%edges(i_edge)%faces(i_face) > 0)
-                ASSERT(this%edges(i_edge)%faces(i_face) <= this%nb_faces)
             end do
         end do
 !
@@ -3652,7 +3850,7 @@ contains
         type(Mmesh), intent(inout) :: this
         integer(kind=8), intent(in) :: cell_id, cell_dim
 !
-        integer(kind=8) :: i, nodes(27), nno, nbpg, ndim
+        integer(kind=8) :: i, nodes(27), nno, nnos, nbpg, ndim
         real(kind=8) :: jaco(3, 3), jacob, coopg(3), dbasis(3, 8), coorno(3), poipg(2)
         character(len=3) :: typema
 ! ---------------------------------------------------------------------------------
@@ -3674,11 +3872,11 @@ contains
             dbasis = 0.d0
             call elraga(typema, "FPG1", ndim, nbpg, coopg, poipg)
             ASSERT(nbpg == 1)
-            call elrfdf(typema, coopg, dbasis, nno_=nno)
+            call elrfdf(typema, coopg, dbasis, nno_=nnos)
 !
 ! ---  Compute the jacobienne
             jaco = 0.d0
-            do i = 1, nno
+            do i = 1, nnos
                 coorno = this%nodes(this%volumes(cell_id)%nodes(i))%coor
                 jaco(1:3, 1) = jaco(1:3, 1)+coorno(1)*dbasis(1:3, i)
                 jaco(1:3, 2) = jaco(1:3, 2)+coorno(2)*dbasis(1:3, i)
@@ -3720,7 +3918,6 @@ contains
                     this%volumes(cell_id)%nodes(1:4) = [nodes(1), nodes(4), nodes(3), nodes(2)]
                     this%volumes(cell_id)%nodes(5) = nodes(5)
                     this%volumes(cell_id)%nodes(6:9) = [nodes(9), nodes(8), nodes(7), nodes(6)]
-                    this%volumes(cell_id)%nodes(7:9) = [nodes(9), nodes(8), nodes(7)]
                     this%volumes(cell_id)%nodes(10:13) = [nodes(10), nodes(13), nodes(12), &
                                                           nodes(11)]
                     this%volumes(cell_id)%nodes(14) = nodes(14)
@@ -3738,7 +3935,7 @@ contains
 !
 ! ------ Verification that volume is positive
                 jaco = 0.d0
-                do i = 1, nno
+                do i = 1, nnos
                     coorno = this%nodes(this%volumes(cell_id)%nodes(i))%coor
                     jaco(1:3, 1) = jaco(1:3, 1)+coorno(1)*dbasis(1:3, i)
                     jaco(1:3, 2) = jaco(1:3, 2)+coorno(2)*dbasis(1:3, i)
