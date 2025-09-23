@@ -15,14 +15,14 @@
 ! You should have received a copy of the GNU General Public License
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
-subroutine leverettIsot(temp, satuIn, alpha, beta, ad, t0_C, hygr, dpc)
+subroutine leverettIsot(temp, satuIn, alpha, beta, ad, t0_C, hygr, dpc, pc_)
     implicit none
 #include "rgi_module.h"
 #include "asterfort/utmess.h"
 #include "asterc/r8t0.h"
     real(kind=8), intent(in) :: temp, satuIn, alpha, beta, ad, t0_C
     real(kind=8), intent(out) :: hygr
-    real(kind=8), intent(out), optional :: dpc
+    real(kind=8), intent(out), optional :: dpc, pc_
 !
     real(kind=8) :: gamma0, gamma, tempK, t0_K, dtemp, KT_K0, a, pc
     real(kind=8) :: satu, K0_KT, tz0
@@ -59,6 +59,11 @@ subroutine leverettIsot(temp, satuIn, alpha, beta, ad, t0_C, hygr, dpc)
         dpc = ((gamma/gamma0)*((KT_K0)**0.5)*a*(-beta+1.d0)/(beta)) &
               *(satu**(-(1.d0+beta)/beta)) &
               *(-1.d0+satu**(-1.d0/beta))**(-beta)
+    end if
+
+    if (present(pc_)) then
+!       Isothermal desorption
+        pc_ = pc
     end if
 
 contains

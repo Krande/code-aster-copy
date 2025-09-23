@@ -17,7 +17,7 @@
 ! --------------------------------------------------------------------
 !
 subroutine rftDiffusion(fami, kpg, ksp, poum, imate, c, &
-                        temp, diff)
+                        temp, diff, difl, difv)
     implicit none
 #include "asterc/r8t0.h"
 #include "asterfort/assert.h"
@@ -28,7 +28,7 @@ subroutine rftDiffusion(fami, kpg, ksp, poum, imate, c, &
     character(len=*), intent(in) :: fami, poum
     integer(kind=8), intent(in) :: kpg, ksp, imate
     real(kind=8), intent(in) :: c, temp
-    real(kind=8), intent(out) :: diff
+    real(kind=8), intent(out) :: diff, difl, difv
 ! ......................................................................
 !   RFT law : diffusion coefficient calculation (SECH_RFT)
 !
@@ -37,6 +37,8 @@ subroutine rftDiffusion(fami, kpg, ksp, poum, imate, c, &
 !   temp (in) : temperature
 !
 !   diff (out) : coefficient de diffusion
+!   difl (out) : coefficient de diffusion liquide
+!   difv (out) : coefficient de diffusion vapeur
 ! ......................................................................
     integer(kind=8)           :: codret(5), nbpar
     real(kind=8)      :: valres(5), hygr, valpar(1), dpc, tz0
@@ -96,6 +98,8 @@ subroutine rftDiffusion(fami, kpg, ksp, poum, imate, c, &
                            vg_m_p, poro, beta, dpc, richardsDiffusionCoef)
 
     diff = vapourDiffusionCoef+richardsDiffusionCoef
+    difv = vapourDiffusionCoef
+    difl = richardsDiffusionCoef
 !-----------------------------------------------------------------------
 !-----------------------------------------------------------------------
 contains

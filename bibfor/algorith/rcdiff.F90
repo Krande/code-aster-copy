@@ -16,7 +16,7 @@
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
 
-subroutine rcdiff(imate, comp, temp, c, diff)
+subroutine rcdiff(imate, comp, temp, c, diff, difl_, difv_)
     implicit none
 #include "jeveux.h"
 #include "asterc/r8t0.h"
@@ -24,9 +24,11 @@ subroutine rcdiff(imate, comp, temp, c, diff)
 #include "asterfort/rcvalb.h"
 #include "asterfort/rftDiffusion.h"
 #include "asterfort/utmess.h"
-    integer(kind=8) :: imate
-    real(kind=8) :: temp, c, diff
-    character(len=16) :: comp
+    integer(kind=8), intent(in) :: imate
+    real(kind=8), intent(in) :: temp, c
+    character(len=16), intent(in) :: comp
+    real(kind=8), intent(out) :: diff
+    real(kind=8), intent(out), optional :: difl_, difv_
 ! ----------------------------------------------------------------------
 !     CALCUL DU COEFFICIENT DE DIFFUSION POUR LES LOI DE TYPE SECHAGE
 !
@@ -35,6 +37,8 @@ subroutine rcdiff(imate, comp, temp, c, diff)
 ! IN  TEMP    : TEMPERATURE
 ! IN  C       : CONCENTRATION EN EAU
 ! OUT DIFF    : VALEUR DU COEFFICIENT DE DIFFUSION
+! OUT DIFL_   : VALEUR DU COEFFICIENT DE DIFFUSION LIQUIDE (OPTIONNEL)
+! OUT DIFV_   : VALEUR DU COEFFICIENT DE DIFFUSION VAPEUR (OPTIONNEL)
 ! ----------------------------------------------------------------------
 !
 !
@@ -51,6 +55,7 @@ subroutine rcdiff(imate, comp, temp, c, diff)
     character(len=16) :: nomres(nbres)
     character(len=32) :: phenom
     real(kind=8) :: val_non_physique
+    real(kind=8) :: difl, difv
 !
 !
     call rccoma(imate, comp(1:6), 1, phenom, icodre(1))
@@ -60,6 +65,9 @@ subroutine rcdiff(imate, comp, temp, c, diff)
     spt = 1
     poum = '+'
     tz0 = r8t0()
+!
+    difl = 0.d0
+    difv = 0.d0
     if (phenom .eq. 'SECH_GRANGER') then
         nbpar = 0
 
@@ -105,7 +113,7 @@ subroutine rcdiff(imate, comp, temp, c, diff)
 !
     else if (phenom .eq. 'SECH_RFT') then
         call rftDiffusion(fami, kpg, spt, poum, imate, &
-                          c, temp, diff)
+                          c, temp, diff, difl, difv)
 !
     else if (phenom .eq. 'SECH_NAPPE') then
         nbpar = 2
@@ -126,6 +134,15 @@ subroutine rcdiff(imate, comp, temp, c, diff)
     else
         call utmess('F', 'ALGORITH10_20', sk=comp)
     end if
+
+    if (present(difl_)) then
+        difl_ = difl
+    end if
+
+    if (present(difv_)) then
+        difv_ = difv
+    end if
+
 !
 !
 end subroutine

@@ -19,11 +19,13 @@
 !
 !
 interface
-    subroutine rcdiff(imate, comp, temp, c, diff)
-        integer(kind=8) :: imate
-        character(len=16) :: comp
-        real(kind=8) :: temp
-        real(kind=8) :: c
-        real(kind=8) :: diff
+    subroutine rcdiff(imate, comp, temp, c, diff, difl_, difv_)
+        integer(kind=8), intent(in) :: imate
+        character(len=16), intent(in) :: comp
+        real(kind=8), intent(in) :: temp
+        real(kind=8), intent(in) :: c
+        real(kind=8), intent(out) :: diff
+        real(kind=8), intent(out), optional :: difl_
+        real(kind=8), intent(out), optional :: difv_
     end subroutine rcdiff
 end interface
