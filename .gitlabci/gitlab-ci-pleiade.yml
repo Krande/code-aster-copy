@@ -403,6 +403,7 @@ compile_pkg:
     name: nexus.retd.edf.fr:5012/debian:trixie
   variables:
     OSNAME: pkg
+    ASTER_REQS_CONFIRM: y
   extends: .compile
   needs:
     - job: prepare_pkg

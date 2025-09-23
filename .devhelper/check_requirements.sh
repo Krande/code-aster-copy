@@ -21,15 +21,13 @@ is_intranet() {
 }
 
 do_install() {
-    echo
-    echo "code_aster requirements not found in 'build/'."
-    echo "If they are already installed, define ASTER_CONFIG environment variable" \
-        "to the environment file."
-    printf "✨ Do you want to download the requirements ([y]/n, c to cancel)? "
-    read answer
-    answer=$(tr '[:upper:]' '[:lower:]' <<< "${answer}")
-    [ "${answer}" = "n" ] && return 0
-    [ "${answer}" = "c" ] && echo "exiting..." && return 1
+    if [ ${ASTER_REQS_CONFIRM:-n} != "y" ]; then
+        printf "✨ Do you want to download the requirements ([y]/n, c to cancel)? "
+        read answer
+        answer=$(tr '[:upper:]' '[:lower:]' <<< "${answer}")
+        [ "${answer}" = "n" ] && return 0
+        [ "${answer}" = "c" ] && echo "exiting..." && return 1
+    fi
 
     ASTER_REQS_PACKAGE=${ASTER_REQS_PACKAGE:-"gcc-ompi"}
     if [ "${ASTER_REQS_PACKAGE}" = "ask" ]; then
@@ -83,6 +81,10 @@ check_requirements_main() {
 
     found=$(find build -name "codeaster-prerequisites-${VERSION}-*" -type d | grep ${args[@]} debug)
     if [ -z "${found}" ]; then
+        echo
+        echo "code_aster requirements not found in 'build/'."
+        echo "If they are already installed, define ASTER_CONFIG environment variable" \
+            "to the environment file."
         do_install || return 4
     fi
     found=$(find build -name "codeaster-prerequisites-${VERSION}-*" -type d | grep ${args[@]} debug)
