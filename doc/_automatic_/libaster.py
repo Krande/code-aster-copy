@@ -833,12 +833,26 @@ class Mesh(BaseMesh):
             Mesh: the quadratic mesh.
         """
 
-    def fix(self, remove_orphelan=True, info=1):
+    def fix(
+        self,
+        remove_orphelan=True,
+        positive_measure=True,
+        outward_normal=True,
+        double_nodes=True,
+        double_cells=True,
+        tole=1e-07,
+        info=1,
+    ):
         """Remove orphelan nodes, and double edges and faces.
 
         Arguments:
-            remove_orphelan (bool) : remove orphelan nodes. Default True
-            info (int) : verbosity mode (1 or 2). Default 1.
+            remove_orphelan (bool) : remove orphelan nodes.
+            positive_measure (bool) : reorder nodes to have a positive measure of cells.
+            outward_normal (bool) : reorder nodes to have an outward normal for boundary faces.
+            double_nodes (bool) : remove double nodes with almost same coordinates.
+            double_cells (bool) : remove double cells with same nodes.
+            tole (float) : tolerance for double nodes
+            info (int) : verbosity mode (1 or 2).
 
         Returns:
             Mesh: fixed mesh
@@ -15125,15 +15139,29 @@ class ParallelMesh(BaseMesh):
             ParallelMesh: the quadratic mesh.
         """
 
-    def fix(self, remove_orphelan=True, info=1):
+    def fix(
+        self,
+        remove_orphelan=True,
+        positive_measure=True,
+        outward_normal=True,
+        double_nodes=True,
+        double_cells=True,
+        tole=1e-07,
+        info=1,
+    ):
         """Remove orphelan nodes, and double edges and faces.
 
         Arguments:
-            remove_orphelan (bool) : remove orphelan nodes. Default True
-            info (int) : verbosity mode (1 or 2). Default 1.
+            remove_orphelan (bool) : remove orphelan nodes.
+            positive_measure (bool) : reorder nodes to have a positive measure of cells.
+            outward_normal (bool) : reorder nodes to have an outward normal for boundary faces.
+            double_nodes (bool) : remove double nodes with almost same coordinates.
+            double_cells (bool) : remove double cells with same nodes.
+            tole (float) : tolerance for double nodes
+            info (int) : verbosity mode (1 or 2).
 
         Returns:
-            ParallelMesh: fixed mesh
+            Mesh: fixed mesh
         """
 
     def getAllMedCellsTypes(self):

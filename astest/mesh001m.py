@@ -104,7 +104,7 @@ mesh_2d = LIRE_MAILLAGE(FORMAT="ASTER", UNITE=21, VERI_MAIL=_F(VERIF="NON"), INF
 connect = mesh_2d.getConnectivity()
 
 test.assertEqual(mesh_2d.getNumberOfNodes(), 15)
-test.assertEqual(mesh_2d.getNumberOfCells(), 9)
+test.assertEqual(mesh_2d.getNumberOfCells(), 10)
 test.assertEqual(connect[8], [14, 1])
 test.assertEqual(connect[7], [5, 4, 2, 3, 13, 8, 9, 11])
 
@@ -112,7 +112,7 @@ mesh_2d_fix = mesh_2d.fix(info=2)
 connect = mesh_2d_fix.getConnectivity()
 
 test.assertEqual(mesh_2d_fix.getNumberOfNodes(), mesh_2d.getNumberOfNodes() - 2)
-test.assertEqual(mesh_2d_fix.getNumberOfCells(), mesh_2d.getNumberOfCells())
+test.assertEqual(mesh_2d_fix.getNumberOfCells(), mesh_2d.getNumberOfCells() - 1)
 test.assertEqual(connect[8], [0, 1])
 test.assertEqual(connect[7], [5, 4, 2, 3, 12, 8, 9, 11])
 

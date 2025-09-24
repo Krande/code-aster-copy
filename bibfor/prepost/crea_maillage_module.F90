@@ -811,21 +811,23 @@ contains
 !
 ! ==================================================================================================
 !
-    subroutine fix_mesh(this, remove_orphelan, outward_normal, positive_measure, double_nodes, tole)
+    subroutine fix_mesh(this, remove_orphelan, outward_normal, positive_measure, double_nodes, &
+                        double_cells, tole)
 !
         implicit none
 !
         class(Mmesh), intent(inout) :: this
         aster_logical, intent(in) :: remove_orphelan, outward_normal, positive_measure
-        aster_logical, intent(in) :: double_nodes
+        aster_logical, intent(in) :: double_nodes, double_cells
         real(kind=8), intent(in) :: tole
 !
         integer(kind=8) :: i_edge, e1, e2, n1, n2, n3, i_face, f1, f2, ns
         integer(kind=8) :: i, j, i_node, j_node, nno, i_volu, v_id, nnos, c_id
-        integer(kind=8) :: oc_id(3), ocx, ocy, ocz
+        integer(kind=8) :: oc_id(3), ocx, ocy, ocz, nc1(27), nc2(27)
         integer(kind=8), allocatable :: map_nodes(:)
         real(kind=8) :: new_coor(3), end, start, v0(3), v1(3), no(3), tole_comp
         real(kind=8) :: bar_v(3), bar_f(3), nvf(3), coor_i(3), coor_diff(3)
+        aster_logical :: same_cell
         type(Moctree) :: octree
 
 !
@@ -1025,6 +1027,33 @@ contains
                 end do
             end if
         end do
+!
+        if (double_cells) then
+            do i = 1, this%nb_cells
+            if (this%cells(i)%keep) then
+                nno = this%converter%nno(this%cells(i)%type)
+                nc1(1:nno) = this%cells(i)%nodes(1:nno)
+                call qsort(nc1(1:nno))
+                do j = i+1, this%nb_cells
+                    if (this%cells(j)%keep .and. &
+                        this%cells(i)%type == this%cells(j)%type) then
+                        same_cell = ASTER_TRUE
+                        nc2(1:nno) = this%cells(j)%nodes(1:nno)
+                        call qsort(nc2(1:nno))
+                        do i_node = 1, nno
+                            if (nc1(i_node) .ne. nc2(i_node)) then
+                                same_cell = ASTER_FALSE
+                                exit
+                            end if
+                        end do
+                        if (same_cell) then
+                            this%cells(j)%keep = ASTER_FALSE
+                        end if
+                    end if
+                end do
+            end if
+            end do
+        end if
 !
         deallocate (map_nodes)
 !

@@ -17,8 +17,11 @@
 ! --------------------------------------------------------------------
 !
 interface
-    subroutine fix_mesh(mesh_in, mesh_out, info, remove_orphelan)
+    subroutine fix_mesh(mesh_in, mesh_out, remove_orphelan, positive_volume,  outward_normal,&
+                  double_nodes,  double_cells, tole, info)
     character(len=8), intent(in) :: mesh_in, mesh_out
-    integer(kind=8), intent(in) :: info, remove_orphelan
+    integer(kind=8), intent(in) :: info, remove_orphelan, positive_volume, outward_normal
+    integer(kind=8), intent(in) :: double_nodes, double_cells
+    real(kind=8), intent(in) :: tole
     end subroutine fix_mesh
 end interface

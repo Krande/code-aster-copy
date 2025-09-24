@@ -292,16 +292,23 @@ Arguments:
 Terminate the mesh creation (*for internal use*).
         )" )
         .def( "fix", &ParallelMesh::fix, R"(
-Remove orphelan nodes, and double edges and faces.
+Fix potential problems.
 
 Arguments:
-    remove_orphelan (bool) : remove orphelan nodes. Default True
-    info (int) : verbosity mode (1 or 2). Default 1.
+    remove_orphelan (bool) : remove orphelan nodes.
+    positive_measure (bool) : reorder nodes to have a positive measure of cells.
+    outward_normal (bool) : reorder nodes to have an outward normal for boundary faces.
+    double_nodes (bool) : merge double nodes with almost same coordinates.
+    double_cells (bool) : merge double cells with same nodes.
+    tole (float) : tolerance for double nodes
+    info (int) : verbosity mode (1 or 2).
 
 Returns:
-    ParallelMesh: fixed mesh
+    Mesh: fixed mesh
         )",
-              py::arg( "remove_orphelan" ) = true, py::arg( "info" ) = 1 )
+              py::arg( "remove_orphelan" ) = true, py::arg( "positive_measure" ) = true,
+              py::arg( "outward_normal" ) = true, py::arg( "double_nodes" ) = true,
+              py::arg( "double_cells" ) = true, py::arg( "tole" ) = 1e-7, py::arg( "info" ) = 1 )
         .def( "convertToLinear", &ParallelMesh::convertToLinear, R"(
 Convert the mesh to a linear one.
 

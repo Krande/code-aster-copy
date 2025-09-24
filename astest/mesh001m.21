@@ -38,6 +38,7 @@ MAILLAGE RESTREINT
  %
  SEG2
  M9       N15       N2
+ M10      N1       N2
  FINSF
  %
  FIN
