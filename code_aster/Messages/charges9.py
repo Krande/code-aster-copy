@@ -43,9 +43,6 @@ Si votre chargement contient plusieurs types dont certains ne peuvent être suiv
     7: _(
         """Un des chargements est de type cinématique (AFFE_CHAR_CINE): il ne peut pas être piloté."""
     ),
-    8: _(
-        """Un des chargements est de type cinématique (AFFE_CHAR_CINE): il ne peut pas être différentiel."""
-    ),
     9: _("""Le chargement est de type force ou flux et ne peut donc pas utiliser DIDI."""),
     10: _("""Un des chargements est spécifié plus d'une fois."""),
     11: _("""Le chargement FORCE_SOL ne peut pas être suiveur."""),
