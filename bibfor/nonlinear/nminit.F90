@@ -91,6 +91,7 @@ subroutine nminit(mesh, model, mater, mateco, cara_elem, &
 #include "asterfort/nonlinDSPrintSepLine.h"
 #include "asterfort/nonlinDSDynamicInit.h"
 #include "asterfort/nonlinDSErrorIndicInit.h"
+#include "asterfort/vecdid.h"
 #include "asterfort/verins.h"
 !
     character(len=8), intent(in) :: mesh
@@ -357,8 +358,8 @@ subroutine nminit(mesh, model, mater, mateco, cara_elem, &
 
 ! - Compute vector for DIDI loads
     if (ldidi) then
-        call nmdidi(ds_inout, model, list_load, numedd, valinc, &
-                    veelem, veasse)
+        call nmdidi(ds_inout, valinc)
+        call vecdid(model, list_load, numedd, veelem, veasse)
     end if
 !
 ! --- CREATION DE LA SD POUR ARCHIVAGE DES INFORMATIONS DE CONVERGENCE

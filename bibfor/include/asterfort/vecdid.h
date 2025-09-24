@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -19,10 +19,11 @@
 !
 !
 interface
-    subroutine vecdid(model, list_load, disp_didi, vect_elem_)
+    subroutine vecdid(model, list_load, nume_dof, veelem, veasse)
         character(len=24), intent(in) :: model
-        character(len=19), intent(in) :: disp_didi
         character(len=19), intent(in) :: list_load
-        character(len=*), intent(in) :: vect_elem_
+        character(len=24), intent(in) :: nume_dof
+        character(len=19), intent(in) :: veelem(*)
+        character(len=19), intent(in) :: veasse(*)
     end subroutine vecdid
 end interface
