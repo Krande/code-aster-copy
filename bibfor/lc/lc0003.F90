@@ -15,7 +15,7 @@
 ! You should have received a copy of the GNU General Public License
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
-! aslint: disable=W0104,W1504
+! aslint: disable=W1504
 !
 subroutine lc0003(fami, kpg, ksp, ndim, imate, &
                   compor, crit, instam, instap, epsm, &
@@ -83,11 +83,11 @@ subroutine lc0003(fami, kpg, ksp, ndim, imate, &
 !                   2   Redécoupage local  ?
 ! --------------------------------------------------------------------------------------------------
 !
+    use nmcine_line_gc_module
     implicit none
 !
 #include "asterf_types.h"
 #include "asterfort/nmcine.h"
-#include "asterfort/nmcine_line_gc.h"
 #include "asterfort/nmecmi.h"
 #include "asterfort/utmess.h"
 !
