@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -550,11 +550,8 @@ class TimeStepper(SolverFeature, Observer):
                 delta_t = nextIncr
             logger.info(MessageLog.GetText("I", "ADAPTATION_6", valr=delta_t))
             if delta_t > self._maxStep:
-                logger.info(
-                    MessageLog.GetText(
-                        "I", "ADAPTATION_12", valr=(delta_t, self._maxStep, self._maxStep)
-                    )
-                )
+                dict_args = dict(valr=(delta_t, self._maxStep, self._maxStep))
+                logger.info(MessageLog.GetText("I", "ADAPTATION_12", **dict_args))
                 delta_t = self._maxStep
             if delta_t <= self._minStep:
                 logger.error(MessageLog.GetText("F", "ADAPTATION_11", valr=delta_t))

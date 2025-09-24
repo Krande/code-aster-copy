@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -101,14 +101,9 @@ def prepare_mesh_syme(meshin, affe_groups, affe_all):
     tol = 1.0e-10
     face_groups = []
     face_nodes = {}
-    volume_ver = 1.0
-    dirthick = {}
 
     for (idx, dirname) in enumerate("x y z".split()):
         vmin, vmax = bounds[idx]
-        volume_ver *= vmax - vmin
-        dirthick[dirname.upper()] = vmax - vmin
-
         ndsmin = m0.getCoords()[:, idx].findIdsInRange(vmin - tol, vmin + tol)
         cellsmin = skin.getCellIdsLyingOnNodes(ndsmin, True)
         grpname = "face_%smin" % dirname
@@ -208,7 +203,37 @@ def prepare_mesh_syme(meshin, affe_groups, affe_all):
 
     newmesh.setGroupsAtLevel(1, node_groups)
 
+    volume_ver, ep_ver = get_mesh_size(newmesh)
     mesh = Mesh()
     mesh.buildFromMedCouplingMesh(newmesh)
 
-    return mesh, group_tout, volume_ver, dirthick
+    return mesh, group_tout, volume_ver, ep_ver
+
+
+def get_mesh_size(mcmesh):
+    """
+    Calculate some mesh properties.
+
+    Args:
+    -----
+        mcmesh (MEDFileUMesh) : Input mesh
+
+    Returns:
+    --------
+        volume_ver (float): Total volume of the bounding box of the mesh object.
+        ep_ver (float) : Thickness along the Z-axis.
+    """
+
+    m0 = mcmesh[0]
+    bounds = m0.getBoundingBox()
+    volume_ver = 1.0
+    dirthick = {}
+
+    for idx, dirname in enumerate("x y z".split()):
+        vmin, vmax = bounds[idx]
+        volume_ver *= vmax - vmin
+        dirthick[dirname.upper()] = vmax - vmin
+
+    ep_ver = dirthick["Z"]
+
+    return volume_ver, ep_ver

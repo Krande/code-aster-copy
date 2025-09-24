@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -50,8 +50,4 @@ CALC_MATE_HOMO = MACRO(
     INFO=SIMP(statut="f", typ="I", defaut=1, into=(1, 2)),
     CORR_MECA=SIMP(statut="f", typ=CO),
     b_corr_massif=BLOC(condition="TYPE_HOMO == 'MASSIF'", CORR_THER=SIMP(statut="f", typ=CO)),
-    b_corr_plaque=BLOC(
-        condition="TYPE_HOMO == 'PLAQUE'",
-        VECT_NORM=SIMP(statut="o", typ="TXM", into=("X", "Y", "Z")),
-    ),
 )
