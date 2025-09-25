@@ -64,6 +64,7 @@ def build(self):
         name="asterbibcxx",
         source=get_srcs("**/*.cxx", excl="MFront/*.cxx"),
         target="bibcxx",
+        rpath="$ORIGIN",
         use=[
             "PYEXT",
             "PYBIND11",
@@ -97,7 +98,7 @@ def check_cxx_compiler_flags(self):
     """check C++ compiler flags"""
     # compiler independent (icpc/icpx & g++)
     self.check_cxx_compiler_options("-fPIC")
-    # self.check_cxx_compiler_options("-flto")
+    # self.check_cxx_compiler_options("-fno-lto")
     try:
         self.check_cxx_compiler_options("-std=c++20", optional=False)
     except Errors.ConfigurationError:

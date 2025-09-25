@@ -16,4 +16,4 @@
 /* along with code_aster.  If not, see <http://www.gnu.org/licenses/>.  */
 /* -------------------------------------------------------------------- */
 
-#define ASTER_SIGFPE FE_DIVBYZERO | FE_OVERFLOW | FE_INVALID
+#define ASTER_SIGFPE FE_DIVBYZERO | FE_OVERFLOW

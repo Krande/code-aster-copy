@@ -5366,9 +5366,17 @@ def matfpe(value):
 
     Arguments:
         value (int): -1 to disable the FPE interception, 1 to enable FPE detection.
+    """
 
-    Returns:
-        str: Current value
+
+# built-in function fe_invalid in libaster
+
+
+def fe_invalid(value):
+    """Enable or disable FE_INVALID exception.
+
+    Arguments:
+        value (int): -1 to disable the interception, 1 to enable detection.
     """
 
 

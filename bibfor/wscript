@@ -61,6 +61,7 @@ def build(self):
         features=("fc fcstlib" if self.env.ASTER_PLATFORM_MINGW else "fc fcshlib"),
         name="asterbibfor",
         target="bibfor",
+        rpath="$ORIGIN",
         source=src_i8,
         use=use + ["INT64"],
         env=env.derive(),
@@ -71,6 +72,7 @@ def build(self):
         features=("fc fcstlib" if self.env.ASTER_PLATFORM_MINGW else "fc fcshlib"),
         name="asterbibfor_ext",
         target="bibfor_ext",
+        rpath="$ORIGIN",
         source=src_ext,
         defines=["WITHOUT_INT64"],
         use=use,
@@ -86,7 +88,7 @@ MAIN = "      program main\n      end program main\n"
 @Configure.conf
 def check_fortran_compiler_flags(self):
     self.check_fortran_compiler_options("-fPIC")
-    # self.check_fortran_compiler_options("-flto")
+    # self.check_fortran_compiler_options("-fno-lto")
     if "gfortran" in self.env.FC_NAME.lower():
         if "64" in self.env.DEST_CPU:
             self.check_fortran_compiler_options("-fdefault-integer-8", dest="FCFLAGS_INT64")
@@ -383,10 +385,7 @@ def _test_type(size, values):
         %s
         return 0;
     }
-    """ % (
-        size,
-        test_cmd,
-    )
+    """ % (size, test_cmd)
     return code
 
 

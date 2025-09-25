@@ -35,11 +35,6 @@ def int_fct(x, f):
     return I
 
 
-# désactivation de l'interception des erreurs numeriques
-# necéssaire pour ne pas planter en cas de nan
-# TODO utiliser CA.disable_fpe() context manager autour des lignes qui en ont besoin
-libaster.matfpe(-1)
-
 cote_plaque = 100
 u_impo = cote_plaque * 0.001
 

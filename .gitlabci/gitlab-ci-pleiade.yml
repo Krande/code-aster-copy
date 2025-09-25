@@ -271,26 +271,28 @@ prepare_debian-12:
     OSNAME: debian-12
   extends: .prepare
   rules:
-    - if: $BUILDTYPE == "nightly"
+  - if: $BUILDTYPE == "nightly"
+    when: on_success
+  - when: manual
+    allow_failure: true
 
 compile_debian-12:
   variables:
     OSNAME: debian-12
   extends: .compile
   needs:
-    - prepare_debian-12
-  rules:
-    - if: $BUILDTYPE == "nightly"
+    - job: prepare_debian-12
+      optional: true
 
 verification_test_debian-12:
   variables:
     OSNAME: debian-12
   extends: .verification_test
   needs:
-    - prepare_debian-12
-    - compile_debian-12
-  rules:
-    - if: $BUILDTYPE == "nightly"
+    - job: prepare_debian-12
+      optional: true
+    - job: compile_debian-12
+      optional: true
 
 # --- variant win for nightly build / weekly testing
 prepare_win:
@@ -300,32 +302,34 @@ prepare_win:
   script:
     - !reference [.prepare, script]
   rules:
-    - if: $BUILDTYPE == "nightly"
+  - if: $BUILDTYPE == "nightly"
+    when: on_success
+  - when: manual
+    allow_failure: true
 
 compile_win:
   variables:
     OSNAME: win
   extends: .compile
   needs:
-    - prepare_win
+    - job: prepare_win
+      optional: true
   script:
     - !reference [.compile, script]
-  rules:
-    - if: $BUILDTYPE == "nightly"
 
 verification_test_win:
   variables:
     OSNAME: win
   extends: .verification_test
   needs:
-    - prepare_win
-    - compile_win
+    - job: prepare_win
+      optional: true
+    - job: compile_win
+      optional: true
   script:
     - test "$(date +%u)" -ne ${WEEKLY_RUN} && echo "not run" && exit 0
     - !reference [.verification_test, script]
   allow_failure: true
-  rules:
-    - if: $BUILDTYPE == "nightly"
 
 # --- variant using pixi for nightly build / weekly testing
 prepare_pixi:
@@ -338,7 +342,10 @@ prepare_pixi:
     - .gitlabci/prepare_pixi.sh
     - !reference [.prepare, script]
   rules:
-    - if: $BUILDTYPE == "nightly"
+  - if: $BUILDTYPE == "nightly"
+    when: on_success
+  - when: manual
+    allow_failure: true
 
 compile_pixi:
   image:
@@ -347,13 +354,12 @@ compile_pixi:
     OSNAME: pixi
   extends: .compile
   needs:
-    - prepare_pixi
+    - job: prepare_pixi
+      optional: true
   script:
     - pixi list --explicit
     - ls -la ${PIXI_HOME} || true
     - pixi run .gitlabci/compile.sh
-  rules:
-    - if: $BUILDTYPE == "nightly"
 
 verification_test_pixi:
   image:
@@ -362,8 +368,10 @@ verification_test_pixi:
     OSNAME: pixi
   extends: .verification_test
   needs:
-    - prepare_pixi
-    - compile_pixi
+    - job: prepare_pixi
+      optional: true
+    - job: compile_pixi
+      optional: true
   script:
     - test "$(date +%u)" -ne ${WEEKLY_RUN} && echo "not run" && exit 0
     - ls -la ${PIXI_HOME} || true
@@ -372,5 +380,55 @@ verification_test_pixi:
         --exclude-testlist .gitlabci/known_failures-pleiade.list
         --resutest=results
   allow_failure: true
+
+# --- variant using code-aster-reqs package for nightly build / weekly testing
+prepare_pkg:
+  image:
+    name: nexus.retd.edf.fr:5012/debian:trixie
+  variables:
+    OSNAME: pkg
+  extends: .prepare
+  script:
+    - apt-get update
+    - apt-get install -y binutils curl git make patch
+    - !reference [.prepare, script]
   rules:
-    - if: $BUILDTYPE == "nightly"
+  - if: $BUILDTYPE == "nightly"
+    when: on_success
+  - when: manual
+    allow_failure: true
+
+compile_pkg:
+  image:
+    name: nexus.retd.edf.fr:5012/debian:trixie
+  variables:
+    OSNAME: pkg
+    ASTER_REQS_CONFIRM: y
+  extends: .compile
+  needs:
+    - job: prepare_pkg
+      optional: true
+  script:
+    - apt-get update
+    - apt-get install -y binutils curl git make patch
+    - !reference [.compile, script]
+
+verification_test_pkg:
+  image:
+    name: nexus.retd.edf.fr:5012/debian:trixie
+  variables:
+    OSNAME: pixi
+    OMPI_MCA_plm: ^rsh
+  extends: .verification_test
+  needs:
+    - job: prepare_pkg
+      optional: true
+    - job: compile_pkg
+      optional: true
+  script:
+    - test "$(date +%u)" -ne ${WEEKLY_RUN} && echo "not run" && exit 0
+    - apt-get update
+    - apt-get install -y cmake git
+    - .gitlabci/add-allow-run-as-root.sh
+    - !reference [.verification_test, script]
+  allow_failure: true
