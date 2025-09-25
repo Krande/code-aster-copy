@@ -36,12 +36,17 @@ subroutine promor(nuz, base, printz)
 #include "asterfort/jexatr.h"
 #include "asterfort/jexnum.h"
 #include "asterfort/juveca.h"
-#include "asterfort/moinip.h"
-#include "asterfort/moinsr.h"
 #include "asterfort/nbec.h"
 #include "asterfort/utmess.h"
-#include "asterfort/uttrii.h"
+#include "asterfort/uttrii_i4.h"
 #include "asterfort/wkvect.h"
+#include "asterc/vector_vector_add_values.h"
+#include "asterc/vector_vector_delete.h"
+#include "asterc/vector_vector_get_data.h"
+#include "asterc/vector_vector_get_data_sizes.h"
+#include "asterc/vector_vector_new.h"
+#include "asterc/vector_vector_resize.h"
+#include "asterc/vector_vector_sort_unique.h"
 !
     character(len=*) :: nuz
     character(len=1) :: base
@@ -66,10 +71,10 @@ subroutine promor(nuz, base, printz)
     integer(kind=8) :: idprn1, iexi
     integer(kind=8) :: idprn2, ifm, niv, iret, nnoe, jnueq
     integer(kind=8) :: vali(3), neqx, iilib, igr, numa, k1, n1, iad1, nddl1, n12
-    integer(kind=8) :: iddl, jddl, iamail, jsmhc, ncoef, jsmde, igd, nbss
-    integer(kind=8) :: iadequ, nlili, nequ, iimax, jnoip, jsuiv, mxddlt
-    integer(kind=8) :: ima, nddlt, jalm, jsmdi, nel, nec, nbsma
-    integer(kind=8) ::  rang, imd, jsmh1, ili2
+    integer(kind=8) :: iddl, iamail, ncoef, jsmde, igd, nbss
+    integer(kind=8) :: iadequ, nlili, nequ, mxddlt
+    integer(kind=8) :: ima, nddlt, jalm, nel, nec, nbsma
+    integer(kind=8) ::  rang, imd, ili2, vec_ptr, vecSize, position
 !
     real(kind=8) :: valr(2), rcoef, requ
     integer(kind=8) :: nbproc
@@ -82,6 +87,8 @@ subroutine promor(nuz, base, printz)
     integer(kind=8), pointer :: sssa(:) => null()
     integer(kind=8), pointer :: v_refp(:) => null()
     integer(kind=8), pointer :: v_crco(:) => null()
+    integer(kind=8), pointer :: v_smdi(:) => null()
+    integer(kind=4), pointer :: v_smhc(:) => null()
     mpi_int :: mrank, msize
 !
 !-----------------------------------------------------------------------
@@ -231,28 +238,19 @@ subroutine promor(nuz, base, printz)
     nec = nbec(igd)
     nequ = zi(iadequ)
 !
-!---- CREATION DE 2 TABLEAUX DE TRAVAIL :
-!      .NOIP   :   TABLE DES NUMEROS DE LIGNE
-!      .NOSUIV :   TABLE DES CHAINAGES DE LA STRUCTURE CHAINEE
-!                  QUI EST CONTRUITE AVANT D'OBTENIR LA
-!                  STRUCTURE COMPACTE (SMDI,SMHC) DE LA MATRICE
-!     CES 2 OBJETS SONT AGRANDIS SI NECESSAIRE DANS MOINSR.F
-!     ON COMMENCE AVEC IIMAX=10
-    iimax = 10
-    call wkvect('&&PROMOR.NOIP', 'V V I', iimax, jnoip)
-    call wkvect('&&PROMOR.NOSUIV', 'V V I', iimax, jsuiv)
+    call vector_vector_new(vec_ptr)
+    call vector_vector_resize(vec_ptr, nequ)
 !
 !     -- ALLOCATION DU VECTEUR &&PROMOR.ANCIEN.LM
 !     CE VECTEUR SERA AGRANDI SI NECESSAIRE
     mxddlt = 100
-    call wkvect('&&PROMOR.ANCIEN.LM', 'V V I', mxddlt, jalm)
+    call wkvect('&&PROMOR.ANCIEN.LM', 'V V S', mxddlt, jalm)
 !
 !     -- ALLOCATION DE .SMOS.SMDI
     call jeexin(nu//'.SMOS', iret)
     if (iret == 0) then
         call detrsd('STOC_MORSE', nu//'.SMOS')
     end if
-    call wkvect(nu//'.SMOS.SMDI', base//' V I', nequ, jsmdi)
 !
 !---- INITIALISATION DES TABLEAUX POUR LE STOCKAGE MORSE
 !     ATTENTION:   PENDANT LA CONSTRUCTION DE LA STRUCTURE CHAINEE
@@ -324,8 +322,8 @@ subroutine promor(nuz, base, printz)
                             call jeveuo('&&PROMOR.ANCIEN.LM', 'E', jalm)
                         end if
                         do iddl = 1, nddl1
-                            zi(jalm+nddlt+iddl-1) = zi(jnueq-1+iad1+ &
-                                                       iddl-1)
+                            zi4(jalm+nddlt+iddl-1) = zi(jnueq-1+iad1+ &
+                                                        iddl-1)
                         end do
                         nddlt = nddlt+nddl1
                     end do
@@ -359,8 +357,8 @@ subroutine promor(nuz, base, printz)
                             call jeveuo('&&PROMOR.ANCIEN.LM', 'E', jalm)
                         end if
                         do iddl = 1, nddl1
-                            zi(jalm+nddlt+iddl-1) = zi(jnueq-1+iad1+ &
-                                                       iddl-1)
+                            zi4(jalm+nddlt+iddl-1) = zi(jnueq-1+iad1+ &
+                                                        iddl-1)
                         end do
                         nddlt = nddlt+nddl1
                     end do
@@ -368,15 +366,13 @@ subroutine promor(nuz, base, printz)
 !
 !       -- TRI EN ORDRE CROISSANT POUR L'INSERTION DES COLONNES
                 ASSERT(nddlt .le. mxddlt)
-                call uttrii(zi(jalm), nddlt)
+                call uttrii_i4(zi4(jalm), nddlt)
 !
 !       -- INSERTION DES COLONNES DE L'ELEMENT DANS
 !           LA STRUCTURE CHAINEE
                 do iddl = 0, nddlt-1
-                    jddl = jsmdi+zi(jalm+iddl)-1
-                    if (zi(jddl) .eq. 0) neqx = neqx+1
-                    call moinsr(zi(jalm+iddl), iddl+1, jalm, jsmdi, jsuiv, &
-                                '&&PROMOR.NOSUIV', jnoip, '&&PROMOR.NOIP', iilib, iimax)
+                    position = zi4(jalm+iddl)-1
+                    call vector_vector_add_values(vec_ptr, position, iddl+1, zi4(jalm))
                 end do
 70              continue
             end do
@@ -403,49 +399,45 @@ subroutine promor(nuz, base, printz)
                         call jeveuo('&&PROMOR.ANCIEN.LM', 'E', jalm)
                     end if
                     do iddl = 1, nddl1
-                        zi(jalm+nddlt+iddl-1) = zi(jnueq-1+iad1+iddl-1)
+                        zi4(jalm+nddlt+iddl-1) = zi(jnueq-1+iad1+iddl-1)
                     end do
                     nddlt = nddlt+nddl1
                 end do
 !
                 ASSERT(nddlt .le. mxddlt)
-                call uttrii(zi(jalm), nddlt)
+                call uttrii_i4(zi4(jalm), nddlt)
                 do iddl = 0, nddlt-1
-                    jddl = jsmdi+zi(jalm+iddl)-1
-                    if (zi(jddl) .eq. 0) neqx = neqx+1
-                    call moinsr(zi(jalm+iddl), iddl+1, jalm, jsmdi, jsuiv, &
-                                '&&PROMOR.NOSUIV', jnoip, '&&PROMOR.NOIP', iilib, iimax)
+                    position = zi4(jalm+iddl)-1
+                    call vector_vector_add_values(vec_ptr, position, iddl+1, zi4(jalm))
                 end do
 130             continue
             end do
         end if
     end do
 !
-    if ((neqx .ne. nequ) .and. (.not. lmadis)) then
-        vali(1) = nequ
-        vali(2) = neqx
-        call utmess('F', 'ASSEMBLA_65', ni=2, vali=vali)
-    end if
-!
 !     DESIMBRIQUATION DE CHAINES POUR OBTENIR LA STRUCTURE COMPACTE
 !     (SMDI,SMHC) DE LA MATRICE
-    call wkvect(nu//'.SMOS.SMH1', base//' V S', iimax, jsmh1)
-    call moinip(neqx, ncoef, zi(jsmdi), zi(jsuiv), zi(jnoip), &
-                zi4(jsmh1))
-    call wkvect(nu//'.SMOS.SMHC', base//' V S', ncoef, jsmhc)
-    do iddl = 1, ncoef
-        zi4(jsmhc+iddl-1) = zi4(jsmh1+iddl-1)
+    call vector_vector_sort_unique(vec_ptr)
+    call vector_vector_get_data_sizes(vec_ptr, vecSize, ncoef)
+    call wkvect(nu//'.SMOS.SMDI', base//' V I', nequ, vi=v_smdi)
+    call wkvect(nu//'.SMOS.SMHC', base//' V S', ncoef, vi4=v_smhc)
+    call vector_vector_get_data(vec_ptr, v_smdi, v_smhc)
+    call vector_vector_delete(vec_ptr)
+    v_smdi(1) = 1
+!   Le contenu du SMDI ne correspond pas à la position du premier terme
+!   d'une ligne donnée dans le SMHC mais à la position du terme diagonal
+!   de la ligne dans le SMHC, c'est pourquoi on doit réaliser la boucle
+!   suivante
+    do iddl = 2, nequ-1
+        v_smdi(iddl) = v_smdi(iddl+1)-1
     end do
-    call jedetr(nu//'.SMOS.SMH1')
+    v_smdi(nequ) = ncoef
 !
 !     -- CREATION ET REMPLISSAGE DE .SMDE
     call wkvect(nu//'.SMOS.SMDE', base//' V I', 6, jsmde)
     zi(jsmde-1+1) = nequ
     zi(jsmde-1+2) = ncoef
     zi(jsmde-1+3) = 1
-!
-    call jedetr('&&PROMOR.NOIP')
-    call jedetr('&&PROMOR.NOSUIV')
     call jedetr('&&PROMOR.ANCIEN.LM   ')
 !
     if (niv .ge. 1 .and. printt) then

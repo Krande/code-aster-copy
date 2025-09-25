@@ -183,11 +183,4 @@ Si vous utilisez directement la commande ASSE_VECTEUR ou la commande DYNA_VIBRA 
  derrière le noeud :  %(i2)d
 """
     ),
-    65: _(
-        """
- incohérence dans le dénombrement des ddls
- nombre de ddl a priori    : %(i1)d
- nombre de ddl a posteriori: %(i2)d
-"""
-    ),
 }

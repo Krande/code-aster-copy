@@ -78,6 +78,10 @@ subroutine juveca(nom, long)
         do i = 1, lonma2
             zi(ltamp+i-1) = zi(ldec+i-1)
         end do
+    else if (type .eq. 'S') then
+        do i = 1, lonma2
+            zi4(ltamp+i-1) = zi4(ldec+i-1)
+        end do
     else if (type .eq. 'R') then
         do i = 1, lonma2
             zr(ltamp+i-1) = zr(ldec+i-1)
@@ -130,6 +134,10 @@ subroutine juveca(nom, long)
     if (type .eq. 'I') then
         do i = 1, lonma2
             zi(ldec+i-1) = zi(ltamp+i-1)
+        end do
+    else if (type .eq. 'S') then
+        do i = 1, lonma2
+            zi4(ldec+i-1) = zi4(ltamp+i-1)
         end do
     else if (type .eq. 'R') then
         do i = 1, lonma2
