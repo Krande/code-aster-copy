@@ -20,6 +20,7 @@
 module crea_maillage_module
 !
     use sort_module
+    use octree_module, only: Octree
 !
     implicit none
 !
@@ -68,27 +69,6 @@ module crea_maillage_module
 ! Module to create or modify a mesh.
 !
 ! --------------------------------------------------------------------------------------------------
-!
-!
-    type MoctreeNode
-        integer(kind=8), allocatable :: nodes(:)
-        integer(kind=8) :: nb_nodes = 0, nb_nodes_max = 0
-! ----- member functions
-    contains
-        procedure, public, pass :: add_node => add_node_octree
-        procedure, public, pass :: free => free_octree_node
-    end type
-
-    type Moctree
-        integer(kind=8) :: nb_div(3) = 20
-        real(kind=8) :: xmin(3) = 0.d0, xmax(3) = 0.d0, dx(3) = 0.d0
-        type(MoctreeNode), allocatable :: octree_nodes(:, :, :)
-! ----- member functions
-    contains
-        procedure, public, pass :: init => init_octree
-        procedure, public, pass :: get_octree_node
-        procedure, public, pass :: free => free_octree
-    end type
 !
     type Mconverter
         aster_logical :: to_convert(MT_NTYMAX) = ASTER_FALSE
@@ -233,7 +213,7 @@ module crea_maillage_module
 !
     public :: Medge, Mface, Mcell, Mmesh, Mconverter
     private :: numbering_edge, numbering_face, dividing_cell, mult_elem
-    private :: sort_nodes_face, fix_measure, Moctree
+    private :: sort_nodes_face, fix_measure
 contains
 !
 !===================================================================================================
@@ -402,138 +382,6 @@ contains
         if (nno > nnos) then
             call qsort(nodes(nnos+1:2*nnos))
         end if
-!
-    end subroutine
-!
-! ==================================================================================================
-!
-    subroutine init_octree(this, mesh)
-!
-        implicit none
-!
-        class(Moctree), intent(inout) :: this
-        type(Mmesh), intent(in) :: mesh
-!
-        integer(kind=8) :: i_node, i_dim, oct_id(3)
-!
-        this%xmin = R8MAEM()
-        this%xmax = -R8MAEM()
-!
-        do i_node = 1, mesh%nb_total_nodes
-            do i_dim = 1, 3
-                this%xmin(i_dim) = min(this%xmin(i_dim), mesh%nodes(i_node)%coor(i_dim))
-                this%xmax(i_dim) = max(this%xmax(i_dim), mesh%nodes(i_node)%coor(i_dim))
-            end do
-        end do
-        ! 2d - mesh
-        if (abs(this%xmax(3)-this%xmin(3)) < 1d-12) then
-            this%nb_div(3) = 1
-        end if
-        ! add offset for roundoff error
-        this%xmin = this%xmin-1d-8
-        this%xmax = this%xmax+1d-8
-        this%dx = (this%xmax-this%xmin)/real(this%nb_div, kind=8)
-        if (this%nb_div(3) == 1) then
-            this%dx(3) = 1.d0
-        end if
-!
-        allocate (this%octree_nodes(this%nb_div(1), this%nb_div(2), this%nb_div(3)))
-!
-        do i_node = 1, mesh%nb_total_nodes
-            oct_id = this%get_octree_node(mesh%nodes(i_node)%coor)
-            call this%octree_nodes(oct_id(1), oct_id(2), oct_id(3))%add_node(i_node)
-        end do
-!
-    end subroutine
-!
-! ==================================================================================================
-!
-    function get_octree_node(this, coor) result(id)
-!
-        implicit none
-!
-        class(Moctree), intent(inout) :: this
-        real(kind=8), intent(in) :: coor(3)
-!
-        integer(kind=8) :: id(3), i_dim
-!
-        id = 0
-!
-        do i_dim = 1, 3
-            id(i_dim) = ceiling((coor(i_dim)-this%xmin(i_dim))/this%dx(i_dim), kind=8)
-        end do
-!
-    end function
-!
-! ==================================================================================================
-!
-    subroutine add_node_octree(this, node_id)
-!
-        implicit none
-!
-        class(MoctreeNode), intent(inout) :: this
-        integer(kind=8), intent(in) :: node_id
-!
-        integer(kind=8), allocatable :: tmp(:)
-        integer(kind=8) :: size
-!
-        this%nb_nodes = this%nb_nodes+1
-        if (this%nb_nodes > this%nb_nodes_max) then
-            if (this%nb_nodes_max == 0) then
-                this%nb_nodes_max = 100
-                allocate (this%nodes(this%nb_nodes_max))
-                this%nodes = 0
-            else
-                size = this%nb_nodes_max
-                allocate (tmp(size))
-                tmp = this%nodes
-                deallocate (this%nodes)
-                this%nb_nodes_max = 2*size
-                allocate (this%nodes(this%nb_nodes_max))
-                this%nodes(1:size) = tmp(1:size)
-                this%nodes(size+1:this%nb_nodes_max) = 0
-                deallocate (tmp)
-            end if
-        end if
-        this%nodes(this%nb_nodes) = node_id
-!
-    end subroutine
-!
-! ==================================================================================================
-!
-    subroutine free_octree_node(this)
-!
-        implicit none
-!
-        class(MoctreeNode), intent(inout) :: this
-!
-        if (this%nb_nodes_max > 0) then
-            deallocate (this%nodes)
-        end if
-        this%nb_nodes = 0
-        this%nb_nodes_max = 0
-!
-    end subroutine
-!
-! ==================================================================================================
-!
-    subroutine free_octree(this)
-!
-        implicit none
-!
-        class(Moctree), intent(inout) :: this
-!
-        integer(kind=8) :: i, j, k
-
-        do i = 1, this%nb_div(1)
-            do j = 1, this%nb_div(2)
-                do k = 1, this%nb_div(3)
-                    call this%octree_nodes(i, j, k)%free()
-                end do
-            end do
-        end do
-!
-        deallocate (this%octree_nodes)
 !
     end subroutine
 !
@@ -821,14 +669,16 @@ contains
         aster_logical, intent(in) :: double_nodes, double_cells
         real(kind=8), intent(in) :: tole
 !
+        integer(kind=8), parameter :: max_pt = 5
         integer(kind=8) :: i_edge, e1, e2, n1, n2, n3, i_face, f1, f2, ns
         integer(kind=8) :: i, j, i_node, j_node, nno, i_volu, v_id, nnos, c_id
-        integer(kind=8) :: oc_id(3), ocx, ocy, ocz, nc1(27), nc2(27)
-        integer(kind=8), allocatable :: map_nodes(:)
-        real(kind=8) :: new_coor(3), end, start, v0(3), v1(3), no(3), tole_comp
-        real(kind=8) :: bar_v(3), bar_f(3), nvf(3), coor_i(3), coor_diff(3)
+        integer(kind=8) :: nc1(27), nc2(27), list_pts(27*max_pt), nb_pts
+        integer(kind=8), allocatable :: map_nodes(:), octree_map(:)
+        real(kind=8) :: new_coor(3), end, start, v0(3), v1(3), no(3)
+        real(kind=8) :: bar_v(3), bar_f(3), nvf(3), coor_i(3)
+        real(kind=8), allocatable :: coor(:, :)
         aster_logical :: same_cell
-        type(Moctree) :: octree
+        type(Octree) :: n_octree
 
 !
         if (this%info >= 2) then
@@ -954,33 +804,35 @@ contains
         end if
 !
         if (double_nodes) then
-            call octree%init(this)
+            allocate (coor(3, this%nb_total_nodes))
+            allocate (octree_map(this%nb_total_nodes))
+            nb_pts = 0
+            do i_node = 1, this%nb_total_nodes
+                if (this%nodes(i_node)%keep) then
+                    nb_pts = nb_pts+1
+                    coor(1:3, nb_pts) = this%nodes(i_node)%coor
+                    octree_map(nb_pts) = i_node
+                end if
+            end do
+            call n_octree%init(nb_pts, coor, max_pt)
+            deallocate (coor)
             do i_node = 1, this%nb_total_nodes
                 if (this%nodes(i_node)%keep) then
                     coor_i = this%nodes(i_node)%coor
-                    tole_comp = max(tole, tole*norm2(coor_i))
-                    oc_id = octree%get_octree_node(coor_i)
-                    do ocx = max(1, oc_id(1)-1), min(octree%nb_div(1), oc_id(1)+1)
-                        do ocy = max(1, oc_id(2)-1), min(octree%nb_div(2), oc_id(2)+1)
-                            do ocz = max(1, oc_id(3)-1), min(octree%nb_div(3), oc_id(3)+1)
-                                do j_node = 1, octree%octree_nodes(ocx, ocy, ocz)%nb_nodes
-                                    n1 = octree%octree_nodes(ocx, ocy, ocz)%nodes(j_node)
-                                    if (n1 .ne. i_node .and. this%nodes(n1)%keep) then
-                                        coor_diff = abs(coor_i-this%nodes(n1)%coor)
-                                        if (maxval(coor_diff) < tole_comp) then
-                                            this%nodes(n1)%keep = ASTER_FALSE
-                                            this%nodes(n1)%orphelan = ASTER_FALSE
-                                            map_nodes(n1) = i_node
-                                            this%nb_nodes = this%nb_nodes-1
-                                        end if
-                                    end if
-                                end do
-                            end do
-                        end do
+                    call n_octree%get_pts_around(coor_i, tole, size(list_pts), nb_pts, list_pts)
+                    do j_node = 1, nb_pts
+                        n1 = octree_map(list_pts(j_node))
+                        if (n1 > i_node .and. this%nodes(n1)%keep) then
+                            this%nodes(n1)%keep = ASTER_FALSE
+                            this%nodes(n1)%orphelan = ASTER_FALSE
+                            map_nodes(n1) = i_node
+                            this%nb_nodes = this%nb_nodes-1
+                        end if
                     end do
                 end if
             end do
-            call octree%free()
+            call n_octree%free()
+            deallocate (octree_map)
 !
             do i_edge = 1, this%nb_edges
                 nno = this%converter%nno(this%edges(i_edge)%type)
