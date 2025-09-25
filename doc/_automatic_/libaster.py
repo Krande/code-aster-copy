@@ -843,14 +843,14 @@ class Mesh(BaseMesh):
         tole=1e-07,
         info=1,
     ):
-        """Remove orphelan nodes, and double edges and faces.
+        """Fix potential problems.
 
         Arguments:
             remove_orphelan (bool) : remove orphelan nodes.
             positive_measure (bool) : reorder nodes to have a positive measure of cells.
             outward_normal (bool) : reorder nodes to have an outward normal for boundary faces.
-            double_nodes (bool) : remove double nodes with almost same coordinates.
-            double_cells (bool) : remove double cells with same nodes.
+            double_nodes (bool) : merge double nodes with almost same coordinates.
+            double_cells (bool) : merge double cells with same nodes.
             tole (float) : tolerance for double nodes
             info (int) : verbosity mode (1 or 2).
 
@@ -15149,14 +15149,14 @@ class ParallelMesh(BaseMesh):
         tole=1e-07,
         info=1,
     ):
-        """Remove orphelan nodes, and double edges and faces.
+        """Fix potential problems.
 
         Arguments:
             remove_orphelan (bool) : remove orphelan nodes.
             positive_measure (bool) : reorder nodes to have a positive measure of cells.
             outward_normal (bool) : reorder nodes to have an outward normal for boundary faces.
-            double_nodes (bool) : remove double nodes with almost same coordinates.
-            double_cells (bool) : remove double cells with same nodes.
+            double_nodes (bool) : merge double nodes with almost same coordinates.
+            double_cells (bool) : merge double cells with same nodes.
             tole (float) : tolerance for double nodes
             info (int) : verbosity mode (1 or 2).
 
