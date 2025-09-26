@@ -39,6 +39,16 @@ MAILLAGE RESTREINT
  SEG2
  M9       N15       N2
  M10      N1       N2
+ M11      N1       N2
+ FINSF
+ %
+ GROUP_NO
+    TEST_NO  N14 N15
+ FINSF
+ %
+  %
+ GROUP_MA
+    TEST_MA  M11
  FINSF
  %
  FIN

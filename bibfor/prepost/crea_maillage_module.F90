@@ -151,6 +151,7 @@ module crea_maillage_module
         integer(kind=8) :: nb_edges_dege = 0, nb_faces_dege = 0
         integer(kind=8) :: max_faces_dege = 0, max_edges_dege = 0
         integer(kind=8), allocatable :: faces_dege(:), edges_dege(:)
+        integer(kind=8), allocatable :: renumber_nodes(:), renumber_cells(:)
 !
         integer(kind=4), allocatable :: lastGhostsLayer(:)
 
@@ -552,10 +553,12 @@ contains
         this%max_edges_dege = 1000
 !
         allocate (this%cells(this%max_cells))
+        allocate (this%renumber_cells(this%max_cells))
         allocate (this%volumes(this%max_volumes))
         allocate (this%faces(this%max_faces))
         allocate (this%edges(this%max_edges))
         allocate (this%nodes(this%max_nodes))
+        allocate (this%renumber_nodes(this%max_nodes))
         allocate (this%lastGhostsLayer(this%max_nodes))
         allocate (this%faces_dege(this%max_faces_dege))
         allocate (this%edges_dege(this%max_edges_dege))
@@ -586,6 +589,7 @@ contains
             node_id = this%add_node(v_coor(3*(i_node-1)+1:3*(i_node-1)+3), owner)
             ASSERT(i_node == node_id)
             this%nodes(node_id)%orphelan = ASTER_TRUE
+            this%renumber_nodes(i_node) = i_node
         end do
 !
 ! --- Read cells
@@ -631,6 +635,7 @@ contains
             case default
                 ASSERT(ASTER_FALSE)
             end select
+            this%renumber_cells(i_cell) = i_cell
         end do
 !
         do i_type = 1, nb_type
@@ -678,7 +683,7 @@ contains
         integer(kind=8) :: i_edge, e1, e2, n1, n2, i_face, f1, f2, ns, count
         integer(kind=8) :: i, j, i_node, j_node, nno, i_volu, v_id, cell_i, cell_j, k, nb_cells
         integer(kind=8) :: nc1(27), nc2(27), list_pts(5*max_pt), nb_pts, nnos
-        integer(kind=8), allocatable :: map_nodes(:), octree_map(:), inv_con(:), offset_con(:)
+        integer(kind=8), allocatable :: octree_map(:), inv_con(:), offset_con(:)
         real(kind=8) :: new_coor(3), end, start, coor_i(3)
         real(kind=8), allocatable :: coor(:, :)
         aster_logical :: same_cell, modif
@@ -688,11 +693,6 @@ contains
             print *, "Fixing mesh..."
             call cpu_time(start)
         end if
-!
-        allocate (map_nodes(this%nb_total_nodes))
-        do i_node = 1, this%nb_total_nodes
-            map_nodes(i_node) = i_node
-        end do
 !
         do i_edge = 1, this%nb_edges_dege
             e1 = this%edges_dege(2*(i_edge-1)+1)
@@ -705,7 +705,7 @@ contains
             new_coor = 0.5d0*(this%nodes(n1)%coor+this%nodes(n2)%coor)
             this%nodes(n1)%coor = new_coor
             this%nodes(n2)%keep = ASTER_FALSE
-            map_nodes(n2) = n1
+            this%renumber_nodes(n2) = n1
             this%nb_nodes = this%nb_nodes-1
             if (this%edges(e2)%cell_id > 0) then
                 this%cells(this%edges(e2)%cell_id)%keep = ASTER_FALSE
@@ -773,7 +773,7 @@ contains
             new_coor = 0.5d0*(this%nodes(n1)%coor+this%nodes(n2)%coor)
             this%nodes(n1)%coor = new_coor
             this%nodes(n2)%keep = ASTER_FALSE
-            map_nodes(n2) = n1
+            this%renumber_nodes(n2) = n1
             this%nb_nodes = this%nb_nodes-1
             if (this%faces(f2)%cell_id > 0) then
                 this%cells(this%faces(f2)%cell_id)%keep = ASTER_FALSE
@@ -849,7 +849,7 @@ contains
                             count = count+1
                             this%nodes(n1)%keep = ASTER_FALSE
                             this%nodes(n1)%orphelan = ASTER_FALSE
-                            map_nodes(n1) = i_node
+                            this%renumber_nodes(n1) = i_node
                             this%nb_nodes = this%nb_nodes-1
                         end if
                     end do
@@ -867,10 +867,10 @@ contains
                 nno = this%converter%nno(this%edges(i_edge)%type)
                 do i_node = 1, nno
                     n2 = this%edges(i_edge)%nodes(i_node)
-                    n1 = map_nodes(n2)
+                    n1 = this%renumber_nodes(n2)
                     this%edges(i_edge)%nodes(i_node) = n1
                     n2 = this%edges(i_edge)%nno_sort(i_node)
-                    n1 = map_nodes(n2)
+                    n1 = this%renumber_nodes(n2)
                     this%edges(i_edge)%nno_sort(i_node) = n1
                 end do
             end do
@@ -879,10 +879,10 @@ contains
                 nno = this%converter%nno(this%faces(i_face)%type)
                 do i_node = 1, nno
                     n2 = this%faces(i_face)%nodes(i_node)
-                    n1 = map_nodes(n2)
+                    n1 = this%renumber_nodes(n2)
                     this%faces(i_face)%nodes(i_node) = n1
                     n2 = this%faces(i_face)%nno_sort(i_node)
-                    n1 = map_nodes(n2)
+                    n1 = this%renumber_nodes(n2)
                     this%faces(i_face)%nno_sort(i_node) = n1
                 end do
             end do
@@ -891,7 +891,7 @@ contains
                 nno = this%converter%nno(this%volumes(i_volu)%type)
                 do i_node = 1, nno
                     n2 = this%volumes(i_volu)%nodes(i_node)
-                    n1 = map_nodes(n2)
+                    n1 = this%renumber_nodes(n2)
                     this%volumes(i_volu)%nodes(i_node) = n1
                 end do
             end do
@@ -903,7 +903,7 @@ contains
                 nno = this%converter%nno(this%cells(i)%type)
                 do i_node = 1, nno
                     n2 = this%cells(i)%nodes(i_node)
-                    n1 = map_nodes(n2)
+                    n1 = this%renumber_nodes(n2)
                     this%cells(i)%nodes(i_node) = n1
                 end do
             end if
@@ -938,6 +938,7 @@ contains
                                 if (same_cell) then
                                     count = count+1
                                     this%cells(cell_j)%keep = ASTER_FALSE
+                                    this%renumber_cells(cell_j) = cell_i
                                 end if
                             end if
                         end do
@@ -952,8 +953,6 @@ contains
                 print *, "- ", count, " double cells removed"
             end if
         end if
-!
-        deallocate (map_nodes)
 !
         if (outward_normal) then
             count = 0
@@ -1024,6 +1023,8 @@ contains
         deallocate (this%lastGhostsLayer)
         deallocate (this%faces_dege)
         deallocate (this%edges_dege)
+        deallocate (this%renumber_nodes)
+        deallocate (this%renumber_cells)
 !
     end subroutine
 !
@@ -1788,6 +1789,7 @@ contains
         this%nb_total_nodes = this%nb_total_nodes+1
         if (this%nb_nodes > this%max_nodes) then
             call this%increase_memory("NODES   ", 2*this%max_nodes)
+            call this%increase_memory("RE_NODES", 2*this%max_nodes)
             ASSERT(this%nb_nodes <= this%max_nodes)
         end if
         node_id = this%nb_nodes
@@ -1795,6 +1797,7 @@ contains
         this%nodes(node_id)%keep = ASTER_TRUE
         this%nodes(node_id)%coor(1:3) = coor
         this%nodes(node_id)%owner = owner
+        this%renumber_nodes(node_id) = node_id
 !
     end function
 !
@@ -3143,7 +3146,7 @@ contains
             call jeveuo(jexnum(grno_in, i_group), 'L', vi=nodes_in)
             call jelira(jexnum(grno_in, i_group), 'LONUTI', nb_nodes_in)
             do i_node = 1, nb_nodes_in
-                node_id = nodes_in(i_node)
+                node_id = this%renumber_nodes(nodes_in(i_node))
                 if (this%nodes(node_id)%keep) then
                     grno_out(i_group) = grno_out(i_group)+1
                 end if
@@ -3170,7 +3173,7 @@ contains
                     call jeveuo(jexnom(grpnoe, nomgrp), 'E', vi=nodes_out)
                     nb_nodes_out = 0
                     do i_node = 1, nb_nodes_in
-                        node_id = nodes_in(i_node)
+                        node_id = this%renumber_nodes(nodes_in(i_node))
                         if (this%nodes(node_id)%keep) then
                             nb_nodes_out = nb_nodes_out+1
                             nodes_out(nb_nodes_out) = this%nodes(node_id)%id
@@ -3226,7 +3229,7 @@ contains
             call jeveuo(jexnum(grma_in, i_group), 'L', vi=cells_in)
             call jelira(jexnum(grma_in, i_group), 'LONUTI', nb_cells_in)
             do i_cell = 1, nb_cells_in
-                cell_id = cells_in(i_cell)
+                cell_id = this%renumber_cells(cells_in(i_cell))
                 nb_cells = 0
                 call this%sub_cells(cell_id, nb_cells, cells)
                 grma_out(i_group) = grma_out(i_group)+nb_cells
@@ -3253,7 +3256,7 @@ contains
                     call jeveuo(jexnom(grpmai, nomgrp), 'E', vi=cells_out)
                     nb_cells_out = 1
                     do i_cell = 1, nb_cells_in
-                        cell_id = cells_in(i_cell)
+                        cell_id = this%renumber_cells(cells_in(i_cell))
                         nb_cells = 0
                         call this%sub_cells(cell_id, nb_cells, cells)
                         cells_out(nb_cells_out:nb_cells_out+nb_cells) = cells(1:nb_cells)
@@ -3365,6 +3368,24 @@ contains
             this%cells(1:old_size) = cells(1:old_size)
             deallocate (cells)
             this%max_cells = new_size
+        elseif (object == "RE_NODES") then
+            old_size = size(this%renumber_nodes)
+            allocate (list(old_size))
+            list(1:old_size) = this%renumber_nodes(1:old_size)
+            deallocate (this%renumber_nodes)
+            allocate (this%renumber_nodes(new_size))
+            this%renumber_nodes(1:old_size) = list(1:old_size)
+            this%renumber_nodes(old_size+1:new_size) = 0
+            deallocate (list)
+        elseif (object == "RE_CELLS") then
+            old_size = size(this%renumber_cells)
+            allocate (list(old_size))
+            list(1:old_size) = this%renumber_cells(1:old_size)
+            deallocate (this%renumber_cells)
+            allocate (this%renumber_cells(new_size))
+            this%renumber_cells(1:old_size) = list(1:old_size)
+            this%renumber_cells(old_size+1:new_size) = 0
+            deallocate (list)
         else
             ASSERT(ASTER_FALSE)
         end if

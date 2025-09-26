@@ -21,7 +21,7 @@
 from code_aster.Commands import *
 from code_aster import CA
 
-CA.init("--test", ERREUR=_F(ALARME="EXCEPTION", ERREUR_F="EXCEPTION"))
+CA.init("--test", ERREUR=_F(ALARME="ALARME", ERREUR_F="EXCEPTION"))
 
 test = CA.TestCase()
 
@@ -104,17 +104,21 @@ mesh_2d = LIRE_MAILLAGE(FORMAT="ASTER", UNITE=21, VERI_MAIL=_F(VERIF="NON"), INF
 connect = mesh_2d.getConnectivity()
 
 test.assertEqual(mesh_2d.getNumberOfNodes(), 15)
-test.assertEqual(mesh_2d.getNumberOfCells(), 10)
+test.assertEqual(mesh_2d.getNumberOfCells(), 11)
 test.assertEqual(connect[8], [14, 1])
 test.assertEqual(connect[7], [5, 4, 2, 3, 13, 8, 9, 11])
+test.assertEqual(mesh_2d.getNodes("TEST_NO"), [13, 14])
+test.assertEqual(mesh_2d.getCells("TEST_MA"), [10])
 
 mesh_2d_fix = mesh_2d.fix(info=2)
 connect = mesh_2d_fix.getConnectivity()
 
 test.assertEqual(mesh_2d_fix.getNumberOfNodes(), mesh_2d.getNumberOfNodes() - 2)
-test.assertEqual(mesh_2d_fix.getNumberOfCells(), mesh_2d.getNumberOfCells() - 1)
+test.assertEqual(mesh_2d_fix.getNumberOfCells(), mesh_2d.getNumberOfCells() - 2)
 test.assertEqual(connect[8], [0, 1])
 test.assertEqual(connect[7], [5, 4, 2, 3, 12, 8, 9, 11])
+test.assertEqual(mesh_2d_fix.getNodes("TEST_NO"), [12, 0])
+test.assertEqual(mesh_2d_fix.getCells("TEST_MA"), [8])
 
 
 # test for reorientation
