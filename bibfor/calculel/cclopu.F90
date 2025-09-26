@@ -57,6 +57,7 @@ subroutine cclopu(resuin, resuou, lisord, nbordr, lisopt, &
 !    - FORCE
 !    - PROPRIETES
 !    - SOUS_POINT
+!    - SECHAGE
 !  ET LE MOT-CLE FACTEUR CHAM_UTIL.
 !
 ! IN  :
@@ -69,7 +70,7 @@ subroutine cclopu(resuin, resuou, lisord, nbordr, lisopt, &
 !   NBOPT  I    NOMBRE D'OPTIONS
 ! ----------------------------------------------------------------------
     integer(kind=8) :: ntymax
-    parameter(ntymax=11)
+    parameter(ntymax=12)
 !
     integer(kind=8) :: i, ityp, n1, jopt, postmp, nbopfa, ioc, ibid
     integer(kind=8) :: nuti, nsup, jord, iordr, iret
@@ -87,7 +88,7 @@ subroutine cclopu(resuin, resuou, lisord, nbordr, lisopt, &
     data tygrop/'CONTRAINTE  ', 'DEFORMATION ', 'ENERGIE     ', &
         'CRITERES    ', 'VARI_INTERNE', 'HYDRAULIQUE ', &
         'THERMIQUE   ', 'ACOUSTIQUE  ', 'FORCE       ', &
-        'PROPRIETES  ', 'SOUS_POINT  '/
+        'PROPRIETES  ', 'SOUS_POINT  ', 'SECHAGE     '/
 !
     call jemarq()
 !

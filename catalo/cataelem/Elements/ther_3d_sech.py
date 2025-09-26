@@ -139,6 +139,23 @@ class SECH_HEXA20(Element):
             para_in=((SP.PGEOMER, LC.EGEOM3D),),
             para_out=((OP.COOR_ELGA.PCOORPG, LC.EGGAU3D),),
         ),
+        OP.DIFF_ELGA(
+            te=242,
+            para_in=(
+                (SP.PGEOMER, LC.EGEOM3D),
+                (OP.DIFF_ELGA.PCOMPOR, LC.CCOMPOT),
+                (SP.PMATERC, LC.CMATERC),
+                (SP.PSECHRR, DDL_THER),
+                (SP.PINSTR, LC.CTIMETR),
+                (OP.DIFF_ELGA.PVARCPR, LC.ZVARCPG),
+            ),
+            para_out=((SP.PDIFFPG, LC.EDIFFUR),),
+        ),
+        OP.DIFF_ELNO(
+            te=4,
+            para_in=((OP.DIFF_ELNO.PDIFFPG, LC.EDIFFUR),),
+            para_out=((SP.PDIFFNO, LC.EDIFFNO),),
+        ),
         OP.DURT_ELNO(
             te=551,
             para_in=((SP.PMATERC, LC.CMATERC), (OP.DURT_ELNO.PPHASIN, LC.EPHASES)),
@@ -224,6 +241,22 @@ class SECH_HEXA20(Element):
         ),
         OP.HYDR_ELNO(
             te=4, para_in=((OP.HYDR_ELNO.PHYDRPG, LC.EHYDRR),), para_out=((SP.PHYDRNO, LC.EHYDRNO),)
+        ),
+        OP.HYGR_ELGA(
+            te=242,
+            para_in=(
+                (SP.PGEOMER, LC.EGEOM3D),
+                (SP.PMATERC, LC.CMATERC),
+                (SP.PSECHRR, DDL_THER),
+                (SP.PINSTR, LC.CTIMETR),
+                (OP.HYGR_ELGA.PVARCPR, LC.ZVARCPG),
+            ),
+            para_out=((SP.PHYGRPG, LC.EHYGROR),),
+        ),
+        OP.HYGR_ELNO(
+            te=4,
+            para_in=((OP.HYGR_ELNO.PHYGRPG, LC.EHYGROR),),
+            para_out=((SP.PHYGRNO, LC.EHYGRNO),),
         ),
         OP.INIT_MAIL_VOIS(te=99, para_out=((OP.INIT_MAIL_VOIS.PVOISIN, LC.EVOISIN),)),
         OP.INIT_VARC(te=99, para_out=((OP.INIT_VARC.PVARCPR, LC.ZVARCPG),)),

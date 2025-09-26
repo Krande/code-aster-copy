@@ -1064,6 +1064,9 @@ EDERANO = LocatedComponents(
     ),
 )
 
+EDIFFNO = LocatedComponents(
+    phys=PHY.DIFF_R, type="ELNO", components=("DIFT", "DIFL", "DIFV", "SECH", "TEMP")
+)
 
 EDOMGNO = LocatedComponents(phys=PHY.DOMA_R, type="ELNO", components=("DOMA",))
 
@@ -1100,6 +1103,8 @@ EERRENOT = LocatedComponents(
 )
 
 EHYDRNO = LocatedComponents(phys=PHY.HYDR_R, type="ELNO", components=("HYDR",))
+
+EHYGRNO = LocatedComponents(phys=PHY.HYGR_R, type="ELNO", components=("HUMR", "PCAP"))
 
 ENINST_R = LocatedComponents(phys=PHY.INST_R, type="ELNO", components=("INST",))
 
@@ -1348,6 +1353,14 @@ ECOPILO = LocatedComponents(
     phys=PHY.PILO_R, type="ELGA", location="RIGI", components=("A0", "A[3]", "ETA")
 )
 
+# Field for diffusion in drying (real)
+EDIFFUR = LocatedComponents(
+    phys=PHY.DIFF_R,
+    type="ELGA",
+    location="RIGI",
+    components=("DIFT", "DIFL", "DIFV", "SECH", "TEMP"),
+)
+
 # Field for flux in thermic (2D - real)
 EFLUX2R = LocatedComponents(
     phys=PHY.FLUX_R, type="ELGA", location="RIGI", components=("FLUX", "FLUY")
@@ -1370,6 +1383,11 @@ EGRAT3R = LocatedComponents(
 
 # Field for hydratation
 EHYDRR = LocatedComponents(phys=PHY.HYDR_R, type="ELGA", location="MASS", components=("HYDR",))
+
+# Field for hygrometrie in drying (real)
+EHYGROR = LocatedComponents(
+    phys=PHY.HYGR_R, type="ELGA", location="RIGI", components=("HUMR", "PCAP")
+)
 
 # For generalized forces - Plates (Real)
 EGFG3DR = LocatedComponents(

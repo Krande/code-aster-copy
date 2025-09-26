@@ -971,6 +971,16 @@ DERA_R = PhysicalQuantity(
 """,
 )
 
+DIFF_R = PhysicalQuantity(
+    type="R",
+    components=("DIFT", "DIFL", "DIFV", "SECH", "TEMP"),
+    comment="""  DIFF_R Type:R Coefficients de diffusion (séchage)
+       DIFT   : coefficient de diffusion total
+       DIFL   : coefficient de diffusion liquide
+       DIFV   : coefficient de diffusion vapeur
+""",
+)
+
 
 DISS_R = PhysicalQuantity(
     type="R",
@@ -2072,6 +2082,15 @@ HYDR_R = PhysicalQuantity(
     components=("HYDR",),
     comment="""  HYDR_R Type:R
        HYDR :
+""",
+)
+
+HYGR_R = PhysicalQuantity(
+    type="R",
+    components=("HUMR", "PCAP"),
+    comment="""  HYGR_R Type:R Hygrométrie (séchage)
+       HUMR   : humidité relative
+       PCAP   : pression capillaire
 """,
 )
 

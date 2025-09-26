@@ -42,6 +42,7 @@ class Phenomenon(Enum):
     METALLURGIE = 12
     PROPRIETES = 13
     AUTRES = 14
+    SECHAGE = 15
 
     @classmethod
     def check_value_iterable(cls, phenomena: Tuple["Phenomenon"]) -> None:
@@ -355,6 +356,20 @@ class NomChamIntoGenerator:
             "SOUR_ELGA": ((), tr("Source de chaleur à partir d'un potentiel électrique")),
             "ETHE_ELEM": ((), tr("Énergie dissipée thermiquement")),
             "HHO_TEMP": ((), tr("Temparature reconstruite aux noeuds pour la modélisation HHO")),
+        },
+        Phenomenon.SECHAGE: {
+            "FLUX_ELGA": ((), tr("Flux de séchage aux points de Gauss")),
+            "FLUX_ELNO": ((), tr("Flux de séchage aux noeuds par élément")),
+            "FLUX_NOEU": ((), tr("Flux de séchage aux noeuds")),
+            "GRAT_ELGA": ((), tr("Gradient thermique aux points de Gauss")),
+            "GRAT_ELNO": ((), tr("Gradient thermique aux noeuds par élément")),
+            "GRAT_NOEU": ((), tr("Gradient thermique aux noeuds")),
+            "DIFF_ELGA": ((), tr("Coefficients de diffusion aux points de Gauss")),
+            "DIFF_ELNO": ((), tr("Coefficients de diffusion aux noeuds par élément")),
+            "DIFF_NOEU": ((), tr("Coefficients de diffusion aux noeuds")),
+            "HYGR_ELGA": ((), tr("Hygrométrie aux points de Gauss")),
+            "HYGR_ELNO": ((), tr("Hygrométrie aux noeuds par élément")),
+            "HYGR_NOEU": ((), tr("Hygrométrie aux noeuds")),
         },
         Phenomenon.ACOUSTIQUE: {
             "PRAC_ELNO": ((), tr("Pression acoustique aux noeuds par élément")),
