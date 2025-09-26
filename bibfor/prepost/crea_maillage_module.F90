@@ -205,6 +205,8 @@ module crea_maillage_module
         procedure, private, pass :: refine_cell
         procedure, private, pass :: sub_cells
         procedure, private, pass :: update
+        procedure, private, pass :: fix_measure
+        procedure, private, pass :: fix_normal_face
     end type
 !
 !===================================================================================================
@@ -213,7 +215,7 @@ module crea_maillage_module
 !
     public :: Medge, Mface, Mcell, Mmesh, Mconverter
     private :: numbering_edge, numbering_face, dividing_cell, mult_elem
-    private :: sort_nodes_face, fix_measure
+    private :: sort_nodes_face
 contains
 !
 !===================================================================================================
@@ -648,6 +650,8 @@ contains
             end do
         end do
 !
+        call this%update()
+!
         if (this%info >= 2) then
             call cpu_time(end)
             print *, "... in ", end-start, " seconds."
@@ -669,17 +673,15 @@ contains
         aster_logical, intent(in) :: double_nodes, double_cells
         real(kind=8), intent(in) :: tole
 !
-        integer(kind=8), parameter :: max_pt = 5
-        integer(kind=8) :: i_edge, e1, e2, n1, n2, n3, i_face, f1, f2, ns
-        integer(kind=8) :: i, j, i_node, j_node, nno, i_volu, v_id, nnos, c_id
-        integer(kind=8) :: nc1(27), nc2(27), list_pts(27*max_pt), nb_pts
+        integer(kind=8), parameter :: max_pt = 10
+        integer(kind=8) :: i_edge, e1, e2, n1, n2, i_face, f1, f2, ns, count
+        integer(kind=8) :: i, j, i_node, j_node, nno, i_volu, v_id
+        integer(kind=8) :: nc1(27), nc2(27), list_pts(5*max_pt), nb_pts
         integer(kind=8), allocatable :: map_nodes(:), octree_map(:)
-        real(kind=8) :: new_coor(3), end, start, v0(3), v1(3), no(3)
-        real(kind=8) :: bar_v(3), bar_f(3), nvf(3), coor_i(3)
+        real(kind=8) :: new_coor(3), end, start, coor_i(3)
         real(kind=8), allocatable :: coor(:, :)
         aster_logical :: same_cell
         type(Octree) :: n_octree
-
 !
         if (this%info >= 2) then
             print *, "Fixing mesh..."
@@ -816,6 +818,7 @@ contains
             end do
             call n_octree%init(nb_pts, coor, max_pt)
             deallocate (coor)
+            count = 0
             do i_node = 1, this%nb_total_nodes
                 if (this%nodes(i_node)%keep) then
                     coor_i = this%nodes(i_node)%coor
@@ -823,6 +826,7 @@ contains
                     do j_node = 1, nb_pts
                         n1 = octree_map(list_pts(j_node))
                         if (n1 > i_node .and. this%nodes(n1)%keep) then
+                            count = count+1
                             this%nodes(n1)%keep = ASTER_FALSE
                             this%nodes(n1)%orphelan = ASTER_FALSE
                             map_nodes(n1) = i_node
@@ -831,6 +835,11 @@ contains
                     end do
                 end if
             end do
+!
+            if (this%info >= 2) then
+                print *, "- ", count, " double nodes removed"
+            end if
+!
             call n_octree%free()
             deallocate (octree_map)
 !
@@ -881,77 +890,48 @@ contains
         end do
 !
         if (double_cells) then
+            count = 0
             do i = 1, this%nb_cells
-            if (this%cells(i)%keep) then
-                nno = this%converter%nno(this%cells(i)%type)
-                nc1(1:nno) = this%cells(i)%nodes(1:nno)
-                call qsort(nc1(1:nno))
-                do j = i+1, this%nb_cells
-                    if (this%cells(j)%keep .and. &
-                        this%cells(i)%type == this%cells(j)%type) then
-                        same_cell = ASTER_TRUE
-                        nc2(1:nno) = this%cells(j)%nodes(1:nno)
-                        call qsort(nc2(1:nno))
-                        do i_node = 1, nno
-                            if (nc1(i_node) .ne. nc2(i_node)) then
-                                same_cell = ASTER_FALSE
-                                exit
+                if (this%cells(i)%keep) then
+                    nno = this%converter%nno(this%cells(i)%type)
+                    nc1(1:nno) = this%cells(i)%nodes(1:nno)
+                    call qsort(nc1(1:nno))
+                    do j = i+1, this%nb_cells
+                        if (this%cells(j)%keep .and. &
+                            this%cells(i)%type == this%cells(j)%type) then
+                            same_cell = ASTER_TRUE
+                            nc2(1:nno) = this%cells(j)%nodes(1:nno)
+                            call qsort(nc2(1:nno))
+                            do i_node = 1, nno
+                                if (nc1(i_node) .ne. nc2(i_node)) then
+                                    same_cell = ASTER_FALSE
+                                    exit
+                                end if
+                            end do
+                            if (same_cell) then
+                                count = count+1
+                                this%cells(j)%keep = ASTER_FALSE
                             end if
-                        end do
-                        if (same_cell) then
-                            this%cells(j)%keep = ASTER_FALSE
                         end if
-                    end if
-                end do
-            end if
+                    end do
+                end if
             end do
+            if (this%info >= 2) then
+                print *, "- ", count, " double cells removed"
+            end if
         end if
 !
         deallocate (map_nodes)
 !
         if (outward_normal) then
             do i_face = 1, this%nb_faces
-                if (this%faces(i_face)%nb_volumes == 1) then
-                    nnos = this%converter%nnos(this%faces(i_face)%type)
-                    n1 = this%faces(i_face)%nodes(1)
-                    n2 = this%faces(i_face)%nodes(2)
-                    n3 = this%faces(i_face)%nodes(nnos)
-                    v0 = this%nodes(n2)%coor-this%nodes(n1)%coor
-                    v1 = this%nodes(n3)%coor-this%nodes(n1)%coor
-                    no(1) = v0(2)*v1(3)-v0(3)*v1(2)
-                    no(2) = v0(3)*v1(1)-v0(1)*v1(3)
-                    no(3) = v0(1)*v1(2)-v0(2)*v1(1)
-                    no = no/norm2(no)
-                    bar_f = this%barycenter_face(i_face)
-                    bar_v = this%barycenter_volume(this%faces(i_face)%volumes(1))
-                    nvf = bar_f-bar_v
-                    nvf = nvf/norm2(nvf)
-                    if (dot_product(nvf, no) <= 0.d0) then
-                        this%faces(i_face)%nodes(2) = n3
-                        this%faces(i_face)%nodes(nnos) = n2
-                        n2 = this%faces(i_face)%nodes(nnos+1)
-                        n3 = this%faces(i_face)%nodes(2*nnos)
-                        this%faces(i_face)%nodes(nnos+1) = n3
-                        this%faces(i_face)%nodes(2*nnos) = n2
-                        if (nnos == 4) then
-                            n2 = this%faces(i_face)%nodes(nnos+2)
-                            n3 = this%faces(i_face)%nodes(nnos+3)
-                            this%faces(i_face)%nodes(nnos+2) = n3
-                            this%faces(i_face)%nodes(nnos+3) = n2
-                        end if
-                        c_id = this%faces(i_face)%cell_id
-                        if (c_id > 0) then
-                            nno = this%converter%nno(this%cells(c_id)%type)
-                            this%cells(c_id)%nodes(1:nno) = this%faces(i_face)%nodes(1:nno)
-                        end if
-                    end if
-                end if
+                call this%fix_normal_face(i_face)
             end do
         end if
 !
         if (positive_measure) then
             do i_volu = 1, this%nb_volumes
-                call fix_measure(this, i_volu, 3)
+                call this%fix_measure(i_volu, 3)
             end do
         end if
 !
@@ -3728,7 +3708,7 @@ contains
 !
         implicit none
 !
-        type(Mmesh), intent(inout) :: this
+        class(Mmesh), intent(inout) :: this
         integer(kind=8), intent(in) :: cell_id, cell_dim
 !
         integer(kind=8) :: i, nodes(27), nno, nnos, nbpg, ndim
@@ -3830,6 +3810,57 @@ contains
             end if
         else
             ASSERT(ASTER_FALSE)
+        end if
+    end subroutine
+!
+! ==================================================================================================
+!
+    subroutine fix_normal_face(this, face_i)
+!
+        implicit none
+!
+        class(Mmesh), intent(inout) :: this
+        integer(kind=8), intent(in) :: face_i
+!
+        integer(kind=8) :: nnos, nno, n1, n2, n3, c_id
+        real(kind=8) :: v0(3), v1(3), no(3)
+        real(kind=8) :: bar_v(3), bar_f(3), nvf(3)
+! ---------------------------------------------------------------------------------
+!
+        if (this%faces(face_i)%nb_volumes == 1) then
+            nnos = this%converter%nnos(this%faces(face_i)%type)
+            n1 = this%faces(face_i)%nodes(1)
+            n2 = this%faces(face_i)%nodes(2)
+            n3 = this%faces(face_i)%nodes(nnos)
+            v0 = this%nodes(n2)%coor-this%nodes(n1)%coor
+            v1 = this%nodes(n3)%coor-this%nodes(n1)%coor
+            no(1) = v0(2)*v1(3)-v0(3)*v1(2)
+            no(2) = v0(3)*v1(1)-v0(1)*v1(3)
+            no(3) = v0(1)*v1(2)-v0(2)*v1(1)
+            no = no/norm2(no)
+            bar_f = this%barycenter_face(face_i)
+            bar_v = this%barycenter_volume(this%faces(face_i)%volumes(1))
+            nvf = bar_f-bar_v
+            nvf = nvf/norm2(nvf)
+            if (dot_product(nvf, no) <= 0.d0) then
+                this%faces(face_i)%nodes(2) = n3
+                this%faces(face_i)%nodes(nnos) = n2
+                n2 = this%faces(face_i)%nodes(nnos+1)
+                n3 = this%faces(face_i)%nodes(2*nnos)
+                this%faces(face_i)%nodes(nnos+1) = n3
+                this%faces(face_i)%nodes(2*nnos) = n2
+                if (nnos == 4) then
+                    n2 = this%faces(face_i)%nodes(nnos+2)
+                    n3 = this%faces(face_i)%nodes(nnos+3)
+                    this%faces(face_i)%nodes(nnos+2) = n3
+                    this%faces(face_i)%nodes(nnos+3) = n2
+                end if
+                c_id = this%faces(face_i)%cell_id
+                if (c_id > 0) then
+                    nno = this%converter%nno(this%cells(c_id)%type)
+                    this%cells(c_id)%nodes(1:nno) = this%faces(face_i)%nodes(1:nno)
+                end if
+            end if
         end if
     end subroutine
 !
