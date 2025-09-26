@@ -207,6 +207,7 @@ module crea_maillage_module
         procedure, private, pass :: update
         procedure, private, pass :: fix_measure
         procedure, private, pass :: fix_normal_face
+        procedure, private, pass :: build_inv_conn
     end type
 !
 !===================================================================================================
@@ -675,15 +676,15 @@ contains
 !
         integer(kind=8), parameter :: max_pt = 10
         integer(kind=8) :: i_edge, e1, e2, n1, n2, i_face, f1, f2, ns, count
-        integer(kind=8) :: i, j, i_node, j_node, nno, i_volu, v_id
-        integer(kind=8) :: nc1(27), nc2(27), list_pts(5*max_pt), nb_pts
-        integer(kind=8), allocatable :: map_nodes(:), octree_map(:)
+        integer(kind=8) :: i, j, i_node, j_node, nno, i_volu, v_id, cell_i, cell_j, k, nb_cells
+        integer(kind=8) :: nc1(27), nc2(27), list_pts(5*max_pt), nb_pts, nnos
+        integer(kind=8), allocatable :: map_nodes(:), octree_map(:), inv_con(:), offset_con(:)
         real(kind=8) :: new_coor(3), end, start, coor_i(3)
         real(kind=8), allocatable :: coor(:, :)
-        aster_logical :: same_cell
+        aster_logical :: same_cell, modif
         type(Octree) :: n_octree
 !
-        if (this%info >= 2) then
+        if (this%info >= 1) then
             print *, "Fixing mesh..."
             call cpu_time(start)
         end if
@@ -753,6 +754,12 @@ contains
 !
         end do
 !
+        if (this%nb_edges_dege > 0) then
+            if (this%info >= 1) then
+                print *, "- ", this%nb_edges_dege, " degenerated edges fixed"
+            end if
+        end if
+!
         do i_face = 1, this%nb_faces_dege
             f1 = this%faces_dege(2*(i_face-1)+1)
             f2 = this%faces_dege(2*(i_face-1)+2)
@@ -796,13 +803,26 @@ contains
 !
         end do
 !
+        if (this%nb_faces_dege > 0) then
+            if (this%info >= 1) then
+                print *, "- ", this%nb_faces_dege, " degenerated faces fixed"
+            end if
+        end if
+!
         if (remove_orphelan) then
+            count = 0
             do i_node = 1, this%nb_total_nodes
                 if (this%nodes(i_node)%orphelan) then
+                    if (this%nodes(i_node)%keep) then
+                        count = count+1
+                    end if
                     this%nodes(i_node)%keep = ASTER_FALSE
                     this%nodes(i_node)%orphelan = ASTER_FALSE
                 end if
             end do
+            if (this%info >= 1) then
+                print *, "- ", count, " orphelan nodes removed"
+            end if
         end if
 !
         if (double_nodes) then
@@ -836,7 +856,7 @@ contains
                 end if
             end do
 !
-            if (this%info >= 2) then
+            if (this%info >= 1) then
                 print *, "- ", count, " double nodes removed"
             end if
 !
@@ -891,32 +911,44 @@ contains
 !
         if (double_cells) then
             count = 0
-            do i = 1, this%nb_cells
-                if (this%cells(i)%keep) then
-                    nno = this%converter%nno(this%cells(i)%type)
-                    nc1(1:nno) = this%cells(i)%nodes(1:nno)
+            call this%build_inv_conn(inv_con, offset_con)
+            do cell_i = 1, this%nb_cells
+                if (this%cells(cell_i)%keep) then
+                    nno = this%converter%nno(this%cells(cell_i)%type)
+                    nnos = this%converter%nnos(this%cells(cell_i)%type)
+                    nc1(1:nno) = this%cells(cell_i)%nodes(1:nno)
                     call qsort(nc1(1:nno))
-                    do j = i+1, this%nb_cells
-                        if (this%cells(j)%keep .and. &
-                            this%cells(i)%type == this%cells(j)%type) then
-                            same_cell = ASTER_TRUE
-                            nc2(1:nno) = this%cells(j)%nodes(1:nno)
-                            call qsort(nc2(1:nno))
-                            do i_node = 1, nno
-                                if (nc1(i_node) .ne. nc2(i_node)) then
-                                    same_cell = ASTER_FALSE
-                                    exit
+                    do k = 1, nnos
+                        nb_cells = offset_con(this%cells(cell_i)%nodes(k)+1)- &
+                                   offset_con(this%cells(cell_i)%nodes(k))
+                        do j = 1, nb_cells
+                            cell_j = inv_con(offset_con(this%cells(cell_i)%nodes(k))+j-1)
+                            if (this%cells(cell_j)%keep .and. &
+                                cell_i < cell_j .and. &
+                                this%cells(cell_i)%type == this%cells(cell_j)%type) then
+                                same_cell = ASTER_TRUE
+                                nc2(1:nno) = this%cells(cell_j)%nodes(1:nno)
+                                call qsort(nc2(1:nno))
+                                do i_node = 1, nno
+                                    if (nc1(i_node) .ne. nc2(i_node)) then
+                                        same_cell = ASTER_FALSE
+                                        exit
+                                    end if
+                                end do
+                                if (same_cell) then
+                                    count = count+1
+                                    this%cells(cell_j)%keep = ASTER_FALSE
                                 end if
-                            end do
-                            if (same_cell) then
-                                count = count+1
-                                this%cells(j)%keep = ASTER_FALSE
                             end if
-                        end if
+                        end do
                     end do
                 end if
             end do
-            if (this%info >= 2) then
+!
+            deallocate (inv_con)
+            deallocate (offset_con)
+!
+            if (this%info >= 1) then
                 print *, "- ", count, " double cells removed"
             end if
         end if
@@ -924,21 +956,35 @@ contains
         deallocate (map_nodes)
 !
         if (outward_normal) then
+            count = 0
             do i_face = 1, this%nb_faces
-                call this%fix_normal_face(i_face)
+                call this%fix_normal_face(i_face, modif)
+                if (modif) then
+                    count = count+1
+                end if
             end do
+            if (this%info >= 1) then
+                print *, "- ", count, " outward normals reoriented"
+            end if
         end if
 !
         if (positive_measure) then
+            count = 0
             do i_volu = 1, this%nb_volumes
-                call this%fix_measure(i_volu, 3)
+                call this%fix_measure(i_volu, 3, modif)
+                if (modif) then
+                    count = count+1
+                end if
             end do
+            if (this%info >= 1) then
+                print *, "- ", count, " volume reoriented"
+            end if
         end if
 !
 ! --- Keep only necessary nodes
         call this%update()
 !
-        if (this%info >= 2) then
+        if (this%info >= 0) then
             call cpu_time(end)
             print *, "... in ", end-start, " seconds."
         end if
@@ -3704,18 +3750,20 @@ contains
 !
 ! ==================================================================================================
 !
-    subroutine fix_measure(this, cell_id, cell_dim)
+    subroutine fix_measure(this, cell_id, cell_dim, modif)
 !
         implicit none
 !
         class(Mmesh), intent(inout) :: this
         integer(kind=8), intent(in) :: cell_id, cell_dim
+        aster_logical, intent(out) :: modif
 !
         integer(kind=8) :: i, nodes(27), nno, nnos, nbpg, ndim
         real(kind=8) :: jaco(3, 3), jacob, coopg(3), dbasis(3, 8), coorno(3), poipg(2)
         character(len=3) :: typema
 ! ---------------------------------------------------------------------------------
 !
+        modif = ASTER_FALSE
         if (cell_dim == 3) then
             select case (this%volumes(cell_id)%type)
             case (MT_HEXA27)
@@ -3749,6 +3797,7 @@ contains
                     -jaco(3, 3)*jaco(2, 1)*jaco(1, 2)-jaco(1, 1)*jaco(2, 3)*jaco(3, 2)
 !
             if (jacob < 0.d0) then
+                modif = ASTER_TRUE
                 nodes = this%volumes(cell_id)%nodes
                 select case (this%volumes(cell_id)%type)
                 case (MT_HEXA27)
@@ -3815,18 +3864,20 @@ contains
 !
 ! ==================================================================================================
 !
-    subroutine fix_normal_face(this, face_i)
+    subroutine fix_normal_face(this, face_i, modif)
 !
         implicit none
 !
         class(Mmesh), intent(inout) :: this
         integer(kind=8), intent(in) :: face_i
+        aster_logical, intent(out) :: modif
 !
         integer(kind=8) :: nnos, nno, n1, n2, n3, c_id
         real(kind=8) :: v0(3), v1(3), no(3)
         real(kind=8) :: bar_v(3), bar_f(3), nvf(3)
 ! ---------------------------------------------------------------------------------
 !
+        modif = ASTER_FALSE
         if (this%faces(face_i)%nb_volumes == 1) then
             nnos = this%converter%nnos(this%faces(face_i)%type)
             n1 = this%faces(face_i)%nodes(1)
@@ -3860,8 +3911,60 @@ contains
                     nno = this%converter%nno(this%cells(c_id)%type)
                     this%cells(c_id)%nodes(1:nno) = this%faces(face_i)%nodes(1:nno)
                 end if
+                modif = ASTER_TRUE
             end if
         end if
+    end subroutine
+!
+! ==================================================================================================
+!
+    subroutine build_inv_conn(this, inv_con, offset_con)
+!
+        implicit none
+!
+        class(Mmesh), intent(inout) :: this
+        integer(kind=8), intent(inout), allocatable :: inv_con(:), offset_con(:)
+!
+! ---------------------------------------------------------------------------------
+!
+        integer(kind=8) :: i_cell, i_node, nno, node_id
+        integer(kind=8), allocatable :: count(:)
+!
+        allocate (count(this%nb_total_nodes))
+        count = 0
+!
+        do i_cell = 1, this%nb_cells
+            if (this%cells(i_cell)%keep) then
+                nno = this%converter%nno(this%cells(i_cell)%type)
+                do i_node = 1, nno
+                    node_id = this%cells(i_cell)%nodes(i_node)
+                    count(node_id) = count(node_id)+1
+                end do
+            end if
+        end do
+!
+        allocate (offset_con(this%nb_total_nodes+1))
+        offset_con(1) = 1
+        do i_node = 1, this%nb_total_nodes
+            offset_con(i_node+1) = offset_con(i_node)+count(i_node)
+        end do
+!
+        allocate (inv_con(offset_con(this%nb_total_nodes+1)))
+        count = 0
+!
+        do i_cell = 1, this%nb_cells
+            if (this%cells(i_cell)%keep) then
+                nno = this%converter%nno(this%cells(i_cell)%type)
+                do i_node = 1, nno
+                    node_id = this%cells(i_cell)%nodes(i_node)
+                    count(node_id) = count(node_id)+1
+                    inv_con(offset_con(node_id)+count(node_id)-1) = i_cell
+                end do
+            end if
+        end do
+!
+        deallocate (count)
+!
     end subroutine
 !
 end module

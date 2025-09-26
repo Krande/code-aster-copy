@@ -852,7 +852,7 @@ class Mesh(BaseMesh):
             double_nodes (bool) : merge double nodes with almost same coordinates.
             double_cells (bool) : merge double cells with same nodes.
             tole (float) : tolerance for double nodes
-            info (int) : verbosity mode (1 or 2).
+            info (int) : verbosity mode (0 or 1 or 2).
 
         Returns:
             Mesh: fixed mesh
@@ -15158,7 +15158,7 @@ class ParallelMesh(BaseMesh):
             double_nodes (bool) : merge double nodes with almost same coordinates.
             double_cells (bool) : merge double cells with same nodes.
             tole (float) : tolerance for double nodes
-            info (int) : verbosity mode (1 or 2).
+            info (int) : verbosity mode (0 or 1 or 2).
 
         Returns:
             Mesh: fixed mesh
