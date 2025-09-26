@@ -40,11 +40,11 @@ module octree_module
     end type
 !
     type OctreeNode
-        real(kind=8) :: xmin(3) = 0.d0, dx(3) = 0.0, dx_child(3) = 0.0
+        real(kind=8) :: xmin(3) = 0.d0, dx(3) = 0.0
         type(OctreeNode), pointer :: children(:, :, :) => null()
         integer(kind=8), allocatable :: list_pts(:)
         real(kind=8), allocatable :: coordinates(:, :)
-        integer(kind=8) :: nb_pts = 0, nb_pts_level = 0, dim = 3
+        integer(kind=8) :: nb_pts = 0, dim = 3, level = 0
 ! ----- member functions
     contains
         procedure, public, pass :: split => split_node
@@ -56,7 +56,7 @@ module octree_module
 !
     type Octree
         real(kind=8) :: xmin(3) = 0.d0, xmax(3) = 0.d0
-        integer(kind=8) :: max_pts_by_node = 0, dim = 3, nb_pt = 0
+        integer(kind=8) :: max_pts_by_node = 1000, max_level = 20, dim = 3, nb_pt = 0
         integer(kind=8), allocatable :: list_pts(:)
         type(OctreeNode) :: node
 ! ----- member functions
@@ -64,6 +64,7 @@ module octree_module
         procedure, public, pass :: init => init_octree
         procedure, public, pass :: free => free_octree
         procedure, public, pass :: get_pts_around => get_pts_around_tree
+        procedure, public, pass :: get_alt_1_pts_around => get_al1_pts_around_tree
     end type
 !
 !===================================================================================================
@@ -210,11 +211,12 @@ contains
         integer(kind=8), intent(inout) :: child_id(3)
 !
         integer(kind=8) :: i_dim
-        real(kind=8) :: rid
+        real(kind=8) :: rid, dx_child(3)
 !
+        dx_child = this%dx/real(nb_div, kind=8)
         child_id = 1
         do i_dim = 1, this%dim
-            rid = (coor(i_dim)-this%xmin(i_dim))/this%dx_child(i_dim)
+            rid = (coor(i_dim)-this%xmin(i_dim))/dx_child(i_dim)
             child_id(i_dim) = max(1, min(nb_div, ceiling(rid, kind=8)))
         end do
 !
@@ -231,15 +233,16 @@ contains
 !
 ! ==================================================================================================
 !
-    subroutine init_octree(this, nb_pts, coordinates, max_pts_by_node)
+    subroutine init_octree(this, nb_pts, coordinates, max_pts_by_node, max_level)
         class(Octree), intent(inout) :: this
-        integer(kind=8), intent(in) :: nb_pts, max_pts_by_node
+        integer(kind=8), intent(in) :: nb_pts, max_pts_by_node, max_level
         real(kind=8), intent(in) :: coordinates(3, nb_pts)
 !
         integer(kind=8), allocatable :: sub_pts(:)
         integer(kind=8) :: i_pt, i_dim
 !
         this%max_pts_by_node = max_pts_by_node
+        this%max_level = max_level
 !
         this%xmin = R8MAEM()
         this%xmax = -R8MAEM()
@@ -261,6 +264,7 @@ contains
 !
         this%node%xmin = this%xmin
         this%node%dx = 0.d0
+        this%node%level = 0
         do i_dim = 1, this%dim
             this%node%dx(i_dim) = (this%xmax(i_dim)-this%node%xmin(i_dim))
         end do
@@ -271,27 +275,28 @@ contains
             sub_pts(i_pt) = i_pt
         end do
 !
-        call this%node%split(nb_pts, coordinates, this%dim, max_pts_by_node, nb_pts, sub_pts)
+        call this%node%split(nb_pts, coordinates, this%dim, max_pts_by_node, max_level, &
+                             nb_pts, sub_pts)
         deallocate (sub_pts)
 !
     end subroutine init_octree
 !
 ! ==================================================================================================
 !
-    subroutine split_node(this, nb_pts, coordinates, dim, max_nb_pts, &
+    subroutine split_node(this, nb_pts, coordinates, dim, max_nb_pts, max_level, &
                           nb_sub_pt, list_sub_pt)
         class(OctreeNode), intent(inout) :: this
         integer(kind=8), intent(in) :: nb_pts, dim, nb_sub_pt, list_sub_pt(nb_sub_pt), max_nb_pts
+        integer(kind=8), intent(in) :: max_level
         real(kind=8), intent(in) :: coordinates(3, nb_pts)
 !
         integer(kind=8), allocatable :: sub_pts(:, :, :, :)
         integer(kind=8) :: i_pt, oi(3), pt_id, i, j, k, nb_sub_pts(3, 3, 3), kmax
+        real(kind=8) :: dx_child(3)
 !
-        this%nb_pts_level = nb_sub_pt
-        this%nb_pts = 0
+        this%nb_pts = nb_sub_pt
         this%dim = dim
-        if (nb_sub_pt <= max_nb_pts) then
-            this%nb_pts = nb_sub_pt
+        if (nb_sub_pt <= max_nb_pts .or. this%level == max_level) then
             if (nb_sub_pt > 0) then
                 allocate (this%list_pts(nb_sub_pt))
                 allocate (this%coordinates(3, nb_sub_pt))
@@ -310,12 +315,13 @@ contains
 !
             allocate (this%children(nb_div, nb_div, kmax))
 !
-            this%dx_child = this%dx/real(nb_div, kind=8)
+            dx_child = this%dx/real(nb_div, kind=8)
 !
             do i = 1, nb_div
                 do j = 1, nb_div
                     do k = 1, kmax
-                        this%children(i, j, k)%dx = this%dx_child
+                        this%children%level = this%level+1
+                        this%children(i, j, k)%dx = dx_child
                         this%children(i, j, k)%xmin(1) = this%xmin(1)+ &
                                                          (i-1)*this%children(i, j, k)%dx(1)
                         this%children(i, j, k)%xmin(2) = this%xmin(2)+ &
@@ -340,6 +346,7 @@ contains
                 do j = 1, nb_div
                     do k = 1, kmax
                         call this%children(i, j, k)%split(nb_pts, coordinates, dim, max_nb_pts, &
+                                                          max_level, &
                                                           nb_sub_pts(i, j, k), sub_pts(i, j, k, :))
                     end do
                 end do
@@ -353,6 +360,9 @@ contains
 ! ==================================================================================================
 !
     subroutine get_pts_around_tree(this, coor, distance, max_nb_pts, nb_pts, list_pts)
+!
+!       Find at points inside the boundign box around the given point.
+!
         class(Octree), intent(inout) :: this
         integer(kind=8), intent(in) :: max_nb_pts
         integer(kind=8), intent(inout) :: nb_pts, list_pts(max_nb_pts)
@@ -371,6 +381,35 @@ contains
 !
     end subroutine
 !
+!
+! ==================================================================================================
+!
+    subroutine get_al1_pts_around_tree(this, coor, distance, max_nb_pts, nb_pts, list_pts)
+!
+!       Find at least one point around the given point.
+!       Double size of bounding box until necessary
+!
+        class(Octree), intent(inout) :: this
+        integer(kind=8), intent(in) :: max_nb_pts
+        integer(kind=8), intent(inout) :: nb_pts, list_pts(max_nb_pts)
+        real(kind=8), intent(in) :: coor(3), distance
+!
+        type(BBox) :: box
+!
+        box%center = coor
+        box%h = distance
+        box%dim = this%dim
+!
+        nb_pts = 0
+        do while (nb_pts == 0)
+            call this%node%get_pts_around(box, max_nb_pts, nb_pts, list_pts)
+            box%h = 2.d0*box%h
+        end do
+!
+        ASSERT(nb_pts <= max_nb_pts)
+!
+    end subroutine
+!
 ! ==================================================================================================
 !
     recursive subroutine get_pts_around_node(this, box, max_nb_pts, nb_pts, list_pts)
@@ -381,14 +420,9 @@ contains
 !
         integer(kind=8) :: ocx, ocy, ocz, ocz_max, i_pt
 !
-        ocz_max = nb_div
-        if (this%dim < 3) then
-            ocz_max = 1
-        end if
-!
-        if (this%nb_pts_level > 0) then
+        if (this%nb_pts > 0) then
             if (box%has_intersection(this)) then
-                if (this%nb_pts > 0) then
+                if (allocated(this%coordinates)) then
                     do i_pt = 1, this%nb_pts
                         if (box%pts_is_inside(this%coordinates(:, i_pt))) then
                             nb_pts = nb_pts+1
@@ -396,6 +430,11 @@ contains
                         end if
                     end do
                 else
+                    ocz_max = nb_div
+                    if (this%dim < 3) then
+                        ocz_max = 1
+                    end if
+!
                     do ocx = 1, nb_div
                         do ocy = 1, nb_div
                             do ocz = 1, ocz_max

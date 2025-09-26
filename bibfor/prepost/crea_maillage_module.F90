@@ -656,8 +656,6 @@ contains
             end do
         end do
 !
-        call this%update()
-!
         if (this%info >= 2) then
             call cpu_time(end)
             print *, "... in ", end-start, " seconds."
@@ -679,7 +677,7 @@ contains
         aster_logical, intent(in) :: double_nodes, double_cells
         real(kind=8), intent(in) :: tole
 !
-        integer(kind=8), parameter :: max_pt = 10
+        integer(kind=8), parameter :: max_pt = 10, max_level = 10
         integer(kind=8) :: i_edge, e1, e2, n1, n2, i_face, f1, f2, ns, count
         integer(kind=8) :: i, j, i_node, j_node, nno, i_volu, v_id, cell_i, cell_j, k, nb_cells
         integer(kind=8) :: nc1(27), nc2(27), list_pts(5*max_pt), nb_pts, nnos
@@ -836,7 +834,7 @@ contains
                     octree_map(nb_pts) = i_node
                 end if
             end do
-            call n_octree%init(nb_pts, coor, max_pt)
+            call n_octree%init(nb_pts, coor, max_pt, max_level)
             deallocate (coor)
             count = 0
             do i_node = 1, this%nb_total_nodes
