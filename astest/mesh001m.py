@@ -78,6 +78,10 @@ test.assertEqual(
     connect[28], [9, 8, 10, 11, 4, 5, 7, 6, 28, 30, 29, 31, 23, 21, 25, 27, 16, 19, 18, 17]
 )
 
+octree_3d = mesh_3d_fix.getOctreeMesh()
+test.assertEqual(octree_3d.getNumberOfNodes(), 201)
+test.assertEqual(octree_3d.getNumberOfCells(), 92)
+
 is_ok = 0
 try:
     mesh_2d = LIRE_MAILLAGE(FORMAT="ASTER", UNITE=21)
@@ -120,6 +124,9 @@ test.assertEqual(connect[7], [5, 4, 2, 3, 12, 8, 9, 11])
 test.assertEqual(mesh_2d_fix.getNodes("TEST_NO"), [12, 0])
 test.assertEqual(mesh_2d_fix.getCells("TEST_MA"), [8])
 
+octree_2d = mesh_2d_fix.getOctreeMesh()
+test.assertEqual(octree_2d.getNumberOfNodes(), 35)
+test.assertEqual(octree_2d.getNumberOfCells(), 22)
 
 # test for reorientation
 

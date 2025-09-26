@@ -245,7 +245,7 @@ VectorLong ParallelMesh::getCells( const std::string name ) const {
 VectorLong ParallelMesh::getCells( const VectorString &names ) const {
 
     if ( names.empty() ) {
-        return irange( (ASTERINTEGER)0, ( ASTERINTEGER )( getNumberOfCells() - 1 ) );
+        return irange( (ASTERINTEGER)0, (ASTERINTEGER)( getNumberOfCells() - 1 ) );
     }
 
     std::vector< VectorLong > cells;
@@ -270,7 +270,7 @@ VectorLong ParallelMesh::getNodes( const std::string name, const bool localNumbe
     CALL_JEMARQ();
     VectorLong listOfNodes;
     if ( name.empty() ) {
-        listOfNodes = irange( (ASTERINTEGER)0, ( ASTERINTEGER )( getNumberOfNodes() - 1 ) );
+        listOfNodes = irange( (ASTERINTEGER)0, (ASTERINTEGER)( getNumberOfNodes() - 1 ) );
     } else if ( !hasGroupOfNodes( name, true ) ) {
         CALL_JEDEMA();
         return VectorLong();

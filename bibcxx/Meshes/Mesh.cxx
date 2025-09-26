@@ -106,7 +106,7 @@ VectorLong Mesh::getCells( const std::string name ) const {
 VectorLong Mesh::getCells( const VectorString &names ) const {
 
     if ( names.empty() ) {
-        return irange( (ASTERINTEGER)0, ( ASTERINTEGER )( getNumberOfCells() - 1 ) );
+        return irange( (ASTERINTEGER)0, (ASTERINTEGER)( getNumberOfCells() - 1 ) );
     }
 
     std::vector< VectorLong > cells;
@@ -129,7 +129,7 @@ VectorLong Mesh::getCells( const VectorString &names ) const {
 VectorLong Mesh::getNodes( const VectorString &names, const bool, const ASTERINTEGER ) const {
 
     if ( names.empty() ) {
-        return irange( (ASTERINTEGER)0, ( ASTERINTEGER )( getNumberOfNodes() - 1 ) );
+        return irange( (ASTERINTEGER)0, (ASTERINTEGER)( getNumberOfNodes() - 1 ) );
     }
 
     std::vector< VectorLong > nodes;
@@ -232,6 +232,14 @@ MeshPtr Mesh::fix( const bool remove_orphan, const bool positive_measure, const 
     fdn = static_cast< int >( double_nodes );
     fdc = static_cast< int >( double_cells );
     CALL_FIX_MESH( getName(), mesh_out->getName(), &fro, &fpv, &fon, &fdn, &fdc, &tole, &inf );
+    mesh_out->build();
+    return mesh_out;
+}
+
+MeshPtr Mesh::getOctreeMesh( const ASTERINTEGER nb_max_pt, const ASTERINTEGER nb_max_level ) {
+    auto mesh_out = std::make_shared< Mesh >();
+    ASTERINTEGER max_pt = nb_max_pt, max_level = nb_max_level;
+    CALL_EXPORT_OCTREE( getName(), mesh_out->getName(), &max_pt, &max_level );
     mesh_out->build();
     return mesh_out;
 }

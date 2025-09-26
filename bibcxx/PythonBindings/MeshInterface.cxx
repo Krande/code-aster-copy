@@ -212,6 +212,17 @@ Returns:
               py::arg( "remove_orphan" ) = true, py::arg( "positive_measure" ) = true,
               py::arg( "outward_normal" ) = true, py::arg( "double_nodes" ) = true,
               py::arg( "double_cells" ) = true, py::arg( "tole" ) = 1e-7, py::arg( "info" ) = 1 )
+        .def( "getOctreeMesh", &Mesh::getOctreeMesh, R"(
+Get the octree mesh.
+
+Arguments:
+    nb_max_pt (int) : maximum number of points for the last level.
+    nb_max_level (int) : maximum number of level.
+
+Returns:
+    Mesh: octree mesh.
+        )",
+              py::arg( "nb_max_pt" ) = 1, py::arg( "nb_max_level" ) = 100 )
         .def( "convertToLinear", &Mesh::convertToLinear, R"(
 Convert the mesh to a linear one.
 

@@ -909,6 +909,17 @@ class Mesh(BaseMesh):
             list[int]: Indexes of the nodes.
         """
 
+    def getOctreeMesh(self, nb_max_pt=1, nb_max_level=100):
+        """Get the octree mesh.
+
+        Arguments:
+            nb_max_pt (int) : maximum number of points for the last level.
+            nb_max_level (int) : maximum number of level.
+
+        Returns:
+            Mesh: octree mesh.
+        """
+
     def hasGroupOfCells(self, group_name, local=False):
         """The group exists in the mesh
 

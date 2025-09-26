@@ -174,6 +174,7 @@ module crea_maillage_module
 ! ----- member functions
     contains
         procedure, public, pass :: add_initial_cell
+        procedure, public, pass :: add_cell
         procedure, public, pass :: check_mesh
         procedure, public, pass :: clean => clean_mesh
         procedure, public, pass :: convert_cells
@@ -184,7 +185,7 @@ module crea_maillage_module
         procedure, public, pass :: refine
         procedure, private, pass :: add_edge
         procedure, private, pass :: add_face
-        procedure, private, pass :: add_node
+        procedure, public, pass :: add_node
         procedure, private, pass :: add_point1
         procedure, private, pass :: add_volume
         procedure, private, pass :: barycenter
@@ -204,7 +205,7 @@ module crea_maillage_module
         procedure, private, pass :: owner_cell
         procedure, private, pass :: refine_cell
         procedure, private, pass :: sub_cells
-        procedure, private, pass :: update
+        procedure, public, pass :: update
         procedure, private, pass :: fix_measure
         procedure, private, pass :: fix_normal_face
         procedure, private, pass :: build_inv_conn
@@ -558,7 +559,9 @@ contains
         allocate (this%edges(this%max_edges))
         allocate (this%nodes(this%max_nodes))
         allocate (this%renumber_nodes(this%max_nodes))
-        allocate (this%lastGhostsLayer(this%max_nodes))
+        if (this%isHPC) then
+            allocate (this%lastGhostsLayer(this%max_nodes))
+        end if
         allocate (this%faces_dege(this%max_faces_dege))
         allocate (this%edges_dege(this%max_edges_dege))
 !
@@ -634,7 +637,6 @@ contains
             case default
                 ASSERT(ASTER_FALSE)
             end select
-            this%renumber_cells(i_cell) = i_cell
         end do
 !
         do i_type = 1, nb_type
@@ -855,6 +857,7 @@ contains
 !
             if (this%info >= 1) then
                 print *, "- ", count, " double nodes removed"
+                print *, "level: ", n_octree%get_number_of_level()
             end if
 !
             call n_octree%free()
@@ -980,7 +983,7 @@ contains
 ! --- Keep only necessary nodes
         call this%update()
 !
-        if (this%info >= 0) then
+        if (this%info >= 1) then
             call cpu_time(end)
             print *, "... in ", end-start, " seconds."
         end if
@@ -1012,16 +1015,36 @@ contains
             end if
         end do
 !
-        deallocate (this%nodes)
-        deallocate (this%edges)
-        deallocate (this%faces)
-        deallocate (this%volumes)
-        deallocate (this%cells)
-        deallocate (this%lastGhostsLayer)
-        deallocate (this%faces_dege)
-        deallocate (this%edges_dege)
-        deallocate (this%renumber_nodes)
-        deallocate (this%renumber_cells)
+        if (allocated(this%nodes)) then
+            deallocate (this%nodes)
+        end if
+        if (allocated(this%edges)) then
+            deallocate (this%edges)
+        end if
+        if (allocated(this%faces)) then
+            deallocate (this%faces)
+        end if
+        if (allocated(this%volumes)) then
+            deallocate (this%volumes)
+        end if
+        if (allocated(this%cells)) then
+            deallocate (this%cells)
+        end if
+        if (allocated(this%lastGhostsLayer)) then
+            deallocate (this%lastGhostsLayer)
+        end if
+        if (allocated(this%faces_dege)) then
+            deallocate (this%faces_dege)
+        end if
+        if (allocated(this%edges_dege)) then
+            deallocate (this%edges_dege)
+        end if
+        if (allocated(this%renumber_nodes)) then
+            deallocate (this%renumber_nodes)
+        end if
+        if (allocated(this%renumber_cells)) then
+            deallocate (this%renumber_cells)
+        end if
 !
     end subroutine
 !
@@ -1478,11 +1501,75 @@ contains
             ASSERT(ASTER_FALSE)
         end if
 !
+        if (this%nb_total_cells > this%max_cells) then
+            call this%increase_memory("CELLS   ", 2*this%max_cells)
+        end if
+!
         this%cells(cell_id)%type = cell_type
         this%cells(cell_id)%dim = cell_dim
         this%cells(cell_id)%id = cell_id
         this%cells(cell_id)%ss_id = cell_index
         this%cells(cell_id)%nodes(1:nb_nodes) = cell_nodes(1:nb_nodes)
+        this%renumber_cells(cell_id) = cell_id
+!
+    end subroutine
+!
+! ==================================================================================================
+!
+    subroutine add_cell(this, typ, nodes, sub_entity)
+!
+        implicit none
+!
+        class(Mmesh), intent(inout) :: this
+        integer(kind=8), intent(in) :: nodes(*), typ
+        aster_logical, intent(in) :: sub_entity
+!
+        integer(kind=8) :: cell_type, cell_dim, cell_nodes(27), nb_nodes, cell_index, i_node
+!
+        this%nb_cells = this%nb_cells+1
+        this%nb_total_cells = this%nb_total_cells+1
+        if (this%nb_total_cells > this%max_cells) then
+            call this%increase_memory("CELLS   ", 2*this%max_cells)
+        end if
+
+        cell_type = typ
+        cell_dim = this%converter%dim(cell_type)
+!
+        nb_nodes = this%converter%nno(cell_type)
+        cell_nodes = 0
+        do i_node = 1, nb_nodes
+            cell_nodes(i_node) = nodes(i_node)
+        end do
+!
+        if (this%debug) then
+            print *, "Cell ", this%nb_cells, ": ", cell_type, &
+                this%converter%name(cell_type), cell_dim
+        end if
+!
+        cell_index = 0
+        if (sub_entity) then
+            if (cell_dim == 3) then
+                cell_index = this%add_volume(cell_type, cell_nodes)
+                this%volumes(cell_index)%cell_id = this%nb_cells
+            elseif (cell_dim == 2) then
+                cell_index = this%add_face(cell_type, cell_nodes)
+                this%faces(cell_index)%cell_id = this%nb_cells
+            elseif (cell_dim == 1) then
+                cell_index = this%add_edge(cell_type, cell_nodes)
+                this%edges(cell_index)%cell_id = this%nb_cells
+            elseif (cell_dim == 0) then
+                cell_index = this%add_point1(cell_type, cell_nodes)
+            else
+                ASSERT(ASTER_FALSE)
+            end if
+        end if
+!
+        this%cells(this%nb_cells)%type = cell_type
+        this%cells(this%nb_cells)%dim = cell_dim
+        this%cells(this%nb_cells)%id = this%nb_cells
+        this%cells(this%nb_cells)%ss_id = cell_index
+        this%cells(this%nb_cells)%nodes(1:nb_nodes) = cell_nodes(1:nb_nodes)
+        this%renumber_cells(this%nb_cells) = this%nb_cells
 !
     end subroutine
 !
@@ -1786,7 +1873,6 @@ contains
         this%nb_total_nodes = this%nb_total_nodes+1
         if (this%nb_nodes > this%max_nodes) then
             call this%increase_memory("NODES   ", 2*this%max_nodes)
-            call this%increase_memory("RE_NODES", 2*this%max_nodes)
             ASSERT(this%nb_nodes <= this%max_nodes)
         end if
         node_id = this%nb_nodes
@@ -1972,11 +2058,14 @@ contains
 !
 ! --- Create .LASTGHOLAYER
 !
-        call wkvect(mesh_out//'.LASTGHOLAYER', 'G V S', max(1, this%lastLayerSize), vi4=v_lastlayer)
-        call jeecra(mesh_out//'.LASTGHOLAYER', 'LONUTI', this%lastLayerSize)
-        do i_node = 1, this%lastLayerSize
-            v_lastlayer(i_node) = this%lastGhostsLayer(i_node)-1_4
-        end do
+        if (this%isHPC) then
+            call wkvect(mesh_out//'.LASTGHOLAYER', 'G V S', max(1, this%lastLayerSize), &
+                        vi4=v_lastlayer)
+            call jeecra(mesh_out//'.LASTGHOLAYER', 'LONUTI', this%lastLayerSize)
+            do i_node = 1, this%lastLayerSize
+                v_lastlayer(i_node) = this%lastGhostsLayer(i_node)-1_4
+            end do
+        end if
 
         if (this%info >= 2) then
             call cpu_time(end)
@@ -3303,12 +3392,23 @@ contains
             deallocate (nodes)
             this%max_nodes = new_size
             ! ghosts
-            allocate (lastGhostsLayer(old_size))
-            lastGhostsLayer(1:old_size) = this%lastGhostsLayer(1:old_size)
-            deallocate (this%lastGhostsLayer)
-            allocate (this%lastGhostsLayer(new_size))
-            this%lastGhostsLayer(1:old_size) = lastGhostsLayer(1:old_size)
-            deallocate (lastGhostsLayer)
+            if (this%isHPC) then
+                allocate (lastGhostsLayer(old_size))
+                lastGhostsLayer(1:old_size) = this%lastGhostsLayer(1:old_size)
+                deallocate (this%lastGhostsLayer)
+                allocate (this%lastGhostsLayer(new_size))
+                this%lastGhostsLayer(1:old_size) = lastGhostsLayer(1:old_size)
+                deallocate (lastGhostsLayer)
+            end if
+            ! renum
+            old_size = size(this%renumber_nodes)
+            allocate (list(old_size))
+            list(1:old_size) = this%renumber_nodes(1:old_size)
+            deallocate (this%renumber_nodes)
+            allocate (this%renumber_nodes(new_size))
+            this%renumber_nodes(1:old_size) = list(1:old_size)
+            this%renumber_nodes(old_size+1:new_size) = 0
+            deallocate (list)
         elseif (object == "EDGES") then
             old_size = size(this%edges)
             allocate (edges(old_size))
@@ -3365,16 +3465,7 @@ contains
             this%cells(1:old_size) = cells(1:old_size)
             deallocate (cells)
             this%max_cells = new_size
-        elseif (object == "RE_NODES") then
-            old_size = size(this%renumber_nodes)
-            allocate (list(old_size))
-            list(1:old_size) = this%renumber_nodes(1:old_size)
-            deallocate (this%renumber_nodes)
-            allocate (this%renumber_nodes(new_size))
-            this%renumber_nodes(1:old_size) = list(1:old_size)
-            this%renumber_nodes(old_size+1:new_size) = 0
-            deallocate (list)
-        elseif (object == "RE_CELLS") then
+            ! renum
             old_size = size(this%renumber_cells)
             allocate (list(old_size))
             list(1:old_size) = this%renumber_cells(1:old_size)

@@ -110,6 +110,10 @@ extern void DEFSSPPPPPPP( FIX_MESH, fix_mesh, const char *, STRING_SIZE, const c
                           ASTERINTEGER *, ASTERINTEGER *, ASTERINTEGER *, ASTERINTEGER *,
                           ASTERINTEGER *, const ASTERDOUBLE *, ASTERINTEGER * );
 
+#define CALL_EXPORT_OCTREE( a, b, c, d ) CALLOOPP( EXPORT_OCTREE, export_octree, a, b, c, d )
+extern void DEFSSPP( EXPORT_OCTREE, export_octree, const char *, STRING_SIZE, const char *,
+                     STRING_SIZE, ASTERINTEGER *, ASTERINTEGER * );
+
 #define CALL_CMBQBQ( a, b, c, d ) CALLOOPP( CMBQBQ, cmbqbq, a, b, c, d )
 extern void DEFSSPP( CMBQBQ, cmbqbq, const char *, STRING_SIZE, const char *, STRING_SIZE,
                      ASTERINTEGER *, ASTERINTEGER * );
