@@ -51,12 +51,14 @@ module octree_module
         procedure, public, pass :: free => free_node
         procedure, public, pass :: is_strictly_inside => is_strictly_inside_pts
         procedure, public, pass :: find_children
+        procedure, public, pass :: is_leaf
         procedure, private, pass :: get_pts_around => get_pts_around_node
+        procedure, public, pass :: get_number_of_level => get_number_of_level_node
     end type OctreeNode
 !
     type Octree
         real(kind=8) :: xmin(3) = 0.d0, xmax(3) = 0.d0
-        integer(kind=8) :: max_pts_by_node = 1000, max_level = 20, dim = 3, nb_pt = 0
+        integer(kind=8) :: max_pts_by_node = 2, max_level = 50, dim = 3, nb_pt = 0
         integer(kind=8), allocatable :: list_pts(:)
         type(OctreeNode) :: node
 ! ----- member functions
@@ -65,6 +67,7 @@ module octree_module
         procedure, public, pass :: free => free_octree
         procedure, public, pass :: get_pts_around => get_pts_around_tree
         procedure, public, pass :: get_alt_1_pts_around => get_al1_pts_around_tree
+        procedure, public, pass :: get_number_of_level => get_number_of_level_tree
     end type
 !
 !===================================================================================================
@@ -175,6 +178,18 @@ contains
         end if
 !
     end subroutine free_node
+!
+! ==================================================================================================
+!
+!
+    function is_leaf(this) result(leaf)
+        class(OctreeNode), intent(in) :: this
+!
+        aster_logical :: leaf
+!
+        leaf = this%nb_pts == 0 .or. allocated(this%coordinates)
+!
+    end function
 !
 ! ==================================================================================================
 !
@@ -363,7 +378,7 @@ contains
 !
 !       Find at points inside the boundign box around the given point.
 !
-        class(Octree), intent(inout) :: this
+        class(Octree), intent(in) :: this
         integer(kind=8), intent(in) :: max_nb_pts
         integer(kind=8), intent(inout) :: nb_pts, list_pts(max_nb_pts)
         real(kind=8), intent(in) :: coor(3), distance
@@ -389,7 +404,7 @@ contains
 !       Find at least one point around the given point.
 !       Double size of bounding box until necessary
 !
-        class(Octree), intent(inout) :: this
+        class(Octree), intent(in) :: this
         integer(kind=8), intent(in) :: max_nb_pts
         integer(kind=8), intent(inout) :: nb_pts, list_pts(max_nb_pts)
         real(kind=8), intent(in) :: coor(3), distance
@@ -413,7 +428,7 @@ contains
 ! ==================================================================================================
 !
     recursive subroutine get_pts_around_node(this, box, max_nb_pts, nb_pts, list_pts)
-        class(OctreeNode), intent(inout) :: this
+        class(OctreeNode), intent(in) :: this
         integer(kind=8), intent(in) :: max_nb_pts
         integer(kind=8), intent(inout) :: nb_pts, list_pts(max_nb_pts)
         type(BBox), intent(in) :: box
@@ -422,7 +437,7 @@ contains
 !
         if (this%nb_pts > 0) then
             if (box%has_intersection(this)) then
-                if (allocated(this%coordinates)) then
+                if (this%is_leaf()) then
                     do i_pt = 1, this%nb_pts
                         if (box%pts_is_inside(this%coordinates(:, i_pt))) then
                             nb_pts = nb_pts+1
@@ -450,5 +465,45 @@ contains
         ASSERT(nb_pts <= max_nb_pts)
 !
     end subroutine
+!
+! ==================================================================================================
+!
+    integer(kind=8) function get_number_of_level_tree(this)
+!
+!       Find at points inside the boundign box around the given point.
+!
+        class(Octree), intent(in) :: this
+!
+        get_number_of_level_tree = 0
+        get_number_of_level_tree = this%node%get_number_of_level()
+!
+    end function
+!
+! ==================================================================================================
+!
+    recursive integer(kind=8) function get_number_of_level_node(this)
+        class(OctreeNode), intent(in) :: this
+!
+        integer(kind=8) :: ocz_max, ocx, ocy, ocz, child_level
+!
+        get_number_of_level_node = this%level
+        if (.not. this%is_leaf()) then
+            ocz_max = nb_div
+            if (this%dim < 3) then
+                ocz_max = 1
+            end if
+!
+            do ocx = 1, nb_div
+                do ocy = 1, nb_div
+                    do ocz = 1, ocz_max
+                        child_level = this%children(ocx, ocy, ocz)%get_number_of_level()
+                        get_number_of_level_node = max(get_number_of_level_node, &
+                                                       child_level)
+                    end do
+                end do
+            end do
+        end if
+!
+    end function
 !
 end module

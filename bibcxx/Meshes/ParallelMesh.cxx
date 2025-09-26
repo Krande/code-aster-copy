@@ -245,7 +245,7 @@ VectorLong ParallelMesh::getCells( const std::string name ) const {
 VectorLong ParallelMesh::getCells( const VectorString &names ) const {
 
     if ( names.empty() ) {
-        return irange( (ASTERINTEGER)0, (ASTERINTEGER)( getNumberOfCells() - 1 ) );
+        return irange( (ASTERINTEGER)0, ( ASTERINTEGER )( getNumberOfCells() - 1 ) );
     }
 
     std::vector< VectorLong > cells;
@@ -270,7 +270,7 @@ VectorLong ParallelMesh::getNodes( const std::string name, const bool localNumbe
     CALL_JEMARQ();
     VectorLong listOfNodes;
     if ( name.empty() ) {
-        listOfNodes = irange( (ASTERINTEGER)0, (ASTERINTEGER)( getNumberOfNodes() - 1 ) );
+        listOfNodes = irange( (ASTERINTEGER)0, ( ASTERINTEGER )( getNumberOfNodes() - 1 ) );
     } else if ( !hasGroupOfNodes( name, true ) ) {
         CALL_JEDEMA();
         return VectorLong();
@@ -455,13 +455,13 @@ bool ParallelMesh::build() {
     return BaseMesh::build();
 }
 
-ParallelMeshPtr ParallelMesh::fix( const bool remove_orphelan, const bool positive_measure,
+ParallelMeshPtr ParallelMesh::fix( const bool remove_orphan, const bool positive_measure,
                                    const bool outward_normal, const bool double_nodes,
                                    const bool double_cells, const ASTERDOUBLE tole,
                                    const ASTERINTEGER info ) {
     auto mesh_out = std::make_shared< ParallelMesh >();
     ASTERINTEGER inf = info, fro, fpv, fon, fdn, fdc;
-    fro = static_cast< int >( remove_orphelan );
+    fro = static_cast< int >( remove_orphan );
     fpv = static_cast< int >( positive_measure );
     fon = static_cast< int >( outward_normal );
     fdn = static_cast< int >( double_nodes );

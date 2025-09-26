@@ -28,7 +28,6 @@ module crea_maillage_module
 !
 #include "jeveux.h"
 #include "asterf_types.h"
-#include "asterc/r8maem.h"
 #include "asterc/asmpi_comm.h"
 #include "asterc/asmpi_sendrecv_i.h"
 #include "asterc/asmpi_sendrecv_r.h"
@@ -667,17 +666,17 @@ contains
 !
 ! ==================================================================================================
 !
-    subroutine fix_mesh(this, remove_orphelan, outward_normal, positive_measure, double_nodes, &
+    subroutine fix_mesh(this, remove_orphan, outward_normal, positive_measure, double_nodes, &
                         double_cells, tole)
 !
         implicit none
 !
         class(Mmesh), intent(inout) :: this
-        aster_logical, intent(in) :: remove_orphelan, outward_normal, positive_measure
+        aster_logical, intent(in) :: remove_orphan, outward_normal, positive_measure
         aster_logical, intent(in) :: double_nodes, double_cells
         real(kind=8), intent(in) :: tole
 !
-        integer(kind=8), parameter :: max_pt = 10, max_level = 10
+        integer(kind=8), parameter :: max_pt = 10, max_level = 12
         integer(kind=8) :: i_edge, e1, e2, n1, n2, i_face, f1, f2, ns, count
         integer(kind=8) :: i, j, i_node, j_node, nno, i_volu, v_id, cell_i, cell_j, k, nb_cells
         integer(kind=8) :: nc1(27), nc2(27), list_pts(5*max_pt), nb_pts, nnos
@@ -807,7 +806,7 @@ contains
             end if
         end if
 !
-        if (remove_orphelan) then
+        if (remove_orphan) then
             count = 0
             do i_node = 1, this%nb_total_nodes
                 if (this%nodes(i_node)%orphelan) then

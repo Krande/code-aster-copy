@@ -835,7 +835,7 @@ class Mesh(BaseMesh):
 
     def fix(
         self,
-        remove_orphelan=True,
+        remove_orphan=True,
         positive_measure=True,
         outward_normal=True,
         double_nodes=True,
@@ -846,7 +846,7 @@ class Mesh(BaseMesh):
         """Fix potential problems.
 
         Arguments:
-            remove_orphelan (bool) : remove orphelan nodes.
+            remove_orphan (bool) : remove orphelan nodes.
             positive_measure (bool) : reorder nodes to have a positive measure of cells.
             outward_normal (bool) : reorder nodes to have an outward normal for boundary faces.
             double_nodes (bool) : merge double nodes with almost same coordinates.
@@ -15141,7 +15141,7 @@ class ParallelMesh(BaseMesh):
 
     def fix(
         self,
-        remove_orphelan=True,
+        remove_orphan=True,
         positive_measure=True,
         outward_normal=True,
         double_nodes=True,
@@ -15152,7 +15152,7 @@ class ParallelMesh(BaseMesh):
         """Fix potential problems.
 
         Arguments:
-            remove_orphelan (bool) : remove orphelan nodes.
+            remove_orphan (bool) : remove orphelan nodes.
             positive_measure (bool) : reorder nodes to have a positive measure of cells.
             outward_normal (bool) : reorder nodes to have an outward normal for boundary faces.
             double_nodes (bool) : merge double nodes with almost same coordinates.

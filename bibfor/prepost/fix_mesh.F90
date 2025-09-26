@@ -16,7 +16,7 @@
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
 
-subroutine fix_mesh(mesh_in, mesh_out, remove_orphelan, positive_volume, outward_normal, &
+subroutine fix_mesh(mesh_in, mesh_out, remove_orphan, positive_volume, outward_normal, &
                     double_nodes, double_cells, tole, info)
 !
     use crea_maillage_module
@@ -27,14 +27,14 @@ subroutine fix_mesh(mesh_in, mesh_out, remove_orphelan, positive_volume, outward
 #include "asterfort/infoma.h"
 !
     character(len=8), intent(in) :: mesh_in, mesh_out
-    integer(kind=8), intent(in) :: info, remove_orphelan, positive_volume, outward_normal
+    integer(kind=8), intent(in) :: info, remove_orphan, positive_volume, outward_normal
     integer(kind=8), intent(in) :: double_nodes, double_cells
     real(kind=8), intent(in) :: tole
 !
     type(Mmesh) :: mesh_conv
     aster_logical :: ro, on, pv, dn, dc
 !
-    ro = remove_orphelan == 1
+    ro = remove_orphan == 1
     on = outward_normal == 1
     pv = positive_volume == 1
     dn = double_nodes == 1

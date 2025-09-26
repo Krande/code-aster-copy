@@ -295,7 +295,7 @@ Terminate the mesh creation (*for internal use*).
 Fix potential problems.
 
 Arguments:
-    remove_orphelan (bool) : remove orphelan nodes.
+    remove_orphan (bool) : remove orphelan nodes.
     positive_measure (bool) : reorder nodes to have a positive measure of cells.
     outward_normal (bool) : reorder nodes to have an outward normal for boundary faces.
     double_nodes (bool) : merge double nodes with almost same coordinates.
@@ -306,7 +306,7 @@ Arguments:
 Returns:
     Mesh: fixed mesh
         )",
-              py::arg( "remove_orphelan" ) = true, py::arg( "positive_measure" ) = true,
+              py::arg( "remove_orphan" ) = true, py::arg( "positive_measure" ) = true,
               py::arg( "outward_normal" ) = true, py::arg( "double_nodes" ) = true,
               py::arg( "double_cells" ) = true, py::arg( "tole" ) = 1e-7, py::arg( "info" ) = 1 )
         .def( "convertToLinear", &ParallelMesh::convertToLinear, R"(
