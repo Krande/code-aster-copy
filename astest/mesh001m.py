@@ -58,7 +58,7 @@ TEST_TABLE(
     FILTRE=_F(NOM_PARA="TEST", VALE_K="VALEUR  "),
 )
 
-mesh_3d = LIRE_MAILLAGE(FORMAT="ASTER", UNITE=20, VERI_MAIL=_F(VERIF="NON"))
+mesh_3d = LIRE_MAILLAGE(FORMAT="ASTER", UNITE=20, VERI_MAIL=_F(VERIF="NON"), INFO=2)
 connect = mesh_3d.getConnectivity()
 
 test.assertEqual(mesh_3d.getNumberOfNodes(), 34)
@@ -68,7 +68,7 @@ test.assertEqual(
     connect[28], [9, 8, 10, 11, 4, 5, 7, 6, 28, 32, 29, 31, 23, 21, 25, 27, 16, 19, 18, 17]
 )
 
-mesh_3d_fix = mesh_3d.fix(True, 2)
+mesh_3d_fix = mesh_3d.fix(True, info=2)
 connect = mesh_3d_fix.getConnectivity()
 
 test.assertEqual(mesh_3d_fix.getNumberOfNodes(), mesh_3d.getNumberOfNodes() - 2)
@@ -137,7 +137,7 @@ test.assertEqual(connect[0], [5, 1, 8, 16, 20, 17])
 test.assertEqual(connect[1], [1, 2, 6, 5, 9, 11, 12, 16])
 test.assertEqual(connect[2], [5, 1, 0, 4, 8, 16, 15, 21, 14, 17, 20, 19, 18])
 
-mesh_3d_fix = mesh_3d.fix(True, 2)
+mesh_3d_fix = mesh_3d.fix(True, info=2)
 
 connect = mesh_3d_fix.getConnectivity()
 

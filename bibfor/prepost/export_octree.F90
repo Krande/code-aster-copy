@@ -54,8 +54,7 @@ subroutine export_octree(mesh_in, mesh_out, nb_max_pt, nb_max_level)
 !
 ! - Create new mesh
 !
-    call mesh%init(mesh_in)
-    call mesh%update()
+    call mesh%init(mesh_in, convert_max=ASTER_FALSE)
 !
     allocate (coordinates(3, mesh%nb_nodes))
     node_id = 0
@@ -80,8 +79,8 @@ subroutine export_octree(mesh_in, mesh_out, nb_max_pt, nb_max_level)
     mesh_oct%max_nodes = mesh%nb_total_nodes
     mesh_oct%max_cells = 2*mesh%nb_total_nodes
     mesh_oct%isHPC = ASTER_FALSE
+    mesh_oct%convert_max = ASTER_FALSE
 !
-
     allocate (mesh_oct%nodes(mesh_oct%max_nodes))
     allocate (mesh_oct%renumber_nodes(mesh_oct%max_nodes))
     allocate (mesh_oct%cells(mesh_oct%max_cells))

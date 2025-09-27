@@ -169,7 +169,7 @@ module crea_maillage_module
 !
         integer(kind=8), pointer :: v_typema(:) => null()
         aster_logical :: debug = ASTER_FALSE
-        aster_logical :: isHPC
+        aster_logical :: isHPC, convert_max = ASTER_TRUE
         integer(kind=8) :: info = 0
 ! ----- member functions
     contains
@@ -496,13 +496,14 @@ contains
 !
 ! ==================================================================================================
 !
-    subroutine init_mesh(this, mesh_in, info)
+    subroutine init_mesh(this, mesh_in, info, convert_max)
 !
         implicit none
 !
         class(Mmesh), intent(inout) :: this
         character(len=8), intent(in) :: mesh_in
         integer(kind=8), optional :: info
+        aster_logical, optional :: convert_max
 ! --------------------------------------------------------------------------------------------------
 ! The idea is to read a given mesh (mesh_in). Internally, all the cells are stored with all nodes
 ! possibles for a cell. The internal cells stored are POI1, SEG3, SEG4, TRIA7, QUAD9,
@@ -526,6 +527,10 @@ contains
 !
         if (present(info)) then
             this%info = info
+        end if
+!
+        if (present(convert_max)) then
+            this%convert_max = convert_max
         end if
 !
         if (this%info >= 2) then
@@ -679,7 +684,7 @@ contains
         real(kind=8), intent(in) :: tole
 !
         integer(kind=8), parameter :: max_pt = 10, max_level = 12
-        integer(kind=8) :: i_edge, e1, e2, n1, n2, i_face, f1, f2, ns, count
+        integer(kind=8) :: i_edge, e1, e2, n1, n2, i_face, f1, f2, ns, count, i_cell, node_id
         integer(kind=8) :: i, j, i_node, j_node, nno, i_volu, v_id, cell_i, cell_j, k, nb_cells
         integer(kind=8) :: nc1(27), nc2(27), list_pts(5*max_pt), nb_pts, nnos
         integer(kind=8), allocatable :: octree_map(:), inv_con(:), offset_con(:)
@@ -692,6 +697,33 @@ contains
             print *, "Fixing mesh..."
             call cpu_time(start)
         end if
+!
+! --- Clean mesh
+!
+! --- Keep initial orphelan nodes
+        do i_node = 1, this%nb_total_nodes
+            this%nodes(i_node)%keep = ASTER_FALSE
+            if (this%nodes(i_node)%orphelan) then
+                this%nodes(i_node)%keep = ASTER_TRUE
+            end if
+        end do
+!
+! --- Keep only nodes of cells
+        do i_cell = 1, this%nb_total_cells
+            if (this%cells(i_cell)%keep) then
+                nno = this%converter%nno(this%cells(i_cell)%type)
+!
+                if (this%debug) then
+                    print *, "Cell: ", i_cell, this%cells(i_cell)%type, nno, &
+                        this%cells(i_cell)%nodes(1:nno)
+                end if
+!
+                do i_node = 1, nno
+                    node_id = this%cells(i_cell)%nodes(i_node)
+                    this%nodes(node_id)%keep = ASTER_TRUE
+                end do
+            end if
+        end do
 !
         do i_edge = 1, this%nb_edges_dege
             e1 = this%edges_dege(2*(i_edge-1)+1)
@@ -857,7 +889,6 @@ contains
 !
             if (this%info >= 1) then
                 print *, "- ", count, " double nodes removed"
-                print *, "level: ", n_octree%get_number_of_level()
             end if
 !
             call n_octree%free()
@@ -1633,7 +1664,9 @@ contains
             this%faces(face_id)%volumes(this%faces(face_id)%nb_volumes) = volume_id
         end do
 !
-        call this%convert_volume(volume_id)
+        if (this%convert_max) then
+            call this%convert_volume(volume_id)
+        end if
 !
         if (this%debug) then
             print *, "Add volume: ", volume_id
@@ -1731,7 +1764,9 @@ contains
             this%nodes(nno_sort(1))%nb_faces = this%nodes(nno_sort(1))%nb_faces+1
             this%nodes(nno_sort(1))%faces(this%nodes(nno_sort(1))%nb_faces) = face_id
 !
-            call this%convert_face(face_id)
+            if (this%convert_max) then
+                call this%convert_face(face_id)
+            end if
         end if
 !
         if (this%debug) then
@@ -1810,10 +1845,12 @@ contains
             this%nodes(nno_sort(1))%nb_edges = this%nodes(nno_sort(1))%nb_edges+1
             this%nodes(nno_sort(1))%edges(this%nodes(nno_sort(1))%nb_edges) = edge_id
 !
-            if (present(face_id)) then
-                call this%convert_edge(edge_id, face_id)
-            else
-                call this%convert_edge(edge_id)
+            if (this%convert_max) then
+                if (present(face_id)) then
+                    call this%convert_edge(edge_id, face_id)
+                else
+                    call this%convert_edge(edge_id)
+                end if
             end if
         end if
 !
@@ -3153,6 +3190,9 @@ contains
             print *, "Refining mesh..."
             call cpu_time(start)
         end if
+!
+        ASSERT(this%convert_max)
+!
         do i_level = 1, level
             if (this%info >= 2) then
                 print *, "- Level ", i_level
@@ -3875,13 +3915,13 @@ contains
         modif = ASTER_FALSE
         if (cell_dim == 3) then
             select case (this%volumes(cell_id)%type)
-            case (MT_HEXA27)
+            case (MT_HEXA8, MT_HEXA9, MT_HEXA20, MT_HEXA27)
                 typema = "HE8"
-            case (MT_TETRA15)
+            case (MT_TETRA4, MT_TETRA10, MT_TETRA15)
                 typema = "TE4"
-            case (MT_PENTA21)
+            case (MT_PENTA6, MT_PENTA7, MT_PENTA15, MT_PENTA18, MT_PENTA21)
                 typema = "PY5"
-            case (MT_PYRAM19)
+            case (MT_PYRAM5, MT_PYRAM13, MT_PYRAM19)
                 typema = "PE6"
             case default
                 ASSERT(ASTER_FALSE)
@@ -3909,7 +3949,7 @@ contains
                 modif = ASTER_TRUE
                 nodes = this%volumes(cell_id)%nodes
                 select case (this%volumes(cell_id)%type)
-                case (MT_HEXA27)
+                case (MT_HEXA8, MT_HEXA9, MT_HEXA20, MT_HEXA27)
                     this%volumes(cell_id)%nodes(1:4) = [nodes(1), nodes(4), nodes(3), nodes(2)]
                     this%volumes(cell_id)%nodes(5:8) = [nodes(5), nodes(8), nodes(7), nodes(6)]
                     this%volumes(cell_id)%nodes(9:12) = [nodes(12), nodes(11), nodes(10), nodes(9)]
@@ -3920,12 +3960,12 @@ contains
                     this%volumes(cell_id)%nodes(21:26) = [nodes(21), nodes(25), nodes(24), &
                                                           nodes(23), nodes(22), nodes(26)]
                     this%volumes(cell_id)%nodes(27) = nodes(27)
-                case (MT_TETRA15)
+                case (MT_TETRA4, MT_TETRA10, MT_TETRA15)
                     this%volumes(cell_id)%nodes(1:4) = [nodes(1), nodes(3), nodes(2), nodes(4)]
                     this%volumes(cell_id)%nodes(5:7) = [nodes(7), nodes(6), nodes(5)]
                     this%volumes(cell_id)%nodes(8:10) = [nodes(8), nodes(9), nodes(10)]
                     this%volumes(cell_id)%nodes(11:15) = nodes(11:15)
-                case (MT_PENTA21)
+                case (MT_PENTA6, MT_PENTA7, MT_PENTA15, MT_PENTA18, MT_PENTA21)
                     this%volumes(cell_id)%nodes(1:3) = [nodes(1), nodes(3), nodes(2)]
                     this%volumes(cell_id)%nodes(4:6) = [nodes(4), nodes(6), nodes(5)]
                     this%volumes(cell_id)%nodes(7:9) = [nodes(9), nodes(8), nodes(7)]
@@ -3933,7 +3973,7 @@ contains
                     this%volumes(cell_id)%nodes(13:15) = [nodes(15), nodes(14), nodes(13)]
                     this%volumes(cell_id)%nodes(16:18) = [nodes(18), nodes(17), nodes(16)]
                     this%volumes(cell_id)%nodes(19:21) = nodes(19:21)
-                case (MT_PYRAM19)
+                case (MT_PYRAM5, MT_PYRAM13, MT_PYRAM19)
                     this%volumes(cell_id)%nodes(1:4) = [nodes(1), nodes(4), nodes(3), nodes(2)]
                     this%volumes(cell_id)%nodes(5) = nodes(5)
                     this%volumes(cell_id)%nodes(6:9) = [nodes(9), nodes(8), nodes(7), nodes(6)]

@@ -307,7 +307,7 @@ subroutine chckma(nomu, dtol)
     end do
 
     if (hasQuadraticCell) then
-        call mesh_conv%init(nomu)
+        call mesh_conv%init(nomu, convert_max=ASTER_FALSE)
         if (mesh_conv%nb_edges_dege > 0) then
             do ima = 1, mesh_conv%nb_edges_dege
                 ma1 = mesh_conv%edges_dege(2*(ima-1)+1)
