@@ -384,7 +384,7 @@ verification_test_pixi:
 # --- variant using code-aster-reqs package for nightly build / weekly testing
 prepare_pkg:
   image:
-    name: nexus.retd.edf.fr:5012/debian:trixie
+    name: nexus.retd.edf.fr:5012/debian:bookworm
   variables:
     OSNAME: pkg
   extends: .prepare
@@ -400,7 +400,7 @@ prepare_pkg:
 
 compile_pkg:
   image:
-    name: nexus.retd.edf.fr:5012/debian:trixie
+    name: nexus.retd.edf.fr:5012/debian:bookworm
   variables:
     OSNAME: pkg
     ASTER_REQS_CONFIRM: y
@@ -415,9 +415,9 @@ compile_pkg:
 
 verification_test_pkg:
   image:
-    name: nexus.retd.edf.fr:5012/debian:trixie
+    name: nexus.retd.edf.fr:5012/debian:bookworm
   variables:
-    OSNAME: pixi
+    OSNAME: pkg
     OMPI_MCA_plm: ^rsh
   extends: .verification_test
   needs:
