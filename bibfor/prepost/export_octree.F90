@@ -68,16 +68,16 @@ subroutine export_octree(mesh_in, mesh_out, nb_max_pt, nb_max_level)
 !
 ! - Compute octree
 !
-    call oct%init(mesh%nb_nodes, coordinates, nb_max_pt, nb_max_level)
+    call oct%init(to_aster_int(mesh%nb_nodes), coordinates, nb_max_pt, nb_max_level)
     deallocate (coordinates)
     call mesh%clean()
 !
 ! - create octree mesh
 !
     call mesh_oct%converter%init()
-    mesh_oct%dim_mesh = 3
+    mesh_oct%dim_mesh = 3_4
     mesh_oct%max_nodes = mesh%nb_total_nodes
-    mesh_oct%max_cells = 2*mesh%nb_total_nodes
+    mesh_oct%max_cells = 2_4*mesh%nb_total_nodes
     mesh_oct%isHPC = ASTER_FALSE
     mesh_oct%convert_max = ASTER_FALSE
 !
@@ -92,7 +92,7 @@ subroutine export_octree(mesh_in, mesh_out, nb_max_pt, nb_max_level)
 !
 ! - Fix cells
 !
-    call mesh_oct%fix(ASTER_FALSE, ASTER_FALSE, ASTER_FALSE, ASTER_TRUE, ASTER_TRUE, 1.d-10)
+    call mesh_oct%fix(ASTER_FALSE, ASTER_FALSE, ASTER_FALSE, ASTER_TRUE, ASTER_FALSE, 1.d-10)
 !
 ! - Copy mesh
 !
@@ -113,23 +113,29 @@ contains
         type(OctreeNode), intent(in) :: ocn
 !
         integer(kind=8) :: ocx, ocy, ocz, ocz_max, nodes(8)
+        real(kind=8) :: coor(3)
 !
         if (ocn%is_leaf()) then
 !
 ! - Add nodes
 !
-            nodes(1) = moct%add_node([ocn%xmin(1), ocn%xmin(2), ocn%xmin(3)], 1)
-            nodes(2) = moct%add_node([ocn%xmin(1)+ocn%dx(1), ocn%xmin(2), ocn%xmin(3)], 1)
-            nodes(3) = moct%add_node([ocn%xmin(1)+ocn%dx(1), ocn%xmin(2)+ocn%dx(2), ocn%xmin(3)], 1)
-            nodes(4) = moct%add_node([ocn%xmin(1), ocn%xmin(2)+ocn%dx(2), ocn%xmin(3)], 1)
+            coor = [ocn%xmin(1), ocn%xmin(2), ocn%xmin(3)]
+            nodes(1) = to_aster_int(moct%add_node(coor, 1_4))
+            coor = [ocn%xmin(1)+ocn%dx(1), ocn%xmin(2), ocn%xmin(3)]
+            nodes(2) = to_aster_int(moct%add_node(coor, 1_4))
+            coor = [ocn%xmin(1)+ocn%dx(1), ocn%xmin(2)+ocn%dx(2), ocn%xmin(3)]
+            nodes(3) = to_aster_int(moct%add_node(coor, 1_4))
+            coor = [ocn%xmin(1), ocn%xmin(2)+ocn%dx(2), ocn%xmin(3)]
+            nodes(4) = to_aster_int(moct%add_node(coor, 1_4))
             if (ocn%dim == 3) then
-                nodes(5) = moct%add_node([ocn%xmin(1), ocn%xmin(2), ocn%xmin(3)+ocn%dx(3)], 1)
-                nodes(6) = moct%add_node([ocn%xmin(1)+ocn%dx(1), ocn%xmin(2), &
-                                          ocn%xmin(3)+ocn%dx(3)], 1)
-                nodes(7) = moct%add_node([ocn%xmin(1)+ocn%dx(1), ocn%xmin(2)+ocn%dx(2), &
-                                          ocn%xmin(3)+ocn%dx(3)], 1)
-                nodes(8) = moct%add_node([ocn%xmin(1), ocn%xmin(2)+ocn%dx(2), &
-                                          ocn%xmin(3)+ocn%dx(3)], 1)
+                coor = [ocn%xmin(1), ocn%xmin(2), ocn%xmin(3)+ocn%dx(3)]
+                nodes(5) = to_aster_int(moct%add_node(coor, 1_4))
+                coor = [ocn%xmin(1)+ocn%dx(1), ocn%xmin(2), ocn%xmin(3)+ocn%dx(3)]
+                nodes(6) = to_aster_int(moct%add_node(coor, 1_4))
+                coor = [ocn%xmin(1)+ocn%dx(1), ocn%xmin(2)+ocn%dx(2), ocn%xmin(3)+ocn%dx(3)]
+                nodes(7) = to_aster_int(moct%add_node(coor, 1_4))
+                coor = [ocn%xmin(1), ocn%xmin(2)+ocn%dx(2), ocn%xmin(3)+ocn%dx(3)]
+                nodes(8) = to_aster_int(moct%add_node(coor, 1_4))
             end if
 !
 ! - Add cells - not save sub_entity to save memory
