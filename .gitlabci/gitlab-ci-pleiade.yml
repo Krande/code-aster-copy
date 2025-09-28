@@ -428,7 +428,7 @@ verification_test_pkg:
   script:
     - test "$(date +%u)" -ne ${WEEKLY_RUN} && echo "not run" && exit 0
     - apt-get update
-    - apt-get install -y cmake git
+    - apt-get install -y cmake git wget
     - .gitlabci/add-allow-run-as-root.sh
     - !reference [.verification_test, script]
   allow_failure: true
