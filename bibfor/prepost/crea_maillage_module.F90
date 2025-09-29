@@ -887,7 +887,7 @@ contains
             do i_node = one_ip, this%nb_total_nodes
                 if (this%nodes(i_node)%keep) then
                     coor_i = this%nodes(i_node)%coor
-                    call n_octree%get_pts_around(coor_i, tole, size(list_pts), nb_pts, list_pts)
+                    call n_octree%get_pts_around(coor_i, tole, nb_pts, list_pts)
                     do j_node = one_ip, int(nb_pts, ip)
                         n1 = octree_map(list_pts(j_node))
                         if (n1 > i_node .and. this%nodes(n1)%keep) then
@@ -3558,6 +3558,7 @@ contains
         integer(kind=8), pointer :: v_nojoin(:) => null()
         integer(kind=8), allocatable :: v_snume(:)
         integer(kind=8), allocatable :: v_rnume(:)
+        aster_logical, allocatable :: v_keep(:)
         integer(ip), allocatable :: v_nkeep(:)
         integer(ip), allocatable :: v_ckeep(:)
         integer(kind=8), pointer :: v_nulogl(:) => null()
@@ -3567,19 +3568,21 @@ contains
         integer(kind=8), allocatable :: v_comm(:)
         integer(kind=8), allocatable :: v_tag(:)
         integer(kind=8), pointer :: v_nblg(:) => null()
-        aster_logical, allocatable :: v_keep(:)
         real(kind=8), allocatable :: v_send(:)
         real(kind=8), allocatable :: v_recv(:)
         mpi_int, parameter :: mpi_one = to_mpi_int(1)
         mpi_int :: msize, mrank, count_send, count_recv, id, tag, mpicou
         integer(kind=8) :: nbproc, rank, nb_recv, n_coor_send, n_coor_recv
         integer(kind=8) :: i_comm, proc_id, domj_i, recv1(1), owner, i_proc, ind
-        integer(ip) :: i_node, nb_nodes_keep, i_node_r, node_id, j_node
+        integer(kind=8) :: nb_pts, list_pts(50)
+        integer(ip) :: i_node, nb_nodes_keep, i_node_r, node_id
         integer(ip) :: i_cell, nno, nb_cells_keep, cell_id, i_layer
-        real(kind=8) :: coor(3), coor_diff(3), tole_comp, start, end, coor_i(3), coor_j(3)
-        real(kind=8), parameter :: tole = 1.d-12
-        aster_logical :: find, keep
-        ! Allows to send all nodes of a mesh to seach candidates - robust bus very slow - for debug
+        real(kind=8) :: coor(3), start, end
+        real(kind=8), parameter :: tole = 1.d-9
+        real(kind=8), allocatable :: coordinates(:, :)
+        aster_logical :: keep
+        type(Octree) :: n_octree
+        ! Allows to send all nodes of a mesh to seach candidates - robust but very slow - for debug
         aster_logical, parameter :: all_nodes = ASTER_FALSE
 !
         if (isParallelMesh(mesh_out)) then
@@ -3672,6 +3675,77 @@ contains
 !
             allocate (v_keep(this%nb_total_nodes))
             allocate (v_nkeep(this%nb_total_nodes))
+! --- Research corresponding node
+! --- On cherche les noeuds avec les coor - c'est pas génial mais pas mieux
+! --- Pour accélérer la recherche, on garde les noeuds voisins des non-proprio
+            v_keep = ASTER_FALSE
+            nb_nodes_keep = zero_ip
+!
+! --- Add first layer of cells
+            do i_cell = one_ip, nb_cells_keep
+                cell_id = v_ckeep(i_cell)
+                keep = ASTER_FALSE
+                nno = this%converter%nno(this%cells(cell_id)%type)
+                do i_node = one_ip, nno
+                    owner = v_noex(this%nodes(this%cells(cell_id)%nodes(i_node))%id)
+                    if (owner .ne. rank .or. all_nodes) then
+                        keep = ASTER_TRUE
+                        exit
+                    end if
+                end do
+                if (keep) then
+                    do i_node = one_ip, nno
+                        node_id = this%cells(cell_id)%nodes(i_node)
+                        owner = v_noex(this%nodes(node_id)%id)
+                        if (((owner == rank .or. all_nodes) .and. (.not. v_keep(node_id)))) then
+                            v_keep(node_id) = ASTER_TRUE
+                            nb_nodes_keep = nb_nodes_keep+one_ip
+                            v_nkeep(nb_nodes_keep) = node_id
+                        end if
+                    end do
+                end if
+            end do
+!
+! --- Add additional layer
+            do i_layer = 2, this%nb_layer
+                do i_cell = one_ip, this%nb_total_cells
+                    if (.not. this%cells(i_cell)%keep) cycle
+                    nno = this%converter%nno(this%cells(i_cell)%type)
+                    keep = ASTER_FALSE
+                    do i_node = one_ip, nno
+                        node_id = this%cells(i_cell)%nodes(i_node)
+                        owner = v_noex(this%nodes(node_id)%id)
+                        if (owner == rank .and. v_keep(node_id)) then
+                            keep = ASTER_TRUE
+                            exit
+                        end if
+                    end do
+                    if (keep) then
+                        do i_node = one_ip, nno
+                            node_id = this%cells(i_cell)%nodes(i_node)
+                            owner = v_noex(this%nodes(node_id)%id)
+                            if (owner == rank .and. .not. v_keep(node_id)) then
+                                v_keep(node_id) = ASTER_TRUE
+                                nb_nodes_keep = nb_nodes_keep+one_ip
+                                v_nkeep(nb_nodes_keep) = node_id
+                            end if
+                        end do
+                    end if
+                end do
+            end do
+!
+! --- Create octree
+!
+            allocate (coordinates(3, nb_nodes_keep))
+            nb_pts = 0
+            do i_node = one_ip, nb_nodes_keep
+                nb_pts = nb_pts+1
+                coordinates(:, nb_pts) = this%nodes(v_nkeep(i_node))%coor
+            end do
+            ASSERT(nb_pts == to_aster_int(nb_nodes_keep))
+!
+            call n_octree%init(nb_pts, coordinates, 5, 8)
+            deallocate (coordinates)
 !
             if (this%info >= 2) then
                 print *, "-Nombre de cells candidates totales: ", nb_cells_keep
@@ -3711,97 +3785,11 @@ contains
                 call asmpi_sendrecv_r(v_send, count_send, id, tag, &
                                       v_recv, count_recv, id, tag, mpicou)
 !
-! --- Research corresponding node
-! --- On cherche les noeuds avec les coor - c'est pas génial mais pas mieux
-! --- Pour accélérer la recherche, on garde les noeuds voisins des non-proprio
-                v_keep = ASTER_FALSE
-                nb_nodes_keep = zero_ip
-!
-! --- Add first layer of cells
-                do i_cell = one_ip, nb_cells_keep
-                    cell_id = v_ckeep(i_cell)
-                    keep = ASTER_FALSE
-                    nno = this%converter%nno(this%cells(cell_id)%type)
-                    do i_node = one_ip, nno
-                        owner = v_noex(this%nodes(this%cells(cell_id)%nodes(i_node))%id)
-                        if (owner == proc_id .or. all_nodes) then
-                            keep = ASTER_TRUE
-                            exit
-                        end if
-                    end do
-                    if (keep) then
-                        do i_node = one_ip, nno
-                            node_id = this%cells(cell_id)%nodes(i_node)
-                            owner = v_noex(this%nodes(node_id)%id)
-                            if (((owner == rank .or. all_nodes) .and. (.not. v_keep(node_id)))) then
-                                v_keep(node_id) = ASTER_TRUE
-                                nb_nodes_keep = nb_nodes_keep+one_ip
-                                v_nkeep(nb_nodes_keep) = node_id
-                            end if
-                        end do
-                    end if
-                end do
-!
-! --- Add additional layer
-                do i_layer = 2, this%nb_layer
-                    do i_cell = one_ip, this%nb_total_cells
-                        if (.not. this%cells(i_cell)%keep) cycle
-                        nno = this%converter%nno(this%cells(i_cell)%type)
-                        keep = ASTER_FALSE
-                        do i_node = one_ip, nno
-                            node_id = this%cells(i_cell)%nodes(i_node)
-                            owner = v_noex(this%nodes(node_id)%id)
-                            if (owner == rank .and. v_keep(node_id)) then
-                                keep = ASTER_TRUE
-                                exit
-                            end if
-                        end do
-                        if (keep) then
-                            do i_node = one_ip, nno
-                                node_id = this%cells(i_cell)%nodes(i_node)
-                                owner = v_noex(this%nodes(node_id)%id)
-                                if (owner == rank .and. .not. v_keep(node_id)) then
-                                    v_keep(node_id) = ASTER_TRUE
-                                    nb_nodes_keep = nb_nodes_keep+one_ip
-                                    v_nkeep(nb_nodes_keep) = node_id
-                                end if
-                            end do
-                        end if
-                    end do
-                end do
-!
                 if (this%info >= 2) then
                     print *, "-Domaine: ", proc_id, &
                         ", nombre de noeuds à trouver: ", n_coor_recv, &
                         " pour ", nb_nodes_keep, " candidats"
                 end if
-!
-                !  On regarde que les noeuds ne sont pas confondu.
-                do i_node = one_ip, nb_nodes_keep
-                    coor_i = this%nodes(v_nkeep(i_node))%coor
-                    tole_comp = max(tole, tole*norm2(coor_i))
-                    do j_node = i_node+one_ip, nb_nodes_keep
-                        coor_j = this%nodes(v_nkeep(j_node))%coor
-                        coor_diff = abs(coor_i-coor_j)
-                        if (maxval(coor_diff) < tole_comp) then
-                            !! Verif pas de noeud double
-                            call utmess('F', 'MAILLAGE1_4')
-                        end if
-                    end do
-                end do
-
-                do i_node = one_ip, int(n_coor_recv, ip)
-                    coor_i = v_recv(4*(i_node-1)+2:4*(i_node-1)+4)
-                    tole_comp = max(tole, tole*norm2(coor_i))
-                    do j_node = i_node+one_ip, int(n_coor_recv, ip)
-                        coor_j = v_recv(4*(j_node-1)+2:4*(j_node-1)+4)
-                        coor_diff = abs(coor_i-coor_j)
-                        if (maxval(coor_diff) < tole_comp) then
-                            !! Verif pas de noeud double
-                            call utmess('F', 'MAILLAGE1_4')
-                        end if
-                    end do
-                end do
 !
 ! --- Create joint .E
                 call jecroc(jexnum(send, i_comm))
@@ -3812,25 +3800,16 @@ contains
                 allocate (v_snume(2*n_coor_recv))
 !
 ! --- Search nodes with coordinates
-                ASSERT(nb_nodes_keep >= n_coor_recv)
-                v_keep(1:nb_nodes_keep) = ASTER_TRUE
+!
                 do i_node_r = one_ip, int(n_coor_recv, ip)
-                    find = ASTER_FALSE
                     coor = v_recv(4*(i_node_r-1)+2:4*(i_node_r-1)+4)
-                    node_id = zero_ip
-                    tole_comp = max(tole, tole*norm2(coor))
-                    do i_node = one_ip, nb_nodes_keep
-                        if (v_keep(i_node)) then
-                            coor_diff = abs(coor-this%nodes(v_nkeep(i_node))%coor)
-                            if (maxval(coor_diff) < tole_comp) then
-                                find = ASTER_TRUE
-                                node_id = this%nodes(v_nkeep(i_node))%id
-                                v_keep(i_node) = ASTER_FALSE
-                                exit
-                            end if
-                        end if
-                    end do
-                    ASSERT(find)
+                    call n_octree%get_pts_around(coor, tole, nb_pts, list_pts)
+                    ASSERT(nb_pts > 0)
+                    if (nb_pts > 1) then
+                        !! Verif pas de noeuds doubles à l'interface
+                        call utmess('F', 'MAILLAGE1_4')
+                    end if
+                    node_id = this%nodes(v_nkeep(list_pts(1)))%id
                     v_nojoin(2*(i_node_r-1)+1) = node_id
                     v_nojoin(2*(i_node_r-1)+2) = int(v_recv(4*(i_node_r-1)+1))
                     v_snume(2*(i_node_r-1)+1) = node_id
@@ -3864,6 +3843,7 @@ contains
                 deallocate (v_rnume)
             end do
 ! --- Cleaning
+            call n_octree%free()
             deallocate (v_keep)
             deallocate (v_nkeep)
             deallocate (v_ckeep)

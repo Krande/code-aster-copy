@@ -374,13 +374,12 @@ contains
 !
 ! ==================================================================================================
 !
-    subroutine get_pts_around_tree(this, coor, distance, max_nb_pts, nb_pts, list_pts)
+    subroutine get_pts_around_tree(this, coor, distance, nb_pts, list_pts)
 !
 !       Find at points inside the boundign box around the given point.
 !
         class(Octree), intent(in) :: this
-        integer(kind=8), intent(in) :: max_nb_pts
-        integer(kind=8), intent(inout) :: nb_pts, list_pts(max_nb_pts)
+        integer(kind=8), intent(inout) :: nb_pts, list_pts(*)
         real(kind=8), intent(in) :: coor(3), distance
 !
         type(BBox) :: box
@@ -390,23 +389,20 @@ contains
         box%dim = this%dim
 !
         nb_pts = 0
-        call this%node%get_pts_around(box, max_nb_pts, nb_pts, list_pts)
-!
-        ASSERT(nb_pts <= max_nb_pts)
+        call this%node%get_pts_around(box, nb_pts, list_pts)
 !
     end subroutine
 !
 !
 ! ==================================================================================================
 !
-    subroutine get_al1_pts_around_tree(this, coor, distance, max_nb_pts, nb_pts, list_pts)
+    subroutine get_al1_pts_around_tree(this, coor, distance, nb_pts, list_pts)
 !
 !       Find at least one point around the given point.
 !       Double size of bounding box until necessary
 !
         class(Octree), intent(in) :: this
-        integer(kind=8), intent(in) :: max_nb_pts
-        integer(kind=8), intent(inout) :: nb_pts, list_pts(max_nb_pts)
+        integer(kind=8), intent(inout) :: nb_pts, list_pts(*)
         real(kind=8), intent(in) :: coor(3), distance
 !
         type(BBox) :: box
@@ -417,20 +413,17 @@ contains
 !
         nb_pts = 0
         do while (nb_pts == 0)
-            call this%node%get_pts_around(box, max_nb_pts, nb_pts, list_pts)
+            call this%node%get_pts_around(box, nb_pts, list_pts)
             box%h = 2.d0*box%h
         end do
-!
-        ASSERT(nb_pts <= max_nb_pts)
 !
     end subroutine
 !
 ! ==================================================================================================
 !
-    recursive subroutine get_pts_around_node(this, box, max_nb_pts, nb_pts, list_pts)
+    recursive subroutine get_pts_around_node(this, box, nb_pts, list_pts)
         class(OctreeNode), intent(in) :: this
-        integer(kind=8), intent(in) :: max_nb_pts
-        integer(kind=8), intent(inout) :: nb_pts, list_pts(max_nb_pts)
+        integer(kind=8), intent(inout) :: nb_pts, list_pts(*)
         type(BBox), intent(in) :: box
 !
         integer(kind=8) :: ocx, ocy, ocz, ocz_max, i_pt
@@ -453,7 +446,7 @@ contains
                     do ocx = 1, nb_div
                         do ocy = 1, nb_div
                             do ocz = 1, ocz_max
-                                call this%children(ocx, ocy, ocz)%get_pts_around(box, max_nb_pts, &
+                                call this%children(ocx, ocy, ocz)%get_pts_around(box, &
                                                                                  nb_pts, list_pts)
                             end do
                         end do
@@ -461,8 +454,6 @@ contains
                 end if
             end if
         end if
-!
-        ASSERT(nb_pts <= max_nb_pts)
 !
     end subroutine
 !
