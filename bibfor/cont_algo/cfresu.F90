@@ -22,9 +22,8 @@ subroutine cfresu(time_incr, ds_contact, disp_cumu_inst, disp_iter, &
     use NonLin_Datastructure_type
     implicit none
 !
-#include "asterf_types.h"
-#include "event_def.h"
 #include "jeveux.h"
+#include "asterf_types.h"
 #include "asterc/r8miem.h"
 #include "asterc/r8prem.h"
 #include "asterfort/apinfi.h"
@@ -34,12 +33,11 @@ subroutine cfresu(time_incr, ds_contact, disp_cumu_inst, disp_iter, &
 #include "asterfort/cfmmvd.h"
 #include "asterfort/cfresa.h"
 #include "asterfort/cfresb.h"
-#include "asterfort/iseven.h"
 #include "asterfort/jedema.h"
 #include "asterfort/jemarq.h"
 #include "asterfort/jeveuo.h"
 #include "asterfort/mmnorm.h"
-#include "asterfort/utmess.h"
+#include "event_def.h"
 !
     real(kind=8), intent(in) :: time_incr
     type(NL_DS_Contact), intent(in) :: ds_contact
