@@ -136,7 +136,7 @@ module crea_maillage_module
         integer(ip) :: id
         real(kind=8) :: coor(3) = 0.d0
         aster_logical :: keep = ASTER_FALSE
-        aster_logical :: orphelan = ASTER_FALSE
+        aster_logical :: orphan = ASTER_FALSE
         integer(ip) :: owner = -one_ip
 ! used to improve search of edges and faces
 ! it could be improved a lot to decrease memory consumption
@@ -608,7 +608,7 @@ contains
             end if
             node_id = this%add_node(v_coor(3*(i_node-1)+1:3*(i_node-1)+3), owner)
             ASSERT(i_node == node_id)
-            this%nodes(node_id)%orphelan = ASTER_TRUE
+            this%nodes(node_id)%orphan = ASTER_TRUE
             this%renumber_nodes(i_node) = i_node
         end do
 !
@@ -665,13 +665,13 @@ contains
 
         deallocate (list_type_cells)
 !
-! --- Search orphelan nodes - to keep at the end
+! --- Search orphan nodes - to keep at the end
         this%nb_total_cells = this%nb_cells
         do i_cell = one_ip, this%nb_cells
             nno = this%converter%nno(this%cells(i_cell)%type)
             do i_node = one_ip, nno
                 node_id = this%cells(i_cell)%nodes(i_node)
-                this%nodes(node_id)%orphelan = ASTER_FALSE
+                this%nodes(node_id)%orphan = ASTER_FALSE
             end do
         end do
 !
@@ -700,7 +700,7 @@ contains
         integer(kind=8) :: list_pts(5*max_pt), nb_pts
         integer(ip) :: i_edge, e1, e2, n1, n2, i_face, f1, f2, ns, count, i_cell, node_id
         integer(ip) :: i, j, i_node, j_node, nno, i_volu, v_id, cell_i, cell_j, k, nb_cells
-        integer(ip) :: nc1(27), nc2(27), nnos
+        integer(ip) :: nc1(27), nc2(27), nnos, nno_end
         integer(ip), allocatable :: octree_map(:), inv_con(:), offset_con(:)
         real(kind=8) :: new_coor(3), end, start, coor_i(3)
         real(kind=8), allocatable :: coor(:, :)
@@ -714,10 +714,10 @@ contains
 !
 ! --- Clean mesh
 !
-! --- Keep initial orphelan nodes
+! --- Keep initial orphan nodes
         do i_node = one_ip, this%nb_total_nodes
             this%nodes(i_node)%keep = ASTER_FALSE
-            if (this%nodes(i_node)%orphelan) then
+            if (this%nodes(i_node)%orphan) then
                 this%nodes(i_node)%keep = ASTER_TRUE
             end if
         end do
@@ -809,6 +809,10 @@ contains
             f1 = this%faces_dege(2*(i_face-1)+1)
             f2 = this%faces_dege(2*(i_face-1)+2)
             nno = this%converter%nno(this%faces(f1)%type)
+            nno_end = this%converter%nno(this%converter%convert_max(this%faces(f1)%type))
+            if (nno < nno_end .or. this%faces(f1)%type .ne. this%faces(f2)%type) then
+                cycle
+            end if
 
             n1 = this%faces(f1)%nodes(nno)
             n2 = this%faces(f2)%nodes(nno)
@@ -857,16 +861,16 @@ contains
         if (remove_orphan) then
             count = zero_ip
             do i_node = one_ip, this%nb_total_nodes
-                if (this%nodes(i_node)%orphelan) then
+                if (this%nodes(i_node)%orphan) then
                     if (this%nodes(i_node)%keep) then
                         count = count+one_ip
                     end if
                     this%nodes(i_node)%keep = ASTER_FALSE
-                    this%nodes(i_node)%orphelan = ASTER_FALSE
+                    this%nodes(i_node)%orphan = ASTER_FALSE
                 end if
             end do
             if (this%info >= one_ip) then
-                print *, "- ", count, " orphelan nodes removed"
+                print *, "- ", count, " orphan nodes removed"
             end if
         end if
 !
@@ -893,7 +897,7 @@ contains
                         if (n1 > i_node .and. this%nodes(n1)%keep) then
                             count = count+one_ip
                             this%nodes(n1)%keep = ASTER_FALSE
-                            this%nodes(n1)%orphelan = ASTER_FALSE
+                            this%nodes(n1)%orphan = ASTER_FALSE
                             this%renumber_nodes(n1) = i_node
                             this%nb_nodes = this%nb_nodes-one_ip
                         end if
@@ -1781,6 +1785,8 @@ contains
 !
             if (this%convert_max) then
                 call this%convert_face(face_id)
+            elseif (nno > nnos) then
+                call qsort(this%faces(face_id)%nno_sort(nnos+1:2*nnos))
             end if
         end if
 !
@@ -1866,6 +1872,8 @@ contains
                 else
                     call this%convert_edge(edge_id)
                 end if
+            elseif (nno == 4) then
+                call qsort(this%edges(edge_id)%nno_sort(3:4))
             end if
         end if
 !
@@ -2792,10 +2800,10 @@ contains
 !
         call asmpi_info(rank=mrank)
 !
-! --- Keep initial orphelan nodes
+! --- Keep initial orphan nodes
         do i_node = one_ip, this%nb_total_nodes
             this%nodes(i_node)%keep = ASTER_FALSE
-            if (this%nodes(i_node)%orphelan) then
+            if (this%nodes(i_node)%orphan) then
                 this%nodes(i_node)%keep = ASTER_TRUE
             end if
         end do

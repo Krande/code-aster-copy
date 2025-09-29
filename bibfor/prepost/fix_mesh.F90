@@ -40,7 +40,7 @@ subroutine fix_mesh(mesh_in, mesh_out, remove_orphan, positive_volume, outward_n
     dn = double_nodes == 1
     dc = double_cells == 1
 !
-    call mesh_conv%init(mesh_in, info, convert_max=ASTER_TRUE)
+    call mesh_conv%init(mesh_in, info, convert_max=ASTER_FALSE)
     call mesh_conv%fix(ro, on, pv, dn, dc, tole)
     call mesh_conv%check_mesh()
     call mesh_conv%copy_mesh(mesh_out)
