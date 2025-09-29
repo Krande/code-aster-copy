@@ -222,7 +222,7 @@ Arguments:
 Returns:
     Mesh: octree mesh.
         )",
-              py::arg( "nb_max_pt" ) = 1, py::arg( "nb_max_level" ) = 100 )
+              py::arg( "nb_max_pt" ) = 1, py::arg( "nb_max_level" ) = 20 )
         .def( "convertToLinear", &Mesh::convertToLinear, R"(
 Convert the mesh to a linear one.
 

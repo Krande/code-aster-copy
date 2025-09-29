@@ -24,7 +24,6 @@ module octree_module
 !
 #include "asterf_types.h"
 #include "asterc/r8maem.h"
-#include "asterfort/assert.h"
 !
     integer(kind=8), parameter, private :: nb_div = 2
     aster_logical, parameter, private :: debug = ASTER_TRUE
@@ -255,6 +254,7 @@ contains
 !
         integer(kind=8), allocatable :: sub_pts(:)
         integer(kind=8) :: i_pt, i_dim
+        real(kind=8) :: x_offset(3)
 !
         this%max_pts_by_node = max_pts_by_node
         this%max_level = max_level
@@ -274,8 +274,9 @@ contains
             this%dim = 2
         end if
         ! increase slithly the first bounding box
-        this%xmin(1:this%dim) = this%xmin(1:this%dim)-max(1.0, 0.05*this%xmin(1:this%dim))
-        this%xmax(1:this%dim) = this%xmax(1:this%dim)+max(1.0, 0.05*this%xmax(1:this%dim))
+        x_offset = abs(this%xmax-this%xmin)
+        this%xmin(1:this%dim) = this%xmin(1:this%dim)-0.05*x_offset(1:this%dim)
+        this%xmax(1:this%dim) = this%xmax(1:this%dim)+0.05*x_offset(1:this%dim)
 !
         this%node%xmin = this%xmin
         this%node%dx = 0.d0

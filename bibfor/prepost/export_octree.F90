@@ -24,11 +24,14 @@ subroutine export_octree(mesh_in, mesh_out, nb_max_pt, nb_max_level)
     implicit none
 !
 #include "asterf_types.h"
+#include "asterfort/addGroupElem.h"
+#include "asterfort/addGrpMa.h"
 #include "asterfort/assert.h"
-#include "asterfort/jedema.h"
 #include "asterfort/cargeo.h"
-#include "MeshTypes_type.h"
+#include "asterfort/codent.h"
+#include "asterfort/jedema.h"
 #include "asterfort/jemarq.h"
+#include "MeshTypes_type.h"
 !
     character(len=8), intent(in) :: mesh_in, mesh_out
     integer(kind=8), intent(in) :: nb_max_pt, nb_max_level
@@ -44,9 +47,10 @@ subroutine export_octree(mesh_in, mesh_out, nb_max_pt, nb_max_level)
 !
     type(Mmesh) :: mesh, mesh_oct
     type(Octree) :: oct
-    integer(kind=8) :: i_node, node_id
+    integer(kind=8) :: i_node, node_id, i_level, i_cell, nb_cells, nb_cells_level
+    integer(kind=8), allocatable :: cells_level(:), list_cells(:)
     real(kind=8), allocatable :: coordinates(:, :)
-
+    character(len=24) :: name
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -88,7 +92,9 @@ subroutine export_octree(mesh_in, mesh_out, nb_max_pt, nb_max_level)
 !
 ! - Create mesh
 !
-    call export_node(mesh_oct, oct%node)
+    nb_cells = 0
+    allocate (cells_level(8**min(8, nb_max_level)))
+    call export_node(mesh_oct, oct%node, nb_cells, cells_level)
 !
 ! - Fix cells
 !
@@ -98,6 +104,35 @@ subroutine export_octree(mesh_in, mesh_out, nb_max_pt, nb_max_level)
 !
     call mesh_oct%copy_mesh(mesh_out)
 !
+! - Add group
+!
+    call addGroupElem(mesh_out, nb_max_level+1)
+    do i_level = 0, nb_max_level
+        nb_cells_level = 0
+        do i_cell = 1, nb_cells
+            if (cells_level(i_cell) == i_level) then
+                nb_cells_level = nb_cells_level+1
+            end if
+        end do
+!
+        if (nb_cells_level > 0) then
+            allocate (list_cells(nb_cells_level))
+            nb_cells_level = 0
+            do i_cell = 1, nb_cells
+                if (cells_level(i_cell) == i_level) then
+                    nb_cells_level = nb_cells_level+1
+                    list_cells(nb_cells_level) = i_cell
+                end if
+            end do
+!
+            name = "level_"
+            call codent(i_level, 'G', name(7:), "F")
+            call addGrpMa(mesh_out, name, list_cells, nb_cells_level)
+            deallocate (list_cells)
+        end if
+    end do
+    deallocate (cells_level)
+!
 ! - Cleaning
 !
     call mesh_oct%clean()
@@ -106,11 +141,14 @@ subroutine export_octree(mesh_in, mesh_out, nb_max_pt, nb_max_level)
     call cargeo(mesh_out)
 !
     call jedema()
+!
 
 contains
-    recursive subroutine export_node(moct, ocn)
+    recursive subroutine export_node(moct, ocn, nb_cells_, cells_level_)
         type(Mmesh), intent(inout) :: moct
         type(OctreeNode), intent(in) :: ocn
+        integer(kind=8), intent(inout) :: nb_cells_
+        integer(kind=8), allocatable, intent(inout) :: cells_level_(:)
 !
         integer(kind=8) :: ocx, ocy, ocz, ocz_max, nodes(8)
         real(kind=8) :: coor(3)
@@ -140,6 +178,9 @@ contains
 !
 ! - Add cells - not save sub_entity to save memory
 !
+            nb_cells_ = nb_cells+1
+            ASSERT(nb_cells <= size(cells_level_))
+            cells_level_(nb_cells) = ocn%level
             if (ocn%dim == 3) then
                 call moct%add_cell(MT_HEXA8, nodes(1:8), ASTER_FALSE)
             else
@@ -154,7 +195,8 @@ contains
             do ocx = 1, size(ocn%children, 1)
                 do ocy = 1, size(ocn%children, 2)
                     do ocz = 1, ocz_max
-                        call export_node(moct, ocn%children(ocx, ocy, ocz))
+                        call export_node(moct, ocn%children(ocx, ocy, ocz), &
+                                         nb_cells_, cells_level_)
                     end do
                 end do
             end do

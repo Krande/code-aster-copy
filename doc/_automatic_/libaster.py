@@ -909,7 +909,7 @@ class Mesh(BaseMesh):
             list[int]: Indexes of the nodes.
         """
 
-    def getOctreeMesh(self, nb_max_pt=1, nb_max_level=100):
+    def getOctreeMesh(self, nb_max_pt=1, nb_max_level=20):
         """Get the octree mesh.
 
         Arguments:
