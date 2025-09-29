@@ -148,7 +148,7 @@ TEST_RESU(
 # =========================================================
 
 if config["ASTER_HAVE_PETSC4PY"]:
-    myOptions = "-pc_type lu -pc_factor_mat_solver_type mumps -ksp_type fgmres -snes_linesearch_type basic  -snes_max_it 10"
+    myOptions = "-pc_type lu -pc_factor_mat_solver_type mumps -ksp_type fgmres -snes_linesearch_type basic  -snes_max_it 10 -snes_view "
     SOLU2 = MECA_NON_LINE(
         MODELE=model,
         CHAM_MATER=mater,

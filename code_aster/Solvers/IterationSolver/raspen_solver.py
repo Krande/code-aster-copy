@@ -240,7 +240,7 @@ class RASPENSolver(BaseIterationSolver):
         self.oper.finalize()
         # delete local snes
         local_solver.snes = None
-
+        raspen_solver.destroyAll()
         return self.current_matrix
 
 
@@ -301,7 +301,7 @@ class _RASPENSolver:
         # Nonoverlapping dofs in global numbering
         self.glbNonOvlpDofs = DDPart.global_interior_dofs
         # Boundary and interior dofs
-        self.bdDofs = DDPart.getLocalBoundaryDofs()
+        self.bdDofs = np.array(DDPart.getLocalBoundaryDofs(), dtype=np.int32)
         # Local boundary size
         self.nbi = len(self.bdDofs)
         if self.nbi == 0:
@@ -318,8 +318,6 @@ class _RASPENSolver:
         self.verbose = False
         # Local Jacobian
         [self.Jloc, self.Jploc, [self.JacFunc, _, _]] = self.locSnes.getJacobian()
-        # Initial local Jacobian
-        self.Jloc0 = self.Jloc.duplicate()
         # Original function opers assembler
         self.operators = LocNSL._assembleOperators
         # A vector to hold local actions
@@ -351,8 +349,11 @@ class _RASPENSolver:
         # Number of singular values to cosnider for coarse problem
         self.nb_svs = 0  # Initialization
         if self.withCoarsePb:
+            # Other version of local Jacobians
+            self.Jloc0 = self.Jloc.duplicate()
             # Number of singular values retained for each subdomain
-            self.nb_svs = self.opts.getInt("raspen_nb_sd_singular_vec", 5)
+            self.nb_svs = self.opts.getInt("raspen_nb_sd_singular_vec", 10)
+            print("The number of singular values read from the PETSc options:")
             self.nb_svs = min((self.nbi - 1), self.nb_svs)
             # Append coarse problem type to methode name
             self.methodName += f"_{self.coarseSpaceType}"
@@ -370,15 +371,11 @@ class _RASPENSolver:
         # Customized convergence test
         self.setGlbSnesConvergenceTest()
         # KSP time measure
-        self.tksp = 0
-        # Cumulative number of linear solves
-        self.cumulLinIter = 0
-        # Cumulative of inner nonlinear solves
-        self.cumLocNonlinear = 0
-        # Assembling time measure
-        self.asstem = 0
-        # Apply diff
-        self.applyDiff = 0
+        self.tCorrect = self.t_pro = self.tksp = 0
+        # Cumulative number of linear solves and inner nonlinear solves
+        self.cumulLinIter = self.cumLocNonlinear = 0
+        # Assembling time measure and applying diff
+        self.asstem = self.applyDiff = 0
 
     def setUpOptions(self, petscOpts, validOpts):
         """
@@ -430,6 +427,7 @@ class _RASPENSolver:
         SnesKsp.setTolerances(rtol=self.rtol)
         # Linear precond type
         if self.withSubPrecond:
+            SnesKsp.setPCSide(PETSc.PC.Side.RIGHT)
             linearPC = SnesKsp.getPC()
             linearPC.setType("python")
             linearPC.setPythonContext(self.JpCtx)
@@ -493,10 +491,12 @@ class _RASPENSolver:
             """
             This is the preconditioned function
             """
-            if self.tksp and self.rank == 0:
-                print("Linear system execution time:", time() - self.tksp, flush=True)
+
             # Get currrent iteration
             It = snes.getIterationNumber()
+            if self.tksp and self.rank == 0:
+                self.tksp = time() - self.tksp
+                print("Linear system execution time:", self.tksp, flush=True)
             # Get local solution approximation
             self.vecscatter.scatter(X, self.locSol0, mode="forward")
             # Set the approximation as the initial guess
@@ -517,9 +517,8 @@ class _RASPENSolver:
                 # No need to go further if convergence is achieved
                 return
             if self.withCoarsePb and self.coarsePbSide == "Right":
-                # Compute the first local jacobian
-                with self.Locnsl._problem.u.dat.vec as u:
-                    self.locSnes.computeJacobian(u, self.Jloc, self.Jploc)
+                self.asterGlbSolution.toPetsc(local=True).copy(self.locSol)
+                self.locSnes.computeJacobian(self.locSol, self.Jloc, self.Jploc)
                 # Build prolongation operator if not built yet
                 if not self.GCGC.ProlongationIsBuilt:
                     prolongBuild = getattr(
@@ -528,7 +527,7 @@ class _RASPENSolver:
                     prolongBuild(It)
                 # Apply coarse correction
                 self.GCGC.correct(X, Y)
-                # Compute Jacobian at the final iterate. I wasnot compute
+                # Compute Jacobian at the final iterate. IF was not computed
                 # in "correct" due to successful convergence check before)
                 if self.jacType == "Exact":
                     self.GCGC.saveLocalJac = True
@@ -549,7 +548,12 @@ class _RASPENSolver:
             MPI.ASTER_COMM_WORLD.Barrier()
             asmpi_set(comm_self)
             # - sequential solve
+            self.t_sdSolve = -time()
             self.locSnes.solve(None, self.locSol)
+            self.t_sdSolve += time()
+            self.t_sdSolve = self.comm.reduce(self.t_sdSolve, op=MPI.MAX, root=0)
+            if self.rank == 0:
+                print(f"The longest local solve took: {self.t_sdSolve}", flush=True)
             # Number of nonlinear local iteration
             it = self.locSnes.getIterationNumber()
             # # Log coarse snes convergence history
@@ -570,7 +574,8 @@ class _RASPENSolver:
                         self.GCGC, "build" + self.coarseSpaceType + "Prolongation"
                     )
                     prolongBuild(It)
-                    print("Time to build prolongation:", time() - t_pro, flush=True)
+                    self.t_pro += time()
+                    print("Time to build prolongation:", self.t_pro, flush=True)
                 self.DDPart.restrict(self.locSol)
                 Y.set(0.0)
                 # Assembles the local parts of the solution to a global solution
@@ -578,7 +583,11 @@ class _RASPENSolver:
                 self.vecscatter(Y, self.locSol)
                 Yd = Y.duplicate()
                 # Second level correction
+                self.comm.Barrier()
+                self.tCorrect = -time()
                 self.GCGC.correct(Y, Yd)
+                self.tCorrect += time()
+                self.tCorrect = self.comm.reduce(self.tCorrect, op=MPI.MAX, root=0)
                 if self.jacType == "Exact":
                     self.GCGC.GCSnes.computeJacobian(self.GCGC.Xc, self.GCGC.Jc)
                     self.GCGC.GCSnes.getKSP().setOperators(self.GCGC.Jc)
@@ -587,17 +596,8 @@ class _RASPENSolver:
                 Yd.destroy()
                 self.vecscatter(Y, self.locSol)
 
-            elif self.withFinalJac or cond or self.solverType.endswith("IN"):
-                # One-level final Jacobian assembling
-                w = self.locSnes.getSolution()
-                if self.solverType.endswith("IN"):
-                    self.vecscatter.scatter(X + Y, w, mode="forward")
-                self.locSnes.computeJacobian(w, self.Jloc, self.Jploc)
-                self.locKsp.setOperators(self.Jloc, self.Jploc)
-            Sol = self.locSol.copy()
-            self.DDPart.restrict(Sol)
             # Local correction
-            C = self.locSol0 - self.locSol
+            C = self.locSol - self.locSol0
             # Add inner nonlinear iterations
             MaxIt = self.comm.reduce(it, op=MPI.MAX, root=0)
             if self.rank == 0:
@@ -606,7 +606,16 @@ class _RASPENSolver:
                 self.DDPart.restrict(C)
             # Add corrections to get residual
             Y.set(0.0)
-            self.vecscatter.scatter(-C, Y, mode="reverse", addv=True)
+            self.vecscatter.scatter(C, Y, mode="reverse", addv=True)
+            if self.withFinalJac or cond or self.solverType.endswith("IN"):
+                # One-level final Jacobian assembling
+                w = self.locSnes.getSolution()
+                self.locSol.copy(w)
+                if self.solverType.endswith("IN"):
+                    self.vecscatter.scatter(X + Y, w, mode="forward")
+                self.locSnes.computeJacobian(w, self.Jloc, self.Jploc)
+                self.locKsp.setOperators(self.Jloc, self.Jploc)
+
             # -------------------------------------------------
             # - switch back to initial communicator
             MPI.ASTER_COMM_WORLD.Barrier()
@@ -708,14 +717,14 @@ class _RASPENSolver:
         Y.set(0.0)
         self.vecscatter.scatter(self.Yloc, Y, mode="reverse", addv=True)
 
-    def originalFunctionNorm(self):
+    def originalFunctionNorm(self, normType=1):
         """
         Computes the norm of the original
         function
         """
         Y = self.glbSol.duplicate()
         self.originalFunction(self.glbSol, Y)
-        return Y.norm()
+        return Y.norm(normType)
 
     def getGlbSnes(self):
         """
@@ -744,6 +753,8 @@ class _RASPENSolver:
         self.DDPart.restrict(self.locSol0)
         self.vecscatter.scatter(self.locSol0, self.glbSol, mode="reverse", addv=True)
         self.fnorm0 = self.originalFunctionNorm()
+        if self.withSubPrecond:
+            self.JpCtx.Precond = None
         # Solving
         t = time()
         self.glbSnes.solve(rhs, self.glbSol)
@@ -756,6 +767,22 @@ class _RASPENSolver:
         #     print("Total time spent in coarse function:", self.GCGC.funcTime,flush=True)
         if self.rank == 0:
             self.saveTimeStepPerfs(self.glbSnes, time_exec)
+
+    def destroyAll(self):
+        """
+        Destroys all RASPEN objects
+        """
+        self.glbSnes.destroy()
+        self.glbSol.destroy()
+        self.Yloc.destroy()
+        self.Res.destroy()
+        self.J.destroy()
+        if self.withCoarsePb:
+            self.Jloc0.destroy()
+            del self.GCGC
+        if self.withSubPrecond:
+            self.Jp.destroy()
+            del self.JpCtx
 
 
 class JacCtx:
@@ -852,7 +879,7 @@ class JacCtx:
             self.Jloc.mult(self.locVec, self.Sl.Yloc)
             self.Sl.Yloc.getArray()[self.Sl.bdDofs] = 0.0
             self.Sl.locKsp.solve(self.Sl.Yloc, self.Sl.Yloc)
-            if self.Sl.solverType == "RASPEN":
+            if self.Sl.solverType.startswith("RAS"):
                 self.Sl.DDPart.restrict(self.Sl.Yloc)
             Y.set(0.0)
             self.Sl.vecscatter.scatter(self.Sl.Yloc, Y, mode="reverse", addv=True)
@@ -913,7 +940,7 @@ class SubJacCtx:
         self.Yloc.getArray()[self.Sl.bdDofs] = 0.0
         self.Sl.locKsp.solve(self.Yloc, self.Yloc)
         # Restrict to nonOverlapping subdomain
-        if self.Sl.solverType in ["RAS", "RASPEN"]:
+        if self.Sl.solverType.startswith("RAS"):
             self.Sl.DDPart.restrict(self.Yloc)
         # Applying coarse differential
         if self.Sl.withCoarsePb:
@@ -955,6 +982,16 @@ class substPrecondCtx:
         self.DDPart = Sl.DDPart
         # Fine-level Jacobian
         self.J = J
+        # Local Jacobian
+        self.Jl = self.Sl.Jloc
+        # Boundary dofs
+        self.bdDofs = self.Sl.bdDofs
+        # Local size
+        self.locSize = self.DDPart.getLocalSize()
+        # Eventually the substructured preconditionner
+        self.Precond = None
+        # Reconstructing the matrix
+        self.reconstruct = True
         # Subdtructured Jacobian
         if subJ:
             assert isinstance(subJ, PETSc.Mat)
@@ -962,7 +999,7 @@ class substPrecondCtx:
         else:
             self.subJ = self.buildSubstruturedJacobian()
         # Substructured KSP
-        self.subKSP = self.setUpSubstKSP()
+        self.sksp = self.setUpSksp()
         # Local work vector
         self.Yloc = self.Sl.Yloc
         # Ghosts sized PETSc vector
@@ -985,16 +1022,89 @@ class substPrecondCtx:
         subJ.setUp()
         return subJ
 
-    def setUpSubstKSP(self):
+    def buildMatEntries(self):
+        """
+        Build substructured Jacobian entries
+        """
+        # Timings
+        timings = {}
+        t00 = time()
+        # Seq Comm
+        comm = self.Jl.getComm()
+
+        # Local factorized matrix
+        LUFct = self.Sl.locKsp.getPC().getFactorMatrix()
+        LUFct.setMumpsIcntl(20, 1)
+
+        # Test local ksp
+        try:
+            self.Sl.locKsp.solve(self.Sl.Yloc, self.Sl.Yloc)
+        except:
+            raise (RuntimeError("Local snes ksp failed ! "))
+
+        # Slicing Local Jacobian only on ghost dofs
+        rowsIs = PETSc.IS().createGeneral(np.arange(self.locSize, dtype=np.int32))
+        colsIs = PETSc.IS().createGeneral(self.bdDofs)
+
+        t0 = time()
+        tempMat = self.Jl.createSubMatrices(rowsIs, colsIs)[0]
+        tempMat.zeroRows(self.bdDofs, 0.0)
+        gmax = MPI.ASTER_COMM_WORLD.reduce(time() - t0, op=MPI.MAX, root=0)
+        timings["Time to extract"] = gmax
+
+        # Build the resulting matrix
+        ResMat = PETSc.Mat().createDense((self.locSize, len(self.bdDofs)), comm=comm)
+        ResMat.setUp()
+
+        # Applying forward/backward substitutions
+        t0 = time()
+        tempMat = tempMat.transpose()
+        tempMat_T = tempMat.createTranspose(tempMat)
+        LUFct.matSolve(tempMat_T, ResMat)
+        gmax = self.Sl.comm.reduce(time() - t0, op=MPI.MAX, root=0)
+        timings["MatSolve time"] = gmax
+
+        # Building the substructured matrix as MATAIJ
+        t0 = time()
+        Mat = ResMat.getDenseArray()
+        ng = self.DDPart.glbGhostSize
+        nl = self.DDPart.intGhostSize
+        SubstMat = PETSc.Mat().createAIJ(([nl, ng], [nl, ng]), comm=self.DDPart.comm)
+        start, end = SubstMat.getOwnershipRange()
+        gmax = self.Sl.comm.reduce(time() - t0, op=MPI.MAX, root=0)
+        timings["Initiating Matrix"] = gmax
+
+        # Setting values
+        t0 = time()
+        for i0, i in enumerate(range(start, end)):
+            SubstMat.setValues(i, i, 1.0)
+            row = self.DDPart.interiorGhosts[i0]
+            SubstMat.setValues(i, self.DDPart.ghostsMap, Mat[row])
+        gmax = self.Sl.comm.reduce(time() - t0, op=MPI.MAX, root=0)
+        timings["Setting values"] = gmax
+
+        # Assembling
+        t0 = time()
+        SubstMat.assemble()
+        gmax = self.Sl.comm.reduce(time() - t0, op=MPI.MAX, root=0)
+        timings["Assembling time"] = gmax
+
+        gmax = self.Sl.comm.reduce(time() - t00, op=MPI.MAX, root=0)
+        timings["Total time"] = gmax
+        if self.Sl.rank == 0:
+            for k, v in timings.items():
+                print(f"  {k}: {v:.6f} seconds", flush=True)
+
+        return SubstMat
+
+    def setUpSksp(self):
         """
         Sets up the PETSc KSP to solve
         the substructured linear problem
         """
         ksp = PETSc.KSP().create(self.DDPart.comm)
-        ksp.setFromOptions()
-        ksp.getPC().setType("none")
+        ksp.prefix = "sksp_"
         ksp.setOperators(self.subJ)
-        ksp.setUp()
         return ksp
 
     def apply(self, mat, X, Y):
@@ -1007,8 +1117,16 @@ class substPrecondCtx:
         Yg = self.GhostVec.duplicate()
         # Writing ghosts values
         Yg.getArray()[:] = self.Yloc.getArray()[self.intGhosts]
+        self.sksp.setFromOptions()
+        if self.Precond is None:
+            self.Precond = self.buildMatEntries()
+        self.sksp.setOperators(self.subJ, self.Precond)
+        self.sksp.setUp()
         # Substructured linear solve
-        self.subKSP.solve(Yg, self.GhostVec)
+        t0 = time()
+        self.sksp.solve(Yg, self.GhostVec)
+        if self.Sl.rank == 0:
+            print(" Subst KSP time: ", time() - t0, flush=True)
         Yg.destroy()
         # Doing Fine level multiplication
         self.Yloc.set(0.0)
@@ -1048,6 +1166,7 @@ class DomainDecomposition:
         self.local_ovlp_dofs = numeq.getGhostDOFs(local=True)
         # ghost in local numbering
         self.local_boundary_dofs = numeq.getGhostDOFs(local=True, lastLayerOnly=self.size > 1)
+        # self.local_boundary_dofs = numeq.getGhostDOFs(local=True)
         # all except ghost in local numbering
         self.local_interior_dofs = numeq.getNoGhostDOFs(local=True)
         # all except ghost in global numbering
@@ -1101,18 +1220,27 @@ class DomainDecomposition:
         PETSc ghosts vector: A PETSc vector where each process subvector corresponds
                                 to the internal ghosts that the subdomain owns."""
         # Preliminarly manipulations
+        bd_dofs = self.local_boundary_dofs
         locVec.set(0.0)
-        locVec.getArray()[self.local_boundary_dofs] = 1.0
+        locVec.getArray()[bd_dofs] = 1.0
         glbVec.set(0.0)
         self.Vecscatter(locVec, glbVec, mode="reverse", addv=True)
         self.Vecscatter(glbVec, locVec)
         self.restrict(locVec)
         # Internal ghosts indices
-        self.interiorGhosts = np.where(locVec.getArray() >= 1)
+        self.interiorGhosts = np.where(locVec.getArray() >= 1)[0]
+        self.interiorGhosts = np.array(self.interiorGhosts, dtype=np.int32)
+        glbIntGhosts = self.local_dofs[self.interiorGhosts]
         # Ghosts sized PETSc vector
-        self.GhostPetscVec = PETSc.Vec().createWithArray(
-            np.zeros_like(self.interiorGhosts), comm=self.comm
-        )
+        self.GhostPetscVec = PETSc.Vec().createWithArray(glbIntGhosts, comm=self.comm)
+        self.GhostPetscVec.setUp()
+        # Exterior to interior ghosts map
+        toAll, SeqVec = PETSc.Scatter().toAll(self.GhostPetscVec)
+        toAll(self.GhostPetscVec, SeqVec)
+        vals = SeqVec.getArray()
+        lookup = {val: i for i, val in enumerate(vals)}
+        self.ghostsMap = np.array([lookup[v] for v in self.local_dofs[bd_dofs]], dtype=np.int32)
+        del lookup
         # Internal ghosts size
         self.intGhostSize = self.GhostPetscVec.getLocalSize()
         # Global Ghosts size
@@ -1239,6 +1367,8 @@ class GalerkinCoarseGridCorrection:
         self.comm = self.raspen.comm
         # Getting the number of procs/subdomains
         self.size = self.raspen.size
+        # Getting the proc rank
+        self.rank = self.raspen.rank
         # Getting the assembler of operators (Function/Jacobian)
         self.operators = self.raspen.operators
         # Vecscatter
@@ -1257,7 +1387,8 @@ class GalerkinCoarseGridCorrection:
         self.onOvlpDofs = self.DDPart.local_ovlp_dofs
         # Dofs on the subdomain boundary
         # (Ghost dofs) in local numbering
-        self.bdDofs = np.array(self.raspen.bdDofs, np.int32)
+        self.bdDofs = self.raspen.bdDofs
+        print(" Local number of ghost nodes", len(self.bdDofs), flush=True)
         # Ghosts multiplicity
         self.SQMult = self.raspen.SQMult
         # Number of singular values to consider for each subdomain
@@ -1300,6 +1431,8 @@ class GalerkinCoarseGridCorrection:
         self.Ploc = None  # To be extracted from self.P with getLocalProlongation
         # Linear solve (Sequential if True otherwise it is Parallel)
         self.isRedistributed = True
+        # Cumulative of the nonlinear coarse Pb iterations
+        self.nonlinCumIts = 0
         # Time to assemble
         self.assTime = 0
         # Correction time
@@ -1350,7 +1483,7 @@ class GalerkinCoarseGridCorrection:
             self.P = samplMat
         else:
             NNCols, samplMat = self.getLocalSamplingMat(samplMat)
-            timings["buildSamplingMat"] = time() - start
+            timings["getLocalSamplingMat"] = time() - start
             start = time()
             self.P = self.buildPrlongFromSamplMat(samplMat, NNCols, self.nb_svs)
         timings["build_prolongation"] = time() - start
@@ -1509,7 +1642,8 @@ class GalerkinCoarseGridCorrection:
         glbIntDofs = self.DDPart.global_interior_dofs
         # Forming the scipy linear operator
         locLinOp = self.formLocalLinearOperator()
-        U, s, _ = svds(locLinOp, k=self.nb_svs, return_singular_vectors="u")
+        U, s, _ = svds(locLinOp, k=self.nb_svs, which="LM", return_singular_vectors="u")
+        # U = np.eye(*U.shape, dtype=U.dtype)        # unpack (n, m)
         # Declaring the prologation matrix in memory
         self.P = PETSc.Mat().createAIJ((self.glbSize, [self.nb_svs, None]), comm=self.comm)
         # # Optimizing memory preallocation
@@ -1622,10 +1756,6 @@ class GalerkinCoarseGridCorrection:
         SamplMat.setUp()
         timings["setup_sampling_matrix"] = time() - start
         start = time()
-        if self.raspen.rank == 0 and self.raspen.verbose:
-            print("\n[Timing for buildSamplingMat()]", flush=True)
-            for k, v in timings.items():
-                print(f"  {k}: {v:.6f} seconds", flush=True)
         startCol, _ = SamplMat.getOwnershipRange()
         offset = startCol
         # offset = startCol + self.raspen.rank*coarseSize
@@ -1913,13 +2043,14 @@ class GalerkinCoarseGridCorrection:
             snesKsp.setType("preonly")
             linearPC = snesKsp.getPC()
             linearPC.setType("python")
-            subCommSize = min(self.size, 1)
+            subCommSize = min(self.size, 12)
             ctx = GalerkinPcCtx(subCommSize)
             linearPC.setPythonContext(ctx)
         else:
             snesKsp.setType("preonly")
             snesKsp.getPC().setType("lu")
-        # Snes.setMonitor(snes_monitor)
+
+        # Snes.setMonitor(coarse_monitor)
         Snes.setUp()
         # # Setting monitoring function to coarse snes
         # self.raspen.Logger.setLocalMonitoringFunction(Snes)
