@@ -1064,9 +1064,7 @@ EDERANO = LocatedComponents(
     ),
 )
 
-EDIFFNO = LocatedComponents(
-    phys=PHY.DIFF_R, type="ELNO", components=("DIFT", "DIFL", "DIFV", "SECH", "TEMP")
-)
+EDIFFNO = LocatedComponents(phys=PHY.DIFF_R, type="ELNO", components=("DIFT", "DIFL", "DIFV"))
 
 EDOMGNO = LocatedComponents(phys=PHY.DOMA_R, type="ELNO", components=("DOMA",))
 
@@ -1355,10 +1353,7 @@ ECOPILO = LocatedComponents(
 
 # Field for diffusion in drying (real)
 EDIFFUR = LocatedComponents(
-    phys=PHY.DIFF_R,
-    type="ELGA",
-    location="RIGI",
-    components=("DIFT", "DIFL", "DIFV", "SECH", "TEMP"),
+    phys=PHY.DIFF_R, type="ELGA", location="RIGI", components=("DIFT", "DIFL", "DIFV")
 )
 
 # Field for flux in thermic (2D - real)
@@ -1479,6 +1474,8 @@ ETEMPMA = LocatedComponents(phys=PHY.TEMP_R, type="ELGA", location="MATER", comp
 ETEMPNO = LocatedComponents(phys=PHY.TEMP_R, type="ELNO", components=("TEMP",))
 
 ETEMPPG = LocatedComponents(phys=PHY.TEMP_R, type="ELGA", location="RIGI", components=("TEMP",))
+
+ESECHPG = LocatedComponents(phys=PHY.TEMP_R, type="ELGA", location="RIGI", components=("SECH",))
 
 ETRIAPG = LocatedComponents(
     phys=PHY.ENDO_R,

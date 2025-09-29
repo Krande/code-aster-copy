@@ -248,7 +248,7 @@ class SEAXSE2(Element):
                 (OP.TOU_INI_ELGA.PGEOM_R, LC.EGGEO2D),
                 (OP.TOU_INI_ELGA.PNEUT_F, LC.EGTINIF),
                 (OP.TOU_INI_ELGA.PNEUT_R, LC.EGTINIR),
-                (SP.PTEMP_R, LC.ETEMPPG),
+                (SP.PTEMP_R, LC.ESECHPG),
             ),
         ),
         OP.TOU_INI_ELEM(

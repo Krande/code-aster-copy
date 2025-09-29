@@ -35,7 +35,13 @@ Ea_R = 9918.698  # Energie d'activation [K]'
 poro = 0.161  # porosité moyenne [-]
 
 
-from hsna102f_fonctions import coefficient_de_diffusion_vapeur, coefficient_de_diffusion
+from hsna102f_fonctions import (
+    coefficient_de_diffusion_vapeur,
+    coefficient_de_diffusion,
+    isotherme_hr_T,
+    pression_capillaire,
+)
+
 
 DIFF_R = FORMULE(
     NOM_PARA=("SECH", "TEMP"),
@@ -107,6 +113,7 @@ RESUTHER = THER_LINEAIRE(
     ETAT_INIT=_F(VALE=15.0),
     INCREMENT=_F(LIST_INST=DEFLISTH),
 )
+
 
 #####################
 # CALCUL DU SECHAGE
@@ -289,6 +296,13 @@ RESUSECH = SECH_NON_LINE(
     TITRE=("CAS TEST SECH_NON_LINE",),
 )
 
+CALC_CHAMP(
+    reuse=RESUSECH,
+    RESULTAT=RESUSECH,
+    SECHAGE=("DIFF_ELGA", "DIFF_ELNO", "DIFF_NOEU", "HYGR_ELGA", "HYGR_ELNO", "HYGR_NOEU"),
+    TOUT_ORDRE="OUI",
+)
+
 
 ##############################
 # TESTS DES RESULTATS
@@ -362,5 +376,211 @@ for j, t in enumerate(inst_test):
             TABLE=COUP,
             FILTRE=(_F(NOM_PARA="COOR_X", VALE=x), _F(NOM_PARA="INST", VALE=t)),
         )
-#
+
+# VALIDATION DES OPTIONS DIFF_**** et HYGR_****
+
+
+TEMP_NOEU = CREA_CHAMP(
+    TYPE_CHAM="NOEU_TEMP_R", OPERATION="EXTR", RESULTAT=RESUTHER, NOM_CHAM="TEMP", INST=1.70294e09
+)
+
+TEMP_ELGA = CREA_CHAMP(OPERATION="DISC", TYPE_CHAM="ELGA_TEMP_R", MODELE=MOTH, CHAM_GD=TEMP_NOEU)
+
+SECH_NOEU = CREA_CHAMP(
+    TYPE_CHAM="NOEU_TEMP_R", OPERATION="EXTR", RESULTAT=RESUSECH, NOM_CHAM="SECH", INST=1.70294e09
+)
+
+SECH_ELGA = CREA_CHAMP(OPERATION="DISC", TYPE_CHAM="ELGA_TEMP_R", MODELE=MOSECH, CHAM_GD=SECH_NOEU)
+
+
+temptest = 26.397513416641374
+sechtest = 93.55083460229133
+
+TEST_RESU(
+    CHAM_ELEM=(
+        _F(GROUP_MA="GRMATEST", POINT=1, NOM_CMP="SECH", VALE_CALC=sechtest, CHAM_GD=SECH_ELGA),
+        _F(GROUP_MA="GRMATEST", POINT=1, NOM_CMP="TEMP", VALE_CALC=temptest, CHAM_GD=TEMP_ELGA),
+    )
+)
+
+
+diff_liqu_ref = coefficient_de_diffusion(
+    sechtest, K0, poro, alpha, beta, p, Ad, T0_K, temptest, Ea_R
+)
+diff_vap_ref = coefficient_de_diffusion_vapeur(
+    sechtest, poro, alpha, beta, a, b, Ad, T0_K, temptest
+)
+diffref = diff_liqu_ref + diff_vap_ref
+
+
+TEST_RESU(
+    RESU=(
+        _F(
+            GROUP_MA="GRMATEST",
+            POINT=1,
+            INST=1.70294e09,
+            REFERENCE="ANALYTIQUE",
+            RESULTAT=RESUSECH,
+            NOM_CHAM="DIFF_ELGA",
+            NOM_CMP="DIFT",
+            VALE_CALC=diffref,
+            VALE_REFE=diffref,
+            PRECISION=1.0e-2,
+        ),
+        _F(
+            GROUP_MA="GRMATEST",
+            POINT=1,
+            INST=1.70294e09,
+            REFERENCE="ANALYTIQUE",
+            RESULTAT=RESUSECH,
+            NOM_CHAM="DIFF_ELGA",
+            NOM_CMP="DIFL",
+            VALE_CALC=diff_liqu_ref,
+            VALE_REFE=diff_liqu_ref,
+            PRECISION=1.0e-2,
+        ),
+        _F(
+            GROUP_MA="GRMATEST",
+            POINT=1,
+            INST=1.70294e09,
+            REFERENCE="ANALYTIQUE",
+            RESULTAT=RESUSECH,
+            NOM_CHAM="DIFF_ELGA",
+            NOM_CMP="DIFV",
+            VALE_CALC=diff_vap_ref,
+            VALE_REFE=diff_vap_ref,
+            PRECISION=1.0e-2,
+        ),
+    )
+)
+
+humidite_rel_ref = isotherme_hr_T(sechtest, alpha, beta, Ad, T0_K, poro, temptest + 273.15)
+pression_cap_ref = pression_capillaire(sechtest, alpha, beta, Ad, T0_K, poro, temptest + 273.15)
+
+
+TEST_RESU(
+    RESU=(
+        _F(
+            GROUP_MA="GRMATEST",
+            POINT=1,
+            INST=1.70294e09,
+            REFERENCE="ANALYTIQUE",
+            RESULTAT=RESUSECH,
+            NOM_CHAM="HYGR_ELGA",
+            NOM_CMP="HUMR",
+            VALE_CALC=humidite_rel_ref,
+            VALE_REFE=humidite_rel_ref,
+            PRECISION=1.0e-2,
+        ),
+        _F(
+            GROUP_MA="GRMATEST",
+            POINT=1,
+            INST=1.70294e09,
+            REFERENCE="ANALYTIQUE",
+            RESULTAT=RESUSECH,
+            NOM_CHAM="HYGR_ELGA",
+            NOM_CMP="PCAP",
+            VALE_CALC=pression_cap_ref,
+            VALE_REFE=pression_cap_ref,
+            PRECISION=1.0e-2,
+        ),
+    )
+)
+
+temptest = 26.663182208364347
+sechtest = 92.29878962345427
+diff_liqu_ref = coefficient_de_diffusion(
+    sechtest, K0, poro, alpha, beta, p, Ad, T0_K, temptest, Ea_R
+)
+diff_vap_ref = coefficient_de_diffusion_vapeur(
+    sechtest, poro, alpha, beta, a, b, Ad, T0_K, temptest
+)
+diffref = diff_liqu_ref + diff_vap_ref
+humidite_rel_ref = isotherme_hr_T(sechtest, alpha, beta, Ad, T0_K, poro, temptest + 273.15)
+pression_cap_ref = pression_capillaire(sechtest, alpha, beta, Ad, T0_K, poro, temptest + 273.15)
+
+
+TEST_RESU(
+    RESU=(
+        _F(
+            GROUP_NO="GRNOTEST",
+            INST=1.70294e09,
+            RESULTAT=RESUSECH,
+            NOM_CHAM="SECH",
+            NOM_CMP="SECH",
+            VALE_CALC=sechtest,
+        ),
+        _F(
+            GROUP_NO="GRNOTEST",
+            INST=1.70294e09,
+            RESULTAT=RESUTHER,
+            NOM_CHAM="TEMP",
+            NOM_CMP="TEMP",
+            VALE_CALC=temptest,
+        ),
+    )
+)
+
+
+TEST_RESU(
+    RESU=(
+        _F(
+            GROUP_NO="GRNOTEST",
+            INST=1.70294e09,
+            REFERENCE="ANALYTIQUE",
+            RESULTAT=RESUSECH,
+            NOM_CHAM="DIFF_NOEU",
+            NOM_CMP="DIFT",
+            VALE_CALC=2.0613286655193766e-11,
+            VALE_REFE=diffref,
+            PRECISION=1.5e-2,
+        ),
+        _F(
+            GROUP_NO="GRNOTEST",
+            INST=1.70294e09,
+            REFERENCE="ANALYTIQUE",
+            RESULTAT=RESUSECH,
+            NOM_CHAM="DIFF_NOEU",
+            NOM_CMP="DIFL",
+            VALE_CALC=2.0554781183012996e-11,
+            VALE_REFE=diff_liqu_ref,
+            PRECISION=1.5e-2,
+        ),
+        _F(
+            GROUP_NO="GRNOTEST",
+            INST=1.70294e09,
+            REFERENCE="ANALYTIQUE",
+            RESULTAT=RESUSECH,
+            NOM_CHAM="DIFF_NOEU",
+            NOM_CMP="DIFV",
+            VALE_CALC=5.850547218077577e-14,
+            VALE_REFE=diff_vap_ref,
+            PRECISION=0.1,
+        ),
+        _F(
+            GROUP_NO="GRNOTEST",
+            INST=1.70294e09,
+            REFERENCE="ANALYTIQUE",
+            RESULTAT=RESUSECH,
+            NOM_CHAM="HYGR_NOEU",
+            NOM_CMP="HUMR",
+            VALE_CALC=0.8302958152438619,
+            VALE_REFE=humidite_rel_ref,
+            PRECISION=4e-2,
+        ),
+        _F(
+            GROUP_NO="GRNOTEST",
+            INST=1.70294e09,
+            REFERENCE="ANALYTIQUE",
+            RESULTAT=RESUSECH,
+            NOM_CHAM="HYGR_NOEU",
+            NOM_CMP="PCAP",
+            VALE_CALC=-25640944.66029245,
+            VALE_REFE=pression_cap_ref,
+            PRECISION=2.2e-1,
+        ),
+    )
+)
+
+
 FIN()

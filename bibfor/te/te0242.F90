@@ -76,13 +76,12 @@ subroutine te0242(option, nomte)
 !
     call jevech('PMATERC', 'L', imate)
     call jevech('PSECHRR', 'L', vr=sechr)
-    call jevech('PCOMPOR', 'L', vk16=compor)
-
-    rela_name = compor(RELA_NAME)
 
     if (option == "DIFF_ELGA") then
+        call jevech('PCOMPOR', 'L', vk16=compor)
+        rela_name = compor(RELA_NAME)
         call jevech('PDIFFPG', 'E', vr=fieldOutGauss)
-        nbcmp = 5
+        nbcmp = 3
         do kp = 1, FEQuadCell%nbQuadPoints
             if (rela_name(1:5) .eq. 'SECH_') then
                 sechpg = FEEvalFuncRScal(FEBasis, sechr, FEQuadCell%points_param(1:3, kp))
@@ -92,8 +91,6 @@ subroutine te0242(option, nomte)
                 fieldOutGauss(nbcmp*(kp-1)+1) = diff
                 fieldOutGauss(nbcmp*(kp-1)+2) = difl
                 fieldOutGauss(nbcmp*(kp-1)+3) = difv
-                fieldOutGauss(nbcmp*(kp-1)+4) = sechpg
-                fieldOutGauss(nbcmp*(kp-1)+5) = tpg
             else
                 ASSERT(ASTER_FALSE)
             end if
@@ -126,6 +123,8 @@ subroutine te0242(option, nomte)
                 end if
             end do
         end if
+    else
+        ASSERT(ASTER_FALSE)
     end if
 !
 end subroutine

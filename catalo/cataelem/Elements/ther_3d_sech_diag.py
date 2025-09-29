@@ -141,6 +141,23 @@ class SECH_HEXA8_D(Element):
             para_in=((SP.PGEOMER, LC.EGEOM3D),),
             para_out=((OP.COOR_ELGA.PCOORPG, LC.EGGAU3D),),
         ),
+        OP.DIFF_ELGA(
+            te=242,
+            para_in=(
+                (SP.PGEOMER, LC.EGEOM3D),
+                (OP.DIFF_ELGA.PCOMPOR, LC.CCOMPOT),
+                (SP.PMATERC, LC.CMATERC),
+                (SP.PSECHRR, DDL_THER),
+                (SP.PINSTR, LC.CTIMETR),
+                (OP.DIFF_ELGA.PVARCPR, LC.ZVARCPG),
+            ),
+            para_out=((SP.PDIFFPG, LC.EDIFFUR),),
+        ),
+        OP.DIFF_ELNO(
+            te=4,
+            para_in=((OP.DIFF_ELNO.PDIFFPG, LC.EDIFFUR),),
+            para_out=((SP.PDIFFNO, LC.EDIFFNO),),
+        ),
         OP.DURT_ELNO(
             te=551,
             para_in=((SP.PMATERC, LC.CMATERC), (OP.DURT_ELNO.PPHASIN, LC.EPHASES)),
@@ -211,21 +228,21 @@ class SECH_HEXA8_D(Element):
             para_in=((OP.GRAT_ELNO.PGRATPG, LC.EGRAT3R),),
             para_out=((SP.PGRATNO, LC.NGRAT3R),),
         ),
-        OP.HYDR_ELGA(
-            te=385,
+        OP.HYGR_ELGA(
+            te=242,
             para_in=(
                 (SP.PGEOMER, LC.EGEOM3D),
-                (OP.HYDR_ELGA.PHYDRMR, LC.EHYDRR),
-                (OP.HYDR_ELGA.PCOMPOR, LC.CCOMPOT),
                 (SP.PMATERC, LC.CMATERC),
-                (OP.HYDR_ELGA.PTEMPMR, DDL_THER),
-                (OP.HYDR_ELGA.PTEMPPR, DDL_THER),
+                (SP.PSECHRR, DDL_THER),
                 (SP.PINSTR, LC.CTIMETR),
+                (OP.HYGR_ELGA.PVARCPR, LC.ZVARCPG),
             ),
-            para_out=((OP.HYDR_ELGA.PHYDRPR, LC.EHYDRR),),
+            para_out=((SP.PHYGRPG, LC.EHYGROR),),
         ),
-        OP.HYDR_ELNO(
-            te=4, para_in=((OP.HYDR_ELNO.PHYDRPG, LC.EHYDRR),), para_out=((SP.PHYDRNO, LC.EHYDRNO),)
+        OP.HYGR_ELNO(
+            te=4,
+            para_in=((OP.HYGR_ELNO.PHYGRPG, LC.EHYGROR),),
+            para_out=((SP.PHYGRNO, LC.EHYGRNO),),
         ),
         OP.INIT_MAIL_VOIS(te=99, para_out=((OP.INIT_MAIL_VOIS.PVOISIN, LC.EVOISIN),)),
         OP.INIT_VARC(te=99, para_out=((OP.INIT_VARC.PVARCPR, LC.ZVARCPG),)),
@@ -413,7 +430,7 @@ class SECH_HEXA8_D(Element):
                 (OP.TOU_INI_ELGA.PSOUR_R, LC.ESOURCR),
                 (OP.TOU_INI_ELGA.PVARI_R, LC.ZVARIPG),
                 (OP.TOU_INI_ELGA.PHYDR_R, LC.EHYDRR),
-                (SP.PTEMP_R, LC.ETEMPPG),
+                (SP.PTEMP_R, LC.ESECHPG),
             ),
         ),
         OP.TOU_INI_ELNO(

@@ -973,7 +973,7 @@ DERA_R = PhysicalQuantity(
 
 DIFF_R = PhysicalQuantity(
     type="R",
-    components=("DIFT", "DIFL", "DIFV", "SECH", "TEMP"),
+    components=("DIFT", "DIFL", "DIFV"),
     comment="""  DIFF_R Type:R Coefficients de diffusion (séchage)
        DIFT   : coefficient de diffusion total
        DIFL   : coefficient de diffusion liquide

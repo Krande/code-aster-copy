@@ -89,18 +89,23 @@ LISTSECH = (
 )
 LISTDEP = (DEFI_LIST_REEL(VALE=(3600, 259200, 2419200, 39420000, 94608000, 157680000)),)
 
-RESUSECH = (
-    SECH_NON_LINE(
-        MODELE=MOSECH,
-        EXCIT=_F(CHARGE=CHARSE),
-        CHAM_MATER=CHMAT,
-        SOLVEUR=_F(METHODE="MULT_FRONT"),
-        SCHEMA_TEMPS=_F(SCHEMA="THETA", THETA=0.57),
-        ETAT_INIT=_F(VALE=128.8),
-        INCREMENT=_F(LIST_INST=LISTSECH),
-        COMPORTEMENT=_F(RELATION="SECH_MENSI", TOUT="OUI"),
-        INFO=1,
-    ),
+RESUSECH = SECH_NON_LINE(
+    MODELE=MOSECH,
+    EXCIT=_F(CHARGE=CHARSE),
+    CHAM_MATER=CHMAT,
+    SOLVEUR=_F(METHODE="MULT_FRONT"),
+    SCHEMA_TEMPS=_F(SCHEMA="THETA", THETA=0.57),
+    ETAT_INIT=_F(VALE=128.8),
+    INCREMENT=_F(LIST_INST=LISTSECH),
+    COMPORTEMENT=_F(RELATION="SECH_MENSI", TOUT="OUI"),
+    INFO=1,
+)
+
+CALC_CHAMP(
+    reuse=RESUSECH,
+    RESULTAT=RESUSECH,
+    SECHAGE=("DIFF_ELGA", "DIFF_ELNO", "DIFF_NOEU", "HYGR_ELGA", "HYGR_ELNO", "HYGR_NOEU"),
+    TOUT_ORDRE="OUI",
 )
 
 # DEFINITION DE LA SOLUTION DE REFERENCE SCILAB
@@ -824,5 +829,64 @@ TEST_RESU(
         ),
     )
 )
+
+TEST_RESU(
+    RESU=(
+        _F(
+            GROUP_NO="P6",
+            INST=157680000,
+            RESULTAT=RESUSECH,
+            NOM_CHAM="DIFF_NOEU",
+            NOM_CMP="DIFT",
+            VALE_CALC=4.693116306617472e-12,
+        ),
+        _F(
+            GROUP_NO="P6",
+            INST=157680000,
+            REFERENCE="ANALYTIQUE",
+            RESULTAT=RESUSECH,
+            NOM_CHAM="DIFF_NOEU",
+            NOM_CMP="DIFL",
+            VALE_CALC=0.0,
+            VALE_REFE=0.0,
+        ),
+        _F(
+            GROUP_NO="P6",
+            INST=157680000,
+            REFERENCE="ANALYTIQUE",
+            RESULTAT=RESUSECH,
+            NOM_CHAM="DIFF_NOEU",
+            NOM_CMP="DIFV",
+            VALE_CALC=0.0,
+            VALE_REFE=0.0,
+        ),
+    )
+)
+
+TEST_RESU(
+    RESU=(
+        _F(
+            GROUP_NO="P6",
+            INST=157680000,
+            REFERENCE="ANALYTIQUE",
+            RESULTAT=RESUSECH,
+            NOM_CHAM="HYGR_NOEU",
+            NOM_CMP="HUMR",
+            VALE_CALC=0.0,
+            VALE_REFE=0.0,
+        ),
+        _F(
+            GROUP_NO="P6",
+            INST=157680000,
+            REFERENCE="ANALYTIQUE",
+            RESULTAT=RESUSECH,
+            NOM_CHAM="HYGR_NOEU",
+            NOM_CMP="PCAP",
+            VALE_CALC=0.0,
+            VALE_REFE=0.0,
+        ),
+    )
+)
+
 
 FIN()
