@@ -22,30 +22,29 @@ subroutine mmmres(mesh, time_incr, ds_contact, disp_cumu_inst, &
     use NonLin_Datastructure_type
     implicit none
 !
-#include "asterf_types.h"
-#include "event_def.h"
 #include "jeveux.h"
+#include "asterf_types.h"
 #include "asterfort/apinfi.h"
+#include "asterfort/as_allocate.h"
+#include "asterfort/as_deallocate.h"
 #include "asterfort/assert.h"
 #include "asterfort/cfdisi.h"
 #include "asterfort/cfdisl.h"
 #include "asterfort/cfmmvd.h"
 #include "asterfort/detrsd.h"
-#include "asterfort/iseven.h"
 #include "asterfort/jedema.h"
 #include "asterfort/jedetr.h"
 #include "asterfort/jemarq.h"
 #include "asterfort/jeveuo.h"
 #include "asterfort/mcopco.h"
+#include "asterfort/mmfield_prep.h"
 #include "asterfort/mminfi.h"
 #include "asterfort/mminfl.h"
 #include "asterfort/mminfm.h"
 #include "asterfort/mmmred.h"
 #include "asterfort/mmmreg.h"
 #include "asterfort/utmess.h"
-#include "asterfort/as_allocate.h"
-#include "asterfort/as_deallocate.h"
-#include "asterfort/mmfield_prep.h"
+#include "event_def.h"
 !
     character(len=8), intent(in) :: mesh
     real(kind=8), intent(in) :: time_incr

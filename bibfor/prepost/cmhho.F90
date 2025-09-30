@@ -22,6 +22,7 @@ subroutine cmhho(mesh_in, mesh_out, nb_list_elem, list_elem)
 !
     implicit none
 !
+#include "asterf_types.h"
 #include "asterfort/jedema.h"
 #include "asterfort/jemarq.h"
 !
@@ -83,6 +84,10 @@ subroutine cmhho(mesh_in, mesh_out, nb_list_elem, list_elem)
 ! - Convert cells
 !
     call mesh_hho%convert_cells(nb_list_elem, list_elem)
+!
+! - Fix cells
+!
+    call mesh_hho%fix(ASTER_FALSE, ASTER_TRUE, ASTER_TRUE, ASTER_FALSE, ASTER_TRUE, 1.0d-12)
 !
 ! - Copy mesh
 !

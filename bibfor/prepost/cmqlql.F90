@@ -20,6 +20,7 @@ subroutine cmqlql(main, maout, nbma, lima)
     use crea_maillage_module
 !
     implicit none
+#include "asterf_types.h"
 #include "asterfort/jedema.h"
 #include "asterfort/jemarq.h"
 !
@@ -50,7 +51,7 @@ subroutine cmqlql(main, maout, nbma, lima)
 !
 ! - Create new mesh
 !
-    call mesh_conv%init(main)
+    call mesh_conv%init(main, convert_max=ASTER_FALSE)
 !
 ! - Add conversion
 !

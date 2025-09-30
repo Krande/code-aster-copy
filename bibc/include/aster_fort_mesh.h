@@ -104,9 +104,15 @@ extern void DEFSPSPPPS( CNVOIS, cnvois, const char *, STRING_SIZE, ASTERINTEGER 
                         STRING_SIZE, ASTERINTEGER *, ASTERINTEGER *, ASTERINTEGER *, const char *,
                         STRING_SIZE );
 
-#define CALL_FIX_MESH( a, b, c, d ) CALLOOPP( FIX_MESH, fix_mesh, a, b, c, d )
-extern void DEFSSPP( FIX_MESH, fix_mesh, const char *, STRING_SIZE, const char *, STRING_SIZE,
-                     ASTERINTEGER *, ASTERINTEGER * );
+#define CALL_FIX_MESH( a, b, c, d, e, f, g, h, i )                                                 \
+    CALLOOPPPPPPP( FIX_MESH, fix_mesh, a, b, c, d, e, f, g, h, i )
+extern void DEFSSPPPPPPP( FIX_MESH, fix_mesh, const char *, STRING_SIZE, const char *, STRING_SIZE,
+                          ASTERINTEGER *, ASTERINTEGER *, ASTERINTEGER *, ASTERINTEGER *,
+                          ASTERINTEGER *, const ASTERDOUBLE *, ASTERINTEGER * );
+
+#define CALL_EXPORT_OCTREE( a, b, c, d ) CALLOOPP( EXPORT_OCTREE, export_octree, a, b, c, d )
+extern void DEFSSPP( EXPORT_OCTREE, export_octree, const char *, STRING_SIZE, const char *,
+                     STRING_SIZE, ASTERINTEGER *, ASTERINTEGER * );
 
 #define CALL_CMBQBQ( a, b, c, d ) CALLOOPP( CMBQBQ, cmbqbq, a, b, c, d )
 extern void DEFSSPP( CMBQBQ, cmbqbq, const char *, STRING_SIZE, const char *, STRING_SIZE,

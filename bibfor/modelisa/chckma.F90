@@ -68,7 +68,7 @@ subroutine chckma(nomu, dtol)
     real(kind=8) :: xa, xb, ya, yb, za, zb
     character(len=24) :: cooval, connex, nsolo, mdoubl
     integer(kind=8) :: nbmail, nbnoeu, ma1, ma2
-    integer(kind=8) :: insolo, imdoub, iatyma, nmdoub
+    integer(kind=8) :: insolo, imdoub, iatyma, nmdoub, nodes(4)
     type(Mmesh) :: mesh_conv
     type(Mconverter) :: converter
     integer(kind=8), pointer :: v_typema(:) => null()
@@ -307,26 +307,26 @@ subroutine chckma(nomu, dtol)
     end do
 
     if (hasQuadraticCell) then
-        call mesh_conv%init(nomu)
+        call mesh_conv%init(nomu, convert_max=ASTER_FALSE)
         if (mesh_conv%nb_edges_dege > 0) then
             do ima = 1, mesh_conv%nb_edges_dege
                 ma1 = mesh_conv%edges_dege(2*(ima-1)+1)
                 ma2 = mesh_conv%edges_dege(2*(ima-1)+2)
+                nodes(1:3) = to_aster_int(mesh_conv%edges(ma1)%nno_sort(1:3))
+                nodes(4) = to_aster_int(mesh_conv%edges(ma2)%nno_sort(3))
                 call utmess('E', 'MODELISA4_11', &
                             sk=mesh_conv%converter%name(mesh_conv%edges(ma1)%type), &
-                            ni=4, &
-                            vali=[mesh_conv%edges(ma1)%nno_sort(1:3), &
-                                  mesh_conv%edges(ma2)%nno_sort(3)])
+                            ni=4, vali=nodes)
             end do
         end if
         if (mesh_conv%nb_faces_dege > 0) then
             do ima = 1, mesh_conv%nb_faces_dege
                 ma1 = mesh_conv%faces_dege(2*(ima-1)+1)
                 ma2 = mesh_conv%faces_dege(2*(ima-1)+2)
+                nodes = to_aster_int(mesh_conv%faces(ma1)%nno_sort(1:4))
                 call utmess('E', 'MODELISA4_12', &
                             sk=mesh_conv%converter%name(mesh_conv%faces(ma1)%type), &
-                            ni=4, &
-                            vali=[mesh_conv%faces(ma1)%nno_sort(1:4)])
+                            ni=4, vali=nodes)
             end do
         end if
 !

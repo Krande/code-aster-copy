@@ -455,11 +455,18 @@ bool ParallelMesh::build() {
     return BaseMesh::build();
 }
 
-ParallelMeshPtr ParallelMesh::fix( const bool remove_orphelan, const ASTERINTEGER info ) {
+ParallelMeshPtr ParallelMesh::fix( const bool remove_orphan, const bool positive_measure,
+                                   const bool outward_normal, const bool double_nodes,
+                                   const bool double_cells, const ASTERDOUBLE tole,
+                                   const ASTERINTEGER info ) {
     auto mesh_out = std::make_shared< ParallelMesh >();
-    ASTERINTEGER inf = info, flag;
-    flag = static_cast< int >( remove_orphelan );
-    CALL_FIX_MESH( getName(), mesh_out->getName(), &inf, &flag );
+    ASTERINTEGER inf = info, fro, fpv, fon, fdn, fdc;
+    fro = static_cast< int >( remove_orphan );
+    fpv = static_cast< int >( positive_measure );
+    fon = static_cast< int >( outward_normal );
+    fdn = static_cast< int >( double_nodes );
+    fdc = static_cast< int >( double_cells );
+    CALL_FIX_MESH( getName(), mesh_out->getName(), &fro, &fpv, &fon, &fdn, &fdc, &tole, &inf );
     mesh_out->updateGlobalGroupOfNodes();
     mesh_out->updateGlobalGroupOfCells();
     mesh_out->build();

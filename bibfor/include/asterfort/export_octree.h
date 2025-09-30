@@ -16,12 +16,9 @@
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
 !
-#include "asterf_types.h"
-!
 interface
-    subroutine iseven(sddisc, event_type_in, lacti)
-        character(len=19), intent(in) :: sddisc
-        integer(kind=8), intent(in) :: event_type_in
-        aster_logical :: lacti
-    end subroutine iseven
+    subroutine export_octree(mesh_in, mesh_out, nb_max_pt, nb_max_level)
+        integer(kind=8), intent(in) :: nb_max_pt, nb_max_level
+        character(len=8), intent(in) :: mesh_in, mesh_out
+    end subroutine cmhho
 end interface
