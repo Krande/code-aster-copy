@@ -16,8 +16,8 @@
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
 !
-subroutine mfront_get_mater_value(extern_addr, BEHinteg, rela_comp, fami, kpg, &
-                                  ksp, imate, props, nprops)
+subroutine mfront_get_mater_value(extern_addr, BEHinteg, relaComp, fami, kpg, &
+                                  ksp, jvMaterCode, props, nprops)
 !
     use Behaviour_type
 !
@@ -34,9 +34,9 @@ subroutine mfront_get_mater_value(extern_addr, BEHinteg, rela_comp, fami, kpg, &
 !
     character(len=16), intent(in) :: extern_addr
     type(Behaviour_Integ), intent(in) :: BEHinteg
-    character(len=16), intent(in) :: rela_comp
+    character(len=16), intent(in) :: relaComp
     character(len=*), intent(in) :: fami
-    integer(kind=8), intent(in) :: kpg, ksp, imate, nprops
+    integer(kind=8), intent(in) :: kpg, ksp, jvMaterCode, nprops
     real(kind=8), intent(out) :: props(nprops)
 !
 ! --------------------------------------------------------------------------------------------------
@@ -49,9 +49,9 @@ subroutine mfront_get_mater_value(extern_addr, BEHinteg, rela_comp, fami, kpg, &
 !
 ! In  extern_addr       : address of the MGISBehaviour object
 ! In  BEHinteg         : parameters for integration of behaviour
-! In  rela_comp        : RELATION comportment
+! In  relaComp        : RELATION comportment
 ! In  fami             : Gauss family for integration point rule
-! In  imate            : coded material address
+! In  jvMaterCode            : coded material address
 ! In  kpg              : current point gauss
 ! In  ksp              : current "sous-point" gauss
 !
@@ -77,14 +77,14 @@ subroutine mfront_get_mater_value(extern_addr, BEHinteg, rela_comp, fami, kpg, &
 
 ! - Get parameters
 !
-    if (rela_comp .eq. 'MFRONT') then
+    if (relaComp .eq. 'MFRONT') then
         nbcoef = nprops
         call mat_proto(BEHinteg, &
-                       fami, kpg, ksp, '+', imate, rela_comp, &
+                       fami, kpg, ksp, '+', jvMaterCode, relaComp, &
                        nbcoef, props)
         ASSERT(nbcoef == nprops)
     else
-! ----- Get the properties values (enter under 'rela_comp' in DEFI_MATERIAU)
+! ----- Get the properties values (enter under 'relaComp' in DEFI_MATERIAU)
         props(1:nprops) = r8nnem()
         if (BEHinteg%behavESVA%tabcod(ZFERRITE) .eq. 1) then
             meta_type = 1
@@ -93,12 +93,12 @@ subroutine mfront_get_mater_value(extern_addr, BEHinteg, rela_comp, fami, kpg, &
                               nb_phasis, zcold_=zalpha)
             do i = 1, nprops
                 if (nomres(i) (1:4) .eq. 'meta') then
-                    call rcvalb(fami, 1, 1, '+', imate, &
-                                ' ', rela_comp, 1, 'META', [zalpha], &
+                    call rcvalb(fami, 1, 1, '+', jvMaterCode, &
+                                ' ', relaComp, 1, 'META', [zalpha], &
                                 1, nomres(i), props(i), codrel(i), 2)
                 else
-                    call rcvalb(fami, kpg, ksp, '+', imate, &
-                                ' ', rela_comp, 0, ' ', [0.d0], &
+                    call rcvalb(fami, kpg, ksp, '+', jvMaterCode, &
+                                ' ', relaComp, 0, ' ', [0.d0], &
                                 1, nomres(i), props(i), codrel(i), 1)
                 end if
             end do
@@ -108,12 +108,12 @@ subroutine mfront_get_mater_value(extern_addr, BEHinteg, rela_comp, fami, kpg, &
             call utmess('F', 'COMPOR4_24')
         else
             if (BEHinteg%behavESVA%lGeomInESVA) then
-                call rcvalb(fami, kpg, ksp, '+', imate, &
-                            ' ', rela_comp, 0, ' ', [0.d0], &
+                call rcvalb(fami, kpg, ksp, '+', jvMaterCode, &
+                            ' ', relaComp, 0, ' ', [0.d0], &
                             nprops, nomres, props, codrel, 1)
             else
-                call rcvalb(fami, kpg, ksp, '+', imate, &
-                            ' ', rela_comp, nb_para, para_name, para_vale, &
+                call rcvalb(fami, kpg, ksp, '+', jvMaterCode, &
+                            ' ', relaComp, nb_para, para_name, para_vale, &
                             nprops, nomres, props, codrel, 1)
             end if
         end if

@@ -148,12 +148,6 @@ cata_msg = {
  pour l'option "RICE_TRACEY", la relation " %(k1)s " n'est pas admise
 """
     ),
-    76: _(
-        """
-Couplage fluage/fissuration :
-La loi BETON_DOUBLE_DP ne peut être couplée qu'avec une loi de fluage de GRANGER
-"""
-    ),
     91: _(
         """
   calcul de la masse non implanté pour les éléments COQUE_3D en grandes rotations, déformation : GROT_GDEP

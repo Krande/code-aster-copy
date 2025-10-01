@@ -15,25 +15,23 @@
 ! You should have received a copy of the GNU General Public License
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
-
-subroutine dmat3d(fami, mater, time, poum, ipg, &
-                  ispg, angl, dr_, di_)
+!
+subroutine dmat3d(fami, materCodeJv, time, poum, ipg, &
+                  ispg, anglNaut, dr_, di_)
 !
     implicit none
 !
-#include "asterfort/get_elas_para.h"
 #include "asterfort/get_elas_id.h"
+#include "asterfort/get_elas_para.h"
 #include "asterfort/matrHooke3d.h"
 #include "asterfort/separ_RI_elas_3D.h"
 !
-!
     character(len=*), intent(in) :: fami
-    integer(kind=8), intent(in) :: mater
+    integer(kind=8), intent(in) :: materCodeJv
     real(kind=8), intent(in) :: time
     character(len=*), intent(in) :: poum
-    integer(kind=8), intent(in) :: ipg
-    integer(kind=8), intent(in) :: ispg
-    real(kind=8), intent(in) :: angl(3)
+    integer(kind=8), intent(in) :: ipg, ispg
+    real(kind=8), intent(in) :: anglNaut(3)
     real(kind=8), optional, intent(out) :: dr_(6, 6)
     real(kind=8), optional, intent(out) :: di_(6, 6)
 !
@@ -45,36 +43,34 @@ subroutine dmat3d(fami, mater, time, poum, ipg, &
 !
 ! --------------------------------------------------------------------------------------------------
 !
-! In  fami   : Gauss family for integration point rule
-! In  mater  : material parameters
-! In  time   : current time
-! In  poum   : '-' or '+' for parameters evaluation (previous or current temperature)
-! In  ipg    : current point gauss
-! In  ispg   : current "sous-point" gauss
-! In  angl   : nautical angles
-! Out dr     : real Hooke matrix
-! Out di     : imaginary Hooke matrix
+! In  fami             : Gauss family for integration point rule
+! In  materCodeJv      : coded material address
+! In  time             : current time
+! In  poum             : '-' or '+' for parameters evaluation (previous or current temperature)
+! In  ipg              : current point gauss
+! In  ispg             : current "sous-point" gauss
+! In  anglNaut         : nautical angles for definition of basis for non-isotropic elasticity
+! Out dr               : Hooke matrix (real part)
+! Out di               : Hooke matrix (imaginary part, for viscoelasticity)
 !
 ! --------------------------------------------------------------------------------------------------
 !
-    integer(kind=8) :: elas_id
+    integer(kind=8) :: elasID
     real(kind=8) :: nur, nui, nu12r, nu13r, nu23r, nu12i, nu13i, nu23i
     real(kind=8) :: e1r, e2r, e3r, e1i, e2i, e3i, er, ei
     real(kind=8) :: g1r, g2r, g3r, g1i, g2i, g3i, gr, gi
-    character(len=16) :: elas_keyword
+    character(len=32) :: elasKeyword
     real(kind=8) :: di(6, 6), dr(6, 6), hr(6), hi(6)
 !
 ! --------------------------------------------------------------------------------------------------
 !
-!
+
 ! - Get type of elasticity (Isotropic/Orthotropic/Transverse isotropic)
-!
-    call get_elas_id(mater, elas_id, elas_keyword)
-!
+    call get_elas_id(materCodeJv, elasID, elasKeyword)
+
 ! - Get elastic parameters
-!
-    call get_elas_para(fami, mater, poum, ipg, ispg, &
-                       elas_id, elas_keyword, &
+    call get_elas_para(fami, materCodeJv, poum, ipg, ispg, &
+                       elasID, elasKeyword, &
                        time=time, &
                        e_=er, nu_=nur, g_=gr, &
                        e1_=e1r, e2_=e2r, e3_=e3r, &
@@ -84,26 +80,24 @@ subroutine dmat3d(fami, mater, time, poum, ipg, &
                        e1i_=e1i, e2i_=e2i, e3i_=e3i, &
                        nu12i_=nu12i, nu13i_=nu13i, nu23i_=nu23i, &
                        g1i_=g1i, g2i_=g2i, g3i_=g3i)
-!
-! - Prepare Hook matrix coefficient
-!
-    call separ_RI_elas_3D(elas_id, nur, gr, nui, gi, &
+
+! - Prepare Hooke matrix coefficient
+    call separ_RI_elas_3D(elasID, nur, gr, nui, gi, &
                           e1r, e2r, e3r, &
                           nu12r, nu13r, nu23r, &
                           e1i, e2i, e3i, &
                           nu12i, nu13i, nu23i, &
                           hr, hi)
-!
+
 ! - Compute Hooke matrix
-!
     if (present(di_)) then
-        call matrHooke3d(elas_id, angl, &
+        call matrHooke3d(elasID, anglNaut, &
                          hi, gi, g1i, g2i, g3i, &
                          di)
         di_ = di
     end if
     if (present(dr_)) then
-        call matrHooke3d(elas_id, angl, &
+        call matrHooke3d(elasID, anglNaut, &
                          hr, gr, g1r, g2r, g3r, &
                          dr)
         dr_ = dr

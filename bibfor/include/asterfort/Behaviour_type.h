@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -182,23 +182,14 @@
 ! Maximum number of external state variables in external solvers
 #define ESVA_EXTE_NBMAXI            8
 
-! Maximum number of components in fields for external state variables
-#define ESVA_FIELD_NBCMPMAXI        6
-#define ESVA_FIELD_TEMP_NBCMP       3
-#define ESVA_FIELD_EPSA_NBCMP       6
-
-! Maximum number of fields for external state variables
-#define ESVA_FIELD_NBMAXI           5
-#define ESVA_FIELD_TEMP             1
-#define ESVA_FIELD_SECH             2
-#define ESVA_FIELD_HYDR             3
-#define ESVA_FIELD_EPSA             4
-#define ESVA_FIELD_PTOT             5
-
-! Type of field to compute strain
-#define ESVA_FIELD_TYPE_UNKW        0
-#define ESVA_FIELD_TYPE_VOLU        1
-#define ESVA_FIELD_TYPE_COMP        2
+! External state variables to create anelastic strain
+#define VARC_STRAIN_NBMAXI          5
+#define VARC_STRAIN_NONE            0
+#define VARC_STRAIN_TEMP            1
+#define VARC_STRAIN_SECH            2
+#define VARC_STRAIN_HYDR            3
+#define VARC_STRAIN_EPSA            4
+#define VARC_STRAIN_PTOT            5
 
 ! Maximum number of Gauss points for coordinates
 #define ESVA_GEOM_NBMAXI            27

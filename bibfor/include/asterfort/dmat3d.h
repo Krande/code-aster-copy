@@ -15,18 +15,16 @@
 ! You should have received a copy of the GNU General Public License
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
-
 !
 interface
-    subroutine dmat3d(fami, mater , time  , poum, ipg,&
-                      ispg, angl, dr_, di_)
+    subroutine dmat3d(fami, mater, time, poum, ipg, &
+                      ispg, anglNaut, dr_, di_)
         character(len=*), intent(in) :: fami
         integer(kind=8), intent(in) :: mater
         real(kind=8), intent(in) :: time
         character(len=*), intent(in) :: poum
-        integer(kind=8), intent(in) :: ipg
-        integer(kind=8), intent(in) :: ispg
-        real(kind=8), intent(in) :: angl(3)
+        integer(kind=8), intent(in) :: ipg, ispg
+        real(kind=8), intent(in) :: anglNaut(3)
         real(kind=8), optional, intent(out) :: dr_(6, 6)
         real(kind=8), optional, intent(out) :: di_(6, 6)
     end subroutine dmat3d

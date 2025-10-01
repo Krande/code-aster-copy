@@ -18,32 +18,33 @@
 ! aslint: disable=W1504,W0104
 !
 subroutine lc0050(BEHinteg, fami, kpg, ksp, ndim, &
-                  typmod, imate, compor, carcri, instam, &
+                  typmod, jvMaterCode, compor, carcri, instam, &
                   instap, neps, epsm, deps, nsig, &
                   sigm, nvi, vim, option, angmas, &
                   stress, statev, dsidep, codret)
 !
     use calcul_module, only: ca_iactif_
     use Behaviour_type
+    use BehaviourStrain_type
 !
     implicit none
 !
-#include "jeveux.h"
 #include "asterc/umatwp.h"
+#include "asterfort/Behaviour_type.h"
 #include "asterfort/lcicma.h"
+#include "asterfort/mat_proto.h"
 #include "asterfort/matrot.h"
 #include "asterfort/tecael.h"
-#include "asterfort/mat_proto.h"
+#include "asterfort/umatPrepareStrain.h"
 #include "blas/dcopy.h"
 #include "blas/dscal.h"
-#include "asterfort/umatPrepareStrain.h"
-#include "asterfort/Behaviour_type.h"
+#include "jeveux.h"
 !
     type(Behaviour_Integ), intent(in) :: BEHinteg
     character(len=*), intent(in) :: fami
     integer(kind=8), intent(in) :: kpg, ksp, ndim
     character(len=8), intent(in) :: typmod(*)
-    integer(kind=8), intent(in) :: imate
+    integer(kind=8), intent(in) :: jvMaterCode
     character(len=16), intent(in) :: compor(*)
     real(kind=8), intent(in) :: carcri(*)
     real(kind=8), intent(in) :: instam, instap
@@ -123,7 +124,7 @@ subroutine lc0050(BEHinteg, fami, kpg, ksp, ndim, &
     real(kind=8) :: ddsdde(36), dfgrd0(3, 3), dfgrd1(3, 3)
     real(kind=8) :: ddsddt(6), drplde(6), drpldt
     real(kind=8) :: coords(3), celent
-    character(len=16) :: rela_comp
+    character(len=16) :: relaComp
     real(kind=8), parameter :: rac2 = sqrt(2.d0)
     real(kind=8), parameter :: usrac2 = sqrt(2.d0)*0.5d0
     character(len=80) :: cmname
@@ -140,15 +141,16 @@ subroutine lc0050(BEHinteg, fami, kpg, ksp, ndim, &
     nshr = ntens-ndi
     codret = 0
     nprops = npropmax
-    rela_comp = compor(RELA_NAME)
-!
+    relaComp = compor(RELA_NAME)
+
 ! - Pointer to UMAT function
-!
     pfumat = int(carcri(EXTE_PTR))
 
 ! - Get temperature
-    temp = BEHInteg%behavESVA%behavESVAField(ESVA_FIELD_TEMP)%valeScalPrev
-    dtemp = BEHInteg%behavESVA%behavESVAField(ESVA_FIELD_TEMP)%valeScalIncr
+    temp = BEHinteg%allVarcStrain%list(VARC_STRAIN_TEMP)%varcPrev(1)
+    dtemp = BEHinteg%allVarcStrain%list(VARC_STRAIN_TEMP)%varcIncr(1)
+    ! temp = BEHInteg%behavESVA%behavESVAField(ESVA_FIELD_TEMP)%valeScalPrev
+    ! dtemp = BEHInteg%behavESVA%behavESVAField(ESVA_FIELD_TEMP)%valeScalIncr
 !
 ! - Get index of element / Newton iteration
 !
@@ -164,18 +166,15 @@ subroutine lc0050(BEHinteg, fami, kpg, ksp, ndim, &
         kinc = 0
         noel = 1
     end if
-!
+
 ! - Coordinates of current Gauss point
-!
     coords(ndim+1:) = BEHinteg%behavESVA%behavESVAGeom%coorElga(kpg, 1:ndim)
-!
+
 ! - Get material properties
-!
     call mat_proto(BEHinteg, fami, kpg, ksp, '+', &
-                   imate, compor(1), nprops, props)
-!
+                   jvMaterCode, relaComp, nprops, props)
+
 ! - Prepare strains
-!
     call umatPrepareStrain(neps, epsm, deps, stran, dstran, &
                            dfgrd0, dfgrd1)
 !
@@ -205,7 +204,7 @@ subroutine lc0050(BEHinteg, fami, kpg, ksp, ndim, &
     layer = 1
     kspt = ksp
     kstep = 1
-    cmname = rela_comp
+    cmname = relaComp
     pnewdt = 1.d0
 !
 ! - Unused variables in UMAT

@@ -17,11 +17,10 @@
 ! --------------------------------------------------------------------
 !
 subroutine mat_proto(BEHinteg, &
-                     fami, kpg, ksp, poum, imate, itface, &
+                     fami, kpg, ksp, poum, jvMaterCode, relaComp, &
                      nprops, props)
 !
     use Behaviour_type
-!
     implicit none
 !
 #include "jeveux.h"
@@ -29,19 +28,17 @@ subroutine mat_proto(BEHinteg, &
 #include "asterc/r8nnem.h"
 #include "asterfort/rcadlv.h"
 #include "asterfort/assert.h"
-#include "asterfort/rccoma.h"
 #include "asterfort/metaGetPhase.h"
 #include "asterfort/metaGetType.h"
 !
     type(Behaviour_Integ), intent(in) :: BEHinteg
     character(len=*), intent(in) :: fami
-    integer(kind=8), intent(in)          :: kpg
-    integer(kind=8), intent(in)          :: ksp
+    integer(kind=8), intent(in) :: kpg, ksp
     character(len=1), intent(in) :: poum
-    integer(kind=8), intent(in)          :: imate
-    character(len=*), intent(in) :: itface
-    integer(kind=8), intent(inout)       :: nprops
-    real(kind=8), intent(out)    :: props(*)
+    integer(kind=8), intent(in) :: jvMaterCode
+    character(len=*), intent(in) :: relaComp
+    integer(kind=8), intent(inout) :: nprops
+    real(kind=8), intent(out) :: props(*)
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -56,56 +53,61 @@ subroutine mat_proto(BEHinteg, &
 !       in   kpg,ksp   : numero du (sous)point de gauss
 !       in   poum      : '+' /'-'
 !       in   nprops    : en entree : dimension du tableau props
-!       in   itface    : nom de l'interface de prototypage
+!       in   relaComp    : nom de l'interface de prototypage
 !       out  nprops    : en sortie : nombre de coefficients recuperes dans props
 !            props(*)  : coeficients du materiau
 !
 ! --------------------------------------------------------------------------------------------------
 !
-    integer(kind=8)      :: i, jadr, icodre, ncoef
+    integer(kind=8) :: i, jadr, icodre, ncoef, nbPara
     real(kind=8) :: phase(5), zalpha
-    integer(kind=8)      :: meta_type, nb_phasis
-    character(len=16) :: elas_keyword
-    integer(kind=8), parameter :: nb_para = 3
-    real(kind=8) :: para_vale(nb_para)
-    character(len=16), parameter :: para_name(nb_para) = (/'X', 'Y', 'Z'/)
+    integer(kind=8) :: metaType, nbPhase
+    integer(kind=8), parameter :: nbParaMaxi = 4
+    real(kind=8) :: paraVale(nbParaMaxi)
+    character(len=16) :: paraName(nbParaMaxi)
 !
 ! --------------------------------------------------------------------------------------------------
 !
-    ASSERT(itface .eq. 'UMAT' .or. itface .eq. 'MFRONT')
+    ASSERT(relaComp .eq. 'UMAT' .or. relaComp .eq. 'MFRONT')
     ASSERT(nprops .gt. 0 .and. nprops .le. 197)
     props(1:nprops) = r8nnem()
-!
-! - Coordinates of current Gauss point
-!
-    para_vale = BEHinteg%behavESVA%behavESVAGeom%coorElga(kpg, :)
-!
+
 ! - Get material properties
-!
-    call rccoma(imate, 'ELAS_META', 0, elas_keyword, icodre)
-    if (icodre .eq. 0) then
-        call metaGetType(meta_type, nb_phasis)
-        call metaGetPhase(fami, poum, kpg, ksp, meta_type, &
-                          nb_phasis, phase, zcold_=zalpha)
-        call rcadlv(fami, kpg, ksp, poum, imate, ' ', itface, &
-                    'LISTE_COEF', 1, ['META'], [zalpha], jadr, ncoef, icodre, 1)
-    else
-        if (BEHinteg%behavESVA%lGeomInESVA) then
-            call rcadlv(fami, kpg, ksp, poum, imate, ' ', itface, &
-                        'LISTE_COEF', 0, [' '], [0.d0], jadr, ncoef, icodre, 1)
-        else
-            call rcadlv(fami, kpg, ksp, poum, imate, ' ', itface, &
-                        'LISTE_COEF', nb_para, para_name, para_vale, jadr, ncoef, icodre, 1)
-        end if
+    zalpha = 0.d0
+    nbPara = 0
+    paraName = " "
+    paraVale = 0.d0
+    if (BEHinteg%behavPara%lElasIsMeta) then
+        call metaGetType(metaType, nbPhase)
+        call metaGetPhase(fami, poum, kpg, ksp, metaType, &
+                          nbPhase, phase, zcold_=zalpha)
+        nbPara = nbPara+1
+        paraName(nbPara) = "META"
+        paraVale(nbPara) = zalpha
     end if
+
+    if (.not. BEHinteg%behavESVA%lGeomInESVA) then
+        ASSERT(fami .ne. 'XFEM')
+        nbPara = nbPara+1
+        paraName(nbPara) = "X"
+        paraVale(nbPara) = BEHinteg%behavESVA%behavESVAGeom%coorElga(kpg, 1)
+        nbPara = nbPara+1
+        paraName(nbPara) = "Y"
+        paraVale(nbPara) = BEHinteg%behavESVA%behavESVAGeom%coorElga(kpg, 2)
+        nbPara = nbPara+1
+        paraName(nbPara) = "Z"
+        paraVale(nbPara) = BEHinteg%behavESVA%behavESVAGeom%coorElga(kpg, 3)
+    end if
+    ASSERT(nbPara .le. nbParaMaxi)
+    call rcadlv(fami, kpg, ksp, poum, jvMaterCode, ' ', relaComp, &
+                'LISTE_COEF', nbPara, paraName, paraVale, jadr, ncoef, icodre, 1)
     ASSERT(icodre .eq. 0)
-!
+
 ! - Copy properties
-!
     ASSERT(ncoef .le. nprops)
     do i = 1, ncoef
         props(i) = zr(jadr-1+i)
     end do
     nprops = ncoef
-
+!
 end subroutine

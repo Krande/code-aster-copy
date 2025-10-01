@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -88,7 +88,12 @@ La déformation est supposée nulle.
     ),
     15: _(
         """
-La nature du matériau élastique %(k1)s n'est pas traitée.
+La nature du matériau élastique %(k1)s n'est pas traitée pour cet élément ou ce comportement. Soit vous n'avez pas renseigné les bons paramètres élastiques, soit il s'agit d'une erreur de programmation.
+"""
+    ),
+    16: _(
+        """
+On ne sait pas calculer les déformations thermiques avec le matériau élastique %(k1)s.
 """
     ),
     19: _(
@@ -204,6 +209,12 @@ La déformation plastique cumulée est négative.
         """
 Le prolongement à droite étant exclu pour la fonction %(k1)s, il n'est pas possible
 d'extrapoler la fonction R(p) au delà de p = %(r1)f
+"""
+    ),
+    76: _(
+        """
+Couplage fluage/fissuration :
+La loi BETON_DOUBLE_DP ne peut être couplée qu'avec une loi de fluage de GRANGER
 """
     ),
     81: _(
