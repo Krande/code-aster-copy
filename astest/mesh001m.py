@@ -145,6 +145,13 @@ test.assertEqual(connect[0], [5, 8, 1, 17, 20, 16])
 test.assertEqual(connect[1], [1, 2, 6, 5, 9, 11, 12, 16])
 test.assertEqual(connect[2], [5, 4, 0, 1, 8, 14, 21, 15, 16, 17, 18, 19, 20])
 
+# issue35069
+mesh_3d = LIRE_MAILLAGE(FORMAT="MED", UNITE=23, INFO=1)
+mesh_3d_fix = mesh_3d.fix(True, info=1)
+
+test.assertEqual(mesh_3d.getNumberOfNodes(), mesh_3d_fix.getNumberOfNodes())
+test.assertEqual(mesh_3d.getNumberOfCells(), mesh_3d_fix.getNumberOfCells())
+
 test.printSummary()
 
 FIN()
