@@ -4029,9 +4029,9 @@ contains
             case (MT_TETRA4, MT_TETRA10, MT_TETRA15)
                 typema = "TE4"
             case (MT_PENTA6, MT_PENTA7, MT_PENTA15, MT_PENTA18, MT_PENTA21)
-                typema = "PY5"
-            case (MT_PYRAM5, MT_PYRAM13, MT_PYRAM19)
                 typema = "PE6"
+            case (MT_PYRAM5, MT_PYRAM13, MT_PYRAM19)
+                typema = "PY5"
             case default
                 ASSERT(ASTER_FALSE)
             end select
