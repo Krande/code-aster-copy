@@ -3,7 +3,7 @@ variables:
   MINIO_MC: ./mc --insecure
   ROOT_URL: https://$GITLAB_TOKEN_NAME:$GITLAB_TOKEN@gitlab.pleiade.edf.fr/codeaster
   PREREQ_VERSION: 20221225
-  OSNAME: debian-11
+  OSNAME: debian-12
   IMAGE_URL: ${DOCKER_NEXUS_URL}/codeaster-prerequisites:${PREREQ_VERSION}-${OSNAME}
   BUILD: mpi
   # BUILDTYPE: ci, nightly
@@ -200,31 +200,31 @@ verification_test:
       artifacts: false
       optional: true
 
-# --- variant debian-12 for nightly build
-prepare_debian-12:
+# --- variant debian-next for nightly build: no image available
+prepare_debian-next:
   variables:
-    OSNAME: debian-12
+    OSNAME: debian-13
   extends: .prepare
   rules:
-    - if: $BUILDTYPE == "nightly"
+    - when: manual
+      allow_failure: true
 
-compile_debian-12:
+compile_debian-next:
   variables:
-    OSNAME: debian-12
+    OSNAME: debian-13
   extends: .compile
   needs:
-    - prepare_debian-12
-  rules:
-    - if: $BUILDTYPE == "nightly"
+    - job: prepare_debian-next
+      optional: true
 
-verification_test_debian-12:
+verification_test_debian-next:
   variables:
-    OSNAME: debian-12
+    OSNAME: debian-13
   extends: .verification_test
   needs:
-    - prepare_debian-12
-    - compile_debian-12
-  rules:
-    - if: $BUILDTYPE == "nightly"
+    - job: prepare_debian-next
+      optional: true
+    - job: compile_debian-next
+      optional: true
 
 
