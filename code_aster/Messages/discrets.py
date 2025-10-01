@@ -252,20 +252,30 @@ Risques et conseils :
     ),
     33: _(
         """
-Le discret avec le matériau %(k1)s/CONTACT="COIN_2D" et
-le comportement %(k2)s
-n'est pas dans un des plans XY, XZ ou YZ.
+Le discret avec le matériau %(k1)s/CONTACT="COIN_2D" et le comportement %(k2)s n'est pas dans un des plans XY, XZ ou YZ.
+
+Informations:
+    Noeud 1 (%(r1)f, %(r2)f, %(r3)f)
+    Noeud 2 (%(r4)f, %(r5)f, %(r6)f)
+    Delta  (%(r7)f, %(r8)f, %(r9)f)
+    Précision (%(r10)f, %(r11)f, %(r12)f)
 """
     ),
     34: _(
         """
-Le discret avec le matériau %(k1)s/CONTACT="COIN_2D" et
-le comportement %(k2)s
-est soit :
+Le discret avec le matériau %(k1)s/CONTACT="COIN_2D" et le comportement %(k2)s est soit :
 -   Sur un des axes X, Y ou Z.
         Dans ce cas, il faut utiliser CONTACT="1D" (option par défaut)
 -   Dans plusieurs plans.
         Dans ce cas il faut adapter PRECISION.
+
+Informations:
+    Noeud 1 (%(r1)f, %(r2)f, %(r3)f)
+    Noeud 2 (%(r4)f, %(r5)f, %(r6)f)
+    Delta  (%(r7)f, %(r8)f, %(r9)f)
+    Précision (%(r10)f, %(r11)f, %(r12)f)
+    Nombre de plans %(i1)d
+    Axes  (%(i2)d, %(i3)d, %(i4)d)
 """
     ),
     35: _(
@@ -279,15 +289,6 @@ gère seulement CONTACT=%(k3)s.
 Pour le discret avec le matériau %(k1)s, le comportement %(k2)s, de CONTACT=%(k3)s.
 Les paramètres suivant ne sont pas pris en compte :
     DIST_1, DIST_2, JEU, RIGI_TAN, AMOR_NOR, AMOR_TAN, COULOMB
-"""
-    ),
-    37: _(
-        """
-Pour le discret de CONTACT=%(k3)s affecté par :
-- le matériau %(k1)s,
-- le comportement %(k2)s,
-
-Pour l'option PRECISION c'est 3 valeurs.
 """
     ),
     40: _(

@@ -26,6 +26,7 @@ subroutine dis_choc_frot_syme(DD, icodma, ulp, xg, klv, &
 #include "jeveux.h"
 #include "asterc/r8prem.h"
 #include "asterc/r8sign.h"
+#include "asterfort/assert.h"
 #include "asterfort/diraidklv.h"
 #include "asterfort/diklvraid.h"
 #include "asterfort/in_liste_entier.h"
@@ -84,10 +85,10 @@ subroutine dis_choc_frot_syme(DD, icodma, ulp, xg, klv, &
     real(kind=8) :: coulom, dist12, psca, vit123(3), Precisxyz(3), utotxyz(3)
     real(kind=8) :: vitt, fort, kp, kt
 !
-    integer(kind=8) :: axes(3), ContactInGlobal, TestOK, TestNOK
+    integer(kind=8) :: axes(3), ContactInGlobal, TestOK, TestNOK, messai(4)
     integer(kind=8) :: jadre1, nbout, jcodre1
     real(kind=8) :: ldp(3), ldm(3), SigneAxe(3)
-    real(kind=8) :: ldpglob(3), forceglob(3), raideglob(6)
+    real(kind=8) :: ldpglob(3), forceglob(3), raideglob(6), messar(12)
     aster_logical :: IsEnfonce
 !
 !   ContactInGlobal :
@@ -103,11 +104,11 @@ subroutine dis_choc_frot_syme(DD, icodma, ulp, xg, klv, &
 ! ----------------------------------------------------------------------
 !
 !   Définition des parametres
-    xl(:) = 0.d0
-    xd(:) = 0.d0
+    xl = 0.d0
+    xd = 0.d0
     dist12 = 0.d0
-    Precisxyz(:) = r8prem()
-    utotxyz(:) = 0.d0
+    Precisxyz = r8prem()
+    utotxyz = 0.d0
 !
 !   Coordonnees dans le repere local
     if (DD%ndim .eq. 3) then
@@ -119,7 +120,7 @@ subroutine dis_choc_frot_syme(DD, icodma, ulp, xg, klv, &
 !       ==> Elles sont surchargées par celles du matériau
     call diraidklv(DD%nomte, raide, klv)
     !
-    valre1(:) = 0.d0
+    valre1 = 0.d0
     valre1(1) = raide(1)
 !   Caractéristiques du matériau
     call rcvala(icodma, ' ', 'DIS_CONTACT', 0, ' ', &
@@ -156,16 +157,10 @@ subroutine dis_choc_frot_syme(DD, icodma, ulp, xg, klv, &
         call rcadlv(' ', 1, 1, '+', icodma, ' ', 'DIS_CONTACT', 'PRECISION', &
                     0, [' '], [0.d0], jadre1, nbout, jcodre1, 0)
         if (jcodre1 .eq. 0) then
-            if (nbout .eq. 3) then
-                Precisxyz(1) = zr(jadre1)
-                Precisxyz(2) = zr(jadre1+1)
-                Precisxyz(3) = zr(jadre1+2)
-            else
-                messak(1) = 'DIS_CONTACT'
-                messak(2) = 'DIS_CHOC'
-                messak(3) = '"COIN_2D"'
-                call utmess('F', 'DISCRETS_37', nk=3, valk=messak)
-            end if
+            ASSERT(nbout .eq. 3)
+            Precisxyz(1) = zr(jadre1)
+            Precisxyz(2) = zr(jadre1+1)
+            Precisxyz(3) = zr(jadre1+2)
         end if
     end if
 !
@@ -174,7 +169,7 @@ subroutine dis_choc_frot_syme(DD, icodma, ulp, xg, klv, &
     if (DD%nno .eq. 2) then
         dist12 = valre1(6)+valre1(7)
         ! Vitesse tangente
-        vit123(:) = 0.d0
+        vit123 = 0.d0
         vit123(2) = dvl(2+DD%nc)-dvl(2)
         if (DD%ndim .eq. 3) then
             vit123(3) = dvl(3+DD%nc)-dvl(3)
@@ -182,12 +177,19 @@ subroutine dis_choc_frot_syme(DD, icodma, ulp, xg, klv, &
         !
         ! Détermination du plan du discret : géométrie initiale
         ldm(1:3) = xg(4:6)-xg(1:3)
-        axes(:) = 0
-        SigneAxe(:) = 0.d0
+        axes = 0
+        SigneAxe = 0.d0
         if (in_liste_entier(ContactInGlobal, [ReperGlobal, ReperBizarre])) then
             ! Plan du discret     : [ axes(1), axes(2) ]
             ! Axe perpendiculaire : axes(3)
             TestOK = 0
+            ! Message
+            messar(1:6) = xg(1:6)
+            messar(7:9) = ldm
+            messar(10:12) = Precisxyz
+            messak(1) = 'DIS_CONTACT'
+            messak(2) = 'DIS_CHOC (cas symétrique)'
+            !
             if (abs(ldm(1)) <= Precisxyz(1)) then
                 ! Plan YZ, vect ↑ X
                 axes = [2, 3, 1]
@@ -205,30 +207,17 @@ subroutine dis_choc_frot_syme(DD, icodma, ulp, xg, klv, &
             end if
             if (TestOK .eq. 0) then
                 ! <F> Le discret n'est pas dans un plan
-                write (*, *) 'DISCRET informations :'
-                write (*, *) '   Node 1    ', xg(1:3)
-                write (*, *) '   Node 2    ', xg(4:6)
-                write (*, *) '   Delta     ', ldm
-                write (*, *) '   Precision ', Precisxyz
-                messak(1) = 'DIS_CONTACT'
-                messak(2) = 'DIS_CHOC (cas symétrique)'
-                call utmess('F', 'DISCRETS_33', nk=2, valk=messak)
+                call utmess('F', 'DISCRETS_33', nk=2, valk=messak, nr=12, valr=messar)
             end if
             if (TestOK .ne. 1 .or. &
                 abs(ldm(axes(1))) <= Precisxyz(axes(1)) .or. &
                 abs(ldm(axes(2))) <= Precisxyz(axes(2))) then
                 ! <F> Le discret est suivant un axe
                 ! <F> Le discret est détecté dans plusieurs plans
-                write (*, *) 'DISCRET informations :'
-                write (*, *) '   Node 1         ', xg(1:3)
-                write (*, *) '   Node 2         ', xg(4:6)
-                write (*, *) '   Delta          ', ldm
-                write (*, *) '   Axes           ', axes
-                write (*, *) '   Precision      ', Precisxyz
-                write (*, *) '   Nombre de plan ', TestOK
-                messak(1) = 'DIS_CONTACT'
-                messak(2) = 'DIS_CHOC (cas symétrique)'
-                call utmess('F', 'DISCRETS_34', nk=2, valk=messak)
+                messai(1:3) = axes
+                messai(4) = TestOK
+                call utmess('F', 'DISCRETS_34', nk=2, valk=messak, nr=12, valr=messar, &
+                            ni=4, vali=messai)
             end if
             do ii = 1, 3
                 SigneAxe(axes(ii)) = r8sign(ldm(axes(ii)))
@@ -244,8 +233,8 @@ subroutine dis_choc_frot_syme(DD, icodma, ulp, xg, klv, &
             xd(ii) = xl(DD%ndim+ii)-xl(ii)
         end do
         ! Déplacement d'entrainement
-        depxyz(:) = 0.d0
-        utotxyz(:) = 0.d0
+        depxyz = 0.d0
+        utotxyz = 0.d0
         utotxyz(1) = ulp(1+DD%nc)-ulp(1)+dpe(1+DD%nc)-dpe(1)
         utotxyz(2) = ulp(2+DD%nc)-ulp(2)+dpe(2+DD%nc)-dpe(2)
         depxyz(1) = xd(1)+utotxyz(1)-dist12-r8prem()
@@ -255,15 +244,15 @@ subroutine dis_choc_frot_syme(DD, icodma, ulp, xg, klv, &
             depxyz(3) = xd(3)+utotxyz(3)
         end if
         ! Vitesse tangente
-        vitxyz(:) = 0.d0
+        vitxyz = 0.d0
         vitxyz(2) = vit123(2)+dve(2+DD%nc)-dve(2)
         if (DD%ndim .eq. 3) then
             vitxyz(3) = vit123(3)+dve(3+DD%nc)-dve(3)
         end if
         ! ------------------------------------------------------------------------------------------
         force(1:3) = 0.d0
-        forceglob(:) = 0.d0
-        raideglob(:) = 0.d0
+        forceglob = 0.d0
+        raideglob = 0.d0
         IsEnfonce = ASTER_FALSE
         if (in_liste_entier(ContactInGlobal, [ReperGlobal, ReperBizarre])) then
             if ((ldp(axes(1))*SigneAxe(axes(1)) <= 0.d0) .and. &
@@ -272,7 +261,7 @@ subroutine dis_choc_frot_syme(DD, icodma, ulp, xg, klv, &
                 ! Les 2 ldp sont <= 0.0
                 !   On garde le plus petit pour le calcul de l'effort
                 !   Pas de déplacement, ni d'effort dans le plan perpendiculaire
-                ldpglob(:) = 0.d0
+                ldpglob = 0.d0
                 if (abs(ldp(axes(1))) <= abs(ldp(axes(2)))) then
                     ldpglob(axes(1)) = ldp(axes(1))
                     ldpglob(axes(2)) = abs(ldpglob(axes(1)))*r8sign(ldp(axes(2)))
@@ -382,13 +371,13 @@ subroutine dis_choc_frot_syme(DD, icodma, ulp, xg, klv, &
         end if
         dist12 = valre1(8)-valre1(6)
         ! Vitesse tangente
-        vit123(:) = 0.d0
+        vit123 = 0.d0
         vit123(2) = dvl(2)
         if (DD%ndim .eq. 3) then
             vit123(3) = dvl(3)
         end if
-        depxyz(:) = 0.d0
-        utotxyz(:) = 0.d0
+        depxyz = 0.d0
+        utotxyz = 0.d0
         utotxyz(1) = ulp(1)+dpe(1)
         utotxyz(2) = ulp(2)+dpe(2)
         depxyz(1) = utotxyz(1)+dist12
@@ -398,7 +387,7 @@ subroutine dis_choc_frot_syme(DD, icodma, ulp, xg, klv, &
             depxyz(3) = utotxyz(3)
         end if
         ! Vitesse tangente
-        vitxyz(:) = 0.d0
+        vitxyz = 0.d0
         vitxyz(2) = vit123(2)+dve(2)
         if (DD%ndim .eq. 3) then
             vitxyz(3) = vit123(3)+dve(3)
