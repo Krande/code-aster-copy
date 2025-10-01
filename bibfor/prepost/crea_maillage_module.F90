@@ -142,8 +142,10 @@ module crea_maillage_module
 ! it could be improved a lot to decrease memory consumption
         integer(ip) :: max_faces = zero_ip, nb_faces = zero_ip
         integer(ip) :: max_edges = zero_ip, nb_edges = zero_ip
+        integer(ip) :: max_volumes = zero_ip, nb_volumes = zero_ip
         integer(ip), allocatable :: faces(:)
         integer(ip), allocatable :: edges(:)
+        integer(ip), allocatable :: volumes(:)
     end type
 !
     type Mmesh
@@ -206,6 +208,7 @@ module crea_maillage_module
         procedure, private, pass :: copy_group_no
         procedure, private, pass :: find_edge
         procedure, private, pass :: find_face
+        procedure, private, pass :: find_volume
         procedure, private, pass :: increase_memory
         procedure, private, pass :: numbering_nodes
         procedure, private, pass :: owner_cell
@@ -372,6 +375,67 @@ contains
             end if
             this%faces_dege(2*(this%nb_faces_dege-1)+1) = face_i_error
             this%faces_dege(2*(this%nb_faces_dege-1)+2) = this%nb_faces+one_ip
+        end if
+!
+    end subroutine
+!
+!===================================================================================================
+!
+!===================================================================================================
+    subroutine find_volume(this, nno, nnos, nno_sort, find, volume_id)
+!
+        implicit none
+!
+        class(Mmesh), intent(inout) ::this
+        integer(ip), intent(in) :: nnos, nno
+        integer(ip), intent(in) :: nno_sort(27)
+        aster_logical, intent(out) :: find
+        integer(ip), intent(out) :: volume_id
+!
+! Find volume_id of volume
+!
+        integer(ip) :: i_volu, i_node, nb_volumes, volume_i, volu_i_error, nno_sort2(27)
+        aster_logical :: ok
+!
+        find = ASTER_FALSE
+        volume_id = zero_ip
+        volu_i_error = zero_ip
+!
+        nb_volumes = this%nodes(nno_sort(1))%nb_volumes
+        if (nb_volumes > zero_ip) then
+            do i_volu = one_ip, nb_volumes
+                volume_i = this%nodes(nno_sort(1))%volumes(i_volu)
+                if (nnos == this%converter%nnos(this%volumes(volume_i)%type)) then
+                    nno_sort2(1:nnos) = this%volumes(volume_i)%nodes(1:nnos)
+                    call qsort(nno_sort2(1:nnos))
+                    ok = ASTER_TRUE
+                    do i_node = one_ip, nnos
+                        if (nno_sort(i_node) .ne. nno_sort2(i_node)) then
+                            ok = ASTER_FALSE
+                            exit
+                        end if
+                    end do
+                else
+                    ok = ASTER_FALSE
+                end if
+                if (ok) then
+                    nno_sort2(1:nno) = this%volumes(volume_i)%nodes(1:nno)
+                    call qsort(nno_sort2(1:nno))
+                    do i_node = 1, nno
+                        if (nno_sort(i_node) .ne. nno_sort2(i_node)) then
+                            volu_i_error = volume_i
+                            ok = ASTER_FALSE
+                            ASSERT(ASTER_FALSE)
+                            exit
+                        end if
+                    end do
+                end if
+                if (ok) then
+                    find = ASTER_TRUE
+                    volume_id = volume_i
+                    exit
+                end if
+            end do
         end if
 !
     end subroutine
@@ -1136,7 +1200,8 @@ contains
                 edge_type(1:nb_edge) = MT_SEG3
                 edge_loc(3, 1:nb_edge) = int([4, 5, 6], ip)
             end if
-        elseif (cell_type == MT_HEXA8 .or. cell_type == MT_HEXA20 .or. cell_type == MT_HEXA27) then
+        elseif (cell_type == MT_HEXA8 .or. cell_type == MT_HEXA9 &
+                .or. cell_type == MT_HEXA20 .or. cell_type == MT_HEXA27) then
             nb_edge = 12_ip
             edge_loc(1:2, 1) = int([1, 2], ip)
             edge_loc(1:2, 2) = int([2, 3], ip)
@@ -1634,57 +1699,89 @@ contains
         integer(ip), intent(in), optional :: parent, isub
         integer(ip) :: volume_id
 ! ----------------------------------------------------------------------
-        integer(ip) :: nno, i_face
+        integer(ip) :: nno, i_face, nno_sort(27), nnos, old_size
         integer(ip) :: nb_edges, edge_type(12), edge_loc(3, 12), edge_id, edge_nno
         integer(ip) :: nb_faces, face_type(6), face_loc(9, 6), i_node, i_edge
         integer(ip) :: face_nno, face_nodes(27), face_id, edge_nodes(27)
+        integer(ip), allocatable :: new_volumes(:)
+        aster_logical :: find
 !
         ASSERT(this%converter%dim(type) == three_ip)
         nno = this%converter%nno(type)
+        nnos = this%converter%nnos(type)
+        nno_sort(1:nno) = nodes(1:nno)
 !
-        this%nb_volumes = this%nb_volumes+one_ip
-        if (this%nb_volumes > this%max_volumes) then
-            call this%increase_memory("VOLUMES ", two_ip*this%max_volumes)
+        call qsort(nno_sort(1:nnos))
+        if (nno > nnos) then
+            call qsort(nno_sort(nnos+1:nno))
         end if
-        ASSERT(this%nb_volumes <= this%max_volumes)
-        volume_id = this%nb_volumes
-        this%volumes(volume_id)%type = type
-        this%volumes(volume_id)%nodes(1:nno) = nodes(1:nno)
-        if (present(parent)) then
-            this%volumes(volume_id)%parent = parent
-        end if
-        if (present(isub)) then
-            this%volumes(volume_id)%isub = isub
-        end if
+!
+        call this%find_volume(nno, nnos, nno_sort, find, volume_id)
+!
+        if (.not. find) then
+            this%nb_volumes = this%nb_volumes+one_ip
+            if (this%nb_volumes > this%max_volumes) then
+                call this%increase_memory("VOLUMES ", two_ip*this%max_volumes)
+            end if
+            ASSERT(this%nb_volumes <= this%max_volumes)
+            volume_id = this%nb_volumes
+            this%volumes(volume_id)%type = type
+            this%volumes(volume_id)%nodes(1:nno) = nodes(1:nno)
+            if (present(parent)) then
+                this%volumes(volume_id)%parent = parent
+            end if
+            if (present(isub)) then
+                this%volumes(volume_id)%isub = isub
+            end if
 ! --- create edges
-        call numbering_edge(type, nb_edges, edge_type, edge_loc)
-        this%volumes(volume_id)%nb_edges = nb_edges
-        do i_edge = one_ip, nb_edges
-            edge_nno = this%converter%nno(edge_type(i_edge))
-            edge_nodes = zero_ip
-            do i_node = one_ip, edge_nno
-                edge_nodes(i_node) = nodes(edge_loc(i_node, i_edge))
+            call numbering_edge(type, nb_edges, edge_type, edge_loc)
+            this%volumes(volume_id)%nb_edges = nb_edges
+            do i_edge = one_ip, nb_edges
+                edge_nno = this%converter%nno(edge_type(i_edge))
+                edge_nodes = zero_ip
+                do i_node = one_ip, edge_nno
+                    edge_nodes(i_node) = nodes(edge_loc(i_node, i_edge))
+                end do
+                edge_id = this%add_edge(edge_type(i_edge), edge_nodes)
+                this%volumes(volume_id)%edges(i_edge) = edge_id
             end do
-            edge_id = this%add_edge(edge_type(i_edge), edge_nodes)
-            this%volumes(volume_id)%edges(i_edge) = edge_id
-        end do
 ! --- create faces
-        call numbering_face(type, nb_faces, face_type, face_loc)
-        this%volumes(volume_id)%nb_faces = nb_faces
-        do i_face = one_ip, nb_faces
-            face_nno = this%converter%nno(face_type(i_face))
-            face_nodes = zero_ip
-            do i_node = one_ip, face_nno
-                face_nodes(i_node) = nodes(face_loc(i_node, i_face))
+            call numbering_face(type, nb_faces, face_type, face_loc)
+            this%volumes(volume_id)%nb_faces = nb_faces
+            do i_face = one_ip, nb_faces
+                face_nno = this%converter%nno(face_type(i_face))
+                face_nodes = zero_ip
+                do i_node = one_ip, face_nno
+                    face_nodes(i_node) = nodes(face_loc(i_node, i_face))
+                end do
+                face_id = this%add_face(face_type(i_face), face_nodes)
+                this%volumes(volume_id)%faces(i_face) = face_id
+                this%faces(face_id)%nb_volumes = this%faces(face_id)%nb_volumes+one_ip
+                ASSERT(this%faces(face_id)%nb_volumes <= 2)
+                this%faces(face_id)%volumes(this%faces(face_id)%nb_volumes) = volume_id
             end do
-            face_id = this%add_face(face_type(i_face), face_nodes)
-            this%volumes(volume_id)%faces(i_face) = face_id
-            this%faces(face_id)%nb_volumes = this%faces(face_id)%nb_volumes+one_ip
-            this%faces(face_id)%volumes(this%faces(face_id)%nb_volumes) = volume_id
-        end do
 !
-        if (this%convert_max) then
-            call this%convert_volume(volume_id)
+            if (this%nodes(nno_sort(1))%nb_volumes >= this%nodes(nno_sort(1))%max_volumes) then
+                if (this%nodes(nno_sort(1))%max_volumes > zero_ip) then
+                    old_size = this%nodes(nno_sort(1))%max_volumes
+                    allocate (new_volumes(old_size))
+                    new_volumes(1:old_size) = this%nodes(nno_sort(1))%volumes(1:old_size)
+                    deallocate (this%nodes(nno_sort(1))%volumes)
+                    allocate (this%nodes(nno_sort(1))%volumes(2*old_size))
+                    this%nodes(nno_sort(1))%volumes(1:old_size) = new_volumes(1:old_size)
+                    deallocate (new_volumes)
+                    this%nodes(nno_sort(1))%max_volumes = two_ip*old_size
+                else
+                    this%nodes(nno_sort(1))%max_volumes = 15_ip
+                    allocate (this%nodes(nno_sort(1))%volumes(15))
+                end if
+            end if
+            this%nodes(nno_sort(1))%nb_volumes = this%nodes(nno_sort(1))%nb_volumes+one_ip
+            this%nodes(nno_sort(1))%volumes(this%nodes(nno_sort(1))%nb_volumes) = volume_id
+!
+            if (this%convert_max) then
+                call this%convert_volume(volume_id)
+            end if
         end if
 !
         if (this%debug) then
@@ -1776,8 +1873,8 @@ contains
                     deallocate (new_faces)
                     this%nodes(nno_sort(1))%max_faces = two_ip*old_size
                 else
-                    this%nodes(nno_sort(1))%max_faces = 30_ip
-                    allocate (this%nodes(nno_sort(1))%faces(30))
+                    this%nodes(nno_sort(1))%max_faces = 15_ip
+                    allocate (this%nodes(nno_sort(1))%faces(15))
                 end if
             end if
             this%nodes(nno_sort(1))%nb_faces = this%nodes(nno_sort(1))%nb_faces+one_ip
