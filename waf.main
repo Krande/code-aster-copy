@@ -35,8 +35,8 @@ waf_main()
         if [ -z "${host}" ]; then
             echo "no preset configuration found"
             source ${prefix}/env.d/version.sh
-            # FIXME: latest during beta test - export VERSION
-            export VERSION=latest
+            # FIXME: set manually during beta tests
+            export VERSION=20240327b
             args=( "-v" )
             [ "${WAF_DEFAULT_VARIANT}" = "debug" ] && args=()
             ${prefix}/.devhelper/check_requirements.sh

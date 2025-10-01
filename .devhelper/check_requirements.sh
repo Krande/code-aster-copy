@@ -42,6 +42,7 @@ do_install() {
         [ "${answer}" = "3" ] && ASTER_REQS_PACKAGE="nogcc-noompi"
         [ "${answer}" = "0" ] && echo "exiting..." && return 1
     fi
+    [ "${WAF_DEFAULT_VARIANT}" = "debug" ] && VARIANT="-debug"
     arch="codeaster-prerequisites-${VERSION}-${ASTER_REQS_PACKAGE}${VARIANT}.sh"
 
     _test curl || return 1
@@ -90,6 +91,10 @@ check_requirements_main() {
     found=$(find build -name "codeaster-prerequisites-${VERSION}-*" -type d | grep ${args[@]} debug)
     if [ -z "${found}" ]; then
         return 1
+    fi
+    if [ "${found}/VERSION" ]; then
+        echo "package details:"
+        cat "${found}/VERSION"
     fi
     return 0
 }
