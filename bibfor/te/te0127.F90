@@ -33,7 +33,7 @@ subroutine te0127(option, nomte)
 !        DONNEES:      OPTION       -->  OPTION DE CALCUL
 !                      NOMTE        -->  NOM DU TYPE ELEMENT
 !
-    real(kind=8) :: nx, ny, nz, sx(9, 9), sy(9, 9), sz(9, 9), jac, tpg
+    real(kind=8) :: nx, ny, nz, sx(9, 9), sy(9, 9), sz(9, 9), jac, tpg, tpg_b, theta
     integer(kind=8) :: ipoids, ivf, idfdx, idfdy, igeom, jgano
     integer(kind=8) :: ndim, nno, ipg, npg1, iveres, iech, iray, nnos
 !
@@ -41,7 +41,7 @@ subroutine te0127(option, nomte)
     real(kind=8) :: hech, sigmEner, epsil, tz0
 ! DEB ------------------------------------------------------------------
 !-----------------------------------------------------------------------
-    integer(kind=8) :: i, ino, itemp, itemps, j, jno
+    integer(kind=8) :: i, ino, itemp, itemps, j, jno, btemp
 !-----------------------------------------------------------------------
     tz0 = r8t0()
 !
@@ -60,10 +60,13 @@ subroutine te0127(option, nomte)
     call jevech('PGEOMER', 'L', igeom)
     call jevech('PINSTR', 'L', itemps)
     call jevech('PTEMPEI', 'L', itemp)
+    call jevech('PTEMPER', 'L', btemp)
     call jevech('PRESIDU', 'E', iveres)
 !
 !    CALCUL DES PRODUITS VECTORIELS OMI   OMJ
 !
+    theta = zr(itemps+2)
+
     do ino = 1, nno
         i = igeom+3*(ino-1)-1
         do jno = 1, nno
@@ -93,8 +96,12 @@ subroutine te0127(option, nomte)
         jac = sqrt(nx*nx+ny*ny+nz*nz)
 !
         tpg = 0.d0
+        tpg_b = 0.d0
         do i = 1, nno
             tpg = tpg+zr(itemp+i-1)*zr(ivf+ldec+i-1)
+            if (theta < -0.5d0) then
+                tpg_b = tpg_b+zr(btemp+i-1)*zr(ivf+ldec+i-1)
+            end if
         end do
         if (option(11:14) .eq. 'COEF') then
             do i = 1, nno
@@ -105,6 +112,10 @@ subroutine te0127(option, nomte)
             do i = 1, nno
                 zr(iveres+i-1) = zr(iveres+i-1)+jac*zr(ipoids+ipg-1)*zr(ivf+ldec+i-1)&
                                 &*sigmEner*epsil*(tpg+tz0)**4
+                if (theta < -0.5d0) then
+                    zr(iveres+i-1) = zr(iveres+i-1)-jac*zr(ipoids+ipg-1)*zr(ivf+ldec+i-1)&
+                                    &*sigmEner*epsil*(tpg_b+tz0)**4
+                end if
             end do
         end if
 !

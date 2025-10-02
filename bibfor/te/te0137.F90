@@ -44,11 +44,11 @@ subroutine te0137(option, nomte)
     integer(kind=8) :: nbres
     parameter(nbres=3)
     character(len=8) :: nompar(nbres), elrefe, alias8
-    real(kind=8) :: valpar(nbres), poids, r, z, nx, ny, tpg
-    real(kind=8) :: coenp1, sigmEner, epsil, tz0
+    real(kind=8) :: valpar(nbres), poids, r, z, nx, ny, tpg, tpg_b
+    real(kind=8) :: coenp1, sigmEner, epsil, tz0, theta
     real(kind=8) :: coorse(18), vectt(9)
     integer(kind=8) :: nno, nnos, ndim, kp, npg, ipoids, ivf, idfde, jgano, igeom
-    integer(kind=8) :: itemps, iveres, i, j, l, li, iech, iray, itemp, icode, ier
+    integer(kind=8) :: itemps, iveres, i, j, l, li, iech, iray, itemp, icode, ier, btemp
     integer(kind=8) :: nnop2, c(6, 9), ise, nse, ibid
     aster_logical :: laxi
 !
@@ -76,6 +76,7 @@ subroutine te0137(option, nomte)
     call jevech('PGEOMER', 'L', igeom)
     call jevech('PINSTR', 'L', itemps)
     call jevech('PTEMPEI', 'L', itemp)
+    call jevech('PTEMPER', 'L', btemp)
     call jevech('PRESIDU', 'E', iveres)
 !
     call connec(nomte, nse, nnop2, c)
@@ -86,6 +87,8 @@ subroutine te0137(option, nomte)
 !
 ! BOUCLE SUR LES SOUS-ELEMENTS
 !
+    theta = zr(itemps+2)
+
     do ise = 1, nse
 !
         do i = 1, nno
@@ -100,11 +103,15 @@ subroutine te0137(option, nomte)
             r = 0.d0
             z = 0.d0
             tpg = 0.d0
+            tpg_b = 0.d0
             do i = 1, nno
                 l = (kp-1)*nno+i
                 r = r+coorse(2*(i-1)+1)*zr(ivf+l-1)
                 z = z+coorse(2*(i-1)+2)*zr(ivf+l-1)
                 tpg = tpg+zr(itemp-1+c(ise, i))*zr(ivf+l-1)
+                if (theta < -0.5d0) then
+                    tpg_b = tpg_b+zr(btemp-1+c(ise, i))*zr(ivf+l-1)
+                end if
             end do
             if (laxi) poids = poids*r
             valpar(1) = r
@@ -130,8 +137,12 @@ subroutine te0137(option, nomte)
                 ASSERT(ier .eq. 0)
                 do i = 1, nno
                     li = ivf+(kp-1)*nno+i-1
-                    vectt(c(ise, i)) = vectt(c(ise, i))+poids*zr(li)*sigmEner*epsil*(tpg+tz0 &
-                                                                                     )**4
+                    vectt(c(ise, i)) = vectt(c(ise, i)) &
+                                       +poids*zr(li)*sigmEner*epsil*(tpg+tz0)**4
+                    if (theta < -0.5d0) then
+                        vectt(c(ise, i)) = vectt(c(ise, i)) &
+                                           -poids*zr(li)*sigmEner*epsil*(tpg_b+tz0)**4
+                    end if
                 end do
             end if
 !

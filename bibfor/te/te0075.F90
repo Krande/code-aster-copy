@@ -135,7 +135,6 @@ subroutine te0075(option, nomte)
             call fointe('FM', zk8(ipara+2), 4, nompar, valpar, para3, icode)
             !
             if (theta > -0.5d0) then
-                valQPC(kp) = para1*para2*((para3+tz0)**4)
                 valpar(4) = time_prev
                 ! SIGM
                 call fointe('FM', zk8(ipara), 4, nompar, valpar, para1, icode)
@@ -144,6 +143,7 @@ subroutine te0075(option, nomte)
                 ! TPF
                 call fointe('FM', zk8(ipara+2), 4, nompar, valpar, para3, icode)
                 !
+                valQPC(kp) = para1*para2*((para3+tz0)**4)
                 valQPP(kp) = para1*para2*((para3+tz0)**4-(tpg+tz0)**4)
             else
                 ! SIGM * EPS * ((TPF+T0)^4-(T+T0)^4)
@@ -228,10 +228,10 @@ subroutine te0075(option, nomte)
     end if
 !
     do kp = 1, FEQuad%nbQuadPoints
-        if (theta < -0.5d0) then
-            valQP(kp) = valQPC(kp)
-        else
+        if (theta > -0.5d0) then
             valQP(kp) = theta*valQPC(kp)+(1.0d0-theta)*valQPP(kp)
+        else
+            valQP(kp) = valQPC(kp)
         end if
     end do
 !
