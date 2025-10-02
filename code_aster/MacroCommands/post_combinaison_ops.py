@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -16,10 +16,9 @@
 # You should have received a copy of the GNU General Public License
 # along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 # --------------------------------------------------------------------
-# import aster
 
 from collections import Counter, OrderedDict
-from itertools import islice, product
+from itertools import product
 
 import numpy as np
 import numpy.matlib
@@ -27,7 +26,6 @@ import numpy.matlib
 from ..Cata.Syntax import _F
 from ..Commands import CALC_TABLE, CREA_RESU, CREA_TABLE, CREA_CHAMP
 from ..Messages import UTMESS
-from ..Objects import FieldOnCellsReal, FieldOnNodesReal
 
 
 def aster_table_to_array(aster_table, without_columns=()):
@@ -251,7 +249,7 @@ def post_combinaison_ops(self, TABLE_COEF_FIN=None, **args):
     field_names = args.get("NOM_CHAM")
     model = args.get("MODELE")
     coefficients_table = args.get("TABLE_COEF").EXTR_TABLE()
-    table_resu_name = args.get("TABLE_COEF_RESU")
+    table_resu = args.get("TABLE_COEF_RESU")
     cells_groups = args.get("GROUP_MA")
     if cells_groups is None:
         cells_groups = ()
@@ -492,5 +490,6 @@ def post_combinaison_ops(self, TABLE_COEF_FIN=None, **args):
         )
     )
 
-    self.register_result(table_coef_resu, table_resu_name)
+    if table_resu:
+        self.register_result(table_coef_resu, table_resu)
     return output_result

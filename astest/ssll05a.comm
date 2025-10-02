@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -22,9 +22,12 @@
 #####################################################################################
 #
 # LOADING CASE : LCAS_1 /  (Operating weight)
-#
+
+from code_aster.Commands import *
+from code_aster import CA
+
 DEBUT(CODE=_F(NIV_PUB_WEB="INTERNET"))
-test = code_aster.TestCase()
+test = CA.TestCase()
 #
 # MESH AND FE-MODEL DEFINITIONS ##########
 MESH = LIRE_MAILLAGE(FORMAT="MED")
@@ -248,12 +251,18 @@ COMB_RESULT = POST_COMBINAISON(
     TYPE_COMB="RESULTAT",
     NOM_CHAM=("EFGE_ELNO",),
     AFFE=(_F(NOM_CAS="L1", RESULTAT=STATIC), _F(NOM_CAS="L2", RESULTAT=STATIC)),
-    TABLE_COEF_RESU=CO("_MA_TABLE"),
+    TABLE_COEF_RESU=CO("coefs"),
 )
 
 
 diff = (4.0 * STATIC.getField("EFGE_ELNO", 1)) - COMB_RESULT.getField("EFGE_ELNO", 1)
-test.assertLess(diff.norm("NORM_INFINITY"), 1.0e-6)
+test.assertLess(diff.norm("NORM_INFINITY"), 1.0e-6, msg="norm of difference")
 
-#
+tbpy = coefs.EXTR_TABLE()
+test.assertEqual(len(tbpy), 1, msg="number of lines")
+test.assertAlmostEqual(tbpy.L1[0], 1.0, msg="L1 value")
+test.assertAlmostEqual(tbpy.L2[0], 3.0, msg="L2 value")
+
+test.printSummary()
+
 FIN()

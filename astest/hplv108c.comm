@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -34,14 +34,13 @@ UN = DEFI_CONSTANTE(VALE=1.0)
 POISSON = DEFI_CONSTANTE(VALE=0.3)
 ZERO = DEFI_CONSTANTE(VALE=0.0)
 
-MATEUNI = DEFI_MATERIAU(ELAS_FO=_F(E=UN, NU=POISSON))
+MATEUNI = DEFI_MATERIAU(ELAS_FO=_F(E=UN, NU=POISSON), THER_FO=_F(LAMBDA=UN, RHO_CP=ZERO))
 
 TAB_HOMO = CALC_MATE_HOMO(
     MAILLAGE=MA,
     AFFE=_F(TOUT="OUI", MATER=MATEUNI),
     VARC=_F(NOM_VARC="TEMP", VALE=(20,)),
     TYPE_HOMO="PLAQUE",
-    VECT_NORM="Z",
     UNITE=80,
 )
 

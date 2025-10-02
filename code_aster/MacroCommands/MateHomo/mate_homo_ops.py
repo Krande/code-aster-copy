@@ -40,8 +40,6 @@ def mate_homo_ops(self, **kwargs):
     verbose = kwargs.get("INFO") == 2
     type_homo = kwargs.get("TYPE_HOMO")
 
-    dir_plaque = kwargs.get("VECT_NORM")
-
     affe_all = any("TOUT" in i for i in ls_affe)
     affe_groups = list(
         set([j for i in [k for k in ls_affe if "GROUP_MA" in k] for j in i["GROUP_MA"]])
@@ -50,10 +48,10 @@ def mate_homo_ops(self, **kwargs):
     varc_name = ls_varc["NOM_VARC"]
     varc_values = sorted(ls_varc["VALE"])
 
-    mesh, group_tout, volume_ver, dirthick = prepare_mesh_syme(meshin, affe_groups, affe_all)
+    mesh, group_tout, volume_ver, ep_ver = prepare_mesh_syme(meshin, affe_groups, affe_all)
 
     DEPLMATE, MODME, CHMATME, MODTH, CHMATTH, L_INST, alpha_calc = setup_calcul(
-        type_homo, mesh, (group_tout,), ls_affe, varc_name, varc_values
+        mesh, (group_tout,), ls_affe, varc_name, varc_values
     )
 
     if type_homo in ("MASSIF",):
@@ -73,7 +71,7 @@ def mate_homo_ops(self, **kwargs):
 
     elif type_homo in ("PLAQUE",):
         elas_fields, ther_fields = calc_corr_plaque_syme(
-            MODME, CHMATME, MODTH, CHMATTH, L_INST, (group_tout,), dir_plaque
+            MODME, CHMATME, MODTH, CHMATTH, L_INST, (group_tout,)
         )
 
         C_hom, D_hom, G_hom, tabpara = calc_tabpara_plaque(
@@ -82,8 +80,7 @@ def mate_homo_ops(self, **kwargs):
             (group_tout,),
             varc_name,
             varc_values,
-            dir_plaque,
-            dirthick,
+            ep_ver,
             **elas_fields,
             **ther_fields
         )

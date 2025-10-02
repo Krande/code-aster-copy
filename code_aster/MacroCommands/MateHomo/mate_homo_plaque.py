@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -47,7 +47,7 @@ PARAPLAQUE = [
 # fmt: on
 
 
-def calc_corr_plaque_syme(MODME, CHMATME, MODTH, CHMATTH, L_INST, ls_group_ma, dir_plaque):
+def calc_corr_plaque_syme(MODME, CHMATME, MODTH, CHMATTH, L_INST, ls_group_ma):
 
     SYME_MECA_XX_mm = AFFE_CHAR_CINE(
         MODELE=MODME,
@@ -95,8 +95,8 @@ def calc_corr_plaque_syme(MODME, CHMATME, MODTH, CHMATTH, L_INST, ls_group_ma, d
         ),
     )
 
-    LOAD_ff_xx = FORMULE(VALE=f"1.0 * {dir_plaque}", NOM_PARA=[dir_plaque])
-    LOAD_ff_xy = FORMULE(VALE=f"0.5 * {dir_plaque}", NOM_PARA=[dir_plaque])
+    LOAD_ff_xx = FORMULE(VALE="1.0 * Z", NOM_PARA="Z")
+    LOAD_ff_xy = FORMULE(VALE="0.5 * Z", NOM_PARA="Z")
 
     CHAR11_mm = AFFE_CHAR_MECA(MODELE=MODME, PRE_EPSI=_F(GROUP_MA=ls_group_ma, EPXX=-1.0))
 
@@ -160,17 +160,13 @@ def calc_corr_plaque_syme(MODME, CHMATME, MODTH, CHMATTH, L_INST, ls_group_ma, d
     return elas_fields, ther_fields
 
 
-def calc_loimel_plaque(DEPLMATE, ls_group_tout, dir_plaque):
+def calc_loimel_plaque(DEPLMATE, ls_group_tout):
 
     LAME_1_mm = FORMULE(NOM_PARA=("E", "NU"), VALE="E*NU/((1+NU)*(1-2*NU))")
     LAME_2_mm = FORMULE(NOM_PARA=("E", "NU"), VALE="E/(2*(1+NU))")
 
-    LAME_1_ff = FORMULE(
-        NOM_PARA=("E", "NU", dir_plaque), VALE="{}**2 * E*NU/((1+NU)*(1-2*NU))".format(dir_plaque)
-    )
-    LAME_2_ff = FORMULE(
-        NOM_PARA=("E", "NU", dir_plaque), VALE="{}**2 * E/(2*(1+NU))".format(dir_plaque)
-    )
+    LAME_1_ff = FORMULE(NOM_PARA=("E", "NU", "Z"), VALE="Z**2 * E*NU/((1+NU)*(1-2*NU))")
+    LAME_2_ff = FORMULE(NOM_PARA=("E", "NU", "Z"), VALE="Z**2 * E/(2*(1+NU))")
 
     RESUMATE = CALC_CHAMP(
         RESULTAT=DEPLMATE,
@@ -238,9 +234,7 @@ def calc_loimel_plaque(DEPLMATE, ls_group_tout, dir_plaque):
     return out
 
 
-def calc_tabpara_plaque(
-    DEPLMATE, volume_ver, ls_group_ma, varc_name, ls_varc, dir_plaque, dirthick, **fields
-):
+def calc_tabpara_plaque(DEPLMATE, volume_ver, ls_group_ma, varc_name, ls_varc, ep_ver, **fields):
 
     CORR_MECA11_MEMB = fields["CORR_MECA11_MEMB"]
     CORR_MECA22_MEMB = fields["CORR_MECA22_MEMB"]
@@ -254,8 +248,8 @@ def calc_tabpara_plaque(
     ASSERT(len(insts_meca) == len(ls_varc))
 
     dictpara = utilities.create_empty_dictpara([varc_name] + PARAPLAQUE)
-    loimel = calc_loimel_plaque(DEPLMATE, ls_group_ma, dir_plaque)
-    h = dirthick[dir_plaque]
+    loimel = calc_loimel_plaque(DEPLMATE, ls_group_ma)
+    h = ep_ver
     tda = utilities.get_temp_def_alpha(DEPLMATE)
 
     # fmt: off

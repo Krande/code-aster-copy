@@ -62,7 +62,7 @@ def get_temp_def_alpha(resu):
     return temp_def_alpha
 
 
-def parse_mater_groups(type_homo, ls_affe, varc_name, ls_group_tout):
+def parse_mater_groups(ls_affe, varc_name, ls_group_tout):
     """
     Cette fonction sert à :
     * Rajouter une couche de vérification sur les propriétés des matériaux affectées.
@@ -74,7 +74,6 @@ def parse_mater_groups(type_homo, ls_affe, varc_name, ls_group_tout):
     mat1, mat2, mat3 = "ELAS", "THER", "THER_NL"
     mandatory_elas, optional_elas = ["E", "NU"], ["RHO", "ALPHA"]
     mandatory_ther, optional_ther = ["LAMBDA"], ["RHO_CP"]
-    need_ther = type_homo in ("MASSIF",)
 
     affe_mod_mate = []
     affe_mod_calc = []
@@ -99,9 +98,8 @@ def parse_mater_groups(type_homo, ls_affe, varc_name, ls_group_tout):
         if mat1 not in matNames:
             UTMESS("F", "HOMO1_8", valk=(mat1, mater.getName(), mater.userName))
 
-        if need_ther:
-            if mat2 not in matNames and mat3 not in matNames:
-                UTMESS("F", "HOMO1_9", valk=(mat2, mat3, mater.getName(), mater.userName))
+        if mat2 not in matNames and mat3 not in matNames:
+            UTMESS("F", "HOMO1_9", valk=(mat2, mat3, mater.getName(), mater.userName))
 
         keyelas = " ".join([m for m in matNames if m in (mat1,)])
         keyther = " ".join([m for m in matNames if m in (mat2, mat3)])
@@ -114,7 +112,6 @@ def parse_mater_groups(type_homo, ls_affe, varc_name, ls_group_tout):
             keyther: mandatory_ther + optional_ther,
         }
 
-        check_list = mandatory_elas if not need_ther else mandatory_elas + mandatory_ther
         temp_def_alpha_current_mat = None
         for key, lspara in parse_list.items():
             missing_in_at_least_one = []
@@ -137,6 +134,7 @@ def parse_mater_groups(type_homo, ls_affe, varc_name, ls_group_tout):
                         pass
                 missing_in_at_least_one.append(p)
 
+        check_list = mandatory_elas + mandatory_ther
         for p in check_list:
             if not p in f_para:
                 UTMESS("F", "HOMO1_10", valk=(p, mater.getName(), mater.userName))
@@ -215,11 +213,9 @@ def prepare_alpha_loads(ls_affe_mod_mate, varc_values):
     return ls_alpha_calc
 
 
-def setup_calcul(type_homo, mesh, ls_group_tout, ls_affe, varc_name, varc_values):
+def setup_calcul(mesh, ls_group_tout, ls_affe, varc_name, varc_values):
 
-    ls_affe_mod_mate, ls_affe_mod_calc = parse_mater_groups(
-        type_homo, ls_affe, varc_name, ls_group_tout
-    )
+    ls_affe_mod_mate, ls_affe_mod_calc = parse_mater_groups(ls_affe, varc_name, ls_group_tout)
 
     ls_alpha_calc = prepare_alpha_loads(ls_affe_mod_mate, varc_values)
 
