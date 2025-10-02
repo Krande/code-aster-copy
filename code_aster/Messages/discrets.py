@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -252,15 +252,30 @@ Risques et conseils :
     ),
     33: _(
         """
-Le discret avec le matériau %(k1)s/CONTACT="COIN_2D" et le comportement %(k2)s n'est pas dans
-un des plans XY, XZ ou YZ.
+Le discret avec le matériau %(k1)s/CONTACT="COIN_2D" et le comportement %(k2)s n'est pas dans un des plans XY, XZ ou YZ.
+
+Informations:
+    Noeud 1 (%(r1)f, %(r2)f, %(r3)f)
+    Noeud 2 (%(r4)f, %(r5)f, %(r6)f)
+    Delta  (%(r7)f, %(r8)f, %(r9)f)
+    Précision (%(r10)f, %(r11)f, %(r12)f)
 """
     ),
     34: _(
         """
-Le discret avec le matériau %(k1)s/CONTACT="COIN_2D" et le comportement %(k2)s est sur un
-des axes X, Y ou Z.
-Dans ce cas, il faut utiliser CONTACT="1D" (option par défaut)
+Le discret avec le matériau %(k1)s/CONTACT="COIN_2D" et le comportement %(k2)s est soit :
+-   Sur un des axes X, Y ou Z.
+        Dans ce cas, il faut utiliser CONTACT="1D" (option par défaut)
+-   Dans plusieurs plans.
+        Dans ce cas il faut adapter PRECISION.
+
+Informations:
+    Noeud 1 (%(r1)f, %(r2)f, %(r3)f)
+    Noeud 2 (%(r4)f, %(r5)f, %(r6)f)
+    Delta  (%(r7)f, %(r8)f, %(r9)f)
+    Précision (%(r10)f, %(r11)f, %(r12)f)
+    Nombre de plans %(i1)d
+    Axes  (%(i2)d, %(i3)d, %(i4)d)
 """
     ),
     35: _(
