@@ -85,7 +85,7 @@ subroutine rcdiff(imate, comp, temp, c, diff, difl_, difv_)
             call utmess('F', 'ALGORITH10_91', sk=phenom, sr=val_non_physique)
         end if
 
-        diff = valres(1)*exp(valres(2)*c)*((temp+tz0)/(valres(4)+tz0))*exp(-valres(3)*(1.d&
+        difl = valres(1)*exp(valres(2)*c)*((temp+tz0)/(valres(4)+tz0))*exp(-valres(3)*(1.d&
                &0/(temp+tz0)-1.d0/(valres(4)+tz0)))
 !
     else if (phenom .eq. 'SECH_MENSI') then
@@ -95,7 +95,7 @@ subroutine rcdiff(imate, comp, temp, c, diff, difl_, difv_)
         call rcvalb(fami, kpg, spt, poum, imate, &
                     ' ', phenom, nbpar, nompar, valpar, &
                     2, nomres, valres, icodre, 1)
-        diff = valres(1)*exp(valres(2)*c)
+        difl = valres(1)*exp(valres(2)*c)
 !
     else if (phenom .eq. 'SECH_BAZANT') then
         nbpar = 1
@@ -109,7 +109,7 @@ subroutine rcdiff(imate, comp, temp, c, diff, difl_, difv_)
                     ' ', phenom, nbpar, nompar, valpar, &
                     4, nomres, valres, icodre, 1)
         rap = ((1.d0-valres(4))/0.25d0)**valres(3)
-        diff = valres(1)*(valres(2)+(1.d0-valres(2))/(1.d0+rap))
+        difl = valres(1)*(valres(2)+(1.d0-valres(2))/(1.d0+rap))
 !
     else if (phenom .eq. 'SECH_RFT') then
         call rftDiffusion(fami, kpg, spt, poum, imate, &
@@ -129,11 +129,13 @@ subroutine rcdiff(imate, comp, temp, c, diff, difl_, difv_)
         call rcvalb(fami, kpg, spt, poum, imate, &
                     ' ', phenom, nbpar, nompar, valpar, &
                     1, nomres, valres, icodre, 1)
-        diff = valres(1)
+        difl = valres(1)
 !
     else
         call utmess('F', 'ALGORITH10_20', sk=comp)
     end if
+
+    diff = difl+difv
 
     if (present(difl_)) then
         difl_ = difl

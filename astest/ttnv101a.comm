@@ -165,12 +165,10 @@ TEST_RESU(
         _F(
             GROUP_NO="PTSURF",
             INST=528.0,
-            REFERENCE="ANALYTIQUE",
             RESULTAT=RESUSECH,
             NOM_CHAM="DIFF_NOEU",
             NOM_CMP="DIFL",
-            VALE_CALC=0.0,
-            VALE_REFE=0.0,
+            VALE_CALC=1.4163650716607842e-09,
         ),
         _F(
             GROUP_NO="PTSURF",

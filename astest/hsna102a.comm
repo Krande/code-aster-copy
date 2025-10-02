@@ -843,12 +843,10 @@ TEST_RESU(
         _F(
             GROUP_NO="P6",
             INST=157680000,
-            REFERENCE="ANALYTIQUE",
             RESULTAT=RESUSECH,
             NOM_CHAM="DIFF_NOEU",
             NOM_CMP="DIFL",
-            VALE_CALC=0.0,
-            VALE_REFE=0.0,
+            VALE_CALC=4.693116306617472e-12,
         ),
         _F(
             GROUP_NO="P6",
