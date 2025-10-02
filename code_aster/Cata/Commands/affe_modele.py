@@ -253,6 +253,7 @@ AFFE_MODELE = OPER(
                     "D_PLAN_HHO",  # person_in_charge: nicolas.pignet at edf.fr
                     "3D_GRAD_HHO",  # person_in_charge: nicolas.pignet at edf.fr
                     "D_PLAN_GRAD_HHO",  # person_in_charge: nicolas.pignet at edf.fr
+                    "PLAQ_MITC",  # person_in_charge: joaquin.cornejo-fuentes at edf.fr
                 ),
             ),
             b_formu_hho=BLOC(

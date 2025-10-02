@@ -204,6 +204,7 @@ Enumeration of modelings.
         .value( "D_PLAN_THMS_DIL", D_PLAN_THMS_DIL )
         .value( "D_PLAN_THVD", D_PLAN_THVD )
         .value( "D_PLAN_THVS", D_PLAN_THVS )
+        .value( "PLAQ_MITC", PLAQ_MITC )
         .value( "FLUI_STRU", FLUI_STRU )
         .value( "GRILLE_EXCENTRE", GRILLE_EXCENTRE )
         .value( "GRILLE_MEMBRANE", GRILLE_MEMBRANE )

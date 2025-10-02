@@ -852,6 +852,8 @@ list_cmp_depl = (
     "HHO_LG[10]",
     "PINCH",
     "PSI",
+    "GAMMA_R",
+    "P",
 )
 comment_depl = """  DEPL_R/_C/_F  Deplacement reel, complexe ou fonction
        DX, DY, DZ : translation suivant X, Y ET Z (repere global)
@@ -930,6 +932,8 @@ comment_depl = """  DEPL_R/_C/_F  Deplacement reel, complexe ou fonction
        HHO_LG : degres de liberté HHO: LAG_GV (cell)
        PINCH   : pinch dof for solid-shell elements
        PSI   : potentiel de vitesse de deplacement du fluid
+       GAMMA_R : déformation de cisaillement
+       P : multiplicateur de lagrange
 """
 
 DEPL_R = PhysicalQuantity(type="R", components=list_cmp_depl, comment=comment_depl)

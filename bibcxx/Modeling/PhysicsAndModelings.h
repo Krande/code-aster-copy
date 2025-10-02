@@ -216,6 +216,7 @@ enum Modelings {
     D_PLAN_THMS_DIL,
     D_PLAN_THVD,
     D_PLAN_THVS,
+    PLAQ_MITC,
     FLUI_STRU,
     GRILLE_EXCENTRE,
     GRILLE_MEMBRANE,
@@ -242,14 +243,14 @@ enum Modelings {
     TUYAU_3M,
     TUYAU_6M,
 };
-const int nbModelings = 196;
+const int nbModelings = 197;
 /**
  * @var ModelingNames
  * @brief Nom Aster des differentes modelisations disponibles
  */
 extern const char *const ModelingNames[nbModelings];
 
-const int nbModelingsMechanics = 183;
+const int nbModelingsMechanics = 184;
 extern const Modelings MechanicsModelings[nbModelingsMechanics];
 
 const int nbModelingsThermal = 17;

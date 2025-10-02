@@ -34,6 +34,23 @@ MECANIQUE = Phenomenon(code="ME")
 phen = MECANIQUE
 
 phen.add(
+    "PLAQ_MITC",
+    Modelisation(
+        dim=(2, 3),
+        code="DKT",
+        attrs=(
+            (AT.NBSIGM, "6"),
+            (AT.TYPMOD, "C_PLAN"),
+            (AT.COQUE, "OUI"),
+            (AT.PLAQUE, "OUI"),
+            (AT.EFGE, "OUI"),
+            (AT.SOUS_POINT, "OUI"),
+        ),
+        elements=((MT.QUAD9, EL.PLAQ_MITC),),
+    ),
+)
+
+phen.add(
     "2D_BARRE",
     Modelisation(
         dim=(1, 2),
