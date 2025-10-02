@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -16,8 +16,6 @@
 # You should have received a copy of the GNU General Public License
 # along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 # --------------------------------------------------------------------
-
-from ...Messages import MasquerAlarme, RetablirAlarme
 
 from ...Cata.Syntax import _F
 from ...CodeCommands import CREA_CHAMP, DEFI_LIST_REEL, DYNA_NON_LINE
@@ -87,10 +85,6 @@ def macro_bascule_schema_ops(self, **args):
             break
     #
     #
-
-    # alarme de DYNA_NON_LINE si les mot-cles de COMPORTEMENT sont renseignes
-    # a tort
-    MasquerAlarme("COMPOR4_70")
 
     if SCHEMA_INIT == "IMPLICITE":
         dincri1 = dincri[0]
@@ -411,5 +405,4 @@ def macro_bascule_schema_ops(self, **args):
                 break
             j = j + 1
     #
-    RetablirAlarme("COMPOR4_70")
     return nomres

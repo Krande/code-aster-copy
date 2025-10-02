@@ -21,7 +21,7 @@
 # ELASTOPLASTICITE  ECROUISSAGE ISOTROPE VON MISES
 # ......................................................................
 
-DEBUT(CODE="OUI", IGNORE_ALARM=("ELEMENTS3_11"))
+DEBUT(CODE="OUI")
 
 # donnee materiau et fonction
 
