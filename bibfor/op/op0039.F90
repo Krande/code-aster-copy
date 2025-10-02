@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -78,6 +78,7 @@ subroutine op0039()
         proc0 = 'OUI'
     end if
     lfichUniq = .false._1
+    result = ' '
 !
 !XX if (nbIndexes .eq. 0) then
     call getfac(keywf, keywfNb)
