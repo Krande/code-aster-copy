@@ -94,7 +94,9 @@ subroutine op0030()
 
 ! - Mesh
     call dismoi('NOM_MAILLA', model, 'MODELE', repk=mesh)
-    ASSERT(.not. isParallelMesh(mesh))
+    if (isParallelMesh(mesh)) then
+        call utmess('F', 'CONTACT_30')
+    end if
 
 ! - Checks
     call dismoi('PHENOMENE', model, 'MODELE', repk=phenomenon)
