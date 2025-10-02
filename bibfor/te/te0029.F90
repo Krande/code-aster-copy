@@ -16,9 +16,199 @@
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
 
-subroutine te0029(nomopt, nomte)
+subroutine te0029(option, nomte)
+!
+    use FE_topo_module
+    use FE_quadrature_module
+    use FE_basis_module
+    use Behaviour_module, only: behaviourOption
+!
+    use c_interface_plaq_mitc_f
+    use iso_c_binding
+
     implicit none
+!
+#include "asterf_types.h"
+#include "jeveux.h"
+#include "asterfort/dxqfor.h"
+#include "asterfort/dxqpgl.h"
+#include "asterfort/dxroep.h"
+#include "asterfort/dxtfor.h"
+#include "asterfort/dxtpgl.h"
+#include "asterfort/elrefe_info.h"
+#include "asterfort/fointe.h"
+#include "asterfort/jevech.h"
+#include "asterfort/tecael.h"
 #include "asterfort/utmess.h"
-    character(len=16) :: nomte, nomopt
-    call utmess('F', 'FERMETUR_8')
+#include "asterfort/utpvgl.h"
+#include "asterfort/utpvlg.h"
+#include "asterfort/get_elas_id.h"
+#include "asterfort/get_elas_para.h"
+!
+!
+    character(len=16), intent(in) :: option, nomte
+
+!     IN  OPTION : NOM DE L'OPTION A CALCULER
+!     IN  NOMTE  : NOM DU TYPE_ELEMENT
+!     -----------------------------------------------------------------
+!     CALCUL DE PRESSION SUR LES ELEMENTS PLAQ_MITC
+!         OPTIONS TRAITEES   ==> CHAR_MECA_PRES_R
+!     -----------------------------------------------------------------
+    integer(kind=8) :: ndim, nno, nnos, npg, ipoids, ivf, idfdx, jgano, ivectu, imate
+    integer(kind=8) :: i, j, ier, iplan, jgeom, jcoqu, jvecg, jpres, itemps, igau
+    integer(kind=8) :: iadzi, iazk24, lpesa
+    real(kind=8) :: pgl(3, 3), xyzl(3, 4), pglo(3), ploc(3)
+    real(kind=8) :: vecl(24), for(6, 4), for2(6, 4), rho, epais
+    real(kind=8) :: undemi
+    real(kind=8) :: valpar(4), dist, excent, pr
+    aster_logical :: global, locapr
+    character(len=8) :: nompar(4), moplan, nomail
+    character(len=24) :: valk
+    character(len=16) :: elas_keyword
+    character(len=4) :: fami
+
+    real(c_double) :: cdofs_f(12), F_elem_int(32), pres
+    integer(c_int) :: nw, ncst, ncd, nk, ne0, ne1, ne2, nwinit
+    real(c_double) :: F_elem(42*42)
+    integer(c_int) :: entities0(1), entities1(1), entities2(1)
+    integer(kind=8) :: perm(18), n, k, reorder(30), elas_id
+    real(c_double) :: cst(5), coor(27), w(9), kappa, w_0(21)
+    real(kind=8) :: e, nu
+
+! DEB ------------------------------------------------------------------
+!
+    call elrefe_info(fami='RIGI', ndim=ndim, nno=nno, nnos=nnos, npg=npg, &
+                     jpoids=ipoids, jvf=ivf, jdfde=idfdx, jgano=jgano)
+! - Geometry
+!
+    call jevech('PGEOMER', 'L', jgeom)
+!
+! - Material parameters
+!
+    call jevech('PMATERC', 'L', imate)
+!
+    do igau = 1, npg
+! ----- Get elastic parameters (only isotropic elasticity)
+!
+        call get_elas_id(zi(imate), elas_id, elas_keyword)
+        call get_elas_para(fami, zi(imate), '+', igau, 1, &
+                           elas_id, elas_keyword, &
+                           e_=e, nu_=nu)
+! ----- Fill integration weight vector (Divided by 4 for FEniCS)
+!
+    end do
+!
+    call dxroep(rho, epais)
+!
+    if (option .eq. 'CHAR_MECA_PRES_R') then
+!              ------------------------------
+        call jevech('PPRESSR', 'L', jpres)
+        call dxtpgl(zr(jgeom), pgl)
+        call utpvgl(nno, 3, pgl, zr(jgeom), xyzl)
+        pres = zr(jpres)
+!
+! --- CAS DES CHARGEMENTS DE FORME FONCTION
+!
+    else if (option .eq. 'CHAR_MECA_PRES_F') then
+
+        call jevech('PPRESSF', 'L', jpres)
+        if (zk8(jpres) .eq. '&FOZERO') goto 999
+        call jevech('PINSTR', 'L', itemps)
+        valpar(4) = zr(itemps)
+        nompar(4) = 'INST'
+        nompar(1) = 'X'
+        nompar(2) = 'Y'
+        nompar(3) = 'Z'
+        pres = 0.d0
+        do j = 0, nno-1
+            valpar(1) = zr(jgeom+3*j)
+            valpar(2) = zr(jgeom+3*j+1)
+            valpar(3) = zr(jgeom+3*j+2)
+            call fointe('FM', zk8(jpres), 4, nompar, valpar, &
+                        pr, ier)
+            pres = pres+pr
+        end do
+        pres = pres/nno
+
+    end if
+!
+!
+! - Initializations
+!
+    cst = 0.d0
+    coor = 0.d0
+    F_elem_int(:) = 0.d0
+    F_elem = 0.d0
+    w_0 = 0.d0
+    nk = 30
+!
+! - Fill material parameters vector
+    kappa = 5.0/6.0
+    cst(1) = e
+    cst(2) = nu
+    cst(3) = kappa
+    cst(4) = epais
+    cst(5) = pres
+! Remplissage du vecteur de coordonnées (3 coordonnées par nœud)
+    do i = 0, 8
+        coor(3*i+1) = zr(jgeom+3*i)
+        coor(3*i+2) = zr(jgeom+3*i+1)
+        coor(3*i+3) = zr(jgeom+3*i+2)
+    end do
+!
+    ! Remplissage des degrés de liberté (N1,N2,N4,N3)
+    cdofs_f(1) = coor(1)
+    cdofs_f(2) = coor(2)
+    cdofs_f(3) = coor(3)
+!
+    cdofs_f(4) = coor(10)
+    cdofs_f(5) = coor(11)
+    cdofs_f(6) = coor(12)
+!
+    cdofs_f(7) = coor(4)
+    cdofs_f(8) = coor(5)
+    cdofs_f(9) = coor(6)
+!
+    cdofs_f(10) = coor(7)
+    cdofs_f(11) = coor(8)
+    cdofs_f(12) = coor(9)
+!
+    nwinit = size(w_0)
+    ncd = size(cdofs_f)
+    ne0 = 1
+    ncst = size(cst)
+    entities0(1) = 0
+!
+    call BP1_qu9_Fortran(w_0, nwinit, cdofs_f, ncd, entities0, ne0, cst, ncst, F_elem)
+!
+![w1, θ_x1, θ_y1, w2, θ_x2, θ_y2, w3, θ_x3, θ_y3, w4, θ_x4, θ_y4,
+! θ_x5, θ_y5, γ_r1, p1, θ_x6, θ_y6, γ_r2, p2,θ_x7, θ_y7,
+! γ_r3, p3, θ_x8, θ_y8,γ_r4, p4, θ_x9, θ_y9]
+!
+    reorder = (/19, 1, 2, &
+                21, 5, 6, &
+                22, 7, 8, &
+                20, 3, 4, &
+                11, 12, &
+                24, 28, &
+                15, 16, &
+                26, 30, &
+                13, 14, &
+                25, 29, &
+                9, 10, &
+                23, 27, &
+                17, 18 &
+                /)
+
+    do i = 1, 30
+        F_elem_int(i) = -F_elem(reorder(i))
+    end do
+!
+! - Set matrix in output field
+    call jevech('PVECTUR', 'E', ivectu)
+    do i = 0, nk-1
+        zr(ivectu+i) = F_elem_int(i+1)
+    end do
+999 continue
+!
 end subroutine

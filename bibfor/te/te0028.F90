@@ -16,9 +16,237 @@
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
 
-subroutine te0028(nomopt, nomte)
+subroutine te0028(option, nomte)
+!
+    use FE_topo_module
+    use FE_quadrature_module
+    use FE_basis_module
+    use Behaviour_module, only: behaviourOption
+!
+    use c_interface_plaq_mitc_j
+    use iso_c_binding
+
     implicit none
-#include "asterfort/utmess.h"
-    character(len=16) :: nomte, nomopt
-    call utmess('F', 'FERMETUR_8')
+!
+#include "asterf_types.h"
+#include "jeveux.h"
+#include "asterfort/elrefe_info.h"
+#include "asterfort/as_allocate.h"
+#include "asterfort/as_deallocate.h"
+#include "asterfort/assert.h"
+#include "asterfort/Behaviour_type.h"
+#include "asterfort/jevech.h"
+#include "asterfort/lteatt.h"
+#include "asterfort/nmdlog.h"
+#include "asterfort/nmgpfi.h"
+#include "asterfort/nmgrla.h"
+#include "asterfort/nmplxd.h"
+#include "asterfort/nmtstm.h"
+#include "asterfort/rcangm.h"
+#include "asterfort/tecach.h"
+#include "asterfort/tgveri.h"
+#include "blas/daxpy.h"
+#include "blas/dcopy.h"
+#include "FE_module.h"
+#include "asterfort/get_elas_id.h"
+#include "asterfort/get_elas_para.h"
+#include "asterfort/dxroep.h"
+#include "asterfort/writeMatrix.h"
+#include "asterfort/utpvgl.h"
+#include "asterfort/dxtpgl.h"
+!
+    character(len=16), intent(in) :: option, nomte
+!
+! --------------------------------------------------------------
+! Elementary computation
+!
+! Elements: PLAQ_MITC
+!
+! Options: FULL_MECA_*, RIGI_MECA_*, RAPH_MECA
+!
+! --------------------------------------------------------------
+!
+! In  option           : name of option to compute
+! In  nomte            : type of finite element
+!
+! --------------------------------------------------------------
+!
+    type(FE_Cell) :: FECell
+    type(FE_Quadrature) :: FEQuad
+    type(FE_basis) :: FEBasis
+!
+    character(len=8) :: typmod(2)
+    character(len=4) :: fami
+    integer(kind=8) :: sz_tens, ndim, jpres
+    integer(kind=8) :: nno, npg, imatuu, lgpg, iret
+    integer(kind=8) :: igeom, imate, i, j
+    integer(kind=8) :: icontm, ivarim
+    integer(kind=8) :: iinstm, iinstp, ideplm, ideplp, icompo, icarcr
+    integer(kind=8) :: ivectu, icontp, ivarip
+    integer(kind=8) :: ivarix, jv_mult_comp
+    integer(kind=8) :: jtab(7)
+    integer(kind=8) :: old_order(21), new_order(21)
+    real(kind=8) :: angl_naut(7), pgl(3, 3), xyzl(3, 4)
+    aster_logical :: matsym
+    character(len=16) :: mult_comp, defo_comp
+    aster_logical :: lVect, lMatr, lVari, lSigm
+    integer(kind=8) :: codret
+    integer(kind=8) :: jv_codret
+!
+    real(c_double) :: cst(4), coor(27), w(9), kappa, w_0(29), pres
+    real(c_double) :: cdofs_f(12), F_elem_int(21)
+! Tableau de sortie (18*18 éléments -> matrice de rigidité)
+    real(c_double) :: A0(42*42), A1(42*42), A2(42*42), A3(42*42), F_elem(21*21), A_int(30*30)
+    real(c_double) :: A4(42*42), A_int0(42*42)
+    real(c_double) :: A11(42*42), A12(42*42), A13(42*42)
+    integer(c_int) :: nw, ncst, ncd, nk, ne0, ne1, ne2, ne3, nwinit, np0, np1
+    integer(c_int) :: entities0(1), entities1(1), entities2(1), quadrature_permutation0(1)
+    integer(c_int) :: entities3(1), quadrature_permutation1(1)
+!
+    real(kind=8) :: b(486), btdb(81, 81), bint(30, 30), bint0(42, 42), bint_perm(30, 30)
+    real(kind=8) :: e, nu, temp, epais, rho, temp_mat(21, 21), bf(30, 30)
+    integer(kind=8) :: elas_id, igau, ipoids, nbinco, npg1
+    integer(kind=8) :: nnos, ivf, idfde
+    character(len=16) :: elas_keyword
+    integer(kind=8) :: perm(18), n, k, reorder(30)
+! ---------------------------------------------------------------------
+!
+! - Finite element informations
+!
+    fami = 'RIGI'
+    call elrefe_info(fami=fami, ndim=ndim, nno=nno, nnos=nnos, &
+                     npg=npg1, jpoids=ipoids, jvf=ivf, jdfde=idfde)
+!
+! - Initializations
+!
+    ndim = 2
+    nbinco = ndim*nno
+    cst = 0.d0
+    coor = 0.d0
+    w = 0.d0
+    btdb(:, :) = 0.d0
+    w_0 = 0.d0
+    A_int = 0.d0
+    A0 = 0.d0
+    bint = 0.d0
+    bf(:, :) = 0.d0
+!
+! - Geometry
+!
+    call jevech('PGEOMER', 'L', igeom)
+!
+! - Material parameters
+!
+    call jevech('PMATERC', 'L', imate)
+
+    do igau = 1, npg1
+! ----- Get elastic parameters (only isotropic elasticity)
+!
+        call get_elas_id(zi(imate), elas_id, elas_keyword)
+        call get_elas_para(fami, zi(imate), '+', igau, 1, &
+                           elas_id, elas_keyword, &
+                           e_=e, nu_=nu)
+! ----- Fill integration weight vector (Divided by 4 for FEniCS)
+!
+    end do
+
+    call dxroep(rho, epais)
+
+! - Fill material parameters vector
+    kappa = 5.0/6.0
+    cst(1) = e
+    cst(2) = nu
+    cst(3) = kappa
+    cst(4) = epais
+! - Fill material entities vector
+! - 4 entities car 4 arêtes dans un carré
+    entities0(1) = 0
+    entities1(1) = 1
+    entities2(1) = 2
+    entities3(1) = 3
+
+! Remplissage du vecteur de coordonnées (3 coordonnées par nœud)
+    do i = 0, 8
+        coor(3*i+1) = zr(igeom+3*i)
+        coor(3*i+2) = zr(igeom+3*i+1)
+        coor(3*i+3) = zr(igeom+3*i+2)
+    end do
+
+    ! Remplissage des degrés (N1 , N2, N4, N3)
+    cdofs_f(1) = coor(1)
+    cdofs_f(2) = coor(2)
+    cdofs_f(3) = coor(3)
+!
+    cdofs_f(4) = coor(10)
+    cdofs_f(5) = coor(11)
+    cdofs_f(6) = coor(12)
+!
+    cdofs_f(7) = coor(4)
+    cdofs_f(8) = coor(5)
+    cdofs_f(9) = coor(6)
+!
+    cdofs_f(10) = coor(7)
+    cdofs_f(11) = coor(8)
+    cdofs_f(12) = coor(9)
+!
+    nwinit = size(w_0)
+    ncd = size(cdofs_f)
+    ne0 = 1
+    ne1 = 1
+    ne2 = 1
+    ne3 = 1
+    ncst = size(cst)
+!
+! !!!!!!!!!!!!!!!!!!!!!!!!!!!!!MATRICE DE RIGIDITÉ!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+! Appel de la fonction C++ - Matrice de rigidité -> Part1
+    call BP4_qu9_Fortran(w_0, nwinit, cdofs_f, ncd, entities0, ne0, cst, ncst, A0)
+! ! Appel de la fonction C++ - Matrice de rigidité -> Part2
+    call BP5_qu9_Fortran(w_0, nwinit, cdofs_f, ncd, entities0, ne0, cst, ncst, A1)
+    call BP5_qu9_Fortran(w_0, nwinit, cdofs_f, ncd, entities1, ne1, cst, ncst, A2)
+    call BP5_qu9_Fortran(w_0, nwinit, cdofs_f, ncd, entities2, ne2, cst, ncst, A3)
+    call BP5_qu9_Fortran(w_0, nwinit, cdofs_f, ncd, entities3, ne3, cst, ncst, A4)
+!
+! Remplissage de la matrice intermédiaire
+    do i = 1, 900
+        A_int(i) = A0(i)+A1(i)+A2(i)+A3(i)+A4(i)
+    end do
+! Remplissage de la matrice K à partir de A_int
+    do i = 1, 30
+        do j = 1, 30
+            bint(i, j) = A_int((j-1)*30+i)
+        end do
+    end do
+!
+![w1, θ_x1, θ_y1, w2, θ_x2, θ_y2, w3, θ_x3, θ_y3, w4, θ_x4, θ_y4,
+! θ_x5, θ_y5, γ_r1, p1, θ_x6, θ_y6, γ_r2, p2,θ_x7, θ_y7,
+! γ_r3, p3, θ_x8, θ_y8,γ_r4, p4, θ_x9, θ_y9]
+    reorder = (/19, 1, 2, &
+                21, 5, 6, &
+                22, 7, 8, &
+                20, 3, 4, &
+                11, 12, &
+                24, 28, &
+                15, 16, &
+                26, 30, &
+                13, 14, &
+                25, 29, &
+                9, 10, &
+                23, 27, &
+                17, 18 &
+                /)
+!
+    do i = 1, 30
+        do j = 1, 30
+            bint_perm(i, j) = bint(reorder(i), reorder(j))
+        end do
+    end do
+!
+    do i = 1, 30
+        do j = 1, 30
+            bf(i, j) = bint_perm(i, j)
+        end do
+    end do
+!
+    call writeMatrix('PMATUUR', 30, 30, ASTER_TRUE, bf)
+
 end subroutine
