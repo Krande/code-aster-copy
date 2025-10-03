@@ -48,7 +48,14 @@ TEMP = CREA_CHAMP(
 PARA__ = 2.5e-11
 # m2/h
 PARB__ = 0.12
-MATSECH = DEFI_MATERIAU(SECH_GRANGER=_F(A=PARA__, B=PARB__, QSR_K=4700, TEMP_0_C=0.0))
+
+# FONC_DESORP bidon pour tester HYGR_ELGA
+fonc_des = FORMULE(VALE="10*SECH", NOM_PARA="SECH")
+
+MATSECH = DEFI_MATERIAU(
+    SECH_GRANGER=_F(A=PARA__, B=PARB__, QSR_K=4700, TEMP_0_C=0.0),
+    BETON_DESORP=_F(FONC_DESORP=fonc_des),
+)
 
 CHMASECH = AFFE_MATERIAU(
     MAILLAGE=MAIL,
@@ -188,12 +195,20 @@ TEST_RESU(
         _F(
             GROUP_NO="PTSURF",
             INST=528.0,
+            RESULTAT=RESUSECH,
+            NOM_CHAM="SECH",
+            NOM_CMP="SECH",
+            VALE_CALC=29.099999999999998,
+        ),
+        _F(
+            GROUP_NO="PTSURF",
+            INST=528.0,
             REFERENCE="ANALYTIQUE",
             RESULTAT=RESUSECH,
             NOM_CHAM="HYGR_NOEU",
             NOM_CMP="HUMR",
-            VALE_CALC=0.0,
-            VALE_REFE=0.0,
+            VALE_CALC=fonc_des(29.1),
+            VALE_REFE=fonc_des(29.1),
         ),
         _F(
             GROUP_NO="PTSURF",

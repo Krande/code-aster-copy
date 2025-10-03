@@ -118,9 +118,9 @@ subroutine te0242(option, nomte)
                     call rcvarc(' ', 'TEMP', '+', 'RIGI', kp, 1, tpg, iret)
                     if (iret .ne. 0) call utmess('F', 'THERMIQUE1_2')
                     call leverettIsotTher(sechpg, tpg, zi(imate), hygr, pc_=pcap)
-                    fieldOutGauss(nbcmp*(kp-1)+1) = hygr
-                    fieldOutGauss(nbcmp*(kp-1)+2) = pcap
                 end if
+                fieldOutGauss(nbcmp*(kp-1)+1) = hygr
+                fieldOutGauss(nbcmp*(kp-1)+2) = pcap
             end do
         end if
     else
