@@ -293,16 +293,8 @@ Les paramètres suivant ne sont pas pris en compte :
     ),
     37: _(
         """
-Pour le discret avec le matériau %(k1)s et le comportement %(k2)s, seul le type 
-%(k3)s est autorisé dans le cas avec frottement de Coulomb (c'est-à-dire dans le 
-cas où le paramètre COULOMB est strictement positif).
-"""
-    ),
-    38: _(
-        """
-Pour le discret avec le matériau %(k1)s et le comportement %(k2)s, les éléments
-discrets 2D sont interdits dans le cas avec frottement de Coulomb (c'est-à-dire dans le 
-cas où le paramètre COULOMB est strictement positif).
+Pour le discret avec le matériau %(k1)s et le comportement %(k2)s, le type d'élément DIS_TR n'est pas autorisé dans le cas avec frottement de Coulomb (c'est-à-dire dans le 
+cas où le paramètre COULOMB est strictement positif). Seul le type %(k3)s est autorisé.
 """
     ),
     40: _(

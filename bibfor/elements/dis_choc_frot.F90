@@ -70,11 +70,6 @@ subroutine dis_choc_frot(DD, iret)
     real(kind=8) :: r8bid
     character(len=8) :: k8bid
 !
-    real(kind=8) :: valre1(2)
-    integer(kind=8) :: codre1(2)
-!
-    character(len=32) :: messak(3)
-!
     aster_logical :: IsSymetrique, IsDynamique, IsStatique, Prediction
     blas_int :: b_incx, b_incy, b_n
 !
@@ -174,7 +169,7 @@ subroutine dis_choc_frot(DD, iret)
         call dis_choc_frot_syme(DD, zi(imat), ulp, zr(igeom), klv, &
                                 kgv, dpe, Prediction, &
                                 force, varmo, varpl)
-    else 
+    else
         ! Formulation non symétrique
         call dis_choc_frot_nosyme(DD, zi(imat), ulp, zr(igeom), klv, &
                                   dpe, varmo, force, varpl)
