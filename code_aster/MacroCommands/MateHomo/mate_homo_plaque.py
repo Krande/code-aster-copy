@@ -513,7 +513,7 @@ def calc_tabpara_plaque(DEPLMATE, volume_ver, ls_group_ma, varc_name, ls_varc, e
         MEMB_ALPHA_L, MEMB_ALPHA_T = np.dot(C_inv, (Bdil_11_mm, Bdil_22_mm, 0))[:2]
 
         D_inv = np.linalg.inv(D_hom)
-        FLEX_ALPHA_L, FLEX_ALPHA_T = np.dot(C_inv, (Bdil_11_ff, Bdil_22_ff, 0))[:2]
+        FLEX_ALPHA_L, FLEX_ALPHA_T = np.dot(D_inv, (Bdil_11_ff, Bdil_22_ff, 0))[:2]
 
         logger.debug(f"<HOMO-WORK-MEMB><V {inst_meca}>: DILA_11 {work_dila_11_mm}")
         logger.debug(f"<HOMO-WORK-MEMB><V {inst_meca}>: DILA_22 {work_dila_22_mm}")
