@@ -17,9 +17,6 @@
 # along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 # --------------------------------------------------------------------
 
-import string
-import sys
-import aster
 from ..Cata.Syntax import _F
 from ..CodeCommands import CALC_FERRAILLAGE, CREA_CHAMP, CREA_RESU
 from ..Messages import UTMESS
@@ -264,14 +261,14 @@ def lstInst(ncas, comb, resultat):
 
             if key_name_combo == "NUME_ORDRE":
                 inst = val_combo
-                if not (inst in resu_nume_ordre):
+                if inst not in resu_nume_ordre:
                     # le cas de charge renseigné dans COMBINAISON_FERRAILLAGE n'a pas un équivalent dans RESULTAT (issu de MACRO_ELAS_MULT)
                     UTMESS("F", "COMBFERR_7")
                 if inst in lst_inst_index:
                     # le cas de charge renseigné dans COMBINAISON_FERRAILLAGE a déjà été renseigné
                     UTMESS("F", "COMBFERR_4")
             else:
-                if not (val_combo in resu_nom_cas):
+                if val_combo not in resu_nom_cas:
                     UTMESS("F", "COMBFERR_6")
                 # Index needs to be [inst_index + 1] because MUME_ORDRE is index + 1
                 inst = resu_nom_cas.index(val_combo) + 1

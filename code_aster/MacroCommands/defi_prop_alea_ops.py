@@ -24,7 +24,7 @@
 
 import sys
 import traceback
-from math import ceil, exp, log, pi, sqrt
+from math import log, sqrt
 
 import numpy as np
 

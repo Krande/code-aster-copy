@@ -21,7 +21,6 @@
 
 # La classe CalcEssaiModifStruct permet de gerer les calculs de modification structurale
 #
-import aster
 from libaster import AsterError
 
 from ...Cata.Syntax import _F
@@ -47,7 +46,6 @@ from ...CodeCommands import (
     PROJ_MESU_MODAL,
     REST_GENE_PHYS,
 )
-from ...Messages import MessageLog as mess
 from ...Objects import DataStructure
 from ..Modal.mode_iter_inv import MODE_ITER_INV
 from ..Modal.mode_iter_simult import MODE_ITER_SIMULT

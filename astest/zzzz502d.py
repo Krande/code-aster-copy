@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -17,12 +17,9 @@
 # along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 # --------------------------------------------------------------------
 
-import code_aster
 from code_aster.Commands import *
 from code_aster import CA
-import numpy as np
-from code_aster.CA import MPI
-from code_aster.Utilities import PETSc, petscInitialize
+from code_aster.Utilities import petscInitialize
 
 
 CA.init("--test", "--abort")

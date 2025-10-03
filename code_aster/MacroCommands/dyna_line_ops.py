@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -40,10 +40,8 @@ from ..CodeCommands import (
     CREA_CHAMP,
     CREA_RESU,
     DEFI_BASE_MODALE,
-    DEFI_INTERF_DYNA,
     DYNA_VIBRA,
     FACTORISER,
-    MACR_ELEM_DYNA,
     MACRO_ELAS_MULT,
     MACRO_MATR_AJOU,
     MODE_STATIQUE,
@@ -55,7 +53,6 @@ from ..CodeCommands import (
     REST_GENE_PHYS,
 )
 from ..Utilities import force_list
-from ..Messages import UTMESS
 
 
 class DynaLineFEM:
@@ -402,7 +399,7 @@ class DynaLineFEM:
                 force_nodale["F" + dof[-1]] = 1.0
             try:
                 __ch = AFFE_CHAR_MECA(MODELE=self.getModele(), FORCE_NODALE=force_nodale)
-            except AsterError as err:
+            except AsterError:
                 continue
 
             __vectelem = CALC_VECT_ELEM(OPTION="CHAR_MECA", CHARGE=__ch)
@@ -1002,7 +999,7 @@ class DynaLineBasis:
                                 d_forc_ajou[key] = charge[key]
                             else:
                                 del charge[key]
-                    if not "MODE_STAT" in keywords:
+                    if "MODE_STAT" not in keywords:
                         del charge["TYPE_APPUI"]
                         del charge["DIRECTION"]
                     d_excit = {"attrname": nameToSave}

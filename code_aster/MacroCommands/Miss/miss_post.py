@@ -25,11 +25,10 @@ Module permettant le post-traitement d'un calcul MISS3D
 
 import os
 import os.path as osp
-import traceback
 from math import pi
 
 import numpy as NP
-from numpy.fft import fft, ifft
+from numpy.fft import ifft
 
 import aster
 from ...Messages import UTMESS
@@ -40,7 +39,6 @@ from ...CodeCommands import (
     CALC_FONC_INTERP,
     CALC_FONCTION,
     COMB_MATR_ASSE,
-    CREA_CHAMP,
     CREA_TABLE,
     DEFI_CONSTANTE,
     DEFI_FICHIER,
@@ -60,7 +58,7 @@ from ...CodeCommands import (
 from ...Helpers.LogicalUnit import LogicalUnitFile
 from ...Objects import DataStructure
 from ...Objects.table_py import Table
-from ...Utilities.misc import _print, _printDBG, set_debug
+from ...Utilities.misc import _printDBG, set_debug
 from .force_iss_vari import force_iss_vari
 from .miss_resu_miss import MissCsolReader
 
@@ -916,7 +914,7 @@ class PostMissFichierTemps(PostMissFichier):
         freq_list2 = list(
             NP.arange(reduc_factor * fc, self.L_points - fc * reduc_factor, reduc_factor)
         )
-        if reduc_factor is not 1 and angle_seuil < 1:
+        if reduc_factor != 1 and angle_seuil < 1:
             freq_list3 = list(NP.arange(self.L_points - fc * reduc_factor, self.L_points))
         else:
             freq_list3 = []

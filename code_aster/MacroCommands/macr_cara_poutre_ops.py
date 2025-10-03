@@ -88,7 +88,7 @@ def TraiteQuadrant(UneSect, NewQuadrant):
     elif (quadrant == 2):
         alpha1 = alpha0 - 90.0
         AY1 = AZ0; AZ1 = AY0
-        RY1 = RZ0; RZ1 = RY0;
+        RY1 = RZ0; RZ1 = RY0
         IY1 = IZ0; IZ1 = IY0
         EY1   = -EZ0;   EZ1   =  EY0
         IYR21 = -IZR20; IZR21 =  IYR20
@@ -121,21 +121,21 @@ def TraiteQuadrant(UneSect, NewQuadrant):
         AY = AZ1; AZ = AY1
         RY = RZ1; RZ = RY1
         IY = IZ1; IZ = IY1
-        EY   =  EZ1;   EZ   = -EY1;
+        EY   =  EZ1;   EZ   = -EY1
         IYR2 =  IZR21; IZR2 = -IYR21
     elif (NewQuadrant == 3):
         alpha = alpha1 + 180.0
         AY = AY1; AZ = AZ1
         RY = RY1; RZ = RZ1
-        IY = IY1; IZ = IZ1;
-        EY   = -EY1;   EZ   = -EZ1;
+        IY = IY1; IZ = IZ1
+        EY   = -EY1;   EZ   = -EZ1
         IYR2 = -IYR21; IZR2 = -IZR21
     elif (NewQuadrant == 4):
         alpha =alpha1 + 270.0
         AY = AZ1; AZ = AY1
         RY = RZ1; RZ = RY1
-        IY = IZ1; IZ = IY1;
-        EY   = -EZ1;   EZ   =  EY1;
+        IY = IZ1; IZ = IY1
+        EY   = -EZ1;   EZ   =  EY1
         IYR2 = -IZR21; IZR2 =  IYR21
     #
     resu = {

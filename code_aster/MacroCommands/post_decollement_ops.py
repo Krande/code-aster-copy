@@ -17,7 +17,6 @@
 # along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 # --------------------------------------------------------------------
 
-import os
 
 import aster
 from ..Cata.Syntax import _F
@@ -33,7 +32,6 @@ from ..CodeCommands import (
     POST_ELEM,
     POST_RELEVE_T,
 )
-from ..Messages import UTMESS
 
 
 def fctZeroUn(listIN):

@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -21,12 +21,8 @@ import aster
 from ...Messages import UTMESS
 
 from ...Cata.Syntax import _F
-from ...CodeCommands import EXTR_MODE, IMPR_CO, INFO_MODE, MODI_MODELE, NUME_DDL
-from ...Objects import (
-    AssemblyMatrixDisplacementReal,
-    GeneralizedAssemblyMatrixReal,
-    GeneralizedAssemblyMatrixComplex,
-)
+from ...CodeCommands import EXTR_MODE, IMPR_CO, INFO_MODE, MODI_MODELE
+from ...Objects import GeneralizedAssemblyMatrixReal, GeneralizedAssemblyMatrixComplex
 from ...Utilities.mpi_utils import MPI
 from .mode_iter_simult import MODE_ITER_SIMULT
 

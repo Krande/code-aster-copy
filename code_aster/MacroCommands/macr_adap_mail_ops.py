@@ -473,7 +473,7 @@ def argument_pilotage(INFO, args):
     #
     if "NOM_CMP" in args:
         if args.get("NOM_CMP") is not None:
-            if not type(args.get("NOM_CMP")) in EnumTypes:
+            if type(args.get("NOM_CMP")) not in EnumTypes:
                 l_aux = [args.get("NOM_CMP")]
             else:
                 l_aux = []
@@ -559,7 +559,7 @@ def argument_champ(INFO, le_champ, usage_champ, iaux):
     #
     if usage_champ == "MAJ_CHAM":
         if le_champ["NOM_CMP"] is not None:
-            if not type(le_champ["NOM_CMP"]) in EnumTypes:
+            if type(le_champ["NOM_CMP"]) not in EnumTypes:
                 l_aux = [le_champ["NOM_CMP"]]
             else:
                 l_aux = []

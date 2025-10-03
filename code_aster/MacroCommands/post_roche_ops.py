@@ -29,8 +29,6 @@ from ..CodeCommands import (
     DEFI_CONSTANTE,
     COPIER,
     CREA_RESU,
-    IMPR_RESU,
-    IMPR_TABLE,
 )
 
 # ===========================================================================

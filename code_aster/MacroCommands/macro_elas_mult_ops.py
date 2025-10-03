@@ -25,8 +25,6 @@ from ..CodeCommands import (
     CALC_MATR_ELEM,
     CALC_VECT_ELEM,
     CREA_RESU,
-    DEFI_LIST_REEL,
-    EXTR_TABLE,
     FACTORISER,
 )
 from ..CodeCommands import NUME_DDL as NUME_DDL_CMD
@@ -135,9 +133,9 @@ def macro_elas_mult_ops(
     for m in CAS_CHARGE:
         iocc = iocc + 1
 
-        if not "SOUS_TITRE" in m:
+        if "SOUS_TITRE" not in m:
             m["SOUS_TITRE"] = None
-        if not "VECT_ASSE" in m:
+        if "VECT_ASSE" not in m:
             m["VECT_ASSE"] = None
 
         # calcul de lcharg : liste des listes de char_meca (mots clé CHAR_MECA

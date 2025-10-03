@@ -21,7 +21,6 @@
 
 import copy
 
-import aster
 from ..Cata.Syntax import _F
 from ..CodeCommands import (
     AFFE_CHAR_MECA,

@@ -18,7 +18,6 @@
 # --------------------------------------------------------------------
 
 from code_aster.Commands import FORMULE
-from code_aster import CA
 
 try:
     # Import du module de calcul symbolique Sympy

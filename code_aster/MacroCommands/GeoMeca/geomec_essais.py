@@ -21,20 +21,12 @@ import math as M
 
 import numpy as NP
 
-import aster
 from libaster import AsterError
 from ...Messages import UTMESS
 
 from ...Behaviours import catalc
 from ...Cata.Syntax import _F
-from ...CodeCommands import (
-    CREA_TABLE,
-    DEFI_FONCTION,
-    DEFI_LIST_INST,
-    DEFI_LIST_REEL,
-    IMPR_TABLE,
-    SIMU_POINT_MAT,
-)
+from ...CodeCommands import DEFI_FONCTION, DEFI_LIST_INST, DEFI_LIST_REEL, SIMU_POINT_MAT
 from ..Utils.calc_point_mat import CalcPointMat
 from .geomec_utils import *
 
@@ -1698,7 +1690,7 @@ def essai_TRIA_ND_C_F(self, str_n_essai, DicoEssai, MATER, COMPORTEMENT, CONVERG
                 list_key__ = []
                 if List_Resu_Supp:
                     for lr in List_Resu_Supp:
-                        if lr in TabRes and (not (lr in list(TabResm.keys()))):
+                        if lr in TabRes and (lr not in list(TabResm.keys())):
                             list_key__.append(lr)
                             TabResm[lr] = []
 

@@ -19,14 +19,9 @@
 
 # Responsible Person: Jefri Draup
 import numpy as np
-import time
 import copy
 import aster
-import sys
-import math
 from ..Cata.Syntax import _F
-from ..Cata.DataStructure import mode_meca
-from ..Objects.table_py import Table, merge
 from ..Messages import UTMESS, MasquerAlarme, RetablirAlarme
 from ..Utilities.misc import get_titre_concept
 from ..CodeCommands import (
@@ -36,12 +31,8 @@ from ..CodeCommands import (
     CREA_CHAMP,
     CREA_TABLE,
     CREA_RESU,
-    DEFI_FICHIER,
     DEFI_GROUP,
     DETRUIRE,
-    IMPR_TABLE,
-    IMPR_RESU,
-    LIRE_MAILLAGE,
     FORMULE,
     POST_ELEM,
     POST_RELEVE_T,

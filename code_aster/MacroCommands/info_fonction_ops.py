@@ -21,7 +21,7 @@ import math
 
 import numpy as NP
 
-from ..Objects.function_py import t_fonction, t_fonction_c, t_nappe
+from ..Objects.function_py import t_fonction, t_nappe
 from ..Cata.Syntax import _F
 from ..CodeCommands import CALC_FONCTION, CREA_TABLE, IMPR_TABLE
 from ..Objects.table_py import Table

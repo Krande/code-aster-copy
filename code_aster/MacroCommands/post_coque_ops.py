@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -17,7 +17,6 @@
 # along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 # --------------------------------------------------------------------
 
-import os
 
 import aster
 from ..Cata.Syntax import _F
@@ -44,15 +43,15 @@ def post_coque_ops(self, RESULTAT, COOR_POINT, CHAM, NUME_ORDRE=None, INST=None,
         INST = dico2["INST"][0]
 
     if NUME_ORDRE:
-        if not NUME_ORDRE in dico2["NUME_ORDRE"]:
+        if NUME_ORDRE not in dico2["NUME_ORDRE"]:
             UTMESS("F", "POST0_25", vali=NUME_ORDRE)
     else:
-        if not INST in dico2["INST"]:
+        if INST not in dico2["INST"]:
             UTMESS("F", "POST0_26", valr=INST)
     #
     if NUME_ORDRE:
         if CHAM == "EFFORT":
-            if not NUME_ORDRE in dico["EFGE_ELNO"]:
+            if NUME_ORDRE not in dico["EFGE_ELNO"]:
                 if NUME_ORDRE in dico["DEPL"]:
                     CALC_CHAMP(
                         RESULTAT=RESULTAT,
@@ -63,7 +62,7 @@ def post_coque_ops(self, RESULTAT, COOR_POINT, CHAM, NUME_ORDRE=None, INST=None,
                 else:
                     UTMESS("F", "POST0_19", vali=NUME_ORDRE)
         elif CHAM == "DEFORMATION":
-            if not NUME_ORDRE in dico["DEGE_ELNO"]:
+            if NUME_ORDRE not in dico["DEGE_ELNO"]:
                 if NUME_ORDRE in dico["DEPL"]:
                     CALC_CHAMP(
                         RESULTAT=RESULTAT,

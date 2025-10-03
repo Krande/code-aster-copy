@@ -21,7 +21,6 @@
 
 import sys
 
-import aster
 from ...Cata.Syntax import _F
 from ...Objects import GeneralizedModeResult, ModeResult, BaseAssemblyMatrix
 from .calc_modes_amelioration import calc_modes_amelioration

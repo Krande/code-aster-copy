@@ -17,13 +17,7 @@
 # along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 # --------------------------------------------------------------------
 
-from ..CodeCommands import (
-    THER_NON_LINE,
-    PROJ_CHAMP,
-    DEFI_FONCTION,
-    DEFI_CONSTANTE,
-    AFFE_CHAR_THER_F,
-)
+from ..CodeCommands import THER_NON_LINE, DEFI_FONCTION, DEFI_CONSTANTE, AFFE_CHAR_THER_F
 from ..Messages import UTMESS
 from ..Cata.Syntax import _F
 from ..Objects import ThermalResultDict

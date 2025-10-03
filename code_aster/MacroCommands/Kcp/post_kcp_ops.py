@@ -23,7 +23,6 @@ Calcul de KCP
 from .post_kcp_utilities import recup_temp
 from .post_kcp_beta import calc_sif_beta, calc_kcp_beta
 
-from ...Cata.Syntax import _F
 from ...CodeCommands import CREA_TABLE
 from ...Objects.table_py import Table
 

@@ -28,7 +28,6 @@ from libaster import AsterError
 
 from ...Messages import UTMESS
 
-from ...Behaviours import catalc
 from ...Cata.Syntax import _F
 from ...CodeCommands import (
     CREA_TABLE,
@@ -786,7 +785,7 @@ def verif_essais(
                 # on s'assure que le TYPE indique dans chaque TABLE_REF figure bien dans
                 # la liste des GRAPHIQUE demandes en sortie pour l'esssai courant
                 # ------------------------------------------------------------------------
-                if not typc[0].replace(" ", "") in DicoEssai["GRAPHIQUE"]:
+                if typc[0].replace(" ", "") not in DicoEssai["GRAPHIQUE"]:
                     valk = (nom_tbref, typc[0], SomListStr(DicoEssai["GRAPHIQUE"]))
                     UTMESS("F", "COMPOR2_43", valk=valk)
 
@@ -1335,7 +1334,7 @@ def remplir_tables(self, typ_essai, str_n_essai, DicoEssai, Resu_in):
                 ]
 
                 for c in List_Resu_Supp:
-                    if Resu_in[c][i] and (not c in param_predef):
+                    if Resu_in[c][i] and (c not in param_predef):
                         LdicoRes += [_F(LISTE_R=Resu_in[c][i], PARA=c)]
 
                     else:
@@ -1393,7 +1392,7 @@ def remplir_tables(self, typ_essai, str_n_essai, DicoEssai, Resu_in):
                 ]
 
                 for c in List_Resu_Supp:
-                    if Resu_in[c][i] and (not c in param_predef):
+                    if Resu_in[c][i] and (c not in param_predef):
                         LdicoRes += [_F(LISTE_R=Resu_in[c][i], PARA=c)]
 
                     else:
@@ -1453,7 +1452,7 @@ def remplir_tables(self, typ_essai, str_n_essai, DicoEssai, Resu_in):
                     )
 
                     for c in List_Resu_Supp:
-                        if Resu_in[c][i] and (not c in param_predef):
+                        if Resu_in[c][i] and (c not in param_predef):
                             LdicoRes += [_F(LISTE_R=Resu_in[c][i][j], PARA="%s_" % (c) + stjp1)]
 
                         else:
@@ -1549,7 +1548,7 @@ def remplir_tables(self, typ_essai, str_n_essai, DicoEssai, Resu_in):
                     )
 
                     for c in List_Resu_Supp:
-                        if Resu_in[c][i] and (not c in param_predef):
+                        if Resu_in[c][i] and (c not in param_predef):
                             LdicoRes += [_F(LISTE_R=Resu_in[c][i][j], PARA="%s_" % (c) + stjp1)]
 
                         else:
@@ -1636,7 +1635,7 @@ def remplir_tables(self, typ_essai, str_n_essai, DicoEssai, Resu_in):
                     )
 
                     for c in List_Resu_Supp:
-                        if Resu_in[c][i] and (not c in param_predef):
+                        if Resu_in[c][i] and (c not in param_predef):
                             LdicoRes += [_F(LISTE_R=Resu_in[c][i][j], PARA="%s_" % (c) + stjp1)]
 
                         else:
@@ -1737,7 +1736,7 @@ def remplir_tables(self, typ_essai, str_n_essai, DicoEssai, Resu_in):
                     )
 
                     for c in List_Resu_Supp:
-                        if Resu_in[c][i] and (not c in param_predef):
+                        if Resu_in[c][i] and (c not in param_predef):
                             LdicoRes += [_F(LISTE_R=Resu_in[c][i][j], PARA="%s_" % (c) + stjp1)]
 
                         else:
@@ -1816,7 +1815,7 @@ def remplir_tables(self, typ_essai, str_n_essai, DicoEssai, Resu_in):
                 )
 
                 for c in List_Resu_Supp:
-                    if Resu_in[c][i] and (not c in param_predef):
+                    if Resu_in[c][i] and (c not in param_predef):
                         LdicoRes += [_F(LISTE_R=Resu_in[c][i], PARA="%s_%s" % (c, stip1))]
 
                     else:

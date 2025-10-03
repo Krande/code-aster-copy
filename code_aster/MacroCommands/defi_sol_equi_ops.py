@@ -18,8 +18,7 @@
 # --------------------------------------------------------------------
 
 import copy
-import os
-from math import exp, floor, log, pi, sin, sqrt
+from math import exp, floor, log, pi, sqrt
 
 import numpy as np
 
@@ -64,7 +63,7 @@ from ..CodeCommands import (
     RECU_FONCTION,
     REST_SPEC_TEMP,
 )
-from ..Helpers import FileAccess, FileType, LogicalUnitFile
+from ..Helpers import FileAccess, LogicalUnitFile
 from ..Objects import Mesh
 
 

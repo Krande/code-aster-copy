@@ -17,7 +17,6 @@
 # along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 # --------------------------------------------------------------------
 import libAsterGC
-import aster
 from ..CodeCommands import CREA_TABLE
 from ..Messages import UTMESS
 from .PostVeriFerraillage.calculetatsect import sectionELU, sectionELS
