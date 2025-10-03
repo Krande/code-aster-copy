@@ -23,6 +23,10 @@ module te0047_type
     implicit none
 !
 #include "asterf_types.h"
+#include "jeveux.h"
+#include "asterc/r8prem.h"
+#include "asterfort/Behaviour_type.h"
+#include "asterfort/rcvala.h"
 !
     type :: te0047_dscr
         ! Ce qu'il faut sauvegarder en fonction de l'option :
@@ -94,7 +98,7 @@ module te0047_type
 ! -------------------------------------------------------------------------------------------------
 !
     public :: te0047_dscr
-    public :: getDiscretInformations, te0047_dscr_write
+    public :: getDiscretInformations, hasSymmetricTangentMatrix, te0047_dscr_write
 !
     private
 #include "asterc/r8miem.h"
@@ -256,6 +260,54 @@ contains
         endif
         !
     end subroutine getDiscretInformations
+    !
+    !
+    subroutine hasSymmetricTangentMatrix(D, output)
+        type(te0047_dscr), intent(in) :: D
+        aster_logical, intent(out) :: output
+        !
+        character(len=16), pointer :: compor(:) => null()
+        integer(kind=8) :: imater
+        integer(kind=8) :: ivitp, iretlc
+        integer(kind=8), parameter :: nbres = 2
+        real(kind=8) :: valres(nbres)
+        integer(kind=8) :: codres(nbres)
+        aster_logical :: okelem, IsCoulomb, IsCoin2D
+        !
+        output = ASTER_TRUE
+        call jevech('PCOMPOR', 'L', vk16=compor)
+        if (compor(RELA_NAME) .eq. 'DIS_CHOC') then
+            ! Cas de DIS_CHOC : matrice non symétrique en présence de frottement
+            ! Vérification du type d'élément discret
+            okelem = (D%ndim .eq. 3)
+            okelem = okelem .and. ((D%nomte .eq. 'MECA_DIS_T_N') .or. (D%nomte .eq. 'MECA_DIS_T_L'))
+            ! Vérification du frottement de Coulomb
+            IsCoulomb = ASTER_FALSE
+            IsCoin2D = ASTER_FALSE
+            call jevech('PMATERC', 'L', imater)
+            call rcvala(zi(imater), ' ', 'DIS_CONTACT', 0, ' ', &
+                        [0.0d0], nbres, ['COULOMB', 'CONTACT'], valres, codres, &
+                        0, nan='NON')
+            if (codres(1) .eq. 0) then
+                if (valres(1) .gt. r8prem()) then
+                    IsCoulomb = ASTER_TRUE
+                end if
+            end if
+            ! Vérification du type de contact (1D ou COIN_2D)
+            if (codres(2) .eq. 0) then
+                if (nint(valres(2)) .ne. 0) then
+                    IsCoin2D = ASTER_TRUE
+                end if
+            end if
+            !
+            output = .not. (IsCoulomb .and. (.not. IsCoin2D) .and. okelem)
+        else if (compor(RELA_NAME) .eq. 'ELAS_NOSYME') then
+            output = ASTER_FALSE
+        else
+            output = ASTER_TRUE
+        end if
+
+    end subroutine hasSymmetricTangentMatrix
     !
     !
     subroutine te0047_dscr_write(D)

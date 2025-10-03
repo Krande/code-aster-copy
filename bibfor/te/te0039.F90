@@ -85,7 +85,7 @@ subroutine te0039(option, nomte)
     integer(kind=8) :: codres(2)
 !
     aster_logical, parameter :: Predic = ASTER_FALSE
-    aster_logical :: IsCoulomb, IsCoin2D
+    aster_logical :: lMatrTangSyme
     blas_int :: b_incx, b_incy, b_n
 !
 ! --------------------------------------------------------------------------------------------------
@@ -222,33 +222,17 @@ subroutine te0039(option, nomte)
                 call discret_sief(for_discret, klv, ulp, sim, ilogic, &
                                   sip, fono, force)
 
-                ! Verification des paramètres matériau
-                IsCoulomb = ASTER_FALSE
-                IsCoin2D = ASTER_FALSE
-                call rcvala(zi(lmater), ' ', 'DIS_CONTACT', 0, ' ', &
-                            [0.0d0], 2, ['COULOMB', 'CONTACT'], valres, codres, &
-                            0, nan='NON')
-                ! --- Coulomb existe et >0
-                if (codres(1) .eq. 0) then
-                    if (valres(1) .gt. r8prem()) then
-                        IsCoulomb = ASTER_TRUE
-                    end if
-                end if
-                ! --- COIN_2D existe et est activé
-                if (codres(2) .eq. 0) then
-                    if (nint(valres(2)) .ne. 0) then
-                        IsCoin2D = ASTER_TRUE
-                    end if
-                end if
+                ! Verification du caractère symétrique de la matrice tangente
+                call hasSymmetricTangentMatrix(for_discret, lMatrTangSyme)
 
                 !   Calcul des efforts
-                if ((IsCoulomb) .and. (.not. IsCoin2D)) then
-                    call dis_choc_frot_nosyme(for_discret, zi(lmater), ulp, zr(igeom), klv, &
-                                              dpe, varmo, force, varpl)
-                else
+                if (lMatrTangSyme) then
                     call dis_choc_frot_syme(for_discret, zi(lmater), ulp, zr(igeom), klv, &
                                             kgv, dpe, Predic, &
                                             force, varmo, varpl)
+                else 
+                    call dis_choc_frot_nosyme(for_discret, zi(lmater), ulp, zr(igeom), klv, &
+                                              dpe, varmo, force, varpl)
                 end if
 
                 ilogic = 2

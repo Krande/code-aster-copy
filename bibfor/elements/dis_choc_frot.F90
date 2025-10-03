@@ -75,7 +75,7 @@ subroutine dis_choc_frot(DD, iret)
 !
     character(len=32) :: messak(3)
 !
-    aster_logical :: okelem, IsSymetrique, IsCoulomb, IsDynamique, IsStatique, IsCoin2D, Prediction
+    aster_logical :: IsSymetrique, IsDynamique, IsStatique, Prediction
     blas_int :: b_incx, b_incy, b_n
 !
 ! --------------------------------------------------------------------------------------------------
@@ -165,53 +165,21 @@ subroutine dis_choc_frot(DD, iret)
     !
     ulp(:) = DD%ulm(:)+DD%dul(:)
     !
-! Verification des paramètres matériau
-    IsCoulomb = ASTER_FALSE
-    IsCoin2D = ASTER_FALSE
-    call rcvala(zi(imat), ' ', 'DIS_CONTACT', 0, ' ', &
-                [0.0d0], 2, ['COULOMB', 'CONTACT'], valre1, codre1, &
-                0, nan='NON')
-! --- Coulomb existe et >0
-    if (codre1(1) .eq. 0) then
-        if (valre1(1) .gt. r8prem()) then
-            IsCoulomb = ASTER_TRUE
-        end if
-    end if
-! --- COIN_2D existe et est activé
-    if (codre1(2) .eq. 0) then
-        if (nint(valre1(2)) .ne. 0) then
-            IsCoin2D = ASTER_TRUE
-        end if
-    end if
-!   Vérification du type d'élément discret
-    okelem = ((DD%nomte .eq. 'MECA_DIS_T_N') .or. (DD%nomte .eq. 'MECA_DIS_T_L'))
-! --- DIS_CHOC avec frottement restreint aux éléments de type DIS_T
-    if (.not. okelem) then
-        messak(1) = 'DIS_CONTACT'
-        messak(2) = 'DIS_CHOC'
-        messak(3) = 'DIS_T'
-        call utmess('F', 'DISCRETS_37', nk=3, valk=messak)
-    end if
-! --- DIS_CHOC avec frottement interdit aux éléments discrets 2D
-    if ((IsCoulomb) .and. (DD%ndim .ne. 3)) then
-        messak(1) = 'DIS_CONTACT'
-        messak(2) = 'DIS_CHOC'
-        call utmess('F', 'DISCRETS_38', nk=3, valk=messak)
-    end if
 !   Relation de comportement de choc
-    if ((IsCoulomb) .and. (.not. IsCoin2D)) then
-        IsSymetrique = ASTER_FALSE
-        call dis_choc_frot_nosyme(DD, zi(imat), ulp, zr(igeom), klv, &
-                                  dpe, varmo, force, varpl)
-    else
-        IsSymetrique = ASTER_TRUE
+    call hasSymmetricTangentMatrix(DD, IsSymetrique)
+    if (IsSymetrique) then
         ! Prédiction en dynamique, on retourne les efforts précédents
         Prediction = IsDynamique .and. (iterat .eq. 1) .and. (DD%option .eq. 'RAPH_MECA')
+        ! Formulation symétrique
         call dis_choc_frot_syme(DD, zi(imat), ulp, zr(igeom), klv, &
                                 kgv, dpe, Prediction, &
                                 force, varmo, varpl)
+    else 
+        ! Formulation non symétrique
+        call dis_choc_frot_nosyme(DD, zi(imat), ulp, zr(igeom), klv, &
+                                  dpe, varmo, force, varpl)
     end if
-!   actualisation de la matrice tangente
+!   Actualisation de la matrice tangente
     if (DD%lMatr) then
         if (IsSymetrique) then
             call jevech('PMATUUR', 'E', imat)
