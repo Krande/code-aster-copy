@@ -29,6 +29,7 @@ subroutine dis_choc_frot_syme(DD, icodma, ulp, xg, klv, &
 #include "asterfort/assert.h"
 #include "asterfort/diraidklv.h"
 #include "asterfort/diklvraid.h"
+#include "asterfort/diraidklv.h"
 #include "asterfort/in_liste_entier.h"
 #include "asterfort/rcvala.h"
 #include "asterfort/rcadlv.h"
@@ -116,8 +117,9 @@ subroutine dis_choc_frot_syme(DD, icodma, ulp, xg, klv, &
     end if
 !   Raideurs du discret
 !       ==> Elles sont surchargées par celles du matériau
+    call diraidklv(DD%nomte, raide, klv)
     valre1 = 0.d0
-    valre1(1) = klv(1)
+    valre1(1) = raide(1)
 !   Caractéristiques du matériau
     call rcvala(icodma, ' ', 'DIS_CONTACT', 0, ' ', &
                 [0.0d0], nbre1, nomre1, valre1, codre1, &
@@ -296,6 +298,11 @@ subroutine dis_choc_frot_syme(DD, icodma, ulp, xg, klv, &
                 varpl(ifx) = force(1)
                 varpl(ify) = force(2)
                 varpl(ifz) = force(3)
+                !
+                force(2) = force(2)+raide(2)*(ulp(2+DD%nc)-ulp(2))
+                if (DD%ndim .eq. 3) then
+                    force(3) = force(3)+raide(3)*(ulp(3+DD%nc)-ulp(3))
+                end if
                 ! Actualisation de la matrice de raideur
                 raide(1) = rignor
                 call diklvraid(DD%nomte, klv, raide)
@@ -337,6 +344,11 @@ subroutine dis_choc_frot_syme(DD, icodma, ulp, xg, klv, &
             varpl(ifx) = force(1)
             varpl(ify) = force(2)
             varpl(ifz) = force(3)
+            !
+            force(2) = force(2)+raide(2)*ulp(2)
+            if (DD%ndim .eq. 3) then
+                force(3) = force(3)+raide(3)*ulp(3)
+            end if
             ! Actualisation de la matrice de raideur
             raide(1) = rignor
             call diklvraid(DD%nomte, klv, raide)
