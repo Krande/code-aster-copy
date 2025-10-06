@@ -1,5 +1,5 @@
 /* -------------------------------------------------------------------- */
-/* Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org             */
+/* Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org             */
 /* This file is part of code_aster.                                     */
 /*                                                                      */
 /* code_aster is free software: you can redistribute it and/or modify   */
@@ -35,7 +35,7 @@
  *
  */
 int libsymb_register( PyObject *dict, const char *libname, const char *symbname, void *handle,
-                      void ( *symbol )() ) {
+                      void ( *symbol )( void * ) ) {
     /* Register the handle on the library and the pointer to the function.
      */
     PyObject *key, *value;
@@ -79,15 +79,15 @@ int libsymb_is_known( PyObject *dict, const char *libname, const char *symbname 
     /* Return 1 if the couple (lib, symbol) has been registered, else 0.
      */
     PyObject *key;
-    int bool = 0;
+    int is_resgistered = 0;
 
     key = _libsymb_to_key( libname, symbname );
     DEBUG_DLL_PYOB( "is_known key = ", key )
     // DEBUG_DLL_PYOB("     in dict = ", dict)
-    bool = PyDict_Contains( dict, key );
-    DEBUG_DLL_VV( " returns %d%s\n", bool, "" )
+    is_resgistered = PyDict_Contains( dict, key );
+    DEBUG_DLL_VV( " returns %d%s\n", is_resgistered, "" )
     Py_XDECREF( key );
-    return bool;
+    return is_resgistered;
 }
 
 void *libsymb_get_handle( PyObject *dict, const char *libname, const char *symbname ) {

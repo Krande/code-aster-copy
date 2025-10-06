@@ -37,7 +37,6 @@ void exportBaseAssemblyMatrixToPython( py::module_ &mod ) {
         // -----------------------------------------------------------------------------------------
         .def( py::init( &initFactoryPtr< BaseAssemblyMatrix, PhysicalProblemPtr, std::string > ) )
         // -----------------------------------------------------------------------------------------
-        // -----------------------------------------------------------------------------------------
         .def( "getDOFNumbering", &BaseAssemblyMatrix::getDOFNumbering )
         // -----------------------------------------------------------------------------------------
         .def( "getMesh", &BaseAssemblyMatrix::getMesh, R"(
