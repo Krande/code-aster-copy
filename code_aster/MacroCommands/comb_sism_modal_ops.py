@@ -1135,35 +1135,36 @@ class MultiAppuiRunner(BaseRunner):
             R_c (ndarray): response by correction by pseudo-mode
         """
 
-        # searche for index (NUME_CMP) in MODE_STATIQUE / PSEUDO_MODE
-        # list of node_num and node_name in group_no
-        _, nodes_name = get_nodes(mesh, l_group_no)
-        # list of all noeud_cmp
-        l_noeud_cmp = []
-        for node_name in nodes_name:
-            noeud_cmp = node_name.ljust(8) + f"D{direction}"
-            l_noeud_cmp.append(noeud_cmp)
         ps_nume_modes = pseudo_mode.getAccessParameters()["NUME_MODE"]
         ps_noeud_cmps = pseudo_mode.getAccessParameters()["NOEUD_CMP"]
-        appui_cmp = nom_appui.ljust(8) + f"D{direction}"
 
-        if all(noeud_cmp in ps_noeud_cmps for noeud_cmp in l_noeud_cmp):
-            # ps_nume_mode = ps_nume_modes[ps_noeud_cmps.index(noeud_cmp)]
-            l_phi_ps = []
-            for noeud_cmp in l_noeud_cmp:
-                ps_nume_mode = ps_nume_modes[ps_noeud_cmps.index(noeud_cmp)]
-                l_phi_ps.append(pseudo_mode.getField(self._option, ps_nume_mode))
-            phi_ps = l_phi_ps[0].copy()
-            for x in l_phi_ps[1:]:
-                phi_ps += x
-        elif appui_cmp in ps_noeud_cmps:
+        # searche for index (APPUI_CMP) in MODE_STATIQUE / PSEUDO_MODE
+        appui_cmp = nom_appui.ljust(8) + f"D{direction}"
+        if appui_cmp in ps_noeud_cmps:
             ps_nume_mode = ps_nume_modes[ps_noeud_cmps.index(appui_cmp)]
             phi_ps = pseudo_mode.getField(self._option, ps_nume_mode)
         else:
-            for noeud_cmp in l_noeud_cmp:
-                if noeud_cmp not in ps_noeud_cmps:
-                    UTMESS("E", "SEISME_66", valk=(noeud_cmp, "PSEUDO_MODE"))
-            UTMESS("F", "SEISME_68", valk=(nom_appui, direction, appui_cmp))
+            # searche for index (NUME_CMP) in MODE_STATIQUE / PSEUDO_MODE
+            # list of node_num and node_name in group_no
+            _, nodes_name = get_nodes(mesh, l_group_no)
+            # list of all noeud_cmp
+            l_noeud_cmp = []
+            for node_name in nodes_name:
+                noeud_cmp = node_name.ljust(8) + f"D{direction}"
+                l_noeud_cmp.append(noeud_cmp)
+            if all(noeud_cmp in ps_noeud_cmps for noeud_cmp in l_noeud_cmp):
+                l_phi_ps = []
+                for noeud_cmp in l_noeud_cmp:
+                    ps_nume_mode = ps_nume_modes[ps_noeud_cmps.index(noeud_cmp)]
+                    l_phi_ps.append(pseudo_mode.getField(self._option, ps_nume_mode))
+                phi_ps = l_phi_ps[0].copy()
+                for x in l_phi_ps[1:]:
+                    phi_ps += x
+            else:
+                for noeud_cmp in l_noeud_cmp:
+                    if noeud_cmp not in ps_noeud_cmps:
+                        UTMESS("E", "SEISME_66", valk=(noeud_cmp, "PSEUDO_MODE"))
+                UTMESS("F", "SEISME_68", valk=(nom_appui, direction, appui_cmp))
 
         if self._option == "VITE":  # pseudo-mode is not allowed
             UTMESS("F", "SEISME_10", valk=option)
