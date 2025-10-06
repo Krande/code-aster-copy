@@ -17,6 +17,7 @@
 # along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 # --------------------------------------------------------------------
 
+from token import OP
 import warnings
 from time import time
 
@@ -241,6 +242,10 @@ class RASPENSolver(BaseIterationSolver):
         # delete local snes
         local_solver.snes = None
         raspen_solver.destroyAll()
+        # delete options from database
+        OptDB = PETSc.Options()
+        loc_opt = [t for t in self._options.split(" ") if t.startswith("-")]
+        [OptDB.delValue(opt) for opt in loc_opt]
         return self.current_matrix
 
 

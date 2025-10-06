@@ -217,6 +217,13 @@ class SNESSolver(BaseIterationSolver):
 
         self.oper.finalize()
 
+        if not self.local:
+            snes.destroy()
+            # delete options from database
+            OptDB = PETSc.Options()
+            loc_opt = [t for t in self._options.split(" ") if t.startswith("-")]
+            [OptDB.delValue(opt) for opt in loc_opt]
+
         return self.current_matrix
 
     def SnesAsterMonitor(self, snes, time_exec):
