@@ -81,9 +81,6 @@ subroutine te0039(option, nomte)
     character(len=16) :: kmess(5)
     character(len=16), pointer :: compor(:) => null()
 !
-    real(kind=8) :: valres(2)
-    integer(kind=8) :: codres(2)
-!
     aster_logical, parameter :: Predic = ASTER_FALSE
     aster_logical :: lMatrTangSyme
     blas_int :: b_incx, b_incy, b_n
@@ -230,7 +227,7 @@ subroutine te0039(option, nomte)
                     call dis_choc_frot_syme(for_discret, zi(lmater), ulp, zr(igeom), klv, &
                                             kgv, dpe, Predic, &
                                             force, varmo, varpl)
-                else 
+                else
                     call dis_choc_frot_nosyme(for_discret, zi(lmater), ulp, zr(igeom), klv, &
                                               dpe, varmo, force, varpl)
                 end if

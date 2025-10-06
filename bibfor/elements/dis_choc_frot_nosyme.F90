@@ -22,6 +22,7 @@ subroutine dis_choc_frot_nosyme(DD, icodma, ulp, xg, klv, &
     use te0047_type
     implicit none
 #include "asterf_types.h"
+#include "asterfort/dikpkt.h"
 #include "asterfort/rcvala.h"
 #include "asterfort/utmess.h"
 #include "asterfort/utpvgl.h"
@@ -51,7 +52,7 @@ subroutine dis_choc_frot_nosyme(DD, icodma, ulp, xg, klv, &
 ! --------------------------------------------------------------------------------------------------
 ! person_in_charge: jean-luc.flejou at edf.fr
 !
-    integer(kind=8), parameter :: nbre1 = 11
+    integer(kind=8), parameter :: nbre1 = 9
     integer(kind=8) :: codre1(nbre1)
     real(kind=8) :: valre1(nbre1)
     character(len=8) :: nomre1(nbre1)
@@ -70,7 +71,7 @@ subroutine dis_choc_frot_nosyme(DD, icodma, ulp, xg, klv, &
     character(len=32) :: messak(3)
 !
     data nomre1/'RIGI_NOR', 'RIGI_TAN', 'AMOR_NOR', 'AMOR_TAN', 'COULOMB', &
-        'DIST_1', 'DIST_2', 'JEU', 'CONTACT', 'KP', 'KT'/
+        'DIST_1', 'DIST_2', 'JEU', 'CONTACT'/
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -99,8 +100,8 @@ subroutine dis_choc_frot_nosyme(DD, icodma, ulp, xg, klv, &
     rignor = abs(valre1(1))
     rigtan = abs(valre1(2))
     coulom = abs(valre1(5))
-    kp = valre1(10)
-    kt = valre1(11)
+!   Raideurs élastiques en parallèle
+    call dikpkt(icodma, 'DIS_CONTACT     ', kp, kt)
 !
 !   Élément avec 2 noeuds
     if (DD%nno .eq. 2) then

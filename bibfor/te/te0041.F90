@@ -48,6 +48,7 @@ subroutine te0041(option, nomte)
 #include "jeveux.h"
 #include "asterc/r8prem.h"
 #include "asterfort/assert.h"
+#include "asterfort/dikpkt.h"
 #include "asterfort/infdis.h"
 #include "asterfort/infted.h"
 #include "asterfort/jevech.h"
@@ -87,6 +88,7 @@ subroutine te0041(option, nomte)
     real(kind=8)        :: valres(5)
     character(len=16)   :: nomres(5)
     character(len=16), pointer :: compor(:) => null()
+    real(kind=8)        :: kp, kt, indicChoc
 ! --------------------------------------------------------------------------------------------------
     aster_logical       :: assemble_amor
 ! --------------------------------------------------------------------------------------------------
@@ -252,13 +254,20 @@ subroutine te0041(option, nomte)
                     call utpsgl(nno, nc, pgl, zr(jdr), matv1)
                 end if
 
+                ! Récupération des raideurs élastiques en parallèle
+                call dikpkt(zi(jma), 'DIS_CONTACT     ', kp, kt)
+
+                ! Prise en compte de l'amortissement de choc
                 if (icodre(1) .eq. 0) then
                     if (abs(valres(1)) > r8prem()) then
+                        ! Définition du facteur "indicateur de choc" (1 si choc, 0 sinon)
+                        ! (contribution élastique à retrancher à la matrice tangente)
+                        indicChoc = (matv1(1)-kp)/valres(1)
                         if (icodre(2) .eq. 0) then
-                            mata1(1) = matv1(1)*valres(2)/valres(1)
+                            mata1(1) = indicChoc*valres(2)
                         end if
                         if (icodre(3) .eq. 0) then
-                            mata1(3) = matv1(1)*valres(3)/valres(1)
+                            mata1(3) = indicChoc*valres(3)
                         end if
                         mata1(6) = mata1(3)
                     end if

@@ -27,8 +27,8 @@ subroutine dis_choc_frot_syme(DD, icodma, ulp, xg, klv, &
 #include "asterc/r8prem.h"
 #include "asterc/r8sign.h"
 #include "asterfort/assert.h"
-#include "asterfort/diraidklv.h"
 #include "asterfort/diklvraid.h"
+#include "asterfort/dikpkt.h"
 #include "asterfort/diraidklv.h"
 #include "asterfort/in_liste_entier.h"
 #include "asterfort/rcvala.h"
@@ -68,7 +68,7 @@ subroutine dis_choc_frot_syme(DD, icodma, ulp, xg, klv, &
 ! --------------------------------------------------------------------------------------------------
 ! person_in_charge: jean-luc.flejou at edf.fr
 !
-    integer(kind=8), parameter :: nbre1 = 11
+    integer(kind=8), parameter :: nbre1 = 9
     real(kind=8) :: valre1(nbre1)
     integer(kind=8) :: codre1(nbre1)
     character(len=12) :: nomre1(nbre1)
@@ -99,7 +99,7 @@ subroutine dis_choc_frot_syme(DD, icodma, ulp, xg, klv, &
     character(len=32) :: messak(3)
 !
     data nomre1/'RIGI_NOR', 'RIGI_TAN', 'AMOR_NOR', 'AMOR_TAN', 'COULOMB', &
-        'DIST_1', 'DIST_2', 'JEU', 'CONTACT', 'KP', 'KT'/
+        'DIST_1', 'DIST_2', 'JEU', 'CONTACT'/
 ! ----------------------------------------------------------------------
 !
 !   Définition des parametres
@@ -128,14 +128,14 @@ subroutine dis_choc_frot_syme(DD, icodma, ulp, xg, klv, &
     rigtan = valre1(2)
     coulom = valre1(5)
     ContactInGlobal = nint(valre1(9))
-    kp = valre1(10)
-    kt = valre1(11)
     if (.not. in_liste_entier(ContactInGlobal, [ReperLocal, ReperGlobal])) then
         messak(1) = 'DIS_CONTACT'
         messak(2) = 'DIS_CHOC'
         messak(3) = '"1D"|"COIN_2D"'
         call utmess('F', 'DISCRETS_35', nk=3, valk=messak)
     end if
+!   Raideurs élastiques en parallèle
+    call dikpkt(icodma, 'DIS_CONTACT     ', kp, kt)
 !
 !   Si ContactInGlobal [ReperGlobal, ReperBizarre]
 !       Prise en compte de          : RIGI_NOR, REPERE
