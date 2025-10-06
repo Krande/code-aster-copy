@@ -80,6 +80,9 @@ class Tensor:
     def __neg__(self):
         return Tensor(-self.array, 1)
 
+    def __eq__(self, other):
+        return NP.sum(sympy.simplify(self.array - other.array)) == 0
+
     def __sub__(self, other):
         return Tensor(self.array - other.array, 1)
 
@@ -106,16 +109,6 @@ class Tensor:
                 raise TypeError("Can't divide by a tensor")
         else:
             return Tensor(self.array / (1.0 * other), 1)
-
-    # def __rdiv__(self, other):
-    #     raise TypeError("Can't divide by a tensor")
-
-    def __cmp__(self, other):
-        if not isTensor(other):
-            return NotImplementedError()
-        if self.rank != other.rank:
-            return 1
-        return not NP.logical_and.reduce(NP.equal(self.array, other.array).flat)
 
     def __len__(self):
         return 3
@@ -204,7 +197,7 @@ class Tensor:
 
     def matrixmultiply(self, other):
         if self.rank == 2 and other.rank == 2:
-            return Tensor(NP.matrixmultiply(NP.transpose(self.array), other.array))
+            return Tensor(NP.transpose(self.array) @ other.array)
         else:
             raise ValueError("Tenseur must of rank 2")
 
@@ -216,13 +209,13 @@ class Tensor:
 
     def eigenvalues(self):
         if self.rank == 2:
-            return eigenvals(self.array)
+            return sympy.Matrix(self.array).eigenvals()
         else:
             raise ValueError("Undefined operation")
 
     def diagonalization(self):
         if self.rank == 2:
-            ev, vectors = eigenvects(self.array)
+            ev, vectors = sympy.Matrix(self.array).eigenvects()
             return ev, Tensor(vectors)
         else:
             raise ValueError("Undefined operation")
