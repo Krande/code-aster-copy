@@ -20,7 +20,7 @@
 from ...Objects import DiscreteComputation
 from ...Supervis import ConvergenceError
 from ...Utilities.mpi_utils import MPI
-from ...Utilities import PETSc, no_new_attributes, profile, petscInitialize
+from ...Utilities import PETSc, no_new_attributes, profile, petscInitialize, removePETScOptions
 from .iteration_solver import BaseIterationSolver
 
 from time import time
@@ -220,9 +220,7 @@ class SNESSolver(BaseIterationSolver):
         if not self.local:
             snes.destroy()
             # delete options from database
-            OptDB = PETSc.Options()
-            loc_opt = [t for t in self._options.split(" ") if t.startswith("-")]
-            [OptDB.delValue(opt) for opt in loc_opt]
+            removePETScOptions(self._options)
 
         return self.current_matrix
 

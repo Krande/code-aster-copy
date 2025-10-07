@@ -27,7 +27,7 @@ from scipy.sparse.linalg import LinearOperator, eigsh, svds
 
 from ...Objects import redistributePetscMat
 from ...Supervis import ConvergenceError
-from ...Utilities import PETSc, no_new_attributes, profile
+from ...Utilities import PETSc, no_new_attributes, profile, removePETScOptions
 from ...Utilities.mpi_utils import MPI
 from .iteration_solver import BaseIterationSolver
 from .snes_solver import SNESSolver
@@ -243,9 +243,7 @@ class RASPENSolver(BaseIterationSolver):
         local_solver.snes = None
         raspen_solver.destroyAll()
         # delete options from database
-        OptDB = PETSc.Options()
-        loc_opt = [t for t in self._options.split(" ") if t.startswith("-")]
-        [OptDB.delValue(opt) for opt in loc_opt]
+        removePETScOptions(self._options)
         return self.current_matrix
 
 

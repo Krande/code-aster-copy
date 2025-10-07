@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -21,4 +21,17 @@
 This module gives common utilities for PETSc.
 """
 
-from libaster import petscInitialize, petscFinalize
+from libaster import petscFinalize, petscInitialize
+
+from ..Utilities import PETSc
+
+
+def removePETScOptions(options):
+    """Remove the options from PETSc's options database
+
+    Arguments:
+        options[str]: PETSc options
+    """
+    OptDB = PETSc.Options()
+    loc_opt = [t for t in options.split(" ") if t.startswith("-")]
+    [OptDB.delValue(opt) for opt in loc_opt]
