@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -31,7 +31,6 @@ from code_aster.Solvers import (
     StorageManager,
     TimeStepper,
 )
-from code_aster.Utilities.logger import INFO, logger
 
 list0 = DEFI_LIST_REEL(VALE=0.0)
 listr = DEFI_LIST_REEL(DEBUT=0.0, INTERVALLE=_F(JUSQU_A=10.0, PAS=1.0))
@@ -69,9 +68,9 @@ class BasicTest(unittest.TestCase):
     def test01_basics(self):
         FOP = UnittestOptions
         opt = FOP.Storage
-        self.assertEqual(str(opt), "UnittestOptions.Storage")
+        self.assertEqual(opt.name, "Storage")
         opt |= FOP.System
-        self.assertEqual(str(opt), "UnittestOptions.Storage|System", str(opt))
+        self.assertEqual(opt.value, 3, opt.value)
 
         syst = SystemDefinition()
         stor = Storage()
