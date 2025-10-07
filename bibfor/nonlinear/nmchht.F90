@@ -36,7 +36,6 @@ subroutine nmchht(model, ds_material, cara_elem, ds_constitutive, &
 #include "asterfort/nmcha0.h"
 #include "asterfort/nmchai.h"
 #include "asterfort/nmchex.h"
-#include "asterfort/nmdidi.h"
 #include "asterfort/nmvcex.h"
 #include "asterfort/nmvcle.h"
 #include "asterfort/NonLinear_type.h"
@@ -45,6 +44,7 @@ subroutine nmchht(model, ds_material, cara_elem, ds_constitutive, &
 #include "asterfort/nonlinLoadDynaCompute.h"
 #include "asterfort/nonlinSubStruCompute.h"
 #include "asterfort/utmess.h"
+#include "asterfort/vecdid.h"
 !
     character(len=24), intent(in) :: model
     type(NL_DS_Material), intent(in) :: ds_material
@@ -214,8 +214,7 @@ subroutine nmchht(model, ds_material, cara_elem, ds_constitutive, &
                                    hval_veelem, hval_veasse)
 ! ----- Compute vector for DIDI loads
         if (l_didi) then
-            call nmdidi(ds_inout, model, list_load, nume_dof, hval_incr, &
-                        hval_veelem, hval_veasse)
+            call vecdid(model, list_load, nume_dof, hval_veelem, hval_veasse)
         end if
     end if
 end subroutine

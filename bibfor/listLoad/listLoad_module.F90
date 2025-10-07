@@ -318,7 +318,15 @@ contains
             else if (loadApply .eq. 'FIXE_PILO') then
                 call utmess('F', 'CHARGES9_7')
             else if (loadApply .eq. 'DIDI') then
-                call utmess('F', 'CHARGES9_8')
+                if (loadIsFunc) then
+                    if (loadCommand(5:7) .eq. "_FT") then
+                        loadIden = 'CINE_FT_DIDI'
+                    else
+                        loadIden = 'CINE_FO_DIDI'
+                    end if
+                else
+                    loadIden = 'CINE_CSTE_DIDI'
+                end if
             else if (loadApply .eq. 'FIXE_CSTE') then
                 if (loadIsFunc) then
                     if (loadCommand(5:7) .eq. "_FT") then
@@ -1453,6 +1461,15 @@ contains
                     listLoadInfo(indxLoadInList+1) = -2
                 else if (loadIden .eq. 'CINE_FT') then
                     listLoadInfo(indxLoadInList+1) = -3
+                else if (loadIden .eq. 'CINE_CSTE_DIDI') then
+                    listLoadInfo(indxLoadInList+1) = -1
+                    listLoadInfo(3*nbLoad+2+indxLoadInList+1) = 1
+                else if (loadIden .eq. 'CINE_FO_DIDI') then
+                    listLoadInfo(indxLoadInList+1) = -2
+                    listLoadInfo(3*nbLoad+2+indxLoadInList+1) = 1
+                else if (loadIden .eq. 'CINE_FT_DIDI') then
+                    listLoadInfo(indxLoadInList+1) = -3
+                    listLoadInfo(3*nbLoad+2+indxLoadInList+1) = 1
 ! --------------------------------------------------------------------------------------------------
                 else if (loadIden .eq. 'DIRI_CSTE') then
                     listLoadInfo(indxLoadInList+1) = 1

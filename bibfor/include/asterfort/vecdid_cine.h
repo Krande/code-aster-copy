@@ -19,9 +19,10 @@
 !
 !
 interface
-    subroutine nmdidi(ds_inout, valinc)
-        use NonLin_Datastructure_type
-        type(NL_DS_InOut), intent(in) :: ds_inout
-        character(len=19), intent(in) :: valinc(*)
-    end subroutine nmdidi
+    subroutine vecdid_cine(charge, infoch, numedd, cncine)
+        character(len=24), intent(in) :: charge
+        character(len=24), intent(in) :: infoch
+        character(len=24), intent(in) :: numedd
+        character(len=19), intent(in) :: cncine
+    end subroutine vecdid_cine
 end interface

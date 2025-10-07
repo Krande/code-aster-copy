@@ -132,23 +132,19 @@ check_load_didi1 = values_depl_didi1[nodes_load].T[2].mean()
 test.assertAlmostEqual(check_load_didi1, 2.0 * DZLOAD, msg="CHAMNO_IMPO - DIDI with ETAT_INIT")
 
 # Cas EVOL_IMPO charge DIDI avec champ initial. On retrouve 2 * DZLOAD.
-issue34815_fixed = False
-if issue34815_fixed:
-    RESU_DIDI2 = MECA_NON_LINE(
-        MODELE=MOD,
-        CHAM_MATER=MAT,
-        EXCIT=(_F(CHARGE=CH_SYME), _F(CHARGE=CMD_CINE, TYPE_CHARGE="DIDI")),
-        INCREMENT=_F(LIST_INST=TIMELINE),
-        ETAT_INIT=_F(DEPL=DEPL_FINAL_REFE),
-    )
+RESU_DIDI2 = MECA_NON_LINE(
+    MODELE=MOD,
+    CHAM_MATER=MAT,
+    EXCIT=(_F(CHARGE=CH_SYME), _F(CHARGE=CMD_CINE, TYPE_CHARGE="DIDI")),
+    INCREMENT=_F(LIST_INST=TIMELINE),
+    ETAT_INIT=_F(DEPL=DEPL_FINAL_REFE),
+)
 
-    DEPL_FINAL_DIDI2 = RESU_DIDI2.getField(
-        "DEPL", para="INST", value=1.0, crit="ABSOLU", prec=1.0e-15
-    )
+DEPL_FINAL_DIDI2 = RESU_DIDI2.getField("DEPL", para="INST", value=1.0, crit="ABSOLU", prec=1.0e-15)
 
-    values_depl_didi2 = DEPL_FINAL_DIDI2.toSimpleFieldOnNodes().getValues()[0]
-    check_load_didi2 = values_depl_didi2[nodes_load].T[2].mean()
-    test.assertAlmostEqual(check_load_didi2, 2.0 * DZLOAD, msg="EVOL_IMPO - DIDI with ETAT_INIT")
+values_depl_didi2 = DEPL_FINAL_DIDI2.toSimpleFieldOnNodes().getValues()[0]
+check_load_didi2 = values_depl_didi2[nodes_load].T[2].mean()
+test.assertAlmostEqual(check_load_didi2, 2.0 * DZLOAD, msg="EVOL_IMPO - DIDI with ETAT_INIT")
 
 test.printSummary()
 

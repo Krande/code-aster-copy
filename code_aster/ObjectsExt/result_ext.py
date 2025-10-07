@@ -335,7 +335,9 @@ class ExtendedResult:
                 if charge.getName() in loadNames:
                     if "FONC_MULT" in dictLoad:
                         if isinstance(charge, DirichletBC):
-                            litsLoads.addDirichletBC(charge, dictLoad["FONC_MULT"])
+                            litsLoads.addDirichletBC(
+                                charge, dictLoad["FONC_MULT"], dictLoad["TYPE_CHARGE"]
+                            )
                         elif charge.getType() == "CHAR_MECA" and not isinstance(
                             charge, MechanicalLoadComplex
                         ):
@@ -346,7 +348,7 @@ class ExtendedResult:
                             litsLoads.addLoad(charge, dictLoad["FONC_MULT"])
                     else:
                         if isinstance(charge, DirichletBC):
-                            litsLoads.addDirichletBC(charge)
+                            litsLoads.addDirichletBC(charge, dictLoad["TYPE_CHARGE"])
                         elif charge.getType() == "CHAR_MECA" and not isinstance(
                             charge, MechanicalLoadComplex
                         ):

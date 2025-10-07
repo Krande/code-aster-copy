@@ -16,12 +16,13 @@
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
 
-subroutine vecdid(model, list_load, disp_didi, vect_elem_)
+subroutine vecdid(model, list_load, nume_dof, veelem, veasse)
 !
     implicit none
 !
 #include "asterf_types.h"
 #include "jeveux.h"
+#include "asterfort/assvec.h"
 #include "asterfort/calcul.h"
 #include "asterfort/codent.h"
 #include "asterfort/exisd.h"
@@ -33,30 +34,31 @@ subroutine vecdid(model, list_load, disp_didi, vect_elem_)
 #include "asterfort/jemarq.h"
 #include "asterfort/jeveuo.h"
 #include "asterfort/mecact.h"
+#include "asterfort/nmchex.h"
 #include "asterfort/vemare.h"
 #include "asterfort/reajre.h"
 !
 ! person_in_charge: mickael.abbas at edf.fr
 !
     character(len=24), intent(in) :: model
-    character(len=19), intent(in) :: disp_didi
     character(len=19), intent(in) :: list_load
-    character(len=*), intent(in) :: vect_elem_
+    character(len=24), intent(in) :: nume_dof
+    character(len=19), intent(in) :: veelem(*)
+    character(len=19), intent(in) :: veasse(*)
 !
 ! --------------------------------------------------------------------------------------------------
 !
-! Mechanics - Load
+! MECA_NON_LINE - Computation
 !
-! Elementary vector for Dirichlet BC (DIDI)
+! Compute elementary vector and assemble for DIDI loads
 !
 ! --------------------------------------------------------------------------------------------------
 !
 ! In  model            : name of the model
-! In  disp_didi        : displacement to compute DIDI loads
 ! In  list_load        : name of datastructure for list of loads
-! In  vect_elem        : name of vect_elem for DIDI loads
-!
-! --------------------------------------------------------------------------------------------------
+! In  nume_dof         : name of numbering (NUME_DDL)
+! In  veelem           : hat variable for elementary vectors
+! In  veasse           : hat variable for vectors
 !
     integer(kind=8) :: nbout, nbin
     parameter(nbout=1, nbin=3)
@@ -67,11 +69,12 @@ subroutine vecdid(model, list_load, disp_didi, vect_elem_)
     integer(kind=8) :: nchar, nbres, icha
     real(kind=8) :: alpha
     character(len=8) :: nomcha
-    character(len=19) :: vect_elem
+    character(len=19) :: vect_elem, vect_asse, disp_didi
     character(len=16) :: option
     character(len=1) :: base
     character(len=24) :: masque
     character(len=24) :: ligrch, chalph
+    aster_logical :: l_didi
     integer(kind=8), pointer :: infc(:) => null()
     character(len=24), pointer :: lcha(:) => null()
 !
@@ -79,12 +82,32 @@ subroutine vecdid(model, list_load, disp_didi, vect_elem_)
 !
     call jemarq()
 !
-! --- INITIALISATIONS
+! --- LISTE DES CHARGES
 !
-    vect_elem = vect_elem_
-    base = 'V'
     call jeexin(list_load(1:19)//'.LCHA', iret)
     if (iret .eq. 0) goto 99
+!
+    call jelira(list_load(1:19)//'.LCHA', 'LONMAX', nchar)
+    call jeveuo(list_load(1:19)//'.LCHA', 'L', vk24=lcha)
+    call jeveuo(list_load(1:19)//'.INFC', 'L', vi=infc)
+!
+! --- VERIF SI CHARGE DE TYPE DIRICHLET DIFFERENTIEL
+!
+    l_didi = .false.
+    do icha = 1, nchar
+        if (infc(icha+1) .gt. 0 .or. infc(1+3*nchar+2+icha) .eq. 0) then
+            l_didi = .true.
+        end if
+    end do
+    if (.not. l_didi) goto 99
+!
+! --- INITIALISATIONS
+!
+    call nmchex(veelem, 'VEELEM', 'CNDIDI', vect_elem)
+    call nmchex(veasse, 'VEASSE', 'CNDIDI', vect_asse)
+    disp_didi = '&&CNCHAR.DIDI'
+
+    base = 'V'
     option = 'MECA_BU_R'
 !
 ! --- INITIALISATION DES CHAMPS POUR CALCUL
@@ -97,12 +120,6 @@ subroutine vecdid(model, list_load, disp_didi, vect_elem_)
 ! REM : LE TERME BT.LAMBDA EST EGALEMENT CALCULE. IL EST NUL CAR A CE
 !       STADE, LES LAMBDAS SONT NULS.
 !
-!
-! --- LISTE DES CHARGES
-!
-    call jelira(list_load(1:19)//'.LCHA', 'LONMAX', nchar)
-    call jeveuo(list_load(1:19)//'.LCHA', 'L', vk24=lcha)
-    call jeveuo(list_load(1:19)//'.INFC', 'L', vi=infc)
 !
 ! --- ALLOCATION DE LA CARTE DU CONDITIONNEMENT DES LAGRANGES
 ! REM : A CE STADE, ON FIXE LE COND A 1
@@ -156,6 +173,10 @@ subroutine vecdid(model, list_load, disp_didi, vect_elem_)
         call reajre(vect_elem, lchout(1), 'V')
     end do
 !
+! - Assembly
+!
+    call assvec('V', vect_asse, 1, vect_elem, [1.d0], nume_dof)
+
 99  continue
 !
     call jedema()

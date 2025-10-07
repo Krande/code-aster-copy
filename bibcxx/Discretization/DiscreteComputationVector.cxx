@@ -93,9 +93,46 @@ DiscreteComputation::_getDirichletBC( const ASTERDOUBLE time_curr ) const {
     return vectAsse;
 };
 
+FieldOnNodesRealPtr DiscreteComputation::_getDirichletDifferentialBC() const {
+
+    auto dofNume = _phys_problem->getDOFNumbering();
+    auto equaNume = dofNume->getEquationNumbering();
+    equaNume->updateValuePointers();
+    const auto &_listOfLoads = _phys_problem->getListOfLoads();
+    if ( !_listOfLoads->isBuilt() )
+        _listOfLoads->build( _phys_problem->getModel() );
+    auto didi_depl = _listOfLoads->getDifferentialDisplacement();
+
+    auto vectAsse = std::make_shared< FieldOnNodesReal >( dofNume );
+    vectAsse->setValues( 0.0 );
+
+    ASTERINTEGER iload = 1;
+    auto types = _listOfLoads->getListOfDiriTyp();
+    for ( const auto &diriBC : _listOfLoads->getDirichletBCs() ) {
+        if ( types[iload - 1] == "DIDI" ) {
+            // add didi_depl on char_cine dofs (voir numchc.F90)
+            auto intParam = diriBC->getIntParam();
+            intParam->updateValuePointer();
+            ASTERINTEGER nbloc = ( *intParam )[0];
+            for ( ASTERINTEGER ibloc = 0; ibloc < nbloc; ibloc++ ) {
+                ASTERINTEGER node = ( *intParam )[1 + 3 * ( ibloc )] - 1;
+                ASTERINTEGER cmp = ( *intParam )[1 + 3 * ( ibloc ) + 1] - 1;
+                ASTERINTEGER dof = equaNume->getDOFsFromNode( node )[cmp];
+                ( *vectAsse )[dof] = ( *didi_depl )[dof];
+            }
+        }
+        iload++;
+    }
+
+    return vectAsse;
+}
+
 FieldOnNodesRealPtr
 DiscreteComputation::getMechanicalDirichletBC( const ASTERDOUBLE time_curr ) const {
-    return this->_getDirichletBC< ASTERDOUBLE >( time_curr );
+    auto vectAsse = this->_getDirichletBC< ASTERDOUBLE >( time_curr );
+    if ( _phys_problem->getListOfLoads()->hasDifferentialDirichletBC() )
+        ( *vectAsse ) += ( *this->_getDirichletDifferentialBC() );
+    return vectAsse;
 }
 
 FieldOnNodesRealPtr
@@ -125,9 +162,11 @@ DiscreteComputation::getIncrementalDirichletBC( const ASTERDOUBLE &time_curr,
     const auto listOfLoads = _phys_problem->getListOfLoads();
     if ( listOfLoads->hasDirichletBC() ) {
         auto diri_curr = this->_getDirichletBC< ASTERDOUBLE >( time_curr );
+        if ( listOfLoads->hasDifferentialDirichletBC() )
+            ( *diri_curr ) += ( *this->_getDirichletDifferentialBC() );
+
         auto diri_impo = *( diri_curr ) - *( disp_curr );
         diri_impo.updateValuePointers();
-
         // Set to zero terms not imposed
         auto eliminatedDofs = _phys_problem->getDirichletBCDOFs();
         auto nbElimination = eliminatedDofs.size();

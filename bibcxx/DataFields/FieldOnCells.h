@@ -394,16 +394,8 @@ class FieldOnCells : public DataField {
 
     std::string getPhysicalQuantity() const {
         _descriptor->updateValuePointer();
-
         auto gd = ( *_descriptor )[0];
-
-        const std::string cata = "&CATA.GD.NOMGD";
-        JeveuxChar32 objName, charName;
-
-        CALLO_JEXNUM( objName, cata, &gd );
-        CALLO_JENUNO( objName, charName );
-
-        return strip( charName.toString() );
+        return PhysicalQuantityManager::getPhysicalQuantityName( gd );
     }
 
     std::string getLocalization() const {

@@ -6,7 +6,7 @@
  * @brief Fichier entete de la classe DirichletBC
  * @author Nicolas Sellenet
  * @section LICENCE
- *   Copyright (C) 1991 - 2024  EDF R&D                www.code-aster.org
+ *   Copyright (C) 1991 - 2025  EDF R&D                www.code-aster.org
  *
  *   This file is part of Code_Aster.
  *
@@ -100,6 +100,8 @@ class DirichletBC : public DataStructure {
     virtual int getPhysics( void ) const { AS_ABORT( "Not allowed" ); };
 
     void setSyntax( SyntaxSaverPtr syntax ) { _syntax = syntax; };
+
+    JeveuxVectorLong getIntParam() const { return _intParam; };
 
   private:
     /**

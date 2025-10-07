@@ -51,6 +51,8 @@ class ListOfLoads : public DataStructure {
     ListDiriBC _listOfDirichletBCs;
     /** @brief List of functions for DirichletBCs */
     ListOfLoadFunctions _listOfDiriFun;
+    /** @brief List of type_charge for  for DirichletBCs */
+    VectorString _listOfDiriTyp;
     /** @brief Chargements Mecaniques */
     ListMecaLoadReal _listOfMechanicalLoadsReal;
     /** @brief List of functions for MechanicalLoads */
@@ -135,8 +137,10 @@ class ListOfLoads : public DataStructure {
      */
     ListOfLoads( const std::string &name, const ModelPtr model );
 
-    void addLoad( const DirichletBCPtr &currentLoad ) {
-        addLoad( currentLoad, emptyRealFunction );
+    void addLoad( const DirichletBCPtr &currentLoad ) { addLoad( currentLoad, "FIXE_CSTE" ); };
+
+    void addLoad( const DirichletBCPtr &currentLoad, const std::string &type ) {
+        addLoad( currentLoad, emptyRealFunction, type );
     };
 
     /**
@@ -144,12 +148,14 @@ class ListOfLoads : public DataStructure {
      * @param currentLoad charge a ajouter a la sd
      * @param func multiplier function
      */
-    void addLoad( const DirichletBCPtr &currentLoad, const FunctionPtr &func ) {
+    void addLoad( const DirichletBCPtr &currentLoad, const FunctionPtr &func,
+                  const std::string &type ) {
         if ( currentLoad ) {
             _isBuilt = false;
             this->setModel( currentLoad->getModel() );
             _listOfDirichletBCs.push_back( currentLoad );
             _listOfDiriFun.push_back( func );
+            _listOfDiriTyp.push_back( type );
         }
     };
 
@@ -158,12 +164,14 @@ class ListOfLoads : public DataStructure {
      * @param currentLoad charge a ajouter a la sd
      * @param func multiplier formula
      */
-    void addLoad( const DirichletBCPtr &currentLoad, const FormulaPtr &func ) {
+    void addLoad( const DirichletBCPtr &currentLoad, const FormulaPtr &func,
+                  const std::string &type ) {
         if ( currentLoad ) {
             _isBuilt = false;
             this->setModel( currentLoad->getModel() );
             _listOfDirichletBCs.push_back( currentLoad );
             _listOfDiriFun.push_back( func );
+            _listOfDiriTyp.push_back( type );
         }
     };
 
@@ -172,12 +180,14 @@ class ListOfLoads : public DataStructure {
      * @param currentLoad charge a ajouter a la sd
      * @param func multiplier function2d
      */
-    void addLoad( const DirichletBCPtr &currentLoad, const Function2DPtr &func ) {
+    void addLoad( const DirichletBCPtr &currentLoad, const Function2DPtr &func,
+                  const std::string &type ) {
         if ( currentLoad ) {
             _isBuilt = false;
             this->setModel( currentLoad->getModel() );
             _listOfDirichletBCs.push_back( currentLoad );
             _listOfDiriFun.push_back( func );
+            _listOfDiriTyp.push_back( type );
         }
     };
 
@@ -852,12 +862,15 @@ class ListOfLoads : public DataStructure {
 
     VectorString getListOfMechaTyp();
     VectorString getListOfMechaFuncTyp();
+    VectorString getListOfDiriTyp();
 
     void setDifferentialDisplacement( const FieldOnNodesRealPtr );
 
     const FieldOnNodesRealPtr getDifferentialDisplacement();
 
+    bool hasDifferential();
     bool hasDifferentialLoads();
+    bool hasDifferentialDirichletBC();
     bool hasDifferentialDisplacement();
 };
 
