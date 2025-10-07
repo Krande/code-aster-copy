@@ -57,6 +57,7 @@ subroutine te0047(optioz, nomtez)
 #include "asterfort/dis_contact_frot.h"
 #include "asterfort/dis_choc_frot.h"
 #include "asterfort/dis_elas_nosyme.h"
+#include "asterfort/dis_elas_para.h"
 #include "asterfort/dicora.h"
 #include "asterfort/didashpot.h"
 #include "asterfort/diecci.h"
@@ -86,12 +87,14 @@ subroutine te0047(optioz, nomtez)
     !
     real(kind=8) :: r8bid
     !
-    aster_logical :: okelem
+    aster_logical :: okelem, okldc
     !
     character(len=8)  :: k8bid
     character(len=24) :: messak(5)
     !
     type(te0047_dscr) :: for_discret
+    !
+    character(len=16) :: nomphe
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -192,6 +195,7 @@ subroutine te0047(optioz, nomtez)
              ((for_discret%nomte .eq. 'MECA_DIS_T_L') .or. &
               (for_discret%nomte .eq. 'MECA_DIS_T_N'))
     !
+    nomphe = for_discret%rela_comp
     codret = 0
     if (for_discret%rela_comp .eq. 'ELAS') then
         ! comportement élastique
@@ -223,6 +227,7 @@ subroutine te0047(optioz, nomtez)
     else if (for_discret%rela_comp .eq. 'DIS_CHOC') then
         ! comportement choc avec frottement de coulomb et sans amortissement
         call dis_choc_frot(for_discret, codret)
+        nomphe = 'DIS_CONTACT'
     else if (for_discret%rela_comp .eq. 'DIS_CONTACT') then
         ! comportement choc avec frottement de coulomb avec amortissement
         call dis_contact_frot(for_discret, codret)
@@ -235,15 +240,19 @@ subroutine te0047(optioz, nomtez)
     else if (for_discret%rela_comp .eq. 'FONDATION') then
         ! comportement fondation : superficielle
         call difondabb(for_discret, codret)
+        nomphe = 'FONDA_SUPERFI'
     else if (for_discret%rela_comp .eq. 'CHOC_ENDO') then
         ! comportement de choc avec déformation résiduelle
         call dichoc_endo_ldc(for_discret, codret)
+        nomphe = 'DIS_CHOC_ENDO'
     else if (for_discret%rela_comp .eq. 'CHOC_ENDO_PENA') then
         ! comportement de choc avec déformation résiduelle par pénalisation
         call dichoc_endo_pena(for_discret, codret)
+        nomphe = 'DIS_CHOC_ENDO'
     else if (for_discret%rela_comp .eq. 'CHOC_ELAS_TRAC') then
         ! comportement de choc avec un comportement élastique non-linéaire
         call dichoc_galet_elasnl(for_discret, codret)
+        nomphe = 'DIS_CHOC_ELAS'
     else if (for_discret%rela_comp .eq. 'JONC_ENDO_PLAS') then
         ! comportement élasto-plastique endommageable : jonction voile-plancher
         call disjvp(for_discret, codret)
@@ -262,5 +271,11 @@ subroutine te0047(optioz, nomtez)
         call jevech('PCODRET', 'E', jcret)
         zi(jcret) = codret
     end if
-!
+    ! Ajout de la contribution d'un élément élastique en parallèle
+    okldc = (for_discret%rela_comp .ne. 'ELAS')
+    okldc = okldc .and. (for_discret%rela_comp .ne. 'JONC_ENDO_PLAS')
+    if (okldc) then
+        call dis_elas_para(for_discret, nomphe)
+    end if
+    !
 end subroutine

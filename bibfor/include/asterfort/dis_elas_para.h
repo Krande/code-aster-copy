@@ -15,13 +15,13 @@
 ! You should have received a copy of the GNU General Public License
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
-
 !
+#include "asterf_types.h"
 !
 interface
-    subroutine dikpkt(imater, nomphe, kp, kt1, kt2)
-        integer(kind=8), intent(in)     :: imater
-        character(len=16), intent(in)   :: nomphe
-        real(kind=8), intent(out)       :: kp, kt1, kt2
-    end subroutine dikpkt
+    subroutine dis_elas_para(for_discret, nomphe)
+        use te0047_type
+        type(te0047_dscr), intent(in) :: for_discret
+        character(len=*), intent(in) :: nomphe
+    end subroutine dis_elas_para
 end interface

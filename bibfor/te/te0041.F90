@@ -88,7 +88,7 @@ subroutine te0041(option, nomte)
     real(kind=8)        :: valres(5)
     character(len=16)   :: nomres(5)
     character(len=16), pointer :: compor(:) => null()
-    real(kind=8)        :: kp, kt, indicChoc
+    real(kind=8)        :: kp, kt1, kt2, indicChoc
 ! --------------------------------------------------------------------------------------------------
     aster_logical       :: assemble_amor
 ! --------------------------------------------------------------------------------------------------
@@ -255,7 +255,7 @@ subroutine te0041(option, nomte)
                 end if
 
                 ! Récupération des raideurs élastiques en parallèle
-                call dikpkt(zi(jma), 'DIS_CONTACT     ', kp, kt)
+                call dikpkt(zi(jma), 'DIS_CONTACT     ', kp, kt1, kt2)
 
                 ! Prise en compte de l'amortissement de choc
                 if (icodre(1) .eq. 0) then
