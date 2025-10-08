@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -21,6 +21,7 @@ subroutine dieven(sddisc, i_event, lacti)
     implicit none
 !
 #include "asterf_types.h"
+#include "asterfort/asmpi_any.h"
 #include "asterfort/assert.h"
 #include "asterfort/utdidt.h"
 !
@@ -61,5 +62,8 @@ subroutine dieven(sddisc, i_event, lacti)
             ASSERT(.false.)
         end if
     end if
+
+! - Share error for HPC
+    lacti = asmpi_any(lacti, ASTER_TRUE)
 !
 end subroutine
