@@ -25,6 +25,7 @@ subroutine dis_elas_para(for_discret, nomphe)
 #include "asterc/r8prem.h"
 #include "asterfort/diklvraid.h"
 #include "asterfort/dikpkt.h"
+#include "asterfort/dis_elas_para_klfl.h"
 #include "asterfort/jevech.h"
 #include "asterfort/rcvala.h"
 #include "asterfort/tecach.h"
@@ -70,23 +71,8 @@ subroutine dis_elas_para(for_discret, nomphe)
     call dikpkt(zi(imater), nomphe, kp, kt1, kt2)
 !
     if ((abs(kp) .ge. r8prem()) .or. (abs(kt1) .ge. r8prem()) .or. (abs(kt2) .ge. r8prem())) then
-        !   Matrice de raideur dans le repère local
-        nc = for_discret%nc
         nn = for_discret%nno
-        neq = nc*nn
-        nsym = neq*(neq+1)/2
-        raide(1:6) = 0.d0
-        raide(1) = kp
-        raide(2) = kt1
-        if (for_discret%ndim .eq. 3) then
-            raide(3) = kt2
-        end if
-        allocate (klvp(nsym))
-        allocate (kgvp(nsym))
-        klvp(1:nsym) = 0.d0
-        kgvp(1:nsym) = 0.d0
-        call diklvraid(for_discret%nomte, klvp, raide)
-
+        nc = for_discret%nc
         !   Déplacements totaux dans le repère local
         ! --- Déplacement
         ulp(:) = for_discret%ulm(:)+for_discret%dul(:)
@@ -95,9 +81,9 @@ subroutine dis_elas_para(for_discret, nomphe)
         call tecach('ONO', 'PDEPENT', 'L', iretlc, iad=idepen)
         if (iretlc .eq. 0) then
             if (for_discret%ndim .eq. 3) then
-                call utpvgl(for_discret%nno, for_discret%nc, for_discret%pgl, zr(idepen), dpe)
+                call utpvgl(nn, nc, for_discret%pgl, zr(idepen), dpe)
             else
-                call ut2vgl(for_discret%nno, for_discret%nc, for_discret%pgl, zr(idepen), dpe)
+                call ut2vgl(nn, nc, for_discret%pgl, zr(idepen), dpe)
             end if
         end if
         ! --- Déplacement total
@@ -116,15 +102,14 @@ subroutine dis_elas_para(for_discret, nomphe)
             end if
         end if
 
-        !   Vecteur force de l'élément élastique dans le repère local
-        flp(1:3) = 0.d0
-        flp(1) = kp*utotxyz(1)
-        flp(2) = kt1*utotxyz(2)
-        if (for_discret%ndim .eq. 3) then
-            flp(3) = kt2*utotxyz(3)
-        end if
+        !   Matrice de raideur et vecteur force de l'élément élastique dans le repère local
+        call dis_elas_para_klfl(for_discret, kp, kt1, kt2, utotxyz, klvp, flp)
 
         !   Mise à jour de la matrice tangente de l'élément élastique (dans le repère global)
+        neq = nc*nn
+        nsym = neq*(neq+1)/2
+        allocate (kgvp(nsym))
+        kgvp(1:nsym) = 0.d0
         call hasSymmetricTangentMatrix(for_discret, IsSymetrique)
         if (for_discret%lMatr) then
             if (for_discret%ndim .eq. 3) then
@@ -208,12 +193,12 @@ subroutine dis_elas_para(for_discret, nomphe)
                 end if
             else if (nn .eq. 2) then
                 zr(ifono-1+1) = zr(ifono-1+1)+fg(1)
-                zr(ifono-1+1+nc) = zr(ifono-1+1+nc)+fg(1)
+                zr(ifono-1+1+nc) = zr(ifono-1+1+nc)+fg(1+nc)
                 zr(ifono-1+2) = zr(ifono-1+2)+fg(2)
-                zr(ifono-1+2+nc) = zr(ifono-1+2+nc)+fg(2)
+                zr(ifono-1+2+nc) = zr(ifono-1+2+nc)+fg(2+nc)
                 if (for_discret%ndim .eq. 3) then
                     zr(ifono-1+3) = zr(ifono-1+3)+fg(3)
-                    zr(ifono-1+3+nc) = zr(ifono-1+3+nc)+fg(3)
+                    zr(ifono-1+3+nc) = zr(ifono-1+3+nc)+fg(3+nc)
                 end if
             end if
         end if

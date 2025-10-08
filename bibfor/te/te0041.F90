@@ -255,7 +255,7 @@ subroutine te0041(option, nomte)
                 end if
 
                 ! Récupération des raideurs élastiques en parallèle
-                call dikpkt(zi(jma), 'DIS_CONTACT     ', kp, kt1, kt2)
+                call dikpkt(zi(jma), 'DIS_CONTACT', kp, kt1, kt2)
 
                 ! Prise en compte de l'amortissement de choc
                 if (icodre(1) .eq. 0) then

@@ -1620,7 +1620,7 @@ DEFI_MATERIAU = MACRO(
         b_coin_2d=BLOC(
             condition="""equal_to("CONTACT", 'COIN_2D')""",
             fr=tr("Précision sur la 'planéité' du discret, dans l'unité du maillage."),
-            PRECISION=SIMP(statut="f", typ="R"),
+            PRECISION=SIMP(statut="o", typ="R", min=3, max=3),
         ),
     ),
     JONC_ENDO_PLAS=FACT(

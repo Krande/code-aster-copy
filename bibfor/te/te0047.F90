@@ -273,6 +273,7 @@ subroutine te0047(optioz, nomtez)
     end if
     ! Ajout de la contribution d'un élément élastique en parallèle
     okldc = (for_discret%rela_comp .ne. 'ELAS')
+    okldc = okldc .and. (for_discret%rela_comp .ne. 'ELAS_NOSYME')
     okldc = okldc .and. (for_discret%rela_comp .ne. 'JONC_ENDO_PLAS')
     if (okldc) then
         call dis_elas_para(for_discret, nomphe)

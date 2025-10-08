@@ -19,7 +19,7 @@
 subroutine dikpkt(imater, nomphe, kp, kt1, kt2)
     implicit none
     integer(kind=8), intent(in)     :: imater
-    character(len=16), intent(in)   :: nomphe
+    character(len=*), intent(in)   :: nomphe
     real(kind=8), intent(out)       :: kp, kt1, kt2
 !
 #include "asterc/r8prem.h"
@@ -78,10 +78,11 @@ subroutine dikpkt(imater, nomphe, kp, kt1, kt2)
     else
         kt2 = valres(4)
     end if
-    if ((kt .gt. r8prem()) .and. ((kt1 .gt. r8prem()) .or. (kt2 .gt. r8prem()))) then
+    if ((abs(kt) .gt. r8prem()) .and. ((abs(kt1) .gt. r8prem()) &
+                                       .or. (abs(kt2) .gt. r8prem()))) then
         messak(1) = nomphe
         call utmess('F', 'DISCRETS_38', nk=1, valk=messak)
-    else if (kt .gt. r8prem()) then
+    else if (abs(kt) .gt. r8prem()) then
         kt1 = kt
         kt2 = kt
     end if

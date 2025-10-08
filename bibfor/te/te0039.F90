@@ -26,8 +26,10 @@ subroutine te0039(option, nomte)
 #include "asterc/r8prem.h"
 #include "asterfort/assert.h"
 #include "asterfort/Behaviour_type.h"
+#include "asterfort/dikpkt.h"
 #include "asterfort/dis_choc_frot_syme.h"
 #include "asterfort/dis_choc_frot_nosyme.h"
+#include "asterfort/dis_elas_para_klfl.h"
 #include "asterfort/discret_sief.h"
 #include "asterfort/infdis.h"
 #include "asterfort/infted.h"
@@ -76,6 +78,9 @@ subroutine te0039(option, nomte)
     real(kind=8) :: klv(78), kgv(78)
     real(kind=8) :: forref, momref
     real(kind=8) :: r8bid
+    real(kind=8) :: utotxyz(3), flp(3)
+    real(kind=8) :: kp, kt1, kt2
+    real(kind=8), allocatable :: klvp(:)
 !
     character(len=8) :: k8bid
     character(len=16) :: kmess(5)
@@ -232,6 +237,30 @@ subroutine te0039(option, nomte)
                                               dpe, varmo, force, varpl)
                 end if
 
+                ! Ajout de la contribution d'un discret élastique en parallèle
+                ! --- Déplacement total
+                utotxyz(1:3) = 0.d0
+                if (for_discret%nno .eq. 2) then
+                    utotxyz(1) = ulp(1+for_discret%nc)-ulp(1)+dpe(1+for_discret%nc)-dpe(1)
+                    utotxyz(2) = ulp(2+for_discret%nc)-ulp(2)+dpe(2+for_discret%nc)-dpe(2)
+                    if (for_discret%ndim .eq. 3) then
+                        utotxyz(3) = ulp(3+for_discret%nc)-ulp(3)+dpe(3+for_discret%nc)-dpe(3)
+                    end if
+                else
+                    utotxyz(1) = ulp(1)+dpe(1)
+                    utotxyz(2) = ulp(2)+dpe(2)
+                    if (for_discret%ndim .eq. 3) then
+                        utotxyz(3) = ulp(3)+dpe(3)
+                    end if
+                end if
+                ! --- Raideurs du discret élastique
+                call dikpkt(zi(lmater), 'DIS_CONTACT', kp, kt1, kt2)
+                ! --- Matrice tangente et vecteur force du discret élastique (repère local)
+                call dis_elas_para_klfl(for_discret, kp, kt1, kt2, utotxyz, klvp, flp)
+                ! --- Ajout de la contribution du discret en parallèle
+                klv(:) = klv(:)+klvp(:)
+                force(:) = force(:)+flp(:)
+                !
                 ilogic = 2
                 call discret_sief(for_discret, klv, ulp, sim, ilogic, &
                                   sip, zr(ifono), force)
