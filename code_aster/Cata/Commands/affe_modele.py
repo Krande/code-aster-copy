@@ -256,8 +256,19 @@ AFFE_MODELE = OPER(
                 ),
             ),
             b_formu_hho=BLOC(
-                condition="""equal_to('MODELISATION', ('3D_HHO', 'D_PLAN_HHO', "D_PLAN_GRAD_HHO", "3D_GRAD_HHO" ))""",
+                condition="""equal_to('MODELISATION', ('3D_HHO', 'D_PLAN_HHO' ))""",
                 fr=tr("HHO formulation"),
+                FORMULATION=SIMP(
+                    statut="f",
+                    typ="TXM",
+                    max=1,
+                    into=("LINEAIRE", "QUADRATIQUE", "CUBIQUE"),
+                    defaut="LINEAIRE",
+                ),
+            ),
+            b_formu_hho_grad=BLOC(
+                condition="""equal_to('MODELISATION', ("D_PLAN_GRAD_HHO", "3D_GRAD_HHO" ))""",
+                fr=tr("HHO formulation with GRAD_VARI"),
                 FORMULATION=SIMP(
                     statut="f",
                     typ="TXM",

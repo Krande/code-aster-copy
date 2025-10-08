@@ -23,9 +23,9 @@ subroutine elraca(elrefz, &
 !
     implicit none
 !
-#include "MeshTypes_type.h"
 #include "asterfort/assert.h"
 #include "asterfort/elrfno.h"
+#include "MeshTypes_type.h"
 !
     character(len=*), intent(in)            :: elrefz
     integer(kind=8), optional, intent(out)          :: ndim_, nno_, nnos_, nbfpg_, nbpg_(MT_NBFAMX)
@@ -180,8 +180,8 @@ subroutine elraca(elrefz, &
         fapg(17) = 'FPG204'
 
     case ('PE6')
-        nbfpg = 9
-        nbpg(1:nbfpg) = [nno, nnos, 1, 6, 6, 8, 21, 12, 29]
+        nbfpg = 12
+        nbpg(1:nbfpg) = [nno, nnos, 1, 6, 6, 8, 21, 12, 29, 52, 95, 168]
         fapg(1) = 'NOEU'
         fapg(2) = 'NOEU_S'
         fapg(3) = 'FPG1'
@@ -191,6 +191,9 @@ subroutine elraca(elrefz, &
         fapg(7) = 'FPG21'
         fapg(8) = 'FPG6NOS'
         fapg(9) = 'FPG29'
+        fapg(10) = 'FPG52'
+        fapg(11) = 'FPG95'
+        fapg(12) = 'FPG168'
 
     case ('PE7')
         nbfpg = 5
@@ -241,8 +244,8 @@ subroutine elraca(elrefz, &
         fapg(9) = 'FPG29'
 
     case ('PY5')
-        nbfpg = 11
-        nbpg(1:nbfpg) = [nno, nnos, 1, 1, 5, 6, 10, 10, 15, 24, 31]
+        nbfpg = 14
+        nbpg(1:nbfpg) = [nno, nnos, 1, 1, 5, 6, 10, 10, 15, 24, 31, 47, 62, 83]
         fapg(1) = 'NOEU'
         fapg(2) = 'NOEU_S'
         fapg(3) = 'FPG1'
@@ -254,6 +257,9 @@ subroutine elraca(elrefz, &
         fapg(9) = 'FPG15'
         fapg(10) = 'FPG24'
         fapg(11) = 'FPG31'
+        fapg(12) = 'FPG47'
+        fapg(13) = 'FPG62'
+        fapg(14) = 'FPG83'
 
     case ('P13')
         nbfpg = 11
@@ -271,8 +277,8 @@ subroutine elraca(elrefz, &
         fapg(11) = 'FPG31'
 
     case ('P19')
-        nbfpg = 11
-        nbpg(1:nbfpg) = [nno, nnos, 1, 1, 5, 6, 10, 10, 15, 24, 31]
+        nbfpg = 14
+        nbpg(1:nbfpg) = [nno, nnos, 1, 1, 5, 6, 10, 10, 15, 24, 31, 47, 62, 83]
         fapg(1) = 'NOEU'
         fapg(2) = 'NOEU_S'
         fapg(3) = 'FPG1'
@@ -284,6 +290,9 @@ subroutine elraca(elrefz, &
         fapg(9) = 'FPG15'
         fapg(10) = 'FPG24'
         fapg(11) = 'FPG31'
+        fapg(12) = 'FPG47'
+        fapg(13) = 'FPG62'
+        fapg(14) = 'FPG83'
 
     case ('TR3')
         nbfpg = 19

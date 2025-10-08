@@ -192,7 +192,7 @@
 #define VARC_STRAIN_PTOT            5
 
 ! Maximum number of Gauss points for coordinates
-#define ESVA_GEOM_NBMAXI            27
+#define ESVA_GEOM_NBMAXI            64
 
 ! --------------------------------------------------------------------------------------------------
 

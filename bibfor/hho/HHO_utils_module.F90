@@ -25,12 +25,12 @@ module HHO_utils_module
     implicit none
 !
     private
+#include "jeveux.h"
 #include "asterf_types.h"
-#include "asterfort/HHO_size_module.h"
 #include "asterfort/assert.h"
 #include "asterfort/dismoi.h"
+#include "asterfort/HHO_size_module.h"
 #include "asterfort/symt46.h"
-#include "jeveux.h"
 #include "MeshTypes_type.h"
 !
 ! --------------------------------------------------------------------------------------------------
@@ -78,22 +78,28 @@ contains
 !
         call dismoi('EXI_HHO', model, 'MODELE', repk=answer)
         if (answer .eq. 'OUI') then
-            call dismoi('EXI_HHO_QUAD', model, 'MODELE', repk=answer)
+            call dismoi('EXI_HHO_CUBI', model, 'MODELE', repk=answer)
             if (answer .eq. 'OUI') then
-                call hhoData%initialize(2, 2, 2, 0.d0, ASTER_FALSE, &
+                call hhoData%initialize(3, 3, 3, 0.d0, ASTER_FALSE, &
                                         ASTER_FALSE)
             else
-                call dismoi('EXI_HHO_LINE', model, 'MODELE', repk=answer)
+                call dismoi('EXI_HHO_QUAD', model, 'MODELE', repk=answer)
                 if (answer .eq. 'OUI') then
-                    call hhoData%initialize(1, 1, 1, 0.d0, ASTER_FALSE, &
+                    call hhoData%initialize(2, 2, 2, 0.d0, ASTER_FALSE, &
                                             ASTER_FALSE)
                 else
-                    call dismoi('EXI_HHO_CSTE', model, 'MODELE', repk=answer)
+                    call dismoi('EXI_HHO_LINE', model, 'MODELE', repk=answer)
                     if (answer .eq. 'OUI') then
-                        call hhoData%initialize(0, 0, 0, 0.d0, ASTER_FALSE, &
+                        call hhoData%initialize(1, 1, 1, 0.d0, ASTER_FALSE, &
                                                 ASTER_FALSE)
                     else
-                        ASSERT(ASTER_FALSE)
+                        call dismoi('EXI_HHO_CSTE', model, 'MODELE', repk=answer)
+                        if (answer .eq. 'OUI') then
+                            call hhoData%initialize(0, 0, 0, 0.d0, ASTER_FALSE, &
+                                                    ASTER_FALSE)
+                        else
+                            ASSERT(ASTER_FALSE)
+                        end if
                     end if
                 end if
             end if

@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -44,23 +44,53 @@ mu = E / 2 / (1 + Nu)
 uX = {
     "LINEAIRE": FORMULE(VALE="X+1", NOM_PARA=("X", "Y", "Z")),
     "QUADRATIQUE": FORMULE(VALE="Z*(X+1)", NOM_PARA=("X", "Y", "Z")),
+    "CUBIQUE": FORMULE(VALE="Z*(X+1)*Y+X*X", NOM_PARA=("X", "Y", "Z")),
 }
 uY = {
     "LINEAIRE": FORMULE(VALE="Y+3", NOM_PARA=("X", "Y", "Z")),
     "QUADRATIQUE": FORMULE(VALE="X*(Y+3)", NOM_PARA=("X", "Y", "Z")),
+    "CUBIQUE": FORMULE(VALE="X*(Y+3)*Z+Y*Y", NOM_PARA=("X", "Y", "Z")),
 }
 uZ = {
     "LINEAIRE": FORMULE(VALE="Z-2", NOM_PARA=("X", "Y", "Z")),
     "QUADRATIQUE": FORMULE(VALE="Y*(Z-2)", NOM_PARA=("X", "Y", "Z")),
+    "CUBIQUE": FORMULE(VALE="Y*(Z-2)*X+Z*Z", NOM_PARA=("X", "Y", "Z")),
 }
 
 zero = FORMULE(VALE="0", NOM_PARA=("X", "Y", "Z"))
 f0 = -(lamb + mu)
 fc = FORMULE(VALE="f0", NOM_PARA=("X", "Y", "Z"), f0=f0)
 
-fX = {"LINEAIRE": zero, "QUADRATIQUE": fc}
-fY = {"LINEAIRE": zero, "QUADRATIQUE": fc}
-fZ = {"LINEAIRE": zero, "QUADRATIQUE": fc}
+fX = {
+    "LINEAIRE": zero,
+    "QUADRATIQUE": fc,
+    "CUBIQUE": FORMULE(
+        VALE="-lamb*(Y + Z + 2.0) - mu*Y - mu*Z - 4.0*mu",
+        NOM_PARA=("X", "Y", "Z"),
+        lamb=lamb,
+        mu=mu,
+    ),
+}
+fY = {
+    "LINEAIRE": zero,
+    "QUADRATIQUE": fc,
+    "CUBIQUE": FORMULE(
+        VALE="-lamb*(X + Z + 2.0) - mu*X - mu*Z - 4.0*mu",
+        NOM_PARA=("X", "Y", "Z"),
+        lamb=lamb,
+        mu=mu,
+    ),
+}
+fZ = {
+    "LINEAIRE": zero,
+    "QUADRATIQUE": fc,
+    "CUBIQUE": FORMULE(
+        VALE="-lamb*(X + Y + 2.0) - mu*X - mu*Y - 4.0*mu",
+        NOM_PARA=("X", "Y", "Z"),
+        lamb=lamb,
+        mu=mu,
+    ),
+}
 
 for unite in (20, 21, 22, 23, 24):
     mesh0 = LIRE_MAILLAGE(FORMAT="MED", UNITE=unite)
@@ -76,7 +106,7 @@ for unite in (20, 21, 22, 23, 24):
 
     mater = AFFE_MATERIAU(MAILLAGE=mesh, AFFE=_F(TOUT="OUI", MATER=coeff))
 
-    for form in ("LINEAIRE", "QUADRATIQUE"):
+    for form in ("LINEAIRE", "QUADRATIQUE", "CUBIQUE"):
         model = AFFE_MODELE(
             MAILLAGE=mesh,
             AFFE=_F(TOUT="OUI", MODELISATION="3D_HHO", FORMULATION=form, PHENOMENE="MECANIQUE"),

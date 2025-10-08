@@ -36,6 +36,7 @@ subroutine get_elas_para(fami, j_mater, poum, ipg, ispg, &
 !
 #include "asterc/r8vide.h"
 #include "asterfort/assert.h"
+#include "asterfort/Behaviour_type.h"
 #include "asterfort/hypmat.h"
 #include "asterfort/rcvalb.h"
 #include "asterfort/rcvalc.h"
@@ -150,7 +151,7 @@ subroutine get_elas_para(fami, j_mater, poum, ipg, ispg, &
     end if
     if (present(BEHinteg)) then
         if (.not. BEHinteg%behavESVA%lGeomInESVA .and. (fami .ne. "XFEM")) then
-            ASSERT(ipg <= 27)
+            ASSERT(ipg <= ESVA_GEOM_NBMAXI)
             nb_para = nb_para+1
             para_name(nb_para) = 'X'
             para_vale(nb_para) = BEHinteg%behavESVA%behavESVAGeom%coorElga(ipg, 1)

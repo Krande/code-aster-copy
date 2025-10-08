@@ -606,7 +606,7 @@ contains
         character(len=16), parameter :: motcle(5) = (/'GROUP_MA', 'MAILLE  ', &
                                                       'GROUP_NO', 'NOEUD   ', &
                                                       'TOUT    '/)
-        integer(kind=8), parameter :: nbCmpSupp = 16
+        integer(kind=8), parameter :: nbCmpSupp = 30
 !
 ! --------------------------------------------------------------------------------------------------
 !
