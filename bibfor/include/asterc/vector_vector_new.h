@@ -16,20 +16,8 @@
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
 
-!
-!
 interface
-    subroutine moinsr(j, n, idil, idiich, idsuiv,&
-                      nosuiv, idip, noip, iilib, iimax)
-        integer(kind=8) :: j
-        integer(kind=8) :: n
-        integer(kind=8) :: idil
-        integer(kind=8) :: idiich
-        integer(kind=8) :: idsuiv
-        character(len=*) :: nosuiv
-        integer(kind=8) :: idip
-        character(len=*) :: noip
-        integer(kind=8) :: iilib
-        integer(kind=8) :: iimax
-    end subroutine moinsr
+    subroutine vector_vector_new(a)
+        integer(kind=8), intent(in) :: a
+    end subroutine vector_vector_new
 end interface

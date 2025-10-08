@@ -19,13 +19,10 @@
 !
 !
 interface
-    subroutine moinip(nch, ncoef, iich, iisuiv, ilig,&
-                      ilig2)
-        integer(kind=8) :: nch
-        integer(kind=8) :: ncoef
-        integer(kind=8) :: iich(*)
-        integer(kind=8) :: iisuiv(*)
-        integer(kind=8) :: ilig(*)
-        integer(kind=4) :: ilig2(1)
-    end subroutine moinip
+    subroutine trir_i4(clef, tab, ntab, n)
+        integer(kind=8) :: n
+        integer(kind=4) :: clef(*)
+        real(kind=8) :: tab(n, *)
+        integer(kind=8) :: ntab
+    end subroutine trir_i4
 end interface
