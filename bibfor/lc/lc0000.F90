@@ -245,6 +245,9 @@ subroutine lc0000(BEHinteg, &
     ndt = 2*ndim
     ndi = ndim
 
+! - Detect external state variables
+    call detectVarc(BEHinteg)
+
 ! - Prepare external state variables at Gauss point
     call behaviourPrepESVAPoin(BEHinteg)
 

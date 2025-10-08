@@ -165,17 +165,4 @@ Veuillez renseigner les valeurs de cette variable de commande dans le mot-clé A
 La loi de comportement réclame une température mais elle n'est pas définie par AFFE_VARC de AFFE_MATERIAU.
 """
     ),
-    77: _(
-        """
-La loi de comportement demande à calculer une déformation non-mécanique externe mais le
-nombre de composantes fournies par AFFE_VARC n'est pas cohérent avec le modèle.
-"""
-    ),
-    79: _(
-        """
-La loi de comportement demande à calculer une déformation non-mécanique externe sous forme volumique
-mais le problème n'est pas isotrope.
-Cette erreur survient quant on tente d'utiliser de la thermique non-isotrope avec MFront.
-"""
-    ),
 }

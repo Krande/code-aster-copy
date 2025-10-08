@@ -15,8 +15,8 @@
 ! You should have received a copy of the GNU General Public License
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
-
-subroutine matrHooke3d(elas_type, angl, &
+!
+subroutine matrHooke3d(elasID, anglNaut, &
                        h, g, g1, g2, g3, &
                        matr_elas)
 !
@@ -24,11 +24,11 @@ subroutine matrHooke3d(elas_type, angl, &
 !
 #include "asterfort/assert.h"
 #include "asterfort/dpassa.h"
+#include "asterfort/ElasticityMaterial_type.h"
 #include "asterfort/utbtab.h"
 !
-!
-    integer(kind=8), intent(in) :: elas_type
-    real(kind=8), intent(in) :: angl(3)
+    integer(kind=8), intent(in) :: elasID
+    real(kind=8), intent(in) :: anglNaut(3)
     real(kind=8), intent(in) :: g, h(6)
     real(kind=8), intent(in) :: g1, g2, g3
     real(kind=8), intent(out) :: matr_elas(6, 6)
@@ -41,15 +41,8 @@ subroutine matrHooke3d(elas_type, angl, &
 !
 ! --------------------------------------------------------------------------------------------------
 !
-! In  elas_type          : Type of elasticity
-!                 1 - Isotropic
-!                 2 - Orthotropic
-!                 3 - Transverse isotropic
-!                           or viscoelasticity
-!                 4 - Isotropic
-!                 5 - Orthotropic
-!                 6 - Transverse isotropic
-! In  angl             : nautical angles
+! In  elasID           : type of elasticity
+! In  anglNaut         : nautical angles
 ! In  h                : Hook coefficient (all)
 ! In  g                : shear ratio (isotropic/Transverse isotropic)
 ! In  g1               : shear ratio (Orthotropic)
@@ -64,16 +57,12 @@ subroutine matrHooke3d(elas_type, angl, &
 !
 ! --------------------------------------------------------------------------------------------------
 !
-    matr_elas(:, :) = 0.d0
-    dorth(:, :) = 0.d0
-    work(:, :) = 0.d0
-!
+    matr_elas = 0.d0
+    dorth = 0.d0
+    work = 0.d0
+
 ! - Compute Hooke matrix
-!
-    if (elas_type .eq. 1 .or. elas_type .eq. 4) then
-!
-! ----- Isotropic elastic matrix
-!
+    if (elasID .eq. ELAS_ISOT .or. elasID .eq. ELAS_VISC_ISOT) then
         matr_elas(1, 1) = h(1)
         matr_elas(1, 2) = h(2)
         matr_elas(1, 3) = h(2)
@@ -86,11 +75,8 @@ subroutine matrHooke3d(elas_type, angl, &
         matr_elas(4, 4) = g
         matr_elas(5, 5) = g
         matr_elas(6, 6) = g
-!
-    else if (elas_type .eq. 2 .or. elas_type .eq. 5) then
-!
-! ----- Orthotropic matrix
-!
+
+    else if (elasID .eq. ELAS_ORTH .or. elasID .eq. ELAS_VISC_ORTH) then
         dorth(1, 1) = h(1)
         dorth(1, 2) = h(2)
         dorth(1, 3) = h(3)
@@ -103,13 +89,11 @@ subroutine matrHooke3d(elas_type, angl, &
         dorth(4, 4) = g1
         dorth(5, 5) = g2
         dorth(6, 6) = g3
-!
-! ----- Compute transition matrix from orthotropic basis to global 3D basis
-!
-        call dpassa(angl, irep, matr_tran)
-!
-! ----- Change Hooke matrix to global 3D basis
-!
+
+! ----- Compute transition matrix from orthotropic basis to global basis
+        call dpassa(anglNaut, irep, matr_tran)
+
+! ----- Change Hooke matrix to global basis
         ASSERT((irep .eq. 1) .or. (irep .eq. 0))
         if (irep .eq. 1) then
             call utbtab('ZERO', 6, 6, dorth, matr_tran, work, matr_elas)
@@ -120,11 +104,8 @@ subroutine matrHooke3d(elas_type, angl, &
                 end do
             end do
         end if
-!
-    else if (elas_type .eq. 3 .or. elas_type .eq. 6) then
-!
-! ----- Transverse isotropic matrix
-!
+
+    else if (elasID .eq. ELAS_ISTR .or. elasID .eq. ELAS_VISC_ISTR) then
         dorth(1, 1) = h(1)
         dorth(1, 2) = h(2)
         dorth(1, 3) = h(3)
@@ -137,13 +118,11 @@ subroutine matrHooke3d(elas_type, angl, &
         dorth(4, 4) = h(5)
         dorth(5, 5) = g
         dorth(6, 6) = dorth(5, 5)
-!
+
 ! ----- Compute transition matrix from orthotropic basis to global 3D basis
-!
-        call dpassa(angl, irep, matr_tran)
-!
+        call dpassa(anglNaut, irep, matr_tran)
+
 ! ----- Change Hooke matrix to global 3D basis
-!
         ASSERT((irep .eq. 1) .or. (irep .eq. 0))
         if (irep .eq. 1) then
             call utbtab('ZERO', 6, 6, dorth, matr_tran, work, matr_elas)
@@ -154,9 +133,9 @@ subroutine matrHooke3d(elas_type, angl, &
                 end do
             end do
         end if
-!
+
     else
-        ASSERT(.false.)
+        ASSERT(ASTER_FALSE)
     end if
 !
 end subroutine

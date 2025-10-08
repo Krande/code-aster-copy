@@ -15,13 +15,12 @@
 ! You should have received a copy of the GNU General Public License
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
-
-subroutine matrot(angl_naut, pgl)
+!
+subroutine matrot(anglNaut, pgl)
 !
     implicit none
 !
-!
-    real(kind=8), intent(in) :: angl_naut(*)
+    real(kind=8), intent(in) :: anglNaut(3)
     real(kind=8), intent(out) :: pgl(3, 3)
 !
 ! --------------------------------------------------------------------------------------------------
@@ -37,7 +36,7 @@ subroutine matrot(angl_naut, pgl)
 !       (X0,Y0,Z0)     >    (X1,Y1,Z0)    >    (X,Y1,Z2)    >    (X,Y,Z)
 !                    APLHA              BETA              GAMMA
 !
-! In  angl_naut        : nautical angles
+! In  anglNaut        : nautical angles
 !                        (1) Alpha - clockwise around Z0
 !                        (2) Beta  - counterclockwise around Y1
 !                        (1) Gamma - clockwise around X
@@ -49,12 +48,13 @@ subroutine matrot(angl_naut, pgl)
 !
 ! --------------------------------------------------------------------------------------------------
 !
-    cosa = cos(angl_naut(1))
-    sina = sin(angl_naut(1))
-    cosb = cos(angl_naut(2))
-    sinb = sin(angl_naut(2))
-    cosg = cos(angl_naut(3))
-    sing = sin(angl_naut(3))
+    pgl = 0.d0
+    cosa = cos(anglNaut(1))
+    sina = sin(anglNaut(1))
+    cosb = cos(anglNaut(2))
+    sinb = sin(anglNaut(2))
+    cosg = cos(anglNaut(3))
+    sing = sin(anglNaut(3))
 !
     pgl(1, 1) = cosb*cosa
     pgl(2, 1) = sing*sinb*cosa-cosg*sina

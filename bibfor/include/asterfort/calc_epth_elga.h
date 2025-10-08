@@ -15,19 +15,16 @@
 ! You should have received a copy of the GNU General Public License
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
-
-!
 !
 interface
-    subroutine calc_epth_elga(fami   , ndim  , poum  , kpg      , ksp,&
-                              j_mater, angl_naut, epsi_ther)
+    subroutine calc_epth_elga(fami, ndim, poum, kpg, ksp, &
+                              materCodeJv, anglNaut, epsiTher)
         character(len=*), intent(in) :: fami
         integer(kind=8), intent(in) :: ndim
         character(len=*), intent(in) :: poum
-        integer(kind=8), intent(in) :: kpg
-        integer(kind=8), intent(in) :: ksp
-        integer(kind=8), intent(in) :: j_mater
-        real(kind=8), intent(in) :: angl_naut(3)
-        real(kind=8), intent(out) :: epsi_ther(6)
+        integer(kind=8), intent(in) :: kpg, ksp
+        integer(kind=8), intent(in) :: materCodeJv
+        real(kind=8), intent(in) :: anglNaut(3)
+        real(kind=8), intent(out) :: epsiTher(6)
     end subroutine calc_epth_elga
 end interface

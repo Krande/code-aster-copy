@@ -26,6 +26,8 @@
 module Behaviour_module
 ! ==================================================================================================
     use Behaviour_type
+    use BehaviourStrain_module
+    use BehaviourStrain_type
     use BehaviourMGIS_type
     use calcul_module, only: ca_jvcnom_, ca_nbcvrc_
 ! ==================================================================================================
@@ -40,9 +42,9 @@ module Behaviour_module
     private :: computeStrainESVA, computeStrainMeca
     private :: varcIsGEOM, isSolverIsExte
     private :: prepEltSize1, prepGradVelo
-    private :: prepHygr, prepPtot, prepTemp, prepSech, prepHydr, prepEpsa, prepFields
     public :: getAsterVariableName, getMFrontVariableName
     private :: setFromOption, setFromCarcri
+    public :: detectVarc
 ! ==================================================================================================
     private
 #include "asterc/indik8.h"
@@ -74,6 +76,31 @@ module Behaviour_module
 ! ==================================================================================================
 contains
 ! ==================================================================================================
+! --------------------------------------------------------------------------------------------------
+!
+! detectVarc
+!
+! Detect external state variables
+!
+! IO  BEHinteg         : main object for managing the integration of behavior laws
+!
+! --------------------------------------------------------------------------------------------------
+    subroutine detectVarc(BEHinteg)
+!   ------------------------------------------------------------------------------------------------
+! ----- Parameters
+        type(Behaviour_Integ), intent(inout) :: BEHinteg
+! ----- Local
+        character(len=1), parameter :: poum = "T"
+!   ------------------------------------------------------------------------------------------------
+!
+        call strainDetectVarc(poum, BEHinteg%behavPara%lTHM, &
+                              BEHInteg%behavPara%fami, &
+                              BEHInteg%behavPara%kpg, &
+                              BEHInteg%behavPara%ksp, &
+                              BEHinteg%allVarcStrain)
+!
+!   ------------------------------------------------------------------------------------------------
+    end subroutine
 ! --------------------------------------------------------------------------------------------------
 !
 ! behaviourInit
@@ -136,26 +163,12 @@ contains
         type(BehaviourESVA), intent(out) :: behavESVA
 ! ----- Locam
         aster_logical :: lGeomInESVA
-        integer(kind=8) :: iField
 !   ------------------------------------------------------------------------------------------------
 !
 
 ! ----- Detect if geometry is in external state variables
         call varcIsGEOM(lGeomInESVA)
         behavESVA%lGeomInESVA = lGeomInESVA
-
-! ----- For fields (default: None)
-        do iField = 1, ESVA_FIELD_NBMAXI
-            behavESVA%behavESVAField(iField)%exist = ASTER_FALSE
-            behavESVA%behavESVAField(iField)%nbComp = 0
-            behavESVA%behavESVAField(iField)%typeForStrain = ESVA_FIELD_TYPE_UNKW
-            behavESVA%behavESVAField(iField)%valePrev = r8nnem()
-            behavESVA%behavESVAField(iField)%valeCurr = r8nnem()
-            behavESVA%behavESVAField(iField)%valeIncr = r8nnem()
-            behavESVA%behavESVAField(iField)%valeScalRefe = r8nnem()
-            behavESVA%behavESVAField(iField)%valeScalPrev = r8nnem()
-            behavESVA%behavESVAField(iField)%valeScalIncr = r8nnem()
-        end do
 
 ! ----- For geometric properties
         behavESVA%behavESVAGeom%elemSize1 = r8nnem()
@@ -209,7 +222,7 @@ contains
         integer(kind=8), intent(in) :: jvMaterCode
         type(Behaviour_Integ), intent(inout) :: BEHinteg
 ! ----- Local
-        integer(kind=8) :: elasType, icodre
+        integer(kind=8) :: elasID, icodre
         character(len=16) :: elasKeyword
 !   ------------------------------------------------------------------------------------------------
 !
@@ -230,12 +243,14 @@ contains
         BEHInteg%behavPara%jvMaterCode = jvMaterCode
         call rccoma(jvMaterCode, 'ELAS', 0, elasKeyword, icodre)
         if (icodre .eq. 0) then
-            call get_elas_id(jvMaterCode, elasType, elasKeyword)
+            call get_elas_id(jvMaterCode, elasID, elasKeyword)
             BEHInteg%behavPara%lElasIsMeta = (elasKeyword == 'ELAS_META')
-            BEHInteg%behavPara%elasType = elasType
+            BEHInteg%behavPara%elasID = elasID
+            BEHInteg%behavPara%elasKeyword = elasKeyword
         end if
         if (LDC_PREP_DEBUG .eq. 1) then
-            WRITE (6, *) '<DEBUG>  Type d élasticité      : ', BEHInteg%behavPara%elasType
+            WRITE (6, *) '<DEBUG>  Type d élasticité      : ', BEHInteg%behavPara%elasID
+            WRITE (6, *) '<DEBUG>  Mot-clef               : ', BEHInteg%behavPara%elasKeyword
             WRITE (6, *) '<DEBUG>  Présence de métallurgie: ', BEHInteg%behavPara%lElasIsMeta
         end if
 
@@ -298,27 +313,31 @@ contains
         character(len=16), dimension(COMPOR_SIZE), intent(in) :: compor
         type(Behaviour_Integ), intent(inout) :: BEHinteg
 ! ----- Locals
-        character(len=16) :: defo_ldc, defo_comp, regu_visc, postIncr, mgisAddr
+        character(len=16) :: relaComp, defoLDC, defoComp, reguVisc, postIncr, mgisAddr
 !   ------------------------------------------------------------------------------------------------
 !
         if (LDC_PREP_DEBUG .eq. 1) then
             WRITE (6, *) '<DEBUG>  From COMPOR'
         end if
-        !
-        defo_ldc = compor(DEFO_LDC)
-        defo_comp = compor(DEFO)
-        regu_visc = compor(REGUVISC)
+
+! ----- Get parameters from behaviour
+        defoLDC = compor(DEFO_LDC)
+        relaComp = compor(RELA_NAME)
+        defoComp = compor(DEFO)
+        reguVisc = compor(REGUVISC)
         postIncr = compor(POSTINCR)
         mgisAddr = compor(MGIS_ADDR)
-        !
-        BEHinteg%behavPara%lFiniteStrain = defo_comp .eq. 'SIMO_MIEHE' .or. &
-                                           defo_comp .eq. 'GROT_GDEP'
-        BEHinteg%behavPara%lGdefLog = defo_comp .eq. 'GDEF_LOG'
+
+! ----- Set flags from behaviour
+        BEHinteg%behavPara%lFiniteStrain = defoComp .eq. 'SIMO_MIEHE' .or. &
+                                           defoComp .eq. 'GROT_GDEP'
+        BEHinteg%behavPara%lGdefLog = defoComp .eq. 'GDEF_LOG'
         BEHinteg%behavPara%lAnnealing = postIncr .eq. "REST_ECRO"
-        BEHinteg%behavPara%lStrainMeca = defo_ldc .eq. 'MECANIQUE'
-        BEHinteg%behavPara%lStrainAll = defo_ldc .eq. 'TOTALE'
-        BEHinteg%behavPara%lStrainOld = defo_ldc .eq. 'OLD'
-        BEHinteg%behavPara%lReguVisc = regu_visc .eq. 'REGU_VISC_ELAS'
+        BEHinteg%behavPara%lStrainMeca = defoLDC .eq. 'MECANIQUE'
+        BEHinteg%behavPara%lStrainAll = defoLDC .eq. 'TOTALE'
+        BEHinteg%behavPara%lStrainOld = defoLDC .eq. 'OLD'
+        BEHinteg%behavPara%lReguVisc = reguVisc .eq. 'REGU_VISC_ELAS'
+        BEHinteg%behavPara%lMetaLemaAni = relaComp .eq. 'META_LEMA_ANI'
         BEHinteg%behavESVA%behavESVAExte%mgisAddr = mgisAddr
         if (LDC_PREP_DEBUG .eq. 1) then
             WRITE (6, *) '<DEBUG>  From COMPOR - lFiniteStrain: ', BEHinteg%behavPara%lFiniteStrain
@@ -362,13 +381,13 @@ contains
 
 ! ----- DEBUG
         if (LDC_PREP_DEBUG .eq. 1) then
-        if (lMGIS) then
-            WRITE (6, *) '<DEBUG>  External solver: MFront'
-        elseif (lUMAT) then
-            WRITE (6, *) '<DEBUG>  External solver: UMAT'
-        else
-            WRITE (6, *) '<DEBUG>  Internal solver'
-        end if
+            if (lMGIS) then
+                WRITE (6, *) '<DEBUG>  External solver: MFront'
+            elseif (lUMAT) then
+                WRITE (6, *) '<DEBUG>  External solver: UMAT'
+            else
+                WRITE (6, *) '<DEBUG>  Internal solver'
+            end if
         end if
 
 ! ----- Get list of external state variables from user
@@ -434,8 +453,8 @@ contains
 ! behaviourPrepStrain
 !
 ! Prepare input strains for the behaviour law
-!    -> If defo_ldc = 'MECANIQUE', prepare mechanical strain
-!    -> If defo_ldc = 'TOTALE' or 'OLD', keep total strain
+!    -> If defoLDC = 'MECANIQUE', prepare mechanical strain
+!    -> If defoLDC = 'TOTALE' or 'OLD', keep total strain
 !
 ! In  neps             : number of components of strains
 ! IO  epsm             : In : total strains at beginning of current step time
@@ -459,15 +478,16 @@ contains
             lStrainMeca = BEHinteg%behavPara%lStrainMeca
             lStrainAll = BEHinteg%behavPara%lStrainAll
             lFiniteStrain = BEHinteg%behavPara%lFiniteStrain
-            lPtot = BEHinteg%behavESVA%behavESVAField(ESVA_FIELD_PTOT)%exist
+            lPtot = BEHinteg%allVarcStrain%list(VARC_STRAIN_PTOT)%exist
             if (lStrainMeca .or. lPtot) then
                 if (LDC_PREP_DEBUG .eq. 1) then
                     WRITE (6, *) '<DEBUG>  Présence de VARC avec nouveau système ou PTOT'
                 end if
                 ASSERT(.not. lFiniteStrain)
 ! ------------- Compute non-mechanic strains for some external state variables
-                call computeStrainESVA(BEHinteg%behavESVA, &
-                                       BEHinteg%behavPara%ldcDime, neps)
+                call computeStrainESVA(BEHinteg%allVarcStrain, &
+                                       BEHinteg%behavESVA, neps)
+
 ! ------------- Subtract to get mechanical strain epsm and deps become mechanical strains
                 call computeStrainMeca(BEHinteg, neps, epsm, deps)
             end if
@@ -644,7 +664,6 @@ contains
         type(Behaviour_Integ), intent(inout) :: BEHinteg
 ! ----- Local
         aster_logical :: lExteSolver, lStrainMeca, lhasInelasticStrains
-        integer(kind=8) :: iField
 !   ------------------------------------------------------------------------------------------------
 !
         if (LDC_PREP_DEBUG .eq. 1) then
@@ -668,34 +687,37 @@ contains
 
 ! ----- Prepare external PTOT state variables (in AFFE_VARC)
         if (ca_nbcvrc_ .ne. 0) then
-            call prepPtot(BEHinteg%behavPara%fami, &
-                          BEHinteg%behavPara%kpg, &
-                          BEHinteg%behavPara%ksp, &
-                          BEHinteg%behavPara%jvMaterCode, &
-                          BEHinteg%behavESVA)
+            if (BEHinteg%allVarcStrain%list(VARC_STRAIN_PTOT)%exist) then
+                call compPtotStrainField(BEHinteg%behavPara%fami, &
+                                         'T', &
+                                         BEHinteg%behavPara%kpg, &
+                                         BEHinteg%behavPara%ksp, &
+                                         BEHinteg%behavPara%jvMaterCode, &
+                                         BEHInteg%behavPara%elasID, &
+                                         BEHInteg%behavPara%elasKeyword, &
+                                         BEHinteg%allVarcStrain%list(VARC_STRAIN_PTOT))
+            end if
         end if
 
 ! ----- Prepare external state variables from fields (in AFFE_VARC)
         if (ca_nbcvrc_ .ne. 0 .or. BEHinteg%behavPara%lTHM) then
             if (lExteSolver .or. lStrainMeca) then
-                call prepFields(BEHinteg%behavPara%fami, &
-                                BEHinteg%behavPara%kpg, &
-                                BEHinteg%behavPara%ksp, &
-                                BEHinteg%behavPara%jvMaterCode, &
-                                BEHinteg%behavPara, &
-                                BEHinteg%behavESVA)
+                call compVarcStrain(BEHinteg%behavPara%fami, &
+                                    'T', &
+                                    BEHinteg%behavPara%kpg, &
+                                    BEHinteg%behavPara%ksp, &
+                                    BEHinteg%behavPara%jvMaterCode, &
+                                    BEHinteg%behavPara%lMetaLemaAni, &
+                                    BEHInteg%behavPara%elasID, &
+                                    BEHInteg%behavPara%elasKeyword, &
+                                    BEHinteg%allVarcStrain)
             end if
         end if
 
 ! ----- Detect inelastic strains
         lhasInelasticStrains = ASTER_FALSE
         if (ca_nbcvrc_ .ne. 0) then
-            do iField = 1, ESVA_FIELD_NBMAXI
-                if (BEHinteg%behavESVA%behavESVAField(iField)%exist) then
-                    lhasInelasticStrains = ASTER_TRUE
-                    exit
-                end if
-            end do
+            lhasInelasticStrains = BEHinteg%allVarcStrain%hasInelasticStrains
         end if
         BEHinteg%behavESVA%lhasInelasticStrains = lhasInelasticStrains
 
@@ -809,7 +831,7 @@ contains
         character(len=64) :: exteNameMGIS
         character(len=8) :: exteNameAster
         real(kind=8) :: valePrev, valeCurr
-        integer(kind=8) :: iESVA, nbESVA, indxField, iret
+        integer(kind=8) :: iESVA, nbESVA, indxVarcStrain, iret
         aster_logical :: lMGIS, lUMAT, exist
         character(len=16) :: mgisAddr
         character(len=4) :: fami
@@ -878,13 +900,13 @@ contains
                 call utmess('F', 'COMPOR4_25', sk=exteNameAster)
 
             case ('ConcreteDrying')
-                indxField = ESVA_FIELD_SECH
-                exist = BEHInteg%behavESVA%behavESVAField(indxField)%exist
+                indxVarcStrain = VARC_STRAIN_SECH
+                exist = BEHInteg%allVarcStrain%list(indxVarcStrain)%exist
                 if (exist) then
                     BEHinteg%behavESVA%behavESVAExte%scalESVAPrev(iESVA) = &
-                        BEHInteg%behavESVA%behavESVAField(indxField)%valeScalPrev
+                        BEHInteg%allVarcStrain%list(indxVarcStrain)%varcPrev(1)
                     BEHinteg%behavESVA%behavESVAExte%scalESVAIncr(iESVA) = &
-                        BEHInteg%behavESVA%behavESVAField(indxField)%valeScalIncr
+                        BEHInteg%allVarcStrain%list(indxVarcStrain)%varcIncr(1)
                 else
                     if (.not. lUMAT) then
                         call logUndefinedVariable(exteNameAster)
@@ -892,13 +914,13 @@ contains
                 end if
 
             case ('ConcreteHydration')
-                indxField = ESVA_FIELD_HYDR
-                exist = BEHInteg%behavESVA%behavESVAField(indxField)%exist
+                indxVarcStrain = VARC_STRAIN_HYDR
+                exist = BEHInteg%allVarcStrain%list(indxVarcStrain)%exist
                 if (exist) then
                     BEHinteg%behavESVA%behavESVAExte%scalESVAPrev(iESVA) = &
-                        BEHInteg%behavESVA%behavESVAField(indxField)%valeScalPrev
+                        BEHInteg%allVarcStrain%list(indxVarcStrain)%varcPrev(1)
                     BEHinteg%behavESVA%behavESVAExte%scalESVAIncr(iESVA) = &
-                        BEHInteg%behavESVA%behavESVAField(indxField)%valeScalIncr
+                        BEHInteg%allVarcStrain%list(indxVarcStrain)%varcIncr(1)
                 else
                     if (BEHInteg%behavESVA%behavESVAOther%lHygr) then
                         BEHinteg%behavESVA%behavESVAExte%scalESVAPrev(iESVA) = 0.d0
@@ -924,13 +946,13 @@ contains
 
             CASE ('Temperature')
                 ASSERT(lMGIS)
-                indxField = ESVA_FIELD_TEMP
-                exist = BEHInteg%behavESVA%behavESVAField(indxField)%exist
+                indxVarcStrain = VARC_STRAIN_TEMP
+                exist = BEHInteg%allVarcStrain%list(indxVarcStrain)%exist
                 if (exist) then
                     BEHinteg%behavESVA%behavESVAExte%scalESVAPrev(iESVA) = &
-                        BEHInteg%behavESVA%behavESVAField(indxField)%valeScalPrev
+                        BEHInteg%allVarcStrain%list(indxVarcStrain)%varcPrev(1)
                     BEHinteg%behavESVA%behavESVAExte%scalESVAIncr(iESVA) = &
-                        BEHInteg%behavESVA%behavESVAField(indxField)%valeScalIncr
+                        BEHInteg%allVarcStrain%list(indxVarcStrain)%varcIncr(1)
                 else
                     call utmess('A', 'COMPOR4_26', sk=exteNameAster)
                 end if
@@ -943,11 +965,11 @@ contains
 
             CASE ('ReferenceTemperature')
                 ASSERT(lMGIS)
-                indxField = ESVA_FIELD_TEMP
-                exist = BEHInteg%behavESVA%behavESVAField(indxField)%exist
+                indxVarcStrain = VARC_STRAIN_TEMP
+                exist = BEHInteg%allVarcStrain%list(indxVarcStrain)%exist
                 if (exist) then
                     BEHinteg%behavESVA%behavESVAExte%scalESVAPrev(iESVA) = &
-                        BEHInteg%behavESVA%behavESVAField(indxField)%valeScalRefe
+                        BEHInteg%allVarcStrain%list(indxVarcStrain)%varcRefe
                 else
                     call utmess('F', 'COMPOR4_26', sk=exteNameAster)
                 end if
@@ -959,13 +981,13 @@ contains
 
             CASE ('TEMP')
                 ASSERT(lUMAT)
-                indxField = ESVA_FIELD_TEMP
-                exist = BEHInteg%behavESVA%behavESVAField(indxField)%exist
+                indxVarcStrain = VARC_STRAIN_TEMP
+                exist = BEHInteg%allVarcStrain%list(indxVarcStrain)%exist
                 if (exist) then
                     BEHinteg%behavESVA%behavESVAExte%scalESVAPrev(iESVA) = &
-                        BEHInteg%behavESVA%behavESVAField(indxField)%valeScalPrev
+                        BEHInteg%allVarcStrain%list(indxVarcStrain)%varcPrev(1)
                     BEHinteg%behavESVA%behavESVAExte%scalESVAIncr(iESVA) = &
-                        BEHInteg%behavESVA%behavESVAField(indxField)%valeScalIncr
+                        BEHInteg%allVarcStrain%list(indxVarcStrain)%varcIncr(1)
                 else
                     call utmess('F', "COMPOR4_76")
                 end if
@@ -991,140 +1013,6 @@ contains
             end if
         end do
 !
-!   ------------------------------------------------------------------------------------------------
-    end subroutine
-! --------------------------------------------------------------------------------------------------
-!
-! prepPtot
-!
-! Prepare external state variable PTOT (specific)
-!
-! In  fami             : Gauss family for integration point rule
-! In  kpg              : current point gauss
-! In  ksp              : current "sous-point" gauss
-! In  imate            : coded material address
-! IO  behavESVA        : parameters for External State Variables
-!
-! --------------------------------------------------------------------------------------------------
-    subroutine prepPtot(fami, kpg, ksp, imate, &
-                        behavESVA)
-!   ------------------------------------------------------------------------------------------------
-! ----- Parameters
-        character(len=*), intent(in) :: fami
-        integer(kind=8), intent(in) :: kpg, ksp, imate
-        type(BehaviourESVA), intent(inout) :: behavESVA
-! ----- Local
-        integer(kind=8), parameter :: indxField = ESVA_FIELD_PTOT
-        integer(kind=8), parameter :: nbComp = 1
-        integer(kind=8) :: iret
-        aster_logical :: exist
-        integer(kind=8), parameter :: nbParaBiot = 1
-        integer(kind=8)  :: codretBiot(nbParaBiot)
-        real(kind=8) :: paraValeBiot(nbParaBiot)
-        character(len=16), parameter :: paraNameBiot(nbParaBiot) = (/'BIOT_COEF'/)
-        integer(kind=8), parameter :: nbParaElas = 2
-        integer(kind=8)  :: codretElas(nbParaElas)
-        real(kind=8) :: paraValeElas(nbParaElas)
-        character(len=16), parameter :: paraNameElas(nbParaElas) = (/'E ', 'NU'/)
-        real(kind=8) :: ptotPrev, ptotCurr
-        real(kind=8) :: ptotFieldPrev, ptotFieldCurr, ptotFieldIncr
-        real(kind=8) :: biotp, biotm, em, ep, num, nup, troikm, troikp
-!   ------------------------------------------------------------------------------------------------
-!
-
-! ----- Get values of external state variable
-        exist = ASTER_FALSE
-        ptotPrev = r8nnem()
-        ptotCurr = r8nnem()
-        iret = 0
-        call rcvarc(' ', 'PTOT', '-', fami, kpg, ksp, &
-                    ptotPrev, iret)
-        if (iret .eq. 0) then
-            iret = 0
-            call rcvarc('F', 'PTOT', '+', fami, kpg, ksp, &
-                        ptotCurr, iret)
-            exist = ASTER_TRUE
-        end if
-
-! ----- Compute strains
-        ptotFieldPrev = 0.d0
-        ptotFieldCurr = 0.d0
-        ptotFieldIncr = 0.d0
-        if (exist) then
-! --------- Get Biot coefficients
-            call rcvalb(fami, kpg, ksp, &
-                        '-', imate, ' ', 'THM_DIFFU', &
-                        0, ' ', [0.d0], &
-                        nbParaBiot, paraNameBiot, paraValeBiot, &
-                        codretBiot, 1)
-            if (codretBiot(1) .ne. 0) then
-                paraValeBiot(1) = 0.d0
-            end if
-            biotm = paraValeBiot(1)
-            call rcvalb(fami, kpg, ksp, &
-                        '+', imate, ' ', 'THM_DIFFU', &
-                        0, ' ', [0.d0], &
-                        nbParaBiot, paraNameBiot, paraValeBiot, &
-                        codretBiot, 1)
-            if (codretBiot(1) .ne. 0) then
-                paraValeBiot(1) = 0.d0
-            end if
-            biotp = paraValeBiot(1)
-
-! --------- Get elastic coefficients
-            call rcvalb(fami, kpg, ksp, &
-                        '-', imate, ' ', 'ELAS', &
-                        0, ' ', [0.d0], &
-                        nbParaElas, paraNameElas, paraValeElas, &
-                        codretElas, 1)
-            if (codretElas(1) .ne. 0) then
-                paraValeElas(1) = 0.d0
-            end if
-            if (codretElas(2) .ne. 0) then
-                paraValeElas(2) = 0.d0
-            end if
-            em = paraValeElas(1)
-            num = paraValeElas(2)
-            call rcvalb(fami, kpg, ksp, &
-                        '+', imate, ' ', 'ELAS', &
-                        0, ' ', [0.d0], &
-                        nbParaElas, paraNameElas, paraValeElas, &
-                        codretElas, 1)
-            if (codretElas(1) .ne. 0) then
-                paraValeElas(1) = 0.d0
-            end if
-            if (codretElas(2) .ne. 0) then
-                paraValeElas(2) = 0.d0
-            end if
-            ep = paraValeElas(1)
-            nup = paraValeElas(2)
-            troikp = ep/(1.d0-2.d0*nup)
-            troikm = em/(1.d0-2.d0*num)
-            ptotFieldPrev = (biotm/troikm)*ptotPrev
-            ptotFieldCurr = (biotp/troikp)*ptotCurr
-            ptotFieldIncr = ptotFieldCurr-ptotFieldPrev
-            if (LDC_PREP_DEBUG .eq. 1) then
-                WRITE (6, *) '<DEBUG>  Prepare PTOT'
-            end if
-        end if
-
-! ----- Save values
-        behavESVA%behavESVAField(indxField)%exist = exist
-        behavESVA%behavESVAField(indxField)%nbComp = nbComp
-        behavESVA%behavESVAField(indxField)%typeForStrain = ESVA_FIELD_TYPE_VOLU
-        behavESVA%behavESVAField(indxField)%valeCurr(1) = ptotFieldCurr
-        behavESVA%behavESVAField(indxField)%valePrev(1) = ptotFieldPrev
-        behavESVA%behavESVAField(indxField)%valeIncr(1) = ptotFieldIncr
-
-! ----- Debug
-        if (LDC_PREP_DEBUG .eq. 1) then
-            if (behavESVA%behavESVAField(indxField)%exist) then
-                WRITE (6, *) '<DEBUG>  Values of PTOT: ', &
-                    behavESVA%behavESVAField(indxField)%valePrev(1:nbComp), &
-                    behavESVA%behavESVAField(indxField)%valeCurr(1:nbComp)
-            end if
-        end if
-
 !   ------------------------------------------------------------------------------------------------
     end subroutine
 ! --------------------------------------------------------------------------------------------------
@@ -1201,485 +1089,6 @@ contains
                     behavESVA%behavESVAOther%hygrIncr
             end if
         end if
-!
-!   ------------------------------------------------------------------------------------------------
-    end subroutine
-! --------------------------------------------------------------------------------------------------
-!
-! prepTemp
-!
-! Prepare external state variable TEMP
-!
-! In  fami             : Gauss family for integration point rule
-! In  kpg              : current point gauss
-! In  ksp              : current "sous-point" gauss
-! In  imate            : coded material address
-! In  behavPara        : parameters for integration of behaviour
-! IO  behavESVA        : parameters for External State Variables
-!
-! --------------------------------------------------------------------------------------------------
-    subroutine prepTemp(fami, kpg, ksp, imate, &
-                        behavPara, behavESVA)
-!   ------------------------------------------------------------------------------------------------
-! ----- Parameters
-        character(len=*), intent(in) :: fami
-        integer(kind=8), intent(in) :: kpg, ksp, imate
-        type(Behaviour_Para), intent(in) :: behavPara
-        type(BehaviourESVA), intent(inout) :: behavESVA
-! ----- Local
-        integer(kind=8), parameter :: indxField = ESVA_FIELD_TEMP
-        integer(kind=8) :: iret, nbComp
-        aster_logical :: exist
-        real(kind=8) :: tempRefe, tempPrev, tempCurr
-        real(kind=8) :: tempFieldIncr(ESVA_FIELD_TEMP_NBCMP)
-        real(kind=8) :: tempFieldPrev(ESVA_FIELD_TEMP_NBCMP)
-        real(kind=8) :: tempFieldCurr(ESVA_FIELD_TEMP_NBCMP)
-        real(kind=8) :: therIsotPrev, therAnisPrev(ESVA_FIELD_TEMP_NBCMP), therMetaPrev
-        real(kind=8) :: therIsotCurr, therAnisCurr(ESVA_FIELD_TEMP_NBCMP), therMetaCurr
-!   ------------------------------------------------------------------------------------------------
-!
-        if (LDC_PREP_DEBUG .eq. 1) then
-            WRITE (6, *) '<DEBUG>  Prepare TEMP'
-        end if
-
-! ----- Get thermal values
-        exist = ASTER_FALSE
-        tempPrev = r8nnem()
-        tempCurr = r8nnem()
-        tempRefe = r8nnem()
-        iret = 0
-        call verift(fami, kpg, ksp, '-', imate, &
-                    epsth_=therIsotPrev, &
-                    epsth_anis_=therAnisPrev, &
-                    epsth_meta_=therMetaPrev, &
-                    temp_prev_=tempPrev, &
-                    temp_refe_=tempRefe, &
-                    iret_=iret)
-        if (iret .ne. 0) then
-            tempPrev = 0.d0
-        end if
-        iret = 0
-        call verift(fami, kpg, ksp, '+', imate, &
-                    epsth_=therIsotCurr, &
-                    epsth_anis_=therAnisCurr, &
-                    epsth_meta_=therMetaCurr, &
-                    temp_curr_=tempCurr, &
-                    iret_=iret)
-        if (iret .eq. 0) then
-            exist = ASTER_TRUE
-        else
-            tempCurr = 0.d0
-        end if
-
-! ----- Temperature as scalar (no strain)
-        if (exist) then
-            behavESVA%behavESVAField(indxField)%valeScalRefe = tempRefe
-            behavESVA%behavESVAField(indxField)%valeScalPrev = tempPrev
-            behavESVA%behavESVAField(indxField)%valeScalIncr = tempCurr-tempPrev
-        end if
-
-! ----- Number of components
-        nbComp = 0
-        if (exist) then
-            if (behavPara%elasType .eq. ELAS_ISOT) then
-                nbComp = 1
-            elseif (behavPara%elasType .eq. ELAS_ISTR) then
-                nbComp = 2
-            elseif (behavPara%elasType .eq. ELAS_ORTH) then
-                nbComp = 3
-            end if
-        end if
-        ASSERT(nbComp .le. ESVA_FIELD_TEMP_NBCMP)
-
-! ----- Compute THER strains
-        tempFieldPrev = 0.d0
-        tempFieldCurr = 0.d0
-        tempFieldIncr = 0.d0
-        if (exist) then
-            if (behavPara%lElasIsMeta) then
-                ASSERT(behavPara%elasType .eq. ELAS_ISOT)
-                ASSERT(nbComp .eq. 1)
-                tempFieldPrev(1:nbComp) = therMetaPrev
-                tempFieldCurr(1:nbComp) = therMetaCurr
-                tempFieldIncr(1:nbComp) = therMetaCurr-therMetaPrev
-            else
-                if (behavPara%elasType == ELAS_ISOT) then
-                    ASSERT(nbComp .eq. 1)
-                    tempFieldIncr(1:nbComp) = therIsotCurr-therIsotPrev
-                    tempFieldPrev(1:nbComp) = therIsotPrev
-                    tempFieldCurr(1:nbComp) = therIsotCurr
-                elseif (behavPara%elasType == ELAS_ORTH .or. &
-                        behavPara%elasType == ELAS_ISTR) then
-                    tempFieldIncr(1:nbComp) = therAnisCurr(1:nbComp)-therAnisPrev(1:nbComp)
-                    tempFieldPrev(1:nbComp) = therAnisPrev(1:nbComp)
-                    tempFieldCurr(1:nbComp) = therAnisCurr(1:nbComp)
-                else
-                    ASSERT(ASTER_FALSE)
-                end if
-            end if
-        end if
-
-! ----- Save values
-        behavESVA%behavESVAField(indxField)%exist = exist
-        behavESVA%behavESVAField(indxField)%nbComp = nbComp
-        behavESVA%behavESVAField(indxField)%typeForStrain = ESVA_FIELD_TYPE_VOLU
-        behavESVA%behavESVAField(indxField)%valeCurr(1:nbComp) = tempFieldCurr(1:nbComp)
-        behavESVA%behavESVAField(indxField)%valePrev(1:nbComp) = tempFieldPrev(1:nbComp)
-        behavESVA%behavESVAField(indxField)%valeIncr(1:nbComp) = tempFieldIncr(1:nbComp)
-
-! ----- Debug
-        if (LDC_PREP_DEBUG .eq. 1) then
-            if (behavESVA%behavESVAField(indxField)%exist) then
-                WRITE (6, *) '<DEBUG>  Values of TEMP (prev): ', &
-                    behavESVA%behavESVAField(indxField)%valePrev(1:nbComp)
-                WRITE (6, *) '<DEBUG>  Values of TEMP (curr): ', &
-                    behavESVA%behavESVAField(indxField)%valeCurr(1:nbComp)
-            end if
-        end if
-!
-!   ------------------------------------------------------------------------------------------------
-    end subroutine
-! --------------------------------------------------------------------------------------------------
-!
-! prepSech
-!
-! Prepare external state variable SECH
-!
-! In  fami             : Gauss family for integration point rule
-! In  kpg              : current point gauss
-! In  ksp              : current "sous-point" gauss
-! In  imate            : coded material address
-! IO  behavESVA        : parameters for External State Variables
-!
-! --------------------------------------------------------------------------------------------------
-    subroutine prepSech(fami, kpg, ksp, imate, &
-                        behavESVA)
-!   ------------------------------------------------------------------------------------------------
-! ----- Parameters
-        character(len=*), intent(in) :: fami
-        integer(kind=8), intent(in) :: kpg, ksp, imate
-        type(BehaviourESVA), intent(inout) :: behavESVA
-! ----- Local
-        integer(kind=8), parameter :: indxField = ESVA_FIELD_SECH
-        integer(kind=8), parameter :: nbComp = 1
-        integer(kind=8) :: iret
-        aster_logical :: exist
-        integer(kind=8), parameter :: nbPara = 1
-        real(kind=8) :: paraVale(nbPara)
-        character(len=16), parameter :: paraName(nbPara) = ('K_DESSIC')
-        integer(kind=8) :: codret(nbPara)
-        real(kind=8) :: sechRefe, sechPrev, sechCurr
-        real(kind=8) :: sechFieldIncr, sechFieldPrev, sechFieldCurr
-        real(kind=8) :: kdessm, kdessp
-!   ------------------------------------------------------------------------------------------------
-!
-        if (LDC_PREP_DEBUG .eq. 1) then
-            WRITE (6, *) '<DEBUG>  Prepare SECH'
-        end if
-
-! ----- Get values of external state variable
-        exist = ASTER_FALSE
-        sechPrev = r8nnem()
-        sechCurr = r8nnem()
-        sechRefe = r8nnem()
-        iret = 0
-        call rcvarc(' ', 'SECH', '-', fami, kpg, ksp, sechPrev, iret)
-        if (iret .eq. 0) then
-            iret = 0
-            call rcvarc('F', 'SECH', '+', fami, kpg, ksp, sechCurr, iret)
-            exist = ASTER_TRUE
-        end if
-        iret = 0
-        call rcvarc(' ', 'SECH', 'REF', fami, kpg, ksp, sechRefe, iret)
-        if (iret .ne. 0) then
-            sechRefe = 0.d0
-        end if
-
-! ----- Drying as scalar (no strain)
-        if (exist) then
-            behavESVA%behavESVAField(indxField)%valeScalRefe = sechRefe
-            behavESVA%behavESVAField(indxField)%valeScalPrev = sechPrev
-            behavESVA%behavESVAField(indxField)%valeScalIncr = sechCurr-sechPrev
-        end if
-
-! ----- Compute strains
-        sechFieldPrev = 0.d0
-        sechFieldCurr = 0.d0
-        sechFieldIncr = 0.d0
-        if (exist) then
-            call rcvalb(fami, kpg, ksp, &
-                        '-', imate, ' ', 'ELAS', &
-                        0, ' ', [0.d0], &
-                        nbPara, paraName, paraVale, &
-                        codret, 1)
-            kdessm = paraVale(1)
-            call rcvalb(fami, kpg, ksp, &
-                        '+', imate, ' ', 'ELAS', &
-                        0, ' ', [0.d0], &
-                        nbPara, paraName, paraVale, &
-                        codret, 1)
-            kdessp = paraVale(1)
-            sechFieldPrev = -kdessm*(sechRefe-sechPrev)
-            sechFieldCurr = -kdessp*(sechRefe-sechCurr)
-            sechFieldIncr = sechFieldCurr-sechFieldPrev
-        end if
-
-! ----- Save values
-        behavESVA%behavESVAField(indxField)%exist = exist
-        behavESVA%behavESVAField(indxField)%nbComp = nbComp
-        behavESVA%behavESVAField(indxField)%typeForStrain = ESVA_FIELD_TYPE_VOLU
-        behavESVA%behavESVAField(indxField)%valeCurr(1) = sechFieldCurr
-        behavESVA%behavESVAField(indxField)%valePrev(1) = sechFieldPrev
-        behavESVA%behavESVAField(indxField)%valeIncr(1) = sechFieldIncr
-
-! ----- Debug
-        if (LDC_PREP_DEBUG .eq. 1) then
-            if (behavESVA%behavESVAField(indxField)%exist) then
-                WRITE (6, *) '<DEBUG>  Values of SECH: ', &
-                    behavESVA%behavESVAField(indxField)%valePrev(1:nbComp), &
-                    behavESVA%behavESVAField(indxField)%valeCurr(1:nbComp)
-            end if
-        end if
-!
-!   ------------------------------------------------------------------------------------------------
-    end subroutine
-! --------------------------------------------------------------------------------------------------
-!
-! prepHydr
-!
-! Prepare external state variable HYDR
-!
-! In  fami             : Gauss family for integration point rule
-! In  kpg              : current point gauss
-! In  ksp              : current "sous-point" gauss
-! In  imate            : coded material address
-! IO  behavESVA        : parameters for External State Variables
-!
-! --------------------------------------------------------------------------------------------------
-    subroutine prepHydr(fami, kpg, ksp, imate, &
-                        behavESVA)
-!   ------------------------------------------------------------------------------------------------
-! ----- Parameters
-        character(len=*), intent(in) :: fami
-        integer(kind=8), intent(in) :: kpg, ksp, imate
-        type(BehaviourESVA), intent(inout) :: behavESVA
-! ----- Local
-        integer(kind=8), parameter :: indxField = ESVA_FIELD_HYDR
-        integer(kind=8), parameter :: nbComp = 1
-        integer(kind=8) :: iret
-        aster_logical :: exist
-        integer(kind=8), parameter :: nbPara = 1
-        real(kind=8) :: paraVale(nbPara)
-        character(len=16), parameter :: paraName(nbPara) = ('B_ENDOGE')
-        integer(kind=8) :: codret(nbPara)
-        real(kind=8) :: hydrPrev, hydrCurr
-        real(kind=8) :: hydrFieldIncr, hydrFieldPrev, hydrFieldCurr
-        real(kind=8) :: bendom, bendop
-!   ------------------------------------------------------------------------------------------------
-!
-        if (LDC_PREP_DEBUG .eq. 1) then
-            WRITE (6, *) '<DEBUG>  Prepare HYDR'
-        end if
-
-! ----- Get values of external state variables
-        exist = ASTER_FALSE
-        hydrPrev = r8nnem()
-        hydrCurr = r8nnem()
-        iret = 0
-        call rcvarc(' ', 'HYDR', '-', fami, kpg, ksp, hydrPrev, iret)
-        if (iret .eq. 0) then
-            iret = 0
-            call rcvarc('F', 'HYDR', '+', fami, kpg, ksp, hydrCurr, iret)
-            exist = ASTER_TRUE
-        end if
-
-! ----- Hydratation as scalar (no strain)
-        if (exist) then
-            behavESVA%behavESVAField(indxField)%valeScalPrev = hydrPrev
-            behavESVA%behavESVAField(indxField)%valeScalIncr = hydrCurr-hydrPrev
-        end if
-
-! ----- Compute strains
-        hydrFieldPrev = 0.d0
-        hydrFieldCurr = 0.d0
-        hydrFieldIncr = 0.d0
-        if (exist) then
-            call rcvalb(fami, kpg, ksp, &
-                        '-', imate, ' ', 'ELAS', &
-                        0, ' ', [0.d0], &
-                        nbPara, paraName, paraVale, &
-                        codret, 1)
-            bendom = paraVale(1)
-            call rcvalb(fami, kpg, ksp, &
-                        '+', imate, ' ', 'ELAS', &
-                        0, ' ', [0.d0], &
-                        nbPara, paraName, paraVale, &
-                        codret, 1)
-            bendop = paraVale(1)
-            hydrFieldPrev = -bendom*hydrPrev
-            hydrFieldCurr = -bendop*hydrCurr
-            hydrFieldIncr = hydrFieldCurr-hydrFieldPrev
-        end if
-
-! ----- Save values
-        behavESVA%behavESVAField(indxField)%exist = exist
-        behavESVA%behavESVAField(indxField)%nbComp = nbComp
-        behavESVA%behavESVAField(indxField)%typeForStrain = ESVA_FIELD_TYPE_VOLU
-        behavESVA%behavESVAField(indxField)%valeCurr = hydrFieldCurr
-        behavESVA%behavESVAField(indxField)%valePrev = hydrFieldPrev
-        behavESVA%behavESVAField(indxField)%valeIncr = hydrFieldIncr
-
-! ----- Debug
-        if (LDC_PREP_DEBUG .eq. 1) then
-            if (behavESVA%behavESVAField(indxField)%exist) then
-                WRITE (6, *) '<DEBUG>  Values of HYDR: ', &
-                    behavESVA%behavESVAField(indxField)%valePrev(1:nbComp), &
-                    behavESVA%behavESVAField(indxField)%valeCurr(1:nbComp)
-            end if
-        end if
-!
-!   ------------------------------------------------------------------------------------------------
-    end subroutine
-! --------------------------------------------------------------------------------------------------
-!
-! prepEpsa
-!
-! Prepare external state variable EPSA
-!
-! In  fami             : Gauss family for integration point rule
-! In  kpg              : current point gauss
-! In  ksp              : current "sous-point" gauss
-! In  behavPara        : parameters for integration of behaviour
-! IO  behavESVA        : parameters for External State Variables
-!
-! --------------------------------------------------------------------------------------------------
-    subroutine prepEpsa(fami, kpg, ksp, &
-                        behavPara, behavESVA)
-!   ------------------------------------------------------------------------------------------------
-! ----- Parameters
-        character(len=*), intent(in) :: fami
-        integer(kind=8), intent(in) :: kpg, ksp
-        type(Behaviour_Para), intent(in) :: behavPara
-        type(BehaviourESVA), intent(inout) :: behavESVA
-! ----- Local
-        integer(kind=8), parameter :: indxField = ESVA_FIELD_EPSA
-        real(kind=8), parameter :: rac2 = sqrt(2.d0)
-        integer(kind=8) :: iret, iComp, nbComp
-        aster_logical :: exist
-        character(len=6), parameter :: epsaName(ESVA_FIELD_EPSA_NBCMP) = &
-                                       (/'EPSAXX', 'EPSAYY', 'EPSAZZ', &
-                                         'EPSAXY', 'EPSAXZ', 'EPSAYZ'/)
-        real(kind=8) :: epsaPrev(ESVA_FIELD_EPSA_NBCMP)
-        real(kind=8) :: epsaCurr(ESVA_FIELD_EPSA_NBCMP)
-        real(kind=8) :: epsaIncr(ESVA_FIELD_EPSA_NBCMP)
-!   ------------------------------------------------------------------------------------------------
-!
-        if (LDC_PREP_DEBUG .eq. 1) then
-            WRITE (6, *) '<DEBUG>  Prepare EPSA'
-        end if
-
-! ----- Number of components
-        if (behavPara%ldcDime .eq. 1) then
-            nbComp = 1
-        else
-            nbComp = 6
-        end if
-        ASSERT(nbComp .le. ESVA_FIELD_EPSA_NBCMP)
-
-! ----- Get values of external state variable
-        exist = ASTER_FALSE
-        epsaPrev = r8nnem()
-        epsaCurr = r8nnem()
-        iret = 0
-        do iComp = 1, nbComp
-            iret = 0
-            call rcvarc(' ', epsaName(iComp), '-', fami, kpg, ksp, &
-                        epsaPrev(iComp), iret)
-            if (iret .ne. 0) then
-                epsaPrev(iComp) = 0.d0
-            else
-                exist = ASTER_TRUE
-            end if
-            iret = 0
-            call rcvarc(' ', epsaName(iComp), '+', fami, kpg, ksp, &
-                        epsaCurr(iComp), iret)
-            if (iret .ne. 0) then
-                epsaCurr(iComp) = 0.d0
-            else
-                exist = ASTER_TRUE
-            end if
-            epsaIncr(iComp) = epsaCurr(iComp)-epsaPrev(iComp)
-        end do
-
-! ----- Nondiagonal terms of EPSA are rescaled with rac2
-        do iComp = 4, nbComp
-            epsaPrev(iComp) = epsaPrev(iComp)*rac2
-            epsaCurr(iComp) = epsaCurr(iComp)*rac2
-            epsaIncr(iComp) = epsaIncr(iComp)*rac2
-        end do
-
-! ----- Save values
-        behavESVA%behavESVAField(indxField)%exist = exist
-        behavESVA%behavESVAField(indxField)%nbComp = nbComp
-        behavESVA%behavESVAField(indxField)%typeForStrain = ESVA_FIELD_TYPE_COMP
-        behavESVA%behavESVAField(indxField)%valeCurr(1:nbComp) = epsaCurr(1:nbComp)
-        behavESVA%behavESVAField(indxField)%valePrev(1:nbComp) = epsaPrev(1:nbComp)
-        behavESVA%behavESVAField(indxField)%valeIncr(1:nbComp) = epsaIncr(1:nbComp)
-
-! ----- Debug
-        if (LDC_PREP_DEBUG .eq. 1) then
-            if (behavESVA%behavESVAField(indxField)%exist) then
-                WRITE (6, *) '<DEBUG>  Values of EPSA: ', &
-                    behavESVA%behavESVAField(indxField)%valePrev(1:nbComp), &
-                    behavESVA%behavESVAField(indxField)%valeCurr(1:nbComp)
-            end if
-        end if
-!
-!   ------------------------------------------------------------------------------------------------
-    end subroutine
-! --------------------------------------------------------------------------------------------------
-!
-! prepFields
-!
-! Prepare fields for external state variables (general)
-!
-! In  fami             : Gauss family for integration point rule
-! In  kpg              : current point gauss
-! In  ksp              : current "sous-point" gauss
-! In  imate            : coded material address
-! In  behavPara        : parameters for integration of behaviour
-! IO  behavESVA        : parameters for External State Variables
-!
-! --------------------------------------------------------------------------------------------------
-    subroutine prepFields(fami, kpg, ksp, imate, &
-                          behavPara, behavESVA)
-!   ------------------------------------------------------------------------------------------------
-! ----- Parameters
-        character(len=*), intent(in) :: fami
-        integer(kind=8), intent(in) :: kpg, ksp, imate
-        type(Behaviour_Para), intent(in) :: behavPara
-        type(BehaviourESVA), intent(inout) :: behavESVA
-!   ------------------------------------------------------------------------------------------------
-!
-        if (LDC_PREP_DEBUG .eq. 1) then
-            WRITE (6, *) '<DEBUG>  Prepare fields for external state variables'
-        end if
-
-! ----- Prepare external state variable TEMP
-        call prepTemp(fami, kpg, ksp, imate, &
-                      behavPara, behavESVA)
-
-! ----- Prepare external state variable SECH
-        call prepSech(fami, kpg, ksp, imate, &
-                      behavESVA)
-
-! ----- Prepare external state variable HYDR
-        call prepHydr(fami, kpg, ksp, imate, &
-                      behavESVA)
-
-! ----- Prepare external state variable EPSA
-        call prepEpsa(fami, kpg, ksp, &
-                      behavPara, behavESVA)
 !
 !   ------------------------------------------------------------------------------------------------
     end subroutine
@@ -1938,23 +1347,19 @@ contains
 !
 ! Pre-compute non-mechanical strains from external state variables
 !
+! In  allVarcStrain    : all external state variables for anelastic strains
 ! IO  behavESVA        : parameters for External State Variables
-! In  ldcDime          : number of components for volumic strains
 ! In  neps             : number of components of strains
 !
 ! --------------------------------------------------------------------------------------------------
-    subroutine computeStrainESVA(behavESVA, ldcDime, neps)
+    subroutine computeStrainESVA(allVarcStrain, behavESVA, neps)
 !   -----------------------------------------------------------------------------------------------
 ! ----- Parameters
+        type(All_Varc_Strain), intent(in) :: allVarcStrain
         type(BehaviourESVA), intent(inout) :: behavESVA
-        integer(kind=8), intent(in) :: ldcDime
         integer(kind=8), intent(in) :: neps
 ! ----- Local
-        integer(kind=8) :: iComp, iField, iDime
-        aster_logical :: exist, hasAnelastiStrains
-        integer(kind=8) :: nbComp, typeForStrain
-        real(kind=8) :: valePrev(ESVA_FIELD_NBCMPMAXI)
-        real(kind=8) :: valeIncr(ESVA_FIELD_NBCMPMAXI)
+        aster_logical :: hasAnelastiStrains
 !   ------------------------------------------------------------------------------------------------
 !
         if (LDC_PREP_DEBUG .eq. 1) then
@@ -1965,55 +1370,8 @@ contains
         behavESVA%epsi_varc = 0.d0
         hasAnelastiStrains = ASTER_FALSE
 
-        do iField = 1, ESVA_FIELD_NBMAXI
-! --------- Get current field
-            exist = behavESVA%behavESVAField(iField)%exist
-            nbComp = behavESVA%behavESVAField(iField)%nbComp
-            valePrev = behavESVA%behavESVAField(iField)%valePrev
-            valeIncr = behavESVA%behavESVAField(iField)%valeIncr
-            typeForStrain = behavESVA%behavESVAField(iField)%typeForStrain
-
-! --------- Add field if exist
-            if (exist) then
-                if (LDC_PREP_DEBUG .eq. 1) then
-                    WRITE (6, *) '<DEBUG>  Field: ', iField, nbComp, &
-                        valePrev(1:nbComp), valeIncr(1:nbComp)
-                end if
-                if (typeForStrain .eq. ESVA_FIELD_TYPE_COMP) then
-                    if (nbComp .ne. neps) then
-                        call utmess("F", "COMPOR4_77")
-                    end if
-                    if (LDC_PREP_DEBUG .eq. 1) then
-                        WRITE (6, *) '<DEBUG> Déformation donnée par composante'
-                    end if
-                    do iComp = 1, nbComp
-                        behavESVA%epsi_varc(iComp) = behavESVA%epsi_varc(iComp)+ &
-                                                     valePrev(iComp)
-                        behavESVA%depsi_varc(iComp) = behavESVA%depsi_varc(iComp)+ &
-                                                      valeIncr(iComp)
-                    end do
-                else if (typeForStrain .eq. ESVA_FIELD_TYPE_VOLU) then
-                    ASSERT(ldcDime .eq. 2 .or. ldcDime .eq. 3)
-                    if (LDC_PREP_DEBUG .eq. 1) then
-                        WRITE (6, *) '<DEBUG> Déformation volumique'
-                    end if
-                    if (nbComp .eq. 1) then
-                        iComp = 1
-                    else
-                        call utmess("F", "COMPOR4_79")
-                    end if
-                    do iDime = 1, 3
-                        behavESVA%epsi_varc(iDime) = behavESVA%epsi_varc(iDime)+ &
-                                                     valePrev(iComp)
-                        behavESVA%depsi_varc(iDime) = behavESVA%depsi_varc(iDime)+ &
-                                                      valeIncr(iComp)
-                    end do
-                else
-                    WRITE (6, *) "typeForStrain: ", typeForStrain
-                    ASSERT(ASTER_FALSE)
-                end if
-            end if
-        end do
+        call getVarcStrain('-', allVarcStrain, neps, behavESVA%epsi_varc)
+        call getVarcStrain('T', allVarcStrain, neps, behavESVA%depsi_varc)
 
 ! ----- DEBUG
         if (LDC_PREP_DEBUG .eq. 1) then
@@ -2056,7 +1414,7 @@ contains
         end if
         lCZM = BEHinteg%behavPara%lCZM
         lGradVari = BEHinteg%behavPara%lGradVari
-        lEpsa = BEHinteg%behavESVA%behavESVAField(ESVA_FIELD_EPSA)%exist
+        lEpsa = BEHInteg%allVarcStrain%list(VARC_STRAIN_EPSA)%exist
         dstran = 0.d0
         stran = 0.d0
         if ((neps .eq. 6) .or. (neps .eq. 4)) then

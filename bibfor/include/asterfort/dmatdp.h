@@ -15,20 +15,16 @@
 ! You should have received a copy of the GNU General Public License
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
-
-!
 !
 interface
-    subroutine dmatdp(fami, mater, time, poum, ipg,&
-                      ispg, angl_naut, dr_, di_)
+    subroutine dmatdp(fami, materCodeJv, time, poum, ipg, &
+                      ispg, anglNaut, dr_, di_)
         character(len=*), intent(in) :: fami
-        integer(kind=8), intent(in) :: mater
+        integer(kind=8), intent(in) :: materCodeJv
         real(kind=8), intent(in) :: time
         character(len=*), intent(in) :: poum
-        integer(kind=8), intent(in) :: ipg
-        integer(kind=8), intent(in) :: ispg
-        real(kind=8), intent(in) :: angl_naut(3)
-        real(kind=8), optional, intent(out) :: dr_(4, 4)
-        real(kind=8), optional, intent(out) :: di_(4, 4)
+        integer(kind=8), intent(in) :: ipg, ispg
+        real(kind=8), intent(in) :: anglNaut(3)
+        real(kind=8), optional, intent(out) :: dr_(4, 4), di_(4, 4)
     end subroutine dmatdp
 end interface
