@@ -31,7 +31,7 @@ test = CA.TestCase()
 #   Solution is a polynomial of order k
 #   So method of order k should have a null error
 #
-#   The script to compute solution is given in zzzz503u.datg
+#   The script to compute solution is given in zzzz512.datg
 #
 ####################################################################################
 

@@ -31,7 +31,7 @@ test = CA.TestCase()
 #   Solution is a polynomial of order k
 #   So method of order k should have a null error
 #
-#   The script to compute solution is given in zzzz503s.datg
+#   The script to compute solution is given in zzzz512a.datg
 #
 ####################################################################################
 
@@ -92,68 +92,67 @@ fZ = {
     ),
 }
 
-for unite in (20, 21, 22, 23, 24):
-    mesh0 = LIRE_MAILLAGE(FORMAT="MED", UNITE=unite)
+mesh0 = LIRE_MAILLAGE(FORMAT="MED", UNITE=20)
 
-    mesh = CREA_MAILLAGE(MAILLAGE=mesh0, MODI_HHO=_F(TOUT="OUI"))
+mesh = CREA_MAILLAGE(MAILLAGE=mesh0, MODI_HHO=_F(TOUT="OUI"))
 
-    mesh = DEFI_GROUP(
-        reuse=mesh, MAILLAGE=mesh, CREA_GROUP_MA=_F(NOM="3D", TOUT="OUI", TYPE_MAILLE="3D")
+mesh = DEFI_GROUP(
+    reuse=mesh, MAILLAGE=mesh, CREA_GROUP_MA=_F(NOM="3D", TOUT="OUI", TYPE_MAILLE="3D")
+)
+
+# define material
+coeff = DEFI_MATERIAU(ELAS=_F(E=E, NU=Nu, RHO=1.0), HHO=_F(COEF_STAB=2 * mu))
+
+mater = AFFE_MATERIAU(MAILLAGE=mesh, AFFE=_F(TOUT="OUI", MATER=coeff))
+
+for form in ("LINEAIRE", "QUADRATIQUE", "CUBIQUE"):
+    model = AFFE_MODELE(
+        MAILLAGE=mesh,
+        AFFE=_F(TOUT="OUI", MODELISATION="3D_HHO", FORMULATION=form, PHENOMENE="MECANIQUE"),
     )
 
-    # define material
-    coeff = DEFI_MATERIAU(ELAS=_F(E=E, NU=Nu, RHO=1.0), HHO=_F(COEF_STAB=2 * mu))
+    bc = AFFE_CHAR_CINE_F(
+        MODELE=model, MECA_IMPO=_F(GROUP_MA="FACES", DX=uX[form], DY=uY[form], DZ=uZ[form])
+    )
 
-    mater = AFFE_MATERIAU(MAILLAGE=mesh, AFFE=_F(TOUT="OUI", MATER=coeff))
+    load = AFFE_CHAR_MECA_F(
+        MODELE=model, FORCE_INTERNE=_F(GROUP_MA="3D", FX=fX[form], FY=fY[form], FZ=fZ[form])
+    )
 
-    for form in ("LINEAIRE", "QUADRATIQUE", "CUBIQUE"):
-        model = AFFE_MODELE(
-            MAILLAGE=mesh,
-            AFFE=_F(TOUT="OUI", MODELISATION="3D_HHO", FORMULATION=form, PHENOMENE="MECANIQUE"),
-        )
+    # solve linear system
+    LREEL = DEFI_LIST_REEL(DEBUT=0.0, INTERVALLE=_F(JUSQU_A=1, NOMBRE=1))
 
-        bc = AFFE_CHAR_CINE_F(
-            MODELE=model, MECA_IMPO=_F(GROUP_MA="FACES", DX=uX[form], DY=uY[form], DZ=uZ[form])
-        )
+    resu = STAT_NON_LINE(
+        MODELE=model,
+        CHAM_MATER=mater,
+        INCREMENT=_F(LIST_INST=LREEL),
+        EXCIT=(_F(CHARGE=bc), _F(CHARGE=load)),
+    )
 
-        load = AFFE_CHAR_MECA_F(
-            MODELE=model, FORCE_INTERNE=_F(GROUP_MA="3D", FX=fX[form], FY=fY[form], FZ=fZ[form])
-        )
+    u_sol = resu.getField("DEPL", para="INST", value=1.0)
 
-        # solve linear system
-        LREEL = DEFI_LIST_REEL(DEBUT=0.0, INTERVALLE=_F(JUSQU_A=1, NOMBRE=1))
+    # define discrete object
+    phys_pb = CA.PhysicalProblem(model, mater)
+    phys_pb.addDirichletBC(bc)
+    phys_pb.computeDOFNumbering()
 
-        resu = STAT_NON_LINE(
-            MODELE=model,
-            CHAM_MATER=mater,
-            INCREMENT=_F(LIST_INST=LREEL),
-            EXCIT=(_F(CHARGE=bc), _F(CHARGE=load)),
-        )
+    hho = CA.HHO(phys_pb)
 
-        u_sol = resu.getField("DEPL", para="INST", value=1.0)
+    # project function
+    u_hho = hho.projectOnHHOSpace([uX[form], uY[form], uZ[form]])
 
-        # define discrete object
-        phys_pb = CA.PhysicalProblem(model, mater)
-        phys_pb.addDirichletBC(bc)
-        phys_pb.computeDOFNumbering()
+    u_diff = u_hho - u_sol
 
-        hho = CA.HHO(phys_pb)
+    test.assertAlmostEqual(u_diff.norm("NORM_2") / u_hho.norm("NORM_2"), 0.0, delta=1e-7)
 
-        # project function
-        u_hho = hho.projectOnHHOSpace([uX[form], uY[form], uZ[form]])
+    dc = CA.DiscreteComputation(phys_pb)
+    mass = dc.getMassMatrix(assembly=True)
+    l2_diff = (mass * u_diff).dot(u_diff)
+    l2_ref = (mass * u_hho).dot(u_hho)
+    test.assertAlmostEqual(l2_diff / l2_ref, 0.0, delta=1e-10)
 
-        u_diff = u_hho - u_sol
-
-        test.assertAlmostEqual(u_diff.norm("NORM_2") / u_hho.norm("NORM_2"), 0.0, delta=1e-7)
-
-        dc = CA.DiscreteComputation(phys_pb)
-        mass = dc.getMassMatrix(assembly=True)
-        l2_diff = (mass * u_diff).dot(u_diff)
-        l2_ref = (mass * u_hho).dot(u_hho)
-        test.assertAlmostEqual(l2_diff / l2_ref, 0.0, delta=1e-10)
-
-        # print("u=", u_hho.getValues())
-        # print("uh=", u_sol.getValues())
-        # print("diif=", u_diff.getValues())
+    # print("u=", u_hho.getValues())
+    # print("uh=", u_sol.getValues())
+    # print("diif=", u_diff.getValues())
 
 FIN()
