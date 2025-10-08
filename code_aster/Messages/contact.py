@@ -95,6 +95,11 @@ Contact méthode continue.
   La méthode de Newton généralisée pour la boucle de géométrie exige que le contact soit aussi résolu par le Newton généralisé.
 """
     ),
+    30: _(
+        """
+La commande DEFI_CONTACT n'est pas utilisable avec un maillage distribué.
+"""
+    ),
     60: _(
         """
 La maille %(k1)s est de type 'SEG' (poutres) en 3D. Pour ces mailles la normale ne peut pas être déterminée automatiquement.
