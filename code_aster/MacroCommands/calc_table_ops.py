@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -99,7 +99,7 @@ def calc_table_ops(self, TABLE, ACTION, INFO, **args):
         if occ["OPERATION"] == "EXTR":
             lpar = force_list(occ["NOM_PARA"])
             for p in lpar:
-                if not p in tab.para:
+                if p not in tab.para:
                     UTMESS("F", "TABLE0_2", valk=[p, TABLE.getName()])
             tab = tab[lpar]
 
@@ -108,7 +108,7 @@ def calc_table_ops(self, TABLE, ACTION, INFO, **args):
             lpar = force_list(occ["NOM_PARA"])
             keep = []
             for p in tab.para:
-                if not p in lpar:
+                if p not in lpar:
                     keep.append(p)
             tab = tab[keep]
 
@@ -130,9 +130,9 @@ def calc_table_ops(self, TABLE, ACTION, INFO, **args):
             if occ.get("NOM_PARA") is not None:
                 lpar = force_list(occ["NOM_PARA"])
                 for p in lpar:
-                    if not p in tab.para:
+                    if p not in tab.para:
                         UTMESS("F", "TABLE0_2", valk=[p, TABLE.getName()])
-                    if not p in tab2.para:
+                    if p not in tab2.para:
                         UTMESS("F", "TABLE0_2", valk=[p, occ["TABLE"].getName()])
             restrict = occ.get("RESTREINT") == "OUI"
             format_r = occ.get("FORMAT_R")

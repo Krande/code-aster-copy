@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -21,7 +21,6 @@ import os
 
 import numpy as np
 
-import aster
 from ..Cata.Syntax import _F
 from ..CodeCommands import (
     CALC_FONCTION,
@@ -193,7 +192,7 @@ def impr_acce_seisme_ops(self, **args):
     tab_data = TABLE.EXTR_TABLE()
     nom_table = TABLE.getName()[:8]
 
-    if not "FONCTION" in tab_data.para:
+    if "FONCTION" not in tab_data.para:
         UTMESS("F", "SEISME_88")
 
     if "NOM_PARA" in tab_data.para:

@@ -28,8 +28,6 @@ import numpy.linalg as linalg
 from ...Utilities import disable_fpe
 from ...Messages import UTMESS
 
-from ...Cata.Syntax import _F
-
 
 def calcul_gradient(A, erreur):
     grad = NP.dot(NP.transpose(A), erreur)

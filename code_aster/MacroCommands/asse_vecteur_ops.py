@@ -1,6 +1,6 @@
 # coding: utf-8
 
-# Copyright (C) 1991 - 2022  EDF R&D                www.code-aster.org
+# Copyright (C) 1991 - 2025  EDF R&D                www.code-aster.org
 #
 # This file is part of Code_Aster.
 #
@@ -19,13 +19,6 @@
 
 from libaster import setFortranLoggingLevel, resetFortranLoggingLevel
 
-from ..Objects import (
-    ElementaryVectorDisplacementReal,
-    ElementaryVectorTemperatureReal,
-    ElementaryVectorPressureComplex,
-    FieldOnNodesReal,
-    FieldOnNodesComplex,
-)
 from ..Utilities import force_list
 
 

@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -19,36 +19,14 @@
 
 # person_in_charge: albert.alarcon at edf.fr
 
-import random
 
 import numpy
 
-import aster
 from libaster import AsterError
 
-from ...Cata.DataStructure import (
-    dyna_harmo,
-    maillage_sdaster,
-    matr_asse_depl_r,
-    mode_meca,
-    modele_sdaster,
-)
-from ...Cata.Syntax import _F
-from ...CodeCommands import (
-    AFFE_MODELE,
-    CREA_CHAMP,
-    CREA_RESU,
-    DEFI_FICHIER,
-    IMPR_RESU,
-    INFO_EXEC_ASTER,
-    LIRE_MAILLAGE,
-    MAC_MODES,
-    MACRO_EXPANS,
-)
+from ...CodeCommands import MAC_MODES, MACRO_EXPANS
 from ...Messages import UTMESS
-from ...Messages import MessageLog as mess
 from ...Supervis import CO
-from .cata_ce import DynaHarmo
 
 
 def extract_mac_array(mac_mode, nom_table="MAC"):

@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -23,7 +23,6 @@ import os
 
 from math import log
 
-import aster
 from .miss_utils import calc_param_auto, dict_format, l_coor_sort, verif_sol_homogene
 from ...Messages import UTMESS
 
@@ -46,7 +45,7 @@ def fichier_sol(tab, struct, param=None):
         "RECEPTEUR",
         "SUBSTRATUM",
     ):
-        if not p in tab.para:
+        if p not in tab.para:
             UTMESS("F", "TABLE0_2", valk=(p, "de sol"))
     nb_couche = len(tab)
     if max(tab.NUME_COUCHE.values()) != nb_couche:
@@ -170,7 +169,7 @@ def fichier_sol(tab, struct, param=None):
             dp = betamin / vp
             k_nb = int(log(spec_max / dp + 1.0) / log(2.0))
             k_nb = k_nb + 1
-            spec_nb = 2 ** k_nb
+            spec_nb = 2**k_nb
         if spec_max_auto:
             param["SPEC_MAX"] = spec_max
             param["SPEC_NB"] = spec_nb

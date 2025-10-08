@@ -26,7 +26,6 @@ from scipy import special
 from scipy import integrate
 import numpy as np
 
-from ..Cata.Syntax import _F
 from ..CodeCommands import FORMULE, CREA_TABLE
 from ..Messages import UTMESS
 

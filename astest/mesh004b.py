@@ -174,7 +174,6 @@ S.view(v)
 # ------------------------------------
 # Scaling validation
 from code_aster.LinearAlgebra import MatrixScaler
-from code_aster.Utilities import logger
 
 # Compute reference solution
 mySolver = CA.MumpsSolver()

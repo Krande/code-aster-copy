@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -32,7 +32,7 @@ import aster
 
 from ..Cata.Syntax import _F
 from ..CodeCommands import DEFI_FICHIER, EXEC_LOGICIEL, IMPR_RESU, LIRE_CHAMP, LIRE_MAILLAGE
-from ..Messages import UTMESS, MasquerAlarme, RetablirAlarme
+from ..Messages import UTMESS
 from ..Supervis import Serializer
 from ..Utilities import ExecutionParameter, logger
 from .Utils import creation_donnees_homard
@@ -473,7 +473,7 @@ def argument_pilotage(INFO, args):
     #
     if "NOM_CMP" in args:
         if args.get("NOM_CMP") is not None:
-            if not type(args.get("NOM_CMP")) in EnumTypes:
+            if type(args.get("NOM_CMP")) not in EnumTypes:
                 l_aux = [args.get("NOM_CMP")]
             else:
                 l_aux = []
@@ -559,7 +559,7 @@ def argument_champ(INFO, le_champ, usage_champ, iaux):
     #
     if usage_champ == "MAJ_CHAM":
         if le_champ["NOM_CMP"] is not None:
-            if not type(le_champ["NOM_CMP"]) in EnumTypes:
+            if type(le_champ["NOM_CMP"]) not in EnumTypes:
                 l_aux = [le_champ["NOM_CMP"]]
             else:
                 l_aux = []
@@ -1846,9 +1846,6 @@ def macr_adap_mail_ops(self, INFO, VERSION_HOMARD, LOGICIEL=None, MAILLAGE_FRONT
         for dico in liste_maillages:
             # print ".... dico =", dico
             if dico["Action"] == "A_lire":
-                #
-                MasquerAlarme("MODELISA5_49")
-                #
                 maillage_a_lire = LIRE_MAILLAGE(
                     UNITE=unite_fichier_homard_vers_aster,
                     FORMAT="MED",
@@ -1858,7 +1855,6 @@ def macr_adap_mail_ops(self, INFO, VERSION_HOMARD, LOGICIEL=None, MAILLAGE_FRONT
                     INFO=infocomm,
                 )
                 #
-                RetablirAlarme("MODELISA5_49")
                 self.register_result(maillage_a_lire, dico["Nom_ASTER"])
                 #
                 # print "MAILLAGE =", maillage_a_lire

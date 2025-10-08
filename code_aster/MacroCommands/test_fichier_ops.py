@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -22,9 +22,8 @@ import os
 import re
 import sys
 import tempfile
-from optparse import OptionGroup, OptionParser
+from optparse import OptionParser
 
-import aster
 from ..Cata.Syntax import _F
 from ..CodeCommands import CREA_TABLE, INFO_EXEC_ASTER, TEST_TABLE
 from ..Messages import UTMESS

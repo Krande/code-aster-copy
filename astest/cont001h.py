@@ -22,8 +22,7 @@
 from code_aster.Commands import *
 from code_aster import CA
 from code_aster.MacroCommands.defi_cont import DEFI_CONT
-from libaster import ContactPairing, ContactComputation
-import numpy
+from libaster import ContactPairing
 
 
 DEBUT(CODE="OUI", DEBUG=_F(SDVERI="OUI"), INFO=1)

@@ -273,7 +273,7 @@ class Tensor:
                                 self.array[i, j, k, :], other.array[:, l]
                             )
         else:
-            raise NotImplemented
+            raise NotImplementedError
         return Tensor(out_array)
 
 

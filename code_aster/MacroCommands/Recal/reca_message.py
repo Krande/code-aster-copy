@@ -23,7 +23,7 @@ import os
 
 import numpy as NP
 
-from ...Messages import UTMESS, MessageLog
+from ...Messages import UTMESS
 
 from .recal import Affiche_Param
 

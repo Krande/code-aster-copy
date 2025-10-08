@@ -35,7 +35,7 @@ try:
 except ImportError:
     HAS_MATPLOTLIB = False
 
-from math import pi, sqrt, log
+from math import sqrt, log
 
 CA.init("--test", ERREUR=_F(ALARME="EXCEPTION"))
 

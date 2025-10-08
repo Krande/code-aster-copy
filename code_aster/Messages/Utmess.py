@@ -230,10 +230,9 @@ class MESSAGE_LOGGER(metaclass=Singleton):
 
         return dicarg
 
-    def get_message(self, code, idmess, valk=(), vali=(), valr=(), exc_typ=None):
-        """Retourne le texte du message dans un dictionnaire dont les clés sont :
-        'code', 'id_message', 'corps_message'
-        """
+    def decode_idmess(self, idmess):
+        """Decode la chaine idmess."""
+
         # décodage : idmess => (catamess, numess)
         idmess = idmess.strip()
         x = idmess.split("_")
@@ -241,6 +240,11 @@ class MESSAGE_LOGGER(metaclass=Singleton):
         catamess = "_".join(x[0:-1]).lower()
         numess = int(x[-1])
         assert numess > 0 and numess < 100, idmess
+
+        return catamess, numess
+
+    def load_cata_msg(self, catamess):
+        """Retourne le dictionnaire de messages."""
 
         # import catamess => cata_msg
         try:
@@ -255,6 +259,35 @@ class MESSAGE_LOGGER(metaclass=Singleton):
                 code = "A"
                 self.print_message(code, "CATAMESS_57", valk=(catamess, str(msg)))
             cata_msg = {}
+
+        return cata_msg
+
+    def check_message(self, idmess, skip=False):
+        """Check that a message exists.
+
+        Args:
+            idmess (str): Message id.
+            skip (bool): True to skip the check.
+
+        Raises:
+            KeyError: If the message does not exist.
+        """
+        if skip:
+            return True
+
+        catamess, numess = self.decode_idmess(idmess)
+        cata_msg = self.load_cata_msg(catamess)
+        if numess not in cata_msg:
+            raise KeyError(f"Inexistent message {idmess!r}")
+        return True
+
+    def get_message(self, code, idmess, valk=(), vali=(), valr=(), exc_typ=None):
+        """Retourne le texte du message dans un dictionnaire dont les clés sont :
+        'code', 'id_message', 'corps_message'
+        """
+
+        catamess, numess = self.decode_idmess(idmess)
+        cata_msg = self.load_cata_msg(catamess)
 
         # corps du message
         fmt_msg = "?"
@@ -430,16 +463,21 @@ Exception : %s
 
         self.init_buffer()
 
-    def disable_alarm(self, idmess, hide=False):
+    def disable_alarm(self, idmess, hide=False, skip=False):
         """Ignore l'alarme "idmess"."""
+
+        self.check_message(idmess, skip)
+
         idmess = idmess.strip()
         if hide:
             self._hidden_alarm[idmess] = self._hidden_alarm.get(idmess, 0) + 1
         else:
             self._ignored_alarm[idmess] = self._ignored_alarm.get(idmess, 0) + 1
 
-    def reset_alarm(self, idmess, hide=False):
+    def reset_alarm(self, idmess, hide=False, skip=False):
         """Réactive l'alarme "idmess"."""
+        self.check_message(idmess, skip)
+
         idmess = idmess.strip()
         if hide:
             self._hidden_alarm[idmess] = min(self._hidden_alarm.get(idmess, 0) - 1, 0)

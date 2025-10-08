@@ -17,7 +17,6 @@
 # along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 # --------------------------------------------------------------------
 
-import cmath
 import numpy as np
 from scipy.optimize import fsolve
 from ...Messages import UTMESS

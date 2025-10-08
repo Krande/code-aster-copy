@@ -19,12 +19,11 @@
 
 
 import os.path as osp
-import numpy as np
 
 from code_aster.Commands import *
 from code_aster import CA
 from code_aster.CA import MPI
-from code_aster.Utilities import SharedTmpdir, petscInitialize
+from code_aster.Utilities import SharedTmpdir
 
 
 CA.init("--test", ERREUR=_F(ALARME="EXCEPTION"))

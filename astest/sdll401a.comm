@@ -21,7 +21,7 @@
 # MODELISATION POU_D_T
 # ======================================================================
 #
-DEBUT(CODE="OUI", DEBUG=_F(SDVERI="OUI"), IGNORE_ALARM="CALCCHAMP_5")
+DEBUT(CODE="OUI", DEBUG=_F(SDVERI="OUI"))
 
 #
 MA = LIRE_MAILLAGE(FORMAT="ASTER")

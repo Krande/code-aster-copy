@@ -172,7 +172,7 @@ def liss_spectre_ops(
 
                     if list_defi_fonc != []:
                         dir_pl = "%s_%s" % (dire, pl)
-                        if not dir_pl in list(dic_dir_planchers.keys()):
+                        if dir_pl not in list(dic_dir_planchers.keys()):
                             dic_dir_planchers[dir_pl] = {
                                 "liste_nappes": [],
                                 "batiment": "inconnu",
@@ -216,7 +216,7 @@ def liss_spectre_ops(
                 nb_freq_max = nb_freq
 
             dir_pl = "%s_%s" % (dire, pl)
-            if not dir_pl in list(dic_dir_planchers.keys()):
+            if dir_pl not in list(dic_dir_planchers.keys()):
                 dic_dir_planchers[dir_pl] = {
                     "liste_nappes": [],
                     "batiment": "inconnu",

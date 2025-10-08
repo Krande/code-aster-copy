@@ -18,12 +18,10 @@
 # --------------------------------------------------------------------
 
 # imports
-import aster
 from ..Cata.Syntax import _F
-from ..Messages import UTMESS, MasquerAlarme, RetablirAlarme
 
 # commandes utilisees dans la macro
-from ..CodeCommands import CREA_CHAMP, CREA_RESU, CALC_CHAMP
+from ..CodeCommands import CREA_CHAMP, CREA_RESU
 
 
 def calc_thermeca_mult_ops(self, TEMP_FIN, TEMP_INIT, RESU_MECA_UNIT, RESU_SUPL_THER, **args):

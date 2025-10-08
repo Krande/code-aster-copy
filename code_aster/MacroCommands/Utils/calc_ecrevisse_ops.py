@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -20,9 +20,8 @@
 import os
 import shutil
 from copy import copy
-from math import atan, atan2, cos, degrees, pi, radians, sin, sqrt
+from math import atan2, cos, degrees, radians, sin
 
-import aster
 
 from ...Cata.Syntax import _F
 from ...CodeCommands import (
@@ -36,7 +35,7 @@ from ...CodeCommands import (
     POST_RELEVE_T,
 )
 from ...Messages import UTMESS, MasquerAlarme, RetablirAlarme
-from ...Objects.table_py import Table, merge
+from ...Objects.table_py import merge
 from ...Supervis import CO
 from .macr_ecre_calc import MACR_ECRE_CALC
 
@@ -227,14 +226,14 @@ def calc_ecrevisse_ops(self, **args):
 
         # On cree les group_no correspondant aux group_ma des levres de la
         # fissure dans le cas ou ils n'existent pas deja
-        if not dFISSURE["GROUP_MA"][0] in _lgno:
+        if dFISSURE["GROUP_MA"][0] not in _lgno:
             DEFI_GROUP(
                 reuse=MODELE_MECA.getMesh(),
                 MAILLAGE=MODELE_MECA.getMesh(),
                 CREA_GROUP_NO=_F(GROUP_MA=(dFISSURE["GROUP_MA"][0])),
             )
 
-        if not dFISSURE["GROUP_MA"][1] in _lgno:
+        if dFISSURE["GROUP_MA"][1] not in _lgno:
             DEFI_GROUP(
                 reuse=MODELE_MECA.getMesh(),
                 MAILLAGE=MODELE_MECA.getMesh(),
@@ -247,7 +246,7 @@ def calc_ecrevisse_ops(self, **args):
 
         # Creation des group_no ordonnes des levres des fissures
         _nom_gno_1 = "_" + dFISSURE["GROUP_MA"][0]
-        if not _nom_gno_1 in _lgno:
+        if _nom_gno_1 not in _lgno:
             DEFI_GROUP(
                 reuse=MODELE_MECA.getMesh(),
                 MAILLAGE=MODELE_MECA.getMesh(),
@@ -264,7 +263,7 @@ def calc_ecrevisse_ops(self, **args):
             )
 
         _nom_gno_2 = "_" + dFISSURE["GROUP_MA"][1]
-        if not _nom_gno_2 in _lgno:
+        if _nom_gno_2 not in _lgno:
             DEFI_GROUP(
                 reuse=MODELE_MECA.getMesh(),
                 MAILLAGE=MODELE_MECA.getMesh(),
@@ -774,7 +773,7 @@ def calc_ecrevisse_ops(self, **args):
             tmp_ecrevisse_absolu = os.path.join(os.getcwd(), tmp_ecrevisse)
             repe_out_absolu = os.path.join(os.getcwd(), "REPE_OUT")
             for file in os.listdir(tmp_ecrevisse_absolu):
-                if not file in ["ecrevisse", "ecrevisse.sh"]:
+                if file not in ["ecrevisse", "ecrevisse.sh"]:
                     old_file = os.path.join(tmp_ecrevisse_absolu, file)
                     new_file = os.path.join(
                         repe_out_absolu, str(pref_fic) + "_" + file + "_" + str(Inst_Ecrevisse)

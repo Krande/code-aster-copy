@@ -17,7 +17,6 @@
 # along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 # --------------------------------------------------------------------
 
-from ..Objects.table_py import Table
 from ..Messages import UTMESS
 import numpy as np
 import time
@@ -161,7 +160,7 @@ class OAR_EF:
         """écriture des lignes d'introduction du fichier de sortie"""
         f.write(f"; CODE_ASTER version {get_version()} \n")
         if self.typefic == "meca":
-            f.write(f"; IMPRESSION AU FORMAT OAR - Modélisation mécanique \n")
+            f.write("; IMPRESSION AU FORMAT OAR - Modélisation mécanique \n")
             # f.write(f"; ORDRE D'IMPRESSION DES CONTRAINTES :{', '.join(ORDRE_CONTRAINTES['3D'])} \n")
         else:
             f.write(

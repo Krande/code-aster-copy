@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -16,21 +16,9 @@
 # You should have received a copy of the GNU General Public License
 # along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 # --------------------------------------------------------------------
-import math
 
-import numpy as NP
 
-from code_aster.Cata.DataStructure import (
-    cham_mater,
-    cham_no_sdaster,
-    char_meca,
-    listr8_sdaster,
-    maillage_sdaster,
-    mater_sdaster,
-    modele_sdaster,
-    resultat_sdaster,
-    table_sdaster,
-)
+from code_aster.Cata.DataStructure import listr8_sdaster, mater_sdaster, table_sdaster
 from code_aster.Cata.Syntax import _F, MACRO, SIMP
 from code_aster.Commands import DEFI_FONCTION, SIMU_POINT_MAT
 from code_aster.Supervis.ExecuteCommand import UserMacro

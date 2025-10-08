@@ -28,7 +28,7 @@ from ..CodeCommands import (
     STAT_NON_LINE,
     THER_LINEAIRE,
 )
-from ..Messages import UTMESS, MasquerAlarme, RetablirAlarme
+from ..Messages import UTMESS
 from ..Objects import EntityType
 from ..Objects.table_py import merge
 from ..Supervis import CO
@@ -85,10 +85,6 @@ def macr_ecrevisse_ops(self, **args):
         info2 = True
 
     # IMPORTATION DE COMMANDES ASTER
-
-    # alarme de STAT_NON_LINE si les mot-cles de COMPORTEMENT sont renseignes
-    # a tort
-    MasquerAlarme("COMPOR4_70")
 
     IsPoursuite = False
     IsInit = True
@@ -638,5 +634,4 @@ def macr_ecrevisse_ops(self, **args):
         DEB_RES = CREA_TABLE(**debprod)
         self.register_result(DEB_RES, DEBIT)
 
-    RetablirAlarme("COMPOR4_70")
     return MECANIC

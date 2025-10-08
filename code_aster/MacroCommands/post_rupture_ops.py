@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -17,13 +17,11 @@
 # along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 # --------------------------------------------------------------------
 
-import aster
 import numpy as NP
 
 from ..Cata.Syntax import _F
 from ..CodeCommands import CALC_TABLE, CREA_TABLE, FORMULE, POST_FATIGUE, RECU_FONCTION
 from ..Messages import UTMESS
-from ..SD.sd_mater import sd_compor1
 
 
 def verif_nb_table(OPERATION, TABLE):
@@ -71,7 +69,7 @@ def verif_un_instant(tabin, OPERATION, COMPTAGE):
 
 def verif_exi(tabin, col):
     """verification que la colonne col existe"""
-    if not col in tabin.para:
+    if col not in tabin.para:
         UTMESS("F", "RUPTURE1_59", valk=(tabin.getName(), col))
 
 
@@ -906,7 +904,7 @@ def post_rupture_ops(self, TABLE, OPERATION, **args):
         change = verif_val_neg(tabin.K1)
 
         # si on a trouve au moins une valeur negative de K1 et G present
-        if change == True and ("G" or "G_IRWIN" in tabin.para):
+        if change and ("G" or "G_IRWIN" in tabin.para):
             # verification que K2 existe
             verif_exi(tabin, "K2")
 
@@ -978,7 +976,7 @@ def post_rupture_ops(self, TABLE, OPERATION, **args):
                 )
 
         # si on a trouve au moins une valeur negative de K1 et G non present
-        elif change == True and ("G" and "G_IRWIN" not in tabin.para):
+        elif change and ("G" and "G_IRWIN" not in tabin.para):
             # formule servant a mettre a zero les valeurs negatives de K1
             __formul = FORMULE(NOM_PARA="K1", VALE="mise_zero(K1)", mise_zero=mise_zero)
 

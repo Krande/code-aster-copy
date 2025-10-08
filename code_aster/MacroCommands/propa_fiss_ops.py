@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -17,20 +17,13 @@
 # along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 # --------------------------------------------------------------------
 
-from math import acos, atan, atan2, cos, log, pi, sin, sqrt
+from math import acos, cos, log, pi, sin, sqrt
 
 import aster
 import numpy as NP
 
 from ..Cata.Syntax import _F
-from ..CodeCommands import (
-    ASSE_MAILLAGE,
-    CALC_TABLE,
-    DEFI_GROUP,
-    LIRE_MAILLAGE,
-    MODI_MODELE_XFEM,
-    POST_RUPTURE,
-)
+from ..CodeCommands import ASSE_MAILLAGE, CALC_TABLE, DEFI_GROUP, MODI_MODELE_XFEM, POST_RUPTURE
 from ..Messages import UTMESS
 from ..Objects import Mesh
 from ..Utilities import medcoupling as medc
@@ -553,13 +546,13 @@ def propa_fiss_ops(self, METHODE_PROPA, INFO, **args):
             __COPIE_SIF = CALC_TABLE(TABLE=SIF, ACTION=_F(OPERATION="EXTR", NOM_PARA=__tabsif.para))
 
             #     beta et gamma
-            if not "BETA" in __tabsif.para and CRITERE_ANGLE in (
+            if "BETA" not in __tabsif.para and CRITERE_ANGLE in (
                 "ANGLE_IMPO",
                 "ANGLE_IMPO_GETA_GAMMA",
             ):
                 UTMESS("F", "XFEM2_19", valk=fiss0.getName())
 
-            if not "GAMMA" in __tabsif.para and CRITERE_ANGLE in (
+            if "GAMMA" not in __tabsif.para and CRITERE_ANGLE in (
                 "ANGLE_IMPO_GAMMA",
                 "ANGLE_IMPO_GETA_GAMMA",
             ):
@@ -683,7 +676,7 @@ def propa_fiss_ops(self, METHODE_PROPA, INFO, **args):
             #     Stockage de Da/Dt de beta et de gamma
             # Si METHODE_PROPA !='MAILLAGE'
             if TEST_MAIL == "NON":
-                if not "K3" in __tabsif.para and Fiss.get("NB_POINT_FOND") is not None:
+                if "K3" not in __tabsif.para and Fiss.get("NB_POINT_FOND") is not None:
                     UTMESS("A", "XFEM2_73")
                     Fiss["NB_POINT_FOND"] = None
 
@@ -929,7 +922,7 @@ def propa_fiss_ops(self, METHODE_PROPA, INFO, **args):
 
             #       Si 2D: verification de l'orientation du repere (VNOR,VDIR)
             if OPERATION != "DETECT_COHESIF":
-                if (not "K3" in __tabsif.para) and (not CRITERE_ANGLE == "ANGLE_IMPO_BETA_GAMMA"):
+                if ("K3" not in __tabsif.para) and (not CRITERE_ANGLE == "ANGLE_IMPO_BETA_GAMMA"):
                     Basefond = Fiss["FISS_ACTUELLE"].getCrackTipBasis()
                     for fond in range(len(Basefond) // 4):
                         VNOR = (Basefond[4 * fond + 0], Basefond[4 * fond + 1])
