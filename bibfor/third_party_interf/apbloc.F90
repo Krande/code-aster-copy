@@ -57,7 +57,7 @@ subroutine apbloc(kptsc)
     character(len=24), pointer :: refa(:) => null()
 
     integer(kind=8) :: neq, kec, nbec, nbnoma, nbddl
-    integer(kind=8) :: jprno, n1, ino, ino_model, ecmax(10), ec1, ec2
+    integer(kind=8) :: jprno, n1, ino, ino_model, ecmax(11), ec1, ec2
     integer(kind=8) :: jnueq, kcmp, nbnomo, nbddlt, ieq
     aster_logical, parameter :: dbg = .false.
 !
@@ -127,7 +127,7 @@ subroutine apbloc(kptsc)
     call dismoi('NB_NO_MAILLA', noma, 'MAILLAGE', repi=nbnoma)
     call dismoi('NOM_GD', nonu, 'NUME_DDL', repk=nomgd)
     call dismoi('NB_EC', nomgd, 'GRANDEUR', repi=nbec)
-    ASSERT(nbec .le. 10)
+    ASSERT(nbec .le. 11)
     call jeveuo(jexnum(nonu//'.NUME.PRNO', 1_8), 'L', jprno)
     call jelira(jexnum(nonu//'.NUME.PRNO', 1_8), 'LONMAX', n1)
     ASSERT(n1 .eq. nbnoma*(nbec+2))

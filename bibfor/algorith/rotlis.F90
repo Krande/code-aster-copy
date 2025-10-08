@@ -88,7 +88,7 @@ subroutine rotlis(nomres, fmli, icar, fplin, fplio, &
 !
     nomg = 'DEPL_R'
     call dismoi('NB_EC', nomg, 'GRANDEUR', repi=nbec)
-    if (nbec .gt. 10) then
+    if (nbec .gt. 11) then
         call utmess('F', 'MODELISA_94')
     end if
 !

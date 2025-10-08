@@ -23,18 +23,21 @@ subroutine assvec(jvBase, vectAsseZ, &
 !
     implicit none
 !
-#include "asterf_types.h"
 #include "jeveux.h"
+#include "asterf_types.h"
 #include "asterc/indik8.h"
 #include "asterfort/asmpi_barrier.h"
 #include "asterfort/asmpi_comm_jev.h"
 #include "asterfort/assert.h"
+#include "asterfort/asseVectField.h"
+#include "asterfort/asseVectSuper.h"
 #include "asterfort/corddl.h"
 #include "asterfort/crelil.h"
 #include "asterfort/dbgobj.h"
 #include "asterfort/detrsd.h"
 #include "asterfort/digdel.h"
 #include "asterfort/dismoi.h"
+#include "asterfort/getDistributionParameters.h"
 #include "asterfort/infniv.h"
 #include "asterfort/jaexin.h"
 #include "asterfort/jecreo.h"
@@ -57,9 +60,6 @@ subroutine assvec(jvBase, vectAsseZ, &
 #include "asterfort/uttcpu.h"
 #include "asterfort/vtcreb.h"
 #include "asterfort/wkvect.h"
-#include "asterfort/asseVectSuper.h"
-#include "asterfort/asseVectField.h"
-#include "asterfort/getDistributionParameters.h"
 !
     character(len=1), intent(in) :: jvBase
     character(len=*), intent(in) :: vectAsseZ
@@ -91,7 +91,7 @@ subroutine assvec(jvBase, vectAsseZ, &
     character(len=24), parameter :: ligrelMesh = '&MAILLA'
     aster_logical, parameter :: dbg = ASTER_FALSE
     integer(kind=8) :: physQuan, nec, nlili
-    integer(kind=8), parameter :: nbecmx = 10
+    integer(kind=8), parameter :: nbecmx = 11
     character(len=8) :: mesh, model, vectElemModel, nogdsi, nogdco
     character(len=14) :: numeDof, answer
     character(len=24) :: vectRefeJv, vectValeJv

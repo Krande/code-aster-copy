@@ -25,18 +25,18 @@ subroutine caimch(chargz)
 #include "asterfort/aflrch.h"
 #include "asterfort/afrela.h"
 #include "asterfort/dismoi.h"
+#include "asterfort/exisd.h"
 #include "asterfort/getvid.h"
 #include "asterfort/getvr8.h"
+#include "asterfort/int_to_char8.h"
 #include "asterfort/jedema.h"
 #include "asterfort/jedetr.h"
-#include "asterfort/exisd.h"
 #include "asterfort/jelira.h"
 #include "asterfort/jemarq.h"
 #include "asterfort/jeveuo.h"
 #include "asterfort/jexnom.h"
 #include "asterfort/utmess.h"
 #include "asterfort/wkvect.h"
-#include "asterfort/int_to_char8.h"
 !
 !
     character(len=*) :: chargz
@@ -145,7 +145,7 @@ subroutine caimch(chargz)
 ! ---   LES INCONNUES ASSOCIEES A LA GRANDEUR DE NOM NOMGD
 !       --------------------------------------------------
         call dismoi('NB_EC', nomgd, 'GRANDEUR', repi=nbec)
-        if (nbec .gt. 10) then
+        if (nbec .gt. 11) then
             call utmess('F', 'MODELISA2_87', sk=nomgd)
         end if
 !

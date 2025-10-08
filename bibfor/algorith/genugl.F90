@@ -56,8 +56,8 @@ subroutine genugl(nume_equa, indirf, modgen, mailsk)
 #include "asterfort/jexnom.h"
 #include "asterfort/jexnum.h"
 #include "asterfort/mgutdm.h"
-#include "asterfort/utmess.h"
 #include "asterfort/profchno_crsd.h"
+#include "asterfort/utmess.h"
 #include "asterfort/wkvect.h"
 !
 !
@@ -69,7 +69,7 @@ subroutine genugl(nume_equa, indirf, modgen, mailsk)
     integer(kind=8) :: nbcou, nbcpmx, nbddl, nbec, nbnot, nbsst, nddlt
     integer(kind=8) :: ntail, numno, nusst, jrefn
 !-----------------------------------------------------------------------
-    parameter(nbcpmx=300)
+    parameter(nbcpmx=320)
     character(len=6) :: pgc
     character(len=8) :: mailsk, modgen, kbid
     character(len=8) :: k8bid
@@ -91,7 +91,7 @@ subroutine genugl(nume_equa, indirf, modgen, mailsk)
 !-----RECUPERATION DU NOMBRE D'ENTIERS CODES DE LA GRANDEUR DEPL_R------
 !
     call dismoi('NB_EC', 'DEPL_R', 'GRANDEUR', repi=nbec)
-    if (nbec .gt. 10) then
+    if (nbec .gt. 11) then
         call utmess('F', 'MODELISA_94')
     end if
 !

@@ -45,8 +45,8 @@ subroutine acticb(nbcmp, nbno, nbec, mcoddl, icono, &
 #include "asterfort/isgeco.h"
     integer(kind=8) :: i, nbcmp, nbcpmx, nbec, nbecmx, nbno
 !-----------------------------------------------------------------------
-    parameter(nbcpmx=300)
-    parameter(nbecmx=10)
+    parameter(nbcpmx=320)
+    parameter(nbecmx=11)
     integer(kind=8) :: mcoddl(nbno*nbec, 2), icono(nbno*nbec), icodac(nbno*nbec)
     integer(kind=8) :: idec(nbcpmx), itout(nbecmx), icoco(nbecmx), icici(nbecmx)
 !

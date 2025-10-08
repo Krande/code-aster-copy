@@ -66,7 +66,7 @@ subroutine bmradi(basmod, intf, nomint, numint, nbddl, &
     integer(kind=8) :: llnoe, nbcmp, nbcpmx, nbddl, nbdif, nbec
     integer(kind=8) :: nbnoe, nbnot, neq, numint, nunoe
 !-----------------------------------------------------------------------
-    parameter(nbcpmx=300)
+    parameter(nbcpmx=320)
     character(len=8) :: basmod, nomint, intf
     character(len=19) :: numddl
     character(len=24) :: noeint

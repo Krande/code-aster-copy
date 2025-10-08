@@ -44,6 +44,7 @@ subroutine camoco(nomres, numref, intf, raid, raildl, &
 #include "asterfort/defsta.h"
 #include "asterfort/dismoi.h"
 #include "asterfort/facmtr.h"
+#include "asterfort/int_to_char8.h"
 #include "asterfort/isdeco.h"
 #include "asterfort/jedema.h"
 #include "asterfort/jedetr.h"
@@ -53,7 +54,6 @@ subroutine camoco(nomres, numref, intf, raid, raildl, &
 #include "asterfort/jeveuo.h"
 #include "asterfort/jexnum.h"
 #include "asterfort/wkvect.h"
-#include "asterfort/int_to_char8.h"
 !
 !-----------------------------------------------------------------------
     integer(kind=8) :: i, iad, ier, ik, ino, inord
@@ -62,7 +62,7 @@ subroutine camoco(nomres, numref, intf, raid, raildl, &
     integer(kind=8) :: nbdeb, nbec, nbfin, nbint, nbnoe, nbnot, neq
     integer(kind=8) :: ntail1, ntail2, numgd
 !-----------------------------------------------------------------------
-    parameter(nbcpmx=300)
+    parameter(nbcpmx=320)
     character(len=6) :: pgc
     character(len=8) :: nomres, intf, typcou, nomnoe, nomcmp, mailla
     character(len=19) :: numref, numddl

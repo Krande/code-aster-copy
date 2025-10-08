@@ -69,11 +69,11 @@ subroutine cafelsiter(cequi, effm, effn, ht, bw, &
 !
     implicit none
 
+#include "asterfort/jedetr.h"
+#include "asterfort/jeveuo.h"
+#include "asterfort/juveca.h"
 #include "asterfort/verifels.h"
 #include "asterfort/wkvect.h"
-#include "asterfort/jedetr.h"
-#include "asterfort/juveca.h"
-#include "asterfort/jeveuo.h"
 !
 !-----------------------------------------------------------------------
 !!!!TERMES PRINCIPAUX D'ENTREE
@@ -211,7 +211,7 @@ subroutine cafelsiter(cequi, effm, effn, ht, bw, &
 
     !Determination Pivot C 'ELS'
     yc = (scmaxc/scmax)*ht
-    N_EC = CEILING(10*(scmaxc*unite_pa))+1
+    N_EC = CEILING(11*(scmaxc*unite_pa))+1
 
     N_TOT = N_ET+N_PCAC+N_EC
 

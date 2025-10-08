@@ -22,15 +22,15 @@ subroutine afretu(iprno, lonlis, klisno, noepou, noma, &
     implicit none
 #include "jeveux.h"
 #include "asterfort/afrela.h"
+#include "asterfort/as_allocate.h"
+#include "asterfort/as_deallocate.h"
+#include "asterfort/char8_to_int.h"
 #include "asterfort/dismoi.h"
 #include "asterfort/imprel.h"
 #include "asterfort/jedema.h"
 #include "asterfort/jemarq.h"
 #include "asterfort/jeveuo.h"
 #include "asterfort/utmess.h"
-#include "asterfort/as_deallocate.h"
-#include "asterfort/as_allocate.h"
-#include "asterfort/char8_to_int.h"
 !
     integer(kind=8) :: lonlis, iprno(*), idec, nbcoef
     real(kind=8) :: coef(nbcoef)
@@ -61,7 +61,7 @@ subroutine afretu(iprno, lonlis, klisno, noepou, noma, &
     motfac = 'LIAISON_ELEM'
     call jeveuo(vale1, 'L', idch1)
     call dismoi('NB_EC', 'DEPL_R', 'GRANDEUR', repi=nbec)
-    if (nbec .gt. 10) then
+    if (nbec .gt. 11) then
         call utmess('F', 'MODELISA_94')
     end if
 !

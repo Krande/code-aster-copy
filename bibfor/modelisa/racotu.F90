@@ -24,6 +24,7 @@ subroutine racotu(iprno, lonlis, klisno, noepou, noma, &
 #include "asterfort/afretu.h"
 #include "asterfort/assvec.h"
 #include "asterfort/calcul.h"
+#include "asterfort/char8_to_int.h"
 #include "asterfort/detrsd.h"
 #include "asterfort/dismoi.h"
 #include "asterfort/infniv.h"
@@ -32,13 +33,12 @@ subroutine racotu(iprno, lonlis, klisno, noepou, noma, &
 #include "asterfort/jemarq.h"
 #include "asterfort/jeveuo.h"
 #include "asterfort/mecact.h"
-#include "asterfort/vemare.h"
 #include "asterfort/normev.h"
 #include "asterfort/raorfi.h"
 #include "asterfort/reajre.h"
 #include "asterfort/utmess.h"
+#include "asterfort/vemare.h"
 #include "asterfort/wkvect.h"
-#include "asterfort/char8_to_int.h"
 !
     integer(kind=8) :: lonlis, iprno(*)
     character(len=8) :: klisno(lonlis), noepou, noma, cara, mod
@@ -179,7 +179,7 @@ subroutine racotu(iprno, lonlis, klisno, noepou, noma, &
 !
     call jeveuo(valech, 'L', idch1)
     call dismoi('NB_EC', 'DEPL_R', 'GRANDEUR', repi=nbec)
-    if (nbec .gt. 10) then
+    if (nbec .gt. 11) then
         call utmess('F', 'MODELISA_94')
     end if
 !

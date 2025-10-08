@@ -60,7 +60,7 @@ subroutine bmrdda(basmod, intf, nomint, numint, nbddl, &
     integer(kind=8) :: nbcpmx, nbddl, nbdif, numint, i, j, nbec, nbcmp, neq
     integer(kind=8) :: nunoe, iran(1), ord, nliais, llint3, llint4, llact, llnoe
     integer(kind=8) ::  nbnoe, inoe
-    parameter(nbcpmx=300)
+    parameter(nbcpmx=320)
     integer(kind=8) :: idec(nbcpmx), ivddl(nbddl)
     character(len=4) :: nliai
     character(len=8) :: basmod, nomint, intf, temp

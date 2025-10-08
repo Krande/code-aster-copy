@@ -83,7 +83,7 @@ subroutine rapo3d(numdlz, iocc, fonrez, lisrez, chargz)
 !
 ! --------- VARIABLES LOCALES ---------------------------
     integer(kind=8) :: nmocl
-    parameter(nmocl=300)
+    parameter(nmocl=320)
     aster_logical :: vexcen, lcolle
     character(len=4) :: typval, typcoe
     character(len=8) :: betaf, mod, nomg, k8bid, cara
@@ -221,7 +221,7 @@ subroutine rapo3d(numdlz, iocc, fonrez, lisrez, chargz)
 !
 ! --- -----------------------------------------------------------------
 ! --- ACCES A L'OBJET .PRNM
-    if (nbec .gt. 10) then
+    if (nbec .gt. 11) then
         call utmess('F', 'MODELISA_94')
     else
         call jeveuo(ligrmo//'.PRNM', 'L', vi=prnm)

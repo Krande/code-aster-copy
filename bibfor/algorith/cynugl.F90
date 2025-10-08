@@ -71,7 +71,7 @@ subroutine cynugl(nume_equa, indirf, modcyc, mailsk)
     integer(kind=8) :: nbcmp, nbcpmx, nbddl, nbec, nbnot, nbsec, nddlt
     integer(kind=8) :: neqsec, nsecpr, ntail, numnos, numsec
 !-----------------------------------------------------------------------
-    parameter(nbcpmx=300)
+    parameter(nbcpmx=320)
     character(len=6) :: pgc
     character(len=8) :: modcyc, mailsk, basmod, intf
     character(len=19) :: numddl, nume_equa, prnosect
@@ -107,7 +107,7 @@ subroutine cynugl(nume_equa, indirf, modcyc, mailsk)
 !
     call dismoi('NB_CMP_MAX', intf, 'INTERF_DYNA', repi=nbcmp)
     call dismoi('NB_EC', intf, 'INTERF_DYNA', repi=nbec)
-    ASSERT(nbec .le. 10)
+    ASSERT(nbec .le. 11)
 !
 !---------------RECUPERATION DU NOMBRE DE SECTEURS----------------------
 !

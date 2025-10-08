@@ -58,6 +58,7 @@ subroutine prjlis(moda, maa, modb, mab, nbnoa, &
 #include "asterfort/dismoi.h"
 #include "asterfort/geolis.h"
 #include "asterfort/infniv.h"
+#include "asterfort/int_to_char8.h"
 #include "asterfort/isdeco.h"
 #include "asterfort/jedema.h"
 #include "asterfort/jedetr.h"
@@ -72,7 +73,6 @@ subroutine prjlis(moda, maa, modb, mab, nbnoa, &
 #include "asterfort/reliem.h"
 #include "asterfort/utmess.h"
 #include "asterfort/wkvect.h"
-#include "asterfort/int_to_char8.h"
 !
 !
     character(len=4) :: zcst
@@ -234,7 +234,7 @@ subroutine prjlis(moda, maa, modb, mab, nbnoa, &
 ! Recuperation des donnees par composantes
     nomg = 'DEPL_R'
     call dismoi('NB_EC', nomg, 'GRANDEUR', repi=nbec)
-    if (nbec .gt. 10) then
+    if (nbec .gt. 11) then
         call utmess('F', 'MODELISA_94')
     end if
 !

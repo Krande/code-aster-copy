@@ -67,7 +67,7 @@ subroutine cafaci(load, mesh, model, valeType)
 !
 ! --------------------------------------------------------------------------------------------------
 !
-    integer(kind=8), parameter :: n_max_keyword = 300
+    integer(kind=8), parameter :: n_max_keyword = 320
     integer(kind=8) :: nbterm(n_max_keyword)
     real(kind=8) :: vale_real(n_max_keyword)
     complex(kind=8) :: vale_cplx(n_max_keyword)
@@ -147,7 +147,7 @@ subroutine cafaci(load, mesh, model, valeType)
     call jeveuo(jexnom('&CATA.GD.NOMCMP', nomg), 'L', inom)
     call jelira(jexnom('&CATA.GD.NOMCMP', nomg), 'LONMAX', nbcmp)
     call dismoi('NB_EC', nomg, 'GRANDEUR', repi=nbec)
-    ASSERT(nbec .le. 10)
+    ASSERT(nbec .le. 11)
 !
 ! - Local coordinate system (dummy)
 !

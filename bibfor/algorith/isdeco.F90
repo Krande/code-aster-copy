@@ -36,7 +36,7 @@ subroutine isdeco(icod, idec, ndim)
     integer(kind=8) :: ndim, necmax
     integer(kind=8) :: idec(ndim), icod(*)
     integer(kind=8) :: nec, iec, i, ipui, k
-    parameter(necmax=10)
+    parameter(necmax=11)
     integer(kind=8) :: ifin(necmax)
 !
 !-----------------------------------------------------------------------
