@@ -40,7 +40,7 @@ subroutine te0136(option, nomte)
 !
     character(len=8) :: elrefe, alias8
     real(kind=8) :: poids, r, nx, ny, tpg
-    real(kind=8) :: coorse(18), vectt(9), hech, sigma, epsil, tz0
+    real(kind=8) :: coorse(18), vectt(9), hech, sigmEner, epsil, tz0
     integer(kind=8) :: nno, nnos, ndim, kp, npg, ipoids, ivf, idfde, jgano, igeom
     integer(kind=8) :: iveres, i, j, l, li, iech, iray, itemp
     integer(kind=8) :: nnop2, c(6, 9), ise, nse, ibid
@@ -67,7 +67,7 @@ subroutine te0136(option, nomte)
         hech = zr(iech)
     else if (option(11:14) .eq. 'RAYO') then
         call jevech('PRAYONR', 'L', iray)
-        sigma = zr(iray)
+        sigmEner = zr(iray)
         epsil = zr(iray+1)
     end if
     call jevech('PGEOMER', 'L', igeom)
@@ -109,8 +109,8 @@ subroutine te0136(option, nomte)
             else if (option(11:14) .eq. 'RAYO') then
                 do i = 1, nno
                     li = ivf+(kp-1)*nno+i-1
-                    vectt(c(ise, i)) = vectt(c(ise, i))+poids*zr(li)*sigma*epsil*(tpg+tz0 &
-                                                                                  )**4
+                    vectt(c(ise, i)) = vectt(c(ise, i))+poids*zr(li)*sigmEner*epsil*(tpg+tz0 &
+                                                                                     )**4
                 end do
             end if
 !

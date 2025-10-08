@@ -15,14 +15,41 @@
 ! You should have received a copy of the GNU General Public License
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
-
-subroutine te0565(nomopt, nomte)
 !
+subroutine te0565(option, nomte)
+!
+    use Behaviour_module
     implicit none
 !
-!     BUTS: .CALCUL DE L'ENERGIES DE DEFORMATION ELASTIQUE - CAS X-FEM
+#include "asterf_types.h"
+#include "asterfort/assert.h"
+#include "asterfort/dfdm2d.h"
+#include "asterfort/dfdm3d.h"
+#include "asterfort/elref1.h"
+#include "asterfort/elrefe_info.h"
+#include "asterfort/enelpg.h"
+#include "asterfort/getElemOrientation.h"
+#include "asterfort/iselli.h"
+#include "asterfort/jevech.h"
+#include "asterfort/lteatt.h"
+#include "asterfort/ltequa.h"
+#include "asterfort/nbsigm.h"
+#include "asterfort/reeref.h"
+#include "asterfort/teattr.h"
+#include "asterfort/tecach.h"
+#include "jeveux.h"
 !
-! -----------------------------------------------------------------
+    character(len=16), intent(in) :: nomte, option
+!
+! --------------------------------------------------------------------------------------------------
+!
+! Elementary computation
+!
+! Elements: XFEM
+!
+! Options: ENEL_ELEM, ENTR_ELEM, ENER_TOTALE, INDIC_ENER, INDIC_SEUIL
+!
+! --------------------------------------------------------------------------------------------------
 !
 !  OPTION ENEL_ELEM : CALCUL DE L'ENERGIE DE DEFORMATION ELASTIQUE
 !  ================   DETERMINEE PAR L'EXPRESSION SUIVANTE :
@@ -43,182 +70,106 @@ subroutine te0565(nomopt, nomte)
 !        OU  .T       EST LE TENSEUR DES CONTRAINTES DU FORMALISME
 !            .D         EST LE TENSEUR DE HOOKE
 !
-!   REMARQUE : EN GRANDE DEFORMATION ON INTEGRE SUR LE VOLUME INITIALE
-! -----------------------------------------------------------------
-!          ELEMENTS ISOPARAMETRIQUES 2D ET 3D
+! --------------------------------------------------------------------------------------------------
 !
-!          OPTIONS : 'ENEL_ELEM'
-!
-!     ENTREES  ---> OPTION : OPTION DE CALCUL
-!              ---> NOMTE  : NOM DU TYPE ELEMENT
-!.......................................................................
-!
-    character(len=16) :: nomte, nomopt
-!
-#include "asterf_types.h"
-#include "jeveux.h"
-#include "asterfort/assert.h"
-#include "asterfort/dfdm2d.h"
-#include "asterfort/dfdm3d.h"
-#include "asterfort/elref1.h"
-#include "asterfort/elrefe_info.h"
-#include "asterfort/enelpg.h"
-#include "asterfort/iselli.h"
-#include "asterfort/jevech.h"
-#include "asterfort/lteatt.h"
-#include "asterfort/nbsigm.h"
-#include "asterfort/getElemOrientation.h"
-#include "asterfort/reeref.h"
-#include "asterfort/tecach.h"
-#include "asterfort/teattr.h"
-#include "asterfort/ltequa.h"
-!-----------------------------------------------------------------------
+    integer(kind=8), parameter :: nbsgm = 6
+    real(kind=8), parameter :: zero = 0.d0
     integer(kind=8) :: idene1
-    integer(kind=8) :: idfde, idsig, idvari, igeom, imate, itemps
-    integer(kind=8) :: ipoids, ivf
-    integer(kind=8) :: nbsgm, nbsig, nbvari, ndim, nno
+    integer(kind=8) :: jvDBaseFunc, jvSigm, jvVari, jvGeom, jvMater, jvTime
+    integer(kind=8) :: jvGaussWeight, jvBaseFunc
+    integer(kind=8) :: nbsig, nbvari, ndim, nno
     integer(kind=8) :: npg, iret, i, jtab(7)
-    parameter(nbsgm=6)
-    real(kind=8) :: enelas
-    real(kind=8) :: deux, trois
-    real(kind=8) :: un, undemi, untier, welas, wtotal
-    real(kind=8) :: zero
-    real(kind=8) :: sigma(nbsgm)
-    real(kind=8) :: angl_naut(3), instan
+    real(kind=8) :: enerElas
+    real(kind=8) :: welas, wtotal
+    real(kind=8) :: sigmEner(nbsgm)
+    real(kind=8) :: anglNaut(3), time
     real(kind=8) :: f(3, 3), r
-    character(len=16) :: compor(3)
+    character(len=16) :: relaName, defoComp
     integer(kind=8) :: jpintt, jpmilt, jcnset, jlonch
     integer(kind=8) :: nse, nnop
-    character(len=8) :: elrefp, elrese(6), fami(6), enr
+    character(len=8) :: elrefp, enr
     real(kind=8) :: coorse(81), xg(3), xe(3), ff(27)
     real(kind=8) :: jac
     integer(kind=8) :: irese, idecpg, idebs, idebv
     integer(kind=8) :: j, in, ino, ise, kpg, n
-    aster_logical :: grand, axi
+    aster_logical :: largeStrain, axi
+    character(len=8), parameter :: elrese(6) = (/'SE2', 'TR3', 'TE4', 'SE3', 'TR6', 'T10'/)
+    character(len=8), parameter :: fami(6) = (/'BID ', 'XINT', 'XINT', 'BID ', 'XINT', 'XINT'/)
 !
-    data elrese/'SE2', 'TR3', 'TE4', 'SE3', 'TR6', 'T10'/
-    data fami/'BID', 'XINT', 'XINT', 'BID', 'XINT', 'XINT'/
+! --------------------------------------------------------------------------------------------------
 !
-!-----------------------------------------------------------------------
-!
-!
-! ---- INITIALISATIONS :
-!
-    zero = 0.0d0
-    undemi = 0.5d0
-    un = 1.0d0
-    deux = 2.0d0
-    trois = 3.0d0
-    untier = 1.0d0/3.0d0
-    enelas = zero
+    enerElas = zero
     welas = zero
     wtotal = zero
-    instan = zero
-!
-! ---- CARACTERISTIQUES DU TYPE D'ELEMENT :
-! ---- GEOMETRIE ET INTEGRATION
-!
-!
-! --- ELEMENT DE REFERENCE PARENT : RECUP DE NDIM ET NNOP
+
+! - Get parent
     call elref1(elrefp)
     call elrefe_info(fami='RIGI', ndim=ndim, nno=nnop)
-!
-!     SOUS-ELEMENT DE REFERENCE : RECUP DE NNO, NPG ET IVF
+
+!   SOUS-ELEMENT DE REFERENCE : RECUP DE NNO, NPG ET IVF
     if (.not. iselli(elrefp)) then
         irese = 3
     else
         irese = 0
     end if
     call elrefe_info(elrefe=elrese(ndim+irese), fami=fami(ndim+irese), nno=nno, npg=npg, &
-                     jpoids=ipoids, jvf=ivf, jdfde=idfde)
-!
-! --- TYPE DE MODELISATION
-!
+                     jpoids=jvGaussWeight, jvf=jvBaseFunc, jdfde=jvDBaseFunc)
     axi = lteatt('AXIS', 'OUI')
-!
-! ---- NOMBRE DE CONTRAINTES ASSOCIE A L'ELEMENT :
-!
     nbsig = nbsigm()
-!
-! ---- RECUPERATION DES COORDONNEES DES CONNECTIVITES :
-!
-    call jevech('PGEOMER', 'L', igeom)
-!
-! ---- RECUPERATION DU MATERIAU :
-!
-    call jevech('PMATERC', 'L', imate)
-!
-! ---- RECUPERATION DES CHAMPS X-FEM :
-!
+    ASSERT(nbsig .le. 6)
+
+! - Geometry
+    call jevech('PGEOMER', 'L', jvGeom)
+
+! - Material parameters
+    call jevech('PMATERC', 'L', jvMater)
+
+! - XFEM
     call jevech('PPINTTO', 'L', jpintt)
     call jevech('PCNSETO', 'L', jcnset)
     call jevech('PLONCHA', 'L', jlonch)
-!     PROPRES AUX ELEMENTS 1D ET 2D (QUADRATIQUES)
     call teattr('S', 'XFEM', enr, iret)
-    if ((iret .eq. 0) .and. ltequa(elrefp, enr)) &
+    if ((iret .eq. 0) .and. ltequa(elrefp, enr)) then
         call jevech('PPMILTO', 'L', jpmilt)
-!
-! ---- RECUPERATION  DES DONNEEES RELATIVES AU REPERE D'ORTHOTROPIE :
-    call getElemOrientation(ndim, nnop, igeom, angl_naut)
-!
-! ---- RECUPERATION DU CHAMP DE DEPLACEMENTS AUX NOEUDS  :
-!
-!    RQ: - on suppose qu'on est en h.p.p. et qu'il n'est donc pas
-!          necessaire de disposer du champ de deplacement pour
-!          calculer l'energie ; on suppose que la variation du volume
-!          de l'element est negligeable
-!        - cette hypothese permet d'eviter d'avoir a creer un champ
-!          de deplacement avec suffisament de composantes (H1X, etc)
-!    call jevech('PDEPLR', 'L', idepl)
-!
-! ---- RECUPERATION DU CHAMP DE CONTRAINTES AUX POINTS D'INTEGRATION :
-!
-    call jevech('PCONTPR', 'L', idsig)
-!
-! ---- RECUPERATION DE L'INSTANT DE CALCUL
-!      -----------------------------------
-    call tecach('NNO', 'PINSTR', 'L', iret, iad=itemps)
-    if (itemps .ne. 0) instan = zr(itemps)
-!
-! ----RECUPERATION DU TYPE DE COMPORTEMENT  :
-!     N'EXISTE PAS EN LINEAIRE
-    call tecach('NNO', 'PCOMPOR', 'L', iret, nval=7, &
-                itab=jtab)
-    compor(1) = 'ELAS'
-    compor(2) = ' '
-    compor(3) = 'PETIT'
-    if (iret .eq. 0) then
-        compor(1) = zk16(jtab(1))
-        compor(3) = zk16(jtab(1)+2)
     end if
-!
-!     GRANDES DEFORMATIONS
-!
-    if ((compor(3) .eq. 'SIMO_MIEHE') .or. (compor(3) .eq. 'GDEF_LOG')) then
-        grand = .true.
+
+! - Orthotropic parameters
+    call getElemOrientation(ndim, nnop, jvGeom, anglNaut)
+
+! - Get stresses
+    call jevech('PCONTPR', 'L', jvSigm)
+
+! - Get time
+    time = zero
+    call tecach('NNO', 'PINSTR', 'L', iret, iad=jvTime)
+    if (jvTime .ne. 0) then
+        time = zr(jvTime)
+    end if
+
+! - Get parameters from behaviour (linear and non-linear cases)
+    call behaviourGetParameters(relaName, defoComp)
+    if ((defoComp .eq. 'SIMO_MIEHE') .or. (defoComp .eq. 'GDEF_LOG')) then
+        largeStrain = ASTER_TRUE
     else
-        grand = .false.
+        largeStrain = ASTER_FALSE
     end if
-!
-! ----   RECUPERATION DU CHAMP DE VARIABLES INTERNES  :
-!        N'EXISTE PAS EN LINEAIRE
-    call tecach('ONO', 'PVARIPR', 'L', iret, nval=7, &
-                itab=jtab)
+
+! - Internal state variables (only for non-linear)
+    jvVari = 1
+    nbvari = 0
+    call tecach('ONO', 'PVARIPR', 'L', iret, nval=7, itab=jtab)
     if (iret .eq. 0) then
-        idvari = jtab(1)
+        jvVari = jtab(1)
         nbvari = max(jtab(6), 1)*jtab(7)
-    else
-        idvari = 1
-        nbvari = 0
     end if
-!
-! --- RECUPERATION DU CHAMP POUR STOCKER L'ENERGIE ELSTIQUE
+
+! - RECUPERATION DU CHAMP POUR STOCKER L'ENERGIE ELSTIQUE
     call jevech('PENERD1', 'E', idene1)
 !
 ! --- RÉCUPÉRATION DE LA SUBDIVISION DE L'ÉLÉMENT EN NSE SOUS ELEMENT
     nse = zi(jlonch-1+1)
-!
-! --- BOUCLE D'INTEGRATION SUR LES NSE SOUS-ELEMENTS
+
+! - BOUCLE D'INTEGRATION SUR LES NSE SOUS-ELEMENTS
     do ise = 1, nse
 !
 !       BOUCLE SUR LES SOMMETS DU SOUS-TRIA (DU SOUS-SEG)
@@ -226,7 +177,7 @@ subroutine te0565(nomopt, nomte)
             ino = zi(jcnset-1+nno*(ise-1)+in)
             do j = 1, ndim
                 if (ino .lt. 1000) then
-                    coorse(ndim*(in-1)+j) = zr(igeom-1+ndim*(ino-1)+j)
+                    coorse(ndim*(in-1)+j) = zr(jvGeom-1+ndim*(ino-1)+j)
                 else if (ino .gt. 1000 .and. ino .lt. 2000) then
                     coorse(ndim*(in-1)+j) = zr(jpintt-1+ndim*(ino-1000-1)+j)
                 else if (ino .gt. 2000 .and. ino .lt. 3000) then
@@ -236,77 +187,65 @@ subroutine te0565(nomopt, nomte)
                 end if
             end do
         end do
-!
-!-----------------------------------------------------------------------
-!         BOUCLE SUR LES POINTS DE GAUSS DU SOUS-ELT
-!-----------------------------------------------------------------------
-!
+
         do kpg = 1, npg
-!
-!     --- COORDONNÉES DU PT DE GAUSS DANS LE REPÈRE RÉEL : XG
-            xg(:) = 0.d0
+! --------- Coordinates of current Gauss point
+            xg = 0.d0
             do i = 1, ndim
                 do n = 1, nno
-                    xg(i) = xg(i)+zr(ivf-1+nno*(kpg-1)+n)*coorse(ndim*(n-1)+i)
+                    xg(i) = xg(i)+zr(jvBaseFunc-1+nno*(kpg-1)+n)*coorse(ndim*(n-1)+i)
                 end do
             end do
-!
-!           JUSTE POUR CALCULER LES FF
-!
-            call reeref(elrefp, nnop, zr(igeom), xg, ndim, &
-                        xe, ff)
-!
-!           CALCULER LE JACOBIEN DE LA TRANSFO SSTET->SSTET REF
-!           AVEC LES COORDONNEES DU SOUS-ELEMENT
+
+! --------- Shepe function
+            call reeref(elrefp, nnop, zr(jvGeom), xg, ndim, xe, ff)
+
+! --------- Compute jacobian
             if (ndim .eq. 2) then
-                call dfdm2d(nno, kpg, ipoids, idfde, coorse, &
+                call dfdm2d(nno, kpg, jvGaussWeight, jvDBaseFunc, coorse, &
                             jac)
             else if (ndim .eq. 3) then
-                call dfdm3d(nno, kpg, ipoids, idfde, coorse, &
+                call dfdm3d(nno, kpg, jvGaussWeight, jvDBaseFunc, coorse, &
                             jac)
+            else
+                ASSERT(ASTER_FALSE)
             end if
-!
-! -         CALCUL DE LA DISTANCE A L'AXE (AXISYMETRIQUE):
+
+! --------- CALCUL DE LA DISTANCE A L'AXE (AXISYMETRIQUE):
             if (axi) then
                 r = 0.d0
                 do n = 1, nnop
-                    r = r+ff(n)*zr(igeom-1+2*(n-1)+1)
+                    r = r+ff(n)*zr(jvGeom-1+2*(n-1)+1)
                 end do
-!
                 ASSERT(r .gt. 0d0)
-!               MODIFICATION DU JACOBIEN
                 jac = jac*r
             end if
 
-!           DEBUT DE LA ZONE MEMOIRE DE SIG ET VI CORRESPONDANTE
+! --------- DEBUT DE LA ZONE MEMOIRE DE SIG ET VI CORRESPONDANTE
             idecpg = npg*(ise-1)
             idebs = nbsig*idecpg
             idebv = nbvari*idecpg
 
-!     --- TENSEUR DES CONTRAINTES AU POINT D'INTEGRATION COURANT :
-!
+! --------- TENSEUR DES CONTRAINTES AU POINT D'INTEGRATION COURANT :
+            sigmEner = 0.d0
             do i = 1, nbsig
-                sigma(i) = zr(idsig+idebs+(kpg-1)*nbsig+i-1)
+                sigmEner(i) = zr(jvSigm+idebs+(kpg-1)*nbsig+i-1)
             end do
-!
-!           CALCUL DU GRADIENT DE LA TRANSFORMATION
-!
-!           Hypothese : on est en H.P.P.
-            ASSERT(.not. grand)
-!
-            f(1:3, 1:3) = 0.d0
+
+! --------- CALCUL DU GRADIENT DE LA TRANSFORMATION
+            ASSERT(.not. largeStrain)
+            f = 0.d0
             do i = 1, 3
                 f(i, i) = 1.d0
             end do
-!
-            call enelpg('XFEM', zi(imate), instan, kpg, angl_naut, &
-                        compor, f, sigma, nbvari, &
-                        zr(idvari+idebv+(kpg-1)*nbvari), enelas)
-!
-            welas = welas+enelas*jac
-!
+            call enelpg('XFEM', zi(jvMater), time, kpg, anglNaut, &
+                        relaName, defoComp, &
+                        f, sigmEner, &
+                        nbvari, zr(jvVari+(kpg-1)*nbvari), &
+                        enerElas)
+            welas = welas+enerElas*jac
+
         end do
-!
     end do
 !
     zr(idene1) = welas

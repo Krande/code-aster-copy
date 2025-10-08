@@ -15,22 +15,15 @@
 ! You should have received a copy of the GNU General Public License
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
-
-!
 #include "asterf_types.h"
 !
 interface
-    subroutine tanbul(option, ndim, g, mate, compor,&
-                      resi, mini, alpha, dsbdep, trepst)
-        integer(kind=8) :: ndim
-        character(len=16) :: option
-        integer(kind=8) :: g
-        integer(kind=8) :: mate
-        character(len=16) :: compor
-        aster_logical :: resi
-        aster_logical :: mini
-        real(kind=8) :: alpha
-        real(kind=8) :: dsbdep(2*ndim, 2*ndim)
-        real(kind=8) :: trepst
+    subroutine tanbul(ndim, kpg, jvMaterCode, relaComp, &
+                      resi, mini, &
+                      alpha, dsbdep, traceEpsiTher)
+        integer(kind=8), intent(in) :: ndim, kpg, jvMaterCode
+        character(len=16), intent(in) :: relaComp
+        aster_logical, intent(in) :: resi, mini
+        real(kind=8), intent(out) :: alpha, dsbdep(2*ndim, 2*ndim), traceEpsiTher
     end subroutine tanbul
 end interface

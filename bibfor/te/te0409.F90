@@ -131,7 +131,7 @@ subroutine te0409(option, nomte)
 !            M  :    MOMENT FLECHISSANT "+"
 !            Q  :    CISAILLEMENT TRANSVERSE
 !
-    real(kind=8) :: sigmam(32), efform(32), effint(32), efforp(32)
+    real(kind=8) :: sigmEnerm(32), efform(32), effint(32), efforp(32)
 !            SIGMAM : EFFORTS DANS LE REPERE UTILISATEUR  A T "-"
 !            EFFORM : EFFORTS DANS LE REPERE DE L'ELEMENT A T "-"
 !            EFFINT : EFFORTS DANS LE REPERE DE L'ELEMENT A T "+"
@@ -389,7 +389,7 @@ subroutine te0409(option, nomte)
     call r8inir(32, 0.d0, efforp, 1)
 !
     call r8inir(36, 0.d0, delas, 1)
-    call r8inir(32, 0.d0, sigmam, 1)
+    call r8inir(32, 0.d0, sigmEnerm, 1)
     call r8inir(32, 0.d0, efform, 1)
     call r8inir(2*4, 0.d0, um, 1)
     call r8inir(3*4, 0.d0, uf, 1)
@@ -416,7 +416,7 @@ subroutine te0409(option, nomte)
     if (.not. lLinear) then
 !      -- SIGMAM : EFFORTS DANS REPERE UTILISATEUR
         do i = 1, nbcont*npg
-            sigmam(i) = zr(icontm-1+i)
+            sigmEnerm(i) = zr(icontm-1+i)
         end do
 !
 !      -- CALCUL DES MATRICES DE CHANGEMENT DE REPERE
@@ -429,7 +429,7 @@ subroutine te0409(option, nomte)
 !
 !       -- PASSAGE DES EFFORTS GENERALISES AUX POINTS D'INTEGRATION
 !              DU REPERE UTILISATEUR AU REPERE INTRINSEQUE
-        call dxefro(npg, t2ui, sigmam, efform)
+        call dxefro(npg, t2ui, sigmEnerm, efform)
     end if
 !
 !     BOUCLE SUR LES POINTS DE GAUSS DE LA SURFACE:

@@ -40,7 +40,7 @@ subroutine te0423(option, nomte)
     integer(kind=8) :: ndim, nno, nnos, npg, ipoids, ivf, idfdx, jgano
     integer(kind=8) :: i, jgeom, jcaco, jvecg
     real(kind=8) :: pgl(3, 3), xyzl(3, 4)
-    real(kind=8) :: bsigma(24), sigt(32)
+    real(kind=8) :: bsigmEner(24), sigt(32)
     character(len=16) :: optio2
 ! ----------------------------------------------------------------------
 !
@@ -75,13 +75,13 @@ subroutine te0423(option, nomte)
 ! --- (I.E. SOMME_VOL(BT_SIG))
 !     ------------------------
     optio2 = 'FORC_NODA'
-    call dxbsig(nomte, xyzl, pgl, sigt, bsigma, &
+    call dxbsig(nomte, xyzl, pgl, sigt, bsigmEner, &
                 optio2)
 !
 ! --- AFFECTATION DU VECTEUR DES FORCES ELEMENTAIRES EN SORTIE DU TE
 !     --------------------------------------------------------------
     do i = 1, nno*6
-        zr(jvecg+i-1) = bsigma(i)
+        zr(jvecg+i-1) = bsigmEner(i)
     end do
 !
 end subroutine

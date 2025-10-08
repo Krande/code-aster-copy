@@ -40,7 +40,7 @@ subroutine te0049(option, nomte)
 !              ---> NOMTE  : NOM DU TYPE ELEMENT
 !.......................................................................
 !
-    real(kind=8) :: sigi(162), epsi(162), bsigma(81), angl_naut(3)
+    real(kind=8) :: sigi(162), epsi(162), bsigmEner(81), angl_naut(3)
     real(kind=8) :: instan, nharm
 !
 ! ---- CARACTERISTIQUES DU TYPE D'ELEMENT :
@@ -71,7 +71,7 @@ subroutine te0049(option, nomte)
     end do
 !
     do i = 1, ndim*nno
-        bsigma(i) = zero
+        bsigmEner(i) = zero
     end do
 !
 ! ---- RECUPERATION DES COORDONNEES DES CONNECTIVITES
@@ -109,7 +109,7 @@ subroutine te0049(option, nomte)
 !      ----------------------
     call bsigmc(nno, ndim, nbsig, npg1, ipoids, &
                 ivf, idfde, zr(igeom), nharm, sigi, &
-                bsigma)
+                bsigmEner)
 !
 ! ---- RECUPERATION ET AFFECTATION DU VECTEUR EN SORTIE AVEC LE
 ! ---- VECTEUR DES FORCES DUES AUX CONTRAINTES INITIALES
@@ -117,7 +117,7 @@ subroutine te0049(option, nomte)
     call jevech('PVECTUR', 'E', ivectu)
 !
     do i = 1, ndim*nno
-        zr(ivectu+i-1) = bsigma(i)
+        zr(ivectu+i-1) = bsigmEner(i)
     end do
 !
 ! FIN ------------------------------------------------------------------

@@ -17,104 +17,104 @@
 ! --------------------------------------------------------------------
 !
 subroutine ethdst(fami, nno, ndim, nbsig, npg, &
-                  ipoids, ivf, idfde, xyz, depl, &
-                  instan, angl_naut, mater, option, enthth)
+                  jvGaussWeight, jvBaseFunc, jvDBaseFunc, &
+                  nodeCoor, time, anglNaut, jvMaterCode, &
+                  enerTherTher)
+!
+    use BehaviourStrain_type
     implicit none
+!
+#include "asterfort/assert.h"
+#include "asterfort/Behaviour_type.h"
+#include "asterfort/dfdm2d.h"
+#include "asterfort/dfdm3d.h"
+#include "asterfort/epthmc.h"
+#include "asterfort/lteatt.h"
+#include "asterfort/sigtmc.h"
+#include "jeveux.h"
+!
+    character(len=*), intent(in) :: fami
+    integer(kind=8), intent(in) :: nno, ndim, nbsig, npg
+    integer(kind=8), intent(in) :: jvGaussWeight, jvBaseFunc, jvDBaseFunc
+    real(kind=8), intent(in) :: nodeCoor(ndim*nno)
+    real(kind=8), intent(in) :: time, anglNaut(3)
+    integer(kind=8), intent(in) :: jvMaterCode
+    real(kind=8), intent(out) :: enerTherTher
+
+! --------------------------------------------------------------------------------------------------
 !
 !      ETHDST   -- CALCUL DU TERME EPSTHT*D*EPSTH RENTRANT
 !                  DANS LE CALCUL DE L'ENERGIE POTENTIELLE
 !                  (I.E.  1/2*UT*K*U - UT*FTH + 1/2*EPSTHT*D*EPSTH)
 !                  POUR LES ELEMENTS ISOPARAMETRIQUES
 !
+! --------------------------------------------------------------------------------------------------
 !
-!   ARGUMENT        E/S  TYPE         ROLE
-!    NNO            IN     I        NOMBRE DE NOEUDS DE L'ELEMENT
-!    NDIM           IN     I        DIMENSION DE L'ELEMENT (2 OU 3)
-!    NBSIG          IN     I        NOMBRE DE CONTRAINTES ASSOCIE
-!                                   A L'ELEMENT
-!    NPG            IN     I        NOMBRE DE POINTS D'INTEGRATION
-!                                   DE L'ELEMENT
-!    IPOIDS         IN     I        POIDS D'INTEGRATION
-!    IVF            IN     I        FONCTIONS DE FORME
-!    IDFDE          IN     I        DERIVEES DES FONCTIONS DE FORME
-!    XYZ(1)         IN     R        COORDONNEES DES CONNECTIVITES
-!    DEPL(1)        IN     R        VECTEUR DES DEPLACEMENTS SUR
-!                                   L'ELEMENT
-!    INSTAN         IN     R        INSTANT DE CALCUL
-!    ANGL_NAUT(3)   IN     R        ANGLES NAUTIQUES DEFINISSANT LE REPERE
-!                                   D'ORTHOTROPIE
-!    MATER          IN     I        MATERIAU
-!    OPTION         IN     K16      OPTION DE CALCUL
-!    ENTHTH         OUT    R        SOMME(EPSTH_T*D*EPSTH)
+! In  fami             : Gauss family for integration point rule
+! In  nno              : number of nodes
+! In  ndim             : dimension of space
+! In  nbsig            : number of stress tensor components
+! In  npg              : number of Gauss points
+! In  jvGaussWeight    : adresse to Gauss point weight
+! In  jvBaseFunc       : adresse to shape functions
+! In  jvDBaseFunc      : adresse to derivative of shape functions
+! In  nodeCoor         : coordinates of nodes
+! In  time             : given time
+! In  anglNaut         : nautical angles (for non-isotropic materials)
+! In  jvMaterCode      : coded material address
+! Out enerTherTher     : SOMME(EPSTH_T*D*EPSTH)
 !
-!.========================= DEBUT DES DECLARATIONS ====================
-! -----  ARGUMENTS
-#include "jeveux.h"
-#include "asterfort/dfdm2d.h"
-#include "asterfort/dfdm3d.h"
-#include "asterfort/epthmc.h"
-#include "asterfort/lteatt.h"
-#include "asterfort/sigtmc.h"
+! --------------------------------------------------------------------------------------------------
 !
-    integer(kind=8) :: ipoids, ivf, idfde
-    character(len=16) :: option
-    character(len=*) :: fami
-    real(kind=8) :: xyz(*), depl(*), angl_naut(3)
-    real(kind=8) :: instan, enthth
-! -----  VARIABLES LOCALES
-    integer(kind=8) :: i, mater, nbsig, ndim, nno, npg, k, igau
-    character(len=16) :: k16bid
-    real(kind=8) :: sigth(162), zero
+    integer(kind=8) :: ino, isig, kpg, nbEpsi
+    real(kind=8) :: epsiTher(162), sigmTher(162)
     real(kind=8) :: rayon
-    real(kind=8) :: epsith(162), enthpg, dfdx(27), dfdy(27), dfdz(27)
-    real(kind=8) :: poidi
-!.========================= DEBUT DU CODE EXECUTABLE ==================
+    real(kind=8) :: enerTherKpg, dfdx(27), dfdy(27), dfdz(27)
+    real(kind=8) :: jacobKpg
 !
-! --- INITIALISATIONS :
-!     -----------------
-    zero = 0.0d0
-    k16bid = ' '
-    enthth = zero
+! --------------------------------------------------------------------------------------------------
 !
-! --- CALCUL DES CONTRAINTES MECANIQUES AUX POINTS D'INTEGRATION
-!      ---------------------------------------------------------
-    call epthmc(fami, nno, ndim, nbsig, npg, &
-                zr(ivf), angl_naut, instan, mater, &
-                option, epsith)
-!
-! --- CALCUL DES CONTRAINTES THERMIQUES AUX POINTS D'INTEGRATION
-!      ---------------------------------------------------------
-    call sigtmc(fami, ndim, nbsig, npg, &
-                instan, mater, angl_naut, &
-                k16bid, sigth)
-!
-! --- CALCUL DES CONTRAINTES TOTALES AUX POINTS D'INTEGRATION
-!      ---------------------------------------------------------
-    do igau = 1, npg
-        enthpg = 0.d0
-! ----  CALCUL DU JACOBIEN*POIDS - CAS MASSIF 3D
-!
+    ASSERT(nbsig .le. 6)
+    ASSERT(npg .le. 27)
+    nbEpsi = nbsig
+    enerTherTher = 0.d0
+
+! - Calcul des déformations thermiques
+    call epthmc(fami, nbEpsi, npg, ndim, &
+                time, anglNaut, jvMaterCode, &
+                VARC_STRAIN_TEMP, epsiTher)
+
+! - Calcul des contraintes thermiques
+    call sigtmc(fami, nbsig, npg, ndim, &
+                time, jvMaterCode, anglNaut, &
+                VARC_STRAIN_TEMP, sigmTher)
+
+! - Loop on Gauss points
+    do kpg = 1, npg
+        enerTherKpg = 0.d0
+
+! ----- Get jacobian at current Gauss point
         if (lteatt('DIM_TOPO_MAILLE', '3')) then
-            call dfdm3d(nno, igau, ipoids, idfde, xyz, &
-                        poidi, dfdx, dfdy, dfdz)
-! ----  CALCUL DU JACOBIEN*POIDS - CAS MASSIF 2D
+            call dfdm3d(nno, kpg, &
+                        jvGaussWeight, jvDBaseFunc, nodeCoor, &
+                        jacobKpg, dfdx, dfdy, dfdz)
         else
-            k = (igau-1)*nno
-            call dfdm2d(nno, igau, ipoids, idfde, xyz, &
-                        poidi, dfdx, dfdy)
+            call dfdm2d(nno, kpg, &
+                        jvGaussWeight, jvDBaseFunc, nodeCoor, &
+                        jacobKpg, dfdx, dfdy)
             if (lteatt('AXIS', 'OUI')) then
                 rayon = 0.d0
-                do i = 1, nno
-                    rayon = rayon+zr(ivf+k-1+i)*xyz(2*(i-1)+1)
+                do ino = 1, nno
+                    rayon = rayon+zr(jvBaseFunc+(kpg-1)*nno-1+ino)*nodeCoor(2*(ino-1)+1)
                 end do
-                poidi = poidi*rayon
+                jacobKpg = jacobKpg*rayon
             end if
         end if
-        do i = 1, nbsig
-            enthpg = enthpg+epsith(i+nbsig*(igau-1))*sigth(i+nbsig*(igau-1))
+        do isig = 1, nbsig
+            enerTherKpg = enerTherKpg+ &
+                          epsiTher(isig+nbsig*(kpg-1))*sigmTher(isig+nbsig*(kpg-1))
         end do
-        enthth = enthth+(enthpg*poidi)
+        enerTherTher = enerTherTher+(enerTherKpg*jacobKpg)
     end do
 !
-!.============================ FIN DE LA ROUTINE ======================
 end subroutine

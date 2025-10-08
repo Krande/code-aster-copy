@@ -15,15 +15,12 @@
 ! You should have received a copy of the GNU General Public License
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
-
-!
-!
 #include "asterf_types.h"
 !
 interface
-    subroutine nurmtd(ndim, nno1, nno2, npg, iw,&
-                      vff1, vff2, ivf1, idff1, vu,&
-                      vp, typmod, igeom, mate, mini,&
+    subroutine nurmtd(ndim, nno1, nno2, npg, iw, &
+                      vff1, vff2, idff1, vu, &
+                      vp, typmod, igeom, mate, mini, &
                       matr)
         integer(kind=8) :: npg
         integer(kind=8) :: nno2

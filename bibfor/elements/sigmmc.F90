@@ -15,93 +15,82 @@
 ! You should have received a copy of the GNU General Public License
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
-
+!
 subroutine sigmmc(fami, nno, ndim, nbsig, npg, &
-                  ipoids, ivf, idfde, xyz, depl, &
-                  instan, angl_naut, mater, nharm, sigma)
-!.======================================================================
+                  jvGaussWeight, jvBaseFunc, jvDBaseFunc, &
+                  nodeCoor, nodeDisp, &
+                  time, anglNaut, jvMaterCode, nharm, &
+                  sigm)
+!
     implicit none
 !
-!      SIGMMC   -- CALCUL DES  CONTRAINTES AUX POINTS D'INTEGRATION
-!                  POUR LES ELEMENTS ISOPARAMETRIQUES
-!
-!   ARGUMENT        E/S  TYPE         ROLE
-!    NNO            IN     I        NOMBRE DE NOEUDS DE L'ELEMENT
-!    NDIM           IN     I        DIMENSION DE L'ELEMENT (2 OU 3)
-!    NBSIG          IN     I        NOMBRE DE CONTRAINTES ASSOCIE
-!                                   A L'ELEMENT
-!    NPG            IN     I        NOMBRE DE POINTS D'INTEGRATION
-!                                   DE L'ELEMENT
-!    IPOIDS         IN     I        POIDS D'INTEGRATION
-!    IVF            IN     I        FONCTIONS DE FORME
-!    IDFDE          IN     I        DERIVEES DES FONCTIONS DE FORME
-!    XYZ(1)         IN     R        COORDONNEES DES CONNECTIVITES
-!    DEPL(1)        IN     R        VECTEUR DES DEPLACEMENTS SUR
-!                                   L'ELEMENT
-!    INSTAN         IN     R        INSTANT DE CALCUL
-!    ANGL_NAUT(3)   IN     R        ANGLES NAUTIQUES DEFINISSANT LE REPERE
-!                                   D'ORTHOTROPIE
-!    MATER          IN     I        MATERIAU
-!    NHARM          IN     R        NUMERO D'HARMONIQUE
-!    SIGMA(1)       OUT    R        CONTRAINTES AUX POINTS D'INTEGRATION
-!
-!.========================= DEBUT DES DECLARATIONS ====================
-! -----  ARGUMENTS
-#include "jeveux.h"
+#include "asterfort/assert.h"
 #include "asterfort/bmatmc.h"
 #include "asterfort/dbudef.h"
 #include "asterfort/dmatmc.h"
-#include "asterfort/lteatt.h"
-    real(kind=8) :: xyz(1), depl(1), angl_naut(3), sigma(1)
-    real(kind=8) :: instan, nharm
-    character(len=*) :: fami
-! -----  VARIABLES LOCALES
-    integer(kind=8) :: igau, nno
+#include "jeveux.h"
+#include "MeshTypes_type.h"
+!
+    character(len=*), intent(in) :: fami
+    integer(kind=8), intent(in) :: nno, ndim, nbsig, npg
+    integer(kind=8), intent(in) :: jvGaussWeight, jvBaseFunc, jvDBaseFunc
+    real(kind=8), intent(in) :: nodeCoor(ndim*nno), nodeDisp(ndim*nno)
+    real(kind=8), intent(in) :: time, anglNaut(3)
+    integer(kind=8), intent(in) :: jvMaterCode
+    real(kind=8), intent(in) :: nharm
+    real(kind=8), intent(out) :: sigm(nbsig*npg)
+!
+! --------------------------------------------------------------------------------------------------
+!
+! Compute stress at Gauss points
+!
+! --------------------------------------------------------------------------------------------------
+!
+! In  fami             : Gauss family for integration point rule
+! In  nno              : number of nodes of element
+! In  ndim             : dimension of element (2 ou 3)
+! In  nbsig            : number of components for stress tensors (4 or 6)
+! In  npg              : number of Gauss points
+! In  jvGaussWeight    : adresse to Gauss point weight
+! In  jvBaseFunc       : adresse to shape functions
+! In  jvDBaseFunc      : adresse to derivative of shape functions
+! In  nodeCoor         : coordinates of nodes
+! In  nodeDisp         : displacements at nodes
+! In  time             : current time
+! In  anglNaut         : nautical angles for definition of basis for non-isotropic elasticity
+! In  jvMaterCode      : adress for material parameters
+! In  nharm            : Fourier mode
+! Out sigm             : values of stress tensor at integration points
+!
+! --------------------------------------------------------------------------------------------------
+!
+    integer(kind=8), parameter :: ksp = 1
+    integer(kind=8) :: kpg, nbinco
     real(kind=8) :: b(486), d(36), jacgau
-    character(len=2) :: k2bid
-!.========================= DEBUT DU CODE EXECUTABLE ==================
 !
-! --- INITIALISATIONS :
-!     -----------------
-!-----------------------------------------------------------------------
-    integer(kind=8) :: idfde, ipoids, ivf, mater, nbinco, nbsig
-    integer(kind=8) :: ndim, ndim2, npg
-    real(kind=8) :: zero
-!-----------------------------------------------------------------------
-    k2bid = '  '
-    zero = 0.0d0
+! --------------------------------------------------------------------------------------------------
+!
+    ASSERT(nbsig .le. 6)
+    ASSERT(npg .le. 27)
+    ASSERT(nno .le. MT_NNOMAX)
     nbinco = ndim*nno
-    ndim2 = ndim
-    if (lteatt('FOURIER', 'OUI')) then
-        ndim2 = 2
-    end if
-!
-    sigma(1:nbsig*npg) = zero
-!
-! --- CALCUL DES CONTRAINTES AUX POINTS D'INTEGRATION
-! ---  BOUCLE SUR LES POINTS D'INTEGRATION
-!      -----------------------------------
-    do igau = 1, npg
-!
-!  --      CALCUL DE LA MATRICE B RELIANT LES DEFORMATIONS DU
-!  --      PREMIER ORDRE AUX DEPLACEMENTS AU POINT D'INTEGRATION
-!  --      COURANT : (EPS_1) = (B)*(UN)
-!          ----------------------------
-        call bmatmc(igau, nbsig, xyz, ipoids, ivf, &
-                    idfde, nno, nharm, jacgau, b)
-!
-!  --      CALCUL DE LA MATRICE DE HOOKE (LE MATERIAU POUVANT
-!  --      ETRE ISOTROPE, ISOTROPE-TRANSVERSE OU ORTHOTROPE)
-!          -------------------------------------------------
-        call dmatmc(fami, mater, instan, '+', &
-                    igau, 1, angl_naut, nbsig, &
+    sigm = 0.d0
+
+! - Loop on Gauss points
+    do kpg = 1, npg
+! ----- Compute [B] matrix (displacements to strains)
+        call bmatmc(kpg, nbsig, nodeCoor, &
+                    jvGaussWeight, jvBaseFunc, jvDBaseFunc, &
+                    nno, nharm, jacgau, b)
+
+! ----- Compute elasticity matrix
+        call dmatmc(fami, jvMaterCode, time, '+', &
+                    kpg, ksp, anglNaut, nbsig, &
                     d)
-!
-!  --      CALCUL DE LA CONTRAINTE AU POINT D'INTEGRATION COURANT
-!          ------------------------------------------------------
-        call dbudef(depl, b, d, nbsig, nbinco, &
-                    sigma(1+nbsig*(igau-1)))
+
+! ----- Compute SIEF_ELGA
+        call dbudef(nodeDisp, b, d, nbsig, nbinco, &
+                    sigm(1+nbsig*(kpg-1)))
     end do
 !
-!.============================ FIN DE LA ROUTINE ======================
 end subroutine

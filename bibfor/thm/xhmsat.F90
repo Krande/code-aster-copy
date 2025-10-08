@@ -29,17 +29,16 @@ subroutine xhmsat(ds_thm, option, &
                   yaenrh, adenhy, nfh)
 !
     use THM_type
-!
     implicit none
 !
 #include "asterf_types.h"
 #include "asterfort/appmas.h"
+#include "asterfort/dilata.h"
 #include "asterfort/dmdepv.h"
 #include "asterfort/dmwdp1.h"
 #include "asterfort/dspdp1.h"
 #include "asterfort/inithm.h"
 #include "asterfort/sigmap.h"
-#include "asterfort/dilata.h"
 #include "asterfort/unsmfi.h"
 #include "asterfort/viporo.h"
 #include "asterfort/virhol.h"
@@ -244,13 +243,13 @@ subroutine xhmsat(ds_thm, option, &
 ! ======================================================================
             do ifh = 1, nfh
                 do i = 1, 3
-                    dsde(adcome+6-1+i, adenhy+(ifh-1)*(ndim+1)) = dsde(adcome+6-1+i, adenhy+ &
-                                                                       (ifh-1)*(ndim+1))+dsdp1(i)
+                    dsde(adcome+6-1+i, adenhy+(ifh-1)*(ndim+1)) = &
+                        dsde(adcome+6-1+i, adenhy+(ifh-1)*(ndim+1))+dsdp1(i)
                 end do
 !
                 do i = 4, 6
-                    dsde(adcome+6-1+i, adenhy+(ifh-1)*(ndim+1)) = dsde(adcome+6-1+i, adenhy+ &
-                                                                     (ifh-1)*(ndim+1))+dsdp1(i)*rac2
+                    dsde(adcome+6-1+i, adenhy+(ifh-1)*(ndim+1)) = &
+                        dsde(adcome+6-1+i, adenhy+(ifh-1)*(ndim+1))+dsdp1(i)*rac2
                 end do
             end do
         end if
@@ -258,14 +257,17 @@ subroutine xhmsat(ds_thm, option, &
 ! --- CALCUL DES DERIVEES DES APPORTS MASSIQUES ------------------------
 ! ======================================================================
         dsde(adcp11, addep1) = dsde(adcp11, addep1)+ &
-                            dmwdp1(rho11, signe, satur, dsatur_dp1, phi, cs, cliq, 1.d0, emmag, bid)
+                               dmwdp1(rho11, signe, satur, dsatur_dp1, &
+                                      phi, cs, cliq, 1.d0, emmag, bid)
         if (yaenrh .eq. 1) then
 ! ======================================================================
 ! --- CALCUL DES DERIVEES DES APPORTS MASSIQUES AVEC XFEM --------------
 ! ======================================================================
             do ifh = 1, nfh
-                dsde(adcp11, adenhy+(ifh-1)*(ndim+1)) = dsde(adcp11, adenhy+(ifh-1)*(ndim+1))+ &
-                            dmwdp1(rho11, signe, satur, dsatur_dp1, phi, cs, cliq, 1.d0, emmag, bid)
+                dsde(adcp11, adenhy+(ifh-1)*(ndim+1)) = &
+                    dsde(adcp11, adenhy+(ifh-1)*(ndim+1))+ &
+                    dmwdp1(rho11, signe, satur, dsatur_dp1, &
+                           phi, cs, cliq, 1.d0, emmag, bid)
             end do
         end if
     end if

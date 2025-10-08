@@ -20,49 +20,52 @@ subroutine te0097(option, nomte)
 !
     implicit none
 !
-    character(len=16) :: option, nomte
-!
-#include "jeveux.h"
 #include "asterc/r8vide.h"
-#include "asterfort/elrefe_info.h"
 #include "asterfort/assert.h"
-#include "asterfort/jevech.h"
-#include "asterfort/nbsigm.h"
-#include "asterfort/getElemOrientation.h"
 #include "asterfort/elref2.h"
+#include "asterfort/elrefe_info.h"
+#include "asterfort/getElemOrientation.h"
+#include "asterfort/jevech.h"
+#include "asterfort/lteatt.h"
+#include "asterfort/nbsigm.h"
 #include "asterfort/niinit.h"
 #include "asterfort/sigvmc.h"
-#include "asterfort/lteatt.h"
+#include "jeveux.h"
+#include "MeshTypes_type.h"
+!
+    character(len=16), intent(in) :: option, nomte
 !
 ! --------------------------------------------------------------------------------------------------
 !
-!     BUT: CALCUL DES CONTRAINTES AUX POINTS DE GAUSS
-!          ELEMENTS INCOMPRESSIBLE EN PETITES DEFORMATIONS
+! Elementary computation
 !
-!          OPTION : 'SIEF_ELGA'
+! Elements: *INCO*
 !
-!     ENTREES  ---> OPTION : OPTION DE CALCUL
-!              ---> NOMTE  : NOM DU TYPE ELEMENT
+! Options: SIEF_ELGA
 !
 ! --------------------------------------------------------------------------------------------------
 !
-    integer(kind=8), parameter :: npgMax = 27, nbNodeMax = 27
+    real(kind=8), parameter :: nharm = 0.d0
+    integer(kind=8), parameter :: npgMax = 27
     integer(kind=8) :: ndim, npg, jvWeightDisp, jvShapeDisp, jvDShapeDisp, jvShapePres
     integer(kind=8) :: idim
     integer(kind=8) :: jvSigm, jvDisp, jvGeom, jvMate, nbsig
     integer(kind=8) :: kpg, isig, iNodeDisp, iNodePres, iOSGS
     integer(kind=8) :: nbNodeDisp, nbNodePres, nbNodeGonf
-    real(kind=8) :: sigmDisp(npgMax*6), angl_naut(3), instan, nharm, sigmTrac(npgMax)
-    real(kind=8) :: presGaus(npgMax), dispU(3*nbNodeMax), dispP(nbNodeMax)
-    integer(kind=8) :: vu(3, nbNodeMax), vg(nbNodeMax), vp(nbNodeMax), vpi(3, nbNodeMax)
+    real(kind=8) :: sigmDisp(npgMax*6), anglNaut(3), time, sigmTrac(npgMax)
+    real(kind=8) :: presGaus(npgMax), dispU(3*MT_NNOMAX), dispP(MT_NNOMAX)
+    integer(kind=8) :: vu(3, MT_NNOMAX), vg(MT_NNOMAX), vp(MT_NNOMAX), vpi(3, MT_NNOMAX)
     integer(kind=8) :: nbElrefe, iRefePres, iRefeGonf
     character(len=8) :: listElrefe(10), typmod(2)
     aster_logical :: lGonf
 !
 ! --------------------------------------------------------------------------------------------------
 !
-    instan = r8vide()
-    nharm = 0
+    nbsig = nbsigm()
+    ASSERT(nbsig .le. 6)
+
+! - Current time
+    time = r8vide()
 
 ! - Some unknonws
     if (lteatt('INCO', 'C2 ')) then
@@ -81,8 +84,6 @@ subroutine te0097(option, nomte)
 ! - List of ELREFE
     call elref2(nomte, 10, listElrefe, nbElrefe)
     ASSERT(nbElrefe .ge. 2)
-    nbsig = nbsigm()
-    ASSERT(nbsig .le. 6)
     if (lGonf) then
         iRefePres = 3
         iRefeGonf = 2
@@ -96,13 +97,13 @@ subroutine te0097(option, nomte)
                      ndim=ndim, nno=nbNodeDisp, npg=npg, &
                      jpoids=jvWeightDisp, jvf=jvShapeDisp, jdfde=jvDShapeDisp)
     ASSERT(npg .le. npgMax)
-    ASSERT(nbNodeDisp .le. nbNodeMax)
+    ASSERT(nbNodeDisp .le. MT_NNOMAX)
 
 ! - Get paramers of finite element for pres
     call elrefe_info(elrefe=listElrefe(iRefePres), fami='RIGI', &
                      nno=nbNodePres, &
                      jvf=jvShapePres)
-    ASSERT(nbNodePres .le. nbNodeMax)
+    ASSERT(nbNodePres .le. MT_NNOMAX)
 
 ! - Get paramers of finite element for gonf
     nbNodeGonf = 0
@@ -110,7 +111,7 @@ subroutine te0097(option, nomte)
         call elrefe_info(elrefe=listElrefe(iRefeGonf), fami='RIGI', &
                          nno=nbNodeGonf)
     end if
-    ASSERT(nbNodeGonf .le. nbNodeMax)
+    ASSERT(nbNodeGonf .le. MT_NNOMAX)
 
 ! - Modelling
     typmod = ' '
@@ -135,7 +136,7 @@ subroutine te0097(option, nomte)
     call jevech('PDEPLAR', 'L', jvDisp)
 
 ! - Construct local anisotropic basis
-    call getElemOrientation(ndim, nbNodeDisp, jvGeom, angl_naut)
+    call getElemOrientation(ndim, nbNodeDisp, jvGeom, anglNaut)
 
 ! - Get displacements for u, v, w
     dispU = 0.d0
@@ -151,11 +152,13 @@ subroutine te0097(option, nomte)
         dispP(iNodePres) = zr(jvDisp-1+vp(iNodePres))
     end do
 
-! - Compute stresses for displacement unknowns
+! - Compute mechanical stress (without effect of external state variables)
     sigmDisp = 0.d0
     call sigvmc('RIGI', nbNodeDisp, ndim, nbsig, npg, &
-                jvWeightDisp, jvShapeDisp, jvDShapeDisp, zr(jvGeom), dispU, &
-                instan, angl_naut, zi(jvMate), nharm, sigmDisp)
+                jvWeightDisp, jvShapeDisp, jvDShapeDisp, &
+                zr(jvGeom), dispU, &
+                time, anglNaut, zi(jvMate), nharm, &
+                sigmDisp)
 
     do kpg = 1, npg
         presGaus(kpg) = 0.d0

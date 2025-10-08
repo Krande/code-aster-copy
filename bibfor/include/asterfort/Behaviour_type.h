@@ -180,7 +180,7 @@
 ! --------------------------------------------------------------------------------------------------
 
 ! Maximum number of external state variables in external solvers
-#define ESVA_EXTE_NBMAXI            8
+#define VARC_EXTE_NBMAXI            8
 
 ! External state variables to create anelastic strain
 #define VARC_STRAIN_NBMAXI          5
@@ -190,9 +190,20 @@
 #define VARC_STRAIN_HYDR            3
 #define VARC_STRAIN_EPSA            4
 #define VARC_STRAIN_PTOT            5
+#define VARC_STRAIN_ALL             99
 
 ! Maximum number of Gauss points for coordinates
-#define ESVA_GEOM_NBMAXI            128
+#define VARC_GEOM_NBMAXI            128
+
+! --------------------------------------------------------------------------------------------------
+!
+! For strains
+!
+! --------------------------------------------------------------------------------------------------
+#define STRAIN_TYPE_NONE            0
+#define STRAIN_TYPE_SMALL           1
+#define STRAIN_TYPE_GREEN           2
+#define STRAIN_TYPE_LOG             3
 
 ! --------------------------------------------------------------------------------------------------
 

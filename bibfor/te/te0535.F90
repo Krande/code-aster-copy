@@ -96,7 +96,7 @@ subroutine te0535(option, nomte)
     real(kind=8) :: defam(6), defap(6)
     real(kind=8) :: alicom, dalico, ss1, hv, he
     real(kind=8) :: vv(12), fv(12), sv(78)
-    real(kind=8) :: gamma, angp(3), sigma(nd), cars1(6)
+    real(kind=8) :: gamma, angp(3), sigmEner(nd), cars1(6)
     real(kind=8) :: a, xiy, xiz, ey, ez
 !
     aster_logical :: reactu
@@ -433,15 +433,15 @@ subroutine te0535(option, nomte)
 !   Calcul de la matrice de rigidité géométrique
     if (lMatr .and. reactu) then
         do i = 1, nc
-            sigma(i) = -zr(istrxp+i-1)
-            sigma(i+nc) = zr(istrxp+ncomp+i-1)
+            sigmEner(i) = -zr(istrxp+i-1)
+            sigmEner(i+nc) = zr(istrxp+ncomp+i-1)
         end do
         call r8inir(nk, 0.0d+0, rgeom, 1)
         call pmfitg(tygrfi, nbfibr, nbcarm, zr(jacf), cars1)
         a = cars1(1)
         xiy = cars1(5)
         xiz = cars1(4)
-        call ptkg00(sigma, a, a, xiz, xiz, xiy, xiy, xl, ey, ez, rgeom)
+        call ptkg00(sigmEner, a, a, xiz, xiz, xiy, xiy, xl, ey, ez, rgeom)
         klv = klv+rgeom
     end if
 !

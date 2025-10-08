@@ -17,106 +17,86 @@
 ! --------------------------------------------------------------------
 !
 subroutine te0087(option, nomte)
+!
+    use BehaviourStrain_module
     implicit none
-#include "jeveux.h"
+!
 #include "asterc/r8vide.h"
+#include "asterfort/assert.h"
+#include "asterfort/Behaviour_type.h"
 #include "asterfort/elrefe_info.h"
 #include "asterfort/epsvmc.h"
+#include "asterfort/getElemOrientation.h"
 #include "asterfort/jevech.h"
 #include "asterfort/nbsigm.h"
-#include "asterfort/getElemOrientation.h"
 #include "asterfort/tecach.h"
+#include "jeveux.h"
 !
-    character(len=16) :: option, nomte
-! ......................................................................
+    character(len=16), intent(in) :: option, nomte
 !
-!     BUT: CALCUL DES DEFORMATIONS AUX POINTS D'INTEGRATION
-!          DES ELEMENTS ISOPARAMETRIQUES 2D
+! --------------------------------------------------------------------------------------------------
 !
-!          OPTIONS : 'EPSI_ELGA'
-!                    'EPSG_ELGA'
-!                    'EPME_ELGA'
-!                    'EPMG_ELGA'
+! Elementary computation
 !
-!     ENTREES  ---> OPTION : OPTION DE CALCUL
-!              ---> NOMTE  : NOM DU TYPE ELEMENT
-! ......................................................................
+! Elements: C_PLAN, D_PLAN, AXIS
 !
-    integer(kind=8) :: nbsig, nbsig1, nbsig2, ndim, nno, i
-    integer(kind=8) :: nnos, npg, ipoids, ivf, idfde
-    integer(kind=8) :: igau, isig, igeom, idepl, iret
-    integer(kind=8) :: itemps, idefo
-    integer(kind=8) :: jgano
+! Options: EPME_ELGA, EPMG_ELGA, EPSG_ELGA, EPSL_ELGA, EPSI_ELGA
 !
-    real(kind=8) :: epsm(54), angl_naut(3)
-    real(kind=8) :: nharm, instan, zero
+! --------------------------------------------------------------------------------------------------
 !
-    character(len=4) :: fami
+    character(len=4), parameter :: fami = 'RIGI'
+    real(kind=8) :: nharm
+    integer(kind=8) :: jvGaussWeight, jvBaseFunc, jvDBaseFunc
+    integer(kind=8) :: ndim, nno, npg, nbsig, nbEpsi
+    integer(kind=8) :: kpg, iret, iEpsi
+    integer(kind=8) :: jvGeom, jvDisp, jvTime, jvEpsi
+    real(kind=8) :: epsi(54), anglNaut(3), time
+    integer(kind=8) :: strainType
+    aster_logical :: lStrainMeca
 !
+! --------------------------------------------------------------------------------------------------
 !
-! DEB ------------------------------------------------------------------
+    call elrefe_info(fami=fami, ndim=ndim, nno=nno, npg=npg, &
+                     jpoids=jvGaussWeight, jvf=jvBaseFunc, jdfde=jvDBaseFunc)
 !
-    fami = 'RIGI'
-    call elrefe_info(fami=fami, ndim=ndim, nno=nno, nnos=nnos, npg=npg, &
-                     jpoids=ipoids, jvf=ivf, jdfde=idfde, jgano=jgano)
-!
-! ---- NOMBRE DE CONTRAINTES ASSOCIE A L'ELEMENT
-!      -----------------------------------------
-    nbsig1 = nbsigm()
-    nbsig2 = 6
-    nbsig = nbsig1
-!
-! --- INITIALISATIONS :
-!     -----------------
-    zero = 0.0d0
-    instan = r8vide()
-    nharm = zero
-!
-    do i = 1, nbsig2*npg
-        epsm(i) = zero
-    end do
-!
-!
-! ---- RECUPERATION DES COORDONNEES DES CONNECTIVITES :
-!      ----------------------------------------------
-    call jevech('PGEOMER', 'L', igeom)
-!
-! ---- RECUPERATION  DES DONNEEES RELATIVES AU REPERE D'ORTHOTROPIE :
-!      ------------------------------------------------------------
-    call getElemOrientation(ndim, nno, igeom, angl_naut)
-!
-! ---- RECUPERATION DU CHAMP DE DEPLACEMENT SUR L'ELEMENT :
-!      --------------------------------------------------
-    call jevech('PDEPLAR', 'L', idepl)
-!
-! ---- RECUPERATION DE L'INSTANT DE CALCUL :
-!      -----------------------------------
-    call tecach('ONO', 'PINSTR', 'L', iret, iad=itemps)
-    if (itemps .ne. 0) then
-        instan = zr(itemps)
+    nbsig = nbsigm()
+    nbEpsi = nbsig
+    ASSERT(nbEpsi .le. 6)
+    ASSERT(npg .le. 9)
+    epsi = 0.d0
+
+! - Get type of strain from option
+    call getStrainType(option, strainType, lStrainMeca)
+
+! - Geometry
+    call jevech('PGEOMER', 'L', jvGeom)
+
+! - Current displacements (nodes)
+    call jevech('PDEPLAR', 'L', jvDisp)
+
+! - Get current time
+    time = r8vide()
+    call tecach('NNO', 'PINSTR', 'L', iret, iad=jvTime)
+    if (jvTime .ne. 0) then
+        time = zr(jvTime)
     end if
-!
-! ---- RECUPERATION DU VECTEUR DES DEFORMATIONS EN SORTIE :
-!      --------------------------------------------------
-    call jevech('PDEFOPG', 'E', idefo)
-!
-! ---- CALCUL DES DEFORMATIONS MECANIQUES AUX POINTS D'INTEGRATION
-! ---- DE L'ELEMENT , I.E. SI ON NOTE EPSI_MECA = B*U
-! ---- ON CALCULE SIMPLEMENT EPSI_MECA POUR LES OPTIONS EPSI ET EPSG
-! ----                    ET EPSI_MECA - EPSI_THERMIQUES POUR LES
-! ----                    OPTIONS EPME ET EPMG :
-!      ---------------------------------------
-    call epsvmc(fami, nno, ndim, nbsig1, npg, &
-                ipoids, ivf, idfde, zr(igeom), zr(idepl), &
-                instan, angl_naut, nharm, option, epsm)
-!
-!      --------------------
-! ---- AFFECTATION DU VECTEUR EN SORTIE AVEC LES DEFORMATIONS AUX
-! ---- POINTS D'INTEGRATION :
-!      --------------------
-    do igau = 1, npg
-        do isig = 1, nbsig
-            zr(idefo+nbsig*(igau-1)+isig-1) = epsm(nbsig*(igau-1)+isig)
+
+! - Orthotropic parameters
+    call getElemOrientation(ndim, nno, jvGeom, anglNaut)
+
+! - Compute mechanical strains or total strains
+    call epsvmc(fami, nno, ndim, nbEpsi, npg, &
+                jvGaussWeight, jvBaseFunc, jvDBaseFunc, &
+                zr(jvGeom), zr(jvDisp), &
+                time, anglNaut, nharm, &
+                strainType, lStrainMeca, &
+                epsi)
+
+! - Save strains
+    call jevech('PDEFOPG', 'E', jvEpsi)
+    do kpg = 1, npg
+        do iEpsi = 1, nbEpsi
+            zr(jvEpsi+nbEpsi*(kpg-1)+iEpsi-1) = epsi(nbEpsi*(kpg-1)+iEpsi)
         end do
     end do
 !

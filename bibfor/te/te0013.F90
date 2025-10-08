@@ -15,116 +15,113 @@
 ! You should have received a copy of the GNU General Public License
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
-
+!
 subroutine te0013(option, nomte)
 !
     implicit none
 !
-#include "asterf_types.h"
-#include "jeveux.h"
 #include "asterc/r8vide.h"
+#include "asterf_types.h"
+#include "asterfort/assert.h"
+#include "asterfort/Behaviour_type.h"
 #include "asterfort/bsigmc.h"
 #include "asterfort/elrefe_info.h"
+#include "asterfort/getElemOrientation.h"
 #include "asterfort/jevech.h"
 #include "asterfort/metau1.h"
 #include "asterfort/metau2.h"
 #include "asterfort/nbsigm.h"
-#include "asterfort/getElemOrientation.h"
 #include "asterfort/sigtmc.h"
 #include "asterfort/tecach.h"
+#include "jeveux.h"
+#include "MeshTypes_type.h"
 !
-! person_in_charge: mickael.abbas at edf.fr
-!
-    character(len=16), intent(in) :: option
-    character(len=16), intent(in) :: nomte
+    character(len=16), intent(in) :: option, nomte
 !
 ! --------------------------------------------------------------------------------------------------
 !
 ! Elementary computation
 !
 ! Elements: 2D et 3D
+!
 ! Option: CHAR_MECA_TEMP_R
 !
 ! --------------------------------------------------------------------------------------------------
 !
-    character(len=4) :: fami
-    real(kind=8) :: bsigma(81), sigth(162), angl_naut(3), time, nharm
-    integer(kind=8) :: i, idfde, igeom, imate, ipoids, itemps, ivectu, iret
-    integer(kind=8) :: ivf, nbsig, ndim, nno, npg
-    real(kind=8) :: zero
+    character(len=4), parameter :: fami = 'RIGI'
+    real(kind=8), parameter :: nharm = 0.d0
+    real(kind=8) :: forcVarc(3*MT_NNOMAX), sigmVarc(162)
+    real(kind=8) :: anglNaut(3), time
+    integer(kind=8) :: jvTime, jvVect, iret
     aster_logical :: l_meta
+    integer(kind=8) :: ndim, nno, npg, nbsig, i, indxVarcStrain
+    integer(kind=8) :: jvGaussWeight, jvBaseFunc, jvDBaseFunc
+    integer(kind=8) :: jvGeom, jvMater
 !
 ! --------------------------------------------------------------------------------------------------
 !
-    zero = 0.d0
-    time = r8vide()
-    nharm = zero
-    ndim = 2
-    fami = 'RIGI'
-    sigth(:) = zero
-    bsigma(:) = zero
-!
-!
-! - Finite element informations
-!
-    call elrefe_info(fami='RIGI', ndim=ndim, nno=nno, npg=npg, jpoids=ipoids, &
-                     jvf=ivf, jdfde=idfde)
-!
+    call elrefe_info(fami=fami, ndim=ndim, nno=nno, npg=npg, &
+                     jpoids=jvGaussWeight, jvf=jvBaseFunc, jdfde=jvDBaseFunc)
+    nbsig = nbsigm()
+    ASSERT(nno .le. MT_NNOMAX)
+    ASSERT(nbsig .le. 6)
+    ASSERT(npg .le. 27)
+
+! - Choice of external state variable
+    if (option .eq. 'CHAR_MECA_TEMP_R') then
+        indxVarcStrain = VARC_STRAIN_TEMP
+    elseif (option .eq. 'CHAR_MECA_HYDR_R') then
+        indxVarcStrain = VARC_STRAIN_HYDR
+    elseif (option .eq. 'CHAR_MECA_SECH_R') then
+        indxVarcStrain = VARC_STRAIN_SECH
+    elseif (option .eq. 'CHAR_MECA_PTOT_R') then
+        indxVarcStrain = VARC_STRAIN_PTOT
+    elseif (option .eq. 'CHAR_MECA_EPSA_R') then
+        indxVarcStrain = VARC_STRAIN_EPSA
+    else
+        ASSERT(ASTER_FALSE)
+    end if
 
 ! - Compute CHAR_MECA_TEMP_R for metallurgy
-!
     if (ndim .eq. 3) then
         call metau2(l_meta)
     else
         call metau1(l_meta)
     end if
 
-    if (l_meta) then
-        goto 40
-    end if
+    if (.not. l_meta) then
+! ----- Geometry
+        call jevech('PGEOMER', 'L', jvGeom)
 
-! - Number of stress components
+! ----- Material parameters
+        call jevech('PMATERC', 'L', jvMater)
+
+! ----- Orthotropic parameters
+        call getElemOrientation(ndim, nno, jvGeom, anglNaut)
+
+! ----- Get time
+        time = r8vide()
+        call tecach('ONO', 'PINSTR', 'L', iret, iad=jvTime)
+        if (jvTime .ne. 0) then
+            time = zr(jvTime)
+        end if
+
+! ----- Calcul des contraintes anélastiques
+        call sigtmc(fami, nbsig, npg, ndim, &
+                    time, zi(jvMater), anglNaut, &
+                    indxVarcStrain, sigmVarc)
+
+! ----- Compute [B]Tx{SIGMVARC}
+        call bsigmc(nno, ndim, nbsig, npg, &
+                    jvGaussWeight, jvBaseFunc, jvDBaseFunc, &
+                    zr(jvGeom), nharm, sigmVarc, &
+                    forcVarc)
+
+! ----- Set output vector
+        call jevech('PVECTUR', 'E', jvVect)
+        do i = 1, ndim*nno
+            zr(jvVect+i-1) = forcVarc(i)
+        end do
 !
-    nbsig = nbsigm()
-!
-! - Geometry
-!
-    call jevech('PGEOMER', 'L', igeom)
-!
-! - Material parameters
-!
-    call jevech('PMATERC', 'L', imate)
-!
-! - Orthotropic parameters
-!
-    call getElemOrientation(ndim, nno, igeom, angl_naut)
-!
-! - Get time
-!
-    call tecach('ONO', 'PINSTR', 'L', iret, iad=itemps)
-    if (itemps .ne. 0) then
-        time = zr(itemps)
     end if
-!
-! - Compute thermal stresses {SIGTH}
-!
-    call sigtmc('RIGI', ndim, nbsig, npg, &
-                time, zi(imate), angl_naut, &
-                option, sigth)
-!
-! - Compute CHAR_MECA_TEMP_R: [B]Tx{SIGTH}
-!
-    call bsigmc(nno, ndim, nbsig, npg, ipoids, &
-                ivf, idfde, zr(igeom), nharm, sigth, &
-                bsigma)
-!
-! - Set output vector
-!
-    call jevech('PVECTUR', 'E', ivectu)
-!
-    do i = 1, ndim*nno
-        zr(ivectu+i-1) = bsigma(i)
-    end do
-!
-40  continue
 end subroutine

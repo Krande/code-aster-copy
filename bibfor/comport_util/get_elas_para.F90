@@ -151,7 +151,7 @@ subroutine get_elas_para(fami, j_mater, poum, ipg, ispg, &
     end if
     if (present(BEHinteg)) then
         if (.not. BEHinteg%behavESVA%lGeomInESVA .and. (fami .ne. "XFEM")) then
-            ASSERT(ipg <= ESVA_GEOM_NBMAXI)
+            ASSERT(ipg <= VARC_GEOM_NBMAXI)
             nb_para = nb_para+1
             para_name(nb_para) = 'X'
             para_vale(nb_para) = BEHinteg%behavESVA%behavESVAGeom%coorElga(ipg, 1)

@@ -17,108 +17,89 @@
 ! --------------------------------------------------------------------
 !
 subroutine te0198(option, nomte)
+!
     implicit none
-#include "jeveux.h"
+!
 #include "asterc/r8vide.h"
+#include "asterf_types.h"
+#include "asterfort/assert.h"
+#include "asterfort/Behaviour_type.h"
 #include "asterfort/bsigmc.h"
 #include "asterfort/elrefe_info.h"
+#include "asterfort/getElemOrientation.h"
 #include "asterfort/jevech.h"
 #include "asterfort/nbsigm.h"
-#include "asterfort/getElemOrientation.h"
 #include "asterfort/sigtmc.h"
 #include "asterfort/tecach.h"
+#include "jeveux.h"
+#include "MeshTypes_type.h"
 !
-    character(len=16) :: option, nomte
-! ......................................................................
-!    - FONCTION REALISEE:  CALCUL DES VECTEURS ELEMENTAIRES
-!                          OPTION : 'CHAR_MECA_TEMP_R  '
-!                          ELEMENTS FOURIER
+    character(len=16), intent(in) :: option, nomte
 !
-!    - ARGUMENTS:
-!        DONNEES:      OPTION       -->  OPTION DE CALCUL
-!                      NOMTE        -->  NOM DU TYPE ELEMENT
-! ......................................................................
+! --------------------------------------------------------------------------------------------------
 !
-    character(len=4) :: fami
-    real(kind=8) :: bsigma(81), sigth(162), angl_naut(3)
-    real(kind=8) :: nharm, instan
-    integer(kind=8) :: ndim, nno, nnos, npg1, ipoids, ivf, idfde, jgano
-    integer(kind=8) :: dimmod
+! Elementary computation
 !
+! Elements: AXIS_FOURIER
 !
-!-----------------------------------------------------------------------
-    integer(kind=8) :: i, igeom, iharmo, imate, iret, itemps, ivectu
-    integer(kind=8) :: nbsig, nh
-    real(kind=8) :: zero
-!-----------------------------------------------------------------------
-    fami = 'RIGI'
-    call elrefe_info(fami=fami, ndim=ndim, nno=nno, nnos=nnos, npg=npg1, &
-                     jpoids=ipoids, jvf=ivf, jdfde=idfde, jgano=jgano)
+! Option: CHAR_MECA_TEMP_R
 !
-! --- INITIALISATIONS :
-!     -----------------
-    zero = 0.0d0
-    instan = r8vide()
-    nharm = zero
-    dimmod = 3
+! --------------------------------------------------------------------------------------------------
 !
-! ---- NOMBRE DE CONTRAINTES ASSOCIE A L'ELEMENT
-!      -----------------------------------------
+    character(len=4), parameter :: fami = 'RIGI'
+    integer(kind=8), parameter :: dimmod = 3
+    real(kind=8) :: nharm
+    real(kind=8) :: forcTher(3*MT_NNOMAX), sigmTher(162)
+    real(kind=8) :: anglNaut(3), time
+    integer(kind=8) :: jvTime, jvVect, jvHarm
+    integer(kind=8) :: ndim, nno, npg, nbsig, i, iret
+    integer(kind=8) :: jvGaussWeight, jvBaseFunc, jvDBaseFunc
+    integer(kind=8) :: jvGeom, jvMater
+!
+! --------------------------------------------------------------------------------------------------
+!
+    call elrefe_info(fami=fami, ndim=ndim, nno=nno, npg=npg, &
+                     jpoids=jvGaussWeight, jvf=jvBaseFunc, jdfde=jvDBaseFunc)
     nbsig = nbsigm()
-!
-    do i = 1, nbsig*npg1
-        sigth(i) = zero
-    end do
-!
+    ASSERT(nno .le. MT_NNOMAX)
+    ASSERT(nbsig .le. 6)
+    ASSERT(npg .le. 27)
+
+! - Geometry
+    call jevech('PGEOMER', 'L', jvGeom)
+
+! - Material parameters
+    call jevech('PMATERC', 'L', jvMater)
+
+! - Orthotropic parameters
+    call getElemOrientation(ndim, nno, jvGeom, anglNaut)
+
+! - Get time
+    time = r8vide()
+    call tecach('NNO', 'PINSTR', 'L', iret, iad=jvTime)
+    if (jvTime .ne. 0) then
+        time = zr(jvTime)
+    end if
+
+! - Get Fourier mode
+    call jevech('PHARMON', 'L', jvHarm)
+    nharm = dble(zi(jvHarm))
+
+! - Calcul des contraintes thermiques
+    call sigtmc(fami, nbsig, npg, ndim, &
+                time, zi(jvMater), anglNaut, &
+                VARC_STRAIN_TEMP, sigmTher)
+
+! - Compute CHAR_MECA_TEMP_R: [B]Tx{SIGTH}
+    call bsigmc(nno, dimmod, nbsig, npg, &
+                jvGaussWeight, jvBaseFunc, jvDBaseFunc, &
+                zr(jvGeom), nharm, sigmTher, &
+                forcTher)
+
+! - Set output vector
+    call jevech('PVECTUR', 'E', jvVect)
     do i = 1, dimmod*nno
-        bsigma(i) = zero
+        zr(jvVect+i-1) = forcTher(i)
     end do
 !
-! ---- RECUPERATION DES COORDONNEES DES CONNECTIVITES
-!      ----------------------------------------------
-    call jevech('PGEOMER', 'L', igeom)
-!
-! ---- RECUPERATION DU MATERIAU
-!      ------------------------
-    call jevech('PMATERC', 'L', imate)
-!
-! ---- RECUPERATION  DES DONNEEES RELATIVES AU REPERE D'ORTHOTROPIE
-!      ------------------------------------------------------------
-    call getElemOrientation(ndim, nno, igeom, angl_naut)
-!
-! ---- RECUPERATION DE L'INSTANT
-!      -------------------------
-    call tecach('NNO', 'PINSTR', 'L', iret, iad=itemps)
-    if (itemps .ne. 0) instan = zr(itemps)
-!
-! ---- RECUPERATION  DU NUMERO D'HARMONIQUE
-!      ------------------------------------
-    call jevech('PHARMON', 'L', iharmo)
-    nh = zi(iharmo)
-    nharm = dble(nh)
-!
-! ---- CALCUL DES CONTRAINTES THERMIQUES AUX POINTS D'INTEGRATION
-! ---- DE L'ELEMENT :
-!      ------------
-    call sigtmc(fami, dimmod, nbsig, npg1, &
-                instan, zi(imate), angl_naut, &
-                option, sigth)
-!
-! ---- CALCUL DU VECTEUR DES FORCES D'ORIGINE THERMIQUE/HYDRIQUE
-! ---- OU DE SECHAGE (BT*SIGTH)
-!      ----------------------------------------------------------
-    call bsigmc(nno, dimmod, nbsig, npg1, ipoids, &
-                ivf, idfde, zr(igeom), nharm, sigth, &
-                bsigma)
-!
-! ---- RECUPERATION ET AFFECTATION DU VECTEUR EN SORTIE AVEC LE
-! ---- VECTEUR DES FORCES D'ORIGINE THERMIQUE
-!      -------------------------------------
-    call jevech('PVECTUR', 'E', ivectu)
-!
-    do i = 1, dimmod*nno
-        zr(ivectu+i-1) = bsigma(i)
-    end do
-!
-! FIN ------------------------------------------------------------------
 end subroutine

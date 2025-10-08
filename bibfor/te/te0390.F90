@@ -83,7 +83,7 @@ subroutine te0390(option, nomte)
     integer(kind=8) :: istady, ivarim, ivarip, ivf, ivitkm, ivitp, j
     integer(kind=8) :: jcret, jefint, k0, k1, k2, k3
     integer(kind=8) :: k4, k5, k6, k7, kc, kp, ks
-    integer(kind=8) :: iorien, lsig, lsigma, ne, nno
+    integer(kind=8) :: iorien, lsig, lsigmEner, ne, nno
     integer(kind=8) :: nord, npg, codret
     real(kind=8) :: a, ajacob, alfnmk, ay, az, delnmk, demi
     real(kind=8) :: deux, e, g, pas, pjacob, r8bid, rho
@@ -218,7 +218,7 @@ subroutine te0390(option, nomte)
         call jevech('PVECTUR', 'E', jefint)
     end if
     if (lSigm) then
-        call jevech('PCONTPR', 'E', lsigma)
+        call jevech('PCONTPR', 'E', lsigmEner)
         call jevech('PCODRET', 'E', jcret)
     end if
 !
@@ -362,7 +362,7 @@ subroutine te0390(option, nomte)
             ASSERT(lSigm)
             call gdfint(kp, nno, ajacob, pjacob, en, &
                         enprim, x0pg, pn, pm, fint)
-            lsig = lsigma-1+(kp-1)*6
+            lsig = lsigmEner-1+(kp-1)*6
             do ks = 1, 3
                 lsig = lsig+1
 !*** ATTENTION : LE TORSEUR EST EXPRIME EN COORDONNEES LOCALES

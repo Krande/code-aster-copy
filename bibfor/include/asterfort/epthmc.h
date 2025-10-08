@@ -15,23 +15,16 @@
 ! You should have received a copy of the GNU General Public License
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
-
-!
 !
 interface
-    subroutine epthmc(fami      , nno      , ndim  , nbsig, npg    ,&
-                      shape_func, angl_naut, time , j_mater,&
-                      option    , epsi_varc)
+    subroutine epthmc(fami, nbEpsi, npg, ndim, &
+                      time, anglNaut, jvMaterCode, &
+                      indxVarcStrain, epsiVarc)
+        use BehaviourStrain_type
         character(len=*), intent(in) :: fami
-        integer(kind=8), intent(in) :: nno
-        integer(kind=8), intent(in) :: ndim
-        integer(kind=8), intent(in) :: nbsig
-        integer(kind=8), intent(in) :: npg
-        real(kind=8), intent(in) :: shape_func(1)
-        real(kind=8), intent(in) :: angl_naut(3)
-        real(kind=8), intent(in) :: time
-        integer(kind=8), intent(in) :: j_mater
-        character(len=16), intent(in) :: option
-        real(kind=8), intent(out) :: epsi_varc(1)
+        integer(kind=8), intent(in) :: nbEpsi, npg, ndim
+        real(kind=8), intent(in) :: time, anglNaut(3)
+        integer(kind=8), intent(in) :: jvMaterCode, indxVarcStrain
+        real(kind=8), intent(out) :: epsiVarc(nbEpsi*npg)
     end subroutine epthmc
 end interface

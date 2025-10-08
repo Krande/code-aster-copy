@@ -297,7 +297,7 @@ subroutine nufilg(ndim, nnod, nnop, npg, iw, &
         end if
 !
 ! ----- Compute "bubble" matrix
-        call tanbul(option, ndim, kpg, mate, rela_comp, &
+        call tanbul(ndim, kpg, mate, rela_comp, &
                     lVect, mini, alpha, dsbdep, trepst)
 !
 ! ----- Cauchy stresses

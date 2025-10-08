@@ -15,27 +15,20 @@
 ! You should have received a copy of the GNU General Public License
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
-
-!
 !
 interface
-    subroutine sigvmc(fami, nno, ndim, nbsig, npg,&
-                      ipoids, ivf, idfde, xyz, depl,&
-                      instan, angl_naut, mater, nharm, sigma)
-        character(len=*) :: fami
-        integer(kind=8) :: nno
-        integer(kind=8) :: ndim
-        integer(kind=8) :: nbsig
-        integer(kind=8) :: npg
-        integer(kind=8) :: ipoids
-        integer(kind=8) :: ivf
-        integer(kind=8) :: idfde
-        real(kind=8) :: xyz(1)
-        real(kind=8) :: depl(1)
-        real(kind=8) :: instan
-        real(kind=8) :: angl_naut(3)
-        integer(kind=8) :: mater
-        real(kind=8) :: nharm
-        real(kind=8) :: sigma(1)
+    subroutine sigvmc(fami, nno, ndim, nbsig, npg, &
+                      jvGaussWeight, jvBaseFunc, jvDBaseFunc, &
+                      nodeCoor, nodeDisp, &
+                      time, anglNaut, jvMaterCode, nharm, &
+                      sigm)
+        character(len=*), intent(in) :: fami
+        integer(kind=8), intent(in) :: nno, ndim, nbsig, npg
+        integer(kind=8), intent(in) :: jvGaussWeight, jvBaseFunc, jvDBaseFunc
+        real(kind=8), intent(in) :: nodeCoor(ndim*nno), nodeDisp(ndim*nno)
+        real(kind=8), intent(in) :: time, anglNaut(3)
+        integer(kind=8), intent(in) :: jvMaterCode
+        real(kind=8), intent(in) :: nharm
+        real(kind=8), intent(out) :: sigm(nbsig*npg)
     end subroutine sigvmc
 end interface
