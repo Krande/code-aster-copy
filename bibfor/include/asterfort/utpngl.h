@@ -15,18 +15,15 @@
 ! You should have received a copy of the GNU General Public License
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
+
 !
-#include "asterf_types.h"
 !
 interface
-    subroutine dis_choc_frot_syme(for_discret, icodma, ulp, xg, klv, kgv, &
-                                  dpe, Predic, force, varmo, varpl)
-        use te0047_type
-        type(te0047_dscr), intent(in) :: for_discret
-        integer(kind=8)         :: icodma
-        real(kind=8)    :: ulp(*), xg(*)
-        real(kind=8)    :: klv(*), kgv(*)
-        real(kind=8)    :: dpe(*), force(*), varmo(*), varpl(*)
-        aster_logical   :: Predic
-    end subroutine dis_choc_frot_syme
+    subroutine utpngl(nn, nc, p, sg, sl)
+        integer(kind=8) :: nn
+        integer(kind=8) :: nc
+        real(kind=8) :: p(3, 3)
+        real(kind=8) :: sg(*)
+        real(kind=8) :: sl(*)
+    end subroutine utpngl
 end interface

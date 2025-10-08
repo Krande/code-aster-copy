@@ -17,7 +17,7 @@
 ! --------------------------------------------------------------------
 !
 subroutine dis_choc_frot_syme(DD, icodma, ulp, xg, klv, &
-                              kgv, dvl, dpe, dve, Predic, &
+                              kgv, dpe, Predic, &
                               force, varmo, varpl)
 !
     use te0047_type
@@ -27,8 +27,9 @@ subroutine dis_choc_frot_syme(DD, icodma, ulp, xg, klv, &
 #include "asterc/r8prem.h"
 #include "asterc/r8sign.h"
 #include "asterfort/assert.h"
-#include "asterfort/diraidklv.h"
 #include "asterfort/diklvraid.h"
+#include "asterfort/dikpkt.h"
+#include "asterfort/diraidklv.h"
 #include "asterfort/in_liste_entier.h"
 #include "asterfort/rcvala.h"
 #include "asterfort/rcadlv.h"
@@ -40,8 +41,8 @@ subroutine dis_choc_frot_syme(DD, icodma, ulp, xg, klv, &
 !
     type(te0047_dscr), intent(in) :: DD
     integer(kind=8) :: icodma
-    real(kind=8) :: ulp(*), dvl(*)
-    real(kind=8) :: dpe(*), dve(*)
+    real(kind=8) :: ulp(*)
+    real(kind=8) :: dpe(*)
     real(kind=8) :: klv(*), xg(*), kgv(*)
     real(kind=8) :: varmo(*), varpl(*), force(*)
     aster_logical :: Predic
@@ -55,9 +56,7 @@ subroutine dis_choc_frot_syme(DD, icodma, ulp, xg, klv, &
 !       icodma  : adresse du materiau code
 !       ulp     : deplacement
 !       xg      : coordonnees des noeuds repere global
-!       dvl     : vitesse
 !       dpe     : déplacement d'entrainement
-!       dve     : vitesse d'entrainement
 !       varmo   : variables internes (temps moins)
 !       kgv     : matrice de raideur repère global          (triangulaire supérieure)
 ! in/out :
@@ -69,7 +68,7 @@ subroutine dis_choc_frot_syme(DD, icodma, ulp, xg, klv, &
 ! --------------------------------------------------------------------------------------------------
 ! person_in_charge: jean-luc.flejou at edf.fr
 !
-    integer(kind=8), parameter :: nbre1 = 11
+    integer(kind=8), parameter :: nbre1 = 9
     real(kind=8) :: valre1(nbre1)
     integer(kind=8) :: codre1(nbre1)
     character(len=12) :: nomre1(nbre1)
@@ -77,13 +76,13 @@ subroutine dis_choc_frot_syme(DD, icodma, ulp, xg, klv, &
     integer(kind=8), parameter :: idepx = 1, idepy = 2, idepz = 3, iidic = 4, idepyp = 5, idepzp = 6
     integer(kind=8), parameter :: ifx = 7, ify = 8, ifz = 9, icalc = 10
 !   État du discret : adhérent, glissant, décollé
-    integer(kind=8), parameter :: EtatAdher = 0, EtatGliss = 1, EtatDecol = 2
+    integer(kind=8), parameter :: EtatAdher = 0, EtatDecol = 2
     integer(kind=8), parameter :: EnVitesse = 1, EnPlasticite = 2
 !
     integer(kind=8) :: ii
-    real(kind=8) :: xl(6), xd(3), raide(6), rignor, rigtan, depxyz(3), vitxyz(3)
-    real(kind=8) :: coulom, dist12, psca, vit123(3), Precisxyz(3), utotxyz(3)
-    real(kind=8) :: vitt, fort, kp, kt
+    real(kind=8) :: xl(6), xd(3), raide(6), raidep(6), rignor, rigtan, depxyz(3)
+    real(kind=8) :: coulom, dist12, Precisxyz(3), klvp(78), utotxyz(3)
+    real(kind=8) :: kp, kt
 !
     integer(kind=8) :: axes(3), ContactInGlobal, TestOK, TestNOK, messai(4)
     integer(kind=8) :: jadre1, nbout, jcodre1
@@ -100,7 +99,7 @@ subroutine dis_choc_frot_syme(DD, icodma, ulp, xg, klv, &
     character(len=32) :: messak(3)
 !
     data nomre1/'RIGI_NOR', 'RIGI_TAN', 'AMOR_NOR', 'AMOR_TAN', 'COULOMB', &
-        'DIST_1', 'DIST_2', 'JEU', 'CONTACT', 'KP', 'KT'/
+        'DIST_1', 'DIST_2', 'JEU', 'CONTACT'/
 ! ----------------------------------------------------------------------
 !
 !   Définition des parametres
@@ -119,7 +118,6 @@ subroutine dis_choc_frot_syme(DD, icodma, ulp, xg, klv, &
 !   Raideurs du discret
 !       ==> Elles sont surchargées par celles du matériau
     call diraidklv(DD%nomte, raide, klv)
-    !
     valre1 = 0.d0
     valre1(1) = raide(1)
 !   Caractéristiques du matériau
@@ -130,14 +128,14 @@ subroutine dis_choc_frot_syme(DD, icodma, ulp, xg, klv, &
     rigtan = valre1(2)
     coulom = valre1(5)
     ContactInGlobal = nint(valre1(9))
-    kp = valre1(10)
-    kt = valre1(11)
     if (.not. in_liste_entier(ContactInGlobal, [ReperLocal, ReperGlobal])) then
         messak(1) = 'DIS_CONTACT'
         messak(2) = 'DIS_CHOC'
         messak(3) = '"1D"|"COIN_2D"'
         call utmess('F', 'DISCRETS_35', nk=3, valk=messak)
     end if
+!   Raideurs élastiques en parallèle
+    call dikpkt(icodma, 'DIS_CONTACT     ', kp, kt)
 !
 !   Si ContactInGlobal [ReperGlobal, ReperBizarre]
 !       Prise en compte de          : RIGI_NOR, REPERE
@@ -168,12 +166,6 @@ subroutine dis_choc_frot_syme(DD, icodma, ulp, xg, klv, &
 !   Élément avec 2 noeuds
     if (DD%nno .eq. 2) then
         dist12 = valre1(6)+valre1(7)
-        ! Vitesse tangente
-        vit123 = 0.d0
-        vit123(2) = dvl(2+DD%nc)-dvl(2)
-        if (DD%ndim .eq. 3) then
-            vit123(3) = dvl(3+DD%nc)-dvl(3)
-        end if
         !
         ! Détermination du plan du discret : géométrie initiale
         ldm(1:3) = xg(4:6)-xg(1:3)
@@ -243,12 +235,6 @@ subroutine dis_choc_frot_syme(DD, icodma, ulp, xg, klv, &
             utotxyz(3) = ulp(3+DD%nc)-ulp(3)+dpe(3+DD%nc)-dpe(3)
             depxyz(3) = xd(3)+utotxyz(3)
         end if
-        ! Vitesse tangente
-        vitxyz = 0.d0
-        vitxyz(2) = vit123(2)+dve(2+DD%nc)-dve(2)
-        if (DD%ndim .eq. 3) then
-            vitxyz(3) = vit123(3)+dve(3+DD%nc)-dve(3)
-        end if
         ! ------------------------------------------------------------------------------------------
         force(1:3) = 0.d0
         forceglob = 0.d0
@@ -306,42 +292,12 @@ subroutine dis_choc_frot_syme(DD, icodma, ulp, xg, klv, &
                 varpl(ifz) = force(3)
                 varpl(iidic) = EtatAdher
             else
+                ! Calcul de la force normale
                 force(1) = rignor*depxyz(1)
                 if (force(1) .gt. 0.d0) force(1) = 0.d0
-                psca = varmo(ify)*vitxyz(2)+varmo(ifz)*vitxyz(3)
-                if ((psca .ge. 0.d0) .and. (nint(varmo(iidic)) .eq. EtatGliss)) then
-                    vitt = (vitxyz(2)**2+vitxyz(3)**2)**0.5d0
-                    force(2) = 0.d0
-                    force(3) = 0.d0
-                    if (vitt .gt. 0.d0) then
-                        force(2) = -coulom*force(1)*vitxyz(2)/vitt
-                        force(3) = -coulom*force(1)*vitxyz(3)/vitt
-                    end if
-                    varpl(iidic) = EtatGliss
-                else
-                    force(2) = rigtan*(depxyz(2)-varmo(idepy))+varmo(ify)
-                    force(3) = rigtan*(depxyz(3)-varmo(idepz))+varmo(ifz)
-                    varpl(iidic) = EtatAdher
-                    fort = (force(2)**2+force(3)**2)**0.5d0
-                    if (fort .gt. abs(coulom*force(1))) then
-                        vitt = (vitxyz(2)**2+vitxyz(3)**2)**0.5d0
-                        force(2) = 0.d0
-                        force(3) = 0.d0
-                        if (vitt .gt. 0.d0) then
-                            force(2) = -coulom*force(1)*vitxyz(2)/vitt
-                            force(3) = -coulom*force(1)*vitxyz(3)/vitt
-                            varpl(iidic) = EtatGliss
-                        end if
-                    end if
-                end if
                 varpl(ifx) = force(1)
                 varpl(ify) = force(2)
                 varpl(ifz) = force(3)
-                !
-                if (abs(rigtan) .gt. r8prem()) then
-                    varpl(idepyp) = depxyz(2)-varmo(ify)/rigtan
-                    varpl(idepzp) = depxyz(3)-varmo(ifz)/rigtan
-                end if
                 !
                 force(2) = force(2)+raide(2)*(ulp(2+DD%nc)-ulp(2))
                 if (DD%ndim .eq. 3) then
@@ -370,12 +326,6 @@ subroutine dis_choc_frot_syme(DD, icodma, ulp, xg, klv, &
             call utmess('F', 'DISCRETS_35', nk=3, valk=messak)
         end if
         dist12 = valre1(8)-valre1(6)
-        ! Vitesse tangente
-        vit123 = 0.d0
-        vit123(2) = dvl(2)
-        if (DD%ndim .eq. 3) then
-            vit123(3) = dvl(3)
-        end if
         depxyz = 0.d0
         utotxyz = 0.d0
         utotxyz(1) = ulp(1)+dpe(1)
@@ -386,50 +336,14 @@ subroutine dis_choc_frot_syme(DD, icodma, ulp, xg, klv, &
             utotxyz(3) = ulp(3)+dpe(3)
             depxyz(3) = utotxyz(3)
         end if
-        ! Vitesse tangente
-        vitxyz = 0.d0
-        vitxyz(2) = vit123(2)+dve(2)
-        if (DD%ndim .eq. 3) then
-            vitxyz(3) = vit123(3)+dve(3)
-        end if
         force(1:3) = 0.d0
         if (depxyz(1) .le. 0.d0) then
+            ! Calcul de la force normale
             force(1) = rignor*depxyz(1)
             if (force(1) .gt. 0.d0) force(1) = 0.d0
-            psca = varmo(ify)*vitxyz(2)+varmo(ifz)*vitxyz(3)
-            if ((psca .ge. 0.d0) .and. (nint(varmo(iidic)) .eq. EtatGliss)) then
-                vitt = (vitxyz(2)**2+vitxyz(3)**2)**0.5d0
-                force(2) = 0.d0
-                force(3) = 0.d0
-                if (vitt .gt. 0.d0) then
-                    force(2) = -coulom*force(1)*vitxyz(2)/vitt
-                    force(3) = -coulom*force(1)*vitxyz(3)/vitt
-                end if
-                varpl(iidic) = EtatGliss
-            else
-                force(2) = rigtan*(depxyz(2)-varmo(idepy))+varmo(ify)
-                force(3) = rigtan*(depxyz(3)-varmo(idepz))+varmo(ifz)
-                varpl(iidic) = EtatAdher
-                fort = (force(2)**2+force(3)**2)**0.5d0
-                if (fort .gt. abs(coulom*force(1))) then
-                    vitt = (vitxyz(2)**2+vitxyz(3)**2)**0.5d0
-                    force(2) = 0.d0
-                    force(3) = 0.d0
-                    if (vitt .gt. 0.d0) then
-                        force(2) = -coulom*force(1)*vitxyz(2)/vitt
-                        force(3) = -coulom*force(1)*vitxyz(3)/vitt
-                        varpl(iidic) = EtatGliss
-                    end if
-                end if
-            end if
             varpl(ifx) = force(1)
             varpl(ify) = force(2)
             varpl(ifz) = force(3)
-            !
-            if (abs(rigtan) .gt. r8prem()) then
-                varpl(idepyp) = depxyz(2)-varmo(ify)/rigtan
-                varpl(idepzp) = depxyz(3)-varmo(ifz)/rigtan
-            end if
             !
             force(2) = force(2)+raide(2)*ulp(2)
             if (DD%ndim .eq. 3) then

@@ -291,6 +291,12 @@ Les paramètres suivant ne sont pas pris en compte :
     DIST_1, DIST_2, JEU, RIGI_TAN, AMOR_NOR, AMOR_TAN, COULOMB
 """
     ),
+    37: _(
+        """
+Pour le discret avec le matériau %(k1)s et le comportement %(k2)s, le type d'élément DIS_TR n'est pas autorisé dans le cas avec frottement de Coulomb (c'est-à-dire dans le 
+cas où le paramètre COULOMB est strictement positif). Seul le type %(k3)s est autorisé.
+"""
+    ),
     40: _(
         """
 L'utilisation des discrets non-symétriques n'est actuellement pas possible pour

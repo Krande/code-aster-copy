@@ -19,10 +19,10 @@
 !
 interface
     subroutine dis_choc_frot_nosyme(for_discret, icodma, ulp, xg, klv, &
-                             varmo, force, varpl)
+                             dpe, varmo, force, varpl)
         use te0047_type
         type(te0047_dscr), intent(in) :: for_discret
         integer(kind=8)         :: icodma
-        real(kind=8)    :: ulp(*), klv(*), xg(*), varmo(*), varpl(*), force(*)
+        real(kind=8)    :: ulp(*), klv(*), xg(*), varmo(*), varpl(*), force(*), dpe(*)
     end subroutine dis_choc_frot_nosyme
 end interface

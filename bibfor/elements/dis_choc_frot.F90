@@ -38,6 +38,7 @@ subroutine dis_choc_frot(DD, iret)
 #include "asterfort/pmavec.h"
 #include "asterfort/rcvala.h"
 #include "asterfort/tecach.h"
+#include "asterfort/utmess.h"
 #include "asterfort/ut2mgl.h"
 #include "asterfort/ut2mlg.h"
 #include "asterfort/ut2vgl.h"
@@ -69,10 +70,7 @@ subroutine dis_choc_frot(DD, iret)
     real(kind=8) :: r8bid
     character(len=8) :: k8bid
 !
-    real(kind=8) :: valre1(1)
-    integer(kind=8) :: codre1(1)
-!
-    aster_logical :: okelem, IsSymetrique, IsCoulomb, IsDynamique, IsStatique, Prediction
+    aster_logical :: IsSymetrique, IsDynamique, IsStatique, Prediction
     blas_int :: b_incx, b_incy, b_n
 !
 ! --------------------------------------------------------------------------------------------------
@@ -162,34 +160,21 @@ subroutine dis_choc_frot(DD, iret)
     !
     ulp(:) = DD%ulm(:)+DD%dul(:)
     !
-! Traitement du cas coulomb=0
-    IsCoulomb = ASTER_FALSE
-    call rcvala(zi(imat), ' ', 'DIS_CONTACT', 0, ' ', &
-                [0.0d0], 1, ['COULOMB'], valre1, codre1, &
-                0, nan='NON')
-! Coulomb existe et >0
-    if (codre1(1) .eq. 0) then
-        if (valre1(1) .gt. r8prem()) then
-            IsCoulomb = ASTER_TRUE
-        end if
-    end if
-!
-    okelem = (DD%ndim .eq. 3)
-    okelem = okelem .and. ((DD%nomte .eq. 'MECA_DIS_T_N') .or. (DD%nomte .eq. 'MECA_DIS_T_L'))
 !   Relation de comportement de choc
-    if (IsCoulomb .and. IsStatique .and. okelem) then
-        IsSymetrique = ASTER_FALSE
-        call dis_choc_frot_nosyme(DD, zi(imat), ulp, zr(igeom), klv, &
-                                  varmo, force, varpl)
-    else
-        IsSymetrique = ASTER_TRUE
-! Prédiction en dynamique, on retourne les efforts précédents
+    call hasSymmetricTangentMatrix(DD, IsSymetrique)
+    if (IsSymetrique) then
+        ! Prédiction en dynamique, on retourne les efforts précédents
         Prediction = IsDynamique .and. (iterat .eq. 1) .and. (DD%option .eq. 'RAPH_MECA')
+        ! Formulation symétrique
         call dis_choc_frot_syme(DD, zi(imat), ulp, zr(igeom), klv, &
-                                kgv, dvl, dpe, dve, Prediction, &
+                                kgv, dpe, Prediction, &
                                 force, varmo, varpl)
+    else
+        ! Formulation non symétrique
+        call dis_choc_frot_nosyme(DD, zi(imat), ulp, zr(igeom), klv, &
+                                  dpe, varmo, force, varpl)
     end if
-!   actualisation de la matrice tangente
+!   Actualisation de la matrice tangente
     if (DD%lMatr) then
         if (IsSymetrique) then
             call jevech('PMATUUR', 'E', imat)

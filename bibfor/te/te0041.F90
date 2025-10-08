@@ -48,6 +48,7 @@ subroutine te0041(option, nomte)
 #include "jeveux.h"
 #include "asterc/r8prem.h"
 #include "asterfort/assert.h"
+#include "asterfort/dikpkt.h"
 #include "asterfort/infdis.h"
 #include "asterfort/infted.h"
 #include "asterfort/jevech.h"
@@ -61,6 +62,7 @@ subroutine te0041(option, nomte)
 #include "asterfort/utmess.h"
 #include "asterfort/utpplg.h"
 #include "asterfort/utpsgl.h"
+#include "asterfort/utpngl.h"
 #include "asterfort/utpslg.h"
 #include "asterfort/vecma.h"
 #include "asterfort/Behaviour_type.h"
@@ -77,15 +79,16 @@ subroutine te0041(option, nomte)
     real(kind=8)    :: eta, r8bid, xrota
     real(kind=8)    :: tempo(ntermx)
     complex(kind=8) :: hyst, dcmplx
-    aster_logical :: lNonLinear
+    aster_logical :: lNonLinear, lDisChoc, IsCoulomb, IsCoin2D
 !
     character(len=8)    :: k8bid
     character(len=24)   :: valk(2)
 !
-    integer(kind=8)             :: icodre(3)
-    real(kind=8)        :: valres(3)
-    character(len=16)   :: nomres(3)
+    integer(kind=8)             :: icodre(5)
+    real(kind=8)        :: valres(5)
+    character(len=16)   :: nomres(5)
     character(len=16), pointer :: compor(:) => null()
+    real(kind=8)        :: kp, kt, indicChoc
 ! --------------------------------------------------------------------------------------------------
     aster_logical       :: assemble_amor
 ! --------------------------------------------------------------------------------------------------
@@ -103,6 +106,7 @@ subroutine te0041(option, nomte)
     end if
 !
     assemble_amor = ASTER_FALSE
+    lDisChoc = ASTER_FALSE
     if (option .eq. 'AMOR_MECA') then
         call tecach('ONO', 'PNONLIN', 'L', iret, iad=jVNonLin)
         lNonLinear = ASTER_FALSE
@@ -113,7 +117,8 @@ subroutine te0041(option, nomte)
         if (lNonLinear) then
 ! --------- Nonlinear cases (=> only for DIS_CHOC)
             call jevech('PCOMPOR', 'L', vk16=compor)
-            assemble_amor = compor(RELA_NAME) .eq. 'DIS_CHOC'
+            lDisChoc = compor(RELA_NAME) .eq. 'DIS_CHOC'
+            assemble_amor = lDisChoc
         else
 ! --------- Linear case (=> for all cases)
             assemble_amor = ASTER_TRUE
@@ -210,24 +215,59 @@ subroutine te0041(option, nomte)
 !           Traitement du cas de assemble_amor
             if (assemble_amor) then
                 if (ndim .ne. 3) goto 666
-                call tecach('ONO', 'PRIGIEL', 'L', iret, iad=jdr)
-                if (jdr .eq. 0) goto 666
                 call tecach('NNN', 'PMATERC', 'L', iret, iad=jma)
                 if ((jma .eq. 0) .or. (iret .ne. 0)) goto 666
+                ! Récupération des paramètres matériau DIS_CONTACT
                 nomres(1) = 'RIGI_NOR'
                 nomres(2) = 'AMOR_NOR'
                 nomres(3) = 'AMOR_TAN'
+                nomres(4) = 'COULOMB'
+                nomres(5) = 'CONTACT'
                 valres = 0.0
-                call utpsgl(nno, nc, pgl, zr(jdr), matv1)
                 call rcvala(zi(jma), ' ', 'DIS_CONTACT', 0, ' ', &
-                            [0.0d0], 3, nomres, valres, icodre, 0)
+                            [0.0d0], 5, nomres, valres, icodre, 0)
+                ! --- Vérification du frottement de Coulomb
+                IsCoulomb = ASTER_FALSE
+                if (icodre(4) .eq. 0) then
+                    if (valres(4) .gt. r8prem()) then
+                        IsCoulomb = ASTER_TRUE
+                    end if
+                end if
+                ! --- Vérification du type de contact (1D ou COIN_2D)
+                IsCoin2D = ASTER_FALSE
+                if (icodre(5) .eq. 0) then
+                    if (nint(valres(5)) .ne. 0) then
+                        IsCoin2D = ASTER_TRUE
+                    end if
+                end if
+
+                ! Récupération de la matrice tangente
+                if ((lDisChoc) .and. (IsCoulomb) .and. (.not. IsCoin2D)) then
+                    ! Cas de DIS_CHOC avec matrice tangente non symétrique
+                    call tecach('ONO', 'PRIGINS', 'L', iret, iad=jdr)
+                    if (jdr .eq. 0) goto 666
+                    call utpngl(nno, nc, pgl, zr(jdr), matv1)
+                else
+                    ! Cas d'une matrice tangente symétrique
+                    call tecach('ONO', 'PRIGIEL', 'L', iret, iad=jdr)
+                    if (jdr .eq. 0) goto 666
+                    call utpsgl(nno, nc, pgl, zr(jdr), matv1)
+                end if
+
+                ! Récupération des raideurs élastiques en parallèle
+                call dikpkt(zi(jma), 'DIS_CONTACT     ', kp, kt)
+
+                ! Prise en compte de l'amortissement de choc
                 if (icodre(1) .eq. 0) then
                     if (abs(valres(1)) > r8prem()) then
+                        ! Définition du facteur "indicateur de choc" (1 si choc, 0 sinon)
+                        ! (contribution élastique à retrancher à la matrice tangente)
+                        indicChoc = (matv1(1)-kp)/valres(1)
                         if (icodre(2) .eq. 0) then
-                            mata1(1) = matv1(1)*valres(2)/valres(1)
+                            mata1(1) = indicChoc*valres(2)
                         end if
                         if (icodre(3) .eq. 0) then
-                            mata1(3) = matv1(1)*valres(3)/valres(1)
+                            mata1(3) = indicChoc*valres(3)
                         end if
                         mata1(6) = mata1(3)
                     end if
@@ -353,17 +393,45 @@ subroutine te0041(option, nomte)
             call jevech('PMATUNS', 'E', jdm)
             if (assemble_amor) then
                 if (ndim .ne. 3) goto 777
-                call tecach('ONO', 'PRIGIEL', 'L', iret, iad=jdr)
-                if (jdr .eq. 0) goto 777
                 call tecach('NNN', 'PMATERC', 'L', iret, iad=jma)
                 if ((jma .eq. 0) .or. (iret .ne. 0)) goto 777
+                ! Récupération des paramètres matériau DIS_CONTACT
                 nomres(1) = 'RIGI_NOR'
                 nomres(2) = 'AMOR_NOR'
                 nomres(3) = 'AMOR_TAN'
+                nomres(4) = 'COULOMB'
+                nomres(5) = 'CONTACT'
                 valres = 0.0
-                call utpsgl(nno, nc, pgl, zr(jdr), matv1)
                 call rcvala(zi(jma), ' ', 'DIS_CONTACT', 0, ' ', &
-                            [0.0d0], 3, nomres, valres, icodre, 0)
+                            [0.0d0], 5, nomres, valres, icodre, 0)
+                ! --- Vérification du frottement de Coulomb
+                IsCoulomb = ASTER_FALSE
+                if (icodre(4) .eq. 0) then
+                    if (valres(4) .gt. r8prem()) then
+                        IsCoulomb = ASTER_TRUE
+                    end if
+                end if
+                ! --- Vérification du type de contact (1D ou COIN_2D)
+                IsCoin2D = ASTER_FALSE
+                if (icodre(5) .eq. 0) then
+                    if (nint(valres(5)) .ne. 0) then
+                        IsCoin2D = ASTER_TRUE
+                    end if
+                end if
+
+                ! Récupération de la matrice tangente
+                if ((lDisChoc) .and. (IsCoulomb) .and. (.not. IsCoin2D)) then
+                    ! Cas de DIS_CHOC avec matrice tangente non symétrique
+                    call tecach('ONO', 'PRIGINS', 'L', iret, iad=jdr)
+                    if (jdr .eq. 0) goto 777
+                    call utpngl(nno, nc, pgl, zr(jdr), matv1)
+                else
+                    ! Cas d'une matrice tangente symétrique
+                    call tecach('ONO', 'PRIGIEL', 'L', iret, iad=jdr)
+                    if (jdr .eq. 0) goto 777
+                    call utpsgl(nno, nc, pgl, zr(jdr), matv1)
+                end if
+
                 if (icodre(1) .eq. 0) then
                     if (abs(valres(1)) > r8prem()) then
                         if (icodre(2) .eq. 0) then

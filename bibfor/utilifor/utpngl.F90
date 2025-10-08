@@ -16,30 +16,30 @@
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
 !
-subroutine utpnlg(nno, nnc, pgl, matl, mate)
+subroutine utpngl(nno, nnc, pgl, matg, mate)
     implicit none
 !
 #include "asterfort/assert.h"
 #include "asterfort/r8inir.h"
 !
     integer(kind=8) :: nno, nnc
-    real(kind=8) :: mate(1), pgl(3, 3), matl(nno*nnc, nno*nnc)
+    real(kind=8) :: mate(1), pgl(3, 3), matg(nno*nnc, nno*nnc)
 ! .....................................................................C
 ! .....................................................................C
 !    TRANSFORMATION DES MATRICES ELEMENTAIRES                          C
-!    PASSAGE DU REPERE LOCAL AU REPERE GLOBAL                          C
+!    PASSAGE DU REPERE GLOBAL AU REPERE LOCAL                          C
 !                                                                      C
 !    - ARGUMENTS:                                                      C
 !        DONNEES:      NNO     -->  NOMBRE DE NOEUDS                   C
 !                      NNC     -->  NOMBRE DE COMPOSANTES              C
 !                      PGL     -->  MATRICE DE PASSAGE GLOBAL -> LOCAL C
-!                      MATL    -->  MATRICE ELEMENTAIRE LOCALE         C
+!                      MATG    -->  MATRICE ELEMENTAIRE GLOBALE        C
 !                                                                      C
-!        SORTIE :      MATE    -->  MATRICE ELEMENTAIRE GLOBALE        C
+!        SORTIE :      MATE    -->  MATRICE ELEMENTAIRE LOCALE         C
 ! .....................................................................C
 ! .....................................................................
     integer(kind=8) :: i, j, k, ii, nj
-    real(kind=8) :: mt(nno*nnc, nno*nnc), matg(nno*nnc, nno*nnc)
+    real(kind=8) :: mt(nno*nnc, nno*nnc), matl(nno*nnc, nno*nnc)
 ! .....................................................................
     ASSERT(nnc .eq. 3)
     nj = nno*nnc
@@ -53,12 +53,12 @@ subroutine utpnlg(nno, nnc, pgl, matl, mate)
         end do
     end do
 !
-! --- ON EFFECTUE : MATG() = MATL() * MT()
+! --- ON EFFECTUE : MATL() = MT() * MATG()
     do k = 1, nno*nnc
         do i = 1, nno*nnc
-            matg(i, k) = 0.d0
+            matl(i, k) = 0.d0
             do j = 1, nj
-                matg(i, k) = matg(i, k)+matl(i, j)*mt(j, k)
+                matl(i, k) = matl(i, k)+mt(i, j)*matg(j, k)
             end do
         end do
     end do
@@ -69,7 +69,7 @@ subroutine utpnlg(nno, nnc, pgl, matl, mate)
         do k = 1, nno*nnc
             mate(ii+k) = 0.d0
             do j = 1, nj
-                mate(ii+k) = mate(ii+k)+mt(j, i)*matg(j, k)
+                mate(ii+k) = mate(ii+k)+matl(i, j)*mt(k, j)
             end do
         end do
     end do
