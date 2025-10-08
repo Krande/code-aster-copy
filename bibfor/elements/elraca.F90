@@ -75,7 +75,7 @@ subroutine elraca(elrefz, &
 
     select case (elrefa)
     case ('HE8')
-        nbfpg = 8
+        nbfpg = 11
         nbpg(1:nbfpg) = [nno, nnos, 1, 8, 27, 16, 64, 125, 216, 343, 512]
         fapg(1) = 'NOEU'
         fapg(2) = 'NOEU_S'
@@ -231,8 +231,8 @@ subroutine elraca(elrefz, &
         fapg(9) = 'FPG29'
 
     case ('P21')
-        nbfpg = 9
-        nbpg(1:nbfpg) = [nno, nnos, 1, 6, 6, 8, 21, 12, 29]
+        nbfpg = 12
+        nbpg(1:nbfpg) = [nno, nnos, 1, 6, 6, 8, 21, 12, 29, 52, 95, 168]
         fapg(1) = 'NOEU'
         fapg(2) = 'NOEU_S'
         fapg(3) = 'FPG1'
@@ -242,6 +242,9 @@ subroutine elraca(elrefz, &
         fapg(7) = 'FPG21'
         fapg(8) = 'FPG6NOS'
         fapg(9) = 'FPG29'
+        fapg(10) = 'FPG52'
+        fapg(11) = 'FPG95'
+        fapg(12) = 'FPG168'
 
     case ('PY5')
         nbfpg = 14

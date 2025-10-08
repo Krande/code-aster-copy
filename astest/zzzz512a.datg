@@ -11,9 +11,9 @@ y = sympy.Symbol("y", real=True)
 z = sympy.Symbol("z", real=True)
 
 # deplacement a renseigner
-ux = z * (x + 1)* y + x*x
-uy = x * (y + 3) *z + y*y
-uz = y * (z - 2) * x + z*z
+ux = z * (x + 1)* y*x + x*x
+uy = x * (y + 3) *z*y + y*y
+uz = y * (z - 2) * x*z + z*z
 
 # calcul G
 G = simplify(

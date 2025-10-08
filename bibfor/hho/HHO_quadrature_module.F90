@@ -753,6 +753,8 @@ contains
                 end do
             end if
         end if
+
+        ASSERT(this%nbQuadPoints <= MAX_QP)
 !
         DEBUG_TIMER(end)
         DEBUG_TIME("Compute hhoGetQuadCell", end-start)
@@ -836,6 +838,9 @@ contains
                 end do
             end if
         end if
+
+        ASSERT(this%nbQuadPoints <= MAX_QP)
+
 !
         DEBUG_TIMER(end)
         DEBUG_TIME("Compute hhoGetQuadFace", end-start)
@@ -897,6 +902,8 @@ contains
             case (21)
                 order = 5
             case (29)
+                order = 6
+            case (52)
                 order = 6
             case (95)
                 order = 9

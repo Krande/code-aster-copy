@@ -82,7 +82,7 @@ subroutine aflrch(lisrez, chargz, type_liai, elim, detr_lisrez, l_preallocz)
     character(len=19) :: lisrel
     character(len=8) :: charge
     integer(kind=8) :: nmocl
-    parameter(nmocl=300)
+    parameter(nmocl=320)
     complex(kind=8) :: betac
     character(len=3) :: klag2
     character(len=4) :: typval, typcoe
@@ -260,7 +260,7 @@ subroutine aflrch(lisrez, chargz, type_liai, elim, detr_lisrez, l_preallocz)
     call dismoi('NB_EC', nomgd, 'GRANDEUR', repi=nec)
 !
 !
-    ASSERT(nec .le. 10)
+    ASSERT(nec .le. 11)
     call jeveuo(ligrmo//'.PRNM', 'L', jprnm)
 
 !   -- les cartes ca1 et ca2 doivent obligatoirement avoir ete

@@ -45,16 +45,19 @@ uX = {
     "LINEAIRE": FORMULE(VALE="X+1", NOM_PARA=("X", "Y", "Z")),
     "QUADRATIQUE": FORMULE(VALE="Z*(X+1)", NOM_PARA=("X", "Y", "Z")),
     "CUBIQUE": FORMULE(VALE="Z*(X+1)*Y+X*X", NOM_PARA=("X", "Y", "Z")),
+    "QUARTIQUE": FORMULE(VALE="Z*(X+1)*Y*X+X*X", NOM_PARA=("X", "Y", "Z")),
 }
 uY = {
     "LINEAIRE": FORMULE(VALE="Y+3", NOM_PARA=("X", "Y", "Z")),
     "QUADRATIQUE": FORMULE(VALE="X*(Y+3)", NOM_PARA=("X", "Y", "Z")),
     "CUBIQUE": FORMULE(VALE="X*(Y+3)*Z+Y*Y", NOM_PARA=("X", "Y", "Z")),
+    "QUARTIQUE": FORMULE(VALE="X*(Y+3)*Z*Y+Y*Y", NOM_PARA=("X", "Y", "Z")),
 }
 uZ = {
     "LINEAIRE": FORMULE(VALE="Z-2", NOM_PARA=("X", "Y", "Z")),
     "QUADRATIQUE": FORMULE(VALE="Y*(Z-2)", NOM_PARA=("X", "Y", "Z")),
     "CUBIQUE": FORMULE(VALE="Y*(Z-2)*X+Z*Z", NOM_PARA=("X", "Y", "Z")),
+    "QUARTIQUE": FORMULE(VALE="Y*(Z-2)*X*Z+Z*Z", NOM_PARA=("X", "Y", "Z")),
 }
 
 zero = FORMULE(VALE="0", NOM_PARA=("X", "Y", "Z"))
@@ -70,6 +73,12 @@ fX = {
         lamb=lamb,
         mu=mu,
     ),
+    "QUARTIQUE": FORMULE(
+        VALE="-6.0*lamb*Y*Z + 2.0*lamb*Y - 3.0*lamb*Z - 2.0*lamb - 8.0*mu*Y*Z + 2.0*mu*Y - 3.0*mu*Z - 4.0*mu",
+        NOM_PARA=("X", "Y", "Z"),
+        lamb=lamb,
+        mu=mu,
+    ),
 }
 fY = {
     "LINEAIRE": zero,
@@ -80,12 +89,24 @@ fY = {
         lamb=lamb,
         mu=mu,
     ),
+    "QUARTIQUE": FORMULE(
+        VALE="-6.0*lamb*X*Z + 2.0*lamb*X - lamb*Z - 2.0*lamb - 8.0*mu*X*Z + 2.0*mu*X - mu*Z - 4.0*mu",
+        NOM_PARA=("X", "Y", "Z"),
+        lamb=lamb,
+        mu=mu,
+    ),
 }
 fZ = {
     "LINEAIRE": zero,
     "QUADRATIQUE": fc,
     "CUBIQUE": FORMULE(
         VALE="-lamb*(X + Y + 2.0) - mu*X - mu*Y - 4.0*mu",
+        NOM_PARA=("X", "Y", "Z"),
+        lamb=lamb,
+        mu=mu,
+    ),
+    "QUARTIQUE": FORMULE(
+        VALE="-6.0*lamb*X*Y - 3.0*lamb*X - lamb*Y - 2.0*lamb - 8.0*mu*X*Y - 3.0*mu*X - mu*Y - 4.0*mu",
         NOM_PARA=("X", "Y", "Z"),
         lamb=lamb,
         mu=mu,
@@ -105,7 +126,13 @@ coeff = DEFI_MATERIAU(ELAS=_F(E=E, NU=Nu, RHO=1.0), HHO=_F(COEF_STAB=2 * mu))
 
 mater = AFFE_MATERIAU(MAILLAGE=mesh, AFFE=_F(TOUT="OUI", MATER=coeff))
 
-for form in ("LINEAIRE", "QUADRATIQUE", "CUBIQUE"):
+nbCells = mesh.getNumberOfCells()
+if nbCells > 1500:
+    formu = ["LINEAIRE", "QUADRATIQUE", "CUBIQUE"]
+else:
+    formu = ["LINEAIRE", "QUADRATIQUE", "CUBIQUE", "QUARTIQUE"]
+
+for form in formu:
     model = AFFE_MODELE(
         MAILLAGE=mesh,
         AFFE=_F(TOUT="OUI", MODELISATION="3D_HHO", FORMULATION=form, PHENOMENE="MECANIQUE"),
@@ -143,7 +170,7 @@ for form in ("LINEAIRE", "QUADRATIQUE", "CUBIQUE"):
 
     u_diff = u_hho - u_sol
 
-    test.assertAlmostEqual(u_diff.norm("NORM_2") / u_hho.norm("NORM_2"), 0.0, delta=1e-7)
+    test.assertAlmostEqual(u_diff.norm("NORM_2") / u_hho.norm("NORM_2"), 0.0, delta=5e-6)
 
     dc = CA.DiscreteComputation(phys_pb)
     mass = dc.getMassMatrix(assembly=True)

@@ -355,7 +355,7 @@ P18.addLocation("FPG6NOS", 12)
 P18.addLocation("FPG8", 8)
 P18.addLocation("FPG21", 21)
 P18.addLocation("FPG29", 29)
-P18.addLocation("FPG95", 29)
+P18.addLocation("FPG95", 95)
 PENTA18.addElrefe(P18)
 
 # ------------------------------------------------------------
@@ -496,6 +496,7 @@ P21.addLocation("FPG6NOS", 12)
 P21.addLocation("FPG8", 8)
 P21.addLocation("FPG21", 21)
 P21.addLocation("FPG29", 29)
+P21.addLocation("FPG95", 95)
 PENTA21.addElrefe(P21)
 
 # ------------------------------------------------------------

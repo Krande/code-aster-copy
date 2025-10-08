@@ -205,7 +205,7 @@
 #define ESVA_FIELD_TYPE_COMP 2
 
 // Maximum number of Gauss points for coordinates
-#define ESVA_GEOM_NBMAXI 64
+#define ESVA_GEOM_NBMAXI 128
 
 // ------------------------------------------------------------------------------------------------
 

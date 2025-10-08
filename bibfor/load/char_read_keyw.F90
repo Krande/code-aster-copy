@@ -69,8 +69,8 @@ subroutine char_read_keyw(keywordfact, iocc, val_type, n_keyexcl, keywordexcl, &
 !
 ! --------------------------------------------------------------------------------------------------
 !
-    character(len=16) :: keywordread(300)
-    character(len=16) :: k16_dummy(300), keyword, val_t_dummy
+    character(len=16) :: keywordread(320)
+    character(len=16) :: k16_dummy(320), keyword, val_t_dummy
     integer(kind=8) :: n, i_keyword, i_keyexcl
     aster_logical :: l_excl
     integer(kind=8) :: j_kexcl
@@ -79,7 +79,7 @@ subroutine char_read_keyw(keywordfact, iocc, val_type, n_keyexcl, keywordexcl, &
 !
     call jemarq()
 !
-    ASSERT(n_max_keyword .eq. 300)
+    ASSERT(n_max_keyword .eq. 320)
 !
 ! - Initial number of keywords
 !

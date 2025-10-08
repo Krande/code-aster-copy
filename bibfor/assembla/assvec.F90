@@ -109,8 +109,8 @@ subroutine assvec(jvBase, vectAsseZ, &
     integer(kind=8) :: liliNume, liliNume2, ligrelNume, jvVectElem
     integer(kind=8) :: iResuElem, iret, jec, jvale, iNodeMode
     integer(kind=8) :: lgncmp, mode, nbNode, nbNode2, meshNbCell
-   integer(kind=8) :: nbResuElem, nbSuperElement, nbCmp, nbCmpMode, nbDofMode, nbElem, nbEqua, nbDof
-    integer(kind=8) :: meshNbNode, nmxcmp, nbNodeMode, nugd, elemNume, iexi
+    integer(kind=8) :: nbResuElem, nbSuperElement, nbCmp, nbCmpMode, nbDofMode, nbElem
+    integer(kind=8) :: meshNbNode, nmxcmp, nbNodeMode, nugd, elemNume, iexi, nbEqua, nbDof
     integer(kind=8) :: icodla(nbecmx), icodge(nbecmx), lshift
     integer(kind=8) :: admodl, lcmodl, ifm, niv, rang, nbproc
     real(kind=8) :: temps(7)
@@ -420,7 +420,7 @@ subroutine assvec(jvBase, vectAsseZ, &
                                     if (nbDofMode .eq. 0) cycle
                                     ASSERT(iad1 .ne. 0)
                                     ASSERT(iad1 .le. nbDof)
-                                    ASSERT(nbDofMode .le. 100)
+                                    ASSERT(nbDofMode .le. 105)
                                     if (vectScalType .eq. 1) then
                                         do iDofMode = 1, nbDofMode
                                             iDof = iDof+1
@@ -472,7 +472,7 @@ subroutine assvec(jvBase, vectAsseZ, &
                                         call corddl(admodl, lcmodl, idprn1, idprn2, liliNume2, &
                                                     mode, nec, nbCmp, nbNode2, iNodeMode, &
                                                     nbDofMode, zi(iapsdl))
-                                        ASSERT(nbDofMode .le. 100)
+                                        ASSERT(nbDofMode .le. 105)
                                     else
                                         iad1 = zi(idprn1-1+ &
                                                   zi(idprn2+ligrelMeshIndx-1)+ &
@@ -481,7 +481,7 @@ subroutine assvec(jvBase, vectAsseZ, &
                                                     ligrelMeshIndx, &
                                                     mode, nec, nbCmp, nbNode, iNodeMode, &
                                                     nbDofMode, zi(iapsdl))
-                                        ASSERT(nbDofMode .le. 100)
+                                        ASSERT(nbDofMode .le. 105)
                                     end if
 
                                     ASSERT(iad1 .ne. 0)

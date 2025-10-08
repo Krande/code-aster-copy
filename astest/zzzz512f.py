@@ -45,14 +45,17 @@ uX = {
     "LINEAIRE": FORMULE(VALE="0.8*X+1", NOM_PARA=("X", "Y")),
     "QUADRATIQUE": FORMULE(VALE="0.8*X*Y-X+1", NOM_PARA=("X", "Y")),
     "CUBIQUE": FORMULE(VALE="0.8*X*X*Y-X+1", NOM_PARA=("X", "Y")),
+    "QUARTIQUE": FORMULE(VALE="0.8*X*X*Y*Y-X+1", NOM_PARA=("X", "Y")),
 }
 uY = {
     "LINEAIRE": FORMULE(VALE="-Y+0.1*X", NOM_PARA=("X", "Y")),
     "QUADRATIQUE": FORMULE(VALE="-Y*Y+0.1*X", NOM_PARA=("X", "Y")),
     "CUBIQUE": FORMULE(VALE="-Y*Y*Y+0.1*X-0.5*X*Y", NOM_PARA=("X", "Y")),
+    "QUARTIQUE": FORMULE(VALE="-Y*Y*Y*Y+0.1*X-0.5*X*Y", NOM_PARA=("X", "Y")),
 }
 
 zero = FORMULE(VALE="0", NOM_PARA=("X", "Y"))
+
 
 fX = {
     "LINEAIRE": zero,
@@ -60,12 +63,24 @@ fX = {
     "CUBIQUE": FORMULE(
         VALE="-lamb*(1.6*Y - 0.5) - 3.2*mu*Y + 0.5*mu", NOM_PARA=("X", "Y"), lamb=lamb, mu=mu
     ),
+    "QUARTIQUE": FORMULE(
+        VALE="-lamb*(1.6*Y*Y - 0.5) - 3.2*mu*Y*Y - mu*(1.6*X*X-0.5)",
+        NOM_PARA=("X", "Y"),
+        lamb=lamb,
+        mu=mu,
+    ),
 }
 fY = {
     "LINEAIRE": zero,
     "QUADRATIQUE": FORMULE(VALE="1.2*lamb+3.2*mu", NOM_PARA=("X", "Y"), lamb=lamb, mu=mu),
     "CUBIQUE": FORMULE(
         VALE="-lamb*(1.6*X - 6.0*Y) - 1.6*mu*X + 12.0*mu*Y", NOM_PARA=("X", "Y"), lamb=lamb, mu=mu
+    ),
+    "QUARTIQUE": FORMULE(
+        VALE="-Y*(lamb*(3.2*X - 12*Y) + 3.2*mu*X - 24.0*mu*Y)",
+        NOM_PARA=("X", "Y"),
+        lamb=lamb,
+        mu=mu,
     ),
 }
 
@@ -81,14 +96,14 @@ coeff = DEFI_MATERIAU(ELAS=_F(E=E, NU=Nu, RHO=1.0), HHO=_F(COEF_STAB=2 * mu))
 
 mater = AFFE_MATERIAU(MAILLAGE=mesh, AFFE=_F(TOUT="OUI", MATER=coeff))
 
-for form in ("LINEAIRE", "QUADRATIQUE", "CUBIQUE"):
+for form in ["LINEAIRE", "QUADRATIQUE", "CUBIQUE", "QUARTIQUE"]:
     model = AFFE_MODELE(
         MAILLAGE=mesh,
         AFFE=_F(TOUT="OUI", MODELISATION="D_PLAN_HHO", FORMULATION=form, PHENOMENE="MECANIQUE"),
     )
 
     bc = AFFE_CHAR_CINE_F(
-        MODELE=model, MECA_IMPO=_F(GROUP_MA="BOUNDARIES", DX=uX[form], DY=uY[form])
+        MODELE=model, MECA_IMPO=_F(GROUP_MA="BOUNDARIES", DX=uX[form], DY=uY[form]), INFO=1
     )
 
     load = AFFE_CHAR_MECA_F(MODELE=model, FORCE_INTERNE=_F(GROUP_MA="2D", FX=fX[form], FY=fY[form]))
@@ -101,6 +116,7 @@ for form in ("LINEAIRE", "QUADRATIQUE", "CUBIQUE"):
         CHAM_MATER=mater,
         INCREMENT=_F(LIST_INST=LREEL),
         EXCIT=(_F(CHARGE=bc), _F(CHARGE=load)),
+        SOLVEUR=_F(METHODE="PETSC", ALGORITHME="FGMRES", PRE_COND="LDLT_SP", PCENT_PIVOT=20),
     )
 
     u_sol = resu.getField("DEPL", para="INST", value=1.0)
