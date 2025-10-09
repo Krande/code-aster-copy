@@ -96,8 +96,8 @@ SOLU2 = MECA_NON_LINE(
 sol2 = SOLU2.getField("DEPL", 1)
 
 
-# ------------------------------------------------------------------------------------------------------------------------
-# RASPEN solve with coarse problem
+# # ------------------------------------------------------------------------------------------------------------------------
+# # RASPEN solve with coarse problem
 
 InternalRASPENOpts = "-raspen_with_coarse_pb -raspen_coarse_side Left -raspen_coarse_type SubdomainSVD -raspen_nb_sd_singular_vec 5 "
 
@@ -116,6 +116,7 @@ myOptions = (
     + "-prefix_pop "
 )
 
+
 SOLU3 = MECA_NON_LINE(
     MODELE=model,
     CHAM_MATER=chmat,
@@ -132,12 +133,49 @@ sol3 = SOLU3.getField("DEPL", 1)
 
 
 # ------------------------------------------------------------------------------------------------------------------------
+# RASPEN solve with substructuring
+
+InternalRASPENOpts = "-raspen_with_substructuring -prefix_push sksp_ -ksp_type gmres -pc_type asm -sub_ksp_type hpddm -sub_ksp_hpddm_type gcrodr -ksp_rtol 1.e-8 -ksp_monitor -sub_ksp_monitor -prefix_pop "
+
+myOptions = (
+    InternalRASPENOpts
+    + "-ksp_type preonly -pc_type lu  -pc_factor_mat_solver_type mumps -snes_linesearch_type basic "
+    # local snes
+    + "-prefix_push lsnes_ "
+    + "-snes_linesearch_type basic -snes_rtol 1.e-7 -snes_atol 1.e-50 -snes_stol 1.e-50 -snes_monitor -snes_max_it 10 -snes_divergence_tolerance -1 "
+    + "-ksp_type preonly  -pc_type lu -pc_factor_mat_solver_type mumps "
+    + "-prefix_pop "
+    # global snes
+    + "-prefix_push gsnes_  "
+    + "-snes_linesearch_type basic -snes_rtol 1e-7 -snes_atol 1e-50 -ksp_monitor -ksp_type gmres -ksp_gmres_restart 10000 -ksp_max_it 5000 -ksp_converged_maxits -ksp_rtol 1.e-7 -ksp_atol 1.e-16 -snes_max_it 50 "
+    + "-prefix_pop "
+)
+
+SOLU4 = MECA_NON_LINE(
+    MODELE=model,
+    CHAM_MATER=chmat,
+    EXCIT=(_F(CHARGE=char_cin), _F(CHARGE=pesa, FONC_MULT=RAMPE)),
+    COMPORTEMENT=_F(RELATION="ELAS", DEFORMATION="GDEF_LOG"),
+    NEWTON=_F(REAC_INCR=1, PREDICTION="ELASTIQUE", MATRICE="TANGENTE", REAC_ITER=1),
+    METHODE="RASPEN",
+    # CONVERGENCE=_F(RESI_GLOB_RELA=1e-10, RESI_GLOB_MAXI=1e-15, ITER_GLOB_MAXI=10),
+    INCREMENT=_F(LIST_INST=DEFLIST),
+    SOLVEUR=_F(METHODE="PETSC", OPTION_PETSC=myOptions),
+    INFO=1,
+)
+sol4 = SOLU4.getField("DEPL", 1)
+
+
+# ------------------------------------------------------------------------------------------------------------------------
 # Validation
 
 diff = sol2 - sol1
 test.assertAlmostEqual(diff.norm(), 0.0)
 
 diff = sol3 - sol1
+test.assertAlmostEqual(diff.norm(), 0.0)
+
+diff = sol4 - sol1
 test.assertAlmostEqual(diff.norm(), 0.0)
 
 

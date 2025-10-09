@@ -17,6 +17,7 @@
 # along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 # --------------------------------------------------------------------
 
+from token import OP
 import warnings
 from time import time
 
@@ -26,7 +27,7 @@ from scipy.sparse.linalg import LinearOperator, eigsh, svds
 
 from ...Objects import redistributePetscMat
 from ...Supervis import ConvergenceError
-from ...Utilities import PETSc, no_new_attributes, profile
+from ...Utilities import PETSc, no_new_attributes, profile, removePETScOptions
 from ...Utilities.mpi_utils import MPI
 from .iteration_solver import BaseIterationSolver
 from .snes_solver import SNESSolver
@@ -241,6 +242,8 @@ class RASPENSolver(BaseIterationSolver):
         # delete local snes
         local_solver.snes = None
         raspen_solver.destroyAll()
+        # delete options from database
+        removePETScOptions(self._options)
         return self.current_matrix
 
 
