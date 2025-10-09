@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -25,6 +25,7 @@ subroutine te0039(option, nomte)
 #include "jeveux.h"
 #include "asterfort/assert.h"
 #include "asterfort/dis_choc_frot_syme.h"
+#include "asterfort/dis_choc_frot_nosyme.h"
 #include "asterfort/discret_sief.h"
 #include "asterfort/infdis.h"
 #include "asterfort/infted.h"
@@ -57,13 +58,13 @@ subroutine te0039(option, nomte)
     type(te0047_dscr) :: for_discret
 !
 !   Les variables internes
-    integer, parameter :: nbvari = 9
+    integer(kind=8), parameter :: nbvari = 9
     real(kind=8) :: varmo(nbvari), varpl(nbvari)
 !
-    integer :: lorien, lmater, ii, jj
-    integer :: ivectu, icontg, neq
-    integer :: iplouf, infodi, itype, ibid
-    integer :: igeom, ideplm, ideplp, icompo, jdc, irep, ifono, ilogic
+    integer(kind=8) :: lorien, lmater, ii, jj
+    integer(kind=8) :: ivectu, icontg, neq
+    integer(kind=8) :: iplouf, infodi, itype, ibid
+    integer(kind=8) :: igeom, ideplm, ideplp, icompo, jdc, irep, ifono, ilogic
 !
     real(kind=8) :: pgl(3, 3), force(3)
     real(kind=8) :: fs(12), ugp(12), dug(12), ulp(12), dul(12), dvl(12), dpe(12), dve(12)
@@ -76,6 +77,7 @@ subroutine te0039(option, nomte)
     character(len=16) :: kmess(5)
 !
     aster_logical, parameter :: Predic = ASTER_FALSE
+    aster_logical :: lMatrTangSyme
     blas_int :: b_incx, b_incy, b_n
 !
 ! --------------------------------------------------------------------------------------------------
@@ -204,9 +206,19 @@ subroutine te0039(option, nomte)
                 ilogic = 0; force(1:3) = 0.0
                 call discret_sief(for_discret, klv, ulp, sim, ilogic, &
                                   sip, fono, force)
-                call dis_choc_frot_syme(for_discret, zi(lmater), ulp, zr(igeom), klv, &
-                                        dvl, dpe, dve, Predic, force, &
-                                        varmo, varpl)
+                ! Verification du caractère symétrique de la matrice tangente
+                call hasSymmetricTangentMatrix(for_discret, lMatrTangSyme)
+
+                !   Calcul des efforts
+                if (lMatrTangSyme) then
+                    call dis_choc_frot_syme(for_discret, zi(lmater), ulp, zr(igeom), klv, &
+                                            dvl, dpe, dve, Predic, force, &
+                                            varmo, varpl)
+                else
+                    call dis_choc_frot_nosyme(for_discret, zi(lmater), ulp, zr(igeom), klv, &
+                                              varmo, force, varpl)
+                end if
+
                 ilogic = 2
                 call discret_sief(for_discret, klv, ulp, sim, ilogic, &
                                   sip, zr(ifono), force)
