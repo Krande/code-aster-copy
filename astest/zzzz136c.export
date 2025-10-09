@@ -8,3 +8,4 @@ P testlist submit verification sequential
 F comm zzzz136c.comm D 1
 F msup zzzz136c.msup D 19
 F libr zzzz136c.38 D 38
+F libr zzzz136c.table D 39
