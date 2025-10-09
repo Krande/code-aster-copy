@@ -314,7 +314,9 @@ def rebuild_with_groups(m0, l0groups):
     face_zmax_no_edges.setName("face_zmax_no_edges")
     node_groups.append(face_zmax_no_edges)
 
-    node_se = int_zmin_ymin[m0.getCoords()[int_zmin_ymin][:, 0].getMinValue()[1]]
+    nds_zsym = m0.getCoords()[:, 2].findIdsInRange(0.0 - tol, 0.0 + tol)
+    int_zsym_ymin = mc.DataArrayInt.BuildIntersection((face_nodes["face_ymin"], nds_zsym))
+    node_se = int_zsym_ymin[m0.getCoords()[int_zsym_ymin][:, 0].getMinValue()[1]]
     lock_rigi_node = mc.DataArrayInt((node_se,))
     lock_rigi_node.setName("lock_rigi")
     node_groups.append(lock_rigi_node)
