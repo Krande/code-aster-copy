@@ -2,6 +2,8 @@
 
 prefix=$(dirname $(dirname $(readlink -n -f ${0})))
 
+export ASTER_REQS_USE_DEBUG=${ASTER_REQS_USE_DEBUG:-0}
+
 _test() {
     printf "\nchecking for ${1}...\n"
     ${1} --version 2> /dev/null
@@ -42,7 +44,7 @@ do_install() {
         [ "${answer}" = "3" ] && ASTER_REQS_PACKAGE="nogcc-noompi"
         [ "${answer}" = "0" ] && echo "exiting..." && return 1
     fi
-    [ "${WAF_DEFAULT_VARIANT}" = "debug" ] && VARIANT="-debug"
+    [ ${ASTER_REQS_USE_DEBUG} -eq 1 ] && VARIANT="-debug"
     arch="codeaster-prerequisites-${VERSION}-${ASTER_REQS_PACKAGE}${VARIANT}.sh"
 
     _test curl || return 1
@@ -78,7 +80,7 @@ do_install() {
 
 check_requirements_main() {
     args=( "-v" )
-    [ "${WAF_DEFAULT_VARIANT}" = "debug" ] && args=()
+    [ ${ASTER_REQS_USE_DEBUG} -eq 1 ] && args=()
 
     found=$(find build -name "codeaster-prerequisites-${VERSION}-*" -type d | grep ${args[@]} debug)
     if [ -z "${found}" ]; then

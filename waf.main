@@ -26,6 +26,8 @@ set_prefix() {
 
 set_prefix "${0}"
 
+export ASTER_REQS_USE_DEBUG=${ASTER_REQS_USE_DEBUG:-0}
+
 waf_main()
 {
     # source the environment only if DEVTOOLS_COMPUTER_ID is not already defined
@@ -38,7 +40,7 @@ waf_main()
             # FIXME: set manually during beta tests
             export VERSION=20240327b
             args=( "-v" )
-            [ "${WAF_DEFAULT_VARIANT}" = "debug" ] && args=()
+            [ ${ASTER_REQS_USE_DEBUG} -eq 1 ] && args=()
             ${prefix}/.devhelper/check_requirements.sh
             iret=$?
             [ ${iret} -eq 4 ] && exit ${iret}
