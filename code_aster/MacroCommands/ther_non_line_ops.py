@@ -34,7 +34,7 @@ from .Utils.ther_non_line_fort_op import THER_NON_LINE_FORT
 
 
 def _use_fortran(keywords):
-    excluded_keys = "OBSERVATION"
+    excluded_keys = ("OBSERVATION",)
 
     for key in excluded_keys:
         if key in keywords:
