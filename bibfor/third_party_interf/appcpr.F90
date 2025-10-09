@@ -65,9 +65,9 @@ subroutine appcpr(kptsc)
     integer(kind=8) :: dimgeo, dimgeo_b, niremp
     integer(kind=8) :: jnequ, jnequl
     integer(kind=8) :: nloc, neqg, ndprop, ieq, numno, icmp
-    integer(kind=8) :: iret, i
+    integer(kind=8) :: iret, i, nbp
     integer(kind=8) :: il, ix, iga_f, igp_f
-    integer(kind=8) :: fill, reacpr
+    integer(kind=8) :: fill, reacpr, nbmode
     integer(kind=8), dimension(:), pointer :: slvi => null()
     integer(kind=8), dimension(:), pointer :: prddl => null()
     integer(kind=8), dimension(:), pointer :: deeq => null()
@@ -78,7 +78,7 @@ subroutine appcpr(kptsc)
     character(len=24) :: precon, seuil_str
     character(len=19) :: nomat, nosolv, syme
     character(len=14) :: nonu, factor
-    character(len=8) :: nomail, nbproc_str, typ, nbvp_str
+    character(len=8) :: nomail, nbp_str, typ, nbmode_str
     character(len=4) :: exilag
     character(len=3) :: matd
     character(len=800) :: myopt
@@ -537,8 +537,11 @@ subroutine appcpr(kptsc)
         factor = 'lu'
         if (syme .eq. 'SYMETRI') factor = 'cholesky'
 
-        call codent(int(max(nbproc/2_8, 1_8), 8), 'D', nbproc_str, 'F')
-        call codent(slvi(3), 'D', nbvp_str, 'F')
+        nbmode = slvi(3)
+        call codent(nbmode, 'D', nbmode_str, 'F')
+        ! we distribute the coarse problem to have 50k dofs by proc
+        nbp = max(ceiling(real(nbproc*nbmode, 8)/real(50000, 8), 8), 1_8)
+        call codent(nbp, 'D', nbp_str, 'F')
         write (seuil_str, '(E24.16)') slvr(6)
         if (typ == "GENEO") then
             myopt = '-prefix_push pc_hpddm_ '// &
@@ -551,7 +554,7 @@ subroutine appcpr(kptsc)
                     '-sub_mat_mumps_icntl_25 0 '// &
                     '-sub_mat_mumps_cntl_3 1.e-50 '// &
                     '-sub_mat_mumps_cntl_5 0. '// &
-                    '-eps_nev '//trim(nbvp_str)//' '// &
+                    '-eps_nev '//trim(nbmode_str)//' '// &
                     '-eps_threshold '//trim(seuil_str)//' '// &
                     '-st_pc_factor_mat_solver_type mumps '// &
                     '-st_share_sub_ksp '// &
@@ -564,7 +567,7 @@ subroutine appcpr(kptsc)
                     '-mat_mumps_icntl_25 0 '// &
                     '-mat_mumps_cntl_3 1.e-50 '// &
                     '-mat_mumps_cntl_5 0. '// &
-                    '-p '//trim(nbproc_str)//' '// &
+                    '-p '//trim(nbp_str)//' '// &
                     '-prefix_pop '// &
                     '-define_subdomains '// &
                     '-has_neumann '// &
@@ -581,7 +584,7 @@ subroutine appcpr(kptsc)
                     '-sub_mat_mumps_cntl_3 1.e-50 '// &
                     '-sub_mat_mumps_cntl_5 0. '// &
                     '-svd_type lanczos '// &
-                    '-svd_nsv '//trim(nbvp_str)//' '// &
+                    '-svd_nsv '//trim(nbmode_str)//' '// &
                     '-svd_relative_threshold '//trim(seuil_str)//' '// &
                     '-st_pc_factor_mat_solver_type mumps '// &
                     '-st_share_sub_ksp '// &
@@ -596,7 +599,7 @@ subroutine appcpr(kptsc)
                     '-mat_mumps_cntl_3 1.e-50 '// &
                     '-mat_mumps_cntl_5 0. '// &
                     '-mat_type baij '// &
-                    '-p '//trim(nbproc_str)//' '// &
+                    '-p '//trim(nbp_str)//' '// &
                     '-prefix_pop '// &
                     '-define_subdomains '// &
                     '-harmonic_overlap 2 '// &
