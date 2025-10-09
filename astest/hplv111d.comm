@@ -17,17 +17,15 @@
 # along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 # --------------------------------------------------------------------
 
-import os
 import json
 import tempfile
 import os.path as osp
-from math import pi
 
 from code_aster.Commands import *
 
 DEBUT(CODE="OUI", ERREUR=_F(ALARME="EXCEPTION"))
 
-testname = "hplv111a"
+testname = "hplv111d"
 
 with open("%s.json" % testname) as f:
     testresu = json.load(f)
@@ -50,13 +48,9 @@ PARA_EQ_PLAQUE = CALC_MATE_HOMO(
     MAILLAGE=MA,
     AFFE=_F(TOUT="OUI", MATER=ACIER),
     VARC=_F(NOM_VARC="TEMP", VALE=21.0),
-    TYPE_HOMO="PLAQUE_CT_MINDLIN",
+    TYPE_HOMO="PLAQUE_CT_TOURATIER",
     CORR_MECA=CO("CORR_MECA"),
 )
-
-IMPR_CORR_HOMO(UNITE=80, CORR_MECA=CORR_MECA)
-MA_RELOAD = LIRE_MAILLAGE(FORMAT="MED", UNITE=80)
-CORR_MECA_RELOAD = LIRE_CORR_HOMO(UNITE=80, TYPE_RESU="EVOL_ELAS", MAILLAGE=MA_RELOAD)
 
 testrefe = {
     "MEMB_L": 0.31721,
@@ -67,8 +61,8 @@ testrefe = {
     "FLEX_T": 0.35372,
     "FLEX_LT": 0.07846,
     "FLEX_G_LT": 0.19348,
-    "CISA_L": 0.21865,
-    "CISA_T": 0.21865,
+    "CISA_L": 0.14175,
+    "CISA_T": 0.14175,
     "ALPHA": 16.4e-6,
 }
 

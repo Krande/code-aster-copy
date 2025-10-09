@@ -30,10 +30,13 @@ from ...CodeCommands import (
     ASSE_VECTEUR,
     NUME_DDL,
 )
+from ...Messages import ASSERT
 from ...Objects import ThermalResultDict, ElasticResultDict
 
 
-def calc_corr_plaque_ct(MODME, CHMATME, MODTH, CHMATTH, L_INST, alpha_calc, ls_group_ma):
+def calc_corr_plaque_ct(
+    MODME, CHMATME, MODTH, CHMATTH, L_INST, alpha_calc, ls_group_ma, ep_ver, type_homo
+):
     """
     Compute the elastic correctors for PLAQUE (Plate) case.
 
@@ -51,6 +54,8 @@ def calc_corr_plaque_ct(MODME, CHMATME, MODTH, CHMATTH, L_INST, alpha_calc, ls_g
         L_INST (list[float]): List of pseudo-time values (homogenization
             temperature values).
         ls_group_ma (list[str]): List of groups where properties are prescribed.
+        ep_ver (float): The VER thickness.
+        type_homo (str): Name of the homogeneization type
 
     Returns:
         ElasticResultDict: Dictionary of elastic correctors.
@@ -132,6 +137,13 @@ def calc_corr_plaque_ct(MODME, CHMATME, MODTH, CHMATTH, L_INST, alpha_calc, ls_g
     LOAD_ff_xx = FORMULE(VALE="1.0 * Z", NOM_PARA="Z")
     LOAD_ff_xy = FORMULE(VALE="0.5 * Z", NOM_PARA="Z")
 
+    if type_homo in ("PLAQUE_CT_TOURATIER",):
+        LOAD_ct = FORMULE(VALE="-0.5 * cos(pi * Z / h)", NOM_PARA="Z", h=ep_ver)
+    elif type_homo in ("PLAQUE_CT_MINDLIN",):
+        LOAD_ct = FORMULE(VALE="-0.5", NOM_PARA="Z")
+    else:
+        ASSERT(False)
+
     CHAR11_mm = AFFE_CHAR_MECA(MODELE=MODME, PRE_EPSI=_F(GROUP_MA=ls_group_ma, EPXX=-1.0))
 
     CHAR22_mm = AFFE_CHAR_MECA(MODELE=MODME, PRE_EPSI=_F(GROUP_MA=ls_group_ma, EPYY=-1.0))
@@ -144,9 +156,9 @@ def calc_corr_plaque_ct(MODME, CHMATME, MODTH, CHMATTH, L_INST, alpha_calc, ls_g
 
     CHAR12_ff = AFFE_CHAR_MECA_F(MODELE=MODME, PRE_EPSI=_F(GROUP_MA=ls_group_ma, EPXY=LOAD_ff_xy))
 
-    CHAR31_ct = AFFE_CHAR_MECA(MODELE=MODME, PRE_EPSI=_F(GROUP_MA=ls_group_ma, EPXZ=-0.5))
+    CHAR31_ct = AFFE_CHAR_MECA_F(MODELE=MODME, PRE_EPSI=_F(GROUP_MA=ls_group_ma, EPXZ=LOAD_ct))
 
-    CHAR23_ct = AFFE_CHAR_MECA(MODELE=MODME, PRE_EPSI=_F(GROUP_MA=ls_group_ma, EPYZ=-0.5))
+    CHAR23_ct = AFFE_CHAR_MECA_F(MODELE=MODME, PRE_EPSI=_F(GROUP_MA=ls_group_ma, EPYZ=LOAD_ct))
 
     CHARDIL_mm = AFFE_CHAR_MECA_F(
         MODELE=MODME,

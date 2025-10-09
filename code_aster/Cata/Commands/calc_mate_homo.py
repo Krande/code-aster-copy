@@ -57,7 +57,9 @@ CALC_MATE_HOMO = MACRO(
         NOM_VARC=SIMP(statut="o", typ="TXM", into=("TEMP", "IRRA")),
         VALE=SIMP(statut="o", typ="R", min=1, max="**"),
     ),
-    TYPE_HOMO=SIMP(statut="o", typ="TXM", into=("MASSIF", "PLAQUE", "PLAQUE_CT")),
+    TYPE_HOMO=SIMP(
+        statut="o", typ="TXM", into=("MASSIF", "PLAQUE", "PLAQUE_CT_MINDLIN", "PLAQUE_CT_TOURATIER")
+    ),
     INFO=SIMP(statut="f", typ="I", defaut=1, into=(1, 2)),
     CORR_MECA=SIMP(statut="f", typ=CO, validators=NoRepeat()),
     b_corr_massif=BLOC(

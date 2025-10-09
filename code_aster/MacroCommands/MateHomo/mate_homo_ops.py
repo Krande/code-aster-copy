@@ -52,7 +52,7 @@ def mate_homo_ops(self, **kwargs):
     mm_user = meshin.createMedCouplingMesh()
     assert check_meshdim(mm_user[0])
 
-    if "PLAQUE" in type_homo:
+    if type_homo.startswith("PLAQUE"):
         point = [0, 0, 0]
         pmanager_z = SymmetryManager(point, "Z")
         mm_homo, _, _ = pmanager_z.build_symmetry_mesh_simple(mm_user)
@@ -65,7 +65,7 @@ def mate_homo_ops(self, **kwargs):
         mesh, (group_tout,), ls_affe, varc_name, varc_values
     )
 
-    if type_homo in ("MASSIF",):
+    if type_homo.startswith("MASSIF"):
         elas_fields, ther_fields = calc_corr_massif_syme(
             MODME, CHMATME, MODTH, CHMATTH, L_INST, alpha_calc, (group_tout,)
         )
@@ -80,12 +80,21 @@ def mate_homo_ops(self, **kwargs):
             **ther_fields,
         )
 
-    elif type_homo in ("PLAQUE",):
-        elas_fields, ther_fields = calc_corr_plaque_syme(
-            MODME, CHMATME, MODTH, CHMATTH, L_INST, alpha_calc, (group_tout,)
-        )
+    elif type_homo.startswith("PLAQUE"):
+
+        if type_homo in ("PLAQUE",):
+            elas_fields, ther_fields = calc_corr_plaque_syme(
+                MODME, CHMATME, MODTH, CHMATTH, L_INST, alpha_calc, (group_tout,)
+            )
+        elif type_homo in ("PLAQUE_CT_MINDLIN", "PLAQUE_CT_TOURATIER"):
+            elas_fields, ther_fields = calc_corr_plaque_ct(
+                MODME, CHMATME, MODTH, CHMATTH, L_INST, alpha_calc, (group_tout,), ep_ver, type_homo
+            )
+        else:
+            ASSERT(False)
 
         C_hom, D_hom, G_hom, tabpara = calc_tabpara_plaque(
+            type_homo,
             DEPLMATE,
             volume_ver,
             (group_tout,),
@@ -96,21 +105,6 @@ def mate_homo_ops(self, **kwargs):
             **ther_fields,
         )
 
-    elif type_homo in ("PLAQUE_CT",):
-        elas_fields, ther_fields = calc_corr_plaque_ct(
-            MODME, CHMATME, MODTH, CHMATTH, L_INST, alpha_calc, (group_tout,)
-        )
-
-        C_hom, D_hom, G_hom, tabpara = calc_tabpara_plaque(
-            DEPLMATE,
-            volume_ver,
-            (group_tout,),
-            varc_name,
-            varc_values,
-            ep_ver,
-            **elas_fields,
-            **ther_fields,
-        )
     else:
         ASSERT(False)
 
