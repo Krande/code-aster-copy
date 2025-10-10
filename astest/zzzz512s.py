@@ -140,6 +140,7 @@ for form in formu:
     # project HHO solution
     h1_field = hho.projectOnLagrangeSpace(u_sol)
     hho_field = hho.projectOnHHOSpace(h1_field)
+    # not zero if k > 2 because quadratic cell
     # test.assertAlmostEqual((hho_field - u_sol).norm("NORM_2"), 0.0, delta=1e-6)
 
 

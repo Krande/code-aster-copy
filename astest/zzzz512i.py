@@ -28,8 +28,11 @@ test = CA.TestCase()
 ###################################################################
 #
 #   Solve Helmholtz problem with HHO
+#
+#   -div(A*grad(u))) - H*u = f
+#
 #   Continuous:
-#   (A * grad u, grad v) + (H * u, v) = (H * f, v)
+#   (A * grad u, grad v) - (H * u, v) = (f, v)
 #   with f given and A > 0, H > 0
 #
 #   Solution is a polynomial of order k
@@ -38,7 +41,7 @@ test = CA.TestCase()
 #   The script to compute solution is given in zzzz512i.datg
 #
 #   HHO:
-#   sum_{T \in Th} (A * GkT(huT), GkT(hvT))_T + (H * u_T, v_T) _T = (H * f, v_T)_T
+#   sum_{T \in Th} (A * GkT(huT), GkT(hvT))_T - (H * u_T, v_T) _T = (f, v_T)_T
 #
 ###################################################################
 
@@ -56,17 +59,14 @@ u = {
 }
 
 f = {
-    "CONSTANTE": FORMULE(VALE="-H", NOM_PARA=("X", "Y", "Z"), H=H),
-    "LINEAIRE": FORMULE(VALE="H*(Z+X-1)", NOM_PARA=("X", "Y", "Z"), H=H),
-    "QUADRATIQUE": FORMULE(VALE="2*A-H*(X*Y+X+Y*Y+Z-1)", NOM_PARA=("X", "Y", "Z"), A=A, H=H),
+    "CONSTANTE": FORMULE(VALE="H", NOM_PARA=("X", "Y", "Z"), H=H),
+    "LINEAIRE": FORMULE(VALE="-H*(Z+X-1)", NOM_PARA=("X", "Y", "Z"), H=H),
+    "QUADRATIQUE": FORMULE(VALE="-2*A-H*(Y*Y-X*Y+Z+X-1)", NOM_PARA=("X", "Y", "Z"), A=A, H=H),
     "CUBIQUE": FORMULE(
-        VALE="(2*A*(X+1) + H*(-X*Y + X*Z*Z  + X + Y*Y  + Z - 1))",
-        NOM_PARA=("X", "Y", "Z"),
-        A=A,
-        H=H,
+        VALE="-(2*A*(X+1) + H*(Z*Z*X+Y*Y-X*Y+Z+X-1))", NOM_PARA=("X", "Y", "Z"), A=A, H=H
     ),
     "QUARTIQUE": FORMULE(
-        VALE="(2*A*(X +1-6*X*X) + H*(-X*X*X*X -X*Y + X*Z*Z  + X + Y*Y  + Z - 1))",
+        VALE="-(2*A*(X +1-6*X*X) + H*(-X*X*X*X+Z*Z*X+Y*Y-X*Y+Z+X-1))",
         NOM_PARA=("X", "Y", "Z"),
         A=A,
         H=H,
@@ -85,7 +85,7 @@ coeff = DEFI_MATERIAU(THER=_F(LAMBDA=1.0, RHO_CP=1.0))
 
 mater = AFFE_MATERIAU(MAILLAGE=mesh, AFFE=_F(TOUT="OUI", MATER=coeff))
 
-formu = ["CONSTANTE", "LINEAIRE"]
+formu = ["CONSTANTE", "LINEAIRE", "QUADRATIQUE", "CUBIQUE", "QUARTIQUE"]
 
 for form in formu:
     # define model
@@ -117,11 +117,11 @@ for form in formu:
     matM = CA.AssemblyMatrixTemperatureReal(phys_pb)
     matM.assemble(matEM, phys_pb.getListOfLoads())
 
-    # compute ( f, v_T)_T
+    # compute (f, v_T)_T
     rhs = disc_comp.getVolumetricForces()
 
     # lhs matrix
-    lhs = A * matK + H * matM
+    lhs = A * matK - H * matM
 
     # BC
     diriBC = disc_comp.getDirichletBC()
@@ -149,7 +149,8 @@ for form in formu:
     # project HHO solution
     h1_field = hho.projectOnLagrangeSpace(u_sol)
     hho_field = hho.projectOnHHOSpace(h1_field)
-    test.assertAlmostEqual((hho_field - u_sol).norm("NORM_2"), 0.0, delta=1e-6)
+    # not zero if k > 2 because quadratic cell
+    # test.assertAlmostEqual((hho_field - u_sol).norm("NORM_2"), 0.0, delta=1e-6)
 
 
 test.printSummary()

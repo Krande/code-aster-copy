@@ -73,7 +73,7 @@ subroutine bmnodi(basmdz, intfz, nmintz, numint, nbdef, &
     character(len=24) :: noeint, idesc
     character(len=24) :: valk(3)
     integer(kind=8) :: vali
-    integer(kind=8) :: idec(300)
+    integer(kind=8) :: idec(320)
     character(len=10) :: typbas(3)
     integer(kind=8) :: i, inoe, iordef, j, lldes, llnoe
     integer(kind=8) :: nbnot, nbcmp, nbec, nbmod, nbnoe

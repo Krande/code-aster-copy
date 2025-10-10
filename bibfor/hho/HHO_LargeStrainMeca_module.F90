@@ -147,7 +147,7 @@ contains
         type(HHO_matrix) :: AT, TMP
         real(kind=8) :: jac_prev, jac_curr, coorpg(3), weight
         integer(kind=8) :: cbs, fbs, total_dofs, faces_dofs, gbs, ipg, gbs_cmp, gbs_sym
-        integer(kind=8) :: cod(27), nbsig
+        integer(kind=8) :: cod(MAX_QP_CELL), nbsig
         aster_logical :: l_gdeflog, l_green_lagr, l_lhs, l_rhs
 !
 ! --------------------------------------------------------------------------------------------------

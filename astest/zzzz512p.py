@@ -60,7 +60,7 @@ f = {
     "CONSTANTE": FORMULE(VALE="0", NOM_PARA=("X", "Y")),
     "LINEAIRE": FORMULE(VALE="0", NOM_PARA=("X", "Y")),
     "QUADRATIQUE": FORMULE(VALE="-2*A", NOM_PARA=("X", "Y"), A=A),
-    "CUBIQUE": FORMULE(VALE="-2*A*(Y+5)", NOM_PARA=("X", "Y"), A=A),
+    "CUBIQUE": FORMULE(VALE="-2*A*(Y-5)", NOM_PARA=("X", "Y"), A=A),
     "QUARTIQUE": FORMULE(VALE="2*A*(-X*X-Y*Y+50)", NOM_PARA=("X", "Y"), A=A),
 }
 
@@ -76,7 +76,7 @@ coeff = DEFI_MATERIAU(THER=_F(LAMBDA=1.0, RHO_CP=1.0))
 
 mater = AFFE_MATERIAU(MAILLAGE=mesh, AFFE=_F(TOUT="OUI", MATER=coeff))
 
-formu = ["CONSTANTE", "LINEAIRE", "QUADRATIQUE", "QUARTIQUE"]
+formu = ["CONSTANTE", "LINEAIRE", "QUADRATIQUE", "CUBIQUE", "QUARTIQUE"]
 
 for form in formu:
     # define model
@@ -140,6 +140,7 @@ for form in formu:
     # project HHO solution
     h1_field = hho.projectOnLagrangeSpace(u_sol)
     hho_field = hho.projectOnHHOSpace(h1_field)
+    # not zero if k > 2 because quadratic cell
     # test.assertAlmostEqual((hho_field - u_sol).norm("NORM_2"), 0.0, delta=1e-6)
 
 
