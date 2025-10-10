@@ -24,7 +24,7 @@ MAIL = LIRE_MAILLAGE(FORMAT="MED", UNITE=20, VERI_MAIL=_F(VERIF="OUI", APLAT=1.0
 T0_C = 20.0
 T0_K = T0_C + 273.15
 
-alpha = 9.33427661  # premier coefficient de Van Genuchten [Pa]
+alpha = 9.33427661  # premier coefficient de Van Genuchten [-]
 beta = 0.38923339  # second coefficient de Van Genuchten [-]
 Ad = 10.160105601  # activation thermique de l'isotherme
 K0 = 1.175e-20  # Perméabilité intrinsèque du liquide [m²]

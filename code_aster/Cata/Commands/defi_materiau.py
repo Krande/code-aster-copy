@@ -3097,6 +3097,11 @@ DEFI_MATERIAU = MACRO(
         A_MIL=SIMP(statut="o", typ="R"),
         B_MIL=SIMP(statut="o", typ="R"),
         VG_M_P=SIMP(statut="o", typ="R"),
+        UNITE_LONGUEUR=SIMP(statut="f", typ="TXM", into=("M", "MM"), defaut="M"),
+        UNITE_TEMPS=SIMP(statut="f", typ="TXM", into=("S", "MIN", "H", "J"), defaut="S"),
+        # hidden keywords
+        COEF_UNITE_L=SIMP(statut="c", defaut=1.0, typ="R"),
+        COEF_UNITE_T=SIMP(statut="c", defaut=1.0, typ="R"),
     ),
     #
     # comportement métallurgique
