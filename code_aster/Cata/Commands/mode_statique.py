@@ -84,7 +84,11 @@ MODE_STATIQUE = OPER(
             TOUT_CMP=SIMP(statut="f", typ="TXM", into=("OUI",)),
             AVEC_CMP=SIMP(statut="f", typ="TXM", max="**"),
             SANS_CMP=SIMP(statut="f", typ="TXM", max="**"),
-            NOM_APPUI=SIMP(statut="f", typ="TXM", max=1, validators=LongStr(1, 8)),
+        ),
+        CORRELE=SIMP(statut="f", typ="TXM", into=("OUI", "NON"), defaut="NON"),
+        b_correle=BLOC(
+            condition="""equal_to("CORRELE", 'OUI')""",
+            NOM_APPUI=SIMP(statut="o", typ="TXM", max=1, validators=LongStr(1, 8)),
         ),
     ),
     MODE_INTERF=FACT(

@@ -282,10 +282,15 @@ CORR = MODE_STATIQUE(
     CHAM_MATER=CHMAT,
     CARA_ELEM=CARA_ELE,
     PSEUDO_MODE=(
-        _F(NOM_APPUI="APPUI_1", GROUP_NO=("N1B", "N4B"), TOUT_CMP="OUI"),
-        _F(NOM_APPUI="APPUI_2", GROUP_NO=("N7B", "N11B", "N15B", "N17B"), TOUT_CMP="OUI"),
-        _F(NOM_APPUI="APPUI_3", GROUP_NO=("N23B", "N36B", "N38B"), TOUT_CMP="OUI"),
-        _F(NOM_APPUI="APPUI_4", GROUP_NO=("N31B",), TOUT_CMP="OUI"),
+        _F(CORRELE="OUI", NOM_APPUI="APPUI_1", GROUP_NO=("N1B", "N4B"), TOUT_CMP="OUI"),
+        _F(
+            CORRELE="OUI",
+            NOM_APPUI="APPUI_2",
+            GROUP_NO=("N7B", "N11B", "N15B", "N17B"),
+            TOUT_CMP="OUI",
+        ),
+        _F(CORRELE="OUI", NOM_APPUI="APPUI_3", GROUP_NO=("N23B", "N36B", "N38B"), TOUT_CMP="OUI"),
+        _F(CORRELE="OUI", NOM_APPUI="APPUI_4", GROUP_NO=("N31B",), TOUT_CMP="OUI"),
     ),
 )
 
