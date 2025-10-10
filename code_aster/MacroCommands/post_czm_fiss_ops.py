@@ -32,20 +32,18 @@
 
 from math import acos, pi
 
-from numpy import *
-
-import aster
-from ..Messages import UTMESS
+import numpy as np
 
 from ..Cata.Syntax import _F
 from ..CodeCommands import CALC_CHAM_ELEM, CREA_CHAMP, CREA_TABLE
+from ..Messages import UTMESS
 from .Fracture.post_voisin_czm import POST_VOISIN_CZM
 
 
 def distance(x, y, xref, yref, xdir, ydir):
     xvect = x - xref
     yvect = y - yref
-    si = sign(xdir * xvect + ydir * yvect)
+    si = np.sign(xdir * xvect + ydir * yvect)
     di = (((xvect) ** 2 + (yvect) ** 2) ** 0.5) * si
     return di
 
@@ -75,8 +73,8 @@ def post_czm_fiss_ops(self, OPTION, RESULTAT, **args):
         __CORX = __CHAMEL.getValuesWithDescription("X", list(GROUP_MA))
         __CORY = __CHAMEL.getValuesWithDescription("Y", list(GROUP_MA))
 
-        xg = array(__CORX[0])
-        yg = array(__CORY[0])
+        xg = np.array(__CORX[0])
+        yg = np.array(__CORY[0])
         nbpg = len(xg)
 
         xmin = min(xg)
@@ -125,8 +123,8 @@ def post_czm_fiss_ops(self, OPTION, RESULTAT, **args):
         ming = min(disg)
         maxg = max(disg)
 
-        __INST = aster.GetResu(RESULTAT.getName(), "VARI_ACCES")["INST"]
-        nbinst = len(__INST)
+        times = RESULTAT.getAccessParameters()["INST"]
+        nbinst = len(times)
 
         Lfis = [0] * (nbinst)
         Ltot = [0] * (nbinst)
@@ -212,7 +210,7 @@ def post_czm_fiss_ops(self, OPTION, RESULTAT, **args):
 
         TABLE_OUT = CREA_TABLE(
             LISTE=(
-                _F(LISTE_R=__INST, PARA="INST"),
+                _F(LISTE_R=times, PARA="INST"),
                 _F(LISTE_R=Lfis, PARA="LONG_FIS"),
                 _F(LISTE_R=Ltot, PARA="LONG_TOT"),
                 _F(LISTE_R=Lcoh, PARA="LONG_COH"),

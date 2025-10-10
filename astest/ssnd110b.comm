@@ -18,12 +18,13 @@
 # --------------------------------------------------------------------
 
 # person_in_charge: david.haboussa at edf.fr
+from math import acos, atan2, sqrt
+
+import numpy as np
+from numpy.linalg import norm
 
 DEBUT(CODE="OUI", DEBUG=_F(SDVERI="OUI"))
 
-
-from numpy.linalg import norm
-from numpy import *
 
 # test de la version initiale de DD_CC en explicite
 TEMP = 300.0
@@ -156,7 +157,7 @@ S6 = DEFI_FONCTION(
 
 
 # densites de dislocation initiales : variables internes de 0 a 44
-avari = zeros(45 + 12)
+avari = np.zeros(45 + 12)
 for i in range(12):
     avari[6 + i * 3] = RHO_0
 
@@ -413,7 +414,7 @@ SI6 = DEFI_FONCTION(
 )
 
 # densites de dislocation initiales : variables internes de 0 a 44
-avari = zeros(45 + 12)
+avari = np.zeros(45 + 12)
 for i in range(12):
     avari[6 + i * 3] = RHO_0
 avari[6 + 4 * 3] = RHO_0 * 10.0
@@ -440,8 +441,8 @@ k = 4
 l = 9
 
 phi1 = 0
-phi = arccos(l / sqrt(h * h + k * k + l * l)) * 180.0 / pi
-phi2 = arctan2(h / sqrt(h * h + k * k), k / sqrt(h * h + k * k)) * 180.0 / pi
+phi = acos(l / sqrt(h * h + k * k + l * l)) * 180.0 / pi
+phi2 = atan2(h / sqrt(h * h + k * k), k / sqrt(h * h + k * k)) * 180.0 / pi
 angles = (phi1, phi, phi2)
 
 IMPDD50 = SIMU_POINT_MAT(
