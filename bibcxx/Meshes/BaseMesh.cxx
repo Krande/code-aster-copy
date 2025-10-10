@@ -3,7 +3,7 @@
  * @brief Implementation de BaseMesh
  * @author Nicolas Sellenet
  * @section LICENCE
- *   Copyright (C) 1991 - 2023  EDF R&D                www.code-aster.org
+ *   Copyright (C) 1991 - 2025  EDF R&D                www.code-aster.org
  *
  *   This file is part of Code_Aster.
  *
@@ -67,16 +67,12 @@ BaseMesh::BaseMesh( const std::string &name, const std::string &type )
 ASTERINTEGER BaseMesh::getNumberOfNodes() const {
     if ( isEmpty() )
         return 0;
-    if ( !_dimensionInformations.exists() )
-        return 0;
     _dimensionInformations->updateValuePointer();
     return ( *_dimensionInformations )[0];
 }
 
 ASTERINTEGER BaseMesh::getNumberOfCells() const {
     if ( isEmpty() )
-        return 0;
-    if ( !_dimensionInformations.exists() )
         return 0;
     _dimensionInformations->updateValuePointer();
     return ( *_dimensionInformations )[2];
@@ -85,9 +81,6 @@ ASTERINTEGER BaseMesh::getNumberOfCells() const {
 ASTERINTEGER BaseMesh::getDimension() const {
     if ( isEmpty() )
         return 0;
-    if ( !_dimensionInformations.exists() )
-        return 0;
-
     _dimensionInformations->updateValuePointer();
     const auto dimGeom = ( *_dimensionInformations )[5];
 

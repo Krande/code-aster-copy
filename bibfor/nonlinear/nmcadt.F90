@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -26,6 +26,7 @@ subroutine nmcadt(sddisc, i_adap, nume_inst, hval_incr, dtp)
 #include "jeveux.h"
 #include "asterc/r8maem.h"
 #include "asterc/r8vide.h"
+#include "asterfort/asmpi_comm_vect.h"
 #include "asterfort/assert.h"
 #include "asterfort/dismoi.h"
 #include "asterfort/extdch.h"
@@ -184,6 +185,8 @@ subroutine nmcadt(sddisc, i_adap, nume_inst, hval_incr, dtp)
     else
         ASSERT(.false.)
     end if
+!
+    call asmpi_comm_vect('MPI_MIN', 'R', scr=dtp)
 !
     call jedema()
 end subroutine

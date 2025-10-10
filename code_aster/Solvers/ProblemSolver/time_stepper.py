@@ -24,7 +24,7 @@ from libaster import ConvergenceError, IntegrationError, SolverError
 
 from ...Cata.Syntax import _F
 from ...Messages import MessageLog
-from ...Utilities import cmp, force_list, logger, no_new_attributes
+from ...Utilities import cmp, force_list, logger, no_new_attributes, MPI
 from ..Basics import Observer, SolverFeature
 from ..Basics import SolverOptions as SOP
 
@@ -658,6 +658,7 @@ class TimeStepper(SolverFeature, Observer):
                 return False
             array = numpy.array(field.getValuesWithDescription(self._cmp, self._group)[0])
             maxIncr = max(abs(array))
+            maxIncr = MPI.ASTER_COMM_WORLD.allreduce(maxIncr, MPI.MAX)
             raised = maxIncr > self._value
             logger.debug("check delta of %s: %s >? %s: %s", self._cmp, maxIncr, self._value, raised)
             if raised:
@@ -971,6 +972,7 @@ class TimeStepper(SolverFeature, Observer):
             array = numpy.array(field.getValuesWithDescription(self._cmp, self._group)[0])
             nonzero = array[numpy.flatnonzero(array)]
             factor = numpy.min(self._value / numpy.abs(nonzero))
+            factor = MPI.ASTER_COMM_WORLD.allreduce(factor, MPI.MIN)
             logger.debug("check delta of %s / %s: %s", self._cmp, self._value, factor)
             return float(factor)
 
