@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -85,36 +85,7 @@ U_endo = beta * U_elas + (1 - beta) * U_max
 # VERIFICATION D'ABSENCE DE SNAP-BACK GLOBAL (U_MAX>U_ELAS)
 assert young > L_prism * k_n / pena_rupture
 
-MA0 = LIRE_MAILLAGE(FORMAT="ASTER")
-
-MA = CREA_MAILLAGE(MAILLAGE=MA0, LINE_QUAD=_F(TOUT="OUI"))
-
-MA = DEFI_GROUP(
-    reuse=MA,
-    MAILLAGE=MA,
-    CREA_GROUP_MA=(
-        _F(NOM="PRISM", MAILLE="PRISM"),
-        _F(NOM="GAUCHE2", MAILLE="GAUCHE2"),
-        _F(NOM="DROITE", MAILLE="DROITE"),
-        _F(NOM="PRISMDEG", MAILLE="PRISMDEG"),
-    ),
-    CREA_GROUP_NO=(
-        _F(NOM="NO6", NOEUD="NO6"),
-        _F(NOM="NS13", NOEUD="NS13"),
-        _F(NOM="NS14", NOEUD="NS14"),
-        _F(NOM="NS15", NOEUD="NS15"),
-    ),
-)
-
-MA = DEFI_GROUP(
-    reuse=MA,
-    MAILLAGE=MA,
-    CREA_GROUP_NO=(
-        _F(NOEUD=("NO2", "NO4", "NO8", "NS7", "NS8", "NS9"), NOM="DROITE"),
-        _F(NOEUD=("NO1", "NO3", "NO7", "NS1", "NS2", "NS3"), NOM="GAUCHE"),
-        _F(NOEUD=("NO6", "NO5", "NO9", "NS12", "NS11", "NS10"), NOM="GAUCHE2"),
-    ),
-)
+MA = LIRE_MAILLAGE(FORMAT="ASTER")
 
 MA = MODI_MAILLAGE(reuse=MA, MAILLAGE=MA, ORIE_FISSURE=_F(GROUP_MA="G_DEG"), INFO=2)
 

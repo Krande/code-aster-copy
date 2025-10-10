@@ -6,4 +6,4 @@ P mpi_nbnoeud 1
 P testlist verification sequential
 
 F comm ssnp164e.comm D 1
-F mail ssnp164d.mail D 20
+F mmed ssnp164e.mmed D 20

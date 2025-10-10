@@ -168,7 +168,7 @@ module crea_maillage_module
         integer :: info = 0
 ! ----- member functions
     contains
-        procedure, public, pass :: add_cell
+        procedure, public, pass :: add_initial_cell
         procedure, public, pass :: check_mesh
         procedure, public, pass :: clean => clean_mesh
         procedure, public, pass :: convert_cells
@@ -563,8 +563,11 @@ contains
         real(kind=8), pointer :: v_coor(:) => null()
         character(len=8) :: name
         integer :: nb_elem_mesh, nb_node_mesh, i_node
-        integer :: i_cell, nno, node_id, owner
+        integer :: i_cell, nno, node_id, owner, i_type, cell_type
         real(kind=8):: start, end
+        integer, allocatable, dimension(:, :) :: list_type_cells
+        integer, parameter :: nb_type = 10
+        integer :: nb_type_cells(nb_type)
 !
         call jemarq()
         call this%converter%init()
@@ -623,11 +626,61 @@ contains
             allocate (this%nodes(node_id)%edges(this%nodes(node_id)%max_edges))
         end do
 !
+! --- Read cells
+!
+        allocate (list_type_cells(nb_type, nb_elem_mesh))
+!
+! --- Order to read cell - hard coded rule
+        nb_type_cells = 0
+
         do i_cell = 1, nb_elem_mesh
-            call this%add_cell(i_cell)
+            cell_type = this%converter%map_type(this%v_typema(i_cell))
+!
+            select case (cell_type)
+            case (MT_POI1)
+                nb_type_cells(1) = nb_type_cells(1)+1
+                list_type_cells(1, nb_type_cells(1)) = i_cell
+            case (MT_SEG4)
+                nb_type_cells(2) = nb_type_cells(2)+1
+                list_type_cells(2, nb_type_cells(2)) = i_cell
+            case (MT_SEG3)
+                nb_type_cells(3) = nb_type_cells(3)+1
+                list_type_cells(3, nb_type_cells(3)) = i_cell
+            case (MT_TRIA7, MT_QUAD9)
+                nb_type_cells(4) = nb_type_cells(4)+1
+                list_type_cells(4, nb_type_cells(4)) = i_cell
+            case (MT_HEXA27, MT_PENTA21, MT_PYRAM19, MT_TETRA15)
+                nb_type_cells(5) = nb_type_cells(5)+1
+                list_type_cells(5, nb_type_cells(5)) = i_cell
+            case (MT_TRIA6, MT_QUAD8)
+                nb_type_cells(6) = nb_type_cells(6)+1
+                list_type_cells(6, nb_type_cells(6)) = i_cell
+            case (MT_PENTA18, MT_HEXA20, MT_PENTA15, MT_PYRAM13, MT_TETRA10)
+                nb_type_cells(7) = nb_type_cells(7)+1
+                list_type_cells(7, nb_type_cells(7)) = i_cell
+            case (MT_SEG2)
+                nb_type_cells(8) = nb_type_cells(8)+1
+                list_type_cells(8, nb_type_cells(8)) = i_cell
+            case (MT_TRIA3, MT_QUAD4)
+                nb_type_cells(9) = nb_type_cells(9)+1
+                list_type_cells(9, nb_type_cells(9)) = i_cell
+            case (MT_HEXA9, MT_PENTA7, MT_HEXA8, MT_PENTA6, MT_PYRAM5, MT_TETRA4)
+                nb_type_cells(10) = nb_type_cells(10)+1
+                list_type_cells(10, nb_type_cells(10)) = i_cell
+            case default
+                ASSERT(ASTER_FALSE)
+            end select
         end do
 !
-! --- Search orphelan nodes - to keep at the end
+        do i_type = 1, nb_type
+            do i_cell = 1, nb_type_cells(i_type)
+                call this%add_initial_cell(list_type_cells(i_type, i_cell))
+            end do
+        end do
+
+        deallocate (list_type_cells)
+!
+! --- Search orphan nodes - to keep at the end
         this%nb_total_cells = this%nb_cells
         do i_cell = 1, this%nb_cells
             nno = this%converter%nno(this%cells(i_cell)%type)
@@ -1090,7 +1143,7 @@ contains
 !
 ! ==================================================================================================
 !
-    subroutine add_cell(this, cell_id)
+    subroutine add_initial_cell(this, cell_id)
 !
         implicit none
 !
@@ -1112,7 +1165,7 @@ contains
         cell_nodes(1:nb_nodes) = v_connex(1:nb_nodes)
 !
         if (this%debug) then
-            print *, "Cell ", this%nb_total_cells, ": ", cell_type, &
+            print *, "Cell ", cell_id, ": ", cell_type, &
                 this%converter%name(cell_type), cell_dim
         end if
 !
@@ -1128,13 +1181,11 @@ contains
             ASSERT(ASTER_FALSE)
         end if
 !
-        this%cells(this%nb_total_cells)%type = cell_type
-        this%cells(this%nb_total_cells)%dim = cell_dim
-        this%cells(this%nb_total_cells)%id = this%nb_total_cells
-        this%cells(this%nb_total_cells)%ss_id = cell_index
-        this%cells(this%nb_total_cells)%nodes(1:nb_nodes) = cell_nodes(1:nb_nodes)
-        call jenuno(jexnum(this%mesh_in//'.NOMMAI', cell_id), &
-                    this%cells(this%nb_total_cells)%name)
+        this%cells(cell_id)%type = cell_type
+        this%cells(cell_id)%dim = cell_dim
+        this%cells(cell_id)%id = cell_id
+        this%cells(cell_id)%ss_id = cell_index
+        this%cells(cell_id)%nodes(1:nb_nodes) = cell_nodes(1:nb_nodes)
 !
     end subroutine
 !
@@ -2931,7 +2982,7 @@ contains
 !
         implicit none
 !
-        class(Mmesh), intent(inout) :: this
+        class(Mmesh), intent(in) :: this
         character(len=8), intent(in) :: mesh_out
 ! ------------------------------------------------------------------
         character(len=24) :: send, recv, domj, gcom, pgin
@@ -2965,7 +3016,6 @@ contains
         aster_logical, parameter :: all_nodes = ASTER_FALSE
 !
         if (isParallelMesh(mesh_out)) then
-            this%info = 4
             if (this%info >= 2) then
                 print *, "Create joints..."
                 call cpu_time(start)
