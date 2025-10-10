@@ -252,8 +252,8 @@ class Interface:
         nInterfaceNodes = len(interfaceNodes)
 
         # we get the indices of the nodes of the interface in the common list
-        ind_no1 = np.where(np.in1d(nodes[: len(self.sub1.nodes)], interfaceNodes1))[0]
-        ind_no2 = np.where(np.in1d(nodes[len(self.sub1.nodes) :], interfaceNodes2))[0]
+        ind_no1 = np.where(np.isin(nodes[: len(self.sub1.nodes)], interfaceNodes1))[0]
+        ind_no2 = np.where(np.isin(nodes[len(self.sub1.nodes) :], interfaceNodes2))[0]
         # since the indices are for a sub-list, we must shift them for use in the common list
         ind_no2 += len(self.sub1.nodes)
         ind_no = np.hstack((ind_no1, ind_no2))

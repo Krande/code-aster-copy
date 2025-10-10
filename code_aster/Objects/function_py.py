@@ -312,11 +312,11 @@ class t_fonction:
             rsup_tab = NP.greater(abs(self.vale_x - rsup), prec * rsup)
         else:
             raise_function_error("fonction : cut : critère absolu ou relatif")
-        if NP.alltrue(rinf_tab):
+        if NP.all(rinf_tab):
             i = NP.searchsorted(self.vale_x, rinf)
         else:
             i = rinf_tab.tolist().index(0) + 1
-        if NP.alltrue(rsup_tab):
+        if NP.all(rsup_tab):
             j = NP.searchsorted(self.vale_x, rsup)
         else:
             j = rsup_tab.tolist().index(0)

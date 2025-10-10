@@ -94,7 +94,7 @@ check_requirements_main() {
     if [ -z "${found}" ]; then
         return 1
     fi
-    if [ "${found}/VERSION" ]; then
+    if [ "${DEBUG}" = "1" ] && [ "${found}/VERSION" ]; then
         echo "package details:"
         cat "${found}/VERSION"
     fi
