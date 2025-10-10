@@ -2110,6 +2110,9 @@ DEFI_MATERIAU = MACRO(
             ATH=SIMP(statut="o", typ="R"),
             TEMP_0_C=SIMP(statut="o", typ="R"),
             PORO=SIMP(statut="o", typ="R"),
+            UNITE_PRESSION=SIMP(statut="f", typ="TXM", into=("Pa", "MPa"), defaut="Pa"),
+            # hidden keywords
+            COEF_UNITE_P=SIMP(statut="c", defaut=1.0, typ="R"),
         ),
     ),
     BETON_RAG=FACT(

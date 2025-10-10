@@ -41,25 +41,28 @@ subroutine leverettIsotTher(c, temp, imate, hygr, dpc_, poro_, t0_C_, beta_, pc_
     real(kind=8), intent(out) :: hygr
     real(kind=8), intent(out), optional :: dpc_, beta_, poro_, t0_C_, pc_
 !
-    integer(kind=8)           :: codret(5)
-    real(kind=8)      :: valres(5)
-    character(len=16) :: nomres(5)
-    real(kind=8)      :: alpha, ad, satu, dpc, beta, poro, t0_C, pc
+    integer(kind=8), parameter :: nbres = 6
+    integer(kind=8)           :: codret(nbres)
+    real(kind=8)      :: valres(nbres)
+    character(len=16) :: nomres(nbres)
+    real(kind=8)      :: alpha, ad, satu, dpc, beta, poro, t0_C, pc, coef_p
 !
     nomres(1) = 'VG_PR'
     nomres(2) = 'VG_N'
     nomres(3) = 'ATH'
     nomres(4) = 'TEMP_0_C'
     nomres(5) = 'PORO'
+    nomres(6) = "COEF_UNITE_P"
 !
     call rcvala(imate, ' ', 'BETON_DESORP', 0, ' ', [0.d0], &
-                5, nomres, valres, codret, 0)
+                nbres, nomres, valres, codret, 0)
     ASSERT(codret(1) .eq. 0)
     alpha = valres(1)
     beta = valres(2)
     ad = valres(3)
     t0_C = valres(4)
     poro = valres(5)
+    coef_p = valres(6)
     satu = c/poro/1.d3
 !
     call leverettIsot(temp, satu, alpha, beta, ad, t0_C, hygr, dpc, pc_=pc)
@@ -72,7 +75,7 @@ subroutine leverettIsotTher(c, temp, imate, hygr, dpc_, poro_, t0_C_, beta_, pc_
     end if
 
     if (present(pc_)) then
-        pc_ = pc
+        pc_ = pc/coef_p
     end if
 
 end subroutine leverettIsotTher

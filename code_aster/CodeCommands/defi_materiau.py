@@ -31,12 +31,25 @@ class MaterialDefinition(ExecuteMacro):
     command_name = "DEFI_MATERIAU"
 
     def adapt_syntax(self, keywords):
-        """Adapt syntax to replace TABLE content in keywords.
+        """Adapt syntax to :
+                - convert character parameters to real parameters (BETON_DESORP, SECH_RFT)
+                - replace parameters with a list of values ​​into as many parameters with a single value
+                  (ELAS_HYPER_VISC, HYPER_HILL)
+                - replace TABLE content in keywords.
 
         Arguments:
             keywords (dict): Keywords arguments of user's keywords, changed
                 in place.
         """
+        if "BETON_DESORP" in keywords:
+            mcfact = keywords["BETON_DESORP"]
+            if mcfact["LEVERETT"] == "OUI":
+                coef_p = 1.0
+                value = mcfact.pop("UNITE_PRESSION")
+                if value == "MPa":
+                    coef_p = 1e6
+                    mcfact["COEF_UNITE_P"] = coef_p
+
         adapt_elas(keywords)
         if "ELAS_HYPER_VISC" in keywords:
             mcfact = keywords["ELAS_HYPER_VISC"]

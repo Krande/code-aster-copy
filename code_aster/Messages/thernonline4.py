@@ -41,7 +41,7 @@ Conseil : utilisez la commande SECH_NON_LINE.
     ),
     4: _(
         """
-La commande SECH_NON_LINE ne fonctionne qu'avec un modèle contentant uniquement
+La commande SECH_NON_LINE ne fonctionne qu'avec un modèle contenant uniquement
 des éléments spécifiques au traitement du séchage.
 """
     ),
