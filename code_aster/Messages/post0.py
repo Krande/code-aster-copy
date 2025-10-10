@@ -35,13 +35,6 @@ Valeurs incorrectes pour VECT_Y.
 Valeurs incorrectes pour VECT_Y: X colinéaire à Y.
 """
     ),
-    4: _(
-        """
-Le vecteur Y n'est pas orthogonal à la ligne de coupe.
-Le vecteur Y a été orthonormalisé pour vous.
-VECT_Y=(%(r1)f,%(r2)f,%(r3)f)
-"""
-    ),
     5: _(
         """
 Le type %(k1)s n'est pas cohérent avec le choix du repère (REPERE %(k2)s).
