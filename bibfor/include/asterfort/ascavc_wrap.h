@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -17,13 +17,12 @@
 ! --------------------------------------------------------------------
 !
 interface
-    subroutine ascavc_wrap(lchar, infcha, fomult, numedd, inst, vci, base)
-        character(len=24) :: lchar
-        character(len=24) :: infcha
-        character(len=24) :: fomult
-        character(len=*) :: numedd
+    subroutine ascavc_wrap(model, list_load, numedd, inst, vci, base)
+        character(len=8) :: model
+        character(len=19) :: list_load
+        character(len=14) :: numedd
         real(kind=8) :: inst
-        character(len=*) :: vci
+        character(len=19) :: vci
         character(len=1) :: base
     end subroutine ascavc_wrap
 end interface

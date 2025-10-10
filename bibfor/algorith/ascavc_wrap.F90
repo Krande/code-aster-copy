@@ -16,20 +16,62 @@
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
 
-subroutine ascavc_wrap(lchar, infcha, fomult, numedd, inst, vci, base)
+subroutine ascavc_wrap(model, list_load, numedd, inst, vci, base)
 !
     use HHO_type
+    use HHO_Dirichlet_module
 !
     implicit none
+#include "asterfort/as_deallocate.h"
 #include "asterfort/ascavc.h"
+#include "asterfort/assert.h"
+#include "asterfort/detrsd.h"
+#include "asterfort/dismoi.h"
+#include "asterfort/isdiri.h"
 
-    character(len=24) :: lchar, infcha, fomult
-    character(len=*) :: vci, numedd
+    character(len=8) :: model
+    character(len=19) :: list_load, vci
+    character(len=14) :: numedd
     real(kind=8) :: inst
     character(len=1) :: base
+!
+    type(HHO_Field) :: hhoField
+    character(len=8) :: answer
+    character(len=24) :: lchar, infcha, fomult
 
-! Wrapper to call AVCAVC from C++ without optional arguments (for HHO)
+! Wrapper to call AVCAVC from C++
 
-    call ascavc(lchar, infcha, fomult, numedd, inst, vci, basez=base)
+    call dismoi('EXI_HHO', model, 'MODELE', repk=answer)
+!
+    lchar = list_load//'.LCHA'
+    infcha = list_load//'.INFC'
+    fomult = list_load//'.FCHA'
+!
+    if (answer .eq. 'OUI') then
+        ASSERT(isdiri(list_load, 'ELIM'))
+!
+! --- Prepare fields for Dirichlet loads
+!
+        hhoField%fieldCineFunc = '&&HHO.CINEFUNC'
+        hhoField%fieldCineVale = '&&HHO.CINEVALE'
+
+        call hhoDiriFuncPrepare(model, list_load, hhoField)
+
+        if (hhoField%l_cine_f) then
+            call hhoDiriFuncCompute(model, hhoField, inst)
+        end if
+
+        call ascavc(lchar, infcha, fomult, numedd, inst, vci, &
+                    l_hho_=ASTER_TRUE, hhoField_=hhoField, basez=base)
+!
+! --- Cleaning
+        call detrsd("CARTE", hhoField%fieldCineFunc)
+        call detrsd('CHAM_ELEM', hhoField%fieldCineVale)
+        if (hhoField%l_cine_f) then
+            AS_DEALLOCATE(vi=hhoField%v_info_cine)
+        end if
+    else
+        call ascavc(lchar, infcha, fomult, numedd, inst, vci, basez=base)
+    end if
 
 end subroutine

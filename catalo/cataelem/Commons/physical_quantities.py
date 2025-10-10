@@ -3722,7 +3722,21 @@ TEMP_C = PhysicalQuantity(
 
 TEMP_F = PhysicalQuantity(
     type="K8",
-    components=("TEMP", "TEMP_MIL", "TEMP_INF", "TEMP_SUP", "LAGR", "SECH"),
+    components=(
+        "TEMP",
+        "TEMP_MIL",
+        "TEMP_INF",
+        "TEMP_SUP",
+        "LAGR",
+        "SECH",
+        "H1",
+        "E1",
+        "DTX",
+        "DTY",
+        "DTZ",
+        "HHO_CT[10]",
+        "HHO_FT[6]",
+    ),
     comment="""  TEMP_F Type:K8 Temperature inconnue du phenomene thermique
        TEMP : temperature
        TEMP_MIL : temperature sur le feuillet moyen  (coques)
@@ -3731,6 +3745,8 @@ TEMP_F = PhysicalQuantity(
        LAGR : parametre de lagrange du a la dualisation des
        conditions aux limites
        SECH : séchage ou concentration en eau
+       HHO_CT : degres de liberté HHO: 1, X, Y, Z, X2, Y2, Z2 (X, Y, Z cell)
+       HHO_FT : degres de liberté HHO: 1, X, Y, X2, Y2, XY (X, Y face)
 """,
 )
 

@@ -48,7 +48,9 @@ CHHOBS = LocatedComponents(
     components=(("EN1", ("X[1]",)), ("EN2", ()), ("EN3", ("X[6]"))),
 )
 
-PFONC = LocatedComponents(phys=PHY.NEUT_K8, type="ELEM", components=("Z[2]",))
+PFONC = LocatedComponents(phys=PHY.NEUT_K8, type="ELEM", components=("Z[5]",))
+
+PFONCR = LocatedComponents(phys=PHY.NEUT_K8, type="ELEM", components=("Z[2]",))
 
 MVECTTR = ArrayOfComponents(phys=PHY.VTEM_R, locatedComponents=DDL_THER)
 
@@ -159,7 +161,7 @@ class THER2DQ9_HHO000(Element):
             te=473,
             para_in=(
                 (SP.PGEOMER, LC.EGEOM2D),
-                (OP.HHO_PROJ_THER.PFUNC_R, PFONC),
+                (OP.HHO_PROJ_THER.PFUNC_R, PFONCR),
                 (SP.PINSTPR, LC.MTEMPSR),
                 (OP.HHO_PROJ_THER.PCHHOBS, CHHOBS),
             ),
@@ -191,6 +193,16 @@ class THER2DQ9_HHO000(Element):
                 (OP.HHO_TEMP_THER.PCHHOBS, CHHOBS),
             ),
             para_out=((OP.HHO_TEMP_THER.PTEMP_R, TEMPHHO),),
+        ),
+        OP.HHO_CINE_F_THER(
+            te=492,
+            para_in=(
+                (SP.PGEOMER, LC.EGEOM2D),
+                (SP.PINSTPR, LC.MTEMPSR),
+                (OP.HHO_CINE_F_THER.PFONC, PFONC),
+                (OP.HHO_CINE_F_THER.PCHHOBS, CHHOBS),
+            ),
+            para_out=((OP.HHO_CINE_F_THER.PCINE, DDL_THER),),
         ),
         OP.HHO_CINE_R_THER(
             te=492,

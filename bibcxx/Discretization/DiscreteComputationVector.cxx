@@ -81,10 +81,12 @@ DiscreteComputation::_getDirichletBC( const ASTERDOUBLE time_curr ) const {
     // Get JEVEUX names of objects to call Fortran
     std::string vectAsseName = vectAsse->getName();
     std::string dofNumName = dofNume->getName();
+    std::string loadName = _listOfLoads->getName();
+    std::string modelName = _phys_problem->getModel()->getName();
     std::string base( "G" );
 
     // Wrapper FORTRAN
-    CALLO_ASCAVC_WRAP( nameLcha, nameInfc, nameFcha, dofNumName, &time_curr, vectAsseName, base );
+    CALLO_ASCAVC_WRAP( modelName, loadName, dofNumName, &time_curr, vectAsseName, base );
 
     // Construct vect_asse object
     vectAsse->build();

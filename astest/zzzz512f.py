@@ -27,11 +27,11 @@ test = CA.TestCase()
 
 ###################################################################################
 #
-#   Patch test with analytical solution
+#   Patch test with analytical solution - linear elasticity
 #   Solution is a polynomial of order k
 #   So method of order k should have a null error
 #
-#   The script to compute solution is given in zzzz512.datg
+#   The script to compute solution is given in zzzz512f.datg
 #
 ####################################################################################
 
@@ -111,7 +111,7 @@ for form in ["LINEAIRE", "QUADRATIQUE", "CUBIQUE", "QUARTIQUE"]:
     # solve linear system
     LREEL = DEFI_LIST_REEL(DEBUT=0.0, INTERVALLE=_F(JUSQU_A=1, NOMBRE=1))
 
-    resu = STAT_NON_LINE(
+    resu = MECA_NON_LINE(
         MODELE=model,
         CHAM_MATER=mater,
         INCREMENT=_F(LIST_INST=LREEL),
