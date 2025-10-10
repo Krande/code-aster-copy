@@ -32,22 +32,22 @@ DDL_THER = LocatedComponents(
     phys=PHY.TEMP_R,
     type="ELNO",
     diff=True,
-    components=(("EN1", ("HHO_FT[3]",)), ("EN2", ()), ("EN3", ("HHO_CT[6]"))),
+    components=(("EN1", ("HHO_FT[4]",)), ("EN2", ()), ("EN3", ("HHO_CT[10]"))),
 )
 
 TEMPHHO = LocatedComponents(phys=PHY.TEMP_R, type="ELNO", components=("TEMP",))
 
 PFONCR = LocatedComponents(phys=PHY.NEUT_K8, type="ELEM", components=("Z[2]",))
 
-CHHOGT = LocatedComponents(phys=PHY.N1920R, type="ELEM", components=("X[216]",))
+CHHOGT = LocatedComponents(phys=PHY.N1920R, type="ELEM", components=("X[680]",))
 
-CHHOST = LocatedComponents(phys=PHY.N1360R, type="ELEM", components=("X[171]",))
+CHHOST = LocatedComponents(phys=PHY.N1360R, type="ELEM", components=("X[595]",))
 
 CHHOBS = LocatedComponents(
     phys=PHY.N3600R,
     type="ELNO",
     diff=True,
-    components=(("EN1", ("X[6]",)), ("EN2", ()), ("EN3", ("X[55]"))),
+    components=(("EN1", ("X[10]",)), ("EN2", ()), ("EN3", ("X[120]"))),
 )
 
 MVECTTR = ArrayOfComponents(phys=PHY.VTEM_R, locatedComponents=DDL_THER)
@@ -58,7 +58,7 @@ MMATTSR = ArrayOfComponents(phys=PHY.MTNS_R, locatedComponents=DDL_THER)
 
 
 # --------------------------------------------------------------------------------------------------
-class THERAXQ9_HHO222(Element):
+class THERAXQ9_HHO333(Element):
     """Thermics - HHO_QUAD - PLAN - QUAD"""
 
     meshType = MT.QUAD9
@@ -69,7 +69,7 @@ class THERAXQ9_HHO222(Element):
     )
     elrefe = (
         ElrefeLoc(
-            MT.QU9, gauss=("RIGI=FPG9", "FPG1=FPG1", "MASS=FPG9"), mater=("RIGI", "FPG1", "MASS")
+            MT.QU9, gauss=("RIGI=FPG16", "FPG1=FPG1", "MASS=FPG16"), mater=("RIGI", "FPG1", "MASS")
         ),
     )
     calculs = (
@@ -345,13 +345,13 @@ class THERAXQ9_HHO222(Element):
 
 
 # --------------------------------------------------------------------------------------------------
-class THERAXT7_HHO222(THERAXQ9_HHO222):
+class THERAXT7_HHO333(THERAXQ9_HHO333):
     """Thermics - HHO_QUAD - PLAN - TRIA"""
 
     meshType = MT.TRIA7
     nodes = (SetOfNodes("EN1", (4, 5, 6)), SetOfNodes("EN2", (1, 2, 3)), SetOfNodes("EN3", (7,)))
     elrefe = (
         ElrefeLoc(
-            MT.TR7, gauss=("RIGI=FPG6", "FPG1=FPG1", "MASS=FPG6"), mater=("RIGI", "FPG1", "MASS")
+            MT.TR7, gauss=("RIGI=FPG12", "FPG1=FPG1", "MASS=FPG12"), mater=("RIGI", "FPG1", "MASS")
         ),
     )

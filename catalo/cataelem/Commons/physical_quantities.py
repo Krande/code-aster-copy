@@ -3734,8 +3734,8 @@ TEMP_F = PhysicalQuantity(
         "DTX",
         "DTY",
         "DTZ",
-        "HHO_CT[10]",
-        "HHO_FT[6]",
+        "HHO_CT[35]",
+        "HHO_FT[15]",
     ),
     comment="""  TEMP_F Type:K8 Temperature inconnue du phenomene thermique
        TEMP : temperature
@@ -3765,8 +3765,8 @@ TEMP_R = PhysicalQuantity(
         "DTX",
         "DTY",
         "DTZ",
-        "HHO_CT[10]",
-        "HHO_FT[6]",
+        "HHO_CT[35]",
+        "HHO_FT[15]",
     ),
     comment="""  TEMP_R Type:R Temperature inconnue du phenomene thermique
        TEMP : temperature

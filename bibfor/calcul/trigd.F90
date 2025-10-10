@@ -24,7 +24,6 @@ subroutine trigd(dg1, deb1, dg2, deb2, cumul, ino, nno)
     implicit none
 
 ! person_in_charge: jacques.pellet at edf.fr
-! aslint: disable=C0110
 
 #include "asterf_types.h"
 #include "jeveux.h"

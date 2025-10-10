@@ -327,7 +327,7 @@ AFFE_MODELE = OPER(
                     statut="f",
                     typ="TXM",
                     max=1,
-                    into=("CONSTANTE", "LINEAIRE", "QUADRATIQUE"),
+                    into=("CONSTANTE", "LINEAIRE", "QUADRATIQUE", "CUBIQUE", "QUARTIQUE"),
                     defaut="LINEAIRE",
                 ),
             ),

@@ -28,8 +28,10 @@ test = CA.TestCase()
 ###################################################################
 #
 #   Solve Helmholtz problem with HHO
+#
+#   div(A*grad(u))) + H*u = f
 #   Continuous:
-#   (A * grad u, grad v) + (H * u, v) = (H * f, v)
+#   (-A * grad u, grad v) + (H * u, v) = (H * f, v)
 #   with f given and A > 0, H > 0
 #
 #   Solution is a polynomial of order k
@@ -58,12 +60,12 @@ u = {
 f = {
     "CONSTANTE": FORMULE(VALE="-1", NOM_PARA=("X", "Y")),
     "LINEAIRE": FORMULE(VALE="Y+X-1", NOM_PARA=("X", "Y")),
-    "QUADRATIQUE": FORMULE(VALE="A/H-X*Y+X+Y*Y-1", NOM_PARA=("X", "Y"), A=A, H=H),
+    "QUADRATIQUE": FORMULE(VALE="2*A/H-X*Y+X+Y*Y-1", NOM_PARA=("X", "Y"), A=A, H=H),
     "CUBIQUE": FORMULE(
-        VALE="(A*(6*X - 1) + H*(-X*Y + X*X*X  + Y*Y  - 1))/H", NOM_PARA=("X", "Y"), A=A, H=H
+        VALE="(2*A*(3*X + 1) + H*(-X*Y + X*X*X +X  + Y*Y  - 1))/H", NOM_PARA=("X", "Y"), A=A, H=H
     ),
     "QUARTIQUE": FORMULE(
-        VALE="(A*(6*X - 1-4*X*Y-2*Y*Y) + H*(X*X*X -X*X*Y*Y -X*Y+X + Y*Y - 1))/H",
+        VALE="(-2*A*(X*X-3*X+Y*Y-1) + H*(X*X*X -X*X*Y*Y -X*Y+X + Y*Y - 1))/H",
         NOM_PARA=("X", "Y"),
         A=A,
         H=H,
@@ -118,7 +120,7 @@ for form in formu:
     rhs = H * disc_comp.getVolumetricForces()
 
     # lhs matrix
-    lhs = A * matK + H * matM
+    lhs = -A * matK + H * matM
 
     # BC
     diriBC = disc_comp.getDirichletBC()

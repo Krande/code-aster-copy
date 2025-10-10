@@ -32,22 +32,24 @@ DDL_THER = LocatedComponents(
     phys=PHY.TEMP_R,
     type="ELNO",
     diff=True,
-    components=(("EN1", ("HHO_FT[3]",)), ("EN2", ()), ("EN3", ("HHO_CT[6]"))),
+    components=(("EN1", ("HHO_FT[4]",)), ("EN2", ()), ("EN3", ("HHO_CT[10]"))),
 )
 
 TEMPHHO = LocatedComponents(phys=PHY.TEMP_R, type="ELNO", components=("TEMP",))
 
+PFONC = LocatedComponents(phys=PHY.NEUT_K8, type="ELEM", components=("Z[5]",))
+
 PFONCR = LocatedComponents(phys=PHY.NEUT_K8, type="ELEM", components=("Z[2]",))
 
-CHHOGT = LocatedComponents(phys=PHY.N1920R, type="ELEM", components=("X[216]",))
+CHHOGT = LocatedComponents(phys=PHY.N1920R, type="ELEM", components=("X[680]",))
 
-CHHOST = LocatedComponents(phys=PHY.N1360R, type="ELEM", components=("X[171]",))
+CHHOST = LocatedComponents(phys=PHY.N1360R, type="ELEM", components=("X[595]",))
 
 CHHOBS = LocatedComponents(
     phys=PHY.N3600R,
     type="ELNO",
     diff=True,
-    components=(("EN1", ("X[6]",)), ("EN2", ()), ("EN3", ("X[55]"))),
+    components=(("EN1", ("X[10]",)), ("EN2", ()), ("EN3", ("X[120]"))),
 )
 
 MVECTTR = ArrayOfComponents(phys=PHY.VTEM_R, locatedComponents=DDL_THER)
@@ -58,8 +60,8 @@ MMATTSR = ArrayOfComponents(phys=PHY.MTNS_R, locatedComponents=DDL_THER)
 
 
 # --------------------------------------------------------------------------------------------------
-class THERAXQ9_HHO222(Element):
-    """Thermics - HHO_QUAD - PLAN - QUAD"""
+class THER2DQ9_HHO333(Element):
+    """Thermics - HHO_QUAD - QUAD"""
 
     meshType = MT.QUAD9
     nodes = (
@@ -69,13 +71,10 @@ class THERAXQ9_HHO222(Element):
     )
     elrefe = (
         ElrefeLoc(
-            MT.QU9, gauss=("RIGI=FPG9", "FPG1=FPG1", "MASS=FPG9"), mater=("RIGI", "FPG1", "MASS")
+            MT.QU9, gauss=("RIGI=FPG16", "FPG1=FPG1", "MASS=FPG16"), mater=("RIGI", "FPG1", "MASS")
         ),
     )
     calculs = (
-        OP.CARA_CISA(te=-1),
-        OP.CARA_GAUCHI(te=-1),
-        OP.CARA_TORSION(te=-1),
         OP.CHAR_THER_EVOL(
             te=445,
             para_in=(
@@ -139,6 +138,7 @@ class THERAXQ9_HHO222(Element):
                 (OP.FLUX_ELGA.PVARCPR, LC.ZVARCPG),
                 (OP.FLUX_ELGA.PCHHOGT, CHHOGT),
                 (OP.FLUX_ELGA.PCHHOST, CHHOST),
+                (OP.FLUX_ELGA.PCHHOBS, CHHOBS),
             ),
             para_out=((OP.FLUX_ELGA.PFLUXPG, LC.EFLUX2R),),
         ),
@@ -151,6 +151,25 @@ class THERAXQ9_HHO222(Element):
             te=494,
             para_in=((SP.PGEOMER, LC.EGEOM2D),),
             para_out=((OP.HHO_PRECALC_BS.PCHHOBO, CHHOBS),),
+        ),
+        OP.HHO_CINE_F_THER(
+            te=492,
+            para_in=(
+                (SP.PGEOMER, LC.EGEOM2D),
+                (SP.PINSTPR, LC.MTEMPSR),
+                (OP.HHO_CINE_F_THER.PFONC, PFONC),
+                (OP.HHO_CINE_F_THER.PCHHOBS, CHHOBS),
+            ),
+            para_out=((OP.HHO_CINE_F_THER.PCINE, DDL_THER),),
+        ),
+        OP.HHO_CINE_R_THER(
+            te=492,
+            para_in=(
+                (SP.PGEOMER, LC.EGEOM2D),
+                (OP.HHO_CINE_R_THER.PCMPVALE, TEMPHHO),
+                (OP.HHO_CINE_R_THER.PCHHOBS, CHHOBS),
+            ),
+            para_out=((OP.HHO_CINE_R_THER.PCINE, DDL_THER),),
         ),
         OP.HHO_PRECALC_OP(
             te=460,
@@ -193,15 +212,6 @@ class THERAXQ9_HHO222(Element):
                 (OP.HHO_TEMP_THER.PCHHOBS, CHHOBS),
             ),
             para_out=((OP.HHO_TEMP_THER.PTEMP_R, TEMPHHO),),
-        ),
-        OP.HHO_CINE_R_THER(
-            te=492,
-            para_in=(
-                (SP.PGEOMER, LC.EGEOM2D),
-                (OP.HHO_CINE_R_THER.PCMPVALE, TEMPHHO),
-                (OP.HHO_CINE_R_THER.PCHHOBS, CHHOBS),
-            ),
-            para_out=((OP.HHO_CINE_R_THER.PCINE, DDL_THER),),
         ),
         OP.INIT_VARC(te=99, para_out=((OP.INIT_VARC.PVARCPR, LC.ZVARCPG),)),
         OP.MASS_THER(
@@ -345,13 +355,13 @@ class THERAXQ9_HHO222(Element):
 
 
 # --------------------------------------------------------------------------------------------------
-class THERAXT7_HHO222(THERAXQ9_HHO222):
-    """Thermics - HHO_QUAD - PLAN - TRIA"""
+class THER2DT7_HHO333(THER2DQ9_HHO333):
+    """Thermics - HHO_QUAD - TRIA"""
 
     meshType = MT.TRIA7
     nodes = (SetOfNodes("EN1", (4, 5, 6)), SetOfNodes("EN2", (1, 2, 3)), SetOfNodes("EN3", (7,)))
     elrefe = (
         ElrefeLoc(
-            MT.TR7, gauss=("RIGI=FPG6", "FPG1=FPG1", "MASS=FPG6"), mater=("RIGI", "FPG1", "MASS")
+            MT.TR7, gauss=("RIGI=FPG12", "FPG1=FPG1", "MASS=FPG12"), mater=("RIGI", "FPG1", "MASS")
         ),
     )

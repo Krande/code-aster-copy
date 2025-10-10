@@ -127,7 +127,7 @@ class MECA3DQU9_HHO4_F(Element):
     meshType = MT.QUAD9
     nodes = (SetOfNodes("EN1", (9,)), SetOfNodes("EN2", (1, 2, 3, 4, 5, 6, 7, 8)))
     attrs = ((AT.BORD_ISO, "OUI"),)
-    elrefe = (ElrefeLoc(MT.QU9, gauss=("RIGI=FPG16",), mater=("RIGI",)),)
+    elrefe = (ElrefeLoc(MT.QU9, gauss=("RIGI=FPG25",), mater=("RIGI",)),)
     calculs = (
         OP.CHAR_MECA_PRES_F(
             te=459,
@@ -211,4 +211,4 @@ class MECA3DTR7_HHO4_F(MECA3DQU9_HHO4_F):
     meshType = MT.TRIA7
     nodes = (SetOfNodes("EN1", (7,)), SetOfNodes("EN2", (1, 2, 3, 4, 5, 6)))
     attrs = ((AT.BORD_ISO, "OUI"),)
-    elrefe = (ElrefeLoc(MT.TR7, gauss=("RIGI=FPG19",), mater=("RIGI",)),)
+    elrefe = (ElrefeLoc(MT.TR7, gauss=("RIGI=FPG16",), mater=("RIGI",)),)

@@ -30,7 +30,7 @@ print("laplacien =")
 pprint(lapla)
 
 
-f = simplify((A*lapla+H*u)/H)
+f = simplify(-A*lapla)
 
 print("force f =")
 pprint(f)
