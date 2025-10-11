@@ -1,4 +1,4 @@
-[project]
+[workspace]
 name = "code-aster"
 version = "17.2.6"
 description = "A pixi project for building the windows variant of code aster"
@@ -9,9 +9,7 @@ platforms = ["win-64", "linux-64"]
 common = { features = ["common"], solve-group = "common", no-default-feature = true }
 dev = { features = ["dev", "common"], no-default-feature = true }
 int64 = { features = ["int64", "common"], no-default-feature = true }
-int32 = { features = ["int32", "common"], no-default-feature = true }
 int64d = { features = ["int64d", "common"], no-default-feature = true }
-int32d = { features = ["int32d", "common"], no-default-feature = true }
 conda = { features = ["conda"], no-default-feature = true }
 
 [feature.conda]
@@ -20,13 +18,9 @@ platforms = ["linux-64", "win-64"]
 dependencies = { rattler-build = "*", python = "==3.12.8" }
 
 [feature.int64]
-channels = ["https://repo.prefix.dev/code-aster", "conda-forge"]
+channels = ["https://repo.prefix.dev/code-aster","https://software.repos.intel.com/python/conda/", "conda-forge"]
 [feature.int64d]
-channels = ["https://repo.prefix.dev/code-aster", "conda-forge"]
-[feature.int32]
-channels = ["https://repo.prefix.dev/code-aster", "conda-forge"]
-[feature.int32d]
-channels = ["https://repo.prefix.dev/code-aster", "conda-forge"]
+channels = ["https://repo.prefix.dev/code-aster","https://software.repos.intel.com/python/conda/", "conda-forge"]
 
 [feature.common.dependencies]
 python = "==3.12.8"
@@ -46,12 +40,21 @@ gcc = "13*"
 
 [feature.common.target.win-64.dependencies]
 vswhere = "*"
-libblas = { version = "*", build = "*mkl" }
-liblapack = { version = "*", build = "*mkl" }
-mkl-devel = "*"
+
 ninja = "*"
 psutil = "*"
 clang = "18.*"
+
+libblas = { version = "*", build = "*mkl" }
+liblapack = { version = "*", build = "*mkl" }
+mkl-devel = { version="*", channel="conda-forge" }
+#intel-openmp = "*"
+ifx_win-64 = { version="*", channel="https://software.repos.intel.com/python/conda/" }
+intel-fortran-rt = { version="*", channel="conda-forge" }
+intel-cmplr-lib-rt = { version="*", channel="conda-forge" }
+intel-opencl-rt = { version="*", channel="conda-forge"}
+intel-cmplr-lic-rt = { version="*", channel="conda-forge"}
+tbb = { version="*", channel="conda-forge"}
 
 [feature.dev.target.win-64.dependencies]
 clangdev = "18.*"
@@ -68,17 +71,6 @@ scotch = { version = "==7.0.7", build = "*release*INT64*" }
 metis = { version = "*", build = "*release*INT64*" }
 mumps = { version = "*", build = "*release*INT64*" }
 
-[feature.int32.target.win-64.dependencies]
-hdf5 = { version = "*", build = "*release*" }
-mfront = { version = "*", build = "*release*" }
-mgis = { version = "*", build = "*release*" }
-libmed = { version = "*", build = "*release*INT32*" }
-medcoupling = { version = "*", build = "*release*INT32*" }
-libscotch = { version = "*", build = "*release*INT32*" }
-scotch = { version = "*", build = "*release*INT32*" }
-metis = { version = "*", build = "*release*INT32*" }
-mumps = { version = "*", build = "*release*INT32*" }
-
 [feature.int64d.target.win-64.dependencies]
 hdf5 = { version = "*", build = "*debug*" }
 mfront = { version = "*", build = "*debug*" }
@@ -89,17 +81,6 @@ libscotch = { version = "*", build = "*debug*INT64*" }
 scotch = { version = "==7.0.7", build = "*debug*INT64*" }
 metis = { version = "*", build = "*debug*INT64*" }
 mumps = { version = "*", build = "*debug*INT64*" }
-
-[feature.int32d.target.win-64.dependencies]
-hdf5 = { version = "*", build = "*debug*" }
-mfront = { version = "*", build = "*debug*" }
-mgis = { version = "*", build = "*debug*" }
-libmed = { version = "*", build = "*debug*INT32*" }
-medcoupling = { version = "*", build = "*debug*INT32*" }
-libscotch = { version = "*", build = "*debug*INT32*" }
-scotch = { version = "*", build = "*debug*INT32*" }
-metis = { version = "*", build = "*debug*INT32*" }
-mumps = { version = "*", build = "*debug*INT32*" }
 
 [feature.conda.tasks]
 ctest = { cmd = ["rattler-build", "test", "-c", "https://repo.prefix.dev/code-aster", "-c", "conda-forge"], env = { OUTPUT_DIR="$PIXI_PROJECT_ROOT/test_output"} }
@@ -112,38 +93,15 @@ cbuildn = { cmd = ["rattler-build", "build", "-r", "conda/recipe.yaml", "-m", "c
 [feature.conda.target.linux-64.tasks]
 cbuildn = { cmd = ["rattler-build", "build", "-r", "conda/recipe.yaml"] }
 
-[feature.int32.target.linux-64.tasks]
-build32 = { cmd = ["waf", "configure", "build"], description = "Build the project" }
-
 [feature.int64.target.win-64.tasks]
 build64 = { cmd = ["msvc/scripts/conda_manual_build.bat", "--pixi-build", "--int-type64", "--build-debug"], description = "Build the project", env = { INTEL_VARS_PATH = "C:/Program Files (x86)/Intel/oneAPI/compiler/latest/env" } }
 install64 = { cmd = ["msvc/scripts/conda_rearrange.bat"], description = "Copy the latest build files to their respective locations" }
-test32d = { cmd = ["run_ctest", "--resutest=temp\\int64", "-L", "submit", "-L", "sequential", "-LE", "need_data", "--timefactor=5.0", "--only-failed-results"], description = "Run the default sequential tests" }
+test64 = { cmd = ["run_ctest", "--resutest=temp\\int64", "-L", "submit", "-L", "sequential", "-LE", "need_data", "--timefactor=5.0", "--only-failed-results"], description = "Run the default sequential tests" }
 
 [feature.int64d.target.win-64.tasks]
 build64d = { cmd = ["msvc/scripts/conda_manual_build.bat", "--pixi-build", "--int-type64", "--build-debug"], description = "Build the project", env = { INTEL_VARS_PATH = "C:/Program Files (x86)/Intel/oneAPI/compiler/latest/env" } }
 install64d = { cmd = ["msvc/scripts/conda_rearrange.bat"], description = "Copy the latest build files to their respective locations" }
-test32d = { cmd = ["run_ctest", "--resutest=temp\\int64d", "-L", "submit", "-L", "sequential", "-LE", "need_data", "--timefactor=5.0", "--only-failed-results"], description = "Run the default sequential tests" }
-
-[feature.int32.target.win-64.tasks]
-build32 = { cmd = ["msvc/scripts/conda_manual_build.bat", "--pixi-build"], description = "Build the project", env = { INTEL_VARS_PATH = "C:/Program Files (x86)/Intel/oneAPI/compiler/latest/env" } }
-install32 = { cmd = ["msvc/scripts/conda_rearrange.bat"], description = "Copy the latest build files to their respective locations" }
-test32d = { cmd = ["run_ctest", "--resutest=temp\\int32", "-L", "submit", "-L", "sequential", "-LE", "need_data", "--timefactor=5.0", "--only-failed-results"], description = "Run the default sequential tests" }
-
-[feature.int32d.target.win-64.tasks]
-build32d = { cmd = ["msvc/scripts/conda_manual_build.bat", "--pixi-build", "--build-debug"], description = "Build the project", env = { INTEL_VARS_PATH = "C:/Program Files (x86)/Intel/oneAPI/compiler/latest/env" } }
-install32d = { cmd = ["msvc/scripts/conda_rearrange.bat"], description = "Copy the latest build files to their respective locations" }
-test32d = { cmd = ["run_ctest", "--resutest=temp\\int32d", "-L", "submit", "-L", "sequential", "-LE", "need_data", "--timefactor=5.0", "--only-failed-results"], description = "Run the default sequential tests" }
-debug32d = { cmd = ["python", "msvc/run_tests.py", "--test-file", "comp008b"], description = "Run the debug script on a specific test" }
-
-test = { cmd = [
-    "run_ctest",
-    "--resutest=temp\\seq",
-    "-L", "submit",
-    "-L", "sequential",
-    "-LE", "need_data",
-    "--timefactor=5.0",
-    "--only-failed-results"], description = "Run the default sequential tests" }
+test64d = { cmd = ["run_ctest", "--resutest=temp\\int64d", "-L", "submit", "-L", "sequential", "-LE", "need_data", "--timefactor=5.0", "--only-failed-results"], description = "Run the default sequential tests" }
 
 [feature.dev.target.win-64.tasks]
 test_scan = { cmd = ["python", "conda/test_scanner/eval_tests.py", "--output", "conda/test_scanner/results"], description = "Scan the test results" }
@@ -157,8 +115,4 @@ def-bibcpp = { cmd = ["python", "msvc/def_gen_cpp.py"], description = "Generate 
 [feature.int64.target.win-64.activation]
 scripts = ["msvc/scripts/activate.bat", "msvc/scripts/activate_intel.bat"]
 [feature.int64d.target.win-64.activation]
-scripts = ["msvc/scripts/activate.bat", "msvc/scripts/activate_intel.bat"]
-[feature.int32.target.win-64.activation]
-scripts = ["msvc/scripts/activate.bat", "msvc/scripts/activate_intel.bat"]
-[feature.int32d.target.win-64.activation]
 scripts = ["msvc/scripts/activate.bat", "msvc/scripts/activate_intel.bat"]
