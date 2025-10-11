@@ -87,7 +87,6 @@ class THPLQU4(Element):
                 (SP.PMATERC, LC.CMATERC),
                 (SP.PTEMPER, DDL_THER),
                 (SP.PINSTR, LC.CTIMETR),
-                (SP.PTMPCHI, DDL_THER),
                 (OP.CHAR_THER_EVOLNI.PVARCPR, LC.ZVARCPG),
             ),
             para_out=((SP.PVECTTI, MVECTTR), (SP.PVECTTR, MVECTTR)),
@@ -252,7 +251,7 @@ class THPLQU4(Element):
                 (SP.PINSTR, LC.CTIMETR),
                 (OP.MASS_THER.PVARCPR, LC.ZVARCPG),
             ),
-            para_out=((OP.MASS_THER.PMATTTR, MMATTTR),),
+            para_out=((SP.PMATTTR, MMATTTR),),
         ),
         OP.META_ELNO(
             te=67,
@@ -288,10 +287,9 @@ class THPLQU4(Element):
                 (SP.PCAMASS, LC.CCAMA3D),
                 (SP.PMATERC, LC.CMATERC),
                 (SP.PTEMPEI, DDL_THER),
-                (SP.PTMPCHF, DDL_THER),
                 (OP.RIGI_THER_TANG.PVARCPR, LC.ZVARCPG),
             ),
-            para_out=((OP.RIGI_THER_TANG.PMATTTR, MMATTTR), (OP.RIGI_THER_TANG.PMATTSR, MMATTSR)),
+            para_out=((SP.PMATTTR, MMATTTR), (OP.RIGI_THER_TANG.PMATTSR, MMATTSR)),
         ),
         OP.MASS_THER_TANG(
             te=246,
@@ -302,7 +300,7 @@ class THPLQU4(Element):
                 (SP.PTEMPEI, DDL_THER),
                 (OP.MASS_THER_TANG.PVARCPR, LC.ZVARCPG),
             ),
-            para_out=((OP.MASS_THER_TANG.PMATTTR, MMATTTR),),
+            para_out=((SP.PMATTTR, MMATTTR),),
         ),
         OP.MTAN_THER_SOURNL(
             te=354,
@@ -312,7 +310,7 @@ class THPLQU4(Element):
                 (SP.PTEMPEI, DDL_THER),
                 (SP.PINSTR, LC.CTIMETR),
             ),
-            para_out=((OP.MTAN_THER_SOURNL.PMATTTR, MMATTTR),),
+            para_out=((SP.PMATTTR, MMATTTR),),
         ),
         OP.NORME_L2(
             te=563,
@@ -342,7 +340,6 @@ class THPLQU4(Element):
                 (SP.PCAMASS, LC.CCAMA3D),
                 (SP.PMATERC, LC.CMATERC),
                 (SP.PTEMPEI, DDL_THER),
-                (SP.PTMPCHF, DDL_THER),
                 (OP.RAPH_THER.PVARCPR, LC.ZVARCPG),
             ),
             para_out=((SP.PRESIDU, MVECTTR), (OP.RAPH_THER.PFLUXPR, LC.EFLUX2R)),
@@ -378,7 +375,7 @@ class THPLQU4(Element):
                 (SP.PINSTR, LC.CTIMETR),
                 (OP.RIGI_THER.PVARCPR, LC.ZVARCPG),
             ),
-            para_out=((OP.RIGI_THER.PMATTTR, MMATTTR),),
+            para_out=((SP.PMATTTR, MMATTTR),),
         ),
         OP.RIGI_THER_CONV(
             te=502,
@@ -399,7 +396,7 @@ class THPLQU4(Element):
                 (SP.PTEMPEI, DDL_THER),
                 (SP.PTEMPER, DDL_THER),
             ),
-            para_out=((OP.RIGI_THER_TRANS.PMATTTR, MMATTTR),),
+            para_out=((SP.PMATTTR, MMATTTR),),
         ),
         OP.SOUR_ELGA(
             te=318,

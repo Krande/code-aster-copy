@@ -164,4 +164,24 @@ du post-traitement de la contrainte de WEIBULL.
 Veillez à définir ce champ sur tous les groupes de mailles utilisés sous le mot-clé WEIBULL(_FO).
         """
     ),
+    27: _(
+        """
+Il n'est pas possible d'utiliser TYPE_SEUIL = "RESTREINT" avec un paramètre SIGM_SEUIL fonction ou champ.
+        """
+    ),
+    28: _(
+        """
+Le groupe de mailles demandé GROUP_MA = %(k1)s n'existe pas !
+        """
+    ),
+    29: _(
+        """
+Dans METHODE_2D, le groupe de noeuds demandé GROUP_NO = %(k1)s n'existe pas !
+        """
+    ),
+    30: _(
+        """
+Dans METHODE_2D, il est nécessaire de renseigner le mot-clé FISSURE si on donne en entrée plus d'un GROUP_NO.
+        """
+    ),
 }

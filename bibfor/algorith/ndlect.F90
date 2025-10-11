@@ -25,8 +25,8 @@ subroutine ndlect(model, materialField, caraElem, listLoad, &
 !
     implicit none
 !
-#include "asterf_types.h"
 #include "jeveux.h"
+#include "asterf_types.h"
 #include "asterc/getfac.h"
 #include "asterc/r8prem.h"
 #include "asterfort/assert.h"
@@ -368,7 +368,7 @@ subroutine ndlect(model, materialField, caraElem, listLoad, &
         amfl(2) = 0
     end if
 
-    call mecact('V', sdamfl, 'MODELE', model(1:8)//'.MODELE', 'NEUT_I', &
+    call mecact('V', sdamfl, 'MODELE', model, 'NEUT_I', &
                 ncmp=2, lnomcmp=licmp, vi=amfl)
 
 !
@@ -381,7 +381,7 @@ subroutine ndlect(model, materialField, caraElem, listLoad, &
     rcmp(2) = beta
     rcmp(3) = gamma
     call jedetr(stadyn)
-    call mecact('V', stadyn, 'MODELE', model(1:8)//'.MODELE', 'STAOUDYN', &
+    call mecact('V', stadyn, 'MODELE', model, 'STAOUDYN', &
                 ncmp=3, lnomcmp=licmp, vr=rcmp)
 !
 ! --- MODE MULTI-APPUI

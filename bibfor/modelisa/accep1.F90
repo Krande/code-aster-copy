@@ -24,14 +24,17 @@ subroutine accep1(modmec, ligrmo, nbm, dir, yang)
 !-----------------------------------------------------------------------
 !
 !
-#include "asterf_types.h"
 #include "jeveux.h"
+#include "asterf_types.h"
+#include "asterfort/as_allocate.h"
+#include "asterfort/as_deallocate.h"
 #include "asterfort/assert.h"
 #include "asterfort/calcul.h"
 #include "asterfort/codent.h"
 #include "asterfort/copisd.h"
 #include "asterfort/detrsd.h"
 #include "asterfort/dismoi.h"
+#include "asterfort/exisd.h"
 #include "asterfort/exlima.h"
 #include "asterfort/getvid.h"
 #include "asterfort/jedema.h"
@@ -45,23 +48,21 @@ subroutine accep1(modmec, ligrmo, nbm, dir, yang)
 #include "asterfort/rsexch.h"
 #include "asterfort/utmess.h"
 #include "asterfort/wkvect.h"
-#include "asterfort/as_deallocate.h"
-#include "asterfort/as_allocate.h"
 !
-    integer(kind=8) :: nbm, i
+    integer(kind=8) :: nbm, i, iexi
     integer(kind=8) :: iret, ngrel, ipg, n1
     integer(kind=8) :: ncham, nn, nbelto, nbelgr, ntail, ialiel
     integer(kind=8) :: igr, ima, ii, iel, ive, itab, imo
     real(kind=8) :: dir(3, 3), v1, v2, v3, w1, w2, w3, ref1, ref2, ref3, refer
     real(kind=8) :: rayon, rayon2, haut, rap1, rap2
     character(len=7) :: incr, ielem, imode
-    character(len=8) :: vetel, lpain(3), lpaout(1), modele, modmec, k8b
+    character(len=8) :: vetel, lpain(3), lpaout(1), modele, modmec, k8b, noma
+    character(len=8) :: partit
     character(len=16) :: option
-    character(len=19) :: nomcha, chgeom, chharm, partit
+    character(len=19) :: nomcha, chgeom, chharm
     character(len=24) :: ligrmo, lchin(3), lchout(1)
     aster_logical :: yang
     character(len=8), pointer :: vec(:) => null()
-    character(len=8), pointer :: lgrf(:) => null()
 !
 !-----------------------------------------------------------------------
     call jemarq()
@@ -97,13 +98,14 @@ subroutine accep1(modmec, ligrmo, nbm, dir, yang)
     end if
 !
     call dismoi('PARTITION', ligrmo, 'LIGREL', repk=partit)
-    if (partit .ne. ' ') then
+    call exisd('PARTITION', partit, iexi)
+    if (iexi .ne. 0) then
         call utmess('F', 'CALCULEL_25', sk=ligrmo)
     end if
 !
 ! CALCULS ELEMENTAIRES
-    call jeveuo(ligrmo(1:19)//'.LGRF', 'L', vk8=lgrf)
-    chgeom = lgrf(1)//'.COORDO'
+    call dismoi('NOM_MAILLA', ligrmo, 'LIGREL', repk=noma)
+    chgeom = noma//".COORDO"
 !
     lpain(1) = 'PGEOMER'
     lchin(1) = chgeom

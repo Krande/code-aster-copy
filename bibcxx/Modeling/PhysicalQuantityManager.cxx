@@ -35,7 +35,11 @@ bool PhysicalQuantityManager::hasQuantityOfName( const std::string name ) {
 std::string PhysicalQuantityManager::getPhysicalQuantityName( const ASTERINTEGER quantityNumber ) {
     if ( quantityNumber <= 0 || quantityNumber > _nameOfPhysicalQuantity->size() )
         throw std::runtime_error( "Not a known physical quantity" );
-    return _nameOfPhysicalQuantity->getStringFromIndex( quantityNumber );
+    return strip( _nameOfPhysicalQuantity->getStringFromIndex( quantityNumber ) );
+};
+
+ASTERINTEGER PhysicalQuantityManager::getPhysicalQuantityNumber( const std::string name ) {
+    return _nameOfPhysicalQuantity->getIndexFromString( name );
 };
 
 const VectorString PhysicalQuantityManager::getAllPhysicalQuantityNames() {

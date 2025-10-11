@@ -37,20 +37,20 @@ subroutine op0189()
 #include "asterfort/detrsd.h"
 #include "asterfort/dismoi.h"
 #include "asterfort/getvid.h"
-#include "asterfort/jeexin.h"
 #include "asterfort/jedema.h"
+#include "asterfort/jeexin.h"
 #include "asterfort/jelira.h"
-#include "asterfort/jeveuo.h"
 #include "asterfort/jemarq.h"
 #include "asterfort/jenuno.h"
+#include "asterfort/jeveuo.h"
 #include "asterfort/jexnum.h"
 #include "asterfort/knindi.h"
 #include "asterfort/nbelem.h"
 #include "asterfort/nbgrel.h"
 #include "asterfort/rsexch.h"
 #include "asterfort/teattr.h"
-#include "asterfort/typele.h"
 #include "asterfort/trvocz.h"
+#include "asterfort/typele.h"
 #include "asterfort/utmess.h"
 #include "asterfort/voiuti.h"
 !
@@ -135,10 +135,10 @@ subroutine op0189()
 !
     call dismoi('NOM_MODELE', nomres, 'RESULTAT', repk=modele)
     call dismoi('NOM_MAILLA', modele, 'MODELE', repk=mailla)
-
-    call jeveuo(modele//'.MAILLE', 'L', vi=tab_typel)
-    call jelira(modele//'.MAILLE', 'LONUTI', ival=nbma)
-    ligrmo = modele//'.MODELE'
+    call dismoi('NOM_LIGREL', modele, 'MODELE', repk=ligrmo)
+!
+    call jeveuo(ligrmo//'.TYFE', 'L', vi=tab_typel)
+    call jelira(ligrmo//'.TYFE', 'LONUTI', ival=nbma)
     call jeveuo(ligrmo//'.REPE', 'L', jrepmo)
 !
 ! --- recuperation de la dimension -> code des types de voisin

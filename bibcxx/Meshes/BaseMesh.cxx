@@ -65,16 +65,12 @@ BaseMesh::BaseMesh( const std::string &name, const std::string &type )
 ASTERINTEGER BaseMesh::getNumberOfNodes() const {
     if ( isEmpty() )
         return 0;
-    if ( !_dimensionInformations.exists() )
-        return 0;
     _dimensionInformations->updateValuePointer();
     return ( *_dimensionInformations )[0];
 }
 
 ASTERINTEGER BaseMesh::getNumberOfCells() const {
     if ( isEmpty() )
-        return 0;
-    if ( !_dimensionInformations.exists() )
         return 0;
     _dimensionInformations->updateValuePointer();
     return ( *_dimensionInformations )[2];
@@ -83,9 +79,6 @@ ASTERINTEGER BaseMesh::getNumberOfCells() const {
 ASTERINTEGER BaseMesh::getDimension() const {
     if ( isEmpty() )
         return 0;
-    if ( !_dimensionInformations.exists() )
-        return 0;
-
     _dimensionInformations->updateValuePointer();
     const auto dimGeom = ( *_dimensionInformations )[5];
 

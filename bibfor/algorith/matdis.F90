@@ -21,6 +21,7 @@ subroutine matdis(matd, verbose)
 #include "asterc/getexm.h"
 #include "asterfort/assert.h"
 #include "asterfort/dismoi.h"
+#include "asterfort/exisd.h"
 #include "asterfort/getvid.h"
 #include "asterfort/getvtx.h"
 #include "asterfort/utmess.h"
@@ -33,10 +34,9 @@ subroutine matdis(matd, verbose)
     character(len=3) :: matd
     aster_logical, intent(in), optional :: verbose
 ! ----------------------------------------------------------------------
-    integer(kind=8) :: ibid, eximc, eximo
+    integer(kind=8) :: ibid, eximc, eximo, iexi
     aster_logical :: verbose_loc
-    character(len=8) :: modele
-    character(len=19) :: ligrmo, partit
+    character(len=8) :: modele, partit
 
 !   -- MATR_DISTRIBUEE ?
     verbose_loc = .true.
@@ -53,9 +53,9 @@ subroutine matdis(matd, verbose)
         end if
         call getvid(' ', 'MODELE', scal=modele, nbret=ibid)
         ASSERT(ibid .eq. 1)
-        ligrmo = modele//'.MODELE'
-        call dismoi('PARTITION', ligrmo, 'LIGREL', repk=partit)
-        if (partit .eq. ' ' .and. matd .eq. 'OUI') then
+        call dismoi('PARTITION', modele, 'MODELE', repk=partit)
+        call exisd('PARTITION', partit, iexi)
+        if (iexi .eq. 0 .and. matd .eq. 'OUI') then
             matd = 'NON'
             if (verbose_loc) then
                 call utmess('I', 'ASSEMBLA_3')

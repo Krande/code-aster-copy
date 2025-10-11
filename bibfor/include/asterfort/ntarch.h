@@ -19,7 +19,7 @@
 !
 interface
     subroutine ntarch(numins, model, materField, caraElem, para, &
-                      sddisc, ds_inout, force, ds_algorom_)
+                      sddisc, ds_inout, force, ds_algorom_, l_dry_)
         use NonLin_Datastructure_type
         use Rom_Datastructure_type
         integer(kind=8), intent(in) :: numins
@@ -29,5 +29,6 @@ interface
         type(NL_DS_InOut), intent(in) :: ds_inout
         aster_logical, intent(inout) :: force
         type(ROM_DS_AlgoPara), optional, intent(in) :: ds_algorom_
+        aster_logical, optional, intent(in) :: l_dry_
     end subroutine ntarch
 end interface

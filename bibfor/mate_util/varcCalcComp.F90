@@ -29,8 +29,9 @@ subroutine varcCalcComp(modelz, chsithz, &
 !
 #include "asterf_types.h"
 #include "asterfort/calcul.h"
-#include "asterfort/gcnco2.h"
 #include "asterfort/corich.h"
+#include "asterfort/dismoi.h"
+#include "asterfort/gcnco2.h"
 #include "asterfort/reajre.h"
 !
     character(len=*), intent(in) :: modelz, chsithz
@@ -74,7 +75,7 @@ subroutine varcCalcComp(modelz, chsithz, &
 !
 ! --------------------------------------------------------------------------------------------------
 !
-    ligrmo = modelz(1:8)//'.MODELE'
+    call dismoi('NOM_LIGREL', modelz, 'MODELE', repk=ligrmo)
     newnom = '.0000000'
     resu_elem = vect_elemz(1:8)//'.0000000'
 !

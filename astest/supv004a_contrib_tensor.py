@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -30,6 +30,7 @@ from code_aster.MacroCommands.Contrib.TensorModule import (
     isTensor,
     laplacien,
 )
+
 from code_aster.MacroCommands.Contrib.HookeTensor import HookeOrthotropic
 
 try:
@@ -208,7 +209,7 @@ class TensorUnitTest(unittest.TestCase):
         )
 
 
-class TensorUnitTest(unittest.TestCase):
+class TensorUnitTest2(unittest.TestCase):
     def setUp(self):
         if not ASTER_HAVE_SYMPY:
             return

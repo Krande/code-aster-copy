@@ -16,7 +16,7 @@
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
 
-subroutine irceme(ifi, nochmd, chanom, typech, modele, &
+subroutine irceme(ifi, nochmd, chanom, typech, ligrel, &
                   nbcmp, nomcmp, etiqcp, partie, numpt, &
                   instan, numord, nbmaec, limaec, sdcarm, &
                   carael, field_type, nbCmpDyna, lfichUniq, codret)
@@ -31,7 +31,7 @@ subroutine irceme(ifi, nochmd, chanom, typech, modele, &
 !               UN CHAMP COMPLEXE
 !       CHANOM : NOM ASTER DU CHAM A ECRIRE
 !       TYPECH : TYPE DU CHAMP
-!       MODELE : MODELE ASSOCIE AU CHAMP
+!       LIGREL : LIGREL ASSOCIE AU CHAMP
 !       NBCMP  : NOMBRE DE COMPOSANTES A ECRIRE
 !       NOMCMP : NOMS DES COMPOSANTES A ECRIRE
 !       ETIQCP : NOMS DES COMPOSANTES A DONNER A MED (LABEL)
@@ -60,8 +60,8 @@ subroutine irceme(ifi, nochmd, chanom, typech, modele, &
 #include "asterfort/jemarq.h"
 #include "asterfort/jeveuo.h"
 #include "asterfort/utmess.h"
-    character(len=8) :: typech, modele, sdcarm, carael
-    character(len=19) :: chanom
+    character(len=8) :: typech, sdcarm, carael
+    character(len=19) :: chanom, ligrel
     character(len=64) :: nochmd
     character(len=*) :: nomcmp(*), partie, etiqcp
     character(len=16), intent(in) :: field_type
@@ -117,7 +117,7 @@ subroutine irceme(ifi, nochmd, chanom, typech, modele, &
 ! 2. ECRITURE DES CHAMPS AU FORMAT MED
 !====
 !
-    call ircame(ifi, nochmd, chanom, typech, modele, &
+    call ircame(ifi, nochmd, chanom, typech, ligrel, &
                 nbcmp, nomcmp, etiqcp, partie, numpt, &
                 instan, numord, jcesk, jcesd, jcesc, &
                 jcesv, jcesl, nbmaec, limaec, sdcarm, &

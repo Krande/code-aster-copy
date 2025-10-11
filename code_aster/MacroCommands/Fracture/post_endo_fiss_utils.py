@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -270,10 +270,10 @@ def versDirMoy(Coorx, Coory, Coorz, hnor):
     htest1 = NP.array(hnor - NP.array([0.0, 0.0, 1.0]), int)
     htest6 = NP.array(hnor - NP.array([0.0, 1.0, 0.0]), int)
 
-    if htest1.any() == False:
+    if not htest1.any():
         lst_abs = Coorx
         lst_ord = Coory
-    elif htest6.any() == False:
+    elif not htest6.any():
         lst_abs = Coorx
         lst_ord = Coorz
     else:

@@ -61,9 +61,8 @@ subroutine rcdiff(imate, comp, temp, c, diff)
     poum = '+'
     tz0 = r8t0()
     if (phenom .eq. 'SECH_GRANGER') then
-        nbpar = 1
-        nompar(1) = 'TEMP'
-        valpar(1) = temp
+        nbpar = 0
+
         nomres(1) = 'A'
         nomres(2) = 'B'
         nomres(3) = 'QSR_K'
@@ -82,9 +81,7 @@ subroutine rcdiff(imate, comp, temp, c, diff)
                &0/(temp+tz0)-1.d0/(valres(4)+tz0)))
 !
     else if (phenom .eq. 'SECH_MENSI') then
-        nbpar = 1
-        nompar(1) = 'TEMP'
-        valpar(1) = temp
+        nbpar = 0
         nomres(1) = 'A'
         nomres(2) = 'B'
         call rcvalb(fami, kpg, spt, poum, imate, &
@@ -94,7 +91,7 @@ subroutine rcdiff(imate, comp, temp, c, diff)
 !
     else if (phenom .eq. 'SECH_BAZANT') then
         nbpar = 1
-        nompar(1) = 'TEMP'
+        nompar(1) = 'SECH'
         valpar(1) = c
         nomres(1) = 'D1'
         nomres(2) = 'ALPHA_BAZANT'
@@ -112,9 +109,13 @@ subroutine rcdiff(imate, comp, temp, c, diff)
 !
     else if (phenom .eq. 'SECH_NAPPE') then
         nbpar = 2
-        nompar(1) = 'TEMP'
+        nompar(1) = 'SECH'
         valpar(1) = c
-        nompar(2) = 'TSEC'
+!       pour SECH_NAPPE il faut donner TEMP en paramètre pour avoir
+!       la valeur du bon instant selon l'option
+!       sinon il faudrait voir globalement s'il ne serait pas plus
+!       correct de mettre poum = '-' pour l'option CHAR_THER_EVOLNI
+        nompar(2) = 'TEMP'
         valpar(2) = temp
         nomres(1) = 'FONCTION'
         call rcvalb(fami, kpg, spt, poum, imate, &

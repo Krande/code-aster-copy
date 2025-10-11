@@ -20,11 +20,12 @@ subroutine memam2(option, modele, mate, mateco, &
                   cara, compor, time, chacce, &
                   vecel, basez, ligrez)
     implicit none
-#include "asterf_types.h"
 #include "jeveux.h"
+#include "asterf_types.h"
 #include "asterfort/calcul.h"
 #include "asterfort/corich.h"
 #include "asterfort/detrsd.h"
+#include "asterfort/dismoi.h"
 #include "asterfort/gcnco2.h"
 #include "asterfort/jedema.h"
 #include "asterfort/jedetr.h"
@@ -83,7 +84,7 @@ subroutine memam2(option, modele, mate, mateco, &
     if (icode .eq. 1) goto 10
 !
     ligrmo = ligrez
-    if (ligrmo .eq. ' ') ligrmo = modele(1:8)//'.MODELE'
+    if (ligrmo .eq. ' ') call dismoi('NOM_LIGREL', modele, 'MODELE', repk=ligrmo)
 !
     lpaout(1) = 'PVECTUR'
 !

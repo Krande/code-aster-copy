@@ -191,15 +191,6 @@ class FieldOnCells : public DataField {
         return nullptr;
     };
 
-    /** @brief Get the model */
-    ModelPtr getModel() const {
-        if ( _dofDescription ) {
-            return _dofDescription->getModel();
-        }
-
-        return nullptr;
-    }
-
     /** @brief Get datastructure for dynamic fields (as VARI_ELGA) */
     std::shared_ptr< SimpleFieldOnCells< ASTERINTEGER > > getExtentedInformations() const {
         return _DCEL;
@@ -403,16 +394,8 @@ class FieldOnCells : public DataField {
 
     std::string getPhysicalQuantity() const {
         _descriptor->updateValuePointer();
-
         auto gd = ( *_descriptor )[0];
-
-        const std::string cata = "&CATA.GD.NOMGD";
-        JeveuxChar32 objName, charName;
-
-        CALLO_JEXNUM( objName, cata, &gd );
-        CALLO_JENUNO( objName, charName );
-
-        return strip( charName.toString() );
+        return PhysicalQuantityManager::getPhysicalQuantityName( gd );
     }
 
     std::string getLocalization() const {
@@ -551,10 +534,6 @@ class FieldOnCells : public DataField {
 
         std::string base = "G";
         std::string prol = "OUI", model = " ";
-
-        if ( getModel() ) {
-            model = getModel()->getName();
-        }
 
         CALLO_CHPCHD( getName(), loc, cham_model->getName(), prol, base, cham_elem->getName(),
                       model );

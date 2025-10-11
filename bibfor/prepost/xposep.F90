@@ -28,6 +28,7 @@ subroutine xposep(mo, malini, mailc, mailx, nsetot, &
 #include "asterfort/cesexi.h"
 #include "asterfort/detrsd.h"
 #include "asterfort/dismoi.h"
+#include "asterfort/ismali.h"
 #include "asterfort/jedema.h"
 #include "asterfort/jedetr.h"
 #include "asterfort/jeexin.h"
@@ -36,7 +37,6 @@ subroutine xposep(mo, malini, mailc, mailx, nsetot, &
 #include "asterfort/jenuno.h"
 #include "asterfort/jeveuo.h"
 #include "asterfort/jexnum.h"
-#include "asterfort/ismali.h"
 #include "asterfort/ligrma.h"
 #include "asterfort/utmess.h"
 #include "asterfort/wkvect.h"
@@ -101,7 +101,7 @@ subroutine xposep(mo, malini, mailc, mailx, nsetot, &
 !     LES MAILLES SANS MODELE RESTENT A 0
 !     DE PLUS, LES MAILLES POI1 SONT CONSIDEREES COMME SANS MODELE
 !     ET NE SERONT PAS POST TRAITEES
-    ligrel = mo//'.MODELE'
+    call dismoi('NOM_LIGREL', mo, 'MODELE', repk=ligrel)
     liel = ligrel//'.LIEL'
     call jelira(liel, 'NMAXOC', ngr)
     do igr = 1, ngr

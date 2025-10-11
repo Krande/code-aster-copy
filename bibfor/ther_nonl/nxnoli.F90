@@ -17,7 +17,7 @@
 ! --------------------------------------------------------------------
 
 subroutine nxnoli(model, materField, caraElem, l_stat, l_evol, &
-                  para, sddisc, ds_inout, ds_algorom)
+                  para, sddisc, ds_inout, ds_algorom, l_dry)
 !
     use NonLin_Datastructure_type
     use Rom_Datastructure_type
@@ -39,10 +39,12 @@ subroutine nxnoli(model, materField, caraElem, l_stat, l_evol, &
     character(len=19), intent(in) :: sddisc
     type(NL_DS_InOut), intent(inout) :: ds_inout
     type(ROM_DS_AlgoPara), intent(in) :: ds_algorom
+    aster_logical, intent(in) :: l_dry
 !
 ! --------------------------------------------------------------------------------------------------
 !
 ! THER_NON_LINE - Init
+! SECH_NON_LINE - Init
 !
 ! Prepare storing
 !
@@ -58,6 +60,7 @@ subroutine nxnoli(model, materField, caraElem, l_stat, l_evol, &
 !                            (2) DELTAT
 ! In  sddisc           : datastructure for time discretization
 ! IO  ds_inout         : datastructure for input/output management
+! In  l_dry            : drying calculation (SECH_NON_LINE)
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -73,7 +76,11 @@ subroutine nxnoli(model, materField, caraElem, l_stat, l_evol, &
 !
     call infniv(ifm, niv)
     if (niv .ge. 2) then
-        write (ifm, *) '<THERMIQUE> PREPARATION DE LA SD EVOL_THER'
+        if (l_dry) then
+            write (ifm, *) '<SECHAGE> PREPARATION DE LA SD EVOL_SECH'
+        else
+            write (ifm, *) '<THERMIQUE> PREPARATION DE LA SD EVOL_THER'
+        end if
     end if
 !
 ! - INSTANT INITIAL
@@ -103,7 +110,11 @@ subroutine nxnoli(model, materField, caraElem, l_stat, l_evol, &
         call rsrusd(result, nume_store)
     else
         ASSERT(nume_store .eq. 0)
-        call rscrsd('G', result, 'EVOL_THER', 100)
+        if (l_dry) then
+            call rscrsd('G', result, 'EVOL_SECH', 100)
+        else
+            call rscrsd('G', result, 'EVOL_THER', 100)
+        end if
     end if
 !
 ! - Storing initial state

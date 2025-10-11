@@ -157,10 +157,10 @@ subroutine ntdoet(model, nume_dof, l_stat, ds_inout)
 ! --------- Informations about initial state
 !
             l_field_read = ds_inout%l_field_read(i_field)
-            if (field_type .eq. 'TEMP') then
+            if (field_type .eq. 'TEMP' .or. field_type .eq. 'SECH') then
                 call jeveuo(field_algo(1:19)//'.VALE', 'E', vr=vale)
 !
-! ------------- Initial temperature: from field
+! ------------- Initial temperature or drying : from field
 !
                 if (l_field_read) then
                     call nmetl2(model, i_field, ds_inout)

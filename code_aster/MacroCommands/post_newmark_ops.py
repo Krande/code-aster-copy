@@ -24,7 +24,6 @@
 import aster
 import numpy as np
 from scipy.optimize import curve_fit
-import copy
 
 from ..Cata.Syntax import _F
 from ..CodeCommands import (

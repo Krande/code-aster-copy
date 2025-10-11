@@ -119,7 +119,7 @@ subroutine lc0058(BEHinteg, fami, kpg, ksp, ndim, &
     real(kind=8) :: dsidep_loc(merge(nsig, 6, nsig*neps .eq. ndsde), &
                                merge(neps, 6, nsig*neps .eq. ndsde))
     real(kind=8) :: props(MGIS_MAX_PROPS)
-    integer(kind=8) :: ntens, nprops, retcode
+    integer(kind=8) :: nprops, retcode
     aster_logical :: dbg
 !
 ! --------------------------------------------------------------------------------------------------
@@ -211,7 +211,6 @@ subroutine lc0058(BEHinteg, fami, kpg, ksp, ndim, &
                                 i=1, BEHinteg%behavESVA%behavESVAExte%nbESVAScal)
         write (6, *) "props:", (props(i), i=1, nprops)
         write (6, *) "angl_naut:", (angmas(i), i=1, ndim)
-        write (6, *) "ntens:", ntens
         write (6, *) "nforc:", nforc
         write (6, *) "nstatv:", nstatv
         write (6, *) "nmatr:", nmatr

@@ -56,12 +56,15 @@ subroutine aceapo(noma, nomo, lmax, npoutr, nbocc, &
 #include "asterfort/as_deallocate.h"
 #include "asterfort/assert.h"
 #include "asterfort/calc_cara_homo.h"
+#include "asterfort/char8_to_int.h"
 #include "asterfort/codent.h"
 #include "asterfort/coecis.h"
+#include "asterfort/dismoi.h"
 #include "asterfort/getvem.h"
 #include "asterfort/getvid.h"
 #include "asterfort/getvr8.h"
 #include "asterfort/getvtx.h"
+#include "asterfort/int_to_char8.h"
 #include "asterfort/isParallelMesh.h"
 #include "asterfort/jecrec.h"
 #include "asterfort/jedema.h"
@@ -78,8 +81,6 @@ subroutine aceapo(noma, nomo, lmax, npoutr, nbocc, &
 #include "asterfort/nocart.h"
 #include "asterfort/tecart.h"
 #include "asterfort/utmess.h"
-#include "asterfort/char8_to_int.h"
-#include "asterfort/int_to_char8.h"
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -88,7 +89,7 @@ subroutine aceapo(noma, nomo, lmax, npoutr, nbocc, &
     character(len=8)  :: caram(4)
     character(len=16) :: k16b, sec, concep, cmd, varsec
     character(len=16) :: nunoel
-    character(len=19) :: cartpo, cartge, cartpf, tabcar, napcis, foncis
+    character(len=19) :: cartpo, cartge, cartpf, tabcar, napcis, foncis, ligrel
     character(len=24) :: tmpnpo, tmpvpo, tmpgen, tmpnge, tmpvge, typca, nommai
     character(len=24) :: tmpnpf, tmpvpf, tmpgef, modmai, mlggma, mlgnma
     character(len=24) :: vmessk(2)
@@ -152,7 +153,8 @@ subroutine aceapo(noma, nomo, lmax, npoutr, nbocc, &
     AS_ALLOCATE(vk8=cara, size=nbcar)
     AS_ALLOCATE(vr=vale, size=nbval)
 !
-    modmai = nomo//'.MAILLE'
+    call dismoi('NOM_LIGREL', nomo, 'MODELE', repk=ligrel)
+    modmai = ligrel//'.TYFE'
     mlgnma = noma//'.TYPMAIL'
     mlggma = noma//'.GROUPEMA'
     ier = 0

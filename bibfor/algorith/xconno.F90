@@ -21,8 +21,8 @@ subroutine xconno(mox, chfis, base, opt, param, &
 !
 !
     implicit none
-#include "asterf_types.h"
 #include "jeveux.h"
+#include "asterf_types.h"
 #include "asterfort/assert.h"
 #include "asterfort/cescel.h"
 #include "asterfort/cescre.h"
@@ -90,7 +90,7 @@ subroutine xconno(mox, chfis, base, opt, param, &
     call jemarq()
     ces = '&&XCONNO.CES'
     cns = '&&XCONNO.CNS'
-    ligrel = mox(1:8)//'.MODELE'
+    call dismoi('NOM_LIGREL', mox, 'MODELE', repk=ligrel)
     lstno = chfis .eq. '.STNO'
 !
 !     1.RECUPERATION D'INFORMATIONS DANS MOX

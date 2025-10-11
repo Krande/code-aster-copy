@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -19,15 +19,9 @@
 !
 !
 interface
-    subroutine nmdidi(ds_inout, model , list_load, nume_dof, valinc,&
-                      veelem  , veasse)
+    subroutine nmdidi(ds_inout, valinc)
         use NonLin_Datastructure_type
         type(NL_DS_InOut), intent(in) :: ds_inout
-        character(len=24), intent(in) :: model
-        character(len=19), intent(in) :: list_load
-        character(len=24), intent(in) :: nume_dof
         character(len=19), intent(in) :: valinc(*)
-        character(len=19), intent(in) :: veelem(*)
-        character(len=19), intent(in) :: veasse(*)
     end subroutine nmdidi
 end interface

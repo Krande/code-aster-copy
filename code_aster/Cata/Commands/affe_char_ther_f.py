@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -35,6 +35,7 @@ AFFE_CHAR_THER_F = OPER(
     regles=(
         AU_MOINS_UN(
             "TEMP_IMPO",
+            "SECH_IMPO",
             "SOURCE",
             "SOUR_NL",
             "FLUX_REP",
@@ -48,6 +49,7 @@ AFFE_CHAR_THER_F = OPER(
             "RAYONNEMENT",
             "CONVECTION",
         ),
+        EXCLUS("TEMP_IMPO", "SECH_IMPO"),
     ),
     MODELE=SIMP(statut="o", typ=(modele_sdaster)),
     DOUBLE_LAGRANGE=SIMP(statut="f", typ="TXM", into=("OUI", "NON"), defaut="OUI"),
@@ -67,6 +69,17 @@ AFFE_CHAR_THER_F = OPER(
         TEMP_MIL=SIMP(statut="f", typ=(fonction_sdaster, nappe_sdaster, formule)),
         TEMP_INF=SIMP(statut="f", typ=(fonction_sdaster, nappe_sdaster, formule)),
         TEMP_SUP=SIMP(statut="f", typ=(fonction_sdaster, nappe_sdaster, formule)),
+    ),
+    SECH_IMPO=FACT(
+        statut="f",
+        max="**",
+        regles=(AU_MOINS_UN("TOUT", "GROUP_MA", "GROUP_NO"),),
+        TOUT=SIMP(statut="f", typ="TXM", into=("OUI",)),
+        GROUP_NO=SIMP(statut="f", typ=grno, validators=NoRepeat(), max="**"),
+        GROUP_MA=SIMP(statut="f", typ=grma, validators=NoRepeat(), max="**"),
+        SANS_GROUP_MA=SIMP(statut="f", typ=grma, validators=NoRepeat(), max="**"),
+        SANS_GROUP_NO=SIMP(statut="f", typ=grno, validators=NoRepeat(), max="**"),
+        SECH=SIMP(statut="f", typ=(fonction_sdaster, nappe_sdaster, formule)),
     ),
     FLUX_REP=FACT(
         statut="f",

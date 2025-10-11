@@ -69,12 +69,17 @@ subroutine atasmo(neq, az, apddl, apptr, numedz, &
 #include "asterfort/jemarq.h"
 #include "asterfort/jeveuo.h"
 #include "asterfort/jexnum.h"
-#include "asterfort/moinip.h"
-#include "asterfort/moinsr.h"
-#include "asterfort/trir.h"
+#include "asterfort/trir_i4.h"
 #include "asterfort/wkvect.h"
 #include "asterfort/as_deallocate.h"
 #include "asterfort/as_allocate.h"
+#include "asterc/vector_vector_add_values.h"
+#include "asterc/vector_vector_delete.h"
+#include "asterc/vector_vector_get_data.h"
+#include "asterc/vector_vector_get_data_sizes.h"
+#include "asterc/vector_vector_new.h"
+#include "asterc/vector_vector_resize.h"
+#include "asterc/vector_vector_sort_unique.h"
 !
     character(len=8) :: ma
 ! -----  ARGUMENTS
@@ -84,7 +89,7 @@ subroutine atasmo(neq, az, apddl, apptr, numedz, &
 ! -----  VARIABLES LOCALES
     integer(kind=8) :: j, k, iimax, jhbid, idsuiv, dimacv, jconl, nblig, nblig2
     integer(kind=8) ::  ilig, idligm, nddlt, jacv, jaci, iilib, idlm, iddl
-    integer(kind=8) :: ieq, jsmhc, jsmdi, ncoef, jvalm, decal, jrefa
+    integer(kind=8) :: ieq, ncoef, jvalm, decal, jrefa, vec_ptr, vecSize, position
     integer(kind=8) :: i, jsmde, ii1, ii2, iii, ii, jj, jdecal, nddltm, kdeb
     character(len=1) :: base
     character(len=14) :: numddl, numedd
@@ -94,6 +99,8 @@ subroutine atasmo(neq, az, apddl, apptr, numedz, &
     real(kind=8) :: un, vi, vj, vij
     integer(kind=8), pointer :: acompac_1er(:) => null()
     integer(kind=8), pointer :: acompac_nbt(:) => null()
+    integer(kind=8), pointer :: v_smdi(:) => null()
+    integer(kind=4), pointer :: v_smhc(:) => null()
 !
 ! ========================= DEBUT DU CODE EXECUTABLE ==================
     call jemarq()
@@ -121,7 +128,6 @@ subroutine atasmo(neq, az, apddl, apptr, numedz, &
     ASSERT(nblig .le. nblig2)
 !
     ksmdi = numddl//'.SMOS.SMDI'
-    call wkvect(ksmdi, base//' V I', neq, jsmdi)
 !
 !
 !     IIMAX   LONGUEUR MAXIMUM ADMISSIBLE DE KHBID ET ISUIV
@@ -168,7 +174,7 @@ subroutine atasmo(neq, az, apddl, apptr, numedz, &
 !     3. COMPACTAGE DE A : ON NE CONSERVE QUE LES TERMES /= 0 AINSI
 !        QUE LES INDICES CORRESPONDANT :
 !     ----------------------------------------------------------------
-    call wkvect('&&ATASMO.ACOMPAC_I', 'V V I', dimacv, jaci)
+    call wkvect('&&ATASMO.ACOMPAC_I', 'V V S', dimacv, jaci)
     call wkvect('&&ATASMO.ACOMPAC_V', 'V V R', dimacv, jacv)
     k = 0
     do j = 1, nmul
@@ -180,7 +186,7 @@ subroutine atasmo(neq, az, apddl, apptr, numedz, &
             do i = 1, nddlt
                 if (zr(idligm-1+i) .ne. 0.d0) then
                     k = k+1
-                    zi(jaci-1+k) = apddl(jdecal+i)
+                    zi4(jaci-1+k) = apddl(jdecal+i)
                     zr(jacv-1+k) = zr(idligm-1+i)
                 end if
             end do
@@ -188,7 +194,7 @@ subroutine atasmo(neq, az, apddl, apptr, numedz, &
 !         CAR MOINSR S'ATTEND A UN TABLEAU ORDONNE
 !         LE TABLEAU DES VALEURS EST AUSSI PERMUTE POUR
 !         RESPECTER CE TRI
-            call trir(zi(jaci+kdeb), zr(jacv+kdeb), 1, k-kdeb)
+            call trir_i4(zi4(jaci+kdeb), zr(jacv+kdeb), 1, k-kdeb)
             call jelibe(jexnum(a, ilig+(j-1)*nblia))
         end do
     end do
@@ -198,13 +204,15 @@ subroutine atasmo(neq, az, apddl, apptr, numedz, &
 !     ----------------------------------------
 !     IILIB  : 1-ERE PLACE LIBRE
     iilib = 1
-    call wkvect('&&ATASMO.LMBID', 'V V I', 1, idlm)
+    call wkvect('&&ATASMO.LMBID', 'V V S', 1, idlm)
+!
+    call vector_vector_new(vec_ptr)
+    call vector_vector_resize(vec_ptr, neq)
 !
 !     4.1 : ON FORCE LA PRESENCE DES TERMES DIAGONAUX:
     do ieq = 1, neq
-        zi(idlm) = ieq
-        call moinsr(zi(idlm), 1, idlm, jsmdi, idsuiv, &
-                    ksuiv, jhbid, khbid, iilib, iimax)
+        zi4(idlm) = ieq
+        call vector_vector_add_values(vec_ptr, ieq-1, 1, zi4(idlm))
     end do
 !
 !
@@ -217,8 +225,8 @@ subroutine atasmo(neq, az, apddl, apptr, numedz, &
 !       -- INSERTION DES COLONNES DE L'ELEMENT DANS
 !           LA STRUCTURE CHAINEE
         do iddl = 0, nddlt-1
-            call moinsr(zi(idlm+iddl), iddl+1, idlm, jsmdi, idsuiv, &
-                        ksuiv, jhbid, khbid, iilib, iimax)
+            position = zi4(idlm+iddl)-1
+            call vector_vector_add_values(vec_ptr, position, iddl+1, zi4(idlm))
         end do
     end do
 !
@@ -226,9 +234,21 @@ subroutine atasmo(neq, az, apddl, apptr, numedz, &
 !     DESIMBRIQUATION DE CHAINES POUR OBTENIR LA STRUCTURE COMPACTE
 !     (ZI(JSMDI),SMHC) DE LA MATRICE
     ksmhc = numddl//'.SMOS.SMHC'
-    call wkvect(ksmhc, base//' V S', iimax, jsmhc)
-    call moinip(neq, ncoef, zi(jsmdi), zi(idsuiv), zi(jhbid), &
-                zi4(jsmhc))
+    call vector_vector_sort_unique(vec_ptr)
+    call vector_vector_get_data_sizes(vec_ptr, vecSize, ncoef)
+    call wkvect(ksmdi, base//' V I', neq, vi=v_smdi)
+    call wkvect(ksmhc, base//' V S', ncoef, vi4=v_smhc)
+    call vector_vector_get_data(vec_ptr, v_smdi, v_smhc)
+    call vector_vector_delete(vec_ptr)
+    v_smdi(1) = 1
+!   Le contenu du SMDI ne correspond pas à la position du premier terme
+!   d'une ligne donnée dans le SMHC mais à la position du terme diagonal
+!   de la ligne dans le SMHC, c'est pourquoi on doit réaliser la boucle
+!   suivante
+    do iddl = 2, neq-1
+        v_smdi(iddl) = v_smdi(iddl+1)-1
+    end do
+    v_smdi(neq) = ncoef
 !
 !
 !     5. OBJET DU NUME_DDL :  .SMDE :
@@ -268,28 +288,27 @@ subroutine atasmo(neq, az, apddl, apptr, numedz, &
     do ilig = 1, nblig
 !       NDDLT : NOMBRE DE TERMES NON NULS POUR ILIG
         nddlt = acompac_nbt(ilig)
-        idlm = jaci-1+acompac_1er(ilig)
         decal = acompac_1er(ilig)
 !
 !       -- CALCUL DE .VALM(II,JJ) :
         do j = 1, nddlt
             vj = zr(jacv-1+decal-1+j)
-            jj = zi(jaci-1+decal-1+j)
+            jj = zi4(jaci-1+decal-1+j)
             ASSERT(jj .le. neq)
-            ii2 = zi(jsmdi-1+jj)
+            ii2 = v_smdi(jj)
             if (jj .eq. 1) then
                 ii1 = 1
             else
-                ii1 = zi(jsmdi-1+jj-1)+1
+                ii1 = v_smdi(jj-1)+1
             end if
             ASSERT(ii2 .ge. ii1)
             do i = 1, j
                 vi = zr(jacv-1+decal-1+i)
-                ii = zi(jaci-1+decal-1+i)
+                ii = zi4(jaci-1+decal-1+i)
                 vij = vi*vj
 !           -- CUMUL DE VIJ DANS .VALM :
                 do iii = ii1, ii2
-                    if (zi4(jsmhc-1+iii) .eq. ii) goto 110
+                    if (v_smhc(iii) .eq. ii) goto 110
                 end do
                 ASSERT(.false.)
 110             continue

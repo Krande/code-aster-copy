@@ -26,13 +26,15 @@ subroutine utpnlg(nno, nnc, pgl, matl, mate)
     real(kind=8) :: mate(1), pgl(3, 3), matl(nno*nnc, nno*nnc)
 ! .....................................................................C
 ! .....................................................................C
-!    - FONCTION REALISEE:  TRANSFORMATION DES MATRICES ELEMENTAIRES    C
-!                          PASSAGE DU REPERE LOCAL AU REPERE GLOBAL    C
+!    TRANSFORMATION DES MATRICES ELEMENTAIRES                          C
+!    PASSAGE DU REPERE LOCAL AU REPERE GLOBAL                          C
+!                                                                      C
 !    - ARGUMENTS:                                                      C
-!        DONNEES:      MATE    -->  MATRICE ELEMENTAIRE                C
-!                      PGL     -->  MATRICE DE PASSAGE L -> G          C
-!                      NI      -->  DIMENTION DU PREMIER INDICE        C
-!                      NJ      -->  DIMENTION DU DEUXIEME INDICE       C
+!        DONNEES:      NNO     -->  NOMBRE DE NOEUDS                   C
+!                      NNC     -->  NOMBRE DE COMPOSANTES              C
+!                      PGL     -->  MATRICE DE PASSAGE GLOBAL -> LOCAL C
+!                      MATL    -->  MATRICE ELEMENTAIRE LOCALE         C
+!                                                                      C
 !        SORTIE :      MATE    -->  MATRICE ELEMENTAIRE GLOBALE        C
 ! .....................................................................C
 ! .....................................................................
@@ -51,7 +53,7 @@ subroutine utpnlg(nno, nnc, pgl, matl, mate)
         end do
     end do
 !
-! --- ON EFFECTUE : MATG() = MATE() * MT()
+! --- ON EFFECTUE : MATG() = MATL() * MT()
     do k = 1, nno*nnc
         do i = 1, nno*nnc
             matg(i, k) = 0.d0

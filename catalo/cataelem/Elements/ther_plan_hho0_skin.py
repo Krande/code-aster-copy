@@ -136,7 +136,7 @@ class THER_2D_HHO0_F(Element):
                 (SP.PINSTR, LC.CTIMETR),
                 (OP.RIGI_THER_ECHA_F.PCHHOBS, CHHOBS),
             ),
-            para_out=((OP.RIGI_THER_ECHA_F.PMATTTR, MMATTTR),),
+            para_out=((SP.PMATTTR, MMATTTR),),
         ),
         OP.RIGI_THER_ECHA_R(
             te=457,
@@ -146,7 +146,7 @@ class THER_2D_HHO0_F(Element):
                 (SP.PINSTR, LC.CTIMETR),
                 (OP.RIGI_THER_ECHA_R.PCHHOBS, CHHOBS),
             ),
-            para_out=((OP.RIGI_THER_ECHA_R.PMATTTR, MMATTTR),),
+            para_out=((SP.PMATTTR, MMATTTR),),
         ),
         OP.MTAN_THER_FLUXNL(
             te=457,
@@ -157,7 +157,7 @@ class THER_2D_HHO0_F(Element):
                 (SP.PINSTR, LC.CTIMETR),
                 (OP.MTAN_THER_FLUXNL.PCHHOBS, CHHOBS),
             ),
-            para_out=((OP.MTAN_THER_FLUXNL.PMATTTR, MMATTTR),),
+            para_out=((SP.PMATTTR, MMATTTR),),
         ),
         OP.MTAN_THER_RAYO_F(
             te=457,
@@ -168,7 +168,7 @@ class THER_2D_HHO0_F(Element):
                 (SP.PINSTR, LC.CTIMETR),
                 (OP.MTAN_THER_RAYO_F.PCHHOBS, CHHOBS),
             ),
-            para_out=((OP.MTAN_THER_RAYO_F.PMATTTR, MMATTTR),),
+            para_out=((SP.PMATTTR, MMATTTR),),
         ),
         OP.MTAN_THER_RAYO_R(
             te=457,
@@ -179,7 +179,7 @@ class THER_2D_HHO0_F(Element):
                 (SP.PINSTR, LC.CTIMETR),
                 (OP.MTAN_THER_RAYO_R.PCHHOBS, CHHOBS),
             ),
-            para_out=((OP.MTAN_THER_RAYO_R.PMATTTR, MMATTTR),),
+            para_out=((SP.PMATTTR, MMATTTR),),
         ),
         OP.TOU_INI_ELGA(
             te=99,

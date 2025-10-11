@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -36,6 +36,10 @@
 #define VMAFM 254.6d-6
 ! Multiplicateur non linéaire maximum de potentiel de fluage
 #define XMAX 25.d0
+! water molar mass (g/mol)
+#define WATERMOLARMASS 18.01528d-3
+! atm to Pa
+#define AtmToPa 101325.d0
 
 ! pour indices dans xmat
 

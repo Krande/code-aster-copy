@@ -19,7 +19,7 @@
 !
 interface
     subroutine nxnoli(model, materField, caraElem, l_stat, l_evol, &
-                      para, sddisc, ds_inout, ds_algorom)
+                      para, sddisc, ds_inout, ds_algorom, l_dry)
         use NonLin_Datastructure_type
         use Rom_Datastructure_type
         character(len=8), intent(in) :: model, materField, caraElem
@@ -28,5 +28,6 @@ interface
         character(len=19), intent(in) :: sddisc
         type(NL_DS_InOut), intent(inout) :: ds_inout
         type(ROM_DS_AlgoPara), intent(in) :: ds_algorom
+        aster_logical, intent(in) :: l_dry
     end subroutine nxnoli
 end interface

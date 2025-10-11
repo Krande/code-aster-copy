@@ -23,16 +23,38 @@ from math import pi
 from ..Commons import *
 from ..Language.DataStructure import *
 from ..Language.Syntax import *
+from ..Language.SyntaxUtils import deprecate, force_list
+from ..Syntax import _F
 
 # Le traitement systématique des mots-clés dans l'op interdit d'avoir
 # uniquement des mots-clés facultatifs sous un mot-clé facteur.
 # Il faut donc au moins un mot-clé obligatoire ou bien une des
 # règles UN_PARMI, AU_MOINS_UN ou NON_VIDE.
 
+
+def compat_syntax(keywords):
+    """Hook to adapt syntax from a old version or for compatibility reasons.
+
+    Arguments:
+        keywords (dict): User's keywords, changed in place.
+    """
+    if "ELAS_FO" in keywords:
+        if not "BETON_DESORP" in keywords:
+            kwFoncDesorp = force_list(keywords["ELAS_FO"])[0].pop("FONC_DESORP", None)
+            if kwFoncDesorp:
+                deprecate(
+                    "DEFI_MATERIAU/ELAS_FO/FONC_DESORP",
+                    case=3,
+                    help="Use DEFI_MATERIAU/BETON_DESORP/FONC_DESORP instead.",
+                )
+                keywords["BETON_DESORP"] = {"FONC_DESORP": kwFoncDesorp}
+
+
 DEFI_MATERIAU = MACRO(
     nom="DEFI_MATERIAU",
     op=OPS("code_aster.MacroCommands.defi_materiau_ops.defi_materiau_ops"),
     sd_prod=mater_sdaster,
+    compat_syntax=compat_syntax,
     fr=tr("Définition des paramètres décrivant le comportement d un matériau"),
     reentrant="f:MATER",
     regles=(
@@ -1496,7 +1518,7 @@ DEFI_MATERIAU = MACRO(
         b_coin_2d=BLOC(
             condition="""equal_to("CONTACT", 'COIN_2D')""",
             fr=tr("Précision sur la 'planéité' du discret, dans l'unité du maillage."),
-            PRECISION=SIMP(statut="f", typ="R"),
+            PRECISION=SIMP(statut="o", typ="R", min=3, max=3),
         ),
     ),
     JONC_ENDO_PLAS=FACT(

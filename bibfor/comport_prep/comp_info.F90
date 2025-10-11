@@ -24,8 +24,9 @@ subroutine comp_info(modelZ, compor)
 !
 #include "asterf_types.h"
 #include "asterfort/comp_meca_pvar.h"
-#include "asterfort/jedetc.h"
+#include "asterfort/dismoi.h"
 #include "asterfort/imvari.h"
+#include "asterfort/jedetc.h"
 !
     character(len=*), intent(in) :: modelZ
     character(len=19), intent(in) :: compor
@@ -45,13 +46,15 @@ subroutine comp_info(modelZ, compor)
 !
     character(len=19), parameter :: comporInfo = '&&NMDOCC.INFO'
     character(len=8) :: model
+    character(len=19) :: ligrel
 !
 ! --------------------------------------------------------------------------------------------------
 !
     model = modelZ(1:8)
+    call dismoi('NOM_LIGREL', model, 'MODELE', repk=ligrel)
 
 ! - Prepare informations about internal variables
-    call comp_meca_pvar(model_=model, comporMap_=compor, comporInfo=comporInfo)
+    call comp_meca_pvar(ligrel_=ligrel, comporMap_=compor, comporInfo=comporInfo)
 
 ! - Print informations about internal variables
     call imvari(comporInfo)

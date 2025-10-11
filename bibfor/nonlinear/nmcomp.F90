@@ -182,6 +182,9 @@ subroutine nmcomp(BEHinteg, &
 
 ! En phase de prediction / defo_meca, deps est tel que deps_meca = 0 (structure additive defos)
     if (l_defo_meca .and. lPred) then
+! ----- Detect external state variables
+        call detectVarc(BEHinteg)
+
 ! ----- Prepare external state variables at Gauss point
         call behaviourPrepESVAPoin(BEHinteg)
 

@@ -17,8 +17,6 @@
 # along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 # --------------------------------------------------------------------
 
-# person_in_charge: mickael.abbas at edf.fr
-
 from ..Commons import *
 from ..Language.DataStructure import *
 from ..Language.Syntax import *
@@ -67,18 +65,6 @@ bloc_manu = BLOC(
     ),
 )
 
-# Bloc pour decoupe automatique - Cas de la collision
-bloc_auto2 = BLOC(
-    fr=tr("Subdivision de type automatique"),
-    condition="""equal_to("SUBD_METHODE", 'AUTO')""",
-    SUBD_INST=SIMP(
-        fr=tr("Parametre de decoupe fine du pas de temps"), statut="o", typ="R", val_min=0.0, max=1
-    ),
-    SUBD_DUREE=SIMP(
-        fr=tr("Duree de decoupe apres collision"), statut="o", typ="R", val_min=0.0, max=1
-    ),
-)
-
 # Bloc pour decoupe du pas de temps
 bloc_deco = BLOC(
     fr=tr("Action de decoupe du pas temps"),
@@ -93,23 +79,6 @@ bloc_deco = BLOC(
     ),
     b_deco_manu=bloc_manu,
     b_deco_auto=bloc_auto,
-)
-
-
-# Bloc pour decoupe du pas de temps - special pour collision
-bloc_deco2 = BLOC(
-    fr=tr("Action de decoupe du pas temps"),
-    condition="""equal_to("ACTION", 'DECOUPE')""",
-    SUBD_METHODE=SIMP(
-        fr=tr("Méthode de subdivision des pas de temps en cas de collision"),
-        statut="f",
-        typ="TXM",
-        max=1,
-        into=("MANUEL", "AUTO"),
-        defaut="AUTO",
-    ),
-    b_deco_manu=bloc_manu,
-    b_deco_auto=bloc_auto2,
 )
 
 # Bloc pour extrapolation du nombre d'iterations de Newton
@@ -216,7 +185,6 @@ DEFI_LIST_INST = OPER(
             into=(
                 "ERREUR",
                 "DELTA_GRANDEUR",
-                "COLLISION",
                 "RESI_MAXI",
                 "INTERPENETRATION",
                 "DIVE_RESI",
@@ -262,19 +230,6 @@ DEFI_LIST_INST = OPER(
                 defaut="DECOUPE",
             ),
             b_deco=bloc_deco,
-        ),
-        b_colli=BLOC(
-            fr=tr("Event: collision"),
-            condition="""equal_to("EVENEMENT", 'COLLISION') """,
-            ACTION=SIMP(
-                fr=tr("Actions possibles"),
-                statut="f",
-                max=1,
-                typ="TXM",
-                into=("ARRET", "DECOUPE"),
-                defaut="DECOUPE",
-            ),
-            b_deco2=bloc_deco2,
         ),
         b_penetration=BLOC(
             fr=tr("Event: interpenetration des surfaces en contact"),

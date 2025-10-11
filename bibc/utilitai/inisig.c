@@ -1,5 +1,5 @@
 /* -------------------------------------------------------------------- */
-/* Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org             */
+/* Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org             */
 /* This file is part of code_aster.                                     */
 /*                                                                      */
 /* code_aster is free software: you can redistribute it and/or modify   */
@@ -27,6 +27,7 @@
 #include "aster.h"
 
 #include "aster_fort_utils.h"
+#include "aster_sigfpe.h"
 
 #include <signal.h>
 
@@ -81,7 +82,7 @@ void DEF0( INISIG, inisig ) {
 #elif defined ASTER_PLATFORM_LINUX
 
     /* Enable some exceptions. At startup all exceptions are masked. */
-    feenableexcept( FE_DIVBYZERO | FE_OVERFLOW | FE_INVALID );
+    feenableexcept( ASTER_SIGFPE );
 
     signal( SIGFPE, hanfpe );
 

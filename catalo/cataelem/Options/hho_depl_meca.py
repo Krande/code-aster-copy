@@ -33,5 +33,5 @@ PDEPL_R = OutputParameter(
 HHO_DEPL_MECA = Option(
     para_in=(SP.PGEOMER, SP.PDEPLPR, PCHHOBS),
     para_out=(PDEPL_R,),
-    condition=(CondCalcul("+", ((AT.PHENO, "ME"), (AT.BORD, "0"))),),
+    condition=(CondCalcul("+", ((AT.PHENO, "ME"), (AT.BORD, "0"), (AT.HHO, "OUI"))),),
 )

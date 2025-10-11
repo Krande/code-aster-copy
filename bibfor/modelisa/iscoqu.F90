@@ -21,9 +21,10 @@ subroutine iscoqu(nomo, numail, lcoque)
 ! person_in_charge: mickael.abbas at edf.fr
 !
     implicit none
-#include "asterf_types.h"
 #include "jeveux.h"
+#include "asterf_types.h"
 #include "asterfort/assert.h"
+#include "asterfort/dismoi.h"
 #include "asterfort/jedema.h"
 #include "asterfort/jeexin.h"
 #include "asterfort/jelira.h"
@@ -68,7 +69,7 @@ subroutine iscoqu(nomo, numail, lcoque)
 !
 ! --- LIGREL DU MODELE
 !
-    ligrmo = nomo(1:8)//'.MODELE'
+    call dismoi('NOM_LIGREL', nomo, 'MODELE', repk=ligrmo)
     call jeexin(ligrmo//'.LIEL', iret)
     if (iret .eq. 0) then
         ASSERT(.false.)

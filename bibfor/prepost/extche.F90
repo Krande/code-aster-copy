@@ -20,12 +20,13 @@ subroutine extche(nchme2, nmaile, nummai, ncmp, nbm, &
                   nbc, indic, nssche, mcf, iocc, &
                   nbnac, nnoeud)
     implicit none
-#include "asterf_types.h"
 #include "jeveux.h"
+#include "asterf_types.h"
 #include "asterc/r8dgrd.h"
 #include "asterfort/assert.h"
 #include "asterfort/celcel.h"
 #include "asterfort/celver.h"
+#include "asterfort/char8_to_int.h"
 #include "asterfort/detrsd.h"
 #include "asterfort/dismoi.h"
 #include "asterfort/exchem.h"
@@ -47,7 +48,6 @@ subroutine extche(nchme2, nmaile, nummai, ncmp, nbm, &
 #include "asterfort/rvrecu.h"
 #include "asterfort/utmess.h"
 #include "asterfort/wkvect.h"
-#include "asterfort/char8_to_int.h"
 !
     integer(kind=8) :: nbm, nbc, nummai(*), iocc, nbnac, nnoeud(*)
     character(len=6) :: indic
@@ -178,7 +178,7 @@ subroutine extche(nchme2, nmaile, nummai, ncmp, nbm, &
 !   NOMS ET ADRESSES DES OJB ASSOCIES AU LIGREL SOUS-JACENT
 !   -------------------------------------------------------
 !
-    character(len=24) :: nrepe, nnoma
+    character(len=24) :: nrepe
     character(len=19) :: nligrl
     character(len=8) :: nmaila, nomgd
     integer(kind=8) :: arepe, anoma
@@ -328,12 +328,9 @@ subroutine extche(nchme2, nmaile, nummai, ncmp, nbm, &
     nligrl = nomaux(1:19)
 !
     nrepe = nligrl//'.REPE'
-    nnoma = nligrl//'.LGRF'
 !
-    call jeveuo(nnoma, 'L', anoma)
+    call dismoi('NOM_MAILLA', nligrl, 'LIGREL', repk=nmaila)
     call jeveuo(nrepe, 'L', arepe)
-!
-    nmaila = zk8(anoma)
 !
     call wkvect(nssche//'.NOMA', 'V V K8', 1, anoma)
 !

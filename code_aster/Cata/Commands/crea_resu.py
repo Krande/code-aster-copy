@@ -41,6 +41,7 @@ def crea_resu_prod(TYPE_RESU, **args):
             fourier_ther,
             evol_varc,
             evol_char,
+            evol_sech,
         )
 
     if TYPE_RESU == "EVOL_ELAS":
@@ -67,6 +68,8 @@ def crea_resu_prod(TYPE_RESU, **args):
         return evol_varc
     if TYPE_RESU == "EVOL_CHAR":
         return evol_char
+    if TYPE_RESU == "EVOL_SECH":
+        return evol_sech
     raise CataError("type de concept resultat non prevu")
 
 
@@ -110,6 +113,7 @@ CREA_RESU = OPER(
             "EVOL_THER",
             "EVOL_VARC",
             "EVOL_CHAR",
+            "EVOL_SECH",
             # pour bloc ASSE
             # "EVOL_THER "
             # pour bloc PERM_CHAM
@@ -136,8 +140,10 @@ CREA_RESU = OPER(
         ),
     ),  # fin bloc b_affe_mult_elas
     b_affe_evol_dyn=BLOC(
-        condition="""equal_to("OPERATION", 'AFFE') and is_in('TYPE_RESU', ('EVOL_ELAS', 'EVOL_NOLI', 'EVOL_THER', 'EVOL_VARC', 'DYNA_TRANS'))""",
-        RESULTAT=SIMP(statut="f", typ=(evol_elas, evol_noli, evol_ther, evol_varc, dyna_trans)),
+        condition="""equal_to("OPERATION", 'AFFE') and is_in('TYPE_RESU', ('EVOL_ELAS', 'EVOL_NOLI', 'EVOL_THER', 'EVOL_VARC', 'DYNA_TRANS', 'EVOL_SECH'))""",
+        RESULTAT=SIMP(
+            statut="f", typ=(evol_elas, evol_noli, evol_ther, evol_varc, dyna_trans, evol_sech)
+        ),
         AFFE=FACT(
             statut="o",
             max="**",
@@ -158,7 +164,8 @@ CREA_RESU = OPER(
     b_affe_evol_char=BLOC(
         condition="""equal_to("OPERATION", 'AFFE') and equal_to("TYPE_RESU", 'EVOL_CHAR')""",
         RESULTAT=SIMP(
-            statut="f", typ=(evol_elas, evol_noli, evol_ther, evol_varc, evol_char, dyna_trans)
+            statut="f",
+            typ=(evol_elas, evol_noli, evol_ther, evol_varc, evol_char, dyna_trans, evol_sech),
         ),
         AFFE=FACT(
             statut="o",
@@ -250,6 +257,15 @@ CREA_RESU = OPER(
             FONC_MULT=SIMP(statut="f", typ=(fonction_sdaster, nappe_sdaster, formule)),
         ),
     ),  # fin bloc b_evol_ther
+    b_evol_sech=BLOC(
+        condition="""equal_to("OPERATION", 'AFFE') and equal_to("TYPE_RESU", 'EVOL_SECH')""",
+        EXCIT=FACT(
+            statut="f",
+            max="**",
+            CHARGE=SIMP(statut="o", typ=(char_ther, char_cine_ther)),
+            FONC_MULT=SIMP(statut="f", typ=(fonction_sdaster, nappe_sdaster, formule)),
+        ),
+    ),  # fin bloc b_evol_sech
     b_evol_noli=BLOC(
         condition="""equal_to("OPERATION", 'AFFE') and equal_to("TYPE_RESU", 'EVOL_NOLI')""",
         COMPORTEMENT=C_COMPORTEMENT("MECA_NON_LINE"),

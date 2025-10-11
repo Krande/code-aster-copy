@@ -83,7 +83,7 @@ subroutine cgComporNodes(result, nume_ordre, nb_point, fondNoeudNume, compValues
 !
 ! - Prepare COMPOR field
 !
-    ligrmo = model(1:8)//'.MODELE'
+    call dismoi('NOM_LIGREL', model, 'MODELE', repk=ligrmo)
     call etenca(compor, ligrmo, iret)
     ASSERT(iret == 0)
     call jeveuo(compor//'.PTMA', 'L', vi=comporPtma)

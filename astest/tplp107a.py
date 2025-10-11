@@ -18,19 +18,16 @@
 # --------------------------------------------------------------------
 
 from code_aster.Commands import FORMULE
-from code_aster import CA
 
 
 def Solu_Manu(Lambda):
 
     try:
         # Import du module de calcul symbolique Sympy
-        with CA.disable_fpe():
-            import sympy
+        import sympy
 
         sympy_available = True
-        # cet import inutile est du au plantage sur la machine clpaster (fiche 17434)
-        import numpy
+
     except ImportError:
         sympy_available = False
 

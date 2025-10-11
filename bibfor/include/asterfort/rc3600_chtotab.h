@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -19,11 +19,10 @@
 !
 !
 interface
-    subroutine rc3600_chtotab(nomtb, conceptin, nsymb, modele, champ)
+    subroutine rc3600_chtotab(nomtb, conceptin, nsymb, champ)
         character(len=8) :: nomtb
         character(len=8) :: conceptin
         character(len=16) :: nsymb
-        character(len=8) :: modele
         character(len=19) :: champ
     end subroutine rc3600_chtotab
 end interface

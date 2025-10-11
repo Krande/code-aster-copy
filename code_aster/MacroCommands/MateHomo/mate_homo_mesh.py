@@ -37,7 +37,6 @@ def prepare_mesh_syme(meshin, affe_groups, affe_all):
         affe_groups (list): List of material prescriptions from the user
             command.
         affe_all (bool): True if TOUT='OUI' is used.
-
     Returns:
         Mesh: The internal VER mesh.
         str: The name of the volume group created.
@@ -47,10 +46,7 @@ def prepare_mesh_syme(meshin, affe_groups, affe_all):
 
     ASSERT(len(affe_groups) > 0 or affe_all)
 
-    mm = meshin.createMedCouplingMesh()
-    m0full = mm[0]
-
-    assert check_meshdim(m0full)
+    m0full = meshin[0]
 
     body_groups = []
 
@@ -60,17 +56,17 @@ def prepare_mesh_syme(meshin, affe_groups, affe_all):
     else:
         # Les groupes de GROUP_MA doivent exister et leur intersection est vide
         for grp in affe_groups:
-            if grp not in mm.getGroupsOnSpecifiedLev(0):
+            if grp not in meshin.getGroupsOnSpecifiedLev(0):
                 UTMESS("F", "HOMO1_4", valk=grp)
 
         intersection = mc.DataArrayInt.BuildIntersection(
-            [mm.getGroupArr(0, grp) for grp in affe_groups if len(affe_groups) > 1]
+            [meshin.getGroupArr(0, grp) for grp in affe_groups if len(affe_groups) > 1]
         )
         if not len(intersection) == 0:
             UTMESS("F", "HOMO1_5")
 
         for grp in affe_groups:
-            body_groups.append(mm.getGroupArr(0, grp))
+            body_groups.append(meshin.getGroupArr(0, grp))
 
     bodycells = mc.DataArrayInt.BuildUnion(body_groups)
     m0 = m0full[bodycells]
@@ -79,10 +75,10 @@ def prepare_mesh_syme(meshin, affe_groups, affe_all):
     # Conservation de tous les groupes de volume sauf BODY et ajout du groupe bodycells
     group_tout = "BODY"
     preserved_groups = []
-    ls_grp_vol = [i for i in mm.getGroupsOnSpecifiedLev(0) if i != group_tout]
+    ls_grp_vol = [i for i in meshin.getGroupsOnSpecifiedLev(0) if i != group_tout]
     for gname in ls_grp_vol:
         try:
-            grp = mm.getGroupArr(0, gname)
+            grp = meshin.getGroupArr(0, gname)
             ni = bodycells.findIdForEach(grp)
             ni.setName(grp.getName())
             preserved_groups.append(ni)
@@ -93,12 +89,54 @@ def prepare_mesh_syme(meshin, affe_groups, affe_all):
     fullvolume.setName(group_tout)
     l0groups = preserved_groups + [fullvolume]
 
-    volume_ver, dirthick, newmesh = rebuild_with_groups(m0, l0groups)
+    newmesh = rebuild_with_groups(m0, l0groups)
+    volume_ver, ep_ver = get_mesh_size(newmesh)
 
     mesh = Mesh()
     mesh.buildFromMedCouplingMesh(newmesh)
 
-    return mesh, group_tout, volume_ver, dirthick
+    return mesh, group_tout, volume_ver, ep_ver
+
+
+def get_mesh_size(mcmesh):
+    """
+    Calculate some mesh properties.
+
+    Args:
+    -----
+        mcmesh (MEDFileUMesh) : Input mesh
+
+    Returns:
+    --------
+        volume_ver (float): Total volume of the bounding box of the mesh object.
+        ep_ver (float) : Thickness along the Z-axis.
+    """
+
+    m0 = mcmesh[0]
+    bounds = m0.getBoundingBox()
+    volume_ver = 1.0
+    dirthick = {}
+
+    for idx, dirname in enumerate("x y z".split()):
+        vmin, vmax = bounds[idx]
+        volume_ver *= vmax - vmin
+        dirthick[dirname.upper()] = vmax - vmin
+
+    ep_ver = dirthick["Z"]
+
+    return volume_ver, ep_ver
+
+
+def check_meshpara(mesh):
+    """
+    Check the type of mesh and raise an error if the mesh is parallel.
+    """
+    if mesh.isParallel():
+        UTMESS("F", "HOMO1_19", valk=mesh.getName())
+    if not mesh.isQuadratic():
+        UTMESS("A", "HOMO1_21", valk=mesh.getName())
+
+    return mesh
 
 
 def check_meshdim(m0):
@@ -180,13 +218,9 @@ def rebuild_with_groups(m0, l0groups):
     tol = MESH_TOL
     face_groups = []
     face_nodes = {}
-    volume_ver = 1.0
-    dirthick = {}
 
-    for (idx, dirname) in enumerate("x y z".split()):
+    for idx, dirname in enumerate("x y z".split()):
         vmin, vmax = bounds[idx]
-        volume_ver *= vmax - vmin
-        dirthick[dirname.upper()] = vmax - vmin
 
         ndsmin = m0.getCoords()[:, idx].findIdsInRange(vmin - tol, vmin + tol)
         cellsmin = skin.getCellIdsLyingOnNodes(ndsmin, True)
@@ -287,4 +321,4 @@ def rebuild_with_groups(m0, l0groups):
 
     newmesh.setGroupsAtLevel(1, node_groups)
 
-    return volume_ver, dirthick, newmesh
+    return newmesh

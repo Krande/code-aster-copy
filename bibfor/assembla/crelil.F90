@@ -104,7 +104,7 @@ subroutine crelil(kstop, nbmat, vlimat, lili, base, &
 !----------------------------------------------------------------------
 !     VARIABLES LOCALES
 !----------------------------------------------------------------------
-    character(len=19) :: prefix, matel
+    character(len=19) :: prefix, matel, ligrel
     character(len=24) :: resu, nomli, k24lil, kmaill
 !-----------------------------------------------------------------------
 !     FONCTIONS LOCALES D'ACCES AUX DIFFERENTS CHAMPS DES
@@ -245,7 +245,8 @@ subroutine crelil(kstop, nbmat, vlimat, lili, base, &
         end do
         if (icomp .eq. 0) then
             nlili = nlili+1
-            call jecroc(jexnom(k24lil, modele//'.MODELE'))
+            call dismoi('NOM_LIGREL', modele, 'MODELE', repk=ligrel)
+            call jecroc(jexnom(k24lil, ligrel))
         end if
     end if
 !

@@ -26,8 +26,9 @@
 import libaster
 from libaster import DataStructure
 
-from ..Utilities import deprecated, import_object, injector
+from ..CodeCommands import COPIER
 from ..Objects.Serialization import InternalStateBuilder
+from ..Utilities import deprecated, import_object, injector
 
 
 @injector(DataStructure)
@@ -53,6 +54,11 @@ class ExtendedDataStructure:
     def is_typco(self):
         """Tell if it is an auxiliary result."""
         return False
+
+    def copy(self):
+        """Returns a copy of the object."""
+        new = COPIER(CONCEPT=self)
+        return new
 
     def __getinitargs__(self):
         """Returns the argument required to reinitialize a derivated

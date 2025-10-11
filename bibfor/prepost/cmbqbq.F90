@@ -20,6 +20,7 @@ subroutine cmbqbq(main, maout, degree, info)
     use crea_maillage_module
 !
     implicit none
+#include "asterf_types.h"
 #include "asterfort/assert.h"
 #include "asterfort/cargeo.h"
 #include "asterfort/dismoi.h"
@@ -52,7 +53,7 @@ subroutine cmbqbq(main, maout, degree, info)
 !
 ! - Create new mesh
 !
-    call mesh_conv%init(main)
+    call mesh_conv%init(main, convert_max=logical(degree .ne. 1, kind=1))
 !
 ! - Add conversion
 !

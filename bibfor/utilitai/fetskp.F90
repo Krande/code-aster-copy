@@ -29,21 +29,24 @@ subroutine fetskp(mod, meth, nbpart)
     character(len=8), intent(in) :: mod, meth
     integer(kind=8), intent(in) :: nbpart
 !
-#include "asterf_types.h"
 #include "jeveux.h"
+#include "asterf_types.h"
 #include "asterc/fetsco.h"
 #include "asterc/gpmetis_aster.h"
+#include "asterfort/as_allocate.h"
+#include "asterfort/as_deallocate.h"
 #include "asterfort/asmpi_comm_jev.h"
 #include "asterfort/asmpi_info.h"
+#include "asterfort/assert.h"
 #include "asterfort/creaco.h"
 #include "asterfort/creagm.h"
 #include "asterfort/dismoi.h"
-#include "asterfort/assert.h"
 #include "asterfort/infniv.h"
+#include "asterfort/isParallelMesh.h"
 #include "asterfort/jedema.h"
 #include "asterfort/jedetr.h"
-#include "asterfort/jelira.h"
 #include "asterfort/jeexin.h"
+#include "asterfort/jelira.h"
 #include "asterfort/jemarq.h"
 #include "asterfort/jeveuo.h"
 #include "asterfort/jexnum.h"
@@ -51,9 +54,6 @@ subroutine fetskp(mod, meth, nbpart)
 #include "asterfort/uttcpr.h"
 #include "asterfort/uttcpu.h"
 #include "asterfort/wkvect.h"
-#include "asterfort/isParallelMesh.h"
-#include "asterfort/as_deallocate.h"
-#include "asterfort/as_allocate.h"
 !
     integer(kind=8) :: nbmama, idco, nbmato, renum2, nbma, nomsdm, masd
     integer(kind=8) :: nbmasd, id, co, renum
@@ -64,7 +64,8 @@ subroutine fetskp(mod, meth, nbpart)
     real(kind=8) :: tmps(7)
     character(len=8) :: ma
     character(len=8) :: kersco
-    character(len=24) :: k24b
+    character(len=24) :: k24b, liel
+    character(len=19) :: ligrel
     integer(kind=4), pointer :: vedlo(:) => null()
     integer(kind=8), pointer :: vrenum1(:) => null()
     integer(kind=4), pointer :: vvelo(:) => null()
@@ -92,20 +93,23 @@ subroutine fetskp(mod, meth, nbpart)
     AS_ALLOCATE(vi=vrenum1, size=nbmato)
 
     nbmato = 0
-    call jeexin(mod//'.MODELE    .LIEL', iexi)
+
+    call dismoi('NOM_LIGREL', mod, 'MODELE', repk=ligrel)
+    liel = ligrel//".LIEL"
+    call jeexin(liel, iexi)
     if (iexi .eq. 0) then
         call utmess('F', 'PARTITION_2')
     end if
-    call jelira(mod//'.MODELE    .LIEL', 'NMAXOC', nocc)
+    call jelira(liel, 'NMAXOC', nocc)
     do iocc = 1, nocc
-        call jelira(jexnum(mod//'.MODELE    .LIEL', iocc), 'LONMAX', nbma)
+        call jelira(jexnum(liel, iocc), 'LONMAX', nbma)
         nbmato = nbmato+nbma-1
     end do
     call wkvect('&&FETSKP.RENUM', 'V V I', nbmato, renum)
     id = 1
     do iocc = 1, nocc
-        call jelira(jexnum(mod//'.MODELE    .LIEL', iocc), 'LONMAX', nbma)
-        call jeveuo(jexnum(mod//'.MODELE    .LIEL', iocc), 'L', idma)
+        call jelira(jexnum(liel, iocc), 'LONMAX', nbma)
+        call jeveuo(jexnum(liel, iocc), 'L', idma)
         do ima = 1, nbma-1
             zi(renum-1+id) = zi(idma-1+ima)
 ! ----- ON VERIFIE QUE LE MODELE NE CONTIENT PAS DE MAILLES TARDIVES

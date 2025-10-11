@@ -20,23 +20,26 @@
 !
 subroutine xddlimf(modele, ino, cnxinv, jnoxfv, motcle, &
                    ch2, ndim, lsn, lst, valimr, valimf, valimc, &
-                   fonree, lisrel, nomn, direct, class, mesh, &
+                   fonree, lisrel, nomn, direct, class, &
                    hea_no)
 !
     implicit none
 !
 #include "jeveux.h"
-#include "asterfort/assert.h"
+#include "asterc/getres.h"
 #include "asterfort/afrela.h"
+#include "asterfort/assert.h"
 #include "asterfort/cesexi.h"
+#include "asterfort/dismoi.h"
 #include "asterfort/elelin.h"
 #include "asterfort/elrfvf.h"
 #include "asterfort/focste.h"
 #include "asterfort/fointe.h"
-#include "asterc/getres.h"
 #include "asterfort/gnomsd.h"
+#include "asterfort/int_to_char8.h"
 #include "asterfort/ismali.h"
 #include "asterfort/jedema.h"
+#include "asterfort/jedetr.h"
 #include "asterfort/jeexin.h"
 #include "asterfort/jelira.h"
 #include "asterfort/jemarq.h"
@@ -48,15 +51,12 @@ subroutine xddlimf(modele, ino, cnxinv, jnoxfv, motcle, &
 #include "asterfort/xcalc_code.h"
 #include "asterfort/xcalc_heav.h"
 #include "asterfort/xdvois.h"
-#include "asterfort/jedetr.h"
-#include "asterfort/int_to_char8.h"
 !
     integer(kind=8) :: ino, jnoxfv, ndim
     real(kind=8) :: lsn(4), lst(4), valimr, direct(3)
     complex(kind=8) :: valimc
     character(len=4) :: fonree
     character(len=8) :: modele, motcle, valimf, nomn
-    character(len=8), intent(in) :: mesh
     character(len=19) :: cnxinv, ch2, lisrel, hea_no
     aster_logical :: class
 !
@@ -68,7 +68,6 @@ subroutine xddlimf(modele, ino, cnxinv, jnoxfv, motcle, &
 !             (POUR DNOR OU DTAN : MOTCLE = DEPL )
 !
 ! IN  INO    : NUMERO DU NOEUD
-! IN  MESH   : NOM DU MAILLAGE
 ! IN  LSN    : LSN DU NOEUD COURANT
 ! IN  NOMN   : NOM DU NOEU COURANT
 !
@@ -93,7 +92,6 @@ subroutine xddlimf(modele, ino, cnxinv, jnoxfv, motcle, &
     parameter(eps=2.d-6)
     integer(kind=8), pointer :: nunotmp(:) => null()
     integer(kind=8), pointer :: connex(:) => null()
-    character(len=8), pointer :: lgrf(:) => null()
     integer(kind=8), pointer :: ihea_no(:) => null()
     real(kind=8), pointer :: lsnv(:) => null()
     complex(kind=8) :: cbid
@@ -133,8 +131,7 @@ subroutine xddlimf(modele, ino, cnxinv, jnoxfv, motcle, &
         call jelira('&&CAAREI.LIST_NODE', 'LONMAX', nbno)
     end if
 ! --- RECUPERATION DU NOM DU MAILLAGE :
-    call jeveuo(modele//'.MODELE    .LGRF', 'L', vk8=lgrf)
-    noma = lgrf(1)
+    call dismoi('NOM_MAILLA', modele, 'MODELE', repk=noma)
 ! --- RECUPERATION DES MAILLES CONTENANT LE NOEUD
     call jeveuo(noma//'.CONNEX', 'L', vi=connex)
     call jeveuo(jexatr(noma//'.CONNEX', 'LONCUM'), 'L', jconx2)

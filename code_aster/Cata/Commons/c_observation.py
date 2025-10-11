@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -24,10 +24,11 @@ from ..Language.Syntax import *
 
 
 def C_OBSERVATION(phys):
-    assert phys in ("MECANIQUE", "THERMIQUE", "DYNAVIBRA")
+    assert phys in ("MECANIQUE", "THERMIQUE", "DYNAVIBRA", "SECHAGE")
     _meca = phys == "MECANIQUE"
     _ther = phys == "THERMIQUE"
     _dyna = phys == "DYNAVIBRA"
+    _sech = phys == "SECHAGE"
 
     # Select nodal fields
     _BlocNode = {}
@@ -55,7 +56,6 @@ def C_OBSERVATION(phys):
         into=("MIN", "MAX", "MOY", "MAXI_ABS", "MINI_ABS", "VALE"),
     )
     _Keywords["NOM_CMP"] = SIMP(statut="f", typ="TXM", max=20)
-    _Keywords["NOM_VARI"] = SIMP(statut="f", typ="TXM", max=20)
     _Keywords["EVAL_CMP"] = SIMP(
         statut="f", typ="TXM", max=1, defaut="VALE", into=("VALE", "FORMULE")
     )
@@ -87,48 +87,79 @@ def C_OBSERVATION(phys):
                 "ACCE_ABSOLU",
             ),
         )
+
     if _ther:
         _Keywords["NOM_CHAM"] = SIMP(statut="o", typ="TXM", max=1, into=("TEMP",))
 
-    mcfact = FACT(
-        statut="f",
-        max=99,
-        regles=(UN_PARMI("NOM_CMP", "NOM_VARI"),),
-        b_formule=BLOC(
-            condition="""(equal_to("EVAL_CMP", 'FORMULE'))""",
-            FORMULE=SIMP(statut="o", typ=formule, max=1),
-        ),
-        b_cham_no=BLOC(
-            condition="""is_in("NOM_CHAM", ('DEPL','VITE','ACCE','TEMP','FORC_NODA','CONT_NOEU','DEPL_ABSOLU','VITE_ABSOLU','ACCE_ABSOLU'))""",
-            regles=(UN_PARMI("NOEUD", "GROUP_NO", "GROUP_MA", "MAILLE", "TOUT")),
-            **_BlocNode
-        ),
-        b_cham_elga=BLOC(
-            condition="""is_in("NOM_CHAM", ('SIEF_ELGA','EPSI_ELGA','VARI_ELGA'))""",
-            regles=(UN_PARMI("GROUP_MA", "MAILLE", "TOUT")),
-            EVAL_ELGA=SIMP(
-                statut="f", typ="TXM", max=1, defaut="VALE", into=("MIN", "MAX", "VALE")
+    if _sech:
+        _Keywords["NOM_CHAM"] = SIMP(statut="o", typ="TXM", max=1, into=("SECH",))
+
+    if _meca or _dyna:
+
+        _Keywords["NOM_VARI"] = SIMP(statut="f", typ="TXM", max=20)
+
+        mcfact = FACT(
+            statut="f",
+            max=99,
+            regles=(UN_PARMI("NOM_CMP", "NOM_VARI"),),
+            b_formule=BLOC(
+                condition="""(equal_to("EVAL_CMP", 'FORMULE'))""",
+                FORMULE=SIMP(statut="o", typ=formule, max=1),
             ),
-            b_elga_vale=BLOC(
-                condition="""(equal_to("EVAL_ELGA", 'VALE'))""",
-                POINT=SIMP(statut="o", typ="I", validators=NoRepeat(), max="**"),
-                SOUS_POINT=SIMP(statut="f", typ="I", validators=NoRepeat(), max="**"),
+            b_cham_no=BLOC(
+                condition="""is_in("NOM_CHAM", ('DEPL','VITE','ACCE','FORC_NODA','CONT_NOEU','DEPL_ABSOLU','VITE_ABSOLU','ACCE_ABSOLU'))""",
+                regles=(UN_PARMI("NOEUD", "GROUP_NO", "GROUP_MA", "MAILLE", "TOUT")),
+                **_BlocNode,
             ),
-            **_BlocElem
-        ),
-        b_cham_elem=BLOC(
-            condition="""(equal_to("NOM_CHAM", 'CONT_ELEM'))""",
-            regles=(UN_PARMI("GROUP_MA", "MAILLE", "TOUT")),
-            **_BlocElem
-        ),
-        b_prec_rela=BLOC(
-            condition="""(equal_to("CRITERE", 'RELATIF'))""",
-            PRECISION=SIMP(statut="f", typ="R", defaut=1.0e-6),
-        ),
-        b_prec_abso=BLOC(
-            condition="""(equal_to("CRITERE", 'ABSOLU'))""", PRECISION=SIMP(statut="o", typ="R")
-        ),
-        **_Keywords
-    )
+            b_cham_elga=BLOC(
+                condition="""is_in("NOM_CHAM", ('SIEF_ELGA','EPSI_ELGA','VARI_ELGA'))""",
+                regles=(UN_PARMI("GROUP_MA", "MAILLE", "TOUT")),
+                EVAL_ELGA=SIMP(
+                    statut="f", typ="TXM", max=1, defaut="VALE", into=("MIN", "MAX", "VALE")
+                ),
+                b_elga_vale=BLOC(
+                    condition="""(equal_to("EVAL_ELGA", 'VALE'))""",
+                    POINT=SIMP(statut="o", typ="I", validators=NoRepeat(), max="**"),
+                    SOUS_POINT=SIMP(statut="f", typ="I", validators=NoRepeat(), max="**"),
+                ),
+                **_BlocElem,
+            ),
+            b_cham_elem=BLOC(
+                condition="""(equal_to("NOM_CHAM", 'CONT_ELEM'))""",
+                regles=(UN_PARMI("GROUP_MA", "MAILLE", "TOUT")),
+                **_BlocElem,
+            ),
+            b_prec_rela=BLOC(
+                condition="""(equal_to("CRITERE", 'RELATIF'))""",
+                PRECISION=SIMP(statut="f", typ="R", defaut=1.0e-6),
+            ),
+            b_prec_abso=BLOC(
+                condition="""(equal_to("CRITERE", 'ABSOLU'))""", PRECISION=SIMP(statut="o", typ="R")
+            ),
+            **_Keywords,
+        )
+
+    elif _ther or _sech:
+        mcfact = FACT(
+            statut="f",
+            max=99,
+            regles=(
+                UN_PARMI("NOM_CMP", "NOM_VARI"),
+                UN_PARMI("NOEUD", "GROUP_NO", "GROUP_MA", "MAILLE", "TOUT"),
+            ),
+            b_formule=BLOC(
+                condition="""(equal_to("EVAL_CMP", 'FORMULE'))""",
+                FORMULE=SIMP(statut="o", typ=formule, max=1),
+            ),
+            b_prec_rela=BLOC(
+                condition="""(equal_to("CRITERE", 'RELATIF'))""",
+                PRECISION=SIMP(statut="f", typ="R", defaut=1.0e-6),
+            ),
+            b_prec_abso=BLOC(
+                condition="""(equal_to("CRITERE", 'ABSOLU'))""", PRECISION=SIMP(statut="o", typ="R")
+            ),
+            **_Keywords,
+            **_BlocNode,
+        )
 
     return mcfact

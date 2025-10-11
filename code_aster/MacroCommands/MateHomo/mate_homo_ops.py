@@ -20,13 +20,15 @@
 """
 Calcul de proprietés homo
 """
+
 from ...Messages import ASSERT
 
 from .mate_homo_utilities import setup_calcul
-from .mate_homo_mesh import prepare_mesh_syme
+from .mate_homo_mesh import prepare_mesh_syme, check_meshdim, check_meshpara
 from .mate_homo_massif import calc_tabpara_massif, calc_corr_massif_syme
 from .mate_homo_plaque import calc_tabpara_plaque, calc_corr_plaque_syme
-from . import check_mesh
+from .mate_homo_plaque_ct import calc_corr_plaque_ct
+from .syme_utilities import SymmetryManager
 
 
 def mate_homo_ops(self, **kwargs):
@@ -34,12 +36,10 @@ def mate_homo_ops(self, **kwargs):
     Main function for homogeneus parameter computation.
 
     """
-    meshin = check_mesh(kwargs.get("MAILLAGE"))
+    meshin = check_meshpara(kwargs.get("MAILLAGE"))
     ls_affe = kwargs.get("AFFE")
     ls_varc = kwargs.get("VARC")
     type_homo = kwargs.get("TYPE_HOMO")
-
-    dir_plaque = kwargs.get("VECT_NORM")
 
     affe_all = any("TOUT" in i for i in ls_affe)
     affe_groups = list(
@@ -49,10 +49,20 @@ def mate_homo_ops(self, **kwargs):
     varc_name = ls_varc["NOM_VARC"]
     varc_values = sorted(ls_varc["VALE"])
 
-    mesh, group_tout, volume_ver, dirthick = prepare_mesh_syme(meshin, affe_groups, affe_all)
+    mm_user = meshin.createMedCouplingMesh()
+    assert check_meshdim(mm_user[0])
+
+    if "PLAQUE" in type_homo:
+        point = [0, 0, 0]
+        pmanager_z = SymmetryManager(point, "Z")
+        mm_homo, _, _ = pmanager_z.build_symmetry_mesh_simple(mm_user)
+    else:
+        mm_homo = mm_user
+
+    mesh, group_tout, volume_ver, ep_ver = prepare_mesh_syme(mm_homo, affe_groups, affe_all)
 
     DEPLMATE, MODME, CHMATME, MODTH, CHMATTH, L_INST, alpha_calc = setup_calcul(
-        type_homo, mesh, (group_tout,), ls_affe, varc_name, varc_values
+        mesh, (group_tout,), ls_affe, varc_name, varc_values
     )
 
     if type_homo in ("MASSIF",):
@@ -67,12 +77,12 @@ def mate_homo_ops(self, **kwargs):
             varc_name,
             varc_values,
             **elas_fields,
-            **ther_fields
+            **ther_fields,
         )
 
     elif type_homo in ("PLAQUE",):
         elas_fields, ther_fields = calc_corr_plaque_syme(
-            MODME, CHMATME, MODTH, CHMATTH, L_INST, (group_tout,), dir_plaque
+            MODME, CHMATME, MODTH, CHMATTH, L_INST, alpha_calc, (group_tout,)
         )
 
         C_hom, D_hom, G_hom, tabpara = calc_tabpara_plaque(
@@ -81,10 +91,25 @@ def mate_homo_ops(self, **kwargs):
             (group_tout,),
             varc_name,
             varc_values,
-            dir_plaque,
-            dirthick,
+            ep_ver,
             **elas_fields,
-            **ther_fields
+            **ther_fields,
+        )
+
+    elif type_homo in ("PLAQUE_CT",):
+        elas_fields, ther_fields = calc_corr_plaque_ct(
+            MODME, CHMATME, MODTH, CHMATTH, L_INST, alpha_calc, (group_tout,)
+        )
+
+        C_hom, D_hom, G_hom, tabpara = calc_tabpara_plaque(
+            DEPLMATE,
+            volume_ver,
+            (group_tout,),
+            varc_name,
+            varc_values,
+            ep_ver,
+            **elas_fields,
+            **ther_fields,
         )
     else:
         ASSERT(False)

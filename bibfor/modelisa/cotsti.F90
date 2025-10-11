@@ -31,7 +31,8 @@ function cotsti(typsup)
         typinf = 'LISTR8'
     else if (typsup .eq. 'LISTIS_SDASTER') then
         typinf = 'LISTIS'
-    else if (typsup .eq. 'MAILLAGE_SDASTER' .or. typsup .eq. 'MAILLAGE') then
+    else if (typsup .eq. 'MAILLAGE_SDASTER' .or. typsup .eq. 'MAILLAGE'  &
+       &.or. typsup .eq. 'MAILLAGE_P') then
         typinf = 'MAILLAGE'
     else if (typsup .eq. 'MODELE_SDASTER') then
         typinf = 'MODELE'

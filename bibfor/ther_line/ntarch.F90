@@ -17,7 +17,7 @@
 ! --------------------------------------------------------------------
 !
 subroutine ntarch(numins, model, materField, caraElem, para, &
-                  sddisc, ds_inout, force, ds_algorom_)
+                  sddisc, ds_inout, force, ds_algorom_, l_dry_)
 !
     use NonLin_Datastructure_type
     use Rom_Datastructure_type
@@ -43,10 +43,12 @@ subroutine ntarch(numins, model, materField, caraElem, para, &
     type(NL_DS_InOut), intent(in) :: ds_inout
     aster_logical, intent(inout) :: force
     type(ROM_DS_AlgoPara), optional, intent(in) :: ds_algorom_
+    aster_logical, optional, intent(in) :: l_dry_
 !
 ! --------------------------------------------------------------------------------------------------
 !
 ! THER_*  - Algorithm
+! SECH_*  - Algorithm
 !
 ! Storing results
 !
@@ -63,11 +65,15 @@ subroutine ntarch(numins, model, materField, caraElem, para, &
     character(len=19) :: k19bid
     character(len=8) :: result
     character(len=24) :: listLoadResu
+    aster_logical :: l_dry
 !
 ! --------------------------------------------------------------------------------------------------
 !
     result = ds_inout%result
     listLoadResu = ds_inout%listLoadResu
+
+    l_dry = ASTER_FALSE
+    if (present(l_dry_)) l_dry = l_dry_
 !
 ! - Print timer
 !
@@ -98,8 +104,13 @@ subroutine ntarch(numins, model, materField, caraElem, para, &
 !
 ! ----- Increased result datastructure if necessary
 !
-        call rsexch(' ', result, 'TEMP', nume_store, k19bid, &
-                    iret)
+        if (l_dry) then
+            call rsexch(' ', result, 'SECH', nume_store, k19bid, &
+                        iret)
+        else
+            call rsexch(' ', result, 'TEMP', nume_store, k19bid, &
+                        iret)
+        end if
         if (iret .eq. 110) then
             call rsagsd(result, 0)
         end if

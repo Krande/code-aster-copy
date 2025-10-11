@@ -62,6 +62,7 @@ contains
         aster_logical, intent(out) :: hasFE
 ! ----- Local
         integer(kind=8) :: iret
+        character(len=19) :: ligrel
         character(len=8) :: model, mesh
 !   ------------------------------------------------------------------------------------------------
 !
@@ -71,10 +72,11 @@ contains
         hasFE = ASTER_FALSE
         call dismoi('NOM_MAILLA', model, 'MODELE', repk=mesh)
         call dismoi('NB_MA_MAILLA', mesh, 'MAILLAGE', repi=nbCell)
-        call jeexin(model//'.MAILLE', iret)
+        call dismoi('NOM_LIGREL', model, 'MODELE', repk=ligrel)
+        call jeexin(ligrel//'.TYFE', iret)
         if (iret .ne. 0) then
             hasFE = ASTER_TRUE
-            call jeveuo(model//'.MAILLE', 'L', vi=modelCells)
+            call jeveuo(ligrel//'.TYFE', 'L', vi=modelCells)
         end if
 !
 !   ------------------------------------------------------------------------------------------------
@@ -266,6 +268,7 @@ contains
         integer(kind=8), pointer :: listCellAffe(:)
 ! ----- Locals
         character(len=8) :: model, mesh
+        character(len=19) :: ligrel
         integer(kind=8) :: nbCellInMesh, nbCell, iCellAffe, iCell
         integer(kind=8), pointer :: modelMaille(:) => null()
         integer(kind=8), pointer :: work(:) => null()
@@ -279,8 +282,9 @@ contains
         call dismoi('NB_MA_MAILLA', mesh, 'MAILLAGE', repi=nbCellInMesh)
 
 ! ----- Access to model
-        call jeveuo(model(1:8)//'.MAILLE', 'L', vi=modelMaille)
-        call jelira(model(1:8)//'.MAILLE', 'LONMAX', nbCell)
+        call dismoi('NOM_LIGREL', model, 'MODELE', repk=ligrel)
+        call jeveuo(ligrel//'.TYFE', 'L', vi=modelMaille)
+        call jelira(ligrel//'.TYFE', 'LONMAX', nbCell)
         ASSERT(nbCellInMesh .eq. nbCell)
 
 ! ----- Create list of affected cells

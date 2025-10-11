@@ -18,8 +18,8 @@
 
 subroutine axdipo(noma, caelem, modele, iaxe)
     implicit none
-#include "asterf_types.h"
 #include "jeveux.h"
+#include "asterf_types.h"
 #include "asterc/indik8.h"
 #include "asterc/r8prem.h"
 #include "asterfort/dismoi.h"
@@ -94,10 +94,10 @@ subroutine axdipo(noma, caelem, modele, iaxe)
 !
 !     RECUPERATION DE LA MODELISATION DES MAILLES
 !     VERIFICATION : PAS DE MAILLES TARDIVES
-    modmai = modele//'.MAILLE'
+    call dismoi('NOM_LIGREL', modele, 'MODELE', repk=ligrmo)
+    modmai = ligrmo//'.TYFE'
     call jeveuo(modmai, 'L', jdme)
 !
-    ligrmo = modele//'.MODELE    '
     modnem = ligrmo//'.NEMA'
     nbmtrd = 0
     call jeexin(modnem, ixnw)

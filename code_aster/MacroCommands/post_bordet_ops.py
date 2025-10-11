@@ -102,7 +102,7 @@ def post_bordet_ops(
             n = n + 1
         if not trouv:
             UTMESS("F", "RUPTURE1_53", valr=INST, valk="utilise pour le calcul de Bordet")
-    if entree_instant == True:
+    if entree_instant:
         index_ordre = list_inst.index(instant)
         nume_ordre = list_ordre[index_ordre]
     elif NUME_ORDRE:

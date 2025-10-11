@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -17,17 +17,14 @@
 # along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 # --------------------------------------------------------------------
 
-import copy
 import glob
 import os
-import sys
 
 import numpy as NP
 
 from ...Messages import UTMESS
 
-from ...Cata.Syntax import _F
-from ...CodeCommands import DEFI_FICHIER, IMPR_FONCTION, INFO_EXEC_ASTER
+from ...CodeCommands import IMPR_FONCTION, INFO_EXEC_ASTER
 
 try:
     import Gnuplot
@@ -65,7 +62,7 @@ def transforme_list_Num(parametres, res_exp):
 # ------------------------------------------------------------------------
 def Random_Tmp_Name(prefix=None):
     crit = False
-    while crit == False:
+    while not crit:
         nombre = int(random.random() * 10000000)
         if prefix:
             fic = prefix + str(nombre)

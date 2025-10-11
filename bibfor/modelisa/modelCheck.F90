@@ -24,12 +24,12 @@ subroutine modelCheck(model, lCheckJacobian, lCheckFSINorms, lCheckPlaneity)
 #include "asterfort/calcul.h"
 #include "asterfort/dismoi.h"
 #include "asterfort/jeveuo.h"
-#include "asterfort/modexi.h"
-#include "asterfort/utmess.h"
-#include "asterfort/taxis.h"
-#include "asterfort/modelCheckFSINormals.h"
 #include "asterfort/modelCheckFluidFormulation.h"
+#include "asterfort/modelCheckFSINormals.h"
 #include "asterfort/modelCheckPlaneity.h"
+#include "asterfort/modexi.h"
+#include "asterfort/taxis.h"
+#include "asterfort/utmess.h"
 !
     character(len=8), intent(in) :: model
     aster_logical, intent(in) :: lCheckJacobian, lCheckFSINorms, lCheckPlaneity
@@ -53,14 +53,14 @@ subroutine modelCheck(model, lCheckJacobian, lCheckFSINorms, lCheckPlaneity)
     character(len=16) :: repk
     integer(kind=8) :: i_disc_2d, i_disc_3d
     character(len=8) :: mesh
-    aster_logical :: lAxis, lHHO
+    aster_logical :: lAxis
     integer(kind=8) :: nbCell
     character(len=19) :: modelLigrel
     integer(kind=8), pointer :: modelCells(:) => null()
 !
 ! --------------------------------------------------------------------------------------------------
 !
-    modelLigrel = model//'.MODELE'
+    call dismoi('NOM_LIGREL', model, 'MODELE', repk=modelLigrel)
 
 ! - Get mesh support
     call dismoi('NOM_MAILLA', model, 'MODELE', repk=mesh)
@@ -70,17 +70,6 @@ subroutine modelCheck(model, lCheckJacobian, lCheckFSINorms, lCheckPlaneity)
     call dismoi('AXIS', model, 'MODELE', repk=repk)
     lAxis = repk .eq. 'OUI'
     call dismoi('DIM_GEOM', model, 'MODELE', repi=nb_dim_geom)
-    call dismoi('EXI_HHO', modelLigrel, 'LIGREL', repk=repk)
-    lHHO = repk .eq. 'OUI'
-!
-! - HHO should be alone
-!
-    if (lHHO) then
-        call dismoi('EXI_NO_HHO', modelLigrel, 'LIGREL', repk=repk)
-        if (repk .eq. 'OUI') then
-            call utmess('F', 'MODELE1_10')
-        end if
-    end if
 !
 ! - Check topoaster_logical dimensions
 !
@@ -122,7 +111,7 @@ subroutine modelCheck(model, lCheckJacobian, lCheckFSINorms, lCheckPlaneity)
 ! - Check if X>0 for axis elements
 !
     if (lAxis) then
-        call jeveuo(model//'.MAILLE', 'L', vi=modelCells)
+        call jeveuo(modelLigrel//'.TYFE', 'L', vi=modelCells)
         call taxis(mesh, modelCells, nbCell)
     end if
 !

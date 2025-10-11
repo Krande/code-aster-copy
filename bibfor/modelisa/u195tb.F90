@@ -38,7 +38,6 @@ subroutine u195tb(chou)
 #include "asterfort/getvtx.h"
 #include "asterfort/jedema.h"
 #include "asterfort/jemarq.h"
-#include "asterfort/jeveuo.h"
 #include "asterfort/tabchs.h"
 #include "asterfort/utmess.h"
     character(len=*) :: chou
@@ -53,7 +52,6 @@ subroutine u195tb(chou)
     character(len=8) :: nomgd, ma, mo
     character(len=16) :: tychlu, option, typchs, typch2
     character(len=19) :: chs, tabin, ligrel
-    character(len=8), pointer :: lgrf(:) => null()
 !
     call jemarq()
 !
@@ -89,8 +87,7 @@ subroutine u195tb(chou)
         if (n1 .eq. 0 .or. n2 .eq. 0) then
             call utmess('F', 'MODELISA7_62')
         end if
-        call jeveuo(mo//'.MODELE    .LGRF', 'L', vk8=lgrf)
-        ma = lgrf(1)
+        call dismoi('NOM_MAILLA', mo, 'MODELE', repk=ma)
     end if
 !
 !     CREATION DU CHAMP SIMPLE

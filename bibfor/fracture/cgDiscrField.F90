@@ -25,11 +25,13 @@ subroutine cgDiscrField(cgField, cgTheta, cgStudy, cgStat, chsdeg, chslag, v_abs
 !
     implicit none
 !
+#include "jeveux.h"
 #include "asterf_types.h"
 #include "asterfort/assert.h"
 #include "asterfort/calcG_type.h"
 #include "asterfort/cescel.h"
 #include "asterfort/cesexi.h"
+#include "asterfort/dismoi.h"
 #include "asterfort/jedema.h"
 #include "asterfort/jelira.h"
 #include "asterfort/jemarq.h"
@@ -38,7 +40,6 @@ subroutine cgDiscrField(cgField, cgTheta, cgStudy, cgStat, chsdeg, chslag, v_abs
 #include "asterfort/jexnum.h"
 #include "asterfort/nbelem.h"
 #include "asterfort/typele.h"
-#include "jeveux.h"
 !
     type(CalcG_field), intent(in) :: cgField
     type(CalcG_theta), intent(in) :: cgTheta
@@ -75,7 +76,7 @@ subroutine cgDiscrField(cgField, cgTheta, cgStudy, cgStat, chsdeg, chslag, v_abs
 !   Champ constant pour construire theta_i dans le te
     if (cgField%ndim .eq. 3) then
 !
-        ligrmo = cgStudy%model//'.MODELE'
+        call dismoi('NOM_LIGREL', cgStudy%model, 'MODELE', repk=ligrmo)
         call jelira(ligrmo//'.LIEL', 'NMAXOC', nbgrel)
 !
         do igr = 1, nbgrel

@@ -53,6 +53,9 @@ subroutine carcha(fieldType, fieldQuantity, fieldSupport, option, param)
     if (fieldType .eq. 'TEMP') then
         fieldQuantity = 'TEMP_R  '
         fieldSupport = 'NOEU'
+    elseif (fieldType .eq. 'SECH') then
+        fieldQuantity = 'TEMP_R  '
+        fieldSupport = 'NOEU'
     else if (fieldType .eq. 'PRES') then
         fieldQuantity = 'PRES_R  '
         fieldSupport = 'ELEM'

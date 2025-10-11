@@ -353,6 +353,15 @@ Subclasses of :py:class:`~code_aster.Objects.DataStructure`
 
 
 ********************************************************************************
+:py:class:`~code_aster.Objects.DryingResult` object
+********************************************************************************
+
+.. autoclass:: code_aster.Objects.DryingResult
+   :show-inheritance:
+   :members:
+
+
+********************************************************************************
 :py:class:`~code_aster.Objects.DynamicMacroElement` object
 ********************************************************************************
 

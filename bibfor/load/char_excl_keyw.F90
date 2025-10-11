@@ -96,6 +96,8 @@ subroutine char_excl_keyw(keywordfact, keywordexcl, n_keyexcl, n_suffix, list_su
         n_keyexcl = n_keyexcl+1
     else if (keywordfact .eq. 'TEMP_IMPO') then
 ! ----- Nothing else components
+    else if (keywordfact .eq. 'SECH_IMPO') then
+! ----- Nothing else components
     else if (keywordfact .eq. 'PRES_IMPO') then
 ! ----- Nothing else components
     else if (keywordfact .eq. 'DDL_POUTRE') then
@@ -157,6 +159,8 @@ subroutine char_excl_keyw(keywordfact, keywordexcl, n_keyexcl, n_suffix, list_su
             n_keyexcl = n_keyexcl+1
             p_keywordexcl(n_keyexcl) = 'BLOCAGE'
         else if (keywordfact .eq. 'TEMP_IMPO') then
+! ----- Nothing else components
+        else if (keywordfact .eq. 'SECH_IMPO') then
 ! ----- Nothing else components
         else if (keywordfact .eq. 'PRES_IMPO') then
 ! ----- Nothing else components

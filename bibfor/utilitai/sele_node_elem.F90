@@ -21,16 +21,16 @@ subroutine sele_node_elem(modelz, nb_elem_type, list_elem_type, list_node, nb_no
 !
     implicit none
 !
+#include "asterfort/as_allocate.h"
+#include "asterfort/as_deallocate.h"
+#include "asterfort/dismoi.h"
+#include "asterfort/jelira.h"
+#include "asterfort/jenuno.h"
+#include "asterfort/jeveuo.h"
+#include "asterfort/jexnum.h"
 #include "asterfort/nbelem.h"
 #include "asterfort/nbgrel.h"
 #include "asterfort/typele.h"
-#include "asterfort/as_allocate.h"
-#include "asterfort/as_deallocate.h"
-#include "asterfort/jenuno.h"
-#include "asterfort/jeveuo.h"
-#include "asterfort/jelira.h"
-#include "asterfort/jexnum.h"
-#include "asterfort/dismoi.h"
 !
 !
     character(len=*), intent(in) :: modelz
@@ -70,7 +70,7 @@ subroutine sele_node_elem(modelz, nb_elem_type, list_elem_type, list_node, nb_no
 ! --------------------------------------------------------------------------------------------------
 !
     nb_node_found = 0
-    ligrmo = modelz(1:8)//'.MODELE'
+    call dismoi('NOM_LIGREL', modelz, 'MODELE', repk=ligrmo)
     call dismoi('NOM_MAILLA', modelz, 'MODELE', repk=mesh)
     call dismoi('NB_NO_MAILLA', mesh, 'MAILLAGE', repi=nb_node_mesh)
 !

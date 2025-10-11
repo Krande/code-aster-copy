@@ -22,7 +22,6 @@ path_repo_save = (
     "/home/i48378/Documents/workspace/sandbox/sandbox-contact-mec-pairing-tests/cont101c"
 )
 import os.path as osp
-import numpy as np
 
 # case - a (Slave side = CONT_BAS)
 path_pairs_a = osp.join(path_repo_save, "case_a/listOfPairs.npy")
@@ -37,9 +36,7 @@ save_data = True
 # -- Core of the test case
 from code_aster.Commands import *
 from code_aster import CA
-from code_aster.MacroCommands.defi_cont import DEFI_CONT
-from libaster import ContactPairing, ContactComputation, PairingMethod
-import numpy
+from libaster import PairingMethod
 
 
 DEBUT(

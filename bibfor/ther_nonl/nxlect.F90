@@ -20,7 +20,7 @@ subroutine nxlect(result, model, &
                   ther_crit_i, ther_crit_r, &
                   ds_inout, ds_algopara, &
                   ds_algorom, ds_print, &
-                  result_dry, compor, &
+                  compor, &
                   mesh, l_dry)
 !
     use NonLin_Datastructure_type
@@ -29,7 +29,6 @@ subroutine nxlect(result, model, &
     implicit none
 !
 #include "asterf_types.h"
-#include "asterfort/ntdcom.h"
 #include "asterfort/nxdocc.h"
 #include "asterfort/nxdocn.h"
 #include "asterfort/nxdomt.h"
@@ -45,10 +44,9 @@ subroutine nxlect(result, model, &
     type(NL_DS_AlgoPara), intent(inout) :: ds_algopara
     type(ROM_DS_AlgoPara), intent(inout) :: ds_algorom
     type(NL_DS_Print), intent(inout) :: ds_print
-    character(len=8), intent(out) :: result_dry
     character(len=24), intent(out) :: compor
     character(len=8), intent(out) :: mesh
-    aster_logical, intent(out) :: l_dry
+    aster_logical, intent(in) :: l_dry
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -66,14 +64,12 @@ subroutine nxlect(result, model, &
 ! IO  ds_algopara      : datastructure for algorithm parameters
 ! IO  ds_algorom       : datastructure for ROM parameters
 ! IO  ds_print         : datastructure for printing parameters
-! Out result_dry       : name of datastructure for results (drying)
 ! Out compor           : name of <CARTE> COMPOR
 ! Out mesh             : name of mesh
-! Out l_dry            : .true. if drying (concrete)
+! In  l_dry            : .true. if drying
 !
 ! --------------------------------------------------------------------------------------------------
 !
-    result_dry = ' '
     compor = ' '
     mesh = ' '
     call dismoi('NOM_MAILLA', model, 'MODELE', repk=mesh)
@@ -87,17 +83,17 @@ subroutine nxlect(result, model, &
 !
     call nxdomt(ds_algopara, ds_algorom)
 !
-! - Read parameters for drying
-!
-    call ntdcom(result_dry, l_dry)
-!
 ! - Read convergence criteria
 !
     call nxdocn(ther_crit_i, ther_crit_r)
 !
 ! - Read parameters for input/output management
 !
-    call nonlinDSInOutRead('THER', result, ds_inout)
+    if (l_dry) then
+        call nonlinDSInOutRead('SECH', result, ds_inout)
+    else
+        call nonlinDSInOutRead('THER', result, ds_inout)
+    end if
 !
 ! - Read parameters for printing
 !

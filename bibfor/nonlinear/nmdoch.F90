@@ -26,6 +26,8 @@ subroutine nmdoch(listLoadPrep, listLoadZ, jvBase)
 #include "asterf_types.h"
 #include "asterfort/as_allocate.h"
 #include "asterfort/as_deallocate.h"
+#include "asterfort/dismoi.h"
+#include "asterfort/isParallelMesh.h"
 #include "asterfort/jedema.h"
 #include "asterfort/jemarq.h"
 #include "asterfort/load_unde_diri.h"
@@ -56,10 +58,10 @@ subroutine nmdoch(listLoadPrep, listLoadZ, jvBase)
     character(len=24) :: listLoad
     character(len=8), parameter :: funcCste = '&&NMDOME'
     character(len=16) :: loadKeyword, loadCommand, loadApply
-    character(len=8) :: loadName, loadFunc
+    character(len=8) :: loadName, loadFunc, meshName
     character(len=13) :: loadPreObject
     aster_logical :: loadIsFunc, hasMultFunc
-    aster_logical :: hasDiriUndead, staticOperator
+    aster_logical :: hasDiriUndead, staticOperator, lParallelMesh
     character(len=8), pointer :: loadDble(:) => null()
 !
 ! --------------------------------------------------------------------------------------------------
@@ -98,6 +100,7 @@ subroutine nmdoch(listLoadPrep, listLoadZ, jvBase)
         call getLoadName(loadKeyword, iKeyword, &
                          iLoadList, nbLoadList, loadDble, &
                          loadName)
+        call dismoi('NOM_MAILLA', loadName, 'CHARGE', repk=meshName)
 
 ! ----- Get function applied to load
         call getLoadFunc(listLoadPrep, &
@@ -132,6 +135,12 @@ subroutine nmdoch(listLoadPrep, listLoadZ, jvBase)
 
 ! - Some checks about continuation method
     if (listLoadPrep%lHasPilo) then
+        if (nbLoadList .ne. 0) then
+            lParallelMesh = isParallelMesh(meshName)
+            if (lParallelMesh) then
+                call utmess('F', 'CHARGES_1')
+            end if
+        end if
         call getNbLoadType(listLoad, "PILO", nbLoadPilo)
         if (nbLoadPilo .eq. 0) then
             call utmess('F', 'CHARGES9_19')

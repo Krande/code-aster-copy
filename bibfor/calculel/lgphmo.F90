@@ -20,6 +20,8 @@ subroutine lgphmo(ma, ligrel, pheno, modeli)
     implicit none
 #include "jeveux.h"
 #include "asterfort/adalig.h"
+#include "asterfort/as_allocate.h"
+#include "asterfort/as_deallocate.h"
 #include "asterfort/assert.h"
 #include "asterfort/dismoi.h"
 #include "asterfort/jecrec.h"
@@ -33,8 +35,6 @@ subroutine lgphmo(ma, ligrel, pheno, modeli)
 #include "asterfort/jexnom.h"
 #include "asterfort/jexnum.h"
 #include "asterfort/wkvect.h"
-#include "asterfort/as_deallocate.h"
-#include "asterfort/as_allocate.h"
 !
     character(len=8) :: ma
     character(len=*) :: ligrel, pheno, modeli
@@ -123,7 +123,7 @@ subroutine lgphmo(ma, ligrel, pheno, modeli)
 !
 !     -- OBJET .LGRF :
 !     ----------------
-    call wkvect(ligr19//'.LGRF', 'V V K8', 3, jlgrf)
+    call wkvect(ligr19//'.LGRF', 'V V K8', 4, jlgrf)
     zk8(jlgrf-1+1) = ma
 !
 !

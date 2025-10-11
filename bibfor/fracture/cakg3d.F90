@@ -26,15 +26,14 @@ subroutine cakg3d(option, result, modele, depla, thetai, &
 
     implicit none
 !
-#include "asterf_types.h"
 #include "jeveux.h"
-#include "asterfort/chpver.h"
-#include "asterfort/chpchd.h"
-#include "asterfort/alchml.h"
-#include "asterfort/xelgano.h"
+#include "asterf_types.h"
 #include "asterc/getfac.h"
+#include "asterfort/alchml.h"
 #include "asterfort/assert.h"
 #include "asterfort/calcul.h"
+#include "asterfort/chpchd.h"
+#include "asterfort/chpver.h"
 #include "asterfort/codent.h"
 #include "asterfort/detrsd.h"
 #include "asterfort/dismoi.h"
@@ -62,6 +61,7 @@ subroutine cakg3d(option, result, modele, depla, thetai, &
 #include "asterfort/vrcins.h"
 #include "asterfort/vrcref.h"
 #include "asterfort/wkvect.h"
+#include "asterfort/xelgano.h"
 !
     integer(kind=8) :: iord, nbprup, ndimte, coor, iadnoe
     real(kind=8) :: puls
@@ -160,7 +160,7 @@ subroutine cakg3d(option, result, modele, depla, thetai, &
     call megeom(modele, chgeom)
 
 !   Recuperation du LIGREL
-    ligrmo = modele//'.MODELE'
+    call dismoi('NOM_LIGREL', modele, 'MODELE', repk=ligrmo)
 !
     chvarc = '&&CAKG3D.VARC'
     chvref = '&&CAKG3D.VARC.REF'

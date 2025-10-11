@@ -23,7 +23,7 @@ CA.init("--test", "--continue")
 
 test = CA.TestCase()
 
-test.assertIsNotNone(ch0.getModel(), msg="chs has a model")
+test.assertIsNotNone(ch0.getDescription(), msg="chs has a description")
 
 # same as done for Y to check the pickling of:
 # - chs (SimpleFieldOnCellsReal),

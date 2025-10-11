@@ -15,12 +15,10 @@
 ! You should have received a copy of the GNU General Public License
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
-! person_in_charge: mickael.abbas at edf.fr
 !
 subroutine nmevim(ds_print, sddisc, sderro, loop_name)
 !
     use NonLin_Datastructure_type
-!
     implicit none
 !
 #include "asterf_types.h"
@@ -60,7 +58,7 @@ subroutine nmevim(ds_print, sddisc, sderro, loop_name)
 ! --------------------------------------------------------------------------------------------------
 !
     aster_logical :: lacti, cvbouc, lerrei, l_sep_line, lldcbo
-    integer(kind=8) :: i_fail_acti
+    integer(kind=8) :: iFailActi
     integer(kind=8) :: iEvent
     character(len=24) :: eventEACTJv, eventENIVJv, eventEMSGJv
     integer(kind=8), pointer :: eventEACT(:) => null()
@@ -75,9 +73,8 @@ subroutine nmevim(ds_print, sddisc, sderro, loop_name)
     call nmlecv(sderro, loop_name, cvbouc)
     call nmltev(sderro, 'ERRI', loop_name, lerrei)
     call nmerge(sderro, 'INTE_BORN', lldcbo)
-!
+
 ! - Separator line to print ?
-!
     l_sep_line = (.not. cvbouc .and. .not. lerrei .and. .not. lldcbo)
 
 ! - Access to datastructure
@@ -142,17 +139,12 @@ subroutine nmevim(ds_print, sddisc, sderro, loop_name)
     end do
 
 ! - Print event messages - User
-    call nmacto(sddisc, i_fail_acti)
-    lacti = i_fail_acti .gt. 0
+    call nmacto(sddisc, iFailActi)
+    lacti = iFailActi .gt. 0
     if (lacti) then
 ! ----- Get event type
-        call getFailEvent(sddisc, i_fail_acti, eventType)
-        if (eventType .eq. FAIL_EVT_COLLISION) then
-            if (l_sep_line) then
-                call nmimpx(ds_print)
-            end if
-            call utmess('I', 'MECANONLINE10_21')
-        else if (eventType .eq. FAIL_EVT_INTERPENE) then
+        call getFailEvent(sddisc, iFailActi, eventType)
+        if (eventType .eq. FAIL_EVT_INTERPENE) then
             if (l_sep_line) then
                 call nmimpx(ds_print)
             end if

@@ -80,7 +80,9 @@ def configure(self):
     self.add_linkflags("-Wl,--no-warn-execstack")
 
     self.add_linkflags("-Wl,--no-as-needed", dest="LINKFLAGS_LIBASTER")
-    self.add_linkflags("-flto=auto", dest="LINKFLAGS")
+    self.add_linkflags("-Wl,-flto=auto", dest="LINKFLAGS")
+    # seems incompatible with subroutines like zerofr that takes function as argument (test ssnv168f)
+    # self.add_linkflags("-Wl,-z,noexecstack", dest="LINKFLAGS")
 
     incpath = osp.join(self.path.get_src().abspath(), "include")
     self.env.append_value("INCLUDES_BIBC", incpath)
@@ -161,6 +163,7 @@ def build_libbibc(self, env):
         name="asterbibc",
         source=get_srcs("**/*.c", excl=[PYMAIN]),
         target="bibc",
+        rpath="$ORIGIN",
         defines="",
         use=use,
         env=env.derive(),
@@ -183,6 +186,7 @@ def build_libaster(self, env):
         features="cxx cxxshlib",
         name="asterlib",
         target="aster",
+        rpath="$ORIGIN",
         source=PYMAIN,
         defines="_MAIN_=_unused_main_",  #'ASTER_WITHOUT_PYMOD',
         env=env.derive(),
@@ -206,7 +210,7 @@ def check_c_compiler_flags(self):
     if self.env.CXX_NAME != 'msvc':
         self.check_c_compiler_options("-fPIC")
     # needs more tests (size and build time)
-    # self.check_c_compiler_options("-flto")
+    # self.check_c_compiler_options("-fno-lto")
     self.start_msg("C compiler flags")
     self.end_msg(self.env["CFLAGS"])
 

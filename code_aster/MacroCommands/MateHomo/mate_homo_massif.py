@@ -35,6 +35,7 @@ from ...CodeCommands import (
 )
 from ...Messages import ASSERT
 from ...Objects import ThermalResultDict, ElasticResultDict
+from ...Utilities import logger
 
 from . import mate_homo_utilities as utilities
 
@@ -476,7 +477,6 @@ def calc_tabpara_massif(DEPLMATE, volume_ver, ls_group_ma, varc_name, ls_varc, *
     ls_K_hom = {}
 
     for i, (inst_meca, inst_ther) in enumerate(zip(insts_meca, insts_ther)):
-
         ASSERT(inst_meca == inst_ther)
 
         work_dila_11 = utilities.cross_work(CORR_MECA11, CORR_DILA, inst_meca, ls_group_ma)
@@ -548,9 +548,10 @@ def calc_tabpara_massif(DEPLMATE, volume_ver, ls_group_ma, varc_name, ls_varc, *
 
         E_L, E_T, E_N, G_LT, G_LN, G_TN = A_inv.diagonal() ** -1
 
-        Bdil_11 = (1 / volume_ver) * (loimel["ALPHA3K"][i] - work_dila_11)
-        Bdil_22 = (1 / volume_ver) * (loimel["ALPHA3K"][i] - work_dila_22)
-        Bdil_33 = (1 / volume_ver) * (loimel["ALPHA3K"][i] - work_dila_33)
+        alpha_3k_meca = loimel["ALPHA3K"][i]
+        Bdil_11 = (1 / volume_ver) * (alpha_3k_meca - work_dila_11)
+        Bdil_22 = (1 / volume_ver) * (alpha_3k_meca - work_dila_22)
+        Bdil_33 = (1 / volume_ver) * (alpha_3k_meca - work_dila_33)
 
         ALPHA_L, ALPHA_T, ALPHA_N = np.dot(A_inv, (Bdil_11, Bdil_22, Bdil_33, 0, 0, 0))[:3]
 
@@ -564,6 +565,32 @@ def calc_tabpara_massif(DEPLMATE, volume_ver, ls_group_ma, varc_name, ls_varc, *
 
         RHO = (1 / volume_ver) * loimel["RHO"][i]
         RHO_CP = (1 / volume_ver) * loimel["RHO_CP"][i]
+
+        logger.debug(f"<HOMO-WORK><V {inst_ther}>: THER_11 {work_ther_11}")
+        logger.debug(f"<HOMO-WORK><V {inst_ther}>: THER_22 {work_ther_22}")
+        logger.debug(f"<HOMO-WORK><V {inst_ther}>: THER_22 {work_ther_33}")
+
+        logger.debug(f"<HOMO-WORK><V {inst_meca}>: DILA_11 {work_dila_11}")
+        logger.debug(f"<HOMO-WORK><V {inst_meca}>: DILA_22 {work_dila_22}")
+        logger.debug(f"<HOMO-WORK><V {inst_meca}>: DILA_22 {work_dila_33}")
+
+        logger.debug(f"<HOMO-WORK><V {inst_meca}>: MECA_11_11 {work_meca_11_11}")
+        logger.debug(f"<HOMO-WORK><V {inst_meca}>: MECA_22_22 {work_meca_22_22}")
+        logger.debug(f"<HOMO-WORK><V {inst_meca}>: MECA_33_33 {work_meca_33_33}")
+
+        logger.debug(f"<HOMO-WORK><V {inst_meca}>: MECA_11_22 {work_meca_11_22}")
+        logger.debug(f"<HOMO-WORK><V {inst_meca}>: MECA_22_33 {work_meca_22_33}")
+        logger.debug(f"<HOMO-WORK><V {inst_meca}>: MECA_22_33 {work_meca_22_33}")
+
+        logger.debug(f"<HOMO-WORK><V {inst_meca}>: MECA_12_12 {work_meca_12_12}")
+        logger.debug(f"<HOMO-WORK><V {inst_meca}>: MECA_23_23 {work_meca_23_23}")
+        logger.debug(f"<HOMO-WORK><V {inst_meca}>: MECA_31_31 {work_meca_31_31}")
+
+        logger.debug(f"<HOMO-LOIMEL><V {inst_ther}>: LAMBDA THER {lambda_ther}")
+        logger.debug(f"<HOMO-LOIMEL><V {inst_meca}>: LAMBDA LAME {lambda_meca}")
+        logger.debug(f"<HOMO-LOIMEL><V {inst_meca}>: MU LAME {mu_meca}")
+        logger.debug(f"<HOMO-LOIMEL><V {inst_meca}>: ALPHA3K {alpha_3k_meca}")
+        logger.debug(f"<HOMO-VOLUME><V {inst_meca}>: VER {volume_ver}")
 
         dictpara["E_L"].append(E_L)
         dictpara["E_T"].append(E_T)

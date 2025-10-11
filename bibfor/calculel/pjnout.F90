@@ -38,6 +38,7 @@ subroutine pjnout(modele)
 !     ------------------------------------------------------------------
 !
     character(len=8) :: noma
+    character(len=19) :: ligrel
     integer(kind=8) :: nbnoeu, jnout, ima, nbno, j, nbmail
 !     ------------------------------------------------------------------
 !
@@ -52,6 +53,7 @@ subroutine pjnout(modele)
 !
     call jemarq()
 !
+    call dismoi('NOM_LIGREL', modele, 'MODELE', repk=ligrel)
     call dismoi('NOM_MAILLA', modele, 'MODELE', repk=noma)
     call dismoi('NB_NO_MAILLA', modele, 'MODELE', repi=nbnoeu)
     call jedetr(modele//'.NOEUD_UTIL')
@@ -62,7 +64,7 @@ subroutine pjnout(modele)
 !
     call jeveuo(noma//'.CONNEX', 'L', vi=connex)
     call jeveuo(jexatr(noma//'.CONNEX', 'LONCUM'), 'L', iconx2)
-    call jeveuo(modele//'.MAILLE', 'L', vi=maille)
+    call jeveuo(ligrel//'.TYFE', 'L', vi=maille)
 !
     do ima = 1, nbmail
         if (maille(ima) .eq. 0) goto 280

@@ -25,6 +25,7 @@ subroutine exiscp(nomcmp, char, modele, nbnd, typend, &
 #include "jeveux.h"
 #include "asterc/indik8.h"
 #include "asterfort/assert.h"
+#include "asterfort/char8_to_int.h"
 #include "asterfort/dismoi.h"
 #include "asterfort/exisdg.h"
 #include "asterfort/jedema.h"
@@ -34,7 +35,6 @@ subroutine exiscp(nomcmp, char, modele, nbnd, typend, &
 #include "asterfort/jeveuo.h"
 #include "asterfort/jexnom.h"
 #include "asterfort/utmess.h"
-#include "asterfort/char8_to_int.h"
 !
     character(len=8) :: nomcmp
     character(len=8) :: char
@@ -76,7 +76,6 @@ subroutine exiscp(nomcmp, char, modele, nbnd, typend, &
     character(len=16) :: pheno
     character(len=19) :: ligrmo
     character(len=8) :: nomgd
-    character(len=8), pointer :: lgrf(:) => null()
 !
 ! ----------------------------------------------------------------------
 !
@@ -135,13 +134,12 @@ subroutine exiscp(nomcmp, char, modele, nbnd, typend, &
 !
 ! --- LIGREL DU MODELE
 !
-    ligrmo = mod(1:8)//'.MODELE'
+    call dismoi('NOM_LIGREL', mod, 'MODELE', repk=ligrmo)
     call jeveuo(ligrmo//'.PRNM', 'L', jprnm)
 !
 ! --- MAILLAGE DU MODELE
 !
-    call jeveuo(ligrmo//'.LGRF', 'L', vk8=lgrf)
-    noma = lgrf(1)
+    call dismoi('NOM_MAILLA', ligrmo, 'LIGREL', repk=noma)
 !
 ! --- POUR CHAQUE NOEUD, ON VERIFIE SI LE DDL EST DESSUS
 !

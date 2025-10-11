@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -146,7 +146,7 @@ def make_include_files(UNITE_INCLUDE, calcul, parametres):
     # ----------------------------------------------------------------------------
     liste_reponses = []
     for reponse in [x[0] for x in calcul]:
-        if not reponse in liste_reponses:
+        if reponse not in liste_reponses:
             liste_reponses.append(reponse)
 
     try:
@@ -236,7 +236,7 @@ def get_tables(tables_calc, tmp_repe_table, prof):
             table_lue = reader.read(1)
             list_para = table_lue.para
             tab_lue = table_lue.values()
-        except Exception as err:
+        except Exception:
             ier = 1
         else:
             ier = 0
@@ -778,7 +778,7 @@ class CALCULS_ASTER:
                 )
 
             # Calcul esclave NOOK
-            if not diag[0:2] in ["OK", "<A"]:
+            if diag[0:2] not in ["OK", "<A"]:
                 # Affichage de l'output et/ou de l'error de l'esclave dans l'output du maitre
                 try:
                     affiche(unity=None, filename=output_filename, label=label, filetype="stdout")

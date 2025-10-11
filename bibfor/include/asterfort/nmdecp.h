@@ -15,21 +15,20 @@
 ! You should have received a copy of the GNU General Public License
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
-
-!
-!
 #include "asterf_types.h"
 !
 interface
-    subroutine nmdecp(sddisc, iterat, i_event_acti, typdec, nbrpas,&
-                      deltac, ratio , optdec      , ldcext, durdec,&
+    subroutine nmdecp(sddisc, iterNewt, iEvenActi, cutStepType, nbStep, &
+                      deltac, ratio, optdec, ldcext, durdec, &
                       retdec)
-        character(len=19) :: sddisc
-        integer(kind=8) :: i_event_acti, iterat, retdec
-        integer(kind=8) :: nbrpas
-        aster_logical :: ldcext
-        real(kind=8) :: ratio, deltac, durdec
-        character(len=4) :: typdec
-        character(len=16) :: optdec
+        character(len=19), intent(in) :: sddisc
+        integer(kind=8), intent(in) :: iterNewt, iEvenActi
+        character(len=4), intent(out) :: cutStepType
+        integer(kind=8), intent(out) :: nbStep
+        real(kind=8), intent(out) :: deltac, ratio
+        character(len=16), intent(out) :: optdec
+        aster_logical, intent(out) :: ldcext
+        real(kind=8), intent(out) :: durdec
+        integer(kind=8), intent(out) :: retdec
     end subroutine nmdecp
 end interface

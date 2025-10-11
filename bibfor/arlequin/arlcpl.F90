@@ -23,13 +23,14 @@ subroutine arlcpl(zocc, nbma1, nbma2, mail, nomo, &
 !
     implicit none
 !
-#include "asterf_types.h"
 #include "jeveux.h"
+#include "asterf_types.h"
 #include "asterfort/arlcp2.h"
 #include "asterfort/arlcp3.h"
 #include "asterfort/arlmai.h"
 #include "asterfort/arlmod.h"
 #include "asterfort/codent.h"
+#include "asterfort/dismoi.h"
 #include "asterfort/jedema.h"
 #include "asterfort/jedetr.h"
 #include "asterfort/jeexin.h"
@@ -122,7 +123,7 @@ subroutine arlcpl(zocc, nbma1, nbma2, mail, nomo, &
                         tabcor, mailar, proj)
             if (proj) then
                 iproj = iproj+1
-                ligarl = modarl(1:8)//'.MODELE'
+                call dismoi('NOM_LIGREL', modarl, 'MODELE', repk=ligarl)
                 arlmt2 = marlel(1:8)//'.ARLMT2'
                 call jeexin(jexnum(arlmt2(1:19)//'.RESL', 2), iexi)
                 if (iexi == 0) goto 210

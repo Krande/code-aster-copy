@@ -23,7 +23,6 @@ import aster
 import numpy as NP
 from numpy import linalg
 
-from ...Cata.Syntax import _F
 from ...CodeCommands import CREA_CHAMP, LIRE_FORC_MISS, LIRE_IMPE_MISS
 from ...Utilities import disable_fpe
 from ..Utils.signal_correlation_utils import CALC_COHE, calc_dist2, get_group_nom_coord

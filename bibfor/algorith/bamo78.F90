@@ -20,13 +20,16 @@ subroutine bamo78(nomres, trange, typres)
 !
     implicit none
 !
-#include "asterf_types.h"
 #include "jeveux.h"
+#include "asterf_types.h"
 #include "asterc/r8vide.h"
+#include "asterfort/as_allocate.h"
+#include "asterfort/as_deallocate.h"
 #include "asterfort/assert.h"
 #include "asterfort/celces.h"
 #include "asterfort/cescel.h"
 #include "asterfort/cesfus.h"
+#include "asterfort/compStress.h"
 #include "asterfort/copmod.h"
 #include "asterfort/detrsd.h"
 #include "asterfort/dismoi.h"
@@ -41,13 +44,13 @@ subroutine bamo78(nomres, trange, typres)
 #include "asterfort/jemarq.h"
 #include "asterfort/jeveuo.h"
 #include "asterfort/mdgeph.h"
-#include "asterfort/compStress.h"
 #include "asterfort/mecara.h"
 #include "asterfort/mechti.h"
 #include "asterfort/megeom.h"
 #include "asterfort/meharm.h"
 #include "asterfort/rcmfmc.h"
 #include "asterfort/refdcp.h"
+#include "asterfort/rs_getlast.h"
 #include "asterfort/rsadpa.h"
 #include "asterfort/rsagsd.h"
 #include "asterfort/rscrsd.h"
@@ -59,9 +62,6 @@ subroutine bamo78(nomres, trange, typres)
 #include "asterfort/vrcins.h"
 #include "asterfort/vrcref.h"
 #include "asterfort/vtcreb.h"
-#include "asterfort/rs_getlast.h"
-#include "asterfort/as_deallocate.h"
-#include "asterfort/as_allocate.h"
 !
     character(len=8) :: nomres
     character(len=16) :: typres
@@ -323,7 +323,7 @@ subroutine bamo78(nomres, trange, typres)
     chvarc = '&&BAMO78.VARC'
     chvref = '&&BAMO78.VREF'
     rundf = r8vide()
-    ligrel = modele//'.MODELE'
+    call dismoi('NOM_LIGREL', modele, 'MODELE', repk=ligrel)
     call dismoi('NOM_MAILLA', modele, 'MODELE', repk=mesh)
     compor = mate(1:8)//'.COMPOR'
     call megeom(modele, chgeom)

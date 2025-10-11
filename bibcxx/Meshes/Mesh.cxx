@@ -221,6 +221,29 @@ bool Mesh::isQuadratic( const bool local ) const {
     return false;
 }
 
+MeshPtr Mesh::fix( const bool remove_orphan, const bool positive_measure, const bool outward_normal,
+                   const bool double_nodes, const bool double_cells, const ASTERDOUBLE tole,
+                   const ASTERINTEGER info ) {
+    auto mesh_out = std::make_shared< Mesh >();
+    ASTERINTEGER inf = info, fro, fpv, fon, fdn, fdc;
+    fro = static_cast< int >( remove_orphan );
+    fpv = static_cast< int >( positive_measure );
+    fon = static_cast< int >( outward_normal );
+    fdn = static_cast< int >( double_nodes );
+    fdc = static_cast< int >( double_cells );
+    CALL_FIX_MESH( getName(), mesh_out->getName(), &fro, &fpv, &fon, &fdn, &fdc, &tole, &inf );
+    mesh_out->build();
+    return mesh_out;
+}
+
+MeshPtr Mesh::getOctreeMesh( const ASTERINTEGER nb_max_pt, const ASTERINTEGER nb_max_level ) {
+    auto mesh_out = std::make_shared< Mesh >();
+    ASTERINTEGER max_pt = nb_max_pt, max_level = nb_max_level;
+    CALL_EXPORT_OCTREE( getName(), mesh_out->getName(), &max_pt, &max_level );
+    mesh_out->build();
+    return mesh_out;
+}
+
 MeshPtr Mesh::convertToLinear( const ASTERINTEGER info ) {
     auto mesh_out = std::make_shared< Mesh >();
     ASTERINTEGER un = 1, inf = info;

@@ -136,13 +136,13 @@ SECHI = CREA_CHAMP(
     TYPE_CHAM="NOEU_TEMP_F",
     OPERATION="AFFE",
     MAILLAGE=M,
-    AFFE=_F(TOUT="OUI", NOM_CMP="TEMP", VALE_F=fhyd1),
+    AFFE=_F(TOUT="OUI", NOM_CMP="SECH", VALE_F=fhyd1),
 )
 
 SECH = CREA_RESU(
     OPERATION="AFFE",
-    TYPE_RESU="EVOL_THER",
-    AFFE=(_F(NOM_CHAM="TEMP", CHAM_GD=SECHI, LIST_INST=L_INS1),),
+    TYPE_RESU="EVOL_SECH",
+    AFFE=(_F(NOM_CHAM="SECH", CHAM_GD=SECHI, LIST_INST=L_INS1),),
 )
 
 
@@ -163,7 +163,7 @@ fieldmat = AFFE_MATERIAU(
             TOUT="OUI",
             NOM_VARC="SECH",
             EVOL=SECH,
-            NOM_CHAM="TEMP",
+            NOM_CHAM="SECH",
             PROL_DROITE="LINEAIRE",
             PROL_GAUCHE="CONSTANT",
             VALE_REF=0.0,

@@ -1,6 +1,6 @@
 # coding: utf-8
 
-# Copyright (C) 1991 - 2024  EDF R&D                www.code-aster.org
+# Copyright (C) 1991 - 2025  EDF R&D                www.code-aster.org
 #
 # This file is part of Code_Aster.
 #
@@ -31,6 +31,7 @@ from ..Objects import (
     ModeResult,
     EmpiricalModeResult,
     NonLinearResult,
+    DryingResult,
 )
 from ..Supervis import ExecuteCommand
 
@@ -54,6 +55,8 @@ class ResultsReader(ExecuteCommand):
             self._result = keywords["reuse"]
         elif typ == "EVOL_THER":
             self._result = ThermalResult()
+        elif typ == "EVOL_SECH":
+            self._result = DryingResult()
         elif typ == "EVOL_ELAS":
             self._result = ElasticResult()
         elif typ == "EVOL_NOLI":

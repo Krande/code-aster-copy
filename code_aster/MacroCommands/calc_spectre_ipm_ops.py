@@ -155,12 +155,12 @@ def calc_spectre_ipm_ops(
                     UTMESS("F", "SPECTRAL0_21", valk=(",".join(lst1), ",".join(lst2)))
                 #
                 col_cham = RESU["TABLE"].get_column("NOM_CHAM")
-                if not "ACCE" in col_cham:
+                if "ACCE" not in col_cham:
                     UTMESS("F", "SPECTRAL0_22")
 
                 if ok1:
                     col_cham = RESU["TABLE"].get_column("NOM_CMP")
-                    if not "DZ" in col_cham:
+                    if "DZ" not in col_cham:
                         UTMESS("F", "SPECTRAL0_23")
 
                     __ACCE_E = RECU_FONCTION(

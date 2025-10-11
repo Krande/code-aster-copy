@@ -1,0 +1,141 @@
+# coding=utf-8
+# --------------------------------------------------------------------
+# Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
+# This file is part of code_aster.
+#
+# code_aster is free software: you can redistribute it and/or modify
+# it under the terms of the GNU General Public License as published by
+# the Free Software Foundation, either version 3 of the License, or
+# (at your option) any later version.
+#
+# code_aster is distributed in the hope that it will be useful,
+# but WITHOUT ANY WARRANTY; without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+# GNU General Public License for more details.
+#
+# You should have received a copy of the GNU General Public License
+# along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
+# --------------------------------------------------------------------
+
+import os
+import json
+import tempfile
+import os.path as osp
+from math import pi
+
+from code_aster.Commands import *
+
+DEBUT(CODE="OUI", ERREUR=_F(ALARME="EXCEPTION"))
+
+testname = "hplv111a"
+
+with open("%s.json" % testname) as f:
+    testresu = json.load(f)
+
+MA = LIRE_MAILLAGE(UNITE=20, FORMAT="MED")
+
+UN = DEFI_CONSTANTE(VALE=1.0)
+E = 195100.0
+E_ACIER = DEFI_CONSTANTE(VALE=E)
+NU_ACIER = DEFI_CONSTANTE(VALE=0.3)
+ALPHA_ACIER = DEFI_CONSTANTE(VALE=16.4e-6)
+RHO_ACIER = DEFI_CONSTANTE(VALE=8.0e-6)
+
+ACIER = DEFI_MATERIAU(
+    ELAS_FO=_F(E=E_ACIER, NU=NU_ACIER, ALPHA=ALPHA_ACIER, RHO=RHO_ACIER, TEMP_DEF_ALPHA=20.0),
+    THER_FO=_F(LAMBDA=UN),
+)
+
+PARA_EQ_PLAQUE = CALC_MATE_HOMO(
+    MAILLAGE=MA,
+    AFFE=_F(TOUT="OUI", MATER=ACIER),
+    VARC=_F(NOM_VARC="TEMP", VALE=21.0),
+    TYPE_HOMO="PLAQUE_CT",
+    CORR_MECA=CO("CORR_MECA"),
+)
+
+IMPR_CORR_HOMO(UNITE=80, CORR_MECA=CORR_MECA)
+MA_RELOAD = LIRE_MAILLAGE(FORMAT="MED", UNITE=80)
+CORR_MECA_RELOAD = LIRE_CORR_HOMO(UNITE=80, TYPE_RESU="EVOL_ELAS", MAILLAGE=MA_RELOAD)
+
+testrefe = {
+    "MEMB_L": 0.31721,
+    "MEMB_T": 0.31721,
+    "MEMB_LT": 0.04639,
+    "MEMB_G_LT": 0.07391,
+    "FLEX_L": 0.35372,
+    "FLEX_T": 0.35372,
+    "FLEX_LT": 0.07846,
+    "FLEX_G_LT": 0.19348,
+    "CISA_L": 0.21865,
+    "CISA_T": 0.21865,
+    "ALPHA": 16.4e-6,
+}
+
+h = 2 * MA.createMedCouplingMesh()[0].getBoundingBox()[-1][1]
+c_flex = E * (h**3) / 12
+c_memb = E * h
+
+
+def update_refe(para, value):
+    upvalue = value
+    if "FLEX" in para:
+        upvalue *= c_flex
+    elif "MEMB" in para or "CISA" in para:
+        upvalue *= c_memb
+    else:
+        pass
+
+    if "G_LT" in para or "CISA" in para:
+        upvalue /= 2
+
+    return upvalue
+
+
+def update_calc(para, value):
+    upvalue = value
+    if "FLEX" in para:
+        upvalue /= c_flex
+    elif "MEMB" in para or "CISA" in para:
+        upvalue /= c_memb
+    else:
+        pass
+
+    if "G_LT" in para or "CISA" in para:
+        upvalue *= 2
+
+    return upvalue
+
+
+temp = "21.0"
+for para, value in testrefe.items():
+    vale_calc = testresu[temp][para]
+    vale_refe = update_refe(para, value)
+    TEST_TABLE(
+        TABLE=PARA_EQ_PLAQUE,
+        NOM_PARA=para,
+        VALE_REFE=vale_refe,
+        REFERENCE="SOURCE_EXTERNE",
+        VALE_CALC=vale_calc,
+        PRECISION=2.0e-3,
+        FILTRE=_F(NOM_PARA="TEMP", VALE=float(temp)),
+    )
+
+tab_values = {
+    para: items
+    for para, items in PARA_EQ_PLAQUE.EXTR_TABLE().values().items()
+    if all(abs(i) > 1.0e-12 for i in items)
+}
+
+vale_calc = {
+    temp: {para: item[i] for para, item in tab_values.items()}
+    for i, temp in enumerate(tab_values["TEMP"])
+}
+
+tmpdir = tempfile.mkdtemp()
+with open(osp.join(tmpdir, "%s.json" % testname), "w") as f:
+    json.dump(vale_calc, f, indent=1, sort_keys=True)
+
+testcalc = {para: round(update_calc(para, vale_calc[float(temp)][para]), 5) for para in testrefe}
+
+FIN()

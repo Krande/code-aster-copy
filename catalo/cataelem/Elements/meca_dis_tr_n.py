@@ -133,6 +133,7 @@ class MECA_DIS_TR_N(Element):
                 (SP.PCINFDI, LC.CCINFDI),
                 (SP.PMATERC, LC.CMATERC),
                 (SP.PRIGIEL, MMATUUR),
+                (SP.PRIGINS, MMATUNS),
                 (OP.AMOR_MECA.PVARCPR, LC.ZVARCPG),
                 (OP.AMOR_MECA.PCOMPOR, LC.CCOMPOR),
                 (SP.PNONLIN, LC.ENONLIN),
@@ -514,6 +515,7 @@ class MECA_DIS_TR_N(Element):
                 (SP.PVITPLU, DDL_MECA),
             ),
             para_out=(
+                (SP.PMATUNS, MMATUNS),
                 (SP.PMATUUR, MMATUUR),
                 (SP.PVECTUR, MVECTUR),
                 (OP.RIGI_MECA_TANG.PCONTPR, EEFGEGA),

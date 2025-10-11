@@ -60,8 +60,7 @@ subroutine pjcor2(noca, cns1z, ces2z, ligrel, corres, &
     integer(kind=8) :: jce2c, jce2l, jce2d, jce2k
     integer(kind=8) :: jcns1c, jcns1l
     integer(kind=8) :: nbno1, ncmp1
-    integer(kind=8) :: iad2, icmp, ima, ipt, isp, jlgrf
-!    integer :: ima, ipt, isp, jlgrf
+    integer(kind=8) :: iad2, icmp, ima, ipt, isp
 !
     real(kind=8), pointer :: cnsv(:) => null()
     real(kind=8), pointer :: cesv(:) => null()
@@ -110,7 +109,6 @@ subroutine pjcor2(noca, cns1z, ces2z, ligrel, corres, &
 !
     dcel = '&&PJCOR2'
 !
-    call jeveuo(ligrel//'.LGRF', 'L', jlgrf)
     call cesvar(noca, ' ', ligrel, dcel)
     call alchml(ligrel, option, nompar, 'V', cel2, &
                 iret, dcel)

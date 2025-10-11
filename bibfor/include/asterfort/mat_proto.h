@@ -17,18 +17,17 @@
 ! --------------------------------------------------------------------
 !
 interface
-    subroutine mat_proto(BEHinteg,&
-                         fami    , kpg, ksp, poum, imate, itface,&
-                         nprops  , props)
+    subroutine mat_proto(BEHinteg, &
+                         fami, kpg, ksp, poum, jvMaterCode, relaComp, &
+                         nprops, props)
         use Behaviour_type
         type(Behaviour_Integ), intent(in) :: BEHinteg
         character(len=*), intent(in) :: fami
-        integer(kind=8), intent(in) :: kpg
-        integer(kind=8), intent(in) :: ksp
+        integer(kind=8), intent(in) :: kpg, ksp
         character(len=1), intent(in) :: poum
-        integer(kind=8), intent(in) :: imate
-        character(len=*), intent(in) :: itface
+        integer(kind=8), intent(in) :: jvMaterCode
+        character(len=*), intent(in) :: relaComp
         integer(kind=8), intent(inout) :: nprops
         real(kind=8), intent(out) :: props(*)
     end subroutine mat_proto
-end interface 
+end interface

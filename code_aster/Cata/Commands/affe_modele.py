@@ -303,6 +303,10 @@ AFFE_MODELE = OPER(
                     "3D_HHO",
                     "PLAN_HHO",
                     "AXIS_HHO",
+                    "AXIS_SECH",
+                    "3D_SECH",
+                    "AXIS_SECH_DIAG",
+                    "3D_SECH_DIAG",
                 ),
             ),
             b_formu_hho=BLOC(

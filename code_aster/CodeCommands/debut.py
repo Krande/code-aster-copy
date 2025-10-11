@@ -232,7 +232,7 @@ class Starter(ExecuteCommand):
 
         if keywords.get("IGNORE_ALARM"):
             for idmess in keywords["IGNORE_ALARM"]:
-                MessageLog.disable_alarm(idmess)
+                MessageLog.disable_alarm(idmess, skip=not params.option & Options.TestMode)
 
         super().exec_(keywords)
 

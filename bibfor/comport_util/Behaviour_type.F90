@@ -24,6 +24,8 @@
 !
 module Behaviour_type
 ! ==================================================================================================
+    use BehaviourStrain_type
+! ==================================================================================================
     implicit none
 ! ==================================================================================================
     private
@@ -44,10 +46,12 @@ module Behaviour_type
         character(len=4) :: fami = " "
 ! ----- Adress for material parameters
         integer(kind=8) :: jvMaterCode = 0
-! ----- Type for elasticity (anisotropy ?)
-        integer(kind=8) :: elasType = ELAS_UNDEF
-! ----- Flag for metallurgical case (temperature)
+! ----- Type for elasticity
+        integer(kind=8) :: elasID = ELAS_UNDEF
+        character(len=16) :: elasKeyword = " "
+! ----- Flag for metallurgical case
         aster_logical :: lElasIsMeta = ASTER_FALSE
+        aster_logical :: lMetaLemaAni = ASTER_FALSE
 ! ----- Times
         real(kind=8) :: timePrev = 0.d0
         real(kind=8) :: timeCurr = 0.d0
@@ -130,25 +134,6 @@ module Behaviour_type
         real(kind=8) :: hygrIncr = 0.d0
     end type BehaviourESVA_Other
 ! ==================================================================================================
-! Type: External state variables - Fields
-! ==================================================================================================
-    type BehaviourESVA_Field
-! ----- Flag
-        aster_logical :: exist = ASTER_FALSE
-! ----- Number of components
-        integer(kind=8) :: nbComp = 0
-! ----- Type of field to compute strain
-        integer(kind=8) :: typeForStrain = ESVA_FIELD_TYPE_UNKW
-! ----- Values of field
-        real(kind=8) :: valePrev(ESVA_FIELD_NBCMPMAXI) = 0.d0
-        real(kind=8) :: valeCurr(ESVA_FIELD_NBCMPMAXI) = 0.d0
-        real(kind=8) :: valeIncr(ESVA_FIELD_NBCMPMAXI) = 0.d0
-! ----- Values of scalars
-        real(kind=8) :: valeScalPrev = 0.d0
-        real(kind=8) :: valeScalIncr = 0.d0
-        real(kind=8) :: valeScalRefe = 0.d0
-    end type BehaviourESVA_Field
-! ==================================================================================================
 ! Type: External state variables - External solver (UMAT, MFRONT/MGIS)
 ! ==================================================================================================
     type BehaviourESVA_Exte
@@ -180,15 +165,12 @@ module Behaviour_type
 ! ----- Other properties
         type(BehaviourESVA_Other) :: behavESVAOther
 
-! ----- Fields
-        type(BehaviourESVA_Field) :: behavESVAField(ESVA_FIELD_NBMAXI)
-
 ! ----- External state variables for external solver (UMAT/MFRONT)
         type(BehaviourESVA_Exte) :: behavESVAExte
 
 ! ----- Non-mechanical strains (external state variable as temperature)
-        real(kind=8) :: epsi_varc(ESVA_FIELD_NBCMPMAXI) = 0.d0
-        real(kind=8) :: depsi_varc(ESVA_FIELD_NBCMPMAXI) = 0.d0
+        real(kind=8) :: epsi_varc(6) = 0.d0
+        real(kind=8) :: depsi_varc(6) = 0.d0
     end type BehaviourESVA
 ! ==================================================================================================
 ! Type: Parameters for integration (main object)
@@ -200,11 +182,14 @@ module Behaviour_type
 ! ----- Parameters for external state variables
         type(BehaviourESVA) :: behavESVA
 
+! ----- All external state variables for anelastic strains
+        type(All_Varc_Strain) :: allVarcStrain
+
     end type Behaviour_Integ
 !===================================================================================================
     public :: Behaviour_Integ, BehaviourESVA
     public :: Behaviour_Para
-    public :: BehaviourESVA_Geom, BehaviourESVA_Other, BehaviourESVA_Field, BehaviourESVA_Exte
+    public :: BehaviourESVA_Geom, BehaviourESVA_Other, BehaviourESVA_Exte
 contains
 !===================================================================================================
 end module

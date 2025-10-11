@@ -15,12 +15,10 @@
 ! You should have received a copy of the GNU General Public License
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
-
-subroutine nmcvgp(sddisc, nume_inst, sderro, valinc, fonact, &
-                  ds_contact)
+!
+subroutine nmcvgp(sddisc, sderro, valinc, listFuncActi, ds_contact)
 !
     use NonLin_Datastructure_type
-!
     implicit none
 !
 #include "asterfort/assert.h"
@@ -30,39 +28,36 @@ subroutine nmcvgp(sddisc, nume_inst, sderro, valinc, fonact, &
 #include "asterfort/nmevev.h"
 #include "asterfort/nmleeb.h"
 !
-! person_in_charge: mickael.abbas at edf.fr
-!
-    integer(kind=8), intent(in) :: fonact(*)
+    integer(kind=8), intent(in) :: listFuncActi(100)
     character(len=19), intent(in) :: sddisc
     character(len=19), intent(in) :: valinc(*)
-    integer(kind=8), intent(in) :: nume_inst
     character(len=24), intent(in) :: sderro
     type(NL_DS_Contact), intent(in) :: ds_contact
 !
-! ----------------------------------------------------------------------
+! --------------------------------------------------------------------------------------------------
 !
 ! ROUTINE MECA_NON_LINE (ALGORITHME)
 !
 ! ETAT DE LA CONVERGENCE DU PAS DE TEMPS
 !
-! ----------------------------------------------------------------------
+! --------------------------------------------------------------------------------------------------
 !
 ! IN  SDDISC : SD DISCRETISATION TEMPORELLE
-! IN  NUMINS : NUMERO D'INSTANT
 ! IN  SDERRO : SD GESTION DES ERREURS
 ! IN  VALINC : VARIABLE CHAPEAU INCREMENTS DES VARIABLES
-! IN  FONACT : FONCTIONNALITES ACTIVEES
+! In  listFuncActi     : list of active functionnalities
 ! In  ds_contact       : datastructure for contact management
+!
+! --------------------------------------------------------------------------------------------------
 !
     integer(kind=8) :: ievdac
     character(len=4) :: etfixe
 !
-! ----------------------------------------------------------------------
+! --------------------------------------------------------------------------------------------------
 !
     call nmleeb(sderro, 'FIXE', etfixe)
-!
-! --- SI PAS DE CONVERGENCE DU POINT FIXE -> TRANSFERT ETAT DE LA BOUCLE
-!
+
+! - SI PAS DE CONVERGENCE DU POINT FIXE -> TRANSFERT ETAT DE LA BOUCLE
     if (etfixe .ne. 'CONV') then
         if (etfixe .eq. 'STOP') then
             call nmeceb(sderro, 'INST', 'STOP')
@@ -73,18 +68,14 @@ subroutine nmcvgp(sddisc, nume_inst, sderro, valinc, fonact, &
         end if
         goto 99
     end if
-!
-! --- EVALUATION CONVERGENCE PAS DE TEMPS
-!
-    call nmevcv(sderro, fonact, 'INST')
-!
-! --- DETECTION DU PREMIER EVENEMENT DECLENCHE
-!
-    call nmevev(sddisc, nume_inst, valinc, sderro, ds_contact, &
-                'INST')
-!
-! --- UN EVENEMENT SE DECLENCHE
-!
+
+! - EVALUATION CONVERGENCE PAS DE TEMPS
+    call nmevcv(sderro, listFuncActi, 'INST')
+
+! - DETECTION DU PREMIER EVENEMENT DECLENCHE
+    call nmevev(sddisc, valinc, sderro, ds_contact, 'INST')
+
+! - UN EVENEMENT SE DECLENCHE
     call nmacto(sddisc, ievdac)
     if (ievdac .gt. 0) then
         call nmeceb(sderro, 'INST', 'EVEN')

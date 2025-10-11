@@ -31,66 +31,20 @@
 #include "DataFields/ListOfTables.h"
 #include "DataStructures/DataStructure.h"
 #include "Loads/PhysicalQuantity.h"
-#include "Meshes/BaseMesh.h"
 #include "Meshes/ConnectionMesh.h"
-#include "Meshes/ParallelMesh.h"
-#include "Meshes/Skeleton.h"
 #include "Modeling/ElementaryModeling.h"
 #include "Modeling/FiniteElementDescriptor.h"
 #include "Modeling/HHOModel.h"
+#include "Modeling/Partition.h"
 #include "Modeling/XfemModel.h"
 #include "Supervis/ResultNaming.h"
 #include "Utilities/SyntaxDictionary.h"
-
-class FiniteElementDescriptor;
-
-using FiniteElementDescriptorPtr = std::shared_ptr< FiniteElementDescriptor >;
-
-/**
- * @enum ModelSplitingMethod
- * @brief Types of partition for model
- */
-enum ModelSplitingMethod { Centralized, SubDomain, GroupOfCellsSplit };
-const int nbModelSplitingMethod = 3;
-
-/**
- * @var ModelSplitingMethodNames
- * @brief Keyword for types of partition
- */
-extern const char *const ModelSplitingMethodNames[nbModelSplitingMethod];
-
-/**
- * @enum GraphPartitioner
- * @brief Graph partitioner
- */
-enum GraphPartitioner { ScotchPartitioner, MetisPartitioner };
-const int nbGraphPartitioner = 2;
-
-/**
- * @var GraphPartitionerNames
- * @brief Keyword for graph partitioner
- */
-extern const char *const GraphPartitionerNames[nbGraphPartitioner];
 
 /**
  * @class Model
  * @brief Datastructure for model (AFFE_MODELE)
  */
 class Model : public DataStructure, public ListOfTables {
-    class Partition : public DataStructure {
-        JeveuxVectorLong _prti;
-        JeveuxVectorChar24 _prtk;
-        JeveuxVectorLong _nupr;
-        JeveuxVectorLong _fdim;
-        JeveuxVectorLong _feta;
-        JeveuxVectorChar8 _fref;
-
-      public:
-        Partition( const std::string );
-        typedef std::shared_ptr< Partition > PartitionPtr;
-        const std::string getMethod() const;
-    };
-
   public:
     typedef std::shared_ptr< Model > ModelPtr;
 
@@ -108,16 +62,10 @@ class Model : public DataStructure, public ListOfTables {
     typedef listOfModsAndGrps::iterator listOfModsAndGrpsIter;
     /** @brief Iterateur constant sur un listOfModsAndGrps */
     typedef listOfModsAndGrps::const_iterator listOfModsAndGrpsCIter;
-
-    /** @brief Vecteur Jeveux '.MAILLE' */
-    JeveuxVectorLong _typeOfCells;
     /** @brief Vecteur Jeveux '.NOEUD' */
     JeveuxVectorLong _typeOfNodes;
-    /** @brief Vecteur Jeveux '.PARTIT': TODO add PARTSD objects */
     /** @brief Liste contenant les modelisations ajoutees par l'utilisateur */
     listOfModsAndGrps _modelisations;
-    /** @brief Maillage sur lequel repose la modelisation */
-    BaseMeshPtr _baseMesh;
     /** @brief Model without XFEM */
     ModelPtr _saneModel;
     /** @brief Model with XFEM */
@@ -140,8 +88,6 @@ class Model : public DataStructure, public ListOfTables {
     GraphPartitioner _graphPartitioner;
     /** @brief Object .MODELE */
     FiniteElementDescriptorPtr _ligrel;
-
-    Partition::PartitionPtr _partSD;
 
     /**
      * @brief Ajout d'une nouvelle modelisation sur tout le maillage
@@ -272,8 +218,6 @@ class Model : public DataStructure, public ListOfTables {
     ConnectionMeshPtr getConnectionMesh() const;
 #endif /* ASTER_HAVE_MPI */
 
-    JeveuxVectorLong getFiniteElementType() const { return _typeOfCells; };
-
     /**
      * @brief Get the sane base model
      */
@@ -296,7 +240,7 @@ class Model : public DataStructure, public ListOfTables {
 
     BaseMeshPtr getMesh() const;
 
-    JeveuxVectorLong getTypeOfCells() const;
+    JeveuxVectorLong getFiniteElementType() const;
 
     /**
      * @brief Methode permettant de savoir si le modele est vide

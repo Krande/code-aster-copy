@@ -22,13 +22,14 @@ subroutine xcpmo1(modmes, modthx, modmex)
 #include "jeveux.h"
 #include "asterfort/adalig.h"
 #include "asterfort/assert.h"
-#include "asterfort/cormgi.h"
 #include "asterfort/copisd.h"
+#include "asterfort/cormgi.h"
 #include "asterfort/detrsd.h"
 #include "asterfort/dismoi.h"
 #include "asterfort/exisd.h"
-#include "asterfort/initel.h"
 #include "asterfort/indk16.h"
+#include "asterfort/initel.h"
+#include "asterfort/int_to_char8.h"
 #include "asterfort/jecrec.h"
 #include "asterfort/jecroc.h"
 #include "asterfort/jedema.h"
@@ -46,7 +47,6 @@ subroutine xcpmo1(modmes, modthx, modmex)
 #include "asterfort/nbgrel.h"
 #include "asterfort/utmess.h"
 #include "asterfort/xtmafi.h"
-#include "asterfort/int_to_char8.h"
 !
     character(len=8) :: modmes, modthx, modmex
 !
@@ -60,7 +60,7 @@ subroutine xcpmo1(modmes, modthx, modmex)
 !
 ! --> on modifie dans cette routine certains objets de modmex en fonction
 !     de mothx :
-!       - le '.MAILLE' modmex//.MAILLE'
+!       - le '.TYFE'   modmex//.TYFE'
 !       - le ligrel    modmex//.MODELE'
 !
 ! ----------------------------------------------------------------------
@@ -198,10 +198,10 @@ subroutine xcpmo1(modmes, modthx, modmex)
     character(len=16) :: ele3dmec(nel3dmec)
     character(len=16) :: eleplmec(nelplmec)
     character(len=16) :: eleaxmec(nelaxmec)
+    character(len=8) :: partsd
     integer(kind=8), pointer :: mmes(:) => null()
     integer(kind=8), pointer :: mmex(:) => null()
     integer(kind=8), pointer :: mthx(:) => null()
-    character(len=8), pointer :: lgrf(:) => null()
 !
 !   elements 3D lineaires mecaniques classiques
 ! ---------------------------------------------------------------------
@@ -243,9 +243,9 @@ subroutine xcpmo1(modmes, modthx, modmex)
 !
 ! ---------------------------------------------------------------------
 !
-    ligmes = modmes//'.MODELE'
-    ligthx = modthx//'.MODELE'
-    ligmex = modmex//'.MODELE'
+    call dismoi('NOM_LIGREL', modmex, 'MODELE', repk=ligmex)
+    call dismoi('NOM_LIGREL', modthx, 'MODELE', repk=ligthx)
+    call dismoi('NOM_LIGREL', modmes, 'MODELE', repk=ligmes)
 !
 ! - recuperation de la liste de toutes les mailles fissurees
 ! - (de dimension n et n-1 car appel a xtmafi avec ndim == 0)
@@ -260,10 +260,10 @@ subroutine xcpmo1(modmes, modthx, modmex)
     call xtmafi(0, fiss, nfiss, lismai, mesmai, nbmx, model=modthx)
     call jeveuo(lismai, 'L', vi=tabmx)
 !
-! - recuperation du '.MAILLE' de modthx et modmes
+! - recuperation du '.TYFE' de modthx et modmes
 !
-    call jeveuo(modthx//'.MAILLE', 'L', vi=mthx)
-    call jeveuo(modmes//'.MAILLE', 'L', vi=mmes)
+    call jeveuo(ligthx//'.TYFE', 'L', vi=mthx)
+    call jeveuo(ligmes//'.TYFE', 'L', vi=mmes)
 !
 ! - on s'assure que toute maille affectee par un element thermique
 ! - enrichi dans modthx est bien affectee par un element mecanique
@@ -294,17 +294,18 @@ subroutine xcpmo1(modmes, modthx, modmex)
 ! - avec mot-cle FISSURE ne recree pas cet objet s'il existe dans
 ! - le modele sain renseigne dans MODELE_IN
 !
-    call exisd('PARTITION', modmex//'.PARTSD', iexi)
+    call dismoi('PARTITION', modmex, 'MODELE', repk=partsd)
+    call exisd('PARTITION', partsd, iexi)
     if (iexi .ne. 0) then
-        call detrsd('PARTITION', modmex//'.PARTSD')
+        call detrsd('PARTITION', partsd)
     end if
 !
-! - recuperation du '.MAILLE' de modmex
+! - recuperation du '.TYFE' de modmex
 !
-    call jeveuo(modmex//'.MAILLE', 'E', vi=mmex)
-    call jelira(modmex//'.MAILLE', 'LONMAX', nmamex, k1bid)
+    call jeveuo(ligmex//'.TYFE', 'E', vi=mmex)
+    call jelira(ligmex//'.TYFE', 'LONMAX', nmamex, k1bid)
 !
-! - modification du '.MAILLE' de modmex pour les mailles fissurees
+! - modification du '.TYFE' de modmex pour les mailles fissurees
 !
     do ima = 1, nbmx
 !
@@ -386,8 +387,7 @@ subroutine xcpmo1(modmes, modthx, modmex)
 !
     call jedupo(ligmex//'.NBNO', 'G', ligrtp//'.NBNO', .false._1)
     call jedupo(ligmex//'.LGRF', 'G', ligrtp//'.LGRF', .false._1)
-    call jeveuo(ligrtp//'.LGRF', 'E', vk8=lgrf)
-    lgrf(2) = modmex
+    call jedupo(ligmex//'.TYFE', 'G', ligrtp//'.TYFE', .false._1)
 !
 ! - on ecrase ligmex avec ligrtp
 !

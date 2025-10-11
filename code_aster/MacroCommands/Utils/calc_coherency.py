@@ -22,7 +22,7 @@
 
 """
 
-from math import exp, log, pi, sqrt, tanh
+from math import pi
 
 import numpy as np
 

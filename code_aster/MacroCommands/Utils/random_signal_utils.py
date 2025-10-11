@@ -36,8 +36,7 @@ Acce2SRO               ---      calculate response spectrum of a seismic signal
                                 (accelerogram) by FFT
 """
 
-from cmath import sqrt as csqrt
-from math import ceil, cos, exp, log, pi, sqrt
+from math import cos, exp, log, pi, sqrt
 
 import numpy as NP
 import aster_fonctions

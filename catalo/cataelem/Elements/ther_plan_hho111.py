@@ -211,7 +211,7 @@ class THER2DQ9_HHO111(Element):
                 (OP.MASS_THER.PVARCPR, LC.ZVARCPG),
                 (OP.MASS_THER.PCHHOBS, CHHOBS),
             ),
-            para_out=((OP.MASS_THER.PMATTTR, MMATTTR),),
+            para_out=((SP.PMATTTR, MMATTTR),),
         ),
         OP.MASS_THER_TANG(
             te=429,
@@ -223,7 +223,7 @@ class THER2DQ9_HHO111(Element):
                 (OP.MASS_THER_TANG.PVARCPR, LC.ZVARCPG),
                 (OP.MASS_THER_TANG.PCHHOBS, CHHOBS),
             ),
-            para_out=((OP.MASS_THER_TANG.PMATTTR, MMATTTR),),
+            para_out=((SP.PMATTTR, MMATTTR),),
         ),
         OP.MASS_THER_RESI(
             te=429,
@@ -247,7 +247,7 @@ class THER2DQ9_HHO111(Element):
                 (SP.PINSTR, LC.CTIMETR),
                 (OP.MTAN_THER_SOURNL.PCHHOBS, CHHOBS),
             ),
-            para_out=((OP.MTAN_THER_SOURNL.PMATTTR, MMATTTR),),
+            para_out=((SP.PMATTTR, MMATTTR),),
         ),
         OP.NSPG_NBVA(
             te=496,
@@ -281,7 +281,7 @@ class THER2DQ9_HHO111(Element):
                 (OP.RIGI_THER.PCHHOST, CHHOST),
                 (OP.RIGI_THER.PCHHOBS, CHHOBS),
             ),
-            para_out=((OP.RIGI_THER.PMATTTR, MMATTTR),),
+            para_out=((SP.PMATTTR, MMATTTR),),
         ),
         OP.RIGI_THER_TANG(
             te=454,
@@ -296,7 +296,7 @@ class THER2DQ9_HHO111(Element):
                 (OP.RIGI_THER_TANG.PCHHOST, CHHOST),
                 (OP.RIGI_THER_TANG.PCHHOBS, CHHOBS),
             ),
-            para_out=((OP.RIGI_THER_TANG.PMATTTR, MMATTTR), (OP.RIGI_THER_TANG.PMATTSR, MMATTSR)),
+            para_out=((SP.PMATTTR, MMATTTR), (OP.RIGI_THER_TANG.PMATTSR, MMATTSR)),
         ),
         OP.TEMP_ELGA(
             te=456,

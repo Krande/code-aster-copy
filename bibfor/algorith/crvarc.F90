@@ -35,10 +35,13 @@ subroutine crvarc()
 #include "jeveux.h"
 #include "asterc/getfac.h"
 #include "asterc/getres.h"
+#include "asterfort/as_allocate.h"
+#include "asterfort/as_deallocate.h"
 #include "asterfort/assert.h"
 #include "asterfort/calcul.h"
 #include "asterfort/cesvar.h"
 #include "asterfort/detrsd.h"
+#include "asterfort/dismoi.h"
 #include "asterfort/exlima.h"
 #include "asterfort/getvid.h"
 #include "asterfort/getvr8.h"
@@ -57,8 +60,6 @@ subroutine crvarc()
 #include "asterfort/rsnoch.h"
 #include "asterfort/rsorac.h"
 #include "asterfort/utmess.h"
-#include "asterfort/as_deallocate.h"
-#include "asterfort/as_allocate.h"
 !
 ! ------------------------------------------------------------------------------
 !
@@ -183,7 +184,7 @@ subroutine crvarc()
     lchin(2) = chcara(7)
 !
     if (LeCas .eq. 'CHAMP') then
-        ligrel = modele//'.MODELE'
+        call dismoi('NOM_LIGREL', modele, 'MODELE', repk=ligrel)
         chinst = '&&CRVRC1.CHINST'
         !
         lpain(3) = 'PTEMPEF'

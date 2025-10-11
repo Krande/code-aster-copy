@@ -26,6 +26,7 @@ subroutine arlmol(nomo, mailar, modarl, tabcor)
 #include "asterfort/assert.h"
 #include "asterfort/cormgi.h"
 #include "asterfort/detrsd.h"
+#include "asterfort/dismoi.h"
 #include "asterfort/exisd.h"
 #include "asterfort/initel.h"
 #include "asterfort/jecrec.h"
@@ -46,7 +47,7 @@ subroutine arlmol(nomo, mailar, modarl, tabcor)
     integer(kind=8) :: ima, nbma, ibid
     integer(kind=8) :: jnbno, jad, jlgrf, jdime, jtyel, jtabco
     character(len=8) :: k8bid
-    character(len=19) :: ligarl
+    character(len=19) :: ligarl, ligrel
     integer(kind=8) :: numori, ityel, iret
 !
 ! ----------------------------------------------------------------------
@@ -74,18 +75,25 @@ subroutine arlmol(nomo, mailar, modarl, tabcor)
 !
 ! --- INITIALISATIONS
 !
-    ligarl = modarl(1:8)//'.MODELE'
+    ligarl = ' '
+    call exisd('MODELE', modarl, iret)
+    if (iret .ne. 0) then
+        call dismoi('NOM_LIGREL', modarl, 'MODELE', repk=ligarl)
+    end if
 !
 ! --- DESTRUCTION DU LIGREL S'IL EXISTE
 !
     call exisd('LIGREL', ligarl, iret)
     if (iret .ne. 0) then
         call detrsd('LIGREL', ligarl)
+    else
+        ligarl = modarl(1:8)//'.MODELE'
     end if
 !
 ! --- INFORMATIONS SUR LE MODELE ORIGINAL
 !
-    call jeveuo(nomo(1:8)//'.MAILLE', 'L', jtyel)
+    call dismoi('NOM_LIGREL', nomo, 'MODELE', repk=ligrel)
+    call jeveuo(ligrel//'.TYFE', 'L', jtyel)
 !
 ! --- ACCES AU TABLEAU DE CORRESPONDANCE
 !
@@ -98,7 +106,7 @@ subroutine arlmol(nomo, mailar, modarl, tabcor)
 !
 ! --- CREATION DE .NOMA + ATTRIBUT DOCU
 !
-    call wkvect(ligarl//'.LGRF', 'V V K8', 1, jlgrf)
+    call wkvect(ligarl//'.LGRF', 'V V K8', 4, jlgrf)
     zk8(jlgrf-1+1) = mailar
     call jeecra(ligarl//'.LGRF', 'DOCU', ibid, 'MECA')
 !

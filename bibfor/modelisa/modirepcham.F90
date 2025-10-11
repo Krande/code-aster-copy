@@ -35,6 +35,7 @@ subroutine modirepcham(resuou, resuin)
 #include "jeveux.h"
 #include "asterfort/calcul.h"
 #include "asterfort/cesvar.h"
+#include "asterfort/checkConsistencyLigrel.h"
 #include "asterfort/dismoi.h"
 #include "asterfort/exisd.h"
 #include "asterfort/getvid.h"
@@ -44,13 +45,13 @@ subroutine modirepcham(resuou, resuin)
 #include "asterfort/jedema.h"
 #include "asterfort/jedetr.h"
 #include "asterfort/jemarq.h"
-#include "asterfort/megeom.h"
+#include "asterfort/mecoor.h"
 #include "asterfort/utmess.h"
 !
 ! --------------------------------------------------------------------------------------------------
 !
     integer(kind=8) :: ifm, niv, nret, iret
-    character(len=8) :: maillage, modele, carelem, caramail, caramodel
+    character(len=8) :: maillage, carelem, caramail, caramodel
     character(len=16) :: repere
     character(len=19) :: chpass
     character(len=24) :: ligrel, option
@@ -61,7 +62,7 @@ subroutine modirepcham(resuou, resuin)
 !     integer ::  vali(2)
     character(len=80) :: valk(3)
 !
-    aster_logical :: lreuse
+    aster_logical :: lreuse, lret
 ! --------------------------------------------------------------------------------------------------
 !
     call jemarq()
@@ -93,7 +94,6 @@ subroutine modirepcham(resuou, resuin)
     call dismoi('NOM_OPTION', resuin, 'CHAMP', repk=option)
     call dismoi('NOM_LIGREL', resuin, 'CHAMP', repk=ligrel)
     call dismoi('NOM_MAILLA', resuin, 'CHAMP', repk=maillage)
-    call dismoi('NOM_MODELE', resuin, 'CHAMP', repk=modele)
 !   Le champ doit être crée avec INI_SP_RIGI
     if (option .ne. 'INI_SP_RIGI') then
         call utmess('F', 'MODELISA3_1')
@@ -123,17 +123,19 @@ subroutine modirepcham(resuou, resuin)
     end if
 !   Nom du modèle sous-jacent à CARA_ELEM. Le même que celui du champ.
     call dismoi('NOM_MODELE', carelem, 'CARA_ELEM', repk=caramodel)
-    if (modele .ne. caramodel) then
-        valk(1) = modele
+    call checkConsistencyLigrel(caramodel, ligrel, lret)
+    if (.not. lret) then
+        valk(1) = resuin
+        valk(2) = carelem
         valk(2) = caramodel
-        call utmess('F', 'MODELISA3_6', nk=2, valk=valk)
+        call utmess('F', 'MODELISA3_6', nk=3, valk=valk)
     end if
 !
 ! --------------------------------------------------------------------------------------------------
 !   Matrice de passage du repère global vers le repère utilisateur
     chpass = '&&REPCHA.MATPASS'
 !
-    call megeom(modele, chgeom)
+    call mecoor(ligrel, chgeom)
     lchin(1) = chgeom
     lpain(1) = 'PGEOMER'
     lchin(2) = carelem//'.CARCOQUE'

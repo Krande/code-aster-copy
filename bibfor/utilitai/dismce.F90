@@ -64,7 +64,7 @@ subroutine dismce(questi, nomobz, repi, repkz, ierd)
     call jeexin(nomob//'.CELD', iret)
     if (iret .eq. 0) then
         ierd = 1
-        goto 9999
+        goto 999
     end if
 !
     call jeveuo(nomob//'.CELD', 'L', vi=celd)
@@ -112,10 +112,6 @@ subroutine dismce(questi, nomobz, repi, repkz, ierd)
             repk = 'NON'
         end if
 !
-    else if (questi .eq. 'NOM_MODELE') then
-        call jeveuo(nomob//'.CELK', 'L', jcelk)
-        call dismlg(questi, zk24(jcelk), repi, repk, ierd)
-!
     else if (questi .eq. 'MXNBSP') then
         repi = max(1, celd(3))
 !
@@ -129,7 +125,7 @@ subroutine dismce(questi, nomobz, repi, repkz, ierd)
         ierd = 1
     end if
 !
-9999 continue
+999 continue
     repkz = repk
 !
     call jedema()

@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -105,7 +105,8 @@ POST_ELEM = OPER(
         GEOMETRIE=SIMP(statut="f", typ="TXM", defaut="INITIALE", into=("INITIALE", "DEFORMEE")),
         CHAM_GD=SIMP(statut="f", typ=(cham_no_sdaster, cham_elem)),
         RESULTAT=SIMP(
-            statut="f", typ=(mode_meca, evol_elas, evol_noli, mult_elas, fourier_elas, dyna_trans)
+            statut="f",
+            typ=(mode_meca, evol_elas, evol_noli, mult_elas, fourier_elas, dyna_trans, evol_sech),
         ),
         CRITERE=SIMP(statut="f", typ="TXM", defaut="RELATIF", into=("RELATIF", "ABSOLU")),
         b_prec_rela=BLOC(
@@ -160,7 +161,8 @@ POST_ELEM = OPER(
         MODE_FOURIER=SIMP(statut="f", typ="I", defaut=0),
         CHAM_GD=SIMP(statut="f", typ=(cham_no_sdaster, cham_elem)),
         RESULTAT=SIMP(
-            statut="f", typ=(mode_meca, evol_elas, evol_ther, evol_noli, dyna_trans, mult_elas)
+            statut="f",
+            typ=(mode_meca, evol_elas, evol_ther, evol_noli, dyna_trans, mult_elas, evol_sech),
         ),
         CRITERE=SIMP(statut="f", typ="TXM", defaut="RELATIF", into=("RELATIF", "ABSOLU")),
         b_prec_rela=BLOC(
@@ -221,7 +223,9 @@ POST_ELEM = OPER(
         ANGLE=SIMP(statut="f", typ="I", defaut=0),
         MODE_FOURIER=SIMP(statut="f", typ="I", defaut=0),
         CHAM_GD=SIMP(statut="f", typ=(cham_no_sdaster, cham_elem)),
-        RESULTAT=SIMP(statut="f", typ=(mode_meca, evol_elas, evol_ther, evol_noli, dyna_trans)),
+        RESULTAT=SIMP(
+            statut="f", typ=(mode_meca, evol_elas, evol_ther, evol_noli, dyna_trans, evol_sech)
+        ),
         CRITERE=SIMP(statut="f", typ="TXM", defaut="RELATIF", into=("RELATIF", "ABSOLU")),
         b_prec_rela=BLOC(
             condition="""(equal_to("CRITERE", 'RELATIF'))""",
@@ -392,7 +396,7 @@ POST_ELEM = OPER(
         ),
         MODELE=SIMP(statut="f", typ=modele_sdaster),
         CHAM_MATER=SIMP(statut="f", typ=cham_mater),
-        RESULTAT=SIMP(statut="f", typ=(evol_noli, evol_ther, evol_elas, evol_char)),
+        RESULTAT=SIMP(statut="f", typ=(evol_noli, evol_ther, evol_elas, evol_char, evol_sech)),
         CHAM_GD=SIMP(statut="f", typ=(cham_no_sdaster, cham_elem)),
         CRITERE=SIMP(statut="f", typ="TXM", defaut="RELATIF", into=("RELATIF", "ABSOLU")),
         b_prec_rela=BLOC(
@@ -432,7 +436,7 @@ POST_ELEM = OPER(
         ),
         MODELE=SIMP(statut="f", typ=modele_sdaster),
         CHAM_MATER=SIMP(statut="f", typ=cham_mater),
-        RESULTAT=SIMP(statut="f", typ=(evol_noli, evol_ther, evol_elas, evol_char)),
+        RESULTAT=SIMP(statut="f", typ=(evol_noli, evol_ther, evol_elas, evol_char, evol_sech)),
         CHAM_GD=SIMP(statut="f", typ=(cham_no_sdaster, cham_elem)),
         CRITERE=SIMP(statut="f", typ="TXM", defaut="RELATIF", into=("RELATIF", "ABSOLU")),
         b_prec_rela=BLOC(
@@ -464,7 +468,7 @@ POST_ELEM = OPER(
         GROUP_MA=SIMP(statut="f", typ=grma, validators=NoRepeat(), max="**"),
         TYPE_MAILLE=SIMP(statut="f", typ="TXM", into=("2D", "3D")),
         TYPE_NORM=SIMP(statut="f", typ="TXM", into=("L2", "FROBENIUS")),
-        RESULTAT=SIMP(statut="f", typ=(evol_noli, evol_ther, evol_elas)),
+        RESULTAT=SIMP(statut="f", typ=(evol_noli, evol_ther, evol_elas, evol_sech)),
         NOM_CHAM=SIMP(
             statut="f",
             typ="TXM",
@@ -472,6 +476,7 @@ POST_ELEM = OPER(
             into=(
                 "DEPL",
                 "TEMP",
+                "SECH",
                 "NEUT_R",
                 "FLUX_ELGA",
                 "FLUX_ELNO",
@@ -521,7 +526,7 @@ POST_ELEM = OPER(
         ),
         TOUT=SIMP(statut="f", typ="TXM", into=("OUI",)),
         GROUP_MA=SIMP(statut="f", typ=grma, validators=NoRepeat(), max="**"),
-        RESULTAT=SIMP(statut="f", typ=(evol_noli, evol_ther, evol_elas)),
+        RESULTAT=SIMP(statut="f", typ=(evol_noli, evol_ther, evol_elas, evol_sech)),
         NOM_CHAM=SIMP(statut="f", typ="TXM", into=C_NOM_CHAM_INTO()),
         CHAM_GD=SIMP(statut="f", typ=(cham_no_sdaster, cham_elem)),
         MODELE=SIMP(statut="f", typ=modele_sdaster),

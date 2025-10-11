@@ -19,8 +19,8 @@
 subroutine vrcins(modelz, chmatz, carelz, inst, chvarc, &
                   codret, nompaz, basez)
     implicit none
-#include "asterf_types.h"
 #include "jeveux.h"
+#include "asterf_types.h"
 #include "asterc/r8nnem.h"
 #include "asterfort/assert.h"
 #include "asterfort/cescel.h"
@@ -28,6 +28,7 @@ subroutine vrcins(modelz, chmatz, carelz, inst, chvarc, &
 #include "asterfort/detrsd.h"
 #include "asterfort/dismoi.h"
 #include "asterfort/imprsd.h"
+#include "asterfort/int_to_char8.h"
 #include "asterfort/jedema.h"
 #include "asterfort/jeexin.h"
 #include "asterfort/jelira.h"
@@ -38,7 +39,6 @@ subroutine vrcins(modelz, chmatz, carelz, inst, chvarc, &
 #include "asterfort/utmess.h"
 #include "asterfort/vrcin1.h"
 #include "asterfort/vrcin2.h"
-#include "asterfort/int_to_char8.h"
 !
     character(len=2) :: codret
     character(len=19) :: chvarc
@@ -160,6 +160,9 @@ subroutine vrcins(modelz, chmatz, carelz, inst, chvarc, &
         ce1v(k) = rundef
     end do
 !
+    call dismoi('NOM_LIGREL', modele, 'MODELE', repk=ligrmo)
+    call dismoi('NOM_MAILLA', modele, 'MODELE', repk=noma)
+    call jeveuo(ligrmo//'.TYFE', 'L', jmaille)
 !
     do ichs = 1, nbchs
         chs = liste_ch(ichs) (1:19)
@@ -223,9 +226,8 @@ subroutine vrcins(modelz, chmatz, carelz, inst, chvarc, &
 !                   -- issue23456 : il peut arriver que nbsp=1 mais sans aucune valeur :
                     if (nbsp .eq. 1 .and. .not. exival) goto 70
 !
-                    call dismoi('NOM_MAILLA', modele, 'MODELE', repk=noma)
+
                     nomail = int_to_char8(ima)
-                    call jeveuo(modele//'.MAILLE', 'L', jmaille)
                     nute = zi(jmaille-1+ima)
                     call jenuno(jexnum('&CATA.TE.NOMTE', nute), nomte)
                     valk(1) = nocmp1
@@ -266,7 +268,6 @@ subroutine vrcins(modelz, chmatz, carelz, inst, chvarc, &
 !
 !   4. recopie du champ simple dans le champ chvarc
 !   -----------------------------------------------------
-    ligrmo = modele//'.MODELE'
     call cescel(chvars, ligrmo, 'INIT_VARC', nompar, 'NAN', &
                 nncp, base, chvarc, 'F', ibid)
 !

@@ -1,0 +1,272 @@
+# coding=utf-8
+# --------------------------------------------------------------------
+# Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
+# This file is part of code_aster.
+#
+# code_aster is free software: you can redistribute it and/or modify
+# it under the terms of the GNU General Public License as published by
+# the Free Software Foundation, either version 3 of the License, or
+# (at your option) any later version.
+#
+# code_aster is distributed in the hope that it will be useful,
+# but WITHOUT ANY WARRANTY; without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+# GNU General Public License for more details.
+#
+# You should have received a copy of the GNU General Public License
+# along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
+# --------------------------------------------------------------------
+
+
+########################################################################
+#          TEST CALCUL avec HHO et CG                                  #
+########################################################################
+
+from code_aster.Commands import *
+from code_aster import CA
+
+CA.init(
+    "--test",
+    ERREUR=_F(ALARME="EXCEPTION", ERREUR_F="EXCEPTION"),
+    DEBUG=_F(SDVERI="OUI", JXVERI="OUI"),
+)
+
+
+mesh0 = LIRE_MAILLAGE(FORMAT="MED", PARTITIONNEUR="PTSCOTCH")
+
+mesh = CREA_MAILLAGE(MAILLAGE=mesh0, MODI_HHO=_F(TOUT="OUI"))
+
+
+mesh = MODI_MAILLAGE(reuse=mesh, MAILLAGE=mesh, ORIE_PEAU=_F(GROUP_MA_PEAU=("HAUT_HHO", "HAUT_CG")))
+
+
+mater = DEFI_MATERIAU(ELAS=_F(E=70, NU=0.3))
+
+fieldmat = AFFE_MATERIAU(AFFE=_F(MATER=mater, TOUT="OUI"), MAILLAGE=mesh)
+
+rampe = DEFI_FONCTION(
+    NOM_PARA="INST", VALE=(0.0, 0.0, 1.0, 1.0), PROL_DROITE="LINEAIRE", PROL_GAUCHE="EXCLU"
+)
+
+listr = DEFI_LIST_REEL(DEBUT=0.0, INTERVALLE=_F(JUSQU_A=1.0, NOMBRE=1))
+
+times = DEFI_LIST_INST(
+    DEFI_LIST=_F(LIST_INST=listr), ECHEC=_F(ACTION="DECOUPE", EVENEMENT="ERREUR", SUBD_NIVEAU=3)
+)
+
+
+modeli = ["D_PLAN", "D_PLAN_HHO"]
+model_grma = [("CG", "BAS_CG", "HAUT_CG"), ("HHO", "BAS_HHO", "HAUT_HHO")]
+diri_grma = ["BAS_CG", "BAS_HHO"]
+pres_grma = ["HAUT_CG", "HAUT_HHO"]
+
+nom_cham = ["DEPL", "HHO_DEPL"]
+AX = [61.5226348714969, 63.2865195425148]
+AY = [306.41750409645596, 307.47429485113275]
+
+# compute cG and HHO separately
+
+for i in range(2):
+
+    model = AFFE_MODELE(
+        AFFE=_F(MODELISATION=modeli[i], PHENOMENE="MECANIQUE", GROUP_MA=model_grma[i]),
+        MAILLAGE=mesh,
+    )
+
+    depl = AFFE_CHAR_CINE(MECA_IMPO=_F(DX=0.0, DY=0.0, GROUP_MA=diri_grma[i]), MODELE=model)
+
+    load = AFFE_CHAR_MECA(PRES_REP=_F(PRES=10, GROUP_MA=pres_grma[i]), MODELE=model)
+
+    resnonl = STAT_NON_LINE(
+        CHAM_MATER=fieldmat,
+        COMPORTEMENT=_F(DEFORMATION="PETIT", RELATION="ELAS", TOUT="OUI"),
+        EXCIT=(
+            _F(CHARGE=depl, TYPE_CHARGE="FIXE_CSTE"),
+            _F(CHARGE=load, FONC_MULT=rampe, TYPE_CHARGE="FIXE_CSTE"),
+        ),
+        INCREMENT=_F(LIST_INST=times),
+        MODELE=model,
+    )
+
+    resnonl = CALC_CHAMP(
+        reuse=resnonl,
+        CHAM_MATER=fieldmat,
+        CRITERES=("SIEQ_NOEU", "SIEQ_ELGA"),
+        PROPRIETES=("MATE_ELEM", "MATE_ELGA"),
+        CONTRAINTE=("SIEF_ELNO", "SIEF_NOEU"),
+        DEFORMATION=("EPSI_ELNO", "EPSI_ELGA"),
+        VARI_INTERNE=("VARC_ELGA"),
+        MODELE=model,
+        RESULTAT=resnonl,
+    )
+
+    TEST_RESU(
+        RESU=(
+            _F(
+                INST=1.0,
+                RESULTAT=resnonl,
+                NOM_CHAM=nom_cham[i],
+                NOM_CMP="DX",
+                TYPE_TEST="SOMM_ABS",
+                VALE_CALC=AX[i],
+                CRITERE="RELATIF",
+            ),
+            _F(
+                INST=1.0,
+                RESULTAT=resnonl,
+                NOM_CHAM=nom_cham[i],
+                NOM_CMP="DY",
+                TYPE_TEST="SOMM_ABS",
+                VALE_CALC=AY[i],
+                CRITERE="RELATIF",
+            ),
+        )
+    )
+
+    IMPR_RESU(UNITE=80 + i, RESU=_F(RESULTAT=resnonl, IMPR_NOM_VARI="OUI"), FORMAT="MED", INFO=1)
+
+
+# compute cG and HHO together
+
+model = AFFE_MODELE(
+    AFFE=(
+        _F(MODELISATION=modeli[0], PHENOMENE="MECANIQUE", GROUP_MA=model_grma[0]),
+        _F(MODELISATION=modeli[1], PHENOMENE="MECANIQUE", GROUP_MA=model_grma[1]),
+    ),
+    MAILLAGE=mesh,
+)
+
+# thet that error is treated
+is_ok = 0
+try:
+    deplall = AFFE_CHAR_CINE(
+        MECA_IMPO=(_F(DX=0.0, DY=0.0, GROUP_MA=diri_grma),), MODELE=model, INFO=1
+    )
+except CA.AsterError as err:
+    fmt_raison = (
+        "-" * 80
+        + """
+
+   Exception interceptee
+   Message : %s
+
+"""
+        + "-" * 80
+        + "\n"
+    )
+
+    print(fmt_raison % str(err))
+    # on verifie que l'erreur fatale est bien celle que l'on attendait :
+    if err.id_message == "CHARGES_2":
+        is_ok = 1
+
+TAB1 = CREA_TABLE(
+    LISTE=(_F(PARA="TEST", TYPE_K="K8", LISTE_K="VALEUR  "), _F(PARA="BOOLEEN", LISTE_I=is_ok))
+)
+TEST_TABLE(
+    REFERENCE="ANALYTIQUE",
+    VALE_CALC_I=1,
+    VALE_REFE_I=1,
+    NOM_PARA="BOOLEEN",
+    TABLE=TAB1,
+    FILTRE=_F(NOM_PARA="TEST", VALE_K="VALEUR  "),
+)
+
+deplcG = AFFE_CHAR_CINE(MECA_IMPO=_F(DX=0.0, DY=0.0, GROUP_MA=diri_grma[0]), MODELE=model, INFO=1)
+deplHHO = AFFE_CHAR_CINE(MECA_IMPO=_F(DX=0.0, DY=0.0, GROUP_MA=diri_grma[1]), MODELE=model, INFO=1)
+depl = AFFE_CHAR_CINE(
+    MECA_IMPO=(
+        _F(DX=0.0, DY=0.0, GROUP_MA=diri_grma[0]),
+        _F(DX=0.0, DY=0.0, GROUP_MA=diri_grma[1]),
+    ),
+    MODELE=model,
+    INFO=1,
+)
+
+load = AFFE_CHAR_MECA(PRES_REP=_F(PRES=10, GROUP_MA=pres_grma), MODELE=model)
+
+resnonl = STAT_NON_LINE(
+    CHAM_MATER=fieldmat,
+    COMPORTEMENT=_F(DEFORMATION="PETIT", RELATION="ELAS", TOUT="OUI"),
+    EXCIT=(
+        _F(CHARGE=depl, TYPE_CHARGE="FIXE_CSTE"),
+        _F(CHARGE=load, FONC_MULT=rampe, TYPE_CHARGE="FIXE_CSTE"),
+    ),
+    INCREMENT=_F(LIST_INST=times),
+    MODELE=model,
+)
+
+resnonl2 = STAT_NON_LINE(
+    CHAM_MATER=fieldmat,
+    COMPORTEMENT=_F(DEFORMATION="PETIT", RELATION="ELAS", TOUT="OUI"),
+    EXCIT=(
+        _F(CHARGE=deplcG, TYPE_CHARGE="FIXE_CSTE"),
+        _F(CHARGE=deplHHO, TYPE_CHARGE="FIXE_CSTE"),
+        _F(CHARGE=load, FONC_MULT=rampe, TYPE_CHARGE="FIXE_CSTE"),
+    ),
+    INCREMENT=_F(LIST_INST=times),
+    MODELE=model,
+)
+
+
+for res in (resnonl, resnonl2):
+    res = CALC_CHAMP(
+        reuse=res,
+        CRITERES=("SIEQ_NOEU", "SIEQ_ELGA"),
+        PROPRIETES=("MATE_ELEM", "MATE_ELGA"),
+        CONTRAINTE=("SIEF_ELNO", "SIEF_NOEU"),
+        DEFORMATION=("EPSI_ELNO", "EPSI_ELGA"),
+        VARI_INTERNE=("VARC_ELGA"),
+        RESULTAT=res,
+    )
+
+    TEST_RESU(
+        RESU=(
+            # cG
+            _F(
+                INST=1.0,
+                RESULTAT=resnonl,
+                NOM_CHAM=nom_cham[0],
+                NOM_CMP="DX",
+                GROUP_MA="CG",
+                TYPE_TEST="SOMM_ABS",
+                VALE_CALC=AX[0],
+                CRITERE="RELATIF",
+            ),
+            _F(
+                INST=1.0,
+                RESULTAT=resnonl,
+                NOM_CHAM=nom_cham[0],
+                NOM_CMP="DY",
+                GROUP_MA="CG",
+                TYPE_TEST="SOMM_ABS",
+                VALE_CALC=AY[0],
+                CRITERE="RELATIF",
+            ),
+            # HHO
+            _F(
+                INST=1.0,
+                RESULTAT=resnonl,
+                NOM_CHAM=nom_cham[1],
+                NOM_CMP="DX",
+                GROUP_MA="HHO",
+                TYPE_TEST="SOMM_ABS",
+                VALE_CALC=AX[1],
+                CRITERE="RELATIF",
+            ),
+            _F(
+                INST=1.0,
+                RESULTAT=resnonl,
+                NOM_CHAM=nom_cham[1],
+                NOM_CMP="DY",
+                GROUP_MA="HHO",
+                TYPE_TEST="SOMM_ABS",
+                VALE_CALC=AY[1],
+                CRITERE="RELATIF",
+            ),
+        )
+    )
+
+IMPR_RESU(UNITE=83, RESU=_F(RESULTAT=resnonl, IMPR_NOM_VARI="OUI"), FORMAT="MED", INFO=1)
+
+FIN()

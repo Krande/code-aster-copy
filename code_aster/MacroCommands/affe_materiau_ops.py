@@ -182,9 +182,7 @@ def createExternalStateVariable(fkw, nomVarc, mesh, kwTout, grp):
                 return "META_ELNO"
             if name.startswith("NEUT"):
                 return "NEUT"
-            if name == "SECH":
-                return "TEMP"
-            if name not in ("CORR", "EPSA", "GEOM", "IRRA", "PTOT", "TEMP"):
+            if name not in ("CORR", "EPSA", "GEOM", "IRRA", "PTOT", "TEMP", "SECH"):
                 raise KeyError("Unknown external state variables")
             return name
 

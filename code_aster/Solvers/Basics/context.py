@@ -40,7 +40,7 @@ class Context:
         problem: :py:class:`PhysicalProblem` object
         state: :py:class:`PhysicalState` object
         result: :py:class:`Result` object (:py:class:`NonLinearResult`,
-            :py:class:`ThermalResult`)
+            :py:class:`ThermalResult` , :py:class:`DryingResult`)
         problem_type: :py:class:`ProblemType` enum value
         keywords: Part of the user keywords
         oper: :py:class:`BaseOperators` object
@@ -240,7 +240,7 @@ class ContextMixin:
         problem: :py:class:`PhysicalProblem` object
         state: :py:class:`PhysicalState` object
         result: :py:class:`Result` object (:py:class:`NonLinearResult`,
-            :py:class:`ThermalResult`)
+            :py:class:`ThermalResult`, :py:class:`DryingResult`)
         problem_type: :py:class:`ProblemType` enum value
         keywords: Part of the user keywords
         oper: :py:class:`BaseOperators` object

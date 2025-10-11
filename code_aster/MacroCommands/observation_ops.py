@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -23,7 +23,6 @@ import copy
 
 import numpy
 
-from ..Cata.DataStructure import dyna_harmo, dyna_trans, evol_elas, mode_meca
 from ..Cata.Syntax import _F
 from ..CodeCommands import CREA_CHAMP, CREA_RESU, DEFI_GROUP
 from ..CodeCommands import MODI_REPERE as MODI_REPERE_CMD

@@ -22,32 +22,32 @@ subroutine aflrch(lisrez, chargz, type_liai, elim, detr_lisrez, l_preallocz)
 !
 #include "jeveux.h"
 #include "asterc/indik8.h"
+#include "asterfort/agdual.h"
 #include "asterfort/assert.h"
+#include "asterfort/char8_to_int.h"
 #include "asterfort/cragch.h"
 #include "asterfort/craglc.h"
 #include "asterfort/dismoi.h"
 #include "asterfort/exisdg.h"
+#include "asterfort/getvtx.h"
 #include "asterfort/impre2.h"
 #include "asterfort/infniv.h"
 #include "asterfort/jedema.h"
 #include "asterfort/jedetr.h"
-#include "asterfort/jeexin.h"
 #include "asterfort/jeecra.h"
+#include "asterfort/jeexin.h"
 #include "asterfort/jelira.h"
 #include "asterfort/jemarq.h"
 #include "asterfort/jenonu.h"
 #include "asterfort/jeveuo.h"
+#include "asterfort/jexatr.h"
 #include "asterfort/jexnom.h"
+#include "asterfort/jexnum.h"
+#include "asterfort/nbec.h"
 #include "asterfort/nocart.h"
 #include "asterfort/noligr.h"
 #include "asterfort/ordlrl.h"
 #include "asterfort/utmess.h"
-#include "asterfort/nbec.h"
-#include "asterfort/jexnum.h"
-#include "asterfort/jexatr.h"
-#include "asterfort/getvtx.h"
-#include "asterfort/agdual.h"
-#include "asterfort/char8_to_int.h"
 !
     character(len=*), intent(in) :: lisrez
     character(len=*), intent(in) :: chargz
@@ -110,7 +110,6 @@ subroutine aflrch(lisrez, chargz, type_liai, elim, detr_lisrez, l_preallocz)
     aster_logical :: detr_lisrel, l_lag1, l_prealloc, lcolle
 
     integer(kind=8) :: niv, numel, nunewm, iexi, jlgns
-    character(len=8), pointer :: lgrf(:) => null()
     integer(kind=8), pointer :: rlnr(:) => null()
     character(len=8), pointer :: rltc(:) => null()
     integer(kind=8), pointer :: rlnt(:) => null()
@@ -128,9 +127,8 @@ subroutine aflrch(lisrez, chargz, type_liai, elim, detr_lisrez, l_preallocz)
 !
 !
     call dismoi('NOM_MODELE', charge, 'CHARGE', repk=mod)
-    ligrmo = mod(1:8)//'.MODELE'
-    call jeveuo(ligrmo//'.LGRF', 'L', vk8=lgrf)
-    noma = lgrf(1)
+    call dismoi('NOM_LIGREL', mod, 'MODELE', repk=ligrmo)
+    call dismoi('NOM_MAILLA', ligrmo, 'LIGREL', repk=noma)
     lcolle = .false.
     call jeexin(noma//'.NOMNOE', ier)
     if (ier .ne. 0) then

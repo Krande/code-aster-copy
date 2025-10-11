@@ -23,9 +23,12 @@ subroutine rapo2d(numdlz, iocc, fonrez, lisrez, chargz)
 #include "jeveux.h"
 #include "asterc/getfac.h"
 #include "asterfort/afrela.h"
+#include "asterfort/as_allocate.h"
+#include "asterfort/as_deallocate.h"
 #include "asterfort/assert.h"
 #include "asterfort/assvec.h"
 #include "asterfort/calcul.h"
+#include "asterfort/char8_to_int.h"
 #include "asterfort/detrsd.h"
 #include "asterfort/dismoi.h"
 #include "asterfort/exlim1.h"
@@ -43,14 +46,11 @@ subroutine rapo2d(numdlz, iocc, fonrez, lisrez, chargz)
 #include "asterfort/jexnum.h"
 #include "asterfort/malin1.h"
 #include "asterfort/mecact.h"
-#include "asterfort/vemare.h"
 #include "asterfort/mesomm.h"
 #include "asterfort/reajre.h"
 #include "asterfort/reliem.h"
 #include "asterfort/utmess.h"
-#include "asterfort/as_deallocate.h"
-#include "asterfort/as_allocate.h"
-#include "asterfort/char8_to_int.h"
+#include "asterfort/vemare.h"
 !
     character(len=*) :: numdlz, chargz, fonrez, lisrez
 ! -------------------------------------------------------
@@ -102,7 +102,6 @@ subroutine rapo2d(numdlz, iocc, fonrez, lisrez, chargz)
     real(kind=8), pointer :: inertie_raccord(:) => null()
     character(len=8), pointer :: lisddl(:) => null()
     character(len=8), pointer :: lisno(:) => null()
-    character(len=8), pointer :: lgrf(:) => null()
     real(kind=8), pointer :: vale(:) => null()
 ! --------- FIN  DECLARATIONS  VARIABLES LOCALES --------
 !
@@ -162,12 +161,11 @@ subroutine rapo2d(numdlz, iocc, fonrez, lisrez, chargz)
 !
 ! --- -----------------------------------------------------------------
 !     LIGREL DU MODELE
-    ligrmo = mod(1:8)//'.MODELE'
+    call dismoi('NOM_LIGREL', mod, 'MODELE', repk=ligrmo)
 !
 ! --- -----------------------------------------------------------------
 ! --- MAILLAGE ASSOCIE AU MODELE
-    call jeveuo(ligrmo//'.LGRF', 'L', vk8=lgrf)
-    noma = lgrf(1)
+    call dismoi('NOM_MAILLA', ligrmo, 'LIGREL', repk=noma)
     grnoma = noma//'.GROUPENO'
 !
 ! --- -----------------------------------------------------------------

@@ -122,22 +122,25 @@ bool ParallelMesh::updateGlobalGroupOfCells( void ) {
 };
 
 bool ParallelMesh::isQuadratic( const bool local ) const {
-    if ( local ) {
-        CALL_JEMARQ();
-        auto cellsType = getMedCellsTypes();
-        cellsType->updateValuePointer();
-        for ( auto &cellType : cellsType ) {
-            if ( cellType == 103 || cellType == 104 || cellType == 206 || cellType == 207 ||
-                 cellType == 208 || cellType == 209 || cellType == 310 || cellType == 315 ||
-                 cellType == 318 || cellType == 313 || cellType == 320 || cellType == 327 ) {
-                CALL_JEDEMA();
-                return true;
-            }
+    bool ret = false;
+    CALL_JEMARQ();
+    auto cellsType = getMedCellsTypes();
+    cellsType->updateValuePointer();
+    for ( auto &cellType : cellsType ) {
+        if ( cellType == 103 || cellType == 104 || cellType == 206 || cellType == 207 ||
+             cellType == 208 || cellType == 209 || cellType == 310 || cellType == 315 ||
+             cellType == 318 || cellType == 313 || cellType == 320 || cellType == 327 ) {
+            ret = true;
+            break;
         }
-        CALL_JEDEMA();
-        return false;
     }
-    ASTERINTEGER test = (ASTERINTEGER)isQuadratic( false );
+    CALL_JEDEMA();
+
+    if ( local ) {
+        return ret;
+    }
+
+    ASTERINTEGER test = (ASTERINTEGER)ret;
     test = AsterMPI::max( test );
     return (bool)test;
 }
@@ -450,6 +453,24 @@ bool ParallelMesh::build() {
     _buildGlobal2LocalNodeIdsMapPtr();
     _joints->build();
     return BaseMesh::build();
+}
+
+ParallelMeshPtr ParallelMesh::fix( const bool remove_orphan, const bool positive_measure,
+                                   const bool outward_normal, const bool double_nodes,
+                                   const bool double_cells, const ASTERDOUBLE tole,
+                                   const ASTERINTEGER info ) {
+    auto mesh_out = std::make_shared< ParallelMesh >();
+    ASTERINTEGER inf = info, fro, fpv, fon, fdn, fdc;
+    fro = static_cast< int >( remove_orphan );
+    fpv = static_cast< int >( positive_measure );
+    fon = static_cast< int >( outward_normal );
+    fdn = static_cast< int >( double_nodes );
+    fdc = static_cast< int >( double_cells );
+    CALL_FIX_MESH( getName(), mesh_out->getName(), &fro, &fpv, &fon, &fdn, &fdc, &tole, &inf );
+    mesh_out->updateGlobalGroupOfNodes();
+    mesh_out->updateGlobalGroupOfCells();
+    mesh_out->build();
+    return mesh_out;
 }
 
 ParallelMeshPtr ParallelMesh::convertToLinear( const ASTERINTEGER info ) {

@@ -198,6 +198,7 @@ contains
         dxi = 0.d0
         F = 0.d0
         converged = .false.
+        iter = 0
 
         do while (.not. converged .and. iter < max_iter)
 

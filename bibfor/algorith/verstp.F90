@@ -21,7 +21,7 @@ subroutine verstp(l_stat, &
                   loadNameJvZ, loadInfoJvZ, &
                   tpsthe, timeMapZ, tempPrevZ, tempIterZ, &
                   varcCurrZ, comporTherZ, &
-                  hydrPrevZ, hydrCurrZ, dryCurrZ, &
+                  hydrPrevZ, hydrCurrZ, &
                   vectElemZ, jvBase)
 !
     use loadTherCompute_module
@@ -46,7 +46,7 @@ subroutine verstp(l_stat, &
     real(kind=8), intent(in) :: tpsthe(6)
     character(len=*), intent(in) :: comporTherZ, timeMapZ
     character(len=*), intent(in) :: tempPrevZ, tempIterZ, varcCurrZ
-    character(len=*), intent(in) :: hydrPrevZ, hydrCurrZ, dryCurrZ
+    character(len=*), intent(in) :: hydrPrevZ, hydrCurrZ
     character(len=*), intent(in) :: vectElemZ
     character(len=1), intent(in) :: jvBase
 !
@@ -72,7 +72,6 @@ subroutine verstp(l_stat, &
 ! In  tempIter          : temperature field at current Newton iteration
 ! In  hydrPrev          : previous hydration
 ! In  hydrCurr          : current hydration
-! In  dryCurr           : current drying
 ! In  vectElem          : name of vectElem result
 ! In  jvBase            : JEVEUX base for object
 !
@@ -87,7 +86,7 @@ subroutine verstp(l_stat, &
     integer(kind=8), pointer :: listLoadInfo(:) => null()
     character(len=24) :: vectElem, resuElem
     real(kind=8) :: timeCurr, timePara(2), theta
-    character(len=24) :: timeMap, tempPrev, tempIter, varcCurr, dryCurr
+    character(len=24) :: timeMap, tempPrev, tempIter, varcCurr
     character(len=13) :: loadPreObject
     character(len=24) :: loadLigrel
 !
@@ -103,9 +102,7 @@ subroutine verstp(l_stat, &
     timeMap = timeMapZ
     tempIter = tempIterZ
     varcCurr = varcCurrZ
-    dryCurr = dryCurrZ
     tempPrev = tempPrevZ
-    dryCurr = dryCurrZ
 
 ! - Get time parameters
     timeCurr = tpsthe(1)
@@ -134,7 +131,7 @@ subroutine verstp(l_stat, &
     call resi_ther(l_stat, &
                    modelZ, caraElemZ, matecoZ, &
                    timePara, timeMap, varcCurr, &
-                   comporTherZ, tempIter, dryCurr, &
+                   comporTherZ, tempIter, &
                    tempPrev, hydrPrevZ, hydrCurrZ, &
                    resuElem, vectElem, jvBase)
 

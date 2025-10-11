@@ -17,11 +17,11 @@
 ! --------------------------------------------------------------------
 !
 interface
-    subroutine cfmxre(mesh  , model_   , ds_measure, ds_contact , nume_inst,&
-                      sddisc, hval_algo, hval_incr )
+    subroutine cfmxre(mesh, modelZ, ds_measure, ds_contact, nume_inst, &
+                      sddisc, hval_algo, hval_incr)
         use NonLin_Datastructure_type
         character(len=8), intent(in) :: mesh
-        character(len=*), intent(in) :: model_
+        character(len=*), intent(in) :: modelZ
         type(NL_DS_Measure), intent(inout) :: ds_measure
         type(NL_DS_Contact), intent(inout) :: ds_contact
         integer(kind=8), intent(in) :: nume_inst

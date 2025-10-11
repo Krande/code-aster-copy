@@ -25,10 +25,11 @@ subroutine assma2(ldistme, lmasym, tt, nu14, ncmp, matel, &
 !-----------------------------------------------------------------------
 ! but : assembler les macro-elements dans une matr_asse
 !-----------------------------------------------------------------------
-#include "asterf_types.h"
 #include "jeveux.h"
+#include "asterf_types.h"
 #include "asterc/indik8.h"
 #include "asterfort/ascopr.h"
+#include "asterfort/asmpi_info.h"
 #include "asterfort/asretm.h"
 #include "asterfort/cordd2.h"
 #include "asterfort/dismoi.h"
@@ -41,7 +42,6 @@ subroutine assma2(ldistme, lmasym, tt, nu14, ncmp, matel, &
 #include "asterfort/jexnum.h"
 #include "asterfort/nbec.h"
 #include "asterfort/ssvalm.h"
-#include "asterfort/asmpi_info.h"
 !-----------------------------------------------------------------------
     aster_logical, intent(in) :: ldistme, lmasym
     character(len=2), intent(in) :: tt
@@ -54,6 +54,7 @@ subroutine assma2(ldistme, lmasym, tt, nu14, ncmp, matel, &
     integer(kind=8) :: lgtmp2
 !-----------------------------------------------------------------------
     character(len=16) :: optio
+    character(len=19) :: ligrel
     aster_logical :: lmesym
     character(len=8) :: mo, ma, nogdco, nogdsi, nomacr
     character(len=14) :: num2
@@ -107,7 +108,8 @@ subroutine assma2(ldistme, lmasym, tt, nu14, ncmp, matel, &
     call dismoi('NB_NO_MAILLA', mo, 'MODELE', repi=nm)
     call dismoi('NB_SM_MAILLA', mo, 'MODELE', repi=nbsma)
     call jeveuo(ma//'.NOMACR', 'L', vk8=vnomacr)
-    call jeveuo(mo//'.MODELE    .SSSA', 'L', vi=sssa)
+    call dismoi('NOM_LIGREL', mo, 'MODELE', repk=ligrel)
+    call jeveuo(ligrel//'.SSSA', 'L', vi=sssa)
 !
     call jeveuo(nu14//'.SMOS.SMDI', 'L', jsmdi)
     call jeveuo(nu14//'.SMOS.SMHC', 'L', jsmhc)

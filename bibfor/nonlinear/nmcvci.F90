@@ -44,6 +44,7 @@ subroutine nmcvci(model, hhoField, &
 #include "asterfort/jelira.h"
 #include "asterfort/jemarq.h"
 #include "asterfort/jeveuo.h"
+#include "asterfort/vecdid_cine.h"
 #include "asterfort/vtcmbl.h"
 #include "asterfort/vtcreb.h"
 
@@ -57,7 +58,7 @@ subroutine nmcvci(model, hhoField, &
     integer(kind=8) :: neq, ieq, neq2, iret, jinfc, ichar
     integer(kind=8) :: nbchar, jlchar
     character(len=1) :: typch(2)
-    aster_logical :: lvcine, l_hho
+    aster_logical :: lvcine, l_hho, l_didi
     integer(kind=8), pointer :: v_dlci(:) => null()
     real(kind=8), pointer :: cncim(:) => null()
     real(kind=8), pointer :: vale(:) => null()
@@ -83,9 +84,16 @@ subroutine nmcvci(model, hhoField, &
 !     -- Y-A-T-IL DES CHARGES CINEMATIQUES ?
 !     -----------------------------------------------------------------
     lvcine = .false.
+    l_didi = .false.
     call jeveuo(infoch, 'L', jinfc)
-    do ichar = 1, zi(jinfc)
-        if (zi(jinfc+ichar) .lt. 0) lvcine = .true.
+    nbchar = zi(jinfc)
+    do ichar = 1, nbchar
+        if (zi(jinfc+ichar) .lt. 0) then
+            lvcine = .true.
+            if (zi(jinfc-1+1+ichar+3*nbchar+2) .eq. 1) then
+                l_didi = .true.
+            end if
+        end if
     end do
 !
 !     -- Y-A-T-IL DES CHARGES CONTENANT DES CHARGES CINEMATIQUES ?
@@ -140,6 +148,12 @@ subroutine nmcvci(model, hhoField, &
     typch(2) = 'R'
     call vtcmbl(2, typch, coefr, typch, l2cnci, &
                 typch(1), cncine)
+!
+!   Dirichlet differentiel
+!
+    if (l_didi) then
+        call vecdid_cine(charge, infoch, numedd, cncine)
+    end if
 !
 !     MENAGE :
 !     ---------

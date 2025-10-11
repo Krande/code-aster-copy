@@ -27,6 +27,7 @@ subroutine contMatrModi(modelZ, ds_contact, matrAsse)
 #include "asterfort/cfdisl.h"
 #include "asterfort/dismoi.h"
 #include "asterfort/echmat.h"
+#include "asterfort/exisd.h"
 #include "asterfort/isParallelMatrix.h"
 !
     character(len=*), intent(in) :: modelZ
@@ -42,8 +43,8 @@ subroutine contMatrModi(modelZ, ds_contact, matrAsse)
 !
 ! --------------------------------------------------------------------------------------------------
 !
-    character(len=3) :: mathpc
-    character(len=19) :: partit
+    integer(kind=8) :: iexi
+    character(len=8) :: partit
     aster_logical :: l_contact_adapt, ldist, l_parallel_matrix
     real(kind=8) :: minmat, maxmat, exponent_val
 !
@@ -63,7 +64,8 @@ subroutine contMatrModi(modelZ, ds_contact, matrAsse)
     if ((nint(ds_contact%update_init_coefficient) .eq. 0) .and. l_contact_adapt) then
         l_parallel_matrix = isParallelMatrix(matrAsse)
         call dismoi('PARTITION', modelZ, 'MODELE', repk=partit)
-        ldist = partit .ne. ' '
+        call exisd('PARTITION', partit, iexi)
+        ldist = iexi .ne. 0
         call echmat(matrAsse, ldist, l_parallel_matrix, minmat, maxmat)
         ds_contact%max_coefficient = maxmat
         if (abs(log(minmat)) .ge. r8prem()) then

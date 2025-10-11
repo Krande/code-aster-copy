@@ -16,11 +16,10 @@
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
 !
-subroutine cfmxre(mesh, model_, ds_measure, ds_contact, nume_inst, &
+subroutine cfmxre(mesh, modelZ, ds_measure, ds_contact, nume_inst, &
                   sddisc, hval_algo, hval_incr)
 !
     use NonLin_Datastructure_type
-!
     implicit none
 !
 #include "asterf_types.h"
@@ -37,7 +36,7 @@ subroutine cfmxre(mesh, model_, ds_measure, ds_contact, nume_inst, &
 #include "asterfort/nmchex.h"
 !
     character(len=8), intent(in) :: mesh
-    character(len=*), intent(in) :: model_
+    character(len=*), intent(in) :: modelZ
     type(NL_DS_Measure), intent(inout) :: ds_measure
     type(NL_DS_Contact), intent(inout) :: ds_contact
     integer(kind=8), intent(in) :: nume_inst
@@ -75,7 +74,7 @@ subroutine cfmxre(mesh, model_, ds_measure, ds_contact, nume_inst, &
 !
 ! --------------------------------------------------------------------------------------------------
 !
-    model = model_
+    model = modelZ
 
 ! - Contact parameters
     l_cont_cont = cfdisl(ds_contact%sdcont_defi, 'FORMUL_CONTINUE')
@@ -105,12 +104,12 @@ subroutine cfmxre(mesh, model_, ds_measure, ds_contact, nume_inst, &
 ! ----- Create fields
         if (l_cont_cont) then
             if (l_cont_node) then
-                call mmmres(mesh, time_incr, ds_contact, disp_cumu_inst, sddisc, &
+                call mmmres(mesh, time_incr, ds_contact, disp_cumu_inst, &
                             cnsinr, cnsper)
                 call mmmcpt(mesh, ds_measure, ds_contact, cnsinr)
             end if
         else if (l_cont_disc) then
-            call cfresu(time_incr, sddisc, ds_contact, disp_cumu_inst, disp_iter, &
+            call cfresu(time_incr, ds_contact, disp_cumu_inst, disp_iter, &
                         cnsinr, cnsper)
         else if (l_cont_lac) then
             call cfmxr0_lac(mesh, ds_contact, ds_measure)

@@ -73,7 +73,7 @@ subroutine nmcrsu(sddisc, lisins, ds_conv, ds_algopara, l_implex, &
     character(len=16) :: metlis
     integer(kind=8) :: iret
     real(kind=8) :: pas_mini_elas, valr
-    integer(kind=8) :: nb_adap, i_adap
+    integer(kind=8) :: nbAdap, iAdap
     integer(kind=8) :: iter_glob_maxi, iter_glob_elas
     integer(kind=8) :: ifm, niv, itmx, vali
     aster_logical :: ldeco
@@ -108,7 +108,7 @@ subroutine nmcrsu(sddisc, lisins, ds_conv, ds_algopara, l_implex, &
 !
     inikry = 0.9d0
     pas_mini_elas = 0.d0
-    call utdidt('L', sddisc, 'LIST', 'NADAPT', vali_=nb_adap)
+    call utdidt('L', sddisc, 'LIST', 'NADAPT', vali_=nbAdap)
     call utdidt('L', sddisc, 'LIST', 'METHODE', valk_=metlis)
 !
 ! --- NOM SDS DE LA LISINS
@@ -150,7 +150,7 @@ subroutine nmcrsu(sddisc, lisins, ds_conv, ds_algopara, l_implex, &
         call jedup1(lisevk, 'V', tpsevk)
         call jedup1(liseloca, 'V', tpseloca)
         call jedup1(lisesu, 'V', tpsesu)
-        if (nb_adap .ne. 0) then
+        if (nbAdap .ne. 0) then
             call jedup1(lisavr, 'V', tpsavr)
             call jedup1(lisaloca, 'V', tpsaloca)
             call jedup1(listpr, 'V', tpstpr)
@@ -196,18 +196,18 @@ subroutine nmcrsu(sddisc, lisins, ds_conv, ds_algopara, l_implex, &
 !
     if (metlis .eq. 'AUTO') then
         call getvis('CONVERGENCE', 'ITER_GLOB_MAXI', iocc=1, scal=itmx, nbret=iret)
-        do i_adap = 1, nb_adap
-            call getAdapEvent(sddisc, i_adap, eventType)
+        do iAdap = 1, nbAdap
+            call getAdapEvent(sddisc, iAdap, eventType)
             if (eventType .eq. ADAP_EVT_TRIGGER) then
-                call utdidt('L', sddisc, 'ADAP', 'NOM_PARA', index_=i_adap, &
+                call utdidt('L', sddisc, 'ADAP', 'NOM_PARA', index_=iAdap, &
                             valk_=nopara)
                 if (nopara .eq. 'NB_ITER_NEWT') then
-                    call utdidt('L', sddisc, 'ADAP', 'VALE', index_=i_adap, &
+                    call utdidt('L', sddisc, 'ADAP', 'VALE', index_=iAdap, &
                                 vali_=vali)
                     if (vali .eq. 0) then
                         vali = itmx/2
                         valr = vali
-                        call utdidt('E', sddisc, 'ADAP', 'VALE', index_=i_adap, &
+                        call utdidt('E', sddisc, 'ADAP', 'VALE', index_=iAdap, &
                                     valr_=valr)
                     end if
                 end if
@@ -218,8 +218,8 @@ subroutine nmcrsu(sddisc, lisins, ds_conv, ds_algopara, l_implex, &
 ! --- VERIF COHERENCE AVEC IMPLEX
 !
     if (metlis .eq. 'AUTO') then
-        do i_adap = 1, nb_adap
-            call getAdapAction(sddisc, i_adap, action_type)
+        do iAdap = 1, nbAdap
+            call getAdapAction(sddisc, iAdap, action_type)
             if (action_type .eq. ADAP_ACT_IMPLEX) then
                 if (.not. l_implex) then
                     call utmess('F', 'MECANONLINE6_4')

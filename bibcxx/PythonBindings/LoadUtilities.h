@@ -41,17 +41,19 @@ template < class cppclass, typename... Args >
 void addDirichletBCToInterface( py::class_< cppclass, Args... > pyclass ) {
 
     void ( cppclass::*c1 )( const DirichletBCPtr & ) = &cppclass::addLoad;
-    void ( cppclass::*c2 )( const DirichletBCPtr &currentLoad, const FunctionPtr &func ) =
-        &cppclass::addLoad;
-    void ( cppclass::*c3 )( const DirichletBCPtr &currentLoad, const FormulaPtr &func ) =
-        &cppclass::addLoad;
-    void ( cppclass::*c4 )( const DirichletBCPtr &currentLoad, const Function2DPtr &func ) =
-        &cppclass::addLoad;
+    void ( cppclass::*c5 )( const DirichletBCPtr &, const std::string &type ) = &cppclass::addLoad;
+    void ( cppclass::*c2 )( const DirichletBCPtr &currentLoad, const FunctionPtr &func,
+                            const std::string &type ) = &cppclass::addLoad;
+    void ( cppclass::*c3 )( const DirichletBCPtr &currentLoad, const FormulaPtr &func,
+                            const std::string &type ) = &cppclass::addLoad;
+    void ( cppclass::*c4 )( const DirichletBCPtr &currentLoad, const Function2DPtr &func,
+                            const std::string &type ) = &cppclass::addLoad;
 
     pyclass.def( "addDirichletBC", c1 );
     pyclass.def( "addDirichletBC", c2 );
     pyclass.def( "addDirichletBC", c3 );
     pyclass.def( "addDirichletBC", c4 );
+    pyclass.def( "addDirichletBC", c5 );
 };
 
 template < class cppclass, typename... Args >

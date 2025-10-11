@@ -721,7 +721,6 @@ def post_endo_fiss_ops(
     MasquerAlarme("CALCULEL5_48")
     MasquerAlarme("ALGORITH12_43")
     MasquerAlarme("CALCULEL2_12")
-    MasquerAlarme("CALCULEL5_7")
 
     # --------------------------------------------------
     # IMPORT OF ASTER COMMANDS
@@ -1004,6 +1003,5 @@ def post_endo_fiss_ops(
     RetablirAlarme("CALCULEL5_48")
     RetablirAlarme("ALGORITH12_43")
     RetablirAlarme("CALCULEL2_12")
-    RetablirAlarme("CALCULEL5_7")
 
     return MAFISS

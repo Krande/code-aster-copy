@@ -3,7 +3,7 @@
  * @brief Implementation de MeshCoordinatesField
  * @author Nicolas Sellenet
  * @section LICENCE
- *   Copyright (C) 1991 - 2023  EDF R&D                www.code-aster.org
+ *   Copyright (C) 1991 - 2025  EDF R&D                www.code-aster.org
  *
  *   This file is part of Code_Aster.
  *
@@ -33,12 +33,7 @@ void MeshCoordinatesField::assign( const JeveuxVectorReal &values ) {
 
 void MeshCoordinatesField::buildDescriptor() {
     _descriptor->allocate( 3 );
-    JeveuxChar32 objName( " " );
-    const std::string quantities( "&CATA.GD.NOMGD" );
-    const std::string geom( "GEOM_R" );
-    CALLO_JEXNOM( objName, quantities, geom );
-    ASTERINTEGER idxgeo = -1;
-    CALLO_JENONU( objName, &idxgeo );
+    ASTERINTEGER idxgeo = PhysicalQuantityManager::getPhysicalQuantityNumber( "GEOM_R" );
     ( *_descriptor )[0] = idxgeo;
     ( *_descriptor )[1] = -3; // X,Y,Z components
     ( *_descriptor )[2] = 14; // means 0b1110 for XYZ (and not W)

@@ -20,18 +20,18 @@ subroutine sele_elem_comp(modelz, compor, defo_comp, list_elem_comp)
 !
     implicit none
 !
-#include "asterfort/assert.h"
-#include "asterfort/nbelem.h"
-#include "asterfort/nbgrel.h"
 #include "asterfort/as_allocate.h"
-#include "asterfort/exisdg.h"
-#include "asterfort/jeveuo.h"
-#include "asterfort/jelira.h"
-#include "asterfort/jexnom.h"
-#include "asterfort/jexnum.h"
+#include "asterfort/assert.h"
+#include "asterfort/Behaviour_type.h"
 #include "asterfort/dismoi.h"
 #include "asterfort/etenca.h"
-#include "asterfort/Behaviour_type.h"
+#include "asterfort/exisdg.h"
+#include "asterfort/jelira.h"
+#include "asterfort/jeveuo.h"
+#include "asterfort/jexnom.h"
+#include "asterfort/jexnum.h"
+#include "asterfort/nbelem.h"
+#include "asterfort/nbgrel.h"
 !
 !
     character(len=*), intent(in) :: modelz
@@ -67,7 +67,7 @@ subroutine sele_elem_comp(modelz, compor, defo_comp, list_elem_comp)
 !
 ! --------------------------------------------------------------------------------------------------
 !
-    ligrmo = modelz(1:8)//'.MODELE'
+    call dismoi('NOM_LIGREL', modelz, 'MODELE', repk=ligrmo)
     call dismoi('NOM_MAILLA', modelz, 'MODELE', repk=mesh)
     call dismoi('NB_MA_MAILLA', mesh, 'MAILLAGE', repi=nb_elem_mesh)
 !

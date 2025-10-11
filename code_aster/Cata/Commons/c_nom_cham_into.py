@@ -431,6 +431,7 @@ class NomChamIntoGenerator:
             "VARI_ELGA": ((), tr("Variables internes aux points de Gauss")),
             "VITE_ABSOLU": ((), tr("Vitesse absolue aux noeuds")),
             "DEPL_ELGA": ((), tr("Déplacements aux sous-points")),
+            "SECH": ((), tr("Séchage aux noeuds")),
         },
         Phenomenon.PROPRIETES: {
             "MATE_ELGA": (

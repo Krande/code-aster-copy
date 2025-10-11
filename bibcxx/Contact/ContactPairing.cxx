@@ -570,7 +570,6 @@ void ContactPairing::buildFiniteElementDescriptor() {
 
     // Create finite element descriptor for virtual contact elements
     _fed = std::make_shared< FiniteElementDescriptor >( mesh );
-    _fed->setModel( model );
 
     // Create list of virtual nodes (none !)
     _fed->setNumberOfVirtualNodes( 0 );

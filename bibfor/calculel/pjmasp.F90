@@ -77,7 +77,7 @@ subroutine pjmasp(moa2, masp, corres, noca)
 !     -- RECUPERATION DU CHAMP DE COORDONNEES DU MAILLAGE 2
     chgeom = mail2//'.COORDO'
 !
-    ligrel = moa2//'.MODELE'
+    call dismoi('NOM_LIGREL', moa2, 'MODELE', repk=ligrel)
 !     1.  CALCUL DU CHAMP DE COORDONNEES DES ELGA (CHAMG):
 !     -------------------------------------------------------
 !

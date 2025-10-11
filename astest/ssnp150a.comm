@@ -22,8 +22,7 @@ from code_aster import CA
 
 try:
     # Import du module de calcul symbolique Sympy
-    with CA.disable_fpe():
-        import sympy
+    import sympy
 
     sympy_available = True
 except ImportError:

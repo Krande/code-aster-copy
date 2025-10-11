@@ -36,6 +36,7 @@ subroutine debca1(nin)
 
 #include "jeveux.h"
 #include "asterc/r8nnem.h"
+#include "asterfort/asmpi_info.h"
 #include "asterfort/cormgi.h"
 #include "asterfort/dismoi.h"
 #include "asterfort/jeexin.h"
@@ -46,11 +47,10 @@ subroutine debca1(nin)
 #include "asterfort/jexatr.h"
 #include "asterfort/jexnom.h"
 #include "asterfort/jexnum.h"
-#include "asterfort/nbgrel.h"
 #include "asterfort/nbelem.h"
+#include "asterfort/nbgrel.h"
 #include "asterfort/utmess.h"
 #include "asterfort/wkvect.h"
-#include "asterfort/asmpi_info.h"
 
     integer(kind=8) :: nin
 !----------------------------------------------------------------------
@@ -63,13 +63,12 @@ subroutine debca1(nin)
 !
 !----------------------------------------------------------------------
     mpi_int :: mrank, msize
-    character(len=8) :: ma
+    character(len=8) :: ma, partit
     integer(kind=8) :: iret, ier, opt, nbscmx, nbpara
     integer(kind=8) :: nnomx, nbopt, nbte, i, j, vali(2)
     character(len=16) :: nomop2, nomte
     character(len=3) :: bevois, exiele
     character(len=12) :: vge
-    character(len=19) :: partit
     real(kind=8) :: rundef
     integer(kind=8), pointer :: nbligcol(:) => null()
     character(len=16), pointer :: nvge(:) => null()

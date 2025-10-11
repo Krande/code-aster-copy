@@ -20,8 +20,8 @@ subroutine dismlg(questi, nomobz, repi, repkz, ierd)
 !
     implicit none
 !
-#include "asterf_types.h"
 #include "jeveux.h"
+#include "asterf_types.h"
 #include "asterfort/assert.h"
 #include "asterfort/dimge1.h"
 #include "asterfort/dismma.h"
@@ -61,7 +61,7 @@ subroutine dismlg(questi, nomobz, repi, repkz, ierd)
 !
     integer(kind=8) :: dimge(3)
     aster_logical :: melang
-    character(len=8) :: calcri, mailla, nomacr, modele, cellTypeName, k8bid, typmod2, typmod3
+    character(len=8) :: calcri, mailla, nomacr, cellTypeName, k8bid, typmod2, typmod3
     character(len=16) :: elemTypeName, phenom, modelization, tyvois, formul
     character(len=19) :: nomob
     character(len=32) :: repk
@@ -98,12 +98,7 @@ subroutine dismlg(questi, nomobz, repi, repkz, ierd)
         repk = zk8(jlgrf-1+4)
     else if (questi .eq. 'PARTITION') then
         call jeveuo(nomob//'.LGRF', 'L', jlgrf)
-        modele = zk8(jlgrf-1+2)
-        repk = modele//'.PARTSD'
-        call exisd('PARTITION', repk, iexi)
-        if (iexi .eq. 0) then
-            repk = ' '
-        end if
+        repk = zk8(jlgrf-1+2)
 
     else if (questi .eq. 'BESOIN_VOISIN') then
         repk = 'NON'
@@ -244,6 +239,14 @@ subroutine dismlg(questi, nomobz, repi, repkz, ierd)
                                 repk = 'OUI_P'
                             end if
                         end if
+
+                    else if (questi .eq. 'EXI_SECH') then
+                        if (lteatt('SECH', 'OUI', typel=elemTypeName)) repk = 'OUI'
+                        if (repk .eq. 'OUI') exit
+
+                    else if (questi .eq. 'EXI_NON_SECH') then
+                        if (.not. lteatt('SECH', 'OUI', typel=elemTypeName)) repk = 'OUI'
+                        if (repk .eq. 'OUI') exit
 
                     else if (questi .eq. 'EXI_HHO') then
                         call teattr('C', 'TYPMOD2', typmod2, iret, typel=elemTypeName)
@@ -465,9 +468,9 @@ subroutine dismlg(questi, nomobz, repi, repkz, ierd)
         call jeveuo(nomob//'.NBNO', 'L', vi=nbno)
         repi = nbno(1)
 
-    else if (questi .eq. 'NOM_MODELE') then
+    else if (questi .eq. 'TYPE_LAGR') then
         call jeveuo(nomob//'.LGRF', 'L', jlgrf)
-        repk = zk8(jlgrf-1+2)
+        repk = zk8(jlgrf-1+3)
 
     else if (questi .eq. 'PHENOMENE') then
         call jelira(nomob//'.LGRF', 'DOCU', cval=phenom)

@@ -19,7 +19,6 @@
 !
 subroutine nxnpas(sddisc, solver, nume_inst, ds_print, &
                   lnkry, l_evol, l_stat, &
-                  l_dry, result_dry, dry_prev, dry_curr, &
                   para, time_curr, deltat, reasma, &
                   tpsthe)
 !
@@ -42,9 +41,6 @@ subroutine nxnpas(sddisc, solver, nume_inst, ds_print, &
     type(NL_DS_Print), intent(inout) :: ds_print
     integer(kind=8), intent(in) :: nume_inst
     aster_logical, intent(in) :: lnkry, l_evol, l_stat
-    aster_logical, intent(in) :: l_dry
-    character(len=8), intent(in) :: result_dry
-    character(len=24), intent(in) :: dry_prev, dry_curr
     real(kind=8), intent(inout) :: para(2)
     real(kind=8), intent(out) :: time_curr, deltat
     aster_logical, intent(out) :: reasma
@@ -64,11 +60,7 @@ subroutine nxnpas(sddisc, solver, nume_inst, ds_print, &
 ! In  nume_inst        : index of current time step
 ! In  l_stat           : .true. is stationnary
 ! In  l_evol           : .true. if transient
-! In  l_dry            : .true. if drying (concrete)
 ! In  lnkry            : .true. if Newton-Krylov solver
-! In  result_dry       : name of datastructure for results (drying)
-! In  dry_prev         : dry field at previous time step
-! In  dry_curr         : dry field at current time step
 ! IO  para             : parameters for time
 !                            (1) THETA
 !                            (2) DELTA
@@ -79,11 +71,7 @@ subroutine nxnpas(sddisc, solver, nume_inst, ds_print, &
 !
 ! --------------------------------------------------------------------------------------------------
 !
-    real(kind=8) :: theta, timet, timtdt, theta_read, time_prev
-    integer(kind=8) :: icoret, nbcham
-    character(len=1) :: base
-    real(kind=8), parameter :: prec = 1.0d-10
-    character(len=8), parameter :: crit = 'ABSOLU'
+    real(kind=8) :: theta, theta_read, time_prev
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -127,28 +115,6 @@ subroutine nxnpas(sddisc, solver, nume_inst, ds_print, &
     tpsthe(4) = r8vide()
     tpsthe(5) = r8vide()
     tpsthe(6) = r8vide()
-
-! - RECUPERATION DU CHAMP DE TEMPERATURE A T ET T+DT POUR LE SECHAGE
-    if (l_dry) then
-        call dismoi('NB_CHAMP_UTI', result_dry, 'RESULTAT', repi=nbcham)
-        if (nbcham .gt. 0) then
-            timet = time_curr-deltat
-            timtdt = time_curr
-            base = 'V'
-            call rsinch(result_dry, 'TEMP', 'INST', timet, dry_prev, &
-                        'CONSTANT', 'CONSTANT', 1, base, prec, crit, icoret)
-            if (icoret .ge. 10) then
-                call utmess('F', 'THERNONLINE4_94', sk=result_dry, si=icoret, sr=timet)
-            end if
-            call rsinch(result_dry, 'TEMP', 'INST', timtdt, dry_curr, &
-                        'CONSTANT', 'CONSTANT', 1, base, prec, crit, icoret)
-            if (icoret .ge. 10) then
-                call utmess('F', 'THERNONLINE4_94', sk=result_dry, si=icoret, sr=timtdt)
-            end if
-        else
-            call utmess('F', 'THERNONLINE4_99', sk=result_dry)
-        end if
-    end if
 !
 ! - Print management - Initializations for convergence table
 !

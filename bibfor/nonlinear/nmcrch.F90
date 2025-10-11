@@ -335,6 +335,7 @@ subroutine nmcrch(numeDof, listFuncActi, sddyna, nlDynaDamping, &
     call vtcreb('&&CNCHAR.CINE', 'V', 'R', nume_ddlz=numeDof)
     call vtcreb('&&CNCHAR.DONN', 'V', 'R', nume_ddlz=numeDof)
     call vtcreb('&&CNCHAR.PILO', 'V', 'R', nume_ddlz=numeDof)
+    call vtcreb('&&CNCHAR.DIDI', 'V', 'R', nume_ddlz=numeDof)
 !
     call jedema()
 end subroutine

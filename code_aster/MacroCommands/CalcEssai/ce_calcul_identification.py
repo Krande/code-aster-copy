@@ -22,7 +22,6 @@
 import numpy.linalg as linalg
 from numpy import array, conjugate, dot, identity, pi, transpose, zeros
 
-from ...Cata.Syntax import _F
 from ...Messages import UTMESS
 from ...Utilities import disable_fpe
 from .cata_ce import InterSpectre, nume_ddl_gene, nume_ddl_phy

@@ -169,10 +169,10 @@ class DataStructureDict(PyDataStructure):
         return self._store.get(key, default)
 
 
-class NonLinearResultDict(DataStructureDict):
-    """Set of thermal results."""
+class DryingResultDict(DataStructureDict):
+    """Set of drying results."""
 
-    object_type = "EVOL_THER"
+    object_type = "EVOL_SECH"
 
 
 class ThermalResultDict(DataStructureDict):

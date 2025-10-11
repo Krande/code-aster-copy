@@ -34,7 +34,7 @@ from .Utils.ther_non_line_fort_op import THER_NON_LINE_FORT
 
 
 def _use_fortran(keywords):
-    excluded_keys = ("EVOL_THER_SECH", "OBSERVATION")
+    excluded_keys = "OBSERVATION"
 
     for key in excluded_keys:
         if key in keywords:
@@ -112,16 +112,7 @@ def ther_non_line_ops(self, **args):
                     ThermalDirichletBC,
                 ),
             ):
-                if "FONC_MULT" in load:
-                    if isinstance(load["CHARGE"], ThermalDirichletBC):
-                        phys_pb.addDirichletBC(load["CHARGE"], load["FONC_MULT"])
-                    else:
-                        phys_pb.addLoad(load["CHARGE"], load["FONC_MULT"])
-                else:
-                    if isinstance(load["CHARGE"], ThermalDirichletBC):
-                        phys_pb.addDirichletBC(load["CHARGE"])
-                    else:
-                        phys_pb.addLoad(load["CHARGE"])
+                phys_pb.addLoadFromDict(load)
             else:
                 raise RuntimeError("Unknown load")
 

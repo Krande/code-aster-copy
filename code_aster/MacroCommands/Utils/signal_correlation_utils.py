@@ -33,7 +33,7 @@ DSP2ACCE_ND        ---   simulation of vector valued random process
 gene_traj_gauss_evol_ND        ---   simulation of vector valued random process
 """
 
-from math import log, pi, sqrt, tanh
+from math import pi, sqrt
 
 import numpy as NP
 

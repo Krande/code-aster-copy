@@ -24,6 +24,7 @@ subroutine vectfl(opt, modele, mateco, templu, &
 #include "asterfort/calcul.h"
 #include "asterfort/corich.h"
 #include "asterfort/detrsd.h"
+#include "asterfort/dismoi.h"
 #include "asterfort/jedema.h"
 #include "asterfort/jeecra.h"
 #include "asterfort/jemarq.h"
@@ -63,7 +64,7 @@ subroutine vectfl(opt, modele, mateco, templu, &
         goto 10
     end if
 !
-    ligrmo = modele(1:8)//'.MODELE'
+    call dismoi('NOM_LIGREL', modele, 'MODELE', repk=ligrmo)
 !
     call megeom(modele(1:8), chgeom)
 !

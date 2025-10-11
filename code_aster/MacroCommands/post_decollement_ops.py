@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -17,7 +17,6 @@
 # along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 # --------------------------------------------------------------------
 
-import os
 
 import aster
 from ..Cata.Syntax import _F
@@ -33,7 +32,6 @@ from ..CodeCommands import (
     POST_ELEM,
     POST_RELEVE_T,
 )
-from ..Messages import UTMESS, MasquerAlarme, RetablirAlarme
 
 
 def fctZeroUn(listIN):
@@ -67,20 +65,10 @@ def post_decollement_ops(self, RESULTAT, NOM_CHAM, NOM_CMP, GROUP_MA, INFO, **ar
         ALARME="NON",
     )
 
-    # le modele 3D ne va contenir que des mailles de peau : on masque les
-    # alarmes
-    MasquerAlarme("CALCULEL2_63")
-    MasquerAlarme("CALCULEL2_64")
-
     # model restreint au GROUP_MA
     __model = AFFE_MODELE(
         MAILLAGE=MAILLAGE, AFFE=_F(GROUP_MA=GROUP_MA, PHENOMENE="MECANIQUE", MODELISATION="3D")
     )
-
-    # le modele 3D ne va contenir que des mailles de peau : on retablit les
-    # alarmes
-    RetablirAlarme("CALCULEL2_63")
-    RetablirAlarme("CALCULEL2_64")
 
     # Calcul de la surface du GROUP_MA : __surf
     __unit = CREA_CHAMP(

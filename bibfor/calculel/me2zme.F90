@@ -47,11 +47,12 @@ subroutine me2zme(modelz, chsigz, vecelz)
 #include "asterfort/calcul.h"
 #include "asterfort/corich.h"
 #include "asterfort/detrsd.h"
+#include "asterfort/dismoi.h"
 #include "asterfort/jedema.h"
 #include "asterfort/jemarq.h"
 #include "asterfort/megeom.h"
-#include "asterfort/vemare.h"
 #include "asterfort/reajre.h"
+#include "asterfort/vemare.h"
     character(len=8) :: modele
     character(len=19) :: vecel
     character(len=8) :: lpain(2), lpaout(6)
@@ -94,7 +95,7 @@ subroutine me2zme(modelz, chsigz, vecelz)
     lchin(1) = chgeom
     lpain(2) = 'PSIEF_R'
     lchin(2) = chsig
-    ligrmo = modele//'.MODELE'
+    call dismoi('NOM_LIGREL', modele, 'MODELE', repk=ligrmo)
 !
     option = 'SECM_ZZ1'
 !

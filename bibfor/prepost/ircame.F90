@@ -17,7 +17,7 @@
 ! --------------------------------------------------------------------
 ! aslint: disable=W1504
 !
-subroutine ircame(ifi, nochmd, chanom, typech, modele, &
+subroutine ircame(ifi, nochmd, chanom, typech, ligrel, &
                   nbcmp, nomcmp, etiqcp, partie, numpt, &
                   instan, numord, adsk, adsd, adsc, &
                   adsv, adsl, nbenec, lienec, sdcarm, &
@@ -25,9 +25,11 @@ subroutine ircame(ifi, nochmd, chanom, typech, modele, &
 !
     implicit none
 !
-#include "asterf_types.h"
-#include "MeshTypes_type.h"
 #include "jeveux.h"
+#include "asterf_types.h"
+#include "asterc/asmpi_allgather_i.h"
+#include "asterc/asmpi_allgatherv_char16.h"
+#include "asterc/asmpi_comm.h"
 #include "asterfort/as_allocate.h"
 #include "asterfort/as_deallocate.h"
 #include "asterfort/asmpi_comm_vect.h"
@@ -63,12 +65,10 @@ subroutine ircame(ifi, nochmd, chanom, typech, modele, &
 #include "asterfort/utlicm.h"
 #include "asterfort/utmess.h"
 #include "asterfort/wkvect.h"
-#include "asterc/asmpi_comm.h"
-#include "asterc/asmpi_allgather_i.h"
-#include "asterc/asmpi_allgatherv_char16.h"
+#include "MeshTypes_type.h"
 !
-    character(len=8) :: typech, modele, sdcarm, carael
-    character(len=19) :: chanom
+    character(len=8) :: typech, sdcarm, carael
+    character(len=19) :: chanom, ligrel
     character(len=64) :: nochmd
     character(len=*) :: nomcmp(*), partie, etiqcp
     integer(kind=8) :: nbcmp, numpt, numord, ifi
@@ -95,7 +95,7 @@ subroutine ircame(ifi, nochmd, chanom, typech, modele, &
 !               UN CHAMP COMPLEXE
 !       CHANOM : NOM ASTER DU CHAM A ECRIRE
 !       TYPECH : TYPE DU CHAMP ('NOEU', 'ELNO', 'ELGA')
-!       MODELE : MODELE ASSOCIE AU CHAMP
+!       LIGREL : LIGREL ASSOCIE AU CHAMP
 !       NBCMP  : NOMBRE DE COMPOSANTES A ECRIRE. S'IL EST NUL, ON
 !                PREND TOUT
 !       NOMCMP : NOMS DES COMPOSANTES A ECRIRE
@@ -107,7 +107,7 @@ subroutine ircame(ifi, nochmd, chanom, typech, modele, &
 !       NBENEC : NOMBRE D'ENTITES A ECRIRE (O, SI TOUTES)
 !       LIENEC : LISTE DES ENTITES A ECRIRE SI EXTRAIT
 !       SDCARM : CARA_ELEM (UTILE POUR LES SOUS-POINTS)
-!       CARAEL : NOM MODELE CARA ELEM
+!       CARAEL : NOM CARA ELEM
 !       LFICHUNIQ : LOGICAL FICHIER UNIQUE
 ! In  field_type       : type of field (symbolic name in result datastructure)
 !     SORTIES:
@@ -211,7 +211,7 @@ subroutine ircame(ifi, nochmd, chanom, typech, modele, &
             call jedetc('V', nom_sd_fu, 1)
             call iremed_filtre(nomaas, nom_sd_fu, 'V', ASTER_TRUE)
         end if
-        call irmail(saux08, ifi, iaux, nomaas, lgaux, modele, nivinf, formar, lfichUniq, &
+        call irmail(saux08, ifi, iaux, nomaas, lgaux, ligrel, nivinf, formar, lfichUniq, &
                     nom_sd_fu)
     else
         if (lfichUniq) then
@@ -246,7 +246,7 @@ subroutine ircame(ifi, nochmd, chanom, typech, modele, &
     else
         ! avoid leaks
         if (nbCmp > 0) AS_DEALLOCATE(vk8=cmpUserName)
-        goto 9999
+        goto 998
     end if
     call utlicm(zk8(adsk+1), &
                 nbcmp, cmpUserName, &
@@ -366,7 +366,7 @@ subroutine ircame(ifi, nochmd, chanom, typech, modele, &
 !   3.3. ==> DEFINITIONS DES IMPRESSIONS ET CREATION DES PROFILS EVENTUELS
     call ircmpr(nofimd, typech, nbimpr, ncaimi, ncaimk, &
                 ncmprf, ncmpvl, ntlcmp, nbvato, nbenec, &
-                lienec, adsd, adsl, nomaas, modele, &
+                lienec, adsd, adsl, nomaas, ligrel, &
                 typgeo, nomtyp, ntproa, chanom, sdcarm, &
                 field_type, nom_sd_fu)
 
@@ -456,7 +456,7 @@ subroutine ircame(ifi, nochmd, chanom, typech, modele, &
     call jedetr('&&'//nompro//'.CARAC_CHAINES__')
     call jedetr(indcmp)
 !
-9999 continue
+998 continue
     call jedema()
 !
 end subroutine

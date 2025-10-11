@@ -51,7 +51,6 @@ subroutine rvche1(chelez, nomjv, nbel, numail, pgl)
     character(len=24) :: valk(2)
     character(len=16) :: option
     character(len=19) :: chelm, noligr
-    character(len=8), pointer :: lgrf(:) => null()
     integer(kind=8), pointer :: celd(:) => null()
     integer(kind=8), pointer :: liel(:) => null()
     character(len=24), pointer :: celk(:) => null()
@@ -101,8 +100,7 @@ subroutine rvche1(chelez, nomjv, nbel, numail, pgl)
     call jeveuo(noligr//'.LIEL', 'L', vi=liel)
     call jeveuo(jexatr(noligr//'.LIEL', 'LONCUM'), 'L', jlongr)
     call jelira(noligr//'.LIEL', 'NUTIOC', nbgrel)
-    call jeveuo(noligr//'.LGRF', 'L', vk8=lgrf)
-    nomma = lgrf(1)
+    call dismoi('NOM_MAILLA', noligr, 'LIGREL', repk=nomma)
     call jeveuo(jexatr(nomma//'.CONNEX', 'LONCUM'), 'L', jpnt)
 !
     do im = 1, nbel

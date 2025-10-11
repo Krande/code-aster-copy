@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -20,7 +20,6 @@
 # person_in_charge: mathieu.courtois at edf.fr
 
 import os.path
-import re
 
 import libaster
 from ..Cata.Syntax import _F
@@ -71,7 +70,7 @@ def impr_table_ops(self, FORMAT, TABLE, INFO, **args):
     nom_para = ltab[0][0].para
     if args["NOM_PARA"]:
         nom_para = args["NOM_PARA"]
-    if not type(nom_para) in (list, tuple):
+    if type(nom_para) not in (list, tuple):
         nom_para = [nom_para]
 
     # ----------------------------------------------
@@ -113,7 +112,7 @@ def impr_table_ops(self, FORMAT, TABLE, INFO, **args):
         # ----- 4. Impression
         # vérification des paramètres
         for p in nom_para:
-            if not p in tab.para:
+            if p not in tab.para:
                 UTMESS("A", "TABLE0_7", valk=p)
 
         # sélection des paramètres et suppression des colonnes vides
@@ -156,10 +155,10 @@ def impr_table_ops(self, FORMAT, TABLE, INFO, **args):
         # 4.5. regroupement par paramètre : PAGINATION
         if args["PAGINATION"]:
             l_ppag = args["PAGINATION"]
-            if not type(l_ppag) in (list, tuple):
+            if type(l_ppag) not in (list, tuple):
                 l_ppag = [l_ppag]
             kargs["PAGINATION"] = [p for p in l_ppag if p in nom_para]
-            l_para_err = [p for p in l_ppag if not p in nom_para]
+            l_para_err = [p for p in l_ppag if p not in nom_para]
             if len(l_para_err) > 0:
                 UTMESS("A", "TABLE0_8", valk=l_para_err)
 

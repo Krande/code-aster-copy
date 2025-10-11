@@ -22,7 +22,7 @@
 from code_aster.Commands import *
 from code_aster import CA
 from code_aster.CA import MPI
-import os.path as osp, numpy as np
+import numpy as np
 
 CA.init("--test", ERREUR=_F(ALARME="EXCEPTION"))
 

@@ -318,8 +318,8 @@ Conseil :
     ),
     45: _(
         """
- Utilisation de COEF_RIGI_DRZ en mode rotation plane en non linéaire :
-   Cette option n'est pas possible actuellement
+Utilisation de COEF_RIGI_DRZ en mode rotation plane en non-linéaire.
+Cette option n'est pas possible actuellement. Il faut prendre une valeur positive pour ce coefficient.
 
  Champ : '%(k1)s'
  Commentaire sur ce champ : %(k2)s

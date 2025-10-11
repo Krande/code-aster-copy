@@ -20,6 +20,7 @@ subroutine xelfis_lists(fiss, modele, elfiss_heav, &
                         elfiss_ctip, elfiss_hect)
     implicit none
 #include "jeveux.h"
+#include "asterfort/dismoi.h"
 #include "asterfort/jedema.h"
 #include "asterfort/jeexin.h"
 #include "asterfort/jelira.h"
@@ -62,6 +63,7 @@ subroutine xelfis_lists(fiss, modele, elfiss_heav, &
 ! ----------------------------------------------------------------------
 !
     character(len=24) :: mafiss(3), elfiss(3)
+    character(len=19) :: ligrel
     integer(kind=8), pointer :: p_mail_affe(:) => null()
     integer(kind=8) :: iret, ima, i, k, cpt, nb_ma_lis, nb_el_lis
     integer(kind=8) :: iadr_lis_ma, iadr_lis_el
@@ -72,7 +74,8 @@ subroutine xelfis_lists(fiss, modele, elfiss_heav, &
 !
 ! - recup de la liste des mailles qui portent des EF dans la sd_modele
 !
-    call jeveuo(modele//'.MAILLE', 'L', vi=p_mail_affe)
+    call dismoi('NOM_LIGREL', modele, 'MODELE', repk=ligrel)
+    call jeveuo(ligrel//'.TYFE', 'L', vi=p_mail_affe)
 !
 ! - boucle sur les 3 types possibles de liste de mailles
 !

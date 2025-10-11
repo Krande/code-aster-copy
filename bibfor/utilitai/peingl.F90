@@ -19,21 +19,22 @@
 subroutine peingl(resu, modele, mate, mateco, cara, nh, &
                   nbocc, motfaz)
     implicit none
-#include "asterf_types.h"
 #include "jeveux.h"
-#include "asterfort/assert.h"
-#include "asterfort/as_allocate.h"
-#include "asterfort/as_deallocate.h"
-#include "asterfort/gettco.h"
+#include "asterf_types.h"
 #include "asterc/r8prem.h"
 #include "asterfort/alchml.h"
+#include "asterfort/as_allocate.h"
+#include "asterfort/as_deallocate.h"
+#include "asterfort/assert.h"
 #include "asterfort/calcul.h"
+#include "asterfort/char8_to_int.h"
 #include "asterfort/codent.h"
 #include "asterfort/detrsd.h"
 #include "asterfort/dismoi.h"
 #include "asterfort/etenca.h"
 #include "asterfort/exisdg.h"
 #include "asterfort/exlim3.h"
+#include "asterfort/gettco.h"
 #include "asterfort/getvem.h"
 #include "asterfort/getvid.h"
 #include "asterfort/getvr8.h"
@@ -61,7 +62,6 @@ subroutine peingl(resu, modele, mate, mateco, cara, nh, &
 #include "asterfort/vrcins.h"
 #include "asterfort/vrcref.h"
 #include "asterfort/wkvect.h"
-#include "asterfort/char8_to_int.h"
 !
     integer(kind=8) :: nh, nbocc
     character(len=*) :: resu, modele, mate, mateco, cara, motfaz
@@ -180,9 +180,9 @@ subroutine peingl(resu, modele, mate, mateco, cara, nh, &
 !
 !.========================= DEBUT DES DECLARATIONS ====================
 ! -----  VARIABLES LOCALES
- integer(kind=8) :: nbparr, nr, np, nc, iret, jord, nbordr, jins, iord, iainst, numord, nbin, nt, nm
+    integer(kind=8) :: nbparr, nr, np, nc, iret, jord, nbordr, jins, iord, iainst, numord, nbin, nt
     integer(kind=8) :: ng, nbgrma, jgr, ig, nbma, jad, nbmail, jma, im, iocc, nume, nbout, numorm
-    integer(kind=8) :: ngdmax, ncmpmx, igd, idebgd, dg, ima, iconex, nbno, nec, ivari
+    integer(kind=8) :: ngdmax, ncmpmx, igd, idebgd, dg, ima, iconex, nbno, nec, ivari, nm
     integer(kind=8) :: i, nbgrma_tot, deca, nbtot, nbMaiT
     real(kind=8) :: work(5), indic1, volume, inst, valr(6), zero, prec
     real(kind=8) :: energy_tout, energy_ma
@@ -363,7 +363,7 @@ subroutine peingl(resu, modele, mate, mateco, cara, nh, &
 !
 !CC---   RECUPERATION DU COMPOR PAR ETENCA
 !
-            ligrmo = modele//'.MODELE'
+            call dismoi('NOM_LIGREL', modele, 'MODELE', repk=ligrmo)
 !
 ! ---    CREATION DU TABLEAU DESCRIPTEUR DE LA CARTE COMPOR ---
 !

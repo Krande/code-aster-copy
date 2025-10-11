@@ -48,7 +48,7 @@ subroutine nmetnc(field_name_algo, field_algo)
         hat_type = field_name_algo(4:9)
         hat_vari = field_name_algo(11:16)
         if (hat_type .eq. 'VALINC') then
-            if (hat_vari .eq. 'TEMP') then
+            if (hat_vari .eq. 'TEMP' .or. hat_vari .eq. 'SECH') then
                 field_algo = '&&NXLECTVAR_____'
             else
                 field_algo = '&&NMCH1P.'//hat_vari

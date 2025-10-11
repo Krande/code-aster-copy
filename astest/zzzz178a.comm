@@ -38,10 +38,13 @@ if nbproc > 1:
 else:
     MQ = CA.Mesh()
     MQ.readMedFile("zzzz178a.mmed")
-    test.assertTrue(MQ.isQuadratic())
+
+test.assertTrue(MQ.isQuadratic())
 
 # Create the linear mesh
 ML = CREA_MAILLAGE(MAILLAGE=MQ, QUAD_LINE=_F(TOUT="OUI"), INFO=1)
+
+test.assertFalse(ML.isQuadratic())
 
 # Check the orientation of the boundary
 ML = MODI_MAILLAGE(reuse=ML, MAILLAGE=ML, ORIE_PEAU=_F(GROUP_MA_PEAU="L1"))

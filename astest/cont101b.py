@@ -21,9 +21,7 @@
 
 from code_aster.Commands import *
 from code_aster import CA
-from code_aster.MacroCommands.defi_cont import DEFI_CONT
-from libaster import ContactPairing, ContactComputation, PairingMethod
-import numpy
+from libaster import PairingMethod
 
 
 DEBUT(

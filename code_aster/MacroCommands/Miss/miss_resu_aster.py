@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -63,7 +63,7 @@ class ResuAsterReader:
         struct = self.struct
         try:
             struct.check()
-        except AssertionError as err:
+        except AssertionError:
             UTMESS("F", "MISS0_8", valk=traceback.format_exc(limit=2))
 
     def post(self):

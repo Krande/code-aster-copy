@@ -101,12 +101,12 @@ subroutine dfllsv(v_sdlist_linfor, v_sdlist_eevenr, v_sdlist_eevenk, sdlist_loca
     integer(kind=8):: nb_loca, lg_ini
     integer(kind=8), pointer :: v_sdlist_loca(:) => null()
     integer(kind=8), pointer :: v_lst_loca(:) => null()
+!
 ! --------------------------------------------------------------------------------------------------
-
+!
     call jemarq()
-!
+
 ! - Alarm for no-step cut
-!
     if (event_typek .eq. failActionKeyword(FAIL_EVT_ERROR)) then
         if (action_typek .eq. failEventKeyword(FAIL_ACT_STOP)) then
             call utmess('I', 'DISCRETISATION_9')
@@ -118,15 +118,12 @@ subroutine dfllsv(v_sdlist_linfor, v_sdlist_eevenr, v_sdlist_eevenk, sdlist_loca
     if (action_typek .eq. failActionKeyword(FAIL_ACT_CUT)) then
         v_sdlist_linfor(7) = 1.d0
     end if
-!
+
 ! - Type of event
-!
     if (event_typek .eq. failEventKeyword(FAIL_EVT_ERROR)) then
         v_sdlist_eevenr(SIZE_LEEVR*(i_fail_save-1)+1) = FAIL_EVT_ERROR
     else if (event_typek .eq. failEventKeyword(FAIL_EVT_INCR_QUANT)) then
         v_sdlist_eevenr(SIZE_LEEVR*(i_fail_save-1)+1) = FAIL_EVT_INCR_QUANT
-    else if (event_typek .eq. failEventKeyword(FAIL_EVT_COLLISION)) then
-        v_sdlist_eevenr(SIZE_LEEVR*(i_fail_save-1)+1) = FAIL_EVT_COLLISION
     else if (event_typek .eq. failEventKeyword(FAIL_EVT_INTERPENE)) then
         v_sdlist_eevenr(SIZE_LEEVR*(i_fail_save-1)+1) = FAIL_EVT_INTERPENE
     else if (event_typek .eq. failEventKeyword(FAIL_EVT_DIVE_RESI)) then
@@ -138,9 +135,8 @@ subroutine dfllsv(v_sdlist_linfor, v_sdlist_eevenr, v_sdlist_eevenk, sdlist_loca
     else
         ASSERT(.false.)
     end if
-!
+
 ! - Type of action
-!
     if (action_typek .eq. failActionKeyword(FAIL_ACT_STOP)) then
         v_sdlist_eevenr(SIZE_LEEVR*(i_fail_save-1)+2) = FAIL_ACT_STOP
     else if (action_typek .eq. failActionKeyword(FAIL_ACT_CUT)) then
@@ -154,9 +150,8 @@ subroutine dfllsv(v_sdlist_linfor, v_sdlist_eevenr, v_sdlist_eevenk, sdlist_loca
     else
         ASSERT(.false.)
     end if
-!
+
 ! - Parameters for EVENEMENT = 'DELTA_GRANDEUR'
-!
     if (event_typek .eq. failEventKeyword(FAIL_EVT_INCR_QUANT)) then
         v_sdlist_eevenr(SIZE_LEEVR*(i_fail_save-1)+5) = vale_ref
         v_sdlist_eevenk(SIZE_LEEVK*(i_fail_save-1)+1) = nom_cham
@@ -187,21 +182,18 @@ subroutine dfllsv(v_sdlist_linfor, v_sdlist_eevenr, v_sdlist_eevenk, sdlist_loca
             v_sdlist_loca(SIZE_LELOCA*(i_fail_save-1)+3) = 0
         end if
     end if
-!
+
 ! - Parameters for EVENEMENT = 'INTERPENETRATION'
-!
     if (event_typek .eq. failEventKeyword(FAIL_EVT_INTERPENE)) then
         v_sdlist_eevenr(SIZE_LEEVR*(i_fail_save-1)+6) = pene_maxi
     end if
-!
+
 ! - Parameters for EVENEMENT = 'RESI_MAXI'
-!
     if (event_typek .eq. failEventKeyword(FAIL_EVT_RESI_MAXI)) then
         v_sdlist_eevenr(SIZE_LEEVR*(i_fail_save-1)+7) = resi_glob_maxi
     end if
-!
+
 ! - Parameters for ACTION = 'DECOUPE'
-!
     if (action_typek .ne. failActionKeyword(FAIL_ACT_STOP)) then
         if (subd_methode .eq. 'MANUEL') then
             v_sdlist_esubdr(SIZE_LESUR*(i_fail_save-1)+1) = 1.d0
@@ -213,24 +205,20 @@ subroutine dfllsv(v_sdlist_linfor, v_sdlist_eevenr, v_sdlist_eevenk, sdlist_loca
             v_sdlist_esubdr(SIZE_LESUR*(i_fail_save-1)+3) = subd_pas_mini
             v_sdlist_esubdr(SIZE_LESUR*(i_fail_save-1)+5) = subd_inst
             v_sdlist_esubdr(SIZE_LESUR*(i_fail_save-1)+6) = subd_duree
-            if (subd_auto .eq. 'COLLISION') then
-                v_sdlist_esubdr(SIZE_LESUR*(i_fail_save-1)+10) = 1.d0
-            else if (subd_auto .eq. 'EXTRAPOLE') then
+            if (subd_auto .eq. 'EXTRAPOLE') then
                 v_sdlist_esubdr(SIZE_LESUR*(i_fail_save-1)+10) = 2.d0
             else
-                ASSERT(.false.)
+                ASSERT(ASTER_FALSE)
             end if
         end if
     end if
-!
+
 ! - Parameters for ACTION = 'ITER_SUPPL'
-!
     if (action_typek .eq. failActionKeyword(FAIL_ACT_ITER)) then
         v_sdlist_esubdr(SIZE_LESUR*(i_fail_save-1)+7) = pcent_iter_plus
     end if
-!
+
 ! - Parameters for ACTION = 'ADAPT_COEF_PENA'
-!
     if (action_typek .eq. failActionKeyword(FAIL_ACT_ADAPT_COEF)) then
         v_sdlist_esubdr(SIZE_LESUR*(i_fail_save-1)+8) = coef_maxi
     end if

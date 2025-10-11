@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -39,7 +39,6 @@ cata_msg = {
     ),
     8: _("""Liste des noeuds affectés pour la modélisation:"""),
     9: _("""Liste des mailles affectées pour la modélisation:"""),
-    10: _("""Le modèle contient un mélange d'éléments HHO et non HHO. Ce n'est pas possible."""),
     11: _("""On ne peut utiliser qu'un seul phénomène."""),
     12: _("""La formulation %(k1)s n'est pas disponible pour les modélisations choisies."""),
     13: _(

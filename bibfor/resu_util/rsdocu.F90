@@ -76,6 +76,8 @@ subroutine rsdocu(docu, resu_type, iret)
         resu_type = 'MODE_EMPI'
     else if (docu .eq. 'EVTH') then
         resu_type = 'EVOL_THER'
+    else if (docu .eq. 'EVSE') then
+        resu_type = 'EVOL_SECH'
     else if (docu .eq. 'EVVA') then
         resu_type = 'EVOL_VARC'
     else

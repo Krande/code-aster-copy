@@ -19,15 +19,10 @@
 
 # Responsible Person: Jefri Draup
 import numpy as np
-import time
 import copy
 import aster
-import sys
-import math
 from ..Cata.Syntax import _F
-from ..Cata.DataStructure import mode_meca
-from ..Objects.table_py import Table, merge
-from ..Messages import UTMESS, MasquerAlarme
+from ..Messages import UTMESS, MasquerAlarme, RetablirAlarme
 from ..Utilities.misc import get_titre_concept
 from ..CodeCommands import (
     AFFE_MODELE,
@@ -36,12 +31,8 @@ from ..CodeCommands import (
     CREA_CHAMP,
     CREA_TABLE,
     CREA_RESU,
-    DEFI_FICHIER,
     DEFI_GROUP,
     DETRUIRE,
-    IMPR_TABLE,
-    IMPR_RESU,
-    LIRE_MAILLAGE,
     FORMULE,
     POST_ELEM,
     POST_RELEVE_T,
@@ -2145,8 +2136,6 @@ def post_jmod_ops(
     #   IGNORE ALARMS
     #
     MasquerAlarme("CALCCHAMP_1")
-    MasquerAlarme("CALCCHAMP_6")
-    MasquerAlarme("CALCULEL_24")
     MasquerAlarme("CATAMESS_41")
     MasquerAlarme("MAILLAGE1_1")
     MasquerAlarme("MODELISA4_8")
@@ -5768,4 +5757,16 @@ def post_jmod_ops(
         if j_correction == "OUI":
             del_group_ma(self, MAIL, "TMAIL_CONT3")
             del_group_ma(self, MAIL, "TMAIL_IMPR")
+
+    RetablirAlarme("CALCCHAMP_1")
+    RetablirAlarme("CATAMESS_41")
+    RetablirAlarme("MAILLAGE1_1")
+    RetablirAlarme("MODELISA4_8")
+    RetablirAlarme("MODELISA4_9")
+    RetablirAlarme("MODELISA8_13")
+    RetablirAlarme("MODELISA8_14")
+    RetablirAlarme("MODELISA8_15")
+    RetablirAlarme("JEVEUX1_64")
+    RetablirAlarme("PREPOST2_7")
+    RetablirAlarme("MED_67")
     return tab_result

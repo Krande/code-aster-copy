@@ -21,7 +21,7 @@ interface
     subroutine xddlim(modele, motcle, nomn, ino, valimr,&
                       valimc, valimf, fonree, icompt, lisrel,&
                       ndim, direct, jnoxfv, ch1, ch2,&
-                      ch3, cnxinv, mesh, hea_no)
+                      ch3, cnxinv, hea_no)
         character(len=8) :: modele
         character(len=8) :: motcle
         character(len=8) :: nomn
@@ -40,6 +40,5 @@ interface
         character(len=19) :: ch3
         character(len=19) :: hea_no
         character(len=19) :: cnxinv
-        character(len=8), intent(in) :: mesh
     end subroutine xddlim
 end interface

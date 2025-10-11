@@ -24,8 +24,7 @@ import math
 
 try:
     # Import du module de calcul symbolique Sympy
-    with CA.disable_fpe():
-        import sympy
+    import sympy
 
     sympy_available = True
 except ImportError:

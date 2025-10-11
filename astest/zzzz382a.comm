@@ -19,7 +19,7 @@
 
 import numpy as NP
 
-DEBUT(CODE="OUI", ERREUR=_F(ALARME="ALARME"), IGNORE_ALARM=("CALCCHAMP_6",))
+DEBUT(CODE="OUI", ERREUR=_F(ALARME="ALARME"))
 
 tours = NP.array([750.0])
 

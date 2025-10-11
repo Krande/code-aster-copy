@@ -165,10 +165,10 @@ contains
                 exteVariCata(iExteStatVari)%fieldType = 'HYDR_ELNO'
 
             elseif (exteVariName .eq. 'SECH') then
-                exteVariCata(iExteStatVari)%listCmp(1)%physQuantityCmp = "TEMP"
+                exteVariCata(iExteStatVari)%listCmp(1)%physQuantityCmp = "SECH"
                 exteVariCata(iExteStatVari)%listCmp(1)%nameCmp = "SECH"
                 ASSERT(nbCmp .eq. 1)
-                exteVariCata(iExteStatVari)%fieldType = 'TEMP'
+                exteVariCata(iExteStatVari)%fieldType = 'SECH'
 
             elseif (exteVariName .eq. 'PTOT') then
                 exteVariCata(iExteStatVari)%listCmp(1)%physQuantityCmp = "PTOT"
@@ -480,6 +480,7 @@ contains
         character(len=16), pointer :: map2Valv(:) => null()
         real(kind=8) :: valeRefe
         character(len=8) :: funcResult, dsName
+        character(len=19) :: ligrel
         character(len=16) :: fieldType, funcExtrLeft, funcExtrRight
         character(len=24), parameter :: listCell = '&&AFVARC.LIST_CELL'
         aster_logical :: onAllCells, hasTHM
@@ -562,7 +563,8 @@ contains
                         call dismoi('EXI_THM', model, 'MODELE', repk=answer)
                         hasTHM = answer .eq. "OUI"
                         if (hasTHM) then
-                            call jeveuo(model//'.MAILLE', 'L', vi=cellAffectedByModel)
+                            call dismoi('NOM_LIGREL', model, 'MODELE', repk=ligrel)
+                            call jeveuo(ligrel//'.TYFE', 'L', vi=cellAffectedByModel)
                             if (onAllCells) then
                                 call utmess('F', 'MATERIAL2_51')
                             else

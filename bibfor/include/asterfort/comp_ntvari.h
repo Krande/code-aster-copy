@@ -19,10 +19,10 @@
 #include "asterfort/Behaviour_type.h"
 !
 interface
-    subroutine comp_ntvari(model_, comporMap_, comporList_, comporInfo, &
+    subroutine comp_ntvari(ligrel_, comporMap_, comporList_, comporInfo, &
                            nt_vari, nb_vari_maxi, mapNbZone, prepExte)
         use BehaviourPrepare_type
-        character(len=8), optional, intent(in) :: model_
+        character(len=19), optional, intent(in) :: ligrel_
         character(len=19), optional, intent(in) :: comporMap_
         character(len=16), optional, intent(in) :: comporList_(COMPOR_SIZE)
         character(len=19), intent(in) :: comporInfo

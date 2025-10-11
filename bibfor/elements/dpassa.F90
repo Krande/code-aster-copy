@@ -15,15 +15,15 @@
 ! You should have received a copy of the GNU General Public License
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
+! aslint: disable=W0413
 !
-subroutine dpassa(angl, irep, matr_tran)
+subroutine dpassa(anglNaut, irep, matr_tran)
 !
     implicit none
 !
 #include "asterfort/matrot.h"
 !
-!
-    real(kind=8), intent(in) :: angl(3)
+    real(kind=8), intent(in) :: anglNaut(3)
     integer(kind=8), intent(out) :: irep
     real(kind=8), intent(out) :: matr_tran(6, 6)
 !
@@ -35,37 +35,32 @@ subroutine dpassa(angl, irep, matr_tran)
 !
 ! --------------------------------------------------------------------------------------------------
 !
-! In  angl             : nautical angles
+! In  anglNaut         : nautical angles
 ! Out irep             : 0 if matrix is trivial (identity), 1 otherwise
 ! Out matr_tran        : transition matrix
 !
 ! --------------------------------------------------------------------------------------------------
 !
     real(kind=8) :: p(3, 3)
-    real(kind=8) :: deux, zero
+    real(kind=8), parameter :: deux = 2.d0, zero = 0.d0
 !
 ! --------------------------------------------------------------------------------------------------
 !
-    zero = 0.d0
-    deux = 2.d0
     irep = 0
-    p(:, :) = 0.d0
-!
-! - Compute matrix from orthotropic referance frame to global reference frame
-!
-    if (angl(1) .eq. zero .and. angl(2) .eq. zero .and. angl(3) .eq. zero) then
+    p = 0.d0
+
+! - Compute matrix from orthotropic reference frame to global reference frame
+    if (anglNaut(1) .eq. zero .and. anglNaut(2) .eq. zero .and. anglNaut(3) .eq. zero) then
         irep = 0
     else
-        call matrot(angl, p)
+        call matrot(anglNaut, p)
         irep = 1
     end if
-!
+
 ! - Transition matrix for elasticity (fourth order)
 ! ---- CETTE MATRICE EST CONSTRUITE EN PARTANT DE LA CONSIDERATION QUE
 ! ----  (SIGMA_GLOB):(EPSILON_GLOB) = (SIGMA_ORTH):(EPSILON_ORTH)
-!
     if (irep .eq. 1) then
-!
         matr_tran(1, 1) = p(1, 1)*p(1, 1)
         matr_tran(1, 2) = p(1, 2)*p(1, 2)
         matr_tran(1, 3) = p(1, 3)*p(1, 3)

@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -17,13 +17,11 @@
 ! --------------------------------------------------------------------
 
 !
-!
 interface
-    subroutine cfresu(time_incr, sddisc, ds_contact, disp_cumu_inst, disp_iter,&
-                      cnsinr   , cnsper)
+    subroutine cfresu(time_incr, ds_contact, disp_cumu_inst, disp_iter, &
+                      cnsinr, cnsper)
         use NonLin_Datastructure_type
         real(kind=8), intent(in) :: time_incr
-        character(len=19), intent(in) :: sddisc
         type(NL_DS_Contact), intent(in) :: ds_contact
         character(len=19), intent(in) :: disp_cumu_inst
         character(len=19), intent(in) :: disp_iter

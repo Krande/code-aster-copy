@@ -225,7 +225,7 @@ subroutine op0184()
     lpaout(1) = 'PPRES_R'
     chpres = '&&OP0184.CHPRES'
     lchout(1) = chpres
-    ligrmo = nomo//'.MODELE'
+    call dismoi('NOM_LIGREL', nomo, 'MODELE', repk=ligrmo)
     option = 'TOU_INI_ELNO'
     call calcul('S', option, ligrmo, 1, lchin, &
                 lpain, 1, lchout, lpaout, 'V', &

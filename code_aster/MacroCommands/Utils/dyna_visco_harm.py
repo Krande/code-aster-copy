@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -19,7 +19,6 @@
 
 from numpy import array
 
-import aster
 from ...Messages import UTMESS
 
 from ...Cata.Syntax import _F
@@ -122,7 +121,7 @@ def dyna_visco_harm(
                     _F(NOEUD=(maillage.getNodeName(no_force[i][0] - 1)), **mc_composante)
                 )
 
-    if l_force_nodale == False:
+    if not l_force_nodale:
         UTMESS("F", "DYNAVISCO_8")
 
     __modstat = MODE_STATIQUE(MATR_RIGI=__asseKgr, FORCE_NODALE=mc_force_nodale)

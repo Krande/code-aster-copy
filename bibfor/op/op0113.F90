@@ -32,8 +32,8 @@ subroutine op0113()
 !
 !
 !
-#include "asterf_types.h"
 #include "jeveux.h"
+#include "asterf_types.h"
 #include "asterc/getres.h"
 #include "asterfort/adalig.h"
 #include "asterfort/assert.h"
@@ -77,8 +77,6 @@ subroutine op0113()
     integer(kind=8) :: jmail2, jtab, jxc
     character(len=8) :: modelx, mod1, modthx, noma, k8cont, k8condi, decou
     aster_logical :: linter
-    character(len=8), pointer :: lgrf1(:) => null()
-    character(len=8), pointer :: lgrf2(:) => null()
 !
     data motfac/' '/
 !
@@ -104,8 +102,7 @@ subroutine op0113()
 !
 ! --- ACCES AU MAILLAGE INITIAL
 !
-    call jeveuo(ligr1//'.LGRF', 'L', vk8=lgrf1)
-    noma = lgrf1(1)
+    call dismoi('NOM_MAILLA', ligr1, 'LIGREL', repk=noma)
     call dismoi('DIM_GEOM', noma, 'MAILLAGE', repi=ndim)
 !
     call dismoi('NB_MA_MAILLA', noma, 'MAILLAGE', repi=nbma)
@@ -229,12 +226,12 @@ subroutine op0113()
     ASSERT(nb1 .eq. nelt)
 !
 !-----------------------------------------------------------------------
-!     4)  CONSTRUCTION DU .MAILLE
+!     4)  CONSTRUCTION DU .TYFE
 !-----------------------------------------------------------------------
 !
-    mail2 = modelx//'.MAILLE'
+    mail2 = ligr2//'.TYFE'
     call wkvect(mail2, 'G V I', nbma, jmail2)
-!        write(6,*)'****** KORUPTION : VERIFICATION DU MODEL.MAILLE ******'
+!        write(6,*)'****** KORUPTION : VERIFICATION DU LIGREL.TYFE ******'
     do ima = 1, nbma
 !        write(6,*)ima,':',zi(jtab-1+5*(ima-1)+4),zi(jtab-1+5*(ima-1)+5)
         zi(jmail2-1+ima) = zi(jtab-1+5*(ima-1)+5)
@@ -249,8 +246,6 @@ subroutine op0113()
 !
     call jedupo(ligr1//'.NBNO', 'G', ligr2//'.NBNO', .false._1)
     call jedupo(ligr1//'.LGRF', 'G', ligr2//'.LGRF', .false._1)
-    call jeveuo(ligr2//'.LGRF', 'E', vk8=lgrf2)
-    lgrf2(2) = modelx
 !
     call jedup1(mod1//'.NEMA', 'G', modelx//'.NEMA')
     call jedup1(mod1//'.SSSA', 'G', modelx//'.SSSA')

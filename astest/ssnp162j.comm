@@ -64,8 +64,6 @@ flux_max = rho_fluide / 12 / visc_fluide * (sigma_max / k_n) ** 3 * press / L_cu
 # FLUX_REFE POUR RESI_REFE_RELA
 flux_refe = 10 * sqrt(flux_min * flux_max)
 
-print("xxxxx=", flux_refe, flux_min)
-
 # L'OUVERTURE ELASTIQUE DU JOINT + CUBE
 delta_elas = sigma_max / k_n + (sigma_max - press) * L_cube / young
 # L'OUVERTURE OU LE JOINT S'OUVRE COMPLETEMENT
@@ -77,37 +75,7 @@ delta_ferm = (sigma_min - press) / k_n + sigma_min * L_cube / young
 # L'OUVERTURE EN GLISSEMENT POUR LE TEST EN MODE2
 delta_max_tan = 3 * delta_elas
 
-MA0 = LIRE_MAILLAGE(FORMAT="ASTER")
-
-
-MA = CREA_MAILLAGE(MAILLAGE=MA0, LINE_QUAD=_F(TOUT="OUI"))
-
-MA = DEFI_GROUP(
-    reuse=MA,
-    MAILLAGE=MA,
-    CREA_GROUP_MA=(
-        _F(NOM="GAUCHE2", MAILLE="M4"),
-        _F(NOM="DROITE", MAILLE="M5"),
-        _F(NOM="CUBEDEG", MAILLE="M2"),
-        _F(NOM="CUBE", MAILLE="M1"),
-    ),
-    CREA_GROUP_NO=(
-        _F(NOM="NS7", NOEUD="N13"),
-        _F(NOM="NS5", NOEUD="N11"),
-        _F(NOM="NO2", NOEUD="N2"),
-        _F(NOM="NS6", NOEUD="N12"),
-    ),
-)
-
-
-MA = DEFI_GROUP(
-    reuse=MA,
-    MAILLAGE=MA,
-    CREA_GROUP_NO=(
-        _F(NOEUD=("N4", "N2", "N8"), NOM="GXXXXXX_DROITE"),
-        _F(NOEUD=("N1", "N3", "N10"), NOM="GXXXXXX_GAUCHE"),
-    ),
-)
+MA = LIRE_MAILLAGE(FORMAT="ASTER")
 
 MA = MODI_MAILLAGE(reuse=MA, MAILLAGE=MA, ORIE_FISSURE=_F(GROUP_MA="GXXXXXX_G_CUBE_D"), INFO=2)
 

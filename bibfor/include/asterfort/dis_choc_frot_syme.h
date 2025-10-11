@@ -20,13 +20,13 @@
 !
 interface
     subroutine dis_choc_frot_syme(for_discret, icodma, ulp, xg, klv, kgv, &
-                                  dvl, dpe, dve, Predic, force, varmo, varpl)
+                                  dpe, Predic, force, varmo, varpl)
         use te0047_type
         type(te0047_dscr), intent(in) :: for_discret
         integer(kind=8)         :: icodma
         real(kind=8)    :: ulp(*), xg(*)
         real(kind=8)    :: klv(*), kgv(*)
-        real(kind=8)    :: dvl(*), dpe(*) ,dve(*), force(*), varmo(*), varpl(*)
+        real(kind=8)    :: dpe(*), force(*), varmo(*), varpl(*)
         aster_logical   :: Predic
     end subroutine dis_choc_frot_syme
 end interface

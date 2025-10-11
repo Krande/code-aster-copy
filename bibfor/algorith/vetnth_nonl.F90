@@ -17,35 +17,35 @@
 ! --------------------------------------------------------------------
 
 subroutine vetnth_nonl(model, caraElem, mateco, time, compor, &
-                       temp_iter, varc_curr, &
+                       temp_iter, varc_prev, varc_curr, &
                        vect_elem_l, vect_elem_nl, base, &
-                       dry_prev_, dry_curr_, hydr_prev_)
+                       hydr_prev_)
 !
     implicit none
 !
 #include "asterf_types.h"
 #include "asterfort/calcul.h"
 #include "asterfort/corich.h"
-#include "asterfort/inical.h"
+#include "asterfort/dismoi.h"
 #include "asterfort/gcnco2.h"
+#include "asterfort/inical.h"
 #include "asterfort/jedetr.h"
 #include "asterfort/jeexin.h"
 #include "asterfort/mecara.h"
 #include "asterfort/megeom.h"
-#include "asterfort/vemare.h"
 #include "asterfort/reajre.h"
+#include "asterfort/vemare.h"
 !
     character(len=8), intent(in) :: model, caraElem
     character(len=24), intent(in) :: mateco
     character(len=24), intent(in) :: time
     character(len=24), intent(in) :: compor
     character(len=24), intent(in) :: temp_iter
+    character(len=19), intent(in) :: varc_prev
     character(len=19), intent(in) :: varc_curr
     character(len=24), intent(in) :: vect_elem_l
     character(len=24), intent(in) :: vect_elem_nl
     character(len=1), intent(in) :: base
-    character(len=24), optional, intent(in) :: dry_prev_
-    character(len=24), optional, intent(in) :: dry_curr_
     character(len=24), optional, intent(in) :: hydr_prev_
 !
 ! --------------------------------------------------------------------------------------------------
@@ -62,11 +62,10 @@ subroutine vetnth_nonl(model, caraElem, mateco, time, compor, &
 ! In  compor           : name of <CARTE> COMPOR
 ! In  temp_iter        : temperature field at current Newton iteration
 ! In  varc_curr        : command variable for current time
+! In  varc_prev        : command variable for previous time
 ! In  vect_elem_l      : name of vect_elem result (linear part)
 ! In  vect_elem_nl     : name of vect_elem result (non linear part)
 ! In  base             : JEVEUX base for object
-! In  dry_prev         : previous drying
-! In  dry_curr         : current drying
 ! In  hydr_prev        : previous hydration
 !
 ! --------------------------------------------------------------------------------------------------
@@ -80,7 +79,7 @@ subroutine vetnth_nonl(model, caraElem, mateco, time, compor, &
     character(len=24) :: ligrmo
     character(len=19) :: resu_elem_l, resu_elem_nl
     character(len=24) :: chgeom, chcara(18)
-    character(len=24) :: hydr_prev, dry_prev, dry_curr
+    character(len=24) :: hydr_prev
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -88,21 +87,13 @@ subroutine vetnth_nonl(model, caraElem, mateco, time, compor, &
     resu_elem_nl = vect_elem_nl(1:8)//'.0000000'
     newnom = '.0000000'
     option = 'CHAR_THER_EVOLNI'
-    ligrmo = model(1:8)//'.MODELE'
+    call dismoi('NOM_LIGREL', model, 'MODELE', repk=ligrmo)
 !
 ! - Get fields
 !
     hydr_prev = ' '
     if (present(hydr_prev_)) then
         hydr_prev = hydr_prev_
-    end if
-    dry_prev = ' '
-    if (present(dry_prev_)) then
-        dry_prev = dry_prev_
-    end if
-    dry_curr = ' '
-    if (present(dry_curr_)) then
-        dry_curr = dry_curr_
     end if
 !
 ! - Init fields
@@ -150,8 +141,8 @@ subroutine vetnth_nonl(model, caraElem, mateco, time, compor, &
     lchin(7) = hydr_prev(1:19)
     lpain(8) = 'PCOMPOR'
     lchin(8) = compor(1:19)
-    lpain(9) = 'PTMPCHI'
-    lchin(9) = dry_prev(1:19)
+    lpain(9) = 'PVARCMR'
+    lchin(9) = varc_prev(1:19)
     lpain(10) = 'PCAMASS'
     lchin(10) = chcara(12) (1:19)
 !

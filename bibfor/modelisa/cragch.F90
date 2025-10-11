@@ -67,7 +67,6 @@ subroutine cragch(long, typcoe, typval, ligrch)
     character(len=19) :: ca1, ca2
     integer(kind=8) :: iret, longut, ngdmx, nedit, ndisp
     integer(kind=8), pointer :: desc(:) => null()
-    character(len=8), pointer :: lgrf(:) => null()
 ! --------- FIN  DECLARATIONS  VARIABLES LOCALES ----------------------
 !
     call jemarq()
@@ -99,8 +98,7 @@ subroutine cragch(long, typcoe, typval, ligrch)
 !
 ! --- MAILLAGE ASSOCIE AU MODELE ---
 !
-        call jeveuo(mod(1:8)//'.MODELE    '//'.LGRF', 'L', vk8=lgrf)
-        noma = lgrf(1)
+        call dismoi('NOM_MAILLA', mod, 'MODELE', repk=noma)
 !
         if (typcoe .eq. 'REEL' .or. typcoe .eq. 'FONC') then
             call alcart('G', ca1, noma, 'DDLM_R')

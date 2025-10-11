@@ -17,7 +17,7 @@
 ! --------------------------------------------------------------------
 !
 interface
-    subroutine ircame(ifi, nochmd, chanom, typech, modele,&
+    subroutine ircame(ifi, nochmd, chanom, typech, ligrel,&
                       nbcmp, nomcmp, etiqcp, partie, numpt,&
                       instan, numord, adsk, adsd, adsc,&
                       adsv, adsl, nbenec, lienec, sdcarm,&
@@ -26,7 +26,7 @@ interface
         character(len=64) :: nochmd
         character(len=19) :: chanom
         character(len=8) :: typech
-        character(len=8) :: modele
+        character(len=19) :: ligrel
         integer(kind=8) :: nbcmp
         character(len=*) :: nomcmp(*)
         character(len=*) :: etiqcp

@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -19,10 +19,7 @@
 import math
 
 from code_aster.Cata.DataStructure import (
-    cham_mater,
-    cham_no_sdaster,
     char_meca,
-    listr8_sdaster,
     maillage_sdaster,
     modele_sdaster,
     resultat_sdaster,
@@ -33,7 +30,6 @@ from code_aster.Commands import (
     CALC_FONC_INTERP,
     CREA_CHAMP,
     DEFI_LIST_REEL,
-    DETRUIRE,
     FORMULE,
 )
 from code_aster.Supervis.ExecuteCommand import UserMacro

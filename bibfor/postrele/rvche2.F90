@@ -19,14 +19,15 @@
 subroutine rvche2(chelez, nomjv, nbel, numail, orig, &
                   axez, nbnac, nnoeud)
     implicit none
-#include "asterf_types.h"
 #include "jeveux.h"
+#include "asterf_types.h"
 #include "asterc/r8vide.h"
 #include "asterfort/dgmode.h"
 #include "asterfort/digdel.h"
 #include "asterfort/dismoi.h"
 #include "asterfort/exisdg.h"
 #include "asterfort/indiis.h"
+#include "asterfort/int_to_char8.h"
 #include "asterfort/jedema.h"
 #include "asterfort/jedupo.h"
 #include "asterfort/jeexin.h"
@@ -39,7 +40,6 @@ subroutine rvche2(chelez, nomjv, nbel, numail, orig, &
 #include "asterfort/nbec.h"
 #include "asterfort/utmess.h"
 #include "asterfort/utpsgl.h"
-#include "asterfort/int_to_char8.h"
 !
     integer(kind=8) :: nbel, numail(*), nbnac, nnoeud(*)
     character(len=*) :: chelez, nomjv
@@ -66,7 +66,6 @@ subroutine rvche2(chelez, nomjv, nbel, numail, orig, &
     integer(kind=8), pointer :: repe(:) => null()
     character(len=24), pointer :: celk(:) => null()
     integer(kind=8), pointer :: liel(:) => null()
-    character(len=8), pointer :: lgrf(:) => null()
     integer(kind=8), pointer :: celd(:) => null()
     real(kind=8), pointer :: vale(:) => null()
 !     ------------------------------------------------------------------
@@ -115,8 +114,7 @@ subroutine rvche2(chelez, nomjv, nbel, numail, orig, &
     call jeveuo(noligr//'.LIEL', 'L', vi=liel)
     call jeveuo(jexatr(noligr//'.LIEL', 'LONCUM'), 'L', jlongr)
     call jelira(noligr//'.LIEL', 'NUTIOC', nbgrel)
-    call jeveuo(noligr//'.LGRF', 'L', vk8=lgrf)
-    nomma = lgrf(1)
+    call dismoi('NOM_MAILLA', noligr, 'LIGREL', repk=nomma)
     call jeveuo(jexatr(nomma//'.CONNEX', 'LONCUM'), 'L', jpnt)
     call jeveuo(nomma//'.CONNEX', 'L', vi=connex)
 !

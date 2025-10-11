@@ -1,12 +1,12 @@
-#ifndef EVOLUTIVETHERMALLOADINTERFACE_H_
-#define EVOLUTIVETHERMALLOADINTERFACE_H_
+#ifndef EVOLUTIVETHERMALRESULTINTERFACE_H_
+#define EVOLUTIVETHERMALRESULTINTERFACE_H_
 
 /**
  * @file ThermalResultInterface.h
  * @brief Fichier entete de la classe ThermalResultInterface
  * @author Nicolas Sellenet
  * @section LICENCE
- *   Copyright (C) 1991 - 2023  EDF R&D                www.code-aster.org
+ *   Copyright (C) 1991 - 2025  EDF R&D                www.code-aster.org
  *
  *   This file is part of Code_Aster.
  *

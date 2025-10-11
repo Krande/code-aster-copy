@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -664,7 +664,7 @@ class creation_donnees_homard:
                 for cle in ("GROUP_MA", "GROUP_NO"):
                     if cle in self.mots_cles:
                         if self.mots_cles.get(cle) is not None:
-                            if not type(self.mots_cles.get(cle)) in EnumTypes:
+                            if type(self.mots_cles.get(cle)) not in EnumTypes:
                                 self.ecrire_ligne_configuration_2(
                                     "CCGroAda", self.mots_cles.get(cle)
                                 )
@@ -741,7 +741,7 @@ class creation_donnees_homard:
                 )
                 if "GROUP_MA_FRONT" in self.mots_cles:
                     if self.mots_cles.get("GROUP_MA_FRONT") is not None:
-                        if not type(self.mots_cles.get("GROUP_MA_FRONT")) in EnumTypes:
+                        if type(self.mots_cles.get("GROUP_MA_FRONT")) not in EnumTypes:
                             self.ecrire_ligne_configuration_2(
                                 "CCGroFro", self.mots_cles.get("GROUP_MA_FRONT")
                             )
@@ -791,7 +791,7 @@ class creation_donnees_homard:
                             )
                     message = "Lien de la frontiere analytique numero %d avec les groupes" % iaux
                     self.ecrire_ligne_configuration_0(message)
-                    if not type(frontiere["GROUP_MA"]) in EnumTypes:
+                    if type(frontiere["GROUP_MA"]) not in EnumTypes:
                         lt_aux = [frontiere["GROUP_MA"]]
                     else:
                         lt_aux = frontiere["GROUP_MA"]

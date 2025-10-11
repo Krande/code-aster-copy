@@ -15,14 +15,13 @@
 ! You should have received a copy of the GNU General Public License
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
-
 !
 interface
-    subroutine matrHooke3d(elas_type, angl,&
-                           h, g, g1, g2, g3,&
+    subroutine matrHooke3d(elasID, anglNaut, &
+                           h, g, g1, g2, g3, &
                            matr_elas)
-        integer(kind=8), intent(in) :: elas_type
-        real(kind=8), intent(in) :: angl(3)
+        integer(kind=8), intent(in) :: elasID
+        real(kind=8), intent(in) :: anglNaut(3)
         real(kind=8), intent(in) :: g, h(6)
         real(kind=8), intent(in) :: g1, g2, g3
         real(kind=8), intent(out) :: matr_elas(6, 6)

@@ -139,7 +139,10 @@ MaterChoc = DEFI_MATERIAU(ELAS=_F(E=1.0, NU=0.2), DIS_CONTACT=_F(RIGI_NOR=Knorm,
 MaterParoi = DEFI_MATERIAU(
     ELAS=_F(E=1.0, NU=0.2), DIS_CONTACT=_F(RIGI_NOR=KnormParoi, AMOR_NOR=AmorNor)
 )
-MaterCoin = DEFI_MATERIAU(ELAS=_F(E=1.0, NU=0.2), DIS_CONTACT=_F(RIGI_NOR=Knorm, CONTACT="COIN_2D"))
+MaterCoin = DEFI_MATERIAU(
+    ELAS=_F(E=1.0, NU=0.2),
+    DIS_CONTACT=_F(RIGI_NOR=Knorm, CONTACT="COIN_2D", PRECISION=(1.0e-05, 1.0e-05, 1.0e-05)),
+)
 #
 CHMAT = AFFE_MATERIAU(
     MAILLAGE=MAIL,
@@ -173,6 +176,7 @@ for ias in ListeAs:
 
 FreqAmp["A"]["x"] = [[1.0, 1.5, 3.0], [0.004, 0.0016, 0.00352]]
 FreqAmp["A"]["y"] = [[2.0, 3.0, 1.0], [0.006, 0.0024, 0.00528]]
+
 
 #
 def PyDepl(Ass, axe, Inst, Tf1, Tf2):
@@ -386,6 +390,32 @@ for Inst,LesValeurs in Resultat:
             )
 
 TEST_RESU(**mclf)
+
+#######
+# # The following code block enables to update non regression reference values
+# valref = []
+# for inst, values in Resultat:
+#     tmp = []
+#     for key, val in zip(LesClefs, values):
+#         if abs(val) > 0.1:
+#             TAB = POST_RELEVE_T(
+#                             ACTION=_F(
+#                                 OPERATION="EXTRACTION",
+#                                 INTITULE="RESU",
+#                                 RESULTAT=Rstnl,
+#                                 NOM_CHAM="REAC_NODA",
+#                                 INST=inst,
+#                                 GROUP_NO=key[0],
+#                                 NOM_CMP=key[1],
+#                             ),
+# )
+#             tmp.append(TAB.EXTR_TABLE().values()[key[1]][0])
+#         else:
+#             tmp.append(0.0)
+#     valref.append([inst, tmp])
+# #
+# print(valref)
+#######
 
 # fmt: on
 FIN()

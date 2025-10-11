@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -17,7 +17,6 @@
 # along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 # --------------------------------------------------------------------
 
-import aster
 from ..Messages import UTMESS
 
 from ..Cata.Syntax import _F
@@ -58,7 +57,7 @@ def verif_table(tabin):
     if nbcab < 1:
         UTMESS("F", "CABLE0_22")
     for nom_para in ("GROUP_MA", "GROUP_NO1", "GROUP_NO2"):
-        if not nom_para in tabin.para:
+        if nom_para not in tabin.para:
             UTMESS("F", "CABLE0_23")
     UTMESS("I", "CABLE0_24", vali=nbcab)
     return nbcab

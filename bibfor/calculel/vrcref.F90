@@ -18,8 +18,8 @@
 
 subroutine vrcref(modele, chmat, carele, chvref, basez)
     implicit none
-#include "asterf_types.h"
 #include "jeveux.h"
+#include "asterf_types.h"
 #include "asterfort/alchml.h"
 #include "asterfort/assert.h"
 #include "asterfort/carces.h"
@@ -99,7 +99,7 @@ subroutine vrcref(modele, chmat, carele, chvref, basez)
 !
 !     -- ON SE PROTEGE DES MODELES QUI NE CONNAISSENT PAS LES VRC :
     celmod = '&&VRCREF.CELMOD'
-    ligrmo = modele//'.MODELE'
+    call dismoi('NOM_LIGREL', modele, 'MODELE', repk=ligrmo)
     call jeexin(ligrmo//'.LIEL', iret)
     if (iret .eq. 0) goto 999
     call alchml(ligrmo, 'INIT_VARC', 'PVARCPR', 'V', celmod, &

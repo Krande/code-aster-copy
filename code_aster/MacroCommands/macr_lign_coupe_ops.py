@@ -689,8 +689,6 @@ def macr_lign_coupe_ops(
 
     #
     MasquerAlarme("ALGORITH12_43")
-    MasquerAlarme("CALCULEL2_63")
-    MasquerAlarme("CALCULEL2_64")
     MasquerAlarme("MODELISA5_53")
     MasquerAlarme("MODELE1_58")
     MasquerAlarme("MODELE1_63")
@@ -961,6 +959,7 @@ def macr_lign_coupe_ops(
 
     if RESULTAT.getType().lower() in (
         "evol_ther",
+        "evol_sech",
         "evol_elas",
         "evol_noli",
         "mode_meca",
@@ -1102,8 +1101,6 @@ def macr_lign_coupe_ops(
     nomres = CREA_TABLE(**dprod)
 
     RetablirAlarme("ALGORITH12_43")
-    RetablirAlarme("CALCULEL2_63")
-    RetablirAlarme("CALCULEL2_64")
     RetablirAlarme("MODELISA5_53")
     RetablirAlarme("MODELE1_58")
     RetablirAlarme("MODELE1_63")

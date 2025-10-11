@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -386,7 +386,7 @@ class spectre:
         tpa4_1 = tpda3 * (self.listFreq[j + 1] - self.listFreq[j]) + self.dataVal[j]
 
         # on verifie si on supprime un point ou pas
-        if elim == True:
+        if elim:
             if tpc1 > tpc2:  # CAS 1
                 self.listFreq[j] = self.listFreq[j + 1]
                 self.dataVal[j - 1] = tpa4_0
@@ -427,7 +427,7 @@ class spectre:
                         tpg * (self.listFreq[j - 1] - self.listFreq[j]) + self.dataVal[j]
                     )
                     tpe = False
-                if tpe == True:
+                if tpe:
                     self.dataVal[j - 1] = tpa4_0
 
             if tpa4_0 > self.samax:
@@ -442,7 +442,7 @@ class spectre:
                         tpg * (self.listFreq[j + 1] - self.listFreq[j]) + self.dataVal[j]
                     )
                     tpe = False
-                if tpe == True:
+                if tpe:
                     self.dataVal[j + 1] = tpa4_1
 
 

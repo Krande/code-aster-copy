@@ -19,8 +19,8 @@
 subroutine xoripe(modele)
     implicit none
 !
-#include "asterf_types.h"
 #include "jeveux.h"
+#include "asterf_types.h"
 #include "asterfort/assert.h"
 #include "asterfort/celces.h"
 #include "asterfort/cescel.h"
@@ -97,7 +97,7 @@ subroutine xoripe(modele)
 !     INITIALISATION DU NOMBRE DE SOUS-ELEMENTS RE-ORIENTES
     nseori = 0
 !
-    ligrel = modele//'.MODELE'
+    call dismoi('NOM_LIGREL', modele, 'MODELE', repk=ligrel)
 !
 !     1.RECUPERATION D'INFORMATIONS DANS MODELE
 !

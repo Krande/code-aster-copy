@@ -15,12 +15,11 @@
 ! You should have received a copy of the GNU General Public License
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
-
-subroutine nmevev(sddisc, nume_inst, valinc, sderro, ds_contact, &
+!
+subroutine nmevev(sddisc, valinc, sderro, ds_contact, &
                   loop_name)
 !
     use NonLin_Datastructure_type
-!
     implicit none
 !
 #include "asterf_types.h"
@@ -31,13 +30,10 @@ subroutine nmevev(sddisc, nume_inst, valinc, sderro, ds_contact, &
 #include "asterfort/nmltev.h"
 #include "asterfort/nmcrel.h"
 !
-! person_in_charge: mickael.abbas at edf.fr
-!
     character(len=24), intent(in) :: sderro
     character(len=19), intent(in) :: sddisc
     character(len=4), intent(in) :: loop_name
     type(NL_DS_Contact), intent(in) :: ds_contact
-    integer(kind=8), intent(in) :: nume_inst
     character(len=19), intent(in) :: valinc(*)
 !
 ! ----------------------------------------------------------------------
@@ -53,7 +49,6 @@ subroutine nmevev(sddisc, nume_inst, valinc, sderro, ds_contact, &
 !
 ! In  sddisc           : datastructure for time discretization TEMPORELLE
 ! In  ds_contact       : datastructure for contact management
-! IN  NUMINS : NUMERO D'INSTANT
 ! IN  SDERRO : SD GESTION DES ERREURS
 ! IN  NOMBCL : NOM DE LA BOUCLE
 !               'NEWT' - BOUCLE DE NEWTON
@@ -93,7 +88,7 @@ subroutine nmevev(sddisc, nume_inst, valinc, sderro, ds_contact, &
 !
 ! --- PREMIER EVENT DECLENCHE
 !
-    call nmevel(sddisc, nume_inst, valinc, loop_name, lsvimx, &
+    call nmevel(sddisc, valinc, loop_name, lsvimx, &
                 ldvres, lresmx, linsta, lerrcv, lerror, &
                 conver, ds_contact)
 !

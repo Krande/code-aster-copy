@@ -20,8 +20,8 @@ subroutine vedimd(nomo, lischa, instan, vecele)
 !
 !
     implicit none
-#include "asterf_types.h"
 #include "jeveux.h"
+#include "asterf_types.h"
 #include "asterfort/assert.h"
 #include "asterfort/calcul.h"
 #include "asterfort/corich.h"
@@ -43,9 +43,9 @@ subroutine vedimd(nomo, lischa, instan, vecele)
 #include "asterfort/lisnol.h"
 #include "asterfort/lisopt.h"
 #include "asterfort/mecact.h"
-#include "asterfort/mecoor.h"
-#include "asterfort/vemare.h"
+#include "asterfort/megeom.h"
 #include "asterfort/reajre.h"
+#include "asterfort/vemare.h"
     character(len=19) :: lischa, vecele
     character(len=8) :: nomo
     real(kind=8) :: instan
@@ -74,7 +74,7 @@ subroutine vedimd(nomo, lischa, instan, vecele)
     character(len=8) :: nomch0
     character(len=8) :: newnom
     character(len=16) :: option
-    character(len=19) :: ligrmo, ligcal
+    character(len=19) :: ligcal
     character(len=13) :: prefob
     character(len=19) :: chgeom, chtime
     character(len=19) :: carte
@@ -95,10 +95,6 @@ subroutine vedimd(nomo, lischa, instan, vecele)
     newnom = '.0000000'
     nomlis = '&&NOMLIS'
     call detrsd('VECT_ELEM', vecele)
-!
-! --- RECUPERATION DU MODELE
-!
-    ligrmo = nomo(1:8)//'.MODELE'
 !
 ! --- INITIALISATION DES CHAMPS POUR CALCUL
 !
@@ -122,12 +118,12 @@ subroutine vedimd(nomo, lischa, instan, vecele)
 !
 ! --- CHAMP DE GEOMETRIE
 !
-    call mecoor(nomo, chgeom)
+    call megeom(nomo, chgeom)
 !
 ! --- CARTE DE L'INSTANT
 !
     chtime = '&&VEDIMD.CH_INST_R'
-    call mecact('V', chtime, 'MODELE', ligrmo, 'INST_R', &
+    call mecact('V', chtime, 'MODELE', nomo, 'INST_R', &
                 ncmp=1, nomcmp='INST', sr=instan)
 !
 ! --- CHAMPS D'ENTREES STANDARDS

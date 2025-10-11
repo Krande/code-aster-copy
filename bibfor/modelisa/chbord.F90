@@ -20,6 +20,7 @@ subroutine chbord(nomo, nbCell, listCellNume, mabord, nbmapr, &
                   nbmabo)
     implicit none
 #include "jeveux.h"
+#include "asterfort/dismoi.h"
 #include "asterfort/jeexin.h"
 #include "asterfort/jelira.h"
 #include "asterfort/jenuno.h"
@@ -53,7 +54,7 @@ subroutine chbord(nomo, nbCell, listCellNume, mabord, nbmapr, &
     modele = nomo
     nbmapr = 0
     nbmabo = 0
-    nolig = modele//'.MODELE'
+    call dismoi('NOM_LIGREL', modele, 'MODELE', repk=nolig)
 !
     call jeexin(nolig//'.LIEL', iret)
     if (iret .eq. 0) goto 999

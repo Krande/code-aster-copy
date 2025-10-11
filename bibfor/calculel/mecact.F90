@@ -31,6 +31,7 @@ subroutine mecact(base, nomcar, moclez, nomco, nomgdz, &
 #include "jeveux.h"
 #include "asterfort/alcart.h"
 #include "asterfort/assert.h"
+#include "asterfort/dismoi.h"
 #include "asterfort/jedema.h"
 #include "asterfort/jedetr.h"
 #include "asterfort/jeexin.h"
@@ -85,7 +86,7 @@ subroutine mecact(base, nomcar, moclez, nomco, nomgdz, &
     character(len=8) :: noma
 !
 !-----------------------------------------------------------------------
-    integer(kind=8) :: i, ianoma, iret, jncmp, jvalv, ltyp, j
+    integer(kind=8) :: i, iret, jncmp, jvalv, ltyp, j
 !
 !-----------------------------------------------------------------------
     call jemarq()
@@ -157,11 +158,9 @@ subroutine mecact(base, nomcar, moclez, nomco, nomgdz, &
     if (mocle(1:6) .eq. 'MAILLA') then
         noma = nommo2(1:8)
     else if (mocle(1:6) .eq. 'MODELE') then
-        call jeveuo(nommo2(1:8)//'.MODELE    .LGRF', 'L', ianoma)
-        noma = zk8(ianoma-1+1)
+        call dismoi('NOM_MAILLA', nommo2, 'MODELE', repk=noma)
     else if (mocle(1:6) .eq. 'LIGREL') then
-        call jeveuo(nommo2(1:19)//'.LGRF', 'L', ianoma)
-        noma = zk8(ianoma-1+1)
+        call dismoi('NOM_MAILLA', nommo2, 'LIGREL', repk=noma)
     else
         ASSERT(.false.)
     end if
@@ -191,7 +190,7 @@ subroutine mecact(base, nomcar, moclez, nomco, nomgdz, &
     call jelira(nomca2(1:19)//'.VALV', 'TYPE', cval=type)
     call jelira(nomca2(1:19)//'.VALV', 'LTYP', ltyp)
     do i = 1, ncmp
-        zk8(jncmp-1+i) = licmp(i)
+        zk8(jncmp-1+i) = licmp(i) (1:8)
         if (type(1:1) .eq. 'R') then
             zr(jvalv-1+i) = rcmp(i)
         end if
@@ -203,11 +202,11 @@ subroutine mecact(base, nomcar, moclez, nomco, nomgdz, &
         end if
         if (type(1:1) .eq. 'K') then
             if (ltyp .eq. 8) then
-                zk8(jvalv-1+i) = kcmp(i)
+                zk8(jvalv-1+i) = kcmp(i) (1:8)
             else if (ltyp .eq. 16) then
-                zk16(jvalv-1+i) = kcmp(i)
+                zk16(jvalv-1+i) = kcmp(i) (1:16)
             else if (ltyp .eq. 24) then
-                zk24(jvalv-1+i) = kcmp(i)
+                zk24(jvalv-1+i) = kcmp(i) (1:24)
             else
                 ASSERT(.false.)
             end if

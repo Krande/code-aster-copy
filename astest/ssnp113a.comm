@@ -54,8 +54,8 @@ CHAR1 = AFFE_CHAR_MECA(
     ),
     MODELE=MODELE,
 )
-CHAR2 = AFFE_CHAR_MECA(
-    DDL_IMPO=(
+CHAR2 = AFFE_CHAR_CINE(
+    MECA_IMPO=(
         _F(DX=1.0, GROUP_NO="COTED"),
         _F(GROUP_NO="N4", DY=1.5),
         _F(GROUP_NO="N8", DY=1.5),

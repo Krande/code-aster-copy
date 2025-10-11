@@ -73,9 +73,6 @@ subroutine dismmo(questi, nomobz, repi, repkz, ierd)
     model = nomobz
     modelLigrel = model//'.MODELE'
 !
-    call jeveuo(modelLigrel//'.LGRF', 'L', vk8=lgrf)
-    mesh = lgrf(1)
-!
     if (questi .eq. 'NOM_LIGREL') then
         repk = modelLigrel
 
@@ -104,13 +101,16 @@ subroutine dismmo(questi, nomobz, repi, repkz, ierd)
             (questi .eq. 'EXI_HHO_QUAD') .or. (questi .eq. 'EXI_NO_HHO') .or. &
             (questi .eq. 'EXI_AXIS') .or. (questi .eq. 'EXI_COQSOL') .or. &
             (questi .eq. 'EXI_IMPE_ABSO') .or. (questi .eq. 'EXI_CABLE') .or. &
-            (questi .eq. 'EXI_POUTRE') .or. (questi .eq. 'EXI_INCO')) then
+            (questi .eq. 'EXI_POUTRE') .or. (questi .eq. 'EXI_INCO') .or. &
+            (questi .eq. 'EXI_SECH') .or. (questi .eq. 'EXI_NON_SECH')) then
         call dismlg(questi, modelLigrel, repi, repk, ierd)
 
     else if (questi .eq. 'ELEM_VOLU_QUAD') then
         call dismqu(questi, modelLigrel, repi, repk, ierd)
 
     else if (questi .eq. 'NOM_MAILLA') then
+        call jeveuo(modelLigrel//'.LGRF', 'L', vk8=lgrf)
+        mesh = lgrf(1)
         repk = mesh
 
     else if (questi .eq. 'MODELISATION') then
@@ -154,6 +154,8 @@ subroutine dismmo(questi, nomobz, repi, repkz, ierd)
 
     elseif ((questi .eq. 'NB_NO_MAILLA') .or. (questi .eq. 'NB_MA_MAILLA') .or. &
             (questi .eq. 'NB_NO_SS_MAX')) then
+        call jeveuo(modelLigrel//'.LGRF', 'L', vk8=lgrf)
+        mesh = lgrf(1)
         call dismma(questi, mesh, repi, repk, ierd)
 
     else if (questi .eq. 'NB_FISS_XFEM') then

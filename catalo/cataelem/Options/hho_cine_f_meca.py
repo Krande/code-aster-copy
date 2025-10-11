@@ -35,5 +35,5 @@ PCINE = OutputParameter(phys=PHY.DEPL_R, type="ELNO")
 HHO_CINE_F_MECA = Option(
     para_in=(SP.PGEOMER, SP.PINSTPR, PFONC, PCHHOBS),
     para_out=(PCINE,),
-    condition=(CondCalcul("+", ((AT.PHENO, "ME"), (AT.BORD, "0"))),),
+    condition=(CondCalcul("+", ((AT.PHENO, "ME"), (AT.BORD, "0"), (AT.HHO, "OUI"))),),
 )

@@ -34,5 +34,5 @@ PCINE = OutputParameter(phys=PHY.TEMP_R, type="ELNO")
 HHO_CINE_R_THER = Option(
     para_in=(SP.PGEOMER, PCMPVALE, PCHHOBS),
     para_out=(PCINE,),
-    condition=(CondCalcul("+", ((AT.PHENO, "TH"), (AT.BORD, "0"))),),
+    condition=(CondCalcul("+", ((AT.PHENO, "TH"), (AT.BORD, "0"), (AT.HHO, "OUI"))),),
 )

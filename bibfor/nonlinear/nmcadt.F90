@@ -26,6 +26,7 @@ subroutine nmcadt(sddisc, i_adap, nume_inst, hval_incr, dtp)
 #include "jeveux.h"
 #include "asterc/r8maem.h"
 #include "asterc/r8vide.h"
+#include "asterfort/asmpi_comm_vect.h"
 #include "asterfort/assert.h"
 #include "asterfort/extdch.h"
 #include "asterfort/jedema.h"
@@ -180,6 +181,8 @@ subroutine nmcadt(sddisc, i_adap, nume_inst, hval_incr, dtp)
     else
         ASSERT(.false.)
     end if
+!
+    call asmpi_comm_vect('MPI_MIN', 'R', scr=dtp)
 !
     call jedema()
 end subroutine

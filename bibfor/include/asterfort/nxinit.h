@@ -25,7 +25,7 @@ interface
                       time, ds_algopara, &
                       ds_algorom, ds_print, vhydr, &
                       l_stat, l_evol, l_rom, &
-                      l_line_search, lnkry)
+                      l_line_search, lnkry, l_dry)
         use NonLin_Datastructure_type
         use Rom_Datastructure_type
         character(len=24), intent(in) ::  compor
@@ -42,5 +42,6 @@ interface
         type(NL_DS_Print), intent(inout) :: ds_print
         character(len=24), intent(in) :: vhydr
         aster_logical, intent(out) :: l_stat, l_evol, l_rom, l_line_search, lnkry
+        aster_logical, intent(in) :: l_dry
     end subroutine nxinit
 end interface

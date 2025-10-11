@@ -16,7 +16,7 @@
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
 !
-subroutine dfllac(factorKeyword, i_fail, dtmin, event_typek, &
+subroutine dfllac(factorKeyword, i_fail, dtmin, &
                   action_typek, &
                   subd_methode, subd_pas_mini, &
                   subd_niveau, subd_pas, &
@@ -36,7 +36,6 @@ subroutine dfllac(factorKeyword, i_fail, dtmin, event_typek, &
     character(len=16), intent(in) :: factorKeyword
     integer(kind=8), intent(in) :: i_fail
     real(kind=8), intent(in) :: dtmin
-    character(len=16), intent(in) :: event_typek
     character(len=16), intent(out) :: action_typek
     character(len=16), intent(out) :: subd_methode
     real(kind=8), intent(out) :: subd_pas_mini
@@ -59,7 +58,6 @@ subroutine dfllac(factorKeyword, i_fail, dtmin, event_typek, &
 ! In  factorKeyword    : factor keyword to read failures
 ! In  i_fail           : index of current factor keyword to read failure
 ! In  dtmin            : minimum time increment in list of times
-! In  event_typek      : type of event
 ! Out action_typek     : type of action
 ! Out subd_methode     : value of SUBD_METHODE for ACTION=DECOUPE
 ! Out subd_pas_mini    : value of SUBD_PAS_MINI for ACTION=DECOUPE
@@ -85,13 +83,13 @@ subroutine dfllac(factorKeyword, i_fail, dtmin, event_typek, &
     if (action_typek .eq. failActionKeyword(FAIL_ACT_STOP)) then
 !
     else if (action_typek .eq. failActionKeyword(FAIL_ACT_CUT)) then
-        call dflldc(factorKeyword, i_fail, dtmin, event_typek, &
+        call dflldc(factorKeyword, i_fail, dtmin, &
                     subd_methode, subd_pas_mini, &
                     subd_niveau, subd_pas, &
                     subd_auto, subd_inst, subd_duree)
     else if (action_typek .eq. failActionKeyword(FAIL_ACT_ITER)) then
         call dfllae(factorKeyword, i_fail, pcent_iter_plus)
-        call dflldc(factorKeyword, i_fail, dtmin, event_typek, &
+        call dflldc(factorKeyword, i_fail, dtmin, &
                     subd_methode, subd_pas_mini, &
                     subd_niveau, subd_pas, &
                     subd_auto, subd_inst, subd_duree)

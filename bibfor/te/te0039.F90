@@ -23,14 +23,17 @@ subroutine te0039(option, nomte)
 !
 #include "asterf_types.h"
 #include "jeveux.h"
+#include "asterc/r8prem.h"
 #include "asterfort/assert.h"
 #include "asterfort/Behaviour_type.h"
 #include "asterfort/dis_choc_frot_syme.h"
+#include "asterfort/dis_choc_frot_nosyme.h"
 #include "asterfort/discret_sief.h"
 #include "asterfort/infdis.h"
 #include "asterfort/infted.h"
 #include "asterfort/jevech.h"
 #include "asterfort/matrot.h"
+#include "asterfort/rcvala.h"
 #include "asterfort/terefe.h"
 #include "asterfort/ut2vgl.h"
 #include "asterfort/ut2vlg.h"
@@ -68,7 +71,7 @@ subroutine te0039(option, nomte)
     integer(kind=8) :: igeom, jdc, irep, ifono, ilogic, jvDisp
 !
     real(kind=8) :: pgl(3, 3), force(3)
-    real(kind=8) :: fs(12), ugp(12), ulp(12), dvl(12), dpe(12), dve(12)
+    real(kind=8) :: fs(12), ugp(12), ulp(12), dpe(12)
     real(kind=8) :: sim(12), sip(12), fono(12)
     real(kind=8) :: klv(78), kgv(78)
     real(kind=8) :: forref, momref
@@ -79,6 +82,7 @@ subroutine te0039(option, nomte)
     character(len=16), pointer :: compor(:) => null()
 !
     aster_logical, parameter :: Predic = ASTER_FALSE
+    aster_logical :: lMatrTangSyme
     blas_int :: b_incx, b_incy, b_n
 !
 ! --------------------------------------------------------------------------------------------------
@@ -203,7 +207,7 @@ subroutine te0039(option, nomte)
             end if
             !
             if (compor(RELA_NAME) .eq. 'DIS_CHOC') then
-                varmo(:) = 0.0; dvl(:) = 0.0; dpe(:) = 0.0; dve(:) = 0.0
+                varmo(:) = 0.0; dpe(:) = 0.0
 ! Relation de comportement de choc : forces nodales
                 call jevech('PVECTUR', 'E', ifono)
                 do ii = 1, neq
@@ -214,9 +218,20 @@ subroutine te0039(option, nomte)
                 ilogic = 0; force(1:3) = 0.0
                 call discret_sief(for_discret, klv, ulp, sim, ilogic, &
                                   sip, fono, force)
-                call dis_choc_frot_syme(for_discret, zi(lmater), ulp, zr(igeom), klv, &
-                                        kgv, dvl, dpe, dve, Predic, &
-                                        force, varmo, varpl)
+
+                ! Verification du caractère symétrique de la matrice tangente
+                call hasSymmetricTangentMatrix(for_discret, lMatrTangSyme)
+
+                !   Calcul des efforts
+                if (lMatrTangSyme) then
+                    call dis_choc_frot_syme(for_discret, zi(lmater), ulp, zr(igeom), klv, &
+                                            kgv, dpe, Predic, &
+                                            force, varmo, varpl)
+                else
+                    call dis_choc_frot_nosyme(for_discret, zi(lmater), ulp, zr(igeom), klv, &
+                                              dpe, varmo, force, varpl)
+                end if
+
                 ilogic = 2
                 call discret_sief(for_discret, klv, ulp, sim, ilogic, &
                                   sip, zr(ifono), force)

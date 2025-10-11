@@ -35,7 +35,8 @@ subroutine trinsr(clef, tab, ntab, n)
 !
 ! --- VARIABLES
 !
-    integer(kind=8) :: n, ntab, clef(*)
+    integer(kind=8) :: clef(*)
+    integer(kind=8) :: n, ntab
     real(kind=8) :: tab(n, *)
     integer(kind=8) :: g, d, i, j, inser
     real(kind=8) :: tmpr

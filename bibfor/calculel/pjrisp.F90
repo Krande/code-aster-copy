@@ -89,7 +89,7 @@ subroutine pjrisp(moa2, masp, corres, noca)
 !   Récuperation du champ de coordonnées du maillage 2
     chgeom = mail2//'.COORDO'
 !
-    ligrel = moa2//'.MODELE'
+    call dismoi('NOM_LIGREL', moa2, 'MODELE', repk=ligrel)
 !
 ! --------------------------------------------------------------------------------------------------
 !   Calcul du champ de coordonnées des ELGA (chamg):

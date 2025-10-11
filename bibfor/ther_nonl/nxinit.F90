@@ -24,7 +24,7 @@ subroutine nxinit(mesh, model, materField, &
                   time, ds_algopara, &
                   ds_algorom, ds_print, vhydr, &
                   l_stat, l_evol, l_rom, &
-                  l_line_search, lnkry)
+                  l_line_search, lnkry, l_dry)
 !
     use NonLin_Datastructure_type
     use Rom_Datastructure_type
@@ -34,6 +34,7 @@ subroutine nxinit(mesh, model, materField, &
 #include "asterf_types.h"
 #include "asterfort/ntcrob.h"
 #include "asterfort/ntcrch.h"
+#include "asterfort/nsetcr.h"
 #include "asterfort/ntetcr.h"
 #include "asterfort/ntdoet.h"
 #include "asterfort/nxcerr.h"
@@ -58,6 +59,7 @@ subroutine nxinit(mesh, model, materField, &
     type(NL_DS_Print), intent(inout) :: ds_print
     character(len=24), intent(in) :: vhydr
     aster_logical, intent(out) :: l_stat, l_evol, l_rom, l_line_search, lnkry
+    aster_logical, intent(in) :: l_dry
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -122,8 +124,13 @@ subroutine nxinit(mesh, model, materField, &
 !
 ! - Create input/output datastructure
 !
-    call ntetcr(nume_dof, ds_inout, &
-                listLoad, compor, vhydr, hydr_init)
+    if (l_dry) then
+        call nsetcr(nume_dof, ds_inout, &
+                    listLoad, compor)
+    else
+        call ntetcr(nume_dof, ds_inout, &
+                    listLoad, compor, vhydr, hydr_init)
+    end if
 !
 ! - Read initial state
 !
@@ -155,6 +162,6 @@ subroutine nxinit(mesh, model, materField, &
 ! - Prepare storing
 !
     call nxnoli(model, materField, caraElem, l_stat, l_evol, &
-                para, sddisc, ds_inout, ds_algorom)
+                para, sddisc, ds_inout, ds_algorom, l_dry)
 !
 end subroutine

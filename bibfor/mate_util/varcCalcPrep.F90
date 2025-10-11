@@ -32,15 +32,16 @@ subroutine varcCalcPrep(modelz, cara_elemz, matecoz, &
     implicit none
 !
 #include "asterf_types.h"
-#include "asterfort/assert.h"
-#include "asterfort/exixfe.h"
-#include "asterfort/megeom.h"
-#include "asterfort/nmvcex.h"
-#include "asterfort/mecara.h"
-#include "asterfort/meharm.h"
-#include "asterfort/xajcin.h"
-#include "asterfort/detrsd.h"
 #include "asterfort/alchml.h"
+#include "asterfort/assert.h"
+#include "asterfort/detrsd.h"
+#include "asterfort/dismoi.h"
+#include "asterfort/exixfe.h"
+#include "asterfort/mecara.h"
+#include "asterfort/megeom.h"
+#include "asterfort/meharm.h"
+#include "asterfort/nmvcex.h"
+#include "asterfort/xajcin.h"
 !
     character(len=*), intent(in) :: modelz, cara_elemz, matecoz
     aster_logical, intent(in) :: l_temp, l_meta
@@ -114,7 +115,7 @@ subroutine varcCalcPrep(modelz, cara_elemz, matecoz, &
 !
     call exixfe(model, iret)
     l_xfem = iret .ne. 0
-    ligrmo = model(1:8)//'.MODELE'
+    call dismoi('NOM_LIGREL', model, 'MODELE', repk=ligrmo)
     chharm = '&&NMVCPR.CHHARM'
 !
 ! - Get fields for external state variables

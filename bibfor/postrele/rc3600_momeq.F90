@@ -22,23 +22,25 @@ subroutine rc3600_momeq()
 !     COMMANDE :  POST_RCCM / B3600 / OPTION MOMENT_EQUIVALENT
 ! ----------------------------------------------------------------------
     implicit none
-#include "asterf_types.h"
 #include "jeveux.h"
+#include "asterf_types.h"
 #include "asterc/getres.h"
 #include "asterfort/assert.h"
 #include "asterfort/calcul.h"
 #include "asterfort/chmima.h"
-#include "asterfort/dismoi.h"
 #include "asterfort/detrsd.h"
+#include "asterfort/dismoi.h"
+#include "asterfort/exlim4.h"
 #include "asterfort/exlima.h"
 #include "asterfort/getvid.h"
 #include "asterfort/getvr8.h"
 #include "asterfort/getvtx.h"
+#include "asterfort/imprsd.h"
 #include "asterfort/infmaj.h"
 #include "asterfort/infniv.h"
 #include "asterfort/jedema.h"
-#include "asterfort/jeexin.h"
 #include "asterfort/jedetr.h"
+#include "asterfort/jeexin.h"
 #include "asterfort/jelira.h"
 #include "asterfort/jemarq.h"
 #include "asterfort/jeveuo.h"
@@ -47,11 +49,10 @@ subroutine rc3600_momeq()
 #include "asterfort/rscrsd.h"
 #include "asterfort/rsexch.h"
 #include "asterfort/rslesd.h"
-#include "asterfort/rsnopa.h"
 #include "asterfort/rsnoch.h"
+#include "asterfort/rsnopa.h"
 #include "asterfort/rsutnu.h"
 #include "asterfort/utmess.h"
-#include "asterfort/imprsd.h"
     character(len=8) :: resu, champ
 
     integer(kind=8) :: ifm, niv
@@ -70,7 +71,7 @@ subroutine rc3600_momeq()
     character(len=24) :: nompar
     character(len=16) :: nomcmd, concep, nopara, nomopt
     character(len=19) :: chin, chextr, ligrel, resu19, lchin(1), lchout(1)
-    character(len=19) :: noch19, tychlu, mcf
+    character(len=19) :: noch19, tychlu, mcf, ligrelCham
     integer(kind=8) :: iexi
     aster_logical :: lnoeu, ldetli, lvide
 
@@ -227,22 +228,22 @@ subroutine rc3600_momeq()
     else
         nomsym = ' '
         conceptin = champ
-        call dismoi('NOM_MODELE', champ, 'CHAMP', repk=modele)
+        call dismoi('NOM_LIGREL', champ, 'CHAMP', repk=ligrelCham)
         call dismoi('NOM_OPTION', champ, 'CHAMP', repk=nomopt)
         if (nomopt(1:9) .ne. 'EFGE_ELNO') call utmess('F', 'POSTRELE_23', sk=nomopt)
-        call exlima('ZONE_ANALYSE', 1, 'V', modele, ligrel)
+        call exlim4('ZONE_ANALYSE', 'V', ligrelCham, ligrel)
         noch19 = '&&RC3600_CHMEQ'
         lchin(1) = champ
         lchout(1) = noch19
 !
-        call calcul('C', 'EFEQ_ELNO', ligrel, 1, lchin, &
+        call calcul('C', 'EFEQ_ELNO', ligrelCham, 1, lchin, &
                     lpain, 1, lchout, lpaout, 'V', &
                     'OUI')
     end if
 
 !    creation de la table
 
-    call rc3600_chtotab(nomtab, conceptin, nomsym, modele, noch19)
+    call rc3600_chtotab(nomtab, conceptin, nomsym, noch19)
 !
     call jedema()
 end subroutine

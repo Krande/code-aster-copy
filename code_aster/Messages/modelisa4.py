@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -62,6 +62,27 @@ Présence de mailles dégénérées : modifier le maillage du béton.
     10: _(
         """
 Phase de vérification du maillage - mailles dégénérées
+
+  -> Risque & Conseil :
+     Vérifiez votre maillage. La présence de telles mailles peut conduire à des
+     problèmes de convergence et nuire à la qualité des résultats.
+
+     Pour détecter les mailles problématiques, il est possible de désactiver
+     la vérification. Puis de convertir le maillage en linéaire, afin de trouver
+     facilement les arêtes ou faces doubles.
+"""
+    ),
+    11: _(
+        """
+Deux arêtes partagent les mêmes noeuds sommets (%(i1)d, %(i2)d)
+mais présentent des noeuds milieux différents (%(i3)d vs %(i4)d).
+"""
+    ),
+    12: _(
+        """
+Deux faces partagent les mêmes noeuds sommets (%(i1)d, %(i2)d, %(i3)d, %(i4)d)
+mais présentent des noeuds milieux différents. Elles sont en général à l'interface de
+deux mailles volumiques.
 """
     ),
     13: _(

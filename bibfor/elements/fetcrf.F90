@@ -58,13 +58,11 @@ subroutine fetcrf(nomo, nbsd)
     integer(kind=8) ::  nbmatr
     integer(kind=8) :: vali(5), iafeta, ial, ials, itma, nber, lil, lils
     integer(kind=8) :: iao, iaos, iexi
-    character(len=8) :: k8bid, ma
-    character(len=19) :: sdpart, ligrmo
+    character(len=8) :: k8bid, ma, sdpart
+    character(len=19) :: ligrmo
     character(len=24) :: nomsda, nomsdm
-
     character(len=24) ::  nomgma, nomref
     character(len=24) ::  k24buf
-    character(len=8), pointer :: lgrf(:) => null()
 !
 !
 ! CORPS DU PROGRAMME
@@ -73,15 +71,14 @@ subroutine fetcrf(nomo, nbsd)
 !**********************************************************************
 ! INITIALISATIONS
 !**********************************************************************
-    sdpart = nomo//'.PARTSD'
+!   ligrel du modele
+    call dismoi('NOM_LIGREL', nomo, 'MODELE', repk=ligrmo)
+    call dismoi('PARTITION', ligrmo, 'LIGREL', repk=sdpart)
+!
     nomref = sdpart//'.FREF'
     nomsdm = sdpart//'.FDIM'
     nomsda = sdpart//'.FETA'
 !
-!
-!   ligrel du modele
-    ligrmo = nomo(1:8)//'.MODELE'
-
 !     VECTEUR DES NBRE DE NOEUDS
     call wkvect('&&FETCRF.NBNO     ', 'V V I', nbsd, nbno)
 !
@@ -94,9 +91,7 @@ subroutine fetcrf(nomo, nbsd)
     zk8(jadr) = nomo
 
 !     MA: MAILLAGE ASSOCIE AU MODELE
-    call jeveuo(ligrmo//'.LGRF', 'L', vk8=lgrf)
-    ma = lgrf(1)
-
+    call dismoi('NOM_MAILLA', nomo, 'MODELE', repk=ma)
     call dismoi('NB_NO_MAILLA', ma, 'MAILLAGE', repi=nbnoto)
     call dismoi('NB_MA_MAILLA', ma, 'MAILLAGE', repi=nbmato)
     nbmatr = nbmato
@@ -243,8 +238,8 @@ subroutine fetcrf(nomo, nbsd)
     end do
 !
 ! **** TEST NBRE DE MAILLES MODELE = SOMME DES MAILLES DES GROUP_MA
-    call jelira(nomo//'.MAILLE', 'LONMAX', nbma)
-    call jeveuo(nomo//'.MAILLE', 'L', ial)
+    call jelira(ligrmo//'.TYFE', 'LONMAX', nbma)
+    call jeveuo(ligrmo//'.TYFE', 'L', ial)
     nbmama = 0
     nber = 0
     do i = 1, nbma

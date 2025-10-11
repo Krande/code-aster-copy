@@ -38,10 +38,7 @@ PCHHOST = InputParameter(phys=PHY.N1360R, comment=""" HHO - matrice de la stabil
 
 PCHHOBS = InputParameter(phys=PHY.N3600R, comment=""" HHO - coefficient base locale""")
 
-PMATTTR = OutputParameter(phys=PHY.MTEM_R, type="RESL")
-
 PMATTSR = OutputParameter(phys=PHY.MTNS_R, type="RESL")
-
 
 RIGI_THER_TANG = Option(
     para_in=(
@@ -50,12 +47,11 @@ RIGI_THER_TANG = Option(
         SP.PCAMASS,
         SP.PMATERC,
         SP.PTEMPEI,
-        SP.PTMPCHF,
         PVARCPR,
         PCHHOGT,
         PCHHOST,
         PCHHOBS,
     ),
-    para_out=(PMATTTR, PMATTSR),
+    para_out=(SP.PMATTTR, PMATTSR),
     condition=(CondCalcul("+", ((AT.PHENO, "TH"), (AT.BORD, "0"))),),
 )

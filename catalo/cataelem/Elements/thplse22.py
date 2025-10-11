@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -77,7 +77,7 @@ class THPLSE22(Element):
         OP.MTAN_THER_PARO_F(
             te=387,
             para_in=((SP.PGEOMER, NGEOMER), (SP.PHECHPF, LC.CHECHPF), (SP.PINSTR, CTEMPSR)),
-            para_out=((OP.MTAN_THER_PARO_F.PMATTTR, MMATTTR),),
+            para_out=((SP.PMATTTR, MMATTTR),),
         ),
         OP.MTAN_THER_PARO_R(
             te=386,
@@ -88,7 +88,7 @@ class THPLSE22(Element):
                 (SP.PTEMPER, DDL_THER),
                 (SP.PINSTR, CTEMPSR),
             ),
-            para_out=((OP.MTAN_THER_PARO_R.PMATTTR, MMATTTR),),
+            para_out=((SP.PMATTTR, MMATTTR),),
         ),
         OP.RESI_THER_PARO_F(
             te=277,
@@ -123,7 +123,7 @@ class THPLSE22(Element):
                 (SP.PTEMPER, DDL_THER),
                 (SP.PINSTR, CTEMPSR),
             ),
-            para_out=((OP.RIGI_THER_PARO_R.PMATTTR, MMATTTR),),
+            para_out=((SP.PMATTTR, MMATTTR),),
         ),
         OP.TOU_INI_ELEM(te=99, para_out=((OP.TOU_INI_ELEM.PGEOM_R, LC.CGEOM2D),)),
         OP.TOU_INI_ELNO(te=99, para_out=((OP.TOU_INI_ELNO.PGEOM_R, NGEOMER),)),

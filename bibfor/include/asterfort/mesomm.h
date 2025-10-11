@@ -15,11 +15,12 @@
 ! You should have received a copy of the GNU General Public License
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
+#include "asterf_types.h"
 
 !
 interface
     subroutine mesomm(champ, long, vi, vr, vc,&
-                      nbma, linuma)
+                      nbma, linuma, local)
         character(len=*) :: champ
         integer(kind=8), intent(in) :: long
         integer(kind=8), optional, intent(out) :: vi(*)
@@ -27,5 +28,6 @@ interface
         complex(kind=8), optional, intent(out) :: vc(*)
         integer(kind=8), optional, intent(in) :: nbma
         integer(kind=8), optional, intent(in) :: linuma(*)
+        aster_logical, optional, intent(in) :: local
     end subroutine mesomm
 end interface

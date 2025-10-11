@@ -22,14 +22,16 @@ subroutine cakg2d(optioz, result, modele, depla, theta, &
                   lmoda, puls, compor)
     implicit none
 !
-#include "asterf_types.h"
 #include "jeveux.h"
-#include "asterfort/chpver.h"
+#include "asterf_types.h"
 #include "asterfort/alchml.h"
-#include "asterfort/chpchd.h"
-#include "asterfort/xelgano.h"
+#include "asterfort/as_allocate.h"
+#include "asterfort/as_deallocate.h"
 #include "asterfort/assert.h"
 #include "asterfort/calcul.h"
+#include "asterfort/char8_to_int.h"
+#include "asterfort/chpchd.h"
+#include "asterfort/chpver.h"
 #include "asterfort/detrsd.h"
 #include "asterfort/dismoi.h"
 #include "asterfort/gcharg.h"
@@ -55,9 +57,7 @@ subroutine cakg2d(optioz, result, modele, depla, theta, &
 #include "asterfort/vrcins.h"
 #include "asterfort/vrcref.h"
 #include "asterfort/wkvect.h"
-#include "asterfort/as_deallocate.h"
-#include "asterfort/as_allocate.h"
-#include "asterfort/char8_to_int.h"
+#include "asterfort/xelgano.h"
 !
     character(len=8) :: modele, fondf, result, symech
     character(len=8) :: noeud
@@ -102,7 +102,7 @@ subroutine cakg2d(optioz, result, modele, depla, theta, &
     character(len=8) :: lpain(nbinmx), lpaout(nboumx)
     character(len=24) :: lchin(nbinmx), lchout(nboumx)
     integer(kind=8) :: i, ibid, inorma, nsig, ifm, niv, jnor, jbasfo
-    integer(kind=8) :: iadrma, iadrff, icoode, iadrco, iadrno, ino1, ino2, inga
+    integer(kind=8) :: iadrff, icoode, iadrco, iadrno, ino1, ino2, inga
     integer(kind=8) :: lobj2, ndimte, nunoff, ndim, nchin, jfond, numfon
     integer(kind=8) :: iret, livi(nbmxpa), nbchar, pbtype
     real(kind=8) :: fic(5), rcmp(6), livr(nbmxpa), girwin
@@ -121,7 +121,7 @@ subroutine cakg2d(optioz, result, modele, depla, theta, &
     character(len=19) :: pinter, ainter, cface, longco, baseco, stano
     character(len=24) :: chgeom, chfond, celmod, sigelno, sigseno
     character(len=24) :: ligrmo, norma
-    character(len=24) :: obj1, obj2, coord, coorn, chtime
+    character(len=24) :: obj2, coord, coorn, chtime
     character(len=24) :: pavolu, pa1d2d, papres, chpuls, chsigi, livk(nbmxpa)
     real(kind=8), pointer :: valg(:) => null()
 !
@@ -152,7 +152,7 @@ subroutine cakg2d(optioz, result, modele, depla, theta, &
     noma = chgeom(1:8)
 
 !   Recuperation du LIGREL
-    ligrmo = modele//'.MODELE'
+    call dismoi('NOM_LIGREL', modele, 'MODELE', repk=ligrmo)
 !
 !   Recuperation de l'etat initial
 !   ------------------------------
@@ -235,9 +235,7 @@ subroutine cakg2d(optioz, result, modele, depla, theta, &
 !
 ! OBJET DECRIVANT LE MAILLAGE
 !
-    obj1 = modele//'.MODELE    .LGRF'
-    call jeveuo(obj1, 'L', iadrma)
-    noma = zk8(iadrma)
+    call dismoi('NOM_MAILLA', modele, 'MODELE', repk=noma)
     coorn = noma//'.COORDO    .VALE'
     coord = noma//'.COORDO    .DESC'
     call jeveuo(coorn, 'L', iadrco)

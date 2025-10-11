@@ -17,6 +17,8 @@
 ! --------------------------------------------------------------------
 
 subroutine chckma(nomu, dtol)
+    use crea_maillage_module
+!
     implicit none
 !-----------------------------------------------------------------------
 !
@@ -30,13 +32,14 @@ subroutine chckma(nomu, dtol)
 !
 !-----------------------------------------------------------------------
 !
-#include "asterf_types.h"
 #include "jeveux.h"
+#include "asterf_types.h"
 #include "asterc/r8maem.h"
 #include "asterc/r8miem.h"
 #include "asterfort/cncinv.h"
 #include "asterfort/dismoi.h"
 #include "asterfort/infniv.h"
+#include "asterfort/int_to_char8.h"
 #include "asterfort/jedema.h"
 #include "asterfort/jedetr.h"
 #include "asterfort/jemarq.h"
@@ -47,7 +50,7 @@ subroutine chckma(nomu, dtol)
 #include "asterfort/juveca.h"
 #include "asterfort/utmess.h"
 #include "asterfort/wkvect.h"
-#include "asterfort/int_to_char8.h"
+#include "MeshTypes_type.h"
 !
     character(len=8) :: nomu
     real(kind=8) :: dtol
@@ -56,7 +59,7 @@ subroutine chckma(nomu, dtol)
 ! ----- DECLARATIONS
 !
     integer(kind=8) :: iaconx, ilconx, ima, nbnm, nbnm2, it, jcoor, ifm, niv
-    integer(kind=8) :: jdrvlc, jcncin, numail, imail
+    integer(kind=8) :: jdrvlc, jcncin, numail, imail, cell_type
     integer(kind=8) :: iadr, iadr0, nbm, nbm0, iadtyp, nb200
     integer(kind=8) :: ja, jb, tabma(200), i, j, k1, k2, knso, kmdb, l
     character(len=8) :: noxa, noxb, tyma, mess_k8(3)
@@ -64,9 +67,12 @@ subroutine chckma(nomu, dtol)
     real(kind=8) :: dm, dp, aplat, drap, mess_r(1)
     real(kind=8) :: xa, xb, ya, yb, za, zb
     character(len=24) :: cooval, connex, nsolo, mdoubl
-    integer(kind=8) :: nbmail, nbnoeu
-    integer(kind=8) :: insolo, imdoub, iatyma, nmdoub
-    aster_logical :: indic, alarme, erreur
+    integer(kind=8) :: nbmail, nbnoeu, ma1, ma2
+    integer(kind=8) :: insolo, imdoub, iatyma, nmdoub, nodes(4)
+    type(Mmesh) :: mesh_conv
+    type(Mconverter) :: converter
+    integer(kind=8), pointer :: v_typema(:) => null()
+    aster_logical :: indic, alarme, erreur, hasQuadraticCell
 !
     call jemarq()
     call infniv(ifm, niv)
@@ -280,6 +286,54 @@ subroutine chckma(nomu, dtol)
 !     ON ARRETE EN ERREUR SUR MAILLE DEGENEREE
     if (erreur) then
         call utmess('F', 'MODELISA4_10')
+    end if
+
+! check presence of degenerated face
+    call converter%init()
+    call jeveuo(nomu//'.TYPMAIL', 'L', vi=v_typema)
+
+    hasQuadraticCell = ASTER_FALSE
+    do ima = 1, nbmail
+        cell_type = converter%map_type(v_typema(ima))
+!
+        select case (cell_type)
+        case (MT_SEG3, MT_SEG4, &
+              MT_TRIA6, MT_TRIA7, MT_QUAD8, MT_QUAD9, &
+              MT_HEXA20, MT_HEXA27, MT_PENTA15, MT_PENTA18, MT_PENTA21, &
+              MT_PYRAM13, MT_PYRAM19, MT_TETRA10, MT_TETRA15)
+            hasQuadraticCell = ASTER_TRUE
+            exit
+        end select
+    end do
+
+    if (hasQuadraticCell) then
+        call mesh_conv%init(nomu, convert_max=ASTER_FALSE)
+        if (mesh_conv%nb_edges_dege > 0) then
+            do ima = 1, mesh_conv%nb_edges_dege
+                ma1 = mesh_conv%edges_dege(2*(ima-1)+1)
+                ma2 = mesh_conv%edges_dege(2*(ima-1)+2)
+                nodes(1:3) = to_aster_int(mesh_conv%edges(ma1)%nno_sort(1:3))
+                nodes(4) = to_aster_int(mesh_conv%edges(ma2)%nno_sort(3))
+                call utmess('E', 'MODELISA4_11', &
+                            sk=mesh_conv%converter%name(mesh_conv%edges(ma1)%type), &
+                            ni=4, vali=nodes)
+            end do
+        end if
+        if (mesh_conv%nb_faces_dege > 0) then
+            do ima = 1, mesh_conv%nb_faces_dege
+                ma1 = mesh_conv%faces_dege(2*(ima-1)+1)
+                ma2 = mesh_conv%faces_dege(2*(ima-1)+2)
+                nodes = to_aster_int(mesh_conv%faces(ma1)%nno_sort(1:4))
+                call utmess('E', 'MODELISA4_12', &
+                            sk=mesh_conv%converter%name(mesh_conv%faces(ma1)%type), &
+                            ni=4, vali=nodes)
+            end do
+        end if
+!
+        if (mesh_conv%nb_edges_dege > 0 .or. mesh_conv%nb_faces_dege > 0) then
+            call mesh_conv%clean()
+            call utmess('F', "MODELISA4_10")
+        end if
     end if
 !
 !     -----------------------------------------------------------

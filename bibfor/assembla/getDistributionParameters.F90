@@ -26,8 +26,8 @@ subroutine getDistributionParameters(nbElem, listElem, &
 #include "asterf_types.h"
 #include "asterfort/asmpi_info.h"
 #include "asterfort/jeveuo.h"
-#include "asterfort/utmess.h"
 #include "asterfort/parti0.h"
+#include "asterfort/utmess.h"
 !
     integer(kind=8), intent(in) :: nbElem
     character(len=*), intent(in) :: listElem(nbElem)
@@ -42,7 +42,7 @@ subroutine getDistributionParameters(nbElem, listElem, &
 ! --------------------------------------------------------------------------------------------------
 !
     mpi_int :: mrank, msize
-    character(len=19) :: partit
+    character(len=8) :: partit
     character(len=24), pointer :: prtk(:) => null()
     integer(kind=8), pointer :: prti(:) => null()
 !

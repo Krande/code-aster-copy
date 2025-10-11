@@ -25,6 +25,7 @@ subroutine xthpos(resuin, resuou)
 #include "asterfort/assert.h"
 #include "asterfort/copisd.h"
 #include "asterfort/detrsd.h"
+#include "asterfort/dismoi.h"
 #include "asterfort/jedema.h"
 #include "asterfort/jelira.h"
 #include "asterfort/jemarq.h"
@@ -32,7 +33,6 @@ subroutine xthpos(resuin, resuou)
 #include "asterfort/rsexch.h"
 #include "asterfort/rsnoch.h"
 #include "asterfort/xthpoc.h"
-#include "asterfort/dismoi.h"
 !
 !
     character(len=8), intent(in) :: resuin, resuou
@@ -53,7 +53,7 @@ subroutine xthpos(resuin, resuou)
     call jemarq()
 !
     call dismoi('NOM_MODELE', resuin, 'RESULTAT', repk=modele)
-    ligrmo = modele(1:8)//'.MODELE'
+    call dismoi('NOM_LIGREL', modele, 'MODELE', repk=ligrmo)
     celtmp = '&&XTELGA.CELTMP'
 !
     ordr = resuin//'           .ORDR'

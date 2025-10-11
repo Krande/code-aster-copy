@@ -22,26 +22,31 @@ subroutine op0018()
 !
     implicit none
 !
+#include "jeveux.h"
 #include "asterf_types.h"
 #include "asterc/getfac.h"
 #include "asterc/getres.h"
+#include "asterfort/adalig.h"
+#include "asterfort/ajlipa.h"
 #include "asterfort/as_allocate.h"
 #include "asterfort/as_deallocate.h"
 #include "asterfort/asmpi_info.h"
-#include "asterfort/adalig.h"
-#include "asterfort/ajlipa.h"
 #include "asterfort/assert.h"
 #include "asterfort/cetucr.h"
 #include "asterfort/cormgi.h"
 #include "asterfort/crevge.h"
 #include "asterfort/dismoi.h"
+#include "asterfort/fetcrf.h"
+#include "asterfort/fetskp.h"
+#include "asterfort/getelem.h"
 #include "asterfort/getvid.h"
 #include "asterfort/getvis.h"
-#include "asterfort/getelem.h"
 #include "asterfort/getvtx.h"
+#include "asterfort/gnoms3.h"
 #include "asterfort/infmaj.h"
 #include "asterfort/infniv.h"
 #include "asterfort/initel.h"
+#include "asterfort/int_to_char8.h"
 #include "asterfort/jecrec.h"
 #include "asterfort/jecroc.h"
 #include "asterfort/jedema.h"
@@ -54,15 +59,12 @@ subroutine op0018()
 #include "asterfort/jeveuo.h"
 #include "asterfort/jexnom.h"
 #include "asterfort/jexnum.h"
+#include "asterfort/modelCheck.h"
+#include "asterfort/modelGetFEType.h"
+#include "asterfort/modelPrint.h"
 #include "asterfort/ssafmo.h"
 #include "asterfort/utmess.h"
-#include "asterfort/modelCheck.h"
-#include "asterfort/modelPrint.h"
-#include "asterfort/modelGetFEType.h"
 #include "asterfort/wkvect.h"
-#include "asterfort/fetcrf.h"
-#include "asterfort/fetskp.h"
-#include "asterfort/int_to_char8.h"
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -79,7 +81,7 @@ subroutine op0018()
 !
     integer(kind=8) :: dim_topo_curr, dim_topo_init
     integer(kind=8) :: ifm, niv
-    character(len=8) :: mesh, model
+    character(len=8) :: mesh, model, partsd
     character(len=8) :: name_elem, z_quasi_zero, methode
     character(len=16) :: k16dummy, name_type_geom, repk, valk(2)
     character(len=16) :: phenom, phenomRead, modeli, list_modelisa(10), keywordfact, modeli_in
@@ -161,10 +163,9 @@ subroutine op0018()
     call jenonu(jexnom('&CATA.TM.NOMTM', 'POI1'), nume_type_poi1)
 
 ! - Common definition for model SD
-    call wkvect(model//'.MODELE    .LGRF', 'G V K8', 4, vk8=p_model_lgrf)
-    call wkvect(model//'.MODELE    .NBNO', 'G V I', 1, vi=p_model_nbno)
+    call wkvect(ligrel//'.LGRF', 'G V K8', 4, vk8=p_model_lgrf)
+    call wkvect(ligrel//'.NBNO', 'G V I', 1, vi=p_model_nbno)
     p_model_lgrf(1) = mesh
-    p_model_lgrf(2) = model
     p_model_nbno(1) = 0
 
 ! - Get phenomenon
@@ -173,7 +174,7 @@ subroutine op0018()
     else if (nb_affe_ss .gt. 0) then
         call getvtx('AFFE_SOUS_STRUC', 'PHENOMENE', iocc=1, scal=phenom)
     end if
-    call jeecra(model//'.MODELE    .LGRF', 'DOCU', cval=phenom(1:4))
+    call jeecra(ligrel//'.LGRF', 'DOCU', cval=phenom(1:4))
 !
     if (nb_affe .ne. 0) then
         keywordfact = 'AFFE'
@@ -182,8 +183,8 @@ subroutine op0018()
         call jelira(mesh_type_geom, 'LONMAX', nb_mesh_elem)
         call jeveuo(mesh_type_geom, 'L', vi=p_mesh_type_geom)
 ! ----- Name of objects for model
-        model_maille = model//'.MAILLE'
-        model_liel = model//'.MODELE    .LIEL'
+        model_maille = ligrel//'.TYFE'
+        model_liel = ligrel//'.LIEL'
 ! ----- Create main objects for model
         call wkvect(model_maille, 'G V I', nb_mesh_elem, vi=p_model_maille)
 ! ----- Working objects
@@ -401,6 +402,12 @@ subroutine op0018()
     if (lparallel_mesh .and. kdis .ne. 'CENTRALISE') then
         call utmess('F', 'MODELE1_99', nk=2, valk=[kdis, mesh])
     end if
+    if (kdis .ne. 'CENTRALISE') then
+!   name of partition
+        partsd = "PART"
+        call gnoms3(partsd, 5, 8, ".PRTK")
+        p_model_lgrf(2) = partsd
+    end if
     if (kdis .eq. 'SOUS_DOMAINE') then
         call getvtx('DISTRIBUTION', 'PARTITIONNEUR', iocc=1, scal=methode, nbret=n1)
         ASSERT(n1 .eq. 1)
@@ -412,7 +419,8 @@ subroutine op0018()
         call fetcrf(model, nbpart)
     end if
     if (kdis .eq. 'SOUS_DOMAINE') then
-        call adalig(ligrel, model//'.PARTSD')
+        call dismoi('PARTITION', ligrel, 'LIGREL', repk=partsd)
+        call adalig(ligrel, partsd)
     else
         call adalig(ligrel)
     end if

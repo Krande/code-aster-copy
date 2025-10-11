@@ -105,6 +105,7 @@ def configure(self):
             value = cfg.get("aster", key, fallback="")
         else:
             self.end_msg("not found")
+            self.start_msg("No resource file found, empty content")
 
     dkey = "PREFS_{}".format(key.upper())
     self.env[dkey] = value

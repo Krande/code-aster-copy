@@ -46,7 +46,7 @@ subroutine convertFieldNodeToFieldElga(model, fieldNode, fieldElga)
 !
 ! --------------------------------------------------------------------------------------------------
 
-    ligrel = model//".MODELE"
+    call dismoi('NOM_LIGREL', model, 'MODELE', repk=ligrel)
 !
 ! - Create new field on cell
 !

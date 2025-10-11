@@ -55,7 +55,8 @@ subroutine nonlinDSInOutRead(phenom, result, ds_inout)
 !
     integer(kind=8) :: ifm, niv
     character(len=16) :: keywf, init_keyw, result_type
-    character(len=8) :: stin_evol, field, criterion, answer
+    character(len=8) :: stin_evol, criterion, answer
+    character(len=19) :: field
     real(kind=8) :: precision, user_time, temp_init
     integer(kind=8) :: nocc, didi_nume, i_field, user_nume, iret
 !
@@ -73,6 +74,8 @@ subroutine nonlinDSInOutRead(phenom, result, ds_inout)
         result_type = 'EVOL_NOLI'
     elseif (phenom .eq. 'THER') then
         result_type = 'EVOL_THER'
+    elseif (phenom .eq. 'SECH') then
+        result_type = 'EVOL_SECH'
     elseif (phenom .eq. 'VIBR') then
         result_type = 'DYNA_TRANS'
     else
@@ -120,7 +123,7 @@ subroutine nonlinDSInOutRead(phenom, result, ds_inout)
 !
 ! - For thermics
 !
-    if (phenom .eq. 'THER') then
+    if (phenom .eq. 'THER' .or. phenom .eq. 'SECH') then
         call getvtx(keywf, 'STAT', iocc=1, scal=answer, nbret=nocc)
         if (nocc .eq. 1) then
             ds_inout%l_init_stat = ASTER_TRUE
@@ -171,7 +174,7 @@ subroutine nonlinDSInOutRead(phenom, result, ds_inout)
         ds_inout%stin_time = user_time
         ds_inout%l_stin_time = nocc .gt. 0
     else
-        ! MECA or THER
+        ! MECA or THER or SECH
         call getvr8(keywf, 'INST', iocc=1, scal=user_time, nbret=nocc)
         ds_inout%user_time = user_time
         ds_inout%l_user_time = nocc .gt. 0

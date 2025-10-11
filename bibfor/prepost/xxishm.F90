@@ -20,14 +20,15 @@ function xxishm(mailc, mailx, mo)
 ! person_in_charge: daniele.colombo at ifpen.fr
 !
     implicit none
+#include "jeveux.h"
 #include "asterf_types.h"
+#include "asterfort/dismoi.h"
 #include "asterfort/jedema.h"
 #include "asterfort/jelira.h"
 #include "asterfort/jemarq.h"
 #include "asterfort/jenuno.h"
 #include "asterfort/jeveuo.h"
 #include "asterfort/jexnum.h"
-#include "jeveux.h"
     aster_logical :: xxishm
 !
 ! BUT : POST_CHAM_XFEM : LE RESULTAT A POST-TRAITER EST-IL HM?
@@ -39,6 +40,7 @@ function xxishm(mailc, mailx, mo)
     character(len=8) :: k8b, mo
     character(len=16) :: notype, notyp2
     character(len=24) :: mailc, mailx
+    character(len=19) :: ligrel
     integer(kind=8) :: nbmac1, nbmac2
     integer(kind=8) :: jmac, jmail, ima, i, itypel
     integer(kind=8) :: jmax
@@ -56,7 +58,8 @@ function xxishm(mailc, mailx, mo)
 !
     call jeveuo(mailc, 'L', jmac)
     call jelira(mailc, 'LONMAX', nbmac1, k8b)
-    call jeveuo(mo//'.MAILLE', 'L', jmail)
+    call dismoi('NOM_LIGREL', mo, 'MODELE', repk=ligrel)
+    call jeveuo(ligrel//'.TYFE', 'L', jmail)
 !
     do i = 1, nbmac1
 !
@@ -70,7 +73,8 @@ function xxishm(mailc, mailx, mo)
 !
     call jeveuo(mailx, 'L', jmax)
     call jelira(mailx, 'LONMAX', nbmac2, k8b)
-    call jeveuo(mo//'.MAILLE', 'L', jmail)
+    call dismoi('NOM_LIGREL', mo, 'MODELE', repk=ligrel)
+    call jeveuo(ligrel//'.TYFE', 'L', jmail)
 !
     do i = 1, nbmac2
 !

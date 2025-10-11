@@ -98,8 +98,8 @@ Returns:
     c1.def( "setDifferentialDisplacement", &ListOfLoads::setDifferentialDisplacement, R"(
 Set differential displacement field for DIDI loads
     )" );
-    c1.def( "hasDifferentialLoads", &ListOfLoads::hasDifferentialLoads, R"(
-Return True if there are DIDI loads
+    c1.def( "hasDifferential", &ListOfLoads::hasDifferential, R"(
+Return True if there are DIDI loads or DIDI Dirichlet BCs
     )" );
     c1.def( "getLoadNames", &ListOfLoads::getLoadNames, R"(
 Returns list of load's names.
