@@ -197,7 +197,7 @@ def rebuild_with_groups(m0, l0groups):
 
     try:
         m0.orientCorrectly3DCells()
-        raise RuntimeError("FIXME : remove the try except since function exists now.")
+        # FIXME : remove the try except since function exists now.
     except AttributeError:
         ids = m0.getMeasureField(False).getArray().findIdsLowerThan(0.0)
         meshToInvert = m0[ids]
