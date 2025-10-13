@@ -67,7 +67,6 @@ subroutine vpermc(lmasse, lraide, nbprop, vecp, fr, &
 !
     call wkvect('&&VPERMC.TAMP.PROV_1', 'V V C', neq, iaux1)
     call wkvect('&&VPERMC.TAMP.PROV_2', 'V V C', neq, iaux2)
-!      CALL WKVECT('&&VPERMC.TAMPON.PROV_3' ,'V V C',NEQ,IAUX3)
     call wkvect('&&VPERMC.TYPEDDL      ', 'V V I', neq, iaux4)
 !
     do i = 1, nbprop
@@ -116,7 +115,6 @@ subroutine vpermc(lmasse, lraide, nbprop, vecp, fr, &
 !
     call jedetr('&&VPERMC.TAMP.PROV_1')
     call jedetr('&&VPERMC.TAMP.PROV_2')
-!      CALL JEDETR('&&VPERMC.TAMPON.PROV_3' )
     call jedetr('&&VPERMC.TYPEDDL      ')
 !
     call jedema()

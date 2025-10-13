@@ -201,8 +201,9 @@ if variante == 1:
                 vp1r = NP.sqrt(abs(vp1)) / 2 / NP.pi
                 print(i, vp1r)
             else:
-                vp1r = NP.sqrt(abs(vp1.real)) / 2 / NP.pi
-                vp1i = 0.5 * vp1.imag / vp1.real
+                vp1 = NP.sqrt(vp1) / 2 / NP.pi
+                vp1r = abs(vp1)
+                vp1i = vp1.imag / vp1r
                 print(i, vp1r, vp1i)
 
 else:
@@ -223,83 +224,114 @@ else:
                 vp1r = sqrt(abs(vp1)) / 2 / pi
                 print(i, vp1r)
             else:
-                vp1r = sqrt(abs(vp1.real)) / 2 / pi
-                vp1i = 0.5 * vp1.imag / vp1.real
+                vp1 = NP.sqrt(vp1) / 2 / NP.pi
+                vp1r = abs(vp1)
+                vp1i = vp1.imag / vp1r
                 print(i, vp1r, vp1i)
 
+# VALE_REFE provenant de PYTHON
+# VALE_CALC non-regression calibre
 TEST_RESU(
     RESU=(
-        _F(NUME_ORDRE=1, PARA="FREQ", RESULTAT=MG_SO, VALE_CALC=124.14153990951, CRITERE="RELATIF"),
+        # MG_SO
+        _F(
+            NUME_ORDRE=1,
+            PARA="FREQ",
+            RESULTAT=MG_SO,
+            VALE_CALC=124.18601592158679,
+            VALE_REFE=124.18601592170208,
+            REFERENCE="SOURCE_EXTERNE",
+        ),
         _F(
             NUME_ORDRE=1,
             PARA="AMOR_REDUIT",
-            VALE_ABS="OUI",
             RESULTAT=MG_SO,
-            VALE_CALC=0.018933070326088999,
-            CRITERE="RELATIF",
+            VALE_CALC=0.01892289958768421,
+            VALE_REFE=0.018922899587369407,
+            REFERENCE="SOURCE_EXTERNE",
         ),
         _F(
             NUME_ORDRE=3,
             PARA="FREQ",
             RESULTAT=MG_SO,
-            VALE_CALC=492.60572017934999,
-            CRITERE="RELATIF",
+            VALE_CALC=495.4458105733331,
+            VALE_REFE=495.44581057335637,
+            REFERENCE="SOURCE_EXTERNE",
         ),
         _F(
             NUME_ORDRE=3,
             PARA="AMOR_REDUIT",
-            VALE_ABS="OUI",
             RESULTAT=MG_SO,
-            VALE_CALC=0.076259398235486997,
-            CRITERE="RELATIF",
+            VALE_CALC=0.07560399085018656,
+            VALE_REFE=0.07560399085016604,
+            REFERENCE="SOURCE_EXTERNE",
         ),
         _F(
             NUME_ORDRE=9,
             PARA="FREQ",
             RESULTAT=MG_SO,
-            VALE_CALC=2019.9749398199999,
-            CRITERE="RELATIF",
+            VALE_CALC=2019.9749398249562,
+            VALE_REFE=2019.9749398249146,
+            REFERENCE="SOURCE_EXTERNE",
         ),
         _F(
             NUME_ORDRE=9,
             PARA="AMOR_REDUIT",
-            VALE_ABS="OUI",
             RESULTAT=MG_SO,
-            VALE_CALC=0.0,
+            VALE_CALC=-1.23184e-16,
+            VALE_REFE=0.0,
             CRITERE="ABSOLU",
+            REFERENCE="SOURCE_EXTERNE",
         ),
-        _F(NUME_ORDRE=1, PARA="FREQ", RESULTAT=MG_QZ, VALE_CALC=124.14153991024, CRITERE="RELATIF"),
+        # MG_QZ
+        _F(
+            NUME_ORDRE=1,
+            PARA="FREQ",
+            RESULTAT=MG_QZ,
+            VALE_CALC=124.1860159216825,
+            VALE_REFE=124.18601592170208,
+            REFERENCE="SOURCE_EXTERNE",
+        ),
         _F(
             NUME_ORDRE=1,
             PARA="AMOR_REDUIT",
-            VALE_ABS="OUI",
             RESULTAT=MG_QZ,
-            VALE_CALC=0.018933070322204999,
-            CRITERE="RELATIF",
+            VALE_CALC=0.01892289958616316,
+            VALE_REFE=0.018922899587369407,
+            REFERENCE="SOURCE_EXTERNE",
         ),
-        _F(NUME_ORDRE=3, PARA="FREQ", RESULTAT=MG_QZ, VALE_CALC=492.60572017924, CRITERE="RELATIF"),
+        _F(
+            NUME_ORDRE=3,
+            PARA="FREQ",
+            RESULTAT=MG_QZ,
+            VALE_CALC=495.4458105725742,
+            VALE_REFE=495.44581057335637,
+            REFERENCE="SOURCE_EXTERNE",
+        ),
         _F(
             NUME_ORDRE=3,
             PARA="AMOR_REDUIT",
-            VALE_ABS="OUI",
             RESULTAT=MG_QZ,
-            VALE_CALC=0.076259398235344,
-            CRITERE="RELATIF",
+            VALE_CALC=0.07560399085040599,
+            VALE_REFE=0.07560399085016604,
+            REFERENCE="SOURCE_EXTERNE",
         ),
         _F(
             NUME_ORDRE=9,
             PARA="FREQ",
             RESULTAT=MG_QZ,
-            VALE_CALC=2019.9749398199999,
-            CRITERE="RELATIF",
+            VALE_CALC=2019.974939824483,
+            VALE_REFE=2019.9749398249146,
+            REFERENCE="SOURCE_EXTERNE",
         ),
         _F(
             NUME_ORDRE=9,
             PARA="AMOR_REDUIT",
-            VALE_ABS="OUI",
             RESULTAT=MG_QZ,
             VALE_CALC=0.0,
+            VALE_REFE=0.0,
             CRITERE="ABSOLU",
+            REFERENCE="SOURCE_EXTERNE",
         ),
     )
 )

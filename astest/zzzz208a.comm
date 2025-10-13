@@ -183,6 +183,29 @@ DYNDIAG = DYNA_VIBRA(
 # inversion de la matrice de masse
 MPYDI = LA.inv(MPYD)
 
+X = """#Pour test numPY des valeurs de MODCGD/MODCQZ
+frequence = LA.eigvals(NP.dot(KPYDC2, MPYDI))
+print("valeurs propres initales:",frequence)
+freqsqrt = NP.sort(NP.sqrt(frequence))
+for o in freqsqrt :
+    print('\n\nFreq. = ', NP.abs(o)/2/NP.pi,' Amor. = ', NP.imag(o)/NP.abs(o))
+#Valeurs fournies par NUMPY
+valeurs propres initales: [1.39169922e+07+1.39169922e+05j 3.52934381e+07+3.52934381e+05j
+ 4.87665639e+08+4.87665639e+06j 5.95340394e+08+5.95340394e+06j
+ 1.03858163e+09+1.03858163e+07j 2.15519704e+09+2.15519704e+07j
+ 3.30283378e+09+3.30283378e+07j 5.40596859e+09+5.40596859e+07j
+ 6.00040901e+09+6.00040901e+07j 1.07095749e+10+1.07095749e+08j]
+Freq. =  593.7500798840222  Amor. =  0.0049998125121165264
+Freq. =  945.5357893447593  Amor. =  0.0049998125121136945
+Freq. =  3514.7307951938974  Amor. =  0.004999812512108903
+Freq. =  3883.4137483406375  Amor. =  0.004999812512108555
+Freq. =  5129.219759590692  Amor. =  0.0049998125121085155
+Freq. =  7388.809659984778  Amor. =  0.00499981251210851
+Freq. =  9146.908764939519  Amor. =  0.004999812512108485
+Freq. =  11702.206226453696  Amor. =  0.004999812512108475
+Freq. =  12328.817269636433  Amor. =  0.004999812512108455
+Freq. =  16470.891421072552  Amor. =  0.004999812512108458"""
+
 # calcul des valeurs propres generalises par numpy sur K*inv(M)
 frequence = LA.eigvals(NP.dot(KPYD2, MPYDI))
 frequencc = LA.eigvals(NP.dot(KPYDC2, MPYDI))
@@ -247,6 +270,8 @@ TEST_RESU(
     )
 )
 
+# VALE_REFE provenant de PYTHON
+# VALE_CALC non-regression calibre
 TEST_RESU(
     RESU=(
         _F(
@@ -254,8 +279,17 @@ TEST_RESU(
             NUME_MODE=1,
             REFERENCE="SOURCE_EXTERNE",
             RESULTAT=MODCGD,
-            VALE_CALC=593.735237061,
-            VALE_REFE=593.73524108140202,
+            VALE_CALC=593.7500798840222,
+            VALE_REFE=593.7500798840222,
+            PRECISION=1.0e-2,
+        ),
+        _F(
+            PARA="AMOR_REDUIT",
+            NUME_MODE=1,
+            REFERENCE="SOURCE_EXTERNE",
+            RESULTAT=MODCGD,
+            VALE_CALC=0.004999812512116528,
+            VALE_REFE=0.0049998125121165264,
             PRECISION=1.0e-2,
         ),
         _F(
@@ -263,8 +297,17 @@ TEST_RESU(
             NUME_MODE=2,
             REFERENCE="SOURCE_EXTERNE",
             RESULTAT=MODCGD,
-            VALE_CALC=945.512152428,
-            VALE_REFE=945.51215674997559,
+            VALE_CALC=945.5357893447592,
+            VALE_REFE=945.5357893447593,
+            PRECISION=1.0e-2,
+        ),
+        _F(
+            PARA="AMOR_REDUIT",
+            NUME_MODE=2,
+            REFERENCE="SOURCE_EXTERNE",
+            RESULTAT=MODCGD,
+            VALE_CALC=0.0049998125121137075,
+            VALE_REFE=0.0049998125121136945,
             PRECISION=1.0e-2,
         ),
         _F(
@@ -272,8 +315,17 @@ TEST_RESU(
             NUME_MODE=3,
             REFERENCE="SOURCE_EXTERNE",
             RESULTAT=MODCGD,
-            VALE_CALC=3514.64293242,
-            VALE_REFE=3514.6429519264034,
+            VALE_CALC=3514.7307951938956,
+            VALE_REFE=3514.7307951938974,
+            PRECISION=1.0e-2,
+        ),
+        _F(
+            PARA="AMOR_REDUIT",
+            NUME_MODE=3,
+            REFERENCE="SOURCE_EXTERNE",
+            RESULTAT=MODCGD,
+            VALE_CALC=0.004999812512108888,
+            VALE_REFE=0.004999812512108903,
             PRECISION=1.0e-2,
         ),
         _F(
@@ -281,8 +333,17 @@ TEST_RESU(
             NUME_MODE=4,
             REFERENCE="SOURCE_EXTERNE",
             RESULTAT=MODCGD,
-            VALE_CALC=3883.31666906,
-            VALE_REFE=3883.3166755063498,
+            VALE_CALC=3883.413748340636,
+            VALE_REFE=3883.4137483406375,
+            PRECISION=1.0e-2,
+        ),
+        _F(
+            PARA="AMOR_REDUIT",
+            NUME_MODE=4,
+            REFERENCE="SOURCE_EXTERNE",
+            RESULTAT=MODCGD,
+            VALE_CALC=0.004999812512108595,
+            VALE_REFE=0.004999812512108555,
             PRECISION=1.0e-2,
         ),
         _F(
@@ -290,8 +351,17 @@ TEST_RESU(
             NUME_MODE=5,
             REFERENCE="SOURCE_EXTERNE",
             RESULTAT=MODCGD,
-            VALE_CALC=5129.09153711,
-            VALE_REFE=5129.0915520443677,
+            VALE_CALC=5129.219759590699,
+            VALE_REFE=5129.219759590692,
+            PRECISION=1.0e-2,
+        ),
+        _F(
+            PARA="AMOR_REDUIT",
+            NUME_MODE=5,
+            REFERENCE="SOURCE_EXTERNE",
+            RESULTAT=MODCGD,
+            VALE_CALC=0.004999812512108458,
+            VALE_REFE=0.0049998125121085155,
             PRECISION=1.0e-2,
         ),
     )
@@ -304,8 +374,17 @@ TEST_RESU(
             NUME_MODE=1,
             REFERENCE="SOURCE_EXTERNE",
             RESULTAT=MODCQZ,
-            VALE_CALC=593.735237061,
-            VALE_REFE=593.73524108140202,
+            VALE_CALC=593.7500798840224,
+            VALE_REFE=593.7500798840222,
+            PRECISION=1.0e-2,
+        ),
+        _F(
+            PARA="AMOR_REDUIT",
+            NUME_MODE=1,
+            REFERENCE="SOURCE_EXTERNE",
+            RESULTAT=MODCQZ,
+            VALE_CALC=0.004999812512116527,
+            VALE_REFE=0.0049998125121165264,
             PRECISION=1.0e-2,
         ),
         _F(
@@ -313,8 +392,17 @@ TEST_RESU(
             NUME_MODE=2,
             REFERENCE="SOURCE_EXTERNE",
             RESULTAT=MODCQZ,
-            VALE_CALC=945.512152428,
-            VALE_REFE=945.51215674997559,
+            VALE_CALC=945.5357893447591,
+            VALE_REFE=945.5357893447593,
+            PRECISION=1.0e-2,
+        ),
+        _F(
+            PARA="AMOR_REDUIT",
+            NUME_MODE=2,
+            REFERENCE="SOURCE_EXTERNE",
+            RESULTAT=MODCQZ,
+            VALE_CALC=0.0049998125121137075,
+            VALE_REFE=0.0049998125121136945,
             PRECISION=1.0e-2,
         ),
         _F(
@@ -322,8 +410,17 @@ TEST_RESU(
             NUME_MODE=3,
             REFERENCE="SOURCE_EXTERNE",
             RESULTAT=MODCQZ,
-            VALE_CALC=3514.64293242,
-            VALE_REFE=3514.6429519264034,
+            VALE_CALC=3514.7307951938956,
+            VALE_REFE=3514.7307951938974,
+            PRECISION=1.0e-2,
+        ),
+        _F(
+            PARA="AMOR_REDUIT",
+            NUME_MODE=3,
+            REFERENCE="SOURCE_EXTERNE",
+            RESULTAT=MODCQZ,
+            VALE_CALC=0.004999812512108888,
+            VALE_REFE=0.004999812512108903,
             PRECISION=1.0e-2,
         ),
         _F(
@@ -331,8 +428,17 @@ TEST_RESU(
             NUME_MODE=4,
             REFERENCE="SOURCE_EXTERNE",
             RESULTAT=MODCQZ,
-            VALE_CALC=3883.31666906,
-            VALE_REFE=3883.3166755063498,
+            VALE_CALC=3883.413748340636,
+            VALE_REFE=3883.4137483406375,
+            PRECISION=1.0e-2,
+        ),
+        _F(
+            PARA="AMOR_REDUIT",
+            NUME_MODE=4,
+            REFERENCE="SOURCE_EXTERNE",
+            RESULTAT=MODCQZ,
+            VALE_CALC=0.004999812512108595,
+            VALE_REFE=0.004999812512108555,
             PRECISION=1.0e-2,
         ),
         _F(
@@ -340,8 +446,17 @@ TEST_RESU(
             NUME_MODE=5,
             REFERENCE="SOURCE_EXTERNE",
             RESULTAT=MODCQZ,
-            VALE_CALC=5129.09153711,
-            VALE_REFE=5129.0915520443677,
+            VALE_CALC=5129.219759590699,
+            VALE_REFE=5129.219759590692,
+            PRECISION=1.0e-2,
+        ),
+        _F(
+            PARA="AMOR_REDUIT",
+            NUME_MODE=5,
+            REFERENCE="SOURCE_EXTERNE",
+            RESULTAT=MODCQZ,
+            VALE_CALC=0.004999812512108458,
+            VALE_REFE=0.0049998125121085155,
             PRECISION=1.0e-2,
         ),
     )

@@ -21,7 +21,7 @@
           interface
             subroutine vpqzla(typeqz,qrn,iqrn,lqrn,qrar,qrai,qrba,qrvl, &
      &lvec,kqrn,lvalpr,nconv,omecor,ktyp,kqrnr,neqact,ilscal,irscal,    &
-     &optiof,omemin,omemax,omeshi,ddlexc,nfreq,lmasse,lraide,lamor,     &
+     &optiof,omemin,omemax,omeshi,ddlexc,dlagr,nfreq,lmasse,lraide,lamor,&
      &numedd,sigma,icscal,ivscal,iiscal,bwork,flage)
               character(len=16) :: typeqz
               integer(kind=8) :: qrn
@@ -46,6 +46,7 @@
               real(kind=8) :: omemax
               real(kind=8) :: omeshi
               integer(kind=8) :: ddlexc(*)
+              integer(kind=8) :: dlagr(*)
               integer(kind=8) :: nfreq
               integer(kind=8) :: lmasse
               integer(kind=8) :: lraide

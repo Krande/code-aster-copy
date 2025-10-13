@@ -22,7 +22,7 @@
 !
 interface
     subroutine vpcalq(eigsol, vecrer, vecrei, vecrek, vecvp, mxresf, neqact,&
-                      nblagr, omemax, omemin, omeshi, vecblo, sigma,&
+                      nblagr, omemax, omemin, omeshi, vecblo, veclag, sigma,&
                       npivot, flage, nconv, vpinf, vpmax)
         character(len=19) , intent(in)    :: eigsol
         character(len=24) , intent(in)    :: vecrer
@@ -36,6 +36,7 @@ interface
         real(kind=8)      , intent(in)    :: omemin
         real(kind=8)      , intent(in)    :: omeshi
         character(len=24) , intent(in)    :: vecblo
+        character(len=24) , intent(in)    :: veclag
         complex(kind=8)   , intent(in)    :: sigma
 !!
         integer(kind=8)           , intent(inout) :: npivot

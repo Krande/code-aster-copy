@@ -201,7 +201,7 @@ subroutine zneupd(rvec, howmny, select, d, z, &
                   ldz, sigma, workev, bmat, n, &
                   which, nev, tol, resid, ncv, &
                   v, ldv, iparam, ipntr, workd, &
-                  workl, lworkl, rwork, info)
+                  workl, lworkl, rwork, info, neqact)
 !                COLUMNS FOR Z. NOTE: NOT NECESSARY IF Z AND V SHARE
 !                THE SAME SPACE. PLEASE NOTIFY THE AUTHORS IF THIS ERROR
 !                OCCURS.
@@ -338,7 +338,7 @@ subroutine zneupd(rvec, howmny, select, d, z, &
     character(len=1) :: bmat, howmny
     character(len=2) :: which
     aster_logical :: rvec
-    integer(kind=8) :: info, ldz, ldv, lworkl, n, ncv, nev
+    integer(kind=8) :: info, ldz, ldv, lworkl, n, ncv, nev, neqact
     complex(kind=8) :: sigma
     real(kind=8) :: tol
 !
@@ -394,7 +394,9 @@ subroutine zneupd(rvec, howmny, select, d, z, &
 !     %------------------------%
 !
     msglvl = mneupd
-    eps = r8miem()**(2.0d+0/3.0d+0)
+! Pour etre coherent avec le reste du calcul modal
+    eps = 1.d-70
+!    eps = r8miem()**(2.0d+0/3.0d+0)
     mode = iparam(7)
     nconv = iparam(5)
     info = 0
@@ -648,6 +650,21 @@ subroutine zneupd(rvec, howmny, select, d, z, &
             end if
         end if
 !
+        if (ncv .gt. neqact) then
+! Espace de projection comporte des ddls bloques ou de Lagranges
+! On ne fait pas de permutation pour ne pas manipuler les valeurs de Ritz infinies
+! qui ne nous interessent finalement pas
+            reord = .false.
+            if (msglvl .gt. 0) then
+                write (logfil, *)
+                write (logfil, *) '&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&'
+                write (logfil, *) '&       ALARME ZNEUPD        &'
+                write (logfil, *) '& NCV/NEQACT = ', ncv, neqact
+                write (logfil, *) '& REORDERING ANNULE          &'
+                write (logfil, *) '&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&'
+                write (logfil, *)
+            end if
+        end if
         if (reord) then
 !
 !           %-----------------------------------------------%
@@ -904,7 +921,7 @@ subroutine zneupd(rvec, howmny, select, d, z, &
 !
         do k = 1, ncv
             temp = workl(iheig+k-1)
-            if (abs(temp*temp) .le. eps) then
+            if (abs(temp) .le. eps) then
                 if (msglvl .gt. 0) then
                     write (logfil, *)
                     write (logfil, *) '&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&'
