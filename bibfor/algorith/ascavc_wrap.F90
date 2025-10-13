@@ -47,8 +47,7 @@ subroutine ascavc_wrap(model, list_load, numedd, inst, vci, base)
     infcha = list_load//'.INFC'
     fomult = list_load//'.FCHA'
 !
-    if (answer .eq. 'OUI') then
-        ASSERT(isdiri(list_load, 'ELIM'))
+    if (answer .eq. 'OUI' .and. isdiri(list_load, 'ELIM')) then
 !
 ! --- Prepare fields for Dirichlet loads
 !
