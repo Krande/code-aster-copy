@@ -774,6 +774,11 @@ def macr_lign_coupe_ops(
         )
         RESULTAT = __resuch
 
+    if NOM_CHAM.endswith(("ELGA", "ELNO", "ELEM")):
+        # This field may be defined in a local axis system, currently we cannot access
+        # to this information, results will be expressed in the same axis system
+        UTMESS("A", "POST0_55", valk=NOM_CHAM)
+
     # Maillage sur lequel s'appuie le résultat à projeter
     if not mesh:
         mesh = model.getMesh()
@@ -1040,7 +1045,7 @@ def macr_lign_coupe_ops(
                     )
 
             # Expression des contraintes aux noeuds ou des déplacements dans le
-            # repere global
+            # repere d'origine du champ
             else:
                 mcACTION.append(
                     _F(

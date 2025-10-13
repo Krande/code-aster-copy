@@ -295,4 +295,15 @@ Dans l'opérateur MACR_LIGN_COUPE, une seule valeur peut-être pour DISTANCE_ALA
 Plusieurs valeurs ont été détectées. On ne retient que la valeur la plus basse : %(r1)f
 """
     ),
+    55: _(
+        """
+Le champ %(k1)s est un champ aux éléments.
+Actuellement, MACR_LIGN_COUPE ne sait pas récupérer le repère dans lequel ce champ est exprimé.
+Il convient d'être particulièrement vigilant à l'utilisation du mot clé REPERE dans LIGN_COUPE:
+- Si vous utilisez l'option REPERE="GLOBAL" de LIGN_COUPE, votre résultat sera exprimé
+dans le même repère que le champ d'origine.
+- Si vous utilisez toute autre options, veuillez vérifier que le champ en entrée est bien
+exprimé dans le repère GLOBAL. Dans le cas contraire, les résultats produits seront faux!
+"""
+    ),
 }
