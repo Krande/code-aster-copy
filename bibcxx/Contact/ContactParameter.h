@@ -167,6 +167,10 @@ class PairingParameter {
     PairingAlgo _algo;
     /** @brief Additional pairing distance = COEF_MULT_APPA */
     ASTERDOUBLE _dist_ratio;
+    /** @brief Additional pairing tolerance = APPA_TOLE */
+    ASTERDOUBLE _pair_tole;
+    /** @brief Additional pairing tolerance = AIRE_TOLE */
+    ASTERDOUBLE _area_tole;
     /** @brief initial contact state = CONTACT_INIT */
     InitialState _cont_init;
 
@@ -194,6 +198,8 @@ class PairingParameter {
         : _algo( PairingAlgo::Mortar ),
           _cont_init( InitialState::Interpenetrated ),
           _dist_ratio( -1.0 ),
+          _pair_tole( 1e-8 ),
+          _area_tole( 1e-8 ),
 
           _beam( false ),
           _dist_supp( nullptr ),
@@ -208,6 +214,10 @@ class PairingParameter {
 
     ASTERDOUBLE getDistanceRatio() const { return _dist_ratio; };
 
+    ASTERDOUBLE getPairingTolerance() const { return _pair_tole; };
+
+    ASTERDOUBLE getAreaIntersectionTolerance() const { return _area_tole; };
+
     InitialState getInitialState() const { return _cont_init; };
 
     GenericFunctionPtr getDistanceFunction() const { return _dist_supp; };
@@ -217,6 +227,10 @@ class PairingParameter {
     void setAlgorithm( const PairingAlgo &algo ) { _algo = algo; };
 
     void setDistanceRatio( const ASTERDOUBLE &dist_ratio ) { _dist_ratio = dist_ratio; };
+
+    void setPairingTolerance( const ASTERDOUBLE &pair_tole ) { _pair_tole = pair_tole; };
+
+    void setAreaIntersectionTolerance( const ASTERDOUBLE &area_tole ) { _area_tole = area_tole; };
 
     void setInitialState( const InitialState &cont_init ) { _cont_init = cont_init; };
 

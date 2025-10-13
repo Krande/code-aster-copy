@@ -73,10 +73,12 @@ ASTERBOOL ContactPairing::compute( ASTERINTEGER &indexZone ) {
     auto dist_pairing = zone->getPairingParameter()->getDistanceRatio();
 
     // Tolerance for pairing (zero value for geometrical operations)
-    ASTERDOUBLE pair_tole = 1e-8;
+    // ASTERDOUBLE pair_tole = 1e-8;
+    auto pair_tole = zone->getPairingParameter()->getPairingTolerance();
 
     // Tolerance for removing intersection cells
-    ASTERDOUBLE area_tole = 1e-2;
+    // ASTERDOUBLE area_tole = 1e-2;
+    auto area_tole = zone->getPairingParameter()->getAreaIntersectionTolerance();
 
     // Pairing
     zone->setVerbosity( getVerbosity() );

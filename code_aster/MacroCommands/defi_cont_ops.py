@@ -170,6 +170,10 @@ def defi_cont_ops(self, **keywords):
         pairParam.setDistanceRatio(zone["COEF_MULT_APPA"])
         pairParam.setInitialState(_init_cont[zone["CONTACT_INIT"]])
 
+        if zone["APPARIEMENT"] == "MORTAR":
+            pairParam.setPairingTolerance(zone["APPA_TOLE"])
+            pairParam.setAreaIntersectionTolerance(zone["AIRE_TOLE"])
+
         if zone.get("CARA_ELEM") is not None:
             pairParam.setElementaryCharacteristics(zone["CARA_ELEM"])
             pairParam.hasBeamDistance = zone["DIST_POUTRE"] == "OUI"
