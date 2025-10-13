@@ -63,6 +63,7 @@ void ContactZone::setVerbosity( const ASTERINTEGER &level ) {
 
 bool ContactZone::pairing( ASTERDOUBLE &dist_pairing, ASTERDOUBLE &pair_tole,
                            ASTERDOUBLE &area_tole ) {
+    _meshPairing->setMethod( getPairingParameter()->getPairingMethod() );
     return _meshPairing->compute( dist_pairing, pair_tole, area_tole );
 }
 

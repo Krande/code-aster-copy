@@ -187,6 +187,19 @@ Arguments:
     PairingAlgo: Pairing algorithm.
         )",
               py::arg( "algo" ) )
+        .def( "getPairingMethod", &PairingParameter::getPairingMethod, R"(
+Return the pairing method used. It is a value of an enum
+
+Returns:
+    PairingMethod: pairing method.
+        )" )
+        .def( "setPairingMethod", &PairingParameter::setPairingMethod, R"(
+Set the cpairing method used. It is a value of an enum
+
+Arguments:
+    PairingMethod: pairing method.
+        )",
+              py::arg( "pair_method" ) )
         .def( "getDistanceRatio", &PairingParameter::getDistanceRatio, R"(
 Return the pairing distance ratio used. It is a value of a float
 

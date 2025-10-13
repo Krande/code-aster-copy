@@ -30,6 +30,7 @@
 #include "Contact/ContactEnum.h"
 #include "Discretization/ElementaryCharacteristics.h"
 #include "Loads/ListOfLoads.h"
+#include "Meshes/MeshEnum.h"
 
 class ContactParameter {
   private:
@@ -163,6 +164,8 @@ typedef std::shared_ptr< FrictionParameter > FrictionParameterPtr;
 
 class PairingParameter {
   private:
+    /** @brief Method of pairing */
+    PairingMethod _pair_method;
     /** @brief Pairing algorithm = APPARIEMENT */
     PairingAlgo _algo;
     /** @brief Additional pairing distance = COEF_MULT_APPA */
@@ -196,6 +199,7 @@ class PairingParameter {
      */
     PairingParameter()
         : _algo( PairingAlgo::Mortar ),
+          _pair_method( PairingMethod::Fast ),
           _cont_init( InitialState::Interpenetrated ),
           _dist_ratio( -1.0 ),
           _pair_tole( 1e-8 ),
@@ -212,6 +216,8 @@ class PairingParameter {
 
     PairingAlgo getAlgorithm() const { return _algo; };
 
+    PairingMethod getPairingMethod() const { return _pair_method; };
+
     ASTERDOUBLE getDistanceRatio() const { return _dist_ratio; };
 
     ASTERDOUBLE getPairingTolerance() const { return _pair_tole; };
@@ -225,6 +231,8 @@ class PairingParameter {
     ElementaryCharacteristicsPtr getElementaryCharacteristics() const { return _cara; };
 
     void setAlgorithm( const PairingAlgo &algo ) { _algo = algo; };
+
+    void setPairingMethod( const PairingMethod &pair_method ) { _pair_method = pair_method; };
 
     void setDistanceRatio( const ASTERDOUBLE &dist_ratio ) { _dist_ratio = dist_ratio; };
 
