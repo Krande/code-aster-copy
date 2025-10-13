@@ -6,4 +6,4 @@ P mpi_nbnoeud 1
 P testlist submit verification sequential
 
 F comm zzzz512a.py D 1
-F mmed zzzz503n.mmed D 20
+F mmed zzzz512u.mmed D 20
