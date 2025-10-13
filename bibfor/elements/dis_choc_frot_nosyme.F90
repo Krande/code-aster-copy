@@ -22,7 +22,6 @@ subroutine dis_choc_frot_nosyme(DD, icodma, ulp, xg, klv, &
     use te0047_type
     implicit none
 #include "asterf_types.h"
-#include "asterfort/dikpkt.h"
 #include "asterfort/rcvala.h"
 #include "asterfort/utmess.h"
 #include "asterfort/utpvgl.h"
@@ -66,7 +65,7 @@ subroutine dis_choc_frot_nosyme(DD, icodma, ulp, xg, klv, &
     integer(kind=8) :: indic, ii
     real(kind=8) :: xl(6), xd(3), rignor, rigtan
     real(kind=8) :: coulom, dist12, utotx, utoty, utotz, depx, depy, depz
-    real(kind=8) :: lambda, fort, dist0, rtmp, kp, kt
+    real(kind=8) :: lambda, fort, dist0, rtmp
 !
     character(len=32) :: messak(3)
 !
@@ -100,8 +99,6 @@ subroutine dis_choc_frot_nosyme(DD, icodma, ulp, xg, klv, &
     rignor = abs(valre1(1))
     rigtan = abs(valre1(2))
     coulom = abs(valre1(5))
-!   Raideurs élastiques en parallèle
-    call dikpkt(icodma, 'DIS_CONTACT     ', kp, kt)
 !
 !   Élément avec 2 noeuds
     if (DD%nno .eq. 2) then
@@ -252,24 +249,6 @@ subroutine dis_choc_frot_nosyme(DD, icodma, ulp, xg, klv, &
                     end if
                 end if
             end if
-            ! Elément élastique en parallèle
-            klvp = 0.d0
-            klvp(idx(1, 1)) = kp
-            klvp(idx(4, 1)) = -kp
-            klvp(idx(1, 4)) = -kp
-            klvp(idx(4, 4)) = kp
-            klvp(idx(2, 2)) = kt
-            klvp(idx(5, 2)) = -kt
-            klvp(idx(2, 5)) = -kt
-            klvp(idx(5, 5)) = kt
-            if (DD%ndim .eq. 3) then
-                klvp(idx(3, 3)) = kt
-                klvp(idx(6, 3)) = -kt
-                klvp(idx(3, 6)) = -kt
-                klvp(idx(6, 6)) = kt
-            end if
-            ! Cumul des raideurs
-            klv(1:DD%neq*DD%neq) = klv(1:DD%neq*DD%neq)+klvp(1:DD%neq*DD%neq)
         else
             ! Cas d'un élément à 1 noeud
             if (indic .eq. EtatAdher) then
@@ -297,25 +276,12 @@ subroutine dis_choc_frot_nosyme(DD, icodma, ulp, xg, klv, &
                     end if
                 end if
             end if
-            ! Elément élastique en parallèle
-            klvp = 0.d0
-            klvp(idx(1, 1)) = kp
-            klvp(idx(2, 2)) = kt
-            if (DD%ndim .eq. 3) then
-                klvp(idx(3, 3)) = kt
-            end if
-            ! Cumul des raideurs
-            klv(1:DD%neq*DD%neq) = klv(1:DD%neq*DD%neq)+klvp(1:DD%neq*DD%neq)
-
         end if
     end if
     ! Elément élastique en parallèle
-    force(1) = force(1)+kp*utotx
     varpl(ifx) = force(1)
-    force(2) = force(2)+kt*utoty
     varpl(ify) = force(2)
     if (DD%ndim .eq. 3) then
-        force(3) = force(3)+kt*utotz
         varpl(ifz) = force(3)
     end if
 
