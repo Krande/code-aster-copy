@@ -24,7 +24,7 @@
 import numpy as NP
 
 try:
-    import sympy
+    from ...Utilities import sympy
 
     X, Y, Z = sympy.symbols("X Y Z")
     ASTER_HAVE_SYMPY = True

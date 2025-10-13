@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -26,6 +26,7 @@ by doing: ``from ..Utilities import PETSc`` or ``from ..Utilities import medcoup
 """
 
 # aslint: disable=C4008
+from .ExecutionParameter import disable_fpe
 
 
 class _PETScMeta(type):
@@ -104,3 +105,23 @@ class medcoupling(metaclass=_medcouplingMeta):
 
 class ParaMEDMEM(metaclass=_ParaMEDMEMMeta):
     """Wrapper to ParaMEDMEM"""
+
+
+class _sympyMeta(type):
+    """Meta class for medcoupling module wrapping."""
+
+    _init = False
+    _mod = None
+
+    def __getattr__(cls, attr):
+        if not cls._init:
+            with disable_fpe():
+                import sympy as origin
+
+            cls._init = True
+            cls._mod = origin
+        return getattr(cls._mod, attr)
+
+
+class sympy(metaclass=_sympyMeta):
+    """Wrapper to sympy"""

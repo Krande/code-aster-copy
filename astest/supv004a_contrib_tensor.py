@@ -34,7 +34,7 @@ from code_aster.MacroCommands.Contrib.TensorModule import (
 from code_aster.MacroCommands.Contrib.HookeTensor import HookeOrthotropic
 
 try:
-    import sympy
+    from code_aster.Utilities import sympy
 
     X, Y, Z = sympy.symbols("X Y Z")
     ASTER_HAVE_SYMPY = True

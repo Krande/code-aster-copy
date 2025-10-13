@@ -23,7 +23,7 @@ from code_aster import CA
 
 try:
     # Import du module de calcul symbolique Sympy
-    import sympy
+    from code_aster.Utilities import sympy
 
     sympy_available = True
 except ImportError:

@@ -24,7 +24,7 @@ from code_aster import CA
 
 try:
     # Import du module de calcul symbolique Sympy
-    import sympy
+    from code_aster.Utilities import sympy
 
     sympy_available = True
 except ImportError:
@@ -412,7 +412,6 @@ RAMPE = DEFI_FONCTION(
 
 
 for Raff in range(0, Nb_Raffinement):
-
     # ========================================================================================
     #          Preparation de calcul sur le nouveau maillage
     # ========================================================================================

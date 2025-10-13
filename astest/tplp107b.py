@@ -21,7 +21,7 @@ from code_aster.Commands import FORMULE
 
 try:
     # Import du module de calcul symbolique Sympy
-    import sympy
+    from code_aster.Utilities import sympy
 
     sympy_available = True
 except ImportError:
@@ -29,9 +29,7 @@ except ImportError:
 
 
 def Solu_Manu(Lambda):
-
     if sympy_available:
-
         X, Y = sympy.symbols("X Y")
 
         # Definition de la solution manufacturee
@@ -50,7 +48,6 @@ def Solu_Manu(Lambda):
 
     # Si importation de sympy impossible
     else:
-
         # ================================================================================================
         # Definition des formules Aster
         # ================================================================================================

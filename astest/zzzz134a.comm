@@ -41,7 +41,7 @@ xg_hexa8 = (1.0 / np.sqrt(3.0)) * rc_hexa8
 w_hexa8 = np.ones((8))
 
 try:
-    import sympy
+    from code_aster.Utilities import sympy
     from sympy import diff, symbols
 
     a1, a2, a3 = symbols("a1 a2 a3")
