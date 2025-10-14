@@ -43,6 +43,7 @@ subroutine getKinematicForHHO(valeType, model, numeddl, keywordFact, cnsForCharc
 #include "asterfort/jeveuo.h"
 #include "asterfort/jexatr.h"
 #include "asterfort/jexnum.h"
+#include "asterfort/utmess.h"
 #include "asterfort/megeom.h"
 !
     character(len=1), intent(in) :: valeType
@@ -139,6 +140,8 @@ subroutine getKinematicForHHO(valeType, model, numeddl, keywordFact, cnsForCharc
         call getnode(mesh, keywordfact, iocc, 'F', listNode, userNodeNb)
         if (userNodeNb .eq. 0) cycle
         call jeveuo(listNode, 'L', vi=userNodeNume)
+! --------- DDL A CONTRAINDRE
+        call getmjm(keywordFact, iocc, mxcmp, userDOFName, chcity, userDOFNb)
 !
 ! --------- Test only nodes with HHO dofs
         l_hho_dofs = hasHHODoFFromNodes(numeddl, userNodeNb, listNode)
@@ -180,9 +183,13 @@ subroutine getKinematicForHHO(valeType, model, numeddl, keywordFact, cnsForCharc
                     exit
                 end if
             end do
-            ASSERT(nodeNumeLoca .gt. 0)
-! --------- DDL A CONTRAINDRE
-            call getmjm(keywordFact, iocc, mxcmp, userDOFName, chcity, userDOFNb)
+!
+!           TODO: add also face of a cell but need to modify HHO_CINE_R_*
+!           to add also face and TE
+            if (nodeNumeLoca == 0) then
+                call utmess("F", "CHARGES_58", ni=2, vali=[modelDime, nodeNume])
+            end if
+!
             do iUserDOF = 1, userDOFNb
 ! ------------- On ne garde que DX, DY, DZ et pas GROUP_MA dans la liste
                 currentDOF = userDOFName(iUserDOF)
@@ -231,7 +238,7 @@ subroutine getKinematicForHHO(valeType, model, numeddl, keywordFact, cnsForCharc
 !
     ASSERT(nncp .eq. 0)
 !
-! - Appel calcul élémentaire (HHO_CINE_MECA)
+! - Appel calcul élémentaire (HHO_CINE_*)
     call megeom(model, chgeom)
     lpain = " "
     lchin = " "
