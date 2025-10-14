@@ -17,12 +17,12 @@
 # along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 # --------------------------------------------------------------------
 
-import math
-
 try:
     # Import du module de calcul symbolique Sympy
     from code_aster.Utilities import sympy
 
+    # access __version__ to check availability
+    sympy.__version__
     sympy_available = True
 except ImportError:
     sympy_available = False

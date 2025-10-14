@@ -18,11 +18,12 @@
 # --------------------------------------------------------------------
 
 """
-This module gives wrapper objects to use PETSc and medcoupling as optional modules.
+This module gives wrapper objects to use PETSc, medcoupling and sympy as optional modules.
 The modules are actually imported at the first use.
+To force the availability just access to an attribute (``__version__`` for example).
 
-Please *always* import PETSc or medcoupling using this wrapper rather than directly
-by doing: ``from ..Utilities import PETSc`` or ``from ..Utilities import medcoupling``.
+Please *always* these mdoules using these wrappers rather than directly
+by doing, for example for PETSc: ``from ..Utilities import PETSc``...
 """
 
 # aslint: disable=C4008
@@ -108,7 +109,7 @@ class ParaMEDMEM(metaclass=_ParaMEDMEMMeta):
 
 
 class _sympyMeta(type):
-    """Meta class for medcoupling module wrapping."""
+    """Meta class for sympy module wrapping."""
 
     _init = False
     _mod = None

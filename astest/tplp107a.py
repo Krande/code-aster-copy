@@ -25,6 +25,8 @@ def Solu_Manu(Lambda):
         # Import du module de calcul symbolique Sympy
         from code_aster.Utilities import sympy
 
+        # access __version__ to check availability
+        sympy.__version__
         sympy_available = True
 
     except ImportError:
