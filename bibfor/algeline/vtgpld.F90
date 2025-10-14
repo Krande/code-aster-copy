@@ -29,8 +29,8 @@ subroutine vtgpld(cumul, alpha, geomiz, deplaz, base, &
 #include "asterfort/jedema.h"
 #include "asterfort/jelira.h"
 #include "asterfort/jemarq.h"
-#include "asterfort/jeveuo.h"
 #include "asterfort/jenuno.h"
+#include "asterfort/jeveuo.h"
 #include "asterfort/jexnum.h"
 #include "asterfort/nbec.h"
 !
@@ -122,7 +122,7 @@ subroutine vtgpld(cumul, alpha, geomiz, deplaz, base, &
     call dismoi('NUM_GD', depla, 'CHAM_NO', repi=idx_gd)
     ASSERT(idx_gd .ne. 0)
     nb_ec = nbec(idx_gd)
-    ASSERT(nb_ec .le. 10)
+    ASSERT(nb_ec .le. 11)
 !
 ! - Access to catalog
 !

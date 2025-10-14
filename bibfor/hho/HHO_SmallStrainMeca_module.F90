@@ -35,16 +35,16 @@ module HHO_SmallStrainMeca_module
     implicit none
 !
     private
+#include "jeveux.h"
 #include "asterf_types.h"
-#include "asterfort/Behaviour_type.h"
-#include "asterfort/HHO_size_module.h"
 #include "asterfort/assert.h"
+#include "asterfort/Behaviour_type.h"
 #include "asterfort/codere.h"
 #include "asterfort/dmatmc.h"
+#include "asterfort/HHO_size_module.h"
 #include "asterfort/nbsigm.h"
 #include "asterfort/nmcomp.h"
 #include "blas/daxpy.h"
-#include "jeveux.h"
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -139,7 +139,7 @@ contains
         real(kind=8) :: BSCEval(MSIZE_CELL_SCAL), bT(MSIZE_CELL_MAT)
         type(HHO_matrix) :: AT, TMP
         integer(kind=8) :: cbs, fbs, total_dofs, faces_dofs, gbs, ipg, gbs_cmp, gbs_sym, nb_sig
-        integer(kind=8) :: cod(27)
+        integer(kind=8) :: cod(MAX_QP_CELL)
         aster_logical :: l_lhs, l_rhs
 ! --------------------------------------------------------------------------------------------------
 !

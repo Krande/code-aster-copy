@@ -20,15 +20,18 @@ subroutine cafono(load, loadLigrel, mesh, model, valeType)
 !
     implicit none
 !
-#include "asterf_types.h"
 #include "jeveux.h"
+#include "asterf_types.h"
 #include "asterc/getfac.h"
 #include "asterc/r8dgrd.h"
 #include "asterfort/affono.h"
 #include "asterfort/alcart.h"
+#include "asterfort/as_allocate.h"
+#include "asterfort/as_deallocate.h"
 #include "asterfort/assert.h"
-#include "asterfort/char_nb_ligf.h"
+#include "asterfort/char8_to_int.h"
 #include "asterfort/char_crea_ligf.h"
+#include "asterfort/char_nb_ligf.h"
 #include "asterfort/dismoi.h"
 #include "asterfort/exisdg.h"
 #include "asterfort/getvid.h"
@@ -48,9 +51,6 @@ subroutine cafono(load, loadLigrel, mesh, model, valeType)
 #include "asterfort/reliem.h"
 #include "asterfort/utmess.h"
 #include "asterfort/wkvect.h"
-#include "asterfort/as_deallocate.h"
-#include "asterfort/as_allocate.h"
-#include "asterfort/char8_to_int.h"
 !
     character(len=8), intent(in) :: load, mesh, model
     character(len=19), intent(in) :: loadLigrel
@@ -149,7 +149,7 @@ subroutine cafono(load, loadLigrel, mesh, model, valeType)
 ! ---------------------------------------------------
 !
     call dismoi('NB_EC', 'FORC_R', 'GRANDEUR', repi=nbecf)
-    if (nbecf .gt. 10) then
+    if (nbecf .gt. 11) then
         call utmess('F', 'MODELISA2_65')
     else
         call dismoi('NOM_LIGREL', model, 'MODELE', repk=modelLigrel)
@@ -157,7 +157,7 @@ subroutine cafono(load, loadLigrel, mesh, model, valeType)
     end if
 !
     call dismoi('NB_EC', 'DEPL_R', 'GRANDEUR', repi=nbec)
-    if (nbec .gt. 10) then
+    if (nbec .gt. 11) then
         call utmess('F', 'MODELISA_94')
     end if
 !

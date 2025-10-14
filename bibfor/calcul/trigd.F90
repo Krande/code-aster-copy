@@ -55,7 +55,7 @@ subroutine trigd(dg1, deb1, dg2, deb2, cumul, ino, nno)
     integer(kind=8) :: cmp, ind1, nec2, nsav, ksav, nmax
     parameter(nec2=120)
     parameter(nsav=5)
-    parameter(nmax=13)
+    parameter(nmax=14)
     integer(kind=8) :: ind2(nsav), necold(nsav)
     integer(kind=8) :: dg1old(nec2, nsav), dg2old(nec2, nsav), poscmp(nec2*nmax, nsav)
     integer(kind=8) :: ieq, i, k

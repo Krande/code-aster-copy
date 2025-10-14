@@ -305,6 +305,32 @@ subroutine dismlg(questi, nomobz, repi, repkz, ierd)
                             repk = 'NON'
                         end if
 
+                    else if (questi .eq. 'EXI_HHO_CUBI') then
+                        if (lteatt('TYPMOD2', 'HHO', typel=elemTypeName) .or. &
+                            lteatt('TYPMOD2', 'HHO_GRAD', typel=elemTypeName)) then
+                            call teattr('C', 'FORMULATION', formul, iret, typel=elemTypeName)
+                            if (formul .eq. 'HHO_CUBI') then
+                                repk = 'OUI'
+                            else
+                                repk = 'NON'
+                            end if
+                        else
+                            repk = 'NON'
+                        end if
+
+                    else if (questi .eq. 'EXI_HHO_QUAR') then
+                        if (lteatt('TYPMOD2', 'HHO', typel=elemTypeName) .or. &
+                            lteatt('TYPMOD2', 'HHO_GRAD', typel=elemTypeName)) then
+                            call teattr('C', 'FORMULATION', formul, iret, typel=elemTypeName)
+                            if (formul .eq. 'HHO_QUAR') then
+                                repk = 'OUI'
+                            else
+                                repk = 'NON'
+                            end if
+                        else
+                            repk = 'NON'
+                        end if
+
                     else if (questi .eq. 'EXI_AXIS') then
                         if (lteatt('AXIS', 'OUI', typel=elemTypeName)) repk = 'OUI'
                         if (repk .eq. 'OUI') exit

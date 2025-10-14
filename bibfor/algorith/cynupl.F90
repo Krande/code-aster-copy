@@ -61,8 +61,8 @@ subroutine cynupl(nume_equa, indirf, modcyc, mailsk, nbsec)
 #include "asterfort/jexnom.h"
 #include "asterfort/jexnum.h"
 #include "asterfort/nbec.h"
-#include "asterfort/rsexch.h"
 #include "asterfort/profchno_crsd.h"
+#include "asterfort/rsexch.h"
 #include "asterfort/wkvect.h"
 !
 !
@@ -74,7 +74,7 @@ subroutine cynupl(nume_equa, indirf, modcyc, mailsk, nbsec)
     integer(kind=8) :: nbddl, nbnot, nbsec, nddlt, neqsec, nsecpr
     integer(kind=8) :: ntail, nugd, numnos, numsec
 !-----------------------------------------------------------------------
-    parameter(nbcpmx=300)
+    parameter(nbcpmx=320)
     character(len=6) :: pgc
     character(len=8) :: modcyc, mailsk, nomgd
     character(len=19) :: nume_equa_sec, nume_equa, chamno
@@ -101,7 +101,7 @@ subroutine cynupl(nume_equa, indirf, modcyc, mailsk, nbsec)
     call dismoi('NB_CMP_MAX', nomgd, 'GRANDEUR', repi=nbcmp)
     call jenonu(jexnom('&CATA.GD.NOMGD', nomgd), nugd)
     nec = nbec(nugd)
-    ASSERT(nec .le. 10)
+    ASSERT(nec .le. 11)
 !
 !
 !-------------RECUPERATION DIMENSION MAILLAGE SQUELETTE-----------------

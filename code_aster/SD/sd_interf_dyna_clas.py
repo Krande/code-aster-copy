@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -57,8 +57,8 @@ class sd_interf_dyna_clas(AsBase):
     def check_DESC(self, checker):
         desc = self.IDC_DESC.get()
         assert desc[0] == 1, desc
-        assert desc[1] > 2 and desc[1] < 10, desc
-        assert desc[2] > 60 and desc[2] < 300, desc
+        assert desc[1] > 2 and desc[1] < 12, desc
+        assert desc[2] > 60 and desc[2] < 320, desc
         assert desc[3] > 0 and desc[3] < 500, desc
         assert desc[4] > 0, desc
         nomgd = sdu_nom_gd(desc[3]).strip()

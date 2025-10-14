@@ -62,7 +62,7 @@ subroutine romFieldNodeEquaToEqua(fieldA, fieldB, nbNodeMesh, listNode, equaAToB
 !
     integer(kind=8) :: ifm, niv
     integer(kind=8), parameter :: iLigrMesh = 1
-    integer(kind=8), parameter :: nbEcMax = 10
+    integer(kind=8), parameter :: nbEcMax = 11
     character(len=24) :: fieldRefeA, fieldRefeB
     character(len=16) :: fieldSuppA, fieldSuppB
     integer(kind=8) :: nb_ec, nbEquaA, nbEquaB

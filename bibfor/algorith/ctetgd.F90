@@ -41,22 +41,22 @@ subroutine ctetgd(basmod, numd, numg, nbsec, teta, &
 !
 !
 !
-#include "asterf_types.h"
 #include "jeveux.h"
+#include "asterf_types.h"
 #include "asterc/r8pi.h"
 #include "asterfort/amppr.h"
 #include "asterfort/bmnodi.h"
 #include "asterfort/dismoi.h"
+#include "asterfort/int_to_char8.h"
 #include "asterfort/intet0.h"
 #include "asterfort/isdeco.h"
 #include "asterfort/jedema.h"
 #include "asterfort/jelira.h"
 #include "asterfort/jemarq.h"
 #include "asterfort/jeveuo.h"
-#include "asterfort/jexnum.h"
 #include "asterfort/jexnom.h"
+#include "asterfort/jexnum.h"
 #include "asterfort/utmess.h"
-#include "asterfort/int_to_char8.h"
 !
 !-----------------------------------------------------------------------
     integer(kind=8) :: i, ibid(1), icomp, iloci, ilocj, inod
@@ -66,7 +66,7 @@ subroutine ctetgd(basmod, numd, numg, nbsec, teta, &
     integer(kind=8) :: numg
     real(kind=8) :: angle, pi, x
 !-----------------------------------------------------------------------
-    parameter(nbcpmx=300)
+    parameter(nbcpmx=320)
     character(len=24) :: valk(2)
     character(len=8) :: basmod, mailla, nomnoe, tyd, intf, kbid
     real(kind=8) :: xd(10), xg(10), xtd(10), xtg(10), tet0(10, 10)
@@ -95,7 +95,7 @@ subroutine ctetgd(basmod, numd, numg, nbsec, teta, &
 !
     call dismoi('NB_CMP_MAX', intf, 'INTERF_DYNA', repi=nbcmp)
     call dismoi('NB_EC', intf, 'INTERF_DYNA', repi=nbec)
-    if (nbec .gt. 10) then
+    if (nbec .gt. 11) then
         call utmess('F', 'MODELISA_94')
     end if
 !

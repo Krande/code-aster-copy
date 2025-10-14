@@ -48,8 +48,8 @@ subroutine axacti(basmod, numa, nbdiam, lisnu, nblis, &
 !
 !
 !      NTA EST LE NOMBRE DE CMP TRAITEE EN CYCLIQUE
-#include "asterf_types.h"
 #include "jeveux.h"
+#include "asterf_types.h"
 #include "asterfort/dismoi.h"
 #include "asterfort/isdeco.h"
 #include "asterfort/jedema.h"
@@ -64,7 +64,7 @@ subroutine axacti(basmod, numa, nbdiam, lisnu, nblis, &
     integer(kind=8) :: nbacti, nbcmp, nbcpmx, nbdiam, nbec, nblis
     integer(kind=8) :: nbnoa, nbnot, numa
 !-----------------------------------------------------------------------
-    parameter(nbcpmx=300)
+    parameter(nbcpmx=320)
     character(len=8) :: basmod, intf
     aster_logical :: okass
     integer(kind=8) :: idec(nbcpmx), lisnu(nblis)
@@ -84,7 +84,7 @@ subroutine axacti(basmod, numa, nbdiam, lisnu, nblis, &
 !
     call dismoi('NB_CMP_MAX', intf, 'INTERF_DYNA', repi=nbcmp)
     call dismoi('NB_EC', intf, 'INTERF_DYNA', repi=nbec)
-    if (nbec .gt. 10) then
+    if (nbec .gt. 11) then
         call utmess('F', 'MODELISA_94')
     end if
 !

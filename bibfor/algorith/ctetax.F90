@@ -45,12 +45,13 @@ subroutine ctetax(basmod, numa, nbsec, teta, nbtet)
 !
 !
 !      NTA EST LE NOMBRE DE CMP TRAITEE EN CYCLIQUE
-#include "asterf_types.h"
 #include "jeveux.h"
+#include "asterf_types.h"
 #include "asterc/r8pi.h"
 #include "asterfort/amppr.h"
 #include "asterfort/bmnodi.h"
 #include "asterfort/dismoi.h"
+#include "asterfort/int_to_char8.h"
 #include "asterfort/intet0.h"
 #include "asterfort/isdeco.h"
 #include "asterfort/jedema.h"
@@ -59,7 +60,6 @@ subroutine ctetax(basmod, numa, nbsec, teta, nbtet)
 #include "asterfort/jeveuo.h"
 #include "asterfort/jexnum.h"
 #include "asterfort/utmess.h"
-#include "asterfort/int_to_char8.h"
 !
 !-----------------------------------------------------------------------
     integer(kind=8) :: i, ibid(1), icomp, iloci, ilocj, inoa
@@ -68,7 +68,7 @@ subroutine ctetax(basmod, numa, nbsec, teta, nbtet)
     integer(kind=8) :: nbtet, noer, nta, numa
     real(kind=8) :: angle, pi, x
 !-----------------------------------------------------------------------
-    parameter(nbcpmx=300)
+    parameter(nbcpmx=320)
     parameter(nta=10)
     character(len=24) :: valk(2)
     character(len=8) :: basmod, mailla, typddl(6), nomnoe, tyd, intf, kbid
@@ -96,7 +96,7 @@ subroutine ctetax(basmod, numa, nbsec, teta, nbtet)
 !
     call dismoi('NB_CMP_MAX', intf, 'INTERF_DYNA', repi=nbcmp)
     call dismoi('NB_EC', intf, 'INTERF_DYNA', repi=nbec)
-    if (nbec .gt. 10) then
+    if (nbec .gt. 11) then
         call utmess('F', 'MODELISA_94')
     end if
 !

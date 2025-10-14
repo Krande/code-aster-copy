@@ -41,6 +41,7 @@ module HHO_Meca_module
     implicit none
 !
     private
+#include "jeveux.h"
 #include "asterf_types.h"
 #include "asterfort/as_allocate.h"
 #include "asterfort/as_deallocate.h"
@@ -60,7 +61,6 @@ module HHO_Meca_module
 #include "asterfort/tecach.h"
 #include "asterfort/utmess.h"
 #include "blas/dsyr.h"
-#include "jeveux.h"
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -144,7 +144,7 @@ contains
         hhoField%fieldCineVale = '&&HHOMEC.CINEVALE'
 !
         if (isfonc(list_func_acti, 'DIRI_CINE')) then
-            call hhoDiriFuncPrepare(model, list_load, hhoField)
+            call hhoDiriFuncPrepare(model(1:8), list_load, hhoField)
         end if
 !
     end subroutine

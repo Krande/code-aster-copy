@@ -59,7 +59,7 @@ subroutine assma2(ldistme, lmasym, tt, nu14, ncmp, matel, &
     character(len=8) :: mo, ma, nogdco, nogdsi, nomacr
     character(len=14) :: num2
     integer(kind=8) :: nbecmx
-    parameter(nbecmx=10)
+    parameter(nbecmx=11)
     integer(kind=8) :: icodla(nbecmx), icodge(nbecmx)
     integer(kind=8) :: i1, i2, iad1, iad11, iad2, iad21
     integer(kind=8) :: jsupma, jnulo1, jprno, jposd1

@@ -42,7 +42,7 @@ subroutine cordd2(jprn1, jprn2, ili, ecodl, nec, &
 #include "jeveux.h"
 #include "asterfort/assert.h"
     integer(kind=8) :: nbecmx, ncmp
-    parameter(nbecmx=10)
+    parameter(nbecmx=11)
     integer(kind=8) :: ifin(nbecmx)
     integer(kind=8) :: pos(1)
     integer(kind=8) :: ecodg, ecodl(*)

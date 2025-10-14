@@ -78,7 +78,7 @@ subroutine assvss(base, vec, vecel, nu, vecpro, &
     integer(kind=8) :: nbecmx, nbelm, nbnoss, nbsma, nbssa, ncmp, ncmpel
     integer(kind=8) :: nddl1, nequa, nm, nmxcmp, nnoe, nugd
 !-----------------------------------------------------------------------
-    parameter(nbecmx=10)
+    parameter(nbecmx=11)
 !
     character(len=1) :: bas
     character(len=8) :: ma, mo, mo2, nogdsi, nogdco, nomcas

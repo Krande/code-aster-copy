@@ -94,7 +94,7 @@ subroutine rotlir(nomres, sst1, intf1, lino1, codret, &
     integer(kind=8) :: m1, n1, lindi1, lnoeu1, nbnoe, nbec, ipos1, ipos2, lmain1, nbcmpm
     integer(kind=8) :: leuler, lresmo, codret, lmacr1, nbddl1, imast, ddla1, lact1, iret
     integer(kind=8) :: lmarot, length, nbcmp, jnocmp, noer
-    parameter(nbcmpm=300)
+    parameter(nbcmpm=320)
     integer(kind=8) :: deco(nbcmpm)
     real(kind=8) :: euler(3), rota(3, 3), norme, nortot
     logical :: nook

@@ -34,6 +34,7 @@ subroutine defint(mailla, nomres)
 #include "jeveux.h"
 #include "asterc/getfac.h"
 #include "asterfort/assert.h"
+#include "asterfort/char8_to_int.h"
 #include "asterfort/defdda.h"
 #include "asterfort/dismoi.h"
 #include "asterfort/getvr8.h"
@@ -54,7 +55,6 @@ subroutine defint(mailla, nomres)
 #include "asterfort/utlisi.h"
 #include "asterfort/utmess.h"
 #include "asterfort/wkvect.h"
-#include "asterfort/char8_to_int.h"
 !
 !
 !
@@ -67,7 +67,7 @@ subroutine defint(mailla, nomres)
     integer(kind=8) :: numgd
     real(kind=8) :: freq
 !-----------------------------------------------------------------------
-    parameter(nbecmx=10)
+    parameter(nbecmx=11)
     character(len=8) :: nomres, mailla
     character(len=8) :: nomcou, type
     character(len=9) :: nom, no, grno

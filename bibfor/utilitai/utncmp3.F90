@@ -19,6 +19,8 @@
 subroutine utncmp3(nume_equa, ncmp, list_cmp, list_name)
     implicit none
 #include "jeveux.h"
+#include "asterfort/as_allocate.h"
+#include "asterfort/as_deallocate.h"
 #include "asterfort/assert.h"
 #include "asterfort/dismoi.h"
 #include "asterfort/exisdg.h"
@@ -30,8 +32,6 @@ subroutine utncmp3(nume_equa, ncmp, list_cmp, list_name)
 #include "asterfort/nbec.h"
 #include "asterfort/utmess.h"
 #include "asterfort/wkvect.h"
-#include "asterfort/as_deallocate.h"
-#include "asterfort/as_allocate.h"
 !
     integer(kind=8) :: ncmp
     character(len=*) :: nume_equa, list_cmp, list_name
@@ -40,7 +40,7 @@ subroutine utncmp3(nume_equa, ncmp, list_cmp, list_name)
 !
 !     ------------------------------------------------------------------
 !
-    integer(kind=8) :: jprno, gd, nec, tabec(10), j, ino, iec, icmp, ncmpmx
+    integer(kind=8) :: jprno, gd, nec, tabec(11), j, ino, iec, icmp, ncmpmx
     integer(kind=8) ::  iad, kcmp, nnoe, ncmpt
     integer(kind=8) :: jcmp
     character(len=8) :: noma, exilag
@@ -58,7 +58,7 @@ subroutine utncmp3(nume_equa, ncmp, list_cmp, list_name)
     call dismoi('NUM_GD', nume_equa19, 'NUME_EQUA', repi=gd)
 !
     nec = nbec(gd)
-    ASSERT(nec .le. 10)
+    ASSERT(nec .le. 11)
     call jelira(jexnum('&CATA.GD.NOMCMP', gd), 'LONMAX', ncmpmx)
     call jeveuo(jexnum('&CATA.GD.NOMCMP', gd), 'L', iad)
     AS_ALLOCATE(vi=vicmp, size=ncmpmx)

@@ -53,6 +53,7 @@ module HHO_Dirichlet_module
 #include "asterfort/infniv.h"
 #include "asterfort/inical.h"
 #include "asterfort/ischar.h"
+#include "asterfort/jedetr.h"
 #include "asterfort/jelira.h"
 #include "asterfort/jenonu.h"
 #include "asterfort/jenuno.h"
@@ -80,6 +81,7 @@ module HHO_Dirichlet_module
     public :: hhoDiriFuncPrepare, hhoDiriFuncCompute, hhoDiriFuncApply, hhoDiriMecaProjFunc
     public :: hhoGetKinematicValues, hhoDiriReadNameFunc, hhoDiriOffset
     public :: hhoDiriMecaProjReal, hhoDiriTherProjReal, hasHHODoFFromNodes
+    public :: hhoDiriTherProjFunc
     private :: hhoDiriNum, hhoDiriNodeType
 !
 contains
@@ -138,7 +140,7 @@ contains
 !
         implicit none
 !
-        character(len=24), intent(in) :: model
+        character(len=8), intent(in) :: model
         character(len=19), intent(in) :: list_load
         type(HHO_Field), intent(inout) :: hhoField
 !
@@ -161,6 +163,7 @@ contains
         character(len=8), pointer :: p_cata_nomcmp(:) => null()
         character(len=8), pointer :: v_field_ncmp(:) => null()
         character(len=19), parameter :: connex_inv = '&&HHOMEC.CONINV'
+        character(len=16) :: pheno
         aster_logical, pointer :: v_elem_affe(:) => null()
         integer(kind=8), pointer :: v_coninv(:) => null()
         integer(kind=8), pointer :: v_connex(:) => null()
@@ -172,7 +175,7 @@ contains
         character(len=24) :: lload_name, lload_info
         integer(kind=8), pointer :: v_load_info(:) => null()
         character(len=24), pointer :: v_load_name(:) => null()
-        aster_logical :: l_cine, l_func, isCellNode
+        aster_logical :: l_cine, l_func, isCellNode, l_meca
         type(HHO_Data) :: hhoData
         integer(kind=8), pointer :: v_afci(:) => null()
         character(len=8), pointer :: v_afck(:) => null()
@@ -189,6 +192,8 @@ contains
 ! ----- Initializations
 !
         name_gd = 'NEUT_K8'
+        call dismoi('PHENOMENE', model, 'MODELE', repk=pheno)
+        l_meca = pheno == "MECANIQUE"
         call dismoi('NOM_MAILLA', model, 'MODELE', repk=mesh)
         ibid = 0
 !
@@ -198,9 +203,17 @@ contains
         nb_cmp_hho_dir_c = binomial(hhoData%cell_degree()+ndim, hhoData%cell_degree())
         nb_cmp_hho_dir_f = binomial(hhoData%face_degree()+ndim-1, hhoData%face_degree())
         if (ndim == 3) then
-            nb_cmp_hho_max = 7*ndim
+            if (l_meca) then
+                nb_cmp_hho_max = 7*ndim
+            else
+                nb_cmp_hho_max = 7
+            end if
         else if (ndim == 2) then
-            nb_cmp_hho_max = 5*ndim
+            if (l_meca) then
+                nb_cmp_hho_max = 5*ndim
+            else
+                nb_cmp_hho_max = 5
+            end if
         else
             ASSERT(ASTER_FALSE)
         end if
@@ -336,11 +349,19 @@ contains
                                 if (isCellNode) then
                                     nb_cmp_hho_dir = nb_cmp_hho_dir_c
                                 end if
-                                dim_cmp = hhoDiriNum(nb_cmp_hho_dir, nume_cmp, ndim)
-                                i_func = ndim*(node_nume_loc-offset)+dim_cmp
+                                if (l_meca) then
+                                    dim_cmp = hhoDiriNum(nb_cmp_hho_dir, nume_cmp, ndim)
+                                    i_func = ndim*(node_nume_loc-offset)+dim_cmp
+                                else
+                                    i_func = node_nume_loc-offset+1
+                                end if
                                 v_field_valv(i_func) = v_afcv(i_affe_cine)
                                 if (.not. isCellNode) then
-                                    nume_cmp_f = ndim*nb_cmp_hho_dir_c+nume_cmp
+                                    if (l_meca) then
+                                        nume_cmp_f = ndim*nb_cmp_hho_dir_c+nume_cmp
+                                    else
+                                        nume_cmp_f = nb_cmp_hho_dir_c+nume_cmp
+                                    end if
                                     hhoField%v_info_cine(3*(i_affe_cine-1)+3) = nume_cmp_f
                                 end if
                             end if
@@ -359,6 +380,8 @@ contains
         else
             hhoField%l_cine_f = ASTER_FALSE
         end if
+!
+        call jedetr(connex_inv)
 !
     end subroutine
 !
@@ -417,7 +440,7 @@ contains
 !
         implicit none
 !
-        character(len=24), intent(in) :: model
+        character(len=8), intent(in) :: model
         type(HHO_Field), intent(in) :: hhoField
         real(kind=8), intent(in) :: time_curr
 !
@@ -442,6 +465,8 @@ contains
         character(len=19) :: lchin(nbin), lchout(nbout)
         character(len=24) :: chgeom, chtime
         character(len=8), parameter :: cmp_name(1) = (/'INST'/)
+        character(len=16) :: pheno
+        aster_logical :: l_meca
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -450,10 +475,17 @@ contains
             call utmess('I', 'HHO2_6')
         end if
 !
+        call dismoi('PHENOMENE', model, 'MODELE', repk=pheno)
+        l_meca = pheno == "MECANIQUE"
+!
 ! --- Initializations
 !
         base = 'V'
-        option = 'HHO_CINE_F_MECA'
+        if (l_meca) then
+            option = 'HHO_CINE_F_MECA'
+        else
+            option = 'HHO_CINE_F_THER'
+        end if
         chtime = '&&HHOCHTIME'
         call dismoi('NOM_LIGREL', model, 'MODELE', repk=ligrel_model)
 !
@@ -493,11 +525,13 @@ contains
                     lpain, nbout, lchout, lpaout, base, &
                     'OUI')
 !
+        ! call imprsd('CHAMP', hhoField%fieldCineVale, 6, 'Value Dirichlet')
+
         call detrsd("CARTE", chtime)
 !
     end subroutine
 !
-    !
+!
 !===================================================================================================
 !
 !===================================================================================================
@@ -606,7 +640,7 @@ contains
         character(len=16), parameter :: motcle(5) = (/'GROUP_MA', 'MAILLE  ', &
                                                       'GROUP_NO', 'NOEUD   ', &
                                                       'TOUT    '/)
-        integer(kind=8), parameter :: nbCmpSupp = 16
+        integer(kind=8), parameter :: nbCmpSupp = 50
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -1196,6 +1230,119 @@ contains
 !
         FuncValuesCellQP = 0.d0
         FuncValuesCellQP(1:hhoQuadCell%nbQuadPoints) = r_vale(hhoCell%node_bar_loc)
+!
+        call hhoL2ProjCellScal(hhoCell, hhoQuadCell, FuncValuesCellQP, hhoData%cell_degree(), &
+                               rhs_cell)
+        call dcopy_1(cbs, rhs_cell, rhs_cine(ind))
+        ind = ind+cbs
+        ASSERT(ind-1 == total_dofs)
+!
+    end subroutine
+!
+!===================================================================================================
+!
+!===================================================================================================
+!
+    subroutine hhoDiriTherProjFunc(hhoCell, hhoData, nomFunc, time, rhs_cine)
+!
+        implicit none
+!
+        type(HHO_Cell), intent(in) :: hhoCell
+        type(HHO_Data), intent(in) :: hhoData
+        character(len=8), intent(in) :: nomFunc(7)
+        real(kind=8), intent(in) :: time
+        real(kind=8), intent(out) :: rhs_cine(MSIZE_TDOFS_SCAL)
+!
+! --------------------------------------------------------------------------------------------------
+!   HHO - AFFE_CHAR_CINE_F
+!
+!   Read Dirichlet loads
+!
+!   In hhoCell         : a HHO Cell
+!   In hhoData         : information on HHO methods
+!   In v_func          : pointer to name of the function
+!   Out nomFunc        : table with the name of the function
+!
+! --------------------------------------------------------------------------------------------------
+!
+        integer(kind=8), parameter :: maxpara = 4
+        real(kind=8) :: valpar(maxpara)
+        character(len=8) :: nompar(maxpara)
+        type(HHO_Face) :: hhoFace
+        type(HHO_Quadrature) :: hhoQuadFace, hhoQuadCell
+        integer(kind=8) :: cbs, fbs, total_dofs, iFace, nbpara, ind
+        real(kind=8) :: FuncValuesQP(MAX_QP_FACE), FuncValuesCellQP(MAX_QP_CELL)
+        real(kind=8) :: rhs_face(MSIZE_FACE_SCAL), rhs_cell(MSIZE_CELL_SCAL)
+!
+! --------------------------------------------------------------------------------------------------
+!
+! --- Initialisation
+!
+        rhs_cine = 0.d0
+!
+        call hhoTherDofs(hhoCell, hhoData, cbs, fbs, total_dofs)
+!
+! --- Type of function dor a face
+!
+        if (hhoCell%ndim == 3) then
+            nbpara = 4
+            nompar(1:3) = (/'X', 'Y', 'Z'/)
+            nompar(nbpara) = 'INST'
+            valpar(nbpara) = time
+        else if (hhoCell%ndim == 2) then
+            nbpara = 3
+            nompar(1:2) = (/'X', 'Y'/)
+            nompar(nbpara) = 'INST'
+            valpar(nbpara) = time
+            nompar(4) = 'XXXXXXXX'
+            valpar(4) = 0.d0
+        else
+            ASSERT(ASTER_FALSE)
+        end if
+!
+! --- Loop on faces
+!
+        ind = 1
+        do iFace = 1, hhoCell%nbfaces
+            hhoFace = hhoCell%faces(iFace)
+!
+! ----- get quadrature
+!
+            call hhoQuadFace%GetQuadFace(hhoface, 2*hhoData%face_degree()+1)
+!
+! --- Loop on directions
+!
+            FuncValuesQp = 0.d0
+            if (nomFunc(iFace) .ne. '&&FOZERO') then
+!
+! -------------- Value of the function at the quadrature point
+!
+                call hhoFuncFScalEvalQp(hhoQuadFace, nomFunc(iFace), nbpara, nompar, &
+                                        valpar, hhoCell%ndim, &
+                                        FuncValuesQp)
+!
+            end if
+!
+! -------------- Compute L2 projection
+!
+            call hhoL2ProjFaceScal(hhoFace, hhoQuadFace, FuncValuesQP, hhoData%face_degree(), &
+                                   rhs_face)
+            call dcopy_1(fbs, rhs_face, rhs_cine(ind))
+            ind = ind+fbs
+        end do
+!
+! --- On cell
+!
+        call hhoQuadCell%GetQuadCell(hhoCell, 2*hhoData%cell_degree()+1)
+!
+! -------------- Value of the function at the quadrature point
+!
+        FuncValuesCellQP = 0.d0
+        if (nomFunc(hhoCell%nbfaces+1) .ne. '&&FOZERO') then
+            call hhoFuncFScalEvalQp(hhoQuadCell, nomFunc(hhoCell%nbfaces+1), nbpara, &
+                                    nompar, valpar, hhoCell%ndim, &
+                                    FuncValuesCellQP)
+        end if
 !
         call hhoL2ProjCellScal(hhoCell, hhoQuadCell, FuncValuesCellQP, hhoData%cell_degree(), &
                                rhs_cell)

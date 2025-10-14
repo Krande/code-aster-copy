@@ -19,6 +19,8 @@
 subroutine numeddl_get_components(nume19, allorone, nodeid, ncmp, stringarray, maxcmp)
     implicit none
 #include "jeveux.h"
+#include "asterfort/as_allocate.h"
+#include "asterfort/as_deallocate.h"
 #include "asterfort/assert.h"
 #include "asterfort/dismoi.h"
 #include "asterfort/exisdg.h"
@@ -29,8 +31,6 @@ subroutine numeddl_get_components(nume19, allorone, nodeid, ncmp, stringarray, m
 #include "asterfort/jexnum.h"
 #include "asterfort/nbec.h"
 #include "asterfort/utmess.h"
-#include "asterfort/as_deallocate.h"
-#include "asterfort/as_allocate.h"
 !
     integer(kind=8) :: ncmp, maxcmp, nodeid
     character(len=*) :: nume19, allorone
@@ -47,7 +47,7 @@ subroutine numeddl_get_components(nume19, allorone, nodeid, ncmp, stringarray, m
 !     In    maxcmp      : max possible number of components (for safety purpose)
 !     -----------------------------------------------------------------------------
 !
-    integer(kind=8) :: jprno, gd, nec, tabec(10), j, ino, iec, icmp, ncmpmx
+    integer(kind=8) :: jprno, gd, nec, tabec(11), j, ino, iec, icmp, ncmpmx
     integer(kind=8) ::  iad, nnoe, idescr
     character(len=8) :: noma, exilag
     character(len=19) :: numeddl, prno
@@ -63,7 +63,7 @@ subroutine numeddl_get_components(nume19, allorone, nodeid, ncmp, stringarray, m
 !
     call jeveuo('&CATA.GD.DESCRIGD', 'L', idescr)
     nec = nbec(gd)
-    ASSERT(nec .le. 10)
+    ASSERT(nec .le. 11)
     call jelira(jexnum('&CATA.GD.NOMCMP', gd), 'LONMAX', ncmpmx)
     call jeveuo(jexnum('&CATA.GD.NOMCMP', gd), 'L', iad)
     AS_ALLOCATE(vi=vicmp, size=ncmpmx)

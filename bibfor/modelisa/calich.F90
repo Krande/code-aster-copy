@@ -21,24 +21,24 @@ subroutine calich(chargz, phenom)
     implicit none
 !
 #include "jeveux.h"
-#include "asterfort/assert.h"
 #include "asterc/getfac.h"
 #include "asterfort/aflrch.h"
 #include "asterfort/afrela.h"
+#include "asterfort/as_allocate.h"
+#include "asterfort/as_deallocate.h"
+#include "asterfort/assert.h"
 #include "asterfort/dismoi.h"
+#include "asterfort/exisd.h"
 #include "asterfort/getvid.h"
 #include "asterfort/getvr8.h"
+#include "asterfort/int_to_char8.h"
 #include "asterfort/jedema.h"
 #include "asterfort/jedetr.h"
-#include "asterfort/exisd.h"
 #include "asterfort/jelira.h"
 #include "asterfort/jemarq.h"
 #include "asterfort/jeveuo.h"
 #include "asterfort/jexnom.h"
 #include "asterfort/utmess.h"
-#include "asterfort/as_deallocate.h"
-#include "asterfort/as_allocate.h"
-#include "asterfort/int_to_char8.h"
 !
 !
     character(len=*), intent(in) :: chargz
@@ -155,7 +155,7 @@ subroutine calich(chargz, phenom)
 ! ---   LES INCONNUES ASSOCIEES A LA GRANDEUR DE NOM NOMGD
 !       --------------------------------------------------
         call dismoi('NB_EC', nomgd, 'GRANDEUR', repi=nbec)
-        ASSERT(nbec .le. 10)
+        ASSERT(nbec .le. 11)
 !
 ! ---   RECUPERATION DU MAILLAGE ASSOCIE AU CHAM_NO
 !       -------------------------------------------

@@ -69,11 +69,11 @@ subroutine cafelsiter(cequi, effm, effn, ht, bw, &
 !
     implicit none
 
+#include "asterfort/jedetr.h"
+#include "asterfort/jeveuo.h"
+#include "asterfort/juveca.h"
 #include "asterfort/verifels.h"
 #include "asterfort/wkvect.h"
-#include "asterfort/jedetr.h"
-#include "asterfort/juveca.h"
-#include "asterfort/jeveuo.h"
 !
 !-----------------------------------------------------------------------
 !!!!TERMES PRINCIPAUX D'ENTREE

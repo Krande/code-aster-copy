@@ -45,6 +45,7 @@ subroutine camoch(nomres, numref, intf, raid, mass, &
 #include "asterfort/defsta.h"
 #include "asterfort/dismoi.h"
 #include "asterfort/facmtr.h"
+#include "asterfort/int_to_char8.h"
 #include "asterfort/isdeco.h"
 #include "asterfort/jedema.h"
 #include "asterfort/jedetr.h"
@@ -57,7 +58,6 @@ subroutine camoch(nomres, numref, intf, raid, mass, &
 #include "asterfort/mtdefs.h"
 #include "asterfort/mtdscr.h"
 #include "asterfort/wkvect.h"
-#include "asterfort/int_to_char8.h"
 !
 !-----------------------------------------------------------------------
     integer(kind=8) :: i, iad, ier, ik, ino, inord
@@ -67,7 +67,7 @@ subroutine camoch(nomres, numref, intf, raid, mass, &
     integer(kind=8) :: nbnot, neq, ntail1, ntail2, numgd
     real(kind=8) :: freq, omega, pi
 !-----------------------------------------------------------------------
-    parameter(nbcpmx=300)
+    parameter(nbcpmx=320)
     character(len=1) :: typcst(2)
     character(len=6) :: pgc
     character(len=8) :: nomddl

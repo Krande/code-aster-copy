@@ -55,7 +55,7 @@ module HHO_basis_module
         real(kind=8) :: scaling_factor(3) = 0.d0
         real(kind=8) :: rotmat(3, 3) = 0.d0
         real(kind=8) :: coeff_mono(MAX_CELL_COEF) = 0.d0
-        integer(kind=8)      :: coeff_shift(MSIZE_CELL_SCAL+1) = 0
+        integer(kind=8)  :: coeff_shift(MSIZE_CELL_SCAL+1) = 0
 
 ! ----- member function
     contains
@@ -287,6 +287,7 @@ contains
                 offset = hhoCell%nbfaces*(size_face*(size_face+1)/2)
                 call readVector('PCHHOBS', maxval(this%coeff_shift)-1, &
                                 this%coeff_mono, offset)
+                ASSERT(this%coeff_shift(size_basis_scal)-1 <= MAX_CELL_COEF)
             else
 !
 ! ------------ If you have this error - add the basis field as an input of you option
@@ -387,6 +388,7 @@ contains
                 nb_coeff = this%coeff_shift(size_basis_scal+1)-1
                 offset = (hhoFace%face_loc-1)*nb_coeff
                 call readVector('PCHHOBS', nb_coeff, this%coeff_mono, offset)
+                ASSERT(nb_coeff <= MAX_FACE_COEF)
 !
             else
 !
@@ -778,8 +780,8 @@ contains
 !
         class(HHO_basis_cell), intent(inout)                    :: this
         real(kind=8), dimension(3), intent(in)                  :: point
-        integer(kind=8), intent(in)                                     :: min_order
-        integer(kind=8), intent(in)                                     :: max_order
+        integer(kind=8), intent(in)                             :: min_order
+        integer(kind=8), intent(in)                             :: max_order
         real(kind=8), dimension(MSIZE_CELL_SCAL), intent(out)   :: basisScalEval
 !
 ! --------------------------------------------------------------------------------------------------
@@ -1293,9 +1295,9 @@ contains
 !
         type(HHO_Quadrature), intent(in)                    :: hhoQuad
         type(HHO_matrix), intent(inout)                     :: basisIpg
-        integer(kind=8), intent(in)                                 :: nb_basis, ndim
+        integer(kind=8), intent(in)                         :: nb_basis, ndim
         real(kind=8), intent(in)                            :: measure
-        integer(kind=8), intent(out)                                :: coeff_shift(*)
+        integer(kind=8), intent(out)                        :: coeff_shift(*)
         real(kind=8), intent(out)                           :: coeff_mono(*)
 !
 ! --------------------------------------------------------------------------------------------------
