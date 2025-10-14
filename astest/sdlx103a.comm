@@ -245,7 +245,7 @@ dyph = DYNA_LINE(
     GROUP_NO_INTERF="ENCASTRE",
     AMORTISSEMENT=_F(TYPE_AMOR="MODAL", AMOR_REDUIT=0.01),
     PARAMETRE=_F(
-        # LIST_FREQ = (12.25, 12.50, 12.75),
+        FREQ=(12.25, 12.50, 12.75),
         Z0=5.0,
         AUTO="OUI",
         OPTION_DREF="OUI",

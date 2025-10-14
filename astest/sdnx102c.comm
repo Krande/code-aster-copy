@@ -1,0 +1,260 @@
+# coding=utf-8
+# --------------------------------------------------------------------
+# Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
+# This file is part of code_aster.
+#
+# code_aster is free software: you can redistribute it and/or modify
+# it under the terms of the GNU General Public License as published by
+# the Free Software Foundation, either version 3 of the License, or
+# (at your option) any later version.
+#
+# code_aster is distributed in the hope that it will be useful,
+# but WITHOUT ANY WARRANTY; without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+# GNU General Public License for more details.
+#
+# You should have received a copy of the GNU General Public License
+# along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
+# --------------------------------------------------------------------
+
+DEBUT(CODE="OUI")
+
+Young = 30.0e9
+
+rho_radier = 2500.0
+
+Poisson = 0.2
+
+rho_zero = 0.0
+
+Delta_t = 0.005
+
+T_max = 2.475
+
+T_0 = 1.24
+
+A_0 = 250.0
+
+freq = 2.0
+
+# Définition chargement
+
+listr = DEFI_LIST_REEL(DEBUT=0.0, INTERVALLE=_F(JUSQU_A=T_max, PAS=Delta_t))
+
+formula = FORMULE(
+    NOM_PARA=("INST",),
+    VALE="(1. - 2.*(pi*freq*(INST - T_0))**2.)*e**(-(pi*freq*(INST - T_0))**2.)",
+    T_0=T_0,
+    freq=freq,
+    A_0=A_0,
+)
+
+
+Fact_V = 2.0 / 3.0
+
+acce_hor = CALC_FONC_INTERP(
+    FONCTION=formula,
+    LIST_PARA=listr,
+    NOM_PARA="INST",
+    PROL_DROITE="CONSTANT",
+    PROL_GAUCHE="CONSTANT",
+)
+
+
+acce_ver = CALC_FONCTION(COMB=_F(FONCTION=acce_hor, COEF=Fact_V))
+
+mesh0 = LIRE_MAILLAGE(UNITE=20)
+
+mesh0 = DEFI_GROUP(
+    reuse=mesh0, CREA_GROUP_NO=_F(GROUP_MA=("Radier",), NOM=("Radier_NO",)), MAILLAGE=mesh0
+)
+
+mesh0 = MODI_MAILLAGE(
+    reuse=mesh0,
+    MAILLAGE=mesh0,
+    ORIE_NORM_COQUE=_F(GROUP_MA=("Radier",), GROUP_NO=("Centre_Rad",), VECT_NORM=(0.0, 0.0, -1.0)),
+)
+
+mesh = CREA_MAILLAGE(
+    CREA_POI1=_F(GROUP_NO=("Discret_0D",), NOM_GROUP_MA=("Discret_0D_POI1")), MAILLAGE=mesh0
+)
+
+model = AFFE_MODELE(
+    AFFE=(
+        _F(MODELISATION="DKT", PHENOMENE="MECANIQUE", GROUP_MA="Radier"),
+        _F(
+            MODELISATION="DIS_T", PHENOMENE="MECANIQUE", GROUP_MA=("Discret_0D_POI1", "Discret_Seg")
+        ),
+    ),
+    MAILLAGE=mesh,
+)
+
+
+Masse = 2000.0
+B = 0.4
+L = 12.0
+Iner = B**4.0 / 12.0
+A = B**2.0
+
+K_X = 12 * Young * Iner / L**3.0
+K_Y = K_X
+K_Z = Young * A / L
+
+fact_red = 1.0
+
+elemprop = AFFE_CARA_ELEM(
+    COQUE=(_F(EPAIS=0.1, GROUP_MA=("Radier")),),
+    DISCRET=(
+        _F(CARA="K_T_D_N", GROUP_MA="Discret_0D_POI1", VALE=(0.0, 0.0, 0.0)),
+        _F(CARA="M_T_D_N", GROUP_MA="Discret_0D_POI1", VALE=Masse),
+        _F(CARA="K_T_D_L", GROUP_MA="Discret_Seg", VALE=(K_X, K_Y, K_Z / fact_red)),
+    ),
+    MODELE=model,
+)
+
+Beton_Radier = DEFI_MATERIAU(ELAS=_F(E=Young, NU=Poisson, RHO=rho_radier))
+
+Beton_Zero = DEFI_MATERIAU(ELAS=_F(E=Young, NU=Poisson, RHO=rho_zero))
+
+fieldmat = AFFE_MATERIAU(AFFE=(_F(GROUP_MA=("Radier"), MATER=(Beton_Zero,)),), MODELE=model)
+
+load = AFFE_CHAR_MECA(
+    DDL_IMPO=_F(DRX=0.0, DRY=0.0, DRZ=0.0, DX=0.0, DY=0.0, DZ=0.0, GROUP_NO=("Centre_Rad",)),
+    LIAISON_SOLIDE=_F(GROUP_NO=("Radier_NO",)),
+    MODELE=model,
+)
+
+ASSEMBLAGE(
+    CARA_ELEM=elemprop,
+    CHAM_MATER=fieldmat,
+    CHARGE=(load,),
+    MATR_ASSE=(
+        _F(MATRICE=CO("MATRRIGI"), OPTION="RIGI_MECA"),
+        _F(MATRICE=CO("MATRMASS"), OPTION="MASS_MECA"),
+    ),
+    MODELE=model,
+    NUME_DDL=CO("NUMDDL"),
+)
+
+Amor_hyst_sol = 0.2
+Young_sol = 200.0e6
+Nu_sol = 0.33
+Rho_sol = 1610.0
+
+tablesol = DEFI_SOL_MISS(
+    COUCHE=(
+        _F(EPAIS=1.0, NUME_MATE=1, RECEPTEUR="OUI", SOURCE="OUI"),
+        _F(NUME_MATE=1, SUBSTRATUM="OUI"),
+    ),
+    MATERIAU=(_F(AMOR_HYST=Amor_hyst_sol, E=Young_sol, NU=Nu_sol, RHO=Rho_sol),),
+)
+
+statmode = MODE_STATIQUE(MATR_RIGI=MATRRIGI, MODE_STAT=_F(GROUP_NO=("Centre_Rad",), TOUT_CMP="OUI"))
+
+intfdyna = DEFI_INTERF_DYNA(
+    INTERFACE=_F(GROUP_NO=("Radier_NO",), NOM="Radier", TYPE="CRAIGB"), NUME_DDL=NUMDDL
+)
+
+modes = CALC_MODES(
+    CALC_FREQ=_F(FREQ=(0.01, 100.0)),
+    FILTRE_MODE=_F(CRIT_EXTR="MASS_EFFE_UN", SEUIL=1e-05),
+    IMPRESSION=_F(CRIT_EXTR="MASS_EFFE_UN", CUMUL="OUI"),
+    MATR_MASS=MATRMASS,
+    MATR_RIGI=MATRRIGI,
+    NORM_MODE=_F(NORME="TRAN_ROTA"),
+    OPTION="BANDE",
+)
+
+modes0 = DEFI_BASE_MODALE(
+    INTERF_DYNA=intfdyna,
+    NUME_REF=NUMDDL,
+    RITZ=(_F(MODE_MECA=(modes,)), _F(MODE_INTF=statmode, NMAX_MODE=(6,))),
+)
+
+
+TranGene = CALC_MISS(
+    BASE_MODALE=modes0,
+    MATR_MASS=MATRMASS,
+    AMOR_REDUIT=0.07,
+    MATR_RIGI=MATRRIGI,
+    MODELE=model,
+    PROJET="Harmonic_Analysis",
+    TYPE_RESU="TRAN_GENE",
+    UNITE_RESU_IMPE=3,
+    TYPE_EXCIT="INST",
+    EXCIT_MONO=(
+        _F(DIRECTION="X", ACCE=acce_hor),
+        _F(DIRECTION="Y", ACCE=acce_hor),
+        _F(DIRECTION="Z", ACCE=acce_ver),
+    ),
+)
+
+
+listfreq = DEFI_LIST_REEL(
+    DEBUT=0.1,
+    INTERVALLE=(
+        _F(JUSQU_A=15.0, NOMBRE=149),
+        _F(JUSQU_A=35.0, NOMBRE=80),
+        _F(JUSQU_A=50.0, NOMBRE=15),
+        _F(JUSQU_A=100.0, NOMBRE=20),
+    ),
+)
+
+Spectres = MACR_SPECTRE(
+    AMOR_SPEC=(0.05,),
+    CALCUL="RELATIF",
+    IMPRESSION=_F(FORMAT="TABLEAU", UNITE=30),
+    LIST_FREQ=listfreq,
+    MAILLAGE=mesh,
+    NOM_CHAM="ACCE",
+    NORME=9.81,
+    PLANCHER=_F(GROUP_NO=("Discret_0D",), NOM="Masse"),
+    RESU=_F(RESU_GENE=TranGene, ACCE_X=acce_hor, ACCE_Y=acce_hor, ACCE_Z=acce_ver),
+)
+
+SpecX = LIRE_FONCTION(
+    INDIC_PARA=(1, 1), INDIC_RESU=(1, 2), NOM_PARA="FREQ", NOM_RESU="REEL", UNITE=30
+)
+
+SpecY = LIRE_FONCTION(
+    INDIC_PARA=(1, 1), INDIC_RESU=(1, 3), NOM_PARA="FREQ", NOM_RESU="REEL", UNITE=30
+)
+
+SpecZ = LIRE_FONCTION(
+    INDIC_PARA=(1, 1), INDIC_RESU=(1, 4), NOM_PARA="FREQ", NOM_RESU="REEL", UNITE=30
+)
+
+
+TEST_FONCTION(
+    VALEUR=(
+        _F(
+            FONCTION=SpecX,
+            NOM_PARA="FREQ",
+            VALE_PARA=2.37,
+            VALE_CALC=1.088675,
+            VALE_REFE=1.088675,
+            REFERENCE="AUTRE_ASTER",
+            PRECISION=0.01,
+        ),
+        _F(
+            FONCTION=SpecY,
+            NOM_PARA="FREQ",
+            VALE_PARA=2.37,
+            VALE_CALC=1.088675,
+            VALE_REFE=1.088675,
+            REFERENCE="AUTRE_ASTER",
+            PRECISION=0.01,
+        ),
+        _F(
+            FONCTION=SpecZ,
+            NOM_PARA="FREQ",
+            VALE_PARA=2.37,
+            VALE_CALC=0.1599704,
+            VALE_REFE=0.1599704,
+            REFERENCE="AUTRE_ASTER",
+            PRECISION=0.01,
+        ),
+    )
+)
+
+FIN()

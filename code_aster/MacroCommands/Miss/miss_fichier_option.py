@@ -24,6 +24,7 @@
 
 import os
 
+import aster
 from .miss_utils import dict_format
 
 sfmt = dict_format["sR"]
@@ -34,10 +35,15 @@ def fichier_option(param):
     content = []
     # fréquences
     if param["LIST_FREQ"]:
-        nb = len(param["LIST_FREQ"])
+        nb = len(param["LIST_FREQ"].getValues())
         content.append("LFREQ %d" % nb)
         fmt = (sfmt * nb).strip()
-        content.append(fmt % tuple(param["LIST_FREQ"]))
+        content.append(fmt % tuple(param["LIST_FREQ"].getValues()))
+    elif param["FREQ"]:
+        nb = len(param["FREQ"])
+        content.append("LFREQ %d" % nb)
+        fmt = (sfmt * nb).strip()
+        content.append(fmt % tuple(param["FREQ"]))
     else:
         fmt = "FREQ" + 3 * sfmt
         content.append(fmt % (param["FREQ_MIN"], param["FREQ_MAX"], param["FREQ_PAS"]))

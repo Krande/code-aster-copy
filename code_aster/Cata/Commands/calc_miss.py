@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -46,7 +46,6 @@ CALC_MISS = MACRO(
     op=OPS("code_aster.MacroCommands.calc_miss_ops.calc_miss_ops"),
     sd_prod=calc_miss_sdprod,
     fr=tr("Préparation des données, exécution du logiciel Miss3D, et post-traitement"),
-    regles=(EXCLUS("TABLE_SOL", "MATER_SOL"),),
     TYPE_RESU=SIMP(
         statut="o",
         typ="TXM",
@@ -63,23 +62,33 @@ CALC_MISS = MACRO(
     ),
     PROJET=SIMP(statut="f", typ="TXM", defaut="MODELE", fr=tr("Nom de l'étude Miss")),
     REPERTOIRE=SIMP(statut="f", typ="TXM", fr=tr("Répertoire de travail de Miss")),
-    VERSION=SIMP(
-        statut="f",
-        typ="TXM",
-        into=("V6.7", "V6.6", "V6.5"),
-        defaut="V6.7",
-        fr=tr("Version de Miss utilisée"),
+    b_version=BLOC(
+        condition="""not is_in("TYPE_RESU", ('HARM_GENE','TRAN_GENE'))""",
+        VERSION=SIMP(
+            statut="f",
+            typ="TXM",
+            into=("V6.7", "V6.6", "V6.5"),
+            defaut="V6.7",
+            fr=tr("Version de Miss utilisée"),
+        ),
     ),
-    TABLE_SOL=SIMP(statut="f", typ=table_sdaster, fr=tr("Table des propriétés du sol stratifié")),
-    MATER_SOL=FACT(
-        statut="f",
-        fr=tr("Propriétés du sol homogène"),
-        E=SIMP(statut="o", typ="R", val_min=0.0),
-        NU=SIMP(statut="o", typ="R", val_min=-1.0, val_max=0.5),
-        RHO=SIMP(statut="o", typ="R", val_min=0.0),
-        AMOR_HYST=SIMP(statut="f", typ="R", val_min=0.0, val_max=1.0),
+    b_carac_sol=BLOC(
+        condition="""not is_in("TYPE_RESU", ('HARM_GENE','TRAN_GENE'))""",
+        regles=(EXCLUS("TABLE_SOL", "MATER_SOL"),),
+        TABLE_SOL=SIMP(
+            statut="f", typ=table_sdaster, fr=tr("Table des propriétés du sol stratifié")
+        ),
+        MATER_SOL=FACT(
+            statut="f",
+            fr=tr("Propriétés du sol homogène"),
+            E=SIMP(statut="o", typ="R", val_min=0.0),
+            NU=SIMP(statut="o", typ="R", val_min=-1.0, val_max=0.5),
+            RHO=SIMP(statut="o", typ="R", val_min=0.0),
+            AMOR_HYST=SIMP(statut="f", typ="R", val_min=0.0, val_max=1.0),
+        ),
     ),
     MATER_FLUIDE=FACT(
+        condition="""is_in("ISSF", ('OUI'))""",
         statut="f",
         fr=tr("Propriétés du fluide (requis si ISSF='OUI')"),
         RHO=SIMP(statut="o", typ="R", val_min=0.0),
@@ -110,15 +119,23 @@ CALC_MISS = MACRO(
             MATR_RIGI=SIMP(statut="f", typ=(matr_asse_depl_r, matr_asse_depl_c)),
             MATR_MASS=SIMP(statut="f", typ=matr_asse_depl_r),
         ),
-        AMOR_REDUIT=SIMP(statut="f", typ="R", max="**"),
+        # AMOR_REDUIT=SIMP(statut="f", typ="R", max="**"),
         GROUP_MA_INTERF=SIMP(
             statut="o", typ=grma, max="**", fr=tr("Groupe de mailles de l'interface")
         ),
         GROUP_MA_FLU_STR=SIMP(
-            statut="f", typ=grma, max="**", fr=tr("Groupe de mailles fluide-structure")
+            condition="""is_in("ISSF", ('OUI'))""",
+            statut="f",
+            typ=grma,
+            max="**",
+            fr=tr("Groupe de mailles fluide-structure"),
         ),
         GROUP_MA_FLU_SOL=SIMP(
-            statut="f", typ=grma, max="**", fr=tr("Groupe de mailles fluide-sol")
+            condition="""is_in("ISSF", ('OUI'))""",
+            statut="f",
+            typ=grma,
+            max="**",
+            fr=tr("Groupe de mailles fluide-sol"),
         ),
         GROUP_MA_SOL_SOL=SIMP(statut="f", typ=grma, max="**", fr=tr("Groupe de mailles sol-sol")),
         UNITE_IMPR_ASTER=SIMP(
@@ -133,12 +150,6 @@ CALC_MISS = MACRO(
             inout="out",
             fr=tr("Unité logique des impédances écrites par Miss"),
         ),
-        UNITE_RESU_FORC=SIMP(
-            statut="f",
-            typ=UnitType(),
-            inout="out",
-            fr=tr("Unité logique des forces sismiques écrites par Miss"),
-        ),
         SOURCE_SOL=FACT(
             statut="f",
             max="**",
@@ -151,6 +162,15 @@ CALC_MISS = MACRO(
             max="**",
             fr=tr("Source ponctuelle dans le fluide"),
             POINT=SIMP(statut="o", typ="R", min=3, max=3, fr=tr("Position de la source")),
+        ),
+    ),
+    b_unite_resu=BLOC(
+        condition="""is_in("TYPE_RESU", ('FICHIER'))""",
+        UNITE_RESU_FORC=SIMP(
+            statut="f",
+            typ=UnitType(),
+            inout="out",
+            fr=tr("Unité logique des forces sismiques écrites par Miss"),
         ),
     ),
     # post-traitement : passage du domaine de Laplace au domaine temporel
@@ -172,15 +192,24 @@ CALC_MISS = MACRO(
             MATR_RIGI=SIMP(statut="f", typ=(matr_asse_depl_r, matr_asse_depl_c)),
             MATR_MASS=SIMP(statut="f", typ=matr_asse_depl_r),
         ),
-        AMOR_REDUIT=SIMP(statut="f", typ="R", max="**"),
+        # AMOR_REDUIT=SIMP(statut="f", typ="R", max="**"),
         GROUP_MA_INTERF=SIMP(
             statut="o", typ=grma, max="**", fr=tr("Groupe de mailles de l'interface")
         ),
+        ISSF=SIMP(statut="f", typ="TXM", into=("OUI", "NON"), defaut="NON"),
         GROUP_MA_FLU_STR=SIMP(
-            statut="f", typ=grma, max="**", fr=tr("Groupe de mailles fluide-structure")
+            condition="""is_in("ISSF", ('OUI'))""",
+            statut="f",
+            typ=grma,
+            max="**",
+            fr=tr("Groupe de mailles fluide-structure"),
         ),
         GROUP_MA_FLU_SOL=SIMP(
-            statut="f", typ=grma, max="**", fr=tr("Groupe de mailles fluide-sol")
+            condition="""is_in("ISSF", ('OUI'))""",
+            statut="f",
+            typ=grma,
+            max="**",
+            fr=tr("Groupe de mailles fluide-sol"),
         ),
         GROUP_MA_SOL_SOL=SIMP(statut="f", typ=grma, max="**", fr=tr("Groupe de mailles sol-sol")),
         UNITE_IMPR_ASTER=SIMP(
@@ -272,11 +301,8 @@ CALC_MISS = MACRO(
     ),
     # si post-traitement
     b_donnees=BLOC(
-        condition="""not is_in("TYPE_RESU", ('FICHIER', 'FICHIER_TEMPS', 'TABLE_CONTROL', 'CHARGE'))""",
-        regles=(
-            ENSEMBLE("GROUP_MA_FLU_STR", "GROUP_MA_FLU_SOL"),
-            UN_PARMI("MATR_AMOR", "AMOR_REDUIT"),
-        ),
+        condition="""is_in("TYPE_RESU", ('TRAN_GENE', 'HARM_GENE', 'TABLE'))""",
+        regles=(UN_PARMI("MATR_AMOR", "AMOR_REDUIT"),),
         MACR_ELEM_DYNA=SIMP(
             statut="f", typ=macr_elem_dyna, fr=tr("Macro élément produit en amont")
         ),
@@ -285,16 +311,7 @@ CALC_MISS = MACRO(
         MATR_MASS=SIMP(statut="o", typ=matr_asse_depl_r),
         MATR_AMOR=SIMP(statut="f", typ=matr_asse_depl_r),
         AMOR_REDUIT=SIMP(statut="f", typ="R", max="**"),
-        GROUP_MA_INTERF=SIMP(
-            statut="o", typ=grma, max="**", fr=tr("Groupe de mailles de l'interface")
-        ),
-        GROUP_MA_FLU_STR=SIMP(
-            statut="f", typ=grma, max="**", fr=tr("Groupe de mailles fluide-structure")
-        ),
-        GROUP_MA_FLU_SOL=SIMP(
-            statut="f", typ=grma, max="**", fr=tr("Groupe de mailles fluide-sol")
-        ),
-        GROUP_MA_SOL_SOL=SIMP(statut="f", typ=grma, max="**", fr=tr("Groupe de mailles sol-sol")),
+        TYPE=SIMP(statut="f", typ="TXM", defaut="ASCII", into=("BINAIRE", "ASCII")),
         UNITE_IMPR_ASTER=SIMP(
             statut="f",
             typ=UnitType(),
@@ -304,192 +321,298 @@ CALC_MISS = MACRO(
         UNITE_RESU_IMPE=SIMP(
             statut="f", typ=UnitType(), inout="in", fr=tr("Unité logique des impédances à relire.")
         ),
-        UNITE_RESU_FORC=SIMP(
-            statut="f",
-            typ=UnitType(),
-            inout="in",
-            fr=tr("Unité logique des forces sismiques à relire"),
+        b_unite_resu_forc=BLOC(
+            condition="""(exists("EXCIT_FORC")) and (exists("UNITE_RESU_IMPE"))""",
+            UNITE_RESU_FORC=SIMP(
+                statut="f",
+                typ=UnitType(),
+                inout="in",
+                fr=tr("Unité logique des forces sismiques à relire"),
+            ),
+        ),
+        param_impe=BLOC(
+            condition="""not exists("UNITE_RESU_IMPE")""",
+            regles=(EXCLUS("TABLE_SOL", "MATER_SOL"), UN_PARMI("TABLE_SOL", "MATER_SOL")),
+            VERSION=SIMP(
+                statut="f",
+                typ="TXM",
+                into=("V6.7", "V6.6", "V6.5"),
+                defaut="V6.7",
+                fr=tr("Version de Miss utilisée"),
+            ),
+            TABLE_SOL=SIMP(
+                statut="f", typ=table_sdaster, fr=tr("Table des propriétés du sol stratifié")
+            ),
+            MATER_SOL=FACT(
+                statut="f",
+                fr=tr("Propriétés du sol homogène"),
+                E=SIMP(statut="o", typ="R", val_min=0.0),
+                NU=SIMP(statut="o", typ="R", val_min=-1.0, val_max=0.5),
+                RHO=SIMP(statut="o", typ="R", val_min=0.0),
+                AMOR_HYST=SIMP(statut="f", typ="R", val_min=0.0, val_max=1.0),
+            ),
+            MATER_FLUIDE=FACT(
+                condition="""is_in("ISSF", ('OUI'))""",
+                statut="f",
+                fr=tr("Propriétés du fluide (requis si ISSF='OUI')"),
+                RHO=SIMP(statut="o", typ="R", val_min=0.0),
+                CELE=SIMP(statut="o", typ="R", val_min=0.0),
+                AMOR_BETA=SIMP(statut="f", typ="R", val_min=0.0, val_max=1.0),
+                DEMI_ESPACE=SIMP(
+                    statut="f",
+                    typ="TXM",
+                    defaut="OUI",
+                    into=("OUI", "NON"),
+                    fr=tr("Demi-espace de fluide avec surface libre ou non"),
+                ),
+            ),
+            GROUP_MA_INTERF=SIMP(
+                statut="f", typ=grma, max="**", fr=tr("Groupe de mailles de l'interface")
+            ),
+            GROUP_MA_SOL_SOL=SIMP(
+                statut="f", typ=grma, max="**", fr=tr("Groupe de mailles sol-sol")
+            ),
+            GROUP_MA_FLU_STR=SIMP(
+                condition="""is_in("ISSF", ('OUI'))""",
+                statut="f",
+                typ=grma,
+                max="**",
+                fr=tr("Groupe de mailles fluide-structure"),
+            ),
+            GROUP_MA_FLU_SOL=SIMP(
+                condition="""is_in("ISSF", ('OUI'))""",
+                statut="f",
+                typ=grma,
+                max="**",
+                fr=tr("Groupe de mailles fluide-sol"),
+            ),
+            SOURCE_SOL=FACT(
+                statut="f",
+                max="**",
+                fr=tr("Source ponctuelle dans le sol"),
+                POINT=SIMP(statut="o", typ="R", min=3, max=3, fr=tr("Position de la source")),
+                DIRECTION=SIMP(statut="o", typ="R", min=3, max=3, fr=tr("Direction de la source")),
+            ),
+            SOURCE_FLUIDE=FACT(
+                statut="f",
+                max="**",
+                fr=tr("Source ponctuelle dans le fluide"),
+                POINT=SIMP(statut="o", typ="R", min=3, max=3, fr=tr("Position de la source")),
+            ),
+            PARAMETRE=FACT(
+                statut="f",
+                regles=(
+                    PRESENT_PRESENT("OFFSET_MAX", "OFFSET_NB"),
+                    UN_PARMI("FREQ_MIN", "LIST_FREQ", "FREQ_IMAG", "FREQ"),
+                    PRESENT_PRESENT("FREQ_MIN", "FREQ_MAX", "FREQ_PAS"),
+                ),
+                FREQ_MIN=SIMP(statut="f", typ="R"),
+                FREQ_MAX=SIMP(statut="f", typ="R"),
+                FREQ_PAS=SIMP(statut="f", typ="R"),
+                FREQ=SIMP(statut="f", typ="R", max="**"),
+                LIST_FREQ=SIMP(statut="f", typ=listr8_sdaster),
+                FREQ_IMAG=SIMP(statut="f", typ="R"),
+                Z0=SIMP(statut="f", typ="R", defaut=0.0),
+                TYPE=SIMP(statut="f", typ="TXM", into=("BINAIRE", "ASCII"), defaut="ASCII"),
+                ALLU=SIMP(statut="f", typ="R", defaut=0.0),
+                SURF=SIMP(statut="f", typ="TXM", into=("OUI", "NON"), defaut="NON"),
+                DREF=SIMP(statut="f", typ="R"),
+                OFFSET_MAX=SIMP(statut="f", typ="R"),
+                OFFSET_NB=SIMP(statut="f", typ="I"),
+                AUTO=SIMP(statut="f", typ="TXM", into=("OUI", "NON"), defaut="NON"),
+                b_auto=BLOC(
+                    condition="""equal_to("AUTO", 'OUI')""",
+                    regles=(ENSEMBLE("SPEC_MAX", "SPEC_NB"),),
+                    OPTION_DREF=SIMP(statut="f", typ="TXM", into=("OUI", "NON"), defaut="NON"),
+                    OPTION_RFIC=SIMP(statut="f", typ="TXM", into=("OUI", "NON"), defaut="NON"),
+                    RFIC=SIMP(statut="f", typ="R"),
+                    SPEC_MAX=SIMP(statut="f", typ="R"),
+                    SPEC_NB=SIMP(statut="f", typ="I"),
+                    COEF_OFFSET=SIMP(statut="f", typ="I", defaut=12),
+                ),
+                b_noauto=BLOC(
+                    condition="""equal_to("AUTO", 'NON')""",
+                    regles=(ENSEMBLE("SPEC_MAX", "SPEC_NB"),),
+                    ALGO=SIMP(statut="f", typ="TXM", into=("DEPL", "REGU")),
+                    RFIC=SIMP(statut="f", typ="R", defaut=0.0),
+                    SPEC_MAX=SIMP(statut="f", typ="R"),
+                    SPEC_NB=SIMP(statut="f", typ="I"),
+                ),
+            ),
         ),
     ),
     # Paramètres du calcul Miss
-    PARAMETRE=FACT(
-        statut="f",
-        regles=(
-            PRESENT_PRESENT("OFFSET_MAX", "OFFSET_NB"),
-            PRESENT_PRESENT("FREQ_MIN", "FREQ_MAX", "FREQ_PAS"),
-            UN_PARMI("FREQ_MIN", "LIST_FREQ", "FREQ_IMAG"),
-        ),
-        FREQ_MIN=SIMP(statut="f", typ="R"),
-        FREQ_MAX=SIMP(statut="f", typ="R"),
-        FREQ_PAS=SIMP(statut="f", typ="R"),
-        LIST_FREQ=SIMP(statut="f", typ="R", max="**"),
-        FREQ_IMAG=SIMP(statut="f", typ="R"),
-        Z0=SIMP(statut="f", typ="R", defaut=0.0),
-        TYPE=SIMP(statut="f", typ="TXM", into=("BINAIRE", "ASCII"), defaut="ASCII"),
+    b_issf=BLOC(
+        condition="""not is_in("TYPE_RESU", ('CHARGE'))""",
         ISSF=SIMP(statut="f", typ="TXM", into=("OUI", "NON"), defaut="NON"),
-        ALLU=SIMP(statut="f", typ="R", defaut=0.0),
-        SURF=SIMP(statut="f", typ="TXM", into=("OUI", "NON"), defaut="NON"),
-        DREF=SIMP(statut="f", typ="R"),
-        OFFSET_MAX=SIMP(statut="f", typ="R"),
-        OFFSET_NB=SIMP(statut="f", typ="I"),
-        AUTO=SIMP(statut="f", typ="TXM", into=("OUI", "NON"), defaut="NON"),
-        b_auto=BLOC(
-            condition="""equal_to("AUTO", 'OUI')""",
-            regles=(ENSEMBLE("SPEC_MAX", "SPEC_NB"),),
-            OPTION_DREF=SIMP(statut="f", typ="TXM", into=("OUI", "NON"), defaut="NON"),
-            OPTION_RFIC=SIMP(statut="f", typ="TXM", into=("OUI", "NON"), defaut="NON"),
-            RFIC=SIMP(statut="f", typ="R"),
-            SPEC_MAX=SIMP(statut="f", typ="R"),
-            SPEC_NB=SIMP(statut="f", typ="I"),
-            COEF_OFFSET=SIMP(statut="f", typ="I", defaut=12),
-        ),
-        b_noauto=BLOC(
-            condition="""equal_to("AUTO", 'NON')""",
-            regles=(ENSEMBLE("SPEC_MAX", "SPEC_NB"),),
-            ALGO=SIMP(statut="f", typ="TXM", into=("DEPL", "REGU")),
-            RFIC=SIMP(statut="f", typ="R", defaut=0.0),
-            SPEC_MAX=SIMP(statut="f", typ="R"),
-            SPEC_NB=SIMP(statut="f", typ="I"),
+    ),
+    # Paramètres du calcul des impédances
+    param_impe=BLOC(
+        condition="""equal_to("TYPE_RESU", ('FICHIER','TABLE_CONTROL','FICHIER_TEMPS','TABLE'))""",
+        PARAMETRE=FACT(
+            statut="f",
+            regles=(
+                PRESENT_PRESENT("OFFSET_MAX", "OFFSET_NB"),
+                UN_PARMI("FREQ_MIN", "LIST_FREQ", "FREQ_IMAG", "FREQ"),
+                PRESENT_PRESENT("FREQ_MIN", "FREQ_MAX", "FREQ_PAS"),
+            ),
+            FREQ_MIN=SIMP(statut="f", typ="R"),
+            FREQ_MAX=SIMP(statut="f", typ="R"),
+            FREQ_PAS=SIMP(statut="f", typ="R"),
+            FREQ=SIMP(statut="f", typ="R", max="**"),
+            LIST_FREQ=SIMP(statut="f", typ=listr8_sdaster),
+            FREQ_IMAG=SIMP(statut="f", typ="R"),
+            Z0=SIMP(statut="f", typ="R", defaut=0.0),
+            TYPE=SIMP(statut="f", typ="TXM", into=("BINAIRE", "ASCII"), defaut="ASCII"),
+            ALLU=SIMP(statut="f", typ="R", defaut=0.0),
+            SURF=SIMP(statut="f", typ="TXM", into=("OUI", "NON"), defaut="NON"),
+            DREF=SIMP(statut="f", typ="R"),
+            OFFSET_MAX=SIMP(statut="f", typ="R"),
+            OFFSET_NB=SIMP(statut="f", typ="I"),
+            AUTO=SIMP(statut="f", typ="TXM", into=("OUI", "NON"), defaut="NON"),
+            b_auto=BLOC(
+                condition="""equal_to("AUTO", 'OUI')""",
+                regles=(ENSEMBLE("SPEC_MAX", "SPEC_NB"),),
+                OPTION_DREF=SIMP(statut="f", typ="TXM", into=("OUI", "NON"), defaut="NON"),
+                OPTION_RFIC=SIMP(statut="f", typ="TXM", into=("OUI", "NON"), defaut="NON"),
+                RFIC=SIMP(statut="f", typ="R"),
+                SPEC_MAX=SIMP(statut="f", typ="R"),
+                SPEC_NB=SIMP(statut="f", typ="I"),
+                COEF_OFFSET=SIMP(statut="f", typ="I", defaut=12),
+            ),
+            b_noauto=BLOC(
+                condition="""equal_to("AUTO", 'NON')""",
+                regles=(ENSEMBLE("SPEC_MAX", "SPEC_NB"),),
+                ALGO=SIMP(statut="f", typ="TXM", into=("DEPL", "REGU")),
+                RFIC=SIMP(statut="f", typ="R", defaut=0.0),
+                SPEC_MAX=SIMP(statut="f", typ="R"),
+                SPEC_NB=SIMP(statut="f", typ="I"),
+            ),
         ),
     ),
-    # Post-traitement type 1 - tran_gene
-    b_post_tran_gene=BLOC(
-        condition="""equal_to("TYPE_RESU", 'TRAN_GENE')""",
-        regles=(ENSEMBLE("INST_FIN", "PAS_INST"),),
-        MODELE=SIMP(statut="o", typ=(modele_sdaster)),
-        GROUP_NO=SIMP(statut="f", typ=grno, max="**"),
-        INST_FIN=SIMP(statut="f", typ="R", fr=tr("Instant final du calcul")),
-        PAS_INST=SIMP(statut="f", typ="R", fr=tr("Pas de temps du calcul")),
-        b_post_tran_gene_temp=BLOC(
-            condition="""exists("INST_FIN")""",
-            regles=(
-                AU_MOINS_UN("ACCE_X", "ACCE_Y", "ACCE_Z", "DEPL_X", "DEPL_Y", "DEPL_Z"),
-                PRESENT_ABSENT("ACCE_X", "DEPL_X", "DEPL_Y", "DEPL_Z"),
-                PRESENT_ABSENT("ACCE_Y", "DEPL_X", "DEPL_Y", "DEPL_Z"),
-                PRESENT_ABSENT("ACCE_Z", "DEPL_X", "DEPL_Y", "DEPL_Z"),
-            ),
-            ACCE_X=SIMP(statut="f", typ=fonction_sdaster),
-            ACCE_Y=SIMP(statut="f", typ=fonction_sdaster),
-            ACCE_Z=SIMP(statut="f", typ=fonction_sdaster),
-            DEPL_X=SIMP(statut="f", typ=fonction_sdaster),
-            DEPL_Y=SIMP(statut="f", typ=fonction_sdaster),
-            DEPL_Z=SIMP(statut="f", typ=fonction_sdaster),
-        ),
-        b_post_tran_gene_frreq=BLOC(
-            condition="""not exists("INST_FIN")""",
-            regles=(
-                AU_MOINS_UN("ACCE_X", "ACCE_Y", "ACCE_Z", "DEPL_X", "DEPL_Y", "DEPL_Z"),
-                PRESENT_ABSENT("ACCE_X", "DEPL_X", "DEPL_Y", "DEPL_Z"),
-                PRESENT_ABSENT("ACCE_Y", "DEPL_X", "DEPL_Y", "DEPL_Z"),
-                PRESENT_ABSENT("ACCE_Z", "DEPL_X", "DEPL_Y", "DEPL_Z"),
-            ),
-            ACCE_X=SIMP(statut="f", typ=fonction_c),
-            ACCE_Y=SIMP(statut="f", typ=fonction_c),
-            ACCE_Z=SIMP(statut="f", typ=fonction_c),
-            DEPL_X=SIMP(statut="f", typ=fonction_c),
-            DEPL_Y=SIMP(statut="f", typ=fonction_c),
-            DEPL_Z=SIMP(statut="f", typ=fonction_c),
-        ),
-    ),
-    # Post-traitement type 1 - harm_gene
     b_post_harm_gene=BLOC(
-        condition="""equal_to("TYPE_RESU", 'HARM_GENE')""",
-        regles=(PRESENT_ABSENT("EXCIT_HARMO", "INST_FIN"), ENSEMBLE("INST_FIN", "PAS_INST")),
+        condition="""is_in("TYPE_RESU", ('HARM_GENE', 'TRAN_GENE'))""",
+        regles=(
+            UN_PARMI("EXCIT_GENE", "EXCIT_FORC", "EXCIT_MONO"),
+            # ENSEMBLE("INST_FIN", "PAS_INST"),
+        ),
         MODELE=SIMP(statut="o", typ=(modele_sdaster)),
-        GROUP_NO=SIMP(statut="f", typ=grno, max="**"),
-        INST_FIN=SIMP(statut="f", typ="R", fr=tr("Instant final du calcul")),
-        PAS_INST=SIMP(statut="f", typ="R", fr=tr("Pas de temps du calcul")),
-        # identique à EXCIT de DYNA_LINE_HARM au type attendu pour VECT_ASSE près
-        EXCIT_HARMO=FACT(
+        # b_bloc_type_excit=BLOC(
+        #     condition="""not exists("EXCIT_GENE")""",
+        #     TYPE_EXCIT=SIMP(statut="o", typ="TXM", into=("INST", "FREQ")),
+        # ),
+        TYPE_EXCIT=SIMP(statut="o", typ="TXM", into=("INST", "FREQ")),
+        bloc_interpol=BLOC(
+            condition="""(equal_to("TYPE_EXCIT", 'INST'))""",
+            INTERPOL=SIMP(statut="f", typ="TXM", into=("OUI", "NON"), defaut="NON"),
+        ),
+        bloc_para_interpol=BLOC(
+            condition="""(equal_to("TYPE_EXCIT", 'INST')) and (equal_to("INTERPOL", 'OUI'))""",
+            PAS_INST=SIMP(statut="o", typ="R"),
+            INST_FIN=SIMP(statut="o", typ="R"),
+        ),
+        b_excitm_inst=BLOC(
+            condition="""(equal_to("TYPE_EXCIT", 'INST'))""",
+            EXCIT_MONO=FACT(
+                statut="f",
+                max="**",
+                DIRECTION=SIMP(statut="o", typ="TXM", into=("X", "Y", "Z")),
+                ACCE=SIMP(statut="f", typ=(fonction_sdaster, formule)),
+            ),
+        ),
+        b_excitm_freq=BLOC(
+            condition="""(equal_to("TYPE_EXCIT", 'FREQ'))""",
+            EXCIT_MONO=FACT(
+                statut="f",
+                max="**",
+                DIRECTION=SIMP(statut="o", typ="TXM", into=("X", "Y", "Z")),
+                ACCE=SIMP(statut="f", typ=(fonction_c, formule_c)),
+            ),
+        ),
+        EXCIT_GENE=FACT(
             statut="f",
             max="**",
             regles=(
                 UN_PARMI("VECT_ASSE", "CHARGE"),
                 UN_PARMI("FONC_MULT", "FONC_MULT_C", "COEF_MULT", "COEF_MULT_C"),
             ),
-            VECT_ASSE=SIMP(statut="f", typ=cham_no_sdaster),
-            CHARGE=SIMP(statut="f", typ=char_meca),
-            FONC_MULT_C=SIMP(statut="f", typ=(fonction_c, formule_c)),
-            COEF_MULT_C=SIMP(statut="f", typ="C"),
+            CHARGE=SIMP(statut="f", typ=(char_meca, char_cine_meca)),
+            VECT_ASSE=SIMP(statut="o", typ=cham_no_sdaster),
             FONC_MULT=SIMP(statut="f", typ=(fonction_sdaster, nappe_sdaster, formule)),
             COEF_MULT=SIMP(statut="f", typ="R"),
+            FONC_MULT_C=SIMP(statut="f", typ=(fonction_c, formule_c)),
+            COEF_MULT_C=SIMP(statut="f", typ="C"),
             PHAS_DEG=SIMP(statut="f", typ="R", defaut=0.0),
             PUIS_PULS=SIMP(statut="f", typ="I", defaut=0),
         ),
-        b_post_harm_gene_temp=BLOC(
-            condition="""not exists("EXCIT_HARMO") and exists("INST_FIN")""",
-            regles=(
-                AU_MOINS_UN("ACCE_X", "ACCE_Y", "ACCE_Z", "DEPL_X", "DEPL_Y", "DEPL_Z"),
-                PRESENT_ABSENT("ACCE_X", "DEPL_X", "DEPL_Y", "DEPL_Z"),
-                PRESENT_ABSENT("ACCE_Y", "DEPL_X", "DEPL_Y", "DEPL_Z"),
-                PRESENT_ABSENT("ACCE_Z", "DEPL_X", "DEPL_Y", "DEPL_Z"),
+        b_excitf_inst=BLOC(
+            condition="""(equal_to("TYPE_EXCIT", 'INST'))""",
+            EXCIT_FORC=FACT(
+                statut="f",
+                max=1,
+                regles=(
+                    AU_MOINS_UN("ACCE_X", "ACCE_Y", "ACCE_Z", "DEPL_X", "DEPL_Y", "DEPL_Z"),
+                    PRESENT_ABSENT("ACCE_X", "DEPL_X", "DEPL_Y", "DEPL_Z"),
+                    PRESENT_ABSENT("ACCE_Y", "DEPL_X", "DEPL_Y", "DEPL_Z"),
+                    PRESENT_ABSENT("ACCE_Z", "DEPL_X", "DEPL_Y", "DEPL_Z"),
+                ),
+                ACCE_X=SIMP(statut="f", typ=fonction_sdaster),
+                ACCE_Y=SIMP(statut="f", typ=fonction_sdaster),
+                ACCE_Z=SIMP(statut="f", typ=fonction_sdaster),
+                DEPL_X=SIMP(statut="f", typ=fonction_sdaster),
+                DEPL_Y=SIMP(statut="f", typ=fonction_sdaster),
+                DEPL_Z=SIMP(statut="f", typ=fonction_sdaster),
+                GROUP_NO=SIMP(statut="f", typ=grno, max="**"),
             ),
-            ACCE_X=SIMP(statut="f", typ=fonction_sdaster),
-            ACCE_Y=SIMP(statut="f", typ=fonction_sdaster),
-            ACCE_Z=SIMP(statut="f", typ=fonction_sdaster),
-            DEPL_X=SIMP(statut="f", typ=fonction_sdaster),
-            DEPL_Y=SIMP(statut="f", typ=fonction_sdaster),
-            DEPL_Z=SIMP(statut="f", typ=fonction_sdaster),
         ),
-        b_post_harm_gene_freq=BLOC(
-            condition="""not exists("EXCIT_HARMO") and not exists("INST_FIN")""",
-            regles=(
-                AU_MOINS_UN("ACCE_X", "ACCE_Y", "ACCE_Z", "DEPL_X", "DEPL_Y", "DEPL_Z"),
-                PRESENT_ABSENT("ACCE_X", "DEPL_X", "DEPL_Y", "DEPL_Z"),
-                PRESENT_ABSENT("ACCE_Y", "DEPL_X", "DEPL_Y", "DEPL_Z"),
-                PRESENT_ABSENT("ACCE_Z", "DEPL_X", "DEPL_Y", "DEPL_Z"),
+        b_excitf_freq=BLOC(
+            condition="""(equal_to("TYPE_EXCIT", 'FREQ'))""",
+            EXCIT_FORC=FACT(
+                statut="f",
+                max=1,
+                regles=(
+                    AU_MOINS_UN("ACCE_X", "ACCE_Y", "ACCE_Z", "DEPL_X", "DEPL_Y", "DEPL_Z"),
+                    PRESENT_ABSENT("ACCE_X", "DEPL_X", "DEPL_Y", "DEPL_Z"),
+                    PRESENT_ABSENT("ACCE_Y", "DEPL_X", "DEPL_Y", "DEPL_Z"),
+                    PRESENT_ABSENT("ACCE_Z", "DEPL_X", "DEPL_Y", "DEPL_Z"),
+                ),
+                ACCE_X=SIMP(statut="f", typ=fonction_c),
+                ACCE_Y=SIMP(statut="f", typ=fonction_c),
+                ACCE_Z=SIMP(statut="f", typ=fonction_c),
+                DEPL_X=SIMP(statut="f", typ=fonction_c),
+                DEPL_Y=SIMP(statut="f", typ=fonction_c),
+                DEPL_Z=SIMP(statut="f", typ=fonction_c),
+                GROUP_NO=SIMP(statut="f", typ=grno, max="**"),
             ),
-            ACCE_X=SIMP(statut="f", typ=fonction_c),
-            ACCE_Y=SIMP(statut="f", typ=fonction_c),
-            ACCE_Z=SIMP(statut="f", typ=fonction_c),
-            DEPL_X=SIMP(statut="f", typ=fonction_c),
-            DEPL_Y=SIMP(statut="f", typ=fonction_c),
-            DEPL_Z=SIMP(statut="f", typ=fonction_c),
+        ),
+        bloc_list_freq_calc=BLOC(
+            condition="""equal_to("TYPE_RESU", 'HARM_GENE')""",
+            LIST_FREQ_CALC=FACT(
+                statut="o",
+                max=1,
+                AUTO=SIMP(statut="f", typ="TXM", into=("OUI", "NON"), defaut="OUI"),
+                bloc_nonauto_freq=BLOC(
+                    condition="""(equal_to("AUTO", 'NON'))""",
+                    regles=(
+                        UN_PARMI("FREQ_MIN", "LIST_FREQ", "FREQ"),
+                        PRESENT_PRESENT("FREQ_MIN", "FREQ_MAX", "FREQ_PAS"),
+                    ),
+                    FREQ_MIN=SIMP(statut="f", typ="R"),
+                    FREQ_MAX=SIMP(statut="f", typ="R"),
+                    FREQ_PAS=SIMP(statut="f", typ="R"),
+                    FREQ=SIMP(statut="f", typ="R", max="**"),
+                    LIST_FREQ=SIMP(statut="f", typ=listr8_sdaster),
+                ),
+            ),
         ),
     ),
-    # Post-traitement type 2
     b_post_table=BLOC(
         condition="""equal_to("TYPE_RESU", 'TABLE')""",
-        regles=(ENSEMBLE("INST_FIN", "PAS_INST"),),
-        MODELE=SIMP(statut="o", typ=(modele_sdaster)),
+        regles=(ENSEMBLE("INST_FIN", "PAS_INST"), ENSEMBLE("NORME", "AMOR_SPEC_OSCI")),
         GROUP_NO=SIMP(
             statut="o", typ=grno, max="**", fr=tr("Liste des groupes de noeud de post-traitement")
         ),
-        INST_FIN=SIMP(statut="f", typ="R", fr=tr("Instant final du calcul")),
-        PAS_INST=SIMP(statut="f", typ="R", fr=tr("Pas de temps du calcul")),
-        NORME=SIMP(statut="o", typ="R", fr=tr("Valeur de la norme du spectre d'oscillateur")),
-        AMOR_SPEC_OSCI=SIMP(
-            statut="o", typ="R", max="**", fr=tr("Amortissement du spectre d'oscillateur")
-        ),
-        LIST_FREQ_SPEC_OSCI=SIMP(
-            statut="f",
-            typ=listr8_sdaster,
-            fr=tr("Fréquences utilisées pour le calcul du spectre d'oscillateur"),
-        ),
-        b_post_table_temp=BLOC(
-            condition="""exists("INST_FIN")""",
-            regles=(AU_MOINS_UN("ACCE_X", "ACCE_Y", "ACCE_Z"),),
-            ACCE_X=SIMP(statut="f", typ=fonction_sdaster),
-            ACCE_Y=SIMP(statut="f", typ=fonction_sdaster),
-            ACCE_Z=SIMP(statut="f", typ=fonction_sdaster),
-        ),
-        b_post_table_freq=BLOC(
-            condition="""not exists("INST_FIN")""",
-            regles=(AU_MOINS_UN("ACCE_X", "ACCE_Y", "ACCE_Z"),),
-            ACCE_X=SIMP(statut="f", typ=fonction_c),
-            ACCE_Y=SIMP(statut="f", typ=fonction_c),
-            ACCE_Z=SIMP(statut="f", typ=fonction_c),
-        ),
-    ),
-    # Post-traitement type 3 - points de controle
-    b_post_control=BLOC(
-        condition="""equal_to("TYPE_RESU", 'TABLE_CONTROL')""",
-        regles=(ENSEMBLE("INST_FIN", "PAS_INST"), ENSEMBLE("NORME", "AMOR_SPEC_OSCI")),
-        GROUP_MA_CONTROL=SIMP(
-            statut="f", typ=grma, max="**", fr=tr("Groupe de mailles des points de contrôle")
-        ),
-        INST_FIN=SIMP(statut="f", typ="R", fr=tr("Instant final du calcul")),
-        PAS_INST=SIMP(statut="f", typ="R", fr=tr("Pas de temps du calcul")),
+        MODELE=SIMP(statut="o", typ=(modele_sdaster)),
         NORME=SIMP(statut="f", typ="R", fr=tr("Valeur de la norme du spectre d'oscillateur")),
         AMOR_SPEC_OSCI=SIMP(
             statut="f", typ="R", max="**", fr=tr("Amortissement du spectre d'oscillateur")
@@ -500,17 +623,83 @@ CALC_MISS = MACRO(
             fr=tr("Fréquences utilisées pour le calcul du spectre d'oscillateur"),
         ),
         TOUT_CHAM=SIMP(statut="f", typ="TXM", into=("OUI",)),
-        b_post_controle_temp=BLOC(
-            condition="""exists("INST_FIN")""",
-            ACCE_X=SIMP(statut="f", typ=fonction_sdaster),
-            ACCE_Y=SIMP(statut="f", typ=fonction_sdaster),
-            ACCE_Z=SIMP(statut="f", typ=fonction_sdaster),
+        TYPE_EXCIT=SIMP(statut="o", typ="TXM", into=("INST", "FREQ")),
+        bloc_interpoltc=BLOC(
+            condition="""(equal_to("TYPE_EXCIT", 'INST'))""",
+            INTERPOL=SIMP(statut="f", typ="TXM", into=("OUI", "NON"), defaut="NON"),
         ),
-        b_post_controle_freq=BLOC(
-            condition="""not exists("INST_FIN")""",
-            ACCE_X=SIMP(statut="f", typ=fonction_c),
-            ACCE_Y=SIMP(statut="f", typ=fonction_c),
-            ACCE_Z=SIMP(statut="f", typ=fonction_c),
+        bloc_para_interpoltc=BLOC(
+            condition="""(equal_to("TYPE_EXCIT", 'INST')) and (equal_to("INTERPOL", 'OUI'))""",
+            PAS_INST=SIMP(statut="o", typ="R"),
+            INST_FIN=SIMP(statut="o", typ="R"),
+        ),
+        b_excitf_insttc=BLOC(
+            condition="""(equal_to("TYPE_EXCIT", 'INST'))""",
+            EXCIT_FORC=FACT(
+                statut="f",
+                max=1,
+                ACCE_X=SIMP(statut="f", typ=fonction_sdaster),
+                ACCE_Y=SIMP(statut="f", typ=fonction_sdaster),
+                ACCE_Z=SIMP(statut="f", typ=fonction_sdaster),
+            ),
+        ),
+        b_excitf_freqtc=BLOC(
+            condition="""(equal_to("TYPE_EXCIT", 'FREQ'))""",
+            EXCIT_FORC=FACT(
+                statut="f",
+                max=1,
+                ACCE_X=SIMP(statut="f", typ=fonction_c),
+                ACCE_Y=SIMP(statut="f", typ=fonction_c),
+                ACCE_Z=SIMP(statut="f", typ=fonction_c),
+            ),
+        ),
+    ),
+    # Post-traitement type 3 - points de controle
+    b_post_control=BLOC(
+        condition="""equal_to("TYPE_RESU", 'TABLE_CONTROL')""",
+        regles=(ENSEMBLE("INST_FIN", "PAS_INST"), ENSEMBLE("NORME", "AMOR_SPEC_OSCI")),
+        GROUP_MA_CONTROL=SIMP(
+            statut="f", typ=grma, max="**", fr=tr("Groupe de mailles des points de contrôle")
+        ),
+        NORME=SIMP(statut="f", typ="R", fr=tr("Valeur de la norme du spectre d'oscillateur")),
+        AMOR_SPEC_OSCI=SIMP(
+            statut="f", typ="R", max="**", fr=tr("Amortissement du spectre d'oscillateur")
+        ),
+        LIST_FREQ_SPEC_OSCI=SIMP(
+            statut="f",
+            typ=listr8_sdaster,
+            fr=tr("Fréquences utilisées pour le calcul du spectre d'oscillateur"),
+        ),
+        TOUT_CHAM=SIMP(statut="f", typ="TXM", into=("OUI",)),
+        TYPE_EXCIT=SIMP(statut="o", typ="TXM", into=("INST", "FREQ")),
+        bloc_interpoltc=BLOC(
+            condition="""(equal_to("TYPE_EXCIT", 'INST'))""",
+            INTERPOL=SIMP(statut="f", typ="TXM", into=("OUI", "NON"), defaut="NON"),
+        ),
+        bloc_para_interpoltc=BLOC(
+            condition="""(equal_to("TYPE_EXCIT", 'INST')) and (equal_to("INTERPOL", 'OUI'))""",
+            PAS_INST=SIMP(statut="o", typ="R"),
+            INST_FIN=SIMP(statut="o", typ="R"),
+        ),
+        b_excitf_insttc=BLOC(
+            condition="""(equal_to("TYPE_EXCIT", 'INST'))""",
+            EXCIT_FORC=FACT(
+                statut="f",
+                max=1,
+                ACCE_X=SIMP(statut="f", typ=fonction_sdaster),
+                ACCE_Y=SIMP(statut="f", typ=fonction_sdaster),
+                ACCE_Z=SIMP(statut="f", typ=fonction_sdaster),
+            ),
+        ),
+        b_excitf_freqtc=BLOC(
+            condition="""(equal_to("TYPE_EXCIT", 'FREQ'))""",
+            EXCIT_FORC=FACT(
+                statut="f",
+                max=1,
+                ACCE_X=SIMP(statut="f", typ=fonction_c),
+                ACCE_Y=SIMP(statut="f", typ=fonction_c),
+                ACCE_Z=SIMP(statut="f", typ=fonction_c),
+            ),
         ),
     ),
     # post-traitement : creation d'une charge sismique temporelle
