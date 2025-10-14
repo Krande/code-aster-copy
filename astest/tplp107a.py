@@ -21,18 +21,18 @@ from code_aster.Commands import FORMULE
 
 
 def Solu_Manu(Lambda):
-
     try:
         # Import du module de calcul symbolique Sympy
-        import sympy
+        from code_aster.Utilities import sympy
 
+        # access __version__ to check availability
+        sympy.__version__
         sympy_available = True
 
     except ImportError:
         sympy_available = False
 
     if sympy_available:
-
         X, Y = sympy.symbols("X Y")
 
         # Definition de la solution manufacturee
@@ -51,7 +51,6 @@ def Solu_Manu(Lambda):
 
     # Si importation de sympy impossible
     else:
-
         # ================================================================================================
         # Definition des formules Aster
         # ================================================================================================

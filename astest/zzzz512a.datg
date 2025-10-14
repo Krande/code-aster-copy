@@ -1,4 +1,4 @@
-import sympy
+from code_aster.Utilities import sympy
 from sympy import *
 
 init_printing(use_unicode=True)

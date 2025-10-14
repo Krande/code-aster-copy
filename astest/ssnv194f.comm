@@ -25,9 +25,6 @@ DEBUT(CODE="OUI", DEBUG=_F(SDVERI="NON"), IGNORE_ALARM=("COMPOR4_62"))
 
 # IGNORE_ALARM='COMPOR4_62' car pour RUNGE_KUTTA, RESI_GLOB_RELA=1.E-4 suffit pour une bonne precision
 
-from numpy.linalg import norm
-from numpy import *
-
 TEMP = 183.0
 # TEMP=25+273
 if TEMP == 153:

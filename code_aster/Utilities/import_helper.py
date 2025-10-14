@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -18,14 +18,16 @@
 # --------------------------------------------------------------------
 
 """
-This module gives wrapper objects to use PETSc and medcoupling as optional modules.
+This module gives wrapper objects to use PETSc, medcoupling and sympy as optional modules.
 The modules are actually imported at the first use.
+To force the availability just access to an attribute (``__version__`` for example).
 
-Please *always* import PETSc or medcoupling using this wrapper rather than directly
-by doing: ``from ..Utilities import PETSc`` or ``from ..Utilities import medcoupling``.
+Please *always* these mdoules using these wrappers rather than directly
+by doing, for example for PETSc: ``from ..Utilities import PETSc``...
 """
 
 # aslint: disable=C4008
+from .ExecutionParameter import disable_fpe
 
 
 class _PETScMeta(type):
@@ -104,3 +106,23 @@ class medcoupling(metaclass=_medcouplingMeta):
 
 class ParaMEDMEM(metaclass=_ParaMEDMEMMeta):
     """Wrapper to ParaMEDMEM"""
+
+
+class _sympyMeta(type):
+    """Meta class for sympy module wrapping."""
+
+    _init = False
+    _mod = None
+
+    def __getattr__(cls, attr):
+        if not cls._init:
+            with disable_fpe():
+                import sympy as origin
+
+            cls._init = True
+            cls._mod = origin
+        return getattr(cls._mod, attr)
+
+
+class sympy(metaclass=_sympyMeta):
+    """Wrapper to sympy"""

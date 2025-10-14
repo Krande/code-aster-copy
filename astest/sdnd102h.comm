@@ -21,6 +21,7 @@ import os
 import os.path as osp
 import numpy as np
 from math import *
+
 from code_aster.Commands import *
 from code_aster import CA
 
@@ -359,7 +360,8 @@ try:
     ax.set_ylabel("Effort impact [N]")
     ax.legend(loc=3)
     savedir = "" or os.getcwd()
-    plt.savefig(osp.join(savedir, "sdnd102h.png"))
+    with CA.disable_fpe():
+        plt.savefig(osp.join(savedir, "sdnd102h.png"))
     plt.close()
 
 except ImportError:

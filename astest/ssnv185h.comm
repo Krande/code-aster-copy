@@ -19,8 +19,6 @@
 
 DEBUT(CODE="OUI", DEBUG=_F(SDVERI="OUI"))
 
-import numpy, math
-
 # MODELISATION H : X-FEM INCLINEE - TRACTION (FACE SUP)
 
 # ---------------------------------------------------------
@@ -192,7 +190,6 @@ SIF = [None] * (nbc + 1)
 BETA_RAD = FORMULE(VALE="BETA*pi/180", NOM_PARA="BETA")
 
 for i in range(0, nbc):
-
     RI[i] = RI[i] * A * cos(ALPHA)
     RS[i] = RS[i] * A * cos(ALPHA)
 

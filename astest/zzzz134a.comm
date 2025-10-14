@@ -41,10 +41,9 @@ xg_hexa8 = (1.0 / np.sqrt(3.0)) * rc_hexa8
 w_hexa8 = np.ones((8))
 
 try:
-    import sympy
-    from sympy import diff, symbols
+    from code_aster.Utilities import sympy
 
-    a1, a2, a3 = symbols("a1 a2 a3")
+    a1, a2, a3 = sympy.symbols("a1 a2 a3")
 
     def N_hexa8_s():
         """
@@ -63,7 +62,10 @@ try:
         HEXA8 symbolic derivatives shape functions
         """
         N = N_hexa8_s()
-        return [[diff(N[i], a1), diff(N[i], a2), diff(N[i], a3)] for i in range(rc_hexa8.shape[0])]
+        return [
+            [sympy.diff(N[i], a1), sympy.diff(N[i], a2), sympy.diff(N[i], a3)]
+            for i in range(rc_hexa8.shape[0])
+        ]
 
     def dN_hexa8(a):
         """

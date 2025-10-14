@@ -66,7 +66,7 @@ test.assertAlmostEqual(fsin(pi / 2.0), -1.0, msg="fsin(pi/2)")
 # check Function.abs()
 fabs = fsin.abs()
 arrabs = fabs.getValuesAsArray()
-test.assertTrue(np.alltrue(arrabs[:, 1] >= 0.0), msg="fsin: abs values")
+test.assertTrue(np.all(arrabs[:, 1] >= 0.0), msg="fsin: abs values")
 test.assertAlmostEqual(fabs(pi / 2.0), 1.0, msg="fabs(pi/2)")
 
 values = fsin.getValuesAsArray()
