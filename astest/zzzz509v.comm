@@ -1,0 +1,114 @@
+# coding=utf-8
+# --------------------------------------------------------------------
+# Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
+# This file is part of code_aster.
+#
+# code_aster is free software: you can redistribute it and/or modify
+# it under the terms of the GNU General Public License as published by
+# the Free Software Foundation, either version 3 of the License, or
+# (at your option) any later version.
+#
+# code_aster is distributed in the hope that it will be useful,
+# but WITHOUT ANY WARRANTY; without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+# GNU General Public License for more details.
+#
+# You should have received a copy of the GNU General Public License
+# along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
+# --------------------------------------------------------------------
+
+import os.path as osp
+
+from code_aster.Commands import *
+from code_aster import CA
+from code_aster.Utilities import SharedTmpdir, petscInitialize
+
+
+DEBUT(CODE="OUI", ERREUR=_F(ALARME="ALARME"), DEBUG=_F(SDVERI="NON"), IGNORE_ALARM=("QUALITY1_2"))
+
+test = CA.TestCase()
+
+petscInitialize("-log_view  ")
+
+# ......................................................................
+# MODELISATION V : Check automatic time stepper for RASPEN
+# ......................................................................
+
+# HPC params
+size = CA.MPI.COMM_WORLD.Get_size()
+rank = CA.MPI.COMM_WORLD.Get_rank()
+
+mult = 1
+MA = CA.ParallelMesh.buildRectangle(lx=10, ly=1, nx=3 * mult, ny=1 * mult)
+
+MA = MA.refine(4)
+MA = MA.convertToQuadratic()
+
+MA = MODI_MAILLAGE(reuse=MA, MAILLAGE=MA, ORIE_PEAU=_F(GROUP_MA_PEAU=("LEFT", "RIGHT")), INFO=2)
+
+
+MO = AFFE_MODELE(MAILLAGE=MA, AFFE=_F(MODELISATION="D_PLAN_SI", PHENOMENE="MECANIQUE", TOUT="OUI"))
+
+
+ACIER = DEFI_MATERIAU(ELAS=_F(E=195000.0, NU=0.3), ECRO_LINE=_F(D_SIGM_EPSI=1930.0, SY=181.0))
+
+CM = AFFE_MATERIAU(MAILLAGE=MA, AFFE=_F(TOUT="OUI", MATER=ACIER))
+
+
+CISAIL = AFFE_CHAR_MECA(MODELE=MO, PRES_REP=(_F(GROUP_MA="LEFT", CISA_2D=-6.0),))
+
+
+LIAISON = AFFE_CHAR_CINE(MODELE=MO, MECA_IMPO=(_F(GROUP_MA="RIGHT", DX=0.0, DY=0.0, DZ=0.0),))
+
+RAMPE = DEFI_FONCTION(NOM_PARA="INST", VALE=(0, 0, 1, 1))
+
+L_INST = DEFI_LIST_REEL(DEBUT=0.0, INTERVALLE=(_F(JUSQU_A=1.0, NOMBRE=3),))
+
+DEFLIST = DEFI_LIST_INST(
+    METHODE="MANUEL", DEFI_LIST=_F(LIST_INST=L_INST), ECHEC=_F(SUBD_PAS=10), MODELE=MO
+)
+
+blr = 0
+internalRASPENOpts = (
+    "-raspen_with_substructuring -sksp_ksp_rtol 1.e-12 -sksp_ksp_atol 1.e-12 -sksp_ksp_max_it 100 -sksp_ksp_type gmres -sksp_ksp_monitor_true_residual "
+    + f"-sksp_pc_asm_overlap 1 -sksp_sub_ksp_type preonly -sksp_pc_type asm -sksp_pc_asm_type basic -sksp_sub_pc_type lu -sksp_sub_pc_factor_mat_solver_type mumps -sksp_sub_pc_factor_mat_mumps_icntl_35 {1 if blr else 0} -sksp_sub_pc_factor_mat_mumps_cntl_7 {blr} "
+)
+
+myOptions = (
+    internalRASPENOpts
+    # local snesp
+    + "-prefix_push lsnes_ "
+    + "-snes_monitor -snes_converged_reason -snes_linesearch_type basic -snes_rtol 1.e-6 -snes_stol 1.e-20 -snes_atol 1.e-20 -snes_max_it 10 -snes_converged_maxits "
+    + "-ksp_type preonly -pc_type lu -pc_factor_mat_solver_type mumps "
+    + "-prefix_pop "
+    # global snes
+    + "-prefix_push gsnes_  "
+    + "-snes_linesearch_type basic  -snes_max_it 6 -snes_monitor  "
+    + "-ksp_type preonly -ksp_monitor -ksp_rtol 1.e-6 -ksp_atol 1.e-12 "
+    + "-prefix_pop  "
+)
+resu = MECA_NON_LINE(
+    MODELE=MO,
+    CHAM_MATER=CM,
+    EXCIT=(_F(CHARGE=LIAISON), _F(CHARGE=CISAIL, FONC_MULT=RAMPE)),
+    COMPORTEMENT=_F(RELATION="VMIS_ISOT_LINE", DEFORMATION="GDEF_LOG"),
+    INCREMENT=_F(LIST_INST=DEFLIST),
+    CONVERGENCE=_F(ITER_GLOB_MAXI=10, RESI_GLOB_RELA=1.0e-5),
+    METHODE="RASPEN",
+    SOLVEUR=_F(METHODE="PETSC", OPTION_PETSC=myOptions),
+)
+
+last_index = resu.getNumberOfIndexes() - 1
+
+with SharedTmpdir("foo") as tmpdir:
+    resu.getField("VARI_ELGA", last_index).toSimpleFieldOnNodes().restrict(
+        "V1"
+    ).toFieldOnNodes().printMedFile(osp.join(tmpdir.path, "post.resi.med"), local=False)
+
+s = resu.getField("DEPL", last_index)
+
+test = CA.TestCase()
+
+test.assertAlmostEqual(s.norm("NORM_2"), 8.5515, places=2)
+
+FIN()
