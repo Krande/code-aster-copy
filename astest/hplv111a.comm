@@ -17,11 +17,9 @@
 # along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 # --------------------------------------------------------------------
 
-import os
 import json
 import tempfile
 import os.path as osp
-from math import pi
 
 from code_aster.Commands import *
 
@@ -50,7 +48,7 @@ PARA_EQ_PLAQUE = CALC_MATE_HOMO(
     MAILLAGE=MA,
     AFFE=_F(TOUT="OUI", MATER=ACIER),
     VARC=_F(NOM_VARC="TEMP", VALE=21.0),
-    TYPE_HOMO="PLAQUE_CT",
+    TYPE_HOMO="PLAQUE_CT_MINDLIN",
     CORR_MECA=CO("CORR_MECA"),
 )
 

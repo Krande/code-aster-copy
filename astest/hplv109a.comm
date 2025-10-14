@@ -19,7 +19,6 @@
 
 from code_aster.CodeCommands import *
 from code_aster.Objects import *
-from code_aster import CA
 
 DEBUT(CODE="OUI", ERREUR=_F(ALARME="ALARME"))
 

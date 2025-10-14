@@ -1,0 +1,255 @@
+# coding=utf-8
+# --------------------------------------------------------------------
+# Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
+# This file is part of code_aster.
+#
+# code_aster is free software: you can redistribute it and/or modify
+# it under the terms of the GNU General Public License as published by
+# the Free Software Foundation, either version 3 of the License, or
+# (at your option) any later version.
+#
+# code_aster is distributed in the hope that it will be useful,
+# but WITHOUT ANY WARRANTY; without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+# GNU General Public License for more details.
+#
+# You should have received a copy of the GNU General Public License
+# along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
+# --------------------------------------------------------------------
+
+# Référence : note interne HI-I74-98-021
+
+# ==============================================================================
+# BIBLIOTHEQUES & MODULES
+# ==============================================================================
+
+import json
+import tempfile
+import os.path as osp
+
+from code_aster.Commands import *
+
+# ==============================================================================
+# PARAMÈTRES
+# ==============================================================================
+
+# ==============================================================================
+# Nom du test
+# ==============================================================================
+
+nom_test = "hplv111c"
+
+# ==============================================================================
+# Matériau
+# ==============================================================================
+
+# Module d'Young (GPa)
+E_acier = 195.1e9
+
+# Coefficient de Poisson
+nu_acier = 0.3
+
+# Masse volumique (kg/m3)
+rho_acier = 7.800e3
+
+# Température de définition du coefficient de dilatation thermique (°C)
+temp_def_alpha_acier = 20.0
+
+# Coefficient de dilatation thermique (1/°C)
+alpha_acier = 16.4e-6
+
+# Température du test (°C)
+temp_test = 21.0
+
+# ==============================================================================
+# COMMANDES CODE_ASTER - DEBUT
+# ==============================================================================
+
+DEBUT(CODE="OUI", ERREUR=_F(ALARME="EXCEPTION"))
+
+# ==============================================================================
+# VALEURS DE RÉFÉRENCE & CALCULÉES
+# ==============================================================================
+
+# Données de référence adimensionalisées
+test_refe = {
+    f"{temp_test:.1f}": {
+        "MEMB_L": 0.48997,
+        "MEMB_T": 0.48997,
+        "MEMB_LT": 0.09683,
+        "MEMB_G_LT": 0.19656,
+        "FLEX_L": 0.48900,
+        "FLEX_T": 0.48900,
+        "FLEX_LT": 0.10026,
+        "FLEX_G_LT": 0.20005,
+        "CISA_L": 0.37442,
+        "CISA_T": 0.37442,
+        "ALPHA": 16.4e-6,
+    }
+}
+
+# Données calculées dimensionalisées
+with open("%s.json" % nom_test) as f:
+    test_calc = json.load(f)
+
+# ==============================================================================
+# FONCTIONS DE DIMENSIONALISATION & D'ADIMENSIONALISATION DES PARAMÈTRES
+# ==============================================================================
+
+
+def dim(para, val, E, h):
+    """
+    La fonction dim dimensionalise les paramètres matériau de plaque avec
+    cisaillement transverse.
+    ---
+    - para : nom du paramètre (string)
+    - val : valeur du paramètre
+    - E : module d'Young
+    - h : épaisseur de la plaque
+    """
+
+    # Valeur dimensionalisée
+    dim_val = val
+
+    # Dimensionalisation
+
+    if "MEMB" in para or "CISA" in para:
+        dim_val *= E * h
+    elif "FLEX" in para:
+        dim_val *= E * (h**3) / 12
+    else:
+        pass
+
+    if "G_LT" in para or "CISA" in para:
+        dim_val /= 2
+
+    return dim_val
+
+
+def adim(para, val, E, h):
+    """
+    La fonction dim adimensionalise les paramètres matériau de plaque avec
+    cisaillement transverse.
+    ---
+    - para : nom du paramètre (string)
+    - val : valeur du paramètre
+    - E : module d'Young
+    - h : épaisseur de la plaque
+    """
+
+    # Valeur adimensionalisée
+    adim_val = val
+
+    # Adimensionalisation
+
+    if "MEMB" in para or "CISA" in para:
+        adim_val /= E * h
+    elif "FLEX" in para:
+        adim_val /= E * (h**3) / 12
+    else:
+        pass
+
+    if "G_LT" in para or "CISA" in para:
+        adim_val *= 2
+
+    return adim_val
+
+
+# ==============================================================================
+# MAILLAGE
+# ==============================================================================
+
+# Maillage quadratique (m)
+MA = LIRE_MAILLAGE(UNITE=20, FORMAT="MED")
+
+# ==============================================================================
+# Géométrie
+# ==============================================================================
+
+# Epaisseur de la plaque (m)
+h = 2 * MA.createMedCouplingMesh()[0].getBoundingBox()[-1][1]
+
+# ==============================================================================
+# MATÉRIAU
+# ==============================================================================
+
+UN = DEFI_CONSTANTE(VALE=1)
+E_ACIER = DEFI_CONSTANTE(VALE=E_acier)
+NU_ACIER = DEFI_CONSTANTE(VALE=nu_acier)
+RHO_ACIER = DEFI_CONSTANTE(VALE=rho_acier)
+ALPHA_ACIER = DEFI_CONSTANTE(VALE=alpha_acier)
+
+ACIER = DEFI_MATERIAU(
+    ELAS_FO=_F(
+        E=E_ACIER,
+        NU=NU_ACIER,
+        ALPHA=ALPHA_ACIER,
+        RHO=RHO_ACIER,
+        TEMP_DEF_ALPHA=temp_def_alpha_acier,
+    ),
+    THER_FO=_F(LAMBDA=UN),
+)
+
+# ==============================================================================
+# HOMOGÉNÉISATION
+# ==============================================================================
+
+PARA_EQ_PLAQUE_CT = CALC_MATE_HOMO(
+    MAILLAGE=MA,
+    AFFE=(_F(TOUT="OUI", MATER=ACIER)),
+    VARC=_F(NOM_VARC="TEMP", VALE=temp_test),
+    TYPE_HOMO="PLAQUE_CT_MINDLIN",
+    CORR_MECA=CO("CORR_MECA"),
+)
+
+# ==============================================================================
+# VALIDATION & TEST DE NON-RÉGRESSION
+# ==============================================================================
+
+for para, val in test_refe[f"{temp_test:.1f}"].items():
+    TEST_TABLE(
+        TABLE=PARA_EQ_PLAQUE_CT,
+        NOM_PARA=para,
+        PRECISION=2.0e-3,
+        REFERENCE="SOURCE_EXTERNE",
+        VALE_REFE=dim(para, test_refe[f"{temp_test:.1f}"][para], E_acier, h),
+        VALE_CALC=test_calc[f"{temp_test:.1f}"][para],
+        FILTRE=_F(NOM_PARA="TEMP", VALE=temp_test),
+    )
+
+# ==============================================================================
+# POST-TRAITEMENT
+# ==============================================================================
+
+# Dictionnaire des paramètres homogénéisés
+para_resu = {
+    para: items
+    for para, items in PARA_EQ_PLAQUE_CT.EXTR_TABLE().values().items()
+    if all(abs(i) > 1.0e-12 for i in items)
+}
+
+# Dictionnaire des paramètres homogénéisés par température
+test_resu = {f"{para_resu['TEMP'][0]:.1f}": {para: item[0] for para, item in para_resu.items()}}
+
+# Écriture du dictionnaire des paramètres homogénéisés par température dans un
+# fichier au format JSON
+# En interactif, permet de récupérer le fichier dans le dossier temporaire
+dossier_temporaire = tempfile.mkdtemp()
+with open(osp.join(dossier_temporaire, "%s.json" % nom_test), "w") as f:
+    json.dump(test_resu, f, indent=4, sort_keys=True)
+
+# Résultats adimensionalisés
+test_resu_adim = {
+    f"{temp_test:.1f}": {
+        para: round(adim(para, test_resu[f"{temp_test:.1f}"][para], E_acier, h), 5)
+        for para in test_refe[f"{temp_test:.1f}"]
+    }
+}
+
+# ==============================================================================
+# COMMANDES CODE_ASTER - FIN
+# ==============================================================================
+
+FIN()
+
+# ==============================================================================
