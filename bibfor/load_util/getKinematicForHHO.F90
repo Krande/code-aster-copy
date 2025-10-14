@@ -156,7 +156,7 @@ subroutine getKinematicForHHO(valeType, model, numeddl, keywordFact, cnsForCharc
             call jeveuo(jexnum(connexInvName, nodeNume), 'L', vi=connexInv)
 !
             ! Optimization - too many cell to be a middle node
-            if (nodeNbCell > 3) cycle
+            if (nodeNbCell > 2) cycle
 !
 !           Search element with same dimenison
             nodeNumeLoca = 0
