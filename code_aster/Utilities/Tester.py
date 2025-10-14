@@ -17,8 +17,7 @@
 # along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 # --------------------------------------------------------------------
 
-"""
-:py:mod:`Tester` --- Checking code_aster execution of testcases
+""":py:mod:`Tester` --- Checking code_aster execution of testcases
 ***************************************************************
 
 """
@@ -27,7 +26,9 @@ import inspect
 import re
 import unittest
 import unittest.case as case
-from functools import wraps, partial
+from functools import partial, wraps
+
+import numpy as np
 
 # TODO use the logger object
 # TODO tell the Helpers to increase the exit status in case of failure
@@ -41,7 +42,7 @@ def addSuccess(method):
 
     @wraps(method)
     def wrapper(inst, *args, **kwds):
-        """wrapper"""
+        """Wrapper"""
         # move 'msg' arguments from args to kwds if it exists
         sig = inspect.signature(method)
         args = list(args)
@@ -71,6 +72,7 @@ def where(level=3):
 
     Returns:
         (str, int): Filename and line number.
+
     """
     filename, line_no = "not_found", 0
     caller = inspect.currentframe()
@@ -120,7 +122,8 @@ class AssertRaisesContext(case._AssertRaisesContext):
 
 class TestCase(unittest.TestCase):
     """Similar to a unittest.TestCase
-    Does not fail but print result OK/NOOK in the .resu file"""
+    Does not fail but print result OK/NOOK in the .resu file
+    """
 
     def __init__(self, methodName="runTest", silent=False):
         """Initialization"""
@@ -136,7 +139,7 @@ class TestCase(unittest.TestCase):
         return not self._last_ok
 
     def runTest(self):
-        """does nothing"""
+        """Does nothing"""
         pass
 
     def printSummary(self):
@@ -188,6 +191,35 @@ class TestCase(unittest.TestCase):
         with context:
             callable_obj(*args, **kwargs)
 
+    def assertArrayEqual(self, actual, reference, rtol=1.0e-07, atol=1.0e-6):
+        """Compare numpy arrays using isclose tolerance.
+
+        If assertion fails a message will be printed detailling failing rows.
+
+        Arguments:
+            actual (numpy.ndarray): 1D or 2D
+            reference (numpy.ndarray): 1D or 2D
+            rtol (float): relative tolerance
+            atol (float): absolute tolerance
+
+        """
+
+        is_close_results = np.isclose(actual, reference, rtol=rtol, atol=atol)
+        arrays_are_equal = np.all(is_close_results)
+        if not arrays_are_equal:
+            differences = ~is_close_results
+            not_equal_rows = np.any(differences, axis=-1)
+            not_equal_rows_actual = actual[not_equal_rows]
+            not_equal_rows_reference = reference[not_equal_rows]
+            msg = (
+                "Arrays are not equal, differing lines are printed bellow\n"
+                f"actual: {not_equal_rows_actual}\n"
+                f"reference: {not_equal_rows_reference}\n"
+            )
+        else:
+            msg = "Arrays are equal"
+        self.assertTrue(arrays_are_equal, msg=msg)
+
 
 def _add_assert_methods(cls):
     for meth in [
@@ -225,4 +257,3 @@ def _add_assert_methods(cls):
 
 
 _add_assert_methods(TestCase)
-del _add_assert_methods
