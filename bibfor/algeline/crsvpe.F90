@@ -42,9 +42,9 @@ subroutine crsvpe(motfac, solveu, kellag)
 ! ----------------------------------------------------------
 !
     integer(kind=8) :: iret, niremp, nmaxit, reacpr, pcpiv
-    integer(kind=8) :: lch, i, lslvo, redmpi
-    real(kind=8) :: fillin, epsmax, resipc, blreps
-    character(len=8) :: kacmum
+    integer(kind=8) :: lch, i, lslvo, redmpi, nbvp
+    real(kind=8) :: fillin, epsmax, resipc, blreps, seuil
+    character(len=8) :: kacmum, typ
     character(len=24) :: kalgo, kprec, renum
     character(len=19) :: solvbd
     character(len=24) :: usersm
@@ -86,6 +86,9 @@ subroutine crsvpe(motfac, solveu, kellag)
     usersm = 'XXXX'
     blreps = 0.d0
     kacmum = 'XXXX'
+    nbvp = -9999
+    seuil = -1.d0
+    typ = 'XXXX'
 !
     select case (kprec)
     case ('LDLT_INC')
@@ -131,12 +134,23 @@ subroutine crsvpe(motfac, solveu, kellag)
         call utmess('F', 'FERMETUR_16', sk='HYPRE')
 #endif
 
-!   PARAMETRES OPTIONNELS LIES AU MULTIGRILLE ALGEBRIQUE BOOMERAMG
+!   PARAMETRES OPTIONNELS LIES AU MULTIGRILLE ALGEBRIQUE GAMG
     case ('GAMG')
 
-!   PARAMETRES OPTIONNELS LIES AU MULTIGRILLE ALGEBRIQUE BOOMERAMG
+!   PARAMETRES OPTIONNELS LIES AU PRECONDITIONNEUR HPDDM
     case ('HPDDM')
-
+        call getvtx(motfac, 'TYPE_RESOL', iocc=1, scal=typ, nbret=iret)
+        ASSERT(iret .eq. 1)
+        call getvis(motfac, 'NB_MODE', iocc=1, scal=nbvp, nbret=iret)
+        ASSERT(iret .eq. 1)
+        call getvr8(motfac, 'SEUIL', iocc=1, nbval=0, nbret=iret)
+        if (-iret > 0) then
+            call getvr8(motfac, 'SEUIL', iocc=1, scal=seuil, nbval=1, nbret=iret)
+            ASSERT(iret .eq. 1)
+        else if (typ == "HARMO") then
+            seuil = 0.d0
+        end if
+!
 !   PARAMETRES OPTIONNELS LIES AU PRECONDITIONNEUR LAGRANGIEN AUGMENTE
     case ('BLOC_LAGR')
 
@@ -175,7 +189,7 @@ subroutine crsvpe(motfac, solveu, kellag)
     slvk(11) = 'XXXX'
     slvk(12) = 'XXXX'
     slvk(13) = kellag
-    slvk(14) = 'XXXX'
+    slvk(14) = typ
 !
 !
 !     POUR NEWTON_KRYLOV LE RESI_RELA VARIE A CHAQUE
@@ -187,10 +201,11 @@ subroutine crsvpe(motfac, solveu, kellag)
     slvr(3) = fillin
     slvr(4) = blreps
     slvr(5) = resipc
+    slvr(6) = seuil
 !
     slvi(1) = redmpi
     slvi(2) = nmaxit
-    slvi(3) = -9999
+    slvi(3) = nbvp
     slvi(4) = niremp
     slvi(5) = 0
     slvi(6) = reacpr
