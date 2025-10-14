@@ -43,6 +43,8 @@ w_hexa8 = np.ones((8))
 try:
     from code_aster.Utilities import sympy
 
+    a1, a2, a3 = sympy.symbols("a1 a2 a3")
+
     def N_hexa8_s():
         """
         HEXA8 symbolic shape functions
