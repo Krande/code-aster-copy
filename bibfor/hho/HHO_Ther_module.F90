@@ -47,10 +47,7 @@ module HHO_Ther_module
 #include "asterfort/rcvalb.h"
 #include "asterfort/readVector.h"
 #include "asterfort/utmess.h"
-#include "blas/daxpy.h"
-#include "blas/dgemm.h"
 #include "blas/dger.h"
-#include "blas/dsymv.h"
 #include "blas/dsyr.h"
 #include "jeveux.h"
 !
@@ -64,7 +61,7 @@ module HHO_Ther_module
 !
 !
     public :: hhoLocalRigiTher, hhoCalcStabCoeffTher, hhoLocalMassTher
-    public :: hhoCalcOpTher, hhoComputeRhsRigiTher, hhoComputeLhsRigiTher
+    public :: hhoCalcOpTher, hhoComputeRhsRigiTher, hhoComputeLhsRigiTher, hhoComputeLhsRigiNLTher
     public :: hhoComputeLhsMassTher, hhoComputeRhsMassTher, hhoComputeBehaviourTher
     public :: hhoReloadPreCalcTher, hhoLocalMassTherNL
     private :: hhoComputeAgphi
@@ -117,11 +114,11 @@ contains
         real(kind=8), dimension(MSIZE_CELL_VEC) :: bT, G_curr_coeff
         real(kind=8), dimension(MSIZE_TDOFS_SCAL) :: temp_curr
         real(kind=8) :: BSCEval(MSIZE_CELL_SCAL), temp_T_curr(MSIZE_CELL_SCAL)
-        type(HHO_matrix) :: TMP, AT
-        real(kind=8) :: module_tang(3, 3), G_curr(3), sig_curr(3)
+        type(HHO_matrix) :: TMP, AT, JT
+        real(kind=8) :: module_tang(3, 3), G_curr(3), sig_curr(3), dsig_curr(3)
         real(kind=8) :: coorpg(3), weight, time_curr, temp_pg_curr
         real(kind=8), pointer :: flux(:) => null()
-        aster_logical :: l_rhs, l_lhs, l_nl, l_flux
+        aster_logical :: l_rhs, l_lhs, l_nl, l_flux, l_matsym
         real(kind=8) :: start, end
 !
         DEBUG_TIMER(start)
@@ -130,8 +127,12 @@ contains
         l_rhs = present(rhs)
 !
         l_nl = ASTER_FALSE
+        l_matsym = ASTER_TRUE
         if (option == "RIGI_THER_TANG" .or. option == "RAPH_THER") then
             l_nl = ASTER_TRUE
+            if (option == "RIGI_THER_TANG") then
+                l_matsym = ASTER_FALSE
+            end if
         end if
         l_flux = ASTER_FALSE
         if (option == "RAPH_THER") then
@@ -161,6 +162,9 @@ contains
         if (l_lhs) then
             call lhs%initialize(total_dofs, total_dofs, 0.d0)
             call AT%initialize(gbs, gbs, 0.d0)
+            if (.not. l_matsym) then
+                call JT%initialize(gbs, total_dofs, 0.d0)
+            end if
         end if
         if (l_rhs) rhs = 0.d0
 !
@@ -208,15 +212,23 @@ contains
 !
             call hhoComputeBehaviourTher(phenom, fami, ipg, ndim, time_curr, &
                                          jmate, coorpg, temp_pg_curr, G_curr, sig_curr, &
-                                         module_tang)
+                                         dsig_curr, module_tang)
 !
 ! ------- Compute rhs
 !
-            if (l_rhs) call hhoComputeRhsRigiTher(hhoCell, sig_curr, weight, BSCEval, gbs, bT)
+            if (l_rhs) then
+                call hhoComputeRhsRigiTher(hhoCell, sig_curr, weight, BSCEval, gbs, bT)
+            end if
 !
 ! ------- Compute lhs
 !
-            if (l_lhs) call hhoComputeLhsRigiTher(hhoCell, module_tang, weight, BSCEval, gbs, AT)
+            if (l_lhs) then
+                call hhoComputeLhsRigiTher(hhoCell, module_tang, weight, BSCEval, gbs, AT)
+                if (.not. l_matsym) then
+                    call hhoComputeLhsRigiNLTher(hhoCell, dsig_curr, weight, BSCEval, &
+                                                 gbs, total_dofs, cbs, JT)
+                end if
+            end if
 !
 ! ------- Save fluxes
 !
@@ -245,6 +257,14 @@ contains
 !
             call hho_dgemm_TN(1.d0, gradrec, TMP, 1.d0, lhs)
             call TMP%free()
+!
+            if (.not. l_matsym) then
+!
+! ----- step3: lhs += gradrec**T * JT
+!
+                call hho_dgemm_TN(1.d0, gradrec, JT, 1.d0, lhs)
+                call JT%free()
+            end if
 !
         end if
 !
@@ -727,6 +747,55 @@ contains
 !
 !===================================================================================================
 !
+    subroutine hhoComputeLhsRigiNLTher(hhoCell, dsig_curr, weight, BSCEval, &
+                                       gbs, total_dofs, cbs, JT)
+!
+        implicit none
+!
+        type(HHO_Cell), intent(in) :: hhoCell
+        real(kind=8), intent(in) :: dsig_curr(3)
+        real(kind=8), intent(in) :: weight
+        real(kind=8), intent(in) :: BSCEval(MSIZE_CELL_SCAL)
+        integer(kind=8), intent(in) :: gbs, total_dofs, cbs
+        type(HHO_matrix), intent(inout) :: JT
+!
+! --------------------------------------------------------------------------------------------------
+!   HHO - thermics
+!
+!   Compute the scalar product AT += (gphi, dsig_curr * v)_T at a quadrature point
+!   In hhoCell      : the current HHO Cell
+!   In module_tang  : elasto-plastic tangent moduli
+!   In weight       : quadrature weight
+!   In BSCEval      : Basis of one composant gphi
+!   In gbs          : number of rows of bT
+!   Out AT          : contribution of bt
+! --------------------------------------------------------------------------------------------------
+!
+        real(kind=8) :: qp_Scphi(MSIZE_CELL_SCAL)
+        integer(kind=8) :: i, j, idim, gbs_cmp, col, row
+! --------------------------------------------------------------------------------------------------
+!
+        gbs_cmp = gbs/hhoCell%ndim
+!
+! -------- Compute scalar_product of (gphi, dsig_curr*cphi)_T
+        col = total_dofs-cbs
+        do idim = 1, hhoCell%ndim
+! --------- Eval (dsig_curr*cphi)_T
+            qp_Scphi = (weight*dsig_curr(idim))*BSCEval
+            do j = 1, cbs
+                row = (idim-1)*gbs_cmp
+                do i = 1, gbs_cmp
+                    JT%m(row+i, col+j) = JT%m(row+i, col+j)+BSCEval(i)*qp_Scphi(j)
+                end do
+            end do
+        end do
+!
+    end subroutine
+!
+!===================================================================================================
+!
+!===================================================================================================
+!
     subroutine hhoComputeLhsMassTher(cp, weight, BSCEval, cbs, lhs)
 !
         implicit none
@@ -931,8 +1000,7 @@ contains
 !===================================================================================================
 !
     subroutine hhoComputeBehaviourTher(phenom, fami, kpg, ndim, time, &
-                                       imate, coorpg, temp, dtemp, fluxglo, &
-                                       Kglo)
+                                       imate, coorpg, temp, dtemp, fluxglo, dfluxglo, Kglo)
 !
         implicit none
 !
@@ -940,7 +1008,7 @@ contains
         character(len=8), intent(in) :: fami
         integer(kind=8), intent(in) :: imate, ndim, kpg
         real(kind=8), intent(in) :: time, dtemp(3), temp, coorpg(3)
-        real(kind=8), intent(out) :: fluxglo(3), Kglo(3, 3)
+        real(kind=8), intent(out) :: fluxglo(3), Kglo(3, 3), dfluxglo(3)
 !
 ! --------------------------------------------------------------------------------------------------
 !  HHO
@@ -948,7 +1016,7 @@ contains
 ! --------------------------------------------------------------------------------------------------
 !
         call nlcomp(phenom, fami, kpg, imate, ndim, &
-                    coorpg, time, temp, Kglo, dtp_=dtemp, fluglo_=fluxglo)
+                    coorpg, time, temp, Kglo, dtp_=dtemp, fluglo_=fluxglo, dfluglo_=dfluxglo)
     end subroutine
 !
 !===================================================================================================
