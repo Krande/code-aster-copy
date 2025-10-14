@@ -94,11 +94,11 @@ TEST3 = [
 ]
 TEST4 = [
     6.445680930312216,
-    -1.5717152502541266e-18,
+    0.0,
     9.999999999999993,
     16402.02025355333,
     15.561250320689375,
-    -1.210686181296381e-17,
+    0.0,
     9.999999999999996,
     95597.97974644664,
 ]
@@ -109,7 +109,7 @@ AMOR = [0.1, -0.1, 10.0, 1.0e-6, 0.0]
 #                         uniquement AFFE_CHAR_MECA ou AFFE_CHAR_MECA
 # -------------------------------------------------------------------------------------
 
-for i in (0, 10):
+for i in range(10):
     if i in (0, 5):
         TEST = TEST0
         TESTR = TEST0R
@@ -294,7 +294,7 @@ for i in (0, 10):
                     REFERENCE="SOURCE_EXTERNE",
                     CRITERE="ABSOLU",
                     VALE_ABS="OUI",
-                    ORDRE_GRANDEUR=1.0e-16,
+                    #ORDRE_GRANDEUR=1.0e-16,
                 ),
                 _F(
                     RESULTAT=MODE_SO,
@@ -305,7 +305,7 @@ for i in (0, 10):
                     REFERENCE="SOURCE_EXTERNE",
                     CRITERE="ABSOLU",
                     VALE_ABS="OUI",
-                    ORDRE_GRANDEUR=1.0e-16,
+                    #ORDRE_GRANDEUR=1.0e-16,
                 ),
             )
         )
@@ -377,7 +377,7 @@ for i in (0, 10):
                     REFERENCE="SOURCE_EXTERNE",
                     CRITERE="ABSOLU",
                     VALE_ABS="OUI",
-                    ORDRE_GRANDEUR=1.0e-16,
+                    #ORDRE_GRANDEUR=1.0e-16,
                 ),
                 _F(
                     RESULTAT=MODE_SO,
@@ -388,7 +388,7 @@ for i in (0, 10):
                     REFERENCE="SOURCE_EXTERNE",
                     CRITERE="ABSOLU",
                     VALE_ABS="OUI",
-                    ORDRE_GRANDEUR=1.0e-16,
+                    #ORDRE_GRANDEUR=1.0e-16,
                 ),
             )
         )
@@ -420,7 +420,7 @@ for i in (0, 10):
 # -------------------------------------------------------------------------------------
 #                         AFFE_CHAR_MECA + AFFE_CHAR_MECA- de 2 façons differentes
 # -------------------------------------------------------------------------------------
-for i in (0, 10):
+for i in range(10):
     if i in (0, 5):
         TEST = TEST0
         TESTR = TEST0R
@@ -590,7 +590,7 @@ for i in (0, 10):
                     REFERENCE="SOURCE_EXTERNE",
                     CRITERE="ABSOLU",
                     VALE_ABS="OUI",
-                    ORDRE_GRANDEUR=1.0e-16,
+                    #ORDRE_GRANDEUR=1.0e-16,
                 ),
                 _F(
                     RESULTAT=MODE_SO,
@@ -601,7 +601,7 @@ for i in (0, 10):
                     REFERENCE="SOURCE_EXTERNE",
                     CRITERE="ABSOLU",
                     VALE_ABS="OUI",
-                    ORDRE_GRANDEUR=1.0e-16,
+                    #ORDRE_GRANDEUR=1.0e-16,
                 ),
             )
         )
@@ -673,7 +673,7 @@ for i in (0, 10):
                     REFERENCE="SOURCE_EXTERNE",
                     CRITERE="ABSOLU",
                     VALE_ABS="OUI",
-                    ORDRE_GRANDEUR=1.0e-16,
+                    #ORDRE_GRANDEUR=1.0e-16,
                 ),
                 _F(
                     RESULTAT=MODE_SO,
@@ -684,7 +684,7 @@ for i in (0, 10):
                     REFERENCE="SOURCE_EXTERNE",
                     CRITERE="ABSOLU",
                     VALE_ABS="OUI",
-                    ORDRE_GRANDEUR=1.0e-16,
+                    #ORDRE_GRANDEUR=1.0e-16,
                 ),
             )
         )
