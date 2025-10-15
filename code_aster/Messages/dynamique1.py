@@ -42,7 +42,7 @@ ACCELERATION_MPI='NON'."""
     ),
     6: _(
         """
-L'incrément de temps est négatif du fait de la reprise du calcul. Cette valeur est incorrecte physiquement, il faut changer votre discrétisation temporelle.
+L'incrément de temps est négatif du fait de la reprise du calcul. Cette valeur peut faire échouer certaines lois de comportement, en particulier les lois avec viscosité.
 """
     ),
 }
