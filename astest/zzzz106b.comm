@@ -61,7 +61,7 @@ MA2 = DEFI_GROUP(
     MAILLAGE=MA2,
     CREA_GROUP_NO=_F(
         NOM="GXXXXXX_GPNS",
-        NOEUD=("N10", "N11", "N25", "N2", "N3", "N9", "N1", "N69", "N70", "N71", "N57", "N72"),
+        NOEUD=("N10", "N11", "N25", "N2", "N3", "N9", "N1", "NS44", "NS45", "NS46", "NS32", "NS47"),
     ),
 )
 
@@ -121,10 +121,10 @@ DEFI_FICHIER(ACTION="LIBERER", UNITE=38)
 TEST_FICHIER(
     FICHIER="fort.38",
     NB_VALE_I=751,
-    VALE_CALC_I=17151,
+    VALE_CALC_I=10731,
     NB_VALE=213,
     VALE_CALC=1.0600500000e03,
-    VALE_CALC_K="84ab9c79ec93aeada6d0a94ae78e4ddd",
+    VALE_CALC_K="ab172d04f6cb24375b7a095f48de411d",
     EXPR_IGNORE=("ASTER"),
 )
 

@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -17,6 +17,8 @@
 ! --------------------------------------------------------------------
 
 subroutine chckma(nomu, dtol)
+    use crea_maillage_module
+!
     implicit none
 !-----------------------------------------------------------------------
 !
@@ -65,6 +67,7 @@ subroutine chckma(nomu, dtol)
     character(len=24) :: cooval, connex, nommai, nomnoe, nsolo, mdoubl
     integer :: nbmail, nbnoeu
     integer :: insolo, imdoub, iatyma, nmdoub
+    type(Mmesh) :: mesh_conv
     aster_logical :: indic, alarme, erreur
 !
     call jemarq()
@@ -281,6 +284,11 @@ subroutine chckma(nomu, dtol)
     if (erreur) then
         call utmess('F', 'MODELISA4_10')
     end if
+
+! check presence of degenerated face
+    call mesh_conv%init(nomu)
+    call mesh_conv%clean()
+
 !
 !     -----------------------------------------------------------
 !     MENAGE DANS LE MAILLAGE : ON DETRUIT NOEUDS ORPHELINS ET
