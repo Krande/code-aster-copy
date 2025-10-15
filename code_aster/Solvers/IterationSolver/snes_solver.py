@@ -125,7 +125,6 @@ class SNESSolver(BaseIterationSolver):
 
     def _evalJacobian(self, snes, X, J, P):
         if snes.appctx != self.SNES_SUCCESS:
-            Print("Not comuting Tangent  " * 20)
             return
         if self.current_incr % self.update_matr_incr == 0:
             _matrix = self.oper.getJacobian(self.matrix_type)
