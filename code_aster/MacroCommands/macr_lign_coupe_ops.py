@@ -777,7 +777,7 @@ def macr_lign_coupe_ops(
     if NOM_CHAM.endswith(("ELGA", "ELNO", "ELEM")):
         # This field may be defined in a local axis system, currently we cannot access
         # to this information, results will be expressed in the same axis system
-        UTMESS("A", "POST0_55", valk=NOM_CHAM)
+        UTMESS("A", "POST0_55", valk=[NOM_CHAM])
 
     # Maillage sur lequel s'appuie le résultat à projeter
     if not mesh:
