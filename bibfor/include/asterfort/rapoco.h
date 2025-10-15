@@ -15,15 +15,11 @@
 ! You should have received a copy of the GNU General Public License
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
-
-!
 !
 interface
-    subroutine rapoco(numdlz, iocc, fonrez, lisrez, chargz)
-        character(len=*) :: numdlz
-        integer(kind=8) :: iocc
-        character(len=*) :: fonrez
-        character(len=*) :: lisrez
-        character(len=*) :: chargz
+    subroutine rapoco(numeDofZ, iocc, listRelaZ, loadZ)
+        character(len=*), intent(in) :: numeDofZ
+        integer(kind=8), intent(in) :: iocc
+        character(len=*), intent(in) :: listRelaZ, loadZ
     end subroutine rapoco
 end interface

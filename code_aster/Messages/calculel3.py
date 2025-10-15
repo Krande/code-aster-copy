@@ -301,43 +301,9 @@ Contactez le support technique.
  type scalaire interdit : %(k1)s
 """
     ),
-    78: _(
-        """
-Utilisation de LIAISON_ELEM / OPTION='%(k1)s', occurrence %(i1)d :
-Le noeud "poutre" (GROUP_NO_2) n'est pas situé géométriquement au même endroit que
-le centre de gravité de la section (GROUP_MA_1). La distance entre les 2 noeuds est
-supérieure à %(r7)g%% du "rayon" (Aire/Pi)^0.5 de la section.
-   Position du centre de gravité de la section :
-      %(r1)g   %(r2)g   %(r3)g
-   Position du noeud "poutre" :
-      %(r4)g   %(r5)g   %(r6)g
-   Distance : %(r9)g
-   Rayon    : %(r8)g
-"""
-    ),
     79: _(
         """
  la matrice A est singulière
-"""
-    ),
-    80: _(
-        """
-Utilisation de LIAISON_ELEM / OPTION='%(k1)s', occurrence %(i1)d :
-Le noeud "poutre" (GROUP_NO_2 ou NOEUD_2) n'est pas situé géométriquement
-au même endroit que le centre de gravité de la section (GROUP_MA_1).
-La distance entre les deux points est supérieure à %(r7)g%% du "rayon" de la section.
-
-   Position du centre de gravité de la section :
-      %(r1)g   %(r2)g   %(r3)g
-   Position du noeud "poutre" :
-      %(r4)g   %(r5)g   %(r6)g
-   Distance : %(r9)g
-   Rayon    : %(r8)g
-
-Risque et conseils :
-   Vérifiez la position du noeud "poutre".
-   Rappel : on ne peut pas utiliser ce type de liaison pour relier une poutre avec
-   une section qui ne serait que partiellement maillée (symétrie du maillage).
 """
     ),
     81: _(
