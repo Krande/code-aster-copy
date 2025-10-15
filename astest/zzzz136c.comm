@@ -486,7 +486,12 @@ actual = np.array(
     list(
         zip(
             [int(val) for val in values["INTITULE"]],
+            values["NUME_ORDRE"],
+            values["INST"],
             values["ABSC_CURV"],
+            values["COOR_X"],
+            values["COOR_Y"],
+            values["COOR_Z"],
             values["DX"],
             values["DY"],
             values["DZ"],
@@ -497,8 +502,10 @@ reference = np.loadtxt("fort.39")
 
 # # To update refence table use numpy savetxt
 # from pathlib import Path
-# np.savetxt(Path.home() /"dev" / "codeaster"/ "src"/ "astest" / "zzzz136c.table", actual,
-#            header=f'Cut id -> name {pprint.pformat(cut_ids)}\nID ABSC_CURV DX DY DZ', )
+# np.savetxt(Path.home() / "dev" / "codeaster" / "src" / "astest" / "zzzz136c.39",
+#            actual,
+#            header=f"Cut id -> name {pprint.pformat(cut_ids)}\n"
+#            "ID NUME_ORDRE INST ABSC_CURV COOR_X COOR_Y COOR_Z DX DY DZ", )
 
 test.assertArrayEqual(actual=actual, reference=reference, rtol=1.0e-07, atol=1.0e-6)
 
