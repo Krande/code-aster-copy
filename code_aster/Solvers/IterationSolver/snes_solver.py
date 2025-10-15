@@ -22,7 +22,6 @@ from ...Supervis import ConvergenceError
 from ...Utilities.mpi_utils import MPI
 from ...Utilities import PETSc, no_new_attributes, profile, petscInitialize, removePETScOptions
 from .iteration_solver import BaseIterationSolver
-
 from time import time
 import os
 
@@ -41,6 +40,9 @@ class SNESSolver(BaseIterationSolver):
     local = snes = fnorm0 = None
     CumulLinIter = Instant = rank = 0
     __setattr__ = no_new_attributes(object.__setattr__)
+    # Definition of the return codes of the nonlinear SNES solver
+    SNES_SUCCESS = 0
+    SNES_FAILURE = -1
 
     def __init__(self, local=False):
         super().__init__()
@@ -74,11 +76,7 @@ class SNESSolver(BaseIterationSolver):
                 "Neither the function nor the Jacobian " + "is given to the operators assembler"
             )
             return
-        # step_copy = self.state.primal_step.toPetsc(local=self.local).copy()
         self.state.primal_step.fromPetsc(X, local=self.local)
-        # prev_petsc = self.state.primal_prev.toPetsc(local=self.local)
-        # prev_copy = prev_petsc.copy()
-        # prev_petsc.set(0.)
         # ----------------------------- Function evaluation ---------------------------
         if F:
             # Build initial residual
@@ -99,9 +97,6 @@ class SNESSolver(BaseIterationSolver):
             self.current_matrix = _matrix
             self._scaling = self.oper.getLagrangeScaling(self.matrix_type)
             _matrix.toPetsc(local=self.local).copy(J)
-        # Recovering aster current step
-        # self.state.primal_step.fromPetsc(step_copy,local=self.local)
-        # self.state.primal_prev.fromPetsc(prev_copy,local=self.local)
 
     def _evalFunction(self, snes, X, F, update=True):
         # Get the solution increment from PETSc
@@ -112,7 +107,13 @@ class SNESSolver(BaseIterationSolver):
             self._primal_incr.applyLagrangeScaling(1 / self._scaling)
             self.state.primal_step += self._primal_incr
         disc_comp = DiscreteComputation(self.problem)
-        residual = self.oper.getResidual(self._scaling)
+        try:
+            residual = self.oper.getResidual(self._scaling)
+            snes.appctx = self.SNES_SUCCESS
+        except Exception as exc:
+            snes.appctx = self.SNES_FAILURE
+            snes.setConvergedReason(PETSc.SNES.ConvergedReason.DIVERGED_FNORM_NAN)
+            return
         # Apply Lagrange scaling
         residual.resi.applyLagrangeScaling(1 / self._scaling)
         # Apply DirichletBC into the residual
@@ -123,6 +124,8 @@ class SNESSolver(BaseIterationSolver):
         # print("internVar=", self.oper._tmp_internVar.getValues()[:40:8], flush=True)
 
     def _evalJacobian(self, snes, X, J, P):
+        if snes.appctx != self.SNES_SUCCESS:
+            return
         if self.current_incr % self.update_matr_incr == 0:
             _matrix = self.oper.getJacobian(self.matrix_type)
             self.current_matrix = _matrix
