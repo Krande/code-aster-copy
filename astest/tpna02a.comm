@@ -1,0 +1,191 @@
+# coding=utf-8
+# --------------------------------------------------------------------
+# Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
+# This file is part of code_aster.
+#
+# code_aster is free software: you can redistribute it and/or modify
+# it under the terms of the GNU General Public License as published by
+# the Free Software Foundation, either version 3 of the License, or
+# (at your option) any later version.
+#
+# code_aster is distributed in the hope that it will be useful,
+# but WITHOUT ANY WARRANTY; without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+# GNU General Public License for more details.
+#
+# You should have received a copy of the GNU General Public License
+# along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
+# --------------------------------------------------------------------
+
+DEBUT(CODE="OUI", ERREUR=_F(ALARME="EXCEPTION"), DEBUG=_F(SDVERI="OUI"))
+
+# Define mesh, model and material
+MAIL = LIRE_MAILLAGE(FORMAT="MED")
+
+MODELE = AFFE_MODELE(MAILLAGE=MAIL, AFFE=_F(TOUT="OUI", PHENOMENE="THERMIQUE", MODELISATION="PLAN"))
+
+LAMBDA0 = DEFI_FONCTION(
+    NOM_PARA="TEMP", VALE=(20, 5.0e-2), PROL_DROITE="CONSTANT", PROL_GAUCHE="CONSTANT"
+)
+
+RHOCP0 = DEFI_FONCTION(
+    NOM_PARA="TEMP", VALE=(20, 3.6e-3), PROL_DROITE="CONSTANT", PROL_GAUCHE="CONSTANT"
+)
+
+MATER = DEFI_MATERIAU(THER_NL=_F(LAMBDA=LAMBDA0, RHO_CP=RHOCP0))
+
+CHAM_MATER = AFFE_MATERIAU(MAILLAGE=MAIL, AFFE=_F(TOUT="OUI", MATER=MATER))
+
+# Define radiation exchange
+temperature_externe = 100.0
+C_epsilon = DEFI_CONSTANTE(VALE=0.8)
+C_sigma = DEFI_CONSTANTE(VALE=5.67e-14)
+TEMP_EXT = DEFI_CONSTANTE(VALE=temperature_externe)
+CHARGE = AFFE_CHAR_THER_F(
+    MODELE=MODELE,
+    RAYONNEMENT=_F(GROUP_MA="LINE_EXT", SIGMA=C_sigma, EPSILON=C_epsilon, TEMP_EXT=TEMP_EXT),
+)
+
+# Solve nonlinear heat transfer problem: steady state
+STAT_THER_F90 = THER_NON_LINE(
+    MODELE=MODELE,
+    CHAM_MATER=CHAM_MATER,
+    EXCIT=_F(CHARGE=CHARGE),
+    INCREMENT=_F(LIST_INST=DEFI_LIST_REEL(VALE=0.0)),
+    TYPE_CALCUL="STAT",
+    NEWTON=_F(REAC_ITER=1),
+    CONVERGENCE=_F(RESI_GLOB_MAXI=1.0e-12, ITER_GLOB_MAXI=10),
+    RECH_LINEAIRE=_F(ITER_LINE_MAXI=0),
+    OBSERVATION=_F(NOM_CHAM="TEMP", NOM_CMP="TEMP", TOUT="OUI"),  # Call fortran
+)
+
+STAT_THER_PY = THER_NON_LINE(
+    MODELE=MODELE,
+    CHAM_MATER=CHAM_MATER,
+    EXCIT=_F(CHARGE=CHARGE),
+    INCREMENT=_F(LIST_INST=DEFI_LIST_REEL(VALE=0.0)),
+    TYPE_CALCUL="STAT",
+    NEWTON=_F(REAC_ITER=1),
+    CONVERGENCE=_F(RESI_GLOB_MAXI=1.0e-12, ITER_GLOB_MAXI=10),
+    RECH_LINEAIRE=_F(ITER_LINE_MAXI=0),
+)
+
+# Solve nonlinear heat-transfer problem: transient state
+nombre_instants = 300
+LIST_REEL = DEFI_LIST_REEL(DEBUT=0.0, INTERVALLE=_F(JUSQU_A=600.0, NOMBRE=nombre_instants))
+LIST_INST = DEFI_LIST_INST(DEFI_LIST=_F(LIST_INST=LIST_REEL))
+
+TRAN_THER_PY = THER_NON_LINE(
+    MODELE=MODELE,
+    CHAM_MATER=CHAM_MATER,
+    EXCIT=_F(CHARGE=CHARGE),
+    INCREMENT=_F(LIST_INST=LIST_INST, NUME_INST_FIN=nombre_instants),
+    ETAT_INIT=_F(VALE=0.0),
+    SCHEMA_TEMPS=_F(SCHEMA="THETA", THETA=0.57),
+    NEWTON=_F(REAC_ITER=1),
+    CONVERGENCE=_F(RESI_GLOB_MAXI=1.0e-7, ITER_GLOB_MAXI=10),
+    RECH_LINEAIRE=_F(ITER_LINE_MAXI=0),
+)
+
+TRAN_THER_F90 = THER_NON_LINE(
+    MODELE=MODELE,
+    CHAM_MATER=CHAM_MATER,
+    EXCIT=_F(CHARGE=CHARGE),
+    INCREMENT=_F(LIST_INST=LIST_INST, NUME_INST_FIN=nombre_instants),
+    ETAT_INIT=_F(VALE=0.0),
+    SCHEMA_TEMPS=_F(SCHEMA="THETA", THETA=0.57),
+    NEWTON=_F(REAC_ITER=1),
+    CONVERGENCE=_F(RESI_GLOB_MAXI=1.0e-7, ITER_GLOB_MAXI=10),
+    RECH_LINEAIRE=_F(ITER_LINE_MAXI=0),
+    OBSERVATION=_F(NOM_CHAM="TEMP", NOM_CMP="TEMP", TOUT="OUI"),  # Call fortran
+)
+
+# TEST RESULTS:
+# Steady results
+for resultat in [STAT_THER_PY, STAT_THER_F90]:
+    TT = CREA_TABLE(
+        RESU=_F(
+            CRITERE="RELATIF",
+            GROUP_MA="LINE_EXT",
+            NOM_CHAM="TEMP",
+            RESULTAT=resultat,
+            TOUT_CMP="OUI",
+        ),
+        TYPE_TABLE="TABLE",
+    )
+
+    TEST_TABLE(
+        CRITERE="RELATIF",
+        FILTRE=(
+            _F(CRITERE="ABSOLU", CRIT_COMP="EQ", NOM_PARA="INST", PRECISION=1e-6, VALE=0.0),
+            _F(CRIT_COMP="MAXI", NOM_PARA="TEMP"),
+        ),
+        TABLE=TT,
+        NOM_PARA="TEMP",
+        REFERENCE="ANALYTIQUE",
+        VALE_CALC=100.0,
+        VALE_REFE=temperature_externe,
+        PRECISION=1e-6,
+    )
+
+    TEST_TABLE(
+        CRITERE="RELATIF",
+        FILTRE=(
+            _F(CRITERE="ABSOLU", CRIT_COMP="EQ", NOM_PARA="INST", PRECISION=1e-6, VALE=0.0),
+            _F(CRIT_COMP="MINI", NOM_PARA="TEMP"),
+        ),
+        TABLE=TT,
+        NOM_PARA="TEMP",
+        REFERENCE="ANALYTIQUE",
+        VALE_CALC=100.0,
+        VALE_REFE=temperature_externe,
+        PRECISION=1e-6,
+    )
+
+
+# Transient results
+vale_calc_100_list = [54.53443932011566, 54.533188379364574]
+vale_calc_600_list = [99.70542525641507, 99.705422320723290]
+for vale_calc_100, vale_calc_600, resultat in zip(
+    vale_calc_100_list, vale_calc_600_list, [TRAN_THER_PY, TRAN_THER_F90]
+):
+    TT = CREA_TABLE(
+        RESU=_F(
+            CRITERE="RELATIF",
+            GROUP_MA="LINE_EXT",
+            NOM_CHAM="TEMP",
+            RESULTAT=resultat,
+            TOUT_CMP="OUI",
+        ),
+        TYPE_TABLE="TABLE",
+    )
+
+    TEST_TABLE(
+        CRITERE="RELATIF",
+        FILTRE=(
+            _F(CRITERE="ABSOLU", CRIT_COMP="EQ", NOM_PARA="INST", PRECISION=1e-6, VALE=100.0),
+            _F(CRIT_COMP="MAXI", NOM_PARA="TEMP"),
+        ),
+        TABLE=TT,
+        NOM_PARA="TEMP",
+        REFERENCE="ANALYTIQUE",
+        VALE_CALC=vale_calc_100,
+        VALE_REFE=54.56435728271139,
+        PRECISION=1e-3,
+    )
+
+    TEST_TABLE(
+        CRITERE="RELATIF",
+        FILTRE=(
+            _F(CRITERE="ABSOLU", CRIT_COMP="EQ", NOM_PARA="INST", PRECISION=1e-6, VALE=600.0),
+            _F(CRIT_COMP="MAXI", NOM_PARA="TEMP"),
+        ),
+        TABLE=TT,
+        NOM_PARA="TEMP",
+        REFERENCE="ANALYTIQUE",
+        VALE_CALC=vale_calc_600,
+        VALE_REFE=99.70768743887123,
+        PRECISION=1e-3,
+    )
+
+FIN()
