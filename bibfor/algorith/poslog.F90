@@ -110,15 +110,9 @@ subroutine poslog(lCorr, lMatr, lSigm, lVari, tlogPrev, &
 !
 ! - Get gradient
     if (lCorr) then
-        b_n = to_blas_int(9)
-        b_incx = to_blas_int(1)
-        b_incy = to_blas_int(1)
-        call dcopy(b_n, fCurr, b_incx, fr, b_incy)
+        fr = fCurr
     else
-        b_n = to_blas_int(9)
-        b_incx = to_blas_int(1)
-        b_incy = to_blas_int(1)
-        call dcopy(b_n, fPrev, b_incx, fr, b_incy)
+        fr = fPrev
     end if
     call lcdetf(ndim, fr, detf)
     if (detf .le. r8prem()) then
@@ -161,12 +155,8 @@ subroutine poslog(lCorr, lMatr, lSigm, lVari, tlogPrev, &
     if (lMatr) then
         dsidep = 0.d0
 !        POUR LA RIGIDITE GEOMETRIQUE : CALCUL AVEC LES PK2
-        tp2 = 0.d0
         if (lCorr) then
-            b_n = to_blas_int(6)
-            b_incx = to_blas_int(1)
-            b_incy = to_blas_int(1)
-            call dcopy(b_n, tlogCurr, b_incx, tp2, b_incy)
+            tp2 = tlogCurr
         else
             sig(1:2*ndim) = sigm(1:2*ndim)
             call pk2sig(ndim, fPrev, detf, pk2Prev, sig, &
@@ -174,15 +164,11 @@ subroutine poslog(lCorr, lMatr, lSigm, lVari, tlogPrev, &
             do kl = 4, 2*ndim
                 pk2Prev(kl) = pk2Prev(kl)*rac2
             end do
-            b_n = to_blas_int(6)
-            b_incx = to_blas_int(1)
-            b_incy = to_blas_int(1)
-            call dcopy(b_n, tlogPrev, b_incx, tp2, b_incy)
+            tp2 = tlogPrev
 !
         end if
 !
-        call deflg3(gn, feta, xi, me, tp2, &
-                    tl)
+        call deflg3(gn, feta, xi, me, tp2, tl)
         call symt46(tl, tls)
 !
         dsidep = matmul(matmul(transpose(pes), dtde), pes)
@@ -190,8 +176,7 @@ subroutine poslog(lCorr, lMatr, lSigm, lVari, tlogPrev, &
         b_n = to_blas_int(36)
         b_incx = to_blas_int(1)
         b_incy = to_blas_int(1)
-        call daxpy(b_n, 1.d0, tls, b_incx, dsidep, &
-                   b_incy)
+        call daxpy(b_n, 1.d0, tls, b_incx, dsidep, b_incy)
 !
     end if
 !
@@ -203,8 +188,7 @@ subroutine poslog(lCorr, lMatr, lSigm, lVari, tlogPrev, &
                 pk2Curr(i) = pk2Curr(i)+tlogCurr(j)*pes(j, i)
             end do
         end do
-        call pk2sig(ndim, fCurr, detf, pk2Curr, sigmCurr, &
-                    1)
+        call pk2sig(ndim, fCurr, detf, pk2Curr, sigmCurr, 1)
     end if
 !
 ! - On stocke TP comme variable interne
