@@ -693,10 +693,7 @@ contains
 ! --------------------------------------------------------------------------------------------------
 !
         integer(kind=8) :: ipg
-        real(kind=8) :: start, end
         aster_logical :: split_simpl, param_
-!
-        DEBUG_TIMER(start)
 !
         this%order = order
 !
@@ -756,9 +753,6 @@ contains
 
         ASSERT(this%nbQuadPoints <= MAX_QP)
 !
-        DEBUG_TIMER(end)
-        DEBUG_TIME("Compute hhoGetQuadCell", end-start)
-!
     end subroutine
 !
 !===================================================================================================
@@ -786,10 +780,7 @@ contains
 ! --------------------------------------------------------------------------------------------------
 !
         integer(kind=8) :: ipg
-        real(kind=8) :: start, end
         aster_logical :: split_simpl, param_
-!
-        DEBUG_TIMER(start)
 !
         this%order = order
 !
@@ -840,10 +831,6 @@ contains
         end if
 
         ASSERT(this%nbQuadPoints <= MAX_QP)
-
-!
-        DEBUG_TIMER(end)
-        DEBUG_TIME("Compute hhoGetQuadFace", end-start)
 !
     end subroutine
 !
@@ -1064,9 +1051,6 @@ contains
 ! --------------------------------------------------------------------------------------------------
         integer(kind=8) :: order, ipg
         aster_logical :: laxis
-        real(kind=8) :: start, end
-!
-        DEBUG_TIMER(start)
 !
         ASSERT(npg .le. MAX_QP)
         this%nbQuadPoints = npg
@@ -1087,9 +1071,6 @@ contains
                 end do
             end if
         end if
-!
-        DEBUG_TIMER(end)
-        DEBUG_TIME("Compute hhoinitCellFamiQ", end-start)
 !
     end subroutine
 !
@@ -1119,9 +1100,6 @@ contains
 !
         integer(kind=8) :: order
         aster_logical :: laxis
-        real(kind=8) :: start, end
-!
-        DEBUG_TIMER(start)
 !
         ASSERT(npg .le. MAX_QP)
         this%nbQuadPoints = npg
@@ -1134,9 +1112,6 @@ contains
         call hhoSelectOrder(hhoFace%typema, npg, order)
 !
         call hhoGetQuadFace(this, hhoFace, order, laxis, ASTER_FALSE)
-!
-        DEBUG_TIMER(end)
-        DEBUG_TIME("Compute hhoinitFaceFamiQ", end-start)
 !
     end subroutine
 !

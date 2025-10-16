@@ -90,11 +90,8 @@ contains
         integer(kind=8) :: dimMassMat, ifromM2, itoM2, colsM2, i, j
         integer(kind=8) :: cbs, fbs, total_dofs, iface, offset_face, fromFace, toFace, cell_offset
         blas_int :: b_n, b_nhrs, b_lda, b_ldb, info
-        real(kind=8) :: start, end
         blas_int :: b_k, b_ldc, b_m
 ! --------------------------------------------------------------------------------------------------
-!
-        DEBUG_TIMER(start)
 !
 ! -- init cell basis
         call hhoBasisCell%initialize(hhoCell)
@@ -319,9 +316,6 @@ contains
 !
         call proj1%free()
 !
-        DEBUG_TIMER(end)
-        DEBUG_TIME("Compute hhoStabScal", end-start)
-!
     end subroutine
 !
 !===================================================================================================
@@ -348,11 +342,8 @@ contains
 !
 ! --------------------------------------------------------------------------------------------------
 !
-        real(kind=8) :: start, end
         type(HHO_matrix) :: stab_scal
 ! --------------------------------------------------------------------------------------------------
-!
-        DEBUG_TIMER(start)
 !
 ! -- compute scalar stabilization
         call hhoStabScal(hhoCell, hhoData, gradrec_scal, stab_scal)
@@ -360,9 +351,6 @@ contains
 ! -- copy the scalar stabilization in the vectorial stabilization
         call MatScal2Vec(hhoCell, hhoData, stab_scal, stab)
         call stab_scal%free()
-!
-        DEBUG_TIMER(end)
-        DEBUG_TIME("Compute hhoStabVec", end-start)
 !
     end subroutine
 !
@@ -400,14 +388,11 @@ contains
         type(HHO_matrix) :: proj1, proj2, proj3, TMP
         real(kind=8), dimension(MSIZE_FACE_SCAL, MSIZE_CELL_SCAL) :: MR1, MR2, traceMat
         integer(kind=8) :: dimMassMat, ifromM1, itoM1, ifromM2, itoM2, colsM2, i, j, idir
-        integer(kind=8) :: cbs, fbs, total_dofs, iface, fromFace, toFace
-    integer(kind=8) :: ifromGrad, itoGrad, ifromProj, itoProj, fbs_comp, faces_dofs, faces_dofs_comp
+        integer(kind=8) :: cbs, fbs, total_dofs, iface, fromFace, toFace, faces_dofs_comp
+        integer(kind=8) :: ifromGrad, itoGrad, ifromProj, itoProj, fbs_comp, faces_dofs
         blas_int :: b_n, b_nhrs, b_lda, b_ldb, info
-        real(kind=8) :: start, end
         blas_int :: b_k, b_ldc, b_m
 ! --------------------------------------------------------------------------------------------------
-!
-        DEBUG_TIMER(start)
 !
 ! -- init cell basis
         call hhoBasisCell%initialize(hhoCell)
@@ -657,9 +642,6 @@ contains
         call proj3%free()
         call TMP%free()
 !
-        DEBUG_TIMER(end)
-        DEBUG_TIME("Compute hhoStabSymVec", end-start)
-!
     end subroutine
 !
 !===================================================================================================
@@ -691,13 +673,11 @@ contains
         real(kind=8), dimension(MSIZE_FACE_SCAL, MSIZE_FACE_SCAL) :: piKF
         real(kind=8), dimension(MSIZE_FACE_SCAL, MSIZE_CELL_SCAL) :: traceMat
         real(kind=8), dimension(MSIZE_FACE_SCAL, MSIZE_TDOFS_SCAL) :: proj3, TMP
-    integer(kind=8) :: cbs, fbs, total_dofs, iface, offset_face, fromFace, toFace, i, j, cell_offset
+        integer(kind=8) :: cbs, fbs, total_dofs, iface, offset_face, fromFace, toFace
+        integer(kind=8) :: i, j, cell_offset
         blas_int :: b_n, b_nhrs, b_lda, b_ldb, info
-        real(kind=8) :: start, end
         blas_int :: b_k, b_ldc, b_m
 ! --------------------------------------------------------------------------------------------------
-!
-        DEBUG_TIMER(start)
 !
 ! -- init cell basis
         call hhoBasisCell%initialize(hhoCell)
@@ -813,9 +793,6 @@ contains
             call stab%copySymU()
         end if
 !
-        DEBUG_TIMER(end)
-        DEBUG_TIME("Compute hdgStabScal", end-start)
-!
     end subroutine
 !
 !===================================================================================================
@@ -829,7 +806,6 @@ contains
         type(HHO_Cell), intent(in) :: hhoCell
         type(HHO_Data), intent(in) :: hhoData
         type(HHO_matrix), intent(out) :: stab
-        real(kind=8) :: start, end
 !
 ! --------------------------------------------------------------------------------------------------
 !   HHO
@@ -844,17 +820,12 @@ contains
         type(HHO_matrix) :: stab_scal
 ! --------------------------------------------------------------------------------------------------
 !
-        DEBUG_TIMER(start)
-!
 ! -- compute scalar stabilization
         call hdgStabScal(hhoCell, hhoData, stab_scal)
 !
 ! -- copy the scalar stabilization in the vectorial stabilization
         call MatScal2Vec(hhoCell, hhoData, stab_scal, stab)
         call stab_scal%free()
-!
-        DEBUG_TIMER(end)
-        DEBUG_TIME("Compute hdgStabVec", end-start)
 !
     end subroutine
 !

@@ -94,9 +94,6 @@ contains
         integer(kind=8) :: cbs, fbs, total_dofs, iface, fromFace, toFace, cell_offset
         blas_int :: b_n, b_nhrs, b_lda, b_ldb, info, b_m
         blas_int, parameter :: b_one = to_blas_int(1)
-        real(kind=8) :: start, end
-!
-        DEBUG_TIMER(start)
 !
 ! -- init cell basis
         call hhoBasisCell%initialize(hhoCell)
@@ -206,9 +203,6 @@ contains
 !
         call BG%free()
 !
-        DEBUG_TIMER(end)
-        DEBUG_TIME("Compute hhoGradRecVec", end-start)
-!
     end subroutine
 !
 !===================================================================================================
@@ -242,9 +236,6 @@ contains
         integer(kind=8) :: gradrec_scal_row, cbs_comp, fbs_comp, faces_dofs, cbs, fbs, gbs, gbs_sym
         integer(kind=8) :: idim, ibeginGrad, iendGrad, jbeginCell, jendCell, jbeginFace, jendFace
         integer(kind=8) :: total_dofs, iFace, jbeginVec, jendVec
-        real(kind=8) :: start, end
-!
-        DEBUG_TIMER(start)
 !
 ! -- number of dofs
         call hhoMecaNLDofs(hhoCell, hhoData, cbs, fbs, total_dofs, gbs, gbs_sym)
@@ -296,9 +287,6 @@ contains
             call lhs_scal%free()
         end if
 !
-        DEBUG_TIMER(end)
-        DEBUG_TIME("Compute hhoGradRecMat", end-start)
-!
     end subroutine
 !
 !===================================================================================================
@@ -339,10 +327,7 @@ contains
         integer(kind=8) :: ipg, ibeginBG, iendBG, ibeginSOL, iendSOL, idim
         blas_int :: b_n, b_nhrs, b_lda, b_ldb, info, b_m
         integer(kind=8) :: iface, fromFace, toFace, cell_offset
-        real(kind=8) :: start, end
         blas_int, parameter :: b_one = 1
-!
-        DEBUG_TIMER(start)
 !
 ! -- init cell basis
         call hhoBasisCell%initialize(hhoCell)
@@ -490,9 +475,6 @@ contains
 !
         call BG%free()
 !
-        DEBUG_TIMER(end)
-        DEBUG_TIME("Compute hhoGradRecFullVec", end-start)
-!
     end subroutine
 !
 !===================================================================================================
@@ -599,9 +581,6 @@ contains
 ! --------------------------------------------------------------------------------------------------
 ! ----- Local variables
         type(HHO_matrix) :: lhs_scal, gradrec_scal
-        real(kind=8) :: start, end
-!
-        DEBUG_TIMER(start)
 !
 ! -- computation of the gradient reconstruction of a scalar function
         if (present(lhs)) then
@@ -615,9 +594,6 @@ contains
             call hhoGradRecFullMatFromVec(hhoCell, hhoData, gradrec_scal, gradrec)
             call gradrec_scal%free()
         end if
-!
-        DEBUG_TIMER(end)
-        DEBUG_TIME("Compute hhoGradRecFullMat", end-start)
 !
     end subroutine
 !
@@ -656,14 +632,12 @@ contains
         real(kind=8) :: BSGEval(MSIZE_CELL_SCAL)
         real(kind=8), parameter :: rac2 = sqrt(2.d0)
         real(kind=8) :: coeff, normal(3)
-     integer(kind=8) :: cbs, fbs, total_dofs, gbs, dimMassMat, nbdimMat, cbs_comp, fbs_comp, gbs_sym
+        integer(kind=8) :: cbs, fbs, total_dofs, gbs, dimMassMat, nbdimMat
+        integer(kind=8):: cbs_comp, fbs_comp, gbs_sym
         integer(kind=8) :: ipg, ibeginBG, iendBG, ibeginSOL, iendSOL, idim, j, iface
         integer(kind=8) :: jbegCell, jendCell, jbegFace, jendFace, faces_dofs
         blas_int :: b_n, b_nhrs, b_lda, b_ldb, info, b_m
-        real(kind=8) :: start, end
         blas_int, parameter :: b_one = 1
-!
-        DEBUG_TIMER(start)
 !
 ! -- init cell basis
         call hhoBasisCell%initialize(hhoCell)
@@ -995,9 +969,6 @@ contains
         end if
         call BG%free()
 !
-        DEBUG_TIMER(end)
-        DEBUG_TIME("Compute hhoGradRecSymFullMat", end-start)
-!
     end subroutine
 !
 !===================================================================================================
@@ -1042,10 +1013,7 @@ contains
         integer(kind=8) :: row_deb_ST, row_fin_ST, col_deb_ST, col_fin_ST, faces_dof
         blas_int :: b_n, b_nhrs, b_lda, b_ldb, info, LWORK, b_m
         real(kind=8) :: qp_dphi_ss, normal(3)
-        real(kind=8) :: start, end
         blas_int, parameter :: b_one = 1
-!
-        DEBUG_TIMER(start)
 !
 ! -- init cell basis
         call hhoBasisCell%initialize(hhoCell)
@@ -1274,9 +1242,6 @@ contains
 
         call BG%free()
         call MG%free()
-!
-        DEBUG_TIMER(end)
-        DEBUG_TIME("Compute hhoGradRecSymMat", end-start)
 !
     end subroutine
 !

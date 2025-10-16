@@ -46,9 +46,9 @@ module HHO_geometry_module
 !
     public :: barycenter, hhoNormalFace, hhoFaceInitCoor, hhoGeomBasis, hhoGeomDerivBasis
     public :: hhoLocalBasisFace, hhoNormalFace2, hhoNormalFace3, hhoNormalFaceQP
-    public :: hhoSplitSimplex, hho_transfo_3d, hho_transfo_quad, hhoIsJacobCst
+    public :: hhoSplitSimplex, hho_transfo_3d, hho_transfo_quad, hhoIsJacobCst, prod_vec
     private :: hho_jaco_cst_quad, hho_jaco_cst_3d
-    private :: hhoNormalFace2d, well_oriented, hhoNormalFace1d, prod_vec, find_lowest_vertex
+    private :: hhoNormalFace2d, well_oriented, hhoNormalFace1d, find_lowest_vertex
 !
 contains
 !

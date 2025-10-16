@@ -87,7 +87,8 @@ ref = resu_ref.getField("TEMP", 0)
 
 # -raspen_solver_type RAS
 InternalRASPENOpts = "-raspen_monitor -raspen_with_coarse_pb -raspen_coarse_side Left -raspen_coarse_type SubdomainSVD -raspen_nb_sd_singular_vec 5 "
-
+# Set to zero because is long
+InternalRASPENOpts = ""
 myOptions = (
     InternalRASPENOpts
     # local snes
