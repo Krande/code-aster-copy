@@ -26,10 +26,17 @@
 # EN VARIANT LES VALEURS D'AMORTISSEMENT ET L'OPERATEUR DE PRISE EN COMPTE DES
 # CONDITIONS LIMITES (AFFE_CHAR_MECA, CINE OU LES 2 A LA FOIS)
 #
+from math import pi
+
 import numpy as NP
 import numpy.linalg as LA
 
+from code_aster.Commands import *
+from code_aster import CA
+
 DEBUT(CODE="OUI", ERREUR=_F(ALARME="EXCEPTION"), DEBUG=_F(SDVERI="OUI"))
+
+test = CA.TestCase()
 
 MASRES0 = LIRE_MAILLAGE(FORMAT="ASTER")
 MASRES = CREA_MAILLAGE(
@@ -230,20 +237,21 @@ for i in range(10):
         RIGAS = ASSE_MATRICE(MATR_ELEM=RIGEL, NUME_DDL=NU, CHAR_CINE=CONDLIM)
         MASAS = ASSE_MATRICE(MATR_ELEM=MASEL, NUME_DDL=NU, CHAR_CINE=CONDLIM)
 
-    # Calcul numpy pour VALE_REFE
-    # CALCUL PAR NUMPY
-    # -----------------
-    # RIGP = 28000 * NP.array([[0.2 + amor * 0.1j, -0.2], [-0.1, 0.2]])
-    # MASP = NP.array([[1.0, 0.0], [0.0, 1.0]])
-    # MASPI = LA.inv(MASP)
-    # print("matrices:", RIGP, MASP, MASPI)
+    # ---------------------------
+    print("\n# --- Calcul numpy pour VALE_REFE")
+    RIGP = 28000 * NP.array([[0.2 + amor * 0.1j, -0.2], [-0.1, 0.2]])
+    MASP = NP.array([[1.0, 0.0], [0.0, 1.0]])
+    MASPI = LA.inv(MASP)
+    print("numpy: matrices:", RIGP, MASP, MASPI)
     # calcul des valeurs propres generalises par numpy sur K*inv(M)
-    # frequence = LA.eigvals(NP.dot(RIGP, MASP))
-    # print("valeurs propres initales:", frequence)
-    # freqsqrt = NP.sort(NP.sqrt(frequence))
-    # for o in freqsqrt:
-    #    print("\n\nFreq. = ", NP.abs(o) / 2 / NP.pi, " Amor. = ", NP.imag(o) / NP.abs(o))
-    # del RIGP, MASP, MASPI, frequence, freqsqrt
+    frequence = LA.eigvals(NP.dot(RIGP, MASP))
+    print("numpy: valeurs propres initales:", frequence)
+    freqsqrt = NP.sort(NP.sqrt(frequence))
+    for j, o in enumerate(freqsqrt):
+        print("numpy: Freq. = ", NP.abs(o) / 2 / NP.pi, " Amor. = ", NP.imag(o) / NP.abs(o))
+        test.assertAlmostEqual(abs(o) / 2.0 / pi, TESTR[2 * j], msg="")
+        test.assertAlmostEqual(o.imag / abs(o), TESTR[2 * j + 1], msg="")
+    del RIGP, MASP, MASPI, frequence, freqsqrt
 
     # CALCUL PAR CALC_MODES/SORENSEN
     # ------------------------------
@@ -709,8 +717,9 @@ for i in range(10):
                 ),
             )
         )
-    #
+
     DETRUIRE(NOM=(RIGMAS, CONDLIM, RIGEL, MASEL, NU, RIGAS, MASAS, MODE_SO, MODE_QZ))
-#
+
+test.printSummary()
+
 FIN()
-#
