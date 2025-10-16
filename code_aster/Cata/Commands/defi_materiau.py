@@ -2110,6 +2110,9 @@ DEFI_MATERIAU = MACRO(
             ATH=SIMP(statut="o", typ="R"),
             TEMP_0_C=SIMP(statut="o", typ="R"),
             PORO=SIMP(statut="o", typ="R"),
+            UNITE_PRESSION=SIMP(statut="f", typ="TXM", into=("Pa", "MPa"), defaut="Pa"),
+            # hidden keywords
+            COEF_UNITE_P=SIMP(statut="c", defaut=1.0, typ="R"),
         ),
     ),
     BETON_RAG=FACT(
@@ -3094,6 +3097,11 @@ DEFI_MATERIAU = MACRO(
         A_MIL=SIMP(statut="o", typ="R"),
         B_MIL=SIMP(statut="o", typ="R"),
         VG_M_P=SIMP(statut="o", typ="R"),
+        UNITE_LONGUEUR=SIMP(statut="f", typ="TXM", into=("M", "MM"), defaut="M"),
+        UNITE_TEMPS=SIMP(statut="f", typ="TXM", into=("S", "MIN", "H", "J"), defaut="S"),
+        # hidden keywords
+        COEF_UNITE_L=SIMP(statut="c", defaut=1.0, typ="R"),
+        COEF_UNITE_T=SIMP(statut="c", defaut=1.0, typ="R"),
     ),
     #
     # comportement métallurgique

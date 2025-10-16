@@ -19,17 +19,14 @@
 !
 !
 interface
-    subroutine rftDiffusion(fami, kpg, ksp, poum, imate, c, &
-                            temp, diff, difl, difv)
-        character(len=*), intent(in) :: fami
-        integer(kind=8), intent(in) :: kpg
-        integer(kind=8), intent(in) :: ksp
-        character(len=*), intent(in) :: poum
+    subroutine leverettIsotTher(c, temp, imate, hygr, dpc_, poro_, t0_C_, beta_, pc_)
         integer(kind=8), intent(in) :: imate
-        real(kind=8), intent(in) :: c
-        real(kind=8), intent(in) :: temp
-        real(kind=8), intent(out) :: diff
-        real(kind=8), intent(out) :: difl
-        real(kind=8), intent(out) :: difv
-    end subroutine rftDiffusion
+        real(kind=8), intent(in) :: c, temp
+        real(kind=8), intent(out) :: hygr
+        real(kind=8), intent(out), optional :: dpc_
+        real(kind=8), intent(out), optional :: beta_
+        real(kind=8), intent(out), optional :: poro_
+        real(kind=8), intent(out), optional :: t0_C_
+        real(kind=8), intent(out), optional :: pc_
+    end subroutine leverettIsotTher
 end interface

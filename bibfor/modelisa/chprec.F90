@@ -277,7 +277,7 @@ subroutine chprec(chou)
 !     --- ON PEUT FAIRE UNE INTERPOLATION ---
 !         ===============================
     if (tysd .eq. 'EVOL_THER' .or. tysd .eq. 'EVOL_ELAS' .or. tysd .eq. 'EVOL_NOLI' .or. &
-        tysd .eq. 'DYNA_TRANS' .or. tysd .eq. 'EVOL_VARC') then
+        tysd .eq. 'DYNA_TRANS' .or. tysd .eq. 'EVOL_VARC' .or. tysd .eq. 'EVOL_SECH') then
 !
         if (interp(1:3) .eq. 'LIN') then
             call getvr8(' ', 'INST', scal=inst, nbret=n4)

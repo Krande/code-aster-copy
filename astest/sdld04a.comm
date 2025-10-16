@@ -1148,6 +1148,15 @@ INST_MAX = CREA_CHAMP(
     TYPE_MAXI="NORM_TRAN",
 )
 
+NUME_MAX = CREA_CHAMP(
+    OPERATION="EXTR",
+    TYPE_CHAM="NOEU_DEPL_R",
+    RESULTAT=TRAN_LI3,
+    NOM_CHAM="ACCE",
+    TYPE_RESU="NUME_ORDRE",
+    TYPE_MAXI="NORM_TRAN",
+)
+
 TEST_RESU(
     CHAM_NO=(
         _F(
@@ -1156,6 +1165,15 @@ TEST_RESU(
             CHAM_GD=INST_MAX,
             VALE_CALC=0.11,
             VALE_REFE=0.11,
+            REFERENCE="ANALYTIQUE",
+            PRECISION=1.0e-3,
+        ),
+        _F(
+            GROUP_NO="N02",
+            NOM_CMP="DX",
+            CHAM_GD=NUME_MAX,
+            VALE_CALC=5,
+            VALE_REFE=5,
             REFERENCE="ANALYTIQUE",
             PRECISION=1.0e-3,
         ),

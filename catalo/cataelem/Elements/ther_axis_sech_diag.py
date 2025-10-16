@@ -143,44 +143,22 @@ class SEAXTL3(Element):
             para_in=((SP.PGEOMER, LC.EGEOM2D),),
             para_out=((OP.COOR_ELGA.PCOORPG, LC.EGGAU2D),),
         ),
-        OP.DURT_ELNO(
-            te=551,
-            para_in=((SP.PMATERC, LC.CMATERC), (OP.DURT_ELNO.PPHASIN, LC.EPHASES)),
-            para_out=((SP.PDURT_R, LC.EDURTNO),),
-        ),
-        OP.ERTH_ELEM(
-            te=3,
+        OP.DIFF_ELGA(
+            te=242,
             para_in=(
-                (SP.PCHARG, LC.CREFERK),
-                (SP.PFLUX_M, LC.NFLUX2R),
-                (SP.PFLUX_P, LC.NFLUX2R),
                 (SP.PGEOMER, LC.EGEOM2D),
+                (OP.DIFF_ELGA.PCOMPOR, LC.CCOMPOT),
                 (SP.PMATERC, LC.CMATERC),
-                (SP.PSOURCF, LC.CSOURCF),
-                (SP.PSOURCR, LC.ESOURCR),
-                (SP.PTEMP_M, DDL_THER),
-                (SP.PTEMP_P, DDL_THER),
-                (OP.ERTH_ELEM.PVOISIN, LC.EVOISIN),
-            ),
-            para_out=((OP.ERTH_ELEM.PERREUR, LC.EERREURT),),
-        ),
-        OP.ERTH_ELNO(
-            te=379,
-            para_in=((OP.ERTH_ELNO.PERREUR, LC.EERREURT),),
-            para_out=((SP.PERRENO, LC.EERRENOT),),
-        ),
-        OP.ETHE_ELEM(
-            te=220,
-            para_in=(
-                (SP.PCAMASS, LC.CCAMA3D),
-                (SP.PGEOMER, LC.EGEOM2D),
-                (SP.PMATERC, LC.CMATERC),
-                (SP.PTEMPER, DDL_THER),
-                (SP.PVARCRR, LC.ZVARCPG),
+                (SP.PSECHRR, DDL_THER),
                 (SP.PINSTR, LC.CTIMETR),
-                (OP.ETHE_ELEM.PVARCPR, LC.ZVARCPG),
+                (OP.DIFF_ELGA.PVARCPR, LC.ZVARCPG),
             ),
-            para_out=((OP.ETHE_ELEM.PENERDR, LC.CENEISO),),
+            para_out=((SP.PDIFFPG, LC.EDIFFUR),),
+        ),
+        OP.DIFF_ELNO(
+            te=4,
+            para_in=((OP.DIFF_ELNO.PDIFFPG, LC.EDIFFUR),),
+            para_out=((SP.PDIFFNO, LC.EDIFFNO),),
         ),
         OP.FLUX_ELGA(
             te=69,
@@ -213,21 +191,21 @@ class SEAXTL3(Element):
             para_in=((OP.GRAT_ELNO.PGRATPG, LC.EGRAT2R),),
             para_out=((SP.PGRATNO, LC.NGRAT2R),),
         ),
-        OP.HYDR_ELGA(
-            te=385,
+        OP.HYGR_ELGA(
+            te=242,
             para_in=(
                 (SP.PGEOMER, LC.EGEOM2D),
-                (OP.HYDR_ELGA.PHYDRMR, LC.EHYDRR),
-                (OP.HYDR_ELGA.PCOMPOR, LC.CCOMPOT),
                 (SP.PMATERC, LC.CMATERC),
-                (OP.HYDR_ELGA.PTEMPMR, DDL_THER),
-                (OP.HYDR_ELGA.PTEMPPR, DDL_THER),
+                (SP.PSECHRR, DDL_THER),
                 (SP.PINSTR, LC.CTIMETR),
+                (OP.HYGR_ELGA.PVARCPR, LC.ZVARCPG),
             ),
-            para_out=((OP.HYDR_ELGA.PHYDRPR, LC.EHYDRR),),
+            para_out=((SP.PHYGRPG, LC.EHYGROR),),
         ),
-        OP.HYDR_ELNO(
-            te=4, para_in=((OP.HYDR_ELNO.PHYDRPG, LC.EHYDRR),), para_out=((SP.PHYDRNO, LC.EHYDRNO),)
+        OP.HYGR_ELNO(
+            te=4,
+            para_in=((OP.HYGR_ELNO.PHYGRPG, LC.EHYGROR),),
+            para_out=((SP.PHYGRNO, LC.EHYGRNO),),
         ),
         OP.INIT_MAIL_VOIS(te=99, para_out=((OP.INIT_MAIL_VOIS.PVOISIN, LC.EVOISIN),)),
         OP.INIT_VARC(te=99, para_out=((OP.INIT_VARC.PVARCPR, LC.ZVARCPG),)),
@@ -386,17 +364,6 @@ class SEAXTL3(Element):
             ),
             para_out=((SP.PMATTTR, MMATTTR),),
         ),
-        OP.SOUR_ELGA(
-            te=318,
-            para_in=(
-                (SP.PGEOMER, LC.EGEOM2D),
-                (SP.PMATERC, LC.CMATERC),
-                (SP.PTEMPER, DDL_THER),
-                (SP.PINSTR, LC.CTIMETR),
-                (OP.SOUR_ELGA.PVARCPR, LC.ZVARCPG),
-            ),
-            para_out=((OP.SOUR_ELGA.PSOUR_R, LC.ESOURCR),),
-        ),
         OP.TOU_INI_ELEM(te=99, para_out=((OP.TOU_INI_ELEM.PSOUR_R, LC.CSOURCR),)),
         OP.TOU_INI_ELGA(
             te=99,
@@ -408,7 +375,7 @@ class SEAXTL3(Element):
                 (OP.TOU_INI_ELGA.PSOUR_R, LC.ESOURCR),
                 (OP.TOU_INI_ELGA.PVARI_R, LC.ZVARIPG),
                 (OP.TOU_INI_ELGA.PHYDR_R, LC.EHYDRR),
-                (SP.PTEMP_R, LC.ETEMPPG),
+                (SP.PTEMP_R, LC.ESECHPG),
             ),
         ),
         OP.TOU_INI_ELNO(

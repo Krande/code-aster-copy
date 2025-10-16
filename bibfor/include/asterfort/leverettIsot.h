@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -19,7 +19,7 @@
 !
 !
 interface
-    subroutine leverettIsot(temp, sech, alpha, beta, ad, t0_C, hygr, dpc)
+    subroutine leverettIsot(temp, sech, alpha, beta, ad, t0_C, hygr, dpc, pc_)
         real(kind=8), intent(in) :: temp
         real(kind=8), intent(in) :: sech
         real(kind=8), intent(in) :: alpha
@@ -28,5 +28,6 @@ interface
         real(kind=8), intent(in) :: t0_C
         real(kind=8), intent(out) :: hygr
         real(kind=8), intent(out), optional :: dpc
+        real(kind=8), intent(out), optional :: pc_
     end subroutine leverettIsot
 end interface

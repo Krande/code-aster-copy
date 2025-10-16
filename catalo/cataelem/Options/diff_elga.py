@@ -17,38 +17,25 @@
 # along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 # --------------------------------------------------------------------
 
-from ..Utilities import _
 
-cata_msg = {
-    1: _(
-        """
-Il y a un chargement de type convection dans les chargements appliqués.
-Ce n'est possible qu'avec THER_NON_LINE_MO.
-"""
-    ),
-    2: _(
-        """
-On ne peut pas utiliser d'éléments de structures (coques, plaques, poutres) dans la commande THER_NON_LINE_MO.
-"""
-    ),
-    3: _(
-        """
-Le modèle contient des éléments spécifiques au traitement du séchage. Ils sont incompatibles avec
-la commande THER_NON_LINE.
+from cataelem.Tools.base_objects import InputParameter, Option, CondCalcul
+import cataelem.Commons.physical_quantities as PHY
+import cataelem.Commons.parameters as SP
+import cataelem.Commons.attributes as AT
 
-Conseil : utilisez la commande SECH_NON_LINE.
-"""
-    ),
-    4: _(
-        """
-La commande SECH_NON_LINE ne fonctionne qu'avec un modèle contenant uniquement
-des éléments spécifiques au traitement du séchage.
-"""
-    ),
-    85: _(
-        """
-   Arrêt : absence de convergence au numéro d'instant : %(i1)d
-                                  lors de l'itération : %(i2)d
-"""
-    ),
-}
+PCOMPOR = InputParameter(
+    phys=PHY.COMPOR, container="RESU!COMPORTHER!N", comment="""  PCOMPOR : COMPORTEMENT """
+)
+PVARCPR = InputParameter(
+    phys=PHY.VARI_R,
+    container="VOLA!&&CCPARA.VARI_INT_N",
+    comment="""  PVARCPR : VARIABLES DE COMMANDE  """,
+)
+
+
+DIFF_ELGA = Option(
+    para_in=(PCOMPOR, SP.PGEOMER, SP.PMATERC, SP.PSECHRR, SP.PINSTR, PVARCPR),
+    para_out=(SP.PDIFFPG,),
+    condition=(CondCalcul("+", ((AT.PHENO, "TH"), (AT.SECH, "OUI"), (AT.BORD, "0"))),),
+    comment="""  DIFF_ELGA : CALCUL DES COEFFICIENTS DE DIFFUSION AUX POINTS DE GAUSS """,
+)

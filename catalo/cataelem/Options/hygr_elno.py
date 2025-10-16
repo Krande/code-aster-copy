@@ -17,38 +17,25 @@
 # along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 # --------------------------------------------------------------------
 
-from ..Utilities import _
+# person_in_charge: jessica.haelewyn at edf.fr
 
-cata_msg = {
-    1: _(
-        """
-Il y a un chargement de type convection dans les chargements appliqués.
-Ce n'est possible qu'avec THER_NON_LINE_MO.
-"""
-    ),
-    2: _(
-        """
-On ne peut pas utiliser d'éléments de structures (coques, plaques, poutres) dans la commande THER_NON_LINE_MO.
-"""
-    ),
-    3: _(
-        """
-Le modèle contient des éléments spécifiques au traitement du séchage. Ils sont incompatibles avec
-la commande THER_NON_LINE.
 
-Conseil : utilisez la commande SECH_NON_LINE.
-"""
-    ),
-    4: _(
-        """
-La commande SECH_NON_LINE ne fonctionne qu'avec un modèle contenant uniquement
-des éléments spécifiques au traitement du séchage.
-"""
-    ),
-    85: _(
-        """
-   Arrêt : absence de convergence au numéro d'instant : %(i1)d
-                                  lors de l'itération : %(i2)d
-"""
-    ),
-}
+from cataelem.Tools.base_objects import InputParameter, OutputParameter, Option, CondCalcul
+import cataelem.Commons.physical_quantities as PHY
+import cataelem.Commons.parameters as SP
+import cataelem.Commons.attributes as AT
+
+
+PHYGRPG = InputParameter(
+    phys=PHY.HYGR_R,
+    container="RESU!HYGR_ELGA!N",
+    comment="""  PHYGRPG : HYGR AUX POINTS DE GAUSS """,
+)
+
+
+HYGR_ELNO = Option(
+    para_in=(PHYGRPG,),
+    para_out=(SP.PHYGRNO,),
+    condition=(CondCalcul("+", ((AT.PHENO, "TH"), (AT.SECH, "OUI"), (AT.BORD, "0"))),),
+    comment="""  HYGR_ELNO : CALCUL DU HYGR AUX NOEUDS PAR ELEMENT """,
+)

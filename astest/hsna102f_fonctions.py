@@ -77,6 +77,19 @@ def permeabilite_liquide(K0, Temp, Ea_R, T0):
 def isotherme_hr_T(C, alpha, beta, Ad, T0, poro, Temp, R=8.314, Mmolaire=18.01528e-3):
     """
     Isotherme Leverett(C,T)
+    C : Concentration en eau
+    Temp : Température en Kelvin
+    """
+    pc = pression_capillaire(C, alpha, beta, Ad, T0, poro, Temp, R, Mmolaire)
+
+    rho_liquide = densite_liquide(Temp)
+    HR = loi_de_kelvin_hr(pc, Temp, rho_liquide)
+    return HR
+
+
+def pression_capillaire(C, alpha, beta, Ad, T0, poro, Temp, R=8.314, Mmolaire=18.01528e-3):
+    """
+    Pression capillaire(C,T)
     """
     C = numpy.minimum(C, 0.999 * poro * 1000)
     gamma0 = tension_superficielle(T0)
@@ -89,9 +102,7 @@ def isotherme_hr_T(C, alpha, beta, Ad, T0, poro, Temp, R=8.314, Mmolaire=18.0152
         * (gamma0 / gamma)
         * numpy.sqrt(K0_KT)
     )
-    rho_liquide = densite_liquide(Temp)
-    HR = loi_de_kelvin_hr(pc, Temp, rho_liquide)
-    return HR
+    return pc
 
 
 def permeabilte_relative_VGM(C, p, beta, poro):

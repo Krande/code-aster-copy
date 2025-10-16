@@ -1073,6 +1073,15 @@ PROTATRP = InputParameter(
 
 PSDRMR = InputParameter(phys=PHY.NEUT_R, comment="""""")
 
+PSECHRR = InputParameter(
+    phys=PHY.TEMP_R,
+    container="RESU!SECH!N",
+    comment="""  PSECHRR :
+  PSECHRR : CONENTRATION EN EAU INSTANT ACTUEL
+""",
+)
+
+
 PSIEFD_R = InputParameter(
     phys=PHY.SIEF_R,
     comment="""  PSIEFD_R : CONTRAINTES PB. DUAL
@@ -1540,6 +1549,20 @@ PDGNOOUT = OutputParameter(
 """,
 )
 
+PDIFFPG = OutputParameter(
+    phys=PHY.DIFF_R,
+    type="ELGA",
+    comment="""  PDIFFPG : COEFFICIENTS DE DIFFUSION AUX POINTS DE GAUSS
+""",
+)
+
+PDIFFNO = OutputParameter(
+    phys=PHY.DIFF_R,
+    type="ELNO",
+    comment="""  PDIFFNO : COEFFICIENTS DE DIFFUSION AUX NOEUDS
+""",
+)
+
 PDISSD1 = OutputParameter(
     phys=PHY.DISS_R,
     type="ELEM",
@@ -1682,6 +1705,9 @@ PHYDRNO = OutputParameter(
     comment="""  PHYDRNO : HYDRATATION AUX NOEUDS PAR ELEMENT
 """,
 )
+
+PHYGRPG = OutputParameter(phys=PHY.HYGR_R, type="ELGA", comment="""""")
+PHYGRNO = OutputParameter(phys=PHY.HYGR_R, type="ELNO", comment="""""")
 
 PINCOCA = OutputParameter(phys=PHY.NEUT_I, type="ELEM", comment="""""")
 

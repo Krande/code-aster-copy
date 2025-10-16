@@ -25,6 +25,11 @@ cata_msg = {
         """Le modèle donné dans la commande n'est pas le même que celui donné dans la structure de données résultat.
          Il ne faut pas le renseigner dans la commande."""
     ),
+    3: _(
+        """Le champ HYGR_ELGA ne peut pas être calculé si BETON_DESORP est absent du matériau
+affecté aux mailles concernées.
+Toutes les composantes sont mises à zéro."""
+    ),
     10: _("""Le modèle est manquant."""),
     18: _(
         """

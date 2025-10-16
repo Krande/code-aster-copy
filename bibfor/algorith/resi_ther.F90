@@ -80,10 +80,15 @@ subroutine resi_ther(l_stat, &
     character(len=19) :: resuElem
     real(kind=8) :: theta, deltat
     character(len=8) :: newnom
+    character(len=3) :: answer
+    aster_logical :: l_dry
 !
 ! --------------------------------------------------------------------------------------------------
 !
     call dismoi('NOM_LIGREL', modelZ, 'MODELE', repk=ligrel_model)
+    call dismoi('EXI_SECH', modelZ, 'MODELE', repk=answer)
+    l_dry = ASTER_FALSE
+    if (answer .eq. 'OUI') l_dry = ASTER_TRUE
     theta = timePara(1)
     deltat = timePara(2)
     lpain = " "
@@ -132,7 +137,7 @@ subroutine resi_ther(l_stat, &
     call reajre(vectElemZ, resuElem, jvBase)
 
 ! - Compute hydratation
-    if (.not. l_stat) then
+    if (.not. l_stat .and. .not. l_dry) then
 ! ----- Input fields
         lpain = " "
         lchin = " "

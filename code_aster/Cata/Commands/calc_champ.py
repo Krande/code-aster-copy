@@ -518,6 +518,59 @@ CALC_CHAMP = OPER(
             ),
         ),
     ),
+    # Bloc Séchage
+    b_sech=BLOC(
+        condition="""is_type("RESULTAT") in (evol_sech,)""",
+        regles=(AU_MOINS_UN("SECHAGE", "CHAM_UTIL"),),
+        SECHAGE=SIMP(
+            statut="f",
+            typ="TXM",
+            validators=NoRepeat(),
+            max="**",
+            fr=tr("Options pour le calcul de champs en calcul de séchage"),
+            into=C_NOM_CHAM_INTO(phenomene=Phenomenon.SECHAGE),
+        ),
+        EXCIT=FACT(
+            statut="f",
+            max="**",
+            fr=tr("Charges contenant les temperatures, les efforts repartis pour les poutres..."),
+            regles=(EXCLUS("FONC_MULT", "COEF_MULT"),),
+            CHARGE=SIMP(statut="o", typ=(char_ther, char_cine_ther)),
+            FONC_MULT=SIMP(statut="f", typ=(fonction_sdaster, nappe_sdaster, formule)),
+            COEF_MULT=SIMP(statut="f", typ="R"),
+            TYPE_CHARGE=SIMP(statut="f", typ="TXM", defaut="FIXE_CSTE", into=("FIXE_CSTE",)),
+        ),
+        CHAM_UTIL=FACT(
+            statut="f",
+            max="**",
+            regles=(UN_PARMI("FORMULE", "CRITERE", "NORME"),),
+            NOM_CHAM=SIMP(statut="o", typ="TXM", fr=tr("Nom du champ utilisé en donnée")),
+            FORMULE=SIMP(
+                statut="f", typ=formule, max="**", fr=tr("Formule permet d'obtenir le critère")
+            ),
+            CRITERE=SIMP(
+                statut="f",
+                typ="TXM",
+                max=1,
+                into=("TRACE", "VMIS", "INVA_2"),
+                fr=tr("Calcul d'un critère pré-défini"),
+            ),
+            NORME=SIMP(
+                statut="f",
+                typ="TXM",
+                max=1,
+                into=("L2", "FROBENIUS"),
+                fr=tr("Calcul d'une norme pré-définie"),
+            ),
+            NUME_CHAM_RESU=SIMP(
+                statut="o",
+                typ="I",
+                val_min=1,
+                val_max=20,
+                fr=tr("Numéro du champ produit. Exemple: 6 produit le champ UT06"),
+            ),
+        ),
+    ),
     # Bloc acoustique
     b_acou=BLOC(
         condition="""is_type("RESULTAT") in (acou_harmo,mode_acou,tran_gene,harm_gene)""",

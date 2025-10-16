@@ -16,7 +16,7 @@
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
 
-subroutine rcdiff(imate, comp, temp, c, diff)
+subroutine rcdiff(imate, comp, temp, c, diff, difl_, difv_)
     implicit none
 #include "jeveux.h"
 #include "asterc/r8t0.h"
@@ -24,9 +24,11 @@ subroutine rcdiff(imate, comp, temp, c, diff)
 #include "asterfort/rcvalb.h"
 #include "asterfort/rftDiffusion.h"
 #include "asterfort/utmess.h"
-    integer(kind=8) :: imate
-    real(kind=8) :: temp, c, diff
-    character(len=16) :: comp
+    integer(kind=8), intent(in) :: imate
+    real(kind=8), intent(in) :: temp, c
+    character(len=16), intent(in) :: comp
+    real(kind=8), intent(out) :: diff
+    real(kind=8), intent(out), optional :: difl_, difv_
 ! ----------------------------------------------------------------------
 !     CALCUL DU COEFFICIENT DE DIFFUSION POUR LES LOI DE TYPE SECHAGE
 !
@@ -35,6 +37,8 @@ subroutine rcdiff(imate, comp, temp, c, diff)
 ! IN  TEMP    : TEMPERATURE
 ! IN  C       : CONCENTRATION EN EAU
 ! OUT DIFF    : VALEUR DU COEFFICIENT DE DIFFUSION
+! OUT DIFL_   : VALEUR DU COEFFICIENT DE DIFFUSION LIQUIDE (OPTIONNEL)
+! OUT DIFV_   : VALEUR DU COEFFICIENT DE DIFFUSION VAPEUR (OPTIONNEL)
 ! ----------------------------------------------------------------------
 !
 !
@@ -51,6 +55,7 @@ subroutine rcdiff(imate, comp, temp, c, diff)
     character(len=16) :: nomres(nbres)
     character(len=32) :: phenom
     real(kind=8) :: val_non_physique
+    real(kind=8) :: difl, difv
 !
 !
     call rccoma(imate, comp(1:6), 1, phenom, icodre(1))
@@ -60,6 +65,9 @@ subroutine rcdiff(imate, comp, temp, c, diff)
     spt = 1
     poum = '+'
     tz0 = r8t0()
+!
+    difl = 0.d0
+    difv = 0.d0
     if (phenom .eq. 'SECH_GRANGER') then
         nbpar = 0
 
@@ -77,7 +85,7 @@ subroutine rcdiff(imate, comp, temp, c, diff)
             call utmess('F', 'ALGORITH10_91', sk=phenom, sr=val_non_physique)
         end if
 
-        diff = valres(1)*exp(valres(2)*c)*((temp+tz0)/(valres(4)+tz0))*exp(-valres(3)*(1.d&
+        difl = valres(1)*exp(valres(2)*c)*((temp+tz0)/(valres(4)+tz0))*exp(-valres(3)*(1.d&
                &0/(temp+tz0)-1.d0/(valres(4)+tz0)))
 !
     else if (phenom .eq. 'SECH_MENSI') then
@@ -87,7 +95,7 @@ subroutine rcdiff(imate, comp, temp, c, diff)
         call rcvalb(fami, kpg, spt, poum, imate, &
                     ' ', phenom, nbpar, nompar, valpar, &
                     2, nomres, valres, icodre, 1)
-        diff = valres(1)*exp(valres(2)*c)
+        difl = valres(1)*exp(valres(2)*c)
 !
     else if (phenom .eq. 'SECH_BAZANT') then
         nbpar = 1
@@ -101,11 +109,11 @@ subroutine rcdiff(imate, comp, temp, c, diff)
                     ' ', phenom, nbpar, nompar, valpar, &
                     4, nomres, valres, icodre, 1)
         rap = ((1.d0-valres(4))/0.25d0)**valres(3)
-        diff = valres(1)*(valres(2)+(1.d0-valres(2))/(1.d0+rap))
+        difl = valres(1)*(valres(2)+(1.d0-valres(2))/(1.d0+rap))
 !
     else if (phenom .eq. 'SECH_RFT') then
         call rftDiffusion(fami, kpg, spt, poum, imate, &
-                          c, temp, diff)
+                          c, temp, diff, difl, difv)
 !
     else if (phenom .eq. 'SECH_NAPPE') then
         nbpar = 2
@@ -121,11 +129,22 @@ subroutine rcdiff(imate, comp, temp, c, diff)
         call rcvalb(fami, kpg, spt, poum, imate, &
                     ' ', phenom, nbpar, nompar, valpar, &
                     1, nomres, valres, icodre, 1)
-        diff = valres(1)
+        difl = valres(1)
 !
     else
         call utmess('F', 'ALGORITH10_20', sk=comp)
     end if
+
+    diff = difl+difv
+
+    if (present(difl_)) then
+        difl_ = difl
+    end if
+
+    if (present(difv_)) then
+        difv_ = difv
+    end if
+
 !
 !
 end subroutine

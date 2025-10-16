@@ -60,9 +60,9 @@ subroutine chmima(nomsd, nomsy, typcha, typmax, nocham, typresu, &
 !
 ! ----------------------------------------------------------------------
     character(len=4) :: ctyp
-    character(len=8) :: typma, crit, noma, nomn, valeur
+    character(len=8) :: typma, crit, noma, nomn
     character(len=19) :: prno, prn2
-    character(len=16) :: noms2
+    character(len=16) :: noms2, valeur
     character(len=19) :: nocha2, chextr, knum, chs1, chs2
     character(len=19) :: mcf
     character(len=5) :: sufv, sufsl
@@ -71,7 +71,7 @@ subroutine chmima(nomsd, nomsy, typcha, typmax, nocham, typresu, &
     integer(kind=8) :: iret, ivale, j, jddlx, jddly, jddlz, jdlrx
     integer(kind=8) :: jdlry, jdlrz, jordr, jvpnt, n2, nbnoe, nc
     integer(kind=8) :: neq, np, nvale, neq2, icsl
-    real(kind=8) :: epsi, rs1, x, y, z
+    real(kind=8) :: epsi, rs1, x, y, z, nume_float
     logical :: verif
 !-----------------------------------------------------------------------
     call jemarq()
@@ -504,12 +504,6 @@ subroutine chmima(nomsd, nomsy, typcha, typmax, nocham, typresu, &
                     if (zi(jdlry+in) .ne. 0) zr(nvale+zi(jdlry+in)-1) = zr(iad)
                     if (zi(jdlrz+in) .ne. 0) zr(nvale+zi(jdlrz+in)-1) = zr(iad)
                 end do
-                call jedetr('&&CHMIMA.DDL.DX')
-                call jedetr('&&CHMIMA.DDL.DY')
-                call jedetr('&&CHMIMA.DDL.DZ')
-                call jedetr('&&CHMIMA.DDL.DRX')
-                call jedetr('&&CHMIMA.DDL.DRY')
-                call jedetr('&&CHMIMA.DDL.DRZ')
             else
                 do j = 0, neq-1
                     call rsadpa(nomsd, 'L', 1, 'INST', zi(inumer+j), &
@@ -524,15 +518,37 @@ subroutine chmima(nomsd, nomsy, typcha, typmax, nocham, typresu, &
                 zr(nvale+j) = zr(iad)
             end do
         end if
-    else
+    else if (valeur(1:10) .eq. 'NUME_ORDRE') then
         if (typma .eq. 'NORM_TRA') then
-            call jedetr('&&CHMIMA.DDL.DX')
-            call jedetr('&&CHMIMA.DDL.DY')
-            call jedetr('&&CHMIMA.DDL.DZ')
-            call jedetr('&&CHMIMA.DDL.DRX')
-            call jedetr('&&CHMIMA.DDL.DRY')
-            call jedetr('&&CHMIMA.DDL.DRZ')
+            if (nbordr .ne. 1) then
+                do in = 0, nbnoe-1
+                    nume_float = float(zi(inumer+zi(jddlx+in)-1))
+                    zr(nvale+zi(jddlx+in)-1) = nume_float
+                    zr(nvale+zi(jddly+in)-1) = nume_float
+                    if (zi(jddlz+in) .ne. 0) zr(nvale+zi(jddlz+in)-1) = nume_float
+                    if (zi(jdlrx+in) .ne. 0) zr(nvale+zi(jdlrx+in)-1) = nume_float
+                    if (zi(jdlry+in) .ne. 0) zr(nvale+zi(jdlry+in)-1) = nume_float
+                    if (zi(jdlrz+in) .ne. 0) zr(nvale+zi(jdlrz+in)-1) = nume_float
+                end do
+            else
+                do j = 0, neq-1
+                    zr(nvale+j) = float(zi(inumer+j))
+                end do
+            end if
+        else
+            do j = 0, neq-1
+                zr(nvale+j) = float(zi(inumer+j))
+            end do
         end if
+    end if
+
+    if (typma .eq. 'NORM_TRA') then
+        call jedetr('&&CHMIMA.DDL.DX')
+        call jedetr('&&CHMIMA.DDL.DY')
+        call jedetr('&&CHMIMA.DDL.DZ')
+        call jedetr('&&CHMIMA.DDL.DRX')
+        call jedetr('&&CHMIMA.DDL.DRY')
+        call jedetr('&&CHMIMA.DDL.DRZ')
     end if
 !
     call jedetr('&&CHMIMA.INST')
