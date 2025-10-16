@@ -30,13 +30,15 @@ module HHO_Ther_module
     use HHO_utils_module
     use HHO_matrix_module
     use HHO_algebra_module
+    use HHO_init_module
     use NonLin_Datastructure_type
 !
     implicit none
 !
     private
-#include "asterf_debug.h"
+#include "jeveux.h"
 #include "asterf_types.h"
+#include "asterf_debug.h"
 #include "asterfort/assert.h"
 #include "asterfort/HHO_size_module.h"
 #include "asterfort/jevech.h"
@@ -49,7 +51,6 @@ module HHO_Ther_module
 #include "asterfort/utmess.h"
 #include "blas/dger.h"
 #include "blas/dsyr.h"
-#include "jeveux.h"
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -577,7 +578,7 @@ contains
 !
         implicit none
 !
-        type(HHO_Cell), intent(in) :: hhoCell
+        type(HHO_Cell), intent(inout) :: hhoCell
         type(HHO_Data), intent(in) :: hhoData
         type(HHO_matrix), intent(out) :: gradfull
         type(HHO_matrix), intent(out), optional :: stab
@@ -597,6 +598,8 @@ contains
 ! --------------------------------------------------------------------------------------------------
 !
         type(HHO_matrix) :: gradrec_scal
+!
+        call hhoInitFacesOfCell(hhoCell)
 !
 ! ----- Compute Gradient reconstruction
         call hhoGradRecFullVec(hhoCell, hhoData, gradfull)

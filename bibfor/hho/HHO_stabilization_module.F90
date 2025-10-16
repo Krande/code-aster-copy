@@ -30,8 +30,8 @@ module HHO_stabilization_module
 !
     implicit none
 !
-#include "asterf_debug.h"
 #include "asterf_types.h"
+#include "asterf_debug.h"
 #include "asterfort/assert.h"
 #include "asterfort/HHO_size_module.h"
 #include "asterfort/utmess.h"
@@ -93,6 +93,7 @@ contains
         blas_int :: b_k, b_ldc, b_m
 ! --------------------------------------------------------------------------------------------------
 !
+        ASSERT(hhoCell%l_face_init)
 ! -- init cell basis
         call hhoBasisCell%initialize(hhoCell)
 !
@@ -394,6 +395,7 @@ contains
         blas_int :: b_k, b_ldc, b_m
 ! --------------------------------------------------------------------------------------------------
 !
+        ASSERT(hhoCell%l_face_init)
 ! -- init cell basis
         call hhoBasisCell%initialize(hhoCell)
 !
@@ -679,6 +681,7 @@ contains
         blas_int :: b_k, b_ldc, b_m
 ! --------------------------------------------------------------------------------------------------
 !
+        ASSERT(hhoCell%l_face_init)
 ! -- init cell basis
         call hhoBasisCell%initialize(hhoCell)
 !

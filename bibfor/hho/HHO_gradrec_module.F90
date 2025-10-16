@@ -32,8 +32,8 @@ module HHO_gradrec_module
     implicit none
 !
     private
-#include "asterf_debug.h"
 #include "asterf_types.h"
+#include "asterf_debug.h"
 #include "asterfort/assert.h"
 #include "asterfort/HHO_size_module.h"
 #include "asterfort/utmess.h"
@@ -95,6 +95,7 @@ contains
         blas_int :: b_n, b_nhrs, b_lda, b_ldb, info, b_m
         blas_int, parameter :: b_one = to_blas_int(1)
 !
+        ASSERT(hhoCell%l_face_init)
 ! -- init cell basis
         call hhoBasisCell%initialize(hhoCell)
 !
@@ -237,6 +238,7 @@ contains
         integer(kind=8) :: idim, ibeginGrad, iendGrad, jbeginCell, jendCell, jbeginFace, jendFace
         integer(kind=8) :: total_dofs, iFace, jbeginVec, jendVec
 !
+        ASSERT(hhoCell%l_face_init)
 ! -- number of dofs
         call hhoMecaNLDofs(hhoCell, hhoData, cbs, fbs, total_dofs, gbs, gbs_sym)
         faces_dofs = total_dofs-cbs
@@ -329,6 +331,7 @@ contains
         integer(kind=8) :: iface, fromFace, toFace, cell_offset
         blas_int, parameter :: b_one = 1
 !
+        ASSERT(hhoCell%l_face_init)
 ! -- init cell basis
         call hhoBasisCell%initialize(hhoCell)
 !
@@ -639,6 +642,7 @@ contains
         blas_int :: b_n, b_nhrs, b_lda, b_ldb, info, b_m
         blas_int, parameter :: b_one = 1
 !
+        ASSERT(hhoCell%l_face_init)
 ! -- init cell basis
         call hhoBasisCell%initialize(hhoCell)
 !
@@ -1015,6 +1019,7 @@ contains
         real(kind=8) :: qp_dphi_ss, normal(3)
         blas_int, parameter :: b_one = 1
 !
+        ASSERT(hhoCell%l_face_init)
 ! -- init cell basis
         call hhoBasisCell%initialize(hhoCell)
 !

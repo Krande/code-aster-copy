@@ -39,6 +39,7 @@ module HHO_size_module
 !
     public :: hhoTherDofs, hhoTherNLDofs, hhoMecaDofs, hhoMecaNLDofs, hhoMecaGradDofs
     public :: hhoTherFaceDofs, hhoMecaFaceDofs, hhoTherCellDofs, hhoMecaCellDofs
+    private :: hhoMecaFaceDofs2, hhoTherFaceDofs2
 !
 contains
 !
@@ -70,7 +71,7 @@ contains
 !
 ! ---- number of dofs
         call hhoTherCellDofs(hhoCell, hhoData, cbs)
-        call hhoTherFaceDofs(hhoCell%faces(1), hhoData, fbs)
+        call hhoTherFaceDofs2(hhoCell, hhoData, fbs)
         total_dofs = cbs+hhoCell%nbfaces*fbs
 !
     end subroutine
@@ -149,7 +150,7 @@ contains
 ! ---- number of dofs
 !
         call hhoMecaCellDofs(hhoCell, hhoData, cbs)
-        call hhoMecaFaceDofs(hhoCell%faces(1), hhoData, fbs)
+        call hhoMecaFaceDofs2(hhoCell, hhoData, fbs)
         total_dofs = cbs+hhoCell%nbfaces*fbs
 !
     end subroutine
@@ -224,6 +225,32 @@ contains
 !
 !===================================================================================================
 !
+    subroutine hhoTherFaceDofs2(hhoCell, hhoData, fbs)
+!
+        implicit none
+!
+        type(HHO_Cell), intent(in)  :: hhoCell
+        type(HHO_Data), intent(in)  :: hhoData
+        integer(kind=8), intent(out)        :: fbs
+!
+! --------------------------------------------------------------------------------------------------
+!   HHO - thermic
+!
+!   Compute the number of dofs for thermic
+!   In hhoCell      : the current HHO cell
+!   In hhoData      : information on HHO methods
+!   Out fbs         : number of face dofs
+!
+! --------------------------------------------------------------------------------------------------
+!
+        fbs = binomial(hhoData%face_degree()+hhoCell%ndim-1, hhoData%face_degree())
+!
+    end subroutine
+!
+!===================================================================================================
+!
+!===================================================================================================
+!
     subroutine hhoMecaFaceDofs(hhoFace, hhoData, fbs)
 !
         implicit none
@@ -247,6 +274,36 @@ contains
 !
         call hhoTherFaceDofs(hhoFace, hhoData, fbs_ther)
         fbs = (hhoFace%ndim+1)*fbs_ther
+!
+    end subroutine
+!
+!===================================================================================================
+!
+!===================================================================================================
+!
+    subroutine hhoMecaFaceDofs2(hhoCell, hhoData, fbs)
+!
+        implicit none
+!
+        type(HHO_Cell), intent(in)  :: hhoCell
+        type(HHO_Data), intent(in)  :: hhoData
+        integer(kind=8), intent(out)        :: fbs
+!
+! --------------------------------------------------------------------------------------------------
+!   HHO - mechanics
+!
+!   Compute the number of dofs for mechanics
+!   In hhoCell      : the current HHO Face
+!   In hhoData      : information on HHO methods
+!   Out fbs         : number of face dofs
+!
+! --------------------------------------------------------------------------------------------------
+!
+        integer(kind=8) :: fbs_ther
+! --------------------------------------------------------------------------------------------------
+!
+        call hhoTherFaceDofs2(hhoCell, hhoData, fbs_ther)
+        fbs = hhoCell%ndim*fbs_ther
 !
     end subroutine
 !

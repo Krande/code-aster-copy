@@ -29,6 +29,7 @@ module HHO_init_module
     implicit none
 !
     private
+#include "jeveux.h"
 #include "asterf_types.h"
 #include "asterfort/assert.h"
 #include "asterfort/Behaviour_type.h"
@@ -38,7 +39,6 @@ module HHO_init_module
 #include "asterfort/rcvala.h"
 #include "asterfort/teattr.h"
 #include "asterfort/tecach.h"
-#include "jeveux.h"
 #include "MeshTypes_type.h"
 !
 ! --------------------------------------------------------------------------------------------------
@@ -50,7 +50,7 @@ module HHO_init_module
 ! --------------------------------------------------------------------------------------------------
 !
 !
-    public :: hhoInfoInitCell, hhoInfoInitFace
+    public :: hhoInfoInitCell, hhoInfoInitFace, hhoInitFacesOfCell, hhoInfoInitCellAndFace
     private :: hhoGeomData, hhoGeomFace, hhoDataInit, hhoFaceInit, hhoCellInit
 !
 contains
@@ -309,7 +309,7 @@ contains
         implicit none
 !
         character(len=8), intent(in)                :: typma
-        real(kind=8), dimension(3, 27), intent(in)   :: nodes_coor
+        real(kind=8), dimension(3, 27), intent(in)  :: nodes_coor
         type(HHO_Cell), intent(out)                 :: hhoCell
 !
 ! --------------------------------------------------------------------------------------------------
@@ -326,20 +326,8 @@ contains
 ! --------------------------------------------------------------------------------------------------
 !
         aster_logical, parameter :: l_debug = ASTER_FALSE
-        integer(kind=8), parameter                      :: max_faces = 6
-        integer(kind=8), parameter                      :: max_nodes = 5
-        integer(kind=8), dimension(max_nodes, max_faces) :: nodes_faces
-        integer(kind=8), dimension(max_faces)           :: nbnodes_faces
-        integer(kind=8), dimension(max_faces)           :: type_faces
-        real(kind=8), dimension(3, max_nodes)    :: coor_face
-        integer(kind=8) :: i_face, i_node
-        aster_logical :: l_jaco
 ! --------------------------------------------------------------------------------------------------
-! --- Init
-        nodes_faces = 0
-        nbnodes_faces = 0
-        type_faces = 0
-        coor_face = 0.d0
+!
 !
         if (typma == 'HEXA27') then
             hhoCell%typema = MT_HEXA8
@@ -347,168 +335,36 @@ contains
             hhoCell%ndim = 3
             hhoCell%nbfaces = 6
             hhoCell%node_bar_loc = 27
-!
-! ----- !!!! Attention l'ordre des faces doit etre le meme que celui du catalogue
-        !!!! Le dernier noeud est le barycentre
-! ----- Face 1 -> N21
-            nodes_faces(1:5, 1) = (/1, 4, 3, 2, 21/)
-            nbnodes_faces(1) = 4
-            type_faces(1) = MT_QUAD4
-! ----- Face 2 -> N22
-            nodes_faces(1:5, 2) = (/1, 2, 6, 5, 22/)
-            nbnodes_faces(2) = 4
-            type_faces(2) = MT_QUAD4
-! ----- Face 3 -> N23
-            nodes_faces(1:5, 3) = (/2, 3, 7, 6, 23/)
-            nbnodes_faces(3) = 4
-            type_faces(3) = MT_QUAD4
-! ----- Face 4 -> N24
-            nodes_faces(1:5, 4) = (/3, 4, 8, 7, 24/)
-            nbnodes_faces(4) = 4
-            type_faces(4) = MT_QUAD4
-! ----- Face 5 -> N25
-            nodes_faces(1:5, 5) = (/1, 5, 8, 4, 25/)
-            nbnodes_faces(5) = 4
-            type_faces(5) = MT_QUAD4
-! ----- Face 6 -> N26
-            nodes_faces(1:5, 6) = (/5, 6, 7, 8, 26/)
-            nbnodes_faces(6) = 4
-            type_faces(6) = MT_QUAD4
-!
         else if (typma == 'TETRA15') then
             hhoCell%typema = MT_TETRA4
             hhoCell%nbnodes = 4
             hhoCell%ndim = 3
             hhoCell%nbfaces = 4
             hhoCell%node_bar_loc = 15
-!
-! ----- !!!! Attention l'ordre des faces doit etre le meme que celui du catalogue
-        !!!! Le dernier noeud est le barycentre
-! ----- Face 1 -> N11
-            nodes_faces(1:4, 1) = (/1, 3, 2, 11/)
-            nbnodes_faces(1) = 3
-            type_faces(1) = MT_TRIA3
-! ----- Face 2 -> N12
-            nodes_faces(1:4, 2) = (/1, 2, 4, 12/)
-            nbnodes_faces(2) = 3
-            type_faces(2) = MT_TRIA3
-! ----- Face 3 -> N13
-            nodes_faces(1:4, 3) = (/1, 4, 3, 13/)
-            nbnodes_faces(3) = 3
-            type_faces(3) = MT_TRIA3
-! ----- Face 4 -> N14
-            nodes_faces(1:4, 4) = (/2, 3, 4, 14/)
-            nbnodes_faces(4) = 3
-            type_faces(4) = MT_TRIA3
-!
         else if (typma == 'PYRAM19') then
             hhoCell%typema = MT_PYRAM5
             hhoCell%nbnodes = 5
             hhoCell%ndim = 3
             hhoCell%nbfaces = 5
             hhoCell%node_bar_loc = 19
-!
-! ----- !!!! Attention l'ordre des faces doit etre le meme que celui du catalogue
-        !!!! Le dernier noeud est le barycentre
-! ----- Face 1 -> N14
-            nodes_faces(1:5, 1) = (/1, 4, 3, 2, 14/)
-            nbnodes_faces(1) = 4
-            type_faces(1) = MT_QUAD4
-! ----- Face 2 -> N15
-            nodes_faces(1:4, 2) = (/1, 2, 5, 15/)
-            nbnodes_faces(2) = 3
-            type_faces(2) = MT_TRIA3
-! ----- Face 3 -> N16
-            nodes_faces(1:4, 3) = (/2, 3, 5, 16/)
-            nbnodes_faces(3) = 3
-            type_faces(3) = MT_TRIA3
-! ----- Face 4 -> N17
-            nodes_faces(1:4, 4) = (/3, 4, 5, 17/)
-            nbnodes_faces(4) = 3
-            type_faces(4) = MT_TRIA3
-! ----- Face 5 -> N18
-            nodes_faces(1:4, 5) = (/4, 1, 5, 18/)
-            nbnodes_faces(5) = 3
-            type_faces(5) = MT_TRIA3
-!
         else if (typma == 'PENTA21') then
             hhoCell%typema = MT_PENTA6
             hhoCell%nbnodes = 6
             hhoCell%ndim = 3
             hhoCell%nbfaces = 5
             hhoCell%node_bar_loc = 21
-!
-! ----- !!!! Attention l'ordre des faces doit etre le meme que celui du catalogue
-        !!!! Le dernier noeud est le barycentre
-! ----- Face 1 -> N16
-            nodes_faces(1:5, 1) = (/1, 2, 5, 4, 16/)
-            nbnodes_faces(1) = 4
-            type_faces(1) = MT_QUAD4
-! ----- Face 2 -> N17
-            nodes_faces(1:5, 2) = (/2, 3, 6, 5, 17/)
-            nbnodes_faces(2) = 4
-            type_faces(2) = MT_QUAD4
-! ----- Face 3 -> N18
-            nodes_faces(1:5, 3) = (/1, 4, 6, 3, 18/)
-            nbnodes_faces(3) = 4
-            type_faces(3) = MT_QUAD4
-! ----- Face 4 -> N19
-            nodes_faces(1:4, 4) = (/1, 3, 2, 19/)
-            nbnodes_faces(4) = 3
-            type_faces(4) = MT_TRIA3
-! ----- Face 5 -> N20
-            nodes_faces(1:4, 5) = (/4, 5, 6, 20/)
-            nbnodes_faces(5) = 3
-            type_faces(5) = MT_TRIA3
-!
         else if (typma == 'QUAD9') then
             hhoCell%typema = MT_QUAD4
             hhoCell%nbnodes = 4
             hhoCell%ndim = 2
             hhoCell%nbfaces = 4
             hhoCell%node_bar_loc = 9
-!
-! ----- !!!! Attention l'ordre des faces doit etre le meme que celui du catalogue
-        !!!! Le dernier noeud est le barycentre
-! ----- Face 1 -> N5
-            nodes_faces(1:3, 1) = (/1, 2, 5/)
-            nbnodes_faces(1) = 2
-            type_faces(1) = MT_SEG2
-! ----- Face 2 -> N6
-            nodes_faces(1:3, 2) = (/2, 3, 6/)
-            nbnodes_faces(2) = 2
-            type_faces(2) = MT_SEG2
-! ----- Face 3 -> N7
-            nodes_faces(1:3, 3) = (/3, 4, 7/)
-            nbnodes_faces(3) = 2
-            type_faces(3) = MT_SEG2
-! ----- Face 4 -> N8
-            nodes_faces(1:3, 4) = (/4, 1, 8/)
-            nbnodes_faces(4) = 2
-            type_faces(4) = MT_SEG2
-!
         else if (typma == 'TRIA7') then
             hhoCell%typema = MT_TRIA3
             hhoCell%nbnodes = 3
             hhoCell%ndim = 2
             hhoCell%nbfaces = 3
             hhoCell%node_bar_loc = 7
-!
-! ----- !!!! Attention l'ordre des faces doit etre le meme que celui du catalogue
-        !!!! Le dernier noeud est le barycentre
-! ----- Face 1 -> N4
-            nodes_faces(1:3, 1) = (/1, 2, 4/)
-            nbnodes_faces(1) = 2
-            type_faces(1) = MT_SEG2
-! ----- Face 2 -> N5
-            nodes_faces(1:3, 2) = (/2, 3, 5/)
-            nbnodes_faces(2) = 2
-            type_faces(2) = MT_SEG2
-! ----- Face 3 -> N6
-            nodes_faces(1:3, 3) = (/3, 1, 6/)
-            nbnodes_faces(3) = 2
-            type_faces(3) = MT_SEG2
-!
         else
             ASSERT(ASTER_FALSE)
         end if
@@ -521,35 +377,12 @@ contains
 !
         hhoCell%axes = hhoLocalAxesCell(hhoCell)
 !
-! ----- Init faces
-!
-        do i_face = 1, hhoCell%nbfaces
-            coor_face = 0.d0
-            do i_node = 1, nbnodes_faces(i_face)
-                coor_face(1:3, i_node) = hhoCell%coorno(1:3, nodes_faces(i_node, i_face))
-            end do
-            call hhoFaceInit(hhoCell%faces(i_face), type_faces(i_face), hhoCell%ndim-1, &
-                             nbnodes_faces(i_face), coor_face, nodes_faces(:, i_face), &
-                             i_face, hhoCell%barycenter)
-        end do
-!
 ! ----- Jacobienne
 !
         if (hhoCell%typema == MT_TETRA4 .or. hhoCell%typema == MT_TRIA3) then
             hhoCell%l_jaco_cst = ASTER_TRUE
         else
-            hhoCell%l_jaco_cst = ASTER_TRUE
-            l_jaco = ASTER_TRUE
-            do i_face = 1, hhoCell%nbfaces
-                if (.not. hhoCell%faces(i_face)%l_jaco_cst) then
-                    hhoCell%l_jaco_cst = ASTER_FALSE
-                    l_jaco = ASTER_FALSE
-                    exit
-                end if
-            end do
-            if (l_jaco) then
-                hhoCell%l_jaco_cst = hhoIsJacobCst(hhoCell%typema, hhoCell%coorno, hhoCell%ndim)
-            end if
+            hhoCell%l_jaco_cst = hhoIsJacobCst(hhoCell%typema, hhoCell%coorno, hhoCell%ndim)
         end if
 !
         if (l_debug) then
@@ -678,7 +511,7 @@ contains
 !
         type(HHO_Cell), intent(out)                 :: hhoCell
         type(HHO_Data), intent(out)                 :: hhoData
-        integer(kind=8), intent(in), optional               :: npg
+        integer(kind=8), intent(in), optional       :: npg
         type(HHO_Quadrature), optional, intent(out) :: hhoQuad
 
 !
@@ -724,6 +557,48 @@ contains
             end if
         end if
 !
+    end subroutine
+!
+!===================================================================================================
+!
+!===================================================================================================
+!
+!
+!===================================================================================================
+!
+!===================================================================================================
+!
+    subroutine hhoInfoInitCellAndFace(hhoCell, hhoData, npg, hhoQuad)
+!
+        implicit none
+!
+        type(HHO_Cell), intent(out)                 :: hhoCell
+        type(HHO_Data), intent(out)                 :: hhoData
+        integer(kind=8), intent(in), optional       :: npg
+        type(HHO_Quadrature), optional, intent(out) :: hhoQuad
+
+!
+! --------------------------------------------------------------------------------------------------
+!
+! HHO
+!
+! Get hho data on the modelisation
+!
+! --------------------------------------------------------------------------------------------------
+!
+!   Initialize information for a HHO cell
+!   Out hhoCell  : the current HHO Cell
+!   Out hhoData  : information on HHO methods
+!   Out hhoQuad  : Quadrature for the cell
+!   In npg (optional)      : number of quadrature point for the face
+! --------------------------------------------------------------------------------------------------
+!
+        if (present(npg)) then
+            call hhoInfoInitCell(hhoCell, hhoData, npg, hhoQuad)
+        else
+            call hhoInfoInitCell(hhoCell, hhoData)
+        end if
+        call hhoInitFacesOfCell(hhoCell)
     end subroutine
 !
 !===================================================================================================
@@ -792,6 +667,200 @@ contains
                 call hhoQuadFace%GetQuadFace(hhoFace, 2*hhoData%face_degree(), &
                                              laxis, param=ASTER_TRUE)
             end if
+        end if
+!
+    end subroutine
+!
+!
+!===================================================================================================
+!
+!===================================================================================================
+!
+    subroutine hhoInitFacesOfCell(hhoCell)
+!
+        implicit none
+!
+        type(HHO_Cell), intent(inout)                 :: hhoCell
+!
+! --------------------------------------------------------------------------------------------------
+!
+! HHO - generic tools
+!
+! Initialize a HHO cell - only face
+!
+! --------------------------------------------------------------------------------------------------
+!
+! Out hhoCell           : a HHO cell
+! --------------------------------------------------------------------------------------------------
+!
+        integer(kind=8), parameter                      :: max_faces = 6
+        integer(kind=8), parameter                      :: max_nodes = 5
+        integer(kind=8), dimension(max_nodes, max_faces) :: nodes_faces
+        integer(kind=8), dimension(max_faces)           :: nbnodes_faces
+        integer(kind=8), dimension(max_faces)           :: type_faces
+        real(kind=8), dimension(3, max_faces) :: coor_face
+        integer(kind=8) :: i_face, i_node
+
+!
+        if (.not. hhoCell%l_face_init) then
+            ! --- Init
+            nodes_faces = 0
+            nbnodes_faces = 0
+            type_faces = 0
+            coor_face = 0.d0
+
+            if (hhoCell%typema == MT_HEXA8) then
+!
+! ----- !!!! Attention l'ordre des faces doit etre le meme que celui du catalogue
+        !!!! Le dernier noeud est le barycentre
+! ----- Face 1 -> N21
+                nodes_faces(1:5, 1) = (/1, 4, 3, 2, 21/)
+                nbnodes_faces(1) = 4
+                type_faces(1) = MT_QUAD4
+! ----- Face 2 -> N22
+                nodes_faces(1:5, 2) = (/1, 2, 6, 5, 22/)
+                nbnodes_faces(2) = 4
+                type_faces(2) = MT_QUAD4
+! ----- Face 3 -> N23
+                nodes_faces(1:5, 3) = (/2, 3, 7, 6, 23/)
+                nbnodes_faces(3) = 4
+                type_faces(3) = MT_QUAD4
+! ----- Face 4 -> N24
+                nodes_faces(1:5, 4) = (/3, 4, 8, 7, 24/)
+                nbnodes_faces(4) = 4
+                type_faces(4) = MT_QUAD4
+! ----- Face 5 -> N25
+                nodes_faces(1:5, 5) = (/1, 5, 8, 4, 25/)
+                nbnodes_faces(5) = 4
+                type_faces(5) = MT_QUAD4
+! ----- Face 6 -> N26
+                nodes_faces(1:5, 6) = (/5, 6, 7, 8, 26/)
+                nbnodes_faces(6) = 4
+                type_faces(6) = MT_QUAD4
+!
+            else if (hhoCell%typema == MT_TETRA4) then
+!
+! ----- !!!! Attention l'ordre des faces doit etre le meme que celui du catalogue
+        !!!! Le dernier noeud est le barycentre
+! ----- Face 1 -> N11
+                nodes_faces(1:4, 1) = (/1, 3, 2, 11/)
+                nbnodes_faces(1) = 3
+                type_faces(1) = MT_TRIA3
+! ----- Face 2 -> N12
+                nodes_faces(1:4, 2) = (/1, 2, 4, 12/)
+                nbnodes_faces(2) = 3
+                type_faces(2) = MT_TRIA3
+! ----- Face 3 -> N13
+                nodes_faces(1:4, 3) = (/1, 4, 3, 13/)
+                nbnodes_faces(3) = 3
+                type_faces(3) = MT_TRIA3
+! ----- Face 4 -> N14
+                nodes_faces(1:4, 4) = (/2, 3, 4, 14/)
+                nbnodes_faces(4) = 3
+                type_faces(4) = MT_TRIA3
+!
+            else if (hhoCell%typema == MT_PYRAM5) then
+!
+! ----- !!!! Attention l'ordre des faces doit etre le meme que celui du catalogue
+        !!!! Le dernier noeud est le barycentre
+! ----- Face 1 -> N14
+                nodes_faces(1:5, 1) = (/1, 4, 3, 2, 14/)
+                nbnodes_faces(1) = 4
+                type_faces(1) = MT_QUAD4
+! ----- Face 2 -> N15
+                nodes_faces(1:4, 2) = (/1, 2, 5, 15/)
+                nbnodes_faces(2) = 3
+                type_faces(2) = MT_TRIA3
+! ----- Face 3 -> N16
+                nodes_faces(1:4, 3) = (/2, 3, 5, 16/)
+                nbnodes_faces(3) = 3
+                type_faces(3) = MT_TRIA3
+! ----- Face 4 -> N17
+                nodes_faces(1:4, 4) = (/3, 4, 5, 17/)
+                nbnodes_faces(4) = 3
+                type_faces(4) = MT_TRIA3
+! ----- Face 5 -> N18
+                nodes_faces(1:4, 5) = (/4, 1, 5, 18/)
+                nbnodes_faces(5) = 3
+                type_faces(5) = MT_TRIA3
+!
+            else if (hhoCell%typema == MT_PENTA6) then
+!
+! ----- !!!! Attention l'ordre des faces doit etre le meme que celui du catalogue
+        !!!! Le dernier noeud est le barycentre
+! ----- Face 1 -> N16
+                nodes_faces(1:5, 1) = (/1, 2, 5, 4, 16/)
+                nbnodes_faces(1) = 4
+                type_faces(1) = MT_QUAD4
+! ----- Face 2 -> N17
+                nodes_faces(1:5, 2) = (/2, 3, 6, 5, 17/)
+                nbnodes_faces(2) = 4
+                type_faces(2) = MT_QUAD4
+! ----- Face 3 -> N18
+                nodes_faces(1:5, 3) = (/1, 4, 6, 3, 18/)
+                nbnodes_faces(3) = 4
+                type_faces(3) = MT_QUAD4
+! ----- Face 4 -> N19
+                nodes_faces(1:4, 4) = (/1, 3, 2, 19/)
+                nbnodes_faces(4) = 3
+                type_faces(4) = MT_TRIA3
+! ----- Face 5 -> N20
+                nodes_faces(1:4, 5) = (/4, 5, 6, 20/)
+                nbnodes_faces(5) = 3
+                type_faces(5) = MT_TRIA3
+!
+            else if (hhoCell%typema == MT_QUAD4) then
+!
+! ----- !!!! Attention l'ordre des faces doit etre le meme que celui du catalogue
+        !!!! Le dernier noeud est le barycentre
+! ----- Face 1 -> N5
+                nodes_faces(1:3, 1) = (/1, 2, 5/)
+                nbnodes_faces(1) = 2
+                type_faces(1) = MT_SEG2
+! ----- Face 2 -> N6
+                nodes_faces(1:3, 2) = (/2, 3, 6/)
+                nbnodes_faces(2) = 2
+                type_faces(2) = MT_SEG2
+! ----- Face 3 -> N7
+                nodes_faces(1:3, 3) = (/3, 4, 7/)
+                nbnodes_faces(3) = 2
+                type_faces(3) = MT_SEG2
+! ----- Face 4 -> N8
+                nodes_faces(1:3, 4) = (/4, 1, 8/)
+                nbnodes_faces(4) = 2
+                type_faces(4) = MT_SEG2
+!
+            else if (hhoCell%typema == MT_TRIA3) then
+!
+! ----- !!!! Attention l'ordre des faces doit etre le meme que celui du catalogue
+        !!!! Le dernier noeud est le barycentre
+! ----- Face 1 -> N4
+                nodes_faces(1:3, 1) = (/1, 2, 4/)
+                nbnodes_faces(1) = 2
+                type_faces(1) = MT_SEG2
+! ----- Face 2 -> N5
+                nodes_faces(1:3, 2) = (/2, 3, 5/)
+                nbnodes_faces(2) = 2
+                type_faces(2) = MT_SEG2
+! ----- Face 3 -> N6
+                nodes_faces(1:3, 3) = (/3, 1, 6/)
+                nbnodes_faces(3) = 2
+                type_faces(3) = MT_SEG2
+!
+            else
+                ASSERT(ASTER_FALSE)
+            end if
+
+            do i_face = 1, hhoCell%nbfaces
+                coor_face = 0.d0
+                do i_node = 1, nbnodes_faces(i_face)
+                    coor_face(1:3, i_node) = hhoCell%coorno(1:3, nodes_faces(i_node, i_face))
+                end do
+                call hhoFaceInit(hhoCell%faces(i_face), type_faces(i_face), hhoCell%ndim-1, &
+                                 nbnodes_faces(i_face), coor_face, nodes_faces(:, i_face), &
+                                 i_face, hhoCell%barycenter)
+            end do
+            hhoCell%l_face_init = ASTER_TRUE
         end if
 !
     end subroutine

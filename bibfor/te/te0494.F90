@@ -20,7 +20,7 @@ subroutine te0494(nomopt, nomte)
 !
     use HHO_type
     use HHO_size_module, only: hhoTherDofs
-    use HHO_init_module, only: hhoInfoInitCell
+    use HHO_init_module, only: hhoInfoInitCellAndFace
     use HHO_basis_module
 !
     implicit none
@@ -28,9 +28,9 @@ subroutine te0494(nomopt, nomte)
 #include "jeveux.h"
 #include "asterf_types.h"
 #include "asterfort/assert.h"
-#include "asterfort/writeVector.h"
-#include "asterfort/HHO_size_module.h"
 #include "asterfort/HHO_basis_module.h"
+#include "asterfort/HHO_size_module.h"
+#include "asterfort/writeVector.h"
 #include "blas/dcopy.h"
 !
 ! --------------------------------------------------------------------------------------------------
@@ -55,7 +55,7 @@ subroutine te0494(nomopt, nomte)
 !
 ! --- Retrieve HHO informations
 !
-    call hhoInfoInitCell(hhoCell, hhoData)
+    call hhoInfoInitCellAndFace(hhoCell, hhoData)
 !
     dec = 1
     do iFace = 1, hhoCell%nbfaces

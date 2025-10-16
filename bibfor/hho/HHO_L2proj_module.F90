@@ -30,11 +30,11 @@ module HHO_L2proj_module
 !
     private
 #include "asterf_types.h"
-#include "asterfort/HHO_size_module.h"
 #include "asterfort/assert.h"
+#include "asterfort/HHO_size_module.h"
 #include "asterfort/utmess.h"
-#include "blas/dposv.h"
 #include "blas/dcopy.h"
+#include "blas/dposv.h"
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -340,6 +340,7 @@ contains
         aster_logical :: with_faces
 ! --------------------------------------------------------------------------------------------------
 !
+        ASSERT(hhoCell%l_face_init)
         call hhoTherDofs(hhoCell, hhoData, cbs, fbs, total_dofs)
 !
         coeff_L2Proj = 0
@@ -369,11 +370,11 @@ contains
 !
         ind = 1
         do iFace = 1, hhoCell%nbfaces
-            hhoFace = hhoCell%faces(iFace)
 !
 ! ----- get quadrature
 !
             if (with_faces) then
+                hhoFace = hhoCell%faces(iFace)
                 call hhoQuadFace%GetQuadFace(hhoface, 2*hhoData%face_degree()+1)
 !
 ! -------------- Value of the function at the quadrature point
@@ -443,6 +444,7 @@ contains
         blas_int :: b_incx, b_incy, b_n
 ! --------------------------------------------------------------------------------------------------
 !
+        ASSERT(hhoCell%l_face_init)
         call hhoMecaDofs(hhoCell, hhoData, cbs, fbs, total_dofs)
 !
         coeff_L2Proj = 0
@@ -552,6 +554,7 @@ contains
 !
 ! --------------------------------------------------------------------------------------------------
 !
+        ASSERT(hhoCell%l_face_init)
         call hhoTherDofs(hhoCell, hhoData, cbs, fbs, total_dofs)
 !
         coeff_L2Proj = 0

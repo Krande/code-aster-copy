@@ -24,6 +24,7 @@ module HHO_Meca_module
     use HHO_compor_module
     use HHO_Dirichlet_module
     use HHO_eval_module
+    use HHO_init_module
     use HHO_LargeStrainMeca_module
     use HHO_quadrature_module
     use HHO_size_module
@@ -158,7 +159,7 @@ contains
         implicit none
 !
         type(HHO_Data), intent(in) :: hhoData
-        type(HHO_Cell), intent(in) :: hhoCell
+        type(HHO_Cell), intent(inout) :: hhoCell
         aster_logical, intent(in) :: l_largestrains
         type(HHO_matrix), intent(out) :: gradfull
         type(HHO_matrix), intent(out) :: stab
@@ -179,8 +180,7 @@ contains
         integer(kind=8) :: cbs, fbs, total_dofs, gbs
         type(HHO_matrix) :: gradfullvec, stabvec
 !
-        call hhoTherNLDofs(hhoCell, hhoData, cbs, fbs, total_dofs, &
-                           gbs)
+        call hhoTherNLDofs(hhoCell, hhoData, cbs, fbs, total_dofs, gbs)
 !
         if (l_largestrains) then
 !
@@ -322,7 +322,7 @@ contains
 !
         implicit none
 !
-        type(HHO_Cell), intent(in) :: hhoCell
+        type(HHO_Cell), intent(inout) :: hhoCell
         type(HHO_Data), intent(in) :: hhoData
         aster_logical, intent(in) :: l_largestrains
         type(HHO_matrix), intent(out) :: gradfull
@@ -347,6 +347,8 @@ contains
 !        real(kind=8) :: gradrec_sym(MSIZE_CELL_VEC, MSIZE_TDOFS_VEC)
 !
 ! --------------------------------------------------------------------------------------------------
+!
+        call hhoInitFacesOfCell(hhoCell)
 !
         if (l_largestrains) then
 !

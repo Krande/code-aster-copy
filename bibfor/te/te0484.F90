@@ -20,19 +20,19 @@ subroutine te0484(option, nomte)
 !
     use HHO_type
     use HHO_size_module
-    use HHO_init_module, only: hhoInfoInitCell
+    use HHO_init_module, only: hhoInfoInitCellAndFace
     use HHO_L2proj_module
     use HHO_quadrature_module
 !
     implicit none
 !
+#include "jeveux.h"
 #include "asterf_types.h"
 #include "asterfort/assert.h"
 #include "asterfort/elrefe_info.h"
 #include "asterfort/HHO_size_module.h"
 #include "asterfort/jevech.h"
 #include "asterfort/writeVector.h"
-#include "jeveux.h"
 !
 ! --------------------------------------------------------------------------------------------------
 !  HHO
@@ -55,7 +55,7 @@ subroutine te0484(option, nomte)
 !
 ! --- Get HHO informations
 !
-    call hhoInfoInitCell(hhoCell, hhoData)
+    call hhoInfoInitCellAndFace(hhoCell, hhoData)
 !
     if (option == "HHO_PROJ2_THER") then
 !
