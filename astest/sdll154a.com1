@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -5020,6 +5020,41 @@ TEST_RESU(
         ),
     )
 )
+
+TEST_RESU(
+    CHAM_ELEM=(
+        # X16 = contrainte équivalente optimisée
+        _F(
+            GROUP_MA="M1",
+            POINT=1,
+            CHAM_GD=chPostRocheTout_DPG_False,
+            NOM_CMP="X16",
+            VALE_CALC=28421555.386803612,
+        ),
+        _F(
+            GROUP_MA="M1",
+            POINT=2,
+            CHAM_GD=chPostRocheTout_DPG_False,
+            NOM_CMP="X16",
+            VALE_CALC=12766131.936781745,
+        ),
+        _F(
+            GROUP_MA="M2",
+            POINT=1,
+            CHAM_GD=chPostRocheTout_DPG_False,
+            NOM_CMP="X16",
+            VALE_CALC=12766131.936781734,
+        ),
+        _F(
+            GROUP_MA="M2",
+            POINT=2,
+            CHAM_GD=chPostRocheTout_DPG_False,
+            NOM_CMP="X16",
+            VALE_CALC=10953846.153846152,
+        ),
+    )
+)
+
 
 # TEST_RESU chPostRocheTout_S
 print("\n----------------TEST_RESU seisme inertiel (S)--------------------")

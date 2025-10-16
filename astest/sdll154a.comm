@@ -16,6 +16,7 @@
 # You should have received a copy of the GNU General Public License
 # along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 # --------------------------------------------------------------------
+import numpy as np
 
 DEBUT(CODE="OUI", DEBUG=_F(SDVERI="OUI"), IMPR_MACRO="OUI")
 
@@ -38,6 +39,34 @@ FRMMIN1 = FORMULE(NOM_PARA=("TEMP",), VALE="410E6+(55-TEMP)*1E6")
 FRMMIN2 = FORMULE(NOM_PARA=("TEMP",), VALE="410E6+(75-TEMP)*1E6")
 FRP02MOY1 = FORMULE(NOM_PARA=("TEMP",), VALE="163E6+(55-TEMP)*1E6")
 FRP02MOY2 = FORMULE(NOM_PARA=("TEMP",), VALE="163E6+(75-TEMP)*1E6")
+
+# construction d'une courbe deformation selon la contrainte sur la base
+# de la formule de Ramberg-Osgood
+
+fepsi = FORMULE(NOM_PARA=("SIGM"), VALE=" SIGM/E + K * pow(SIGM / E, 1 / N)", E=2.0e11, K=0.01, N=2)
+
+fepsi2 = FORMULE(NOM_PARA=("SIGM"), VALE=" SIGM/E + K * pow(SIGM / E, 1 / N)", E=2.0e8, K=0.7, N=2)
+
+vale_sigm = list(np.linspace(870000.0, 870001.0, 2))
+vale_sigm.extend(np.linspace(6600000, 6800000, 1000))
+
+TRAC_EPSI = CALC_FONC_INTERP(
+    FONCTION=fepsi,
+    NOM_PARA="SIGM",
+    NOM_RESU="EPSI",
+    PROL_DROITE="EXCLU",
+    PROL_GAUCHE="EXCLU",
+    VALE_PARA=vale_sigm,
+)
+
+TRAC_EPSI2 = CALC_FONC_INTERP(
+    FONCTION=fepsi2,
+    NOM_PARA="SIGM",
+    NOM_RESU="EPSI",
+    PROL_DROITE="CONSTANT",
+    PROL_GAUCHE="CONSTANT",
+    VALE_PARA=vale_sigm,
+)
 
 acier = DEFI_MATERIAU(
     ELAS=_F(E=2.0e11, RHO=7800, ALPHA=1.2e-5, NU=0.3),
@@ -423,12 +452,29 @@ chPostRocheTout_DP = POST_ROCHE(
 )
 
 # 3- deplacement + pression + poids propre (DPG)
+# validation de TRAC_EPSI avec fonction équivalente à Ramberg-Osgood
 chPostRocheTout_DPG = POST_ROCHE(
     RCCM_RX="NON",
     ZONE_ANALYSE=(_F(TOUT="OUI", GROUP_NO_ORIG="A"),),
     MODELE=modele,
     CARA_ELEM=cara_elem,
     CHAM_MATER=ch_mater,
+    TRAC_EPSI=TRAC_EPSI,
+    RESU_MECA=(
+        _F(TYPE_CHAR="POIDS", RESULTAT=poids_propre, NUME_ORDRE=1),
+        _F(TYPE_CHAR="DEPLACEMENT", RESULTAT=deplacement_impose, NUME_ORDRE=1),
+    ),
+    PRESSION=(_F(TOUT="OUI", VALE=1e6),),
+)
+# meme calcul avec une fonction différente pour vérifier que les résultats sont
+# différents
+chPostRocheTout_DPG_False = POST_ROCHE(
+    RCCM_RX="NON",
+    ZONE_ANALYSE=(_F(TOUT="OUI", GROUP_NO_ORIG="A"),),
+    MODELE=modele,
+    CARA_ELEM=cara_elem,
+    CHAM_MATER=ch_mater,
+    TRAC_EPSI=TRAC_EPSI2,
     RESU_MECA=(
         _F(TYPE_CHAR="POIDS", RESULTAT=poids_propre, NUME_ORDRE=1),
         _F(TYPE_CHAR="DEPLACEMENT", RESULTAT=deplacement_impose, NUME_ORDRE=1),

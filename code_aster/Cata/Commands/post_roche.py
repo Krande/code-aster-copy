@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -99,4 +99,5 @@ POST_ROCHE = MACRO(
         VALE=SIMP(statut="o", typ="R", val_min=0.0),
     ),
     RCCM_RX=SIMP(statut="f", typ="TXM", into=("OUI", "NON"), defaut=("OUI")),
+    TRAC_EPSI=SIMP(statut="f", typ=(fonction_sdaster,)),
 )

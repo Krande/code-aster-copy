@@ -201,6 +201,7 @@ class PostRocheCommon:
         Récupération du champ de matériau
         Valeur de RCCM_RX
         Valeur de INST_TEMP
+        Récupération de TRAC_EPSI
         """
 
         if self.args.get("MODELE"):
@@ -234,6 +235,15 @@ class PostRocheCommon:
             self.lRCCM_RX = True
         else:
             self.lRCCM_RX = False
+
+        if self.args.get("TRAC_EPSI"):
+            self.trac_epsi = self.args.get("TRAC_EPSI")
+            if self.trac_epsi.Parametres()["NOM_RESU"] != "EPSI":
+                UTMESS("F", "POSTROCHE_27")
+            if self.trac_epsi.Parametres()["NOM_PARA"] != "SIGM":
+                UTMESS("F", "POSTROCHE_28")
+        else:
+            self.trac_epsi = None
 
         self.inst_temp = self.args.get("INST_TEMP")
 
@@ -1220,17 +1230,28 @@ class PostRocheCommon:
                 if sigRef / e < seuil:
                     return 0.0
 
-                def epsip(sig, e, k, n):
-                    return k * pow(sig / e, 1 / n)
+                if self.trac_epsi:
 
-                def funcToSolve(sigV):
-                    return (
-                        r * (sigV - sigP - sigRef) / e
-                        + sigV / e
-                        + epsip(sigV, e, k, n)
-                        - (sigP + sigRef) / e
-                        - epsip(sigP, e, k, n)
-                    )
+                    def funcToSolve(sigV):
+                        return (
+                            r * (sigV - sigP - sigRef) / e
+                            - (sigRef) / e
+                            + self.trac_epsi(sigV)
+                            - self.trac_epsi(sigP)
+                        )
+
+                else:
+
+                    def epsi(sig, e, k, n):
+                        return sig / e + k * pow(sig / e, 1 / n)
+
+                    def funcToSolve(sigV):
+                        return (
+                            r * (sigV - sigP - sigRef) / e
+                            - sigRef / e
+                            + epsi(sigV, e, k, n)
+                            - epsi(sigP, e, k, n)
+                        )
 
                 # param
                 dSig = sigRef / 1000
@@ -1242,8 +1263,6 @@ class PostRocheCommon:
                 f0 = funcToSolve(sigVk)
                 fk = f0
                 nbIter = 0
-
-                # print('f0',f0,'sigv0',sigVk)
 
                 while ratio > tol and nbIter <= nbIterMax and abs(fk) > tolfk:
                     fkp = funcToSolve(sigVk + dSig)
