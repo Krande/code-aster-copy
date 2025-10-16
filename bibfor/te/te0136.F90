@@ -39,12 +39,12 @@ subroutine te0136(option, nomte)
 !                      NOMTE        -->  NOM DU TYPE ELEMENT
 !
     character(len=8) :: elrefe, alias8
-    real(kind=8) :: poids, r, nx, ny, tpg, tpg_b, theta
+    real(kind=8) :: poids, r, nx, ny, tpg, tpg_b, theta, delta_t
     real(kind=8) :: coorse(18), vectt(9), hech, sigmEner, epsil, tz0
     integer(kind=8) :: nno, nnos, ndim, kp, npg, ipoids, ivf, idfde, jgano, igeom
     integer(kind=8) :: iveres, i, j, l, li, iech, iray, itemp, btemp, itemps
     integer(kind=8) :: nnop2, c(6, 9), ise, nse, ibid
-    aster_logical :: laxi
+    aster_logical :: laxi, l_stat
 !
 !     -----------------------------------------------------------------
 !
@@ -84,7 +84,14 @@ subroutine te0136(option, nomte)
 !
 ! BOUCLE SUR LES SOUS-ELEMENTS
 !
+    l_stat = .false.
     theta = zr(itemps+2)
+    delta_t = zr(itemps+1)
+    ! FIXME: find a better way to define l_stat. Ideally it should be theta = -1
+    ! See issue 34998
+    if ((theta .eq. 1.d0) .and. (delta_t .lt. 0.d0)) then
+        l_stat = .true.
+    end if
 
     do ise = 1, nse
 !
@@ -104,9 +111,7 @@ subroutine te0136(option, nomte)
                 l = (kp-1)*nno+i
                 r = r+coorse(2*(i-1)+1)*zr(ivf+l-1)
                 tpg = tpg+zr(itemp-1+c(ise, i))*zr(ivf+l-1)
-                if (theta < -0.5d0) then
-                    tpg_b = tpg_b+zr(btemp-1+c(ise, i))*zr(ivf+l-1)
-                end if
+                if (l_stat) tpg_b = tpg_b+zr(btemp-1+c(ise, i))*zr(ivf+l-1)
             end do
             if (laxi) poids = poids*r
             if (option(11:14) .eq. 'COEF') then
@@ -119,7 +124,7 @@ subroutine te0136(option, nomte)
                     li = ivf+(kp-1)*nno+i-1
                     vectt(c(ise, i)) = vectt(c(ise, i)) &
                                        +poids*zr(li)*sigmEner*epsil*(tpg+tz0)**4
-                    if (theta < -0.5d0) then
+                    if (l_stat) then
                         vectt(c(ise, i)) = vectt(c(ise, i)) &
                                            -poids*zr(li)*sigmEner*epsil*(tpg_b+tz0)**4
                     end if

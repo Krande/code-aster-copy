@@ -81,7 +81,7 @@ subroutine nxnpas(sddisc, solver, nume_inst, ds_print, &
 !
     if (l_stat) then
         deltat = -1.d150
-        theta = -1.d0
+        theta = 1.d0
         if (l_evol) then
             time_curr = diinst(sddisc, nume_inst)
         else

@@ -45,12 +45,12 @@ subroutine te0137(option, nomte)
     parameter(nbres=3)
     character(len=8) :: nompar(nbres), elrefe, alias8
     real(kind=8) :: valpar(nbres), poids, r, z, nx, ny, tpg, tpg_b
-    real(kind=8) :: coenp1, sigmEner, epsil, tz0, theta
+    real(kind=8) :: coenp1, sigmEner, epsil, tz0, theta, delta_t
     real(kind=8) :: coorse(18), vectt(9)
     integer(kind=8) :: nno, nnos, ndim, kp, npg, ipoids, ivf, idfde, jgano, igeom
     integer(kind=8) :: itemps, iveres, i, j, l, li, iech, iray, itemp, icode, ier, btemp
     integer(kind=8) :: nnop2, c(6, 9), ise, nse, ibid
-    aster_logical :: laxi
+    aster_logical :: laxi, l_stat
 !
 !
     call elref1(elrefe)
@@ -87,7 +87,14 @@ subroutine te0137(option, nomte)
 !
 ! BOUCLE SUR LES SOUS-ELEMENTS
 !
+    l_stat = .false.
     theta = zr(itemps+2)
+    delta_t = zr(itemps+1)
+    ! FIXME: find a better way to define l_stat. Ideally it should be theta = -1
+    ! See issue 34998
+    if ((theta .eq. 1.d0) .and. (delta_t .lt. 0.d0)) then
+        l_stat = .true.
+    end if
 
     do ise = 1, nse
 !
@@ -109,9 +116,7 @@ subroutine te0137(option, nomte)
                 r = r+coorse(2*(i-1)+1)*zr(ivf+l-1)
                 z = z+coorse(2*(i-1)+2)*zr(ivf+l-1)
                 tpg = tpg+zr(itemp-1+c(ise, i))*zr(ivf+l-1)
-                if (theta < -0.5d0) then
-                    tpg_b = tpg_b+zr(btemp-1+c(ise, i))*zr(ivf+l-1)
-                end if
+                if (l_stat) tpg_b = tpg_b+zr(btemp-1+c(ise, i))*zr(ivf+l-1)
             end do
             if (laxi) poids = poids*r
             valpar(1) = r
@@ -139,7 +144,7 @@ subroutine te0137(option, nomte)
                     li = ivf+(kp-1)*nno+i-1
                     vectt(c(ise, i)) = vectt(c(ise, i)) &
                                        +poids*zr(li)*sigmEner*epsil*(tpg+tz0)**4
-                    if (theta < -0.5d0) then
+                    if (l_stat) then
                         vectt(c(ise, i)) = vectt(c(ise, i)) &
                                            -poids*zr(li)*sigmEner*epsil*(tpg_b+tz0)**4
                     end if
