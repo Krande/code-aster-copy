@@ -652,6 +652,7 @@ def get_coor(LIGN_COUPE, position, coord, mesh):
 def macr_lign_coupe_ops(
     self,
     LIGN_COUPE,
+    REPERE_INI=None,
     RESULTAT=None,
     CHAM_GD=None,
     NOM_CHAM=None,
@@ -678,6 +679,8 @@ def macr_lign_coupe_ops(
     MasquerAlarme("MODELE1_58")
     MasquerAlarme("MODELE1_63")
     MasquerAlarme("MODELE1_64")
+
+    field_in_global_axis = REPERE_INI == "GLOBAL"
 
     mcORDR = {}
 
@@ -774,10 +777,18 @@ def macr_lign_coupe_ops(
         )
         RESULTAT = __resuch
 
-    if NOM_CHAM.endswith(("ELGA", "ELNO", "ELEM")):
+    at_least_1_axis_not_initial = any(line_def["REPERE"] != "INITIAL" for line_def in LIGN_COUPE)
+    if (
+        not field_in_global_axis
+        and at_least_1_axis_not_initial
+        and NOM_CHAM.endswith(("ELGA", "ELNO", "ELEM"))
+    ):
+        if REPERE_INI is None:
+            UTMESS("F", "POST0_55", valk=[NOM_CHAM])
+
         # This field may be defined in a local axis system, currently we cannot access
         # to this information, results will be expressed in the same axis system
-        UTMESS("A", "POST0_55", valk=[NOM_CHAM])
+        UTMESS("F", "POST0_56", valk=[NOM_CHAM, REPERE_INI])
 
     # Maillage sur lequel s'appuie le résultat à projeter
     if not mesh:
@@ -791,7 +802,9 @@ def macr_lign_coupe_ops(
     minidim = dime
 
     for m in LIGN_COUPE:
-        if m["TYPE"] == "SEGMENT":
+        cut_axis_system = m["REPERE"]
+        cut_type = m["TYPE"]
+        if cut_type == "SEGMENT":
             coor_orig = get_coor(m, "ORIG", coord, mesh)
             coor_extr = get_coor(m, "EXTR", coord, mesh)
             lignes.append((coor_orig, coor_extr, m["NB_POINTS"]))
@@ -799,7 +812,7 @@ def macr_lign_coupe_ops(
             if minidim != dime:
                 UTMESS("F", "POST0_11")
 
-        elif m["TYPE"] == "ARC":
+        elif cut_type == "ARC":
             minidim = min(minidim, len(m["COOR_ORIG"]), len(m["CENTRE"]))
             if minidim != dime:
                 UTMESS("F", "POST0_11")
@@ -810,7 +823,7 @@ def macr_lign_coupe_ops(
                     UTMESS("F", "POST0_12")
                 arcs.append((m["COOR_ORIG"], m["CENTRE"], m["NB_POINTS"], m["ANGLE"], m["DNOR"]))
 
-        elif m["TYPE"] == "GROUP_NO":
+        elif cut_type == "GROUP_NO":
             group = m["GROUP_NO"]
             if not mesh.hasGroupOfNodes(group):
                 UTMESS("F", "POST0_13", valk=[group, mesh.getName()])
@@ -821,7 +834,7 @@ def macr_lign_coupe_ops(
                 )
             groups.append(l_coor_group)
 
-        elif m["TYPE"] == "GROUP_MA":
+        elif cut_type == "GROUP_MA":
             group = m["GROUP_MA"]
             if not mesh.hasGroupOfCells(group):
                 UTMESS("F", "POST0_14", valk=[group, mesh.getName()])
@@ -881,8 +894,9 @@ def macr_lign_coupe_ops(
     iocc = 1
     motscles["CREA_GROUP_NO"] = []
     for m in LIGN_COUPE:
-        if m["TYPE"] in ("GROUP_NO", "GROUP_MA"):
-            motscles["CREA_GROUP_NO"].append(_F(GROUP_MA=m[m["TYPE"]].ljust(24)))
+        cut_type = m["TYPE"]
+        if cut_type in ("GROUP_NO", "GROUP_MA"):
+            motscles["CREA_GROUP_NO"].append(_F(GROUP_MA=m[cut_type].ljust(24)))
         else:
             motscles["CREA_GROUP_NO"].append(_F(GROUP_MA="LICOU" + str(iocc)))
             iocc = iocc + 1
@@ -981,8 +995,9 @@ def macr_lign_coupe_ops(
             else:
                 motscles["TOUT_CMP"] = "OUI"
 
-            if m["TYPE"] in ("GROUP_NO", "GROUP_MA"):
-                groupe = m[m["TYPE"]].ljust(8)
+            cut_type = m["TYPE"]
+            if cut_type in ("GROUP_NO", "GROUP_MA"):
+                groupe = m[cut_type].ljust(8)
                 nomgrma = groupe
             else:
                 ioc2 += 1
@@ -993,14 +1008,14 @@ def macr_lign_coupe_ops(
             # on definit l'intitulé
             if m["INTITULE"]:
                 intitl = m["INTITULE"]
-            elif m["TYPE"] in ("GROUP_NO", "GROUP_MA"):
+            elif cut_type in ("GROUP_NO", "GROUP_MA"):
                 intitl = groupe
             else:
                 intitl = f"l.coupe{ioc2}"
 
             # Expression des contraintes aux noeuds ou des déplacements dans le
             # repere local
-            if m["REPERE"] != "GLOBAL":
+            if cut_axis_system != "INITIAL":
                 if NOM_CHAM in (
                     "DEPL",
                     "SIEF_ELNO",
@@ -1009,12 +1024,12 @@ def macr_lign_coupe_ops(
                     "FLUX_ELNO",
                     "FLUX_NOEU",
                 ):
-                    if m["REPERE"] == "POLAIRE":
+                    if cut_axis_system == "POLAIRE":
                         mcACTION.append(
                             _F(
                                 INTITULE=intitl,
                                 RESULTAT=__remodr,
-                                REPERE=m["REPERE"],
+                                REPERE=cut_axis_system,
                                 GROUP_NO=groupe,
                                 NOM_CHAM=NOM_CHAM,
                                 **motscles,
@@ -1033,7 +1048,7 @@ def macr_lign_coupe_ops(
                         )
 
                 else:
-                    UTMESS("A", "POST0_17", valk=[NOM_CHAM, m["REPERE"]])
+                    UTMESS("A", "POST0_17", valk=[NOM_CHAM, cut_axis_system])
                     mcACTION.append(
                         _F(
                             INTITULE=intitl,

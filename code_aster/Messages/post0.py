@@ -19,6 +19,10 @@
 
 from ..Utilities import _
 
+_nota_lign_coupe_axis = """MACR_LIGN_COUPE ne sait pas récupérer le repère dans lequel le champ
+fourni en entrée est exprimé et peut donc uniquement réaliser des changements de repère pour
+un champ défini initialement dans le repère GLOBAL"""
+
 cata_msg = {
     1: _(
         """
@@ -296,14 +300,19 @@ Plusieurs valeurs ont été détectées. On ne retient que la valeur la plus bas
 """
     ),
     55: _(
-        """
+        f"""
+Pour effectuer l'opération demandée, MACR_LIGN_COUPE a besoin de connaître le repère dans
+lequel le champ %(k1)s est défini.
+Merci de renseigner le mot clé REPERE_INI.
+À noter que {_nota_lign_coupe_axis}.
+"""
+    ),
+    56: _(
+        f"""
 Le champ %(k1)s est un champ aux éléments.
-Actuellement, MACR_LIGN_COUPE ne sait pas récupérer le repère dans lequel ce champ est exprimé.
-Il convient d'être particulièrement vigilant quant à l'utilisation du mot clé REPERE dans LIGN_COUPE:
-- Si vous utilisez l'option REPERE="GLOBAL" de LIGN_COUPE, votre résultat sera exprimé
-dans le même repère que le champ d'origine.
-- Si vous utilisez toute autre option, veuillez vérifier que le champ en entrée est bien
-exprimé dans le repère GLOBAL. Dans le cas contraire, les résultats produits seront faux!
+Vous avez demandé un changement de repère pour au moins une coupe, et vous avez indiqué que
+le champ en entrée est exprimé dans le repère %(k2)s.
+Actuellement, {_nota_lign_coupe_axis}.
 """
     ),
 }
