@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -20,9 +20,8 @@ subroutine peeint(tableOut, model, nbocc)
 !
     implicit none
 !
-#include "asterf_types.h"
-#include "jeveux.h"
 #include "asterc/indik8.h"
+#include "asterf_types.h"
 #include "asterfort/as_allocate.h"
 #include "asterfort/as_deallocate.h"
 #include "asterfort/assert.h"
@@ -54,6 +53,7 @@ subroutine peeint(tableOut, model, nbocc)
 #include "asterfort/rsSelectStoringIndex.h"
 #include "asterfort/rsGetOneBehaviourFromResult.h"
 #include "asterfort/convertFieldNodeToNeutElem.h"
+#include "jeveux.h"
 !
     integer :: nbocc
     character(len=8) :: model
@@ -74,17 +74,17 @@ subroutine peeint(tableOut, model, nbocc)
     character(len=16), parameter :: paraNameField(nbParaField) = (/'CHAM_GD ', 'VOL     '/)
     character(len=3), parameter :: cmpNameOk(nbCmpOk) = (/'N  ', 'VY ', 'VZ ', 'MT ', 'MFY', 'MFZ'/)
     integer :: iret, ibid, iocc, nbret
-    integer :: cellNume, cmpNume, numeStore
+    integer :: cmpNume, numeStore
     integer :: iCmp, iCellCompute, iGroup, iStore, iCell, iCmpOk
-    integer :: nbCellMesh, nbCellUser, nbCell, nbCellFilter, nbCellCompute
+    integer :: nbCellMesh, nbCellUser, nbCellFilter, nbCellCompute
     integer :: nbCmp, nbStore, nbCmpField, nbGroup, nbVari
     integer :: pdtElemType
     real(kind=8) :: inst
-    character(len=8) :: mesh, resultIn, cellName, physName
+    character(len=8) :: mesh, resultIn, physName
     character(len=4) :: fieldSupp, lStructElem
     character(len=8), parameter :: locaNameAll = 'TOUT', locaNameGroup = 'GROUP_MA'
-    character(len=24), parameter :: locaNameUnion = 'UNION_GROUP_MA', locaNameCell = 'MAILLE'
-    character(len=24), parameter :: keywFact = 'INTEGRALE'
+    character(len=24), parameter :: locaNameUnion = 'UNION_GROUP_MA'
+    character(len=24), parameter :: factorKeyword = 'INTEGRALE'
     character(len=24), parameter :: listCellUser = '&&PEEINT.CELL_USER'
     character(len=24) :: listCellFilter
     character(len=24) :: numeStoreJv, timeStoreJv, compor
@@ -105,22 +105,20 @@ subroutine peeint(tableOut, model, nbocc)
     integer, pointer :: listElemType(:) => null()
     real(kind=8), pointer :: listTimeStore(:) => null()
     character(len=16), pointer :: variName(:) => null()
-    character(len=8), pointer :: cmpName(:) => null(), cellNames(:) => null()
+    character(len=8), pointer :: cmpName(:) => null()
     character(len=8), pointer :: cmpNameAll(:) => null()
     character(len=24), pointer :: groupCell(:) => null()
 !
 ! --------------------------------------------------------------------------------------------------
 !
     call jemarq()
-!
+
 ! - Main parameters
-!
     call dismoi('NOM_MAILLA', model, 'MODELE', repk=mesh)
     call dismoi('NB_MA_MAILLA', mesh, 'MAILLAGE', repi=nbCellMesh)
     l_pmesh = isParallelMesh(mesh)
-!
+
 ! - Origin of fields
-!
     call getvid(' ', 'RESULTAT', scal=resultIn, nbret=nbret)
     lFromResult = nbret .ne. 0
     call getvid(' ', 'CHAM_GD', scal=fieldFromUser, nbret=nbret)
@@ -130,16 +128,14 @@ subroutine peeint(tableOut, model, nbocc)
         fieldInput = 'TMP_CHAMP_GD'
         call copisd('CHAMP', 'V', fieldFromUser, fieldInput)
     end if
-!
+
 ! - Select storing index from user
-!
     call rsSelectStoringIndex(resultIn, lFromField, &
                               nbStore, numeStoreJv, timeStoreJv)
     call jeveuo(numeStoreJv, 'L', vi=listNumeStore)
     call jeveuo(timeStoreJv, 'L', vr=listTimeStore)
-!
+
 ! - Create table
-!
     call tbcrsd(tableOut, 'G')
     if (lFromResult) then
         call tbajpa(tableOut, nbParaResult, paraNameResult, paraTypeResult)
@@ -148,9 +144,9 @@ subroutine peeint(tableOut, model, nbocc)
     end if
 !
     do iocc = 1, nbocc
-
-! ----- Get list of cells fro user to create reduced domain
-        call getelem(mesh, keywFact, iocc, 'F', listCellUser, nbCellUser, l_keep_propz=ASTER_TRUE)
+! ----- Get list of cells from user to create reduced domain
+        call getelem(mesh, factorKeyword, iocc, 'F', &
+                     listCellUser, nbCellUser, l_keep_propz=ASTER_TRUE, model=model)
         call jeexin(listCellUser, iret)
         l_empty = ASTER_FALSE
         if (iret .eq. 0) then
@@ -159,7 +155,7 @@ subroutine peeint(tableOut, model, nbocc)
         end if
 
 ! ----- Sort with topological dimension of cells
-        call getvtx(keywFact, 'TYPE_MAILLE', iocc=iocc, scal=filterTypeName, nbret=iret)
+        call getvtx(factorKeyword, 'TYPE_MAILLE', iocc=iocc, scal=filterTypeName, nbret=iret)
         if (iret .eq. 0) then
             listCellFilter = listCellUser
             nbCellFilter = nbCellUser
@@ -198,7 +194,7 @@ subroutine peeint(tableOut, model, nbocc)
         end if
 
 ! ----- Get name of components
-        call getvtx(keywFact, 'NOM_CMP', iocc=iocc, nbval=0, nbret=nbCmp)
+        call getvtx(factorKeyword, 'NOM_CMP', iocc=iocc, nbval=0, nbret=nbCmp)
         nbCmp = -nbCmp
         lVariName = ASTER_FALSE
 
@@ -206,7 +202,7 @@ subroutine peeint(tableOut, model, nbocc)
             ASSERT(.not. l_pmesh)
 ! --------- Get list for internal state variables
             lVariName = ASTER_TRUE
-            call getvtx(keywFact, 'NOM_VARI', iocc=iocc, nbval=0, nbret=nbVari)
+            call getvtx(factorKeyword, 'NOM_VARI', iocc=iocc, nbval=0, nbret=nbVari)
             nbVari = -nbVari
             ASSERT(nbVari .gt. 0)
             if (nbVari .gt. 0) then
@@ -215,7 +211,8 @@ subroutine peeint(tableOut, model, nbocc)
                 end if
             end if
             AS_ALLOCATE(vk16=variName, size=nbVari)
-            call getvtx(keywFact, 'NOM_VARI', iocc=iocc, nbval=nbVari, vect=variName)
+            call getvtx(factorKeyword, 'NOM_VARI', iocc=iocc, nbval=nbVari, vect=variName)
+
 ! --------- Get behaviour (only one !)
             if (lFromResult) then
                 call rsGetOneBehaviourFromResult(resultIn, nbStore, listNumeStore, compor)
@@ -238,7 +235,7 @@ subroutine peeint(tableOut, model, nbocc)
                           nbVari, variName, cmpNameAll)
         else
             AS_ALLOCATE(vk8=cmpName, size=nbCmp)
-            call getvtx(keywFact, 'NOM_CMP', iocc=iocc, nbval=nbCmp, vect=cmpName, nbret=iret)
+            call getvtx(factorKeyword, 'NOM_CMP', iocc=iocc, nbval=nbCmp, vect=cmpName, nbret=iret)
         end if
 
 ! ----- Copy name of components
@@ -286,7 +283,7 @@ subroutine peeint(tableOut, model, nbocc)
             if (lFromResult) then
                 numeStore = listNumeStore(iStore)
                 inst = listTimeStore(iStore)
-                call getvtx(keywFact, 'NOM_CHAM', iocc=iocc, scal=fieldName, nbret=iret)
+                call getvtx(factorKeyword, 'NOM_CHAM', iocc=iocc, scal=fieldName, nbret=iret)
                 if (iret .eq. 0) then
                     call utmess('F', 'POSTELEM_4')
                 end if
@@ -333,7 +330,7 @@ subroutine peeint(tableOut, model, nbocc)
             AS_DEALLOCATE(vk8=cmpNameNeut)
 !
 ! --------- CALCUL ET STOCKAGE DES MOYENNES : MOT-CLE 'TOUT'
-            call getvtx(keywFact, 'TOUT', iocc=iocc, nbval=0, nbret=iret)
+            call getvtx(factorKeyword, 'TOUT', iocc=iocc, nbval=0, nbret=iret)
             if (iret .ne. 0) then
                 nbCellCompute = nbCellMesh
                 AS_ALLOCATE(vi=cellCompute, size=nbCellCompute)
@@ -351,11 +348,11 @@ subroutine peeint(tableOut, model, nbocc)
             end if
 !
 ! --------- CALCUL ET STOCKAGE DES MOYENNES : MOT-CLE 'GROUP_MA'
-            call getvtx(keywFact, 'GROUP_MA', iocc=iocc, nbval=0, nbret=nbret)
+            call getvtx(factorKeyword, 'GROUP_MA', iocc=iocc, nbval=0, nbret=nbret)
             if (nbret .ne. 0) then
                 nbGroup = -nbret
                 AS_ALLOCATE(vk24=groupCell, size=nbGroup)
-                call getvtx(keywFact, 'GROUP_MA', iocc=iocc, nbval=nbGroup, vect=groupCell)
+                call getvtx(factorKeyword, 'GROUP_MA', iocc=iocc, nbval=nbGroup, vect=groupCell)
                 do iGroup = 1, nbGroup
                     groupName = groupCell(iGroup)
                     call jeexin(jexnom(mesh//'.GROUPEMA', groupName), iret)
@@ -393,26 +390,6 @@ subroutine peeint(tableOut, model, nbocc)
                 end if
                 AS_DEALLOCATE(vk24=groupCell)
 
-            end if
-!
-! --------- CALCUL ET STOCKAGE DES MOYENNES : MOT-CLE 'MAILLE'
-            call getvtx(keywFact, 'MAILLE', iocc=iocc, nbval=0, nbret=nbret)
-            if (nbret .ne. 0) then
-                ASSERT(.not. l_pmesh)
-                nbCell = -nbret
-                nbCellCompute = nbCell
-                AS_ALLOCATE(vk8=cellNames, size=nbCellCompute)
-                call getvtx(keywFact, 'MAILLE', iocc=iocc, nbval=nbCellCompute, vect=cellNames)
-                do iCellCompute = 1, nbCellCompute
-                    cellName = cellNames(iCellCompute)
-                    call jenonu(jexnom(mesh//'.NOMMAI', cellName), cellNume)
-                    call peecal(fieldSupp, tableOut, fieldName, &
-                                locaNameCell, cellName, &
-                                [cellNume], 1, &
-                                model, lFromResult, field, nbCmp, cmpName, &
-                                cmpNameInit, numeStore, inst, iocc, ligrel, cespoi)
-                end do
-                AS_DEALLOCATE(vk8=cellNames)
             end if
         end do
 !
