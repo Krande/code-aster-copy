@@ -33,17 +33,6 @@ MA0 = LIRE_MAILLAGE(FORMAT="ASTER")
 
 MA = CREA_MAILLAGE(MAILLAGE=MA0, LINE_QUAD=_F(TOUT="OUI"))
 
-MA = DEFI_GROUP(
-    reuse=MA,
-    MAILLAGE=MA,
-    CREA_GROUP_NO=(
-        _F(NOEUD=("NO2", "NO4", "NO10", "NO8", "NS2", "NS6", "NS10", "NS7"), NOM="DROITE"),
-        _F(NOEUD=("NO1", "NO3", "NO9", "NO7", "NS4", "NS5", "NS12", "NS8"), NOM="GAUCHE"),
-        _F(NOEUD=("NS17"), NOM="NS17"),
-        _F(NOEUD=("NS18"), NOM="NS18"),
-    ),
-)
-
 MA = MODI_MAILLAGE(reuse=MA, MAILLAGE=MA, ORIE_FISSURE=_F(GROUP_MA="G_CUBE_D"), INFO=2)
 
 ### >>>>>>>>>>>>>>>>>

@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -62,6 +62,18 @@ Présence de mailles dégénérées : modifier le maillage du béton.
     10: _(
         """
 Phase de vérification du maillage - mailles dégénérées
+
+"""
+    ),
+    11: _(
+        """
+Deux éléments de type %(k1)s partagent les mêmes noeuds sommets (%(i1)d, %(i2)d)
+mais présentent des noeuds milieux différents (%(i3)d vs %(i4)d).
+"""
+    ),
+    12: _(
+        """
+Deux éléments de type %(k1)s partagent les mêmes noeuds sommets (%(i1)d, %(i2)d, %(i3)d, %(i4)d) mais présentent des noeuds milieux différents.
 """
     ),
     13: _(

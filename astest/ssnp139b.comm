@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -73,11 +73,11 @@ MA = DEFI_GROUP(
     reuse=MA,
     MAILLAGE=MA,
     CREA_GROUP_MA=(
-        _F(NOM="M9791", MAILLE="M9791"),
-        _F(NOM="M9790", MAILLE="M9790"),
-        _F(NOM="M9788", MAILLE="M9788"),
-        _F(NOM="M9789", MAILLE="M9789"),
-        _F(NOM="M9792", MAILLE="M9792"),
+        _F(NOM="M9791", MAILLE="M9785"),
+        _F(NOM="M9790", MAILLE="M9784"),
+        _F(NOM="M9788", MAILLE="M9782"),
+        _F(NOM="M9789", MAILLE="M9783"),
+        _F(NOM="M9792", MAILLE="M9786"),
     ),
 )
 

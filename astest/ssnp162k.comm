@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -78,43 +78,7 @@ delta_ferm = (sigma_min - press) / k_n + sigma_min * L_cube / young
 # L'OUVERTURE EN GLISSEMENT POUR LE TEST EN MODE2
 delta_max_tan = 3 * delta_elas
 
-MA0 = LIRE_MAILLAGE(FORMAT="ASTER")
-
-
-MA = CREA_MAILLAGE(MAILLAGE=MA0, LINE_QUAD=_F(TOUT="OUI"))
-
-MA = DEFI_GROUP(
-    reuse=MA,
-    MAILLAGE=MA,
-    CREA_GROUP_MA=(
-        _F(NOM="GAUCHE2", MAILLE="GAUCHE2"),
-        _F(NOM="DROITE", MAILLE="DROITE"),
-        _F(NOM="CUBEDEG", MAILLE="CUBEDEG"),
-        _F(NOM="CUBE", MAILLE="CUBE"),
-    ),
-    CREA_GROUP_NO=(
-        _F(NOM="NO12", NOEUD="NO12"),
-        _F(NOM="NS20", NOEUD="NS20"),
-        _F(NOM="NS19", NOEUD="NS19"),
-        _F(NOM="NS18", NOEUD="NS18"),
-        _F(NOM="NS5", NOEUD="NS5"),
-        _F(NOM="NS8", NOEUD="NS8"),
-        _F(NOM="NS4", NOEUD="NS4"),
-        _F(NOM="NS17", NOEUD="NS17"),
-        _F(NOM="NS12", NOEUD="NS12"),
-    ),
-)
-
-
-MA = DEFI_GROUP(
-    reuse=MA,
-    MAILLAGE=MA,
-    CREA_GROUP_NO=(
-        _F(NOEUD=("NO2", "NO4", "NO10", "NO8", "NS2", "NS6", "NS10", "NS7"), NOM="DROITE"),
-        _F(NOEUD=("NO1", "NO3", "NO9", "NO7", "NS4", "NS5", "NS12", "NS8"), NOM="GAUCHE"),
-    ),
-)
-
+MA = LIRE_MAILLAGE(FORMAT="ASTER")
 
 MA = MODI_MAILLAGE(reuse=MA, MAILLAGE=MA, ORIE_FISSURE=_F(GROUP_MA="G_CUBE_D"), INFO=2)
 
