@@ -185,7 +185,7 @@ subroutine vppost(vecrer, vecrei, vecrek, vecvp, nbpark, &
                     zi(lddl), zi(lprod), [rbid], zc(lvec), nbpari, &
                     nparr, nbpark, nopara, mod45b, zi(lresui), &
                     zr(lresur), zk24(lresuk), ktyp, lcomod, ibid, &
-                    ibid, k16bid, ibid)
+                    ibid, typres, ibid)
     end if
 !
 !

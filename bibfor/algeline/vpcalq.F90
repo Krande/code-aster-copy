@@ -18,7 +18,7 @@
 
 subroutine vpcalq(eigsol, vecrer, vecrei, vecrek, vecvp, &
                   mxresf, neqact, nblagr, omemax, omemin, &
-                  omeshi, vecblo, sigma, npivot, flage, &
+                  omeshi, vecblo, veclag, sigma, npivot, flage, &
                   nconv, vpinf, vpmax)
 !
 ! ROUTINE EFFECTUANT LE CALCUL MODAL PARAMETRE DANS EIGSOL PAR LA METHODE QZ
@@ -56,7 +56,7 @@ subroutine vpcalq(eigsol, vecrer, vecrei, vecrek, vecvp, &
     real(kind=8), intent(in) :: omemax, omemin, omeshi
     complex(kind=8), intent(in) :: sigma
     character(len=19), intent(in) :: eigsol
-    character(len=24), intent(in) :: vecrer, vecrei, vecrek, vecvp, vecblo
+    character(len=24), intent(in) :: vecrer, vecrei, vecrek, vecvp, vecblo, veclag
 !
 ! --- OUTPUT
 !
@@ -70,11 +70,11 @@ subroutine vpcalq(eigsol, vecrer, vecrei, vecrek, vecvp, &
 !
 ! --- VARIABLES LOCALES
 !
-    integer(kind=8) :: imet, lamor, lmasse, lraide, nbvect, neq, nfreq, lprod
+    integer(kind=8) :: imet, lamor, lmasse, lraide, nbvect, neq, nfreq
     integer(kind=8) :: qrn, qrlwor, qrn2, ilscal, irscal, icscal, ivscal, iiscal
     integer(kind=8) :: lvalpr, iqrn, lqrn, qrar, qrai, qrba, qrvl, kqrn
     integer(kind=8) :: lauc, kqrnr, mfreq, ifreq, izero
-    integer(kind=8) :: lresui, lresur, lresuk, lvec
+    integer(kind=8) :: lresui, lresur, lresuk, lvec, lprod, llagr
     real(kind=8) :: quapi2, omecor, precdc, rbid, rzero
     character(len=1) :: ktyp
     character(len=8) :: method
@@ -103,6 +103,7 @@ subroutine vpcalq(eigsol, vecrer, vecrei, vecrek, vecvp, &
     call jeveuo(vecrek, 'E', lresuk)
     call jeveuo(vecvp, 'E', lvec)
     call jeveuo(vecblo, 'L', lprod)
+    call jeveuo(veclag, 'L', llagr)
 !
 ! --- LECTURE DES DONNEES DE EIGSOL
 !
@@ -184,7 +185,7 @@ subroutine vpcalq(eigsol, vecrer, vecrei, vecrek, vecvp, &
                         qrai, qrba, qrvl, lvec, kqrn, &
                         lvalpr, nconv, omecor, ktyp, kqrnr, &
                         neqact, ilscal, irscal, optiof, omemin, &
-                        omemax, omeshi, zi(lprod), nfreq, lmasse, &
+                        omemax, omeshi, zi(lprod), zi(llagr), nfreq, lmasse, &
                         lraide, lamor, numedd, sigma, icscal, &
                         ivscal, iiscal, bwork, flage)
             call rectfr(nconv, nconv, omeshi, npivot, nblagr, &
@@ -219,7 +220,7 @@ subroutine vpcalq(eigsol, vecrer, vecrei, vecrek, vecvp, &
                         qrai, qrba, qrvl, lvec, kqrn, &
                         lvalpr, nconv, omecor, ktyp, kqrnr, &
                         neqact, ilscal, irscal, optiof, omemin, &
-                        omemax, omeshi, zi(lprod), nfreq, lmasse, &
+                        omemax, omeshi, zi(lprod), zi(llagr), nfreq, lmasse, &
                         lraide, lamor, numedd, sigma, icscal, &
                         ivscal, iiscal, bwork, flage)
             npivot = nblagr
@@ -252,7 +253,7 @@ subroutine vpcalq(eigsol, vecrer, vecrei, vecrek, vecvp, &
                     qrai, qrba, qrvl, lvec, kqrn, &
                     lvalpr, nconv, omecor, ktyp, kqrnr, &
                     neqact, ilscal, irscal, optiof, omemin, &
-                    omemax, omeshi, zi(lprod), nfreq, lmasse, &
+                    omemax, omeshi, zi(lprod), zi(llagr), nfreq, lmasse, &
                     lraide, lamor, numedd, sigma, icscal, &
                     ivscal, iiscal, bwork, flage)
         nfreq = nfreq/2

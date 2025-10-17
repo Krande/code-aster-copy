@@ -150,7 +150,7 @@ subroutine op0045()
     case ('QZ')
         call vpcalq(eigsol, vecrer, vecrei, vecrek, vecvp, &
                     mxresf, neqact, nblagr, omemax, omemin, &
-                    omeshi, vecblo, sigma, npivot, flage, &
+                    omeshi, vecblo, veclag, sigma, npivot, flage, &
                     nconv, vpinf, vpmax)
     case default
         ASSERT(.false.)
