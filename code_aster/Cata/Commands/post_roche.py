@@ -88,6 +88,6 @@ POST_ROCHE = MACRO(
         GROUP_MA=SIMP(statut="f", typ=grma, validators=NoRepeat(), max="**"),
         VALE=SIMP(statut="o", typ="R", val_min=0.0),
     ),
-    RCCM_RX=SIMP(statut="f", typ="TXM", into=("OUI", "NON"), defaut=("OUI")),
+    LIMITE_ADM=SIMP(statut="f", typ="TXM", into=("OUI", "NON"), defaut=("OUI")),
     TRAC_EPSI=SIMP(statut="f", typ=(fonction_sdaster,)),
 )

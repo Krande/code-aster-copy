@@ -91,7 +91,7 @@ def post_roche_ops(self, **kwargs):
         calculS2.coef_abattement()
         calculS2.buildField()
 
-        if not PRCommon.lRCCM_RX:
+        if not PRCommon.lLimiteAdm:
             PRCommon.calcContrainteEquiv(calcul.field, calculS2.field)
         PRCommon.calcContrainteEquiv(calcul.field, calculS2.field, opt=True)
 
@@ -202,7 +202,7 @@ class PostRocheCommon:
         Récupération du modèle
         Récupération des caracteristiques de poutre
         Récupération du champ de matériau
-        Valeur de RCCM_RX
+        Valeur de LIMITE_ADM
         Valeur de INST_TEMP
         Récupération de TRAC_EPSI
         """
@@ -234,10 +234,10 @@ class PostRocheCommon:
         else:
             self.chammater = None
 
-        if self.args.get("RCCM_RX") == "OUI":
-            self.lRCCM_RX = True
+        if self.args.get("LIMITE_ADM") == "OUI":
+            self.lLimiteAdm = True
         else:
-            self.lRCCM_RX = False
+            self.lLimiteAdm = False
 
         if self.args.get("TRAC_EPSI"):
             self.trac_epsi = self.args.get("TRAC_EPSI")
@@ -395,10 +395,10 @@ class PostRocheCommon:
 
         self.chRochElno = chRochElno
 
-        # si RCCM_RX = 'OUI' on vérifie la présence de RP02_MIN, RM_MIN et RP02_MOY
+        # si LIMITE_ADM = 'OUI' on vérifie la présence de RP02_MIN, RM_MIN et RP02_MOY
         # si ces paramètres n'ont pas été fournis par l'utilisateur leurs valeurs
         # sont négatives
-        if self.lRCCM_RX:
+        if self.lLimiteAdm:
             tabpara = POST_ELEM(
                 MINMAX=_F(
                     MODELE=self.model,
@@ -1208,7 +1208,7 @@ class PostRocheCommon:
         # contrainte vraie
 
         # pour RCCM_RC = OUI
-        if self.lRCCM_RX:
+        if self.lLimiteAdm:
             fSigVraieMax = FORMULE(
                 NOM_PARA=("COEF", "RP02_MOY", "RP02_MIN", "RM_MIN"),
                 VALE="2*COEF*(0.426*RP02_MIN+0.032*RM_MIN)*RP02_MOY/RP02_MIN",
@@ -1331,7 +1331,7 @@ class PostRocheCommon:
             else:
                 return sigV / E + K_FACT * pow(sigV / E, 1 / N_EXPO)
 
-        if self.lRCCM_RX:
+        if self.lLimiteAdm:
             fEpsVraieMax = FORMULE(
                 NOM_PARA=("X2", "E", "K_FACT", "N_EXPO"),
                 VALE="EpsVraie(X2, E, K_FACT, N_EXPO)",
@@ -1421,7 +1421,7 @@ class PostRocheCommon:
 
         # coefficient d'abattement
 
-        if self.lRCCM_RX:
+        if self.lLimiteAdm:
 
             def fepsiMP(sig, e, k, n):
                 return k * pow(sig / e, 1 / n)
@@ -1666,7 +1666,7 @@ class PostRocheCommon:
         Construction des champs de sortie (principal et complémentaire)
         """
 
-        if self.lRCCM_RX:
+        if self.lLimiteAdm:
             chTempo = CREA_CHAMP(
                 OPERATION="ASSE",
                 MODELE=self.model,
@@ -2099,7 +2099,7 @@ class PostRocheCalc:
         - à partir de l'effet de ressort max
         """
 
-        if self.param.lRCCM_RX:
+        if self.param.lLimiteAdm:
             chSigVraie = CREA_CHAMP(
                 OPERATION="EVAL",
                 TYPE_CHAM="ELNO_NEUT_R",
@@ -2257,11 +2257,11 @@ class PostRocheCalc:
         - à partir de l'effet de ressort => g
         - à partir de l'effet de ressort max => g_opt
 
-        pour RCCM_RX = OUI, on ne calcule que g_opt avec
+        pour LIMITE_ADM = OUI, on ne calcule que g_opt avec
         une formule propre
         """
 
-        if self.param.lRCCM_RX:
+        if self.param.lLimiteAdm:
             # X1 = sigPression
             # X2 = sig Vraie
             # X3 = coef ressort max
