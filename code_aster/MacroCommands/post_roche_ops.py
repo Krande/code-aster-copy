@@ -91,8 +91,6 @@ def post_roche_ops(self, **kwargs):
         calculS2.coef_abattement()
         calculS2.buildField()
 
-        if not PRCommon.lLimiteAdm:
-            PRCommon.calcContrainteEquiv(calcul.field, calculS2.field)
         PRCommon.calcContrainteEquiv(calcul.field, calculS2.field, opt=True)
 
         chPrin, chComp = PRCommon.buildOutput(calcul.field, calculS2.field)
@@ -482,6 +480,16 @@ class PostRocheCommon:
         flambda = FORMULE(
             NOM_PARA=("R", "EP", "X3"), VALE="EP*X3/(R-EP/2)**2"
         )  # noté f dans RB 3680
+
+        # Changement de B2 selon le type d'analyse (moment ou contrainte)
+        # if self.reguCoude:
+        #     fB2_coude = DEFI_CONSTANTE(VALE=1.0)
+        # else:
+        #     fB2_coude = FORMULE(
+        #         NOM_PARA=("R", "EP", "X3"),
+        #         VALE="max(1,1.3/flambda(R,EP,X3)**(2./3))",
+        #         flambda=flambda,
+        #     )
         fB2_coude = FORMULE(
             NOM_PARA=("R", "EP", "X3"), VALE="max(1,1.3/flambda(R,EP,X3)**(2./3))", flambda=flambda
         )
@@ -1207,22 +1215,13 @@ class PostRocheCommon:
 
         # contrainte vraie
 
-        # pour RCCM_RC = OUI
+        # pour LIMITE_ADM = OUI
         if self.lLimiteAdm:
             fSigVraieMax = FORMULE(
                 NOM_PARA=("COEF", "RP02_MOY", "RP02_MIN", "RM_MIN"),
                 VALE="2*COEF*(0.426*RP02_MIN+0.032*RM_MIN)*RP02_MOY/RP02_MIN",
             )
-
-            self.chFSigVraie = CREA_CHAMP(
-                OPERATION="AFFE",
-                TYPE_CHAM="ELNO_NEUT_F",
-                MODELE=self.model,
-                PROL_ZERO="OUI",
-                AFFE=(_F(NOM_CMP=("X2"), VALE_F=(fSigVraieMax), **self.dicAllZones),),
-            )
-
-        # pour RCCM_RC = NON
+        # pour LIMITE_ADM = NON
         else:
 
             def fsolve(sigRef, sigP, e, k, n, r, nbIterMax, seuil):
@@ -1287,19 +1286,6 @@ class PostRocheCommon:
                 else:
                     return sigVk
 
-            # calcul à partir de l'effet de ressort
-
-            # SigRef = N
-            # SigPression = X1
-            # Ressort = X2
-            fSigVraie = FORMULE(
-                NOM_PARA=("N", "X1", "X2", "E", "K_FACT", "N_EXPO"),
-                VALE="fsolve(N,X1,E,K_FACT,N_EXPO,X2,nbIterMax,seuil)",
-                fsolve=fsolve,
-                nbIterMax=self.nbIterMax,
-                seuil=self.seuilSigRef,
-            )
-
             # calcul à partir de l'effet de ressort max
 
             # SigRef = N
@@ -1314,15 +1300,13 @@ class PostRocheCommon:
                 seuil=self.seuilSigRef,
             )
 
-            self.chFSigVraie = CREA_CHAMP(
-                OPERATION="AFFE",
-                TYPE_CHAM="ELNO_NEUT_F",
-                MODELE=self.model,
-                PROL_ZERO="OUI",
-                AFFE=(
-                    _F(NOM_CMP=("X1", "X2"), VALE_F=(fSigVraie, fSigVraieMax), **self.dicAllZones),
-                ),
-            )
+        self.chFSigVraie = CREA_CHAMP(
+            OPERATION="AFFE",
+            TYPE_CHAM="ELNO_NEUT_F",
+            MODELE=self.model,
+            PROL_ZERO="OUI",
+            AFFE=(_F(NOM_CMP=("X2"), VALE_F=(fSigVraieMax), **self.dicAllZones),),
+        )
         # epsilon vraie
 
         def EpsVraie(sigV, E, K_FACT, N_EXPO):
@@ -1331,43 +1315,19 @@ class PostRocheCommon:
             else:
                 return sigV / E + K_FACT * pow(sigV / E, 1 / N_EXPO)
 
-        if self.lLimiteAdm:
-            fEpsVraieMax = FORMULE(
-                NOM_PARA=("X2", "E", "K_FACT", "N_EXPO"),
-                VALE="EpsVraie(X2, E, K_FACT, N_EXPO)",
-                EpsVraie=EpsVraie,
-            )
+        fEpsVraieMax = FORMULE(
+            NOM_PARA=("X2", "E", "K_FACT", "N_EXPO"),
+            VALE="EpsVraie(X2, E, K_FACT, N_EXPO)",
+            EpsVraie=EpsVraie,
+        )
 
-            self.chFEpsVraie = CREA_CHAMP(
-                OPERATION="AFFE",
-                TYPE_CHAM="ELNO_NEUT_F",
-                MODELE=self.model,
-                PROL_ZERO="OUI",
-                AFFE=(_F(NOM_CMP=("X2"), VALE_F=(fEpsVraieMax), **self.dicAllZones),),
-            )
-
-        else:
-            fEpsVraie = FORMULE(
-                NOM_PARA=("X1", "E", "K_FACT", "N_EXPO"),
-                VALE="EpsVraie(X1, E, K_FACT, N_EXPO)",
-                EpsVraie=EpsVraie,
-            )
-
-            fEpsVraieMax = FORMULE(
-                NOM_PARA=("X2", "E", "K_FACT", "N_EXPO"),
-                VALE="EpsVraie(X2, E, K_FACT, N_EXPO)",
-                EpsVraie=EpsVraie,
-            )
-
-            self.chFEpsVraie = CREA_CHAMP(
-                OPERATION="AFFE",
-                TYPE_CHAM="ELNO_NEUT_F",
-                MODELE=self.model,
-                PROL_ZERO="OUI",
-                AFFE=(
-                    _F(NOM_CMP=("X1", "X2"), VALE_F=(fEpsVraie, fEpsVraieMax), **self.dicAllZones),
-                ),
-            )
+        self.chFEpsVraie = CREA_CHAMP(
+            OPERATION="AFFE",
+            TYPE_CHAM="ELNO_NEUT_F",
+            MODELE=self.model,
+            PROL_ZERO="OUI",
+            AFFE=(_F(NOM_CMP=("X2"), VALE_F=(fEpsVraieMax), **self.dicAllZones),),
+        )
 
         # veriContrainte
 
@@ -1389,20 +1349,10 @@ class PostRocheCommon:
             else:
                 return 0
 
-        f1 = FORMULE(NOM_PARA=("X1", "X2"), VALE="veriSupSigP(X1,X2)", veriSupSigP=veriSupSigP)
-
         f2 = FORMULE(NOM_PARA=("X1", "X3"), VALE="veriSupSigP(X1,X3)", veriSupSigP=veriSupSigP)
-
-        f3 = FORMULE(
-            NOM_PARA=("X4", "X2"), VALE="veriInfSigRef(X4,X2)", veriInfSigRef=veriInfSigRef
-        )
-
         f4 = FORMULE(
             NOM_PARA=("X4", "X3"), VALE="veriInfSigRef(X4,X3)", veriInfSigRef=veriInfSigRef
         )
-
-        f5 = FORMULE(NOM_PARA=("X2"), VALE="veriIterMax(X2)", veriIterMax=veriIterMax)
-
         f6 = FORMULE(NOM_PARA=("X3"), VALE="veriIterMax(X3)", veriIterMax=veriIterMax)
 
         self.chFSigVInfSigP = CREA_CHAMP(
@@ -1410,13 +1360,7 @@ class PostRocheCommon:
             TYPE_CHAM="ELNO_NEUT_F",
             MODELE=self.model,
             PROL_ZERO="OUI",
-            AFFE=(
-                _F(
-                    NOM_CMP=("X1", "X2", "X3", "X4", "X5", "X6"),
-                    VALE_F=(f1, f2, f3, f4, f5, f6),
-                    **self.dicAllZones,
-                ),
-            ),
+            AFFE=(_F(NOM_CMP=("X2", "X4", "X6"), VALE_F=(f2, f4, f6), **self.dicAllZones),),
         )
 
         # coefficient d'abattement
@@ -1436,14 +1380,6 @@ class PostRocheCommon:
                 fepsiMP=fepsiMP,
             )
 
-            self.chFCoefAbat = CREA_CHAMP(
-                OPERATION="AFFE",
-                TYPE_CHAM="ELNO_NEUT_F",
-                MODELE=self.model,
-                PROL_ZERO="OUI",
-                AFFE=(_F(NOM_CMP=("X2"), VALE_F=(fCoefAbatOpt), **self.dicAllZones),),
-            )
-
         else:
 
             def coefAbat(sigRef, sigP, sigV):
@@ -1454,23 +1390,17 @@ class PostRocheCommon:
                 else:
                     return (sigV - sigP) / sigRef
 
-            fCoefAbat = FORMULE(
-                NOM_PARA=("N", "X1", "X2"), VALE="coefAbat(N, X1, X2)", coefAbat=coefAbat
-            )
-
             fCoefAbatOpt = FORMULE(
                 NOM_PARA=("N", "X1", "X3"), VALE="coefAbat(N, X1, X3)", coefAbat=coefAbat
             )
 
-            self.chFCoefAbat = CREA_CHAMP(
-                OPERATION="AFFE",
-                TYPE_CHAM="ELNO_NEUT_F",
-                MODELE=self.model,
-                PROL_ZERO="OUI",
-                AFFE=(
-                    _F(NOM_CMP=("X1", "X2"), VALE_F=(fCoefAbat, fCoefAbatOpt), **self.dicAllZones),
-                ),
-            )
+        self.chFCoefAbat = CREA_CHAMP(
+            OPERATION="AFFE",
+            TYPE_CHAM="ELNO_NEUT_F",
+            MODELE=self.model,
+            PROL_ZERO="OUI",
+            AFFE=(_F(NOM_CMP=("X2"), VALE_F=(fCoefAbatOpt), **self.dicAllZones),),
+        )
 
     def combinaisons(self):
         """
@@ -1666,180 +1596,83 @@ class PostRocheCommon:
         Construction des champs de sortie (principal et complémentaire)
         """
 
-        if self.lLimiteAdm:
-            chTempo = CREA_CHAMP(
-                OPERATION="ASSE",
-                MODELE=self.model,
-                TYPE_CHAM="ELNO_NEUT_R",
-                PROL_ZERO="OUI",
-                ASSE=(
-                    _F(
-                        CHAM_GD=chVale,
-                        TOUT="OUI",
-                        NOM_CMP=(
-                            "X1",
-                            "X2",
-                            "X3",
-                            "X4",
-                            "X5",
-                            "X6",
-                            "X7",
-                            "X8",
-                            "X9",
-                            "X10",
-                            "X11",
-                            "X12",
-                            "X13",
-                        ),
-                        NOM_CMP_RESU=(
-                            "X1",
-                            "X3",
-                            "X5",
-                            "X7",
-                            "X9",
-                            "X11",
-                            "X13",
-                            "X17",
-                            "X19",
-                            "X21",
-                            "X23",
-                            "X25",
-                            "X27",
-                        ),
+        chTempo = CREA_CHAMP(
+            OPERATION="ASSE",
+            MODELE=self.model,
+            TYPE_CHAM="ELNO_NEUT_R",
+            PROL_ZERO="OUI",
+            ASSE=(
+                _F(
+                    CHAM_GD=chVale,
+                    TOUT="OUI",
+                    NOM_CMP=(
+                        "X1",
+                        "X2",
+                        "X3",
+                        "X4",
+                        "X5",
+                        "X6",
+                        "X7",
+                        "X8",
+                        "X9",
+                        "X10",
+                        "X11",
+                        "X12",
+                        "X13",
                     ),
-                    _F(
-                        CHAM_GD=chValeS2,
-                        TOUT="OUI",
-                        NOM_CMP=(
-                            "X1",
-                            "X2",
-                            "X3",
-                            "X4",
-                            "X5",
-                            "X6",
-                            "X7",
-                            "X8",
-                            "X9",
-                            "X10",
-                            "X11",
-                            "X12",
-                            "X13",
-                        ),
-                        NOM_CMP_RESU=(
-                            "X2",
-                            "X4",
-                            "X6",
-                            "X8",
-                            "X10",
-                            "X12",
-                            "X14",
-                            "X18",
-                            "X20",
-                            "X22",
-                            "X24",
-                            "X26",
-                            "X28",
-                        ),
-                    ),
-                    # _F(CHAM_GD = self.chContEquiv,
-                    # TOUT = 'OUI',
-                    # NOM_CMP = ('X1',),
-                    # NOM_CMP_RESU = ('X15',),
-                    # ),
-                    _F(
-                        CHAM_GD=self.chContEquivOpt,
-                        TOUT="OUI",
-                        NOM_CMP=("X1",),
-                        NOM_CMP_RESU=("X16",),
+                    NOM_CMP_RESU=(
+                        "X1",
+                        "X3",
+                        "X5",
+                        "X7",
+                        "X9",
+                        "X11",
+                        "X13",
+                        "X17",
+                        "X19",
+                        "X21",
+                        "X23",
+                        "X25",
+                        "X27",
                     ),
                 ),
-            )
-        else:
-            chTempo = CREA_CHAMP(
-                OPERATION="ASSE",
-                MODELE=self.model,
-                TYPE_CHAM="ELNO_NEUT_R",
-                PROL_ZERO="OUI",
-                ASSE=(
-                    _F(
-                        CHAM_GD=chVale,
-                        TOUT="OUI",
-                        NOM_CMP=(
-                            "X1",
-                            "X2",
-                            "X3",
-                            "X4",
-                            "X5",
-                            "X6",
-                            "X7",
-                            "X8",
-                            "X9",
-                            "X10",
-                            "X11",
-                            "X12",
-                            "X13",
-                        ),
-                        NOM_CMP_RESU=(
-                            "X1",
-                            "X3",
-                            "X5",
-                            "X7",
-                            "X9",
-                            "X11",
-                            "X13",
-                            "X17",
-                            "X19",
-                            "X21",
-                            "X23",
-                            "X25",
-                            "X27",
-                        ),
+                _F(
+                    CHAM_GD=chValeS2,
+                    TOUT="OUI",
+                    NOM_CMP=(
+                        "X1",
+                        "X2",
+                        "X3",
+                        "X4",
+                        "X5",
+                        "X6",
+                        "X7",
+                        "X8",
+                        "X9",
+                        "X10",
+                        "X11",
+                        "X12",
+                        "X13",
                     ),
-                    _F(
-                        CHAM_GD=chValeS2,
-                        TOUT="OUI",
-                        NOM_CMP=(
-                            "X1",
-                            "X2",
-                            "X3",
-                            "X4",
-                            "X5",
-                            "X6",
-                            "X7",
-                            "X8",
-                            "X9",
-                            "X10",
-                            "X11",
-                            "X12",
-                            "X13",
-                        ),
-                        NOM_CMP_RESU=(
-                            "X2",
-                            "X4",
-                            "X6",
-                            "X8",
-                            "X10",
-                            "X12",
-                            "X14",
-                            "X18",
-                            "X20",
-                            "X22",
-                            "X24",
-                            "X26",
-                            "X28",
-                        ),
-                    ),
-                    _F(
-                        CHAM_GD=self.chContEquiv, TOUT="OUI", NOM_CMP=("X1",), NOM_CMP_RESU=("X15",)
-                    ),
-                    _F(
-                        CHAM_GD=self.chContEquivOpt,
-                        TOUT="OUI",
-                        NOM_CMP=("X1",),
-                        NOM_CMP_RESU=("X16",),
+                    NOM_CMP_RESU=(
+                        "X2",
+                        "X4",
+                        "X6",
+                        "X8",
+                        "X10",
+                        "X12",
+                        "X14",
+                        "X18",
+                        "X20",
+                        "X22",
+                        "X24",
+                        "X26",
+                        "X28",
                     ),
                 ),
-            )
+                _F(CHAM_GD=self.chContEquivOpt, TOUT="OUI", NOM_CMP=("X1",), NOM_CMP_RESU=("X16",)),
+            ),
+        )
 
         chPrin = CREA_CHAMP(
             OPERATION="ASSE",
@@ -2095,7 +1928,6 @@ class PostRocheCalc:
     def contrainteVraie(self):
         """
         Calcul des contraintes vraies
-        - à partir de l'effet de ressort
         - à partir de l'effet de ressort max
         """
 
@@ -2111,7 +1943,6 @@ class PostRocheCalc:
         else:
             # assemblage de champs
             # X1 = Sigma Pression
-            # X2 = effet de ressort
             # X3 = effet de ressort max
 
             chUtil = CREA_CHAMP(
@@ -2121,7 +1952,6 @@ class PostRocheCalc:
                 PROL_ZERO="OUI",
                 ASSE=(
                     _F(CHAM_GD=self.param.chSigPres, TOUT="OUI", NOM_CMP=("X1",)),
-                    _F(CHAM_GD=self.chRessort, TOUT="OUI", NOM_CMP=("X1",), NOM_CMP_RESU=("X2",)),
                     _F(CHAM_GD=self.chRessMax, TOUT="OUI", NOM_CMP=("X1",), NOM_CMP_RESU=("X3",)),
                 ),
             )
@@ -2153,7 +1983,6 @@ class PostRocheCalc:
 
         # assemblage de champs
         # X1 = contrainte de Pression
-        # X2 = contrainte vraie
         # X3 = contrainte vraie "Max"
 
         chUtil2 = CREA_CHAMP(
@@ -2163,12 +1992,7 @@ class PostRocheCalc:
             PROL_ZERO="OUI",
             ASSE=(
                 _F(CHAM_GD=self.param.chSigPres, TOUT="OUI", NOM_CMP=("X1",)),
-                _F(
-                    CHAM_GD=self.chSigVraie,
-                    TOUT="OUI",
-                    NOM_CMP=("X1", "X2"),
-                    NOM_CMP_RESU=("X2", "X3"),
-                ),
+                _F(CHAM_GD=self.chSigVraie, TOUT="OUI", NOM_CMP=("X2"), NOM_CMP_RESU=("X3")),
                 _F(CHAM_GD=self.chSigRef, TOUT="OUI", NOM_CMP=("N",), NOM_CMP_RESU=("X4",)),
             ),
         )
@@ -2183,33 +2007,21 @@ class PostRocheCalc:
             CHAM_PARA=(chUtil2,),
         )
 
-        # IMPR_RESU(UNITE=6, FORMAT='RESULTAT', RESU=_F(CHAM_GD=chSigVInfSigP,
-        # NOM_CMP=('X1','X2','X3','X4')))
-
         self.chSigVInfSigP = chSigVInfSigP
 
         tabVeriSigV = POST_ELEM(
             MINMAX=_F(
                 MODELE=self.param.model,
                 CHAM_GD=chSigVInfSigP,
-                NOM_CMP=("X1", "X2", "X3", "X4", "X5", "X6"),
+                NOM_CMP=("X2", "X4", "X6"),
                 **self.param.dicAllZones,
             )
         )
 
         nrow = tabVeriSigV.get_nrow()
-        maxX1 = tabVeriSigV["MAX_X1", nrow]
         maxX2 = tabVeriSigV["MAX_X2", nrow]
-        maxX3 = tabVeriSigV["MAX_X3", nrow]
         maxX4 = tabVeriSigV["MAX_X4", nrow]
-        maxX5 = tabVeriSigV["MAX_X5", nrow]
         maxX6 = tabVeriSigV["MAX_X6", nrow]
-
-        if maxX1 > 0:
-            if self.numeOrdre != -1:
-                UTMESS("A", "POSTROCHE_8", vali=self.numeOrdre, valk="la contrainte réelle")
-            else:
-                UTMESS("A", "POSTROCHE_9", valk="la contrainte réelle")
 
         if maxX2 > 0:
             if self.numeOrdre != -1:
@@ -2218,27 +2030,12 @@ class PostRocheCalc:
             else:
                 UTMESS("A", "POSTROCHE_9", valk="la contrainte réelle optimisée")
 
-        if maxX3 > 0:
-            if self.numeOrdre != -1:
-                UTMESS("A", "POSTROCHE_12", vali=self.numeOrdre, valk="la contrainte réelle")
-            else:
-                UTMESS("A", "POSTROCHE_13", valk="la contrainte réelle")
-
         if maxX4 > 0:
             if self.numeOrdre != -1:
                 dict_args = dict(vali=self.numeOrdre, valk="la contrainte réelle optimisée")
                 UTMESS("A", "POSTROCHE_12", **dict_args)
             else:
                 UTMESS("A", "POSTROCHE_13", valk="la contrainte réelle optimisée")
-
-        if maxX5 > 0:
-            if self.numeOrdre != -1:
-                valargs = _F(
-                    vali=[self.numeOrdre, self.param.nbIterMax], valk="la contrainte réelle"
-                )
-                UTMESS("A", "POSTROCHE_14", **valargs)
-            else:
-                UTMESS("A", "POSTROCHE_15", vali=self.param.nbIterMax, valk="la contrainte réelle")
 
         if maxX6 > 0:
             if self.numeOrdre != -1:
@@ -2253,12 +2050,10 @@ class PostRocheCalc:
 
     def coef_abattement(self):
         """
-        Calcul des coefficients d'abattement g et g_opt
-        - à partir de l'effet de ressort => g
+        Calcul du coefficient d'abattement g_opt
         - à partir de l'effet de ressort max => g_opt
 
-        pour LIMITE_ADM = OUI, on ne calcule que g_opt avec
-        une formule propre
+        pour LIMITE_ADM = OUI, on calcule g_opt avec une formule propre
         """
 
         if self.param.lLimiteAdm:
@@ -2304,12 +2099,9 @@ class PostRocheCalc:
         # X3 = réversibilité totale
         # X4 = facteur d'effet de ressort
         # X5 = facteur d'effet de ressort maximal
-        # X6 = coefficient d'abattement
         # X7 = coefficient d'abattement optimisé
 
-        # X10 = contrainte vraie
         # X11 = contrainte vraie optimisée
-        # X12 = epsilon vraie
         # X13 = epsilon vraie optimisée
 
         field = CREA_CHAMP(
@@ -2323,30 +2115,10 @@ class PostRocheCalc:
                 _F(CHAM_GD=self.chReversTot, TOUT="OUI", NOM_CMP=("X1",), NOM_CMP_RESU=("X3",)),
                 _F(CHAM_GD=self.chRessort, TOUT="OUI", NOM_CMP=("X1",), NOM_CMP_RESU=("X4",)),
                 _F(CHAM_GD=self.chRessMax, TOUT="OUI", NOM_CMP=("X1",), NOM_CMP_RESU=("X5",)),
-                _F(
-                    CHAM_GD=self.chCoefsAbat,
-                    TOUT="OUI",
-                    NOM_CMP=("X1", "X2"),
-                    NOM_CMP_RESU=("X6", "X7"),
-                ),
-                _F(
-                    CHAM_GD=self.chSigVInfSigP,
-                    TOUT="OUI",
-                    NOM_CMP=("X1", "X2"),
-                    NOM_CMP_RESU=("X8", "X9"),
-                ),
-                _F(
-                    CHAM_GD=self.chSigVraie,
-                    TOUT="OUI",
-                    NOM_CMP=("X1", "X2"),
-                    NOM_CMP_RESU=("X10", "X11"),
-                ),
-                _F(
-                    CHAM_GD=self.chEpsVraie,
-                    TOUT="OUI",
-                    NOM_CMP=("X1", "X2"),
-                    NOM_CMP_RESU=("X12", "X13"),
-                ),
+                _F(CHAM_GD=self.chCoefsAbat, TOUT="OUI", NOM_CMP=("X2"), NOM_CMP_RESU=("X7")),
+                _F(CHAM_GD=self.chSigVInfSigP, TOUT="OUI", NOM_CMP=("X2"), NOM_CMP_RESU=("X9")),
+                _F(CHAM_GD=self.chSigVraie, TOUT="OUI", NOM_CMP=("X2"), NOM_CMP_RESU=("X11")),
+                _F(CHAM_GD=self.chEpsVraie, TOUT="OUI", NOM_CMP=("X2"), NOM_CMP_RESU=("X13")),
             ),
         )
 
