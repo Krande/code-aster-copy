@@ -138,7 +138,7 @@ def calc_corr_plaque_ct(
     LOAD_ff_xy = FORMULE(VALE="0.5 * Z", NOM_PARA="Z")
 
     if type_homo in ("PLAQUE_CT_TOURATIER",):
-        LOAD_ct = FORMULE(VALE="-0.5 * cos(pi * Z / h)", NOM_PARA="Z", h=ep_ver)
+        LOAD_ct = FORMULE(VALE="-0.5 * (pi/2)*cos(pi * Z / h)", NOM_PARA="Z", h=ep_ver)
     elif type_homo in ("PLAQUE_CT_MINDLIN",):
         LOAD_ct = FORMULE(VALE="-0.5", NOM_PARA="Z")
     else:

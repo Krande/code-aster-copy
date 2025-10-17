@@ -61,8 +61,8 @@ testrefe = {
     "FLEX_T": 0.35372,
     "FLEX_LT": 0.07846,
     "FLEX_G_LT": 0.19348,
-    "CISA_L": 0.14175,
-    "CISA_T": 0.14175,
+    "CISA_L": 0.21865,
+    "CISA_T": 0.21865,
     "ALPHA": 16.4e-6,
 }
 
