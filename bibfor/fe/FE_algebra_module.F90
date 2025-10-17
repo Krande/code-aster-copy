@@ -34,6 +34,8 @@ module FE_algebra_module
 !
 ! --------------------------------------------------------------------------------------------------
 !
+! aslint: disable=C1505
+!
     public :: dgemv_T_2xn, dgemv_T_3xn, dgemv_T_4xn, dgemv_T_6xn
     public :: dgemv_2x2, dgemv_3x3, dgemv_T_4x4, dgemv_T_6x6
     public :: daxpy_1, daxpy_1x2, daxpy_1x3, daxpy_1xm, dcopy_1
@@ -78,8 +80,8 @@ contains
 #else
 !
         y(1) = alpha*( &
-               mat(1, 1)*x(1)+mat(2, 1)*x(2)+mat(3, 1)*x(3)+mat(4, 1)*x(4)+mat(5, 1)*x(5)+mat(6, &
-               &1)*x(6) &
+               mat(1, 1)*x(1)+mat(2, 1)*x(2)+mat(3, 1)*x(3)+mat(4, 1)*x(4)+mat(5, 1)*x(5)+ &
+               mat(6, 1)*x(6) &
                )
         y(2) = alpha*( &
                mat(1, 2)*x(1)+mat(2, 2)*x(2)+mat(3, 2)*x(3)+mat(4, 2)*x(4)+mat(5, 2)*x(5)+mat(6, &
@@ -619,13 +621,12 @@ contains
 ! --------------------------------------------------------------------------------------------------
 !
 !
-        blas_int :: b_incx, b_incy, b_n
-
+        blas_int :: b_n
+        blas_int, parameter :: b_one = to_blas_int(1)
+!
 #ifdef FE_USE_BLAS
         b_n = to_blas_int(n)
-        b_incx = to_blas_int(1)
-        b_incy = to_blas_int(1)
-        call daxpy(b_n, alpha, x, b_incx, y, b_incy)
+        call daxpy(b_n, alpha, x, b_one, y, b_one)
 #else
 !
         select case (n)
@@ -652,9 +653,7 @@ contains
             y(6) = y(6)+alpha*x(6)
         case default
             b_n = to_blas_int(n)
-            b_incx = to_blas_int(1)
-            b_incy = to_blas_int(1)
-            call daxpy(b_n, alpha, x, b_incx, y, b_incy)
+            call daxpy(b_n, alpha, x, b_one, y, b_one)
         end select
 #endif
 !
@@ -681,13 +680,12 @@ contains
 ! --------------------------------------------------------------------------------------------------
 !
 !
-        blas_int :: b_incx, b_incy, b_n
-
+        blas_int :: b_n
+        blas_int, parameter :: b_one = to_blas_int(1), b_two = to_blas_int(2)
+!
 #ifdef FE_USE_BLAS
         b_n = to_blas_int(n)
-        b_incx = to_blas_int(1)
-        b_incy = to_blas_int(2)
-        call daxpy(b_n, alpha, x, b_incx, y, b_incy)
+        call daxpy(b_n, alpha, x, b_one, y, b_two)
 #else
 !
         select case (n)
@@ -714,9 +712,7 @@ contains
             y(11) = y(11)+alpha*x(6)
         case default
             b_n = to_blas_int(n)
-            b_incx = to_blas_int(1)
-            b_incy = to_blas_int(2)
-            call daxpy(b_n, alpha, x, b_incx, y, b_incy)
+            call daxpy(b_n, alpha, x, b_one, y, b_two)
         end select
 #endif
 !
@@ -743,13 +739,12 @@ contains
 ! --------------------------------------------------------------------------------------------------
 !
 !
-        blas_int :: b_incx, b_incy, b_n
+        blas_int :: b_n
+        blas_int, parameter :: b_one = to_blas_int(1), b_3 = to_blas_int(3)
 !
 #ifdef FE_USE_BLAS
         b_n = to_blas_int(n)
-        b_incx = to_blas_int(1)
-        b_incy = to_blas_int(3)
-        call daxpy(b_n, alpha, x, b_incx, y, b_incy)
+        call daxpy(b_n, alpha, x, b_one, y, b_3)
 #else
 !
         select case (n)
@@ -776,9 +771,7 @@ contains
             y(16) = y(16)+alpha*x(6)
         case default
             b_n = to_blas_int(n)
-            b_incx = to_blas_int(1)
-            b_incy = to_blas_int(3)
-            call daxpy(b_n, alpha, x, b_incx, y, b_incy)
+            call daxpy(b_n, alpha, x, b_one, y, b_3)
         end select
 #endif
 !
@@ -805,13 +798,13 @@ contains
 ! --------------------------------------------------------------------------------------------------
 !
 !
-        blas_int :: b_incx, b_incy, b_n
+        blas_int :: b_n, b_m
+        blas_int, parameter :: b_one = to_blas_int(1)
 !
 #ifdef FE_USE_BLAS
         b_n = to_blas_int(n)
-        b_incx = to_blas_int(1)
-        b_incy = to_blas_int(m)
-        call daxpy(b_n, alpha, x, b_incx, y, b_incy)
+        b_m = to_blas_int(m)
+        call daxpy(b_n, alpha, x, b_one, y, b_m)
 #else
 !
         select case (m)
@@ -823,9 +816,8 @@ contains
             call daxpy_1x3(n, alpha, x, y)
         case default
             b_n = to_blas_int(n)
-            b_incx = to_blas_int(1)
-            b_incy = to_blas_int(m)
-            call daxpy(b_n, alpha, x, b_incx, y, b_incy)
+            b_m = to_blas_int(m)
+            call daxpy(b_n, alpha, x, b_one, y, b_m)
         end select
 #endif
 !
@@ -851,13 +843,12 @@ contains
 ! --------------------------------------------------------------------------------------------------
 !
 !
-        blas_int :: b_incx, b_incy, b_n
+        blas_int :: b_n
+        blas_int, parameter :: b_one = to_blas_int(1)
 
 #ifdef FE_USE_BLAS
         b_n = to_blas_int(n)
-        b_incx = to_blas_int(1)
-        b_incy = to_blas_int(1)
-        call dcopy(b_n, x, b_incx, y, b_incy)
+        call dcopy(b_n, x, b_one, y, b_one)
 #else
 !
         select case (n)
@@ -880,6 +871,7 @@ contains
             y(2) = x(2)
             y(3) = x(3)
             y(4) = x(4)
+            y(5) = x(5)
         case (6)
             y(1) = x(1)
             y(2) = x(2)
@@ -889,9 +881,7 @@ contains
             y(6) = x(6)
         case default
             b_n = to_blas_int(n)
-            b_incx = to_blas_int(1)
-            b_incy = to_blas_int(1)
-            call dcopy(b_n, x, b_incx, y, b_incy)
+            call dcopy(b_n, x, b_one, y, b_one)
         end select
 #endif
 !
