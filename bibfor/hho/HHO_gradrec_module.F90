@@ -28,6 +28,7 @@ module HHO_gradrec_module
     use HHO_geometry_module
     use HHO_algebra_module
     use HHO_matrix_module
+    use FE_algebra_module
 !
     implicit none
 !
@@ -325,7 +326,7 @@ contains
         real(kind=8), dimension(MSIZE_CELL_SCAL) :: BSCEval, BSGEval, VecGrad
         real(kind=8), dimension(MSIZE_FACE_SCAL) :: BSFEval
         real(kind=8) :: normal(3)
-        integer(kind=8) :: cbs, fbs, total_dofs, gbs, dimMassMat
+        integer(kind=8) :: cbs, fbs, total_dofs, gbs, dimMassMat, max_deg, gbs_cmp
         integer(kind=8) :: ipg, ibeginBG, iendBG, ibeginSOL, iendSOL, idim
         blas_int :: b_n, b_nhrs, b_lda, b_ldb, info, b_m
         integer(kind=8) :: iface, fromFace, toFace, cell_offset
@@ -338,10 +339,13 @@ contains
 ! -- number of dofs
         call hhoTherNLDofs(hhoCell, hhoData, cbs, fbs, total_dofs, gbs)
         cell_offset = total_dofs-cbs+1
+        gbs_cmp = gbs/hhoCell%ndim
 !
 ! -- compute mass matrix of P^k_d(T;R)
         call massMat%compute(hhoCell, 0, hhoData%grad_degree())
         dimMassMat = massMat%nrows
+!
+        max_deg = max(hhoData%cell_degree(), hhoData%grad_degree())
 !
         toFace = 0
         call gradrec%initialize(gbs, total_dofs, 0.d0)
@@ -350,6 +354,8 @@ contains
             hhoFace = hhoCell%faces(iface)
             fromFace = toFace+1
             toFace = fromFace+fbs-1
+            b_lda = to_blas_int(dimMassMat)
+            b_m = to_blas_int(dimMassMat)
 !
             call hhoBasisFace%initialize(hhoFace)
 ! ----- get quadrature
@@ -361,16 +367,14 @@ contains
 ! ----- Loop on quadrature point
             do ipg = 1, hhoQuad%nbQuadPoints
 ! --------- Eval cell basis function at the quadrature point
-                call hhoBasisCell%BSEval(hhoQuad%points(1:3, ipg), 0, hhoData%cell_degree(), &
-                                         BSCEval)
+                call hhoBasisCell%BSEval(hhoQuad%points(1:3, ipg), 0, max_deg, BSCEval)
+!
+! --------- Eval grad cell basis function at the quadrature point
+                call dcopy_1(gbs_cmp, BSCEval, BSGEval)
 !
 ! --------- Eval face basis function at the quadrature point
                 call hhoBasisFace%BSEval(hhoQuad%points(1:3, ipg), 0, hhoData%face_degree(), &
                                          BSFEval)
-!
-! --------- Eval grad cell basis function at the quadrature point
-                call hhoBasisCell%BSEval(hhoQuad%points(1:3, ipg), 0, hhoData%grad_degree(), &
-                                         BSGEval)
 !
                 normal = hhoNormalFaceQP(hhoFace, hhoQuad%points_param(1:2, ipg))
 !
@@ -379,16 +383,12 @@ contains
                     iendBG = ibeginBG+dimMassMat-1
 !
 ! ------------  Compute (vF, tau *normal)
-                    b_lda = to_blas_int(dimMassMat)
-                    b_m = to_blas_int(dimMassMat)
                     b_n = to_blas_int(fbs)
                     call dger(b_m, b_n, hhoQuad%weights(ipg)*normal(idim), BSGEval, b_one, &
                               BSFEval, b_one, &
                               gradrec%m(ibeginBG:iendBG, fromFace:toFace), b_lda)
 !
 ! ------------  Compute -(vT, tau *normal)
-                    b_lda = to_blas_int(dimMassMat)
-                    b_m = to_blas_int(dimMassMat)
                     b_n = to_blas_int(cbs)
                     call dger(b_m, b_n, -hhoQuad%weights(ipg)*normal(idim), BSGEval, b_one, &
                               BSCEval, b_one, &
@@ -636,7 +636,7 @@ contains
         real(kind=8), parameter :: rac2 = sqrt(2.d0)
         real(kind=8) :: coeff, normal(3)
         integer(kind=8) :: cbs, fbs, total_dofs, gbs, dimMassMat, nbdimMat
-        integer(kind=8):: cbs_comp, fbs_comp, gbs_sym
+        integer(kind=8):: cbs_comp, fbs_comp, gbs_sym, gbs_comp, max_deg
         integer(kind=8) :: ipg, ibeginBG, iendBG, ibeginSOL, iendSOL, idim, j, iface
         integer(kind=8) :: jbegCell, jendCell, jbegFace, jendFace, faces_dofs
         blas_int :: b_n, b_nhrs, b_lda, b_ldb, info, b_m
@@ -661,10 +661,13 @@ contains
 !
         cbs_comp = cbs/hhoCell%ndim
         fbs_comp = fbs/hhoCell%ndim
+        gbs_comp = gbs/(hhoCell%ndim*hhoCell%ndim)
+        max_deg = max(hhoData%cell_degree(), hhoData%grad_degree())
 !
 ! -- compute mass matrix of P^k_d(T;R)
         call massMat%compute(hhoCell, 0, hhoData%grad_degree())
         dimMassMat = massMat%nrows
+        b_n = to_blas_int(dimMassMat)
 !
         call gradrec%initialize(gbs_sym, total_dofs, 0.d0)
 !
@@ -689,7 +692,6 @@ contains
 !
                 do j = 1, cbs
                     coeff = hhoQuadCell%weights(ipg)*BVCSGradEval(idim, j)
-                    b_n = to_blas_int(dimMassMat)
                     call daxpy(b_n, coeff, BSGEval, b_one, &
                                gradrec%m(ibeginBG:iendBG, faces_dofs+j), b_one)
                 end do
@@ -703,7 +705,6 @@ contains
 !
                     do j = 1, cbs
                         coeff = hhoQuadCell%weights(ipg)*BVCSGradEval(3+idim, j)
-                        b_n = to_blas_int(dimMassMat)
                         call daxpy(b_n, coeff, BSGEval, b_one, &
                                    gradrec%m(ibeginBG:iendBG, faces_dofs+j), b_one)
                     end do
@@ -714,7 +715,6 @@ contains
 !
                 do j = 1, cbs
                     coeff = hhoQuadCell%weights(ipg)*BVCSGradEval(4, j)
-                    b_n = to_blas_int(dimMassMat)
                     call daxpy(b_n, coeff, BSGEval, b_one, &
                                gradrec%m(ibeginBG:iendBG, faces_dofs+j), b_one)
                 end do
@@ -725,6 +725,9 @@ contains
         end do
 !
 ! -- Loop on the faces
+        b_lda = to_blas_int(dimMassMat)
+        b_m = to_blas_int(dimMassMat)
+!
         do iface = 1, hhoCell%nbfaces
             hhoFace = hhoCell%faces(iface)
 !
@@ -738,16 +741,15 @@ contains
 ! ----- Loop on quadrature point
             do ipg = 1, hhoQuad%nbQuadPoints
 ! --------- Eval cell basis function at the quadrature point
-                call hhoBasisCell%BSEval(hhoQuad%points(1:3, ipg), 0, hhoData%cell_degree(), &
-                                         BSCEval)
+                call hhoBasisCell%BSEval(hhoQuad%points(1:3, ipg), 0, max_deg, BSCEval)
+!
+! --------- Eval grad cell basis function at the quadrature point
+                call dcopy_1(gbs_comp, BSCEval, BSGEval)
+
 !
 ! --------- Eval face basis function at the quadrature point
                 call hhoBasisFace%BSEval(hhoQuad%points(1:3, ipg), 0, hhoData%face_degree(), &
                                          BSFEval)
-!
-! --------- Eval grad cell basis function at the quadrature point
-                call hhoBasisCell%BSEval(hhoQuad%points(1:3, ipg), 0, hhoData%grad_degree(), &
-                                         BSGEval)
 !
                 normal = hhoNormalFaceQP(hhoFace, hhoQuad%points_param(1:2, ipg))
 !

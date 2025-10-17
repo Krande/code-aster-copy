@@ -39,6 +39,8 @@ module HHO_basis_module
 #include "asterfort/teattr.h"
 #include "asterfort/tecach.h"
 #include "asterfort/utmess.h"
+#include "blas/ddot.h"
+
 ! --------------------------------------------------------------------------------------------------
 !
 ! HHO - generic
@@ -798,8 +800,10 @@ contains
 ! --------------------------------------------------------------------------------------------------
 !
         real(kind=8), dimension(3) :: peval
-        integer(kind=8) :: imono, ifrom, ito, icoeff
-        integer(kind=8), dimension(3) :: power
+        real(kind=8), dimension(84) :: polyEval
+        integer(kind=8) :: imono, ifrom, ito, power(3), nb_coeff
+        blas_int, parameter :: b_one = to_blas_int(1)
+        blas_int :: b_n
 !
 ! ---- Check the order
         call check_order(min_order, max_order, this%hhoMono%maxOrder())
@@ -816,43 +820,37 @@ contains
 ! ----- Loop on the monomial
 !
         if (this%ndim == 2) then
+            do imono = 1, ito
+                power(1:2) = this%hhoMono%monomials(1:2, imono)
+                polyEval(imono) = this%hhoMono%monoEval(1, power(1))* &
+                                  this%hhoMono%monoEval(2, power(2))
+            end do
             if (this%type == BASIS_ORTHO) then
                 do imono = ifrom, ito
-                    do icoeff = 1, this%coeff_shift(imono+1)-this%coeff_shift(imono)
-                        power(1:2) = this%hhoMono%monomials(1:2, icoeff)
-                        basisScalEval(imono) = basisScalEval(imono)+ &
-                                               this%coeff_mono(this%coeff_shift(imono)-1+icoeff)* &
-                                               this%hhoMono%monoEval(1, power(1))* &
-                                               this%hhoMono%monoEval(2, power(2))
-                    end do
+                    nb_coeff = this%coeff_shift(imono+1)-this%coeff_shift(imono)
+                    b_n = to_blas_int(nb_coeff)
+                    basisScalEval(imono) = ddot(b_n, this%coeff_mono(this%coeff_shift(imono)), &
+                                                b_one, polyEval, b_one)
                 end do
             else
-                do imono = ifrom, ito
-                    power(1:2) = this%hhoMono%monomials(1:2, imono)
-                    basisScalEval(imono) = this%hhoMono%monoEval(1, power(1))* &
-                                           this%hhoMono%monoEval(2, power(2))
-                end do
+                basisScalEval(ifrom:ito) = polyEval(ifrom:ito)
             end if
         else if (this%ndim == 3) then
+            do imono = 1, ito
+                power(1:3) = this%hhoMono%monomials(1:3, imono)
+                polyEval(imono) = this%hhoMono%monoEval(1, power(1))* &
+                                  this%hhoMono%monoEval(2, power(2)) &
+                                  *this%hhoMono%monoEval(3, power(3))
+            end do
             if (this%type == BASIS_ORTHO) then
                 do imono = ifrom, ito
-                    do icoeff = 1, this%coeff_shift(imono+1)-this%coeff_shift(imono)
-                        power(1:3) = this%hhoMono%monomials(1:3, icoeff)
-                        basisScalEval(imono) = basisScalEval(imono)+ &
-                                               this%coeff_mono(this%coeff_shift(imono)-1+icoeff)* &
-                                               this%hhoMono%monoEval(1, power(1))* &
-                                               this%hhoMono%monoEval(2, power(2))* &
-                                               this%hhoMono%monoEval(3, power(3))
-                    end do
+                    nb_coeff = this%coeff_shift(imono+1)-this%coeff_shift(imono)
+                    b_n = to_blas_int(nb_coeff)
+                    basisScalEval(imono) = ddot(b_n, this%coeff_mono(this%coeff_shift(imono)), &
+                                                b_one, polyEval, b_one)
                 end do
             else
-                do imono = ifrom, ito
-                    power(1:3) = this%hhoMono%monomials(1:3, imono)
-                    basisScalEval(imono) = this%hhoMono%monoEval(1, power(1))* &
-                                           this%hhoMono%monoEval(2, power(2))* &
-                                           this%hhoMono%monoEval(3, power(3))
-
-                end do
+                basisScalEval(ifrom:ito) = polyEval(ifrom:ito)
             end if
         else
             ASSERT(ASTER_FALSE)
@@ -1149,8 +1147,8 @@ contains
 !
         class(HHO_basis_face), intent(inout)                    :: this
         real(kind=8), dimension(3), intent(in)                  :: point
-        integer(kind=8), intent(in)                                     :: min_order
-        integer(kind=8), intent(in)                                     :: max_order
+        integer(kind=8), intent(in)                             :: min_order
+        integer(kind=8), intent(in)                             :: max_order
         real(kind=8), dimension(MSIZE_FACE_SCAL), intent(out)   :: basisScalEval
 !
 ! --------------------------------------------------------------------------------------------------
@@ -1166,8 +1164,10 @@ contains
 ! --------------------------------------------------------------------------------------------------
 !
         real(kind=8), dimension(2) :: peval
-        integer(kind=8) :: imono, ifrom, ito, icoeff
-        integer(kind=8), dimension(2) :: power
+        real(kind=8), dimension(84) :: polyEval
+        integer(kind=8) :: imono, ifrom, ito, nb_coeff, power(2)
+        blas_int, parameter :: b_one = to_blas_int(1)
+        blas_int :: b_n
 !
 ! ---- Check the order
         call check_order(min_order, max_order, this%hhoMono%maxOrder())
@@ -1183,38 +1183,36 @@ contains
 !
 ! ----- Loop on the monomial
         if (this%ndim == 1) then
+            do imono = 1, ito
+                power(1) = this%hhoMono%monomials(1, imono)
+                polyEval(imono) = this%hhoMono%monoEval(1, power(1))
+            end do
+
             if (this%type == BASIS_ORTHO) then
                 do imono = ifrom, ito
-                    do icoeff = 1, this%coeff_shift(imono+1)-this%coeff_shift(imono)
-                        power(1) = this%hhoMono%monomials(1, icoeff)
-                        basisScalEval(imono) = basisScalEval(imono)+ &
-                                               this%coeff_mono(this%coeff_shift(imono)-1+icoeff)* &
-                                               this%hhoMono%monoEval(1, power(1))
-                    end do
+                    nb_coeff = this%coeff_shift(imono+1)-this%coeff_shift(imono)
+                    b_n = to_blas_int(nb_coeff)
+                    basisScalEval(imono) = ddot(b_n, this%coeff_mono(this%coeff_shift(imono)), &
+                                                b_one, polyEval, b_one)
                 end do
             else
-                do imono = ifrom, ito
-                    power(1) = this%hhoMono%monomials(1, imono)
-                    basisScalEval(imono) = this%hhoMono%monoEval(1, power(1))
-                end do
+                basisScalEval(ifrom:ito) = polyEval(ifrom:ito)
             end if
         else if (this%ndim == 2) then
+            do imono = 1, ito
+                power(1:2) = this%hhoMono%monomials(1:2, imono)
+                polyEval(imono) = this%hhoMono%monoEval(1, power(1))* &
+                                  this%hhoMono%monoEval(2, power(2))
+            end do
             if (this%type == BASIS_ORTHO) then
                 do imono = ifrom, ito
-                    do icoeff = 1, this%coeff_shift(imono+1)-this%coeff_shift(imono)
-                        power(1:2) = this%hhoMono%monomials(1:2, icoeff)
-                        basisScalEval(imono) = basisScalEval(imono)+ &
-                                               this%coeff_mono(this%coeff_shift(imono)-1+icoeff)* &
-                                               this%hhoMono%monoEval(1, power(1))* &
-                                               this%hhoMono%monoEval(2, power(2))
-                    end do
+                    nb_coeff = this%coeff_shift(imono+1)-this%coeff_shift(imono)
+                    b_n = to_blas_int(nb_coeff)
+                    basisScalEval(imono) = ddot(b_n, this%coeff_mono(this%coeff_shift(imono)), &
+                                                b_one, polyEval, b_one)
                 end do
             else
-                do imono = ifrom, ito
-                    power(1:2) = this%hhoMono%monomials(1:2, imono)
-                    basisScalEval(imono) = this%hhoMono%monoEval(1, power(1))* &
-                                           this%hhoMono%monoEval(2, power(2))
-                end do
+                basisScalEval(ifrom:ito) = polyEval(ifrom:ito)
             end if
         else
             ASSERT(ASTER_FALSE)
