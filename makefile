@@ -70,7 +70,12 @@ JOBS ?= $(shell \
 	if grep -q -- "-j" <<< "$(MAKEFLAGS)"; then \
 		j=-j$$( sed -e 's/.*-j\([0-9]\+\).*/\1/' <<< "$(MAKEFLAGS)" ) ; \
 	fi; \
-	[ "$$j" = "-j" ] && j="-j$$(nproc)"; \
+	if [ "$$j" = "-j" ]; then \
+		jobs=$$(nproc) ; \
+		[ -z "$$jobs" ] && jobs=12 ; \
+		[ $$jobs -gt 12 ] && jobs=12 ; \
+		j="-j$$jobs" ; \
+	fi ; \
 	echo $$j )
 DEFAULT ?= safe
 
