@@ -4807,6 +4807,28 @@ def onFatalError(value=""):
     """
 
 
+# built-in function matfpe in libaster
+
+
+def matfpe(value):
+    """Enable or disable floating point exceptions.
+
+    Arguments:
+        value (int): -1 to disable the FPE interception, 1 to enable FPE detection.
+    """
+
+
+# built-in function fe_invalid in libaster
+
+
+def fe_invalid(value):
+    """Enable or disable FE_INVALID exception.
+
+    Arguments:
+        value (int): -1 to disable the interception, 1 to enable detection.
+    """
+
+
 # built-in function set_option in libaster
 
 
