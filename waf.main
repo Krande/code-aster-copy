@@ -72,10 +72,12 @@ detect_host()
             return
         fi
     fi
-    if [ -f /software/restricted/simumeca/aster/cronos ]; then
+    if [ -f /software/shared/simumeca/aster/selena ]; then
+        printf selena
+    elif [ -f /software/restricted/simumeca/aster/cronos ]; then
         printf cronos
-    elif [ -f /projets/simumeca/eole ]; then
-        printf eole
+    elif [ -f /software/simumeca/aster/cirrus ]; then
+        printf cirrus
     elif [ -f /projets/simumeca/gaia ]; then
         printf gaia
     elif egrep -q "Scibian 10.0" /etc/issue; then
