@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -68,7 +68,7 @@ module te0047_type
         aster_logical       :: rigi = ASTER_FALSE
         aster_logical       :: resi = ASTER_FALSE
         !
-        integer             :: syme = 0
+        integer(kind=8)     :: syme = 0
         !
         character(len=16)   :: option = ''
         character(len=16)   :: nomte = ''
@@ -76,11 +76,11 @@ module te0047_type
         character(len=16)   :: defo_comp = ''
         character(len=16)   :: type_comp = ''
         !
-        integer             :: ndim
-        integer             :: nbt
-        integer             :: nno
-        integer             :: nc
-        integer             :: neq
+        integer(kind=8)     :: ndim
+        integer(kind=8)     :: nbt
+        integer(kind=8)     :: nno
+        integer(kind=8)     :: nc
+        integer(kind=8)     :: neq
         !
         real(kind=8)        :: ulm(12), ugm(12)
         real(kind=8)        :: dul(12), dug(12)
@@ -92,14 +92,16 @@ module te0047_type
 ! -------------------------------------------------------------------------------------------------
 !
     public :: te0047_dscr
-    public :: getDiscretInformations, te0047_dscr_write
+    public :: getDiscretInformations, te0047_dscr_write, hasSymmetricTangentMatrix
 !
     private
 #include "jeveux.h"
+#include "asterc/r8prem.h"
 #include "asterfort/assert.h"
 #include "asterfort/Behaviour_type.h"
 #include "asterfort/infted.h"
 #include "asterfort/jevech.h"
+#include "asterfort/rcvala.h"
 !
 ! -------------------------------------------------------------------------------------------------
 !
@@ -119,7 +121,7 @@ contains
     subroutine getDiscretInformations(D)
         type(te0047_dscr), intent(inout) :: D
         !
-        integer       :: icompo, codret, itype, ideplm, ideplp, jtempsm, jtempsp, ii
+        integer(kind=8)       :: icompo, codret, itype, ideplm, ideplp, jtempsm, jtempsp, ii
         aster_logical :: IsOk
         !
         IsOk = (D%nomte .ne. '') .and. (D%option .ne. '') .and. &
@@ -178,6 +180,47 @@ contains
     end subroutine getDiscretInformations
     !
     !
+    subroutine hasSymmetricTangentMatrix(D, output)
+        type(te0047_dscr), intent(in) :: D
+        aster_logical, intent(out) :: output
+        !
+        character(len=16), pointer :: compor(:) => null()
+        integer(kind=8) :: imater
+        integer(kind=8) :: ivitp, iretlc
+        integer(kind=8), parameter :: nbres = 1
+        real(kind=8) :: valres(nbres)
+        integer(kind=8) :: codres(nbres)
+        aster_logical :: okelem, IsCoulomb
+        !
+        output = ASTER_TRUE
+        call jevech('PCOMPOR', 'L', vk16=compor)
+        if (compor(RELA_NAME) .eq. 'DIS_CHOC') then
+            ! Cas de DIS_CHOC : matrice non symétrique en présence de frottement
+            ! Vérification du type d'élément discret
+            okelem = (D%ndim .eq. 3)
+            okelem = okelem .and. ((D%nomte .eq. 'MECA_DIS_T_N') .or. (D%nomte .eq. 'MECA_DIS_T_L'))
+            ! Vérification du frottement de Coulomb
+            IsCoulomb = ASTER_FALSE
+            call jevech('PMATERC', 'L', imater)
+            call rcvala(zi(imater), ' ', 'DIS_CONTACT', 0, ' ', &
+                        [0.0d0], nbres, ['COULOMB'], valres, codres, &
+                        0, nan='NON')
+            if (codres(1) .eq. 0) then
+                if (valres(1) .gt. r8prem()) then
+                    IsCoulomb = ASTER_TRUE
+                end if
+            end if
+            !
+            output = .not. (IsCoulomb .and. okelem)
+        else if (compor(RELA_NAME) .eq. 'ELAS_NOSYME') then
+            output = ASTER_FALSE
+        else
+            output = ASTER_TRUE
+        end if
+
+    end subroutine hasSymmetricTangentMatrix
+    !
+    !
     subroutine te0047_dscr_write(D)
         type(te0047_dscr), intent(in) :: D
         !
@@ -190,5 +233,5 @@ contains
         write (*, '(A)') 'resi rigi'
         write (*, '(2(L1,4X))') D%resi, D%rigi
     end subroutine te0047_dscr_write
-    !
+!
 end module te0047_type
