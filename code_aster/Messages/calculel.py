@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -332,8 +332,8 @@ Conseil :
     ),
     45: _(
         """
- Utilisation de COEF_RIGI_DRZ en mode rotation plane en non linéaire :
-   Cette option n'est pas possible actuellement
+Utilisation de COEF_RIGI_DRZ en mode rotation plane en non-linéaire.
+Cette option n'est pas possible actuellement. Il faut prendre une valeur positive pour ce coefficient.
 
  Champ : '%(k1)s'
  Commentaire sur ce champ : %(k2)s

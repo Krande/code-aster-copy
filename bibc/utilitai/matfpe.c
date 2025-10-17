@@ -1,5 +1,5 @@
 /* -------------------------------------------------------------------- */
-/* Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org             */
+/* Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org             */
 /* This file is part of code_aster.                                     */
 /*                                                                      */
 /* code_aster is free software: you can redistribute it and/or modify   */
@@ -27,6 +27,8 @@
 */
 #include "aster.h"
 
+#include "aster_sigfpe.h"
+
 #include <stdio.h>
 
 #if defined ASTER_HAVE_SUPPORT_FPE
@@ -39,8 +41,10 @@
 #endif
 
 void hanfpe( int sig );
+void aster_fe_invalid( const int );
 
 static int compteur_fpe = 1;
+static int compteur_invalid = 0;
 #endif
 
 void DEFP( MATFPE, matfpe, ASTERINTEGER *enable ) {
@@ -51,14 +55,12 @@ void DEFP( MATFPE, matfpe, ASTERINTEGER *enable ) {
         printf( "#MATFPE var = %ld (compteur %d)\n", *enable, compteur_fpe );
         return;
     }
-
     compteur_fpe = compteur_fpe + *enable;
-
     if ( compteur_fpe < 1 ) {
 #if defined ASTER_PLATFORM_MINGW
         _controlfp( _MCW_EM, _MCW_EM );
 #else
-        fedisableexcept( FE_DIVBYZERO | FE_OVERFLOW | FE_INVALID );
+        fedisableexcept( ASTER_SIGFPE );
 #endif
         /* définition du handler : hanfpe appelle UTMFPE qui fait UTMESS('F') */
         signal( SIGFPE, hanfpe );
@@ -68,12 +70,39 @@ void DEFP( MATFPE, matfpe, ASTERINTEGER *enable ) {
         _clearfp();
         _controlfp( _EM_UNDERFLOW | _EM_DENORMAL | _EM_INEXACT, _MCW_EM );
 #else
-        feclearexcept( FE_DIVBYZERO | FE_OVERFLOW | FE_INVALID );
-        feenableexcept( FE_DIVBYZERO | FE_OVERFLOW | FE_INVALID );
+        feclearexcept( ASTER_SIGFPE );
+        feenableexcept( ASTER_SIGFPE );
 #endif
         /* définition du handler : hanfpe appelle UTMFPE qui fait UTMESS('F') */
         signal( SIGFPE, hanfpe );
     }
+    aster_fe_invalid( (int)*enable );
 
+#endif
+}
+
+void aster_fe_invalid( const int enable ) {
+
+#if defined ASTER_HAVE_SUPPORT_FPE && defined ASTER_PLATFORM_LINUX
+    // FE_INVALID was not enabled on mingw
+
+    /* permet juste de vérifier où on en est si besoin ! */
+    if ( enable == 0 ) {
+        printf( "#ASTER_FE_INVALID var = %ld (compteur %d)\n", enable, compteur_invalid );
+        return;
+    }
+    compteur_invalid = compteur_invalid + enable;
+    if ( compteur_invalid < 1 ) {
+        fedisableexcept( FE_INVALID );
+        /* définition du handler : hanfpe appelle UTMFPE qui fait UTMESS('F') */
+        signal( SIGFPE, hanfpe );
+    } else if ( compteur_invalid >= 1 ) {
+        // printf( "<i> FE_INVALID exception enabled\n" );
+        /* avant de reactiver le controle des FPE, on abaisse les flags */
+        feclearexcept( FE_INVALID );
+        feenableexcept( FE_INVALID );
+        /* définition du handler : hanfpe appelle UTMFPE qui fait UTMESS('F') */
+        signal( SIGFPE, hanfpe );
+    }
 #endif
 }

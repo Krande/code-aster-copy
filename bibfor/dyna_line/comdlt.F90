@@ -170,7 +170,7 @@ subroutine comdlt()
                 numrep, ds_inout)
 !
 ! - Get kinematic loads
-    call dyGetKineLoad(masse, rigid, amort, lamort, listLoad, &
+    call dyGetKineLoad(rigid, masse, amort, lamort, listLoad, &
                        kineLoad, iinteg)
 !
     neq = zi(imat(1)+2)
