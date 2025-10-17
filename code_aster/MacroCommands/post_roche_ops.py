@@ -58,9 +58,11 @@ def post_roche_ops(self, **kwargs):
 
     for i, nume in enumerate(PRCommon.listNumeTran):
         numeOrdre = -1
+        inst = 0.0
         if PRCommon.mcf == "RESU_MECA_TRAN":
             PRCommon.extrInstInerTran(nume)
             numeOrdre = i + 1
+            inst = nume
             UTMESS("I", "POSTROCHE_11", vali=[numeOrdre, len(PRCommon.listNumeTran)])
 
         PRCommon.combinaisons()
@@ -75,7 +77,7 @@ def post_roche_ops(self, **kwargs):
         calcul.contrainteVraie()
         calcul.veriContrainte()
         calcul.coef_abattement()
-        calcul.buildOutput()
+        calcul.buildField()
 
         # calcul sur les moments de séisme inertiel
         calculS2 = PostRocheCalc(PRCommon, PRCommon.MSI_tot, numeOrdre)
@@ -87,53 +89,54 @@ def post_roche_ops(self, **kwargs):
         calculS2.contrainteVraie()
         calculS2.veriContrainte()
         calculS2.coef_abattement()
-        calculS2.buildOutput()
+        calculS2.buildField()
 
         if not PRCommon.lRCCM_RX:
-            PRCommon.calcContrainteEquiv(calcul.chOutput, calculS2.chOutput)
-        PRCommon.calcContrainteEquiv(calcul.chOutput, calculS2.chOutput, opt=True)
+            PRCommon.calcContrainteEquiv(calcul.field, calculS2.field)
+        PRCommon.calcContrainteEquiv(calcul.field, calculS2.field, opt=True)
 
-        chOutPutComplet = PRCommon.buildOutput(calcul.chOutput, calculS2.chOutput)
+        chPrin, chComp = PRCommon.buildOutput(calcul.field, calculS2.field)
 
-        # IMPR_RESU(UNITE=6, FORMAT='RESULTAT', RESU=_F(CHAM_GD=PRCommon.chUtil1, MAILLE='M1'))
-        # IMPR_RESU(UNITE=6, FORMAT='RESULTAT', RESU=_F(CHAM_GD=PRCommon.chUtil1Opt, MAILLE='M1'))
-
-        if PRCommon.mcf == "RESU_MECA_TRAN":
-            if i == 0:
-                resuOut = CREA_RESU(
-                    TYPE_RESU="EVOL_NOLI",
-                    OPERATION="AFFE",
-                    AFFE=_F(NOM_CHAM="UT01_ELNO", CHAM_GD=chOutPutComplet, INST=nume),
-                )
-            else:
-                resuOut = CREA_RESU(
-                    TYPE_RESU="EVOL_NOLI",
-                    OPERATION="AFFE",
-                    reuse=resuOut,
-                    RESULTAT=resuOut,
-                    AFFE=_F(NOM_CHAM="UT01_ELNO", CHAM_GD=chOutPutComplet, INST=nume),
-                )
+        if i == 0:
+            resuOut = CREA_RESU(
+                TYPE_RESU="EVOL_NOLI",
+                OPERATION="AFFE",
+                AFFE=(
+                    _F(NOM_CHAM="UT01_ELNO", CHAM_GD=chPrin, INST=inst),
+                    _F(NOM_CHAM="UT02_ELNO", CHAM_GD=chComp, INST=inst),
+                ),
+            )
         else:
-            return chOutPutComplet
+            resuOut = CREA_RESU(
+                TYPE_RESU="EVOL_NOLI",
+                OPERATION="AFFE",
+                reuse=resuOut,
+                RESULTAT=resuOut,
+                AFFE=(
+                    _F(NOM_CHAM="UT01_ELNO", CHAM_GD=chPrin, INST=inst),
+                    _F(NOM_CHAM="UT02_ELNO", CHAM_GD=chComp, INST=inst),
+                ),
+            )
 
     # pour RESU_MECA_TRAN : calcul des maximums
+    if PRCommon.mcf == "RESU_MECA_TRAN":
+        # à revoir si on remet en activité RESU_MECA_TRAN
+        chMax = CREA_CHAMP(
+            OPERATION="EXTR",
+            TYPE_CHAM="ELNO_NEUT_R",
+            RESULTAT=resuOut,
+            NOM_CHAM="UT01_ELNO",
+            TYPE_MAXI="MAXI",
+            TOUT_ORDRE="OUI",
+        )
 
-    chMax = CREA_CHAMP(
-        OPERATION="EXTR",
-        TYPE_CHAM="ELNO_NEUT_R",
-        RESULTAT=resuOut,
-        NOM_CHAM="UT01_ELNO",
-        TYPE_MAXI="MAXI",
-        TOUT_ORDRE="OUI",
-    )
-
-    resuOut = CREA_RESU(
-        TYPE_RESU="EVOL_NOLI",
-        OPERATION="AFFE",
-        reuse=resuOut,
-        RESULTAT=resuOut,
-        AFFE=_F(NOM_CHAM="UT02_ELNO", CHAM_GD=chMax, INST=0.0),
-    )
+        resuOut = CREA_RESU(
+            TYPE_RESU="EVOL_NOLI",
+            OPERATION="AFFE",
+            reuse=resuOut,
+            RESULTAT=resuOut,
+            AFFE=_F(NOM_CHAM="UT03_ELNO", CHAM_GD=chMax, INST=0.0),
+        )
     return resuOut
 
 
@@ -1660,11 +1663,11 @@ class PostRocheCommon:
 
     def buildOutput(self, chVale, chValeS2):
         """
-        Construction du champ de sortie contenant toutes les grandeurs
+        Construction des champs de sortie (principal et complémentaire)
         """
 
         if self.lRCCM_RX:
-            chOutput = CREA_CHAMP(
+            chTempo = CREA_CHAMP(
                 OPERATION="ASSE",
                 MODELE=self.model,
                 TYPE_CHAM="ELNO_NEUT_R",
@@ -1752,7 +1755,7 @@ class PostRocheCommon:
                 ),
             )
         else:
-            chOutput = CREA_CHAMP(
+            chTempo = CREA_CHAMP(
                 OPERATION="ASSE",
                 MODELE=self.model,
                 TYPE_CHAM="ELNO_NEUT_R",
@@ -1838,7 +1841,67 @@ class PostRocheCommon:
                 ),
             )
 
-        return chOutput
+        chPrin = CREA_CHAMP(
+            OPERATION="ASSE",
+            MODELE=self.model,
+            TYPE_CHAM="ELNO_NEUT_R",
+            PROL_ZERO="OUI",
+            ASSE=(
+                _F(
+                    CHAM_GD=chTempo,
+                    TOUT="OUI",
+                    NOM_CMP=("X1", "X2", "X13", "X14", "X16"),
+                    NOM_CMP_RESU=("X1", "X3", "X5", "X7", "X9"),
+                ),
+            ),
+        )
+
+        chComp = CREA_CHAMP(
+            OPERATION="ASSE",
+            MODELE=self.model,
+            TYPE_CHAM="ELNO_NEUT_R",
+            PROL_ZERO="OUI",
+            ASSE=(
+                _F(
+                    CHAM_GD=chTempo,
+                    TOUT="OUI",
+                    NOM_CMP=(
+                        "X3",
+                        "X4",
+                        "X5",
+                        "X6",
+                        "X7",
+                        "X8",
+                        "X9",
+                        "X10",
+                        "X19",
+                        "X20",
+                        "X23",
+                        "X24",
+                        "X27",
+                        "X28",
+                    ),
+                    NOM_CMP_RESU=(
+                        "X1",
+                        "X3",
+                        "X5",
+                        "X7",
+                        "X9",
+                        "X11",
+                        "X13",
+                        "X15",
+                        "X17",
+                        "X18",
+                        "X19",
+                        "X21",
+                        "X23",
+                        "X25",
+                    ),
+                ),
+            ),
+        )
+
+        return chPrin, chComp
 
 
 class PostRocheCalc:
@@ -2231,7 +2294,7 @@ class PostRocheCalc:
 
         self.chCoefsAbat = chCoefsAbat
 
-    def buildOutput(self):
+    def buildField(self):
         """
         Construction d'un champ contenant toutes les valeurs de sortie
         """
@@ -2249,7 +2312,7 @@ class PostRocheCalc:
         # X12 = epsilon vraie
         # X13 = epsilon vraie optimisée
 
-        chOutput = CREA_CHAMP(
+        field = CREA_CHAMP(
             OPERATION="ASSE",
             MODELE=self.param.model,
             TYPE_CHAM="ELNO_NEUT_R",
@@ -2287,4 +2350,4 @@ class PostRocheCalc:
             ),
         )
 
-        self.chOutput = chOutput
+        self.field = field

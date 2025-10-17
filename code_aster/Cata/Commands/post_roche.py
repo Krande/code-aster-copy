@@ -24,20 +24,10 @@ from ..Language.DataStructure import *
 from ..Language.Syntax import *
 
 
-def post_roche_prod(RESU_MECA, **args):
-    if args.get("__all__"):
-        return (cham_elem, evol_noli)
-
-    if RESU_MECA is not None:
-        return cham_elem
-    else:
-        return evol_noli
-
-
 POST_ROCHE = MACRO(
     nom="POST_ROCHE",
     op=OPS("code_aster.MacroCommands.post_roche_ops.post_roche_ops"),
-    sd_prod=cham_elem,
+    sd_prod=evol_noli,
     fr=tr(
         "Méthode Roche de représentation du comportement élasto-plastique des lignes de tuyauteries"
     ),
