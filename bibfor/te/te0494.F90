@@ -22,6 +22,7 @@ subroutine te0494(nomopt, nomte)
     use HHO_size_module, only: hhoTherDofs
     use HHO_init_module, only: hhoInfoInitCellAndFace
     use HHO_basis_module
+    use FE_algebra_module
 !
     implicit none
 !
@@ -31,11 +32,10 @@ subroutine te0494(nomopt, nomte)
 #include "asterfort/HHO_basis_module.h"
 #include "asterfort/HHO_size_module.h"
 #include "asterfort/writeVector.h"
-#include "blas/dcopy.h"
 !
 ! --------------------------------------------------------------------------------------------------
-!  HHO - Thermics
-!  Option: AFFE_CHAR_CINE_R
+!  HHO - Generic
+!  Option: HHO_PRECALC_BS
 ! --------------------------------------------------------------------------------------------------
 !
     character(len=16) :: nomte, nomopt
@@ -48,8 +48,6 @@ subroutine te0494(nomopt, nomte)
     type(HHO_basis_face) :: hhoBasisFace
     real(kind=8) :: basis(6*MAX_FACE_COEF+MAX_CELL_COEF)
     integer(kind=8) :: dec, iFace, size
-    blas_int :: b_n
-    blas_int, parameter :: b_incx = 1, b_incy = 1
 !
     ASSERT(nomopt .eq. 'HHO_PRECALC_BS')
 !
@@ -61,15 +59,13 @@ subroutine te0494(nomopt, nomte)
     do iFace = 1, hhoCell%nbfaces
         call hhoBasisFace%initialize(hhoCell%faces(iFace))
         size = maxval(hhoBasisFace%coeff_shift)-1
-        b_n = to_blas_int(size)
-        call dcopy(b_n, hhoBasisFace%coeff_mono, b_incx, basis(dec), b_incy)
+        call dcopy_1(size, hhoBasisFace%coeff_mono, basis(dec))
         dec = dec+size
     end do
 !
     call hhoBasisCell%initialize(hhoCell)
     size = maxval(hhoBasisCell%coeff_shift)-1
-    b_n = to_blas_int(size)
-    call dcopy(b_n, hhoBasisCell%coeff_mono, b_incx, basis(dec), b_incy)
+    call dcopy_1(size, hhoBasisCell%coeff_mono, basis(dec))
     dec = dec+size
 !
 ! -- Save - the name is not PCHHOBS because reading this field in basis

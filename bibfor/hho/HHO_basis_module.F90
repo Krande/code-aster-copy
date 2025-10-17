@@ -224,7 +224,7 @@ contains
 !
         type(HHO_Cell), intent(in)          :: hhoCell
         class(HHO_basis_cell), intent(out)  :: this
-        integer(kind=8), optional, intent(in)       :: type
+        integer(kind=8), optional, intent(in) :: type
 !
 ! --------------------------------------------------------------------------------------------------
 !   HHO
@@ -236,7 +236,7 @@ contains
 !
 ! --------------------------------------------------------------------------------------------------
 !
-        integer(kind=8) :: idim, size_basis_scal, ipg, iret, jtab(1), ib, offset, size_face
+        integer(kind=8) :: idim, size_basis_scal, ipg, iret, jtab(1), ib, offset, size_face, j
         integer(kind=8) :: max_deg_cell, max_deg_face
         real(kind=8) :: axes(3, 3), length_box(3)
         type(HHO_matrix) :: basisOrthoIpg
@@ -261,20 +261,19 @@ contains
         end if
         length_box = hhoLengthBoundingBoxCell(hhoCell, axes)
 !
-        this%rotmat = transpose(axes)
         this%ndim = hhoCell%ndim
         this%scaling_factor = 2.d0/length_box
         this%center = hhoCenterBoundingBoxCell(hhoCell, axes)
 !
-        do idim = 1, this%ndim
-            this%rotmat(idim, :) = &
-                this%rotmat(idim, :)*this%scaling_factor(idim)
+        do j = 1, 3
+            do idim = 1, this%ndim
+                this%rotmat(idim, j) = axes(j, idim)*this%scaling_factor(idim)
+            end do
         end do
 !
         if (this%type == BASIS_ORTHO) then
 !
-            call hhoBasisIner%initialize(hhoCell, BASIS_INERTIAL)
-            size_basis_scal = hhoBasisIner%BSSize(0, max_deg_cell)
+            size_basis_scal = this%BSSize(0, max_deg_cell)
 !
             call tecach('NNO', 'PCHHOBS', 'L', iret, nval=1, itab=jtab)
 !
@@ -285,9 +284,9 @@ contains
                 end do
                 size_face = binomial(max_deg_face+this%ndim-1, max_deg_face)
                 offset = hhoCell%nbfaces*(size_face*(size_face+1)/2)
-                call readVector('PCHHOBS', maxval(this%coeff_shift)-1, &
+                call readVector('PCHHOBS', this%coeff_shift(size_basis_scal+1)-1, &
                                 this%coeff_mono, offset)
-                ASSERT(this%coeff_shift(size_basis_scal)-1 <= MAX_CELL_COEF)
+                ASSERT(this%coeff_shift(size_basis_scal+1)-1 <= MAX_CELL_COEF)
             else
 !
 ! ------------ If you have this error - add the basis field as an input of you option
@@ -300,6 +299,8 @@ contains
                     call basisOrthoIpg%initialize(MSIZE_CELL_SCAL, hhoQuad%nbQuadPoints, 0.d0)
 !
 ! --------------------- Initialize phi_i
+!
+                    call hhoBasisIner%initialize(hhoCell, BASIS_INERTIAL)
 !
                     do ipg = 1, hhoQuad%nbQuadPoints
                         call hhoBasisIner%BSEval(hhoQuad%points(1:3, ipg), &
@@ -339,7 +340,7 @@ contains
 !
 ! --------------------------------------------------------------------------------------------------
 !
-        integer(kind=8) :: idim, size_basis_scal, ipg, iret, jtab(1), ib, offset, nb_coeff
+        integer(kind=8) :: idim, size_basis_scal, ipg, iret, jtab(1), ib, offset, nb_coeff, j
         integer(kind=8) :: max_deg_cell, max_deg_face
         real(kind=8) :: axes(3, 2), length_box(2)
         type(HHO_matrix) :: basisOrthoIpg
@@ -363,19 +364,17 @@ contains
 !
         this%ndim = hhoFace%ndim
         this%scaling_factor = 2.d0/length_box
-        this%rotmat = transpose(axes)
         this%center = hhoCenterBoundingBoxFace(hhoFace, axes)
 !
-        do idim = 1, this%ndim
-            this%rotmat(idim, :) = &
-                this%rotmat(idim, :)*this%scaling_factor(idim)
+        do j = 1, 3
+            do idim = 1, this%ndim
+                this%rotmat(idim, j) = axes(j, idim)*this%scaling_factor(idim)
+            end do
         end do
 !
         if (this%type == BASIS_ORTHO) then
 !
-            call hhoBasisIner%initialize(hhoFace, BASIS_INERTIAL)
-!
-            size_basis_scal = hhoBasisIner%BSSize(0, max_deg_face)
+            size_basis_scal = this%BSSize(0, max_deg_face)
 !
             call tecach('NNO', 'PCHHOBS', 'L', iret, nval=1, itab=jtab)
 !
@@ -401,6 +400,8 @@ contains
                     call basisOrthoIpg%initialize(MSIZE_FACE_SCAL, hhoQuad%nbQuadPoints, 0.d0)
 !
 ! --------------------- Initialize phi_i
+!
+                    call hhoBasisIner%initialize(hhoFace, BASIS_INERTIAL)
 !
                     do ipg = 1, hhoQuad%nbQuadPoints
                         call hhoBasisIner%BSEval(hhoQuad%points(1:3, ipg), &
