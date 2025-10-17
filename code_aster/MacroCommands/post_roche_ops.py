@@ -91,7 +91,7 @@ def post_roche_ops(self, **kwargs):
         calculS2.coef_abattement()
         calculS2.buildField()
 
-        PRCommon.calcContrainteEquiv(calcul.field, calculS2.field, opt=True)
+        PRCommon.calcContrainteEquiv(calcul.field, calculS2.field)
 
         chPrin, chComp = PRCommon.buildOutput(calcul.field, calculS2.field)
 
@@ -482,15 +482,8 @@ class PostRocheCommon:
         )  # noté f dans RB 3680
 
         # Changement de B2 selon le type d'analyse (moment ou contrainte)
-        # if self.reguCoude:
-        #     fB2_coude = DEFI_CONSTANTE(VALE=1.0)
-        # else:
-        #     fB2_coude = FORMULE(
-        #         NOM_PARA=("R", "EP", "X3"),
-        #         VALE="max(1,1.3/flambda(R,EP,X3)**(2./3))",
-        #         flambda=flambda,
-        #     )
-        fB2_coude = FORMULE(
+        fB2_coude_moment = DEFI_CONSTANTE(VALE=1.0)
+        fB2_coude_contrainte = FORMULE(
             NOM_PARA=("R", "EP", "X3"), VALE="max(1,1.3/flambda(R,EP,X3)**(2./3))", flambda=flambda
         )
 
@@ -530,10 +523,11 @@ class PostRocheCommon:
             flambda=flambda,
         )
 
+        # on passe le B2 des contraintes en X1 et le B2 des moments en X7
         affe = [
             _F(
-                NOM_CMP=("X1", "X2", "X3", "X4", "X5", "X6"),
-                VALE_F=(fB2_droit, fZ, fD1_droit, fD21, fD22_droit, fD22_droit),
+                NOM_CMP=("X1", "X2", "X3", "X4", "X5", "X6", "X7"),
+                VALE_F=(fB2_droit, fZ, fD1_droit, fD21, fD22_droit, fD22_droit, fB2_droit),
                 **self.dicAllZones,
             )
         ]
@@ -541,8 +535,16 @@ class PostRocheCommon:
             affe.append(
                 _F(
                     GROUP_MA=self.lGrmaCoude,
-                    NOM_CMP=("X1", "X2", "X3", "X4", "X5", "X6"),
-                    VALE_F=(fB2_coude, fZ, fD1_coude, fD21, fD22_coude, fD23_coude),
+                    NOM_CMP=("X1", "X2", "X3", "X4", "X5", "X6", "X7"),
+                    VALE_F=(
+                        fB2_coude_contrainte,
+                        fZ,
+                        fD1_coude,
+                        fD21,
+                        fD22_coude,
+                        fD23_coude,
+                        fB2_coude_moment,
+                    ),
                 )
             )
 
@@ -1103,20 +1105,36 @@ class PostRocheCommon:
             ),
         )
 
-        # contrainte de référence
+        # contrainte de référence pour les contraintes
         # X1 => B2, X2 => Z
 
-        fSig = FORMULE(
+        fSigCont = FORMULE(
             NOM_PARA=("MT", "MFY", "MFZ", "X1", "X2"),
             VALE="sqrt( pow(0.79*X1/X2*sqrt(pow(MFY,2)+pow(MFZ,2)),2) + pow(0.87*MT/X2,2))",
         )
 
-        self.chFSigRef = CREA_CHAMP(
+        self.chFSigRefCont = CREA_CHAMP(
             OPERATION="AFFE",
             TYPE_CHAM="ELNO_NEUT_F",
             MODELE=self.model,
             PROL_ZERO="OUI",
-            AFFE=(_F(NOM_CMP=("X1"), VALE_F=(fSig,), **self.dicAllZones),),
+            AFFE=(_F(NOM_CMP=("X1"), VALE_F=(fSigCont,), **self.dicAllZones),),
+        )
+
+        # contrainte de référence pour les contraintes
+        # X1 => B2, X2 => Z
+
+        fSigMom = FORMULE(
+            NOM_PARA=("MT", "MFY", "MFZ", "X7", "X2"),
+            VALE="sqrt( pow(0.79*X7/X2*sqrt(pow(MFY,2)+pow(MFZ,2)),2) + pow(0.87*MT/X2,2))",
+        )
+
+        self.chFSigRefMom = CREA_CHAMP(
+            OPERATION="AFFE",
+            TYPE_CHAM="ELNO_NEUT_F",
+            MODELE=self.model,
+            PROL_ZERO="OUI",
+            AFFE=(_F(NOM_CMP=("X1"), VALE_F=(fSigMom,), **self.dicAllZones),),
         )
         # EpsiMP
         # N => SigmaRef
@@ -1470,21 +1488,15 @@ class PostRocheCommon:
             )
         return chRes
 
-    def calcContrainteEquiv(self, chCoefsAbat_m, chCoefsAbat_msi, opt=False):
+    def calcContrainteEquiv(self, chCoefsAbat_m, chCoefsAbat_msi, reguCoude=False):
         """
         Calcul des champs de contraintes equivalentes
         """
 
-        # si opt est True, on prend la composante X2
-
-        if opt:
-            cmpG = "X7"
-        else:
-            cmpG = "X6"
-
-        fonc1 = FORMULE(NOM_PARA=(cmpG, "MT", "MFY", "MFZ"), VALE="%s*abs(MT)" % cmpG)
-        fonc2 = FORMULE(NOM_PARA=(cmpG, "MT", "MFY", "MFZ"), VALE="%s*abs(MFY)" % cmpG)
-        fonc3 = FORMULE(NOM_PARA=(cmpG, "MT", "MFY", "MFZ"), VALE="%s*abs(MFZ)" % cmpG)
+        # X7 : coefficient d'abatement optimisé
+        fonc1 = FORMULE(NOM_PARA=("X7", "MT", "MFY", "MFZ"), VALE="X7*abs(MT)")
+        fonc2 = FORMULE(NOM_PARA=("X7", "MT", "MFY", "MFZ"), VALE="X7*abs(MFY)")
+        fonc3 = FORMULE(NOM_PARA=("X7", "MT", "MFY", "MFZ"), VALE="X7*abs(MFZ)")
 
         chFonc = CREA_CHAMP(
             OPERATION="AFFE",
@@ -1522,7 +1534,7 @@ class PostRocheCommon:
             TYPE_CHAM="ELNO_NEUT_R",
             PROL_ZERO="OUI",
             ASSE=(
-                _F(CHAM_GD=self.chParams, TOUT="OUI", NOM_CMP=("X1", "X2", "X3", "X4", "X5", "X6")),
+                _F(CHAM_GD=self.chParams, TOUT="OUI", NOM_CMP=("X2", "X3", "X4", "X5", "X6")),
                 _F(
                     CHAM_GD=self.M,
                     TOUT="OUI",
@@ -1586,10 +1598,7 @@ class PostRocheCommon:
             OPERATION="EVAL", TYPE_CHAM="ELNO_NEUT_R", CHAM_F=chFonc, CHAM_PARA=(chUtil)
         )
 
-        if opt:
-            self.chContEquivOpt = chContEquiv
-        else:
-            self.chContEquiv = chContEquiv
+        self.chContEquivOpt = chContEquiv
 
     def buildOutput(self, chVale, chValeS2):
         """
@@ -1738,21 +1747,27 @@ class PostRocheCommon:
 
 
 class PostRocheCalc:
-    def __init__(self, prCommon, chMoment, numeOrdre):
+    def __init__(self, prCommon, chMoment, numeOrdre, reguCoude=False):
         """ """
         self.chMoment = chMoment
         self.param = prCommon
         self.numeOrdre = numeOrdre
+        self.reguCoude = reguCoude
 
     def contraintesRef(self):
         """
         Calcul des contraintes de références
         """
 
+        if self.reguCoude:
+            cham_fonc = self.param.chFSigRefMom
+        else:
+            cham_fonc = self.param.chFSigRefCont
+
         chSigNeut = CREA_CHAMP(
             OPERATION="EVAL",
             TYPE_CHAM="ELNO_NEUT_R",
-            CHAM_F=self.param.chFSigRef,
+            CHAM_F=cham_fonc,
             CHAM_PARA=(self.chMoment, self.param.chParams),
         )
 
