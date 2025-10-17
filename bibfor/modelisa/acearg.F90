@@ -1,0 +1,266 @@
+! --------------------------------------------------------------------
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
+! This file is part of code_aster.
+!
+! code_aster is free software: you can redistribute it and/or modify
+! it under the terms of the GNU General Public License as published by
+! the Free Software Foundation, either version 3 of the License, or
+! (at your option) any later version.
+!
+! code_aster is distributed in the hope that it will be useful,
+! but WITHOUT ANY WARRANTY; without even the implied warranty of
+! MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+! GNU General Public License for more details.
+!
+! You should have received a copy of the GNU General Public License
+! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
+! --------------------------------------------------------------------
+
+subroutine acearg(infdonn, lmax, noemaf, nbocc, infcarte, ivr, zjdlm)
+!
+!
+! --------------------------------------------------------------------------------------------------
+!
+!     AFFE_CARA_ELEM
+!
+!     AFFECTATION DES CARACTERISTIQUES POUR LES ELEMENTS DISCRET PAR RAIDEUR REPARTIE
+!
+! --------------------------------------------------------------------------------------------------
+! person_in_charge: jean-luc.flejou at edf.fr
+!
+    use cara_elem_parameter_module
+    use cara_elem_info_type
+    use cara_elem_carte_type
+    implicit none
+    type(cara_elem_info) :: infdonn
+    integer(kind=8) :: lmax, noemaf, nbocc, ivr(*), zjdlm(*)
+    type(cara_elem_carte) :: infcarte(*)
+!
+#include "asterf_types.h"
+#include "jeveux.h"
+#include "asterfort/as_allocate.h"
+#include "asterfort/as_deallocate.h"
+#include "asterfort/affdis.h"
+#include "asterfort/assert.h"
+#include "asterfort/dismoi.h"
+#include "asterfort/getvem.h"
+#include "asterfort/getvis.h"
+#include "asterfort/getvr8.h"
+#include "asterfort/getvtx.h"
+#include "asterfort/in_liste_entier.h"
+#include "asterfort/isParallelMesh.h"
+#include "asterfort/jedema.h"
+#include "asterfort/jedetr.h"
+#include "asterfort/jelira.h"
+#include "asterfort/jemarq.h"
+#include "asterfort/jenuno.h"
+#include "asterfort/jeveuo.h"
+#include "asterfort/jexnom.h"
+#include "asterfort/jexnum.h"
+#include "asterfort/nocart.h"
+#include "asterfort/provec.h"
+#include "asterfort/r8inir.h"
+#include "asterfort/rairep.h"
+#include "asterfort/utmess.h"
+#include "asterfort/wkvect.h"
+#include "asterfort/int_to_char8.h"
+#include "blas/ddot.h"
+!&<
+! --------------------------------------------------------------------------------------------------
+    integer(kind=8) :: nbcar, nbval, nrd
+    parameter(nbcar=100, nbval=5, nrd=2)
+    integer(kind=8) :: jdc(3), jdv(3), iunite, ifm, iretour
+    integer(kind=8) :: jdcinf, jdvinf
+    integer(kind=8) :: ii, idecal, in, inbn, ino, inoe, ioc, irep
+    integer(kind=8) :: irgno, isym, itbmp, itbno, iv, nummail
+    integer(kind=8) :: jd, jdls, jj, jn
+    integer(kind=8) :: ll, ldgm, ldnm, lokm, lorep, nbnma
+    integer(kind=8) :: nbno, nbnoeu, nc, ncar, ncmp
+    integer(kind=8) :: ndim, ng, ngp, nma, nrep, nval, dimcar
+    integer(kind=8) :: vali(2)
+! --------------------------------------------------------------------------------------------------
+
+    character(len=1)  :: kma(3)
+    character(len=8)  :: nomnoe, nomu, car(nbcar), lamass, noma
+    character(len=16) :: rep, repdis(nrd)
+    character(len=19) :: cart(3), cartdi
+
+
+
+
+    integer(kind=8) :: n_groups, nbparno, ntopo
+    integer(kind=8) :: j_typ, j_grma, j_no
+    integer(kind=8) :: nb_cells, nb_nodes, i_cell, num_cell, nb_no, i_no, i_noe, posi
+    real(kind=8) :: vale(nbval)
+    real(kind=8) :: x(9), y(9), z(9), xyzc(3), a(3), b(3), c(3), surf, surtot
+    character(len=8) :: typm, nommai
+    character(len=24) :: grma, gr_seg(nbval), gr_centre(nbval)
+    character(len=24) :: magrno, magrma, manoma, matyma
+    real(kind=8), pointer :: coeno(:) => null()
+    integer(kind=8), pointer :: parno(:) => null()
+    real(kind=8), pointer :: surmai(:) => null()
+    real(kind=8), pointer :: coord(:) => null()
+    blas_int :: b_1, b_2, b_3
+    aster_logical :: l_pmesh
+!
+! --------------------------------------------------------------------------------------------------
+!
+    call jemarq()
+!
+    nomu = infdonn%nomu
+    noma = infdonn%maillage
+    ndim = infdonn%dimmod
+!   Si c'est un maillage partionné ==> PLOUF
+    l_pmesh = isParallelMesh(noma)
+    if ( l_pmesh ) then
+        call utmess('F', 'AFFECARAELEM_99')
+    endif
+!   Pour les discrets c'est obligatoirement du 2D ou 3D
+    ASSERT((ndim .eq. 2) .or. (ndim .eq. 3))
+!
+!   Les cartes sont déjà construites : ace_crea_carte
+    cartdi = infcarte(ACE_CAR_DINFO)%nom_carte
+    jdcinf = infcarte(ACE_CAR_DINFO)%adr_cmp
+    jdvinf = infcarte(ACE_CAR_DINFO)%adr_val
+    dimcar = infcarte(ACE_CAR_DINFO)%nbr_cmp
+!
+    cart(1) = infcarte(ACE_CAR_DISCK)%nom_carte
+    jdc(1)  = infcarte(ACE_CAR_DISCK)%adr_cmp
+    jdv(1)  = infcarte(ACE_CAR_DISCK)%adr_val
+!
+    cart(2) = infcarte(ACE_CAR_DISCM)%nom_carte
+    jdc(2)  = infcarte(ACE_CAR_DISCM)%adr_cmp
+    jdv(2)  = infcarte(ACE_CAR_DISCM)%adr_val
+!
+    cart(3) = infcarte(ACE_CAR_DISCA)%nom_carte
+    jdc(3)  = infcarte(ACE_CAR_DISCA)%adr_cmp
+    jdv(3)  = infcarte(ACE_CAR_DISCA)%adr_val
+!
+    ifm = ivr(4)
+
+    magrno = noma//'.GROUPENO'
+    magrma = noma//'.GROUPEMA'
+    manoma = noma//'.CONNEX'
+    matyma = noma//'.TYPMAIL'
+    call jeveuo(matyma, 'L', j_typ)
+    call jeveuo(noma//'.COORDO    .VALE', 'L', vr=coord)
+
+!   Boucle sur les occurrences de rigi_grille
+    do ioc = 1, nbocc
+!
+        call getvem(noma, 'GROUP_MA', 'RIGI_GRILLE', 'GROUP_MA', ioc, 1, grma, n_groups)
+        print*, grma
+        call getvem(noma, 'GROUP_MA', 'RIGI_GRILLE', 'GROUP_MA_SEG2', ioc, nbval, gr_seg, n_groups)
+        print*, gr_seg
+        call getvem(noma, 'GROUP_NO', 'RIGI_GRILLE', 'GROUP_NO_CENTRE', ioc, nbval, gr_centre, n_groups)
+        print*, gr_centre
+        call getvr8('RIGI_GRILLE', 'VALE', iocc=ioc, nbval=nbval, vect=vale)
+        print*, vale
+
+        call jelira(jexnom(magrma, grma), 'LONUTI', nb_cells)
+        call jeveuo(jexnom(magrma, grma), 'L', j_grma)
+
+!       calcul des surfaces au support des noeuds
+!
+        nb_nodes = 0
+        do i_cell = 0, nb_cells
+            num_cell = zi(j_grma-1+i_cell)
+            if (num_cell .le. 0) then
+                nommai = '????'
+                call utmess('F', 'AFFECARAELEM_25', si=ioc, nk=2, valk=[grma, nommai])
+            else if (zjdlm(num_cell) .eq. 0) then
+                nommai = int_to_char8(num_cell)
+                call utmess('F', 'AFFECARAELEM_25', si=ioc, nk=2, valk=[grma, nommai])
+            end if
+            call jelira(jexnum(manoma, num_cell), 'LONMAX', nb_no)
+            nb_nodes = nb_nodes+nb_no
+            call jenuno(jexnum('&CATA.TM.NOMTM', zi(j_typ-1+num_cell)), typm)
+            call dismoi('DIM_TOPO', typm, 'TYPE_MAILLE', repi=ntopo)
+            if (ntopo .ne. 2) then
+                call utmess('F', 'MODELISA6_35')
+            end if
+        end do
+        ASSERT(nb_cells .ne. 0)
+!
+
+        b_1 = to_blas_int(1)
+        b_2 = to_blas_int(2)
+        b_3 = to_blas_int(3)
+
+!       Coefficients des noeuds de l interface
+        AS_ALLOCATE(vr=coeno, size=nb_nodes)
+!       Participation des noeuds de l interface
+        AS_ALLOCATE(vi=parno, size=nb_nodes)
+!       Surfaces élémentaires de la maille
+        AS_ALLOCATE(vr=surmai, size=nb_cells)
+
+        nbparno = 0
+        do i_cell = 1, nb_cells
+            num_cell = zi(j_grma-1+i_cell)
+            call jelira(jexnum(manoma, num_cell), 'LONMAX', nb_no)
+            call jeveuo(jexnum(manoma, num_cell), 'L', j_no)
+            xyzc(:) = 0.0d0
+            do i_no = 1, nb_no
+                i_noe = zi(j_no-1+i_no)
+!               On enregistre le numéro du noeud dans parno, s'il n'y est pas déjà
+                if (.not. in_liste_entier(i_noe, parno(1:nbparno))) then
+                    nbparno = nbparno+1
+                    parno(nbparno) = i_noe
+                end if
+                x(i_no) = coord(3*(i_noe-1)+1)
+                y(i_no) = coord(3*(i_noe-1)+2)
+                z(i_no) = coord(3*(i_noe-1)+3)
+                xyzc(1) = xyzc(1)+x(i_no)
+                xyzc(2) = xyzc(2)+y(i_no)
+                xyzc(3) = xyzc(3)+z(i_no)
+            end do
+            xyzc(:) = xyzc(:)/nb_no
+!
+            a(1) = x(3)-x(1)
+            a(2) = y(3)-y(1)
+            a(3) = z(3)-z(1)
+            if (nb_no .eq. 3 .or. nb_no .eq. 6 .or. nb_no .eq. 7) then
+                b(1) = x(2)-x(1)
+                b(2) = y(2)-y(1)
+                b(3) = z(2)-z(1)
+            else if (nb_no .eq. 4 .or. nb_no .eq. 8 .or. nb_no .eq. 9) then
+                b(1) = x(4)-x(2)
+                b(2) = y(4)-y(2)
+                b(3) = z(4)-z(2)
+            else
+                ASSERT(.false.)
+            end if
+            call provec(a, b, c)
+            surf = ddot(b_3, c, b_1, c, b_1)
+            surmai(i_cell) = sqrt(surf)*0.5d0
+
+            surtot = surtot+surmai(i_cell)
+!           Surface de la maille affectée à chacun des noeuds
+            surmai(i_cell) = surmai(i_cell)/nb_no
+        end do
+        nbno = nbparno
+!
+!       Calcul des pondérations élémentaires
+
+        do i_cell = 1, nb_cells
+            num_cell = zi(j_grma-1+i_cell)
+            call jelira(jexnum(manoma, num_cell), 'LONMAX', nb_no)
+            call jeveuo(jexnum(manoma, num_cell), 'L', j_no)
+            do i_no = 1, nb_no
+                i_noe = zi(j_no-1+i_no)
+!               Le noeud doit être dans parno
+                if (in_liste_entier(i_noe, parno(1:nbparno), posi)) then
+                    coeno(posi) = coeno(posi)+surmai(i_cell)/surtot
+                else
+                    ASSERT(.false.)
+                end if
+            end do
+        end do
+
+        AS_DEALLOCATE(vr=coeno)
+        AS_DEALLOCATE(vi=parno)
+        AS_DEALLOCATE(vr=surmai)
+
+    end do
+        
+end subroutine

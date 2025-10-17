@@ -1534,6 +1534,35 @@ AFFE_CARA_ELEM = OPER(
     ),
     #
     # ==============================================================================
+    RIGI_GRILLE=FACT(
+        statut="f",
+        max=1,
+        GROUP_MA_SEG2=SIMP(
+            statut="o",
+            typ=grma,
+            min=5,
+            max=5,
+            fr=tr("Mailles de type seg2 correspondant aux discrets"),
+        ),
+        GROUP_MA=SIMP(
+            statut="o",
+            typ=grma,
+            validators=NoRepeat(),
+            max=1,
+            fr=tr("Surface servant à répartir les caractéristiques des discrets"),
+        ),
+        GROUP_NO_CENTRE=SIMP(statut="o", typ=grno, min=5, max=5),
+        OPTION=SIMP(statut="f", typ="TXM", into=("RIGI",), defaut="RIGI"),
+        VALE=SIMP(
+            statut="o",
+            typ="R",
+            min=5,
+            max=5,
+            fr=tr("Valeurs pour les discrets du tapis de ressorts."),
+        ),
+    ),
+    #
+    # ==============================================================================
     RIGI_MISS_3D=FACT(
         statut="f",
         max=1,
