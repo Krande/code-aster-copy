@@ -248,6 +248,7 @@ TEST_RESU(
             RESULTAT=MG_SO,
             VALE_CALC=0.01892289958768421,
             VALE_REFE=0.018922899587369407,
+            VALE_ABS="OUI",
             REFERENCE="SOURCE_EXTERNE",
         ),
         _F(
@@ -264,6 +265,7 @@ TEST_RESU(
             RESULTAT=MG_SO,
             VALE_CALC=0.07560399085018656,
             VALE_REFE=0.07560399085016604,
+            VALE_ABS="OUI",
             REFERENCE="SOURCE_EXTERNE",
         ),
         _F(
@@ -280,6 +282,7 @@ TEST_RESU(
             RESULTAT=MG_SO,
             VALE_CALC=-1.23184e-16,
             VALE_REFE=0.0,
+            VALE_ABS="OUI",
             CRITERE="ABSOLU",
             REFERENCE="SOURCE_EXTERNE",
         ),
@@ -298,6 +301,7 @@ TEST_RESU(
             RESULTAT=MG_QZ,
             VALE_CALC=0.01892289958616316,
             VALE_REFE=0.018922899587369407,
+            VALE_ABS="OUI",
             REFERENCE="SOURCE_EXTERNE",
         ),
         _F(
@@ -314,6 +318,7 @@ TEST_RESU(
             RESULTAT=MG_QZ,
             VALE_CALC=0.07560399085040599,
             VALE_REFE=0.07560399085016604,
+            VALE_ABS="OUI",
             REFERENCE="SOURCE_EXTERNE",
         ),
         _F(
