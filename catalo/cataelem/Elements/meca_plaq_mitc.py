@@ -32,17 +32,13 @@ NDEPLAC = LocatedComponents(
     phys=PHY.DEPL_C, type="ELNO", components=("DX", "DY", "DZ", "DRX", "DRY", "DRZ")
 )
 
-# DDL_MECA = LocatedComponents(
-#     phys=PHY.DEPL_R, type="ELNO", components=("DX", "DY", "DZ", "DRX", "DRY", "DRZ")
-# )
-
 DDL_MECA = LocatedComponents(
     phys=PHY.DEPL_R,
     type="ELNO",
     diff=True,
     components=(
         ("EN1", ("DZ", "DRX", "DRY")),
-        ("EN2", ("DRX", "DRY", "GAMMA_R", "P")),
+        ("EN2", ("DRX", "DRY", "PHI", "LAG_GV")),
         ("EN3", ("DRX", "DRY")),
     ),
 )

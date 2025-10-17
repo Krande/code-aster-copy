@@ -152,8 +152,7 @@ for cmp in (
     "DRGY",
     "DRGZ",
     "PSI",
-    "GAMMA_R",
-    "P",
+    "LAG_GV",
 ):
 
     # ----------------
