@@ -67,33 +67,65 @@ def post_roche_ops(self, **kwargs):
 
         PRCommon.combinaisons()
 
+        # Contraintes :
+        # -----------
+
         # calcul sur les moments de déplacement (m)
-        calcul = PostRocheCalc(PRCommon, PRCommon.m, numeOrdre)
-        calcul.contraintesRef()
-        calcul.epsiMp()
-        calcul.reversibilite_locale()
-        calcul.reversibilite_totale()
-        calcul.effet_ressort("Monotone")
-        calcul.contrainteVraie()
-        calcul.veriContrainte()
-        calcul.coef_abattement()
-        calcul.buildField()
+        calcCont = PostRocheCalc(PRCommon, PRCommon.m, numeOrdre)
+        calcCont.contraintesRef()
+        calcCont.epsiMp()
+        calcCont.reversibilite_locale()
+        calcCont.reversibilite_totale()
+        calcCont.effet_ressort("Monotone")
+        calcCont.contrainteVraie()
+        calcCont.veriContrainte()
+        calcCont.coef_abattement()
+        calcCont.buildField()
 
         # calcul sur les moments de séisme inertiel
-        calculS2 = PostRocheCalc(PRCommon, PRCommon.MSI_tot, numeOrdre)
-        calculS2.contraintesRef()
-        calculS2.epsiMp()
-        calculS2.reversibilite_locale()
-        calculS2.reversibilite_totale()
-        calculS2.effet_ressort("Sismique")
-        calculS2.contrainteVraie()
-        calculS2.veriContrainte()
-        calculS2.coef_abattement()
-        calculS2.buildField()
+        calcContS2 = PostRocheCalc(PRCommon, PRCommon.MSI_tot, numeOrdre)
+        calcContS2.contraintesRef()
+        calcContS2.epsiMp()
+        calcContS2.reversibilite_locale()
+        calcContS2.reversibilite_totale()
+        calcContS2.effet_ressort("Sismique")
+        calcContS2.contrainteVraie()
+        calcContS2.veriContrainte()
+        calcContS2.coef_abattement()
+        calcContS2.buildField()
 
-        PRCommon.calcContrainteEquiv(calcul.field, calculS2.field)
+        # Moments :
+        # -------
 
-        chPrin, chComp = PRCommon.buildOutput(calcul.field, calculS2.field)
+        # calcul sur les moments de déplacement (m)
+        calcMoment = PostRocheCalc(PRCommon, PRCommon.m, numeOrdre, reguCoude=True)
+        calcMoment.contraintesRef()
+        calcMoment.epsiMp()
+        calcMoment.reversibilite_locale()
+        calcMoment.reversibilite_totale()
+        calcMoment.effet_ressort("Monotone")
+        calcMoment.contrainteVraie()
+        calcMoment.veriContrainte()
+        calcMoment.coef_abattement()
+        calcMoment.buildField()
+
+        # calcul sur les moments de séisme inertiel
+        calcMomentS2 = PostRocheCalc(PRCommon, PRCommon.MSI_tot, numeOrdre, reguCoude=True)
+        calcMomentS2.contraintesRef()
+        calcMomentS2.epsiMp()
+        calcMomentS2.reversibilite_locale()
+        calcMomentS2.reversibilite_totale()
+        calcMomentS2.effet_ressort("Sismique")
+        calcMomentS2.contrainteVraie()
+        calcMomentS2.veriContrainte()
+        calcMomentS2.coef_abattement()
+        calcMomentS2.buildField()
+
+        PRCommon.calcContrainteEquiv(calcCont.field, calcContS2.field)
+
+        chPrin, chComp = PRCommon.buildOutput(
+            calcCont.field, calcContS2.field, calcMoment.field, calcMomentS2.field
+        )
 
         if i == 0:
             resuOut = CREA_RESU(
@@ -1600,19 +1632,19 @@ class PostRocheCommon:
 
         self.chContEquivOpt = chContEquiv
 
-    def buildOutput(self, chVale, chValeS2):
+    def buildOutput(self, chCont, chContS2, chMoment, chMomentS2):
         """
         Construction des champs de sortie (principal et complémentaire)
         """
 
-        chTempo = CREA_CHAMP(
+        chContTemp = CREA_CHAMP(
             OPERATION="ASSE",
             MODELE=self.model,
             TYPE_CHAM="ELNO_NEUT_R",
             PROL_ZERO="OUI",
             ASSE=(
                 _F(
-                    CHAM_GD=chVale,
+                    CHAM_GD=chCont,
                     TOUT="OUI",
                     NOM_CMP=(
                         "X1",
@@ -1646,7 +1678,7 @@ class PostRocheCommon:
                     ),
                 ),
                 _F(
-                    CHAM_GD=chValeS2,
+                    CHAM_GD=chContS2,
                     TOUT="OUI",
                     NOM_CMP=(
                         "X1",
@@ -1683,6 +1715,84 @@ class PostRocheCommon:
             ),
         )
 
+        chMomentTemp = CREA_CHAMP(
+            OPERATION="ASSE",
+            MODELE=self.model,
+            TYPE_CHAM="ELNO_NEUT_R",
+            PROL_ZERO="OUI",
+            ASSE=(
+                _F(
+                    CHAM_GD=chMoment,
+                    TOUT="OUI",
+                    NOM_CMP=(
+                        "X1",
+                        "X2",
+                        "X3",
+                        "X4",
+                        "X5",
+                        "X6",
+                        "X7",
+                        "X8",
+                        "X9",
+                        "X10",
+                        "X11",
+                        "X12",
+                        "X13",
+                    ),
+                    NOM_CMP_RESU=(
+                        "X1",
+                        "X3",
+                        "X5",
+                        "X7",
+                        "X9",
+                        "X11",
+                        "X13",
+                        "X17",
+                        "X19",
+                        "X21",
+                        "X23",
+                        "X25",
+                        "X27",
+                    ),
+                ),
+                _F(
+                    CHAM_GD=chMomentS2,
+                    TOUT="OUI",
+                    NOM_CMP=(
+                        "X1",
+                        "X2",
+                        "X3",
+                        "X4",
+                        "X5",
+                        "X6",
+                        "X7",
+                        "X8",
+                        "X9",
+                        "X10",
+                        "X11",
+                        "X12",
+                        "X13",
+                    ),
+                    NOM_CMP_RESU=(
+                        "X2",
+                        "X4",
+                        "X6",
+                        "X8",
+                        "X10",
+                        "X12",
+                        "X14",
+                        "X18",
+                        "X20",
+                        "X22",
+                        "X24",
+                        "X26",
+                        "X28",
+                    ),
+                ),
+                # _F(CHAM_GD=self.chContEquivOpt, TOUT="OUI", NOM_CMP=("X1",), NOM_CMP_RESU=("X16",)),
+            ),
+        )
+
         chPrin = CREA_CHAMP(
             OPERATION="ASSE",
             MODELE=self.model,
@@ -1690,10 +1800,16 @@ class PostRocheCommon:
             PROL_ZERO="OUI",
             ASSE=(
                 _F(
-                    CHAM_GD=chTempo,
+                    CHAM_GD=chContTemp,
                     TOUT="OUI",
                     NOM_CMP=("X1", "X2", "X13", "X14", "X16"),
                     NOM_CMP_RESU=("X1", "X3", "X5", "X7", "X9"),
+                ),
+                _F(
+                    CHAM_GD=chMomentTemp,
+                    TOUT="OUI",
+                    NOM_CMP=("X1", "X2", "X13", "X14"),
+                    NOM_CMP_RESU=("X2", "X4", "X6", "X8"),
                 ),
             ),
         )
@@ -1705,7 +1821,7 @@ class PostRocheCommon:
             PROL_ZERO="OUI",
             ASSE=(
                 _F(
-                    CHAM_GD=chTempo,
+                    CHAM_GD=chContTemp,
                     TOUT="OUI",
                     NOM_CMP=(
                         "X3",
@@ -1733,11 +1849,47 @@ class PostRocheCommon:
                         "X13",
                         "X15",
                         "X17",
-                        "X18",
                         "X19",
                         "X21",
                         "X23",
                         "X25",
+                        "X27",
+                    ),
+                ),
+                _F(
+                    CHAM_GD=chMomentTemp,
+                    TOUT="OUI",
+                    NOM_CMP=(
+                        "X3",
+                        "X4",
+                        "X5",
+                        "X6",
+                        "X7",
+                        "X8",
+                        "X9",
+                        "X10",
+                        "X19",
+                        "X20",
+                        "X23",
+                        "X24",
+                        "X27",
+                        "X28",
+                    ),
+                    NOM_CMP_RESU=(
+                        "X2",
+                        "X4",
+                        "X6",
+                        "X8",
+                        "X10",
+                        "X12",
+                        "X14",
+                        "X16",
+                        "X18",
+                        "X20",
+                        "X22",
+                        "X24",
+                        "X26",
+                        "X28",
                     ),
                 ),
             ),
