@@ -32,10 +32,8 @@ module aster_fieldsplit_module
 #include "asterf_types.h"
 #include "asterf_petsc.h"
 #ifdef ASTER_HAVE_PETSC
-    use petscksp
-    use petscpc
-    use petsc_data_module
     use aster_petsc_module
+    use petsc_data_module
 !
     implicit none
     private
@@ -80,8 +78,10 @@ contains
         IS :: current_is, is_with_bs_3
         PC :: pc
         PetscInt :: nu, mg, ng
-        PetscInt :: bs, nsplit
-        KSP, dimension(:), allocatable :: subksp
+        PetscInt :: bs, nsplit, lsize, gsize
+        KSP, dimension(:), allocatable, target :: subksp
+        KSP, pointer :: p_subksp(:)
+        KSP, pointer :: ksp
         Mat :: Mat_temp
         aster_logical :: debug
 !========================
@@ -104,10 +104,11 @@ contains
         call asmpi_info(rank=rang, size=nbproc)
         call asmpi_comm('GET', mpicomm)
 !  Give the main solver a name
-        call PetscObjectSetName(kp(kptsc), 'Top level KSP', ierr)
+        ksp => kp(kptsc)
+        call PetscObjectSetName(ksp, 'Top level KSP', ierr)
         ASSERT(ierr == 0)
 !  Get current preconditioner
-        call KSPGetPC(kp(kptsc), pc, ierr)
+        call KSPGetPC(ksp, pc, ierr)
         ASSERT(ierr == 0)
 !
 !  Build IndexSets
@@ -152,15 +153,19 @@ contains
             start = 1
             end = sum(fields_size(1:nb_fields-idx))
             call get_is_of_field(is_list(2*idx-1), nonu, ap(kptsc), cmp_global(start:end), bs)
+            call ISGetLocalSize(is_list(2*idx-1), lsize, ierr)
+            call ISGetSize(is_list(2*idx-1), gsize, ierr)
             if (debug) write (ifm, *) "Treating field nb ", 2*idx-1, ": ", cmp_global(start:end), &
-                " with bs=", bs
+                " with bs=", bs, "of local/global size", lsize, "/", gsize
 ! the single block
             bs = to_petsc_int(fields_size(nb_fields-idx+1))
             start = sum(fields_size(1:nb_fields-idx))+1
             end = sum(fields_size(1:nb_fields-idx+1))
             call get_is_of_field(is_list(2*idx), nonu, ap(kptsc), cmp_global(start:end), bs)
+            call ISGetLocalSize(is_list(2*idx), lsize, ierr)
+            call ISGetSize(is_list(2*idx), gsize, ierr)
             if (debug) write (ifm, *) "Treating field nb ", 2*idx, ": ", cmp_global(start:end), &
-                " with bs=", bs
+                " with bs=", bs, "of local/global size", lsize, "/", gsize
         end do
 !
 !  Check IS dimensions
@@ -204,7 +209,7 @@ contains
             end do
             ! Get the current PC
             if (idx == 1) then
-                call KSPGetPC(kp(kptsc), pc_list(idx), ierr)
+                call KSPGetPC(ksp, pc_list(idx), ierr)
             else
                 call KSPGetPC(subksp(2*(idx-1)-1), pc_list(idx), ierr)
             end if
@@ -221,6 +226,7 @@ contains
                 current_is = subis_list(idx-1)
             end if
             call PCFieldSplitSetIS(pc_list(idx), field_name1(1:length1), current_is, ierr)
+            ASSERT(ierr == 0)
             if (field_name1(1:length1) == 'DXDYDZ') then
                 call ISSetBlockSize(current_is, to_petsc_int(3), ierr)
                 ASSERT(ierr == 0)
@@ -244,6 +250,7 @@ contains
                 current_is = subis_list(idx)
             end if
             call PCFieldSplitSetIS(pc_list(idx), field_name2(1:length2), current_is, ierr)
+            ASSERT(ierr == 0)
             if (field_name2(1:length2) == 'DXDYDZ') then
                 call ISSetBlockSize(current_is, to_petsc_int(3), ierr)
                 ASSERT(ierr == 0)
@@ -260,12 +267,14 @@ contains
             call PCSetup(pc_list(idx), ierr)
             ASSERT(ierr == 0)
             nsplit = 2
-            call PCFieldSplitGetSubKSP(pc_list(idx), nsplit, subksp(2*idx-1:2*idx), ierr)
+            call PCFieldSplitGetSubKSP(pc_list(idx), nsplit, p_subksp, ierr)
             ASSERT(ierr == 0)
-            call PetscObjectSetName(subksp(2*idx-1), ' KSP  '//field_name1(1:length1), ierr)
+            call PetscObjectSetName(p_subksp(1), ' KSP  '//field_name1(1:length1), ierr)
             ASSERT(ierr == 0)
-            call PetscObjectSetName(subksp(2*idx), ' KSP  '//field_name2(1:length2), ierr)
+            call PetscObjectSetName(p_subksp(2), ' KSP  '//field_name2(1:length2), ierr)
             ASSERT(ierr == 0)
+            subksp(2*idx-1) = p_subksp(1)
+            subksp(2*idx) = p_subksp(2)
 !
 !  Configure the subksp, compute and join the near null space to the submatrix
 !
@@ -324,8 +333,7 @@ contains
         mpi_int :: rang, nbproc, mpicomm
         PetscErrorCode :: ierr
         MatNullSpace :: sp
-        PetscScalar :: xx_v(1)
-        PetscOffset :: xx_i
+        PetscScalar, pointer :: xx_v(:) => null()
         Vec :: coords, displ_coords
         PetscInt :: low, high, bs
         character(len=19) :: nomat
@@ -447,7 +455,7 @@ contains
 ! la matrice est centralisée
         else
             call VecGetOwnershipRange(coords, low, high, ierr)
-            call VecGetArray(coords, xx_v, xx_i, ierr)
+            call VecGetArray(coords, xx_v, ierr)
             ix = 0
             do ieq = low+1, high
 ! Noeud auquel est associé le ddl Aster ieq
@@ -457,10 +465,10 @@ contains
                 icmp = deeq((ieq-1)*2+2)
                 ASSERT((numno .gt. 0) .and. (icmp .gt. 0))
                 ix = ix+1
-                xx_v(xx_i+ix) = coordo(dimgeo*(numno-1)+icmp)
+                xx_v(ix) = coordo(dimgeo*(numno-1)+icmp)
             end do
             !
-            call VecRestoreArray(coords, xx_v, xx_i, ierr)
+            call VecRestoreArray(coords, xx_v, ierr)
             ASSERT(ierr == 0)
         end if
         !
@@ -513,7 +521,7 @@ contains
         PetscInt :: nab_local(1), high_ab(1), low_ab, n_ab
         PetscErrorCode :: ierr
         PetscInt, parameter :: izero = 0, ione = 1
-        IS :: is_ind_ab, is_a_in_ab_local
+        IS :: is_ind_ab, is_a_in_ab_local, is_a_in_ab_
         ISLocalToGlobalMapping :: mapping
 !
 !   Contexte parallèle (nb de processeurs, rang, communicateur MPI)
@@ -566,8 +574,11 @@ contains
 !   Traduction en un index set global, conforme à la répartion parallèle
 !   de is_ab
 !   ---------------------------------------------------------------------
-        call ISLocalToGlobalMappingApplyIS(mapping, is_a_in_ab_local, is_a_in_ab, ierr)
+        call ISLocalToGlobalMappingApplyIS(mapping, is_a_in_ab_local, is_a_in_ab_, ierr)
         ASSERT(ierr == 0)
+!
+        ! Transfer the index set to the common communicator
+        call ISOnComm(is_a_in_ab_, mpicomm, PETSC_COPY_VALUES, is_a_in_ab, ierr)
 !
         if (present(is_b_in_ab)) then
             call ISComplement(is_a_in_ab, low_ab, high_ab(1), is_b_in_ab, ierr)
@@ -575,6 +586,8 @@ contains
         end if
 !
         call ISDestroy(is_ind_ab, ierr)
+        ASSERT(ierr == 0)
+        call ISDestroy(is_a_in_ab_, ierr)
         ASSERT(ierr == 0)
         call ISDestroy(is_a_in_ab_local, ierr)
         ASSERT(ierr == 0)

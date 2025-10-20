@@ -138,7 +138,7 @@ subroutine elg_calcxl(x1, vlag)
 !
     call KSPGetConvergedReason(elg_context(ke)%ksp, reason, ierr)
     ASSERT(ierr == 0)
-    if (reason < 0) then
+    if (reason%v < 0) then
         call utmess('F', 'ELIMLAGR_8')
     end if
 ! - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -

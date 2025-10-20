@@ -88,15 +88,15 @@ contains
         elg_ctxt%full_matas = ' '
         elg_ctxt%reduced_matas = ' '
         elg_ctxt%k_matas = ' '
-        elg_ctxt%kproj = PETSC_NULL_MAT
-        elg_ctxt%matc = PETSC_NULL_MAT
-        elg_ctxt%tfinal = PETSC_NULL_MAT
-        elg_ctxt%matb = PETSC_NULL_MAT
-        elg_ctxt%vx0 = PETSC_NULL_VEC
-        elg_ctxt%vecb = PETSC_NULL_VEC
-        elg_ctxt%vecc = PETSC_NULL_VEC
-        elg_ctxt%cct = PETSC_NULL_MAT
-        elg_ctxt%ksp = PETSC_NULL_KSP
+        PetscObjectNullify(elg_ctxt%kproj)
+        PetscObjectNullify(elg_ctxt%matc)
+        PetscObjectNullify(elg_ctxt%tfinal)
+        PetscObjectNullify(elg_ctxt%matb)
+        PetscObjectNullify(elg_ctxt%vx0)
+        PetscObjectNullify(elg_ctxt%vecb)
+        PetscObjectNullify(elg_ctxt%vecc)
+        PetscObjectNullify(elg_ctxt%cct)
+        PetscObjectNullify(elg_ctxt%ksp)
     end function new_elg_context
 !
 ! Free object elg_ctxt
@@ -115,58 +115,58 @@ contains
             free_all = .not. keep_basis
         end if
 !
-        if (elg_ctxt%kproj /= PETSC_NULL_MAT) then
+        if (.not. PetscObjectIsNull(elg_ctxt%kproj)) then
             call MatDestroy(elg_ctxt%kproj, ierr)
             ASSERT(ierr == 0)
         end if
-        if (elg_ctxt%matc /= PETSC_NULL_MAT) then
+        if (.not. PetscObjectIsNull(elg_ctxt%matc)) then
             call MatDestroy(elg_ctxt%matc, ierr)
             ASSERT(ierr == 0)
         end if
-        if (elg_ctxt%matb /= PETSC_NULL_MAT) then
+        if (.not. PetscObjectIsNull(elg_ctxt%matb)) then
             call MatDestroy(elg_ctxt%matb, ierr)
             ASSERT(ierr == 0)
         end if
-        if (elg_ctxt%vx0 /= PETSC_NULL_VEC) then
+        if (.not. PetscObjectIsNull(elg_ctxt%vx0)) then
             call VecDestroy(elg_ctxt%vx0, ierr)
             ASSERT(ierr == 0)
         end if
-        if (elg_ctxt%vecb /= PETSC_NULL_VEC) then
+        if (.not. PetscObjectIsNull(elg_ctxt%vecb)) then
             call VecDestroy(elg_ctxt%vecb, ierr)
             ASSERT(ierr == 0)
         end if
-        if (elg_ctxt%vecc /= PETSC_NULL_VEC) then
+        if (.not. PetscObjectIsNull(elg_ctxt%vecc)) then
             call VecDestroy(elg_ctxt%vecc, ierr)
             ASSERT(ierr == 0)
         end if
 !
-        elg_ctxt%kproj = PETSC_NULL_MAT
-        elg_ctxt%matc = PETSC_NULL_MAT
-        elg_ctxt%matb = PETSC_NULL_MAT
-        elg_ctxt%vx0 = PETSC_NULL_VEC
-        elg_ctxt%vecb = PETSC_NULL_VEC
-        elg_ctxt%vecc = PETSC_NULL_VEC
+        PetscObjectNullify(elg_ctxt%kproj)
+        PetscObjectNullify(elg_ctxt%matc)
+        PetscObjectNullify(elg_ctxt%matb)
+        PetscObjectNullify(elg_ctxt%vx0)
+        PetscObjectNullify(elg_ctxt%vecb)
+        PetscObjectNullify(elg_ctxt%vecc)
 !
         if (free_all) then
             elg_ctxt%full_matas = ' '
             elg_ctxt%k_matas = ' '
             elg_ctxt%reduced_matas = ' '
 !
-            if (elg_ctxt%tfinal /= PETSC_NULL_MAT) then
+            if (.not. PetscObjectIsNull(elg_ctxt%tfinal)) then
                 call MatDestroy(elg_ctxt%tfinal, ierr)
                 ASSERT(ierr == 0)
             end if
-            if (elg_ctxt%cct /= PETSC_NULL_MAT) then
+            if (.not. PetscObjectIsNull(elg_ctxt%cct)) then
                 call MatDestroy(elg_ctxt%cct, ierr)
                 ASSERT(ierr == 0)
             end if
-            if (elg_ctxt%ksp /= PETSC_NULL_KSP) then
+            if (.not. PetscObjectIsNull(elg_ctxt%ksp)) then
                 call KSPDestroy(elg_ctxt%ksp, ierr)
                 ASSERT(ierr == 0)
             end if
-            elg_ctxt%tfinal = PETSC_NULL_MAT
-            elg_ctxt%cct = PETSC_NULL_MAT
-            elg_ctxt%ksp = PETSC_NULL_KSP
+            PetscObjectNullify(elg_ctxt%tfinal)
+            PetscObjectNullify(elg_ctxt%cct)
+            PetscObjectNullify(elg_ctxt%ksp)
         end if
 !
     end subroutine free_elg_context

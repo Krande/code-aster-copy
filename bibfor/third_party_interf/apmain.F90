@@ -121,11 +121,11 @@ subroutine apmain(action, kptsc, rsolu, vcine, istop, &
     PetscInt :: low, high
     PetscReal :: rtol, atol, dtol
     Vec :: r
-    PetscScalar :: xx(1), ires, fres
-    PetscOffset :: xidx
+    PetscScalar :: ires, fres
+    PetscScalar, pointer :: xx(:) => null()
     KSPConvergedReason :: indic
     Mat :: a
-    KSP :: ksp
+    KSP, pointer :: ksp
     PC :: pc
 !----------------------------------------------------------------
     cbid = dcmplx(0.d0, 0.d0)
@@ -218,20 +218,23 @@ subroutine apmain(action, kptsc, rsolu, vcine, istop, &
 !        1.4 CREATION DU PRECONDITIONNEUR PETSc (EXTRAIT DU KSP) :
 !        ---------------------------------------------------------
 !
+        ksp => kp(kptsc)
         if (precon == 'UTILISATEUR') then
-            call create_custom_ksp(kp(kptsc), ap(kptsc), ierr)
+            call create_custom_ksp(ksp, ap(kptsc), ierr)
             ASSERT(ierr .eq. 0)
             user_ksp(kptsc) = ASTER_TRUE
 
             if (niv >= 2) then
-                call KSPView(kp(kptsc), PETSC_VIEWER_STDOUT_SELF, ierr)
+                call KSPView(ksp, PETSC_VIEWER_STDOUT_SELF, ierr)
                 ASSERT(ierr .eq. 0)
             end if
         else
-            call KSPCreate(mpicomm, kp(kptsc), ierr)
-            ASSERT(ierr .eq. 0)
+            if (PetscObjectIsNull(ksp)) then
+                call KSPCreate(mpicomm, ksp, ierr)
+                ASSERT(ierr .eq. 0)
+            end if
             !
-            call KSPSetOperators(kp(kptsc), ap(kptsc), ap(kptsc), ierr)
+            call KSPSetOperators(ksp, ap(kptsc), ap(kptsc), ierr)
             ASSERT(ierr == 0)
         end if
         !
@@ -246,7 +249,7 @@ subroutine apmain(action, kptsc, rsolu, vcine, istop, &
 !        -----------------------------------------------
 !
         a = ap(kptsc)
-        ksp = kp(kptsc)
+        ksp => kp(kptsc)
 !
 !        2.1 PRETRAITEMENT DU SECOND MEMBRE :
 !        ------------------------------------
@@ -329,7 +332,7 @@ subroutine apmain(action, kptsc, rsolu, vcine, istop, &
                                                  .or. (precon .eq. 'LDLT_DP'))) then
             call ap2foi(kptsc, mpicomm, nosolv, lmd, indic, its)
 !           -- ksp a ete modifie par ap2foi :
-            ksp = kp(kptsc)
+            ksp => kp(kptsc)
             lap2foi = .true.
         else
             lap2foi = .false.
@@ -338,7 +341,7 @@ subroutine apmain(action, kptsc, rsolu, vcine, istop, &
 !
 !       ANALYSE DES CAUSES ET EMISSION EVENTUELLE D'UN MESSAGE
 !       EN CAS DE DIVERGENCE
-        if (indic .lt. 0) then
+        if (indic%v .lt. 0) then
             call KSPGetTolerances(ksp, rtol, atol, dtol, maxits, &
                                   ierr)
             ASSERT(ierr .eq. 0)
@@ -413,7 +416,7 @@ subroutine apmain(action, kptsc, rsolu, vcine, istop, &
 !
             else
 !              AUTRE ERREUR
-                ptserr = indic
+                ptserr = indic%v
                 call utmess('F', 'PETSC_12', si=ptserr)
             end if
         end if
@@ -462,12 +465,12 @@ subroutine apmain(action, kptsc, rsolu, vcine, istop, &
             ASSERT(ierr .eq. 0)
 !
 !        -- RECOPIE DE DANS RSOLU
-            call VecGetArray(x, xx, xidx, ierr)
+            call VecGetArray(x, xx, ierr)
             ASSERT(ierr .eq. 0)
 !
-            call cpysol(nomat, nonu, rsolu, low, xx(xidx+1))
+            call cpysol(nomat, nonu, rsolu, low, xx)
 !
-            call VecRestoreArray(x, xx, xidx, ierr)
+            call VecRestoreArray(x, xx, ierr)
             ASSERT(ierr .eq. 0)
         end if
 
@@ -515,15 +518,15 @@ subroutine apmain(action, kptsc, rsolu, vcine, istop, &
 !
             call VecDestroy(xlocal, ierr)
             ASSERT(ierr .eq. 0)
-            xlocal = PETSC_NULL_VEC
+            PetscObjectNullify(xlocal)
 !
             call VecDestroy(xglobal, ierr)
             ASSERT(ierr == 0)
-            xglobal = PETSC_NULL_VEC
+            PetscObjectNullify(xglobal)
 !
             call VecScatterDestroy(xscatt, ierr)
             ASSERT(ierr == 0)
-            xscatt = PETSC_NULL_VECSCATTER
+            PetscObjectNullify(xscatt)
 !           ON STOCKE LE NOMBRE D'ITERATIONS DU KSP
             call KSPGetIterationNumber(ksp, maxits, ierr)
             ASSERT(ierr .eq. 0)
@@ -549,7 +552,7 @@ subroutine apmain(action, kptsc, rsolu, vcine, istop, &
 !        --------------------------------
 !
         a = ap(kptsc)
-        ksp = kp(kptsc)
+        ksp => kp(kptsc)
 !
 !        3.1 NETTOYAGE PETSc :
 !        ---------------------
@@ -559,7 +562,7 @@ subroutine apmain(action, kptsc, rsolu, vcine, istop, &
         ASSERT(ierr .eq. 0)
 !
 !       user KSP will be removed on Python object deletion
-        if (ksp /= PETSC_NULL_KSP .and. .not. user_ksp(kptsc)) then
+        if (.not. user_ksp(kptsc)) then
             call KSPDestroy(ksp, ierr)
             ASSERT(ierr .eq. 0)
         end if
@@ -569,8 +572,8 @@ subroutine apmain(action, kptsc, rsolu, vcine, istop, &
         nosols(kptsc) = ' '
         nonus(kptsc) = ' '
         options(kptsc) = ' '
-        ap(kptsc) = PETSC_NULL_MAT
-        kp(kptsc) = PETSC_NULL_KSP
+        PetscObjectNullify(ap(kptsc))
+        PetscObjectNullify(kp(kptsc))
         tblocs(kptsc) = -1
 !
 !        -- PRECONDITIONNEUR UTILISE

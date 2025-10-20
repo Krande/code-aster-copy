@@ -21,7 +21,7 @@
 interface
     subroutine apmams(matass, auxMat)
 #ifdef ASTER_HAVE_PETSC
-        use aster_petsc_module
+        use petsc
         character(len=19) :: matass
         Mat :: auxMat
 #else

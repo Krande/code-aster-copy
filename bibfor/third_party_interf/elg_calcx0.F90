@@ -91,7 +91,7 @@ subroutine elg_calcx0()
     call KSPGetConvergedReason(elg_context(ke)%ksp, reason, ierr)
     ASSERT(ierr == 0)
 !  Reason < 0 indicates a problem during the resolution
-    if (reason < 0) then
+    if (reason%v < 0) then
         call utmess('F', 'ELIMLAGR_8')
     end if
 !

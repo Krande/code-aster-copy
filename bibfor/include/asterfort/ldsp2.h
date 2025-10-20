@@ -18,18 +18,18 @@
 !
 !
 interface
-    subroutine ldsp2( pc, x1, y, ierr )
+    subroutine ldsp2(pc, x1, y, ierr)
 #ifdef ASTER_HAVE_PETSC
-       use aster_petsc_module
-       PC, intent(in)              ::  pc
-       Vec, intent(in)             ::  x1
-       Vec, intent(inout)          ::  y
-       PetscErrorCode, intent(out) ::  ierr
+        use petsc
+        PC, intent(in)              ::  pc
+        Vec, intent(in)             ::  x1
+        Vec, intent(inout)          ::  y
+        PetscErrorCode, intent(out) ::  ierr
 #else
-       integer(kind=8)  :: pc
-       integer(kind=8)  :: x1
-       integer(kind=8)  :: y
-       integer(kind=4) :: ierr
+        integer(kind=8)  :: pc
+        integer(kind=8)  :: x1
+        integer(kind=8)  :: y
+        integer(kind=4) :: ierr
 #endif
     end subroutine ldsp2
 end interface

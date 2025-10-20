@@ -90,17 +90,17 @@ subroutine ap_on_off(action, option)
         if (ierr .ne. 0) call utmess('F', 'PETSC_1')
         ASSERT(ierr .eq. 0)
         do k = 1, nmxins
-            ap(k) = PETSC_NULL_MAT
-            kp(k) = PETSC_NULL_KSP
+            PetscObjectNullify(ap(k))
+            PetscObjectNullify(kp(k))
             nomats(k) = ' '
             nosols(k) = ' '
             nonus(k) = ' '
             tblocs(k) = -1
         end do
 !
-        xlocal = PETSC_NULL_VEC
-        xglobal = PETSC_NULL_VEC
-        xscatt = PETSC_NULL_VECSCATTER
+        PetscObjectNullify(xlocal)
+        PetscObjectNullify(xglobal)
+        PetscObjectNullify(xscatt)
         spsomu = ' '
         spmat = ' '
         spsolv = ' '

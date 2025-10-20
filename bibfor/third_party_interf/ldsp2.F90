@@ -39,8 +39,7 @@ subroutine ldsp2(pc, x1, y, ierr)
     Vec, intent(inout)          :: y
     PetscErrorCode, intent(out) ::  ierr
 !
-    PetscScalar :: xx(1)
-    PetscOffset :: xidx
+    PetscScalar, pointer :: xx(:) => null()
 !----------------------------------------------------------------
 !
 ! --  COPIE DU VECTEUR D'ENTREE, CAR ERREUR S'IL EST TRANSFORME
@@ -53,17 +52,17 @@ subroutine ldsp2(pc, x1, y, ierr)
     call VecScatterEnd(xscatt, xlocal, xglobal, INSERT_VALUES, SCATTER_FORWARD, ierr)
     ASSERT(ierr .eq. 0)
 !
-    call VecGetArray(xglobal, xx, xidx, ierr)
+    call VecGetArray(xglobal, xx, ierr)
     ASSERT(ierr .eq. 0)
 !
 ! --  APPEL A LA ROUTINE DE PRECONDITIONNEMENT (DESCENTE/REMONTEE)
     cbid = dcmplx(0.d0, 0.d0)
     prepos = .true.
-    call amumph('RESOUD', spsomu, spmat, xx(xidx+1), [cbid], &
+    call amumph('RESOUD', spsomu, spmat, xx, [cbid], &
                 ' ', 1_8, iret, prepos)
 !
 ! --  ENVOI DES VALEURS DU VECTEUR SUR LES DIFFERENTS PROCS
-    call VecRestoreArray(xglobal, xx, xidx, ierr)
+    call VecRestoreArray(xglobal, xx, ierr)
     ASSERT(ierr .eq. 0)
     call VecScatterBegin(xscatt, xglobal, y, INSERT_VALUES, SCATTER_REVERSE, ierr)
     ASSERT(ierr .eq. 0)

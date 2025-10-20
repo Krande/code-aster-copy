@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -20,13 +20,13 @@
 !
 #include "asterf_petsc.h"
 interface
-    subroutine ldsp1( pc, ierr)
+    subroutine ldsp1(pc, ierr)
 #ifdef ASTER_HAVE_PETSC
-       use aster_petsc_module
-       PC, intent(inout)      :: pc
-       PetscErrorCode, intent(out) :: ierr
+        use petsc
+        PC, intent(inout)      :: pc
+        PetscErrorCode, intent(out) :: ierr
 #else
-       integer(kind=4) :: pc, ierr
+        integer(kind=4) :: pc, ierr
 #endif
     end subroutine ldsp1
 end interface

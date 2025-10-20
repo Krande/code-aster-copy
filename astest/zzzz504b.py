@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -178,15 +178,17 @@ Print(f"pF_loc.size={pF_loc.size}")
 Print(f"pF_loc.comm={pF_loc.comm}")
 Print(f"MPI.ASTER_COMM_SELF={MPI.ASTER_COMM_SELF}")
 test.assertEqual(pF_loc.size, 26)
-if rank == 0:
-    pF *= 2
-    pF_loc *= 2
+
+F_array = pF.getArray()
+F_loc_array = pF_loc.getArray()
+F_array *= 2 if rank == 0 else 1
+F_loc_array *= 2 if rank == 0 else 1
+
 pF_loc.view()
 Print(f"F_init={F.getValues()}")
 # Import fro PETSc - use local since pF_loc is a seq vec
 F.fromPetsc(pF_loc, local=True)
 Print(f"F_post={F.getValues()}")
-
 # Assemble the local in a parallel one and check it is the same
 pF2 = PETSc.Vec().create(comm=MPI.ASTER_COMM_WORLD)
 pF2.setType("mpi")

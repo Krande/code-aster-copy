@@ -17,8 +17,9 @@
 ! --------------------------------------------------------------------
 #include "asterf_petsc.h"
 !
-interface 
+interface
     subroutine elg_calc_solu(matas1, nsecm, rsolu2, rsolu1, omega2, ke_mass)
+        use, intrinsic :: iso_c_binding
         character(len=19) :: matas1
         integer(kind=8) :: nsecm
         real(kind=8) :: rsolu2(*)
@@ -30,4 +31,4 @@ interface
         integer(kind=8), optional, intent(in) :: ke_mass
 #endif
     end subroutine elg_calc_solu
-end interface 
+end interface

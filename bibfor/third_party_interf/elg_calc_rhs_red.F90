@@ -57,10 +57,8 @@ subroutine elg_calc_rhs_red(matas1, nsecm, secm, solu2)
 #ifdef ASTER_HAVE_PETSC
 !
 !================================================================
-    character(len=1) :: kbid
     character(len=14) :: nu1, nu2
     character(len=19) :: matas2
-    integer(kind=8) ::  ibid
     integer(kind=8) :: neq1, neq2, icob, icoc, ieq1, ieq2
     integer(kind=8) :: jsolu2
     character(len=24), pointer :: refa(:) => null()
@@ -68,8 +66,8 @@ subroutine elg_calc_rhs_red(matas1, nsecm, secm, solu2)
     integer(kind=8), pointer :: delg(:) => null()
     PetscErrorCode :: ierr
     PetscInt :: n1, n2, n3
-    PetscScalar :: xx(1), m1
-    PetscOffset :: xidxb, xidxc, xidxb2
+    PetscScalar :: m1
+    PetscScalar, pointer :: xxb(:) => null(), xxc(:) => null(), xxb2(:) => null()
     Vec :: bx0, vecb2, vectmp
 !
 !
@@ -106,9 +104,9 @@ subroutine elg_calc_rhs_red(matas1, nsecm, secm, solu2)
 !
 !     -- calcul de VecB et VecC (extraits de SECM) :
 !     ------------------------------------------------
-    call VecGetArray(elg_context(ke)%vecb, xx, xidxb, ierr)
+    call VecGetArray(elg_context(ke)%vecb, xxb, ierr)
     ASSERT(ierr == 0)
-    call VecGetArray(elg_context(ke)%vecc, xx, xidxc, ierr)
+    call VecGetArray(elg_context(ke)%vecc, xxc, ierr)
     ASSERT(ierr == 0)
     call jeveuo(nu1//'.NUME.DELG', 'L', vi=delg)
     call jeveuo(matas1//'.CONL', 'L', vr=conl)
@@ -118,15 +116,15 @@ subroutine elg_calc_rhs_red(matas1, nsecm, secm, solu2)
     do ieq1 = 1, neq1
         if (delg(ieq1) .eq. 0) then
             icob = icob+1
-            xx(xidxb+icob) = secm(ieq1)
+            xxb(icob) = secm(ieq1)
         else if (delg(ieq1) .eq. -1) then
             icoc = icoc+1
-            xx(xidxc+icoc) = secm(ieq1)*conl(ieq1)
+            xxc(icoc) = secm(ieq1)*conl(ieq1)
         end if
     end do
-    call VecRestoreArray(elg_context(ke)%vecb, xx, xidxb, ierr)
+    call VecRestoreArray(elg_context(ke)%vecb, xxb, ierr)
     ASSERT(ierr == 0)
-    call VecRestoreArray(elg_context(ke)%vecc, xx, xidxc, ierr)
+    call VecRestoreArray(elg_context(ke)%vecc, xxc, ierr)
     ASSERT(ierr == 0)
 !
 !
@@ -158,12 +156,12 @@ subroutine elg_calc_rhs_red(matas1, nsecm, secm, solu2)
 !
 !     -- recopie de VecB2 dans SOLU2 :
     call wkvect(solu2, 'V V R', neq2, jsolu2)
-    call VecGetArray(vecb2, xx, xidxb2, ierr)
+    call VecGetArray(vecb2, xxb2, ierr)
     ASSERT(ierr == 0)
     do ieq2 = 1, neq2
-        zr(jsolu2-1+ieq2) = xx(xidxb2+ieq2)
+        zr(jsolu2-1+ieq2) = xxb2(ieq2)
     end do
-    call VecRestoreArray(vecb2, xx, xidxb2, ierr)
+    call VecRestoreArray(vecb2, xxb2, ierr)
     ASSERT(ierr == 0)
 !
 !

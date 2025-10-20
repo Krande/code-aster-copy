@@ -22,7 +22,7 @@ subroutine appcrs(kptsc, lmd)
 #include "asterf_petsc.h"
 !
 ! person_in_charge: natacha.bereux at edf.fr
-! aslint:disable=
+! aslint:disable=C1314
     use aster_petsc_module
     use petsc_data_module
     implicit none
@@ -72,8 +72,10 @@ subroutine appcrs(kptsc, lmd)
     PetscInt :: fill, neq, ndprop
     PetscReal :: fillp
     Mat :: a
-    KSP :: ksp, kspp, subksp(1)
+    KSP, pointer :: ksp
+    KSP, pointer :: subksp(:) => null()
     PC :: pc, pcp
+    Vec :: vec_tmp
     mpi_int :: mrank, msize
 !----------------------------------------------------------------
     call jemarq()
@@ -86,7 +88,7 @@ subroutine appcrs(kptsc, lmd)
     nonu = nonu_courant
     nosolv = nosols(kptsc)
     a = ap(kptsc)
-    ksp = kp(kptsc)
+    ksp => kp(kptsc)
 !
     call jeveuo(nosolv//'.SLVK', 'L', jslvk)
     call jeveuo(nosolv//'.SLVR', 'L', jslvr)
@@ -112,19 +114,20 @@ subroutine appcrs(kptsc, lmd)
 !     ----------------------------------------
     if ((precon .eq. 'LDLT_INC') .or. (precon .eq. 'SOR')) then
         if (nbproc .gt. 1) then
-            kspp = ksp
-            call KSPGetPC(kspp, pcp, ierr)
+            call KSPGetPC(ksp, pcp, ierr)
             ASSERT(ierr .eq. 0)
             call PCSetType(pcp, PCBJACOBI, ierr)
             ASSERT(ierr .eq. 0)
-            call KSPSetUp(kspp, ierr)
+            call KSPSetUp(ksp, ierr)
             ASSERT(ierr .eq. 0)
-            call PCBJacobiGetSubKSP(pcp, nlocal, first, (/PETSC_NULL_KSP/), ierr)
+            call PCBJacobiGetSubKSP(pcp, nlocal, first, PETSC_NULL_KSP_POINTER, ierr)
             ASSERT(ierr .eq. 0)
             ASSERT(nlocal == 1)
+            ! we force the pointer's nullity since it is not guaranted
+            nullify (subksp)
             call PCBJacobiGetSubKSP(pcp, nlocal, first, subksp, ierr)
             ASSERT(ierr .eq. 0)
-            ksp = subksp(1)
+            ksp => subksp(1)
         else
             goto 999
         end if
@@ -183,20 +186,25 @@ subroutine appcrs(kptsc, lmd)
                 if (zi(jprddl+jcoll) .eq. rang) ndprop = ndprop+to_petsc_int(1)
             end do
 !
-            ASSERT(xlocal == PETSC_NULL_VEC)
-            call VecCreateMPI(mpicou, ndprop, neq, xlocal, ierr)
+            ASSERT(PetscObjectIsNull(xlocal))
+            call VecCreateMPI(mpicou, ndprop, neq, vec_tmp, ierr)
+            ASSERT(ierr == 0)
+            xlocal = vec_tmp
         else
             call jelira(nonu//'.SMOS.SMDI', 'LONMAX', nsmdi)
             neq = to_petsc_int(nsmdi)
-            ASSERT(xlocal == PETSC_NULL_VEC)
-            call VecCreateMPI(mpicou, PETSC_DECIDE, neq, xlocal, ierr)
+            ASSERT(PetscObjectIsNull(xlocal))
+            call VecCreateMPI(mpicou, PETSC_DECIDE, neq, vec_tmp, ierr)
+            ASSERT(ierr == 0)
+            xlocal = vec_tmp
         end if
         ASSERT(ierr .eq. 0)
 !
-        ASSERT(xscatt == PETSC_NULL_VECSCATTER)
-        ASSERT(xglobal == PETSC_NULL_VEC)
-        call VecCreateSeq(PETSC_COMM_SELF, to_petsc_int(neq), xglobal, ierr)
+        ASSERT(PetscObjectIsNull(xscatt))
+        ASSERT(PetscObjectIsNull(xglobal))
+        call VecCreateSeq(PETSC_COMM_SELF, to_petsc_int(neq), vec_tmp, ierr)
         ASSERT(ierr == 0)
+        xglobal = vec_tmp
 ! On passe PETSC_NULL_VEC en lieu et place de xglobal en entrée de VecScatterCreateToAll
 ! car ainsi, il n'est pas realloué
         call VecScatterCreateToAll(xlocal, xscatt, PETSC_NULL_VEC, ierr)

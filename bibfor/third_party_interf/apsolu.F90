@@ -66,8 +66,7 @@ subroutine apsolu(kptsc, lmd, rsolu)
 !     Variables PETSc
     PetscInt :: neqg, neql, nuglpe, high2, low2
     PetscErrorCode ::  ierr
-    PetscScalar :: xx(1)
-    PetscOffset :: xidx
+    PetscScalar, pointer :: xx(:)
     VecScatter :: ctx
     Vec :: xgth
     mpi_int :: mrank, msize
@@ -114,20 +113,20 @@ subroutine apsolu(kptsc, lmd, rsolu)
         ASSERT(ierr .eq. 0)
 !
 !       -- RECOPIE DE DANS RSOLU
-        call VecGetArray(x, xx, xidx, ierr)
+        call VecGetArray(x, xx, ierr)
         ASSERT(ierr .eq. 0)
 !
         do iloc = 1, nloc
             if (prddl(iloc) .eq. rang) then
                 nuglpe = to_petsc_int(nlgp(iloc))
                 iglo = nulg(iloc)
-                rsolu(iglo) = xx(xidx+nuglpe-low2)
+                rsolu(iglo) = xx(nuglpe-low2)
             end if
         end do
 !
         call asmpi_comm_vect('MPI_SUM', 'R', nbval=nglo, vr=rsolu)
 !
-        call VecRestoreArray(x, xx, xidx, ierr)
+        call VecRestoreArray(x, xx, ierr)
         ASSERT(ierr .eq. 0)
 !
     else
@@ -147,14 +146,14 @@ subroutine apsolu(kptsc, lmd, rsolu)
         ASSERT(ierr .eq. 0)
 !
 !       -- RECOPIE DE XX DANS RSOLU
-        call VecGetArray(xgth, xx, xidx, ierr)
+        call VecGetArray(xgth, xx, ierr)
         ASSERT(ierr .eq. 0)
 !
         do ieq = 1, neq
-            rsolu(ieq) = xx(xidx+ieq)
+            rsolu(ieq) = xx(ieq)
         end do
 !
-        call VecRestoreArray(xgth, xx, xidx, ierr)
+        call VecRestoreArray(xgth, xx, ierr)
         ASSERT(ierr .eq. 0)
 !
 !       -- NETTOYAGE

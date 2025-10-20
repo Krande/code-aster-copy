@@ -60,7 +60,7 @@ subroutine ap2foi(kptsc, mpicou, nosolv, lmd, indic, &
     real(kind=8), pointer      :: slvr(:) => null()
     real(kind=8) :: sr4_old
     PetscErrorCode ::  ierr
-    KSP :: ksp
+    KSP, pointer :: ksp
     PC :: pc_lmp
     !----------------------------------------------------------------
 
@@ -78,12 +78,12 @@ subroutine ap2foi(kptsc, mpicou, nosolv, lmd, indic, &
 !   -----------------------------------------------------------
     spmat = ' '
     spsolv = ' '
-    call KSPDestroy(kp(kptsc), ierr)
+    ksp => kp(kptsc)
+    call KSPDestroy(ksp, ierr)
 !
-    call KSPCreate(mpicou, kp(kptsc), ierr)
-    ksp = kp(kptsc)
+    call KSPCreate(mpicou, ksp, ierr)
     ASSERT(ierr .eq. 0)
-    call KSPSetOperators(kp(kptsc), ap(kptsc), ap(kptsc), ierr)
+    call KSPSetOperators(ksp, ap(kptsc), ap(kptsc), ierr)
     ASSERT(ierr .eq. 0)
     !
     !   slvi(5) = nombre d'itérations pour atteindre la convergence du solveur linéaire.
@@ -102,7 +102,7 @@ subroutine ap2foi(kptsc, mpicou, nosolv, lmd, indic, &
     if (lmp_is_active) then
         call lmp_destroy(pc_lmp, ierr)
         ASSERT(ierr == 0)
-        call KSPSetComputeRitz(kp(kptsc), petsc_true, ierr)
+        call KSPSetComputeRitz(ksp, petsc_true, ierr)
         ASSERT(ierr == 0)
     end if
     !
@@ -121,13 +121,13 @@ subroutine ap2foi(kptsc, mpicou, nosolv, lmd, indic, &
     !   ---------------------
     call VecDestroy(xlocal, ierr)
     ASSERT(ierr == 0)
-    xlocal = PETSC_NULL_VEC
+    PetscObjectNullify(xlocal)
     call VecDestroy(xglobal, ierr)
     ASSERT(ierr == 0)
-    xglobal = PETSC_NULL_VEC
+    PetscObjectNullify(xglobal)
     call VecScatterDestroy(xscatt, ierr)
     ASSERT(ierr == 0)
-    xscatt = PETSC_NULL_VECSCATTER
+    PetscObjectNullify(xscatt)
 
     call apksp(kptsc)
     call appcrs(kptsc, lmd)

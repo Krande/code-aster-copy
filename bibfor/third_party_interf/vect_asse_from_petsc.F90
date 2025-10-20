@@ -84,8 +84,7 @@ subroutine vect_asse_from_petsc(vasse, nume_equa, vecpet, scaling, ilocal)
     character(len=24) :: domj, recv, send, gcom, pgid
     character(len=32) :: nojoine, nojoinr
 !
-    PetscOffset :: xidx
-    PetscScalar :: xx(1)
+    PetscScalar, pointer :: xx(:)
     PetscErrorCode ::  ierr
     VecScatter :: ctx
     PetscInt :: low, high
@@ -132,15 +131,15 @@ subroutine vect_asse_from_petsc(vasse, nume_equa, vecpet, scaling, ilocal)
         ASSERT(ierr .eq. 0)
 !
 !       -- Copy to the field
-        call VecGetArray(vecgth, xx, xidx, ierr)
+        call VecGetArray(vecgth, xx, ierr)
         ASSERT(ierr .eq. 0)
 !
         call jelira(vasse//'.VALE', 'LONMAX', neq)
         do ieq = 1, neq
-            vale(ieq) = xx(xidx+ieq)
+            vale(ieq) = xx(ieq)
         end do
 !
-        call VecRestoreArray(vecgth, xx, xidx, ierr)
+        call VecRestoreArray(vecgth, xx, ierr)
         ASSERT(ierr .eq. 0)
 !
 !       -- Cleanup
@@ -169,18 +168,18 @@ subroutine vect_asse_from_petsc(vasse, nume_equa, vecpet, scaling, ilocal)
         l_local = (ilocal .eq. 1)
 !
 !       -- Retrieve the fortran array
-        call VecGetArray(vecpet, xx, xidx, ierr)
+        call VecGetArray(vecpet, xx, ierr)
         ASSERT(ierr .eq. 0)
 !
         if (l_local) then
             do iaux = 0, nloc-1
-                vale(iaux+1) = xx(xidx+iaux+1)
+                vale(iaux+1) = xx(iaux+1)
             end do
         else
             do iaux = 0, nloc-1
                 if (zi(jprddl+iaux) .eq. rang) then
                     numglo = zi(jnulg+iaux)
-                    vale(iaux+1) = xx(xidx+numglo-low+1)
+                    vale(iaux+1) = xx(numglo-low+1)
                 end if
             end do
 !
@@ -344,7 +343,7 @@ subroutine vect_asse_from_petsc(vasse, nume_equa, vecpet, scaling, ilocal)
         end if
 !
 !
-        call VecRestoreArray(vecpet, xx, xidx, ierr)
+        call VecRestoreArray(vecpet, xx, ierr)
         ASSERT(ierr .eq. 0)
 
 !

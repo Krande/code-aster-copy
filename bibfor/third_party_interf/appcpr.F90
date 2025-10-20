@@ -95,13 +95,12 @@ subroutine appcpr(kptsc)
     PetscInt :: low, high, bs, nterm, nsmooth
     PetscErrorCode :: ierr
     PetscReal :: fillp
-    PetscScalar :: xx_v(1)
-    PetscOffset :: xx_i
+    PetscScalar, pointer :: xx_v(:) => null()
     PetscInt, pointer :: nulg_ip(:) => null()
 
     Mat :: a, auxMat
     Vec :: coords
-    KSP :: ksp
+    KSP, pointer :: ksp
     IS  :: auxIS
     PC  :: pc
     mpi_int :: mrank, msize
@@ -117,7 +116,7 @@ subroutine appcpr(kptsc)
     nonu = nonu_courant
     nosolv = nosols(kptsc)
     a = ap(kptsc)
-    ksp = kp(kptsc)
+    ksp => kp(kptsc)
 !
     call jeveuo(nosolv//'.SLVK', 'L', vk24=slvk)
     call jeveuo(nosolv//'.SLVR', 'L', vr=slvr)
@@ -288,7 +287,7 @@ subroutine appcpr(kptsc)
                 ! la matrice est centralisée
             else
                 call VecGetOwnershipRange(coords, low, high, ierr)
-                call VecGetArray(coords, xx_v, xx_i, ierr)
+                call VecGetArray(coords, xx_v, ierr)
                 ix = 0
                 do ieq = low+1, high
                     ! Noeud auquel est associé le ddl Aster ieq
@@ -298,10 +297,10 @@ subroutine appcpr(kptsc)
                     icmp = deeq((ieq-1)*2+2)
                     ASSERT((numno .gt. 0) .and. (icmp .gt. 0))
                     ix = ix+1
-                    xx_v(xx_i+ix) = coordo(dimgeo*(numno-1)+icmp)
+                    xx_v(ix) = coordo(dimgeo*(numno-1)+icmp)
                 end do
                 !
-                call VecRestoreArray(coords, xx_v, xx_i, ierr)
+                call VecRestoreArray(coords, xx_v, ierr)
                 ASSERT(ierr == 0)
             end if
             !
@@ -524,8 +523,7 @@ subroutine appcpr(kptsc)
                                  PETSC_COPY_VALUES, auxIS, ierr)
             ASSERT(ierr == 0)
 
-            ! call PCHPDDMDumpAuxiliaryMat(pc, auxIS, auxMat)
-!       Set the Neumann matrix
+!     Set the Neumann matrix
             call PCHPDDMSetAuxiliaryMat(pc, auxIS, auxMat, PETSC_NULL_FUNCTION, &
                                         PETSC_NULL_INTEGER, ierr)
             ASSERT(ierr == 0)

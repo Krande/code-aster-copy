@@ -70,8 +70,7 @@ subroutine apvsmb(kptsc, lmd, rsolu)
 !     Variables PETSc
     PetscInt :: low2, high2
     PetscErrorCode ::  ierr
-    PetscScalar :: xx(1)
-    PetscOffset :: xidx
+    PetscScalar, pointer :: xx(:)
     mpi_int :: mrank, msize
 !----------------------------------------------------------------
     call jemarq()
@@ -161,14 +160,14 @@ subroutine apvsmb(kptsc, lmd, rsolu)
 !       -- calcul de b=RSOLU :
 !       ------------------------------------------------
         call VecGetOwnershipRange(b, low2, high2, ierr)
-        call VecGetArray(b, xx, xidx, ierr)
+        call VecGetArray(b, xx, ierr)
         ASSERT(ierr .eq. 0)
 !
         do i = 1, high2-low2
             ieq = low2+i
-            if (ieq .gt. 0) xx(xidx+i) = rsolu(ieq)
+            if (ieq .gt. 0) xx(i) = rsolu(ieq)
         end do
-        call VecRestoreArray(b, xx, xidx, ierr)
+        call VecRestoreArray(b, xx, ierr)
         ASSERT(ierr .eq. 0)
     end if
 

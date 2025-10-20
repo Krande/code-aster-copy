@@ -72,8 +72,8 @@ subroutine elg_calc_matm_red(matas1, matas2, bas1)
     aster_logical :: lsym
     PetscInt :: nterm, mm, nn
     PetscErrorCode :: ierr
-    PetscInt, allocatable :: irow(:)
-    real(kind=8), allocatable :: vrow(:)
+    PetscInt, pointer :: irow(:)
+    PetscScalar, pointer :: vrow(:)
     integer(kind=8), pointer :: deeq(:) => null()
     character(len=24), pointer :: refa(:) => null()
 !----------------------------------------------------------------
@@ -120,14 +120,12 @@ subroutine elg_calc_matm_red(matas1, matas2, bas1)
     if (neq2 .eq. 0) call utmess('F', 'ELIMLAGR_7')
 !
 !     -- on parcourt la matrice Kproj pour repérer ses termes non nuls
-    allocate (irow(neq2))
-    allocate (vrow(neq2))
     call wkvect('&&ELG_CALC_MATM_RED.NZCO', 'V V I', neq2, jnzcol)
     ndiag = 0
     nnz2 = 0
 
     do ilig = 0, neq2-1
-        call MatGetRow(elg_context(ke)%kproj, to_petsc_int(ilig), nterm, irow(1), vrow(1), &
+        call MatGetRow(elg_context(ke)%kproj, to_petsc_int(ilig), nterm, irow, vrow, &
                        ierr)
         ASSERT(ierr == 0)
         do k = 1, nterm
@@ -138,7 +136,7 @@ subroutine elg_calc_matm_red(matas1, matas2, bas1)
                 zi(jnzcol-1+jcol+1) = zi(jnzcol-1+jcol+1)+1
             end if
         end do
-        call MatRestoreRow(elg_context(ke)%kproj, to_petsc_int(ilig), nterm, irow(1), vrow(1), &
+        call MatRestoreRow(elg_context(ke)%kproj, to_petsc_int(ilig), nterm, irow, vrow, &
                            ierr)
         ASSERT(ierr == 0)
     end do
@@ -181,7 +179,7 @@ subroutine elg_calc_matm_red(matas1, matas2, bas1)
     call jerazo('&&ELG_CALC_MATM_RED.NZCO', neq2, 1_8)
     iterm = 0
     do ilig = 0, neq2-1
-        call MatGetRow(elg_context(ke)%kproj, to_petsc_int(ilig), nterm, irow(1), vrow(1), &
+        call MatGetRow(elg_context(ke)%kproj, to_petsc_int(ilig), nterm, irow, vrow, &
                        ierr)
         ASSERT(ierr == 0)
         do k = 1, nterm
@@ -204,7 +202,7 @@ subroutine elg_calc_matm_red(matas1, matas2, bas1)
                 iterm = iterm+1
             end if
         end do
-        call MatRestoreRow(elg_context(ke)%kproj, to_petsc_int(ilig), nterm, irow(1), vrow(1), &
+        call MatRestoreRow(elg_context(ke)%kproj, to_petsc_int(ilig), nterm, irow, vrow, &
                            ierr)
         ASSERT(ierr == 0)
     end do
@@ -278,7 +276,6 @@ subroutine elg_calc_matm_red(matas1, matas2, bas1)
     nbnom = nbno+nbnl
     call jeecra(jexnum(nu2//'.NUME.PRNO', 1_8), 'LONMAX', nbnom*(nec+2), kbid)
 !
-    deallocate (irow, vrow)
     call jedetr('&&ELG_CALC_MATM_RED.NZCO')
     call jedema()
 #else
