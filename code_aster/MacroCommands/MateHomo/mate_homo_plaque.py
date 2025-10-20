@@ -285,7 +285,7 @@ def calc_loimel_plaque(DEPLMATE, ep_ver, type_homo, ls_group_tout):
 
     if type_homo in ("PLAQUE_CT_TOURATIER",):
         LAME_2_ct = FORMULE(
-            NOM_PARA=("E", "NU", "Z"), VALE="cos(pi*(Z/h)) * E/(2*(1+NU))", h=ep_ver
+            NOM_PARA=("E", "NU", "Z"), VALE="((pi/2)*cos(pi*(Z/h)))**2 * E/(2*(1+NU))", h=ep_ver
         )
     elif type_homo in ("PLAQUE_CT_MINDLIN",):
         LAME_2_ct = FORMULE(NOM_PARA=("E", "NU", "Z"), VALE="1.0 * E/(2*(1+NU))")
