@@ -133,7 +133,18 @@ def process_h(self, node):
 
 
 def build_libbibc(self, env):
-    use = ["BIBCXX", "PETSC", "SCOTCH", "PARMETIS", "METIS", "MED", "HDF5", "NUMPY", "PYEXT"]
+    use = [
+        "PYEXT",
+        "NUMPY",
+        "BIBCXX",
+        "HDF5",
+        "MED",
+        "METIS",
+        "PARMETIS",
+        # "GKLIB",
+        "SCOTCH",
+        "PETSC",
+    ]
     get_srcs = self.path.get_src().ant_glob
     # compile *.c
     self(
