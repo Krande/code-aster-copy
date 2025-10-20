@@ -71,7 +71,7 @@ subroutine jxlirb(ic, iaddi, iadmo, lso)
 !     ------------------------------------------------------------------
     aster_logical :: lrab
     character(len=512) :: nom512
-    integer(kind=8) :: lgbl, vali(3)
+    integer(kind=8) :: lgbl, vali(2)
 ! DEB ------------------------------------------------------------------
     ierr = 0
     lgbl = 1024*longbl(ic)*lois
@@ -86,9 +86,8 @@ subroutine jxlirb(ic, iaddi, iadmo, lso)
         call readdr(nom512, iszon(jiecr), lgbl, iadloc, ierr)
         if (ierr .ne. 0) then
             vali(1) = iaddi+i-1
-            vali(2) = numext
-            vali(3) = ierr
-            call utmess('F', 'JEVEUX_41', sk=nombas(ic), ni=3, vali=vali)
+            vali(2) = ierr
+            call utmess('F', 'JEVEUX_41', sk=nom512, ni=2, vali=vali)
         end if
         nbacce(2*ic-1) = nbacce(2*ic-1)+1
     end do
@@ -104,9 +103,8 @@ subroutine jxlirb(ic, iaddi, iadmo, lso)
         call readdr(nom512, iszon(jiecr), lgbl, iadloc, ierr)
         if (ierr .ne. 0) then
             vali(1) = iaddi+i-1
-            vali(2) = numext
-            vali(3) = ierr
-            call utmess('F', 'JEVEUX_41', sk=nombas(ic), ni=3, vali=vali)
+            vali(2) = ierr
+            call utmess('F', 'JEVEUX_41', sk=nom512, ni=2, vali=vali)
         end if
         nbacce(2*ic-1) = nbacce(2*ic-1)+1
     end if

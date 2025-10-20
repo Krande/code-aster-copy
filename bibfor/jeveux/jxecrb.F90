@@ -76,7 +76,7 @@ subroutine jxecrb(ic, iaddi, iadmo, lso, idco, &
 !     ------------------------------------------------------------------
     character(len=512) :: nom512
     aster_logical :: lrab
-    integer(kind=8) :: lgbl, vali(3)
+    integer(kind=8) :: lgbl, vali(2)
 ! DEB ------------------------------------------------------------------
     ib = 0
     ierr = 0
@@ -92,9 +92,8 @@ subroutine jxecrb(ic, iaddi, iadmo, lso, idco, &
         call writdr(nom512, iszon(jiecr), lgbl, iadloc, ierr)
         if (ierr .ne. 0) then
             vali(1) = iaddi+i-1
-            vali(2) = numext
-            vali(3) = ierr
-            call utmess('F', 'JEVEUX_40', sk=nombas(ic), ni=3, vali=vali)
+            vali(2) = ierr
+            call utmess('F', 'JEVEUX_40', sk=nom512, ni=2, vali=vali)
         end if
         nbacce(2*ic) = nbacce(2*ic)+1
         iusadi(jusadi(ic)+3*(iaddi+i-1)-2) = idco
@@ -112,9 +111,8 @@ subroutine jxecrb(ic, iaddi, iadmo, lso, idco, &
         call writdr(nom512, iszon(jiecr), lgbl, iadloc, ierr)
         if (ierr .ne. 0) then
             vali(1) = iaddi+i-1
-            vali(2) = numext
-            vali(3) = ierr
-            call utmess('F', 'JEVEUX_40', sk=nombas(ic), ni=3, vali=vali)
+            vali(2) = ierr
+            call utmess('F', 'JEVEUX_40', sk=nom512, ni=2, vali=vali)
         end if
         nbacce(2*ic) = nbacce(2*ic)+1
         iusadi(jusadi(ic)+3*(iaddi+nblent)-2) = idco
