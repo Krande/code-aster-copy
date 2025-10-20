@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -19,7 +19,7 @@
 
 import os.path as osp
 
-from waflib import Configure, Utils
+from waflib import Configure, Errors, Utils
 
 
 def options(self):
@@ -29,8 +29,7 @@ def options(self):
 def configure(self):
     self.load("compiler_cxx")
     self.check_cxx_compiler_flags()
-    if "icc" not in self.env.CC_NAME:
-        self.check_bibcxx_depends()
+    self.check_bibcxx_depends()
     self.check_cxx_types()
 
     cxxpath = self.path.get_src().abspath()
@@ -61,21 +60,24 @@ def build(self):
         )
 
     self(
-        features="cxx cxxshlib",
+        features=("cxx" if self.env.ASTER_PLATFORM_MINGW else "cxx cxxshlib"),
         name="asterbibcxx",
         source=get_srcs("**/*.cxx", excl="MFront/*.cxx"),
         target="bibcxx",
+        rpath="$ORIGIN",
         use=[
-            "BIBCXX",
-            "PYBIND11",
-            "PETSC",
-            "MGIS",
-            "MED",
-            "HDF5",
             "PYEXT",
+            "PYBIND11",
             "NUMPY",
             "CXX",
+            "BIBCXX",
+            "HDF5",
+            "MED",
+            "MGIS",
+            "METIS",
+            "PARMETIS",
             "SCOTCH",
+            "PETSC",
         ],
         env=env.derive(),
         install_path=env.ASTERLIBDIR,
@@ -87,34 +89,47 @@ def build(self):
 def check_bibcxx_depends(self):
     """check dependencies of bibcxx"""
     self.check_cxx(uselib_store="CXX", lib="stdc++")
-    # if int(self.env.CC_VERSION[0] or 0) < 9:
-    #     self.check_cxx(uselib_store="CXX", lib="stdc++fs")
+    if self.env.CC_NAME.lower() == "gcc" and int(self.env.CC_VERSION[0] or 0) < 9:
+        self.check_cxx(uselib_store="CXX", lib="stdc++fs")
 
 
 @Configure.conf
 def check_cxx_compiler_flags(self):
     """check C++ compiler flags"""
-    # compiler independent (ifort & g++)
+    # compiler independent (icpc/icpx & g++)
     self.check_cxx_compiler_options("-fPIC")
-    self.check_cxx_compiler_options("-std=c++17")
+    # self.check_cxx_compiler_options("-fno-lto")
+    try:
+        self.check_cxx_compiler_options("-std=c++20", optional=False)
+    except Errors.ConfigurationError:
+        # for GCC 9 and earlier
+        self.check_cxx_compiler_options("-std=c++2a")
     # FIXME: should globally add -fvisibility-hidden
     self.check_cxx_compiler_options("-Wno-attributes")
-
+    # New in 12.x: https://github.com/pybind/pybind11/issues/5224
+    # https://gcc.gnu.org/bugzilla/show_bug.cgi?id=103483: same bug?
+    # Suppose to be fixed in 13.x
+    if self.env.CC_NAME.lower() == "gcc" and int(self.env.CC_VERSION[0] or 0) == 12:
+        self.check_cxx_compiler_options("-Wno-array-bounds")
+        self.check_cxx_compiler_options("-Wno-stringop-overread")
     self.start_msg("C++ compiler flags")
     self.end_msg(self.env["CXXFLAGS"])
 
 
 @Configure.conf
-def check_cxx_compiler_options(self, options):
+def check_cxx_compiler_options(self, options, optional=True):
     """Check C++ compiler options"""
+    # do not use mandatory argument as it is consumed by 'Configure.conf' decorator
     if type(options) not in (list, tuple):
         options = [options]
     self.start_msg("Checking for C++ option")
-    if self.check_cxx(cflags=options, mandatory=False):
+    if self.check_cxx(cxxflags=options, mandatory=False):
         self.env.append_unique("CXXFLAGS", options)
         self.end_msg("yes (%s)" % " ".join(options))
     else:
         self.end_msg("no (%s)" % " ".join(options), "YELLOW")
+        if not optional:
+            raise Errors.ConfigurationError(f"unsupported options: {options}")
 
 
 @Configure.conf
