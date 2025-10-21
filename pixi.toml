@@ -6,7 +6,7 @@ platforms = ["linux-64"]
 version = "0.1.0"
 
 [tasks]
-configure = {cmd = ["./configure"]}
+configure = {cmd = ["./configure"], env = { ENABLE_CCACHE = "1" }}
 
 build = {cmd = ["make"]}
 install = {depends-on = ["build"]}

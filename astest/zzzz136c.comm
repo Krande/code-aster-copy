@@ -17,8 +17,28 @@
 # along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 # --------------------------------------------------------------------
 
+from code_aster.Commands import (
+    DEBUT,
+    LIRE_MAILLAGE,
+    AFFE_MODELE,
+    LIRE_RESU,
+    MACR_LIGN_COUPE,
+    CREA_CHAMP,
+    TEST_TABLE,
+    IMPR_TABLE,
+    DEFI_GROUP,
+    EXTR_TABLE,
+    FIN,
+)
+from code_aster import CA
+
 DEBUT(CODE="OUI", DEBUG=_F(SDVERI="OUI"), IMPR_MACRO="OUI")
 
+import pprint
+import math
+import numpy as np
+
+test = CA.TestCase()
 
 MA = LIRE_MAILLAGE(FORMAT="IDEAS", UNITE=19)
 
@@ -365,7 +385,14 @@ TEST_TABLE(
 )
 
 # check GROUP_NO_ORIG/GROUP_NO_EXTR
-MA = DEFI_GROUP(MAILLAGE=MA, CREA_GROUP_NO=(_F(NOM="GRN2", NOEUD="N2"), _F(NOM="GRN3", NOEUD="N3")))
+MA = DEFI_GROUP(
+    MAILLAGE=MA,
+    CREA_GROUP_NO=(
+        _F(NOM="GRN2", NOEUD="N2"),
+        _F(NOM="GRN3", NOEUD="N3"),
+        _F(NOM="GRN1to3", NOEUD=["N1", "N2", "N3"]),
+    ),
+)
 
 TN6 = MACR_LIGN_COUPE(
     CHAM_GD=CHNO,
@@ -406,6 +433,62 @@ TEST_TABLE(
 )
 
 # ----------------------------------------------------------------------
+# REGRESSION ONLY testing for several LIGN_COUPE VECT_Y configurations (reference values have not
+# been verified)
+
+cut_lines = []
+cut_ids = {}
+cut_id = 0
+# testing various vect_y orientations
+for rot_ry in (0.0, 33.3333, 45.0, 89.9, 90.1, 135.0, 179.0):
+    vect_y_compo_z = math.sin(np.radians(rot_ry))
+    for rot_rz in (0.0, 33.0, 45.0, 89.9, 90.1, 135.0, 180.0):
+        rot_rz_rad = np.radians(rot_rz)
+        vect_y = (math.cos(rot_rz_rad), math.sin(rot_rz_rad), vect_y_compo_z)
+        cut_name = f"vect_y = ({vect_y[0]:.3f}, {vect_y[1]:.3f}, {vect_y[2]:.3f})"
+        cut_ids[cut_id] = f"segment {cut_name}"
+        cut_lines.append(
+            _F(
+                TYPE="SEGMENT",
+                REPERE="LOCAL",
+                GROUP_NO_ORIG="GRN2",
+                GROUP_NO_EXTR="GRN3",
+                VECT_Y=vect_y,
+                NB_POINTS=3,
+                NOM_CMP=("DX", "DY", "DZ"),
+                OPERATION="EXTRACTION",
+                INTITULE=str(cut_id),
+            )
+        )
+        cut_id += 1
+
+table = MACR_LIGN_COUPE(CHAM_GD=CHNO, MODELE=MO, LIGN_COUPE=cut_lines)
+values = table.EXTR_TABLE().values()
+actual = np.array(
+    list(
+        zip(
+            [int(val) for val in values["INTITULE"]],
+            values["NUME_ORDRE"],
+            values["INST"],
+            values["ABSC_CURV"],
+            values["COOR_X"],
+            values["COOR_Y"],
+            values["COOR_Z"],
+            values["DX"],
+            values["DY"],
+            values["DZ"],
+        )
+    )
+)
+reference = np.loadtxt("fort.39")
+
+# # To update refence table use numpy savetxt
+# from pathlib import Path
+# np.savetxt(Path.home() / "dev" / "codeaster" / "src" / "astest" / "zzzz136c.39",
+#            actual,
+#            header=f"Cut id -> name {pprint.pformat(cut_ids)}\n"
+#            "ID NUME_ORDRE INST ABSC_CURV COOR_X COOR_Y COOR_Z DX DY DZ", )
+
+test.assertArrayEqual(actual=actual, reference=reference, rtol=1.0e-07, atol=1.0e-6)
 
 FIN()
-#

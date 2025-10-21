@@ -170,262 +170,115 @@ def crea_resu_local(dime, NOM_CHAM, m, resin, mail, nomgrma):
     else:
         assert 0
 
-    if m["TYPE"] == "SEGMENT" and m["REPERE"] != "CYLINDRIQUE":
-        if m["REPERE"] == "LOCAL":
-            # --- determination des angles nautiques
-            cx1 = m["COOR_EXTR"][0] - m["COOR_ORIG"][0]
-            cx2 = m["COOR_EXTR"][1] - m["COOR_ORIG"][1]
-            cx3 = 0.0
-            if dime == 3:
-                cx3 = m["COOR_EXTR"][2] - m["COOR_ORIG"][2]
-            nvx = sqrt(cx1**2 + cx2**2 + cx3**2)
-            if abs(nvx) < epsi:
-                UTMESS("F", "POST0_1")
-            cx1 = cx1 / nvx
-            cx2 = cx2 / nvx
-            cx3 = cx3 / nvx
-            if m["VECT_Y"]:
-                cy1 = m["VECT_Y"][0]
-                cy2 = m["VECT_Y"][1]
-                cy3 = 0.0
-                if dime == 3:
-                    cy3 = m["VECT_Y"][2]
-            else:
-                UTMESS("F", "POST0_50")
-            nvy = sqrt(cy1**2 + cy2**2 + cy3**2)
-            if abs(nvy) < epsi:
-                UTMESS("F", "POST0_2")
-            cy1 = cy1 / nvy
-            cy2 = cy2 / nvy
-            cy3 = cy3 / nvy
-            if (abs(cx1 - cy1) < epsi and abs(cx2 - cy2) < epsi and abs(cx3 - cy3) < epsi) or (
-                abs(cx1 + cy1) < epsi and abs(cx2 + cy2) < epsi and abs(cx3 + cy3) < epsi
-            ):
-                UTMESS("F", "POST0_3")
-            if abs(cx1 * cy1 + cx2 * cy2 + cx3 * cy3) > epsi:
-                cz1 = cx2 * cy3 - cx3 * cy2
-                cz2 = cx3 * cy1 - cx1 * cy3
-                cz3 = cx1 * cy2 - cx2 * cy1
-                nvz = sqrt(cz1**2 + cz2**2 + cz3**2)
-                cz1 = cz1 / nvz
-                cz2 = cz2 / nvz
-                cz3 = cz3 / nvz
-                cy1 = cz2 * cx3 - cz3 * cx2
-                cy2 = cz3 * cx1 - cz1 * cx3
-                cy3 = cz1 * cx2 - cz2 * cx1
-                nvy = sqrt(cy1**2 + cy2**2 + cy3**2)
-                cy1 = cy1 / nvy
-                cy2 = cy2 / nvy
-                cy3 = cy3 / nvy
-                UTMESS("A", "POST0_4", valr=[cy1, cy2, cy3])
-            else:
-                cz1 = cx2 * cy3 - cx3 * cy2
-                cz2 = cx3 * cy1 - cx1 * cy3
-                cz3 = cx1 * cy2 - cx2 * cy1
-            beta = 0.0
-            gamma = 0.0
-            if dime == 2:
-                alpha = atan2(cx2, cx1)
-            else:
-                if cx1**2 + cx2**2 > epsi:
-                    alpha = atan2(cx2, cx1)
-                    beta = -asin(cx3)
-                    gamma = atan2(cy3, cz3)
-                else:
-                    alpha = atan2(-cy1, cy2)
-                    beta = -asin(cx3)
-                    gamma = 0.0
-            alpha = alpha * 180 / pi
-            beta = beta * 180 / pi
-            gamma = gamma * 180 / pi
+    modi_champ_args = [_F(NOM_CHAM=NOM_CHAM, TYPE_CHAM=TYPE_CHAM)]
 
-        elif m["REPERE"] == "UTILISATEUR":
-            alpha = m["ANGL_NAUT"][0]
-            beta = m["ANGL_NAUT"][1]
-            gamma = m["ANGL_NAUT"][2]
+    repere_cut = m["REPERE"]
+    type_cut = m["TYPE"]
 
-        motscles = {}
-        motscles["MODI_CHAM"] = []
-        motscles["AFFE"] = []
-        motscles["MODI_CHAM"].append(_F(NOM_CHAM=NOM_CHAM, TYPE_CHAM=TYPE_CHAM))
+    if type_cut == "SEGMENT" and repere_cut == "LOCAL":
+        if not m["VECT_Y"]:
+            UTMESS("F", "POST0_50")
+
+        # --- determination des angles nautiques
+        cx1 = m["COOR_EXTR"][0] - m["COOR_ORIG"][0]
+        cx2 = m["COOR_EXTR"][1] - m["COOR_ORIG"][1]
+        cx3 = 0.0
+        if dime == 3:
+            cx3 = m["COOR_EXTR"][2] - m["COOR_ORIG"][2]
+        nvx = sqrt(cx1**2 + cx2**2 + cx3**2)
+        if abs(nvx) < epsi:
+            UTMESS("F", "POST0_1")
+        cx1 = cx1 / nvx
+        cx2 = cx2 / nvx
+        cx3 = cx3 / nvx
+        cy1 = m["VECT_Y"][0]
+        cy2 = m["VECT_Y"][1]
+        cy3 = 0.0
+        if dime == 3:
+            cy3 = m["VECT_Y"][2]
+        nvy = sqrt(cy1**2 + cy2**2 + cy3**2)
+        if abs(nvy) < epsi:
+            UTMESS("F", "POST0_2")
+        cy1 = cy1 / nvy
+        cy2 = cy2 / nvy
+        cy3 = cy3 / nvy
+
+        if (abs(cx1 - cy1) < epsi and abs(cx2 - cy2) < epsi and abs(cx3 - cy3) < epsi) or (
+            abs(cx1 + cy1) < epsi and abs(cx2 + cy2) < epsi and abs(cx3 + cy3) < epsi
+        ):
+            UTMESS("F", "POST0_3")
+
+        if dime == 2:
+            # MODI_REPERE can't handle VECT_Y for 2d results -> convert to ANGL_NAUT
+            alpha = atan2(cx2, cx1) * 180 / pi
+            args_affe = [_F(ANGL_NAUT=[alpha], TOUT="OUI")]
+        else:
+            args_affe = [_F(VECT_X=(cx1, cx2, cx3), VECT_Y=(cy1, cy2, cy3), TOUT="OUI")]
+
+        __remodr = MODI_REPERE(
+            RESULTAT=resin, REPERE="UTILISATEUR", AFFE=args_affe, MODI_CHAM=modi_champ_args
+        )
+
+    elif type_cut == "SEGMENT" and repere_cut == "UTILISATEUR":
+        alpha = m["ANGL_NAUT"][0]
+        beta = m["ANGL_NAUT"][1]
+        gamma = m["ANGL_NAUT"][2]
         ANGL_NAUT = []
         ANGL_NAUT.append(alpha)
         if dime == 3:
             ANGL_NAUT.append(beta)
             ANGL_NAUT.append(gamma)
-        motscles["AFFE"].append(_F(ANGL_NAUT=ANGL_NAUT, TOUT="OUI"))
-        __remodr = MODI_REPERE(RESULTAT=resin, REPERE="UTILISATEUR", **motscles)
+        __remodr = MODI_REPERE(
+            RESULTAT=resin,
+            REPERE="UTILISATEUR",
+            AFFE=[_F(ANGL_NAUT=ANGL_NAUT, TOUT="OUI")],
+            MODI_CHAM=modi_champ_args,
+        )
+    elif type_cut == "ARC" and repere_cut != "CYLINDRIQUE":
+        UTMESS("F", "POST0_5", valk=[type_cut, repere_cut])
+    elif type_cut == "ARC":
+        ORIGINE = [m["CENTRE"][0], m["CENTRE"][1]]
+        if dime == 3:
+            ORIGINE.append(m["CENTRE"][2])
+            affe_args = [
+                _F(ORIGINE=ORIGINE, AXE_Z=[m["DNOR"][0], m["DNOR"][1], m["DNOR"][2]], TOUT="OUI")
+            ]
+        elif dime == 2:
+            affe_args = [_F(ORIGINE=ORIGINE, TOUT="OUI")]
+        __remodr = MODI_REPERE(
+            RESULTAT=resin, REPERE="CYLINDRIQUE", MODI_CHAM=modi_champ_args, AFFE=affe_args
+        )
 
-    if m["TYPE"] == "ARC":
-        if m["REPERE"] == "CYLINDRIQUE":
-            motscles = {}
-            motscles["MODI_CHAM"] = []
-            motscles["AFFE"] = []
-            motscles["MODI_CHAM"].append(_F(NOM_CHAM=NOM_CHAM, TYPE_CHAM=TYPE_CHAM))
-            ORIGINE = []
-            ORIGINE.append(m["CENTRE"][0])
-            ORIGINE.append(m["CENTRE"][1])
-            if dime == 3:
-                ORIGINE.append(m["CENTRE"][2])
-                AXE_Z = []
-                AXE_Z.append(m["DNOR"][0])
-                AXE_Z.append(m["DNOR"][1])
-                AXE_Z.append(m["DNOR"][2])
-                motscles["AFFE"].append(_F(ORIGINE=ORIGINE, AXE_Z=AXE_Z, TOUT="OUI"))
-            elif dime == 2:
-                motscles["AFFE"].append(_F(ORIGINE=ORIGINE, TOUT="OUI"))
-            __remodr = MODI_REPERE(RESULTAT=resin, REPERE="CYLINDRIQUE", **motscles)
-        else:
-            UTMESS("F", "POST0_5", valk=[m["TYPE"], m["REPERE"]])
+    elif type_cut[:5] == "GROUP" and repere_cut == "LOCAL":
+        # disabled in #35098 because of a lack of test coverage
+        UTMESS("F", "POST0_57")
 
-    if m["TYPE"][:5] == "GROUP" or m["TYPE"] == "SEGMENT":
-        if m["TYPE"][:5] == "GROUP" and m["REPERE"] == "LOCAL":
-            # determination du repère local (v1,v2,v3)
-            # ---------------------------------------
-            connex = mail.getConnectivity()
-            coord = mail.getCoordinates()
+    elif (type_cut[:5] == "GROUP" or type_cut == "SEGMENT") and repere_cut == "CYLINDRIQUE":
+        if dime == 3:
+            affe_args = [_F(ORIGINE=m["ORIGINE"], AXE_Z=m["AXE_Z"], TOUT="OUI")]
+        elif dime == 2:
+            affe_args = [_F(ORIGINE=m["ORIGINE"], TOUT="OUI")]
+        __remodr = MODI_REPERE(
+            RESULTAT=resin, REPERE="CYLINDRIQUE", MODI_CHAM=modi_champ_args, AFFE=affe_args
+        )
+    elif (type_cut[:5] == "GROUP" or type_cut == "SEGMENT") and repere_cut == "UTILISATEUR":
+        alpha = m["ANGL_NAUT"][0]
+        beta = m["ANGL_NAUT"][1]
+        gamma = m["ANGL_NAUT"][2]
+        ANGL_NAUT = []
+        ANGL_NAUT.append(alpha)
+        if dime == 3:
+            ANGL_NAUT.append(beta)
+            ANGL_NAUT.append(gamma)
 
-            cells = mail.getCells(nomgrma)
-            dictu = {}
-            #     initialisations
-            for cell in cells:
-                n1 = connex[cell][0]
-                n2 = connex[cell][1]
-                dictu[n1] = []
-                dictu[n2] = []
-            #     determination du vecteur tangent (v1) + normalisation
-            for cell in cells:
-                vectu1 = []
-                vectu2 = []
-                n1 = connex[cell][0]
-                n2 = connex[cell][1]
-                ux = coord.getNode(n2).x() - coord.getNode(n1).x()
-                uy = coord.getNode(n2).y() - coord.getNode(n1).y()
-                vectu1.append(ux)
-                vectu1.append(uy)
-                vectu2.append(ux)
-                vectu2.append(uy)
-                if dime == 3:
-                    uz = coord.getNode(n2).z() - coord.getNode(n2).z()
-                    vectu1.append(uz)
-                    vectu2.append(uz)
-                dictu[n1].append(vectu1)
-                dictu[n2].append(vectu2)
-            for i in dictu:
-                if len(dictu[i]) == 2:
-                    dictu[i][0][0] = dictu[i][0][0] + dictu[i][1][0]
-                    dictu[i][0][1] = dictu[i][0][1] + dictu[i][1][1]
-                    if dime == 3:
-                        dictu[i][0][2] = dictu[i][0][2] + dictu[i][1][2]
-                    del dictu[i][1]
-            for i in dictu:
-                if dime == 2:
-                    norm = sqrt(dictu[i][0][0] ** 2 + dictu[i][0][1] ** 2)
-                    dictu[i][0][0] = dictu[i][0][0] / norm
-                    dictu[i][0][1] = dictu[i][0][1] / norm
-                elif dime == 3:
-                    norm = sqrt(dictu[i][0][0] ** 2 + dictu[i][0][1] ** 2 + dictu[i][0][2] ** 2)
-                    dictu[i][0][0] = dictu[i][0][0] / norm
-                    dictu[i][0][1] = dictu[i][0][1] / norm
-                    dictu[i][0][2] = dictu[i][0][2] / norm
-            #     determination du vecteur normal (v2):
-            #     on projete VECT_Y sur le plan orthogonal au vecteur v1.
-            #     (ce vecteur normal est obtenu par 2 produits vectoriels successifs en 3D)
-            if dime == 3:
-                norm = sqrt(m["VECT_Y"][0] ** 2 + m["VECT_Y"][1] ** 2 + m["VECT_Y"][2] ** 2)
-                tmpy = [m["VECT_Y"][0] / norm, m["VECT_Y"][1] / norm, m["VECT_Y"][2] / norm]
-            j = 0
-            __resu = [None] * (len(dictu) + 1)
-            __resu[0] = resin
-            for i in dictu:
-                j = j + 1
-                vecty = []
-                if dime == 2:
-                    vecty.append(-dictu[i][0][1])
-                    vecty.append(dictu[i][0][0])
-                    dictu[i].append(vecty)
-                elif dime == 3:
-                    # v3= v1 vectoriel vect_y
-                    vectz = []
-                    vectz.append(dictu[i][0][1] * tmpy[2] - dictu[i][0][2] * tmpy[1])
-                    vectz.append(dictu[i][0][2] * tmpy[0] - dictu[i][0][0] * tmpy[2])
-                    vectz.append(dictu[i][0][0] * tmpy[1] - dictu[i][0][1] * tmpy[0])
-                    normz = sqrt(vectz[0] ** 2 + vectz[1] ** 2 + vectz[2] ** 2)
-                    vectz[0] = vectz[0] / normz
-                    vectz[1] = vectz[1] / normz
-                    vectz[2] = vectz[2] / normz
-                    vecty.append(vectz[1] * dictu[i][0][2] - vectz[2] * dictu[i][0][1])
-                    vecty.append(vectz[2] * dictu[i][0][0] - vectz[0] * dictu[i][0][2])
-                    vecty.append(vectz[0] * dictu[i][0][1] - vectz[1] * dictu[i][0][0])
-                    normy = sqrt(vecty[0] ** 2 + vecty[1] ** 2 + vecty[2] ** 2)
-                    vecty[0] = vecty[0] / normy
-                    vecty[1] = vecty[1] / normy
-                    vecty[2] = vecty[2] / normy
-                    dictu[i].append(vecty)
-                    dictu[i].append(vectz)
-                cx1 = dictu[i][0][0]
-                cx2 = dictu[i][0][1]
-                cy1 = dictu[i][1][0]
-                cy2 = dictu[i][1][1]
-                if dime == 3:
-                    cx3 = dictu[i][0][2]
-                    cy3 = dictu[i][1][2]
-                    cz1 = dictu[i][2][0]
-                    cz2 = dictu[i][2][1]
-                    cz3 = dictu[i][2][2]
-
-                # determination des angles nautiques (alpha,beta,gamma)
-                # ----------------------------------------------------
-                beta = 0.0
-                gamma = 0.0
-                if dime == 2:
-                    alpha = atan2(cx2, cx1)
-                else:
-                    if cx1**2 + cx2**2 > epsi:
-                        alpha = atan2(cx2, cx1)
-                        beta = -asin(cx3)
-                        gamma = atan2(cy3, cz3)
-                    else:
-                        alpha = atan2(-cy1, cy2)
-                        beta = -asin(cx3)
-                        gamma = 0.0
-                alpha = alpha * 180 / pi
-                beta = beta * 180 / pi
-                gamma = gamma * 180 / pi
-                motscles = {}
-                motscles["MODI_CHAM"] = []
-                motscles["AFFE"] = []
-                motscles["MODI_CHAM"].append(_F(NOM_CHAM=NOM_CHAM, TYPE_CHAM=TYPE_CHAM))
-                ANGL_NAUT = []
-                ANGL_NAUT.append(alpha)
-                if dime == 3:
-                    ANGL_NAUT.append(beta)
-                    ANGL_NAUT.append(gamma)
-                motscles["AFFE"].append(_F(ANGL_NAUT=ANGL_NAUT, NOEUD=mail.getNodeName(i)))
-                __resu[j] = MODI_REPERE(RESULTAT=__resu[j - 1], REPERE="UTILISATEUR", **motscles)
-            __remodr = __resu[j]
-
-        motscles = {}
-        motscles["MODI_CHAM"] = []
-        motscles["AFFE"] = []
-        motscles["MODI_CHAM"].append(_F(NOM_CHAM=NOM_CHAM, TYPE_CHAM=TYPE_CHAM))
-        if m["REPERE"] == "CYLINDRIQUE":
-            if dime == 3:
-                motscles["AFFE"].append(_F(ORIGINE=m["ORIGINE"], AXE_Z=m["AXE_Z"], TOUT="OUI"))
-            elif dime == 2:
-                motscles["AFFE"].append(_F(ORIGINE=m["ORIGINE"], TOUT="OUI"))
-            __remodr = MODI_REPERE(RESULTAT=resin, REPERE="CYLINDRIQUE", **motscles)
-        elif m["REPERE"] == "UTILISATEUR":
-            alpha = m["ANGL_NAUT"][0]
-            beta = m["ANGL_NAUT"][1]
-            gamma = m["ANGL_NAUT"][2]
-            ANGL_NAUT = []
-            ANGL_NAUT.append(alpha)
-            if dime == 3:
-                ANGL_NAUT.append(beta)
-                ANGL_NAUT.append(gamma)
-            motscles["AFFE"].append(_F(ANGL_NAUT=ANGL_NAUT, TOUT="OUI"))
-            __remodr = MODI_REPERE(RESULTAT=resin, REPERE="UTILISATEUR", **motscles)
+        __remodr = MODI_REPERE(
+            RESULTAT=resin,
+            REPERE="UTILISATEUR",
+            MODI_CHAM=modi_champ_args,
+            AFFE=[_F(ANGL_NAUT=ANGL_NAUT, TOUT="OUI")],
+        )
+    else:
+        raise ValueError(f"{type_cut} using {repere_cut} not handled")
 
     return __remodr
 
@@ -672,7 +525,16 @@ def get_coor(LIGN_COUPE, position, coord, mesh):
 
 #
 def macr_lign_coupe_ops(
-    self, LIGN_COUPE, RESULTAT=None, CHAM_GD=None, NOM_CHAM=None, MODELE=None, **args
+    self,
+    LIGN_COUPE,
+    REPERE_INIT=None,
+    RESULTAT=None,
+    CHAM_GD=None,
+    NOM_CHAM=None,
+    MODELE=None,
+    VIS_A_VIS=None,
+    UNITE_MAILLAGE=None,
+    **args,
 ):
     """
     Ecriture de la macro MACR_LIGN_COUPE
@@ -680,8 +542,7 @@ def macr_lign_coupe_ops(
 
     # La valeur par défaut n'est pas dans le catalogue, sinon le mot-clé devient
     # obligatoire dans AsterStudy
-    UNITE_MAILLAGE = args.get("UNITE_MAILLAGE")
-    if not UNITE_MAILLAGE:
+    if UNITE_MAILLAGE is None:
         logical_unit = LogicalUnitFile.new_free(access=FileAccess.New)
         UNITE_MAILLAGE = logical_unit.unit
 
@@ -693,6 +554,8 @@ def macr_lign_coupe_ops(
     MasquerAlarme("MODELE1_58")
     MasquerAlarme("MODELE1_63")
     MasquerAlarme("MODELE1_64")
+
+    field_in_global_axis = REPERE_INIT == "GLOBAL"
 
     mcORDR = {}
 
@@ -789,6 +652,19 @@ def macr_lign_coupe_ops(
         )
         RESULTAT = __resuch
 
+    at_least_1_axis_not_initial = any(line_def["REPERE"] != "INITIAL" for line_def in LIGN_COUPE)
+    if (
+        not field_in_global_axis
+        and at_least_1_axis_not_initial
+        and (NOM_CHAM.endswith(("ELGA", "ELNO", "ELEM")) or REPERE_INIT == "LOCAL")
+    ):
+        if REPERE_INIT is None:
+            UTMESS("F", "POST0_55", valk=[NOM_CHAM])
+
+        # This field may be defined in a local axis system, currently we cannot access
+        # to this information, results will be expressed in the same axis system
+        UTMESS("F", "POST0_56", valk=[NOM_CHAM, REPERE_INIT])
+
     # Maillage sur lequel s'appuie le résultat à projeter
     if not mesh:
         mesh = model.getMesh()
@@ -801,7 +677,9 @@ def macr_lign_coupe_ops(
     minidim = dime
 
     for m in LIGN_COUPE:
-        if m["TYPE"] == "SEGMENT":
+        cut_axis_system = m["REPERE"]
+        cut_type = m["TYPE"]
+        if cut_type == "SEGMENT":
             coor_orig = get_coor(m, "ORIG", coord, mesh)
             coor_extr = get_coor(m, "EXTR", coord, mesh)
             lignes.append((coor_orig, coor_extr, m["NB_POINTS"]))
@@ -809,7 +687,7 @@ def macr_lign_coupe_ops(
             if minidim != dime:
                 UTMESS("F", "POST0_11")
 
-        elif m["TYPE"] == "ARC":
+        elif cut_type == "ARC":
             minidim = min(minidim, len(m["COOR_ORIG"]), len(m["CENTRE"]))
             if minidim != dime:
                 UTMESS("F", "POST0_11")
@@ -820,7 +698,7 @@ def macr_lign_coupe_ops(
                     UTMESS("F", "POST0_12")
                 arcs.append((m["COOR_ORIG"], m["CENTRE"], m["NB_POINTS"], m["ANGLE"], m["DNOR"]))
 
-        elif m["TYPE"] == "GROUP_NO":
+        elif cut_type == "GROUP_NO":
             group = m["GROUP_NO"]
             if not mesh.hasGroupOfNodes(group):
                 UTMESS("F", "POST0_13", valk=[group, mesh.getName()])
@@ -831,7 +709,7 @@ def macr_lign_coupe_ops(
                 )
             groups.append(l_coor_group)
 
-        elif m["TYPE"] == "GROUP_MA":
+        elif cut_type == "GROUP_MA":
             group = m["GROUP_MA"]
             if not mesh.hasGroupOfCells(group):
                 UTMESS("F", "POST0_14", valk=[group, mesh.getName()])
@@ -891,8 +769,9 @@ def macr_lign_coupe_ops(
     iocc = 1
     motscles["CREA_GROUP_NO"] = []
     for m in LIGN_COUPE:
-        if m["TYPE"] in ("GROUP_NO", "GROUP_MA"):
-            motscles["CREA_GROUP_NO"].append(_F(GROUP_MA=m[m["TYPE"]].ljust(24)))
+        cut_type = m["TYPE"]
+        if cut_type in ("GROUP_NO", "GROUP_MA"):
+            motscles["CREA_GROUP_NO"].append(_F(GROUP_MA=m[cut_type].ljust(24)))
         else:
             motscles["CREA_GROUP_NO"].append(_F(GROUP_MA="LICOU" + str(iocc)))
             iocc = iocc + 1
@@ -908,8 +787,8 @@ def macr_lign_coupe_ops(
     motscles = {}
     motscles.update(mcORDR)
     motscles["VIS_A_VIS"] = []
-    if "VIS_A_VIS" in args:
-        for v in args["VIS_A_VIS"]:
+    if VIS_A_VIS is not None:
+        for v in VIS_A_VIS:
             if v["GROUP_MA_1"]:
                 motscles["VIS_A_VIS"].append(_F(GROUP_MA_1=v["GROUP_MA_1"], TOUT_2="OUI"))
             elif v["MAILLE_1"]:
@@ -969,7 +848,6 @@ def macr_lign_coupe_ops(
         "fourier_elas",
         "dyna_trans",
     ):
-
         for iocc, m in enumerate(LIGN_COUPE):
             motscles = {}
             motscles["OPERATION"] = m["OPERATION"]
@@ -992,8 +870,9 @@ def macr_lign_coupe_ops(
             else:
                 motscles["TOUT_CMP"] = "OUI"
 
-            if m["TYPE"] in ("GROUP_NO", "GROUP_MA"):
-                groupe = m[m["TYPE"]].ljust(8)
+            cut_type = m["TYPE"]
+            if cut_type in ("GROUP_NO", "GROUP_MA"):
+                groupe = m[cut_type].ljust(8)
                 nomgrma = groupe
             else:
                 ioc2 += 1
@@ -1004,14 +883,14 @@ def macr_lign_coupe_ops(
             # on definit l'intitulé
             if m["INTITULE"]:
                 intitl = m["INTITULE"]
-            elif m["TYPE"] in ("GROUP_NO", "GROUP_MA"):
+            elif cut_type in ("GROUP_NO", "GROUP_MA"):
                 intitl = groupe
             else:
                 intitl = f"l.coupe{ioc2}"
 
             # Expression des contraintes aux noeuds ou des déplacements dans le
             # repere local
-            if m["REPERE"] != "GLOBAL":
+            if cut_axis_system != "INITIAL":
                 if NOM_CHAM in (
                     "DEPL",
                     "SIEF_ELNO",
@@ -1020,12 +899,12 @@ def macr_lign_coupe_ops(
                     "FLUX_ELNO",
                     "FLUX_NOEU",
                 ):
-                    if m["REPERE"] == "POLAIRE":
+                    if cut_axis_system == "POLAIRE":
                         mcACTION.append(
                             _F(
                                 INTITULE=intitl,
                                 RESULTAT=__remodr,
-                                REPERE=m["REPERE"],
+                                REPERE=cut_axis_system,
                                 GROUP_NO=groupe,
                                 NOM_CHAM=NOM_CHAM,
                                 **motscles,
@@ -1044,7 +923,7 @@ def macr_lign_coupe_ops(
                         )
 
                 else:
-                    UTMESS("A", "POST0_17", valk=[NOM_CHAM, m["REPERE"]])
+                    UTMESS("A", "POST0_17", valk=[NOM_CHAM, cut_axis_system])
                     mcACTION.append(
                         _F(
                             INTITULE=intitl,
@@ -1056,7 +935,7 @@ def macr_lign_coupe_ops(
                     )
 
             # Expression des contraintes aux noeuds ou des déplacements dans le
-            # repere global
+            # repere d'origine du champ
             else:
                 mcACTION.append(
                     _F(
