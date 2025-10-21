@@ -75,40 +75,26 @@ subroutine te0028(option, nomte)
     type(FE_Quadrature) :: FEQuad
     type(FE_basis) :: FEBasis
 !
-    character(len=8) :: typmod(2)
     character(len=4) :: fami
-    integer(kind=8) :: sz_tens, ndim, jpres
-    integer(kind=8) :: nno, npg, imatuu, lgpg, iret
-    integer(kind=8) :: igeom, imate, i, j
-    integer(kind=8) :: icontm, ivarim
-    integer(kind=8) :: iinstm, iinstp, ideplm, ideplp, icompo, icarcr
-    integer(kind=8) :: ivectu, icontp, ivarip
-    integer(kind=8) :: ivarix, jv_mult_comp
-    integer(kind=8) :: jtab(7)
-    integer(kind=8) :: old_order(21), new_order(21)
-    real(kind=8) :: angl_naut(7), pgl(3, 3), xyzl(3, 4)
-    aster_logical :: matsym
-    character(len=16) :: mult_comp, defo_comp
-    aster_logical :: lVect, lMatr, lVari, lSigm
-    integer(kind=8) :: codret
-    integer(kind=8) :: jv_codret
+    integer(kind=8) :: ndim, nno, npg, igeom, imate, i, j
+    integer(kind=8), parameter :: size_fenicsx = 42*42, size_aster = 30*30
+
+    real(c_double) :: cst(4), coor(27), kappa, cdofs_f(12)
+    ! NOTICE: see the size of the arrays in the C file: c_interface_plaq_mitc_j
+    real(c_double), dimension(size_fenicsx) :: A0, A1, A2, A3, A4
+    real(c_double), dimension(size_aster) :: A_int
+
+    integer(c_int) :: ncst, ncd, ne0, ne1, ne2, ne3, nwinit
+    integer(c_int) :: entities0(1), entities1(1), entities2(1), entities3(1)
 !
-    real(c_double) :: cst(4), coor(27), w(9), kappa, w_0(29), pres
-    real(c_double) :: cdofs_f(12), F_elem_int(21)
-! Tableau de sortie (18*18 éléments -> matrice de rigidité)
-    real(c_double) :: A0(42*42), A1(42*42), A2(42*42), A3(42*42), F_elem(21*21), A_int(30*30)
-    real(c_double) :: A4(42*42), A_int0(42*42)
-    real(c_double) :: A11(42*42), A12(42*42), A13(42*42)
-    integer(c_int) :: nw, ncst, ncd, nk, ne0, ne1, ne2, ne3, nwinit, np0, np1
-    integer(c_int) :: entities0(1), entities1(1), entities2(1), quadrature_permutation0(1)
-    integer(c_int) :: entities3(1), quadrature_permutation1(1)
-!
-    real(kind=8) :: b(486), btdb(81, 81), bint(30, 30), bint0(42, 42), bint_perm(30, 30)
-    real(kind=8) :: e, nu, temp, epais, rho, temp_mat(21, 21), bf(30, 30)
-    integer(kind=8) :: elas_id, igau, ipoids, nbinco, npg1
+    integer(kind=8), parameter :: size_mat = 30
+    integer(kind=8) :: reorder(size_mat)
+    real(c_double) :: w_0(size_mat)
+    real(kind=8), dimension(size_mat, size_mat) :: bint, bf
+    real(kind=8) :: e, nu, epais, rho
+    integer(kind=8) :: elas_id, igau, ipoids, npg1
     integer(kind=8) :: nnos, ivf, idfde
     character(len=16) :: elas_keyword
-    integer(kind=8) :: perm(18), n, k, reorder(30)
 ! ---------------------------------------------------------------------
 !
 ! - Finite element informations
@@ -120,16 +106,35 @@ subroutine te0028(option, nomte)
 ! - Initializations
 !
     ndim = 2
-    nbinco = ndim*nno
     cst = 0.d0
     coor = 0.d0
-    w = 0.d0
-    btdb(:, :) = 0.d0
     w_0 = 0.d0
+    cdofs_f = 0.d0
     A_int = 0.d0
     A0 = 0.d0
+    A1 = 0.d0
+    A2 = 0.d0
+    A3 = 0.d0
+    A4 = 0.d0
     bint = 0.d0
-    bf(:, :) = 0.d0
+    bf = 0.d0
+    ![w1, θ_x1, θ_y1, w2, θ_x2, θ_y2, w3, θ_x3, θ_y3, w4, θ_x4, θ_y4,
+    ! θ_x5, θ_y5, γ_r1, p1, θ_x6, θ_y6, γ_r2, p2,θ_x7, θ_y7,
+    ! γ_r3, p3, θ_x8, θ_y8,γ_r4, p4, θ_x9, θ_y9]
+    reorder = (/19, 1, 2, &
+                21, 5, 6, &
+                22, 7, 8, &
+                20, 3, 4, &
+                11, 12, &
+                24, 28, &
+                15, 16, &
+                26, 30, &
+                13, 14, &
+                25, 29, &
+                9, 10, &
+                23, 27, &
+                17, 18 &
+                /)
 !
 ! - Geometry
 !
@@ -158,6 +163,7 @@ subroutine te0028(option, nomte)
     cst(2) = nu
     cst(3) = kappa
     cst(4) = epais
+
 ! - Fill material entities vector
 ! - 4 entities car 4 arêtes dans un carré
     entities0(1) = 0
@@ -200,53 +206,29 @@ subroutine te0028(option, nomte)
 ! !!!!!!!!!!!!!!!!!!!!!!!!!!!!!MATRICE DE RIGIDITÉ!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
 ! Appel de la fonction C++ - Matrice de rigidité -> Part1
     call BP4_qu9_Fortran(w_0, nwinit, cdofs_f, ncd, entities0, ne0, cst, ncst, A0)
-! ! Appel de la fonction C++ - Matrice de rigidité -> Part2
+! Appel de la fonction C++ - Matrice de rigidité -> Part2
     call BP5_qu9_Fortran(w_0, nwinit, cdofs_f, ncd, entities0, ne0, cst, ncst, A1)
     call BP5_qu9_Fortran(w_0, nwinit, cdofs_f, ncd, entities1, ne1, cst, ncst, A2)
     call BP5_qu9_Fortran(w_0, nwinit, cdofs_f, ncd, entities2, ne2, cst, ncst, A3)
     call BP5_qu9_Fortran(w_0, nwinit, cdofs_f, ncd, entities3, ne3, cst, ncst, A4)
 !
 ! Remplissage de la matrice intermédiaire
-    do i = 1, 900
+    do i = 1, size_aster
         A_int(i) = A0(i)+A1(i)+A2(i)+A3(i)+A4(i)
     end do
 ! Remplissage de la matrice K à partir de A_int
-    do i = 1, 30
-        do j = 1, 30
-            bint(i, j) = A_int((j-1)*30+i)
+    do i = 1, size_mat
+        do j = 1, size_mat
+            bint(i, j) = A_int((j-1)*size_mat+i)
+        end do
+    end do
+! Reorganisation de la matrice
+    do i = 1, size_mat
+        do j = 1, size_mat
+            bf(i, j) = bint(reorder(i), reorder(j))
         end do
     end do
 !
-![w1, θ_x1, θ_y1, w2, θ_x2, θ_y2, w3, θ_x3, θ_y3, w4, θ_x4, θ_y4,
-! θ_x5, θ_y5, γ_r1, p1, θ_x6, θ_y6, γ_r2, p2,θ_x7, θ_y7,
-! γ_r3, p3, θ_x8, θ_y8,γ_r4, p4, θ_x9, θ_y9]
-    reorder = (/19, 1, 2, &
-                21, 5, 6, &
-                22, 7, 8, &
-                20, 3, 4, &
-                11, 12, &
-                24, 28, &
-                15, 16, &
-                26, 30, &
-                13, 14, &
-                25, 29, &
-                9, 10, &
-                23, 27, &
-                17, 18 &
-                /)
-!
-    do i = 1, 30
-        do j = 1, 30
-            bint_perm(i, j) = bint(reorder(i), reorder(j))
-        end do
-    end do
-!
-    do i = 1, 30
-        do j = 1, 30
-            bf(i, j) = bint_perm(i, j)
-        end do
-    end do
-!
-    call writeMatrix('PMATUUR', 30, 30, ASTER_TRUE, bf)
+    call writeMatrix('PMATUUR', size_mat, size_mat, ASTER_TRUE, bf)
 
 end subroutine

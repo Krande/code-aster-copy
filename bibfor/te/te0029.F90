@@ -55,24 +55,25 @@ subroutine te0029(option, nomte)
 !         OPTIONS TRAITEES   ==> CHAR_MECA_PRES_R
 !     -----------------------------------------------------------------
     integer(kind=8) :: ndim, nno, nnos, npg, ipoids, ivf, idfdx, jgano, ivectu, imate
-    integer(kind=8) :: i, j, ier, iplan, jgeom, jcoqu, jvecg, jpres, itemps, igau
-    integer(kind=8) :: iadzi, iazk24, lpesa
-    real(kind=8) :: pgl(3, 3), xyzl(3, 4), pglo(3), ploc(3)
-    real(kind=8) :: vecl(24), for(6, 4), for2(6, 4), rho, epais
-    real(kind=8) :: undemi
-    real(kind=8) :: valpar(4), dist, excent, pr
-    aster_logical :: global, locapr
-    character(len=8) :: nompar(4), moplan, nomail
-    character(len=24) :: valk
+    integer(kind=8) :: i, j, ier, jgeom, jpres, itemps, igau
+    real(kind=8) :: pgl(3, 3), xyzl(3, 4)
+    real(kind=8) :: for(6, 4), rho, epais
+    real(kind=8) :: valpar(4), pr
+    character(len=8) :: nompar(4)
     character(len=16) :: elas_keyword
     character(len=4) :: fami
 
-    real(c_double) :: cdofs_f(12), F_elem_int(32), pres
-    integer(c_int) :: nw, ncst, ncd, nk, ne0, ne1, ne2, nwinit
-    real(c_double) :: F_elem(42*42)
+    real(c_double) :: cst(5), coor(27), kappa, cdofs_f(12)
+    ! NOTICE: see the size of the arrays in the C file: c_interface_plaq_mitc_f
+
+    integer(c_int) :: ncst, ncd, nk, ne0, nwinit
     integer(c_int) :: entities0(1), entities1(1), entities2(1)
-    integer(kind=8) :: perm(18), n, k, reorder(30), elas_id
-    real(c_double) :: cst(5), coor(27), w(9), kappa, w_0(21)
+    integer(kind=8) :: n, k, elas_id
+
+    integer(kind=8), parameter :: size_mat = 30, size_fenicsx = 42*42
+    real(c_double) :: F_elem(size_fenicsx), F_elem_int(size_mat), w_0(size_mat)
+    integer(kind=8) :: reorder(size_mat)
+    real(c_double) :: pres
     real(kind=8) :: e, nu
 
 ! DEB ------------------------------------------------------------------
@@ -137,7 +138,7 @@ subroutine te0029(option, nomte)
 !
     cst = 0.d0
     coor = 0.d0
-    F_elem_int(:) = 0.d0
+    F_elem_int = 0.d0
     F_elem = 0.d0
     w_0 = 0.d0
     nk = 30
@@ -200,7 +201,7 @@ subroutine te0029(option, nomte)
                 17, 18 &
                 /)
 
-    do i = 1, 30
+    do i = 1, size_mat
         F_elem_int(i) = -F_elem(reorder(i))
     end do
 !
