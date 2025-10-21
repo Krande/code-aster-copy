@@ -76,7 +76,7 @@ subroutine te0334(option, nomte)
     integer(kind=8) :: elasID
     character(len=16) :: elasKeyword, relaComp, kit_comp_1, kit_comp_2
     type(All_Varc_Strain) :: allVarcStrain
-    real(kind=8) :: tempkpg, time
+    real(kind=8) :: tempkpg
     real(kind=8) :: d(4, 4)
 !
 ! --------------------------------------------------------------------------------------------------
@@ -206,7 +206,7 @@ subroutine te0334(option, nomte)
 ! ----- Get elastic parameters (only isotropic elasticity)
         call get_elas_para(fami, zi(jvMater), '+', kpg, ksp, &
                            elasID, elasKeyword, &
-                           time=time, temp=tempkpg, e_=e, nu_=nu)
+                           time=allVarcStrain%time, temp=allVarcStrain%temp, e_=e, nu_=nu)
         ASSERT(elasID .eq. ELAS_ISOT)
 
 ! ----- Compute non-mechanical strains (epsiVarc) for some external state variables
@@ -222,7 +222,7 @@ subroutine te0334(option, nomte)
         epsiMeca(1:4) = epsiTota(1:4)-epsiVarc(1:4)
 
         if (lCplan) then
-            call dmatmc(fami, zi(jvMater), time, '+', kpg, ksp, &
+            call dmatmc(fami, zi(jvMater), allVarcStrain%time, '+', kpg, ksp, &
                         anglNaut, nbSig, d, l_modi_cp)
             epsiMeca(3) = -1.d0/d(3, 3)* &
                           (d(3, 1)*(epsiMeca(1)-epsiVarc(1))+ &
