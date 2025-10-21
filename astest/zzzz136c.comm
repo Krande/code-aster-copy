@@ -462,24 +462,6 @@ for rot_ry in (0.0, 33.3333, 45.0, 89.9, 90.1, 135.0, 179.0):
         )
         cut_id += 1
 
-# Adding a cut with group_no option
-vect_y_compo_z = math.sin(np.radians(33.333))
-rot_rz_rad = np.radians(33.333)
-vect_y = (math.cos(rot_rz_rad), math.sin(rot_rz_rad), vect_y_compo_z)
-cut_name = f"vect_y = ({vect_y[0]:.3f}, {vect_y[1]:.3f}, {vect_y[2]:.3f})"
-cut_ids[cut_id] = f"group {cut_name}"
-cut_lines.append(
-    _F(
-        TYPE="GROUP_NO",
-        REPERE="LOCAL",
-        GROUP_NO="GRN1to3",
-        VECT_Y=vect_y,
-        NOM_CMP=("DX", "DY", "DZ"),
-        OPERATION="EXTRACTION",
-        INTITULE=str(cut_id),
-    )
-)
-
 table = MACR_LIGN_COUPE(CHAM_GD=CHNO, MODELE=MO, LIGN_COUPE=cut_lines)
 values = table.EXTR_TABLE().values()
 actual = np.array(

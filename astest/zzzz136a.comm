@@ -676,24 +676,6 @@ P1L_G = POST_RELEVE_T(
 IMPR_TABLE(TABLE=P1L_G, NOM_PARA=("ABSC_CURV", "SIXX", "SIYY", "SIZZ", "SIXY", "SIXZ", "SIYZ"))
 
 # ------------
-M1_L = MACR_LIGN_COUPE(
-    RESULTAT=RESU,
-    NOM_CHAM="SIGM_NOEU",
-    VIS_A_VIS=_F(MAILLE_1="M101"),
-    LIGN_COUPE=_F(
-        TYPE="GROUP_NO",
-        REPERE="LOCAL",
-        VECT_Y=(1.0, 1.0, 0.0),
-        OPERATION="EXTRACTION",
-        GROUP_NO="LIST1",
-        INTITULE="M1_L: LISTE DE NOEUDS P7 P8, REPERE LOCAL: (1. 1. 0.)",
-        DISTANCE_MAX=0.001,
-    ),
-)
-IMPR_TABLE(TABLE=M1_L, NOM_PARA=("ABSC_CURV", "SIXX", "SIYY", "SIZZ", "SIXY", "SIXZ", "SIYZ"))
-
-
-# ------------
 M1_U = MACR_LIGN_COUPE(
     RESULTAT=RESU,
     NOM_CHAM="SIGM_NOEU",
@@ -743,24 +725,6 @@ P2L_G = POST_RELEVE_T(
 )
 
 IMPR_TABLE(TABLE=P2L_G, NOM_PARA=("ABSC_CURV", "SIXX", "SIYY", "SIZZ", "SIXY", "SIXZ", "SIYZ"))
-
-# ------------
-M2L_L = MACR_LIGN_COUPE(
-    RESULTAT=RESU,
-    NOM_CHAM="SIGM_NOEU",
-    VIS_A_VIS=_F(MAILLE_1=("M98", "M99", "M104", "M107", "M108", "M113")),
-    LIGN_COUPE=_F(
-        TYPE="GROUP_NO",
-        REPERE="LOCAL",
-        VECT_Y=(0.0, 1.0, 0.0),
-        OPERATION="EXTRACTION",
-        GROUP_NO="LIST2",
-        INTITULE="M2L_L: LISTE DE NOEUDS P9 P10 REPERE LOCAL VECT_Y: (0. 1. 0.)",
-        DISTANCE_MAX=0.001,
-    ),
-)
-IMPR_TABLE(TABLE=M2L_L, NOM_PARA=("ABSC_CURV", "SIXX", "SIYY", "SIZZ", "SIXY", "SIXZ", "SIYZ"))
-
 
 P2L_L = POST_RELEVE_T(
     ACTION=_F(
@@ -830,26 +794,6 @@ P3L_G = POST_RELEVE_T(
 )
 
 IMPR_TABLE(TABLE=P3L_G, NOM_PARA=("ABSC_CURV", "SIXX", "SIYY", "SIZZ", "SIXY", "SIXZ", "SIYZ"))
-
-# ------------
-
-
-M3_L = MACR_LIGN_COUPE(
-    RESULTAT=RESU,
-    NOM_CHAM="SIGM_NOEU",
-    VIS_A_VIS=_F(MAILLE_1="M110"),
-    LIGN_COUPE=_F(
-        TYPE="GROUP_NO",
-        REPERE="LOCAL",
-        VECT_Y=(-1.0, 0.0, 0.0),
-        OPERATION="EXTRACTION",
-        GROUP_NO="LIST3",
-        INTITULE="M3_L: LISTE DE NOEUDS P11 P12, REPERE LOCAL: (-1. 0. 0.)",
-        DISTANCE_MAX=0.001,
-    ),
-)
-IMPR_TABLE(TABLE=M3_L, NOM_PARA=("ABSC_CURV", "SIXX", "SIYY", "SIZZ", "SIXY", "SIXZ", "SIYZ"))
-
 
 # ------------
 
@@ -929,24 +873,6 @@ IMPR_TABLE(TABLE=N1_G, NOM_PARA=("ABSC_CURV", "DX", "DY", "DZ"))
 
 # ------------
 
-N1_L = MACR_LIGN_COUPE(
-    RESULTAT=RESU,
-    NOM_CHAM="DEPL",
-    VIS_A_VIS=_F(MAILLE_1=("M101",)),
-    LIGN_COUPE=_F(
-        TYPE="GROUP_NO",
-        REPERE="LOCAL",
-        VECT_Y=(1.0, 1.0, 0.0),
-        OPERATION="EXTRACTION",
-        GROUP_NO="LIST1",
-        INTITULE="N1_L:  P7 P8 REPERE LOCAL, VECT_Y: (1. 1. 0.)",
-        DISTANCE_MAX=0.001,
-    ),
-)
-IMPR_TABLE(TABLE=N1_L, NOM_PARA=("ABSC_CURV", "DX", "DY", "DZ"))
-
-# ------------
-
 N1_U = MACR_LIGN_COUPE(
     RESULTAT=RESU,
     NOM_CHAM="DEPL",
@@ -980,24 +906,6 @@ N2_G = MACR_LIGN_COUPE(
     ),
 )
 IMPR_TABLE(TABLE=N2_G, NOM_PARA=("ABSC_CURV", "DX", "DY", "DZ"))
-
-# ------------
-
-N2_L = MACR_LIGN_COUPE(
-    RESULTAT=RESU,
-    NOM_CHAM="DEPL",
-    VIS_A_VIS=_F(MAILLE_1=("M98", "M99", "M104", "M107", "M108", "M113")),
-    LIGN_COUPE=_F(
-        TYPE="GROUP_NO",
-        REPERE="LOCAL",
-        VECT_Y=(0.0, 1.0, 0.0),
-        OPERATION="EXTRACTION",
-        GROUP_NO="LIST2",
-        INTITULE="N1_L:  P9 P10 REPERE LOCAL, VECT_Y: (0. 1. 0.)",
-        DISTANCE_MAX=0.001,
-    ),
-)
-IMPR_TABLE(TABLE=N2_L, NOM_PARA=("ABSC_CURV", "DX", "DY", "DZ"))
 
 # ------------
 
@@ -1035,25 +943,6 @@ N3_G = MACR_LIGN_COUPE(
     ),
 )
 IMPR_TABLE(TABLE=N3_G, NOM_PARA=("ABSC_CURV", "DX", "DY", "DZ"))
-
-
-# ------------
-
-N3_L = MACR_LIGN_COUPE(
-    RESULTAT=RESU,
-    NOM_CHAM="DEPL",
-    VIS_A_VIS=_F(MAILLE_1=("M110")),
-    LIGN_COUPE=_F(
-        TYPE="GROUP_NO",
-        REPERE="LOCAL",
-        VECT_Y=(-1.0, 0.0, 0.0),
-        OPERATION="EXTRACTION",
-        GROUP_NO="LIST3",
-        INTITULE="N3_G:   P11 P12, REPERE LOCAL, VECT_Y: (-1. 0. 0.)",
-        DISTANCE_MAX=0.001,
-    ),
-)
-IMPR_TABLE(TABLE=N3_L, NOM_PARA=("ABSC_CURV", "DX", "DY", "DZ"))
 
 
 # ------------

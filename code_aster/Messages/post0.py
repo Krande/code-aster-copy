@@ -303,7 +303,7 @@ Plusieurs valeurs ont été détectées. On ne retient que la valeur la plus bas
         f"""
 Pour effectuer l'opération demandée, MACR_LIGN_COUPE a besoin de connaître le repère dans
 lequel le champ %(k1)s est défini.
-Merci de renseigner le mot clé REPERE_INI.
+Merci de renseigner le mot clé REPERE_INIT.
 À noter que {_nota_lign_coupe_axis}.
 """
     ),
@@ -313,6 +313,11 @@ Le champ %(k1)s est un champ aux éléments.
 Vous avez demandé un changement de repère pour au moins une coupe, et vous avez indiqué que
 le champ en entrée est exprimé dans le repère %(k2)s.
 Actuellement, {_nota_lign_coupe_axis}.
+"""
+    ),
+    57: _(
+        """
+La modification de REPERE pour une coupe de type GROUP_MA ou GROUP_NO n'est pas implémentée.
 """
     ),
 }

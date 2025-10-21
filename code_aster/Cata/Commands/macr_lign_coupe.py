@@ -34,7 +34,7 @@ MACR_LIGN_COUPE = MACRO(
         "des lignes de coupe définies par deux points et un intervalle"
     ),
     regles=(UN_PARMI("RESULTAT", "CHAM_GD"),),
-    REPERE_INI=SIMP(statut="f", typ="TXM", into=("GLOBAL", "LOCAL")),
+    REPERE_INIT=SIMP(statut="f", typ="TXM", into=("GLOBAL", "LOCAL")),
     RESULTAT=SIMP(
         statut="f",
         typ=(
