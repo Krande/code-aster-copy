@@ -116,6 +116,7 @@ doc:
 
 distclean: ##- perform a distclean of the build directory.
 	./waf_$(ASTER_BUILD) distclean
+	rm -rf build/codeaster-prerequisites-*
 
 install-tests:
 	$(MAKE) fast OPTS="$(OPTS) --install-tests"

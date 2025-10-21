@@ -1,6 +1,6 @@
 #!/bin/bash
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -26,19 +26,38 @@ set_prefix() {
 
 set_prefix "${0}"
 
+export ASTER_REQS_USE_DEBUG=${ASTER_REQS_USE_DEBUG:-0}
+
 waf_main()
 {
     # source the environment only if DEVTOOLS_COMPUTER_ID is not already defined
     printf "checking environment... "
     if [ -z "${DEVTOOLS_COMPUTER_ID}" ]; then
         host=$(detect_host)
+        if [ -z "${host}" ]; then
+            echo "no preset configuration found"
+            source ${prefix}/env.d/version.sh
+            # FIXME: set manually during beta tests
+            export VERSION=20221225b
+            args=( "-v" )
+            [ ${ASTER_REQS_USE_DEBUG} -eq 1 ] && args=()
+            ${prefix}/.devhelper/check_requirements.sh
+            iret=$?
+            [ ${iret} -eq 4 ] && exit ${iret}
+            if [ ${iret} -eq 0 ]; then
+                export ASTER_CONFIG=$(ls ${prefix}/build/codeaster-prerequisites-${VERSION}-*/*.sh | grep ${args[@]} debug | head -1)
+            else
+                printf "⚠️  code_aster requirements not found, configuration may fail!\n\n"
+            fi
+            host=$(detect_host)
+        fi
         if [ ! -z "${host}" ]; then
             export WAFBUILD_ENV="$(get_wafbuild_env ${host})"
             if [ -e "${WAFBUILD_ENV}" ]; then
                 . "${WAFBUILD_ENV}"
                 echo "loading ${WAFBUILD_ENV}"
             else
-                echo "no found"
+                echo "no found: ${WAFBUILD_ENV}"
                 unset WAFBUILD_ENV
             fi
         fi
@@ -64,6 +83,10 @@ waf_main()
 # detect for supported host for automatic configuration
 detect_host()
 {
+    if [ ! -z "${ASTER_CONFIG}" ]; then
+        printf aster_config
+        return
+    fi
     if [ ! -z "${SINGULARITY_NAME}" ] || [ -f /.dockerenv ]; then
         local wbe=$(ls /opt/public/*_${WAF_SUFFIX}.sh 2> /dev/null)
         if [ ! -z "${wbe}" ]; then
@@ -86,8 +109,6 @@ detect_host()
         printf scibian9
     elif egrep -q "Calibre 9|Debian GNU/Linux 8" /etc/issue; then
         printf calibre9
-    elif [ -f /home/aster/clap0f0q ]; then
-        printf clap0f0q
     fi
     printf ""
 }
@@ -96,6 +117,10 @@ get_wafbuild_env()
 {
     # usage: get_wafbuild_env platform
     local plt="${1}"
+    if [ "${plt}" = "aster_config" ]; then
+        printf "${ASTER_CONFIG}"
+        return
+    fi
     local wbe="/opt/public/${plt}_${WAF_SUFFIX}.sh"
     if [ ! -f "${wbe}" ]; then
         wbe="${prefix}/env.d/${plt}_${WAF_SUFFIX}.sh"
