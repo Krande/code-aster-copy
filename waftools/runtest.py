@@ -84,8 +84,10 @@ def configure(self):
         self.end_msg("not found")
         fcfg = fcfg.with_name("config.json")
         self.start_msg("Reading user prefs from %s" % fcfg)
-    value = ""
-    if fcfg.is_file():
+    value = self.options.outputdir or ""
+    if value:
+        pass
+    elif fcfg.is_file():
         with fcfg.open("rb") as fobj:
             if fcfg.suffix == ".yaml":
                 content = yaml.load(fobj, Loader=yaml.Loader)
