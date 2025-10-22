@@ -1,0 +1,127 @@
+# coding=utf-8
+# --------------------------------------------------------------------
+# Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
+# This file is part of code_aster.
+#
+# code_aster is free software: you can redistribute it and/or modify
+# it under the terms of the GNU General Public License as published by
+# the Free Software Foundation, either version 3 of the License, or
+# (at your option) any later version.
+#
+# code_aster is distributed in the hope that it will be useful,
+# but WITHOUT ANY WARRANTY; without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+# GNU General Public License for more details.
+#
+# You should have received a copy of the GNU General Public License
+# along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
+# --------------------------------------------------------------------
+
+DEBUT(CODE="OUI", ERREUR=_F(ALARME="EXCEPTION"), DEBUG=_F(SDVERI="OUI"))
+
+import numpy as np
+
+test = CA.TestCase()
+
+
+def w_(x, y, t, nu, **kwargs):
+    a = (1 / 3) * x**3 * y**3 * (x - 1) ** 3 * (y - 1) ** 3
+    b1 = y**3 * (y - 1) ** 3 * x * (x - 1) * (5 * x**2 - 5 * x + 1)
+    b2 = x**3 * (x - 1) ** 3 * y * (y - 1) * (5 * y**2 - 5 * y + 1)
+    b = (2 * t**2) / (5 * (1 - nu)) * (b1 + b2)
+    return a - b
+
+
+def drx_(x, y, **kwargs):
+    return y**3 * (y - 1) ** 3 * x**2 * (x - 1) ** 2 * (2 * x - 1)
+
+
+def dry_(x, y, **kwargs):
+    return x**3 * (x - 1) ** 3 * y**2 * (y - 1) ** 2 * (2 * y - 1)
+
+
+# Global parameters
+FINE_REFINEMENT = 6
+YOUNG = 10920.0
+POISSON = 0.3
+
+for epais in [0.1, 0.001]:
+
+    CTE = YOUNG * epais**3 / (12.0 * (1.0 - POISSON**2))
+
+    FORM1 = FORMULE(
+        VALE="CTE * (12*Y*(Y-1)*(5*X*X-5*X+1)*(2*Y*Y*(Y-1)*(Y-1) + X*(X-1)*(5*Y*Y-5*Y+1)))",
+        NOM_PARA=["X", "Y"],
+        CTE=CTE,
+    )
+
+    FORM2 = FORMULE(
+        VALE="CTE * (12*X*(X-1)*(5*Y*Y-5*Y+1)*(2*X*X*(X-1)*(X-1) + Y*(Y-1)*(5*X*X-5*X+1)))",
+        NOM_PARA=["X", "Y"],
+        CTE=CTE,
+    )
+
+    PRES = FORMULE(VALE="FORM1(X,Y) + FORM2(X,Y)", NOM_PARA=["X", "Y"], FORM1=FORM1, FORM2=FORM2)
+
+    # NUMERICAL COMPUTATION
+
+    mesh = CA.Mesh.buildSquare(refine=FINE_REFINEMENT)
+
+    mesh = DEFI_GROUP(
+        reuse=mesh, CREA_GROUP_NO=(_F(GROUP_MA=("SURFACE",), NOM="SURFACE"),), MAILLAGE=mesh
+    )
+
+    model = AFFE_MODELE(
+        AFFE=_F(MODELISATION=("DKT",), PHENOMENE="MECANIQUE", TOUT="OUI"), MAILLAGE=mesh
+    )
+
+    cara_elem = AFFE_CARA_ELEM(MODELE=model, COQUE=_F(GROUP_MA="SURFACE", EPAIS=epais))
+
+    mater = DEFI_MATERIAU(ELAS=_F(E=YOUNG, NU=POISSON, RHO=10))
+
+    cham_mater = AFFE_MATERIAU(AFFE=_F(MATER=(mater,), TOUT="OUI"), MODELE=model)
+
+    meca_bcs = AFFE_CHAR_CINE(
+        MECA_IMPO=_F(
+            DX=0, DY=0, DZ=0, DRX=0, DRY=0, DRZ=0, GROUP_MA=("LEFT", "RIGHT", "TOP", "BOTTOM")
+        ),
+        MODELE=model,
+    )
+
+    meca_chr = AFFE_CHAR_MECA_F(MODELE=model, FORCE_COQUE=_F(GROUP_MA="SURFACE", PRES=PRES))
+
+    result = MECA_STATIQUE(
+        MODELE=model,
+        CHAM_MATER=cham_mater,
+        EXCIT=(_F(CHARGE=meca_bcs), _F(CHARGE=meca_chr)),
+        OPTION="SANS",
+        CARA_ELEM=cara_elem,
+    )
+
+    displacement = result.getField("DEPL", para="INST", value=0.0)
+    w_numerique = displacement.restrict(["DZ"])
+    drx_numerique = displacement.restrict(["DRX"])
+    dry_numerique = displacement.restrict(["DRY"])
+
+    # ANALYTICAL COMPUTATION
+
+    analytical_values = []
+    for i, (func, name) in enumerate(zip([w_, drx_, dry_], ["DZ", "DRX", "DRY"])):
+        coords = mesh.getCoordinatesAsSimpleFieldOnNodes()
+        field = func(coords.X, coords.Y, t=epais, nu=POISSON)
+        temp = CA.SimpleFieldOnNodesReal(mesh, "DEPL_R", [name], prol_zero=True)
+        temp.setComponentValues(name, field)
+        value = temp.toFieldOnNodes()
+        analytical_values.append(value)
+
+    erreur_w = analytical_values[0] - w_numerique
+    error = erreur_w.norm("NORM_2")
+    # TODO: add error test
+
+    erreur_drx = analytical_values[1] - drx_numerique
+    error = erreur_drx.norm("NORM_2")
+
+    erreur_dry = analytical_values[2] - dry_numerique
+    error = erreur_dry.norm("NORM_2")
+
+FIN()
