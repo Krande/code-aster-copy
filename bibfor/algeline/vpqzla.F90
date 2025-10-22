@@ -232,7 +232,7 @@ subroutine vpqzla(typeqz, qrn, iqrn, lqrn, qrar, &
     if (zi(lraide+4) .eq. 0) lnsr = .true.
     if (zi(lmasse+4) .eq. 0) lnsm = .true.
     ! prise en compte du nouveau traitements pour affe_char_cine sur
-    ! ddls physiques
+    ! ddls physiques. SI QEP, uniquement typlin=2
     lcine = .true.
 !
 !--------------------------------------------------
@@ -437,6 +437,7 @@ subroutine vpqzla(typeqz, qrn, iqrn, lqrn, qrar, &
 ! ---- ERREUR DONNEES OU CALCUL
 !        IF (ANORM*BNORM*CNORM.EQ.0.D0) ASSERT(.FALSE.)
 ! ---- COEF MULTIPLICATEUR (EQUILIBRAGE) POUR LA LINEARISATION PB QUAD
+! ---- ON COMPTE QUAND MEME LES CONTRIBUTIONS DES EVENTUELS AFFE_CHAR_CINE
         coefn = (anorm+bnorm+cnorm)/(3*qrns2)
 !
         if (niv .ge. 2) then
@@ -529,6 +530,39 @@ subroutine vpqzla(typeqz, qrn, iqrn, lqrn, qrar, &
             end do
             ideb = ifin+1
         end do
+!Traitement supplementaire pour prendre en compte les blocages via
+! AFFE_CHAR_CINE: on annule ligne/colonne des ddls concernes sauf
+! le terme diagonal de K
+        if (lcine) then
+            call jeexin(nommas(1:19)//'.CCID', iercon)
+            if (iercon .ne. 0) then
+                ASSERT(typlin .eq. 2)
+                call jeveuo(nommas(1:19)//'.CCID', 'L', vi=ccid)
+                do i = 1, qrns2
+                    ibloq = ccid(i)
+                    ilagr = dlagr(i)
+                    im1 = i-1
+!-- blocage sur ddl physique
+                    if ((ibloq .eq. 1) .and. (ilagr .eq. 1)) then
+                        do j = 1, qrns2
+                            jm1 = j-1
+! MATRICE COMPAGNON A - PARTIE K
+                            zc(iqrn+jm1*qrn+im1) = czero
+                            zc(iqrn+im1*qrn+jm1) = czero
+! MATRICE COMPAGNON B - PARTIE C
+                            zc(lqrn+jm1*qrn+im1) = czero
+                            zc(lqrn+im1*qrn+jm1) = czero
+! MATRICE COMPAGNON B - PARTIE M
+                            zc(lqrn+qrn*(qrns2+jm1)+im1) = czero
+                            zc(lqrn+qrn*(qrns2+im1)+jm1) = czero
+                        end do
+                        zc(iqrn+im1*qrn+im1) = cun*coefn
+                        zc(lqrn+im1*qrn+im1) = czero
+                        zc(lqrn+qrn*(qrns2+im1)+im1) = czero
+                    end if
+                end do
+            end if
+        end if
     end if
 !
 ! ---- TESTS UNITAIRES SI LTEST=.TRUE.

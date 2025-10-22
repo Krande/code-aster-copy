@@ -23,8 +23,11 @@
 #                   VITESSE CRITIQUE
 #                     FLOTTEMENT
 #                      CALCUL 3D
-#            CALCUL MODAL COMPLEXE EN EAU AVEC TRI_DIAG ET QZ
-#                   CAS TEST FDLV106A
+#
+# OBJECTIF POUR LA BASE DE CAS-TESTS ASTER: QEP DANS 3 CONFIGURATIONS PHYSIQUES
+# INTERCOMPARAISON DES METHODES CALC_MODES+TRI_DIAG OU SORENSEN OU QZ.
+# ET EN VARIANT LA PRISE EN COMPTE DES CONDITIONS LIMITES (AFFE_CHAR_MECA, CINE OU LES 2 A LA FOIS)
+# SOIT 3 X 3 X 3 = 27 CALCULS QEP
 
 DEBUT(
     CODE="OUI", DEBUG=_F(SDVERI="OUI"), IMPR_MACRO="OUI", IGNORE_ALARM=("MODELE1_63", "MODELE1_64")
@@ -363,11 +366,11 @@ TEST_RESU(
 MAYA2 = LIRE_MAILLAGE(FORMAT="IDEAS", UNITE=21)
 
 SYSTEQ = AFFE_MODELE(
-    MAILLAGE=MAYA2, AFFE=_F(TOUT="OUI", PHENOMENE="MECANIQUE", MODELISATION="DIS_T")
+    INFO=2, MAILLAGE=MAYA2, AFFE=_F(TOUT="OUI", PHENOMENE="MECANIQUE", MODELISATION="DIS_T")
 )
 
 # MODE COMPLEXE AVEC AMORTISSEMENT FLUIDE
-
+# =========================================
 CARAC = AFFE_CARA_ELEM(
     MODELE=SYSTEQ,
     DISCRET=(
@@ -379,45 +382,189 @@ CARAC = AFFE_CARA_ELEM(
     ),
 )
 
-ENCASTR = AFFE_CHAR_MECA(
-    MODELE=SYSTEQ,
-    DDL_IMPO=(_F(GROUP_NO="ENCAST", DX=0.0, DY=0.0, DZ=0.0), _F(GROUP_NO="GUIDE", DY=0.0, DZ=0.0)),
-)
+# si i==0: QEP AVEC TRI_DIAG/SORENSEN/QZ + AFFE_CHAR_CINE
+# si i==1: QEP AVEC TRI_DIAG/SORENSEN/QZ + AFFE_CHAR_MECA
+# si i==2: QEP AVEC TRI_DIAG/SORENSEN/QZ + AFFE_CHAR_CINE/MECA PANACHES
+# ----------------------------------------------------------------------------------
+# VALE_CALC (NON-REGRESSION)
+TEST = [12.40901123908641, 0.000109155364581963]
+for i in range(3):
+    # PREPARATION DES MATRICES
+    if i == 0:
+        ENCASTR = AFFE_CHAR_CINE(
+            MODELE=SYSTEQ,
+            MECA_IMPO=(
+                _F(GROUP_NO="ENCAST", DX=0.0, DY=0.0, DZ=0.0),
+                _F(GROUP_NO="GUIDE", DY=0.0, DZ=0.0),
+            ),
+        )
+        RIGIELEM = CALC_MATR_ELEM(OPTION="RIGI_MECA", MODELE=SYSTEQ, CARA_ELEM=CARAC)
+        MASSELEM = CALC_MATR_ELEM(OPTION="MASS_MECA", MODELE=SYSTEQ, CARA_ELEM=CARAC)
+        AMORELEM = CALC_MATR_ELEM(OPTION="AMOR_MECA", MODELE=SYSTEQ, CARA_ELEM=CARAC)
+        NUMERO = NUME_DDL(MATR_RIGI=RIGIELEM)
+        RAIDEUR = ASSE_MATRICE(MATR_ELEM=RIGIELEM, NUME_DDL=NUMERO, CHAR_CINE=ENCASTR)
+        MASSE = ASSE_MATRICE(MATR_ELEM=MASSELEM, NUME_DDL=NUMERO, CHAR_CINE=ENCASTR)
+        AMORT = ASSE_MATRICE(MATR_ELEM=AMORELEM, NUME_DDL=NUMERO, CHAR_CINE=ENCASTR)
+        MODBIT = CALC_MODES(
+            MATR_RIGI=RAIDEUR,
+            VERI_MODE=_F(SEUIL=1.0e-2),
+            MATR_AMOR=AMORT,
+            MATR_MASS=MASSE,
+            SOLVEUR_MODAL=_F(METHODE="TRI_DIAG"),
+        )
+    elif i == 1:
+        ENCASTR = AFFE_CHAR_MECA(
+            MODELE=SYSTEQ,
+            DDL_IMPO=(
+                _F(GROUP_NO="ENCAST", DX=0.0, DY=0.0, DZ=0.0),
+                _F(GROUP_NO="GUIDE", DY=0.0, DZ=0.0),
+            ),
+        )
+        RIGIELEM = CALC_MATR_ELEM(
+            OPTION="RIGI_MECA", MODELE=SYSTEQ, CARA_ELEM=CARAC, CHARGE=ENCASTR
+        )
+        MASSELEM = CALC_MATR_ELEM(
+            OPTION="MASS_MECA", MODELE=SYSTEQ, CARA_ELEM=CARAC, CHARGE=ENCASTR
+        )
+        AMORELEM = CALC_MATR_ELEM(
+            OPTION="AMOR_MECA", MODELE=SYSTEQ, CARA_ELEM=CARAC, CHARGE=ENCASTR
+        )
+        NUMERO = NUME_DDL(MATR_RIGI=RIGIELEM)
+        RAIDEUR = ASSE_MATRICE(MATR_ELEM=RIGIELEM, NUME_DDL=NUMERO)
+        MASSE = ASSE_MATRICE(MATR_ELEM=MASSELEM, NUME_DDL=NUMERO)
+        AMORT = ASSE_MATRICE(MATR_ELEM=AMORELEM, NUME_DDL=NUMERO)
+    elif i == 2:
+        ENCASTR = AFFE_CHAR_CINE(
+            MODELE=SYSTEQ,
+            MECA_IMPO=(_F(GROUP_NO="ENCAST", DX=0.0, DZ=0.0), _F(GROUP_NO="GUIDE", DZ=0.0)),
+        )
+        ENCASTR2 = AFFE_CHAR_MECA(
+            MODELE=SYSTEQ, DDL_IMPO=(_F(GROUP_NO="ENCAST", DY=0.0), _F(GROUP_NO="GUIDE", DY=0.0))
+        )
+        RIGIELEM = CALC_MATR_ELEM(
+            OPTION="RIGI_MECA", MODELE=SYSTEQ, CARA_ELEM=CARAC, CHARGE=ENCASTR2
+        )
+        MASSELEM = CALC_MATR_ELEM(
+            OPTION="MASS_MECA", MODELE=SYSTEQ, CARA_ELEM=CARAC, CHARGE=ENCASTR2
+        )
+        AMORELEM = CALC_MATR_ELEM(
+            OPTION="AMOR_MECA", MODELE=SYSTEQ, CARA_ELEM=CARAC, CHARGE=ENCASTR2
+        )
+        NUMERO = NUME_DDL(MATR_RIGI=RIGIELEM)
+        RAIDEUR = ASSE_MATRICE(MATR_ELEM=RIGIELEM, NUME_DDL=NUMERO, CHAR_CINE=ENCASTR)
+        MASSE = ASSE_MATRICE(MATR_ELEM=MASSELEM, NUME_DDL=NUMERO, CHAR_CINE=ENCASTR)
+        AMORT = ASSE_MATRICE(MATR_ELEM=AMORELEM, NUME_DDL=NUMERO, CHAR_CINE=ENCASTR)
 
-RIGIELEM = CALC_MATR_ELEM(OPTION="RIGI_MECA", MODELE=SYSTEQ, CARA_ELEM=CARAC, CHARGE=ENCASTR)
+    # RESOLUTIONS MODALES PROPREMENT DITES: TRI_DIAG/SORENSEN/QZ
+    MODBIT = CALC_MODES(
+        MATR_RIGI=RAIDEUR,
+        VERI_MODE=_F(SEUIL=1.0e-2),
+        MATR_AMOR=AMORT,
+        MATR_MASS=MASSE,
+        SOLVEUR_MODAL=_F(METHODE="TRI_DIAG"),
+    )
+    MODBIS = CALC_MODES(
+        CALC_FREQ=_F(NMAX_FREQ=1, FREQ=12.0),
+        OPTION="CENTRE",
+        MATR_RIGI=RAIDEUR,
+        VERI_MODE=_F(SEUIL=1.0e-2),
+        MATR_AMOR=AMORT,
+        MATR_MASS=MASSE,
+        SOLVEUR_MODAL=_F(METHODE="SORENSEN"),
+    )
+    MODBIZ = CALC_MODES(
+        MATR_RIGI=RAIDEUR,
+        VERI_MODE=_F(SEUIL=1.0e-2),
+        MATR_AMOR=AMORT,
+        MATR_MASS=MASSE,
+        SOLVEUR_MODAL=_F(METHODE="QZ"),
+    )
+    TEST_RESU(
+        RESU=(
+            _F(
+                NUME_ORDRE=1,
+                PARA="FREQ",
+                REFERENCE="ANALYTIQUE",
+                RESULTAT=MODBIT,
+                VALE_CALC=TEST[0],
+                VALE_REFE=12.5,
+                CRITERE="RELATIF",
+                PRECISION=1.0e-2,
+            ),
+            _F(
+                NUME_ORDRE=1,
+                PARA="AMOR_REDUIT",
+                REFERENCE="ANALYTIQUE",
+                RESULTAT=MODBIT,
+                VALE_CALC=TEST[1],
+                VALE_REFE=1.1e-4,
+                CRITERE="RELATIF",
+                PRECISION=1.0e-2,
+            ),
+            _F(
+                NUME_ORDRE=1,
+                PARA="FREQ",
+                REFERENCE="ANALYTIQUE",
+                RESULTAT=MODBIS,
+                VALE_CALC=TEST[0],
+                VALE_REFE=12.5,
+                CRITERE="RELATIF",
+                PRECISION=1.0e-2,
+            ),
+            _F(
+                NUME_ORDRE=1,
+                PARA="AMOR_REDUIT",
+                REFERENCE="ANALYTIQUE",
+                RESULTAT=MODBIS,
+                VALE_CALC=TEST[1],
+                VALE_REFE=1.1e-4,
+                CRITERE="RELATIF",
+                PRECISION=1.0e-2,
+            ),
+            _F(
+                NUME_ORDRE=1,
+                PARA="FREQ",
+                REFERENCE="ANALYTIQUE",
+                RESULTAT=MODBIZ,
+                VALE_CALC=TEST[0],
+                VALE_REFE=12.5,
+                CRITERE="RELATIF",
+                PRECISION=1.0e-2,
+            ),
+            _F(
+                NUME_ORDRE=1,
+                PARA="AMOR_REDUIT",
+                REFERENCE="ANALYTIQUE",
+                RESULTAT=MODBIZ,
+                VALE_CALC=TEST[1],
+                VALE_REFE=1.1e-4,
+                CRITERE="RELATIF",
+                PRECISION=1.0e-2,
+            ),
+        )
+    ),
+    DETRUIRE(
+        NOM=(
+            ENCASTR,
+            RIGIELEM,
+            MASSELEM,
+            AMORELEM,
+            NUMERO,
+            RAIDEUR,
+            MASSE,
+            AMORT,
+            MODBIT,
+            MODBIS,
+            MODBIZ,
+        )
+    )
+    if i == 2:
+        DETRUIRE(NOM=(ENCASTR2))
 
-MASSELEM = CALC_MATR_ELEM(OPTION="MASS_MECA", MODELE=SYSTEQ, CARA_ELEM=CARAC, CHARGE=ENCASTR)
-
-AMORELEM = CALC_MATR_ELEM(OPTION="AMOR_MECA", MODELE=SYSTEQ, CARA_ELEM=CARAC, CHARGE=ENCASTR)
-
-NUMERO = NUME_DDL(MATR_RIGI=RIGIELEM)
-
-RAIDEUR = ASSE_MATRICE(MATR_ELEM=RIGIELEM, NUME_DDL=NUMERO)
-
-MASSE = ASSE_MATRICE(MATR_ELEM=MASSELEM, NUME_DDL=NUMERO)
-
-AMORT = ASSE_MATRICE(MATR_ELEM=AMORELEM, NUME_DDL=NUMERO)
-
-MODBIS = CALC_MODES(
-    MATR_RIGI=RAIDEUR,
-    VERI_MODE=_F(SEUIL=1.0e-2),
-    MATR_AMOR=AMORT,
-    MATR_MASS=MASSE,
-    SOLVEUR_MODAL=_F(METHODE="TRI_DIAG"),
-)
-
-# AVEC QZ + OPTION='PLUS_PETITE' + 'QZ_SIMPLE'
-
-MODBISZ = CALC_MODES(
-    MATR_RIGI=RAIDEUR,
-    VERI_MODE=_F(SEUIL=1.0e-2),
-    MATR_AMOR=AMORT,
-    MATR_MASS=MASSE,
-    SOLVEUR_MODAL=_F(METHODE="QZ"),
-)
+# FIN BOUCLE
 
 # MODE COMPLEXE A VITESSE CRITIQUE
-
+# =================================
 CARACRIT = AFFE_CARA_ELEM(
     MODELE=SYSTEQ,
     DISCRET=(
@@ -428,41 +575,181 @@ CARACRIT = AFFE_CARA_ELEM(
         _F(CARA="A_T_D_L", GROUP_MA="DASHPOT", VALE=(3.56e6, 3.56e6, 3.56e6)),
     ),
 )
+# si i==0: QEP AVEC TRI_DIAG/SORENSEN/QZ + AFFE_CHAR_CINE
+# si i==1: QEP AVEC TRI_DIAG/SORENSEN/QZ + AFFE_CHAR_MECA
+# si i==2: QEP AVEC TRI_DIAG/SORENSEN/QZ + AFFE_CHAR_CINE/MECA PANACHES
+# ----------------------------------------------------------------------------------
+# VALE_CALC (NON-REGRESSION)
+TEST = [12.409011312, 1.38783249e-05]
+for i in range(3):
+    # PREPARATION DES MATRICES
+    if i == 0:
+        ENCASTR = AFFE_CHAR_CINE(
+            MODELE=SYSTEQ,
+            MECA_IMPO=(
+                _F(GROUP_NO="ENCAST", DX=0.0, DY=0.0, DZ=0.0),
+                _F(GROUP_NO="GUIDE", DY=0.0, DZ=0.0),
+            ),
+        )
+        RIGELCR = CALC_MATR_ELEM(OPTION="RIGI_MECA", MODELE=SYSTEQ, CARA_ELEM=CARACRIT)
+        MASELCR = CALC_MATR_ELEM(OPTION="MASS_MECA", MODELE=SYSTEQ, CARA_ELEM=CARACRIT)
+        AMELCR = CALC_MATR_ELEM(OPTION="AMOR_MECA", MODELE=SYSTEQ, CARA_ELEM=CARACRIT)
+        NUMCR = NUME_DDL(MATR_RIGI=RIGELCR)
+        RAIDCR = ASSE_MATRICE(MATR_ELEM=RIGELCR, NUME_DDL=NUMCR, CHAR_CINE=ENCASTR)
+        MASSCR = ASSE_MATRICE(MATR_ELEM=MASELCR, NUME_DDL=NUMCR, CHAR_CINE=ENCASTR)
+        AMORCR = ASSE_MATRICE(MATR_ELEM=AMELCR, NUME_DDL=NUMCR, CHAR_CINE=ENCASTR)
+    elif i == 1:
+        ENCASTR = AFFE_CHAR_MECA(
+            MODELE=SYSTEQ,
+            DDL_IMPO=(
+                _F(GROUP_NO="ENCAST", DX=0.0, DY=0.0, DZ=0.0),
+                _F(GROUP_NO="GUIDE", DY=0.0, DZ=0.0),
+            ),
+        )
+        RIGELCR = CALC_MATR_ELEM(
+            OPTION="RIGI_MECA", MODELE=SYSTEQ, CARA_ELEM=CARACRIT, CHARGE=ENCASTR
+        )
+        MASELCR = CALC_MATR_ELEM(
+            OPTION="MASS_MECA", MODELE=SYSTEQ, CARA_ELEM=CARACRIT, CHARGE=ENCASTR
+        )
+        AMELCR = CALC_MATR_ELEM(
+            OPTION="AMOR_MECA", MODELE=SYSTEQ, CARA_ELEM=CARACRIT, CHARGE=ENCASTR
+        )
+        NUMCR = NUME_DDL(MATR_RIGI=RIGELCR)
+        RAIDCR = ASSE_MATRICE(MATR_ELEM=RIGELCR, NUME_DDL=NUMCR)
+        MASSCR = ASSE_MATRICE(MATR_ELEM=MASELCR, NUME_DDL=NUMCR)
+        AMORCR = ASSE_MATRICE(MATR_ELEM=AMELCR, NUME_DDL=NUMCR)
+    elif i == 2:
+        ENCASTR = AFFE_CHAR_CINE(
+            MODELE=SYSTEQ,
+            MECA_IMPO=(_F(GROUP_NO="ENCAST", DX=0.0, DZ=0.0), _F(GROUP_NO="GUIDE", DZ=0.0)),
+        )
+        ENCASTR2 = AFFE_CHAR_MECA(
+            MODELE=SYSTEQ, DDL_IMPO=(_F(GROUP_NO="ENCAST", DY=0.0), _F(GROUP_NO="GUIDE", DY=0.0))
+        )
+        RIGELCR = CALC_MATR_ELEM(
+            OPTION="RIGI_MECA", MODELE=SYSTEQ, CARA_ELEM=CARACRIT, CHARGE=ENCASTR2
+        )
+        MASELCR = CALC_MATR_ELEM(
+            OPTION="MASS_MECA", MODELE=SYSTEQ, CARA_ELEM=CARACRIT, CHARGE=ENCASTR2
+        )
+        AMELCR = CALC_MATR_ELEM(
+            OPTION="AMOR_MECA", MODELE=SYSTEQ, CARA_ELEM=CARACRIT, CHARGE=ENCASTR2
+        )
+        NUMCR = NUME_DDL(MATR_RIGI=RIGELCR)
+        RAIDCR = ASSE_MATRICE(MATR_ELEM=RIGELCR, NUME_DDL=NUMCR, CHAR_CINE=ENCASTR)
+        MASSCR = ASSE_MATRICE(MATR_ELEM=MASELCR, NUME_DDL=NUMCR, CHAR_CINE=ENCASTR)
+        AMORCR = ASSE_MATRICE(MATR_ELEM=AMELCR, NUME_DDL=NUMCR, CHAR_CINE=ENCASTR)
 
-RIGELCR = CALC_MATR_ELEM(OPTION="RIGI_MECA", MODELE=SYSTEQ, CARA_ELEM=CARACRIT, CHARGE=ENCASTR)
+    # RESOLUTIONS MODALES PROPREMENT DITES: TRI_DIAG/SORENSEN/QZ
+    MODCRIT = CALC_MODES(
+        MATR_RIGI=RAIDCR,
+        VERI_MODE=_F(SEUIL=1.0e-2),
+        MATR_AMOR=AMORCR,
+        MATR_MASS=MASSCR,
+        SOLVEUR_MODAL=_F(METHODE="TRI_DIAG"),
+    )
+    MODCRIS = CALC_MODES(
+        CALC_FREQ=_F(NMAX_FREQ=1, FREQ=12.0),
+        OPTION="CENTRE",
+        MATR_RIGI=RAIDCR,
+        VERI_MODE=_F(SEUIL=1.0e-2),
+        MATR_AMOR=AMORCR,
+        MATR_MASS=MASSCR,
+        SOLVEUR_MODAL=_F(METHODE="SORENSEN"),
+    )
+    MODCRIZ = CALC_MODES(
+        MATR_RIGI=RAIDCR,
+        VERI_MODE=_F(SEUIL=1.0e-2),
+        MATR_AMOR=AMORCR,
+        MATR_MASS=MASSCR,
+        SOLVEUR_MODAL=_F(METHODE="QZ"),
+    )
+    TEST_RESU(
+        RESU=(
+            _F(
+                NUME_ORDRE=1,
+                PARA="FREQ",
+                REFERENCE="ANALYTIQUE",
+                RESULTAT=MODCRIT,
+                VALE_CALC=TEST[0],
+                VALE_REFE=12.5,
+                CRITERE="RELATIF",
+                PRECISION=1.0e-2,
+            ),
+            _F(
+                NUME_ORDRE=1,
+                PARA="AMOR_REDUIT",
+                REFERENCE="ANALYTIQUE",
+                RESULTAT=MODCRIT,
+                VALE_CALC=TEST[1],
+                VALE_REFE=1.38e-05,
+                CRITERE="RELATIF",
+                PRECISION=1.0e-2,
+            ),
+            _F(
+                NUME_ORDRE=1,
+                PARA="FREQ",
+                REFERENCE="ANALYTIQUE",
+                RESULTAT=MODCRIS,
+                VALE_CALC=TEST[0],
+                VALE_REFE=12.5,
+                CRITERE="RELATIF",
+                PRECISION=1.0e-2,
+            ),
+            _F(
+                NUME_ORDRE=1,
+                PARA="AMOR_REDUIT",
+                REFERENCE="ANALYTIQUE",
+                RESULTAT=MODCRIS,
+                VALE_CALC=TEST[1],
+                VALE_REFE=1.38e-05,
+                CRITERE="RELATIF",
+                PRECISION=1.0e-2,
+            ),
+            _F(
+                NUME_ORDRE=1,
+                PARA="FREQ",
+                REFERENCE="ANALYTIQUE",
+                RESULTAT=MODCRIZ,
+                VALE_CALC=TEST[0],
+                VALE_REFE=12.5,
+                CRITERE="RELATIF",
+                PRECISION=1.0e-2,
+            ),
+            _F(
+                NUME_ORDRE=1,
+                PARA="AMOR_REDUIT",
+                REFERENCE="ANALYTIQUE",
+                RESULTAT=MODCRIZ,
+                VALE_CALC=TEST[1],
+                VALE_REFE=1.38e-05,
+                CRITERE="RELATIF",
+                PRECISION=1.0e-2,
+            ),
+        )
+    )
+    DETRUIRE(
+        NOM=(
+            ENCASTR,
+            RIGELCR,
+            MASELCR,
+            AMELCR,
+            NUMCR,
+            RAIDCR,
+            MASSCR,
+            AMORCR,
+            MODCRIT,
+            MODCRIS,
+            MODCRIZ,
+        )
+    )
+    if i == 2:
+        DETRUIRE(NOM=(ENCASTR2))
 
-MASELCR = CALC_MATR_ELEM(OPTION="MASS_MECA", MODELE=SYSTEQ, CARA_ELEM=CARACRIT, CHARGE=ENCASTR)
-
-AMELCR = CALC_MATR_ELEM(OPTION="AMOR_MECA", MODELE=SYSTEQ, CARA_ELEM=CARACRIT, CHARGE=ENCASTR)
-
-NUMCR = NUME_DDL(MATR_RIGI=RIGELCR)
-
-RAIDCR = ASSE_MATRICE(MATR_ELEM=RIGELCR, NUME_DDL=NUMCR)
-
-MASSCR = ASSE_MATRICE(MATR_ELEM=MASELCR, NUME_DDL=NUMCR)
-
-AMORCR = ASSE_MATRICE(MATR_ELEM=AMELCR, NUME_DDL=NUMCR)
-
-MODCRIT = CALC_MODES(
-    MATR_RIGI=RAIDCR,
-    VERI_MODE=_F(SEUIL=1.0e-2),
-    MATR_AMOR=AMORCR,
-    MATR_MASS=MASSCR,
-    SOLVEUR_MODAL=_F(METHODE="TRI_DIAG"),
-)
-
-# AVEC QZ + OPTION='PLUS_PETITE' + 'QZ_SIMPLE'
-
-MODCRITZ = CALC_MODES(
-    MATR_RIGI=RAIDCR,
-    VERI_MODE=_F(SEUIL=1.0e-2),
-    MATR_AMOR=AMORCR,
-    MATR_MASS=MASSCR,
-    SOLVEUR_MODAL=_F(METHODE="QZ"),
-)
-
+# FIN BOUCLE
 # MODE COMPLEXE AU FLOTTEMENT
-
+# ============================
 CARAFLOT = AFFE_CARA_ELEM(
     MODELE=SYSTEQ,
     DISCRET=(
@@ -473,169 +760,177 @@ CARAFLOT = AFFE_CARA_ELEM(
         _F(CARA="A_T_D_L", GROUP_MA="DASHPOT", VALE=(-1.7e8, -1.7e8, -1.7e8)),
     ),
 )
+# si i==0: QEP AVEC TRI_DIAG/SORENSEN/QZ + AFFE_CHAR_CINE
+# si i==1: QEP AVEC TRI_DIAG/SORENSEN/QZ + AFFE_CHAR_MECA
+# si i==2: QEP AVEC TRI_DIAG/SORENSEN/QZ + AFFE_CHAR_CINE/MECA PANACHES
+# ----------------------------------------------------------------------------------
+# VALE_CALC (NON-REGRESSION)
+TEST = [12.409008588, -6.62728999e-04]
+for i in range(3):
+    # PREPARATION DES MATRICES
+    if i == 0:
+        ENCASTR = AFFE_CHAR_CINE(
+            MODELE=SYSTEQ,
+            MECA_IMPO=(
+                _F(GROUP_NO="ENCAST", DX=0.0, DY=0.0, DZ=0.0),
+                _F(GROUP_NO="GUIDE", DY=0.0, DZ=0.0),
+            ),
+        )
+        RIGELFL = CALC_MATR_ELEM(OPTION="RIGI_MECA", MODELE=SYSTEQ, CARA_ELEM=CARAFLOT)
+        MASELFL = CALC_MATR_ELEM(OPTION="MASS_MECA", MODELE=SYSTEQ, CARA_ELEM=CARAFLOT)
+        AMELFL = CALC_MATR_ELEM(OPTION="AMOR_MECA", MODELE=SYSTEQ, CARA_ELEM=CARAFLOT)
+        NUMFL = NUME_DDL(MATR_RIGI=RIGELFL)
+        RAIDFL = ASSE_MATRICE(MATR_ELEM=RIGELFL, NUME_DDL=NUMFL, CHAR_CINE=ENCASTR)
+        MASSFL = ASSE_MATRICE(MATR_ELEM=MASELFL, NUME_DDL=NUMFL, CHAR_CINE=ENCASTR)
+        AMORFL = ASSE_MATRICE(MATR_ELEM=AMELFL, NUME_DDL=NUMFL, CHAR_CINE=ENCASTR)
+    elif i == 1:
+        ENCASTR = AFFE_CHAR_MECA(
+            MODELE=SYSTEQ,
+            DDL_IMPO=(
+                _F(GROUP_NO="ENCAST", DX=0.0, DY=0.0, DZ=0.0),
+                _F(GROUP_NO="GUIDE", DY=0.0, DZ=0.0),
+            ),
+        )
+        RIGELFL = CALC_MATR_ELEM(
+            OPTION="RIGI_MECA", MODELE=SYSTEQ, CARA_ELEM=CARAFLOT, CHARGE=ENCASTR
+        )
+        MASELFL = CALC_MATR_ELEM(
+            OPTION="MASS_MECA", MODELE=SYSTEQ, CARA_ELEM=CARAFLOT, CHARGE=ENCASTR
+        )
+        AMELFL = CALC_MATR_ELEM(
+            OPTION="AMOR_MECA", MODELE=SYSTEQ, CARA_ELEM=CARAFLOT, CHARGE=ENCASTR
+        )
+        NUMFL = NUME_DDL(MATR_RIGI=RIGELFL)
+        RAIDFL = ASSE_MATRICE(MATR_ELEM=RIGELFL, NUME_DDL=NUMFL)
+        MASSFL = ASSE_MATRICE(MATR_ELEM=MASELFL, NUME_DDL=NUMFL)
+        AMORFL = ASSE_MATRICE(MATR_ELEM=AMELFL, NUME_DDL=NUMFL)
+    elif i == 2:
+        ENCASTR = AFFE_CHAR_CINE(
+            MODELE=SYSTEQ,
+            MECA_IMPO=(_F(GROUP_NO="ENCAST", DX=0.0, DZ=0.0), _F(GROUP_NO="GUIDE", DZ=0.0)),
+        )
+        ENCASTR2 = AFFE_CHAR_MECA(
+            MODELE=SYSTEQ, DDL_IMPO=(_F(GROUP_NO="ENCAST", DY=0.0), _F(GROUP_NO="GUIDE", DY=0.0))
+        )
+        RIGELFL = CALC_MATR_ELEM(
+            OPTION="RIGI_MECA", MODELE=SYSTEQ, CARA_ELEM=CARAFLOT, CHARGE=ENCASTR2
+        )
+        MASELFL = CALC_MATR_ELEM(
+            OPTION="MASS_MECA", MODELE=SYSTEQ, CARA_ELEM=CARAFLOT, CHARGE=ENCASTR2
+        )
+        AMELFL = CALC_MATR_ELEM(
+            OPTION="AMOR_MECA", MODELE=SYSTEQ, CARA_ELEM=CARAFLOT, CHARGE=ENCASTR2
+        )
+        NUMFL = NUME_DDL(MATR_RIGI=RIGELFL)
+        RAIDFL = ASSE_MATRICE(MATR_ELEM=RIGELFL, NUME_DDL=NUMFL, CHAR_CINE=ENCASTR)
+        MASSFL = ASSE_MATRICE(MATR_ELEM=MASELFL, NUME_DDL=NUMFL, CHAR_CINE=ENCASTR)
+        AMORFL = ASSE_MATRICE(MATR_ELEM=AMELFL, NUME_DDL=NUMFL, CHAR_CINE=ENCASTR)
 
-RIGELFL = CALC_MATR_ELEM(OPTION="RIGI_MECA", MODELE=SYSTEQ, CARA_ELEM=CARAFLOT, CHARGE=ENCASTR)
-
-MASELFL = CALC_MATR_ELEM(OPTION="MASS_MECA", MODELE=SYSTEQ, CARA_ELEM=CARAFLOT, CHARGE=ENCASTR)
-
-AMELFL = CALC_MATR_ELEM(OPTION="AMOR_MECA", MODELE=SYSTEQ, CARA_ELEM=CARAFLOT, CHARGE=ENCASTR)
-
-NUMFL = NUME_DDL(MATR_RIGI=RIGELFL)
-
-RAIDFL = ASSE_MATRICE(MATR_ELEM=RIGELFL, NUME_DDL=NUMFL)
-
-MASSFL = ASSE_MATRICE(MATR_ELEM=MASELFL, NUME_DDL=NUMFL)
-
-AMORFL = ASSE_MATRICE(MATR_ELEM=AMELFL, NUME_DDL=NUMFL)
-
-MODFLOT = CALC_MODES(
-    MATR_RIGI=RAIDFL,
-    VERI_MODE=_F(SEUIL=1.0e-2),
-    MATR_AMOR=AMORFL,
-    MATR_MASS=MASSFL,
-    SOLVEUR_MODAL=_F(METHODE="TRI_DIAG"),
-)
-
-# AVEC QZ + OPTION='PLUS_PETITE' + 'QZ_SIMPLE'
-
-MODFLOTZ = CALC_MODES(
-    MATR_RIGI=RAIDFL,
-    VERI_MODE=_F(SEUIL=1.0e-2),
-    MATR_AMOR=AMORFL,
-    MATR_MASS=MASSFL,
-    SOLVEUR_MODAL=_F(METHODE="QZ"),
-)
-
-TEST_RESU(
-    RESU=(
-        _F(
-            NUME_ORDRE=1,
-            PARA="FREQ",
-            REFERENCE="ANALYTIQUE",
-            RESULTAT=MODBIS,
-            VALE_CALC=12.409011239,
-            VALE_REFE=12.5,
-            CRITERE="RELATIF",
-            PRECISION=1.0e-2,
-        ),
-        _F(
-            NUME_ORDRE=1,
-            PARA="AMOR_REDUIT",
-            REFERENCE="ANALYTIQUE",
-            RESULTAT=MODBIS,
-            VALE_CALC=1.09155365e-04,
-            VALE_REFE=1.1e-4,
-            CRITERE="RELATIF",
-            PRECISION=1.0e-2,
-        ),
-        _F(
-            NUME_ORDRE=1,
-            PARA="FREQ",
-            REFERENCE="ANALYTIQUE",
-            RESULTAT=MODCRIT,
-            VALE_CALC=12.409011312,
-            VALE_REFE=12.5,
-            CRITERE="RELATIF",
-            PRECISION=1.0e-2,
-        ),
-        _F(
-            NUME_ORDRE=1,
-            PARA="AMOR_REDUIT",
-            REFERENCE="ANALYTIQUE",
-            RESULTAT=MODCRIT,
-            VALE_CALC=1.38783249e-05,
-            VALE_REFE=1.38e-05,
-            CRITERE="RELATIF",
-            PRECISION=1.0e-2,
-        ),
-        _F(
-            NUME_ORDRE=1,
-            PARA="FREQ",
-            REFERENCE="ANALYTIQUE",
-            RESULTAT=MODFLOT,
-            VALE_CALC=12.409008588,
-            VALE_REFE=12.5,
-            CRITERE="RELATIF",
-            PRECISION=1.0e-2,
-        ),
-        _F(
-            NUME_ORDRE=1,
-            PARA="AMOR_REDUIT",
-            REFERENCE="ANALYTIQUE",
-            RESULTAT=MODFLOT,
-            VALE_CALC=-6.62728999e-04,
-            VALE_REFE=-6.6e-4,
-            CRITERE="RELATIF",
-            PRECISION=1.0e-2,
-        ),
+    # RESOLUTIONS MODALES PROPREMENT DITES: TRI_DIAG/SORENSEN/QZ
+    MODFLOT = CALC_MODES(
+        MATR_RIGI=RAIDFL,
+        VERI_MODE=_F(SEUIL=1.0e-2),
+        MATR_AMOR=AMORFL,
+        MATR_MASS=MASSFL,
+        SOLVEUR_MODAL=_F(METHODE="TRI_DIAG"),
     )
-)
-
-# POUR QZ
-
-TEST_RESU(
-    RESU=(
-        _F(
-            NUME_ORDRE=1,
-            PARA="FREQ",
-            REFERENCE="ANALYTIQUE",
-            RESULTAT=MODBISZ,
-            VALE_CALC=12.409011239,
-            VALE_REFE=12.5,
-            CRITERE="RELATIF",
-            PRECISION=1.0e-2,
-        ),
-        _F(
-            NUME_ORDRE=1,
-            PARA="AMOR_REDUIT",
-            REFERENCE="ANALYTIQUE",
-            RESULTAT=MODBISZ,
-            VALE_CALC=1.09155365e-04,
-            VALE_REFE=1.1e-4,
-            CRITERE="RELATIF",
-            PRECISION=1.0e-2,
-        ),
-        _F(
-            NUME_ORDRE=1,
-            PARA="FREQ",
-            REFERENCE="ANALYTIQUE",
-            RESULTAT=MODCRITZ,
-            VALE_CALC=12.409011312,
-            VALE_REFE=12.5,
-            CRITERE="RELATIF",
-            PRECISION=1.0e-2,
-        ),
-        _F(
-            NUME_ORDRE=1,
-            PARA="AMOR_REDUIT",
-            REFERENCE="ANALYTIQUE",
-            RESULTAT=MODCRITZ,
-            VALE_CALC=1.38783249e-05,
-            VALE_REFE=1.38e-05,
-            CRITERE="RELATIF",
-            PRECISION=1.0e-2,
-        ),
-        _F(
-            NUME_ORDRE=1,
-            PARA="FREQ",
-            REFERENCE="ANALYTIQUE",
-            RESULTAT=MODFLOTZ,
-            VALE_CALC=12.409008588,
-            VALE_REFE=12.5,
-            CRITERE="RELATIF",
-            PRECISION=1.0e-2,
-        ),
-        _F(
-            NUME_ORDRE=1,
-            PARA="AMOR_REDUIT",
-            REFERENCE="ANALYTIQUE",
-            RESULTAT=MODFLOTZ,
-            VALE_CALC=-6.62728999e-04,
-            VALE_REFE=-6.6e-4,
-            CRITERE="RELATIF",
-            PRECISION=1.0e-2,
-        ),
+    MODFLOS = CALC_MODES(
+        CALC_FREQ=_F(NMAX_FREQ=1, FREQ=12.0),
+        OPTION="CENTRE",
+        MATR_RIGI=RAIDFL,
+        VERI_MODE=_F(SEUIL=1.0e-2),
+        MATR_AMOR=AMORFL,
+        MATR_MASS=MASSFL,
+        SOLVEUR_MODAL=_F(METHODE="SORENSEN"),
     )
-)
+    MODFLOZ = CALC_MODES(
+        MATR_RIGI=RAIDFL,
+        VERI_MODE=_F(SEUIL=1.0e-2),
+        MATR_AMOR=AMORFL,
+        MATR_MASS=MASSFL,
+        SOLVEUR_MODAL=_F(METHODE="QZ"),
+    )
 
+    TEST_RESU(
+        RESU=(
+            _F(
+                NUME_ORDRE=1,
+                PARA="FREQ",
+                REFERENCE="ANALYTIQUE",
+                RESULTAT=MODFLOT,
+                VALE_CALC=TEST[0],
+                VALE_REFE=12.5,
+                CRITERE="RELATIF",
+                PRECISION=1.0e-2,
+            ),
+            _F(
+                NUME_ORDRE=1,
+                PARA="AMOR_REDUIT",
+                REFERENCE="ANALYTIQUE",
+                RESULTAT=MODFLOT,
+                VALE_CALC=TEST[1],
+                VALE_REFE=-6.6e-4,
+                CRITERE="RELATIF",
+                PRECISION=1.0e-2,
+            ),
+            _F(
+                NUME_ORDRE=1,
+                PARA="FREQ",
+                REFERENCE="ANALYTIQUE",
+                RESULTAT=MODFLOS,
+                VALE_CALC=TEST[0],
+                VALE_REFE=12.5,
+                CRITERE="RELATIF",
+                PRECISION=1.0e-2,
+            ),
+            _F(
+                NUME_ORDRE=1,
+                PARA="AMOR_REDUIT",
+                REFERENCE="ANALYTIQUE",
+                RESULTAT=MODFLOS,
+                VALE_CALC=TEST[1],
+                VALE_REFE=-6.6e-4,
+                CRITERE="RELATIF",
+                PRECISION=1.0e-2,
+            ),
+            _F(
+                NUME_ORDRE=1,
+                PARA="FREQ",
+                REFERENCE="ANALYTIQUE",
+                RESULTAT=MODFLOZ,
+                VALE_CALC=TEST[0],
+                VALE_REFE=12.5,
+                CRITERE="RELATIF",
+                PRECISION=1.0e-2,
+            ),
+            _F(
+                NUME_ORDRE=1,
+                PARA="AMOR_REDUIT",
+                REFERENCE="ANALYTIQUE",
+                RESULTAT=MODFLOZ,
+                VALE_CALC=TEST[1],
+                VALE_REFE=-6.6e-4,
+                CRITERE="RELATIF",
+                PRECISION=1.0e-2,
+            ),
+        )
+    )
+    DETRUIRE(
+        NOM=(
+            ENCASTR,
+            RIGELFL,
+            MASELFL,
+            AMELFL,
+            NUMFL,
+            RAIDFL,
+            MASSFL,
+            AMORFL,
+            MODFLOT,
+            MODFLOS,
+            MODFLOZ,
+        )
+    )
+    if i == 2:
+        DETRUIRE(NOM=(ENCASTR2))
+# FIN BOUCLE
 FIN()
