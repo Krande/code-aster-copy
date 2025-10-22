@@ -19,7 +19,10 @@
 subroutine infoma(nomu, niv_)
     implicit none
 #include "jeveux.h"
+#include "asterfort/asmpi_comm_vect.h"
+#include "asterfort/asmpi_info.h"
 #include "asterfort/assert.h"
+#include "asterfort/int_to_char8.h"
 #include "asterfort/infniv.h"
 #include "asterfort/jedema.h"
 #include "asterfort/jeexin.h"
@@ -29,7 +32,6 @@ subroutine infoma(nomu, niv_)
 #include "asterfort/jeveuo.h"
 #include "asterfort/jexnum.h"
 #include "asterfort/dismoi.h"
-#include "asterfort/int_to_char8.h"
 !
     character(len=8) :: nomu
     integer(kind=8), optional :: niv_
@@ -44,12 +46,17 @@ subroutine infoma(nomu, niv_)
     character(len=8) :: type
     integer(kind=8) :: niv, ifm, nn, nbno, j, idec, iad1, nbcoor, nbma
     integer(kind=8) :: nbltit, iad, i, nbnoeu, nbmail, nbgrno, nbgrma
-    integer(kind=8) :: nbmmai, n1, nbmmax, ityp
+    integer(kind=8) :: nbmmai, n1, nbmmax, ityp, nbnoeuL, nbmailL
+    integer(kind=8) :: rang, nbproc
     parameter(nbmmax=100)
-    integer(kind=8) :: dimmai(nbmmax), iret
+    integer(kind=8) :: dimmai(nbmmax), iret, iret2
     character(len=8) :: mclmai(nbmmax)
     integer(kind=8), pointer :: typmail(:) => null()
     integer(kind=8), pointer :: dime(:) => null()
+    integer(kind=8), pointer :: noex(:) => null()
+    integer(kind=8), pointer :: maex(:) => null()
+    aster_logical :: lPMesh
+    mpi_int :: mrank, msize
 !
 !
 !
@@ -64,6 +71,12 @@ subroutine infoma(nomu, niv_)
 !
     call jemarq()
 !
+    call jeexin(nomu//'.NOEX', iret)
+    call jeexin(nomu//'.MAEX', iret2)
+    lPMesh = .false.
+    if (iret .ne. 0 .and. iret2 .ne. 0) then
+        lPMesh = .true.
+    end if
 !
     conxv = nomu//'.CONNEX'
     grpnov = nomu//'.GROUPENO'
@@ -74,7 +87,24 @@ subroutine infoma(nomu, niv_)
     call dismoi('NB_MA_MAILLA', nomu, 'MAILLAGE', repi=nbmail)
     call dismoi('NB_NO_MAILLA', nomu, 'MAILLAGE', repi=nbnoeu)
 !
-!
+    if (lPMesh) then
+        call jeveuo(nomu//'.NOEX', 'L', vi=noex)
+        call jeveuo(nomu//'.MAEX', 'L', vi=maex)
+        call asmpi_info(rank=mrank, size=msize)
+        rang = to_aster_int(mrank)
+        nbproc = to_aster_int(msize)
+        nbmailL = nbmail
+        nbnoeuL = 0
+        do i = 1, nbnoeu
+            if (noex(i) .eq. rang) then
+                nbnoeuL = nbnoeuL+1
+            end if
+        end do
+        call asmpi_comm_vect('MPI_SUM', 'I', sci=nbnoeuL)
+    else
+        nbmailL = nbmail
+        nbnoeuL = nbnoeu
+    end if
 !
     if (present(niv_)) then
         ifm = 6
@@ -113,11 +143,24 @@ subroutine infoma(nomu, niv_)
         dimmai(i) = 0
         call jenuno(jexnum('&CATA.TM.NOMTM', i), mclmai(i))
     end do
-    do i = 1, nbmail
-        ityp = typmail(i)
-        ASSERT((ityp .gt. 0) .and. (ityp .lt. 100))
-        dimmai(ityp) = dimmai(ityp)+1
-    end do
+    if (lPMesh) then
+        nbmailL = 0
+        do i = 1, nbmail
+            ityp = typmail(i)
+            ASSERT((ityp .gt. 0) .and. (ityp .lt. 100))
+            if (maex(i) .eq. rang) then
+                dimmai(ityp) = dimmai(ityp)+1
+                nbmailL = nbmailL+1
+            end if
+        end do
+        call asmpi_comm_vect('MPI_SUM', 'I', 100, vi=dimmai)
+    else
+        do i = 1, nbmail
+            ityp = typmail(i)
+            ASSERT((ityp .gt. 0) .and. (ityp .lt. 100))
+            dimmai(ityp) = dimmai(ityp)+1
+        end do
+    end if
 !
 !
 !
@@ -132,8 +175,8 @@ subroutine infoma(nomu, niv_)
                 write (ifm, 801) zk80(iad+i-1)
             end do
         end if
-        write (ifm, 804) comnoe, nbnoeu
-        write (ifm, 804) commai, nbmail
+        write (ifm, 804) comnoe, nbnoeuL
+        write (ifm, 804) commai, nbmailL
         do i = 1, nbmmai
             if (dimmai(i) .ne. 0) write (ifm, 806) mclmai(i), dimmai(i)
         end do
