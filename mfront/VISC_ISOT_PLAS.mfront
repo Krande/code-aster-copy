@@ -1,0 +1,1181 @@
+/* -------------------------------------------------------------------- */
+/* Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org             */
+/* This file is part of code_aster.                                     */
+/*                                                                      */
+/* code_aster is free software: you can redistribute it and/or modify   */
+/* it under the terms of the GNU General Public License as published by */
+/* the Free Software Foundation, either version 3 of the License, or    */
+/* (at your option) any later version.                                  */
+/*                                                                      */
+/* code_aster is distributed in the hope that it will be useful,        */
+/* but WITHOUT ANY WARRANTY; without even the implied warranty of       */
+/* MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the        */
+/* GNU General Public License for more details.                         */
+/*                                                                      */
+/* You should have received a copy of the GNU General Public License    */
+/* along with code_aster.  If not, see <http://www.gnu.org/licenses/>.  */
+/* -------------------------------------------------------------------- */
+
+/* ************************************************************************** */
+/* ISOTROPIC ELASTO-VISCOPLASTIC POLYCRYSTAL BEHAVIOUR OF BAINITIC RPV STEELS */
+/* ************************************************************************** */
+
+/* NB: the ImplicitII DSL (Domain Specific Language) does not automatically
+         predefine the ElasticStrain eel as the first internal state variable */
+@DSL ImplicitII;
+@Behaviour VISC_ISOT_PLAS;
+@Author Ghiath MONNET, Jeremy DALPHIN;
+@Date 17/06/2025;
+@Description{
+  An isotropic elastoviscoplastic law (polycrystalline) for bainitic RPV steels.
+  It describes the Taylor polycrystal behaviour by the Kocks-Mecking scheme.
+  The temperature T must be given in Celcius degrees (°C) and it is the only
+  external state variable considered in this law.
+  The elastic behaviour is given using the following expressions:
+    - Young modulus (YOUNG_MODULUS) := (2.6e6 Pa) * (-23.721 * T(°C) + 78821.0);
+    - Poisson ratio (POISSON_RATIO) := 0.3 .
+  It also accounts for the fundamental microstructure features:
+    - grain size (GRAIN_SIZE);
+    - dislocation density (RHO_DISLOCATION);
+    - solute cluster size (SOLUTE_CLUSTER_SIZE);
+    - solute cluster density (SOLUTE_CLUSTER_DENSITY).
+  Two flow rules are used depending on deformation conditions:
+    - friction controlled at law temperature / high strain rates;
+    - drag controlled at high temperature / low strain rates.
+  The law accounts empirically for static and dynamic ageings, as well as for
+  large deformations.
+  Two additional physical constants (ONE_METER and ONE_PASCAL) must be specified
+  by the user to ensure that the above length- and stress-related quantities
+  can be properly converted into the international system (SI) of units.
+  In particular, all physical quantities are assumed to be given in the
+  international system of units inside this file.
+
+  The behaviour law can be detailed as follows:
+    - eto = eel + evp
+    - sig = D_elas(YOUNG_MODULUS(T(°C)),POISSON_RATIO) * eel
+    - dot(evp) = dot(p) * 1.5*deviator(sig)/sigmaeq(sig)
+    - dot(p) = 1.0e-6*[ (1/5.0e6) * max( 0.0, sigmaeq(sig)-sigC(p,dot(p)) ) ]^10
+    The pseudo-yield surface criterion sigC(p,dot(p)) is then decomposed into
+    several terms:
+      - sigC(p,dot(p)) = sigHP + VD + VS(p) + sigE(dot(p)) + R(p,sigE(dot(p)))
+      - R(p,sigE(dot(p))) = sqrt{ sigI2 + sig_auto2(p) +
+                                              sigLT2(sig_auto2(p),sigE(dot(p)) }
+      - sigLT2(sig_auto2(p),sigE(dot(p)) =
+                                  [max(0.0,sqrt{3*sig_auto2(p)}-sigE(dot(p)))]^2
+      Introducing the shear modulus (2nd Lame coefficient) denoted mu, which
+      depends on YOUNG_MODULUS(T(°C)) and POISSON_RATIO, each above term depends
+      itself on several sub-terms:
+        - sigHP = mu * sqrt{ 3.3090e-11 / GRAIN_SIZE }
+        - VD = 2.5e7 * min( max( 0.0 , 1.0e-2 * T(°C) - 2.0 ) , 1.0 )
+        - VS(p) = ( 8.0e7 - 2.0e5 * ( T(°C) + 150.0 ) ) * exp( -200.0 * p )
+        - sigE(dot(p)) = 0.0 if dot(p) <= exp[ 19.3289 - 9744.78/T(°K) ] and
+                         900.0e6 if dot(p) >= exp(19.3289) and otherwise
+                  900.0e6 * [ 1 - (T(°K)/9744.78) * ( 19.3289 - log(dot(p) ) ]^2
+        - sigI2 = 0.0 if 1.0e-22 * SOLUTE_CLUSTER_DENSITY > 1.0e-2 and otherwise
+             = mu * mu * 3.35e-8 * [ 1.0e9 * SOLUTE_CLUSTER_SIZE]^2.3 *
+                                          [1.0e-22*SOLUTE_CLUSTER_DENSITY]^(8/7)
+        - sig_auto2(p) = mu * mu *[ 4/(4*L*f) - 3/(4*L*f) * exp(-p) -
+                    ( 1/(4*L*f) - 1.5376e-20 * RHO_DISLOCATION ) * exp(-3*f*p) ]
+        where the last sub-term depends on the free mean distance L and the
+        annihilation distance f, both normalized by the Burgers vector
+                                                        denoted b (:=2.48e-10m):
+          - L = 1/( 1/4500.0 + 2.717e-4/40.0 *
+                                           sqrt{1.0e-22*SOLUTE_CLUSTER_DENSITY})
+          - f = min( 0.019 * T(°K) + 1.178, 6.8 )
+
+  We refer to the Aster documentation R5-03-38 for a more detailed
+  description of the model. It is mainly based on the one described in the
+  article of Journal of Nuclear Materials 586 (2023) 154647, entitled Analytical
+  flow equation for irradiated low-alloy steels established by multiscale
+  modeling, and written by Ghiath MONNET.
+} /* End of @Description */
+
+/* ************************************************************************** */
+/* Section providing the parameters of the implicit algorithm                 */
+/* ************************************************************************** */
+
+@Algorithm NewtonRaphson;
+
+/* Parameter ruling the implicit scheme */
+@Theta 1.0;
+@PhysicalBounds theta in [0.0:1.0];
+@Bounds theta in [0.5:1.0];
+
+/* Parameter ruling the convergence criterion (1.0e-08 by default in MFront). */
+/* NB: this value can be changed via the RESI_INTE keyword in Code_Aster */
+@Epsilon 5.0e-14;
+@PhysicalBounds epsilon in [0.0:*[;
+@Bounds epsilon in [1.0e-30:1.0];
+
+/* Parameter for the maximal number of iterations (100 by default in MFront). */
+/* NB: this value can be changed via the ITER_INTE_MAXI keyword in Code_Aster */
+@IterMax 100; /* NB: it cannot be negative (unsigned integer parameter) */
+
+/* ************************************************************************** */
+/* Section providing the material properties that must be given by the user   */
+/* ************************************************************************** */
+
+/* NB1: we recall that the values of the materials in the DEFI_MATERIAU command
+        of Aster must be given in the same order than the one described below */
+
+/* NB2: to avoid the truncation of variable names in Aster, we recall that they
+          should be lower than 14 characters (for tensors and 16 for scalars) */
+
+/* Activate the checking of physical dimensions in the MFront algorithm */
+@UseQt true;
+
+/* Young modulus (in Pa if SI units are considered), expected to be set to
+                                (2.6e6 Pa)*(78821.0-23.721*T(°C)) in this law */
+@MaterialProperty stress YOUNG_MODULUS;
+@PhysicalBounds YOUNG_MODULUS in [0.0:*[;
+@Bounds YOUNG_MODULUS in [0.0:1.0e30];
+YOUNG_MODULUS.setGlossaryName("YoungModulus");
+
+/* Poisson ratio (no unit) that is expected to be set to 0.3 in this law */
+@MaterialProperty real POISSON_RATIO;
+@PhysicalBounds POISSON_RATIO in [-1.0:0.5];
+@Bounds POISSON_RATIO in [-0.99:0.49];
+POISSON_RATIO.setGlossaryName("PoissonRatio");
+
+/* Size of grains (in m if SI units are considered and in [1.0e-7m; 1.0e-3m]) */
+/* NB: checks for bounds is done during the initialization of local variables */
+@MaterialProperty length GRAIN_SIZE;
+@PhysicalBounds GRAIN_SIZE in [0.0:*[;
+@Bounds GRAIN_SIZE in [1.0e-30:1.0e30];
+GRAIN_SIZE.setEntryName("TAILLE_GRAIN");
+
+/* Density of initial dislocations (in m^⁻2 if SI units are considered and in
+                                                    [1.0e12m^⁻2; 1.0e20m^⁻2]) */
+/* NB: checks for bounds is done during the initialization of local variables */
+@MaterialProperty result_type<result_type<real,length,OpDiv>,length,OpDiv>
+                                                                RHO_DISLOCATION;
+@PhysicalBounds RHO_DISLOCATION in [0.0:*[;
+@Bounds RHO_DISLOCATION in [0.0:1.0e30];
+RHO_DISLOCATION.setEntryName("D_DISLOC");
+
+/* Density of solute clusters (in m^-3 if SI units are considered and in
+                                                      [0.0m^-3; 1.0e25m^-3] ) */
+/* NB: checks for bounds is done during the initialization of local variables */
+@MaterialProperty result_type<result_type<result_type<real,length,OpDiv>,
+                             length,OpDiv>,length,OpDiv> SOLUTE_CLUSTER_DENSITY;
+@PhysicalBounds SOLUTE_CLUSTER_DENSITY in [0.0:*[;
+@Bounds SOLUTE_CLUSTER_DENSITY in [0.0:1.0e30];
+SOLUTE_CLUSTER_DENSITY.setEntryName("C_AMAS");
+
+/* Size of solute clusters (in m if SI units are considered and in
+                                                          [1.0e-9m; 1.0e-8m]) */
+/* NB: checks for bounds is done during the initialization of local variables */
+@MaterialProperty length SOLUTE_CLUSTER_SIZE;
+@PhysicalBounds SOLUTE_CLUSTER_SIZE in [0.0:*[;
+@Bounds SOLUTE_CLUSTER_SIZE in [0.0:1.0e30];
+SOLUTE_CLUSTER_SIZE.setEntryName("TAILLE_AMAS");
+
+/* One Meter expressed in the unit system of lengthes considered by the user.
+    (for example ONE_METER=1.0e3 if mm are used in Aster). It is introduced
+      in MFront to be consistent with Aster, since the latter do not assume that
+          the physical quantities are given in the international system units */
+@MaterialProperty length ONE_METER;
+@PhysicalBounds ONE_METER in [0.0:*[;
+@Bounds ONE_METER in [1.0e-18:1.0e18];
+ONE_METER.setEntryName("LengthUnit");
+
+/* One Pascal expressed in the unit system of stresses considered by the user.
+    (for example ONE_PASCAL=1.0e-6 if MPa are used in Aster). It is introduced
+     in MFront to be consistent with Aster, since the latter do not assume that
+       the physical quantities are given in the international system of units */
+@MaterialProperty stress ONE_PASCAL;
+@PhysicalBounds ONE_PASCAL in [0.0:*[;
+@Bounds ONE_PASCAL in [1.0e-18:1.0e18];
+ONE_PASCAL.setEntryName("StressUnit");
+
+/* ************************************************************************** */
+/* Section providing the internal state variables                             */
+/* ************************************************************************** */
+
+/* Equivalent visco-plastic strain (the only implicit unknown of the problem) */
+@StateVariable strain p;
+p.setEntryName("EPSPEQ");
+
+/* NB: @StateVariable concerns internal state variables that are part of the
+         implicit algorithm whereas @AuxiliaryStateVariables are other internal
+          state variables that can be updated explicitly during the algorithm */
+
+/* INDIPLAS=real(1.0) if dp>strain(0.0) and real(0.0) otherwise */
+@AuxiliaryStateVariable real INDIPLAS;
+INDIPLAS.setEntryName("INDIPLAS");
+
+/* The DSL ImplicitII does not automatically predefine the ElasticStrain eel
+                      (symmetric tensor) as the first internel state variable */
+@AuxiliaryStateVariable StrainStensor eel_old;
+eel_old.setGlossaryName("ElasticStrain");
+
+/* ************************************************************************** */
+/* Section implementing a private function to check bounds dynamically        */
+/* ************************************************************************** */
+@Private{
+  /* The function areBoundsOk() returns true if bound are ok, otherwise false */
+  bool areBoundsOk(void)
+  {
+    /* Check the value of the parameter ruling the implicit scheme */
+    if (theta<real(0.5) || theta>real(1.0))
+    {
+      std::cout << "Error: the value given to MFront for the parameter ruling ";
+      std::cout << "the implicit numerical scheme and denoted 'theta' (:=";
+      std::cout << theta << ") cannot be ";
+      if (theta<real(0.0))
+      {
+        std::cout << "physically negative";
+      }
+      else if (theta<real(0.5))
+      {
+        std::cout << "lower than one-half";
+      }
+      else
+      {
+        std::cout << "physically greater than one";
+      }
+      std::cout << "." << std::endl;
+      return false;
+    }
+
+    /* Check the value of the parameter ruling the convergence criterion */
+    if (epsilon<real(1.0e-30) || epsilon>real(1.0))
+    {
+      std::cout << "Error: the value given to MFront for the parameter ruling ";
+      std::cout << "the convergence criterion denoted 'RESI_INTE' or ";
+      std::cout << "'epsilon' (:=" << epsilon << ") ";
+      if (epsilon<=real(0.0))
+      {
+        std::cout << "should be physically positive";
+      }
+      else if (epsilon<real(1.0e-30))
+      {
+        std::cout << "cannot be lower than 1.0e-30";
+      }
+      else
+      {
+        std::cout << "cannot be greater than one";
+      }
+      std::cout << "." << std::endl;
+      return false;
+    }
+
+    /* Check that the temperature T (given in °C) is not too high or above the
+        absolute zero (with a tolerance of tol_T:=0.15°C so that its value in °K
+                is invertible, which is needed for the computation of exp_Af) */
+    if (T<temperature(-273.0) || T>temperature(1.0e30))
+    {
+      std::cout << "Error: the temperature given to MFront and denoted by the ";
+      std::cout << "external state variable 'Temperature' or 'T' (:=" << T ;
+      std::cout << "°C) cannot be ";
+      if (T<temperature(-273.15))
+      {
+        std::cout << "physically lower than the absolute zero i.e. -273.15°C";
+      }
+      else if (T<temperature(-273.0))
+      {
+        std::cout << "lower than -273.0°C";
+      }
+      else
+      {
+        std::cout << "greater than 1.0e30°C";
+      }
+      std::cout << "." << std::endl;
+      return false;
+    }
+
+    /* Check the prescribed stress unit is not below/above 1 atto-/Exa-Pascal */
+    if (ONE_PASCAL<stress(1.0e-18) || ONE_PASCAL>stress(1.0e18))
+    {
+      std::cout << "Error: the stress unit given to MFront and associated ";
+      std::cout << "with the eighth material property denoted 'StressUnit', ";
+      std::cout << "'V8', or 'ONE_PASCAL' (:=" << ONE_PASCAL << ") ";
+      if (ONE_PASCAL<=stress(0.0))
+      {
+        std::cout << "should be physically positive";
+      }
+      else if (ONE_PASCAL<stress(1.0e-18))
+      {
+        std::cout << "cannot be lower than 1.0e-18 (or equivalently a stress ";
+        std::cout << "unit above the Exa-Pascal i.e. greater than 1.0EPa)";
+      }
+      else
+      {
+        std::cout << "cannot be greater than 1.0e18 (or equivalently a stress ";
+        std::cout << "unit below the atto-Pascal i.e. lower than 1.0aPa)";
+      }
+      std::cout << "." << std::endl;
+      return false;
+    }
+
+    /* Check that the provided Young modulus is not too high and positive */
+    if (YOUNG_MODULUS<=stress(0.0) || YOUNG_MODULUS>stress(1.0e30))
+    {
+      std::cout << "Error: the Young modulus given to MFront and associated ";
+      std::cout << "with the first material property denoted 'YoungModulus', ";
+      std::cout << "'V1', or 'YOUNG_MODULUS' (:=" << YOUNG_MODULUS <<" i.e. " ;
+      std::cout << YOUNG_MODULUS/ONE_PASCAL << "Pa) ";
+      if (YOUNG_MODULUS<=stress(0.0))
+      {
+        std::cout << "should be physically positive";
+      }
+      else
+      {
+        std::cout << "cannot be greater than 1.0e30 (i.e. ";
+        std::cout << stress(1.0e30)/ONE_PASCAL << "Pa)" ;
+      }
+      std::cout << "." << std::endl;
+      return false;
+    }
+
+    /* Check the provided Poisson ratio is in the interval [-0.99; 0.49] */
+    if (POISSON_RATIO<real(-0.99) || POISSON_RATIO>real(0.49))
+    {
+      std::cout << "Error: the Poisson ratio given to MFront and associated ";
+      std::cout << "with the second material property denoted 'PoissonRatio', ";
+      std::cout << "'V2', or 'POISSON_RATIO' (:=" << POISSON_RATIO <<") ";
+      if (POISSON_RATIO<=real(-1.0))
+      {
+        std::cout << "should be physically greater than minus one";
+      }
+      else if (POISSON_RATIO>=real(0.5))
+      {
+        std::cout << "should be physically lower than one-half";
+      }
+      else if (POISSON_RATIO<real(-0.99))
+      {
+        std::cout << "cannot be lower than -0.99";
+      }
+      else
+      {
+        std::cout << "cannot be greater than 0.49";
+      }
+      std::cout << "." << std::endl;
+      return false;
+    }
+
+    /* Check the prescribed length unit is not below/above 1 atto-/Exa-meter */
+    if (ONE_METER<length(1.0e-18) || ONE_METER>length(1.0e18))
+    {
+      std::cout << "Error: the length unit given to MFront and associated ";
+      std::cout << "with the seventh material property denoted 'LengthUnit', ";
+      std::cout << "'V7', or 'ONE_METER' (:=" << ONE_METER << ") ";
+      if (ONE_METER<=length(0.0))
+      {
+        std::cout << "should be physically positive";
+      }
+      else if (ONE_METER<length(1.0e-18))
+      {
+        std::cout << "cannot be lower than 1.0e-18 (or equivalently a length ";
+        std::cout << "unit above the Exa-meter i.e. greater than 1.0Em)";
+      }
+      else
+      {
+        std::cout << "cannot be greater than 1.0e18 (or equivalently a length ";
+        std::cout << "unit below the atto-meter i.e. lower than 1.0am)";
+      }
+      std::cout << "." << std::endl;
+      return false;
+    }
+
+    /* Check that the provided grain size (converted in SI unit i.e. in meter)
+            is in the physical interval [1.0e-7m; 1.0e-3m] valid for this law */
+    if (GRAIN_SIZE<real(1.0e-7)*ONE_METER|| GRAIN_SIZE>real(1.0e-3)*ONE_METER)
+    {
+      std::cout << "Error: the grain size given to MFront and associated ";
+      std::cout << "with the third material property denoted 'TAILLE_GRAIN', ";
+      std::cout << "'V3', or 'GRAIN_SIZE' (:=" << GRAIN_SIZE <<" i.e. " ;
+      std::cout << GRAIN_SIZE/ONE_METER << "m) ";
+      if (GRAIN_SIZE<=length(0.0))
+      {
+        std::cout << "should be physically positive";
+      }
+      else if (GRAIN_SIZE<length(1.0e-30))
+      {
+        std::cout << "cannot be lower than 1.0e-30 (i.e. ";
+        std::cout << real(1.0e-30)/ONE_METER << "m)";
+      }
+      else if (GRAIN_SIZE>length(1.0e30))
+      {
+        std::cout << "cannot be greater than 1.0e30 (i.e. ";
+        std::cout << real(1.0e30)/ONE_METER << "m)";
+      }
+      else if (GRAIN_SIZE<real(1.0e-7)*ONE_METER)
+      {
+        std::cout << "cannot be lower than " << real(1.0e-7)*ONE_METER;
+        std::cout << " (i.e. 1.0e-7m)";
+      }
+      else
+      {
+        std::cout << "cannot be greater than " << real(1.0e-3)*ONE_METER;
+        std::cout << " (i.e. 1.0e-3m)";
+      }
+      std::cout << "." << std::endl;
+      return false;
+    }
+
+    /* Check that the provided initial dislocation density (converted in SI unit
+          i.e. in meter^-2) is in the physical interval [1.0e12m^⁻2; 1.0e20m^⁻2]
+                                                           valid for this law */
+    if (RHO_DISLOCATION*ONE_METER*ONE_METER<real(1.0e12) ||
+                               RHO_DISLOCATION*ONE_METER*ONE_METER>real(1.0e20))
+    {
+      std::cout << "Error: the initial dislocation density given to MFront ";
+      std::cout << "and associated with the fourth material property denoted ";
+      std::cout << "'D_DISLOC', 'V4', or 'RHO_DISLOCATION' (:=";
+      std::cout << RHO_DISLOCATION << " i.e. ";
+      std::cout << RHO_DISLOCATION*ONE_METER*ONE_METER << "m^-2) cannot be ";
+      if (length(1.0)*length(1.0)*RHO_DISLOCATION<real(0.0))
+      {
+        std::cout << "physically negative";
+      }
+      else if (length(1.0)*length(1.0)*RHO_DISLOCATION>real(1.0e30))
+      {
+        std::cout << "greater than 1.0e30 (i.e. ";
+        std::cout << real(1.0e30)*ONE_METER*ONE_METER << "m^-2)";
+      }
+      else if (RHO_DISLOCATION*ONE_METER*ONE_METER<real(1.0e12))
+      {
+        std::cout << "lower than " << real(1.0e12)/(ONE_METER*ONE_METER);
+        std::cout << " (i.e. 1.0e12m^-2)";
+      }
+      else
+      {
+        std::cout << "greater than " << real(1.0e20)/(ONE_METER*ONE_METER);
+        std::cout << " (i.e. 1.0e20m^-2)";
+      }
+      std::cout << "." << std::endl;
+      return false;
+    }
+
+    /* Check that the provided solute cluster density (converted in SI unit i.e
+                  in meter^-3) is in the physical interval [0.0m^⁻3; 1.0e25m^⁻3]
+                                                           valid for this law */
+    if (SOLUTE_CLUSTER_DENSITY*ONE_METER*ONE_METER*ONE_METER<real(0.0) ||
+              SOLUTE_CLUSTER_DENSITY*ONE_METER*ONE_METER*ONE_METER>real(1.0e25))
+    {
+      std::cout << "Error: the solute cluster density given to MFront and ";
+      std::cout << "associated with the fifth material property denoted ";
+      std::cout << "'C_AMAS', 'V5', or 'SOLUTE_CLUSTER_DENSITY' (:=";
+      std::cout << SOLUTE_CLUSTER_DENSITY <<" i.e. ";
+      std::cout << SOLUTE_CLUSTER_DENSITY*ONE_METER*ONE_METER*ONE_METER;
+      std::cout << "m^-3) cannot be ";
+      if (length(1.0)*length(1.0)*length(1.0)*SOLUTE_CLUSTER_DENSITY<real(0.0))
+      {
+        std::cout << "physically negative";
+      }
+      else if (length(1.0)*length(1.0)*length(1.0)*SOLUTE_CLUSTER_DENSITY>
+                                                                   real(1.0e30))
+      {
+        std::cout << "greater than 1.0e30 (i.e. ";
+        std::cout << real(1.0e30)*ONE_METER*ONE_METER*ONE_METER << "m^-3)";
+      }
+      else
+      {
+        std::cout << "greater than ";
+        std::cout << real(1.0e25)/(ONE_METER*ONE_METER*ONE_METER);
+        std::cout << " (i.e. 1.0e25m^-3)";
+      }
+      std::cout << "." << std::endl;
+      return false;
+    }
+
+    /* Check that the provided solute cluster size (converted in SI unit i.e. in
+     meter) is in the physical interval [1.0e-9m; 1.0e-8m] valid for this law */
+    if (SOLUTE_CLUSTER_SIZE<real(1.0e-9)*ONE_METER ||
+                                     SOLUTE_CLUSTER_SIZE>real(1.0e-8)*ONE_METER)
+    {
+      std::cout << "Error: the solute cluster size given to MFront and ";
+      std::cout << "associated with the sixth material property denoted ";
+      std::cout << "'TAILLE_AMAS', 'V6', or 'SOLUTE_CLUSTER_SIZE' (:=";
+      std::cout << SOLUTE_CLUSTER_SIZE << " i.e. ";
+      std::cout << SOLUTE_CLUSTER_SIZE/ONE_METER << "m) cannot be ";
+      if (SOLUTE_CLUSTER_SIZE<length(0.0))
+      {
+        std::cout << "physically negative";
+      }
+      else if (SOLUTE_CLUSTER_SIZE>length(1.0e30))
+      {
+        std::cout << "greater than 1.0e30 (i.e. " << real(1.0e30)/ONE_METER;
+        std::cout  << "m)";
+      }
+      else if (SOLUTE_CLUSTER_SIZE<real(1.0e-9)*ONE_METER)
+      {
+        std::cout << "lower than " << real(1.0e-9)*ONE_METER;
+        std::cout << " (i.e. 1.0e-9m)";
+      }
+      else
+      {
+        std::cout << "greater than " << real(1.0e-8)*ONE_METER;
+        std::cout << " (i.e. 1.0e-8m)";
+      }
+      std::cout << "." << std::endl;
+      return false;
+    }
+
+    return true;
+  }
+
+} /* End of @Private */
+
+/* ************************************************************************** */
+/* Section providing the constant values within the implicit algorithm        */
+/* ************************************************************************** */
+
+/* NB1: @Parameter refers to a constant variable that can be changed at the
+        execution time by the user, where @StaticVariable remain internal to the
+                                                            MFront algorithm. */
+
+/* NB2: Sadly, MFront does not seem to support result_type<...> for static
+        variables so we change @StaticVariable for @Parameter even if it is
+        less efficient (the bug has been fixed in more recent version of MFront
+                                than 4.2.0 which is the current one of Aster) */
+
+/* Constant giving the temperature (in °C) of the absolute zero Kelvin (0°K) */
+@StaticVariable temperature T_zeroK=-273.15;
+@StaticVariable temperature tol_T=0.15;
+
+/* NB: no positive constants related to the Poisson ratio = 0.3 and the Young
+                      modulus =(2.6e6 Pa)*(-23.721*T(°C)+78821.0) in this law */
+
+/* Positive Hall-Petch term related to the computation of
+                                         sigHP=mu*sqrt(3.3090e-11/GRAIN_SIZE) */
+/* NB: the constant K_mu300_2 is defined as the square of the Hall-Petch
+   constant K (in Pa.sqrt(m)) divided by mu(:=(1.0e6Pa)(-23.721*T(°C)+78821.0))
+                                                             taken at T=300°K */
+@StaticVariable length K_mu300_2=3.3090e-11;
+
+/* Positive constants related to the computation of
+                                      VD=2.5e7*min(max(0,1.0e-2*T(°C)-2.0),1) */
+@StaticVariable stress A_VD=2.5e7;
+@StaticVariable thermalexpansion B_VD=1.0e-2;
+@StaticVariable real C_VD=2.0;
+
+/* Positive constants related to the computation of
+                                     VS=(8.0e7-2.0e5*(T(°C)+150))*exp(-200*p) */
+/* NB: if the temperature is too high, there is softening (VS < 0) */
+@StaticVariable stress A_VS=8.0e7;
+@Parameter result_type<stress,temperature,OpDiv> B_VS=2.0e5;
+@StaticVariable temperature C_VS=150.0;
+@Parameter result_type<real,strain,OpDiv> D_VS=200.0;
+
+/* Positive constants related to the computation of the free mean distance
+       (normalized by the Burgers vector b:=2.48e-10m):
+          L=1/(1/4500.0+(2.717e-4/40.0)*sqrt(1.0e-22*SOLUTE_CLUSTER_DENSITY)) */
+@StaticVariable real A_L=2.222222222e-4; /* A_L := 1/lam_ini with lam_ini=4500.0
+                                      (dimensionless because normalized by b) */
+@StaticVariable real B_L=6.7925e-6; /* B_L := 2.717e-4/K_SC with K_SC=40.0
+                                      (dimensionless because normalized by b) */
+@StaticVariable real C_L=1.0e-22; /* Dimensionless because we will adimension
+                                                     inside the sqrt function */
+
+/* Positive constants related to the computation of the annihilation distance
+                        (normalized by the Burgers vector b:=2.48e-10m):
+                                                 f=min(6.8,1.178+0.019*T(°K)) */
+@StaticVariable real A_f=6.8;
+@StaticVariable real B_f=1.178;
+@StaticVariable thermalexpansion C_f=0.019;
+
+/* Positive constant related to the computations of H:=mu*mu/(4*f*L) and
+                                        S:=H-mu*mu*1.5376e-20*RHO_DISLOCATION */
+@StaticVariable real A_H=1.5376e-20; /* A_H:=b^2/4 but dimensionless because we
+                                    will adimension dislocation density later */
+
+/* Positive constant related to the computation of
+                                      sig_auto2=4*H-3*H*exp(-p)-S*exp(-3*f*p) */
+@Parameter result_type<real,strain,OpDiv> A_sig_auto2=3.0;
+
+/* Positive constants related to the computation of the squared contributions
+     of the solute clusters SigI2=mu*mu*3.35e-8*[1.0e9*SOLUTE_CLUSTER_SIZE]^2.3*
+                                          [1.0e-22*SOLUTE_CLUSTER_DENSITY]^(8/7)
+                  if 1.0e-22*SOLUTE_CLUSTER_DENSITY>1.0e-2 and zero otherwise */
+@StaticVariable real A_sigI2=1.0e-2;
+@StaticVariable real B_sigI2=3.35e-8;
+@StaticVariable real C_sigI2=1.0e9; /* Dimensionless because we will adimension
+                                                      inside the pow function */
+@StaticVariable real D_sigI2=2.3;
+@IntegerConstant E_sigI2=8;
+@IntegerConstant F_sigI2=7;
+
+/* Positive constants related to the computation of
+        sigE=900.0e6*[min(max(0,1-T(°K)*(20.4276-log(3*dot(p))/9744.78),1)]^2 */
+/* WARNING here: the natural logarithm appearing in the computation of sigE is
+                 protected dynamically as follows: sigE belongs to [0,1] is
+                 equivalent that dot(p) belongs to [exp(Bf-Af/T(°K)),exp(Bf)]
+                 Since one bounds depends on the temperature, we have proceeded
+                 differently than for y and we have defined the bounds exp_Bf
+                 and exp_Af as local variables to ensure that. */
+@StaticVariable stress sig_of=900.0e6; /* Reference constant of the friction
+                                                                       regime */
+@StaticVariable temperature Af=9744.78; /* = delta_Go/k= 0.84eV/8.62e-5eV.K^-1*/
+@StaticVariable real Bf=19.3289; /* = ln(gamma_friction_zero) =
+                                      ln(rho_m*b*F*l_c) =
+                                           ln(1.0e13*2.48e-10*1.0e13*1.0-e-8) */
+                                 /* NB: 19.3289+log(3)=20.4276 and Cf is kept
+                                     because of the dimensional analysis (and to
+                                          adimension inside the log function) */
+@Parameter result_type<time,strain,OpDiv> Cf=1.0;
+
+/* Positive constants related to the drag regime related to the computation
+                      of dp=dt*1.0e-6*[max(0.0,(sigmaeq(sig)-sigC)/5.0e6)]^10 */
+@StaticVariable strainrate gamma_od=1.0e-6; /* Reference speed of deformation
+                                                           in the drag regime */
+@StaticVariable stress sig_od=5.0e6; /* Reference stress of the drag regime */
+@IntegerConstant nd=10; /* The reference exponent nd of the drag regime */
+
+/* ************************************************************************** */
+/* Section providing the local variables                                      */
+/* ************************************************************************** */
+
+/* Local variables to keep track of the user unit of stress */
+@LocalVariable stress pascal;
+
+/* Temperature expressed in Kelvin degrees (°K) */
+@LocalVariable temperature TK;
+
+/* Elastic tensor given by YOUNG_MODULUS=(2.6e6Pa)*(78821.0-23.721*T(°C)) and
+                                                            POISSON_RATIO=0.3 */
+@LocalVariable StiffnessTensor D_elas;
+
+/* Two contributions of the grain size (sigHP) and temperature (VD)
+                            adimensionalized by mu to reduce numerical errors */
+@LocalVariable real sigHPplusVD;
+
+/* Fixed coefficient in the contribution related to the equivalent visco-plastic
+          strain p (VS) and adimensionalized by mu to reduce numerical errors */
+@LocalVariable real VS_0;
+
+/* 3 times the annihilation distance f normalised by b (the Burgers vector) */
+@LocalVariable result_type<real,strain,OpDiv> Y;
+
+/* We define here H as 1/(4*L*f) (originally mu*mu/4*L*f and adimensionalized by
+                                            mu*mu to reduce numerical errors) */
+@LocalVariable real H;
+
+/* We define here Hini as 1.5376e-20*RHO_DISLOCATION (originally
+                           mu*mu*1.5376e-20*RHO_DISLOCATION and adimensionalized
+                                         by mu*mu to reduce numerical errors) */
+@LocalVariable real Hini;
+
+/* We define S_Yp as real(0.5)*theta*Y*(H-Hini) and
+                           S_p as result_type<real,strain,OpDiv>(1.5)*theta*H */
+@LocalVariable result_type<real,strain,OpDiv> S_Yp;
+@LocalVariable result_type<real,strain,OpDiv> S_p;
+
+/* Contribution related to the solute clusters (sigI2) and adimensionalized by
+                                                mu to reduce numerical errors */
+@LocalVariable real sigI2;
+
+/* We introduce here exp_Bf=1,1*exp(Bf) and exp_Af=0.9*exp(Bf-Af/T(°K)) to
+                 protect the operation log(dot(p)) in the computation of sigE */
+@LocalVariable real exp_Bf;
+@LocalVariable real exp_Af;
+
+/* We introduce the adimensionalized version (by mu) of sig_of and sig_od to
+                                                  reduce the numerical errors */
+@LocalVariable real sig_of_mu;
+@LocalVariable real mu_sig_od;
+
+/* Boolean to keep track of the elastic prediction hypothesis */
+@LocalVariable bool bloading;
+
+/* Temporary variable to keep track of the derivative of p inside the Newton
+                                                                       method */
+@LocalVariable strainrate dot_p;
+
+/* Local variables to keep track of the Von Mises norm and flow direction
+                            adimensionalized by mu to reduce numerical errors */
+@LocalVariable real seq;
+@LocalVariable stress theta4mu_seq;
+@LocalVariable real ndmu_sig_od;
+@LocalVariable real ndseqmu_sig_od;
+@LocalVariable Stensor ndir;
+@LocalVariable real theta3;
+
+/* Local variable used to keep track of the elastic strain */
+@LocalVariable strain p_old;
+
+/* Local variables used to compute the Jacobian coefficient dfp_ddp
+                           adimensionalized by mu to reduce numerical errors  */
+@LocalVariable result_type<real,strain,OpDiv> dsigC_ddp;
+@LocalVariable result_type<real,strain,OpDiv> dsigE_ddp;
+@LocalVariable real dR2_dsig_auto2;
+@LocalVariable result_type<real,strain,OpDiv> dR2_2ddp;
+
+/* Local variables to compute the consistent tangent operator */
+@LocalVariable real ddp_ddeto_coefficient;
+@LocalVariable stress Dt_coefficient;
+
+/* Local variables used for the Newton method */
+@LocalVariable strain dp_left;
+@LocalVariable strain dp_right;
+@LocalVariable strain dp_old;
+@LocalVariable strain fp_old;
+
+/* ************************************************************************** */
+/* Section providing the initialization of the local variables                */
+/* ************************************************************************** */
+
+@InitLocalVariables{
+  /* Perform the checking of bounds if checkTheBounds is set to true */
+  const auto checkTheBounds=false;
+  if (checkTheBounds)
+  {
+    /* Stop if the function areBoundsOk() returns false (bounds are not ok) */
+    if (!areBoundsOk())
+    {
+      return false;
+    }
+  }
+
+  /* Compute the elastic tensor from Young modulus and Poisson ratio */
+  const auto T_ok=max(T_zeroK,T);
+  TK=max(temperature(0.0),T_ok-T_zeroK);
+  pascal=min(max(stress(1.0e-18),abs(ONE_PASCAL)),stress(1.0e18));
+  const auto young=max(stress(0.0),stress(1.0)*abs(YOUNG_MODULUS)/pascal);
+  const auto poisson=min(max(real(-0.99),POISSON_RATIO),real(0.49));
+  const auto mu2=young/(real(1.0)+poisson);
+  const auto mu=real(0.5)*mu2;
+  const auto imu=real(1.0)/max(stress(1.0e-30),mu);
+  const auto lambda=poisson*mu/(real(0.5)-poisson);
+  D_elas=lambda*Stensor4::IxI()+mu2*Stensor4::Id();
+
+  /* Two contributions of the grain size (sigHP) and temperature (VD) */
+  const auto meter=min(max(length(1.0e-18),abs(ONE_METER)),length(1.0e18));
+  const auto grain_size_coefficient=max(real(0.0),
+              K_mu300_2/max(length(1.0e-18),length(1.0)*abs(GRAIN_SIZE)/meter));
+  const auto sigHP=power<1,2>(grain_size_coefficient);
+  const auto VD=(A_VD*imu)*min(max(real(0.0),B_VD*T_ok-C_VD),real(1.0));
+  sigHPplusVD=sigHP+VD; /* We adimensionalize all stress quantities by mu to
+                                                      reduce numerical errors */
+
+  /* Contributions depending on the equivalent visco-plastic strain p (VS) */
+  VS_0=max(real(0.0),imu*(A_VS-B_VS*(C_VS+T_ok)));
+  const auto density=max(real(0.0),
+                           C_L*(abs(SOLUTE_CLUSTER_DENSITY)*meter*meter*meter));
+  const auto L=real(1.0)/(A_L+B_L*power<1,2>(density)); /* Free mean distance
+                                         normalized by b (the Burgers vector) */
+  const auto f=min(B_f+C_f*TK,A_f); /* Annihilation distance
+                                         normalized by b (the Burgers vector) */
+  Y=max(result_type<real,strain,OpDiv>(0.0),A_sig_auto2*f);
+  H=real(0.25)/(L*f);
+  Hini=A_H*(abs(RHO_DISLOCATION)*meter*meter);
+  S_Yp=real(0.5)*theta*Y*(H-Hini);
+  S_p=result_type<real,strain,OpDiv>(1.5)*theta*H;
+
+  /* Square of the contribution related to the solute clusters (sigI2) */
+  sigI2=real(0.0);
+  if (density>A_sigI2)
+  {
+    const auto size=max(real(0.0),C_sigI2*(abs(SOLUTE_CLUSTER_SIZE)/meter));
+    if (size>real(0.0))
+    {
+      sigI2=B_sigI2*pow(size,D_sigI2)*power<E_sigI2,F_sigI2>(density);
+    }
+  }
+
+  /* Contributions depending on the derivative dot(p) of the equivalent
+   visco-plastic strain (effective stress of the network friction sigE and R) */
+  exp_Bf=real(1.1)*exp(Bf);
+  exp_Af=real(0.9)*exp(Bf-Af/max(tol_T,TK)); /* NB: avoid zero division of
+                                                                        T(°K) */
+  sig_of_mu=sig_of*imu;
+  mu_sig_od=mu/sig_od;
+  ndmu_sig_od=nd*mu_sig_od;
+  ndseqmu_sig_od=ndmu_sig_od; /* Later multiplied by seq in @Predictor */
+
+  bloading=false;
+  dot_p=strainrate(0.0);
+
+  seq=real(0.0); /* real because we have adimension by mu to reduce errors */
+  theta4mu_seq=real(2.0)*theta*mu2; /* Later divided by seq in @Predictor */
+
+  ndir=Stensor(0.0);
+  theta3=real(3.0)*theta;
+
+  p_old=strain(0.0);
+
+  dsigC_ddp=result_type<real,strain,OpDiv>(0.0);
+  dsigE_ddp=result_type<real,strain,OpDiv>(0.0);
+  dR2_dsig_auto2=real(0.0);
+  dR2_2ddp=result_type<real,strain,OpDiv>(0.0);
+
+  ddp_ddeto_coefficient=real(0.0);
+  Dt_coefficient=stress(0.0);
+
+  dp_left=strain(0.0);
+  dp_right=strain(0.0);
+  dp_old=strain(0.0);
+  fp_old=strain(0.0);
+
+} /* End of @InitLocalVariables */
+
+
+/* ************************************************************************** */
+/* Section providing an explicit elastic prediction                           */
+/* ************************************************************************** */
+
+@Predictor{
+  /* Elastic prediction is made i.e. dp=0, which implies deel=deto */
+  /* We have adimensionalized by mu all stress quantities to reduce numerical
+                                                    errors on the estimations */
+  const auto dev_eel_elas=deviator(eel_old+deto);
+  const auto seq2_elas=max(real(0.0),real(6.0)*(dev_eel_elas|dev_eel_elas));
+  const auto seq_elas=power<1,2>(seq2_elas);
+
+  /* sigE=0 in this case (in particular sigLT2+sig_auto2=4*sig_auto2) */
+  const auto VS=VS_0*exp(-D_VS*max(strain(0.0),p));
+  const auto exp_Yp=exp(-Y*max(strain(0.0),p));
+  const auto exp_p=exp(-result_type<real,strain,OpDiv>(1.0)*max(strain(0.0),p));
+  const auto sig_auto2=
+                max(real(0.0),Hini*exp_Yp+H*(real(4.0)-exp_Yp-real(3.0)*exp_p));
+  const auto R2=max(real(0.0),real(4.0)*sig_auto2+sigI2);
+  const auto R=power<1,2>(R2);
+  const auto sigC=max(real(0.0),sigHPplusVD+VS+R); /* pseudo-yield surface */
+  bloading=(seq_elas>sigC);
+  if (bloading)
+  {
+    /* Compute quantities properly at middle time step (_mts) */
+    /* The flow direction is computed without using D_elas (less num. errors) */
+    const auto dev_eel_mts=deviator(eel_old+theta*deto);
+    const auto seq2_mts=max(real(0.0),real(6.0)*(dev_eel_mts|dev_eel_mts));
+    seq=power<1,2>(seq2_mts);
+    const auto iseq=real(1.0)/max(real(1.0e-30),seq);
+    ndir=real(3.0)*dev_eel_mts*iseq;
+    theta4mu_seq*=iseq;
+    ndseqmu_sig_od*=seq;
+
+    /* The first try is made so as to find the f(dp_left)<0 and f(dp_right)>0 */
+    dp_left=strain(1.0e-11);
+    const auto p_left=p+theta*dp_left;
+    const auto VS_left=VS_0*exp(-D_VS*max(strain(0.0),p_left));
+    const auto exp_Yp_left=exp(-Y*max(strain(0.0),p_left));
+    const auto exp_p_left=
+              exp(-result_type<real,strain,OpDiv>(1.0)*max(strain(0.0),p_left));
+    const auto sig_auto2_left=max(real(0.0),
+               Hini*exp_Yp_left+H*(real(4.0)-exp_Yp_left-real(3.0)*exp_p_left));
+    const auto iTa_left=(Bf-log(min(max(exp_Af,Cf*dp_left/dt),exp_Bf)))/Af;
+    const auto friction_coefficient_left=
+                            min(max(real(0.0),real(1.0)-TK*iTa_left),real(1.0));
+    const auto sigE_left=
+                  sig_of_mu*friction_coefficient_left*friction_coefficient_left;
+    const auto sigLT_left=
+                  max(real(0.0),power<1,2>(real(3.0)*sig_auto2_left)-sigE_left);
+    const auto sigLT2_left=sigLT_left*sigLT_left;
+    const auto R2_left=max(real(0.0),sig_auto2_left+sigLT2_left+sigI2);
+    const auto R_left=power<1,2>(R2_left);
+    const auto sigC_left=max(real(0.0),sigHPplusVD+VS_left+sigE_left+R_left);
+    const auto drag_coefficient_left=
+                        max(real(0.0),mu_sig_od*(seq-theta3*dp_left-sigC_left));
+    const auto fp_drag_left=(dt*gamma_od)*power<nd>(drag_coefficient_left);
+    if (abs(dp_left-fp_drag_left)<strain(1.0e-30))
+    {
+      /* We found directly the zero (almost impossible numerically) */
+      dp=fp_drag_left;
+      dp_left=dp-strain(1.0e-30);
+      dp_right=dp+strain(1.0e-30);
+    }
+    else
+    {
+      /* f(dp_left) is different from zero */
+      strain fp_left=dp_left-fp_drag_left;
+      strain fp_right=fp_left;
+      dp_right=dp_left;
+      if (fp_left<strain(0.0))
+      {
+        /* Lower bound found but try to find a better one */
+        while (fp_right<strain(0.0))
+        {
+          dp_right*=real(10.0);
+          const auto p_right=p+theta*dp_right;
+          const auto VS_right=VS_0*exp(-D_VS*max(strain(0.0),p_right));
+          const auto exp_Yp_right=exp(-Y*max(strain(0.0),p_right));
+          const auto exp_p_right=
+             exp(-result_type<real,strain,OpDiv>(1.0)*max(strain(0.0),p_right));
+          const auto sig_auto2_right=max(real(0.0),
+            Hini*exp_Yp_right+H*(real(4.0)-exp_Yp_right-real(3.0)*exp_p_right));
+          const auto iTa_right=
+                            (Bf-log(min(max(exp_Af,Cf*dp_right/dt),exp_Bf)))/Af;
+          const auto friction_coefficient_right=
+                           min(max(real(0.0),real(1.0)-TK*iTa_right),real(1.0));
+          const auto sigE_right=
+                sig_of_mu*friction_coefficient_right*friction_coefficient_right;
+          const auto sigLT_right=
+                max(real(0.0),power<1,2>(real(3.0)*sig_auto2_right)-sigE_right);
+          const auto sigLT2_right=sigLT_right*sigLT_right;
+          const auto R2_right=max(real(0.0),sig_auto2_right+sigLT2_right+sigI2);
+          const auto R_right=power<1,2>(R2_right);
+          const auto sigC_right=
+                         max(real(0.0),sigHPplusVD+VS_right+sigE_right+R_right);
+          const auto drag_coefficient_right=
+                      max(real(0.0),mu_sig_od*(seq-theta3*dp_right-sigC_right));
+          const auto fp_drag_right=
+                                (dt*gamma_od)*power<nd>(drag_coefficient_right);
+          fp_right=dp_right-fp_drag_right;
+        }
+        dp_left=dp_right/real(10.0);
+      }
+      else /*if (fp_left>strain(0.0))*/
+      {
+        /* Upper bound found but try to find a better one */
+        while (fp_right>strain(0.0))
+        {
+          dp_right/=real(10.0);
+          const auto p_right=p+theta*dp_right;
+          const auto VS_right=VS_0*exp(-D_VS*max(strain(0.0),p_right));
+          const auto exp_Yp_right=exp(-Y*max(strain(0.0),p_right));
+          const auto exp_p_right=
+             exp(-result_type<real,strain,OpDiv>(1.0)*max(strain(0.0),p_right));
+          const auto sig_auto2_right=max(real(0.0),
+            Hini*exp_Yp_right+H*(real(4.0)-exp_Yp_right-real(3.0)*exp_p_right));
+          const auto iTa_right=
+                            (Bf-log(min(max(exp_Af,Cf*dp_right/dt),exp_Bf)))/Af;
+          const auto friction_coefficient_right=
+                           min(max(real(0.0),real(1.0)-TK*iTa_right),real(1.0));
+          const auto sigE_right=
+                sig_of_mu*friction_coefficient_right*friction_coefficient_right;
+          const auto sigLT_right=
+                max(real(0.0),power<1,2>(real(3.0)*sig_auto2_right)-sigE_right);
+          const auto sigLT2_right=sigLT_right*sigLT_right;
+          const auto R2_right=max(real(0.0),sig_auto2_right+sigLT2_right+sigI2);
+          const auto R_right=power<1,2>(R2_right);
+          const auto sigC_right=
+                         max(real(0.0),sigHPplusVD+VS_right+sigE_right+R_right);
+          const auto drag_coefficient_right=
+                      max(real(0.0),mu_sig_od*(seq-theta3*dp_right-sigC_right));
+          const auto fp_drag_right=
+                                (dt*gamma_od)*power<nd>(drag_coefficient_right);
+          fp_right=dp_right-fp_drag_right;
+        }
+        dp_left=dp_right;
+        dp_right*=real(10.0);
+      }
+    }
+    /* f(dp_left) < 0 < f(dp_right==dp_left*10) */
+    dp=0.5*(dp_left+dp_right);
+    dp_old=dp*(real(1.0)+real(10.0)*epsilon);
+  }
+  else
+  {
+    dot_p=strainrate(0.0);
+  }
+  eel_old+=deto;
+  p_old=p;
+
+} /* End of @Predictor */
+
+
+/* ************************************************************************** */
+/* Section providing the implicit integration scheme                          */
+/* ************************************************************************** */
+
+@Integrator{
+  /* NB: fp is automatically initialized to dp and the Jacobian matrix dfp_ddp
+                                                                 to real(1.0) */
+  /*fp=dp;*/
+  /*dfp_ddp=real(1.0);*/
+  if (bloading)
+  {
+    /* NB: in this case dp>0 and deel=deto-dp*ndir. However, one can prove that
+       ndir(eel+theta*deel)=ndir(eel+theta*deto) and also that
+       seq(eel+theta*deel)=seq(eel+theta*deto)-3*mu*theta*dp
+       In particular we can see seq-sigC as a function of a single unknown dp */
+
+    /* If for some reason dp not in [dp_left dp_right], something went wrong */
+    /* Try to find a stable interval for the Newton method */
+    if (dp<dp_left || dp>dp_right)
+    {
+      /* Start from previous dp and we know that zero is in [dp_left; dp_old] */
+      fp-=dp;
+      if (fp_old>0)
+      {
+        dp_right=dp_old;
+        dp=real(0.5)*(dp_left+dp_right);
+      }
+      else
+      {
+        dp_left=dp_old;
+        dp=real(0.5)*(dp_left+dp_right);
+      }
+      fp+=dp;
+      /*dfp_ddp=real(1.0);*/
+    }
+    else if (dp==dp_old)
+    {
+      /* Epsilon machine reached for dp without convergence for fp */
+      /* We force the convergence here nothing better can be really done */
+      fp-=fp_old;
+    }
+    else if (dp==dp_left || dp==dp_right)
+    {
+      /* Oscillation found for dp (of order epsilon) without conv. for dp */
+      /* We force the convergence here by forcing dp to equal dp_old */
+      fp-=dp;
+      dp=dp_old;
+      fp+=dp;
+      fp-=fp_old;
+    }
+
+    if (abs(dp-dp_old)<epsilon*dp && abs(dp-dp_old)<epsilon*strain(1.0))
+    {
+      /* Start restricting the interval for close enough dp */
+      if (fp_old<strain(0.0))
+      {
+        dp_left=max(dp_left,dp_old);
+      }
+      else
+      {
+        dp_right=min(dp_right,dp_old);
+      }
+    }
+
+    /* Compute the yield surface criterion (sigC) */
+    const auto p_mts=p+theta*dp; /* NB: _mts as middle time step */
+    const auto VS=VS_0*exp(-D_VS*max(strain(0.0),p_mts));
+    const auto exp_Yp=exp(-Y*max(strain(0.0),p_mts));
+    const auto exp_p=
+               exp(-result_type<real,strain,OpDiv>(1.0)*max(strain(0.0),p_mts));
+    const auto sig_auto2=
+                max(real(0.0),Hini*exp_Yp+H*(real(4.0)-exp_Yp-real(3.0)*exp_p));
+    dot_p=dp/dt;
+    const auto iTa=(Bf-log(min(max(exp_Af,Cf*dot_p),exp_Bf)))/Af; /* Temperature
+                                              where the friction ends (in °C) */
+    const auto friction_coefficient=
+                                 min(max(real(0.0),real(1.0)-TK*iTa),real(1.0));
+    const auto sigE=sig_of_mu*friction_coefficient*friction_coefficient;
+    const auto sigLT=max(real(0.0),power<1,2>(real(3.0)*sig_auto2)-sigE);
+    const auto sigLT2=sigLT*sigLT;
+    const auto R2=max(real(0.0),sig_auto2+sigLT2+sigI2);
+    const auto R=power<1,2>(R2);
+    const auto sigC=max(real(0.0),sigHPplusVD+VS+sigE+R); /* pseudo-yield
+                                                                      surface */
+
+    /* Define the implicit scalar equation to solve f(dp)=0 */
+    const auto seq_mts=seq-theta3*dp; /* OK for dimensions because we adimension
+                                                                        by mu */
+    const auto drag_coefficient=max(real(0.0),mu_sig_od*(seq_mts-sigC));
+    const auto dfp_drag=(dt*gamma_od)*power<nd-1>(drag_coefficient);
+    const auto fp_drag=dfp_drag*drag_coefficient;
+    /* NB: fp is automatically initialized to dp and the Jacobian matrix dfp_ddp
+                                                                 to real(1.0) */
+    /*fp=dp-fp_drag;*/
+    fp-=fp_drag;
+    fp_old=fp;
+    dp_old=dp;
+
+    /* Compute de derivative of fp with respect to dp (needed for a robust
+                                                               Newton method) */
+    dsigC_ddp=-theta*D_VS*VS;
+    dsigE_ddp=result_type<real,strain,OpDiv>(0.0);
+    if (friction_coefficient>real(0.0) && friction_coefficient<real(1.0) &&
+                                                                Cf*dp>dt*exp_Af)
+    {
+      dsigE_ddp=real(2.0)*sig_of_mu*friction_coefficient*TK/(Af*dp);
+      dsigC_ddp+=dsigE_ddp;
+    }
+
+    if (R>real(0.0))
+    {
+      dR2_2ddp=result_type<real,strain,OpDiv>(0.0);
+      dR2_dsig_auto2=real(1.0);
+      if (sigLT>real(0.0))
+      {
+        dR2_2ddp-=sigLT*dsigE_ddp;
+        /* Handle the (infinite) derivative of sig_LT2 around zero with
+                                                         respect to sig_auto2 */
+        if (sig_auto2>real(1.0e-15))
+        {
+          dR2_dsig_auto2+=sigLT*power<1,2>(real(3.0)/sig_auto2);
+        }
+        else if (sig_auto2>real(0.0))
+        {
+          /* replace by the cubic polynomial satisfying f(0)=f'(0)=0,
+                              f(x_eps)=sqrt(x_eps) and f'(x_eps)=0.5/sqrt(x_eps)
+                                                              with x_eps=1.0e-30
+                    We get f(x)=0.5*sqrt(x_eps)*(x/x_eps)^2*(5-3*x/x_eps)
+                          and f'(x)=(0.5/sqrt(x_eps)*(x/x_eps)*(10-9*x/x_eps) */
+          dR2_dsig_auto2+=real(1.732050807568877293527446341506)*sigLT*
+                   (real(1.0e45)*sig_auto2*(real(10.0)-real(9.0e30)*sig_auto2));
+        }
+      }
+      dR2_2ddp+=dR2_dsig_auto2*(S_Yp*exp_Yp+S_p*exp_p);
+      /* NB: the term S_Yp*exp_Yp+S_p*exp_p corresponds to 0.5*dsig_auto2_ddp */
+
+      /* Handle the (infinite) derivative of R around zero with respect to R2 */
+      if (R>real(1.0e-15))
+      {
+        dsigC_ddp+=dR2_2ddp/R;
+      }
+      else
+      {
+        /* replace by the cubic polynomial satisfying f(0)=f'(0)=0,
+           f(x_eps)=sqrt(x_eps) and f'(x_eps)=0.5/sqrt(x_eps) with x_eps=1.0e-30
+           We get f(x)=0.5*sqrt(x_eps)*(x/x_eps)^2*(5-3*x/x_eps) and
+                              f'(x)=(0.5/sqrt(x_eps)*(x/x_eps)*(10-9*x/x_eps) */
+        dsigC_ddp+=dR2_2ddp*(real(1.0e45)*R2*(real(10.0)-real(9.0e30)*R2));
+      }
+    }
+    /*dfp_ddp=real(1.0)+ndmu_sig_od*dfp_drag*(theta3+dsigC_ddp);*/
+    dfp_ddp+=ndmu_sig_od*dfp_drag*(theta3+dsigC_ddp);
+
+    /* We have used here the trick that for dp0 such that f(dp0)=0 we have
+                       the relation dfp_drag(dp0)=(dp0)/drag_coefficient(dp0) */
+    /*ddp_ddeto_coefficient=ndseqmu_sig_od*dfp_drag/(dfp_ddp*dp)-real(1.0);*/
+
+    ddp_ddeto_coefficient=-real(1.0);
+    if (drag_coefficient>real(0.0))
+    {
+      ddp_ddeto_coefficient+=ndseqmu_sig_od/(dfp_ddp*drag_coefficient);
+    }
+    Dt_coefficient=theta4mu_seq*dp;
+
+  } /* End of if (bloading) */
+} /* End of @Integrator */
+
+/* ************************************************************************** */
+/* Section providing the computation of the tangent operator                  */
+/* ************************************************************************** */
+
+@TangentOperator{
+  Dt=D_elas;
+  if (smt==CONSISTENTTANGENTOPERATOR)
+  {
+    if (bloading)
+    {
+      /* We have used here the trick that for dp0 such that f(dp0)=0 we have
+                       the relation dfp_drag(dp0)=(dp0)/drag_coefficient(dp0) */
+      Dt-=Dt_coefficient*(Stensor4::M()+ddp_ddeto_coefficient*(ndir^ndir));
+    }
+  }
+  Dt*=pascal/stress(1.0);
+
+} /* End of @TangentOperator */
+
+
+/* ************************************************************************** */
+/* Section providing the final stress (p has been updated here)               */
+/* ************************************************************************** */
+
+@ComputeFinalStress{
+  if (bloading)
+  {
+    eel_old-=(p-p_old)*ndir;
+  }
+  sig=(pascal/stress(1.0))*D_elas*eel_old;
+
+} /* End of @ComputeFinalStress */
+
+
+/* ************************************************************************** */
+/* Section providing the computation of the auxiliary state variables         */
+/* ************************************************************************** */
+
+@UpdateAuxiliaryStateVariables{
+  INDIPLAS=real(0.0);
+  if (dot_p>strainrate(0.0))
+  {
+    INDIPLAS=real(1.0);
+  }
+
+} /* End of @UpdateAuxiliaryStateVariables */
+

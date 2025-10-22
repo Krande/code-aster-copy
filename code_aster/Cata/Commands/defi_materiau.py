@@ -116,6 +116,9 @@ DEFI_MATERIAU = MACRO(
         ),
         EXCLUS("VENDOCHAB", "VENDOCHAB_FO"),
         EXCLUS("VISC_ENDO", "VISC_ENDO_FO"),
+        EXCLUS("VISC_ISOT_PLAS", "VISC_ISOT_PLAS_FO"),
+        PRESENT_PRESENT("VISC_ISOT_PLAS", "ELAS"),
+        PRESENT_PRESENT("VISC_ISOT_PLAS_FO", "ELAS_FO"),
         EXCLUS("META_LEMA_ANI", "META_LEMA_ANI_FO"),
         EXCLUS("Iwan", "Iwan_FO"),
         EXCLUS("MohrCoulombAS", "MohrCoulombAS_FO"),
@@ -350,6 +353,8 @@ DEFI_MATERIAU = MACRO(
             "NORTON_FO",
             "GTN",
             # MFront
+            "VISC_ISOT_PLAS",
+            "VISC_ISOT_PLAS_FO",
             "META_LEMA_ANI",
             "META_LEMA_ANI_FO",
             "BETON_BURGER",
@@ -5793,6 +5798,114 @@ DEFI_MATERIAU = MACRO(
     ),
     ####  FIN MONOCRISTAL
     ### MFRONT OFFICIAL
+    VISC_ISOT_PLAS=FACT(
+        statut="f",
+        YoungModulus=SIMP(
+            statut="o",
+            typ="R",
+            val_min=0.0,
+            val_max=1.0e30,
+            fr=tr("module de Young, en unite de contrainte (Pa ou MPa)"),
+        ),
+        PoissonRatio=SIMP(
+            statut="o", typ="R", val_min=-0.99, val_max=0.49, fr=tr("coefficient de Poisson")
+        ),
+        TAILLE_GRAIN=SIMP(
+            statut="o",
+            typ="R",
+            val_min=1.0e-7,  # [1.0e-7 m; 1.0e-3 m] or [1.0e-4 mm; 1.0 mm]
+            val_max=1.0,  # NB: an additional bound check is performed in adapt_syntax
+            fr=tr("taille des grains, en unite de longueur (m ou mm)"),
+        ),
+        D_DISLOC=SIMP(
+            statut="o",
+            typ="R",
+            val_min=1.0e6,  # [1.0e12 m^-2; 1.0e20 m^-2] or [1.0e6 mm^-2; 1.0e14 mm^-2]
+            val_max=1.0e20,  # NB: an additional bound check is performed in adapt_syntax
+            fr=tr("densité de dislocation initiale (en m^-2 ou mm^-2)"),
+        ),
+        C_AMAS=SIMP(
+            statut="o",
+            typ="R",
+            val_min=0.0,  # [0.0 m^-3; 1.0e25 m^-3] or [0.0 mm^-3; 1.0e16 mm^-3]
+            val_max=1.0e25,  # NB: an additional bound check is performed in adapt_syntax
+            fr=tr("concentration des amas de soluté (en m^-3 ou mm^-3)"),
+        ),
+        TAILLE_AMAS=SIMP(
+            statut="o",
+            typ="R",
+            val_min=1.0e-9,  # [1.0e-9 m; 1.0e-8 m] or [1.0e-6 mm; 1.0e-5 mm]
+            val_max=1.0e-5,  # NB: an additional bound check is performed in adapt_syntax
+            fr=tr("taille des amas de soluté, en unite de longueur (m ou mm)"),
+        ),
+        UNITE_LONGUEUR=SIMP(
+            statut="f",
+            typ="TXM",
+            into=("m", "mm"),
+            defaut="m",
+            fr=tr("unite de longueur (m ou mm), metre par defaut"),
+        ),
+        UNITE_CONTRAINTE=SIMP(
+            statut="f",
+            typ="TXM",
+            into=("Pa", "MPa"),
+            defaut="Pa",
+            fr=tr("unite de contrainte (Pa ou MPa), Pascal par defaut"),
+        ),
+        # Hidden keywords
+        LengthUnit=SIMP(statut="c", typ="R", defaut=1.0),
+        StressUnit=SIMP(statut="c", typ="R", defaut=1.0),
+    ),
+    VISC_ISOT_PLAS_FO=FACT(
+        statut="f",
+        YoungModulus=SIMP(
+            statut="o",
+            typ=(fonction_sdaster, nappe_sdaster, formule),
+            fr=tr("module de Young, en unite de contrainte (Pa ou MPa)"),
+        ),
+        PoissonRatio=SIMP(
+            statut="o",
+            typ=(fonction_sdaster, nappe_sdaster, formule),
+            fr=tr("coefficient de Poisson"),
+        ),
+        TAILLE_GRAIN=SIMP(
+            statut="o",
+            typ=(fonction_sdaster, nappe_sdaster, formule),
+            fr=tr("taille des grains, en unite de longueur (m ou mm)"),
+        ),
+        D_DISLOC=SIMP(
+            statut="o",
+            typ=(fonction_sdaster, nappe_sdaster, formule),
+            fr=tr("densité de dislocation initiale (en m^-2 ou mm^-2)"),
+        ),
+        C_AMAS=SIMP(
+            statut="o",
+            typ=(fonction_sdaster, nappe_sdaster, formule),
+            fr=tr("concentration des amas de soluté (en m^-3 ou mm^-3)"),
+        ),
+        TAILLE_AMAS=SIMP(
+            statut="o",
+            typ=(fonction_sdaster, nappe_sdaster, formule),
+            fr=tr("taille des amas de soluté, en unite de longueur (m ou mm)"),
+        ),
+        UNITE_LONGUEUR=SIMP(
+            statut="f",
+            typ="TXM",
+            into=("m", "mm"),
+            defaut="m",
+            fr=tr("unite de longueur (m ou mm), metre par defaut"),
+        ),
+        UNITE_CONTRAINTE=SIMP(
+            statut="f",
+            typ="TXM",
+            into=("Pa", "MPa"),
+            defaut="Pa",
+            fr=tr("unite de contrainte (Pa ou MPa), Pascal par defaut"),
+        ),
+        # hidden keywords
+        LengthUnit=SIMP(statut="c", typ="R", defaut=1.0),
+        StressUnit=SIMP(statut="c", typ="R", defaut=1.0),
+    ),
     BETON_BURGER=FACT(
         statut="f",
         YoungModulus=SIMP(statut="o", typ="R"),
