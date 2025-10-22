@@ -37,8 +37,9 @@ waf_main()
         if [ -z "${host}" ]; then
             echo "no preset configuration found"
             source ${prefix}/env.d/version.sh
-            # FIXME: set manually during beta tests
-            export VERSION=20221225b
+            # transitional
+            [ "${VERSION}" = "20221225" ] && VERSION="${VERSION}b"
+            export VERSION
             args=( "-v" )
             [ ${ASTER_REQS_USE_DEBUG} -eq 1 ] && args=()
             ${prefix}/.devhelper/check_requirements.sh
