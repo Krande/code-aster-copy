@@ -415,12 +415,14 @@ def main(argv=None):
     if args.time_limit:
         export.set_time_limit(args.time_limit)
     # use FACMTPS from environment
-    try:
-        mult = float(os.environ.get("FACMTPS", 1))
-        limit = export.get("time_limit", 86400.0) * mult
-        export.set_time_limit(limit)
-    except ValueError:
-        pass
+    mult = 1.0
+    if not (need_split or need_mpiexec):
+        try:
+            mult = float(os.environ.get("FACMTPS", 1))
+        except ValueError:
+            pass
+    limit = export.get("time_limit", 86400.0) * mult
+    export.set_time_limit(limit)
     if args.interactive:
         export.set("interact", True)
     if args.interactive or make_env or args.exectool in ("valgrind", "gdb"):
