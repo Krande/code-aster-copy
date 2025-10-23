@@ -54,7 +54,7 @@ subroutine te0446(option, nomte)
     integer(kind=8) :: nno, igeom
     integer(kind=8) :: ndim, iret, ind
     integer(kind=8) :: jcara
-    real(kind=8) :: pgl(3, 3), xyzl(3, 4), bsigma(24)
+    real(kind=8) :: pgl(3, 3), xyzl(3, 4), bsigmEner(24)
     real(kind=8) :: effgt(32), effort(32)
     real(kind=8) :: effref, momref
     real(kind=8) :: alpha, beta, t2ev(4), t2ve(4), c, s
@@ -134,7 +134,7 @@ subroutine te0446(option, nomte)
         end if
 !
 ! --- CALCUL DES EFFORTS INTERNES (I.E. SOMME_VOL(BT_SIG))
-        call dxbsig(nomte, xyzl, pgl, effgt, bsigma, &
+        call dxbsig(nomte, xyzl, pgl, effgt, bsigmEner, &
                     option)
 !
 ! --- AFFECTATION DES VALEURS DE BSIGMA AU VECTEUR EN SORTIE
@@ -144,7 +144,7 @@ subroutine te0446(option, nomte)
         do i = 1, nno
             do j = 1, 6
                 k = k+1
-                zr(ivectu+k-1) = bsigma(k)
+                zr(ivectu+k-1) = bsigmEner(k)
             end do
         end do
     else if (option .eq. 'REFE_FORC_NODA') then
@@ -176,15 +176,15 @@ subroutine te0446(option, nomte)
         end do
 !
 ! ------ CALCUL DES EFFORTS INTERNES (I.E. SOMME_VOL(BT_SIG))
-        call dxbsig(nomte, xyzl, pgl, effgt, bsigma, &
+        call dxbsig(nomte, xyzl, pgl, effgt, bsigmEner, &
                     option)
 !
 ! ------ AFFECTATION DES VALEURS DE BSIGMA AU VECTEUR EN SORTIE
         call jevech('PVECTUR', 'E', ivectu)
         k = 0
         do i = 1, nno
-            effref = (abs(bsigma(k+1))+abs(bsigma(k+2))+abs(bsigma(k+3)))/3.d0
-            momref = (abs(bsigma(k+4))+abs(bsigma(k+5))+abs(bsigma(k+6)))/3.d0
+            effref = (abs(bsigmEner(k+1))+abs(bsigmEner(k+2))+abs(bsigmEner(k+3)))/3.d0
+            momref = (abs(bsigmEner(k+4))+abs(bsigmEner(k+5))+abs(bsigmEner(k+6)))/3.d0
             ASSERT(abs(effref) .gt. r8prem())
             ASSERT(abs(momref) .gt. r8prem())
             do j = 1, 6

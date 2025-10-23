@@ -17,7 +17,7 @@
 ! --------------------------------------------------------------------
 !
 interface
-    subroutine caliel(loadZ, valeTypeZ, modelZ)
-        character(len=*), intent(in) :: loadZ, valeTypeZ, modelZ
+    subroutine caliel(loadZ, modelZ)
+        character(len=*), intent(in) :: loadZ, modelZ
     end subroutine caliel
 end interface

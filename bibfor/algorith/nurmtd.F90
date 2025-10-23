@@ -18,7 +18,7 @@
 ! aslint: disable=W1306
 !
 subroutine nurmtd(ndim, nno1, nno2, npg, iw, &
-                  vff1, vff2, ivf1, idff1, vu, &
+                  vff1, vff2, idff1, vu, &
                   vp, typmod, igeom, mate, mini, &
                   matr)
 !
@@ -37,7 +37,7 @@ subroutine nurmtd(ndim, nno1, nno2, npg, iw, &
     integer(kind=8) :: ndim, nno1, nno2, npg, iw, idff1
     integer(kind=8) :: mate
     integer(kind=8) :: vu(3, 27), vp(27)
-    integer(kind=8) :: ivf1, igeom
+    integer(kind=8) :: igeom
     real(kind=8) :: vff1(nno1, npg), vff2(nno2, npg)
     character(len=8) :: typmod(*)
     real(kind=8) :: matr(*)
@@ -169,7 +169,7 @@ subroutine nurmtd(ndim, nno1, nno2, npg, iw, &
         end do
 !
 ! - CALCUL DE LA MATRICE D'ELASTICITE BULLE
-        call tanbul(option, ndim, g, mate, compor, &
+        call tanbul(ndim, g, mate, compor, &
                     .false._1, .true._1, alpha, dsidep, trepst)
         dsidep(4, 4) = dsidep(4, 4)/2.d0
         if (ndim .eq. 3) then

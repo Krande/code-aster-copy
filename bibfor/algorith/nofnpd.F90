@@ -191,7 +191,7 @@ subroutine nofnpd(ndim, nno1, nno2, nno3, npg, &
         end do
 !
 ! - CALCUL DE L'INVERSE DE KAPPA
-        call tanbul(option, ndim, g, mate, compor(1), &
+        call tanbul(ndim, g, mate, compor(1), &
                     .false._1, .false._1, alpha, dsbdep, trepst)
 !
 ! - VECTEUR FINT:U

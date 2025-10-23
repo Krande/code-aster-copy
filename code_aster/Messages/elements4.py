@@ -25,16 +25,6 @@ cata_msg = {
   erreur dans le calcul de PRES_F
 """
     ),
-    2: _(
-        """
- pour l'option INDIC_ENER, les seules relations admises sont "VMIS_ISOT_LINE" et "VMIS_ISOT_TRAC" .
-"""
-    ),
-    3: _(
-        """
- pour l'option INDIC_SEUIL, les seules relations admises sont "VMIS_ISOT_LINE", "VMIS_ISOT_TRAC"  et "VMIS_CINE_LINE" .
-"""
-    ),
     4: _(
         """
  L'option SIPM_ELNO n'est pas autorisée pour les sections de poutre de type GENERALE

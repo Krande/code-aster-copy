@@ -15,355 +15,275 @@
 ! You should have received a copy of the GNU General Public License
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
-
+!
 subroutine te0575(option, nomte)
+!
+    use Behaviour_module
     implicit none
+!
+#include "asterc/r8vide.h"
 #include "asterf_types.h"
-#include "jeveux.h"
+#include "asterfort/assert.h"
+#include "asterfort/Behaviour_type.h"
 #include "asterfort/dfdm2d.h"
 #include "asterfort/elrefe_info.h"
 #include "asterfort/enelpg.h"
 #include "asterfort/eps1mc.h"
+#include "asterfort/getElemOrientation.h"
 #include "asterfort/jevech.h"
 #include "asterfort/lteatt.h"
 #include "asterfort/nbsigm.h"
 #include "asterfort/nmgeom.h"
-#include "asterfort/getElemOrientation.h"
 #include "asterfort/tecach.h"
 #include "asterfort/utmess.h"
+#include "jeveux.h"
+#include "MeshTypes_type.h"
 !
-    character(len=16) :: option, nomte
-!.......................................................................
+    character(len=16), intent(in) :: option, nomte
 !
-! FONCTIONS REALISEES:
+! --------------------------------------------------------------------------------------------------
 !
-!      CALCUL DE LA DENSITE D'ENERGIE POTENTIELLE THERMOELASTIQUE
-!      A L'EQUILIBRE POUR LES ELEMENTS ISOPARAMETRIQUES 2D
-!      .SOIT AUX POINTS D'INTEGRATION : OPTION 'ENEL_ELGA'
+! Elementary computation
 !
-!      OPTIONS : 'ENEL_ELGA'
+! Elements: C_PLAN, D_PLAN, AXIS
 !
-!      CALCUL DE LA DENSITE D'ENERGIE TOTALE
-!      A L'EQUILIBRE POUR LES ELEMENTS ISOPARAMETRIQUES 2D
-!      .SOIT AUX POINTS D'INTEGRATION : OPTION 'ETOT_ELGA'
+! Options: ENEL_ELGA, ETOT_ELEM, ETOT_ELGA
 !
-!      OPTIONS : 'ETOT_ELGA'
+! --------------------------------------------------------------------------------------------------
 !
-! ENTREES  ---> OPTION : OPTION DE CALCUL
-!          ---> NOMTE  : NOM DU TYPE ELEMENT
-!.......................................................................
-!
-!-----------------------------------------------------------------------
-    integer(kind=8) :: i, idener, idepl, ideplm, idepmm, idfde, idvari
-    integer(kind=8) :: idsig, idsigm, igau, igeom, imate, ipoids, isig, nbvari
-    integer(kind=8) :: itemps, ivf, jgano, k, mxcmel, nbcont
-    integer(kind=8) :: nbnomx, nbsig, ndim, nno, nnos, npg, jtab(7)
-!
-    real(kind=8) :: deux, enelem, poids, rayon, undemi, zero
-!-----------------------------------------------------------------------
-    parameter(mxcmel=162)
-    parameter(nbnomx=27)
-    parameter(nbcont=6)
-    integer(kind=8) :: iharmo, nh, iret
-    integer(kind=8) :: idenem
-    real(kind=8) :: epsi(nbcont), epsim(nbcont), delta(nbcont)
-    real(kind=8) :: nharm, angl_naut(3), instan
-    real(kind=8) :: enerpg(nbnomx), epss(mxcmel), r
+    character(len=4), parameter :: fami = "RIGI"
+    integer(kind=8), parameter :: mxcmel = 162, nbSigx = 6, nbEpsx = 6
+    real(kind=8) :: epsiCurr(mxcmel), epsiPrev(mxcmel)
+    real(kind=8), parameter :: zero = 0.d0, undemi = 0.5d0, deux = 2.d0
+    real(kind=8) :: nharm, rayon
+    aster_logical :: axi
+    integer(kind=8) :: jvDispCurr, jvDispPrev, jvVari
+    integer(kind=8) :: jvSigmCurr, jvSigmPrev, jvGeom, jvMater, jvTime, jvHarm
+    integer(kind=8) :: jvGaussWeight, jvBaseFunc, jvDBaseFunc
+    integer(kind=8) :: nbsig, ndim, nno, npg, nbvari, nbEpsi
+    integer(kind=8) :: idenem, idener
+    real(kind=8) :: enerElem, poids
+    integer(kind=8) :: jtab(7), iret
+    integer(kind=8) :: kpg, ino, isigm, iEpsi
+    real(kind=8) :: epsiKpgCurr(nbEpsx), epsiKpgPrev(nbEpsx), epsiKpgDelta(nbEpsx)
+    real(kind=8) :: anglNaut(3), time
+    real(kind=8) :: enerKpg(MT_NNOMAX), r
     real(kind=8) :: f(3, 3)
-    real(kind=8) :: epssm(mxcmel), sigmm(nbcont), sigma(nbcont)
-    real(kind=8) :: integ1, integ2, integ, epsbid(6), dfdbid(27*3)
-    character(len=4) :: fami
-    character(len=16) :: compor(3)
-    aster_logical :: grand, axi
+    real(kind=8) :: sigmKpgPrev(nbSigx), sigmKpgCurr(nbSigx)
+    real(kind=8) :: integ1, integ2, integ
+    real(kind=8) :: epsiDumm(6), dfdbid(27*3)
+    character(len=16) :: relaName, defoComp
+    aster_logical :: largeStrain
 !
-! ---- CARACTERISTIQUES DU TYPE D'ELEMENT :
-! ---- GEOMETRIE ET INTEGRATION
-!      ------------------------
+! --------------------------------------------------------------------------------------------------
 !
-    fami = 'RIGI'
-    call elrefe_info(fami=fami, ndim=ndim, nno=nno, nnos=nnos, npg=npg, &
-                     jpoids=ipoids, jvf=ivf, jdfde=idfde, jgano=jgano)
+    call elrefe_info(fami=fami, ndim=ndim, nno=nno, npg=npg, &
+                     jpoids=jvGaussWeight, jvf=jvBaseFunc, jdfde=jvDBaseFunc)
 !
-! ---- NOMBRE DE CONTRAINTES ASSOCIE A L'ELEMENT
-!      -----------------------------------------
     nbsig = nbsigm()
-!
-! --- INITIALISATIONS :
-!     -----------------
-    zero = 0.0d0
-    undemi = 0.5d0
-    deux = 2.0d0
-    nharm = zero
-    enelem = zero
-!
-    do i = 1, nbnomx
-        enerpg(i) = zero
-    end do
-!
-! ---- RECUPERATION DES COORDONNEES DES CONNECTIVITES
-!      ----------------------------------------------
-    call jevech('PGEOMER', 'L', igeom)
-!
+    ASSERT(nno .le. MT_NNOMAX)
+    ASSERT(nbsig .le. 6)
+    ASSERT(npg .le. 27)
+    nbEpsi = nbsig
+    enerElem = zero
+    enerKpg = zero
+
+! - Geometry
+    call jevech('PGEOMER', 'L', jvGeom)
+
     if (option(1:4) .eq. 'ENEL') then
-!
-! ----   RECUPERATION DU MATERIAU
-!        ------------------------
-        call jevech('PMATERC', 'L', imate)
-!
-! ----   RECUPERATION  DES DONNEES RELATIVES AU REPERE D'ORTHOTROPIE
-!         -----------------------------------------------------------
-        call getElemOrientation(ndim, nno, igeom, angl_naut)
-!
-! ---    RECUPERATION DU CHAMP DE DEPLACEMENT A L'INSTANT COURANT :
-!        --------------------------------------------------------
-        call jevech('PDEPLAR', 'L', idepl)
-!
-! ----    RECUPERATION DU CHAMP DE CONTRAINTES AUX POINTS D'INTEGRATION
-!         -------------------------------------------------------------
-        call jevech('PCONTRR', 'L', idsig)
-!
-! ----    RECUPERATION DE L'INSTANT DE CALCUL
-!         -----------------------------------
-        call tecach('ONO', 'PINSTR', 'L', iret, iad=itemps)
-        if (itemps .ne. 0) instan = zr(itemps)
-!
-! ----   RECUPERATION DU CHAMP DE VARIABLES INTERNES  :
-!        N'EXISTE PAS EN LINEAIRE
-        call tecach('ONO', 'PVARIGR', 'L', iret, nval=7, &
-                    itab=jtab)
+! ----- Material parameters
+        call jevech('PMATERC', 'L', jvMater)
+
+! ----- Orthotropic parameters
+        call getElemOrientation(ndim, nno, jvGeom, anglNaut)
+
+! ----- Current displacements
+        call jevech('PDEPLAR', 'L', jvDispCurr)
+
+! ----- Current stresses
+        call jevech('PCONTRR', 'L', jvSigmCurr)
+
+! ----- Get time
+        time = r8vide()
+        call tecach('ONO', 'PINSTR', 'L', iret, iad=jvTime)
+        if (jvTime .ne. 0) then
+            time = zr(jvTime)
+        end if
+
+! ----- Internal state variables (only for non-linear)
+        jvVari = 1
+        nbvari = 0
+        call tecach('ONO', 'PVARIGR', 'L', iret, nval=7, itab=jtab)
         if (iret .eq. 0) then
-            idvari = jtab(1)
+            jvVari = jtab(1)
             nbvari = max(jtab(6), 1)*jtab(7)
-        else
-            idvari = 1
-            nbvari = 0
         end if
-!
+
     end if
-!
-! ----RECUPERATION DU TYPE DE COMPORTEMENT  :
-!     N'EXISTE PAS EN LINEAIRE
-    call tecach('NNO', 'PCOMPOR', 'L', iret, nval=7, &
-                itab=jtab)
-    compor(1) = 'ELAS'
-    compor(2) = ' '
-    compor(3) = 'PETIT'
-    if (iret .eq. 0) then
-        compor(1) = zk16(jtab(1))
-        compor(3) = zk16(jtab(1)+2)
-    end if
-!
-!     GRANDES DEFORMATIONS
-!
-    if ((compor(3) .eq. 'SIMO_MIEHE') .or. (compor(3) .eq. 'GDEF_LOG')) then
-        grand = .true.
+
+! - Get parameters from behaviour (linear and non-linear cases)
+    call behaviourGetParameters(relaName, defoComp)
+    if ((defoComp .eq. 'SIMO_MIEHE') .or. (defoComp .eq. 'GDEF_LOG')) then
+        largeStrain = ASTER_TRUE
     else
-        grand = .false.
+        largeStrain = ASTER_FALSE
     end if
-!
-!
-! --- CAS DU CALCUL DE LA DENSITE D'ENERGIE TOTALE :
-!     ============================================
+
+! - CAS DU CALCUL DE LA DENSITE D'ENERGIE TOTALE
     if (option(1:4) .eq. 'ETOT') then
-!
-        if (grand) then
-            call utmess('F', 'COMPOR1_79', sk=compor(3))
+        if (largeStrain) then
+            call utmess('F', 'ENERGY1_7', sk=defoComp)
         end if
-!
-! ---   RECUPERATION DU CHAMP DE DEPLACEMENT A L'INSTANT COURANT :
-!       --------------------------------------------------------
-        call jevech('PDEPLR', 'L', idepl)
-!
-! ---   RECUPERATION EVENTUELLE DU CHAMP DE DEPLACEMENT A
-! ---   L'INSTANT PRECEDENT :
-!       -------------------
-        call tecach('NNO', 'PDEPLM', 'L', iret, iad=ideplm)
-        if (ideplm .ne. 0) then
-            call jevech('PDEPLM', 'L', idepmm)
+
+! ----- RECUPERATION DU CHAMP DE DEPLACEMENT A L'INSTANT COURANT
+        call jevech('PDEPLR', 'L', jvDispCurr)
+
+! ----- RECUPERATION EVENTUELLE DU CHAMP DE DEPLACEMENT A L'INSTANT PRECEDENT
+        call tecach('NNO', 'PDEPLM', 'L', iret, iad=jvDispPrev)
+
+! ----- RECUPERATION DU CHAMP DE CONTRAINTES A L'INSTANT COURANT
+        call jevech('PCONTPR', 'L', jvSigmCurr)
+
+! ----- RECUPERATION EVENTUELLE DU CHAMP DE CONTRAINTES A L'INSTANT PRECEDENT
+        call tecach('NNO', 'PCONTMR', 'L', iret, iad=jvSigmPrev)
+
+! ----- RECUPERATION EVENTUELLE DU NUMERO D'HARMONIQUE
+        call tecach('NNO', 'PHARMON', 'L', iret, iad=jvHarm)
+        nharm = 0.d0
+        if (jvHarm .ne. 0) then
+            nharm = dble(zi(jvHarm))
         end if
-!
-! ---   RECUPERATION DU CHAMP DE CONTRAINTES AUX POINTS D'INTEGRATION
-! ---   A L'INSTANT COURANT :
-!       -------------------
-        call jevech('PCONTPR', 'L', idsig)
-!
-! ---   RECUPERATION EVENTUELLE DU CHAMP DE CONTRAINTES A
-! ---   L'INSTANT PRECEDENT :
-!       -------------------
-        call tecach('NNO', 'PCONTMR', 'L', iret, iad=idsigm)
-        if (idsigm .ne. 0) then
-            call jevech('PCONTMR', 'L', idsigm)
+
+! ----- CALCUL DU CHAMP DE DEFORMATIONS AU PREMIER ORDRE (current)
+        epsiCurr = 0.d0
+        call eps1mc(nno, ndim, nbsig, npg, &
+                    jvGaussWeight, jvBaseFunc, jvDBaseFunc, &
+                    zr(jvGeom), zr(jvDispCurr), nharm, &
+                    epsiCurr)
+
+! ----- CALCUL DU CHAMP DE DEFORMATIONS AU PREMIER ORDRE (previous)
+        epsiPrev = 0.d0
+        if (jvDispPrev .ne. 0) then
+            call eps1mc(nno, ndim, nbsig, npg, &
+                        jvGaussWeight, jvBaseFunc, jvDBaseFunc, &
+                        zr(jvGeom), zr(jvDispPrev), nharm, &
+                        epsiPrev)
         end if
-!
-! ---   RECUPERATION EVENTUELLE DU NUMERO D'HARMONIQUE :
-!       ----------------------------------------------
-        call tecach('NNO', 'PHARMON', 'L', iret, iad=iharmo)
-        if (iharmo .ne. 0) then
-            nh = zi(iharmo)
-            nharm = dble(nh)
-        end if
-!
-! ---   CALCUL DU CHAMP DE DEFORMATIONS AU PREMIER ORDRE
-! ---   CORRESPONDANT AU CHAMP DE DEPLACEMENT COURANT :
-!       ---------------------------------------------
-        call eps1mc(nno, ndim, nbsig, npg, ipoids, &
-                    ivf, idfde, zr(igeom), zr(idepl), nharm, &
-                    epss)
-!
-! ---   CALCUL EVENTUEL DU CHAMP DE DEFORMATIONS AU PREMIER ORDRE
-! ---   CORRESPONDANT AU CHAMP DE DEPLACEMENT A L'INSTANT PRECEDENT :
-!       -----------------------------------------------------------
-        if (ideplm .ne. 0) then
-            call eps1mc(nno, ndim, nbsig, npg, ipoids, &
-                        ivf, idfde, zr(igeom), zr(idepmm), nharm, &
-                        epssm)
-        end if
-!
     end if
-!
-! ---- BOUCLE SUR LES POINTS D'INTEGRATION :
-!      ===================================
-    do igau = 1, npg
-!
-        k = (igau-1)*nno
-!
-!  --   CALCUL DES DERIVEES DES FONCTIONS DE FORME ET DU PRODUIT
-!  --   JACOBIEN*POIDS_INTEGRATION (DANS LA VARIABLE POIDS)
-!  --   AU POINT D'INTEGRATION COURANT :
-!       ------------------------------
-!
-        call dfdm2d(nno, igau, ipoids, idfde, zr(igeom), &
-                    poids)
-!
-        axi = .false.
+
+    do kpg = 1, npg
+! ----- CALCUL DES DERIVEES DES FONCTIONS DE FORME ET DU PRODUIT
+! ----- JACOBIEN*POIDS_INTEGRATION (DANS LA VARIABLE POIDS)
+! ----- AU POINT D'INTEGRATION COURANT :
+        call dfdm2d(nno, kpg, jvGaussWeight, jvDBaseFunc, zr(jvGeom), poids)
+        axi = ASTER_FALSE
         if ((lteatt('AXIS', 'OUI')) .or. (lteatt('FOURIER', 'OUI'))) then
             rayon = zero
-            do i = 1, nno
-                rayon = rayon+zr(ivf+k+i-1)*zr(igeom+ndim*(i-1))
+            do ino = 1, nno
+                rayon = rayon+zr(jvBaseFunc+(kpg-1)*nno+ino-1)*zr(jvGeom+ndim*(ino-1))
             end do
             poids = poids*rayon
-            axi = .true.
+            axi = ASTER_TRUE
         end if
-        do isig = 1, nbsig
-            epsi(isig) = zero
-        end do
-!
-!  --    CALCUL DE LA DENSITE D'ENERGIE POTENTIELLE THERMOELASTIQUE :
-!        ==========================================================
+        epsiKpgCurr = 0.d0
+
         if (option(1:4) .eq. 'ENEL') then
-!
-! --- TENSEUR DES CONTRAINTES AU POINT D'INTEGRATION COURANT :
-!
-            do i = 1, nbsig
-                sigma(i) = zr(idsig+(igau-1)*nbsig+i-1)
+! --------- TENSEUR DES CONTRAINTES AU POINT D'INTEGRATION COURANT :
+            sigmKpgCurr = 0.d0
+            do iSigm = 1, nbsig
+                sigmKpgCurr(iSigm) = zr(jvSigmCurr+(kpg-1)*nbsig+iSigm-1)
             end do
-!
-!
-! ---     CALCUL DU JACOBIEN AU POINT D'INTEGRATION COURANT :
-            call nmgeom(2, nno, axi, grand, zr(igeom), &
-                        igau, ipoids, ivf, idfde, zr(idepl), &
-                        .true._1, poids, dfdbid, f, epsbid, &
+
+! --------- CALCUL DU JACOBIEN AU POINT D'INTEGRATION COURANT
+            call nmgeom(2, nno, axi, largeStrain, zr(jvGeom), kpg, &
+                        jvGaussWeight, jvBaseFunc, jvDBaseFunc, &
+                        zr(jvDispCurr), &
+                        ASTER_TRUE, poids, dfdbid, f, epsiDumm, &
                         r)
-!
-! ---     CALCUL DE L'ENERGIE ELASTIQUE AU POINT D'INTEGRATION COURANT
-!
-            call enelpg(fami, zi(imate), instan, igau, angl_naut, &
-                        compor, f, sigma, nbvari, &
-                        zr(idvari+(igau-1)*nbvari), enerpg(igau))
-!
-!
-!  --    CALCUL DE LA DENSITE D'ENERGIE TOTALE :
-!        =====================================
+
+! --------- CALCUL DE L'ENERGIE DE DEFORMATION ELASTIQUE
+            call enelpg(fami, zi(jvMater), time, kpg, anglNaut, &
+                        relaName, defoComp, &
+                        f, sigmKpgCurr, &
+                        nbvari, zr(jvVari+(kpg-1)*nbvari), &
+                        enerKpg(kpg))
+
         else if (option(1:4) .eq. 'ETOT') then
-!
-!  --      TENSEURS DES DEFORMATIONS  ET DES CONTRAINTES AU PAS DE
-!  --      TEMPS COURANT ET AU PAS DE TEMPS PRECEDENT S'IL Y A LIEU,
-!  --      AU POINT D'INTEGRATION COURANT :
-!          ------------------------------
-            do i = 1, nbsig
-                epsi(i) = epss(i+(igau-1)*nbsig)
-                if (ideplm .ne. 0) then
-                    epsim(i) = epssm(i+(igau-1)*nbsig)
-                end if
-                sigma(i) = zr(idsig+(igau-1)*nbsig+i-1)
-                if (idsigm .ne. 0) then
-                    sigmm(i) = zr(idsigm+(igau-1)*nbsig+i-1)
+! --------- TENSEURS DES DEFORMATIONS  ET DES CONTRAINTES AU PAS DE
+! --------- TEMPS COURANT ET AU PAS DE TEMPS PRECEDENT S'IL Y A LIEU,
+! --------- AU POINT D'INTEGRATION COURANT
+            do iEpsi = 1, nbEpsi
+                epsiKpgCurr(iEpsi) = epsiCurr(iEpsi+(kpg-1)*nbEpsi)
+                if (jvDispPrev .ne. 0) then
+                    epsiKpgPrev(iEpsi) = epsiPrev(iEpsi+(kpg-1)*nbEpsi)
                 end if
             end do
-!
-            if (ideplm .ne. 0) then
-                do i = 1, nbsig
-                    delta(i) = epsi(i)-epsim(i)
-                end do
-            else
-                do i = 1, nbsig
-                    delta(i) = 0.d0
+            do iSigm = 1, nbSig
+                sigmKpgCurr(iSigm) = zr(jvSigmCurr+(kpg-1)*nbsig+iSigm-1)
+                if (jvSigmPrev .ne. 0) then
+                    sigmKpgPrev(iSigm) = zr(jvSigmPrev+(kpg-1)*nbsig+iSigm-1)
+                end if
+            end do
+            epsiKpgDelta = 0.d0
+            if (jvDispPrev .ne. 0) then
+                do iEpsi = 1, nbEpsi
+                    epsiKpgDelta(iEpsi) = epsiKpgCurr(iEpsi)-epsiKpgPrev(iEpsi)
                 end do
             end if
-!
-!  --      CALCUL DES TERMES A SOMMER POUR OBTENIR LA DENSITE
-!  --      D'ENERGIE TOTALE :
-!          ----------------
-            if (ideplm .ne. 0 .and. idsigm .ne. 0) then
-                integ1 = sigma(1)*delta(1)+sigma(2)*delta(2)+sigma(3)*delta(3)+deux*sigma(4&
-                         &)*delta(4)
-                if (lteatt('FOURIER', 'OUI')) integ1 = integ1+deux*sigma(5)*delta(5)+deux*sigm&
-                                                      &a(6)*delta(6)
-!
-                integ2 = sigmm(1)*delta(1)+sigmm(2)*delta(2)+sigmm(3)*delta(3)+deux*sigmm(4&
-                         &)*delta(4)
-                if (lteatt('FOURIER', 'OUI')) integ2 = integ2+deux*sigmm(5)*delta(5)+deux*sigm&
-                                                      &m(6)*delta(6)
-!
-                enerpg(igau) = undemi*(integ1+integ2)
+
+! --------- CALCUL DES TERMES A SOMMER POUR OBTENIR LA DENSITE D'ENERGIE TOTALE
+            if (jvDispPrev .ne. 0 .and. jvSigmPrev .ne. 0) then
+                integ1 = sigmKpgCurr(1)*epsiKpgDelta(1)+ &
+                         sigmKpgCurr(2)*epsiKpgDelta(2)+ &
+                         sigmKpgCurr(3)*epsiKpgDelta(3)+ &
+                         deux*sigmKpgCurr(4)*epsiKpgDelta(4)
+                if (lteatt('FOURIER', 'OUI')) then
+                    integ1 = integ1+ &
+                             deux*sigmKpgCurr(5)*epsiKpgDelta(5)+ &
+                             deux*sigmKpgCurr(6)*epsiKpgDelta(6)
+                end if
+                integ2 = sigmKpgPrev(1)*epsiKpgDelta(1)+ &
+                         sigmKpgPrev(2)*epsiKpgDelta(2)+ &
+                         sigmKpgPrev(3)*epsiKpgDelta(3)+ &
+                         deux*sigmKpgPrev(4)*epsiKpgDelta(4)
+                if (lteatt('FOURIER', 'OUI')) then
+                    integ2 = integ2+ &
+                             deux*sigmKpgPrev(5)*epsiKpgDelta(5)+ &
+                             deux*sigmKpgPrev(6)*epsiKpgDelta(6)
+                end if
+                enerKpg(kpg) = undemi*(integ1+integ2)
             else
-!
-!  --        CAS D'ORDRE NUMERO 1 :
-!            --------------------
-                integ = sigma(1)*epsi(1)+sigma(2)*epsi(2)+sigma(3)*epsi(3)+deux*sigma(4)*e&
-                        &psi(4)
-                if (lteatt('FOURIER', 'OUI')) integ = integ+deux*sigma(5)*epsi(5)+deux*sigma(6&
-                                                     &)*epsi(6)
-!
-                enerpg(igau) = undemi*integ
-!
+                integ = sigmKpgCurr(1)*epsiKpgCurr(1)+ &
+                        sigmKpgCurr(2)*epsiKpgCurr(2)+ &
+                        sigmKpgCurr(3)*epsiKpgCurr(3)+ &
+                        deux*sigmKpgCurr(4)*epsiKpgCurr(4)
+                if (lteatt('FOURIER', 'OUI')) then
+                    integ = integ+ &
+                            deux*sigmKpgCurr(5)*epsiKpgCurr(5)+ &
+                            deux*sigmKpgCurr(6)*epsiKpgCurr(6)
+                end if
+                enerKpg(kpg) = undemi*integ
             end if
-!
-            enelem = enelem+enerpg(igau)*poids
-!
+            enerElem = enerElem+enerKpg(kpg)*poids
         end if
-!
     end do
-!
-! ---- RECUPERATION DU CHAMP DES DENSITES D'ENERGIE DE DEFORMATION
-! ---- ELASTIQUE EN SORTIE
-!      -------------------
+
+! - RECUPERATION DU CHAMP DES DENSITES D'ENERGIE DE DEFORMATION ELASTIQUE EN SORTIE
     call jevech('PENERDR', 'E', idener)
-!
-! --- OPTIONS ENEL_* ET ETOT_*
-!     ==============================
     if (option(1:4) .eq. 'ETOT') then
         call jevech('PENERDM', 'L', idenem)
-!
-! ---   OPTION ETOT_ELGA
-!       ================
         if (option .eq. 'ETOT_ELGA') then
-            do igau = 1, npg
-                zr(idener+igau-1) = zr(idenem+igau-1)+enerpg(igau)
+            do kpg = 1, npg
+                zr(idener+kpg-1) = zr(idenem+kpg-1)+enerKpg(kpg)
             end do
-!
-! ---   OPTION ETOT_ELEM
-!       ================
         else if (option .eq. 'ETOT_ELEM') then
-            zr(idener) = zr(idenem)+enelem
+            zr(idener) = zr(idenem)+enerElem
         end if
     else
-!
-! ---   OPTION ENEL_ELGA
-!       ================
         if (option .eq. 'ENEL_ELGA') then
-            do igau = 1, npg
-                zr(idener+igau-1) = enerpg(igau)
+            do kpg = 1, npg
+                zr(idener+kpg-1) = enerKpg(kpg)
             end do
         end if
     end if

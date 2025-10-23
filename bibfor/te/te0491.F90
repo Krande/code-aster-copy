@@ -15,18 +15,52 @@
 ! You should have received a copy of the GNU General Public License
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
-
+! aslint: disable=W1501
+!
 subroutine te0491(option, nomte)
-!.......................................................................
+!
+    use Behaviour_module
+    use BehaviourStrain_module
     implicit none
 !
+#include "asterc/r8prem.h"
+#include "asterc/r8vide.h"
+#include "asterf_types.h"
+#include "asterfort/assert.h"
+#include "asterfort/Behaviour_type.h"
+#include "asterfort/dfdm3d.h"
+#include "asterfort/diago3.h"
+#include "asterfort/ElasticityMaterial_type.h"
+#include "asterfort/elrefe_info.h"
+#include "asterfort/enelpg.h"
+#include "asterfort/eps1mc.h"
+#include "asterfort/epsvmc.h"
+#include "asterfort/get_elas_id.h"
+#include "asterfort/get_elas_para.h"
+#include "asterfort/getElemOrientation.h"
+#include "asterfort/jevech.h"
+#include "asterfort/nbsigm.h"
+#include "asterfort/nmgeom.h"
+#include "asterfort/rcfonc.h"
+#include "asterfort/rctrac.h"
+#include "asterfort/rctype.h"
+#include "asterfort/rcvalb.h"
+#include "asterfort/rcvarc.h"
+#include "asterfort/tecach.h"
+#include "asterfort/utmess.h"
+#include "jeveux.h"
 !
-!     BUTS: .CALCUL DES INDICATEURS GLOBAUX
-!            DE PERTE DE PROPORTIONNALITE DU CHARGEMENT.
-!            POUR LES ELEMENTS ISOPARAMETRIQUES 3D
-!           .CALCUL DES ENERGIES DE DEFORMATION ELASTIQUE ET TOTALE
+    character(len=16), intent(in) :: nomte, option
 !
-! -----------------------------------------------------------------
+! --------------------------------------------------------------------------------------------------
+!
+! Elementary computation
+!
+! Elements: 3D
+!
+! Options: ENEL_ELEM, ENTR_ELEM, ENER_TOTALE, INDIC_ENER, INDIC_SEUIL
+!
+! --------------------------------------------------------------------------------------------------
 !
 !  OPTION INDIC_ENER : CALCUL DE  L'INDICATEUR GLOBAL
 !  =================   ENERGETIQUE DETERMINE PAR L'EXPRESSION SUIVANTE:
@@ -39,7 +73,6 @@ subroutine te0491(option, nomte)
 !            (I.E. ASSOCIEE A LA COURBE DE TRACTION SI ON
 !                  CONSIDERAIT LE MATERIAU ELASTIQUE NON-LINEAIRE)
 !            .V EST LE VOLUME DU GROUPE DE MAILLES TRAITE
-! -----------------------------------------------------------------
 !
 !  OPTION INDIC_SEUIL : CALCUL DE  L'INDICATEUR GLOBAL
 !  ==================   DETERMINE PAR L'EXPRESSION SUIVANTE :
@@ -53,9 +86,6 @@ subroutine te0491(option, nomte)
 !            .R         EST LA FONCTION D'ECROUISSAGE
 !            .P         EST LA DEFORMATION PLASTIQUE CUMULEE
 !            .V         EST LE VOLUME DU GROUPE DE MAILLES TRAITE
-!
-!
-! -----------------------------------------------------------------
 !
 !  OPTION ENEL_ELEM : CALCUL DE L'ENERGIE DE DEFORMATION ELASTIQUE
 !  ================   DETERMINEE PAR L'EXPRESSION SUIVANTE :
@@ -75,7 +105,6 @@ subroutine te0491(option, nomte)
 !   ENERELAS = SOMME_VOLUME((T_T*(1/D)*T).DV)
 !        OU  .T       EST LE TENSEUR DES CONTRAINTES DU FORMALISME
 !            .D         EST LE TENSEUR DE HOOKE
-! -----------------------------------------------------------------
 !
 !  OPTION ENTR_ELEM : CALCUL DE L'ENERGIE DE DEFORMATION ELASTIQUE
 !  =================   MODIFIEE DETERMINEE PAR L'EXPRESSION SUIVANTE :
@@ -86,11 +115,8 @@ subroutine te0491(option, nomte)
 !            .Ei       SONT (pour i=1..3) LES DEFORMATIONS PROPRES
 !            .H        LA FONCTION D'HEAVISIDE
 !
-! -----------------------------------------------------------------
 !
 !  OPTION ENER_TOTALE : CALCUL DE L'ENERGIE DE DEFORMATION TOTALE
-!  ==================   DETERMINEE PAR L'EXPRESSION SUIVANTE :
-!
 !   ENER_TOTALE =  ENELAS + EPLAS
 !
 !          AVEC : ENELAS =  SOMME_VOLUME((SIG_T*(1/D)*SIG).DV)
@@ -107,318 +133,234 @@ subroutine te0491(option, nomte)
 !                      .VMIS_ISOT_LINE
 !                      .VMIS_ISOT_TRAC
 !
-!   REMARQUE : EN GRANDE DEFORMATION ON INTEGRE SUR LE VOLUME INITIALE
+!   REMARQUE : EN GRANDE DEFORMATION ON INTEGRE SUR LE VOLUME INITIAL
 !
-!         POUR LES AUTRES COMPORTEMENTS ON S'ARRETE EN ERREUR FATALE
-! -----------------------------------------------------------------
-!          ELEMENTS ISOPARAMETRIQUES 3D
+! --------------------------------------------------------------------------------------------------
 !
-!          OPTIONS : 'INDIC_ENER'
-!                    'INDIC_SEUIL'
-!                    'ENEL_ELEM'
-!                    'ENER_TOTALE'
-!
-!     ENTREES  ---> OPTION : OPTION DE CALCUL
-!              ---> NOMTE  : NOM DU TYPE ELEMENT
-!.......................................................................
-!
-#include "asterf_types.h"
-#include "jeveux.h"
-#include "asterc/r8prem.h"
-#include "asterc/r8vide.h"
-#include "asterfort/dfdm3d.h"
-#include "asterfort/elrefe_info.h"
-#include "asterfort/enelpg.h"
-#include "asterfort/eps1mc.h"
-#include "asterfort/epsvmc.h"
-#include "asterfort/jevech.h"
-#include "asterfort/nbsigm.h"
-#include "asterfort/nmgeom.h"
-#include "asterfort/getElemOrientation.h"
-#include "asterfort/rcfonc.h"
-#include "asterfort/rctrac.h"
-#include "asterfort/rctype.h"
-#include "asterfort/rcvalb.h"
-#include "asterfort/rcvarc.h"
-#include "asterfort/tecach.h"
-#include "asterfort/utmess.h"
-#include "asterfort/diago3.h"
-!-----------------------------------------------------------------------
-    integer(kind=8) :: idconm, idene1, idene2, idepl, ideplm, idepmm
-    integer(kind=8) :: idfde, idsig, idsigm, idvari, igau, igeom, imate, icodre(5)
-    integer(kind=8) :: ipoids, ivf, jgano, jprol, jvale, mxcmel, nbsgm, itemps
-    integer(kind=8) :: nbsig, nbsig2, nbval, nbvari, ndim, nno, nnos, npg1
-    integer(kind=8) :: iret, iret1
-    integer(kind=8) :: i, jtab(7)
-    parameter(mxcmel=162)
-    parameter(nbsgm=6)
-    real(kind=8) :: airep, c1, c2, deux, deuxmu, dsde, e
+    aster_logical, parameter :: axi = ASTER_FALSE
+    character(len=4), parameter :: fami = "RIGI"
+    integer(kind=8), parameter :: ksp = 1
+    integer(kind=8), parameter :: mxcmel = 162, nbsgm = 6
+    real(kind=8), parameter :: zero = 0.d0, undemi = 0.5d0, un = 1.d0
+    real(kind=8), parameter :: deux = 2.d0, trois = 3.d0, untier = 1.d0/3.d0
+    integer(kind=8), parameter :: nbProp = 2
+    integer(kind=8) :: propCodret(nbProp)
+    character(len=16), parameter :: propName(nbProp) = (/'D_SIGM_EPSI', 'SY         '/)
+    real(kind=8) :: propVale(nbProp)
+    real(kind=8), parameter :: nharm = 0.d0
+    integer(kind=8) :: idconm, idene1, idene2, jvDisp, ideplm, jvDispPrev
+    integer(kind=8) :: jvDBaseFunc, jvSigm, jvSigmPrev, jvVari, kpg, jvGeom, jvMater
+    integer(kind=8) :: jvGaussWeight, jvBaseFunc, jprol, jvale, jvTime
+    integer(kind=8) :: nbsig, nbsig2, nbval, nbvari, ndim, nno, npg, nbEpsi
+    integer(kind=8) :: iret, iret1, i, jtab(7)
+    real(kind=8) :: airep, c1, c2, deuxmu, dsde, e
     real(kind=8) :: lame, mu, vecp(3, 3), epm(3)
-    real(kind=8) :: enelas, eneldv, enelsp, enelto, eplaeq, eplast, epseq
-    real(kind=8) :: enelastr, enelpart1, enelpart2, trepstraction, welastr
+    real(kind=8) :: enerElas, eneldv, enelsp, enelto, eplaeq, enerPlas, epseq
+    real(kind=8) :: enerElasTrac, enerElas1, enerElas2, trepstraction, welastr
     real(kind=8) :: omega, p, poids, psi, rp
-    real(kind=8) :: rprim, sigeq, sigy, tempg, trepsm, trois, trsig
-    real(kind=8) :: un, undemi, untier, volume, welas, wtotal, zero
-    real(kind=8) :: valres(5)
-    real(kind=8) :: sigma(nbsgm), epsdv(nbsgm)
-    real(kind=8) :: epsel(nbsgm), epspla(nbsgm), x(nbsgm)
-    real(kind=8) :: epsim(nbsgm), sigmm(nbsgm), delta(nbsgm)
+    real(kind=8) :: rprim, sigeq, sigy, tempg, trepsm, trsig
+    real(kind=8) :: volume, welas, wtotal
+    real(kind=8) :: sigmEner(nbsgm), epsdv(nbsgm)
+    real(kind=8) :: epsiElas(nbsgm), epsiPlas(nbsgm), x(nbsgm)
+    real(kind=8) :: epsim(nbsgm), delta(nbsgm), sigmm(nbsgm)
     real(kind=8) :: epsi(nbsgm), epssm(mxcmel), epss(mxcmel)
-    real(kind=8) :: angl_naut(3), instan, nharm, integ, integ1
-    real(kind=8) :: epsm(mxcmel), integ2, nu, k, indigl
-    real(kind=8) :: f(3, 3), r, para_vale, epsbid(6), dfdbid(27*3)
-    character(len=4) :: fami
-    character(len=16) :: nomres(5)
+    real(kind=8) :: anglNaut(3), time, integ, integ1
+    real(kind=8) :: epsiMeca(mxcmel), integ2, nu, k, indigl, para_vale
+    real(kind=8) :: f(3, 3), r, trav(81)
     character(len=8) :: para_type
-    character(len=16) :: nomte, option, optio2, compor(3)
-    aster_logical :: grand, axi
-!-----------------------------------------------------------------------
+    character(len=16) :: relaName, defoComp
+    aster_logical :: largeStrain
+    integer(kind=8) :: strainType
+    aster_logical :: lStrainMeca
+    integer(kind=8) :: elasID
+    character(len=16) :: elasKeyword
 !
-! ---- INITIALISATIONS :
+! --------------------------------------------------------------------------------------------------
 !
-    zero = 0.0d0
-    undemi = 0.5d0
-    un = 1.0d0
-    deux = 2.0d0
-    trois = 3.0d0
-    untier = 1.0d0/3.0d0
-    nharm = zero
     omega = zero
-    enelas = zero
-    eplast = zero
-    welas = zero
-    wtotal = zero
-    welastr = zero
     psi = zero
     volume = zero
     indigl = zero
-    instan = r8vide()
-!
-! ---- CARACTERISTIQUES DU TYPE D'ELEMENT :
-! ---- GEOMETRIE ET INTEGRATION
-    fami = 'RIGI'
-    call elrefe_info(fami=fami, ndim=ndim, nno=nno, nnos=nnos, npg=npg1, &
-                     jpoids=ipoids, jvf=ivf, jdfde=idfde, jgano=jgano)
-!
-    axi = .false.
-!
-! ----NOMBRE DE CONTRAINTES ASSOCIE A L'ELEMENT :
-!
+    enerElas = zero
+    enerElasTrac = zero
+    enerPlas = zero
+    welas = zero
+    welastr = zero
+    wtotal = zero
+
+! - CARACTERISTIQUES DU TYPE D'ELEMENT
+    call elrefe_info(fami=fami, ndim=ndim, nno=nno, npg=npg, &
+                     jpoids=jvGaussWeight, jvf=jvBaseFunc, jdfde=jvDBaseFunc)
+
+! - NOMBRE DE CONTRAINTES ASSOCIE A L'ELEMENT :
     nbsig = nbsigm()
-!
-! ----RECUPERATION DES COORDONNEES DES CONNECTIVITES :
-!
-    call jevech('PGEOMER', 'L', igeom)
-!
-! ----RECUPERATION DU MATERIAU :
-!
-    call jevech('PMATERC', 'L', imate)
-!
-! ----RECUPERATION  DES DONNEEES RELATIVES AU REPERE D'ORTHOTROPIE :
-    call getElemOrientation(ndim, nno, igeom, angl_naut)
-!
-! ---- RECUPERATION DU CHAMP DE DEPLACEMENTS AUX NOEUDS  :
-!
-    call jevech('PDEPLR', 'L', idepl)
-!
-! ---- RECUPERATION DU CHAMP DE CONTRAINTES AUX POINTS D'INTEGRATION :
-!
-    call jevech('PCONTPR', 'L', idsig)
-!
-! ---- RECUPERATION DE L'INSTANT DE CALCUL
-!      -----------------------------------
-    call tecach('NNO', 'PINSTR', 'L', iret, iad=itemps)
-    if (itemps .ne. 0) instan = zr(itemps)
-!
-! ----RECUPERATION DU TYPE DE COMPORTEMENT  :
-!     N'EXISTE PAS EN LINEAIRE
-    call tecach('NNO', 'PCOMPOR', 'L', iret, nval=7, &
-                itab=jtab)
-    compor(1) = 'ELAS'
-    compor(2) = ' '
-    compor(3) = 'PETIT'
-    if (iret .eq. 0) then
-        compor(1) = zk16(jtab(1))
-        compor(3) = zk16(jtab(1)+2)
+    nbEpsi = nbsig
+    ASSERT(nbsig .le. 6)
+    ASSERT(npg .le. 27)
+
+! - Geometry
+    call jevech('PGEOMER', 'L', jvGeom)
+
+! - Material parameters
+    call jevech('PMATERC', 'L', jvMater)
+
+! - Orthotropic parameters
+    call getElemOrientation(ndim, nno, jvGeom, anglNaut)
+
+! - Get displacements
+    call jevech('PDEPLR', 'L', jvDisp)
+
+! - Get stresses
+    call jevech('PCONTPR', 'L', jvSigm)
+
+! - Get time
+    time = r8vide()
+    call tecach('NNO', 'PINSTR', 'L', iret, iad=jvTime)
+    if (jvTime .ne. 0) then
+        time = zr(jvTime)
     end if
-!
-!     GRANDES DEFORMATIONS
-!
-    if ((compor(3) .eq. 'SIMO_MIEHE') .or. (compor(3) .eq. 'GDEF_LOG')) then
-        grand = .true.
+
+! - Get parameters from behaviour (linear and non-linear cases)
+    call behaviourGetParameters(relaName, defoComp)
+    if ((defoComp .eq. 'SIMO_MIEHE') .or. (defoComp .eq. 'GDEF_LOG')) then
+        largeStrain = ASTER_TRUE
     else
-        grand = .false.
+        largeStrain = ASTER_FALSE
     end if
-!
-! ---- RECUPERATION DU CHAMP DE DEPLACEMENTS AUX NOEUDS  :
-!
     if (option .eq. 'ENER_TOTALE') then
-        if (grand) then
-            call utmess('F', 'COMPOR1_78', sk=compor(3))
-        end if
-        call tecach('NNO', 'PDEPLM', 'L', iret, iad=ideplm)
-        if (ideplm .ne. 0) then
-            call jevech('PDEPLM', 'L', idepmm)
+        if (largeStrain) then
+            call utmess('F', 'ENERGY1_3', sk=defoComp)
         end if
     end if
-!
-! ON TESTE LA RECUPERATION DU CHAMP DE CONTRAINTES DU PAS PRECEDENT
-!
+
+! - ON TESTE LA RECUPERATION DU CHAMP DE CONTRAINTES DU PAS PRECEDENT
     if (option .eq. 'ENER_TOTALE') then
-        if ((compor(1) (1:9) .ne. 'VMIS_ISOT') .and. (compor(1) (1:4) .ne. 'ELAS')) then
+        if ((relaName(1:9) .ne. 'VMIS_ISOT') .and. (relaName(1:4) .ne. 'ELAS')) then
             call tecach('NNO', 'PCONTMR', 'L', iret, iad=idconm)
             if (idconm .ne. 0) then
-                call jevech('PCONTMR', 'L', idsigm)
+                call jevech('PCONTMR', 'L', jvSigmPrev)
             end if
         end if
     end if
-!
-! ----   RECUPERATION DU CHAMP DE VARIABLES INTERNES  :
-!        N'EXISTE PAS EN LINEAIRE
-    call tecach('ONO', 'PVARIPR', 'L', iret, nval=7, &
-                itab=jtab)
-    if (iret .eq. 0) then
-        idvari = jtab(1)
-        nbvari = max(jtab(6), 1)*jtab(7)
-    else
-        nbvari = 0
+
+! - ON TESTE LA RECUPERATION DU CHAMP DE CONTRAINTES DU PAS PRECEDENT
+    if (option .eq. 'ENER_TOTALE') then
+        call tecach('NNO', 'PDEPLM', 'L', iret, iad=ideplm)
+        if (ideplm .ne. 0) then
+            call jevech('PDEPLM', 'L', jvDispPrev)
+        end if
     end if
-!
-! -- CALCUL DES DEFORMATIONS TOTALES DANS LE CAS DE
-! -- ENERGIE TOTALE A L INSTANT COURANT ET CELUI D AVANT
-!
-    if ((compor(1) (1:9) .ne. 'VMIS_ISOT') .and. (compor(1) (1:4) .ne. 'ELAS')) then
-!
+
+! - Internal state variables (only for non-linear)
+    jvVari = 1
+    nbvari = 0
+    call tecach('ONO', 'PVARIPR', 'L', iret, nval=7, itab=jtab)
+    if (iret .eq. 0) then
+        jvVari = jtab(1)
+        nbvari = max(jtab(6), 1)*jtab(7)
+    end if
+
+! - CALCUL DES DEFORMATIONS TOTALES DANS LE CAS DE ENERGIE TOTALE A L INSTANT COURANT ET
+! - CELUI D AVANT
+    if ((relaName(1:9) .ne. 'VMIS_ISOT') .and. (relaName(1:4) .ne. 'ELAS')) then
         if (option .eq. 'ENER_TOTALE') then
-!
-!  CALCUL DE B.U
-!
-            call eps1mc(nno, ndim, nbsig, npg1, ipoids, &
-                        ivf, idfde, zr(igeom), zr(idepl), nharm, &
+            call eps1mc(nno, ndim, nbsig, npg, &
+                        jvGaussWeight, jvBaseFunc, jvDBaseFunc, &
+                        zr(jvGeom), zr(jvDisp), nharm, &
                         epss)
-!
             if (ideplm .ne. 0) then
-                call eps1mc(nno, ndim, nbsig, npg1, ipoids, &
-                            ivf, idfde, zr(igeom), zr(idepmm), nharm, &
+                call eps1mc(nno, ndim, nbsig, npg, &
+                            jvGaussWeight, jvBaseFunc, jvDBaseFunc, &
+                            zr(jvGeom), zr(jvDispPrev), nharm, &
                             epssm)
             end if
         end if
-!
     end if
-!
+
 ! ---- CALCUL DES DEFORMATIONS HORS THERMIQUES CORRESPONDANTES AU
 ! ---- CHAMP DE DEPLACEMENT I.E. EPSM = EPST - EPSTH
 ! ---- OU EPST  SONT LES DEFORMATIONS TOTALES
 ! ----    EPST = B.U
 ! ---- ET EPSTH SONT LES DEFORMATIONS THERMIQUES
 ! ----    EPSTH = ALPHA*(T-TREF) :
-!
-    optio2 = 'EPME_ELGA'
-    call epsvmc(fami, nno, ndim, nbsig, npg1, &
-                ipoids, ivf, idfde, zr(igeom), zr(idepl), &
-                instan, angl_naut, nharm, optio2, epsm)
-!
-!                      ===========================
-!                      =                         =
-!                      = OPTION   "INDIC_ENER"   =
-!                      = OPTION   "ENEL_ELEM"    =
-!                      = OPTION   "ENTR_ELEM"    =
-!                      = OPTION   "ENER_TOTALE"  =
-!                      =                         =
-!                      ===========================
-!
-    if (option .eq. 'INDIC_ENER' .or. option .eq. 'ENEL_ELEM' .or. option .eq. &
-        'ENER_TOTALE' .or. option .eq. 'ENTR_ELEM') then
-!
-! --- BOUCLE SUR LES POINTS D'INTEGRATION
-!
-        do igau = 1, npg1
-!
+
+! - Compute mechanical strains
+    strainType = STRAIN_TYPE_SMALL
+    lStrainMeca = ASTER_TRUE
+    call epsvmc(fami, nno, ndim, nbEpsi, npg, &
+                jvGaussWeight, jvBaseFunc, jvDBaseFunc, &
+                zr(jvGeom), zr(jvDisp), &
+                time, anglNaut, nharm, &
+                strainType, lStrainMeca, &
+                epsiMeca)
+
+    if (option .eq. 'INDIC_ENER' .or. option .eq. 'ENEL_ELEM' .or. &
+        option .eq. 'ENER_TOTALE' .or. option .eq. 'ENTR_ELEM') then
+        do kpg = 1, npg
             omega = zero
             psi = zero
-!
-! --- TENSEUR DES CONTRAINTES AU POINT D'INTEGRATION COURANT :
-!
+
+!---------- TENSEUR DES CONTRAINTES AU POINT D'INTEGRATION COURANT
+            sigmEner = 0.d0
             do i = 1, nbsig
-                sigma(i) = zr(idsig+(igau-1)*nbsig+i-1)
+                sigmEner(i) = zr(jvSigm+(kpg-1)*nbsig+i-1)
             end do
-!
-!
-! --- CALCUL DU JACOBIEN AU POINT D'INTEGRATION COURANT :
-            call nmgeom(3, nno, axi, grand, zr(igeom), &
-                        igau, ipoids, ivf, idfde, zr(idepl), &
-                        .true._1, poids, dfdbid, f, epsbid, &
+
+! --------- CALCUL DU JACOBIEN AU POINT D'INTEGRATION COURANT :
+            call nmgeom(3, nno, axi, largeStrain, zr(jvGeom), kpg, &
+                        jvGaussWeight, jvBaseFunc, jvDBaseFunc, &
+                        zr(jvDisp), &
+                        ASTER_TRUE, poids, trav, f, epsi, &
                         r)
-!
-!
-! --- CALCUL DE L'ENERGIE ELASTIQUE AU POINT D'INTEGRATION COURANT
-!
-            call enelpg(fami, zi(imate), instan, igau, angl_naut, &
-                        compor, f, sigma, nbvari, &
-                        zr(idvari+(igau-1)*nbvari), enelas)
-!
-!
-! --- TRAITEMENT DE L'OPTION ENEL_ELEM :
-!
+
+! --------- CALCUL DE L'ENERGIE DE DEFORMATION ELASTIQUE
+            call enelpg(fami, zi(jvMater), time, kpg, anglNaut, &
+                        relaName, defoComp, &
+                        f, sigmEner, &
+                        nbvari, zr(jvVari+(kpg-1)*nbvari), &
+                        enerElas)
+
             if (option .eq. 'ENEL_ELEM') then
-!
-                welas = welas+enelas*poids
-!
-!  ===============================================
-!  = FIN TRAITEMENT DE L'OPTION ENEL_ELEM        =
-!  ===============================================
-!
-                goto 120
-!
+                welas = welas+enerElas*poids
+                goto 10
             end if
-!
-! --- RECUPERATION DES CARACTERISTIQUES DU MATERIAU :
-!
-            nomres(1) = 'E'
-            nomres(2) = 'NU'
-!
-            call rcvalb(fami, igau, 1, '+', zi(imate), &
-                        ' ', 'ELAS', 0, ' ', [0.d0], &
-                        2, nomres, valres, icodre, 2)
-!
-            e = valres(1)
-            nu = valres(2)
-!
+
+! --------- Get elastic parameters
+            call get_elas_id(zi(jvMater), elasID, elasKeyword)
+            if (elasID .ne. ELAS_ISOT) then
+                call utmess("F", "ENERGY1_4", nk=2, valk=[option, elasKeyword])
+            end if
+            call get_elas_para(fami, zi(jvMater), '+', kpg, ksp, &
+                               elasID, elasKeyword, &
+                               e_=e, nu_=nu)
             deuxmu = e/(un+nu)
             k = untier*e/(un-deux*nu)
             lame = (e*nu)/((1+nu)*(1-2*nu))
             mu = e/(2*(1+nu))
-!
+
 ! --- CALCUL DES DEFORMATIONS ELASTIQUES EN CONSIDERANT LE MATERIAU ISOTROPE :
 ! --- EPS_ELAS    = 1/D*SIGMA
 ! ---             = ((1+NU)/E)*SIGMA-(NU/E)*TRACE(SIGMA) :
-!
             c1 = (un+nu)/e
             c2 = nu/e
 
-            trsig = sigma(1)+sigma(2)+sigma(3)
-            epsel(1) = c1*sigma(1)-c2*trsig
-            epsel(2) = c1*sigma(2)-c2*trsig
-            epsel(3) = c1*sigma(3)-c2*trsig
-            epsel(4) = c1*sigma(4)
-            epsel(5) = c1*sigma(5)
-            epsel(6) = c1*sigma(6)
+            trsig = sigmEner(1)+sigmEner(2)+sigmEner(3)
+            epsiElas(1) = c1*sigmEner(1)-c2*trsig
+            epsiElas(2) = c1*sigmEner(2)-c2*trsig
+            epsiElas(3) = c1*sigmEner(3)-c2*trsig
+            epsiElas(4) = c1*sigmEner(4)
+            epsiElas(5) = c1*sigmEner(5)
+            epsiElas(6) = c1*sigmEner(6)
 
-!
-! --- PARTIE SPHERIQUE DE L'ENERGIE DE DEFORMATION ELASTIQUE POSITIVE OU NULLE:
-!
-
-            trepstraction = epsel(1)+epsel(2)+epsel(3)
+! --------- PARTIE SPHERIQUE DE L'ENERGIE DE DEFORMATION ELASTIQUE POSITIVE OU NULLE
+            trepstraction = epsiElas(1)+epsiElas(2)+epsiElas(3)
             if (trepstraction .le. zero) then
                 trepstraction = zero
             end if
+            enerElas1 = undemi*lame*trepstraction*trepstraction
 
-            enelpart1 = undemi*lame*trepstraction*trepstraction
-
-!
-! --- CALCUL DES DEFORMATIONS ELASTIQUES PRINCIPALES POSITIVES OU NULLES:
-            call diago3(epsel, vecp, epm)
-
+! --------- CALCUL DES DEFORMATIONS ELASTIQUES PRINCIPALES POSITIVES OU NULLES:
+            call diago3(epsiElas, vecp, epm)
             if (epm(1) .le. zero) then
                 epm(1) = zero
             end if
@@ -429,230 +371,164 @@ subroutine te0491(option, nomte)
                 epm(3) = zero
             end if
 
-!
-! --- PARTIE DE L'ENERGIE DE DEFORMATION ELASTIQUE (DIRECTIONS PRINCIPALES) POSITIVE OU NULLE:
-!
+! --------- PARTIE DE L'ENERGIE DE DEFORMATION ELASTIQUE (DIRECTIONS PRINCIPALES) POSITIVE OU NULLE
+            enerElas2 = mu*(epm(1)*epm(1)+epm(2)*epm(2)+epm(3)*epm(3))
 
-            enelpart2 = mu*(epm(1)*epm(1)+&
-                     &epm(2)*epm(2)+&
-                     &epm(3)*epm(3))
-
-!
-! --- ENERGIE DE DEFORMATION ELASTIQUE DE TRACTION:
-!
-            enelastr = enelpart1+enelpart2
-
-! --- TRAITEMENT DE L'OPTION ENEL_ELTR :
+! --------- ENERGIE DE DEFORMATION ELASTIQUE DE TRACTION
+            enerElasTrac = enerElas1+enerElas2
 
             if (option .eq. 'ENTR_ELEM') then
-!
-                welastr = welastr+enelastr*poids
-!
-                goto 120
-!
-!  ===============================================
-!  = FIN TRAITEMENT DE L'OPTION ENEL_ELTR        =
-!  ===============================================
-!
+                welastr = welastr+enerElasTrac*poids
+                goto 10
             end if
 
-!
-! --- RECUPERATION DES CARACTERISTIQUES DU MATERIAU :
-!
-            nomres(1) = 'E'
-            nomres(2) = 'NU'
-!
-            call rcvalb(fami, igau, 1, '+', zi(imate), &
-                        ' ', 'ELAS', 0, ' ', [0.d0], &
-                        2, nomres, valres, icodre, 2)
-!
-!
-            e = valres(1)
-            nu = valres(2)
-!
-!-------------------------------------------------------
-!   CACUL DU TERME OMEGA REPRESENTANT L'ENERGIE TOTALE -
-!   OMEGA = SOMME_0->T(SIGMA:D(EPS)/DT).DTAU           -
-!-------------------------------------------------------
-! --- TRAITEMENT DU CAS DE L'ECROUISSAGE LINEAIRE ISOTROPE :
-!
-            if (compor(1) .eq. 'VMIS_ISOT_LINE') then
-!
-! --- RECUPERATION DE LA LIMITE D'ELASTICITE SY
-! --- ET DE LA PENTE DE LA COURBE DE TRACTION D_SIGM_EPSI :
-!
-                nomres(1) = 'D_SIGM_EPSI'
-                nomres(2) = 'SY'
-!
-                call rcvalb(fami, igau, 1, '+', zi(imate), &
+! --------- Get elastic parameters
+            call get_elas_id(zi(jvMater), elasID, elasKeyword)
+            if (elasID .ne. ELAS_ISOT) then
+                call utmess("F", "ENERGY1_4", nk=2, valk=[option, elasKeyword])
+            end if
+            call get_elas_para(fami, zi(jvMater), '+', kpg, ksp, &
+                               elasID, elasKeyword, &
+                               e_=e, nu_=nu)
+
+! --------- CALCUL DU TERME OMEGA REPRESENTANT L'ENERGIE TOTALE
+! --------- OMEGA = SOMME_0->T(SIGMA:D(EPS)/DT).DTAU
+            if (relaName .eq. 'VMIS_ISOT_LINE') then
+! ------------- Parameters from linear traction
+                call rcvalb(fami, kpg, ksp, '+', zi(jvMater), &
                             ' ', 'ECRO_LINE', 0, ' ', [0.d0], &
-                            2, nomres, valres, icodre, 2)
-!
-                dsde = valres(1)
-                sigy = valres(2)
-!
-! --- RECUPERATION DE LA DEFORMATION PLASTIQUE CUMULEE :
-!
-                p = zr(idvari+(igau-1)*nbvari+1-1)
-!
-! --- PENTE DE LA COURBE DE TRACTION DANS LE DIAGRAMME 'REDRESSE' :
-!
+                            nbProp, propName, propVale, &
+                            propCodret, 2)
+                dsde = propVale(1)
+                sigy = propVale(2)
+
+! ------------- RECUPERATION DE LA DEFORMATION PLASTIQUE CUMULEE
+                p = zr(jvVari+(kpg-1)*nbvari+1-1)
+
+! ------------- PENTE DE LA COURBE DE TRACTION DANS LE DIAGRAMME 'REDRESSE'
                 rprim = e*dsde/(e-dsde)
-!
-! --- CONTRAINTE UNIAXIALE SUR LA COURBE DE TRACTION :
-!
+
+! ------------- CONTRAINTE UNIAXIALE SUR LA COURBE DE TRACTION
                 rp = sigy+rprim*p
-!
-! --- TRAVAIL PLASTIQUE 'EQUIVALENT' :
-!
-                eplast = undemi*(sigy+rp)*p
-!
-! --- TRAITEMENT DU CAS DE L'ECROUISSAGE NON-LINEAIRE ISOTROPE :
-!
-            else if (compor(1) .eq. 'VMIS_ISOT_TRAC') then
-!
-! --- RECUPERATION DE LA COURBE DE TRACTION :
-!
-                call rcvarc(' ', 'TEMP', '+', fami, igau, &
+
+! ------------- TRAVAIL PLASTIQUE 'EQUIVALENT'
+                enerPlas = undemi*(sigy+rp)*p
+
+            else if (relaName .eq. 'VMIS_ISOT_TRAC') then
+! ------------- TEMPERATURE AU POINT D'INTEGRATION COURANT
+                call rcvarc(' ', 'TEMP', '+', fami, kpg, &
                             1, tempg, iret1)
-                call rctype(zi(imate), 1, 'TEMP', [tempg], para_vale, &
+                call rctype(zi(jvMater), 1, 'TEMP', [tempg], para_vale, &
                             para_type)
                 if ((para_type(1:4) .eq. 'TEMP') .and. (iret1 .eq. 1)) then
                     call utmess('F', 'COMPOR5_5', sk=para_type)
                 end if
-                call rctrac(zi(imate), 1, 'SIGM', tempg, jprol, &
+
+! ------------- RECUPERATION DE LA COURBE DE TRACTION
+                call rctrac(zi(jvMater), 1, 'SIGM', para_vale, jprol, &
                             jvale, nbval, e)
-!
-! --- RECUPERATION DE LA DEFORMATION PLASTIQUE CUMULEE :
-!
-                p = zr(idvari+(igau-1)*nbvari+1-1)
-!
-! --- TRAVAIL PLASTIQUE 'EQUIVALENT' :
-!
+
+! ------------- RECUPERATION DE LA DEFORMATION PLASTIQUE CUMULEE
+                p = zr(jvVari+(kpg-1)*nbvari+1-1)
+
+! ------------- TRAVAIL PLASTIQUE 'EQUIVALENT'
                 call rcfonc('V', 1, jprol, jvale, nbval, &
                             p=p, rp=rp, rprim=rprim, airerp=airep)
-!
-                eplast = airep
+                enerPlas = airep
+
             end if
-!
-! --- AFFECTATION A OMEGA QUI EST L'ENERGIE TOTALE
-! --- DE LA CONTRIBUTION AU POINT D'INTEGRATION DE L'ENERGIE
-! --- ELASTIQUE ET DE L'ENERGIE PLASTIQUE :
-!
-            omega = omega+enelas+eplast
-!
-! --- TRAITEMENT DE L'OPTION ENER_TOTALE :
-!
+
+! --------- AFFECTATION A OMEGA QUI EST L'ENERGIE TOTALE
+! --------- DE LA CONTRIBUTION AU POINT D'INTEGRATION DE L'ENERGIE
+! --------- ELASTIQUE ET DE L'ENERGIE PLASTIQUE :
+            omega = omega+enerElas+enerPlas
+
             if (option .eq. 'ENER_TOTALE') then
-!
-                if ((compor(1) (1:9) .ne. 'VMIS_ISOT') .and. (compor(1) (1:4) .ne. 'ELAS')) then
-!
-!             TENSEUR DES CONTRAINTES AU POINT D'INTEGRATION PRECEDENT
-!             ON LE CALCULE SEULEMENT DANS LE CAS DE LOI DE COMPORTEMENT
-!             NI VMIS_ISOT_ NI ELAS
-!
+                if ((relaName(1:9) .ne. 'VMIS_ISOT') .and. (relaName(1:4) .ne. 'ELAS')) then
+! ----------------- TENSEUR DES CONTRAINTES AU POINT D'INTEGRATION PRECEDENT
+! ----------------- ON LE CALCULE SEULEMENT DANS LE CAS DE LOI DE COMPORTEMENT
+! ----------------- NI VMIS_ISOT_ NI ELAS
                     if (idconm .ne. 0) then
                         do i = 1, nbsig
-                            sigmm(i) = zr(idsigm+(igau-1)*nbsig+i-1)
+                            sigmm(i) = zr(jvSigmPrev+(kpg-1)*nbsig+i-1)
                         end do
                     end if
-!
-! ---         TENSEUR DES DEFORMATIONS AU POINT D'INTEGRATION COURANT
-!             ON LE CALCULE SEULEMENT DANS LE CAS DE LOI DE COMPORTEMENT
-!             NI VMIS_ISOT_ NI ELAS
-!
+
+! ----------------- TENSEUR DES DEFORMATIONS AU POINT D'INTEGRATION COURANT
+! ----------------- ON LE CALCULE SEULEMENT DANS LE CAS DE LOI DE COMPORTEMENT
+! ----------------- NI VMIS_ISOT_ NI ELAS
                     do i = 1, nbsig
-                        epsi(i) = epss(i+(igau-1)*nbsig)
+                        epsi(i) = epss(i+(kpg-1)*nbsig)
                     end do
-!
-! ---         TENSEUR DES DEFORMATIONS AU POINT D'INTEGRATION PRECEDENT
-!             ON LE CALCULE SEULEMENT DANS LE CAS DE LOI DE COMPORTEMENT
-!             NI VMIS_ISOT_ NI ELAS
-!
+
+! ----------------- TENSEUR DES DEFORMATIONS AU POINT D'INTEGRATION PRECEDENT
+! ----------------- ON LE CALCULE SEULEMENT DANS LE CAS DE LOI DE COMPORTEMENT
+! ----------------- NI VMIS_ISOT_ NI ELAS
                     if (ideplm .ne. 0) then
                         do i = 1, nbsig
-                            epsim(i) = epssm(i+(igau-1)*nbsig)
+                            epsim(i) = epssm(i+(kpg-1)*nbsig)
                         end do
                     end if
-!
+
                     if ((idconm .ne. 0) .and. (ideplm .ne. 0)) then
                         do i = 1, nbsig
                             delta(i) = epsi(i)-epsim(i)
                         end do
-!
-!---             CALCUL DES TERMES A SOMMER
-!
-                        integ1 = sigmm(1)*delta(1)+sigmm(2)*delta(2)+sigmm(3)*delta(3)+2.0d&
-                                 &0*sigmm(4)*delta(4)+2.0d0*sigmm(5)*delta(5)+2.0d0*sigmm(6)*&
-                                 & delta(6)
-!
-                        integ2 = sigma(1)*delta(1)+sigma(2)*delta(2)+sigma(3)*delta(3)+2.0d&
-                                 &0*sigma(4)*delta(4)+2.0d0*sigma(5)*delta(5)+2.0d0*sigma(6)*&
-                                 & delta(6)
-!
+! --------------------- CALCUL DES TERMES A SOMMER
+                        integ1 = sigmm(1)*delta(1)+ &
+                                 sigmm(2)*delta(2)+ &
+                                 sigmm(3)*delta(3)+ &
+                                 deux*sigmm(4)*delta(4)+ &
+                                 deux*sigmm(5)*delta(5)+ &
+                                 deux*sigmm(6)*delta(6)
+                        integ2 = sigmEner(1)*delta(1)+ &
+                                 sigmEner(2)*delta(2)+ &
+                                 sigmEner(3)*delta(3)+ &
+                                 deux*sigmEner(4)*delta(4)+ &
+                                 deux*sigmEner(5)*delta(5)+ &
+                                 deux*sigmEner(6)*delta(6)
                         integ = undemi*(integ1+integ2)*poids
-!
                     else
-!
-!---             CAS OU LE NUMERO D ORDRE EST UN
-!
-                        integ = sigma(1)*epsi(1)+sigma(2)*epsi(2)+sigma(3)*epsi(3)+2.0d0*si&
-                                &gma(4)*epsi(4)+2.0d0*sigma(5)*epsi(5)+2.0d0*sigma(6)*epsi(6&
-                                &)
-!
+! --------------------- CAS OU LE NUMERO D ORDRE EST UN
+                        integ = sigmEner(1)*epsi(1)+ &
+                                sigmEner(2)*epsi(2)+ &
+                                sigmEner(3)*epsi(3)+ &
+                                deux*sigmEner(4)*epsi(4)+ &
+                                deux*sigmEner(5)*epsi(5)+ &
+                                deux*sigmEner(6)*epsi(6)
                         integ = undemi*integ*poids
-!
                     end if
-!
                     wtotal = wtotal+integ
-!
                 else
-!
-!-- DANS LE CAS VMIS_ISOT ON CALCULE L ENERGIE TOTALE
-!
-                    wtotal = wtotal+(enelas+eplast)*poids
-!
+! ----------------- DANS LE CAS VMIS_ISOT ON CALCULE L ENERGIE TOTALE
+                    wtotal = wtotal+(enerElas+enerPlas)*poids
                 end if
-!
-!  ===============================================
-!  = FIN TRAITEMENT DE L'OPTION ENER_TOTALE      =
-!  ===============================================
-!
-                goto 120
-!
+                goto 10
             end if
-!
-!---------------------------------------------------------
-!   CACUL DU TERME PSI REPRESENTANT L'ENERGIE ELASTIQUE  -
-!   NON-LINEAIRE TOTALE ASSOCIEE A LA COURBE DE TRACTION -
-!---------------------------------------------------------
-!
-! --- CALCUL DE LA DILATATION VOLUMIQUE AU POINT D'INTEGRATION COURANT
-!
-            trepsm = epsm(1+(igau-1)*nbsig)+epsm(2+(igau-1)*nbsig)+epsm(3+(igau-1)*nbsig)
-!
-! --- DEVIATEUR DES DEFORMATIONS AU POINT D'INTEGRATION COURANT
-!
-            epsdv(1) = epsm(1+(igau-1)*nbsig)-untier*trepsm
-            epsdv(2) = epsm(2+(igau-1)*nbsig)-untier*trepsm
-            epsdv(3) = epsm(3+(igau-1)*nbsig)-untier*trepsm
-            epsdv(4) = epsm(4+(igau-1)*nbsig)
-            epsdv(5) = epsm(5+(igau-1)*nbsig)
-            epsdv(6) = epsm(6+(igau-1)*nbsig)
+
+! --------- CALCUL DE LA DILATATION VOLUMIQUE AU POINT D'INTEGRATION COURANT
+            trepsm = epsiMeca(1+(kpg-1)*nbsig)+epsiMeca(2+(kpg-1)*nbsig)+epsiMeca(3+(kpg-1)*nbsig)
+
+! --------- DEVIATEUR DES DEFORMATIONS AU POINT D'INTEGRATION COURANT
+            epsdv(1) = epsiMeca(1+(kpg-1)*nbsig)-untier*trepsm
+            epsdv(2) = epsiMeca(2+(kpg-1)*nbsig)-untier*trepsm
+            epsdv(3) = epsiMeca(3+(kpg-1)*nbsig)-untier*trepsm
+            epsdv(4) = epsiMeca(4+(kpg-1)*nbsig)
+            epsdv(5) = epsiMeca(5+(kpg-1)*nbsig)
+            epsdv(6) = epsiMeca(6+(kpg-1)*nbsig)
 !
 ! --- CALCUL DE LA DEFORMATION ELASTIQUE EQUIVALENTE AU
 ! --- POINT D'INTEGRATION COURANT :
 !
-            epseq = sqrt( &
-                    trois/deux*( &
-                    epsdv(1)*epsdv(1)+epsdv(2)*epsdv(2)+epsdv(3)*epsdv(3)+deux*(epsdv(4)*epsdv&
-                    &(4)+epsdv(5)*epsdv(5)+epsdv(6)*epsdv(6)) &
-                    ) &
-                    )
-!
+            epseq = sqrt(trois/deux*(epsdv(1)*epsdv(1)+ &
+                                     epsdv(2)*epsdv(2)+ &
+                                     epsdv(3)*epsdv(3)+ &
+                                     deux*(epsdv(4)*epsdv(4)+ &
+                                           epsdv(5)*epsdv(5)+ &
+                                           epsdv(6)*epsdv(6))))
+
 ! --- COEFFICIENTS DU MATERIAU (CONSTANTE ELASTIQUE DE CISAILLEMENT
 ! --- DE LAME : MU ET  MODULE ELASTIQUE DE DILATATION : K) :
-!
             deuxmu = e/(un+nu)
             k = untier*e/(un-deux*nu)
 !
@@ -664,52 +540,39 @@ subroutine te0491(option, nomte)
 ! --- PARTIE SPHERIQUE DE L'ENERGIE DE DEFORMATION ELASTIQUE :
 !
             enelsp = undemi*k*trepsm*trepsm
-!
-! --- TRAITEMENT DU CAS DE L'ECROUISSAGE LINEAIRE ISOTROPE :
-!
-            if (compor(1) .eq. 'VMIS_ISOT_LINE') then
-!
-! --- RECUPERATION DE LA LIMITE D'ELASTICITE SY
-! --- ET DE LA PENTE DE LA COURBE DE TRACTION D_SIGM_EPSI :
-!
-                nomres(1) = 'D_SIGM_EPSI'
-                nomres(2) = 'SY'
-!
-                call rcvalb(fami, igau, 1, '+', zi(imate), &
+
+            if (relaName .eq. 'VMIS_ISOT_LINE') then
+! ------------- Parameters from linear traction
+                call rcvalb(fami, kpg, ksp, '+', zi(jvMater), &
                             ' ', 'ECRO_LINE', 0, ' ', [0.d0], &
-                            2, nomres, valres, icodre, 2)
-!
-                dsde = valres(1)
-                sigy = valres(2)
-!
-! --- PENTE DE LA COURBE DE TRACTION DANS LE DIAGRAMME 'REDRESSE'
-!
+                            nbProp, propName, propVale, &
+                            propCodret, 2)
+                dsde = propVale(1)
+                sigy = propVale(2)
+
+! ------------- PENTE DE LA COURBE DE TRACTION DANS LE DIAGRAMME 'REDRESSE'
                 rprim = e*dsde/(e-dsde)
-!
-! --- DEFORMATION NON-LINEAIRE CUMULEE EQUIVALENTE :
-!
+
+! ------------- DEFORMATION NON-LINEAIRE CUMULEE EQUIVALENTE :
                 p = (sigeq-sigy)/(rprim+trois/deux*deuxmu)
                 if (p .le. r8prem()) p = zero
-!
-! --- CONTRAINTE UNIAXIALE SUR LA COURBE DE TRACTION :
-!
+
+! ------------- CONTRAINTE UNIAXIALE SUR LA COURBE DE TRACTION :
                 rp = sigy+rprim*p
-!
-! --- TRAVAIL ELASTIQUE NON-LINEAIRE 'EQUIVALENT' :
-!
-                eplast = undemi*(sigy+rp)*p
-!
-! --- TRAITEMENT DU CAS DE L'ECROUISSAGE NON-LINEAIRE ISOTROPE :
-!
-            else if (compor(1) .eq. 'VMIS_ISOT_TRAC') then
-!
-! --- RECUPERATION DE LA COURBE DE TRACTION :
-!
-                call rctrac(zi(imate), 1, 'SIGM', tempg, jprol, &
+
+! ------------- TRAVAIL ELASTIQUE NON-LINEAIRE 'EQUIVALENT' :
+                enerPlas = undemi*(sigy+rp)*p
+
+! ------------- TRAITEMENT DU CAS DE L'ECROUISSAGE NON-LINEAIRE ISOTROPE :
+
+            else if (relaName .eq. 'VMIS_ISOT_TRAC') then
+
+! ------------- RECUPERATION DE LA COURBE DE TRACTION :
+
+                call rctrac(zi(jvMater), 1, 'SIGM', tempg, jprol, &
                             jvale, nbval, e)
-!
-! --- CALCUL DE LA LIMITE ELASTIQUE SIGY :
-!
+
+! ------------- CALCUL DE LA LIMITE ELASTIQUE SIGY :
                 call rcfonc('S', 1, jprol, jvale, nbval, &
                             sigy=sigy)
 !
@@ -722,9 +585,9 @@ subroutine te0491(option, nomte)
 !
 ! --- TRAVAIL ELASTIQUE NON-LINEAIRE 'EQUIVALENT' :
 !
-                eplast = airep
+                enerPlas = airep
             else
-                call utmess('F', 'ELEMENTS4_2')
+                call utmess('F', 'ENERGY1_6')
             end if
 !
 ! --- PARTIE DEVIATORIQUE DE L'ENERGIE DE DEFORMATION ELASTIQUE
@@ -741,7 +604,7 @@ subroutine te0491(option, nomte)
 ! --- ENERGIE DE DEFORMATION ELASTIQUE TOTALE AU POINT
 ! --- D'INTEGRATION COURANT :
 !
-            enelto = enelsp+eneldv+eplast
+            enelto = enelsp+eneldv+enerPlas
 !
 ! --- AFFECTATION A PSI QUI EST L'ENERGIE ELASTIQUE TOTALE
 ! --- DE LA CONTRIBUTION AU POINT D'INTEGRATION DE CETTE ENERGIE :
@@ -758,17 +621,16 @@ subroutine te0491(option, nomte)
                 indigl = indigl+(un-psi/omega)*poids
             end if
 !
-120         continue
+10          continue
         end do
-!
-! ----  RECUPERATION ET AFFECTATION DES GRANDEURS EN SORTIE
-! ----  AVEC RESPECTIVEMENT LA VALEUR DE L'INDICATEUR GLOBAL SUR
-! ----  L'ELEMENT ET LE VOLUME DE L'ELEMENT POUR L'OPTION
-! ----  INDIC_ENER
-! ----  AFFECTATION DE L'ENERGIE DE DEFORMATION ELASTIQUE
-! ----  ET DE L'ENERGIE DE DEFORMATION TOTALE RESPECTIVEMENT
-! ----  POUR LES OPTIONS ENEL_ELEM ET ENER_TOTALE :
-!
+
+! ----   RECUPERATION ET AFFECTATION DES GRANDEURS EN SORTIE
+! ----   AVEC RESPECTIVEMENT LA VALEUR DE L'INDICATEUR GLOBAL SUR
+! ----   L'ELEMENT ET LE VOLUME DE L'ELEMENT POUR L'OPTION
+! ----   INDIC_ENER
+! ----   AFFECTATION DE L'ENERGIE DE DEFORMATION ELASTIQUE
+! ----   ET DE L'ENERGIE DE DEFORMATION TOTALE RESPECTIVEMENT
+! ----   POUR LES OPTIONS ENEL_ELEM ET ENER_TOTALE :
         if (option .eq. 'INDIC_ENER') then
             call jevech('PENERD1', 'E', idene1)
             zr(idene1) = indigl
@@ -784,181 +646,144 @@ subroutine te0491(option, nomte)
             call jevech('PENERD1', 'E', idene1)
             zr(idene1) = wtotal
         end if
-!
-!
+
     else if (option .eq. 'INDIC_SEUIL') then
-!
-! ---    BOUCLE SUR LES POINTS D'INTEGRATION
-!
-        do igau = 1, npg1
-!
-! ---      RECUPERATION DES CARACTERISTIQUES DU MATERIAU :
-!
-            nomres(1) = 'E'
-            nomres(2) = 'NU'
-!
-            call rcvalb(fami, igau, 1, '+', zi(imate), &
-                        ' ', 'ELAS', 0, ' ', [0.d0], &
-                        2, nomres, valres, icodre, 2)
-!
-!
-            e = valres(1)
-            nu = valres(2)
-!
-! ---      TENSEUR DES CONTRAINTES AU POINT D'INTEGRATION COURANT :
-!
-            do i = 1, nbsig
-                sigma(i) = zr(idsig+(igau-1)*nbsig+i-1)
-            end do
-!
-! ---      CALCUL DES DEFORMATIONS ELASTIQUES AU POINT
-! ---      D'INTEGRATION COURANT EN CONSIDERANT LE MATERIAU ISOTROPE :
-! ---       EPS_ELAS    = 1/D*SIGMA
-! ---                   = ((1+NU)/E)*SIGMA-(NU/E)*TRACE(SIGMA) :
-!
+        do kpg = 1, npg
+! --------- Get elastic parameters
+            call get_elas_id(zi(jvMater), elasID, elasKeyword)
+            if (elasID .ne. ELAS_ISOT) then
+                call utmess("F", "ENERGY1_4", nk=2, valk=[option, elasKeyword])
+            end if
+            call get_elas_para(fami, zi(jvMater), '+', kpg, ksp, &
+                               elasID, elasKeyword, &
+                               e_=e, nu_=nu)
             c1 = (un+nu)/e
             c2 = nu/e
-            trsig = sigma(1)+sigma(2)+sigma(3)
-            epsel(1) = c1*sigma(1)-c2*trsig
-            epsel(2) = c1*sigma(2)-c2*trsig
-            epsel(3) = c1*sigma(3)-c2*trsig
-            epsel(4) = c1*sigma(4)
-            epsel(5) = c1*sigma(5)
-            epsel(6) = c1*sigma(6)
-!
-! ---      CALCUL DES DEFORMATIONS PLASTIQUES AU POINT
-! ---      D'INTEGRATION COURANT
-! ---      EPS_PLAST = EPS_TOT - EPS_ELAS - EPSTH
-! ---      EPS_PLAST = EPS_HORS_THERMIQUE - EPS_ELAS :
-!
-            epspla(1) = epsm(1+(igau-1)*nbsig)-epsel(1)
-            epspla(2) = epsm(2+(igau-1)*nbsig)-epsel(2)
-            epspla(3) = epsm(3+(igau-1)*nbsig)-epsel(3)
-            epspla(4) = epsm(4+(igau-1)*nbsig)-epsel(4)
-            epspla(5) = epsm(5+(igau-1)*nbsig)-epsel(5)
-            epspla(6) = epsm(6+(igau-1)*nbsig)-epsel(6)
-!
-! ---      CAS DE L'ECROUISSAGE CINEMATIQUE :
-! ---      LE TENSEUR A PRENDRE EN CONSIDERATION POUR LE CALCUL
-! ---      DU TRAVAIL PLASTIQUE EST SIGMA - X OU X EST LE TENSEUR
-! ---      DE RAPPEL :
-!
-            if (compor(1) .eq. 'VMIS_CINE_LINE') then
+
+! --------- TENSEUR DES CONTRAINTES AU POINT D'INTEGRATION COURANT
+            sigmEner = 0.d0
+            do i = 1, nbsig
+                sigmEner(i) = zr(jvSigm+(kpg-1)*nbsig+i-1)
+            end do
+
+! --- CALCUL DES DEFORMATIONS ELASTIQUES AU POINT
+! --- D'INTEGRATION COURANT EN CONSIDERANT LE MATERIAU ISOTROPE :
+! --- EPS_ELAS    = 1/D*SIGMA
+! ---             = ((1+NU)/E)*SIGMA-(NU/E)*TRACE(SIGMA) :
+            trsig = sigmEner(1)+sigmEner(2)+sigmEner(3)
+            epsiElas(1) = c1*sigmEner(1)-c2*trsig
+            epsiElas(2) = c1*sigmEner(2)-c2*trsig
+            epsiElas(3) = c1*sigmEner(3)-c2*trsig
+            epsiElas(4) = c1*sigmEner(4)
+            epsiElas(5) = c1*sigmEner(5)
+            epsiElas(6) = c1*sigmEner(6)
+
+! --- CALCUL DES DEFORMATIONS PLASTIQUES AU POINT
+! --- D'INTEGRATION COURANT
+! --- EPS_PLAST = EPS_TOT - EPS_ELAS - EPSTH
+! --- EPS_PLAST = EPS_HORS_THERMIQUE - EPS_ELAS
+            epsiPlas(1) = epsiMeca(1+(kpg-1)*nbsig)-epsiElas(1)
+            epsiPlas(2) = epsiMeca(2+(kpg-1)*nbsig)-epsiElas(2)
+            epsiPlas(3) = epsiMeca(3+(kpg-1)*nbsig)-epsiElas(3)
+            epsiPlas(4) = epsiMeca(4+(kpg-1)*nbsig)-epsiElas(4)
+            epsiPlas(5) = epsiMeca(5+(kpg-1)*nbsig)-epsiElas(5)
+            epsiPlas(6) = epsiMeca(6+(kpg-1)*nbsig)-epsiElas(6)
+
+            if (relaName .eq. 'VMIS_CINE_LINE') then
                 nbsig2 = 7
+                ASSERT(jvVari .ne. 1)
                 do i = 1, nbsig
-                    x(i) = zr(idvari+(igau-1)*nbsig2+i-1)
+                    x(i) = zr(jvVari+(kpg-1)*nbsig2+i-1)
                 end do
+                sigmEner = 0.d0
                 do i = 1, nbsig
-                    sigma(i) = sigma(i)-x(i)
+                    sigmEner(i) = sigmEner(i)-x(i)
                 end do
             end if
-!
-! ---      CALCUL DU TRAVAIL PLASTIQUE AU POINT D'INTEGRATION COURANT :
-!
-            eplast = sigma(1)*epspla(1)+sigma(2)*epspla(2)+sigma(3)*epspla(3)+deux*(sigma(&
-                     &4)*epspla(4)+sigma(5)*epspla(5)+sigma(6)*epspla(6))
-!
-! ---      CALCUL DU TRAVAIL PLASTIQUE EQUIVALENT AU POINT
-! ---      D'INTEGRATION COURANT :
-!
-! ---      TRAITEMENT DU CAS DE L'ECROUISSAGE LINEAIRE  :
-!
-            if (compor(1) .eq. 'VMIS_ISOT_LINE' .or. compor(1) .eq. 'VMIS_CINE_LINE') then
-!
-! ---          RECUPERATION DE LA LIMITE D'ELASTICITE SY
-! ---          ET DE LA PENTE DE LA COURBE DE TRACTION D_SIGM_EPSI :
-!
-                nomres(1) = 'D_SIGM_EPSI'
-                nomres(2) = 'SY'
-!
-                call rcvalb(fami, igau, 1, '+', zi(imate), &
+
+! --------- CALCUL DU TRAVAIL PLASTIQUE AU POINT D'INTEGRATION COURANT
+            enerPlas = sigmEner(1)*epsiPlas(1)+ &
+                       sigmEner(2)*epsiPlas(2)+ &
+                       sigmEner(3)*epsiPlas(3)+ &
+                       deux*(sigmEner(4)*epsiPlas(4)+ &
+                             sigmEner(5)*epsiPlas(5)+ &
+                             sigmEner(6)*epsiPlas(6))
+
+! --------- CALCUL DU TRAVAIL PLASTIQUE EQUIVALENT
+! --------- TRAITEMENT DU CAS DE L'ECROUISSAGE LINEAIRE
+            if (relaName .eq. 'VMIS_ISOT_LINE' .or. relaName .eq. 'VMIS_CINE_LINE') then
+! ------------- Parameters from linear traction
+                call rcvalb(fami, kpg, ksp, '+', zi(jvMater), &
                             ' ', 'ECRO_LINE', 0, ' ', [0.d0], &
-                            2, nomres, valres, icodre, 2)
-!
-                dsde = valres(1)
-                sigy = valres(2)
-!
-! ---          CALCUL DE LA DEFORMATION PLASTIQUE EQUIVALENTE :
-!
-                epseq = sqrt( &
-                        trois/deux*( &
-                        epspla(1)*epspla(1)+epspla(2)*epspla(2)+epspla(3)*epspla(3)+deux*(eps&
-                        &pla(4)*epspla(4)+epspla(5)*epspla(5)+epspla(6)*epspla(6)) &
-                        ) &
-                        )
-!
-! ---          DEFORMATION PLASTIQUE CUMULEE :
-!
-! ---         (TEMPORAIRE POUR L'ECROUISSAGE CINEMATIQUE)
-                if (compor(1) .eq. 'VMIS_CINE_LINE') then
+                            nbProp, propName, propVale, &
+                            propCodret, 2)
+                dsde = propVale(1)
+                sigy = propVale(2)
+
+! ------------- CALCUL DE LA DEFORMATION PLASTIQUE EQUIVALENTE
+                epseq = sqrt(trois/deux*( &
+                             epsiPlas(1)*epsiPlas(1)+ &
+                             epsiPlas(2)*epsiPlas(2)+ &
+                             epsiPlas(3)*epsiPlas(3)+ &
+                             deux*(epsiPlas(4)*epsiPlas(4)+ &
+                                   epsiPlas(5)*epsiPlas(5)+ &
+                                   epsiPlas(6)*epsiPlas(6))))
+
+! ------------- DEFORMATION PLASTIQUE CUMULEE (TEMPORAIRE POUR L'ECROUISSAGE CINEMATIQUE)
+                if (relaName .eq. 'VMIS_CINE_LINE') then
                     p = epseq
-                else if (compor(1) .eq. 'VMIS_ISOT_LINE') then
-                    p = zr(idvari+(igau-1)*nbvari+1-1)
+                else if (relaName .eq. 'VMIS_ISOT_LINE') then
+                    p = zr(jvVari+(kpg-1)*nbvari+1-1)
                 end if
-!
-! ---          PENTE DE LA COURBE DE TRACTION DANS LE DIAGRAMME
-! ---          'REDRESSE' :
-!
+
+! ------------- PENTE DE LA COURBE DE TRACTION DANS LE DIAGRAMME 'REDRESSE' :
                 rprim = e*dsde/(e-dsde)
-!
-! ---          CONTRAINTE UNIAXIALE SUR LA COURBE DE TRACTION :
-!
+
+! ------------- CONTRAINTE UNIAXIALE SUR LA COURBE DE TRACTION :
                 rp = sigy+rprim*p
-!
-! ---          TRAVAIL PLASTIQUE 'EQUIVALENT' :
-!
+
+! ------------- TRAVAIL PLASTIQUE 'EQUIVALENT' :
                 eplaeq = rp*p
-!
-! ---      TRAITEMENT DU CAS DE L'ECROUISSAGE NON-LINEAIRE ISOTROPE :
-!
-            else if (compor(1) .eq. 'VMIS_ISOT_TRAC') then
-!
-! ---          RECUPERATION DE LA COURBE DE TRACTION :
-!
-                call rcvarc(' ', 'TEMP', '+', fami, igau, &
-                            1, tempg, iret1)
-                call rctrac(zi(imate), 1, 'SIGM', tempg, jprol, &
+
+            else if (relaName .eq. 'VMIS_ISOT_TRAC') then
+! ------------- RECUPERATION DE LA COURBE DE TRACTION :
+                call rcvarc(' ', 'TEMP', '+', fami, kpg, &
+                            ksp, tempg, iret1)
+                call rctrac(zi(jvMater), 1, 'SIGM', tempg, jprol, &
                             jvale, nbval, e)
-!
-! ---      RECUPERATION DE LA DEFORMATION PLASTIQUE CUMULEE :
-!
-                p = zr(idvari+(igau-1)*nbvari+1-1)
-!
-! ---          TRAVAIL PLASTIQUE 'EQUIVALENT' :
-!
+
+! ------------- RECUPERATION DE LA DEFORMATION PLASTIQUE CUMULEE
+                p = zr(jvVari+(kpg-1)*nbvari+1-1)
+
+! ------------- TRAVAIL PLASTIQUE 'EQUIVALENT'
                 call rcfonc('V', 1, jprol, jvale, nbval, &
                             p=p, rp=rp, rprim=rprim, airerp=airep)
-!
                 eplaeq = rp*p
+
             else
-                call utmess('F', 'ELEMENTS4_3')
+                call utmess('F', 'ENERGY1_5')
             end if
-!
-! ---      CALCUL DU JACOBIEN AU POINT D'INTEGRATION COURANT :
-            call dfdm3d(nno, igau, ipoids, idfde, zr(igeom), &
+
+! --------- CALCUL DU JACOBIEN AU POINT D'INTEGRATION COURANT
+            call dfdm3d(nno, kpg, jvGaussWeight, jvDBaseFunc, zr(jvGeom), &
                         poids)
-!
-! ---      VOLUME DE L'ELEMENT :
-!
+
+! --------- VOLUME DE L'ELEMENT
             volume = volume+poids
-!
-! ---      INDICATEUR GLOBAL ENERGETIQUE (NON NORMALISE) :
-!
+
+! --------- INDICATEUR GLOBAL ENERGETIQUE (NON NORMALISE)
             if (eplaeq .ge. 1d04*r8prem()) then
-                indigl = indigl+(un-eplast/eplaeq)*poids
+                indigl = indigl+(un-enerPlas/eplaeq)*poids
             end if
-!
         end do
-!
-! ----   RECUPERATION ET AFFECTATION DES GRANDEURS EN SORTIE
-! ----   AVEC RESPECTIVEMENT LA VALEUR DE L'INDICATEUR GLOBAL SUR
-! ----   L'ELEMENT ET LE VOLUME DE L'ELEMENT :
-!
+
+! ----- RECUPERATION ET AFFECTATION DES GRANDEURS EN SORTIE
+! ----- AVEC RESPECTIVEMENT LA VALEUR DE L'INDICATEUR GLOBAL SUR
+! ----- L'ELEMENT ET LE VOLUME DE L'ELEMENT
         call jevech('PENERD1', 'E', idene1)
         zr(idene1) = indigl
         call jevech('PENERD2', 'E', idene2)
         zr(idene2) = volume
-!
     end if
 !
 end subroutine

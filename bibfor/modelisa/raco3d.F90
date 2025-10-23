@@ -16,14 +16,10 @@
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
 !
-subroutine raco3d(numdlz, iocc, fonrez, lisrez, chargz)
-    !
+subroutine raco3d(iocc, listRelaZ, loadZ)
+!
     implicit none
-    !
-    !    ATTENTION CETTE PROGRAMMATION SUPPOSE QUE L'OBJET NUEQ EST UN
-    !    VECTEUR IDENTITE. A MODIFIER
-
-#include "jeveux.h"
+!
 #include "asterfort/alchml.h"
 #include "asterfort/as_allocate.h"
 #include "asterfort/as_deallocate.h"
@@ -42,33 +38,31 @@ subroutine raco3d(numdlz, iocc, fonrez, lisrez, chargz)
 #include "asterfort/rco3d_crealigrel.h"
 #include "asterfort/rco3d_crep.h"
 #include "asterfort/reliem.h"
+#include "jeveux.h"
 #include "MeshTypes_type.h"
 !
-    integer(kind=8) :: iocc
-    character(len=8) :: charge
-    character(len=14) :: numddl
-    character(len=19) :: lisrel
-    character(len=*) :: numdlz, chargz, fonrez, lisrez
-! -------------------------------------------------------
-!     LIAISON COQUE-3D PAR DES RELATIONS LINEAIRES
-!     ENTRE LES MAILLES DE BORDS
-! -------------------------------------------------------
-!  NUMDLZ        - IN    - K14  - : NOM DU NUMEDDL DU LIGREL DU MODELE
-!                                     (IL A ETE CREE SUR LA VOLATILE)
-!  IOCC          - IN    - I    - : NUMERO D'OCCURENCE DU MOT-FACTEUR
-!  FONREZ        - IN    - K4   - : 'REEL'
-!  LISREZ        - IN    - K19  - : NOM DE LA SD LISTE_RELA
-!  CHARGE        - IN    - K8   - : NOM DE LA SD CHARGE
-!                - JXVAR -      -
-! -------------------------------------------------------
+    integer(kind=8), intent(in) :: iocc
+    character(len=*), intent(in) :: listRelaZ, loadZ
 !
+! --------------------------------------------------------------------------------------------------
 !
-! --------- VARIABLES LOCALES ---------------------------
-
-    character(len=16) :: motfac, motcle(2), typmcl(2)
-    character(len=19) :: ligrmo, ligrel, chmlrac
+! LIAISON_ELEM
+!
+! For Shell/Solid (3D
+!
+! --------------------------------------------------------------------------------------------------
+!
+! In  iocc             : index of factor keyword
+! In  listRela         : name of object for linear relations
+! In  load             : load
+!
+! --------------------------------------------------------------------------------------------------
+!
+    character(len=16), parameter :: factorKeyword = "LIAISON_ELEM"
+    character(len=16) :: motcle(2), typmcl(2)
+    character(len=19) :: modelLigrel, ligrel, chmlrac
     character(len=24) :: lismaco, lismavo, lisnoco
-    character(len=8)  :: mod, noma
+    character(len=8)  :: model, mesh
     integer(kind=8) :: nbmavo, nbmaco, nt_nodes
     integer(kind=8) :: nb_pairs, iret
     integer(kind=8) :: i, n1
@@ -82,56 +76,46 @@ subroutine raco3d(numdlz, iocc, fonrez, lisrez, chargz)
     integer(kind=8), allocatable :: map_noco_nbelem(:, :)
     real(kind=8), pointer ::  v_epai(:) => null()
     integer(kind=8), pointer :: list_total_no_co(:) => null()
-    character(len=8) :: cara_elem
-
+    character(len=8) :: caraElem
+    character(len=8) :: load
+    character(len=19) :: listRela
+!
+! --------------------------------------------------------------------------------------------------
+!
     call jemarq()
-
+!
+    load = loadZ
+    listRela = listRelaZ
+!
     motcle(1) = 'GROUP_MA_COQUE'
     motcle(2) = 'GROUP_MA_MASSIF'
     typmcl(1) = 'GROUP_MA'
     typmcl(2) = 'GROUP_MA'
-
-    numddl = numdlz
-    charge = chargz
-    lisrel = lisrez
-
     lismavo = '&&RACO3D.LMAILLES.VOL'
     lisnoco = '&&RACO3D.LNOEUDS.COQ'
     lismaco = '&&RACO3D.LMAILLES.COQ'
-    motfac = 'LIAISON_ELEM'
     ligrel = '&&RACO3D'
 
-! --- MODELE ASSOCIE AU LIGREL DE CHARGE :
-!     ----------------------------------
-    call dismoi('NOM_MODELE', charge(1:8), 'CHARGE', repk=mod)
+! - Main parameters
+    call dismoi('NOM_MODELE', load, 'CHARGE', repk=model)
+    call dismoi('NOM_LIGREL', model, 'MODELE', repk=modelLigrel)
+    call dismoi('NOM_MAILLA', modelLigrel, 'LIGREL', repk=mesh)
 
-! ---  LIGREL DU MODELE :
-!      ----------------
-    call dismoi('NOM_LIGREL', mod, 'MODELE', repk=ligrmo)
-!
-! --- MAILLAGE ASSOCIE AU MODELE :
-!     --------------------------
-    call dismoi('NOM_MAILLA', ligrmo, 'LIGREL', repk=noma)
-
-!--- RECUPERER COEF_RIGI_DRZ
-
+! - RECUPERER COEF_RIGI_DRZ
     call getvr8('LIAISON_ELEM', 'COEF_RIGI_DRZ', iocc=iocc, scal=crig, nbret=n1)
-
     if (n1 .eq. 0) then
         crig = 1.d0-5
     end if
-!--- -----------------------------------
-!-- RECUPERER LA LISTE DES MAILLES
 
-    call reliem(' ', noma, 'NU_MAILLE', motfac, iocc, &
+! - RECUPERER LA LISTE DES MAILLES
+    call reliem(' ', mesh, 'NU_MAILLE', factorKeyword, iocc, &
                 1, motcle(1), typmcl(1), lismaco, nbmaco)
 
-    call reliem(' ', noma, 'NU_MAILLE', motfac, iocc, &
+    call reliem(' ', mesh, 'NU_MAILLE', factorKeyword, iocc, &
                 1, motcle(2), typmcl(2), lismavo, nbmavo)
 
-!- RECUPERER LA LISTE DES NOOEUDS DU BORD DE LA COQUE
-
-    call reliem(' ', noma, 'NU_NOEUD', motfac, iocc, &
+! - RECUPERER LA LISTE DES NOOEUDS DU BORD DE LA COQUE
+    call reliem(' ', mesh, 'NU_NOEUD', factorKeyword, iocc, &
                 1, motcle(1), typmcl(1), lisnoco, nbnocot)
     call jeveuo(lisnoco, 'L', jlisnoco)
     !
@@ -145,8 +129,8 @@ subroutine raco3d(numdlz, iocc, fonrez, lisrez, chargz)
 
     AS_ALLOCATE(vr=v_epai, size=nbmaco)
 
-    call getvid('LIAISON_ELEM', 'CARA_ELEM', iocc=iocc, scal=cara_elem, nbret=n1)
-    call rco3d_crep(cara_elem, noma, lismaco, nbmaco, v_epai)
+    call getvid('LIAISON_ELEM', 'CARA_ELEM', iocc=iocc, scal=caraElem, nbret=n1)
+    call rco3d_crep(caraElem, mesh, lismaco, nbmaco, v_epai)
     ! RECUPERER LE MAX POUR L APPARIEMMENT
     epai = maxval(v_epai)
     !
@@ -155,7 +139,7 @@ subroutine raco3d(numdlz, iocc, fonrez, lisrez, chargz)
     nb_pairs = 0
     nt_nodes = 0
 
-    call rco3d_apco3d(noma, lismavo, lismaco, nbmavo, nbmaco, epai, &
+    call rco3d_apco3d(mesh, lismavo, lismaco, nbmavo, nbmaco, epai, &
                       list_pairs, nb_pairs, nt_nodes)
 !
 
@@ -168,7 +152,7 @@ subroutine raco3d(numdlz, iocc, fonrez, lisrez, chargz)
     allocate (map_noco_nbnoco(9, nbnocot, nb_pairs))
     allocate (map_noco_nbelem(9, nbnocot))
     !
-    call rco3d_crealigrel(ligrel, noma, mod, list_pairs, &
+    call rco3d_crealigrel(ligrel, mesh, model, list_pairs, &
                           nb_pairs, nt_nodes, &
                           list_total_no_co, nbnocot, map_noco_pair, &
                           map_noco_nbelem, map_noco_nbnoco)
@@ -177,13 +161,13 @@ subroutine raco3d(numdlz, iocc, fonrez, lisrez, chargz)
 
     chmlrac = '&&RACO3D.PCACOQU.CM'
     call alchml(ligrel, 'LIAI_CO_3D', 'PCACOQU', 'V', chmlrac, iret, ' ')
-    call rco3d_crch(ligrel, noma, chmlrac, lismaco, nbmaco, crig, v_epai)
+    call rco3d_crch(ligrel, mesh, chmlrac, lismaco, nbmaco, crig, v_epai)
 
 !--  Fields
 !
     lpain(1) = 'PGEOMER'
     lpain(2) = 'PCACOQU'
-    lchin(1) = noma//'.COORDO'
+    lchin(1) = mesh//'.COORDO'
     lchin(2) = '&&RACO3D.PCACOQU.CM'
     lpaout(1) = 'PMATUNS'
     lchout(1) = '&&RACO3D.PMATUNS'
@@ -194,13 +178,13 @@ subroutine raco3d(numdlz, iocc, fonrez, lisrez, chargz)
                 'OUI')
 
 !-- add the linear relations
-    call rco3d_clcrela(ligrel, noma, nb_pairs, nbnocot, &
+    call rco3d_clcrela(ligrel, mesh, nb_pairs, nbnocot, &
                        list_total_no_co, map_noco_pair, map_noco_nbelem, &
-                       map_noco_nbnoco, lchout(1) (1:19), fonrez, lisrel)
+                       map_noco_nbnoco, lchout(1) (1:19), listRela)
 
-!FIN
-    call detrsd('CHAM_ELEM', chmlrac)
+! - Clean
     call detrsd('LIGREL', ligrel)
+    call detrsd('CHAM_ELEM', chmlrac)
     call detrsd('RESUELEM', '&&RACO3D.PMATUNS')
     call jedetr('&&RACO3D.LMAILLES.VOL')
     call jedetr('&&RACO3D.LMAILLES.COQ')

@@ -21,28 +21,38 @@ from ..Utilities import _
 
 cata_msg = {
     1: _(
-        """On ne peut pas utiliser le mode MULTI_APPUI avec un comportement non-linéaire.
-On doit être soit en élasticité, soit utiliser un comportement de type DIS_CONTACT ou DIS_CHOC."""
+        """
+Le calcul de ENEL_ELGA n'est pas possible avec le modèle de déformation %(k1)s.
+"""
     ),
     2: _(
-        """On ne peut pas utiliser ACCELERATION_MPI en parallélisme distribué : on force
-ACCELERATION_MPI='NON'."""
+        """
+Le calcul de ENEL_ELGA n'est pas possible avec des paramètres élastiques %(k1)s.
+"""
     ),
     3: _(
-        """Le nombre maximal d'itérations de l'algorithme d'équilibrage de bandes de fréquence est atteint.
-        Il n'a pas été possible d'équilibrer les bandes de fréquence à la tolérance souhaitée."""
+        """
+Le calcul de ENER_TOTALE n'est pas possible avec le modèle de déformation %(k1)s.
+"""
     ),
     4: _(
-        """Convergence de l'algorithme d'équilibrage de bandes de fréquence atteinte.
-    Erreur relative maximale :%(r1)12.5e. Nombre d'itérations : %(i1)i"""
+        """
+Le calcul de %(k1)s n'est pas possible avec des paramètres élastiques %(k2)s.
+"""
     ),
     5: _(
-        """L'algorithme d'équilibrage de bandes de fréquence ne prend en entrée que
-    des matrices symétriques réelles."""
+        """
+Pour l'option INDIC_SEUIL, les seules relations admises sont VMIS_ISOT_LINE, VMIS_ISOT_TRAC et VMIS_CINE_LINE.
+"""
     ),
     6: _(
         """
-L'incrément de temps est négatif du fait de la reprise du calcul. Cette valeur peut faire échouer certaines lois de comportement, en particulier les lois avec viscosité.
+Pour l'option INDIC_ENER, les seules relations admises sont VMIS_ISOT_LINE et VMIS_ISOT_TRAC.
+"""
+    ),
+    7: _(
+        """
+Le calcul de ETOT_ELGA n'est pas possible avec le modèle de déformation %(k1)s.
 """
     ),
 }

@@ -70,7 +70,7 @@ subroutine te0457(option, nomte)
     real(kind=8), dimension(MSIZE_FACE_SCAL) :: basisScalEval, temp_F_curr
     real(kind=8), dimension(MSIZE_FACE_SCAL, MSIZE_FACE_SCAL) :: lhs
     real(kind=8) :: CoeffQP_curr(MAX_QP_FACE), coeff, d_alpha, temp_eval_curr
-    real(kind=8) :: sigma(MAX_QP_FACE), epsil(MAX_QP_FACE), rbid, tz0, time_curr
+    real(kind=8) :: sigmEner(MAX_QP_FACE), epsil(MAX_QP_FACE), rbid, tz0, time_curr
     integer(kind=8) :: fbs, celldim, ipg, nbpara, npg
     integer(kind=8) :: j_time, j_coefh, j_para
     blas_int :: b_incx, b_lda, b_n
@@ -135,10 +135,10 @@ subroutine te0457(option, nomte)
 !
     else if (option .eq. 'MTAN_THER_RAYO_R') then
 !
-! ----- Get real value (sigma, epsil, temp_inf)
+! ----- Get real value (sigmEner, epsil, temp_inf)
 !
         call jevech('PRAYONR', 'L', j_para)
-        sigma = zr(j_para)
+        sigmEner = zr(j_para)
         epsil = zr(j_para+1)
         tz0 = r8t0()
 !
@@ -150,12 +150,12 @@ subroutine te0457(option, nomte)
                              temp_F_curr, fbs &
                              )
 !
-            CoeffQP_curr(ipg) = 4.d0*sigma(ipg)*epsil(ipg)*(temp_eval_curr+tz0)**3
+            CoeffQP_curr(ipg) = 4.d0*sigmEner(ipg)*epsil(ipg)*(temp_eval_curr+tz0)**3
         end do
     else if (option .eq. 'MTAN_THER_RAYO_F') then
         call jevech('PRAYONF', 'L', j_para)
 !
-! ---- Get Function Parameters (sigma, epsil, temp_inf)
+! ---- Get Function Parameters (sigmEner, epsil, temp_inf)
 !
         if (celldim == 3) then
             nbpara = 4
@@ -175,7 +175,7 @@ subroutine te0457(option, nomte)
 ! ----- Evaluate the analytical function at T+
 !
         call hhoFuncFScalEvalQp(hhoQuadFace, zk8(j_para), nbpara, nompar, valpar, &
-                                celldim, sigma)
+                                celldim, sigmEner)
         call hhoFuncFScalEvalQp(hhoQuadFace, zk8(j_para+1), nbpara, nompar, valpar, &
                                 celldim, epsil)
 !
@@ -188,7 +188,7 @@ subroutine te0457(option, nomte)
                              temp_F_curr, fbs &
                              )
 !
-            CoeffQP_curr(ipg) = 4.d0*sigma(ipg)*epsil(ipg)*(temp_eval_curr+tz0)**3
+            CoeffQP_curr(ipg) = 4.d0*sigmEner(ipg)*epsil(ipg)*(temp_eval_curr+tz0)**3
         end do
 !
     else if (option .eq. 'MTAN_THER_FLUXNL') then

@@ -128,7 +128,7 @@ module SolidShell_type
 ! - JEVEUX adress to coded material
         integer(kind=8)         :: jvMater = 0
 ! - Local basis for non-isotropic material properties
-        real(kind=8)    :: mateBase(7) = 0.d0
+        real(kind=8)    :: mateBase(3) = 0.d0
 ! - Elasticity matrix at center of element
         real(kind=8)    :: elemHookeMatrix(SSH_SIZE_TENS, SSH_SIZE_TENS) = 0.d0
     end type SSH_MATE_PARA

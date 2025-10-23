@@ -65,7 +65,7 @@ subroutine te0143(option, nomte)
     real(kind=8) :: xfly, xflz
     real(kind=8) :: pgl(3, 3), mat(105)
     real(kind=8) :: iyr2, izr2, b(14), ksi1, d1b3(2, 3)
-    real(kind=8) :: sigma(14), carsec(6)
+    real(kind=8) :: sigmEner(14), carsec(6)
     character(len=16) :: ch16
 !
     integer(kind=8) :: nbfibr, nbgrfi, tygrfi, nbcarm, nug(10)
@@ -159,16 +159,16 @@ subroutine te0143(option, nomte)
             ASSERT((npg .eq. 2) .or. (npg .eq. 3))
             if (npg .eq. 2) then
                 do i = 1, nc
-                    sigma(i) = zr(ldep+i-1)
-                    sigma(i+nc) = zr(ldep+nc+i-1)
+                    sigmEner(i) = zr(ldep+i-1)
+                    sigmEner(i+nc) = zr(ldep+nc+i-1)
                 end do
             else
                 do i = 1, nc
-                    sigma(i) = zr(ldep+i-1)
-                    sigma(i+nc) = zr(ldep+nc+nc+i-1)
+                    sigmEner(i) = zr(ldep+i-1)
+                    sigmEner(i+nc) = zr(ldep+nc+nc+i-1)
                 end do
             end if
-            call ptkg00(sigma, a, a2, xiz, xiz2, xiy, xiy2, xl, ey, ez, mat)
+            call ptkg00(sigmEner, a, a2, xiz, xiz2, xiy, xiy2, xl, ey, ez, mat)
         else if (nomte .eq. 'MECA_POU_D_TG') then
             call jspgno(xl, zr(ldep), b)
             b(1:7) = -b(1:7)

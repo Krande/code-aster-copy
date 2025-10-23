@@ -38,7 +38,7 @@ subroutine te0127(option, nomte)
     integer(kind=8) :: ndim, nno, ipg, npg1, iveres, iech, iray, nnos
 !
     integer(kind=8) :: idec, jdec, kdec, ldec
-    real(kind=8) :: hech, sigma, epsil, tz0
+    real(kind=8) :: hech, sigmEner, epsil, tz0
 ! DEB ------------------------------------------------------------------
 !-----------------------------------------------------------------------
     integer(kind=8) :: i, ino, itemp, itemps, j, jno
@@ -54,7 +54,7 @@ subroutine te0127(option, nomte)
         hech = zr(iech)
     else if (option(11:14) .eq. 'RAYO') then
         call jevech('PRAYONR', 'L', iray)
-        sigma = zr(iray)
+        sigmEner = zr(iray)
         epsil = zr(iray+1)
     end if
     call jevech('PGEOMER', 'L', igeom)
@@ -104,7 +104,7 @@ subroutine te0127(option, nomte)
         else if (option(11:14) .eq. 'RAYO') then
             do i = 1, nno
                 zr(iveres+i-1) = zr(iveres+i-1)+jac*zr(ipoids+ipg-1)*zr(ivf+ldec+i-1)&
-                                &*sigma*epsil*(tpg+tz0)**4
+                                &*sigmEner*epsil*(tpg+tz0)**4
             end do
         end if
 !

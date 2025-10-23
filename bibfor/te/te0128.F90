@@ -38,7 +38,7 @@ subroutine te0128(option, nomte)
     character(len=8) :: nompar(4)
     real(kind=8) :: nx, ny, nz, sx(9, 9), sy(9, 9), sz(9, 9), jac, tpg
     real(kind=8) :: valpar(4), xx, yy, zz
-    real(kind=8) :: echnp1, sigma, epsil, tz0
+    real(kind=8) :: echnp1, sigmEner, epsil, tz0
     integer(kind=8) :: ipoids, ivf, idfdx, idfdy, igeom, jgano
     integer(kind=8) :: ndim, nno, ipg, npg1, iveres, iech, iray, nnos
     integer(kind=8) :: idec, jdec, kdec, ldec
@@ -119,14 +119,14 @@ subroutine te0128(option, nomte)
             end do
         else if (option(11:14) .eq. 'RAYO') then
             call fointe('A', zk8(iray), 4, nompar, valpar, &
-                        sigma, ier)
+                        sigmEner, ier)
             ASSERT(ier .eq. 0)
             call fointe('A', zk8(iray+1), 4, nompar, valpar, &
                         epsil, ier)
             ASSERT(ier .eq. 0)
             do i = 1, nno
                 zr(iveres+i-1) = zr(iveres+i-1)+jac*zr(ipoids+ipg-1)*zr(ivf+ldec+i-1)&
-                                &*sigma*epsil*(tpg+tz0)**4
+                                &*sigmEner*epsil*(tpg+tz0)**4
             end do
         end if
 !

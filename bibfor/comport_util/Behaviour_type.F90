@@ -110,7 +110,7 @@ module Behaviour_type
 ! ----- Gradient of velocity for *CRISTAL
         real(kind=8)  :: gradVelo(9) = 0.d0
 ! ----- Coordinates of all Gauss points
-        real(kind=8)  :: coorElga(ESVA_GEOM_NBMAXI, 3) = 0.d0
+        real(kind=8)  :: coorElga(VARC_GEOM_NBMAXI, 3) = 0.d0
     end type BehaviourESVA_Geom
 ! ==================================================================================================
 ! Type: External state variables - Other properties
@@ -140,9 +140,9 @@ module Behaviour_type
 ! ----- Number of external state variables used (as scalar) in external solver
         integer(kind=8) :: nbESVAScal = 0
 ! ----- Value of external state variables used (as scalar) in external solver
-        real(kind=8) :: scalESVAPrev(ESVA_EXTE_NBMAXI) = 0.d0
+        real(kind=8) :: scalESVAPrev(VARC_EXTE_NBMAXI) = 0.d0
 ! ----- Incremental value of external state variables used (as scalar)  in external solver
-        real(kind=8) :: scalESVAIncr(ESVA_EXTE_NBMAXI) = 0.d0
+        real(kind=8) :: scalESVAIncr(VARC_EXTE_NBMAXI) = 0.d0
 ! ----- Address for library of MGIS
         character(len=16) :: mgisAddr = " "
     end type BehaviourESVA_Exte

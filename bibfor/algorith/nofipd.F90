@@ -288,7 +288,7 @@ subroutine nofipd(ndim, nnod, nnop, nnog, npg, &
             goto 999
         end if
 ! ----- Compute "bubble" matrix
-        call tanbul(option, ndim, kpg, mate, rela_comp, &
+        call tanbul(ndim, kpg, mate, rela_comp, &
                     lVect, mini, alpha, dsbdep, trepst)
 ! ----- Internal forces
         if (lVect) then

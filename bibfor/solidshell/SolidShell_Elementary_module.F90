@@ -43,19 +43,19 @@ module SolidShell_Elementary_module
                initGeomCell, initMatePara, initElemProp, initBehaPara
 ! ==================================================================================================
     private
-#include "jeveux.h"
-#include "asterf_types.h"
-#include "MeshTypes_type.h"
 #include "asterc/r8vide.h"
-#include "asterfort/Behaviour_type.h"
-#include "asterfort/SolidShell_type.h"
+#include "asterf_types.h"
 #include "asterfort/assert.h"
+#include "asterfort/Behaviour_type.h"
 #include "asterfort/dmat3d.h"
 #include "asterfort/elrefe_info.h"
-#include "asterfort/jevech.h"
 #include "asterfort/getElemOrientation.h"
+#include "asterfort/jevech.h"
+#include "asterfort/SolidShell_type.h"
 #include "asterfort/tecach.h"
 #include "asterfort/terefe.h"
+#include "jeveux.h"
+#include "MeshTypes_type.h"
 ! ==================================================================================================
 contains
 ! ==================================================================================================
@@ -71,22 +71,22 @@ contains
 ! --------------------------------------------------------------------------------------------------
     subroutine initElemProp(inteFami, elemProp)
 !   ------------------------------------------------------------------------------------------------
-! - Parameters
+! ----- Parameters
         character(len=4), intent(in)     :: inteFami
         type(SSH_ELEM_PROP), intent(out) :: elemProp
-! - Local
+! ----- Local
         integer(kind=8) :: npg, nno
         integer(kind=8) :: jvWeight, jvCoor, jvShape, jvDShape
 !   ------------------------------------------------------------------------------------------------
 !
         if (SSH_DBG_ELEM) SSH_DBG_STRG('> initElemProp')
 
-! - Get element parameters
+! ----- Get element parameters
         call elrefe_info(fami=inteFami, npg=npg, nno=nno, &
                          jpoids=jvWeight, jcoopg=jvCoor, &
                          jvf=jvShape, jdfde=jvDShape)
 
-! - Set parameters for integration scheme
+! ----- Set parameters for integration scheme
         elemProp%elemInte%inteFami = inteFami
         elemProp%elemInte%nbIntePoint = npg
         elemProp%elemInte%jvCoor = jvCoor
@@ -94,7 +94,7 @@ contains
         elemProp%elemInte%jvShape = jvShape
         elemProp%elemInte%jvDShape = jvDShape
 
-! - Set main parameters of finite element
+! ----- Set main parameters of finite element
         if (nno .eq. 9) then
             elemProp%cellType = SSH_CELL_HEXA
         else
@@ -121,10 +121,10 @@ contains
 ! --------------------------------------------------------------------------------------------------
     subroutine initGeomCell(elemProp, cellGeom)
 !   ------------------------------------------------------------------------------------------------
-! - Parameters
+! ----- Parameters
         type(SSH_ELEM_PROP), intent(in)  :: elemProp
         type(SSH_CELL_GEOM), intent(out) :: cellGeom
-! - Local
+! ----- Local
         integer(kind=8)      :: iDofGeom, iNodeGeom
         real(kind=8) :: detJac0
         real(kind=8) :: area0
@@ -132,10 +132,10 @@ contains
 !
         if (SSH_DBG_ELEM) SSH_DBG_STRG('> initGeomCell')
 
-! - Access to field of coordinates
+! ----- Access to field of coordinates
         call jevech('PGEOMER', 'L', cellGeom%jvGeom)
 
-! - Set initial geometry
+! ----- Set initial geometry
         do iDofGeom = 1, elemProp%nbDofGeom
             cellGeom%geomInit(iDofGeom) = zr(cellGeom%jvGeom+iDofGeom-1)
         end do
@@ -145,20 +145,20 @@ contains
             cellGeom%geomInitZ(iNodeGeom) = cellGeom%geomInit(3*(iNodeGeom-1)+3)
         end do
 
-! - Set center
+! ----- Set center
         if (elemProp%cellType == SSH_CELL_HEXA) then
             cellGeom%cellCenterCova = hexaCovaCenter
         else
             ASSERT(ASTER_FALSE)
         end if
 
-! - Compute Jacobian matrix at center of element on initial configuration
+! ----- Compute Jacobian matrix at center of element on initial configuration
         call compJacoMatr(elemProp, &
                           cellGeom%geomInit, cellGeom%cellCenterCova, &
                           cellGeom%Jac0, cellGeom%JacInv0, &
                           detJac0)
         cellGeom%detJac0 = abs(detJac0)
-! - Compute average Thickness
+! ----- Compute average Thickness
         call compAhmadFrame(cellGeom, area0)
         cellGeom%h0 = abs(detJac0)*8/area0
 !
@@ -180,24 +180,24 @@ contains
 ! --------------------------------------------------------------------------------------------------
     subroutine initMatePara(elemProp, cellGeom, timeCurr, matePara)
 !   ------------------------------------------------------------------------------------------------
-! - Parameters
+! ----- Parameters
         type(SSH_ELEM_PROP), intent(in)  :: elemProp
         type(SSH_CELL_GEOM), intent(in)  :: cellGeom
         real(kind=8), intent(in)         :: timeCurr
         type(SSH_MATE_PARA), intent(out) :: matePara
-! - Local
+! ----- Local
         integer(kind=8) :: jvMate
 !   ------------------------------------------------------------------------------------------------
 !
         if (SSH_DBG_ELEM) SSH_DBG_STRG('> initMatePara')
-! - Access to field of material parameters
+! ----- Access to field of material parameters
         call jevech('PMATERC', 'L', jvMate)
         matePara%jvMater = zi(jvMate)
 
-! - Set material orientation
+! ----- Set material orientation
         call setMateOrientation(elemProp, cellGeom, matePara)
 
-! - Compute elasticity matrix at middle of cell
+! ----- Compute elasticity matrix at middle of cell
         call compElemElasMatrix(elemProp%elemInte, timeCurr, matePara)
 
 !
@@ -305,18 +305,18 @@ contains
 ! --------------------------------------------------------------------------------------------------
     subroutine setMateOrientation(elemProp, cellGeom, matePara)
 !   ------------------------------------------------------------------------------------------------
-! - Parameters
+! ----- Parameters
         type(SSH_ELEM_PROP), intent(in)    :: elemProp
         type(SSH_CELL_GEOM), intent(in)    :: cellGeom
         type(SSH_MATE_PARA), intent(inout) :: matePara
-! - Local
+! ----- Local
         integer(kind=8) :: nno, jvGeom
 !   ------------------------------------------------------------------------------------------------
 !
         nno = elemProp%nbNodeGeom
         jvGeom = cellGeom%jvGeom
 
-! - Get orientation
+! ----- Get orientation
         call getElemOrientation(SSH_NDIM, nno, jvGeom, matePara%mateBase)
 !
 !   ------------------------------------------------------------------------------------------------
@@ -334,7 +334,7 @@ contains
 ! --------------------------------------------------------------------------------------------------
     subroutine compElemElasMatrix(elemInte, timeCurr, matePara)
 !   ------------------------------------------------------------------------------------------------
-! - Parameters
+! ----- Parameters
         type(SSH_ELEM_INTE), intent(in)    :: elemInte
         real(kind=8), intent(in)           :: timeCurr
         type(SSH_MATE_PARA), intent(inout) :: matePara
@@ -354,7 +354,7 @@ contains
 ! --------------------------------------------------------------------------------------------------
     subroutine compRigiMatr()
 !   ------------------------------------------------------------------------------------------------
-! - Local
+! ----- Local
         character(len=4), parameter :: inteFami = 'RIGI'
         type(SSH_CELL_GEOM) :: cellGeom
         type(SSH_ELEM_PROP) :: elemProp
@@ -365,29 +365,29 @@ contains
 !
         matrRigi = 0.d0
 
-! - Non-sense ! To suppress (see issue30887)
+! ----- Non-sense ! To suppress (see issue30887)
         timeCurr = r8vide()
 
-! - Initialization of general properties of finite element
+! ----- Initialization of general properties of finite element
         call initElemProp(inteFami, elemProp)
         if (SSH_DBG_ELEM) call dbgObjElemProp(elemProp)
 
-! - Initialization of geometric properties of cell
+! ----- Initialization of geometric properties of cell
         call initGeomCell(elemProp, cellGeom)
         if (SSH_DBG_GEOM) call dbgObjCellGeom(cellGeom)
 
-! - Initialization of properties of material
+! ----- Initialization of properties of material
         call initMatePara(elemProp, cellGeom, timeCurr, matePara)
         if (SSH_DBG_MATE) call dbgObjMatePara(matePara)
 
-! - Compute rigidity matrix
+! ----- Compute rigidity matrix
         if (elemProp%cellType .eq. SSH_CELL_HEXA) then
             call compRigiMatrHexa(elemProp, cellGeom, matePara, matrRigi)
         else
             ASSERT(ASTER_FALSE)
         end if
 
-! - Save matrix
+! ----- Save matrix
         call jevech('PMATUUR', 'E', jvMatr)
         k = 0
         do i = 1, elemProp%nbDof
@@ -408,7 +408,7 @@ contains
 ! --------------------------------------------------------------------------------------------------
     subroutine compSiefElga()
 !   ------------------------------------------------------------------------------------------------
-! - Local
+! ----- Local
         character(len=4), parameter :: inteFami = 'RIGI'
         type(SSH_CELL_GEOM) :: cellGeom
         type(SSH_ELEM_PROP) :: elemProp
@@ -419,25 +419,25 @@ contains
 !
         siefElga = 0.d0
 
-! - Non-sense ! To suppress (see issue30887)
+! ----- Non-sense ! To suppress (see issue30887)
         timeCurr = r8vide()
 
-! - Initialization of general properties of finite element
+! ----- Initialization of general properties of finite element
         call initElemProp(inteFami, elemProp)
         if (SSH_DBG_ELEM) call dbgObjElemProp(elemProp)
 
-! - Initialization of geometric properties of cell
+! ----- Initialization of geometric properties of cell
         call initGeomCell(elemProp, cellGeom)
         if (SSH_DBG_GEOM) call dbgObjCellGeom(cellGeom)
 
-! - Initialization of properties of material
+! ----- Initialization of properties of material
         call initMatePara(elemProp, cellGeom, timeCurr, matePara)
         if (SSH_DBG_MATE) call dbgObjMatePara(matePara)
 
-! - Get displacements
+! ----- Get displacements
         call jevech('PDEPLAR', 'L', jvDisp)
 
-! - Compute stresses
+! ----- Compute stresses
         if (elemProp%cellType .eq. SSH_CELL_HEXA) then
             call compSiefElgaHexa(elemProp, cellGeom, matePara, zr(jvDisp), &
                                   siefElga)
@@ -445,7 +445,7 @@ contains
             ASSERT(ASTER_FALSE)
         end if
 
-! - Save stress
+! ----- Save stress
         call jevech('PCONTRR', 'E', jvSigm)
         do i = 1, SSH_SIZE_TENS*elemProp%elemInte%nbIntePoint
             zr(jvSigm-1+i) = siefElga(i)
@@ -462,7 +462,7 @@ contains
 ! --------------------------------------------------------------------------------------------------
     subroutine compForcNoda()
 !   ------------------------------------------------------------------------------------------------
-! - Local
+! ----- Local
         character(len=4), parameter :: inteFami = 'RIGI'
         type(SSH_CELL_GEOM) :: cellGeom
         type(SSH_ELEM_PROP) :: elemProp
@@ -472,18 +472,18 @@ contains
 !
         forcNoda = 0.d0
 
-! - Initialization of general properties of finite element
+! ----- Initialization of general properties of finite element
         call initElemProp(inteFami, elemProp)
         if (SSH_DBG_ELEM) call dbgObjElemProp(elemProp)
 
-! - Initialization of geometric properties of cell
+! ----- Initialization of geometric properties of cell
         call initGeomCell(elemProp, cellGeom)
         if (SSH_DBG_GEOM) call dbgObjCellGeom(cellGeom)
 
-! - Get stresses
+! ----- Get stresses
         call jevech('PSIEFR', 'L', jvSigm)
 
-! - Compute nodal forces
+! ----- Compute nodal forces
         if (elemProp%cellType .eq. SSH_CELL_HEXA) then
             call compForcNodaHexa(elemProp, cellGeom, &
                                   zr(jvSigm), forcNoda)
@@ -491,7 +491,7 @@ contains
             ASSERT(ASTER_FALSE)
         end if
 
-! - Save vector
+! ----- Save vector
         call jevech('PVECTUR', 'E', jvVect)
         do i = 1, elemProp%nbDof
             zr(jvVect-1+i) = forcNoda(i)
@@ -510,9 +510,9 @@ contains
 ! --------------------------------------------------------------------------------------------------
     subroutine compNonLinear(option)
 !   ------------------------------------------------------------------------------------------------
-! - Parameters
+! ----- Parameters
         character(len=16), intent(in)    :: option
-! - Local
+! ----- Local
         character(len=4), parameter :: inteFami = 'RIGI'
         type(SSH_CELL_GEOM) :: cellGeom
         type(SSH_ELEM_PROP) :: elemProp
@@ -559,7 +559,7 @@ contains
 ! --------------------------------------------------------------------------------------------------
     subroutine compEpsiElga()
 !   ------------------------------------------------------------------------------------------------
-! - Local
+! ----- Local
         character(len=4), parameter :: inteFami = 'RIGI'
         type(SSH_CELL_GEOM) :: cellGeom
         type(SSH_ELEM_PROP) :: elemProp
@@ -569,25 +569,25 @@ contains
 !
         epsiElga = 0.d0
 
-! - Initialization of general properties of finite element
+! ----- Initialization of general properties of finite element
         call initElemProp(inteFami, elemProp)
         if (SSH_DBG_ELEM) call dbgObjElemProp(elemProp)
 
-! - Initialization of geometric properties of cell
+! ----- Initialization of geometric properties of cell
         call initGeomCell(elemProp, cellGeom)
         if (SSH_DBG_GEOM) call dbgObjCellGeom(cellGeom)
 
-! - Get displacements
+! ----- Get displacements
         call jevech('PDEPLAR', 'L', jvDisp)
 
-! - Compute strains
+! ----- Compute strains
         if (elemProp%cellType .eq. SSH_CELL_HEXA) then
             call compEpsiElgaHexa(elemProp, cellGeom, zr(jvDisp), epsiElga)
         else
             ASSERT(ASTER_FALSE)
         end if
 
-! - Save strains
+! ----- Save strains
         call jevech('PDEFOPG', 'E', jvEpsi)
         do i = 1, SSH_SIZE_TENS*elemProp%elemInte%nbIntePoint
             zr(jvEpsi-1+i) = epsiElga(i)
@@ -604,7 +604,7 @@ contains
 ! --------------------------------------------------------------------------------------------------
     subroutine compEpslElga()
 !   ------------------------------------------------------------------------------------------------
-! - Local
+! ----- Local
         character(len=4), parameter :: inteFami = 'RIGI'
         type(SSH_CELL_GEOM) :: cellGeom
         type(SSH_ELEM_PROP) :: elemProp
@@ -614,25 +614,25 @@ contains
 !
         epslElga = 0.d0
 
-! - Initialization of general properties of finite element
+! ----- Initialization of general properties of finite element
         call initElemProp(inteFami, elemProp)
         if (SSH_DBG_ELEM) call dbgObjElemProp(elemProp)
 
-! - Initialization of geometric properties of cell
+! ----- Initialization of geometric properties of cell
         call initGeomCell(elemProp, cellGeom)
         if (SSH_DBG_GEOM) call dbgObjCellGeom(cellGeom)
 
-! - Get displacements
+! ----- Get displacements
         call jevech('PDEPLAR', 'L', jvDisp)
 
-! - Compute stresses
+! ----- Compute stresses
         if (elemProp%cellType .eq. SSH_CELL_HEXA) then
             call compEpslElgaHexa(elemProp, cellGeom, zr(jvDisp), epslElga)
         else
             ASSERT(ASTER_FALSE)
         end if
 
-! - Save stress
+! ----- Save stress
         call jevech('PDEFOPG', 'E', jvEpsi)
         do i = 1, SSH_SIZE_TENS*elemProp%elemInte%nbIntePoint
             zr(jvEpsi-1+i) = epslElga(i)
@@ -651,9 +651,9 @@ contains
 ! --------------------------------------------------------------------------------------------------
     subroutine compLoad(option)
 !   ------------------------------------------------------------------------------------------------
-! - Parameters
+! ----- Parameters
         character(len=16), intent(in)   :: option
-! - Local
+! ----- Local
         character(len=4), parameter :: inteFami = 'RIGI'
         type(SSH_CELL_GEOM) :: cellGeom
         type(SSH_ELEM_PROP) :: elemProp
@@ -664,31 +664,31 @@ contains
 !
         loadNoda = 0.d0
 
-! - Non-sense ! To suppress (see issue30887)
+! ----- Non-sense ! To suppress (see issue30887)
         timeCurr = r8vide()
 
-! - Initialization of general properties of finite element
+! ----- Initialization of general properties of finite element
         call initElemProp(inteFami, elemProp)
         if (SSH_DBG_ELEM) call dbgObjElemProp(elemProp)
 
-! - Initialization of geometric properties of cell
+! ----- Initialization of geometric properties of cell
         call initGeomCell(elemProp, cellGeom)
         if (SSH_DBG_GEOM) call dbgObjCellGeom(cellGeom)
 
-! - Initialization of properties of material
+! ----- Initialization of properties of material
         if (option .eq. 'CHAR_MECA_PESA_R') then
             call initMatePara(elemProp, cellGeom, timeCurr, matePara)
             if (SSH_DBG_MATE) call dbgObjMatePara(matePara)
         end if
 
-! - Compute load
+! ----- Compute load
         if (elemProp%cellType .eq. SSH_CELL_HEXA) then
             call compLoadHexa(elemProp, cellGeom, matePara, option, loadNoda)
         else
             ASSERT(ASTER_FALSE)
         end if
 
-! - Save vector
+! ----- Save vector
         call jevech('PVECTUR', 'E', jvVect)
         do i = 1, elemProp%nbDof
             zr(jvVect-1+i) = loadNoda(i)
@@ -705,7 +705,7 @@ contains
 ! --------------------------------------------------------------------------------------------------
     subroutine compMassMatr()
 !   ------------------------------------------------------------------------------------------------
-! - Local
+! ----- Local
         character(len=4), parameter :: inteFami = 'MASS'
         type(SSH_CELL_GEOM) :: cellGeom
         type(SSH_ELEM_PROP) :: elemProp
@@ -716,29 +716,29 @@ contains
 !
         matrMass = 0.d0
 
-! - Non-sense ! To suppress (see issue30887)
+! ----- Non-sense ! To suppress (see issue30887)
         timeCurr = r8vide()
 
-! - Initialization of general properties of finite element
+! ----- Initialization of general properties of finite element
         call initElemProp(inteFami, elemProp)
         if (SSH_DBG_ELEM) call dbgObjElemProp(elemProp)
 
-! - Initialization of geometric properties of cell
+! ----- Initialization of geometric properties of cell
         call initGeomCell(elemProp, cellGeom)
         if (SSH_DBG_GEOM) call dbgObjCellGeom(cellGeom)
 
-! - Initialization of properties of material
+! ----- Initialization of properties of material
         call initMatePara(elemProp, cellGeom, timeCurr, matePara)
         if (SSH_DBG_MATE) call dbgObjMatePara(matePara)
 
-! - Compute mass matrix
+! ----- Compute mass matrix
         if (elemProp%cellType .eq. SSH_CELL_HEXA) then
             call compMassMatrHexa(elemProp, cellGeom, matePara, matrMass)
         else
             ASSERT(ASTER_FALSE)
         end if
 
-! - Save matrix
+! ----- Save matrix
         call jevech('PMATUUR', 'E', jvMatr)
         k = 0
         do i = 1, elemProp%nbDof
@@ -759,7 +759,7 @@ contains
 ! --------------------------------------------------------------------------------------------------
     subroutine compRigiGeomMatr()
 !   ------------------------------------------------------------------------------------------------
-! - Local
+! ----- Local
         character(len=4), parameter :: inteFami = 'RIGI'
         type(SSH_CELL_GEOM) :: cellGeom
         type(SSH_ELEM_PROP) :: elemProp
@@ -770,26 +770,26 @@ contains
 !
         matrRigiGeom = 0.d0
 
-! - Initialization of general properties of finite element
+! ----- Initialization of general properties of finite element
         call initElemProp(inteFami, elemProp)
         if (SSH_DBG_ELEM) call dbgObjElemProp(elemProp)
         nbIntePoint = elemProp%elemInte%nbIntePoint
 
-! - Initialization of geometric properties of cell
+! ----- Initialization of geometric properties of cell
         call initGeomCell(elemProp, cellGeom)
         if (SSH_DBG_GEOM) call dbgObjCellGeom(cellGeom)
 
-! - Get stress tensor
+! ----- Get stress tensor
         call jevech('PCONTRR', 'L', jvSigm)
 
-! - Compute geometric rigidity matrix
+! ----- Compute geometric rigidity matrix
         if (elemProp%cellType .eq. SSH_CELL_HEXA) then
             call compRigiGeomMatrHexa(elemProp, cellGeom, nbIntePoint, zr(jvSigm), matrRigiGeom)
         else
             ASSERT(ASTER_FALSE)
         end if
 
-! - Save matrix
+! ----- Save matrix
         call jevech('PMATUUR', 'E', jvMatr)
         k = 0
         do i = 1, elemProp%nbDof
@@ -810,7 +810,7 @@ contains
 ! --------------------------------------------------------------------------------------------------
     subroutine compRefeForcNoda()
 !   ------------------------------------------------------------------------------------------------
-! - Local
+! ----- Local
         character(len=4), parameter :: inteFami = 'RIGI'
         type(SSH_CELL_GEOM) :: cellGeom
         type(SSH_ELEM_PROP) :: elemProp
@@ -820,25 +820,25 @@ contains
 !
         refeForcNoda = 0.d0
 
-! - Initialization of general properties of finite element
+! ----- Initialization of general properties of finite element
         call initElemProp(inteFami, elemProp)
         if (SSH_DBG_ELEM) call dbgObjElemProp(elemProp)
 
-! - Initialization of geometric properties of cell
+! ----- Initialization of geometric properties of cell
         call initGeomCell(elemProp, cellGeom)
         if (SSH_DBG_GEOM) call dbgObjCellGeom(cellGeom)
 
-! - Get reference stress
+! ----- Get reference stress
         call terefe('SIGM_REFE', 'MECA_ISO', sigmRefe)
 
-! - Compute reference force
+! ----- Compute reference force
         if (elemProp%cellType .eq. SSH_CELL_HEXA) then
             call compRefeForcNodaHexa(elemProp, cellGeom, sigmRefe, refeForcNoda)
         else
             ASSERT(ASTER_FALSE)
         end if
 
-! - Save vector
+! ----- Save vector
         call jevech('PVECTUR', 'E', jvVect)
         do iDof = 1, elemProp%nbDof
             zr(jvVect-1+iDof) = refeForcNoda(iDof)
@@ -852,14 +852,12 @@ contains
 !
 ! Compute external state variable load - CHAR_MECA_TEMP_R
 !
-! In  option           : name of option to compute
-!
 ! --------------------------------------------------------------------------------------------------
-    subroutine compLoadExteStatVari(option)
+    subroutine compLoadExteStatVari(indxVarcStrain)
 !   ------------------------------------------------------------------------------------------------
-! - Parameters
-        character(len=16), intent(in)   :: option
-! - Local
+! ----- Parameters
+        integer(kind=8), intent(in) :: indxVarcStrain
+! ----- Local
         character(len=4), parameter :: inteFami = 'RIGI'
         type(SSH_CELL_GEOM) :: cellGeom
         type(SSH_ELEM_PROP) :: elemProp
@@ -870,35 +868,36 @@ contains
 !
         loadNoda = 0.d0
 
-! - Non-sense ! To suppress (see issue30887)
+! ----- Non-sense ! To suppress (see issue30887)
         timeCurr = r8vide()
 
-! - Initialization of general properties of finite element
+! ----- Initialization of general properties of finite element
         call initElemProp(inteFami, elemProp)
         if (SSH_DBG_ELEM) call dbgObjElemProp(elemProp)
 
-! - Initialization of geometric properties of cell
+! ----- Initialization of geometric properties of cell
         call initGeomCell(elemProp, cellGeom)
         if (SSH_DBG_GEOM) call dbgObjCellGeom(cellGeom)
 
-! - Get current time
+! ----- Get current time
         call tecach('ONO', 'PINSTR', 'L', iret, iad=jvTime)
         if (jvTime .ne. 0) then
             timeCurr = zr(jvTime)
         end if
 
-! - Initialization of properties of material
+! ----- Initialization of properties of material
         call initMatePara(elemProp, cellGeom, timeCurr, matePara)
         if (SSH_DBG_MATE) call dbgObjMatePara(matePara)
 
-! - Compute external state variable load
+! ----- Compute external state variable load
         if (elemProp%cellType .eq. SSH_CELL_HEXA) then
-            call compLoadExteStatVariHexa(elemProp, cellGeom, matePara, option, loadNoda)
+            call compLoadExteStatVariHexa(elemProp, cellGeom, matePara, indxVarcStrain, &
+                                          loadNoda)
         else
             ASSERT(ASTER_FALSE)
         end if
 
-! - Save vector
+! ----- Save vector
         call jevech('PVECTUR', 'E', jvVect)
         do i = 1, elemProp%nbDof
             zr(jvVect-1+i) = loadNoda(i)
@@ -915,7 +914,7 @@ contains
 ! --------------------------------------------------------------------------------------------------
     subroutine compEpvcElga()
 !   ------------------------------------------------------------------------------------------------
-! - Local
+! ----- Local
         character(len=4), parameter :: inteFami = 'RIGI'
         integer(kind=8), parameter :: nbCmp = 6
         character(len=16) :: option
@@ -929,42 +928,42 @@ contains
 !
         epvcElga = 0.d0
 
-! - Non-sense ! To suppress (see issue30887)
+! ----- Non-sense ! To suppress (see issue30887)
         timeCurr = r8vide()
 
-! - Initialization of general properties of finite element
+! ----- Initialization of general properties of finite element
         call initElemProp(inteFami, elemProp)
         if (SSH_DBG_ELEM) call dbgObjElemProp(elemProp)
 
-! - Initialization of geometric properties of cell
+! ----- Initialization of geometric properties of cell
         call initGeomCell(elemProp, cellGeom)
         if (SSH_DBG_GEOM) call dbgObjCellGeom(cellGeom)
 
-! - Initialization of properties of material (to suppress, see 30888)
+! ----- Initialization of properties of material (to suppress, see 30888)
         call initMatePara(elemProp, cellGeom, timeCurr, matePara)
         if (SSH_DBG_MATE) call dbgObjMatePara(matePara)
 
-! - Compute strains
+! ----- Compute strains
         if (elemProp%cellType .eq. SSH_CELL_HEXA) then
             option = 'EPVC_ELGA_TEMP'
-            call compEpvcElgaHexa(elemProp, matePara, option, epvcElga)
+            call compEpvcElgaHexa(elemProp, matePara, epvcElga)
             epvcElgaAllCmp(:, 1) = epvcElga(:, 1)
             epvcElgaAllCmp(:, 2) = epvcElga(:, 2)
             epvcElgaAllCmp(:, 3) = epvcElga(:, 3)
             option = 'EPVC_ELGA_SECH'
-            call compEpvcElgaHexa(elemProp, matePara, option, epvcElga)
+            call compEpvcElgaHexa(elemProp, matePara, epvcElga)
             epvcElgaAllCmp(:, 4) = epvcElga(:, 1)
             option = 'EPVC_ELGA_HYDR'
-            call compEpvcElgaHexa(elemProp, matePara, option, epvcElga)
+            call compEpvcElgaHexa(elemProp, matePara, epvcElga)
             epvcElgaAllCmp(:, 5) = epvcElga(:, 1)
             option = 'EPVC_ELGA_PTOT'
-            call compEpvcElgaHexa(elemProp, matePara, option, epvcElga)
+            call compEpvcElgaHexa(elemProp, matePara, epvcElga)
             epvcElgaAllCmp(:, 6) = epvcElga(:, 1)
         else
             ASSERT(ASTER_FALSE)
         end if
 
-! - Save strains
+! ----- Save strains
         call jevech('PDEFOPG', 'E', jvEpsi)
         do iIntePoint = 1, elemProp%elemInte%nbIntePoint
             do iCmp = 1, nbCmp

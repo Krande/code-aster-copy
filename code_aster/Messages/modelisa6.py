@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -138,15 +138,6 @@ cata_msg = {
  Dans le maillage " %(k1)s " la maille " %(k2)s " est de type " %(k3)s " (ni TRIA3 ni QUAD4)
 """
     ),
-    28: _(
-        """
- Le noeud <%(k1)s> de la poutre, de coordonnées <%(r1)g  %(r2)g  %(r3)g>,
- ne doit pas appartenir à des mailles constituant la trace de la poutre sur la coque.
- Le problème vient de l'occurrence %(i1)d de LIAISON_ELEM.
-
-Solution : Il faut dédoubler le noeud.
-"""
-    ),
     29: _(
         """
  Une maille des groupes modélisant la dalle a une dimension topologique différente
@@ -163,11 +154,6 @@ Solution : Il faut dédoubler le noeud.
       Tabulez votre formule, à une finesse de discrétisation d'abscisse (TEMP) à votre convenance,
       par la commande CALC_FONC_INTERP
  """
-    ),
-    32: _(
-        """
- impossibilité, le noeud  %(k1)s ne porte le degré de liberté de rotation %(k2)s
-"""
     ),
     33: _(
         """
@@ -198,84 +184,6 @@ Solution : Il faut dédoubler le noeud.
     38: _(
         """
  on ne trouve pas les angles nautiques pour le tuyau
-"""
-    ),
-    39: _(
-        """
- option  %(k1)s  invalide
-"""
-    ),
-    40: _(
-        """
-Erreur utilisateur pour LIAISON_ELEM / OPTION='3D_POU' (ou OPTION='2D_POU').
-Il faut que les mots clés GROUP_NO_2, NOEUD_2, GROUP_MA_2 ou MAILLE_2 ne
-désignent qu'un seul noeud.
-On trouve %(i1)d noeuds.
-"""
-    ),
-    43: _(
-        """
- il ne faut donner qu'un seul noeud dans le GROUP_NO :  %(k1)s
-"""
-    ),
-    44: _(
-        """
- impossibilité, le noeud  %(k1)s porte le degré de liberté de rotation  %(k2)s
-"""
-    ),
-    45: _(
-        """
- impossibilité, le noeud poutre  %(k1)s  devrait porter le degré de liberté  %(k2)s
-"""
-    ),
-    46: _(
-        """
- impossibilité, la surface de raccord du massif est nulle
-"""
-    ),
-    47: _(
-        """
- il faut donner un CARA_ELEM pour récupérer les caractéristiques de tuyau.
-"""
-    ),
-    48: _(
-        """
- il faut indiquer le mot-clé 'NOEUD_2' ou 'GROUP_NO_2' après le mot-clé facteur  %(k1)s  pour l'option  %(k2)s
-"""
-    ),
-    49: _(
-        """
- il ne faut donner qu'un seul noeud de poutre à raccorder à la coque.
-"""
-    ),
-    50: _(
-        """
- il ne faut donner qu'un seul GROUP_NO à un noeud à raccorder à la coque.
-"""
-    ),
-    51: _(
-        """
- il faut donner un vecteur orientant l'axe de la poutre sous le mot-clé "AXE_POUTRE".
-"""
-    ),
-    52: _(
-        """
- il faut donner un vecteur non nul orientant l'axe de la poutre sous le mot-clé "AXE_POUTRE".
-"""
-    ),
-    53: _(
-        """
- il faut donner un CARA_ELEM pour récupérer l'épaisseur des éléments de bord.
-"""
-    ),
-    54: _(
-        """
- impossibilité, le noeud  %(k1)s ne porte pas le degré de liberté de rotation  %(k2)s
-"""
-    ),
-    55: _(
-        """
- impossibilité, la surface de raccord de la coque est nulle
 """
     ),
     58: _(

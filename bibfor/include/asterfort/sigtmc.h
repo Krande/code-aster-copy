@@ -15,21 +15,17 @@
 ! You should have received a copy of the GNU General Public License
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
-
-!
 !
 interface
-    subroutine sigtmc(fami, ndim, nbsig, npg,&
-                      instan, mater, angl_naut,&
-                      option, sigma)
-        character(len=*) :: fami
-        integer(kind=8) :: ndim
-        integer(kind=8) :: nbsig
-        integer(kind=8) :: npg
-        real(kind=8) :: instan
-        integer(kind=8) :: mater
-        real(kind=8) :: angl_naut(3)
-        character(len=16) :: option
-        real(kind=8) :: sigma(1)
+    subroutine sigtmc(fami, nbsig, npg, ndim, &
+                      time, jvMaterCode, anglNaut, &
+                      indxVarcStrain, sigmVarc)
+        character(len=*), intent(in) :: fami
+        integer(kind=8), intent(in) :: nbsig, npg, ndim
+        real(kind=8), intent(in) :: time
+        integer(kind=8), intent(in) :: jvMaterCode
+        real(kind=8), intent(in) :: anglNaut(3)
+        integer(kind=8), intent(in) :: indxVarcStrain
+        real(kind=8), intent(out) :: sigmVarc(nbsig*npg)
     end subroutine sigtmc
 end interface

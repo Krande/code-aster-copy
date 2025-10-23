@@ -266,7 +266,7 @@ subroutine charme(load, valeType)
         call calyrc(load, mesh, model, geomDime)
 
 ! ----- LIAISON_ELEM
-        call caliel(valeType, load, model)
+        call caliel(load, model)
 
 ! ----- LIAISON_CHAMNO
         call calich(load, phenomS)

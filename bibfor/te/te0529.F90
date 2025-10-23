@@ -17,18 +17,24 @@
 ! --------------------------------------------------------------------
 !
 subroutine te0529(option, nomte)
+!
+    use BehaviourStrain_module
+    use BehaviourStrain_type
     implicit none
-#include "jeveux.h"
+!
 #include "asterc/r8vide.h"
+#include "asterfort/assert.h"
+#include "asterfort/Behaviour_type.h"
 #include "asterfort/elrefe_info.h"
 #include "asterfort/epstmc.h"
-#include "asterfort/jevech.h"
 #include "asterfort/getElemOrientation.h"
-#include "asterfort/r8inir.h"
+#include "asterfort/jevech.h"
 #include "asterfort/tecach.h"
+#include "jeveux.h"
 !
-    character(len=16) :: option, nomte
+    character(len=16), intent(in) :: option, nomte
 !
+! --------------------------------------------------------------------------------------------------
 !
 !     BUT: CALCUL DES DEFORMATIONS LIEES AUX VARIABLES DE COMMANDE
 !          AUX POINTS D'INTEGRATION DES ELEMENTS ISOPARAMETRIQUES 3D
@@ -45,92 +51,81 @@ subroutine te0529(option, nomte)
 !
 !     ENTREES  ---> OPTION : OPTION DE CALCUL
 !              ---> NOMTE  : NOM DU TYPE ELEMENT
-!.......................................................................
 !
-    integer(kind=8) :: jgano, ndim, nno, i, nnos, npg, ipoids, ivf, idfde, igau, isig
-    integer(kind=8) :: igeom, itemps, idefo, imate, iret, nbcmp
-    real(kind=8) :: epvc(162), angl_naut(3)
-    real(kind=8) :: instan, epsse(6), epsth(6), epshy(6), epspt(6)
-    character(len=4) :: fami
-    character(len=16) :: optio2
-! DEB ------------------------------------------------------------------
+! --------------------------------------------------------------------------------------------------
 !
-!    NOMBRE DE COMPOSANTES  A  CALCULER
-    nbcmp = 6
+    integer(kind=8), parameter :: ksp = 1, nbEpsi = 6
+    character(len=4), parameter :: fami = 'RIGI'
+    integer(kind=8) :: ndim, nno, npg, kpg, iEpsi, iret
+    integer(kind=8) :: jvGeom, jvTime, jvEpsi, jvMater
+    real(kind=8) :: time, anglNaut(3)
+    real(kind=8) :: epsiVarc(162)
+    real(kind=8) :: epsiSech(nbEpsi), epsiTher(nbEpsi), epsiHydr(nbEpsi), epsiPtot(nbEpsi)
+    !    real(kind=8) :: epsiEpsa(nbEpsi)
+    type(All_Varc_Strain) :: allVarcStrain
 !
-! ---- CARACTERISTIQUES DU TYPE D'ELEMENT :
-! ---- GEOMETRIE ET INTEGRATION
-!      ------------------------
-    fami = 'RIGI'
-    call elrefe_info(fami=fami, ndim=ndim, nno=nno, nnos=nnos, npg=npg, &
-                     jpoids=ipoids, jvf=ivf, jdfde=idfde, jgano=jgano)
+! --------------------------------------------------------------------------------------------------
 !
-! ---- RECUPERATION DES COORDONNEES DES CONNECTIVITES :
-!      ----------------------------------------------
-    call jevech('PGEOMER', 'L', igeom)
-!
-! ---- RECUPERATION DU MATERIAU :
-!      ----------------------------------------------
-    call tecach('NNO', 'PMATERC', 'L', iret, iad=imate)
-!
-! --- RECUPERATION  DES DONNEEES RELATIVES AU REPERE D'ORTHOTROPIE :
-!     ------------------------------------------------------------
-    call getElemOrientation(ndim, nno, igeom, angl_naut)
-!
-! ---- RECUPERATION DE L'INSTANT DE CALCUL :
-!      -----------------------------------
-    call tecach('NNO', 'PINSTR', 'L', iret, iad=itemps)
-    if (itemps .ne. 0) then
-        instan = zr(itemps)
+    epsiVarc = 0.d0
+
+! - Get element parameters
+    call elrefe_info(fami=fami, ndim=ndim, nno=nno, npg=npg)
+    ASSERT(npg .le. 27)
+
+! - Geometry
+    call jevech('PGEOMER', 'L', jvGeom)
+
+! - Material parameters
+    call tecach('NNO', 'PMATERC', 'L', iret, iad=jvMater)
+
+! - Orthotropic parameters
+    call getElemOrientation(ndim, nno, jvGeom, anglNaut)
+
+! - Get current time
+    call tecach('NNO', 'PINSTR', 'L', iret, iad=jvTime)
+    if (jvTime .ne. 0) then
+        time = zr(jvTime)
     else
-        instan = r8vide()
+        time = r8vide()
     end if
-!
-!     -----------------
-! ---- RECUPERATION DU VECTEUR DES DEFORMATIONS EN SORTIE :
-!      --------------------------------------------------
-    call jevech('PDEFOPG', 'E', idefo)
-    call r8inir(135, 0.d0, epvc, 1)
-!
-!
-    do igau = 1, npg
-!
-!      CALCUL AU POINT DE GAUSS DE LA TEMPERATURE
-! ------------------------------------------
-!
-        optio2 = 'EPVC_ELGA_TEMP'
-!
-        call epstmc(fami, ndim, instan, '+', igau, &
-                    1, angl_naut, zi(imate), optio2, &
-                    epsth)
-        optio2 = 'EPVC_ELGA_SECH'
-        call epstmc(fami, ndim, instan, '+', igau, &
-                    1, angl_naut, zi(imate), optio2, &
-                    epsse)
-        optio2 = 'EPVC_ELGA_HYDR'
-        call epstmc(fami, ndim, instan, '+', igau, &
-                    1, angl_naut, zi(imate), optio2, &
-                    epshy)
-        optio2 = 'EPVC_ELGA_PTOT'
-        call epstmc(fami, ndim, instan, '+', igau, &
-                    1, angl_naut, zi(imate), optio2, &
-                    epspt)
-        do i = 1, 3
-            epvc(i+nbcmp*(igau-1)) = epsth(i)
-        end do
-        epvc(4+nbcmp*(igau-1)) = epsse(1)
-        epvc(5+nbcmp*(igau-1)) = epshy(1)
-        epvc(6+nbcmp*(igau-1)) = epspt(1)
+
+! - Compute
+    do kpg = 1, npg
+
+! ----- Compute inelastic strains
+        call epstmc(fami, '+', kpg, ksp, ndim, &
+                    time, anglNaut, zi(jvMater), &
+                    VARC_STRAIN_ALL, allVarcStrain)
+
+! ----- Get TEMP strains
+        call getVarcStrain('+', VARC_STRAIN_TEMP, allVarcStrain, 6, epsiTher)
+
+! ----- Get SECH strains
+        call getVarcStrain('+', VARC_STRAIN_SECH, allVarcStrain, 6, epsiSech)
+
+! ----- Get HYDR strains
+        call getVarcStrain('+', VARC_STRAIN_HYDR, allVarcStrain, 6, epsiHydr)
+
+! ----- Get PTOT strains
+        call getVarcStrain('+', VARC_STRAIN_PTOT, allVarcStrain, 6, epsiPtot)
+
+! ----- Get PTOT strains
+        ! call getVarcStrain('+', VARC_STRAIN_EPSA, allVarcStrain, 6, epsiEpsa)
+
+        epsiVarc(1+nbEpsi*(kpg-1)) = epsiTher(1)
+        epsiVarc(2+nbEpsi*(kpg-1)) = epsiTher(2)
+        epsiVarc(3+nbEpsi*(kpg-1)) = epsiTher(3)
+        epsiVarc(4+nbEpsi*(kpg-1)) = epsiSech(1)
+        epsiVarc(5+nbEpsi*(kpg-1)) = epsiHydr(1)
+        epsiVarc(6+nbEpsi*(kpg-1)) = epsiPtot(1)
 !
     end do
-!
-!         --------------------
-! ---- AFFECTATION DU VECTEUR EN SORTIE AVEC LES DEFORMATIONS AUX
-! ---- POINTS D'INTEGRATION :
-!      --------------------
-    do igau = 1, npg
-        do isig = 1, nbcmp
-            zr(idefo+nbcmp*(igau-1)+isig-1) = epvc(nbcmp*(igau-1)+isig)
+
+! - Set output
+    call jevech('PDEFOPG', 'E', jvEpsi)
+    do kpg = 1, npg
+        do iEpsi = 1, nbEpsi
+            zr(jvEpsi+nbEpsi*(kpg-1)+iEpsi-1) = epsiVarc(nbEpsi*(kpg-1)+iEpsi)
         end do
     end do
 !

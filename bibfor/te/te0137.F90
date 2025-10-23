@@ -45,7 +45,7 @@ subroutine te0137(option, nomte)
     parameter(nbres=3)
     character(len=8) :: nompar(nbres), elrefe, alias8
     real(kind=8) :: valpar(nbres), poids, r, z, nx, ny, tpg
-    real(kind=8) :: coenp1, sigma, epsil, tz0
+    real(kind=8) :: coenp1, sigmEner, epsil, tz0
     real(kind=8) :: coorse(18), vectt(9)
     integer(kind=8) :: nno, nnos, ndim, kp, npg, ipoids, ivf, idfde, jgano, igeom
     integer(kind=8) :: itemps, iveres, i, j, l, li, iech, iray, itemp, icode, ier
@@ -123,15 +123,15 @@ subroutine te0137(option, nomte)
                 end do
             else if (option(11:14) .eq. 'RAYO') then
                 call fointe('A', zk8(iray), 4, nompar, valpar, &
-                            sigma, ier)
+                            sigmEner, ier)
                 ASSERT(ier .eq. 0)
                 call fointe('A', zk8(iray+1), 4, nompar, valpar, &
                             epsil, ier)
                 ASSERT(ier .eq. 0)
                 do i = 1, nno
                     li = ivf+(kp-1)*nno+i-1
-                    vectt(c(ise, i)) = vectt(c(ise, i))+poids*zr(li)*sigma*epsil*(tpg+tz0 &
-                                                                                  )**4
+                    vectt(c(ise, i)) = vectt(c(ise, i))+poids*zr(li)*sigmEner*epsil*(tpg+tz0 &
+                                                                                     )**4
                 end do
             end if
 !

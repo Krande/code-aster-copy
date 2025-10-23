@@ -15,7 +15,6 @@
 ! You should have received a copy of the GNU General Public License
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
-! person_in_charge: mickael.abbas at edf.fr
 !
 subroutine getExternalStateVariable(rela_comp, rela_code_py, &
                                     l_mfront_offi, l_mfront_proto, &
@@ -23,7 +22,6 @@ subroutine getExternalStateVariable(rela_comp, rela_code_py, &
 !
     use NonLin_Datastructure_type
     use Behaviour_module
-!
     implicit none
 !
 #include "asterc/lcextevari.h"
@@ -60,7 +58,7 @@ subroutine getExternalStateVariable(rela_comp, rela_code_py, &
 !
     integer(kind=8) :: nb_exte, i_exte, idummy1, idummy2, i_exte_list
     integer(kind=8), parameter :: nb_exte_list = 31
-    character(len=64) :: name_exte(ESVA_EXTE_NBMAXI)
+    character(len=64) :: name_exte(VARC_EXTE_NBMAXI)
     character(len=8) :: varc_aster
     integer(kind=8) :: tabcod(60)
     character(len=8), parameter :: name_varc(nb_exte_list) = (/ &
@@ -96,11 +94,11 @@ subroutine getExternalStateVariable(rela_comp, rela_code_py, &
     name_exte = ' '
     if (l_mfront_proto .or. l_mfront_offi) then
         call mgis_get_number_of_esvs(extern_addr, nb_exte)
-        ASSERT(nb_exte .le. ESVA_EXTE_NBMAXI)
+        ASSERT(nb_exte .le. VARC_EXTE_NBMAXI)
         call mgis_get_esvs(extern_addr, name_exte)
     else
         call lcinfo(rela_code_py, idummy1, idummy2, nb_exte)
-        ASSERT(nb_exte .le. ESVA_EXTE_NBMAXI)
+        ASSERT(nb_exte .le. VARC_EXTE_NBMAXI)
         call lcextevari(rela_code_py, nb_exte, name_exte)
     end if
 

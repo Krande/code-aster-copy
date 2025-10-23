@@ -53,7 +53,7 @@ subroutine te0531(option, nomte)
     integer(kind=8) :: nbsp, ipg, ksp, i, jvEpsi, icomp2, jvSigm, icomp3
     integer(kind=8) :: nbgf, icp, isdcom, ig, nbfig, ifib, icaba
     integer(kind=8) :: nbsec, tygrfi, nbcarm, nug(10)
-    real(kind=8) :: epsth, sigma(6), trsig, e, nu, c1, c2, a
+    real(kind=8) :: epsth, sigmEner(6), trsig, e, nu, c1, c2, a
     character(len=4)  :: fami
     character(len=8)  :: materi
     character(len=16) :: elasKeyword
@@ -150,15 +150,15 @@ subroutine te0531(option, nomte)
                         c2 = nu/e
                         icomp3 = jvSigm+nbcmp*nbsp*(ipg-1)+nbcmp*(ksp-1)-1
                         do i = 1, nbcmp
-                            sigma(i) = zr(icomp3+i)
+                            sigmEner(i) = zr(icomp3+i)
                         end do
-                        trsig = sigma(1)+sigma(2)+sigma(3)
+                        trsig = sigmEner(1)+sigmEner(2)+sigmEner(3)
 !                       soustraction des deformations elastiques
                         do i = 1, 2
-                            zr(icomp+i) = zr(icomp+i)-(c1*sigma(i)-c2*trsig)
+                            zr(icomp+i) = zr(icomp+i)-(c1*sigmEner(i)-c2*trsig)
                         end do
 !                       on laisse la composante 3 nulle
-                        zr(icomp+4) = zr(icomp+4)-c1*sigma(4)
+                        zr(icomp+4) = zr(icomp+4)-c1*sigmEner(4)
 !                       les composantes EPXZ et EPYZ mises à zero,
 !                       le calcul produirait des resultats faux car
 !                       SIXZ et SIYZ sont nulles dans le champ de contrainte

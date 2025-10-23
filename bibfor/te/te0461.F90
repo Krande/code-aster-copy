@@ -73,7 +73,7 @@ subroutine te0461(option, nomte)
     real(kind=8) :: ParaQP_curr(MAX_QP_FACE)
     real(kind=8) :: NeumValuesQP(MAX_QP_FACE)
     real(kind=8) :: time_curr, theta, temp_eval_curr, tz0
-    real(kind=8) :: sigma(MAX_QP_FACE), epsil(MAX_QP_FACE), rbid
+    real(kind=8) :: sigmEner(MAX_QP_FACE), epsil(MAX_QP_FACE), rbid
     integer(kind=8) :: fbs, celldim, ipg, nbpara, npg
     integer(kind=8) :: j_time, j_coefh, j_para
 !
@@ -150,7 +150,7 @@ subroutine te0461(option, nomte)
 !
     else if (option .eq. 'CHAR_THER_RAYO_R') then
 !
-! ----- Get real value (sigma, epsil, temp_inf)
+! ----- Get real value (sigmEner, epsil, temp_inf)
 !
         call jevech('PRAYONR', 'L', j_para)
         CoeffQP_curr = zr(j_para)*zr(j_para+1)
@@ -159,7 +159,7 @@ subroutine te0461(option, nomte)
     else if (option .eq. 'CHAR_THER_RAYO_F') then
         call jevech('PRAYONF', 'L', j_para)
 !
-! ---- Get Function Parameters (sigma, epsil, temp_inf)
+! ---- Get Function Parameters (sigmEner, epsil, temp_inf)
 !
         if (celldim == 3) then
             nbpara = 4
@@ -179,10 +179,10 @@ subroutine te0461(option, nomte)
 ! ----- Evaluate the analytical function at T+
 !
         call hhoFuncFScalEvalQp(hhoQuadFace, zk8(j_para), nbpara, nompar, valpar, &
-                                celldim, sigma)
+                                celldim, sigmEner)
         call hhoFuncFScalEvalQp(hhoQuadFace, zk8(j_para+1), nbpara, nompar, valpar, &
                                 celldim, epsil)
-        CoeffQP_curr = sigma*epsil
+        CoeffQP_curr = sigmEner*epsil
         call hhoFuncFScalEvalQp(hhoQuadFace, zk8(j_para+2), nbpara, nompar, valpar, &
                                 celldim, ParaQP_curr)
 !

@@ -15,23 +15,21 @@
 ! You should have received a copy of the GNU General Public License
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
-
-!
 !
 interface
-    subroutine enelpg(fami, iadmat, instan, igau, angl_naut,&
-                      compor, f, sigma, nbvari,&
-                      vari, enelas)
-        character(len=4) :: fami
-        integer(kind=8) :: iadmat
-        real(kind=8) :: instan
-        integer(kind=8) :: igau
-        real(kind=8) :: angl_naut(3)
-        character(len=16) :: compor(*)
-        real(kind=8) :: f(3, 3)
-        real(kind=8) :: sigma(6)
-        integer(kind=8) :: nbvari
-        real(kind=8) :: vari(*)
-        real(kind=8) :: enelas
+    subroutine enelpg(fami, jvMaterCode, time, kpg, anglNaut, &
+                      relaName, defoComp, &
+                      f, sigmEner, &
+                      nbVari, vari, &
+                      enerElas)
+        character(len=*), intent(in) :: fami
+        integer(kind=8), intent(in) :: jvMaterCode
+        real(kind=8), intent(in) :: time, anglNaut(3)
+        character(len=16), intent(in) :: relaName, defoComp
+        integer(kind=8), intent(in) :: kpg
+        real(kind=8), intent(in) :: f(3, 3), sigmEner(6)
+        integer(kind=8), intent(in) :: nbVari
+        real(kind=8), intent(in) :: vari(nbVari)
+        real(kind=8), intent(out) :: enerElas
     end subroutine enelpg
 end interface

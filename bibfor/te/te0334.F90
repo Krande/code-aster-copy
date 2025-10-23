@@ -61,7 +61,7 @@ subroutine te0334(option, nomte)
     integer(kind=8), parameter :: nbsgm = 4
     aster_logical :: l_modi_cp
     real(kind=8) :: epsiPlas(mxcmel), epsiCreep(nbsgm)
-    real(kind=8) :: epsiTota(6), epsiVarc(6), epsiMeca(6), sigma(4)
+    real(kind=8) :: epsiTota(6), epsiVarc(6), epsiMeca(6), sigmEner(4)
     integer(kind=8) :: nbVari, variIndxTemp, nbVariGranger
     real(kind=8) :: e, nu, c1, c2, trsig
     aster_logical :: l_creep, lTempInVari, lCplan, lDplan, lMetaLemaAni, lTHM
@@ -214,7 +214,7 @@ subroutine te0334(option, nomte)
                             zi(jvMater), lMetaLemaAni, &
                             elasID, elasKeyword, &
                             allVarcStrain)
-        call getVarcStrain('+', allVarcStrain, 6, epsiVarc)
+        call getVarcStrain('+', VARC_STRAIN_ALL, allVarcStrain, 6, epsiVarc)
         epsiVarc(4) = epsiVarc(4)/sqrt(2.d0)
 
 ! ----- Compute mechanical strains epsiMeca = epsiTota - epsiVarc
@@ -241,26 +241,26 @@ subroutine te0334(option, nomte)
 
 ! ----- Compute stresses
         do iSig = 1, nbSig
-            sigma(iSig) = zr(jvSigm+(kpg-1)*nbSig+iSig-1)
+            sigmEner(iSig) = zr(jvSigm+(kpg-1)*nbSig+iSig-1)
         end do
         if (lCplan) then
-            trsig = sigma(1)+sigma(2)
+            trsig = sigmEner(1)+sigmEner(2)
         else
-            trsig = sigma(1)+sigma(2)+sigma(3)
+            trsig = sigmEner(1)+sigmEner(2)+sigmEner(3)
         end if
 
 ! ----- Compute plastic strains epsiPlas = epsi_tota - epsi_elas - epsiCreep
         c1 = (1.d0+nu)/e
         c2 = nu/e
-        epsiPlas(nbEps*(kpg-1)+1) = epsiMeca(1)-(c1*sigma(1)-c2*trsig)-epsiCreep(1)
-        epsiPlas(nbEps*(kpg-1)+2) = epsiMeca(2)-(c1*sigma(2)-c2*trsig)-epsiCreep(2)
+        epsiPlas(nbEps*(kpg-1)+1) = epsiMeca(1)-(c1*sigmEner(1)-c2*trsig)-epsiCreep(1)
+        epsiPlas(nbEps*(kpg-1)+2) = epsiMeca(2)-(c1*sigmEner(2)-c2*trsig)-epsiCreep(2)
         if (lCplan) then
             epsiPlas(nbEps*(kpg-1)+3) = -(epsiPlas(nbEps*(kpg-1)+1)+epsiPlas(nbEps*(kpg-1)+2))
         else
-            epsiPlas(nbEps*(kpg-1)+3) = epsiMeca(3)-(c1*sigma(3)-c2*trsig)- &
+            epsiPlas(nbEps*(kpg-1)+3) = epsiMeca(3)-(c1*sigmEner(3)-c2*trsig)- &
                                         epsiCreep(3)
         end if
-        epsiPlas(nbEps*(kpg-1)+4) = epsiMeca(4)-c1*sigma(4)-epsiCreep(4)
+        epsiPlas(nbEps*(kpg-1)+4) = epsiMeca(4)-c1*sigmEner(4)-epsiCreep(4)
     end do
 
 ! - Plastic strain output

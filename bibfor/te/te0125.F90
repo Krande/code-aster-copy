@@ -19,11 +19,11 @@
 subroutine te0125(option, nomte)
 !
     use SolidShell_Elementary_module
-!
     implicit none
 !
 #include "asterf_types.h"
 #include "asterfort/assert.h"
+#include "asterfort/Behaviour_type.h"
 !
     character(len=16), intent(in) :: option, nomte
 !
@@ -67,13 +67,13 @@ subroutine te0125(option, nomte)
     elseif (option .eq. 'CHAR_MECA_FR3D3D') then
         call compLoad(option)
     elseif (option .eq. 'CHAR_MECA_TEMP_R') then
-        call compLoadExteStatVari(option)
+        call compLoadExteStatVari(VARC_STRAIN_TEMP)
     elseif (option .eq. 'CHAR_MECA_HYDR_R') then
-        call compLoadExteStatVari(option)
+        call compLoadExteStatVari(VARC_STRAIN_HYDR)
     elseif (option .eq. 'CHAR_MECA_SECH_R') then
-        call compLoadExteStatVari(option)
+        call compLoadExteStatVari(VARC_STRAIN_SECH)
     elseif (option .eq. 'CHAR_MECA_EPSA_R') then
-        call compLoadExteStatVari(option)
+        call compLoadExteStatVari(VARC_STRAIN_EPSA)
     elseif (option .eq. 'MASS_MECA') then
         call compMassMatr()
     elseif (option .eq. 'RIGI_GEOM') then
