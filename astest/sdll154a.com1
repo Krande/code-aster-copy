@@ -459,6 +459,17 @@ TEST_RESU(
             VALE_CALC=13384615.38461538,
             VALE_REFE=post_roche_analytic._sigma_deplacement_ref[3],
         ),
+        _F(  # contrainte de référence pour les moments
+            GROUP_MA="M2",
+            POINT=2,
+            REFERENCE="AUTRE_ASTER",
+            RESULTAT=resuPostRocheTout,
+            NOM_CHAM="UT01_ELNO",
+            INST=0.0,
+            NOM_CMP="X2",
+            VALE_CALC=13384615.38461538,
+            VALE_REFE=post_roche_analytic._sigma_deplacement_ref[3],
+        ),
         # contrainte de référence S2
         _F(
             GROUP_MA="M1",
@@ -501,6 +512,18 @@ TEST_RESU(
             NOM_CHAM="UT01_ELNO",
             INST=0.0,
             NOM_CMP="X3",
+            VALE_CALC=803678.7858581579,
+            VALE_REFE=post_roche_analytic._sigma_sismique_ref[3],
+        ),
+        # contrainte de référence S2 pour les moments
+        _F(
+            GROUP_MA="M2",
+            POINT=2,
+            REFERENCE="AUTRE_ASTER",
+            RESULTAT=resuPostRocheTout,
+            NOM_CHAM="UT01_ELNO",
+            INST=0.0,
+            NOM_CMP="X4",
             VALE_CALC=803678.7858581579,
             VALE_REFE=post_roche_analytic._sigma_sismique_ref[3],
         ),
@@ -549,6 +572,18 @@ TEST_RESU(
             VALE_CALC=0.8180652597627948,
             VALE_REFE=post_roche_analytic._t[3],
         ),
+        # réversibilité locale t pour les moments
+        _F(
+            GROUP_MA="M2",
+            POINT=2,
+            REFERENCE="AUTRE_ASTER",
+            RESULTAT=resuPostRocheTout,
+            NOM_CHAM="UT02_ELNO",
+            INST=0.0,
+            NOM_CMP="X2",
+            VALE_CALC=0.8180652597627948,
+            VALE_REFE=post_roche_analytic._t[3],
+        ),
         # réversibilité locale ts
         _F(
             GROUP_MA="M1",
@@ -591,6 +626,18 @@ TEST_RESU(
             NOM_CHAM="UT02_ELNO",
             INST=0.0,
             NOM_CMP="X3",
+            VALE_CALC=0.20045932079329185,
+            VALE_REFE=post_roche_analytic._t_s[3],
+        ),
+        # réversibilité locale ts pour les moments
+        _F(
+            GROUP_MA="M2",
+            POINT=2,
+            REFERENCE="AUTRE_ASTER",
+            RESULTAT=resuPostRocheTout,
+            NOM_CHAM="UT02_ELNO",
+            INST=0.0,
+            NOM_CMP="X4",
             VALE_CALC=0.20045932079329185,
             VALE_REFE=post_roche_analytic._t_s[3],
         ),
@@ -639,6 +686,18 @@ TEST_RESU(
             VALE_CALC=0.8180652597627946,
             VALE_REFE=post_roche_analytic._T,
         ),
+        # réversibilité totale T pour les moments
+        _F(
+            GROUP_MA="M2",
+            POINT=2,
+            REFERENCE="AUTRE_ASTER",
+            RESULTAT=resuPostRocheTout,
+            NOM_CHAM="UT02_ELNO",
+            INST=0.0,
+            NOM_CMP="X6",
+            VALE_CALC=0.8180652597627946,
+            VALE_REFE=post_roche_analytic._T,
+        ),
         # réversibilité totale Ts
         _F(
             GROUP_MA="M1",
@@ -681,6 +740,18 @@ TEST_RESU(
             NOM_CHAM="UT02_ELNO",
             INST=0.0,
             NOM_CMP="X7",
+            VALE_CALC=1.0576809482984968,
+            VALE_REFE=post_roche_analytic._T_s,
+        ),
+        # réversibilité totale Ts
+        _F(
+            GROUP_MA="M2",
+            POINT=2,
+            REFERENCE="AUTRE_ASTER",
+            RESULTAT=resuPostRocheTout,
+            NOM_CHAM="UT02_ELNO",
+            INST=0.0,
+            NOM_CMP="X8",
             VALE_CALC=1.0576809482984968,
             VALE_REFE=post_roche_analytic._T_s,
         ),
@@ -733,6 +804,19 @@ TEST_RESU(
             VALE_CALC=0.0,
             VALE_REFE=post_roche_analytic._r_m[3],
         ),
+        # facteur d'effet de ressort r_M pour les moments
+        _F(
+            GROUP_MA="M2",
+            POINT=2,
+            REFERENCE="AUTRE_ASTER",
+            RESULTAT=resuPostRocheTout,
+            NOM_CHAM="UT02_ELNO",
+            INST=0.0,
+            NOM_CMP="X10",
+            ORDRE_GRANDEUR=1,
+            VALE_CALC=0.0,
+            VALE_REFE=post_roche_analytic._r_m[3],
+        ),
         # facteur d'effet de ressort r_S
         _F(
             GROUP_MA="M1",
@@ -775,6 +859,18 @@ TEST_RESU(
             NOM_CHAM="UT02_ELNO",
             INST=0.0,
             NOM_CMP="X11",
+            VALE_CALC=4.276287199382205,
+            VALE_REFE=post_roche_analytic._r_s[3],
+        ),
+        # facteur d'effet de ressort r_S pour les moments
+        _F(
+            GROUP_MA="M2",
+            POINT=2,
+            REFERENCE="AUTRE_ASTER",
+            RESULTAT=resuPostRocheTout,
+            NOM_CHAM="UT02_ELNO",
+            INST=0.0,
+            NOM_CMP="X12",
             VALE_CALC=4.276287199382205,
             VALE_REFE=post_roche_analytic._r_s[3],
         ),
@@ -827,6 +923,19 @@ TEST_RESU(
             VALE_CALC=0.0,
             VALE_REFE=post_roche_analytic._r_mmax[3],
         ),
+        # facteur d'effet de ressort maximal r_M_Max pour les moments
+        _F(
+            GROUP_MA="M2",
+            POINT=2,
+            REFERENCE="AUTRE_ASTER",
+            RESULTAT=resuPostRocheTout,
+            NOM_CHAM="UT02_ELNO",
+            INST=0.0,
+            NOM_CMP="X14",
+            ORDRE_GRANDEUR=1,
+            VALE_CALC=0.0,
+            VALE_REFE=post_roche_analytic._r_mmax[3],
+        ),
         # facteur d'effet de ressort maximal r_S_Max
         _F(
             GROUP_MA="M1",
@@ -869,6 +978,18 @@ TEST_RESU(
             NOM_CHAM="UT02_ELNO",
             INST=0.0,
             NOM_CMP="X15",
+            VALE_CALC=4.276287199382205,
+            VALE_REFE=post_roche_analytic._r_smax[3],
+        ),
+        # facteur d'effet de ressort maximal r_S_Max pour les moments
+        _F(
+            GROUP_MA="M2",
+            POINT=2,
+            REFERENCE="AUTRE_ASTER",
+            RESULTAT=resuPostRocheTout,
+            NOM_CHAM="UT02_ELNO",
+            INST=0.0,
+            NOM_CMP="X16",
             VALE_CALC=4.276287199382205,
             VALE_REFE=post_roche_analytic._r_smax[3],
         ),
@@ -917,6 +1038,18 @@ TEST_RESU(
             VALE_CALC=0.441600153682,
             VALE_REFE=post_roche_analytic._gopt[3],
         ),
+        # coefficient d'abattement optimisé gOpt pour les moments
+        _F(
+            GROUP_MA="M2",
+            POINT=2,
+            REFERENCE="AUTRE_ASTER",
+            RESULTAT=resuPostRocheTout,
+            NOM_CHAM="UT01_ELNO",
+            INST=0.0,
+            NOM_CMP="X6",
+            VALE_CALC=0.441600153682,
+            VALE_REFE=post_roche_analytic._gopt[3],
+        ),
         # coefficient d'abattement optimisé gsOpt
         _F(
             GROUP_MA="M1",
@@ -959,6 +1092,18 @@ TEST_RESU(
             NOM_CHAM="UT01_ELNO",
             INST=0.0,
             NOM_CMP="X7",
+            VALE_CALC=0.715814552148,
+            VALE_REFE=post_roche_analytic._g_sopt[3],
+        ),
+        # coefficient d'abattement optimisé gsOpt pour les moments
+        _F(
+            GROUP_MA="M2",
+            POINT=2,
+            REFERENCE="AUTRE_ASTER",
+            RESULTAT=resuPostRocheTout,
+            NOM_CHAM="UT01_ELNO",
+            INST=0.0,
+            NOM_CMP="X8",
             VALE_CALC=0.715814552148,
             VALE_REFE=post_roche_analytic._g_sopt[3],
         ),
@@ -1048,6 +1193,17 @@ TEST_RESU(
             ORDRE_GRANDEUR=1,
             VALE_CALC=0.0,
         ),
+        # indicateur sigmaV_opt <sigmaP pour les moments
+        _F(
+            GROUP_MA="M2",
+            POINT=2,
+            RESULTAT=resuPostRocheTout,
+            NOM_CHAM="UT02_ELNO",
+            INST=0.0,
+            NOM_CMP="X18",
+            ORDRE_GRANDEUR=1,
+            VALE_CALC=0.0,
+        ),
         # indicateur sigmaV_s_opt <sigmaP
         _F(
             GROUP_MA="M1",
@@ -1086,6 +1242,17 @@ TEST_RESU(
             NOM_CHAM="UT02_ELNO",
             INST=0.0,
             NOM_CMP="X19",
+            ORDRE_GRANDEUR=1,
+            VALE_CALC=0.0,
+        ),
+        # indicateur sigmaV_s_opt <sigmaP pour les moments
+        _F(
+            GROUP_MA="M2",
+            POINT=2,
+            RESULTAT=resuPostRocheTout,
+            NOM_CHAM="UT02_ELNO",
+            INST=0.0,
+            NOM_CMP="X20",
             ORDRE_GRANDEUR=1,
             VALE_CALC=0.0,
         ),
@@ -1134,6 +1301,18 @@ TEST_RESU(
             VALE_CALC=6780648.21082,
             VALE_REFE=post_roche_analytic._sigma_deplacement_opt[3],
         ),
+        # contrainte vraie opt pour les moments
+        _F(
+            GROUP_MA="M2",
+            POINT=2,
+            REFERENCE="AUTRE_ASTER",
+            RESULTAT=resuPostRocheTout,
+            NOM_CHAM="UT02_ELNO",
+            INST=0.0,
+            NOM_CMP="X22",
+            VALE_CALC=6780648.21082,
+            VALE_REFE=post_roche_analytic._sigma_deplacement_opt[3],
+        ),
         # contrainte vraie S2 opt
         _F(
             GROUP_MA="M1",
@@ -1176,6 +1355,18 @@ TEST_RESU(
             NOM_CHAM="UT02_ELNO",
             INST=0.0,
             NOM_CMP="X23",
+            VALE_CALC=1445284.97017,
+            VALE_REFE=post_roche_analytic._sigma_sismique_opt[3],
+        ),
+        # contrainte vraie S2 opt pour les moments
+        _F(
+            GROUP_MA="M2",
+            POINT=2,
+            REFERENCE="AUTRE_ASTER",
+            RESULTAT=resuPostRocheTout,
+            NOM_CHAM="UT02_ELNO",
+            INST=0.0,
+            NOM_CMP="X24",
             VALE_CALC=1445284.97017,
             VALE_REFE=post_roche_analytic._sigma_sismique_opt[3],
         ),
@@ -1224,6 +1415,18 @@ TEST_RESU(
             VALE_CALC=9.21297307767e-05,
             VALE_REFE=epsi(post_roche_analytic._sigma_deplacement_opt[3]),
         ),
+        # deformation vraie opt pour les moments
+        _F(
+            GROUP_MA="M2",
+            POINT=2,
+            REFERENCE="AUTRE_ASTER",
+            RESULTAT=resuPostRocheTout,
+            NOM_CHAM="UT02_ELNO",
+            INST=0.0,
+            NOM_CMP="X26",
+            VALE_CALC=9.21297307767e-05,
+            VALE_REFE=epsi(post_roche_analytic._sigma_deplacement_opt[3]),
+        ),
         # deformation vraie S2 opt
         _F(
             GROUP_MA="M1",
@@ -1266,6 +1469,18 @@ TEST_RESU(
             NOM_CHAM="UT02_ELNO",
             INST=0.0,
             NOM_CMP="X27",
+            VALE_CALC=3.41084352869e-05,
+            VALE_REFE=epsi(post_roche_analytic._sigma_sismique_opt[3]),
+        ),
+        # deformation vraie S2 opt pour les moments
+        _F(
+            GROUP_MA="M2",
+            POINT=2,
+            REFERENCE="AUTRE_ASTER",
+            RESULTAT=resuPostRocheTout,
+            NOM_CHAM="UT02_ELNO",
+            INST=0.0,
+            NOM_CMP="X28",
             VALE_CALC=3.41084352869e-05,
             VALE_REFE=epsi(post_roche_analytic._sigma_sismique_opt[3]),
         ),
