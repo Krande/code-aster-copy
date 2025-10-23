@@ -1615,7 +1615,7 @@ class PostRocheCommon:
                 "X17",
                 "X18",  # R, EP
             ),
-            VALE="sqrt((X3*X16*(X17-X18)/X18)**2 + 1/X2**2*(X4**2*(X7+X10+X13)**2+X5**2*(X8+X11+X14)**2+X6**2*(X9+X12+X15)**2))",
+            VALE="sqrt((X3*X16*(X17-X18)/X18)**2 + 1/X2**2*(X4**2*(abs(X7)+X10+X13)**2+X5**2*(abs(X8)+X11+X14)**2+X6**2*(abs(X9)+X12+X15)**2))",
         )
 
         chFonc = CREA_CHAMP(
