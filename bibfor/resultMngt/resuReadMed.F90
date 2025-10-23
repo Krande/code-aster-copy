@@ -24,7 +24,8 @@ subroutine resuReadMed(fileUnit, &
                        storeIndxNb, storeIndx, &
                        storeTimeNb, storeTime, &
                        storeEpsi, storeCrit, &
-                       storePara, fieldStoreNb)
+                       storePara, fieldStoreNb, &
+                       numeDdlName)
 !
     implicit none
 !
@@ -53,6 +54,7 @@ subroutine resuReadMed(fileUnit, &
     character(len=8), intent(in) :: storeCrit
     character(len=4), intent(in) :: storePara
     integer(kind=8), intent(out) :: fieldStoreNb(100)
+    character(len=8), intent(in) :: numeDdlName
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -165,7 +167,7 @@ subroutine resuReadMed(fileUnit, &
                     storeIndx, storeTime, &
                     storeCrit, storeEpsi, storePara, &
                     cmpNb, cmpAstName, cmpMedName, &
-                    fieldStoreNb(iField))
+                    fieldStoreNb(iField), numeDdlName)
     end do
 !
 end subroutine

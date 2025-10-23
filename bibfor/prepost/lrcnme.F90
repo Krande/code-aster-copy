@@ -19,7 +19,7 @@
 subroutine lrcnme(chanom, nochmd, nomamd, nomaas, nomgd, &
                   typent, nbcmpv, ncmpva, ncmpvm, iinst, &
                   numpt, numord, inst, crit, prec, &
-                  nrofic, codret, base)
+                  nrofic, codret, base, nonu)
 !_____________________________________________________________________
 !
 ! person_in_charge: nicolas.sellenet at edf.fr
@@ -82,6 +82,8 @@ subroutine lrcnme(chanom, nochmd, nomamd, nomaas, nomgd, &
     character(len=*) :: ncmpva, ncmpvm
     character(len=8) :: nomaas, nomgd
     character(len=8) :: crit
+    character(len=8) :: nonu
+    character(len=14) :: nonu14
     character(len=*) :: nochmd, nomamd
 !
     integer(kind=8) :: nrofic, typent
@@ -111,6 +113,7 @@ subroutine lrcnme(chanom, nochmd, nomamd, nomaas, nomgd, &
 !
     character(len=1) :: saux01
     character(len=8) :: saux08, parbid
+    character(len=19) :: nume_equa
     character(len=19) :: chamn
     character(len=19) :: chamns, mobid
     character(len=24) :: optbid
@@ -218,7 +221,12 @@ subroutine lrcnme(chanom, nochmd, nomamd, nomaas, nomgd, &
 !
     chamn = chanom
 !
-    call cnscno(chamns, ' ', 'NON', bas2, chamn, &
+    nume_equa = ' '
+    nonu14 = nonu
+    if (nonu14 .ne. ' ') then
+        nume_equa = nonu14//'.NUME'
+    end if
+    call cnscno(chamns, nume_equa, 'NON', bas2, chamn, &
                 'F', ibid)
 !
     call detrsd('CHAM_NO_S', chamns)

@@ -26,7 +26,14 @@
 #   L'ON A ENCASTRE
 ###################################################################
 
+from code_aster.Commands import *
+from code_aster.Objects import *
+from code_aster import CA
+import numpy as np
+
 DEBUT(CODE="OUI", DEBUG=_F(SDVERI="OUI"))
+
+test = CA.TestCase()
 
 MATER1 = DEFI_MATERIAU(ELAS=_F(E=200000.0, NU=0.3, RHO=10000.0))
 
@@ -101,6 +108,39 @@ RESU = MECA_STATIQUE(
 
 RESU = CALC_CHAMP(reuse=RESU, RESULTAT=RESU, GROUP_MA="POU3D", CONTRAINTE=("SIGM_ELNO"))
 
+depl1 = RESU.getField("DEPL", 1)
+sDepl1 = depl1.toSimpleFieldOnNodes()
+values1 = sDepl1.getValues()[0]
+
+NU2 = NUME_DDL(MODELE=MOD, CHARGE=(CH))
+
+IMPR_RESU(FORMAT="MED", UNITE=23, RESU=_F(RESULTAT=RESU, NOM_CHAM="DEPL"))
+
+RESU2 = LIRE_RESU(
+    TYPE_RESU="EVOL_ELAS",
+    FORMAT="MED",
+    NUME_DDL=NU2,
+    MODELE=MOD,
+    TOUT_ORDRE="OUI",
+    FORMAT_MED=_F(NOM_CHAM="DEPL", NOM_CHAM_MED="RESU____DEPL"),
+    UNITE=23,
+)
+
+depl2 = LIRE_CHAMP(
+    UNITE=23,
+    FORMAT="MED",
+    NOM_MED="RESU____DEPL",
+    TYPE_CHAM="NOEU_DEPL_R",
+    NOM_CMP_IDEM="OUI",
+    MAILLAGE=MA,
+    NUME_DDL=NU2,
+    NUME_PT=1,
+    NUME_ORDRE=1,
+)
+sDepl2 = depl2.toSimpleFieldOnNodes()
+values2 = sDepl2.getValues()[0]
+
+test.assertAlmostEqual(np.max(np.abs(values1 - values2)), 0.0)
 
 TEST_RESU(
     RESU=(
@@ -305,6 +345,67 @@ TEST_RESU(
             VALE_CALC=0.0,
             CRITERE="ABSOLU",
             GROUP_MA="M25",
+        ),
+    )
+)
+
+
+TEST_RESU(
+    RESU=(
+        _F(
+            NUME_ORDRE=1,
+            RESULTAT=RESU2,
+            NOM_CHAM="DEPL",
+            GROUP_NO="N1",
+            NOM_CMP="DX",
+            VALE_CALC=8.3333333299999996e-05,
+            VALE_REFE=8.3333333299999996e-05,
+            REFERENCE="ANALYTIQUE",
+            CRITERE="RELATIF",
+        ),
+        _F(
+            NUME_ORDRE=1,
+            RESULTAT=RESU2,
+            NOM_CHAM="DEPL",
+            GROUP_NO="N1",
+            NOM_CMP="DY",
+            VALE_CALC=1.666666667e-4,
+            VALE_REFE=1.666666667e-4,
+            REFERENCE="ANALYTIQUE",
+            CRITERE="RELATIF",
+        ),
+        _F(
+            NUME_ORDRE=1,
+            RESULTAT=RESU2,
+            NOM_CHAM="DEPL",
+            GROUP_NO="N1",
+            NOM_CMP="DZ",
+            VALE_CALC=-2.5e-4,
+            VALE_REFE=-2.5e-4,
+            REFERENCE="ANALYTIQUE",
+            CRITERE="RELATIF",
+        ),
+        _F(
+            NUME_ORDRE=1,
+            RESULTAT=RESU2,
+            NOM_CHAM="DEPL",
+            GROUP_NO="N6",
+            NOM_CMP="DX",
+            VALE_CALC=-8.3333333333332999e-06,
+            VALE_REFE=-8.3333333333332999e-06,
+            REFERENCE="ANALYTIQUE",
+            CRITERE="RELATIF",
+        ),
+        _F(
+            NUME_ORDRE=1,
+            RESULTAT=RESU2,
+            NOM_CHAM="DEPL",
+            GROUP_NO="N6",
+            NOM_CMP="DY",
+            VALE_CALC=4.0583333333333003e-05,
+            VALE_REFE=4.0583333333333003e-05,
+            REFERENCE="NON_DEFINI",
+            CRITERE="RELATIF",
         ),
     )
 )

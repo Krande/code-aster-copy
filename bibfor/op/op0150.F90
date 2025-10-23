@@ -56,9 +56,9 @@ subroutine op0150()
 ! --------------------------------------------------------------------------------------------------
 !
     integer(kind=8) :: ifm, niv
-    integer(kind=8) :: storeIndxNb, storeCreaNb, storeTimeNb
+    integer(kind=8) :: storeIndxNb, storeCreaNb, storeTimeNb, numeDdlNb
     character(len=19) :: storeTime, storeIndx
-    character(len=8) :: storeCrit
+    character(len=8) :: storeCrit, numeDdlName
     real(kind=8) :: storeEpsi
     character(len=4) :: storePara
     character(len=10) :: storeAccess
@@ -179,6 +179,14 @@ subroutine op0150()
 !
     call resuReadCheckFields(resultName, resultType, fieldNb, fieldList)
 !
+! - Check if fields are allowed for the result
+!
+    call getvid(' ', 'NUME_DDL', scal=numeDdlName, nbret=numeDdlNb)
+!
+    if (numeDdlNb .eq. 0) then
+        numeDdlName = ' '
+    end if
+!
 ! - Read
 !
     if (fileFormat .eq. 'IDEAS') then
@@ -210,7 +218,8 @@ subroutine op0150()
                          storeIndxNb, storeIndx, &
                          storeTimeNb, storeTime, &
                          storeEpsi, storeCrit, &
-                         storePara, fieldStoreNb)
+                         storePara, fieldStoreNb, &
+                         numeDdlName)
     else
         ASSERT(ASTER_FALSE)
     end if

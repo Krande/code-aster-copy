@@ -25,7 +25,7 @@ subroutine lrfmed(fileUnit, resultName, meshAst, storeLast, &
                   storeIndx, storeTime, &
                   storeCrit, storeEpsi, storePara, &
                   cmpNb, cmpAstName, cmpMedName, &
-                  fieldStoreNb)
+                  fieldStoreNb, numeDdlName)
 !
     use as_med_module, only: as_med_open
     implicit none
@@ -78,6 +78,7 @@ subroutine lrfmed(fileUnit, resultName, meshAst, storeLast, &
     integer(kind=8), intent(in) :: cmpNb
     character(len=24), intent(in) :: cmpAstName, cmpMedName
     integer(kind=8), intent(out) :: fieldStoreNb
+    character(len=8), intent(in) :: numeDdlName
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -136,7 +137,8 @@ subroutine lrfmed(fileUnit, resultName, meshAst, storeLast, &
     character(len=200) :: fileName
     character(len=255) :: kfic
     integer(kind=8) :: typent, typgom
-    integer(kind=8), parameter :: edlect = 0, ednoeu = 3, edmail = 0, ednoma = 4, ednono = -1, typnoe = 0
+    integer(kind=8), parameter :: edlect = 0, ednoeu = 3, edmail = 0, ednoma = 4
+    integer(kind=8), parameter :: ednono = -1, typnoe = 0
     character(len=1) :: saux01
     character(len=8) :: saux08
     integer(kind=8) :: numeStep, numeStore, inum
@@ -318,7 +320,7 @@ subroutine lrfmed(fileUnit, resultName, meshAst, storeLast, &
                     fieldQuantity, typent, cmpNb, cmpAstName, cmpMedName, &
                     prolz, iinst, numeStep, numeStore, timeCurr, &
                     storeCrit, storeEpsi, fileUnit, option, param, &
-                    zi(jnbpgm), zi(jnbpmm), zi(jnbsmm), iret)
+                    zi(jnbpgm), zi(jnbpmm), zi(jnbsmm), iret, nonu=numeDdlName)
 !
 !         POUR LES CHAM_NO : POUR ECONOMISER L'ESPACE,
 !         ON ESSAYE DE PARTAGER LE NUME_EQUA DU CHAMP CREE AVEC

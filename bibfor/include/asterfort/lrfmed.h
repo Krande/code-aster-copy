@@ -25,7 +25,7 @@ interface
                       storeIndx   , storeTime    ,&
                       storeCrit   , storeEpsi    , storePara   ,&
                       cmpNb       , cmpAstName   , cmpMedName  ,&
-                      fieldStoreNb)
+                      fieldStoreNb, numeDdlName)
         integer(kind=8), intent(in) :: fileUnit, storeLast
         character(len=8), intent(in) :: resultName
         character(len=8), intent(in) :: meshAst
@@ -45,5 +45,6 @@ interface
         integer(kind=8), intent(in) :: cmpNb
         character(len=24), intent(in) :: cmpAstName, cmpMedName
         integer(kind=8), intent(out) :: fieldStoreNb
+        character(len=8), intent(in) :: numeDdlName
     end subroutine lrfmed
 end interface

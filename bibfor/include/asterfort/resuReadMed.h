@@ -25,7 +25,8 @@ interface
                            storeIndxNb , storeIndx   ,&
                            storeTimeNb , storeTime   ,&
                            storeEpsi   , storeCrit   ,&
-                           storePara   , fieldStoreNb)
+                           storePara   , fieldStoreNb,&
+                           numeDdlName)
         integer(kind=8), intent(in) :: fileUnit
         character(len=8), intent(in) :: resultName
         character(len=8), intent(in) :: model, meshAst
@@ -39,5 +40,6 @@ interface
         character(len=8), intent(in) :: storeCrit
         character(len=4), intent(in) :: storePara
         integer(kind=8), intent(out) :: fieldStoreNb(100)
+        character(len=8), intent(in) :: numeDdlName
     end subroutine resuReadMed
 end interface

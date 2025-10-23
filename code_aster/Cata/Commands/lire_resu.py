@@ -154,6 +154,7 @@ LIRE_RESU = OPER(
     # General parameters
     MAILLAGE=SIMP(statut="f", typ=maillage_sdaster),
     MODELE=SIMP(statut="f", typ=modele_sdaster),
+    NUME_DDL=SIMP(statut="f", typ=nume_ddl_sdaster),
     CHAM_MATER=SIMP(statut="f", typ=cham_mater),
     CARA_ELEM=SIMP(statut="f", typ=cara_elem),
     # Select storing
