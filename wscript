@@ -70,7 +70,7 @@ def options(self):
                 "includes, python modules",
                 "  CONFIG_PARAMETERS_name=value: extra configuration parameters "
                 "(for config.yaml/json)",
-                "  WAFBUILD_ENV   : environment file to be included in runtime " "environment file",
+                "  WAFBUILD_ENV   : environment file to be included in runtime environment file",
                 "  PREFIX         : default installation prefix to be used, "
                 "if no --prefix option is given.",
                 "  ASTER_BLAS_INT_SIZE  : kind of integers to use in the fortran blas/lapack "
@@ -276,8 +276,8 @@ def configure(self):
     # compute default prefix
     if self.env.PREFIX in ("", "/"):
         self.env.PREFIX = osp.abspath(default_prefix)
-    if "PREFIX_ROOT" in os.environ:
-        self.env.PREFIX = osp.join(os.environ["PREFIX_ROOT"], install_suffix)
+        if "PREFIX_ROOT" in os.environ:
+            self.env.PREFIX = osp.join(os.environ["PREFIX_ROOT"], install_suffix)
     self.msg("Setting prefix to", self.env.PREFIX)
 
     # wine wrapper must be set up before checking compilers
