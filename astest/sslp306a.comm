@@ -33,11 +33,11 @@ def w_(x, y, t, nu, **kwargs):
 
 
 def drx_(x, y, **kwargs):
-    return y**3 * (y - 1) ** 3 * x**2 * (x - 1) ** 2 * (2 * x - 1)
+    return x**3 * (x - 1) ** 3 * y**2 * (y - 1) ** 2 * (2 * y - 1)
 
 
 def dry_(x, y, **kwargs):
-    return x**3 * (x - 1) ** 3 * y**2 * (y - 1) ** 2 * (2 * y - 1)
+    return -(y**3 * (y - 1) ** 3 * x**2 * (x - 1) ** 2 * (2 * x - 1))
 
 
 # Global parameters
@@ -101,10 +101,7 @@ for k, refine in enumerate([COARSE_REFINEMENT, FINE_REFINEMENT]):
     cham_mater = AFFE_MATERIAU(AFFE=_F(MATER=(mater,), TOUT="OUI"), MODELE=model)
 
     meca_bcs = AFFE_CHAR_CINE(
-        MECA_IMPO=_F(
-            DZ=0, DRX=0, DRY=0, GROUP_MA=("LEFT", "RIGHT", "TOP", "BOTTOM")
-        ),
-        MODELE=model,
+        MECA_IMPO=_F(DZ=0, DRX=0, DRY=0, GROUP_MA=("LEFT", "RIGHT", "TOP", "BOTTOM")), MODELE=model
     )
 
     meca_chr = AFFE_CHAR_MECA_F(MODELE=model, PRES_REP=_F(GROUP_MA="SURFACE", PRES=PRES))
@@ -141,7 +138,9 @@ for k, refine in enumerate([COARSE_REFINEMENT, FINE_REFINEMENT]):
         temp.setComponentValues(name, field)
         value = temp.toFieldOnNodes()
         analytical_values.append(value)
-        test.assertAlmostEqual(value.norm("NORM_2"), non_regression_values[i][k], places=6)
+        a = value.norm("NORM_2")
+        b = non_regression_values[i][k]
+        test.assertAlmostEqual(a, b, places=6)
 
     erreur_w = analytical_values[0] - w_numerique
     erreur_table[0, k] = erreur_w.norm("NORM_2")
@@ -152,13 +151,14 @@ for k, refine in enumerate([COARSE_REFINEMENT, FINE_REFINEMENT]):
     erreur_dry = analytical_values[2] - dry_numerique
     erreur_table[2, k] = erreur_dry.norm("NORM_2")
 
+tolerance = 1e-3
 for j in range(2):
     for i in range(3):
 
         error = erreur_table[i, j]
 
-        if not (error <= 1e-3):
-            test.assertTrue(False)
+        if not (error <= tolerance):
+            test.assertTrue(False, msg=f"{error:.3e} >> {tolerance}")
         else:
             test.assertTrue(True)
 
@@ -196,10 +196,7 @@ for epais in [0.1, 0.001]:
     cham_mater = AFFE_MATERIAU(AFFE=_F(MATER=(mater,), TOUT="OUI"), MODELE=model)
 
     meca_bcs = AFFE_CHAR_CINE(
-        MECA_IMPO=_F(
-            DZ=0, DRX=0, DRY=0, GROUP_MA=("LEFT", "RIGHT", "TOP", "BOTTOM")
-        ),
-        MODELE=model,
+        MECA_IMPO=_F(DZ=0, DRX=0, DRY=0, GROUP_MA=("LEFT", "RIGHT", "TOP", "BOTTOM")), MODELE=model
     )
 
     meca_chr = AFFE_CHAR_MECA_F(MODELE=model, PRES_REP=_F(GROUP_MA="SURFACE", PRES=PRES))
@@ -223,9 +220,7 @@ for epais in [0.1, 0.001]:
 
     analytical_values = []
     for mesh, func, name in zip(
-            [mesh_line, mesh_quad, mesh_quad],
-            [w_, drx_, dry_],
-            ["DZ", "DRX", "DRY"],
+        [mesh_line, mesh_quad, mesh_quad], [w_, drx_, dry_], ["DZ", "DRX", "DRY"]
     ):
         coords = mesh.getCoordinatesAsSimpleFieldOnNodes()
         field = func(coords.X, coords.Y, t=epais, nu=POISSON)

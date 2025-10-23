@@ -72,6 +72,7 @@ subroutine te0029(option, nomte)
 
     integer(kind=8), parameter :: size_mat = 30, size_fenicsx = 42*42
     real(c_double) :: F_elem(size_fenicsx), F_elem_int(size_mat), w_0(size_mat)
+    real(kind=8) :: signs(size_mat)
     integer(kind=8) :: reorder(size_mat)
     real(c_double) :: pres
     real(kind=8) :: e, nu
@@ -182,27 +183,42 @@ subroutine te0029(option, nomte)
 !
     call BP1_qu9_Fortran(w_0, nwinit, cdofs_f, ncd, entities0, ne0, cst, ncst, F_elem)
 !
-![w1, θ_x1, θ_y1, w2, θ_x2, θ_y2, w3, θ_x3, θ_y3, w4, θ_x4, θ_y4,
-! θ_x5, θ_y5, γ_r1, p1, θ_x6, θ_y6, γ_r2, p2,θ_x7, θ_y7,
-! γ_r3, p3, θ_x8, θ_y8,γ_r4, p4, θ_x9, θ_y9]
-!
-    reorder = (/19, 1, 2, &
-                21, 5, 6, &
-                22, 7, 8, &
-                20, 3, 4, &
-                11, 12, &
-                24, 28, &
-                15, 16, &
-                26, 30, &
-                13, 14, &
-                25, 29, &
-                9, 10, &
-                23, 27, &
-                17, 18 &
-                /)
+    ![w1, θ_y1, -θ_x1, w2, θ_y2, -θ_x2, w3, θ_y3, -θ_x3, w4, θ_y4, -θ_x4,
+    ! θ_y5, -θ_x5, γ_r1, p1, θ_y6, -θ_x6, γ_r2, p2,θ_y7, -θ_x7,
+    ! γ_r3, p3, θ_y8, -θ_x8,γ_r4, p4, θ_y9, -θ_x9]
+    signs = (/ &
+            1.d0, 1.d0, -1.d0, &
+            1.d0, 1.d0, -1.d0, &
+            1.d0, 1.d0, -1.d0, &
+            1.d0, 1.d0, -1.d0, &
+            1.d0, -1.d0, &
+            1.d0, 1.d0, &
+            1.d0, -1.d0, &
+            1.d0, 1.d0, &
+            1.d0, -1.d0, &
+            1.d0, 1.d0, &
+            1.d0, -1.d0, &
+            1.d0, 1.d0, &
+            1.d0, -1.d0 &
+            /)
+    reorder = (/ &
+              19, 2, 1, &
+              21, 6, 5, &
+              22, 8, 7, &
+              20, 4, 3, &
+              12, 11, &
+              24, 28, &
+              16, 15, &
+              26, 30, &
+              14, 13, &
+              25, 29, &
+              10, 9, &
+              23, 27, &
+              18, 17 &
+              /)
 
     do i = 1, size_mat
-        F_elem_int(i) = -F_elem(reorder(i))
+        F_elem_int(i) = -signs(i)*F_elem(reorder(i))
     end do
 !
 ! - Set matrix in output field
