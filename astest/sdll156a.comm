@@ -224,7 +224,7 @@ sismique = CREA_RESU(
 )
 # appel à POST_ROCHE
 
-chPostRocheTout = POST_ROCHE(
+resuPostRocheTout = POST_ROCHE(
     LIMITE_ADM="NON",
     ZONE_ANALYSE=(_F(GROUP_MA="RUN", GROUP_NO_ORIG="A"), _F(GROUP_MA="BRANCH", GROUP_NO_ORIG="C")),
     MODELE=modele,
@@ -249,7 +249,7 @@ chPostRocheTout = POST_ROCHE(
 # 7- seisme inertiel + deplacement (SD)
 
 # 1- deplacement (D)
-chPostRocheTout_D = POST_ROCHE(
+resuPostRocheTout_D = POST_ROCHE(
     LIMITE_ADM="NON",
     ZONE_ANALYSE=(_F(GROUP_MA="RUN", GROUP_NO_ORIG="A"), _F(GROUP_MA="BRANCH", GROUP_NO_ORIG="C")),
     MODELE=modele,
@@ -259,7 +259,7 @@ chPostRocheTout_D = POST_ROCHE(
 )
 
 # 2- deplacement + pression (DP)
-chPostRocheTout_DP = POST_ROCHE(
+resuPostRocheTout_DP = POST_ROCHE(
     LIMITE_ADM="NON",
     ZONE_ANALYSE=(_F(GROUP_MA="RUN", GROUP_NO_ORIG="A"), _F(GROUP_MA="BRANCH", GROUP_NO_ORIG="C")),
     MODELE=modele,
@@ -270,7 +270,7 @@ chPostRocheTout_DP = POST_ROCHE(
 )
 
 # 3- deplacement + pression + poids propre (DPG)
-chPostRocheTout_DPG = POST_ROCHE(
+resuPostRocheTout_DPG = POST_ROCHE(
     LIMITE_ADM="NON",
     ZONE_ANALYSE=(_F(GROUP_MA="RUN", GROUP_NO_ORIG="A"), _F(GROUP_MA="BRANCH", GROUP_NO_ORIG="C")),
     MODELE=modele,
@@ -284,7 +284,7 @@ chPostRocheTout_DPG = POST_ROCHE(
 )
 
 # 4- seisme inertiel (S)
-chPostRocheTout_S = POST_ROCHE(
+resuPostRocheTout_S = POST_ROCHE(
     LIMITE_ADM="NON",
     ZONE_ANALYSE=(_F(GROUP_MA="RUN", GROUP_NO_ORIG="A"), _F(GROUP_MA="BRANCH", GROUP_NO_ORIG="C")),
     MODELE=modele,
@@ -294,7 +294,7 @@ chPostRocheTout_S = POST_ROCHE(
 )
 
 # 5- seisme inertiel + pression (SP)
-chPostRocheTout_SP = POST_ROCHE(
+resuPostRocheTout_SP = POST_ROCHE(
     LIMITE_ADM="NON",
     ZONE_ANALYSE=(_F(GROUP_MA="RUN", GROUP_NO_ORIG="A"), _F(GROUP_MA="BRANCH", GROUP_NO_ORIG="C")),
     MODELE=modele,
@@ -305,7 +305,7 @@ chPostRocheTout_SP = POST_ROCHE(
 )
 
 # 6- seisme inertiel + pression + poids propre (SPG)
-chPostRocheTout_SPG = POST_ROCHE(
+resuPostRocheTout_SPG = POST_ROCHE(
     LIMITE_ADM="NON",
     ZONE_ANALYSE=(_F(GROUP_MA="RUN", GROUP_NO_ORIG="A"), _F(GROUP_MA="BRANCH", GROUP_NO_ORIG="C")),
     MODELE=modele,
@@ -319,7 +319,7 @@ chPostRocheTout_SPG = POST_ROCHE(
 )
 
 # 7- seisme inertiel + deplacement (SD)
-chPostRocheTout_SD = POST_ROCHE(
+resuPostRocheTout_SD = POST_ROCHE(
     LIMITE_ADM="NON",
     ZONE_ANALYSE=(_F(GROUP_MA="RUN", GROUP_NO_ORIG="A"), _F(GROUP_MA="BRANCH", GROUP_NO_ORIG="C")),
     MODELE=modele,
