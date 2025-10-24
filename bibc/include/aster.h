@@ -1,5 +1,5 @@
 /* -------------------------------------------------------------------- */
-/* Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org             */
+/* Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org             */
 /* This file is part of code_aster.                                     */
 /*                                                                      */
 /* code_aster is free software: you can redistribute it and/or modify   */
@@ -16,6 +16,7 @@
 /* along with code_aster.  If not, see <http://www.gnu.org/licenses/>.  */
 /* -------------------------------------------------------------------- */
 
+// aslint: disable=C3401
 #ifndef ASTER_H_
 #define ASTER_H_
 
@@ -51,10 +52,5 @@
         DBGV( "Assertion failed: %s", #cond );                                                     \
         INTERRUPT( 17 );                                                                           \
     }
-
-/* deprecated functions on Windows */
-#ifdef ASTER_PLATFORM_WINDOWS
-#define strdup _strdup
-#endif
 
 #endif
