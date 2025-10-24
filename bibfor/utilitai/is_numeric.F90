@@ -16,8 +16,17 @@
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
 !
-interface
-    subroutine caliel(loadZ, modelZ)
-        character(len=*), intent(in) :: loadZ, modelZ
-    end subroutine caliel
-end interface
+function is_numeric(string)
+    implicit none
+#include "asterf_types.h"
+    character(len=*), intent(in) :: string
+    aster_logical :: is_numeric
+    real(kind=8) :: x
+    integer(kind=8) :: e, n
+    character(len=12) :: fmt
+!
+    n = len_trim(string)
+    write (fmt, '("(f",i0,".0)")') n
+    read (string, fmt, iostat=e) x
+    is_numeric = e == 0
+end function is_numeric

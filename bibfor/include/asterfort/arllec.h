@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -19,15 +19,13 @@
 !
 !
 interface
-    subroutine arllec(motcle,iocc,modele,noma,nomb, &
-                      model,cine,dime)
-        integer :: iocc
-        integer :: dime
-        character(len=16) :: motcle
-        character(len=8) :: modele
-        character(len=8) :: cine(3)
-        character(len=8) :: model(3)
-        character(len=10) :: noma
-        character(len=10) :: nomb
+    subroutine arllec(factorKeyword, iocc, model, noma, nomb, &
+                      partModel, partKine, dime)
+        character(len=16), intent(in) :: factorKeyword
+        integer, intent(in) :: iocc
+        character(len=8), intent(in) :: model
+        character(len=10), intent(in) :: noma, nomb
+        character(len=8), intent(out) :: partModel(2), partKine(2)
+        integer, intent(out) :: dime
     end subroutine arllec
 end interface

@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -16,13 +16,14 @@
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
 !
-subroutine caarle(numdlz, iocc, lisrez, chargz)
+subroutine caarle(numeDofZ, iocc, listRelaZ, loadZ)
 !
     implicit none
 #include "jeveux.h"
 #include "asterc/getfac.h"
 #include "asterfort/arlcou.h"
 #include "asterfort/arllec.h"
+#include "asterfort/dismoi.h"
 #include "asterfort/getvid.h"
 #include "asterfort/getvtx.h"
 #include "asterfort/jedema.h"
@@ -35,109 +36,79 @@ subroutine caarle(numdlz, iocc, lisrez, chargz)
 #include "asterfort/utmess.h"
 #include "asterfort/wkvect.h"
 !
-    integer :: iocc
-    character(len=*) :: numdlz, chargz, lisrez
+    character(len=*), intent(in) :: numeDofZ
+    integer, intent(in) :: iocc
+    character(len=*), intent(in) :: listRelaZ, loadZ
 !
-! ----------------------------------------------------------------------
+! --------------------------------------------------------------------------------------------------
 !
-!              CREATION D'UN CHARGEMENT DE TYPE ARLEQUIN
+! LIAISON_ELEM
 !
-! ----------------------------------------------------------------------
+! For ARLEQUIN
 !
-! I/O  CHARGE : SD CHARGE
+! --------------------------------------------------------------------------------------------------
 !
-! SD EN ENTREE :
-! ==============
+! In  numeDof          : name of numbering object (NUME_DDL)
+! In  iocc             : index of factor keyword
+! In  listRela         : name of object for linear relations
+! In  load             : load
 !
-! .CHME.MODEL.NOMO       : NOM DU MODELE ASSOCIE A LA CHARGE
-! .TYPE                  : TYPE DE LA CHARGE
+! --------------------------------------------------------------------------------------------------
 !
-! SD EN SORTIE ENRICHIE PAR :
-! ===========================
-! .CHME.LIGRE     : LIGREL DE CHARGE
-! .CHME.CIMPO     : CARTE COEFFICIENTS IMPOSES
-! .CHME.CMULT     : CARTE COEFFICIENTS MULTIPLICATEURS
-!
-!
-    character(len=8) :: charge
-    character(len=14) :: numddl
-    character(len=19) :: lisrel
-    character(len=24) :: typmai
+    character(len=16), parameter :: factorKeyword = "LIAISON_ELEM"
+    character(len=8) :: load
+    character(len=14) :: numeDof
+    character(len=19) :: listRela
+    character(len=24), parameter :: typmai = '&&CAARLE.NOMTM'
     character(len=10) :: noma, nomb, nom1, nom2
-    character(len=8) :: nomo, mail, model(3), cine(3)
+    character(len=8) :: model, mesh, partModel(2), partKine(2)
     character(len=8) :: k8bid
-    integer :: dime, nocc, iop
+    integer :: dime
     integer :: nbtyp
-    integer :: zocc, ibid, i
-    integer :: jtypm, jlgrf
-    character(len=16) :: motfac, option
-!
-    data typmai/'&&CAARLE.NOMTM'/
+    integer :: ibid, i
+    integer :: jtypm
 !
 ! ----------------------------------------------------------------------
+!
     call jemarq()
 !
-    numddl = numdlz
-    charge = chargz
-    lisrel = lisrez
-    zocc = iocc
-    motfac = 'LIAISON_ELEM'
-!
-! --- IMPOSE-T-ON UNE CHARGE ARLEQUIN ?
-!
-    call getfac(motfac, nocc)
-    call getvtx(motfac, 'OPTION', iocc=zocc, scal=option, nbret=iop)
-    if (option .ne. '3D_POU_ARLEQUIN') then
-        call utmess('F', 'MODELISA6_39', sk=option)
-    end if
-!
-    call getfac(motfac, nocc)
-    if (nocc .eq. 0) goto 999
-!
-! --- LECTURE NOMS DU MODELE ET DU MAILLAGE
-!
-    call getvid(' ', 'MODELE', iocc=0, nbval=1, scal=nomo, &
-                nbret=ibid)
-    call jeveuo(nomo(1:8)//'.MODELE    .LGRF', 'L', jlgrf)
-    mail = zk8(jlgrf)
-!
-! --- STRUCTURES DE DONNEES
-!
-    noma = charge(1:8)//'.A'
-    nomb = charge(1:8)//'.B'
-    nom1 = charge(1:8)//'.1'
-    nom2 = charge(1:8)//'.2'
-!
+    numeDof = numeDofZ
+    load = loadZ
+    listRela = listRelaZ
+
+! - Get model
+    call getvid(' ', 'MODELE', iocc=0, nbval=1, scal=model, nbret=ibid)
+
+! - Get mesh
+    call dismoi('NOM_MAILLA', model, 'MODELE', repk=mesh)
+
+! - STRUCTURES DE DONNEES
+    noma = load(1:8)//'.A'
+    nomb = load(1:8)//'.B'
+    nom1 = load(1:8)//'.1'
+    nom2 = load(1:8)//'.2'
+
 ! --- CREATION D'UN VECTEUR CONTENANT LE NOM DES TYPES DE MAILLES
-!
     call jelira('&CATA.TM.NOMTM', 'NOMMAX', nbtyp, k8bid)
     call wkvect(typmai, 'V V K8', nbtyp, jtypm)
     do i = 1, nbtyp
         call jenuno(jexnum('&CATA.TM.NOMTM', i), zk8(jtypm-1+i))
     end do
-!
-! --- LECTURE ET VERIFICATION DES MAILLES DES MODELES
-!
-    call arllec(motfac, zocc, nomo, noma, nomb, &
-                model, cine, dime)
-!
-! --- CALCUL DES EQUATIONS DE COUPLAGE
-!
-    call arlcou(mail, zocc, nomo, typmai, noma, &
-                nomb, cine, dime, lisrel, charge)
-!
-! --- DESALLOCATION GROUPES 1 ET 2
-!
+
+! - LECTURE ET VERIFICATION DES MAILLES DES MODELES
+    call arllec(factorKeyword, iocc, model, noma, nomb, &
+                partModel, partKine, dime)
+
+! - CALCUL DES EQUATIONS DE COUPLAGE
+    call arlcou(mesh, iocc, model, typmai, noma, &
+                nomb, partKine, dime, listRela, load)
+
+! - Cleaning
     call jedetr(nom1)
     call jedetr(nom2)
     call jedetr(noma//'.GROUPEMA')
     call jedetr(nomb//'.GROUPEMA')
-!
-! --- DESALLOCATION AUTRES OBJETS ARLEQUIN
-!
     call jedetr(typmai)
-!
-999 continue
 !
     call jedema()
 !
