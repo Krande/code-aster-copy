@@ -126,6 +126,7 @@ MACR_LIGN_COUPE = MACRO(
     # UNITE_MAILLAGE: pour rester optionnel dans AsterStudy,
     # la valeur par défaut est définie dans 'ops'
     UNITE_MAILLAGE=SIMP(statut="f", typ=UnitType(), inout="out"),
+    UNITE_RESU=SIMP(statut="f", typ=UnitType(), inout="out"),
     MODELE=SIMP(statut="f", typ=modele_sdaster),
     VIS_A_VIS=FACT(
         statut="f",

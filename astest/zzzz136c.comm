@@ -19,6 +19,7 @@
 
 from code_aster.Commands import (
     DEBUT,
+    DEFI_FICHIER,
     LIRE_MAILLAGE,
     AFFE_MODELE,
     LIRE_RESU,
@@ -31,11 +32,13 @@ from code_aster.Commands import (
     FIN,
 )
 from code_aster import CA
+from code_aster.Utilities import medcoupling as mc
 
 DEBUT(CODE="OUI", DEBUG=_F(SDVERI="OUI"), IMPR_MACRO="OUI")
 
 import pprint
 import math
+import tempfile
 import numpy as np
 
 test = CA.TestCase()
@@ -462,7 +465,12 @@ for rot_ry in (0.0, 33.3333, 45.0, 89.9, 90.1, 135.0, 179.0):
         )
         cut_id += 1
 
-table = MACR_LIGN_COUPE(CHAM_GD=CHNO, MODELE=MO, LIGN_COUPE=cut_lines)
+medfilename_tmp = tempfile.NamedTemporaryFile(dir="REPE_OUT", suffix=".med").name
+unite_resu = DEFI_FICHIER(FICHIER=medfilename_tmp, ACTION="ASSOCIER", TYPE="LIBRE", ACCES="NEW")
+table = MACR_LIGN_COUPE(CHAM_GD=CHNO, MODELE=MO, UNITE_RESU=unite_resu, LIGN_COUPE=cut_lines)
+
+DEFI_FICHIER(ACTION="LIBERER", UNITE=unite_resu)
+
 values = table.EXTR_TABLE().values()
 actual = np.array(
     list(
@@ -490,5 +498,18 @@ reference = np.loadtxt("fort.39")
 #            "ID NUME_ORDRE INST ABSC_CURV COOR_X COOR_Y COOR_Z DX DY DZ", )
 
 test.assertArrayEqual(actual=actual, reference=reference, rtol=1.0e-07, atol=1.0e-6)
+
+# testing that med and table output files match
+reference = np.array(list(zip(values["DX"], values["DY"], values["DZ"])))
+actual_medfilefiled = mc.MEDFileFieldMultiTS(medfilename_tmp)
+actual_medfield: mc.MEDCouplingFieldDouble = actual_medfilefiled.getFieldAtLevel(
+    mc.ON_NODES, 1, 0, 1
+)
+
+components = actual_medfield.getArray().getInfoOnComponents()
+components_index_to_compare = [components.index(compo) for compo in ("DX", "DY", "DZ")]
+
+actual_med_array = actual_medfield.getArray().toNumPyArray()[:, components_index_to_compare]
+test.assertArrayEqual(actual=actual_med_array, reference=reference, rtol=1.0e-07, atol=1.0e-6)
 
 FIN()

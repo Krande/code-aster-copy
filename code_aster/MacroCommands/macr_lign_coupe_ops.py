@@ -18,7 +18,11 @@
 # --------------------------------------------------------------------
 
 import os
-from math import asin, atan2, cos, pi, sin, sqrt
+from math import asin, atan2, cos, pi, sin, sqrt, isclose
+from pathlib import Path
+from typing import List, Dict, Tuple
+
+import numpy as np
 
 from ..Cata.Syntax import _F
 from ..CodeCommands import (
@@ -33,6 +37,7 @@ from ..CodeCommands import (
 )
 from ..Helpers import FileAccess, LogicalUnitFile
 from ..Messages import UTMESS, MasquerAlarme, RetablirAlarme
+from ..Utilities import medcoupling as mc, logger
 
 #
 # script PYTHON de creation du résultat local
@@ -40,6 +45,105 @@ from ..Messages import UTMESS, MasquerAlarme, RetablirAlarme
 
 #
 # verification que les points de la ligne de coupe sont dans la matiere
+
+
+class VisuCutBuilder:
+    def __init__(self, mesh_med: mc.MEDFileUMesh):
+        self.mesh_med = mesh_med
+
+        self.arrays: Dict[Tuple[str, int], np.ndarray] = {}
+        self.instants: Dict[Tuple[str, int], float] = {}
+        self.components: Dict[str, List[str]] = {}
+        self.nb_nodes: int = mesh_med.getNumberOfNodes()
+
+    def __str__(self):
+        return f"""
+        instants: {self.instants}
+        components: {self.components}
+        arrays: {self.arrays}
+        mesh_med: {self.mesh_med}
+        nb_nodes: {self.nb_nodes}
+        """
+
+    @classmethod
+    def from_aster_mesh(cls, mesh) -> "VisuCutBuilder":
+        mesh_med = mesh.createMedCouplingMesh()
+        return cls(mesh_med=mesh_med)
+
+    def add_field_from_aster_result(
+        self, aster_result, field_name: str, nodes: list[int], nume_ordre: int, instant: float
+    ):
+        field = aster_result.getField(field_name, nume_ordre).toSimpleFieldOnNodes()
+        # extract values for cut group only
+        values = field.getValues()[0][nodes]
+        components = field.getComponents()
+        self.add_field(
+            field_name=field_name,
+            nodes=nodes,
+            values=values,
+            components=components,
+            nume_ordre=nume_ordre,
+            instant=instant,
+        )
+
+    def add_field(
+        self,
+        field_name: str,
+        nodes: list[int],
+        values: np.ndarray,
+        components: List[str],
+        nume_ordre: int,
+        instant: float,
+    ):
+        assert len(nodes) == values.shape[0]
+        stock_address: Tuple[str, int] = (field_name, nume_ordre)
+        already_instanciated_field = stock_address in self.arrays
+        if already_instanciated_field:
+            assert isclose(self.instants[stock_address], instant)
+            assert self.arrays[stock_address].shape == (self.nb_nodes, values.shape[1] + 1)
+            assert self.components[field_name] == components
+        else:
+            self.instants[stock_address] = instant
+            self.arrays[stock_address] = np.empty((self.nb_nodes, values.shape[1] + 1))
+            self.components[field_name] = components
+
+        current_array = self.arrays[stock_address]
+        assert max(nodes) <= current_array.shape[0]
+        current_array[nodes, 0] = nodes
+        current_array[nodes, 1:] = values
+
+    def write(self, filepath: Path):
+        if not self.arrays:
+            logger.warn("Cannot write visu output because no data where set")
+            return
+        field_file = mc.MEDFileFieldMultiTS()
+        for (field_name, nume_ordre), current_array in self.arrays.items():
+            instant = self.instants[(field_name, nume_ordre)]
+
+            # Medcoupling field
+            field_values = mc.DataArrayDouble(current_array[:, 1:].tolist())
+            field_values.setInfoOnComponents(self.components[field_name])
+            field_values.setName(field_name)
+
+            medc_node_field = mc.MEDCouplingFieldDouble(mc.ON_NODES, mc.ONE_TIME)
+            medc_node_field.setName(field_name)
+            medc_node_field.setArray(field_values)
+            medc_node_field.setNature(mc.IntensiveMaximum)
+
+            medc_node_field.setMesh(self.mesh_med.getMeshAtLevel(1))
+
+            medc_node_field.checkConsistencyLight()
+            medfield = mc.MEDFileField1TS()
+            medfield.setFieldNoProfileSBT(medc_node_field)
+            medfield.setTime(nume_ordre, 0, instant)
+
+            print(f"medfield = {medfield}")
+            field_file.pushBackTimeStep(medfield)
+
+        print(f"field_file = {field_file}")
+
+        self.mesh_med.write(str(filepath), 2)
+        field_file.write(str(filepath), 0)
 
 
 def crea_grp_matiere(groupe, newgrp, iocc, m, __remodr, NOM_CHAM, __macou):
@@ -147,7 +251,7 @@ def crea_grp_matiere(groupe, newgrp, iocc, m, __remodr, NOM_CHAM, __macou):
     return
 
 
-def crea_resu_local(dime, NOM_CHAM, m, resin, mail, nomgrma):
+def crea_resu_local(dime, NOM_CHAM, m, resin, mail):
     epsi = 0.00000001
 
     if NOM_CHAM == "DEPL":
@@ -523,7 +627,6 @@ def get_coor(LIGN_COUPE, position, coord, mesh):
     return coor
 
 
-#
 def macr_lign_coupe_ops(
     self,
     LIGN_COUPE,
@@ -534,6 +637,7 @@ def macr_lign_coupe_ops(
     MODELE=None,
     VIS_A_VIS=None,
     UNITE_MAILLAGE=None,
+    UNITE_RESU=None,
     **args,
 ):
     """
@@ -545,6 +649,8 @@ def macr_lign_coupe_ops(
     if UNITE_MAILLAGE is None:
         logical_unit = LogicalUnitFile.new_free(access=FileAccess.New)
         UNITE_MAILLAGE = logical_unit.unit
+
+    write_visu = UNITE_RESU is not None
 
     # On importe les definitions des commandes a utiliser dans la macro
 
@@ -651,6 +757,8 @@ def macr_lign_coupe_ops(
             AFFE=_F(NOM_CHAM=NOM_CHAM, CHAM_GD=CHAM_GD, INST=0.0, MODELE=MODELE),
         )
         RESULTAT = __resuch
+
+    assert NOM_CHAM is not None
 
     at_least_1_axis_not_initial = any(line_def["REPERE"] != "INITIAL" for line_def in LIGN_COUPE)
     if (
@@ -836,7 +944,10 @@ def macr_lign_coupe_ops(
     ioc2 = 0
     mcACTION = []
 
-    if RESULTAT.getType().lower() in (
+    nume_ordres = __recou.getAccessParameters()["NUME_ORDRE"]
+    instants = __recou.getAccessParameters()["INST"]
+
+    if RESULTAT.getType().lower() not in (
         "evol_ther",
         "evol_sech",
         "evol_elas",
@@ -848,95 +959,87 @@ def macr_lign_coupe_ops(
         "fourier_elas",
         "dyna_trans",
     ):
-        for iocc, m in enumerate(LIGN_COUPE):
-            motscles = {}
-            motscles["OPERATION"] = m["OPERATION"]
-            if m["NOM_CMP"]:
-                motscles["NOM_CMP"] = m["NOM_CMP"]
-                if m["TRAC_NOR"]:
-                    motscles["TRAC_NOR"] = m["TRAC_NOR"]
-                elif m["TRAC_DIR"]:
-                    motscles["TRAC_DIR"] = m["TRAC_DIR"]
-                    motscles["DIRECTION"] = m["DIRECTION"]
-            elif m["INVARIANT"]:
-                motscles["INVARIANT"] = m["INVARIANT"]
-            elif m["RESULTANTE"]:
-                motscles["RESULTANTE"] = m["RESULTANTE"]
-                if m["MOMENT"]:
-                    motscles["MOMENT"] = m["MOMENT"]
-                    motscles["POINT"] = m["POINT"]
-            elif m["ELEM_PRINCIPAUX"]:
-                motscles["ELEM_PRINCIPAUX"] = m["ELEM_PRINCIPAUX"]
-            else:
-                motscles["TOUT_CMP"] = "OUI"
+        assert 0
 
-            cut_type = m["TYPE"]
-            if cut_type in ("GROUP_NO", "GROUP_MA"):
-                groupe = m[cut_type].ljust(8)
-                nomgrma = groupe
-            else:
-                ioc2 += 1
-                nomgrma = " "
-                groupe = f"LICOF{ioc2}"
-                crea_grp_matiere(f"LICOU{ioc2}", groupe, iocc, m, __remodr, NOM_CHAM, __macou)
+    if write_visu:
+        visu_cut = VisuCutBuilder.from_aster_mesh(mesh=__macou)
 
-            # on definit l'intitulé
-            if m["INTITULE"]:
-                intitl = m["INTITULE"]
-            elif cut_type in ("GROUP_NO", "GROUP_MA"):
-                intitl = groupe
-            else:
-                intitl = f"l.coupe{ioc2}"
+    for iocc, m in enumerate(LIGN_COUPE):
+        motscles = {}
+        motscles["OPERATION"] = m["OPERATION"]
+        if m["NOM_CMP"]:
+            motscles["NOM_CMP"] = m["NOM_CMP"]
+            if m["TRAC_NOR"]:
+                motscles["TRAC_NOR"] = m["TRAC_NOR"]
+            elif m["TRAC_DIR"]:
+                motscles["TRAC_DIR"] = m["TRAC_DIR"]
+                motscles["DIRECTION"] = m["DIRECTION"]
+        elif m["INVARIANT"]:
+            motscles["INVARIANT"] = m["INVARIANT"]
+        elif m["RESULTANTE"]:
+            motscles["RESULTANTE"] = m["RESULTANTE"]
+            if m["MOMENT"]:
+                motscles["MOMENT"] = m["MOMENT"]
+                motscles["POINT"] = m["POINT"]
+        elif m["ELEM_PRINCIPAUX"]:
+            motscles["ELEM_PRINCIPAUX"] = m["ELEM_PRINCIPAUX"]
+        else:
+            motscles["TOUT_CMP"] = "OUI"
 
-            # Expression des contraintes aux noeuds ou des déplacements dans le
-            # repere local
-            if cut_axis_system != "INITIAL":
-                if NOM_CHAM in (
-                    "DEPL",
-                    "SIEF_ELNO",
-                    "SIGM_NOEU",
-                    "SIGM_ELNO",
-                    "FLUX_ELNO",
-                    "FLUX_NOEU",
-                ):
-                    if cut_axis_system == "POLAIRE":
-                        mcACTION.append(
-                            _F(
-                                INTITULE=intitl,
-                                RESULTAT=__remodr,
-                                REPERE=cut_axis_system,
-                                GROUP_NO=groupe,
-                                NOM_CHAM=NOM_CHAM,
-                                **motscles,
-                            )
-                        )
-                    else:
-                        __remodr = crea_resu_local(dime, NOM_CHAM, m, __recou, __macou, nomgrma)
-                        mcACTION.append(
-                            _F(
-                                INTITULE=intitl,
-                                RESULTAT=__remodr,
-                                GROUP_NO=groupe,
-                                NOM_CHAM=NOM_CHAM,
-                                **motscles,
-                            )
-                        )
+        cut_type = m["TYPE"]
+        if cut_type in ("GROUP_NO", "GROUP_MA"):
+            groupe = m[cut_type].ljust(8)
+        else:
+            ioc2 += 1
+            groupe = f"LICOF{ioc2}"
+            crea_grp_matiere(f"LICOU{ioc2}", groupe, iocc, m, __remodr, NOM_CHAM, __macou)
 
-                else:
-                    UTMESS("A", "POST0_17", valk=[NOM_CHAM, cut_axis_system])
+        # on definit l'intitulé
+        if m["INTITULE"]:
+            intitl = m["INTITULE"]
+        elif cut_type in ("GROUP_NO", "GROUP_MA"):
+            intitl = groupe
+        else:
+            intitl = f"l.coupe{ioc2}"
+
+        current_resu = __recou
+        # Expression des contraintes aux noeuds ou des déplacements dans le
+        # repere local
+        if cut_axis_system != "INITIAL":
+            if NOM_CHAM in (
+                "DEPL",
+                "SIEF_ELNO",
+                "SIGM_NOEU",
+                "SIGM_ELNO",
+                "FLUX_ELNO",
+                "FLUX_NOEU",
+            ):
+                if cut_axis_system == "POLAIRE":
                     mcACTION.append(
                         _F(
                             INTITULE=intitl,
-                            RESULTAT=__recou,
+                            RESULTAT=__remodr,
+                            REPERE=cut_axis_system,
+                            GROUP_NO=groupe,
+                            NOM_CHAM=NOM_CHAM,
+                            **motscles,
+                        )
+                    )
+                else:
+                    __remodr = crea_resu_local(dime, NOM_CHAM, m, __recou, __macou)
+                    current_resu = __remodr
+                    mcACTION.append(
+                        _F(
+                            INTITULE=intitl,
+                            RESULTAT=__remodr,
                             GROUP_NO=groupe,
                             NOM_CHAM=NOM_CHAM,
                             **motscles,
                         )
                     )
 
-            # Expression des contraintes aux noeuds ou des déplacements dans le
-            # repere d'origine du champ
             else:
+                UTMESS("A", "POST0_17", valk=[NOM_CHAM, cut_axis_system])
                 mcACTION.append(
                     _F(
                         INTITULE=intitl,
@@ -947,8 +1050,48 @@ def macr_lign_coupe_ops(
                     )
                 )
 
-    else:
-        assert 0
+        # Expression des contraintes aux noeuds ou des déplacements dans le
+        # repere d'origine du champ
+        else:
+            mcACTION.append(
+                _F(
+                    INTITULE=intitl,
+                    RESULTAT=__recou,
+                    GROUP_NO=groupe,
+                    NOM_CHAM=NOM_CHAM,
+                    **motscles,
+                )
+            )
+
+        if write_visu:
+            # ATTENTION si CHANGEMENT DE REPERE les noms de CHAMP PEUVENT CHANGER
+            fields_names = current_resu.getFieldsNames()
+            assert len(fields_names) == 1
+
+            field_name = fields_names[0]
+
+            node_ids = __macou.getNodes(groupe)
+            print(f"__macou = {__macou}")
+            print(f"groupe = {groupe}")
+            print(f"node_ids = {node_ids}")
+            print(f"{NOM_CHAM=}")
+            print(f"{instants=}")
+            print(f"{nume_ordres=}")
+
+            # Create field with linearise fields
+            for instant, nume_ordre in zip(instants, nume_ordres, strict=True):
+                visu_cut.add_field_from_aster_result(
+                    aster_result=current_resu,
+                    field_name=field_name,
+                    nodes=node_ids,
+                    nume_ordre=nume_ordre,
+                    instant=instant,
+                )
+
+    if write_visu:
+        visu_filepath = Path(LogicalUnitFile.filename_from_unit(unit=UNITE_RESU))
+        print(f"visu_cut = {visu_cut}")
+        visu_cut.write(filepath=visu_filepath)
 
     __tabitm = POST_RELEVE_T(ACTION=mcACTION)
 
