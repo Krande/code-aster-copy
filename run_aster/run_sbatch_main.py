@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -90,6 +90,7 @@ TEMPLATE = """#!/bin/bash
 
 # redirect output in the current directory
 #SBATCH --output={output}
+#SBATCH --error={output}.stderr
 
 {RUNASTER_ROOT}/bin/run_aster {run_aster_options} {study}
 """
