@@ -1152,6 +1152,46 @@ TEST_RESU(
             VALE_CALC=4867803.70246,
             VALE_REFE=post_roche_analytic._sigma_eq_opt[3],
         ),
+        # moments équivalents MT
+        _F(
+            GROUP_MA="M1",
+            POINT=1,
+            RESULTAT=resuPostRocheTout,
+            NOM_CHAM="UT01_ELNO",
+            INST=0.0,
+            NOM_CMP="X11",
+            VALE_CALC=5.002383889298323,
+        ),
+        # moments équivalents MFY
+        _F(
+            GROUP_MA="M1",
+            POINT=1,
+            RESULTAT=resuPostRocheTout,
+            NOM_CHAM="UT01_ELNO",
+            INST=0.0,
+            NOM_CMP="X12",
+            VALE_CALC=43.094573098486634,
+        ),
+        # moments équivalents MFZ
+        _F(
+            GROUP_MA="M1",
+            POINT=1,
+            RESULTAT=resuPostRocheTout,
+            NOM_CHAM="UT01_ELNO",
+            INST=0.0,
+            NOM_CMP="X13",
+            VALE_CALC=22.858588234751288,
+        ),
+        # moments équivalents norme
+        _F(
+            GROUP_MA="M1",
+            POINT=1,
+            RESULTAT=resuPostRocheTout,
+            NOM_CHAM="UT01_ELNO",
+            INST=0.0,
+            NOM_CMP="X14",
+            VALE_CALC=49.03754817690857,
+        ),
         # indicateur sigmaV_opt <sigmaP
         _F(
             GROUP_MA="M1",

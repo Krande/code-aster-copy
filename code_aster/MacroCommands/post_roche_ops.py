@@ -66,6 +66,7 @@ def post_roche_ops(self, **kwargs):
             UTMESS("I", "POSTROCHE_11", vali=[numeOrdre, len(PRCommon.listNumeTran)])
 
         PRCommon.combinaisons()
+        PRCommon.formatMoments()
 
         # Contraintes :
         # -----------
@@ -94,6 +95,8 @@ def post_roche_ops(self, **kwargs):
         calcContS2.coef_abattement()
         calcContS2.buildField()
 
+        PRCommon.calcContrainteEquiv(calcCont.field, calcContS2.field)
+
         # Moments :
         # -------
 
@@ -121,7 +124,7 @@ def post_roche_ops(self, **kwargs):
         calcMomentS2.coef_abattement()
         calcMomentS2.buildField()
 
-        PRCommon.calcContrainteEquiv(calcCont.field, calcContS2.field)
+        PRCommon.calcMomentEquiv(calcMoment.field, calcMomentS2.field)
 
         chPrin, chComp = PRCommon.buildOutput(
             calcCont.field, calcContS2.field, calcMoment.field, calcMomentS2.field
@@ -638,6 +641,10 @@ class PostRocheCommon:
         asse_msi = []
         asse_MSI_tot = []
 
+        # On rajoute un booléen pour checker si on est dans le cas DYN-QS ou pas
+        # Par défaut, on considère qu'on est en classification sismique historique (issus de deux calculs modales spectrales DYN et QS)
+        self.cumulQuad = False
+
         __FIELD = [None] * 3 * len(self.dResuMeca)
         nbfield = 0
 
@@ -737,6 +744,10 @@ class PostRocheCommon:
 
                 # réponse totale
                 if typeres == "DYN_QS":
+
+                    # On se trouve dans le cas DYN-QS, classification sismique classique
+                    self.cumulQuad = True
+
                     iordr = ind
                     if lSismInerSpec[0] or lSismInerSpec[1] or lSismInerSpec[2]:
                         UTMESS("F", "POSTROCHE_24")
@@ -1520,7 +1531,49 @@ class PostRocheCommon:
             )
         return chRes
 
-    def calcContrainteEquiv(self, chCoefsAbat_m, chCoefsAbat_msi, reguCoude=False):
+    def formatMoments(self):
+        """
+        Format fields for moment equiv calculation
+        """
+
+        # ces trois champs sont NEUT_R s'ils existent
+        self.MnopeCor = self.toSief_R(self.Mnope)
+        self.mnopeCor = self.toSief_R(self.mnope)
+        self.msitmpCor = self.toSief_R(self.msitmp)
+        # champs SIEF_R s'ils existent
+        self.MpermCor = self.combi(self.Mperm, None)
+        self.mpermCor = self.combi(self.mperm, None)
+
+    def toSief_R(self, fieldNeut):
+        """
+        Create or change field to SIEF_R type
+        """
+
+        if fieldNeut:
+
+            chSief = CREA_CHAMP(
+                OPERATION="ASSE",
+                MODELE=self.model,
+                TYPE_CHAM="ELNO_SIEF_R",
+                PROL_ZERO="OUI",
+                ASSE=_F(
+                    CHAM_GD=fieldNeut,
+                    TOUT="OUI",
+                    NOM_CMP=("X1", "X2", "X3"),
+                    NOM_CMP_RESU=self.listCmp,
+                ),
+            )
+        else:
+            chSief = CREA_CHAMP(
+                OPERATION="AFFE",
+                TYPE_CHAM="ELNO_SIEF_R",
+                MODELE=self.model,
+                PROL_ZERO="OUI",
+                AFFE=(_F(NOM_CMP=self.listCmp, VALE=(0.0, 0.0, 0.0), **self.dicAllZones),),
+            )
+        return chSief
+
+    def calcContrainteEquiv(self, chCoefsAbat_m, chCoefsAbat_msi):
         """
         Calcul des champs de contraintes equivalentes
         """
@@ -1632,6 +1685,182 @@ class PostRocheCommon:
 
         self.chContEquivOpt = chContEquiv
 
+    def calcMomentEquiv(self, chCoefsAbat_m, chCoefsAbat_msi):
+        """
+        Calcul du champ de moment equivalent
+        """
+        # X7 : coefficient d'abatement optimisé
+
+        # Il faut qu'on fasse une distinction ici entre méthode classique (un résultat spectral modale) et méthode historique (deux résultats spectraux modaux)
+
+        if self.cumulQuad:  # On créé le champ de fonction avec un cumul quadratique des moments
+
+            fMT_abat = FORMULE(
+                NOM_PARA=(
+                    "X1",  # MT du séisme QS (Mnope)
+                    "X4",  # MT du séisme DYN (msitmp)
+                    "X7",  # MT du poids (Mperm)
+                    "X10",  # MT de la dilatation thermique (mperm)
+                    "X13",  # MT du déplacement (mnope)
+                    "X16",  # gopt
+                    "X17",  # gsopt
+                ),
+                VALE="sqrt(X1**2+X17**2*X4**2)+X7+X16*(X13+X10)",
+            )
+
+            fMFY_abat = FORMULE(
+                NOM_PARA=(
+                    "X2",  # MFY du séisme QS (Mnope)
+                    "X5",  # MFY du séisme DYN (msitmp)
+                    "X8",  # MFY du poids (Mperm)
+                    "X11",  # MFY de la dilatation thermique (mperm)
+                    "X14",  # MFY du déplacement (mnope)
+                    "X16",  # gopt
+                    "X17",  # gsopt
+                ),
+                VALE="sqrt(X2**2+X17**2*X5**2)+X8+X16*(X14+X11)",
+            )
+
+            fMFZ_abat = FORMULE(
+                NOM_PARA=(
+                    "X3",  # MFZ du séisme QS (Mnope)
+                    "X6",  # MFZ du séisme DYN (msitmp)
+                    "X9",  # MFZ du poids (Mperm)
+                    "X12",  # MFZ de la dilatation thermique (mperm)
+                    "X15",  # MFZ du déplacement (mnope)
+                    "X16",  # gopt
+                    "X17",  # gsopt
+                ),
+                VALE="sqrt(X3**2+X17**2*X6**2)+X9+X16*(X15+X12)",
+            )
+
+        else:  # On crée un champ de fonction avec un cumul linéaire des moments
+            fMT_abat = FORMULE(
+                NOM_PARA=(
+                    "X1",  # MT du séisme QS (Mnope)
+                    "X4",  # MT du séisme DYN (msitmp)
+                    "X7",  # MT du poids (Mperm)
+                    "X10",  # MT de la dilatation thermique (mperm)
+                    "X13",  # MT du déplacement (mnope)
+                    "X16",  # gopt
+                    "X17",  # gsopt
+                ),
+                VALE="X1+X7+X17*X4+X16*(X13+X10)",
+            )
+
+            fMFY_abat = FORMULE(
+                NOM_PARA=(
+                    "X2",  # MFY du séisme QS (Mnope)
+                    "X5",  # MFY du séisme DYN (msitmp)
+                    "X8",  # MFY du poids (Mperm)
+                    "X11",  # MFY de la dilatation thermique (mperm)
+                    "X14",  # MFY du déplacement (mnope)
+                    "X16",  # gopt
+                    "X17",  # gsopt
+                ),
+                VALE="X2+X8+X17*X5+X16*(X14+X11)",
+            )
+
+            fMFZ_abat = FORMULE(
+                NOM_PARA=(
+                    "X3",  # MFZ du séisme QS (Mnope)
+                    "X6",  # MFZ du séisme DYN (msitmp)
+                    "X9",  # MFZ du poids (Mperm)
+                    "X12",  # MFZ de la dilatation thermique (mperm)
+                    "X15",  # MFZ du déplacement (mnope)
+                    "X16",  # gopt
+                    "X17",  # gsopt
+                ),
+                VALE="X3+X9+X17*X6+X16*(X15+X12)",
+            )
+
+        chFM_abat = CREA_CHAMP(
+            OPERATION="AFFE",
+            TYPE_CHAM="ELNO_NEUT_F",
+            MODELE=self.model,
+            PROL_ZERO="OUI",
+            AFFE=(
+                _F(
+                    NOM_CMP=("X1", "X2", "X3"),
+                    VALE_F=(fMT_abat, fMFY_abat, fMFZ_abat),
+                    **self.dicAllZones,
+                ),
+            ),
+        )
+
+        chUtil1 = CREA_CHAMP(
+            OPERATION="ASSE",
+            MODELE=self.model,
+            TYPE_CHAM="ELNO_NEUT_R",
+            PROL_ZERO="OUI",
+            ASSE=(
+                _F(
+                    CHAM_GD=self.MnopeCor,
+                    TOUT="OUI",
+                    NOM_CMP=("MT", "MFY", "MFZ"),
+                    NOM_CMP_RESU=("X1", "X2", "X3"),
+                ),
+                _F(
+                    CHAM_GD=self.msitmpCor,
+                    TOUT="OUI",
+                    NOM_CMP=("MT", "MFY", "MFZ"),
+                    NOM_CMP_RESU=("X4", "X5", "X6"),
+                ),
+                _F(
+                    CHAM_GD=self.MpermCor,
+                    TOUT="OUI",
+                    NOM_CMP=("MT", "MFY", "MFZ"),
+                    NOM_CMP_RESU=("X7", "X8", "X9"),
+                ),
+                _F(
+                    CHAM_GD=self.mpermCor,
+                    TOUT="OUI",
+                    NOM_CMP=("MT", "MFY", "MFZ"),
+                    NOM_CMP_RESU=("X10", "X11", "X12"),
+                ),
+                _F(
+                    CHAM_GD=self.mnopeCor,
+                    TOUT="OUI",
+                    NOM_CMP=("MT", "MFY", "MFZ"),
+                    NOM_CMP_RESU=("X13", "X14", "X15"),
+                ),
+                _F(CHAM_GD=chCoefsAbat_m, TOUT="OUI", NOM_CMP=("X7"), NOM_CMP_RESU=("X16")),
+                _F(CHAM_GD=chCoefsAbat_msi, TOUT="OUI", NOM_CMP=("X7"), NOM_CMP_RESU=("X17")),
+            ),
+        )
+
+        # On évalue le champ de fonction créé à l'aide du champ utile que l'on vient de se donner
+        chM_abat = CREA_CHAMP(
+            OPERATION="EVAL", TYPE_CHAM="ELNO_NEUT_R", CHAM_F=chFM_abat, CHAM_PARA=(chUtil1)
+        )
+
+        # Etape 3 : Calcul du moment équivalent
+
+        fM_equiv = FORMULE(NOM_PARA=("X1", "X2", "X3"), VALE="sqrt(X1**2 + X2**2 + X3**2)")
+
+        chFM_equiv = CREA_CHAMP(
+            OPERATION="AFFE",
+            TYPE_CHAM="ELNO_NEUT_F",
+            MODELE=self.model,
+            PROL_ZERO="OUI",
+            AFFE=(_F(NOM_CMP=("X1"), VALE_F=(fM_equiv), **self.dicAllZones),),
+        )
+
+        chMomentEquiv = CREA_CHAMP(
+            OPERATION="EVAL", TYPE_CHAM="ELNO_NEUT_R", CHAM_F=chFM_equiv, CHAM_PARA=(chM_abat)
+        )
+
+        self.chMomentEquivOpt = CREA_CHAMP(
+            OPERATION="ASSE",
+            MODELE=self.model,
+            TYPE_CHAM="ELNO_NEUT_R",
+            PROL_ZERO="OUI",
+            ASSE=(
+                _F(CHAM_GD=chM_abat, TOUT="OUI", NOM_CMP=("X1", "X2", "X3")),
+                _F(CHAM_GD=chMomentEquiv, TOUT="OUI", NOM_CMP=("X1"), NOM_CMP_RESU=("X4",)),
+            ),
+        )
+
     def buildOutput(self, chCont, chContS2, chMoment, chMomentS2):
         """
         Construction des champs de sortie (principal et complémentaire)
@@ -1711,7 +1940,6 @@ class PostRocheCommon:
                         "X28",
                     ),
                 ),
-                _F(CHAM_GD=self.chContEquivOpt, TOUT="OUI", NOM_CMP=("X1",), NOM_CMP_RESU=("X16",)),
             ),
         )
 
@@ -1789,7 +2017,6 @@ class PostRocheCommon:
                         "X28",
                     ),
                 ),
-                # _F(CHAM_GD=self.chContEquivOpt, TOUT="OUI", NOM_CMP=("X1",), NOM_CMP_RESU=("X16",)),
             ),
         )
 
@@ -1802,14 +2029,21 @@ class PostRocheCommon:
                 _F(
                     CHAM_GD=chContTemp,
                     TOUT="OUI",
-                    NOM_CMP=("X1", "X2", "X13", "X14", "X16"),
-                    NOM_CMP_RESU=("X1", "X3", "X5", "X7", "X9"),
+                    NOM_CMP=("X1", "X2", "X13", "X14"),
+                    NOM_CMP_RESU=("X1", "X3", "X5", "X7"),
                 ),
                 _F(
                     CHAM_GD=chMomentTemp,
                     TOUT="OUI",
                     NOM_CMP=("X1", "X2", "X13", "X14"),
                     NOM_CMP_RESU=("X2", "X4", "X6", "X8"),
+                ),
+                _F(CHAM_GD=self.chContEquivOpt, TOUT="OUI", NOM_CMP=("X1",), NOM_CMP_RESU=("X9",)),
+                _F(
+                    CHAM_GD=self.chMomentEquivOpt,
+                    TOUT="OUI",
+                    NOM_CMP=("X1", "X2", "X3", "X4"),
+                    NOM_CMP_RESU=("X11", "X12", "X13", "X14"),
                 ),
             ),
         )
