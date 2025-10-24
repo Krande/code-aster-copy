@@ -1,0 +1,72 @@
+# coding=utf-8
+# --------------------------------------------------------------------
+# Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
+# This file is part of code_aster.
+#
+# code_aster is free software: you can redistribute it and/or modify
+# it under the terms of the GNU General Public License as published by
+# the Free Software Foundation, either version 3 of the License, or
+# (at your option) any later version.
+#
+# code_aster is distributed in the hope that it will be useful,
+# but WITHOUT ANY WARRANTY; without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+# GNU General Public License for more details.
+#
+# You should have received a copy of the GNU General Public License
+# along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
+# --------------------------------------------------------------------
+
+from code_aster.Commands import *
+from code_aster import CA
+from code_aster.MacroCommands.defi_cont import DEFI_CONT
+from libaster import ContactPairing, ContactComputation, PairingMethod
+import math
+import numpy as np
+
+DEBUT(CODE="OUI", DEBUG=_F(SDVERI="OUI"), INFO=1)
+
+test = CA.TestCase()
+
+# -------------------------------------
+#       - Analytical solution
+# -------------------------------------
+nbrefQuad = 4
+refValues = {
+    "nbPairs": 1,
+    "intersectionPts": [
+        [-0.6104950057268757, -1.0374094793486621, 1.3572123903134607],
+        [-0.4820513328137422, -0.42305226753086, 1.804768511282825],
+        [1.1359810942473887, -0.1972780052089661, 1.5184330838401876],
+        [1.2016952510152934, -0.3778261670672855, 1.3572123903134607],
+    ],
+    "nbQuadPtsTot": 4 * nbrefQuad,
+}
+
+# - Test that cheacks that we use FPG4 quad rule on each triangle
+test.assertEqual(len(refValues["intersectionPts"]) * nbrefQuad, refValues["nbQuadPtsTot"])
+
+pairingMethod = [PairingMethod.Fast, PairingMethod.BrutForce]
+# -------------------------------------
+#       - Read mesh and set model
+# -------------------------------------
+mesh = LIRE_MAILLAGE(UNITE=20, FORMAT="MED")
+modi = AFFE_MODELE(MAILLAGE=mesh, AFFE=_F(TOUT="OUI", PHENOMENE="MECANIQUE", MODELISATION="D_PLAN"))
+# -------------------------------------
+#       - Loop over pairing method
+# -------------------------------------
+for pairMeth in pairingMethod:
+    # - Compute pairing
+    meshPair = CA.MeshPairing()
+    meshPair.setMesh(mesh)
+    meshPair.setVerbosity(1)
+    meshPair.setPair("cont_slave", "cont_master")
+    meshPair.setMethod(pairMeth)
+    meshPair.compute()
+    # - Test number of pairs
+    test.assertEqual(meshPair.getNumberOfPairs(), refValues["nbPairs"])
+    # - Test intersection points
+    test.assertSequenceEqual(meshPair.getIntersectionPoints(0), refValues["intersectionPts"])
+    # - Test number of quadrature points
+    test.assertEqual(len(meshPair.getQuadraturePoints(0)), refValues["nbQuadPtsTot"])
+FIN()

@@ -1,0 +1,96 @@
+# coding=utf-8
+# --------------------------------------------------------------------
+# Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
+# This file is part of code_aster.
+#
+# code_aster is free software: you can redistribute it and/or modify
+# it under the terms of the GNU General Public License as published by
+# the Free Software Foundation, either version 3 of the License, or
+# (at your option) any later version.
+#
+# code_aster is distributed in the hope that it will be useful,
+# but WITHOUT ANY WARRANTY; without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+# GNU General Public License for more details.
+#
+# You should have received a copy of the GNU General Public License
+# along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
+# --------------------------------------------------------------------
+
+from code_aster.Commands import *
+from code_aster import CA
+from code_aster.MacroCommands.defi_cont import DEFI_CONT
+from libaster import ContactPairing, ContactComputation, PairingMethod
+import math
+import numpy as np
+
+DEBUT(CODE="OUI", DEBUG=_F(SDVERI="OUI"), INFO=1)
+
+test = CA.TestCase()
+
+# -------------------------------------
+#       - Analytical solution
+# -------------------------------------
+# - Before computing the analytical value
+refValues = {"h": 4, "theta_deg": 35, "nbPairs": 0, "intersectionPts": None}
+
+
+# - Routine to compute the analytical value
+def points(h, theta_deg):
+    theta_rad = math.radians(theta_deg)
+    pt_1 = [-np.cos(theta_rad), h - np.sin(theta_rad), 0.0]
+    t_star = (1 + np.cos(theta_rad) - np.tan(theta_rad) * (h - np.sin(theta_rad))) / (
+        2 * np.cos(theta_rad) + 2 * np.tan(theta_rad) * np.sin(theta_rad)
+    )
+    pt_2 = [(-1 + 2 * t_star) * np.cos(theta_rad), h + (-1 + 2 * t_star) * np.sin(theta_rad), 0.0]
+    return [pt_1, pt_2]
+
+
+refValues["intersectionPts"] = points(refValues["h"], refValues["theta_deg"])
+
+
+# - Routine to set the equality of intersection points
+def are_point_sets_equal(test_current, ref, computed, tol=1e-6):
+    ref = np.asarray(ref)
+    computed = np.asarray(computed)
+    # - test sizes of both sets
+    if ref.shape != computed.shape:
+        return False
+    # - sort points for stable comparisons
+    ref_sorted = np.sort(ref, axis=0)
+    computed_sorted = np.sort(computed, axis=0)
+    # - comparaison by loop over points
+    for i, intePoint in enumerate(ref_sorted):
+        # - compute relative errors
+        relative_err = np.linalg.norm(
+            np.subtract(intePoint, computed_sorted[i, :])
+        ) / np.linalg.norm(intePoint)
+        # - test according to tolerance
+        test_current.assertLessEqual(relative_err, tol)
+
+
+# - Pairing methods to test
+pairingMethod = [PairingMethod.Fast, PairingMethod.BrutForce]
+# -------------------------------------
+#       - Read mesh and set model
+# -------------------------------------
+mesh = LIRE_MAILLAGE(UNITE=20, FORMAT="MED")
+modi = AFFE_MODELE(MAILLAGE=mesh, AFFE=_F(TOUT="OUI", PHENOMENE="MECANIQUE", MODELISATION="D_PLAN"))
+# -------------------------------------
+#       - Loop over pairing method
+# -------------------------------------
+for pairMeth in pairingMethod:
+    # - Compute pairing
+    meshPair = CA.MeshPairing()
+    meshPair.setMesh(mesh)
+    meshPair.setVerbosity(1)
+    meshPair.setPair("cont_slave", "cont_master")
+    meshPair.setMethod(pairMeth)
+    meshPair.compute()
+    # - Test number of pairs
+    test.assertEqual(meshPair.getNumberOfPairs(), refValues["nbPairs"])
+    # - Test intersection points
+    if refValues["nbPairs"] > 0:
+        are_point_sets_equal(test, refValues["intersectionPts"], meshPair.getIntersectionPoints(0))
+
+FIN()
