@@ -58,4 +58,9 @@ Vous utilisez le mot clé NOM_APPUI, un degré de liberté ne peux appartenir qu
 NOM_APPUI %(k1)s apparaît dans plusieurs occurrences du mot clé PSEUDO_MODE.
 """
     ),
+    8: _(
+        """
+Arrêt dans MODE_STATIQUE, problème avec au moins un degré de liberté.
+"""
+    ),
 }

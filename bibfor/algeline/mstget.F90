@@ -74,6 +74,7 @@ subroutine mstget(matrix, keywordfactz, nbocc, ddlsta)
     integer(kind=8) :: nbb, nbl, nbliai, ncmp, nd, nt
     integer(kind=8) :: nb_node, nsc, ntc
     integer(kind=8) :: nb_appui, nb_mode_appui, idx_gd, icmp, nbcmp, nb_cmp_appui, nume_cmp(6)
+    aster_logical :: dof_error
     character(len=8) :: nom_appui
     character(len=19) :: nume_equa
     integer(kind=8), pointer :: list_equa(:) => null()
@@ -271,6 +272,7 @@ subroutine mstget(matrix, keywordfactz, nbocc, ddlsta)
 ! -----   PSEUDO_MODE: dof must been physical type
 ! -----   MODE_INTERF: dof must been blocked
 !
+        dof_error = .false.
         do ieq = 1, neq
             imode = list_equa(ieq)
             iii = zi(jind2+ieq-1)*imode
@@ -278,12 +280,16 @@ subroutine mstget(matrix, keywordfactz, nbocc, ddlsta)
                 call rgndas(nume_ddl, ieq, l_print=.true.)
                 if (keywordfact .eq. 'MODE_STAT') then
                     call utmess('E', 'MODESTAT1_2')
+                    dof_error = .true.
                 else if (keywordfact .eq. 'FORCE_NODALE') then
                     call utmess('E', 'MODESTAT1_3')
+                    dof_error = .true.
                 else if (keywordfact .eq. 'PSEUDO_MODE') then
                     call utmess('E', 'MODESTAT1_4')
+                    dof_error = .true.
                 else if (keywordfact .eq. 'MODE_INTERF') then
                     call utmess('E', 'MODESTAT1_5')
+                    dof_error = .true.
                 else
                     ASSERT(.false.)
                 end if
@@ -294,6 +300,7 @@ subroutine mstget(matrix, keywordfactz, nbocc, ddlsta)
                     if (nom_appui .ne. ' ' .or. ddlsta(ieq) .lt. 0) then
                         call rgndas(nume_ddl, ieq, l_print=.true.)
                         call utmess('E', 'MODESTAT1_6')
+                        dof_error = .true.
                     end if
                 end if
                 ddlsta(ieq) = imode
@@ -307,6 +314,9 @@ subroutine mstget(matrix, keywordfactz, nbocc, ddlsta)
                 end if
             end if
         end do
+        if (dof_error) then
+            call utmess('F', 'MODESTAT1_8')
+        end if
         if (nom_appui .ne. ' ') then
             nb_mode_appui = nb_mode_appui+nb_cmp_appui
         end if
