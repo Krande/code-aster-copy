@@ -30,6 +30,7 @@ list of *str*.
 """
 
 import os
+from string import Template
 
 from .logger import logger
 
@@ -107,13 +108,25 @@ class AbstractParameter:
 
 
 class ParameterStr(AbstractParameter):
-    """A parameter defined in a Export object of type string."""
+    """A parameter defined in a Export object of type string.
+
+    It may use environment variable "${VAR}", substitution is only done once
+    when the value is assigned.
+    """
 
     @staticmethod
     def _convert(value):
         if isinstance(value, (list, tuple)):
             value = " ".join([str(i) for i in value])
-        return value and str(value)
+        if not value:
+            return value
+        value = str(value)
+        if "$" in value:
+            try:
+                value = Template(value).substitute(os.environ)
+            except (KeyError, ValueError):
+                pass
+        return value
 
 
 class VarMixin:
