@@ -85,9 +85,9 @@ mpi4py = "4.0.*"
 petsc4py = ">=3.21.6,<4"
 slepc4py = ">=3.21.2,<4"
 # compilers
-gcc = "14.*"
-gfortran = "14.*"
-gxx = "14.*"
+gcc = ">=12.0,<13"
+gfortran = ">=12.0,<13"
+gxx = ">=12.0,<13"
 mpi = "==1.0"
 openmpi = ">=5.0.7,<6"
 # mathematical libraries
