@@ -16,7 +16,6 @@
 # You should have received a copy of the GNU General Public License
 # along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 # --------------------------------------------------------------------
-import numpy as np
 
 DEBUT(CODE="OUI", DEBUG=_F(SDVERI="OUI"), IMPR_MACRO="OUI")
 
@@ -39,34 +38,6 @@ FRMMIN1 = FORMULE(NOM_PARA=("TEMP",), VALE="410E6+(55-TEMP)*1E6")
 FRMMIN2 = FORMULE(NOM_PARA=("TEMP",), VALE="410E6+(75-TEMP)*1E6")
 FRP02MOY1 = FORMULE(NOM_PARA=("TEMP",), VALE="163E6+(55-TEMP)*1E6")
 FRP02MOY2 = FORMULE(NOM_PARA=("TEMP",), VALE="163E6+(75-TEMP)*1E6")
-
-# construction d'une courbe deformation selon la contrainte sur la base
-# de la formule de Ramberg-Osgood
-
-fepsi = FORMULE(NOM_PARA=("SIGM"), VALE=" SIGM/E + K * pow(SIGM / E, 1 / N)", E=2.0e11, K=0.01, N=2)
-
-fepsi2 = FORMULE(NOM_PARA=("SIGM"), VALE=" SIGM/E + K * pow(SIGM / E, 1 / N)", E=2.0e8, K=0.7, N=2)
-
-vale_sigm = list(np.linspace(870000.0, 870001.0, 2))
-vale_sigm.extend(np.linspace(6600000, 6800000, 1000))
-
-TRAC_EPSI = CALC_FONC_INTERP(
-    FONCTION=fepsi,
-    NOM_PARA="SIGM",
-    NOM_RESU="EPSI",
-    PROL_DROITE="EXCLU",
-    PROL_GAUCHE="EXCLU",
-    VALE_PARA=vale_sigm,
-)
-
-TRAC_EPSI2 = CALC_FONC_INTERP(
-    FONCTION=fepsi2,
-    NOM_PARA="SIGM",
-    NOM_RESU="EPSI",
-    PROL_DROITE="CONSTANT",
-    PROL_GAUCHE="CONSTANT",
-    VALE_PARA=vale_sigm,
-)
 
 acier = DEFI_MATERIAU(
     ELAS=_F(E=2.0e11, RHO=7800, ALPHA=1.2e-5, NU=0.3),
@@ -335,8 +306,8 @@ sismique = COMB_SISM_MODAL(
 
 # appel à POST_ROCHE
 
-resuPostRocheTout = POST_ROCHE(
-    LIMITE_ADM="NON",
+chPostRocheTout = POST_ROCHE(
+    RCCM_RX="NON",
     ZONE_ANALYSE=(_F(TOUT="OUI", GROUP_NO_ORIG="A"),),
     MODELE=modele,
     CARA_ELEM=cara_elem,
@@ -356,8 +327,39 @@ resuPostRocheTout = POST_ROCHE(
     PRESSION=(_F(TOUT="OUI", VALE=1e6),),
 )
 
+IMPR_RESU(
+    UNITE=6,
+    FORMAT="RESULTAT",
+    RESU=_F(
+        CHAM_GD=chPostRocheTout,
+        NOM_CMP=(
+            "X1",
+            "X2",
+            "X3",
+            "X4",
+            "X5",
+            "X6",
+            "X7",
+            "X8",
+            "X9",
+            "X10",
+            "X11",
+            "X12",
+            "X13",
+            "X14",
+            "X15",
+            "X16",
+            "X17",
+            "X18",
+            "X19",
+            "X20",
+        ),
+    ),
+)
+
+
 chPostRocheRCCMRX = POST_ROCHE(
-    LIMITE_ADM="OUI",
+    RCCM_RX="OUI",
     # ZONE_ANALYSE=(_F(TOUT="OUI", GROUP_NO_ORIG="A"),),
     # ZONE_ANALYSE=(_F(GROUP_MA="TUYAU", GROUP_NO_ORIG="A"),),
     ZONE_ANALYSE=(_F(GROUP_MA=("M1", "M2"), GROUP_NO_ORIG="A"),),
@@ -374,7 +376,7 @@ chPostRocheRCCMRX = POST_ROCHE(
 )
 
 chPostRocheGrMa = POST_ROCHE(
-    LIMITE_ADM="NON",
+    RCCM_RX="NON",
     # ZONE_ANALYSE=(_F(GROUP_MA="TUYAU", GROUP_NO_ORIG="A"),),
     ZONE_ANALYSE=(_F(GROUP_MA=("M2", "M1"), GROUP_NO_ORIG="A"),),
     MODELE=modele,
@@ -401,7 +403,7 @@ chPostRocheGrMa = POST_ROCHE(
 
 # 1- deplacement (D)
 chPostRocheTout_D = POST_ROCHE(
-    LIMITE_ADM="NON",
+    RCCM_RX="NON",
     ZONE_ANALYSE=(_F(TOUT="OUI", GROUP_NO_ORIG="A"),),
     MODELE=modele,
     CARA_ELEM=cara_elem,
@@ -411,7 +413,7 @@ chPostRocheTout_D = POST_ROCHE(
 
 # 2- deplacement + pression (DP)
 chPostRocheTout_DP = POST_ROCHE(
-    LIMITE_ADM="NON",
+    RCCM_RX="NON",
     ZONE_ANALYSE=(_F(TOUT="OUI", GROUP_NO_ORIG="A"),),
     MODELE=modele,
     CARA_ELEM=cara_elem,
@@ -421,29 +423,12 @@ chPostRocheTout_DP = POST_ROCHE(
 )
 
 # 3- deplacement + pression + poids propre (DPG)
-# validation de TRAC_EPSI avec fonction équivalente à Ramberg-Osgood
 chPostRocheTout_DPG = POST_ROCHE(
-    LIMITE_ADM="NON",
+    RCCM_RX="NON",
     ZONE_ANALYSE=(_F(TOUT="OUI", GROUP_NO_ORIG="A"),),
     MODELE=modele,
     CARA_ELEM=cara_elem,
     CHAM_MATER=ch_mater,
-    TRAC_EPSI=TRAC_EPSI,
-    RESU_MECA=(
-        _F(TYPE_CHAR="POIDS", RESULTAT=poids_propre, NUME_ORDRE=1),
-        _F(TYPE_CHAR="DEPLACEMENT", RESULTAT=deplacement_impose, NUME_ORDRE=1),
-    ),
-    PRESSION=(_F(TOUT="OUI", VALE=1e6),),
-)
-# meme calcul avec une fonction différente pour vérifier que les résultats sont
-# différents
-chPostRocheTout_DPG_False = POST_ROCHE(
-    LIMITE_ADM="NON",
-    ZONE_ANALYSE=(_F(TOUT="OUI", GROUP_NO_ORIG="A"),),
-    MODELE=modele,
-    CARA_ELEM=cara_elem,
-    CHAM_MATER=ch_mater,
-    TRAC_EPSI=TRAC_EPSI2,
     RESU_MECA=(
         _F(TYPE_CHAR="POIDS", RESULTAT=poids_propre, NUME_ORDRE=1),
         _F(TYPE_CHAR="DEPLACEMENT", RESULTAT=deplacement_impose, NUME_ORDRE=1),
@@ -453,7 +438,7 @@ chPostRocheTout_DPG_False = POST_ROCHE(
 
 # 4- seisme inertiel (S)
 chPostRocheTout_S = POST_ROCHE(
-    LIMITE_ADM="NON",
+    RCCM_RX="NON",
     ZONE_ANALYSE=(_F(TOUT="OUI", GROUP_NO_ORIG="A"),),
     MODELE=modele,
     CARA_ELEM=cara_elem,
@@ -463,7 +448,7 @@ chPostRocheTout_S = POST_ROCHE(
 
 # 5- seisme inertiel + pression (SP)
 chPostRocheTout_SP = POST_ROCHE(
-    LIMITE_ADM="NON",
+    RCCM_RX="NON",
     ZONE_ANALYSE=(_F(TOUT="OUI", GROUP_NO_ORIG="A"),),
     MODELE=modele,
     CARA_ELEM=cara_elem,
@@ -474,7 +459,7 @@ chPostRocheTout_SP = POST_ROCHE(
 
 # 6- seisme inertiel + pression + poids propre (SPG)
 chPostRocheTout_SPG = POST_ROCHE(
-    LIMITE_ADM="NON",
+    RCCM_RX="NON",
     ZONE_ANALYSE=(_F(TOUT="OUI", GROUP_NO_ORIG="A"),),
     MODELE=modele,
     CARA_ELEM=cara_elem,
@@ -488,7 +473,7 @@ chPostRocheTout_SPG = POST_ROCHE(
 
 # 7- seisme inertiel + deplacement (SD)
 chPostRocheTout_SD = POST_ROCHE(
-    LIMITE_ADM="NON",
+    RCCM_RX="NON",
     ZONE_ANALYSE=(_F(TOUT="OUI", GROUP_NO_ORIG="A"),),
     MODELE=modele,
     CARA_ELEM=cara_elem,
@@ -658,7 +643,7 @@ IMPR_RESU(UNITE=6, FORMAT="RESULTAT", RESU=_F(RESULTAT=sismique_re, NOM_CHAM="EF
 # 2nd appel à POST_ROCHE
 
 chLuPostRocheTout = POST_ROCHE(
-    LIMITE_ADM="NON",
+    RCCM_RX="NON",
     ZONE_ANALYSE=(_F(TOUT="OUI", GROUP_NO_ORIG="A"),),
     MODELE=modele,
     CARA_ELEM=cara_elem,
@@ -683,7 +668,7 @@ chLuPostRocheTout = POST_ROCHE(
 
 
 chLuPostRocheRCCMRX = POST_ROCHE(
-    LIMITE_ADM="OUI",
+    RCCM_RX="OUI",
     ZONE_ANALYSE=(_F(TOUT="OUI", GROUP_NO_ORIG="A"),),
     MODELE=modele,
     CARA_ELEM=cara_elem,
@@ -701,7 +686,7 @@ chLuPostRocheRCCMRX = POST_ROCHE(
 
 
 chLuPostRocheGrMa = POST_ROCHE(
-    LIMITE_ADM="NON",
+    RCCM_RX="NON",
     ZONE_ANALYSE=(_F(GROUP_MA="TUYAU", GROUP_NO_ORIG="A"),),
     MODELE=modele,
     CARA_ELEM=cara_elem,
@@ -728,7 +713,7 @@ chLuPostRocheGrMa = POST_ROCHE(
 
 # 1- deplacement (D)
 chLuPostRocheTout_D = POST_ROCHE(
-    LIMITE_ADM="NON",
+    RCCM_RX="NON",
     ZONE_ANALYSE=(_F(TOUT="OUI", GROUP_NO_ORIG="A"),),
     MODELE=modele,
     CARA_ELEM=cara_elem,
@@ -738,7 +723,7 @@ chLuPostRocheTout_D = POST_ROCHE(
 
 # 2- deplacement + pression (DP)
 chLuPostRocheTout_DP = POST_ROCHE(
-    LIMITE_ADM="NON",
+    RCCM_RX="NON",
     ZONE_ANALYSE=(_F(TOUT="OUI", GROUP_NO_ORIG="A"),),
     MODELE=modele,
     CARA_ELEM=cara_elem,
@@ -749,7 +734,7 @@ chLuPostRocheTout_DP = POST_ROCHE(
 
 # 3- deplacement + pression + poids propre (DPG)
 chLuPostRocheTout_DPG = POST_ROCHE(
-    LIMITE_ADM="NON",
+    RCCM_RX="NON",
     ZONE_ANALYSE=(_F(TOUT="OUI", GROUP_NO_ORIG="A"),),
     MODELE=modele,
     CARA_ELEM=cara_elem,
@@ -763,7 +748,7 @@ chLuPostRocheTout_DPG = POST_ROCHE(
 
 # 4- seisme inertiel (S)
 chLuPostRocheTout_S = POST_ROCHE(
-    LIMITE_ADM="NON",
+    RCCM_RX="NON",
     ZONE_ANALYSE=(_F(TOUT="OUI", GROUP_NO_ORIG="A"),),
     MODELE=modele,
     CARA_ELEM=cara_elem,
@@ -773,7 +758,7 @@ chLuPostRocheTout_S = POST_ROCHE(
 
 # 5- seisme inertiel + pression (SP)
 chLuPostRocheTout_SP = POST_ROCHE(
-    LIMITE_ADM="NON",
+    RCCM_RX="NON",
     ZONE_ANALYSE=(_F(TOUT="OUI", GROUP_NO_ORIG="A"),),
     MODELE=modele,
     CARA_ELEM=cara_elem,
@@ -784,7 +769,7 @@ chLuPostRocheTout_SP = POST_ROCHE(
 
 # 6- seisme inertiel + pression + poids propre (SPG)
 chLuPostRocheTout_SPG = POST_ROCHE(
-    LIMITE_ADM="NON",
+    RCCM_RX="NON",
     ZONE_ANALYSE=(_F(TOUT="OUI", GROUP_NO_ORIG="A"),),
     MODELE=modele,
     CARA_ELEM=cara_elem,
@@ -798,7 +783,7 @@ chLuPostRocheTout_SPG = POST_ROCHE(
 
 # 7- seisme inertiel + deplacement (SD)
 chLuPostRocheTout_SD = POST_ROCHE(
-    LIMITE_ADM="NON",
+    RCCM_RX="NON",
     ZONE_ANALYSE=(_F(TOUT="OUI", GROUP_NO_ORIG="A"),),
     MODELE=modele,
     CARA_ELEM=cara_elem,
@@ -811,7 +796,7 @@ chLuPostRocheTout_SD = POST_ROCHE(
 
 # 8- seisme inertiel(X) + deplacement (SD)
 chLuPostRocheTout_SDX = POST_ROCHE(
-    LIMITE_ADM="NON",
+    RCCM_RX="NON",
     ZONE_ANALYSE=(_F(TOUT="OUI", GROUP_NO_ORIG="A"),),
     MODELE=modele,
     CARA_ELEM=cara_elem,
@@ -824,7 +809,7 @@ chLuPostRocheTout_SDX = POST_ROCHE(
 
 # 9- seisme inertiel(Y) + deplacement (SD)
 chLuPostRocheTout_SDY = POST_ROCHE(
-    LIMITE_ADM="NON",
+    RCCM_RX="NON",
     ZONE_ANALYSE=(_F(TOUT="OUI", GROUP_NO_ORIG="A"),),
     MODELE=modele,
     CARA_ELEM=cara_elem,
@@ -837,7 +822,7 @@ chLuPostRocheTout_SDY = POST_ROCHE(
 
 # 10- seisme inertiel(Z) + deplacement (SD)
 chLuPostRocheTout_SDZ = POST_ROCHE(
-    LIMITE_ADM="NON",
+    RCCM_RX="NON",
     ZONE_ANALYSE=(_F(TOUT="OUI", GROUP_NO_ORIG="A"),),
     MODELE=modele,
     CARA_ELEM=cara_elem,
