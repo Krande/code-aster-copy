@@ -44,10 +44,11 @@ def dry_(x, y, **kwargs):
 FINE_REFINEMENT = 6
 YOUNG = 10920.0
 POISSON = 0.3
+TOLERANCE = 1e-2 # Greater than sslp306a
 
-for epais in [0.1, 0.001]:
+for thickness in [0.1, 0.001]:
 
-    CTE = YOUNG * epais**3 / (12.0 * (1.0 - POISSON**2))
+    CTE = YOUNG * thickness**3 / (12.0 * (1.0 - POISSON**2))
 
     FORM1 = FORMULE(
         VALE="CTE * (12*Y*(Y-1)*(5*X*X-5*X+1)*(2*Y*Y*(Y-1)*(Y-1) + X*(X-1)*(5*Y*Y-5*Y+1)))",
@@ -68,16 +69,14 @@ for epais in [0.1, 0.001]:
     mesh = CA.Mesh.buildSquare(refine=FINE_REFINEMENT)
 
     mesh = DEFI_GROUP(
-        reuse=mesh,
-        CREA_GROUP_NO=(_F(GROUP_MA=("SURFACE",), NOM="SURFACE"),),
-        MAILLAGE=mesh,
+        reuse=mesh, CREA_GROUP_NO=(_F(GROUP_MA=("SURFACE",), NOM="SURFACE"),), MAILLAGE=mesh
     )
 
     model = AFFE_MODELE(
         AFFE=_F(MODELISATION=("DST",), PHENOMENE="MECANIQUE", TOUT="OUI"), MAILLAGE=mesh
     )
 
-    cara_elem = AFFE_CARA_ELEM(MODELE=model, COQUE=_F(GROUP_MA="SURFACE", EPAIS=epais))
+    cara_elem = AFFE_CARA_ELEM(MODELE=model, COQUE=_F(GROUP_MA="SURFACE", EPAIS=thickness))
 
     mater = DEFI_MATERIAU(ELAS=_F(E=YOUNG, NU=POISSON, RHO=10))
 
@@ -101,29 +100,33 @@ for epais in [0.1, 0.001]:
     )
 
     displacement = result.getField("DEPL", para="INST", value=0.0)
-    w_numerique = displacement.restrict(["DZ"])
-    drx_numerique = displacement.restrict(["DRX"])
-    dry_numerique = displacement.restrict(["DRY"])
+    w_numeric = displacement.restrict(["DZ"])
+    drx_numeric = displacement.restrict(["DRX"])
+    dry_numeric = displacement.restrict(["DRY"])
+    numerical_values = [w_numeric, drx_numeric, dry_numeric]
 
     # ANALYTICAL COMPUTATION
 
     analytical_values = []
     for i, (func, name) in enumerate(zip([w_, drx_, dry_], ["DZ", "DRX", "DRY"])):
         coords = mesh.getCoordinatesAsSimpleFieldOnNodes()
-        field = func(coords.X, coords.Y, t=epais, nu=POISSON)
+        field = func(coords.X, coords.Y, t=thickness, nu=POISSON)
         temp = CA.SimpleFieldOnNodesReal(mesh, "DEPL_R", [name], prol_zero=True)
         temp.setComponentValues(name, field)
         value = temp.toFieldOnNodes()
         analytical_values.append(value)
 
-    erreur_w = analytical_values[0] - w_numerique
-    error = erreur_w.norm("NORM_2")
-    # TODO: add error test
+    for i in range(len(analytical_values)):
+        difference = analytical_values[i] - numerical_values[i]
+        error = difference.norm("NORM_2")
+        if not (error <= TOLERANCE):
+            test.assertTrue(False, msg=f"{error:.3e} >> {TOLERANCE}")
+        else:
+            test.assertTrue(True)
 
-    erreur_drx = analytical_values[1] - drx_numerique
-    error = erreur_drx.norm("NORM_2")
-
-    erreur_dry = analytical_values[2] - dry_numerique
-    error = erreur_dry.norm("NORM_2")
+    # Compare deflection
+    deflection_num = np.max(numerical_values[0].getValues())
+    deflection_ana = w_(0.5, 0.5, thickness, POISSON)
+    test.assertAlmostEqual(deflection_ana, deflection_num, delta=0.01 * deflection_num)
 
 FIN()
