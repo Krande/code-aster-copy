@@ -113,7 +113,7 @@ contains
         ASSERT(this%ncols <= this%max_ncols)
 !
 #ifdef ASTER_DEBUG_FC
-        dbg = ASTER_FALSE
+        dbg = ASTER_TRUE
 #else
         dbg = ASTER_FALSE
 #endif
@@ -197,7 +197,7 @@ contains
         ASSERT(this%ncols <= this%max_ncols)
 !
 #ifdef ASTER_DEBUG_FC
-        dbg = ASTER_FALSE
+        dbg = ASTER_TRUE
 #else
         dbg = ASTER_FALSE
 #endif

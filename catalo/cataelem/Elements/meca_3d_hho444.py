@@ -352,6 +352,11 @@ class MECA3DH27_HHO444(Element):
         OP.COOR_ELGA(
             te=488, para_in=((SP.PGEOMER, NGEOMER),), para_out=((OP.COOR_ELGA.PCOORPG, EGGEOP_R),)
         ),
+        OP.DEPL_ELGA(
+            te=456,
+            para_in=((SP.PGEOMER, NGEOMER), (SP.PDEPLAR, DDL_MECA), (OP.DEPL_ELGA.PCHHOBS, CHHOBS)),
+            para_out=((SP.PDEPLGA, LC.EGDEP3D),),
+        ),
         OP.EPSI_ELGA(
             te=448,
             para_in=(
@@ -443,6 +448,15 @@ class MECA3DH27_HHO444(Element):
                 (OP.HHO_PROJ_MECA.PCHHOBS, CHHOBS),
             ),
             para_out=((OP.HHO_PROJ_MECA.PDEPL_R, DDL_MECA),),
+        ),
+        OP.HHO_PROJ3_MECA(
+            te=484,
+            para_in=(
+                (SP.PGEOMER, NGEOMER),
+                (OP.HHO_PROJ3_MECA.PQPTP_R, LC.EGDEP3D),
+                (OP.HHO_PROJ3_MECA.PCHHOBS, CHHOBS),
+            ),
+            para_out=((OP.HHO_PROJ3_MECA.PDEPL_R, DDL_MECA),),
         ),
         OP.HHO_DEPL_MECA(
             te=456,

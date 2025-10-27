@@ -50,7 +50,7 @@ subroutine te0484(option, nomte)
     type(HHO_Quadrature) :: hhoQuad
     integer(kind=8) :: cbs, fbs, total_dofs, npg
     real(kind=8), dimension(MSIZE_TDOFS_VEC) :: coeff_L2Proj
-    real(kind=8), dimension(MSIZE_CELL_SCAL) :: cell_L2Proj
+    real(kind=8), dimension(MSIZE_CELL_VEC) :: cell_L2Proj
     real(kind=8), pointer :: field(:) => null()
 !
 ! --- Get HHO informations
@@ -75,10 +75,16 @@ subroutine te0484(option, nomte)
         coeff_L2Proj = 0.d0
         coeff_L2Proj(total_dofs-cbs+1:total_dofs) = cell_L2Proj(1:cbs)
         call writeVector("PTEMP_R", total_dofs, coeff_L2Proj)
-    elseif (option == "HHO_PROJ_MECA") then
-        ASSERT(ASTER_FALSE)
+    elseif (option == "HHO_PROJ3_MECA") then
 !
         call hhoMecaDofs(hhoCell, hhoData, cbs, fbs, total_dofs)
+        call elrefe_info(fami='RIGI', npg=npg)
+        call hhoQuad%initCell(hhoCell, npg)
+        call jevech("PQPTP_R", "L", vr=field)
+        call hhoL2ProjCellVec(hhoCell, hhoQuad, field, hhoData%cell_degree(), cell_L2Proj)
+!
+        coeff_L2Proj = 0.d0
+        coeff_L2Proj(total_dofs-cbs+1:total_dofs) = cell_L2Proj(1:cbs)
         call writeVector("PDEPL_R", total_dofs, coeff_L2Proj)
     else
         ASSERT(ASTER_FALSE)

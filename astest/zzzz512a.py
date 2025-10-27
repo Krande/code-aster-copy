@@ -182,4 +182,18 @@ for form in formu:
     # print("uh=", u_sol.getValues())
     # print("diif=", u_diff.getValues())
 
+    # to test DEPL_ELGA
+    f_elga = hho.evaluateAtQuadraturePoints(u_sol)
+    f_hho = hho.projectOnHHOCellSpace(f_elga)
+    u_diff = f_hho - u_sol
+
+    # compute (u_T, v_T) _T
+    matEM = CALC_MATR_ELEM(MODELE=model, OPTION="MASS_MECA", CHAM_MATER=mater)
+
+    matM = CA.AssemblyMatrixDisplacementReal(phys_pb)
+    matM.assemble(matEM, phys_pb.getListOfLoads())
+
+    l2_diff = (matM * u_diff).dot(u_diff)
+    test.assertAlmostEqual(l2_diff / l2_ref, 0.0, delta=1e-10)
+
 FIN()
