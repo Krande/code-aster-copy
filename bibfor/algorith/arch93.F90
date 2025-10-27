@@ -40,6 +40,7 @@ subroutine arch93(resultName, concep, nume, raide, nbmodd, &
 #include "asterfort/jedetr.h"
 #include "asterfort/jeexin.h"
 #include "asterfort/jelibe.h"
+#include "asterfort/jelira.h"
 #include "asterfort/jemarq.h"
 #include "asterfort/jeveuo.h"
 #include "asterfort/rgndas.h"
@@ -66,6 +67,7 @@ subroutine arch93(resultName, concep, nume, raide, nbmodd, &
     integer(kind=8) :: lcoef, lddad, lfreq, lnom, lnume, ltype, na, nbmoad, nbmoda
     integer(kind=8) :: ladpa, nbmodd, modeNb, nbmodf, paraNb, nbpsmo, nnaxe, nnd
     integer(kind=8) :: lnumm
+    integer(kind=8) :: nb_mode_appui
     real(kind=8) :: zero, un, coef(3), xnorm
     character(len=1) :: tyddl
     character(len=8) :: k8b, monaxe, chmat, carael
@@ -78,6 +80,7 @@ subroutine arch93(resultName, concep, nume, raide, nbmodd, &
     aster_logical :: direct
     integer(kind=8), pointer :: modeList(:) => null()
     character(len=16), pointer :: paraName(:) => null()
+    character(len=16), pointer :: nom_appui_cmp(:) => null()
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -251,8 +254,13 @@ subroutine arch93(resultName, concep, nume, raide, nbmodd, &
         imoad = 0
         call jeveuo(moaimp, 'L', lmoad)
         call jeveuo(ddlac, 'L', lddad)
-        do ieq = 1, neq
-            if (zi(lddad+ieq-1) .eq. 1) then
+        call jeexin('&&MSTGET.NOM.APPUI_CMP', nb_mode_appui)
+        if (nb_mode_appui .ne. 0) then
+            call jeveuo('&&MSTGET.NOM.APPUI_CMP', 'L', vk16=nom_appui_cmp)
+            call jelira('&&MSTGET.NOM.APPUI_CMP', 'LONMAX', nb_mode_appui)
+        end if
+        do ieq = 1, neq+nb_mode_appui
+            if (ieq .gt. neq .or. zi(lddad+ieq-1) .eq. 1) then
                 imode = imode+1
                 imoad = imoad+1
 !
@@ -277,11 +285,15 @@ subroutine arch93(resultName, concep, nume, raide, nbmodd, &
                 call rsnoch(resultName, 'DEPL', imode)
 !
 !              --- LES PARAMETRES ---
-                call rgndas(nume, ieq, l_print=.false., &
-                            name_nodez=nomnoe, name_cmpz=nomcmp)
                 call rsadpa(resultName, 'E', 1, 'NOEUD_CMP', imode, &
                             0, sjv=lnom, styp=k8b)
-                zk16(lnom) = nomnoe//nomcmp
+                if (ieq .le. neq) then
+                    call rgndas(nume, ieq, l_print=.false., &
+                                name_nodez=nomnoe, name_cmpz=nomcmp)
+                    zk16(lnom) = nomnoe//nomcmp
+                else
+                    zk16(lnom) = nom_appui_cmp(ieq-neq)
+                end if
                 call rsadpa(resultName, 'E', 1, 'NUME_DDL', imode, &
                             0, sjv=lnume, styp=k8b)
                 zi(lnume) = ieq
@@ -308,6 +320,9 @@ subroutine arch93(resultName, concep, nume, raide, nbmodd, &
                 zr(ltype) = zero
             end if
         end do
+        if (nb_mode_appui .gt. 0) then
+            call jedetr('&&MSTGET.NOM.APPUI_CMP')
+        end if
     end if
 !--
 !-- MODES A ACCELERATION IMPOSEE

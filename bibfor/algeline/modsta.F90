@@ -25,6 +25,7 @@ subroutine modsta(motcle, matfac, matpre, solveu, lmatm, &
 #include "asterfort/jeexin.h"
 #include "asterfort/jedema.h"
 #include "asterfort/jedetr.h"
+#include "asterfort/jelira.h"
 #include "asterfort/jemarq.h"
 #include "asterfort/jeveuo.h"
 #include "asterfort/mrmult.h"
@@ -81,6 +82,7 @@ subroutine modsta(motcle, matfac, matpre, solveu, lmatm, &
     integer(kind=8) :: ib, ic, ie, ila1, ila2, im, imod, in, ila1o, nblag, jlag
     integer(kind=8) :: in2, ind, jddr, iret, nbatch, n_last_batch, batch_size, iaux
     integer(kind=8) :: coef_sparse, nzrhs_max, js1, js2, js3
+    integer(kind=8) :: nb_mode_appui
     integer(kind=8), pointer :: position_ddl(:) => null()
     integer(kind=8), pointer :: deeq(:) => null()
     character(len=24), pointer :: slvk(:) => null()
@@ -213,6 +215,11 @@ subroutine modsta(motcle, matfac, matpre, solveu, lmatm, &
                 imod = imod+1
             end if
         end do
+        call jeexin('&&MSTGET.NOM.APPUI_CMP', nb_mode_appui)
+        if (nb_mode_appui .ne. 0) then
+            call jelira('&&MSTGET.NOM.APPUI_CMP', 'LONMAX', nb_mode_appui)
+        end if
+        imod = imod+nb_mode_appui
         call wkvect('&&MODSTA.POSITION_DDR', 'V V R', neq*imod, jddr)
         imod = 0
         do ie = 1, neq
@@ -226,6 +233,19 @@ subroutine modsta(motcle, matfac, matpre, solveu, lmatm, &
                 zr(jddr+(imod-1)*neq+ila1-1) = un
                 zr(jddr+(imod-1)*neq+ila2-1) = un
             end if
+        end do
+        do im = 1, nb_mode_appui
+            imod = imod+1
+            do ie = 1, neq
+                if (iddl(ie) .eq. -im) then
+                    call ddllag(nume, ie, neq, ila1, ila2, &
+                                ila1o)
+                    ila1o = ila1
+                    if (ila1 .eq. 0 .or. ila2 .eq. 0) call utmess('F', 'ALGELINE2_4')
+                    zr(jddr+(imod-1)*neq+ila1-1) = un
+                    zr(jddr+(imod-1)*neq+ila2-1) = un
+                end if
+            end do
         end do
         n_last_batch = mod(imod, icmpl27)
         if (n_last_batch == 0) then
@@ -248,6 +268,11 @@ subroutine modsta(motcle, matfac, matpre, solveu, lmatm, &
                 call mrmult('ZERO', lmatm, zr(jddr+neq*(imod-1)), zrmod(1, imod), 1, &
                             .true._1)
             end if
+        end do
+        do im = 1, nb_mode_appui
+            imod = imod+1
+            call mrmult('ZERO', lmatm, zr(jddr+neq*(imod-1)), zrmod(1, imod), 1, &
+                        .true._1)
         end do
         call jedetr('&&MODSTA.POSITION_DDR')
     end if

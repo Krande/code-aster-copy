@@ -32,8 +32,10 @@ subroutine psmo93(solveu, masse, raide, raidfa, nume, &
 #include "asterfort/getvtx.h"
 #include "asterfort/jedema.h"
 #include "asterfort/jedetr.h"
+#include "asterfort/jelira.h"
 #include "asterfort/jemarq.h"
 #include "asterfort/jeveuo.h"
+#include "asterfort/jeexin.h"
 #include "asterfort/modsta.h"
 #include "asterfort/mstget.h"
 #include "asterfort/utmess.h"
@@ -51,6 +53,7 @@ subroutine psmo93(solveu, masse, raide, raidfa, nume, &
     integer(kind=8) :: i, ia, id, ii, imod, ind
     integer(kind=8) :: jaxe, jcoef, lddad, lmoad, lmoda, na, nbacc
     integer(kind=8) :: nbmoad, nbmoda, nbpsmo, nd, nnaxe
+    integer(kind=8) :: nb_mode_appui
 !-----------------------------------------------------------------------
     call jemarq()
 !
@@ -162,8 +165,15 @@ subroutine psmo93(solveu, masse, raide, raidfa, nume, &
         call wkvect(ddlac, 'V V I', neq, lddad)
         call mstget(masse, 'PSEUDO_MODE', nbpsmo, zi(lddad))
         do ii = 0, neq-1
-            nbmoad = nbmoad+zi(lddad+ii)
+            if (zi(lddad+ii) .eq. 1) then
+                nbmoad = nbmoad+1
+            end if
         end do
+        call jeexin('&&MSTGET.NOM.APPUI_CMP', nb_mode_appui)
+        if (nb_mode_appui .ne. 0) then
+            call jelira('&&MSTGET.NOM.APPUI_CMP', 'LONMAX', nb_mode_appui)
+        end if
+        nbmoad = nbmoad+nb_mode_appui
         call wkvect(moaimp, 'V V R', neq*nbmoad, lmoad)
         call modsta('ACCD', raidfa, matpre, solveu, lmatm, &
                     nume, zi(lddad), [0.d0], neq, nbmoad, &

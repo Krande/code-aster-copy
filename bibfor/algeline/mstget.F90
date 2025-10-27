@@ -26,8 +26,11 @@ subroutine mstget(matrix, keywordfactz, nbocc, ddlsta)
 #include "asterfort/getvtx.h"
 #include "asterfort/jedema.h"
 #include "asterfort/jedetr.h"
+#include "asterfort/jelira.h"
 #include "asterfort/jemarq.h"
 #include "asterfort/jeveuo.h"
+#include "asterfort/jexnum.h"
+#include "asterfort/juveca.h"
 #include "asterfort/as_allocate.h"
 #include "asterfort/as_deallocate.h"
 #include "asterfort/select_dof.h"
@@ -70,8 +73,17 @@ subroutine mstget(matrix, keywordfactz, nbocc, ddlsta)
     integer(kind=8) :: llag, na, nac, nba
     integer(kind=8) :: nbb, nbl, nbliai, ncmp, nd, nt
     integer(kind=8) :: nb_node, nsc, ntc
+    integer(kind=8) :: nb_appui, nb_mode_appui, idx_gd, icmp, nbcmp, nb_cmp_appui, nume_cmp(6)
+    aster_logical :: dof_error
+    character(len=8) :: nom_appui
+    character(len=19) :: nume_equa
     integer(kind=8), pointer :: list_equa(:) => null()
     integer(kind=8), pointer :: p_list_node(:) => null()
+    integer(kind=8), pointer :: p_deeq(:) => null()
+    integer(kind=8), pointer :: list_cmp(:) => null()
+    character(len=8), pointer :: p_cata_nomcmp(:) => null()
+    character(len=8), pointer :: nom_appuis(:) => null()
+    character(len=16), pointer :: nom_appui_cmp(:) => null()
 !-----------------------------------------------------------------------
     call jemarq()
 !
@@ -102,6 +114,31 @@ subroutine mstget(matrix, keywordfactz, nbocc, ddlsta)
     else if (keywordfact .eq. 'PSEUDO_MODE') then
         jind1 = lacb
         jind2 = llag
+        nb_appui = 0
+        AS_ALLOCATE(vk8=nom_appuis, size=nbocc)
+        do iocc = 1, nbocc
+            call getvtx(keywordfact, 'NOM_APPUI', iocc=iocc, nbval=0, nbret=na)
+            if (na .ne. 0) then
+                call getvtx(keywordfact, 'NOM_APPUI', iocc=iocc, nbval=-na, scal=nom_appui)
+                do ic = 1, nb_appui
+                    if (nom_appui .eq. nom_appuis(ic)) then
+                        call utmess('F', 'MODESTAT1_7', sk=nom_appui)
+                    end if
+                end do
+                nb_appui = nb_appui+1
+                nom_appuis(nb_appui) = nom_appui
+            end if
+        end do
+        AS_DEALLOCATE(vk8=nom_appuis)
+        if (nb_appui .gt. 0) then
+            call dismoi('NUME_EQUA', nume_ddl, 'NUME_DDL', repk=nume_equa)
+            call dismoi('NUM_GD_SI', nume_ddl, 'NUME_DDL', repi=idx_gd)
+            call jeveuo(nume_equa(1:19)//'.DEEQ', 'L', vi=p_deeq)
+            call jeveuo(jexnum('&CATA.GD.NOMCMP', idx_gd), 'L', vk8=p_cata_nomcmp)
+            call jelira(jexnum('&CATA.GD.NOMCMP', idx_gd), 'LONMAX', nbcmp)
+            call wkvect('&&MSTGET.NOM.APPUI_CMP', 'V V K16', 6*nb_appui, vk16=nom_appui_cmp)
+            nb_mode_appui = 0
+        end if
     else if (keywordfact .eq. 'MODE_INTERF') then
         jind1 = lblo
         jind2 = lact
@@ -110,10 +147,15 @@ subroutine mstget(matrix, keywordfactz, nbocc, ddlsta)
     end if
 !
     do iocc = 1, nbocc
+        nom_appui = ' '
         if (keywordfact .eq. 'PSEUDO_MODE') then
             call getvtx(keywordfact, 'AXE', iocc=iocc, nbval=0, nbret=na)
             call getvtx(keywordfact, 'DIRECTION', iocc=iocc, nbval=0, nbret=nd)
             if ((na+nd) .ne. 0) goto 10
+            call getvtx(keywordfact, 'NOM_APPUI', iocc=iocc, nbval=0, nbret=na)
+            if (na .ne. 0) then
+                call getvtx(keywordfact, 'NOM_APPUI', iocc=iocc, nbval=-na, scal=nom_appui)
+            end if
         end if
 !
 ! ----- Get nodes
@@ -194,32 +236,90 @@ subroutine mstget(matrix, keywordfactz, nbocc, ddlsta)
             end do
         end if
 !
+! ----- Update list_equa
+!
+        do ieq = 1, neq
+            list_equa(ieq) = list_equa(ieq)*zi(lcmp+ieq-1)
+        end do
+!
+! ----- pour un appui, le nombre de modes correspond au nombre de composantes actives sur les noeuds
+!
+        if (nom_appui .ne. ' ') then
+            AS_ALLOCATE(vi=list_cmp, size=nbcmp)
+            do ieq = 1, neq
+                if (list_equa(ieq) .eq. 1) then
+                    icmp = p_deeq(2*(ieq-1)+2)
+                    ASSERT(icmp .gt. 0)
+                    list_cmp(icmp) = 1
+                end if
+            end do
+            ic = 0
+            do icmp = 1, nbcmp
+                if (list_cmp(icmp) .eq. 1) then
+                    ic = ic+1
+                    ASSERT(ic .le. 6)
+                    nume_cmp(ic) = icmp
+                    nom_appui_cmp(nb_mode_appui+ic) = nom_appui//p_cata_nomcmp(icmp)
+                end if
+            end do
+            nb_cmp_appui = ic
+            AS_DEALLOCATE(vi=list_cmp)
+        end if
+!
 ! ----- Checking:
 ! -----   MODE_STAT: dof must been blocked
 ! -----   FORCE_NODALE: dof must been free
 ! -----   PSEUDO_MODE: dof must been physical type
 ! -----   MODE_INTERF: dof must been blocked
 !
+        dof_error = .false.
         do ieq = 1, neq
-            imode = list_equa(ieq)*zi(lcmp+ieq-1)
+            imode = list_equa(ieq)
             iii = zi(jind2+ieq-1)*imode
             if (iii .ne. 0) then
                 call rgndas(nume_ddl, ieq, l_print=.true.)
                 if (keywordfact .eq. 'MODE_STAT') then
                     call utmess('E', 'MODESTAT1_2')
+                    dof_error = .true.
                 else if (keywordfact .eq. 'FORCE_NODALE') then
                     call utmess('E', 'MODESTAT1_3')
+                    dof_error = .true.
                 else if (keywordfact .eq. 'PSEUDO_MODE') then
                     call utmess('E', 'MODESTAT1_4')
+                    dof_error = .true.
                 else if (keywordfact .eq. 'MODE_INTERF') then
                     call utmess('E', 'MODESTAT1_5')
+                    dof_error = .true.
                 else
                     ASSERT(.false.)
                 end if
                 imode = 0
             end if
-            ddlsta(ieq) = max(ddlsta(ieq), imode)
+            if (imode .gt. 0) then
+                if (ddlsta(ieq) .ne. 0) then
+                    if (nom_appui .ne. ' ' .or. ddlsta(ieq) .lt. 0) then
+                        call rgndas(nume_ddl, ieq, l_print=.true.)
+                        call utmess('E', 'MODESTAT1_6')
+                        dof_error = .true.
+                    end if
+                end if
+                ddlsta(ieq) = imode
+                if (nom_appui .ne. ' ') then
+                    icmp = p_deeq(2*(ieq-1)+2)
+                    do ic = 1, nb_cmp_appui
+                        if (nume_cmp(ic) .eq. icmp) then
+                            ddlsta(ieq) = -(nb_mode_appui+ic)*ddlsta(ieq)
+                        end if
+                    end do
+                end if
+            end if
         end do
+        if (dof_error) then
+            call utmess('F', 'MODESTAT1_8')
+        end if
+        if (nom_appui .ne. ' ') then
+            nb_mode_appui = nb_mode_appui+nb_cmp_appui
+        end if
 !
 !        --- NETTOYAGE ---
 !
@@ -230,6 +330,9 @@ subroutine mstget(matrix, keywordfactz, nbocc, ddlsta)
 !
 10      continue
     end do
+    if (keywordfact .eq. 'PSEUDO_MODE' .and. nb_mode_appui .gt. 0) then
+        call juveca('&&MSTGET.NOM.APPUI_CMP', nb_mode_appui)
+    end if
     call jedetr('&&MSTGET.LISTE.LAGRAN')
     call jedetr('&&MSTGET.LISTE.BLOQUE')
     call jedetr('&&MSTGET.LISTE.ACTIF')
