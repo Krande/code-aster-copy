@@ -183,7 +183,7 @@ def build_libaster(self, env):
         install_path=env.ASTERLIBDIR,
     )
     extlib = ".so"
-    mods = ["aster", "aster_core", "aster_fonctions", "med_aster"]
+    mods = ["aster", "aster_core", "aster_fonctions"]
     libaster = "libaster.so"
     if env.ASTER_PLATFORM_MINGW:
         extlib = ".pyd"

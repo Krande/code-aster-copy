@@ -66,7 +66,9 @@ Platform types:
 - ``ASTER_PLATFORM_LINUX``
 - ``ASTER_PLATFORM_LINUX64``
 - ``ASTER_PLATFORM_POSIX``
-- ``ASTER_PLATFORM_WINDOWS``
+- ``ASTER_PLATFORM_MINGW``: on Windows using MinGW tools.
+- ``ASTER_PLATFORM_MSYS2``: on Window, using MSYS2 framework
+  (``ASTER_PLATFORM_MINGW`` is also defined in this case).
 
 Datatypes and adjustements to prerequisites datatypes:
 

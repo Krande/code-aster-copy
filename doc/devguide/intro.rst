@@ -6,7 +6,7 @@ General concepts
 
 All C, C++ and fortran source files are compiled and embedded in :file:`libaster.so`.
 This shared library also defines Python modules: ``aster``, ``aster_core``,
-``aster_fonctions``, ``med_aster`` and ``libaster`` which defines Python bindings
+``aster_fonctions`` and ``libaster`` which defines Python bindings
 to the C++ objects (using `pybind11 <https://pybind11.readthedocs.io>`_).
 The C++ objects may be extended with pure Python methods.
 

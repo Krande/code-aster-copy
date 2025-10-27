@@ -169,43 +169,11 @@ DEFI_FICHIER(FICHIER="MED_70", UNITE=70, TYPE="LIBRE")
 
 IMPR_RESU(FORMAT="MED", UNITE=70, RESU=_F(RESULTAT=TEMPE1))
 
-import med_aster
-
-dic_champ_med = med_aster.get_nom_champ_med("MED_70")
-tab1 = []
-tab2 = []
-tab3 = []
-compteur = 1
-for nom_cham, cmps in dic_champ_med.items():
-    for nom_cmp in cmps:
-        tab1.append(nom_cham)
-        tab2.append(nom_cmp)
-        tab3.append(compteur)
-        compteur += 1
-
 
 def med_name(result):
     """Returns the result name used for a field name."""
     return "{0:_<8s}".format(result.userName.ljust(8, "_")[0:8])
 
-
-TAB = CREA_TABLE(
-    LISTE=(
-        _F(PARA="NUMERO", LISTE_I=tab3),
-        _F(PARA="NOM_CHAM", LISTE_K=tab1, TYPE_K="K24"),
-        _F(PARA="NOM_CMP", LISTE_K=tab2, TYPE_K="K24"),
-    )
-)
-
-IMPR_TABLE(TABLE=TAB, UNITE=50)
-TEST_FICHIER(
-    FICHIER="./fort.50",
-    NB_VALE_I=2,
-    VALE_CALC_I=2,
-    NB_VALE=0,
-    VALE_CALC_K="9ad3416e570da40ccfbd2089baa629cc",
-    EXPR_IGNORE="ASTER",
-)
 
 TEMPE = LIRE_RESU(
     TYPE_RESU="EVOL_THER",

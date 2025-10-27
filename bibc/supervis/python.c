@@ -1,5 +1,5 @@
 /* -------------------------------------------------------------------- */
-/* Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org             */
+/* Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org             */
 /* This file is part of code_aster.                                     */
 /*                                                                      */
 /* code_aster is free software: you can redistribute it and/or modify   */
@@ -37,7 +37,6 @@
 #include "aster_core_module.h"
 #include "aster_fonctions_module.h"
 #include "aster_module.h"
-#include "med_aster_module.h"
 
 #include <stdio.h>
 
@@ -53,9 +52,6 @@ void initAsterModules() {
 
         /* Module définissant des opérations sur les objets fonction_sdaster */
         PyImport_AppendInittab( "aster_fonctions", PyInit_aster_fonctions );
-#ifdef ASTER_HAVE_MED
-        PyImport_AppendInittab( "med_aster", PyInit_med_aster );
-#endif
     }
 }
 
