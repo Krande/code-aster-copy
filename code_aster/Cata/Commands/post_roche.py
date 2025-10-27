@@ -64,7 +64,7 @@ POST_ROCHE = MACRO(
             # RESULTAT=SIMP(statut="o", typ=(mode_meca,)),
             RESULTAT=SIMP(statut="o", typ=(mult_elas, mode_meca)),
             DIRECTION=SIMP(statut="f", typ="TXM", into=("COMBI", "X", "Y", "Z"), defaut="COMBI"),
-            TYPE_RESU=SIMP(statut="f", typ="TXM", into=("DYN_QS", "DYN", "QS"), defaut="DYN_QS"),
+            TYPE_RESU=SIMP(statut="o", typ="TXM", into=("DYN", "QS")),
         ),
         b_autre=BLOC(
             condition="""not equal_to("TYPE_CHAR", 'SISM_INER_SPEC') """,
