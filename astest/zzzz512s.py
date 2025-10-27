@@ -143,6 +143,12 @@ for form in formu:
     # not zero if k > 2 because quadratic cell
     # test.assertAlmostEqual((hho_field - u_sol).norm("NORM_2"), 0.0, delta=1e-6)
 
+    # to test TEMP_ELGA
+    f_elga = hho.evaluateAtQuadraturePoints(u_sol)
+    f_hho = hho.projectOnHHOCellSpace(f_elga)
+    u_diff = f_hho - u_sol
+    l2_diff = (matM * u_diff).dot(u_diff)
+    test.assertAlmostEqual(l2_diff / l2_ref, 0.0, delta=1e-10)
 
 test.printSummary()
 
