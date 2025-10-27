@@ -47,6 +47,7 @@ module listLoad_module
     public :: getMecaNeum, getTherNeum, getAcouNeum
     public :: checkConsistency, getLoadParameters, addLoadMeca, addLoadTher, addLoadAcou
     public :: getListLoadLigrel
+    public :: hasDiriElimBC, isDiriElimBC
     private :: getListLoadAccess, copyListLoad
 ! ==================================================================================================
     private
@@ -2519,5 +2520,105 @@ contains
 !
 !   ------------------------------------------------------------------------------------------------
     end subroutine
+! --------------------------------------------------------------------------------------------------
+!
+! hasDiriElimBC
+!
+! Return True if at least one load is 'ELIM' i.e. comes from AFFE_CHAR_CINE
+!
+! In  listLoad : name of datastructure for list of loads
+!
+! --------------------------------------------------------------------------------------------------
+    function hasDiriElimBC(listLoadZ) result(lelim)
+!   ------------------------------------------------------------------------------------------------
+! ----- Parameters
+        character(len=*), intent(in) :: listLoadZ
+        aster_logical :: lelim
+!   ------------------------------------------------------------------------------------------------
+!
+        integer(kind=8) :: ier, i_load, nb_load, jafci, load_nume_diri
+        character(len=19) :: list_load
+        character(len=24) :: lload_name, lload_info, load_name
+        integer(kind=8), pointer :: v_load_info(:) => null()
+        character(len=24), pointer :: v_load_name(:) => null()
+!
+        lelim = ASTER_FALSE
+!
+! - Datastructure access
+!
+        list_load = listLoadZ
+        lload_name = list_load//'.LCHA'
+        lload_info = list_load//'.INFC'
+        call jeveuo(lload_name, 'L', vk24=v_load_name)
+        call jeveuo(lload_info, 'L', vi=v_load_info)
+!
+        nb_load = v_load_info(1)
+!
+        do i_load = 1, nb_load
+            load_nume_diri = v_load_info(i_load+1)
+            load_name = v_load_name(i_load)
+            !
+            if ((load_nume_diri .eq. -1) .or. (load_nume_diri .eq. -2) &
+                .or. (load_nume_diri .eq. -3)) then
+                call jeexin(load_name(1:19)//'.AFCI', ier)
+                if (ier .ne. 0) then
+                    call jeveuo(load_name(1:19)//'.AFCI', 'L', jafci)
+                    if (zi(jafci-1+1) .gt. 0) then
+                        lelim = ASTER_TRUE
+                        exit
+                    end if
+                end if
+            end if
+        end do
+!   ------------------------------------------------------------------------------------------------
+    end function
+! --------------------------------------------------------------------------------------------------
+!
+! isDiriElimBC
+!
+! Return True if the load is 'ELIM' i.e. comes from AFFE_CHAR_CINE
+!
+! In  listLoad : name of datastructure for list of loads
+! In  i_load : i-th load
+!
+! --------------------------------------------------------------------------------------------------
+    function isDiriElimBC(listLoadZ, i_load) result(lelim)
+!   ------------------------------------------------------------------------------------------------
+! ----- Parameters
+        character(len=*), intent(in) :: listLoadZ
+        aster_logical :: lelim
+!   ------------------------------------------------------------------------------------------------
+!
+        integer(kind=8) :: ier, i_load, jafci, load_nume_diri
+        character(len=19) :: list_load
+        character(len=24) :: lload_name, lload_info, load_name
+        integer(kind=8), pointer :: v_load_info(:) => null()
+        character(len=24), pointer :: v_load_name(:) => null()
+!
+        lelim = ASTER_FALSE
+!
+! - Datastructure access
+!
+        list_load = listLoadZ
+        lload_info = list_load//'.INFC'
+        lload_name = list_load//'.LCHA'
+        call jeveuo(lload_info, 'L', vi=v_load_info)
+!
+        load_nume_diri = v_load_info(i_load+1)
+!
+        if ((load_nume_diri .eq. -1) .or. (load_nume_diri .eq. -2) &
+            .or. (load_nume_diri .eq. -3)) then
+            call jeveuo(lload_name, 'L', vk24=v_load_name)
+            load_name = v_load_name(i_load)
+            call jeexin(load_name(1:19)//'.AFCI', ier)
+            if (ier .ne. 0) then
+                call jeveuo(load_name(1:19)//'.AFCI', 'L', jafci)
+                if (zi(jafci-1+1) .gt. 0) then
+                    lelim = ASTER_TRUE
+                end if
+            end if
+        end if
+!   ------------------------------------------------------------------------------------------------
+    end function
 !
 end module listLoad_module

@@ -27,6 +27,7 @@ module HHO_Dirichlet_module
     use HHO_eval_module, only: hhoFuncFScalEvalQp
     use HHO_L2proj_module
     use FE_algebra_module
+    use listLoad_module, only: isDiriElimBC
 !
     implicit none
 !
@@ -52,7 +53,6 @@ module HHO_Dirichlet_module
 #include "asterfort/imprsd.h"
 #include "asterfort/infniv.h"
 #include "asterfort/inical.h"
-#include "asterfort/ischar.h"
 #include "asterfort/jedetr.h"
 #include "asterfort/jelira.h"
 #include "asterfort/jenonu.h"
@@ -258,7 +258,7 @@ contains
         nb_cine_func = 0
         do i_load = 1, nb_load
             load_name = v_load_name(i_load) (1:8)
-            l_cine = ischar(list_load, 'DIRI', 'ELIM', i_load)
+            l_cine = isDiriElimBC(list_load, i_load)
             if (l_cine) then
                 call dismoi('TYPE_CHARGE', load_name, 'CHARGE', repk=load_type)
                 l_func = load_type(5:6) .eq. '_F'
