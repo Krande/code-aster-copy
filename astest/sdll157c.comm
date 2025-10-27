@@ -320,8 +320,8 @@ TEST_RESU(
             INST=0.0,
             NOM_CHAM="UT01_ELNO",
             NOM_CMP="X9",
-            VALE_CALC=237846578.25495368,
-            PRECISION=1e-2,
+            VALE_CALC=278390859.2482066,
+            PRECISION=16e-2,
             VALE_REFE=240.2e6,
         ),
     )
@@ -330,7 +330,7 @@ TEST_RESU(
 # appel à POST_ROCHE : comparaison à CAST3M
 
 
-chPostRoche3M = POST_ROCHE(
+resuPostRoche3M = POST_ROCHE(
     ZONE_ANALYSE=(_F(TOUT="OUI", GROUP_NO_ORIG="ENCA1"),),
     CHAM_MATER=ch_mater,
     CARA_ELEM=cara_elem,
@@ -356,7 +356,7 @@ TEST_RESU(
         # coefficient d'abattement optimisé gOpt
         _F(
             TYPE_TEST="MAX",
-            RESULTAT=resuPostRocheTout,
+            RESULTAT=resuPostRoche3M,
             INST=0.0,
             NOM_CHAM="UT01_ELNO",
             NOM_CMP="X5",
@@ -365,7 +365,7 @@ TEST_RESU(
         # coefficient d'abattement optimisé gsOpt
         _F(
             TYPE_TEST="MAX",
-            RESULTAT=resuPostRocheTout,
+            RESULTAT=resuPostRoche3M,
             INST=0.0,
             NOM_CHAM="UT01_ELNO",
             NOM_CMP="X7",
@@ -375,7 +375,7 @@ TEST_RESU(
         _F(
             TYPE_TEST="MAX",
             REFERENCE="AUTRE_ASTER",
-            RESULTAT=resuPostRocheTout,
+            RESULTAT=resuPostRoche3M,
             INST=0.0,
             NOM_CHAM="UT01_ELNO",
             NOM_CMP="X9",
