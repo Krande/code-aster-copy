@@ -89,7 +89,6 @@ subroutine sigtmc(fami, nbsig, npg, ndim, &
 ! --------- Compute Hooke matrix [D]
             call dmatmc(fami, jvMaterCode, time, '+', kpg, &
                         ksp, anglNaut, nbsig, d)
-            WRITE (6, *) "d: ", kpg, time, anglNaut, sum(d)
 
 ! --------- Compute stresses from external state variables
             do iSigm = 1, nbsig
