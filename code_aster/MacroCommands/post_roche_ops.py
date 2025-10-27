@@ -641,10 +641,6 @@ class PostRocheCommon:
         asse_msi = []
         asse_MSI_tot = []
 
-        # On rajoute un booléen pour checker si on est dans le cas DYN-QS ou pas
-        # Par défaut, on considère qu'on est en classification sismique historique (issus de deux calculs modales spectrales DYN et QS)
-        self.cumulQuad = False
-
         __FIELD = [None] * 3 * len(self.dResuMeca)
         nbfield = 0
 
@@ -744,9 +740,6 @@ class PostRocheCommon:
 
                 # réponse totale
                 if typeres == "DYN_QS":
-
-                    # On se trouve dans le cas DYN-QS, classification sismique classique
-                    self.cumulQuad = True
 
                     iordr = ind
                     if lSismInerSpec[0] or lSismInerSpec[1] or lSismInerSpec[2]:
@@ -1693,86 +1686,56 @@ class PostRocheCommon:
 
         # Il faut qu'on fasse une distinction ici entre méthode classique (un résultat spectral modale) et méthode historique (deux résultats spectraux modaux)
 
-        if self.cumulQuad:  # On créé le champ de fonction avec un cumul quadratique des moments
+        def sign(x):
+            if x == 0.0:
+                return 1.0
+            else:
+                return x / abs(x)
 
-            fMT_abat = FORMULE(
-                NOM_PARA=(
-                    "X1",  # MT du séisme QS (Mnope)
-                    "X4",  # MT du séisme DYN (msitmp)
-                    "X7",  # MT du poids (Mperm)
-                    "X10",  # MT de la dilatation thermique (mperm)
-                    "X13",  # MT du déplacement (mnope)
-                    "X16",  # gopt
-                    "X17",  # gsopt
-                ),
-                VALE="sqrt(X1**2+X17**2*X4**2)+X7+X16*(X13+X10)",
-            )
+        fMT_abat = FORMULE(
+            NOM_PARA=(
+                "X1",  # MT du séisme QS (Mnope)
+                "X4",  # MT du séisme DYN (msitmp)
+                "X7",  # MT du poids (Mperm)
+                "X10",  # MT de la dilatation thermique (mperm)
+                "X13",  # MT du déplacement (mnope)
+                "X16",  # gopt
+                "X17",  # gsopt
+            ),
+            # VALE="X7+X16*(X13+X10)+sign(X7+X16*(X13+X10))*(abs(X1)+X16*abs(XX)+X17*X4)", sign=sign,
+            VALE="X7+X16*(X13+X10)+sign(X7+X16*(X13+X10))*(abs(X1)+X17*X4)",
+            sign=sign,
+        )
 
-            fMFY_abat = FORMULE(
-                NOM_PARA=(
-                    "X2",  # MFY du séisme QS (Mnope)
-                    "X5",  # MFY du séisme DYN (msitmp)
-                    "X8",  # MFY du poids (Mperm)
-                    "X11",  # MFY de la dilatation thermique (mperm)
-                    "X14",  # MFY du déplacement (mnope)
-                    "X16",  # gopt
-                    "X17",  # gsopt
-                ),
-                VALE="sqrt(X2**2+X17**2*X5**2)+X8+X16*(X14+X11)",
-            )
+        fMFY_abat = FORMULE(
+            NOM_PARA=(
+                "X2",  # MFY du séisme QS (Mnope)
+                "X5",  # MFY du séisme DYN (msitmp)
+                "X8",  # MFY du poids (Mperm)
+                "X11",  # MFY de la dilatation thermique (mperm)
+                "X14",  # MFY du déplacement (mnope)
+                "X16",  # gopt
+                "X17",  # gsopt
+            ),
+            # VALE="X8+X16*(X14+X11)+sign(X8+X16*(X14+X11))*(abs(X2)+X16*abs(XX)+X17*X5)", sign=sign,
+            VALE="X8+X16*(X14+X11)+sign(X8+X16*(X14+X11))*(abs(X2)+X17*X5)",
+            sign=sign,
+        )
 
-            fMFZ_abat = FORMULE(
-                NOM_PARA=(
-                    "X3",  # MFZ du séisme QS (Mnope)
-                    "X6",  # MFZ du séisme DYN (msitmp)
-                    "X9",  # MFZ du poids (Mperm)
-                    "X12",  # MFZ de la dilatation thermique (mperm)
-                    "X15",  # MFZ du déplacement (mnope)
-                    "X16",  # gopt
-                    "X17",  # gsopt
-                ),
-                VALE="sqrt(X3**2+X17**2*X6**2)+X9+X16*(X15+X12)",
-            )
-
-        else:  # On crée un champ de fonction avec un cumul linéaire des moments
-            fMT_abat = FORMULE(
-                NOM_PARA=(
-                    "X1",  # MT du séisme QS (Mnope)
-                    "X4",  # MT du séisme DYN (msitmp)
-                    "X7",  # MT du poids (Mperm)
-                    "X10",  # MT de la dilatation thermique (mperm)
-                    "X13",  # MT du déplacement (mnope)
-                    "X16",  # gopt
-                    "X17",  # gsopt
-                ),
-                VALE="X1+X7+X17*X4+X16*(X13+X10)",
-            )
-
-            fMFY_abat = FORMULE(
-                NOM_PARA=(
-                    "X2",  # MFY du séisme QS (Mnope)
-                    "X5",  # MFY du séisme DYN (msitmp)
-                    "X8",  # MFY du poids (Mperm)
-                    "X11",  # MFY de la dilatation thermique (mperm)
-                    "X14",  # MFY du déplacement (mnope)
-                    "X16",  # gopt
-                    "X17",  # gsopt
-                ),
-                VALE="X2+X8+X17*X5+X16*(X14+X11)",
-            )
-
-            fMFZ_abat = FORMULE(
-                NOM_PARA=(
-                    "X3",  # MFZ du séisme QS (Mnope)
-                    "X6",  # MFZ du séisme DYN (msitmp)
-                    "X9",  # MFZ du poids (Mperm)
-                    "X12",  # MFZ de la dilatation thermique (mperm)
-                    "X15",  # MFZ du déplacement (mnope)
-                    "X16",  # gopt
-                    "X17",  # gsopt
-                ),
-                VALE="X3+X9+X17*X6+X16*(X15+X12)",
-            )
+        fMFZ_abat = FORMULE(
+            NOM_PARA=(
+                "X3",  # MFZ du séisme QS (Mnope)
+                "X6",  # MFZ du séisme DYN (msitmp)
+                "X9",  # MFZ du poids (Mperm)
+                "X12",  # MFZ de la dilatation thermique (mperm)
+                "X15",  # MFZ du déplacement (mnope)
+                "X16",  # gopt
+                "X17",  # gsopt
+            ),
+            # VALE="X9+X16*(X15+X12)+sign(X9+X16*(X15+X12))*(abs(X3)+X16*abs(XX)+X17*X6)", sign=sign,
+            VALE="X9+X16*(X15+X12)+sign(X9+X16*(X15+X12))*(abs(X3)+X17*X6)",
+            sign=sign,
+        )
 
         chFM_abat = CREA_CHAMP(
             OPERATION="AFFE",
@@ -1860,6 +1823,73 @@ class PostRocheCommon:
                 _F(CHAM_GD=chMomentEquiv, TOUT="OUI", NOM_CMP=("X1"), NOM_CMP_RESU=("X4",)),
             ),
         )
+
+    # def calcContrainteEquiv2(self, chCoefsAbat_m, chCoefsAbat_msi):
+    #     """
+    #     Calcul des champs de contraintes equivalentes selon une autre codification
+    #     """
+
+    #     chM_abat = self.chMomentEquivOpt
+
+    #     # Etape 2 : Calcul de la contrainte équivalente, v2
+
+    #     # X1, X2, X3 : moments abattus
+    #     # X4 : B2, X5 : Z, X6 : D1
+    #     "X17",
+    #     "X18",  # R, EP
+
+    #     X3*X16*(X17-X18)/X18
+
+    #     fCont_equiv2 = FORMULE(
+    #         NOM_PARA=("X1", "X2", "X3", "X4", "X5", "X6"),
+    #         VALE="X6 + sqrt((0.79*X4*sqrt(X2**2 + X3**2)/X5)**2 + (0.87*X1/X5)**2)",
+    #     )
+
+    #     chFCont_equiv2 = CREA_CHAMP(
+    #         OPERATION="AFFE",
+    #         TYPE_CHAM="ELNO_NEUT_F",
+    #         MODELE=self.model,
+    #         PROL_ZERO="OUI",
+    #         AFFE=(_F(NOM_CMP=("X1"), VALE_F=(fCont_equiv2), **self.dicAllZones),),
+    #     )
+
+    #     chUtil2 = CREA_CHAMP(
+    #         OPERATION="ASSE",
+    #         MODELE=self.model,
+    #         TYPE_CHAM="ELNO_NEUT_R",
+    #         PROL_ZERO="OUI",
+    #         ASSE=(
+    #             _F(
+    #                 CHAM_GD=chM_abat,
+    #                 TOUT="OUI",
+    #                 NOM_CMP=("X1", "X2", "X3"),
+    #             ),
+    #             _F(
+    #                 CHAM_GD=self.chParams,
+    #                 TOUT="OUI",
+    #                 NOM_CMP=("X1", "X2", "X3"),
+    #                 NOM_CMP_RESU=("X4", "X5", "X6"),
+    #             ),
+    #             _F(
+    #                 CHAM_GD=self.chRochElno,
+    #                 TOUT="OUI",
+    #                 NOM_CMP=("R", "EP"),
+    #                 NOM_CMP_RESU=("X17", "X18"),
+    #             ),
+    #             #_F(CHAM_GD=self.chSigPres, TOUT="OUI", NOM_CMP=("X1"), NOM_CMP_RESU=("X6")),
+    #         ),
+    #     )
+
+    #     chContEquiv2 = CREA_CHAMP(
+    #         OPERATION="EVAL", TYPE_CHAM="ELNO_NEUT_R", CHAM_F=chFCont_equiv2, CHAM_PARA=(chUtil2)
+    #     )
+
+    #     if option == "opti":
+    #         self.chContEquiv2Opt = chContEquiv2
+    #     elif option == "cons":
+    #         self.chContEquiv2Cons = chContEquiv2
+    #     elif option == "norm":
+    #         self.chContEquiv2 = chContEquiv2
 
     def buildOutput(self, chCont, chContS2, chMoment, chMomentS2):
         """
