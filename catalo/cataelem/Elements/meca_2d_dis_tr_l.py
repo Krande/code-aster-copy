@@ -199,9 +199,11 @@ class MECA_2D_DIS_TR_L(Element):
         OP.FORC_NODA(
             te=39,
             para_in=(
+                (OP.FORC_NODA.PCOMPOR, LC.CCOMPOR),
                 (OP.FORC_NODA.PCAORIE, CCAORIE),
                 (SP.PCINFDI, LC.CCINFDI),
                 (SP.PSIEFR, EEFGEGA),
+                (SP.PMATERC, LC.CMATERC),
             ),
             para_out=((SP.PVECTUR, MVECTUR),),
         ),
@@ -359,7 +361,12 @@ class MECA_2D_DIS_TR_L(Element):
         ),
         OP.REFE_FORC_NODA(
             te=39,
-            para_in=((SP.PCINFDI, LC.CCINFDI), (SP.PREFCO, LC.CRESEFM)),
+            para_in=(
+                (OP.REFE_FORC_NODA.PCOMPOR, LC.CCOMPOR),
+                (SP.PCINFDI, LC.CCINFDI),
+                (SP.PREFCO, LC.CRESEFM),
+                (SP.PMATERC, LC.CMATERC),
+            ),
             para_out=((SP.PVECTUR, MVECTUR),),
         ),
         OP.REST_ECRO(te=99, para_out=((OP.REST_ECRO.PVARIPR, ZVARIPG),)),

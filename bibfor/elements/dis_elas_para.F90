@@ -37,7 +37,6 @@ subroutine dis_elas_para(for_discret, nomphe)
 #include "asterfort/utpnlg.h"
 #include "asterfort/utpvgl.h"
 #include "asterfort/utpvlg.h"
-#include "asterfort/vecma.h"
 !
     type(te0047_dscr), intent(in) :: for_discret
     character(len=*), intent(in) :: nomphe
@@ -54,14 +53,14 @@ subroutine dis_elas_para(for_discret, nomphe)
 ! --------------------------------------------------------------------------------------------------
 ! person_in_charge: donatien.rossat at edf.fr
 !
-    integer(kind=8) :: imater, ii, i, j
+    integer(kind=8) :: imater, ii, jj, k, i, j
     integer(kind=8) :: iretlc, idepen
     integer(kind=8) :: imatr, icont, ifono
-    integer(kind=8) :: nc, nn, neq, nsym
-    real(kind=8) :: kp, kt1, kt2, raide(6)
+    integer(kind=8) :: nc, nn
+    real(kind=8) :: kp, kt1, kt2
     real(kind=8) :: utotxyz(3), flp(3), ulp(12), dpe(12), fl(12), fg(12)
 !
-    real(kind=8), allocatable :: klvp(:), kgvp(:), klcp(:, :)
+    real(kind=8) :: klvp(for_discret%nsym), kgvp(for_discret%nsym)
 !
     aster_logical :: IsSymetrique
 !
@@ -102,14 +101,12 @@ subroutine dis_elas_para(for_discret, nomphe)
             end if
         end if
 
+        kgvp = 0.d0
+        klvp = 0.d0
         !   Matrice de raideur et vecteur force de l'élément élastique dans le repère local
         call dis_elas_para_klfl(for_discret, kp, kt1, kt2, utotxyz, klvp, flp)
 
         !   Mise à jour de la matrice tangente de l'élément élastique (dans le repère global)
-        neq = nc*nn
-        nsym = neq*(neq+1)/2
-        allocate (kgvp(nsym))
-        kgvp(1:nsym) = 0.d0
         call hasSymmetricTangentMatrix(for_discret, IsSymetrique)
         if (for_discret%lMatr) then
             if (for_discret%ndim .eq. 3) then
@@ -119,20 +116,25 @@ subroutine dis_elas_para(for_discret, nomphe)
             end if
             if (IsSymetrique) then
                 call jevech('PMATUUR', 'E', imatr)
-                do ii = 1, nsym
+                do ii = 1, for_discret%nsym
                     zr(imatr-1+ii) = zr(imatr-1+ii)+kgvp(ii)
                 end do
             else
-                allocate (klcp(neq, neq))
-                call vecma(kgvp, for_discret%nbt, klcp, neq)
                 call jevech('PMATUNS', 'E', imatr)
-                do i = 1, neq
-                    ii = neq*(i-1)
-                    do j = 1, neq
-                        zr(imatr-1+ii+j) = zr(imatr-1+ii+j)+klcp(i, j)
+                k = 1
+                do i = 1, for_discret%neq
+                    do j = 1, i
+                        ii = for_discret%neq*(i-1)
+                        jj = for_discret%neq*(j-1)
+                        zr(imatr-1+ii+j) = zr(imatr-1+ii+j)+kgvp(k)
+                        if (i /= j) then
+                            zr(imatr-1+jj+i) = zr(imatr-1+jj+i)+kgvp(k)
+                        end if
+                        k = k+1
                     end do
                 end do
             end if
+
         end if
 
         !   Mise à jour des efforts généralisés

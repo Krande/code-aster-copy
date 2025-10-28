@@ -86,7 +86,7 @@ subroutine disjvp(for_discret, iret)
     character(len=24) :: messak(5)
 !
 !
-    real(kind=8) :: klc(for_discret%neq*for_discret%neq), klv(for_discret%nbt)
+    real(kind=8) :: klc(for_discret%nfull), klv(for_discret%nbt)
     real(kind=8) :: dpe(for_discret%neq)
     real(kind=8) :: fl(for_discret%neq)
     real(kind=8) :: force(3), raide(6)

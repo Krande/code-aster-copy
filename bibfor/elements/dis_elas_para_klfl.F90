@@ -26,7 +26,7 @@ subroutine dis_elas_para_klfl(for_discret, kp, kt1, kt2, utotxyz, klvp, flp)
     type(te0047_dscr), intent(in) :: for_discret
     real(kind=8), intent(in)      :: kp, kt1, kt2
     real(kind=8), intent(in)      :: utotxyz(3)
-    real(kind=8), allocatable, intent(out) :: klvp(:)
+    real(kind=8), intent(out)     :: klvp(for_discret%nsym)
     real(kind=8), intent(out)     :: flp(3)
 !
 ! --------------------------------------------------------------------------------------------------
@@ -48,27 +48,21 @@ subroutine dis_elas_para_klfl(for_discret, kp, kt1, kt2, utotxyz, klvp, flp)
 ! --------------------------------------------------------------------------------------------------
 ! person_in_charge: donatien.rossat at edf.fr
 !
-    integer(kind=8) :: nc, nn, neq, nsym
     real(kind=8) :: raide(6)
 ! --------------------------------------------------------------------------------------------------
 
 !   Matrice de raideur de l'élément élastique dans le repère local
-    nn = for_discret%nno
-    nc = for_discret%nc
-    neq = nc*nn
-    nsym = neq*(neq+1)/2
-    raide(1:6) = 0.d0
+    raide = 0.d0
     raide(1) = kp
     raide(2) = kt1
     if (for_discret%ndim .eq. 3) then
         raide(3) = kt2
     end if
-    allocate (klvp(nsym))
-    klvp(1:nsym) = 0.d0
+    klvp = 0.d0
     call diklvraid(for_discret%nomte, klvp, raide)
 
 !   Vecteur force de l'élément élastique dans le repère local
-    flp(1:3) = 0.d0
+    flp = 0.d0
     flp(1) = kp*utotxyz(1)
     flp(2) = kt1*utotxyz(2)
     if (for_discret%ndim .eq. 3) then
