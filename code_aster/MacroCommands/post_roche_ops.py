@@ -55,6 +55,7 @@ def post_roche_ops(self, **kwargs):
     PRCommon.calcSigmaP()
     PRCommon.sismInerTran()
     PRCommon.createFonctionsFields()
+    zeroNeutField = PRCommon.createZeroField()
 
     for i, nume in enumerate(PRCommon.listNumeTran):
         numeOrdre = -1
@@ -68,69 +69,90 @@ def post_roche_ops(self, **kwargs):
         PRCommon.combinaisons()
         PRCommon.formatMoments()
 
-        # Contraintes :
-        # -----------
+        # Calcul 1 B2 != 1 dans les coudes (non régularisé) :
+        # -------------------------------------------------
 
         # calcul sur les moments de déplacement (m)
-        calcCont = PostRocheCalc(PRCommon, PRCommon.m, numeOrdre)
-        calcCont.contraintesRef()
-        calcCont.epsiMp()
-        calcCont.reversibilite_locale()
-        calcCont.reversibilite_totale()
-        calcCont.effet_ressort("Monotone")
-        calcCont.contrainteVraie()
-        calcCont.veriContrainte()
-        calcCont.coef_abattement()
-        calcCont.buildField()
+        calcNonRegu = PostRocheCalc(PRCommon, PRCommon.m, numeOrdre)
+        calcNonRegu.contraintesRef()
+        calcNonRegu.epsiMp()
+        calcNonRegu.reversibilite_locale()
+        calcNonRegu.reversibilite_totale()
+        calcNonRegu.effet_ressort("Monotone")
+        calcNonRegu.contrainteVraie()
+        calcNonRegu.veriContrainte()
+        calcNonRegu.coef_abattement()
+        calcNonRegu.buildField()
 
         # calcul sur les moments de séisme inertiel
-        calcContS2 = PostRocheCalc(PRCommon, PRCommon.MSI_tot, numeOrdre)
-        calcContS2.contraintesRef()
-        calcContS2.epsiMp()
-        calcContS2.reversibilite_locale()
-        calcContS2.reversibilite_totale()
-        calcContS2.effet_ressort("Sismique")
-        calcContS2.contrainteVraie()
-        calcContS2.veriContrainte()
-        calcContS2.coef_abattement()
-        calcContS2.buildField()
+        calcNonReguS2 = PostRocheCalc(PRCommon, PRCommon.MSI_tot, numeOrdre)
+        calcNonReguS2.contraintesRef()
+        calcNonReguS2.epsiMp()
+        calcNonReguS2.reversibilite_locale()
+        calcNonReguS2.reversibilite_totale()
+        calcNonReguS2.effet_ressort("Sismique")
+        calcNonReguS2.contrainteVraie()
+        calcNonReguS2.veriContrainte()
+        calcNonReguS2.coef_abattement()
+        calcNonReguS2.buildField()
 
-        PRCommon.calcContrainteEquiv(calcCont.field, calcContS2.field)
+        chMomentEquiv = PRCommon.calcMomentEquiv(calcNonRegu.field, calcNonReguS2.field)
 
-        # Moments :
-        # -------
+        if PRCommon.typeCalcul == "RCC_MRX":
 
-        # calcul sur les moments de déplacement (m)
-        calcMoment = PostRocheCalc(PRCommon, PRCommon.m, numeOrdre, reguCoude=True)
-        calcMoment.contraintesRef()
-        calcMoment.epsiMp()
-        calcMoment.reversibilite_locale()
-        calcMoment.reversibilite_totale()
-        calcMoment.effet_ressort("Monotone")
-        calcMoment.contrainteVraie()
-        calcMoment.veriContrainte()
-        calcMoment.coef_abattement()
-        calcMoment.buildField()
+            if PRCommon.CONT_ABAT == "CODIFIE":
+                chContEquiv = PRCommon.calcContrainteEquiv(calcNonRegu.field, calcNonReguS2.field)
+            else:
+                chContEquiv = PRCommon.calcContrainteEquiv2(chMomentEquiv)
 
-        # calcul sur les moments de séisme inertiel
-        calcMomentS2 = PostRocheCalc(PRCommon, PRCommon.MSI_tot, numeOrdre, reguCoude=True)
-        calcMomentS2.contraintesRef()
-        calcMomentS2.epsiMp()
-        calcMomentS2.reversibilite_locale()
-        calcMomentS2.reversibilite_totale()
-        calcMomentS2.effet_ressort("Sismique")
-        calcMomentS2.contrainteVraie()
-        calcMomentS2.veriContrainte()
-        calcMomentS2.coef_abattement()
-        calcMomentS2.buildField()
+            chPrin, chComp = PRCommon.buildOutput(
+                calcNonRegu.field,
+                calcNonReguS2.field,
+                zeroNeutField,
+                zeroNeutField,
+                chContEquiv,
+                chMomentEquiv,
+            )
 
-        PRCommon.calcMomentEquiv(calcMoment.field, calcMomentS2.field)
-        # utilise les valeurs des moments abattus
-        PRCommon.calcContrainteEquiv2()
+        else:  # PRCommon.typeCalcul == "ASNR":
+            # Calcul 2 B2 = 1 partout (régularisé) :
+            # -------------------------------------------------
 
-        chPrin, chComp = PRCommon.buildOutput(
-            calcCont.field, calcContS2.field, calcMoment.field, calcMomentS2.field
-        )
+            # calcul sur les moments de déplacement (m)
+            calcRegu = PostRocheCalc(PRCommon, PRCommon.m, numeOrdre, reguCoude=True)
+            calcRegu.contraintesRef()
+            calcRegu.epsiMp()
+            calcRegu.reversibilite_locale()
+            calcRegu.reversibilite_totale()
+            calcRegu.effet_ressort("Monotone")
+            calcRegu.contrainteVraie()
+            calcRegu.veriContrainte()
+            calcRegu.coef_abattement()
+            calcRegu.buildField()
+
+            # calcul sur les moments de séisme inertiel
+            calcReguS2 = PostRocheCalc(PRCommon, PRCommon.MSI_tot, numeOrdre, reguCoude=True)
+            calcReguS2.contraintesRef()
+            calcReguS2.epsiMp()
+            calcReguS2.reversibilite_locale()
+            calcReguS2.reversibilite_totale()
+            calcReguS2.effet_ressort("Sismique")
+            calcReguS2.contrainteVraie()
+            calcReguS2.veriContrainte()
+            calcReguS2.coef_abattement()
+            calcReguS2.buildField()
+
+            chMomentEquivRegu = PRCommon.calcMomentEquiv(calcRegu.field, calcReguS2.field)
+            chContEquiv = PRCommon.calcContrainteEquiv2(chMomentEquiv)
+
+            chPrin, chComp = PRCommon.buildOutput(
+                calcNonRegu.field,
+                calcNonReguS2.field,
+                calcRegu.field,
+                calcReguS2.field,
+                chContEquiv,
+                chMomentEquivRegu,
+            )
 
         if i == 0:
             resuOut = CREA_RESU(
@@ -237,9 +259,9 @@ class PostRocheCommon:
         Récupération du modèle
         Récupération des caracteristiques de poutre
         Récupération du champ de matériau
-        Valeur de LIMITE_ADM
         Valeur de INST_TEMP
         Récupération de TRAC_EPSI
+        Valeur de FORME, LIMITE_ADM et CONT_ABAT
         """
 
         if self.args.get("MODELE"):
@@ -269,11 +291,6 @@ class PostRocheCommon:
         else:
             self.chammater = None
 
-        if self.args.get("LIMITE_ADM") == "OUI":
-            self.lLimiteAdm = True
-        else:
-            self.lLimiteAdm = False
-
         if self.args.get("TRAC_EPSI"):
             self.trac_epsi = self.args.get("TRAC_EPSI")
             if self.trac_epsi.Parametres()["NOM_RESU"] != "EPSI":
@@ -284,6 +301,13 @@ class PostRocheCommon:
             self.trac_epsi = None
 
         self.inst_temp = self.args.get("INST_TEMP")
+
+        self.typeCalcul = self.args.get("FORME")
+        self.lLimiteAdm = False
+        if self.typeCalcul == "RCC_MRX":
+            if self.args.get("LIMITE_ADM") == "OUI":
+                self.lLimiteAdm = True
+            self.CONT_ABAT = self.args.get("CONT_ABAT")
 
     def checkZones(self):
         """
@@ -518,9 +542,7 @@ class PostRocheCommon:
             NOM_PARA=("R", "EP", "X3"), VALE="EP*X3/(R-EP/2)**2"
         )  # noté f dans RB 3680
 
-        # Changement de B2 selon le type d'analyse (moment ou contrainte)
-        fB2_coude_moment = DEFI_CONSTANTE(VALE=1.0)
-        fB2_coude_contrainte = FORMULE(
+        fB2_coude = FORMULE(
             NOM_PARA=("R", "EP", "X3"), VALE="max(1,1.3/flambda(R,EP,X3)**(2./3))", flambda=flambda
         )
 
@@ -560,11 +582,10 @@ class PostRocheCommon:
             flambda=flambda,
         )
 
-        # on passe le B2 des contraintes en X1 et le B2 des moments en X7
         affe = [
             _F(
-                NOM_CMP=("X1", "X2", "X3", "X4", "X5", "X6", "X7"),
-                VALE_F=(fB2_droit, fZ, fD1_droit, fD21, fD22_droit, fD22_droit, fB2_droit),
+                NOM_CMP=("X1", "X2", "X3", "X4", "X5", "X6"),
+                VALE_F=(fB2_droit, fZ, fD1_droit, fD21, fD22_droit, fD22_droit),
                 **self.dicAllZones,
             )
         ]
@@ -572,16 +593,8 @@ class PostRocheCommon:
             affe.append(
                 _F(
                     GROUP_MA=self.lGrmaCoude,
-                    NOM_CMP=("X1", "X2", "X3", "X4", "X5", "X6", "X7"),
-                    VALE_F=(
-                        fB2_coude_contrainte,
-                        fZ,
-                        fD1_coude,
-                        fD21,
-                        fD22_coude,
-                        fD23_coude,
-                        fB2_coude_moment,
-                    ),
+                    NOM_CMP=("X1", "X2", "X3", "X4", "X5", "X6"),
+                    VALE_F=(fB2_coude, fZ, fD1_coude, fD21, fD22_coude, fD23_coude),
                 )
             )
 
@@ -1143,36 +1156,36 @@ class PostRocheCommon:
             ),
         )
 
-        # contrainte de référence pour les contraintes
+        # contrainte de référence
         # X1 => B2, X2 => Z
 
-        fSigCont = FORMULE(
+        fSigNonRegu = FORMULE(
             NOM_PARA=("MT", "MFY", "MFZ", "X1", "X2"),
             VALE="sqrt( pow(0.79*X1/X2*sqrt(pow(MFY,2)+pow(MFZ,2)),2) + pow(0.87*MT/X2,2))",
         )
 
-        self.chFSigRefCont = CREA_CHAMP(
+        self.chFSigRefNonRegu = CREA_CHAMP(
             OPERATION="AFFE",
             TYPE_CHAM="ELNO_NEUT_F",
             MODELE=self.model,
             PROL_ZERO="OUI",
-            AFFE=(_F(NOM_CMP=("X1"), VALE_F=(fSigCont,), **self.dicAllZones),),
+            AFFE=(_F(NOM_CMP=("X1"), VALE_F=(fSigNonRegu,), **self.dicAllZones),),
         )
 
-        # contrainte de référence pour les contraintes
-        # X1 => B2, X2 => Z
+        # contrainte de référence régularisé aux coudes (B2=1)
+        # X2 => Z
 
-        fSigMom = FORMULE(
-            NOM_PARA=("MT", "MFY", "MFZ", "X7", "X2"),
-            VALE="sqrt( pow(0.79*X7/X2*sqrt(pow(MFY,2)+pow(MFZ,2)),2) + pow(0.87*MT/X2,2))",
+        fSigRegu = FORMULE(
+            NOM_PARA=("MT", "MFY", "MFZ", "X2"),
+            VALE="sqrt( pow(0.79/X2*sqrt(pow(MFY,2)+pow(MFZ,2)),2) + pow(0.87*MT/X2,2))",
         )
 
-        self.chFSigRefMom = CREA_CHAMP(
+        self.chFSigRefRegu = CREA_CHAMP(
             OPERATION="AFFE",
             TYPE_CHAM="ELNO_NEUT_F",
             MODELE=self.model,
             PROL_ZERO="OUI",
-            AFFE=(_F(NOM_CMP=("X1"), VALE_F=(fSigMom,), **self.dicAllZones),),
+            AFFE=(_F(NOM_CMP=("X1"), VALE_F=(fSigRegu,), **self.dicAllZones),),
         )
         # EpsiMP
         # N => SigmaRef
@@ -1436,7 +1449,7 @@ class PostRocheCommon:
                 fepsiMP=fepsiMP,
             )
 
-        else:
+        elif self.typeCalcul == "RCC_MRX":
 
             def coefAbat(sigRef, sigP, sigV):
                 if sigV == 0:
@@ -1445,6 +1458,21 @@ class PostRocheCommon:
                     return 1.0
                 else:
                     return (sigV - sigP) / sigRef
+
+            fCoefAbatOpt = FORMULE(
+                NOM_PARA=("N", "X1", "X3"), VALE="coefAbat(N, X1, X3)", coefAbat=coefAbat
+            )
+        else:  # ASNR
+
+            def coefAbat(sigRef, sigP, sigV):
+                if sigV == 0:
+                    return 1.0
+                if sigV <= sigP:
+                    return 1.0
+                if sigV >= sigP + sigRef:
+                    return 1.0
+                else:
+                    return sigV / (sigRef + sigP)
 
             fCoefAbatOpt = FORMULE(
                 NOM_PARA=("N", "X1", "X3"), VALE="coefAbat(N, X1, X3)", coefAbat=coefAbat
@@ -1678,15 +1706,13 @@ class PostRocheCommon:
             OPERATION="EVAL", TYPE_CHAM="ELNO_NEUT_R", CHAM_F=chFonc, CHAM_PARA=(chUtil)
         )
 
-        self.chContEquivOpt = chContEquiv
+        return chContEquiv
 
     def calcMomentEquiv(self, chCoefsAbat_m, chCoefsAbat_msi):
         """
         Calcul du champ de moment equivalent
         """
         # X7 : coefficient d'abatement optimisé
-
-        # Il faut qu'on fasse une distinction ici entre méthode classique (un résultat spectral modale) et méthode historique (deux résultats spectraux modaux)
 
         def sign(x):
             if x == 0.0:
@@ -1815,7 +1841,7 @@ class PostRocheCommon:
             OPERATION="EVAL", TYPE_CHAM="ELNO_NEUT_R", CHAM_F=chFM_equiv, CHAM_PARA=(chM_abat)
         )
 
-        self.chMomentEquivOpt = CREA_CHAMP(
+        chMomentEquivOpt = CREA_CHAMP(
             OPERATION="ASSE",
             MODELE=self.model,
             TYPE_CHAM="ELNO_NEUT_R",
@@ -1826,12 +1852,14 @@ class PostRocheCommon:
             ),
         )
 
-    def calcContrainteEquiv2(self):
+        return chMomentEquivOpt
+
+    def calcContrainteEquiv2(self, chM_abat):
         """
         Calcul des champs de contraintes equivalentes selon une autre codification
-        """
 
-        chM_abat = self.chMomentEquivOpt
+        chM_abat : champ de moments abattus
+        """
 
         # Etape 2 : Calcul de la contrainte équivalente, v2
 
@@ -1873,7 +1901,6 @@ class PostRocheCommon:
                     NOM_CMP=("R", "EP"),
                     NOM_CMP_RESU=("X17", "X18"),
                 ),
-                # _F(CHAM_GD=self.chSigPres, TOUT="OUI", NOM_CMP=("X1"), NOM_CMP_RESU=("X6")),
             ),
         )
 
@@ -1881,21 +1908,37 @@ class PostRocheCommon:
             OPERATION="EVAL", TYPE_CHAM="ELNO_NEUT_R", CHAM_F=chFCont_equiv2, CHAM_PARA=(chUtil2)
         )
 
-        self.chContEquiv2Opt = chContEquiv2
+        return chContEquiv2
 
-    def buildOutput(self, chCont, chContS2, chMoment, chMomentS2):
+    def createZeroField(self):
+        """
+        Création d'un champ NEUT_R nul sur le modèle
+        """
+        zeroNeutField = CREA_CHAMP(
+            OPERATION="AFFE",
+            TYPE_CHAM="ELNO_NEUT_R",
+            MODELE=self.model,
+            PROL_ZERO="OUI",
+            AFFE=(_F(TOUT="OUI", NOM_CMP="X1", VALE=0.0),),
+        )
+
+        return zeroNeutField
+
+    def buildOutput(
+        self, chNonRegu, chNonReguS2, chRegu, chReguS2, chContEquivOpt, chMomentEquivOpt
+    ):
         """
         Construction des champs de sortie (principal et complémentaire)
         """
 
-        chContTemp = CREA_CHAMP(
+        chNonReguTemp = CREA_CHAMP(
             OPERATION="ASSE",
             MODELE=self.model,
             TYPE_CHAM="ELNO_NEUT_R",
             PROL_ZERO="OUI",
             ASSE=(
                 _F(
-                    CHAM_GD=chCont,
+                    CHAM_GD=chNonRegu,
                     TOUT="OUI",
                     NOM_CMP=(
                         "X1",
@@ -1929,7 +1972,7 @@ class PostRocheCommon:
                     ),
                 ),
                 _F(
-                    CHAM_GD=chContS2,
+                    CHAM_GD=chNonReguS2,
                     TOUT="OUI",
                     NOM_CMP=(
                         "X1",
@@ -1965,14 +2008,14 @@ class PostRocheCommon:
             ),
         )
 
-        chMomentTemp = CREA_CHAMP(
+        chReguTemp = CREA_CHAMP(
             OPERATION="ASSE",
             MODELE=self.model,
             TYPE_CHAM="ELNO_NEUT_R",
             PROL_ZERO="OUI",
             ASSE=(
                 _F(
-                    CHAM_GD=chMoment,
+                    CHAM_GD=chRegu,
                     TOUT="OUI",
                     NOM_CMP=(
                         "X1",
@@ -2006,7 +2049,7 @@ class PostRocheCommon:
                     ),
                 ),
                 _F(
-                    CHAM_GD=chMomentS2,
+                    CHAM_GD=chReguS2,
                     TOUT="OUI",
                     NOM_CMP=(
                         "X1",
@@ -2049,26 +2092,23 @@ class PostRocheCommon:
             PROL_ZERO="OUI",
             ASSE=(
                 _F(
-                    CHAM_GD=chContTemp,
+                    CHAM_GD=chNonReguTemp,
                     TOUT="OUI",
                     NOM_CMP=("X1", "X2", "X13", "X14"),
                     NOM_CMP_RESU=("X1", "X3", "X5", "X7"),
                 ),
                 _F(
-                    CHAM_GD=chMomentTemp,
+                    CHAM_GD=chReguTemp,
                     TOUT="OUI",
                     NOM_CMP=("X1", "X2", "X13", "X14"),
                     NOM_CMP_RESU=("X2", "X4", "X6", "X8"),
                 ),
-                _F(CHAM_GD=self.chContEquivOpt, TOUT="OUI", NOM_CMP=("X1",), NOM_CMP_RESU=("X9",)),
+                _F(CHAM_GD=chContEquivOpt, TOUT="OUI", NOM_CMP=("X1",), NOM_CMP_RESU=("X9",)),
                 _F(
-                    CHAM_GD=self.chContEquiv2Opt, TOUT="OUI", NOM_CMP=("X1",), NOM_CMP_RESU=("X10",)
-                ),
-                _F(
-                    CHAM_GD=self.chMomentEquivOpt,
+                    CHAM_GD=chMomentEquivOpt,
                     TOUT="OUI",
                     NOM_CMP=("X1", "X2", "X3", "X4"),
-                    NOM_CMP_RESU=("X11", "X12", "X13", "X14"),
+                    NOM_CMP_RESU=("X10", "X11", "X12", "X13"),
                 ),
             ),
         )
@@ -2080,7 +2120,7 @@ class PostRocheCommon:
             PROL_ZERO="OUI",
             ASSE=(
                 _F(
-                    CHAM_GD=chContTemp,
+                    CHAM_GD=chNonReguTemp,
                     TOUT="OUI",
                     NOM_CMP=(
                         "X3",
@@ -2116,7 +2156,7 @@ class PostRocheCommon:
                     ),
                 ),
                 _F(
-                    CHAM_GD=chMomentTemp,
+                    CHAM_GD=chReguTemp,
                     TOUT="OUI",
                     NOM_CMP=(
                         "X3",
@@ -2171,9 +2211,9 @@ class PostRocheCalc:
         """
 
         if self.reguCoude:
-            cham_fonc = self.param.chFSigRefMom
+            cham_fonc = self.param.chFSigRefRegu
         else:
-            cham_fonc = self.param.chFSigRefCont
+            cham_fonc = self.param.chFSigRefNonRegu
 
         chSigNeut = CREA_CHAMP(
             OPERATION="EVAL",
@@ -2477,7 +2517,7 @@ class PostRocheCalc:
     def coef_abattement(self):
         """
         Calcul du coefficient d'abattement g_opt
-        - à partir de l'effet de ressort max => g_opt
+        à partir de l'effet de ressort max
 
         pour LIMITE_ADM = OUI, on calcule g_opt avec une formule propre
         """

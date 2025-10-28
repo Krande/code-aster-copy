@@ -4114,7 +4114,7 @@ TEST_RESU(
             VALE_CALC=4837220.14495,
             VALE_REFE=post_roche_analytic_DPG._sigma_eq_opt[3],
         ),
-        # UT01_ELNO-X10= contrainte équivalente optimisée version 2
+        # UT01_ELNO-X10= moment équivalent optimisé MT
         _F(
             GROUP_MA="M2",
             POINT=2,
@@ -4122,26 +4122,16 @@ TEST_RESU(
             NOM_CHAM="UT01_ELNO",
             INST=0.0,
             NOM_CMP="X10",
-            VALE_CALC=5910648.210944676,
-        ),
-        # UT01_ELNO-X11= moment équivalent optimisé MT
-        _F(
-            GROUP_MA="M2",
-            POINT=2,
-            RESULTAT=resuPostRocheTout_DPG,
-            NOM_CHAM="UT01_ELNO",
-            INST=0.0,
-            NOM_CMP="X11",
             VALE_CALC=5.002383889401252,
         ),
-        # UT01_ELNO-X14= moment équivalent optimisé (norme)
+        # UT01_ELNO-X13= moment équivalent optimisé (norme)
         _F(
             GROUP_MA="M2",
             POINT=2,
             RESULTAT=resuPostRocheTout_DPG,
             NOM_CHAM="UT01_ELNO",
             INST=0.0,
-            NOM_CMP="X14",
+            NOM_CMP="X13",
             VALE_CALC=5.002383889401252,
         ),
         # UT02_ELNO-X17= indicateur sigmaV_opt <sigmaP
