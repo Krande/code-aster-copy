@@ -74,7 +74,7 @@ subroutine te0333(option, nomte)
     integer(kind=8) :: elasID
     character(len=16) :: elasKeyword, relaComp, kit_comp_1, kit_comp_2
     type(All_Varc_Strain) :: allVarcStrain
-    real(kind=8) :: tempkpg, time
+    real(kind=8) :: tempkpg
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -191,7 +191,7 @@ subroutine te0333(option, nomte)
 ! ----- Get elastic parameters (only isotropic elasticity)
         call get_elas_para(fami, zi(jvMater), '+', kpg, ksp, &
                            elasID, elasKeyword, &
-                           time=time, temp=tempkpg, e_=e, nu_=nu)
+                           time=allVarcStrain%time, temp=allVarcStrain%temp, e_=e, nu_=nu)
         ASSERT(elasID .eq. ELAS_ISOT)
 
 ! ----- Compute non-mechanical strains (epsiVarc) for some external state variables
