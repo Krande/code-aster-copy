@@ -219,10 +219,10 @@ contains
 ! --------- Eval gradient at T- and T+
 !
             G_prev = hhoEvalMatCell( &
-                     hhoBasisCell, hhoData%grad_degree(), coorpg(1:3), G_prev_coeff, gbs)
+                     hhoBasisCell, hhoData%grad_degree(), coorpg(1:3), G_prev_coeff)
 !
             G_curr = hhoEvalMatCell( &
-                     hhoBasisCell, hhoData%grad_degree(), coorpg(1:3), G_curr_coeff, gbs)
+                     hhoBasisCell, hhoData%grad_degree(), coorpg(1:3), G_curr_coeff)
 !
 ! --------- Eval gradient of the deformation at T- and T+
 !

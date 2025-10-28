@@ -276,9 +276,9 @@ contains
 !
             if (hhoComporState%l_largestrain) then
                 G_prev = hhoEvalMatCell(hhoBasisCell, hhoData%grad_degree(), coorpg(1:3), &
-                                        G_prev_coeff, mk_gbs)
+                                        G_prev_coeff)
                 G_curr = hhoEvalMatCell(hhoBasisCell, hhoData%grad_degree(), coorpg(1:3), &
-                                        G_curr_coeff, mk_gbs)
+                                        G_curr_coeff)
 !
 ! --------- Eval gradient of the deformation at T- and T+
 !
@@ -297,25 +297,25 @@ contains
                 if (cod(ipg) .ne. 0) goto 999
             else
                 Eps_prev = hhoEvalSymMatCell(hhoBasisCell, hhoData%grad_degree(), &
-                                             coorpg(1:3), G_prev_coeff, mk_gbs_sym)
+                                             coorpg(1:3), G_prev_coeff)
                 Eps_curr = hhoEvalSymMatCell(hhoBasisCell, hhoData%grad_degree(), &
-                                             coorpg(1:3), G_curr_coeff, mk_gbs_sym)
+                                             coorpg(1:3), G_curr_coeff)
             end if
 !
             GV_prev = hhoEvalVecCell(hhoBasisCell, hhoData%grad_degree(), &
-                                     coorpg(1:3), GV_prev_coeff, gv_gbs)
+                                     coorpg(1:3), GV_prev_coeff)
             GV_curr = hhoEvalVecCell(hhoBasisCell, hhoData%grad_degree(), &
-                                     coorpg(1:3), GV_curr_coeff, gv_gbs)
+                                     coorpg(1:3), GV_curr_coeff)
 !
             var_prev = hhoEvalScalCell(hhoBasisCell, hhoData%cell_degree(), &
-                                       coorpg(1:3), hhoGVState%vari_prev(gv_cell_offset:), gv_cbs)
+                                       coorpg(1:3), hhoGVState%vari_prev(gv_cell_offset:))
             var_curr = hhoEvalScalCell(hhoBasisCell, hhoData%cell_degree(), &
-                                       coorpg(1:3), hhoGVState%vari_curr(gv_cell_offset:), gv_cbs)
+                                       coorpg(1:3), hhoGVState%vari_curr(gv_cell_offset:))
 !
             lag_prev = hhoEvalScalCell(hhoBasisCell, hhoData%cell_degree(), &
-                                       coorpg(1:3), hhoGVState%lagv_prev, gv_cbs)
+                                       coorpg(1:3), hhoGVState%lagv_prev)
             lag_curr = hhoEvalScalCell(hhoBasisCell, hhoData%cell_degree(), &
-                                       coorpg(1:3), hhoGVState%lagv_curr, gv_cbs)
+                                       coorpg(1:3), hhoGVState%lagv_curr)
 
 ! --------- Set main parameters for behaviour (on point)
             call behaviourSetParaPoin(ipg, ksp, BEHinteg)

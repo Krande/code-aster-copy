@@ -727,7 +727,7 @@ contains
 !
             if (hhoCS%l_largestrain) then
                 G_curr = hhoEvalMatCell( &
-                         hhoBasisCell, hhoData%grad_degree(), coorpg(1:3), G_curr_coeff, gbs)
+                         hhoBasisCell, hhoData%grad_degree(), coorpg(1:3), G_curr_coeff)
 !
 ! --------- Eval gradient of the deformation at T- and T+
 !

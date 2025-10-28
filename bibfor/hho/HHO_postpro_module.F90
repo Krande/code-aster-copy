@@ -117,8 +117,7 @@ contains
             do ino = 1, nbnodes
                 post_sol(idim, ino) = hhoEvalScalCell( &
                                       hhoBasisCell, hhoData%cell_degree(), &
-                                      hhoCell%coorno(1:3, ino), sol_T_dim, comp_dim &
-                                      )
+                                      hhoCell%coorno(1:3, ino), sol_T_dim)
             end do
         end do
 !
@@ -187,8 +186,7 @@ contains
             do ipg = 1, hhoQuad%nbQuadPoints
                 post_sol(idim, ipg) = hhoEvalScalCell( &
                                       hhoBasisCell, hhoData%cell_degree(), &
-                                      hhoQuad%points(1:3, ipg), sol_T_dim, comp_dim &
-                                      )
+                                      hhoQuad%points(1:3, ipg), sol_T_dim)
             end do
         end do
 !
@@ -265,19 +263,16 @@ contains
             do ino = 1, nbnodes
                 post_sol(idim, ino) = hhoEvalScalCell( &
                                       hhoBasisCell, hhoData%cell_degree(), &
-                                      hhoCell%coorno(1:3, ino), sol_U_dim, comp_dim &
-                                      )
+                                      hhoCell%coorno(1:3, ino), sol_U_dim)
             end do
         end do
         do ino = 1, nbnodes
             post_sol(ndim+1, ino) = hhoEvalScalCell( &
                                     hhoBasisCell, hhoData%cell_degree(), &
-                                    hhoCell%coorno(1:3, ino), sol_V, gv_cbs &
-                                    )
+                                    hhoCell%coorno(1:3, ino), sol_V)
             post_sol(ndim+2, ino) = hhoEvalScalCell( &
                                     hhoBasisCell, hhoData%cell_degree(), &
-                                    hhoCell%coorno(1:3, ino), sol_L, gv_cbs &
-                                    )
+                                    hhoCell%coorno(1:3, ino), sol_L)
         end do
 !
 ! --- Copy of post_sol in PDEPL_R ('OUT' to fill)
@@ -509,9 +504,7 @@ contains
 !
         do ino = 1, nbnodes
             post_sol(ino) = hhoEvalScalCell( &
-                            hhoBasisCell, hhoData%cell_degree(), hhoCell%coorno(1:3, ino), sol_T, &
-                            cbs &
-                            )
+                            hhoBasisCell, hhoData%cell_degree(), hhoCell%coorno(1:3, ino), sol_T)
         end do
 !
 ! --- Copy of post_sol in PTEMP_R ('OUT' to fill)
@@ -564,9 +557,7 @@ contains
 !
         do ipg = 1, hhoQuad%nbQuadPoints
             post_sol(ipg) = hhoEvalScalCell( &
-                            hhoBasisCell, hhoData%cell_degree(), hhoQuad%points(1:3, ipg), sol_T, &
-                            cbs &
-                            )
+                            hhoBasisCell, hhoData%cell_degree(), hhoQuad%points(1:3, ipg), sol_T)
         end do
 !
 ! --- Copy of post_sol in PTEMP_R ('OUT' to fill)

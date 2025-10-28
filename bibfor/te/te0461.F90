@@ -233,8 +233,7 @@ subroutine te0461(option, nomte)
         do ipg = 1, hhoQuadFace%nbQuadPoints
             temp_eval_curr = hhoEvalScalFace( &
                              hhoBasisFace, hhoData%face_degree(), hhoQuadFace%points(1:3, ipg), &
-                             temp_F_curr, fbs &
-                             )
+                             temp_F_curr)
 !
             NeumValuesQP(ipg) = CoeffQP_curr(ipg)*(ParaQP_curr(ipg)-temp_eval_curr)
         end do
@@ -247,8 +246,7 @@ subroutine te0461(option, nomte)
         do ipg = 1, hhoQuadFace%nbQuadPoints
             temp_eval_curr = hhoEvalScalFace( &
                              hhoBasisFace, hhoData%face_degree(), hhoQuadFace%points(1:3, ipg), &
-                             temp_F_curr, fbs &
-                             )
+                             temp_F_curr)
 !
             NeumValuesQP(ipg) = CoeffQP_curr(ipg)*((ParaQP_curr(ipg)+tz0)**4-(temp_eval_curr+tz0)&
                                                   &**4)
@@ -262,8 +260,7 @@ subroutine te0461(option, nomte)
         do ipg = 1, hhoQuadFace%nbQuadPoints
             temp_eval_curr = hhoEvalScalFace( &
                              hhoBasisFace, hhoData%face_degree(), hhoQuadFace%points(1:3, ipg), &
-                             temp_F_curr, fbs &
-                             )
+                             temp_F_curr)
             call foderi(zk8(j_para), temp_eval_curr, NeumValuesQP(ipg), rbid)
         end do
     else

@@ -54,7 +54,7 @@ contains
 !
 !===================================================================================================
 !
-    function hhoEvalScalCell(hhoBasisCell, order, pt, coeff, size_coeff) result(eval)
+    function hhoEvalScalCell(hhoBasisCell, order, pt, coeff) result(eval)
 !
         implicit none
 !
@@ -62,7 +62,6 @@ contains
         integer(kind=8), intent(in) :: order
         real(kind=8), dimension(3), intent(in) :: pt
         real(kind=8), dimension(:), intent(in) :: coeff
-        integer(kind=8), intent(in) :: size_coeff
         real(kind=8) :: eval
 !
 ! --------------------------------------------------------------------------------------------------
@@ -72,7 +71,6 @@ contains
 !   In Order        : polynomial order of the function
 !   In pt           : point where evaluate
 !   In coeff        : polynomial coefficient of the function
-!   In size_coeff   : number of coefficient
 ! --------------------------------------------------------------------------------------------------
 !
         real(kind=8), dimension(MSIZE_CELL_SCAL) :: BSCEval
@@ -84,7 +82,7 @@ contains
 ! --- Evaluate basis function at pt
         call hhoBasisCell%BSEval(pt, 0, order, BSCEval)
 !
-        b_n = to_blas_int(size_coeff)
+        b_n = to_blas_int(hhoBasisCell%BSSize(0, order))
         eval = ddot(b_n, coeff, b_one, BSCEval, b_one)
 !
     end function
@@ -93,7 +91,7 @@ contains
 !
 !===================================================================================================
 !
-    function hhoEvalScalFace(hhoBasisFace, order, pt, coeff, size_coeff) result(eval)
+    function hhoEvalScalFace(hhoBasisFace, order, pt, coeff) result(eval)
 !
         implicit none
 !
@@ -101,7 +99,6 @@ contains
         integer(kind=8), intent(in) :: order
         real(kind=8), dimension(3), intent(in) :: pt
         real(kind=8), dimension(:), intent(in) :: coeff
-        integer(kind=8), intent(in) :: size_coeff
         real(kind=8) :: eval
 !
 ! --------------------------------------------------------------------------------------------------
@@ -111,7 +108,6 @@ contains
 !   In Order        : polynomial order of the function
 !   In pt           : point where evaluate
 !   In coeff        : polynomial coefficient of the function
-!   In size_coeff   : number of coefficient
 ! --------------------------------------------------------------------------------------------------
 !
         real(kind=8), dimension(MSIZE_FACE_SCAL) :: BSFEval
@@ -123,7 +119,7 @@ contains
 ! --- Evaluate basis function at pt
         call hhoBasisFace%BSEval(pt, 0, order, BSFEval)
 !
-        b_n = to_blas_int(size_coeff)
+        b_n = to_blas_int(hhoBasisFace%BSSize(0, order))
         eval = ddot(b_n, coeff, b_one, BSFEval, b_one)
 !
     end function
@@ -132,7 +128,7 @@ contains
 !
 !===================================================================================================
 !
-    function hhoEvalVecCell(hhoBasisCell, order, pt, coeff, size_coeff) result(eval)
+    function hhoEvalVecCell(hhoBasisCell, order, pt, coeff) result(eval)
 !
         implicit none
 !
@@ -140,7 +136,6 @@ contains
         integer(kind=8), intent(in) :: order
         real(kind=8), dimension(3), intent(in) :: pt
         real(kind=8), dimension(:), intent(in) :: coeff
-        integer(kind=8), intent(in) :: size_coeff
         real(kind=8) :: eval(3)
 !
 ! --------------------------------------------------------------------------------------------------
@@ -150,7 +145,6 @@ contains
 !   In Order        : polynomial order of the function
 !   In pt           : point where evaluate
 !   In coeff        : polynomial coefficient of the function
-!   In size_coeff   : number of coefficient
 ! --------------------------------------------------------------------------------------------------
 !
         real(kind=8), dimension(MSIZE_CELL_SCAL) :: BSCEval
@@ -159,7 +153,7 @@ contains
         blas_int, parameter :: b_one = to_blas_int(1)
 !
         eval = 0.d0
-        size_cmp = size_coeff/hhoBasisCell%ndim
+        size_cmp = hhoBasisCell%BSSize(0, order)
         b_n = to_blas_int(size_cmp)
 !
 ! --- Evaluate basis function at pt
@@ -177,7 +171,7 @@ contains
 !
 !===================================================================================================
 !
-    function hhoEvalVecFace(hhoBasisFace, order, pt, coeff, size_coeff) result(eval)
+    function hhoEvalVecFace(hhoBasisFace, order, pt, coeff) result(eval)
 !
         implicit none
 !
@@ -185,7 +179,6 @@ contains
         integer(kind=8), intent(in) :: order
         real(kind=8), dimension(3), intent(in) :: pt
         real(kind=8), dimension(:), intent(in) :: coeff
-        integer(kind=8), intent(in) :: size_coeff
         real(kind=8) :: eval(3)
 !
 ! --------------------------------------------------------------------------------------------------
@@ -195,7 +188,6 @@ contains
 !   In Order        : polynomial order of the function
 !   In pt           : point where evaluate
 !   In coeff        : polynomial coefficient of the function
-!   In size_coeff   : number of coefficient
 ! --------------------------------------------------------------------------------------------------
 !
         real(kind=8), dimension(MSIZE_FACE_SCAL) :: BSFEval
@@ -204,7 +196,7 @@ contains
         blas_int, parameter :: b_one = to_blas_int(1)
 !
         eval = 0.d0
-        size_cmp = size_coeff/(hhoBasisFace%ndim+1)
+        size_cmp = hhoBasisFace%BSSize(0, order)
         b_n = to_blas_int(size_cmp)
 !
 ! --- Evaluate basis function at pt
@@ -222,7 +214,7 @@ contains
 !
 !===================================================================================================
 !
-    function hhoEvalMatCell(hhoBasisCell, order, pt, coeff, size_coeff) result(eval)
+    function hhoEvalMatCell(hhoBasisCell, order, pt, coeff) result(eval)
 !
         implicit none
 !
@@ -230,7 +222,6 @@ contains
         integer(kind=8), intent(in) :: order
         real(kind=8), dimension(3), intent(in) :: pt
         real(kind=8), dimension(:), intent(in) :: coeff
-        integer(kind=8), intent(in) :: size_coeff
         real(kind=8) :: eval(3, 3)
 !
 ! --------------------------------------------------------------------------------------------------
@@ -249,7 +240,7 @@ contains
         blas_int, parameter :: b_one = to_blas_int(1)
 !
         eval = 0.d0
-        size_cmp = size_coeff/(hhoBasisCell%ndim*hhoBasisCell%ndim)
+        size_cmp = hhoBasisCell%BSSize(0, order)
         b_n = to_blas_int(size_cmp)
 !
 ! --- Evaluate basis function at pt
@@ -269,7 +260,7 @@ contains
 !
 !===================================================================================================
 !
-    function hhoEvalSymMatCell(hhoBasisCell, order, pt, coeff, size_coeff) result(eval)
+    function hhoEvalSymMatCell(hhoBasisCell, order, pt, coeff) result(eval)
 !
         implicit none
 !
@@ -277,7 +268,6 @@ contains
         integer(kind=8), intent(in) :: order
         real(kind=8), dimension(3), intent(in) :: pt
         real(kind=8), dimension(:), intent(in) :: coeff
-        integer(kind=8), intent(in) :: size_coeff
         real(kind=8) :: eval(6)
 !
 ! --------------------------------------------------------------------------------------------------
@@ -297,13 +287,7 @@ contains
         blas_int :: b_n
         blas_int, parameter :: b_one = to_blas_int(1)
 !
-        if (hhoBasisCell%ndim == 2) then
-            size_cmp = size_coeff/3
-        else if (hhoBasisCell%ndim == 3) then
-            size_cmp = size_coeff/6
-        else
-            ASSERT(ASTER_FALSE)
-        end if
+        size_cmp = hhoBasisCell%BSSize(0, order)
         b_n = to_blas_int(size_cmp)
 !
 ! --- Evaluate basis function at pt
@@ -322,8 +306,6 @@ contains
                 deca = deca+size_cmp
             end do
         end do
-!
-        ASSERT(deca == size_coeff)
 !
         eval(1) = mat(1, 1)
         eval(2) = mat(2, 2)

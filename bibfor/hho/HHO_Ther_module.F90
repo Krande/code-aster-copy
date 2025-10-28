@@ -40,6 +40,7 @@ module HHO_Ther_module
 #include "asterf_types.h"
 #include "asterf_debug.h"
 #include "asterfort/assert.h"
+#include "asterfort/Behaviour_type.h"
 #include "asterfort/HHO_size_module.h"
 #include "asterfort/jevech.h"
 #include "asterfort/nlcomp.h"
@@ -199,12 +200,12 @@ contains
 ! --------- Eval gradient at T+
 !
             G_curr = hhoEvalVecCell(hhoBasisCell, hhoData%grad_degree(), &
-                                    coorpg(1:3), G_curr_coeff, gbs)
+                                    coorpg(1:3), G_curr_coeff)
 !
 ! --------- Eval temperature at T+
 !
             temp_pg_curr = hhoEvalScalCell(hhoBasisCell, hhoData%cell_degree(), &
-                                           coorpg(1:3), temp_T_curr, cbs)
+                                           coorpg(1:3), temp_T_curr)
 !
 ! ------- Compute behavior
 !
@@ -370,7 +371,7 @@ contains
 ! --------- Eval gradient at T+
 !
             temp_pg_curr = hhoEvalScalCell(hhoBasisCell, hhoData%cell_degree(), &
-                                           coorpg, temp_T_curr, cbs)
+                                           coorpg, temp_T_curr)
 !
 ! -------- Compute behavior
 !
@@ -436,7 +437,7 @@ contains
         character(len=32) :: phenom
         integer(kind=8) :: cbs, fbs, total_dofs, faces_dofs, gbs, cell_offset
         integer(kind=8) :: jmate, ipg, icodre(3), jcomp, ifon(6)
-        real(kind=8), dimension(MSIZE_CELL_SCAL) :: temp_T_curr
+        real(kind=8), dimension(MSIZE_CELL_SCAL) :: temp_T_curr, rhs_cell
         real(kind=8) :: BSCEval(MSIZE_CELL_SCAL)
         real(kind=8) :: coorpg(3), weight, temp_pg_curr, beta, dbeta
         character(len=16) :: comp
@@ -450,7 +451,7 @@ contains
         call jevech('PMATERC', 'L', jmate)
         call jevech('PCOMPOR', 'L', jcomp)
 !
-        comp = zk16(jcomp)
+        comp = zk16(jcomp-1+RELA_NAME)
         if (comp(1:5) .eq. 'THER_') then
 !
             call rccoma(zi(jmate), 'THER', 1, phenom, icodre(1))
@@ -466,8 +467,7 @@ contains
 !
 ! --- number of dofs
 !
-        call hhoTherNLDofs(hhoCell, hhoData, cbs, fbs, total_dofs, &
-                           gbs)
+        call hhoTherNLDofs(hhoCell, hhoData, cbs, fbs, total_dofs, gbs)
         faces_dofs = total_dofs-cbs
         cell_offset = faces_dofs+1
 !
@@ -477,7 +477,10 @@ contains
             call lhs%initialize(total_dofs, total_dofs, 0.0)
             call lhs_cell%initialize(cbs, cbs, 0.d0)
         end if
-        if (l_rhs) rhs = 0.d0
+        if (l_rhs) then
+            rhs = 0.d0
+            rhs_cell = 0.d0
+        end if
 !
         call hhoBasisCell%initialize(hhoCell)
 !
@@ -496,10 +499,10 @@ contains
 !
             call hhoBasisCell%BSEval(coorpg(1:3), 0, hhoData%cell_degree(), BSCEval)
 !
-! --------- Eval gradient at T+
+! --------- Eval temperature at T+
 !
             temp_pg_curr = hhoEvalScalCell(hhoBasisCell, hhoData%cell_degree(), &
-                                           coorpg, temp_T_curr, cbs)
+                                           coorpg, temp_T_curr)
 !
 ! -------- Compute behavior
 !
@@ -508,7 +511,7 @@ contains
 ! -------- Compute rhs
 !
             if (l_rhs) then
-                call hhoComputeRhsMassTher(beta, weight, BSCEval, cbs, rhs(cell_offset:))
+                call hhoComputeRhsMassTher(beta, weight, BSCEval, cbs, rhs_cell)
             end if
 !
 ! -------- Compute lhs
@@ -525,6 +528,10 @@ contains
             call lhs_cell%copySymU()
             call lhs%copy(lhs_cell, faces_dofs, faces_dofs)
             call lhs_cell%free()
+        end if
+!
+        if (l_rhs) then
+            rhs(cell_offset:total_dofs) = rhs_cell(1:cbs)
         end if
 !
     end subroutine

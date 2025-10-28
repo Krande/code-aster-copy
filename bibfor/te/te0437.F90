@@ -95,7 +95,7 @@ subroutine te0437(nomopt, nomte)
 !
         do ipg = 1, hhoQuad%nbQuadPoints
             temp_eval = hhoEvalScalCell(hhoBasisCell, hhoData%cell_degree(), &
-                                        hhoQuad%points(1:3, ipg), temp_T, cbs)
+                                        hhoQuad%points(1:3, ipg), temp_T)
 
             call foderi(zk8(isour), temp_eval, sour, dsdt)
 
