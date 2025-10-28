@@ -132,6 +132,7 @@ subroutine comthm(ds_thm, &
     real(kind=8) :: tperm(ndim, ndim)
     real(kind=8) :: lambp, dlambp, lambs, dlambs
     real(kind=8) :: tlambt(ndim, ndim), tlamct(ndim, ndim), tdlamt(ndim, ndim)
+    integer(kind=8) :: i
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -218,6 +219,12 @@ subroutine comthm(ds_thm, &
                            dsde, retcom)
         if (retcom .ne. 0) then
             goto 99
+        end if
+        ! Special treatment to fill dsig_dpc in the tangent operator of GonfElas
+        if (ds_thm%ds_behaviour%rela_meca .eq. 'GonfElas') then
+            do i = 1, 3
+                dsde(adcome+6+i-1, addep1) = vintp(1)
+            end do
         end if
     end if
 !
