@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -29,6 +29,8 @@ derivated objects to store values of type *str*, *int*, *float*, *bool* and
 list of *str*.
 """
 
+import os
+from string import Template
 
 from .logger import logger
 
@@ -104,13 +106,42 @@ class AbstractParameter:
 
 
 class ParameterStr(AbstractParameter):
-    """A parameter defined in a Export object of type string."""
+    """A parameter defined in a Export object of type string.
+
+    It may use environment variable "${VAR}", substitution is only done once
+    when the value is assigned.
+    """
 
     @staticmethod
     def _convert(value):
         if isinstance(value, (list, tuple)):
             value = " ".join([str(i) for i in value])
-        return str(value)
+        if not value:
+            return value
+        value = str(value)
+        if "$" in value:
+            try:
+                value = Template(value).substitute(os.environ)
+            except (KeyError, ValueError):
+                pass
+        return value
+
+
+class VarMixin:
+    """Mixin class for a parameter that may be overridden by environment."""
+
+    def set(self, value):
+        """Convert and set the value.
+
+        Arguments:
+            value (misc): New value.
+        """
+        self._value = self.convert(os.environ.get(self._name, value))
+
+
+class ParameterVarStr(VarMixin, ParameterStr):
+    """A parameter defined in a Export object of type string that may be
+    overridden by an environment variable."""
 
 
 class ParameterBool(AbstractParameter):

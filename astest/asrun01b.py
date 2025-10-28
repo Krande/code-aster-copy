@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -250,6 +250,19 @@ class TestStore(unittest.TestCase):
 
         store.set("y", 1)
         self.assertFalse(store.has_param("y"))
+
+        para = ParameterStr("var")
+        self.assertIsNone(para.value)
+        para.set("/path/to/tmpdir")
+        self.assertIsNotNone(para.value)
+        self.assertEqual(para.value, "/path/to/tmpdir")
+        os.environ["TESTUSER"] = "whoami"
+        para.set("/path/${TESTUSER}/tmpdir")
+        self.assertEqual(para.value, "/path/whoami/tmpdir")
+        os.environ["TESTUSER"] = "only substitued when set"
+        self.assertEqual(para.value, "/path/whoami/tmpdir")
+        para.set("/path/${UNDEF}/tmpdir")
+        self.assertEqual(para.value, "/path/${UNDEF}/tmpdir")
 
 
 class TestExportParameter(unittest.TestCase):
