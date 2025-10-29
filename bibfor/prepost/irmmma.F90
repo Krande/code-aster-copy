@@ -97,7 +97,7 @@ subroutine irmmma(fid, nomamd, nbCell, connex, point, &
     integer(kind=8) :: ino, iCell, nbCellTypeTotal, nbbloc
     integer(kind=8) :: jnomma(MT_NTYMAX), jnumma(MT_NTYMAX), jcnxma(MT_NTYMAX)
     integer(kind=8) :: ifm, niv, jma, rang, nbproc, jtyp, nbmat, nbmal, start, jno
-    integer(kind=8) :: filter(1), numno
+    integer(kind=8) :: filter(1), numno, empty(1)
     mpi_int :: mrank, msize
     character(len=8) :: saux08
     aster_logical :: lnocen, lfu
@@ -322,9 +322,15 @@ subroutine irmmma(fid, nomamd, nbCell, connex, point, &
                     call utmess('F', 'DVP_97', sk=saux08, si=codret)
                 end if
 !
-                call as_mmhyaw(fid, nomamd, zi(jcnxma(iCellType)), &
-                               nnotyp(iCellType)*nbCellType(iCellType), edmail, &
-                               typgeo(iCellType), ednoda, filter(1), codret)
+                if (nbmal .eq. 0) then
+                    call as_mmhyaw(fid, nomamd, empty, &
+                                   nnotyp(iCellType)*nbCellType(iCellType), edmail, &
+                                   typgeo(iCellType), ednoda, filter(1), codret)
+                else
+                    call as_mmhyaw(fid, nomamd, zi(jcnxma(iCellType)), &
+                                   nnotyp(iCellType)*nbCellType(iCellType), edmail, &
+                                   typgeo(iCellType), ednoda, filter(1), codret)
+                end if
                 if (codret .ne. 0) then
                     saux08 = 'mmhcyw'
                     call utmess('F', 'DVP_97', sk=saux08, si=codret)
