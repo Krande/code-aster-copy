@@ -188,10 +188,6 @@ class Mesh : public BaseMesh {
     void addNodeLabels( const VectorString &labels );
 
     void addCellLabels( const VectorString &labels );
-
-    std::string getNodeName( const ASTERINTEGER &index ) const;
-
-    std::string getCellName( const ASTERINTEGER &index ) const;
 };
 
 /**

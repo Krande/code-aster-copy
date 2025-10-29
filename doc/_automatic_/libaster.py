@@ -560,16 +560,6 @@ class BaseMesh(DataStructure):
             tolerance (float): Tolerance used to detect flat cells.
         """
 
-    def getCellName(self, index):
-        """Return the name of the given cell
-
-        Arguments:
-            index (int) : index of the cell (0-based)
-
-        Returns:
-            str : name of the cell (stripped)
-        """
-
     def getCellType(self, index):
         """Return the type of the given cell
 
@@ -644,16 +634,6 @@ class BaseMesh(DataStructure):
 
         Returns:
             tuple(real): values of min and max edges
-        """
-
-    def getNodeName(self, index):
-        """Return the name of the given node
-
-        Arguments:
-            index (int) : index of the node (0-based)
-
-        Returns:
-            str : name of the node (stripped)
         """
 
     def getNumberOfCells(self):

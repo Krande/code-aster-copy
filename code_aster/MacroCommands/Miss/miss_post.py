@@ -646,7 +646,7 @@ class PostMissTran(PostMiss):
                 MATR_RIGI=rigtot,
                 FREQ=freq,
                 EXCIT=excit,
-                **opts
+                **opts,
             )
         else:
             dyge = self.dyna_vibra_harm(
@@ -657,7 +657,7 @@ class PostMissTran(PostMiss):
                 FREQ=freq,
                 AMOR_MODAL=_F(AMOR_REDUIT=self.param["AMOR_REDUIT"]),
                 EXCIT=excit,
-                **opts
+                **opts,
             )
         return dyge
 
@@ -792,7 +792,7 @@ class PostMissTabl(PostMiss):
             FREQ=freq,
             AMOR_MODAL=_F(AMOR_REDUIT=self.param["AMOR_REDUIT"]),
             EXCIT=_F(VECT_ASSE_GENE=__fosx, COEF_MULT=1.0),
-            **opts
+            **opts,
         )
         return __dyge
 
@@ -874,7 +874,7 @@ class PostMissTabl(PostMiss):
                 FONCTION=_reptemp,
                 NORME=self.param["NORME"],
                 AMOR_REDUIT=self.param["AMOR_SPEC_OSCI"],
-                **opts
+                **opts,
             )
         )
         self.add_line(gno, cham, "INST", **{FKEY[dir]: _reptemp})
@@ -1009,7 +1009,7 @@ class PostMissControl(PostMiss):
                 FONCTION=_reptemp,
                 NORME=self.param["NORME"],
                 AMOR_REDUIT=self.param["AMOR_SPEC_OSCI"],
-                **opts
+                **opts,
             )
         )
         self.add_line(nompc, cham, "INST", **{fonct_i: _reptemp})
@@ -1427,11 +1427,11 @@ class PostMissChar(PostMiss):
             # récuperation du maillage
             mail = self.MODELE.getMesh()
             list_nuno_affe = []
+            self.List_Noeu_Fictif = []
             for gr in self.param["GROUP_NO_AFFE"]:
                 list_nuno_affe.extend([val + 1 for val in mail.getNodes(gr)])
-            self.List_Noeu_Fictif = []
             for nuno in list_nuno_affe:
-                self.List_Noeu_Fictif.append(mail.getNodeName(nuno))
+                self.List_Noeu_Fictif.append("N" + str(nuno))
         else:
             self.List_Noeu_Fictif = []
 

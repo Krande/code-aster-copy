@@ -317,7 +317,7 @@ def get_noeud_a_calculer(Lnoff, ndim, FOND_FISS, MAILLAGE, EnumTypes, args):
                 if grpno not in MAILLAGE.getGroupsOfNodes():
                     UTMESS("F", "RUPTURE0_13", valk=grpno)
                 for node in MAILLAGE.getNodes(grpno):
-                    NO_AVEC.append(MAILLAGE.getNodeName(node))
+                    NO_AVEC.append(str(node + 1))
             NO_AVEC = list(map(lambda x: x.rstrip(), NO_AVEC))
         else:
             if (MAILLAGE.isQuadratic()) and (TOUT is None):
@@ -332,7 +332,7 @@ def get_noeud_a_calculer(Lnoff, ndim, FOND_FISS, MAILLAGE, EnumTypes, args):
                 if grpno not in MAILLAGE.getGroupsOfNodes():
                     UTMESS("F", "RUPTURE0_13", valk=grpno)
                 for node in MAILLAGE.getNodes(grpno):
-                    NO_SANS.append(MAILLAGE.getNodeName(node))
+                    NO_SANS.append(str(node + 1))
             NO_SANS = list(map(lambda x: x.rstrip(), NO_SANS))
 
         # verification que les noeuds "AVEC" et "SANS" appartiennent au fond de
@@ -403,7 +403,7 @@ def get_direction(Nnoff, ndim, Lnoff, FOND_FISS, MAILLAGE):
     # suppresion des coordonnées du projeté du noeud, non utilisées ici
     basloc = NP.array(basloc).reshape((len(basloc) // nb_comp_basloc), nb_comp_basloc)[:, ndim:]
     #   recuperation des valeurs dans baseloc en indexant sur les noeuds du fond de fissure
-    index_by_nodename = {MAILLAGE.getNodeName(i): i for i in MAILLAGE.getNodes()}
+    index_by_nodename = {str(i + 1): i for i in MAILLAGE.getNodes()}
     Basefo = basloc[[index_by_nodename[nodename] for nodename in Lnoff], :].flatten()
 
     VNOR = [None] * Nnoff
@@ -1776,7 +1776,7 @@ def post_k1_k2_k3_ops(
     PREC_VIS_A_VIS=None,
     INFO=None,
     TITRE=None,
-    **args
+    **args,
 ):
     """
     Macro POST_K1_K2_K3

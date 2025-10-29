@@ -59,7 +59,7 @@ def char_rota_ops(self, MODELE, ANGLE_DEGRES, TINI, TFIN, RESU, MAIL, **args):
         __DXTf = FORMULE(
             VALE="X1*(cos(angle*(INST-TINI)/(TFIN-TINI))-1.0)-Y1*sin(angle*(INST-TINI)/(TFIN-TINI))",
             NOM_PARA=("INST"),
-            **const_context
+            **const_context,
         )
         _DXT = CALC_FONC_INTERP(
             FONCTION=__DXTf, LIST_PARA=__interp, NOM_PARA="INST", INTERPOL="LIN"
@@ -67,13 +67,13 @@ def char_rota_ops(self, MODELE, ANGLE_DEGRES, TINI, TFIN, RESU, MAIL, **args):
         __DYTf = FORMULE(
             VALE="X1*sin(angle*(INST-TINI)/(TFIN-TINI))+Y1*(cos(angle*(INST-TINI)/(TFIN-TINI))-1.0)",
             NOM_PARA=("INST"),
-            **const_context
+            **const_context,
         )
         _DYT = CALC_FONC_INTERP(
             FONCTION=__DYTf, LIST_PARA=__interp, NOM_PARA="INST", INTERPOL="LIN"
         )
         dico = {}
-        dico["NOEUD"] = MAIL.getNodeName(ino)
+        dico["NOEUD"] = str(ino + 1)
         dico["DX"] = _DXT
         dico["DY"] = _DYT
         ddlimpo.append(dico)

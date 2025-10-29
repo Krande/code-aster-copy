@@ -249,14 +249,6 @@ const std::vector< VectorLong > BaseMesh::getMedConnectivityZeroBased() const {
     return result;
 }
 
-std::string BaseMesh::getNodeName( const ASTERINTEGER &index ) const {
-    return strip( std::to_string( index + 1 ) );
-};
-
-std::string BaseMesh::getCellName( const ASTERINTEGER &index ) const {
-    return strip( std::to_string( index + 1 ) );
-};
-
 ASTERINTEGER BaseMesh::getCellType( const ASTERINTEGER &index ) const {
     if ( isEmpty() )
         return 0;

@@ -40,7 +40,6 @@ from ...Objects import DataStructure, FullResult, HarmoGeneralizedResult, Transi
 
 
 class Resultat:
-
     """Classe chapeau a toutes les sd_resultat traitees dans CALC_ESSAI"""
 
     # TODO : mettre ici les attributs et procedures communs a tous les resus
@@ -79,7 +78,6 @@ class Resultat:
 
 
 class ModeMeca(Resultat):
-
     """!Gestion des sd_resultat d'aster
 
     Permet de conserver une reference sur un objet aster sd_resultat
@@ -212,7 +210,6 @@ class ModeMeca(Resultat):
 
 
 class DynaHarmo(Resultat):
-
     """pour les resultats de type dyna_harmo"""
 
     def __init__(
@@ -290,7 +287,6 @@ class DynaHarmo(Resultat):
 
 
 class InterSpectre:
-
     """!Gestion des concepts de type interspectre
 
     Regroupe les concepts aster de type interspectre :
@@ -534,7 +530,6 @@ class InterSpectre:
 
 
 class Tempo:
-
     """!Gestion des concepts de type table_fonction contenant des temporels
 
     Regroupe les concepts aster de type table_fonction :
@@ -629,7 +624,6 @@ class Tempo:
 
 
 class Modele:
-
     """!Gestion des concepts de type modele_sdaster
     Notamment une routine qui permet de fabriquer un nume_ddl
     a partir d'un modele pour les rojtines de type PROJ_CHAMP
@@ -696,7 +690,6 @@ class Modele:
 
 # -------------------------------------------------------------------------
 class CalcEssaiObjects:
-
     """!Classe qui recupere les objets pouvant etre utilises par
     CALC_ESSAI dans le catalogue aster"""
 
@@ -877,7 +870,7 @@ def nume_ddl_phy(resu):
     maya = resu.maya
     nume = []
     for ind in range(nb_ddl):
-        nom_no = maya.getNodeName(description[0][ind])
+        nom_no = str(description[0][ind] + 1)
         nume.append(nom_no.strip() + "_" + description[1][ind])
 
     return nume

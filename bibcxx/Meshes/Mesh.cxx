@@ -295,19 +295,3 @@ void Mesh::addCellLabels( const VectorString &labels ) {
         _nameOfCells->add( i + 1, labels[i] );
     }
 }
-
-std::string Mesh::getNodeName( const ASTERINTEGER &index ) const {
-    if ( _nameOfNodes->exists() ) {
-        return _nameOfNodes->getStringFromIndex( index );
-    } else {
-        return BaseMesh::getNodeName( index );
-    }
-}
-
-std::string Mesh::getCellName( const ASTERINTEGER &index ) const {
-    if ( _nameOfCells->exists() ) {
-        return _nameOfCells->getStringFromIndex( index );
-    } else {
-        return BaseMesh::getCellName( index );
-    }
-}
