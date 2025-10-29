@@ -22,7 +22,7 @@ subroutine te0460(nomopt, nomte)
     use HHO_size_module
     use HHO_stabilization_module, only: hhoStabScal, hdgStabScal
     use HHO_gradrec_module, only: hhoGradRecVec, hhoGradRecFullVec
-    use HHO_init_module, only: hhoInfoInitCell
+    use HHO_init_module, only: hhoInfoInitCellAndFace
     use HHO_matrix_module
 !
     implicit none
@@ -52,7 +52,7 @@ subroutine te0460(nomopt, nomte)
 !
 ! --- Retrieve HHO informations
 !
-    call hhoInfoInitCell(hhoCell, hhoData)
+    call hhoInfoInitCellAndFace(hhoCell, hhoData)
 !
     call hhoTherNLDofs(hhoCell, hhoData, cbs, fbs, total_dofs, gbs)
 !

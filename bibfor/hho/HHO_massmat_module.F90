@@ -99,11 +99,8 @@ contains
         real(kind=8), dimension(MSIZE_CELL_SCAL) :: basisScalEval
         integer(kind=8) :: dimMat, ipg, i
         aster_logical :: dbg
-        real(kind=8) :: start, end
         blas_int :: b_incx, b_lda, b_n
 ! --------------------------------------------------------------------------------------------------
-!
-        DEBUG_TIMER(start)
 !
 ! ----- init basis
         call hhoBasisCell%initialize(hhoCell)
@@ -155,9 +152,6 @@ contains
         end if
 ! call hhoPrintMat(this%m(1:dimMat, 1:dimMat))
 !
-        DEBUG_TIMER(end)
-        DEBUG_TIME("Compute hhoMassMatCellScal", end-start)
-!
     end subroutine
 !
 !===================================================================================================
@@ -188,10 +182,8 @@ contains
         real(kind=8), dimension(MSIZE_FACE_SCAL) :: basisScalEval
         integer(kind=8) :: dimMat, ipg, i
         aster_logical :: dbg
-        real(kind=8) :: start, end
         blas_int :: b_incx, b_lda, b_n
 ! --------------------------------------------------------------------------------------------------
-        DEBUG_TIMER(start)
 !
 ! ----- init basis
         call hhoBasisFace%initialize(hhoFace)
@@ -243,8 +235,6 @@ contains
         end if
 !
 ! call hhoPrintMat(this%m)
-        DEBUG_TIMER(end)
-        DEBUG_TIME("Compute hhoMassMatFaceScal", end-start)
 !
     end subroutine
 !

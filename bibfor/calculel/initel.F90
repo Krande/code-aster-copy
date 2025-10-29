@@ -36,6 +36,7 @@ subroutine initel(ligrel, l_calc_rigi)
 #include "asterfort/jexatr.h"
 #include "asterfort/jexnum.h"
 #include "asterfort/nbelem.h"
+#include "asterfort/teattr.h"
 #include "asterfort/typele.h"
 #include "asterfort/utmess.h"
 !
@@ -61,13 +62,13 @@ subroutine initel(ligrel, l_calc_rigi)
 !     VARIABLES LOCALES:
 !     ------------------
     integer(kind=8) :: igr, ngr, nmaxob, nbobj, nbprin
-    integer(kind=8) :: nbno, jlliel, iconx2
+    integer(kind=8) :: nbno, jlliel, iconx2, iret
     integer(kind=8) :: nute, nbel, iel, numa, nbnoma, ino, nuno
     parameter(nmaxob=30)
     integer(kind=8) :: adobj(nmaxob)
     character(len=24) :: noobj(nmaxob)
     character(len=1) :: base
-    character(len=8) :: exiele, ma, prin, nomail
+    character(len=8) :: exiele, ma, prin, nomail, typmod2
     character(len=16) :: nomte
     integer(kind=8), pointer :: vprin(:) => null()
     integer(kind=8), pointer :: connex(:) => null()
@@ -157,7 +158,12 @@ subroutine initel(ligrel, l_calc_rigi)
                 nuno = connex(zi(iconx2+numa-1)+ino-1)
                 if (vprin(nuno) .ne. 1) then
                     nomail = int_to_char8(numa)
-                    call utmess('A', 'MODELE1_63', sk=nomail)
+                    call teattr('C', 'TYPMOD2', typmod2, iret, typel=nomte)
+                    if (typmod2(1:3) .eq. 'HHO') then
+                        call utmess('F', 'MODELE1_65', sk=nomail)
+                    else
+                        call utmess('A', 'MODELE1_63', sk=nomail)
+                    end if
                     goto 71
                 end if
             end do

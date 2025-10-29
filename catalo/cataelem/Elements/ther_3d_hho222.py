@@ -310,7 +310,7 @@ class THER3DH27_HHO222(Element):
                 (OP.RIGI_THER_TANG.PCHHOST, CHHOST),
                 (OP.RIGI_THER_TANG.PCHHOBS, CHHOBS),
             ),
-            para_out=((SP.PMATTTR, MMATTTR), (OP.RIGI_THER_TANG.PMATTSR, MMATTSR)),
+            para_out=((OP.RIGI_THER_TANG.PMATTSR, MMATTSR),),
         ),
         OP.TEMP_ELGA(
             te=456,

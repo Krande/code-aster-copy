@@ -34,12 +34,13 @@ subroutine deflg3(gn, feta, xi, me, t, &
 #include "asterfort/tnsvec.h"
     real(kind=8) :: gn(3, 3), t(6), tl(3, 3, 3, 3)
     real(kind=8) :: dzeta(3, 3), t33(3, 3), me(3, 3, 3, 3), xi(3, 3), feta(4)
+    real(kind=8) :: dzf(3, 3)
     integer(kind=8) :: a, b, c, d
 ! ----------------------------------------------------------------------
 !
 !     CALCUL DU TERME T.L
 !
-    call r8inir(9, 0.d0, dzeta, 1)
+    dzeta = 0.d0
     call tnsvec(6, 3, t33, t, 1.d0/sqrt(2.d0))
 !
 !     A,B sont les composantes, J,I sont les modes propres
@@ -60,40 +61,47 @@ subroutine deflg3(gn, feta, xi, me, t, &
 !
     do a = 1, 3
         do b = 1, 3
+            dzf(1, 1) = 0.25d0*feta(1)*dzeta(1, 1)*me(a, b, 1, 1)+ &
+                        2.d0*xi(2, 1)*dzeta(2, 1)*me(a, b, 2, 1) &
+                        +2.d0*xi(3, 1)*dzeta(3, 1)*me(a, b, 3, 1)
+            dzf(2, 2) = 0.25d0*feta(2)*dzeta(2, 2)*me(a, b, 2, 2)+ &
+                        2.d0*xi(1, 2)*dzeta(1, 2)*me(a, b, 1, 2) &
+                        +2.d0*xi(3, 2)*dzeta(3, 2)*me(a, b, 3, 2)
+            dzf(3, 3) = 0.25d0*feta(3)*dzeta(3, 3)*me(a, b, 3, 3)+ &
+                        2.d0*xi(1, 3)*dzeta(1, 3)*me(a, b, 1, 3) &
+                        +2.d0*xi(2, 3)*dzeta(2, 3)*me(a, b, 2, 3)
+            dzf(2, 3) = 2.d0*feta(4)*dzeta(1, 2)*me(a, b, 1, 3)+ &
+                        2.d0*xi(2, 3)*dzeta(2, 3)*me(a, b, 3, 3) &
+                        +2.d0*xi(2, 3)*dzeta(3, 3)*me(a, b, 2, 3)
+            dzf(3, 2) = 2.d0*feta(4)*dzeta(1, 3)*me(a, b, 1, 2)+ &
+                        2.d0*xi(3, 2)*dzeta(3, 2)*me(a, b, 2, 2) &
+                        +2.d0*xi(3, 2)*dzeta(2, 2)*me(a, b, 3, 2)
+            dzf(1, 2) = 2.d0*feta(4)*dzeta(3, 1)*me(a, b, 3, 2)+ &
+                        2.d0*xi(1, 2)*dzeta(1, 2)*me(a, b, 2, 2) &
+                        +2.d0*xi(1, 2)*dzeta(2, 2)*me(a, b, 1, 2)
+            dzf(2, 1) = 2.d0*feta(4)*dzeta(3, 2)*me(a, b, 3, 1)+ &
+                        2.d0*xi(2, 1)*dzeta(2, 1)*me(a, b, 1, 1) &
+                        +2.d0*xi(2, 1)*dzeta(1, 1)*me(a, b, 2, 1)
+            dzf(1, 3) = 2.d0*feta(4)*dzeta(2, 1)*me(a, b, 2, 3)+ &
+                        2.d0*xi(1, 3)*dzeta(1, 3)*me(a, b, 3, 3) &
+                        +2.d0*xi(1, 3)*dzeta(3, 3)*me(a, b, 1, 3)
+            dzf(3, 1) = 2.d0*feta(4)*dzeta(2, 3)*me(a, b, 2, 1)+ &
+                        2.d0*xi(3, 1)*dzeta(3, 1)*me(a, b, 1, 1) &
+                        +2.d0*xi(3, 1)*dzeta(1, 1)*me(a, b, 3, 1)
+!
             do c = 1, 3
                 do d = 1, 3
                     tl(a, b, c, d) &
-                        = 0.25d0*feta(1)*dzeta(1, 1)*me(a, b, 1, 1)*me(c, d, 1, 1) &
-                          +0.25d0*feta(2)*dzeta(2, 2)*me(a, b, 2, 2)*me(c, d, 2, 2) &
-                          +0.25d0*feta(3)*dzeta(3, 3)*me(a, b, 3, 3)*me(c, d, 3, 3) &
+                        = dzf(1, 1)*me(c, d, 1, 1) &
+                          +dzf(2, 2)*me(c, d, 2, 2) &
+                          +dzf(3, 3)*me(c, d, 3, 3) &
                           !
-                          +2.d0*feta(4)*dzeta(1, 2)*me(a, b, 1, 3)*me(c, d, 2, 3) &
-                          +2.d0*feta(4)*dzeta(1, 3)*me(a, b, 1, 2)*me(c, d, 3, 2) &
-                          +2.d0*feta(4)*dzeta(2, 1)*me(a, b, 2, 3)*me(c, d, 1, 3) &
-                          +2.d0*feta(4)*dzeta(2, 3)*me(a, b, 2, 1)*me(c, d, 3, 1) &
-                          +2.d0*feta(4)*dzeta(3, 1)*me(a, b, 3, 2)*me(c, d, 1, 2) &
-                          +2.d0*feta(4)*dzeta(3, 2)*me(a, b, 3, 1)*me(c, d, 2, 1) &
-                          !
-                          +2.d0*xi(1, 2)*dzeta(1, 2)*me(a, b, 1, 2)*me(c, d, 2, 2) &
-                          +2.d0*xi(1, 3)*dzeta(1, 3)*me(a, b, 1, 3)*me(c, d, 3, 3) &
-                          +2.d0*xi(2, 1)*dzeta(2, 1)*me(a, b, 2, 1)*me(c, d, 1, 1) &
-                          +2.d0*xi(2, 3)*dzeta(2, 3)*me(a, b, 2, 3)*me(c, d, 3, 3) &
-                          +2.d0*xi(3, 1)*dzeta(3, 1)*me(a, b, 3, 1)*me(c, d, 1, 1) &
-                          +2.d0*xi(3, 2)*dzeta(3, 2)*me(a, b, 3, 2)*me(c, d, 2, 2) &
-                          !
-                          +2.d0*xi(1, 2)*dzeta(1, 2)*me(a, b, 2, 2)*me(c, d, 1, 2) &
-                          +2.d0*xi(1, 3)*dzeta(1, 3)*me(a, b, 3, 3)*me(c, d, 1, 3) &
-                          +2.d0*xi(2, 1)*dzeta(2, 1)*me(a, b, 1, 1)*me(c, d, 2, 1) &
-                          +2.d0*xi(2, 3)*dzeta(2, 3)*me(a, b, 3, 3)*me(c, d, 2, 3) &
-                          +2.d0*xi(3, 1)*dzeta(3, 1)*me(a, b, 1, 1)*me(c, d, 3, 1) &
-                          +2.d0*xi(3, 2)*dzeta(3, 2)*me(a, b, 2, 2)*me(c, d, 3, 2) &
-                          !
-                          +2.d0*xi(1, 2)*dzeta(2, 2)*me(a, b, 1, 2)*me(c, d, 1, 2) &
-                          +2.d0*xi(1, 3)*dzeta(3, 3)*me(a, b, 1, 3)*me(c, d, 1, 3) &
-                          +2.d0*xi(2, 1)*dzeta(1, 1)*me(a, b, 2, 1)*me(c, d, 2, 1) &
-                          +2.d0*xi(2, 3)*dzeta(3, 3)*me(a, b, 2, 3)*me(c, d, 2, 3) &
-                          +2.d0*xi(3, 1)*dzeta(1, 1)*me(a, b, 3, 1)*me(c, d, 3, 1) &
-                          +2.d0*xi(3, 2)*dzeta(2, 2)*me(a, b, 3, 2)*me(c, d, 3, 2)
+                          +dzf(2, 3)*me(c, d, 2, 3) &
+                          +dzf(3, 2)*me(c, d, 3, 2) &
+                          +dzf(1, 3)*me(c, d, 1, 3) &
+                          +dzf(3, 1)*me(c, d, 3, 1) &
+                          +dzf(1, 2)*me(c, d, 1, 2) &
+                          +dzf(2, 1)*me(c, d, 2, 1)
                 end do
             end do
         end do

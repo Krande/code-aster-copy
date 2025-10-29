@@ -114,4 +114,13 @@ Vous essayez d'appliquer un déplacement selon DZ à une modélisation qui n'est
 Conseil: Vérifié vos conditions aux limites.
 """
     ),
+    58: _(
+        """
+    AFFE_CHAR_CINE:
+Aucune maille de dimension %(i1)d n'a pu être trouvée pour le noeud %(i2)d.
+
+
+Conseil: Vérifié vos conditions aux limites. En effet, pour les modèles HHO, il est nécessaire d'avoir un volume rattaché à un bord.
+"""
+    ),
 }

@@ -49,7 +49,6 @@ module HHO_LargeStrainMeca_module
 #include "asterfort/pk2topk1.h"
 #include "asterfort/poslog.h"
 #include "asterfort/prelog.h"
-#include "blas/dger.h"
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -522,9 +521,7 @@ contains
 ! --------------------------------------------------------------------------------------------------
 !
         real(kind=8) :: qp_module_tang(3, 3, 3, 3), qp_mod_vec(9)
-        integer(kind=8) :: i, j, row, col, gbs_cmp, dim2
-        blas_int :: b_lda, b_m, b_n
-        blas_int, parameter :: b_one = 1
+        integer(kind=8) :: i, j, row, gbs_cmp, dim2, k, l
 ! --------------------------------------------------------------------------------------------------
 !
         Agphi = 0.d0
@@ -532,18 +529,16 @@ contains
         gbs_cmp = gbs/dim2
         qp_module_tang = weight*module_tang
 !
-        b_lda = to_blas_int(gbs_cmp)
-        b_m = to_blas_int(gbs_cmp)
-        b_n = to_blas_int(dim2)
-!
-        row = 1
-        col = 1
+        row = 0
         do i = 1, hhoCell%ndim
             do j = 1, hhoCell%ndim
 ! ------------- Extract and transform the tangent moduli
                 qp_mod_vec = transfo_A(hhoCell%ndim, qp_module_tang, i, j)
-                call dger(b_m, b_n, 1.d0, BSCEval, b_one, &
-                          qp_mod_vec, b_one, Agphi(row:(row+gbs_cmp-1), 1:dim2), b_lda)
+                do l = 1, dim2
+                    do k = 1, gbs_cmp
+                        Agphi(row+k, l) = BSCEval(k)*qp_mod_vec(l)
+                    end do
+                end do
                 row = row+gbs_cmp
             end do
         end do

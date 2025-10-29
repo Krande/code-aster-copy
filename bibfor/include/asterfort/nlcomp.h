@@ -19,13 +19,13 @@
 !
 interface
     subroutine nlcomp(phenom, fami, kpg, imate, ndim, coorpg, time, &
-        tp, Kglo, dtp_, fluglo_)
+        tp, Kglo, dtp_, fluglo_, dfluglo_)
         character(len=16), intent(in) :: phenom
         character(len=8), intent(in) :: fami
         integer(kind=8), intent(in) :: imate, ndim, kpg
         real(kind=8), intent(in) :: coorpg(3), time, tp
         real(kind=8), intent(out) :: Kglo(3, 3)
         real(kind=8), optional, intent(in) :: dtp_(3)
-        real(kind=8), optional, intent(out) :: fluglo_(3)
+        real(kind=8), optional, intent(out) :: fluglo_(3), dfluglo_(3)
     end subroutine nlcomp
 end interface

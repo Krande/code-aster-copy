@@ -64,7 +64,7 @@ subroutine te0487(nomopt, nomte)
     character(len=32) :: phenom
     type(HHO_matrix) :: gradrec
     real(kind=8), dimension(3*MAX_QP_CELL) :: flux
-    real(kind=8) :: module_tang(3, 3), G_curr(3), sig_curr(3)
+    real(kind=8) :: module_tang(3, 3), G_curr(3), sig_curr(3), dsig_curr(3)
     real(kind=8) :: coorpg(3), weight, time_curr, temp_eval_curr
     real(kind=8) :: BSCEval(MSIZE_CELL_SCAL)
     real(kind=8), dimension(MSIZE_TDOFS_SCAL) :: temp_curr
@@ -150,7 +150,7 @@ subroutine te0487(nomopt, nomte)
 !
         call hhoComputeBehaviourTher(phenom, fami, ipg, hhoCell%ndim, time_curr, &
                                      jmate, coorpg, temp_eval_curr, G_curr, sig_curr, &
-                                     module_tang)
+                                     dsig_curr, module_tang)
 !
         flux(deca:deca+hhoCell%ndim) = -sig_curr(1:hhoCell%ndim)
         deca = deca+hhoCell%ndim

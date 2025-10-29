@@ -52,6 +52,8 @@ subroutine te0454(nomopt, nomte)
     type(HHO_Data) :: hhoData
     type(HHO_Cell) :: hhoCell
     type(HHO_matrix) :: gradfull, lhs, stab
+    aster_logical :: matsym
+    character(len=8) :: name_param
 !
 ! --- Get element parameters
 !
@@ -63,6 +65,14 @@ subroutine te0454(nomopt, nomte)
 !
     if (nomopt /= "RIGI_THER" .and. nomopt /= "RIGI_THER_TANG") then
         ASSERT(ASTER_FALSE)
+    end if
+!
+    if (nomopt == "RIGI_THER_TANG") then
+        name_param = "PMATTSR"
+        matsym = ASTER_FALSE
+    else
+        name_param = "PMATTTR"
+        matsym = ASTER_TRUE
     end if
 !
 ! --- Compute Operators
@@ -80,7 +90,7 @@ subroutine te0454(nomopt, nomte)
 !
 ! --- Save lhs
 !
-    call lhs%write('PMATTTR', ASTER_TRUE)
+    call lhs%write(name_param, matsym)
 !
     call lhs%free()
     call gradfull%free()

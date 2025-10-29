@@ -17,7 +17,6 @@
 # along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 # --------------------------------------------------------------------
 
-#
 
 from cataelem.Tools.base_objects import InputParameter, OutputParameter, Option, CondCalcul
 import cataelem.Commons.physical_quantities as PHY
@@ -25,25 +24,18 @@ import cataelem.Commons.parameters as SP
 import cataelem.Commons.attributes as AT
 
 
-PNBSP_I = InputParameter(
-    phys=PHY.NBSP_I, container="CARA!.CANBSP", comment="""  PNBSP_I :  NOMBRE DE SOUS_POINTS  """
-)
-
-
-PDEPLGA = OutputParameter(phys=PHY.DEPL_R, type="ELGA")
-
 PCHHOBS = InputParameter(phys=PHY.N3600R, comment=""" HHO - coefficient base locale""")
 
 
-DEPL_ELGA = Option(
-    para_in=(SP.PCACOQU, SP.PGEOMER, SP.PDEPLAR, PNBSP_I, PCHHOBS),
-    para_out=(PDEPLGA,),
-    condition=(
-        CondCalcul("+", ((AT.PHENO, "ME"), (AT.BORD, "0"))),
-        CondCalcul("-", ((AT.PHENO, "ME"), (AT.ABSO, "OUI"))),
-        CondCalcul("-", ((AT.PHENO, "ME"), (AT.FLUIDE, "OUI"))),
-        CondCalcul("-", ((AT.PHENO, "ME"), (AT.INTERFACE, "OUI"))),
-    ),
-    comment=""" CALCUL DES DEPLACEMENTS AUX SOUS-POINTS
-   A PARTIR DES DEPLACEMENTS AUX NOEUDS.""",
+PDEPL_R = OutputParameter(
+    phys=PHY.DEPL_R, type="ELNO", comment=""" HHO - degres de liberte de la cellule"""
+)
+
+PQPTP_R = InputParameter(phys=PHY.DEPL_R, comment="""Field to project""")
+
+
+HHO_PROJ3_MECA = Option(
+    para_in=(SP.PGEOMER, PQPTP_R, PCHHOBS),
+    para_out=(PDEPL_R,),
+    condition=(CondCalcul("+", ((AT.PHENO, "ME"), (AT.BORD, "0"), (AT.HHO, "OUI"))),),
 )

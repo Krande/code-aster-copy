@@ -44,26 +44,26 @@ module HHO_GV_module
     implicit none
 !
     private
-#include "asterc/r8prem.h"
+#include "jeveux.h"
 #include "asterf_types.h"
+#include "asterc/r8prem.h"
 #include "asterfort/assert.h"
 #include "asterfort/Behaviour_type.h"
 #include "asterfort/codere.h"
+#include "asterfort/deflg4.h"
 #include "asterfort/desymt46.h"
 #include "asterfort/HHO_size_module.h"
 #include "asterfort/jevech.h"
 #include "asterfort/lagmodtonommod.h"
 #include "asterfort/lcdetf.h"
 #include "asterfort/nmcomp.h"
-#include "asterfort/sigtopk1.h"
 #include "asterfort/poslog.h"
 #include "asterfort/prelog.h"
-#include "asterfort/readVector.h"
-#include "asterfort/rcvalb.h"
-#include "asterfort/deflg4.h"
 #include "asterfort/prodmt.h"
+#include "asterfort/rcvalb.h"
+#include "asterfort/readVector.h"
+#include "asterfort/sigtopk1.h"
 #include "blas/dsyr.h"
-#include "jeveux.h"
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -1240,7 +1240,7 @@ contains
 !
         implicit none
 !
-        type(HHO_Cell), intent(in) :: hhoCell
+        type(HHO_Cell), intent(inout) :: hhoCell
         type(HHO_Data), intent(in) :: hhoData
         aster_logical, intent(in) :: l_largestrains
         type(HHO_Meca_State), intent(inout) :: hhoMecaState
