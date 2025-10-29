@@ -95,7 +95,7 @@ subroutine op0018()
     integer(kind=8) :: nb_elem
     aster_logical :: l_elem, l_grandeur_cara, lParallelMesh
     aster_logical :: l_calc_rigi, l_need_neigh
-    aster_logical :: lCheckJacobian, lCheckFSINorms, lCheckPlaneity
+    aster_logical :: lCheckJacobian, lCheckFSINorms, lCheckPlaneity, lCheckFSIFormulation
     integer(kind=8) :: ielem, iaffe
     integer(kind=8) :: vali(4), ico, idx_modelisa
     integer(kind=8), pointer :: p_cata_dim(:) => null()
@@ -142,6 +142,10 @@ subroutine op0018()
 ! - Check FSI normals
     call getvtx(' ', 'VERI_NORM_IFS', scal=repk)
     lCheckFSINorms = repk .eq. 'OUI'
+
+! - Check FSI Formulation
+    call getvtx(' ', 'VERI_FORMULATION_IFS', scal=repk)
+    lCheckFSIFormulation = repk .eq. 'OUI'
 
 ! - Check planeity
     call getvtx(' ', 'VERI_PLAN', scal=repk)
@@ -445,7 +449,7 @@ subroutine op0018()
 !
 ! - Check model
 !
-    call modelCheck(model, lCheckJacobian, lCheckFSINorms, lCheckPlaneity)
+    call modelCheck(model, lCheckJacobian, lCheckFSINorms, lCheckPlaneity, lCheckFSIFormulation)
 !
 ! - Create grandeurs caracteristiques
 !

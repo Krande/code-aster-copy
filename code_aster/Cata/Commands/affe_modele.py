@@ -381,6 +381,13 @@ AFFE_MODELE = OPER(
         defaut="OUI",
         fr=tr("Vérification de l'orientation des normales pour l'IFS"),
     ),
+    VERI_FORMULATION_IFS=SIMP(
+        statut="f",
+        typ="TXM",
+        into=("OUI", "NON"),
+        defaut="OUI",
+        fr=tr("Vérification de la cohérent de la formulation pour l'IFS"),
+    ),
     VERI_PLAN=SIMP(
         statut="f",
         typ="TXM",
