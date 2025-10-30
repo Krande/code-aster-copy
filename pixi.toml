@@ -18,9 +18,9 @@ platforms = ["linux-64", "win-64"]
 dependencies = { rattler-build = "*", python = "==3.12.8" }
 
 [feature.int64]
-channels = ["https://repo.prefix.dev/code-aster","https://software.repos.intel.com/python/conda/", "conda-forge"]
+channels = ["conda-forge", "https://repo.prefix.dev/code-aster",]
 [feature.int64d]
-channels = ["https://repo.prefix.dev/code-aster","https://software.repos.intel.com/python/conda/", "conda-forge"]
+channels = ["conda-forge", "https://repo.prefix.dev/code-aster",]
 
 [feature.common.dependencies]
 python = "==3.12.8"
@@ -47,9 +47,10 @@ clang = "18.*"
 
 libblas = { version = "*", build = "*mkl" }
 liblapack = { version = "*", build = "*mkl" }
-mkl-devel = { version="*", channel="conda-forge" }
+mkl = { version="*", channel="conda-forge" }
+mkl-devel = { version="==2025.3", channel="conda-forge" }
 #intel-openmp = "*"
-ifx_win-64 = { version="*", channel="https://software.repos.intel.com/python/conda/" }
+ifx_win-64 = { version="*", channel="conda-forge" }
 intel-fortran-rt = { version="*", channel="conda-forge" }
 intel-cmplr-lib-rt = { version="*", channel="conda-forge" }
 intel-opencl-rt = { version="*", channel="conda-forge"}
