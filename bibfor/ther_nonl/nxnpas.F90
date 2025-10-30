@@ -80,14 +80,12 @@ subroutine nxnpas(sddisc, solver, nume_inst, ds_print, &
 ! - RECUPERATION DU PAS DE TEMPS ET DES PARAMETRES DE RESOLUTION
 !
     if (l_stat) then
+        deltat = -1.d150
+        theta = 1.d0
         if (l_evol) then
             time_curr = diinst(sddisc, nume_inst)
-            deltat = -1.d150
-            theta = 1.d0
         else
             time_curr = 0.d0
-            deltat = -1.d150
-            theta = 1.d0
         end if
     else
         time_curr = diinst(sddisc, nume_inst)

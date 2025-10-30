@@ -36,14 +36,15 @@ subroutine te0128(option, nomte)
 !                      NOMTE        -->  NOM DU TYPE ELEMENT
 !
     character(len=8) :: nompar(4)
-    real(kind=8) :: nx, ny, nz, sx(9, 9), sy(9, 9), sz(9, 9), jac, tpg
+    real(kind=8) :: nx, ny, nz, sx(9, 9), sy(9, 9), sz(9, 9), jac, tpg, tpg_b, theta, delta_t
     real(kind=8) :: valpar(4), xx, yy, zz
     real(kind=8) :: echnp1, sigmEner, epsil, tz0
     integer(kind=8) :: ipoids, ivf, idfdx, idfdy, igeom, jgano
     integer(kind=8) :: ndim, nno, ipg, npg1, iveres, iech, iray, nnos
     integer(kind=8) :: idec, jdec, kdec, ldec
 !-----------------------------------------------------------------------
-    integer(kind=8) :: i, ier, ino, itemp, itemps, j, jno
+    integer(kind=8) :: i, ier, ino, itemp, itemps, j, jno, btemp
+    aster_logical :: l_stat
 !
 !-----------------------------------------------------------------------
     data nompar/'X', 'Y', 'Z', 'INST'/
@@ -62,11 +63,21 @@ subroutine te0128(option, nomte)
     call jevech('PGEOMER', 'L', igeom)
     call jevech('PINSTR', 'L', itemps)
     call jevech('PTEMPEI', 'L', itemp)
+    call jevech('PTEMPER', 'L', btemp)
     call jevech('PRESIDU', 'E', iveres)
 !
 !
 !    CALCUL DES PRODUITS VECTORIELS OMI   OMJ
 !
+    l_stat = .false.
+    theta = zr(itemps+2)
+    delta_t = zr(itemps+1)
+    ! FIXME: find a better way to define l_stat. Ideally it should be theta = -1
+    ! See issue 34998
+    if ((theta .eq. 1.d0) .and. (delta_t .lt. 0.d0)) then
+        l_stat = .true.
+    end if
+
     do ino = 1, nno
         i = igeom+3*(ino-1)-1
         do jno = 1, nno
@@ -96,14 +107,16 @@ subroutine te0128(option, nomte)
         jac = sqrt(nx*nx+ny*ny+nz*nz)
 !
         tpg = 0.d0
+        tpg_b = 0.d0
         xx = 0.d0
         yy = 0.d0
         zz = 0.d0
         do i = 1, nno
-            tpg = tpg+zr(itemp+i-1)*zr(ivf+ldec+i-1)
             xx = xx+zr(igeom+3*i-3)*zr(ivf+ldec+i-1)
             yy = yy+zr(igeom+3*i-2)*zr(ivf+ldec+i-1)
             zz = zz+zr(igeom+3*i-1)*zr(ivf+ldec+i-1)
+            tpg = tpg+zr(itemp+i-1)*zr(ivf+ldec+i-1)
+            if (l_stat) tpg_b = tpg_b+zr(btemp+i-1)*zr(ivf+ldec+i-1)
         end do
         valpar(1) = xx
         valpar(2) = yy
@@ -127,6 +140,10 @@ subroutine te0128(option, nomte)
             do i = 1, nno
                 zr(iveres+i-1) = zr(iveres+i-1)+jac*zr(ipoids+ipg-1)*zr(ivf+ldec+i-1)&
                                 &*sigmEner*epsil*(tpg+tz0)**4
+                if (l_stat) then
+                    zr(iveres+i-1) = zr(iveres+i-1)-jac*zr(ipoids+ipg-1)*zr(ivf+ldec+i-1)&
+                                    &*sigmEner*epsil*(tpg_b+tz0)**4
+                end if
             end do
         end if
 !
