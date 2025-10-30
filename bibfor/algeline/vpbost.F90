@@ -103,6 +103,8 @@ subroutine vpbost(typres, nbmode, nbvect, omeshi, valpro, &
 !
     loginf = .false.
     logmax = .false.
+    vpinf2 = vpinf
+    vpmax2 = vpmax
     if (method .ne. 'SORENSEN') then
         do i = nbmode+1, nbvect
             if (valpro(i) .le. vpinf) then
@@ -124,7 +126,9 @@ subroutine vpbost(typres, nbmode, nbvect, omeshi, valpro, &
 !
         if (loginf) then
             if (vpinf2 .lt. vpinf) then
-                if (vpmax .gt. r8prem()) then
+! erreur de copier coller je pense
+!                if (vpmax .gt. r8prem()) then
+                if (vpinf .gt. r8prem()) then
                     tole = (abs(vpinf2-vpinf)/vpinf)
                     if (tole .lt. precdc) then
                         call utmess('A', 'ALGELINE3_58')
@@ -153,7 +157,9 @@ subroutine vpbost(typres, nbmode, nbvect, omeshi, valpro, &
 !
         if (logmax) then
             if (vpmax2 .gt. vpmax) then
-                if (vpinf .gt. r8prem()) then
+! erreur de copier coller je pense
+!                if (vpinf .gt. r8prem()) then
+                if (vpmax .gt. r8prem()) then
                     tole = (abs(vpmax2-vpmax)/vpmax)
                     if (tole .lt. precdc) then
                         call utmess('A', 'ALGELINE3_58')
@@ -213,7 +219,7 @@ subroutine vpbost(typres, nbmode, nbvect, omeshi, valpro, &
     if (niv .ge. 1) then
         write (ifm, 1600)
     end if
-!
+
 1600 format(72('-'))
 !
 end subroutine

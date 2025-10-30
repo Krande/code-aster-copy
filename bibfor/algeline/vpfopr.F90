@@ -19,7 +19,7 @@
 subroutine vpfopr(option, typres, lmasse, lraide, ldynam, &
                   omemin, omemax, omeshi, nbfreq, npivot, &
                   omecor, precsh, nbrssa, nblagr, solveu, &
-                  det, idet)
+                  det, idet, lpg)
 !     DETERMINATION DE SHIFT(S), D'UNE MATRICE SHIFTEE, DE SA FACTORISEE
 !     DU NBRE DE PIVOTS NEGATIFS (POUR TEST DE STURM) VOIRE DU NBRE
 !     DE FREQ DANS UNE BANDE.
@@ -133,6 +133,7 @@ subroutine vpfopr(option, typres, lmasse, lraide, ldynam, &
     integer(kind=8) :: lmasse, lraide, ldynam, nbrssa
     real(kind=8) :: omemin, omemax, omeshi, omecor, precsh, det(2)
     integer(kind=8) :: nbfreq, npivot(2), nblagr, idet(2)
+    aster_logical, optional, intent(in) :: lpg
 !
 !
 ! VARIABLES LOCALES
@@ -193,7 +194,11 @@ subroutine vpfopr(option, typres, lmasse, lraide, ldynam, &
         if (option(1:5) .eq. 'BANDE') then
             call utmess('I', 'ALGELINE6_41', sk='BANDE')
         else
-            call utmess('I', 'ALGELINE6_41', sk=option)
+            if ((option(1:11) .EQ. 'PLUS_PETITE') .and. (lpg)) then
+                call utmess('I', 'ALGELINE6_41', sk='PLUS_GRANDE')
+            else
+                call utmess('I', 'ALGELINE6_41', sk=option)
+            end if
         end if
     end if
 !     ------------------------------------------------------------------
