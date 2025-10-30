@@ -463,6 +463,7 @@ resuLuPostRocheRCCMRX = POST_ROCHE(
 )
 
 
+# FORME = 'RCC_MRX' + CONT_ABAT='CODIFIE': par défaut
 resuLuPostRocheGrMa = POST_ROCHE(
     LIMITE_ADM="NON",
     ZONE_ANALYSE=(_F(GROUP_MA="TUYAU", GROUP_NO_ORIG="A"),),
@@ -477,6 +478,42 @@ resuLuPostRocheGrMa = POST_ROCHE(
     PRESSION=(_F(GROUP_MA="TUYAU", VALE=1e6)),
     COUDE=_F(GROUP_MA="TUYAU", ANGLE=90, RCOURB=0.01),
 )
+
+# FORME = 'RCC_MRX' (défaut)
+# CONT_ABAT='DT'
+# (Contrainte vraie optimisé UT02-X9 calculé avec la formule proposée par la DT)
+resuLuPostRocheGrMa_DT = POST_ROCHE(
+    CONT_ABAT="DT",
+    LIMITE_ADM="NON",
+    ZONE_ANALYSE=(_F(GROUP_MA="TUYAU", GROUP_NO_ORIG="A"),),
+    MODELE=modele,
+    CARA_ELEM=cara_elem,
+    CHAM_MATER=ch_mater,
+    RESU_MECA=(
+        _F(TYPE_CHAR="POIDS", RESULTAT=poids_propre, NUME_ORDRE=1),
+        _F(TYPE_CHAR="DILAT_THERM", RESULTAT=dilatation_thermique, NUME_ORDRE=1),
+        _F(TYPE_CHAR="DEPLACEMENT", RESULTAT=deplacement_impose, NUME_ORDRE=1),
+    ),
+    PRESSION=(_F(GROUP_MA="TUYAU", VALE=1e6)),
+    COUDE=_F(GROUP_MA="TUYAU", ANGLE=90, RCOURB=0.01),
+)
+
+# FORME = ASNR
+resuLuPostRocheGrMa_ASNR = POST_ROCHE(
+    FORME="ASNR",
+    ZONE_ANALYSE=(_F(GROUP_MA="TUYAU", GROUP_NO_ORIG="A"),),
+    MODELE=modele,
+    CARA_ELEM=cara_elem,
+    CHAM_MATER=ch_mater,
+    RESU_MECA=(
+        _F(TYPE_CHAR="POIDS", RESULTAT=poids_propre, NUME_ORDRE=1),
+        _F(TYPE_CHAR="DILAT_THERM", RESULTAT=dilatation_thermique, NUME_ORDRE=1),
+        _F(TYPE_CHAR="DEPLACEMENT", RESULTAT=deplacement_impose, NUME_ORDRE=1),
+    ),
+    PRESSION=(_F(GROUP_MA="TUYAU", VALE=1e6)),
+    COUDE=_F(GROUP_MA="TUYAU", ANGLE=90, RCOURB=0.01),
+)
+
 
 # Tests cas de calcul
 # 1- deplacement (D)
