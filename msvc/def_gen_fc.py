@@ -117,40 +117,23 @@ def extract_symbols(obj_files):
 
 
 def generate_def_file(symbols, output_file):
-    """Generate a .def exporting both MSVC/ifx and GNU-style names via aliases.
+    """Generate a .def exporting only the exact, actually-defined symbols.
 
-    Rules per discovered internal symbol `s`:
-    - Always export the internal symbol `s` as-is.
-    - If `s` ends with `_` (GNU style), also export the alias without underscore: `base = s[:-1]`; emit `base=s`.
-    - If `s` does NOT end with `_` (MSVC/ifx style), also export the alias with underscore: emit `s_=s`.
-
-    This ensures both spellings are available regardless of which one is actually defined internally.
+    Rationale:
+    - When creating a static library or using lib.exe with a .def, MSVC expects every
+      name in EXPORTS to be found exactly in the provided object files. Alias forms
+      like `foo_=foo` are not honored when producing a static .lib and will instead
+      trigger unresolved externals for the alias name.
+    - Therefore we only emit the exact names we discovered with dumpbin from the
+      object files participating in this library.
     """
-    exports = []
-    for s in symbols:
-        exports.append(s)  # always export the actual internal symbol
-        if s.endswith("_"):
-            base = s[:-1]
-            if base:
-                exports.append(f"{base}={s}")
-        else:
-            exports.append(f"{s}_={s}")
-
-    # de-duplicate while preserving order
-    seen = set()
-    ordered = []
-    for e in exports:
-        if e not in seen:
-            seen.add(e)
-            ordered.append(e)
-
     with open(output_file, "w", encoding="utf-8") as f:
         f.write("LIBRARY bibfor\n")
         f.write("EXPORTS\n")
-        for e in ordered:
-            f.write(f"    {e}\n")
+        for s in symbols:
+            f.write(f"    {s}\n")
 
-    print(f"Generated {output_file} with {len(ordered)} exports (from {len(symbols)} symbols)")
+    print(f"Generated {output_file} with {len(symbols)} exports")
 
 
 def main():
