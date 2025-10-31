@@ -21,7 +21,7 @@ subroutine intget(sd_int_, ip, iocc, lonvec, savejv, &
                   rvect, cvect, kvect, vi, vr, &
                   vc, vk8, vk16, vk24, address, &
                   buffer)
-    use iso_c_binding, only: c_loc, c_ptr, c_f_pointer
+    use iso_c_binding, only: c_ptr
     implicit none
 ! Extract the value of a parameter in the temporary data structure for an
 ! integration scheme in linear dynamics (DYNA_VIBRA)
@@ -61,6 +61,8 @@ subroutine intget(sd_int_, ip, iocc, lonvec, savejv, &
 #include "blas/dcopy.h"
 #include "blas/zcopy.h"
 !
+!   Import additional iso_c_binding symbols after the includes
+    use iso_c_binding, only: c_loc, c_f_pointer
 !
 !   ====================================================================
 !   = 0 =   Variable declarations and initialization

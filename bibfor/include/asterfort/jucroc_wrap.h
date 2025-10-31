@@ -20,7 +20,7 @@
 !
 interface
     subroutine jucroc_wrap(nomc, nooc, nuoc, dim, pc)
-        use iso_c_binding, only:  c_loc, c_ptr, c_f_pointer
+        use iso_c_binding, only: c_ptr
         character(len=*) :: nomc
         character(len=*) :: nooc
         integer(kind=8) :: nuoc

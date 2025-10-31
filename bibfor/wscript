@@ -93,7 +93,9 @@ MAIN = "      program main\n      end program main\n"
 
 @Configure.conf
 def check_fortran_compiler_flags(self):
-    self.check_fortran_compiler_options("-fPIC")
+    # -fPIC is only needed on Linux/Unix platforms
+    if not self.env.ASTER_PLATFORM_MSVC64:
+        self.check_fortran_compiler_options("-fPIC")
     # self.check_fortran_compiler_options("-fno-lto")
     if "gfortran" in self.env.FC_NAME.lower():
         if "64" in self.env.DEST_CPU:
@@ -107,11 +109,21 @@ def check_fortran_compiler_flags(self):
         # long lines after preprocessing
         self.check_fortran_compiler_options("-ffree-line-length-none")
     if "ifort" in self.env.FC_NAME.lower():
-        self.check_fortran_compiler_options(["-fpe0", "-traceback"])
+        if not self.env.ASTER_PLATFORM_MSVC64:
+            # Linux-style flags
+            self.check_fortran_compiler_options(["-fpe0", "-traceback"])
         if "64" in self.env.DEST_CPU:
-            self.check_fortran_compiler_options("-i8", dest="FCFLAGS_INT64")
-            self.check_fortran_compiler_options("-r8", dest="FCFLAGS_INT64")
-        self.check_fortran_compiler_options(["-nogen-interfaces", "-xCORE-AVX2"])
+            if self.env.ASTER_PLATFORM_MSVC64:
+                # Use Windows-style flags for Intel Fortran
+                self.check_fortran_compiler_options("/integer-size:64", dest="FCFLAGS_INT64")
+                self.check_fortran_compiler_options("/real-size:64", dest="FCFLAGS_INT64")
+            else:
+                # Use Linux-style flags
+                self.check_fortran_compiler_options("-i8", dest="FCFLAGS_INT64")
+                self.check_fortran_compiler_options("-r8", dest="FCFLAGS_INT64")
+        # Only add architecture-specific flags on Linux
+        if not self.env.ASTER_PLATFORM_MSVC64:
+            self.check_fortran_compiler_options(["-nogen-interfaces", "-xCORE-AVX2"])
         if self.env.ASTER_PLATFORM_MSVC64:
             self.check_fortran_compiler_options(["/nologo"])
         # all Intel specific features must use:

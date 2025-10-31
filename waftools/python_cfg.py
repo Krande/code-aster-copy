@@ -100,6 +100,13 @@ def check_numpy_headers(self):
         numpy_includes = PureWindowsPath(*parts).as_posix()
     # split include paths into list for proper -I flags
     include_list = numpy_includes.split()
+    
+    # Add Python include directory for MSVC platform
+    if self.env.ASTER_PLATFORM_MSVC64:
+        cmd_py = self.env.PYTHON + ["-c", "\nimport sysconfig\nprint(sysconfig.get_path('include'))"]
+        python_includes = self.cmd_and_log(cmd_py, shell=False).strip()
+        include_list.append(python_includes)
+    
     # check the given includes dirs
     self.check(
         feature="c",
