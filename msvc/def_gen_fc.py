@@ -32,42 +32,61 @@ def find_object_files(build_dir):
 
 
 def extract_symbols(obj_files):
-    """Extract Fortran symbols from object files using llvm-nm."""
+    """Extract Fortran symbols from object files using dumpbin (COFF-aware).
+
+    Rules:
+    - Only External symbols that are defined in this object (exclude UNDEF)
+    - Exclude C++/CRT/RTTI/import thunks and similar internals
+    - Keep only names ending with '_' (Fortran convention)
+    - Exclude any names containing '.' (module metadata like module._)
+    - Exclude obvious module-related exports ending with '._' or containing '_module'
+    """
     symbols = set()
+
+    exclude_prefixes = (
+        "__imp_", "__Cxx", "__RT", "_TI", "_CT", "_Init_thread_", "$", "._", "__chkstk"
+    )
 
     for obj_file in obj_files:
         try:
-            # Run llvm-nm to get symbols
             result = subprocess.run(
-                ["llvm-nm", "--extern-only", "--defined-only", str(obj_file)],
+                ["dumpbin", "/SYMBOLS", str(obj_file)],
                 capture_output=True,
                 text=True,
                 check=True
             )
-
             for line in result.stdout.splitlines():
-                parts = line.split()
-                if len(parts) < 3:
+                if "External" not in line or "|" not in line:
+                    continue
+                if "UNDEF" in line:
+                    continue
+                parts = line.split('|', 1)
+                if len(parts) < 2:
+                    continue
+                right = parts[1].strip()
+                if not right:
+                    continue
+                token = right.split()[0]
+                name = token.strip().strip('()')
+
+                if not name:
+                    continue
+                if name.startswith(exclude_prefixes):
+                    continue
+                if name.startswith('?'):
+                    continue
+                if not name.endswith('_'):
+                    continue
+                if '.' in name:
+                    continue
+                if name.endswith('._') or '_module' in name:
                     continue
 
-                symbol_type = parts[1]
-                symbol_name = parts[2]
-
-                # Filter for Fortran symbols
-                # Fortran symbols typically end with _
-                # Skip C++ mangled symbols (starting with ?)
-                # T = Text/Code symbol (functions)
-
-                if symbol_type in ['T', 't']:
-                    # Include Fortran symbols (ending with _)
-                    # Skip C++ mangled symbols
-                    if symbol_name.endswith('_') and not symbol_name.startswith('?'):
-                        symbols.add(symbol_name)
-
-        except subprocess.CalledProcessError as e:
-            print(f"Warning: Failed to extract symbols from {obj_file}: {e}")
+                symbols.add(name)
+        except subprocess.CalledProcessError:
+            continue
         except FileNotFoundError:
-            print("Error: llvm-nm not found. Make sure LLVM tools are in PATH.")
+            print("Error: dumpbin.exe not found. Make sure MSVC tools are in PATH.")
             sys.exit(1)
 
     return sorted(symbols)
