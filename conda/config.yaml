@@ -27,7 +27,7 @@ fortran_compiler:
   - if: linux
     then: gfortran
   - if: win
-    then: flang
+    then: ifx
 
 c_compiler_version:
   - if: linux
