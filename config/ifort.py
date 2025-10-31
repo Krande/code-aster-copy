@@ -99,19 +99,50 @@ all_ifort_platforms = [('intel64', 'amd64'), ('em64t', 'amd64'), ('ia32', 'x86')
 
 @conf
 def gather_ifort_versions(conf, versions):
-    ifort_batch_file = pathlib.Path(os.getenv("INTEL_VARS_PATH")+'\\vars.bat')
+    # Check if we're in a conda build with Intel Fortran already configured
+    conda_intel = os.getenv("CONDA_BUILD_INTEL_FORTRAN")
     ifort_version = os.getenv("INTEL_FORTRAN_VERSION", "2025.1162")
-    if ifort_batch_file.exists():
-        Logs.info(f"Using ifort batch file: {ifort_batch_file}")
-        arch = 'amd64'
-        version = ifort_version
-        target = 'intel64'
-        targets = dict(intel64=target_compiler(conf, 'intel', arch, version, target, ifort_batch_file.as_posix()))
-        major = version[0:2]
-        versions['intel ' + major] = targets
-        return
-    else:
-        Logs.info(f"INTEL_VARS_PATH: {ifort_batch_file}, INTEL_FORTRAN_VERSION: {ifort_version}")
+
+    if conda_intel:
+        # Conda-based Intel Fortran - paths are already set, just verify compiler exists
+        Logs.info(f"Detecting conda-based Intel Fortran compiler")
+
+        # Try to find ifx in PATH
+        ifx_path = conf.find_program(['ifx', 'ifort'], var='FC_TEST', mandatory=False)
+        if ifx_path:
+            Logs.info(f"Found Intel Fortran compiler in PATH")
+
+            # Get current PATH, LIB, and INCLUDE from environment
+            current_path = os.getenv('PATH', '').split(';')
+            current_lib = os.getenv('LIB', '').split(';')
+            current_include = os.getenv('INCLUDE', '').split(';')
+
+            arch = 'amd64'
+            version = ifort_version
+            target = 'intel64'
+
+            # Create a conda-aware target_compiler
+            tc = target_compiler(conf, 'intel', arch, version, target, None)
+            tc.is_conda = True
+            tc.conda_paths = (current_path, current_include, current_lib)
+            targets = dict(intel64=tc)
+            major = version[0:2]
+            versions['intel ' + major] = targets
+            return
+
+    # Try environment variable pointing to vars.bat
+    intel_vars_path = os.getenv("INTEL_VARS_PATH")
+    if intel_vars_path:
+        ifort_batch_file = pathlib.Path(intel_vars_path + '\\vars.bat')
+        if ifort_batch_file.exists():
+            Logs.info(f"Using ifort batch file: {ifort_batch_file}")
+            arch = 'amd64'
+            version = ifort_version
+            target = 'intel64'
+            targets = dict(intel64=target_compiler(conf, 'intel', arch, version, target, ifort_batch_file.as_posix()))
+            major = version[0:2]
+            versions['intel ' + major] = targets
+            return
 
     version_pattern = re.compile(r'^...?.?\....?.?')
     try:
@@ -269,11 +300,24 @@ class target_compiler(object):
         self.bindirs = None
         self.incdirs = None
         self.libdirs = None
+        self.is_conda = False
+        self.conda_paths = None
 
     def evaluate(self):
         if self.is_done:
             return
         self.is_done = True
+
+        # Handle conda-based compiler
+        if self.is_conda and self.conda_paths:
+            Logs.info("Using conda-based Intel Fortran environment")
+            self.bindirs = [p for p in self.conda_paths[0] if p]
+            self.incdirs = [p for p in self.conda_paths[1] if p]
+            self.libdirs = [p for p in self.conda_paths[2] if p]
+            self.is_valid = True
+            return
+
+        # Handle traditional batch file based setup
         try:
             vs = self.conf.get_ifort_version_win32(self.compiler, self.version, self.bat_target, self.bat)
         except Errors.ConfigurationError as e:
@@ -328,8 +372,18 @@ def find_ifort_win32(conf):
     env = dict(conf.environ)
     if path:
         env.update(PATH=';'.join(path))
-    if not conf.cmd_and_log(fc + ['/nologo', '/help'], env=env):
-        conf.fatal('not intel fortran compiler could not be identified')
+
+    # For conda builds, skip the help check as compiler is already validated
+    conda_intel = os.getenv("CONDA_BUILD_INTEL_FORTRAN")
+    if not conda_intel:
+        # Only run help check for non-conda builds
+        try:
+            if not conf.cmd_and_log(fc + ['/nologo', '/help'], env=env):
+                conf.fatal('not intel fortran compiler could not be identified')
+        except UnicodeEncodeError:
+            # Handle encoding errors in compiler output gracefully
+            Logs.warn('ifort: Unicode encoding error in compiler output, skipping validation')
+
     v.FC_NAME = 'IFORT'
     if not v.LINK_FC:
         conf.find_program(linker_name, var='LINK_FC', path_list=path, mandatory=True)

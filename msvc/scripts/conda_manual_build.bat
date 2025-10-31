@@ -139,6 +139,10 @@ if "%FC%" == "ifx.exe" (
     set FCFLAGS=%FCFLAGS% /4R8 /fpp /MD /names:lowercase /assume:underscore /assume:nobscc /fpe:0
     :: Add lib paths
     set LDFLAGS=%LDFLAGS% /LIBPATH:%LIB_PATH_ROOT%/lib /LIBPATH:%LIB_PATH_ROOT%/bin /LIBPATH:%PREF_ROOT%/libs
+    set "INCLUDE=%BUILD_PREFIX%\opt\compiler\include\intel64;%BUILD_PREFIX%\Library\include;%INCLUDE%"
+    :: Signal to ifort.py that we're using conda-based Intel Fortran
+    set "INTEL_FORTRAN_VERSION=2025.1162"
+    set "CONDA_BUILD_INTEL_FORTRAN=1"
 ) else (
     echo "Using LLVM Flang Fortran compiler"
     set FC_SEARCH=flang
