@@ -27,6 +27,7 @@ subroutine vppara(modes, typcon, knega, lraide, lmasse, &
     implicit none
 #include "asterf_types.h"
 #include "jeveux.h"
+#include "asterc/r8depi.h"
 #include "asterfort/assert.h"
 #include "asterfort/jedema.h"
 #include "asterfort/jemarq.h"
@@ -82,9 +83,9 @@ subroutine vppara(modes, typcon, knega, lraide, lmasse, &
 ! IN NFREQG    : IN   : NBRE TOTAL DE MODES
 !     ------------------------------------------------------------------
 !
-    integer(kind=8) :: ineg, iprec, iret, ilgcon, nrscr
-    real(kind=8) :: rbid
-    complex(kind=8) :: zbid
+    integer(kind=8) :: ineg, iprec, iret, ilgcon, nrscr, ifreq
+    real(kind=8) :: rbid, fr2, fr3
+    complex(kind=8) :: zbid, caux
     aster_logical :: lns
 !     ------------------------------------------------------------------
 !
@@ -177,6 +178,23 @@ subroutine vppara(modes, typcon, knega, lraide, lmasse, &
         call vpermc(lmasse, lraide, nfreq, vectc, resur(mxresf+1), &
                     resur(2*mxresf+1), dbloq, omecor, resur(3*mxresf+1))
 !
+        if (typres(1:9) .eq. 'DYNAMIQUE') then
+! Dans le cas GEP a modes complexes + typres=DYNAMIQUE , on stocke jusqu'ici
+! avec om=(2*pi*f)**2, via rectfc:
+! resufr(ivec, 2)=dble(om) et resufr(ivec,3)=(dimag(om)/dble(om))/2.d0
+! Ceci afin detre coherent avec le calcul du residu de vpermc.
+! On fige ici la bonne valeur pour l'impression et le sockage ds la SD_RESULTAT
+            do ifreq = 1, nfreq
+                fr2 = resur(mxresf+ifreq)
+                fr3 = resur(2*mxresf+ifreq)
+                caux = dcmplx(fr2, 2*fr2*fr3)
+                caux = sqrt(caux)/r8depi()
+! valeur 'FREQUENCE' pour GEP a mode complexe (abs(lambda)): resufr(ifreq, 1)
+                resur(ifreq) = abs(caux)
+! valeur 'AMORTISSEMENT' pour GEP a mode complexe (Im(lambda)/abs(lambda)): resufr(ifreq,3)
+                resur(2*mxresf+ifreq) = dimag(caux)/abs(caux)
+            end do
+        end if
 !        - STOCKAGE DES VECTEURS PROPRES ---
         call vpstor(ineg, 'C', modes, nfreq, neq, &
                     [rbid], vectc, mxresf, nbpari, nbparr, &

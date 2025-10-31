@@ -23,6 +23,9 @@
 # Validation basée sur EPZZ, SIZZ en testant le maximum de la différence
 # entre Code_Aster et MFront
 
+import numpy as np
+from numpy.linalg import norm
+
 DEBUT(CODE="OUI", DEBUG=_F(SDVERI="NON"))
 
 
@@ -31,9 +34,6 @@ behaviour = CREA_LIB_MFRONT(NOM_COMPOR="PolyCrystalDDCC", UNITE_MFRONT=38)
 # SDVERI='NON' car la verification est trop couteuse en CPU
 
 # IGNORE_ALARM='MECANONLINE5_21' car pour RUNGE_KUTTA, RESI_GLOB_RELA=1.E-4 suffit pour une bonne precision
-
-from numpy.linalg import norm
-from numpy import *
 
 TEMP = 50
 
@@ -170,7 +170,7 @@ nvarita = 7 + nbgra * (6 + 3 * nb_systa + 6) + 1
 nvarpargra = 3 * nb_systa
 
 # densites de dislocation initiales : variables internes de 0 a 44
-avaria = zeros(nvarita)
+avaria = np.zeros(nvarita)
 for igr in range(nbgra):
     for isy in range(12):
         avaria[7 + 6 * nbgra + igr * nvarpargra + isy * 3] = rho_inia
@@ -203,7 +203,7 @@ nb_syst = 12
 nvarit = 7 + nbgr * (6 + nb_syst) + 6
 
 # densites de dislocation initiales : variables internes de 0 a 44
-avari = zeros(nvarit)
+avari = np.zeros(nvarit)
 for i in range(12 * nbgr):
     avari[7 + nbgr * 6 + i] = rho_ini
 lvari = list(avari)

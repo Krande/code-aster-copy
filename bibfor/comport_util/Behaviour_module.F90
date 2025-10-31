@@ -44,7 +44,7 @@ module Behaviour_module
     private :: prepEltSize1, prepGradVelo
     public :: getAsterVariableName, getMFrontVariableName
     private :: setFromOption, setFromCarcri
-    public :: detectVarc
+    public :: detectVarc, behaviourGetParameters
 ! ==================================================================================================
     private
 #include "asterc/indik8.h"
@@ -67,6 +67,7 @@ module Behaviour_module
 #include "asterfort/rccoma.h"
 #include "asterfort/rcvalb.h"
 #include "asterfort/rcvarc.h"
+#include "asterfort/tecach.h"
 #include "asterfort/utmess.h"
 #include "asterfort/verift.h"
 #include "blas/daxpy.h"
@@ -823,11 +824,11 @@ contains
 ! ----- Parameters
         type(Behaviour_Integ), intent(inout) :: BEHinteg
 ! ----- Local
-        character(len=8), parameter :: nameUMAT(ESVA_EXTE_NBMAXI) = (/ &
+        character(len=8), parameter :: nameUMAT(VARC_EXTE_NBMAXI) = (/ &
                                        'SECH    ', 'HYDR    ', 'IRRA    ', &
                                        'NEUT1   ', 'NEUT2   ', 'CORR    ', &
                                        'ALPHPUR ', 'ALPHBETA'/)
-        character(len=64) :: exteNameESVA(ESVA_EXTE_NBMAXI)
+        character(len=64) :: exteNameESVA(VARC_EXTE_NBMAXI)
         character(len=64) :: exteNameMGIS
         character(len=8) :: exteNameAster
         real(kind=8) :: valePrev, valeCurr
@@ -854,11 +855,11 @@ contains
         if (lMGIS) then
             mgisAddr = BEHinteg%behavESVA%behavESVAExte%mgisAddr
             call mgis_get_number_of_esvs(mgisAddr, nbESVA)
-            ASSERT(nbESVA .le. ESVA_EXTE_NBMAXI)
+            ASSERT(nbESVA .le. VARC_EXTE_NBMAXI)
             call mgis_get_esvs(mgisAddr, exteNameESVA)
         elseif (lUMAT) then
             exteNameESVA = nameUMAT
-            nbESVA = ESVA_EXTE_NBMAXI
+            nbESVA = VARC_EXTE_NBMAXI
         else
             ASSERT(ASTER_FALSE)
         end if
@@ -1324,7 +1325,7 @@ contains
 !   ------------------------------------------------------------------------------------------------
 !
         behavESVAGeom%coorElga = 0.d0
-        ASSERT(npg .le. ESVA_GEOM_NBMAXI)
+        ASSERT(npg .le. VARC_GEOM_NBMAXI)
         if (LDC_PREP_DEBUG .eq. 1) then
             WRITE (6, *) '<DEBUG>  Compute coordinates of Gauss points'
         end if
@@ -1370,8 +1371,8 @@ contains
         behavESVA%epsi_varc = 0.d0
         hasAnelastiStrains = ASTER_FALSE
 
-        call getVarcStrain('-', allVarcStrain, neps, behavESVA%epsi_varc)
-        call getVarcStrain('T', allVarcStrain, neps, behavESVA%depsi_varc)
+        call getVarcStrain('-', VARC_STRAIN_ALL, allVarcStrain, neps, behavESVA%epsi_varc)
+        call getVarcStrain('T', VARC_STRAIN_ALL, allVarcStrain, neps, behavESVA%depsi_varc)
 
 ! ----- DEBUG
         if (LDC_PREP_DEBUG .eq. 1) then
@@ -1571,5 +1572,36 @@ contains
 !
 !   ------------------------------------------------------------------------------------------------
     end subroutine
+! --------------------------------------------------------------------------------------------------
+!
+! behaviourGetParameters
+!
+! Get parameters from behaviour (linear and non-linear cases)
+!
+! Out relaComp         : RELATION in behaviour
+! Out defoComp         : DEFORMATION in behaviour
+!
+! --------------------------------------------------------------------------------------------------
+    subroutine behaviourGetParameters(relaName, defoComp)
+!   ------------------------------------------------------------------------------------------------
+! ----- Parameters
+        character(len=16), intent(out) :: relaName, defoComp
+! ----- Local
+        integer(kind=8) :: iret, jtab(7)
+!   ------------------------------------------------------------------------------------------------
+!
+        relaName = " "
+        defoComp = " "
+        call tecach('NNO', 'PCOMPOR', 'L', iret, nval=7, itab=jtab)
+        relaName = 'ELAS'
+        defoComp = 'PETIT'
+        if (iret .eq. 0) then
+            relaName = zk16(jtab(1)-1+RELA_NAME)
+            defoComp = zk16(jtab(1)-1+DEFO)
+        end if
+!
+!   ------------------------------------------------------------------------------------------------
+    end subroutine
+
 !
 end module Behaviour_module

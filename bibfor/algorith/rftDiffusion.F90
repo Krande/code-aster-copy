@@ -17,17 +17,18 @@
 ! --------------------------------------------------------------------
 !
 subroutine rftDiffusion(fami, kpg, ksp, poum, imate, c, &
-                        temp, diff)
+                        temp, diff, difl, difv)
     implicit none
 #include "asterc/r8t0.h"
 #include "asterfort/assert.h"
+#include "asterfort/leverettIsotTher.h"
 #include "asterfort/rcvalb.h"
 #include "asterfort/utmess.h"
 #include "rgi_module.h"
     character(len=*), intent(in) :: fami, poum
     integer(kind=8), intent(in) :: kpg, ksp, imate
     real(kind=8), intent(in) :: c, temp
-    real(kind=8), intent(out) :: diff
+    real(kind=8), intent(out) :: diff, difl, difv
 ! ......................................................................
 !   RFT law : diffusion coefficient calculation (SECH_RFT)
 !
@@ -36,13 +37,16 @@ subroutine rftDiffusion(fami, kpg, ksp, poum, imate, c, &
 !   temp (in) : temperature
 !
 !   diff (out) : coefficient de diffusion
+!   difl (out) : coefficient de diffusion liquide
+!   difv (out) : coefficient de diffusion vapeur
 ! ......................................................................
-    integer(kind=8)           :: codret(5), nbpar
-    real(kind=8)      :: valres(5), hygr, valpar(1), dpc, tz0
+    integer(kind=8), parameter :: nbres = 7
+    integer(kind=8)           :: codret(nbres), nbpar
+    real(kind=8)      :: valres(nbres), hygr, valpar(1), dpc, tz0
     real(kind=8)      :: richardsDiffusionCoef, vapourDiffusionCoef
     real(kind=8)      :: perm_in, qsr_k, poro, a_mil, b_mil, t0_C, vg_m_p
-    real(kind=8)      :: t0_K, tempK, beta, satu
-    character(len=16) :: nomres(5)
+    real(kind=8)      :: t0_K, tempK, beta, satu, coef_l, coef_t
+    character(len=16) :: nomres(nbres)
     character(len=8) :: nompar(1)
 !
 !   --------------------------------------------------------------------
@@ -55,16 +59,20 @@ subroutine rftDiffusion(fami, kpg, ksp, poum, imate, c, &
     nomres(3) = 'A_MIL'
     nomres(4) = 'B_MIL'
     nomres(5) = 'VG_M_P'
+    nomres(6) = 'COEF_UNITE_L'
+    nomres(7) = 'COEF_UNITE_T'
 
     call rcvalb(fami, kpg, ksp, poum, imate, &
                 ' ', 'SECH_RFT', 0, ' ', [0.d0], &
-                5, nomres, valres, codret, 1)
+                nbres, nomres, valres, codret, 1)
 
     perm_in = valres(1)
     qsr_k = valres(2)
     a_mil = valres(3)
     b_mil = valres(4)
     vg_m_p = valres(5)
+    coef_l = valres(6)
+    coef_t = valres(7)
 
     nomres(1) = 'FONC_DESORP'
     nbpar = 1
@@ -79,6 +87,7 @@ subroutine rftDiffusion(fami, kpg, ksp, poum, imate, c, &
 !       si un jour on veut autorisé cela il faudra faire les appels
 !       avec temp en paramètre et rcvala pour avoir le bon temp
 !       selon l'option
+!       mais vu les restrictions d'unités ca parait compliqué en l'état
     else
 !       leverett isotherm
         call leverettIsotTher(c, temp, imate, hygr, dpc, poro, t0_C, beta)
@@ -94,56 +103,17 @@ subroutine rftDiffusion(fami, kpg, ksp, poum, imate, c, &
     call richardsDiffusion(satu, tempK, perm_in, t0_K, qsr_k, &
                            vg_m_p, poro, beta, dpc, richardsDiffusionCoef)
 
+!   difv est intrinsequement calculé en m^2/s compte-tenu des paramètres en dur
+!   difl est définit par l'unité surfacique de PERM_IN ([PERM_IN]) : [PERM_IN]/s
+
+    difv = vapourDiffusionCoef*coef_t/coef_l**2
+    difl = richardsDiffusionCoef*coef_t
     diff = vapourDiffusionCoef+richardsDiffusionCoef
+
 !-----------------------------------------------------------------------
 !-----------------------------------------------------------------------
 contains
 !
-!   --------------------------------------------------------------------
-    subroutine leverettIsotTher(c, temp, imate, hygr, dpc, poro, t0_C, beta)
-!
-#include "asterfort/rcvala.h"
-#include "asterfort/leverettIsot.h"
-!
-!      .................................................................
-!      evaluation of hygrometry with leverett isotherm for thermic
-!
-!      c (in) : concentration en eau
-!      temp (in) : temperature
-!
-!      hygr (out) : hygrometry
-!      dpc (out) : capillar pressure derivative
-!
-!      .................................................................
-        integer(kind=8), intent(in) :: imate
-        real(kind=8), intent(in) :: c, temp
-        real(kind=8), intent(out) :: hygr, dpc, beta, poro, t0_C
-!
-        integer(kind=8)           :: codret(5)
-        real(kind=8)      :: valres(5)
-        character(len=16) :: nomres(5)
-        real(kind=8)      :: alpha, ad, satu
-!
-        nomres(1) = 'VG_PR'
-        nomres(2) = 'VG_N'
-        nomres(3) = 'ATH'
-        nomres(4) = 'TEMP_0_C'
-        nomres(5) = 'PORO'
-!
-        call rcvala(imate, ' ', 'BETON_DESORP', 0, ' ', [0.d0], &
-                    5, nomres, valres, codret, 0)
-        ASSERT(codret(1) .eq. 0)
-        alpha = valres(1)
-        beta = valres(2)
-        ad = valres(3)
-        t0_C = valres(4)
-        poro = valres(5)
-        satu = c/poro/1.d3
-!
-        call leverettIsot(temp, satu, alpha, beta, ad, t0_C, hygr, dpc)
-
-    end subroutine leverettIsotTher
-!   --------------------------------------------------------------------
 !   --------------------------------------------------------------------
     subroutine vapourDiffusion(satu, tempK, dpc, hygr, poro, a_mil, b_mil, &
                                vapDiff)

@@ -59,7 +59,7 @@ subroutine verili(nomres, ii, fpli1, fpli2, iret)
     integer(kind=8) :: nbecmx, nbnoe1, nbnoe2, numgd
 !-----------------------------------------------------------------------
     parameter(nbcmpm=10)
-    parameter(nbecmx=10)
+    parameter(nbecmx=11)
     character(len=8) :: nomres, nomg
     character(len=24) :: fpli1, fpli2
     character(len=24) :: valk(6)
@@ -80,7 +80,7 @@ subroutine verili(nomres, ii, fpli1, fpli2, iret)
 !
     nomg = 'DEPL_R'
     call dismoi('NB_EC', nomg, 'GRANDEUR', repi=nbec)
-    if (nbec .gt. 10) then
+    if (nbec .gt. 11) then
         call utmess('F', 'MODELISA_94')
     end if
 !

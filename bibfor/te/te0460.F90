@@ -22,15 +22,15 @@ subroutine te0460(nomopt, nomte)
     use HHO_size_module
     use HHO_stabilization_module, only: hhoStabScal, hdgStabScal
     use HHO_gradrec_module, only: hhoGradRecVec, hhoGradRecFullVec
-    use HHO_init_module, only: hhoInfoInitCell
+    use HHO_init_module, only: hhoInfoInitCellAndFace
     use HHO_matrix_module
 !
     implicit none
 !
-#include "asterf_types.h"
-#include "asterfort/HHO_size_module.h"
-#include "asterfort/assert.h"
 #include "jeveux.h"
+#include "asterf_types.h"
+#include "asterfort/assert.h"
+#include "asterfort/HHO_size_module.h"
 !
 ! --------------------------------------------------------------------------------------------------
 !  HHO
@@ -52,10 +52,16 @@ subroutine te0460(nomopt, nomte)
 !
 ! --- Retrieve HHO informations
 !
-    call hhoInfoInitCell(hhoCell, hhoData)
+    call hhoInfoInitCellAndFace(hhoCell, hhoData)
 !
     call hhoTherNLDofs(hhoCell, hhoData, cbs, fbs, total_dofs, gbs)
-
+!
+!   Array to large to be saved
+    if ((hhoCell%ndim == 3 .and. hhoData%cell_degree() > 2) .or. &
+        hhoData%cell_degree() > 3) then
+        goto 999
+    end if
+!
 ! ----- Compute vectoriel Gradient reconstruction
     call hhoGradRecFullVec(hhoCell, hhoData, gradfullvec)
 !
@@ -76,5 +82,7 @@ subroutine te0460(nomopt, nomte)
 !
     call stabscal%write('PCHHOST', ASTER_TRUE)
     call stabscal%free()
+!
+999 continue
 !
 end subroutine

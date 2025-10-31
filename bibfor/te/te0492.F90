@@ -20,7 +20,7 @@ subroutine te0492(nomopt, nomte)
 !
     use HHO_type
     use HHO_size_module, only: hhoTherDofs
-    use HHO_init_module, only: hhoInfoInitCell
+    use HHO_init_module, only: hhoInfoInitCellAndFace
     use HHO_Dirichlet_module
 !
     implicit none
@@ -28,9 +28,9 @@ subroutine te0492(nomopt, nomte)
 #include "jeveux.h"
 #include "asterf_types.h"
 #include "asterfort/assert.h"
+#include "asterfort/HHO_size_module.h"
 #include "asterfort/jevech.h"
 #include "asterfort/writeVector.h"
-#include "asterfort/HHO_size_module.h"
 !
 ! --------------------------------------------------------------------------------------------------
 !  HHO - Thermics
@@ -44,14 +44,29 @@ subroutine te0492(nomopt, nomte)
     type(HHO_Data) :: hhoData
     type(HHO_Cell) :: hhoCell
     real(kind=8) :: rhs_cine(MSIZE_TDOFS_SCAL)
-    integer(kind=8) :: cbs, fbs, total_dofs
+    integer(kind=8) :: cbs, fbs, total_dofs, j_func, j_time
     real(kind=8), pointer :: r_vale(:) => null()
+    character(len=8) :: nomfunct(7)
 !
 ! --- Retrieve HHO informations
 !
-    call hhoInfoInitCell(hhoCell, hhoData)
+    call hhoInfoInitCellAndFace(hhoCell, hhoData)
 !
-    if (nomopt .eq. 'HHO_CINE_R_THER') then
+    if (nomopt .eq. 'HHO_CINE_F_THER') then
+!
+! --- Read Name of function
+!
+        call jevech('PFONC', 'L', j_func)
+        nomfunct(1:hhoCell%nbfaces+1) = zk8(j_func:j_func-1+hhoCell%nbfaces+1)
+!
+! -- Get current time
+        call jevech('PINSTPR', 'L', j_time)
+!
+! --- Projection of the boundary conditions
+!
+        call hhoDiriTherProjFunc(hhoCell, hhoData, nomfunct, zr(j_time), rhs_cine)
+!
+    elseif (nomopt .eq. 'HHO_CINE_R_THER') then
 !
 ! --- Read Name of field
 !

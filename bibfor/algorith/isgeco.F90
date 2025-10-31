@@ -40,7 +40,7 @@ subroutine isgeco(icod1, icod2, ndim, iopt, icod)
 #include "asterfort/isdeco.h"
     integer(kind=8) :: i, ik, iopt, nbcpmx, ndim
 !-----------------------------------------------------------------------
-    parameter(nbcpmx=300)
+    parameter(nbcpmx=320)
     integer(kind=8) :: icod1(1), icod2(1), icod(1)
     integer(kind=8) :: idec1(nbcpmx), idec2(nbcpmx), idec(nbcpmx)
 !

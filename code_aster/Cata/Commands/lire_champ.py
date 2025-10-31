@@ -46,6 +46,7 @@ LIRE_CHAMP = OPER(
     fr=tr("Lire un champ dans un fichier au format MED et le stocker dans un concept."),
     reentrant="n",
     MAILLAGE=SIMP(statut="o", typ=maillage_sdaster),
+    NUME_DDL=SIMP(statut="f", typ=nume_ddl_sdaster),
     FORMAT=SIMP(statut="f", typ="TXM", defaut="MED", into=("MED",)),
     UNITE=SIMP(statut="f", typ=UnitType("med"), defaut=81, inout="in"),
     b_format=BLOC(

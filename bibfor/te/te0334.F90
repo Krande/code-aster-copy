@@ -61,7 +61,7 @@ subroutine te0334(option, nomte)
     integer(kind=8), parameter :: nbsgm = 4
     aster_logical :: l_modi_cp
     real(kind=8) :: epsiPlas(mxcmel), epsiCreep(nbsgm)
-    real(kind=8) :: epsiTota(6), epsiVarc(6), epsiMeca(6), sigma(4)
+    real(kind=8) :: epsiTota(6), epsiVarc(6), epsiMeca(6), sigmEner(4)
     integer(kind=8) :: nbVari, variIndxTemp, nbVariGranger
     real(kind=8) :: e, nu, c1, c2, trsig
     aster_logical :: l_creep, lTempInVari, lCplan, lDplan, lMetaLemaAni, lTHM
@@ -76,7 +76,7 @@ subroutine te0334(option, nomte)
     integer(kind=8) :: elasID
     character(len=16) :: elasKeyword, relaComp, kit_comp_1, kit_comp_2
     type(All_Varc_Strain) :: allVarcStrain
-    real(kind=8) :: tempkpg, time
+    real(kind=8) :: tempkpg
     real(kind=8) :: d(4, 4)
 !
 ! --------------------------------------------------------------------------------------------------
@@ -206,7 +206,7 @@ subroutine te0334(option, nomte)
 ! ----- Get elastic parameters (only isotropic elasticity)
         call get_elas_para(fami, zi(jvMater), '+', kpg, ksp, &
                            elasID, elasKeyword, &
-                           time=time, temp=tempkpg, e_=e, nu_=nu)
+                           time=allVarcStrain%time, temp=allVarcStrain%temp, e_=e, nu_=nu)
         ASSERT(elasID .eq. ELAS_ISOT)
 
 ! ----- Compute non-mechanical strains (epsiVarc) for some external state variables
@@ -214,7 +214,7 @@ subroutine te0334(option, nomte)
                             zi(jvMater), lMetaLemaAni, &
                             elasID, elasKeyword, &
                             allVarcStrain)
-        call getVarcStrain('+', allVarcStrain, 6, epsiVarc)
+        call getVarcStrain('+', VARC_STRAIN_ALL, allVarcStrain, 6, epsiVarc)
         epsiVarc(4) = epsiVarc(4)/sqrt(2.d0)
 
 ! ----- Compute mechanical strains epsiMeca = epsiTota - epsiVarc
@@ -222,7 +222,7 @@ subroutine te0334(option, nomte)
         epsiMeca(1:4) = epsiTota(1:4)-epsiVarc(1:4)
 
         if (lCplan) then
-            call dmatmc(fami, zi(jvMater), time, '+', kpg, ksp, &
+            call dmatmc(fami, zi(jvMater), allVarcStrain%time, '+', kpg, ksp, &
                         anglNaut, nbSig, d, l_modi_cp)
             epsiMeca(3) = -1.d0/d(3, 3)* &
                           (d(3, 1)*(epsiMeca(1)-epsiVarc(1))+ &
@@ -241,26 +241,26 @@ subroutine te0334(option, nomte)
 
 ! ----- Compute stresses
         do iSig = 1, nbSig
-            sigma(iSig) = zr(jvSigm+(kpg-1)*nbSig+iSig-1)
+            sigmEner(iSig) = zr(jvSigm+(kpg-1)*nbSig+iSig-1)
         end do
         if (lCplan) then
-            trsig = sigma(1)+sigma(2)
+            trsig = sigmEner(1)+sigmEner(2)
         else
-            trsig = sigma(1)+sigma(2)+sigma(3)
+            trsig = sigmEner(1)+sigmEner(2)+sigmEner(3)
         end if
 
 ! ----- Compute plastic strains epsiPlas = epsi_tota - epsi_elas - epsiCreep
         c1 = (1.d0+nu)/e
         c2 = nu/e
-        epsiPlas(nbEps*(kpg-1)+1) = epsiMeca(1)-(c1*sigma(1)-c2*trsig)-epsiCreep(1)
-        epsiPlas(nbEps*(kpg-1)+2) = epsiMeca(2)-(c1*sigma(2)-c2*trsig)-epsiCreep(2)
+        epsiPlas(nbEps*(kpg-1)+1) = epsiMeca(1)-(c1*sigmEner(1)-c2*trsig)-epsiCreep(1)
+        epsiPlas(nbEps*(kpg-1)+2) = epsiMeca(2)-(c1*sigmEner(2)-c2*trsig)-epsiCreep(2)
         if (lCplan) then
             epsiPlas(nbEps*(kpg-1)+3) = -(epsiPlas(nbEps*(kpg-1)+1)+epsiPlas(nbEps*(kpg-1)+2))
         else
-            epsiPlas(nbEps*(kpg-1)+3) = epsiMeca(3)-(c1*sigma(3)-c2*trsig)- &
+            epsiPlas(nbEps*(kpg-1)+3) = epsiMeca(3)-(c1*sigmEner(3)-c2*trsig)- &
                                         epsiCreep(3)
         end if
-        epsiPlas(nbEps*(kpg-1)+4) = epsiMeca(4)-c1*sigma(4)-epsiCreep(4)
+        epsiPlas(nbEps*(kpg-1)+4) = epsiMeca(4)-c1*sigmEner(4)-epsiCreep(4)
     end do
 
 ! - Plastic strain output

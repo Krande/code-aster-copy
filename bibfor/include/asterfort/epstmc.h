@@ -15,22 +15,19 @@
 ! You should have received a copy of the GNU General Public License
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
-
-!
 !
 interface
-    subroutine epstmc(fami     , ndim  , instan, poum   , kpg   ,&
-                      ksp      , angl_naut, j_mater, option,&
-                      epsi_varc)
-        character(len=*), intent(in) :: fami
-        integer(kind=8), intent(in) :: ndim
-        character(len=*), intent(in) :: poum
-        integer(kind=8), intent(in) :: kpg
-        integer(kind=8), intent(in) :: ksp
-        integer(kind=8), intent(in) :: j_mater
-        real(kind=8), intent(in) :: angl_naut(3)
-        character(len=16), intent(in) :: option
-        real(kind=8), intent(in) :: instan
-        real(kind=8), intent(out) :: epsi_varc(6)
+    subroutine epstmc(fami, poum, kpg, ksp, ndim, &
+                      time, anglNaut, jvMaterCode, &
+                      indxVarcStrain, allVarcStrain, &
+                      epsiVarc_)
+        use BehaviourStrain_type
+        character(len=*), intent(in) :: fami, poum
+        integer(kind=8), intent(in) :: kpg, ksp, ndim
+        real(kind=8), intent(in) :: time, anglNaut(3)
+        integer(kind=8), intent(in) :: jvMaterCode
+        integer(kind=8), intent(in) :: indxVarcStrain
+        type(All_Varc_Strain), intent(inout) :: allVarcStrain
+        real(kind=8), optional, intent(out) :: epsiVarc_(6)
     end subroutine epstmc
 end interface

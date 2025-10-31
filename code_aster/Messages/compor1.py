@@ -383,21 +383,6 @@ Pour ne pas prendre en compte l'effet de %(k3)s, déformation correspondante nul
 Pour le comportement %(k1)s les paramètres %(k2)s et %(k3)s sont obligatoires.
 """
     ),
-    77: _(
-        """
-Le calcul de ENEL_ELGA  n'est pas possible avec DEFORMATION= %(k1)s.
-"""
-    ),
-    78: _(
-        """
-Le calcul de ENER_TOTALE  n'est pas possible avec DEFORMATION= %(k1)s.
-"""
-    ),
-    79: _(
-        """
-Le calcul de ETOT_ELGA  n'est pas possible avec DEFORMATION= %(k1)s.
-"""
-    ),
     80: _(
         """
 DELTA1 = %(r1)f doit toujours rester entre 0 et 1.

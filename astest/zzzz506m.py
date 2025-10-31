@@ -80,7 +80,10 @@ RES = STAT_NON_LINE(
         METHODE="PETSC",
         PRE_COND="HPDDM",
         RESI_RELA=1e-10,
-        OPTION_PETSC="-ksp_monitor_true_residual -log_view -pc_hpddm_levels_1_eps_nev 50",
+        TYPE_RESOL="HARMO",
+        NB_MODE=50,
+        SEUIL=1e-6,
+        OPTION_PETSC="-ksp_monitor_true_residual -log_view",
     ),
 )
 

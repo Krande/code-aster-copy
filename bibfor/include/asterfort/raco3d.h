@@ -15,15 +15,10 @@
 ! You should have received a copy of the GNU General Public License
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
-
-!
 !
 interface
-    subroutine raco3d(numdlz, iocc, fonrez, lisrez, chargz)
-        character(len=*) :: numdlz
-        integer(kind=8) :: iocc
-        character(len=*) :: fonrez
-        character(len=*) :: lisrez
-        character(len=*) :: chargz
+    subroutine raco3d(iocc, listRelaZ, loadZ)
+        integer(kind=8), intent(in) :: iocc
+        character(len=*), intent(in):: loadZ, listRelaZ
     end subroutine raco3d
 end interface

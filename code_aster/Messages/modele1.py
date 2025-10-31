@@ -96,6 +96,15 @@ Il est d'usage d'utiliser un maillage dans le plan Z passant par l'origine pour 
          (par exemple 'PLAN_DIAG' en thermique, 'AXIS_SI' en mécanique)
 """
     ),
+    65: _(
+        """La maille %(k1)s porte un élément fini de bord, mais elle ne borde aucun élément ayant une "rigidité". Ceci est interdit avec les méthodes HHO.
+
+  -> Conseil :
+     Il faut ajouter un volume pour les mailles de bord.
+     Sinon, vérifier la définition du modèle (AFFE_MODELE) en évitant l'utilisation
+     de l'opérande TOUT='OUI'.
+"""
+    ),
     70: _(
         """
  Possible erreur utilisateur dans la commande AFFE_MODELE :

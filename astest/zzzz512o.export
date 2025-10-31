@@ -1,0 +1,9 @@
+P time_limit 20
+P memory_limit 1024
+P ncpus 1
+P mpi_nbcpu 1
+P mpi_nbnoeud 1
+P testlist submit verification sequential
+
+F comm zzzz512m.py D 1
+F mmed zzzz512h.mmed D 20

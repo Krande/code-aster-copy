@@ -1,0 +1,905 @@
+# coding=utf-8
+# --------------------------------------------------------------------
+# Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
+# This file is part of code_aster.
+#
+# code_aster is free software: you can redistribute it and/or modify
+# it under the terms of the GNU General Public License as published by
+# the Free Software Foundation, either version 3 of the License, or
+# (at your option) any later version.
+#
+# code_aster is distributed in the hope that it will be useful,
+# but WITHOUT ANY WARRANTY; without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+# GNU General Public License for more details.
+#
+# You should have received a copy of the GNU General Public License
+# along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
+# --------------------------------------------------------------------
+
+# MODELISATION F  : LOI RFT
+DEBUT(CODE="OUI", ERREUR=_F(ALARME="EXCEPTION"), DEBUG=_F(SDVERI="OUI"))
+
+# COPIE DE HSNA102F avec système d'unité mm et heure, minute ou jour
+
+MAIL = LIRE_MAILLAGE(FORMAT="MED")
+MAIL = MODI_MAILLAGE(reuse=MAIL, MAILLAGE=MAIL, ECHELLE=1e3)
+
+#  DEFINTION DES PROPRIETES HYDRIQUES DU BETON
+
+T0_C = 20
+T0_K = T0_C + 273.15
+
+alpha = 9.33427661  # premier coefficient de Van Genuchten [-]
+beta = 0.38923339  # second coefficient de Van Genuchten [-]
+Ad = 10.160105601  # activation thermique de l'isotherme
+K0 = 1.175e-20 * 1e6  # Perméabilité intrinsèque du liquide [mm²]
+p = 2.91  # facteur d'interaction porale [-]
+a = 2.607  # premier coefficient de Millington [-]
+b = 7.0  # second coefficient de Millington [-]
+Ea_R = 9918.698  # Energie d'activation [K]'
+poro = 0.161  # porosité moyenne [-]
+
+MOSECH = (
+    AFFE_MODELE(
+        MAILLAGE=MAIL,
+        AFFE=_F(
+            GROUP_MA=("SURF", "FE", "FI", "DSUP", "DINF"),
+            MODELISATION="AXIS_SECH",
+            PHENOMENE="THERMIQUE",
+        ),
+    ),
+)
+
+#  LA TEMPERATURE EST CONSTANTE ET EGALE A 20 DEG. PDT TT L'ESSAI
+
+TEMP = CREA_CHAMP(
+    TYPE_CHAM="NOEU_TEMP_R",
+    OPERATION="AFFE",
+    MAILLAGE=MAIL,
+    AFFE=_F(TOUT="OUI", NOM_CMP="TEMP", VALE=20.0),
+)
+
+
+CEQ = DEFI_CONSTANTE(VALE=58.8)
+
+CHARSE = AFFE_CHAR_SECH_F(MODELE=MOSECH, SECH_IMPO=_F(GROUP_MA="FE", SECH=CEQ))
+
+#      LES INSTANTS DE CALCULS CORRESPONDENT AUX PROFILS DE TENEUR EN EAU
+#      PROPOSES FIG. 15.1., P.199 DE [GRANGER, 1995]
+#      1 HEURE  -->      3600s
+#      3 JOURS   -->   259200s
+#     28 JOURS  -->   2419200s
+#      1 AN 1/4 -->  39420000s
+#      3 ANS    -->  94608000s
+#      5 ANS    --> 157680000s
+
+
+# TEST en MM et munite :
+# =====================
+
+BETON = DEFI_MATERIAU(
+    BETON_DESORP=_F(LEVERETT="OUI", PORO=poro, VG_PR=alpha, VG_N=beta, ATH=Ad, TEMP_0_C=T0_C),
+    SECH_RFT=_F(
+        PERM_IN=K0, QSR_K=Ea_R, A_MIL=a, B_MIL=b, VG_M_P=p, UNITE_LONGUEUR="MM", UNITE_TEMPS="MIN"
+    ),
+)
+
+CHMAT = (
+    AFFE_MATERIAU(
+        MAILLAGE=MAIL,
+        AFFE=_F(GROUP_MA="SURF", MATER=BETON),
+        AFFE_VARC=(_F(NOM_VARC="TEMP", CHAM_GD=TEMP, VALE_REF=0),),
+    ),
+)
+
+LISTSECH = (
+    DEFI_LIST_REEL(
+        DEBUT=0.0,
+        INTERVALLE=(
+            _F(JUSQU_A=3600 / 60, NOMBRE=10),
+            _F(JUSQU_A=259200 / 60, NOMBRE=10),
+            _F(JUSQU_A=2419200 / 60, NOMBRE=10),
+            _F(JUSQU_A=39420000 / 60, NOMBRE=10),
+            _F(JUSQU_A=94608000 / 60, NOMBRE=10),
+            _F(JUSQU_A=157680000 / 60, NOMBRE=10),
+        ),
+    ),
+)
+LISTDEP = (
+    DEFI_LIST_REEL(
+        VALE=(3600 / 60, 259200 / 60, 2419200 / 60, 39420000 / 60, 94608000 / 60, 157680000 / 60)
+    ),
+)
+
+RESUSECH = (
+    SECH_NON_LINE(
+        MODELE=MOSECH,
+        EXCIT=_F(CHARGE=CHARSE),
+        CHAM_MATER=CHMAT,
+        SOLVEUR=_F(METHODE="MULT_FRONT"),
+        PARM_THETA=0.57,
+        ETAT_INIT=_F(VALE=128.8),
+        INCREMENT=_F(LIST_INST=LISTSECH),
+        COMPORTEMENT=_F(RELATION="SECH_RFT", TOUT="OUI"),
+        INFO=1,
+        CONVERGENCE=_F(ITER_GLOB_MAXI=20, RESI_GLOB_RELA=1e-06),
+    ),
+)
+
+# TEST EN X=0.0
+TEST_RESU(
+    RESU=(
+        _F(
+            GROUP_NO="P0",
+            INST=3600 / 60,
+            REFERENCE="AUTRE_ASTER",
+            RESULTAT=RESUSECH,
+            NOM_CHAM="SECH",
+            NOM_CMP="SECH",
+            VALE_CALC=1.2879999999999998e02,
+            VALE_REFE=1.2879999999999998e02,
+            PRECISION=1.0e-2,
+        ),
+        _F(
+            GROUP_NO="P0",
+            INST=259200 / 60,
+            REFERENCE="AUTRE_ASTER",
+            RESULTAT=RESUSECH,
+            NOM_CHAM="SECH",
+            NOM_CMP="SECH",
+            VALE_CALC=1.2879999999999364e02,
+            VALE_REFE=1.2879999999999364e02,
+            PRECISION=1.0e-2,
+        ),
+        _F(
+            GROUP_NO="P0",
+            INST=2419200 / 60,
+            REFERENCE="AUTRE_ASTER",
+            RESULTAT=RESUSECH,
+            NOM_CHAM="SECH",
+            NOM_CMP="SECH",
+            VALE_CALC=1.2845780063601214e02,
+            VALE_REFE=1.2845780063601214e02,
+            PRECISION=1.0e-2,
+        ),
+        _F(
+            GROUP_NO="P0",
+            INST=39420000 / 60,
+            REFERENCE="AUTRE_ASTER",
+            RESULTAT=RESUSECH,
+            NOM_CHAM="SECH",
+            NOM_CMP="SECH",
+            VALE_CALC=1.0511662983796056e02,
+            VALE_REFE=1.0511662983796056e02,
+            PRECISION=1.0e-2,
+        ),
+        _F(
+            GROUP_NO="P0",
+            INST=94608000 / 60,
+            REFERENCE="AUTRE_ASTER",
+            RESULTAT=RESUSECH,
+            NOM_CHAM="SECH",
+            NOM_CMP="SECH",
+            VALE_CALC=9.3223367211295169e01,
+            VALE_REFE=9.3223367211295169e01,
+            PRECISION=1.0e-2,
+        ),
+        _F(
+            GROUP_NO="P0",
+            INST=157680000 / 60,
+            REFERENCE="AUTRE_ASTER",
+            RESULTAT=RESUSECH,
+            NOM_CHAM="SECH",
+            NOM_CMP="SECH",
+            VALE_CALC=8.6243397581457245e01,
+            VALE_REFE=8.6243397581457245e01,
+            PRECISION=1.0e-2,
+        ),
+    )
+)
+
+# TEST EN X=0.04
+TEST_RESU(
+    RESU=(
+        _F(
+            GROUP_NO="P4",
+            INST=3600 / 60,
+            REFERENCE="AUTRE_ASTER",
+            RESULTAT=RESUSECH,
+            NOM_CHAM="SECH",
+            NOM_CMP="SECH",
+            VALE_CALC=1.2879999999999970e02,
+            VALE_REFE=1.2879999999999970e02,
+            PRECISION=1.0e-2,
+        ),
+        _F(
+            GROUP_NO="P4",
+            INST=259200 / 60,
+            REFERENCE="AUTRE_ASTER",
+            RESULTAT=RESUSECH,
+            NOM_CHAM="SECH",
+            NOM_CMP="SECH",
+            VALE_CALC=1.2879970557803858e02,
+            VALE_REFE=1.2879970557803858e02,
+            PRECISION=1.0e-2,
+        ),
+        _F(
+            GROUP_NO="P4",
+            INST=2419200 / 60,
+            REFERENCE="AUTRE_ASTER",
+            RESULTAT=RESUSECH,
+            NOM_CHAM="SECH",
+            NOM_CMP="SECH",
+            VALE_CALC=1.2622418002788167e02,
+            VALE_REFE=1.2622418002788167e02,
+            PRECISION=1.0e-2,
+        ),
+        _F(
+            GROUP_NO="P4",
+            INST=39420000 / 60,
+            REFERENCE="AUTRE_ASTER",
+            RESULTAT=RESUSECH,
+            NOM_CHAM="SECH",
+            NOM_CMP="SECH",
+            VALE_CALC=1.0088005495545711e02,
+            VALE_REFE=1.0088005495545711e02,
+            PRECISION=1.0e-2,
+        ),
+        _F(
+            GROUP_NO="P4",
+            INST=94608000 / 60,
+            REFERENCE="AUTRE_ASTER",
+            RESULTAT=RESUSECH,
+            NOM_CHAM="SECH",
+            NOM_CMP="SECH",
+            VALE_CALC=8.9271504310821911e01,
+            VALE_REFE=8.9271504310821911e01,
+            PRECISION=1.0e-2,
+        ),
+        _F(
+            GROUP_NO="P4",
+            INST=157680000 / 60,
+            REFERENCE="AUTRE_ASTER",
+            RESULTAT=RESUSECH,
+            NOM_CHAM="SECH",
+            NOM_CMP="SECH",
+            VALE_CALC=8.2484206837012891e01,
+            VALE_REFE=8.2484206837012891e01,
+            PRECISION=1.0e-2,
+        ),
+    )
+)
+
+# TEST EN X=0.06
+TEST_RESU(
+    RESU=(
+        _F(
+            GROUP_NO="P6",
+            INST=3600 / 60,
+            REFERENCE="AUTRE_ASTER",
+            RESULTAT=RESUSECH,
+            NOM_CHAM="SECH",
+            NOM_CMP="SECH",
+            VALE_CALC=1.2879999999997560e02,
+            VALE_REFE=1.2879999999997560e02,
+            PRECISION=1.0e-2,
+        ),
+        _F(
+            GROUP_NO="P6",
+            INST=259200 / 60,
+            REFERENCE="AUTRE_ASTER",
+            RESULTAT=RESUSECH,
+            NOM_CHAM="SECH",
+            NOM_CMP="SECH",
+            VALE_CALC=1.2845101868890600e02,
+            VALE_REFE=1.2845101868890600e02,
+            PRECISION=1.0e-2,
+        ),
+        _F(
+            GROUP_NO="P6",
+            INST=2419200 / 60,
+            REFERENCE="AUTRE_ASTER",
+            RESULTAT=RESUSECH,
+            NOM_CHAM="SECH",
+            NOM_CMP="SECH",
+            VALE_CALC=1.1999773069390473e02,
+            VALE_REFE=1.1999773069390473e02,
+            PRECISION=1.0e-2,
+        ),
+        _F(
+            GROUP_NO="P6",
+            INST=39420000 / 60,
+            REFERENCE="AUTRE_ASTER",
+            RESULTAT=RESUSECH,
+            NOM_CHAM="SECH",
+            NOM_CMP="SECH",
+            VALE_CALC=9.3256929468085332e01,
+            VALE_REFE=9.3256929468085332e01,
+            PRECISION=1.0e-2,
+        ),
+        _F(
+            GROUP_NO="P6",
+            INST=94608000 / 60,
+            REFERENCE="AUTRE_ASTER",
+            RESULTAT=RESUSECH,
+            NOM_CHAM="SECH",
+            NOM_CMP="SECH",
+            VALE_CALC=8.2236190690133441e01,
+            VALE_REFE=8.2236190690133441e01,
+            PRECISION=1.0e-2,
+        ),
+        _F(
+            GROUP_NO="P6",
+            INST=157680000 / 60,
+            REFERENCE="AUTRE_ASTER",
+            RESULTAT=RESUSECH,
+            NOM_CHAM="SECH",
+            NOM_CMP="SECH",
+            VALE_CALC=7.5895066405305272e01,
+            VALE_REFE=7.5895066405305272e01,
+            PRECISION=1.0e-2,
+        ),
+    )
+)
+
+# TEST MM et Heure
+# ================
+
+
+BETON = DEFI_MATERIAU(
+    BETON_DESORP=_F(LEVERETT="OUI", PORO=poro, VG_PR=alpha, VG_N=beta, ATH=Ad, TEMP_0_C=T0_C),
+    SECH_RFT=_F(
+        PERM_IN=K0, QSR_K=Ea_R, A_MIL=a, B_MIL=b, VG_M_P=p, UNITE_LONGUEUR="MM", UNITE_TEMPS="H"
+    ),
+)
+
+CHMAT = (
+    AFFE_MATERIAU(
+        MAILLAGE=MAIL,
+        AFFE=_F(GROUP_MA="SURF", MATER=BETON),
+        AFFE_VARC=(_F(NOM_VARC="TEMP", CHAM_GD=TEMP, VALE_REF=0),),
+    ),
+)
+
+LISTSECH = (
+    DEFI_LIST_REEL(
+        DEBUT=0.0,
+        INTERVALLE=(
+            _F(JUSQU_A=3600 / 3600, NOMBRE=10),
+            _F(JUSQU_A=259200 / 3600, NOMBRE=10),
+            _F(JUSQU_A=2419200 / 3600, NOMBRE=10),
+            _F(JUSQU_A=39420000 / 3600, NOMBRE=10),
+            _F(JUSQU_A=94608000 / 3600, NOMBRE=10),
+            _F(JUSQU_A=157680000 / 3600, NOMBRE=10),
+        ),
+    ),
+)
+LISTDEP = (
+    DEFI_LIST_REEL(
+        VALE=(
+            3600 / 3600,
+            259200 / 3600,
+            2419200 / 3600,
+            39420000 / 3600,
+            94608000 / 3600,
+            157680000 / 3600,
+        )
+    ),
+)
+
+RESUSECH = (
+    SECH_NON_LINE(
+        MODELE=MOSECH,
+        EXCIT=_F(CHARGE=CHARSE),
+        CHAM_MATER=CHMAT,
+        SOLVEUR=_F(METHODE="MULT_FRONT"),
+        PARM_THETA=0.57,
+        ETAT_INIT=_F(VALE=128.8),
+        INCREMENT=_F(LIST_INST=LISTSECH),
+        COMPORTEMENT=_F(RELATION="SECH_RFT", TOUT="OUI"),
+        INFO=1,
+        CONVERGENCE=_F(ITER_GLOB_MAXI=20, RESI_GLOB_RELA=1e-06),
+    ),
+)
+
+# TESTS EN REFERENCE AUTRE_ASTER (SECH_RFT)
+
+# TEST EN X=0.0
+TEST_RESU(
+    RESU=(
+        _F(
+            GROUP_NO="P0",
+            INST=3600 / 3600,
+            REFERENCE="AUTRE_ASTER",
+            RESULTAT=RESUSECH,
+            NOM_CHAM="SECH",
+            NOM_CMP="SECH",
+            VALE_CALC=1.2879999999999998e02,
+            VALE_REFE=1.2879999999999998e02,
+            PRECISION=1.0e-2,
+        ),
+        _F(
+            GROUP_NO="P0",
+            INST=259200 / 3600,
+            REFERENCE="AUTRE_ASTER",
+            RESULTAT=RESUSECH,
+            NOM_CHAM="SECH",
+            NOM_CMP="SECH",
+            VALE_CALC=1.2879999999999364e02,
+            VALE_REFE=1.2879999999999364e02,
+            PRECISION=1.0e-2,
+        ),
+        _F(
+            GROUP_NO="P0",
+            INST=2419200 / 3600,
+            REFERENCE="AUTRE_ASTER",
+            RESULTAT=RESUSECH,
+            NOM_CHAM="SECH",
+            NOM_CMP="SECH",
+            VALE_CALC=1.2845780063601214e02,
+            VALE_REFE=1.2845780063601214e02,
+            PRECISION=1.0e-2,
+        ),
+        _F(
+            GROUP_NO="P0",
+            INST=39420000 / 3600,
+            REFERENCE="AUTRE_ASTER",
+            RESULTAT=RESUSECH,
+            NOM_CHAM="SECH",
+            NOM_CMP="SECH",
+            VALE_CALC=1.0511662983796056e02,
+            VALE_REFE=1.0511662983796056e02,
+            PRECISION=1.0e-2,
+        ),
+        _F(
+            GROUP_NO="P0",
+            INST=94608000 / 3600,
+            REFERENCE="AUTRE_ASTER",
+            RESULTAT=RESUSECH,
+            NOM_CHAM="SECH",
+            NOM_CMP="SECH",
+            VALE_CALC=9.3223367211295169e01,
+            VALE_REFE=9.3223367211295169e01,
+            PRECISION=1.0e-2,
+        ),
+        _F(
+            GROUP_NO="P0",
+            INST=157680000 / 3600,
+            REFERENCE="AUTRE_ASTER",
+            RESULTAT=RESUSECH,
+            NOM_CHAM="SECH",
+            NOM_CMP="SECH",
+            VALE_CALC=8.6243397581457245e01,
+            VALE_REFE=8.6243397581457245e01,
+            PRECISION=1.0e-2,
+        ),
+    )
+)
+
+# TEST EN X=0.04
+TEST_RESU(
+    RESU=(
+        _F(
+            GROUP_NO="P4",
+            INST=3600 / 3600,
+            REFERENCE="AUTRE_ASTER",
+            RESULTAT=RESUSECH,
+            NOM_CHAM="SECH",
+            NOM_CMP="SECH",
+            VALE_CALC=1.2879999999999970e02,
+            VALE_REFE=1.2879999999999970e02,
+            PRECISION=1.0e-2,
+        ),
+        _F(
+            GROUP_NO="P4",
+            INST=259200 / 3600,
+            REFERENCE="AUTRE_ASTER",
+            RESULTAT=RESUSECH,
+            NOM_CHAM="SECH",
+            NOM_CMP="SECH",
+            VALE_CALC=1.2879970557803858e02,
+            VALE_REFE=1.2879970557803858e02,
+            PRECISION=1.0e-2,
+        ),
+        _F(
+            GROUP_NO="P4",
+            INST=2419200 / 3600,
+            REFERENCE="AUTRE_ASTER",
+            RESULTAT=RESUSECH,
+            NOM_CHAM="SECH",
+            NOM_CMP="SECH",
+            VALE_CALC=1.2622418002788167e02,
+            VALE_REFE=1.2622418002788167e02,
+            PRECISION=1.0e-2,
+        ),
+        _F(
+            GROUP_NO="P4",
+            INST=39420000 / 3600,
+            REFERENCE="AUTRE_ASTER",
+            RESULTAT=RESUSECH,
+            NOM_CHAM="SECH",
+            NOM_CMP="SECH",
+            VALE_CALC=1.0088005495545711e02,
+            VALE_REFE=1.0088005495545711e02,
+            PRECISION=1.0e-2,
+        ),
+        _F(
+            GROUP_NO="P4",
+            INST=94608000 / 3600,
+            REFERENCE="AUTRE_ASTER",
+            RESULTAT=RESUSECH,
+            NOM_CHAM="SECH",
+            NOM_CMP="SECH",
+            VALE_CALC=8.9271504310821911e01,
+            VALE_REFE=8.9271504310821911e01,
+            PRECISION=1.0e-2,
+        ),
+        _F(
+            GROUP_NO="P4",
+            INST=157680000 / 3600,
+            REFERENCE="AUTRE_ASTER",
+            RESULTAT=RESUSECH,
+            NOM_CHAM="SECH",
+            NOM_CMP="SECH",
+            VALE_CALC=8.2484206837012891e01,
+            VALE_REFE=8.2484206837012891e01,
+            PRECISION=1.0e-2,
+        ),
+    )
+)
+
+# TEST EN X=0.06
+TEST_RESU(
+    RESU=(
+        _F(
+            GROUP_NO="P6",
+            INST=3600 / 3600,
+            REFERENCE="AUTRE_ASTER",
+            RESULTAT=RESUSECH,
+            NOM_CHAM="SECH",
+            NOM_CMP="SECH",
+            VALE_CALC=1.2879999999997560e02,
+            VALE_REFE=1.2879999999997560e02,
+            PRECISION=1.0e-2,
+        ),
+        _F(
+            GROUP_NO="P6",
+            INST=259200 / 3600,
+            REFERENCE="AUTRE_ASTER",
+            RESULTAT=RESUSECH,
+            NOM_CHAM="SECH",
+            NOM_CMP="SECH",
+            VALE_CALC=1.2845101868890600e02,
+            VALE_REFE=1.2845101868890600e02,
+            PRECISION=1.0e-2,
+        ),
+        _F(
+            GROUP_NO="P6",
+            INST=2419200 / 3600,
+            REFERENCE="AUTRE_ASTER",
+            RESULTAT=RESUSECH,
+            NOM_CHAM="SECH",
+            NOM_CMP="SECH",
+            VALE_CALC=1.1999773069390473e02,
+            VALE_REFE=1.1999773069390473e02,
+            PRECISION=1.0e-2,
+        ),
+        _F(
+            GROUP_NO="P6",
+            INST=39420000 / 3600,
+            REFERENCE="AUTRE_ASTER",
+            RESULTAT=RESUSECH,
+            NOM_CHAM="SECH",
+            NOM_CMP="SECH",
+            VALE_CALC=9.3256929468085332e01,
+            VALE_REFE=9.3256929468085332e01,
+            PRECISION=1.0e-2,
+        ),
+        _F(
+            GROUP_NO="P6",
+            INST=94608000 / 3600,
+            REFERENCE="AUTRE_ASTER",
+            RESULTAT=RESUSECH,
+            NOM_CHAM="SECH",
+            NOM_CMP="SECH",
+            VALE_CALC=8.2236190690133441e01,
+            VALE_REFE=8.2236190690133441e01,
+            PRECISION=1.0e-2,
+        ),
+        _F(
+            GROUP_NO="P6",
+            INST=157680000 / 3600,
+            REFERENCE="AUTRE_ASTER",
+            RESULTAT=RESUSECH,
+            NOM_CHAM="SECH",
+            NOM_CMP="SECH",
+            VALE_CALC=7.5895066405305272e01,
+            VALE_REFE=7.5895066405305272e01,
+            PRECISION=1.0e-2,
+        ),
+    )
+)
+
+
+# TEST MM et jours
+# ================
+
+
+BETON = DEFI_MATERIAU(
+    BETON_DESORP=_F(LEVERETT="OUI", PORO=poro, VG_PR=alpha, VG_N=beta, ATH=Ad, TEMP_0_C=T0_C),
+    SECH_RFT=_F(
+        PERM_IN=K0, QSR_K=Ea_R, A_MIL=a, B_MIL=b, VG_M_P=p, UNITE_LONGUEUR="MM", UNITE_TEMPS="J"
+    ),
+)
+
+CHMAT = (
+    AFFE_MATERIAU(
+        MAILLAGE=MAIL,
+        AFFE=_F(GROUP_MA="SURF", MATER=BETON),
+        AFFE_VARC=(_F(NOM_VARC="TEMP", CHAM_GD=TEMP, VALE_REF=0),),
+    ),
+)
+
+
+LISTSECH = (
+    DEFI_LIST_REEL(
+        DEBUT=0.0,
+        INTERVALLE=(
+            _F(JUSQU_A=3600 / 3600 / 24, NOMBRE=10),
+            _F(JUSQU_A=259200 / 3600 / 24, NOMBRE=10),
+            _F(JUSQU_A=2419200 / 3600 / 24, NOMBRE=10),
+            _F(JUSQU_A=39420000 / 3600 / 24, NOMBRE=10),
+            _F(JUSQU_A=94608000 / 3600 / 24, NOMBRE=10),
+            _F(JUSQU_A=157680000 / 3600 / 24, NOMBRE=10),
+        ),
+    ),
+)
+LISTDEP = (
+    DEFI_LIST_REEL(
+        VALE=(
+            3600 / 3600 / 24,
+            259200 / 3600 / 24,
+            2419200 / 3600 / 24,
+            39420000 / 3600 / 24,
+            94608000 / 3600 / 24,
+            157680000 / 3600 / 24,
+        )
+    ),
+)
+
+RESUSECH = (
+    SECH_NON_LINE(
+        MODELE=MOSECH,
+        EXCIT=_F(CHARGE=CHARSE),
+        CHAM_MATER=CHMAT,
+        SOLVEUR=_F(METHODE="MULT_FRONT"),
+        PARM_THETA=0.57,
+        ETAT_INIT=_F(VALE=128.8),
+        INCREMENT=_F(LIST_INST=LISTSECH),
+        COMPORTEMENT=_F(RELATION="SECH_RFT", TOUT="OUI"),
+        INFO=1,
+        CONVERGENCE=_F(ITER_GLOB_MAXI=20, RESI_GLOB_RELA=1e-06),
+    ),
+)
+
+# TESTS EN REFERENCE AUTRE_ASTER (SECH_RFT)
+
+# TEST EN X=0.0
+TEST_RESU(
+    RESU=(
+        _F(
+            GROUP_NO="P0",
+            INST=3600 / 3600 / 24,
+            REFERENCE="AUTRE_ASTER",
+            RESULTAT=RESUSECH,
+            NOM_CHAM="SECH",
+            NOM_CMP="SECH",
+            VALE_CALC=1.2879999999999998e02,
+            VALE_REFE=1.2879999999999998e02,
+            PRECISION=1.0e-2,
+        ),
+        _F(
+            GROUP_NO="P0",
+            INST=259200 / 3600 / 24,
+            REFERENCE="AUTRE_ASTER",
+            RESULTAT=RESUSECH,
+            NOM_CHAM="SECH",
+            NOM_CMP="SECH",
+            VALE_CALC=1.2879999999999364e02,
+            VALE_REFE=1.2879999999999364e02,
+            PRECISION=1.0e-2,
+        ),
+        _F(
+            GROUP_NO="P0",
+            INST=2419200 / 3600 / 24,
+            REFERENCE="AUTRE_ASTER",
+            RESULTAT=RESUSECH,
+            NOM_CHAM="SECH",
+            NOM_CMP="SECH",
+            VALE_CALC=1.2845780063601214e02,
+            VALE_REFE=1.2845780063601214e02,
+            PRECISION=1.0e-2,
+        ),
+        _F(
+            GROUP_NO="P0",
+            INST=39420000 / 3600 / 24,
+            REFERENCE="AUTRE_ASTER",
+            RESULTAT=RESUSECH,
+            NOM_CHAM="SECH",
+            NOM_CMP="SECH",
+            VALE_CALC=1.0511662983796056e02,
+            VALE_REFE=1.0511662983796056e02,
+            PRECISION=1.0e-2,
+        ),
+        _F(
+            GROUP_NO="P0",
+            INST=94608000 / 3600 / 24,
+            REFERENCE="AUTRE_ASTER",
+            RESULTAT=RESUSECH,
+            NOM_CHAM="SECH",
+            NOM_CMP="SECH",
+            VALE_CALC=9.3223367211295169e01,
+            VALE_REFE=9.3223367211295169e01,
+            PRECISION=1.0e-2,
+        ),
+        _F(
+            GROUP_NO="P0",
+            INST=157680000 / 3600 / 24,
+            REFERENCE="AUTRE_ASTER",
+            RESULTAT=RESUSECH,
+            NOM_CHAM="SECH",
+            NOM_CMP="SECH",
+            VALE_CALC=8.6243397581457245e01,
+            VALE_REFE=8.6243397581457245e01,
+            PRECISION=1.0e-2,
+        ),
+    )
+)
+
+# TEST EN X=0.04
+TEST_RESU(
+    RESU=(
+        _F(
+            GROUP_NO="P4",
+            INST=3600 / 3600 / 24,
+            REFERENCE="AUTRE_ASTER",
+            RESULTAT=RESUSECH,
+            NOM_CHAM="SECH",
+            NOM_CMP="SECH",
+            VALE_CALC=1.2879999999999970e02,
+            VALE_REFE=1.2879999999999970e02,
+            PRECISION=1.0e-2,
+        ),
+        _F(
+            GROUP_NO="P4",
+            INST=259200 / 3600 / 24,
+            REFERENCE="AUTRE_ASTER",
+            RESULTAT=RESUSECH,
+            NOM_CHAM="SECH",
+            NOM_CMP="SECH",
+            VALE_CALC=1.2879970557803858e02,
+            VALE_REFE=1.2879970557803858e02,
+            PRECISION=1.0e-2,
+        ),
+        _F(
+            GROUP_NO="P4",
+            INST=2419200 / 3600 / 24,
+            REFERENCE="AUTRE_ASTER",
+            RESULTAT=RESUSECH,
+            NOM_CHAM="SECH",
+            NOM_CMP="SECH",
+            VALE_CALC=1.2622418002788167e02,
+            VALE_REFE=1.2622418002788167e02,
+            PRECISION=1.0e-2,
+        ),
+        _F(
+            GROUP_NO="P4",
+            INST=39420000 / 3600 / 24,
+            REFERENCE="AUTRE_ASTER",
+            RESULTAT=RESUSECH,
+            NOM_CHAM="SECH",
+            NOM_CMP="SECH",
+            VALE_CALC=1.0088005495545711e02,
+            VALE_REFE=1.0088005495545711e02,
+            PRECISION=1.0e-2,
+        ),
+        _F(
+            GROUP_NO="P4",
+            INST=94608000 / 3600 / 24,
+            REFERENCE="AUTRE_ASTER",
+            RESULTAT=RESUSECH,
+            NOM_CHAM="SECH",
+            NOM_CMP="SECH",
+            VALE_CALC=8.9271504310821911e01,
+            VALE_REFE=8.9271504310821911e01,
+            PRECISION=1.0e-2,
+        ),
+        _F(
+            GROUP_NO="P4",
+            INST=157680000 / 3600 / 24,
+            REFERENCE="AUTRE_ASTER",
+            RESULTAT=RESUSECH,
+            NOM_CHAM="SECH",
+            NOM_CMP="SECH",
+            VALE_CALC=8.2484206837012891e01,
+            VALE_REFE=8.2484206837012891e01,
+            PRECISION=1.0e-2,
+        ),
+    )
+)
+
+# TEST EN X=0.06
+TEST_RESU(
+    RESU=(
+        _F(
+            GROUP_NO="P6",
+            INST=3600 / 3600 / 24,
+            REFERENCE="AUTRE_ASTER",
+            RESULTAT=RESUSECH,
+            NOM_CHAM="SECH",
+            NOM_CMP="SECH",
+            VALE_CALC=1.2879999999997560e02,
+            VALE_REFE=1.2879999999997560e02,
+            PRECISION=1.0e-2,
+        ),
+        _F(
+            GROUP_NO="P6",
+            INST=259200 / 3600 / 24,
+            REFERENCE="AUTRE_ASTER",
+            RESULTAT=RESUSECH,
+            NOM_CHAM="SECH",
+            NOM_CMP="SECH",
+            VALE_CALC=1.2845101868890600e02,
+            VALE_REFE=1.2845101868890600e02,
+            PRECISION=1.0e-2,
+        ),
+        _F(
+            GROUP_NO="P6",
+            INST=2419200 / 3600 / 24,
+            REFERENCE="AUTRE_ASTER",
+            RESULTAT=RESUSECH,
+            NOM_CHAM="SECH",
+            NOM_CMP="SECH",
+            VALE_CALC=1.1999773069390473e02,
+            VALE_REFE=1.1999773069390473e02,
+            PRECISION=1.0e-2,
+        ),
+        _F(
+            GROUP_NO="P6",
+            INST=39420000 / 3600 / 24,
+            REFERENCE="AUTRE_ASTER",
+            RESULTAT=RESUSECH,
+            NOM_CHAM="SECH",
+            NOM_CMP="SECH",
+            VALE_CALC=9.3256929468085332e01,
+            VALE_REFE=9.3256929468085332e01,
+            PRECISION=1.0e-2,
+        ),
+        _F(
+            GROUP_NO="P6",
+            INST=94608000 / 3600 / 24,
+            REFERENCE="AUTRE_ASTER",
+            RESULTAT=RESUSECH,
+            NOM_CHAM="SECH",
+            NOM_CMP="SECH",
+            VALE_CALC=8.2236190690133441e01,
+            VALE_REFE=8.2236190690133441e01,
+            PRECISION=1.0e-2,
+        ),
+        _F(
+            GROUP_NO="P6",
+            INST=157680000 / 3600 / 24,
+            REFERENCE="AUTRE_ASTER",
+            RESULTAT=RESUSECH,
+            NOM_CHAM="SECH",
+            NOM_CMP="SECH",
+            VALE_CALC=7.5895066405305272e01,
+            VALE_REFE=7.5895066405305272e01,
+            PRECISION=1.0e-2,
+        ),
+    )
+)
+
+
+FIN()

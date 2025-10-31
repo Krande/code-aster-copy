@@ -20,8 +20,8 @@ subroutine calicp(load, mesh, model, valeType)
 !
     implicit none
 !
-#include "asterf_types.h"
 #include "jeveux.h"
+#include "asterf_types.h"
 #include "asterc/getfac.h"
 #include "asterc/indik8.h"
 #include "asterfort/aflrch.h"
@@ -111,7 +111,7 @@ subroutine calicp(load, mesh, model, valeType)
     call jeveuo(jexnom('&CATA.GD.NOMCMP', nomg), 'L', jnom)
     call jelira(jexnom('&CATA.GD.NOMCMP', nomg), 'LONMAX', nb_cmp, k8dummy)
     call dismoi('NB_EC', nomg, 'GRANDEUR', repi=nbec)
-    ASSERT(nbec .le. 10)
+    ASSERT(nbec .le. 11)
 !
 ! - Index in DEPL_R <GRANDEUR> for DX, DY, DZ, DRX, DRY, DRZ
 !

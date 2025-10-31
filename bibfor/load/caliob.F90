@@ -31,6 +31,7 @@ subroutine caliob(load, mesh, model, valeType)
 #include "asterfort/dismoi.h"
 #include "asterfort/getnode.h"
 #include "asterfort/getvr8.h"
+#include "asterfort/int_to_char8.h"
 #include "asterfort/jedema.h"
 #include "asterfort/jedetc.h"
 #include "asterfort/jedetr.h"
@@ -38,7 +39,6 @@ subroutine caliob(load, mesh, model, valeType)
 #include "asterfort/jeveuo.h"
 #include "asterfort/matrot.h"
 #include "asterfort/utmess.h"
-#include "asterfort/int_to_char8.h"
 !
     character(len=8), intent(in) :: load, mesh, model
     character(len=4), intent(in) :: valeType
@@ -58,7 +58,7 @@ subroutine caliob(load, mesh, model, valeType)
 !
 ! --------------------------------------------------------------------------------------------------
 !
-    integer(kind=8), parameter :: n_max_keyword = 300
+    integer(kind=8), parameter :: n_max_keyword = 320
     integer(kind=8) :: ddlimp(n_max_keyword)
     real(kind=8) :: valimr(n_max_keyword)
     complex(kind=8) :: valimc(n_max_keyword)
@@ -117,7 +117,7 @@ subroutine caliob(load, mesh, model, valeType)
 !
     nomg = 'DEPL_R'
     call dismoi('NB_EC', nomg, 'GRANDEUR', repi=nbec)
-    ASSERT(nbec .le. 10)
+    ASSERT(nbec .le. 11)
 
 ! - Model informations
     call dismoi('DIM_GEOM', model, 'MODELE', repi=geomDime)

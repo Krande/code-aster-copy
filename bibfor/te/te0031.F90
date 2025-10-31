@@ -89,7 +89,7 @@ subroutine te0031(option, nomte)
     integer(kind=8) :: ivect, nddl, nvec, iret, jvSief
     integer(kind=8) :: nbcou, jnbspi, iret1, itab(7), nbsp
     integer(kind=8) :: ibid, n1, n2, ni
-    real(kind=8) :: pgl(3, 3), xyzl(3, 4), bsigma(24), effgt(32)
+    real(kind=8) :: pgl(3, 3), xyzl(3, 4), bsigmEner(24), effgt(32)
     real(kind=8) :: effref, momref
     real(kind=8) :: vecloc(24), ener(3), matp(24, 24), matv(300)
     real(kind=8) :: foref, moref
@@ -331,7 +331,7 @@ subroutine te0031(option, nomte)
         end if
 !
 ! ------ CALCUL DES EFFORTS INTERNES (I.E. SOMME_VOL(BT_SIG))
-        call dxbsig(nomte, xyzl, pgl, effgt, bsigma, option)
+        call dxbsig(nomte, xyzl, pgl, effgt, bsigmEner, option)
 !
 ! ------ AFFECTATION DES VALEURS DE BSIGMA AU VECTEUR EN SORTIE
         call jevech('PVECTUR', 'E', jvect)
@@ -339,7 +339,7 @@ subroutine te0031(option, nomte)
         do i = 1, nno
             do j = 1, 6
                 k = k+1
-                zr(jvect+k-1) = bsigma(k)
+                zr(jvect+k-1) = bsigmEner(k)
             end do
         end do
 !
@@ -359,14 +359,14 @@ subroutine te0031(option, nomte)
         end do
 !
 ! ------ CALCUL DES EFFORTS INTERNES (I.E. SOMME_VOL(BT_SIG))
-        call dxbsig(nomte, xyzl, pgl, effgt, bsigma, option)
+        call dxbsig(nomte, xyzl, pgl, effgt, bsigmEner, option)
 !
 ! ------ AFFECTATION DES VALEURS DE BSIGMA AU VECTEUR EN SORTIE
         call jevech('PVECTUR', 'E', jvect)
         k = 0
         do i = 1, nno
-            effref = (abs(bsigma(k+1))+abs(bsigma(k+2))+abs(bsigma(k+3)))/3.d0
-            momref = (abs(bsigma(k+4))+abs(bsigma(k+5))+abs(bsigma(k+6)))/3.d0
+            effref = (abs(bsigmEner(k+1))+abs(bsigmEner(k+2))+abs(bsigmEner(k+3)))/3.d0
+            momref = (abs(bsigmEner(k+4))+abs(bsigmEner(k+5))+abs(bsigmEner(k+6)))/3.d0
             do j = 1, 6
                 k = k+1
                 if (j .lt. 4) then

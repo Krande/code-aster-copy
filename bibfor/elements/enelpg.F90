@@ -15,16 +15,47 @@
 ! You should have received a copy of the GNU General Public License
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
+! aslint: disable=W0413
 !
-subroutine enelpg(fami, iadmat, instan, igau, angl_naut, &
-                  compor, f, sigma, nbvari, vari, &
-                  enelas)
-!.......................................................................
+subroutine enelpg(fami, jvMaterCode, time, kpg, anglNaut, &
+                  relaName, defoComp, &
+                  f, sigmEner, &
+                  nbVari, vari, &
+                  enerElas)
+!
     implicit none
-! -----------------------------------------------------------------
 !
-!  OPTION ENEL_ELGA : CALCUL DE L'ENERGIE DE DEFORMATION ELASTIQUE
-!  ================   DETERMINEE PAR L'EXPRESSION SUIVANTE :
+#include "asterfort/assert.h"
+#include "asterfort/d1mamc.h"
+#include "asterfort/ElasticityMaterial_type.h"
+#include "asterfort/get_elas_id.h"
+#include "asterfort/get_elas_para.h"
+#include "asterfort/lteatt.h"
+#include "asterfort/nbsigm.h"
+#include "asterfort/nrsmt1.h"
+#include "asterfort/nrsmtb.h"
+#include "asterfort/nrsmtt.h"
+#include "asterfort/rcvalb.h"
+#include "asterfort/utmess.h"
+#include "asterfort/verift.h"
+#include "asterfort/zerop3.h"
+#include "blas/dcopy.h"
+!
+    character(len=*), intent(in) :: fami
+    integer(kind=8), intent(in) :: jvMaterCode
+    real(kind=8), intent(in) :: time, anglNaut(3)
+    character(len=16), intent(in) :: relaName, defoComp
+    integer(kind=8), intent(in) :: kpg
+    real(kind=8), intent(in) :: f(3, 3), sigmEner(6)
+    integer(kind=8), intent(in) :: nbVari
+    real(kind=8), intent(in) :: vari(nbVari)
+    real(kind=8), intent(out) :: enerElas
+!
+! --------------------------------------------------------------------------------------------------
+!
+! CALCUL DE L'ENERGIE DE DEFORMATION ELASTIQUE
+!
+! DETERMINEE PAR L'EXPRESSION SUIVANTE :
 !
 !  EN HPP
 !   ENELAS =  SOMME_VOLUME((SIG_T*(1/D)*SIG).DV)
@@ -41,84 +72,55 @@ subroutine enelpg(fami, iadmat, instan, igau, angl_naut, &
 !   ENERELAS = SOMME_VOLUME((T_T*(1/D)*T).DV)
 !        OU  .T       EST LE TENSEUR DES CONTRAINTES DU FORMALISME
 !            .D         EST LE TENSEUR DE HOOKE
-! -----------------------------------------------------------------
-!     ENTREES  ---> OPTION : OPTION DE CALCUL
-!              ---> NOMTE  : NOM DU TYPE ELEMENT
-!.......................................................................
 !
-!-----------------------------------------------------------------------
-#include "asterfort/d1mamc.h"
-#include "asterfort/lteatt.h"
-#include "asterfort/nbsigm.h"
-#include "asterfort/nrsmt1.h"
-#include "asterfort/nrsmtb.h"
-#include "asterfort/nrsmtt.h"
-#include "asterfort/r8inir.h"
-#include "asterfort/rcvalb.h"
-#include "asterfort/utmess.h"
-#include "asterfort/verift.h"
-#include "asterfort/zerop3.h"
-#include "blas/dcopy.h"
-    integer(kind=8) :: nbsig, nbvari, nsol, i, iadmat, igau, icodre(2), isig, jsig
-    real(kind=8) :: c1, c2, deux, vari(*), enelas, trt, un, undemi, zero
-    real(kind=8) :: sol(3), sigma(6), jzero, uzero, mzero, instan, epsi(6)
-    real(kind=8) :: mjac, ujac, wbe, be(6), e, nu, f(3, 3), angl_naut(3)
+! --------------------------------------------------------------------------------------------------
+!
+    integer(kind=8), parameter :: ksp = 1
+    integer(kind=8) :: nbsig, nsol, i, isig, jsig
+    real(kind=8) :: c1, c2, trt
+    real(kind=8) :: sol(3), jzero, uzero, mzero, epsi(6)
+    real(kind=8) :: mjac, ujac, wbe, be(6), e, nu
     real(kind=8) :: mu, troisk, jac, tau(6), trtau, eqtau, dvtau(6), tlog(6)
-    real(kind=8) :: trbe, epsthe, kr(6), pdtsca(6), d1(36), valres(2)
-    character(len=4) :: fami
-    character(len=16) :: nomres(2), compor(*)
+    real(kind=8) :: trbe, epsthe, d1(36)
+    integer(kind=8) :: elasID
+    character(len=16) :: elasKeyword
     blas_int :: b_incx, b_incy, b_n
-    data kr/1.d0, 1.d0, 1.d0, 0.d0, 0.d0, 0.d0/
-    data pdtsca/1.d0, 1.d0, 1.d0, 2.d0, 2.d0, 2.d0/
-!-----------------------------------------------------------------------
+    real(kind=8), parameter :: pdtsca(6) = (/1.d0, 1.d0, 1.d0, 2.d0, 2.d0, 2.d0/)
+    real(kind=8), parameter :: kr(6) = (/1.d0, 1.d0, 1.d0, 0.d0, 0.d0, 0.d0/)
 !
-    zero = 0.0d0
-    deux = 2.0d0
-    undemi = 0.5d0
-    un = 1.0d0
+! --------------------------------------------------------------------------------------------------
+!
     nbsig = nbsigm()
-    enelas = 0.d0
-    nsol = 0
-    jzero = zero
-    uzero = zero
-    ujac = zero
-    mzero = zero
-    mjac = zero
-    wbe = zero
-    do i = 1, 3
-        sol(i) = zero
-    end do
-!
-!
+    ASSERT(nbsig .le. 6)
+    enerElas = 0.d0
+
 ! --- CAS EN GRANDES DEFORMATIONS SIMO_MIEHE
-    if ((compor(3) .eq. 'SIMO_MIEHE') .and. &
-        ((compor(1) (1:9) .eq. 'VMIS_ISOT') .or. (compor(1) .eq. 'ELAS'))) then
-!
-! ---    RECUPERATION DES CARACTERISTIQUES DU MATERIAU :
-        nomres(1) = 'E'
-        nomres(2) = 'NU'
-        call rcvalb(fami, igau, 1, '+', iadmat, &
-                    ' ', 'ELAS', 0, ' ', [0.d0], &
-                    2, nomres, valres, icodre, 2)
-        e = valres(1)
-        nu = valres(2)
+    if ((defoComp .eq. 'SIMO_MIEHE') .and. &
+        ((relaName(1:9) .eq. 'VMIS_ISOT') .or. (relaName .eq. 'ELAS'))) then
+
+! ----- Get elastic parameters
+        call get_elas_id(jvMaterCode, elasID, elasKeyword)
+        if (elasID .ne. ELAS_ISOT) then
+            call utmess("F", "ENERGY1_2", sk=elasKeyword)
+        end if
+        call get_elas_para(fami, jvMaterCode, '+', kpg, ksp, &
+                           elasID, elasKeyword, &
+                           e_=e, nu_=nu)
         mu = e/(2.d0*(1.d0+nu))
         troisk = e/(1.d0-2.d0*nu)
-!
-        jac = f(1, 1)*(f(2, 2)*f(3, 3)-f(2, 3)*f(3, 2))-f(2, 1)*(f(1, 2)*f(3, 3)-f(1, 3)*f(3, 2)&
-              &)+f(3, 1)*(f(1, 2)*f(2, 3)-f(1, 3)*f(2, 2))
-!
-! ---    CALCUL DE TAU TEL QUE TAU=JAC*SIGMA
-!
-        tau(5) = 0.d0
-        tau(6) = 0.d0
-!
+
+! ----- Compute jacobian of transformation
+        jac = f(1, 1)*(f(2, 2)*f(3, 3)-f(2, 3)*f(3, 2))- &
+              f(2, 1)*(f(1, 2)*f(3, 3)-f(1, 3)*f(3, 2))+ &
+              f(3, 1)*(f(1, 2)*f(2, 3)-f(1, 3)*f(2, 2))
+
+! ----- CALCUL DE TAU TEL QUE TAU=JAC*SIGMA
+        tau = 0.d0
         do i = 1, nbsig
-            tau(i) = jac*sigma(i)
+            tau(i) = jac*sigmEner(i)
         end do
-!
-! ---    CALCUL DE LA TRACE DE TAU- TAU EQUIVALENT ET TAU DEVIATORIQUE
-!
+
+! ----- CALCUL DE LA TRACE DE TAU- TAU EQUIVALENT ET TAU DEVIATORIQUE
         trtau = tau(1)+tau(2)+tau(3)
         eqtau = 0.d0
         do i = 1, 6
@@ -126,23 +128,26 @@ subroutine enelpg(fami, iadmat, instan, igau, angl_naut, &
             eqtau = eqtau+pdtsca(i)*(dvtau(i)**2.d0)
         end do
         eqtau = sqrt(1.5d0*eqtau)
-!
-! ---    CALCUL DE LA TRACE DES DEFORMATIONS ELASTIQUES BE
-!
+
+! ----- CALCUL DE LA TRACE DES DEFORMATIONS ELASTIQUES BE
         b_n = to_blas_int(6)
         b_incx = to_blas_int(1)
         b_incy = to_blas_int(1)
         call dcopy(b_n, vari(3), b_incx, be, b_incy)
         trbe = be(1)+be(2)+be(3)
         trbe = jac**(-2.d0/3.d0)*(3.d0-2.d0*trbe)
-!
-!  ---   DEFORMATION THERMIQUE AU POINT D'INTEGRATION COURANT :
-!
-        call verift(fami, igau, 1, '+', iadmat, &
+
+! ----- DEFORMATION THERMIQUE AU POINT D'INTEGRATION COURANT :
+        call verift(fami, kpg, ksp, '+', jvMaterCode, &
                     epsth_=epsthe)
-!
-!
-! ---    ATTENTION, EN PRESENCE DE THERMIQUE, CA MET LE BAZARD...
+
+! ----- ATTENTION, EN PRESENCE DE THERMIQUE, CA MET LE BAZAR...
+        sol = 0.d0
+        jzero = 0.d0
+        uzero = 0.d0
+        mzero = 0.d0
+        nsol = 0
+        mjac = 0.d0
         if (epsthe .ne. 0) then
             call zerop3(-3.d0*epsthe, -1.d0, -3.d0*epsthe, sol, nsol)
             jzero = sol(1)
@@ -150,86 +155,72 @@ subroutine enelpg(fami, iadmat, instan, igau, angl_naut, &
             call nrsmtt(troisk, jzero, epsthe, mzero)
             call nrsmtt(troisk, jac, epsthe, mjac)
         end if
-!
-! ---    CALCUL DES TERMES DE L'ENERGIE
+
+! ----- CALCUL DES TERMES DE L'ENERGIE
+        ujac = 0.d0
         call nrsmt1(troisk/3.d0, jac, ujac)
+        wbe = 0.d0
         call nrsmtb(mu, trbe, wbe)
+        enerElas = ujac+wbe+mjac-uzero-mzero
+
+    else if ((defoComp(1:8) .eq. 'GDEF_LOG')) then
+! ----- Get elastic parameters
+        call get_elas_id(jvMaterCode, elasID, elasKeyword)
+        if (elasID .ne. ELAS_ISOT) then
+            call utmess("F", "ENERGY1_2", sk=elasKeyword)
+        end if
+        call get_elas_para(fami, jvMaterCode, '+', kpg, ksp, &
+                           elasID, elasKeyword, &
+                           e_=e, nu_=nu)
+        mu = e/(2.d0*(1.d0+nu))
+        troisk = e/(1.d0-2.d0*nu)
 !
-        enelas = ujac+wbe+mjac-uzero-mzero
-!
-!
-! --- CAS EN GRANDES DEFORMATIONS GDEF_LOG
-!
-    else if ((compor(3) (1:8) .eq. 'GDEF_LOG')) then
-!
-! ---    RECUPERATION DES CARACTERISTIQUES DU MATERIAU :
-        nomres(1) = 'E'
-        nomres(2) = 'NU'
-        call rcvalb(fami, igau, 1, '+', iadmat, &
-                    ' ', 'ELAS', 0, ' ', [0.d0], &
-                    2, nomres, valres, icodre, 2)
-        e = valres(1)
-        nu = valres(2)
-!
-        c1 = (un+nu)/e
+        c1 = (1.d0+nu)/e
         c2 = nu/e
         b_n = to_blas_int(6)
         b_incx = to_blas_int(1)
         b_incy = to_blas_int(1)
-        call dcopy(b_n, vari(nbvari-5), b_incx, tlog, b_incy)
-!
-!        CAS 3D
+        call dcopy(b_n, vari(nbVari-5), b_incx, tlog, b_incy)
+
         if (lteatt('DIM_TOPO_MAILLE', '3')) then
-!
             trt = tlog(1)+tlog(2)+tlog(3)
-            enelas = undemi*( &
-                     tlog(1)*(c1*tlog(1)-c2*trt)+tlog(2)*(c1*tlog(2)-c2*trt)+tlog(3)*(c1*tlog(3)-&
-                     &c2*trt)+(tlog(4)*c1*tlog(4)+tlog(5)*c1*tlog(5)+tlog(6)*c1*tlog(6)) &
-                     )
-!
-!
-! ---    CAS DES CONTRAINTES PLANES :
+            enerElas = 0.5d0*(tlog(1)*(c1*tlog(1)-c2*trt)+ &
+                              tlog(2)*(c1*tlog(2)-c2*trt)+ &
+                              tlog(3)*(c1*tlog(3)-c2*trt)+ &
+                              (tlog(4)*c1*tlog(4)+ &
+                               tlog(5)*c1*tlog(5)+ &
+                               tlog(6)*c1*tlog(6)))
+
         else if (lteatt('C_PLAN', 'OUI')) then
             trt = tlog(1)+tlog(2)
-!
-            enelas = undemi*( &
-                     tlog(1)*(c1*tlog(1)-c2*trt)+tlog(2)*(c1*tlog(2)-c2*trt)+deux*tlog(4)*c1*tlog&
-                     &(4) &
-                     )
-! ---    CAS AXI ET DEFORMATIONS PLANES :
+            enerElas = 0.5d0*(tlog(1)*(c1*tlog(1)-c2*trt)+ &
+                              tlog(2)*(c1*tlog(2)-c2*trt)+ &
+                              2.d0*tlog(4)*c1*tlog(4))
         else
             trt = tlog(1)+tlog(2)+tlog(3)
-!
-            enelas = undemi*( &
-                     tlog(1)*(c1*tlog(1)-c2*trt)+tlog(2)*(c1*tlog(2)-c2*trt)+tlog(3)*(c1*tlog(3)-&
-                     &c2*trt)+deux*tlog(4)*c1*tlog(4) &
-                     )
+            enerElas = 0.5d0*(tlog(1)*(c1*tlog(1)-c2*trt)+ &
+                              tlog(2)*(c1*tlog(2)-c2*trt)+ &
+                              tlog(3)*(c1*tlog(3)-c2*trt)+ &
+                              2.d0*tlog(4)*c1*tlog(4))
         end if
-! --- EN HPP SI ON CONSIDERE LE MATERIAU ISOTROPE
-! --- E_ELAS = 1/2*SIGMA*1/D*SIGMA :
-!
-! --- CAS EN GRANDES DEFORMATIONS SIMO_MIEHE
-    else if (compor(3) (1:5) .eq. 'PETIT') then
-!
-!  --    CALCUL DE L'INVERSE DE LA MATRICE DE HOOKE (LE MATERIAU
-!  --    POUVANT ETRE ISOTROPE, ISOTROPE-TRANSVERSE OU ORTHOTROPE)
-!        ---------------------------------------------------------
-        call d1mamc(fami, iadmat, instan, '+', igau, &
-                    1, angl_naut, nbsig, d1)
-!
-!  --    DENSITE D'ENERGIE POTENTIELLE ELASTIQUE AU POINT
-!  --    D'INTEGRATION COURANT
-!        ---------------------
-        call r8inir(6, 0.d0, epsi, 1)
+
+    else if (defoComp(1:5) .eq. 'PETIT') then
+
+! ----- CALCUL DE L'INVERSE DE LA MATRICE DE HOOKE
+        call d1mamc(fami, jvMaterCode, time, '+', kpg, &
+                    1, anglNaut, nbsig, d1)
+
+! ----- DENSITE D'ENERGIE POTENTIELLE ELASTIQUE AU POINT D'INTEGRATION COURANT
+        epsi = 0.d0
         do isig = 1, nbsig
             do jsig = 1, nbsig
-                epsi(isig) = epsi(isig)+d1(nbsig*(isig-1)+jsig)*sigma(jsig)
+                epsi(isig) = epsi(isig)+d1(nbsig*(isig-1)+jsig)*sigmEner(jsig)
             end do
-            enelas = enelas+undemi*sigma(isig)*epsi(isig)
+            enerElas = enerElas+0.5d0*sigmEner(isig)*epsi(isig)
         end do
-!
+
     else
-        call utmess('F', 'COMPOR1_77', sk=compor(3))
+        call utmess('F', "ENERGY1_1", sk=defoComp)
     end if
 !
 end subroutine

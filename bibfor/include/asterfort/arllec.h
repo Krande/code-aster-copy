@@ -15,19 +15,15 @@
 ! You should have received a copy of the GNU General Public License
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
-
-!
 !
 interface
-    subroutine arllec(motcle,iocc,modele,noma,nomb, &
-                      model,cine,dime)
-        integer(kind=8) :: iocc
-        integer(kind=8) :: dime
-        character(len=16) :: motcle
-        character(len=8) :: modele
-        character(len=8) :: cine(3)
-        character(len=8) :: model(3)
-        character(len=10) :: noma
-        character(len=10) :: nomb
+    subroutine arllec(factorKeyword, iocc, model, noma, nomb, &
+                      partModel, partKine, dime)
+        character(len=16), intent(in) :: factorKeyword
+        integer(kind=8), intent(in) :: iocc
+        character(len=8), intent(in) :: model
+        character(len=10), intent(in) :: noma, nomb
+        character(len=8), intent(out) :: partModel(2), partKine(2)
+        integer(kind=8), intent(out) :: dime
     end subroutine arllec
 end interface

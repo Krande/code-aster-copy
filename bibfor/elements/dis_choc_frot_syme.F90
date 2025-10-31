@@ -28,7 +28,6 @@ subroutine dis_choc_frot_syme(DD, icodma, ulp, xg, klv, &
 #include "asterc/r8sign.h"
 #include "asterfort/assert.h"
 #include "asterfort/diklvraid.h"
-#include "asterfort/dikpkt.h"
 #include "asterfort/diraidklv.h"
 #include "asterfort/in_liste_entier.h"
 #include "asterfort/rcvala.h"
@@ -82,7 +81,6 @@ subroutine dis_choc_frot_syme(DD, icodma, ulp, xg, klv, &
     integer(kind=8) :: ii
     real(kind=8) :: xl(6), xd(3), raide(6), raidep(6), rignor, rigtan, depxyz(3)
     real(kind=8) :: coulom, dist12, Precisxyz(3), klvp(78), utotxyz(3)
-    real(kind=8) :: kp, kt
 !
     integer(kind=8) :: axes(3), ContactInGlobal, TestOK, TestNOK, messai(4)
     integer(kind=8) :: jadre1, nbout, jcodre1
@@ -134,8 +132,6 @@ subroutine dis_choc_frot_syme(DD, icodma, ulp, xg, klv, &
         messak(3) = '"1D"|"COIN_2D"'
         call utmess('F', 'DISCRETS_35', nk=3, valk=messak)
     end if
-!   Raideurs élastiques en parallèle
-    call dikpkt(icodma, 'DIS_CONTACT     ', kp, kt)
 !
 !   Si ContactInGlobal [ReperGlobal, ReperBizarre]
 !       Prise en compte de          : RIGI_NOR, REPERE
@@ -381,17 +377,5 @@ subroutine dis_choc_frot_syme(DD, icodma, ulp, xg, klv, &
             varpl(ifz) = varmo(ifz)
         end if
     end if
-!
-!   Ajout d'une contribution élastique en //
-    force(1) = force(1)+kp*utotxyz(1)
-    force(2) = force(2)+kt*utotxyz(2)
-    force(3) = force(3)+kt*utotxyz(3)
-!   Récupération des raideurs diagonales de klv, qui ont été actualisées
-    call diraidklv(DD%nomte, raide, klv)
-!   Ajout des raideurs élastiques // à klv
-    raide(1) = raide(1)+kp
-    raide(2) = raide(2)+kt
-    raide(3) = raide(3)+kt
-    call diklvraid(DD%nomte, klv, raide)
 !
 end subroutine

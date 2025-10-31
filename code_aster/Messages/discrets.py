@@ -297,6 +297,11 @@ Pour le discret avec le matériau %(k1)s et le comportement %(k2)s, le type d'é
 cas où le paramètre COULOMB est strictement positif). Seul le type %(k3)s est autorisé.
 """
     ),
+    38: _(
+        """
+Pour le discret avec le matériau %(k1)s, il n'est pas possible de spécifier à la fois le paramètre KT et les paramètres (KT1, KT2).
+"""
+    ),
     40: _(
         """
 L'utilisation des discrets non-symétriques n'est actuellement pas possible pour

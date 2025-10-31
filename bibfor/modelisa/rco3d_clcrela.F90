@@ -18,7 +18,7 @@
 !
 subroutine rco3d_clcrela(ligrel, noma, nb_pairs, nbnocot, &
                          list_total_no_co, map_noco_pair, map_noco_nbelem, &
-                         map_noco_nbnoco, resuelem, fonrez, lisrel)
+                         map_noco_nbnoco, resuelem, lisrel)
     !
     use raco3d_module
     !
@@ -47,7 +47,6 @@ subroutine rco3d_clcrela(ligrel, noma, nb_pairs, nbnocot, &
     integer(kind=8), intent(in) :: map_noco_nbnoco(:, :, :)
     integer(kind=8), intent(in) :: map_noco_nbelem(:, :)
     integer(kind=8), pointer, intent(in) :: list_total_no_co(:)
-    character(len=*), intent(in) :: fonrez
 
 !  SUBROUTINE: rco3d_addrela
 !
@@ -79,8 +78,6 @@ subroutine rco3d_clcrela(ligrel, noma, nb_pairs, nbnocot, &
 !                                     contain the node.
 !                                     Dimensions: (9, nbnocot)
 !
-!  fonrez           - IN    - R      - 'REEL'
-!
 !  resuelem         - IN    - K19    - Name of the elementary matrices (`resuelem`) used to compute
 !                                    the linear realtion .
 !
@@ -90,12 +87,13 @@ subroutine rco3d_clcrela(ligrel, noma, nb_pairs, nbnocot, &
 ! ------------------------------------------------------------------------------
 
     complex(kind=8) :: betac
+    character(len=4), parameter :: valeType = 'REEL'
     real(kind=8) :: beta
     character(len=24) :: noeuma
     character(len=16) :: motfac
     character(len=8) :: betaf, dofs(6), nomnoe
     integer(kind=8) :: nbterm, i, j, k, l
-    character(len=4) :: typval, typcoe
+    character(len=4) :: typcoe
     character(len=8), pointer :: lisddl(:) => null()
     character(len=8), pointer :: lisno(:) => null()
     integer(kind=8), pointer :: repe_type(:) => null()
@@ -127,8 +125,6 @@ subroutine rco3d_clcrela(ligrel, noma, nb_pairs, nbnocot, &
     ! --- VECTEUR DES DIMENSIONS DE CES DIRECTIONS
     AS_ALLOCATE(vi=repe_type, size=NB_NDDL_MAX*nb_pairs)
 
-    ! --- TYPE DES VALEURS AU SECOND MEMBRE DES RELATIONS
-    typval = fonrez
     ! --- TYPE DES VALEURS DES COEFFICIENTS DES RELATIONS
     typcoe = 'REEL'
     ! --- VALEUR DU SECOND MEMBRE DES RELATIONS QUAND C'EST UNE FONCTION
@@ -251,7 +247,7 @@ subroutine rco3d_clcrela(ligrel, noma, nb_pairs, nbnocot, &
 
             call afrela(coer, coec, lisddl, lisno, repe_type, &
                         repe_defi, nbterm, beta, betac, betaf, &
-                        typcoe, typval, 0.d0, lisrel)
+                        typcoe, valeType, 0.d0, lisrel)
             call imprel(motfac, nbterm, coer, lisddl, lisno, &
                         beta, 1.0e-16)
             nbterm = 0

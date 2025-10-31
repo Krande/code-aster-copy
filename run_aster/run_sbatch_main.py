@@ -93,6 +93,7 @@ TEMPLATE = """#!/bin/bash
 
 # redirect output in the current directory
 #SBATCH --output={output}
+#SBATCH --error={output}.stderr
 
 {RUNASTER_ROOT}/bin/run_aster {run_aster_options} {study}
 """

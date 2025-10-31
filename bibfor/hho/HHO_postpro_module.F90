@@ -59,7 +59,7 @@ module HHO_postpro_module
 !
 ! --------------------------------------------------------------------------------------------------
     public :: hhoPostMeca, hhoPostDeplMeca, hhoPostTher, hhoPostTherElga
-    public :: hhoPostMecaGradVari
+    public :: hhoPostMecaGradVari, hhoPostMecaElga
     private :: hhoPostDeplMecaOP
 !
 contains
@@ -130,6 +130,76 @@ contains
         do ino = 1, nbnodes
             do idim = 1, ndim
                 zr(jvect-1+i) = post_sol(idim, ino)
+                i = i+1
+            end do
+        end do
+!
+    end subroutine
+!
+! ==================================================================================================
+! ==================================================================================================
+!
+    subroutine hhoPostMecaElga(hhoCell, hhoData, hhoQuad)
+!
+        implicit none
+!
+        type(HHO_Cell), intent(in) :: hhoCell
+        type(HHO_Data), intent(in) :: hhoData
+        type(HHO_Quadrature), intent(in) :: hhoQuad
+!
+! --------------------------------------------------------------------------------------------------
+!   HHO - mechanics
+!
+!   Evaluate HHO cell unknowns at the nodes
+!   In hhoCell         : a HHO Cell
+!   In hhoData         : information on HHO methods
+!   In hhoQuad         : quadrature
+! --------------------------------------------------------------------------------------------------
+!
+        type(HHO_basis_cell) :: hhoBasisCell
+        integer(kind=8) :: total_dofs, cbs, fbs, jvect, i, ipg, ndim, idim, comp_dim
+        real(kind=8), dimension(MSIZE_CELL_VEC) :: sol_T
+        real(kind=8), dimension(MSIZE_CELL_SCAL) :: sol_T_dim
+        real(kind=8), dimension(3, MAX_QP_CELL) :: post_sol
+!
+        ndim = hhoCell%ndim
+        sol_T = 0.d0
+        sol_T_dim = 0.d0
+        post_sol = 0.d0
+!
+! --- number of dofs
+!
+        call hhoMecaDofs(hhoCell, hhoData, cbs, fbs, total_dofs)
+        comp_dim = cbs/ndim
+!
+! --- We get the solution on the cell
+!
+        call readVector('PDEPLAR', cbs, sol_T, total_dofs-cbs)
+!
+! --- init cell basis
+!
+        call hhoBasisCell%initialize(hhoCell)
+!
+! --- Compute the solution in the cell nodes
+!
+        do idim = 1, ndim
+            sol_T_dim(1:comp_dim) = sol_T(1+(idim-1)*comp_dim:idim*comp_dim)
+            do ipg = 1, hhoQuad%nbQuadPoints
+                post_sol(idim, ipg) = hhoEvalScalCell( &
+                                      hhoBasisCell, hhoData%cell_degree(), &
+                                      hhoQuad%points(1:3, ipg), sol_T_dim, comp_dim &
+                                      )
+            end do
+        end do
+!
+! --- Copy of post_sol in PDEPLGA ('OUT' to fill)
+!
+        call jevech('PDEPLGA', 'E', jvect)
+!
+        i = 1
+        do ipg = 1, hhoQuad%nbQuadPoints
+            do idim = 1, ndim
+                zr(jvect-1+i) = post_sol(idim, ipg)
                 i = i+1
             end do
         end do

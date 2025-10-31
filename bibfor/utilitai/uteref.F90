@@ -281,7 +281,7 @@ subroutine uteref(chanom, typech, tyelas, nomte, lfichUniq, &
                         wg)
         end if
 !
-        ASSERT(nbpg .le. 27)
+        ASSERT(nbpg .le. 125)
 !
     end if
 !

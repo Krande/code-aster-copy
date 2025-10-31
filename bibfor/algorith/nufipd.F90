@@ -259,7 +259,7 @@ subroutine nufipd(ndim, nno1, nno2, npg, iw, &
         end if
 
 ! ----- Compute "bubble" matrix
-        call tanbul(option, ndim, kpg, mate, rela_comp, &
+        call tanbul(ndim, kpg, mate, rela_comp, &
                     lVect, mini, alpha, dsbdep, trepst)
 
 ! ----- Static condensation (for MINI element)

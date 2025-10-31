@@ -77,7 +77,7 @@ subroutine te0489(option, nomte)
     integer(kind=8) :: nno, nbsig, nnos, isigtm, isigtp, idvar1
     integer(kind=8) :: idvar2, nbvarint, npg, i, k, ndim, igau, icodre(3)
     integer(kind=8) :: nbvari, jprolp, jvalep, nbvalp, ibid
-    real(kind=8) :: sigma1(mxcmel), sigma2(mxcmel)
+    real(kind=8) :: sigmEner1(mxcmel), sigmEner2(mxcmel)
     real(kind=8) :: sigt1(mxcmel), sigt2(mxcmel)
     real(kind=8) :: dchav(nbpgmx), dchat(nbpgmx)
     real(kind=8) :: dchax(nbpgmx), dchay(nbpgmx)
@@ -112,8 +112,8 @@ subroutine te0489(option, nomte)
     do i = 1, mxcmel
         sigt1(i) = zero
         sigt2(i) = zero
-        sigma1(i) = zero
-        sigma2(i) = zero
+        sigmEner1(i) = zero
+        sigmEner2(i) = zero
         x1(i) = zero
         x2(i) = zero
         xrapel(i) = zero
@@ -170,8 +170,8 @@ subroutine te0489(option, nomte)
             k = k+1
             sigt1(i+(igau-1)*nbsig) = zr(isigtm+k-1)
             sigt2(i+(igau-1)*nbsig) = zr(isigtp+k-1)
-            sigma1(i+(igau-1)*nbsig) = zr(isigtm+k-1)
-            sigma2(i+(igau-1)*nbsig) = zr(isigtp+k-1)
+            sigmEner1(i+(igau-1)*nbsig) = zr(isigtm+k-1)
+            sigmEner2(i+(igau-1)*nbsig) = zr(isigtp+k-1)
         end do
     end do
 !
@@ -183,18 +183,18 @@ subroutine te0489(option, nomte)
 !
         do igau = 1, npg
 !
-            trsig1 = sigma1( &
-                     1+(igau-1)*nbsig)+sigma1(2+(igau-1)*nbsig)+sigma1(3+(igau-1)*nbsig)
+            trsig1 = sigmEner1( &
+                     1+(igau-1)*nbsig)+sigmEner1(2+(igau-1)*nbsig)+sigmEner1(3+(igau-1)*nbsig)
 !
-            trsig2 = sigma2( &
-                     1+(igau-1)*nbsig)+sigma2(2+(igau-1)*nbsig)+sigma2(3+(igau-1)*nbsig)
-            sigma1(1+(igau-1)*nbsig) = sigma1(1+(igau-1)*nbsig)-untier*trsig1
-            sigma1(2+(igau-1)*nbsig) = sigma1(2+(igau-1)*nbsig)-untier*trsig1
-            sigma1(3+(igau-1)*nbsig) = sigma1(3+(igau-1)*nbsig)-untier*trsig1
+            trsig2 = sigmEner2( &
+                     1+(igau-1)*nbsig)+sigmEner2(2+(igau-1)*nbsig)+sigmEner2(3+(igau-1)*nbsig)
+            sigmEner1(1+(igau-1)*nbsig) = sigmEner1(1+(igau-1)*nbsig)-untier*trsig1
+            sigmEner1(2+(igau-1)*nbsig) = sigmEner1(2+(igau-1)*nbsig)-untier*trsig1
+            sigmEner1(3+(igau-1)*nbsig) = sigmEner1(3+(igau-1)*nbsig)-untier*trsig1
 !
-            sigma2(1+(igau-1)*nbsig) = sigma2(1+(igau-1)*nbsig)-untier*trsig2
-            sigma2(2+(igau-1)*nbsig) = sigma2(2+(igau-1)*nbsig)-untier*trsig2
-            sigma2(3+(igau-1)*nbsig) = sigma2(3+(igau-1)*nbsig)-untier*trsig2
+            sigmEner2(1+(igau-1)*nbsig) = sigmEner2(1+(igau-1)*nbsig)-untier*trsig2
+            sigmEner2(2+(igau-1)*nbsig) = sigmEner2(2+(igau-1)*nbsig)-untier*trsig2
+            sigmEner2(3+(igau-1)*nbsig) = sigmEner2(3+(igau-1)*nbsig)-untier*trsig2
         end do
 !
 ! ---- DANS LE CAS D'UN ECROUISSAGE CINEMATIQUE
@@ -232,8 +232,8 @@ subroutine te0489(option, nomte)
 !     &                                -X1(I+ (IGAU-1)*NBSIG)
                 sigt2(i+(igau-1)*nbsig) = zr(isigtp+k-1)
 !     &                                -X2(I+ (IGAU-1)*NBSIG)
-                sigma1(i+(igau-1)*nbsig) = zr(isigtm+k-1)-x1(i+(igau-1)*nbsig)
-                sigma2(i+(igau-1)*nbsig) = zr(isigtp+k-1)-x2(i+(igau-1)*nbsig)
+                sigmEner1(i+(igau-1)*nbsig) = zr(isigtm+k-1)-x1(i+(igau-1)*nbsig)
+                sigmEner2(i+(igau-1)*nbsig) = zr(isigtp+k-1)-x2(i+(igau-1)*nbsig)
             end do
         end do
 !
@@ -243,32 +243,32 @@ subroutine te0489(option, nomte)
 !
         do igau = 1, npg
 !
-            trsig1 = sigma1( &
-                     1+(igau-1)*nbsig)+sigma1(2+(igau-1)*nbsig)+sigma1(3+(igau-1)*nbsig)
+            trsig1 = sigmEner1( &
+                     1+(igau-1)*nbsig)+sigmEner1(2+(igau-1)*nbsig)+sigmEner1(3+(igau-1)*nbsig)
 !
-            trsig2 = sigma2( &
-                     1+(igau-1)*nbsig)+sigma2(2+(igau-1)*nbsig)+sigma2(3+(igau-1)*nbsig)
+            trsig2 = sigmEner2( &
+                     1+(igau-1)*nbsig)+sigmEner2(2+(igau-1)*nbsig)+sigmEner2(3+(igau-1)*nbsig)
 !
             trx1 = x1(1+(igau-1)*nbsig)+x1(2+(igau-1)*nbsig)+x1(3+(igau-1)*nbsig)
 !
             trx2 = x2(1+(igau-1)*nbsig)+x2(2+(igau-1)*nbsig)+x2(3+(igau-1)*nbsig)
 !
-            sigma1(1+(igau-1)*nbsig) = sigma1(1+(igau-1)*nbsig)-untier*(trsig1-trx1)
-            sigma1(2+(igau-1)*nbsig) = sigma1(2+(igau-1)*nbsig)-untier*(trsig1-trx1)
-            sigma1(3+(igau-1)*nbsig) = sigma1(3+(igau-1)*nbsig)-untier*(trsig1-trx1)
-            sigma1(4+(igau-1)*nbsig) = sigma1(4+(igau-1)*nbsig)
+            sigmEner1(1+(igau-1)*nbsig) = sigmEner1(1+(igau-1)*nbsig)-untier*(trsig1-trx1)
+            sigmEner1(2+(igau-1)*nbsig) = sigmEner1(2+(igau-1)*nbsig)-untier*(trsig1-trx1)
+            sigmEner1(3+(igau-1)*nbsig) = sigmEner1(3+(igau-1)*nbsig)-untier*(trsig1-trx1)
+            sigmEner1(4+(igau-1)*nbsig) = sigmEner1(4+(igau-1)*nbsig)
 !
-            sigma2(1+(igau-1)*nbsig) = sigma2(1+(igau-1)*nbsig)-untier*(trsig2-trx2)
-            sigma2(2+(igau-1)*nbsig) = sigma2(2+(igau-1)*nbsig)-untier*(trsig2-trx2)
-            sigma2(3+(igau-1)*nbsig) = sigma2(3+(igau-1)*nbsig)-untier*(trsig2-trx2)
-            sigma2(4+(igau-1)*nbsig) = sigma2(4+(igau-1)*nbsig)
+            sigmEner2(1+(igau-1)*nbsig) = sigmEner2(1+(igau-1)*nbsig)-untier*(trsig2-trx2)
+            sigmEner2(2+(igau-1)*nbsig) = sigmEner2(2+(igau-1)*nbsig)-untier*(trsig2-trx2)
+            sigmEner2(3+(igau-1)*nbsig) = sigmEner2(3+(igau-1)*nbsig)-untier*(trsig2-trx2)
+            sigmEner2(4+(igau-1)*nbsig) = sigmEner2(4+(igau-1)*nbsig)
 !
             if (ndim .eq. 3) then
-                sigma1(5+(igau-1)*nbsig) = sigma1(5+(igau-1)*nbsig)
-                sigma1(6+(igau-1)*nbsig) = sigma1(6+(igau-1)*nbsig)
+                sigmEner1(5+(igau-1)*nbsig) = sigmEner1(5+(igau-1)*nbsig)
+                sigmEner1(6+(igau-1)*nbsig) = sigmEner1(6+(igau-1)*nbsig)
 !
-                sigma2(5+(igau-1)*nbsig) = sigma2(5+(igau-1)*nbsig)
-                sigma2(6+(igau-1)*nbsig) = sigma2(6+(igau-1)*nbsig)
+                sigmEner2(5+(igau-1)*nbsig) = sigmEner2(5+(igau-1)*nbsig)
+                sigmEner2(6+(igau-1)*nbsig) = sigmEner2(6+(igau-1)*nbsig)
             end if
         end do
 !
@@ -278,7 +278,7 @@ subroutine te0489(option, nomte)
 ! ----  I = (NORME(SIGMA2) - NORME(SIGMA1))/NORME(SIGMA2) :
 !      --------------------------------------------------
     call dchapg(sigt1, sigt2, npg, nbsig, dchat)
-    call dchapg(sigma1, sigma2, npg, nbsig, dchav)
+    call dchapg(sigmEner1, sigmEner2, npg, nbsig, dchav)
 !
 !
 ! ---- CALCUL DE L'INDICATEUR LOCAL DE PERTE DE RADIALITE ERR_RADI
@@ -301,7 +301,7 @@ subroutine te0489(option, nomte)
 ! ---- CALCUL DE L'INDICATEUR LOCAL DE PERTE DE RADIALITE RADI:
 ! ----  I = 1- ABS(SIGMA1:DSIGMA)/(NORME(SIGMA1)*NORME(DSIGMA) :
 !      -------------------------------------------------------
-        call radipg(sigma1, sigma2, npg, nbsig, radiv, &
+        call radipg(sigmEner1, sigmEner2, npg, nbsig, radiv, &
                     cosang, 0, compor, imate, nbvari, &
                     zr(idvar1), zr(idvar2))
 !

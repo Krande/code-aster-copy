@@ -60,7 +60,7 @@ from .ExecutionParameter import ExecutionParameter, disable_fpe
 from .general import initial_context
 from .i18n import localization
 from .i18n import translate as _
-from .import_helper import ParaMEDMEM, PETSc, SLEPc, medcoupling
+from .import_helper import ParaMEDMEM, PETSc, SLEPc, medcoupling, sympy
 from .injector import injector
 from .interpolatelist import InterpolateList
 from .logger import DEBUG, ERROR, INFO, WARNING, logger, loglevel, with_loglevel

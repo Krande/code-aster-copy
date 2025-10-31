@@ -75,11 +75,10 @@ try:
     import aster
     import aster_core
     import aster_fonctions
-    import med_aster
     import libaster
 
     # setup, do not keep references here...
-    del aster, aster_core, aster_fonctions, med_aster, libaster
+    del aster, aster_core, aster_fonctions, libaster
 
     # ... except for rc and package info
     from .Utilities.rc import rc

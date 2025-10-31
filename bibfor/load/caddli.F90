@@ -67,7 +67,7 @@ subroutine caddli(keywordfact, load, mesh, model, valeType)
 !
 ! --------------------------------------------------------------------------------------------------
 !
-    integer(kind=8), parameter :: n_max_cmp = 300
+    integer(kind=8), parameter :: n_max_cmp = 320
     integer(kind=8) :: cmp_nb
     integer(kind=8) :: cmp_acti(n_max_cmp)
     real(kind=8) :: vale_real(n_max_cmp)
@@ -163,7 +163,7 @@ subroutine caddli(keywordfact, load, mesh, model, valeType)
     call jeveuo(jexnom('&CATA.GD.NOMCMP', nomg), 'L', jnom)
     call jelira(jexnom('&CATA.GD.NOMCMP', nomg), 'LONMAX', nbcmp)
     call dismoi('NB_EC', nomg, 'GRANDEUR', repi=nbec)
-    ASSERT(nbec .le. 10)
+    ASSERT(nbec .le. 11)
 !
 ! - Local coordinate system (dummy)
 !

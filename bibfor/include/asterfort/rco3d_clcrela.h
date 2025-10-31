@@ -15,20 +15,17 @@
 ! You should have received a copy of the GNU General Public License
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
-
-!
 !
 interface
-    subroutine rco3d_clcrela(ligrel, noma, nb_pairs, nbnocot,&
-        list_total_no_co, map_noco_pair, map_noco_nbelem, &
-        map_noco_nbnoco, resuelem, fonrez, lisrel )
+    subroutine rco3d_clcrela(ligrel, noma, nb_pairs, nbnocot, &
+                             list_total_no_co, map_noco_pair, map_noco_nbelem, &
+                             map_noco_nbnoco, resuelem, lisrel)
         character(len=19), intent(in) :: ligrel, resuelem, lisrel
         character(len=8), intent(in) :: noma
         integer(kind=8), intent(in) :: nb_pairs, nbnocot
-        integer(kind=8), intent(in) :: map_noco_pair(:,:,:)
-        integer(kind=8), intent(in) :: map_noco_nbnoco(:,:,:)
-        integer(kind=8), intent(in) :: map_noco_nbelem(:,:)
+        integer(kind=8), intent(in) :: map_noco_pair(:, :, :)
+        integer(kind=8), intent(in) :: map_noco_nbnoco(:, :, :)
+        integer(kind=8), intent(in) :: map_noco_nbelem(:, :)
         integer(kind=8), pointer, intent(in) :: list_total_no_co(:)
-        character(len=*), intent(in) :: fonrez
     end subroutine rco3d_clcrela
 end interface

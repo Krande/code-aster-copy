@@ -1,0 +1,36 @@
+import sympy
+from sympy import *
+
+init_printing(use_unicode=True)
+
+A = sympy.Symbol("A", positive=True, real=True)
+H = sympy.Symbol("H", positive=True, real=True)
+
+x = sympy.Symbol("x", real=True)
+y = sympy.Symbol("y", real=True)
+z = sympy.Symbol("z", real=True)
+
+# temperature a renseigner
+u = -x*x*x*x+ z*z*x+ y*y - x*y + z+x-1
+
+# calcul G
+G = simplify(
+    sympy.Matrix(
+        [
+            diff(u, x), diff(u, y), diff(u, z)
+        ]
+    )
+)
+pprint(G)
+
+# calcul sigma
+lapla = simplify(diff(G[0],x)+diff(G[1],y)+diff(G[2],z))
+
+print("laplacien =")
+pprint(lapla)
+
+
+f = -simplify((A*lapla+H*u)/H)
+
+print("force f =")
+pprint(f)

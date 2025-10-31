@@ -16,7 +16,7 @@
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
 !
-subroutine caliel(valeTypeZ, loadZ, modelZ)
+subroutine caliel(loadZ, modelZ)
 !
     implicit none
 !
@@ -39,28 +39,16 @@ subroutine caliel(valeTypeZ, loadZ, modelZ)
 #include "asterfort/rapoco.h"
 #include "jeveux.h"
 !
-    character(len=*), intent(in) :: loadZ, valeTypeZ, modelZ
+    character(len=*), intent(in) :: loadZ, modelZ
 !
 ! --------------------------------------------------------------------------------------------------
 !
-!     MODELISATION DU RACCORD ENTRE DES ELEMENTS
-!     AYANT DES MODELISATIONS DIFFERENTES PAR DES RELATIONS
-!     LINEAIRES ENTRE DDLS.
-!     CES RELATIONS SONT AFFECTEES A LA CHARGE CHARGZ.
-!     TYPES DES RACCORDS TRAITES :
-!       1) RACCORD POUTRE-3D PAR DES RELATIONS LINEAIRES
-!          ENTRE LES NOEUDS DES MAILLES DE SURFACE MODELISANT
-!          LA TRACE DE LA SECTION DE LA POUTRE SUR LE MASSIF 3D
-!          ET LE NOEUD DE LA POUTRE DONNE PAR L'UTILISATEUR
+! LIAISON_ELE
 !
-!       2) RACCORD POUTRE-COQUE PAR DES RELATIONS LINEAIRES
-!          ENTRE LES NOEUDS DES MAILLES DE BORD DE COQUE MODELISANT
-!          LA TRACE DE LA SECTION DE LA POUTRE SUR A COQUE
-!          ET LE NOEUD DE LA POUTRE DONNE PAR L'UTILISATEUR
-! -------------------------------------------------------
-!  FONREZ        - IN    - K4   - : 'REEL' OU 'FONC'
-!  CHARGZ        - IN    - K8   - : NOM DE LA SD CHARGE
-!                - JXVAR -      -
+! --------------------------------------------------------------------------------------------------
+!
+! In  load             : load
+! In  model            : model
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -70,7 +58,7 @@ subroutine caliel(valeTypeZ, loadZ, modelZ)
     character(len=14), parameter :: numeDof = '&&CALIEL.NUMED'
     character(len=16) :: option
     character(len=19) :: modelLigrel
-    character(len=19), parameter :: lisrel = '&&CALIEL.RLLISTE'
+    character(len=19), parameter :: listRela = '&&CALIEL.RLLISTE'
     integer(kind=8) :: iocc, nbOcc, iop, nbLigr
     character(len=24), pointer :: listLigr(:) => null()
 !
@@ -94,31 +82,31 @@ subroutine caliel(valeTypeZ, loadZ, modelZ)
         do iocc = 1, nbOcc
             call getvtx(factorKeyword, 'OPTION', iocc=iocc, scal=option, nbret=iop)
             if (option .eq. '3D_POU') then
-                call rapo3d(numeDof, iocc, valeTypeZ, lisrel, loadZ)
+                call rapo3d(numeDof, iocc, listRela, loadZ)
             else if (option .eq. 'COQ_3D') then
-                call raco3d(numeDof, iocc, valeTypeZ, lisrel, loadZ)
+                call raco3d(iocc, listRela, loadZ)
             else if (option .eq. '3D_POU_ARLEQUIN') then
-                call caarle(numeDof, iocc, lisrel, loadZ)
+                call caarle(numeDof, iocc, listRela, loadZ)
             else if (option .eq. '2D_POU') then
-                call rapo2d(numeDof, iocc, valeTypeZ, lisrel, loadZ)
+                call rapo2d(numeDof, iocc, listRela, loadZ)
             else if (option .eq. '3D_TUYAU') then
-                call rapo3d(numeDof, iocc, valeTypeZ, lisrel, loadZ)
+                call rapo3d(numeDof, iocc, listRela, loadZ)
             else if (option .eq. 'PLAQ_POUT_ORTH') then
-                call rapo3d(numeDof, iocc, valeTypeZ, lisrel, loadZ)
+                call rapo3d(numeDof, iocc, listRela, loadZ)
             else if (option .eq. 'COQ_POU') then
-                call rapoco(numeDof, iocc, valeTypeZ, lisrel, loadZ)
+                call rapoco(numeDof, iocc, listRela, loadZ)
             else if (option .eq. 'COQ_TUYAU') then
-                call rapoco(numeDof, iocc, valeTypeZ, lisrel, loadZ)
+                call rapoco(numeDof, iocc, listRela, loadZ)
             else
                 ASSERT(ASTER_FALSE)
             end if
         end do
 
 ! ----- Affect relations to load
-        call aflrch(lisrel, load, 'NLIN')
+        call aflrch(listRela, load, 'NLIN')
 
 ! ----- Clean
-        call jedetc('V', lisrel, 1)
+        call jedetc('V', listRela, 1)
         call jedetr('&&CALIEL.LIGRMO')
         call jedetr('&&CALIEL.NUMED')
 !

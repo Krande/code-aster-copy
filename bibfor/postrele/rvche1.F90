@@ -41,7 +41,7 @@ subroutine rvche1(chelez, nomjv, nbel, numail, pgl)
 ! ----------------------------------------------------------------------
 ! ----------------------------------------------------------------------
     integer(kind=8) :: debugr
-    integer(kind=8) ::  gd, iad, ncmpmx, nec, tabec(10), iavale
+    integer(kind=8) ::  gd, iad, ncmpmx, nec, tabec(11), iavale
     integer(kind=8) ::  im, imail, igrel, ielg, mode, nscal, icoef, nsca, nnoe
     integer(kind=8) :: ncmpp, icmp, npcalc, iel, ncou, iachml, icou, ino, icmpt, nbgrel
     integer(kind=8) :: numxx, numyy, numzz, numxy, numxz, numyz, nuddl, jlongr

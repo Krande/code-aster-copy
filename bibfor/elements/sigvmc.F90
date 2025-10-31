@@ -17,104 +17,75 @@
 ! --------------------------------------------------------------------
 !
 subroutine sigvmc(fami, nno, ndim, nbsig, npg, &
-                  ipoids, ivf, idfde, xyz, depl, &
-                  instan, angl_naut, mater, nharm, sigma)
-!.======================================================================
+                  jvGaussWeight, jvBaseFunc, jvDBaseFunc, &
+                  nodeCoor, nodeDisp, &
+                  time, anglNaut, jvMaterCode, nharm, &
+                  sigm)
+!
+    use BehaviourStrain_type
     implicit none
 !
-!      SIGVMC   -- CALCUL DES  CONTRAINTES 'VRAIES'
-!                  (I.E. SIGMA_MECA - SIGMA_THERMIQUES- SIGMA_RETRAIT)
-!                  AUX POINTS D'INTEGRATION POUR LES ELEMENTS
-!                  ISOPARAMETRIQUES
-!
-!   ARGUMENT        E/S  TYPE         ROLE
-!    FAMI           IN     K        FAMILLE DE POINT DE GAUSS
-!    NNO            IN     I        NOMBRE DE NOEUDS DE L'ELEMENT
-!    NDIM           IN     I        DIMENSION DE L'ELEMENT (2 OU 3)
-!    NBSIG          IN     I        NOMBRE DE CONTRAINTES ASSOCIE
-!                                   A L'ELEMENT
-!    NPG            IN     I        NOMBRE DE POINTS D'INTEGRATION
-!                                   DE L'ELEMENT
-!    NI(1)          IN     R        FONCTIONS DE FORME
-!    DNIDX(1)       IN     R        DERIVEES DES FONCTIONS DE FORME
-!                                   / X SUR L'ELEMENT DE REFERENCE
-!    DNIDY(1)       IN     R        DERIVEES DES FONCTIONS DE FORME
-!                                   / Y SUR L'ELEMENT DE REFERENCE
-!    DNIDZ(1)       IN     R        DERIVEES DES FONCTIONS DE FORME
-!                                   / Z SUR L'ELEMENT DE REFERENCE
-!    POIDS(1)       IN     R        POIDS D'INTEGRATION
-!    XYZ(1)         IN     R        COORDONNEES DES CONNECTIVITES
-!    DEPL(1)        IN     R        VECTEUR DES DEPLACEMENTS SUR
-!                                   L'ELEMENT
-!    INSTAN         IN     R        INSTANT DE CALCUL
-!    ANGL_NAUT      IN     R        ANGLES NAUTIQUES DEFINISSANT LE REPERE
-!                                   D'ORTHOTROPIE
-!    MATER          IN     I        MATERIAU
-!    NHARM          IN     R        NUMERO D'HARMONIQUE
-!    SIGMA(1)       OUT    R        CONTRAINTES AUX POINTS D'INTEGRATION
-!
-!.========================= DEBUT DES DECLARATIONS ====================
-! -----  ARGUMENTS
-#include "jeveux.h"
+#include "asterfort/assert.h"
+#include "asterfort/Behaviour_type.h"
 #include "asterfort/sigmmc.h"
 #include "asterfort/sigtmc.h"
-    character(len=*) :: fami
-    real(kind=8) :: xyz(1), depl(1), angl_naut(3), sigma(1)
-    real(kind=8) :: instan, nharm
-    integer(kind=8) :: ipoids, ivf, idfde
-! -----  VARIABLES LOCALES
-    character(len=16) :: option
-    real(kind=8) :: sigth(162), sighy(162), sigse(162)
+#include "jeveux.h"
+#include "MeshTypes_type.h"
 !
+    character(len=*), intent(in) :: fami
+    integer(kind=8), intent(in) :: nno, ndim, nbsig, npg
+    integer(kind=8), intent(in) :: jvGaussWeight, jvBaseFunc, jvDBaseFunc
+    real(kind=8), intent(in) :: nodeCoor(ndim*nno), nodeDisp(ndim*nno)
+    real(kind=8), intent(in) :: time, anglNaut(3)
+    integer(kind=8), intent(in) :: jvMaterCode
+    real(kind=8), intent(in) :: nharm
+    real(kind=8), intent(out) :: sigm(nbsig*npg)
 !
-!.========================= DEBUT DU CODE EXECUTABLE ==================
+! --------------------------------------------------------------------------------------------------
 !
-! --- INITIALISATIONS :
-!     -----------------
-!-----------------------------------------------------------------------
-    integer(kind=8) :: i, mater, nbsig, ndim, nno, npg
-    real(kind=8) :: zero
-!-----------------------------------------------------------------------
-    zero = 0.0d0
+! Compute mechanical stress (without effect of external state variables)
 !
-    do i = 1, nbsig*npg
-        sigma(i) = zero
-    end do
+! --------------------------------------------------------------------------------------------------
 !
+! In  fami             : Gauss family for integration point rule
+! In  nno              : number of nodes of element
+! In  ndim             : dimension of element (2 ou 3)
+! In  nbsig            : number of components for stress tensors (4 or 6)
+! In  npg              : number of Gauss points
+! In  jvGaussWeight    : adresse to Gauss point weight
+! In  jvBaseFunc       : adresse to shape functions
+! In  jvDBaseFunc      : adresse to derivative of shape functions
+! In  nodeCoor         : coordinates of nodes
+! In  nodeDisp         : displacements at nodes
+! In  time             : current time
+! In  anglNaut         : nautical angles for definition of basis for non-isotropic elasticity
+! In  jvMaterCode      : adress for material parameters
+! In  nharm            : Fourier mode
+! Out sigm             : values of stress tensor at integration points
 !
-! --- CALCUL DES CONTRAINTES MECANIQUES AUX POINTS D'INTEGRATION
-!      ---------------------------------------------------------
+! --------------------------------------------------------------------------------------------------
+!
+    real(kind=8) :: sigmVarc(162)
+!
+! --------------------------------------------------------------------------------------------------
+!
+    ASSERT(nbsig .le. 6)
+    ASSERT(npg .le. 27)
+    sigm = 0.d0
+
+! - Compute total stress
     call sigmmc(fami, nno, ndim, nbsig, npg, &
-                ipoids, ivf, idfde, xyz, depl, &
-                instan, angl_naut, mater, nharm, sigma)
+                jvGaussWeight, jvBaseFunc, jvDBaseFunc, &
+                nodeCoor, nodeDisp, &
+                time, anglNaut, jvMaterCode, nharm, &
+                sigm)
+
+! - Compute stresses from external state variables
+    call sigtmc(fami, nbsig, npg, ndim, &
+                time, jvMaterCode, anglNaut, &
+                VARC_STRAIN_ALL, sigmVarc)
+
+! - CALCUL DES CONTRAINTES TOTALES AUX POINTS D'INTEGRATION
+    sigm(1:nbsig*npg) = sigm(1:nbsig*npg)-sigmVarc(1:nbsig*npg)
 !
-! --- CALCUL DES CONTRAINTES THERMIQUES AUX POINTS D'INTEGRATION
-!      ---------------------------------------------------------
-    option = 'CALC_CONT_TEMP_R'
-    call sigtmc(fami, ndim, nbsig, npg, &
-                instan, mater, angl_naut, &
-                option, sigth)
-!
-!--- CALCUL DES CONTRAINTES DUES AUX RETRAIT DE DESSICCATION
-!           ET D'HYDRATATION
-!      ---------------------------------------------------------
-!
-    option = 'CALC_CONT_HYDR_R'
-    call sigtmc(fami, ndim, nbsig, npg, &
-                instan, mater, angl_naut, &
-                option, sighy)
-!
-!
-    option = 'CALC_CONT_SECH_R'
-    call sigtmc(fami, ndim, nbsig, npg, &
-                instan, mater, angl_naut, &
-                option, sigse)
-!
-! --- CALCUL DES CONTRAINTES TOTALES AUX POINTS D'INTEGRATION
-!      ---------------------------------------------------------
-    do i = 1, nbsig*npg
-        sigma(i) = sigma(i)-sigth(i)-sighy(i)-sigse(i)
-    end do
-!
-!.============================ FIN DE LA ROUTINE ======================
 end subroutine

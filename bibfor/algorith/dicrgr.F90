@@ -96,7 +96,7 @@ subroutine dicrgr(DD, icodma, varim, klv, varip, fono, sip)
     real(kind=8) :: phiseuil, kphi, thetac, ktheta, kphi2, phiseuil2, phipl2
     real(kind=8) :: dpp, dphipl, dphipl2, ktheta2
     real(kind=8) :: tempp, tempm
-    real(kind=8) :: fl(12), raideldc(6), kp
+    real(kind=8) :: fl(12), raideldc(6)
 !
     integer(kind=8)             :: codre1(6), codre2(1), codre3(1), codre4(7), codre5(7)
     real(kind=8)        :: valp_fix(6), valp_tr(1), valp_rot(7)
@@ -191,7 +191,6 @@ subroutine dicrgr(DD, icodma, varim, klv, varip, fono, sip)
     et_ax = valp_fix(3)
     et_rot = valp_fix(4)
     coul_ax = valp_fix(5)
-    kp = valp_fix(6)
 !
     fser = valp_tr(1)/4.d0
 !
@@ -265,9 +264,9 @@ subroutine dicrgr(DD, icodma, varim, klv, varip, fono, sip)
         varip(7) = rtp
         !
         ! Mise en // de KP sur (kx,ky,kz)
-        sip(1) = -fser+(kn_ax+kp)*(uxm+dux)
-        sip(2) = rtp+kp*(uym+duy)
-        sip(3) = 0.d0+kp*(uzm+duz)
+        sip(1) = -fser+kn_ax*(uxm+dux)
+        sip(2) = rtp
+        sip(3) = 0.d0
         sip(1+DD%nc) = sip(1)
         sip(2+DD%nc) = sip(2)
         sip(3+DD%nc) = sip(3)
@@ -372,9 +371,9 @@ subroutine dicrgr(DD, icodma, varim, klv, varip, fono, sip)
             ktt = thetan
         end if
         ! Mise en // de KP sur (kx,ky,kz)
-        raideldc(1) = kxx+kp
-        raideldc(2) = kyy+kp
-        raideldc(3) = kzz+kp
+        raideldc(1) = kxx
+        raideldc(2) = kyy
+        raideldc(3) = kzz
         raideldc(4) = kpp
         raideldc(5) = kkk
         raideldc(6) = ktt

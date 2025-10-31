@@ -17,11 +17,11 @@
 # along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 # --------------------------------------------------------------------
 
-DEBUT(CODE="OUI", ERREUR=_F(ALARME="EXCEPTION"))
+DEBUT(CODE="OUI", ERREUR=_F(ALARME="ALARME"))
 # ATTENTION : Unite de temps : heure
 MAIL = LIRE_MAILLAGE(FORMAT="MED")
 
-MODTHER = AFFE_MODELE(
+MODSECH = AFFE_MODELE(
     MAILLAGE=MAIL, AFFE=_F(TOUT="OUI", PHENOMENE="THERMIQUE", MODELISATION="3D_SECH_DIAG")
 )
 
@@ -48,7 +48,14 @@ TEMP = CREA_CHAMP(
 PARA__ = 2.5e-11
 # m2/h
 PARB__ = 0.12
-MATSECH = DEFI_MATERIAU(SECH_GRANGER=_F(A=PARA__, B=PARB__, QSR_K=4700, TEMP_0_C=0.0))
+
+# FONC_DESORP bidon pour tester HYGR_ELGA
+fonc_des = FORMULE(VALE="10*SECH", NOM_PARA="SECH")
+
+MATSECH = DEFI_MATERIAU(
+    SECH_GRANGER=_F(A=PARA__, B=PARB__, QSR_K=4700, TEMP_0_C=0.0),
+    BETON_DESORP=_F(FONC_DESORP=fonc_des),
+)
 
 CHMASECH = AFFE_MATERIAU(
     MAILLAGE=MAIL,
@@ -64,13 +71,13 @@ C0 = 106.42
 # =========================================================================
 #  Condition limite de concentration en eau imposee
 # =========================================================================
-charsec = AFFE_CHAR_SECH(MODELE=MODTHER, SECH_IMPO=_F(GROUP_MA="echange", SECH=Ceq))
+charsec = AFFE_CHAR_SECH(MODELE=MODSECH, SECH_IMPO=_F(GROUP_MA="echange", SECH=Ceq))
 # =========================================================================
 #  Resolution
 # =========================================================================
 
 RESUSECH = SECH_NON_LINE(
-    MODELE=MODTHER,
+    MODELE=MODSECH,
     CHAM_MATER=CHMASECH,
     COMPORTEMENT=_F(RELATION="SECH_GRANGER"),
     EXCIT=_F(CHARGE=charsec),
@@ -80,6 +87,14 @@ RESUSECH = SECH_NON_LINE(
     ARCHIVAGE=_F(LIST_INST=lisarch2),
 )
 
+CALC_CHAMP(
+    reuse=RESUSECH,
+    RESULTAT=RESUSECH,
+    SECHAGE=("DIFF_ELGA", "DIFF_ELNO", "DIFF_NOEU", "HYGR_ELGA", "HYGR_ELNO", "HYGR_NOEU"),
+    TOUT_ORDRE="OUI",
+)
+
+
 # =========================================================================
 #  Calcul de la perte de masse
 # =========================================================================
@@ -87,7 +102,7 @@ RESUSECH = SECH_NON_LINE(
 CMoy = POST_ELEM(
     INTEGRALE=_F(GROUP_MA="MAILVOL", NOM_CMP="SECH", NOM_CHAM="SECH", TYPE_MAILLE="3D"),
     RESULTAT=RESUSECH,
-    MODELE=MODTHER,
+    MODELE=MODSECH,
     CHAM_MATER=CHMASECH,
     LIST_INST=lisarch2,
 )
@@ -142,6 +157,70 @@ TEST_TABLE(
     VALE_REFE=1.7,
     VALE_CALC=1.7486312879432,
     REFERENCE="SOURCE_EXTERNE",
+)
+
+TEST_RESU(
+    RESU=(
+        _F(
+            GROUP_NO="PTSURF",
+            INST=528.0,
+            RESULTAT=RESUSECH,
+            NOM_CHAM="DIFF_NOEU",
+            NOM_CMP="DIFT",
+            VALE_CALC=1.4163650716607842e-09,
+        ),
+        _F(
+            GROUP_NO="PTSURF",
+            INST=528.0,
+            RESULTAT=RESUSECH,
+            NOM_CHAM="DIFF_NOEU",
+            NOM_CMP="DIFL",
+            VALE_CALC=1.4163650716607842e-09,
+        ),
+        _F(
+            GROUP_NO="PTSURF",
+            INST=528.0,
+            REFERENCE="ANALYTIQUE",
+            RESULTAT=RESUSECH,
+            NOM_CHAM="DIFF_NOEU",
+            NOM_CMP="DIFV",
+            VALE_CALC=0.0,
+            VALE_REFE=0.0,
+        ),
+    )
+)
+
+TEST_RESU(
+    RESU=(
+        _F(
+            GROUP_NO="PTSURF",
+            INST=528.0,
+            RESULTAT=RESUSECH,
+            NOM_CHAM="SECH",
+            NOM_CMP="SECH",
+            VALE_CALC=29.099999999999998,
+        ),
+        _F(
+            GROUP_NO="PTSURF",
+            INST=528.0,
+            REFERENCE="ANALYTIQUE",
+            RESULTAT=RESUSECH,
+            NOM_CHAM="HYGR_NOEU",
+            NOM_CMP="HUMR",
+            VALE_CALC=fonc_des(29.1),
+            VALE_REFE=fonc_des(29.1),
+        ),
+        _F(
+            GROUP_NO="PTSURF",
+            INST=528.0,
+            REFERENCE="ANALYTIQUE",
+            RESULTAT=RESUSECH,
+            NOM_CHAM="HYGR_NOEU",
+            NOM_CMP="PCAP",
+            VALE_CALC=0.0,
+            VALE_REFE=0.0,
+        ),
+    )
 )
 
 

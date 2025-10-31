@@ -15,27 +15,21 @@
 ! You should have received a copy of the GNU General Public License
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
-
-!
 !
 interface
-    subroutine epsvmc(fami   , nno    , ndim  , nbsig, npg   ,&
-                      j_poids, j_vf   , j_dfde, xyz  , disp  ,&
-                      time   , angl_naut, nharm, option,  epsi   )
+    subroutine epsvmc(fami, nno, ndim, nbEpsi, npg, &
+                      jvGaussWeight, jvBaseFunc, jvDBaseFunc, &
+                      nodeCoor, nodeDisp, &
+                      time, anglNaut, nharm, &
+                      strainType, lStrainMeca, &
+                      epsi)
         character(len=*), intent(in) :: fami
-        integer(kind=8), intent(in) :: nno
-        integer(kind=8), intent(in) :: ndim
-        integer(kind=8), intent(in) :: nbsig
-        integer(kind=8), intent(in) :: npg
-        integer(kind=8), intent(in) :: j_poids
-        integer(kind=8), intent(in) :: j_vf
-        integer(kind=8), intent(in) :: j_dfde
-        real(kind=8), intent(in) :: xyz(1)
-        real(kind=8), intent(in) :: disp(1)
-        real(kind=8), intent(in) :: time
-        real(kind=8), intent(in) :: angl_naut(3)
-        real(kind=8), intent(in) :: nharm
-        character(len=16), intent(in) :: option
-        real(kind=8), intent(out) :: epsi(1)
+        integer(kind=8), intent(in) :: nno, ndim, nbEpsi, npg
+        integer(kind=8), intent(in) :: jvGaussWeight, jvBaseFunc, jvDBaseFunc
+        real(kind=8), intent(in) :: nodeCoor(ndim*nno), nodeDisp(ndim*nno)
+        real(kind=8), intent(in) :: time, anglNaut(3), nharm
+        integer(kind=8), intent(in) :: strainType
+        aster_logical, intent(in) :: lStrainMeca
+        real(kind=8), intent(out) :: epsi(nbEpsi*npg)
     end subroutine epsvmc
 end interface

@@ -30,9 +30,10 @@ module BehaviourStrain_module
     implicit none
 ! ==================================================================================================
     public :: strainDetectVarc, compVarcStrain, getVarcStrain
+    private :: detectVarc
     private :: compTherStrain, compTherStrainField
     private :: compSechStrainField, compHydrStrainField, compEpsaStrainField
-    public :: compPtotStrainField
+    public :: compPtotStrainField, getStrainType
 ! ==================================================================================================
     private
 #include "asterc/r8nnem.h"
@@ -63,10 +64,11 @@ contains
 ! In  kpg              : current point gauss
 ! In  ksp              : current "sous-point" gauss
 ! IO  allVarcStrain    : all external state variables for anelastic strains
+! In  indxVarcStrain   : index of external state variable
 !
 ! --------------------------------------------------------------------------------------------------
     subroutine strainDetectVarc(poum, lTHM, fami, kpg, ksp, &
-                                allVarcStrain)
+                                allVarcStrain, indxVarcStrain_)
 !   ------------------------------------------------------------------------------------------------
 ! ----- Parameters
         character(len=*), intent(in) :: poum
@@ -74,8 +76,57 @@ contains
         character(len=*), intent(in) ::  fami
         integer(kind=8), intent(in) :: kpg, ksp
         type(All_Varc_Strain), intent(inout) :: allVarcStrain
+        integer(kind=8), optional, intent(in) :: indxVarcStrain_
 ! ----- Local
-        integer(kind=8) :: iVarcStrain, iVarcStrainCmp, strainNbCmp
+        integer(kind=8) :: iVarcStrain, indxVarcStrain
+!   ------------------------------------------------------------------------------------------------
+!
+        allVarcStrain%lTHM = lTHM
+        if (ca_nbcvrc_ .ne. 0 .or. lTHM) then
+            if (present(indxVarcStrain_)) then
+                ASSERT(indxVarcStrain_ .gt. 0)
+                indxVarcStrain = indxVarcStrain_
+            else
+                indxVarcStrain = VARC_STRAIN_ALL
+            end if
+            if (indxVarcStrain .eq. VARC_STRAIN_ALL) then
+                do iVarcStrain = 1, VARC_STRAIN_NBMAXI
+                    call detectVarc(poum, fami, kpg, ksp, &
+                                    iVarcStrain, allVarcStrain%list(iVarcStrain))
+                end do
+            else
+                ASSERT(indxVarcStrain .le. VARC_STRAIN_NBMAXI)
+                call detectVarc(poum, fami, kpg, ksp, &
+                                indxVarcStrain, allVarcStrain%list(indxVarcStrain))
+            end if
+        end if
+!
+!   ------------------------------------------------------------------------------------------------
+    end subroutine
+! --------------------------------------------------------------------------------------------------
+!
+! detectVarc
+!
+! Detect external state variables
+!
+! In  poum             : '-'  '+' or 'T' (previous, current and both)
+! In  fami             : Gauss family for integration point rule
+! In  kpg              : current point gauss
+! In  ksp              : current "sous-point" gauss
+! In  indxVarcStrain   : index of external state variable
+! IO  varcStrain       : external state variable for anelastic strains
+!
+! --------------------------------------------------------------------------------------------------
+    subroutine detectVarc(poum, fami, kpg, ksp, &
+                          indxVarcStrain, varcStrain)
+!   ------------------------------------------------------------------------------------------------
+! ----- Parameters
+        character(len=*), intent(in) :: poum, fami
+        integer(kind=8), intent(in) :: kpg, ksp, indxVarcStrain
+        type(Varc_Strain), intent(inout) :: varcStrain
+
+! ----- Local
+        integer(kind=8) :: iVarcStrainCmp, strainNbCmp
         integer(kind=8) :: iretPrev, iretCurr, iretRefe
         aster_logical :: exist
         real(kind=8) :: varcPrev, varcCurr, varcRefe
@@ -83,72 +134,68 @@ contains
         character(len=2), parameter :: varcCmpName(6) = (/'XX', 'YY', 'ZZ', 'XY', 'XZ', 'YZ'/)
 !   ------------------------------------------------------------------------------------------------
 !
-        allVarcStrain%lTHM = lTHM
-        if (ca_nbcvrc_ .ne. 0 .or. lTHM) then
-            do iVarcStrain = 1, VARC_STRAIN_NBMAXI
-                strainNbCmp = varcStrainNbcmp(iVarcStrain)
-                allVarcStrain%list(iVarcStrain)%varcStrainType = iVarcStrain
+        ASSERT(indxVarcStrain .gt. 0)
+        ASSERT(indxVarcStrain .le. VARC_STRAIN_NBMAXI)
+        strainNbCmp = varcStrainNbcmp(indxVarcStrain)
+        varcStrain%varcStrainType = indxVarcStrain
+        exist = ASTER_FALSE
+        do iVarcStrainCmp = 1, strainNbCmp
+! --------- Prepare name of external state variable
+            if (strainNbCmp .eq. 1) then
+                varcName = varcStrainName(indxVarcStrain)
+            else
+                varcName = varcStrainName(indxVarcStrain) (1:4)//varcCmpName(iVarcStrainCmp)
+            end if
 
-                exist = ASTER_FALSE
-                do iVarcStrainCmp = 1, strainNbCmp
-! ----------------- Prepare name of external state variable
-                    if (strainNbCmp .eq. 1) then
-                        varcName = varcStrainName(iVarcStrain)
-                    else
-                        varcName = varcStrainName(iVarcStrain) (1:4)//varcCmpName(iVarcStrainCmp)
-                    end if
+! --------- Get previous and current values of external state variable
+            varcPrev = r8nnem()
+            varcCurr = r8nnem()
+            iretPrev = 1
+            if (poum .eq. '-' .or. poum .eq. 'T') then
+                call rcvarc(' ', varcName, '-', fami, kpg, ksp, &
+                            varcPrev, iretPrev)
+            end if
+            iretCurr = 1
+            if (poum .eq. '+' .or. poum .eq. 'T') then
+                call rcvarc(' ', varcName, '+', fami, kpg, ksp, &
+                            varcCurr, iretCurr)
+            end if
+            if (poum .eq. '-') then
+                if (iretPrev .eq. 0) then
+                    exist = ASTER_TRUE
+                end if
+            end if
+            if (poum .eq. '+') then
+                if (iretCurr .eq. 0) then
+                    exist = ASTER_TRUE
+                end if
+            end if
+            if (poum .eq. 'T') then
+                if (iretCurr+iretPrev .eq. 0) then
+                    exist = ASTER_TRUE
+                end if
+                if (iretCurr+iretPrev .eq. 1) then
+                    call utmess("F", "COMPOR7_2", sk=varcName)
+                end if
+            end if
+            varcStrain%exist = exist
+            varcStrain%varcPrev(iVarcStrainCmp) = varcPrev
+            varcStrain%varcCurr(iVarcStrainCmp) = varcCurr
+            varcStrain%varcIncr(iVarcStrainCmp) = varcCurr-varcPrev
 
-! ----------------- Get previous and current values of external state variable
-                    varcPrev = r8nnem()
-                    varcCurr = r8nnem()
-                    iretPrev = 1
-                    if (poum .eq. '-' .or. poum .eq. 'T') then
-                        call rcvarc(' ', varcName, '-', fami, kpg, ksp, &
-                                    varcPrev, iretPrev)
-                    end if
-                    iretCurr = 1
-                    if (poum .eq. '+' .or. poum .eq. 'T') then
-                        call rcvarc(' ', varcName, '+', fami, kpg, ksp, &
-                                    varcCurr, iretCurr)
-                    end if
-                    if (poum .eq. '-') then
-                        if (iretPrev .eq. 0) then
-                            exist = ASTER_TRUE
-                        end if
-                    end if
-                    if (poum .eq. '+') then
-                        if (iretCurr .eq. 0) then
-                            exist = ASTER_TRUE
-                        end if
-                    end if
-                    if (poum .eq. 'T') then
-                        if (iretCurr+iretPrev .eq. 0) then
-                            exist = ASTER_TRUE
-                        end if
-                        if (iretCurr+iretPrev .eq. 1) then
-                            call utmess("F", "COMPOR7_2", sk=varcName)
-                        end if
-                    end if
-                    allVarcStrain%list(iVarcStrain)%exist = exist
-                    allVarcStrain%list(iVarcStrain)%varcPrev(iVarcStrainCmp) = varcPrev
-                    allVarcStrain%list(iVarcStrain)%varcCurr(iVarcStrainCmp) = varcCurr
-                    allVarcStrain%list(iVarcStrain)%varcIncr(iVarcStrainCmp) = varcCurr-varcPrev
-
-! ----------------- Get reference value of external state variable (if exist !)
-                    varcRefe = r8nnem()
-                    iretRefe = 1
-                    if (varcStrainHasRefe(iVarcStrain)) then
-                        call rcvarc(' ', varcName, 'REF', fami, kpg, &
-                                    ksp, varcRefe, iretRefe)
-                        !if (exist .and. iretRefe .eq. 1) then
-                        if (ASTER_FALSE) then
-                            call utmess("F", "COMPOR7_8")
-                        end if
-                    end if
-                    allVarcStrain%list(iVarcStrain)%varcRefe = varcRefe
-                end do
-            end do
-        end if
+! --------- Get reference value of external state variable (if exist !)
+            varcRefe = r8nnem()
+            iretRefe = 1
+            if (varcStrainHasRefe(indxVarcStrain)) then
+                call rcvarc(' ', varcName, 'REF', fami, kpg, &
+                            ksp, varcRefe, iretRefe)
+                !if (exist .and. iretRefe .eq. 1) then
+                if (ASTER_FALSE) then
+                    call utmess("F", "COMPOR7_8")
+                end if
+            end if
+            varcStrain%varcRefe = varcRefe
+        end do
 !
 !   ------------------------------------------------------------------------------------------------
     end subroutine
@@ -201,7 +248,7 @@ contains
         indxVarcStrain = VARC_STRAIN_SECH
         if (allVarcStrain%list(indxVarcStrain)%exist) then
             call compSechStrainField(fami, poum, kpg, ksp, &
-                                     jvMaterCode, &
+                                     jvMaterCode, elasKeyword, &
                                      allVarcStrain%list(indxVarcStrain))
             allVarcStrain%hasInelasticStrains = ASTER_TRUE
         end if
@@ -210,7 +257,7 @@ contains
         indxVarcStrain = VARC_STRAIN_HYDR
         if (allVarcStrain%list(indxVarcStrain)%exist) then
             call compHydrStrainField(fami, poum, kpg, ksp, &
-                                     jvMaterCode, &
+                                     jvMaterCode, elasKeyword, &
                                      allVarcStrain%list(indxVarcStrain))
             allVarcStrain%hasInelasticStrains = ASTER_TRUE
         end if
@@ -241,15 +288,17 @@ contains
 ! Get anelastic strains from all external state variables
 !
 ! In  poum             : '-'  '+' or 'T' (previous, current and both)
+! In  indxVarcStrain   : index of external state variable
 ! In  allVarcStrain    : all external state variables for anelastic strains
 ! In  nbEpsi           : number of components for inelastic strains
 ! Out epsiVarc         : anelastic strains from all external state variables
 !
 ! --------------------------------------------------------------------------------------------------
-    subroutine getVarcStrain(poum, allVarcStrain, nbEpsi, epsiVarc)
+    subroutine getVarcStrain(poum, indxVarcStrain, allVarcStrain, nbEpsi, epsiVarc)
 !   ------------------------------------------------------------------------------------------------
 ! ----- Parameters
         character(len=*), intent(in) :: poum
+        integer(kind=8), intent(in) :: indxVarcStrain
         type(All_Varc_Strain), intent(in) :: allVarcStrain
         integer(kind=8), intent(in) :: nbEpsi
         real(kind=8), intent(out) :: epsiVarc(nbEpsi)
@@ -258,22 +307,40 @@ contains
 !   ------------------------------------------------------------------------------------------------
 !
         epsiVarc = 0.d0
-        do iVarcStrain = 1, VARC_STRAIN_NBMAXI
-            if (allVarcStrain%list(iVarcStrain)%exist) then
-                if (poum .eq. "+") then
-                    epsiVarc = epsiVarc+ &
-                               allVarcStrain%list(iVarcStrain)%fieldCurr
-                elseif (poum .eq. "-") then
-                    epsiVarc = epsiVarc+ &
-                               allVarcStrain%list(iVarcStrain)%fieldPrev
-                elseif (poum .eq. "T") then
-                    epsiVarc = epsiVarc+ &
-                               allVarcStrain%list(iVarcStrain)%fieldIncr
-                else
-                    ASSERT(ASTER_FALSE)
+
+        if (indxVarcStrain .eq. VARC_STRAIN_ALL) then
+            do iVarcStrain = 1, VARC_STRAIN_NBMAXI
+                if (allVarcStrain%list(iVarcStrain)%exist) then
+                    if (poum .eq. "+") then
+                        epsiVarc = epsiVarc+ &
+                                   allVarcStrain%list(iVarcStrain)%fieldCurr
+                    elseif (poum .eq. "-") then
+                        epsiVarc = epsiVarc+ &
+                                   allVarcStrain%list(iVarcStrain)%fieldPrev
+                    elseif (poum .eq. "T") then
+                        epsiVarc = epsiVarc+ &
+                                   allVarcStrain%list(iVarcStrain)%fieldIncr
+                    else
+                        ASSERT(ASTER_FALSE)
+                    end if
                 end if
+            end do
+        else
+            ASSERT(indxVarcStrain .gt. 0)
+            ASSERT(indxVarcStrain .le. VARC_STRAIN_NBMAXI)
+            if (poum .eq. "+") then
+                epsiVarc = epsiVarc+ &
+                           allVarcStrain%list(indxVarcStrain)%fieldCurr
+            elseif (poum .eq. "-") then
+                epsiVarc = epsiVarc+ &
+                           allVarcStrain%list(indxVarcStrain)%fieldPrev
+            elseif (poum .eq. "T") then
+                epsiVarc = epsiVarc+ &
+                           allVarcStrain%list(indxVarcStrain)%fieldIncr
+            else
+                ASSERT(ASTER_FALSE)
             end if
-        end do
+        end if
 !
 !   ------------------------------------------------------------------------------------------------
     end subroutine
@@ -499,17 +566,19 @@ contains
 ! In  kpg              : current point gauss
 ! In  ksp              : current "sous-point" gauss
 ! In  jvMaterCode      : adress for material parameters
+! In  elasKeyword      : factor keyword for type of elasticity parameters
 ! IO  varcStrainSech   : external state variables parameters for drying
 !
 ! --------------------------------------------------------------------------------------------------
     subroutine compSechStrainField(fami, poum, kpg, ksp, &
-                                   jvMaterCode, &
+                                   jvMaterCode, elasKeyword, &
                                    varcStrainSech)
 !   ------------------------------------------------------------------------------------------------
 ! ----- Parameters.
         character(len=*), intent(in) :: fami, poum
         integer(kind=8), intent(in) :: kpg, ksp
         integer(kind=8), intent(in) :: jvMaterCode
+        character(len=16), intent(in) :: elasKeyword
         type(Varc_Strain), intent(inout) :: varcStrainSech
 ! ----- Local
         integer(kind=8), parameter :: nbProp = 1
@@ -534,7 +603,7 @@ contains
         kdessp = r8nnem()
         if (poum .eq. '-' .or. poum .eq. 'T') then
             call rcvalb(fami, kpg, ksp, &
-                        '-', jvMaterCode, ' ', 'ELAS', &
+                        '-', jvMaterCode, ' ', elasKeyword, &
                         0, ' ', [0.d0], &
                         nbProp, propName, propVale, &
                         codret, 1)
@@ -542,7 +611,7 @@ contains
         end if
         if (poum .eq. '+' .or. poum .eq. 'T') then
             call rcvalb(fami, kpg, ksp, &
-                        '+', jvMaterCode, ' ', 'ELAS', &
+                        '+', jvMaterCode, ' ', elasKeyword, &
                         0, ' ', [0.d0], &
                         nbProp, propName, propVale, &
                         codret, 1)
@@ -570,17 +639,19 @@ contains
 ! In  kpg              : current point gauss
 ! In  ksp              : current "sous-point" gauss
 ! In  jvMaterCode      : adress for material parameters
+! In  elasKeyword      : factor keyword for type of elasticity parameters
 ! IO  varcStrainHydr   : external state variables parameters for hydratation
 !
 ! --------------------------------------------------------------------------------------------------
     subroutine compHydrStrainField(fami, poum, kpg, ksp, &
-                                   jvMaterCode, &
+                                   jvMaterCode, elasKeyword, &
                                    varcStrainHydr)
 !   ------------------------------------------------------------------------------------------------
 ! ----- Parameters.
         character(len=*), intent(in) :: fami, poum
         integer(kind=8), intent(in) :: kpg, ksp
         integer(kind=8), intent(in) :: jvMaterCode
+        character(len=16), intent(in) :: elasKeyword
         type(Varc_Strain), intent(inout) :: varcStrainHydr
 ! ----- Local
         integer(kind=8), parameter :: nbProp = 1
@@ -604,7 +675,7 @@ contains
         bendop = r8nnem()
         if (poum .eq. '-' .or. poum .eq. 'T') then
             call rcvalb(fami, kpg, ksp, &
-                        '-', jvMaterCode, ' ', 'ELAS', &
+                        '-', jvMaterCode, ' ', elasKeyword, &
                         0, ' ', [0.d0], &
                         nbProp, propName, propVale, &
                         codret, 1)
@@ -612,7 +683,7 @@ contains
         end if
         if (poum .eq. '+' .or. poum .eq. 'T') then
             call rcvalb(fami, kpg, ksp, &
-                        '+', jvMaterCode, ' ', 'ELAS', &
+                        '+', jvMaterCode, ' ', elasKeyword, &
                         0, ' ', [0.d0], &
                         nbProp, propName, propVale, &
                         codret, 1)
@@ -767,6 +838,45 @@ contains
             varcStrainEpsa%fieldCurr(iVarcStrainCmp) = epsaCurr
             varcStrainEpsa%fieldIncr(iVarcStrainCmp) = epsaIncr
         end do
+!
+!   ------------------------------------------------------------------------------------------------
+    end subroutine
+
+! --------------------------------------------------------------------------------------------------
+!
+! getStrainType
+!
+! Get type of strain from option
+!
+! In  option            : option to compute
+! Out strainType       : type of strain (small, Green, log, etc.)
+! Out lStrainMeca      : flag to compute mechanical strains
+!
+! --------------------------------------------------------------------------------------------------
+    subroutine getStrainType(optionZ, strainType, lStrainMeca)
+!   ------------------------------------------------------------------------------------------------
+! ----- Parameters.
+        character(len=*), intent(in) :: optionZ
+        integer(kind=8), intent(out) :: strainType
+        aster_logical, intent(out) :: lStrainMeca
+! ----- Local
+        character(len=16) :: option
+!   ------------------------------------------------------------------------------------------------
+!
+        option = optionZ
+        strainType = STRAIN_TYPE_NONE
+        lStrainMeca = option(1:3) .eq. "EPM"
+        if (option(4:4) .eq. 'I') then
+            strainType = STRAIN_TYPE_SMALL
+        elseif (option(4:4) .eq. 'E') then
+            strainType = STRAIN_TYPE_SMALL
+        elseif (option(4:4) .eq. 'L') then
+            strainType = STRAIN_TYPE_LOG
+        elseif (option(4:4) .eq. 'G') then
+            strainType = STRAIN_TYPE_GREEN
+        else
+            ASSERT(ASTER_FALSE)
+        end if
 !
 !   ------------------------------------------------------------------------------------------------
     end subroutine

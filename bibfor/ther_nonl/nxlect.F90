@@ -35,6 +35,7 @@ subroutine nxlect(result, model, &
 #include "asterfort/dismoi.h"
 #include "asterfort/nonlinDSInOutRead.h"
 #include "asterfort/nonlinDSPrintRead.h"
+#include "asterfort/utmess.h"
 !
     character(len=8), intent(in) :: result
     character(len=8), intent(in) :: model
@@ -47,6 +48,9 @@ subroutine nxlect(result, model, &
     character(len=24), intent(out) :: compor
     character(len=8), intent(out) :: mesh
     aster_logical, intent(in) :: l_dry
+!
+!
+    character(len=3) :: answer
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -73,6 +77,16 @@ subroutine nxlect(result, model, &
     compor = ' '
     mesh = ' '
     call dismoi('NOM_MAILLA', model, 'MODELE', repk=mesh)
+!
+! - Check model vs command
+!
+    if (l_dry) then
+        call dismoi('EXI_NON_SECH', model, 'MODELE', repk=answer)
+        if (answer .eq. 'OUI') call utmess('F', 'THERNONLINE4_4')
+    else
+        call dismoi('EXI_SECH', model, 'MODELE', repk=answer)
+        if (answer .eq. 'OUI') call utmess('F', 'THERNONLINE4_3')
+    end if
 !
 ! - Create comportment <CARTE>
 !

@@ -815,12 +815,11 @@ for kk in range(0, nbV, 1):
             SEUIL=1.9999999999999995e-04,
         ),
         OPTION="CENTRE",
-        CALC_FREQ=_F(NMAX_FREQ=nbF + 1, FREQ=1300.0),
+        CALC_FREQ=_F(NMAX_FREQ=nbF + 1, FREQ=1300.0, SEUIL_FREQ=0.015),
         MATR_AMOR=GYOM[kk],
         MATR_MASS=MASS[kk],
         SOLVEUR_MODAL=_F(METHODE="QZ"),
     )
-
     _mod2[kk] = CALC_MODES(
         MATR_RIGI=RIGE[kk],
         VERI_MODE=_F(

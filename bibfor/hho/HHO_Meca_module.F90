@@ -24,6 +24,7 @@ module HHO_Meca_module
     use HHO_compor_module
     use HHO_Dirichlet_module
     use HHO_eval_module
+    use HHO_init_module
     use HHO_LargeStrainMeca_module
     use HHO_quadrature_module
     use HHO_size_module
@@ -41,6 +42,7 @@ module HHO_Meca_module
     implicit none
 !
     private
+#include "jeveux.h"
 #include "asterf_types.h"
 #include "asterfort/as_allocate.h"
 #include "asterfort/as_deallocate.h"
@@ -60,7 +62,6 @@ module HHO_Meca_module
 #include "asterfort/tecach.h"
 #include "asterfort/utmess.h"
 #include "blas/dsyr.h"
-#include "jeveux.h"
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -144,7 +145,7 @@ contains
         hhoField%fieldCineVale = '&&HHOMEC.CINEVALE'
 !
         if (isfonc(list_func_acti, 'DIRI_CINE')) then
-            call hhoDiriFuncPrepare(model, list_load, hhoField)
+            call hhoDiriFuncPrepare(model(1:8), list_load, hhoField)
         end if
 !
     end subroutine
@@ -158,7 +159,7 @@ contains
         implicit none
 !
         type(HHO_Data), intent(in) :: hhoData
-        type(HHO_Cell), intent(in) :: hhoCell
+        type(HHO_Cell), intent(inout) :: hhoCell
         aster_logical, intent(in) :: l_largestrains
         type(HHO_matrix), intent(out) :: gradfull
         type(HHO_matrix), intent(out) :: stab
@@ -179,8 +180,7 @@ contains
         integer(kind=8) :: cbs, fbs, total_dofs, gbs
         type(HHO_matrix) :: gradfullvec, stabvec
 !
-        call hhoTherNLDofs(hhoCell, hhoData, cbs, fbs, total_dofs, &
-                           gbs)
+        call hhoTherNLDofs(hhoCell, hhoData, cbs, fbs, total_dofs, gbs)
 !
         if (l_largestrains) then
 !
@@ -322,7 +322,7 @@ contains
 !
         implicit none
 !
-        type(HHO_Cell), intent(in) :: hhoCell
+        type(HHO_Cell), intent(inout) :: hhoCell
         type(HHO_Data), intent(in) :: hhoData
         aster_logical, intent(in) :: l_largestrains
         type(HHO_matrix), intent(out) :: gradfull
@@ -347,6 +347,8 @@ contains
 !        real(kind=8) :: gradrec_sym(MSIZE_CELL_VEC, MSIZE_TDOFS_VEC)
 !
 ! --------------------------------------------------------------------------------------------------
+!
+        call hhoInitFacesOfCell(hhoCell)
 !
         if (l_largestrains) then
 !

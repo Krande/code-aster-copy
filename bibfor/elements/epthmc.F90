@@ -15,111 +15,77 @@
 ! You should have received a copy of the GNU General Public License
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
-
-subroutine epthmc(fami, nno, ndim, nbsig, npg, &
-                  shape_func, angl_naut, time, j_mater, &
-                  option, epsi_varc)
 !
+subroutine epthmc(fami, nbEpsi, npg, ndim, &
+                  time, anglNaut, jvMaterCode, &
+                  indxVarcStrain, epsiVarc)
+!
+    use BehaviourStrain_module
+    use BehaviourStrain_type
     implicit none
 !
+#include "asterc/r8vide.h"
+#include "asterfort/assert.h"
+#include "asterfort/Behaviour_type.h"
 #include "asterfort/epstmc.h"
-#include "asterfort/lteatt.h"
-!
+#include "asterfort/get_elas_id.h"
 !
     character(len=*), intent(in) :: fami
-    integer(kind=8), intent(in) :: nno
-    integer(kind=8), intent(in) :: ndim
-    integer(kind=8), intent(in) :: nbsig
-    integer(kind=8), intent(in) :: npg
-    real(kind=8), intent(in) :: shape_func(1)
-    real(kind=8), intent(in) :: angl_naut(3)
-    real(kind=8), intent(in) :: time
-    integer(kind=8), intent(in) :: j_mater
-    character(len=16), intent(in) :: option
-    real(kind=8), intent(out) :: epsi_varc(1)
+    integer(kind=8), intent(in) ::  nbEpsi, npg, ndim
+    real(kind=8), intent(in) :: time, anglNaut(3)
+    integer(kind=8), intent(in) :: jvMaterCode, indxVarcStrain
+    real(kind=8), intent(out) :: epsiVarc(nbEpsi*npg)
 !
 ! --------------------------------------------------------------------------------------------------
 !
-! Compute variable commands strains (thermics, drying, etc.)
+! Compute anelastic strains from external state variables
 !
 ! --------------------------------------------------------------------------------------------------
 !
-! In  fami         : Gauss family for integration point rule
-! In  nno          : number of nodes
-! In  ndim         : dimension of space
-! In  nbsig        : number of stress tensor components
-! In  npg          : number of Gauss points
-! In  shape_func   : shape function
-! In  j_mater      : coded material address
-! In  repere       : definition of basis (for non-isotropic materials)
-! In  time         : current time
-! In  option       : name of option to compute
-! Out epsi_varc    : command variables strains
+! In  fami             : Gauss family for integration point rule
+! In  nno              : number of nodes
+! In  ndim             : dimension of space
+! In  nbEpsi           : number of strain tensor components
+! In  npg              : number of Gauss points
+! In  anglNaut         : nautical angles (for non-isotropic materials)
+! In  time             : given time
+! In  jvMaterCode      : coded material address
+! In  indxVarcStrain   : index of external state variable
+! Out epsiVarc         : anelastic strains from all external state variables
 !
 ! --------------------------------------------------------------------------------------------------
 !
-    real(kind=8) :: epsi_ther(6), epsi_hydr(6), epsi_sech(6), epsi_anel(6), epsi_pres(6)
-    character(len=16) :: optio2
-    integer(kind=8) :: i, kpg, ndim2
-    real(kind=8) :: zero
+    integer(kind=8), parameter :: ksp = 1
+    integer(kind=8) :: kpg, iEpsi, elasID
+    character(len=16) :: elasKeyword
+    real(kind=8) :: epsiVarcKpg(6)
+    type(All_Varc_Strain) :: allVarcStrain
 !
 ! --------------------------------------------------------------------------------------------------
 !
-    zero = 0.d0
-    epsi_varc(1:nbsig*npg) = zero
-    ndim2 = ndim
-    if (lteatt('FOURIER', 'OUI')) then
-        ndim2 = 2
+    epsiVarc = 0.d0
+    ASSERT(nbEpsi .le. 6)
+
+! - Current time
+    allVarcStrain%time = time
+    if (time .eq. r8vide()) then
+        allVarcStrain%hasTime = ASTER_FALSE
+    else
+        allVarcStrain%hasTime = ASTER_TRUE
     end if
-!
+
+! - Get type of elasticity (Isotropic/Orthotropic/Transverse isotropic)
+    call get_elas_id(jvMaterCode, elasID, elasKeyword)
+
 ! - Loop on Gauss points
-!
     do kpg = 1, npg
-!
-! ----- Thermic strains
-!
-        optio2 = ' '
-        call epstmc(fami, ndim, time, '+', kpg, &
-                    1, angl_naut, j_mater, optio2, &
-                    epsi_ther)
-!
-! ----- Hydric strains
-!
-        optio2 = option(1:9)//'_HYDR'
-        call epstmc(fami, ndim, time, '+', kpg, &
-                    1, angl_naut, j_mater, optio2, &
-                    epsi_hydr)
-!
-! ----- Drying strains
-!
-        optio2 = option(1:9)//'_SECH'
-        call epstmc(fami, ndim, time, '+', kpg, &
-                    1, angl_naut, j_mater, optio2, &
-                    epsi_sech)
-!
-! ----- Anelastic strains (given by user)
-!
-        optio2 = option(1:9)//'_EPSA'
-        call epstmc(fami, ndim, time, '+', kpg, &
-                    1, angl_naut, j_mater, optio2, &
-                    epsi_anel)
-!
-! ----- Pressure strains
-!
-        optio2 = option(1:9)//'_PTOT'
-        call epstmc(fami, ndim, time, '+', kpg, &
-                    1, angl_naut, j_mater, optio2, &
-                    epsi_pres)
-!
-! ----- Total command variables strains
-!
-        do i = 1, nbsig
-            epsi_varc(i+nbsig*(kpg-1)) = epsi_varc(i+nbsig*(kpg-1))+ &
-                                         epsi_ther(i)+ &
-                                         epsi_hydr(i)+ &
-                                         epsi_sech(i)+ &
-                                         epsi_anel(i)+ &
-                                         epsi_pres(i)
+        epsiVarcKpg = 0.d0
+        call epstmc(fami, "+", kpg, ksp, ndim, &
+                    time, anglNaut, jvMaterCode, &
+                    indxVarcStrain, allVarcStrain, &
+                    epsiVarcKpg)
+        do iEpsi = 1, nbEpsi
+            epsiVarc(nbEpsi*(kpg-1)+iEpsi) = epsiVarcKpg(iEpsi)
         end do
     end do
 !

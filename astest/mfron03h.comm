@@ -24,17 +24,17 @@
 # Validation basée sur rho_5 en testant le maximum de la différence
 # entre Code_Aster et MFront
 
-DEBUT(CODE="OUI", DEBUG=_F(SDVERI="OUI"))
+from math import acos, atan2, pi, sqrt
 
+import numpy as np
+from numpy.linalg import norm
+
+DEBUT(CODE="OUI", DEBUG=_F(SDVERI="OUI"))
 
 behaviour = CREA_LIB_MFRONT(NOM_COMPOR="MonoCrystalDDCC", UNITE_MFRONT=38)
 
-from numpy.linalg import norm
-from numpy import *
-
 TEMP = 50
 # TEMP=300.
-
 
 # coef=1.e3 # Pa, m
 coef = 1.0  # MPa, mm
@@ -208,7 +208,7 @@ SI6 = DEFI_FONCTION(
 )
 
 # densites de dislocation initiales : variables internes de 0 a 44 (mfront)
-avari = zeros(18)
+avari = np.zeros(18)
 for i in range(12):
     avari[6 + i] = rho_ini
 avari[6 + 4] = rho_ini5
@@ -216,7 +216,7 @@ avari[6 + 4] = rho_ini5
 lvari = list(avari)
 
 # densites de dislocation initiales : variables internes de 0 a 44 (aster)
-avaria = zeros(45 + 12)
+avaria = np.zeros(45 + 12)
 for i in range(12):
     avaria[6 + i * 3] = RHO_0
 avaria[6 + 4 * 3] = RHO_0 * 10.0
@@ -273,8 +273,8 @@ k = 4
 l = 9
 
 phi1 = 0
-phi = arccos(l / sqrt(h * h + k * k + l * l)) * 180.0 / pi
-phi2 = arctan2(h / sqrt(h * h + k * k), k / sqrt(h * h + k * k)) * 180.0 / pi
+phi = acos(l / sqrt(h * h + k * k + l * l)) * 180.0 / pi
+phi2 = atan2(h / sqrt(h * h + k * k), k / sqrt(h * h + k * k)) * 180.0 / pi
 angles = (phi1, phi, phi2)
 
 IMPDDAS = SIMU_POINT_MAT(

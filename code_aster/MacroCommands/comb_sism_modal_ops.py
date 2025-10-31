@@ -135,7 +135,7 @@ def get_group_appuis(spectres, group_appui_correle=None):
         group_appui_correle: input for operande GROUP_APPUI_CORRELE
 
     Returns:
-        group_appuis (list[dict[str, list]]): groups of appuis
+        group_appuis (dict[str, list]): groups of appuis
     """
     # preparing for group_appui_correle
     group_appuis = {}
@@ -552,12 +552,9 @@ class Resu:
         self._field_by_option = {}
 
     def _incr_index(self):
-        # FIXME : est-ce toujours utile ?
+        """resize sd result"""
         self._nbIndexes += 1
-        if self._nbIndexes == 1:
-            self._result.allocate(self._nbIndexes)
-        else:
-            self._result.resize(self._nbIndexes)
+        self._result.resize(self._nbIndexes)
 
     def _setField(self, option, values, name):
         """Add field to result
@@ -1121,7 +1118,7 @@ class MultiAppuiRunner(BaseRunner):
         return R_m
 
     def _corr_pseudo_mode(
-        self, pr_wr2_phi, w_r, direction, pseudo_mode, s_r_freq_cut, l_group_no, mesh
+        self, pr_wr2_phi, w_r, direction, pseudo_mode, s_r_freq_cut, l_group_no, nom_appui, mesh
     ):
         """Correction by pseudo-mode/mode statique, for MULTI_APPUI
         Args:
@@ -1131,46 +1128,54 @@ class MultiAppuiRunner(BaseRunner):
             pseudo_mode (ModeResult): pseudo mode for static correction
             s_r_freq_cut (ndarray)  : value of ZPA at the cutting frequency
             l_group_no list[str]    : list of all group_no of support
+            nom_appui               : support name
             mesh (Mesh)             : mesh extracted from mode_meca
 
         Returns:
             R_c (ndarray): response by correction by pseudo-mode
         """
 
-        # searche for index (NUME_CMP) in MODE_STATIQUE / PSEUDO_MODE
-        # list of node_num and node_name in group_no
-        _, nodes_name = get_nodes(mesh, l_group_no)
-        # list of all noeud_cmp
-        l_noeud_cmp = []
-        for node_name in nodes_name:
-            noeud_cmp = node_name.ljust(8) + f"D{direction}"
-            l_noeud_cmp.append(noeud_cmp)
         ps_nume_modes = pseudo_mode.getAccessParameters()["NUME_MODE"]
         ps_noeud_cmps = pseudo_mode.getAccessParameters()["NOEUD_CMP"]
 
-        if all(noeud_cmp in ps_noeud_cmps for noeud_cmp in l_noeud_cmp):
-            # ps_nume_mode = ps_nume_modes[ps_noeud_cmps.index(noeud_cmp)]
-            l_phi_ps = []
-            for noeud_cmp in l_noeud_cmp:
-                ps_nume_mode = ps_nume_modes[ps_noeud_cmps.index(noeud_cmp)]
-                l_phi_ps.append(pseudo_mode.getField(self._option, ps_nume_mode))
-            phi_ps = l_phi_ps[0].copy()
-            for x in l_phi_ps[1:]:
-                phi_ps += x
-            # get static mode for component (noeud_cmp)
-
-            if self._option == "VITE":  # pseudo-mode is not allowed
-                UTMESS("F", "SEISME_10", valk=option)
-                R_c_noeud = (phi_ps.getValues() * w_r - np.sum(pr_wr2_phi, axis=0)) * s_r_freq_cut
-            elif (
-                self._option == "ACCE_ABSOLU"
-            ):  # correction by pseudo-mode is not allowed for ACCE_ABSOLU in mutl_appui
-                UTMESS("F", "SEISME_10", valk=option)
-                R_c_noeud = np.zeros(phi_ps.size())
-            else:
-                R_c_noeud = (phi_ps.getValues() - np.sum(pr_wr2_phi, axis=0)) * s_r_freq_cut
+        # searche for index (APPUI_CMP) in MODE_STATIQUE / PSEUDO_MODE
+        appui_cmp = nom_appui.ljust(8) + f"D{direction}"
+        if appui_cmp in ps_noeud_cmps:
+            ps_nume_mode = ps_nume_modes[ps_noeud_cmps.index(appui_cmp)]
+            phi_ps = pseudo_mode.getField(self._option, ps_nume_mode)
         else:
-            UTMESS("F", "SEISME_66", valk=(noeud_cmp, "PSEUDO_MODE"))
+            # searche for index (NUME_CMP) in MODE_STATIQUE / PSEUDO_MODE
+            # list of node_num and node_name in group_no
+            _, nodes_name = get_nodes(mesh, l_group_no)
+            # list of all noeud_cmp
+            l_noeud_cmp = []
+            for node_name in nodes_name:
+                noeud_cmp = node_name.ljust(8) + f"D{direction}"
+                l_noeud_cmp.append(noeud_cmp)
+            if all(noeud_cmp in ps_noeud_cmps for noeud_cmp in l_noeud_cmp):
+                l_phi_ps = []
+                for noeud_cmp in l_noeud_cmp:
+                    ps_nume_mode = ps_nume_modes[ps_noeud_cmps.index(noeud_cmp)]
+                    l_phi_ps.append(pseudo_mode.getField(self._option, ps_nume_mode))
+                phi_ps = l_phi_ps[0].copy()
+                for x in l_phi_ps[1:]:
+                    phi_ps += x
+            else:
+                for noeud_cmp in l_noeud_cmp:
+                    if noeud_cmp not in ps_noeud_cmps:
+                        UTMESS("E", "SEISME_66", valk=(noeud_cmp, "PSEUDO_MODE"))
+                UTMESS("F", "SEISME_68", valk=(nom_appui, direction, appui_cmp))
+
+        if self._option == "VITE":  # pseudo-mode is not allowed
+            UTMESS("F", "SEISME_10", valk=option)
+            R_c_noeud = (phi_ps.getValues() * w_r - np.sum(pr_wr2_phi, axis=0)) * s_r_freq_cut
+        elif (
+            self._option == "ACCE_ABSOLU"
+        ):  # correction by pseudo-mode is not allowed for ACCE_ABSOLU in mutl_appui
+            UTMESS("F", "SEISME_10", valk=option)
+            R_c_noeud = np.zeros(phi_ps.size())
+        else:
+            R_c_noeud = (phi_ps.getValues() - np.sum(pr_wr2_phi, axis=0)) * s_r_freq_cut
 
         return R_c_noeud
 
@@ -1301,7 +1306,14 @@ class MultiAppuiRunner(BaseRunner):
                 if mode_corr == "OUI":
                     s_r_freq_cut = self._s_r_freq_cut(spectre)
                     R_c_noeud = self._corr_pseudo_mode(
-                        pr_wr2_phi_c, w_r, direction, pseudo_mode, s_r_freq_cut, l_group_no, mesh
+                        pr_wr2_phi_c,
+                        w_r,
+                        direction,
+                        pseudo_mode,
+                        s_r_freq_cut,
+                        l_group_no,
+                        nom_appui,
+                        mesh,
                     )
                     # save for INFO
                     self._pseudo[direction][nom_appui] = s_r_freq_cut

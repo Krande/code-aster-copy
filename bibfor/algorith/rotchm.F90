@@ -50,9 +50,9 @@ subroutine rotchm(profno, vale, tetss, nbss, invsk, &
 #include "asterfort/jeveuo.h"
 #include "asterfort/jexnom.h"
 #include "asterfort/jexnum.h"
+#include "asterfort/nueq_chck.h"
 #include "asterfort/utmess.h"
 #include "asterfort/wkvect.h"
-#include "asterfort/nueq_chck.h"
 !
 !
 !
@@ -82,7 +82,7 @@ subroutine rotchm(profno, vale, tetss, nbss, invsk, &
 !
     nomg = 'DEPL_R'
     call dismoi('NB_EC', nomg, 'GRANDEUR', repi=nbec)
-    if (nbec .gt. 10) then
+    if (nbec .gt. 11) then
         call utmess('F', 'MODELISA_94')
     end if
 !

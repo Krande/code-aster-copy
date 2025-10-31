@@ -1200,7 +1200,7 @@ def impr_graphique(
     for i, cle in enumerate(Courbes):
         curve = Courbes[cle]
 
-        number = randint(0, 1.0e6)
+        number = randint(0, 1000000)
 
         # on passe a l'iteration suivante
         # si les listes de resultats sont vides

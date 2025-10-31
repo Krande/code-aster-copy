@@ -45,11 +45,11 @@ void DEFSSSSPSSS( ASCOVA, ascova, const char *, STRING_SIZE, const char *, STRIN
                   const char *, STRING_SIZE, const char *, STRING_SIZE, const ASTERDOUBLE *,
                   const char *, STRING_SIZE, const char *, STRING_SIZE, const char *, STRING_SIZE );
 
-#define CALLO_ASCAVC_WRAP( a, b, c, d, e, f, g )                                                   \
-    CALLOOOOPOO( ASCAVC_WRAP, ascavc_wrap, a, b, c, d, e, f, g )
-void DEFSSSSPSS( ASCAVC_WRAP, ascavc_wrap, const char *, STRING_SIZE, const char *, STRING_SIZE,
-                 const char *, STRING_SIZE, const char *, STRING_SIZE, const ASTERDOUBLE *,
-                 const char *, STRING_SIZE, const char *, STRING_SIZE );
+#define CALLO_ASCAVC_WRAP( a, b, c, d, e, f )                                                      \
+    CALLOOOPOO( ASCAVC_WRAP, ascavc_wrap, a, b, c, d, e, f )
+void DEFSSSPSS( ASCAVC_WRAP, ascavc_wrap, const char *, STRING_SIZE, const char *, STRING_SIZE,
+                const char *, STRING_SIZE, const ASTERDOUBLE *, const char *, STRING_SIZE,
+                const char *, STRING_SIZE );
 
 #define CALL_ASMATR( a, b, c, d, e, f, g, h, i )                                                   \
     CALLPSSSSSSPS( ASMATR, asmatr, a, b, c, d, e, f, g, h, i )

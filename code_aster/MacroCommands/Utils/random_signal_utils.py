@@ -794,7 +794,7 @@ def SRO2DSP(
     NITER=10,
     FREQ_FILTRE_ZPA=0,
     NB_FREQ_LISS=0,
-    **args
+    **args,
 ):
     # ---------------------------------------------
     #  f_in : SRO cible, frequency given in (Hz)
@@ -835,7 +835,7 @@ def SRO2DSP(
             DSP.append(0.0)
         else:
             fi = freqi / 2.0 / pi
-            valsro = float(f_in.evalfonc([fi]).vale_y * NORME)
+            valsro = f_in.evalfonc([fi]).vale_y[0] * NORME
             lsro.append(valsro)
             nupi = peak(0.5, DUREE_PHASE_FORTE, fi, AMORT)
             nup2 = nupi**2

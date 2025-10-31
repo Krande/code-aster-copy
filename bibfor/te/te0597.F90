@@ -93,7 +93,7 @@ subroutine te0597(option, nomte)
     call jevech('PMATUUR', 'E', imatuu)
 !
     call nurmtd(ndim, nno1, nno2, npg, iw, &
-                zr(ivf1), zr(ivf2), ivf1, idf1, vu, &
+                zr(ivf1), zr(ivf2), idf1, vu, &
                 vp, typmod, igeom, zi(imate), mini, &
                 zr(imatuu))
 !

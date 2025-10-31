@@ -50,6 +50,13 @@ subroutine te0004(option, nomte)
         call tecach('OOO', 'PDERANO', 'E', iret, nval=7, &
                     itab=itabou)
 !
+    else if (option .eq. 'DIFF_ELNO') then
+        fami = 'RIGI'
+        call tecach('OOO', 'PDIFFPG', 'L', iret, nval=7, &
+                    itab=itabin)
+        call tecach('OOO', 'PDIFFNO', 'E', iret, nval=7, &
+                    itab=itabou)
+!
     else if (option .eq. 'DISS_ELNO') then
         fami = 'RIGI'
         call tecach('OOO', 'PDISSPG', 'L', iret, nval=7, &
@@ -166,6 +173,13 @@ subroutine te0004(option, nomte)
         call tecach('OOO', 'PHYDRPG', 'L', iret, nval=7, &
                     itab=itabin)
         call tecach('OOO', 'PHYDRNO', 'E', iret, nval=7, &
+                    itab=itabou)
+!
+    else if (option .eq. 'HYGR_ELNO') then
+        fami = 'RIGI'
+        call tecach('OOO', 'PHYGRPG', 'L', iret, nval=7, &
+                    itab=itabin)
+        call tecach('OOO', 'PHYGRNO', 'E', iret, nval=7, &
                     itab=itabou)
 !
     else if (option .eq. 'SIGM_ELNO') then

@@ -742,7 +742,7 @@ contains
         integer(kind=8), intent(out) :: nbEc
         integer(kind=8), optional, intent(out) :: dofDZIndx_
 ! - Local
-        integer(kind=8), parameter :: nbDofMaxi = 300
+        integer(kind=8), parameter :: nbDofMaxi = 320
         character(len=8) :: physQuanDofName(nbDofMaxi)
         character(len=8) :: physQuanName
         integer(kind=8) :: dofDZIndx, jvPhysQuanDofName
@@ -756,7 +756,7 @@ contains
 ! - Access to list of DOF
         physQuanDofName = ' '
         call dismoi('NB_EC', physQuanName, 'GRANDEUR', repi=nbec)
-        ASSERT(nbec .le. 10)
+        ASSERT(nbec .le. 11)
         call jelira(jexnom('&CATA.GD.NOMCMP', physQuanName), 'LONMAX', physQuanSize)
         physQuanNbDof = physQuanSize-1
         ASSERT(physQuanSize .le. nbDofMaxi)

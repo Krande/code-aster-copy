@@ -1460,6 +1460,32 @@ DEFI_MATERIAU = MACRO(
         KYP=SIMP(statut="o", typ="R"),
         DLP=SIMP(statut="o", typ="R"),
         KYG=SIMP(statut="o", typ="R"),
+        KP=SIMP(
+            statut="f",
+            typ="R",
+            defaut=0.0,
+            fr=tr("Raideur selon l'axe local x de l'élément d'un ressort élastique en parallèle."),
+        ),
+        KT=SIMP(
+            statut="f",
+            typ="R",
+            defaut=0.0,
+            fr=tr(
+                "Raideur selon les axes locaux y et z de l'élément d'un ressort élastique en parallèle."
+            ),
+        ),
+        KT1=SIMP(
+            statut="f",
+            typ="R",
+            defaut=0.0,
+            fr=tr("Raideur selon l'axe local y de l'élément d'un ressort élastique en parallèle."),
+        ),
+        KT2=SIMP(
+            statut="f",
+            typ="R",
+            defaut=0.0,
+            fr=tr("Raideur selon l'axe local z de l'élément d'un ressort élastique en parallèle."),
+        ),
     ),
     ASSE_CORN=FACT(
         statut="f",
@@ -1478,6 +1504,32 @@ DEFI_MATERIAU = MACRO(
         KRX=SIMP(statut="o", typ="R"),
         KRZ=SIMP(statut="o", typ="R"),
         R_P0=SIMP(statut="f", typ="R", defaut=1.0e4),
+        KP=SIMP(
+            statut="f",
+            typ="R",
+            defaut=0.0,
+            fr=tr("Raideur selon l'axe local x de l'élément d'un ressort élastique en parallèle."),
+        ),
+        KT=SIMP(
+            statut="f",
+            typ="R",
+            defaut=0.0,
+            fr=tr(
+                "Raideur selon les axes locaux y et z de l'élément d'un ressort élastique en parallèle."
+            ),
+        ),
+        KT1=SIMP(
+            statut="f",
+            typ="R",
+            defaut=0.0,
+            fr=tr("Raideur selon l'axe local y de l'élément d'un ressort élastique en parallèle."),
+        ),
+        KT2=SIMP(
+            statut="f",
+            typ="R",
+            defaut=0.0,
+            fr=tr("Raideur selon l'axe local z de l'élément d'un ressort élastique en parallèle."),
+        ),
     ),
     FONDA_SUPERFI=FACT(
         statut="f",
@@ -1499,6 +1551,32 @@ DEFI_MATERIAU = MACRO(
         RAID_CP_RY=SIMP(statut="f", typ="R", defaut=0.0, val_min=0.0),
         GAMMA_CP_RY=SIMP(statut="f", typ="R", defaut=0.0, val_min=0.0),
         DECOLLEMENT=SIMP(statut="f", typ="TXM", into=("OUI", "NON"), defaut="NON", enum=(1, 2)),
+        KP=SIMP(
+            statut="f",
+            typ="R",
+            defaut=0.0,
+            fr=tr("Raideur selon l'axe local x de l'élément d'un ressort élastique en parallèle."),
+        ),
+        KT=SIMP(
+            statut="f",
+            typ="R",
+            defaut=0.0,
+            fr=tr(
+                "Raideur selon les axes locaux y et z de l'élément d'un ressort élastique en parallèle."
+            ),
+        ),
+        KT1=SIMP(
+            statut="f",
+            typ="R",
+            defaut=0.0,
+            fr=tr("Raideur selon l'axe local y de l'élément d'un ressort élastique en parallèle."),
+        ),
+        KT2=SIMP(
+            statut="f",
+            typ="R",
+            defaut=0.0,
+            fr=tr("Raideur selon l'axe local z de l'élément d'un ressort élastique en parallèle."),
+        ),
     ),
     DIS_CONTACT=FACT(
         statut="f",
@@ -1507,8 +1585,32 @@ DEFI_MATERIAU = MACRO(
         RIGI_TAN=SIMP(statut="f", typ="R"),
         AMOR_NOR=SIMP(statut="f", typ="R"),
         AMOR_TAN=SIMP(statut="f", typ="R"),
-        KP=SIMP(statut="f", typ="R", defaut=0.0),
-        KT=SIMP(statut="f", typ="R", defaut=0.0),
+        KP=SIMP(
+            statut="f",
+            typ="R",
+            defaut=0.0,
+            fr=tr("Raideur selon l'axe local x de l'élément d'un ressort élastique en parallèle."),
+        ),
+        KT=SIMP(
+            statut="f",
+            typ="R",
+            defaut=0.0,
+            fr=tr(
+                "Raideur selon les axes locaux y et z de l'élément d'un ressort élastique en parallèle."
+            ),
+        ),
+        KT1=SIMP(
+            statut="f",
+            typ="R",
+            defaut=0.0,
+            fr=tr("Raideur selon l'axe local y de l'élément d'un ressort élastique en parallèle."),
+        ),
+        KT2=SIMP(
+            statut="f",
+            typ="R",
+            defaut=0.0,
+            fr=tr("Raideur selon l'axe local z de l'élément d'un ressort élastique en parallèle."),
+        ),
         COULOMB=SIMP(statut="f", typ="R", val_min=0.0),
         DIST_1=SIMP(statut="f", typ="R", val_min=0.0),
         DIST_2=SIMP(statut="f", typ="R", val_min=0.0),
@@ -1621,7 +1723,6 @@ DEFI_MATERIAU = MACRO(
         F_SER_FO=SIMP(statut="f", typ=(fonction_sdaster, nappe_sdaster, formule)),
         ET_AX=SIMP(statut="f", typ="R", defaut=1.0e-7),
         ET_ROT=SIMP(statut="f", typ="R", defaut=1.0e-7),
-        KP=SIMP(statut="f", typ="R", defaut=0.0),
         ANG1=SIMP(statut="f", typ="R"),
         ANG2=SIMP(statut="f", typ="R"),
         ANG3=SIMP(statut="f", typ="R"),
@@ -1636,6 +1737,32 @@ DEFI_MATERIAU = MACRO(
         PEN2_FO=SIMP(statut="f", typ=(fonction_sdaster, nappe_sdaster, formule)),
         PEN3_FO=SIMP(statut="f", typ=(fonction_sdaster, nappe_sdaster, formule)),
         PEN4_FO=SIMP(statut="f", typ=(fonction_sdaster, nappe_sdaster, formule)),
+        KP=SIMP(
+            statut="f",
+            typ="R",
+            defaut=0.0,
+            fr=tr("Raideur selon l'axe local x de l'élément d'un ressort élastique en parallèle."),
+        ),
+        KT=SIMP(
+            statut="f",
+            typ="R",
+            defaut=0.0,
+            fr=tr(
+                "Raideur selon les axes locaux y et z de l'élément d'un ressort élastique en parallèle."
+            ),
+        ),
+        KT1=SIMP(
+            statut="f",
+            typ="R",
+            defaut=0.0,
+            fr=tr("Raideur selon l'axe local y de l'élément d'un ressort élastique en parallèle."),
+        ),
+        KT2=SIMP(
+            statut="f",
+            typ="R",
+            defaut=0.0,
+            fr=tr("Raideur selon l'axe local z de l'élément d'un ressort élastique en parallèle."),
+        ),
         regles=(
             EXCLUS("ANG1", "ANG1_FO"),
             UN_PARMI("ANG1", "ANG1_FO"),
@@ -1983,6 +2110,9 @@ DEFI_MATERIAU = MACRO(
             ATH=SIMP(statut="o", typ="R"),
             TEMP_0_C=SIMP(statut="o", typ="R"),
             PORO=SIMP(statut="o", typ="R"),
+            UNITE_PRESSION=SIMP(statut="f", typ="TXM", into=("Pa", "MPa"), defaut="Pa"),
+            # hidden keywords
+            COEF_UNITE_P=SIMP(statut="c", defaut=1.0, typ="R"),
         ),
     ),
     BETON_RAG=FACT(
@@ -2564,6 +2694,32 @@ DEFI_MATERIAU = MACRO(
             val_min=1.0,
             fr=tr("Coefficient de non-linéarité suivant l'axe local Rz de l'élément."),
         ),
+        KP=SIMP(
+            statut="f",
+            typ="R",
+            defaut=0.0,
+            fr=tr("Raideur selon l'axe local x de l'élément d'un ressort élastique en parallèle."),
+        ),
+        KT=SIMP(
+            statut="f",
+            typ="R",
+            defaut=0.0,
+            fr=tr(
+                "Raideur selon les axes locaux y et z de l'élément d'un ressort élastique en parallèle."
+            ),
+        ),
+        KT1=SIMP(
+            statut="f",
+            typ="R",
+            defaut=0.0,
+            fr=tr("Raideur selon l'axe local y de l'élément d'un ressort élastique en parallèle."),
+        ),
+        KT2=SIMP(
+            statut="f",
+            typ="R",
+            defaut=0.0,
+            fr=tr("Raideur selon l'axe local z de l'élément d'un ressort élastique en parallèle."),
+        ),
     ),
     DIS_VISC=FACT(
         statut="f",
@@ -2603,11 +2759,37 @@ DEFI_MATERIAU = MACRO(
             defaut=0.5,
             fr=tr("Puissance de la loi visqueuse ]0.0, 1.0] ."),
         ),
+        KP=SIMP(
+            statut="f",
+            typ="R",
+            defaut=0.0,
+            fr=tr("Raideur selon l'axe local x de l'élément d'un ressort élastique en parallèle."),
+        ),
+        KT=SIMP(
+            statut="f",
+            typ="R",
+            defaut=0.0,
+            fr=tr(
+                "Raideur selon les axes locaux y et z de l'élément d'un ressort élastique en parallèle."
+            ),
+        ),
+        KT1=SIMP(
+            statut="f",
+            typ="R",
+            defaut=0.0,
+            fr=tr("Raideur selon l'axe local y de l'élément d'un ressort élastique en parallèle."),
+        ),
+        KT2=SIMP(
+            statut="f",
+            typ="R",
+            defaut=0.0,
+            fr=tr("Raideur selon l'axe local z de l'élément d'un ressort élastique en parallèle."),
+        ),
     ),
     DIS_ECRO_TRAC=FACT(
         statut="f",
         fr=tr("Loi pour un discret avec écrouissage isotrope ou cinématique."),
-        regles=(UN_PARMI("FX", "FTAN"),),
+        regles=(UN_PARMI("FX", "FTAN")),
         FX=SIMP(
             statut="f",
             typ=(fonction_sdaster),
@@ -2622,6 +2804,32 @@ DEFI_MATERIAU = MACRO(
             condition=""" exists("FTAN") """,
             fr=tr("Type de l'écrouissage : isotrope ou cinématique"),
             ECROUISSAGE=SIMP(statut="o", typ="TXM", into=("ISOTROPE", "CINEMATIQUE"), enum=(1, 2)),
+        ),
+        KP=SIMP(
+            statut="f",
+            typ="R",
+            defaut=0.0,
+            fr=tr("Raideur selon l'axe local x de l'élément d'un ressort élastique en parallèle."),
+        ),
+        KT=SIMP(
+            statut="f",
+            typ="R",
+            defaut=0.0,
+            fr=tr(
+                "Raideur selon les axes locaux y et z de l'élément d'un ressort élastique en parallèle."
+            ),
+        ),
+        KT1=SIMP(
+            statut="f",
+            typ="R",
+            defaut=0.0,
+            fr=tr("Raideur selon l'axe local y de l'élément d'un ressort élastique en parallèle."),
+        ),
+        KT2=SIMP(
+            statut="f",
+            typ="R",
+            defaut=0.0,
+            fr=tr("Raideur selon l'axe local z de l'élément d'un ressort élastique en parallèle."),
         ),
     ),
     DIS_BILI_ELAS=FACT(
@@ -2672,6 +2880,32 @@ DEFI_MATERIAU = MACRO(
         FPRE_DZ=SIMP(
             statut="f", typ="R", fr=tr("Effort de préserrage suivant l'axe local z de l'élément.")
         ),
+        KP=SIMP(
+            statut="f",
+            typ="R",
+            defaut=0.0,
+            fr=tr("Raideur selon l'axe local x de l'élément d'un ressort élastique en parallèle."),
+        ),
+        KT=SIMP(
+            statut="f",
+            typ="R",
+            defaut=0.0,
+            fr=tr(
+                "Raideur selon les axes locaux y et z de l'élément d'un ressort élastique en parallèle."
+            ),
+        ),
+        KT1=SIMP(
+            statut="f",
+            typ="R",
+            defaut=0.0,
+            fr=tr("Raideur selon l'axe local y de l'élément d'un ressort élastique en parallèle."),
+        ),
+        KT2=SIMP(
+            statut="f",
+            typ="R",
+            defaut=0.0,
+            fr=tr("Raideur selon l'axe local z de l'élément d'un ressort élastique en parallèle."),
+        ),
     ),
     DIS_CHOC_ENDO=FACT(
         statut="f",
@@ -2696,6 +2930,33 @@ DEFI_MATERIAU = MACRO(
         FXP=SIMP(statut="c", typ=fonction_sdaster),
         RIGIP=SIMP(statut="c", typ=fonction_sdaster),
         AMORP=SIMP(statut="c", typ=fonction_sdaster),
+        #
+        KP=SIMP(
+            statut="f",
+            typ="R",
+            defaut=0.0,
+            fr=tr("Raideur selon l'axe local x de l'élément d'un ressort élastique en parallèle."),
+        ),
+        KT=SIMP(
+            statut="f",
+            typ="R",
+            defaut=0.0,
+            fr=tr(
+                "Raideur selon les axes locaux y et z de l'élément d'un ressort élastique en parallèle."
+            ),
+        ),
+        KT1=SIMP(
+            statut="f",
+            typ="R",
+            defaut=0.0,
+            fr=tr("Raideur selon l'axe local y de l'élément d'un ressort élastique en parallèle."),
+        ),
+        KT2=SIMP(
+            statut="f",
+            typ="R",
+            defaut=0.0,
+            fr=tr("Raideur selon l'axe local z de l'élément d'un ressort élastique en parallèle."),
+        ),
     ),
     DIS_CHOC_ELAS=FACT(
         statut="f",
@@ -2708,6 +2969,32 @@ DEFI_MATERIAU = MACRO(
         DIST_1=SIMP(statut="f", typ="R", defaut=0.0, val_min=0.0),
         DIST_2=SIMP(statut="f", typ="R", defaut=0.0, val_min=0.0),
         RIGIP=SIMP(statut="c", typ=fonction_sdaster),
+        KP=SIMP(
+            statut="f",
+            typ="R",
+            defaut=0.0,
+            fr=tr("Raideur selon l'axe local x de l'élément d'un ressort élastique en parallèle."),
+        ),
+        KT=SIMP(
+            statut="f",
+            typ="R",
+            defaut=0.0,
+            fr=tr(
+                "Raideur selon les axes locaux y et z de l'élément d'un ressort élastique en parallèle."
+            ),
+        ),
+        KT1=SIMP(
+            statut="f",
+            typ="R",
+            defaut=0.0,
+            fr=tr("Raideur selon l'axe local y de l'élément d'un ressort élastique en parallèle."),
+        ),
+        KT2=SIMP(
+            statut="f",
+            typ="R",
+            defaut=0.0,
+            fr=tr("Raideur selon l'axe local z de l'élément d'un ressort élastique en parallèle."),
+        ),
     ),
     # Discrets non-linéaires : fin
     #
@@ -2810,6 +3097,11 @@ DEFI_MATERIAU = MACRO(
         A_MIL=SIMP(statut="o", typ="R"),
         B_MIL=SIMP(statut="o", typ="R"),
         VG_M_P=SIMP(statut="o", typ="R"),
+        UNITE_LONGUEUR=SIMP(statut="f", typ="TXM", into=("M", "MM"), defaut="M"),
+        UNITE_TEMPS=SIMP(statut="f", typ="TXM", into=("S", "MIN", "H", "J"), defaut="S"),
+        # hidden keywords
+        COEF_UNITE_L=SIMP(statut="c", defaut=1.0, typ="R"),
+        COEF_UNITE_T=SIMP(statut="c", defaut=1.0, typ="R"),
     ),
     #
     # comportement métallurgique

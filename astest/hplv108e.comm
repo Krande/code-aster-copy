@@ -1,0 +1,845 @@
+# coding=utf-8
+# --------------------------------------------------------------------
+# Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
+# This file is part of code_aster.
+#
+# code_aster is free software: you can redistribute it and/or modify
+# it under the terms of the GNU General Public License as published by
+# the Free Software Foundation, either version 3 of the License, or
+# (at your option) any later version.
+#
+# code_aster is distributed in the hope that it will be useful,
+# but WITHOUT ANY WARRANTY; without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+# GNU General Public License for more details.
+#
+# You should have received a copy of the GNU General Public License
+# along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
+# --------------------------------------------------------------------
+
+# ==============================================================================
+# BIBLIOTHEQUES & MODULES
+# ==============================================================================
+
+import os
+import json
+import tempfile
+import os.path as osp
+import numpy as np
+
+try:
+    import matplotlib
+
+    matplotlib.use("Agg")
+    import matplotlib.pyplot as plt
+
+    HAS_MATPLOTLIB = True
+except ImportError:
+    HAS_MATPLOTLIB = False
+
+from code_aster.Commands import *
+
+# ==============================================================================
+# PARAMÈTRES
+# ==============================================================================
+
+# ==============================================================================
+# Nom du test
+# ==============================================================================
+
+nom_test = "hplv108e"
+
+# ==============================================================================
+# Matériaux
+# ==============================================================================
+
+# Matériau 1
+
+# Module d'Young (MPa)
+E_Young_1 = 1
+
+# Matériau 2
+
+# Module d'Young (MPa)
+E_Young_2 = 10
+
+E_Young = [E_Young_1, E_Young_2]
+
+E_Young = np.array(E_Young)
+
+# Commun
+
+# Coefficient de Poisson
+nu = 0.3
+
+# Module de cisaillement
+G = E_Young / (2 * (1 + nu))
+
+# Température du test (°C)
+temp_test = 20.0
+
+# ==============================================================================
+# COMMANDES CODE_ASTER - DEBUT
+# ==============================================================================
+
+DEBUT(CODE="OUI", ERREUR=_F(ALARME="EXCEPTION"))
+
+# ==============================================================================
+# FONCTIONS DE DIMENSIONALISATION & D'ADIMENSIONALISATION DES PARAMÈTRES
+# ==============================================================================
+
+
+def dim(para, val, E, h):
+    """
+    La fonction dim dimensionalise les paramètres matériau de plaque avec
+    cisaillement transverse.
+    ---
+    - para : nom du paramètre (string)
+    - val : valeur du paramètre
+    - E : module d'Young
+    - h : épaisseur de la plaque
+    """
+
+    # Valeur dimensionalisée
+    dim_val = val
+
+    # Dimensionalisation
+
+    if "MEMB" in para or "CISA" in para:
+        dim_val *= E * h
+    elif "FLEX" in para:
+        dim_val *= E * (h**3) / 12
+    else:
+        pass
+
+    if "G_LT" in para or "CISA" in para:
+        dim_val /= 2
+
+    return dim_val
+
+
+def adim(para, val, E, h):
+    """
+    La fonction dim adimensionalise les paramètres matériau de plaque avec
+    cisaillement transverse.
+    ---
+    - para : nom du paramètre (string)
+    - val : valeur du paramètre
+    - E : module d'Young
+    - h : épaisseur de la plaque
+    """
+
+    # Valeur adimensionalisée
+    adim_val = val
+
+    # Adimensionalisation
+
+    if "MEMB" in para or "CISA" in para:
+        adim_val /= E * h
+    elif "FLEX" in para:
+        adim_val /= E * (h**3) / 12
+    else:
+        pass
+
+    if "G_LT" in para or "CISA" in para:
+        adim_val *= 2
+
+    return adim_val
+
+
+def raideur_equi_strat_memb_ct(para, val, E, delta_z):
+    """
+    La fonction raideur_equi_strat_memb_ct calcule le paramètre de membrane
+    équivalent d'une plaque stratifiée.
+    ---
+    - para : nom du paramètre (string)
+    - val : valeur du paramètre
+    - E : liste des modules d'Young des couches
+    - delta_z : liste des épaisseurs des couches
+    """
+
+    para_eq = 0
+
+    # Pour chaque couche
+    for i in range(0, len(E)):
+        para_eq += dim(para, val, E[i], delta_z[i])
+
+    # Symmétrie
+    para_eq *= 2
+
+    return para_eq
+
+
+def raideur_equi_strat_flex(para, val, E, delta_z):
+    """
+    La fonction raideur_equi_strat_flex calcule le paramètre de flexion
+    équivalent d'une plaque stratifiée.
+    ---
+    - para : nom du paramètre (string)
+    - val : valeur du paramètre
+    - E : liste des modules d'Young des couches
+    - delta_z : liste des épaisseurs des couches
+    """
+
+    para_eq = 0
+    z_min = 0
+    z_max = 0
+
+    # Pour chaque couche
+    for i in range(0, len(E)):
+
+        z_min = z_max
+        z_max += delta_z[i]
+
+        para_eq += 1 / 3 * (z_max**3 - z_min**3) * E[i] * val
+
+    if "G_LT" in para:
+        para_eq /= 2
+
+    # Symmétrie
+    para_eq *= 2
+
+    return para_eq
+
+
+# ==============================================================================
+# MAILLAGE
+# ==============================================================================
+
+# Maillage quadratique (mm)
+MA = LIRE_MAILLAGE(UNITE=20, FORMAT="MED")
+
+# ==============================================================================
+# Géométrie
+# ==============================================================================
+
+# Épaisseur de la plaque (mm)
+h = 2 * MA.createMedCouplingMesh()[0].getBoundingBox()[-1][1]
+
+# Épaisseur de chaque couche (mm)
+
+maillage = MA.createMedCouplingMesh()
+
+# # MEDCOUPLING
+# grp1 = maillage.getGroupArr(0, "couche1")
+# bbox = maillage[0].getCoords()[maillage[0][grp1].computeFetchedNodeIds()].getMinMaxPerComponent()
+# (xmin, xmax), (ymin, ymax), (zmin, zmax) = bbox
+# dz = zmax - zmin
+
+# ASTER
+coords = MA.getCoordinates().toNumpy()
+ngrp1 = MA.getNodesFromCells("couche1")
+dx, dy, dz = coords[ngrp1].max(axis=0) - coords[ngrp1].min(axis=0)
+
+delta_z_1 = dz
+delta_z_2 = h / 2 - delta_z_1
+
+delta_z = [delta_z_1, delta_z_2]
+
+# Côté de la cellule (mm)
+a = MA.createMedCouplingMesh()[0].getBoundingBox()[0][1]
+
+# ==============================================================================
+# MATÉRIAU
+# ==============================================================================
+
+UN = DEFI_CONSTANTE(VALE=1)
+E1 = DEFI_CONSTANTE(VALE=E_Young_1)
+E2 = DEFI_CONSTANTE(VALE=E_Young_2)
+NU = DEFI_CONSTANTE(VALE=nu)
+
+ACIER1 = DEFI_MATERIAU(ELAS_FO=_F(E=E1, NU=NU), THER_FO=_F(LAMBDA=UN))
+
+ACIER2 = DEFI_MATERIAU(ELAS_FO=_F(E=E2, NU=NU), THER_FO=_F(LAMBDA=UN))
+
+# ==============================================================================
+# VALEURS DE RÉFÉRENCE & CALCULÉES
+# ==============================================================================
+
+# Données de référence adimensionalisées par couche homogène
+test_refe = {
+    f"{temp_test:.1f}": {
+        "MEMB_L": 1 / (1 - nu**2),
+        "MEMB_T": 1 / (1 - nu**2),
+        "MEMB_LT": nu / (1 - nu**2),
+        "MEMB_G_LT": (1 - nu) / (1 - nu**2),
+        "FLEX_L": 1 / (1 - nu**2),
+        "FLEX_T": 1 / (1 - nu**2),
+        "FLEX_LT": nu / (1 - nu**2),
+        "FLEX_G_LT": (1 - nu) / (1 - nu**2),
+        "CISA_L": 1 / (1 + nu),
+        "CISA_T": 1 / (1 + nu),
+    }
+}
+
+# Données calculées dimensionalisées
+with open("%s.json" % nom_test) as f:
+    test_calc = json.load(f)
+test_calc_love = test_calc["LOVE"]
+test_calc_mindlin = test_calc["MINDLIN"]
+test_calc_touratier = test_calc["TOURATIER"]
+
+# Données de référence équivalentes dimensionalisées pour la plaque stratifiée
+
+test_refe_dim = {
+    "LOVE": {
+        f"{temp_test:.1f}": {
+            "MEMB_L": [],
+            "MEMB_T": [],
+            "MEMB_LT": [],
+            "MEMB_G_LT": [],
+            "FLEX_L": [],
+            "FLEX_T": [],
+            "FLEX_LT": [],
+            "FLEX_G_LT": [],
+        }
+    },
+    "MINDLIN": {
+        f"{temp_test:.1f}": {
+            "MEMB_L": [],
+            "MEMB_T": [],
+            "MEMB_LT": [],
+            "MEMB_G_LT": [],
+            "FLEX_L": [],
+            "FLEX_T": [],
+            "FLEX_LT": [],
+            "FLEX_G_LT": [],
+        }
+    },
+    "TOURATIER": {
+        f"{temp_test:.1f}": {
+            "MEMB_L": [],
+            "MEMB_T": [],
+            "MEMB_LT": [],
+            "MEMB_G_LT": [],
+            "FLEX_L": [],
+            "FLEX_T": [],
+            "FLEX_LT": [],
+            "FLEX_G_LT": [],
+        }
+    },
+}
+
+for para, val in test_refe[f"{temp_test:.1f}"].items():
+    if "MEMB" in para:
+        test_refe_dim["LOVE"][f"{temp_test:.1f}"][para] = raideur_equi_strat_memb_ct(
+            para, test_refe[f"{temp_test:.1f}"][para], E_Young, delta_z
+        )
+        test_refe_dim["MINDLIN"][f"{temp_test:.1f}"][para] = raideur_equi_strat_memb_ct(
+            para, test_refe[f"{temp_test:.1f}"][para], E_Young, delta_z
+        )
+        test_refe_dim["TOURATIER"][f"{temp_test:.1f}"][para] = raideur_equi_strat_memb_ct(
+            para, test_refe[f"{temp_test:.1f}"][para], E_Young, delta_z
+        )
+    elif "FLEX" in para:
+        test_refe_dim["LOVE"][f"{temp_test:.1f}"][para] = raideur_equi_strat_flex(
+            para, test_refe[f"{temp_test:.1f}"][para], E_Young, delta_z
+        )
+        test_refe_dim["MINDLIN"][f"{temp_test:.1f}"][para] = raideur_equi_strat_flex(
+            para, test_refe[f"{temp_test:.1f}"][para], E_Young, delta_z
+        )
+        test_refe_dim["TOURATIER"][f"{temp_test:.1f}"][para] = raideur_equi_strat_flex(
+            para, test_refe[f"{temp_test:.1f}"][para], E_Young, delta_z
+        )
+
+# ==============================================================================
+# HOMOGÉNÉISATION
+# ==============================================================================
+
+PARA_EQ_PLAQUE_LOVE = CALC_MATE_HOMO(
+    MAILLAGE=MA,
+    AFFE=(_F(GROUP_MA="couche1", MATER=ACIER1), _F(GROUP_MA="couche2", MATER=ACIER2)),
+    VARC=_F(NOM_VARC="TEMP", VALE=temp_test),
+    TYPE_HOMO="PLAQUE",
+    CORR_MECA=CO("CORR_MECA_LOVE"),
+)
+
+PARA_EQ_PLAQUE_CT_MINDLIN = CALC_MATE_HOMO(
+    MAILLAGE=MA,
+    AFFE=(_F(GROUP_MA="couche1", MATER=ACIER1), _F(GROUP_MA="couche2", MATER=ACIER2)),
+    VARC=_F(NOM_VARC="TEMP", VALE=temp_test),
+    TYPE_HOMO="PLAQUE_CT_MINDLIN",
+    CORR_MECA=CO("CORR_MECA_MINDLIN"),
+)
+
+PARA_EQ_PLAQUE_CT_TOURATIER = CALC_MATE_HOMO(
+    MAILLAGE=MA,
+    AFFE=(_F(GROUP_MA="couche1", MATER=ACIER1), _F(GROUP_MA="couche2", MATER=ACIER2)),
+    VARC=_F(NOM_VARC="TEMP", VALE=temp_test),
+    TYPE_HOMO="PLAQUE_CT_TOURATIER",
+    CORR_MECA=CO("CORR_MECA_TOURATIER"),
+)
+
+# ==============================================================================
+# VALIDATION & TEST DE NON-RÉGRESSION DES PARAMÈTRES
+# ==============================================================================
+
+for para, val in test_refe[f"{temp_test:.1f}"].items():
+    if not "CISA" in para:
+        TEST_TABLE(
+            TABLE=PARA_EQ_PLAQUE_LOVE,
+            NOM_PARA=para,
+            PRECISION=2.0e-3,
+            REFERENCE="SOURCE_EXTERNE",
+            VALE_REFE=test_refe_dim["LOVE"][f"{temp_test:.1f}"][para],
+            VALE_CALC=test_calc_love[f"{temp_test:.1f}"][para],
+            FILTRE=_F(NOM_PARA="TEMP", VALE=temp_test),
+        )
+
+for para, val in test_refe[f"{temp_test:.1f}"].items():
+    if not "CISA" in para:
+        TEST_TABLE(
+            TABLE=PARA_EQ_PLAQUE_CT_MINDLIN,
+            NOM_PARA=para,
+            PRECISION=2.0e-3,
+            REFERENCE="SOURCE_EXTERNE",
+            VALE_REFE=test_refe_dim["MINDLIN"][f"{temp_test:.1f}"][para],
+            VALE_CALC=test_calc_mindlin[f"{temp_test:.1f}"][para],
+            FILTRE=_F(NOM_PARA="TEMP", VALE=temp_test),
+        )
+    else:
+        TEST_TABLE(
+            TABLE=PARA_EQ_PLAQUE_CT_MINDLIN,
+            NOM_PARA=para,
+            VALE_CALC=test_calc_mindlin[f"{temp_test:.1f}"][para],
+            FILTRE=_F(NOM_PARA="TEMP", VALE=temp_test),
+        )
+
+for para, val in test_refe[f"{temp_test:.1f}"].items():
+    if not "CISA" in para:
+        TEST_TABLE(
+            TABLE=PARA_EQ_PLAQUE_CT_TOURATIER,
+            NOM_PARA=para,
+            PRECISION=2.0e-3,
+            REFERENCE="SOURCE_EXTERNE",
+            VALE_REFE=test_refe_dim["TOURATIER"][f"{temp_test:.1f}"][para],
+            VALE_CALC=test_calc_touratier[f"{temp_test:.1f}"][para],
+            FILTRE=_F(NOM_PARA="TEMP", VALE=temp_test),
+        )
+    else:
+        TEST_TABLE(
+            TABLE=PARA_EQ_PLAQUE_CT_TOURATIER,
+            NOM_PARA=para,
+            VALE_CALC=test_calc_touratier[f"{temp_test:.1f}"][para],
+            FILTRE=_F(NOM_PARA="TEMP", VALE=temp_test),
+        )
+
+# ==============================================================================
+# POST-TRAITEMENT DES PARAMÈTRES HOMOGÉNÉISÉS
+# ==============================================================================
+
+# Dictionnaire des paramètres homogénéisés
+para_resu_love = {
+    para: items
+    for para, items in PARA_EQ_PLAQUE_LOVE.EXTR_TABLE().values().items()
+    if all(abs(i) > 1.0e-12 for i in items)
+}
+para_resu_mindlin = {
+    para: items
+    for para, items in PARA_EQ_PLAQUE_CT_MINDLIN.EXTR_TABLE().values().items()
+    if all(abs(i) > 1.0e-12 for i in items)
+}
+para_resu_touratier = {
+    para: items
+    for para, items in PARA_EQ_PLAQUE_CT_TOURATIER.EXTR_TABLE().values().items()
+    if all(abs(i) > 1.0e-12 for i in items)
+}
+
+# Dictionnaire des paramètres homogénéisés par température
+test_resu_love = {
+    f"{para_resu_love['TEMP'][0]:.1f}": {para: item[0] for para, item in para_resu_love.items()}
+}
+test_resu_mindlin = {
+    f"{para_resu_mindlin['TEMP'][0]:.1f}": {
+        para: item[0] for para, item in para_resu_mindlin.items()
+    }
+}
+test_resu_touratier = {
+    f"{para_resu_touratier['TEMP'][0]:.1f}": {
+        para: item[0] for para, item in para_resu_touratier.items()
+    }
+}
+
+# Écriture du dictionnaire des paramètres homogénéisés par température dans un
+# fichier au format JSON
+# En interactif, permet de récupérer le fichier dans le dossier temporaire
+dossier_temporaire = tempfile.mkdtemp()
+test_resu = {"LOVE": test_resu_love, "MINDLIN": test_resu_mindlin, "TOURATIER": test_resu_touratier}
+with open(osp.join(dossier_temporaire, "%s.json" % nom_test), "w") as f:
+    json.dump(test_resu, f, indent=4, sort_keys=True)
+
+# ==============================================================================
+# GROUPES DE NOEUDS DE LECTURE DES CORRECTEURS
+# ==============================================================================
+
+# ==============================================================================
+# Mindlin
+# ==============================================================================
+
+# Pointeur vers le maillage des correcteurs
+MA_CORR_MIND = CORR_MECA_MINDLIN["CORR_MECA11_MEMB"].getMesh()
+
+# Groupes de noeuds de surface pour intersections
+
+MA_CORR_MIND = DEFI_GROUP(
+    reuse=MA_CORR_MIND,
+    MAILLAGE=MA_CORR_MIND,
+    CREA_GROUP_NO=(
+        _F(
+            NOM="NO_FACE_X_PLUS",
+            OPTION="PLAN",
+            POINT=(a, 0.0, 0.0),
+            PRECISION=a / 1.0e3,
+            VECT_NORMALE=(1.0, 0.0, 0.0),
+        ),
+        _F(
+            NOM="NO_FACE_Y_PLUS",
+            OPTION="PLAN",
+            POINT=(0.0, a, 0.0),
+            PRECISION=a / 1.0e3,
+            VECT_NORMALE=(0.0, 1.0, 0.0),
+        ),
+    ),
+)
+
+# Définition des noeuds de lecture par intersections de groupes de noeuds
+
+MA_CORR_MIND = DEFI_GROUP(
+    reuse=MA_CORR_MIND,
+    MAILLAGE=MA_CORR_MIND,
+    CREA_GROUP_NO=(_F(NOM="NO_LIGNE_EPAISSEUR", INTERSEC=("NO_FACE_X_PLUS", "NO_FACE_Y_PLUS")),),
+)
+
+# ==============================================================================
+# Mindlin
+# ==============================================================================
+
+# Pointeur vers le maillage des correcteurs
+MA_CORR_TOUR = CORR_MECA_TOURATIER["CORR_MECA11_MEMB"].getMesh()
+
+# Groupes de noeuds de surface pour intersections
+
+MA_CORR_TOUR = DEFI_GROUP(
+    reuse=MA_CORR_TOUR,
+    MAILLAGE=MA_CORR_TOUR,
+    CREA_GROUP_NO=(
+        _F(
+            NOM="NO_FACE_X_PLUS",
+            OPTION="PLAN",
+            POINT=(a, 0.0, 0.0),
+            PRECISION=a / 1.0e3,
+            VECT_NORMALE=(1.0, 0.0, 0.0),
+        ),
+        _F(
+            NOM="NO_FACE_Y_PLUS",
+            OPTION="PLAN",
+            POINT=(0.0, a, 0.0),
+            PRECISION=a / 1.0e3,
+            VECT_NORMALE=(0.0, 1.0, 0.0),
+        ),
+    ),
+)
+
+# Définition des noeuds de lecture par intersections de groupes de noeuds
+
+MA_CORR_TOUR = DEFI_GROUP(
+    reuse=MA_CORR_TOUR,
+    MAILLAGE=MA_CORR_TOUR,
+    CREA_GROUP_NO=(_F(NOM="NO_LIGNE_EPAISSEUR", INTERSEC=("NO_FACE_X_PLUS", "NO_FACE_Y_PLUS")),),
+)
+
+# ==============================================================================
+# ÉVOLUTION DES CORRECTEURS DANS L'ÉPAISSEUR DE LA PLAQUE
+# ==============================================================================
+
+# Formulation de Love
+
+TABL_EVOL_LOVE_CORR_MECA11_MEMB = MACR_LIGN_COUPE(
+    RESULTAT=CORR_MECA_LOVE["CORR_MECA11_MEMB"],
+    NOM_CHAM="DEPL",
+    LIGN_COUPE=_F(TYPE="SEGMENT", NB_POINTS=100, COOR_ORIG=(a, a, -h / 2), COOR_EXTR=(a, a, h / 2)),
+)
+
+TABL_EVOL_LOVE_CORR_MECA11_FLEX = MACR_LIGN_COUPE(
+    RESULTAT=CORR_MECA_LOVE["CORR_MECA11_FLEX"],
+    NOM_CHAM="DEPL",
+    LIGN_COUPE=_F(TYPE="SEGMENT", NB_POINTS=100, COOR_ORIG=(a, a, -h / 2), COOR_EXTR=(a, a, h / 2)),
+)
+
+# Formulation de Mindlin
+
+TABL_EVOL_MINDLIN_CORR_MECA11_MEMB = MACR_LIGN_COUPE(
+    RESULTAT=CORR_MECA_MINDLIN["CORR_MECA11_MEMB"],
+    NOM_CHAM="DEPL",
+    LIGN_COUPE=_F(TYPE="SEGMENT", NB_POINTS=100, COOR_ORIG=(a, a, -h / 2), COOR_EXTR=(a, a, h / 2)),
+)
+
+TABL_EVOL_MINDLIN_CORR_MECA11_FLEX = MACR_LIGN_COUPE(
+    RESULTAT=CORR_MECA_MINDLIN["CORR_MECA11_FLEX"],
+    NOM_CHAM="DEPL",
+    LIGN_COUPE=_F(TYPE="SEGMENT", NB_POINTS=100, COOR_ORIG=(a, a, -h / 2), COOR_EXTR=(a, a, h / 2)),
+)
+
+CORR_MECA_MINDLIN["CORR_MECA31_CT"] = CALC_CHAMP(
+    reuse=CORR_MECA_MINDLIN["CORR_MECA31_CT"],
+    RESULTAT=CORR_MECA_MINDLIN["CORR_MECA31_CT"],
+    CONTRAINTE="SIGM_ELNO",
+)
+
+TABL_EVOL_MINDLIN_CORR_MECA31_CT = MACR_LIGN_COUPE(
+    RESULTAT=CORR_MECA_MINDLIN["CORR_MECA31_CT"],
+    NOM_CHAM="DEPL",
+    LIGN_COUPE=_F(TYPE="SEGMENT", NB_POINTS=100, COOR_ORIG=(a, a, -h / 2), COOR_EXTR=(a, a, h / 2)),
+)
+
+TABL_EVOL_MINDLIN_CORR_MECA31_CT_SIG = MACR_LIGN_COUPE(
+    RESULTAT=CORR_MECA_MINDLIN["CORR_MECA31_CT"],
+    NOM_CHAM="SIGM_ELNO",
+    LIGN_COUPE=_F(TYPE="SEGMENT", NB_POINTS=100, COOR_ORIG=(a, a, -h / 2), COOR_EXTR=(a, a, h / 2)),
+)
+
+CORR_MECA_MINDLIN["CORR_MECA23_CT"] = CALC_CHAMP(
+    reuse=CORR_MECA_MINDLIN["CORR_MECA23_CT"],
+    RESULTAT=CORR_MECA_MINDLIN["CORR_MECA23_CT"],
+    CONTRAINTE="SIGM_ELNO",
+)
+
+TABL_EVOL_MINDLIN_CORR_MECA23_CT = MACR_LIGN_COUPE(
+    RESULTAT=CORR_MECA_MINDLIN["CORR_MECA23_CT"],
+    NOM_CHAM="DEPL",
+    LIGN_COUPE=_F(TYPE="SEGMENT", NB_POINTS=100, COOR_ORIG=(a, a, -h / 2), COOR_EXTR=(a, a, h / 2)),
+)
+
+TABL_EVOL_MINDLIN_CORR_MECA23_CT_SIG = MACR_LIGN_COUPE(
+    RESULTAT=CORR_MECA_MINDLIN["CORR_MECA23_CT"],
+    NOM_CHAM="SIGM_ELNO",
+    LIGN_COUPE=_F(TYPE="SEGMENT", NB_POINTS=100, COOR_ORIG=(a, a, -h / 2), COOR_EXTR=(a, a, h / 2)),
+)
+
+# Formulation de Touratier
+
+TABL_EVOL_TOURATIER_CORR_MECA11_MEMB = MACR_LIGN_COUPE(
+    RESULTAT=CORR_MECA_TOURATIER["CORR_MECA11_MEMB"],
+    NOM_CHAM="DEPL",
+    LIGN_COUPE=_F(TYPE="SEGMENT", NB_POINTS=100, COOR_ORIG=(a, a, -h / 2), COOR_EXTR=(a, a, h / 2)),
+)
+
+TABL_EVOL_TOURATIER_CORR_MECA11_FLEX = MACR_LIGN_COUPE(
+    RESULTAT=CORR_MECA_TOURATIER["CORR_MECA11_FLEX"],
+    NOM_CHAM="DEPL",
+    LIGN_COUPE=_F(TYPE="SEGMENT", NB_POINTS=100, COOR_ORIG=(a, a, -h / 2), COOR_EXTR=(a, a, h / 2)),
+)
+
+CORR_MECA_TOURATIER["CORR_MECA31_CT"] = CALC_CHAMP(
+    reuse=CORR_MECA_TOURATIER["CORR_MECA31_CT"],
+    RESULTAT=CORR_MECA_TOURATIER["CORR_MECA31_CT"],
+    CONTRAINTE="SIGM_ELNO",
+)
+
+TABL_EVOL_TOURATIER_CORR_MECA31_CT = MACR_LIGN_COUPE(
+    RESULTAT=CORR_MECA_TOURATIER["CORR_MECA31_CT"],
+    NOM_CHAM="DEPL",
+    LIGN_COUPE=_F(TYPE="SEGMENT", NB_POINTS=100, COOR_ORIG=(a, a, -h / 2), COOR_EXTR=(a, a, h / 2)),
+)
+
+TABL_EVOL_TOURATIER_CORR_MECA31_CT_SIG = MACR_LIGN_COUPE(
+    RESULTAT=CORR_MECA_TOURATIER["CORR_MECA31_CT"],
+    NOM_CHAM="SIGM_ELNO",
+    LIGN_COUPE=_F(TYPE="SEGMENT", NB_POINTS=100, COOR_ORIG=(a, a, -h / 2), COOR_EXTR=(a, a, h / 2)),
+)
+
+CORR_MECA_TOURATIER["CORR_MECA23_CT"] = CALC_CHAMP(
+    reuse=CORR_MECA_TOURATIER["CORR_MECA23_CT"],
+    RESULTAT=CORR_MECA_TOURATIER["CORR_MECA23_CT"],
+    CONTRAINTE="SIGM_ELNO",
+)
+
+TABL_EVOL_TOURATIER_CORR_MECA23_CT = MACR_LIGN_COUPE(
+    RESULTAT=CORR_MECA_TOURATIER["CORR_MECA23_CT"],
+    NOM_CHAM="DEPL",
+    LIGN_COUPE=_F(TYPE="SEGMENT", NB_POINTS=100, COOR_ORIG=(a, a, -h / 2), COOR_EXTR=(a, a, h / 2)),
+)
+
+TABL_EVOL_TOURATIER_CORR_MECA23_CT_SIG = MACR_LIGN_COUPE(
+    RESULTAT=CORR_MECA_TOURATIER["CORR_MECA23_CT"],
+    NOM_CHAM="SIGM_ELNO",
+    LIGN_COUPE=_F(TYPE="SEGMENT", NB_POINTS=100, COOR_ORIG=(a, a, -h / 2), COOR_EXTR=(a, a, h / 2)),
+)
+
+# Conversion en tableaux au format NumPy
+
+evol_coor_z = np.array(TABL_EVOL_LOVE_CORR_MECA11_MEMB.getValues("COOR_Z")[2])
+
+evol_love_corr_meca11_memb = np.array(TABL_EVOL_LOVE_CORR_MECA11_MEMB.getValues("DZ")[2])
+evol_love_corr_meca11_flex = np.array(TABL_EVOL_LOVE_CORR_MECA11_FLEX.getValues("DZ")[2])
+
+evol_mindlin_corr_meca11_memb = np.array(TABL_EVOL_MINDLIN_CORR_MECA11_MEMB.getValues("DZ")[2])
+evol_mindlin_corr_meca11_flex = np.array(TABL_EVOL_MINDLIN_CORR_MECA11_FLEX.getValues("DZ")[2])
+evol_mindlin_corr_meca31_ct_dx = np.array(TABL_EVOL_MINDLIN_CORR_MECA31_CT.getValues("DX")[2])
+evol_mindlin_corr_meca31_ct_sixz_dx = np.array(
+    TABL_EVOL_MINDLIN_CORR_MECA31_CT_SIG.getValues("SIXZ")[2]
+)
+evol_mindlin_corr_meca23_ct_dy = np.array(TABL_EVOL_MINDLIN_CORR_MECA23_CT.getValues("DY")[2])
+evol_mindlin_corr_meca23_ct_siyz_dx = np.array(
+    TABL_EVOL_MINDLIN_CORR_MECA23_CT_SIG.getValues("SIYZ")[2]
+)
+
+evol_touratier_corr_meca11_memb = np.array(TABL_EVOL_TOURATIER_CORR_MECA11_MEMB.getValues("DZ")[2])
+evol_touratier_corr_meca11_flex = np.array(TABL_EVOL_TOURATIER_CORR_MECA11_FLEX.getValues("DZ")[2])
+evol_touratier_corr_meca31_ct_dx = np.array(TABL_EVOL_TOURATIER_CORR_MECA31_CT.getValues("DX")[2])
+evol_touratier_corr_meca31_ct_sixz_dx = np.array(
+    TABL_EVOL_TOURATIER_CORR_MECA31_CT_SIG.getValues("SIXZ")[2]
+)
+evol_touratier_corr_meca23_ct_dy = np.array(TABL_EVOL_TOURATIER_CORR_MECA23_CT.getValues("DY")[2])
+evol_touratier_corr_meca23_ct_siyz_dy = np.array(
+    TABL_EVOL_TOURATIER_CORR_MECA23_CT_SIG.getValues("SIYZ")[2]
+)
+
+# Déformations élémentaires en cisaillement transverse
+epsi_ct_mindlin = -0.5 * np.ones(len(evol_coor_z))
+epsi_ct_touratier = -0.5 * np.cos(np.pi * evol_coor_z / h) * np.pi / 2
+
+# Évolution du module de cisaillement dans l'épaisseur (MPa)
+G_z = np.ones(len(evol_coor_z))
+couche_z = np.ones(len(evol_coor_z))
+for i in range(len(evol_coor_z)):
+    for j in range(len(E_Young)):
+        if abs(evol_coor_z[i]) > sum(delta_z[: j + 1]):
+            couche_z[i] += 1
+    G_z[i] = G[int(couche_z[i] - 1)]
+
+# Génération des graphiques d'évolution des correcteurs au travers de la plaque
+
+if HAS_MATPLOTLIB and os.getenv("DISPLAY"):
+
+    # Compléter le répertoire pour sauvegarder l'image sur un emplacement du
+    # disque
+    repertoire_sauv = "" or os.getcwd()
+
+    # Correcteurs en membrane
+
+    plt.plot(evol_love_corr_meca11_memb * 1e-3, evol_coor_z * 1e-3, label="LOVE")
+    plt.plot(evol_mindlin_corr_meca11_memb * 1e-3, evol_coor_z * 1e-3, "--", label="MINDLIN")
+    plt.plot(evol_touratier_corr_meca11_memb * 1e-3, evol_coor_z * 1e-3, ":", label="TOURATIER")
+
+    plt.grid()
+
+    plt.xlabel("Correction (m)")
+    plt.ylabel("z (m)")
+    plt.title("CORR_MECA11_MEMB, DZ")
+
+    plt.legend()
+
+    plt.savefig(osp.join(repertoire_sauv, "%s_CORR_MECA11_MEMB_DZ" % nom_test))
+
+    # Correcteurs en flexion
+
+    plt.figure()
+
+    plt.plot(evol_love_corr_meca11_flex * 1e-3, evol_coor_z * 1e-3, label="LOVE")
+    plt.plot(evol_mindlin_corr_meca11_flex * 1e-3, evol_coor_z * 1e-3, "--", label="MINDLIN")
+    plt.plot(evol_touratier_corr_meca11_flex * 1e-3, evol_coor_z * 1e-3, ":", label="TOURATIER")
+
+    plt.grid()
+
+    plt.xlabel("Correction (m)")
+    plt.ylabel("z (m)")
+    plt.title("CORR_MECA11_FLEX, DZ")
+
+    plt.legend()
+
+    plt.savefig(osp.join(repertoire_sauv, "%s_CORR_MECA11_FLEX_DZ" % nom_test))
+
+    # Correcteurs en cisaillement transverse 31
+
+    plt.figure()
+
+    plt.plot(evol_mindlin_corr_meca31_ct_dx * 1e-3, evol_coor_z * 1e-3, label="MINDLIN")
+    plt.plot(evol_touratier_corr_meca31_ct_dx * 1e-3, evol_coor_z * 1e-3, "--", label="TOURATIER")
+
+    plt.grid()
+
+    plt.xlabel("Correction (m)")
+    plt.ylabel("z (m)")
+    plt.title("CORR_MECA31_CT, DX")
+
+    plt.legend()
+
+    plt.savefig(osp.join(repertoire_sauv, "%s_CORR_MECA31_CT_DX" % nom_test))
+
+    # Correcteurs en cisaillement transverse 23
+
+    plt.figure()
+
+    plt.plot(evol_mindlin_corr_meca23_ct_dy * 1e-3, evol_coor_z * 1e-3, label="MINDLIN")
+    plt.plot(evol_touratier_corr_meca23_ct_dy * 1e-3, evol_coor_z * 1e-3, "--", label="TOURATIER")
+
+    plt.grid()
+
+    plt.xlabel("Correction (m)")
+    plt.ylabel("z (m)")
+    plt.title("CORR_MECA23_CT, DY")
+
+    plt.legend()
+
+    plt.savefig(osp.join(repertoire_sauv, "%s_CORR_MECA23_CT_DY" % nom_test))
+
+    # Contraintes des correcteurs en cisaillement transverse 31
+
+    plt.figure()
+
+    plt.plot(
+        (2 * G_z * epsi_ct_mindlin + evol_mindlin_corr_meca31_ct_sixz_dx),
+        evol_coor_z * 1e-3,
+        label="MINDLIN",
+    )
+    plt.plot(
+        (2 * G_z * epsi_ct_touratier + evol_touratier_corr_meca31_ct_sixz_dx),
+        evol_coor_z * 1e-3,
+        "--",
+        label="TOURATIER",
+    )
+
+    plt.grid()
+
+    plt.xlabel("Contrainte (MPa)")
+    plt.ylabel("z (m)")
+    plt.title("Contrainte totale en cisaillement XZ, SIEF_ELNO, SIXZ")
+
+    plt.legend()
+
+    plt.savefig(osp.join(repertoire_sauv, "%s_contrainte_totale_CT_XZ_SIXZ" % nom_test))
+
+    # Contraintes des correcteurs en cisaillement transverse 23
+
+    plt.figure()
+
+    plt.plot(
+        (2 * G_z * epsi_ct_mindlin + evol_mindlin_corr_meca23_ct_siyz_dx),
+        evol_coor_z * 1e-3,
+        label="MINDLIN",
+    )
+    plt.plot(
+        (2 * G_z * epsi_ct_touratier + evol_touratier_corr_meca23_ct_siyz_dy),
+        evol_coor_z * 1e-3,
+        "--",
+        label="TOURATIER",
+    )
+
+    plt.grid()
+
+    plt.xlabel("Contrainte (MPa)")
+    plt.ylabel("z (m)")
+    plt.title("Contrainte totale en cisaillement YZ, SIEF_ELNO, SIYZ")
+
+    plt.legend()
+
+    plt.savefig(osp.join(repertoire_sauv, "%s_contrainte_totale_CT_YZ_SIYZ" % nom_test))
+
+# ==============================================================================
+# COMMANDES CODE_ASTER - FIN
+# ==============================================================================
+
+FIN()
+
+# ==============================================================================

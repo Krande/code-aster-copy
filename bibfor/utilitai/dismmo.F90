@@ -98,7 +98,9 @@ subroutine dismmo(questi, nomobz, repi, repkz, ierd)
             (questi .eq. 'EXI_STR2') .or. (questi .eq. 'EXI_THM') .or. &
             (questi .eq. 'EXI_HHO') .or. (questi .eq. 'EXI_HHO_CSTE') .or. &
             (questi .eq. 'EXI_HHO_LINE') .or. &
-            (questi .eq. 'EXI_HHO_QUAD') .or. (questi .eq. 'EXI_NO_HHO') .or. &
+            (questi .eq. 'EXI_HHO_QUAD') .or. (questi .eq. 'EXI_HHO_CUBI') .or. &
+            (questi .eq. 'EXI_HHO_QUAR') .or. &
+            (questi .eq. 'EXI_NO_HHO') .or. &
             (questi .eq. 'EXI_AXIS') .or. (questi .eq. 'EXI_COQSOL') .or. &
             (questi .eq. 'EXI_IMPE_ABSO') .or. (questi .eq. 'EXI_CABLE') .or. &
             (questi .eq. 'EXI_POUTRE') .or. (questi .eq. 'EXI_INCO') .or. &

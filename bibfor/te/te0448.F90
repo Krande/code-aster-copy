@@ -20,7 +20,7 @@ subroutine te0448(nomopt, nomte)
 !
     use HHO_basis_module
     use HHO_eval_module
-    use HHO_init_module, only: hhoInfoInitCell
+    use HHO_init_module, only: hhoInfoInitCellAndFace
     use HHO_gradrec_module
     use HHO_Meca_module
     use HHO_quadrature_module
@@ -32,6 +32,7 @@ subroutine te0448(nomopt, nomte)
 !
     implicit none
 !
+#include "jeveux.h"
 #include "asterf_types.h"
 #include "asterfort/assert.h"
 #include "asterfort/Behaviour_type.h"
@@ -42,7 +43,6 @@ subroutine te0448(nomopt, nomte)
 #include "asterfort/nbsigm.h"
 #include "asterfort/readVector.h"
 #include "blas/dgemv.h"
-#include "jeveux.h"
 !
 ! --------------------------------------------------------------------------------------------------
 !  HHO
@@ -74,7 +74,7 @@ subroutine te0448(nomopt, nomte)
 !
 ! --- Get HHO informations
 !
-    call hhoInfoInitCell(hhoCell, hhoData)
+    call hhoInfoInitCellAndFace(hhoCell, hhoData)
 !
 ! --- Get element parameters
 !

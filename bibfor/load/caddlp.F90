@@ -25,6 +25,8 @@ subroutine caddlp(load, mesh, model, valeType)
 #include "asterc/getfac.h"
 #include "asterfort/afddli.h"
 #include "asterfort/aflrch.h"
+#include "asterfort/as_allocate.h"
+#include "asterfort/as_deallocate.h"
 #include "asterfort/assert.h"
 #include "asterfort/char_beam_lcs.h"
 #include "asterfort/char_excl_keyw.h"
@@ -32,6 +34,7 @@ subroutine caddlp(load, mesh, model, valeType)
 #include "asterfort/cncinv.h"
 #include "asterfort/dismoi.h"
 #include "asterfort/getnode.h"
+#include "asterfort/int_to_char8.h"
 #include "asterfort/jedema.h"
 #include "asterfort/jedetr.h"
 #include "asterfort/jeexin.h"
@@ -41,9 +44,6 @@ subroutine caddlp(load, mesh, model, valeType)
 #include "asterfort/jexnom.h"
 #include "asterfort/utmess.h"
 #include "asterfort/wkvect.h"
-#include "asterfort/as_deallocate.h"
-#include "asterfort/as_allocate.h"
-#include "asterfort/int_to_char8.h"
 !
     character(len=8), intent(in) :: load, mesh, model
     character(len=4), intent(in) :: valeType
@@ -63,7 +63,7 @@ subroutine caddlp(load, mesh, model, valeType)
 !
 ! --------------------------------------------------------------------------------------------------
 !
-    integer(kind=8), parameter :: n_max_keyword = 300
+    integer(kind=8), parameter :: n_max_keyword = 320
     integer(kind=8) :: ddlimp(n_max_keyword)
     real(kind=8) :: valimr(n_max_keyword)
     complex(kind=8) :: valimc(n_max_keyword)
@@ -135,7 +135,7 @@ subroutine caddlp(load, mesh, model, valeType)
     call jeveuo(jexnom('&CATA.GD.NOMCMP', nomg), 'L', jnom)
     call jelira(jexnom('&CATA.GD.NOMCMP', nomg), 'LONMAX', nbcmp, k8bid)
     call dismoi('NB_EC', nomg, 'GRANDEUR', repi=nbec)
-    ASSERT(nbec .le. 10)
+    ASSERT(nbec .le. 11)
 !
 ! - Local coordinate system
 !

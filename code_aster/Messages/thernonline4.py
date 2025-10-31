@@ -31,6 +31,20 @@ Ce n'est possible qu'avec THER_NON_LINE_MO.
 On ne peut pas utiliser d'éléments de structures (coques, plaques, poutres) dans la commande THER_NON_LINE_MO.
 """
     ),
+    3: _(
+        """
+Le modèle contient des éléments spécifiques au traitement du séchage. Ils sont incompatibles avec
+la commande THER_NON_LINE.
+
+Conseil : utilisez la commande SECH_NON_LINE.
+"""
+    ),
+    4: _(
+        """
+La commande SECH_NON_LINE ne fonctionne qu'avec un modèle contenant uniquement
+des éléments spécifiques au traitement du séchage.
+"""
+    ),
     85: _(
         """
    Arrêt : absence de convergence au numéro d'instant : %(i1)d

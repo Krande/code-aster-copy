@@ -65,9 +65,9 @@ subroutine appcpr(kptsc)
     integer(kind=8) :: dimgeo, dimgeo_b, niremp
     integer(kind=8) :: jnequ, jnequl
     integer(kind=8) :: nloc, neqg, ndprop, ieq, numno, icmp
-    integer(kind=8) :: iret, i
+    integer(kind=8) :: iret, i, nbp
     integer(kind=8) :: il, ix, iga_f, igp_f
-    integer(kind=8) :: fill, reacpr
+    integer(kind=8) :: fill, reacpr, nbmode
     integer(kind=8), dimension(:), pointer :: slvi => null()
     integer(kind=8), dimension(:), pointer :: prddl => null()
     integer(kind=8), dimension(:), pointer :: deeq => null()
@@ -75,10 +75,10 @@ subroutine appcpr(kptsc)
     integer(kind=8), dimension(:), pointer :: nlgp => null()
     mpi_int :: mpicomm
 !
-    character(len=24) :: precon
+    character(len=24) :: precon, seuil_str
     character(len=19) :: nomat, nosolv, syme
     character(len=14) :: nonu, factor
-    character(len=8) :: nomail, nbproc_str
+    character(len=8) :: nomail, nbp_str, typ, nbmode_str
     character(len=4) :: exilag
     character(len=3) :: matd
     character(len=800) :: myopt
@@ -485,73 +485,126 @@ subroutine appcpr(kptsc)
 #ifdef ASTER_PETSC_HAVE_HPDDM
 !     HPDDM works only in hpc mode
         if (.not. l_parallel_matrix) call utmess('F', 'PETSC_23')
+!
+        typ = slvk(14) (1:8)
+        call dismoi('TYPE_MATRICE', nomat, 'MATR_ASSE', repk=syme)
+        if (typ == "AUTO") then
+            if (syme .eq. 'SYMETRI') then
+                typ = "GENEO"
+            else
+                typ = "HARMO"
+            end if
+        end if
+!
 !     Set HPPDM pc
         call PCSetType(pc, PCHPDDM, ierr)
         ASSERT(ierr == 0)
-!     Create the auxiliary matrix usefull for the coarse problem
-        call MatCreate(PETSC_COMM_SELF, auxMat, ierr)
-        ASSERT(ierr == 0)
-!     Set the block size here because we have it easily
-        bs = tblocs(kptsc)
-        call MatSetBlockSize(auxMat, bs, ierr)
-        ASSERT(ierr == 0)
-!     Transfer the local code_aster matrix to the PETSc one
-        call apmams(nomat, auxMat)
-        ASSERT(ierr == 0)
-!     Get the local dof in the global numbering
-        call jeveuo(nonu//'.NUME.NULG', 'L', vi=nulg)
+!
+        if (typ == "GENEO") then
+!       Create the auxiliary matrix usefull for the coarse problem
+            call MatCreate(PETSC_COMM_SELF, auxMat, ierr)
+            ASSERT(ierr == 0)
+!       Set the block size here because we have it easily
+            bs = tblocs(kptsc)
+            call MatSetBlockSize(auxMat, bs, ierr)
+            ASSERT(ierr == 0)
+!       Transfer the local code_aster matrix to the PETSc one
+            call apmams(nomat, auxMat)
+            ASSERT(ierr == 0)
+!       Get the local dof in the global numbering
+            call jeveuo(nonu//'.NUME.NULG', 'L', vi=nulg)
 
 #if ASTER_PETSC_INT_SIZE == 4
-        AS_ALLOCATE(size=int(size(nulg), 8), vi4=nulg_ip)
+            AS_ALLOCATE(size=int(size(nulg), 8), vi4=nulg_ip)
 #else
-        AS_ALLOCATE(size=int(size(nulg), 8), vi=nulg_ip)
+            AS_ALLOCATE(size=int(size(nulg), 8), vi=nulg_ip)
 #endif
-        nulg_ip(1:size(nulg)) = (/(to_petsc_int(nulg(i)), i=1, size(nulg))/)
-        call ISCreateGeneral(PETSC_COMM_SELF, to_petsc_int(size(nulg)), nulg_ip, &
-                             PETSC_COPY_VALUES, auxIS, ierr)
-        ASSERT(ierr == 0)
+            nulg_ip(1:size(nulg)) = (/(to_petsc_int(nulg(i)), i=1, size(nulg))/)
+            call ISCreateGeneral(PETSC_COMM_SELF, to_petsc_int(size(nulg)), nulg_ip, &
+                                 PETSC_COPY_VALUES, auxIS, ierr)
+            ASSERT(ierr == 0)
 
-        ! call PCHPDDMDumpAuxiliaryMat(pc, auxIS, auxMat)
-!     Set the Neumann matrix
-        call PCHPDDMSetAuxiliaryMat(pc, auxIS, auxMat, PETSC_NULL_FUNCTION, &
-                                    PETSC_NULL_INTEGER, ierr)
-        ASSERT(ierr == 0)
-        call ISDestroy(auxIS, ierr)
-        call MatDestroy(auxMat, ierr)
-        ASSERT(ierr == 0)
+            ! call PCHPDDMDumpAuxiliaryMat(pc, auxIS, auxMat)
+!       Set the Neumann matrix
+            call PCHPDDMSetAuxiliaryMat(pc, auxIS, auxMat, PETSC_NULL_FUNCTION, &
+                                        PETSC_NULL_INTEGER, ierr)
+            ASSERT(ierr == 0)
+            call ISDestroy(auxIS, ierr)
+            call MatDestroy(auxMat, ierr)
+            ASSERT(ierr == 0)
+        end if
 !     Set the PC definition
-        call dismoi('TYPE_MATRICE', nomat, 'MATR_ASSE', repk=syme)
         factor = 'lu'
         if (syme .eq. 'SYMETRI') factor = 'cholesky'
 
-        call codent(int(nbproc/2, 8), 'D', nbproc_str, 'F')
-        myopt = '-prefix_push pc_hpddm_ '// &
-                '-prefix_push levels_1_ '// &
-                '-pc_type asm '// &
-                '-sub_mat_mumps_icntl_14 5000 '// &
-                '-sub_mat_mumps_icntl_24 1 '// &
-                '-sub_mat_mumps_icntl_25 0 '// &
-                '-sub_mat_mumps_cntl_3 1.e-50 '// &
-                '-sub_mat_mumps_cntl_5 0. '// &
-                '-eps_nev 30 '// &
-                '-sub_pc_type '//factor//' '// &
-                '-sub_pc_factor_mat_solver_type mumps '// &
-                '-st_pc_factor_mat_solver_type mumps '// &
-                '-st_share_sub_ksp '// &
-                '-prefix_pop '// &
-                '-prefix_push coarse_ '// &
-                '-pc_factor_mat_solver_type mumps '// &
-                '-sub_pc_type '//factor//' '// &
-                '-mat_mumps_icntl_14 5000 '// &
-                '-mat_mumps_icntl_24 1 '// &
-                '-mat_mumps_icntl_25 0 '// &
-                '-mat_mumps_cntl_3 1.e-50 '// &
-                '-mat_mumps_cntl_5 0. '// &
-                '-p '//trim(nbproc_str)//' '// &
-                '-prefix_pop '// &
-                '-define_subdomains '// &
-                '-has_neumann '// &
-                '-prefix_pop '
+        nbmode = slvi(3)
+        call codent(nbmode, 'D', nbmode_str, 'F')
+        ! we distribute the coarse problem to have 50k dofs by proc
+        nbp = max(ceiling(real(nbproc*nbmode, 8)/real(50000, 8), 8), 1_8)
+        call codent(nbp, 'D', nbp_str, 'F')
+        write (seuil_str, '(E24.16)') slvr(6)
+        if (typ == "GENEO") then
+            myopt = '-prefix_push pc_hpddm_ '// &
+                    '-prefix_push levels_1_ '// &
+                    '-pc_type asm '// &
+                    '-sub_pc_factor_mat_solver_type mumps '// &
+                    '-sub_pc_type '//factor//' '// &
+                    '-sub_mat_mumps_icntl_14 5000 '// &
+                    '-sub_mat_mumps_icntl_24 1 '// &
+                    '-sub_mat_mumps_icntl_25 0 '// &
+                    '-sub_mat_mumps_cntl_3 1.e-50 '// &
+                    '-sub_mat_mumps_cntl_5 0. '// &
+                    '-eps_nev '//trim(nbmode_str)//' '// &
+                    '-eps_threshold '//trim(seuil_str)//' '// &
+                    '-st_pc_factor_mat_solver_type mumps '// &
+                    '-st_share_sub_ksp '// &
+                    '-prefix_pop '// &
+                    '-prefix_push coarse_ '// &
+                    '-pc_factor_mat_solver_type mumps '// &
+                    '-pc_type '//factor//' '// &
+                    '-mat_mumps_icntl_14 5000 '// &
+                    '-mat_mumps_icntl_24 1 '// &
+                    '-mat_mumps_icntl_25 0 '// &
+                    '-mat_mumps_cntl_3 1.e-50 '// &
+                    '-mat_mumps_cntl_5 0. '// &
+                    '-p '//trim(nbp_str)//' '// &
+                    '-prefix_pop '// &
+                    '-define_subdomains '// &
+                    '-has_neumann '// &
+                    '-prefix_pop '
+        else
+            myopt = '-prefix_push pc_hpddm_ '// &
+                    '-prefix_push levels_1_ '// &
+                    '-pc_type asm '// &
+                    '-sub_pc_factor_mat_solver_type mumps '// &
+                    '-sub_pc_type '//factor//' '// &
+                    '-sub_mat_mumps_icntl_14 5000 '// &
+                    '-sub_mat_mumps_icntl_24 1 '// &
+                    '-sub_mat_mumps_icntl_25 0 '// &
+                    '-sub_mat_mumps_cntl_3 1.e-50 '// &
+                    '-sub_mat_mumps_cntl_5 0. '// &
+                    '-svd_type lanczos '// &
+                    '-svd_nsv '//trim(nbmode_str)//' '// &
+                    '-svd_relative_threshold '//trim(seuil_str)//' '// &
+                    '-st_pc_factor_mat_solver_type mumps '// &
+                    '-st_share_sub_ksp '// &
+                    '-prefix_pop '// &
+                    '-prefix_push coarse_ '// &
+                    '-correction deflated '// &
+                    '-pc_factor_mat_solver_type mumps '// &
+                    '-pc_type '//factor//' '// &
+                    '-mat_mumps_icntl_14 5000 '// &
+                    '-mat_mumps_icntl_24 1 '// &
+                    '-mat_mumps_icntl_25 0 '// &
+                    '-mat_mumps_cntl_3 1.e-50 '// &
+                    '-mat_mumps_cntl_5 0. '// &
+                    '-mat_type baij '// &
+                    '-p '//trim(nbp_str)//' '// &
+                    '-prefix_pop '// &
+                    '-define_subdomains '// &
+                    '-harmonic_overlap 2 '// &
+                    '-prefix_pop '
+        end if
         call PetscOptionsInsertString(PETSC_NULL_OPTIONS, myopt, ierr)
         ASSERT(ierr == 0)
         call PetscOptionsInsertString(PETSC_NULL_OPTIONS, options(kptsc), ierr)

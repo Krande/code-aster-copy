@@ -15,174 +15,163 @@
 ! You should have received a copy of the GNU General Public License
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
-
-subroutine epsvmc(fami, nno, ndim, nbsig, npg, &
-                  j_poids, j_vf, j_dfde, xyz, disp, &
-                  time, angl_naut, nharm, option, epsi)
+!
+subroutine epsvmc(fami, nno, ndim, nbEpsi, npg, &
+                  jvGaussWeight, jvBaseFunc, jvDBaseFunc, &
+                  nodeCoor, nodeDisp, &
+                  time, anglNaut, nharm, &
+                  strainType, lStrainMeca, &
+                  epsi)
 !
     implicit none
 !
 #include "asterf_types.h"
-#include "jeveux.h"
 #include "asterfort/assert.h"
+#include "asterfort/Behaviour_type.h"
 #include "asterfort/dmatmc.h"
 #include "asterfort/eps1mc.h"
 #include "asterfort/eps2mc.h"
 #include "asterfort/epslmc.h"
 #include "asterfort/epthmc.h"
-#include "asterfort/lteatt.h"
 #include "asterfort/jevech.h"
-!
+#include "asterfort/lteatt.h"
+#include "jeveux.h"
 !
     character(len=*), intent(in) :: fami
-    integer(kind=8), intent(in) :: nno
-    integer(kind=8), intent(in) :: ndim
-    integer(kind=8), intent(in) :: nbsig
-    integer(kind=8), intent(in) :: npg
-    integer(kind=8), intent(in) :: j_poids
-    integer(kind=8), intent(in) :: j_vf
-    integer(kind=8), intent(in) :: j_dfde
-    real(kind=8), intent(in) :: xyz(1)
-    real(kind=8), intent(in) :: disp(1)
-    real(kind=8), intent(in) :: time
-    real(kind=8), intent(in) :: angl_naut(3)
-    real(kind=8), intent(in) :: nharm
-    character(len=16), intent(in) :: option
-    real(kind=8), intent(out) :: epsi(1)
+    integer(kind=8), intent(in) :: nno, ndim, nbEpsi, npg
+    integer(kind=8), intent(in) :: jvGaussWeight, jvBaseFunc, jvDBaseFunc
+    real(kind=8), intent(in) :: nodeCoor(ndim*nno), nodeDisp(ndim*nno)
+    real(kind=8), intent(in) :: time, anglNaut(3), nharm
+    integer(kind=8), intent(in) :: strainType
+    aster_logical, intent(in) :: lStrainMeca
+    real(kind=8), intent(out) :: epsi(nbEpsi*npg)
 !
 ! --------------------------------------------------------------------------------------------------
 !
-! Compute mechanical strains or total strains (depend on option)
+! Compute mechanical strains or total strains
 !
 ! Mechanical strains = total strains - command variables strains
 !
 ! --------------------------------------------------------------------------------------------------
 !
-! In  fami         : Gauss family for integration point rule
-! In  nno          : number of nodes
-! In  ndim         : dimension of space
-! In  nbsig        : number of stress tensor components
-! In  npg          : number of Gauss points
-! In  j_poids      : JEVEUX adress to weight of Gauss points
-! In  j_vf         : JEVEUX adress to shape functions
-! In  j_dfde       : JEVEUX adress to derivatives of shape functions
-! In  xyz          : coordinates of element
-! In  disp         : displacements of element
-! In  time         : current time
-! In  j_mater      : coded material address
-! In  angl_naut    : nautical angles (for non-isotropic materials)
-! In  nharm        : Fourier mode
-! In  option       : name of option to compute
-! Out epsi         : mechanical strains or total strains
+! In  fami             : Gauss family for integration point rule
+! In  nno              : number of nodes
+! In  ndim             : dimension of space
+! In  nbEpsi           : number of strain tensor components
+! In  npg              : number of Gauss points
+! In  jvGaussWeight    : adresse to Gauss point weight
+! In  jvBaseFunc       : adresse to shape functions
+! In  jvDBaseFunc      : adresse to derivative of shape functions
+! In  nodeCoor         : coordinates of nodes
+! In  nodeDisp         : displacements of nodes
+! In  time             : given time
+! In  anglNaut         : nautical angles (for non-isotropic materials)
+! In  nharm            : Fourier mode
+! In  strainType       : type of strain (small, Green, log, etc.)
+! In  lStrainMeca      : flag to compute mechanical strains
+! Out epsi             : mechanical strains or total strains
 !
 ! --------------------------------------------------------------------------------------------------
 !
-    real(kind=8) :: epsi_varc(162), epsi_tota_g(162), epsi_tota(162)
-    real(kind=8) :: d(4, 4)
-    real(kind=8) :: zero, un, deux
-    integer(kind=8) :: i, kpg, imate
+    integer(kind=8), parameter :: ksp = 1
     aster_logical :: l_modi_cp
+    real(kind=8) :: epsiVarc(162), epsiMeca(162), epsiTota(162)
+    real(kind=8) :: epsiLine(162), epsiNlin(162)
+    real(kind=8) :: d(4, 4)
+    integer(kind=8) :: kpg, jvMater
+    aster_logical :: lStrainVarc
 !
 ! --------------------------------------------------------------------------------------------------
 !
-    zero = 0.d0
-    un = 1.d0
-    deux = 2.d0
-    ASSERT(nbsig*npg .le. 162)
-    epsi(1:nbsig*npg) = zero
-    epsi_tota(1:nbsig*npg) = zero
-    epsi_tota_g(1:nbsig*npg) = zero
-    epsi_varc(1:nbsig*npg) = zero
-    if (option(4:4) .eq. 'L') then
-        call epslmc(nno, ndim, nbsig, &
-                    npg, j_poids, j_vf, &
-                    j_dfde, xyz, disp, &
-                    epsi)
+    ASSERT(nbEpsi .le. 6)
+    ASSERT(npg .le. 27)
+    epsiVarc = 0.d0
+    epsiMeca = 0.d0
+    epsiTota = 0.d0
+    epsiLine = 0.d0
+    epsiNlin = 0.d0
+
+! - When compute strains from external state variables ?
+    lStrainVarc = lStrainMeca .or. lteatt('C_PLAN', 'OUI')
+
+! - Compute total strain
+    if (strainType .eq. STRAIN_TYPE_LOG) then
+        call epslmc(nno, ndim, nbEpsi, &
+                    npg, jvGaussWeight, jvBaseFunc, &
+                    jvDBaseFunc, nodeCoor, nodeDisp, &
+                    epsiTota)
+
+    elseif (strainType .eq. STRAIN_TYPE_SMALL) then
+        call eps1mc(nno, ndim, nbEpsi, npg, &
+                    jvGaussWeight, jvBaseFunc, jvDBaseFunc, &
+                    nodeCoor, nodeDisp, nharm, &
+                    epsiTota)
+
+    elseif (strainType .eq. STRAIN_TYPE_GREEN) then
+        call eps1mc(nno, ndim, nbEpsi, npg, &
+                    jvGaussWeight, jvBaseFunc, jvDBaseFunc, &
+                    nodeCoor, nodeDisp, nharm, &
+                    epsiLine)
+        call eps2mc(nno, ndim, nbEpsi, npg, &
+                    jvGaussWeight, jvBaseFunc, jvDBaseFunc, &
+                    nodeCoor, nodeDisp, &
+                    epsiNLin)
+        epsiTota = epsiLine+epsiNLin
+
     else
-!
-! - Total strains: first order (small strains)
-!
-        call eps1mc(nno, ndim, nbsig, npg, j_poids, &
-                    j_vf, j_dfde, xyz, disp, nharm, &
-                    epsi_tota)
-!
-! - Total strains: second order (large strains)
-!
-        if (option(4:4) .eq. 'G') then
-            call eps2mc(nno, ndim, nbsig, npg, j_poids, &
-                        j_vf, j_dfde, xyz, disp, epsi_tota_g)
-        end if
-!
-! - Total strains
-!
-        do i = 1, nbsig*npg
-            epsi(i) = epsi_tota(i)+epsi_tota_g(i)
-        end do
+        ASSERT(ASTER_FALSE)
     end if
-!
-! - Compute variable commands strains (thermics, drying, etc.)
-!
-    if (option(1:4) .eq. 'EPME' .or. option(1:4) .eq. 'EPMG' .or. lteatt('C_PLAN', 'OUI')) then
-        call jevech('PMATERC', 'L', imate)
-        call epthmc(fami, nno, ndim, nbsig, npg, &
-                    zr(j_vf), angl_naut, time, zi(imate), &
-                    option, epsi_varc)
+
+! - Compute anelastic strains from external state variables
+    if (lStrainVarc) then
+        call jevech('PMATERC', 'L', jvMater)
+        call epthmc(fami, nbEpsi, npg, ndim, &
+                    time, anglNaut, zi(jvMater), &
+                    VARC_STRAIN_ALL, epsiVarc)
     end if
-!
-! - Mechanical strains
-!
-    if (option(1:4) .eq. 'EPME' .or. option(1:4) .eq. 'EPMG') then
-        do i = 1, nbsig*npg
-            epsi(i) = epsi_tota(i)+epsi_tota_g(i)-epsi_varc(i)
-        end do
+
+! - Compute mechanical strains
+    if (lStrainMeca) then
+        epsiMeca = epsiTota-epsiVarc
     end if
-!
-! - 2D model
-!
+
+! - Modification for plaste stress hypothesis
     if (lteatt('C_PLAN', 'OUI')) then
-!
-! ----- Plane stress
-!
         do kpg = 1, npg
-!
-! --------- il s'agit de calculer EPS33 : pour cela il faut donner la
-! --------- condition SIG33=0 dans l'expression complete de la loi de
-! --------- Hooke c'est à dire avec la loi 3D :
-! --------- Eps33= -1/D33 (D13.Eps11 +D12.Eps22), ce qui donne (en
-! --------- isotrope) l'expression classique :
-! --------- Eps33 = -Nu / (1-Nu) * (Eps11 + Eps22).
-! --------- voir issue12540
-!
-            l_modi_cp = .true.
-!
+            l_modi_cp = ASTER_TRUE
+
 ! --------- Hooke matrix for iso-parametric elements
-!
-            call dmatmc(fami, zi(imate), time, '+', kpg, &
-                        1, angl_naut, nbsig, d, &
-                        l_modi_cp)
-!
-            if (option(1:4) .eq. 'EPME' .or. option(1:4) .eq. 'EPMG') then
-                epsi(nbsig*(kpg-1)+3) = -un/d(3, 3)* &
-                                        (d(3, 1)*epsi(nbsig*(kpg-1)+1)+ &
-                                         d(3, 2)*epsi(nbsig*(kpg-1)+2)+ &
-                                         d(3, 4)*epsi(nbsig*(kpg-1)+4)*deux)
+            call dmatmc(fami, zi(jvMater), time, '+', kpg, ksp, anglNaut, nbEpsi, d, l_modi_cp)
+
+! --------- Modification of strains
+            if (lStrainMeca) then
+                epsiMeca(nbEpsi*(kpg-1)+3) = -1.d0/d(3, 3)* &
+                                             (d(3, 1)*epsiMeca(nbEpsi*(kpg-1)+1)+ &
+                                              d(3, 2)*epsiMeca(nbEpsi*(kpg-1)+2)+ &
+                                              d(3, 4)*epsiMeca(nbEpsi*(kpg-1)+4)*2.d0)
             else
-                epsi(nbsig*(kpg-1)+3) = -un/d(3, 3)* &
-                                        (d(3, 1)*(epsi(nbsig*(kpg-1)+1)- &
-                                                  epsi_varc(nbsig*(kpg-1)+1))+ &
-                                         d(3, 2)*(epsi(nbsig*(kpg-1)+2)- &
-                                                  epsi_varc(nbsig*(kpg-1)+2))+ &
-                                         d(3, 4)*(epsi(nbsig*(kpg-1)+4)- &
-                                                  epsi_varc(nbsig*(kpg-1)+4))*deux)+ &
-                                        epsi_varc(nbsig*(kpg-1)+3)
+                epsiTota(nbEpsi*(kpg-1)+3) = -1.d0/d(3, 3)* &
+                                             (d(3, 1)*(epsiTota(nbEpsi*(kpg-1)+1)- &
+                                                       epsiVarc(nbEpsi*(kpg-1)+1))+ &
+                                              d(3, 2)*(epsiTota(nbEpsi*(kpg-1)+2)- &
+                                                       epsiVarc(nbEpsi*(kpg-1)+2))+ &
+                                              d(3, 4)*(epsiTota(nbEpsi*(kpg-1)+4)- &
+                                                       epsiVarc(nbEpsi*(kpg-1)+4))*2.d0)+ &
+                                             epsiVarc(nbEpsi*(kpg-1)+3)
             end if
         end do
-    else if (lteatt('D_PLAN', 'OUI')) then
-!
-! ----- Plane strain: EPZZ = 0
-!
+    end if
+
+! - Select output strains
+    epsi = 0.d0
+    if (lStrainMeca) then
+        epsi(1:nbEpsi*npg) = epsiMeca(1:nbEpsi*npg)
+    else
+        epsi(1:nbEpsi*npg) = epsiTota(1:nbEpsi*npg)
+    end if
+    if (lteatt('D_PLAN', 'OUI')) then
         do kpg = 1, npg
-            epsi(nbsig*(kpg-1)+3) = zero
+            epsi(nbEpsi*(kpg-1)+3) = 0.d0
         end do
     end if
 !

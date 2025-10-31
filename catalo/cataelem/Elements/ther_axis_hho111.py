@@ -48,7 +48,7 @@ CHHOBS = LocatedComponents(
     components=(("EN1", ("X[3]",)), ("EN2", ()), ("EN3", ("X[21]"))),
 )
 
-PFONC = LocatedComponents(phys=PHY.NEUT_K8, type="ELEM", components=("Z[2]",))
+PFONCR = LocatedComponents(phys=PHY.NEUT_K8, type="ELEM", components=("Z[2]",))
 
 MVECTTR = ArrayOfComponents(phys=PHY.VTEM_R, locatedComponents=DDL_THER)
 
@@ -161,7 +161,7 @@ class THERAXQ9_HHO111(Element):
             te=473,
             para_in=(
                 (SP.PGEOMER, LC.EGEOM2D),
-                (OP.HHO_PROJ_THER.PFUNC_R, PFONC),
+                (OP.HHO_PROJ_THER.PFUNC_R, PFONCR),
                 (SP.PINSTPR, LC.MTEMPSR),
                 (OP.HHO_PROJ_THER.PCHHOBS, CHHOBS),
             ),
@@ -298,7 +298,7 @@ class THERAXQ9_HHO111(Element):
                 (OP.RIGI_THER_TANG.PCHHOST, CHHOST),
                 (OP.RIGI_THER_TANG.PCHHOBS, CHHOBS),
             ),
-            para_out=((SP.PMATTTR, MMATTTR), (OP.RIGI_THER_TANG.PMATTSR, MMATTSR)),
+            para_out=((OP.RIGI_THER_TANG.PMATTSR, MMATTSR),),
         ),
         OP.TEMP_ELGA(
             te=456,

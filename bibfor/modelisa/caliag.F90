@@ -78,7 +78,7 @@ subroutine caliag(fonrez, chargz, phenom)
     integer(kind=8) :: lonli1, lonli2, nb, nbcmp, nbec, nbno, nbterm
     integer(kind=8) :: nddl1, nddl2, nddla, nliag, nmult1, nmult2
 !-----------------------------------------------------------------------
-    parameter(nmocl=300)
+    parameter(nmocl=320)
     real(kind=8) :: beta
     complex(kind=8) :: betac
     aster_logical :: dnor, lcolle
@@ -269,7 +269,7 @@ subroutine caliag(fonrez, chargz, phenom)
 ! --- NOMBRE D'ENTIERS CODES ASSOCIE A LA GRANDEUR ---
 !
     call dismoi('NB_EC', nomg, 'GRANDEUR', repi=nbec)
-    ASSERT(nbec .le. 10)
+    ASSERT(nbec .le. 11)
 !
     call jeveuo(jexnom('&CATA.GD.NOMCMP', nomg), 'L', inom)
     call jelira(jexnom('&CATA.GD.NOMCMP', nomg), 'LONMAX', nbcmp)

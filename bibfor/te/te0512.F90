@@ -85,7 +85,7 @@ subroutine te0512(option, nomte)
     integer(kind=8) :: ibid, jtab(7), nbvari
 !
 !
-    real(kind=8) :: sigma(mxcmel), sigd(mxcmel)
+    real(kind=8) :: sigmEner(mxcmel), sigd(mxcmel)
     real(kind=8) :: sigeq(nbpgmx), trsig(nbpgmx)
     real(kind=8) :: cendo(nbpgmx), cendom(nbpgmx)
     real(kind=8) :: sendo(nbpgmx)
@@ -169,7 +169,7 @@ subroutine te0512(option, nomte)
     do igau = 1, npg
         do i = 1, nbsig
             k = k+1
-            sigma(i+(igau-1)*nbsig) = zr(iconpg+k-1)
+            sigmEner(i+(igau-1)*nbsig) = zr(iconpg+k-1)
         end do
     end do
 !
@@ -178,13 +178,13 @@ subroutine te0512(option, nomte)
 !
     do igau = 1, npg
         indic = (igau-1)*nbsig
-        trsig(igau) = untier*(sigma(indic+1)+sigma(indic+2)+sigma(indic+3))
-        sigd(indic+1) = sigma(indic+1)-trsig(igau)
-        sigd(indic+2) = sigma(indic+2)-trsig(igau)
-        sigd(indic+3) = sigma(indic+3)-trsig(igau)
-        sigd(indic+4) = sigma(indic+4)
-        sigd(indic+5) = sigma(indic+5)
-        sigd(indic+6) = sigma(indic+6)
+        trsig(igau) = untier*(sigmEner(indic+1)+sigmEner(indic+2)+sigmEner(indic+3))
+        sigd(indic+1) = sigmEner(indic+1)-trsig(igau)
+        sigd(indic+2) = sigmEner(indic+2)-trsig(igau)
+        sigd(indic+3) = sigmEner(indic+3)-trsig(igau)
+        sigd(indic+4) = sigmEner(indic+4)
+        sigd(indic+5) = sigmEner(indic+5)
+        sigd(indic+6) = sigmEner(indic+6)
     end do
 !
 ! --- 1.3 CALCUL DE LA CONTRAINTE EQUIVALENTE SIGEQ

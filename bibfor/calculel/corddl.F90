@@ -46,7 +46,7 @@ subroutine corddl(admodl, lcmodl, idprn1, idprn2, ili, &
     integer(kind=8) :: in, k, mode, n, nbecmx, ncmp
     integer(kind=8) :: nddloc, nec
 !-----------------------------------------------------------------------
-    parameter(nbecmx=10)
+    parameter(nbecmx=11)
     integer(kind=8) :: ifin(nbecmx)
     integer(kind=8) :: admodl, lcmodl, pos(1)
     integer(kind=8) :: ecodg, ecodl

@@ -85,7 +85,7 @@ subroutine select_dof(listEqua_, tablEqua_, tablCmp_, &
 ! --------------------------------------------------------------------------------------------------
 !
     integer(kind=8), parameter :: iLigrMesh = 1
-    integer(kind=8), parameter :: nbEcMax = 10
+    integer(kind=8), parameter :: nbEcMax = 11
     integer(kind=8) :: physDesc(nbEcMax)
     character(len=24) :: liliName
     character(len=8) :: cmpName, mesh

@@ -99,11 +99,8 @@ contains
         real(kind=8), dimension(MSIZE_CELL_SCAL) :: basisScalEval
         integer(kind=8) :: dimMat, ipg, i
         aster_logical :: dbg
-        real(kind=8) :: start, end
         blas_int :: b_incx, b_lda, b_n
 ! --------------------------------------------------------------------------------------------------
-!
-        DEBUG_TIMER(start)
 !
 ! ----- init basis
         call hhoBasisCell%initialize(hhoCell)
@@ -112,6 +109,8 @@ contains
         this%m = 0.d0
         this%nrows = dimMat
         this%ncols = dimMat
+        ASSERT(this%nrows <= this%max_nrows)
+        ASSERT(this%ncols <= this%max_ncols)
 !
 #ifdef ASTER_DEBUG_FC
         dbg = ASTER_TRUE
@@ -146,17 +145,12 @@ contains
 !
             call hhoCopySymPartMat('U', this%m(1:dimMat, 1:dimMat))
 !
-            if (hhoBasisCell%isOrthonormal()) then
-#ifdef ASTER_DEBUG_FC
+            if (hhoBasisCell%isOrthonormal() .and. dbg) then
                 ASSERT(hhoIsIdentityMat(this%m, dimMat))
-#endif
             end if
 !
         end if
 ! call hhoPrintMat(this%m(1:dimMat, 1:dimMat))
-!
-        DEBUG_TIMER(end)
-        DEBUG_TIME("Compute hhoMassMatCellScal", end-start)
 !
     end subroutine
 !
@@ -188,10 +182,8 @@ contains
         real(kind=8), dimension(MSIZE_FACE_SCAL) :: basisScalEval
         integer(kind=8) :: dimMat, ipg, i
         aster_logical :: dbg
-        real(kind=8) :: start, end
         blas_int :: b_incx, b_lda, b_n
 ! --------------------------------------------------------------------------------------------------
-        DEBUG_TIMER(start)
 !
 ! ----- init basis
         call hhoBasisFace%initialize(hhoFace)
@@ -201,6 +193,8 @@ contains
         this%m = 0.d0
         this%nrows = dimMat
         this%ncols = dimMat
+        ASSERT(this%nrows <= this%max_nrows)
+        ASSERT(this%ncols <= this%max_ncols)
 !
 #ifdef ASTER_DEBUG_FC
         dbg = ASTER_TRUE
@@ -235,16 +229,12 @@ contains
 !
             call hhoCopySymPartMat('U', this%m(1:dimMat, 1:dimMat))
 !
-            if (hhoBasisFace%isOrthonormal()) then
-#ifdef ASTER_DEBUG_FC
+            if (hhoBasisFace%isOrthonormal() .and. dbg) then
                 ASSERT(hhoIsIdentityMat(this%m, dimMat))
-#endif
             end if
         end if
 !
 ! call hhoPrintMat(this%m)
-        DEBUG_TIMER(end)
-        DEBUG_TIME("Compute hhoMassMatFaceScal", end-start)
 !
     end subroutine
 !

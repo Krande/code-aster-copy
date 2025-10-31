@@ -27,5 +27,5 @@
 #define BASIS_ORTHO     3
 
 ! ---- maximal number of coefficient
-#define MAX_FACE_COEF 231
-#define MAX_CELL_COEF 3570
+#define MAX_FACE_COEF 130
+#define MAX_CELL_COEF 1600

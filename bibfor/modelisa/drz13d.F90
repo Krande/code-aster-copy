@@ -24,16 +24,16 @@ subroutine drz13d(noma, ligrmo, type_vale, nb_node, list_node, &
 !
 #include "jeveux.h"
 #include "asterfort/afrela.h"
+#include "asterfort/as_allocate.h"
+#include "asterfort/as_deallocate.h"
 #include "asterfort/assert.h"
 #include "asterfort/dismoi.h"
 #include "asterfort/exisdg.h"
+#include "asterfort/int_to_char8.h"
 #include "asterfort/jedema.h"
 #include "asterfort/jeexin.h"
 #include "asterfort/jemarq.h"
 #include "asterfort/jeveuo.h"
-#include "asterfort/as_deallocate.h"
-#include "asterfort/as_allocate.h"
-#include "asterfort/int_to_char8.h"
 !
 !
     character(len=8), intent(in) :: noma
@@ -113,7 +113,7 @@ subroutine drz13d(noma, ligrmo, type_vale, nb_node, list_node, &
 !
     nomg = 'DEPL_R'
     call dismoi('NB_EC', nomg, 'GRANDEUR', repi=nbec)
-    ASSERT(nbec .le. 10)
+    ASSERT(nbec .le. 11)
     call jeveuo(ligrmo//'.PRNM', 'L', jprnm)
 !
 ! - Nodes coordinates

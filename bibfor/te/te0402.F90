@@ -77,7 +77,7 @@ subroutine te0402(option, nomte)
 !
     real(kind=8) :: sigmt(3, 3)
 !
-    real(kind=8) :: sigma(3, 3)
+    real(kind=8) :: sigmEner(3, 3)
 !
     real(kind=8) :: barsig(9, 9)
 !
@@ -265,7 +265,7 @@ subroutine te0402(option, nomte)
 !           SIGMA =  ( VECTT ) T * SIGMT * VECTT
 !
             call btkb(3, 3, 3, sigmt, vectt, &
-                      bid33, sigma)
+                      bid33, sigmEner)
 !
 !
 !
@@ -305,7 +305,7 @@ subroutine te0402(option, nomte)
 !
 !---------- BARSIG   ( 9 , 9 )
 !
-            call sigbar(sigma, barsig)
+            call sigbar(sigmEner, barsig)
 !
 !---------- CALCUL DE
 !           J1DN2 ( 9 , 6 * NB1 + 3 ) =

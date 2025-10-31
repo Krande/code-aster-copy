@@ -24,9 +24,11 @@ subroutine crcore()
 !           "DYNA_TRANS"   "EVOL_CHAR"
 !
 ! --- ------------------------------------------------------------------
-#include "asterf_types.h"
 #include "jeveux.h"
+#include "asterf_types.h"
 #include "asterc/getres.h"
+#include "asterfort/as_allocate.h"
+#include "asterfort/as_deallocate.h"
 #include "asterfort/assert.h"
 #include "asterfort/dismoi.h"
 #include "asterfort/exisdg.h"
@@ -59,8 +61,6 @@ subroutine crcore()
 #include "asterfort/vtcopy.h"
 #include "asterfort/vtcreb.h"
 #include "asterfort/wkvect.h"
-#include "asterfort/as_deallocate.h"
-#include "asterfort/as_allocate.h"
 #include "blas/daxpy.h"
 !
     integer(kind=8) :: ibid, ier, icompt, iret, numini, numfin
@@ -71,7 +71,7 @@ subroutine crcore()
     integer(kind=8) :: tnum(1)
     integer(kind=8) :: nbordr1, nbordr2, numei, neq, nbnoeu, gd, nec, iec
     integer(kind=8) :: ngn, nbno, ino, in, nbd, jchi1, ldgn, jdist
-    integer(kind=8) :: nfx, nfy, nfz, jncmp, tabec(10), ncmpmx, iad2, ncmp0, j2
+    integer(kind=8) :: nfx, nfy, nfz, jncmp, tabec(11), ncmpmx, iad2, ncmp0, j2
     integer(kind=8) :: nfrx, nfry, nfrz
 !
     real(kind=8) :: rbid, tps, prec, coefr
@@ -239,7 +239,7 @@ subroutine crcore()
     call jeveuo(numedd//'.NUME.REFN', 'L', vk24=refn)
     nomgd = refn(2) (1:8)
     call jeveuo(jexnom('&CATA.GD.NOMCMP', nomgd), 'L', jncmp)
-    ASSERT(nec .le. 10)
+    ASSERT(nec .le. 11)
     call jelira(jexnum('&CATA.GD.NOMCMP', gd), 'LONMAX', ncmpmx)
     call jeveuo(jexnum('&CATA.GD.NOMCMP', gd), 'L', iad2)
 !    AS_ALLOCATE(vi=vicmp, size=ncmpmx*nbnoeu)

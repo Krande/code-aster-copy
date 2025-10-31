@@ -23,18 +23,21 @@ subroutine assvec(jvBase, vectAsseZ, &
 !
     implicit none
 !
-#include "asterf_types.h"
 #include "jeveux.h"
+#include "asterf_types.h"
 #include "asterc/indik8.h"
 #include "asterfort/asmpi_barrier.h"
 #include "asterfort/asmpi_comm_jev.h"
 #include "asterfort/assert.h"
+#include "asterfort/asseVectField.h"
+#include "asterfort/asseVectSuper.h"
 #include "asterfort/corddl.h"
 #include "asterfort/crelil.h"
 #include "asterfort/dbgobj.h"
 #include "asterfort/detrsd.h"
 #include "asterfort/digdel.h"
 #include "asterfort/dismoi.h"
+#include "asterfort/getDistributionParameters.h"
 #include "asterfort/infniv.h"
 #include "asterfort/jaexin.h"
 #include "asterfort/jecreo.h"
@@ -57,9 +60,6 @@ subroutine assvec(jvBase, vectAsseZ, &
 #include "asterfort/uttcpu.h"
 #include "asterfort/vtcreb.h"
 #include "asterfort/wkvect.h"
-#include "asterfort/asseVectSuper.h"
-#include "asterfort/asseVectField.h"
-#include "asterfort/getDistributionParameters.h"
 !
     character(len=1), intent(in) :: jvBase
     character(len=*), intent(in) :: vectAsseZ
@@ -91,7 +91,7 @@ subroutine assvec(jvBase, vectAsseZ, &
     character(len=24), parameter :: ligrelMesh = '&MAILLA'
     aster_logical, parameter :: dbg = ASTER_FALSE
     integer(kind=8) :: physQuan, nec, nlili
-    integer(kind=8), parameter :: nbecmx = 10
+    integer(kind=8), parameter :: nbecmx = 11
     character(len=8) :: mesh, model, vectElemModel, nogdsi, nogdco
     character(len=14) :: numeDof, answer
     character(len=24) :: vectRefeJv, vectValeJv
@@ -109,8 +109,8 @@ subroutine assvec(jvBase, vectAsseZ, &
     integer(kind=8) :: liliNume, liliNume2, ligrelNume, jvVectElem
     integer(kind=8) :: iResuElem, iret, jec, jvale, iNodeMode
     integer(kind=8) :: lgncmp, mode, nbNode, nbNode2, meshNbCell
-   integer(kind=8) :: nbResuElem, nbSuperElement, nbCmp, nbCmpMode, nbDofMode, nbElem, nbEqua, nbDof
-    integer(kind=8) :: meshNbNode, nmxcmp, nbNodeMode, nugd, elemNume, iexi
+    integer(kind=8) :: nbResuElem, nbSuperElement, nbCmp, nbCmpMode, nbDofMode, nbElem
+    integer(kind=8) :: meshNbNode, nmxcmp, nbNodeMode, nugd, elemNume, iexi, nbEqua, nbDof
     integer(kind=8) :: icodla(nbecmx), icodge(nbecmx), lshift
     integer(kind=8) :: admodl, lcmodl, ifm, niv, rang, nbproc
     real(kind=8) :: temps(7)
@@ -420,7 +420,7 @@ subroutine assvec(jvBase, vectAsseZ, &
                                     if (nbDofMode .eq. 0) cycle
                                     ASSERT(iad1 .ne. 0)
                                     ASSERT(iad1 .le. nbDof)
-                                    ASSERT(nbDofMode .le. 100)
+                                    ASSERT(nbDofMode .le. 105)
                                     if (vectScalType .eq. 1) then
                                         do iDofMode = 1, nbDofMode
                                             iDof = iDof+1
@@ -472,7 +472,7 @@ subroutine assvec(jvBase, vectAsseZ, &
                                         call corddl(admodl, lcmodl, idprn1, idprn2, liliNume2, &
                                                     mode, nec, nbCmp, nbNode2, iNodeMode, &
                                                     nbDofMode, zi(iapsdl))
-                                        ASSERT(nbDofMode .le. 100)
+                                        ASSERT(nbDofMode .le. 105)
                                     else
                                         iad1 = zi(idprn1-1+ &
                                                   zi(idprn2+ligrelMeshIndx-1)+ &
@@ -481,7 +481,7 @@ subroutine assvec(jvBase, vectAsseZ, &
                                                     ligrelMeshIndx, &
                                                     mode, nec, nbCmp, nbNode, iNodeMode, &
                                                     nbDofMode, zi(iapsdl))
-                                        ASSERT(nbDofMode .le. 100)
+                                        ASSERT(nbDofMode .le. 105)
                                     end if
 
                                     ASSERT(iad1 .ne. 0)

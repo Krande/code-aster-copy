@@ -21,11 +21,11 @@
 #include "asterf_types.h"
 !
 interface
-    subroutine zneupd(rvec, howmny, select, d, z,&
-                      ldz, sigma, workev, bmat, n,&
-                      which, nev, tol, resid, ncv,&
-                      v, ldv, iparam, ipntr, workd,&
-                      workl, lworkl, rwork, info)
+    subroutine zneupd(rvec, howmny, select, d, z, &
+                      ldz, sigma, workev, bmat, n, &
+                      which, nev, tol, resid, ncv, &
+                      v, ldv, iparam, ipntr, workd, &
+                      workl, lworkl, rwork, info, neqact)
         integer(kind=8) :: lworkl
         integer(kind=8) :: ldv
         integer(kind=8) :: ncv
@@ -50,5 +50,6 @@ interface
         complex(kind=8) :: workl(lworkl)
         real(kind=8) :: rwork(*)
         integer(kind=8) :: info
+        integer(kind=8) :: neqact
     end subroutine zneupd
 end interface

@@ -35,6 +35,7 @@ subroutine imbint(nomres, ifm)
 #include "jeveux.h"
 #include "asterfort/bmnodi.h"
 #include "asterfort/dismoi.h"
+#include "asterfort/int_to_char8.h"
 #include "asterfort/isdeco.h"
 #include "asterfort/jedema.h"
 #include "asterfort/jelibe.h"
@@ -43,7 +44,6 @@ subroutine imbint(nomres, ifm)
 #include "asterfort/jenuno.h"
 #include "asterfort/jeveuo.h"
 #include "asterfort/jexnum.h"
-#include "asterfort/int_to_char8.h"
 !
 !-----------------------------------------------------------------------
     integer(kind=8) :: i, ibid(1), idau, idcb, idda, idha, idmn
@@ -52,7 +52,7 @@ subroutine imbint(nomres, ifm)
     integer(kind=8) :: llnoe, lltyp, nbcmp, nbcpmx, nbdef, nbec, nbint
     integer(kind=8) :: nbno, nbnot, ncomp, numgd
 !-----------------------------------------------------------------------
-    parameter(nbcpmx=300)
+    parameter(nbcpmx=320)
     character(len=8) :: nomcou, typcou, nomnoe, typ, typbas(3), nomtyp
     character(len=8) :: nomres, mailla, flec, craigb, mneal, aucun, cbharm
     character(len=16) :: tydef

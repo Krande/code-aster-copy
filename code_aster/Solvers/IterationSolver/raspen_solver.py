@@ -236,6 +236,9 @@ class RASPENSolver(BaseIterationSolver):
         raspen_solver.solve()
 
         if raspen_solver.glbSnes.getConvergedReason() < 0:
+            # delete before exit
+            local_solver.snes = None
+            raspen_solver.destroyAll()
             raise ConvergenceError("MECANONLINE9_7")
 
         self.oper.finalize()
@@ -552,7 +555,15 @@ class _RASPENSolver:
             asmpi_set(comm_self)
             # - sequential solve
             self.t_sdSolve = -time()
+            # before local solve set context to no error
+            self.locSnes.appctx = SNESSolver.SNES_SUCCESS
+            # solve
             self.locSnes.solve(None, self.locSol)
+            # broadcast error
+            failed = MPI.ASTER_COMM_WORLD.allreduce(self.locSnes.appctx, op=MPI.MIN)
+            if failed != SNESSolver.SNES_SUCCESS:
+                self.locSnes.setConvergedReason(PETSc.SNES.ConvergedReason.DIVERGED_FNORM_NAN)
+                self.glbSnes.setConvergedReason(PETSc.SNES.ConvergedReason.DIVERGED_FNORM_NAN)
             self.t_sdSolve += time()
             self.t_sdSolve = self.comm.reduce(self.t_sdSolve, op=MPI.MAX, root=0)
             if self.rank == 0:
@@ -651,6 +662,9 @@ class _RASPENSolver:
         routine that computes the true residual
         instead of the preconditioned one
         """
+        # if a local solve failed, the global step must fail
+        if self.locSnes.appctx == SNESSolver.SNES_FAILURE:
+            return PETSc.SNES.ConvergedReason.DIVERGED_FNORM_NAN
         cvg = its > 0 and self.Fnorm / self.fnorm0 < self.rtol or self.Fnorm < self.atol
         return cvg
 

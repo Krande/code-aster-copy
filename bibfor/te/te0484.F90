@@ -20,19 +20,19 @@ subroutine te0484(option, nomte)
 !
     use HHO_type
     use HHO_size_module
-    use HHO_init_module, only: hhoInfoInitCell
+    use HHO_init_module, only: hhoInfoInitCellAndFace
     use HHO_L2proj_module
     use HHO_quadrature_module
 !
     implicit none
 !
+#include "jeveux.h"
 #include "asterf_types.h"
 #include "asterfort/assert.h"
 #include "asterfort/elrefe_info.h"
 #include "asterfort/HHO_size_module.h"
 #include "asterfort/jevech.h"
 #include "asterfort/writeVector.h"
-#include "jeveux.h"
 !
 ! --------------------------------------------------------------------------------------------------
 !  HHO
@@ -50,12 +50,12 @@ subroutine te0484(option, nomte)
     type(HHO_Quadrature) :: hhoQuad
     integer(kind=8) :: cbs, fbs, total_dofs, npg
     real(kind=8), dimension(MSIZE_TDOFS_VEC) :: coeff_L2Proj
-    real(kind=8), dimension(MSIZE_CELL_SCAL) :: cell_L2Proj
+    real(kind=8), dimension(MSIZE_CELL_VEC) :: cell_L2Proj
     real(kind=8), pointer :: field(:) => null()
 !
 ! --- Get HHO informations
 !
-    call hhoInfoInitCell(hhoCell, hhoData)
+    call hhoInfoInitCellAndFace(hhoCell, hhoData)
 !
     if (option == "HHO_PROJ2_THER") then
 !
@@ -75,10 +75,16 @@ subroutine te0484(option, nomte)
         coeff_L2Proj = 0.d0
         coeff_L2Proj(total_dofs-cbs+1:total_dofs) = cell_L2Proj(1:cbs)
         call writeVector("PTEMP_R", total_dofs, coeff_L2Proj)
-    elseif (option == "HHO_PROJ_MECA") then
-        ASSERT(ASTER_FALSE)
+    elseif (option == "HHO_PROJ3_MECA") then
 !
         call hhoMecaDofs(hhoCell, hhoData, cbs, fbs, total_dofs)
+        call elrefe_info(fami='RIGI', npg=npg)
+        call hhoQuad%initCell(hhoCell, npg)
+        call jevech("PQPTP_R", "L", vr=field)
+        call hhoL2ProjCellVec(hhoCell, hhoQuad, field, hhoData%cell_degree(), cell_L2Proj)
+!
+        coeff_L2Proj = 0.d0
+        coeff_L2Proj(total_dofs-cbs+1:total_dofs) = cell_L2Proj(1:cbs)
         call writeVector("PDEPL_R", total_dofs, coeff_L2Proj)
     else
         ASSERT(ASTER_FALSE)

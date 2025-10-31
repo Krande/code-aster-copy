@@ -111,7 +111,7 @@ LI1 = DEFI_LIST_REEL(
 LI2 = DEFI_LIST_REEL(DEBUT=0.019, INTERVALLE=_F(JUSQU_A=0.999, PAS=1.0e-2))
 
 # parametre article JLA
-alpha = 9.33427661  # premier coefficient de Van Genuchten [Pa]
+alpha = 9.33427661  # premier coefficient de Van Genuchten [-]
 beta = 0.38923339  # second coefficient de Van Genuchten [-]
 Ad = 10.378
 gamma0 = tension_superficielle(TREF)

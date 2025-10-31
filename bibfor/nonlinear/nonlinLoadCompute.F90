@@ -32,25 +32,25 @@ subroutine nonlinLoadCompute(mode, list_load, &
     implicit none
 !
 #include "asterf_types.h"
-#include "asterfort/assert.h"
-#include "asterfort/nmdebg.h"
-#include "asterfort/isfonc.h"
-#include "asterfort/nmchex.h"
-#include "asterfort/nmvcex.h"
-#include "asterfort/vedime.h"
 #include "asterfort/asasve.h"
 #include "asterfort/ascova.h"
-#include "asterfort/vedpme.h"
+#include "asterfort/assert.h"
 #include "asterfort/assvec.h"
-#include "asterfort/vecgme.h"
-#include "asterfort/vefpme.h"
-#include "asterfort/nmcvci.h"
-#include "asterfort/vechme.h"
-#include "asterfort/nmtime.h"
-#include "asterfort/nmsssv.h"
 #include "asterfort/assvss.h"
 #include "asterfort/infdbg.h"
+#include "asterfort/isfonc.h"
+#include "asterfort/nmchex.h"
+#include "asterfort/nmcvci.h"
+#include "asterfort/nmdebg.h"
+#include "asterfort/nmsssv.h"
+#include "asterfort/nmtime.h"
+#include "asterfort/nmvcex.h"
 #include "asterfort/utmess.h"
+#include "asterfort/vecgme.h"
+#include "asterfort/vechme.h"
+#include "asterfort/vedime.h"
+#include "asterfort/vedpme.h"
+#include "asterfort/vefpme.h"
 !
     character(len=4), intent(in) :: mode
     character(len=19), intent(in) :: list_load
@@ -133,7 +133,7 @@ subroutine nonlinLoadCompute(mode, list_load, &
         hhoField = hhoField_
 !
         if (hhoField%l_cine_f) then
-            call hhoDiriFuncCompute(model, hhoField, time_curr)
+            call hhoDiriFuncCompute(model(1:8), hhoField, time_curr)
         end if
     end if
 !

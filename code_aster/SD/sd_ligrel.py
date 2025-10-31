@@ -111,4 +111,4 @@ class sd_ligrel(AsBase):
             assert self.LGNS.lonmax >= nb_no_tard  # .LGNS est surdimensionné
             nbec = self.PRNS.lonmax / nb_no_tard
             assert self.PRNS.lonmax == nb_no_tard * nbec, (nbec, nb_no_tard)
-            assert nbec >= 1 and nbec < 10, nbec
+            assert nbec >= 1 and nbec < 12, nbec

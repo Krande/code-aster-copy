@@ -15,184 +15,111 @@
 ! You should have received a copy of the GNU General Public License
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
-
-subroutine epstmc(fami, ndim, instan, poum, kpg, &
-                  ksp, angl_naut, j_mater, option, &
-                  epsi_varc)
 !
+subroutine epstmc(fami, poum, kpg, ksp, ndim, &
+                  time, anglNaut, jvMaterCode, &
+                  indxVarcStrain, allVarcStrain, &
+                  epsiVarc_)
+!
+    use BehaviourStrain_module
+    use BehaviourStrain_type
     implicit none
 !
-#include "jeveux.h"
 #include "asterc/r8vide.h"
+#include "asterfort/ElasticityMaterial_type.h"
 #include "asterfort/get_elas_id.h"
-#include "asterfort/get_elas_para.h"
-#include "asterfort/calc_epth_elga.h"
-#include "asterfort/rcvalb.h"
-#include "asterfort/rcvarc.h"
+#include "asterfort/lteatt.h"
+#include "asterfort/matrot.h"
 #include "asterfort/utmess.h"
+#include "asterfort/utpslg.h"
+#include "jeveux.h"
 !
-!
-    character(len=*), intent(in) :: fami
-    integer(kind=8), intent(in) :: ndim
-    character(len=*), intent(in) :: poum
-    integer(kind=8), intent(in) :: kpg
-    integer(kind=8), intent(in) :: ksp
-    integer(kind=8), intent(in) :: j_mater
-    real(kind=8), intent(in) :: angl_naut(3)
-    character(len=16), intent(in) :: option
-    real(kind=8), intent(in) :: instan
-    real(kind=8), intent(out) :: epsi_varc(6)
+    character(len=*), intent(in) :: fami, poum
+    integer(kind=8), intent(in) :: kpg, ksp, ndim
+    real(kind=8), intent(in) :: time, anglNaut(3)
+    integer(kind=8), intent(in) :: jvMaterCode, indxVarcStrain
+    type(All_Varc_Strain), intent(inout) :: allVarcStrain
+    real(kind=8), optional, intent(out) :: epsiVarc_(6)
 !
 ! --------------------------------------------------------------------------------------------------
 !
-! Compute variable commands strains (themrics, drying, etc.)
+! Compute inelastic strains from external state variables
 !
 ! For isoparametric elements
 !
 ! --------------------------------------------------------------------------------------------------
 !
-! In  fami         : Gauss family for integration point rule
-! In  ndim         : dimension of space
-! In  poum         : parameters evaluation
-!                     '-' for previous temperature
-!                     '+' for current temperature
-!                     'T' for current and previous temperature
-! In  kpg          : current point gauss
-! In  ksp          : current "sous-point" gauss
-! In  j_mater      : coded material address
-! In  angl_naut    : nautical angles (for non-isotropic materials)
-! In  instan       : current time
-! In  option       : name of option to compute
-! Out epsi_varc    : command variables strains
+! In  fami             : Gauss family for integration point rule
+! In  poum             : '-'  '+' or 'T' (previous, current and both)
+! In  kpg              : current point gauss
+! In  ksp              : current "sous-point" gauss
+! In  time             : given time
+! In  jvMaterCode      : coded material address
+! In  indxVarcStrain   : index of external state variable
+! IO  allVarcStrain    : all external state variables for anelastic strains
+! Out epsiVarc         : anelastic strains from all external state variables
 !
 ! --------------------------------------------------------------------------------------------------
 !
-    integer(kind=8), parameter :: nbres = 3
-    integer(kind=8) :: icodre(nbres)
-    character(len=16) :: nomres(nbres)
-    real(kind=8) :: valres(nbres)
-!
-    integer(kind=8) :: nbv, elas_id, nbpar
-    real(kind=8) :: biot, e
-    character(len=8) :: nompar
-    character(len=32) :: phenom
-    real(kind=8) :: valpar, bendog, kdessi
-    real(kind=8) :: troisk, nu
-    real(kind=8) :: hydr, sech, sref, ptot
-    integer(kind=8) :: k, iret
-    character(len=16) :: elas_keyword
-    character(len=6), parameter :: epsa(6) = (/'EPSAXX', 'EPSAYY', 'EPSAZZ', &
-                                               'EPSAXY', 'EPSAXZ', 'EPSAYZ'/)
+    aster_logical, parameter :: lMetaLemaAni = ASTER_FALSE
+    aster_logical :: lTHM
+    integer(kind=8) :: elasID
+    character(len=16) :: elasKeyword
+    real(kind=8) :: epsiVarcLoca(6), epsiVarcLocaIn(6), epsiVarcLocaOut(6)
+    real(kind=8) :: pgl(3, 3)
 !
 ! --------------------------------------------------------------------------------------------------
 !
-    if (instan .eq. r8vide()) then
-        nbpar = 0
+    lTHM = lteatt('TYPMOD2', 'THM')
+
+! - Current time
+    allVarcStrain%time = time
+    if (time .eq. r8vide()) then
+        allVarcStrain%hasTime = ASTER_FALSE
     else
-        nbpar = 1
-        nompar = 'INST'
-        valpar = instan
+        allVarcStrain%hasTime = ASTER_TRUE
     end if
-    epsi_varc(1:6) = 0.d0
-    biot = 0.d0
-    bendog = 0.d0
-    kdessi = 0.d0
-!
-! - Get command variables
-!
-    call rcvarc(' ', 'HYDR', poum, fami, kpg, &
-                ksp, hydr, iret)
-    if (iret .eq. 1) hydr = 0.d0
-    call rcvarc(' ', 'SECH', poum, fami, kpg, &
-                ksp, sech, iret)
-    if (iret .eq. 1) sech = 0.d0
-    call rcvarc(' ', 'PTOT', poum, fami, kpg, &
-                ksp, ptot, iret)
-    if (iret .eq. 1) ptot = 0.d0
-    call rcvarc(' ', 'SECH', 'REF', fami, 1, &
-                1, sref, iret)
-    if (iret .eq. 1) sref = 0.d0
-!
-    if (option(11:14) .eq. 'HYDR') then
-!
-! ----- Hydric strains
-!
-        if (hydr .ne. 0.d0) then
-            call get_elas_id(j_mater, elas_id, elas_keyword)
-            nomres(1) = 'B_ENDOGE'
-            nbv = 1
-            call rcvalb(fami, kpg, ksp, poum, j_mater, &
-                        ' ', elas_keyword, nbpar, nompar, [valpar], &
-                        nbv, nomres, valres, icodre, 0)
-            if (icodre(1) .eq. 0) then
-                bendog = valres(1)
-                epsi_varc(1) = -bendog*hydr
-                epsi_varc(2) = -bendog*hydr
-                epsi_varc(3) = -bendog*hydr
-            else
-                call utmess('I', 'COMPOR5_12')
-            end if
-        end if
-    else if (option(11:14) .eq. 'PTOT') then
-!
-! ----- Fluid pressure strain
-!
-        if (ptot .ne. 0.d0) then
-            phenom = 'THM_DIFFU'
-            nomres(1) = 'BIOT_COEF'
-            nbv = 1
-            call rcvalb(fami, kpg, ksp, poum, j_mater, &
-                        ' ', phenom, nbpar, nompar, [valpar], &
-                        nbv, nomres, valres, icodre, 0)
-            if (icodre(1) .eq. 0) then
-                biot = valres(1)
-            else
-                biot = 0.d0
-                call utmess('I', 'COMPOR5_13')
-            end if
-            call get_elas_id(j_mater, elas_id, elas_keyword)
-            call get_elas_para(fami, j_mater, poum, kpg, ksp, &
-                               elas_id, elas_keyword, &
-                               time=instan, &
-                               e_=e, nu_=nu)
-            troisk = e/(1.d0-2.d0*nu)
-            epsi_varc(1) = biot/troisk*ptot
-            epsi_varc(2) = epsi_varc(1)
-            epsi_varc(3) = epsi_varc(1)
-        end if
-    else if (option(11:14) .eq. 'SECH') then
-!
-! ----- Drying strains
-!
-        call get_elas_id(j_mater, elas_id, elas_keyword)
-        nomres(1) = 'K_DESSIC'
-        nbv = 1
-        call rcvalb(fami, kpg, ksp, poum, j_mater, &
-                    ' ', elas_keyword, nbpar, nompar, [valpar], &
-                    nbv, nomres, valres, icodre, 0)
-        if (icodre(1) .eq. 0) then
-            kdessi = valres(1)
+
+! - Get type of elasticity (Isotropic/Orthotropic/Transverse isotropic)
+    call get_elas_id(jvMaterCode, elasID, elasKeyword)
+
+! - Detect external state variable
+    call strainDetectVarc(poum, lTHM, fami, kpg, ksp, &
+                          allVarcStrain, indxVarcStrain)
+
+! - Compute non-mechanical strains
+    call compVarcStrain(fami, poum, kpg, ksp, &
+                        jvMaterCode, lMetaLemaAni, &
+                        elasID, elasKeyword, &
+                        allVarcStrain)
+
+! - Return values if required
+    if (present(epsiVarc_)) then
+        epsiVarc_ = 0.d0
+        call getVarcStrain(poum, indxVarcStrain, allVarcStrain, 6, epsiVarcLoca)
+
+! ----- Non-isotropic elasticity: rotate strains
+        if (elasID .eq. ELAS_ISOT) then
+            epsiVarc_ = epsiVarcLoca
         else
-            kdessi = 0.d0
+            call matrot(anglNaut, pgl)
+            epsiVarcLocaIn(1) = epsiVarcLoca(1)
+            epsiVarcLocaIn(2) = epsiVarcLoca(4)
+            epsiVarcLocaIn(3) = epsiVarcLoca(2)
+            epsiVarcLocaIn(4) = epsiVarcLoca(5)
+            epsiVarcLocaIn(5) = epsiVarcLoca(6)
+            epsiVarcLocaIn(6) = epsiVarcLoca(3)
+            call utpslg(1, 3, pgl, epsiVarcLocaIn, epsiVarcLocaOut)
+            epsiVarc_(1) = epsiVarcLocaOut(1)
+            epsiVarc_(2) = epsiVarcLocaOut(3)
+            epsiVarc_(3) = epsiVarcLocaOut(6)
+            epsiVarc_(4) = epsiVarcLocaOut(2)
+            epsiVarc_(5) = epsiVarcLocaOut(4)
+            epsiVarc_(6) = epsiVarcLocaOut(5)
+            if (ndim .eq. 2) then
+                epsiVarc_(3) = epsiVarcLoca(3)
+            end if
         end if
-        epsi_varc(1) = -kdessi*(sref-sech)
-        epsi_varc(2) = -kdessi*(sref-sech)
-        epsi_varc(3) = -kdessi*(sref-sech)
-    else if (option(11:14) .eq. 'EPSA') then
-!
-! ----- User strains for command variables
-!
-        do k = 1, 6
-            call rcvarc(' ', epsa(k), poum, fami, kpg, &
-                        ksp, epsi_varc(k), iret)
-            if (iret .eq. 1) epsi_varc(k) = 0.d0
-        end do
-    else
-!
-! ----- Thermic strains
-!
-        call calc_epth_elga(fami, ndim, poum, kpg, ksp, &
-                            j_mater, angl_naut, epsi_varc)
     end if
 !
 end subroutine

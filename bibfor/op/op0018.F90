@@ -30,6 +30,7 @@ subroutine op0018()
 #include "asterfort/ajlipa.h"
 #include "asterfort/as_allocate.h"
 #include "asterfort/as_deallocate.h"
+#include "asterfort/asmpi_comm_vect.h"
 #include "asterfort/asmpi_info.h"
 #include "asterfort/assert.h"
 #include "asterfort/cetucr.h"
@@ -47,6 +48,7 @@ subroutine op0018()
 #include "asterfort/infniv.h"
 #include "asterfort/initel.h"
 #include "asterfort/int_to_char8.h"
+#include "asterfort/isParallelMesh.h"
 #include "asterfort/jecrec.h"
 #include "asterfort/jecroc.h"
 #include "asterfort/jedema.h"
@@ -91,9 +93,9 @@ subroutine op0018()
     character(len=24), parameter :: list_elem = '&&OP0018.LIST_ELEM'
     integer(kind=8), pointer :: p_list_elem(:) => null()
     integer(kind=8) :: nb_elem
-    aster_logical :: l_elem, l_grandeur_cara, lparallel_mesh
+    aster_logical :: l_elem, l_grandeur_cara, lParallelMesh
     aster_logical :: l_calc_rigi, l_need_neigh
-    aster_logical :: lCheckJacobian, lCheckFSINorms, lCheckPlaneity
+    aster_logical :: lCheckJacobian, lCheckFSINorms, lCheckPlaneity, lCheckFSIFormulation
     integer(kind=8) :: ielem, iaffe
     integer(kind=8) :: vali(4), ico, idx_modelisa
     integer(kind=8), pointer :: p_cata_dim(:) => null()
@@ -108,7 +110,7 @@ subroutine op0018()
     integer(kind=8), pointer :: p_model_maille(:) => null()
     character(len=8), pointer :: p_model_lgrf(:) => null()
     integer(kind=8), pointer :: p_model_nbno(:) => null()
-    integer(kind=8) :: lont_liel, nb_grel, nb_elem_affe, nb_mesh_elem
+    integer(kind=8) :: lont_liel, nb_grel, nb_elem_affe, nb_mesh_elem, nb_elem_affe_min
     integer(kind=8) :: nb_elem_naffe, nbproc, nbpart
     integer(kind=8) :: nb_affe, nb_affe_ss, nbocc, n1
     integer(kind=8) :: long_grel, nb_modelisa, nume_type_poi1, nume_grel
@@ -131,7 +133,7 @@ subroutine op0018()
 ! - Get mesh
     call getvid(' ', 'MAILLAGE', scal=mesh)
     call dismoi('PARALLEL_MESH', mesh, 'MAILLAGE', repk=repk)
-    lparallel_mesh = repk .eq. 'OUI'
+    lParallelMesh = repk .eq. 'OUI'
 
 ! - Check jacobians
     call getvtx(' ', 'VERI_JACOBIEN', scal=repk)
@@ -140,6 +142,10 @@ subroutine op0018()
 ! - Check FSI normals
     call getvtx(' ', 'VERI_NORM_IFS', scal=repk)
     lCheckFSINorms = repk .eq. 'OUI'
+
+! - Check FSI Formulation
+    call getvtx(' ', 'VERI_FORMULATION_IFS', scal=repk)
+    lCheckFSIFormulation = repk .eq. 'OUI'
 
 ! - Check planeity
     call getvtx(' ', 'VERI_PLAN', scal=repk)
@@ -212,7 +218,7 @@ subroutine op0018()
 ! --------- Get elements
             call jedetr(list_elem)
             call getelem(mesh, keywordfact, iaffe, ' ', list_elem, nb_elem)
-            ASSERT(lparallel_mesh .or. nb_elem .gt. 0)
+            ASSERT(lParallelMesh .or. nb_elem .gt. 0)
 ! --------- Check dimensions
             call dismoi('DIM_TOPO', phemod, 'PHEN_MODE', repi=dim_topo_curr)
             if (dim_topo_init .eq. -99) then
@@ -310,8 +316,16 @@ subroutine op0018()
             vali(3) = nb_elem_affe
             call utmess('I', 'MODELE1_4', sk=mesh, ni=3, vali=vali)
         end if
-        if (nb_elem_affe .eq. 0) then
-            call utmess('F', 'MODELE1_6', sk=mesh)
+        if (lParallelMesh) then
+            nb_elem_affe_min = nb_elem_affe
+            call asmpi_comm_vect('MPI_MIN', 'I', sci=nb_elem_affe_min)
+            if (nb_elem_affe_min .eq. 0) then
+                call utmess('F', 'MODELE1_6', sk=mesh)
+            end if
+        else
+            if (nb_elem_affe .eq. 0) then
+                call utmess('F', 'MODELE1_6', sk=mesh)
+            end if
         end if
 !
 ! ----- Create LIEL
@@ -399,7 +413,7 @@ subroutine op0018()
     if (nbproc .eq. 1) then
         kdis = 'CENTRALISE'
     end if
-    if (lparallel_mesh .and. kdis .ne. 'CENTRALISE') then
+    if (lParallelMesh .and. kdis .ne. 'CENTRALISE') then
         call utmess('F', 'MODELE1_99', nk=2, valk=[kdis, mesh])
     end if
     if (kdis .ne. 'CENTRALISE') then
@@ -435,7 +449,7 @@ subroutine op0018()
 !
 ! - Check model
 !
-    call modelCheck(model, lCheckJacobian, lCheckFSINorms, lCheckPlaneity)
+    call modelCheck(model, lCheckJacobian, lCheckFSINorms, lCheckPlaneity, lCheckFSIFormulation)
 !
 ! - Create grandeurs caracteristiques
 !

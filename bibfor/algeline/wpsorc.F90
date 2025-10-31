@@ -118,9 +118,8 @@ subroutine wpsorc(lmasse, lamor, lmatra, nbeq, nbvect, &
 #include "asterfort/wp2ayc.h"
 #include "asterfort/znaupd.h"
 #include "asterfort/zneupd.h"
-    integer(kind=8) :: lmasse, lmatra, nbeq, nbvect, nfreq, lonwl
-    integer(kind=8) :: ddlexc(*), ddllag(*), neqact, maxitr
-    integer(kind=8) :: ifm, niv, priram(8), nconv, lamor
+    integer(kind=8) :: lmasse, lmatra, nbeq, nbvect, nfreq, lonwl, ddlexc(*), ddllag(*), neqact
+    integer(kind=8) :: ifm, niv, priram(8), nconv, lamor, maxitr
     real(kind=8) :: tolsor, alpha, rwork(*)
     aster_logical :: selec(*), flage
     complex(kind=8) :: sigma, vect(nbeq, *), dsor(*), resid(*), workd(*), workl(*), vaux(*)
@@ -140,8 +139,8 @@ subroutine wpsorc(lmasse, lamor, lmatra, nbeq, nbvect, &
     character(len=1) :: bmat
     character(len=2) :: which
 !
-    integer(kind=8) :: logfil, ndigit, mgetv0, mnaupd, mnaup2, mnaitr
-    integer(kind=8) ::  mneigh, mnapps, mngets, mneupd
+    integer(kind=8) :: logfil, ndigit, mgetv0, mnaupd, mnaup2, mnaitr, mneigh, mnapps, mngets
+    integer(kind=8) :: mneupd
     common/debug/&
      &  logfil, ndigit, mgetv0,&
      &  mnaupd, mnaup2, mnaitr, mneigh, mnapps, mngets, mneupd
@@ -302,7 +301,7 @@ subroutine wpsorc(lmasse, lamor, lmatra, nbeq, nbvect, &
                 2*nbeq, sigma, workv, bmat, 2*nbeq, &
                 which, nfreq, tolsor, resid, nbvect, &
                 vauc, 2*nbeq, iparam, ipntr, workd, &
-                workl, lonwl, rwork, info)
+                workl, lonwl, rwork, info, 2*neqact)
 !
 !
 ! GESTION DES FLAGS D'ERREURS

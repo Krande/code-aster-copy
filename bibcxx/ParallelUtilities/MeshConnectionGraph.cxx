@@ -62,11 +62,10 @@ void MeshConnectionGraph::buildFromIncompleteMesh( const IncompleteMeshPtr &mesh
     int curProc = 0, minNodeId = allRanges[0];
     const auto connectEnd = reverseConnect.end();
     const auto size = allRanges[1] - allRanges[0];
-    std::vector< std::set< ASTERINTEGER > > foundConnections =
-        std::vector< std::set< ASTERINTEGER > >( size );
+    std::vector< VectorLong > foundConnections( size );
     VectorOfVectorsLong connections = VectorOfVectorsLong( nbProcs );
     CommGraph commGraph;
-    std::vector< std::set< ASTERINTEGER > > graph( allRanges[2 * rank + 1] - allRanges[2 * rank] );
+    std::vector< VectorLong > graph( allRanges[2 * rank + 1] - allRanges[2 * rank] );
     for ( int nodeId = 1; nodeId <= allRanges[allRanges.size() - 1]; ++nodeId ) {
         const auto &curIter = reverseConnect.find( nodeId - 1 );
         if ( curIter != connectEnd ) {
@@ -75,9 +74,9 @@ void MeshConnectionGraph::buildFromIncompleteMesh( const IncompleteMeshPtr &mesh
                 for ( const auto &nodeId2 : fastConnect[elemId] ) {
                     if ( nodeId2 != nodeId ) {
                         if ( curProc == rank ) {
-                            graph[nodeId - minNodeId - 1].insert( nodeId2 - 1 );
+                            graph[nodeId - minNodeId - 1].push_back( nodeId2 - 1 );
                         } else {
-                            foundConnections[nodeId - minNodeId - 1].insert( nodeId2 - 1 );
+                            foundConnections[nodeId - minNodeId - 1].push_back( nodeId2 - 1 );
                         }
                     }
                 }
@@ -86,7 +85,15 @@ void MeshConnectionGraph::buildFromIncompleteMesh( const IncompleteMeshPtr &mesh
         if ( nodeId + 1 > allRanges[2 * curProc + 1] ) {
             if ( rank != curProc ) {
                 int cmpt = 0;
-                for ( const auto &nodeList : foundConnections ) {
+                for ( auto &nodeList : foundConnections ) {
+                    sort( nodeList.begin(), nodeList.end() );
+
+                    // Group unique elements together
+                    auto it = unique( nodeList.begin(), nodeList.end() );
+
+                    // Erase duplicates
+                    nodeList.erase( it, nodeList.end() );
+
                     if ( nodeList.size() != 0 ) {
                         connections[curProc].push_back( cmpt );
                         connections[curProc].push_back( nodeList.size() );
@@ -105,12 +112,12 @@ void MeshConnectionGraph::buildFromIncompleteMesh( const IncompleteMeshPtr &mesh
                 minNodeId = allRanges[2 * curProc];
                 if ( curProc < nbProcs ) {
                     const auto size = allRanges[2 * curProc + 1] - allRanges[2 * curProc];
-                    foundConnections = std::vector< std::set< ASTERINTEGER > >( size );
+                    foundConnections = std::vector< VectorLong >( size );
                 }
             }
         }
     }
-    foundConnections = std::vector< std::set< ASTERINTEGER > >();
+    foundConnections = std::vector< VectorLong >();
 
     commGraph.synchronizeOverProcesses();
     for ( const auto [tag, proc] : commGraph ) {
@@ -149,10 +156,19 @@ void MeshConnectionGraph::buildFromIncompleteMesh( const IncompleteMeshPtr &mesh
             const auto size = ( *curIter );
             ++curIter;
             for ( int pos = 0; pos < size; ++pos ) {
-                graph[nodeId].insert( *curIter );
+                graph[nodeId].push_back( *curIter );
                 ++curIter;
             }
         }
+    }
+    for ( auto &curSet : graph ) {
+        sort( curSet.begin(), curSet.end() );
+
+        // Group unique elements together
+        auto it = unique( curSet.begin(), curSet.end() );
+
+        // Erase duplicates
+        curSet.erase( it, curSet.end() );
     }
     connections = VectorOfVectorsLong();
 
@@ -171,7 +187,7 @@ void MeshConnectionGraph::buildFromIncompleteMesh( const IncompleteMeshPtr &mesh
             _edges.push_back( nodeId );
             ++posInEdges;
         }
-        curSet = std::set< ASTERINTEGER >();
+        curSet = VectorLong();
     }
     _vertices[nbVert] = posInEdges;
     const int totNodeNb = allRanges[2 * nbProcs - 1];

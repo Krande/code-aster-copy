@@ -70,7 +70,7 @@ subroutine ordlrl(charge, lisrel, nomgd)
 ! --------- VARIABLES LOCALES ---------------------------
     character(len=24) :: valk(2)
     integer(kind=8) :: nmocl
-    parameter(nmocl=300)
+    parameter(nmocl=320)
     complex(kind=8) :: coproc, rapcoc, dcmplx
     character(len=4) :: typcoe
     character(len=8) :: nomnoe
@@ -125,7 +125,7 @@ subroutine ordlrl(charge, lisrel, nomgd)
         nomcmp(i) = zk8(inom-1+i)
     end do
     call dismoi('NB_EC', nomgd, 'GRANDEUR', repi=nbec)
-    ASSERT(nbec .le. 10)
+    ASSERT(nbec .le. 11)
     call jeveuo(ligrmo//'.PRNM', 'L', jprnm)
 !
 ! --- ACCES AUX COMPOSANTES DE LA LISTE_RELA

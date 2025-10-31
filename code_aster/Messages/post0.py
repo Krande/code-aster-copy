@@ -19,6 +19,10 @@
 
 from ..Utilities import _
 
+_nota_lign_coupe_axis = """MACR_LIGN_COUPE ne sait pas récupérer le repère dans lequel le champ
+fourni en entrée est exprimé et peut donc uniquement réaliser des changements de repère pour
+un champ défini initialement dans le repère GLOBAL"""
+
 cata_msg = {
     1: _(
         """
@@ -33,13 +37,6 @@ Valeurs incorrectes pour VECT_Y.
     3: _(
         """
 Valeurs incorrectes pour VECT_Y: X colinéaire à Y.
-"""
-    ),
-    4: _(
-        """
-Le vecteur Y n'est pas orthogonal à la ligne de coupe.
-Le vecteur Y a été orthonormalisé pour vous.
-VECT_Y=(%(r1)f,%(r2)f,%(r3)f)
 """
     ),
     5: _(
@@ -300,6 +297,27 @@ Plusieurs valeurs ont été détectées. On ne retient que la valeur la plus bas
         """
 Dans l'opérateur MACR_LIGN_COUPE, une seule valeur peut-être pour DISTANCE_ALARME.
 Plusieurs valeurs ont été détectées. On ne retient que la valeur la plus basse : %(r1)f
+"""
+    ),
+    55: _(
+        f"""
+Pour effectuer l'opération demandée, MACR_LIGN_COUPE a besoin de connaître le repère dans
+lequel le champ %(k1)s est défini.
+Merci de renseigner le mot clé REPERE_INIT.
+À noter que {_nota_lign_coupe_axis}.
+"""
+    ),
+    56: _(
+        f"""
+Le champ %(k1)s est un champ aux éléments.
+Vous avez demandé un changement de repère pour au moins une coupe, et vous avez indiqué que
+le champ en entrée est exprimé dans le repère %(k2)s.
+Actuellement, {_nota_lign_coupe_axis}.
+"""
+    ),
+    57: _(
+        """
+La modification de REPERE pour une coupe de type GROUP_MA ou GROUP_NO n'est pas implémentée.
 """
     ),
 }

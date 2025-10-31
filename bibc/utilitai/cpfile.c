@@ -1,5 +1,5 @@
 /* -------------------------------------------------------------------- */
-/* Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org             */
+/* Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org             */
 /* This file is part of code_aster.                                     */
 /*                                                                      */
 /* code_aster is free software: you can redistribute it and/or modify   */
@@ -27,18 +27,6 @@ void DEFSSS( CPFILE, cpfile, char *action, STRING_SIZE la, char *nom1, STRING_SI
     char *ncmd;
     long i, l, ldeb, num;
     int ier;
-#ifdef ASTER_PLATFORM_WINDOWS
-    num = _flushall();
-    ldeb = 5;
-    if ( *action == 'C' ) {
-        ncmd = "copy ";
-    } else if ( *action == 'M' ) {
-        ncmd = "move ";
-    } else {
-        ncmd = " ? ";
-        ldeb = 3;
-    }
-#else
     num = fflush( stderr );
     num = fflush( stdout );
     ldeb = 3;
@@ -50,7 +38,7 @@ void DEFSSS( CPFILE, cpfile, char *action, STRING_SIZE la, char *nom1, STRING_SI
         ncmd = " ? ";
         ldeb = 3;
     }
-#endif
+
     if ( lnom1 > 80 ) {
         lnom1 = 80;
     }
@@ -108,10 +96,6 @@ void DEFSSS( CPFILE, cpfile, char *action, STRING_SIZE la, char *nom1, STRING_SI
     if ( ier == -1 ) {
         perror( "\n<cpfile> code retour system" );
     }
-#ifdef ASTER_PLATFORM_WINDOWS
-    num = _flushall();
-#else
     num = fflush( stderr );
     num = fflush( stdout );
-#endif
 }

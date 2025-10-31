@@ -97,7 +97,7 @@ ALPH = DEFI_FONCTION(NOM_PARA="TEMP", VALE=(0.0, 1.0e-04, 500.0, 2.0e-04))
 
 # définition de l'isotherme de Leverett
 # via une formule pour calcul de référence
-alpha = 9.33427661  # premier coefficient de Van Genuchten [Pa]
+alpha = 9.33427661  # premier coefficient de Van Genuchten [-]
 beta = 0.38923339  # second coefficient de Van Genuchten [-]
 Ad = 10.160105601  # activation thermique de l'isotherme
 T0_Lev = 20

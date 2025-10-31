@@ -71,7 +71,7 @@ subroutine select_dof_2(listEqua_, tablEqua_, &
 !
 ! --------------------------------------------------------------------------------------------------
 !
-    integer(kind=8), parameter :: nbEcMax = 10
+    integer(kind=8), parameter :: nbEcMax = 11
     integer(kind=8) :: physDesc(nbEcMax)
     character(len=8) :: cmpName, mesh
     character(len=19) :: nume_equa, nume_equa_gene, fieldNode, numeEqul

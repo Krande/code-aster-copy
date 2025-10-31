@@ -21,8 +21,10 @@ from code_aster.Commands import *
 
 try:
     # Import du module de calcul symbolique Sympy
-    import sympy
+    from code_aster.Utilities import sympy
 
+    # access __version__ to check availability
+    sympy.__version__
     sympy_available = True
 except ImportError:
     sympy_available = False
@@ -38,7 +40,6 @@ NU = 0.0
 # ================================================================================================
 
 if sympy_available:
-
     from code_aster.MacroCommands.Contrib import HookeTensor, TensorModule
 
     X, Y, Z = sympy.symbols("X Y Z")
@@ -168,7 +169,6 @@ if sympy_available:
 
 # Si importation de sympy impossible
 else:
-
     # ================================================================================================
     # Definition des formules Aster
     # ================================================================================================

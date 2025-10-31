@@ -17,80 +17,72 @@
 ! --------------------------------------------------------------------
 !
 subroutine te0022(option, nomte)
+!
     implicit none
-    character(len=16) :: option, nomte
-!.......................................................................
 !
-!     BUT: CALCUL DES CONTRAINTES AUX POINTS DE GAUSS
-!          ELEMENTS ISOPARAMETRIQUES 2D et 3D
-!
-!          OPTION : 'SIEF_ELGA'
-!
-!     ENTREES  ---> OPTION : OPTION DE CALCUL
-!              ---> NOMTE  : NOM DU TYPE ELEMENT
-!.......................................................................
-!
-#include "jeveux.h"
 #include "asterc/r8vide.h"
+#include "asterfort/assert.h"
 #include "asterfort/elrefe_info.h"
+#include "asterfort/getElemOrientation.h"
 #include "asterfort/jevech.h"
 #include "asterfort/nbsigm.h"
-#include "asterfort/getElemOrientation.h"
 #include "asterfort/sigvmc.h"
+#include "jeveux.h"
 !
-    integer(kind=8) :: ndim, nno, nnos, npg, ipoids, ivf, idfde, jgano
-    integer(kind=8) :: i, icont, idepl, igeom, imate, nbsig
+    character(len=16), intent(in) :: option, nomte
 !
-    real(kind=8) :: sigma(162), angl_naut(3), instan, nharm
-    real(kind=8) :: zero
+! --------------------------------------------------------------------------------------------------
 !
-!-----------------------------------------------------------------------
+! Elementary computation
 !
-    call elrefe_info(fami='RIGI', ndim=ndim, nno=nno, nnos=nnos, npg=npg, &
-                     jpoids=ipoids, jvf=ivf, jdfde=idfde, jgano=jgano)
+! Elements: 3D*, C_PLAN*, D_PLAN*, AXIS*
 !
-! - NOMBRE DE CONTRAINTES ASSOCIE A L'ELEMENT
-!   -----------------------------------------
+! Options: SIEF_ELGA
+!
+! --------------------------------------------------------------------------------------------------
+!
+    real(kind=8), parameter :: nharm = 0.d0
+    integer(kind=8) :: ndim, nno, npg, nbsig, i
+    integer(kind=8) :: jvGaussWeight, jvBaseFunc, jvDBaseFunc
+    integer(kind=8) :: jvSigm, jvDisp, jvGeom, jvMater
+    real(kind=8) :: sigm(162), anglNaut(3), time
+!
+! --------------------------------------------------------------------------------------------------
+!
+    call elrefe_info(fami='RIGI', ndim=ndim, nno=nno, npg=npg, &
+                     jpoids=jvGaussWeight, jvf=jvBaseFunc, jdfde=jvDBaseFunc)
+!
     nbsig = nbsigm()
-!
-! - INITIALISATIONS :
-!   -----------------
-    zero = 0.0d0
-    instan = r8vide()
-    nharm = zero
-!
-    do i = 1, nbsig*npg
-        sigma(i) = zero
-    end do
-!
-! - RECUPERATION DES COORDONNEES DES CONNECTIVITES
-!   ----------------------------------------------
-    call jevech('PGEOMER', 'L', igeom)
-!
-! - RECUPERATION DU MATERIAU
-!   ------------------------
-    call jevech('PMATERC', 'L', imate)
-!
-! - RECUPERATION  DES DONNEEES RELATIVES AU REPERE D'ORTHOTROPIE
-!   ------------------------------------------------------------
-    call getElemOrientation(ndim, nno, igeom, angl_naut)
-!
-! ---- RECUPERATION DU CHAMP DE DEPLACEMENT SUR L'ELEMENT
-!      --------------------------------------------------
-    call jevech('PDEPLAR', 'L', idepl)
-!
+    sigm = 0.d0
+    ASSERT(nbsig .le. 6)
+    ASSERT(npg .le. 27)
+
+! - Current time
+    time = r8vide()
+
+! - Geometry
+    call jevech('PGEOMER', 'L', jvGeom)
+
+! - Material parameters
+    call jevech('PMATERC', 'L', jvMater)
+
+! - Orthotropic parameters
+    call getElemOrientation(ndim, nno, jvGeom, anglNaut)
+
+! - Current displacements (nodes)
+    call jevech('PDEPLAR', 'L', jvDisp)
+
+! - Compute mechanical stress (without effect of external state variables)
     call sigvmc('RIGI', nno, ndim, nbsig, npg, &
-                ipoids, ivf, idfde, zr(igeom), zr(idepl), &
-                instan, angl_naut, zi(imate), nharm, sigma)
-!
-!
-! ---- RECUPERATION ET AFFECTATION DU VECTEUR EN SORTIE
-! ---- AVEC LE VECTEUR DES CONTRAINTES AUX POINTS D'INTEGRATION
-!      --------------------------------------------------------
-    call jevech('PCONTRR', 'E', icont)
-!
+                jvGaussWeight, jvBaseFunc, jvDBaseFunc, &
+                zr(jvGeom), zr(jvDisp), &
+                time, anglNaut, zi(jvMater), nharm, &
+                sigm)
+
+! - Final copy of stress
+    call jevech('PCONTRR', 'E', jvSigm)
     do i = 1, nbsig*npg
-        zr(icont+i-1) = sigma(i)
+        zr(jvSigm+i-1) = sigm(i)
     end do
 !
 end subroutine

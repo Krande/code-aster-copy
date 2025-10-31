@@ -1,0 +1,40 @@
+import sympy
+from sympy import *
+
+init_printing(use_unicode=True)
+
+mu = sympy.Symbol("mu", positive=True, real=True)
+lamba = sympy.Symbol("lamba", positive=True, real=True)
+
+x = sympy.Symbol("x", real=True)
+y = sympy.Symbol("y", real=True)
+
+# deplacement a renseigner
+ux = 0.8 * x * x * y *y - x + 1
+uy = -y * y * y *y + 0.1 * x - 0.5 * y * x
+
+# calcul G
+G = simplify(sympy.Matrix([[diff(ux, x), diff(ux, y)], [diff(uy, x), diff(uy, y)]]))
+pprint(G)
+print("Gs =")
+Gs = simplify(0.5 * (G + G.transpose()))
+pprint(Gs)
+
+divu = Gs.trace()
+
+
+# calcul sigma
+sigma = trigsimp(simplify(2 * mu * Gs + lamba * divu * eye(2)))
+
+print("sigma =")
+pprint(sigma)
+
+
+fx = -simplify((diff(sigma[0, 0], x) + diff(sigma[0, 1], y)))
+fy = -simplify((diff(sigma[1, 0], x) + diff(sigma[1, 1], y)))
+
+# calcul force volumique
+f = trigsimp(sympy.Matrix([[fx], [fy]]))
+
+print("force f =")
+pprint(f)

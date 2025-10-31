@@ -27,14 +27,14 @@ module HHO_quadrature_module
     implicit none
 !
     private
-#include "asterf_debug.h"
+#include "jeveux.h"
 #include "asterf_types.h"
+#include "asterf_debug.h"
 #include "asterfort/assert.h"
 #include "asterfort/elraga.h"
 #include "asterfort/HHO_size_module.h"
-#include "asterfort/utmess.h"
 #include "asterfort/reereg.h"
-#include "jeveux.h"
+#include "asterfort/utmess.h"
 #include "MeshTypes_type.h"
 !
 ! --------------------------------------------------------------------------------------------------
@@ -353,7 +353,7 @@ contains
 !
         implicit none
 !
-        integer(kind=8), intent(in)                             :: typema, nbnode, ndim
+        integer(kind=8), intent(in)                     :: typema, nbnode, ndim
         real(kind=8), dimension(3, 4), intent(in)       :: coorno
         aster_logical, intent(in)                       :: param
         class(HHO_quadrature), intent(inout)            :: this
@@ -580,8 +580,8 @@ contains
 !
         real(kind=8) :: jaco, x, y, z
         real(kind=8), dimension(3) :: coorac
-        integer(kind=8), parameter :: max_order = 7
-        integer(kind=8), parameter :: max_pg = 31
+        integer(kind=8), parameter :: max_order = 10
+        integer(kind=8), parameter :: max_pg = 83
         character(len=8), dimension(0:max_order) :: rules
         integer(kind=8) :: dimp, nbpg, ipg
         real(kind=8) :: coorpg(max_pg*3), poidpg(max_pg)
@@ -589,7 +589,8 @@ contains
 ! ----- check order of integration
         call check_order(this%order, max_order)
 !
-        rules = (/'FPG1B', 'FPG1B', 'FPG5 ', 'FPG6 ', 'FPG10', 'FPG15', 'FPG24', 'FPG31'/)
+        rules = (/'FPG1B', 'FPG1B', 'FPG5 ', 'FPG6 ', 'FPG10', 'FPG15', 'FPG24', 'FPG31', &
+                  'FPG47', 'FPG62', 'FPG83'/)
 !
 !------ get quadrature points
         coorpg = 0.d0
@@ -634,8 +635,8 @@ contains
 !
         real(kind=8) :: jaco
         real(kind=8), dimension(3) :: coorac
-        integer(kind=8), parameter :: max_order = 6
-        integer(kind=8), parameter :: max_pg = 29
+        integer(kind=8), parameter :: max_order = 11
+        integer(kind=8), parameter :: max_pg = 168
         character(len=8), dimension(0:max_order) :: rules
         integer(kind=8) :: dimp, nbpg, ipg
         real(kind=8) :: coorpg(max_pg*3), poidpg(max_pg), x, y, z
@@ -643,7 +644,8 @@ contains
 ! ----- check order of integration
         call check_order(this%order, max_order)
 !
-        rules = (/'FPG1 ', 'FPG6B', 'FPG6B', 'FPG8 ', 'FPG21', 'FPG21', 'FPG29'/)
+        rules = (/'FPG1  ', 'FPG6B ', 'FPG6B ', 'FPG8  ', 'FPG21 ', 'FPG21 ', 'FPG29 ', &
+                  'FPG52 ', 'FPG95 ', 'FPG95 ', 'FPG168', 'FPG168'/)
 !
 !------ get quadrature points
         coorpg = 0.d0
@@ -691,10 +693,7 @@ contains
 ! --------------------------------------------------------------------------------------------------
 !
         integer(kind=8) :: ipg
-        real(kind=8) :: start, end
         aster_logical :: split_simpl, param_
-!
-        DEBUG_TIMER(start)
 !
         this%order = order
 !
@@ -751,9 +750,8 @@ contains
                 end do
             end if
         end if
-!
-        DEBUG_TIMER(end)
-        DEBUG_TIME("Compute hhoGetQuadCell", end-start)
+
+        ASSERT(this%nbQuadPoints <= MAX_QP)
 !
     end subroutine
 !
@@ -782,10 +780,7 @@ contains
 ! --------------------------------------------------------------------------------------------------
 !
         integer(kind=8) :: ipg
-        real(kind=8) :: start, end
         aster_logical :: split_simpl, param_
-!
-        DEBUG_TIMER(start)
 !
         this%order = order
 !
@@ -834,9 +829,8 @@ contains
                 end do
             end if
         end if
-!
-        DEBUG_TIMER(end)
-        DEBUG_TIME("Compute hhoGetQuadFace", end-start)
+
+        ASSERT(this%nbQuadPoints <= MAX_QP)
 !
     end subroutine
 !
@@ -875,6 +869,12 @@ contains
                 order = 5
             case (64)
                 order = 7
+            case (125)
+                order = 9
+            case (216)
+                order = 11
+            case (343)
+                order = 13
             case default
                 ASSERT(ASTER_FALSE)
             end select
@@ -890,6 +890,12 @@ contains
                 order = 5
             case (29)
                 order = 6
+            case (52)
+                order = 6
+            case (95)
+                order = 9
+            case (168)
+                order = 11
             case default
                 ASSERT(ASTER_FALSE)
             end select
@@ -909,6 +915,12 @@ contains
                 order = 6
             case (31)
                 order = 7
+            case (47)
+                order = 8
+            case (62)
+                order = 9
+            case (83)
+                order = 10
             case default
                 ASSERT(ASTER_FALSE)
             end select
@@ -924,8 +936,24 @@ contains
                 order = 4
             case (15)
                 order = 5
-            case (23)
+            case (24)
                 order = 6
+            case (35)
+                order = 7
+            case (46)
+                order = 8
+            case (59)
+                order = 9
+            case (74)
+                order = 10
+            case (94)
+                order = 11
+            case (117)
+                order = 12
+            case (144)
+                order = 13
+            case (204)
+                order = 14
             case default
                 ASSERT(ASTER_FALSE)
             end select
@@ -939,6 +967,12 @@ contains
                 order = 5
             case (16)
                 order = 7
+            case (25)
+                order = 9
+            case (36)
+                order = 11
+            case (49)
+                order = 13
             case default
                 ASSERT(ASTER_FALSE)
             end select
@@ -960,6 +994,12 @@ contains
                 order = 7
             case (16)
                 order = 8
+            case (19)
+                order = 9
+            case (25)
+                order = 10
+            case (28)
+                order = 11
             case default
                 ASSERT(ASTER_FALSE)
             end select
@@ -973,6 +1013,10 @@ contains
                 order = 5
             case (4)
                 order = 7
+            case (5)
+                order = 9
+            case (6)
+                order = 11
             case default
                 ASSERT(ASTER_FALSE)
             end select
@@ -1007,9 +1051,6 @@ contains
 ! --------------------------------------------------------------------------------------------------
         integer(kind=8) :: order, ipg
         aster_logical :: laxis
-        real(kind=8) :: start, end
-!
-        DEBUG_TIMER(start)
 !
         ASSERT(npg .le. MAX_QP)
         this%nbQuadPoints = npg
@@ -1030,9 +1071,6 @@ contains
                 end do
             end if
         end if
-!
-        DEBUG_TIMER(end)
-        DEBUG_TIME("Compute hhoinitCellFamiQ", end-start)
 !
     end subroutine
 !
@@ -1062,9 +1100,6 @@ contains
 !
         integer(kind=8) :: order
         aster_logical :: laxis
-        real(kind=8) :: start, end
-!
-        DEBUG_TIMER(start)
 !
         ASSERT(npg .le. MAX_QP)
         this%nbQuadPoints = npg
@@ -1077,9 +1112,6 @@ contains
         call hhoSelectOrder(hhoFace%typema, npg, order)
 !
         call hhoGetQuadFace(this, hhoFace, order, laxis, ASTER_FALSE)
-!
-        DEBUG_TIMER(end)
-        DEBUG_TIME("Compute hhoinitFaceFamiQ", end-start)
 !
     end subroutine
 !

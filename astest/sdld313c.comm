@@ -20,19 +20,25 @@
 #       ANALYSE MODALE, PROBLEME MODAL GENERALISE A MATRICE K COMPLEXE
 #
 #
-# OBJECTIF POUR LA BASE DE CAS-TESTS ASTER: MODAL GENERALISE COMPLEXE.
-# INTERCOMPARAISON DES METHODES DE SOUS-ESPACES (SORENSEN ET QZ).
-# CAS_TEST__:SDLD313C
+# OBJECTIF POUR LA BASE DE CAS-TESTS ASTER: GEP A MATRICE K COMPLEXE VIA UN
+# AMORTISSEMENT HYSTERETIQUE
+# INTERCOMPARAISON DES METHODES DE NUMPY, CALC_MODES+SORENSEN ET CALC_MODES+QZ.
+# EN VARIANT LES VALEURS D'AMORTISSEMENT ET L'OPERATEUR DE PRISE EN COMPTE DES
+# CONDITIONS LIMITES (AFFE_CHAR_MECA, CINE OU LES 2 A LA FOIS)
 #
+from math import pi
+
+import numpy as NP
+import numpy.linalg as LA
+
+from code_aster.Commands import *
+from code_aster import CA
 
 DEBUT(CODE="OUI", ERREUR=_F(ALARME="EXCEPTION"), DEBUG=_F(SDVERI="OUI"))
 
-#
+test = CA.TestCase()
 
 MASRES0 = LIRE_MAILLAGE(FORMAT="ASTER")
-
-#
-
 MASRES = CREA_MAILLAGE(
     MAILLAGE=MASRES0,
     CREA_POI1=(_F(NOM_GROUP_MA="B", GROUP_NO="B"), _F(NOM_GROUP_MA="C", GROUP_NO="C")),
@@ -46,223 +52,674 @@ MODELE = AFFE_MODELE(
     ),
 )
 
-#
-RIGMAS = AFFE_CARA_ELEM(
-    MODELE=MODELE,
-    DISCRET=(
-        _F(GROUP_MA="AMORT", CARA="K_T_D_L", VALE=(28000.0, 0.001, 0.001), AMOR_HYST=0.1),
-        _F(
-            GROUP_MA="AMORT",
-            CARA="M_T_L",
-            VALE=(
-                0.0,
-                0.0,
-                0.0,
-                0.0,
-                0.0,
-                0.0,
-                0.0,
-                0.0,
-                0.0,
-                0.0,
-                0.0,
-                0.0,
-                0.0,
-                0.0,
-                0.0,
-                0.0,
-                0.0,
-                0.0,
-                0.0,
-                0.0,
-                0.0,
+# VALE_REFE
+TEST0R = [6.46222526308711, 0.04249782015413385, 15.560069882271089, 0.007323637911698332]
+TEST1R = [6.46222526308711, -0.04249782015413385, 15.560069882271089, -0.007323637911698332]
+TEST2R = [11.940974109047797, 0.05084398132271347, 26.62894000595828, 0.6324390493148134]
+TEST3R = [6.445680930313876, 4.2677669529645575e-07, 15.561250320689263, 7.322330470336444e-08]
+TEST4R = [6.445680930312213, 0.0, 15.561250320689378, 0.0]
+# VALE_CALC
+TEST0 = [
+    6.462225263087111,
+    0.04249782015413383,
+    9.999999999999995,
+    16455.709787888514,
+    15.560069882271089,
+    0.0073236379116983375,
+    10.0,
+    95404.29021211146,
+]
+TEST1 = [
+    6.462225263087111,
+    -0.04249782015413383,
+    9.999999999999995,
+    16455.709787888514,
+    15.560069882271089,
+    -0.0073236379116983375,
+    10.0,
+    95404.29021211146,
+]
+TEST2 = [
+    11.940974109047799,
+    0.05084398132271348,
+    5.1042119171820115,
+    27416.413263780734,
+    26.628940005958274,
+    0.6324390493148134,
+    10.208423834364023,
+    54832.82652756147,
+]
+TEST3 = [
+    6.445680930313873,
+    4.267766953033847e-07,
+    10.000000000000004,
+    16402.02025355872,
+    15.56125032068925,
+    7.322330468935464e-08,
+    10.000000000000005,
+    95597.97974642734,
+]
+TEST4 = [
+    6.445680930312216,
+    0.0,
+    9.999999999999993,
+    16402.02025355333,
+    15.561250320689375,
+    0.0,
+    9.999999999999996,
+    95597.97974644664,
+]
+
+# Les valeurs d amortissements testees
+AMOR = [0.1, -0.1, 10.0, 1.0e-6, 0.0]
+# -------------------------------------------------------------------------------------
+#                         uniquement AFFE_CHAR_MECA ou AFFE_CHAR_MECA
+# -------------------------------------------------------------------------------------
+
+for i in range(10):
+    if i in (0, 5):
+        TEST = TEST0
+        TESTR = TEST0R
+        j = 0
+    elif i in (1, 6):
+        TEST = TEST1
+        TESTR = TEST1R
+        j = 1
+    elif i in (2, 7):
+        TEST = TEST2
+        TESTR = TEST2R
+        j = 2
+    elif i in (3, 8):
+        TEST = TEST3
+        TESTR = TEST3R
+        j = 3
+    elif i in (4, 9):
+        TEST = TEST4
+        TESTR = TEST4R
+        j = 4
+    amor = AMOR[j]
+    if i < 5:
+        print("uniquement AFFE_CHAR_MECA + Amortissement=", amor)
+    else:
+        print("uniquement AFFE_CHAR_CINE + Amortissement=", amor)
+    RIGMAS = AFFE_CARA_ELEM(
+        MODELE=MODELE,
+        DISCRET=(
+            _F(GROUP_MA="AMORT", CARA="K_T_D_L", VALE=(28000.0, 0.001, 0.001), AMOR_HYST=amor),
+            _F(
+                GROUP_MA="AMORT",
+                CARA="M_T_L",
+                AMOR_HYST=amor,
+                VALE=(
+                    0.0,
+                    0.0,
+                    0.0,
+                    0.0,
+                    0.0,
+                    0.0,
+                    0.0,
+                    0.0,
+                    0.0,
+                    0.0,
+                    0.0,
+                    0.0,
+                    0.0,
+                    0.0,
+                    0.0,
+                    0.0,
+                    0.0,
+                    0.0,
+                    0.0,
+                    0.0,
+                    0.0,
+                ),
             ),
-            AMOR_HYST=0.1,
-        ),
-        _F(GROUP_MA="K2", CARA="K_T_D_L", VALE=(28000.0, 0.001, 0.001), AMOR_HYST=0.1),
-        _F(
-            GROUP_MA="K2",
-            CARA="M_T_L",
-            VALE=(
-                0.0,
-                0.0,
-                0.0,
-                0.0,
-                0.0,
-                0.0,
-                0.0,
-                0.0,
-                0.0,
-                0.0,
-                0.0,
-                0.0,
-                0.0,
-                0.0,
-                0.0,
-                0.0,
-                0.0,
-                0.0,
-                0.0,
-                0.0,
-                0.0,
+            _F(GROUP_MA="K2", CARA="K_T_D_L", VALE=(28000.0, 0.001, 0.001)),
+            _F(
+                GROUP_MA="K2",
+                CARA="M_T_L",
+                VALE=(
+                    0.0,
+                    0.0,
+                    0.0,
+                    0.0,
+                    0.0,
+                    0.0,
+                    0.0,
+                    0.0,
+                    0.0,
+                    0.0,
+                    0.0,
+                    0.0,
+                    0.0,
+                    0.0,
+                    0.0,
+                    0.0,
+                    0.0,
+                    0.0,
+                    0.0,
+                    0.0,
+                    0.0,
+                ),
             ),
-            AMOR_HYST=0.1,
-        ),
-        _F(GROUP_MA="B", CARA="M_T_D_N", VALE=(10.0,)),
-        _F(GROUP_MA="C", CARA="M_T_D_N", VALE=(5.0,)),
-    ),
-)
-
-#
-CONDLIM = AFFE_CHAR_MECA(
-    MODELE=MODELE, DDL_IMPO=(_F(TOUT="OUI", DY=0.0, DZ=0.0), _F(GROUP_NO="A", DX=0.0))
-)
-
-RIGIELEM = CALC_MATR_ELEM(MODELE=MODELE, OPTION="RIGI_MECA", CARA_ELEM=RIGMAS, CHARGE=CONDLIM)
-
-MASSELEM = CALC_MATR_ELEM(MODELE=MODELE, OPTION="MASS_MECA", CARA_ELEM=RIGMAS, CHARGE=CONDLIM)
-
-RIGCMPLX = CALC_MATR_ELEM(
-    MODELE=MODELE, OPTION="RIGI_MECA_HYST", RIGI_MECA=RIGIELEM, CARA_ELEM=RIGMAS, CHARGE=CONDLIM
-)
-
-
-INCONNUS = NUME_DDL(MATR_RIGI=RIGCMPLX)
-
-MATRRIGI = ASSE_MATRICE(MATR_ELEM=RIGCMPLX, NUME_DDL=INCONNUS)
-
-MATRRIGR = ASSE_MATRICE(MATR_ELEM=RIGIELEM, NUME_DDL=INCONNUS)
-
-MATRMASS = ASSE_MATRICE(MATR_ELEM=MASSELEM, NUME_DDL=INCONNUS)
-
-
-# CALCUL DES FREQUENCES PROPRES
-# -------------------------------------------------
-#
-# AVEC SORENSEN
-MODE_SO = CALC_MODES(
-    INFO=1,
-    MATR_RIGI=MATRRIGI,
-    OPTION="CENTRE",
-    CALC_FREQ=_F(NMAX_FREQ=2, FREQ=10.0),
-    MATR_MASS=MATRMASS,
-    SOLVEUR=_F(METHODE="MUMPS", ELIM_LAGR="NON"),
-    SOLVEUR_MODAL=_F(METHODE="SORENSEN"),
-)
-
-
-TEST_RESU(
-    RESU=(
-        _F(
-            NUME_ORDRE=1,
-            PARA="FREQ",
-            REFERENCE="ANALYTIQUE",
-            RESULTAT=MODE_SO,
-            VALE_CALC=6.445680930,
-            VALE_REFE=6.4537000000000004,
-            CRITERE="RELATIF",
-            PRECISION=1.0e-2,
-        ),
-        _F(
-            NUME_ORDRE=2,
-            PARA="FREQ",
-            REFERENCE="ANALYTIQUE",
-            RESULTAT=MODE_SO,
-            VALE_CALC=15.561250321,
-            VALE_REFE=15.5806,
-            CRITERE="RELATIF",
-            PRECISION=1.0e-2,
+            _F(GROUP_MA="B", CARA="M_T_D_N", VALE=(10.0,)),
+            _F(GROUP_MA="C", CARA="M_T_D_N", VALE=(5.0,)),
         ),
     )
-)
+    # AFFE_CHAR_MECA
+    if i in (0, 1, 2, 3, 4):
+        CONDLIM = AFFE_CHAR_MECA(
+            MODELE=MODELE, DDL_IMPO=(_F(TOUT="OUI", DY=0.0, DZ=0.0), _F(GROUP_NO="A", DX=0.0))
+        )
+        RIGEL = CALC_MATR_ELEM(OPTION="RIGI_MECA", MODELE=MODELE, CARA_ELEM=RIGMAS, CHARGE=CONDLIM)
+        RIGEL = CALC_MATR_ELEM(
+            OPTION="RIGI_MECA_HYST",
+            MODELE=MODELE,
+            CARA_ELEM=RIGMAS,
+            CHARGE=CONDLIM,
+            RIGI_MECA=RIGEL,
+        )
+        MASEL = CALC_MATR_ELEM(OPTION="MASS_MECA", MODELE=MODELE, CARA_ELEM=RIGMAS, CHARGE=CONDLIM)
+        NU = NUME_DDL(MATR_RIGI=RIGEL)
+        RIGAS = ASSE_MATRICE(MATR_ELEM=RIGEL, NUME_DDL=NU)
+        MASAS = ASSE_MATRICE(MATR_ELEM=MASEL, NUME_DDL=NU)
+    # AFFE_CHAR_CINE
+    else:
+        CONDLIM = AFFE_CHAR_CINE(
+            MODELE=MODELE, MECA_IMPO=(_F(TOUT="OUI", DY=0.0, DZ=0.0), _F(GROUP_NO="A", DX=0.0))
+        )
+        RIGEL = CALC_MATR_ELEM(OPTION="RIGI_MECA", MODELE=MODELE, CARA_ELEM=RIGMAS)
+        RIGEL = CALC_MATR_ELEM(
+            OPTION="RIGI_MECA_HYST", MODELE=MODELE, CARA_ELEM=RIGMAS, RIGI_MECA=RIGEL
+        )
+        MASEL = CALC_MATR_ELEM(OPTION="MASS_MECA", MODELE=MODELE, CARA_ELEM=RIGMAS)
+        NU = NUME_DDL(MATR_RIGI=RIGEL)
+        RIGAS = ASSE_MATRICE(MATR_ELEM=RIGEL, NUME_DDL=NU, CHAR_CINE=CONDLIM)
+        MASAS = ASSE_MATRICE(MATR_ELEM=MASEL, NUME_DDL=NU, CHAR_CINE=CONDLIM)
 
-TEST_RESU(
-    RESU=(
-        _F(
-            NUME_ORDRE=1,
-            PARA="AMOR_REDUIT",
-            REFERENCE="ANALYTIQUE",
-            RESULTAT=MODE_SO,
-            VALE_CALC=0.050000000,
-            VALE_REFE=0.050000000000000003,
-            CRITERE="RELATIF",
-            PRECISION=1.0e-3,
-        ),
-        _F(
-            NUME_ORDRE=2,
-            PARA="AMOR_REDUIT",
-            REFERENCE="ANALYTIQUE",
-            RESULTAT=MODE_SO,
-            VALE_CALC=0.050000000,
-            VALE_REFE=0.050000000000000003,
-            CRITERE="RELATIF",
-            PRECISION=1.0e-3,
-        ),
+    # ---------------------------
+    print("\n# --- Calcul numpy pour VALE_REFE")
+    RIGP = 28000 * NP.array([[0.2 + amor * 0.1j, -0.2], [-0.1, 0.2]])
+    MASP = NP.array([[1.0, 0.0], [0.0, 1.0]])
+    MASPI = LA.inv(MASP)
+    print("numpy: matrices:", RIGP, MASP, MASPI)
+    # calcul des valeurs propres generalises par numpy sur K*inv(M)
+    frequence = LA.eigvals(NP.dot(RIGP, MASP))
+    print("numpy: valeurs propres initales:", frequence)
+    freqsqrt = NP.sort(NP.sqrt(frequence))
+    for j, o in enumerate(freqsqrt):
+        print("numpy: Freq. = ", NP.abs(o) / 2 / NP.pi, " Amor. = ", NP.imag(o) / NP.abs(o))
+        test.assertAlmostEqual(abs(o) / 2.0 / pi, TESTR[2 * j], msg="")
+        test.assertAlmostEqual(o.imag / abs(o), TESTR[2 * j + 1], msg="")
+    del RIGP, MASP, MASPI, frequence, freqsqrt
+
+    # CALCUL PAR CALC_MODES/SORENSEN
+    # ------------------------------
+    MODE_SO = CALC_MODES(
+        INFO=1,
+        OPTION="CENTRE",
+        SOLVEUR=_F(METHODE="MUMPS"),
+        CALC_FREQ=_F(FREQ=(15.0), NMAX_FREQ=2),
+        SOLVEUR_MODAL=_F(METHODE="SORENSEN", DIM_SOUS_ESPACE=2),
+        MATR_RIGI=RIGAS,
+        MATR_MASS=MASAS,
     )
-)
-
-# AVEC QZ
-MODE_QZ = CALC_MODES(
-    INFO=1,
-    MATR_RIGI=MATRRIGI,
-    OPTION="CENTRE",
-    CALC_FREQ=_F(NMAX_FREQ=2, FREQ=10.0),
-    MATR_MASS=MATRMASS,
-    SOLVEUR_MODAL=_F(TYPE_QZ="QZ_EQUI", METHODE="QZ"),
-)
-
-
-TEST_RESU(
-    RESU=(
-        _F(
-            NUME_ORDRE=1,
-            PARA="FREQ",
-            REFERENCE="ANALYTIQUE",
-            RESULTAT=MODE_QZ,
-            VALE_CALC=6.445680930,
-            VALE_REFE=6.4537000000000004,
-            CRITERE="RELATIF",
-            PRECISION=1.0e-2,
-        ),
-        _F(
-            NUME_ORDRE=2,
-            PARA="FREQ",
-            REFERENCE="ANALYTIQUE",
-            RESULTAT=MODE_QZ,
-            VALE_CALC=15.561250321,
-            VALE_REFE=15.5806,
-            CRITERE="RELATIF",
-            PRECISION=1.0e-2,
-        ),
+    # IMPR_RESU(RESU=_F(RESULTAT=MODE_SO),UNITE=6,FORMAT='RESULTAT')
+    # IMPR_CO(CONCEPT=_F(NOM=MODE_SO), ATTRIBUT="OUI", NIVEAU=2, UNITE=6)
+    TEST_RESU(
+        RESU=(
+            _F(
+                RESULTAT=MODE_SO,
+                NUME_MODE=1,
+                PARA="FREQ",
+                VALE_CALC=TEST[0],
+                VALE_REFE=TESTR[0],
+                REFERENCE="SOURCE_EXTERNE",
+            ),
+            _F(RESULTAT=MODE_SO, NUME_MODE=1, PARA="MASS_GENE", VALE_CALC=TEST[2]),
+            _F(RESULTAT=MODE_SO, NUME_MODE=1, PARA="RIGI_GENE", VALE_CALC=TEST[3]),
+            _F(
+                RESULTAT=MODE_SO,
+                NUME_MODE=2,
+                PARA="FREQ",
+                VALE_CALC=TEST[4],
+                VALE_REFE=TESTR[2],
+                REFERENCE="SOURCE_EXTERNE",
+            ),
+            _F(RESULTAT=MODE_SO, NUME_MODE=2, PARA="MASS_GENE", VALE_CALC=TEST[6]),
+            _F(RESULTAT=MODE_SO, NUME_MODE=2, PARA="RIGI_GENE", VALE_CALC=TEST[7]),
+        )
     )
-)
-
-TEST_RESU(
-    RESU=(
-        _F(
-            NUME_ORDRE=1,
-            PARA="AMOR_REDUIT",
-            REFERENCE="ANALYTIQUE",
-            RESULTAT=MODE_QZ,
-            VALE_CALC=0.050000000,
-            VALE_REFE=0.050000000000000003,
-            CRITERE="RELATIF",
-            PRECISION=1.0e-3,
-        ),
-        _F(
-            NUME_ORDRE=2,
-            PARA="AMOR_REDUIT",
-            REFERENCE="ANALYTIQUE",
-            RESULTAT=MODE_QZ,
-            VALE_CALC=0.050000000,
-            VALE_REFE=0.050000000000000003,
-            CRITERE="RELATIF",
-            PRECISION=1.0e-3,
-        ),
+    if i in (4, 9):
+        TEST_RESU(
+            RESU=(
+                _F(
+                    RESULTAT=MODE_SO,
+                    NUME_MODE=1,
+                    PARA="AMOR_REDUIT",
+                    VALE_CALC=TEST[1],
+                    VALE_REFE=TESTR[1],
+                    REFERENCE="SOURCE_EXTERNE",
+                    CRITERE="ABSOLU",
+                    VALE_ABS="OUI",
+                    # ORDRE_GRANDEUR=1.0e-16,
+                ),
+                _F(
+                    RESULTAT=MODE_SO,
+                    NUME_MODE=2,
+                    PARA="AMOR_REDUIT",
+                    VALE_CALC=TEST[5],
+                    VALE_REFE=TESTR[3],
+                    REFERENCE="SOURCE_EXTERNE",
+                    CRITERE="ABSOLU",
+                    VALE_ABS="OUI",
+                    # ORDRE_GRANDEUR=1.0e-16,
+                ),
+            )
+        )
+    else:
+        TEST_RESU(
+            RESU=(
+                _F(
+                    RESULTAT=MODE_SO,
+                    NUME_MODE=1,
+                    PARA="AMOR_REDUIT",
+                    VALE_CALC=TEST[1],
+                    VALE_REFE=TESTR[1],
+                    REFERENCE="SOURCE_EXTERNE",
+                ),
+                _F(
+                    RESULTAT=MODE_SO,
+                    NUME_MODE=2,
+                    PARA="AMOR_REDUIT",
+                    VALE_CALC=TEST[5],
+                    VALE_REFE=TESTR[3],
+                    REFERENCE="SOURCE_EXTERNE",
+                ),
+            )
+        )
+    # CALCUL PAR CALC_MODES/QZ
+    # ------------------------
+    MODE_QZ = CALC_MODES(
+        INFO=1,
+        OPTION="CENTRE",
+        SOLVEUR=_F(METHODE="MUMPS"),
+        CALC_FREQ=_F(FREQ=(15.0), NMAX_FREQ=2),
+        SOLVEUR_MODAL=_F(METHODE="QZ", TYPE_QZ="QZ_EQUI"),
+        MATR_RIGI=RIGAS,
+        MATR_MASS=MASAS,
     )
-)
-
+    TEST_RESU(
+        RESU=(
+            _F(
+                RESULTAT=MODE_QZ,
+                NUME_MODE=1,
+                PARA="FREQ",
+                VALE_CALC=TEST[0],
+                VALE_REFE=TESTR[0],
+                REFERENCE="SOURCE_EXTERNE",
+            ),
+            _F(RESULTAT=MODE_QZ, NUME_MODE=1, PARA="MASS_GENE", VALE_CALC=TEST[2]),
+            _F(RESULTAT=MODE_QZ, NUME_MODE=1, PARA="RIGI_GENE", VALE_CALC=TEST[3]),
+            _F(
+                RESULTAT=MODE_QZ,
+                NUME_MODE=2,
+                PARA="FREQ",
+                VALE_CALC=TEST[4],
+                VALE_REFE=TESTR[2],
+                REFERENCE="SOURCE_EXTERNE",
+            ),
+            _F(RESULTAT=MODE_QZ, NUME_MODE=2, PARA="MASS_GENE", VALE_CALC=TEST[6]),
+            _F(RESULTAT=MODE_QZ, NUME_MODE=2, PARA="RIGI_GENE", VALE_CALC=TEST[7]),
+        )
+    )
+    if i in (4, 9):
+        TEST_RESU(
+            RESU=(
+                _F(
+                    RESULTAT=MODE_SO,
+                    NUME_MODE=1,
+                    PARA="AMOR_REDUIT",
+                    VALE_CALC=TEST[1],
+                    VALE_REFE=TESTR[1],
+                    REFERENCE="SOURCE_EXTERNE",
+                    CRITERE="ABSOLU",
+                    VALE_ABS="OUI",
+                    # ORDRE_GRANDEUR=1.0e-16,
+                ),
+                _F(
+                    RESULTAT=MODE_SO,
+                    NUME_MODE=2,
+                    PARA="AMOR_REDUIT",
+                    VALE_CALC=TEST[5],
+                    VALE_REFE=TESTR[3],
+                    REFERENCE="SOURCE_EXTERNE",
+                    CRITERE="ABSOLU",
+                    VALE_ABS="OUI",
+                    # ORDRE_GRANDEUR=1.0e-16,
+                ),
+            )
+        )
+    else:
+        TEST_RESU(
+            RESU=(
+                _F(
+                    RESULTAT=MODE_SO,
+                    NUME_MODE=1,
+                    PARA="AMOR_REDUIT",
+                    VALE_CALC=TEST[1],
+                    VALE_REFE=TESTR[1],
+                    REFERENCE="SOURCE_EXTERNE",
+                ),
+                _F(
+                    RESULTAT=MODE_SO,
+                    NUME_MODE=2,
+                    PARA="AMOR_REDUIT",
+                    VALE_CALC=TEST[5],
+                    VALE_REFE=TESTR[3],
+                    REFERENCE="SOURCE_EXTERNE",
+                ),
+            )
+        )
+    #
+    DETRUIRE(NOM=(RIGMAS, CONDLIM, RIGEL, MASEL, NU, RIGAS, MASAS, MODE_SO, MODE_QZ))
 #
-#
+
+# -------------------------------------------------------------------------------------
+#                         AFFE_CHAR_MECA + AFFE_CHAR_MECA- de 2 façons differentes
+# -------------------------------------------------------------------------------------
+for i in range(10):
+    if i in (0, 5):
+        TEST = TEST0
+        TESTR = TEST0R
+        j = 0
+    elif i in (1, 6):
+        TEST = TEST1
+        TESTR = TEST1R
+        j = 1
+    elif i in (2, 7):
+        TEST = TEST2
+        TESTR = TEST2R
+        j = 2
+    elif i in (3, 8):
+        TEST = TEST3
+        TESTR = TEST3R
+        j = 3
+    elif i in (4, 9):
+        TEST = TEST4
+        TESTR = TEST4R
+        j = 4
+    amor = AMOR[j]
+    if i < 5:
+        print("uniquement AFFE_CHAR_MECA+CINE + Amortissement=", amor)
+    else:
+        print("uniquement AFFE_CHAR_CINE+MECA + Amortissement=", amor)
+    RIGMAS = AFFE_CARA_ELEM(
+        MODELE=MODELE,
+        DISCRET=(
+            _F(GROUP_MA="AMORT", CARA="K_T_D_L", VALE=(28000.0, 0.001, 0.001), AMOR_HYST=amor),
+            _F(
+                GROUP_MA="AMORT",
+                CARA="M_T_L",
+                AMOR_HYST=amor,
+                VALE=(
+                    0.0,
+                    0.0,
+                    0.0,
+                    0.0,
+                    0.0,
+                    0.0,
+                    0.0,
+                    0.0,
+                    0.0,
+                    0.0,
+                    0.0,
+                    0.0,
+                    0.0,
+                    0.0,
+                    0.0,
+                    0.0,
+                    0.0,
+                    0.0,
+                    0.0,
+                    0.0,
+                    0.0,
+                ),
+            ),
+            _F(GROUP_MA="K2", CARA="K_T_D_L", VALE=(28000.0, 0.001, 0.001)),
+            _F(
+                GROUP_MA="K2",
+                CARA="M_T_L",
+                VALE=(
+                    0.0,
+                    0.0,
+                    0.0,
+                    0.0,
+                    0.0,
+                    0.0,
+                    0.0,
+                    0.0,
+                    0.0,
+                    0.0,
+                    0.0,
+                    0.0,
+                    0.0,
+                    0.0,
+                    0.0,
+                    0.0,
+                    0.0,
+                    0.0,
+                    0.0,
+                    0.0,
+                    0.0,
+                ),
+            ),
+            _F(GROUP_MA="B", CARA="M_T_D_N", VALE=(10.0,)),
+            _F(GROUP_MA="C", CARA="M_T_D_N", VALE=(5.0,)),
+        ),
+    )
+    # AFFE_CHAR_MECA+CINE
+    if i in (0, 1, 2, 3, 4):
+        CONDLIM = AFFE_CHAR_MECA(MODELE=MODELE, DDL_IMPO=(_F(TOUT="OUI", DY=0.0, DZ=0.0),))
+        CONDLIM2 = AFFE_CHAR_CINE(MODELE=MODELE, MECA_IMPO=(_F(GROUP_NO="A", DX=0.0),))
+        RIGEL = CALC_MATR_ELEM(OPTION="RIGI_MECA", MODELE=MODELE, CARA_ELEM=RIGMAS, CHARGE=CONDLIM)
+        RIGEL = CALC_MATR_ELEM(
+            OPTION="RIGI_MECA_HYST",
+            MODELE=MODELE,
+            CARA_ELEM=RIGMAS,
+            CHARGE=CONDLIM,
+            RIGI_MECA=RIGEL,
+        )
+        MASEL = CALC_MATR_ELEM(OPTION="MASS_MECA", MODELE=MODELE, CARA_ELEM=RIGMAS, CHARGE=CONDLIM)
+        NU = NUME_DDL(MATR_RIGI=RIGEL)
+        RIGAS = ASSE_MATRICE(MATR_ELEM=RIGEL, NUME_DDL=NU, CHAR_CINE=CONDLIM2)
+        MASAS = ASSE_MATRICE(MATR_ELEM=MASEL, NUME_DDL=NU, CHAR_CINE=CONDLIM2)
+    # AFFE_CHAR_CINE+MECA
+    else:
+        CONDLIM = AFFE_CHAR_MECA(MODELE=MODELE, DDL_IMPO=(_F(GROUP_NO="A", DX=0.0),))
+        CONDLIM2 = AFFE_CHAR_CINE(MODELE=MODELE, MECA_IMPO=(_F(TOUT="OUI", DY=0.0, DZ=0.0),))
+        RIGEL = CALC_MATR_ELEM(OPTION="RIGI_MECA", MODELE=MODELE, CARA_ELEM=RIGMAS, CHARGE=CONDLIM)
+        RIGEL = CALC_MATR_ELEM(
+            OPTION="RIGI_MECA_HYST",
+            MODELE=MODELE,
+            CARA_ELEM=RIGMAS,
+            CHARGE=CONDLIM,
+            RIGI_MECA=RIGEL,
+        )
+        MASEL = CALC_MATR_ELEM(OPTION="MASS_MECA", MODELE=MODELE, CARA_ELEM=RIGMAS, CHARGE=CONDLIM)
+        NU = NUME_DDL(MATR_RIGI=RIGEL)
+        RIGAS = ASSE_MATRICE(MATR_ELEM=RIGEL, NUME_DDL=NU, CHAR_CINE=CONDLIM2)
+        MASAS = ASSE_MATRICE(MATR_ELEM=MASEL, NUME_DDL=NU, CHAR_CINE=CONDLIM2)
+
+    # CALCUL PAR CALC_MODES/SORENSEN
+    # ------------------------------
+    MODE_SO = CALC_MODES(
+        INFO=1,
+        OPTION="CENTRE",
+        SOLVEUR=_F(METHODE="MUMPS"),
+        CALC_FREQ=_F(FREQ=(15.0), NMAX_FREQ=2),
+        SOLVEUR_MODAL=_F(METHODE="SORENSEN", DIM_SOUS_ESPACE=2),
+        MATR_RIGI=RIGAS,
+        MATR_MASS=MASAS,
+    )
+    TEST_RESU(
+        RESU=(
+            _F(
+                RESULTAT=MODE_SO,
+                NUME_MODE=1,
+                PARA="FREQ",
+                VALE_CALC=TEST[0],
+                VALE_REFE=TESTR[0],
+                REFERENCE="SOURCE_EXTERNE",
+            ),
+            _F(RESULTAT=MODE_SO, NUME_MODE=1, PARA="MASS_GENE", VALE_CALC=TEST[2]),
+            _F(RESULTAT=MODE_SO, NUME_MODE=1, PARA="RIGI_GENE", VALE_CALC=TEST[3]),
+            _F(
+                RESULTAT=MODE_SO,
+                NUME_MODE=2,
+                PARA="FREQ",
+                VALE_CALC=TEST[4],
+                VALE_REFE=TESTR[2],
+                REFERENCE="SOURCE_EXTERNE",
+            ),
+            _F(RESULTAT=MODE_SO, NUME_MODE=2, PARA="MASS_GENE", VALE_CALC=TEST[6]),
+            _F(RESULTAT=MODE_SO, NUME_MODE=2, PARA="RIGI_GENE", VALE_CALC=TEST[7]),
+        )
+    )
+    if i in (4, 9):
+        TEST_RESU(
+            RESU=(
+                _F(
+                    RESULTAT=MODE_SO,
+                    NUME_MODE=1,
+                    PARA="AMOR_REDUIT",
+                    VALE_CALC=TEST[1],
+                    VALE_REFE=TESTR[1],
+                    REFERENCE="SOURCE_EXTERNE",
+                    CRITERE="ABSOLU",
+                    VALE_ABS="OUI",
+                    # ORDRE_GRANDEUR=1.0e-16,
+                ),
+                _F(
+                    RESULTAT=MODE_SO,
+                    NUME_MODE=2,
+                    PARA="AMOR_REDUIT",
+                    VALE_CALC=TEST[5],
+                    VALE_REFE=TESTR[3],
+                    REFERENCE="SOURCE_EXTERNE",
+                    CRITERE="ABSOLU",
+                    VALE_ABS="OUI",
+                    # ORDRE_GRANDEUR=1.0e-16,
+                ),
+            )
+        )
+    else:
+        TEST_RESU(
+            RESU=(
+                _F(
+                    RESULTAT=MODE_SO,
+                    NUME_MODE=1,
+                    PARA="AMOR_REDUIT",
+                    VALE_CALC=TEST[1],
+                    VALE_REFE=TESTR[1],
+                    REFERENCE="SOURCE_EXTERNE",
+                ),
+                _F(
+                    RESULTAT=MODE_SO,
+                    NUME_MODE=2,
+                    PARA="AMOR_REDUIT",
+                    VALE_CALC=TEST[5],
+                    VALE_REFE=TESTR[3],
+                    REFERENCE="SOURCE_EXTERNE",
+                ),
+            )
+        )
+    # CALCUL PAR CALC_MODES/QZ
+    # ------------------------
+    MODE_QZ = CALC_MODES(
+        INFO=1,
+        OPTION="CENTRE",
+        SOLVEUR=_F(METHODE="MUMPS"),
+        CALC_FREQ=_F(FREQ=(15.0), NMAX_FREQ=2),
+        SOLVEUR_MODAL=_F(METHODE="QZ", TYPE_QZ="QZ_EQUI"),
+        MATR_RIGI=RIGAS,
+        MATR_MASS=MASAS,
+    )
+    TEST_RESU(
+        RESU=(
+            _F(
+                RESULTAT=MODE_QZ,
+                NUME_MODE=1,
+                PARA="FREQ",
+                VALE_CALC=TEST[0],
+                VALE_REFE=TESTR[0],
+                REFERENCE="SOURCE_EXTERNE",
+            ),
+            _F(RESULTAT=MODE_QZ, NUME_MODE=1, PARA="MASS_GENE", VALE_CALC=TEST[2]),
+            _F(RESULTAT=MODE_QZ, NUME_MODE=1, PARA="RIGI_GENE", VALE_CALC=TEST[3]),
+            _F(
+                RESULTAT=MODE_QZ,
+                NUME_MODE=2,
+                PARA="FREQ",
+                VALE_CALC=TEST[4],
+                VALE_REFE=TESTR[2],
+                REFERENCE="SOURCE_EXTERNE",
+            ),
+            _F(RESULTAT=MODE_QZ, NUME_MODE=2, PARA="MASS_GENE", VALE_CALC=TEST[6]),
+            _F(RESULTAT=MODE_QZ, NUME_MODE=2, PARA="RIGI_GENE", VALE_CALC=TEST[7]),
+        )
+    )
+    if i in (4, 9):
+        TEST_RESU(
+            RESU=(
+                _F(
+                    RESULTAT=MODE_SO,
+                    NUME_MODE=1,
+                    PARA="AMOR_REDUIT",
+                    VALE_CALC=TEST[1],
+                    VALE_REFE=TESTR[1],
+                    REFERENCE="SOURCE_EXTERNE",
+                    CRITERE="ABSOLU",
+                    VALE_ABS="OUI",
+                    # ORDRE_GRANDEUR=1.0e-16,
+                ),
+                _F(
+                    RESULTAT=MODE_SO,
+                    NUME_MODE=2,
+                    PARA="AMOR_REDUIT",
+                    VALE_CALC=TEST[5],
+                    VALE_REFE=TESTR[3],
+                    REFERENCE="SOURCE_EXTERNE",
+                    CRITERE="ABSOLU",
+                    VALE_ABS="OUI",
+                    # ORDRE_GRANDEUR=1.0e-16,
+                ),
+            )
+        )
+    else:
+        TEST_RESU(
+            RESU=(
+                _F(
+                    RESULTAT=MODE_SO,
+                    NUME_MODE=1,
+                    PARA="AMOR_REDUIT",
+                    VALE_CALC=TEST[1],
+                    VALE_REFE=TESTR[1],
+                    REFERENCE="SOURCE_EXTERNE",
+                ),
+                _F(
+                    RESULTAT=MODE_SO,
+                    NUME_MODE=2,
+                    PARA="AMOR_REDUIT",
+                    VALE_CALC=TEST[5],
+                    VALE_REFE=TESTR[3],
+                    REFERENCE="SOURCE_EXTERNE",
+                ),
+            )
+        )
+
+    DETRUIRE(NOM=(RIGMAS, CONDLIM, RIGEL, MASEL, NU, RIGAS, MASAS, MODE_SO, MODE_QZ))
+
+test.printSummary()
+
 FIN()
-#

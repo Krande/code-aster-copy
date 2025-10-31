@@ -1,6 +1,6 @@
 /**
  * @section LICENCE
- *   Copyright (C) 1991 - 2024  EDF R&D                www.code-aster.org
+ *   Copyright (C) 1991 - 2025  EDF R&D                www.code-aster.org
  *
  *   This file is part of Code_Aster.
  *
@@ -282,12 +282,13 @@ FieldOnCellsRealPtr HHO::evaluateAtQuadraturePoints( const FieldOnNodesRealPtr h
 
     // Input fields
     calcul->addInputField( "PGEOMER", mesh->getCoordinates() );
-    calcul->addInputField( "PTEMPER", hho_field );
+    const std::string fname = model->isThermal() ? "PTEMPER" : "PDEPLAR";
+    calcul->addInputField( fname, hho_field );
     calcul->addHHOField( model->getHHOModel() );
 
     // Output fields
     auto hho_elga = std::make_shared< FieldOnCellsReal >( model );
-    const std::string pname = model->isThermal() ? "PTEMP_R" : "PDEPL_R";
+    const std::string pname = model->isThermal() ? "PTEMP_R" : "PDEPLGA";
     calcul->addOutputField( pname, hho_elga );
 
     // Compute

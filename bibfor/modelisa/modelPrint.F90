@@ -22,9 +22,12 @@ subroutine modelPrint(model)
 !
 #include "asterfort/as_allocate.h"
 #include "asterfort/as_deallocate.h"
+#include "asterfort/asmpi_comm_vect.h"
+#include "asterfort/asmpi_info.h"
 #include "asterfort/assert.h"
 #include "asterfort/dismoi.h"
 #include "asterfort/infniv.h"
+#include "asterfort/isParallelMesh.h"
 #include "asterfort/jeexin.h"
 #include "asterfort/jelira.h"
 #include "asterfort/jenonu.h"
@@ -55,7 +58,8 @@ subroutine modelPrint(model)
     integer(kind=8) :: nume_type_poi1, jc, j, k, ibegin, isharp
     integer(kind=8) :: nume_type_elem, nume_type_geom
     integer(kind=8) :: iexi, nb_type_elem
-    integer(kind=8) :: nb_elem_grel
+    integer(kind=8) :: nb_elem_grel, nb_elem_grel_loc, ielem
+    integer(kind=8) :: rang, nbproc
     character(len=8) :: type_geom, name_entity, tabmai(8)
     character(len=19) :: ligrel_model
     character(len=8) :: mesh
@@ -69,6 +73,10 @@ subroutine modelPrint(model)
     character(len=16), pointer :: p_modeli(:) => null()
     character(len=16), pointer :: p_formul(:) => null()
     character(len=16), pointer :: p_type_elem(:) => null()
+    integer(kind=8), pointer :: p_liel(:) => null()
+    integer(kind=8), pointer :: p_maex(:) => null()
+    aster_logical :: lPMesh
+    mpi_int :: mrank, msize
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -80,6 +88,13 @@ subroutine modelPrint(model)
 !
     call dismoi('NOM_MAILLA', model, 'MODELE', repk=mesh)
     call jeveuo(mesh//'.TYPMAIL', 'L', vi=p_mesh_typmai)
+    lPMesh = isParallelMesh(mesh)
+    if (lPMesh) then
+        call jeveuo(mesh//'.MAEX', 'L', vi=p_maex)
+        call asmpi_info(rank=mrank, size=msize)
+        rang = to_aster_int(mrank)
+        nbproc = to_aster_int(msize)
+    end if
 !
 ! - Access to catalogs
 !
@@ -119,13 +134,23 @@ subroutine modelPrint(model)
     do igrel = 1, nbgrel
         call jelira(jexnum(ligrel_model//'.LIEL', igrel), 'LONMAX', long_grel)
         nb_elem_grel = long_grel-1
+        nb_elem_grel_loc = nb_elem_grel
+        if (lPMesh) then
+            call jeveuo(jexnum(ligrel_model//'.LIEL', igrel), 'L', vi=p_liel)
+            nb_elem_grel_loc = 0
+            do ielem = 1, nb_elem_grel
+                if (p_maex(p_liel(ielem)) .eq. rang) then
+                    nb_elem_grel_loc = nb_elem_grel_loc+1
+                end if
+            end do
+        end if
         if (nb_elem_grel .ne. 0) then
             nume_type_elem = p_model_liel(numvec+nb_elem_grel)
             if (nume_type_elem .eq. 0) then
                 goto 10
             end if
             ASSERT(nume_type_elem .gt. 0 .and. nume_type_elem .le. nb_type_elem)
-            p_nb_elem(nume_type_elem) = p_nb_elem(nume_type_elem)+nb_elem_grel
+            p_nb_elem(nume_type_elem) = p_nb_elem(nume_type_elem)+nb_elem_grel_loc
             if (p_modeli(nume_type_elem) .eq. ' ') then
                 call jenuno(jexnum('&CATA.TE.NOMTE', nume_type_elem), type_elem)
                 if (type_elem .eq. 'MECA_HEXS8') then
@@ -174,6 +199,9 @@ subroutine modelPrint(model)
 !
 ! - Each type: printing
 !
+    if (lPMesh) then
+        call asmpi_comm_vect('MPI_SUM', 'I', nb_type_elem, vi=p_nb_elem)
+    end if
     do igrel = 1, nb_type_elem
         nb_elem_grel = p_nb_elem(igrel)
         if (nb_elem_grel .ne. 0) then

@@ -20,7 +20,7 @@ subroutine vpqzla(typeqz, qrn, iqrn, lqrn, qrar, &
                   qrai, qrba, qrvl, lvec, kqrn, &
                   lvalpr, nconv, omecor, ktyp, kqrnr, &
                   neqact, ilscal, irscal, optiof, omemin, &
-                  omemax, omeshi, ddlexc, nfreq, lmasse, &
+                  omemax, omeshi, ddlexc, dlagr, nfreq, lmasse, &
                   lraide, lamor, numedd, sigma, icscal, &
                   ivscal, iiscal, bwork, flage)
 !     SUBROUTINE ASTER ORCHESTRANT LA METHODE QZ (VERSION LAPACK).
@@ -68,6 +68,7 @@ subroutine vpqzla(typeqz, qrn, iqrn, lqrn, qrar, &
 ! IN  OMEMIN/OMEMAX: R8 : FREQS MIN ET MAX DE LA BANDE RECHERCHEE
 ! IN  OMESHI : R8 : VALEUR  RETENUE DU SHIFT PAR VPFOPR EN GENE REEL
 ! IN  DDLEXC : IS : DDLEXC(1..QRN) VECTEUR POSITION DES DDLS BLOQUES.
+! IN  DLAGR  : IS : POSITION DES DDL DE LAGRANGE
 ! IN  NFREQ  : IS : NBRE DE MODES DEMANDES SI OPTIOF=CENTRE OU
 !                   PLUS_PETITE
 ! IN  LMASSE : IS : DESCRIPTEUR DE LA MATRICE DE MASSE M (R)
@@ -125,7 +126,7 @@ subroutine vpqzla(typeqz, qrn, iqrn, lqrn, qrar, &
 !
     integer(kind=8) :: qrn, iqrn, lqrn, qrar, qrai, icscal, ivscal, iiscal, qrba
     integer(kind=8) :: qrvl, lvec, kqrn, lvalpr, nconv, kqrnr, neqact, ilscal, irscal
-    integer(kind=8) :: ddlexc(*), nfreq, lmasse, lraide, lamor
+    integer(kind=8) :: ddlexc(*), dlagr(*), nfreq, lmasse, lraide, lamor
     character(len=1) :: ktyp, kmsg
     character(len=16) :: typeqz, optiof
     character(len=19) :: numedd
@@ -137,12 +138,12 @@ subroutine vpqzla(typeqz, qrn, iqrn, lqrn, qrar, &
 !-----------------------------------------------------------------------
 ! DECLARATION VARIABLES LOCALES
 !
-    integer(kind=8) :: i, j, decal, ideb, ifin, qrlwo, qrlwor, kqrn2, iauxh, vali(5), ifm, niv, iret
-    integer(kind=8) :: ivalr
+    integer(kind=8) :: i, j, decal, ideb, ifin, qrlwo, qrlwor, kqrn2, iauxh, vali(5), ifm, niv
+    integer(kind=8) :: ivalr, iret
     integer(kind=8) :: ivalm, ihcol, ivp1, ivp2, ivala, j2, iauxh2, qrns2, lvec2, lvec3, lvec4
-    integer(kind=8) :: imult, typlin, iaux1, iaux2, iaux3, ivala1, ivalr1, ivalm1, lvecn, jm1, iauxh1, im1
-    integer(kind=8) :: j2m1, iaux21, ics1
-    integer(kind=8) :: ldvl
+    integer(kind=8) :: imult, typlin, iaux1, iaux2, iaux3, ivala1, ivalr1, ivalm1, lvecn, jm1
+    integer(kind=8) :: j2m1, iaux21, ics1, im1, iauxh1
+    integer(kind=8) :: ldvl, ibloq, ilagr, iercon
     integer(kind=4) :: qrinfo, ilo, ihi
     real(kind=8) :: abnrm, bbnrm, baux, rauxi, aaux, valr(4), raux, anorm, bnorm, prec2, vpinf
     real(kind=8) :: prec, vpmax, vpcour, alpha, prec3, run, rzero, rauxr, rauxm, cnorm, caux
@@ -152,8 +153,9 @@ subroutine vpqzla(typeqz, qrn, iqrn, lqrn, qrar, &
     complex(kind=8) :: cauxr1
     character(len=1) :: kbal, ksens, valk
     character(len=24) :: nomrai, nommas, nomamo
-    aster_logical :: lkr, ltest, lc, ldebug, lnsa, lnsr, lnsm, lqze
+    aster_logical :: lkr, ltest, lc, ldebug, lnsa, lnsr, lnsm, lqze, lcine
     integer(kind=8), pointer :: smdi(:) => null()
+    integer(kind=8), pointer :: ccid(:) => null()
     blas_int :: b_incx, b_incy, b_n
     blas_int :: b_lda, b_ldb, b_ldvl, b_ldvr, b_lwork
     blas_int :: b_itype
@@ -229,6 +231,9 @@ subroutine vpqzla(typeqz, qrn, iqrn, lqrn, qrar, &
     end if
     if (zi(lraide+4) .eq. 0) lnsr = .true.
     if (zi(lmasse+4) .eq. 0) lnsm = .true.
+    ! prise en compte du nouveau traitements pour affe_char_cine sur
+    ! ddls physiques. SI QEP, uniquement typlin=2
+    lcine = .true.
 !
 !--------------------------------------------------
 !--------------------------------------------------
@@ -275,6 +280,30 @@ subroutine vpqzla(typeqz, qrn, iqrn, lqrn, qrar, &
                 end do
                 ideb = ifin+1
             end do
+!Traitement supplementaire pour prendre en compte les blocages via
+! AFFE_CHAR_CINE: on annule ligne/colonne des ddls concernes sauf
+! le terme diagonal de K
+            if (lcine) then
+                call jeexin(nommas(1:19)//'.CCID', iercon)
+                if (iercon .ne. 0) then
+                    call jeveuo(nommas(1:19)//'.CCID', 'L', vi=ccid)
+                    do i = 1, qrn
+                        ibloq = ccid(i)
+                        ilagr = dlagr(i)
+!-- blocage sur ddl physique
+                        if ((ibloq .eq. 1) .and. (ilagr .eq. 1)) then
+                            do j = 1, qrn
+                                zr(iqrn+(j-1)*qrn+i-1) = rzero
+                                zr(lqrn+(j-1)*qrn+i-1) = rzero
+                                zr(iqrn+(i-1)*qrn+j-1) = rzero
+                                zr(lqrn+(i-1)*qrn+j-1) = rzero
+                            end do
+                            zr(iqrn+(i-1)*qrn+i-1) = run
+                            zr(lqrn+(i-1)*qrn+i-1) = rzero
+                        end if
+                    end do
+                end if
+            end if
         else
 ! ---- MATRICES K COMPLEXE ET M REELLE OU K/M NON SYMETRIQUES
             ideb = 1
@@ -314,6 +343,30 @@ subroutine vpqzla(typeqz, qrn, iqrn, lqrn, qrar, &
                 end do
                 ideb = ifin+1
             end do
+!Traitement supplementaire pour prendre en compte les blocages via
+! AFFE_CHAR_CINE: on annule ligne/colonne des ddls concernes sauf
+! le terme diagonal de K
+            if (lcine) then
+                call jeexin(nommas(1:19)//'.CCID', iercon)
+                if (iercon .ne. 0) then
+                    call jeveuo(nommas(1:19)//'.CCID', 'L', vi=ccid)
+                    do i = 1, qrn
+                        ibloq = ccid(i)
+                        ilagr = dlagr(i)
+!-- blocage sur ddl physique
+                        if ((ibloq .eq. 1) .and. (ilagr .eq. 1)) then
+                            do j = 1, qrn
+                                zc(iqrn+(j-1)*qrn+i-1) = czero
+                                zc(lqrn+(j-1)*qrn+i-1) = czero
+                                zc(iqrn+(i-1)*qrn+j-1) = czero
+                                zc(lqrn+(i-1)*qrn+j-1) = czero
+                            end do
+                            zc(iqrn+(i-1)*qrn+i-1) = cun
+                            zc(lqrn+(i-1)*qrn+i-1) = czero
+                        end if
+                    end do
+                end if
+            end if
         end if
     else
 ! ---- PB MODAL QUADRATIQUE
@@ -384,6 +437,7 @@ subroutine vpqzla(typeqz, qrn, iqrn, lqrn, qrar, &
 ! ---- ERREUR DONNEES OU CALCUL
 !        IF (ANORM*BNORM*CNORM.EQ.0.D0) ASSERT(.FALSE.)
 ! ---- COEF MULTIPLICATEUR (EQUILIBRAGE) POUR LA LINEARISATION PB QUAD
+! ---- ON COMPTE QUAND MEME LES CONTRIBUTIONS DES EVENTUELS AFFE_CHAR_CINE
         coefn = (anorm+bnorm+cnorm)/(3*qrns2)
 !
         if (niv .ge. 2) then
@@ -476,6 +530,39 @@ subroutine vpqzla(typeqz, qrn, iqrn, lqrn, qrar, &
             end do
             ideb = ifin+1
         end do
+!Traitement supplementaire pour prendre en compte les blocages via
+! AFFE_CHAR_CINE: on annule ligne/colonne des ddls concernes sauf
+! le terme diagonal de K
+        if (lcine) then
+            call jeexin(nommas(1:19)//'.CCID', iercon)
+            if (iercon .ne. 0) then
+                ASSERT(typlin .eq. 2)
+                call jeveuo(nommas(1:19)//'.CCID', 'L', vi=ccid)
+                do i = 1, qrns2
+                    ibloq = ccid(i)
+                    ilagr = dlagr(i)
+                    im1 = i-1
+!-- blocage sur ddl physique
+                    if ((ibloq .eq. 1) .and. (ilagr .eq. 1)) then
+                        do j = 1, qrns2
+                            jm1 = j-1
+! MATRICE COMPAGNON A - PARTIE K
+                            zc(iqrn+jm1*qrn+im1) = czero
+                            zc(iqrn+im1*qrn+jm1) = czero
+! MATRICE COMPAGNON B - PARTIE C
+                            zc(lqrn+jm1*qrn+im1) = czero
+                            zc(lqrn+im1*qrn+jm1) = czero
+! MATRICE COMPAGNON B - PARTIE M
+                            zc(lqrn+qrn*(qrns2+jm1)+im1) = czero
+                            zc(lqrn+qrn*(qrns2+im1)+jm1) = czero
+                        end do
+                        zc(iqrn+im1*qrn+im1) = cun*coefn
+                        zc(lqrn+im1*qrn+im1) = czero
+                        zc(lqrn+qrn*(qrns2+im1)+im1) = czero
+                    end if
+                end do
+            end if
+        end if
     end if
 !
 ! ---- TESTS UNITAIRES SI LTEST=.TRUE.

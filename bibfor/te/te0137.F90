@@ -44,13 +44,13 @@ subroutine te0137(option, nomte)
     integer(kind=8) :: nbres
     parameter(nbres=3)
     character(len=8) :: nompar(nbres), elrefe, alias8
-    real(kind=8) :: valpar(nbres), poids, r, z, nx, ny, tpg
-    real(kind=8) :: coenp1, sigma, epsil, tz0
+    real(kind=8) :: valpar(nbres), poids, r, z, nx, ny, tpg, tpg_b
+    real(kind=8) :: coenp1, sigmEner, epsil, tz0, theta, delta_t
     real(kind=8) :: coorse(18), vectt(9)
     integer(kind=8) :: nno, nnos, ndim, kp, npg, ipoids, ivf, idfde, jgano, igeom
-    integer(kind=8) :: itemps, iveres, i, j, l, li, iech, iray, itemp, icode, ier
+    integer(kind=8) :: itemps, iveres, i, j, l, li, iech, iray, itemp, icode, ier, btemp
     integer(kind=8) :: nnop2, c(6, 9), ise, nse, ibid
-    aster_logical :: laxi
+    aster_logical :: laxi, l_stat
 !
 !
     call elref1(elrefe)
@@ -76,6 +76,7 @@ subroutine te0137(option, nomte)
     call jevech('PGEOMER', 'L', igeom)
     call jevech('PINSTR', 'L', itemps)
     call jevech('PTEMPEI', 'L', itemp)
+    call jevech('PTEMPER', 'L', btemp)
     call jevech('PRESIDU', 'E', iveres)
 !
     call connec(nomte, nse, nnop2, c)
@@ -86,6 +87,15 @@ subroutine te0137(option, nomte)
 !
 ! BOUCLE SUR LES SOUS-ELEMENTS
 !
+    l_stat = .false.
+    theta = zr(itemps+2)
+    delta_t = zr(itemps+1)
+    ! FIXME: find a better way to define l_stat. Ideally it should be theta = -1
+    ! See issue 34998
+    if ((theta .eq. 1.d0) .and. (delta_t .lt. 0.d0)) then
+        l_stat = .true.
+    end if
+
     do ise = 1, nse
 !
         do i = 1, nno
@@ -100,11 +110,13 @@ subroutine te0137(option, nomte)
             r = 0.d0
             z = 0.d0
             tpg = 0.d0
+            tpg_b = 0.d0
             do i = 1, nno
                 l = (kp-1)*nno+i
                 r = r+coorse(2*(i-1)+1)*zr(ivf+l-1)
                 z = z+coorse(2*(i-1)+2)*zr(ivf+l-1)
                 tpg = tpg+zr(itemp-1+c(ise, i))*zr(ivf+l-1)
+                if (l_stat) tpg_b = tpg_b+zr(btemp-1+c(ise, i))*zr(ivf+l-1)
             end do
             if (laxi) poids = poids*r
             valpar(1) = r
@@ -123,15 +135,19 @@ subroutine te0137(option, nomte)
                 end do
             else if (option(11:14) .eq. 'RAYO') then
                 call fointe('A', zk8(iray), 4, nompar, valpar, &
-                            sigma, ier)
+                            sigmEner, ier)
                 ASSERT(ier .eq. 0)
                 call fointe('A', zk8(iray+1), 4, nompar, valpar, &
                             epsil, ier)
                 ASSERT(ier .eq. 0)
                 do i = 1, nno
                     li = ivf+(kp-1)*nno+i-1
-                    vectt(c(ise, i)) = vectt(c(ise, i))+poids*zr(li)*sigma*epsil*(tpg+tz0 &
-                                                                                  )**4
+                    vectt(c(ise, i)) = vectt(c(ise, i)) &
+                                       +poids*zr(li)*sigmEner*epsil*(tpg+tz0)**4
+                    if (l_stat) then
+                        vectt(c(ise, i)) = vectt(c(ise, i)) &
+                                           -poids*zr(li)*sigmEner*epsil*(tpg_b+tz0)**4
+                    end if
                 end do
             end if
 !

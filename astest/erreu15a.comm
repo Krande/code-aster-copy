@@ -1,0 +1,41 @@
+# coding=utf-8
+# --------------------------------------------------------------------
+# Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
+# This file is part of code_aster.
+#
+# code_aster is free software: you can redistribute it and/or modify
+# it under the terms of the GNU General Public License as published by
+# the Free Software Foundation, either version 3 of the License, or
+# (at your option) any later version.
+#
+# code_aster is distributed in the hope that it will be useful,
+# but WITHOUT ANY WARRANTY; without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+# GNU General Public License for more details.
+#
+# You should have received a copy of the GNU General Public License
+# along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
+# --------------------------------------------------------------------
+
+from code_aster.Commands import *
+from code_aster import CA
+
+DEBUT(CODE="OUI", ERREUR=_F(ALARME="EXCEPTION", ERREUR_F="EXCEPTION"), DEBUG=_F(SDVERI="OUI"))
+
+test = CA.TestCase()
+
+MAIL0 = LIRE_MAILLAGE(FORMAT="MED")
+
+MAIL = CREA_MAILLAGE(MAILLAGE=MAIL0, MODI_HHO=_F(TOUT="OUI"))
+
+
+# 1) Test that HHO has no skin element only
+# ----------------------------------------------------------------------------------------------
+try:
+    MOD = AFFE_MODELE(
+        MAILLAGE=MAIL, AFFE=_F(TOUT="OUI", PHENOMENE="MECANIQUE", MODELISATION="3D_HHO")
+    )
+except CA.AsterError as exc:
+    test.assertEqual(exc.id_message, "MODELE1_65")
+
+FIN()

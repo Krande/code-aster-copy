@@ -294,12 +294,17 @@ CREA_CHAMP = OPER(
             b_type_abs=BLOC(
                 condition="""(equal_to("TYPE_MAXI", 'MAXI_ABS') or equal_to("TYPE_MAXI", 'MINI_ABS'))""",
                 TYPE_RESU=SIMP(
-                    statut="f", typ="TXM", defaut="VALE", into=("VALE", "INST", "VALE_ABS")
+                    statut="f",
+                    typ="TXM",
+                    defaut="VALE",
+                    into=("VALE", "INST", "VALE_ABS", "NUME_ORDRE"),
                 ),
             ),
             b_type_non_abs=BLOC(
                 condition="""(equal_to("TYPE_MAXI", 'MAXI') or equal_to("TYPE_MAXI", 'MINI') or equal_to("TYPE_MAXI", 'NORM_TRAN'))""",
-                TYPE_RESU=SIMP(statut="f", typ="TXM", defaut="VALE", into=("VALE", "INST")),
+                TYPE_RESU=SIMP(
+                    statut="f", typ="TXM", defaut="VALE", into=("VALE", "INST", "NUME_ORDRE")
+                ),
             ),
             b_type_maxi=BLOC(
                 condition="""exists("TYPE_MAXI")""",

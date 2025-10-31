@@ -70,7 +70,12 @@ JOBS ?= $(shell \
 	if grep -q -- "-j" <<< "$(MAKEFLAGS)"; then \
 		j=-j$$( sed -e 's/.*-j\([0-9]\+\).*/\1/' <<< "$(MAKEFLAGS)" ) ; \
 	fi; \
-	[ "$$j" = "-j" ] && j="-j$$(nproc)"; \
+	if [ "$$j" = "-j" ]; then \
+		jobs=$$(nproc) ; \
+		[ -z "$$jobs" ] && jobs=12 ; \
+		[ $$jobs -gt 12 ] && jobs=12 ; \
+		j="-j$$jobs" ; \
+	fi ; \
 	echo $$j )
 DEFAULT ?= safe
 
@@ -117,6 +122,7 @@ doc:
 
 distclean: ##- perform a distclean of the build directory.
 	./waf_$(ASTER_BUILD) distclean
+	rm -rf build/codeaster-prerequisites-*
 
 install-tests:
 	$(MAKE) fast OPTS="$(OPTS) --install-tests"

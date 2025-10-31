@@ -132,13 +132,15 @@ module HHO_type
 ! ----- Volume ou Surface de la cellule
         real(kind=8)                :: measure = 0.d0
 ! ----- Nombre de faces de la cellule
-        integer(kind=8)                     :: nbfaces = 0
+        integer(kind=8)             :: nbfaces = 0
 ! ----- Donnees sur les faces (max 6 faces pour hexa)
-        type(HHO_Face), dimension(6):: faces
+        type(HHO_Face), dimension(6) :: faces
 ! ----- Index locale des noeuds de la cellule
-        integer(kind=8)                     :: node_bar_loc = 0
+        integer(kind=8)              :: node_bar_loc = 0
 ! ----- Jacobien is constant
-        aster_logical               :: l_jaco_cst = ASTER_FALSE
+        aster_logical                :: l_jaco_cst = ASTER_FALSE
+! ----- Initialize face
+        aster_logical                :: l_face_init = ASTER_FALSE
 ! ----- member function
     contains
         procedure, public, pass :: print => print_cell

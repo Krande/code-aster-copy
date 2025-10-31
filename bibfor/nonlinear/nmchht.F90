@@ -129,7 +129,7 @@ subroutine nmchht(model, ds_material, cara_elem, ds_constitutive, &
     if (l_comp_mstp) then
 ! ----- Check Delta_time
         if (time_init-time_prev_step .lt. 0.d0) then
-            call utmess('F', 'DYNAMIQUE1_6')
+            call utmess('A', 'DYNAMIQUE1_6')
         end if
 
 ! ----- Create <CARTE> for time

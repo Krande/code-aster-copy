@@ -71,7 +71,7 @@ subroutine exiscp(nomcmp, char, modele, nbnd, typend, &
     integer(kind=8) :: jnom, jprnm, jexis
     integer(kind=8) :: i, icmp, ino
     integer(kind=8) :: nbcmp, nmocl, nbec
-    parameter(nmocl=300)
+    parameter(nmocl=320)
     character(len=8) :: nomddl(nmocl), noma, mod
     character(len=16) :: pheno
     character(len=19) :: ligrmo
@@ -89,7 +89,7 @@ subroutine exiscp(nomcmp, char, modele, nbnd, typend, &
 ! --- NOMBRE D'ENTIERS CODES POUR LA GRANDEUR
 !
     call dismoi('NB_EC', nomgd, 'GRANDEUR', repi=nbec)
-    ASSERT(nbec .le. 10)
+    ASSERT(nbec .le. 11)
 !
 ! --- RECUPERATION DES NOMS DES DDLS DISPONIBLES POUR UNE GRANDEUR
 !

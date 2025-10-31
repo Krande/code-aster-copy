@@ -24,7 +24,8 @@ subroutine rectfc(nbmode, nbvect, omeshi, npivot, nblagr, &
     integer(kind=8) :: resufi(nfreq, *)
     complex(kind=8) :: omeshi, valpro(nvpro)
     real(kind=8) :: resufr(nfreq, *)
-!     RECTIFIE LES VALEURS PROPRES COMPLEXES
+!     RECTIFIE LES VALEURS PROPRES COMPLEXES POUR GEP CONDUISANT A DES
+!     MODES COMPLEXES
 !     ------------------------------------------------------------------
 !     IN  : NBMODE  : NOMBRE DE MODE DEMANDES
 !     IN  : NBVECT  : NOMBRE DE VECTEURS UTILISES AU COURS DU CALCUL
@@ -70,6 +71,11 @@ subroutine rectfc(nbmode, nbvect, omeshi, npivot, nblagr, &
         end if
         if (ivec .le. nbmode) then
             resufi(ivec, 1) = npivot+in
+! si GEP a modes complexes + typres=DYNAMIQUE
+! attention coherence avec vpermc/vppara/vpwecf
+! resufr(ivec,2)/(ivec,3) sert au calcul du residu de vpermc
+! resufr(ivec,1)/(ivec,3) sert a l'affichage des resultats de vpwecf
+! et a la creation de la SD_RESULTAT de vppost
             resufr(ivec, 2) = dble(om)
             if (abs(dble(om)) .lt. prec) then
                 resufr(ivec, 3) = 1.d+70

@@ -20,7 +20,8 @@ subroutine te0456(nomopt, nomte)
 !
     use HHO_type
     use HHO_quadrature_module
-    use HHO_postpro_module, only: hhoPostMeca, hhoPostTher, hhoPostTherElga, hhoPostMecaGradVari
+    use HHO_postpro_module, only: hhoPostMeca, hhoPostTher, hhoPostTherElga, hhoPostMecaGradVari, &
+                                  hhoPostMecaElga
     use HHO_init_module, only: hhoInfoInitCell
 !
     implicit none
@@ -63,6 +64,9 @@ subroutine te0456(nomopt, nomte)
     else if (nomopt == 'TEMP_ELGA') then
         call hhoQuad%initCell(hhoCell, npg)
         call hhoPostTherElga(hhoCell, hhoData, hhoQuad)
+    else if (nomopt == 'DEPL_ELGA') then
+        call hhoQuad%initCell(hhoCell, npg)
+        call hhoPostMecaElga(hhoCell, hhoData, hhoQuad)
     else
         ASSERT(ASTER_FALSE)
     end if

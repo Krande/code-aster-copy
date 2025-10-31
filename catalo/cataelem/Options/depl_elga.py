@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -32,9 +32,11 @@ PNBSP_I = InputParameter(
 
 PDEPLGA = OutputParameter(phys=PHY.DEPL_R, type="ELGA")
 
+PCHHOBS = InputParameter(phys=PHY.N3600R, comment=""" HHO - coefficient base locale""")
+
 
 DEPL_ELGA = Option(
-    para_in=(SP.PCACOQU, SP.PGEOMER, SP.PDEPLAR, PNBSP_I),
+    para_in=(SP.PCACOQU, SP.PGEOMER, SP.PDEPLAR, PNBSP_I, PCHHOBS),
     para_out=(PDEPLGA,),
     condition=(
         CondCalcul("+", ((AT.PHENO, "ME"), (AT.BORD, "0"))),

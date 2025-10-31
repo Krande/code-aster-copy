@@ -42,7 +42,7 @@ function sdsolv(vect)
 ! ----------------------------------------------------------------------
 !
     integer(kind=8) :: zslvk, zslvr, zslvi, zslvo
-    parameter(zslvk=14, zslvr=5, zslvi=9, zslvo=31)
+    parameter(zslvk=14, zslvr=6, zslvi=9, zslvo=31)
 !
 ! ----------------------------------------------------------------------
 !

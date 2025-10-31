@@ -72,20 +72,6 @@ coefficients de dilatation). Le comportement ou l'élément concerné ne savent 
 L'indicateur INDL_ELGA n'est pas possible avec le comportement %(k1)s.
 """
     ),
-    12: _(
-        """
-Problème lors du calcul des déformations hydriques (retrait endogène).
-Il manque la définition du coefficient B_ENDOGE dans DEFI_MATERIAU.
-La déformation est supposée nulle.
-"""
-    ),
-    13: _(
-        """
-Problème lors du calcul des déformations dues à la pression du fluide.
-Il manque la définition du coefficient BIOT_COEF dans DEFI_MATERIAU.
-La déformation est supposée nulle.
-"""
-    ),
     15: _(
         """
 La nature du matériau élastique %(k1)s n'est pas traitée pour cet élément ou ce comportement. Soit vous n'avez pas renseigné les bons paramètres élastiques, soit il s'agit d'une erreur de programmation.

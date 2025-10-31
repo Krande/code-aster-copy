@@ -247,7 +247,7 @@ def calc_corr_plaque_syme(MODME, CHMATME, MODTH, CHMATTH, L_INST, alpha_calc, ls
     return elas_fields, ther_fields
 
 
-def calc_loimel_plaque(DEPLMATE, ls_group_tout):
+def calc_loimel_plaque(DEPLMATE, ep_ver, type_homo, ls_group_tout):
     """
     Compute the average value of material parameters on the VER mesh.
 
@@ -267,6 +267,8 @@ def calc_loimel_plaque(DEPLMATE, ls_group_tout):
     Args:
         DEPLMATE (ElasticResult): Mechanical result from the 0-load boundary condition.
         ls_group_tout (list[str]): List of groups where properties are prescribed.
+        ep_ver (float): Plate thickness.
+        type_homo (str): Name of the homogeneization type
 
     Returns:
         dict: A dictionary containing the average properties values as a
@@ -281,12 +283,31 @@ def calc_loimel_plaque(DEPLMATE, ls_group_tout):
     LAME_2_ff = FORMULE(NOM_PARA=("E", "NU", "Z"), VALE="Z**2 * E/(2*(1+NU))")
     ALPHA_3K_ff = FORMULE(NOM_PARA=("E", "NU", "ALPHA"), VALE="Z**2 * ALPHA*E/(1-2*NU)")
 
+    if type_homo in ("PLAQUE_CT_TOURATIER",):
+        LAME_2_ct = FORMULE(
+            NOM_PARA=("E", "NU", "Z"), VALE="((pi/2)*cos(pi*(Z/h)))**2 * E/(2*(1+NU))", h=ep_ver
+        )
+    elif type_homo in ("PLAQUE_CT_MINDLIN",):
+        LAME_2_ct = FORMULE(NOM_PARA=("E", "NU", "Z"), VALE="1.0 * E/(2*(1+NU))")
+    elif type_homo in ("PLAQUE",):
+        LAME_2_ct = FORMULE(NOM_PARA=("E", "NU", "Z"), VALE="0.0 * E/(2*(1+NU))")
+    else:
+        ASSERT(False)
+
     RESUMATE = CALC_CHAMP(
         RESULTAT=DEPLMATE,
         GROUP_MA=ls_group_tout,
         PROPRIETES=("MATE_ELGA",),
         CHAM_UTIL=_F(
-            FORMULE=(LAME_1_mm, LAME_2_mm, ALPHA_3K_mm, LAME_1_ff, LAME_2_ff, ALPHA_3K_ff),
+            FORMULE=(
+                LAME_1_mm,
+                LAME_2_mm,
+                ALPHA_3K_mm,
+                LAME_1_ff,
+                LAME_2_ff,
+                ALPHA_3K_ff,
+                LAME_2_ct,
+            ),
             NOM_CHAM="MATE_ELGA",
             NUME_CHAM_RESU=1,
         ),
@@ -308,7 +329,7 @@ def calc_loimel_plaque(DEPLMATE, ls_group_tout):
         MODELE=RESUMATE.getModel(),
         INTEGRALE=_F(
             GROUP_MA=ls_group_tout,
-            NOM_CMP=("X1", "X2", "X3", "X4", "X5", "X6"),
+            NOM_CMP=("X1", "X2", "X3", "X4", "X5", "X6", "X7"),
             NOM_CHAM="UT01_ELGA",
             TYPE_MAILLE="3D",
         ),
@@ -332,12 +353,16 @@ def calc_loimel_plaque(DEPLMATE, ls_group_tout):
         )
 
     out = {}
-    out["LAME1_mm"], out["LAME2_mm"], out["ALPHA3K_mm"] = [
-        LAME_INTE.EXTR_TABLE().values()["INTE_%s" % key] for key in ("X1", "X2", "X3")
+    out["LAME1_mm"], out["LAME1_ff"] = [
+        LAME_INTE.EXTR_TABLE().values()["INTE_%s" % key] for key in ("X1", "X4")
     ]
 
-    out["LAME1_ff"], out["LAME2_ff"], out["ALPHA3K_ff"] = [
-        LAME_INTE.EXTR_TABLE().values()["INTE_%s" % key] for key in ("X4", "X5", "X6")
+    out["LAME2_mm"], out["LAME2_ff"], out["LAME2_ct"] = [
+        LAME_INTE.EXTR_TABLE().values()["INTE_%s" % key] for key in ("X2", "X5", "X7")
+    ]
+
+    out["ALPHA3K_mm"], out["ALPHA3K_ff"] = [
+        LAME_INTE.EXTR_TABLE().values()["INTE_%s" % key] for key in ("X3", "X6")
     ]
 
     out["RHO"], out["RHO_CP"], out["LAMBDA_THER"] = [
@@ -347,7 +372,9 @@ def calc_loimel_plaque(DEPLMATE, ls_group_tout):
     return out
 
 
-def calc_tabpara_plaque(DEPLMATE, volume_ver, ls_group_ma, varc_name, ls_varc, ep_ver, **fields):
+def calc_tabpara_plaque(
+    type_homo, DEPLMATE, volume_ver, ls_group_ma, varc_name, ls_varc, ep_ver, **fields
+):
     """
     Compute the homogeneous properties values for a plate element.
 
@@ -357,6 +384,7 @@ def calc_tabpara_plaque(DEPLMATE, volume_ver, ls_group_ma, varc_name, ls_varc, e
     irradiation levels.
 
     Args:
+        type_homo (str): Name of the homogeneization type
         DEPLMATE (ElasticResult): Mechanical result from the 0-load boundary
             condition.
         volume_ver (float): Volume of the Volume Element Representative (VER).
@@ -380,6 +408,8 @@ def calc_tabpara_plaque(DEPLMATE, volume_ver, ls_group_ma, varc_name, ls_varc, e
             DEFI_MATERIAU.
     """
 
+    ASSERT(type_homo.startswith("PLAQUE"))
+
     CORR_MECA11_MEMB = fields["CORR_MECA11_MEMB"]
     CORR_MECA22_MEMB = fields["CORR_MECA22_MEMB"]
     CORR_MECA12_MEMB = fields["CORR_MECA12_MEMB"]
@@ -396,7 +426,7 @@ def calc_tabpara_plaque(DEPLMATE, volume_ver, ls_group_ma, varc_name, ls_varc, e
     ASSERT(len(insts_meca) == len(ls_varc))
 
     dictpara = utilities.create_empty_dictpara([varc_name] + PARAPLAQUE)
-    loimel = calc_loimel_plaque(DEPLMATE, ls_group_ma)
+    loimel = calc_loimel_plaque(DEPLMATE, ep_ver, type_homo, ls_group_ma)
     h = ep_ver
     tda = utilities.get_temp_def_alpha_result(DEPLMATE)
     ls_C_hom = {}
@@ -427,8 +457,9 @@ def calc_tabpara_plaque(DEPLMATE, volume_ver, ls_group_ma, varc_name, ls_varc, e
         C1212_hom = (h / volume_ver) * (mu_meca_mm - work_meca_12_12_mm)
 
         # CISAILLEMENT TRANSVERSE
-
         if CORR_MECA31_CT and CORR_MECA23_CT:
+            mu_meca_ct = loimel["LAME2_ct"][i]
+
             work_meca_31_31_ct = utilities.cross_work(
                 CORR_MECA31_CT, CORR_MECA31_CT, inst_meca, ls_group_ma
             )
@@ -436,8 +467,8 @@ def calc_tabpara_plaque(DEPLMATE, volume_ver, ls_group_ma, varc_name, ls_varc, e
                 CORR_MECA23_CT, CORR_MECA23_CT, inst_meca, ls_group_ma
             )
 
-            G11_hom = (h / volume_ver) * (mu_meca_mm - work_meca_31_31_ct)
-            G22_hom = (h / volume_ver) * (mu_meca_mm - work_meca_23_23_ct)
+            G11_hom = (h / volume_ver) * (mu_meca_ct - work_meca_31_31_ct)
+            G22_hom = (h / volume_ver) * (mu_meca_ct - work_meca_23_23_ct)
 
         else:
             work_meca_31_31_ct = 0.0

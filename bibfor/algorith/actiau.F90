@@ -43,8 +43,8 @@ subroutine actiau(nbcmp, nbno, nbec, mcoddl, icodac)
     integer(kind=8) :: i, iec, nbcmp, nbcpmx, nbec, nbecmx, nbno
 !
 !-----------------------------------------------------------------------
-    parameter(nbcpmx=300)
-    parameter(nbecmx=10)
+    parameter(nbcpmx=320)
+    parameter(nbecmx=11)
     integer(kind=8) :: mcoddl(nbno*nbec, 2), icodac(nbno*nbec)
     integer(kind=8) :: idec(nbcpmx), itout(nbecmx), icoco(nbecmx), icici(nbecmx)
 !

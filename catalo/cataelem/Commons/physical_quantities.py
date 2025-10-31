@@ -842,12 +842,12 @@ list_cmp_depl = (
     "DRGX",
     "DRGY",
     "DRGZ",
-    "HHO_CX[10]",
-    "HHO_CY[10]",
-    "HHO_CZ[10]",
-    "HHO_FX[6]",
-    "HHO_FY[6]",
-    "HHO_FZ[6]",
+    "HHO_CX[35]",
+    "HHO_CY[35]",
+    "HHO_CZ[35]",
+    "HHO_FX[15]",
+    "HHO_FY[15]",
+    "HHO_FZ[15]",
     "HHO_VR[10]",
     "HHO_LG[10]",
     "PINCH",
@@ -968,6 +968,16 @@ DERA_R = PhysicalQuantity(
        X23      : tenseur cinematique utilise pour IND_DCHA et VAL_DCHA, CMP 23
        RADI_V   : indic. de perte de radialite sur le deviateur des contraintes
        ERR_RADI : indicateur d'erreur d'integration due a la non radialite
+""",
+)
+
+DIFF_R = PhysicalQuantity(
+    type="R",
+    components=("DIFT", "DIFL", "DIFV"),
+    comment="""  DIFF_R Type:R Coefficients de diffusion (séchage)
+       DIFT   : coefficient de diffusion total
+       DIFL   : coefficient de diffusion liquide
+       DIFV   : coefficient de diffusion vapeur
 """,
 )
 
@@ -2072,6 +2082,15 @@ HYDR_R = PhysicalQuantity(
     components=("HYDR",),
     comment="""  HYDR_R Type:R
        HYDR :
+""",
+)
+
+HYGR_R = PhysicalQuantity(
+    type="R",
+    components=("HUMR", "PCAP"),
+    comment="""  HYGR_R Type:R Hygrométrie (séchage)
+       HUMR   : humidité relative
+       PCAP   : pression capillaire
 """,
 )
 
@@ -3722,7 +3741,21 @@ TEMP_C = PhysicalQuantity(
 
 TEMP_F = PhysicalQuantity(
     type="K8",
-    components=("TEMP", "TEMP_MIL", "TEMP_INF", "TEMP_SUP", "LAGR", "SECH"),
+    components=(
+        "TEMP",
+        "TEMP_MIL",
+        "TEMP_INF",
+        "TEMP_SUP",
+        "LAGR",
+        "SECH",
+        "H1",
+        "E1",
+        "DTX",
+        "DTY",
+        "DTZ",
+        "HHO_CT[35]",
+        "HHO_FT[15]",
+    ),
     comment="""  TEMP_F Type:K8 Temperature inconnue du phenomene thermique
        TEMP : temperature
        TEMP_MIL : temperature sur le feuillet moyen  (coques)
@@ -3731,6 +3764,8 @@ TEMP_F = PhysicalQuantity(
        LAGR : parametre de lagrange du a la dualisation des
        conditions aux limites
        SECH : séchage ou concentration en eau
+       HHO_CT : degres de liberté HHO: 1, X, Y, Z, X2, Y2, Z2 (X, Y, Z cell)
+       HHO_FT : degres de liberté HHO: 1, X, Y, X2, Y2, XY (X, Y face)
 """,
 )
 
@@ -3749,8 +3784,8 @@ TEMP_R = PhysicalQuantity(
         "DTX",
         "DTY",
         "DTZ",
-        "HHO_CT[10]",
-        "HHO_FT[6]",
+        "HHO_CT[35]",
+        "HHO_FT[15]",
     ),
     comment="""  TEMP_R Type:R Temperature inconnue du phenomene thermique
        TEMP : temperature

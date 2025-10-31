@@ -19,9 +19,9 @@
 !
 !
 interface
-    subroutine dikpkt(imater, nomphe, kp, kt)
+    subroutine dikpkt(imater, nomphe, kp, kt1, kt2)
         integer(kind=8), intent(in)     :: imater
-        character(len=16), intent(in)   :: nomphe
-        real(kind=8), intent(out)       :: kp, kt
+        character(len=*), intent(in)    :: nomphe
+        real(kind=8), intent(out)       :: kp, kt1, kt2
     end subroutine dikpkt
 end interface

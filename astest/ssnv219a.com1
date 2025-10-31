@@ -24,8 +24,7 @@ POURSUITE(CODE="OUI", DEBUG=_F(SDVERI="OUI"), IGNORE_ALARM=("MODELE1_63",))
 # Calcul de la solution de reference
 # ================================================================================================
 if sympy_available:
-
-    import sympy
+    from code_aster.Utilities import sympy
 
     from code_aster.MacroCommands.Contrib import TensorModule
     from code_aster.MacroCommands.Contrib import HookeTensor
@@ -157,7 +156,6 @@ if sympy_available:
 
 # Si importation de sympy impossible
 else:
-
     # ================================================================================================
     # Definition des formules Aster
     # ================================================================================================

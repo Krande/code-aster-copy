@@ -113,7 +113,6 @@ subroutine te0244(option, nomte)
                         FEQuadRigi%points(1:3, kp), aniso, ifon, flux, Kglo, dfluxglo)
         else if (rela_name(1:5) .eq. 'SECH_') then
             sechpg = FEEvalFuncRScal(FEBasis, tempi, FEQuadRigi%points_param(1:3, kp))
-            BGSEval = FEBasis%grad(FEQuadRigi%points_param(1:3, kp), FEQuadRigi%jacob(1:3, 1:3, kp))
             dsechpg = FEEvalGradVec(FEBasis, tempi, FEQuadRigi%points_param(1:3, kp), BGSEval)
             call rcvarc(' ', 'TEMP', '-', 'RIGI', kp, 1, tpg, iret)
             if (iret .ne. 0) call utmess('F', 'THERMIQUE1_2')

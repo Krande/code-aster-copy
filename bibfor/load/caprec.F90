@@ -20,21 +20,21 @@ subroutine caprec(load, loadLigrel, mesh, model, valeType)
 !
     implicit none
 !
-#include "asterf_types.h"
 #include "jeveux.h"
+#include "asterf_types.h"
 #include "asterc/getfac.h"
 #include "asterc/indik8.h"
 #include "asterfort/aflrch.h"
+#include "asterfort/alcart.h"
 #include "asterfort/armin.h"
 #include "asterfort/assert.h"
 #include "asterfort/char_rcbp_cabl.h"
 #include "asterfort/char_rcbp_lino.h"
 #include "asterfort/copisd.h"
-#include "asterfort/craglc.h"
 #include "asterfort/cragch.h"
-#include "asterfort/dismoi.h"
-#include "asterfort/solide_tran.h"
+#include "asterfort/craglc.h"
 #include "asterfort/detrsd.h"
+#include "asterfort/dismoi.h"
 #include "asterfort/drz12d.h"
 #include "asterfort/drz13d.h"
 #include "asterfort/exisdg.h"
@@ -53,11 +53,11 @@ subroutine caprec(load, loadLigrel, mesh, model, valeType)
 #include "asterfort/jexnom.h"
 #include "asterfort/jexnum.h"
 #include "asterfort/nbec.h"
+#include "asterfort/nocart.h"
+#include "asterfort/solide_tran.h"
+#include "asterfort/tecart.h"
 #include "asterfort/utmess.h"
 #include "asterfort/wkvect.h"
-#include "asterfort/alcart.h"
-#include "asterfort/nocart.h"
-#include "asterfort/tecart.h"
 !
     character(len=8), intent(in) :: load, mesh, model
     character(len=19), intent(in) :: loadLigrel
@@ -173,7 +173,7 @@ subroutine caprec(load, loadLigrel, mesh, model, valeType)
     call jeveuo(jexnom('&CATA.GD.NOMCMP', nomg_depl), 'L', j_cmp_depl)
     call jelira(jexnom('&CATA.GD.NOMCMP', nomg_depl), 'LONMAX', nb_cmp_depl, k8bid)
     call dismoi('NB_EC', nomg_depl, 'GRANDEUR', repi=nbec_depl)
-    ASSERT(nbec_depl .le. 10)
+    ASSERT(nbec_depl .le. 11)
 !
 ! - Index in DEPL_R <GRANDEUR> for DX, DY, DZ, DRX, DRY, DRZ
 !
@@ -202,7 +202,7 @@ subroutine caprec(load, loadLigrel, mesh, model, valeType)
     call jeveuo(jexnom('&CATA.GD.NOMCMP', nomg_sief), 'L', j_cmp_sief)
     call jelira(jexnom('&CATA.GD.NOMCMP', nomg_sief), 'LONMAX', nb_cmp_sief, k8bid)
     call dismoi('NB_EC', nomg_sief, 'GRANDEUR', repi=nbec_sief)
-    ASSERT(nbec_sief .le. 10)
+    ASSERT(nbec_sief .le. 11)
 !
 !
 ! - On procède en deux passes :

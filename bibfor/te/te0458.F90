@@ -20,7 +20,7 @@ subroutine te0458(nomopt, nomte)
 !
     use HHO_type
     use HHO_size_module, only: hhoMecaDofs
-    use HHO_init_module, only: hhoInfoInitCell
+    use HHO_init_module, only: hhoInfoInitCellAndFace
     use HHO_Dirichlet_module
 !
     implicit none
@@ -50,7 +50,7 @@ subroutine te0458(nomopt, nomte)
 !
 ! --- Retrieve HHO informations
 !
-    call hhoInfoInitCell(hhoCell, hhoData)
+    call hhoInfoInitCellAndFace(hhoCell, hhoData)
 !
     if (nomopt .eq. 'HHO_CINE_F_MECA') then
 !

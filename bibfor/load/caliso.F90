@@ -20,16 +20,17 @@ subroutine caliso(load, mesh, model, valeType)
 !
     implicit none
 !
-#include "asterf_types.h"
 #include "jeveux.h"
+#include "asterf_types.h"
 #include "asterc/getfac.h"
 #include "asterc/indik8.h"
 #include "asterfort/aflrch.h"
 #include "asterfort/armin.h"
 #include "asterfort/assert.h"
 #include "asterfort/char_excl_keyw.h"
+#include "asterfort/codent.h"
+#include "asterfort/detrsd.h"
 #include "asterfort/dismoi.h"
-#include "asterfort/solide_tran.h"
 #include "asterfort/drz12d.h"
 #include "asterfort/drz13d.h"
 #include "asterfort/exisdg.h"
@@ -41,9 +42,8 @@ subroutine caliso(load, mesh, model, valeType)
 #include "asterfort/jemarq.h"
 #include "asterfort/jeveuo.h"
 #include "asterfort/jexnom.h"
+#include "asterfort/solide_tran.h"
 #include "asterfort/utmess.h"
-#include "asterfort/codent.h"
-#include "asterfort/detrsd.h"
 !
     character(len=8), intent(in) :: load, mesh, model
     character(len=4), intent(in) :: valeType
@@ -129,7 +129,7 @@ subroutine caliso(load, mesh, model, valeType)
     call jeveuo(jexnom('&CATA.GD.NOMCMP', nomg), 'L', jnom)
     call jelira(jexnom('&CATA.GD.NOMCMP', nomg), 'LONMAX', nb_cmp)
     call dismoi('NB_EC', nomg, 'GRANDEUR', repi=nbec)
-    ASSERT(nbec .le. 10)
+    ASSERT(nbec .le. 11)
 !
 ! - Index in DEPL_R <GRANDEUR> for DX, DY, DZ, DRX, DRY, DRZ
 !
