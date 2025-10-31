@@ -1,203 +1,127 @@
-import pathlib
-import json
-import re
+#!/usr/bin/env python3
+"""
+Generate bibfor.def file for MSVC from compiled Fortran object files.
+
+This script extracts Fortran symbols from compiled object files in the bibfor directory
+and generates a module definition (.def) file for use with the MSVC linker.
+"""
+
+import subprocess
+import sys
+from pathlib import Path
 
 
-ROOT_DIR = pathlib.Path(__file__).resolve().parent.parent.absolute()
-BIBFOR_DIR = ROOT_DIR  / "bibfor"
-GC_DIR = ROOT_DIR / "libs/gc"
-MSVC_DIR = ROOT_DIR / "msvc"
-BIBFOR_DEF = MSVC_DIR / "bibfor.def"
+def find_object_files(build_dir):
+    """Find all object files in the bibfor build directory."""
+    obj_files = []
+    bibfor_dir = build_dir / "bibfor"
+
+    if not bibfor_dir.exists():
+        print(f"Warning: bibfor build directory not found: {bibfor_dir}")
+        return obj_files
+
+    for obj_file in bibfor_dir.rglob("*.obj"):
+        obj_files.append(obj_file)
+
+    print(f"Found {len(obj_files)} object files in {bibfor_dir}")
+    return obj_files
 
 
-def scan_header_files(
-    directory: pathlib.Path, cache_file: pathlib.Path = pathlib.Path("temp/h_cache.json"), clear_cache=False
-) -> dict:
-    if cache_file.exists() and not clear_cache:
-        with open(cache_file, "r") as cache:
-            return json.load(cache)
+def extract_symbols(obj_files):
+    """Extract Fortran symbols from object files using llvm-nm."""
+    symbols = set()
 
-    # Regex patterns to identify modules and subroutines/functions
-    module_pattern = re.compile(r"^\s*module\s+(\w+)", re.IGNORECASE)
-    func_pattern = re.compile(r"^\s*(subroutine|function)\s+(\w+)", re.IGNORECASE)
-    end_func_pattern = re.compile(r"^\s*end\s+(subroutine|function)\s+(\w+)", re.IGNORECASE)
+    for obj_file in obj_files:
+        try:
+            # Run llvm-nm to get symbols
+            result = subprocess.run(
+                ["llvm-nm", "--extern-only", "--defined-only", str(obj_file)],
+                capture_output=True,
+                text=True,
+                check=True
+            )
 
-    # Dictionary to store modules and associated functions
-    modules = {"na": []}
-
-    # Scan each Fortran file in the directory
-    for fp in directory.rglob("*.h"):
-        if "deprecated" in list(fp.parents):
-            continue
-        with open(fp, "r", encoding="utf-8") as file:
-            current_module = "na"
-            inside_subroutine = False
-            current_subroutine = ""
-            for line in file:
-                if line.startswith("!"):
+            for line in result.stdout.splitlines():
+                parts = line.split()
+                if len(parts) < 3:
                     continue
-                # Check if line defines a module
-                module_match = module_pattern.match(line)
-                if module_match:
-                    current_module = module_match.group(1)
-                    modules[current_module] = []
 
-                # Check if line defines a function/subroutine
-                func_match = func_pattern.match(line)
-                if func_match and not inside_subroutine:
-                    inside_subroutine = True
-                    current_subroutine = func_match.group(2)
-                    function_name = func_match.group(2)
-                    modules[current_module].append(function_name)
+                symbol_type = parts[1]
+                symbol_name = parts[2]
 
-                end_func_match = end_func_pattern.match(line)
-                if inside_subroutine and end_func_match:
-                    if current_subroutine == end_func_match.group(2):
-                        inside_subroutine = False
-                        current_subroutine = ""
+                # Filter for Fortran symbols
+                # Fortran symbols typically end with _
+                # Skip C++ mangled symbols (starting with ?)
+                # T = Text/Code symbol (functions)
 
-    # save to cache
-    cache_file.parent.mkdir(exist_ok=True, parents=True)
-    with open(cache_file, "w") as cache:
-        json.dump(modules, cache, indent=4)
+                if symbol_type in ['T', 't']:
+                    # Include Fortran symbols (ending with _)
+                    # Skip C++ mangled symbols
+                    if symbol_name.endswith('_') and not symbol_name.startswith('?'):
+                        symbols.add(symbol_name)
 
-    return modules
+        except subprocess.CalledProcessError as e:
+            print(f"Warning: Failed to extract symbols from {obj_file}: {e}")
+        except FileNotFoundError:
+            print("Error: llvm-nm not found. Make sure LLVM tools are in PATH.")
+            sys.exit(1)
+
+    return sorted(symbols)
 
 
-def scan_fortran_files(
-    directories: list[pathlib.Path],
-    cache_file: pathlib.Path = pathlib.Path("temp/fc_cache.json"),
-    clear_cache=False,
-) -> dict:
-    if cache_file.exists() and not clear_cache:
-        with open(cache_file, "r") as cache:
-            return json.load(cache)
+def generate_def_file(symbols, output_file):
+    """Generate the .def file."""
+    with open(output_file, 'w') as f:
+        f.write("LIBRARY bibfor\n")
+        f.write("EXPORTS\n")
 
-    # Regex patterns to identify modules and subroutines/functions
-    module_pattern = re.compile(r"^\s*module\s+(\w+)", re.IGNORECASE)
-    func_pattern = re.compile(r"^\s*(subroutine|function)\s+(\w+)", re.IGNORECASE)
+        for symbol in symbols:
+            f.write(f"    {symbol}\n")
 
-    # Dictionary to store modules and associated functions
-    modules = {"na": []}
+    print(f"Generated {output_file} with {len(symbols)} symbols")
 
-    # Scan each Fortran file in the directory
-    for directory in directories:
-        for fp in directory.rglob("*"):
-            if not fp.name.lower().endswith((".f90", ".f", ".for")):  # Common Fortran extensions
-                continue
-            if "deprecated" in list(fp.parents):
-                continue
-            with open(fp, "r", encoding="utf-8") as file:
-                current_module = "na"
-                for line in file:
-                    if line.startswith("!"):
-                        continue
-                    # Check if line defines a module
-                    module_match = module_pattern.match(line)
-                    if module_match:
-                        current_module = module_match.group(1)
-                        modules[current_module] = []
-
-                    # Check if line defines a function/subroutine
-                    func_match = func_pattern.match(line)
-                    if func_match:
-                        function_name = func_match.group(2)
-                        modules[current_module].append(function_name)
-    # save to cache
-    cache_file.parent.mkdir(exist_ok=True, parents=True)
-    with open(cache_file, "w") as cache:
-        json.dump(modules, cache, indent=4)
-
-    return modules
-
-
-def create_def_file(modules: dict, headers:dict, output_file: pathlib.Path, suffix="_", make_lower=True, make_upper=False):
-    output_file.parent.mkdir(exist_ok=True, parents=True)
-    functions_only = set([i.lower() for x in modules.values() for i in x])
-    headers_only = set([i.lower() for x in headers.values() for i in x])
-
-    functions_w_headers = headers_only & functions_only
-    functions_sorted = sorted(functions_w_headers)
-
-    #functions_and_headers = functions_only | headers_only
-    #functions_sorted = sorted(functions_and_headers)
-
-    with open(output_file, "w") as def_file:
-        def_file.write("LIBRARY bibfor\n")
-        def_file.write("EXPORTS\n")
-        for function in functions_sorted:
-            if make_lower:
-                lib_name=function.lower()
-            elif make_upper:
-                lib_name =function.upper()
-            else:
-                lib_name =function
-            #def_file.write(f"    {lib_name}={lib_name+suffix}\n")
-            def_file.write(f"    {lib_name+suffix}\n")
-
-def compare_with_existing_def(existing_def_file: pathlib.Path, modules: dict, headers: dict, use_w_headers_only=False):
-    functions_only = set([f"{i.lower()}_" for x in modules.values() for i in x])
-    headers_only = set([f"{i.lower()}_" for x in headers.values() for i in x])
-    functions_w_headers = headers_only & functions_only
-
-    existing = set()
-    for existing_def in existing_def_file.read_text().splitlines():
-        if existing_def.startswith("LIBRARY") or existing_def.startswith("EXPORTS"):
-            continue
-        existing.add(existing_def.strip().lower())
-
-    result_dict = {}
-    in_h_not_in_func = headers_only - functions_only
-    print(f"Headers not in functions: {len(in_h_not_in_func)=}")
-    result_dict["in_h_not_in_func"] = list(in_h_not_in_func)
-
-    missing = existing - functions_only
-    missing_w_headers = existing - functions_w_headers
-    print(f"Missing symbols: {len(missing)=}, {len(missing_w_headers)=}")
-    result_dict["missing"] = list(missing)
-    result_dict["missing_w_headers"] = list(missing_w_headers)
-
-    missing_diff = missing_w_headers.difference(missing)
-    print(f"Missing diff: {len(missing_diff)=}")
-    result_dict["missing_h_diff"] = list(missing_diff)
-
-    unnecessary = functions_only - existing
-    unnecessary_w_headers = functions_w_headers - existing
-    print(f"unnecessary symbols: {len(unnecessary)=}, {len(unnecessary_w_headers)=}")
-    result_dict["unnecessary"] = list(unnecessary)
-    result_dict["unnecessary_w_headers"] = list(unnecessary_w_headers)
-
-    matching = functions_only & existing
-    matching_w_headers = functions_w_headers & existing
-    print(f"Matching symbols: {len(matching)=}, {len(matching_w_headers)=}")
-    result_dict["matching"] = list(matching)
-    result_dict["matching_w_headers"] = list(matching_w_headers)
-
-    with open("temp/fc_def_compare.json", "w") as f:
-        json.dump(result_dict, f, indent=4)
-
-#
-# As of now these 6 symbols
-# + install C:\Work\code\code-aster-src\.pixi\envs\default\Library\lib\aster\bibcxx.lib (from build\std\debug\bibcxx\bibcxx.lib)
-# bibfor.def : error LNK2001: unresolved external symbol fct_
-# bibfor.def : error LNK2001: unresolved external symbol func_
-# bibfor.def : error LNK2001: unresolved external symbol lccrma_
-# bibfor.def : error LNK2001: unresolved external symbol lcesbo_
-# bibfor.def : error LNK2001: unresolved external symbol lcesga_
-# bibfor.def : error LNK2001: unresolved external symbol rk5fct_
-# bibfor\\bibfor.lib : fatal error LNK1120: 6 unresolved externals
-#
 
 def main():
-    output_file = BIBFOR_DEF.parent / "bibfor.def"
-    headers = scan_header_files(BIBFOR_DIR, clear_cache=True)
-    modules = scan_fortran_files([BIBFOR_DIR, GC_DIR], clear_cache=True)
+    # Determine paths
+    script_dir = Path(__file__).parent
+    project_root = script_dir.parent
 
-    compare_with_existing_def(BIBFOR_DEF, modules, headers)
-    # manually add rcvale_wrap to headers as it has no header
-    create_def_file(modules, headers, output_file)
-    print(f".def file created at: {output_file}")
+    # Try to find build directory
+    build_dirs = []
+    for pattern in ["build/int64/debug", "build/int64/release", "build/int32/debug", "build/int32/release"]:
+        build_path = project_root / pattern
+        if build_path.exists():
+            build_dirs.append(build_path)
+
+    if not build_dirs:
+        print("Error: No build directory found. Please run 'waf build' first.")
+        sys.exit(1)
+
+    # Use the first found build directory (most recent)
+    build_dir = build_dirs[0]
+    print(f"Using build directory: {build_dir}")
+
+    # Find object files
+    obj_files = find_object_files(build_dir)
+
+    if not obj_files:
+        print("Error: No object files found. Please compile bibfor first.")
+        sys.exit(1)
+
+    # Extract symbols
+    symbols = extract_symbols(obj_files)
+
+    if not symbols:
+        print("Warning: No Fortran symbols extracted!")
+        sys.exit(1)
+
+    # Generate .def file
+    output_file = script_dir / "bibfor.def"
+    generate_def_file(symbols, output_file)
+
+    print(f"Successfully generated {output_file}")
 
 
 if __name__ == "__main__":
     main()
+

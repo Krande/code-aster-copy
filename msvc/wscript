@@ -84,6 +84,8 @@ def configure(self):
     self.env.BIBCXX_DEF = self.options.bibcxx_def
     self.env.MFRONT_DEF = self.options.mfront_def
     self.env.ASTER_DEF = self.options.aster_def
+    # Flag to enable DEF file generation during build
+    self.env.GENERATE_DEF_FILES = True
     self.end_msg(
         f"{self.env.BIBFOR_DEF}, {self.env.BIBC_DEF}, {self.env.BIBCXX_DEF}, {self.env.MFRONT_DEF}, {self.env.ASTER_DEF}"
     )

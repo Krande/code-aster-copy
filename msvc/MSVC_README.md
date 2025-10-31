@@ -49,6 +49,36 @@ for LLVM Flang (which is supported on conda-forge).
 | MFront      | 4.2.0    | CLANG-CL   | CLANG-CL     | LLVM Flang                       |
 | MGIS        | 2.2.0    | VS2019     | VS2019       | LLVM Flang                       |
 | METIS       | 5.1.0    | VS2022     | VS2022       | N/A                              |
+
+## DEF File Generation
+
+Windows DLLs require explicit symbol exports using `.def` (module definition) files. Code_Aster provides automated tools to generate these files from compiled object files.
+
+### Manual Generation
+
+After building the project, you can manually regenerate the `.def` files using pixi tasks:
+
+```cmd
+pixi run def-bibfor    # Generate bibfor.def (Fortran library)
+pixi run def-bibcxx    # Generate bibcxx.def (C++ library)
+pixi run def-bibc      # Generate bibc.def (C library)
+```
+
+### How It Works
+
+1. The scripts scan the build directory for compiled `.obj` files
+2. Use `llvm-nm` to extract exported symbols from each object file
+3. Filter symbols based on library type (Fortran/C++/C)
+4. Generate the `.def` file with proper LIBRARY and EXPORTS sections
+
+### Requirements
+
+- The project must be built first (object files must exist)
+- `llvm-nm` must be available in PATH (included with clang in conda environment)
+
+For more details, see:
+- `msvc/DEF_AUTO_GENERATION.md` - Technical overview
+- `msvc/DEF_INTEGRATION_SUMMARY.md` - Implementation summary
 | SCOTCH      | 7.0.4    | VS2022     | VS2022       | LLVM Flang                       |
 | MUMPS       | 5.7.0    | VS2022     | VS2022       | Intel OneAPI Fortran 2024.1 (^1) |
 | Code Aster  | 17.0.10  | VS2022     | VS2022       | Intel OneAPI Fortran 2024.1 (^1) |

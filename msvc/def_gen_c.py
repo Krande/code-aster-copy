@@ -1,0 +1,148 @@
+#!/usr/bin/env python3
+"""
+Generate DEF file for bibc (C library) by extracting symbols from compiled object files.
+
+This script uses dumpbin.exe to extract symbols from C object files and creates
+a .def file for exporting them from the DLL.
+"""
+
+import argparse
+import subprocess
+import sys
+from pathlib import Path
+
+
+def find_object_files(build_dir, library_name="bibc"):
+    """Find all object files for the given library."""
+    obj_files = []
+    build_path = Path(build_dir)
+
+    # Look for object files in the build directory
+    for obj_file in build_path.rglob("*.obj"):
+        # Filter to only include files from the target library
+        if library_name in str(obj_file):
+            obj_files.append(obj_file)
+
+    return obj_files
+
+
+def extract_c_symbols(obj_file):
+    """Extract C symbols from an object file using dumpbin."""
+    symbols = []
+    data_symbols = []
+
+    try:
+        # Run dumpbin to get symbols
+        result = subprocess.run(
+            ["dumpbin", "/SYMBOLS", str(obj_file)],
+            capture_output=True,
+            text=True,
+            check=True
+        )
+
+        for line in result.stdout.split('\n'):
+            # Look for External symbols
+            if "External" in line and "| " in line:
+                parts = line.split('|')
+                if len(parts) >= 2:
+                    symbol = parts[1].strip()
+
+                    # Check if it's a DATA symbol (global variable)
+                    is_data = "SECT" in line and not ("()" in line or "notype" in line.lower())
+
+                    # Filter C symbols
+                    # Skip compiler-generated symbols and internals
+                    if symbol and not symbol.startswith('.'):
+                        # Include C symbols (functions and globals)
+                        if (not symbol.startswith('?') and  # Exclude C++ mangled names
+                            (symbol.startswith('_') or
+                             symbol.startswith('Py') or
+                             symbol.startswith('g') or
+                             any(x in symbol for x in ['aster', 'asmpi', 'NULL_FUNCTION']))):
+                            if is_data:
+                                data_symbols.append(symbol)
+                            else:
+                                symbols.append(symbol)
+
+    except subprocess.CalledProcessError as e:
+        print(f"Warning: Failed to process {obj_file}: {e}", file=sys.stderr)
+    except FileNotFoundError:
+        print("Error: dumpbin.exe not found. Ensure MSVC tools are in PATH.", file=sys.stderr)
+        sys.exit(1)
+
+    return symbols, data_symbols
+
+
+def generate_def_file(symbols, data_symbols, output_file, library_name="bibc"):
+    """Generate a .def file from the list of symbols."""
+    # Remove duplicates and sort
+    unique_symbols = sorted(set(symbols))
+    unique_data_symbols = sorted(set(data_symbols))
+
+    with open(output_file, 'w') as f:
+        f.write(f"LIBRARY {library_name}\n")
+        f.write("EXPORTS\n")
+
+        # Write DATA symbols first
+        for symbol in unique_data_symbols:
+            f.write(f"\t{symbol} \t DATA\n")
+
+        # Write regular symbols
+        for symbol in unique_symbols:
+            f.write(f"\t{symbol}\n")
+
+    total = len(unique_symbols) + len(unique_data_symbols)
+    print(f"Generated {output_file} with {total} symbols ({len(unique_data_symbols)} DATA)")
+
+
+def main():
+    parser = argparse.ArgumentParser(
+        description="Generate DEF file for bibc C library"
+    )
+    parser.add_argument(
+        "--build-dir",
+        default="build/int64",
+        help="Build directory containing object files"
+    )
+    parser.add_argument(
+        "--output",
+        default="msvc/bibc.def",
+        help="Output DEF file path"
+    )
+    parser.add_argument(
+        "--obj-files",
+        nargs='+',
+        help="Specific object files to process (optional)"
+    )
+
+    args = parser.parse_args()
+
+    # Get object files
+    if args.obj_files:
+        obj_files = [Path(f) for f in args.obj_files]
+    else:
+        obj_files = find_object_files(args.build_dir, "bibc")
+
+    if not obj_files:
+        print(f"No object files found in {args.build_dir}", file=sys.stderr)
+        sys.exit(1)
+
+    print(f"Processing {len(obj_files)} object files...")
+
+    # Extract symbols from all object files
+    all_symbols = []
+    all_data_symbols = []
+    for obj_file in obj_files:
+        symbols, data_symbols = extract_c_symbols(obj_file)
+        all_symbols.extend(symbols)
+        all_data_symbols.extend(data_symbols)
+
+    # Generate DEF file
+    output_path = Path(args.output)
+    output_path.parent.mkdir(parents=True, exist_ok=True)
+    generate_def_file(all_symbols, all_data_symbols, output_path, "bibc")
+
+
+if __name__ == "__main__":
+    main()
+
