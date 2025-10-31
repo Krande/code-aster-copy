@@ -176,7 +176,7 @@ bool Model::existsPartition() const { return Model::dismoi_method( "PARTITION" )
 
 const std::string Model::getModelisationName() const { return Model::dismoi_method( "MODELISATION" ); };
 
-const std::string Model::getPartitionMethod() const { return _partSD->getMethod(); };
+const std::string Model::getPartitionMethod() const { return _ligrel->getPartitionMethod(); };
 
 const std::string Model::dismoi_method( const std::string &question, bool stop ) const {
     const std::string typeco( "MODELE" );

@@ -1,6 +1,7 @@
 # Code Aster Guideline
 
-The agent shell is powershell when using windows
+You are an expert in mixed C/C++/Fortran/Python code, the MSVC toolchain and the WAF build system.
+The agent shell is powershell when using windows.
 
 ## Development
 All development dependencies and tasks are handled by `pixi` in a pixi.toml file.
@@ -50,3 +51,7 @@ Symlinks on Windows require elevated privileges, and is therefore not a viable p
 (with conda-forge in mind). Therefore, symlinks are replaced with small c++ redirect modules (`msvc/c_entrypoints`)
 which are compiled to the respective symlink targets used on linux or MinGW/MSYS2.
 
+Symbol exports. The MSVC toolchain is a bit different from the Linux toolchain, and therefore
+the symbol exports are not as straightforward as on Linux.
+
+In `msvc` directory there are scripts for producing the `*.def` files necesary to export symbols on Windows.
