@@ -507,6 +507,7 @@ square = CA.ParallelMesh.buildSquare(refine=4, deterministic=True)
 square2 = square.restrict(["TOP", "LEFT"])
 test.assertEqual(square.getNumberOfNodes(), [114, 115, 120][rank])
 test.assertEqual(square2.getNumberOfNodes(), [22, 13, 0][rank])
+test.assertEqual(mesh.getLocalToGlobalNodeIds()[0], [4, 44, 0][rank])
 test.assertEqual(
     CA.ParallelMesh.buildCube(refine=4, deterministic=True).getNumberOfNodes(),
     [1955, 2151, 2205][rank],
@@ -519,6 +520,7 @@ test.assertEqual(
     CA.ParallelMesh.buildCylinder(refine=3, deterministic=True).getNumberOfNodes(),
     [3321, 3321, 3825][rank],
 )
+
 
 # test ghosts
 square = CA.ParallelMesh.buildSquare(refine=2, deterministic=True, ghost=2)

@@ -186,6 +186,17 @@ subroutine rdtmai(noma, nomare, base, corrn, corrm, bascor)
         end do
     end if
 !
+! - Trier les noeuds pour les avoir dans le même ordre que le maillage initial
+!
+    nbnoou = 0
+    do ino = 1, nbnoin
+        if (zi(jwk1+ino-1) > 0) then
+            nbnoou = nbnoou+1
+            zi(jwk1+ino-1) = nbnoou
+            zi(jwk2+nbnoou-1) = ino
+        end if
+    end do
+!
 !
 !
 ! -2- CREATION DU NOUVEAU MAILLAGE
@@ -280,7 +291,7 @@ subroutine rdtmai(noma, nomare, base, corrn, corrm, bascor)
             call wkvect(nomare//'.NUMALG', base//' V I', nbmaou, iadr)
             call jeveuo(noma//'.NUMALG', 'L', vi=malg)
             do ima = 1, nbmaou
-                zi(iadr-1+ima) = maex(zi(jnuma+ima-1))
+                zi(iadr-1+ima) = malg(zi(jnuma+ima-1))
             end do
         end if
 ! --- OBJET .NOEX
@@ -288,7 +299,7 @@ subroutine rdtmai(noma, nomare, base, corrn, corrm, bascor)
         call jeveuo(noma//'.NOEX', 'L', vi=noex)
         do ino = 1, nbnoin
             if (zi(jwk1+ino-1) .ne. 0) then
-                zi(iadr-1+zi(jwk1+ino-1)-1) = noex(ino)
+                zi(iadr-1+zi(jwk1+ino-1)) = noex(ino)
             end if
         end do
 ! --- OBJET .NUNOLG
@@ -296,7 +307,7 @@ subroutine rdtmai(noma, nomare, base, corrn, corrm, bascor)
         call jeveuo(noma//'.NUNOLG', 'L', vi=nolg)
         do ino = 1, nbnoin
             if (zi(jwk1+ino-1) .ne. 0) then
-                zi(iadr-1+zi(jwk1+ino-1)-1) = nolg(ino)
+                zi(iadr-1+zi(jwk1+ino-1)) = nolg(ino)
             end if
         end do
     end if
