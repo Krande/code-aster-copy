@@ -60,6 +60,11 @@ def extract_symbols(obj_files):
                     continue
                 if "UNDEF" in line:
                     continue
+                # Only include entries that are associated with a real section and look like functions
+                if "SECT" not in line:
+                    continue
+                if "()" not in line:
+                    continue
                 parts = line.split('|', 1)
                 if len(parts) < 2:
                     continue
@@ -79,7 +84,7 @@ def extract_symbols(obj_files):
                     continue
                 if '.' in name:
                     continue
-                if name.endswith('._') or '_module' in name:
+                if name.endswith('._') or '_module' in name or "_mp_" in name:
                     continue
 
                 symbols.add(name)

@@ -401,8 +401,6 @@ EXPORTS
     assvss_
     asvepr_
     atasmo_
-    augmented_lagrangian_context_type_mp_free_augm_lagrangian_context_
-    augmented_lagrangian_context_type_mp_new_augmented_lagrangian_context_
     avcdmx_
     avcipr_
     avcrit_
@@ -441,11 +439,7 @@ EXPORTS
     barych_
     base3n_
     bcoqaf_
-    behaviourmgis_type_mp_fromastertomfront_
     behaviourselectoption_
-    behaviourstrain_type_mp_varcstrainhasrefe_
-    behaviourstrain_type_mp_varcstrainname_
-    behaviourstrain_type_mp_varcstrainnbcmp_
     betcvx_
     betfpp_
     betimp_
@@ -574,38 +568,6 @@ EXPORTS
     calcfp_
     calcft_
     calcg_
-    calcg_type_mp_addpara_
-    calcg_type_mp_addvalues_
-    calcg_type_mp_clean_field_
-    calcg_type_mp_clean_table_
-    calcg_type_mp_compute_curvature_
-    calcg_type_mp_create_npf_
-    calcg_type_mp_finish_stat_
-    calcg_type_mp_getabscurv_
-    calcg_type_mp_getabsfon_
-    calcg_type_mp_getabsfonname_
-    calcg_type_mp_getbaseloc_
-    calcg_type_mp_getcoornodes_
-    calcg_type_mp_getfield_
-    calcg_type_mp_getfondnoeud_
-    calcg_type_mp_getfondnoeudcoor_
-    calcg_type_mp_getfondnoeudnume_
-    calcg_type_mp_getfondtailler_
-    calcg_type_mp_getparameter_
-    calcg_type_mp_initialize_field_
-    calcg_type_mp_initialize_stat_
-    calcg_type_mp_initialize_study_
-    calcg_type_mp_initialize_table_
-    calcg_type_mp_initialize_theta_
-    calcg_type_mp_isdynatrans_
-    calcg_type_mp_ismodemeca_
-    calcg_type_mp_print_field_
-    calcg_type_mp_print_stat_
-    calcg_type_mp_print_study_
-    calcg_type_mp_print_theta_
-    calcg_type_mp_save_table_
-    calcg_type_mp_setoption_
-    calcg_typecreate_npf_mp_licmp_
     calcgetdata_
     calcgetdatameca_
     calcgr_
@@ -1452,35 +1414,6 @@ EXPORTS
     crtype_
     crvarc_
     crvloc_
-    csc_matrix_type_mp_check_csc_matrix_
-    csc_matrix_type_mp_compress_csc_matrix_
-    csc_matrix_type_mp_concat_csc_matrix_
-    csc_matrix_type_mp_copy_col_of_csc_matrix_
-    csc_matrix_type_mp_copy_csc_matrix_
-    csc_matrix_type_mp_create_csc_matrix_
-    csc_matrix_type_mp_create_csc_matrix_from_csc_store_
-    csc_matrix_type_mp_define_csc_matrix_from_array_
-    csc_matrix_type_mp_eye_csc_matrix_
-    csc_matrix_type_mp_free_csc_matrix_
-    csc_matrix_type_mp_get_block_from_csc_matrix_
-    csc_matrix_type_mp_hsplit_csc_matrix_
-    csc_matrix_type_mp_inverse_permutation_
-    csc_matrix_type_mp_new_csc_matrix_
-    csc_matrix_type_mp_norm2_of_csc_matrix_
-    csc_matrix_type_mp_permute_cols_of_csc_matrix_
-    csc_matrix_type_mp_permute_rows_of_csc_matrix_
-    csc_matrix_type_mp_print_csc_matrix_
-    csc_matrix_type_mp_sort_rows_of_csc_matrix_
-    csc_matrix_type_mp_to_one_based_indexing_
-    csc_matrix_type_mp_to_zero_based_indexing_
-    csc_matrix_type_mp_transpose_csc_matrix_
-    csc_store_type_mp_create_csc_store_
-    csc_store_type_mp_create_dyn_column_
-    csc_store_type_mp_free_csc_store_
-    csc_store_type_mp_free_dyn_column_
-    csc_store_type_mp_new_csc_store_
-    csc_store_type_mp_new_dyn_column_
-    csc_store_type_mp_put_to_csc_store_
     cschmi_
     csmbc8_
     csmbgg_
@@ -2224,8 +2157,6 @@ EXPORTS
     elg_calcx0_
     elg_calcxl_
     elg_calcxl_modal_
-    elg_context_type_mp_free_elg_context_
-    elg_context_type_mp_new_elg_context_
     elg_kellag_
     elg_preres_
     elg_resoud_
@@ -2343,9 +2274,6 @@ EXPORTS
     extchn_
     extdch_
     extdia_
-    externalstatevariable_type_mp_listextestatvari_
-    externalstatevariable_type_mp_listnbcmp_
-    externalstatevariable_type_mp_listphysquantity_
     extmod_
     extmod_sorted_
     extra1_
@@ -2717,18 +2645,6 @@ EXPORTS
     hbrmat_
     hbvaec_
     hfmss_
-    hho_type_mp_adapt_
-    hho_type_mp_cell_degree_
-    hho_type_mp_coeff_stab_
-    hho_type_mp_debug_data_
-    hho_type_mp_face_degree_
-    hho_type_mp_grad_degree_
-    hho_type_mp_initialize_data_
-    hho_type_mp_precompute_
-    hho_type_mp_print_cell_
-    hho_type_mp_print_data_
-    hho_type_mp_print_face_
-    hho_type_mp_setcoeffstab_
     histog_
     hlode_
     hmdeca_
@@ -3657,40 +3573,8 @@ EXPORTS
     lkvacv_
     lkvarp_
     lkvarv_
-    lmp_context_type_mp_build_lmp_context_
-    lmp_context_type_mp_free_lmp_context_
-    lmp_context_type_mp_new_lmp_context_
     load_list_info_
     load_unde_diri_
-    loadacoucompute_type_mp_acouloadfield_
-    loadacoucompute_type_mp_acouloadkeyword_
-    loadmecacompute_type_mp_mecaloadfield_
-    loadmecacompute_type_mp_mecaloadkeyword_
-    loadmecacompute_type_mp_mecaloadmatrf_
-    loadmecacompute_type_mp_mecaloadmatrr_
-    loadmecacompute_type_mp_mecaloadparaf_
-    loadmecacompute_type_mp_mecaloadparam_
-    loadmecacompute_type_mp_mecaloadparar_
-    loadmecacompute_type_mp_mecaloadpilo_
-    loadmecacompute_type_mp_mecaloadsuiv_
-    loadmecacompute_type_mp_mecaloadvectf_
-    loadmecacompute_type_mp_mecaloadvectr_
-    loadmecacompute_type_mp_mecaloadvectsf_
-    loadmecacompute_type_mp_mecaloadvectsr_
-    loadthercompute_type_mp_therloadfield_
-    loadthercompute_type_mp_therloadkeyword_
-    loadthercompute_type_mp_therloadmatrf_
-    loadthercompute_type_mp_therloadmatrr_
-    loadthercompute_type_mp_therloadparaf_
-    loadthercompute_type_mp_therloadparar_
-    loadthercompute_type_mp_therloadresif_
-    loadthercompute_type_mp_therloadresir_
-    loadthercompute_type_mp_therloadvectf_
-    loadthercompute_type_mp_therloadvectr_
-    loadthercompute_type_mp_thermatrparaf_
-    loadthercompute_type_mp_thermatrparar_
-    loadthercompute_type_mp_therresiparaf_
-    loadthercompute_type_mp_therresiparar_
     lobs_
     locglo_
     loncar_
@@ -6147,9 +6031,6 @@ EXPORTS
     rvtec2_
     rvtecn_
     rvvsup_
-    saddle_point_context_type_mp_free_saddle_point_context_
-    saddle_point_context_type_mp_get_num_of_constraints_
-    saddle_point_context_type_mp_new_saddle_point_context_
     sandcas1_
     sandcas2_
     sandcas2bis_
@@ -6248,22 +6129,6 @@ EXPORTS
     snecol_
     solide_tran_
     solide_tran_maj_
-    solidshell_type_mp_hexacovacenter_
-    solidshell_type_mp_hexaquadxiad_
-    solidshell_type_mp_hexaquadxieh_
-    solidshell_type_mp_hexaquadxijm_
-    solidshell_type_mp_hexastabdmatr_
-    solidshell_type_mp_hexavectg1_
-    solidshell_type_mp_hexavectg2_
-    solidshell_type_mp_hexavectg3_
-    solidshell_type_mp_hexavecth1_
-    solidshell_type_mp_hexavecth2_
-    solidshell_type_mp_hexavecth3_
-    solidshell_type_mp_hexavecth4_
-    solidshell_type_mp_hexavects1_
-    solidshell_type_mp_matr3iden_
-    solidshell_type_mp_tensoriden_
-    solidshell_type_mp_typmod_
     solrei_
     solren_
     somint_
@@ -6489,9 +6354,6 @@ EXPORTS
     te0045_
     te0046_
     te0047_
-    te0047_type_mp_getdiscretinformations_
-    te0047_type_mp_hassymmetrictangentmatrix_
-    te0047_type_mp_te0047_dscr_write_
     te0048_
     te0049_
     te0050_

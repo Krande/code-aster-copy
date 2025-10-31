@@ -10,18 +10,28 @@ from waftools.clangdb import build_clang_compilation_db
 
 
 class msvclibgen(Task.Task):
-    run_str = "LIB.exe /OUT:${TGT} ${SRC}"
+    # Use a minimal run_str; we will compose the full command with a response file in exec_command
+    run_str = "LIB.exe /OUT:${TGT}"
     color = "BLUE"
     before = ["cshlib", "cxxshlib", "fcshlib"]
     use_msvc_entry = False
 
+    def __str__(self):
+        # Provide a concise task banner to avoid dumping thousands of inputs
+        try:
+            out_name = self.outputs[0].name if self.outputs else "<no-output>"
+            n_inputs = len(self.inputs) if hasattr(self, "inputs") else 0
+            return f"msvclibgen: {out_name} ({n_inputs} objects)"
+        except Exception:
+            # Fall back to default if anything unexpected happens
+            return super().__str__()
+
     def exec_command(self, cmd, **kw):
-        """Execute the command"""
+        """Execute the command with a response file to avoid massive command lines/logs."""
         output_fp = pathlib.Path(self.outputs[0].abspath())
         output_fp.parent.mkdir(parents=True, exist_ok=True)
         obld = self.generator.bld
         root_path = pathlib.Path(obld.root.abspath()).resolve().absolute()
-        # Logs.info(f"{self.env.BIBC_DEF=}, {self.env.BIBCXX_DEF=}, {self.env.BIBFOR_DEF=}")
         clean_name_map = {
             "bibc": self.env.BIBC_DEF,
             "bibcxx": self.env.BIBCXX_DEF,
@@ -30,10 +40,11 @@ class msvclibgen(Task.Task):
             "mfront": self.env.MFRONT_DEF,
         }
         clean_name = output_fp.stem.replace("_gen", "")
-        # todo: auto-gen def files from obj files can be slotted in here
+        # libs directory for dependent libs
         libs_dir = pathlib.Path(self.env.PREFIX).resolve().absolute().parent / "libs"
-        # This is a hack to copy the generated lib to the build directory
+        # Base options
         opts = ["/NOLOGO", "/MACHINE:X64", "/SUBSYSTEM:CONSOLE", f"/LIBPATH:{libs_dir}"]
+        # DEF file
         def_file = root_path / clean_name / f"{clean_name}.def"
         if clean_name.endswith("proxy"):
             def_file = root_path / "msvc/c_entrypoints" / f"{clean_name}.def"
@@ -42,15 +53,30 @@ class msvclibgen(Task.Task):
             def_file_v = clean_name_map.get(clean_name, None)
             if def_file_v is not None:
                 def_file = root_path / def_file_v
-                Logs.info(f"Using def file {def_file=}")
+                Logs.debug(f"Using def file {def_file=}")
             opts += [f"/DEF:{def_file}"]
 
-        cmd = cmd[:2] + opts + cmd[2:]
-        # write a copy of the inputs to a file
-        with open(output_fp.with_name(f"{output_fp.stem}_in.txt"), "w") as f:
-            f.write("\n".join([str(x) for x in cmd]))
+        # Build a response file containing all input object files
+        # self.inputs are Nodes (previous compile tasks' outputs)
+        src_paths = [str(n.abspath()) for n in self.inputs]
+        rsp_path = output_fp.with_suffix(".rsp")
+        with open(rsp_path, "w", encoding="utf-8") as rsp:
+            # one entry per line keeps it readable
+            for p in src_paths:
+                rsp.write(p)
+                rsp.write("\n")
 
-        ret = super().exec_command(cmd, **kw)
+        # Compose compact command: LIB.exe /OUT:<out> <opts> @<rsp>
+        cmd_compact = [cmd[0], cmd[1], *opts, f"@{rsp_path}"]
+
+        # Log a concise summary at info level
+        Logs.info(
+            f"Generating {output_fp.name} with {len(src_paths)} objects (using response file '{rsp_path}')."
+        )
+        Logs.debug(f"Response file: {rsp_path}")
+
+        # Execute
+        ret = super().exec_command(cmd_compact, **kw)
         return ret
 
 

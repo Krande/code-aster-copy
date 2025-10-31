@@ -27,8 +27,9 @@ which can take different arguments.
 
 * `--use-log`: Creates a log file for the installation phase (the configure phase is still logged to the console)
 * `--no-clean`: Does not clean the build directory and uses the cache from last run
+* `--verbose-waf`: Log verbose 
 
-All build commands are stored in `build\int64\debug\compile_commands.json` (can be debug/release depending on the build)
+* All build commands are stored in `build\int64\debug\compile_commands.json` (can be debug/release depending on the build)
 
 ## MSVC Support
 
