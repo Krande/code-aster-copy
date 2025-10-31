@@ -33,7 +33,6 @@ AFFE_CHAR_THER = OPER(
         AU_MOINS_UN(
             "EVOL_CHAR",
             "TEMP_IMPO",
-            "SECH_IMPO",
             "SOURCE",
             "FLUX_REP",
             "ECHANGE",
@@ -47,7 +46,6 @@ AFFE_CHAR_THER = OPER(
             "LIAISON_MAIL",
             "CONVECTION",
         ),
-        EXCLUS("TEMP_IMPO", "SECH_IMPO"),
     ),
     MODELE=SIMP(statut="o", typ=(modele_sdaster)),
     DOUBLE_LAGRANGE=SIMP(statut="f", typ="TXM", into=("OUI", "NON"), defaut="OUI"),
@@ -74,17 +72,6 @@ AFFE_CHAR_THER = OPER(
         TEMP_MIL=SIMP(statut="f", typ="R"),
         TEMP_INF=SIMP(statut="f", typ="R"),
         TEMP_SUP=SIMP(statut="f", typ="R"),
-    ),
-    SECH_IMPO=FACT(
-        statut="f",
-        max="**",
-        regles=(AU_MOINS_UN("TOUT", "GROUP_MA", "GROUP_NO", TOUT="OUI"),),
-        TOUT=SIMP(statut="f", typ="TXM", into=("OUI",)),
-        GROUP_NO=SIMP(statut="f", typ=grno, validators=NoRepeat(), max="**"),
-        GROUP_MA=SIMP(statut="f", typ=grma, validators=NoRepeat(), max="**"),
-        SANS_GROUP_MA=SIMP(statut="f", typ=grma, validators=NoRepeat(), max="**"),
-        SANS_GROUP_NO=SIMP(statut="f", typ=grno, validators=NoRepeat(), max="**"),
-        SECH=SIMP(statut="o", typ="R"),
     ),
     FLUX_REP=FACT(
         statut="f",
