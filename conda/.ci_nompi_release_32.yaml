@@ -1,8 +1,0 @@
-mpi:
-  - nompi
-
-build_type:
-  - release
-
-int_type:
-  - 32
