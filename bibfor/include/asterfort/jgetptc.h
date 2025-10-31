@@ -22,7 +22,7 @@
             subroutine jgetptc(jad,pteur_c,vl,vi,vi4,vr,vc,vk8,vk16, &
      &vk24,vk32,vk80)
 
-      use iso_c_binding, only: c_ptr
+      use iso_c_binding, only:   c_ptr
       integer(kind=8) :: jad
       type(c_ptr) :: pteur_c
 

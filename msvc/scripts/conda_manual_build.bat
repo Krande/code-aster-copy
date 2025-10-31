@@ -139,7 +139,7 @@ if "%FC%" == "ifx.exe" (
     set FCFLAGS=%FCFLAGS% /4R8 /fpp /MD /names:lowercase /assume:underscore /assume:nobscc /fpe:0
     :: Add lib paths
     set LDFLAGS=%LDFLAGS% /LIBPATH:%LIB_PATH_ROOT%/lib /LIBPATH:%LIB_PATH_ROOT%/bin /LIBPATH:%PREF_ROOT%/libs
-    set "INCLUDE=%BUILD_PREFIX%\opt\compiler\include\intel64;%BUILD_PREFIX%\Library\include;%INCLUDE%"
+    set "INCLUDE=%PREF_ROOT%\opt\compiler\include\intel64;%LIBRARY_PREFIX%\include;%INCLUDE%"
     :: Signal to ifort.py that we're using conda-based Intel Fortran
     set "INTEL_FORTRAN_VERSION=2025.1162"
     set "CONDA_BUILD_INTEL_FORTRAN=1"
@@ -251,7 +251,7 @@ if %VERBOSE_WAF%==1 (
 REM Conditional log handling
 if %USE_LOG%==1 (
     set "datetimeString="
-    call conda_datetime.bat
+    call %~dp0\conda_datetime.bat
     waf install_debug -vvv > "install_debug_%datetimeString%.log" 2>&1
 ) else (
     if "%BUILD_DEBUG%" == "1" (

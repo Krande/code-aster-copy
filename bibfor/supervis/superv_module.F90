@@ -138,12 +138,6 @@ contains
         integer(kind=8) :: asthread_getmax
 #ifdef ASTER_HAVE_OPENMP
         asthread_getmax = omp_get_max_threads()
-! Experimenting with this because of a bug in MSVC64
-!        #ifdef ASTER_PLATFORM_MSVC64
-!            if (asthread_getmax .gt. 1) then
-!                print *, 'OpenMP max threads > 1, Forcing to 1 for MSVC64'
-!            end if
-!        #endif
 #else
         asthread_getmax = 1
 #endif

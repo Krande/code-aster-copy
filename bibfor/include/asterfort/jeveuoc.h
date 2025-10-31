@@ -20,7 +20,7 @@
 !
 interface
     subroutine jeveuoc(nomlu, cel, pc)
-        use iso_c_binding, only: c_ptr
+        use iso_c_binding, only:  c_loc, c_ptr, c_f_pointer
         implicit none
 
         character(len=*), intent(in) :: nomlu
