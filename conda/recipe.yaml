@@ -25,9 +25,9 @@ requirements:
   build:
     - ${{ compiler('c') }}
     - ${{ compiler('cxx') }}
+    - ${{ compiler('fortran') }}
     - if: not win
       then:
-        - ${{ compiler('fortran') }}
         - libgomp
     - pyyaml
     - waf ==2.1.5

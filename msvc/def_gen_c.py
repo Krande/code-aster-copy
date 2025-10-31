@@ -13,23 +13,61 @@ from pathlib import Path
 
 
 def find_object_files(build_dir, library_name="bibc"):
-    """Find all object files for the given library."""
+    """Find all object files for the given library.
+
+    Restrict search to the specific library subdirectory to avoid cross-picking
+    from similarly-named directories (e.g., bibcxx). Supports both .obj and .o.
+    """
     obj_files = []
     build_path = Path(build_dir)
+    lib_dir = build_path / library_name
 
-    # Look for object files in the build directory
-    for obj_file in build_path.rglob("*.obj"):
-        # Filter to only include files from the target library
-        if library_name in str(obj_file):
-            obj_files.append(obj_file)
+    if not lib_dir.exists():
+        # Fall back to whole tree scan as a last resort (older layouts), but be strict on path
+        search_roots = [lib_dir, build_path]
+    else:
+        search_roots = [lib_dir]
 
-    return obj_files
+    patterns = ["*.obj", "*.o"]
+    for root in search_roots:
+        if not root.exists():
+            continue
+        for pattern in patterns:
+            for obj_file in root.rglob(pattern):
+                # Ensure path actually contains the library dir name as a segment
+                if library_name in obj_file.parts:
+                    obj_files.append(obj_file)
+
+    # Deduplicate while preserving order
+    seen = set()
+    unique_files = []
+    for p in obj_files:
+        if p not in seen:
+            seen.add(p)
+            unique_files.append(p)
+
+    return unique_files
 
 
 def extract_c_symbols(obj_file):
-    """Extract C symbols from an object file using dumpbin."""
+    """Extract C symbols from an object file using dumpbin.
+
+    Notes:
+    - Filters out import thunks (__imp_), C++/RTTI/CRT internals, and stray annotations
+      appended by dumpbin like "(__declspec(dllimport) ... )".
+    """
     symbols = []
     data_symbols = []
+
+    # Prefixes to exclude from DEF (CRT/RTTI/imports/etc.)
+    exclude_prefixes = (
+        "__imp_", "__Cxx", "__RT", "_TI", "_CT", "_Init_thread_", "$", "._", "__chkstk"
+    )
+    # Specific symbols to exclude (not to be exported from bibc)
+    exclude_symbols = {
+        "_unused_main_", "_main", "main", "WinMain", "_WinMain@16",
+        "DllMain", "_DllMain@12", "DllMainCRTStartup", "_DllMainCRTStartup@12"
+    }
 
     try:
         # Run dumpbin to get symbols
@@ -41,28 +79,53 @@ def extract_c_symbols(obj_file):
         )
 
         for line in result.stdout.split('\n'):
-            # Look for External symbols
-            if "External" in line and "| " in line:
-                parts = line.split('|')
+            # Look for External symbols that are actually defined in this object
+            if "External" in line and "|" in line:
+                if "UNDEF" in line:
+                    # skip undefined externals; they are imported from other libs
+                    continue
+                parts = line.split('|', 1)
                 if len(parts) >= 2:
-                    symbol = parts[1].strip()
+                    # Right side typically starts with the symbol then whitespace and annotations
+                    right = parts[1].strip()
+                    if not right:
+                        continue
+                    token = right.split()[0]  # strip any trailing annotations
+
+                    # strip any surrounding parentheses remnants
+                    symbol = token.strip() \
+                        .removesuffix(')') \
+                        .removeprefix('(')
 
                     # Check if it's a DATA symbol (global variable)
                     is_data = "SECT" in line and not ("()" in line or "notype" in line.lower())
 
-                    # Filter C symbols
-                    # Skip compiler-generated symbols and internals
-                    if symbol and not symbol.startswith('.'):
-                        # Include C symbols (functions and globals)
-                        if (not symbol.startswith('?') and  # Exclude C++ mangled names
-                            (symbol.startswith('_') or
-                             symbol.startswith('Py') or
-                             symbol.startswith('g') or
-                             any(x in symbol for x in ['aster', 'asmpi', 'NULL_FUNCTION']))):
-                            if is_data:
-                                data_symbols.append(symbol)
-                            else:
-                                symbols.append(symbol)
+                    # Filtering rules
+                    if not symbol:
+                        continue
+                    if symbol in exclude_symbols:
+                        continue
+                    if symbol.startswith('.'):
+                        continue
+                    if symbol.startswith(exclude_prefixes):
+                        continue
+
+                    # Exclude C++ mangled names
+                    if symbol.startswith('?'):
+                        continue
+
+                    # Accept C-like names
+                    is_c_like = (
+                        symbol.startswith('_') or symbol.startswith('Py') or symbol.startswith('g') or
+                        any(x in symbol for x in ("aster", "asmpi", "NULL_FUNCTION"))
+                    )
+                    if not is_c_like:
+                        continue
+
+                    if is_data:
+                        data_symbols.append(symbol)
+                    else:
+                        symbols.append(symbol)
 
     except subprocess.CalledProcessError as e:
         print(f"Warning: Failed to process {obj_file}: {e}", file=sys.stderr)

@@ -26,6 +26,7 @@ The `build` and `buildd` on windows call the `msvc/scripts/conda_manual_build.ba
 which can take different arguments.
 
 * `--use-log`: Creates a log file for the installation phase (the configure phase is still logged to the console)
+* `--no-clean`: Does not clean the build directory and uses the cache from last run
 
 All build commands are stored in `build\int64\debug\compile_commands.json` (can be debug/release depending on the build)
 

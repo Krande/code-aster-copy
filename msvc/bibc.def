@@ -1,34 +1,26 @@
 LIBRARY bibc
 EXPORTS
-	CODEASTER_ARRAY_API 	 DATA
-	gErrFlg 	 DATA
-	gExcEnv 	 DATA
-	gExcLvl 	 DATA
-	gExcNumb 	 DATA
-	BlankStr
-	CopyCStrToFStr
-	FStrlen
-	FreeStr
-	GetJdcAttr
-	MakeBlankFStr
-	MakeCStrFromFStr
-	MakeFStrFromCStr
-	MakeListFloat
-	MakeListInt
-	MakeListString
-	MakeTabFStr
-	MakeTupleFloat
-	MakeTupleInt
-	MakeTupleString
 	NULL_FUNCTION
-	PRE_myabort
 	PyInit_aster
 	PyInit_aster_core
 	PyInit_aster_fonctions
-	PyInit_med_aster
-	SetTabFStr
-	TraiteMessageErreur
 	__local_stdio_printf_options
+	__real@3eb0c6f7a0b5ed8d
+	__real@3f91df46a2529d39
+	__real@3ff0000000000000
+	__real@4000000000000000
+	__real@400921fb54442d18
+	__real@401921fb54442d18
+	__real@404ca5dc1a63c1f8
+	__real@4066800000000000
+	__real@4071126666666666
+	__real@408f400000000000
+	__real@408ff80000000000
+	__real@bff0000000000000
+	__real@c04a000000000000
+	__real@c04a800000000000
+	__real@c08ff00000000000
+	__xmm@7fffffffffffffff7fffffffffffffff
 	_check_string_length
 	_end_try
 	_libsymb_get_object
@@ -36,8 +28,11 @@ EXPORTS
 	_new_try
 	_reset_tpmax
 	_search_id
-	append_etape
-	asabrt_
+	_snprintf
+	_vfprintf_l
+	_vsnprintf
+	_vsnprintf_l
+	_vsprintf_l
 	asmpi_allgather_char8_
 	asmpi_allgather_i_
 	asmpi_allgather_r_
@@ -82,6 +77,7 @@ EXPORTS
 	asmpi_split_comm_
 	asmpi_test_
 	asmpi_wtime_
+	aster_fe_invalid
 	aster_free_comm
 	aster_get_comm_world
 	aster_get_current_comm
@@ -99,29 +95,15 @@ EXPORTS
 	aster_set_current_comm
 	aster_set_mpi_barrier
 	aster_split_comm
+	aster_terminate
 	asterc_getopt
 	asterc_getopt_double
 	asterc_getopt_long
 	asterc_getopt_string
-	calc_SPEC_OSCI
-	cheksd_
-	chkmsg_
-	closdr_
-	clrusr_
-	conv_un_c8
-	convc8
-	converltx
-	convert
-	convertxt
-	convr8
-	cpfile_
-	datetoi_
-	dll_init
-	dllcls_
-	erfcam_
-	etausr_
-	fetsco_
-	fprintf
+	gErrFlg
+	gExcEnv
+	gExcLvl
+	gExcNumb
 	gcecdu_
 	gcncon2_
 	get_dll_register_dict
@@ -149,116 +131,3 @@ EXPORTS
 	gtopti_
 	gtoptk_
 	gtoptr_
-	hancpu
-	hanfpe
-	hdfcld_
-	hdfclf_
-	hdfclg_
-	hdfcrg_
-	hdfnbo_
-	hdfopd_
-	hdfopf_
-	hdfopg_
-	hdfrsv_
-	hdftsd_
-	hdfwat_
-	hdfwsv_
-	hpalloc_
-	hpdeallc_
-	ind_fac
-	indiceNbName
-	indik8_
-	iniran_
-	inisig_
-	init_etape_stack
-	isbaem_
-	isjvup_
-	ismaem_
-	isnnem_
-	ispbem_
-	jdcget_
-	jdcset_
-	kloklo_
-	lbisem_
-	lcalgo_
-	lccree_
-	lcdeformldc_
-	lcdiscard_
-	lcextevari_
-	lcinfo_
-	lckitread_
-	lcreguvisc_
-	lcsymb_
-	lcsymm_
-	lctest_
-	lctype_
-	lcvari_
-	libsymb_apply_on_all
-	libsymb_get_handle
-	libsymb_get_symbol
-	libsymb_is_known
-	libsymb_register
-	libsymb_release
-	lihdfv_
-	limedv_
-	liscov_
-	llbloc_
-	loc8em_
-	lofiem_
-	loisem_
-	lolsem_
-	lor8em_
-	matfpe_
-	mempid_
-	mofiem_
-	ncisem_
-	ncr8em_
-	openLogicalUnitFile
-	open_fac
-	opendr_
-	pop_etape
-	prhead_
-	print_trace_
-	printf
-	putvir_
-	putvrr_
-	r4maem_
-	r4miem_
-	r8baem_
-	r8depi_
-	r8dgrd_
-	r8gaem_
-	r8maem_
-	r8miem_
-	r8nnem_
-	r8pi_
-	r8prem_
-	r8rddg_
-	r8t0_
-	r8vide_
-	rdtmax_
-	readdr_
-	register_sh_etape
-	register_sh_jeveux_status
-	register_sh_msglog
-	register_sh_params
-	releaseLogicalUnitFile
-	rmarem_
-	rmaxem_
-	rmfile_
-	rminem_
-	rmirem_
-	sprintf
-	stpusr1
-	strmov_
-	aster_terminate
-	testresu_print_
-	umat_get_function_
-	umatwp_
-	utalrm_
-	utflsh_
-	utprin_
-	uttcsm_
-	uttrst_
-	writdr_
-	xfini_

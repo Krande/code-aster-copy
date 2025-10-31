@@ -8,10 +8,6 @@ echo "Setting compiler env vars"
 
 :: set FC=flang-new.exe
 set FC=ifx.exe
-if not "%FC%" == "flang-new" (
-    call %RECIPE_DIR%\activate_ifx.bat
-)
-
 set CC=clang-cl.exe
 set CXX=clang-cl.exe
 
@@ -61,6 +57,10 @@ if "%FC%" == "ifx.exe" (
     set FCFLAGS=%FCFLAGS% /fpp /4R8 /MD /names:lowercase /assume:underscore /assume:nobscc /fpe:0 /4I8
     :: Add lib paths
     set LDFLAGS=%LDFLAGS% /LIBPATH:%LIB_PATH_ROOT%/lib /LIBPATH:%LIB_PATH_ROOT%/bin /LIBPATH:%PREF_ROOT%/libs
+    set "INCLUDE=%PREF_ROOT%\opt\compiler\include\intel64;%LIBRARY_PREFIX%\include;%INCLUDE%"
+    :: Signal to ifort.py that we're using conda-based Intel Fortran
+    set "INTEL_FORTRAN_VERSION=2025.1162"
+    set "CONDA_BUILD_INTEL_FORTRAN=1"
 ) else (
     echo "Using LLVM Flang Fortran compiler"
     set FC_SEARCH=flang

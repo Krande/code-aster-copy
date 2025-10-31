@@ -12,7 +12,10 @@ from pathlib import Path
 
 
 def find_object_files(build_dir):
-    """Find all object files in the bibfor build directory."""
+    """Find all object files in the bibfor build directory.
+
+    Supports both .obj and .o (e.g., .f.1.o) file extensions.
+    """
     obj_files = []
     bibfor_dir = build_dir / "bibfor"
 
@@ -20,8 +23,9 @@ def find_object_files(build_dir):
         print(f"Warning: bibfor build directory not found: {bibfor_dir}")
         return obj_files
 
-    for obj_file in bibfor_dir.rglob("*.obj"):
-        obj_files.append(obj_file)
+    for pattern in ["*.obj", "*.o"]:
+        for obj_file in bibfor_dir.rglob(pattern):
+            obj_files.append(obj_file)
 
     print(f"Found {len(obj_files)} object files in {bibfor_dir}")
     return obj_files
