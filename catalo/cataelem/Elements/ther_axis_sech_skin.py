@@ -94,26 +94,6 @@ class SEAXSE2(Element):
             para_in=((SP.PFLUXVF, LC.CFLUX2F), (SP.PGEOMER, LC.EGEOM2D), (SP.PINSTR, LC.CTIMETR)),
             para_out=((SP.PVECTTR, MVECTTR),),
         ),
-        OP.CHAR_THER_RAYO_F(
-            te=75,
-            para_in=(
-                (SP.PGEOMER, LC.EGEOM2D),
-                (SP.PRAYONF, LC.CRAYONF),
-                (SP.PTEMPER, DDL_THER),
-                (SP.PINSTR, LC.CTIMETR),
-            ),
-            para_out=((SP.PVECTTR, MVECTTR),),
-        ),
-        OP.CHAR_THER_RAYO_R(
-            te=75,
-            para_in=(
-                (SP.PGEOMER, LC.EGEOM2D),
-                (SP.PRAYONR, LC.CRAYONR),
-                (SP.PTEMPER, DDL_THER),
-                (SP.PINSTR, LC.CTIMETR),
-            ),
-            para_out=((SP.PVECTTR, MVECTTR),),
-        ),
         OP.CHAR_THER_ECHA_F(
             te=75,
             para_in=(
@@ -141,16 +121,6 @@ class SEAXSE2(Element):
             para_in=((SP.PGEOMER, LC.EGEOM2D),),
             para_out=((OP.COOR_ELGA.PCOORPG, LC.EGGAU2D),),
         ),
-        OP.FLUX_FLUI_X(
-            te=309,
-            para_in=((SP.PGEOMER, LC.EGEOM2D),),
-            para_out=((OP.FLUX_FLUI_X.PMATTTR, MMATTTR),),
-        ),
-        OP.FLUX_FLUI_Y(
-            te=309,
-            para_in=((SP.PGEOMER, LC.EGEOM2D),),
-            para_out=((OP.FLUX_FLUI_Y.PMATTTR, MMATTTR),),
-        ),
         OP.MTAN_THER_FLUXNL(
             te=251,
             para_in=(
@@ -160,26 +130,6 @@ class SEAXSE2(Element):
                 (SP.PINSTR, LC.CTIMETR),
             ),
             para_out=((OP.MTAN_THER_FLUXNL.PMATTTR, MMATTTR),),
-        ),
-        OP.MTAN_THER_RAYO_F(
-            te=251,
-            para_in=(
-                (SP.PGEOMER, LC.EGEOM2D),
-                (SP.PRAYONF, LC.CRAYONF),
-                (SP.PTEMPEI, DDL_THER),
-                (SP.PINSTR, LC.CTIMETR),
-            ),
-            para_out=((OP.MTAN_THER_RAYO_F.PMATTTR, MMATTTR),),
-        ),
-        OP.MTAN_THER_RAYO_R(
-            te=251,
-            para_in=(
-                (SP.PGEOMER, LC.EGEOM2D),
-                (SP.PRAYONR, LC.CRAYONR),
-                (SP.PTEMPEI, DDL_THER),
-                (SP.PINSTR, LC.CTIMETR),
-            ),
-            para_out=((OP.MTAN_THER_RAYO_R.PMATTTR, MMATTTR),),
         ),
         OP.RESI_THER_COEF_F(
             te=137,
@@ -206,26 +156,6 @@ class SEAXSE2(Element):
             para_in=(
                 (SP.PFLUXNL, LC.CFLUXNF),
                 (SP.PGEOMER, LC.EGEOM2D),
-                (SP.PTEMPEI, DDL_THER),
-                (SP.PINSTR, LC.CTIMETR),
-            ),
-            para_out=((SP.PRESIDU, MVECTTR),),
-        ),
-        OP.RESI_THER_RAYO_F(
-            te=137,
-            para_in=(
-                (SP.PGEOMER, LC.EGEOM2D),
-                (SP.PRAYONF, LC.CRAYONF),
-                (SP.PTEMPEI, DDL_THER),
-                (SP.PINSTR, LC.CTIMETR),
-            ),
-            para_out=((SP.PRESIDU, MVECTTR),),
-        ),
-        OP.RESI_THER_RAYO_R(
-            te=136,
-            para_in=(
-                (SP.PGEOMER, LC.EGEOM2D),
-                (SP.PRAYONR, LC.CRAYONR),
                 (SP.PTEMPEI, DDL_THER),
                 (SP.PINSTR, LC.CTIMETR),
             ),
