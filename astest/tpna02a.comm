@@ -59,33 +59,10 @@ STAT_THER_F90 = THER_NON_LINE(
     OBSERVATION=_F(NOM_CHAM="TEMP", NOM_CMP="TEMP", TOUT="OUI"),  # Call fortran
 )
 
-STAT_THER_PY = THER_NON_LINE(
-    MODELE=MODELE,
-    CHAM_MATER=CHAM_MATER,
-    EXCIT=_F(CHARGE=CHARGE),
-    INCREMENT=_F(LIST_INST=DEFI_LIST_REEL(VALE=0.0)),
-    TYPE_CALCUL="STAT",
-    NEWTON=_F(REAC_ITER=1),
-    CONVERGENCE=_F(RESI_GLOB_MAXI=1.0e-12, ITER_GLOB_MAXI=10),
-    RECH_LINEAIRE=_F(ITER_LINE_MAXI=0),
-)
-
 # Solve nonlinear heat-transfer problem: transient state
 nombre_instants = 300
 LIST_REEL = DEFI_LIST_REEL(DEBUT=0.0, INTERVALLE=_F(JUSQU_A=600.0, NOMBRE=nombre_instants))
 LIST_INST = DEFI_LIST_INST(DEFI_LIST=_F(LIST_INST=LIST_REEL))
-
-TRAN_THER_PY = THER_NON_LINE(
-    MODELE=MODELE,
-    CHAM_MATER=CHAM_MATER,
-    EXCIT=_F(CHARGE=CHARGE),
-    INCREMENT=_F(LIST_INST=LIST_INST, NUME_INST_FIN=nombre_instants),
-    ETAT_INIT=_F(VALE=0.0),
-    SCHEMA_TEMPS=_F(SCHEMA="THETA", THETA=0.57),
-    NEWTON=_F(REAC_ITER=1),
-    CONVERGENCE=_F(RESI_GLOB_MAXI=1.0e-7, ITER_GLOB_MAXI=10),
-    RECH_LINEAIRE=_F(ITER_LINE_MAXI=0),
-)
 
 TRAN_THER_F90 = THER_NON_LINE(
     MODELE=MODELE,
@@ -93,7 +70,6 @@ TRAN_THER_F90 = THER_NON_LINE(
     EXCIT=_F(CHARGE=CHARGE),
     INCREMENT=_F(LIST_INST=LIST_INST, NUME_INST_FIN=nombre_instants),
     ETAT_INIT=_F(VALE=0.0),
-    SCHEMA_TEMPS=_F(SCHEMA="THETA", THETA=0.57),
     NEWTON=_F(REAC_ITER=1),
     CONVERGENCE=_F(RESI_GLOB_MAXI=1.0e-7, ITER_GLOB_MAXI=10),
     RECH_LINEAIRE=_F(ITER_LINE_MAXI=0),
@@ -102,90 +78,84 @@ TRAN_THER_F90 = THER_NON_LINE(
 
 # TEST RESULTS:
 # Steady results
-for resultat in [STAT_THER_PY, STAT_THER_F90]:
-    TT = CREA_TABLE(
-        RESU=_F(
-            CRITERE="RELATIF",
-            GROUP_MA="LINE_EXT",
-            NOM_CHAM="TEMP",
-            RESULTAT=resultat,
-            TOUT_CMP="OUI",
-        ),
-        TYPE_TABLE="TABLE",
-    )
-
-    TEST_TABLE(
+TT = CREA_TABLE(
+    RESU=_F(
         CRITERE="RELATIF",
-        FILTRE=(
-            _F(CRITERE="ABSOLU", CRIT_COMP="EQ", NOM_PARA="INST", PRECISION=1e-6, VALE=0.0),
-            _F(CRIT_COMP="MAXI", NOM_PARA="TEMP"),
-        ),
-        TABLE=TT,
-        NOM_PARA="TEMP",
-        REFERENCE="ANALYTIQUE",
-        VALE_CALC=100.0,
-        VALE_REFE=temperature_externe,
-        PRECISION=1e-6,
-    )
+        GROUP_MA="LINE_EXT",
+        NOM_CHAM="TEMP",
+        RESULTAT=STAT_THER_F90,
+        TOUT_CMP="OUI",
+    ),
+    TYPE_TABLE="TABLE",
+)
 
-    TEST_TABLE(
-        CRITERE="RELATIF",
-        FILTRE=(
-            _F(CRITERE="ABSOLU", CRIT_COMP="EQ", NOM_PARA="INST", PRECISION=1e-6, VALE=0.0),
-            _F(CRIT_COMP="MINI", NOM_PARA="TEMP"),
-        ),
-        TABLE=TT,
-        NOM_PARA="TEMP",
-        REFERENCE="ANALYTIQUE",
-        VALE_CALC=100.0,
-        VALE_REFE=temperature_externe,
-        PRECISION=1e-6,
-    )
+TEST_TABLE(
+    CRITERE="RELATIF",
+    FILTRE=(
+        _F(CRITERE="ABSOLU", CRIT_COMP="EQ", NOM_PARA="INST", PRECISION=1e-6, VALE=0.0),
+        _F(CRIT_COMP="MAXI", NOM_PARA="TEMP"),
+    ),
+    TABLE=TT,
+    NOM_PARA="TEMP",
+    REFERENCE="ANALYTIQUE",
+    VALE_CALC=100.0,
+    VALE_REFE=temperature_externe,
+    PRECISION=1e-6,
+)
+
+TEST_TABLE(
+    CRITERE="RELATIF",
+    FILTRE=(
+        _F(CRITERE="ABSOLU", CRIT_COMP="EQ", NOM_PARA="INST", PRECISION=1e-6, VALE=0.0),
+        _F(CRIT_COMP="MINI", NOM_PARA="TEMP"),
+    ),
+    TABLE=TT,
+    NOM_PARA="TEMP",
+    REFERENCE="ANALYTIQUE",
+    VALE_CALC=100.0,
+    VALE_REFE=temperature_externe,
+    PRECISION=1e-6,
+)
 
 
 # Transient results
-vale_calc_100_list = [54.53443932011566, 54.533188379364574]
-vale_calc_600_list = [99.70542525641507, 99.705422320723290]
-for vale_calc_100, vale_calc_600, resultat in zip(
-    vale_calc_100_list, vale_calc_600_list, [TRAN_THER_PY, TRAN_THER_F90]
-):
-    TT = CREA_TABLE(
-        RESU=_F(
-            CRITERE="RELATIF",
-            GROUP_MA="LINE_EXT",
-            NOM_CHAM="TEMP",
-            RESULTAT=resultat,
-            TOUT_CMP="OUI",
-        ),
-        TYPE_TABLE="TABLE",
-    )
-
-    TEST_TABLE(
+TT = CREA_TABLE(
+    RESU=_F(
         CRITERE="RELATIF",
-        FILTRE=(
-            _F(CRITERE="ABSOLU", CRIT_COMP="EQ", NOM_PARA="INST", PRECISION=1e-6, VALE=100.0),
-            _F(CRIT_COMP="MAXI", NOM_PARA="TEMP"),
-        ),
-        TABLE=TT,
-        NOM_PARA="TEMP",
-        REFERENCE="ANALYTIQUE",
-        VALE_CALC=vale_calc_100,
-        VALE_REFE=54.56435728271139,
-        PRECISION=1e-3,
-    )
+        GROUP_MA="LINE_EXT",
+        NOM_CHAM="TEMP",
+        RESULTAT=TRAN_THER_F90,
+        TOUT_CMP="OUI",
+    ),
+    TYPE_TABLE="TABLE",
+)
 
-    TEST_TABLE(
-        CRITERE="RELATIF",
-        FILTRE=(
-            _F(CRITERE="ABSOLU", CRIT_COMP="EQ", NOM_PARA="INST", PRECISION=1e-6, VALE=600.0),
-            _F(CRIT_COMP="MAXI", NOM_PARA="TEMP"),
-        ),
-        TABLE=TT,
-        NOM_PARA="TEMP",
-        REFERENCE="ANALYTIQUE",
-        VALE_CALC=vale_calc_600,
-        VALE_REFE=99.70768743887123,
-        PRECISION=1e-3,
-    )
+TEST_TABLE(
+    CRITERE="RELATIF",
+    FILTRE=(
+        _F(CRITERE="ABSOLU", CRIT_COMP="EQ", NOM_PARA="INST", PRECISION=1e-6, VALE=100.0),
+        _F(CRIT_COMP="MAXI", NOM_PARA="TEMP"),
+    ),
+    TABLE=TT,
+    NOM_PARA="TEMP",
+    REFERENCE="ANALYTIQUE",
+    VALE_CALC=54.533188379364574,
+    VALE_REFE=54.56435728271139,
+    PRECISION=1e-3,
+)
+
+TEST_TABLE(
+    CRITERE="RELATIF",
+    FILTRE=(
+        _F(CRITERE="ABSOLU", CRIT_COMP="EQ", NOM_PARA="INST", PRECISION=1e-6, VALE=600.0),
+        _F(CRIT_COMP="MAXI", NOM_PARA="TEMP"),
+    ),
+    TABLE=TT,
+    NOM_PARA="TEMP",
+    REFERENCE="ANALYTIQUE",
+    VALE_CALC=99.705422320723290,
+    VALE_REFE=99.70768743887123,
+    PRECISION=1e-3,
+)
 
 FIN()
