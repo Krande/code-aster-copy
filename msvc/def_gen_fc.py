@@ -32,20 +32,29 @@ def find_object_files(build_dir):
 
 
 def extract_symbols(obj_files):
-    """Extract Fortran symbols from object files using dumpbin (COFF-aware).
+    """Extract defined external symbols from COFF objs via dumpbin.
 
-    Rules:
-    - Only External symbols that are defined in this object (exclude UNDEF)
-    - Exclude C++/CRT/RTTI/import thunks and similar internals
-    - Keep only names ending with '_' (Fortran convention)
-    - Exclude any names containing '.' (module metadata like module._)
-    - Exclude obvious module-related exports ending with '._' or containing '_module'
+    We no longer require trailing underscores nor the "()" marker, because
+    MSVC/Intel Fortran often emit symbols without underscores and may not
+    annotate with parentheses in COFF symbol listings.
+
+    Additionally, filter out MSVC/Intel Fortran constant pool symbols like
+    __real@..., __xmm@..., __ymm@..., and similar, which must not be exported.
     """
-    symbols = set()
+    import re
 
+    defined = set()
+
+    # Exclude common non-exportable prefixes and thunks
     exclude_prefixes = (
-        "__imp_", "__Cxx", "__RT", "_TI", "_CT", "_Init_thread_", "$", "._", "__chkstk"
+        "__imp_", "__Cxx", "__RT", "_TI", "_CT", "_Init_thread_", "$", "._", "__chkstk",
+        # Constant pool / vectorized literals and others we must not export
+        "__real@", "__xmm@", "__ymm@", "__int@", "__m128@", "__m256@",
     )
+
+    # Accept only reasonable API-like symbols: start with a letter, then [A-Za-z0-9_]*
+    # This will drop names containing '@' (stdcall decorations), dots, etc.
+    api_name_re = re.compile(r"^[A-Za-z][A-Za-z0-9_]*$")
 
     for obj_file in obj_files:
         try:
@@ -53,60 +62,95 @@ def extract_symbols(obj_files):
                 ["dumpbin", "/SYMBOLS", str(obj_file)],
                 capture_output=True,
                 text=True,
-                check=True
+                check=True,
             )
-            for line in result.stdout.splitlines():
-                if "External" not in line or "|" not in line:
-                    continue
-                if "UNDEF" in line:
-                    continue
-                # Only include entries that are associated with a real section and look like functions
-                if "SECT" not in line:
-                    continue
-                if "()" not in line:
-                    continue
-                parts = line.split('|', 1)
-                if len(parts) < 2:
-                    continue
-                right = parts[1].strip()
-                if not right:
-                    continue
-                token = right.split()[0]
-                name = token.strip().strip('()')
-
-                if not name:
-                    continue
-                if name.startswith(exclude_prefixes):
-                    continue
-                if name.startswith('?'):
-                    continue
-                if not name.endswith('_'):
-                    continue
-                if '.' in name:
-                    continue
-                if name.endswith('._') or '_module' in name or "_mp_" in name:
-                    continue
-
-                symbols.add(name)
-        except subprocess.CalledProcessError:
-            continue
         except FileNotFoundError:
             print("Error: dumpbin.exe not found. Make sure MSVC tools are in PATH.")
             sys.exit(1)
+        except subprocess.CalledProcessError:
+            continue
 
-    return sorted(symbols)
+        for raw in result.stdout.splitlines():
+            line = raw.strip()
+            # We want: External, defined (not UNDEF), associated with a section
+            if "External" not in line or "|" not in line:
+                continue
+            if "UNDEF" in line:
+                continue
+            if "SECT" not in line:
+                continue
+
+            # right side after the '|'
+            try:
+                right = line.split("|", 1)[1].strip()
+            except Exception:
+                continue
+            if not right:
+                continue
+
+            # The symbol token is typically the last field after the '|'
+            token = right.split()[-1]
+            name = token.strip()
+            # Some dumpbin variants append '()' to function names; strip it if present
+            if name.endswith("()"):
+                name = name[:-2]
+            if not name:
+                continue
+
+            # Exclusions for obvious non-APIs and internals
+            if name.startswith(exclude_prefixes):
+                continue
+            if name.startswith("?"):  # C++ mangled
+                continue
+            if "." in name:          # module metadata
+                continue
+            if name.endswith("._") or "_module" in name or "_mp_" in name:
+                continue
+            if "@" in name:          # stdcall-size decorated or const pools
+                continue
+            if not api_name_re.match(name):
+                continue
+
+            defined.add(name)
+
+    return sorted(defined)
 
 
 def generate_def_file(symbols, output_file):
-    """Generate the .def file."""
-    with open(output_file, 'w') as f:
+    """Generate a .def exporting both MSVC/ifx and GNU-style names via aliases.
+
+    Rules per discovered internal symbol `s`:
+    - Always export the internal symbol `s` as-is.
+    - If `s` ends with `_` (GNU style), also export the alias without underscore: `base = s[:-1]`; emit `base=s`.
+    - If `s` does NOT end with `_` (MSVC/ifx style), also export the alias with underscore: emit `s_=s`.
+
+    This ensures both spellings are available regardless of which one is actually defined internally.
+    """
+    exports = []
+    for s in symbols:
+        exports.append(s)  # always export the actual internal symbol
+        if s.endswith("_"):
+            base = s[:-1]
+            if base:
+                exports.append(f"{base}={s}")
+        else:
+            exports.append(f"{s}_={s}")
+
+    # de-duplicate while preserving order
+    seen = set()
+    ordered = []
+    for e in exports:
+        if e not in seen:
+            seen.add(e)
+            ordered.append(e)
+
+    with open(output_file, "w", encoding="utf-8") as f:
         f.write("LIBRARY bibfor\n")
         f.write("EXPORTS\n")
+        for e in ordered:
+            f.write(f"    {e}\n")
 
-        for symbol in symbols:
-            f.write(f"    {symbol}\n")
-
-    print(f"Generated {output_file} with {len(symbols)} symbols")
+    print(f"Generated {output_file} with {len(ordered)} exports (from {len(symbols)} symbols)")
 
 
 def main():
