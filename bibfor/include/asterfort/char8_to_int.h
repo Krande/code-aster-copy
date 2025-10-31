@@ -15,9 +15,14 @@
 ! You should have received a copy of the GNU General Public License
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
+#include "asterf_types.h"
 !
 interface
-    subroutine caliel(loadZ, modelZ)
-        character(len=*), intent(in) :: loadZ, modelZ
-    end subroutine caliel
+    function char8_to_int(to_convert, lcolle, nommai, typent)
+        character(len=8), intent(in) :: to_convert
+        aster_logical, optional, intent(in) :: lcolle
+        character(len=8), optional, intent(in) :: nommai
+        character(len=*), optional, intent(in) :: typent
+        integer(kind=8) :: char8_to_int
+    end function char8_to_int
 end interface

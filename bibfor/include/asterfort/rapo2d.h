@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -19,11 +19,9 @@
 !
 !
 interface
-    subroutine rapo2d(numdlz, iocc, fonrez, lisrez, chargz)
-        character(len=*) :: numdlz
-        integer :: iocc
-        character(len=*) :: fonrez
-        character(len=*) :: lisrez
-        character(len=*) :: chargz
+    subroutine rapo2d(numeDofZ, iocc, listRelaZ, loadZ)
+        character(len=*), intent(in) :: numeDofZ
+        integer, intent(in) :: iocc
+        character(len=*), intent(in) :: listRelaZ, loadZ
     end subroutine rapo2d
 end interface

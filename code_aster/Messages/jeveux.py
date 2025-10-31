@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -235,29 +235,34 @@ Contactez le support technique.
     ),
     40: _(
         """
-     Erreur écriture de l'enregistrement %(i1)d sur la base : %(k1)s %(i2)d
-     code retour : %(i3)d
-     Erreur probablement provoquée par une taille trop faible du répertoire de travail.
+    Erreur écriture de l'enregistrement %(i1)d sur la base :
+        %(k1)s
+
+    Code retour : %(i2)d
+    Erreur probablement provoquée par un manque d'espace disque.
 """
     ),
     41: _(
         """
-     Erreur lecture de l'enregistrement %(i1)d sur la base : %(k1)s %(i2)d
-     code retour : %(i3)d
+     Erreur lecture de l'enregistrement %(i1)d sur la base :
+        %(k1)s
+
+    Code retour : %(i3)d
 """
     ),
     42: _(
         """
-     Fichier saturé, le nombre maximum d'enregistrement %(i1)d de la base %(k1)s est atteint
-     il faut relancer le calcul en passant une taille maximum de base sur la ligne de commande
-     argument "--max_base" suivi de la valeur en Mo.
+    Fichier saturé, le nombre maximum d'enregistrement %(i1)d de la base %(k1)s est atteint
+    il faut relancer le calcul en passant une taille maximum de base sur la ligne de commande
+    argument "--max_base" suivi de la valeur en Mo.
 """
     ),
     43: _(
         """
-     Erreur d'ouverture du fichier %(k1)s , code retour %(i1)d
-Ce message est un message d'erreur développeur.
-Contactez le support technique.
+    Erreur d'ouverture du fichier %(k1)s , code retour %(i1)d
+
+    Ce message est un message d'erreur développeur.
+    Contactez le support technique.
 """
     ),
     44: _(

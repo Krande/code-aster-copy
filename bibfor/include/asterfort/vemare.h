@@ -15,9 +15,13 @@
 ! You should have received a copy of the GNU General Public License
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
+
+!
 !
 interface
-    subroutine caliel(loadZ, modelZ)
-        character(len=*), intent(in) :: loadZ, modelZ
-    end subroutine caliel
+    subroutine vemare(base, vect_elemz, modelz)
+        character(len=1), intent(in) :: base
+        character(len=*), intent(in) :: vect_elemz
+        character(len=*), intent(in) :: modelz
+    end subroutine vemare
 end interface

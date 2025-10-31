@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -19,18 +19,17 @@
 !
 !
 interface
-    subroutine arlcou(mail  ,iocc,  nomo  ,typmai,         &
-                      nom1  ,nom2  ,cine  , &
-                      dime, lisrel, charge)
-        integer :: dime
-        integer :: iocc
-        character(len=24) :: typmai
-        character(len=8) :: mail
-        character(len=8) :: nomo
-        character(len=8) :: charge
-        character(len=19) :: lisrel
-        character(len=8) :: cine(3)
-        character(len=10) :: nom1
-        character(len=10) :: nom2
+    subroutine arlcou(mesh, iocc, model, typmai, &
+                      nom1, nom2, partKine, &
+                      dime, listRela, load)
+        character(len=8), intent(in) :: mesh
+        integer, intent(in) :: iocc
+        character(len=8), intent(in) :: model
+        character(len=24), intent(in) :: typmai
+        character(len=10), intent(in) :: nom1, nom2
+        character(len=8), intent(in) :: partKine(2)
+        integer, intent(in) :: dime
+        character(len=19), intent(in) :: listRela
+        character(len=8), intent(in) :: load
     end subroutine arlcou
 end interface

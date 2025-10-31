@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -15,28 +15,28 @@
 ! You should have received a copy of the GNU General Public License
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
-
-subroutine arlcou(mail, iocc, nomo, typmai, &
-                  nom1, nom2, cine, &
-                  dime, lisrel, charge)
-
+!
+subroutine arlcou(mesh, iocc, model, typmai, &
+                  nom1, nom2, partKine, &
+                  dime, listRela, load)
+!
     implicit none
-
+!
 #include "jeveux.h"
 #include "asterfort/jemarq.h"
 #include "asterfort/jelira.h"
 #include "asterfort/arlcpl.h"
 #include "asterfort/jedema.h"
-
-!     ARGUMENTS:
-!     ----------
-    character(len=24) :: typmai
-    character(len=8) ::  mail, nomo
-    character(len=8) ::  charge
-    character(len=19) :: lisrel
-    character(len=10) :: nom1, nom2
-    character(len=8) ::  cine(3)
-    integer ::      dime, iocc
+!
+    character(len=8), intent(in) :: mesh
+    integer, intent(in) :: iocc
+    character(len=8), intent(in) :: model
+    character(len=24), intent(in) :: typmai
+    character(len=10), intent(in) :: nom1, nom2
+    character(len=8), intent(in) :: partKine(2)
+    integer, intent(in) :: dime
+    character(len=19), intent(in) :: listRela
+    character(len=8), intent(in) :: load
 
 ! ----------------------------------------------------------------------
 
@@ -58,20 +58,20 @@ subroutine arlcou(mail, iocc, nomo, typmai, &
 ! ----------------------------------------------------------------------
 
     character(len=10) :: nomgr1, nomgr2
-    character(len=8) ::  cine1, cine2
-    integer ::      nbma1, nbma2
+    character(len=8) :: cine1, cine2
+    integer :: nbma1, nbma2
     character(len=19) :: ngrm1, ngrm2
     character(len=8) ::  k8bid
 
 ! ----------------------------------------------------------------------
     call jemarq()
 
-! --- INITIALISATIONS
+! - INITIALISATIONS
 
     nomgr1 = nom1
     nomgr2 = nom2
-    cine1 = cine(1)
-    cine2 = cine(2)
+    cine1 = partKine(1)
+    cine2 = partKine(2)
 
 ! --- CALCUL DES MATRICES DE COUPLAGE ELEMENTAIRE ARLEQUIN
 
@@ -81,8 +81,8 @@ subroutine arlcou(mail, iocc, nomo, typmai, &
     call jelira(ngrm2, 'LONMAX', nbma2, k8bid)
 
     call arlcpl(iocc, nbma1, nbma2, &
-                mail, nomo, typmai, &
-                nomgr1, nomgr2, dime, lisrel, charge)
+                mesh, model, typmai, &
+                nomgr1, nomgr2, dime, listRela, load)
 
     call jedema()
 

@@ -15,9 +15,12 @@
 ! You should have received a copy of the GNU General Public License
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
+
+!
 !
 interface
-    subroutine caliel(loadZ, modelZ)
-        character(len=*), intent(in) :: loadZ, modelZ
-    end subroutine caliel
+function is_numeric(string)
+character(len=*), intent(in) :: string
+logical :: is_numeric
+end function is_numeric
 end interface
