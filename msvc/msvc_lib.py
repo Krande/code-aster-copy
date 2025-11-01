@@ -343,12 +343,20 @@ def set_flags(self) -> None:
         Logs.info(f"Skipping {name=}")
         return None
 
-    archive_dir = bld_path / archive_name
+
+    if name == "astergc":
+        archive_dir = bld_path / 'libs'
+    elif name == "asterbibfor_ext":
+        archive_dir = bld_path / 'bibfor'
+    else:
+        archive_dir = bld_path / archive_name
+
     args += [f"/LIBPATH:{archive_dir.as_posix()}", f"/WHOLEARCHIVE:{archive_name}.lib", f"{archive_name}.exp"]
 
-    Logs.info(f"Setting flags {args} for {name=}")
+    Logs.debug(f"{archive_name=} extra flags {args} for {name=}")
     self.link_task.env.append_unique("LINKFLAGS", args)
-
+    # log the entire LINKFLAGS
+    Logs.debug(f"{archive_name=}: {self.link_task.env.LINKFLAGS=}")
 
 @TaskGen.feature("cxxshlib", "fcshlib", "cshlib")
 @TaskGen.after_method("apply_link")
