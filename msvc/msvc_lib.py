@@ -375,7 +375,21 @@ def set_flags(self) -> None:
     else:
         archive_dir = bld_path / archive_name
 
+    # Add LIBPATH for the library's own directory
     args += [f"/LIBPATH:{archive_dir.as_posix()}", f"/WHOLEARCHIVE:{archive_name}.lib", f"{archive_name}.exp"]
+
+    # Add LIBPATH for all dependent libraries so the linker can find their import libraries
+    # All libraries potentially depend on each other, so add all paths
+    dependent_lib_paths = [
+        bld_path / 'bibc',
+        bld_path / 'bibcxx',
+        bld_path / 'bibfor',
+        bld_path / 'libs',  # for AsterGC
+    ]
+
+    for lib_path in dependent_lib_paths:
+        if lib_path != archive_dir:  # Don't duplicate the library's own path
+            args += [f"/LIBPATH:{lib_path.as_posix()}"]
 
     Logs.debug(f"{archive_name=} extra flags {args} for {name=}")
     self.link_task.env.append_unique("LINKFLAGS", args)
