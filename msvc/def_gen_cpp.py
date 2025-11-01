@@ -8,6 +8,7 @@ and generates a module definition (.def) file for use with the MSVC linker.
 
 import subprocess
 import sys
+import re
 from pathlib import Path
 
 
@@ -32,46 +33,99 @@ def find_object_files(build_dir):
 
 
 def extract_symbols(obj_files):
-    """Extract C++ symbols from object files using llvm-nm."""
+    """Extract intended export symbols using dumpbin with robust filtering.
+
+    Goal: avoid exporting MSVC C++ mangled names and template internals; keep
+    only C-like API symbols that are actually defined in these objects.
+    """
     symbols = set()
+
+    # Exclude common non-exportable prefixes and thunks, plus const pools
+    exclude_prefixes = (
+        "__imp_", "__Cxx", "__RT", "_TI", "_CT", "_Init_thread_", "$", "._", "__chkstk",
+        "__real@", "__xmm@", "__ymm@", "__int@", "__m128@", "__m256@",
+    )
+
+    api_name_re = re.compile(r"^[A-Za-z_][A-Za-z0-9_]*$")
 
     for obj_file in obj_files:
         try:
-            # Run llvm-nm to get symbols
             result = subprocess.run(
-                ["llvm-nm", "--extern-only", "--defined-only", str(obj_file)],
+                ["dumpbin", "/SYMBOLS", str(obj_file)],
                 capture_output=True,
                 text=True,
-                check=True
+                check=True,
             )
-
-            for line in result.stdout.splitlines():
-                parts = line.split()
-                if len(parts) < 3:
-                    continue
-
-                symbol_type = parts[1]
-                symbol_name = parts[2]
-
-                # Filter for C++ symbols
-                # C++ mangled names start with '?'
-                # T = Text/Code symbol (functions)
-
-                if symbol_type in ['T', 't']:
-                    # Include C++ mangled symbols (starting with ?)
-                    if symbol_name.startswith('?'):
-                        symbols.add(symbol_name)
-                    # Also include std:: symbols even if not mangled
-                    elif 'std@@' in symbol_name:
-                        symbols.add(symbol_name)
-
-        except subprocess.CalledProcessError as e:
-            print(f"Warning: Failed to extract symbols from {obj_file}: {e}")
         except FileNotFoundError:
-            print("Error: llvm-nm not found. Make sure LLVM tools are in PATH.")
+            print("Error: dumpbin.exe not found. Make sure MSVC tools are in PATH.")
             sys.exit(1)
+        except subprocess.CalledProcessError:
+            continue
+
+        for raw in result.stdout.splitlines():
+            line = raw.strip()
+            if "External" not in line or "|" not in line:
+                continue
+            if "UNDEF" in line:
+                continue
+            if "SECT" not in line:
+                continue
+
+            try:
+                right = line.split("|", 1)[1].strip()
+            except Exception:
+                continue
+            if not right:
+                continue
+
+            token = right.split()[-1]
+            name = token.strip()
+            if name.endswith("()"):
+                name = name[:-2]
+            if not name:
+                continue
+
+            # Hard rejections
+            if name.startswith(exclude_prefixes):
+                continue
+            if name.startswith('?') or name.startswith('_Z'):
+                # Exclude MSVC and Itanium C++ mangled names
+                continue
+            if ("@" in name) or ("." in name):
+                continue
+            if not api_name_re.match(name):
+                continue
+
+            symbols.add(name)
 
     return sorted(symbols)
+
+
+def _read_def_exports(def_path: Path):
+    """Read a .def file and return a set of exported symbol names (first token per line after EXPORTS)."""
+    exports = set()
+    p = Path(def_path)
+    if not p.exists():
+        return exports
+    try:
+        lines = p.read_text(encoding="utf-8", errors="ignore").splitlines()
+    except Exception:
+        return exports
+    in_exports = False
+    for raw in lines:
+        line = raw.strip()
+        if not line:
+            continue
+        up = line.upper()
+        if up.startswith("EXPORTS"):
+            in_exports = True
+            continue
+        if not in_exports:
+            continue
+        token = line.split()[0]
+        if token and token.upper() not in ("EXPORTS", "LIBRARY"):
+            exports.add(token)
+    return exports
 
 
 def generate_def_file(symbols, output_file):
@@ -116,8 +170,18 @@ def main():
     # Extract symbols
     symbols = extract_symbols(obj_files)
 
+    # Exclude symbols that belong to separate libs (asterGC, bibfor_ext) if their DEFs exist
+    excluded = set()
+    excluded |= _read_def_exports(script_dir / "asterGC.def")
+    excluded |= _read_def_exports(script_dir / "bibfor_ext.def")
+    if excluded:
+        before = len(symbols)
+        symbols = [s for s in symbols if s not in excluded]
+        after = len(symbols)
+        print(f"Excluded {before - after} symbols present in separate libs (asterGC/bibfor_ext)")
+
     if not symbols:
-        print("Warning: No C++ symbols extracted!")
+        print("Warning: No symbols left to export after filtering!")
         sys.exit(1)
 
     # Generate .def file

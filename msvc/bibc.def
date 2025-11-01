@@ -4,22 +4,6 @@ EXPORTS
 	PyInit_aster
 	PyInit_aster_core
 	PyInit_aster_fonctions
-	__real@3eb0c6f7a0b5ed8d
-	__real@3f91df46a2529d39
-	__real@3ff0000000000000
-	__real@4000000000000000
-	__real@400921fb54442d18
-	__real@401921fb54442d18
-	__real@404ca5dc1a63c1f8
-	__real@4066800000000000
-	__real@4071126666666666
-	__real@408f400000000000
-	__real@408ff80000000000
-	__real@bff0000000000000
-	__real@c04a000000000000
-	__real@c04a800000000000
-	__real@c08ff00000000000
-	__xmm@7fffffffffffffff7fffffffffffffff
 	_check_string_length
 	_end_try
 	_libsymb_get_object

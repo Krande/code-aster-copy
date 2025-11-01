@@ -61,7 +61,9 @@ def extract_c_symbols(obj_file):
 
     # Prefixes to exclude from DEF (CRT/RTTI/imports/etc.)
     exclude_prefixes = (
-        "__imp_", "__Cxx", "__RT", "_TI", "_CT", "_Init_thread_", "$", "._", "__chkstk"
+        "__imp_", "__Cxx", "__RT", "_TI", "_CT", "_Init_thread_", "$", "._", "__chkstk",
+        # Constant pool / vectorized literals and others we must not export
+        "__real@", "__xmm@", "__ymm@", "__int@", "__m128@", "__m256@",
     )
     # Specific symbols to exclude (not to be exported from bibc)
     exclude_symbols = {
@@ -105,13 +107,14 @@ def extract_c_symbols(obj_file):
                         continue
                     if symbol in exclude_symbols:
                         continue
-                    if symbol.startswith('.'):
+                    # Exclude any symbol with obvious decoration/metadata
+                    if symbol.startswith('.') or ('@' in symbol) or ('.' in symbol):
                         continue
                     if symbol.startswith(exclude_prefixes):
                         continue
 
-                    # Exclude C++ mangled names
-                    if symbol.startswith('?'):
+                    # Exclude C++ mangled names (MSVC and Itanium)
+                    if symbol.startswith('?') or symbol.startswith('_Z'):
                         continue
 
                     # Accept C-like names
