@@ -112,8 +112,10 @@ run_aster = { cmd = ["run_aster.bat"], description = "Run the aster executable (
 dumpbin = { cmd = ["dumpbin", ], description = "Dump the dependencies of the aster executable" }
 
 def-bibfor = { cmd = ["python", "msvc/def_gen_fc.py"], description = "Generate the bibfor.def file" }
+def-bibfor-ext = { cmd = ["python", "msvc/def_gen_bibfor_ext.py"], description = "Generate the bibfor_ext.def file" }
 def-bibcxx = { cmd = ["python", "msvc/def_gen_cpp.py"], description = "Generate the bibcxx.def file" }
 def-bibc = { cmd = ["python", "msvc/def_gen_c.py"], description = "Generate the bibc.def file" }
+def-astergc = { cmd = ["python", "msvc/def_gen_astergc.py"], description = "Generate the asterGC.def file" }
 
 [feature.int64.target.win-64.activation]
 scripts = ["msvc/scripts/activate.bat", "msvc/scripts/activate_intel.bat"]

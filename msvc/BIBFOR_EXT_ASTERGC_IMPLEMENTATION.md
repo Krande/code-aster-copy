@@ -217,6 +217,7 @@ pixi run def-astergc
 - [x] Update `msvc/msvc_lib.py` - Update extract_main_tasks()
 - [x] Update `msvc/msvc_lib.py` - Add def file mappings
 - [x] Update `msvc/msvc_lib.py` - Update run_mvsc_lib_gen()
+- [x] Update `msvc/msvc_lib.py` - Update create_msvclibgen_task()
 - [x] Update `msvc/wscript` - Add command-line options
 - [x] Update `msvc/wscript` - Store def paths in configure()
 - [x] Update `pixi.toml` - Add def-bibfor-ext task

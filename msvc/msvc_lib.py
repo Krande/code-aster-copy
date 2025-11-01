@@ -36,6 +36,8 @@ class msvclibgen(Task.Task):
             "bibc": self.env.BIBC_DEF,
             "bibcxx": self.env.BIBCXX_DEF,
             "bibfor": self.env.BIBFOR_DEF,
+            "bibfor_ext": self.env.BIBFOR_EXT_DEF,
+            "AsterGC": self.env.ASTERGC_DEF,
             "aster": self.env.ASTER_DEF,
             "mfront": self.env.MFRONT_DEF,
         }
@@ -93,6 +95,8 @@ class LibTask:
     asterbibc: TaskObject
     asterbibcxx: TaskObject
     asterbibfor: TaskObject
+    asterbibfor_ext: TaskObject
+    astergc: TaskObject
     asterlib: TaskObject
 
     def all_tasks_ready(self) -> bool:
@@ -137,9 +141,11 @@ def extract_main_tasks(self: TaskGen.task_gen) -> LibTask:
     c_task_object = get_task_object(bld, "asterbibc", "c")
     cxx_task_object = get_task_object(bld, "asterbibcxx", "cxx")
     fc_task_object = get_task_object(bld, "asterbibfor", "fc")
+    fc_ext_task_object = get_task_object(bld, "asterbibfor_ext", "fc")
+    gc_task_object = get_task_object(bld, "astergc", "cxx")
     c_aster_object = get_task_object(bld, "asterlib", "cxx")
 
-    return LibTask(c_task_object, cxx_task_object, fc_task_object, c_aster_object)
+    return LibTask(c_task_object, cxx_task_object, fc_task_object, fc_ext_task_object, gc_task_object, c_aster_object)
 
 
 def create_msvclibgen_task(self, lib_name: str, input_tasks) -> Task:
@@ -149,6 +155,10 @@ def create_msvclibgen_task(self, lib_name: str, input_tasks) -> Task:
     bld_path = pathlib.Path(self.bld.bldnode.abspath()).resolve().absolute()
     if lib_name == "aster":
         lib_output_file_path = bld_path / "bibc" / "aster.lib"
+    elif lib_name == "bibfor_ext":
+        lib_output_file_path = bld_path / "bibfor" / "bibfor_ext.lib"
+    elif lib_name == "AsterGC":
+        lib_output_file_path = bld_path / "libs" / "AsterGC.lib"
     elif lib_name.endswith("proxy"):
         Logs.debug(f"input_tasks: {input_tasks=}")
         lib_output_file_path = bld_path / "msvc" / f"{lib_name}.lib"
@@ -174,6 +184,8 @@ def run_mvsc_lib_gen(self, task_obj: LibTask):
     clib_task = task_obj.asterbibc.libtask
     cxxlib_task = task_obj.asterbibcxx.libtask
     fclib_task = task_obj.asterbibfor.libtask
+    fcext_lib_task = task_obj.asterbibfor_ext.libtask
+    gc_lib_task = task_obj.astergc.libtask
     aster_task = task_obj.asterlib.libtask
 
     Logs.debug(f"Before removal: {clib_task.outputs=}")
@@ -182,16 +194,22 @@ def run_mvsc_lib_gen(self, task_obj: LibTask):
     clib_task.outputs = [o for o in clib_task.outputs if o.suffix() != ".lib"]
     cxxlib_task.outputs = [o for o in cxxlib_task.outputs if o.suffix() != ".lib"]
     fclib_task.outputs = [o for o in fclib_task.outputs if o.suffix() != ".lib"]
+    fcext_lib_task.outputs = [o for o in fcext_lib_task.outputs if o.suffix() != ".lib"]
+    gc_lib_task.outputs = [o for o in gc_lib_task.outputs if o.suffix() != ".lib"]
     aster_task.outputs = [o for o in aster_task.outputs if o.suffix() != ".lib"]
 
     Logs.debug(f"After removal: {clib_task.outputs=}")
     Logs.debug(f"After removal: {fclib_task.outputs=}")
+    Logs.debug(f"After removal: {fcext_lib_task.outputs=}")
+    Logs.debug(f"After removal: {gc_lib_task.outputs=}")
     Logs.debug(f"After removal: {cxxlib_task.outputs=}")
     Logs.debug(f"After removal: {aster_task.outputs=}")
 
     c_input_tasks = [ctask.outputs[0] for ctask in task_obj.asterbibc.tasks]
     cxx_input_tasks = [cxxtask.outputs[0] for cxxtask in task_obj.asterbibcxx.tasks]
     fc_input_tasks = [fctask.outputs[0] for fctask in task_obj.asterbibfor.tasks]
+    fc_ext_input_tasks = [fctask.outputs[0] for fctask in task_obj.asterbibfor_ext.tasks]
+    gc_input_tasks = [gctask.outputs[0] for gctask in task_obj.astergc.tasks]
     aster_input_tasks = [ctask.outputs[0] for ctask in task_obj.asterlib.tasks if ctask.outputs[0].suffix() == ".o"]
     Logs.debug(f"{aster_input_tasks=}")
 
@@ -201,27 +219,49 @@ def run_mvsc_lib_gen(self, task_obj: LibTask):
     clib_lib_task = create_msvclibgen_task(self, "bibc", c_input_tasks)
     bibcxx_lib_task = create_msvclibgen_task(self, "bibcxx", cxx_input_tasks)
     bibfor_lib_task = create_msvclibgen_task(self, "bibfor", fc_input_tasks)
+    bibfor_ext_lib_task = create_msvclibgen_task(self, "bibfor_ext", fc_ext_input_tasks)
+    gc_lib_task_gen = create_msvclibgen_task(self, "AsterGC", gc_input_tasks)
     bibaster_lib_task = create_msvclibgen_task(self, "aster", aster_input_tasks)
 
     Logs.debug(f"{clib_lib_task.outputs=}")
     Logs.debug(f"{fclib_task.outputs=}")
+    Logs.debug(f"{fcext_lib_task.outputs=}")
+    Logs.debug(f"{gc_lib_task.outputs=}")
     Logs.debug(f"{bibaster_lib_task.outputs=}")
 
     # filter out all non-lib files
     clib_task_outputs = [x for x in clib_lib_task.outputs if x.suffix() == ".lib"]
     fclib_task_outputs = [x for x in bibfor_lib_task.outputs if x.suffix() == ".lib"]
+    fcext_lib_task_outputs = [x for x in bibfor_ext_lib_task.outputs if x.suffix() == ".lib"]
+    gc_task_outputs = [x for x in gc_lib_task_gen.outputs if x.suffix() == ".lib"]
     bibaster_task_outputs = [x for x in bibaster_lib_task.outputs if x.suffix() == ".lib"]
     bibcxx_task_outputs = [x for x in bibcxx_lib_task.outputs if x.suffix() == ".lib"]
 
     Logs.debug(f"{clib_task_outputs=}")
     Logs.debug(f"{fclib_task_outputs=}")
+    Logs.debug(f"{fcext_lib_task_outputs=}")
+    Logs.debug(f"{gc_task_outputs=}")
     Logs.debug(f"{bibaster_task_outputs=}")
     Logs.debug(f"{bibcxx_task_outputs=}")
 
-    clib_task.inputs += bibcxx_task_outputs + fclib_task_outputs
+    # Set up library dependencies according to the dependency chain
+    # bibfor_ext depends on bibcxx and bibc
+    fcext_lib_task.inputs += bibcxx_task_outputs + clib_task_outputs
+
+    # AsterGC depends on bibc and bibfor
+    gc_lib_task.inputs += clib_task_outputs + fclib_task_outputs
+
+    # bibc depends on bibcxx, bibfor, and bibfor_ext
+    clib_task.inputs += bibcxx_task_outputs + fclib_task_outputs + fcext_lib_task_outputs
+
+    # bibfor depends on bibcxx and bibc
     fclib_task.inputs += bibcxx_task_outputs + clib_task_outputs
-    cxxlib_task.inputs += bibaster_task_outputs + clib_task_outputs + fclib_task_outputs
-    aster_task.inputs += fclib_task_outputs + clib_task_outputs + bibcxx_task_outputs
+
+    # bibcxx depends on aster, bibc, bibfor, bibfor_ext, and AsterGC
+    cxxlib_task.inputs += bibaster_task_outputs + clib_task_outputs + fclib_task_outputs + fcext_lib_task_outputs + gc_task_outputs
+
+    # aster depends on bibfor, bibfor_ext, bibc, bibcxx, and AsterGC
+    aster_task.inputs += fclib_task_outputs + fcext_lib_task_outputs + clib_task_outputs + bibcxx_task_outputs + gc_task_outputs
 
     bibc_dll = [o for o in clib_task.outputs if o.suffix() == ".dll"][0]
     bibcxx_dll = [o for o in cxxlib_task.outputs if o.suffix() == ".dll"][0]
