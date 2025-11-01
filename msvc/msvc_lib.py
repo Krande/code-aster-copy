@@ -233,7 +233,14 @@ def run_mvsc_lib_gen(self, task_obj: LibTask):
 
 _lib_task_obj: LibTask | None = None
 _task_done = False
-_compiler_map = {"asterlib": "cxx", "asterbibc": "c", "asterbibfor": "fc", "asterbibcxx": "cxx"}
+_compiler_map = {
+    "asterlib": "cxx",
+    "asterbibc": "c",
+    "asterbibfor": "fc",
+    "asterbibfor_ext": "fc",
+    "astergc": "cxx",
+    "asterbibcxx": "cxx"
+}
 
 _proxy_tasks = set()
 
@@ -282,6 +289,10 @@ def set_flags(self) -> None:
         archive_name = "bibcxx"
     elif name == "asterbibfor":
         archive_name = "bibfor"
+    elif name == "asterbibfor_ext":
+        archive_name = "bibfor_ext"
+    elif name == "astergc":
+        archive_name = "AsterGC"
     elif name == "asterlib":
         archive_name = "aster"
     elif name.endswith("proxy"):
@@ -338,7 +349,7 @@ def make_msvc_modifications(self: TaskGen.task_gen):
     build_clang_compilation_db(
         self,
         lib_task_obj.asterbibc.tasks,
-        lib_task_obj.asterbibcxx.tasks + lib_task_obj.asterlib.tasks,
-        lib_task_obj.asterbibfor.tasks,
+        lib_task_obj.asterbibcxx.tasks + lib_task_obj.asterlib.tasks + lib_task_obj.astergc.tasks,
+        lib_task_obj.asterbibfor.tasks + lib_task_obj.asterbibfor_ext.tasks,
     )
     _task_done = True
