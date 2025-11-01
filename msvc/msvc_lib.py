@@ -180,7 +180,6 @@ def create_msvclibgen_task(self, lib_name: str, input_tasks) -> Task:
 
 
 def run_mvsc_lib_gen(self, task_obj: LibTask):
-    Logs.info("Configuring MSVC libraries build sequence")
     clib_task = task_obj.asterbibc.libtask
     cxxlib_task = task_obj.asterbibcxx.libtask
     fclib_task = task_obj.asterbibfor.libtask
@@ -292,7 +291,7 @@ def run_mvsc_lib_gen(self, task_obj: LibTask):
     Logs.debug(f"{type(bibc_dll)=}{bibc_dll=}")
     Logs.debug(f"{type(bibcxx_dll)=}{bibcxx_dll=}")
 
-    Logs.info("Successfully configured MSVC lib build sequence")
+    Logs.info("Successfully Configured MSVC lib build sequence")
 
 
 _lib_task_obj: LibTask | None = None

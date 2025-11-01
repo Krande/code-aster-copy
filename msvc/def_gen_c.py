@@ -9,6 +9,7 @@ a .def file for exporting them from the DLL.
 import argparse
 import subprocess
 import sys
+import re
 from pathlib import Path
 
 
@@ -117,12 +118,9 @@ def extract_c_symbols(obj_file):
                     if symbol.startswith('?') or symbol.startswith('_Z'):
                         continue
 
-                    # Accept C-like names
-                    is_c_like = (
-                        symbol.startswith('_') or symbol.startswith('Py') or symbol.startswith('g') or
-                        any(x in symbol for x in ("aster", "asmpi", "NULL_FUNCTION"))
-                    )
-                    if not is_c_like:
+                    # Accept standard C/Fortran-identifiers (letters/underscore, digits/underscore)
+                    # This allows lowercase exports like r8prem_ used by Fortran-callable C shims.
+                    if not re.match(r'^_?[A-Za-z][A-Za-z0-9_]*$', symbol):
                         continue
 
                     if is_data:
