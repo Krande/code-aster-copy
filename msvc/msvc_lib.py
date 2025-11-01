@@ -245,23 +245,47 @@ def run_mvsc_lib_gen(self, task_obj: LibTask):
     Logs.debug(f"{bibcxx_task_outputs=}")
 
     # Set up library dependencies according to the dependency chain
-    # bibfor_ext depends on bibcxx and bibc
-    fcext_lib_task.inputs += bibcxx_task_outputs + clib_task_outputs
+    # Strategy: Generate all .lib files first (they only need object files),
+    # then link all DLLs (which need the .lib files)
 
-    # AsterGC depends on bibc and bibfor
-    gc_lib_task.inputs += clib_task_outputs + fclib_task_outputs
+    # Note: msvclibgen tasks (bibfor_lib_task, etc.) only need object files as inputs.
+    # They do NOT depend on other .lib files, so NO set_run_after between them.
+    # This avoids circular dependencies.
+    # Only the DLL link tasks need to wait for .lib generation to complete.
 
-    # bibc depends on bibcxx, bibfor, and bibfor_ext
-    clib_task.inputs += bibcxx_task_outputs + fclib_task_outputs + fcext_lib_task_outputs
+    # All DLL link tasks must wait for ALL .lib generation tasks to complete
+    all_lib_gen_tasks = [bibfor_lib_task, bibfor_ext_lib_task, clib_lib_task,
+                         bibcxx_lib_task, gc_lib_task_gen, bibaster_lib_task]
 
-    # bibfor depends on bibcxx and bibc
+    # bibfor.dll depends on bibcxx.lib and bibc.lib
     fclib_task.inputs += bibcxx_task_outputs + clib_task_outputs
+    for lib_task in all_lib_gen_tasks:
+        fclib_task.set_run_after(lib_task)
 
-    # bibcxx depends on aster, bibc, bibfor, bibfor_ext, and AsterGC
+    # bibfor_ext.dll depends on bibfor.lib, bibcxx.lib, and bibc.lib
+    fcext_lib_task.inputs += fclib_task_outputs + bibcxx_task_outputs + clib_task_outputs
+    for lib_task in all_lib_gen_tasks:
+        fcext_lib_task.set_run_after(lib_task)
+
+    # bibc.dll depends on bibfor.lib, bibfor_ext.lib, and bibcxx.lib
+    clib_task.inputs += fclib_task_outputs + fcext_lib_task_outputs + bibcxx_task_outputs
+    for lib_task in all_lib_gen_tasks:
+        clib_task.set_run_after(lib_task)
+
+    # AsterGC.dll depends on bibfor.lib and bibc.lib
+    gc_lib_task.inputs += fclib_task_outputs + clib_task_outputs
+    for lib_task in all_lib_gen_tasks:
+        gc_lib_task.set_run_after(lib_task)
+
+    # bibcxx.dll depends on aster.lib, bibc.lib, bibfor.lib, bibfor_ext.lib, and AsterGC.lib
     cxxlib_task.inputs += bibaster_task_outputs + clib_task_outputs + fclib_task_outputs + fcext_lib_task_outputs + gc_task_outputs
+    for lib_task in all_lib_gen_tasks:
+        cxxlib_task.set_run_after(lib_task)
 
-    # aster depends on bibfor, bibfor_ext, bibc, bibcxx, and AsterGC
+    # aster.dll depends on bibfor.lib, bibfor_ext.lib, bibc.lib, bibcxx.lib, and AsterGC.lib
     aster_task.inputs += fclib_task_outputs + fcext_lib_task_outputs + clib_task_outputs + bibcxx_task_outputs + gc_task_outputs
+    for lib_task in all_lib_gen_tasks:
+        aster_task.set_run_after(lib_task)
 
     bibc_dll = [o for o in clib_task.outputs if o.suffix() == ".dll"][0]
     bibcxx_dll = [o for o in cxxlib_task.outputs if o.suffix() == ".dll"][0]
