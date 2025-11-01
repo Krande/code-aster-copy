@@ -1,15 +1,10 @@
 LIBRARY bibcxx
 EXPORTS
-    CODEASTER_ARRAY_API
     PyInit_libaster
     _raiseException
-    _scprintf
-    _vscprintf_l
-    _vsprintf_s_l
     eval_formula_
     fma_double_
     getMaterialPropertiesNames
-    getTridimMaterialPropertiesNames
     mgis_debug_
     mgis_get_double_mfront_parameter_
     mgis_get_esvs_
@@ -33,21 +28,6 @@ EXPORTS
     mgis_set_outofbounds_policy_
     mgis_set_rotation_matrix_
     mgis_set_thermodynamic_forces_
-    printf
-    pybind11_clear
-    pybind11_getbuffer
-    pybind11_meta_call
-    pybind11_meta_dealloc
-    pybind11_meta_getattro
-    pybind11_meta_setattro
-    pybind11_object_dealloc
-    pybind11_object_init
-    pybind11_object_new
-    pybind11_releasebuffer
-    pybind11_static_get
-    pybind11_static_set
-    pybind11_traverse
-    sprintf_s
     uexcep_
     vector_vector_add_values_
     vector_vector_delete_
@@ -56,5 +36,3 @@ EXPORTS
     vector_vector_new_
     vector_vector_resize_
     vector_vector_sort_unique_
-    wmemcpy
-    wmemset

@@ -44,9 +44,33 @@ def extract_symbols(obj_files):
     exclude_prefixes = (
         "__imp_", "__Cxx", "__RT", "_TI", "_CT", "_Init_thread_", "$", "._", "__chkstk",
         "__real@", "__xmm@", "__ymm@", "__int@", "__m128@", "__m256@",
+        # Project/tooling-specific we never want to export from bibcxx
+        "pybind11_",
     )
 
+    # Specific CRT/utility symbols we should not export from bibcxx
+    exclude_symbols = {
+        "printf", "fprintf", "sprintf", "sprintf_s", "snprintf", "_snprintf",
+        "_vfprintf_l", "_vsprintf_l", "_vsprintf_s_l", "_scprintf", "_vscprintf_l",
+        "__local_stdio_printf_options", "wmemcpy", "wmemset", "CODEASTER_ARRAY_API",
+    }
+
     api_name_re = re.compile(r"^[A-Za-z_][A-Za-z0-9_]*$")
+
+    # Positive allow-list: restrict bibcxx to known C-API surfaces
+    allowed_prefixes = (
+        "mgis_",            # MGIS C API
+        "vector_vector_",   # small vector wrapper API
+        "PyInit_",          # Python module init (if any)
+    )
+    allowed_exact = {
+        "eval_formula_",
+        "uexcep_",
+        "fma_double_",
+        "_raiseException",
+        "getMaterialPropertiesNames",  # single legacy helper exported on Linux builds
+        # Intentionally do NOT include getTridimMaterialPropertiesNames unless proven defined
+    }
 
     for obj_file in obj_files:
         try:
@@ -78,14 +102,18 @@ def extract_symbols(obj_files):
             if not right:
                 continue
 
-            token = right.split()[-1]
+            # Take the FIRST token after '|': this is the real COFF symbol name.
+            token = right.split()[0]
             name = token.strip()
+            # Drop optional trailing parentheses dumpbin may append for functions
             if name.endswith("()"):
                 name = name[:-2]
             if not name:
                 continue
 
             # Hard rejections
+            if name in exclude_symbols:
+                continue
             if name.startswith(exclude_prefixes):
                 continue
             if name.startswith('?') or name.startswith('_Z'):
@@ -94,6 +122,10 @@ def extract_symbols(obj_files):
             if ("@" in name) or ("." in name):
                 continue
             if not api_name_re.match(name):
+                continue
+
+            # Positive allow-list enforcement
+            if not (name in allowed_exact or any(name.startswith(p) for p in allowed_prefixes)):
                 continue
 
             symbols.add(name)
