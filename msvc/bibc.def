@@ -4,7 +4,6 @@ EXPORTS
 	PyInit_aster
 	PyInit_aster_core
 	PyInit_aster_fonctions
-	__local_stdio_printf_options
 	__real@3eb0c6f7a0b5ed8d
 	__real@3f91df46a2529d39
 	__real@3ff0000000000000
@@ -29,7 +28,6 @@ EXPORTS
 	_reset_tpmax
 	_search_id
 	_snprintf
-	_vfprintf_l
 	_vsnprintf
 	_vsnprintf_l
 	_vsprintf_l

@@ -121,17 +121,6 @@ EXPORTS
     amogen_
     ampcpr_
     amppr_
-    AMUMPC
-    amumpd_
-    amumph_
-    amumpi_
-    amumpm_
-    amumpm_hpc_
-    amumpp_
-    amumps_
-    amumpt_
-    amumpu_
-    amumpz_
     anacri_
     analybar_
     ancrca_
@@ -145,15 +134,8 @@ EXPORTS
     ante3d_
     antece_
     antisy_
-    ap2foi_
-    ap_assembly_vector_
     ap_infast_
     ap_infast_n_
-    ap_on_off_
-    apalmc_
-    apalmd_
-    apalmh_
-    apbloc_
     apcalc_
     apcaln_
     apchar_
@@ -173,7 +155,6 @@ EXPORTS
     apelem_getvertex_n_
     apelem_inside_
     apelem_inside_n_
-    apetsc_
     apforc_
     apimpr_
     apimpr_c_
@@ -186,23 +167,14 @@ EXPORTS
     apinte_prma_n_
     apinte_prsl_
     apinte_weight_
-    apksp_
     aplcno_
     aplcpg_
     aplcpgn_
-    apldlt_
     apm345_
-    apmain_
-    apmamc_
-    apmamd_
-    apmamh_
-    apmams_
     apnomp_
     apnorm_
     apntos_
     aporth_
-    appcpr_
-    appcrs_
     appmas_
     appmasl_
     apprin_
@@ -212,7 +184,6 @@ EXPORTS
     aprtpm_
     apsave_pair_
     apsave_patch_
-    apsolu_
     apstoc_
     apstos_
     apsvnl_
@@ -226,8 +197,6 @@ EXPORTS
     apvect_
     apvepa_
     apverl_
-    apvsmb_
-    apvsmbh_
     ar_dgeqr2_
     ar_dlacon_
     ar_dlaexc_
@@ -465,9 +434,6 @@ EXPORTS
     bprime_
     bptobg_
     brbagl_
-    bresels_
-    breselsqp_
-    breselu_
     bsigma_
     bsigmc_
     bsthco_
@@ -1348,7 +1314,6 @@ EXPORTS
     cpte10_
     cptr03_
     cptr06_
-    cpysol_
     cq3d2d_
     cragch_
     craglc_
@@ -2149,18 +2114,8 @@ EXPORTS
     ejfore_
     ejinit_
     elelin_
-    elg_allocvr_
-    elg_calc_matk_red_
-    elg_calc_matm_red_
-    elg_calc_rhs_red_
-    elg_calc_solu_
-    elg_calcx0_
-    elg_calcxl_
-    elg_calcxl_modal_
     elg_kellag_
     elg_preres_
-    elg_resoud_
-    elim75_
     elimco_
     elimcq_
     elimun_
@@ -2323,7 +2278,6 @@ EXPORTS
     fgvdmg_
     fieldnodehasconstantprofile_
     fiintf_
-    filter_smd_
     filtering_
     find_cardan_roots_
     finlf1_
@@ -2914,7 +2868,6 @@ EXPORTS
     irmfac_
     irmgms_
     irmhdf_
-    irmhpc_
     irmifr_
     irmiim_
     irmit2_
@@ -3431,8 +3384,6 @@ EXPORTS
     ldc_disjvp_
     ldlt_matr_
     ldlt_renum_
-    ldsp1_
-    ldsp2_
     leccoo_
     lecdbg_
     lecelt_
@@ -3593,9 +3544,7 @@ EXPORTS
     lrm_clean_joint_
     lrmast_
     lrmpga_
-    lrmtyp_
     lrvcpg_
-    lrvema_
     lrvemo_
     lspini_
     lsqpol_
@@ -3649,7 +3598,6 @@ EXPORTS
     mat_com_
     mat_inv_
     mat_proto_
-    matass2petsc_
     matbmn_
     matbmr_
     matbsr_
@@ -5133,7 +5081,6 @@ EXPORTS
     pcfact_
     pcfalu_
     pcfull_
-    pchpddmdumpauxiliarymat_
     pcinfe_
     pcldlt_
     pcmump_
@@ -7291,8 +7238,6 @@ EXPORTS
     vecmat_
     vecnuv_
     vecomo_
-    vect_asse_from_petsc_
-    vect_asse_update_ghost_values_
     vectan_
     vectci_
     vectfl_
@@ -7322,8 +7267,6 @@ EXPORTS
     verif_affe_carte_
     verif_bord_
     verif_loi_mater_
-    verifels_
-    verifelu_
     verifepsa_
     veriff_
     verifg_
