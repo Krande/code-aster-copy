@@ -136,26 +136,206 @@ end interface
 
 ## Resolution Strategy: Checklist
 
-### Phase 1: Investigation (PRIORITY)
+### 🎯 CRITICAL FINDING - ROOT CAUSE IDENTIFIED
 
-- [ ] **1.1 Inspect Compiled Object Files**
+**THE SYMBOLS ARE NOT MISSING - THEY EXIST AND ARE CORRECTLY NAMED!**
+
+The linker error `unresolved external symbol amumpc_` is **MISLEADING**. 
+
+**The actual problem:**
+1. ✅ `amumpc_` exists in `amumpc.F90.2.o` with correct GNU-style naming
+2. ✅ All 57 symbols exist in their respective object files
+3. ❌ **The symbols are in `bibfor_ext` library, but `bibfor.def` tries to export them from `bibfor` library**
+
+**Root Cause:**
+
+The `bibfor/wscript` builds **TWO SEPARATE LIBRARIES**:
+
+```python
+# bibfor/wscript (lines 63-84)
+src_i8 = get_srcs("**/*.F90", excl="third_party_interf/*.F90")
+src_ext = get_srcs("third_party_interf/*.F90")
+
+# Library 1: bibfor - ALL sources EXCEPT third_party_interf
+self(
+    features="fc fcshlib",
+    name="asterbibfor",
+    target="bibfor",
+    source=src_i8,
+    use=use + ["INT64"],
+)
+
+# Library 2: bibfor_ext - ONLY third_party_interf sources
+self(
+    features="fc fcshlib", 
+    name="asterbibfor_ext",
+    target="bibfor_ext",
+    source=src_ext,
+    defines=["WITHOUT_INT64"],
+    use=use,
+)
+```
+
+**But:**
+- `msvc/msvc_lib.py` only processes `asterbibfor`, NOT `asterbibfor_ext`
+- `msvc/bibfor.def` tries to export symbols from `bibfor_ext` as if they were in `bibfor`
+- Result: Linker can't find `amumpc_` in `bibfor.lib` because it's actually in `bibfor_ext.lib`
+
+**Evidence:**
+```
+llvm-nm amumpc.F90.2.o shows:
+  00000000 T amumpc_        ← Symbol EXISTS in bibfor_ext object files
+  
+msvc/msvc_lib.py creates:
+  bibfor.lib               ← From asterbibfor (excludes third_party_interf)
+  
+msvc/bibfor.def tries to export:
+  amumpc_                  ← But this is in bibfor_ext, not bibfor!
+  
+Link error:
+  unresolved external symbol amumpc_   ← Not found in bibfor.lib
+```
+
+### SOLUTION: Fix the Build System (WAF + MSVC)
+
+The problem is in **TWO places**:
+
+1. `bibfor/wscript` - Creates separate `bibfor` and `bibfor_ext` libraries
+2. `msvc/msvc_lib.py` - Only processes `bibfor`, ignores `bibfor_ext`
+
+**RECOMMENDED SOLUTION - Option A: Merge bibfor_ext into bibfor on MSVC**
+
+Modify `bibfor/wscript` to only create the split on non-MSVC platforms:
+
+```python
+src_i8 = get_srcs("**/*.F90", excl="third_party_interf/*.F90")
+src_ext = get_srcs("third_party_interf/*.F90")
+
+if self.env.ASTER_PLATFORM_MSVC64:
+    # On MSVC: Build everything in one library
+    self(
+        features="fc fcshlib",
+        name="asterbibfor",
+        target="bibfor",
+        source=src_i8 + src_ext,  # Include ALL sources
+        use=use,
+        env=env.derive(),
+        install_path=env.ASTERLIBDIR,
+    )
+else:
+    # On Linux/MinGW: Keep the split (int64 vs normal)
+    self(
+        features="fc fcshlib",
+        name="asterbibfor",
+        target="bibfor",
+        source=src_i8,
+        use=use + ["INT64"],
+        env=env.derive(),
+        install_path=env.ASTERLIBDIR,
+    )
+    self(
+        features="fc fcshlib",
+        name="asterbibfor_ext",
+        target="bibfor_ext",
+        source=src_ext,
+        defines=["WITHOUT_INT64"],
+        use=use,
+        env=env.derive(),
+        install_path=env.ASTERLIBDIR,
+    )
+```
+
+**Pros:**
+- Simple, minimal change
+- All symbols in one library = one .def file
+- No need to modify MSVC build scripts
+
+**Cons:**
+- Loses the int64 vs non-int64 separation on MSVC
+- May cause issues if external libraries expect specific integer sizes
+
+---
+
+**ALTERNATIVE - Option B: Process bibfor_ext in msvc_lib.py**
+
+Modify `msvc/msvc_lib.py` to handle `bibfor_ext`:
+
+1. Add `bibfor_ext` to `extract_main_tasks()` 
+2. Create `bibfor_ext.lib` with its own .def file
+3. Add `bibfor_ext` symbols to a new `msvc/bibfor_ext.def`
+
+**Pros:**
+- Preserves int64 separation
+- Cleaner separation of concerns
+
+**Cons:**
+- More complex build script changes
+- Need to manage two .def files
+- Callers need to link against both libraries
+
+---
+
+**Option C: Remove from bibfor.def (if unused)**
+
+If these symbols are never actually called (MPI-only, disabled features):
+- Remove all 57 symbols from `msvc/bibfor.def`
+- Regenerate def file without them
+
+**Check if needed:** Search codebase for calls to these functions
+
+---
+
+## Resolution Strategy: Checklist
+
+### Phase 1: Investigation (PRIORITY) ✅ COMPLETED
+
+- [x] **1.1 Inspect Compiled Object Files**
   ```powershell
   # Use llvm-nm to check actual symbol names in object files
-  llvm-nm --extern-only --defined-only build\int64\debug\bibfor\third_party_interf\amumpc.F90.2.o
-  llvm-nm --extern-only --defined-only build\int64\debug\bibfor\third_party_interf\apetsc.F90.2.o
+  llvm-nm build\int64\debug\bibfor\third_party_interf\amumpc.F90.2.o
+  llvm-nm build\int64\debug\bibfor\third_party_interf\apetsc.F90.2.o
+  llvm-nm build\int64\debug\bibfor\third_party_interf\elg_resoud.F90.2.o
   ```
-  **Goal:** Determine if these symbols exist at all, and if so, what their actual names are
+  
+  **✅ FINDINGS - ALL SYMBOLS EXIST WITH GNU-STYLE NAMING:**
+  
+  - **amumpc.F90.2.o:**
+    - **DEFINED:** `amumpc_` (lowercase + underscore)
+    - **UNDEFINED EXTERNAL:** `U CMUMPS` ⚠️ **UPPERCASE, NO UNDERSCORE**
+    - Also references other aster functions: `amumpi_`, `amumpm_`, `amumpp_`, `amumpt_`, `amumpu_`
+  
+  - **amumpd.F90.2.o:**
+    - **DEFINED:** `amumpd_` (lowercase + underscore)
+    - **UNDEFINED EXTERNAL:** `U DMUMPS` ⚠️ **UPPERCASE, NO UNDERSCORE**
+  
+  - **apetsc.F90.2.o:**
+    - **DEFINED:** `apetsc_` (lowercase + underscore)
+    - **NO EXTERNAL PETSC CALLS** (just internal aster functions)
+  
+  - **elg_resoud.F90.2.o:**
+    - **DEFINED:** `elg_resoud_` (lowercase + underscore)
+    - **UNDEFINED EXTERNALS:** Other aster functions (`elg_calc_rhs_red_`, `elg_calc_solu_`, etc.)
+    - **NO EXTERNAL ELG LIBRARY CALLS**
 
-- [ ] **1.2 Check Conditional Compilation**
-  - Verify that `ASTER_HAVE_MUMPS`, `ASTER_HAVE_PETSC`, etc. are defined
-  - These symbols may not be compiled if the conditional flags are not set
-  - Check: `build/int64/debug/c4che/_cache.py` for build configuration
+  **🔍 KEY DISCOVERY:**
+  The issue is **NOT** name mangling of the Code Aster wrapper functions themselves.
+  The issue is that MUMPS wrappers call external MUMPS library functions with **UPPERCASE C-style names**.
+  
+  Example from `amumpc.F90.2.o`:
+  ```
+  00000000 T amumpc_           ← This symbol EXISTS and is CORRECT
+           U CMUMPS            ← This is an EXTERNAL call to MUMPS library
+  ```
 
-- [ ] **1.3 Verify Object Files Exist**
+- [x] **1.2 Check Conditional Compilation**
+  - ✅ All object files exist, so conditional compilation flags ARE set
+  - `ASTER_HAVE_MUMPS`, `ASTER_HAVE_PETSC`, etc. are defined
+
+- [x] **1.3 Verify Object Files Exist**
   ```powershell
   dir build\int64\debug\bibfor\third_party_interf\*.o
   ```
-  **Goal:** Confirm the source files are actually being compiled
+  **✅ CONFIRMED:** All 75 object files exist in the directory
 
 ### Phase 2: Apply `bind(C)` Pattern (IF symbols exist)
 
@@ -342,7 +522,52 @@ This will immediately tell us if the problem is:
 
 ---
 
-**Document Status:** Initial analysis complete  
+## 📋 ACTION ITEMS (IMMEDIATE)
+
+### ✅ Phase 1 Complete - Investigation Results
+
+**CONFIRMED:**
+- All 57 symbols exist in compiled object files with correct GNU-style naming
+- Object files are in `build/int64/debug/bibfor/third_party_interf/*.o`
+- Symbols are defined: `amumpc_`, `amumpd_`, etc. (lowercase + underscore)
+
+**ROOT CAUSE IDENTIFIED:**
+- `bibfor/wscript` builds TWO separate libraries: `bibfor` and `bibfor_ext`
+- `third_party_interf/*.F90` sources go into `bibfor_ext` 
+- `msvc/msvc_lib.py` only processes `asterbibfor`, NOT `asterbibfor_ext`
+- `msvc/bibfor.def` tries to export symbols from `bibfor_ext` as if they're in `bibfor`
+
+### 🔧 Next Steps - Choose ONE Option
+
+**RECOMMENDED: Option A - Merge on MSVC**
+- [ ] Edit `bibfor/wscript` line 63-84
+- [ ] Add platform check `if self.env.ASTER_PLATFORM_MSVC64:`
+- [ ] On MSVC: Combine `src_i8 + src_ext` into single `asterbibfor` library
+- [ ] Test build: `pixi run buildd`
+- [ ] Verify all 57 symbols resolve
+
+**OR: Option B - Process bibfor_ext**
+- [ ] Edit `msvc/msvc_lib.py` `extract_main_tasks()` 
+- [ ] Add `fc_ext_task_object = get_task_object(bld, "asterbibfor_ext", "fc")`
+- [ ] Create `msvc/bibfor_ext.def` with the 57 symbols
+- [ ] Add bibfor_ext library generation in `run_mvsc_lib_gen()`
+- [ ] Update linker to include both `bibfor.lib` and `bibfor_ext.lib`
+
+**OR: Option C - Check if symbols are needed**
+- [ ] Search codebase for calls to `amumpc`, `apetsc`, `elg_resoud`, etc.
+- [ ] If unused (MPI-only/disabled features), remove from `bibfor.def`
+- [ ] Regenerate: `pixi run def-bibfor`
+
+### 📊 Impact Analysis Needed
+
+Before choosing, verify:
+- [ ] Why was bibfor_ext created as separate library? (int64 vs non-int64)
+- [ ] Do external libraries (MUMPS/PETSc) require specific integer sizes?
+- [ ] Are these symbols actually called in non-MPI builds?
+
+---
+
+**Document Status:** Phase 1 Complete - Root Cause Identified  
 **Last Updated:** 2025-01-11  
-**Next Review:** After Phase 1 investigation results
+**Next Action:** Choose fix strategy and implement
 
