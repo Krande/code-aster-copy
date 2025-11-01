@@ -95,6 +95,8 @@ environments:
       - conda: https://conda.anaconda.org/conda-forge/win-64/libhwloc-2.12.1-default_h64bd3f2_1002.conda
       - conda: https://conda.anaconda.org/conda-forge/win-64/libiconv-1.18-h135ad9c_1.conda
       - conda: https://conda.anaconda.org/conda-forge/win-64/liblapack-3.9.0-38_hf9ab0e9_mkl.conda
+      - conda: https://conda.anaconda.org/conda-forge/win-64/libllvm-c18-18.1.8-default_hac490eb_10.conda
+      - conda: https://conda.anaconda.org/conda-forge/win-64/libllvm18-18.1.8-default_hac490eb_10.conda
       - conda: https://conda.anaconda.org/conda-forge/win-64/liblzma-5.8.1-h2466b09_1.conda
       - conda: https://conda.anaconda.org/conda-forge/win-64/libsqlite-3.50.0-h67fdade_0.conda
       - conda: https://conda.anaconda.org/conda-forge/win-64/libwinpthread-12.0.0.r4.gg4f2fc60ca-h57928b3_9.conda
@@ -102,6 +104,8 @@ environments:
       - conda: https://conda.anaconda.org/conda-forge/win-64/libxml2-2.15.1-h5d26750_0.conda
       - conda: https://conda.anaconda.org/conda-forge/win-64/libzlib-1.3.1-h2466b09_2.conda
       - conda: https://conda.anaconda.org/conda-forge/win-64/llvm-openmp-21.1.4-hfa2b4ca_0.conda
+      - conda: https://conda.anaconda.org/conda-forge/win-64/llvm-tools-18.1.8-default_hac490eb_10.conda
+      - conda: https://conda.anaconda.org/conda-forge/win-64/llvmdev-18.1.8-default_hac490eb_10.conda
       - conda: https://conda.anaconda.org/conda-forge/win-64/mkl-2025.3.0-hac47afa_454.conda
       - conda: https://conda.anaconda.org/conda-forge/win-64/mkl-devel-2025.3.0-h57928b3_454.conda
       - conda: https://conda.anaconda.org/conda-forge/win-64/mkl-include-2025.3.0-h57928b3_454.conda
@@ -438,6 +442,8 @@ environments:
       - conda: https://conda.anaconda.org/conda-forge/win-64/libhwloc-2.12.1-default_h64bd3f2_1002.conda
       - conda: https://conda.anaconda.org/conda-forge/win-64/libiconv-1.18-hc1393d2_2.conda
       - conda: https://conda.anaconda.org/conda-forge/win-64/liblapack-3.9.0-38_hf9ab0e9_mkl.conda
+      - conda: https://conda.anaconda.org/conda-forge/win-64/libllvm-c18-18.1.8-default_hac490eb_10.conda
+      - conda: https://conda.anaconda.org/conda-forge/win-64/libllvm18-18.1.8-default_hac490eb_10.conda
       - conda: https://conda.anaconda.org/conda-forge/win-64/liblzma-5.8.1-h2466b09_2.conda
       - conda: https://repo.prefix.dev/code-aster/win-64/libmed-4.1.1.6-py312_nompi_release_INT64_h5461c00_364.conda
       - conda: https://repo.prefix.dev/code-aster/win-64/libscotch-7.0.7-aster_nompi_release_INT64_h9cfabd8_365.conda
@@ -448,6 +454,8 @@ environments:
       - conda: https://conda.anaconda.org/conda-forge/win-64/libxml2-2.15.1-h5d26750_0.conda
       - conda: https://conda.anaconda.org/conda-forge/win-64/libzlib-1.3.1-h2466b09_2.conda
       - conda: https://conda.anaconda.org/conda-forge/win-64/llvm-openmp-21.1.4-hfa2b4ca_0.conda
+      - conda: https://conda.anaconda.org/conda-forge/win-64/llvm-tools-18.1.8-default_hac490eb_10.conda
+      - conda: https://conda.anaconda.org/conda-forge/win-64/llvmdev-18.1.8-default_hac490eb_10.conda
       - conda: https://repo.prefix.dev/code-aster/win-64/medcoupling-9.13.0-py312_nompi_release_INT64_h7efd7c2_364.conda
       - conda: https://repo.prefix.dev/code-aster/win-64/metis-5.1.0.4.1-aster_release_INT64_h151e3bc_265.conda
       - conda: https://repo.prefix.dev/code-aster/win-64/mfront-4.2.2-py312_release_h3a889ac_200.conda
@@ -591,6 +599,8 @@ environments:
       - conda: https://conda.anaconda.org/conda-forge/win-64/libhwloc-2.12.1-default_h64bd3f2_1002.conda
       - conda: https://conda.anaconda.org/conda-forge/win-64/libiconv-1.18-hc1393d2_2.conda
       - conda: https://conda.anaconda.org/conda-forge/win-64/liblapack-3.9.0-38_hf9ab0e9_mkl.conda
+      - conda: https://conda.anaconda.org/conda-forge/win-64/libllvm-c18-18.1.8-default_hac490eb_10.conda
+      - conda: https://conda.anaconda.org/conda-forge/win-64/libllvm18-18.1.8-default_hac490eb_10.conda
       - conda: https://conda.anaconda.org/conda-forge/win-64/liblzma-5.8.1-h2466b09_2.conda
       - conda: https://repo.prefix.dev/code-aster/win-64/libmed-4.1.1.6-py312_nompi_debug_INT64_hf72c98b_164.conda
       - conda: https://repo.prefix.dev/code-aster/win-64/libscotch-7.0.7-aster_nompi_debug_INT64_h9e4d6ca_165.conda
@@ -601,6 +611,8 @@ environments:
       - conda: https://conda.anaconda.org/conda-forge/win-64/libxml2-2.15.1-h5d26750_0.conda
       - conda: https://conda.anaconda.org/conda-forge/win-64/libzlib-1.3.1-h2466b09_2.conda
       - conda: https://conda.anaconda.org/conda-forge/win-64/llvm-openmp-21.1.4-hfa2b4ca_0.conda
+      - conda: https://conda.anaconda.org/conda-forge/win-64/llvm-tools-18.1.8-default_hac490eb_10.conda
+      - conda: https://conda.anaconda.org/conda-forge/win-64/llvmdev-18.1.8-default_hac490eb_10.conda
       - conda: https://repo.prefix.dev/code-aster/win-64/medcoupling-9.13.0-py312_nompi_debug_INT64_h42dcd74_164.conda
       - conda: https://repo.prefix.dev/code-aster/win-64/metis-5.1.0.4.1-aster_debug_INT64_he0ba980_65.conda
       - conda: https://repo.prefix.dev/code-aster/win-64/mfront-4.2.2-py312_debug_hdc4022e_0.conda
@@ -1849,6 +1861,23 @@ packages:
   license_family: BSD
   size: 79298
   timestamp: 1761680854566
+- conda: https://conda.anaconda.org/conda-forge/win-64/libllvm-c18-18.1.8-default_hac490eb_10.conda
+  sha256: a8bb6afaec5ac569c766930dfef7d045084d6bb1fb7fe5e9df3c123abfc33470
+  md5: d403ebc8b27294bacef787d2a26950e7
+  depends:
+  - libxml2
+  - libxml2-16 >=2.14.5
+  - libzlib >=1.3.1,<2.0a0
+  - ucrt >=10.0.20348.0
+  - vc >=14.3,<15
+  - vc14_runtime >=14.44.35208
+  - zstd >=1.5.7,<1.6.0a0
+  constrains:
+  - llvmdev 18.1.8
+  license: Apache-2.0 WITH LLVM-exception
+  license_family: Apache
+  size: 23000058
+  timestamp: 1757363720138
 - conda: https://conda.anaconda.org/conda-forge/win-64/libllvm-c18-18.1.8-default_hec7ea82_5.conda
   sha256: 548c25cf79be5496d10be9bbf6bb1b016f7a13c089242e90620e046093705500
   md5: 7e981ce15931e134f43abb61faef90f5
@@ -1865,6 +1894,21 @@ packages:
   license_family: Apache
   size: 22937970
   timestamp: 1743997204235
+- conda: https://conda.anaconda.org/conda-forge/win-64/libllvm18-18.1.8-default_hac490eb_10.conda
+  sha256: 31599c72b8be4bb6c27d04889fda06150f7a3cb9015ba2af4d8afde6240a9260
+  md5: 8f1293115485fd39b889d07c45c3a793
+  depends:
+  - libxml2
+  - libxml2-16 >=2.14.5
+  - libzlib >=1.3.1,<2.0a0
+  - ucrt >=10.0.20348.0
+  - vc >=14.3,<15
+  - vc14_runtime >=14.44.35208
+  - zstd >=1.5.7,<1.6.0a0
+  license: Apache-2.0 WITH LLVM-exception
+  license_family: Apache
+  size: 60789
+  timestamp: 1757363502531
 - conda: https://conda.anaconda.org/conda-forge/win-64/libllvm18-18.1.8-default_hec7ea82_5.conda
   sha256: bd5dd6a81ddf40fae32cc61fcbc6133fdf11841406bcf40548b6ed2c8c26a0f2
   md5: 2981e1eb7adde4a13409fb276e233dc6
@@ -2341,6 +2385,27 @@ packages:
   license_family: APACHE
   size: 347267
   timestamp: 1761131531490
+- conda: https://conda.anaconda.org/conda-forge/win-64/llvm-tools-18.1.8-default_hac490eb_10.conda
+  sha256: 220f54a1f55717ec6f2a3b65be80f8f658cfbf750cd4428f13a18dc7b190d56f
+  md5: b0db68a3e68e390050422c49bd64f150
+  depends:
+  - libllvm18 18.1.8 default_hac490eb_10
+  - libxml2
+  - libxml2-16 >=2.14.5
+  - libzlib >=1.3.1,<2.0a0
+  - ucrt >=10.0.20348.0
+  - vc >=14.3,<15
+  - vc14_runtime >=14.44.35208
+  - zstd >=1.5.7,<1.6.0a0
+  constrains:
+  - llvm        18.1.8
+  - llvmdev     18.1.8
+  - clang-tools 18.1.8
+  - clang       18.1.8
+  license: Apache-2.0 WITH LLVM-exception
+  license_family: Apache
+  size: 367870934
+  timestamp: 1757363960958
 - conda: https://conda.anaconda.org/conda-forge/win-64/llvm-tools-18.1.8-default_hec7ea82_5.conda
   sha256: a16cae74a8f5d5fa88d6fb882db93e079b45701434e383b3993390552d3d4981
   md5: a3c081c3ae7d73e7a67831aa9e0298c4
@@ -2361,6 +2426,29 @@ packages:
   license_family: Apache
   size: 370097643
   timestamp: 1743997532948
+- conda: https://conda.anaconda.org/conda-forge/win-64/llvmdev-18.1.8-default_hac490eb_10.conda
+  sha256: 12ee336cd0721d604eab814f115f689c903e20e31b2f6e68ad4819d378e5b065
+  md5: 2570824f876c24189becd3f3c7a916a5
+  depends:
+  - libllvm-c18 18.1.8 default_hac490eb_10
+  - libllvm18 18.1.8 default_hac490eb_10
+  - libxml2
+  - libxml2-16 >=2.14.5
+  - libzlib >=1.3.1,<2.0a0
+  - llvm-tools 18.1.8 default_hac490eb_10
+  - ucrt >=10.0.20348.0
+  - vc >=14.3,<15
+  - vc14_runtime >=14.44.35208
+  - zstd >=1.5.7,<1.6.0a0
+  constrains:
+  - llvm        18.1.8
+  - clang-tools 18.1.8
+  - llvm-tools  18.1.8
+  - clang       18.1.8
+  license: Apache-2.0 WITH LLVM-exception
+  license_family: Apache
+  size: 100471348
+  timestamp: 1757365028815
 - conda: https://conda.anaconda.org/conda-forge/win-64/llvmdev-18.1.8-default_hec7ea82_5.conda
   sha256: aa4fbd1a057619b80bbf052c10c5c21361361c3e94d0a2d82a797e2a6d863cc4
   md5: 23fd984188f6b6ddeb234bf5835d5557

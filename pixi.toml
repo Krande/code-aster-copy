@@ -33,6 +33,7 @@ python-dotenv = "*"
 pybind11 = "==2.13.1"
 setuptools = "*"
 
+
 [feature.common.target.linux-64.dependencies]
 gfortran = "13*"
 gxx = "13*"
@@ -47,15 +48,15 @@ clang = "18.*"
 
 libblas = { version = "*", build = "*mkl" }
 liblapack = { version = "*", build = "*mkl" }
-mkl = { version="2025.3.*", channel="conda-forge" }
+#mkl = { version="2025.3.*", channel="conda-forge" }
 mkl-devel = { version="2025.3.*", channel="conda-forge" }
-#intel-openmp = "*"
 ifx_win-64 = { version="*", channel="conda-forge" }
-intel-fortran-rt = { version="*", channel="conda-forge" }
-intel-cmplr-lib-rt = { version="*", channel="conda-forge" }
-intel-opencl-rt = { version="*", channel="conda-forge"}
-intel-cmplr-lic-rt = { version="*", channel="conda-forge"}
-tbb = { version="*", channel="conda-forge"}
+#intel-fortran-rt = { version="*", channel="conda-forge" }
+#intel-cmplr-lib-rt = { version="*", channel="conda-forge" }
+#intel-opencl-rt = { version="*", channel="conda-forge"}
+#intel-cmplr-lic-rt = { version="*", channel="conda-forge"}
+#tbb = { version="*", channel="conda-forge"}
+llvmdev = "*"
 
 [feature.dev.target.win-64.dependencies]
 clangdev = "18.*"

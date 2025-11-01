@@ -131,7 +131,7 @@ def get_task_object(bld: TaskGen, taskgen_name: str, compiler_prefix: str) -> Ta
 
 
 def extract_main_tasks(self: TaskGen.task_gen) -> LibTask:
-    Logs.info(f"Extracting main tasks for {self.get_name()=}")
+    Logs.debug(f"Extracting main tasks for {self.get_name()=}")
 
     bld = self.bld
     c_task_object = get_task_object(bld, "asterbibc", "c")
@@ -150,7 +150,7 @@ def create_msvclibgen_task(self, lib_name: str, input_tasks) -> Task:
     if lib_name == "aster":
         lib_output_file_path = bld_path / "bibc" / "aster.lib"
     elif lib_name.endswith("proxy"):
-        Logs.info(f"input_tasks: {input_tasks=}")
+        Logs.debug(f"input_tasks: {input_tasks=}")
         lib_output_file_path = bld_path / "msvc" / f"{lib_name}.lib"
     else:
         lib_output_file_path = bld_path / lib_name / f"{lib_name}.lib"
@@ -164,19 +164,19 @@ def create_msvclibgen_task(self, lib_name: str, input_tasks) -> Task:
     msvc_libgen_task.dep_nodes = input_tasks
     msvc_libgen_task.outputs = [bib_lib_output_file_node]
 
-    Logs.info(f"{msvc_libgen_task.outputs=}")
+    Logs.debug(f"{msvc_libgen_task.outputs=}")
 
     return msvc_libgen_task
 
 
 def run_mvsc_lib_gen(self, task_obj: LibTask):
-    Logs.info("Running MSVC lib generation")
+    Logs.info("Generating MSVC import libraries")
     clib_task = task_obj.asterbibc.libtask
     cxxlib_task = task_obj.asterbibcxx.libtask
     fclib_task = task_obj.asterbibfor.libtask
     aster_task = task_obj.asterlib.libtask
 
-    Logs.info(f"Before removal: {clib_task.outputs=}")
+    Logs.debug(f"Before removal: {clib_task.outputs=}")
 
     # Lib files are created by MSVC lib generation, so will remove these from the shlib outputs
     clib_task.outputs = [o for o in clib_task.outputs if o.suffix() != ".lib"]
@@ -184,16 +184,16 @@ def run_mvsc_lib_gen(self, task_obj: LibTask):
     fclib_task.outputs = [o for o in fclib_task.outputs if o.suffix() != ".lib"]
     aster_task.outputs = [o for o in aster_task.outputs if o.suffix() != ".lib"]
 
-    Logs.info(f"After removal: {clib_task.outputs=}")
-    Logs.info(f"After removal: {fclib_task.outputs=}")
-    Logs.info(f"After removal: {cxxlib_task.outputs=}")
-    Logs.info(f"After removal: {aster_task.outputs=}")
+    Logs.debug(f"After removal: {clib_task.outputs=}")
+    Logs.debug(f"After removal: {fclib_task.outputs=}")
+    Logs.debug(f"After removal: {cxxlib_task.outputs=}")
+    Logs.debug(f"After removal: {aster_task.outputs=}")
 
     c_input_tasks = [ctask.outputs[0] for ctask in task_obj.asterbibc.tasks]
     cxx_input_tasks = [cxxtask.outputs[0] for cxxtask in task_obj.asterbibcxx.tasks]
     fc_input_tasks = [fctask.outputs[0] for fctask in task_obj.asterbibfor.tasks]
     aster_input_tasks = [ctask.outputs[0] for ctask in task_obj.asterlib.tasks if ctask.outputs[0].suffix() == ".o"]
-    Logs.info(f"{aster_input_tasks=}")
+    Logs.debug(f"{aster_input_tasks=}")
 
     if len(aster_input_tasks) == 0:
         raise Errors.WafError("Failed MSVC lib generation: No aster input tasks found")
@@ -203,9 +203,9 @@ def run_mvsc_lib_gen(self, task_obj: LibTask):
     bibfor_lib_task = create_msvclibgen_task(self, "bibfor", fc_input_tasks)
     bibaster_lib_task = create_msvclibgen_task(self, "aster", aster_input_tasks)
 
-    Logs.info(f"{clib_lib_task.outputs=}")
-    Logs.info(f"{fclib_task.outputs=}")
-    Logs.info(f"{bibaster_lib_task.outputs=}")
+    Logs.debug(f"{clib_lib_task.outputs=}")
+    Logs.debug(f"{fclib_task.outputs=}")
+    Logs.debug(f"{bibaster_lib_task.outputs=}")
 
     # filter out all non-lib files
     clib_task_outputs = [x for x in clib_lib_task.outputs if x.suffix() == ".lib"]
@@ -213,10 +213,10 @@ def run_mvsc_lib_gen(self, task_obj: LibTask):
     bibaster_task_outputs = [x for x in bibaster_lib_task.outputs if x.suffix() == ".lib"]
     bibcxx_task_outputs = [x for x in bibcxx_lib_task.outputs if x.suffix() == ".lib"]
 
-    Logs.info(f"{clib_task_outputs=}")
-    Logs.info(f"{fclib_task_outputs=}")
-    Logs.info(f"{bibaster_task_outputs=}")
-    Logs.info(f"{bibcxx_task_outputs=}")
+    Logs.debug(f"{clib_task_outputs=}")
+    Logs.debug(f"{fclib_task_outputs=}")
+    Logs.debug(f"{bibaster_task_outputs=}")
+    Logs.debug(f"{bibcxx_task_outputs=}")
 
     clib_task.inputs += bibcxx_task_outputs + fclib_task_outputs
     fclib_task.inputs += bibcxx_task_outputs + clib_task_outputs
@@ -255,10 +255,10 @@ def make_libs_for_entrypoints(self) -> None:
     c_input_tasks = [ctask.outputs[0] for ctask in aster_object.tasks]
     clib_task = aster_object.libtask
 
-    Logs.info(f"{name=},{c_input_tasks=}, {clib_task.outputs=}")
+    Logs.debug(f"{name=},{c_input_tasks=}, {clib_task.outputs=}")
 
     clib_task.outputs = [o for o in clib_task.outputs if o.suffix() != ".lib"]
-    Logs.info(f"{clib_task.outputs=} after removal")
+    Logs.debug(f"{clib_task.outputs=} after removal")
 
     aster_msvc_lib_task = create_msvclibgen_task(self, name, c_input_tasks)
 
