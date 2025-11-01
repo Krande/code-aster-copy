@@ -164,7 +164,6 @@ EXPORTS
 	indik8_
 	iniran_
 	inisig_
-	initAsterModules
 	init_etape_stack
 	int_to_string_conversion_
 	isbaem_
