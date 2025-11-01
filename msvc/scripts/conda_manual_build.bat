@@ -251,7 +251,7 @@ if %VERBOSE_WAF%==1 (
 REM Conditional log handling
 if %USE_LOG%==1 (
     set "datetimeString="
-    call %~dp0\conda_datetime.bat
+    call %~dp0msvc\scripts\conda_datetime.bat
     waf install_debug -vvv > "install_debug_%datetimeString%.log" 2>&1
 ) else (
     if "%BUILD_DEBUG%" == "1" (
