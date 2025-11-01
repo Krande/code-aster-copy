@@ -1,6 +1,10 @@
 import pathlib
 import shutil
 import time
+import os
+import sys
+import json
+import subprocess
 
 from waflib import Logs, Task
 
@@ -90,6 +94,48 @@ def build_clang_compilation_db(task_gen, c_tasks, cxx_tasks, fc_tasks=None):
 
     elapsed = time.perf_counter() - start
     root = list(clang_db.values())
+
+    # Async option: offload the final JSON write to a background subprocess
+    if os.environ.get("ASTER_CLANGDB_MODE", "").lower() == "async":
+        snapshot_node = bld.bldnode.make_node("compile_commands.snapshot.json")
+        snapshot_path = snapshot_node.abspath()
+        out_path = database_file.abspath()
+        # Write snapshot atomically
+        tmp_snap = snapshot_path + ".tmp"
+        with open(tmp_snap, "w", encoding="utf-8") as f:
+            json.dump(root, f)
+        os.replace(tmp_snap, snapshot_path)
+
+        # Build subprocess command to finalize JSON (atomic write + log)
+        cmd = [sys.executable, "-m", "waftools.clangdb", "--from-snapshot", snapshot_path, "--out", out_path]
+        creationflags = 0
+        popen_kwargs = {}
+        if os.name == "nt":
+            # Detached background process on Windows
+            creationflags = getattr(subprocess, "DETACHED_PROCESS", 0) | getattr(subprocess, "CREATE_NEW_PROCESS_GROUP", 0)
+            popen_kwargs["creationflags"] = creationflags
+        else:
+            popen_kwargs["start_new_session"] = True
+
+        try:
+            subprocess.Popen(cmd, stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL, **popen_kwargs)
+            Logs.info(
+                "Compilation database generation continues in background (async). Snapshot has %d entries; elapsed so far: %.2f s",
+                len(root),
+                elapsed,
+            )
+        except Exception as e:
+            Logs.warn("Failed to spawn async clangdb writer (%s); falling back to synchronous write", e)
+            database_file.write_json(root)
+            Logs.info(
+                "Compilation database written to %s (%d entries in %.2f s)",
+                database_file.path_from(bld.path),
+                len(root),
+                elapsed,
+            )
+        return
+
+    # Synchronous path (default)
     database_file.write_json(root)
     Logs.info(
         "Compilation database written to %s (%d entries in %.2f s)",
@@ -97,3 +143,36 @@ def build_clang_compilation_db(task_gen, c_tasks, cxx_tasks, fc_tasks=None):
         len(root),
         elapsed,
     )
+
+
+if __name__ == "__main__":
+    # CLI for async writer: python -m waftools.clangdb --from-snapshot <snapshot> --out <output>
+    import argparse
+    _ap = argparse.ArgumentParser(description="Finalize compile_commands.json from snapshot.")
+    _ap.add_argument("--from-snapshot", dest="snapshot", required=True, help="Path to snapshot JSON")
+    _ap.add_argument("--out", dest="out", required=True, help="Path to final compile_commands.json")
+    _args = _ap.parse_args()
+
+    t0 = time.perf_counter()
+    with open(_args.snapshot, "r", encoding="utf-8") as _f:
+        _data = json.load(_f)
+
+    _tmp = _args.out + ".tmp"
+    with open(_tmp, "w", encoding="utf-8") as _f:
+        json.dump(_data, _f)
+    os.replace(_tmp, _args.out)
+
+    _elapsed = time.perf_counter() - t0
+    try:
+        from waflib import Logs as _Logs  # type: ignore
+        _Logs.info(
+            "Async compilation database written to %s (%d entries in %.2f s)",
+            _args.out,
+            len(_data),
+            _elapsed,
+        )
+    except Exception:
+        print(
+            f"Async compilation database written to {_args.out} ({len(_data)} entries in {_elapsed:.2f} s)",
+            file=sys.stdout,
+        )
