@@ -26,7 +26,6 @@ subroutine acearg(infdonn, lmax, noemaf, nbocc, infcarte, ivr, zjdlm)
 !     AFFECTATION DES CARACTERISTIQUES POUR LES ELEMENTS DISCRET PAR RAIDEUR REPARTIE
 !
 ! --------------------------------------------------------------------------------------------------
-! person_in_charge: jean-luc.flejou at edf.fr
 !
     use cara_elem_parameter_module
     use cara_elem_info_type
@@ -44,13 +43,10 @@ subroutine acearg(infdonn, lmax, noemaf, nbocc, infcarte, ivr, zjdlm)
 #include "asterfort/assert.h"
 #include "asterfort/dismoi.h"
 #include "asterfort/getvem.h"
-#include "asterfort/getvis.h"
 #include "asterfort/getvr8.h"
-#include "asterfort/getvtx.h"
 #include "asterfort/in_liste_entier.h"
 #include "asterfort/isParallelMesh.h"
 #include "asterfort/jedema.h"
-#include "asterfort/jedetr.h"
 #include "asterfort/jelira.h"
 #include "asterfort/jemarq.h"
 #include "asterfort/jenuno.h"
@@ -59,40 +55,31 @@ subroutine acearg(infdonn, lmax, noemaf, nbocc, infcarte, ivr, zjdlm)
 #include "asterfort/jexnum.h"
 #include "asterfort/nocart.h"
 #include "asterfort/provec.h"
-#include "asterfort/r8inir.h"
-#include "asterfort/rairep.h"
 #include "asterfort/utmess.h"
-#include "asterfort/wkvect.h"
 #include "asterfort/int_to_char8.h"
 #include "blas/ddot.h"
 !&<
 ! --------------------------------------------------------------------------------------------------
-    integer(kind=8) :: nbcar, nbval, nrd
-    parameter(nbcar=100, nbval=5, nrd=2)
-    integer(kind=8) :: jdc(3), jdv(3), iunite, ifm, iretour
+    integer(kind=8) :: nbval
+    parameter(nbval=5)
+    integer(kind=8) :: jdc(3), jdv(3), ifm
     integer(kind=8) :: jdcinf, jdvinf
-    integer(kind=8) :: ii, idecal, in, inbn, ino, inoe, ioc, irep
-    integer(kind=8) :: irgno, isym, itbmp, itbno, iv, nummail
-    integer(kind=8) :: jd, jdls, jj, jn
-    integer(kind=8) :: ll, ldgm, ldnm, lokm, lorep, nbnma
-    integer(kind=8) :: nbno, nbnoeu, nc, ncar, ncmp
-    integer(kind=8) :: ndim, ng, ngp, nma, nrep, nval, dimcar
-    integer(kind=8) :: vali(2)
+    integer(kind=8) :: iv, ioc, ll
+    integer(kind=8) :: nbno, ncmp
+    integer(kind=8) :: ndim, dimcar
 ! --------------------------------------------------------------------------------------------------
 
     character(len=1)  :: kma(3)
-    character(len=8)  :: nomnoe, nomu, car(nbcar), lamass, noma
-    character(len=16) :: rep, repdis(nrd)
+    data kma/'K', 'M', 'A'/
+    character(len=8)  :: nomu, noma
     character(len=19) :: cart(3), cartdi
 
-
-
-
     integer(kind=8) :: n_groups, nbparno, ntopo
-    integer(kind=8) :: j_typ, j_grma, j_no
-    integer(kind=8) :: nb_cells, nb_nodes, i_cell, num_cell, nb_no, i_no, i_noe, posi
+    integer(kind=8) :: j_typ, j_grma, j_no, j_grno
+    integer(kind=8) :: nb_cells, nb_nodes, i_cell, num_cell, nb_no, i_no, i_noe, posi, i_val
     real(kind=8) :: vale(nbval)
-    real(kind=8) :: x(9), y(9), z(9), xyzc(3), a(3), b(3), c(3), surf, surtot
+    real(kind=8) :: x(9), y(9), z(9), a(3), b(3), c(3), surf, surtot
+    real(kind=8) :: i_x, i_y, x_g, y_g, x_p, y_p, rigi(6), mass(4)
     character(len=8) :: typm, nommai
     character(len=24) :: grma, gr_seg(nbval), gr_centre(nbval)
     character(len=24) :: magrno, magrma, manoma, matyma
@@ -100,7 +87,8 @@ subroutine acearg(infdonn, lmax, noemaf, nbocc, infcarte, ivr, zjdlm)
     integer(kind=8), pointer :: parno(:) => null()
     real(kind=8), pointer :: surmai(:) => null()
     real(kind=8), pointer :: coord(:) => null()
-    blas_int :: b_1, b_2, b_3
+    integer(kind=8), pointer :: parcell(:) => null()
+    blas_int :: b_1, b_3
     aster_logical :: l_pmesh
 !
 ! --------------------------------------------------------------------------------------------------
@@ -115,8 +103,7 @@ subroutine acearg(infdonn, lmax, noemaf, nbocc, infcarte, ivr, zjdlm)
     if ( l_pmesh ) then
         call utmess('F', 'AFFECARAELEM_99')
     endif
-!   Pour les discrets c'est obligatoirement du 2D ou 3D
-    ASSERT((ndim .eq. 2) .or. (ndim .eq. 3))
+    ASSERT(ndim .eq. 3)
 !
 !   Les cartes sont déjà construites : ace_crea_carte
     cartdi = infcarte(ACE_CAR_DINFO)%nom_carte
@@ -152,7 +139,8 @@ subroutine acearg(infdonn, lmax, noemaf, nbocc, infcarte, ivr, zjdlm)
         print*, grma
         call getvem(noma, 'GROUP_MA', 'RIGI_GRILLE', 'GROUP_MA_SEG2', ioc, nbval, gr_seg, n_groups)
         print*, gr_seg
-        call getvem(noma, 'GROUP_NO', 'RIGI_GRILLE', 'GROUP_NO_CENTRE', ioc, nbval, gr_centre, n_groups)
+        call getvem(noma, 'GROUP_NO', 'RIGI_GRILLE', 'GROUP_NO_CENTRE', ioc, nbval, gr_centre, &
+&                   n_groups)
         print*, gr_centre
         call getvr8('RIGI_GRILLE', 'VALE', iocc=ioc, nbval=nbval, vect=vale)
         print*, vale
@@ -161,9 +149,9 @@ subroutine acearg(infdonn, lmax, noemaf, nbocc, infcarte, ivr, zjdlm)
         call jeveuo(jexnom(magrma, grma), 'L', j_grma)
 
 !       calcul des surfaces au support des noeuds
-!
+
         nb_nodes = 0
-        do i_cell = 0, nb_cells
+        do i_cell = 1, nb_cells
             num_cell = zi(j_grma-1+i_cell)
             if (num_cell .le. 0) then
                 nommai = '????'
@@ -184,7 +172,6 @@ subroutine acearg(infdonn, lmax, noemaf, nbocc, infcarte, ivr, zjdlm)
 !
 
         b_1 = to_blas_int(1)
-        b_2 = to_blas_int(2)
         b_3 = to_blas_int(3)
 
 !       Coefficients des noeuds de l interface
@@ -195,11 +182,11 @@ subroutine acearg(infdonn, lmax, noemaf, nbocc, infcarte, ivr, zjdlm)
         AS_ALLOCATE(vr=surmai, size=nb_cells)
 
         nbparno = 0
+        surtot = 0.d0
         do i_cell = 1, nb_cells
             num_cell = zi(j_grma-1+i_cell)
             call jelira(jexnum(manoma, num_cell), 'LONMAX', nb_no)
             call jeveuo(jexnum(manoma, num_cell), 'L', j_no)
-            xyzc(:) = 0.0d0
             do i_no = 1, nb_no
                 i_noe = zi(j_no-1+i_no)
 !               On enregistre le numéro du noeud dans parno, s'il n'y est pas déjà
@@ -210,11 +197,7 @@ subroutine acearg(infdonn, lmax, noemaf, nbocc, infcarte, ivr, zjdlm)
                 x(i_no) = coord(3*(i_noe-1)+1)
                 y(i_no) = coord(3*(i_noe-1)+2)
                 z(i_no) = coord(3*(i_noe-1)+3)
-                xyzc(1) = xyzc(1)+x(i_no)
-                xyzc(2) = xyzc(2)+y(i_no)
-                xyzc(3) = xyzc(3)+z(i_no)
             end do
-            xyzc(:) = xyzc(:)/nb_no
 !
             a(1) = x(3)-x(1)
             a(2) = y(3)-y(1)
@@ -257,10 +240,96 @@ subroutine acearg(infdonn, lmax, noemaf, nbocc, infcarte, ivr, zjdlm)
             end do
         end do
 
+!       Numeros de mailles seg2 associé à parno
+        AS_ALLOCATE(vi=parcell, size=nbno)
+
+        do i_val = 1, nbval
+!           récupération des seg2 associés à parno
+            call jelira(jexnom(magrma, gr_seg(i_val)), 'LONUTI', nb_cells)
+            ASSERT(nb_cells .eq. nbno)
+            call jeveuo(jexnom(magrma, gr_seg(i_val)), 'L', j_grma)
+            do i_cell = 1, nb_cells
+                num_cell = zi(j_grma-1+i_cell)
+                call jelira(jexnum(manoma, num_cell), 'LONMAX', nb_no)
+                ASSERT(nb_no .eq. 2)
+                call jeveuo(jexnum(manoma, num_cell), 'L', j_no)
+!               Vérification que un des noeuds fait partie de la surface
+                do i_no = 1, nbno
+                    if (zi(j_no) .eq. parno(i_no) .or. zi(j_no+1) .eq. parno(i_no)) then
+                        parcell(i_no) = num_cell
+                        goto 22
+                    end if
+                end do
+                ASSERT(.false.)
+22              continue
+            end do
+
+            if (i_val .gt. 3) then
+                ! recup des coordonnées du centre
+                call jeveuo(jexnom(magrno, gr_centre(i_val)), 'L', j_grno)
+                i_noe = zi(j_grno)
+                if (i_val .eq. 4) then
+                    y_g = coord(3*(i_noe-1)+2)
+                    i_x = 0.d0
+                else
+                    x_g = coord(3*(i_noe-1)+1)
+                    i_y = 0.d0
+                end if
+                ! calcul du moment
+                do i_no = 1, nbno
+                    i_noe = parno(i_no)
+                    if (i_val .eq. 4) then
+                        y_p = coord(3*(i_noe-1)+2)
+                        i_x = i_x + coeno(i_no)*(y_p - y_g)**2
+                    else
+                        x_p = coord(3*(i_noe-1)+1)
+                        i_y = i_y + coeno(i_no)*(x_p - x_g)**2
+                    end if
+                end do
+                if (i_val .eq. 4) then
+                    print*, "i_x", i_x * surtot
+                else if (i_val .eq. 5) then
+                    print*, "i_y", i_y * surtot
+                end if
+            end if
+
+            ! calcul de la rigidité
+            do i_no = 1, nbno
+                rigi = 1.d-3
+                if (i_val .eq. 4) then
+                    rigi(3) = vale(i_val) * coeno(i_no) / i_x
+                else if (i_val .eq. 5) then
+                    rigi(3) = vale(i_val) * coeno(i_no) / i_y
+                else
+                    rigi(i_val) = vale(i_val) * coeno(i_no)
+                end if
+                ! on applique la rigidité sur le groupe de SEG_2
+                iv = 1
+                call affdis(ndim, 1, 0.d0, 'K_TR_D_L', rigi, &
+                            jdc, jdv, ivr, iv, kma, &
+                            ncmp, ll, jdcinf, jdvinf, 1)
+                call nocart(cartdi, 3, dimcar, mode='NUM', nma=1, limanu=[parcell(i_no)])
+                call nocart(cart(ll), 3, ncmp, mode='NUM', nma=1, limanu=[parcell(i_no)])
+
+!               affectation de matrice masse nulle
+                iv = 1
+                mass = 1.d-12
+                call affdis(ndim, 1, 0.d0, 'M_TR_D_L', mass, &
+                            jdc, jdv, ivr, iv, kma, &
+                            ncmp, ll, jdcinf, jdvinf, 1)
+                call nocart(cartdi, 3, dimcar, mode='NUM', nma=1, limanu=[parcell(i_no)])
+                call nocart(cart(ll), 3, ncmp, mode='NUM', nma=1, limanu=[parcell(i_no)])
+            end do
+
+        end do
+
         AS_DEALLOCATE(vr=coeno)
         AS_DEALLOCATE(vi=parno)
         AS_DEALLOCATE(vr=surmai)
+        AS_DEALLOCATE(vi=parcell)
 
     end do
-        
+
+    call jedema()
+
 end subroutine
