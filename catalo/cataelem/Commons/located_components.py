@@ -437,13 +437,28 @@ CFER1_R = LocatedComponents(
         "PHIYS",
         "PHIZI",
         "PHIZS",
+        "ASMINFIS",
+        "ECHELLE",
     ),
 )
 
 CFER2_R = LocatedComponents(
     phys=PHY.FER2_R,
     type="ELEM",
-    components=("DNSXI", "DNSXS", "DNSYI", "DNSYS", "DNSXT", "DNSYT", "DNSVOL", "CONSTRUC"),
+    components=(
+        "DNSXI",
+        "DNSXS",
+        "DNSYI",
+        "DNSYS",
+        "DNSXT",
+        "DNSYT",
+        "DNSVOL",
+        "CONSTRUC",
+        "ASMINXI",
+        "ASMINXS",
+        "ASMINYI",
+        "ASMINYS",
+    ),
 )
 
 CVFER0_R = LocatedComponents(

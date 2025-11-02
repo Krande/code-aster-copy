@@ -43,7 +43,7 @@ subroutine clcplq(typcmb, typco, nb, precs, &
 !      I EPUCISA       IMPACT DE L'EFFORT TRANCHANT ET DE LA TORSION SUR LE
 !                      FERRAILLAGE LONGITUDINAL?
 !                      (0 = NON, 1 = OUI)
-!      I FERRMIN       PRISE EN COMPTE DU FERRA MINI (0 = NON, 1 = OUI, 2 = CODE)
+!      I FERRMIN       PRISE EN COMPTE DU FERRA MINI ( 1 = VALE_MIN, 2 = EC2/BAEL91)
 !      I RHOLMIN       RATIO DE FERRAILLAGE LONGI MINI (A RENSEIGNER SI FERMIN='OUI')
 !      I RHOTMIN       RATIO DE FERRAILLAGE TRNSV MINI (A RENSEIGNER SI FERMIN='OUI')
 !      I COMPRESS      VALORISATION DE LA COMPRESSION POUR LES ACIERS TRANSVERSAUX
@@ -149,6 +149,7 @@ subroutine clcplq(typcmb, typco, nb, precs, &
     real(kind=8) :: dnsits(6)
     integer(kind=8) :: ierrl
     integer(kind=8) :: ierrt
+
 !
 !       NOMBRE DE DIVISIONS ENTRE -PI/2 ET +PI/2
     real(kind=8) :: fcttab(nb, 6)
@@ -553,6 +554,7 @@ subroutine clcplq(typcmb, typco, nb, precs, &
             if (ierrlG .eq. 0) then
                 call clcopt(nb, fcttab, ai, dnsits(1), dnsits(2))
                 call clcopt(nb, fcttab, as, dnsits(3), dnsits(4))
+
             else
                 dnsits(1) = -1.d0
                 dnsits(2) = -1.d0

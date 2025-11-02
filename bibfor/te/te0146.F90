@@ -70,6 +70,8 @@ subroutine te0146(option, nomte)
 !                   0 = NON, 1 = OUI
 !     FERRMIN    PRISE EN COMPTE D'UN FERRAILLAGE MINIMUN
 !                   0 = NON, 1 = OUI, 2 = CODE
+!     FERRMINFISS   PRISE EN COMPTE DU Asmin Fiss ( 1 = OUI)
+!     EFFECHEL      PRISE EN COMPTE DE LEFFET DECHELLE ( 1 = OUI)
 !     RHOLMIN    RATIO DE FERRAILLAGE LONGI MINI (A RENSEIGNER SI FERMIN='OUI')
 !     RHOTMIN    RATIO DE FERRAILLAGE TRNSV MINI (A RENSEIGNER SI FERMIN='OUI')
 !     COMPRESS   VALORISATION DE LA COMPRESSION POUR LES ACIERS TRANSVERSAUX
@@ -156,7 +158,7 @@ subroutine te0146(option, nomte)
 !---------------------------------------------------------------------
 !
     real(kind=8) :: cequi, sigs, sigci, sigcs, sigcyi, sigcys, sigczi, sigczs
-    real(kind=8) :: alphacc, effrts(8), dnsits(6)
+    real(kind=8) :: alphacc, effrts(8), dnsits(6), dnsmin(4)
     real(kind=8) :: ht, enrobi, enrobs, enrobyi, enrobys, enrobzi, enrobzs
     real(kind=8) :: gammac, gammas, rholmin, rhotmin, slsyme
     real(kind=8) :: facier, fbeton, eys, rhoacier, dnsvol, areinf, ashear
@@ -164,10 +166,13 @@ subroutine te0146(option, nomte)
     real(kind=8) :: wmaxi, wmaxs, wmaxyi, wmaxys, wmaxzi, wmaxzs, sigelsqp, kt
     real(kind=8) :: phixi, phixs, phiyi, phiys, phizi, phizs
     real(kind=8) :: reinf, shear, stirrups, thiter, epiter, aphiter
-    integer(kind=8) :: ierr, ierrl, ierrt, jepais, jefge, jfer1, jfer2, itab(7), nno
-    integer(kind=8) :: typcmb, typco, ferrmin, typdiag, ferrsyme, epucisa, clacier, uc, um
-    integer(kind=8) :: ino, icmp, iret, k, meth2D, cond109, precs
+    integer(kind=8) :: ierr, ierrl, ierrt, jepais, jefge, jfer1, jfer2, itab(7)
+    integer(kind=8) :: typcmb, typco, ferrmin, typdiag, ferrsyme, epucisa
+    integer(kind=8) ::  clacier, uc, um, ferrminfiss, effechel
+    integer(kind=8) :: ino, icmp, iret, comp, meth2D, cond109, precs, nno
     integer(kind=8) :: iadzi, iazk24, compress, ferrcomp, typstru, nb
+    real(kind=8) :: k, hs, N, M, Asmininf, Asminsup, Act, kc, k1, sigma_c, m1
+    real(kind=8) ::  chi0, fctm, unite_m, unite_pa, A, I, Mfiss, x, b
 !
     call tecael(iadzi, iazk24, noms=0)
 !
@@ -214,9 +219,10 @@ subroutine te0146(option, nomte)
 !                 43       44        45       46       47      48      49
 !              'WMAXYI','WMAXYS','WMAXZI','WMAXZS','SIGELSQP','KT',
 !                 50       51       52       53        54      55
-!              'PHIXI','PHIXS','PHIYI','PHIYS','PHIZI','PHIZS'
-!                 56      57      58      59      60      61
-!
+!              'PHIXI','PHIXS','PHIYI','PHIYS','PHIZI','PHIZS', 'ASMINFIS',
+!                 56      57      58      59      60      61       62
+!              'ECHELLE'
+!                 63
     typcmb = nint(zr(jfer1-1+1))
     typco = nint(zr(jfer1-1+2))
     meth2D = nint(zr(jfer1-1+3))
@@ -278,6 +284,8 @@ subroutine te0146(option, nomte)
     phiys = zr(jfer1-1+59)
     phizi = zr(jfer1-1+60)
     phizs = zr(jfer1-1+61)
+    ferrminfiss = nint(zr(jfer1-1+62))
+    effechel = nint(zr(jfer1-1+63))
 
     !Only option '2D'
     if (typstru .eq. 1.d0) then
@@ -305,8 +313,11 @@ subroutine te0146(option, nomte)
 !
     dnsvol = 0.d0
     construc = 0.d0
-    do k = 1, 6
-        dnsits(k) = 0.d0
+    do comp = 1, 6
+        dnsits(comp) = 0.d0
+    end do
+    do comp = 1, 4
+        dnsmin(comp) = 0.d0
     end do
 
     if (meth2D .eq. 1.d0) then
@@ -314,8 +325,8 @@ subroutine te0146(option, nomte)
         precs = ceiling(1/epiter)
         call clcplq(typcmb, typco, nb, precs, &
                     ferrsyme, slsyme, ferrcomp, epucisa, &
-                    ferrmin, rholmin, rhotmin, compress, cequi, &
-                    enrobi, enrobs, sigs, sigci, sigcs, &
+                    ferrmin, rholmin, rhotmin, compress, &
+                    cequi, enrobi, enrobs, sigs, sigci, sigcs, &
                     alphacc, gammas, gammac, facier, eys, typdiag, &
                     fbeton, clacier, uc, um, &
                     wmaxi, wmaxs, sigelsqp, kt, phixi, phixs, phiyi, phiys, &
@@ -339,7 +350,8 @@ subroutine te0146(option, nomte)
 !       ----------------------------------------------
 !
     if (rhoacier .gt. 0) then
-        dnsvol = rhoacier*(dnsits(1)+dnsits(2)+dnsits(3)+dnsits(4)+dnsits(5)*ht+dnsits(6)*ht)/ht
+        dnsvol = rhoacier*(dnsits(1)+dnsits(2)+dnsits(3)+dnsits(4) &
+                           +dnsits(5)*ht+dnsits(6)*ht)/ht
         if (dnsits(5) .eq. -1.d0 .or. dnsits(6) .eq. -1.d0) then
 !           Vrai uniquement pour le calcul du ferraillage transversal au BAEL
 !           (pour lequel les aciers d'effort tranchant ne sont pas calculés)
@@ -363,7 +375,6 @@ subroutine te0146(option, nomte)
     else
         construc = -1.d0
     end if
-!
 
 !       -- GESTION DES ALARMES EMISES :
 !       -------------------------------
@@ -455,10 +466,152 @@ subroutine te0146(option, nomte)
         construc = -1.d0
     end if
 !
+
+    ! Minimum steel for crack control
+    if ((ferrminfiss .eq. 1) .or. ferrminfiss .eq. 2) then
+        if (typcmb .eq. 2) then
+
+            if (uc .eq. 0) then
+                unite_pa = 1.e6
+                unite_m = 1.e-3
+            elseif (uc .eq. 1) then
+                unite_pa = 1.
+                unite_m = 1.
+            end if
+            ! Convert length to mm and stress to MPa
+            facier = facier/unite_pa
+            fbeton = fbeton/unite_pa
+            ht = ht/unite_m
+            b = 1000.d0
+            if (fbeton .le. (50*unite_pa)) then
+                fctm = 0.30*((fbeton)**(2.0/3.0))
+            else
+                fctm = 2.12*LOG(1.0+((fbeton)+8.0)/10.0)
+            end if
+
+            ! computation of k
+            if (ht .le. 300.d0) then
+                k = 1.d0
+            else if (ht .ge. 800.d0) then
+                k = 0.65d0
+            else
+                k = (0.65d0-1.d0)/(800.d0-300.d0)*(ht-300.d0)+1.d0
+            end if
+
+            ! computation of hs
+            hs = min(ht, 1000.d0)
+
+            do comp = 1, 2
+                Asmininf = 0.d0
+                Asminsup = 0.d0
+                N = -effrts(comp)
+                M = -effrts(comp+3)/unite_m
+
+                if ((N .gt. 0.d0) .and. (M/abs(N) .lt. ht/6.d0) .and. &
+                    (M/abs(N) .gt. -ht/6.d0)) then
+                    ! Full compression
+                    Asmininf = 0.d0
+                    Asminsup = 0.d0
+                elseif ((N .lt. 0.d0) .and. (M/abs(N) .lt. ht/6.d0) .and. &
+                        (M/abs(N) .gt. -ht/6.d0)) then
+                    ! Full tension
+
+                    Act = b*ht
+                    kc = 1.d0
+                    Asmininf = kc*k*fctm*Act/facier/2.d0
+                    Asminsup = Asmininf
+
+                else
+
+                    ! partially compressed
+                    !section area
+                    A = b*ht
+                    !section moment of inertia
+                    I = 1.d0/12.d0*b*(ht)**3
+                    !Stress on concrete
+                    sigma_c = N/(b*ht)
+                    !Cracking bending moment
+                    Mfiss = 2.d0*I/ht*(fctm+sigma_c)
+                    !Neutral axis depth
+                    x = ht/2.d0+sigma_c*I/Mfiss
+                    !Area of concrete in tension
+                    Act = min(b*ht, b*(ht-x))
+                    if (N .gt. 0.d0) then
+                        k1 = 1.5d0
+                    else
+                        k1 = 2.d0*hs/(3.d0*ht)
+                    end if
+
+                    kc = max(0.d0, min(1.d0, 0.4d0*(1-(sigma_c/(k1*(ht/hs)*fctm)))))
+
+                    if (M .gt. 0.d0) then
+                        ! lower fiber in tension
+                        Asmininf = kc*k*fctm*Act/facier
+                        Asminsup = 0.d0
+                    elseif (M .lt. 0.d0) then
+                        ! upper fiber in tension
+                        Asminsup = kc*k*fctm*Act/facier
+                        Asmininf = 0.d0
+                    else
+                        !No miminium steel
+                        Asmininf = 0.d0
+                        Asminsup = 0.d0
+                    end if
+
+                end if
+
+                ! Taking into account scale effect
+                if (effechel .eq. 1) then
+
+                    if ((ht .le. 6250.d0) .and. (ht .ge. 400.d0) .and. &
+                        (fbeton .le. 55.d0) .and. (fbeton .ge. 30.d0)) then
+                        !Scale effect is applicable according to DN 2100 RCC-CW
+                        if ((N .gt. 0.d0) .and. (M/abs(N) .lt. ht/6.d0) .and. &
+                            (M/abs(N) .gt. -ht/6.d0)) then
+                            ! Full compression
+                            Asmininf = 0.d0
+                            Asminsup = 0.d0
+                        else
+                            kc = 1.d0
+                            Act = b*ht/2.d0
+                            m1 = 2.5d0*0.1d0-3.6d0*0.001d0*(fbeton+8) &
+                                 +1.3d0*0.00001d0*(fbeton+8)**2d0
+
+                            chi0 = (6.d0*0.001d0/(ht/1000.d0)**2.d0)**m1
+                            Asmininf = kc*k*chi0*fctm*Act/facier
+                            Asminsup = Asmininf
+
+                        end if
+
+                    else
+                        !Scale effect is not applicable according to DN 2100 RCC-CW
+                        call utmess('A', 'CALCULEL7_38')
+                    end if
+                end if
+
+                dnsmin(2*comp-1) = Asmininf*(unite_m)**2.d0
+                dnsmin(2*comp) = Asminsup*(unite_m)**2.d0
+
+            end do
+
+            !Taking into account minimum steel
+            dnsits(1) = max(dnsits(1), dnsmin(1))
+            dnsits(2) = max(dnsits(2), dnsmin(2))
+            dnsits(3) = max(dnsits(3), dnsmin(3))
+            dnsits(4) = max(dnsits(4), dnsmin(4))
+
+        else
+            call utmess('A', 'CALCULEL7_39')
+
+        end if
+
+    end if
+
+!
 !       -- STOCKAGE DES RESULTATS DANS FER2 :
 !       -------------------------------------
-!   FER2_R =  DNSXI DNSXS DNSYI DNSYS DNSXT DNSYT DNSVOL CONSTRUC
-!               1     2     3     4     5     6      7       8
+!   FER2_R =  DNSXI DNSXS DNSYI DNSYS DNSXT DNSYT DNSVOL CONSTRUC ASMINXI ASMINXS ASMINYI ASMINYS
+!               1     2     3     4     5     6      7       8      9      10     11     12
 !
     zr(jfer2-1+1) = dnsits(1)
     zr(jfer2-1+2) = dnsits(3)
@@ -468,7 +621,10 @@ subroutine te0146(option, nomte)
     zr(jfer2-1+6) = dnsits(6)
     zr(jfer2-1+7) = dnsvol
     zr(jfer2-1+8) = construc
-
+    zr(jfer2-1+9) = dnsmin(1)
+    zr(jfer2-1+10) = dnsmin(2)
+    zr(jfer2-1+11) = dnsmin(3)
+    zr(jfer2-1+12) = dnsmin(4)
 998 continue
 
 end subroutine
