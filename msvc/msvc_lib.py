@@ -257,7 +257,7 @@ def run_mvsc_lib_gen(self, task_obj: LibTask):
                          bibcxx_lib_task, gc_lib_task_gen, bibaster_lib_task]
 
     # bibfor.dll depends on bibcxx.lib and bibc.lib
-    fclib_task.inputs += bibcxx_task_outputs + clib_task_outputs
+    fclib_task.inputs += bibcxx_task_outputs + clib_task_outputs + fcext_lib_task_outputs
     for lib_task in all_lib_gen_tasks:
         fclib_task.set_run_after(lib_task)
 

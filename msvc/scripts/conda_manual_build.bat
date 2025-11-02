@@ -181,7 +181,7 @@ set LDFLAGS=%LDFLAGS% med.lib medC.lib medfwrap.lib medimport.lib
 :: ------------------------------------------------------------------
 :: Provide GNU __atomic_* symbols for MSVC linkers (needed by MUMPS)
 :: Compile the local stub and add it to link flags
-set "ATOMIC_STUB_SRC=%PARENT_DIR%/msvc/atomic_gnu_stubs.c"
+:: set "ATOMIC_STUB_SRC=%PARENT_DIR%/msvc/atomic_gnu_stubs.c"
 if exist "%ATOMIC_STUB_SRC%" (
     echo Building atomic stub library from %ATOMIC_STUB_SRC%
     "%CC%" /nologo /c /O2 "%ATOMIC_STUB_SRC%"

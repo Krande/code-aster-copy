@@ -114,7 +114,7 @@ def extract_symbols(obj_files):
                 continue
             if "." in name:          # module metadata
                 continue
-            if name.endswith("._") or "_module" in name or "_mp_" in name:
+            if name.endswith("._"):# or "_module" in name or "_mp_" in name:
                 continue
             if "@" in name:          # stdcall-size decorated or const pools
                 continue

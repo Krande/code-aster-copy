@@ -45,7 +45,7 @@ def extract_symbols(obj_files):
     # Exclude common non-exportable prefixes and thunks, plus const pools
     exclude_prefixes = (
         "__imp_", "__Cxx", "__RT", "_TI", "_CT", "_Init_thread_", "$", "._", "__chkstk",
-        "__real@", "__xmm@", "__ymm@", "__int@", "__m128@", "__m256@",
+        "__real@", "__xmm@", "__ymm@", "__int@", "__m128@", "__m256@", "pybind11"
     )
 
     # Specific CRT/utility symbols we should not export from AsterGC
@@ -111,8 +111,8 @@ def extract_symbols(obj_files):
 
             # Positive allow-list: keep only clear public API prefixes
             allowed_prefixes = ("PyInit_", "aster_gc_", "gc_")
-            if not name.startswith(allowed_prefixes):
-                continue
+            #if not name.startswith(allowed_prefixes):
+            #    continue
 
             symbols.add(name)
 
