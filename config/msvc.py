@@ -200,6 +200,7 @@ def get_msvc_version(conf, compiler, version, target, vcvars):
 	except AttributeError:
 		conf.msvc_cnt = 1
 	batfile = conf.bldnode.make_node('waf-print-msvc-%d.bat' % conf.msvc_cnt)
+	envfile = conf.bldnode.make_node('waf-print-msvc-%d.txt' % conf.msvc_cnt)
 	batfile.write("""@echo off
 setlocal enabledelayedexpansion
 :: if SETVARS_CALL is defined, then the script is being called from another script
@@ -211,13 +212,16 @@ if not defined SETVARS_COMPLETED (
 ) else (
     echo Environment variables already set
 )
-echo PATH=%%PATH%%
-echo INCLUDE=%%INCLUDE%%
-echo LIB=%%LIB%%;%%LIBPATH%%
+:: Write to file to avoid "input line too long" errors with very long PATH variables
+echo PATH=%%PATH%%> "%s"
+echo INCLUDE=%%INCLUDE%%>> "%s"
+echo LIB=%%LIB%%;%%LIBPATH%%>> "%s"
 endlocal
-""" % (vcvars,target))
-	sout = conf.cmd_and_log(['cmd.exe', '/E:on', '/V:on', '/C', batfile.abspath()], stdin=getattr(Utils.subprocess, 'DEVNULL', None))
-	lines = sout.splitlines()
+""" % (vcvars, target, envfile.abspath(), envfile.abspath(), envfile.abspath()))
+	conf.cmd_and_log(['cmd.exe', '/E:on', '/V:on', '/C', batfile.abspath()], stdin=getattr(Utils.subprocess, 'DEVNULL', None))
+
+	# Read the environment variables from the file
+	lines = Utils.readf(envfile.abspath()).splitlines()
 
 	if not lines[0]:
 		lines.pop(0)

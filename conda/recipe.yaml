@@ -48,7 +48,7 @@ requirements:
     - zlib
     - if: win
       then:
-        - hdf5 * *release*
+        - hdf5 * *${{ build_type }}*
         - metis * *${{ build_type }}*INT${{ int_type }}*
         - mumps * *${{ build_type }}*INT${{ int_type }}*66
         - mfront * *${{ build_type }}*
@@ -60,10 +60,10 @@ requirements:
         - psutil
     - if: not win
       then:
-        - "libscotch * *debug*"
-        - "scotch * *debug*"
-        - "metis * *debug*"
-        - "mumps * *debug*"
+        - "libscotch * *${{ build_type }}*"
+        - "scotch * *${{ build_type }}*"
+        - "metis * *${{ build_type }}*"
+        - "mumps * *${{ build_type }}*"
         - mfront
         - mgis
         - libmed
