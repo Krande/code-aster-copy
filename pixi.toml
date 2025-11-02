@@ -32,7 +32,7 @@ pytest = "*"
 python-dotenv = "*"
 pybind11 = "==2.13.1"
 setuptools = "*"
-
+scipy = "*"
 
 [feature.common.target.linux-64.dependencies]
 gfortran = "13*"

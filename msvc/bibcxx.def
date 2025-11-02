@@ -1,5 +1,6 @@
 LIBRARY bibcxx
 EXPORTS
+    ?toLower@@YA?AV?$basic_string@DU?$char_traits@D@std@@V?$allocator@D@2@@std@@AEBV12@@Z
     PyInit_libaster
     _raiseException
     eval_formula_

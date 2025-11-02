@@ -72,6 +72,13 @@ def extract_symbols(obj_files):
         # Intentionally do NOT include getTridimMaterialPropertiesNames unless proven defined
     }
 
+    # Explicitly-allowed MSVC C++ mangled symbols that must be exported from bibcxx
+    # Keep this list minimal to preserve a stable C-like export surface.
+    allowed_msvc_mangled = {
+        # std::string toLower(std::string const&)
+        "?toLower@@YA?AV?$basic_string@DU?$char_traits@D@std@@V?$allocator@D@2@@std@@AEBV12@@Z",
+    }
+
     for obj_file in obj_files:
         try:
             result = subprocess.run(
@@ -109,6 +116,11 @@ def extract_symbols(obj_files):
             if name.endswith("()"):
                 name = name[:-2]
             if not name:
+                continue
+
+            # Allowlist: include specific MSVC-mangled C++ symbols even if mangled
+            if name in allowed_msvc_mangled:
+                symbols.add(name)
                 continue
 
             # Hard rejections

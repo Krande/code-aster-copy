@@ -81,7 +81,9 @@ def configure(self):
         self.add_linkflags("-Wl,--no-warn-execstack")
         self.add_linkflags("-Wl,-flto=auto", dest="LINKFLAGS")
 
-    self.add_linkflags("-Wl,--no-as-needed", dest="LINKFLAGS_LIBASTER")
+    # Do not pass GNU ld flags to MSVC
+    if not self.env.ASTER_PLATFORM_MSVC64:
+        self.add_linkflags("-Wl,--no-as-needed", dest="LINKFLAGS_LIBASTER")
     # seems incompatible with subroutines like zerofr that takes function as argument (test ssnv168f)
     # self.add_linkflags("-Wl,-z,noexecstack", dest="LINKFLAGS")
 
