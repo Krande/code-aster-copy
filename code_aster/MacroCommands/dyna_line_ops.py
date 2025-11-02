@@ -1003,7 +1003,7 @@ class DynaLineBasis:
                                 d_forc_ajou[key] = charge[key]
                             else:
                                 del charge[key]
-                    if not "MODE_STAT" in keywords:
+                    if "MODE_STAT" not in keywords:
                         del charge["TYPE_APPUI"]
                         del charge["DIRECTION"]
                     d_excit = {"attrname": nameToSave}

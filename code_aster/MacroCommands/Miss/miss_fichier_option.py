@@ -24,7 +24,6 @@
 
 import os
 
-import aster
 from .miss_utils import dict_format
 
 sfmt = dict_format["sR"]

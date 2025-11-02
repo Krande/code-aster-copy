@@ -45,7 +45,7 @@ from ...Cata.Syntax import _F
 from ...CodeCommands import IMPR_MACR_ELEM, MACR_ELEM_DYNA
 from ...Helpers.LogicalUnit import LogicalUnitFile
 from ...Messages import UTMESS
-from ...Utilities import ExecutionParameter, Timer, config
+from ...Utilities import ExecutionParameter, Timer
 from ...Utilities.misc import _print, decode_str, encode_str, send_file, set_debug
 from ...Utilities.mpi_utils import MPI
 from ...Utilities.System import ExecCommand

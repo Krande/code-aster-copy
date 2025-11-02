@@ -25,11 +25,10 @@ Module permettant le post-traitement d'un calcul MISS3D
 
 import os
 import os.path as osp
-import traceback
 from math import pi
 
 import numpy as NP
-from numpy.fft import fft, ifft
+from numpy.fft import ifft
 
 import aster
 from ...Messages import UTMESS
@@ -61,7 +60,7 @@ from ...CodeCommands import (
 from ...Helpers.LogicalUnit import LogicalUnitFile
 from ...Objects import DataStructure
 from ...Objects.table_py import Table
-from ...Utilities.misc import _print, _printDBG, set_debug
+from ...Utilities.misc import _printDBG, set_debug
 from .force_iss_vari import force_iss_vari
 from .miss_resu_miss import MissCsolReader
 
@@ -105,13 +104,10 @@ class PostMiss:
     def argument(self):
         """Vérification des arguments d'entrée."""
         # fréquences du calcul Miss
-        # info_freq(self.param)# Cette commande ne sert à rien ici car on ne considère par
-        # interpolation des accéléros si présents (à supprimer sauf si TABLE)
         self.excit_gene = self.param["EXCIT_GENE"]
         self.excit_mono = self.param["EXCIT_MONO"]
         self.excit_forc = self.param["EXCIT_FORC"]
         self.list_freq_calc = self.param["LIST_FREQ_CALC"]
-        # self.interpol = self.param["INTERPOL"]
         if self.excit_forc is not None:
             if self.param["TYPE_EXCIT"] == "INST" and self.param["INTERPOL"] == "OUI":
                 tmax = self.param["INST_FIN"]
@@ -677,7 +673,6 @@ class PostMissHarm(PostMissTran):
     def __init__(self, parent, param):
         """Initialisation."""
         super(PostMissHarm, self).__init__(parent, param)
-        # self.methode_fft = "COMPLET"
         self.methode_fft = "PROL_ZERO"
         self.sd = None
 

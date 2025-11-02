@@ -119,7 +119,6 @@ CALC_MISS = MACRO(
             MATR_RIGI=SIMP(statut="f", typ=(matr_asse_depl_r, matr_asse_depl_c)),
             MATR_MASS=SIMP(statut="f", typ=matr_asse_depl_r),
         ),
-        # AMOR_REDUIT=SIMP(statut="f", typ="R", max="**"),
         GROUP_MA_INTERF=SIMP(
             statut="o", typ=grma, max="**", fr=tr("Groupe de mailles de l'interface")
         ),
@@ -192,7 +191,6 @@ CALC_MISS = MACRO(
             MATR_RIGI=SIMP(statut="f", typ=(matr_asse_depl_r, matr_asse_depl_c)),
             MATR_MASS=SIMP(statut="f", typ=matr_asse_depl_r),
         ),
-        # AMOR_REDUIT=SIMP(statut="f", typ="R", max="**"),
         GROUP_MA_INTERF=SIMP(
             statut="o", typ=grma, max="**", fr=tr("Groupe de mailles de l'interface")
         ),
@@ -497,10 +495,6 @@ CALC_MISS = MACRO(
             # ENSEMBLE("INST_FIN", "PAS_INST"),
         ),
         MODELE=SIMP(statut="o", typ=(modele_sdaster)),
-        # b_bloc_type_excit=BLOC(
-        #     condition="""not exists("EXCIT_GENE")""",
-        #     TYPE_EXCIT=SIMP(statut="o", typ="TXM", into=("INST", "FREQ")),
-        # ),
         TYPE_EXCIT=SIMP(statut="o", typ="TXM", into=("INST", "FREQ")),
         bloc_interpol=BLOC(
             condition="""(equal_to("TYPE_EXCIT", 'INST'))""",
