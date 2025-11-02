@@ -8,8 +8,8 @@ platforms = ["win-64", "linux-64"]
 [environments]
 common = { features = ["common"], solve-group = "common", no-default-feature = true }
 dev = { features = ["dev", "common"], no-default-feature = true }
-int64 = { features = ["int64", "common"], no-default-feature = true }
-int64d = { features = ["int64d", "common"], no-default-feature = true }
+release = { features = ["release", "common"], no-default-feature = true }
+debug = { features = ["debug", "common"], no-default-feature = true }
 conda = { features = ["conda"], no-default-feature = true }
 
 [feature.conda]
@@ -17,9 +17,9 @@ channels = ["conda-forge"]
 platforms = ["linux-64", "win-64"]
 dependencies = { rattler-build = "*", python = "==3.12.8" }
 
-[feature.int64]
+[feature.release]
 channels = ["conda-forge", "https://repo.prefix.dev/code-aster",]
-[feature.int64d]
+[feature.debug]
 channels = ["conda-forge", "https://repo.prefix.dev/code-aster",]
 
 [feature.common.dependencies]
@@ -48,21 +48,15 @@ clang = "18.*"
 
 libblas = { version = "*", build = "*mkl" }
 liblapack = { version = "*", build = "*mkl" }
-#mkl = { version="2025.3.*", channel="conda-forge" }
 mkl-devel = { version="2025.3.*", channel="conda-forge" }
 ifx_win-64 = { version="*", channel="conda-forge" }
-#intel-fortran-rt = { version="*", channel="conda-forge" }
-#intel-cmplr-lib-rt = { version="*", channel="conda-forge" }
-#intel-opencl-rt = { version="*", channel="conda-forge"}
-#intel-cmplr-lic-rt = { version="*", channel="conda-forge"}
-#tbb = { version="*", channel="conda-forge"}
 llvmdev = "*"
 
 [feature.dev.target.win-64.dependencies]
 clangdev = "18.*"
 pixi-pycharm = "*"
 
-[feature.int64.target.win-64.dependencies]
+[feature.release.target.win-64.dependencies]
 hdf5 = { version = "*", build = "*release*" }
 mfront = { version = "*", build = "*release*" }
 mgis = { version = "*", build = "*release*" }
@@ -71,18 +65,18 @@ medcoupling = { version = "*", build = "*release*INT64*" }
 libscotch = { version = "*", build = "*release*INT64*" }
 scotch = { version = "==7.0.7", build = "*release*INT64*" }
 metis = { version = "*", build = "*release*INT64*" }
-mumps = { version = "*", build = "*debug*INT64*65" }
+mumps = { version = "*", build = "*release*INT64*65" }
 
-[feature.int64d.target.win-64.dependencies]
+[feature.debug.target.win-64.dependencies]
 hdf5 = { version = "*", build = "*debug*" }
 mfront = { version = "*", build = "*debug*" }
 mgis = { version = "*", build = "*debug*" }
 libmed = { version = "*", build = "*debug*INT64*" }
 medcoupling = { version = "*", build = "*debug*INT64*" }
+metis = { version = "*", build = "*debug*INT64*" }
 libscotch = { version = "*", build = "*debug*INT64*" }
 scotch = { version = "==7.0.7", build = "*debug*INT64*" }
-metis = { version = "*", build = "*debug*INT64*" }
-mumps = { version = "*", build = "*debug*INT64*65" }
+mumps = { version = "*", build = "*debug*INT64*66" }
 
 [feature.conda.tasks]
 ctest = { cmd = ["rattler-build", "test", "-c", "conda-forge", "-c", "https://repo.prefix.dev/code-aster"], env = { OUTPUT_DIR="$PIXI_PROJECT_ROOT/test_output"} }
@@ -95,15 +89,15 @@ cbuildn = { cmd = ["rattler-build", "build", "-r", "conda/recipe.yaml", "-m", "c
 [feature.conda.target.linux-64.tasks]
 cbuildn = { cmd = ["rattler-build", "build", "-r", "conda/recipe.yaml"] }
 
-[feature.int64.target.win-64.tasks]
+[feature.release.target.win-64.tasks]
 build = { cmd = ["msvc/scripts/conda_manual_build.bat", "--pixi-build", "--int-type64", "--build-debug"], description = "Build the project", env = { INTEL_VARS_PATH = "C:/Program Files (x86)/Intel/oneAPI/compiler/latest/env" } }
 install = { cmd = ["msvc/scripts/conda_rearrange.bat"], description = "Copy the latest build files to their respective locations" }
-test = { cmd = ["run_ctest", "--resutest=temp\\int64", "-L", "submit", "-L", "sequential", "-LE", "need_data", "--timefactor=5.0", "--only-failed-results"], description = "Run the default sequential tests" }
+test = { cmd = ["run_ctest", "--resutest=temp\\release", "-L", "submit", "-L", "sequential", "-LE", "need_data", "--timefactor=5.0", "--only-failed-results"], description = "Run the default sequential tests" }
 
-[feature.int64d.target.win-64.tasks]
+[feature.debug.target.win-64.tasks]
 buildd = { cmd = ["msvc/scripts/conda_manual_build.bat", "--pixi-build", "--int-type64", "--build-debug"], description = "Build the project", env = { INTEL_VARS_PATH = "C:/Program Files (x86)/Intel/oneAPI/compiler/latest/env" } }
 installd = { cmd = ["msvc/scripts/conda_rearrange.bat"], description = "Copy the latest build files to their respective locations" }
-testd = { cmd = ["run_ctest", "--resutest=temp\\int64d", "-L", "submit", "-L", "sequential", "-LE", "need_data", "--timefactor=5.0", "--only-failed-results"], description = "Run the default sequential tests" }
+testd = { cmd = ["run_ctest", "--resutest=temp\\debug", "-L", "submit", "-L", "sequential", "-LE", "need_data", "--timefactor=5.0", "--only-failed-results"], description = "Run the default sequential tests" }
 
 [feature.dev.target.win-64.tasks]
 test_scan = { cmd = ["python", "conda/test_scanner/eval_tests.py", "--output", "conda/test_scanner/results"], description = "Scan the test results" }
@@ -118,7 +112,7 @@ def-bibc = { cmd = ["python", "msvc/def_gen_c.py"], description = "Generate the 
 def-astergc = { cmd = ["python", "msvc/def_gen_astergc.py"], description = "Generate the asterGC.def file" }
 def-gen-all = { cmd = "echo Def generation complete", depends-on =["def-bibfor", "def-bibfor-ext", "def-bibcxx", "def-bibc", "def-astergc"]}
 
-[feature.int64.target.win-64.activation]
+[feature.release.target.win-64.activation]
 scripts = ["msvc/scripts/activate.bat", "msvc/scripts/activate_intel.bat"]
-[feature.int64d.target.win-64.activation]
+[feature.debug.target.win-64.activation]
 scripts = ["msvc/scripts/activate.bat", "msvc/scripts/activate_intel.bat"]
