@@ -108,7 +108,8 @@ def extract_symbols(obj_files):
                 continue
             if not api_name_re.match(name):
                 continue
-
+            if name in exclude_symbols:
+                continue
             # Positive allow-list: keep only clear public API prefixes
             allowed_prefixes = ("PyInit_", "aster_gc_", "gc_")
             #if not name.startswith(allowed_prefixes):

@@ -1,8 +1,5 @@
 LIBRARY AsterGC
 EXPORTS
     PyInit_libAsterGC
-    __local_stdio_printf_options
-    _vfprintf_l
     dintels
     dintelu
-    fprintf
