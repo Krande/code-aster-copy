@@ -118,11 +118,6 @@ def extract_symbols(obj_files):
             if not name:
                 continue
 
-            # Allowlist: include specific MSVC-mangled C++ symbols even if mangled
-            if name in allowed_msvc_mangled:
-                symbols.add(name)
-                continue
-
             # Hard rejections
             if name in exclude_symbols:
                 continue

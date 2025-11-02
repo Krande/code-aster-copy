@@ -8,6 +8,18 @@ import os.path as osp
 from waflib import Context, Errors, Logs, Utils
 
 
+def _to_text(s):
+    """Return a unicode string; decode bytes as UTF-8 with replacement.
+
+    Prevents UnicodeEncodeError when writing logs on Windows (cp1252 consoles).
+    """
+    if s is None:
+        return ""
+    if isinstance(s, bytes):
+        return s.decode("utf-8", errors="replace")
+    return s
+
+
 def exec_pyaster(self, pyfile, args, **kwargs):
     """Execute aster depending on the configuration"""
     cwd = kwargs["cwd"]
@@ -51,10 +63,13 @@ def exec_pyaster(self, pyfile, args, **kwargs):
         else:
             kwargs["output"] = Context.BOTH
             stdout, stderr = self.cmd_and_log(cmds, env=environ, shell=True, quiet=0, **kwargs)
-        with open(logbase + ".out", "w") as flog:
-            flog.write(stdout or "")
-        with open(logbase + ".err", "w") as flog:
-            flog.write(stderr or "")
+        # Normalize and write logs using UTF-8 to avoid Windows cp1252 encoding errors
+        out_text = _to_text(stdout)
+        err_text = _to_text(stderr)
+        with open(logbase + ".out", "w", encoding="utf-8", errors="replace") as flog:
+            flog.write(out_text)
+        with open(logbase + ".err", "w", encoding="utf-8", errors="replace") as flog:
+            flog.write(err_text)
     except Errors.WafError as err:
         Logs.warn("stdout: %s" % err.stdout)
         Logs.warn("stderr: %s" % err.stderr)

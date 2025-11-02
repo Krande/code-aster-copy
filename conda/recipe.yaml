@@ -50,7 +50,7 @@ requirements:
       then:
         - hdf5 * *release*
         - metis * *${{ build_type }}*INT${{ int_type }}*
-        - mumps * *${{ build_type }}*INT${{ int_type }}*65
+        - mumps * *${{ build_type }}*INT${{ int_type }}*66
         - mfront * *${{ build_type }}*
         - mgis * *${{ build_type }}*
         - libmed * *${{ build_type }}*INT${{ int_type }}*
