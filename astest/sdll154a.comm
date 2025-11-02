@@ -198,6 +198,77 @@ deplacement_b = AFFE_CHAR_MECA(MODELE=modele, DDL_IMPO=(_F(GROUP_NO="B", DRX=0.0
 
 poids = AFFE_CHAR_MECA(MODELE=modele, PESANTEUR=_F(GRAVITE=9.81, DIRECTION=(0.0, 0.0, -1.0)))
 
+# CHARGEMENTS SISMIQUES
+# Spectre de réponse à 2%
+acce_xy = DEFI_FONCTION(
+    NOM_PARA="FREQ",
+    INTERPOL="LOG",
+    VALE=(1.0, 1.962, 10.0, 19.62, 30.0, 19.62, 100.0, 1.962, 10000.0, 1.962),
+)
+spect_xy = DEFI_NAPPE(
+    NOM_PARA="AMOR",
+    INTERPOL=("LIN", "LOG"),
+    PARA=(0.015, 0.02, 0.025),
+    FONCTION=(acce_xy, acce_xy, acce_xy),
+)
+
+# Spectre de réponse 99% (on divise par 10, test informatique pure)
+acce_xy99 = DEFI_FONCTION(
+    NOM_PARA="FREQ",
+    INTERPOL="LOG",
+    VALE=(
+        1.0,
+        0.1 * 1.962,
+        10.0,
+        0.1 * 19.62,
+        30.0,
+        0.1 * 19.62,
+        100.0,
+        0.1 * 1.962,
+        10000.0,
+        0.1 * 1.962,
+    ),
+)
+spect_xy99 = DEFI_NAPPE(
+    NOM_PARA="AMOR",
+    INTERPOL=("LIN", "LOG"),
+    PARA=0.99,
+    FONCTION=acce_xy99,
+)
+
+
+# modes
+
+ASSEMBLAGE(
+    MODELE=modele,
+    CHAM_MATER=ch_mater,
+    CARA_ELEM=cara_elem,
+    CHARGE=(blocage_a, blocage_b),
+    NUME_DDL=CO("nddl"),
+    MATR_ASSE=(
+        _F(MATRICE=CO("matrice_rigi"), OPTION="RIGI_MECA"),
+        _F(MATRICE=CO("matrice_mass"), OPTION="MASS_MECA"),
+    ),
+)
+
+modes_dyn = CALC_MODES(
+    MATR_RIGI=matrice_rigi, MATR_MASS=matrice_mass, CALC_FREQ=_F(NMAX_FREQ=4), CARA_ELEM=cara_elem
+)
+modes_dyn = CALC_CHAMP(
+    reuse=modes_dyn,
+    RESULTAT=modes_dyn,
+    CONTRAINTE="EFGE_ELNO",
+    CHAM_MATER=ch_mater,
+)
+
+modes_sta = MODE_STATIQUE(
+    CARA_ELEM=cara_elem,
+    CHAM_MATER=ch_mater,
+    MATR_RIGI=matrice_rigi,
+    MATR_MASS=matrice_mass,
+    PSEUDO_MODE=_F(AXE=("X", "Y", "Z")),
+)
+modes_sta = CALC_CHAMP(reuse=modes_sta, RESULTAT=modes_sta, CONTRAINTE="EFGE_ELNO")
 
 # resultats
 
@@ -262,8 +333,186 @@ dilatation_thermique = CALC_CHAMP(
     reuse=dilatation_thermique, RESULTAT=dilatation_thermique, CONTRAINTE="EFGE_ELNO"
 )
 
+sismique = COMB_SISM_MODAL(
+    MODE_MECA=modes_dyn,
+    AMOR_REDUIT=0.02,
+    MODE_CORR="OUI",
+    PSEUDO_MODE=modes_sta,
+    TYPE_ANALYSE="MONO_APPUI",
+    SPECTRE=(
+        _F(LIST_AXE=("X", "Y"), SPEC_OSCI=spect_xy, ECHELLE=1),
+        _F(LIST_AXE=("Z"), SPEC_OSCI=spect_xy, ECHELLE=0.5),
+    ),
+    COMB_MODE=_F(TYPE="SRSS"),
+    COMB_DIRECTION="QUAD",
+    OPTION=("EFGE_ELNO"),
+    TYPE_RESU=(_F(TYPE="VALE_TOTA"),),  # reponse totale
+)
+
+sismique_qs = COMB_SISM_MODAL(
+    MODE_MECA=modes_dyn,
+    AMOR_REDUIT=0.99,
+    MODE_CORR="OUI",
+    PSEUDO_MODE=modes_sta,
+    TYPE_ANALYSE="MONO_APPUI",
+    SPECTRE=(
+        _F(LIST_AXE=("X", "Y"), SPEC_OSCI=spect_xy99, ECHELLE=1),
+        _F(LIST_AXE=("Z"), SPEC_OSCI=spect_xy99, ECHELLE=0.5),
+    ),
+    COMB_MODE=_F(TYPE="SRSS"),
+    COMB_DIRECTION="QUAD",
+    OPTION=("EFGE_ELNO"),
+    TYPE_RESU=(_F(TYPE="VALE_TOTA"),),  # reponse totale
+)
+
+# sismique_dyn = sismique_tot - sismique_qs
+
+ch_tot = CREA_CHAMP(
+    OPERATION="EXTR",
+    TYPE_CHAM="ELNO_SIEF_R",
+    RESULTAT=sismique,  # = rep. sismique totale à 2%
+    NOM_CHAM="EFGE_ELNO",
+    NOM_CAS="TOTA",
+)
+
+ch_qs = CREA_CHAMP(
+    OPERATION="EXTR",
+    TYPE_CHAM="ELNO_SIEF_R",
+    RESULTAT=sismique_qs,  # sismique à 100%
+    NOM_CHAM="EFGE_ELNO",
+    NOM_CAS="TOTA",
+)
+
+
+ch_dyn = CREA_CHAMP(
+    TYPE_CHAM="ELNO_SIEF_R",
+    OPERATION="ASSE",
+    MODELE=modele,
+    ASSE=(
+        _F(TOUT="OUI", CHAM_GD=ch_tot, CUMUL="OUI"),
+        _F(TOUT="OUI", CHAM_GD=ch_qs, CUMUL="OUI", COEF_R=-1.0),
+    ),
+)
+
+# on affecte le champ 4 fois pour obtenir un numero d'ordre 4
+# NUME_ORDRE n'est pas disponible dans CREA_RESU
+sismique_dyn = CREA_RESU(
+    OPERATION="AFFE",
+    TYPE_RESU="MULT_ELAS",
+    AFFE=(_F(NOM_CHAM="EFGE_ELNO", CHAM_GD=ch_dyn, NOM_CAS="TOTA", MODELE=modele),),
+)
+
 
 # appel à POST_ROCHE
+
+# -------------- POST_ROHCE SISMIQUE ---------------------#
+# PostRoche tout + chargement sismique (DYN et QS):
+# Pour l'instant, ce test n'est pas tracée dans la doc V
+# Il s'agit d'un test supplémentaire.
+# FORME = 'RCC_MRX' (défaut) + CONT_ABAT='CODIFIE' (pas de Coude)
+resuPostRocheToutSism = POST_ROCHE(
+    LIMITE_ADM="NON",
+    ZONE_ANALYSE=(_F(TOUT="OUI", GROUP_NO_ORIG="A"),),
+    MODELE=modele,
+    CARA_ELEM=cara_elem,
+    CHAM_MATER=ch_mater,
+    RESU_MECA=(
+        _F(TYPE_CHAR="POIDS", CHAM_GD=poids_propre_champ),
+        _F(
+            TYPE_CHAR="DILAT_THERM",
+            RESULTAT=dilatation_thermique,
+            INST=1,
+            CRITERE="RELATIF",
+            PRECISION=1e-6,
+        ),
+        _F(TYPE_CHAR="DEPLACEMENT", RESULTAT=deplacement_impose, INST=0, CRITERE="ABSOLU"),
+        _F(TYPE_CHAR="SISM_INER_SPEC", RESULTAT=sismique_dyn, DIRECTION="COMBI", TYPE_RESU="DYN"),
+        _F(TYPE_CHAR="SISM_INER_SPEC", RESULTAT=sismique_qs, DIRECTION="COMBI", TYPE_RESU="QS"),
+    ),
+    PRESSION=(_F(TOUT="OUI", VALE=1e6),),
+)
+
+# Avec "Coude":
+# FORME = 'RCC_MRX' (défaut) + CONT_ABAT='CODIFIE' (avec Coude)
+resuPostRocheToutSism_Coude = POST_ROCHE(
+    LIMITE_ADM="NON",
+    ZONE_ANALYSE=(_F(GROUP_MA="TUYAU", GROUP_NO_ORIG="A"),),
+    MODELE=modele,
+    CARA_ELEM=cara_elem,
+    CHAM_MATER=ch_mater,
+    RESU_MECA=(
+        _F(TYPE_CHAR="POIDS", CHAM_GD=poids_propre_champ),
+        _F(
+            TYPE_CHAR="DILAT_THERM",
+            RESULTAT=dilatation_thermique,
+            INST=1,
+            CRITERE="RELATIF",
+            PRECISION=1e-6,
+        ),
+        _F(TYPE_CHAR="DEPLACEMENT", RESULTAT=deplacement_impose, INST=0, CRITERE="ABSOLU"),
+        _F(TYPE_CHAR="SISM_INER_SPEC", RESULTAT=sismique_dyn, DIRECTION="COMBI", TYPE_RESU="DYN"),
+        _F(TYPE_CHAR="SISM_INER_SPEC", RESULTAT=sismique_qs, DIRECTION="COMBI", TYPE_RESU="QS"),
+    ),
+    PRESSION=(_F(TOUT="OUI", VALE=1e6),),
+    COUDE=_F(GROUP_MA="TUYAU", ANGLE=90, RCOURB=0.01),
+)
+
+
+# FORME = 'RCC_MRX' (défaut) + CONT_ABAT='DT' (avec Coude)
+# (Contrainte vraie optimisé UT02-X9 calculé avec la formule proposée par la DT)
+resuPostRocheToutSism_Coude_DT = POST_ROCHE(
+    CONT_ABAT="DT",
+    LIMITE_ADM="NON",
+    ZONE_ANALYSE=(_F(GROUP_MA="TUYAU", GROUP_NO_ORIG="A"),),
+    MODELE=modele,
+    CARA_ELEM=cara_elem,
+    CHAM_MATER=ch_mater,
+    RESU_MECA=(
+        _F(TYPE_CHAR="POIDS", CHAM_GD=poids_propre_champ),
+        _F(
+            TYPE_CHAR="DILAT_THERM",
+            RESULTAT=dilatation_thermique,
+            INST=1,
+            CRITERE="RELATIF",
+            PRECISION=1e-6,
+        ),
+        _F(TYPE_CHAR="DEPLACEMENT", RESULTAT=deplacement_impose, INST=0, CRITERE="ABSOLU"),
+        _F(TYPE_CHAR="SISM_INER_SPEC", RESULTAT=sismique_dyn, DIRECTION="COMBI", TYPE_RESU="DYN"),
+        _F(TYPE_CHAR="SISM_INER_SPEC", RESULTAT=sismique_qs, DIRECTION="COMBI", TYPE_RESU="QS"),
+    ),
+    PRESSION=(_F(TOUT="OUI", VALE=1e6),),
+    COUDE=_F(GROUP_MA="TUYAU", ANGLE=90, RCOURB=0.01),
+)
+
+
+# FORME = 'ASNR' --> CONT_ABAT='DT' (pas de choix de l'utilisateur)
+# (calcul avec Coude)
+# (Contrainte vraie optimisé UT02-X9 calculé avec la formule proposée par la DT)
+resuPostRocheToutSism_Coude_ASNR = POST_ROCHE(
+    FORME="ASNR",
+    ZONE_ANALYSE=(_F(GROUP_MA="TUYAU", GROUP_NO_ORIG="A"),),
+    MODELE=modele,
+    CARA_ELEM=cara_elem,
+    CHAM_MATER=ch_mater,
+    RESU_MECA=(
+        _F(TYPE_CHAR="POIDS", CHAM_GD=poids_propre_champ),
+        _F(
+            TYPE_CHAR="DILAT_THERM",
+            RESULTAT=dilatation_thermique,
+            INST=1,
+            CRITERE="RELATIF",
+            PRECISION=1e-6,
+        ),
+        _F(TYPE_CHAR="DEPLACEMENT", RESULTAT=deplacement_impose, INST=0, CRITERE="ABSOLU"),
+        _F(TYPE_CHAR="SISM_INER_SPEC", RESULTAT=sismique_dyn, DIRECTION="COMBI", TYPE_RESU="DYN"),
+        _F(TYPE_CHAR="SISM_INER_SPEC", RESULTAT=sismique_qs, DIRECTION="COMBI", TYPE_RESU="QS"),
+    ),
+    PRESSION=(_F(TOUT="OUI", VALE=1e6),),
+    COUDE=_F(GROUP_MA="TUYAU", ANGLE=90, RCOURB=0.01),
+)
+
+# -------------- FIN POST_ROHCE SISMIQUE ---------------------#
+
 
 resuPostRocheTout = POST_ROCHE(
     LIMITE_ADM="NON",
