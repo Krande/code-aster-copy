@@ -111,8 +111,3 @@ def-bibcxx = { cmd = ["python", "msvc/def_gen_cpp.py"], description = "Generate 
 def-bibc = { cmd = ["python", "msvc/def_gen_c.py"], description = "Generate the bibc.def file" }
 def-astergc = { cmd = ["python", "msvc/def_gen_astergc.py"], description = "Generate the asterGC.def file" }
 def-gen-all = { cmd = "echo Def generation complete", depends-on =["def-bibfor", "def-bibfor-ext", "def-bibcxx", "def-bibc", "def-astergc"]}
-
-[feature.release.target.win-64.activation]
-scripts = ["msvc/scripts/activate.bat", "msvc/scripts/activate_intel.bat"]
-[feature.debug.target.win-64.activation]
-scripts = ["msvc/scripts/activate.bat", "msvc/scripts/activate_intel.bat"]
