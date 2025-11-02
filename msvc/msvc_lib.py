@@ -134,6 +134,50 @@ def get_task_object(bld: TaskGen, taskgen_name: str, compiler_prefix: str) -> Ta
     return TaskObject(lib_task, program_task, tasks, task_gen)
 
 
+def get_task_object_multi(bld: TaskGen, taskgen_name: str, compiler_prefixes) -> TaskObject:
+    """Return a TaskObject aggregating tasks from multiple compiler families (e.g., ['cxx','fc']).
+    Prefers a C++ shlib as the libtask if present, otherwise takes the first available.
+    """
+    if isinstance(compiler_prefixes, str):
+        compiler_prefixes = [compiler_prefixes]
+
+    lib_task = None
+    program_task = None
+    tasks = []
+    task_gen = bld.get_tgen_by_name(taskgen_name)
+
+    # Collect all matching compile tasks and remember shlib/program tasks per family
+    family_libtasks = []
+    for task in task_gen.tasks:
+        tname = task.__class__.__name__
+        for pref in compiler_prefixes:
+            if tname == f"{pref}shlib":
+                family_libtasks.append((pref, task))
+            elif tname == f"{pref}program":
+                # keep the first program we find (rarely used here)
+                if program_task is None:
+                    program_task = task
+            elif tname == pref:
+                tasks.append(task)
+
+    # Choose the libtask: prefer cxx if available to drive the DLL link
+    preferred_order = ["cxx", "fc", "c"]
+    for pref in preferred_order:
+        for fam, t in family_libtasks:
+            if fam == pref:
+                lib_task = t
+                break
+        if lib_task is not None:
+            break
+    if lib_task is None and family_libtasks:
+        lib_task = family_libtasks[0][1]
+
+    if len(tasks) == 0:
+        Errors.WafError(f"No tasks found for {taskgen_name} (prefixes={compiler_prefixes})")
+
+    return TaskObject(lib_task, program_task, tasks, task_gen)
+
+
 def extract_main_tasks(self: TaskGen.task_gen) -> LibTask:
     Logs.debug(f"Extracting main tasks for {self.get_name()=}")
 
@@ -142,9 +186,12 @@ def extract_main_tasks(self: TaskGen.task_gen) -> LibTask:
     cxx_task_object = get_task_object(bld, "asterbibcxx", "cxx")
     fc_task_object = get_task_object(bld, "asterbibfor", "fc")
     fc_ext_task_object = get_task_object(bld, "asterbibfor_ext", "fc")
-    gc_task_object = get_task_object(bld, "astergc", "cxx")
+    gc_task_object = get_task_object_multi(bld, "astergc", ["cxx", "fc"])
     c_aster_object = get_task_object(bld, "asterlib", "cxx")
-
+    Logs.info(f"AsterGC objects found: {len(gc_task_object.tasks)}")
+    # print asterGC task names for debugging
+    for t in gc_task_object.tasks:
+        Logs.info(f"AsterGC task: {t.__class__.__name__} - {t.outputs}")
     return LibTask(c_task_object, cxx_task_object, fc_task_object, fc_ext_task_object, gc_task_object, c_aster_object)
 
 
@@ -208,9 +255,26 @@ def run_mvsc_lib_gen(self, task_obj: LibTask):
     cxx_input_tasks = [cxxtask.outputs[0] for cxxtask in task_obj.asterbibcxx.tasks]
     fc_input_tasks = [fctask.outputs[0] for fctask in task_obj.asterbibfor.tasks]
     fc_ext_input_tasks = [fctask.outputs[0] for fctask in task_obj.asterbibfor_ext.tasks]
-    gc_input_tasks = [gctask.outputs[0] for gctask in task_obj.astergc.tasks]
+    # Collect all object file outputs (.o or .obj) from AsterGC tasks, not just outputs[0]
+    gc_input_tasks = []
+    Logs.info(f"Collecting AsterGC .o/.obj inputs from {len(task_obj.astergc.tasks)} tasks")
+    for gctask in task_obj.astergc.tasks:
+        try:
+            outs = [n.abspath() for n in getattr(gctask, "outputs", [])]
+        except Exception:
+            outs = []
+        Logs.info(f"AsterGC task {gctask.__class__.__name__} outputs: {outs}")
+        for outn in getattr(gctask, "outputs", []):
+            p = outn.abspath()
+            inc = p.lower().endswith(".o") or p.lower().endswith(".obj")
+            Logs.info(f"  consider {p} -> {'IN' if inc else 'skip'}")
+            if inc:
+                gc_input_tasks.append(outn)
     aster_input_tasks = [ctask.outputs[0] for ctask in task_obj.asterlib.tasks if ctask.outputs[0].suffix() == ".o"]
     Logs.debug(f"{aster_input_tasks=}")
+    Logs.info(f"AsterGC object inputs collected for libgen: {len(gc_input_tasks)}")
+    for n in gc_input_tasks:
+        Logs.debug(f"AsterGC libgen input: {n}")
 
     if len(aster_input_tasks) == 0:
         raise Errors.WafError("Failed MSVC lib generation: No aster input tasks found")
@@ -256,13 +320,13 @@ def run_mvsc_lib_gen(self, task_obj: LibTask):
     all_lib_gen_tasks = [bibfor_lib_task, bibfor_ext_lib_task, clib_lib_task,
                          bibcxx_lib_task, gc_lib_task_gen, bibaster_lib_task]
 
-    # bibfor.dll depends on bibcxx.lib and bibc.lib
-    fclib_task.inputs += bibcxx_task_outputs + clib_task_outputs + fcext_lib_task_outputs
+    # bibfor.dll depends on bibcxx.lib, bibc.lib, bibfor_ext.lib, and AsterGC.lib
+    fclib_task.inputs += bibcxx_task_outputs + clib_task_outputs + fcext_lib_task_outputs + gc_task_outputs
     for lib_task in all_lib_gen_tasks:
         fclib_task.set_run_after(lib_task)
 
-    # bibfor_ext.dll depends on bibfor.lib, bibcxx.lib, and bibc.lib
-    fcext_lib_task.inputs += fclib_task_outputs + bibcxx_task_outputs + clib_task_outputs
+    # bibfor_ext.dll depends on bibfor.lib, bibcxx.lib, bibc.lib, and AsterGC.lib
+    fcext_lib_task.inputs += fclib_task_outputs + bibcxx_task_outputs + clib_task_outputs + gc_task_outputs
     for lib_task in all_lib_gen_tasks:
         fcext_lib_task.set_run_after(lib_task)
 
@@ -271,8 +335,9 @@ def run_mvsc_lib_gen(self, task_obj: LibTask):
     for lib_task in all_lib_gen_tasks:
         clib_task.set_run_after(lib_task)
 
-    # AsterGC.dll depends on bibfor.lib and bibc.lib
-    gc_lib_task.inputs += fclib_task_outputs + clib_task_outputs
+    # AsterGC.dll should not depend on bibfor to avoid cycles; keep bibc only if required
+    # Remove bibfor from AsterGC inputs
+    # gc_lib_task.inputs += clib_task_outputs  # uncomment if AsterGC actually needs bibc
     for lib_task in all_lib_gen_tasks:
         gc_lib_task.set_run_after(lib_task)
 
@@ -428,13 +493,18 @@ def make_msvc_modifications(self: TaskGen.task_gen):
 
     if name in _compiler_map.keys():
         Logs.debug(f"setting {name=}")
-        aster_object = get_task_object(self.bld, name, _compiler_map[name])
-        if name == "asterlib" and len(aster_object.tasks) == 0:
-            # For some reason the asterlib compile tasks are forced to be compiled with the c compiler despite it
-            # being assigned cxx compiler in the wscript
-            aster_object_c = get_task_object(self.bld, name, "c")
-            aster_object.tasks = aster_object_c.tasks
-        setattr(lib_task_obj, name, aster_object)
+        if name == "astergc":
+            # Do NOT overwrite the aggregated astergc TaskObject captured in extract_main_tasks.
+            # Overwriting here (when only one family is ready) would drop the other family's tasks.
+            Logs.debug("Skipping astergc TaskObject override to preserve aggregated fc+cxx tasks")
+        else:
+            aster_object = get_task_object(self.bld, name, _compiler_map[name])
+            if name == "asterlib" and len(aster_object.tasks) == 0:
+                # For some reason the asterlib compile tasks are forced to be compiled with the c compiler despite it
+                # being assigned cxx compiler in the wscript
+                aster_object_c = get_task_object(self.bld, name, "c")
+                aster_object.tasks = aster_object_c.tasks
+            setattr(lib_task_obj, name, aster_object)
 
     are_tasks_ready = lib_task_obj.all_tasks_ready()
     Logs.debug(f"{are_tasks_ready=}")
