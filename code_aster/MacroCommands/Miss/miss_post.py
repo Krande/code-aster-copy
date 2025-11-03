@@ -36,9 +36,11 @@ from ...Messages import UTMESS
 from ...Cata.Syntax import _F
 from ...CodeCommands import (
     AFFE_CHAR_MECA_F,
+    CALC_CHAR_SEISME,
     CALC_FONC_INTERP,
     CALC_FONCTION,
     COMB_MATR_ASSE,
+    CREA_CHAMP,
     CREA_TABLE,
     DEFI_CONSTANTE,
     DEFI_FICHIER,
@@ -102,61 +104,140 @@ class PostMiss:
     def argument(self):
         """Vérification des arguments d'entrée."""
         # fréquences du calcul Miss
-        info_freq(self.param)
-        # interpolation des accéléros si présents (à supprimer sauf si TABLE)
-        self.excit_kw = self.param["EXCIT_HARMO"]
-        if self.excit_kw is None:
-            if self.param["INST_FIN"] is not None:
+        self.excit_gene = self.param["EXCIT_GENE"]
+        self.excit_mono = self.param["EXCIT_MONO"]
+        self.excit_forc = self.param["EXCIT_FORC"]
+        self.list_freq_calc = self.param["LIST_FREQ_CALC"]
+        if self.excit_forc is not None:
+            if self.param["TYPE_EXCIT"] == "INST" and self.param["INTERPOL"] == "OUI":
                 tmax = self.param["INST_FIN"]
                 pasdt = self.param["PAS_INST"]
                 __linst = DEFI_LIST_REEL(DEBUT=0.0, INTERVALLE=_F(JUSQU_A=tmax - pasdt, PAS=pasdt))
                 linst = __linst.getValues()
                 UTMESS("I", "MISS0_10", valr=(min(linst), max(linst), pasdt), vali=len(linst))
-                if self.param["ACCE_X"]:
-                    _acx = CALC_FONCTION(
-                        COMB=_F(FONCTION=self.param["ACCE_X"], COEF=1.0), LIST_PARA=__linst
-                    )
+                if self.excit_forc.get("ACCE_X") is not None:
+                    accx_ini = self.excit_forc.get("ACCE_X")
+                    list_time_ini = accx_ini.Absc()
+                    T_max_ini = list_time_ini[-1]
+                    if T_max_ini < tmax:
+                        UTMESS("F", "MISS0_46")
+                    _acx = CALC_FONCTION(COMB=_F(FONCTION=accx_ini, COEF=1.0), LIST_PARA=__linst)
                     self.acce_x = _acx
-                if self.param["ACCE_Y"]:
-                    _acy = CALC_FONCTION(
-                        COMB=_F(FONCTION=self.param["ACCE_Y"], COEF=1.0), LIST_PARA=__linst
-                    )
+                if self.excit_forc.get("ACCE_Y") is not None:
+                    accy_ini = self.excit_forc.get("ACCE_Y")
+                    list_time_ini = accy_ini.Absc()
+                    T_max_ini = list_time_ini[-1]
+                    if T_max_ini < tmax:
+                        UTMESS("F", "MISS0_46")
+                    _acy = CALC_FONCTION(COMB=_F(FONCTION=accy_ini, COEF=1.0), LIST_PARA=__linst)
                     self.acce_y = _acy
-                if self.param["ACCE_Z"]:
-                    _acz = CALC_FONCTION(
-                        COMB=_F(FONCTION=self.param["ACCE_Z"], COEF=1.0), LIST_PARA=__linst
-                    )
+                if self.excit_forc.get("ACCE_Z") is not None:
+                    accz_ini = self.excit_forc.get("ACCE_Z")
+                    list_time_ini = accz_ini.Absc()
+                    T_max_ini = list_time_ini[-1]
+                    if T_max_ini < tmax:
+                        UTMESS("F", "MISS0_46")
+                    _acz = CALC_FONCTION(COMB=_F(FONCTION=accz_ini, COEF=1.0), LIST_PARA=__linst)
                     self.acce_z = _acz
-                if self.param.get("GROUP_NO") is None:
-                    if self.param.get("DEPL_X"):
+                if self.excit_forc.get("GROUP_NO") is None:
+                    if self.excit_forc.get("DEPL_X") is not None:
+                        depx_ini = self.excit_forc.get("DEPL_X")
+                        list_time_ini = depx_ini.Absc()
+                        T_max_ini = list_time_ini[-1]
+                        if T_max_ini < tmax:
+                            UTMESS("F", "MISS0_46")
                         _acx = CALC_FONCTION(
-                            COMB=_F(FONCTION=self.param["DEPL_X"], COEF=1.0), LIST_PARA=__linst
+                            COMB=_F(FONCTION=depx_ini, COEF=1.0), LIST_PARA=__linst
                         )
                         self.depl_x = _acx
-                    if self.param.get("DEPL_Y"):
+                    if self.excit_forc.get("DEPL_Y") is not None:
+                        depy_ini = self.excit_forc.get("DEPL_Y")
+                        list_time_ini = depy_ini.Absc()
+                        T_max_ini = list_time_ini[-1]
+                        if T_max_ini < tmax:
+                            UTMESS("F", "MISS0_46")
                         _acy = CALC_FONCTION(
-                            COMB=_F(FONCTION=self.param["DEPL_Y"], COEF=1.0), LIST_PARA=__linst
+                            COMB=_F(FONCTION=depy_ini, COEF=1.0), LIST_PARA=__linst
                         )
                         self.depl_y = _acy
-                    if self.param.get("DEPL_Z"):
+                    if self.excit_forc.get("DEPL_Z") is not None:
+                        depz_ini = self.excit_forc.get("DEPL_Z")
+                        list_time_ini = depz_ini.Absc()
+                        T_max_ini = list_time_ini[-1]
+                        if T_max_ini < tmax:
+                            UTMESS("F", "MISS0_46")
                         _acz = CALC_FONCTION(
-                            COMB=_F(FONCTION=self.param["DEPL_Z"], COEF=1.0), LIST_PARA=__linst
+                            COMB=_F(FONCTION=depz_ini, COEF=1.0), LIST_PARA=__linst
                         )
                         self.depl_z = _acz
-            else:
-                if self.param["ACCE_X"]:
-                    self.acce_x = self.param["ACCE_X"]
-                if self.param["ACCE_Y"]:
-                    self.acce_y = self.param["ACCE_Y"]
-                if self.param["ACCE_Z"]:
-                    self.acce_z = self.param["ACCE_Z"]
+
+            elif (
+                self.param["TYPE_EXCIT"] == "INST" and self.param["INTERPOL"] == "NON"
+            ) or self.param["TYPE_EXCIT"] == "FREQ":
+                if self.excit_forc.get("ACCE_X") is not None:
+                    self.acce_x = self.excit_forc.get("ACCE_X")
+                if self.excit_forc.get("ACCE_Y") is not None:
+                    self.acce_y = self.excit_forc.get("ACCE_Y")
+                if self.excit_forc.get("ACCE_Z") is not None:
+                    self.acce_z = self.excit_forc.get("ACCE_Z")
                 if self.param.get("GROUP_NO") is None:
-                    if self.param.get("DEPL_X"):
-                        self.depl_x = self.param.get("DEPL_X")
-                    if self.param.get("DEPL_Y"):
-                        self.depl_y = self.param.get("DEPL_Y")
-                    if self.param.get("DEPL_Z"):
-                        self.depl_z = self.param.get("DEPL_Z")
+                    if self.excit_forc.get("DEPL_X") is not None:
+                        self.depl_x = self.excit_forc.get("DEPL_X")
+                    if self.excit_forc.get("DEPL_Y") is not None:
+                        self.depl_y = self.excit_forc.get("DEPL_Y")
+                    if self.excit_forc.get("DEPL_Z") is not None:
+                        self.depl_z = self.excit_forc.get("DEPL_Z")
+        if self.excit_mono is not None:
+            if self.param["TYPE_EXCIT"] == "INST":
+                if self.param["INTERPOL"] == "OUI":
+                    tmax = self.param["INST_FIN"]
+                    pasdt = self.param["PAS_INST"]
+                    __linst = DEFI_LIST_REEL(
+                        DEBUT=0.0, INTERVALLE=_F(JUSQU_A=tmax - pasdt, PAS=pasdt)
+                    )
+                    linst = __linst.getValues()
+                    UTMESS("I", "MISS0_10", valr=(min(linst), max(linst), pasdt), vali=len(linst))
+                    for excit_mono_i in self.excit_mono:
+                        dExc = excit_mono_i
+                        if dExc["DIRECTION"] == "X":
+                            accx_ini = dExc["ACCE"]
+                            list_time_ini = accx_ini.Absc()
+                            T_max_ini = list_time_ini[-1]
+                            if T_max_ini < tmax:
+                                UTMESS("F", "MISS0_46")
+                            _acx = CALC_FONCTION(
+                                COMB=_F(FONCTION=accx_ini, COEF=1.0), LIST_PARA=__linst
+                            )
+                        self.acce_x = _acx
+                        if dExc["DIRECTION"] == "Y":
+                            accy_ini = dExc["ACCE"]
+                            list_time_ini = accy_ini.Absc()
+                            T_max_ini = list_time_ini[-1]
+                            if T_max_ini < tmax:
+                                UTMESS("F", "MISS0_46")
+                            _acy = CALC_FONCTION(
+                                COMB=_F(FONCTION=accy_ini, COEF=1.0), LIST_PARA=__linst
+                            )
+                            self.acce_y = _acy
+                        if dExc["DIRECTION"] == "Z":
+                            accz_ini = dExc["ACCE"]
+                            list_time_ini = accz_ini.Absc()
+                            T_max_ini = list_time_ini[-1]
+                            if T_max_ini < tmax:
+                                UTMESS("F", "MISS0_46")
+                            _acz = CALC_FONCTION(
+                                COMB=_F(FONCTION=accz_ini, COEF=1.0), LIST_PARA=__linst
+                            )
+                            self.acce_z = _acz
+            else:
+                for excit_mono_i in self.excit_mono:
+                    dExc = excit_mono_i
+                    if dExc["DIRECTION"] == "X":
+                        self.acce_x = dExc["ACCE"]
+                    if dExc["DIRECTION"] == "Y":
+                        self.acce_y = dExc["ACCE"]
+                    if dExc["DIRECTION"] == "Z":
+                        self.acce_z = dExc["ACCE"]
 
     def execute(self):
         """Lance le post-traitement"""
@@ -196,7 +277,7 @@ class PostMiss:
     def set_fft_accelero(self):
         """Calcul des FFT des accélérogrammes si fonctions temporelles."""
 
-        if self.param["INST_FIN"] is not None:
+        if self.param["TYPE_EXCIT"] == "INST":
             if self.acce_x:
                 _xff = CALC_FONCTION(FFT=_F(FONCTION=self.acce_x, METHODE=self.methode_fft))
                 self.xff = _xff
@@ -231,25 +312,75 @@ class PostMiss:
 
     def set_freq_dlh(self):
         """Déterminer les fréquences du calcul harmonique."""
-        if self.excit_kw is not None:
-            if self.param["FREQ_MIN"] is not None:
-                freq_min = self.param["FREQ_MIN"]
-                freq_max = self.param["FREQ_MAX"]
-                df = self.param["FREQ_PAS"]
-                lfreq = NP.arange(freq_min, freq_max + df, df).tolist()
-                UTMESS("I", "MISS0_12", valr=(freq_min, freq_max, df), vali=len(lfreq))
+        if (
+            self.param["TYPE_RESU"] == "HARM_GENE"
+            or self.param["TYPE_RESU"] == "TRAN_GENE"
+            or self.param["TYPE_RESU"] == "TABLE"
+        ):
+
+            if self.excit_gene is not None or self.excit_mono is not None:
+                if (
+                    self.param["TYPE_RESU"] == "HARM_GENE"
+                    and self.list_freq_calc.get("AUTO") == "NON"
+                ):
+                    if self.list_freq_calc.get("FREQ_MIN") is not None:
+                        freq_min = self.list_freq_calc.get("FREQ_MIN")
+                        freq_max = self.list_freq_calc.get("FREQ_MAX")
+                        df = self.list_freq_calc.get("FREQ_PAS")
+                        lfreq = NP.arange(freq_min, freq_max + df, df).tolist()
+                        UTMESS("I", "MISS0_12", valr=(freq_min, freq_max, df), vali=len(lfreq))
+                    else:
+                        if self.list_freq_calc.get("LIST_FREQ") is not None:
+                            lfreq = self.list_freq_calc.get("LIST_FREQ").getValues()
+                        else:
+                            lfreq = self.list_freq_calc.get("FREQ")
+                        UTMESS("I", "MISS0_11", valk=repr(lfreq), vali=len(lfreq))
+                else:
+                    if self.param["TYPE_RESU"] == "HARM_GENE" and self.excit_gene is not None:
+                        if (
+                            self.excit_gene[0].get("COEF_MULT") is not None
+                            or self.excit_gene[0].get("COEF_MULT_C") is not None
+                        ):
+                            if self.list_freq_calc.get("AUTO") is "OUI":
+                                UTMESS("F", "MISS0_45")
+                    if self.param["TYPE_EXCIT"] == "INST":
+                        if self.excit_gene is not None:
+                            acce_time = self.excit_gene[0].get("FONC_MULT")
+                        else:
+                            acce_time = self.excit_mono[0].get("ACCE")
+                        list_time = acce_time.Absc()
+                        Delta_t = list_time[1] - list_time[0]
+                        T_max = list_time[-1]
+                        n = NP.log(len(list_time)) / NP.log(2)
+                        if int(n) != n:
+                            n = int(n) + 1
+                        T_max = (2**n) * Delta_t
+                        df = 1.0 / T_max
+                        freq_max = 1 / (2 * Delta_t)
+                        freq_max = (int(freq_max / df) - 1) * df
+                        lfreq = NP.arange(0.0, freq_max + df, df)
+                        UTMESS("I", "MISS0_12", valr=(0.0, freq_max, df), vali=len(lfreq))
+                    else:
+                        if self.excit_gene is not None:
+                            fft = self.excit_gene[0].get("FONC_MULT_C")
+                        else:
+                            fft = self.excit_mono[0].get("ACCE")
+                        tf_fft = fft.convert("complex")
+                        df = tf_fft.vale_x[1] - tf_fft.vale_x[0]
+                        med = len(tf_fft.vale_x) // 2
+                        lfreq = tf_fft.vale_x[:med].tolist()
+                        freq_max = lfreq[-1]
+                        UTMESS("I", "MISS0_12", valr=(0.0, freq_max, df), vali=len(lfreq))
+
             else:
-                lfreq = self.param["LIST_FREQ"]
-                UTMESS("I", "MISS0_11", valk=repr(lfreq), vali=len(lfreq))
-        else:
-            fft = self.xff or self.yff or self.zff
-            assert fft is not None
-            tf_fft = fft.convert("complex")
-            df = tf_fft.vale_x[1] - tf_fft.vale_x[0]
-            med = len(tf_fft.vale_x) // 2 + 1
-            lfreq = tf_fft.vale_x[:med].tolist()
-            freq_max = lfreq[-1]
-            UTMESS("I", "MISS0_12", valr=(0.0, freq_max, df), vali=len(lfreq))
+                fft = self.xff or self.yff or self.zff
+                assert fft is not None
+                tf_fft = fft.convert("complex")
+                df = tf_fft.vale_x[1] - tf_fft.vale_x[0]
+                med = len(tf_fft.vale_x) // 2
+                lfreq = tf_fft.vale_x[:med].tolist()
+                freq_max = lfreq[-1]
+                UTMESS("I", "MISS0_12", valr=(0.0, freq_max, df), vali=len(lfreq))
         self.list_freq_DLH = lfreq
 
     def initco(self):
@@ -270,9 +401,12 @@ class PostMiss:
     def check_datafile_exist(self):
         """Vérifie l'existence des fichiers."""
         filename1 = LogicalUnitFile.filename_from_unit(self.param["UNITE_RESU_IMPE"])
-        filename2 = LogicalUnitFile.filename_from_unit(self.param["UNITE_RESU_FORC"])
-        assert osp.exists(filename1)
-        assert osp.exists(filename2)
+        if not osp.exists(filename1):
+            UTMESS("F", "MISS0_47")
+        if self.excit_mono is None and self.excit_gene is None:
+            filename2 = LogicalUnitFile.filename_from_unit(self.param["UNITE_RESU_FORC"])
+            if not osp.exists(filename2):
+                UTMESS("F", "MISS0_48")
 
     def init_table(self):
         """Initialise la table"""
@@ -314,6 +448,7 @@ class PostMissTran(PostMiss):
         super(PostMissTran, self).__init__(parent, param)
         self.methode_fft = "PROL_ZERO"
         self.excit_harmo = []
+        self.excit_ccs = []
 
     def argument(self):
         """Vérification des arguments d'entrée."""
@@ -328,11 +463,8 @@ class PostMissTran(PostMiss):
 
     def sortie(self):
         """Prépare et produit les concepts de sortie."""
-        # XXX on pensait qu'il fallait utiliser PROL_ZERO mais miss01a
-        #    devient alors NOOK. A clarifier/vérifier en passant
-        #    d'autres tests avec ce post-traitement.
         resugene = REST_SPEC_TEMP(
-            RESU_GENE=self.dyge, METHODE="TRONCATURE", SYMETRIE="NON", TOUT_CHAM="OUI"
+            RESU_GENE=self.dyge, METHODE="PROL_ZERO", SYMETRIE="NON", TOUT_CHAM="OUI", N_PUIS=0
         )
         self.initco()
         return resugene
@@ -345,7 +477,8 @@ class PostMissTran(PostMiss):
     def boucle_dlh(self):
         """Exécution des DYNA_VIBRA//HARM"""
         first = True
-        for freq in self.list_freq_DLH:
+        list_freq_boucle = self.list_freq_DLH
+        for freq in list_freq_boucle:
             opts = {}
             _printDBG("Calcul pour la fréquence %.2f Hz" % freq)
             __impe = LIRE_IMPE_MISS(
@@ -369,77 +502,141 @@ class PostMissTran(PostMiss):
             self.dyge = self.iteration_dlh(_rito, freq, opts)
             first = False
 
+    def concepts_communs(self):
+        """Construction des concepts spécifiques au cas TRAN."""
+        super(PostMissTran, self).concepts_communs()
+        if self.excit_gene is not None:
+            for excit_i in self.excit_gene:
+                dExc = excit_i
+                for mc in list(dExc.keys()):
+                    if dExc[mc] is None:
+                        del dExc[mc]
+                if dExc.get("VECT_ASSE") is not None:
+                    __excit = PROJ_VECT_BASE(
+                        BASE=self.param["BASE_MODALE"],
+                        NUME_DDL_GENE=self.nddlgen,
+                        VECT_ASSE=dExc["VECT_ASSE"],
+                        TYPE_VECT="FORC",
+                    )
+                    dExc["VECT_ASSE_GENE"] = __excit
+                    del dExc["VECT_ASSE"]
+                if self.param["TYPE_EXCIT"] == "INST":
+                    if dExc.get("FONC_MULT") is not None:
+                        accef = CALC_FONCTION(
+                            FFT=_F(FONCTION=dExc["FONC_MULT"], METHODE="PROL_ZERO")
+                        )
+                        dExc["FONC_MULT_C"] = accef
+                        del dExc["FONC_MULT"]
+                self.excit_harmo.append(dExc)
+        if self.excit_mono is not None:
+            for excit_i in self.excit_mono:
+                dExc = excit_i
+                for mc in list(dExc.keys()):
+                    if dExc[mc] is None:
+                        del dExc[mc]
+                if dExc.get("DIRECTION") is not None:
+                    if dExc["DIRECTION"] == "X":
+                        direction = (1.0, 0.0, 0.0)
+                    elif dExc["DIRECTION"] == "Y":
+                        direction = (0.0, 1.0, 0.0)
+                    elif dExc["DIRECTION"] == "Z":
+                        direction = (0.0, 0.0, 1.0)
+                    seisme = CALC_CHAR_SEISME(
+                        DIRECTION=direction, MATR_MASS=self.param["MATR_MASS"], MONO_APPUI="OUI"
+                    )
+                    seigene = PROJ_VECT_BASE(
+                        BASE=self.param["BASE_MODALE"],
+                        NUME_DDL_GENE=self.nddlgen,
+                        VECT_ASSE=seisme,
+                        TYPE_VECT="FORC",
+                    )
+                    dExc["VECT_ASSE_GENE"] = seigene
+                    del dExc["DIRECTION"]
+
+                if self.param["TYPE_EXCIT"] == "INST":
+                    accef = CALC_FONCTION(FFT=_F(FONCTION=dExc["ACCE"], METHODE="PROL_ZERO"))
+                    dExc["FONC_MULT_C"] = accef
+                    del dExc["ACCE"]
+                else:
+                    dExc["FONC_MULT_C"] = dExc["ACCE"]
+                    del dExc["ACCE"]
+
+                self.excit_ccs.append(dExc)
+
     def iteration_dlh(self, rigtot, freq, opts):
         """Calculs à une fréquence donnée."""
         excit = []
-        if self.acce_x:
-            __fosx = LIRE_FORC_MISS(
-                BASE=self.param["BASE_MODALE"],
-                NUME_DDL_GENE=self.nddlgen,
-                ISSF=self.param["ISSF"],
-                NOM_CMP="DX",
-                NOM_CHAM="ACCE",
-                UNITE_RESU_FORC=self.param["UNITE_RESU_FORC"],
-                FREQ_EXTR=freq,
-            )
-            excit.append(_F(VECT_ASSE_GENE=__fosx, FONC_MULT_C=self.xff))
-        if self.acce_y:
-            __fosy = LIRE_FORC_MISS(
-                BASE=self.param["BASE_MODALE"],
-                NUME_DDL_GENE=self.nddlgen,
-                ISSF=self.param["ISSF"],
-                NOM_CMP="DY",
-                NOM_CHAM="ACCE",
-                UNITE_RESU_FORC=self.param["UNITE_RESU_FORC"],
-                FREQ_EXTR=freq,
-            )
-            excit.append(_F(VECT_ASSE_GENE=__fosy, FONC_MULT_C=self.yff))
-        if self.acce_z:
-            __fosz = LIRE_FORC_MISS(
-                BASE=self.param["BASE_MODALE"],
-                NUME_DDL_GENE=self.nddlgen,
-                ISSF=self.param["ISSF"],
-                NOM_CMP="DZ",
-                NOM_CHAM="ACCE",
-                UNITE_RESU_FORC=self.param["UNITE_RESU_FORC"],
-                FREQ_EXTR=freq,
-            )
-            excit.append(_F(VECT_ASSE_GENE=__fosz, FONC_MULT_C=self.zff))
-        if self.depl_x:
-            __fosx = LIRE_FORC_MISS(
-                BASE=self.param["BASE_MODALE"],
-                NUME_DDL_GENE=self.nddlgen,
-                ISSF=self.param["ISSF"],
-                NOM_CMP="DX",
-                NOM_CHAM="DEPL",
-                UNITE_RESU_FORC=self.param["UNITE_RESU_FORC"],
-                FREQ_EXTR=freq,
-            )
-            excit.append(_F(VECT_ASSE_GENE=__fosx, FONC_MULT_C=self.xff))
-        if self.depl_y:
-            __fosy = LIRE_FORC_MISS(
-                BASE=self.param["BASE_MODALE"],
-                NUME_DDL_GENE=self.nddlgen,
-                ISSF=self.param["ISSF"],
-                NOM_CMP="DY",
-                NOM_CHAM="DEPL",
-                UNITE_RESU_FORC=self.param["UNITE_RESU_FORC"],
-                FREQ_EXTR=freq,
-            )
-            excit.append(_F(VECT_ASSE_GENE=__fosy, FONC_MULT_C=self.yff))
-        if self.depl_z:
-            __fosz = LIRE_FORC_MISS(
-                BASE=self.param["BASE_MODALE"],
-                NUME_DDL_GENE=self.nddlgen,
-                ISSF=self.param["ISSF"],
-                NOM_CMP="DZ",
-                NOM_CHAM="DEPL",
-                UNITE_RESU_FORC=self.param["UNITE_RESU_FORC"],
-                FREQ_EXTR=freq,
-            )
-            excit.append(_F(VECT_ASSE_GENE=__fosz, FONC_MULT_C=self.zff))
+        if self.excit_forc is not None:
+            if self.acce_x:
+                __fosx = LIRE_FORC_MISS(
+                    BASE=self.param["BASE_MODALE"],
+                    NUME_DDL_GENE=self.nddlgen,
+                    ISSF=self.param["ISSF"],
+                    NOM_CMP="DX",
+                    NOM_CHAM="ACCE",
+                    UNITE_RESU_FORC=self.param["UNITE_RESU_FORC"],
+                    FREQ_EXTR=freq,
+                )
+                excit.append(_F(VECT_ASSE_GENE=__fosx, FONC_MULT_C=self.xff))
+            if self.acce_y:
+                __fosy = LIRE_FORC_MISS(
+                    BASE=self.param["BASE_MODALE"],
+                    NUME_DDL_GENE=self.nddlgen,
+                    ISSF=self.param["ISSF"],
+                    NOM_CMP="DY",
+                    NOM_CHAM="ACCE",
+                    UNITE_RESU_FORC=self.param["UNITE_RESU_FORC"],
+                    FREQ_EXTR=freq,
+                )
+                excit.append(_F(VECT_ASSE_GENE=__fosy, FONC_MULT_C=self.yff))
+            if self.acce_z:
+                __fosz = LIRE_FORC_MISS(
+                    BASE=self.param["BASE_MODALE"],
+                    NUME_DDL_GENE=self.nddlgen,
+                    ISSF=self.param["ISSF"],
+                    NOM_CMP="DZ",
+                    NOM_CHAM="ACCE",
+                    UNITE_RESU_FORC=self.param["UNITE_RESU_FORC"],
+                    FREQ_EXTR=freq,
+                )
+                excit.append(_F(VECT_ASSE_GENE=__fosz, FONC_MULT_C=self.zff))
+            if self.depl_x:
+                __fosx = LIRE_FORC_MISS(
+                    BASE=self.param["BASE_MODALE"],
+                    NUME_DDL_GENE=self.nddlgen,
+                    ISSF=self.param["ISSF"],
+                    NOM_CMP="DX",
+                    NOM_CHAM="DEPL",
+                    UNITE_RESU_FORC=self.param["UNITE_RESU_FORC"],
+                    FREQ_EXTR=freq,
+                )
+                excit.append(_F(VECT_ASSE_GENE=__fosx, FONC_MULT_C=self.xff))
+            if self.depl_y:
+                __fosy = LIRE_FORC_MISS(
+                    BASE=self.param["BASE_MODALE"],
+                    NUME_DDL_GENE=self.nddlgen,
+                    ISSF=self.param["ISSF"],
+                    NOM_CMP="DY",
+                    NOM_CHAM="DEPL",
+                    UNITE_RESU_FORC=self.param["UNITE_RESU_FORC"],
+                    FREQ_EXTR=freq,
+                )
+                excit.append(_F(VECT_ASSE_GENE=__fosy, FONC_MULT_C=self.yff))
+            if self.depl_z:
+                __fosz = LIRE_FORC_MISS(
+                    BASE=self.param["BASE_MODALE"],
+                    NUME_DDL_GENE=self.nddlgen,
+                    ISSF=self.param["ISSF"],
+                    NOM_CMP="DZ",
+                    NOM_CHAM="DEPL",
+                    UNITE_RESU_FORC=self.param["UNITE_RESU_FORC"],
+                    FREQ_EXTR=freq,
+                )
+                excit.append(_F(VECT_ASSE_GENE=__fosz, FONC_MULT_C=self.zff))
         if len(self.excit_harmo) > 0:
             excit.extend(self.excit_harmo)
+        if len(self.excit_ccs) > 0:
+            excit.extend(self.excit_ccs)
         if self.amorgen:
             dyge = self.dyna_vibra_harm(
                 TYPE_CALCUL="HARM",
@@ -476,32 +673,12 @@ class PostMissHarm(PostMissTran):
     def __init__(self, parent, param):
         """Initialisation."""
         super(PostMissHarm, self).__init__(parent, param)
-        self.methode_fft = "COMPLET"
+        self.methode_fft = "PROL_ZERO"
         self.sd = None
 
     def argument(self):
         """Vérification des arguments d'entrée."""
         super(PostMissHarm, self).argument()
-
-    def concepts_communs(self):
-        """Construction des concepts spécifiques au cas HARMO."""
-        super(PostMissHarm, self).concepts_communs()
-        if self.excit_kw is not None:
-            for excit_i in self.excit_kw:
-                dExc = excit_i
-                for mc in list(dExc.keys()):
-                    if dExc[mc] is None:
-                        del dExc[mc]
-                if dExc.get("VECT_ASSE") is not None:
-                    __excit = PROJ_VECT_BASE(
-                        BASE=self.param["BASE_MODALE"],
-                        NUME_DDL_GENE=self.nddlgen,
-                        VECT_ASSE=dExc["VECT_ASSE"],
-                        TYPE_VECT="FORC",
-                    )
-                    dExc["VECT_ASSE_GENE"] = __excit
-                    del dExc["VECT_ASSE"]
-                self.excit_harmo.append(dExc)
 
     def sortie(self):
         """Prépare et produit les concepts de sortie."""
@@ -530,7 +707,8 @@ class PostMissTabl(PostMiss):
         # s'assurer que les unités logiques sont libérées (rewind)
         self.check_datafile_exist()
         DEFI_FICHIER(ACTION="LIBERER", UNITE=self.param["UNITE_RESU_IMPE"])
-        DEFI_FICHIER(ACTION="LIBERER", UNITE=self.param["UNITE_RESU_FORC"])
+        if self.excit_mono is None and self.excit_gene is None:
+            DEFI_FICHIER(ACTION="LIBERER", UNITE=self.param["UNITE_RESU_FORC"])
 
     def execute(self):
         """Lance le post-traitement"""
@@ -1112,7 +1290,6 @@ class PostMissFichierTemps(PostMissFichier):
 
     def impr_impe(self, Zdt, unite_type_impe, ibin):
         """Ecriture d'une impédance quelconque dans le fichier de sortie en argument"""
-        print("ibin=", ibin)
         if ibin == 0:
             if self.param["NB_MODE"] < 6:
                 nb_colonne = self.param["NB_MODE"]
@@ -1173,11 +1350,9 @@ class PostMissFichierTemps(PostMissFichier):
             lpara.append(float(self.L_point2))
             lpara.append(self.dt)
             lpara.append(float(self.nrows))
-            print("lpara=", lpara)
             lfreq = []
             for n in range(0, self.L_point2):
                 lfreq.append(n * self.dt)
-            print("lfreq=", lfreq)
             lparaArr = NP.array(lpara)
             lfreqArr = NP.array(lfreq)
             lparaArr.tofile(fid)
@@ -1510,7 +1685,11 @@ def PostMissFactory(type_post, parent, param):
 def info_freq(param):
     """Emet un message sur les fréquences utilisées"""
     if param["LIST_FREQ"]:
-        UTMESS("I", "MISS0_14", valk=repr(param["LIST_FREQ"]), vali=len(param["LIST_FREQ"]))
+        valk_0 = repr(param["LIST_FREQ"].getValues())
+        vali_0 = len(param["LIST_FREQ"].getValues())
+        UTMESS("I", "MISS0_14", valk=valk_0, vali=vali_0)
+    elif param["FREQ"]:
+        UTMESS("I", "MISS0_14", valk=repr(param["FREQ"]), vali=len(param["FREQ"]))
     else:
         nbfmiss = int((param["FREQ_MAX"] - param["FREQ_MIN"]) / param["FREQ_PAS"]) + 1
         valr = (param["FREQ_MIN"], param["FREQ_MAX"], param["FREQ_PAS"])

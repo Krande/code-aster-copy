@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -116,13 +116,12 @@ class MISS_PARAMETER:
             self.set("_exec_Miss", True)
             typ = FileType.Ascii if self._keywords["TYPE"] == "ASCII" else FileType.Free
             self["UNITE_RESU_IMPE"] = LogicalUnitFile.new_free(typ=typ).unit
+            if self.get("EXCIT_FORC") is not None:
+                self["UNITE_RESU_FORC"] = LogicalUnitFile.new_free().unit
         elif self["TYPE_RESU"] in ("TABLE_CONTROL",):
             self.set("_exec_Miss", True)
 
-        if self.get("UNITE_RESU_FORC") is None:
-            self.set("_exec_Miss", True)
-            self["UNITE_RESU_FORC"] = LogicalUnitFile.new_free().unit
-        elif self["TYPE_RESU"] in ("TABLE_CONTROL",):
+        if self["TYPE_RESU"] in ("TABLE_CONTROL",):
             self.set("_exec_Miss", True)
 
         # fréquences

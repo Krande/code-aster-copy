@@ -361,6 +361,7 @@ DYNA_LINE = MACRO(
                 defaut="V6.7",
                 fr=tr("Version de Miss utilisée"),
             ),
+            TYPE_EXCIT=SIMP(statut="f", typ="TXM", into=("INST", "FREQ"), defaut="INST"),
             CALC_IMPE_FORC=SIMP(statut="f", typ="TXM", into=("OUI", "NON"), defaut="OUI"),
             GROUP_MA_INTERF=SIMP(
                 statut="o", typ=grma, max="**", fr=tr("Groupe de mailles de l'interface")
@@ -387,7 +388,7 @@ DYNA_LINE = MACRO(
                     fr=tr("Unité logique des impédances écrites par Miss"),
                 ),
                 UNITE_RESU_FORC=SIMP(
-                    statut="o",
+                    statut="f",
                     typ=UnitType(),
                     inout="in",
                     fr=tr("Unité logique des forces sismiques écrites par Miss"),
@@ -430,13 +431,14 @@ DYNA_LINE = MACRO(
                     statut="f",
                     regles=(
                         PRESENT_PRESENT("OFFSET_MAX", "OFFSET_NB"),
+                        UN_PARMI("FREQ_MIN", "LIST_FREQ", "FREQ_IMAG", "FREQ"),
                         PRESENT_PRESENT("FREQ_MIN", "FREQ_MAX", "FREQ_PAS"),
-                        EXCLUS("FREQ_MIN", "LIST_FREQ", "FREQ_IMAG"),
                     ),
                     FREQ_MIN=SIMP(statut="f", typ="R"),
                     FREQ_MAX=SIMP(statut="f", typ="R"),
                     FREQ_PAS=SIMP(statut="f", typ="R"),
-                    LIST_FREQ=SIMP(statut="f", typ="R", max="**"),
+                    FREQ=SIMP(statut="f", typ="R", max="**"),
+                    LIST_FREQ=SIMP(statut="f", typ=listr8_sdaster),
                     FREQ_IMAG=SIMP(statut="f", typ="R"),
                     Z0=SIMP(statut="f", typ="R", defaut=0.0),
                     TYPE=SIMP(statut="f", typ="TXM", into=("BINAIRE", "ASCII"), defaut="ASCII"),
@@ -446,8 +448,9 @@ DYNA_LINE = MACRO(
                     OFFSET_MAX=SIMP(statut="f", typ="R"),
                     OFFSET_NB=SIMP(statut="f", typ="I"),
                     AUTO=SIMP(statut="f", typ="TXM", into=("OUI", "NON"), defaut="NON"),
-                    b_auto_harm=BLOC(
+                    b_auto=BLOC(
                         condition="""equal_to("AUTO", 'OUI')""",
+                        regles=(ENSEMBLE("SPEC_MAX", "SPEC_NB"),),
                         OPTION_DREF=SIMP(statut="f", typ="TXM", into=("OUI", "NON"), defaut="NON"),
                         OPTION_RFIC=SIMP(statut="f", typ="TXM", into=("OUI", "NON"), defaut="NON"),
                         RFIC=SIMP(statut="f", typ="R"),
@@ -455,9 +458,9 @@ DYNA_LINE = MACRO(
                         SPEC_NB=SIMP(statut="f", typ="I"),
                         COEF_OFFSET=SIMP(statut="f", typ="I", defaut=12),
                     ),
-                    b_noauto_harm=BLOC(
+                    b_noauto=BLOC(
                         condition="""equal_to("AUTO", 'NON')""",
-                        regles=(PRESENT_PRESENT("SPEC_MAX", "SPEC_NB"),),
+                        regles=(ENSEMBLE("SPEC_MAX", "SPEC_NB"),),
                         ALGO=SIMP(statut="f", typ="TXM", into=("DEPL", "REGU")),
                         RFIC=SIMP(statut="f", typ="R", defaut=0.0),
                         SPEC_MAX=SIMP(statut="f", typ="R"),
@@ -465,7 +468,7 @@ DYNA_LINE = MACRO(
                     ),
                 ),
             ),
-        ),  # end b_iss_harm
+        ),
         b_ifs_harm=BLOC(
             condition="""equal_to("IFS", 'OUI')""",
             FORC_AJOU=SIMP(statut="f", typ="TXM", into=("OUI",)),
@@ -515,8 +518,8 @@ DYNA_LINE = MACRO(
             VERSION_MISS=SIMP(
                 statut="f",
                 typ="TXM",
-                into=("V6.6", "V6.5"),
-                defaut="V6.6",
+                into=("V6.7", "V6.6", "V6.5"),
+                defaut="V6.7",
                 fr=tr("Version de Miss utilisée"),
             ),
             CALC_IMPE_FORC=SIMP(statut="f", typ="TXM", into=("OUI", "NON"), defaut="OUI"),

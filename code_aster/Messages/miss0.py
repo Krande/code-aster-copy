@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -81,7 +81,7 @@ Les %(i1)d fréquences du calcul harmonique sont :
     ),
     12: _(
         """
-Plage de fréquence du calcul harmonique : [%(r1).4f, %(r2).4f]
+Plage de fréquence du calcul harmonique : [%(r1).4f, %(r2).4f] Hz
 par pas de %(r3).4f Hz, soit %(i1)d fréquences.
 """
     ),
@@ -236,6 +236,22 @@ doivent obligatoirement être définies en utilisant le mot-clé MATER_FLUIDE.
 est supérieure à 2.
 
 Conseil : les valeurs d'amortissement doivent être renseignées en absolu et non en pourcentage.
+"""
+    ),
+    45: _(
+        """Si on ne fournit pas une fonction multiplicatrice, il est impossible de déterminer automatiquement la liste des fréquences du calcul harmonique. Il faut donc rentrer manuellement les paramètres.
+"""
+    ),
+    46: _(
+        """L'instant final choisi pour l'interpolation dans l'option INTERPOL est supérieur à l'instant final de la fonction initiale. Il faut choisir une valeur inférieure.
+"""
+    ),
+    47: _(
+        """On attend un fichier en entrée avec les impédances préalablement calculées. Vérifier d'avoir bien assigné un fichier à UNITE_RESU_IMPE.
+"""
+    ),
+    48: _(
+        """On attend un fichier en entrée avec les forces sismiques préalablement calculées. Vérifier d'avoir bien assigné un fichier à UNITE_RESU_FORC.
 """
     ),
 }

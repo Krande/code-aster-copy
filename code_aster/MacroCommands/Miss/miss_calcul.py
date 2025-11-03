@@ -401,7 +401,7 @@ class CalculMissFichierTemps(CalculMiss):
         self.nbr_freq = self.L_points // 2 + 1
 
         # Variables à rajouter dans 'param'
-        self.param.set("LIST_FREQ", None)
+        self.param.set("FREQ", None)
         self.param.set("FREQ_IMAG", None)
         # Nombre de modes (dynamiques) d'interface
         modes_nb = self.data.mode_stat_nb
@@ -458,7 +458,7 @@ class CalculMissFichierTemps(CalculMiss):
             UTMESS("I", "MISS0_25", vali=(k, rank))
 
             if (k == 0) or (k == self.nbr_freq - 1):
-                self.param.set("LIST_FREQ", (0.1e-4,))
+                self.param.set("FREQ", (0.1e-4,))
                 self.param.set(
                     "FREQ_IMAG",
                     (
@@ -470,7 +470,7 @@ class CalculMissFichierTemps(CalculMiss):
                 )
             else:
                 self.param.set(
-                    "LIST_FREQ",
+                    "FREQ",
                     (
                         -(
                             -2.0 * rho * sin(2 * pi * k / L_points)
@@ -495,7 +495,7 @@ class CalculMissFichierTemps(CalculMiss):
             str00 = (
                 str(self.param["FREQ_IMAG"])
                 + " + i . "
-                + str(self.param["LIST_FREQ"][0])
+                + str(self.param["FREQ"][0])
                 + " ("
                 + str(k + 1)
                 + "/"

@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -343,12 +343,14 @@ class MissCmdeGenerator:
         freq_max = self.param["FREQ_MAX"]
         freq_pas = self.param["FREQ_PAS"]
         freq_imag = self.param["FREQ_IMAG"]
+        list_freq = self.param["LIST_FREQ"]
+        freq = self.param["FREQ"]
         _nbfreq = 0
         # formats possibles pour les fréquences
-        assert (self.param["FREQ_MIN"], self.param["LIST_FREQ"]).count(
+        assert (freq_min, list_freq, freq).count(
             None
-        ) == 1, "expect FREQ_MIN xor LIST_FREQ, not together"
-        if self.param["FREQ_MIN"] is not None:
+        ) == 2, "expect at most FREQ_MIN, LIST_FREQ or FREQ, not together"
+        if freq_min is not None:
             lines.append(
                 (
                     "FREQUENCE DE %%(freq_min)%(R)s A %%(freq_max)%(R)s "
@@ -357,8 +359,8 @@ class MissCmdeGenerator:
                 % locals()
             )
             _nbfreq = int((freq_max - freq_min) / freq_pas) + 2
-        if self.param["LIST_FREQ"] is not None:
-            lfreq = list(self.param["LIST_FREQ"])
+        if list_freq is not None:
+            lfreq = list_freq.getValues()
             nbf = len(lfreq)
             lines.extend(
                 [
@@ -367,7 +369,17 @@ class MissCmdeGenerator:
                 ]
             )
             _nbfreq = nbf + 1
-        if self.param["FREQ_IMAG"] is not None:
+        elif freq is not None:
+            lfreq = freq
+            nbf = len(lfreq)
+            lines.extend(
+                [
+                    ("FREQUENCE %%%(I)s" % dict_format) % nbf,
+                    (dict_format["sR"] * nbf) % tuple(lfreq),
+                ]
+            )
+            _nbfreq = nbf + 1
+        if freq_imag is not None:
             lines.append(("IMGO %%%(R)s\n" % dict_format) % freq_imag)
         # _nbfreq will be used in miss_post
         self.param.set("_nbfreq", _nbfreq)
