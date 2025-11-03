@@ -31,6 +31,14 @@ mfy_poids_propre = np.array(poids_propre_values["MFY"])
 
 table = CREA_TABLE(
     RESU=_F(
+        RESULTAT=poids_propre_neg, NOM_CHAM="EFGE_ELNO", TOUT="OUI", NOM_CMP=("MT", "MFY", "MFZ")
+    )
+)
+poids_propre_neg_values = table.EXTR_TABLE().values()
+mfy_poids_propre_neg = np.array(poids_propre_neg_values["MFY"])
+
+table = CREA_TABLE(
+    RESU=_F(
         RESULTAT=deplacement_impose, NOM_CHAM="EFGE_ELNO", TOUT="OUI", NOM_CMP=("MT", "MFY", "MFZ")
     )
 )
@@ -136,7 +144,7 @@ post_roche_analytic.calcul_sigma_eq()
 # tout + Séisme  : On va tester tous les variables sorties
 # FORME = 'RCC_MRX' & CONTRAINTE_ABAT = 'CODE'
 post_roche_analyticSism = PostRocheAnalytic(
-    mfy_poids_propre,
+    mfy_poids_propre_neg,
     mt_deplacement_impose,
     mfy_sismique_dyn,
     mfz_sismique_dyn,
@@ -1694,7 +1702,7 @@ TEST_RESU(
             NOM_CHAM="UT01_ELNO",
             INST=0.0,
             NOM_CMP="X11",
-            VALE_CALC=43.1923071,
+            VALE_CALC=-43.1923071,
             VALE_REFE=post_roche_analyticSism._mfy_abat[0],
             REFERENCE="AUTRE_ASTER",
         ),
@@ -1705,7 +1713,7 @@ TEST_RESU(
             NOM_CHAM="UT01_ELNO",
             INST=0.0,
             NOM_CMP="X11",
-            VALE_CALC=13.0074689,
+            VALE_CALC=-13.0074689,
             VALE_REFE=post_roche_analyticSism._mfy_abat[1],
             REFERENCE="AUTRE_ASTER",
         ),
@@ -1716,7 +1724,7 @@ TEST_RESU(
             NOM_CHAM="UT01_ELNO",
             INST=0.0,
             NOM_CMP="X11",
-            VALE_CALC=13.0074689,
+            VALE_CALC=-13.0074689,
             VALE_REFE=post_roche_analyticSism._mfy_abat[2],
             REFERENCE="AUTRE_ASTER",
         ),
@@ -1727,7 +1735,7 @@ TEST_RESU(
             NOM_CHAM="UT01_ELNO",
             INST=0.0,
             NOM_CMP="X11",
-            VALE_CALC=0.24931049,
+            VALE_CALC=-0.24931049,
             VALE_REFE=post_roche_analyticSism._mfy_abat[3],
             REFERENCE="AUTRE_ASTER",
         ),

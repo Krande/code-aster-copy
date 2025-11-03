@@ -197,6 +197,7 @@ blocage_b = AFFE_CHAR_MECA(MODELE=modele, DDL_IMPO=(_F(GROUP_NO="B", DX=0, DZ=0)
 deplacement_b = AFFE_CHAR_MECA(MODELE=modele, DDL_IMPO=(_F(GROUP_NO="B", DRX=0.02)))
 
 poids = AFFE_CHAR_MECA(MODELE=modele, PESANTEUR=_F(GRAVITE=9.81, DIRECTION=(0.0, 0.0, -1.0)))
+poids_neg = AFFE_CHAR_MECA(MODELE=modele, PESANTEUR=_F(GRAVITE=9.81, DIRECTION=(0.0, 0.0, 1.0)))
 
 # CHARGEMENTS SISMIQUES
 # Spectre de réponse à 2%
@@ -277,6 +278,25 @@ poids_propre_champ = CREA_CHAMP(
     TYPE_CHAM="ELNO_SIEF_R",
     OPERATION="EXTR",
     RESULTAT=poids_propre,
+    NOM_CHAM="EFGE_ELNO",
+    NUME_ORDRE=1,
+)
+
+poids_propre_neg = MECA_STATIQUE(
+    MODELE=modele,
+    CHAM_MATER=ch_mater,
+    CARA_ELEM=cara_elem,
+    EXCIT=(_F(CHARGE=blocage_a), _F(CHARGE=poids_neg)),
+    INST=0.0,
+)
+poids_propre_neg = CALC_CHAMP(
+    reuse=poids_propre_neg, RESULTAT=poids_propre_neg, CONTRAINTE="EFGE_ELNO"
+)
+
+poids_propre_champ_neg = CREA_CHAMP(
+    TYPE_CHAM="ELNO_SIEF_R",
+    OPERATION="EXTR",
+    RESULTAT=poids_propre_neg,
     NOM_CHAM="EFGE_ELNO",
     NUME_ORDRE=1,
 )
@@ -408,7 +428,7 @@ resuPostRocheToutSism = POST_ROCHE(
     CARA_ELEM=cara_elem,
     CHAM_MATER=ch_mater,
     RESU_MECA=(
-        _F(TYPE_CHAR="POIDS", CHAM_GD=poids_propre_champ),
+        _F(TYPE_CHAR="POIDS", CHAM_GD=poids_propre_champ_neg),
         _F(
             TYPE_CHAR="DILAT_THERM",
             RESULTAT=dilatation_thermique,
