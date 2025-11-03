@@ -60,7 +60,7 @@ IMPR_RESU = PROC(
             statut="f",
             typ="TXM",
             into=("3.3.1", "4.0.0", "4.1.0"),
-            defaut="4.0.0",
+            defaut="3.3.1",
             fr=tr("Choix de la version du fichier MED"),
         ),
         FICHIER_UNIQUE=SIMP(
