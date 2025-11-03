@@ -1,2 +1,2 @@
 # Recommended prerequisites version
-VERSION="20240327"
+VERSION="20251026"
