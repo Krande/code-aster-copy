@@ -53,7 +53,7 @@ ifx_win-64 = { version="*", channel="conda-forge" }
 llvmdev = "*"
 
 [feature.dev.target.win-64.dependencies]
-clangdev = "18.*"
+clangdev = "*"
 pixi-pycharm = "*"
 
 [feature.release.target.win-64.dependencies]

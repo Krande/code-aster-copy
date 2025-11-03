@@ -188,10 +188,10 @@ def extract_main_tasks(self: TaskGen.task_gen) -> LibTask:
     fc_ext_task_object = get_task_object(bld, "asterbibfor_ext", "fc")
     gc_task_object = get_task_object_multi(bld, "astergc", ["cxx", "fc"])
     c_aster_object = get_task_object(bld, "asterlib", "cxx")
-    Logs.info(f"AsterGC objects found: {len(gc_task_object.tasks)}")
+    Logs.debug(f"AsterGC objects found: {len(gc_task_object.tasks)}")
     # print asterGC task names for debugging
     for t in gc_task_object.tasks:
-        Logs.info(f"AsterGC task: {t.__class__.__name__} - {t.outputs}")
+        Logs.debug(f"AsterGC task: {t.__class__.__name__} - {t.outputs}")
     return LibTask(c_task_object, cxx_task_object, fc_task_object, fc_ext_task_object, gc_task_object, c_aster_object)
 
 
@@ -257,22 +257,22 @@ def run_mvsc_lib_gen(self, task_obj: LibTask):
     fc_ext_input_tasks = [fctask.outputs[0] for fctask in task_obj.asterbibfor_ext.tasks]
     # Collect all object file outputs (.o or .obj) from AsterGC tasks, not just outputs[0]
     gc_input_tasks = []
-    Logs.info(f"Collecting AsterGC .o/.obj inputs from {len(task_obj.astergc.tasks)} tasks")
+    Logs.debug(f"Collecting AsterGC .o/.obj inputs from {len(task_obj.astergc.tasks)} tasks")
     for gctask in task_obj.astergc.tasks:
         try:
             outs = [n.abspath() for n in getattr(gctask, "outputs", [])]
         except Exception:
             outs = []
-        Logs.info(f"AsterGC task {gctask.__class__.__name__} outputs: {outs}")
+        Logs.debug(f"AsterGC task {gctask.__class__.__name__} outputs: {outs}")
         for outn in getattr(gctask, "outputs", []):
             p = outn.abspath()
             inc = p.lower().endswith(".o") or p.lower().endswith(".obj")
-            Logs.info(f"  consider {p} -> {'IN' if inc else 'skip'}")
+            Logs.debug(f"  consider {p} -> {'IN' if inc else 'skip'}")
             if inc:
                 gc_input_tasks.append(outn)
     aster_input_tasks = [ctask.outputs[0] for ctask in task_obj.asterlib.tasks if ctask.outputs[0].suffix() == ".o"]
     Logs.debug(f"{aster_input_tasks=}")
-    Logs.info(f"AsterGC object inputs collected for libgen: {len(gc_input_tasks)}")
+    Logs.debug(f"AsterGC object inputs collected for libgen: {len(gc_input_tasks)}")
     for n in gc_input_tasks:
         Logs.debug(f"AsterGC libgen input: {n}")
 
@@ -400,7 +400,7 @@ def make_libs_for_entrypoints(self) -> None:
     clib_task_outputs = [x for x in aster_msvc_lib_task.outputs if x.suffix() == ".lib"]
 
     clib_task.inputs += clib_task_outputs
-    Logs.info(f"{clib_task.inputs=}")
+    Logs.debug(f"{clib_task.inputs=}")
 
 
 @TaskGen.feature("cxxshlib", "fcshlib", "cshlib")
@@ -428,7 +428,7 @@ def set_flags(self) -> None:
         conda_dir = bld_path / "msvc"
         args += [f"/LIBPATH:{conda_dir.as_posix()}"]
     else:
-        Logs.info(f"Skipping {name=}")
+        Logs.debug(f"Skipping {name=}")
         return None
 
 

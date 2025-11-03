@@ -110,7 +110,7 @@ def gather_ifort_versions(conf, versions):
         # Try to find ifx in PATH
         ifx_path = conf.find_program(['ifx', 'ifort'], var='FC_TEST', mandatory=False)
         if ifx_path:
-            Logs.info(f"Found Intel Fortran compiler in PATH")
+            Logs.debug(f"Found Intel Fortran compiler in PATH")
 
             # Get current PATH, LIB, and INCLUDE from environment
             current_path = os.getenv('PATH', '').split(';')
@@ -343,7 +343,7 @@ class target_compiler(object):
 
         # Handle conda-based compiler
         if self.is_conda and self.conda_paths:
-            Logs.info("Using conda-based Intel Fortran environment")
+            Logs.debug("Using conda-based Intel Fortran environment")
             self.bindirs = [p for p in self.conda_paths[0] if p]
             self.incdirs = [p for p in self.conda_paths[1] if p]
             self.libdirs = [p for p in self.conda_paths[2] if p]
