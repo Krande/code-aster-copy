@@ -193,7 +193,7 @@ def get_msvc_version(conf, compiler, version, target, vcvars):
 	:return: the location of the compiler executable, the location of include dirs, and the library paths
 	:rtype: tuple of strings
 	"""
-	Logs.info('msvc: get_msvc_version: %r %r %r', compiler, version, target)
+	Logs.debug('msvc: get_msvc_version: %r %r %r', compiler, version, target)
 
 	# Check if we're already in an activated MSVC environment (e.g., conda build)
 	# This avoids "input line too long" errors when PATH is already very long

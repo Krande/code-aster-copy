@@ -302,14 +302,28 @@ def check_math_libs(self, libs, embed, optional=False):
 
 
 def check_win_cores(self):
-    # Example: Using WMIC to get CPU count
-    import subprocess
+    # Use modern methods to get CPU count on Windows
+    # WMIC is deprecated and removed in newer Windows versions
+    nproc = None
+
+    # Try os.cpu_count() first (Python 3.4+)
     try:
-        nproc = int(subprocess.check_output("WMIC CPU Get NumberOfCores /Value", shell=True).strip().split(b'=')[1])
-    except (Errors.ConfigurationError, ValueError):
+        nproc = os.cpu_count()
+    except AttributeError:
+        pass
+
+    # Fallback to NUMBER_OF_PROCESSORS environment variable
+    if nproc is None:
+        try:
+            nproc = int(os.environ.get('NUMBER_OF_PROCESSORS', '1'))
+        except (ValueError, TypeError):
+            nproc = 1
+
+    # Ensure we have a valid value
+    if nproc is None or nproc < 1:
         nproc = 1
-    else:
-        self.end_msg(nproc)
+
+    self.end_msg(nproc)
     self.env["NPROC"] = nproc
 
 
