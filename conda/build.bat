@@ -51,27 +51,20 @@ REM /MD link with MSVCRT.lib. /FS allow for c compiler calls to vc140.pdb on mul
 set CFLAGS=%CFLAGS% /FS /MD
 set CXXFLAGS=%CXXFLAGS% /MD
 
-if "%FC%" == "ifx.exe" (
-    echo "Using Intel Fortran LLVM IFX compiler"
-    set FC_SEARCH=ifort
-    set FCFLAGS=%FCFLAGS% /fpp /4R8 /MD /names:lowercase /assume:underscore /assume:nobscc /fpe:0 /4I8
-    :: Add lib paths
-    set LDFLAGS=%LDFLAGS% /LIBPATH:%LIB_PATH_ROOT%/lib /LIBPATH:%LIB_PATH_ROOT%/bin /LIBPATH:%PREF_ROOT%/libs
-    :: Set up paths for Intel Fortran compiler in conda environment
-    set "PATH=%BUILD_PREFIX%\Library\bin;%BUILD_PREFIX%\Scripts;%PATH%"
-    set "LIB=%BUILD_PREFIX%\Library\lib;%LIB%"
-    set "INCLUDE=%BUILD_PREFIX%\opt\compiler\include\intel64;%BUILD_PREFIX%\Library\include;%INCLUDE%"
+echo "Using Intel Fortran LLVM IFX compiler"
+set FC_SEARCH=ifort
+set FCFLAGS=%FCFLAGS% /fpp /4R8 /MD /names:lowercase /assume:underscore /assume:nobscc /fpe:0 /4I8
+:: Add lib paths
+set LDFLAGS=%LDFLAGS% /LIBPATH:%LIB_PATH_ROOT%/lib /LIBPATH:%LIB_PATH_ROOT%/bin /LIBPATH:%PREF_ROOT%/libs
+:: Set up paths for Intel Fortran compiler in conda environment
+set "PATH=%BUILD_PREFIX%\Library\bin;%BUILD_PREFIX%\Scripts;%PATH%"
+set "LIB=%BUILD_PREFIX%\Library\lib;%LIB%"
+set "INCLUDE=%BUILD_PREFIX%\opt\compiler\include\intel64;%BUILD_PREFIX%\Library\include;%INCLUDE%"
 
-    :: Signal to ifort.py that we're using conda-based Intel Fortran
-    set "INTEL_FORTRAN_VERSION=2025.1162"
-    set "CONDA_BUILD_INTEL_FORTRAN=1"
-) else (
-    echo "Using LLVM Flang Fortran compiler"
-    set FC_SEARCH=flang
-    set FCFLAGS=%FCFLAGS% -cpp --dependent-lib=msvcrt -fdefault-double-8 -fdefault-real-8 -funderscoring -fdefault-integer-8
-    :: Add lib paths
-    set LDFLAGS=%LDFLAGS% -L %LIB_PATH_ROOT%/lib -L %LIB_PATH_ROOT%/bin -L %PREF_ROOT%/libs
-)
+:: Signal to ifort.py that we're using conda-based Intel Fortran
+set "INTEL_FORTRAN_VERSION=2025.1162"
+set "CONDA_BUILD_INTEL_FORTRAN=1"
+
 if %CC% == "cl.exe" set CFLAGS=%CFLAGS% /sourceDependencies %OUTPUT_DIR%
 
 :: Create dll debug pdb

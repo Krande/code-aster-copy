@@ -193,15 +193,42 @@ def get_msvc_version(conf, compiler, version, target, vcvars):
 	:return: the location of the compiler executable, the location of include dirs, and the library paths
 	:rtype: tuple of strings
 	"""
-	Logs.debug('msvc: get_msvc_version: %r %r %r', compiler, version, target)
+	Logs.info('msvc: get_msvc_version: %r %r %r', compiler, version, target)
 
-	try:
-		conf.msvc_cnt += 1
-	except AttributeError:
-		conf.msvc_cnt = 1
-	batfile = conf.bldnode.make_node('waf-print-msvc-%d.bat' % conf.msvc_cnt)
-	envfile = conf.bldnode.make_node('waf-print-msvc-%d.txt' % conf.msvc_cnt)
-	batfile.write("""@echo off
+	# Check if we're already in an activated MSVC environment (e.g., conda build)
+	# This avoids "input line too long" errors when PATH is already very long
+	if os.environ.get('INCLUDE') and os.environ.get('LIB'):
+		Logs.debug('msvc: Using existing MSVC environment from os.environ')
+		MSVC_PATH = os.environ.get('PATH', '').split(';')
+		MSVC_INCDIR = [i for i in os.environ.get('INCLUDE', '').split(';') if i]
+		lib_env = os.environ.get('LIB', '')
+		libpath_env = os.environ.get('LIBPATH', '')
+		# Combine LIB and LIBPATH, similar to what vcvars does
+		combined_lib = lib_env
+		if libpath_env:
+			if combined_lib:
+				combined_lib += ';' + libpath_env
+			else:
+				combined_lib = libpath_env
+		MSVC_LIBDIR = [i for i in combined_lib.split(';') if i]
+
+		if MSVC_PATH and MSVC_INCDIR and MSVC_LIBDIR:
+			Logs.debug('msvc: Successfully read environment from os.environ')
+		else:
+			Logs.debug('msvc: Environment incomplete, falling back to vcvars')
+			MSVC_PATH = MSVC_INCDIR = MSVC_LIBDIR = None
+	else:
+		MSVC_PATH = MSVC_INCDIR = MSVC_LIBDIR = None
+
+	# If we couldn't use the existing environment, call vcvars
+	if None in (MSVC_PATH, MSVC_INCDIR, MSVC_LIBDIR):
+		try:
+			conf.msvc_cnt += 1
+		except AttributeError:
+			conf.msvc_cnt = 1
+		batfile = conf.bldnode.make_node('waf-print-msvc-%d.bat' % conf.msvc_cnt)
+		envfile = conf.bldnode.make_node('waf-print-msvc-%d.txt' % conf.msvc_cnt)
+		batfile.write("""@echo off
 setlocal enabledelayedexpansion
 :: if SETVARS_CALL is defined, then the script is being called from another script
 :: and we should not set the environment variables
@@ -218,30 +245,29 @@ echo INCLUDE=%%INCLUDE%%>> "%s"
 echo LIB=%%LIB%%;%%LIBPATH%%>> "%s"
 endlocal
 """ % (vcvars, target, envfile.abspath(), envfile.abspath(), envfile.abspath()))
-	conf.cmd_and_log(['cmd.exe', '/E:on', '/V:on', '/C', batfile.abspath()], stdin=getattr(Utils.subprocess, 'DEVNULL', None))
+		conf.cmd_and_log(['cmd.exe', '/E:on', '/V:on', '/C', batfile.abspath()], stdin=getattr(Utils.subprocess, 'DEVNULL', None))
 
-	# Read the environment variables from the file
-	lines = Utils.readf(envfile.abspath()).splitlines()
+		# Read the environment variables from the file
+		lines = Utils.readf(envfile.abspath()).splitlines()
 
-	if not lines[0]:
-		lines.pop(0)
+		if not lines[0]:
+			lines.pop(0)
 
-	MSVC_PATH = MSVC_INCDIR = MSVC_LIBDIR = None
-	for line in lines:
-		if line.startswith('PATH='):
-			path = line[5:]
-			MSVC_PATH = path.split(';')
-		elif line.startswith('INCLUDE='):
-			MSVC_INCDIR = [i for i in line[8:].split(';') if i]
-		elif line.startswith('LIB='):
-			MSVC_LIBDIR = [i for i in line[4:].split(';') if i]
-	if None in (MSVC_PATH, MSVC_INCDIR, MSVC_LIBDIR):
-		conf.fatal('msvc: Could not find a valid architecture for building (get_msvc_version_3)')
+		MSVC_PATH = MSVC_INCDIR = MSVC_LIBDIR = None
+		for line in lines:
+			if line.startswith('PATH='):
+				MSVC_PATH = line[5:].split(';')
+			elif line.startswith('INCLUDE='):
+				MSVC_INCDIR = [i for i in line[8:].split(';') if i]
+			elif line.startswith('LIB='):
+				MSVC_LIBDIR = [i for i in line[4:].split(';') if i]
+		if None in (MSVC_PATH, MSVC_INCDIR, MSVC_LIBDIR):
+			conf.fatal('msvc: Could not find a valid architecture for building (get_msvc_version_3)')
 
 	# Check if the compiler is usable at all.
 	# The detection may return 64-bit versions even on 32-bit systems, and these would fail to run.
 	env = dict(os.environ)
-	env.update(PATH = path)
+	env.update(PATH = ';'.join(MSVC_PATH))
 	compiler_name, linker_name, lib_name = _get_prog_names(conf, compiler)
 	cxx = conf.find_program(compiler_name, path_list=MSVC_PATH)
 
