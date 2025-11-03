@@ -48,20 +48,22 @@ requirements:
     - zlib
     - if: win
       then:
+        - hdf5 * *${{ build_type }}*
         - metis * *${{ build_type }}*INT${{ int_type }}*
-        - mumps * *${{ build_type }}*INT${{ int_type }}*
+        - mumps * *${{ build_type }}*INT${{ int_type }}*66
         - mfront * *${{ build_type }}*
         - mgis * *${{ build_type }}*
         - libmed * *${{ build_type }}*INT${{ int_type }}*
-        - scotch * *${{ build_type }}*INT${{ int_type }}*
+        - libscotch * *${{ build_type }}*INT${{ int_type }}*65
+        - scotch * *${{ build_type }}*INT${{ int_type }}*65
         - medcoupling * *${{ build_type }}*INT${{ int_type }}*
         - psutil
     - if: not win
       then:
-        - "libscotch * *debug*"
-        - "scotch * *debug*"
-        - "metis * *debug*"
-        - "mumps * *debug*"
+        - "libscotch * *${{ build_type }}*"
+        - "scotch * *${{ build_type }}*"
+        - "metis * *${{ build_type }}*"
+        - "mumps * *${{ build_type }}*"
         - mfront
         - mgis
         - libmed

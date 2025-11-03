@@ -15,9 +15,13 @@ def find_object_files(build_dir):
     """Find all object files in the bibfor build directory.
 
     Supports both .obj and .o (e.g., .f.1.o) file extensions.
+
+    Excludes the third_party_interf subtree which belongs to the separate
+    bibfor_ext library on MSVC.
     """
     obj_files = []
     bibfor_dir = build_dir / "bibfor"
+    third_party_dir = bibfor_dir / "third_party_interf"
 
     if not bibfor_dir.exists():
         print(f"Warning: bibfor build directory not found: {bibfor_dir}")
@@ -25,9 +29,15 @@ def find_object_files(build_dir):
 
     for pattern in ["*.obj", "*.o"]:
         for obj_file in bibfor_dir.rglob(pattern):
+            # Skip files that are part of bibfor_ext
+            try:
+                if third_party_dir in obj_file.parents:
+                    continue
+            except Exception:
+                pass
             obj_files.append(obj_file)
 
-    print(f"Found {len(obj_files)} object files in {bibfor_dir}")
+    print(f"Found {len(obj_files)} object files in {bibfor_dir} (excluding third_party_interf)")
     return obj_files
 
 
@@ -104,7 +114,7 @@ def extract_symbols(obj_files):
                 continue
             if "." in name:          # module metadata
                 continue
-            if name.endswith("._") or "_module" in name or "_mp_" in name:
+            if name.endswith("._"):# or "_module" in name or "_mp_" in name:
                 continue
             if "@" in name:          # stdcall-size decorated or const pools
                 continue
@@ -136,6 +146,40 @@ def generate_def_file(symbols, output_file):
     print(f"Generated {output_file} with {len(symbols)} exports")
 
 
+def _read_def_exports(def_path: Path):
+    """Read a .def file and return a set of exported symbol names.
+
+    Very tolerant parser: looks for lines after an EXPORTS header and collects
+    first tokens that look like symbol names (ignoring DATA suffix).
+    """
+    exports = set()
+    if not def_path.exists():
+        return exports
+    try:
+        content = def_path.read_text(encoding="utf-8", errors="ignore").splitlines()
+    except Exception:
+        return exports
+
+    in_exports = False
+    for raw in content:
+        line = raw.strip()
+        if not line:
+            continue
+        up = line.upper()
+        if up.startswith("EXPORTS"):
+            in_exports = True
+            continue
+        if not in_exports:
+            # allow LIBRARY line or comments before
+            continue
+        # take the first whitespace-separated token as symbol
+        token = line.split()[0]
+        # ignore markers like DATA
+        if token and token.upper() != "EXPORTS" and token.upper() != "LIBRARY":
+            exports.add(token)
+    return exports
+
+
 def main():
     # Determine paths
     script_dir = Path(__file__).parent
@@ -164,7 +208,19 @@ def main():
         sys.exit(1)
 
     # Extract symbols
-    symbols = extract_symbols(obj_files)
+    symbols = set(extract_symbols(obj_files))
+
+    # Subtract symbols belonging to separate libraries if their DEFs exist
+    bibfor_ext_def = script_dir / "bibfor_ext.def"
+    astergc_def = script_dir / "asterGC.def"
+    excluded = set()
+    excluded |= _read_def_exports(bibfor_ext_def)
+    excluded |= _read_def_exports(astergc_def)
+    if excluded:
+        before = len(symbols)
+        symbols -= excluded
+        after = len(symbols)
+        print(f"Excluded {before - after} symbols present in separate libs (bibfor_ext/asterGC)")
 
     if not symbols:
         print("Warning: No Fortran symbols extracted!")
@@ -172,7 +228,7 @@ def main():
 
     # Generate .def file
     output_file = script_dir / "bibfor.def"
-    generate_def_file(symbols, output_file)
+    generate_def_file(sorted(symbols), output_file)
 
     print(f"Successfully generated {output_file}")
 

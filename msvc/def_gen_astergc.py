@@ -35,51 +35,87 @@ def find_object_files(build_dir):
 
 
 def extract_symbols(obj_files):
-    """Extract all exported symbols from object files using llvm-nm.
+    """Extract intended export symbols using dumpbin with robust filtering.
 
-    This handles both Fortran and C++ symbols.
+    Goal: avoid exporting MSVC C++ mangled names and template/CRT internals; keep
+    only C/Fortran-like API symbols that are actually defined in these objects.
     """
     symbols = set()
 
+    # Exclude common non-exportable prefixes and thunks, plus const pools
+    exclude_prefixes = (
+        "__imp_", "__Cxx", "__RT", "_TI", "_CT", "_Init_thread_", "$", "._", "__chkstk",
+        "__real@", "__xmm@", "__ymm@", "__int@", "__m128@", "__m256@", "pybind11"
+    )
+
+    # Specific CRT/utility symbols we should not export from AsterGC
+    exclude_symbols = {
+        "printf", "fprintf", "sprintf", "sprintf_s", "snprintf", "_snprintf",
+        "_vfprintf_l", "_vsprintf_l", "_vsprintf_s_l", "_scprintf", "_vscprintf_l",
+        "__local_stdio_printf_options",
+    }
+
+    # Accept only C-like api names (letters/underscores and digits)
+    import re
+    api_name_re = re.compile(r"^[A-Za-z_][A-Za-z0-9_]*$")
+
     for obj_file in obj_files:
         try:
-            # Run llvm-nm to get symbols
             result = subprocess.run(
-                ["llvm-nm", "--extern-only", "--defined-only", str(obj_file)],
+                ["dumpbin", "/SYMBOLS", str(obj_file)],
                 capture_output=True,
                 text=True,
-                check=True
+                check=True,
             )
-
-            for line in result.stdout.splitlines():
-                parts = line.split()
-                if len(parts) < 3:
-                    continue
-
-                symbol_type = parts[1]
-                symbol_name = parts[2]
-
-                # Filter for exported symbols
-                # T/t = Text/Code symbol (functions)
-                # D/d = Data symbol (global variables)
-                # B/b = BSS symbol (uninitialized data)
-
-                if symbol_type in ['T', 't', 'D', 'd', 'B', 'b']:
-                    # Exclude internal symbols
-                    if symbol_name.startswith('_Z'):  # C++ mangled but internal
-                        # Include it - it might be needed
-                        pass
-                    if symbol_name.startswith('?'):  # C++ MSVC mangled
-                        symbols.add(symbol_name)
-                    elif symbol_name.startswith('_') or symbol_name.isalpha():
-                        # Fortran or C symbols
-                        symbols.add(symbol_name)
-
-        except subprocess.CalledProcessError as e:
-            print(f"Warning: Failed to extract symbols from {obj_file}: {e}")
         except FileNotFoundError:
-            print("Error: llvm-nm not found. Make sure LLVM tools are in PATH.")
+            print("Error: dumpbin.exe not found. Make sure MSVC tools are in PATH.")
             sys.exit(1)
+        except subprocess.CalledProcessError:
+            # Skip problematic objects but continue overall
+            continue
+
+        for raw in result.stdout.splitlines():
+            line = raw.strip()
+            if "External" not in line or "|" not in line:
+                continue
+            if "UNDEF" in line:
+                continue
+            if "SECT" not in line:
+                continue
+
+            try:
+                right = line.split("|", 1)[1].strip()
+            except Exception:
+                continue
+            if not right:
+                continue
+
+            token = right.split()[-1]
+            name = token.strip()
+            if name.endswith("()"):
+                name = name[:-2]
+            if not name:
+                continue
+
+            # Hard rejections
+            if name.startswith(exclude_prefixes):
+                continue
+            # Exclude MSVC and Itanium C++ mangled names
+            if name.startswith('?') or name.startswith('_Z'):
+                continue
+            # Exclude decorated/section names
+            if ("@" in name) or ("." in name):
+                continue
+            if not api_name_re.match(name):
+                continue
+            if name in exclude_symbols:
+                continue
+            # Positive allow-list: keep only clear public API prefixes
+            allowed_prefixes = ("PyInit_", "aster_gc_", "gc_")
+            #if not name.startswith(allowed_prefixes):
+            #    continue
+
+            symbols.add(name)
 
     return sorted(symbols)
 

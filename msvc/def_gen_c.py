@@ -9,6 +9,7 @@ a .def file for exporting them from the DLL.
 import argparse
 import subprocess
 import sys
+import re
 from pathlib import Path
 
 
@@ -61,7 +62,9 @@ def extract_c_symbols(obj_file):
 
     # Prefixes to exclude from DEF (CRT/RTTI/imports/etc.)
     exclude_prefixes = (
-        "__imp_", "__Cxx", "__RT", "_TI", "_CT", "_Init_thread_", "$", "._", "__chkstk"
+        "__imp_", "__Cxx", "__RT", "_TI", "_CT", "_Init_thread_", "$", "._", "__chkstk",
+        # Constant pool / vectorized literals and others we must not export
+        "__real@", "__xmm@", "__ymm@", "__int@", "__m128@", "__m256@",
     )
     # Specific symbols to exclude (not to be exported from bibc)
     exclude_symbols = {
@@ -105,21 +108,19 @@ def extract_c_symbols(obj_file):
                         continue
                     if symbol in exclude_symbols:
                         continue
-                    if symbol.startswith('.'):
+                    # Exclude any symbol with obvious decoration/metadata
+                    if symbol.startswith('.') or ('@' in symbol) or ('.' in symbol):
                         continue
                     if symbol.startswith(exclude_prefixes):
                         continue
 
-                    # Exclude C++ mangled names
-                    if symbol.startswith('?'):
+                    # Exclude C++ mangled names (MSVC and Itanium)
+                    if symbol.startswith('?') or symbol.startswith('_Z'):
                         continue
 
-                    # Accept C-like names
-                    is_c_like = (
-                        symbol.startswith('_') or symbol.startswith('Py') or symbol.startswith('g') or
-                        any(x in symbol for x in ("aster", "asmpi", "NULL_FUNCTION"))
-                    )
-                    if not is_c_like:
+                    # Accept standard C/Fortran-identifiers (letters/underscore, digits/underscore)
+                    # This allows lowercase exports like r8prem_ used by Fortran-callable C shims.
+                    if not re.match(r'^_?[A-Za-z][A-Za-z0-9_]*$', symbol):
                         continue
 
                     if is_data:
@@ -134,6 +135,33 @@ def extract_c_symbols(obj_file):
         sys.exit(1)
 
     return symbols, data_symbols
+
+
+def _read_def_exports(def_path: Path):
+    """Read a .def file and return a set of exported symbol names (first token per line after EXPORTS)."""
+    exports = set()
+    p = Path(def_path)
+    if not p.exists():
+        return exports
+    try:
+        lines = p.read_text(encoding="utf-8", errors="ignore").splitlines()
+    except Exception:
+        return exports
+    in_exports = False
+    for raw in lines:
+        line = raw.strip()
+        if not line:
+            continue
+        up = line.upper()
+        if up.startswith("EXPORTS"):
+            in_exports = True
+            continue
+        if not in_exports:
+            continue
+        token = line.split()[0]
+        if token and token.upper() not in ("EXPORTS", "LIBRARY"):
+            exports.add(token)
+    return exports
 
 
 def generate_def_file(symbols, data_symbols, output_file, library_name="bibc"):
@@ -199,6 +227,18 @@ def main():
         symbols, data_symbols = extract_c_symbols(obj_file)
         all_symbols.extend(symbols)
         all_data_symbols.extend(data_symbols)
+
+    # Exclude symbols that belong to separate libs (asterGC, bibfor_ext) if their DEFs exist
+    script_dir = Path(__file__).parent
+    excluded = set()
+    excluded |= _read_def_exports(script_dir / "asterGC.def")
+    excluded |= _read_def_exports(script_dir / "bibfor_ext.def")
+    if excluded:
+        before = (len(set(all_symbols)) + len(set(all_data_symbols)))
+        all_symbols = [s for s in all_symbols if s not in excluded]
+        all_data_symbols = [s for s in all_data_symbols if s not in excluded]
+        after = (len(set(all_symbols)) + len(set(all_data_symbols)))
+        print(f"Excluded {before - after} symbols present in separate libs (asterGC/bibfor_ext)")
 
     # Generate DEF file
     output_path = Path(args.output)

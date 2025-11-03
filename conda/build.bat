@@ -57,7 +57,11 @@ if "%FC%" == "ifx.exe" (
     set FCFLAGS=%FCFLAGS% /fpp /4R8 /MD /names:lowercase /assume:underscore /assume:nobscc /fpe:0 /4I8
     :: Add lib paths
     set LDFLAGS=%LDFLAGS% /LIBPATH:%LIB_PATH_ROOT%/lib /LIBPATH:%LIB_PATH_ROOT%/bin /LIBPATH:%PREF_ROOT%/libs
-    set "INCLUDE=%PREF_ROOT%\opt\compiler\include\intel64;%LIBRARY_PREFIX%\include;%INCLUDE%"
+    :: Set up paths for Intel Fortran compiler in conda environment
+    set "PATH=%BUILD_PREFIX%\Library\bin;%BUILD_PREFIX%\Scripts;%PATH%"
+    set "LIB=%BUILD_PREFIX%\Library\lib;%LIB%"
+    set "INCLUDE=%BUILD_PREFIX%\opt\compiler\include\intel64;%BUILD_PREFIX%\Library\include;%INCLUDE%"
+
     :: Signal to ifort.py that we're using conda-based Intel Fortran
     set "INTEL_FORTRAN_VERSION=2025.1162"
     set "CONDA_BUILD_INTEL_FORTRAN=1"

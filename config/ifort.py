@@ -241,27 +241,60 @@ if not defined SETVARS_COMPLETED (
     echo Environment variables already set
 )
 
-echo PATH=%%PATH%%
-echo INCLUDE=%%INCLUDE%%
-echo LIB=%%LIB%%;%%LIBPATH%%
+:: Write to temporary files to avoid command line length limits
+set TEMP_DIR=%%TEMP%%\\waf_msvc_%d
+if not exist "%%TEMP_DIR%%" mkdir "%%TEMP_DIR%%"
+echo %%PATH%% > "%%TEMP_DIR%%\\path.txt"
+echo %%INCLUDE%% > "%%TEMP_DIR%%\\include.txt"
+echo %%LIB%%;%%LIBPATH%% > "%%TEMP_DIR%%\\lib.txt"
+echo TEMP_DIR=%%TEMP_DIR%%
 endlocal
-""" % (vcvars, target))
+""" % (vcvars, target, conf.msvc_cnt))
+    
     sout = conf.cmd_and_log(['cmd.exe', '/E:on', '/V:on', '/C', batfile.abspath()])
-    batfile.delete()
-    lines = sout.splitlines()
-    if not lines[0]:
-        lines.pop(0)
-    MSVC_PATH = MSVC_INCDIR = MSVC_LIBDIR = None
-    for line in lines:
-        if line.startswith('PATH='):
-            path = line[5:]
+    
+    # Parse the TEMP_DIR from output
+    temp_dir = None
+    for line in sout.splitlines():
+        if line.startswith('TEMP_DIR='):
+            temp_dir = line[9:].strip()
+            break
+    
+    if not temp_dir:
+        batfile.delete()
+        conf.fatal('ifort: Could not determine temp directory')
+    
+    # Read the environment variables from files
+    import codecs
+    try:
+        with codecs.open(os.path.join(temp_dir, 'path.txt'), 'r', encoding='utf-8', errors='ignore') as f:
+            path = f.read().strip()
             MSVC_PATH = path.split(';')
-        elif line.startswith('INCLUDE='):
-            MSVC_INCDIR = [i for i in line[8:].split(';') if i]
-        elif line.startswith('LIB='):
-            MSVC_LIBDIR = [i for i in line[4:].split(';') if i]
+        
+        with codecs.open(os.path.join(temp_dir, 'include.txt'), 'r', encoding='utf-8', errors='ignore') as f:
+            includes = f.read().strip()
+            MSVC_INCDIR = [i for i in includes.split(';') if i]
+        
+        with codecs.open(os.path.join(temp_dir, 'lib.txt'), 'r', encoding='utf-8', errors='ignore') as f:
+            libs = f.read().strip()
+            MSVC_LIBDIR = [i for i in libs.split(';') if i]
+        
+        # Clean up temp files
+        import shutil
+        try:
+            shutil.rmtree(temp_dir)
+        except:
+            pass
+            
+    except Exception as e:
+        batfile.delete()
+        conf.fatal('ifort: Could not read environment from temp files: %s' % str(e))
+    
+    batfile.delete()
+    
     if None in (MSVC_PATH, MSVC_INCDIR, MSVC_LIBDIR):
         conf.fatal('ifort: Could not find a valid architecture for building (get_ifort_version_win32)')
+    
     env = dict(os.environ)
     env.update(PATH=path)
     compiler_name, linker_name, lib_name = _get_prog_names(conf, compiler)
@@ -415,7 +448,7 @@ def apply_flags_ifort(self):
         for f in self.env.LINKFLAGS:
             d = f.lower()
             if d[1:].startswith('debug'):
-                Logs.info(f"Exporting bibfor to pdb")
+                Logs.debug(f"Exporting bibfor to pdb")
                 pdbnode = self.link_task.outputs[0].change_ext('.pdb')
                 self.link_task.outputs.append(pdbnode)
                 if getattr(self, 'install_task', None):
