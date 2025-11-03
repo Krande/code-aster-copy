@@ -41,6 +41,7 @@ subroutine pjefco(moa1, moa2, corres, base)
 #include "asterfort/jemarq.h"
 #include "asterfort/jeveuo.h"
 #include "asterfort/pj0dco.h"
+#include "asterfort/pjcovide.h"
 #include "asterfort/pj2dco.h"
 #include "asterfort/pj3dco.h"
 #include "asterfort/pj4dco.h"
@@ -73,14 +74,19 @@ subroutine pjefco(moa1, moa2, corres, base)
     character(len=2) :: dim
     integer(kind=8) :: n1, nbocc, iocc, nbno2, nbma1, nbma2
     integer(kind=8) :: iexi, nbNodeInterc, nbnoma2, nbnono2
+    integer(kind=8) :: jxxk1, nbno
 !
-    aster_logical :: l_dmax, dbg, final_occ, parallelMesh
+    aster_logical :: l_dmax, dbg, final_occ, l_parallel_mesh
     real(kind=8) :: dmax, dala, dmax0d
     integer(kind=8), pointer :: limanu1(:) => null()
     integer(kind=8), pointer :: linonu2(:) => null()
     integer(kind=8), pointer :: limanu2(:) => null()
     integer(kind=8), pointer :: linotmp(:) => null()
     integer(kind=8), pointer :: linotm2(:) => null()
+    integer(kind=8), pointer :: pjef_nb(:) => null()
+    integer(kind=8), pointer :: pjef_nu(:) => null()
+    real(kind=8), pointer :: pjef_cf(:) => null()
+    integer(kind=8), pointer :: pjef_tr(:) => null()
 !----------------------------------------------------------------------
     call jemarq()
     ASSERT(base .eq. 'V')
@@ -195,8 +201,9 @@ subroutine pjefco(moa1, moa2, corres, base)
 !
             call reliem(nomo1, noma1, 'NU_MAILLE', 'VIS_A_VIS', iocc, &
                         3, motcle, tymocl, '&&PJEFCO.LIMANU1', nbma1)
-            parallelMesh = isParallelMesh(noma1)
-            if (parallelMesh .and. nbma1 == 0) then
+            l_parallel_mesh = isParallelMesh(noma1)
+            if (l_parallel_mesh .and. nbma1 == 0) then
+                call pjcovide(noma1, noma2, corre2)
                 goto 99
             end if
             call jeveuo('&&PJEFCO.LIMANU1', 'L', vi=limanu1)
@@ -213,8 +220,8 @@ subroutine pjefco(moa1, moa2, corres, base)
             tymocl(3) = 'TOUT'
             call reliem(' ', noma2, 'NU_MAILLE', 'VIS_A_VIS', iocc, &
                         3, motcle, tymocl, '&&PJEFCO.LIMANU2', nbma2)
-            parallelMesh = isParallelMesh(noma2)
-            if (parallelMesh .and. nbma2 == 0) then
+            l_parallel_mesh = isParallelMesh(noma2)
+            if (l_parallel_mesh .and. nbma2 == 0) then
                 goto 99
             end if
             nbnoma2 = 0
@@ -251,8 +258,8 @@ subroutine pjefco(moa1, moa2, corres, base)
             call reliem(' ', noma2, 'NU_NOEUD', 'VIS_A_VIS', iocc, &
                         2, motcle, tymocl, '&&PJEFCO.LINOTM2', nbnono2)
 
-            parallelMesh = isParallelMesh(noma2)
-            if (parallelMesh .and. nbnono2+nbnoma2 == 0) then
+            l_parallel_mesh = isParallelMesh(noma2)
+            if (l_parallel_mesh .and. nbnono2+nbnoma2 == 0) then
                 goto 99
             end if
 
@@ -283,7 +290,7 @@ subroutine pjefco(moa1, moa2, corres, base)
 !           intersection entre les noeuds2 des occurrences precedentes
 !           et de l'occurrence courante
             call pjreco(linonu2, nbno2, iocc, final_occ, nameListInterc, &
-                        nbNodeInterc, parallelMesh)
+                        nbNodeInterc, l_parallel_mesh)
 !
 !           CALCUL DU CORRESP_2_MAILLA POUR IOCC :
             call pjefca(moa1, '&&PJEFCO.LIMANU1', iocc, ncas(1))

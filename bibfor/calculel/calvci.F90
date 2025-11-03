@@ -46,6 +46,7 @@ subroutine calvci(nomci, nume_ddlz, nbchci, lchci, vpara, &
 #include "asterfort/utmess.h"
 #include "asterfort/vtcreb.h"
 #include "asterfort/wkvect.h"
+#include "asterfort/isParallelMesh.h"
 !
     character(len=*) :: nomci, lchci(*), nume_ddlz
     character(len=1) :: base
@@ -92,7 +93,7 @@ subroutine calvci(nomci, nume_ddlz, nbchci, lchci, vpara, &
     integer(kind=8) :: nbcmp1, i_ligr_mesh, vali(1)
     character(len=1) :: typval
     character(len=4) :: phen
-    aster_logical :: fonc
+    aster_logical :: fonc, l_parallel_mesh
     real(kind=8) :: valp(4), res, valr(1)
     character(len=8) :: mesh, gd, nomf, evoim, cmp_name, nomch, npara
     character(len=14) :: nume_ddl
@@ -141,6 +142,7 @@ subroutine calvci(nomci, nume_ddlz, nbchci, lchci, vpara, &
     call dismoi('NOM_GD', nume_ddl, 'NUME_DDL', repk=gd)
     call dismoi('NOM_MAILLA', nume_ddl, 'NUME_DDL', repk=mesh)
     call dismoi('NUME_EQUA', nume_ddl, 'NUME_DDL', repk=nume_equa)
+    l_parallel_mesh = isParallelMesh(mesh)
 !
 ! - Get informations about GRANDEUR
 !
@@ -220,6 +222,8 @@ subroutine calvci(nomci, nume_ddlz, nbchci, lchci, vpara, &
             call jeveuo(cnsimp//'.CNSD', 'L', vi=cnsd)
             call jeveuo(cnsimp//'.CNSC', 'L', vk8=cnsc)
             call jelira(cnsimp//'.CNSC', 'LONMAX', nbcmp1)
+            ! Protection no dofs are present in the subdomain
+            if (l_parallel_mesh .and. cnsd(2) == 0) goto 999
             ASSERT(nbcmp1 .eq. cnsd(2))
             call jeveuo(cnsimp//'.CNSV', 'L', vr=cnsv)
             call jeveuo(cnsimp//'.CNSL', 'L', jcn1l)
