@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -264,6 +264,7 @@ class THER_FACE3(Element):
                 (SP.PCOEFHF, CCOEFHF),
                 (SP.PGEOMER, NGEOMER),
                 (SP.PTEMPEI, DDL_THER),
+                (SP.PTEMPER, DDL_THER),
                 (SP.PTEMPSR, CTEMPSR),
             ),
             para_out=((SP.PRESIDU, MVECTTR),),
@@ -274,6 +275,7 @@ class THER_FACE3(Element):
                 (SP.PCOEFHR, CCOEFHR),
                 (SP.PGEOMER, NGEOMER),
                 (SP.PTEMPEI, DDL_THER),
+                (SP.PTEMPER, DDL_THER),
                 (SP.PTEMPSR, CTEMPSR),
             ),
             para_out=((SP.PRESIDU, MVECTTR),),
@@ -294,6 +296,7 @@ class THER_FACE3(Element):
                 (SP.PGEOMER, NGEOMER),
                 (SP.PRAYONF, LC.CRAYONF),
                 (SP.PTEMPEI, DDL_THER),
+                (SP.PTEMPER, DDL_THER),
                 (SP.PTEMPSR, CTEMPSR),
             ),
             para_out=((SP.PRESIDU, MVECTTR),),
@@ -304,6 +307,7 @@ class THER_FACE3(Element):
                 (SP.PGEOMER, NGEOMER),
                 (SP.PRAYONR, LC.CRAYONR),
                 (SP.PTEMPEI, DDL_THER),
+                (SP.PTEMPER, DDL_THER),
                 (SP.PTEMPSR, CTEMPSR),
             ),
             para_out=((SP.PRESIDU, MVECTTR),),

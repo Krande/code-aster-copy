@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -81,7 +81,7 @@ subroutine verstp(model, lload_name, lload_info, cara_elem, mate, &
 !
 ! --------------------------------------------------------------------------------------------------
 !
-    integer, parameter :: nb_in_maxi = 5
+    integer, parameter :: nb_in_maxi = 6
     integer, parameter :: nbout = 2
     character(len=8) :: lpain(nb_in_maxi), lpaout(nbout)
     character(len=19) :: lchin(nb_in_maxi), lchout(nbout)
@@ -157,7 +157,7 @@ subroutine verstp(model, lload_name, lload_info, cara_elem, mate, &
 ! - Preparing input fields
 !
     call load_neut_prep(model, nb_in_maxi, nb_in_prep, lchin, lpain, &
-                        temp_iter_=temp_iter)
+                        temp_iter_=temp_iter, temp_prev_=temp_prev)
 !
 ! - Computation
 !
