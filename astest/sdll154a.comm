@@ -229,12 +229,7 @@ acce_xy99 = DEFI_FONCTION(
         0.1 * 1.962,
     ),
 )
-spect_xy99 = DEFI_NAPPE(
-    NOM_PARA="AMOR",
-    INTERPOL=("LIN", "LOG"),
-    PARA=0.99,
-    FONCTION=acce_xy99,
-)
+spect_xy99 = DEFI_NAPPE(NOM_PARA="AMOR", INTERPOL=("LIN", "LOG"), PARA=0.99, FONCTION=acce_xy99)
 
 
 # modes
@@ -255,10 +250,7 @@ modes_dyn = CALC_MODES(
     MATR_RIGI=matrice_rigi, MATR_MASS=matrice_mass, CALC_FREQ=_F(NMAX_FREQ=4), CARA_ELEM=cara_elem
 )
 modes_dyn = CALC_CHAMP(
-    reuse=modes_dyn,
-    RESULTAT=modes_dyn,
-    CONTRAINTE="EFGE_ELNO",
-    CHAM_MATER=ch_mater,
+    reuse=modes_dyn, RESULTAT=modes_dyn, CONTRAINTE="EFGE_ELNO", CHAM_MATER=ch_mater
 )
 
 modes_sta = MODE_STATIQUE(
@@ -409,9 +401,8 @@ sismique_dyn = CREA_RESU(
 # PostRoche tout + chargement sismique (DYN et QS):
 # Pour l'instant, ce test n'est pas tracée dans la doc V
 # Il s'agit d'un test supplémentaire.
-# FORME = 'RCC_MRX' (défaut) + CONT_ABAT='CODIFIE' (pas de Coude)
+# FORME = 'RCC_MRX' (défaut) + CONTRAINTE_ABAT='CODE' (pas de Coude)
 resuPostRocheToutSism = POST_ROCHE(
-    LIMITE_ADM="NON",
     ZONE_ANALYSE=(_F(TOUT="OUI", GROUP_NO_ORIG="A"),),
     MODELE=modele,
     CARA_ELEM=cara_elem,
@@ -433,7 +424,7 @@ resuPostRocheToutSism = POST_ROCHE(
 )
 
 # Avec "Coude":
-# FORME = 'RCC_MRX' (défaut) + CONT_ABAT='CODIFIE' (avec Coude)
+# FORME = 'RCC_MRX' (défaut) + CONTRAINTE_ABAT='CODE' (avec Coude)
 resuPostRocheToutSism_Coude = POST_ROCHE(
     LIMITE_ADM="NON",
     ZONE_ANALYSE=(_F(GROUP_MA="TUYAU", GROUP_NO_ORIG="A"),),
@@ -458,10 +449,10 @@ resuPostRocheToutSism_Coude = POST_ROCHE(
 )
 
 
-# FORME = 'RCC_MRX' (défaut) + CONT_ABAT='DT' (avec Coude)
-# (Contrainte vraie optimisé UT02-X9 calculé avec la formule proposée par la DT)
-resuPostRocheToutSism_Coude_DT = POST_ROCHE(
-    CONT_ABAT="DT",
+# FORME = 'RCC_MRX' (défaut) + CONTRAINTE_ABAT='REFE_ELAS' (avec Coude)
+# (Contrainte vraie optimisé UT02-X9 calculé avec la formule REFE_ELAS)
+resuPostRocheToutSism_Coude_RE = POST_ROCHE(
+    CONTRAINTE_ABAT="REFE_ELAS",
     LIMITE_ADM="NON",
     ZONE_ANALYSE=(_F(GROUP_MA="TUYAU", GROUP_NO_ORIG="A"),),
     MODELE=modele,
@@ -485,9 +476,9 @@ resuPostRocheToutSism_Coude_DT = POST_ROCHE(
 )
 
 
-# FORME = 'ASNR' --> CONT_ABAT='DT' (pas de choix de l'utilisateur)
+# FORME = 'ASNR' --> CONTRAINTE_ABAT='REFE_ELAS' (pas de choix de l'utilisateur)
 # (calcul avec Coude)
-# (Contrainte vraie optimisé UT02-X9 calculé avec la formule proposée par la DT)
+# (Contrainte vraie optimisé UT02-X9 calculé avec la formule REFE_ELAS)
 resuPostRocheToutSism_Coude_ASNR = POST_ROCHE(
     FORME="ASNR",
     ZONE_ANALYSE=(_F(GROUP_MA="TUYAU", GROUP_NO_ORIG="A"),),
@@ -712,7 +703,7 @@ resuLuPostRocheRCCMRX = POST_ROCHE(
 )
 
 
-# FORME = 'RCC_MRX' + CONT_ABAT='CODIFIE': par défaut
+# FORME = 'RCC_MRX' + CONTRAINTE_ABAT='CODE': par défaut
 resuLuPostRocheGrMa = POST_ROCHE(
     LIMITE_ADM="NON",
     ZONE_ANALYSE=(_F(GROUP_MA="TUYAU", GROUP_NO_ORIG="A"),),
@@ -729,11 +720,10 @@ resuLuPostRocheGrMa = POST_ROCHE(
 )
 
 # FORME = 'RCC_MRX' (défaut)
-# CONT_ABAT='DT'
-# (Contrainte vraie optimisé UT02-X9 calculé avec la formule proposée par la DT)
-resuLuPostRocheGrMa_DT = POST_ROCHE(
-    CONT_ABAT="DT",
-    LIMITE_ADM="NON",
+# CONTRAINTE_ABAT='REFE_ELAS'
+# (Contrainte vraie optimisé UT02-X9 calculé avec la formule REFE_ELAS)
+resuLuPostRocheGrMa_RE = POST_ROCHE(
+    CONTRAINTE_ABAT="REFE_ELAS",
     ZONE_ANALYSE=(_F(GROUP_MA="TUYAU", GROUP_NO_ORIG="A"),),
     MODELE=modele,
     CARA_ELEM=cara_elem,

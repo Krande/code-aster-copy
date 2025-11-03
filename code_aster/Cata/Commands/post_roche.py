@@ -35,8 +35,8 @@ POST_ROCHE = MACRO(
     FORME=SIMP(statut="f", typ="TXM", into=("RCC_MRX", "ASNR"), defaut="RCC_MRX"),
     b_rccmrx=BLOC(
         condition="""equal_to("FORME", "RCC_MRX") """,
-        LIMITE_ADM=SIMP(statut="f", typ="TXM", into=("OUI", "NON"), defaut=("OUI")),
-        CONT_ABAT=SIMP(statut="f", typ="TXM", into=("CODIFIE", "DT"), defaut=("CODIFIE")),
+        LIMITE_ADM=SIMP(statut="f", typ="TXM", into=("OUI", "NON"), defaut=("NON")),
+        CONTRAINTE_ABAT=SIMP(statut="f", typ="TXM", into=("CODE", "REFE_ELAS"), defaut=("CODE")),
     ),
     ZONE_ANALYSE=FACT(
         statut="o",

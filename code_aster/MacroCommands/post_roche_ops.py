@@ -100,7 +100,7 @@ def post_roche_ops(self, **kwargs):
 
         if PRCommon.typeCalcul == "RCC_MRX":
 
-            if PRCommon.CONT_ABAT == "CODIFIE":
+            if PRCommon.CONT_ABAT == "CODE":
                 chContEquiv = PRCommon.calcContrainteEquiv(calcNonRegu.field, calcNonReguS2.field)
             else:
                 chContEquiv = PRCommon.calcContrainteEquiv2(chMomentEquiv)
@@ -261,7 +261,7 @@ class PostRocheCommon:
         Récupération du champ de matériau
         Valeur de INST_TEMP
         Récupération de TRAC_EPSI
-        Valeur de FORME, LIMITE_ADM et CONT_ABAT
+        Valeur de FORME, LIMITE_ADM et CONTRAINTE_ABAT
         """
 
         if self.args.get("MODELE"):
@@ -307,7 +307,7 @@ class PostRocheCommon:
         if self.typeCalcul == "RCC_MRX":
             if self.args.get("LIMITE_ADM") == "OUI":
                 self.lLimiteAdm = True
-            self.CONT_ABAT = self.args.get("CONT_ABAT")
+            self.CONT_ABAT = self.args.get("CONTRAINTE_ABAT")
 
     def checkZones(self):
         """
