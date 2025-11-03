@@ -468,7 +468,7 @@ def main(argv=None):
                         ncpus=export.get("ncpus", 1),
                         program=cmd,
                     )
-                    cmd = [CFG.get("mpiexec").format(**args_cmd)] + cmd
+                    cmd = CFG.get("mpiexec").format(**args_cmd)
                 logger.info("Running: %s", cmd)
                 proc = run(cmd, shell=True, check=False)
                 status = Status.load(statfile)
