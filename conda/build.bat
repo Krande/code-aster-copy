@@ -4,6 +4,8 @@ set CLICOLOR_FORCE=1
 
 setlocal enabledelayedexpansion
 
+SET CONFIG_PARAMETERS_addmem=5000
+
 echo "Setting compiler env vars"
 
 :: set FC=flang-new.exe
