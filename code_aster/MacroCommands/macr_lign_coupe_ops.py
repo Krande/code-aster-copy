@@ -18,11 +18,8 @@
 # --------------------------------------------------------------------
 
 import os
-from math import asin, atan2, cos, pi, sin, sqrt, isclose
+from math import atan2, cos, pi, sin, sqrt
 from pathlib import Path
-from typing import List, Dict, Tuple
-
-import numpy as np
 
 from ..Cata.Syntax import _F
 from ..CodeCommands import (
@@ -37,7 +34,7 @@ from ..CodeCommands import (
 )
 from ..Helpers import FileAccess, LogicalUnitFile
 from ..Messages import UTMESS, MasquerAlarme, RetablirAlarme
-from ..Utilities import medcoupling as mc, logger
+from ..MedUtils.visu_builders import VisuCutBuilder
 
 #
 # script PYTHON de creation du résultat local
@@ -45,105 +42,6 @@ from ..Utilities import medcoupling as mc, logger
 
 #
 # verification que les points de la ligne de coupe sont dans la matiere
-
-
-class VisuCutBuilder:
-    def __init__(self, mesh_med: mc.MEDFileUMesh):
-        self.mesh_med = mesh_med
-
-        self.arrays: Dict[Tuple[str, int], np.ndarray] = {}
-        self.instants: Dict[Tuple[str, int], float] = {}
-        self.components: Dict[str, List[str]] = {}
-        self.nb_nodes: int = mesh_med.getNumberOfNodes()
-
-    def __str__(self):
-        return f"""
-        instants: {self.instants}
-        components: {self.components}
-        arrays: {self.arrays}
-        mesh_med: {self.mesh_med}
-        nb_nodes: {self.nb_nodes}
-        """
-
-    @classmethod
-    def from_aster_mesh(cls, mesh) -> "VisuCutBuilder":
-        mesh_med = mesh.createMedCouplingMesh()
-        return cls(mesh_med=mesh_med)
-
-    def add_field_from_aster_result(
-        self, aster_result, field_name: str, nodes: list[int], nume_ordre: int, instant: float
-    ):
-        field = aster_result.getField(field_name, nume_ordre).toSimpleFieldOnNodes()
-        # extract values for cut group only
-        values = field.getValues()[0][nodes]
-        components = field.getComponents()
-        self.add_field(
-            field_name=field_name,
-            nodes=nodes,
-            values=values,
-            components=components,
-            nume_ordre=nume_ordre,
-            instant=instant,
-        )
-
-    def add_field(
-        self,
-        field_name: str,
-        nodes: list[int],
-        values: np.ndarray,
-        components: List[str],
-        nume_ordre: int,
-        instant: float,
-    ):
-        assert len(nodes) == values.shape[0]
-        stock_address: Tuple[str, int] = (field_name, nume_ordre)
-        already_instanciated_field = stock_address in self.arrays
-        if already_instanciated_field:
-            assert isclose(self.instants[stock_address], instant)
-            assert self.arrays[stock_address].shape == (self.nb_nodes, values.shape[1] + 1)
-            assert self.components[field_name] == components
-        else:
-            self.instants[stock_address] = instant
-            self.arrays[stock_address] = np.empty((self.nb_nodes, values.shape[1] + 1))
-            self.components[field_name] = components
-
-        current_array = self.arrays[stock_address]
-        assert max(nodes) <= current_array.shape[0]
-        current_array[nodes, 0] = nodes
-        current_array[nodes, 1:] = values
-
-    def write(self, filepath: Path):
-        if not self.arrays:
-            logger.warn("Cannot write visu output because no data where set")
-            return
-        field_file = mc.MEDFileFieldMultiTS()
-        for (field_name, nume_ordre), current_array in self.arrays.items():
-            instant = self.instants[(field_name, nume_ordre)]
-
-            # Medcoupling field
-            field_values = mc.DataArrayDouble(current_array[:, 1:].tolist())
-            field_values.setInfoOnComponents(self.components[field_name])
-            field_values.setName(field_name)
-
-            medc_node_field = mc.MEDCouplingFieldDouble(mc.ON_NODES, mc.ONE_TIME)
-            medc_node_field.setName(field_name)
-            medc_node_field.setArray(field_values)
-            medc_node_field.setNature(mc.IntensiveMaximum)
-
-            medc_node_field.setMesh(self.mesh_med.getMeshAtLevel(1))
-
-            medc_node_field.checkConsistencyLight()
-            medfield = mc.MEDFileField1TS()
-            medfield.setFieldNoProfileSBT(medc_node_field)
-            medfield.setTime(nume_ordre, 0, instant)
-
-            print(f"medfield = {medfield}")
-            field_file.pushBackTimeStep(medfield)
-
-        print(f"field_file = {field_file}")
-
-        self.mesh_med.write(str(filepath), 2)
-        field_file.write(str(filepath), 0)
 
 
 def crea_grp_matiere(groupe, newgrp, iocc, m, __remodr, NOM_CHAM, __macou):
@@ -944,9 +842,6 @@ def macr_lign_coupe_ops(
     ioc2 = 0
     mcACTION = []
 
-    nume_ordres = __recou.getAccessParameters()["NUME_ORDRE"]
-    instants = __recou.getAccessParameters()["INST"]
-
     if RESULTAT.getType().lower() not in (
         "evol_ther",
         "evol_sech",
@@ -1075,18 +970,10 @@ def macr_lign_coupe_ops(
             print(f"groupe = {groupe}")
             print(f"node_ids = {node_ids}")
             print(f"{NOM_CHAM=}")
-            print(f"{instants=}")
-            print(f"{nume_ordres=}")
 
-            # Create field with linearise fields
-            for instant, nume_ordre in zip(instants, nume_ordres, strict=True):
-                visu_cut.add_field_from_aster_result(
-                    aster_result=current_resu,
-                    field_name=field_name,
-                    nodes=node_ids,
-                    nume_ordre=nume_ordre,
-                    instant=instant,
-                )
+            visu_cut.add_field_from_aster_result_all_timesteps(
+                aster_result=current_resu, field_name=field_name, nodes=node_ids
+            )
 
     if write_visu:
         visu_filepath = Path(LogicalUnitFile.filename_from_unit(unit=UNITE_RESU))
