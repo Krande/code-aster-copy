@@ -69,7 +69,11 @@ def extract_c_symbols(obj_file):
     # Specific symbols to exclude (not to be exported from bibc)
     exclude_symbols = {
         "_unused_main_", "_main", "main", "WinMain", "_WinMain@16",
-        "DllMain", "_DllMain@12", "DllMainCRTStartup", "_DllMainCRTStartup@12"
+        "DllMain", "_DllMain@12", "DllMainCRTStartup", "_DllMainCRTStartup@12",
+        # CRT internal functions that should not be exported
+        "_vfprintf_l", "_vsnprintf", "_vsnprintf_l", "_vsprintf_l",
+        "_fprintf_l", "_sprintf_l", "_printf_l", "_snprintf_l",
+        "_scanf_l", "_fscanf_l", "_sscanf_l",
     }
 
     try:
