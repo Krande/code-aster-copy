@@ -19,10 +19,20 @@
 
 from math import isclose
 from pathlib import Path
-from typing import List, Dict, Tuple
-from ..Utilities import medcoupling as mc, logger
+from typing import Dict, Tuple, Iterable, Sequence
 
 import numpy as np
+
+try:
+    from code_aster.Utilities.import_helper import medcoupling as mc
+except (ImportError, ModuleNotFoundError):
+    import medcoupling as mc
+try:
+    from code_aster.Utilities.logger import logger
+except (ImportError, ModuleNotFoundError):
+    import logging
+    logging.basicConfig(level=logging.INFO)
+    logger = logging.getLogger("code_aster")
 
 
 class VisuCutBuilder:
@@ -31,7 +41,7 @@ class VisuCutBuilder:
 
         self.arrays: Dict[Tuple[str, int, str], np.ndarray] = {}
         self.instants: Dict[Tuple[str, int, str], float] = {}
-        self.components: Dict[Tuple[str, str], List[str]] = {}
+        self.components: Dict[Tuple[str, str], Iterable[str]] = {}
         self.nb_nodes: int = mesh_med.getNumberOfNodes()
 
     def __str__(self):
@@ -48,7 +58,7 @@ class VisuCutBuilder:
         mesh_med = mesh.createMedCouplingMesh()
         return cls(mesh_med=mesh_med)
 
-    def add_field_from_aster_result_all_timesteps(
+    def add_field_on_nodes_from_aster_result_all_timesteps(
         self, aster_result, field_name: str, nodes: list[int]
     ):
         nume_ordres = aster_result.getAccessParameters()["NUME_ORDRE"]
@@ -56,7 +66,7 @@ class VisuCutBuilder:
 
         # Create field with linearise fields
         for instant, nume_ordre in zip(instants, nume_ordres, strict=True):
-            self.add_field_from_aster_result_1_timestep(
+            self.add_field_on_nodes_from_aster_result_1_timestep(
                 aster_result=aster_result,
                 field_name=field_name,
                 nodes=nodes,
@@ -64,14 +74,14 @@ class VisuCutBuilder:
                 instant=instant,
             )
 
-    def add_field_from_aster_result_1_timestep(
+    def add_field_on_nodes_from_aster_result_1_timestep(
         self, aster_result, field_name: str, nodes: list[int], nume_ordre: int, instant: float
     ):
         field = aster_result.getField(field_name, nume_ordre).toSimpleFieldOnNodes()
         # extract values for cut group only
         values = field.getValues()[0][nodes]
         components = field.getComponents()
-        self.add_field(
+        self.add_field_on_nodes(
             field_name=field_name,
             nodes=nodes,
             values=values,
@@ -80,12 +90,12 @@ class VisuCutBuilder:
             instant=instant,
         )
 
-    def add_field(
+    def add_field_on_nodes(
         self,
         field_name: str,
-        nodes: list[int],
+        nodes: Sequence[int],
         values: np.ndarray,
-        components: List[str],
+        components: Iterable[str],
         nume_ordre: int,
         instant: float,
     ):
@@ -93,12 +103,18 @@ class VisuCutBuilder:
         stock_address: Tuple[str, int, str] = (field_name, nume_ordre, mc.ON_NODES)
         already_instanciated_field = stock_address in self.arrays
         if already_instanciated_field:
-            assert isclose(self.instants[stock_address], instant)
+            previous_instant = self.instants[stock_address]
+            if not isclose(previous_instant, instant):
+                raise ValueError(f"{instant} differs from already affected instant {previous_instant}")
+
+            previous_components = self.components[(field_name, mc.ON_NODES)]
+            if previous_components != components:
+                raise ValueError(f"{components} differs from already affected components {previous_components}")
+
             assert self.arrays[stock_address].shape == (self.nb_nodes, values.shape[1] + 1)
-            assert self.components[(field_name, mc.ON_NODES)] == components
         else:
             self.instants[stock_address] = instant
-            self.arrays[stock_address] = np.empty((self.nb_nodes, values.shape[1] + 1))
+            self.arrays[stock_address] = np.full((self.nb_nodes, values.shape[1] + 1), np.nan)
             self.components[(field_name, mc.ON_NODES)] = components
 
         current_array = self.arrays[stock_address]
@@ -112,8 +128,6 @@ class VisuCutBuilder:
             return
         field_file = mc.MEDFileFieldMultiTS()
 
-        all_levels = self.mesh_med.getNonEmptyLevels()
-        max_level = max(all_levels)
         for (field_name, nume_ordre, location), current_array in self.arrays.items():
             if location != mc.ON_NODES:
                 raise NotImplementedError(f"location {location} is not implemented yet")
@@ -128,10 +142,8 @@ class VisuCutBuilder:
             medc_node_field.setName(field_name)
             medc_node_field.setArray(field_values)
             medc_node_field.setNature(mc.IntensiveMaximum)
-            if location == mc.ON_NODES:
-                relative_level = max_level - 0
 
-            medc_node_field.setMesh(self.mesh_med.getMeshAtLevel(relative_level))
+            medc_node_field.setMesh(self.mesh_med.getMeshAtLevel(0))
 
             medc_node_field.checkConsistencyLight()
             medfield = mc.MEDFileField1TS()

@@ -34,7 +34,7 @@ from ..CodeCommands import (
 )
 from ..Helpers import FileAccess, LogicalUnitFile
 from ..Messages import UTMESS, MasquerAlarme, RetablirAlarme
-from ..MedUtils.visu_builders import VisuCutBuilder
+from ..visu.visu_builders import VisuCutBuilder
 
 #
 # script PYTHON de creation du résultat local
@@ -966,18 +966,13 @@ def macr_lign_coupe_ops(
             field_name = fields_names[0]
 
             node_ids = __macou.getNodes(groupe)
-            print(f"__macou = {__macou}")
-            print(f"groupe = {groupe}")
-            print(f"node_ids = {node_ids}")
-            print(f"{NOM_CHAM=}")
 
-            visu_cut.add_field_from_aster_result_all_timesteps(
+            visu_cut.add_field_on_nodes_from_aster_result_all_timesteps(
                 aster_result=current_resu, field_name=field_name, nodes=node_ids
             )
 
     if write_visu:
         visu_filepath = Path(LogicalUnitFile.filename_from_unit(unit=UNITE_RESU))
-        print(f"visu_cut = {visu_cut}")
         visu_cut.write(filepath=visu_filepath)
 
     __tabitm = POST_RELEVE_T(ACTION=mcACTION)
