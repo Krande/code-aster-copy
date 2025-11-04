@@ -80,7 +80,7 @@ subroutine acearg(infdonn, lmax, noemaf, nbocc, infcarte, ivr, zjdlm)
     real(kind=8) :: vale(nbval)
     real(kind=8) :: x(9), y(9), z(9), a(3), b(3), c(3), surf, surtot
     real(kind=8) :: i_x, i_y, x_g, y_g, x_p, y_p, rigi(6), mass(4)
-    character(len=8) :: typm, nommai
+    character(len=8) :: typm
     character(len=24) :: grma, gr_seg(nbval), gr_centre(nbval)
     character(len=24) :: magrno, magrma, manoma, matyma
     real(kind=8), pointer :: coeno(:) => null()
@@ -101,7 +101,7 @@ subroutine acearg(infdonn, lmax, noemaf, nbocc, infcarte, ivr, zjdlm)
 !   Si c'est un maillage partionné ==> PLOUF
     l_pmesh = isParallelMesh(noma)
     if ( l_pmesh ) then
-        call utmess('F', 'AFFECARAELEM_99')
+        call utmess('F', 'AFFECARAELEM_99', sk='RIGI_GRILLE')
     endif
     ASSERT(ndim .eq. 3)
 !
@@ -136,16 +136,13 @@ subroutine acearg(infdonn, lmax, noemaf, nbocc, infcarte, ivr, zjdlm)
     do ioc = 1, nbocc
 !
         call getvem(noma, 'GROUP_MA', 'RIGI_GRILLE', 'GROUP_MA', ioc, 1, grma, n_groups)
-        print*, grma
         call getvem(noma, 'GROUP_MA', 'RIGI_GRILLE', 'GROUP_MA_SEG2', ioc, nbval, gr_seg, n_groups)
-        print*, gr_seg
         call getvem(noma, 'GROUP_NO', 'RIGI_GRILLE', 'GROUP_NO_CENTRE', ioc, nbval, gr_centre, &
-&                   n_groups)
-        print*, gr_centre
+                    n_groups)
         call getvr8('RIGI_GRILLE', 'VALE', iocc=ioc, nbval=nbval, vect=vale)
-        print*, vale
 
         call jelira(jexnom(magrma, grma), 'LONUTI', nb_cells)
+        ASSERT(nb_cells .ne. 0)
         call jeveuo(jexnom(magrma, grma), 'L', j_grma)
 
 !       calcul des surfaces au support des noeuds
@@ -153,24 +150,15 @@ subroutine acearg(infdonn, lmax, noemaf, nbocc, infcarte, ivr, zjdlm)
         nb_nodes = 0
         do i_cell = 1, nb_cells
             num_cell = zi(j_grma-1+i_cell)
-            if (num_cell .le. 0) then
-                nommai = '????'
-                call utmess('F', 'AFFECARAELEM_25', si=ioc, nk=2, valk=[grma, nommai])
-            else if (zjdlm(num_cell) .eq. 0) then
-                nommai = int_to_char8(num_cell)
-                call utmess('F', 'AFFECARAELEM_25', si=ioc, nk=2, valk=[grma, nommai])
-            end if
             call jelira(jexnum(manoma, num_cell), 'LONMAX', nb_no)
             nb_nodes = nb_nodes+nb_no
             call jenuno(jexnum('&CATA.TM.NOMTM', zi(j_typ-1+num_cell)), typm)
             call dismoi('DIM_TOPO', typm, 'TYPE_MAILLE', repi=ntopo)
             if (ntopo .ne. 2) then
-                call utmess('F', 'MODELISA6_35')
+                call utmess('F', 'AFFECARAELEM_26', sk=grma, ni=2, vali=[ioc, num_cell])
             end if
         end do
-        ASSERT(nb_cells .ne. 0)
 !
-
         b_1 = to_blas_int(1)
         b_3 = to_blas_int(3)
 
@@ -244,23 +232,34 @@ subroutine acearg(infdonn, lmax, noemaf, nbocc, infcarte, ivr, zjdlm)
         AS_ALLOCATE(vi=parcell, size=nbno)
 
         do i_val = 1, nbval
+            parcell = 0
 !           récupération des seg2 associés à parno
             call jelira(jexnom(magrma, gr_seg(i_val)), 'LONUTI', nb_cells)
-            ASSERT(nb_cells .eq. nbno)
+            if (nb_cells .ne. nbno) then
+                call utmess('F', 'AFFECARAELEM_27', sk=gr_seg(i_val), &
+                            ni=3, vali=[ioc, nb_cells, nbno])
+            end if
             call jeveuo(jexnom(magrma, gr_seg(i_val)), 'L', j_grma)
             do i_cell = 1, nb_cells
                 num_cell = zi(j_grma-1+i_cell)
                 call jelira(jexnum(manoma, num_cell), 'LONMAX', nb_no)
-                ASSERT(nb_no .eq. 2)
+                if (nb_no .ne. 2) then
+                    call utmess('F', 'AFFECARAELEM_28', sk=gr_seg(i_val), &
+                                ni=2, vali=[ioc, num_cell])
+                end if
                 call jeveuo(jexnum(manoma, num_cell), 'L', j_no)
 !               Vérification que un des noeuds fait partie de la surface
                 do i_no = 1, nbno
                     if (zi(j_no) .eq. parno(i_no) .or. zi(j_no+1) .eq. parno(i_no)) then
+                        if (parcell(i_no) .ne. 0) then
+                            call utmess('F', 'AFFECARAELEM_29', sk=gr_seg(i_val), &
+                                        ni=4, vali=[ioc, parcell(i_no), num_cell, parno(i_no)])
+                        end if
                         parcell(i_no) = num_cell
                         goto 22
                     end if
                 end do
-                ASSERT(.false.)
+                call utmess('F', 'AFFECARAELEM_30', sk=gr_seg(i_val), ni=2, vali=[ioc, num_cell])
 22              continue
             end do
 
@@ -286,11 +285,6 @@ subroutine acearg(infdonn, lmax, noemaf, nbocc, infcarte, ivr, zjdlm)
                         i_y = i_y + coeno(i_no)*(x_p - x_g)**2
                     end if
                 end do
-                if (i_val .eq. 4) then
-                    print*, "i_x", i_x * surtot
-                else if (i_val .eq. 5) then
-                    print*, "i_y", i_y * surtot
-                end if
             end if
 
             ! calcul de la rigidité

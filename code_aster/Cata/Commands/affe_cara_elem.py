@@ -1536,7 +1536,7 @@ AFFE_CARA_ELEM = OPER(
     # ==============================================================================
     RIGI_GRILLE=FACT(
         statut="f",
-        max=1,
+        max="**",
         GROUP_MA_SEG2=SIMP(
             statut="o",
             typ=grma,
