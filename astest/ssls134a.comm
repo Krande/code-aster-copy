@@ -472,7 +472,7 @@ RESUELU3 = CALC_FERRAILLAGE(
             TOUT="OUI",
             TYPE_STRUCTURE="2D",
             FERR_COMP="OUI",
-            FERR_MIN="CODE",
+            FERR_MIN="EC2",
             C_SUP=0.04,
             C_INF=0.04,
             FYK=500.0e6,
@@ -631,6 +631,7 @@ for j in range(len(D_ref)):
                 )
             )
 
+
 # CAS 4 - calcul du ferraillage avec ferraillage minimum manuellement renseigné:
 # -------------------------------------------------------------------------------
 
@@ -648,7 +649,7 @@ RESUELU4 = CALC_FERRAILLAGE(
             TOUT="OUI",
             TYPE_STRUCTURE="2D",
             FERR_COMP="OUI",
-            FERR_MIN="OUI",
+            FERR_MIN="VALE_MIN",
             RHO_LONGI_MIN=0.0013,
             RHO_TRNSV_MIN=0.0,
             C_SUP=0.04,
@@ -826,7 +827,7 @@ RESUELU5 = CALC_FERRAILLAGE(
             TOUT="OUI",
             TYPE_STRUCTURE="2D",
             FERR_COMP="OUI",
-            FERR_MIN="CODE",
+            FERR_MIN="EC2",
             C_SUP=0.04,
             C_INF=0.04,
             FYK=500.0e6,
@@ -1164,7 +1165,7 @@ RESUELU6 = CALC_FERRAILLAGE(
             TOUT="OUI",
             TYPE_STRUCTURE="2D",
             FERR_COMP="OUI",
-            FERR_MIN="CODE",
+            FERR_MIN="EC2",
             C_SUP=0.04,
             C_INF=0.04,
             FYK=500.0e6,
@@ -1341,7 +1342,7 @@ RESUELU7 = CALC_FERRAILLAGE(
             TOUT="OUI",
             TYPE_STRUCTURE="2D",
             FERR_COMP="OUI",
-            FERR_MIN="CODE",
+            FERR_MIN="EC2",
             EPURE_CISA="OUI",
             C_SUP=0.04,
             C_INF=0.04,
