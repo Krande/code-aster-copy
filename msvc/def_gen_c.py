@@ -73,7 +73,7 @@ def extract_c_symbols(obj_file):
         # CRT internal functions that should not be exported
         "_vfprintf_l", "_vsnprintf", "_vsnprintf_l", "_vsprintf_l",
         "_fprintf_l", "_sprintf_l", "_printf_l", "_snprintf_l",
-        "_scanf_l", "_fscanf_l", "_sscanf_l",
+        "_scanf_l", "_fscanf_l", "_sscanf_l", "vsprintf",
     }
 
     try:

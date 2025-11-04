@@ -67,6 +67,10 @@ set "INCLUDE=%BUILD_PREFIX%\opt\compiler\include\intel64;%BUILD_PREFIX%\Library\
 set "INTEL_FORTRAN_VERSION=2025.1162"
 set "CONDA_BUILD_INTEL_FORTRAN=1"
 
+:: Increase compiler memory limits to avoid out-of-memory errors
+set "FOR_STACK_LIMIT=1000000000"
+set "_INTEL_COMPILER_HEAP_SIZE=2048"
+
 if %CC% == "cl.exe" set CFLAGS=%CFLAGS% /sourceDependencies %OUTPUT_DIR%
 
 :: Create dll debug pdb
@@ -137,9 +141,9 @@ if errorlevel 1 (
 )
 
 if "%build_type%" == "debug" (
-    waf install_debug
+    waf install_debug -j2
 ) else (
-    waf install
+    waf install -j2
 )
 
 if errorlevel 1 exit 1
