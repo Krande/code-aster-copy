@@ -41,7 +41,8 @@ fortran_compiler_version:
   - if: linux
     then: 13
   - if: win
-    then: "2025.0"
+    then: "2025.0"  # 2025.0 works. v2025.3 has issues.
+# https://community.intel.com/t5/Intel-Fortran-Compiler/Compiler-out-of-memory-with-too-many-args-to-max/m-p/1709228
 
 libblas:
   - if: not win
