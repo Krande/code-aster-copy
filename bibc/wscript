@@ -19,7 +19,7 @@
 
 import os.path as osp
 import sys
-import os 
+import os
 from pathlib import Path
 
 
@@ -144,10 +144,6 @@ def post_install_links(ctx):
         return
 
     asterlibdir = Path(ctx.env.ASTERLIBDIR)
-    dll_path = asterlibdir / 'aster.dll'
-    if not dll_path.exists():
-        Logs.warn(f"{dll_path} not found")
-        return
 
     extlib = "so"
     mods = ["aster", "aster_core", "aster_fonctions"]
@@ -157,14 +153,19 @@ def post_install_links(ctx):
         mods.extend(["libaster", "libAsterGC"])
         libaster = "aster.dll"
 
+    libaster_path = asterlibdir / libaster
+    if not libaster_path.exists():
+        Logs.warn(f"{libaster_path} not found")
+        return
+
     for linkname in (f"{mod}.{extlib}" for mod in mods):
         linkpath = asterlibdir / linkname
 
         if linkpath.exists():
             linkpath.unlink()
-        os.link(dll_path, linkpath)
+        os.link(libaster_path, linkpath)
         Logs.info(f"Created hardlink: {linkpath}")
-        
+
 
 def build_libbibc(self, env):
     use = [
