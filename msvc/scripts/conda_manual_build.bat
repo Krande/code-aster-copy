@@ -178,28 +178,6 @@ set LDFLAGS=%LDFLAGS% metis.lib
 :: Add libmed libs
 set LDFLAGS=%LDFLAGS% med.lib medC.lib medfwrap.lib medimport.lib
 
-:: ------------------------------------------------------------------
-:: Provide GNU __atomic_* symbols for MSVC linkers (needed by MUMPS)
-:: Compile the local stub and add it to link flags
-:: set "ATOMIC_STUB_SRC=%PARENT_DIR%/msvc/atomic_gnu_stubs.c"
-if exist "%ATOMIC_STUB_SRC%" (
-    echo Building atomic stub library from %ATOMIC_STUB_SRC%
-    "%CC%" /nologo /c /O2 "%ATOMIC_STUB_SRC%"
-    if errorlevel 1 (
-        echo WARNING: Failed to compile atomic stub. Build may fail with unresolved __atomic_* symbols.
-    ) else (
-        lib /nologo /out:atomic_stub.lib atomic_gnu_stubs.obj
-        if errorlevel 1 (
-            echo WARNING: Failed to create atomic_stub.lib. Build may fail with unresolved __atomic_* symbols.
-        ) else (
-            set "LDFLAGS=%LDFLAGS% %CD%/atomic_stub.lib"
-        )
-    )
-) else (
-    echo NOTE: No atomic stub source found at %ATOMIC_STUB_SRC%
-)
-:: ------------------------------------------------------------------
-
 set INCLUDES_BIBC=%PREF_ROOT%/include %PARENT_DIR%/bibfor/include %INCLUDES_BIBC%
 
 set DEFINES=H5_BUILT_AS_DYNAMIC_LIB _CRT_SECURE_NO_WARNINGS _SCL_SECURE_NO_WARNINGS WIN32_LEAN_AND_MEAN

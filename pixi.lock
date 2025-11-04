@@ -623,8 +623,8 @@ environments:
       - conda: https://conda.anaconda.org/conda-forge/win-64/llvmdev-18.1.8-default_hac490eb_10.conda
       - conda: https://repo.prefix.dev/code-aster/win-64/medcoupling-9.13.0-py312_nompi_release_INT64_h7efd7c2_364.conda
       - conda: https://repo.prefix.dev/code-aster/win-64/metis-5.1.0.4.1-aster_release_INT64_h151e3bc_265.conda
-      - conda: https://repo.prefix.dev/code-aster/win-64/mfront-4.2.2-py312_release_h3a889ac_200.conda
-      - conda: https://repo.prefix.dev/code-aster/win-64/mgis-2.2-py312_release_h0cb4b11_200.conda
+      - conda: https://repo.prefix.dev/code-aster/win-64/mfront-4.2.3-py312_release_h09cf13b_200.conda
+      - conda: https://repo.prefix.dev/code-aster/win-64/mgis-2.2.1-py312_release_h4bad6c1_200.conda
       - conda: https://conda.anaconda.org/conda-forge/win-64/mkl-2025.3.0-hac47afa_454.conda
       - conda: https://conda.anaconda.org/conda-forge/win-64/mkl-devel-2025.3.0-h57928b3_454.conda
       - conda: https://conda.anaconda.org/conda-forge/win-64/mkl-include-2025.3.0-h57928b3_454.conda
@@ -2459,18 +2459,19 @@ packages:
   license: GPL-3.0-only
   size: 21688506
   timestamp: 1739717715484
-- conda: https://repo.prefix.dev/code-aster/win-64/mfront-4.2.2-py312_release_h3a889ac_200.conda
-  sha256: a59a08ee63c940f703aaac5668e4d448d6ccf6ddb7c7597a74d7f1847ce2b704
+- conda: https://repo.prefix.dev/code-aster/win-64/mfront-4.2.3-py312_release_h09cf13b_200.conda
+  sha256: 0a05801a4f1b57eae096e63b09d2e9b9b41034bf8ee9bc07d33739facaf4aab4
   depends:
   - python
   - vc >=14.3,<15
-  - vc14_runtime >=14.42.34433
+  - vc14_runtime >=14.44.35208
   - ucrt >=10.0.20348.0
-  - python_abi 3.12.* *_cp312
   - libboost-python >=1.86.0,<1.87.0a0
+  - python_abi 3.12.* *_cp312
+  - numpy >=1.26.4,<2.0a0
   license: GPL-3.0-only
-  size: 8488181
-  timestamp: 1739717726651
+  size: 5785875
+  timestamp: 1762270879714
 - conda: https://repo.prefix.dev/code-aster/win-64/mgis-2.2-py312_debug_h82a4274_0.conda
   sha256: b654de31748c5c0a30c8064d50926ee862ac3d4b37952bfd0a36070533db739c
   depends:
@@ -2486,21 +2487,21 @@ packages:
   license: Apache-2.0
   size: 6109531
   timestamp: 1739718683312
-- conda: https://repo.prefix.dev/code-aster/win-64/mgis-2.2-py312_release_h0cb4b11_200.conda
-  sha256: 0b18af49c9162750b2075a6ae7bcc4f5b15f5fda9925b78be52aa180004117b3
+- conda: https://repo.prefix.dev/code-aster/win-64/mgis-2.2.1-py312_release_h4bad6c1_200.conda
+  sha256: f55d7b1dfe1b0558d64b5015edb05799e65a85b0201eada756c5c7c4a8d482d1
   depends:
   - python
   - numpy >=1.26.4,<2.0a0
   - vc >=14.3,<15
-  - vc14_runtime >=14.42.34433
+  - vc14_runtime >=14.44.35208
   - ucrt >=10.0.20348.0
-  - mfront >=4.2.2,<4.3.0a0
-  - libboost-python >=1.86.0,<1.87.0a0
   - numpy >=1.26.4,<2.0a0
+  - libboost-python >=1.86.0,<1.87.0a0
+  - mfront >=4.2.3,<4.3.0a0
   - python_abi 3.12.* *_cp312
   license: Apache-2.0
-  size: 574115
-  timestamp: 1739718653455
+  size: 562083
+  timestamp: 1762279609094
 - conda: https://conda.anaconda.org/conda-forge/win-64/mkl-2025.3.0-hac47afa_454.conda
   sha256: 3c432e77720726c6bd83e9ee37ac8d0e3dd7c4cf9b4c5805e1d384025f9e9ab6
   md5: c83ec81713512467dfe1b496a8292544

@@ -90,12 +90,12 @@ cbuildn = { cmd = ["rattler-build", "build", "-r", "conda/recipe.yaml", "-m", "c
 cbuildn = { cmd = ["rattler-build", "build", "-r", "conda/recipe.yaml"] }
 
 [feature.release.target.win-64.tasks]
-build = { cmd = ["msvc/scripts/conda_manual_build.bat", "--pixi-build", "--int-type64", "--build-debug"], description = "Build the project", env = { INTEL_VARS_PATH = "C:/Program Files (x86)/Intel/oneAPI/compiler/latest/env" } }
+build = { cmd = ["msvc/scripts/conda_manual_build.bat", "--pixi-build", "--int-type64"], description = "Build the project" }
 install = { cmd = ["msvc/scripts/conda_rearrange.bat"], description = "Copy the latest build files to their respective locations" }
 test = { cmd = ["run_ctest", "--resutest=temp\\release", "-L", "submit", "-L", "sequential", "-LE", "need_data", "--timefactor=5.0", "--only-failed-results"], description = "Run the default sequential tests" }
 
 [feature.debug.target.win-64.tasks]
-buildd = { cmd = ["msvc/scripts/conda_manual_build.bat", "--pixi-build", "--int-type64", "--build-debug"], description = "Build the project", env = { INTEL_VARS_PATH = "C:/Program Files (x86)/Intel/oneAPI/compiler/latest/env" } }
+buildd = { cmd = ["msvc/scripts/conda_manual_build.bat", "--pixi-build", "--int-type64", "--build-debug"], description = "Build the project" }
 installd = { cmd = ["msvc/scripts/conda_rearrange.bat"], description = "Copy the latest build files to their respective locations" }
 testd = { cmd = ["run_ctest", "--resutest=temp\\debug", "-L", "submit", "-L", "sequential", "-LE", "need_data", "--timefactor=5.0", "--only-failed-results"], description = "Run the default sequential tests" }
 
