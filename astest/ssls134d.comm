@@ -1,0 +1,705 @@
+# coding=utf-8
+# --------------------------------------------------------------------
+# Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
+# This file is part of code_aster.
+#
+# code_aster is free software: you can redistribute it and/or modify
+# it under the terms of the GNU General Public License as published by
+# the Free Software Foundation, either version 3 of the License, or
+# (at your option) any later version.
+#
+# code_aster is distributed in the hope that it will be useful,
+# but WITHOUT ANY WARRANTY; without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+# GNU General Public License for more details.
+#
+# You should have received a copy of the GNU General Public License
+# along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
+# --------------------------------------------------------------------
+
+DEBUT(CODE="OUI", ERREUR=_F(ALARME="ALARME"), DEBUG=_F(SDVERI="OUI"), IGNORE_ALARM=("CALCULEL_85"))
+
+MA = LIRE_MAILLAGE(FORMAT="MED", UNITE=20)
+
+MODEL = AFFE_MODELE(
+    MAILLAGE=MA, AFFE=_F(GROUP_MA="PLAQUE", PHENOMENE="MECANIQUE", MODELISATION="DKT")
+)
+
+CARA = AFFE_CARA_ELEM(MODELE=MODEL, COQUE=_F(GROUP_MA="PLAQUE", EPAIS=200))
+CARA2 = AFFE_CARA_ELEM(MODELE=MODEL, COQUE=_F(GROUP_MA="PLAQUE", EPAIS=500))
+CARA3 = AFFE_CARA_ELEM(MODELE=MODEL, COQUE=_F(GROUP_MA="PLAQUE", EPAIS=1000))
+CARA4 = AFFE_CARA_ELEM(MODELE=MODEL, COQUE=_F(GROUP_MA="PLAQUE", EPAIS=0.5))
+
+# on cree une sd evol_elas avec des champs d'efforts imposes en N et mm:
+# -------------------------------------------------------------
+
+# traction uniforme en X et compression uniforme en Y
+CHEFF1 = CREA_CHAMP(
+    MAILLAGE=MA,
+    OPERATION="AFFE",
+    TYPE_CHAM="CART_SIEF_R",
+    AFFE=_F(
+        GROUP_MA="PLAQUE",
+        NOM_CMP=("NXX", "NYY", "NXY", "MXX", "MYY", "MXY", "QX", "QY"),
+        VALE=(1.0e6, -1.0e6, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0),
+    ),
+)
+
+# flexion simple en X et Y: moment positif en X et moment négatif en Y
+CHEFF2 = CREA_CHAMP(
+    MAILLAGE=MA,
+    OPERATION="AFFE",
+    TYPE_CHAM="CART_SIEF_R",
+    AFFE=_F(
+        GROUP_MA="PLAQUE",
+        NOM_CMP=("NXX", "NYY", "NXY", "MXX", "MYY", "MXY", "QX", "QY"),
+        VALE=(0.0, 0.0, 0.0, -1.0e8, 1.0e8, 0.0, 0.0, 0.0),
+    ),
+)
+# flexion composée en X: moment positif + effort normal de compression
+# flexion composée en Y: moment positif + effort normal de traction
+CHEFF3 = CREA_CHAMP(
+    MAILLAGE=MA,
+    OPERATION="AFFE",
+    TYPE_CHAM="CART_SIEF_R",
+    AFFE=_F(
+        GROUP_MA="PLAQUE",
+        NOM_CMP=("NXX", "NYY", "NXY", "MXX", "MYY", "MXY", "QX", "QY"),
+        VALE=(-0.50e6, 0.5e6, 0.0, -1.0e8, -1.0e8, 0.0, 0.0, 0.0),
+    ),
+)
+
+# flexion composée en X: moment negatif + effort normal de compression
+# flexion composée en Y: moment negatif + effort normal de traction
+CHEFF4 = CREA_CHAMP(
+    MAILLAGE=MA,
+    OPERATION="AFFE",
+    TYPE_CHAM="CART_SIEF_R",
+    AFFE=_F(
+        GROUP_MA="PLAQUE",
+        NOM_CMP=("NXX", "NYY", "NXY", "MXX", "MYY", "MXY", "QX", "QY"),
+        VALE=(-0.50e6, 0.5e6, 0.0, 1.0e8, 1.0e8, 0.0, 0.0, 0.0),
+    ),
+)
+
+# flexion composée en X: moment positif + effort normal de compression elevé
+# flexion composée en Y: moment positif faible + effort normal de traction
+CHEFF5 = CREA_CHAMP(
+    MAILLAGE=MA,
+    OPERATION="AFFE",
+    TYPE_CHAM="CART_SIEF_R",
+    AFFE=_F(
+        GROUP_MA="PLAQUE",
+        NOM_CMP=("NXX", "NYY", "NXY", "MXX", "MYY", "MXY", "QX", "QY"),
+        VALE=(-3.00e6, 0.5e6, 0.0, -1.0e8, -1.0e7, 0.0, 0.0, 0.0),
+    ),
+)
+
+
+# on cree une sd evol_elas avec des champs d'efforts imposes en N et m:
+# -------------------------------------------------------------
+
+# traction uniforme en X et compression uniforme en Y
+CHEFF6 = CREA_CHAMP(
+    MAILLAGE=MA,
+    OPERATION="AFFE",
+    TYPE_CHAM="CART_SIEF_R",
+    AFFE=_F(
+        GROUP_MA="PLAQUE",
+        NOM_CMP=("NXX", "NYY", "NXY", "MXX", "MYY", "MXY", "QX", "QY"),
+        VALE=(1.0e6, -1.0e6, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0),
+    ),
+)
+
+# flexion simple en X et Y: moment positif en X et moment négatif en Y
+CHEFF7 = CREA_CHAMP(
+    MAILLAGE=MA,
+    OPERATION="AFFE",
+    TYPE_CHAM="CART_SIEF_R",
+    AFFE=_F(
+        GROUP_MA="PLAQUE",
+        NOM_CMP=("NXX", "NYY", "NXY", "MXX", "MYY", "MXY", "QX", "QY"),
+        VALE=(0.0, 0.0, 0.0, -1.0e5, 1.0e5, 0.0, 0.0, 0.0),
+    ),
+)
+# flexion composée en X: moment positif + effort normal de compression
+# flexion composée en Y: moment positif + effort normal de traction
+CHEFF8 = CREA_CHAMP(
+    MAILLAGE=MA,
+    OPERATION="AFFE",
+    TYPE_CHAM="CART_SIEF_R",
+    AFFE=_F(
+        GROUP_MA="PLAQUE",
+        NOM_CMP=("NXX", "NYY", "NXY", "MXX", "MYY", "MXY", "QX", "QY"),
+        VALE=(-0.50e6, 0.5e6, 0.0, -1.0e5, -1.0e5, 0.0, 0.0, 0.0),
+    ),
+)
+
+# flexion composée en X: moment negatif + effort normal de compression
+# flexion composée en Y: moment negatif + effort normal de traction
+CHEFF9 = CREA_CHAMP(
+    MAILLAGE=MA,
+    OPERATION="AFFE",
+    TYPE_CHAM="CART_SIEF_R",
+    AFFE=_F(
+        GROUP_MA="PLAQUE",
+        NOM_CMP=("NXX", "NYY", "NXY", "MXX", "MYY", "MXY", "QX", "QY"),
+        VALE=(-0.50e6, 0.5e6, 0.0, 1.0e5, 1.0e5, 0.0, 0.0, 0.0),
+    ),
+)
+
+# flexion composée en X: moment positif + effort normal de compression elevé
+# flexion composée en Y: moment positif faible + effort normal de traction
+CHEFF10 = CREA_CHAMP(
+    MAILLAGE=MA,
+    OPERATION="AFFE",
+    TYPE_CHAM="CART_SIEF_R",
+    AFFE=_F(
+        GROUP_MA="PLAQUE",
+        NOM_CMP=("NXX", "NYY", "NXY", "MXX", "MYY", "MXY", "QX", "QY"),
+        VALE=(-3.00e6, 0.5e6, 0.0, -1.0e5, -1.0e4, 0.0, 0.0, 0.0),
+    ),
+)
+
+# CAS 1 - calcul du ferraillage minimal pour la maitrise de fissuration :
+# --------------------------------
+
+RESUELSQP = CREA_RESU(
+    OPERATION="AFFE",
+    TYPE_RESU="EVOL_ELAS",
+    AFFE=(
+        _F(NOM_CHAM="EFGE_ELNO", CHAM_GD=CHEFF1, INST=1.0, MODELE=MODEL, CARA_ELEM=CARA),
+        _F(NOM_CHAM="EFGE_ELNO", CHAM_GD=CHEFF2, INST=2.0, MODELE=MODEL, CARA_ELEM=CARA),
+        _F(NOM_CHAM="EFGE_ELNO", CHAM_GD=CHEFF3, INST=3.0, MODELE=MODEL, CARA_ELEM=CARA),
+        _F(NOM_CHAM="EFGE_ELNO", CHAM_GD=CHEFF4, INST=4.0, MODELE=MODEL, CARA_ELEM=CARA),
+        _F(NOM_CHAM="EFGE_ELNO", CHAM_GD=CHEFF5, INST=5.0, MODELE=MODEL, CARA_ELEM=CARA),
+    ),
+)
+
+
+RESUELSQP1 = CALC_FERRAILLAGE(
+    RESULTAT=RESUELSQP,
+    CARA_ELEM=CARA,
+    reuse=RESUELSQP,
+    CODIFICATION="EC2",
+    TYPE_COMB="ELS_QP",
+    UNITE_CONTRAINTE="MPa",
+    INST=(1.0, 2.0, 3.0, 4.0, 5.0),
+    AFFE=(
+        _F(
+            TOUT="OUI",
+            TYPE_STRUCTURE="2D",
+            C_INF=40,
+            C_SUP=40,
+            FCK=35.0,
+            FYK=500.0,
+            WMAX_INF=0.15,
+            WMAX_SUP=0.15,
+            PHI_INF_X=25,
+            PHI_SUP_X=25,
+            PHI_INF_Y=25,
+            PHI_SUP_Y=25,
+            SIGC_ELS_QP=0.45 * 35.0,
+            KT=0.6,
+            ALPHA_E=21.0,
+            UTIL_COMPR="NON",
+            DNSTRA_CRIT=6.0e-3,
+            ALPHA_REINF=1.0,
+            ALPHA_SHEAR=1.0,
+            ALPHA_CC=1.0,
+            EYS=210.0e3,
+            RHO_ACIER=7800,
+            FERR_MIN_FISS="EC2",
+        ),
+    ),
+)
+
+
+COMP = ["ASMINXI", "ASMINXS", "ASMINYI", "ASMINYS"]
+# -----------------------------------------------------
+# Tests pour CAS 1
+# -----------------------------------------------------
+D_ref = [
+    [0.6419924883390477e3, 0.6419924883390477e3, 0.00000000000000e00, 0.00000000000000e00],  # 1
+    [0.25679699533561906e3, 0.00000000000000e00, 0.00000000000000e00, 0.25679699533561906e3],  # 2
+    [0.06940401e3, 0.00000000000000e00, 1.113584e3, 0.00000000000000e00],  # 3
+    [0.00000000000000e00, 0.06940401e3, 0.00000000000000e00, 1.113584e3],  # 4
+    [0.00000000000000e00, 0.00000000000000e00, 0.6419924883390477e3, 0.6419924883390477e3],  # 5
+]
+
+D_calc = [
+    [0.6419924883390477e3, 0.6419924883390477e3, 0.00000000000000e00, 0.00000000000000e00],  # 1
+    [0.25679699533561906e3, 0.00000000000000e00, 0.00000000000000e00, 0.25679699533561906e3],  # 2
+    [0.06940741239338706e3, 0.00000000000000e00, 1.1135939906712382e3, 0.00000000000000e00],  # 3
+    [0.00000000000000e00, 0.06940741239338706e3, 0.00000000000000e00, 1.1135939906712382e3],  # 4
+    [0.00000000000000e00, 0.00000000000000e00, 0.6419924883390477e3, 0.6419924883390477e3],  # 5
+]
+
+for j in range(len(D_ref)):
+    for i, ncmp in enumerate(COMP):
+        if D_ref[j][i] == 0:
+            TEST_RESU(
+                RESU=_F(
+                    RESULTAT=RESUELSQP1,
+                    INST=j + 1.0,
+                    NOM_CHAM="FERR_ELEM",
+                    NOM_CMP=ncmp,
+                    GROUP_MA="M1",
+                    LEGENDE="ELS_QP",
+                    VALE_REFE=D_ref[j][i],
+                    VALE_CALC=D_calc[j][i],
+                    REFERENCE="ANALYTIQUE",
+                    ORDRE_GRANDEUR=1.0e-3,
+                    CRITERE="ABSOLU",
+                )
+            )
+        else:
+            TEST_RESU(
+                RESU=_F(
+                    RESULTAT=RESUELSQP1,
+                    INST=j + 1.0,
+                    NOM_CHAM="FERR_ELEM",
+                    NOM_CMP=ncmp,
+                    GROUP_MA="M1",
+                    LEGENDE="ELS_QP",
+                    VALE_REFE=D_ref[j][i],
+                    REFERENCE="ANALYTIQUE",
+                    PRECISION=1e-4,
+                    VALE_CALC=D_calc[j][i],
+                )
+            )
+
+# CAS 2 - épaisseur = 500 mm
+# ---------------------------
+
+RESUELSQP = CREA_RESU(
+    OPERATION="AFFE",
+    TYPE_RESU="EVOL_ELAS",
+    AFFE=(
+        _F(NOM_CHAM="EFGE_ELNO", CHAM_GD=CHEFF1, INST=1.0, MODELE=MODEL, CARA_ELEM=CARA2),
+        _F(NOM_CHAM="EFGE_ELNO", CHAM_GD=CHEFF2, INST=2.0, MODELE=MODEL, CARA_ELEM=CARA2),
+        _F(NOM_CHAM="EFGE_ELNO", CHAM_GD=CHEFF3, INST=3.0, MODELE=MODEL, CARA_ELEM=CARA2),
+        _F(NOM_CHAM="EFGE_ELNO", CHAM_GD=CHEFF4, INST=4.0, MODELE=MODEL, CARA_ELEM=CARA2),
+        _F(NOM_CHAM="EFGE_ELNO", CHAM_GD=CHEFF5, INST=5.0, MODELE=MODEL, CARA_ELEM=CARA2),
+    ),
+)
+
+
+RESUELSQP1 = CALC_FERRAILLAGE(
+    RESULTAT=RESUELSQP,
+    CARA_ELEM=CARA2,
+    reuse=RESUELSQP,
+    CODIFICATION="EC2",
+    TYPE_COMB="ELS_QP",
+    UNITE_CONTRAINTE="MPa",
+    INST=(1.0, 2.0, 3.0, 4.0, 5.0),
+    AFFE=(
+        _F(
+            TOUT="OUI",
+            TYPE_STRUCTURE="2D",
+            C_INF=40,
+            C_SUP=40,
+            FCK=35.0,
+            FYK=500.0,
+            WMAX_INF=0.15,
+            WMAX_SUP=0.15,
+            PHI_INF_X=25,
+            PHI_SUP_X=25,
+            PHI_INF_Y=25,
+            PHI_SUP_Y=25,
+            SIGC_ELS_QP=0.45 * 35.0,
+            KT=0.6,
+            ALPHA_E=21.0,
+            UTIL_COMPR="NON",
+            DNSTRA_CRIT=6.0e-3,
+            ALPHA_REINF=1.0,
+            ALPHA_SHEAR=1.0,
+            ALPHA_CC=1.0,
+            EYS=210.0e3,
+            RHO_ACIER=7800,
+            FERR_MIN_FISS="EC2",
+        ),
+    ),
+)
+
+
+# -----------------------------------------------------
+# Tests pour CAS 2
+# -----------------------------------------------------
+D_ref = [
+    [1.38025e3, 1.38025e3, 0.00000000000000e00, 0.00000000000000e00],  # 1
+    [0.5521e3, 0.00000000000000e00, 0.00000000000000e00, 0.5521e3],  # 2
+    [0.33353e3, 0.00000000000000e00, 1.1767e3, 0.00000000000000e00],  # 3
+    [0.00000000000000e00, 0.33353e3, 0.00000000000000e00, 1.1767e3],  # 4
+    [0.00000000000000e00, 0.00000000000000e00, 1.38025e3, 1.38025e3],  # 5
+]
+
+D_calc = [
+    [1.3802838499289525e3, 1.3802838499289525e3, 0.00000000000000e00, 0.00000000000000e00],  # 1
+    [0.552113539971581e3, 0.00000000000000e00, 0.00000000000000e00, 0.552113539971581e3],  # 2
+    [0.333539325586088e3, 0.00000000000000e00, 1.1766869824370338e3, 0.00000000000000e00],  # 3
+    [0.00000000000000e00, 0.333539325586088e3, 0.00000000000000e00, 1.1766869824370338e3],  # 4
+    [0.00000000000000e00, 0.00000000000000e00, 1.3802838499289525e3, 1.3802838499289525e3],  # 5
+]
+
+for j in range(len(D_ref)):
+    for i, ncmp in enumerate(COMP):
+        if D_ref[j][i] == 0:
+            TEST_RESU(
+                RESU=_F(
+                    RESULTAT=RESUELSQP1,
+                    INST=j + 1.0,
+                    NOM_CHAM="FERR_ELEM",
+                    NOM_CMP=ncmp,
+                    GROUP_MA="M1",
+                    LEGENDE="ELS_QP",
+                    VALE_REFE=D_ref[j][i],
+                    VALE_CALC=D_calc[j][i],
+                    REFERENCE="ANALYTIQUE",
+                    ORDRE_GRANDEUR=1.0e-3,
+                    CRITERE="ABSOLU",
+                )
+            )
+        else:
+            TEST_RESU(
+                RESU=_F(
+                    RESULTAT=RESUELSQP1,
+                    INST=j + 1.0,
+                    NOM_CHAM="FERR_ELEM",
+                    NOM_CMP=ncmp,
+                    GROUP_MA="M1",
+                    LEGENDE="ELS_QP",
+                    VALE_REFE=D_ref[j][i],
+                    REFERENCE="ANALYTIQUE",
+                    PRECISION=1e-4,
+                    VALE_CALC=D_calc[j][i],
+                )
+            )
+
+# CAS 3 - épaisseur = 1000 mm
+# --------------------------------
+
+RESUELSQP = CREA_RESU(
+    OPERATION="AFFE",
+    TYPE_RESU="EVOL_ELAS",
+    AFFE=(
+        _F(NOM_CHAM="EFGE_ELNO", CHAM_GD=CHEFF1, INST=1.0, MODELE=MODEL, CARA_ELEM=CARA3),
+        _F(NOM_CHAM="EFGE_ELNO", CHAM_GD=CHEFF2, INST=2.0, MODELE=MODEL, CARA_ELEM=CARA3),
+        _F(NOM_CHAM="EFGE_ELNO", CHAM_GD=CHEFF3, INST=3.0, MODELE=MODEL, CARA_ELEM=CARA3),
+        _F(NOM_CHAM="EFGE_ELNO", CHAM_GD=CHEFF4, INST=4.0, MODELE=MODEL, CARA_ELEM=CARA3),
+        _F(NOM_CHAM="EFGE_ELNO", CHAM_GD=CHEFF5, INST=5.0, MODELE=MODEL, CARA_ELEM=CARA3),
+    ),
+)
+
+
+RESUELSQP1 = CALC_FERRAILLAGE(
+    RESULTAT=RESUELSQP,
+    CARA_ELEM=CARA3,
+    reuse=RESUELSQP,
+    CODIFICATION="EC2",
+    TYPE_COMB="ELS_QP",
+    UNITE_CONTRAINTE="MPa",
+    INST=(1.0, 2.0, 3.0, 4.0, 5.0),
+    AFFE=(
+        _F(
+            TOUT="OUI",
+            TYPE_STRUCTURE="2D",
+            C_INF=40,
+            C_SUP=40,
+            FCK=35.0,
+            FYK=500.0,
+            WMAX_INF=0.15,
+            WMAX_SUP=0.15,
+            PHI_INF_X=25,
+            PHI_SUP_X=25,
+            PHI_INF_Y=25,
+            PHI_SUP_Y=25,
+            SIGC_ELS_QP=0.45 * 35.0,
+            KT=0.6,
+            ALPHA_E=21.0,
+            UTIL_COMPR="NON",
+            DNSTRA_CRIT=6.0e-3,
+            ALPHA_REINF=1.0,
+            ALPHA_SHEAR=1.0,
+            ALPHA_CC=1.0,
+            EYS=210.0e3,
+            RHO_ACIER=7800,
+            FERR_MIN_FISS="EC2",
+        ),
+    ),
+)
+
+
+# -----------------------------------------------------
+# Tests pour CAS 3
+# -----------------------------------------------------
+D_ref = [
+    [2.0864e3, 2.0864e3, 0.00000000000000e00, 0.00000000000000e00],  # 1
+    [0.83457e3, 0.00000000000000e00, 0.00000000000000e00, 0.83457e3],  # 2
+    [0.647108e3, 0.00000000000000e00, 1.2195e3, 0.00000000000000e00],  # 3
+    [0.00000000000000e00, 0.647108e3, 0.00000000000000e00, 1.2195e3],  # 4
+    [0.00000000000000e00, 0.00000000000000e00, 2.086435e3, 2.086435e3],  # 5
+]
+
+D_calc = [
+    [2.086475587101905e3, 2.086475587101905e3, 0.00000000000000e00, 0.00000000000000e00],  # 1
+    [0.8345902348407619e3, 0.00000000000000e00, 0.00000000000000e00, 0.8345902348407619e3],  # 2
+    [0.6471242231769075e3, 0.00000000000000e00, 1.2195541655210511e3, 0.00000000000000e00],  # 3
+    [0.00000000000000e00, 0.6471242231769075e3, 0.00000000000000e00, 1.2195541655210511e3],  # 4
+    [0.00000000000000e00, 0.00000000000000e00, 2.086475587101905e3, 2.086475587101905e3],  # 5
+]
+
+for j in range(len(D_ref)):
+    for i, ncmp in enumerate(COMP):
+        if D_ref[j][i] == 0:
+            TEST_RESU(
+                RESU=_F(
+                    RESULTAT=RESUELSQP1,
+                    INST=j + 1.0,
+                    NOM_CHAM="FERR_ELEM",
+                    NOM_CMP=ncmp,
+                    GROUP_MA="M1",
+                    LEGENDE="ELS_QP",
+                    VALE_REFE=D_ref[j][i],
+                    VALE_CALC=D_calc[j][i],
+                    REFERENCE="ANALYTIQUE",
+                    ORDRE_GRANDEUR=1.0e-3,
+                    CRITERE="ABSOLU",
+                )
+            )
+        else:
+            TEST_RESU(
+                RESU=_F(
+                    RESULTAT=RESUELSQP1,
+                    INST=j + 1.0,
+                    NOM_CHAM="FERR_ELEM",
+                    NOM_CMP=ncmp,
+                    GROUP_MA="M1",
+                    LEGENDE="ELS_QP",
+                    VALE_REFE=D_ref[j][i],
+                    REFERENCE="ANALYTIQUE",
+                    PRECISION=1e-4,
+                    VALE_CALC=D_calc[j][i],
+                )
+            )
+
+# CAS 4 - épaisseur = 1000 mm + effet d'echelle
+# --------------------------------
+
+RESUELSQP = CREA_RESU(
+    OPERATION="AFFE",
+    TYPE_RESU="EVOL_ELAS",
+    AFFE=(
+        _F(NOM_CHAM="EFGE_ELNO", CHAM_GD=CHEFF1, INST=1.0, MODELE=MODEL, CARA_ELEM=CARA3),
+        _F(NOM_CHAM="EFGE_ELNO", CHAM_GD=CHEFF2, INST=2.0, MODELE=MODEL, CARA_ELEM=CARA3),
+        _F(NOM_CHAM="EFGE_ELNO", CHAM_GD=CHEFF3, INST=3.0, MODELE=MODEL, CARA_ELEM=CARA3),
+        _F(NOM_CHAM="EFGE_ELNO", CHAM_GD=CHEFF4, INST=4.0, MODELE=MODEL, CARA_ELEM=CARA3),
+        _F(NOM_CHAM="EFGE_ELNO", CHAM_GD=CHEFF5, INST=5.0, MODELE=MODEL, CARA_ELEM=CARA3),
+    ),
+)
+
+
+RESUELSQP1 = CALC_FERRAILLAGE(
+    RESULTAT=RESUELSQP,
+    CARA_ELEM=CARA3,
+    reuse=RESUELSQP,
+    CODIFICATION="EC2",
+    TYPE_COMB="ELS_QP",
+    UNITE_CONTRAINTE="MPa",
+    INST=(1.0, 2.0, 3.0, 4.0, 5.0),
+    AFFE=(
+        _F(
+            TOUT="OUI",
+            TYPE_STRUCTURE="2D",
+            C_INF=40,
+            C_SUP=40,
+            FCK=35.0,
+            FYK=500.0,
+            WMAX_INF=0.15,
+            WMAX_SUP=0.15,
+            PHI_INF_X=25,
+            PHI_SUP_X=25,
+            PHI_INF_Y=25,
+            PHI_SUP_Y=25,
+            SIGC_ELS_QP=0.45 * 35.0,
+            KT=0.6,
+            ALPHA_E=21.0,
+            UTIL_COMPR="NON",
+            DNSTRA_CRIT=6.0e-3,
+            ALPHA_REINF=1.0,
+            ALPHA_SHEAR=1.0,
+            ALPHA_CC=1.0,
+            EYS=210.0e3,
+            RHO_ACIER=7800,
+            FERR_MIN_FISS="RCC-CW",
+            EFFET_ECHELLE="OUI",
+        ),
+    ),
+)
+
+
+# -----------------------------------------------------
+# Tests pour CAS 4
+# -----------------------------------------------------
+D_ref = [
+    [1.1336e3, 1.1336e3, 0.00000000000000e00, 0.00000000000000e00],  # 1
+    [1.1336e3, 1.1336e3, 1.1336e3, 1.1336e3],  # 2
+    [1.1336e3, 1.1336e3, 1.1336e3, 1.1336e3],  # 3
+    [1.1336e3, 1.1336e3, 1.1336e3, 1.1336e3],  # 4
+    [0.00000000000000e00, 0.00000000000000e00, 1.1336e3, 1.1336e3],  # 5
+]
+
+D_calc = [
+    [1.1336701933390523e3, 1.1336701933390523e3, 0.00000000000000e00, 0.00000000000000e00],  # 1
+    [1.1336701933390523e3, 1.1336701933390523e3, 1.1336701933390523e3, 1.1336701933390523e3],  # 2
+    [1.1336701933390523e3, 1.1336701933390523e3, 1.1336701933390523e3, 1.1336701933390523e3],  # 3
+    [1.1336701933390523e3, 1.1336701933390523e3, 1.1336701933390523e3, 1.1336701933390523e3],  # 4
+    [0.00000000000000e00, 0.00000000000000e00, 1.1336701933390523e3, 1.1336701933390523e3],  # 5
+]
+
+for j in range(len(D_ref)):
+    for i, ncmp in enumerate(COMP):
+        if D_ref[j][i] == 0:
+            TEST_RESU(
+                RESU=_F(
+                    RESULTAT=RESUELSQP1,
+                    INST=j + 1.0,
+                    NOM_CHAM="FERR_ELEM",
+                    NOM_CMP=ncmp,
+                    GROUP_MA="M1",
+                    LEGENDE="ELS_QP",
+                    VALE_REFE=D_ref[j][i],
+                    VALE_CALC=D_calc[j][i],
+                    REFERENCE="ANALYTIQUE",
+                    ORDRE_GRANDEUR=1.0e-3,
+                    CRITERE="ABSOLU",
+                )
+            )
+        else:
+            TEST_RESU(
+                RESU=_F(
+                    RESULTAT=RESUELSQP1,
+                    INST=j + 1.0,
+                    NOM_CHAM="FERR_ELEM",
+                    NOM_CMP=ncmp,
+                    GROUP_MA="M1",
+                    LEGENDE="ELS_QP",
+                    VALE_REFE=D_ref[j][i],
+                    REFERENCE="ANALYTIQUE",
+                    PRECISION=1e-4,
+                    VALE_CALC=D_calc[j][i],
+                )
+            )
+
+# CAS 5 - épaisseur = 0.5 m + UNITE_CONTRAINTE = Pa
+# ---------------------------
+
+RESUELSQP = CREA_RESU(
+    OPERATION="AFFE",
+    TYPE_RESU="EVOL_ELAS",
+    AFFE=(
+        _F(NOM_CHAM="EFGE_ELNO", CHAM_GD=CHEFF6, INST=1.0, MODELE=MODEL, CARA_ELEM=CARA4),
+        _F(NOM_CHAM="EFGE_ELNO", CHAM_GD=CHEFF7, INST=2.0, MODELE=MODEL, CARA_ELEM=CARA4),
+        _F(NOM_CHAM="EFGE_ELNO", CHAM_GD=CHEFF8, INST=3.0, MODELE=MODEL, CARA_ELEM=CARA4),
+        _F(NOM_CHAM="EFGE_ELNO", CHAM_GD=CHEFF9, INST=4.0, MODELE=MODEL, CARA_ELEM=CARA4),
+        _F(NOM_CHAM="EFGE_ELNO", CHAM_GD=CHEFF10, INST=5.0, MODELE=MODEL, CARA_ELEM=CARA4),
+    ),
+)
+
+
+RESUELSQP1 = CALC_FERRAILLAGE(
+    RESULTAT=RESUELSQP,
+    CARA_ELEM=CARA4,
+    reuse=RESUELSQP,
+    CODIFICATION="EC2",
+    TYPE_COMB="ELS_QP",
+    UNITE_CONTRAINTE="Pa",
+    INST=(1.0, 2.0, 3.0, 4.0, 5.0),
+    AFFE=(
+        _F(
+            TOUT="OUI",
+            TYPE_STRUCTURE="2D",
+            C_INF=0.04,
+            C_SUP=0.04,
+            FCK=35.0e6,
+            FYK=500.0e6,
+            WMAX_INF=0.00015,
+            WMAX_SUP=0.00015,
+            SIGC_ELS_QP=0.45 * 35.0e6,
+            KT=0.6,
+            PHI_INF_X=0.025,
+            PHI_SUP_X=0.025,
+            PHI_INF_Y=0.025,
+            PHI_SUP_Y=0.025,
+            ALPHA_E=21.0,
+            UTIL_COMPR="NON",
+            DNSTRA_CRIT=6.0e-3,
+            ALPHA_REINF=1.0,
+            ALPHA_SHEAR=1.0,
+            RHO_CRIT=150.0,
+            ALPHA_STIRRUPS=1.0,
+            L_CRIT=1.0,
+            ALPHA_CC=1.0,
+            EYS=210.0e9,
+            RHO_ACIER=7800,
+            FERR_MIN_FISS="EC2",
+        ),
+    ),
+)
+
+
+# -----------------------------------------------------
+# Tests pour CAS 5
+# -----------------------------------------------------
+D_ref = [
+    [1.38025e-3, 1.38025e-3, 0.00000000000000e00, 0.00000000000000e00],  # 1
+    [0.5521e-3, 0.00000000000000e00, 0.00000000000000e00, 0.5521e-3],  # 2
+    [0.33353e-3, 0.00000000000000e00, 1.1767e-3, 0.00000000000000e00],  # 3
+    [0.00000000000000e00, 0.33353e-3, 0.00000000000000e00, 1.1767e-3],  # 4
+    [0.00000000000000e00, 0.00000000000000e00, 1.38025e-3, 1.38025e-3],  # 5
+]
+
+D_calc = [
+    [1.3802838499289525e-3, 1.3802838499289525e-3, 0.00000000000000e00, 0.00000000000000e00],  # 1
+    [0.552113539971581e-3, 0.00000000000000e00, 0.00000000000000e00, 0.552113539971581e-3],  # 2
+    [0.333539325586088e-3, 0.00000000000000e00, 1.1766869824370338e-3, 0.00000000000000e00],  # 3
+    [0.00000000000000e00, 0.333539325586088e-3, 0.00000000000000e00, 1.1766869824370338e-3],  # 4
+    [0.00000000000000e00, 0.00000000000000e00, 1.3802838499289525e-3, 1.3802838499289525e-3],  # 5
+]
+
+for j in range(len(D_ref)):
+    for i, ncmp in enumerate(COMP):
+        if D_ref[j][i] == 0:
+            TEST_RESU(
+                RESU=_F(
+                    RESULTAT=RESUELSQP1,
+                    INST=j + 1.0,
+                    NOM_CHAM="FERR_ELEM",
+                    NOM_CMP=ncmp,
+                    GROUP_MA="M1",
+                    LEGENDE="ELS_QP",
+                    VALE_REFE=D_ref[j][i],
+                    VALE_CALC=D_calc[j][i],
+                    REFERENCE="ANALYTIQUE",
+                    ORDRE_GRANDEUR=1.0e-3,
+                    CRITERE="ABSOLU",
+                )
+            )
+        else:
+            TEST_RESU(
+                RESU=_F(
+                    RESULTAT=RESUELSQP1,
+                    INST=j + 1.0,
+                    NOM_CHAM="FERR_ELEM",
+                    NOM_CMP=ncmp,
+                    GROUP_MA="M1",
+                    LEGENDE="ELS_QP",
+                    VALE_REFE=D_ref[j][i],
+                    REFERENCE="ANALYTIQUE",
+                    PRECISION=1e-4,
+                    VALE_CALC=D_calc[j][i],
+                )
+            )
+
+
+FIN()
