@@ -83,7 +83,7 @@ def check_numpy_headers(self):
         for i, sub in enumerate(parts):
             if sub == "lib":
                 parts[i] = "Lib"
-        numpy_includes = PureWindowsPath(*parts)
+        numpy_includes = PureWindowsPath(*parts).as_posix()
     # check the given includes dirs
     self.check(
         feature="c",
