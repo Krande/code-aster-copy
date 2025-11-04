@@ -74,6 +74,15 @@ requirements:
       then:
         - "libblas * *mkl"
         - "liblapack * *mkl"
+        - hdf5 * *${{ build_type }}*
+        - metis * *${{ build_type }}*INT${{ int_type }}*
+        - mumps * *${{ build_type }}*INT${{ int_type }}*66
+        - mfront * *${{ build_type }}*
+        - mgis * *${{ build_type }}*
+        - libmed * *${{ build_type }}*INT${{ int_type }}*
+        - libscotch * *${{ build_type }}*INT${{ int_type }}*65
+        - scotch * *${{ build_type }}*INT${{ int_type }}*65
+        - medcoupling * *${{ build_type }}*INT${{ int_type }}*
     - ${{ pin_compatible('numpy', upper_bound='x.x') }}
     - if: not win
       then:
