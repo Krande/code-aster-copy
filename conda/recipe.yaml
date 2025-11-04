@@ -46,6 +46,7 @@ requirements:
     - liblapack
     - libxml2
     - zlib
+    - scipy
     - if: win
       then:
         - hdf5 * *${{ build_type }}*

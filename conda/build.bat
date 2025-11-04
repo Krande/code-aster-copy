@@ -55,7 +55,7 @@ set CXXFLAGS=%CXXFLAGS% /MD
 
 echo "Using Intel Fortran LLVM IFX compiler"
 set FC_SEARCH=ifort
-set FCFLAGS=%FCFLAGS% /fpp /4R8 /MD /names:lowercase /assume:underscore /assume:nobscc /fpe:0 /4I8
+set FCFLAGS=%FCFLAGS% /fpp /integer-size:64 /real-size:64 /MD /names:lowercase /assume:underscore /assume:nobscc /fpe:0 /traceback /nologo
 :: Add lib paths
 set LDFLAGS=%LDFLAGS% /LIBPATH:%LIB_PATH_ROOT%/lib /LIBPATH:%LIB_PATH_ROOT%/bin /LIBPATH:%PREF_ROOT%/libs
 :: Set up paths for Intel Fortran compiler in conda environment

@@ -23,8 +23,8 @@ jobs:
       fail-fast: false
       matrix:
         builds: [
-          { os: windows-2022, build: .ci_nompi_release_64, os_brief: win },
-          { os: windows-2022, build: .ci_nompi_debug_64, os_brief: win },
+          { os: windows-latest, build: .ci_nompi_release_64, os_brief: win },
+          { os: windows-latest, build: .ci_nompi_debug_64, os_brief: win },
           { os: ubuntu-latest, build: .ci_nompi_release_64, os_brief: linux }
         ]
     steps:
