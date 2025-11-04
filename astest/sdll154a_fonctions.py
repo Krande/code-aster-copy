@@ -21,7 +21,7 @@ import numpy as np
 
 def fsolve(func, x0):
     epsfcn = np.finfo(np.dtype(float)).eps
-    eps = epsfcn ** 0.5
+    eps = epsfcn**0.5
     delta_x = 1.0
     x = x0
     while abs(delta_x) > eps:
@@ -115,7 +115,7 @@ class PostRocheAnalytic:
         """calcule self._sigma_deplacement_ref, self._sigma_sismique_ref, self._t, self._ts, self._T, self._T_s, self._r_m et self._r_s"""
         # moments en deplacements à abattres
         mt_deplacement = np.abs(self._mt_deplacement_impose)
-        mf_sismique = np.sqrt(self._mfy_sismique ** 2 + self._mfz_sismique ** 2)
+        mf_sismique = np.sqrt(self._mfy_sismique**2 + self._mfz_sismique**2)
 
         # sigma ref (UT01-X1 et X3)
         self._sigma_deplacement_ref = 0.87 * mt_deplacement / self._Z
@@ -476,7 +476,7 @@ class PostRocheAnalytic:
 
             # mT OK car pas d'autres chargements en Torsion
             # # UT01-X10 :
-            self._m_t_abat = self._gopt_moment * self._mt_deplacement_impose
+            self._m_t_abat = self._gopt_moment * np.abs(self._mt_deplacement_impose)
 
             # m_fy:
             m_signe = self._mfy_poids_propre
@@ -503,7 +503,7 @@ class PostRocheAnalytic:
 
             # m_t
             # UT01-X10 :
-            self._m_t_abat = self._gopt * self._mt_deplacement_impose
+            self._m_t_abat = self._gopt * np.abs(self._mt_deplacement_impose)
 
             # m_fy:
             m_signe = self._mfy_poids_propre
@@ -525,7 +525,7 @@ class PostRocheAnalytic:
             )
 
         # UT01-X13 (commun pour les 2) :
-        self._m_abat = np.sqrt(self._m_t_abat ** 2 + self._mfy_abat ** 2 + self._mfz_abat ** 2)
+        self._m_abat = np.sqrt(self._m_t_abat**2 + self._mfy_abat**2 + self._mfz_abat**2)
 
         return self._m_t_abat, self._mfy_abat, self._mfz_abat, self._m_abat
 
@@ -560,7 +560,7 @@ class PostRocheAnalytic:
                 self._sigpres2
                 + np.sqrt(
                     (0.87 * _m_t_abat2) ** 2
-                    + (0.79 * self._B_2) ** 2 * (_mfy_abat2 ** 2 + _mfz_abat2 ** 2)
+                    + (0.79 * self._B_2) ** 2 * (_mfy_abat2**2 + _mfz_abat2**2)
                 )
                 / self._Z
             )
@@ -591,19 +591,19 @@ class PostRocheAnalytic:
                 )
 
                 self._sigma_eq_opt = (
-                    self._sigpres2 ** 2
+                    self._sigpres2**2
                     + 1
-                    / self._Z ** 2
+                    / self._Z**2
                     * (
-                        self._D_21 ** 2 * (self._gopt * self._mt_deplacement_impose) ** 2
-                        + self._D_22 ** 2
+                        self._D_21**2 * (self._gopt * self._mt_deplacement_impose) ** 2
+                        + self._D_22**2
                         * (
                             abs(self._mfy_poids_propre)
                             + abs(self._mfy_sismique_qs)
                             + self._g_sopt * abs(self._mfy_sismique_dyn)
                         )
                         ** 2
-                        + self._D_23 ** 2
+                        + self._D_23**2
                         * (abs(self._mfz_sismique_qs) + self._g_sopt * abs(self._mfz_sismique_dyn))
                         ** 2
                     )
@@ -614,7 +614,7 @@ class PostRocheAnalytic:
                     self._sigpres2
                     + np.sqrt(
                         (0.87 * self._m_t_abat) ** 2
-                        + (0.79 * self._B_2) ** 2 * (self._mfy_abat ** 2 + self._mfz_abat ** 2)
+                        + (0.79 * self._B_2) ** 2 * (self._mfy_abat**2 + self._mfz_abat**2)
                     )
                     / self._Z
                 )

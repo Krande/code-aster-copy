@@ -427,7 +427,7 @@ resuPostRocheTout = POST_ROCHE(
     RESU_MECA=(
         _F(TYPE_CHAR="POIDS", RESULTAT=poids_propre, NUME_ORDRE=1),
         _F(TYPE_CHAR="DILAT_THERM", RESULTAT=dilatation_thermique, NUME_ORDRE=1),
-        _F(TYPE_CHAR="DEPLACEMENT", RESULTAT=deplacement_impose, NUME_ORDRE=1),
+        _F(TYPE_CHAR="DDS", RESULTAT=deplacement_impose, NUME_ORDRE=1),
         _F(TYPE_CHAR="SISM_INER_SPEC", RESULTAT=sismique_dyn, DIRECTION="COMBI", TYPE_RESU="DYN"),
         _F(TYPE_CHAR="SISM_INER_SPEC", RESULTAT=sismique_qs, DIRECTION="COMBI", TYPE_RESU="QS"),
     ),

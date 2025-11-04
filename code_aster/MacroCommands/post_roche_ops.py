@@ -650,11 +650,11 @@ class PostRocheCommon:
         # msi reste n'est pas combiné
 
         asse_Mperm = []  # Poids propre
-        asse_mperm = []  # Dilatation
-        asse_Mnope = []
+        asse_mperm = []  # Dilatation et déplacements imposés non sismiques
+        asse_Mnope = []  # TYPE_CHAR=’SISM_INER_SPEC’, TYPE_RESU=’QS’
         asse_mnope = []  # Dépl imposés aux ancrages
-        asse_msi = []
-        asse_MSI_tot = []
+        asse_msi = []  # TYPE_CHAR=’SISM_INER_SPEC’, TYPE_RESU=’DYN’
+        asse_MSI_tot = []  # non utilisé
 
         __FIELD = [None] * 3 * len(self.dResuMeca)
         nbfield = 0
@@ -890,8 +890,10 @@ class PostRocheCommon:
                     asse_Mperm.append(oc_asse)
                 elif typchar == "DILAT_THERM":
                     asse_mperm.append(oc_asse)
-                elif typchar == "DEPLACEMENT":
+                elif typchar == "DDS":
                     asse_mnope.append(oc_asse)
+                elif typchar == "DINS":
+                    asse_mperm.append(oc_asse)
                 else:
                     raise Exception("TYPE_CHAR inconnu")
 
@@ -1562,7 +1564,7 @@ class PostRocheCommon:
         # ces trois champs sont NEUT_R s'ils existent
         self.MnopeCor = self.toSief_R(self.Mnope)
         self.mnopeCor = self.toSief_R(self.mnope)
-        self.msitmpCor = self.toSief_R(self.msitmp)
+        self.msitmpCor = self.msi
         # champs SIEF_R s'ils existent
         self.MpermCor = self.combi(self.Mperm, None)
         self.mpermCor = self.combi(self.mperm, None)
@@ -1722,46 +1724,43 @@ class PostRocheCommon:
 
         fMT_abat = FORMULE(
             NOM_PARA=(
-                "X1",  # MT du séisme QS (Mnope)
-                "X4",  # MT du séisme DYN (msitmp)
+                "X1",  # MT du séisme QS (Mnope) Msi
+                "X4",  # MT du séisme DYN (msitmp) msi
                 "X7",  # MT du poids (Mperm)
-                "X10",  # MT de la dilatation thermique (mperm)
-                "X13",  # MT du déplacement (mnope)
+                "X10",  # MT de la dilatation thermique + dep imp non sismique (mperm)
+                "X13",  # MT du dds (mnope = ms)
                 "X16",  # gopt
                 "X17",  # gsopt
             ),
-            # VALE="X7+X16*(X13+X10)+sign(X7+X16*(X13+X10))*(abs(X1)+X16*abs(XX)+X17*X4)", sign=sign,
-            VALE="X7+X16*(X13+X10)+sign(X7+X16*(X13+X10))*(abs(X1)+X17*X4)",
+            VALE="X7+X16*X10+sign(X7+X16*X10)*(abs(X1)+X16*abs(X13)+X17*abs(X4))",
             sign=sign,
         )
 
         fMFY_abat = FORMULE(
             NOM_PARA=(
-                "X2",  # MFY du séisme QS (Mnope)
-                "X5",  # MFY du séisme DYN (msitmp)
+                "X2",  # MFY du séisme QS (Mnope) Msi
+                "X5",  # MFY du séisme DYN (msitmp) msi
                 "X8",  # MFY du poids (Mperm)
-                "X11",  # MFY de la dilatation thermique (mperm)
-                "X14",  # MFY du déplacement (mnope)
+                "X11",  # MFY de la dilatation thermique + dep imp non sismique (mperm)
+                "X14",  # MFY du dds (mnope = ms)
                 "X16",  # gopt
                 "X17",  # gsopt
             ),
-            # VALE="X8+X16*(X14+X11)+sign(X8+X16*(X14+X11))*(abs(X2)+X16*abs(XX)+X17*X5)", sign=sign,
-            VALE="X8+X16*(X14+X11)+sign(X8+X16*(X14+X11))*(abs(X2)+X17*X5)",
+            VALE="X8+X16*X11+sign(X8+X16*X11)*(abs(X2)+X16*abs(X14)+X17*abs(X5))",
             sign=sign,
         )
 
         fMFZ_abat = FORMULE(
             NOM_PARA=(
-                "X3",  # MFZ du séisme QS (Mnope)
-                "X6",  # MFZ du séisme DYN (msitmp)
+                "X3",  # MFZ du séisme QS (Mnope) Msi
+                "X6",  # MFZ du séisme DYN (msitmp) msi
                 "X9",  # MFZ du poids (Mperm)
-                "X12",  # MFZ de la dilatation thermique (mperm)
-                "X15",  # MFZ du déplacement (mnope)
+                "X12",  # MFZ de la dilatation thermique + dep imp non sismique (mperm)
+                "X15",  # MFZ du dds (mnope = ms)
                 "X16",  # gopt
                 "X17",  # gsopt
             ),
-            # VALE="X9+X16*(X15+X12)+sign(X9+X16*(X15+X12))*(abs(X3)+X16*abs(XX)+X17*X6)", sign=sign,
-            VALE="X9+X16*(X15+X12)+sign(X9+X16*(X15+X12))*(abs(X3)+X17*X6)",
+            VALE="X9+X16*X12+sign(X9+X16*X12)*(abs(X3)+X16*abs(X15)+X17*abs(X6))",
             sign=sign,
         )
 

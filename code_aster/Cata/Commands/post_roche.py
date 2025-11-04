@@ -63,7 +63,7 @@ POST_ROCHE = MACRO(
         statut="o",
         max="**",
         TYPE_CHAR=SIMP(
-            statut="o", typ="TXM", into=("SISM_INER_SPEC", "DEPLACEMENT", "DILAT_THERM", "POIDS")
+            statut="o", typ="TXM", into=("SISM_INER_SPEC", "DDS", "DILAT_THERM", "POIDS", "DINS")
         ),
         b_sism_iner_spec=BLOC(
             condition="""equal_to("TYPE_CHAR", 'SISM_INER_SPEC') """,

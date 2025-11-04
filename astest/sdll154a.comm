@@ -195,6 +195,7 @@ blocage_a = AFFE_CHAR_MECA(
 blocage_b = AFFE_CHAR_MECA(MODELE=modele, DDL_IMPO=(_F(GROUP_NO="B", DX=0, DZ=0)))
 
 deplacement_b = AFFE_CHAR_MECA(MODELE=modele, DDL_IMPO=(_F(GROUP_NO="B", DRX=0.02)))
+deplacement_b_neg = AFFE_CHAR_MECA(MODELE=modele, DDL_IMPO=(_F(GROUP_NO="B", DRX=-0.02)))
 
 poids = AFFE_CHAR_MECA(MODELE=modele, PESANTEUR=_F(GRAVITE=9.81, DIRECTION=(0.0, 0.0, -1.0)))
 poids_neg = AFFE_CHAR_MECA(MODELE=modele, PESANTEUR=_F(GRAVITE=9.81, DIRECTION=(0.0, 0.0, 1.0)))
@@ -312,8 +313,19 @@ deplacement_impose = CALC_CHAMP(
     reuse=deplacement_impose, RESULTAT=deplacement_impose, CONTRAINTE="EFGE_ELNO"
 )
 
-IMPR_RESU(UNITE=6, FORMAT="RESULTAT", RESU=_F(RESULTAT=deplacement_impose, NOM_CHAM="EFGE_ELNO"))
+deplacement_impose_neg = MECA_STATIQUE(
+    MODELE=modele,
+    CHAM_MATER=ch_mater,
+    CARA_ELEM=cara_elem,
+    EXCIT=(_F(CHARGE=blocage_a), _F(CHARGE=deplacement_b_neg)),
+    INST=0.0,
+)
+deplacement_impose_neg = CALC_CHAMP(
+    reuse=deplacement_impose_neg, RESULTAT=deplacement_impose_neg, CONTRAINTE="EFGE_ELNO"
+)
 
+# IMPR_RESU(UNITE=6, FORMAT="RESULTAT", RESU=_F(RESULTAT=deplacement_impose, NOM_CHAM="EFGE_ELNO"))
+# IMPR_RESU(UNITE=6, FORMAT="RESULTAT", RESU=_F(RESULTAT=deplacement_impose_neg, NOM_CHAM="EFGE_ELNO"))
 
 tabInteg = POST_ELEM(
     MODELE=modele,
@@ -436,7 +448,7 @@ resuPostRocheToutSism = POST_ROCHE(
             CRITERE="RELATIF",
             PRECISION=1e-6,
         ),
-        _F(TYPE_CHAR="DEPLACEMENT", RESULTAT=deplacement_impose, INST=0, CRITERE="ABSOLU"),
+        _F(TYPE_CHAR="DDS", RESULTAT=deplacement_impose, INST=0, CRITERE="ABSOLU"),
         _F(TYPE_CHAR="SISM_INER_SPEC", RESULTAT=sismique_dyn, DIRECTION="COMBI", TYPE_RESU="DYN"),
         _F(TYPE_CHAR="SISM_INER_SPEC", RESULTAT=sismique_qs, DIRECTION="COMBI", TYPE_RESU="QS"),
     ),
@@ -460,7 +472,7 @@ resuPostRocheToutSism_Coude = POST_ROCHE(
             CRITERE="RELATIF",
             PRECISION=1e-6,
         ),
-        _F(TYPE_CHAR="DEPLACEMENT", RESULTAT=deplacement_impose, INST=0, CRITERE="ABSOLU"),
+        _F(TYPE_CHAR="DDS", RESULTAT=deplacement_impose, INST=0, CRITERE="ABSOLU"),
         _F(TYPE_CHAR="SISM_INER_SPEC", RESULTAT=sismique_dyn, DIRECTION="COMBI", TYPE_RESU="DYN"),
         _F(TYPE_CHAR="SISM_INER_SPEC", RESULTAT=sismique_qs, DIRECTION="COMBI", TYPE_RESU="QS"),
     ),
@@ -487,7 +499,7 @@ resuPostRocheToutSism_Coude_RE = POST_ROCHE(
             CRITERE="RELATIF",
             PRECISION=1e-6,
         ),
-        _F(TYPE_CHAR="DEPLACEMENT", RESULTAT=deplacement_impose, INST=0, CRITERE="ABSOLU"),
+        _F(TYPE_CHAR="DDS", RESULTAT=deplacement_impose, INST=0, CRITERE="ABSOLU"),
         _F(TYPE_CHAR="SISM_INER_SPEC", RESULTAT=sismique_dyn, DIRECTION="COMBI", TYPE_RESU="DYN"),
         _F(TYPE_CHAR="SISM_INER_SPEC", RESULTAT=sismique_qs, DIRECTION="COMBI", TYPE_RESU="QS"),
     ),
@@ -514,7 +526,7 @@ resuPostRocheToutSism_Coude_ASNR = POST_ROCHE(
             CRITERE="RELATIF",
             PRECISION=1e-6,
         ),
-        _F(TYPE_CHAR="DEPLACEMENT", RESULTAT=deplacement_impose, INST=0, CRITERE="ABSOLU"),
+        _F(TYPE_CHAR="DDS", RESULTAT=deplacement_impose, INST=0, CRITERE="ABSOLU"),
         _F(TYPE_CHAR="SISM_INER_SPEC", RESULTAT=sismique_dyn, DIRECTION="COMBI", TYPE_RESU="DYN"),
         _F(TYPE_CHAR="SISM_INER_SPEC", RESULTAT=sismique_qs, DIRECTION="COMBI", TYPE_RESU="QS"),
     ),
@@ -540,7 +552,7 @@ resuPostRocheTout = POST_ROCHE(
             CRITERE="RELATIF",
             PRECISION=1e-6,
         ),
-        _F(TYPE_CHAR="DEPLACEMENT", RESULTAT=deplacement_impose, INST=0, CRITERE="ABSOLU"),
+        _F(TYPE_CHAR="DDS", RESULTAT=deplacement_impose, INST=0, CRITERE="ABSOLU"),
     ),
     PRESSION=(_F(TOUT="OUI", VALE=1e6),),
 )
@@ -556,7 +568,7 @@ resuPostRocheRCCMRX = POST_ROCHE(
     RESU_MECA=(
         _F(TYPE_CHAR="POIDS", RESULTAT=poids_propre, NUME_ORDRE=1),
         _F(TYPE_CHAR="DILAT_THERM", RESULTAT=dilatation_thermique, NUME_ORDRE=1),
-        _F(TYPE_CHAR="DEPLACEMENT", RESULTAT=deplacement_impose, NUME_ORDRE=1),
+        _F(TYPE_CHAR="DDS", RESULTAT=deplacement_impose, NUME_ORDRE=1),
     ),
     PRESSION=(_F(TOUT="OUI", VALE=1e6),),
 )
@@ -571,7 +583,7 @@ resuPostRocheGrMa = POST_ROCHE(
     RESU_MECA=(
         _F(TYPE_CHAR="POIDS", RESULTAT=poids_propre, NUME_ORDRE=1),
         _F(TYPE_CHAR="DILAT_THERM", RESULTAT=dilatation_thermique, NUME_ORDRE=1),
-        _F(TYPE_CHAR="DEPLACEMENT", RESULTAT=deplacement_impose, NUME_ORDRE=1),
+        _F(TYPE_CHAR="DDS", RESULTAT=deplacement_impose, NUME_ORDRE=1),
     ),
     PRESSION=(_F(GROUP_MA="TUYAU", VALE=1e6),),
 )
@@ -590,7 +602,7 @@ resuPostRocheTout_D = POST_ROCHE(
     MODELE=modele,
     CARA_ELEM=cara_elem,
     CHAM_MATER=ch_mater,
-    RESU_MECA=(_F(TYPE_CHAR="DEPLACEMENT", RESULTAT=deplacement_impose, NUME_ORDRE=1),),
+    RESU_MECA=(_F(TYPE_CHAR="DDS", RESULTAT=deplacement_impose_neg, NUME_ORDRE=1),),
 )
 
 # 2- deplacement + pression (DP)
@@ -600,7 +612,7 @@ resuPostRocheTout_DP = POST_ROCHE(
     MODELE=modele,
     CARA_ELEM=cara_elem,
     CHAM_MATER=ch_mater,
-    RESU_MECA=(_F(TYPE_CHAR="DEPLACEMENT", RESULTAT=deplacement_impose, NUME_ORDRE=1),),
+    RESU_MECA=(_F(TYPE_CHAR="DDS", RESULTAT=deplacement_impose, NUME_ORDRE=1),),
     PRESSION=(_F(TOUT="OUI", VALE=1e6),),
 )
 
@@ -615,7 +627,7 @@ resuPostRocheTout_DPG = POST_ROCHE(
     TRAC_EPSI=TRAC_EPSI,
     RESU_MECA=(
         _F(TYPE_CHAR="POIDS", RESULTAT=poids_propre, NUME_ORDRE=1),
-        _F(TYPE_CHAR="DEPLACEMENT", RESULTAT=deplacement_impose, NUME_ORDRE=1),
+        _F(TYPE_CHAR="DDS", RESULTAT=deplacement_impose, NUME_ORDRE=1),
     ),
     PRESSION=(_F(TOUT="OUI", VALE=1e6),),
 )
@@ -630,7 +642,7 @@ resuPostRocheTout_DPG_False = POST_ROCHE(
     TRAC_EPSI=TRAC_EPSI2,
     RESU_MECA=(
         _F(TYPE_CHAR="POIDS", RESULTAT=poids_propre, NUME_ORDRE=1),
-        _F(TYPE_CHAR="DEPLACEMENT", RESULTAT=deplacement_impose, NUME_ORDRE=1),
+        _F(TYPE_CHAR="DDS", RESULTAT=deplacement_impose, NUME_ORDRE=1),
     ),
     PRESSION=(_F(TOUT="OUI", VALE=1e6),),
 )
@@ -700,7 +712,7 @@ resuLuPostRocheTout = POST_ROCHE(
     RESU_MECA=(
         _F(TYPE_CHAR="POIDS", RESULTAT=poids_propre_lu, NUME_ORDRE=1),
         _F(TYPE_CHAR="DILAT_THERM", RESULTAT=dilatation_thermique_lu, NUME_ORDRE=1),
-        _F(TYPE_CHAR="DEPLACEMENT", RESULTAT=deplacement_impose_lu, NUME_ORDRE=1),
+        _F(TYPE_CHAR="DDS", RESULTAT=deplacement_impose_lu, NUME_ORDRE=1),
     ),
     PRESSION=(_F(TOUT="OUI", VALE=1e6),),
 )
@@ -717,7 +729,7 @@ resuLuPostRocheRCCMRX = POST_ROCHE(
     RESU_MECA=(
         _F(TYPE_CHAR="POIDS", RESULTAT=poids_propre_lu, NUME_ORDRE=1),
         _F(TYPE_CHAR="DILAT_THERM", RESULTAT=dilatation_thermique_lu, NUME_ORDRE=1),
-        _F(TYPE_CHAR="DEPLACEMENT", RESULTAT=deplacement_impose_lu, NUME_ORDRE=1),
+        _F(TYPE_CHAR="DDS", RESULTAT=deplacement_impose_lu, NUME_ORDRE=1),
     ),
     PRESSION=(_F(TOUT="OUI", VALE=1e6),),
 )
@@ -733,7 +745,7 @@ resuLuPostRocheGrMa = POST_ROCHE(
     RESU_MECA=(
         _F(TYPE_CHAR="POIDS", RESULTAT=poids_propre, NUME_ORDRE=1),
         _F(TYPE_CHAR="DILAT_THERM", RESULTAT=dilatation_thermique, NUME_ORDRE=1),
-        _F(TYPE_CHAR="DEPLACEMENT", RESULTAT=deplacement_impose, NUME_ORDRE=1),
+        _F(TYPE_CHAR="DDS", RESULTAT=deplacement_impose, NUME_ORDRE=1),
     ),
     PRESSION=(_F(GROUP_MA="TUYAU", VALE=1e6)),
     COUDE=_F(GROUP_MA="TUYAU", ANGLE=90, RCOURB=0.01),
@@ -751,7 +763,7 @@ resuLuPostRocheGrMa_RE = POST_ROCHE(
     RESU_MECA=(
         _F(TYPE_CHAR="POIDS", RESULTAT=poids_propre, NUME_ORDRE=1),
         _F(TYPE_CHAR="DILAT_THERM", RESULTAT=dilatation_thermique, NUME_ORDRE=1),
-        _F(TYPE_CHAR="DEPLACEMENT", RESULTAT=deplacement_impose, NUME_ORDRE=1),
+        _F(TYPE_CHAR="DDS", RESULTAT=deplacement_impose, NUME_ORDRE=1),
     ),
     PRESSION=(_F(GROUP_MA="TUYAU", VALE=1e6)),
     COUDE=_F(GROUP_MA="TUYAU", ANGLE=90, RCOURB=0.01),
@@ -767,7 +779,7 @@ resuLuPostRocheGrMa_ASNR = POST_ROCHE(
     RESU_MECA=(
         _F(TYPE_CHAR="POIDS", RESULTAT=poids_propre, NUME_ORDRE=1),
         _F(TYPE_CHAR="DILAT_THERM", RESULTAT=dilatation_thermique, NUME_ORDRE=1),
-        _F(TYPE_CHAR="DEPLACEMENT", RESULTAT=deplacement_impose, NUME_ORDRE=1),
+        _F(TYPE_CHAR="DDS", RESULTAT=deplacement_impose, NUME_ORDRE=1),
     ),
     PRESSION=(_F(GROUP_MA="TUYAU", VALE=1e6)),
     COUDE=_F(GROUP_MA="TUYAU", ANGLE=90, RCOURB=0.01),
@@ -788,7 +800,7 @@ resuLuPostRocheTout_D = POST_ROCHE(
     MODELE=modele,
     CARA_ELEM=cara_elem,
     CHAM_MATER=ch_mater,
-    RESU_MECA=(_F(TYPE_CHAR="DEPLACEMENT", RESULTAT=deplacement_impose, NUME_ORDRE=1),),
+    RESU_MECA=(_F(TYPE_CHAR="DDS", RESULTAT=deplacement_impose, NUME_ORDRE=1),),
 )
 
 # 2- deplacement + pression (DP)
@@ -798,7 +810,7 @@ resuLuPostRocheTout_DP = POST_ROCHE(
     MODELE=modele,
     CARA_ELEM=cara_elem,
     CHAM_MATER=ch_mater,
-    RESU_MECA=(_F(TYPE_CHAR="DEPLACEMENT", RESULTAT=deplacement_impose, NUME_ORDRE=1),),
+    RESU_MECA=(_F(TYPE_CHAR="DDS", RESULTAT=deplacement_impose, NUME_ORDRE=1),),
     PRESSION=(_F(TOUT="OUI", VALE=1e6),),
 )
 
@@ -811,7 +823,7 @@ resuLuPostRocheTout_DPG = POST_ROCHE(
     CHAM_MATER=ch_mater,
     RESU_MECA=(
         _F(TYPE_CHAR="POIDS", RESULTAT=poids_propre, NUME_ORDRE=1),
-        _F(TYPE_CHAR="DEPLACEMENT", RESULTAT=deplacement_impose, NUME_ORDRE=1),
+        _F(TYPE_CHAR="DDS", RESULTAT=deplacement_impose, NUME_ORDRE=1),
     ),
     PRESSION=(_F(TOUT="OUI", VALE=1e6),),
 )

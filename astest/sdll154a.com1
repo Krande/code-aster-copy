@@ -47,6 +47,17 @@ mt_deplacement_impose = np.array(deplacement_impose_values["MT"])
 
 table = CREA_TABLE(
     RESU=_F(
+        RESULTAT=deplacement_impose_neg,
+        NOM_CHAM="EFGE_ELNO",
+        TOUT="OUI",
+        NOM_CMP=("MT", "MFY", "MFZ"),
+    )
+)
+deplacement_impose_neg_values = table.EXTR_TABLE().values()
+mt_deplacement_impose_neg = np.array(deplacement_impose_neg_values["MT"])
+
+table = CREA_TABLE(
+    RESU=_F(
         RESULTAT=dilatation_thermique,
         NOM_CHAM="EFGE_ELNO",
         TOUT="OUI",
@@ -280,9 +291,12 @@ post_roche_analytic_Coude_ASNR.calc_moment_abat()
 post_roche_analytic_Coude_ASNR.calcul_sigma_eq()
 
 # 1- deplacement (D)
-post_roche_analytic_D = PostRocheAnalytic(zeros, mt_deplacement_impose, zeros, zeros, zeros, zeros)
+post_roche_analytic_D = PostRocheAnalytic(
+    zeros, mt_deplacement_impose_neg, zeros, zeros, zeros, zeros
+)
 post_roche_analytic_D.calcul_ressort()
 post_roche_analytic_D.calcul_abattement()
+post_roche_analytic_D.calc_moment_abat()
 post_roche_analytic_D.calcul_sigma_eq()
 
 # 2- deplacement + pression (DP)
@@ -8633,6 +8647,51 @@ TEST_RESU(
             NOM_CMP="X9",
             VALE_CALC=3444861.379938064,
             VALE_REFE=post_roche_analytic_D._sigma_eq_opt[3],
+        ),
+        # UT01_ELNO-X10= moment équivalent optimisé MT
+        _F(
+            GROUP_MA="M1",
+            POINT=1,
+            REFERENCE="AUTRE_ASTER",
+            RESULTAT=resuPostRocheTout_D,
+            NOM_CHAM="UT01_ELNO",
+            INST=0.0,
+            NOM_CMP="X10",
+            VALE_CALC=3.5624839373623884,
+            VALE_REFE=post_roche_analytic_D._m_t_abat[0],
+        ),
+        _F(
+            GROUP_MA="M1",
+            POINT=2,
+            REFERENCE="AUTRE_ASTER",
+            RESULTAT=resuPostRocheTout_D,
+            NOM_CHAM="UT01_ELNO",
+            INST=0.0,
+            NOM_CMP="X10",
+            VALE_CALC=3.5624839373623884,
+            VALE_REFE=post_roche_analytic_D._m_t_abat[1],
+        ),
+        _F(
+            GROUP_MA="M2",
+            POINT=1,
+            REFERENCE="AUTRE_ASTER",
+            RESULTAT=resuPostRocheTout_D,
+            NOM_CHAM="UT01_ELNO",
+            INST=0.0,
+            NOM_CMP="X10",
+            VALE_CALC=3.5624839373623884,
+            VALE_REFE=post_roche_analytic_D._m_t_abat[2],
+        ),
+        _F(
+            GROUP_MA="M2",
+            POINT=2,
+            REFERENCE="AUTRE_ASTER",
+            RESULTAT=resuPostRocheTout_D,
+            NOM_CHAM="UT01_ELNO",
+            INST=0.0,
+            NOM_CMP="X10",
+            VALE_CALC=3.5624839373623884,
+            VALE_REFE=post_roche_analytic_D._m_t_abat[3],
         ),
         # UT02_ELNO-X17= indicateur sigmaV_opt <sigmaP
         _F(

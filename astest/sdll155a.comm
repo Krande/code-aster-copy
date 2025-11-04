@@ -154,7 +154,7 @@ resuPostRocheTout = POST_ROCHE(
     RESU_MECA=(
         _F(TYPE_CHAR="POIDS", RESULTAT=poids_propre, NUME_ORDRE=1),
         _F(TYPE_CHAR="DILAT_THERM", RESULTAT=dilatation_thermique, NUME_ORDRE=1),
-        _F(TYPE_CHAR="DEPLACEMENT", RESULTAT=deplacement_impose, NUME_ORDRE=1),
+        _F(TYPE_CHAR="DDS", RESULTAT=deplacement_impose, NUME_ORDRE=1),
     ),
     PRESSION=(_F(TOUT="OUI", VALE=1e6),),
 )
@@ -173,7 +173,7 @@ resuPostRocheTout_D = POST_ROCHE(
     MODELE=modele,
     CARA_ELEM=cara_elem,
     CHAM_MATER=ch_mater,
-    RESU_MECA=(_F(TYPE_CHAR="DEPLACEMENT", RESULTAT=deplacement_impose, NUME_ORDRE=1),),
+    RESU_MECA=(_F(TYPE_CHAR="DDS", RESULTAT=deplacement_impose, NUME_ORDRE=1),),
 )
 
 # 2- deplacement + pression (DP)
@@ -183,7 +183,7 @@ resuPostRocheTout_DP = POST_ROCHE(
     MODELE=modele,
     CARA_ELEM=cara_elem,
     CHAM_MATER=ch_mater,
-    RESU_MECA=(_F(TYPE_CHAR="DEPLACEMENT", RESULTAT=deplacement_impose, NUME_ORDRE=1),),
+    RESU_MECA=(_F(TYPE_CHAR="DDS", RESULTAT=deplacement_impose, NUME_ORDRE=1),),
     PRESSION=(_F(TOUT="OUI", VALE=1e6),),
 )
 
@@ -196,7 +196,7 @@ resuPostRocheTout_DPG = POST_ROCHE(
     CHAM_MATER=ch_mater,
     RESU_MECA=(
         _F(TYPE_CHAR="POIDS", RESULTAT=poids_propre, NUME_ORDRE=1),
-        _F(TYPE_CHAR="DEPLACEMENT", RESULTAT=deplacement_impose, NUME_ORDRE=1),
+        _F(TYPE_CHAR="DDS", RESULTAT=deplacement_impose, NUME_ORDRE=1),
     ),
     PRESSION=(_F(TOUT="OUI", VALE=1e6),),
 )
