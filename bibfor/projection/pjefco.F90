@@ -74,7 +74,7 @@ subroutine pjefco(moa1, moa2, corres, base)
     character(len=2) :: dim
     integer(kind=8) :: n1, nbocc, iocc, nbno2, nbma1, nbma2
     integer(kind=8) :: iexi, nbNodeInterc, nbnoma2, nbnono2
-    integer(kind=8) :: jxxk1, nbno
+    integer(kind=8) :: jxxk1, nbno, nbma1_tot, nbma2_tot
 !
     aster_logical :: l_dmax, dbg, final_occ, l_parallel_mesh
     real(kind=8) :: dmax, dala, dmax0d
@@ -83,10 +83,6 @@ subroutine pjefco(moa1, moa2, corres, base)
     integer(kind=8), pointer :: limanu2(:) => null()
     integer(kind=8), pointer :: linotmp(:) => null()
     integer(kind=8), pointer :: linotm2(:) => null()
-    integer(kind=8), pointer :: pjef_nb(:) => null()
-    integer(kind=8), pointer :: pjef_nu(:) => null()
-    real(kind=8), pointer :: pjef_cf(:) => null()
-    integer(kind=8), pointer :: pjef_tr(:) => null()
 !----------------------------------------------------------------------
     call jemarq()
     ASSERT(base .eq. 'V')
@@ -94,6 +90,9 @@ subroutine pjefco(moa1, moa2, corres, base)
     corre1 = '&&PJEFCO.CORRES1'
     corre2 = '&&PJEFCO.CORRES2'
     corre3 = '&&PJEFCO.CORRES3'
+!
+    nbma1_tot = 0
+    nbma2_tot = 0
 !
     call jeexin(moa1//'.MODELE    .REPE', iexi)
     if (iexi .gt. 0) then
@@ -202,6 +201,7 @@ subroutine pjefco(moa1, moa2, corres, base)
             call reliem(nomo1, noma1, 'NU_MAILLE', 'VIS_A_VIS', iocc, &
                         3, motcle, tymocl, '&&PJEFCO.LIMANU1', nbma1)
             l_parallel_mesh = isParallelMesh(noma1)
+            nbma1_tot = nbma1_tot+nbma1
             if (l_parallel_mesh .and. nbma1 == 0) then
                 call pjcovide(noma1, noma2, corre2)
                 goto 99
@@ -259,6 +259,7 @@ subroutine pjefco(moa1, moa2, corres, base)
                         2, motcle, tymocl, '&&PJEFCO.LINOTM2', nbnono2)
 
             l_parallel_mesh = isParallelMesh(noma2)
+            nbma2_tot = nbma2_tot+nbnono2+nbnoma2
             if (l_parallel_mesh .and. nbnono2+nbnoma2 == 0) then
                 goto 99
             end if
@@ -351,6 +352,16 @@ subroutine pjefco(moa1, moa2, corres, base)
         call copisd('CORRESP_2_MAILLA', 'V', corre2, corres)
         call detrsd('CORRESP_2_MAILLA', corre1)
         call detrsd('CORRESP_2_MAILLA', corre2)
+!
+! In hpc, we do not support the case where the projection must be done
+! on a subdomain that possesses elements on Mesh1 and none on Mesh 2 (or the contrary).
+! In this case, the user is adviced soem use DISTRIBUTION='OUI'.
+! We support the case where a subdomain has no elements on Mesh1 *and* Mesh2.
+        if (l_parallel_mesh .and. (nbma1_tot*nbma2_tot == 0)) then
+            if (.not. (nbma1_tot == 0 .and. nbma2_tot == 0)) &
+                call utmess('F', 'PROJECTION4_5')
+        end if
+!
     end if
 !
 !

@@ -73,7 +73,7 @@ load = AFFE_CHAR_MECA(
 
 matcoeff = PROJ_CHAMP(
     PROJECTION="NON",
-    DISTRIBUTION="NON",
+    DISTRIBUTION="OUI",
     METHODE="COLLOCATION",
     MAILLAGE_1=mesh,
     MAILLAGE_2=mesh,
