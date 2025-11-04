@@ -69,4 +69,4 @@ mpi_prefix:
   - nompi
 
 clang:
-  - 18
+  - 19
