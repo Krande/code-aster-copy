@@ -73,7 +73,7 @@ requirements:
         - "mumps * *${{ build_type }}*"
         - mfront
         - mgis
-        - libmed * *${{ mpi }}
+        - libmed * *${{ mpi }}*
         - medcoupling
   run:
     - if: win
