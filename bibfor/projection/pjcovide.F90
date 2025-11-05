@@ -58,13 +58,9 @@ subroutine pjcovide(noma1, noma2, corres)
     zk24(jxxk1-1+3) = 'COLLOCATION'
     call dismoi('NB_NO_MAILLA', noma1, 'MAILLAGE', nbno)
     call wkvect(corres//'.PJEF_NB', 'V V I', nbno, vi=pjef_nb)
-    pjef_nb = 0
     call wkvect(corres//'.PJEF_NU', 'V V I', 4, vi=pjef_nu)
-    pjef_nu(1:4) = 0
     call wkvect(corres//'.PJEF_CF', 'V V R', 4, vr=pjef_cf)
-    pjef_cf(1:4) = 0.d0
     call wkvect(corres//'.PJEF_TR', 'V V I', 1, vi=pjef_tr)
-    pjef_tr(1) = 0
 !
     call jedema()
 end subroutine
