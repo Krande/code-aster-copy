@@ -16,7 +16,10 @@
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
 
-subroutine affdef(tmp, nom, nel, ntel, tab, ier)
+subroutine affdef(tmp, nom, nel, tab, ier)
+!
+    use cara_elem_parameter_module
+!
     implicit none
 #include "jeveux.h"
 #include "asterc/r8maem.h"
@@ -26,7 +29,6 @@ subroutine affdef(tmp, nom, nel, ntel, tab, ier)
 #include "asterfort/jexnom.h"
 #include "asterfort/utmess.h"
 !
-    integer(kind=8) :: ntel(*)
     character(len=8) :: tab(*)
     character(len=24) :: nom, tmp
 !
@@ -50,7 +52,7 @@ subroutine affdef(tmp, nom, nel, ntel, tab, ier)
 !     3    EPZ2   R1     E1     R2     E2    TSEC  AI1   AI2  JG1  JG2
 !     4    IYR21  IYR22  IZR21  IZR22
 !--- -------------------------------------------------------------------
-    integer(kind=8) :: ier, isec, j, jdge, nc, nd, ne
+    integer(kind=8) :: ier, isec, j, jdge, nc, nd, ne, idx1poutre
     integer(kind=8) :: nel, ng, nr, nt, nx, ny, nz
 !--- -------------------------------------------------------------------
     parameter(nr=4, nc=2, ng=8)
@@ -76,28 +78,41 @@ subroutine affdef(tmp, nom, nel, ntel, tab, ier)
 !--- -------------------------------------------------------------------
 !
     call jemarq()
-    tst = r8maem()
+!   On enleve 1% au Real maxi : il reste maxi
+!       Modifs des tests    if (real .eq. tst)  ==> if (real .ge. tst)
+!                           if (real .ne. tst)  ==> if (real .le. tst)
+    tst = r8maem()*0.99
 !
     call jeveuo(jexnom(tmp, nom), 'E', jdge)
     isec = nint(zr(jdge+35))
 !
+!   Index de départ des poutres dans la SD cara_elem
+!       On décale de -1, pour éviter les +1 après
+    idx1poutre = elem_supp%aceind(ACE_NU_POUTRE, 1)-1
+!
+!    1:MECA_POU_D_T
+!    4:MEFS_POU_D_T
+!    5:MECA_POU_D_TG
+!   12:MECA_POU_D_TGM
+!    2:MECA_POU_D_E
+!   11:MECA_POU_D_EM
+
 !   COMPLETUDE DES DONNES GENERALES
     if (isec .eq. 0) then
         do j = 1, ng
-            if (zr(jdge+ogen(j)-1) .eq. tst) then
+            if (zr(jdge+ogen(j)-1) .ge. tst) then
                 valk(1) = nom
                 valk(2) = tab(ogen(j))
                 call utmess('A', 'MODELISA_77', nk=2, valk=valk)
                 ier = ier+1
             end if
         end do
-!        1:MECA_POU_D_T
-!        4:MEFS_POU_D_T     5:MECA_POU_D_TG
-!       12:MECA_POU_D_TGM
-        if ((nel .eq. ntel(1)) .or. (nel .eq. ntel(4)) .or. &
-            (nel .eq. ntel(5)) .or. (nel .eq. ntel(12))) then
+        if ((nel .eq. elem_supp%catanum(idx1poutre+ACE_MECA_POU_D_T)) .or. &
+            (nel .eq. elem_supp%catanum(idx1poutre+ACE_MEFS_POU_D_T)) .or. &
+            (nel .eq. elem_supp%catanum(idx1poutre+ACE_MECA_POU_D_TG)) .or. &
+            (nel .eq. elem_supp%catanum(idx1poutre+ACE_MECA_POU_D_TGM))) then
             do j = 1, nt
-                if (zr(jdge+otpe(j)-1) .eq. tst) then
+                if (zr(jdge+otpe(j)-1) .ge. tst) then
                     valk(1) = nom
                     valk(2) = tab(otpe(j))
                     call utmess('A', 'MODELISA_78', nk=2, valk=valk)
@@ -109,7 +124,7 @@ subroutine affdef(tmp, nom, nel, ntel, tab, ier)
 !   COMPLETUDE DES DONNES GEOMETRIQUES RECTANGLE
     if (isec .eq. 1) then
         do j = 1, nr
-            if (zr(jdge+orec(j)-1) .eq. tst) then
+            if (zr(jdge+orec(j)-1) .ge. tst) then
                 valk(1) = nom
                 valk(2) = tab(orec(j))
                 call utmess('A', 'MODELISA_79', nk=2, valk=valk)
@@ -121,7 +136,7 @@ subroutine affdef(tmp, nom, nel, ntel, tab, ier)
 !   COMPLETUDE DES DONNES GEOMETRIQUES CERCLE
     if (isec .eq. 2) then
         do j = 1, nc
-            if (zr(jdge+ocer(j)-1) .eq. tst) then
+            if (zr(jdge+ocer(j)-1) .ge. tst) then
                 valk(1) = nom
                 valk(2) = tab(ocer(j))
                 call utmess('A', 'MODELISA_80', nk=2, valk=valk)
@@ -133,7 +148,7 @@ subroutine affdef(tmp, nom, nel, ntel, tab, ier)
 !   VERIFICATION DE LA STRICTE POSITIVITE DE  VALEURS GENERALE
     if (isec .eq. 0) then
         do j = 1, nx
-            if (zr(jdge+pgen(j)-1) .ne. tst) then
+            if (zr(jdge+pgen(j)-1) .le. tst) then
                 if (zr(jdge+pgen(j)-1) .le. 0.d0) then
                     valk(1) = nom
                     valk(2) = tab(pgen(j))
@@ -147,7 +162,7 @@ subroutine affdef(tmp, nom, nel, ntel, tab, ier)
 !     VERIFICATION DE LA STRICTE POSITIVITE DE VALEURS RECTANGLE
     if (isec .eq. 1) then
         do j = 1, ny
-            if (zr(jdge+prec(j)-1) .ne. tst) then
+            if (zr(jdge+prec(j)-1) .le. tst) then
                 if (zr(jdge+prec(j)-1) .le. 0.d0) then
                     valk(1) = nom
                     valk(2) = tab(prec(j))
@@ -161,7 +176,7 @@ subroutine affdef(tmp, nom, nel, ntel, tab, ier)
 !     VERIFICATION DE LA STRICTE POSITIVITE DE VALEURS CERCLE
     if (isec .eq. 2) then
         do j = 1, nz
-            if (zr(jdge+pcer(j)-1) .ne. tst) then
+            if (zr(jdge+pcer(j)-1) .le. tst) then
                 if (zr(jdge+pcer(j)-1) .le. 0.d0) then
                     valk(1) = nom
                     valk(2) = tab(pcer(j))
@@ -178,14 +193,15 @@ subroutine affdef(tmp, nom, nel, ntel, tab, ier)
     if (isec .eq. 0) then
 !        EXCENTREMENTS, AIRES INTERIEURES, CONSTANTES DE GAUCHISSEMENT
         do j = 1, ne
-            if (zr(jdge+dexc(j)-1) .eq. tst) zr(jdge+dexc(j)-1) = 0.d0
+            if (zr(jdge+dexc(j)-1) .ge. tst) zr(jdge+dexc(j)-1) = 0.d0
         end do
 !        DIST. FIBRE EXT.+ RAYON TORSION
         do j = 1, nd
-            if (zr(jdge+ddfx(j)-1) .eq. tst) zr(jdge+ddfx(j)-1) = 1.d0
+            if (zr(jdge+ddfx(j)-1) .ge. tst) zr(jdge+ddfx(j)-1) = 1.d0
         end do
 !        EULER
-        if (nel .eq. ntel(2) .or. nel .eq. ntel(11)) then
+        if ((nel .eq. elem_supp%catanum(idx1poutre+ACE_MECA_POU_D_E)) .or. &
+            (nel .eq. elem_supp%catanum(idx1poutre+ACE_MECA_POU_D_EM))) then
             do j = 1, nt
                 zr(jdge+otpe(j)-1) = 0.d0
             end do
@@ -195,7 +211,7 @@ subroutine affdef(tmp, nom, nel, ntel, tab, ier)
 !     AFFECTATION DES VALEURS PAR DEFAUT POUR LES DONNEES RECTANGLE
     if (isec .eq. 1) then
         do j = 1, nr
-            if (zr(jdge+drec(j)-1) .eq. tst) then
+            if (zr(jdge+drec(j)-1) .ge. tst) then
                 zr(jdge+drec(j)-1) = zr(jdge+orec(j)-1)/2.d0
             else
                 if (zr(jdge+drec(j)-1) .gt. (zr(jdge+orec(j)-1)/2.d0)) then
@@ -212,7 +228,7 @@ subroutine affdef(tmp, nom, nel, ntel, tab, ier)
 !     AFFECTATION DES VALEURS PAR DEFAUT POUR LES DONNEES CERCLE
     if (isec .eq. 2) then
         do j = 1, nc
-            if (zr(jdge+dcer(j)-1) .eq. tst) then
+            if (zr(jdge+dcer(j)-1) .ge. tst) then
                 zr(jdge+dcer(j)-1) = zr(jdge+ocer(j)-1)
             else
                 if (zr(jdge+dcer(j)-1) .gt. zr(jdge+ocer(j)-1)) then

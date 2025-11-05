@@ -21,7 +21,8 @@ DEBUT(CODE="OUI", DEBUG=_F(SDVERI="OUI"))
 
 Young = 210000.0
 Alpha = 1.2e-05
-Scable = pi * (10.0**2)
+Rayon = 10.0
+Scable = pi * (Rayon**2)
 
 cable = DEFI_MATERIAU(CABLE=_F(EC_SUR_E=0.001), ELAS=_F(ALPHA=Alpha, E=Young, NU=0.3, RHO=8e-09))
 
@@ -31,7 +32,7 @@ model = AFFE_MODELE(
     MAILLAGE=mailc, AFFE=(_F(GROUP_MA="CABLE", MODELISATION="CABLE", PHENOMENE="MECANIQUE"),)
 )
 
-caral = AFFE_CARA_ELEM(MODELE=model, CABLE=_F(GROUP_MA="CABLE", N_INIT=1.0, SECTION=Scable))
+caral = AFFE_CARA_ELEM(MODELE=model, CABLE=_F(GROUP_MA="CABLE", N_INIT=1.0, RAYON=Rayon))
 
 insta = DEFI_LIST_REEL(DEBUT=0.0, INTERVALLE=_F(JUSQU_A=6, PAS=1.0))
 

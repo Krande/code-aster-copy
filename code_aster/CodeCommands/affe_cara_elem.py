@@ -20,6 +20,8 @@
 from ..Messages import UTMESS
 from ..Objects import ElementaryCharacteristics
 from ..Supervis import ExecuteCommand
+from ..Utilities import force_list
+import numpy as np
 
 
 class EltCharacteristicsAssignment(ExecuteCommand):
@@ -38,13 +40,26 @@ class EltCharacteristicsAssignment(ExecuteCommand):
         """
         self._result = ElementaryCharacteristics(keywords["MODELE"])
 
+    # Retourne la valeur ou valdefaut : la même que dans affe_cara_elem
+    def valeurCara(self, cara, Lcara, Lvale, valdefaut=None):
+        """Retourne la valeur de la caractéristiques 'cara' dans 'Lcara'."""
+        if cara in Lcara:
+            return Lvale[Lcara.index(cara)]
+        else:
+            if valdefaut is not None:
+                return valdefaut
+            else:
+                raise AsException("Erreur de syntaxe dans la commande")
+
     def adapt_syntax(self, keywords):
-        """Hook to adapt syntax *after* syntax checking.
+        """Hook to adapt syntax *AFTER* syntax checking.
 
         Arguments:
             keywords (dict): Keywords arguments of user's keywords, changed
                 in place.
         """
+        # ---------------------------------------------------------------- MASSIF
+        # Check that MASSIF appears once only if there is TOUT in MASSIF simple keywords
         if "MASSIF" in keywords:
             # Check that MASSIF appears once only if there is TOUT in MASSIF simple keywords
             l_dic_kws = keywords.get("MASSIF")
@@ -52,6 +67,78 @@ class EltCharacteristicsAssignment(ExecuteCommand):
                 for dic in l_dic_kws:
                     if "TOUT" in dic.keys():
                         UTMESS("F", "SUPERVIS_10")
+        #
+        # ---------------------------------------------------------------- CABLE
+        # Création de VALE et CARA
+        if "CABLE" in keywords:
+            keywords["CABLE"] = force_list(keywords.get("CABLE", []))
+            for ioc in range(len(keywords["CABLE"])):
+                LesCables = keywords["CABLE"][ioc]
+                if "AIRE" in LesCables:
+                    aire = LesCables["AIRE"]
+                    rayon = np.sqrt(aire / np.pi)
+                    diame = rayon * 2.0
+                if "RAYON" in LesCables:
+                    rayon = LesCables["RAYON"]
+                    aire = np.pi * np.square(rayon)
+                    diame = rayon * 2.0
+                if "DIAMETRE" in LesCables:
+                    diame = LesCables["DIAMETRE"]
+                    rayon = diame * 0.5
+                    aire = np.pi * np.square(rayon)
+                #
+                n_init = LesCables["N_INIT"]
+                #
+                keywords["CABLE"][ioc]["CARA"] = ("AIRE", "RAYON", "DIAMETRE", "N_INIT")
+                keywords["CABLE"][ioc]["VALE"] = (aire, rayon, diame, n_init)
+        # ---------------------------------------------------------------- BARRE
+        # Modification de VALE et CARA
+        if "BARRE" in keywords:
+            keywords["BARRE"] = force_list(keywords.get("BARRE", []))
+            for ioc in range(len(keywords["BARRE"])):
+                LaForme = keywords["BARRE"][ioc]["SECTION"]
+                if LaForme == "CERCLE":
+                    LesCara = force_list(keywords["BARRE"][ioc]["CARA"])
+                    LesVale = force_list(keywords["BARRE"][ioc]["VALE"])
+                    if not "EP" in LesCara:
+                        LeRayon = LesVale[LesCara.index("R")]
+                        LesCara.append("EP")
+                        LesVale.append(LeRayon)
+                        keywords["BARRE"][ioc]["CARA"] = LesCara
+                        keywords["BARRE"][ioc]["VALE"] = LesVale
+                elif LaForme == "RECTANGLE":
+                    # "H", "EP", "HZ", "HY", "EPY", "EPZ"
+                    LesCara = force_list(keywords["BARRE"][ioc]["CARA"])
+                    LesVale = force_list(keywords["BARRE"][ioc]["VALE"])
+                    if "H" in LesCara:
+                        H = self.valeurCara("H", LesCara, LesVale)
+                        EP = self.valeurCara("EP", LesCara, LesVale, H * 0.5)
+                        HZ = H
+                        HY = H
+                        EPY = EP
+                        EPZ = EP
+                        LesCara = ["HZ", "HY", "EPY", "EPZ"]
+                        LesVale = [HZ, HY, EPY, EPZ]
+                        keywords["BARRE"][ioc]["CARA"] = LesCara
+                        keywords["BARRE"][ioc]["VALE"] = LesVale
+                    else:
+                        HY = self.valeurCara("HY", LesCara, LesVale)
+                        HZ = self.valeurCara("HZ", LesCara, LesVale)
+                        EPY = self.valeurCara("EPY", LesCara, LesVale, HY * 0.5)
+                        EPZ = self.valeurCara("EPZ", LesCara, LesVale, HZ * 0.5)
+                        LesCara = ["HZ", "HY", "EPY", "EPZ"]
+                        LesVale = [HZ, HY, EPY, EPZ]
+                        keywords["BARRE"][ioc]["CARA"] = LesCara
+                        keywords["BARRE"][ioc]["VALE"] = LesVale
+                elif LaForme == "GENERALE":
+                    IsAire = keywords["BARRE"][ioc].get("AIRE")
+                    if IsAire:
+                        Aire = keywords["BARRE"][ioc]["AIRE"]
+                        LesCara = ["A"]
+                        LesVale = [Aire]
+                        keywords["BARRE"][ioc]["CARA"] = LesCara
+                        keywords["BARRE"][ioc]["VALE"] = LesVale
+        # ----------------------------------------------------------------
 
 
 AFFE_CARA_ELEM = EltCharacteristicsAssignment.run

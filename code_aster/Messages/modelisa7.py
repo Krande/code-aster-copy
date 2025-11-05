@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -337,21 +337,6 @@ Erreur utilisateur :
         """
 Erreur utilisateur :
  vous devez fournir les mots clés MODELE et OPTION pour un champ élémentaire
-"""
-    ),
-    63: _(
-        """
- occurrence  %(k1)s  de  %(k2)s : impossible d affecter les valeurs demandées sur le(la) %(k3)s  qui n a pas été affecte(e) par un élément
-"""
-    ),
-    64: _(
-        """
- occurrence  %(k1)s  de  %(k2)s : impossible d affecter les valeurs demandées sur le(la)  %(k3)s  qui ne supporte pas un élément du bon type
-"""
-    ),
-    65: _(
-        """
- occurrence  %(k1)s  de  %(k2)s  : le(la) %(k3)s  ne supporte pas un élément compatible avec la caractéristique  %(k4)s
 """
     ),
     66: _(

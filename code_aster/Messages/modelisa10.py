@@ -53,7 +53,8 @@ Pour obtenir le détail des mailles affectées, utilisez INFO=2.
     ),
     5: _(
         """
-La maille quadrangulaire %(i1)d est dégénérée: les cotés 1-2 et 1-3 sont colinéaires. On ne peut pas évaluer la normale.
+La maille quadrangulaire %(i1)d est dégénérée : les cotés 1-2 et 1-3 sont colinéaires.
+On ne peut pas évaluer la normale.
 """
     ),
     7: _(
@@ -112,11 +113,6 @@ La valeur du mot clé DEFORMATION='%(k1)s' et incompatible avec la modélisation
     18: _(
         """
 Certains éléments à interpolation linéaires du modèle ne sont pas compatibles avec le modèle de déformation DEFORMATION='%(k1)s'.
-"""
-    ),
-    19: _(
-        """
-AFFE_CARA_ELEM Pour l'occurrence n° %(i1)d de BARRE le nombre de caractéristiques et de valeurs doivent être identiques.
 """
     ),
 }

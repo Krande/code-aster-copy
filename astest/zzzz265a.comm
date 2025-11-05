@@ -91,7 +91,7 @@ CARA = AFFE_CARA_ELEM(
             VALE=((_IMAX * _XEIL), (_IMAX * _XEIL), ((2 * _IMAX) * _XEIL), 1e-12),
         ),
     ),
-    CABLE=_F(GROUP_MA="TOTAL1", N_INIT=5000.0, SECTION=_AIRE),
+    CABLE=_F(GROUP_MA="TOTAL1", N_INIT=5000.0, AIRE=_AIRE),
     DISCRET=(
         _F(CARA="A_T_D_N", GROUP_MA="DIS", VALE=(0.0, 0.0, 0.0)),
         _F(CARA="K_T_D_N", GROUP_MA="DIS", VALE=(0.0, 0.0, 0.0)),

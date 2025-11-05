@@ -21,12 +21,12 @@
 interface
     subroutine rigmi1(noma, nogr, ifreq, nfreq, ifmis,&
                       rigma, rigma2)
-        character(len=8) :: noma
+        character(len=8)  :: noma
         character(len=24) :: nogr
-        integer(kind=8) :: ifreq
-        integer(kind=8) :: nfreq
-        integer(kind=8) :: ifmis
-        real(kind=8) :: rigma(*)
-        real(kind=8) :: rigma2(*)
+        integer(kind=8)   :: ifreq
+        integer(kind=8)   :: nfreq
+        integer(kind=8)   :: ifmis
+        real(kind=8)      :: rigma(*)
+        real(kind=8)      :: rigma2(*)
     end subroutine rigmi1
 end interface

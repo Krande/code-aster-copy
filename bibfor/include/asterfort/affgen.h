@@ -19,12 +19,10 @@
 !
 !
 interface
-    subroutine affgen(tmp, nom, nel, ntel, napcis,&
-                      foncis)
+    subroutine affgen(tmp, nom, nel, napcis, foncis)
         character(len=24) :: tmp
         character(len=24) :: nom
-        integer(kind=8) :: nel
-        integer(kind=8) :: ntel(*)
+        integer(kind=8)   :: nel
         character(len=19) :: napcis
         character(len=19) :: foncis
     end subroutine affgen

@@ -19,13 +19,11 @@
 !
 !
 interface
-    subroutine affdef(tmp, nom, nel, ntel, tab,&
-                      ier)
-        character(len=24) :: tmp
-        character(len=24) :: nom
-        integer(kind=8) :: nel
-        integer(kind=8) :: ntel(*)
-        character(len=8) :: tab(*)
-        integer(kind=8) :: ier
+    subroutine affdef(tmp, nom, nel, tab, ier)
+        character(len=24)   :: tmp
+        character(len=24)   :: nom
+        integer(kind=8)     :: nel
+        character(len=8)    :: tab(*)
+        integer(kind=8)     :: ier
     end subroutine affdef
 end interface

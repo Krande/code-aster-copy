@@ -19,10 +19,16 @@
 !
 !
 interface
-    subroutine acevrm(nbocc, noma, noemax, noemaf)
-        integer(kind=8) :: nbocc
-        character(len=8) :: noma
-        integer(kind=8) :: noemax
-        integer(kind=8) :: noemaf
-    end subroutine acevrm
+    subroutine ace_affe_barre(nbocc, infoconcept, infocarte, grp_lmax, grp_nbma, listemail)
+!
+        use cara_elem_carte_type
+        use cara_elem_info_type
+!
+        integer(kind=8)         :: nbocc
+        type (cara_elem_info)   :: infoconcept
+        type (cara_elem_carte)  :: infocarte(*)
+        character(len=24)       :: grp_lmax(*)
+        integer(kind=8)         :: grp_nbma(*)
+        integer(kind=8)         :: listemail(*)
+    end subroutine ace_affe_barre
 end interface

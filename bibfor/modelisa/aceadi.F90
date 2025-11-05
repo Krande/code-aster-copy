@@ -16,85 +16,92 @@
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
 
-subroutine aceadi(noma, nomo, mcf, lmax, nbocc, infcarte, ivr)
+subroutine aceadi(nbocc, infoconcept, infcarte, mcf)
 !
 !
 ! --------------------------------------------------------------------------------------------------
 !
 !     AFFE_CARA_ELEM
-!     AFFECTATION DES CARACTERISTIQUES POUR LES ELEMENTS DISCRET
+!
+!     Affectation des caractéristiques pour les éléments discrets
 !
 ! --------------------------------------------------------------------------------------------------
-!
-!  IN
-!     NOMA   : NOM DU MAILLAGE
-!     NOMO   : NOM DU MODELE
-!     LMAX   : NOMBRE MAX DE MAILLE OU GROUPE DE MAILLE
-!     NBOCC  : NOMBRE D'OCCURENCES DU MOT CLE DISCRET
-!     IVR    : TABLEAU DES INDICES DE VERIFICATION
-!
-! --------------------------------------------------------------------------------------------------
-! person_in_charge: jean-luc.flejou at edf.fr
 !
     use cara_elem_parameter_module
+    use cara_elem_info_type
     use cara_elem_carte_type
     implicit none
-    character(len=8) :: noma, nomo
-    integer(kind=8) :: lmax, nbocc, ivr(*), ifm
-    type(cara_elem_carte) :: infcarte(*)
-    character(len=*) :: mcf
-!
 #include "jeveux.h"
-!
-#include "asterc/getres.h"
-!
 #include "asterfort/affdis.h"
+#include "asterfort/as_allocate.h"
+#include "asterfort/as_deallocate.h"
 #include "asterfort/assert.h"
-#include "asterfort/getvem.h"
 #include "asterfort/getvr8.h"
 #include "asterfort/getvtx.h"
 #include "asterfort/jedema.h"
-#include "asterfort/jedetr.h"
+#include "asterfort/jelira.h"
 #include "asterfort/jemarq.h"
+#include "asterfort/jenuno.h"
+#include "asterfort/jeveuo.h"
+#include "asterfort/jexnom.h"
+#include "asterfort/jexnum.h"
 #include "asterfort/nocart.h"
-#include "asterfort/verdis.h"
-#include "asterfort/wkvect.h"
+#include "asterfort/utmess.h"
+#include "asterfort/verima.h"
+#include "asterfort/int_to_char8.h"
+!
+    integer(kind=8) :: nbocc
+    type(cara_elem_info) :: infoconcept
+    type(cara_elem_carte) :: infcarte(*)
+    character(len=*) :: mcf
 !
 ! --------------------------------------------------------------------------------------------------
-    integer(kind=8) :: nbcar, nbval, nrd
-    parameter(nbcar=100, nbval=1000, nrd=2)
-    integer(kind=8) :: jdc(3), jdv(3), dimcar, nm, ii, l, iv, ndim
-    integer(kind=8) :: jdcinf, jdvinf, ncmp, nn
-    integer(kind=8) :: nsym, neta, nrep, i3d, i2d, ier
-    integer(kind=8) :: jdls, i, ioc, irep, isym, ng, nj, ncar
-    integer(kind=8) :: nval, jdls2
+    integer(kind=8) :: nbval, nrd, lmax, ifm
+!   nbval : nombre de valeurs maximum à lire pour *_TR_L non-symétrique 12*12 = 144
+    parameter(nbval=150, nrd=2)
+    integer(kind=8) :: jdc(3), jdv(3), dimcar, ii, jj, ikma, iv, ndim, jmail, nbmail, numa
+    integer(kind=8) :: jdcinf, jdvinf, ncmp, nutyma
+    integer(kind=8) :: nsym, neta, nrep, ivr(4)
+    integer(kind=8) :: ioc, irep, isym, ng
+    integer(kind=8) :: nval
     real(kind=8) :: val(nbval), eta
     character(len=1) :: kma(3)
-    character(len=8) :: nomu
-    character(len=9) :: car(nbcar)
-    character(len=16) :: rep, repdis(nrd), concep, cmd, sym, symdis(nrd)
-    character(len=19) :: cart(3), ligmo, cartdi
-    character(len=24) :: tmpdis, mlggno
+    character(len=4) :: letype
+    character(len=8) :: noma, nomo, cara, typel, nomail
+    character(len=16) :: rep, repdis(nrd), sym, symdis(nrd)
+    character(len=19) :: cart(3), cartdi
+    character(len=24) :: grmama
+!
+    character(len=24) :: valk(4)
+! --------------------------------------------------------------------------------------------------
+    integer(kind=8), pointer :: typmail(:) => null()
+    character(len=24), pointer  :: group_ma(:) => null()
 !
 ! --------------------------------------------------------------------------------------------------
+!
     data repdis/'GLOBAL          ', 'LOCAL           '/
     data symdis/'OUI             ', 'NON             '/
     data kma/'K', 'M', 'A'/
 ! --------------------------------------------------------------------------------------------------
 !
     call jemarq()
-    call getres(nomu, concep, cmd)
-    tmpdis = nomu//'.DISCRET'
-    mlggno = noma//'.GROUPENO'
-    ligmo = nomo//'.MODELE    '
 !
-!   Vérification des dimensions / modélisations
-    ier = 0
-    call verdis(nomo, noma, 'F', i3d, i2d, ndim, ier)
+    nomo = infoconcept%modele
+    noma = infoconcept%maillage
+    ndim = infoconcept%dimmod
+    lmax = infoconcept%GroupeMaxOccur
+    ivr(:) = infoconcept%ivr(:)
+!
+!   Pour controle
+    grmama = noma//'.GROUPEMA'
+!   Vecteur du type des mailles du maillage
+    if (infoconcept%VerifMaille .or. infoconcept%IsParaMesh) then
+        call jeveuo(noma//'.TYPMAIL', 'L', vi=typmail)
+    end if
+!
     ASSERT((mcf .eq. 'DISCRET_2D') .or. (mcf .eq. 'DISCRET'))
 !
-    call wkvect('&&TMPDISCRET', 'V V K24', lmax, jdls)
-    call wkvect('&&TMPDISCRET2', 'V V K8', lmax, jdls2)
+    AS_ALLOCATE(vk24=group_ma, size=lmax)
 !
 !   Les cartes sont déjà construites : ace_crea_carte
     cartdi = infcarte(ACE_CAR_DINFO)%nom_carte
@@ -116,33 +123,66 @@ subroutine aceadi(noma, nomo, mcf, lmax, nbocc, infcarte, ivr)
 !
     ifm = ivr(4)
 !   Boucle sur les occurences de discret
-    nj = 0
-    nn = 0
     do ioc = 1, nbocc
         eta = 0.0d0
-        irep = 1
-        isym = 1
         val(:) = 0.0d0
-        call getvem(noma, 'GROUP_MA', mcf, 'GROUP_MA', ioc, lmax, zk24(jdls), ng)
-        call getvem(noma, 'MAILLE', mcf, 'MAILLE', ioc, lmax, zk8(jdls2), nm)
+        call getvtx(mcf, 'GROUP_MA', iocc=ioc, nbval=lmax, vect=group_ma, nbret=ng)
+        ! En //, il faut vérifier que les groupes existent sur le proc
+        !   en sortie de verima ==> les groupes présent sur le proc
+        if (infoconcept%VerifMaille .or. infoconcept%IsParaMesh) then
+            call verima(noma, group_ma, ng, 'GROUP_MA')
+        end if
+        if (ng .eq. 0) cycle
+        !
         call getvr8(mcf, 'VALE', iocc=ioc, nbval=nbval, vect=val, nbret=nval)
-        ASSERT(nbval .ge. 1)
-        call getvtx(mcf, 'CARA', iocc=ioc, nbval=nbcar, vect=car, nbret=ncar)
-        ASSERT(ncar .eq. 1)
-!
-        call getvtx(mcf, 'REPERE', iocc=ioc, scal=rep, nbret=nrep)
+        ASSERT(abs(nval) .le. nbval)
+        call getvtx(mcf, 'CARA', iocc=ioc, scal=cara)
         call getvr8(mcf, 'AMOR_HYST', iocc=ioc, scal=eta, nbret=neta)
-        if (ioc .eq. 1 .and. nrep .eq. 0) rep = repdis(1)
-        do i = 1, nrd
-            if (rep .eq. repdis(i)) irep = i
-        end do
 !
+!       Repère : par défaut GLOBAL
+        irep = 1
+        call getvtx(mcf, 'REPERE', iocc=ioc, scal=rep, nbret=nrep)
+        if (nrep .ge. 1) then
+            do ii = 1, nrd
+                if (rep .eq. repdis(ii)) irep = ii
+            end do
+        end if
 !       Matrice symétrique ou non-symétrique : par défaut symétrique
+        isym = 1
         call getvtx(mcf, 'SYME', iocc=ioc, scal=sym, nbret=nsym)
-        if (nsym .eq. 0) sym = symdis(1)
-        do i = 1, nrd
-            if (sym .eq. symdis(i)) isym = i
-        end do
+        if (nsym .ge. 1) then
+            do ii = 1, nrd
+                if (sym .eq. symdis(ii)) isym = ii
+            end do
+        end if
+!
+!       Vérification du bon type de maille en fonction de cara
+        if (infoconcept%VerifMaille .or. infoconcept%IsParaMesh) then
+            if ((cara(2:7) .eq. '_T_D_N') .or. (cara(2:8) .eq. '_TR_D_N') .or. &
+                (cara(2:5) .eq. '_T_N') .or. (cara(2:6) .eq. '_TR_N')) then
+                letype = 'POI1'
+            else
+                letype = 'SEG2'
+            end if
+            !
+            do ii = 1, ng
+                call jelira(jexnom(grmama, group_ma(ii)), 'LONUTI', nbmail)
+                call jeveuo(jexnom(grmama, group_ma(ii)), 'L', jmail)
+                do jj = 1, nbmail
+                    numa = zi(jmail+jj-1)
+                    nutyma = typmail(numa)
+                    call jenuno(jexnum('&CATA.TM.NOMTM', nutyma), typel)
+                    if (typel(1:4) .ne. letype) then
+                        nomail = int_to_char8(numa)
+                        valk(1) = nomail
+                        valk(2) = letype
+                        valk(3) = typel
+                        valk(4) = cara
+                        call utmess('F', 'MODELISA_56', nk=4, valk=valk)
+                    end if
+                end do
+            end do
+        end if
 !
         if (ivr(3) .eq. 2) then
             if (isym .eq. 1) then
@@ -151,32 +191,25 @@ subroutine aceadi(noma, nomo, mcf, lmax, nbocc, infcarte, ivr)
                 write (ifm, 100) rep, 'NON-SYMETRIQUE', ioc
             end if
         end if
+!
 !       GROUP_MA = toutes les mailles de tous les groupes de mailles
-        if (ng .gt. 0) then
-            iv = 1
-            do i = 1, ncar
-                call affdis(ndim, irep, eta, car(i), val, jdc, jdv, ivr, iv, kma, &
-                            ncmp, l, jdcinf, jdvinf, isym)
-                do ii = 1, ng
-                    call nocart(cartdi, 2, dimcar, groupma=zk24(jdls+ii-1))
-                    call nocart(cart(l), 2, ncmp, groupma=zk24(jdls+ii-1))
-                end do
-            end do
-        end if
-!       MAILLE = toutes les mailles de la liste de mailles
-        if (nm .gt. 0) then
-            iv = 1
-            do i = 1, ncar
-                call affdis(ndim, irep, eta, car(i), val, jdc, jdv, ivr, iv, kma, &
-                            ncmp, l, jdcinf, jdvinf, isym)
-                call nocart(cartdi, 3, dimcar, mode='NOM', nma=nm, limano=zk8(jdls2))
-                call nocart(cart(l), 3, ncmp, mode='NOM', nma=nm, limano=zk8(jdls2))
-            end do
+        iv = 1
+        call affdis(ndim, irep, eta, cara, val, jdc, jdv, ivr, iv, kma, &
+                    ncmp, ikma, jdcinf, jdvinf, isym)
+        do ii = 1, ng
+            call nocart(cartdi, 2, dimcar, groupma=group_ma(ii))
+            call nocart(cart(ikma), 2, ncmp, groupma=group_ma(ii))
+        end do
+        if (cara(1:1) .eq. 'K') then
+            infcarte(ACE_CAR_DISCK)%utilise = .true.
+        else if (cara(1:1) .eq. 'M') then
+            infcarte(ACE_CAR_DISCM)%utilise = .true.
+        else if (cara(1:1) .eq. 'A') then
+            infcarte(ACE_CAR_DISCA)%utilise = .true.
         end if
     end do
 !
-    call jedetr('&&TMPDISCRET')
-    call jedetr('&&TMPDISCRET2')
+    AS_DEALLOCATE(vk24=group_ma)
 !
     call jedema()
 !

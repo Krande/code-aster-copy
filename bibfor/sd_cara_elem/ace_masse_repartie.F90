@@ -16,8 +16,7 @@
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
 
-subroutine ace_masse_repartie(nbocc, infdonn, grplmax, lmax, infcarte, nbdisc, zjdlm)
-!
+subroutine ace_masse_repartie(nbocc, infdonn, infcarte, grplmax, grpnbma, lesmailles, nbdisc)
 !
 ! --------------------------------------------------------------------------------------------------
 !     AFFE_CARA_ELEM
@@ -25,24 +24,25 @@ subroutine ace_masse_repartie(nbocc, infdonn, grplmax, lmax, infcarte, nbdisc, z
 !     MASSES RÉPARTIES
 !
 ! --------------------------------------------------------------------------------------------------
-! person_in_charge: jean-luc.flejou at edf.fr
 !
     use cara_elem_parameter_module
     use cara_elem_info_type
     use cara_elem_carte_type
+!
     implicit none
-    integer(kind=8) :: nbocc
-    type(cara_elem_info) :: infdonn
-    character(len=24) :: grplmax(*)
-    integer(kind=8) :: lmax
+    integer(kind=8)       :: nbocc
+    type(cara_elem_info)  :: infdonn
     type(cara_elem_carte) :: infcarte(*)
-    integer(kind=8) :: nbdisc
-    integer(kind=8) :: zjdlm(*)
+    character(len=24)     :: grplmax(*)
+    integer(kind=8)       :: grpnbma(*)
+    integer(kind=8)       :: lesmailles(*)
+    integer(kind=8)       :: nbdisc
 !
 #include "jeveux.h"
 #include "asterfort/as_allocate.h"
 #include "asterfort/as_deallocate.h"
 #include "asterfort/assert.h"
+#include "asterfort/ace_affe_verif_elem.h"
 #include "asterfort/calcul_cara_maille.h"
 #include "asterfort/dismoi.h"
 #include "asterfort/fointe.h"
@@ -63,8 +63,9 @@ subroutine ace_masse_repartie(nbocc, infdonn, grplmax, lmax, infcarte, nbdisc, z
 #include "asterfort/int_to_char8.h"
 !
 ! --------------------------------------------------------------------------------------------------
- integer(kind=8) :: iocc, ii, jj, kk, iret, nbgrp, nb, ldgm, nm, nb_mail_grp, nb_noeu_grp, ifm, irep
-    integer(kind=8) :: ndim, appui, ltypmail, imail, ntopo, isym, iv
+    integer(kind=8) :: iocc, ii, jj, kk, iret, nbgrp, nb, ldgm, nm, nb_mail_grp, nb_noeu_grp
+    integer(kind=8) :: ifm, irep
+    integer(kind=8) :: ndim, appui, ltypmail, imail, ntopo, isym, iv, GroupeMaxOccur, coderet
     integer(kind=8) :: nfct, compte_maille, nb_noeud_uniq, ll, ncmp, nbsurchpoi1, nbsurchpoi2
     integer(kind=8) :: ivr(4)
     real(kind=8) :: lamasse, valfongro, surfacetotale, zero(6)
@@ -77,7 +78,7 @@ subroutine ace_masse_repartie(nbocc, infdonn, grplmax, lmax, infcarte, nbdisc, z
     character(len=19) :: cart(3), cartdi, masse_type
     logical :: repartition, ok
 !
-    integer(kind=8) :: nbnoeu, nbmail
+    integer(kind=8)  :: nbmail, jdme
     character(len=8) :: noma
 !
 ! --------------------------------------------------------------------------------------------------
@@ -90,7 +91,7 @@ subroutine ace_masse_repartie(nbocc, infdonn, grplmax, lmax, infcarte, nbdisc, z
     integer(kind=8), pointer :: lstpoi1surch(:) => null()
     real(kind=8), pointer :: lstcoenoe(:) => null()
 ! --------------------------------------------------------------------------------------------------
-    integer(kind=8)           :: vmessi(4)
+    integer(kind=8)   :: vmessi(4)
     character(len=24) :: vmessk(6)
 ! --------------------------------------------------------------------------------------------------
 !
@@ -99,13 +100,18 @@ subroutine ace_masse_repartie(nbocc, infdonn, grplmax, lmax, infcarte, nbdisc, z
     call jemarq()
 !
     noma = infdonn%maillage
-    nbnoeu = infdonn%nbnoeu
     ndim = infdonn%dimmod
     nbmail = infdonn%nbmail
+    jdme = infdonn%jmodmail
+    GroupeMaxOccur = infdonn%GroupeMaxOccur
     ivr(:) = infdonn%ivr(:)
 !
 !   Pour les discrets c'est obligatoirement du 2d ou 3d
     ASSERT((ndim .eq. 2) .or. (ndim .eq. 3))
+!   Si c'est un maillage partionné ==> PLOUF
+    if (infdonn%IsParaMesh) then
+        call utmess('F', 'AFFECARAELEM_99')
+    end if
 !
 !   Les cartes sont déjà construites : ace_crea_carte
     cartdi = infcarte(ACE_CAR_DINFO)%nom_carte
@@ -136,8 +142,12 @@ subroutine ace_masse_repartie(nbocc, infdonn, grplmax, lmax, infcarte, nbdisc, z
     AS_ALLOCATE(vi=lstnummaipoi1, size=nbdisc)
     compte_maille = 0
 !   Les mailles de la 1ère occurrence
-    call getvtx('MASS_REP', 'GROUP_MA_POI1', iocc=1, nbval=lmax, vect=grplmax, nbret=nbgrp)
-!   on éclate les GROUP_MA en mailles
+    call getvtx('MASS_REP', 'GROUP_MA_POI1', iocc=1, nbval=GroupeMaxOccur, &
+                vect=grplmax, nbret=nbgrp)
+!   Vérification que les affectations ne concernent que les DISCRET
+    call ace_affe_verif_elem(noma, jdme, lesmailles, nbgrp, grplmax, grpnbma, &
+                             ACE_NU_DISCRET, 'DISCRET', coderet)
+!   On éclate les GROUP_MA en mailles
     do ii = 1, nbgrp
         call jelira(jexnom(magrma, grplmax(ii)), 'LONUTI', nb)
         call jeveuo(jexnom(magrma, grplmax(ii)), 'L', ldgm)
@@ -160,9 +170,12 @@ subroutine ace_masse_repartie(nbocc, infdonn, grplmax, lmax, infcarte, nbdisc, z
         nbsurchpoi1 = 0
         nbsurchpoi2 = 0
         do iocc = 2, nbocc
-            call getvtx('MASS_REP', 'GROUP_MA_POI1', iocc=iocc, nbval=lmax, vect=grplmax, &
-                        nbret=nbgrp)
-!           on éclate les GROUP_MA en mailles
+            call getvtx('MASS_REP', 'GROUP_MA_POI1', iocc=iocc, nbval=GroupeMaxOccur, &
+                        vect=grplmax, nbret=nbgrp)
+!           Vérification que les affectations ne concernent que les DISCRET
+            call ace_affe_verif_elem(noma, jdme, lesmailles, nbgrp, grplmax, grpnbma, &
+                                     ACE_NU_DISCRET, 'DISCRET', coderet)
+!           On éclate les GROUP_MA en mailles
             do ii = 1, nbgrp
                 kk = compte_maille
                 call jelira(jexnom(magrma, grplmax(ii)), 'LONUTI', nb)
@@ -185,8 +198,8 @@ subroutine ace_masse_repartie(nbocc, infdonn, grplmax, lmax, infcarte, nbdisc, z
                             vmessi(3) = nbdisc
                             vmessi(4) = kk
                             vmessk(1) = grplmax(ii)
-                            call utmess('F', 'AFFECARAELEM_21', nk=1, valk=vmessk, ni=4, &
-                                        vali=vmessi)
+                            call utmess('F', 'AFFECARAELEM_21', nk=1, valk=vmessk, &
+                                        ni=4, vali=vmessi)
                         end if
                         lstnummaipoi1(compte_maille) = imail
                     end if
@@ -229,7 +242,8 @@ subroutine ace_masse_repartie(nbocc, infdonn, grplmax, lmax, infcarte, nbdisc, z
 !
         nb_mail_grp = 0
         nb_noeu_grp = 0
-        call getvtx('MASS_REP', 'GROUP_MA', iocc=iocc, nbval=lmax, vect=grplmax, nbret=nbgrp)
+        call getvtx('MASS_REP', 'GROUP_MA', iocc=iocc, nbval=GroupeMaxOccur, &
+                    vect=grplmax, nbret=nbgrp)
 !       on éclate les GROUP_MA en mailles pour déterminer les noeuds concernés
         do ii = 1, nbgrp
             call jelira(jexnom(magrma, grplmax(ii)), 'LONUTI', nb)
@@ -379,14 +393,15 @@ subroutine ace_masse_repartie(nbocc, infdonn, grplmax, lmax, infcarte, nbdisc, z
         end if
 !
 !       on éclate les GROUP_MA_POI1 pour vérifier que les noeuds sont dans le GROUP_MA
-        call getvtx('MASS_REP', 'GROUP_MA_POI1', iocc=iocc, nbval=lmax, vect=grplmax, nbret=nbgrp)
+        call getvtx('MASS_REP', 'GROUP_MA_POI1', iocc=iocc, nbval=GroupeMaxOccur, &
+                    vect=grplmax, nbret=nbgrp)
         do ii = 1, nbgrp
             call jelira(jexnom(magrma, grplmax(ii)), 'LONUTI', nb)
             call jeveuo(jexnom(magrma, grplmax(ii)), 'L', ldgm)
             do jj = ldgm, ldgm+nb-1
                 imail = zi(jj)
 !               Si la maille n'est pas affectée
-                if (zjdlm(imail) .eq. 0) then
+                if (lesmailles(imail) .eq. 0) then
                     vmessk(2) = grplmax(ii)
                     vmessk(3) = int_to_char8(imail)
                     call utmess('F', 'AFFECARAELEM_22', nk=3, valk=vmessk, ni=1, vali=vmessi)

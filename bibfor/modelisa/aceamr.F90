@@ -16,7 +16,7 @@
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
 
-subroutine aceamr(infdonn, lmax, nbocc, infcarte, ivr)
+subroutine aceamr(nbocc, infdonn, infcarte, grplmax)
 !
 !
 ! --------------------------------------------------------------------------------------------------
@@ -29,7 +29,6 @@ subroutine aceamr(infdonn, lmax, nbocc, infcarte, ivr)
 !
 ! IN  : NOMA   : NOM DU MAILLAGE
 ! IN  : NOMO   : NOM DU MODELE
-! IN  : LMAX   : NOMBRE MAX DE MAILLE OU GROUPE DE MAILLE
 ! IN  : NBOCC  : NOMBRE D'OCCURRENCES DU MOT CLE MASS_AJOU
 ! IN  : IVR    : TABLEAU DES INDICES DE VERIFICATION
 !
@@ -38,16 +37,17 @@ subroutine aceamr(infdonn, lmax, nbocc, infcarte, ivr)
     use cara_elem_parameter_module
     use cara_elem_info_type
     use cara_elem_carte_type
+!
     implicit none
-    type(cara_elem_info) :: infdonn
-    type(cara_elem_carte) :: infcarte(*)
-    integer(kind=8) :: lmax, nbocc, ivr(*)
+    integer(kind=8)         :: nbocc
+    type(cara_elem_info)    :: infdonn
+    type(cara_elem_carte)   :: infcarte(*)
+    character(len=24)       :: grplmax(*)
 !
 #include "asterf_types.h"
 #include "jeveux.h"
 #include "asterfort/affdis.h"
 #include "asterfort/assert.h"
-#include "asterfort/getvem.h"
 #include "asterfort/getvtx.h"
 #include "asterfort/jedema.h"
 #include "asterfort/jedetr.h"
@@ -67,10 +67,10 @@ subroutine aceamr(infdonn, lmax, nbocc, infcarte, ivr)
     integer(kind=8) :: nbcar, nbval, nrd
     parameter(nbcar=100, nbval=6, nrd=2)
     integer(kind=8) :: jdc(3), jdv(3), ifm
-    integer(kind=8) :: jdcinf, jdvinf
+    integer(kind=8) :: jdcinf, jdvinf, GroupeMaxOccur, noemaf, noemax, NbNoeudMax
     integer(kind=8) :: i, ii, in, inbn, ino, inoe, ioc, irep
     integer(kind=8) :: irgno, isym, itbmp, itbno, iv
-    integer(kind=8) :: jd, jdls, jj, jn
+    integer(kind=8) :: jd, jj, jn
     integer(kind=8) :: ikma, ldgm, ldnm, lokm, lorep, nbnma
     integer(kind=8) :: nbno, nbnoeu, nc, ncarac, ncmp
     integer(kind=8) :: ndim, ng, ngp, nma, dimcar
@@ -90,18 +90,27 @@ subroutine aceamr(infdonn, lmax, nbocc, infcarte, ivr)
 ! --------------------------------------------------------------------------------------------------
 !
     call jemarq()
+    if (nbocc .le. 0) goto 999
 !
     noma = infdonn%maillage
     ndim = infdonn%dimmod
+    noemaf = infdonn%MailleMaxOccur
+    noemax = infdonn%NoeudMaxMaille
+    GroupeMaxOccur = infdonn%GroupeMaxOccur
+!   Le nombre de noeuds maxi
+    NbNoeudMax = noemaf*noemax
 !   Pour les discrets c'est obligatoirement du 2D ou 3D
     ASSERT((ndim .eq. 2) .or. (ndim .eq. 3))
+!   Si c'est un maillage partionné ==> PLOUF
+    if (infdonn%IsParaMesh) then
+        call utmess('F', 'AFFECARAELEM_99')
+    end if
 !
     nbval2 = 3
 !
-    call wkvect('&&TMPDISCRET', 'V V K24', lmax, jdls)
-    call wkvect('&&TMPTABNO', 'V V K8', lmax, itbno)
-    call wkvect('&&TMPRIGNO', 'V V R', 6*lmax, irgno)
-    call wkvect('&&TMPTABMP', 'V V K8', lmax, itbmp)
+    call wkvect('&&TMPTABNO', 'V V K8', NbNoeudMax, itbno)
+    call wkvect('&&TMPRIGNO', 'V V R', 6*NbNoeudMax, irgno)
+    call wkvect('&&TMPTABMP', 'V V K8', NbNoeudMax, itbmp)
 !
 !   Les cartes sont déjà construites : ace_crea_carte
     cartdi = infcarte(ACE_CAR_DINFO)%nom_carte
@@ -121,7 +130,7 @@ subroutine aceamr(infdonn, lmax, nbocc, infcarte, ivr)
     jdc(3) = infcarte(ACE_CAR_DISCA)%adr_cmp
     jdv(3) = infcarte(ACE_CAR_DISCA)%adr_val
 !
-    ifm = ivr(4)
+    ifm = infdonn%ivr(4)
 !   On ne peut faire qu'une occurrence de MASS_AJOU : catalogue
 !   On garde la boucle, au cas où l'on souhaiterait faire des évolutions
     ASSERT(nbocc .eq. 1)
@@ -132,8 +141,8 @@ subroutine aceamr(infdonn, lmax, nbocc, infcarte, ivr)
         rep = repdis(1)
         lvale = .false.
 !
-        call getvem(noma, 'GROUP_MA', 'MASS_AJOU', 'GROUP_MA', ioc, &
-                    lmax, zk24(jdls), ng)
+        call getvtx('MASS_AJOU', 'GROUP_MA', iocc=ioc, nbval=GroupeMaxOccur, &
+                    vect=grplmax, nbret=ng)
         call r8inir(nbval, 0.0d0, vale, 1)
         call getvtx('MASS_AJOU', 'GROUP_MA_POI1', iocc=ioc, scal=nogp, nbret=ngp)
 !
@@ -142,7 +151,7 @@ subroutine aceamr(infdonn, lmax, nbocc, infcarte, ivr)
         end do
 !
         ncarac = 1
-        if (ivr(3) .eq. 2) then
+        if (infdonn%ivr(3) .eq. 2) then
             write (ifm, 100) rep, ioc
         end if
 !       "GROUP_MA" = TOUTES LES MAILLES DE TOUS LES GROUPES DE MAILLES
@@ -158,11 +167,11 @@ subroutine aceamr(infdonn, lmax, nbocc, infcarte, ivr)
             if (transl) then
                 lamass = 'K_T_D_N'
                 call masrep(noma, ioc, vale, lvale, ng, &
-                            zk24(jdls), nbno, zk8(itbno), zr(irgno), ndim)
+                            grplmax, nbno, zk8(itbno), zr(irgno), ndim)
             else
                 ASSERT(.false.)
             end if
-            ASSERT(nbno .le. lmax)
+            ASSERT(nbno .le. NbNoeudMax)
 !
             do ino = 1, nbno
                 zk8(itbmp+ino-1) = ' '
@@ -201,7 +210,7 @@ subroutine aceamr(infdonn, lmax, nbocc, infcarte, ivr)
                     end do
 !                   SI ON PASSE ICI AUCUN DES NOEUDS DU DISCRET APPARTIENT
 !                   A LA SURFACE, ET CE N'EST PAS NORMAL
-                    write (ifm, *) 'GROUP_MA :', (' '//zk24(jdls+ii-1), ii=1, ng)
+                    write (ifm, *) 'GROUP_MA :', (' '//grplmax(ii), ii=1, ng)
                     call utmess('F', 'MODELISA_21', sk=nomnoe)
 22                  continue
                 end do
@@ -218,7 +227,7 @@ subroutine aceamr(infdonn, lmax, nbocc, infcarte, ivr)
                     end do
                 end if
 !
-                if (ivr(3) .eq. 2) then
+                if (infdonn%ivr(3) .eq. 2) then
                     do i = 1, nbno
                         iv = 1
                         jd = itbmp+i-1
@@ -239,7 +248,7 @@ subroutine aceamr(infdonn, lmax, nbocc, infcarte, ivr)
                     jn = itbno+i-1
 !
                     call affdis(ndim, irep, eta, car(nc), zr(irgno+6*i-6), &
-                                jdc, jdv, ivr, iv, kma, &
+                                jdc, jdv, infdonn%ivr, iv, kma, &
                                 ncmp, ikma, jdcinf, jdvinf, isym)
                     call nocart(cartdi, 3, dimcar, mode='NOM', nma=1, limano=[zk8(jd)])
                     call nocart(cart(ikma), 3, ncmp, mode='NOM', nma=1, limano=[zk8(jd)])
@@ -250,11 +259,11 @@ subroutine aceamr(infdonn, lmax, nbocc, infcarte, ivr)
 30      continue
     end do
 !
-    call jedetr('&&TMPDISCRET')
     call jedetr('&&TMPTABNO')
     call jedetr('&&TMPRIGNO')
     call jedetr('&&TMPTABMP')
 !
+999 continue
     call jedema()
 !
 100 format(/, ' <DISCRET> MATRICES AFFECTEES AUX ELEMENTS DISCRET ', &

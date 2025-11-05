@@ -38,8 +38,8 @@ subroutine masrep(noma, ioc, rigi, lvale, nbgr, &
 #include "asterfort/utmess.h"
 #include "asterfort/as_deallocate.h"
 #include "asterfort/as_allocate.h"
-#include "asterfort/int_to_char8.h"
 #include "blas/ddot.h"
+#include "asterfort/int_to_char8.h"
 !
     integer(kind=8) :: ioc, nbgr, nbno, ndim
     character(len=8) :: noma, tabnoe(*)
