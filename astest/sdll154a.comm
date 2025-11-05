@@ -197,6 +197,9 @@ blocage_b = AFFE_CHAR_MECA(MODELE=modele, DDL_IMPO=(_F(GROUP_NO="B", DX=0, DZ=0)
 deplacement_b = AFFE_CHAR_MECA(MODELE=modele, DDL_IMPO=(_F(GROUP_NO="B", DRX=0.02)))
 deplacement_b_neg = AFFE_CHAR_MECA(MODELE=modele, DDL_IMPO=(_F(GROUP_NO="B", DRX=-0.02)))
 
+# Test DINS / DILAT_THERM : depl_impo DY <0  pour obtenir MFZ < 0 :
+dep_imp_non_sism = AFFE_CHAR_MECA(MODELE=modele, DDL_IMPO=(_F(GROUP_NO="B", DY=-0.01)))
+
 poids = AFFE_CHAR_MECA(MODELE=modele, PESANTEUR=_F(GRAVITE=9.81, DIRECTION=(0.0, 0.0, -1.0)))
 poids_neg = AFFE_CHAR_MECA(MODELE=modele, PESANTEUR=_F(GRAVITE=9.81, DIRECTION=(0.0, 0.0, 1.0)))
 
@@ -324,7 +327,19 @@ deplacement_impose_neg = CALC_CHAMP(
     reuse=deplacement_impose_neg, RESULTAT=deplacement_impose_neg, CONTRAINTE="EFGE_ELNO"
 )
 
-# IMPR_RESU(UNITE=6, FORMAT="RESULTAT", RESU=_F(RESULTAT=deplacement_impose, NOM_CHAM="EFGE_ELNO"))
+deplacement_impose_dins = MECA_STATIQUE(
+    MODELE=modele,
+    CHAM_MATER=ch_mater,
+    CARA_ELEM=cara_elem,
+    EXCIT=(_F(CHARGE=blocage_a), _F(CHARGE=dep_imp_non_sism)),
+    INST=1.0,
+)
+deplacement_impose_dins = CALC_CHAMP(
+    reuse=deplacement_impose_dins, RESULTAT=deplacement_impose_dins, CONTRAINTE="EFGE_ELNO"
+)
+
+# IMPR_RESU(UNITE=8, FORMAT="RESULTAT", RESU=_F(RESULTAT=deplacement_impose_dins, NOM_CHAM="EFGE_ELNO"))
+# IMPR_RESU(UNITE=8, FORMAT="RESULTAT", RESU=_F(RESULTAT=deplacement_impose, NOM_CHAM="EFGE_ELNO"))
 # IMPR_RESU(UNITE=6, FORMAT="RESULTAT", RESU=_F(RESULTAT=deplacement_impose_neg, NOM_CHAM="EFGE_ELNO"))
 
 tabInteg = POST_ELEM(
@@ -429,7 +444,8 @@ sismique_dyn = CREA_RESU(
 
 # appel à POST_ROCHE
 
-# -------------- POST_ROHCE SISMIQUE ---------------------#
+
+# -------------- POST_ROCHE SISMIQUE ---------------------#
 # PostRoche tout + chargement sismique (DYN et QS):
 # Pour l'instant, ce test n'est pas tracée dans la doc V
 # Il s'agit d'un test supplémentaire.
@@ -534,7 +550,83 @@ resuPostRocheToutSism_Coude_ASNR = POST_ROCHE(
     COUDE=_F(GROUP_MA="TUYAU", ANGLE=90, RCOURB=0.01),
 )
 
-# -------------- FIN POST_ROHCE SISMIQUE ---------------------#
+
+# ------------------------------------------------------------------------------#
+# ajout du chargement de type Déplacements Imposés Non-Sismiques (DINS)
+
+# FORME = 'RCC_MRX' (défaut) + CONTRAINTE_ABAT='CODE' (defaut), avec Coude
+# Vérif de la contrainte formule de contrainte vraie dans RCC_MRx
+resuPostRocheToutSism_Coude_DINS = POST_ROCHE(
+    LIMITE_ADM="NON",
+    ZONE_ANALYSE=(_F(GROUP_MA="TUYAU", GROUP_NO_ORIG="A"),),
+    MODELE=modele,
+    CARA_ELEM=cara_elem,
+    CHAM_MATER=ch_mater,
+    RESU_MECA=(
+        _F(TYPE_CHAR="POIDS", CHAM_GD=poids_propre_champ),
+        _F(TYPE_CHAR="DINS", RESULTAT=deplacement_impose_dins, INST=1, CRITERE="ABSOLU"),
+        _F(TYPE_CHAR="DDS", RESULTAT=deplacement_impose, INST=0, CRITERE="ABSOLU"),
+        _F(TYPE_CHAR="SISM_INER_SPEC", RESULTAT=sismique_dyn, DIRECTION="COMBI", TYPE_RESU="DYN"),
+        _F(TYPE_CHAR="SISM_INER_SPEC", RESULTAT=sismique_qs, DIRECTION="COMBI", TYPE_RESU="QS"),
+    ),
+    PRESSION=(_F(TOUT="OUI", VALE=1e6),),
+    COUDE=_F(GROUP_MA="TUYAU", ANGLE=90, RCOURB=0.01),
+)
+
+# FORME = 'ASNR' --> CONTRAINTE_ABAT='REFE_ELAS' (pas de choix de l'utilisateur)
+# (calcul avec Coude)
+# (Contrainte vraie optimisé UT02-X9 calculé avec la formule REFE_ELAS)
+resuPostRocheSism_Coude_ASNR_DINS = POST_ROCHE(
+    FORME="ASNR",
+    ZONE_ANALYSE=(_F(GROUP_MA="TUYAU", GROUP_NO_ORIG="A"),),
+    MODELE=modele,
+    CARA_ELEM=cara_elem,
+    CHAM_MATER=ch_mater,
+    RESU_MECA=(
+        _F(TYPE_CHAR="POIDS", CHAM_GD=poids_propre_champ),
+        # _F(
+        #     TYPE_CHAR="DILAT_THERM",
+        #     RESULTAT=dilatation_thermique,
+        #     INST=1,
+        #     CRITERE="RELATIF",
+        #     PRECISION=1e-6,
+        # ),
+        # _F(TYPE_CHAR="DILAT_THERM", RESULTAT=deplacement_impose_dins, INST=1, CRITERE="ABSOLU"),
+        _F(TYPE_CHAR="DINS", RESULTAT=deplacement_impose_dins, INST=1, CRITERE="ABSOLU"),
+        _F(TYPE_CHAR="DDS", RESULTAT=deplacement_impose, INST=0, CRITERE="ABSOLU"),
+        _F(TYPE_CHAR="SISM_INER_SPEC", RESULTAT=sismique_dyn, DIRECTION="COMBI", TYPE_RESU="DYN"),
+        _F(TYPE_CHAR="SISM_INER_SPEC", RESULTAT=sismique_qs, DIRECTION="COMBI", TYPE_RESU="QS"),
+    ),
+    PRESSION=(_F(TOUT="OUI", VALE=1e6),),
+    COUDE=_F(GROUP_MA="TUYAU", ANGLE=90, RCOURB=0.01),
+)
+
+
+# Duplicate pour couverture TYPE_CHAR="DILAT_THERM"
+
+# FORME = 'ASNR' --> CONTRAINTE_ABAT='REFE_ELAS'
+# (calcul avec Coude)
+# (Contrainte vraie optimisé UT02-X9 calculé avec la formule REFE_ELAS)
+resuPostRocheSism_Coude_ASNR_THER = POST_ROCHE(
+    FORME="ASNR",
+    ZONE_ANALYSE=(_F(GROUP_MA="TUYAU", GROUP_NO_ORIG="A"),),
+    MODELE=modele,
+    CARA_ELEM=cara_elem,
+    CHAM_MATER=ch_mater,
+    RESU_MECA=(
+        _F(TYPE_CHAR="POIDS", CHAM_GD=poids_propre_champ),
+        _F(TYPE_CHAR="DILAT_THERM", RESULTAT=deplacement_impose_dins, INST=1, CRITERE="ABSOLU"),
+        # _F(TYPE_CHAR="DINS", RESULTAT=deplacement_impose_dins, INST=1, CRITERE="ABSOLU"),
+        _F(TYPE_CHAR="DDS", RESULTAT=deplacement_impose, INST=0, CRITERE="ABSOLU"),
+        _F(TYPE_CHAR="SISM_INER_SPEC", RESULTAT=sismique_dyn, DIRECTION="COMBI", TYPE_RESU="DYN"),
+        _F(TYPE_CHAR="SISM_INER_SPEC", RESULTAT=sismique_qs, DIRECTION="COMBI", TYPE_RESU="QS"),
+    ),
+    PRESSION=(_F(TOUT="OUI", VALE=1e6),),
+    COUDE=_F(GROUP_MA="TUYAU", ANGLE=90, RCOURB=0.01),
+)
+
+
+# -------------- FIN POST_ROCHE SISMIQUE ---------------------#
 
 
 resuPostRocheTout = POST_ROCHE(
