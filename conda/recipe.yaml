@@ -55,7 +55,7 @@ requirements:
     - scipy
     - if: win
       then:
-        - hdf5 ==1.14.6 *${{ build_type }}*
+        - hdf5 * *${{ build_type }}*
         - metis * *${{ build_type }}*INT${{ int_type }}*
         - mumps * *${{ build_type }}*INT${{ int_type }}*
         - mfront * *${{ build_type }}*
@@ -80,7 +80,7 @@ requirements:
       then:
         - "libblas * *mkl"
         - "liblapack * *mkl"
-        - hdf5 ==1.14.6 *${{ build_type }}*
+        - hdf5 * *${{ build_type }}*
         - metis * *${{ build_type }}*INT${{ int_type }}*
         - mumps * *${{ build_type }}*INT${{ int_type }}*
         - mfront * *${{ build_type }}*
