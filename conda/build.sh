@@ -30,7 +30,7 @@ export LIBPATH_MEDCOUPLING="${PREFIX}/lib"
 export INCLUDES_MEDCOUPLING="${PREFIX}/include"
 export PYPATH_MEDCOUPLING=${SP_DIR}
 
-python ${RECIPE_DIR}/scripts/update_version.py
+python ${RECIPE_DIR}/config/update_version.py
 
 mpi_type=std
 if [[ "$mpi" != "nompi" ]]; then
@@ -57,8 +57,10 @@ if [[ $major_version -gt 9 ]]; then
   echo "adding -fallow-argument-mismatch to FCFLAGS"
 
   export FCFLAGS="-fallow-argument-mismatch ${FCFLAGS}"
+  export FFLAGS="-fallow-argument-mismatch ${FFLAGS}"
 else
   echo "FCFLAGS: $FCFLAGS"
+  echo "FFLAGS: $FFLAGS"
 fi
 
 if [[ "${int_type}" == "64" ]]; then

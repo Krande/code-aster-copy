@@ -1,7 +1,3 @@
-bootstrapper.*.log
-installer.*.log
-w_fortran-compiler*.exe
-Miniforge3-*.exe
-scripts/main_test_file.py
+diagnostics/main_test_file.py
 REPE_OUT/
 000000*ADAP_1/
