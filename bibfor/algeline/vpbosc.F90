@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -104,6 +104,8 @@ subroutine vpbosc(typres, nbmode, nbvect, omeshi, valpro, &
 !
     loginf = .false.
     logmax = .false.
+    vpinf2 = vpinf
+    vpmax2 = vpmax
     if (method .ne. 'SORENSEN') then
         do i = nbmode+1, nbvect
             if (dble(valpro(i)) .le. vpinf) then
@@ -154,7 +156,9 @@ subroutine vpbosc(typres, nbmode, nbvect, omeshi, valpro, &
 !
         if (logmax) then
             if (vpmax2 .gt. vpmax) then
-                if (vpinf .gt. r8prem()) then
+! erreur de copier coller je pense
+!                if (vpinf .gt. r8prem()) then
+                if (vpmax .gt. r8prem()) then
                     tole = (abs(vpmax2-vpmax)/vpmax)
                     if (tole .lt. precdc) then
                         call utmess('A', 'ALGELINE3_58')
@@ -214,7 +218,7 @@ subroutine vpbosc(typres, nbmode, nbvect, omeshi, valpro, &
     if (niv .ge. 1) then
         write (ifm, 1600)
     end if
-!
+
 1600 format(72('-'))
 !
 end subroutine
