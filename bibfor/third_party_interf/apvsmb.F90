@@ -21,8 +21,6 @@ subroutine apvsmb(kptsc, lmd, rsolu)
 #include "asterf_types.h"
 #include "asterf_petsc.h"
 !
-! person_in_charge: natacha.bereux at edf.fr
-! aslint:disable=
     use aster_petsc_module
     use petsc_data_module
     use saddle_point_module, only: convert_rhs_to_saddle_point
@@ -70,7 +68,7 @@ subroutine apvsmb(kptsc, lmd, rsolu)
 !     Variables PETSc
     PetscInt :: low2, high2
     PetscErrorCode ::  ierr
-    PetscScalar, pointer :: xx(:)
+    PetscScalar, pointer :: xx(:) => null()
     mpi_int :: mrank, msize
 !----------------------------------------------------------------
     call jemarq()

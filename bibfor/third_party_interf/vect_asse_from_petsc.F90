@@ -84,7 +84,7 @@ subroutine vect_asse_from_petsc(vasse, nume_equa, vecpet, scaling, ilocal)
     character(len=24) :: domj, recv, send, gcom, pgid
     character(len=32) :: nojoine, nojoinr
 !
-    PetscScalar, pointer :: xx(:)
+    PetscScalar, pointer :: xx(:) => null()
     PetscErrorCode ::  ierr
     VecScatter :: ctx
     PetscInt :: low, high

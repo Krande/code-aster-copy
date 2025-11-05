@@ -80,8 +80,8 @@ contains
         PetscInt :: nu, mg, ng
         PetscInt :: bs, nsplit, lsize, gsize
         KSP, dimension(:), allocatable, target :: subksp
-        KSP, pointer :: p_subksp(:)
-        KSP, pointer :: ksp
+        KSP, pointer :: p_subksp(:) => null()
+        KSP, pointer :: ksp => null()
         Mat :: Mat_temp
         aster_logical :: debug
 !========================

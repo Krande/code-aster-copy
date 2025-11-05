@@ -73,15 +73,15 @@ module aster_petsc_module
             PetscErrorCode, intent(out) :: ierr
         end subroutine MatCreateShell
     end interface
-    ! interface
-    !     subroutine MatShellSetOperation(mat, operation, myop, ierr)
-    !         use petscmatdef
-    !         Mat :: mat
-    !         MatOperation :: operation
-    !         external :: myop
-    !         PetscErrorCode, intent(out) :: ierr
-    !     end subroutine MatShellSetOperation
-    ! end interface
+    interface
+        subroutine MatShellSetOperation(mat, operation, myop, ierr)
+            use petscmatdef
+            Mat :: mat
+            MatOperation :: operation
+            external :: myop
+            PetscErrorCode, intent(out) :: ierr
+        end subroutine MatShellSetOperation
+    end interface
 !
 ! PC and KSP routines
 !

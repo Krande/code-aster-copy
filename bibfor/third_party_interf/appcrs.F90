@@ -21,8 +21,6 @@ subroutine appcrs(kptsc, lmd)
 #include "asterf_types.h"
 #include "asterf_petsc.h"
 !
-! person_in_charge: natacha.bereux at edf.fr
-! aslint:disable=C1314
     use aster_petsc_module
     use petsc_data_module
     implicit none
@@ -72,7 +70,7 @@ subroutine appcrs(kptsc, lmd)
     PetscInt :: fill, neq, ndprop
     PetscReal :: fillp
     Mat :: a
-    KSP, pointer :: ksp
+    KSP, pointer :: ksp => null()
     KSP, pointer :: subksp(:) => null()
     PC :: pc, pcp
     Vec :: vec_tmp

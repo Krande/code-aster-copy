@@ -21,9 +21,6 @@ subroutine apsolu(kptsc, lmd, rsolu)
 #include "asterf_types.h"
 #include "asterf_petsc.h"
 !
-!
-! person_in_charge: natacha.bereux at edf.fr
-!
     use aster_petsc_module
     use petsc_data_module
     use saddle_point_module, only: update_double_lagrange
@@ -66,7 +63,7 @@ subroutine apsolu(kptsc, lmd, rsolu)
 !     Variables PETSc
     PetscInt :: neqg, neql, nuglpe, high2, low2
     PetscErrorCode ::  ierr
-    PetscScalar, pointer :: xx(:)
+    PetscScalar, pointer :: xx(:) => null()
     VecScatter :: ctx
     Vec :: xgth
     mpi_int :: mrank, msize

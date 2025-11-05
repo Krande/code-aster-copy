@@ -23,7 +23,6 @@ subroutine elg_calcx0()
     use aster_petsc_module
     use elg_data_module
     implicit none
-! person_in_charge: natacha.bereux at edf.fr
 #include "jeveux.h"
 #include "asterc/asmpi_comm.h"
 #include "asterfort/asmpi_info.h"

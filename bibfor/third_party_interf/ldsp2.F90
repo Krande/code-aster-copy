@@ -23,7 +23,6 @@ subroutine ldsp2(pc, x1, y, ierr)
     use petsc_data_module
 !
     implicit none
-! person_in_charge: natacha.bereux at edf.fr
 !
 #include "asterfort/amumph.h"
 #include "asterfort/assert.h"

@@ -72,8 +72,8 @@ subroutine elg_calc_matm_red(matas1, matas2, bas1)
     aster_logical :: lsym
     PetscInt :: nterm, mm, nn
     PetscErrorCode :: ierr
-    PetscInt, pointer :: irow(:)
-    PetscScalar, pointer :: vrow(:)
+    PetscInt, pointer :: irow(:) => null()
+    PetscScalar, pointer :: vrow(:) => null()
     integer(kind=8), pointer :: deeq(:) => null()
     character(len=24), pointer :: refa(:) => null()
 !----------------------------------------------------------------

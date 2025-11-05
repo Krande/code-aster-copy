@@ -58,7 +58,7 @@ subroutine apksp(kptsc)
     PetscInt :: maxits
     PetscReal :: rtol, atol, dtol, aster_petsc_real
     Mat :: a
-    KSP, pointer :: ksp
+    KSP, pointer :: ksp => null()
     PetscViewerAndFormat :: vf
 !=================================================================
     call jemarq()

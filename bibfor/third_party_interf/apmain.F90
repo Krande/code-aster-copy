@@ -28,10 +28,6 @@ subroutine apmain(action, kptsc, rsolu, vcine, istop, &
 !
     implicit none
 !
-!
-! person_in_charge: natacha.bereux at edf.fr
-! aslint:disable=
-!
     character(len=*) :: action
     integer(kind=8) :: kptsc
     real(kind=8) :: rsolu(*)
@@ -125,7 +121,7 @@ subroutine apmain(action, kptsc, rsolu, vcine, istop, &
     PetscScalar, pointer :: xx(:) => null()
     KSPConvergedReason :: indic
     Mat :: a
-    KSP, pointer :: ksp
+    KSP, pointer :: ksp => null()
     PC :: pc
 !----------------------------------------------------------------
     cbid = dcmplx(0.d0, 0.d0)

@@ -20,7 +20,6 @@ subroutine appcpr(kptsc)
 !
 #include "asterf_types.h"
 #include "asterf_petsc.h"
-! person_in_charge: natacha.bereux at edf.fr
     use aster_petsc_module
     use petsc_data_module
     use augmented_lagrangian_module, only: augmented_lagrangian_apply, &
@@ -100,7 +99,7 @@ subroutine appcpr(kptsc)
 
     Mat :: a, auxMat
     Vec :: coords
-    KSP, pointer :: ksp
+    KSP, pointer :: ksp => null()
     IS  :: auxIS
     PC  :: pc
     mpi_int :: mrank, msize

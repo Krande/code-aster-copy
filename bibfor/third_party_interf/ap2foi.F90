@@ -20,7 +20,6 @@ subroutine ap2foi(kptsc, mpicou, nosolv, lmd, indic, &
                   its)
 #include "asterf_types.h"
 #include "asterf_petsc.h"
-! person_in_charge: natacha.bereux at edf.fr
     use aster_petsc_module
     use petsc_data_module
     use lmp_module, only: lmp_destroy
@@ -60,7 +59,7 @@ subroutine ap2foi(kptsc, mpicou, nosolv, lmd, indic, &
     real(kind=8), pointer      :: slvr(:) => null()
     real(kind=8) :: sr4_old
     PetscErrorCode ::  ierr
-    KSP, pointer :: ksp
+    KSP, pointer :: ksp => null()
     PC :: pc_lmp
     !----------------------------------------------------------------
 

@@ -228,7 +228,7 @@ contains
         !
         ! Local variables
         !
-        Mat, pointer :: submat(:)
+        Mat, pointer :: submat(:) => null()
         PetscInt :: nsub
         !
         ASSERT((ctxt%data_model == distributed_data) .or. (ctxt%data_model == replicated_data))

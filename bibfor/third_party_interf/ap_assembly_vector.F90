@@ -74,7 +74,7 @@ subroutine ap_assembly_vector(chno)
     mpi_int :: mrank, msize
     Vec :: assembly
     PetscInt :: low, high
-    PetscScalar, pointer :: xx(:)
+    PetscScalar, pointer :: xx(:) => null()
     PetscBool :: done
     PetscInt, dimension(:), pointer :: ig_petsc_c => null()
 

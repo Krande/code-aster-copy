@@ -23,7 +23,6 @@ subroutine elg_calc_solu(matas1, nsecm, rsolu2, rsolu1, omega2, ke_mass)
     use aster_petsc_module
     use elg_data_module
     implicit none
-! person_in_charge: natacha.bereux at edf.fr
 !
 #include "jeveux.h"
 #include "asterfort/assert.h"
@@ -73,7 +72,7 @@ subroutine elg_calc_solu(matas1, nsecm, rsolu2, rsolu1, omega2, ke_mass)
     PetscErrorCode :: ierr
     PetscInt :: n1, n2, n3
     PetscScalar :: p1
-    PetscScalar, pointer :: xx(:)
+    PetscScalar, pointer :: xx(:) => null()
     Vec :: x1, y, vlag, tmp1
 !
 !

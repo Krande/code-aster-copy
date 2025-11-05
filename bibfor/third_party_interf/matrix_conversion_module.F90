@@ -288,7 +288,6 @@ contains
         Mat :: at_mat
         PetscInt :: nrow, ncol
         PetscInt, dimension(:), pointer :: rowptr_c => null(), colind_c => null()
-        integer(kind=8) :: jerr
         PetscErrorCode :: ierr
 !
 ! La structure CSR de A^T est la structure CSC de A
@@ -327,7 +326,8 @@ contains
         ! Dummy arguments
         Mat, intent(in) :: a_mat
         PetscInt, intent(out)  :: nn
-        PetscInt, dimension(:), pointer :: ia, ja, pia, pja
+        PetscInt, dimension(:), pointer :: ia, ja
+        PetscInt, dimension(:), pointer :: pia => null(), pja => null()
         PetscScalar, dimension(:), pointer :: val
         ! Local variables
         PetscErrorCode :: ierr
