@@ -16,6 +16,12 @@ package:
 
 source:
   - path: ..
+    filter:
+      exclude:
+        - "*/.github/*"
+        - "*/.gitlab/*"
+        - "*/.junie/*"
+        - "*/conda_debug/*"
 
 build:
   number: ${{ build }}
@@ -49,7 +55,7 @@ requirements:
     - scipy
     - if: win
       then:
-        - hdf5 * *${{ build_type }}*
+        - hdf5 ==1.14.6 *${{ build_type }}*
         - metis * *${{ build_type }}*INT${{ int_type }}*
         - mumps * *${{ build_type }}*INT${{ int_type }}*66
         - mfront * *${{ build_type }}*
@@ -74,7 +80,7 @@ requirements:
       then:
         - "libblas * *mkl"
         - "liblapack * *mkl"
-        - hdf5 * *${{ build_type }}*
+        - hdf5 ==1.14.6 *${{ build_type }}*
         - metis * *${{ build_type }}*INT${{ int_type }}*
         - mumps * *${{ build_type }}*INT${{ int_type }}*66
         - mfront * *${{ build_type }}*
@@ -87,7 +93,6 @@ requirements:
     - if: not win
       then:
         - libxcrypt
-        - ${{ pin_compatible('mgis', upper_bound='x.x') }}  # this is not given a run_export in conda-forge
 
 
 tests:

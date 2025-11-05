@@ -1,6 +1,6 @@
 [workspace]
 name = "code-aster"
-version = "17.2.6"
+version = "17.3.12"
 description = "A pixi project for building the windows variant of code aster"
 channels = ["conda-forge"]
 platforms = ["win-64", "linux-64"]
@@ -100,7 +100,7 @@ installd = { cmd = ["msvc/scripts/conda_rearrange.bat"], description = "Copy the
 testd = { cmd = ["run_ctest", "--resutest=temp\\debug", "-L", "submit", "-L", "sequential", "-LE", "need_data", "--timefactor=5.0", "--only-failed-results"], description = "Run the default sequential tests" }
 
 [feature.dev.target.win-64.tasks]
-test_scan = { cmd = ["python", "conda/test_scanner/eval_tests.py", "--output", "conda/test_scanner/results"], description = "Scan the test results" }
+test_scan = { cmd = ["python", "conda_debug/test_scanner/eval_tests.py", "--output", "conda_debug/test_scanner/results"], description = "Scan the test results" }
 debug = { cmd = ["python", "msvc/run_tests.py", "--test-file", "comp008b"], description = "Run the debug script on a specific test" }
 run_aster = { cmd = ["run_aster.bat"], description = "Run the aster executable (code aster needs to be built and installed)" }
 dumpbin = { cmd = ["dumpbin", ], description = "Dump the dependencies of the aster executable" }

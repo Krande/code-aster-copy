@@ -110,7 +110,7 @@ if "%int_type%" == "64" (
     echo "Using 32-bit integer type"
 )
 
-python %RECIPE_DIR%\scripts\update_version.py
+python %RECIPE_DIR%\config\update_version.py
 
 REM Install for standard sequential
 waf configure ^
