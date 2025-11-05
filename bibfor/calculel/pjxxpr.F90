@@ -164,9 +164,7 @@ subroutine pjxxpr(resu1, resu2, moa1, moa2, corres, &
                 end if
             end if
         else
-            if (.not. l_parallel_mesh) then
-                ASSERT(.false.)
-            end if
+            ASSERT(l_parallel_mesh)
         end if
         !
         call rsutc4(resu1, ' ', 1, 200, nomsym, nbsym, acceno)
