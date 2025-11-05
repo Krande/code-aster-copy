@@ -68,3 +68,6 @@ python:
 
 clang:
   - 19
+
+mpi_prefix:
+  - nompi
