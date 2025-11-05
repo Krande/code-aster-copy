@@ -163,8 +163,13 @@ def post_install_links(ctx):
 
         if linkpath.exists():
             linkpath.unlink()
-        os.link(libaster_path, linkpath)
-        Logs.info(f"Created hardlink: {linkpath}")
+        if ctx.env.ASTER_PLATFORM_MSYS2:
+            os.link(libaster_path, linkpath)
+            Logs.info(f"Created hardlink: {linkpath}")
+        else:
+            os.symlink(libaster_path, linkpath)
+            Logs.info(f"Created symlink: {linkpath}")
+
 
 
 def build_libbibc(self, env):
