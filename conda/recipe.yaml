@@ -57,12 +57,12 @@ requirements:
       then:
         - hdf5 ==1.14.6 *${{ build_type }}*
         - metis * *${{ build_type }}*INT${{ int_type }}*
-        - mumps * *${{ build_type }}*INT${{ int_type }}*66
+        - mumps * *${{ build_type }}*INT${{ int_type }}*
         - mfront * *${{ build_type }}*
         - mgis * *${{ build_type }}*
         - libmed * *${{ build_type }}*INT${{ int_type }}*
-        - libscotch * *${{ build_type }}*INT${{ int_type }}*65
-        - scotch * *${{ build_type }}*INT${{ int_type }}*65
+        - libscotch * *${{ build_type }}*INT${{ int_type }}*
+        - scotch * *${{ build_type }}*INT${{ int_type }}*
         - medcoupling * *${{ build_type }}*INT${{ int_type }}*
         - psutil
     - if: not win
@@ -82,12 +82,12 @@ requirements:
         - "liblapack * *mkl"
         - hdf5 ==1.14.6 *${{ build_type }}*
         - metis * *${{ build_type }}*INT${{ int_type }}*
-        - mumps * *${{ build_type }}*INT${{ int_type }}*66
+        - mumps * *${{ build_type }}*INT${{ int_type }}*
         - mfront * *${{ build_type }}*
         - mgis * *${{ build_type }}*
         - libmed * *${{ build_type }}*INT${{ int_type }}*
-        - libscotch * *${{ build_type }}*INT${{ int_type }}*65
-        - scotch * *${{ build_type }}*INT${{ int_type }}*65
+        - libscotch * *${{ build_type }}*INT${{ int_type }}*
+        - scotch * *${{ build_type }}*INT${{ int_type }}*
         - medcoupling * *${{ build_type }}*INT${{ int_type }}*
     - ${{ pin_compatible('numpy', upper_bound='x.x') }}
     - if: not win
