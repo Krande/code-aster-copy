@@ -86,6 +86,11 @@ def options(self):
 def configure(self):
     opts = self.options
     # Configure.find_program uses first self.environ, then os.environ
+    # Ensure self.environ has the compiler variables from os.environ
+    for var in ("CC", "CXX", "FC"):
+        if var in os.environ and var not in self.environ:
+            self.environ[var] = os.environ[var]
+
     if opts.parallel:
         self.environ.setdefault("CC", "mpicc")
         self.environ.setdefault("CXX", "mpicxx")
