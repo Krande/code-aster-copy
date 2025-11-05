@@ -80,7 +80,7 @@ subroutine dis_choc_frot_syme(DD, icodma, ulp, xg, klv, &
 !
     integer(kind=8) :: ii
     real(kind=8) :: xl(6), xd(3), raide(6), raidep(6), rignor, rigtan, depxyz(3)
-    real(kind=8) :: coulom, dist12, Precisxyz(3), klvp(78), utotxyz(3)
+    real(kind=8) :: coulom, dist12, Precisxyz(3), utotxyz(3)
 !
     integer(kind=8) :: axes(3), ContactInGlobal, TestOK, TestNOK, messai(4)
     integer(kind=8) :: jadre1, nbout, jcodre1
@@ -310,7 +310,7 @@ subroutine dis_choc_frot_syme(DD, icodma, ulp, xg, klv, &
             varpl(iidic) = EtatDecol
             varpl(idepyp) = 0.d0
             varpl(idepzp) = 0.d0
-            klv(1:78) = 0.d0
+            klv(1:DD%nsym) = 0.d0
         end if
 !
 !   Élément avec 1 noeud
@@ -355,7 +355,7 @@ subroutine dis_choc_frot_syme(DD, icodma, ulp, xg, klv, &
             varpl(iidic) = EtatDecol
             varpl(idepyp) = 0.d0
             varpl(idepzp) = 0.d0
-            klv(1:78) = 0.d0
+            klv(1:DD%nsym) = 0.d0
         end if
     end if
     varpl(idepx) = depxyz(1)

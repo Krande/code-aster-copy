@@ -45,6 +45,8 @@ subroutine te0039(option, nomte)
 #include "asterfort/utpvgl.h"
 #include "asterfort/utpvlg.h"
 #include "asterfort/lteatt.h"
+#include "asterfort/as_allocate.h"
+#include "asterfort/as_deallocate.h"
 #include "blas/dcopy.h"
     character(len=16) :: option, nomte
 !
@@ -67,27 +69,28 @@ subroutine te0039(option, nomte)
     integer(kind=8), parameter :: nbvari = 9
     real(kind=8) :: varmo(nbvari), varpl(nbvari)
 !
-    integer(kind=8) :: lorien, lmater, ii, jj
-    integer(kind=8) :: ivectu, jvSief, neq
+    integer(kind=8) :: lorien, lmater, ii, jj, i, j, k
+    integer(kind=8) :: ivectu, jvSief
     integer(kind=8) :: iplouf, infodi, itype, ibid
     integer(kind=8) :: igeom, jdc, irep, ifono, ilogic, jvDisp
 !
     real(kind=8) :: pgl(3, 3), force(3)
     real(kind=8) :: fs(12), ugp(12), ulp(12), dpe(12)
     real(kind=8) :: sim(12), sip(12), fono(12)
-    real(kind=8) :: klv(78), kgv(78)
     real(kind=8) :: forref, momref
     real(kind=8) :: r8bid
     real(kind=8) :: utotxyz(3), flp(3)
     real(kind=8) :: kp, kt1, kt2
-    real(kind=8), allocatable :: klvp(:)
+    real(kind=8), pointer :: klvp(:) => null()
+    real(kind=8), pointer :: klv(:) => null()
+    real(kind=8), pointer :: kgv(:) => null()
 !
     character(len=8) :: k8bid
     character(len=16) :: kmess(5)
     character(len=16), pointer :: compor(:) => null()
 !
     aster_logical, parameter :: Predic = ASTER_FALSE
-    aster_logical :: lMatrTangSyme
+    aster_logical :: lMatrTangSyme, IsSymetrique
     blas_int :: b_incx, b_incy, b_n
 !
 ! --------------------------------------------------------------------------------------------------
@@ -107,14 +110,13 @@ subroutine te0039(option, nomte)
         call utmess('A+', 'DISCRETS_27', sk=nomte)
         call infdis('DUMP', ibid, r8bid, 'A+')
     end if
-!   Matrice de raideur symetrique ou pas, pour les discrets
-    call infdis('SYMK', infodi, r8bid, k8bid)
+
 !   Récupere les informations sur les elements
     for_discret%option = option
     for_discret%nomte = nomte
-    call infted(for_discret%nomte, infodi, for_discret%nbt, for_discret%nno, for_discret%nc, &
-                for_discret%ndim, itype)
-    neq = for_discret%nno*for_discret%nc
+!   Matrice de raideur symetrique ou pas, pour les discrets
+    call infdis('SYMK', for_discret%syme, r8bid, k8bid)
+    call getDiscretInformations(for_discret)
 !
     if (option(1:14) .eq. 'REFE_FORC_NODA') then
         call jevech('PVECTUR', 'E', ivectu)
@@ -157,6 +159,11 @@ subroutine te0039(option, nomte)
             call utmess('F', 'DISCRETS_15', nk=2, valk=kmess)
         end if
     else if (option .eq. 'FONL_NOEU') then
+        AS_ALLOCATE(vr=klv, size=for_discret%nbt)
+        klv = 0.d0
+        AS_ALLOCATE(vr=kgv, size=for_discret%nbt)
+        kgv = 0.d0
+
         call jevech('PGEOMER', 'L', igeom)
         call jevech('PDEPLAR', 'L', jvDisp)
         call jevech('PCOMPOR', 'L', vk16=compor)
@@ -168,7 +175,7 @@ subroutine te0039(option, nomte)
 ! DÉPLACEMENTS DANS LE REPÈRE GLOBAL
 !   UGM = DEPLACEMENT PRECEDENT
 !   UGP = DEPLACEMENT COURANT
-            do ii = 1, neq
+            do ii = 1, for_discret%neq
                 ugp(ii) = zr(jvDisp+ii-1)
             end do
 ! DÉPLACEMENTS DANS LE REPÈRE LOCAL
@@ -215,7 +222,7 @@ subroutine te0039(option, nomte)
                 varmo(:) = 0.0; dpe(:) = 0.0
 ! Relation de comportement de choc : forces nodales
                 call jevech('PVECTUR', 'E', ifono)
-                do ii = 1, neq
+                do ii = 1, for_discret%neq
                     zr(ifono+ii-1) = 0.0
                     sim(ii) = 0.0
                 end do
@@ -253,18 +260,42 @@ subroutine te0039(option, nomte)
                         utotxyz(3) = ulp(3)+dpe(3)
                     end if
                 end if
+
+                AS_ALLOCATE(vr=klvp, size=for_discret%nsym)
+                klvp = 0.d0
+
                 ! --- Raideurs du discret élastique
                 call dikpkt(zi(lmater), 'DIS_CONTACT', kp, kt1, kt2)
                 ! --- Matrice tangente et vecteur force du discret élastique (repère local)
                 call dis_elas_para_klfl(for_discret, kp, kt1, kt2, utotxyz, klvp, flp)
                 ! --- Ajout de la contribution du discret en parallèle
-                klv(:) = klv(:)+klvp(:)
-                force(:) = force(:)+flp(:)
+                call hasSymmetricTangentMatrix(for_discret, IsSymetrique)
+                if (IsSymetrique) then
+                    ASSERT(for_discret%nbt .eq. for_discret%nsym)
+                    klv = klv+klvp
+                else
+                    ASSERT(for_discret%nbt .eq. for_discret%nfull)
+                    k = 1
+                    do i = 1, for_discret%neq
+                        do j = 1, i
+                            ii = for_discret%neq*(i-1)
+                            jj = for_discret%neq*(j-1)
+                            !
+                            klv(ii+j) = klv(ii+j)+klvp(k)
+                            if (i /= j) then
+                                klv(jj+i) = klv(jj+i)+klvp(k)
+                            end if
+                            k = k+1
+                        end do
+                    end do
+                end if
+                !
+                force = force+flp
                 !
                 ilogic = 2
                 call discret_sief(for_discret, klv, ulp, sim, ilogic, &
                                   sip, zr(ifono), force)
-                do ii = 1, neq
+                do ii = 1, for_discret%neq
                     zr(ifono+ii-1) = zr(ifono+ii-1)-fono(ii)
                 end do
                 if (for_discret%nno .eq. 2) then
@@ -272,13 +303,16 @@ subroutine te0039(option, nomte)
                         zr(ifono+ii-1) = 0.0
                     end do
                 end if
+                AS_DEALLOCATE(vr=klvp)
             end if
         end if
+        AS_DEALLOCATE(vr=klv)
+        AS_DEALLOCATE(vr=kgv)
     else if (option .eq. 'FORC_NODA') then
         call jevech('PSIEFR', 'L', jvSief)
         call jevech('PVECTUR', 'E', ivectu)
         if (for_discret%nno .eq. 1) then
-            do ii = 1, neq
+            do ii = 1, for_discret%neq
                 fs(ii) = zr(jvSief+ii-1)
             end do
         else
@@ -298,5 +332,6 @@ subroutine te0039(option, nomte)
     else
         ASSERT(.false.)
     end if
+
 !
 end subroutine

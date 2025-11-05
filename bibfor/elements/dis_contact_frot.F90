@@ -69,7 +69,7 @@ subroutine dis_contact_frot(for_discret, iret)
     integer(kind=8) :: iretlc, ifono, imatsym, icarcr, iiter, iterat
     integer(kind=8) :: icontm, icontp
 !
-    real(kind=8) :: klc(for_discret%neq*for_discret%neq), klv(for_discret%nbt)
+    real(kind=8) :: klc(for_discret%nfull), klv(for_discret%nbt)
     real(kind=8) :: dvl(for_discret%neq), dpe(for_discret%neq), dve(for_discret%neq)
     real(kind=8) :: fl(for_discret%neq)
     real(kind=8) :: force(3), raide(6)

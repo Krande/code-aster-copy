@@ -24,7 +24,7 @@ interface
         type(te0047_dscr), intent(in) :: for_discret
         real(kind=8), intent(in)      :: kp, kt1, kt2 
         real(kind=8), intent(in)      :: utotxyz(3)
-        real(kind=8), allocatable, intent(out) :: klvp(:)
+        real(kind=8), intent(out)     :: klvp(for_discret%nsym)
         real(kind=8), intent(out)     :: flp(3)
     end subroutine dis_elas_para_klfl
 end interface

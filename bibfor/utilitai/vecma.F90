@@ -32,13 +32,11 @@ subroutine vecma(mv, n, mp, m)
 !
     k = 0
     do i = 1, m
-        do j = 1, m
+        do j = 1, i
             k = k+1
             mp(i, j) = mv(k)
             mp(j, i) = mv(k)
-            if (j .eq. i) goto 10
         end do
-10      continue
     end do
 !
 end subroutine

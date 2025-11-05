@@ -66,7 +66,7 @@ subroutine dichoc_endo_ldc(for_discret, iret)
 !
     integer(kind=8) :: imater, igeom, icontm, jdc, ivitp, idepen, iviten, jtm, jtp
     integer(kind=8) :: iretlc
-    real(kind=8) :: klc(for_discret%neq*for_discret%neq), klv(for_discret%nbt)
+    real(kind=8) :: klc(for_discret%nfull), klv(for_discret%nbt)
     real(kind=8) :: dvl(for_discret%neq), dpe(for_discret%neq), dve(for_discret%neq)
     real(kind=8) :: fl(for_discret%neq)
     real(kind=8) :: raide(6), force(1)

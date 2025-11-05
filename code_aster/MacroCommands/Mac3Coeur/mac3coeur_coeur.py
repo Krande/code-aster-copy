@@ -56,7 +56,6 @@ from .mac3coeur_commons import CollectionMAC3, flat_list
 
 
 class Coeur:
-
     """Classe définissant un coeur de reacteur."""
 
     required_parameters = [
@@ -120,11 +119,16 @@ class Coeur:
     _subtime = ("N0", "N0b", "N1", "N2", "N3", "N4", "N5", "N6", "N7", "N8", "N8b", "N9")
     _type_coeur = None
     _is_multi_rod = False
+    _has_corner_mesh = False
     _len_mnt = 1.0
 
     @property
     def is_multi_rod(self):
         return self._is_multi_rod
+
+    @property
+    def has_corner_mesh(self):
+        return self._has_corner_mesh
 
     @property
     def len_mnt(self):
@@ -133,14 +137,6 @@ class Coeur:
     @property
     def type_coeur(self):
         return self._type_coeur
-
-    @property
-    def nb_nodes_grid(self):
-        """Number of nodes of a grid"""
-        assert self.collAC.size > 0, "Parameter not set"
-        ls_items = list(set((ac.nb_nodes_grid for ac in self.collAC)))
-        assert len(ls_items) == 1, "Invalid mesh"
-        return ls_items[0]
 
     @property
     def nb_cr_mesh(self):
@@ -674,6 +670,11 @@ class Coeur:
 
         MA = CREA_MAILLAGE(MAILLAGE=MA0, CREA_POI1=tuple(dict_grids))
 
+        for ac in self.collAC:
+            if "DI_CT_%s" % ac.pos_aster not in gma_names:
+                di_ct = MA.getCells("DI_%s" % ac.pos_aster)
+                MA.setGroupOfCells("DI_CT_%s" % ac.pos_aster, di_ct)
+
         if "GRIL_I" not in gma_names:
             gril_i = MA.getCells(tuple(set(grids_middle)))
             MA.setGroupOfCells("GRIL_I", gril_i)
@@ -719,6 +720,7 @@ class Coeur:
         self._len_mnt = round(max(mnt_x) - min(mnt_x), 8)
 
         self._is_multi_rod = len([i for i in gnodes if i.startswith("CREIBAS_")]) > 0
+        self._has_corner_mesh = len([i for i in gnodes if i.startswith("RES_COIN")]) > 0
 
         for ac in self.collAC:
             id_cr = "CR_%s" % ac.pos_aster
@@ -735,8 +737,8 @@ class Coeur:
             sz = len(ls_nodes_grid)
             assert sz == 1, "Invalid mesh %d" % sz
             ac.nb_nodes_grid = ls_nodes_grid[0]
+            logger.debug("<MAC3_COEUR>: nb_nodes_grid(%s) = %s" % (ac.pos_aster, ac.nb_nodes_grid))
 
-        logger.debug("<MAC3_COEUR>: nb_nodes_grid = %s" % (self.nb_nodes_grid))
         logger.debug("<MAC3_COEUR>: nb_cr_mesh = %s" % (self.nb_cr_mesh))
         logger.debug("<MAC3_COEUR>: nb_tg_mesh = %s" % (self.nb_tg_mesh))
 
@@ -1433,12 +1435,25 @@ class Coeur:
 
         if CONTACT == "OUI":
             _M_RES = DEFI_MATERIAU(DIS_CONTACT=_F(RIGI_NOR=1.0e9 * RATIO + 1.0e1 * (1.0 - RATIO)))
+            _M_COIN = DEFI_MATERIAU(
+                DIS_CONTACT=_F(
+                    RIGI_NOR=1.0e9 * RATIO + 1.0e1 * (1.0 - RATIO),
+                    CONTACT="COIN_2D",
+                    PRECISION=(1.0e-02, 1.0e-05, 1.0e-05),
+                )
+            )
         else:
             _M_RES = DEFI_MATERIAU(DIS_CONTACT=_F(RIGI_NOR=1.0e1))
+            _M_COIN = DEFI_MATERIAU(
+                DIS_CONTACT=_F(
+                    RIGI_NOR=1.0e1, CONTACT="COIN_2D", PRECISION=(1.0e-02, 1.0e-05, 1.0e-05)
+                )
+            )
 
         mcf = flat_list([ac.mcf_AC_mater() for ac in self.collAC])
-        mtmp = (_F(GROUP_MA="RES_TOT", MATER=_M_RES),)
-        mcf.extend(mtmp)
+        mcf.extend((_F(GROUP_MA="RES_TOT", MATER=_M_RES),))
+        if self.has_corner_mesh:
+            mcf.extend((_F(GROUP_MA="RES_COIN", MATER=_M_COIN),))
 
         return mcf
 
@@ -1697,7 +1712,6 @@ class Coeur:
 
 
 class CoeurFactory(Mac3Factory):
-
     """Classe pour construire les objets Coeur."""
 
     # Ex.: La classe "Coeur" sera nommée Coeur_900 dans le fichier
@@ -1745,7 +1759,6 @@ class CoeurFactory(Mac3Factory):
 
 
 class MateriauAC:
-
     """Conteneur des matériaux d'un assemblage."""
 
     _types = ("DIL", "MNT", "ES", "EI", "CR", "TG", "GC_ME", "GC_EB", "GC_EH")

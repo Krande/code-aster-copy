@@ -50,8 +50,10 @@ module te0047_type
         !   nbt     : nombre de terme dans la matrice
         !   nno     : nombre de noeuds de l'élément
         !   nc      : nombre de composante par noeud
-        !   neq     : nombre de terme de la matrice complète
+        !   neq     : nombre d'equations
         !   syme    : symetrique=1, non-symetrique=2
+        !   nsym    : nombre de terme de la matrice symetrique
+        !   nfull   : nombre de terme de la matrice complète
         !
         !   ugm     : déplacement moins dans le repère global
         !   dug     : incrément de déplacement dans le repère global
@@ -85,6 +87,8 @@ module te0047_type
         integer(kind=8)             :: nno
         integer(kind=8)             :: nc
         integer(kind=8)             :: neq
+        integer(kind=8)             :: nsym
+        integer(kind=8)             :: nfull
         !
         real(kind=8)        :: ulm(12), ugm(12)
         real(kind=8)        :: dul(12), dug(12)
@@ -143,6 +147,9 @@ contains
         call infted(D%nomte, D%syme, D%nbt, D%nno, D%nc, D%ndim, itype)
         !
         D%neq = D%nno*D%nc
+        D%nsym = D%neq*(D%neq+1)/2
+        D%nfull = D%neq*D%neq
+        !
         ! Récupération des infos concernant les comportements :
         !     rela_comp   compor(RELA_NAME)   NOM_DU_COMPORTEMENT
         !     nbvar       compor(NVAR)        nbvar = read (compor(NVAR),'(i16)')

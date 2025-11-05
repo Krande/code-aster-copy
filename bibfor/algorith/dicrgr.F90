@@ -68,7 +68,7 @@ subroutine dicrgr(DD, icodma, varim, klv, varip, fono, sip)
     type(te0047_dscr), intent(in) :: DD
     integer(kind=8) :: icodma
     real(kind=8) :: varim(*)
-    real(kind=8) :: klv(78), varip(*), fono(*), sip(*)
+    real(kind=8) :: klv(DD%nsym), varip(*), fono(*), sip(*)
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -112,6 +112,7 @@ subroutine dicrgr(DD, icodma, varim, klv, varip, fono, sip)
 !
     option = DD%option
     neq = DD%nno*DD%nc
+    ASSERT(DD%nsym .eq. DD%nbt)
 !
 !   Type d’élément : SEG2
     npg = 2
@@ -378,7 +379,7 @@ subroutine dicrgr(DD, icodma, varim, klv, varip, fono, sip)
         raideldc(5) = kkk
         raideldc(6) = ktt
         !
-        klv(1:78) = 0.0d0
+        klv = 0.0d0
         call diklvraid(DD%nomte, klv, raideldc)
     end if
 !

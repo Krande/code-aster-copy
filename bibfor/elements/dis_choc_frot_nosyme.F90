@@ -29,7 +29,7 @@ subroutine dis_choc_frot_nosyme(DD, icodma, ulp, xg, klv, &
 !
     type(te0047_dscr), intent(in) :: DD
     integer(kind=8) :: icodma
-    real(kind=8) :: ulp(*), klv(*), xg(*), varmo(*), varpl(*), force(*), dpe(*), klvp(144)
+    real(kind=8) :: ulp(*), klv(*), xg(*), varmo(*), varpl(*), force(*), dpe(*)
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -189,7 +189,7 @@ subroutine dis_choc_frot_nosyme(DD, icodma, ulp, xg, klv, &
             end if
             fort = (force(2)**2+force(3)**2)**0.50
         end if
-        klv(1:DD%neq*DD%neq) = 0.d0
+        klv(1:DD%nfull) = 0.d0
         if (DD%nno .eq. 2) then
             ! Cas d'un élément à 2 noeuds
             if (indic .eq. EtatAdher) then

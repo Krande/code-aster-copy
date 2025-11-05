@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -42,7 +42,6 @@ def DEFI_FONCTION_PROFILE(px, py):
 
 
 class ThycLoadManager:
-
     """Object to represent a result read from THYC"""
 
     __slots__ = ("chtr_nodal", "chtr_poutre", "chax_nodal", "chax_poutre")
@@ -97,7 +96,7 @@ class ThycLoadManager:
         linear_ax = []
 
         chThyc = {}
-        for (posX_thyc, posY_thyc) in thyc_resu.fa_positions:
+        for posX_thyc, posY_thyc in thyc_resu.fa_positions:
             posi_aster = coeur.position_fromthyc(posX_thyc, posY_thyc)
             logger.debug(
                 "<THYC_LOAD>: Position THYC : (%s, %s) MAC3 : %s"
@@ -115,8 +114,8 @@ class ThycLoadManager:
 
             for j, grid_j in enumerate(thyc_resu.grids_index):
                 grid_grp_no = "G_%s_%d" % (posi_aster, j + 1)
-                chThyc["X"] = tr_x[grid_j] / coeur.nb_nodes_grid
-                chThyc["Y"] = tr_y[grid_j] / coeur.nb_nodes_grid
+                chThyc["X"] = tr_x[grid_j] / ac.nb_nodes_grid
+                chThyc["Y"] = tr_y[grid_j] / ac.nb_nodes_grid
 
                 logger.debug(
                     "<THYC_LOAD><TRANSVERSAL>: Grid group %s : LoadX = %s, LoadY = %s"
@@ -155,7 +154,7 @@ class ThycLoadManager:
 
             # Force axiale pour une grille extremite (inf)
             grp_ax_g1 = "G_%s_1" % posi_aster
-            f_ax_g1 = force_ax / RAT_CHFR * ac.K_GRE / KTOT / coeur.nb_nodes_grid
+            f_ax_g1 = force_ax / RAT_CHFR * ac.K_GRE / KTOT / ac.nb_nodes_grid
             nodal_ax.extend([_F(GROUP_NO=grp_ax_g1, FX=f_ax_g1)])
             logger.debug(
                 "<THYC_LOAD><AXIAL>: Grid group %s : Axial Load = %s" % (grp_ax_g1, f_ax_g1)
@@ -164,14 +163,14 @@ class ThycLoadManager:
             # Force axiale pour chacune des grilles de mélange
             for j in range(1, ac.NBGR - 1):
                 grp_ax_gi = "G_%s_%d" % (posi_aster, j + 1)
-                f_ax_gi = force_ax / RAT_CHFR * ac.K_GRM / KTOT / coeur.nb_nodes_grid
+                f_ax_gi = force_ax / RAT_CHFR * ac.K_GRM / KTOT / ac.nb_nodes_grid
                 nodal_ax.extend([_F(GROUP_NO=grp_ax_gi, FX=f_ax_gi)])
                 logger.debug(
                     "<THYC_LOAD><AXIAL>: Grid group %s : Axial Load = %s" % (grp_ax_gi, f_ax_gi)
                 )
 
             grp_ax_glast = "G_%s_%d" % (posi_aster, ac.NBGR)
-            f_ax_glast = force_ax / RAT_CHFR * ac.K_GRE / KTOT / coeur.nb_nodes_grid
+            f_ax_glast = force_ax / RAT_CHFR * ac.K_GRE / KTOT / ac.nb_nodes_grid
             nodal_ax.extend([_F(GROUP_NO=grp_ax_glast, FX=f_ax_glast)])
             logger.debug(
                 "<THYC_LOAD><AXIAL>: Grid group %s : Axial Load = %s" % (grp_ax_glast, f_ax_glast)
