@@ -1,12 +1,8 @@
-python:
-  - 3.12
-
 mpi:
-  - nompi
+  - openmpi
 
 build_type:
   - release
-  - debug
 
 int_type:
   - 64

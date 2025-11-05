@@ -26,6 +26,7 @@ jobs:
           { os: windows-latest, build: .ci_nompi_release_64, os_brief: win, short: win-rel },
           { os: windows-latest, build: .ci_nompi_debug_64, os_brief: win, short: win-deb },
           { os: ubuntu-latest, build: .ci_nompi_release_64, os_brief: linux, short: linux-rel }
+          { os: ubuntu-latest, build: .ci_openmpi_release_64, os_brief: linux, short: linux-rel-openmpi }
         ]
     steps:
       - uses: actions/checkout@v5

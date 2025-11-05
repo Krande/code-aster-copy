@@ -45,10 +45,8 @@ if [[ "${build_type}" == "debug" ]]; then
     build_type=debug
 else
     echo "Debugging Disabled"
+    build_type=release
 fi
-
-export FCFLAGS="-fdefault-integer-8 ${FCFLAGS}"
-export FFLAGS="-fdefault-integer-8 ${FFLAGS}"
 
 # if gfortran version > 9, we need to conditionally add -fallow-argument-mismatch
 # to avoid mismatch errors related to floats and integer types
@@ -136,14 +134,14 @@ echo "Compilation complete"
 export LD_LIBRARY_PATH="${PREFIX}/lib/aster"
 
 # This is for reducing reliance on conda activation scripts.
-mv "${PREFIX}/lib/aster/code_aster" "${SP_DIR}/code_aster"
-mv "${PREFIX}/lib/aster/run_aster" "${SP_DIR}/run_aster"
+mv "${PREFIX}/lib64/aster/code_aster" "${SP_DIR}/code_aster"
+mv "${PREFIX}/lib64/aster/run_aster" "${SP_DIR}/run_aster"
 
 # move aster_pkginfo.py and aster_version.py
 mv ${SRC_DIR}/build/${build_type}/code_aster/*.py "${SP_DIR}/code_aster/Utilities/"
 # note to self. aster.so is symlinked to libaster.so
-mv ${PREFIX}/lib/aster/libb*.so "${PREFIX}/lib/"
-mv ${PREFIX}/lib/aster/libAsterMFrOff*.so "${PREFIX}/lib/"
+mv ${PREFIX}/lib64/aster/libb*.so "${PREFIX}/lib/"
+mv ${PREFIX}/lib64/aster/libAsterMFrOff*.so "${PREFIX}/lib/"
 
-mv "${PREFIX}/lib/aster/med_aster.so" "${SP_DIR}/"
-mv ${PREFIX}/lib/aster/*.so "${SP_DIR}/"
+mv "${PREFIX}/lib64/aster/med_aster.so" "${SP_DIR}/"
+mv ${PREFIX}/lib64/aster/*.so "${SP_DIR}/"
