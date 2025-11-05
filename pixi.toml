@@ -18,9 +18,9 @@ platforms = ["linux-64", "win-64"]
 dependencies = { rattler-build = "*", python = "3.12.*" }
 
 [feature.release]
-channels = ["conda-forge", "https://repo.prefix.dev/code-aster",]
+channels = ["conda-forge", "https://repo.prefix.dev/code-aster"]
 [feature.debug]
-channels = ["conda-forge", "https://repo.prefix.dev/code-aster",]
+channels = ["conda-forge", "https://repo.prefix.dev/code-aster"]
 
 [feature.common.dependencies]
 python = "==3.12.8"
@@ -48,8 +48,8 @@ clang = "18.*"
 
 libblas = { version = "*", build = "*mkl" }
 liblapack = { version = "*", build = "*mkl" }
-mkl-devel = { version="2025.3.*", channel="conda-forge" }
-ifx_win-64 = { version="*", channel="conda-forge" }
+mkl-devel = { version = "2025.3.*", channel = "conda-forge" }
+ifx_win-64 = { version = "*", channel = "conda-forge" }
 llvmdev = "*"
 
 [feature.dev.target.win-64.dependencies]
@@ -79,8 +79,8 @@ scotch = { version = "==7.0.7", build = "*debug*INT64*" }
 mumps = { version = "*", build = "*debug*INT64*66" }
 
 [feature.conda.tasks]
-ctest = { cmd = ["rattler-build", "test", "-c", "conda-forge", "-c", "https://repo.prefix.dev/code-aster"], env = { OUTPUT_DIR="$PIXI_PROJECT_ROOT/test_output"} }
-cbuild = { cmd = ["rattler-build", "build", "-r", "conda/recipe.yaml","-m", "conda/config.yaml", "-c", "conda-forge", "-c", "https://repo.prefix.dev/code-aster"], env = { OUTPUT_DIR="$PIXI_PROJECT_ROOT/test_output"} }
+ctest = { cmd = ["rattler-build", "test", "-c", "https://repo.prefix.dev/code-aster", "-c", "conda-forge"], env = { OUTPUT_DIR = "$PIXI_PROJECT_ROOT/test_output" } }
+cbuild = { cmd = ["rattler-build", "build", "-r", "conda/recipe.yaml", "-m", "conda/config.yaml", "-c", "conda-forge", "-c", "https://repo.prefix.dev/code-aster"], env = { OUTPUT_DIR = "$PIXI_PROJECT_ROOT/test_output" } }
 test-eval = { cmd = ["python", "conda_debug/test_scanner/eval_tests.py", "$PIXI_PROJECT_ROOT/test_output", "--output", "$PIXI_PROJECT_ROOT/conda_debug/test_scanner/results"] }
 
 [feature.conda.target.win-64.tasks]
@@ -110,4 +110,4 @@ def-bibfor-ext = { cmd = ["python", "msvc/def_gen_bibfor_ext.py"], description =
 def-bibcxx = { cmd = ["python", "msvc/def_gen_cpp.py"], description = "Generate the bibcxx.def file" }
 def-bibc = { cmd = ["python", "msvc/def_gen_c.py"], description = "Generate the bibc.def file" }
 def-astergc = { cmd = ["python", "msvc/def_gen_astergc.py"], description = "Generate the asterGC.def file" }
-def-gen-all = { cmd = "echo Def generation complete", depends-on =["def-bibfor", "def-bibfor-ext", "def-bibcxx", "def-bibc", "def-astergc"]}
+def-gen-all = { cmd = "echo Def generation complete", depends-on = ["def-bibfor", "def-bibfor-ext", "def-bibcxx", "def-bibc", "def-astergc"] }
