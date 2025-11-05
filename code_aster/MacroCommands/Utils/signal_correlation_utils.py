@@ -127,7 +127,7 @@ def CALC_COHE(puls, **kwargs):
         model=kwargs["TYPE"],
         nom_mail=kwargs["MAILLAGE"],
         nom_group_inter=kwargs["GROUP_NO_INTERF"],
-        **kwargs
+        **kwargs,
     )
     return coherency_matrix[0]
 
@@ -137,7 +137,7 @@ def get_group_nom_coord(group_inter, nom_mail):
     # no des noeuds
     liste_no_interf = nom_mail.getNodes(group_inter)
     # nom des noeuds
-    liste_nom_no_int = [nom_mail.getNodeName(node) for node in liste_no_interf]
+    liste_nom_no_int = [str(node + 1) for node in liste_no_interf]
     COORD_3D = nom_mail.getCoordinates().getValues()
     coord_no_interf = NP.array([COORD_3D[3 * node : 3 * (node + 1)] for node in liste_no_interf])
     if len(coord_no_interf[0]) == 2:

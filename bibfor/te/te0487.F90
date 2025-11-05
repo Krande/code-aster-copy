@@ -138,13 +138,13 @@ subroutine te0487(nomopt, nomte)
 ! --------- Eval gradient at T+
 !
         G_curr = hhoEvalVecCell( &
-                 hhoBasisCell, hhoData%grad_degree(), coorpg(1:3), G_curr_coeff, gbs)
+                 hhoBasisCell, hhoData%grad_degree(), coorpg(1:3), G_curr_coeff)
 !
 ! --------- Eval temperature at T+
 !
         temp_eval_curr = hhoEvalScalCell( &
                          hhoBasisCell, hhoData%cell_degree(), coorpg(1:3), &
-                         temp_curr(cell_offset:), cbs)
+                         temp_curr(cell_offset:))
 !
 ! ------- Compute behavior
 !

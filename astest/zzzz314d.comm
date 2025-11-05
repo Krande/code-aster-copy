@@ -32,7 +32,7 @@ import numpy as np
 nb_comp_basloc = 9
 basloc = FISS0.getCrackFrontNodeBasis().getValues()
 basloc = np.array(basloc).reshape((len(basloc) // nb_comp_basloc), nb_comp_basloc)[:, 3:]
-index_by_nodename = {M.getNodeName(i): i for i in M.getNodes()}
+index_by_nodename = {str(i + 1): i for i in M.getNodes()}
 lnoff = FISS0.getCrackFrontNodes()
 basefond0 = basloc[[index_by_nodename[nodename] for nodename in lnoff], :].flatten()
 

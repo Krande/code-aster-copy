@@ -212,7 +212,7 @@ def all_coordinates(self, MAIL):
     Store in dict type
     """
 
-    nodes = [MAIL.getNodeName(node) for node in MAIL.getNodes()]
+    nodes = [str(node + 1) for node in MAIL.getNodes()]
     node_co = np.reshape(MAIL.getCoordinates().getValues(), (len(nodes), 3)).tolist()
 
     all_co = dict(zip(nodes, node_co))
@@ -1398,7 +1398,7 @@ def grad_elno(self, MAIL, MODE, MATE, listElemTMAIL, __EPSI_ELGA, __FIELD_CAL, i
 
     dicAllElems = {}
     for i, cell in enumerate(connect):
-        dicAllElems[MAIL.getCellName(i)] = [MAIL.getNodeName(j) for j in cell]
+        dicAllElems[str(i + 1)] = [str(j + 1) for j in cell]
 
     dicElemNode = {}
     for iElem in dicAllElems.keys():
@@ -2126,7 +2126,7 @@ def post_jmod_ops(
     OPTION=None,
     ETAT_INIT=None,
     TITRE=None,
-    **args
+    **args,
 ):
     """
     Macro POST_J - Calculate J-integral
@@ -4510,7 +4510,7 @@ def post_jmod_ops(
                 diff_group_ma(self, MAIL, "TMAIL_IMPR", "TMAIL", "TMAIL_CONT3")
 
             ElemsTMAIL = MAIL.getCells("TMAIL")
-            listElemTMAIL = [MAIL.getCellName(iElem) for iElem in ElemsTMAIL]
+            listElemTMAIL = [str(iElem + 1) for iElem in ElemsTMAIL]
 
             #       -----------------------------------
             #       Propagation vectors
@@ -5337,7 +5337,7 @@ def post_jmod_ops(
                     if GROUP_NO[incr_gno] == knodes:
                         # print("collgrno[knodes]  ",collgrno[knodes])
 
-                        LIST_NODE__ = [MAIL.getNodeName(node) for node in MAIL.getNodes(knodes)]
+                        LIST_NODE__ = [str(node + 1) for node in MAIL.getNodes(knodes)]
                         # print("LIST_NODE__  ",LIST_NODE__)
 
                         if incr_gno == 0:

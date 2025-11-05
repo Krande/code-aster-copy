@@ -899,7 +899,7 @@ class Mac3CoeurDeformation(Mac3CoeurCalcul):
         sfield = forc_noda.toSimpleFieldOnNodes()
         fvalues, fmask = sfield.getValues()
         fx = fvalues.T[0]
-        list_args = [_F(NOEUD=mesh.getNodeName(n), FX=f) for (n, f) in zip(gnodes, fx[gnodes])]
+        list_args = [_F(NOEUD=str(n + 1), FX=f) for (n, f) in zip(gnodes, fx[gnodes])]
 
         head_unload = AFFE_CHAR_MECA(MODELE=self.model, FORCE_NODALE=list_args)
 

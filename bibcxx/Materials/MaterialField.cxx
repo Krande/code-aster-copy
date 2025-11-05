@@ -68,18 +68,7 @@ listOfPartOfMaterialField MaterialField::getVectorOfPartOfMaterialField() const 
     return toReturn;
 };
 
-ASTERINTEGER nameToId( const std::string &name ) {
-    if ( name[0] == 'M' || name[1] == 'N' ) {
-        const std::string tmp( name.substr( 1, name.size() - 1 ) );
-        return std::atoi( tmp.c_str() );
-    } else {
-        return std::atoi( name.c_str() );
-    }
-};
-
-MaterialPtr MaterialField::getMaterialOnCell( const std::string cellName ) const {
-    // const auto cellNames = _mesh->getCellNameMap();
-    ASTERINTEGER cellId = nameToId( cellName );
+MaterialPtr MaterialField::getMaterialOnCell( const ASTERINTEGER cellId ) const {
     _champ_mat->build();
     auto size = _champ_mat->size();
     ASTERINTEGER pos = size - 1;
@@ -105,7 +94,7 @@ MaterialPtr MaterialField::getMaterialOnCell( const std::string cellName ) const
         }
     }
     if ( !found )
-        throw std::runtime_error( "Cell " + cellName + " not found in Material" );
+        throw std::runtime_error( "Cell " + std::to_string( cellId ) + " not found in Material" );
 
     const auto valAndComp = _champ_mat->getValues( pos );
     const auto &val = valAndComp.getValues();

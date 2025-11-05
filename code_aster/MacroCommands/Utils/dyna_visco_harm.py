@@ -51,7 +51,7 @@ def dyna_visco_harm(
     e0,
     eta0,
     __num,
-    **args
+    **args,
 ):
     """
     Macro-command DYNA_VISCO,
@@ -117,9 +117,7 @@ def dyna_visco_harm(
                 mc_composante = {}
                 mc_composante["AVEC_CMP"] = tuple(ddl_phys[i])
 
-                mc_force_nodale.append(
-                    _F(NOEUD=(maillage.getNodeName(no_force[i][0] - 1)), **mc_composante)
-                )
+                mc_force_nodale.append(_F(NOEUD=(str(no_force[i][0])), **mc_composante))
 
     if not l_force_nodale:
         UTMESS("F", "DYNAVISCO_8")

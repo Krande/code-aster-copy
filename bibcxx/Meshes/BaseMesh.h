@@ -190,10 +190,6 @@ class BaseMesh : public DataStructure, public ListOfTables {
      */
     ASTERINTEGER getNumberOfCells() const;
 
-    virtual std::string getNodeName( const ASTERINTEGER &index ) const;
-
-    virtual std::string getCellName( const ASTERINTEGER &index ) const;
-
     ASTERINTEGER getCellType( const ASTERINTEGER &index ) const;
 
     virtual VectorLong getCellFamily() const { return VectorLong(); };

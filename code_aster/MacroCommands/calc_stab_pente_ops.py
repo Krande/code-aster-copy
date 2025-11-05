@@ -814,7 +814,7 @@ class LEM_Solver:
                     key: pore_pres_para[key]
                     for key in ["RESULTAT", "NUME_ORDRE", "INST", "PRECISION"]
                     if pore_pres_para.get(key) is not None
-                }
+                },
             )
             __mod_2 = AFFE_MODELE(
                 AFFE=_F(MODELISATION=("D_PLAN",), PHENOMENE="MECANIQUE", TOUT="OUI"),
@@ -1084,7 +1084,7 @@ class LEM_Solver:
                     dist_min = dist
                     ncell_base = ncell
 
-            mat_c = self.chmat.getMaterialOnCell(self.mesh.getCellName(ncell_base))
+            mat_c = self.chmat.getMaterialOnCell(ncell_base)
             if mat_c is None:
                 UTMESS("F", "CALCSTABPENTE_24", vali=ncell_base + 1)
             return mat_c

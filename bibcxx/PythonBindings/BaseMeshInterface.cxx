@@ -84,26 +84,6 @@ Return the connectivity of the mesh as Python lists.
 Returns:
     list[list[int]]: List of, for each cell, a list of the nodes indexes.
         )" )
-        .def( "getNodeName", &BaseMesh::getNodeName, R"(
-Return the name of the given node
-
-Arguments:
-    index (int) : index of the node (0-based)
-
-Returns:
-    str : name of the node (stripped)
-        )",
-              py::arg( "index" ) )
-        .def( "getCellName", &BaseMesh::getCellName, R"(
-Return the name of the given cell
-
-Arguments:
-    index (int) : index of the cell (0-based)
-
-Returns:
-    str : name of the cell (stripped)
-        )",
-              py::arg( "index" ) )
         .def( "getCellTypeName", &BaseMesh::getCellTypeName, R"(
 Return the type name of the given cell
 
