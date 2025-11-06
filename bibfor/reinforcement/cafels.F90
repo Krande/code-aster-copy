@@ -113,6 +113,7 @@ subroutine cafels(cequi, effm, effn, ht, bw, &
     real(kind=8) :: X, Ncc, Mcc, Calc
     logical :: COND_ITER
     logical :: COND_NS
+    integer(kind=8) :: n_et, n_pc, n_pcac, n_ec, n_tot
 
     !Significations des pointeurs :
     !PIVOT = 1 ==> "A"
@@ -337,12 +338,18 @@ subroutine cafels(cequi, effm, effn, ht, bw, &
 998 continue
 
     if (COND_ITER .eqv. (.TRUE.)) then
+        n_et = 11
+        n_pc = precs+1
+        n_pcac = ceiling((n_pc-1)*(ht/d))+1
+        n_ec = ceiling(10*min(scmaxs, scmaxi)*((1-uc)*1.e-6+uc))+1
+        n_tot = n_et+n_pcac+n_ec
         call cafelsiter(cequi, effm, effn, ht, bw, &
                         enrobi, enrobs, scmaxi, scmaxs, ssmax, ferrcomp, &
                         precs, ferrsyme, slsyme, uc, um, COND_NS, &
                         AsTEND, AsCOMP, SsTEND, SsCOMP, &
                         ScTEND, ScCOMP, &
-                        alpha, pivot, etat, ierr)
+                        alpha, pivot, etat, ierr, &
+                        n_et, n_pc, n_pcac, n_ec, n_tot)
     end if
 
 !------------------------------------------------------------------
