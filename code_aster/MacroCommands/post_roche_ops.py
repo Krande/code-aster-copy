@@ -159,8 +159,8 @@ def post_roche_ops(self, **kwargs):
                 TYPE_RESU="EVOL_NOLI",
                 OPERATION="AFFE",
                 AFFE=(
-                    _F(NOM_CHAM="UT01_ELNO", CHAM_GD=chPrin, INST=inst),
-                    _F(NOM_CHAM="UT02_ELNO", CHAM_GD=chComp, INST=inst),
+                    _F(NOM_CHAM="ROC1_ELNO", CHAM_GD=chPrin, INST=inst),
+                    _F(NOM_CHAM="ROC2_ELNO", CHAM_GD=chComp, INST=inst),
                 ),
             )
         else:
@@ -170,8 +170,8 @@ def post_roche_ops(self, **kwargs):
                 reuse=resuOut,
                 RESULTAT=resuOut,
                 AFFE=(
-                    _F(NOM_CHAM="UT01_ELNO", CHAM_GD=chPrin, INST=inst),
-                    _F(NOM_CHAM="UT02_ELNO", CHAM_GD=chComp, INST=inst),
+                    _F(NOM_CHAM="ROC1_ELNO", CHAM_GD=chPrin, INST=inst),
+                    _F(NOM_CHAM="ROC2_ELNO", CHAM_GD=chComp, INST=inst),
                 ),
             )
 

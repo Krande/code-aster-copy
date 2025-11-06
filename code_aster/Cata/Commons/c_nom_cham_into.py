@@ -484,6 +484,8 @@ class NomChamIntoGenerator:
             "RESI_RELA_NOEU": ((), tr("Residus relatifs aux noeuds")),
             "SISE_ELNO": ((), tr("Contraintes aux noeuds par sous-élément")),
             "VITE_VENT": ((), tr("Chargement vitesse du vent")),
+            "ROC1_ELNO": ((), tr("Champ principal issu de POST_ROCHE")),
+            "ROC2_ELNO": ((), tr("Champ complémentaire issu de POST_ROCHE")),
             **{
                 f"UT{str(i).zfill(2)}_{typ}": ((), tr(f"Champ utilisateur numéro {i}_{typ}"))
                 for typ in ("ELGA", "ELNO", "ELEM", "NOEU", "CART")
