@@ -81,7 +81,7 @@ if sys.platform == "win32" and python_version >= (3, 8):
     if ld_library_path:
         # Split the LD_LIBRARY_PATH and add each directory
         for path in ld_library_path.split(os.pathsep):
-            print('Adding directory:', path)
+            print("Adding directory:", path)
             if os.path.isdir(path):
                 print(os.add_dll_directory(os.path.abspath(path)))
 
