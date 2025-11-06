@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -27,6 +27,7 @@ from ..Objects import (
     HarmoGeneralizedResult,
     ModeResult,
     TransientGeneralizedResult,
+    PhysicalSolutionRestitutor,
 )
 from ..Supervis import ExecuteCommand
 
@@ -52,6 +53,39 @@ class RestGenePhys(ExecuteCommand):
             self._result = ModeResult()
         else:
             raise Exception("Unknown result type")
+
+    def exec_(self, keywords):
+        """Override default _exec method."""
+
+        if "ENVELOPPE" in keywords and keywords["ENVELOPPE"]:
+            resu_gene = keywords.get("RESU_GENE")
+            enveloppe = keywords["ENVELOPPE"]
+
+            if enveloppe == "NORME_MOMENT":
+                ar = 1
+            if enveloppe == "VALE_ABS":
+                ar = 0
+            psr = PhysicalSolutionRestitutor(resu_gene, 15, ar)
+            node_fields = psr.computeMaxForFieldsOnNodes()
+            cell_fields = psr.computeMaxForFieldsOnCells()
+
+            self._result.resize(1)
+
+            # Safely set only existing fields
+            if "EFGE_ELNO" in cell_fields:
+                self._result.setField(cell_fields["EFGE_ELNO"], "EFGE_ELNO", 1)
+            if "EGRU_ELNO" in cell_fields:
+                self._result.setField(cell_fields["EGRU_ELNO"], "EGRU_ELNO", 1)
+
+            if "ACCE" in node_fields:
+                self._result.setField(node_fields["ACCE"], "ACCE", 1)
+            if "DEPL" in node_fields:
+                self._result.setField(node_fields["DEPL"], "DEPL", 1)
+            if "REAC_NODA" in node_fields:
+                self._result.setField(node_fields["REAC_NODA"], "REAC_NODA", 1)
+
+        else:
+            super(RestGenePhys, self).exec_(keywords)
 
     def post_exec(self, keywords):
         """Execute the command.
@@ -129,6 +163,7 @@ class RestGenePhys(ExecuteCommand):
                 dofNum = resu_gene.getDOFNumbering()
                 if dofNum:
                     self._result.setDOFNumbering(dofNum)
+
         elif isinstance(resu_gene, ModeResult):
             matrRigiElim = resu_gene.getDependencies()[0]
             assert isinstance(matrRigiElim, AssemblyMatrixDisplacementReal)

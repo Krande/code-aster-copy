@@ -150,6 +150,7 @@
 #include "PythonBindings/PhysicalProblemInterface.h"
 #include "PythonBindings/PhysicalQuantityInterface.h"
 #include "PythonBindings/PhysicalQuantityManagerInterface.h"
+#include "PythonBindings/PhysicalSolutionRestitutorInterface.h"
 #include "PythonBindings/PhysicsAndModelingsInterface.h"
 #include "PythonBindings/PostProcessingInterface.h"
 #include "PythonBindings/PrestressingCableInterface.h"
@@ -334,6 +335,7 @@ PYBIND11_MODULE( libaster, mod ) {
     exportBehaviourPropertyToPython( mod );
     exportCodedMaterialToPython( mod );
     exportSetLoggingLevelToPython( mod );
+    exportPhysicalSolutionRestitutorToPython( mod );
     exportPostProcessingToPython( mod );
     exportHHOToPython( mod );
 #ifdef ASTER_HAVE_MPI

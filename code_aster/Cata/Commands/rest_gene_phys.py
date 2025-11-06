@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -73,6 +73,12 @@ REST_GENE_PHYS = OPER(
     ),
     b_prec_abso=BLOC(
         condition="""(equal_to("CRITERE", 'ABSOLU'))""", PRECISION=SIMP(statut="o", typ="R")
+    ),
+    b_exict_resu_gene=BLOC(
+        condition="""exists("RESU_GENE")""",
+        ENVELOPPE=SIMP(
+            statut="f", typ="TXM", default="VALE_ABS", into=("NORME_MOMENT", "VALE_ABS")
+        ),
     ),
     INTERPOL=SIMP(statut="f", typ="TXM", defaut="NON", into=("NON", "LIN")),
     MULT_APPUI=SIMP(statut="f", typ="TXM", into=("OUI",)),
