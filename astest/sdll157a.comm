@@ -423,6 +423,7 @@ sismique_dyn = CREA_RESU(
 
 resuPostRocheTout = POST_ROCHE(
     SIGM_LIM="NON",
+    TOUT_CHAM="OUI",
     ZONE_ANALYSE=(_F(TOUT="OUI", GROUP_NO_ORIG="ENCA1"),),
     RESU_MECA=(
         _F(TYPE_CHAR="POIDS", RESULTAT=poids_propre, NUME_ORDRE=1),
@@ -574,6 +575,7 @@ TEST_RESU(
 
 resuPostRoche3M = POST_ROCHE(
     SIGM_LIM="NON",
+    TOUT_CHAM="OUI",
     ZONE_ANALYSE=(_F(TOUT="OUI", GROUP_NO_ORIG="ENCA1"),),
     CHAM_MATER=ch_mater,
     CARA_ELEM=cara_elem,

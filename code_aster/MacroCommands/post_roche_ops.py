@@ -20,6 +20,7 @@
 from math import pi
 from ..Messages import UTMESS
 from ..Cata.Syntax import _F
+from ..Utilities import force_list
 from ..CodeCommands import (
     CREA_CHAMP,
     CALC_CHAM_ELEM,
@@ -154,25 +155,17 @@ def post_roche_ops(self, **kwargs):
                 chMomentEquivRegu,
             )
 
+        affe = []
+        if PRCommon.printRoc1:
+            affe.append(_F(NOM_CHAM="ROC1_ELNO", CHAM_GD=chPrin, INST=inst))
+        if PRCommon.printRoc2:
+            affe.append(_F(NOM_CHAM="ROC2_ELNO", CHAM_GD=chComp, INST=inst))
+
         if i == 0:
-            resuOut = CREA_RESU(
-                TYPE_RESU="EVOL_NOLI",
-                OPERATION="AFFE",
-                AFFE=(
-                    _F(NOM_CHAM="ROC1_ELNO", CHAM_GD=chPrin, INST=inst),
-                    _F(NOM_CHAM="ROC2_ELNO", CHAM_GD=chComp, INST=inst),
-                ),
-            )
+            resuOut = CREA_RESU(TYPE_RESU="EVOL_NOLI", OPERATION="AFFE", AFFE=affe)
         else:
             resuOut = CREA_RESU(
-                TYPE_RESU="EVOL_NOLI",
-                OPERATION="AFFE",
-                reuse=resuOut,
-                RESULTAT=resuOut,
-                AFFE=(
-                    _F(NOM_CHAM="ROC1_ELNO", CHAM_GD=chPrin, INST=inst),
-                    _F(NOM_CHAM="ROC2_ELNO", CHAM_GD=chComp, INST=inst),
-                ),
+                TYPE_RESU="EVOL_NOLI", OPERATION="AFFE", reuse=resuOut, RESULTAT=resuOut, AFFE=affe
             )
 
     # pour RESU_MECA_TRAN : calcul des maximums
@@ -308,6 +301,18 @@ class PostRocheCommon:
             if self.args.get("SIGM_LIM") == "OUI":
                 self.lLimiteAdm = True
             self.SIGM_ABAT = self.args.get("SIGM_ABAT")
+
+        self.printRoc1 = False
+        self.printRoc2 = False
+        if self.args.get("TOUT_CHAM"):
+            self.printRoc1 = True
+            self.printRoc2 = True
+        else:
+            list_nom_cham = force_list(self.args.get("NOM_CHAM"))
+            if "ROC1_ELNO" in list_nom_cham:
+                self.printRoc1 = True
+            if "ROC2_ELNO" in list_nom_cham:
+                self.printRoc2 = True
 
     def checkZones(self):
         """

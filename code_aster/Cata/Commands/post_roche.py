@@ -95,4 +95,16 @@ POST_ROCHE = MACRO(
         VALE=SIMP(statut="o", typ="R", val_min=0.0),
     ),
     TRAC_EPSI=SIMP(statut="f", typ=(fonction_sdaster,)),
+    TOUT_CHAM=SIMP(statut="f", typ="TXM", into=("OUI",)),
+    b_nom_cham=BLOC(
+        condition="""not exists("TOUT_CHAM")""",
+        NOM_CHAM=SIMP(
+            statut="f",
+            typ="TXM",
+            validators=NoRepeat(),
+            max=2,
+            defaut="ROC1_ELNO",
+            into=("ROC1_ELNO", "ROC2_ELNO"),
+        ),
+    ),
 )

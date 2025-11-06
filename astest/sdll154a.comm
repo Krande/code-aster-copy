@@ -472,6 +472,7 @@ sismique_dyn = CREA_RESU(
 resuPostRocheToutSism = POST_ROCHE(
     ZONE_ANALYSE=(_F(TOUT="OUI", GROUP_NO_ORIG="A"),),
     MODELE=modele,
+    NOM_CHAM=("ROC1_ELNO", "ROC2_ELNO"),
     CARA_ELEM=cara_elem,
     CHAM_MATER=ch_mater,
     RESU_MECA=(
@@ -496,6 +497,7 @@ resuPostRocheToutSism_Coude = POST_ROCHE(
     SIGM_LIM="NON",
     ZONE_ANALYSE=(_F(GROUP_MA="TUYAU", GROUP_NO_ORIG="A"),),
     MODELE=modele,
+    TOUT_CHAM="OUI",
     CARA_ELEM=cara_elem,
     CHAM_MATER=ch_mater,
     RESU_MECA=(
@@ -523,6 +525,7 @@ resuPostRocheToutSism_Coude_RE = POST_ROCHE(
     SIGM_LIM="NON",
     ZONE_ANALYSE=(_F(GROUP_MA="TUYAU", GROUP_NO_ORIG="A"),),
     MODELE=modele,
+    TOUT_CHAM="OUI",
     CARA_ELEM=cara_elem,
     CHAM_MATER=ch_mater,
     RESU_MECA=(
@@ -550,6 +553,7 @@ resuPostRocheToutSism_Coude_ASNR = POST_ROCHE(
     VARIANTE="ASNR",
     ZONE_ANALYSE=(_F(GROUP_MA="TUYAU", GROUP_NO_ORIG="A"),),
     MODELE=modele,
+    TOUT_CHAM="OUI",
     CARA_ELEM=cara_elem,
     CHAM_MATER=ch_mater,
     RESU_MECA=(
@@ -579,6 +583,7 @@ resuPostRocheToutSism_Coude_DINS = POST_ROCHE(
     SIGM_LIM="NON",
     ZONE_ANALYSE=(_F(GROUP_MA="TUYAU", GROUP_NO_ORIG="A"),),
     MODELE=modele,
+    TOUT_CHAM="OUI",
     CARA_ELEM=cara_elem,
     CHAM_MATER=ch_mater,
     RESU_MECA=(
@@ -599,6 +604,7 @@ resuPostRocheSism_Coude_ASNR_DINS = POST_ROCHE(
     VARIANTE="ASNR",
     ZONE_ANALYSE=(_F(GROUP_MA="TUYAU", GROUP_NO_ORIG="A"),),
     MODELE=modele,
+    TOUT_CHAM="OUI",
     CARA_ELEM=cara_elem,
     CHAM_MATER=ch_mater,
     RESU_MECA=(
@@ -630,6 +636,7 @@ resuPostRocheSism_Coude_ASNR_THER = POST_ROCHE(
     VARIANTE="ASNR",
     ZONE_ANALYSE=(_F(GROUP_MA="TUYAU", GROUP_NO_ORIG="A"),),
     MODELE=modele,
+    TOUT_CHAM="OUI",
     CARA_ELEM=cara_elem,
     CHAM_MATER=ch_mater,
     RESU_MECA=(
@@ -652,6 +659,7 @@ resuPostRocheTout = POST_ROCHE(
     SIGM_LIM="NON",
     ZONE_ANALYSE=(_F(TOUT="OUI", GROUP_NO_ORIG="A"),),
     MODELE=modele,
+    TOUT_CHAM="OUI",
     CARA_ELEM=cara_elem,
     CHAM_MATER=ch_mater,
     RESU_MECA=(
@@ -674,6 +682,7 @@ resuPostRocheRCCMRX = POST_ROCHE(
     # ZONE_ANALYSE=(_F(GROUP_MA="TUYAU", GROUP_NO_ORIG="A"),),
     ZONE_ANALYSE=(_F(GROUP_MA=("M1", "M2"), GROUP_NO_ORIG="A"),),
     MODELE=modele,
+    TOUT_CHAM="OUI",
     CARA_ELEM=cara_elem,
     CHAM_MATER=ch_mater,
     RESU_MECA=(
@@ -689,6 +698,7 @@ resuPostRocheGrMa = POST_ROCHE(
     # ZONE_ANALYSE=(_F(GROUP_MA="TUYAU", GROUP_NO_ORIG="A"),),
     ZONE_ANALYSE=(_F(GROUP_MA=("M2", "M1"), GROUP_NO_ORIG="A"),),
     MODELE=modele,
+    TOUT_CHAM="OUI",
     CARA_ELEM=cara_elem,
     CHAM_MATER=ch_mater,
     RESU_MECA=(
@@ -711,6 +721,7 @@ resuPostRocheTout_D = POST_ROCHE(
     SIGM_LIM="NON",
     ZONE_ANALYSE=(_F(TOUT="OUI", GROUP_NO_ORIG="A"),),
     MODELE=modele,
+    TOUT_CHAM="OUI",
     CARA_ELEM=cara_elem,
     CHAM_MATER=ch_mater,
     RESU_MECA=(_F(TYPE_CHAR="DDS", RESULTAT=deplacement_impose_neg, NUME_ORDRE=1),),
@@ -721,6 +732,7 @@ resuPostRocheTout_DP = POST_ROCHE(
     SIGM_LIM="NON",
     ZONE_ANALYSE=(_F(TOUT="OUI", GROUP_NO_ORIG="A"),),
     MODELE=modele,
+    TOUT_CHAM="OUI",
     CARA_ELEM=cara_elem,
     CHAM_MATER=ch_mater,
     RESU_MECA=(_F(TYPE_CHAR="DDS", RESULTAT=deplacement_impose, NUME_ORDRE=1),),
@@ -733,6 +745,7 @@ resuPostRocheTout_DPG = POST_ROCHE(
     SIGM_LIM="NON",
     ZONE_ANALYSE=(_F(TOUT="OUI", GROUP_NO_ORIG="A"),),
     MODELE=modele,
+    TOUT_CHAM="OUI",
     CARA_ELEM=cara_elem,
     CHAM_MATER=ch_mater,
     TRAC_EPSI=TRAC_EPSI,
@@ -764,6 +777,7 @@ resuPostRocheTout_PG = POST_ROCHE(
     SIGM_LIM="NON",
     ZONE_ANALYSE=(_F(TOUT="OUI", GROUP_NO_ORIG="A"),),
     MODELE=modele,
+    TOUT_CHAM="OUI",
     CARA_ELEM=cara_elem,
     CHAM_MATER=ch_mater,
     RESU_MECA=(_F(TYPE_CHAR="POIDS", RESULTAT=poids_propre, NUME_ORDRE=1),),
@@ -816,6 +830,7 @@ resuLuPostRocheTout = POST_ROCHE(
     SIGM_LIM="NON",
     ZONE_ANALYSE=(_F(TOUT="OUI", GROUP_NO_ORIG="A"),),
     MODELE=modele,
+    TOUT_CHAM="OUI",
     CARA_ELEM=cara_elem,
     CHAM_MATER=ch_materfo,
     # INST_TEMP n'est pas utile si on utilise CHAM_GD plutôt qu'EVOL dans AFFE_MATERIAU/AFFE_VARC
@@ -833,6 +848,7 @@ resuLuPostRocheRCCMRX = POST_ROCHE(
     SIGM_LIM="OUI",
     ZONE_ANALYSE=(_F(TOUT="OUI", GROUP_NO_ORIG="A"),),
     MODELE=modele,
+    TOUT_CHAM="OUI",
     CARA_ELEM=cara_elem,
     CHAM_MATER=ch_materfo,
     # INST_TEMP n'est pas utile si on utilise CHAM_GD plutôt qu'EVOL dans AFFE_MATERIAU/AFFE_VARC
@@ -851,6 +867,7 @@ resuLuPostRocheGrMa = POST_ROCHE(
     SIGM_LIM="NON",
     ZONE_ANALYSE=(_F(GROUP_MA="TUYAU", GROUP_NO_ORIG="A"),),
     MODELE=modele,
+    TOUT_CHAM="OUI",
     CARA_ELEM=cara_elem,
     CHAM_MATER=ch_mater,
     RESU_MECA=(
@@ -869,6 +886,7 @@ resuLuPostRocheGrMa_RE = POST_ROCHE(
     SIGM_ABAT="REFE_ELAS",
     ZONE_ANALYSE=(_F(GROUP_MA="TUYAU", GROUP_NO_ORIG="A"),),
     MODELE=modele,
+    TOUT_CHAM="OUI",
     CARA_ELEM=cara_elem,
     CHAM_MATER=ch_mater,
     RESU_MECA=(
@@ -885,6 +903,7 @@ resuLuPostRocheGrMa_ASNR = POST_ROCHE(
     VARIANTE="ASNR",
     ZONE_ANALYSE=(_F(GROUP_MA="TUYAU", GROUP_NO_ORIG="A"),),
     MODELE=modele,
+    TOUT_CHAM="OUI",
     CARA_ELEM=cara_elem,
     CHAM_MATER=ch_mater,
     RESU_MECA=(
@@ -909,6 +928,7 @@ resuLuPostRocheTout_D = POST_ROCHE(
     SIGM_LIM="NON",
     ZONE_ANALYSE=(_F(TOUT="OUI", GROUP_NO_ORIG="A"),),
     MODELE=modele,
+    TOUT_CHAM="OUI",
     CARA_ELEM=cara_elem,
     CHAM_MATER=ch_mater,
     RESU_MECA=(_F(TYPE_CHAR="DDS", RESULTAT=deplacement_impose, NUME_ORDRE=1),),
@@ -919,6 +939,7 @@ resuLuPostRocheTout_DP = POST_ROCHE(
     SIGM_LIM="NON",
     ZONE_ANALYSE=(_F(TOUT="OUI", GROUP_NO_ORIG="A"),),
     MODELE=modele,
+    TOUT_CHAM="OUI",
     CARA_ELEM=cara_elem,
     CHAM_MATER=ch_mater,
     RESU_MECA=(_F(TYPE_CHAR="DDS", RESULTAT=deplacement_impose, NUME_ORDRE=1),),
@@ -930,6 +951,7 @@ resuLuPostRocheTout_DPG = POST_ROCHE(
     SIGM_LIM="NON",
     ZONE_ANALYSE=(_F(TOUT="OUI", GROUP_NO_ORIG="A"),),
     MODELE=modele,
+    TOUT_CHAM="OUI",
     CARA_ELEM=cara_elem,
     CHAM_MATER=ch_mater,
     RESU_MECA=(
@@ -944,6 +966,7 @@ resuLuPostRocheTout_PG = POST_ROCHE(
     SIGM_LIM="NON",
     ZONE_ANALYSE=(_F(TOUT="OUI", GROUP_NO_ORIG="A"),),
     MODELE=modele,
+    TOUT_CHAM="OUI",
     CARA_ELEM=cara_elem,
     CHAM_MATER=ch_mater,
     RESU_MECA=(_F(TYPE_CHAR="POIDS", RESULTAT=poids_propre, NUME_ORDRE=1),),
