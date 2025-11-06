@@ -83,7 +83,7 @@ subroutine vpcals(eigsol, vecrer, vecrei, vecrek, vecvp, &
 !
     integer(kind=8) :: imet, lamor, lmasse, lmatra, lraide, maxitr, nbvect, neq, nfreq
     integer(kind=8) :: lonwl, lselec, lresid, lworkd, lworkl, lworkv, ldsor, laux, lworkr
-    integer(kind=8) :: lauc, laur, laul, ldiagr, lsurdr, lprod, lddl, eddl, eddl2
+    integer(kind=8) :: lauc, laur, laul, ldiagr, lsurdr, lprod, lddl, eddl, eddl2, ibid
     integer(kind=8) :: nfreq1, izero, mfreq, ifreq, ifm, niv, priram(8)
     integer(kind=8) :: lresui, lresur, lresuk, lvec, redem, jstab
     real(kind=8) :: alpha, quapi2, omecor, precdc, precsh, rbid, rzero, tolsor
@@ -238,6 +238,16 @@ subroutine vpcals(eigsol, vecrer, vecrei, vecrek, vecvp, &
                     ifm, niv, priram, alpha, omecor, &
                     nconv, flage, solveu, &
                     nbddl2, zi(eddl2), zr(jstab), csta, redem)
+        if (lpg) then
+! --  ON MODIFIE QUELQUES VALEURS POUR OPTION='PLUS_GRANDE'
+            k24bid = masse
+            call vpecri(eigsol, 'K', 2, k24bid, rbid, ibid)
+            k24bid = raide
+            call vpecri(eigsol, 'K', 3, k24bid, rbid, ibid)
+            do imet = 1, nconv
+                zr(ldsor-1+imet) = +1.d0/zr(ldsor-1+imet)
+            end do
+        end if
         call rectfr(nconv, nconv, omeshi, npivot, nblagr, &
                     zr(ldsor), nfreq+1, zi(lresui), zr(lresur), mxresf)
         nfreq1 = nfreq+1
@@ -250,7 +260,7 @@ subroutine vpcals(eigsol, vecrer, vecrei, vecrek, vecvp, &
             zi(lresui-1+mxresf+imet) = izero
             zr(lresur-1+imet) = freqom(zr(lresur-1+mxresf+imet))
 !       SI OPTION 'PLUS_GRANDE' : CONVERSION EN VALEUR PHYSIQUE
-            if (lpg) zr(lresur-1+imet) = +1.d0/(quapi2*zr(lresur-1+imet))
+!            if (lpg) zr(lresur-1+imet) = +1.d0/(quapi2*zr(lresur-1+imet))
             zr(lresur-1+2*mxresf+imet) = rzero
             zk24(lresuk-1+mxresf+imet) = kmetho
         end do
@@ -284,6 +294,17 @@ subroutine vpcals(eigsol, vecrer, vecrei, vecrek, vecvp, &
                         zr(lworkv), zi(lprod), zi(lddl), neqact, maxitr, &
                         ifm, niv, priram, alpha, omecor, &
                         nconv, flage, solveu)
+
+            if (lpg) then
+! --  ON MODIFIE QUELQUES VALEURS POUR OPTION='PLUS_GRANDE'
+                k24bid = masse
+                call vpecri(eigsol, 'K', 2, k24bid, rbid, ibid)
+                k24bid = raide
+                call vpecri(eigsol, 'K', 3, k24bid, rbid, ibid)
+                do imet = 1, nconv
+                    zr(ldsor-1+imet) = +1.d0/zr(ldsor-1+imet)
+                end do
+            end if
             call rectfr(nconv, nconv, omeshi, npivot, nblagr, &
                         zr(ldsor), nfreq+1, zi(lresui), zr(lresur), mxresf)
             nfreq1 = nfreq+1
@@ -297,7 +318,7 @@ subroutine vpcals(eigsol, vecrer, vecrei, vecrek, vecvp, &
                 zi(lresui-1+mxresf+imet) = izero
                 zr(lresur-1+imet) = freqom(zr(lresur-1+mxresf+imet))
 !           SI OPTION 'PLUS_GRANDE' : CONVERSION EN VALEUR PHYSIQUE
-                if (lpg) zr(lresur-1+imet) = +1.d0/(quapi2*zr(lresur-1+imet))
+                !if (lpg) zr(lresur-1+imet) = +1.d0/(quapi2*zr(lresur-1+imet))
                 zr(lresur-1+2*mxresf+imet) = rzero
                 zk24(lresuk-1+mxresf+imet) = kmetho
             end do
@@ -448,7 +469,6 @@ subroutine vpcals(eigsol, vecrer, vecrei, vecrek, vecvp, &
     if (mod45b(1:4) .eq. 'OP45') then
         call vpecri(eigsol, 'I', 1, k24bid, rbid, nfreq)
     end if
-
 !
 !
 ! --- NETTOYAGE OBJETS TEMPORAIRES

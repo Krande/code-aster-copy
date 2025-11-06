@@ -74,7 +74,7 @@ subroutine vpcalt(eigsol, vecrer, vecrei, vecrek, vecvp, &
 !
     integer(kind=8) :: i, iret, imet, lamor, lmasse, lmatra, lraide, nbvect, neq, nfreq
     integer(kind=8) :: lselec, ldiagr, lsurdr, lprod, lddl, lsign, lxrig, lmtpsc
-    integer(kind=8) :: iadx, iady, iadz, iadrh, iadrb
+    integer(kind=8) :: iadx, iady, iadz, iadrh, iadrb, ibid
     integer(kind=8) :: mfreq, ifreq, nitv, nborto, nitqrm
     integer(kind=8) :: lresui, lresur, lresuk, lvec
     real(kind=8) :: quapi2, omecor, precdc, rbid, rzero, prorto, prsudg
@@ -190,6 +190,18 @@ subroutine vpcalt(eigsol, vecrer, vecrei, vecrek, vecvp, &
         call vp2trd('G', nbvect, zr(ldiagr), zr(lsurdr), zr(lsign), &
                     zr(iadz), nitv, nitqrm)
         call vpreco(nbvect, neq, zr(iadz), zr(lvec))
+        if (lpg) then
+! --  ON MODIFIE QUELQUES VALEURS POUR OPTION='PLUS_GRANDE'
+            k24bid = masse
+            call vpecri(eigsol, 'K', 2, k24bid, rbid, ibid)
+            k24bid = raide
+            call vpecri(eigsol, 'K', 3, k24bid, rbid, ibid)
+            do imet = 1, nfreq
+                zr(ldiagr-1+imet) = +1.d0/zr(ldiagr-1+imet)
+            end do
+! --- POUR LE TEST DE STURM: ON NE PREND PAS EN COMPTE LES MODES NON CONVERGES ICI
+            nbvect = nfreq
+        end if
         call rectfr(nfreq, nbvect, omeshi, npivot, nblagr, &
                     zr(ldiagr), nbvect, zi(lresui), zr(lresur), mxresf)
         call vpbost(typres, nfreq, nbvect, omeshi, zr(ldiagr), &
@@ -202,7 +214,7 @@ subroutine vpcalt(eigsol, vecrer, vecrei, vecrek, vecvp, &
             zi(lresui-1+mxresf+imet) = nitqrm
             zr(lresur-1+imet) = freqom(zr(lresur-1+mxresf+imet))
 !           SI OPTION 'PLUS_GRANDE' : CONVERSION EN VALEUR PHYSIQUE
-            if (lpg) zr(lresur-1+imet) = +1.d0/(quapi2*zr(lresur-1+imet))
+            !if (lpg) zr(lresur-1+imet) = +1.d0/(quapi2*zr(lresur-1+imet))
             zr(lresur-1+2*mxresf+imet) = rzero
             zk24(lresuk-1+mxresf+imet) = kmetho
         end do

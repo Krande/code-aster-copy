@@ -19,10 +19,10 @@
 !
 !
 interface
-    subroutine vpfopr(option, typres, lmasse, lraide, ldynam,&
-                      omemin, omemax, omeshi, nbfreq, npivot,&
-                      omecor, precsh, nbrssa, nblagr, solveu,&
-                      det, idet)
+    subroutine vpfopr(option, typres, lmasse, lraide, ldynam, &
+                      omemin, omemax, omeshi, nbfreq, npivot, &
+                      omecor, precsh, nbrssa, nblagr, solveu, &
+                      det, idet, lpg)
         character(len=*) :: option
         character(len=16) :: typres
         integer(kind=8) :: lmasse
@@ -40,5 +40,6 @@ interface
         character(len=19) :: solveu
         real(kind=8) :: det(2)
         integer(kind=8) :: idet(2)
+        aster_logical, optional, intent(in) :: lpg
     end subroutine vpfopr
 end interface

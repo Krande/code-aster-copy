@@ -70,7 +70,7 @@ subroutine vpcalq(eigsol, vecrer, vecrei, vecrek, vecvp, &
 !
 ! --- VARIABLES LOCALES
 !
-    integer(kind=8) :: imet, lamor, lmasse, lraide, nbvect, neq, nfreq
+    integer(kind=8) :: imet, lamor, lmasse, lraide, nbvect, neq, nfreq, ibid
     integer(kind=8) :: qrn, qrlwor, qrn2, ilscal, irscal, icscal, ivscal, iiscal
     integer(kind=8) :: lvalpr, iqrn, lqrn, qrar, qrai, qrba, qrvl, kqrn
     integer(kind=8) :: lauc, kqrnr, mfreq, ifreq, izero
@@ -188,6 +188,16 @@ subroutine vpcalq(eigsol, vecrer, vecrei, vecrek, vecvp, &
                         omemax, omeshi, zi(lprod), zi(llagr), nfreq, lmasse, &
                         lraide, lamor, numedd, sigma, icscal, &
                         ivscal, iiscal, bwork, flage)
+            if (lpg) then
+! --  ON MODIFIE QUELQUES VALEURS POUR OPTION='PLUS_GRANDE'
+                k24bid = masse
+                call vpecri(eigsol, 'K', 2, k24bid, rbid, ibid)
+                k24bid = raide
+                call vpecri(eigsol, 'K', 3, k24bid, rbid, ibid)
+                do imet = 1, nconv
+                    zr(lvalpr-1+imet) = +1.d0/zr(lvalpr-1+imet)
+                end do
+            end if
             call rectfr(nconv, nconv, omeshi, npivot, nblagr, &
                         zr(lvalpr), nfreq, zi(lresui), zr(lresur), mxresf)
             call vpbost(typres, nconv, nconv, omeshi, zr(lvalpr), &
@@ -199,7 +209,7 @@ subroutine vpcalq(eigsol, vecrer, vecrei, vecrek, vecvp, &
                 zi(lresui-1+mxresf+imet) = izero
                 zr(lresur-1+imet) = freqom(zr(lresur-1+mxresf+imet))
 !           SI OPTION 'PLUS_GRANDE' : CONVERSION EN VALEUR PHYSIQUE
-                if (lpg) zr(lresur-1+imet) = +1.d0/(quapi2*zr(lresur-1+imet))
+!                if (lpg) zr(lresur-1+imet) = +1.d0/(quapi2*zr(lresur-1+imet))
                 zr(lresur-1+2*mxresf+imet) = rzero
                 zk24(lresuk-1+mxresf+imet) = typeqz
             end do
