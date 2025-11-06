@@ -362,6 +362,20 @@ class SimpleFieldOnCells : public DataField {
     };
 
     /**
+     * Calculate the position of value in CESV array
+     */
+    ASTERINTEGER getPositionInArray( const ASTERINTEGER &ima, const ASTERINTEGER &icmp,
+                                     const ASTERINTEGER &ipt, const ASTERINTEGER &ispt ) {
+        return _positionInArray( ima, icmp, ipt, ispt );
+    }
+
+    /**
+     * @brief Get the values of the field
+     *
+     */
+    const JeveuxVector< ValueType > &getValues() const { return _values; }
+
+    /**
      * @brief Access to the (icmp) component of the (ima) cell
               at the (ipt) point, at the (ispt) sub-point.
     */

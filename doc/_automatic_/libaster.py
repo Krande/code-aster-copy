@@ -16695,6 +16695,119 @@ def resetFortranLoggingLevel():
     """Reset level of logging for fortran code (level = 0)."""
 
 
+# class PhysicalSolutionRestitutor in libaster
+
+
+class PhysicalSolutionRestitutor:
+    pass
+
+    # Method resolution order:
+    #     PhysicalSolutionRestitutor
+    #     pybind11_builtins.pybind11_object
+    #     builtins.object
+
+    # Methods defined here:
+
+    def __init__(self, *args, **kwargs):
+        """Overloaded function.
+
+        1. __init__(self: libaster.PhysicalSolutionRestitutor, resgen: libaster.TransientGeneralizedResult) -> None
+
+
+        PhysicalSolutionRestitutor(resgen)
+
+        Create a PhysicalSolutionRestitutor associated with a transient generalized result.
+
+        Arguments:
+            resgen (TransientGeneralizedResult):
+                Pointer to the transient generalized result from which physical fields
+                will be reconstructed.
+
+        Returns:
+            PhysicalSolutionRestitutor:
+                A restitution object initialized with the given transient result.
+
+
+        2. __init__(self: libaster.PhysicalSolutionRestitutor, resgen: libaster.TransientGeneralizedResult, nbatch: int, ar: int) -> None
+
+
+        PhysicalSolutionRestitutor(resgen, nbatch, ar)
+
+        Create a PhysicalSolutionRestitutor with control over batching and activation parameters.
+
+        Arguments:
+            resgen (TransientGeneralizedResult):
+                Transient generalized result object containing modal information.
+            nbatch (int):
+                Number of batches used during restitution computations.
+            ar (int):
+                Additional parameter for enveloppe computations.
+
+        Returns:
+            PhysicalSolutionRestitutor:
+                Configured restitution object for field reconstruction.
+        """
+
+    def computeMaxForFieldsOnCells(self):
+        """Compute the time-maximum of all modal fields defined on cells.
+
+        Similar to `computeMaxForFieldsOnNodes`, but applied to cell-based fields.
+        Each entry in the returned dictionary corresponds to a field name and its
+        cell field containing maximum values over the transient duration.
+
+        Returns:
+            dict[str, FieldOnCellsReal]:
+                Mapping between field names and their corresponding
+                cell fields containing the maximum values over time.
+        """
+
+    def computeMaxForFieldsOnNodes(self):
+        """Compute the time-maximum of all modal fields defined on nodes.
+
+        This function processes all nodal fields associated with the transient result
+        and returns the maximum (component-wise or field-wise) observed over time
+        for each field.
+
+        Returns:
+            dict[str, FieldOnNodesReal]:
+                Mapping between field names and their corresponding
+                nodal fields containing the maximum values over time.
+        """
+
+    def get_acceleration_coeffs(self):
+        """Return the generalized acceleration coefficients.
+
+        These coefficients represent the modal acceleration amplitudes
+        used to reconstruct physical acceleration fields.
+
+        Returns:
+            list[float]:
+                Reference to the vector of acceleration coefficients (no copy).
+        """
+
+    def get_displacement_coeffs(self):
+        """Return the generalized displacement coefficients.
+
+        These coefficients represent the modal displacement amplitudes
+        used during physical restitution.
+
+        Returns:
+            list[float]:
+                Reference to the vector of displacement coefficients (no copy).
+        """
+
+    def get_velocity_coeffs(self):
+        """Return the generalized velocity coefficients.
+
+        These coefficients represent the modal velocity amplitudes
+        used to reconstruct physical velocity fields.
+
+        Returns:
+            list[float]:
+                Reference to the vector of velocity coefficients (no copy).
+        """
+
+
 # class PostProcessing in libaster
 
 

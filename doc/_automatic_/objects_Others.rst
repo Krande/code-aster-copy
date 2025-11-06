@@ -529,6 +529,15 @@ Documentation of all other types.
 
 
 ********************************************************************************
+:py:class:`~code_aster.Objects.PhysicalSolutionRestitutor` object
+********************************************************************************
+
+.. autoclass:: code_aster.Objects.PhysicalSolutionRestitutor
+   :show-inheritance:
+   :members:
+
+
+********************************************************************************
 :py:class:`~code_aster.Objects.Physics` object
 ********************************************************************************
 
