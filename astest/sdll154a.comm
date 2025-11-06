@@ -338,6 +338,25 @@ deplacement_impose_dins = CALC_CHAMP(
     reuse=deplacement_impose_dins, RESULTAT=deplacement_impose_dins, CONTRAINTE="EFGE_ELNO"
 )
 
+ch_deplacement_impose_dins = CREA_CHAMP(
+    TYPE_CHAM="ELNO_SIEF_R",
+    OPERATION="EXTR",
+    RESULTAT=deplacement_impose_dins,
+    NOM_CHAM="EFGE_ELNO",
+    INST=1,
+)
+
+ch_deplacement_impose_dins_demi = CREA_CHAMP(
+    OPERATION="ASSE",
+    MODELE=modele,
+    TYPE_CHAM="ELNO_SIEF_R",
+    PROL_ZERO="OUI",
+    ASSE=_F(
+        COEF_R=0.5, CHAM_GD=ch_deplacement_impose_dins, TOUT="OUI", NOM_CMP=("MT", "MFY", "MFZ")
+    ),
+)
+
+
 # IMPR_RESU(UNITE=8, FORMAT="RESULTAT", RESU=_F(RESULTAT=deplacement_impose_dins, NOM_CHAM="EFGE_ELNO"))
 # IMPR_RESU(UNITE=8, FORMAT="RESULTAT", RESU=_F(RESULTAT=deplacement_impose, NOM_CHAM="EFGE_ELNO"))
 # IMPR_RESU(UNITE=6, FORMAT="RESULTAT", RESU=_F(RESULTAT=deplacement_impose_neg, NOM_CHAM="EFGE_ELNO"))
@@ -615,8 +634,8 @@ resuPostRocheSism_Coude_ASNR_THER = POST_ROCHE(
     CHAM_MATER=ch_mater,
     RESU_MECA=(
         _F(TYPE_CHAR="POIDS", CHAM_GD=poids_propre_champ),
-        _F(TYPE_CHAR="DILAT_THERM", RESULTAT=deplacement_impose_dins, INST=1, CRITERE="ABSOLU"),
-        # _F(TYPE_CHAR="DINS", RESULTAT=deplacement_impose_dins, INST=1, CRITERE="ABSOLU"),
+        _F(TYPE_CHAR="DILAT_THERM", CHAM_GD=ch_deplacement_impose_dins_demi),
+        _F(TYPE_CHAR="DINS", CHAM_GD=ch_deplacement_impose_dins_demi),
         _F(TYPE_CHAR="DDS", RESULTAT=deplacement_impose, INST=0, CRITERE="ABSOLU"),
         _F(TYPE_CHAR="SISM_INER_SPEC", RESULTAT=sismique_dyn, DIRECTION="COMBI", TYPE_RESU="DYN"),
         _F(TYPE_CHAR="SISM_INER_SPEC", RESULTAT=sismique_qs, DIRECTION="COMBI", TYPE_RESU="QS"),

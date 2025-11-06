@@ -250,7 +250,7 @@ class PostRocheCommon:
         self.dirDisp = ["X", "Y", "Z", "COMBI"]
         self.listCmp = ["MT", "MFY", "MFZ"]
 
-        self.permanentLoadsTypes = ["POIDS", "DILAT_THERM"]
+        self.permanentLoadsTypes = ["POIDS", "DILAT_THERM", "DINS"]
         self.nbIterMax = 30
         self.seuilSigRef = 1e-6
 
@@ -918,7 +918,11 @@ class PostRocheCommon:
             __Mperm = asse_Mperm[0]["CHAM_GD"]
         else:
             __Mperm = CREA_CHAMP(
-                OPERATION="ASSE", MODELE=self.model, TYPE_CHAM="ELNO_SIEF_R", ASSE=asse_Mperm
+                OPERATION="ASSE",
+                MODELE=self.model,
+                TYPE_CHAM="ELNO_SIEF_R",
+                PROL_ZERO="OUI",
+                ASSE=asse_Mperm,
             )
 
         if asse_mperm == []:
@@ -927,7 +931,11 @@ class PostRocheCommon:
             __mperm = asse_mperm[0]["CHAM_GD"]
         else:
             __mperm = CREA_CHAMP(
-                OPERATION="ASSE", MODELE=self.model, TYPE_CHAM="ELNO_SIEF_R", ASSE=asse_mperm
+                OPERATION="ASSE",
+                MODELE=self.model,
+                TYPE_CHAM="ELNO_SIEF_R",
+                PROL_ZERO="OUI",
+                ASSE=asse_mperm,
             )
 
         # changement des composantes pour formule
