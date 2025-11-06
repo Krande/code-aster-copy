@@ -20,7 +20,8 @@
 
 #include "Results/PhysicalSolutionRestitutor.h"
 
-std::map< std::string, FieldOnNodesRealPtr > PhysicalSolutionRestitutor::computeMaxForFieldsOnNodes() {
+std::map< std::string, FieldOnNodesRealPtr >
+PhysicalSolutionRestitutor::computeMaxForFieldsOnNodes() {
     const auto &resmod = getModeResults();
     const auto &resgen = getGeneralizedResults();
     if ( !resmod || !resgen )
@@ -35,7 +36,7 @@ std::map< std::string, FieldOnNodesRealPtr > PhysicalSolutionRestitutor::compute
 
     std::map< std::string, FieldOnNodesRealPtr > results;
 
-    const std::vector< std::string > availableFields = resmod->getFieldsNames();
+    const VectorString availableFields = resmod->getFieldsNames();
     auto hasField = [&]( const std::string &name ) {
         return std::find( availableFields.begin(), availableFields.end(), name ) !=
                availableFields.end();
@@ -62,9 +63,9 @@ std::map< std::string, FieldOnNodesRealPtr > PhysicalSolutionRestitutor::compute
         const size_t nVals = field_max->getValues()->size();
         std::fill_n( max_ptr, nVals, 0.0 );
 
-        std::vector< double > X_batch( m * nModes );
-        std::vector< double > Y_batch( m * nVals );
-        std::vector< double > A( nVals * nModes );
+        VectorReal X_batch( m * nModes );
+        VectorReal Y_batch( m * nVals );
+        VectorReal A( nVals * nModes );
         for ( size_t j = 0; j < nModes; ++j )
             std::copy( A_ptrs[j], A_ptrs[j] + nVals, A.data() + j * nVals );
 
@@ -112,9 +113,9 @@ std::map< std::string, FieldOnNodesRealPtr > PhysicalSolutionRestitutor::compute
         const size_t nVals = field_max->getValues()->size();
         std::fill_n( max_ptr, nVals, 0.0 );
 
-        std::vector< double > X_batch( m * nModes );
-        std::vector< double > Y_batch( m * nVals );
-        std::vector< double > A( nVals * nModes );
+        VectorReal X_batch( m * nModes );
+        VectorReal Y_batch( m * nVals );
+        VectorReal A( nVals * nModes );
         for ( size_t j = 0; j < nModes; ++j )
             std::copy( A_ptrs[j], A_ptrs[j] + nVals, A.data() + j * nVals );
 
@@ -147,13 +148,15 @@ std::map< std::string, FieldOnNodesRealPtr > PhysicalSolutionRestitutor::compute
     // Optional: log missing fields
     for ( const std::string &f : { "DEPL", "REAC_NODA" } ) {
         if ( !hasField( f ) )
-            std::cout << "[PhysicalSolutionRestitutor] Field not found in resmod: " << f << std::endl;
+            std::cout << "[PhysicalSolutionRestitutor] Field not found in resmod: " << f
+                      << std::endl;
     }
 
     return results;
 }
 
-std::map< std::string, FieldOnCellsRealPtr > PhysicalSolutionRestitutor::computeMaxForFieldsOnCells() {
+std::map< std::string, FieldOnCellsRealPtr >
+PhysicalSolutionRestitutor::computeMaxForFieldsOnCells() {
     const VectorReal &all_coeffs_disp = getDisplacementCoeffs();
     const ModeResultPtr &resmod = getModeResults();
     const TransientGeneralizedResultPtr &resgen = getGeneralizedResults();
@@ -162,7 +165,7 @@ std::map< std::string, FieldOnCellsRealPtr > PhysicalSolutionRestitutor::compute
         throw std::runtime_error( "computeMaxForFieldsOnCells: resmod or resgen is null." );
 
     // --- Fields to process ---
-    std::vector< std::string > field_names = { "EFGE_ELNO", "EGRU_ELNO" };
+    VectorString field_names = { "EFGE_ELNO", "EGRU_ELNO" };
 
     std::map< std::string, FieldOnCellsRealPtr > results;
 
@@ -206,11 +209,11 @@ std::map< std::string, FieldOnCellsRealPtr > PhysicalSolutionRestitutor::compute
         //
 
         const size_t m = _nbatch; // taille du batch
-        std::vector< double > X_batch( m * nModes );
-        std::vector< double > Y_batch( m * nVals );
+        VectorReal X_batch( m * nModes );
+        VectorReal Y_batch( m * nVals );
 
         // Préparer A une seule fois (hors boucle)
-        std::vector< double > A( nVals * nModes );
+        VectorReal A( nVals * nModes );
         for ( size_t j = 0; j < nModes; ++j ) {
             std::copy( A_ptrs[j], A_ptrs[j] + nVals, A.data() + j * nVals );
         }

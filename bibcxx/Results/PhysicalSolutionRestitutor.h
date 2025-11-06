@@ -43,8 +43,8 @@ class PhysicalSolutionRestitutor {
 
   public:
     // --- Constructeur ---
-    PhysicalSolutionRestitutor( const TransientGeneralizedResultPtr &resgen, 
-        const ASTERINTEGER &nbatch, const ASTERINTEGER &ar )
+    PhysicalSolutionRestitutor( const TransientGeneralizedResultPtr &resgen,
+                                const ASTERINTEGER &nbatch, const ASTERINTEGER &ar )
         : _gene_resu( resgen ), _nbatch( nbatch ), _ar( ar ) {
         if ( !_gene_resu ) {
             throw std::runtime_error( "PhysicalSolutionRestitutor: resgen is null." );
@@ -86,12 +86,13 @@ class PhysicalSolutionRestitutor {
     };
 
     inline void matVecBatch( const double *A_ptr, const double *X_ptr, double *Y_ptr, size_t nVals,
-                              size_t nModes, size_t m ) {
+                             size_t nModes, size_t m ) {
         cblas_dgemm( CblasColMajor, CblasNoTrans, CblasNoTrans, nVals, m, nModes, 1.0, A_ptr, nVals,
                      X_ptr, nModes, 0.0, Y_ptr, nVals );
     }
 
-    static inline void updateMaxAbsValues( const double *vals_in, double *vals_max, const size_t n ) {
+    static inline void updateMaxAbsValues( const double *vals_in, double *vals_max,
+                                           const size_t n ) {
         for ( size_t i = 0; i < n; ++i ) {
             const double vin = std::abs( vals_in[i] );
             vals_max[i] = std::max( vals_max[i], vin );
@@ -99,7 +100,7 @@ class PhysicalSolutionRestitutor {
     }
 
     static inline void updateMaxAbsValuesWithMoments( const double *vals_in, double *vals_max,
-                                                  const FieldIndexInfo &field_info ) {
+                                                      const FieldIndexInfo &field_info ) {
         const auto &indices = field_info.start_indices;
         const auto &ncmps = field_info.ncomps;
         const size_t nsp = indices.size();
