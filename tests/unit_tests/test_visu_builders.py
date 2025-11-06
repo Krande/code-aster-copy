@@ -69,6 +69,10 @@ def test_visu_builder_works_for_node_fields(tmp_path):
         nume_ordre=1,
         instant=0.1,
     )
+
+    visu_cut.add_group(name="toto", ids=[1,2], geo_type=VisuCutBuilder.NODE)
+    visu_cut.add_group(name="tata", ids=[2,3], geo_type=VisuCutBuilder.LINE)
+
     temp_med_file = tmp_path / "visu_1.med"
     visu_cut.write(temp_med_file)
 
@@ -159,3 +163,9 @@ def test_visu_builder_works_for_node_fields(tmp_path):
             ]
         ),
     )
+
+    # Testing groups
+    actual_mesh: mc.MEDFileUMesh = mc.MEDFileUMesh.New(str(temp_med_file))
+    assert actual_mesh.getGroupArr(1, "toto").getValues() == [1, 2]
+    assert actual_mesh.getGroupArr(0, "tata").getValues() == [2, 3]
+

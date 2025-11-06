@@ -19,30 +19,41 @@
 
 from math import isclose
 from pathlib import Path
-from typing import Dict, Tuple, Iterable, Sequence
+from typing import Dict, Tuple, List, Iterable, Sequence
 
 import numpy as np
 
 try:
-    from code_aster.Utilities.import_helper import medcoupling as mc
+    from ..Utilities.import_helper import medcoupling as mc
 except (ImportError, ModuleNotFoundError):
     import medcoupling as mc
 try:
-    from code_aster.Utilities.logger import logger
+    from ..Utilities.logger import logger
 except (ImportError, ModuleNotFoundError):
     import logging
+
     logging.basicConfig(level=logging.INFO)
     logger = logging.getLogger("code_aster")
 
 
 class VisuCutBuilder:
+    NODE: int = 0
+    LINE: int = 1
+    SURFACE: int = 2
+    VOLUME: int = 3
+
     def __init__(self, mesh_med: mc.MEDFileUMesh):
-        self.mesh_med = mesh_med
+        self.mesh_med: mc.MEDFileUMesh = mesh_med
 
         self.arrays: Dict[Tuple[str, int, str], np.ndarray] = {}
         self.instants: Dict[Tuple[str, int, str], float] = {}
         self.components: Dict[Tuple[str, str], Iterable[str]] = {}
         self.nb_nodes: int = mesh_med.getNumberOfNodes()
+
+        self._all_geo_types: List[int] = self.mesh_med.getAllGeoTypes()
+        if len(self._all_geo_types) > 1:
+            raise NotImplementedError("Multi level meshes are not handled yet")
+        self._max_geo_type: int = max(self._all_geo_types)
 
     def __str__(self):
         return f"""
@@ -105,11 +116,15 @@ class VisuCutBuilder:
         if already_instanciated_field:
             previous_instant = self.instants[stock_address]
             if not isclose(previous_instant, instant):
-                raise ValueError(f"{instant} differs from already affected instant {previous_instant}")
+                raise ValueError(
+                    f"{instant} differs from already affected instant {previous_instant}"
+                )
 
             previous_components = self.components[(field_name, mc.ON_NODES)]
             if previous_components != components:
-                raise ValueError(f"{components} differs from already affected components {previous_components}")
+                raise ValueError(
+                    f"{components} differs from already affected components {previous_components}"
+                )
 
             assert self.arrays[stock_address].shape == (self.nb_nodes, values.shape[1] + 1)
         else:
@@ -121,6 +136,19 @@ class VisuCutBuilder:
         assert max(nodes) <= current_array.shape[0]
         current_array[nodes, 0] = nodes
         current_array[nodes, 1:] = values
+
+    def add_group(self, name: str, ids: Sequence[int], geo_type: int):
+        """
+        Adds a group to mesh_med
+        Args:
+            name: Name of the new group
+            ids: index of the items (cells or nodes to add to this group)
+            geo_type: geometry of target items VisuCutBuilder.NODE, VisuCutBuilder.LINE,
+                      VisuCutBuilder.SURFACE, VisuCutBuilder.VOLUME
+        """
+        group = mc.DataArrayInt(list(ids))
+        group.setName(name=name)
+        self.mesh_med.setGroupsAtLevel(self._max_geo_type - geo_type, [group])
 
     def write(self, filepath: Path):
         if not self.arrays:
@@ -150,10 +178,7 @@ class VisuCutBuilder:
             medfield.setFieldNoProfileSBT(medc_node_field)
             medfield.setTime(nume_ordre, 0, instant)
 
-            print(f"medfield = {medfield}")
             field_file.pushBackTimeStep(medfield)
-
-        print(f"field_file = {field_file}")
 
         self.mesh_med.write(str(filepath), 2)
         field_file.write(str(filepath), 0)
