@@ -422,8 +422,6 @@ class MVCA_HEXA20(Element):
                 (SP.PDEPLAR, NDEPLAR),
                 (SP.PGEOMER, NGEOMER),
                 (SP.PMATERC, LC.CMATERC),
-                (OP.EPSI_ELGA.PVARCPR, LC.ZVARCPG),
-                (SP.PVARCRR, LC.ZVARCPG),
             ),
             para_out=((SP.PDEFOPC, EDEFOPC), (OP.EPSI_ELGA.PDEFOPG, EDEFOPG)),
         ),

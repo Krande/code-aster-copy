@@ -255,7 +255,7 @@ Conseil :
     ),
     45: _(
         """
- Le comportement matériau %(k1)s n'est pas traité.
+L'élasticité de type %(k1)s n'est pas traitée.
 
 Conseil :
  Pour définir une COQUE_3D orthotrope, il ne faut pas utiliser

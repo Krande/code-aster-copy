@@ -329,7 +329,6 @@ class MECXSE3(Element):
                 (SP.PDEPLAR, DDL_MECA),
                 (SP.PGEOMER, NGEOMER),
                 (OP.EPSI_ELGA.PNBSP_I, ENBSP_I),
-                (OP.EPSI_ELGA.PVARCPR, LC.ZVARCPG),
             ),
             para_out=((SP.PDEFOPC, EDEFOPC), (OP.EPSI_ELGA.PDEFOPG, EDEFOPG)),
         ),

@@ -43,6 +43,8 @@ MMATUUR = ArrayOfComponents(phys=PHY.MDEP_R, locatedComponents=DDL_MECA)
 MMATUNS = ArrayOfComponents(phys=PHY.MDNS_R, locatedComponents=DDL_MECA)
 
 MMATZZR = ArrayOfComponents(phys=PHY.MSIZ_R, locatedComponents=LC.DDL_NOZ1)
+
+
 # ------------------------------------------------------------
 class MEAXQS8(Element):
     """Mechanics - Axisymmetric - QUAD8 - Sub-integrated"""
@@ -499,8 +501,6 @@ class MEAXQS8(Element):
                 (SP.PGEOMER, LC.EGEOM2D),
                 (SP.PMATERC, LC.CMATERC),
                 (SP.PINSTR, LC.MTEMPSR),
-                (OP.EPSI_ELGA.PVARCPR, LC.ZVARCPG),
-                (SP.PVARCRR, LC.ZVARCPG),
             ),
             para_out=((SP.PDEFOPC, LC.EGPS2DC), (OP.EPSI_ELGA.PDEFOPG, LC.EGPS2DR)),
         ),

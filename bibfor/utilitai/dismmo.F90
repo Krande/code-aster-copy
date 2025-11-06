@@ -54,7 +54,6 @@ subroutine dismmo(questi, nomobz, repi, repkz, ierd)
 !
     integer(kind=8) :: ico, igrel
     integer(kind=8) :: iret, elemTypeNume, nbgrel, lielSize
-    character(len=4) :: tytm
     character(len=8) :: mesh, model
     character(len=16) :: elemTypeName, nomodl, nomod2
     character(len=19) :: modelLigrel
@@ -90,21 +89,7 @@ subroutine dismmo(questi, nomobz, repi, repkz, ierd)
             (questi .eq. 'PHENOMENE')) then
         call dismlg(questi, modelLigrel, repi, repk, ierd)
 
-    elseif ((questi .eq. 'EXI_AMOR') .or. (questi .eq. 'EXI_ELEM') .or. &
-            (questi .eq. 'EXI_RDM') .or. (questi .eq. 'EXI_COQUE') .or. &
-            (questi .eq. 'EXI_GRILLE') .or. (questi .eq. 'EXI_COQ3D') .or. &
-            (questi .eq. 'EXI_PLAQUE') .or. (questi .eq. 'EXI_TUYAU') .or. &
-            (questi .eq. 'EXI_POUX') .or. (questi .eq. 'EXI_STRX') .or. &
-            (questi .eq. 'EXI_STR2') .or. (questi .eq. 'EXI_THM') .or. &
-            (questi .eq. 'EXI_HHO') .or. (questi .eq. 'EXI_HHO_CSTE') .or. &
-            (questi .eq. 'EXI_HHO_LINE') .or. &
-            (questi .eq. 'EXI_HHO_QUAD') .or. (questi .eq. 'EXI_HHO_CUBI') .or. &
-            (questi .eq. 'EXI_HHO_QUAR') .or. &
-            (questi .eq. 'EXI_NO_HHO') .or. &
-            (questi .eq. 'EXI_AXIS') .or. (questi .eq. 'EXI_COQSOL') .or. &
-            (questi .eq. 'EXI_IMPE_ABSO') .or. (questi .eq. 'EXI_CABLE') .or. &
-            (questi .eq. 'EXI_POUTRE') .or. (questi .eq. 'EXI_INCO') .or. &
-            (questi .eq. 'EXI_SECH') .or. (questi .eq. 'EXI_NON_SECH')) then
+    elseif (questi(1:4) .eq. 'EXI_' .and. questi .ne. 'EXI_XFEM') then
         call dismlg(questi, modelLigrel, repi, repk, ierd)
 
     else if (questi .eq. 'ELEM_VOLU_QUAD') then
@@ -198,27 +183,6 @@ subroutine dismmo(questi, nomobz, repi, repkz, ierd)
             repk = 'NON'
         end if
 
-    else if (questi .eq. 'EXI_ELTVOL') then
-!          (EXISTENCE D'ELEMENTS DONT LA MAILLE EST VOLUMIQUE)
-!
-        call jeexin(modelLigrel//'.LIEL', iret)
-        if (iret .gt. 0) then
-            call jelira(modelLigrel//'.LIEL', 'NUTIOC', nbgrel)
-            repk = 'NON'
-            do igrel = 1, nbgrel
-                call jeveuo(jexnum(modelLigrel//'.LIEL', igrel), 'L', vi=liel)
-                call jelira(jexnum(modelLigrel//'.LIEL', igrel), 'LONMAX', lielSize)
-                elemTypeNume = liel(lielSize)
-                call jenuno(jexnum('&CATA.TE.NOMTE', elemTypeNume), elemTypeName)
-                call dismte('TYPE_TYPMAIL', elemTypeName, repi, tytm, ierd)
-                if (tytm .eq. 'VOLU') then
-                    repk = 'OUI'
-                    goto 70
-                end if
-            end do
-        else
-            repk = 'NON'
-        end if
     else if (questi .eq. 'EXI_XFEM') then
         call jeexin(model//'.FISS', iret)
         if (iret .gt. 0) then

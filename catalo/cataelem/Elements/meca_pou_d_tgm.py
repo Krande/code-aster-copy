@@ -570,8 +570,6 @@ class MECA_POU_D_TGM(Element):
                 (SP.PFIBRES, LC.ECAFIEL),
                 (SP.PGEOMER, NGEOMER),
                 (OP.EPSI_ELGA.PNBSP_I, ENBSP_I),
-                (OP.EPSI_ELGA.PVARCPR, LC.ZVARCPG),
-                (SP.PVARCRR, LC.ZVARCPG),
                 (OP.EPSI_ELGA.PCOMPOR, LC.CCOMPOR),
                 (SP.PCAGNPO, CCAGNPO),
                 (SP.PMATERC, LC.CMATERC),

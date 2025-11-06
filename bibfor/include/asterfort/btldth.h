@@ -15,24 +15,18 @@
 ! You should have received a copy of the GNU General Public License
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
-
-!
+#include "asterf_types.h"
 !
 interface
-    subroutine btldth(fami, xi3, nb1, kpg, btild,&
-                      wgt, indic, young, nu, alpha,&
-                      temper, forthi)
-        character(len=4) :: fami
-        real(kind=8) :: xi3
-        integer(kind=8) :: nb1
-        integer(kind=8) :: kpg
-        real(kind=8) :: btild(5, 42)
-        real(kind=8) :: wgt
-        integer(kind=8) :: indic
-        real(kind=8) :: young
-        real(kind=8) :: nu
-        real(kind=8) :: alpha
-        real(kind=8) :: temper
-        real(kind=8) :: forthi(1)
+    subroutine btldth(nb1, btild, wgt, &
+                      hasTemp, tempKpg, &
+                      young, nu, alpha, &
+                      forthi)
+        integer(kind=8), intent(in) :: nb1
+        real(kind=8), intent(in) :: btild(5, 42), wgt
+        aster_logical, intent(in) :: hasTemp
+        real(kind=8), intent(in) :: tempKpg
+        real(kind=8), intent(in) :: young, nu, alpha
+        real(kind=8), intent(out) :: forthi(42)
     end subroutine btldth
 end interface

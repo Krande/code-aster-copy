@@ -85,7 +85,6 @@ Erreur de programmation lors de l'assemblage :
     ),
     15: _(
         """
- Erreur Utilisateur :
  On cherche à calculer une déformation thermique mais on ne trouve pas toutes les
  quantités nécessaires :
     - température

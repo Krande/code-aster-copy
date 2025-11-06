@@ -16,26 +16,26 @@
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
 !
-subroutine btldth(nb1, btild, wgt, &
-                  hasTemp, tempKpg, &
-                  young, nu, alpha, &
-                  forthi)
+subroutine vdxtemp(kInf, kMoy, kSup, &
+                   kpgsn, ksi3, &
+                   hasTempRefe, tempRefe, &
+                   hasTemp, tempKpg)
 !
     implicit none
 !
 #include "asterc/r8nnem.h"
 #include "asterf_types.h"
-#include "asterfort/jevech.h"
 #include "asterfort/rcvarc.h"
 #include "asterfort/utmess.h"
 #include "jeveux.h"
 !
-    integer(kind=8), intent(in) :: nb1
-    real(kind=8), intent(in) :: btild(5, 42), wgt
-    aster_logical, intent(in) :: hasTemp
-    real(kind=8), intent(in) :: tempKpg
-    real(kind=8), intent(in) :: young, nu, alpha
-    real(kind=8), intent(out) :: forthi(42)
+    integer(kind=8), intent(in) :: kInf, kMoy, kSup
+    integer(kind=8), intent(in) :: kpgsn
+    real(kind=8), intent(in) :: ksi3
+    aster_logical, intent(in) :: hasTempRefe
+    real(kind=8), intent(in) :: tempRefe
+    aster_logical, intent(out) :: hasTemp
+    real(kind=8), intent(out) :: tempKpg
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -45,21 +45,33 @@ subroutine btldth(nb1, btild, wgt, &
 !
 ! --------------------------------------------------------------------------------------------------
 !
-    integer(kind=8) :: i, k
-    real(kind=8) :: vecthr(2)
+    integer(kind=8) :: iret1, iret2, iret3
+    real(kind=8) :: tempInf, tempMoy, tempSup
+    real(kind=8) :: p1xi3, p2xi3, p3xi3
 !
 ! --------------------------------------------------------------------------------------------------
 !
-    forthi = 0.d0
-    if (hasTemp) then
-        vecthr(1) = young*alpha*tempKpg/(1.d0-nu)
-        vecthr(2) = vecthr(1)
-        do i = 1, 5*nb1+2
-            forthi(i) = 0.d0
-            do k = 1, 2
-                forthi(i) = forthi(i)+btild(k, i)*vecthr(k)*wgt
-            end do
-        end do
+    hasTemp = ASTER_FALSE
+    tempKpg = r8nnem()
+
+! - Get temperature
+    call rcvarc(' ', 'TEMP', '+', 'MASS', kpgsn, &
+                kInf, tempInf, iret1)
+    call rcvarc(' ', 'TEMP', '+', 'MASS', kpgsn, &
+                kMoy, tempMoy, iret2)
+    call rcvarc(' ', 'TEMP', '+', 'MASS', kpgsn, &
+                kSup, tempSup, iret3)
+    p1xi3 = 1-ksi3*ksi3
+    p2xi3 = -ksi3*(1-ksi3)/2.d0
+    p3xi3 = ksi3*(1+ksi3)/2.d0
+    if (hasTempRefe) then
+        if ((iret1+iret2+iret3) .eq. 0) then
+            tempKpg = tempMoy*p1xi3+tempInf*p2xi3+tempSup*p3xi3
+            tempKpg = tempKpg-tempRefe
+            hasTemp = ASTER_TRUE
+        else
+            call utmess('F', 'SHELL1_1')
+        end if
     end if
 !
 end subroutine

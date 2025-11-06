@@ -526,11 +526,7 @@ class MIPLQU8(Element):
         ),
         OP.EPSI_ELGA(
             te=447,
-            para_in=(
-                (SP.PDEPLAR, NDEPLAR),
-                (SP.PGEOMER, NGEOMER),
-                (OP.EPSI_ELGA.PVARCPR, LC.ZVARCPG),
-            ),
+            para_in=((SP.PDEPLAR, NDEPLAR), (SP.PGEOMER, NGEOMER)),
             para_out=((SP.PDEFOPC, EDEFOPC), (OP.EPSI_ELGA.PDEFOPG, EDEFOPG)),
         ),
         OP.EPSI_ELNO(

@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -44,7 +44,7 @@ PARALLELISME_TEMPS='NON'.
     ),
     5: _(
         """
- Le rapport entre le module de Young du revêtement et celui du métal de base doit être compris entre 0,7 et 1. 
+ Le rapport entre le module de Young du revêtement et celui du métal de base doit être compris entre 0,7 et 1.
  En dehors de ces bornes, l'interpolation  barycentrique n'est pas possible.
 """
     ),
@@ -145,27 +145,6 @@ Relancer en posant PARALLELISME_TEMPS='NON' afin d'éteindre cette alarme.
         """
  Intersection Droite / Cercle
  pas d'intersection trouvée
-"""
-    ),
-    22: _(
-        """
-Nombre de pas de temps=%(i1)d
-Calcul option=%(k1)s --> parallélisme en temps activé
-"""
-    ),
-    23: _(
-        """
-Calcul option=%(k1)s --> parallélisme en espace activé
-"""
-    ),
-    24: _(
-        """
-Calcul option=%(k1)s --> parallélisme en espace désactivé
-"""
-    ),
-    25: _(
-        """
-Calcul option=%(k1)s --> calcul sur 1 processus, aucun parallélisme MPI activé
 """
     ),
     28: _(

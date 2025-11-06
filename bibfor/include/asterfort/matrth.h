@@ -15,17 +15,20 @@
 ! You should have received a copy of the GNU General Public License
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
-
-!
+#include "asterf_types.h"
 !
 interface
-    subroutine matrth(fami, npg, young, nu, alpha,&
-                      indith)
-        character(len=4) :: fami
-        integer(kind=8) :: npg
-        real(kind=8) :: young
-        real(kind=8) :: nu
-        real(kind=8) :: alpha
-        integer(kind=8) :: indith
+    subroutine matrth(famiZ, &
+                      elasID, elasKeywordZ, jvMaterCode, &
+                      hasTemp, tempMoy, alpha, &
+                      young_, nu_)
+        character(len=*), intent(in) :: famiZ
+        integer(kind=8), intent(in) :: elasID
+        character(len=*), intent(in) :: elasKeywordZ
+        integer(kind=8), intent(in) :: jvMaterCode
+        aster_logical, intent(in) :: hasTemp
+        real(kind=8), intent(in) :: tempMoy
+        real(kind=8), intent(out) :: alpha
+        real(kind=8), optional, intent(out) :: young_, nu_
     end subroutine matrth
 end interface

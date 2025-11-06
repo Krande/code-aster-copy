@@ -17,9 +17,6 @@
 # along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 # --------------------------------------------------------------------
 
-# person_in_charge: jacques.pellet at edf.fr
-
-
 from cataelem.Tools.base_objects import InputParameter, OutputParameter, Option, CondCalcul
 import cataelem.Commons.physical_quantities as PHY
 import cataelem.Commons.parameters as SP
@@ -94,5 +91,5 @@ EPSI_ELGA = Option(
         CondCalcul("-", ((AT.PHENO, "ME"), (AT.MODELI, "AFI"))),
         CondCalcul("-", ((AT.PHENO, "ME"), (AT.MODELI, "PFI"))),
     ),
-    comment="""  EPSI_ELGA : DEFORMATIONS PAR ELEMENT AUX POINTS DE GAUSS """,
+    comment="""EPSI_ELGA : DEFORMATIONS PAR ELEMENT AUX POINTS DE GAUSS """,
 )

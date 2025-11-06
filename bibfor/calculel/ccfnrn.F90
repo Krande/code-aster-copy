@@ -269,20 +269,20 @@ subroutine ccfnrn(option, resuin, resultOut, lisord, nbordr, &
                 ibid, ibid, ibid, ibid, k24b, &
                 ibid, ibid, kbid, k24b, prbid, &
                 pcbid)
-    if (nbproc .eq. 1 .and. niv > 1) then
-        call utmess('I', 'PREPOST_25', sk=option)
-    else if (nbproc .gt. 1) then
+    !if (nbproc .eq. 1 .and. niv > 1) then
+    !    call utmess('I', 'PREPOST_25', sk=option)
+    !else
+    if (nbproc .gt. 1) then
         call dismoi('NOM_MAILLA', resuin, 'RESULTAT', repk=mesh)
-!
         if (ldist) then
             ASSERT(.not. l_pmesh)
-            call utmess('I', 'PREPOST_22', si=nbordr, sk=option)
-        else if (.not. l_pmesh) then
-            if (lsdpar) then
-                call utmess('I', 'PREPOST_23', sk=option)
-            else
-                call utmess('I', 'PREPOST_24', sk=option)
-            end if
+            !call utmess('I', 'PREPOST_22', si=nbordr, sk=option)
+            !else if (.not. l_pmesh) then
+            !if (lsdpar) then
+            !    call utmess('I', 'PREPOST_23', sk=option)
+            !else
+            !    call utmess('I', 'PREPOST_24', sk=option)
+            !end if
         end if
     end if
 !

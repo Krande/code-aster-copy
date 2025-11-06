@@ -260,7 +260,6 @@ class MEMBTR3(Element):
                 (OP.EPSI_ELGA.PCOMPOR, LC.CCOMPOR),
                 (SP.PDEPLAR, DDL_MECA),
                 (SP.PGEOMER, NGEOMER),
-                (OP.EPSI_ELGA.PVARCPR, LC.ZVARCPG),
             ),
             para_out=((OP.EPSI_ELGA.PDEFOPG, EDEFOPG),),
         ),
