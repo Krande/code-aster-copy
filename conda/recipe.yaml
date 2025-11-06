@@ -74,17 +74,13 @@ requirements:
         - medcoupling
         - mfront
         - mgis
+        - scotch
+        - metis
     - if: (mpi == 'nompi') and not win
       then:
         - mumps-seq
-        - "libscotch * *${{ build_type }}*"
-        - "scotch * *${{ build_type }}*"
-        - "metis * *${{ build_type }}*"
-        - "mumps * *${{ build_type }}*"
     - if: (mpi != 'nompi') and not win
       then:
-        - scotch
-        - metis
         - ${{ mpi }}
         - scalapack >=2.2.0,<3
         - mumps-mpi
