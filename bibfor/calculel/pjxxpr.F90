@@ -71,6 +71,7 @@ subroutine pjxxpr(resu1, resu2, moa1, moa2, corres, &
 #include "asterfort/utmess.h"
 #include "asterfort/vpcrea.h"
 #include "asterfort/wkvect.h"
+#include "asterfort/isParallelMesh.h"
 !
 ! --------------------------------------------------------------------------------------------------
     character(len=1) :: base
@@ -85,7 +86,7 @@ subroutine pjxxpr(resu1, resu2, moa1, moa2, corres, &
     integer(kind=8) :: iexi, jpara, ier, inume
     parameter(nbmax=50)
     integer(kind=8) :: ipar, ipar1, ipar2
-    aster_logical :: acceno, lxfem, lpjxfem
+    aster_logical :: acceno, lxfem, lpjxfem, l_parallel_mesh
     real(kind=8) :: r8b, prec, inst
     complex(kind=8) :: c16b
     character(len=1) :: typerr
@@ -128,6 +129,8 @@ subroutine pjxxpr(resu1, resu2, moa1, moa2, corres, &
         ligrel = ' '
     end if
 !
+    l_parallel_mesh = (isParallelMesh(ma1) .or. isParallelMesh(ma2))
+!
     if (nomcmd .eq. 'DEPL_INTERNE') then
 !       ON NE TRAITE QUE LE CHAMP DEPL
         nbsym = 1
@@ -147,15 +150,21 @@ subroutine pjxxpr(resu1, resu2, moa1, moa2, corres, &
         prolong%vale_r = 0.0d0
 !
     else
-        call jeveuo(corres//'.PJXX_K1', 'L', vk24=pjxx_k1)
-        if (method(1:10) .ne. 'SOUS_POINT') then
-            if (pjxx_k1(2) .ne. ma2) then
-                call utmess('F', 'CALCULEL4_60')
+        call jeexin(corres//'.PJXX_K1', iexi)
+        if (iexi .gt. 0) then
+            call jeveuo(corres//'.PJXX_K1', 'L', vk24=pjxx_k1)
+
+            if (method(1:10) .ne. 'SOUS_POINT') then
+                if (pjxx_k1(2) .ne. ma2) then
+                    call utmess('F', 'CALCULEL4_60')
+                end if
+            else
+                if (method .eq. 'SOUS_POINT_RIGI') then
+                    call utmess('F', 'CALCULEL5_28')
+                end if
             end if
         else
-            if (method .eq. 'SOUS_POINT_RIGI') then
-                call utmess('F', 'CALCULEL5_28')
-            end if
+            ASSERT(l_parallel_mesh)
         end if
         !
         call rsutc4(resu1, ' ', 1, 200, nomsym, nbsym, acceno)
