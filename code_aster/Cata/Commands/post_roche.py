@@ -32,11 +32,11 @@ POST_ROCHE = MACRO(
         "Méthode Roche de représentation du comportement élasto-plastique des lignes de tuyauteries"
     ),
     reentrant="n",
-    FORME=SIMP(statut="f", typ="TXM", into=("RCC_MRX", "ASNR"), defaut="RCC_MRX"),
+    VARIANTE=SIMP(statut="f", typ="TXM", into=("RCC_MRX", "ASNR"), defaut="RCC_MRX"),
     b_rccmrx=BLOC(
-        condition="""equal_to("FORME", "RCC_MRX") """,
-        LIMITE_ADM=SIMP(statut="f", typ="TXM", into=("OUI", "NON"), defaut=("NON")),
-        CONTRAINTE_ABAT=SIMP(statut="f", typ="TXM", into=("CODE", "REFE_ELAS"), defaut=("CODE")),
+        condition="""equal_to("VARIANTE", "RCC_MRX") """,
+        SIGM_LIM=SIMP(statut="f", typ="TXM", into=("OUI", "NON"), defaut=("NON")),
+        SIGM_ABAT=SIMP(statut="f", typ="TXM", into=("CODE", "REFE_ELAS"), defaut=("CODE")),
     ),
     ZONE_ANALYSE=FACT(
         statut="o",

@@ -114,7 +114,7 @@ dilatation_thermique = LIRE_RESU(
 # appel à POST_ROCHE
 
 resuPostRocheTout = POST_ROCHE(
-    LIMITE_ADM="NON",
+    SIGM_LIM="NON",
     ZONE_ANALYSE=(_F(GROUP_MA="RUN", GROUP_NO_ORIG="A"), _F(GROUP_MA="BRANCH", GROUP_NO_ORIG="C")),
     MODELE=modele,
     CARA_ELEM=cara_elem,
@@ -135,7 +135,7 @@ resuPostRocheTout = POST_ROCHE(
 
 # 1- deplacement (D)
 resuPostRocheTout_D = POST_ROCHE(
-    LIMITE_ADM="NON",
+    SIGM_LIM="NON",
     ZONE_ANALYSE=(_F(GROUP_MA="RUN", GROUP_NO_ORIG="A"), _F(GROUP_MA="BRANCH", GROUP_NO_ORIG="C")),
     MODELE=modele,
     CARA_ELEM=cara_elem,
@@ -145,7 +145,7 @@ resuPostRocheTout_D = POST_ROCHE(
 
 # 2- deplacement + pression (DP)
 resuPostRocheTout_DP = POST_ROCHE(
-    LIMITE_ADM="NON",
+    SIGM_LIM="NON",
     ZONE_ANALYSE=(_F(GROUP_MA="RUN", GROUP_NO_ORIG="A"), _F(GROUP_MA="BRANCH", GROUP_NO_ORIG="C")),
     MODELE=modele,
     CARA_ELEM=cara_elem,
@@ -156,7 +156,7 @@ resuPostRocheTout_DP = POST_ROCHE(
 
 # 3- deplacement + pression + poids propre (DPG)
 resuPostRocheTout_DPG = POST_ROCHE(
-    LIMITE_ADM="NON",
+    SIGM_LIM="NON",
     ZONE_ANALYSE=(_F(GROUP_MA="RUN", GROUP_NO_ORIG="A"), _F(GROUP_MA="BRANCH", GROUP_NO_ORIG="C")),
     MODELE=modele,
     CARA_ELEM=cara_elem,
@@ -171,7 +171,7 @@ resuPostRocheTout_DPG = POST_ROCHE(
 
 # 4- pression + poids propre (PG)
 resuPostRocheTout_PG = POST_ROCHE(
-    LIMITE_ADM="NON",
+    SIGM_LIM="NON",
     ZONE_ANALYSE=(_F(GROUP_MA="RUN", GROUP_NO_ORIG="A"), _F(GROUP_MA="BRANCH", GROUP_NO_ORIG="C")),
     MODELE=modele,
     CARA_ELEM=cara_elem,

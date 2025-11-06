@@ -98,9 +98,9 @@ def post_roche_ops(self, **kwargs):
 
         chMomentEquiv = PRCommon.calcMomentEquiv(calcNonRegu.field, calcNonReguS2.field)
 
-        if PRCommon.typeCalcul == "RCC_MRX":
+        if PRCommon.variante == "RCC_MRX":
 
-            if PRCommon.CONT_ABAT == "CODE":
+            if PRCommon.SIGM_ABAT == "CODE":
                 chContEquiv = PRCommon.calcContrainteEquiv(calcNonRegu.field, calcNonReguS2.field)
             else:
                 chContEquiv = PRCommon.calcContrainteEquiv2(chMomentEquiv)
@@ -114,7 +114,7 @@ def post_roche_ops(self, **kwargs):
                 chMomentEquiv,
             )
 
-        else:  # PRCommon.typeCalcul == "ASNR":
+        else:  # PRCommon.variante == "ASNR":
             # Calcul 2 B2 = 1 partout (régularisé) :
             # -------------------------------------------------
 
@@ -261,7 +261,7 @@ class PostRocheCommon:
         Récupération du champ de matériau
         Valeur de INST_TEMP
         Récupération de TRAC_EPSI
-        Valeur de FORME, LIMITE_ADM et CONTRAINTE_ABAT
+        Valeur de VARIANTE, SIGM_LIM et SIGM_ABAT
         """
 
         if self.args.get("MODELE"):
@@ -302,12 +302,12 @@ class PostRocheCommon:
 
         self.inst_temp = self.args.get("INST_TEMP")
 
-        self.typeCalcul = self.args.get("FORME")
+        self.variante = self.args.get("VARIANTE")
         self.lLimiteAdm = False
-        if self.typeCalcul == "RCC_MRX":
-            if self.args.get("LIMITE_ADM") == "OUI":
+        if self.variante == "RCC_MRX":
+            if self.args.get("SIGM_LIM") == "OUI":
                 self.lLimiteAdm = True
-            self.CONT_ABAT = self.args.get("CONTRAINTE_ABAT")
+            self.SIGM_ABAT = self.args.get("SIGM_ABAT")
 
     def checkZones(self):
         """
@@ -454,7 +454,7 @@ class PostRocheCommon:
 
         self.chRochElno = chRochElno
 
-        # si LIMITE_ADM = 'OUI' on vérifie la présence de RP02_MIN, RM_MIN et RP02_MOY
+        # si SIGM_LIM = 'OUI' on vérifie la présence de RP02_MIN, RM_MIN et RP02_MOY
         # si ces paramètres n'ont pas été fournis par l'utilisateur leurs valeurs
         # sont négatives
         if self.lLimiteAdm:
@@ -1294,13 +1294,13 @@ class PostRocheCommon:
 
         # contrainte vraie
 
-        # pour LIMITE_ADM = OUI
+        # pour SIGM_LIM = OUI
         if self.lLimiteAdm:
             fSigVraieMax = FORMULE(
                 NOM_PARA=("COEF", "RP02_MOY", "RP02_MIN", "RM_MIN"),
                 VALE="2*COEF*(0.426*RP02_MIN+0.032*RM_MIN)*RP02_MOY/RP02_MIN",
             )
-        # pour LIMITE_ADM = NON
+        # pour SIGM_LIM = NON
         else:
 
             def fsolve(sigRef, sigP, e, k, n, r, nbIterMax, seuil):
@@ -1459,7 +1459,7 @@ class PostRocheCommon:
                 fepsiMP=fepsiMP,
             )
 
-        elif self.typeCalcul == "RCC_MRX":
+        elif self.variante == "RCC_MRX":
 
             def coefAbat(sigRef, sigP, sigV):
                 if sigV == 0:
@@ -2526,7 +2526,7 @@ class PostRocheCalc:
         Calcul du coefficient d'abattement g_opt
         à partir de l'effet de ressort max
 
-        pour LIMITE_ADM = OUI, on calcule g_opt avec une formule propre
+        pour SIGM_LIM = OUI, on calcule g_opt avec une formule propre
         """
 
         if self.param.lLimiteAdm:

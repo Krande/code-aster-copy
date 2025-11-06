@@ -166,7 +166,7 @@ post_roche_analytic.calcul_sigma_eq()
 # ---------------------------------------------------------------------------- #
 
 # tout + Séisme  : On va tester tous les variables sorties
-# FORME = 'RCC_MRX' & CONTRAINTE_ABAT = 'CODE'
+# VARIANTE = 'RCC_MRX' & SIGM_ABAT = 'CODE'
 post_roche_analyticSism = PostRocheAnalytic(
     mfy_poids_propre_neg,
     mt_deplacement_impose,
@@ -181,7 +181,7 @@ post_roche_analyticSism.calcul_abattement()
 post_roche_analyticSism.calc_moment_abat()
 post_roche_analyticSism.calcul_sigma_eq()
 
-# FORME = 'RCC_MRX' & CONTRAINTE_ABAT = 'CODE'
+# VARIANTE = 'RCC_MRX' & SIGM_ABAT = 'CODE'
 post_roche_analyticSism_Coude = PostRocheAnalytic(
     mfy_poids_propre,
     mt_deplacement_impose,
@@ -198,7 +198,7 @@ post_roche_analyticSism_Coude.calc_moment_abat()
 post_roche_analyticSism_Coude.calcul_sigma_eq()
 
 
-# FORME = 'RCC_MRX' & CONTRAINTE_ABAT = 'REFE_ELAS'
+# VARIANTE = 'RCC_MRX' & SIGM_ABAT = 'REFE_ELAS'
 post_roche_analyticSism_Coude_RE = PostRocheAnalytic(
     mfy_poids_propre,
     mt_deplacement_impose,
@@ -208,7 +208,7 @@ post_roche_analyticSism_Coude_RE = PostRocheAnalytic(
     mfz_sismique_qs,
     pression=1e6,
     coude=True,
-    codifie=False,  # eq. to CONTRAINTE_ABAT = 'REFE_ELAS'
+    codifie=False,  # eq. to SIGM_ABAT = 'REFE_ELAS'
 )
 post_roche_analyticSism_Coude_RE.calcul_ressort()
 post_roche_analyticSism_Coude_RE.calcul_abattement()
@@ -216,7 +216,7 @@ post_roche_analyticSism_Coude_RE.calc_moment_abat()
 post_roche_analyticSism_Coude_RE.calcul_sigma_eq()
 
 
-# tout + coude FORME='ASRN'
+# tout + coude VARIANTE='ASRN'
 post_roche_analyticSism_Coude_ASNR = PostRocheAnalytic(
     mfy_poids_propre,
     mt_deplacement_impose,
@@ -226,11 +226,11 @@ post_roche_analyticSism_Coude_ASNR = PostRocheAnalytic(
     mfz_sismique_qs,
     pression=1e6,
     coude=True,
-    asnr=True,  # eq. to FORME = 'ASRN'
-    codifie=False,  # eq. to CONTRAINTE_ABAT = 'REFE_ELAS'
+    asnr=True,  # eq. to VARIANTE = 'ASRN'
+    codifie=False,  # eq. to SIGM_ABAT = 'REFE_ELAS'
 )
 
-# Attention : lorsque FORME='ASRN' (asrn=True), que ce soit la valeur de codifie (True/False)
+# Attention : lorsque VARIANTE='ASRN' (asrn=True), que ce soit la valeur de codifie (True/False)
 # on prendre toujours la formule REFE_ELAS pour calculer UT02-X9
 
 post_roche_analyticSism_Coude_ASNR.calcul_ressort()
@@ -243,7 +243,7 @@ post_roche_analyticSism_Coude_ASNR.calcul_sigma_eq()
 # TEST : Déplacements Imposés Non-Sismique / Dilatation thermique
 # (DINS / DILAT_THERM)
 
-# FORME = 'RCC_MRX' & CONTRAINTE_ABAT = 'CODE', Calcul avec coude
+# VARIANTE = 'RCC_MRX' & SIGM_ABAT = 'CODE', Calcul avec coude
 post_roche_analyticSism_Coude_DINS = PostRocheAnalytic(
     mfy_poids_propre,
     mt_deplacement_impose,
@@ -260,7 +260,7 @@ post_roche_analyticSism_Coude_DINS.calcul_abattement()
 post_roche_analyticSism_Coude_DINS.calc_moment_abat()
 post_roche_analyticSism_Coude_DINS.calcul_sigma_eq()
 
-# tout + coude FORME='ASRN' + Déplacements Imposés Non-Sismique / Dilatation thermique
+# tout + coude VARIANTE='ASRN' + Déplacements Imposés Non-Sismique / Dilatation thermique
 # (DINS / DILAT_THERM)
 post_roche_analyticSism_Coude_ASNR_dns = PostRocheAnalytic(
     mfy_poids_propre,
@@ -271,12 +271,12 @@ post_roche_analyticSism_Coude_ASNR_dns = PostRocheAnalytic(
     mfz_sismique_qs,
     pression=1e6,
     coude=True,
-    asnr=True,  # eq. to FORME = 'ASRN'
-    codifie=False,  # eq. to CONTRAINTE_ABAT = 'REFE_ELAS'
+    asnr=True,  # eq. to VARIANTE = 'ASRN'
+    codifie=False,  # eq. to SIGM_ABAT = 'REFE_ELAS'
     mfz_depl_impo_non_sism=mfz_dins,  # depla imposé non-sismique (ou thermique)
 )
 
-# Attention : lorsque FORME='ASRN' (asrn=True), que ce soit la valeur de codifie (True/False)
+# Attention : lorsque VARIANTE='ASRN' (asrn=True), que ce soit la valeur de codifie (True/False)
 # on prendre toujours la formule REFE_ELAS pour calculer UT02-X9
 
 post_roche_analyticSism_Coude_ASNR_dns.calcul_ressort()
@@ -297,14 +297,14 @@ post_roche_analytic_Coude = PostRocheAnalytic(
     zeros,  # mfz_sismique_qs,
     pression=1e6,
     coude=True,
-    asnr=False,  # eq. to FORME = 'RCC_MRX'
+    asnr=False,  # eq. to VARIANTE = 'RCC_MRX'
 )
 post_roche_analytic_Coude.calcul_ressort()
 post_roche_analytic_Coude.calcul_abattement()
 post_roche_analytic_Coude.calc_moment_abat()
 post_roche_analytic_Coude.calcul_sigma_eq()
 
-# tout + coude avec CONTRAINTE_ABAT='REFE_ELAS'
+# tout + coude avec SIGM_ABAT='REFE_ELAS'
 post_roche_analytic_Coude_RE = PostRocheAnalytic(
     mfy_poids_propre,
     mt_deplacement_impose,
@@ -316,15 +316,15 @@ post_roche_analytic_Coude_RE = PostRocheAnalytic(
     # zeros,  # mfz_sismique,
     pression=1e6,
     coude=True,
-    asnr=False,  # eq. to FORME = 'RCC_MRX'
-    codifie=False,  # eq. to CONTRAINTE_ABAT = 'REFE_ELAS'
+    asnr=False,  # eq. to VARIANTE = 'RCC_MRX'
+    codifie=False,  # eq. to SIGM_ABAT = 'REFE_ELAS'
 )
 post_roche_analytic_Coude_RE.calcul_ressort()
 post_roche_analytic_Coude_RE.calcul_abattement()
 post_roche_analytic_Coude_RE.calc_moment_abat()
 post_roche_analytic_Coude_RE.calcul_sigma_eq()
 
-# tout + coude FORME='ASRN'
+# tout + coude VARIANTE='ASRN'
 post_roche_analytic_Coude_ASNR = PostRocheAnalytic(
     mfy_poids_propre,
     mt_deplacement_impose,
@@ -334,11 +334,11 @@ post_roche_analytic_Coude_ASNR = PostRocheAnalytic(
     zeros,  # mfz_sismique_qs,
     pression=1e6,
     coude=True,
-    asnr=True,  # eq. to FORME = 'ASRN'
-    codifie=False,  # eq. to CONTRAINTE_ABAT = 'REFE_ELAS'
+    asnr=True,  # eq. to VARIANTE = 'ASRN'
+    codifie=False,  # eq. to SIGM_ABAT = 'REFE_ELAS'
 )
 
-# Attention : lorsque FORME='ASRN' (asrn=True), que ce soit la valeur de codifie (True/False)
+# Attention : lorsque VARIANTE='ASRN' (asrn=True), que ce soit la valeur de codifie (True/False)
 # on prendre toujours la formule 'REFE_ELAS' pour calculer UT02-X9
 
 post_roche_analytic_Coude_ASNR.calcul_ressort()
@@ -1292,7 +1292,7 @@ TEST_RESU(
 ###########################################################################
 # TEST_RESU SEISME
 
-# TEST_RESU resuPostRocheToutSism : FORME = 'RCC_MRX', CONTRAINTE_ABAT = 'RCC_MRX'
+# TEST_RESU resuPostRocheToutSism : VARIANTE = 'RCC_MRX', SIGM_ABAT = 'RCC_MRX'
 TEST_RESU(
     RESU=(
         # UT01 : Champ principal
@@ -3203,7 +3203,7 @@ TEST_RESU(
 )
 
 
-# TEST_RESU resuPostRocheToutSism_Coude : FORME = 'RCC_MRX', CONTRAINTE_ABAT = 'RCC_MRX'
+# TEST_RESU resuPostRocheToutSism_Coude : VARIANTE = 'RCC_MRX', SIGM_ABAT = 'RCC_MRX'
 TEST_RESU(
     RESU=(
         # UT01 : Champ principal
@@ -5114,7 +5114,7 @@ TEST_RESU(
 )
 
 
-# TEST_RESU resuPostRocheToutSism_Coude_RE : FORME = 'RCC_MRX', CONTRAINTE_ABAT = 'REFE_ELAS'
+# TEST_RESU resuPostRocheToutSism_Coude_RE : VARIANTE = 'RCC_MRX', SIGM_ABAT = 'REFE_ELAS'
 TEST_RESU(
     RESU=(  # UT01_ELNO-X9= contrainte équivalente optimisée
         _F(
@@ -5165,7 +5165,7 @@ TEST_RESU(
 )
 
 
-# # TEST_RESU resuPostRocheToutSism_Coude_ASNR : FORME = 'RCC_MRX', CONTRAINTE_ABAT = 'RCC_MRX'
+# # TEST_RESU resuPostRocheToutSism_Coude_ASNR : VARIANTE = 'RCC_MRX', SIGM_ABAT = 'RCC_MRX'
 TEST_RESU(
     RESU=(
         # UT01 : Champ principal
@@ -7022,7 +7022,7 @@ TEST_RESU(
 
 # Test_resu pour DINS / DILAT_THERM
 
-# # TEST_RESU resuPostRocheToutSism_Coude_DINS : FORME = 'RCC_MRX', CONTRAINTE_ABAT = 'RCC_MRX'
+# # TEST_RESU resuPostRocheToutSism_Coude_DINS : VARIANTE = 'RCC_MRX', SIGM_ABAT = 'RCC_MRX'
 TEST_RESU(
     RESU=(
         # UT01 : Champ principal
@@ -8925,7 +8925,7 @@ TEST_RESU(
     )
 )
 
-# # TEST_RESU resuPostRocheSism_Coude_ASNR_DINS : FORME = 'RCC_MRX', CONTRAINTE_ABAT = 'RCC_MRX'
+# # TEST_RESU resuPostRocheSism_Coude_ASNR_DINS : VARIANTE = 'RCC_MRX', SIGM_ABAT = 'RCC_MRX'
 TEST_RESU(
     RESU=(
         # UT01 : Champ principal
@@ -10765,7 +10765,7 @@ TEST_RESU(
     )
 )
 
-# # TEST_RESU resuPostRocheSism_Coude_ASNR_THER : FORME = 'RCC_MRX', CONTRAINTE_ABAT = 'RCC_MRX'
+# # TEST_RESU resuPostRocheSism_Coude_ASNR_THER : VARIANTE = 'RCC_MRX', SIGM_ABAT = 'RCC_MRX'
 TEST_RESU(
     RESU=(
         # UT01 : Champ principal
@@ -19564,7 +19564,7 @@ TEST_RESU(
 )
 
 
-# TEST_RESU pour resuLuPostRocheGrMa_RE : FORME = 'RCC_MRX', CONTRAINTE_ABAT = 'REFE_ELAS'
+# TEST_RESU pour resuLuPostRocheGrMa_RE : VARIANTE = 'RCC_MRX', SIGM_ABAT = 'REFE_ELAS'
 # Seul la composante UT01_ELNO X9 est testée
 TEST_RESU(
     RESU=(
@@ -19617,8 +19617,8 @@ TEST_RESU(
     )
 )
 
-# TEST_RESU pour resuLuPostRocheGrMa_ASNR : FORME = 'ASNR',
-# (CONTRAINTE_ABAT = 'REFE_ELAS' : obligatoire)
+# TEST_RESU pour resuLuPostRocheGrMa_ASNR : VARIANTE = 'ASNR',
+# (SIGM_ABAT = 'REFE_ELAS' : obligatoire)
 
 TEST_RESU(
     RESU=(

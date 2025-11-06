@@ -21,7 +21,7 @@ import numpy as np
 
 def fsolve(func, x0):
     epsfcn = np.finfo(np.dtype(float)).eps
-    eps = epsfcn ** 0.5
+    eps = epsfcn**0.5
     delta_x = 1.0
     x = x0
     while abs(delta_x) > eps:
@@ -64,9 +64,9 @@ class PostRocheAnalytic:
         pression=0,
         coude=False,
         RCCM=False,
-        asnr=False,  # FORME=ASNR ou pas (différent g). asrn = False --> FORME=RCC_MRX
-        codifie=True,  # CONTRAINTE_ABAT = CODE - version actuelle
-        # si codifie = False, CONTRAINTE_ABAT=REFE_ELAS.
+        asnr=False,  # VARIANTE=ASNR ou pas (différent g). asrn = False --> VARIANTE=RCC_MRX
+        codifie=True,  # SIGM_ABAT = CODE - version actuelle
+        # si codifie = False, SIGM_ABAT=REFE_ELAS.
         mfz_depl_impo_non_sism=_zeros,  # deplacements imposés non-sismiques (DINS / DILAT_THERM)
     ):
         ep = 0.005
@@ -121,7 +121,7 @@ class PostRocheAnalytic:
         mt_deplacement = np.abs(self._mt_deplacement_impose)
         mf_deplacement = np.abs(self._mfz_depl_impo_non_sism)
 
-        mf_sismique = np.sqrt(self._mfy_sismique ** 2 + self._mfz_sismique ** 2)
+        mf_sismique = np.sqrt(self._mfy_sismique**2 + self._mfz_sismique**2)
 
         # sigma ref (UT01-X1 et X3)
         self._sigma_deplacement_ref = (
@@ -132,17 +132,17 @@ class PostRocheAnalytic:
         # 0.87 * mt_deplacement / self._Z
         self._sigma_sismique_ref = 0.79 * self._B_2 * mf_sismique / self._Z
         # sigma ref pour moment(UT01-X2 et X4)
-        if self.asnr:  # FORME=ASNR
+        if self.asnr:  # VARIANTE=ASNR
             self._sigma_deplacement_ref_moment = (
                 np.sqrt((0.87 * mt_deplacement) ** 2 + (0.79 * mf_deplacement) ** 2) / self._Z
             )
             self._sigma_sismique_ref_moment = 0.79 * mf_sismique / self._Z  # (B2=1)
-        else:  # (X2=X4 = 0 lorsque FORME=RCCMRX)
+        else:  # (X2=X4 = 0 lorsque VARIANTE=RCCMRX)
             self._sigma_deplacement_ref_moment = np.zeros(len(mt_deplacement))
             self._sigma_sismique_ref_moment = np.zeros(len(mf_sismique))
 
         # reversibilites locales
-        if self.asnr:  # FORME=ASNR
+        if self.asnr:  # VARIANTE=ASNR
             sig_over_E = self._sigma_deplacement_ref / self._E
             sig_over_E = (sig_over_E > 1e-6) * sig_over_E
             self._t = sig_over_E  # UT02-X1
@@ -180,7 +180,7 @@ class PostRocheAnalytic:
                     self._t_s_moment[ii] = s_E / self._epsi_p(s)
                 ii += 1
 
-        else:  # forme='rcc_mrx'
+        else:  # VARIANTE='rcc_mrx'
             sig_over_E = self._sigma_deplacement_ref / self._E
             sig_over_E = (sig_over_E > 1e-6) * sig_over_E
             self._t = sig_over_E  # UT02-X1
@@ -254,7 +254,7 @@ class PostRocheAnalytic:
             self._T_s_moment = 0.0  # UT02-X8
 
         # ressorts
-        if self.asnr:  # FORME=ASNR
+        if self.asnr:  # VARIANTE=ASNR
             self._r_m = np.maximum(
                 np.array([self._T / t - 1 if t != 0.0 else 0.0 for t in self._t]), np.zeros([4])
             )
@@ -273,7 +273,7 @@ class PostRocheAnalytic:
             self._r_mmax_moment = np.array([np.amax(self._r_m_moment)] * 4)
             self._r_smax_moment = np.array([np.amax(self._r_s_moment)] * 4)
 
-        else:  # FORME=RCC_MRX
+        else:  # VARIANTE=RCC_MRX
             self._r_m = np.maximum(
                 np.array([self._T / t - 1 if t != 0.0 else 0.0 for t in self._t]), np.zeros([4])
             )
@@ -495,7 +495,7 @@ class PostRocheAnalytic:
         Formules  simplifiées adaptées à la conception du cas-test
         31-oct-2025
         """
-        if self.asnr:  # FORME=ASNR
+        if self.asnr:  # VARIANTE=ASNR
             # Calcul des moments abattus avec g = g_opt_moment, gS = gS_opt_moment
             # selon la formule proposée par la formule REFE_ELAS
 
@@ -526,9 +526,9 @@ class PostRocheAnalytic:
                 np.abs(self._mfz_sismique_qs) + self._g_sopt_moment * np.abs(self._mfz_sismique_dyn)
             )
 
-        else:  # FORME=RCC_MRX
+        else:  # VARIANTE=RCC_MRX
             # Calcul des moments abattus avec g / gS = g_opt / g_Sopt
-            # Nota: g_opt_moment = gS_opt_moment = 0 si Forme=RCC_MRX
+            # Nota: g_opt_moment = gS_opt_moment = 0 si VARIANTE=RCC_MRX
 
             # m_t
             # UT01-X10 :
@@ -558,16 +558,16 @@ class PostRocheAnalytic:
             )
 
         # UT01-X13 (commun pour les 2) :
-        self._m_abat = np.sqrt(self._m_t_abat ** 2 + self._mfy_abat ** 2 + self._mfz_abat ** 2)
+        self._m_abat = np.sqrt(self._m_t_abat**2 + self._mfy_abat**2 + self._mfz_abat**2)
 
         return self._m_t_abat, self._mfy_abat, self._mfz_abat, self._m_abat
 
     def calcul_sigma_eq(self):
         """calcule le sigma equivalent (UT01-X9)"""
         if self.asnr:
-            print("Calcul de UT01-X9 : FORME=ASNR --> CONTRAINTE_ABAT=REFE_ELAS")
-            # FORME=ASNR --> CONTRAINTE_ABAT="REFE_ELAS" uniquement
-            # Attention: bien que la forme soit ASNR, B2 doit être différent à 1
+            print("Calcul de UT01-X9 : VARIANTE=ASNR --> SIGM_ABAT=REFE_ELAS")
+            # VARIANTE=ASNR --> SIGM_ABAT="REFE_ELAS" uniquement
+            # Attention: bien que la VARIANTE soit ASNR, B2 doit être différent à 1
             # dans les coudes pour le calcul des contraintes abattues.
             _m_t_abat2 = self._gopt * self._mt_deplacement_impose
 
@@ -598,13 +598,13 @@ class PostRocheAnalytic:
                 self._sigpres2
                 + np.sqrt(
                     (0.87 * _m_t_abat2) ** 2
-                    + (0.79 * self._B_2) ** 2 * (_mfy_abat2 ** 2 + _mfz_abat2 ** 2)
+                    + (0.79 * self._B_2) ** 2 * (_mfy_abat2**2 + _mfz_abat2**2)
                 )
                 / self._Z
             )
 
-        else:  # FORME=RCC_MRX
-            if self.codifie:  # CONTRAINTE_ABAT="RCC_MRX"
+        else:  # VARIANTE=RCC_MRX
+            if self.codifie:  # SIGM_ABAT="RCC_MRX"
                 # self._sigma_eq = (
                 #     self._sigpres2**2
                 #     + 1
@@ -625,23 +625,23 @@ class PostRocheAnalytic:
 
                 print(
                     "Calcul de UT01-X9 : "
-                    "FORME=RCC_MRX et CONTRAINTE_ABAT=CODE (formule codifiée avec les Dij)"
+                    "VARIANTE=RCC_MRX et SIGM_ABAT=CODE (formule codifiée avec les Dij)"
                 )
 
                 self._sigma_eq_opt = (
-                    self._sigpres2 ** 2
+                    self._sigpres2**2
                     + 1
-                    / self._Z ** 2
+                    / self._Z**2
                     * (
-                        self._D_21 ** 2 * (self._gopt * self._mt_deplacement_impose) ** 2
-                        + self._D_22 ** 2
+                        self._D_21**2 * (self._gopt * self._mt_deplacement_impose) ** 2
+                        + self._D_22**2
                         * (
                             abs(self._mfy_poids_propre)
                             + abs(self._mfy_sismique_qs)
                             + self._g_sopt * abs(self._mfy_sismique_dyn)
                         )
                         ** 2
-                        + self._D_23 ** 2
+                        + self._D_23**2
                         * (
                             abs(self._mfz_sismique_qs)
                             + self._g_sopt * abs(self._mfz_sismique_dyn)
@@ -650,13 +650,13 @@ class PostRocheAnalytic:
                         ** 2
                     )
                 ) ** 0.5
-            else:  # CONTRAINTE_ABAT="REFE_ELAS"
-                print("Calcul de UT01-X9 : FORME=RCC_MRX et CONTRAINTE_ABAT=REFE_ELAS")
+            else:  # SIGM_ABAT="REFE_ELAS"
+                print("Calcul de UT01-X9 : VARIANTE=RCC_MRX et SIGM_ABAT=REFE_ELAS")
                 self._sigma_eq_opt = (
                     self._sigpres2
                     + np.sqrt(
                         (0.87 * self._m_t_abat) ** 2
-                        + (0.79 * self._B_2) ** 2 * (self._mfy_abat ** 2 + self._mfz_abat ** 2)
+                        + (0.79 * self._B_2) ** 2 * (self._mfy_abat**2 + self._mfz_abat**2)
                     )
                     / self._Z
                 )

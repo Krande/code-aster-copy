@@ -468,7 +468,7 @@ sismique_dyn = CREA_RESU(
 # PostRoche tout + chargement sismique (DYN et QS):
 # Pour l'instant, ce test n'est pas tracée dans la doc V
 # Il s'agit d'un test supplémentaire.
-# FORME = 'RCC_MRX' (défaut) + CONTRAINTE_ABAT='CODE' (pas de Coude)
+# VARIANTE = 'RCC_MRX' (défaut) + SIGM_ABAT='CODE' (pas de Coude)
 resuPostRocheToutSism = POST_ROCHE(
     ZONE_ANALYSE=(_F(TOUT="OUI", GROUP_NO_ORIG="A"),),
     MODELE=modele,
@@ -491,9 +491,9 @@ resuPostRocheToutSism = POST_ROCHE(
 )
 
 # Avec "Coude":
-# FORME = 'RCC_MRX' (défaut) + CONTRAINTE_ABAT='CODE' (avec Coude)
+# VARIANTE = 'RCC_MRX' (défaut) + SIGM_ABAT='CODE' (avec Coude)
 resuPostRocheToutSism_Coude = POST_ROCHE(
-    LIMITE_ADM="NON",
+    SIGM_LIM="NON",
     ZONE_ANALYSE=(_F(GROUP_MA="TUYAU", GROUP_NO_ORIG="A"),),
     MODELE=modele,
     CARA_ELEM=cara_elem,
@@ -516,11 +516,11 @@ resuPostRocheToutSism_Coude = POST_ROCHE(
 )
 
 
-# FORME = 'RCC_MRX' (défaut) + CONTRAINTE_ABAT='REFE_ELAS' (avec Coude)
+# VARIANTE = 'RCC_MRX' (défaut) + SIGM_ABAT='REFE_ELAS' (avec Coude)
 # (Contrainte vraie optimisé UT02-X9 calculé avec la formule REFE_ELAS)
 resuPostRocheToutSism_Coude_RE = POST_ROCHE(
-    CONTRAINTE_ABAT="REFE_ELAS",
-    LIMITE_ADM="NON",
+    SIGM_ABAT="REFE_ELAS",
+    SIGM_LIM="NON",
     ZONE_ANALYSE=(_F(GROUP_MA="TUYAU", GROUP_NO_ORIG="A"),),
     MODELE=modele,
     CARA_ELEM=cara_elem,
@@ -543,11 +543,11 @@ resuPostRocheToutSism_Coude_RE = POST_ROCHE(
 )
 
 
-# FORME = 'ASNR' --> CONTRAINTE_ABAT='REFE_ELAS' (pas de choix de l'utilisateur)
+# VARIANTE = 'ASNR' --> SIGM_ABAT='REFE_ELAS' (pas de choix de l'utilisateur)
 # (calcul avec Coude)
 # (Contrainte vraie optimisé UT02-X9 calculé avec la formule REFE_ELAS)
 resuPostRocheToutSism_Coude_ASNR = POST_ROCHE(
-    FORME="ASNR",
+    VARIANTE="ASNR",
     ZONE_ANALYSE=(_F(GROUP_MA="TUYAU", GROUP_NO_ORIG="A"),),
     MODELE=modele,
     CARA_ELEM=cara_elem,
@@ -573,10 +573,10 @@ resuPostRocheToutSism_Coude_ASNR = POST_ROCHE(
 # ------------------------------------------------------------------------------#
 # ajout du chargement de type Déplacements Imposés Non-Sismiques (DINS)
 
-# FORME = 'RCC_MRX' (défaut) + CONTRAINTE_ABAT='CODE' (defaut), avec Coude
+# VARIANTE = 'RCC_MRX' (défaut) + SIGM_ABAT='CODE' (defaut), avec Coude
 # Vérif de la contrainte formule de contrainte vraie dans RCC_MRx
 resuPostRocheToutSism_Coude_DINS = POST_ROCHE(
-    LIMITE_ADM="NON",
+    SIGM_LIM="NON",
     ZONE_ANALYSE=(_F(GROUP_MA="TUYAU", GROUP_NO_ORIG="A"),),
     MODELE=modele,
     CARA_ELEM=cara_elem,
@@ -592,11 +592,11 @@ resuPostRocheToutSism_Coude_DINS = POST_ROCHE(
     COUDE=_F(GROUP_MA="TUYAU", ANGLE=90, RCOURB=0.01),
 )
 
-# FORME = 'ASNR' --> CONTRAINTE_ABAT='REFE_ELAS' (pas de choix de l'utilisateur)
+# VARIANTE = 'ASNR' --> SIGM_ABAT='REFE_ELAS' (pas de choix de l'utilisateur)
 # (calcul avec Coude)
 # (Contrainte vraie optimisé UT02-X9 calculé avec la formule REFE_ELAS)
 resuPostRocheSism_Coude_ASNR_DINS = POST_ROCHE(
-    FORME="ASNR",
+    VARIANTE="ASNR",
     ZONE_ANALYSE=(_F(GROUP_MA="TUYAU", GROUP_NO_ORIG="A"),),
     MODELE=modele,
     CARA_ELEM=cara_elem,
@@ -623,11 +623,11 @@ resuPostRocheSism_Coude_ASNR_DINS = POST_ROCHE(
 
 # Duplicate pour couverture TYPE_CHAR="DILAT_THERM"
 
-# FORME = 'ASNR' --> CONTRAINTE_ABAT='REFE_ELAS'
+# VARIANTE = 'ASNR' --> SIGM_ABAT='REFE_ELAS'
 # (calcul avec Coude)
 # (Contrainte vraie optimisé UT02-X9 calculé avec la formule REFE_ELAS)
 resuPostRocheSism_Coude_ASNR_THER = POST_ROCHE(
-    FORME="ASNR",
+    VARIANTE="ASNR",
     ZONE_ANALYSE=(_F(GROUP_MA="TUYAU", GROUP_NO_ORIG="A"),),
     MODELE=modele,
     CARA_ELEM=cara_elem,
@@ -649,7 +649,7 @@ resuPostRocheSism_Coude_ASNR_THER = POST_ROCHE(
 
 
 resuPostRocheTout = POST_ROCHE(
-    LIMITE_ADM="NON",
+    SIGM_LIM="NON",
     ZONE_ANALYSE=(_F(TOUT="OUI", GROUP_NO_ORIG="A"),),
     MODELE=modele,
     CARA_ELEM=cara_elem,
@@ -669,7 +669,7 @@ resuPostRocheTout = POST_ROCHE(
 )
 
 resuPostRocheRCCMRX = POST_ROCHE(
-    LIMITE_ADM="OUI",
+    SIGM_LIM="OUI",
     # ZONE_ANALYSE=(_F(TOUT="OUI", GROUP_NO_ORIG="A"),),
     # ZONE_ANALYSE=(_F(GROUP_MA="TUYAU", GROUP_NO_ORIG="A"),),
     ZONE_ANALYSE=(_F(GROUP_MA=("M1", "M2"), GROUP_NO_ORIG="A"),),
@@ -685,7 +685,7 @@ resuPostRocheRCCMRX = POST_ROCHE(
 )
 
 resuPostRocheGrMa = POST_ROCHE(
-    LIMITE_ADM="NON",
+    SIGM_LIM="NON",
     # ZONE_ANALYSE=(_F(GROUP_MA="TUYAU", GROUP_NO_ORIG="A"),),
     ZONE_ANALYSE=(_F(GROUP_MA=("M2", "M1"), GROUP_NO_ORIG="A"),),
     MODELE=modele,
@@ -708,7 +708,7 @@ resuPostRocheGrMa = POST_ROCHE(
 
 # 1- deplacement (D)
 resuPostRocheTout_D = POST_ROCHE(
-    LIMITE_ADM="NON",
+    SIGM_LIM="NON",
     ZONE_ANALYSE=(_F(TOUT="OUI", GROUP_NO_ORIG="A"),),
     MODELE=modele,
     CARA_ELEM=cara_elem,
@@ -718,7 +718,7 @@ resuPostRocheTout_D = POST_ROCHE(
 
 # 2- deplacement + pression (DP)
 resuPostRocheTout_DP = POST_ROCHE(
-    LIMITE_ADM="NON",
+    SIGM_LIM="NON",
     ZONE_ANALYSE=(_F(TOUT="OUI", GROUP_NO_ORIG="A"),),
     MODELE=modele,
     CARA_ELEM=cara_elem,
@@ -730,7 +730,7 @@ resuPostRocheTout_DP = POST_ROCHE(
 # 3- deplacement + pression + poids propre (DPG)
 # validation de TRAC_EPSI avec fonction équivalente à Ramberg-Osgood
 resuPostRocheTout_DPG = POST_ROCHE(
-    LIMITE_ADM="NON",
+    SIGM_LIM="NON",
     ZONE_ANALYSE=(_F(TOUT="OUI", GROUP_NO_ORIG="A"),),
     MODELE=modele,
     CARA_ELEM=cara_elem,
@@ -745,7 +745,7 @@ resuPostRocheTout_DPG = POST_ROCHE(
 # meme calcul avec une fonction différente pour vérifier que les résultats sont
 # différents
 resuPostRocheTout_DPG_False = POST_ROCHE(
-    LIMITE_ADM="NON",
+    SIGM_LIM="NON",
     ZONE_ANALYSE=(_F(TOUT="OUI", GROUP_NO_ORIG="A"),),
     MODELE=modele,
     CARA_ELEM=cara_elem,
@@ -761,7 +761,7 @@ resuPostRocheTout_DPG_False = POST_ROCHE(
 
 # 4- pression + poids propre (PG)
 resuPostRocheTout_PG = POST_ROCHE(
-    LIMITE_ADM="NON",
+    SIGM_LIM="NON",
     ZONE_ANALYSE=(_F(TOUT="OUI", GROUP_NO_ORIG="A"),),
     MODELE=modele,
     CARA_ELEM=cara_elem,
@@ -813,7 +813,7 @@ dilatation_thermique_lu = LIRE_RESU(
 # 2nd appel à POST_ROCHE
 
 resuLuPostRocheTout = POST_ROCHE(
-    LIMITE_ADM="NON",
+    SIGM_LIM="NON",
     ZONE_ANALYSE=(_F(TOUT="OUI", GROUP_NO_ORIG="A"),),
     MODELE=modele,
     CARA_ELEM=cara_elem,
@@ -830,7 +830,7 @@ resuLuPostRocheTout = POST_ROCHE(
 
 
 resuLuPostRocheRCCMRX = POST_ROCHE(
-    LIMITE_ADM="OUI",
+    SIGM_LIM="OUI",
     ZONE_ANALYSE=(_F(TOUT="OUI", GROUP_NO_ORIG="A"),),
     MODELE=modele,
     CARA_ELEM=cara_elem,
@@ -846,9 +846,9 @@ resuLuPostRocheRCCMRX = POST_ROCHE(
 )
 
 
-# FORME = 'RCC_MRX' + CONTRAINTE_ABAT='CODE': par défaut
+# VARIANTE = 'RCC_MRX' + SIGM_ABAT='CODE': par défaut
 resuLuPostRocheGrMa = POST_ROCHE(
-    LIMITE_ADM="NON",
+    SIGM_LIM="NON",
     ZONE_ANALYSE=(_F(GROUP_MA="TUYAU", GROUP_NO_ORIG="A"),),
     MODELE=modele,
     CARA_ELEM=cara_elem,
@@ -862,11 +862,11 @@ resuLuPostRocheGrMa = POST_ROCHE(
     COUDE=_F(GROUP_MA="TUYAU", ANGLE=90, RCOURB=0.01),
 )
 
-# FORME = 'RCC_MRX' (défaut)
-# CONTRAINTE_ABAT='REFE_ELAS'
+# VARIANTE = 'RCC_MRX' (défaut)
+# SIGM_ABAT='REFE_ELAS'
 # (Contrainte vraie optimisé UT02-X9 calculé avec la formule REFE_ELAS)
 resuLuPostRocheGrMa_RE = POST_ROCHE(
-    CONTRAINTE_ABAT="REFE_ELAS",
+    SIGM_ABAT="REFE_ELAS",
     ZONE_ANALYSE=(_F(GROUP_MA="TUYAU", GROUP_NO_ORIG="A"),),
     MODELE=modele,
     CARA_ELEM=cara_elem,
@@ -880,9 +880,9 @@ resuLuPostRocheGrMa_RE = POST_ROCHE(
     COUDE=_F(GROUP_MA="TUYAU", ANGLE=90, RCOURB=0.01),
 )
 
-# FORME = ASNR
+# VARIANTE = ASNR
 resuLuPostRocheGrMa_ASNR = POST_ROCHE(
-    FORME="ASNR",
+    VARIANTE="ASNR",
     ZONE_ANALYSE=(_F(GROUP_MA="TUYAU", GROUP_NO_ORIG="A"),),
     MODELE=modele,
     CARA_ELEM=cara_elem,
@@ -906,7 +906,7 @@ resuLuPostRocheGrMa_ASNR = POST_ROCHE(
 
 # 1- deplacement (D)
 resuLuPostRocheTout_D = POST_ROCHE(
-    LIMITE_ADM="NON",
+    SIGM_LIM="NON",
     ZONE_ANALYSE=(_F(TOUT="OUI", GROUP_NO_ORIG="A"),),
     MODELE=modele,
     CARA_ELEM=cara_elem,
@@ -916,7 +916,7 @@ resuLuPostRocheTout_D = POST_ROCHE(
 
 # 2- deplacement + pression (DP)
 resuLuPostRocheTout_DP = POST_ROCHE(
-    LIMITE_ADM="NON",
+    SIGM_LIM="NON",
     ZONE_ANALYSE=(_F(TOUT="OUI", GROUP_NO_ORIG="A"),),
     MODELE=modele,
     CARA_ELEM=cara_elem,
@@ -927,7 +927,7 @@ resuLuPostRocheTout_DP = POST_ROCHE(
 
 # 3- deplacement + pression + poids propre (DPG)
 resuLuPostRocheTout_DPG = POST_ROCHE(
-    LIMITE_ADM="NON",
+    SIGM_LIM="NON",
     ZONE_ANALYSE=(_F(TOUT="OUI", GROUP_NO_ORIG="A"),),
     MODELE=modele,
     CARA_ELEM=cara_elem,
@@ -941,7 +941,7 @@ resuLuPostRocheTout_DPG = POST_ROCHE(
 
 # 4- pression + poids propre (PG)
 resuLuPostRocheTout_PG = POST_ROCHE(
-    LIMITE_ADM="NON",
+    SIGM_LIM="NON",
     ZONE_ANALYSE=(_F(TOUT="OUI", GROUP_NO_ORIG="A"),),
     MODELE=modele,
     CARA_ELEM=cara_elem,
