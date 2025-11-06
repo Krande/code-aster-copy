@@ -34,7 +34,7 @@
 void abort();
 
 #if defined ASTER_PLATFORM_MSYS2
-void print_trace_(void);
+void print_trace_( void );
 #endif
 
 void hancpu( int sig );

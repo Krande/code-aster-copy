@@ -120,7 +120,8 @@ ASTERINTEGER DEFP( MEMPID, mempid, ASTERINTEGER *val ) {
     return iret;
 
 #elif defined ASTER_PLATFORM_MINGW
-    PROCESS_MEMORY_COUNTERS pmc; // PROCESS_MEMORY_COUNTERS_EX is the same but with one additional field the PrivateUsage one. 
+    PROCESS_MEMORY_COUNTERS pmc; // PROCESS_MEMORY_COUNTERS_EX is the same but with one additional
+                                 // field the PrivateUsage one.
     GetProcessMemoryInfo( GetCurrentProcess(), &pmc, sizeof( pmc ) );
     /* VmSize */
     val[0] = (ASTERINTEGER)pmc.WorkingSetSize / 1024;
