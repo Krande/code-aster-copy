@@ -40,6 +40,8 @@ requirements:
     - if: win
       then: clang
     - setuptools
+    - if: "mpi != 'nompi'"
+      then: ${{ mpi }}
   host:
     - python
     - numpy
@@ -75,6 +77,8 @@ requirements:
         - mgis
         - libmed * *${{ mpi }}*
         - medcoupling
+    - if: "mpi != 'nompi'"
+      then: ${{ mpi }}
   run:
     - if: win
       then:
