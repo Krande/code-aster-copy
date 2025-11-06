@@ -83,12 +83,15 @@ def build(self):
     get_srcs = self.path.get_src().ant_glob
     env = self.all_envs[self.variant]
 
+    # Use SPDIR if provided (for conda/rattler builds), otherwise use ASTERLIBDIR
+    install_base = env.SPDIR if env.SPDIR else env.ASTERLIBDIR
+
     self(
         features="py",
         name="code_aster_py",
         source=get_srcs("**/*.py"),
         install_from=".",
-        install_path=osp.join(env.ASTERLIBDIR, "code_aster"),
+        install_path=osp.join(install_base, "code_aster"),
     )
 
     self(
@@ -96,7 +99,7 @@ def build(self):
         name="pytmpl",
         source="aster_pkginfo.pytmpl",
         target="aster_pkginfo.py",
-        install_path=osp.join(env.ASTERLIBDIR, "code_aster", "Utilities"),
+        install_path=osp.join(install_base, "code_aster", "Utilities"),
         VERSION_INFO=pformat(env["ASTER_VERSION"]),
     )
 
@@ -105,7 +108,7 @@ def build(self):
         name="pytmpl",
         source="aster_version.pytmpl",
         target="aster_version.py",
-        install_path=osp.join(env.ASTERLIBDIR, "code_aster", "Cata"),
+        install_path=osp.join(install_base, "code_aster", "Cata"),
         VERSION_INFO=pformat(env["ASTER_VERSION"]),
     )
 

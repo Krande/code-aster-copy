@@ -113,6 +113,21 @@ def options(self):
 
     group = self.get_option_group("Build and installation options")
     group.add_option(
+        "--spdir",
+        dest="spdir",
+        default=None,
+        help="Python site-packages directory for conda/rattler builds "
+        "[default: auto-detect from Python]",
+    )
+    group.add_option(
+        "--disable-aster-subdir",
+        dest="disable_aster_subdir",
+        action="store_true",
+        default=False,
+        help="Disable the /aster subdirectory in installation paths "
+        "(useful for conda/rattler builds where files should go directly to lib)",
+    )
+    group.add_option(
         "--fast",
         dest="custom_fc_sig",
         action="store_true",
@@ -360,9 +375,21 @@ def build(self):
         )
     if self.cmd.startswith("install"):
         # because we can't know which files are obsolete `rm *.py{,c,o}`
-        remove_previous(
-            self.root.find_node(self.env.ASTERLIBDIR), ["**/*.py", "**/*.pyc", "**/*.pyo"]
-        )
+        # When using SPDIR (conda builds), only clean our specific subdirectories
+        # not the entire site-packages directory
+        if env.SPDIR:
+            # Only clean code_aster and run_aster subdirectories
+            code_aster_dir = self.root.find_node(osp.join(env.SPDIR, "code_aster"))
+            run_aster_dir = self.root.find_node(osp.join(env.SPDIR, "run_aster"))
+            if code_aster_dir:
+                remove_previous(code_aster_dir, ["**/*.py", "**/*.pyc", "**/*.pyo"])
+            if run_aster_dir:
+                remove_previous(run_aster_dir, ["**/*.py", "**/*.pyc", "**/*.pyo"])
+        else:
+            # Traditional installation - clean entire ASTERLIBDIR
+            remove_previous(
+                self.root.find_node(self.env.ASTERLIBDIR), ["**/*.py", "**/*.pyc", "**/*.pyo"]
+            )
         remove_previous(
             self.root.find_node(self.env.ASTERDATADIR),
             ["datg/**/*", "materiau/**/*", "tests_data/**/*"],
@@ -482,13 +509,32 @@ def reset_msg(self):
 @Configure.conf
 def set_installdirs(self):
     # set the installation subdirectories
-    norm = lambda path: osp.normpath(osp.join(path, "aster"))
-    self.env["ASTERLIBDIR"] = norm(self.env.LIBDIR)
-    self.env["ASTERINCLUDEDIR"] = norm(self.env.INCLUDEDIR)
-    self.env["ASTERDATADIR"] = norm(self.env.DATADIR)
+    # Check if --libdir was explicitly provided and override LIBDIR if needed
+    # The gnu_dirs module defaults to lib64 on 64-bit systems, but conda/rattler
+    # builds typically expect lib to be used
+    if self.options.libdir:
+        # User explicitly set libdir, use it
+        self.env.LIBDIR = self.options.libdir
+
+    # Check if --spdir was explicitly provided for conda/rattler builds
+    if self.options.spdir:
+        self.env.SPDIR = self.options.spdir
+
+    # For conda/rattler builds, we don't want the /aster subdirectory for libraries
+    # but we DO want it for data files (tests, profile.sh, etc.)
+    if self.options.disable_aster_subdir:
+        norm_lib = lambda path: osp.normpath(path)
+        norm_data = lambda path: osp.normpath(osp.join(path, "aster"))
+    else:
+        norm_lib = lambda path: osp.normpath(osp.join(path, "aster"))
+        norm_data = lambda path: osp.normpath(osp.join(path, "aster"))
+
+    self.env["ASTERLIBDIR"] = norm_lib(self.env.LIBDIR)
+    self.env["ASTERINCLUDEDIR"] = norm_data(self.env.INCLUDEDIR)
+    self.env["ASTERDATADIR"] = norm_data(self.env.DATADIR)
     if not self.env.LOCALEDIR:
         self.env.LOCALEDIR = osp.join(self.env.PREFIX, "share", "locale")
-    self.env["ASTERLOCALEDIR"] = norm(self.env.LOCALEDIR)
+    self.env["ASTERLOCALEDIR"] = norm_data(self.env.LOCALEDIR)
     # set relative paths for profile.sh
     for var in ("LIBDIR", "DATADIR", "LOCALEDIR"):
         self.env["RELATIVE_" + var] = osp.relpath(self.env["ASTER" + var], self.env["PREFIX"])

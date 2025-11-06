@@ -18,7 +18,7 @@ export INCLUDES_BOOST=${PREFIX}/include
 export LIBPATH_BOOST=${PREFIX}/lib
 export LIB_BOOST="libboost_python$CONDA_PY"
 
-export INCLUDES_MUMPS="${PREFIX}/include"
+export INCLUDES_MUMPS="${PREFIX}/include ${PREFIX}/include/mumps_seq"
 export LIBPATH_MUMPS="${PREFIX}/lib"
 
 export INCLUDES_MED="${PREFIX}/include"
@@ -68,6 +68,7 @@ else
 fi
 
 if [[ "$mpi" == "nompi" ]]; then
+
   # Install for standard sequential
   waf \
     --use-config-dir=${SRC_DIR}/config/ \
@@ -77,9 +78,12 @@ if [[ "$mpi" == "nompi" ]]; then
     --enable-hdf5 \
     --enable-mumps \
     --enable-metis \
+    --mumps-libs="cmumps_seq dmumps_seq smumps_seq zmumps_seq pord_seq mumps_common_seq mpiseq_seq" \
     --enable-scotch \
     --enable-mfront \
     --libdir="${PREFIX}/lib" \
+    --spdir="${SP_DIR}" \
+    --disable-aster-subdir \
     --install-tests \
     --disable-mpi \
     --disable-petsc \
@@ -116,6 +120,8 @@ else
     --prefix="${PREFIX}" \
     --enable-mpi \
     --libdir="${PREFIX}/lib" \
+    --spdir="${SP_DIR}" \
+    --disable-aster-subdir \
     --install-tests \
     --without-hg
 
@@ -129,17 +135,23 @@ fi
 
 echo "Compilation complete"
 
-export LD_LIBRARY_PATH="${PREFIX}/lib/aster"
+# With --spdir option, Python packages and extensions are installed directly to ${SP_DIR}:
+# - code_aster/ and run_aster/ Python packages -> ${SP_DIR}
+# - aster.so, aster_core.so, aster_fonctions.so -> ${SP_DIR}
+# - elem.1 catalog file -> ${SP_DIR}
+#
+# C/C++/Fortran shared libraries remain in ${PREFIX}/lib:
+# - libbibfor.so, libbibfor_ext.so, libbibcxx.so, libbibc.so, libAsterGC.so, libAsterMFrOfficial.so
 
-# This is for reducing reliance on conda activation scripts.
-mv "${PREFIX}/lib64/aster/code_aster" "${SP_DIR}/code_aster"
-mv "${PREFIX}/lib64/aster/run_aster" "${SP_DIR}/run_aster"
+ASTER_LIBDIR="${PREFIX}/lib"
+echo "All Python files installed to: ${SP_DIR}"
+echo "Shared libraries installed to: ${ASTER_LIBDIR}"
 
-# move aster_pkginfo.py and aster_version.py
-mv ${SRC_DIR}/build/${build_type}/code_aster/*.py "${SP_DIR}/code_aster/Utilities/"
-# note to self. aster.so is symlinked to libaster.so
-mv ${PREFIX}/lib64/aster/libb*.so "${PREFIX}/lib/"
-mv ${PREFIX}/lib64/aster/libAsterMFrOff*.so "${PREFIX}/lib/"
+export LD_LIBRARY_PATH="${ASTER_LIBDIR}"
 
-mv "${PREFIX}/lib64/aster/med_aster.so" "${SP_DIR}/"
-mv ${PREFIX}/lib64/aster/*.so "${SP_DIR}/"
+# Everything should already be in the right place!
+# No file moving needed when using --spdir and --disable-aster-subdir
+
+
+
+

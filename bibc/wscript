@@ -178,6 +178,10 @@ def build_libaster(self, env):
     use = ["LIBASTER", "asterbibfor", "asterbibfor_ext", "asterbibc", "asterbibcxx", "astergc"]
     if env.BUILD_MFRONT:
         use.append("astermfront")
+
+    # For Python extension modules, install to SPDIR if provided, otherwise ASTERLIBDIR
+    python_install_path = env.SPDIR if env.SPDIR else env.ASTERLIBDIR
+
     # {bibfor, bibc, bibcxx}/*.o
     if self.env.ASTER_PLATFORM_MINGW:
         # fix circular dependencies between bibc.a and bibfor.a
@@ -194,7 +198,7 @@ def build_libaster(self, env):
         defines="_MAIN_=_unused_main_",  #'ASTER_WITHOUT_PYMOD',
         env=env.derive(),
         use=use,
-        install_path=env.ASTERLIBDIR,
+        install_path=python_install_path,
     )
     extlib = ".so"
     mods = ["aster", "aster_core", "aster_fonctions"]
@@ -204,7 +208,7 @@ def build_libaster(self, env):
         mods.extend(["libaster", "libAsterGC"])
         libaster = "aster.dll"
     for submodule in mods:
-        src = osp.join(env.ASTERLIBDIR, submodule + extlib)
+        src = osp.join(python_install_path, submodule + extlib)
         self.symlink_as(src, libaster)
 
 
