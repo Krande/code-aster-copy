@@ -18,7 +18,7 @@
 
 subroutine verifels(cequi, ht, bw, enrobi, enrobs, &
                     scmaxi, scmaxs, ssmax, uc, &
-                    dnsinf, dnssup, effm, effn, verif)
+                    dnsinf, dnssup, effm, effn, verif, n_tot)
 !______________________________________________________________________
 !
 !      VERIFELS
@@ -54,8 +54,6 @@ subroutine verifels(cequi, ht, bw, enrobi, enrobs, &
     implicit none
 !
 #include "extern/dintels.h"
-#include "asterfort/wkvect.h"
-#include "asterfort/jedetr.h"
 !
     real(kind=8) :: cequi
     real(kind=8) :: ht
@@ -71,6 +69,7 @@ subroutine verifels(cequi, ht, bw, enrobi, enrobs, &
     real(kind=8) :: effm
     real(kind=8) :: effn
     integer(kind=8) :: verif
+    integer(kind=8) :: n_tot
 
 !-----------------------------------------------------------------------
 !!!!VARIABLES DE CALCUL
@@ -81,20 +80,15 @@ subroutine verifels(cequi, ht, bw, enrobi, enrobs, &
     logical :: COND_OK
     real(kind=8) :: nrd0, nrd1, mrd0, mrd1
     character(24) :: pnrd, pmrd
-    real(kind=8), pointer :: mrd(:) => null()
-    real(kind=8), pointer :: nrd(:) => null()
+    real(kind=8) :: mrd(2*n_tot)
+    real(kind=8) :: nrd(2*n_tot)
 
     !Dimensionnement des vecteurs
-
-    pnrd = 'POINT_NRD'
-    pmrd = 'POINT_MRD'
 
     ntot = -1
     call dintels(cequi, ht, bw, enrobi, enrobs, &
                  scmaxi, scmaxs, ssmax, uc, &
                  ntot, ndemi=ndemi)
-    call wkvect(pnrd, ' V V R ', ntot, vr=nrd)
-    call wkvect(pmrd, ' V V R ', ntot, vr=mrd)
 
     call dintels(cequi, ht, bw, enrobi, enrobs, &
                  scmaxi, scmaxs, ssmax, uc, &
@@ -158,8 +152,5 @@ subroutine verifels(cequi, ht, bw, enrobi, enrobs, &
     else
         verif = 1
     end if
-
-    call jedetr(pnrd)
-    call jedetr(pmrd)
 
 end subroutine

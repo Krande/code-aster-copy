@@ -21,7 +21,7 @@
 interface
      subroutine verifels(cequi, ht, bw, enrobi, enrobs,&
                          scmaxi, scmaxs, ssmax, uc,&
-                         dnsinf, dnssup, effm, effn, verif)
+                         dnsinf, dnssup, effm, effn, verif, n_tot)
         real(kind=8) :: cequi
         real(kind=8) :: ht
         real(kind=8) :: bw
@@ -36,5 +36,6 @@ interface
         real(kind=8) :: effm
         real(kind=8) :: effn
         integer(kind=8) :: verif
+        integer(kind=8) :: n_tot
     end subroutine verifels
 end interface

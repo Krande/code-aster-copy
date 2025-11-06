@@ -170,7 +170,7 @@ subroutine cafelsiter(cequi, effm, effn, ht, bw, &
     !!Intervention 05/2023 - Section non ferraillée auto-équilibrée
     call verifels(cequi, ht, bw, enrobi, enrobs, &
                   scmaxi, scmaxs, ssmax, uc, &
-                  seuil_as, seuil_as, effm, effn, verif)
+                  seuil_as, seuil_as, effm, effn, verif, n_tot)
 
     if (verif .eq. 0) then
         !OK
