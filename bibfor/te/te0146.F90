@@ -70,7 +70,7 @@ subroutine te0146(option, nomte)
 !                   0 = NON, 1 = OUI
 !     FERRMIN    PRISE EN COMPTE D'UN FERRAILLAGE MINIMUN
 !                   0 = NON, 1 = OUI, 2 = CODE
-!     FERRMINFISS   PRISE EN COMPTE DU Asmin Fiss ( 1 = OUI)
+!     FERRMINFISS   PRISE EN COMPTE DU Asmin Fiss ( 1 = EC2, 2 = RCC-CW)
 !     EFFECHEL      PRISE EN COMPTE DE LEFFET DECHELLE ( 1 = OUI)
 !     RHOLMIN    RATIO DE FERRAILLAGE LONGI MINI (A RENSEIGNER SI FERMIN='OUI')
 !     RHOTMIN    RATIO DE FERRAILLAGE TRNSV MINI (A RENSEIGNER SI FERMIN='OUI')
@@ -172,7 +172,7 @@ subroutine te0146(option, nomte)
     integer(kind=8) :: ino, icmp, iret, comp, meth2D, cond109, precs, nno
     integer(kind=8) :: iadzi, iazk24, compress, ferrcomp, typstru, nb
     real(kind=8) :: k, hs, N, M, Asmininf, Asminsup, Act, kc, k1, sigma_c, m1
-    real(kind=8) ::  chi0, fctm, unite_m, unite_pa, A, I, Mfiss, x, b
+    real(kind=8) ::  chi0, fctm, unite_m, unite_pa, b
 !
     call tecael(iadzi, iazk24, noms=0)
 !
@@ -524,23 +524,16 @@ subroutine te0146(option, nomte)
                 else
 
                     ! partially compressed
-                    !section area
-                    A = b*ht
-                    !section moment of inertia
-                    I = 1.d0/12.d0*b*(ht)**3
-                    !Stress on concrete
-                    sigma_c = N/(b*ht)
-                    !Cracking bending moment
-                    Mfiss = 2.d0*I/ht*(fctm+sigma_c)
-                    !Neutral axis depth
-                    x = ht/2.d0+sigma_c*I/Mfiss
                     !Area of concrete in tension
-                    Act = min(b*ht, b*(ht-x))
+                    ! to make it simple we consider hcteff = h/2
+                    Act = b*ht/2.d0
                     if (N .gt. 0.d0) then
                         k1 = 1.5d0
                     else
                         k1 = 2.d0*hs/(3.d0*ht)
                     end if
+
+                    sigma_c = N/(b*ht)
 
                     kc = max(0.d0, min(1.d0, 0.4d0*(1-(sigma_c/(k1*(ht/hs)*fctm)))))
 
@@ -566,22 +559,15 @@ subroutine te0146(option, nomte)
                     if ((ht .le. 6250.d0) .and. (ht .ge. 400.d0) .and. &
                         (fbeton .le. 55.d0) .and. (fbeton .ge. 30.d0)) then
                         !Scale effect is applicable according to DN 2100 RCC-CW
-                        if ((N .gt. 0.d0) .and. (M/abs(N) .lt. ht/6.d0) .and. &
-                            (M/abs(N) .gt. -ht/6.d0)) then
-                            ! Full compression
-                            Asmininf = 0.d0
-                            Asminsup = 0.d0
-                        else
-                            kc = 1.d0
-                            Act = b*ht/2.d0
-                            m1 = 2.5d0*0.1d0-3.6d0*0.001d0*(fbeton+8) &
-                                 +1.3d0*0.00001d0*(fbeton+8)**2d0
 
-                            chi0 = (6.d0*0.001d0/(ht/1000.d0)**2.d0)**m1
-                            Asmininf = kc*k*chi0*fctm*Act/facier
-                            Asminsup = Asmininf
+                        kc = 1.d0
+                        Act = b*ht/2.d0
+                        m1 = 2.5d0*0.1d0-3.6d0*0.001d0*(fbeton+8) &
+                             +1.3d0*0.00001d0*(fbeton+8)**2d0
 
-                        end if
+                        chi0 = (6.d0*0.001d0/(ht/1000.d0)**2.d0)**m1
+                        Asmininf = kc*k*chi0*fctm*Act/facier
+                        Asminsup = Asmininf
 
                     else
                         !Scale effect is not applicable according to DN 2100 RCC-CW
