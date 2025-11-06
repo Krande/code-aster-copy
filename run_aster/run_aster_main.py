@@ -460,8 +460,8 @@ def main(argv=None):
                 if "--no-mpi" not in argv_i:
                     argv_i.append("--no-mpi")
                 argv_i.append(fexp)
-                ##cmd = f"{run_aster} {' '.join(argv_i)}"
-                cmd = ["run_aster", *argv_i]
+
+                cmd = f"{run_aster} {' '.join(argv_i)}"
                 if need_mpiexec:
                     args_cmd = dict(
                         mpi_nbcpu=export.get("mpi_nbcpu", 1),
