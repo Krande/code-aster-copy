@@ -19,7 +19,9 @@
 
 import os
 import os.path as osp
+import re
 from functools import partial
+
 from waflib import Configure, Errors, Utils
 
 
@@ -33,7 +35,8 @@ def options(self):
         "--disable-mpi",
         dest="parallel",
         default=os.environ.get("ENABLE_MPI") != "0",
-        action="store_false", help="Build a sequential version"
+        action="store_false",
+        help="Build a sequential version",
     )
     group.add_option(
         "--enable-mpi",
@@ -91,7 +94,6 @@ def configure(self):
         self.environ.setdefault("CXX", "mpicxx")
         self.environ.setdefault("FC", "mpif90")
     self.load_compilers()
-    self.check_compilers_version()
     self.check_fortran_verbose_flag()
     self.check_openmp()
     # self.check_vmsize() is executed after mpiexec checking
@@ -101,12 +103,26 @@ def configure(self):
 
 
 @Configure.conf
-def check_compilers_version(self):
+def check_compilers_type_version(self):
+    def _get_version(prog):
+        output = self.cmd_and_log(Utils.to_list(prog) + ["--version"])
+        return output.splitlines()[0]
+
+    self.env.CC_IS_INTEL = False
+    self.env.FC_IS_INTEL = False
     self.start_msg("Checking for C compiler version")
-    self.end_msg(self.env.CC_NAME.lower() + " " + ".".join(Utils.to_list(self.env.CC_VERSION)))
+    line1 = _get_version(self.env.CC)
+    expr = re.compile("(intel|oneapi|icx|icc)")
+    if expr.search(line1.lower()):
+        self.env.CC_IS_INTEL = True
+    self.end_msg(line1)
     # CXX_VERSION does not exist, c++ == c
     self.start_msg("Checking for Fortran compiler version")
-    self.end_msg(self.env.FC_NAME.lower() + " " + ".".join(Utils.to_list(self.env.FC_VERSION)))
+    line1 = _get_version(self.env.FC)
+    expr = re.compile("(intel|oneapi|ifx|ifort)")
+    if expr.search(line1.lower()):
+        self.env.FC_IS_INTEL = True
+    self.end_msg(line1)
 
 
 @Configure.conf
@@ -126,6 +142,7 @@ def load_compilers(self):
     self.load("compiler_c")
     self.load("compiler_cxx")
     self.load("compiler_fc")
+    self.check_compilers_type_version()
     if self.options.parallel:
         self.load_compilers_mpi()
 
@@ -141,11 +158,8 @@ def load_compilers_mpi(self):
     )
     # raise ValueError(str(self.env.CC) + "  ///  " + str(self.env.CXX))
 
-    ifort = "ifort" in self.env.FC_NAME.lower()
-    icc = "icc" in self.env.CC_NAME.lower()
-
     # We won't alter environment if Intel compiler is detected...
-    if not icc:
+    if not self.env.CC_IS_INTEL:
         msg = "Checking C compiler package (collect configuration flags)"
         if not check(path=self.env.CC, msg=msg):
             self.fatal("Unable to configure the parallel environment for C compiler")
@@ -153,14 +167,14 @@ def load_compilers_mpi(self):
         del self.env["LINKFLAGS_MPI"]
 
     # We won't alter environment if Intel compiler is detected...
-    if not ifort:
+    if not self.env.FC_IS_INTEL:
         msg = "Checking Fortran compiler package (collect configuration flags)"
         if not check(path=self.env.FC, msg=msg):
             self.fatal("Unable to configure the parallel environment for FORTRAN compiler")
         self.env["FCLINKFLAGS_MPI"] = self.env["LINKFLAGS_MPI"]
         del self.env["LINKFLAGS_MPI"]
 
-    if not icc:
+    if not self.env.CC_IS_INTEL:
         self.check_cc(header_name="mpi.h", use="MPI")
 
     self.define("ASTER_HAVE_MPI", 1)
@@ -177,9 +191,7 @@ def check_openmp(self):
     # OpenMP interoperability is not secure
     # we consider both compiler should be from same vendor
     # Define CFLAGS_x and CCFLAGS_x to avoid ambiguous behaviour
-    ifort = "ifort" in self.env.FC_NAME.lower()
-    icc = "icc" in self.env.CC_NAME.lower()
-    if ifort and icc:
+    if self.env.FC_IS_INTEL and self.env.CC_IS_INTEL:
         self.env["FCFLAGS_OPENMP"] = ["-qopenmp"]
         self.env["FCLINKFLAGS_OPENMP"] = ["-qopenmp"]
         self.env["CFLAGS_OPENMP"] = self.env["FCFLAGS_OPENMP"]
@@ -189,8 +201,8 @@ def check_openmp(self):
         self.env["CXXLINKFLAGS_OPENMP"] = self.env["FCLINKFLAGS_OPENMP"]
         self.env.ASTER_HAVE_OPENMP = 1
         self.msg("Checking for OpenMP flag -qopenmp for Intel compilers", "yes", color="GREEN")
-    elif not (ifort or icc):
-        for x in ("-fopenmp", "-openmp", "-mp", "-xopenmp", "-omp", "-qsmp=omp"):
+    elif not (self.env.FC_IS_INTEL or self.env.CC_IS_INTEL):
+        for x in ("-fopenmp", "-qopenmp", "-openmp", "-mp", "-xopenmp", "-omp", "-qsmp=omp"):
             try:
                 self.check_fc(
                     msg="Checking for OpenMP flag %s" % x,
@@ -273,8 +285,7 @@ def check_vmsize(self):
             size = self.cmd_and_log(cmd)
         except Errors.WafError:
             self.end_msg(
-                "failed (memory consumption can not be estimated " "during the calculation)",
-                "YELLOW",
+                "failed (memory consumption can not be estimated during the calculation)", "YELLOW"
             )
         else:
             self.end_msg("ok (%s)" % size)

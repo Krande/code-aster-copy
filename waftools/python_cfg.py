@@ -41,7 +41,7 @@ def check_python(self):
     self.load("python")
     self.check_python_version((3, 5, 0))
     self.check_python_headers()
-    if "icc" in self.env.CC_NAME.lower():
+    if self.env.CC_IS_INTEL:
         self.env["LIB_PYEXT"] = list(set(self.env["LIB_PYEXT"]))
         # Best is to clear PYEMBED and PYEXT {c/cxx}flags
         for lang in ("CFLAGS", "CXXFLAGS"):

@@ -79,7 +79,7 @@ def configure(self):
     incpath = osp.join(self.path.get_src().abspath(), "include")
     self.env.append_value("INCLUDES_BIBC", incpath)
 
-    if "ifort" in self.env.FC_NAME.lower():
+    if self.env.CC_IS_INTEL:
         self.add_linkflags("-nofor-main", dest="LINKFLAGS_fcprogram")
     self.check_c_compiler_flags()
 
