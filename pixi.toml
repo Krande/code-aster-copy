@@ -44,7 +44,7 @@ vswhere = "*"
 
 ninja = "*"
 psutil = "*"
-clang = "18.*"
+clang = "19.*"
 
 libblas = { version = "*", build = "*mkl" }
 liblapack = { version = "*", build = "*mkl" }
@@ -65,7 +65,7 @@ medcoupling = { version = "*", build = "*release*INT64*" }
 libscotch = { version = "*", build = "*release*INT64*" }
 scotch = { version = "==7.0.7", build = "*release*INT64*" }
 metis = { version = "*", build = "*release*INT64*" }
-mumps = { version = "*", build = "*release*INT64*65" }
+mumps = { version = "*", build = "*release*INT64*" }
 
 [feature.debug.target.win-64.dependencies]
 hdf5 = { version = "*", build = "*debug*" }
@@ -76,7 +76,7 @@ medcoupling = { version = "*", build = "*debug*INT64*" }
 metis = { version = "*", build = "*debug*INT64*" }
 libscotch = { version = "*", build = "*debug*INT64*" }
 scotch = { version = "==7.0.7", build = "*debug*INT64*" }
-mumps = { version = "*", build = "*debug*INT64*66" }
+mumps = { version = "*", build = "*debug*INT64*" }
 
 [feature.conda.tasks]
 ctest = { cmd = ["rattler-build", "test", "-c", "https://repo.prefix.dev/code-aster", "-c", "conda-forge"], env = { OUTPUT_DIR = "$PIXI_PROJECT_ROOT/test_output" } }
