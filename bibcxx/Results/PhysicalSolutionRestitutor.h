@@ -28,8 +28,6 @@
 #include "Studies/PhysicalProblem.h"
 
 #include <cblas.h>
-#include <immintrin.h>
-#include <omp.h>
 
 class PhysicalSolutionRestitutor {
   private:
