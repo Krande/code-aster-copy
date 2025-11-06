@@ -23,10 +23,9 @@ module as_med_module
 ! default version to be used for output for backward compatibility
 #ifdef ASTER_MED_SUPPORT_WRITE_V3
     integer(kind=8), parameter :: bkwd_vers(3) = (/3, 3, 1/)
-#else 
+#else
     integer(kind=8), parameter :: bkwd_vers(3) = (/4, 0, 0/)
 #endif
-
 
 !
 #include "asterc/asmpi_comm.h"
@@ -93,11 +92,11 @@ contains
                 end if
 
 #ifndef ASTER_MED_SUPPORT_WRITE_V3
-                if ( vers(1) .eq. 3 ) then 
+                if (vers(1) .eq. 3) then
                     vers(1) = 4
                     vers(2) = 0
                     vers(3) = 0
-                end if 
+                end if
 #endif
 
                 if (vers(1) .eq. 4 .and. (vers(2) .eq. 0 .or. vers(2) .eq. 1)) then
