@@ -74,7 +74,7 @@ def check_numpy_headers(self):
     numpy_includes = self.cmd_and_log(cmd, shell=False).strip()
     self.end_msg(numpy_includes)
     self.start_msg("Checking for numpy arrayobject.h")
-    # Basile Marchand : Bad path formating on msys2
+    # Bad path formating on msys2
     if self.is_defined("ASTER_PLATFORM_MINGW") and not self.is_defined("ASTER_PLATFORM_MSYS2"):
         incs = PureWindowsPath(numpy_includes)
         parts = list(incs.parts)

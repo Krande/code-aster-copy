@@ -160,13 +160,11 @@ def post_install_links(ctx):
     for linkname in (f"{mod}.{extlib}" for mod in mods):
         linkpath = asterlibdir / linkname
 
-        try:
-            if linkpath.exists():
-                linkpath.unlink()
-            os.link(dll_path, linkpath)
-            Logs.info(f"Created hardlink: {linkpath}")
-        except Exception as e:
-            Logs.warn(f"Failed to create hardlink {linkpath}: {e}")
+        if linkpath.exists():
+            linkpath.unlink()
+        os.link(dll_path, linkpath)
+        Logs.info(f"Created hardlink: {linkpath}")
+        
 
 def build_libbibc(self, env):
     use = [
@@ -223,18 +221,6 @@ def build_libaster(self, env):
     )
 
     self.add_post_fun(post_install_links)
-
-    # extlib = ".so"
-    # mods = ["aster", "aster_core", "aster_fonctions", "med_aster"]
-    # libaster = "libaster.so"
-    # if env.ASTER_PLATFORM_MINGW:
-    #     extlib = ".pyd"
-    #     mods.extend(["libaster", "libAsterGC"])
-    #     libaster = "aster.dll"
-    # for submodule in mods:
-    #     src = osp.join(env.ASTERLIBDIR, submodule + extlib)
-    #     #self.symlink_as(src, libaster)
-    #     os.link(src, libaster)
 
 @Configure.conf
 def check_c_compiler_flags(self):
