@@ -1,0 +1,41 @@
+Total passing tests: 93.82% [2248/2396]
+Total failed tests: 148 of 2396
+FACTOR_11_MECA_STATIQUE (''):
+  2 [1.35%]
+  sdls106c|sdls505a
+MED_18_SANS_PARTITIONNEUR (''):
+  11 [7.43%]
+  zzzz291d|zzzz508b|sslp116e|zzzz127g|zzzz512u|zzzz506i|mesh001c|zzzz508d|zzzz508c|zzzz505a|zzzz509t
+MFRONT_4_COMPILATION_FAILED ('MFront compilation failed - libBehaviour.so not produced'):
+  1 [0.68%]
+  ssnv187x
+MGIS_CONFIG_ERROR ('MFront/MGIS configuration error - ASTER_BEHAVIOUR_LIB not set'):
+  20 [13.51%]
+  ssnv518a|hsna106a|comp012f|mfron02j|ssnv163e|hsnv135a|ssnv205c|comp012g|ssnv232c|ssnv205b|hsnv136d|comp012h|ssnv520a|comp012i|zzzz509f|wtnv122e|ssnv519a|ssnv163d|ssnv181b|wtnv122d
+MISSING_ASPELL ('Missing aspell spell checker'):
+  1 [0.68%]
+  supv002a
+MISSING_ASRUN (''):
+  2 [1.35%]
+  ssna110a|ssnv228b
+MISSING_FORTRAN_COMPILER ('Fortran compiler not found in runtime'):
+  1 [0.68%]
+  zzzz409a
+MISSING_HOMARD ('Missing homard'):
+  17 [11.49%]
+  zzzz175b|wtnl100f|forma01b|forma01c|zzzz356a|tpll01h|tplp107b|zzzz319b|ssnv173k|zzzz319a|zzzz121c|zzzz121d|tplp305d|wtnl100c|forma11a|tpll01j|zzzz121e
+MISSING_MISS3D_PERMISSION ('Permission denied error when running MISS3D'):
+  1 [0.68%]
+  sdls118a
+MISSING_XMGRACE ('Missing xmgrace'):
+  5 [3.38%]
+  sdnl105b|forma10a|forma10b|forma30b|sdnl105a
+NOOK_TEST_RESU (''):
+  7 [4.73%]
+  mesh001b|erreu03a|zzzz155k|zzzz155l|ssls150a|sdll123d|zzzz505h
+SEGMENTATION_FAULT ('Segmentation fault - likely memory corruption or library issue'):
+  6 [4.05%]
+  sslx101a|zzzz413a|ssnl123a|zzzz353a|forma40b|ssnl504a
+Unknown ('Unknown error pattern'):
+  74 [50.00%]
+  zzzz351c|ssnp167f|zzzz504g|zzzz504j|zzzz216b|wtnv152d|zzzz178e|zzzz504v|zzzz503a|zzzz504q|zzzz504c|zzzz216d|zzzz155d|zzzz504t|zzzz504i|tpnv02a|zzzz216j|listr01a|mesh004b|ssna102d|func02a|tpnv02c|zzzz216f|func01b|zzzz504k|zzzz351b|zzzz504e|zzzz504m|zzzz504d|mesh004d|petsc04g|zzzz216i|asrun01b|zzzz504h|zzzz504b|zzzz509v|supv004b|hsnv100z|zzzz216c|zzzz215d|supv004d|zzzz178d|zzzz216k|zzzz505j|sslv306b|zzzz504y|zzzz509l|zzzz504p|func01a|zzzz504l|formula01a|func02b|zzzz504x|zzzz178b|wtnv152b|mesh004a|wtnv152c|supv003f|mesh004c|zzzz216g|tpnv02b|zzzz504u|zzzz216e|zzzz216l|zzzz504a|wtnv152a|supv003c|formula01c|zzzz504s|table01a|zzzz504w|zzzz504r|zzzz155h|zzzz504o

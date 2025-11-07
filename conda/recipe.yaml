@@ -72,8 +72,8 @@ requirements:
       then:
         - libmed * *${{ mpi }}*
         - medcoupling
-        - mfront <5
-        - mgis <3
+        - mfront
+        - mgis
         - scotch
         - metis
         - mumps-include
@@ -116,7 +116,7 @@ requirements:
 
 tests:
   - script:
-      - run_ctest --resutest=${{ env.get("OUTPUT_DIR", default="temp\\seq") }} -L submit -L sequential -LE need_data --timefactor=10.0 --only-failed-results --clean
+      - run_ctest --resutest=${{ env.get("OUTPUT_DIR", default="temp\\seq") }}/${{mpi}} -L submit ${{ '-L sequential' if mpi == 'nompi' else '' }} -LE need_data --timefactor=10.0 --only-failed-results --clean
       - if errorlevel 1 exit 1
     requirements:
       run:

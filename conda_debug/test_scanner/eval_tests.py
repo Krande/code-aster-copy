@@ -56,7 +56,7 @@ def eval_tests(test_dir: str | pathlib.Path, results_dir: str | pathlib.Path = "
 
     if isinstance(test_dir, str):
         test_dir = pathlib.Path(test_dir)
-
+    test_dir = test_dir.resolve().absolute()
     test_cases_xml = get_xml_log_stats(test_dir / "run_testcases.xml")
 
     tot_seq_files = test_cases_xml.tot_num_jobs
@@ -98,9 +98,6 @@ def eval_tests(test_dir: str | pathlib.Path, results_dir: str | pathlib.Path = "
     # save to file with todays date
     os.makedirs('results', exist_ok=True)
     today_str = datetime.now().strftime("%Y-%m-%d")
-    os_subdir = platform.system().lower()
-    results_dir = pathlib.Path(results_dir) / os_subdir
-    results_dir.mkdir(parents=True, exist_ok=True)
     with open(f"{results_dir}/{today_str}.txt", "w") as f:
         f.write(err_str)
 
@@ -111,8 +108,23 @@ def scan_cli():
     parser.add_argument('--output', type=str, help='Output directory for results')
     parser.add_argument('--set-passing-env-var', action='store_true', help='Set environment variable PASSED_TESTS which represents the percentage (0-100) of passing tests')
     args = parser.parse_args()
-    eval_tests(args.test_dir, args.output, args.set_passing_env_var)
+
+    test_root_dir = args.test_dir
+    if isinstance(test_root_dir, str):
+        test_root_dir = pathlib.Path(test_root_dir)
+    test_root_dir = test_root_dir.resolve().absolute()
+    variants = ["nompi", "openmpi"]
+    output_dir = pathlib.Path(args.output)
+    for run_dir_xml in test_root_dir.rglob('run_testcases.xml'):
+        test_dir = run_dir_xml.parent
+        run_type = ''
+        if test_dir.name in variants:
+            run_type = test_dir.name
+        os_subdir = platform.system().lower()
+        results_dir = output_dir / os_subdir / run_type
+        results_dir.mkdir(parents=True, exist_ok=True)
+        eval_tests(test_dir, results_dir, args.set_passing_env_var)
 
 if __name__ == '__main__':
-    #eval_tests("../../test_output")
+    #eval_tests("../../test_output/nompi")
     scan_cli()

@@ -18,7 +18,10 @@ export INCLUDES_BOOST=${PREFIX}/include
 export LIBPATH_BOOST=${PREFIX}/lib
 export LIB_BOOST="libboost_python$CONDA_PY"
 
-export INCLUDES_MUMPS="${PREFIX}/include ${PREFIX}/include/mumps_seq"
+export INCLUDES_MUMPS="${PREFIX}/include"
+if [[ "$mpi" == "nompi" ]]; then
+  export INCLUDES_MUMPS="${INCLUDES_MUMPS} ${PREFIX}/include/mumps_seq"
+fi
 export LIBPATH_MUMPS="${PREFIX}/lib"
 
 export INCLUDES_MED="${PREFIX}/include"
