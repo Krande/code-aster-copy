@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -25,6 +25,7 @@ from code_aster.MacroCommands.Miss.miss_resu_aster import ResuAsterReader
 from code_aster.MacroCommands.Miss.miss_resu_miss import MissCsolReader
 from code_aster.MacroCommands.Utils import test_utils
 from code_aster.Objects.table_py import Table
+from code_aster.CodeCommands import DEFI_LIST_REEL
 
 
 class TestMissCmde(unittest.TestCase):
@@ -58,6 +59,7 @@ class TestMissCmde(unittest.TestCase):
                 "FREQ_MAX": None,
                 "FREQ_PAS": None,
                 "LIST_FREQ": None,
+                "FREQ": None,
                 "FREQ_IMAG": None,
                 "Z0": 0.0,
                 "SURF": "NON",
@@ -104,10 +106,11 @@ p3XBA15iMxscL6TqGKyCyOSnuh0vxPM7dF817RxlFa2K2q2Wr66K8+3KGXTh18+JPpAwiBl2D/Oh
 rzbePN2zVALgo+MbBL2zTNXugQUJozFeYGEix2rEDiPsQeFVUkeFG9EU8uNj8h1znZ9EJFJtesbM
 stwDncR5RevYR6cq/CqGI19Y6lvgN0yQXTY=
 """
+        listfreq = DEFI_LIST_REEL(VALE=(12.25, 12.50, 12.75))
         self.par.update(
             {
                 "PROJET": "SDLX103A",
-                "LIST_FREQ": (12.25, 12.50, 12.75),
+                "LIST_FREQ": listfreq,
                 "TYPE": "BINAIRE",
                 "Z0": 5.0,
                 "DREF": 1.0,
@@ -276,7 +279,7 @@ mvv8JCqRitMzdqbpHCjF9gW142wdq/JFHgdevNSrwW/+xHAQ
                 "FICHIER_SOL_INCI": "./Miss_Laplace.sol.inci",
                 "FREQ_IMAG": 64.97465,
                 "INST_FIN": 2.0,
-                "LIST_FREQ": (1.023383,),
+                "FREQ": (1.023383,),
                 "NB_MODE": 6,
                 "OFFSET_MAX": 40,
                 "OFFSET_NB": 400,

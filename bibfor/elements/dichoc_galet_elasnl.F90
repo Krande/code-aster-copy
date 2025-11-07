@@ -61,7 +61,7 @@ subroutine dichoc_galet_elasnl(for_discret, iret)
     integer(kind=8) :: ifono, imatri
     integer(kind=8) :: icontp, icontm, iadzi, iazk24
 !
-    real(kind=8) :: klc(for_discret%neq*for_discret%neq)
+    real(kind=8) :: klc(for_discret%nfull)
     real(kind=8) :: klv(for_discret%nbt), fl(for_discret%neq), raide(6)
     real(kind=8) :: r8bid
     character(len=16), pointer :: compor(:) => null()

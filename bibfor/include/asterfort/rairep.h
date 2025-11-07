@@ -21,17 +21,17 @@
 interface
     subroutine rairep(noma, ioc, km, rigi, nbgr, &
                       ligrma, zjdlm, nbno, tabnoe, rignoe, rirot, ndim)
-        integer(kind=8) :: nbgr
-        character(len=8) :: noma
-        integer(kind=8) :: ioc
-        character(len=8) :: km
-        real(kind=8) :: rigi(6)
+        integer(kind=8)   :: nbgr
+        character(len=8)  :: noma
+        integer(kind=8)   :: ioc
+        character(len=8)  :: km
+        real(kind=8)      :: rigi(6)
         character(len=24) :: ligrma(nbgr)
-        integer(kind=8) :: zjdlm(*)
-        integer(kind=8) :: nbno
-        character(len=8) :: tabnoe(*)
-        real(kind=8) :: rignoe(*)
-        real(kind=8) :: rirot(3)
-        integer(kind=8) :: ndim
+        integer(kind=8)   :: zjdlm(*)
+        integer(kind=8)   :: nbno
+        character(len=8)  :: tabnoe(*)
+        real(kind=8)      :: rignoe(*)
+        real(kind=8)      :: rirot(3)
+        integer(kind=8)   :: ndim
     end subroutine rairep
 end interface

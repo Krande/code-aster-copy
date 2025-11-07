@@ -155,7 +155,7 @@ MA[nb_raff] = DEFI_GROUP(
     CREA_GROUP_MA=_F(NOM="MDFGF3", OPTION="APPUI", GROUP_NO="NDFGF3", TYPE_APPUI="TOUT"),
 )
 
-maille = MA[4].getCellName(MA[4].getCells("MDFGF3")[0])
+maille = str(MA[4].getCells("MDFGF3")[0] + 1)
 DEFI_GROUP(MAILLAGE=MA[4], reuse=MA[4], CREA_GROUP_MA=_F(NOM="diam_min", MAILLE=maille))
 
 TEST_RESU(

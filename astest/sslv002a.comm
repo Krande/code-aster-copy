@@ -218,7 +218,7 @@ def AngleCyl(GROUP_MA, MAILLAGE, CENTRE, AXE, LISTE_CARA, **args):
 
         alpha, beta, gamma = AngleNaut(repere)
 
-        nom_maille = MAILLAGE.getCellName(ima)
+        nom_maille = str(ima + 1)
         nom_grma = "CELL_" + str(int(nom_maille) - 500)
         mon_dico = {}
         mon_dico["GROUP_MA"] = nom_grma

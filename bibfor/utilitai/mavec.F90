@@ -33,12 +33,10 @@ subroutine mavec(mp, m, mv, n)
 !
     k = 0
     do i = 1, m
-        do j = 1, m
+        do j = 1, i
             k = k+1
             mv(k) = mp(i, j)
-            if (j .eq. i) goto 10
         end do
-10      continue
     end do
 !
 end subroutine

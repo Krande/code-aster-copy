@@ -24,10 +24,9 @@ subroutine ace_crea_carte(infdonn, infcarte)
 !
 !       Création automatique des cartes utilisées par AFFE_CARA_ELEM
 !
-!           Utilisation de jeveut
+!           !!! Utilisation de jeveut !!!
 !
 ! --------------------------------------------------------------------------------------------------
-! person_in_charge: jean-luc.flejou at edf.fr
 !
     use cara_elem_parameter_module
     use cara_elem_info_type
@@ -37,6 +36,7 @@ subroutine ace_crea_carte(infdonn, infcarte)
     type(cara_elem_carte) :: infcarte(*)
 !
 #include "jeveux.h"
+#include "asterf_types.h"
 #include "asterfort/alcart.h"
 #include "asterfort/assert.h"
 #include "asterfort/codent.h"
@@ -44,18 +44,21 @@ subroutine ace_crea_carte(infdonn, infcarte)
 #include "asterfort/in_liste_entier.h"
 #include "asterfort/jedema.h"
 #include "asterfort/jeexin.h"
+#include "asterfort/jelira.h"
+#include "asterfort/jeveuo.h"
+#include "asterfort/jexnum.h"
 #include "asterfort/jemarq.h"
 #include "asterfort/jeveut.h"
 #include "asterfort/nocart.h"
 !
 ! --------------------------------------------------------------------------------------------------
-    integer(kind=8)             :: ii, jj, ixci, ibid, indx
+    integer(kind=8)     :: ii, jj, ixci, ibid, indx, jdesc2, gd, iddgd
     real(kind=8)        :: r8bid
     character(len=6)    :: kjj
     character(len=8)    :: nomu, noma, k8bid
     character(len=24)   :: tmpcinf, tmpvinf
 !
-    integer(kind=8)             :: adr_cmp, adr_val, nbr_cmp
+    integer(kind=8)     :: adr_cmp, adr_val, nbr_cmp
     character(len=19)   :: nom_carte
 !
     character(len=5), parameter :: kma(3) = (/'K    ', 'M    ', 'A    '/)
@@ -78,8 +81,15 @@ subroutine ace_crea_carte(infdonn, infcarte)
         end if
         call jeveut(tmpcinf, 'E', adr_cmp)
         call jeveut(tmpvinf, 'E', adr_val)
+!       Récupération des infos sur la carte
+        call jeveuo(nom_carte//'.DESC', 'L', jdesc2)
+!       Le numéro de la grandeur
+        gd = zi(jdesc2-1+1)
+        call jeveuo(jexnum('&CATA.GD.DESCRIGD', gd), 'L', iddgd)
+!       Protection : c'est une carte ELEM
+        ASSERT(zi(iddgd) .eq. 1)
+        call jelira(jexnum('&CATA.GD.NOMCMP', gd), 'LONMAX', nbr_cmp)
 !       Remplissage des cartes par les valeurs par défaut
-        nbr_cmp = 0
         if (ii .eq. ACE_CAR_DINFO) then
 !           Par défaut pour K, M, A : repère global, matrice symétrique, pas affectée
             call infdis('DIMC', nbr_cmp, r8bid, k8bid)
@@ -114,6 +124,7 @@ subroutine ace_crea_carte(infdonn, infcarte)
             call nocart(nom_carte, 1, nbr_cmp)
         end if
         infcarte(ii)%nom_carte = nom_carte
+        infcarte(ii)%utilise = ASTER_FALSE
         infcarte(ii)%nbr_cmp = nbr_cmp
         infcarte(ii)%adr_cmp = adr_cmp
         infcarte(ii)%adr_val = adr_val

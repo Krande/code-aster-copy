@@ -39,6 +39,7 @@ subroutine vpcalj(eigsol, vecrer, vecrei, vecrek, vecvp, &
 #include "asterfort/sspace.h"
 #include "asterfort/utmess.h"
 #include "asterfort/vpbost.h"
+#include "asterfort/vpecri.h"
 #include "asterfort/vplecs.h"
 #include "asterfort/vpordi.h"
 #include "asterfort/vpordo.h"
@@ -64,13 +65,13 @@ subroutine vpcalj(eigsol, vecrer, vecrei, vecrek, vecvp, &
 !
     integer(kind=8) :: iret, imet, lmasse, lmatra, lraide, nbvect, neq, nfreq
     integer(kind=8) :: lprod, lmtpsc, lvalpr, itemax, nperm, nitbat, nitjac
-    integer(kind=8) :: mfreq, ifreq
+    integer(kind=8) :: mfreq, ifreq, ibid
     integer(kind=8) :: lresui, lresur, lresuk, lvec
-    real(kind=8) :: quapi2, omecor, precdc, rzero, tol, toldyn
+    real(kind=8) :: quapi2, omecor, precdc, rzero, tol, toldyn, rbid
     character(len=8) :: method
     character(len=16) :: optiof, typres
     character(len=19) :: masse, raide
-    character(len=24) :: kmetho
+    character(len=24) :: kmetho, k24bid
     aster_logical :: lc, lkr, lns, lpg
 !
 ! -----------------------
@@ -140,6 +141,18 @@ subroutine vpcalj(eigsol, vecrer, vecrei, vecrek, vecvp, &
                     nfreq, zi(lprod), itemax, nperm, tol, &
                     toldyn, zr(lvec), zr(lvalpr), nitjac, nitbat, &
                     solveu)
+        if (lpg) then
+! --  ON MODIFIE QUELQUES VALEURS POUR OPTION='PLUS_GRANDE'
+            k24bid = masse
+            call vpecri(eigsol, 'K', 2, k24bid, rbid, ibid)
+            k24bid = raide
+            call vpecri(eigsol, 'K', 3, k24bid, rbid, ibid)
+            do imet = 1, nfreq
+                zr(lvalpr-1+imet) = +1.d0/zr(lvalpr-1+imet)
+            end do
+! --- POUR LE TEST DE STURM: ON NE PREND PAS EN COMPTE LES MODES NON CONVERGES ICI
+            nbvect = nfreq
+        end if
         call rectfr(nfreq, nbvect, omeshi, npivot, nblagr, &
                     zr(lvalpr), nbvect, zi(lresui), zr(lresur), mxresf)
         call vpbost(typres, nfreq, nbvect, omeshi, zr(lvalpr), &
@@ -153,7 +166,7 @@ subroutine vpcalj(eigsol, vecrer, vecrei, vecrek, vecvp, &
             zi(lresui-1+4*mxresf+imet) = nitjac
             zr(lresur-1+imet) = freqom(zr(lresur-1+mxresf+imet))
 !           SI OPTION 'PLUS_GRANDE' : CONVERSION EN VALEUR PHYSIQUE
-            if (lpg) zr(lresur-1+imet) = +1.d0/(quapi2*zr(lresur-1+imet))
+            !if (lpg) zr(lresur-1+imet) = +1.d0/(quapi2*zr(lresur-1+imet))
             zr(lresur-1+2*mxresf+imet) = rzero
             zk24(lresuk-1+mxresf+imet) = 'BATHE_WILSON'
         end do

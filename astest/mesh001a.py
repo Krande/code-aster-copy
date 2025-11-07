@@ -231,8 +231,6 @@ test.assertTrue((medtypes[49:] == 308).all())
 quad47 = connect[47 - 1]
 test.assertSequenceEqual(quad47, [9, 0, 17, 25])
 test.assertSequenceEqual(medconn[47 - 1], [9, 0, 17, 25])
-test.assertEqual("47", mesh.getCellName(47 - 1))
-test.assertEqual("10", mesh.getNodeName(10 - 1))
 
 # always 3 coordinates, even if 'getDimension() == 2'
 npcoord = np.array(values).reshape((-1, 3))

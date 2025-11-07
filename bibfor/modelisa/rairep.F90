@@ -34,9 +34,9 @@ subroutine rairep(noma, ioc, km, rigiRep, nbgr, &
 #include "asterfort/assert.h"
 #include "asterfort/dismoi.h"
 #include "asterfort/fointe.h"
-#include "asterfort/getvem.h"
 #include "asterfort/getvid.h"
 #include "asterfort/getvr8.h"
+#include "asterfort/getvtx.h"
 #include "asterfort/in_liste_entier.h"
 #include "asterfort/jedema.h"
 #include "asterfort/jelira.h"
@@ -72,8 +72,8 @@ subroutine rairep(noma, ioc, km, rigiRep, nbgr, &
 !
     aster_logical :: lfonc, trans
 !
-    integer(kind=8), pointer        :: parno(:) => null()
-    integer(kind=8), pointer        :: mailles_surf(:) => null()
+    integer(kind=8), pointer :: parno(:) => null()
+    integer(kind=8), pointer :: mailles_surf(:) => null()
     real(kind=8), pointer   :: coegro(:) => null()
     real(kind=8), pointer   :: coeno(:) => null()
     real(kind=8), pointer   :: surmai(:) => null()
@@ -97,12 +97,14 @@ subroutine rairep(noma, ioc, km, rigiRep, nbgr, &
 !
 !   Récupération du centre
     call getvr8('RIGI_PARASOL', 'COOR_CENTRE', iocc=ioc, nbval=0, nbret=ncg)
-    call getvem(noma, 'GROUP_NO', 'RIGI_PARASOL', 'GROUP_NO_CENTRE', ioc, 0, k8b, ngn)
+    call getvtx('RIGI_PARASOL', 'GROUP_NO_CENTRE', iocc=ioc, nbval=0, vect=k8b, nbret=ngn)
     xyzg(:) = 0.0
     if (ncg .ne. 0) then
+        ASSERT(ngn .eq. 0)
         call getvr8('RIGI_PARASOL', 'COOR_CENTRE', iocc=ioc, nbval=3, vect=xyzg, nbret=ncg)
     else if (ngn .ne. 0) then
-        call getvem(noma, 'GROUP_NO', 'RIGI_PARASOL', 'GROUP_NO_CENTRE', ioc, 1, nomgr, ngn)
+        ASSERT(ncg .eq. 0)
+        call getvtx('RIGI_PARASOL', 'GROUP_NO_CENTRE', iocc=ioc, nbval=1, vect=nomgr, nbret=ngn)
         call jeveuo(jexnom(magrno, nomgr), 'L', ldgn)
         inoe = zi(ldgn)
         nomnoe = int_to_char8(inoe)
@@ -188,6 +190,7 @@ subroutine rairep(noma, ioc, km, rigiRep, nbgr, &
             num_maille = zi(ldgm+in)
             if (.not. in_liste_entier(num_maille, mailles_surf(1:nb_ma_surf), posi)) then
                 nb_ma_surf = nb_ma_surf+1
+                ASSERT(nb_ma_surf .le. NbMaille)
                 mailles_surf(nb_ma_surf) = num_maille
                 posi = nb_ma_surf
             else
@@ -204,6 +207,7 @@ subroutine rairep(noma, ioc, km, rigiRep, nbgr, &
 !               On enregistre le numéro du noeud dans parno, s'il n'y est pas déjà
                 if (.not. in_liste_entier(inoe, parno(1:nbparno))) then
                     nbparno = nbparno+1
+                    ASSERT(nbparno .le. NbNoeud)
                     parno(nbparno) = inoe
                 end if
                 x(nn) = coord(3*(inoe-1)+1)
@@ -256,6 +260,8 @@ subroutine rairep(noma, ioc, km, rigiRep, nbgr, &
             surmai(posi) = surmai(posi)/nm
         end do cymaille
     end do
+!   Ceinture et bretelle
+    ASSERT(nbparno .le. nbno)
     nbno = nbparno
 !
 !   Calcul des pondérations élémentaires

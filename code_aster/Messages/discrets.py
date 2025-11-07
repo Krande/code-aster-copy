@@ -96,12 +96,6 @@ Pour information :
    Maille   : <%(k5)s>
 """
     ),
-    9: _(
-        """
-Il ne faut pas demander TR derrière CARA si le type d'élément discret ne prend
-pas en compte la rotation.
-"""
-    ),
     10: _(
         """
 Pour l'élément DISCRET de modèle <%(k1)s> la matrice de décharge est non développée.
@@ -147,25 +141,9 @@ L'option %(k1)s ne sait pas traiter l'élément %(k2)s.
 Message de la routine %(k3)s.
 """
     ),
-    16: _(
-        """
-Il est interdit d'avoir des éléments discrets 2D et 3D dans un modèle.
-"""
-    ),
-    17: _(
-        """
-Votre modélisation ne comporte pas d'élément discret.
-"""
-    ),
     18: _(
         """
 Seul DEFORMATION ='PETIT' est possible pour les éléments discrets.
-"""
-    ),
-    20: _(
-        """
-Votre modélisation doit être soit 2D soit 3D.
-Il est interdit d'avoir des discrets sur une modélisation %(k1)s.
 """
     ),
     21: _(

@@ -75,8 +75,8 @@ def mac3coeur_ac_permute(self, **args):
                 PRECISION=1.0e-10,
             ),
             _F(
-                GROUP_MA_INIT="DI_%s" % POS_INIT,
-                GROUP_MA_FINAL="DI_%s" % POS_FIN,
+                GROUP_MA_INIT="DI_CT_%s" % POS_INIT,
+                GROUP_MA_FINAL="DI_CT_%s" % POS_FIN,
                 TRAN=VECT,
                 PRECISION=1.0e-10,
             ),

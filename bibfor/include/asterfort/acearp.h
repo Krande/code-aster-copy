@@ -15,21 +15,17 @@
 ! You should have received a copy of the GNU General Public License
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
-
-!
-!
-! person_in_charge: jean-luc.flejou at edf.fr
 !
 interface
-    subroutine acearp(infdonn, lmax, noemaf, nbocc, infcarte, ivr, zjdlm )
+    subroutine acearp(nbocc, infdonn, infcarte, grp_lmax, zjdlm)
+!
         use cara_elem_info_type
         use cara_elem_carte_type
-        type (cara_elem_info) :: infdonn
-        integer(kind=8) :: lmax
-        integer(kind=8) :: noemaf
-        integer(kind=8) :: nbocc
+!
+        integer(kind=8)        :: nbocc
+        type (cara_elem_info)  :: infdonn
         type (cara_elem_carte) :: infcarte(*)
-        integer(kind=8) :: ivr(*)
-        integer(kind=8) :: zjdlm(*)
-   end subroutine acearp
+        character(len=24)      :: grp_lmax(*)
+        integer(kind=8)        :: zjdlm(*)
+    end subroutine acearp
 end interface

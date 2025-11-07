@@ -1,0 +1,196 @@
+# coding=utf-8
+# --------------------------------------------------------------------
+# Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
+# This file is part of code_aster.
+#
+# code_aster is free software: you can redistribute it and/or modify
+# it under the terms of the GNU General Public License as published by
+# the Free Software Foundation, either version 3 of the License, or
+# (at your option) any later version.
+#
+# code_aster is distributed in the hope that it will be useful,
+# but WITHOUT ANY WARRANTY; without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+# GNU General Public License for more details.
+#
+# You should have received a copy of the GNU General Public License
+# along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
+# --------------------------------------------------------------------
+
+DEBUT(CODE="OUI")
+
+Young = 30.0e9
+
+rho_radier = 2500.0
+
+Poisson = 0.2
+
+rho_zero = 0.0
+
+mesh0 = LIRE_MAILLAGE(UNITE=20)
+
+mesh0 = DEFI_GROUP(
+    reuse=mesh0, CREA_GROUP_NO=_F(GROUP_MA=("Radier",), NOM=("Radier_NO",)), MAILLAGE=mesh0
+)
+
+mesh0 = MODI_MAILLAGE(
+    reuse=mesh0,
+    MAILLAGE=mesh0,
+    ORIE_NORM_COQUE=_F(GROUP_MA=("Radier",), GROUP_NO=("Centre_Rad",), VECT_NORM=(0.0, 0.0, -1.0)),
+)
+
+mesh = CREA_MAILLAGE(
+    CREA_POI1=_F(GROUP_NO=("Discret_0D",), NOM_GROUP_MA=("Discret_0D_POI1")), MAILLAGE=mesh0
+)
+
+model = AFFE_MODELE(
+    AFFE=(
+        _F(MODELISATION="DKT", PHENOMENE="MECANIQUE", GROUP_MA="Radier"),
+        _F(
+            MODELISATION="DIS_T", PHENOMENE="MECANIQUE", GROUP_MA=("Discret_0D_POI1", "Discret_Seg")
+        ),
+    ),
+    MAILLAGE=mesh,
+)
+
+
+Masse = 2000.0
+B = 0.4
+L = 12.0
+Iner = B**4.0 / 12.0
+A = B**2.0
+
+K_X = 12 * Young * Iner / L**3.0
+K_Y = K_X
+K_Z = Young * A / L
+
+elemprop = AFFE_CARA_ELEM(
+    COQUE=(_F(EPAIS=0.1, GROUP_MA=("Radier")),),
+    DISCRET=(
+        _F(CARA="K_T_D_N", GROUP_MA="Discret_0D_POI1", VALE=(0.0, 0.0, 0.0)),
+        _F(CARA="M_T_D_N", GROUP_MA="Discret_0D_POI1", VALE=Masse),
+        _F(CARA="K_T_D_L", GROUP_MA="Discret_Seg", VALE=(K_X, K_Y, K_Z)),
+    ),
+    MODELE=model,
+)
+
+Beton_Radier = DEFI_MATERIAU(ELAS=_F(E=Young, NU=Poisson, RHO=rho_radier))
+
+Beton_Zero = DEFI_MATERIAU(ELAS=_F(E=Young, NU=Poisson, RHO=rho_zero))
+
+fieldmat = AFFE_MATERIAU(AFFE=(_F(GROUP_MA=("Radier"), MATER=(Beton_Zero,)),), MODELE=model)
+
+load = AFFE_CHAR_MECA(
+    DDL_IMPO=_F(DRX=0.0, DRY=0.0, DRZ=0.0, DX=0.0, DY=0.0, DZ=0.0, GROUP_NO=("Centre_Rad",)),
+    LIAISON_SOLIDE=_F(GROUP_MA=("Radier",)),
+    MODELE=model,
+)
+
+ASSEMBLAGE(
+    CARA_ELEM=elemprop,
+    CHAM_MATER=fieldmat,
+    CHARGE=(load,),
+    MATR_ASSE=(
+        _F(MATRICE=CO("MATRRIGI"), OPTION="RIGI_MECA"),
+        _F(MATRICE=CO("MATRMASS"), OPTION="MASS_MECA"),
+    ),
+    MODELE=model,
+    NUME_DDL=CO("NUMDDL"),
+)
+
+Amor_hyst_sol = 0.2
+Young_sol = 200.0e6
+Nu_sol = 0.33
+Rho_sol = 1610.0
+
+tablesol = DEFI_SOL_MISS(
+    COUCHE=(
+        _F(EPAIS=1.0, NUME_MATE=1, RECEPTEUR="OUI", SOURCE="OUI"),
+        _F(NUME_MATE=1, SUBSTRATUM="OUI"),
+    ),
+    MATERIAU=(_F(AMOR_HYST=Amor_hyst_sol, E=Young_sol, NU=Nu_sol, RHO=Rho_sol),),
+)
+
+statmode = MODE_STATIQUE(MATR_RIGI=MATRRIGI, MODE_STAT=_F(GROUP_NO=("Centre_Rad",), TOUT_CMP="OUI"))
+
+intfdyna = DEFI_INTERF_DYNA(
+    INTERFACE=_F(GROUP_NO=("Radier_NO",), NOM="Radier", TYPE="CRAIGB"), NUME_DDL=NUMDDL
+)
+
+modes0 = DEFI_BASE_MODALE(
+    INTERF_DYNA=intfdyna,
+    NUME_REF=NUMDDL,
+    RITZ=(_F(MODE_MECA=(statmode,), NMAX_MODE=(0,)), _F(MODE_INTF=statmode, NMAX_MODE=(6,))),
+)
+
+CALC_MISS(
+    BASE_MODALE=modes0,
+    GROUP_MA_INTERF=("Radier",),
+    MATR_MASS=MATRMASS,
+    MATR_RIGI=MATRRIGI,
+    PARAMETRE=_F(
+        ALGO="DEPL",
+        FREQ_MAX=40.0,
+        FREQ_MIN=0.1,
+        FREQ_PAS=0.4,
+        OFFSET_MAX=2.4,
+        OFFSET_NB=50.0,
+        SURF="OUI",
+        Z0=0.0,
+    ),
+    PROJET="Dynamic_Stiffness",
+    TABLE_SOL=tablesol,
+    TYPE_RESU="FICHIER",
+    UNITE_IMPR_ASTER=2,
+    UNITE_RESU_FORC=4,
+    UNITE_RESU_IMPE=3,
+)
+
+
+# Solution analytique
+import numpy as np
+
+B = 0.5
+r_tra = (4 * B * B / np.pi) ** 0.5
+G_sol = Young_sol / (2 * (1 + Nu_sol))
+J_vert = 1.052
+J_hori = 1.035
+K_vert = 4 * G_sol * r_tra / (1 - Nu_sol) * J_vert
+K_hori = 8 * G_sol * r_tra / (2 - Nu_sol) * J_hori
+
+
+KXX_RE = LIRE_FONCTION(
+    INDIC_PARA=(1, 1), INDIC_RESU=(1, 2), NOM_PARA="FREQ", NOM_RESU="REEL", UNITE=3
+)
+
+KZZ_RE = LIRE_FONCTION(
+    INDIC_PARA=(15, 1), INDIC_RESU=(15, 2), NOM_PARA="FREQ", NOM_RESU="REEL", UNITE=3
+)
+
+
+TEST_FONCTION(
+    VALEUR=_F(
+        FONCTION=KXX_RE,
+        NOM_PARA="FREQ",
+        VALE_PARA=0.1,
+        VALE_CALC=1.8498e8,
+        VALE_REFE=K_hori,
+        REFERENCE="ANALYTIQUE",
+        PRECISION=0.15,
+    )
+)
+
+TEST_FONCTION(
+    VALEUR=_F(
+        FONCTION=KZZ_RE,
+        NOM_PARA="FREQ",
+        VALE_PARA=0.1,
+        VALE_CALC=2.3222e8,
+        VALE_REFE=K_vert,
+        REFERENCE="ANALYTIQUE",
+        PRECISION=0.15,
+    )
+)
+
+
+FIN()

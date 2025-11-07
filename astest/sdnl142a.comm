@@ -42,7 +42,7 @@ rhoeau = 1000.0
 
 cara = AFFE_CARA_ELEM(
     MODELE=mo,
-    CABLE=_F(GROUP_MA="CABLE", SECTION=0.03110176, N_INIT=1000.0),
+    CABLE=_F(GROUP_MA="CABLE", AIRE=0.03110176, N_INIT=1000.0),
     DISCRET=(
         _F(CARA="K_TR_D_L", GROUP_MA=("R1", "R2"), VALE=(50.0, 50.0, 50.0, 1000.0, 1000.0, 1000.0)),
         _F(CARA="M_TR_D_L", GROUP_MA=("R1", "R2"), VALE=(0.0, 0.0, 0.0, 0.0)),

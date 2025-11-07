@@ -21,12 +21,12 @@
 interface
     subroutine tbcarapou(nomta, nomsec, nbpara, nompara, valpara, okpara)
 !
-    integer(kind=8), intent(in)             :: nbpara
-    character(len=*), intent(in)    :: nomta
-    character(len=*), intent(in)    :: nomsec
-    character(len=*), intent(in)    :: nompara(nbpara)
-    integer(kind=8), intent(out)            :: okpara(nbpara)
-    real(kind=8), intent(out)       :: valpara(nbpara)
+    integer(kind=8), intent(in)  :: nbpara
+    character(len=*), intent(in) :: nomta
+    character(len=*), intent(in) :: nomsec
+    character(len=*), intent(in) :: nompara(nbpara)
+    integer(kind=8), intent(out) :: okpara(nbpara)
+    real(kind=8), intent(out)    :: valpara(nbpara)
 !
     end subroutine tbcarapou
 end interface

@@ -42,7 +42,7 @@ def observation_ops(
     NOM_CHAM=None,
     FILTRE=None,
     EPSI_MOYENNE=None,
-    **args
+    **args,
 ):
     """
     Ecriture de la macro MACRO_OBSERVATION
@@ -361,7 +361,7 @@ def observation_ops(
                     MODELE=MODELE_1,
                     TYPE_CHAM=TYPE_CHAM,
                     OPTION="EPSI_NOEU",
-                    **argsa
+                    **argsa,
                 )
 
                 if RESULTAT.getType() == "MODE_MECA":
@@ -421,7 +421,7 @@ def observation_ops(
                     MODELE_1=MODELE_1,
                     MODELE_2=MODELE_2,
                     NOM_CHAM=nomcham,
-                    **mcfact
+                    **mcfact,
                 )
             else:
                 __proj = PROJ_CHAMP(
@@ -430,7 +430,7 @@ def observation_ops(
                     MODELE_1=MODELE_1,
                     MODELE_2=MODELE_2,
                     NOM_CHAM=nomcham,
-                    **mcfact
+                    **mcfact,
                 )
             modele = MODELE_2
         else:
@@ -522,7 +522,7 @@ def observation_ops(
                         modele = MODELE_2
                         chnormx, description = chnorm.getValuesWithDescription("DX")
                         ind_noeuds = description[0]
-                        nom_allno = [mayaexp.getNodeName(k) for k in ind_noeuds]
+                        nom_allno = [str(k + 1) for k in ind_noeuds]
 
                         # on met les noeuds conernes sous forme de liste et on va
                         # chercher les noeuds des mailles pour 'MAILLE' et
@@ -546,7 +546,7 @@ def observation_ops(
                                 REPERE="UTILISATEUR",
                                 TOUT_ORDRE="OUI",
                                 CRITERE="RELATIF",
-                                **argsm
+                                **argsm,
                             )
                             k = k + 1
 
@@ -702,7 +702,7 @@ def observation_ops(
                         OPERATION="AFFE",
                         TYPE_RESU=TYPE_RESU,
                         AFFE=liste,
-                        **argsr
+                        **argsr,
                     )
                 else:
                     RESU = CREA_RESU(OPERATION="AFFE", TYPE_RESU=TYPE_RESU, AFFE=liste, **argsr)
@@ -719,7 +719,7 @@ def observation_ops(
                 MODELE_2=modele,
                 NUME_DDL=NUME_DDL,
                 NOM_CHAM=nomcham,
-                **mcfact
+                **mcfact,
             )
 
     return RESU
@@ -939,14 +939,14 @@ def find_no(maya, mcsimp):
         for group in mcsimp["GROUP_NO"]:
             list_ind_no = maya.getNodes(group)
             for ind_no in list_ind_no:
-                nomnoe = maya.getNodeName(ind_no)
+                nomnoe = str(ind_no + 1)
                 if nomnoe not in list_no:
                     list_no.append(nomnoe)
     elif "MAILLE" in mcsimp:
         for nu_ma in maya.getCells():
-            if maya.getCellName(nu_ma) in mcsimp["MAILLE"]:
+            if str(nu_ma + 1) in mcsimp["MAILLE"]:
                 for ind_no in connect[nu_ma]:
-                    nomnoe = maya.getNodeName(ind_no)
+                    nomnoe = str(ind_no + 1)
                     if nomnoe not in list_no:
                         list_no.append(nomnoe)
     elif "GROUP_MA" in mcsimp:
@@ -954,7 +954,7 @@ def find_no(maya, mcsimp):
             list_nu_ma = maya.getCells(group)
             for nu_ma in list_nu_ma:
                 for ind_no in connect[nu_ma]:
-                    nomnoe = maya.getNodeName(ind_no)
+                    nomnoe = str(ind_no + 1)
                     if nomnoe not in list_no:
                         list_no.append(nomnoe)
 
@@ -983,7 +983,7 @@ def find_ma(maya, mcsimp):
         for group in mcsimp["GROUP_MA"]:
             list_ind_ma = maya.getCells(group)
             for ind_ma in list_ind_ma:
-                nommail = maya.getCellName(ind_ma)
+                nommail = str(ind_ma + 1)
                 if nommail not in list_ma:
                     list_ma.append(nommail)
 

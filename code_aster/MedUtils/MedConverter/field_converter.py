@@ -21,7 +21,7 @@
 
 import libaster
 import numpy as np
-from ...Utilities import medcoupling as medc, ParaMEDMEM as PMM
+from ...Utilities import medcoupling as medc
 
 
 def getPhysicalQuantityFromFieldName(fname):
@@ -86,9 +86,9 @@ def toMCFieldAndProfileNode(asfield, medmesh, prefix=""):
         field ( MEDCouplingFieldDouble ) : The field medcoupling format.
 
     """
-    if not isinstance(medmesh, (medc.MEDFileUMesh, medc.MEDCouplingUMesh, PMM.MEDCouplingUMesh)):
-        msg = "Argument must be a MEDCouplingUMesh, not '{}'"
-        raise TypeError(msg.format(type(medmesh).__name__))
+    tname = type(medmesh).__name__
+    if not tname in ("MEDFileUMesh", "MEDCouplingUMesh"):
+        raise TypeError(f"Invalid argument type '{tname}'")
 
     # Aster values
     values, mask = asfield.toNumpy()
@@ -138,9 +138,9 @@ def toMCFieldAndProfileElem(asfield, medmesh, prefix=""):
         field ( MEDCouplingFieldDouble ) : The field medcoupling format.
     """
 
-    if not isinstance(medmesh, (medc.MEDCouplingUMesh, PMM.MEDCouplingUMesh)):
-        msg = "toMedCouplingField() argument must be a MEDCouplingUMesh, not '{}'"
-        raise TypeError(msg.format(type(medmesh).__name__))
+    tname = type(medmesh).__name__
+    if not tname in ("MEDCouplingUMesh",):
+        raise TypeError(f"Invalid argument type '{tname}'")
 
     values, mask = asfield._cache["val"], asfield._cache["msk"]
 
@@ -240,10 +240,9 @@ def fromMedFileField1TSNodes(mc_field, astermesh):
         values (list[float]) : Field values
 
     """
-
-    if not isinstance(mc_field, (medc.MEDCouplingFieldDouble, PMM.MEDCouplingFieldDouble)):
-        msg = "Argument must be a MEDCouplingFieldDouble, not '{}'"
-        raise TypeError(msg.format(type(mc_field).__name__))
+    tname = type(mc_field).__name__
+    if not tname in ("MEDCouplingFieldDouble",):
+        raise TypeError(f"Invalid argument type '{tname}'")
 
     if mc_field.getTypeOfField() != medc.ON_NODES:
         raise RuntimeError("Field is not defined on nodes.")
@@ -278,9 +277,9 @@ def fromMedFileField1TSCells(mc_field, astermesh):
 
     """
 
-    if not isinstance(mc_field, (medc.MEDCouplingFieldDouble, PMM.MEDCouplingFieldDouble)):
-        msg = "Argument must be a MEDCouplingFieldDouble, not '{}'"
-        raise TypeError(msg.format(type(mc_field).__name__))
+    tname = type(mc_field).__name__
+    if not tname in ("MEDCouplingFieldDouble",):
+        raise TypeError(f"Invalid argument type '{tname}'")
 
     if mc_field.getTypeOfField() != medc.ON_CELLS:
         raise RuntimeError("Field is not defined on cells.")

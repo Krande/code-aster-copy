@@ -16,7 +16,7 @@
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
 
-subroutine acearm(infdonn, lmax, nbocc, infcarte, ivr)
+subroutine acearm(nbocc, infdonn, infcarte)
 !
 !
     use cara_elem_parameter_module
@@ -42,13 +42,14 @@ subroutine acearm(infdonn, lmax, nbocc, infcarte, ivr)
 #include "asterfort/rigmi2.h"
 #include "asterfort/ulisop.h"
 #include "asterfort/ulopen.h"
+#include "asterfort/utmess.h"
 #include "asterfort/wkvect.h"
 #include "asterfort/int_to_char8.h"
 !
     type(cara_elem_info) :: infdonn
     type(cara_elem_carte) :: infcarte(*)
 
-    integer(kind=8) :: lmax, nbocc, ivr(*), ifm
+    integer(kind=8) :: nbocc, ifm
 
 ! ----------------------------------------------------------------------
 !     AFFE_CARA_ELEM
@@ -62,7 +63,7 @@ subroutine acearm(infdonn, lmax, nbocc, infcarte, ivr)
     integer(kind=8) :: nrd
     parameter(nrd=2)
     integer(kind=8) :: jdc(3), jdv(3), dimcar, irgma, irgm2, irgm3
-    integer(kind=8) :: itbmp, ndim, jdcinf, jdvinf, i, ioc
+    integer(kind=8) :: itbmp, ndim, jdcinf, jdvinf, i, ioc, lmax
     integer(kind=8) :: irep, isym, impris, nu, nfr, ngp, ngl, ifreq, nma, ldgm, nbpo
     integer(kind=8) :: in, nfreq, iv, jd, ncmp, l, nbli, ncmp2, icf
     real(kind=8) :: eta, vale(3), freq, coef, zero(5)
@@ -74,7 +75,7 @@ subroutine acearm(infdonn, lmax, nbocc, infcarte, ivr)
     character(len=19) :: cart(3), cartdi
     character(len=24) :: nogp, nogl
 !
-!     integer :: ixckma, ixci
+!     integer(kind=8) :: ixckma, ixci
 !     real(kind=8) :: r8bid
 !     character(len=8) :: k8bid
 !     character(len=24) :: tmpnd(3), tmpvd(3), tmcinf, tmvinf
@@ -87,8 +88,13 @@ subroutine acearm(infdonn, lmax, nbocc, infcarte, ivr)
 !
     noma = infdonn%maillage
     ndim = infdonn%dimmod
+    lmax = infdonn%MailleMaxOccur
 !   Pour miss3d c'est obligatoirement du 3d
     ASSERT(ndim .eq. 3)
+!   Si c'est un maillage partionné ==> PLOUF
+    if (infdonn%IsParaMesh) then
+        call utmess('F', 'AFFECARAELEM_99')
+    end if
 !
     call wkvect('&&TMPRIGMA', 'V V R', 3*lmax, irgma)
     call wkvect('&&TMPRIGM2', 'V V R', 3*lmax, irgm2)
@@ -113,7 +119,7 @@ subroutine acearm(infdonn, lmax, nbocc, infcarte, ivr)
     jdc(3) = infcarte(ACE_CAR_DISCA)%adr_cmp
     jdv(3) = infcarte(ACE_CAR_DISCA)%adr_val
 !
-    ifm = ivr(4)
+    ifm = infdonn%ivr(4)
 !   On ne peut faire qu'une occurrence de RIGI_MISS_3D : catalogue
 !   On garde la boucle, au cas où l'on souhaiterait faire des évolutions
     ASSERT(nbocc .eq. 1)
@@ -134,7 +140,7 @@ subroutine acearm(infdonn, lmax, nbocc, infcarte, ivr)
         do i = 1, nrd
             if (rep .eq. repdis(i)) irep = i
         end do
-        if (ivr(3) .eq. 2) then
+        if (infdonn%ivr(3) .eq. 2) then
             write (ifm, 100) rep, ioc
         end if
 100     format(/, 3x, &
@@ -165,7 +171,7 @@ subroutine acearm(infdonn, lmax, nbocc, infcarte, ivr)
                 iv = 1
                 jd = itbmp+i-1
                 call affdis(ndim, irep, eta, cara, zr(irgma+3*i-3), &
-                            jdc, jdv, ivr, iv, kma, &
+                            jdc, jdv, infdonn%ivr, iv, kma, &
                             ncmp, l, jdcinf, jdvinf, isym)
                 call nocart(cartdi, 3, dimcar, mode='NOM', nma=1, &
                             limano=[zk8(jd)])
@@ -175,7 +181,7 @@ subroutine acearm(infdonn, lmax, nbocc, infcarte, ivr)
                 iv = 1
                 ledisc = 'M_T_D_N'
                 call affdis(ndim, irep, eta, ledisc, zero, &
-                            jdc, jdv, ivr, iv, kma, &
+                            jdc, jdv, infdonn%ivr, iv, kma, &
                             ncmp, l, jdcinf, jdvinf, isym)
                 call nocart(cartdi, 3, dimcar, mode='NOM', nma=1, &
                             limano=[zk8(jd)])
@@ -185,7 +191,7 @@ subroutine acearm(infdonn, lmax, nbocc, infcarte, ivr)
                 iv = 1
                 ledisc = 'A_T_D_N'
                 call affdis(ndim, irep, eta, ledisc, zero, &
-                            jdc, jdv, ivr, iv, kma, &
+                            jdc, jdv, infdonn%ivr, iv, kma, &
                             ncmp, l, jdcinf, jdvinf, isym)
                 call nocart(cartdi, 3, dimcar, mode='NOM', nma=1, &
                             limano=[zk8(jd)])
@@ -212,7 +218,7 @@ subroutine acearm(infdonn, lmax, nbocc, infcarte, ivr)
                 vale(2) = -zr(irgm2+3*i-2)*coef
                 vale(3) = -zr(irgm2+3*i-1)*coef
                 call affdis(ndim, irep, eta, cara, vale, &
-                            jdc, jdv, ivr, iv, kma, &
+                            jdc, jdv, infdonn%ivr, iv, kma, &
                             ncmp2, l, jdcinf, jdvinf, isym)
                 call nocart(cartdi, 3, dimcar, mode='NOM', nma=1, &
                             limano=[zk8(jd)])
@@ -222,7 +228,7 @@ subroutine acearm(infdonn, lmax, nbocc, infcarte, ivr)
                 iv = 1
                 ledisc = 'M_T_D_L'
                 call affdis(ndim, irep, eta, ledisc, zero, &
-                            jdc, jdv, ivr, iv, kma, &
+                            jdc, jdv, infdonn%ivr, iv, kma, &
                             ncmp2, l, jdcinf, jdvinf, isym)
                 call nocart(cartdi, 3, dimcar, mode='NOM', nma=1, &
                             limano=[zk8(jd)])
@@ -232,7 +238,7 @@ subroutine acearm(infdonn, lmax, nbocc, infcarte, ivr)
                 iv = 1
                 ledisc = 'A_T_D_L'
                 call affdis(ndim, irep, eta, ledisc, zero, &
-                            jdc, jdv, ivr, iv, kma, &
+                            jdc, jdv, infdonn%ivr, iv, kma, &
                             ncmp2, l, jdcinf, jdvinf, isym)
                 call nocart(cartdi, 3, dimcar, mode='NOM', nma=1, &
                             limano=[zk8(jd)])

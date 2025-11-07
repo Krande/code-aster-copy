@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -47,6 +47,10 @@ qui portent les champs à projeter. Seuls les champs portés par les mailles qui
 correspondent à la topologie donnée sous CAS_FIGURE seront projetés sur les mailles
 du MODELE_2 ou du MAILLAGE_2.
 """
+    ),
+    5: _(
+        """Vous utilisez une projection parallèle mais un sous-domaine ne possède aucune maille
+         à projeter. Vous devriez utiliser le mot-clé DISTRIBUTION."""
     ),
     54: _("""Il n'y a aucun noeud sur lesquels projeter."""),
     55: _(

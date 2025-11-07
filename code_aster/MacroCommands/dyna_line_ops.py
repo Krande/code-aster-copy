@@ -40,8 +40,11 @@ from ..CodeCommands import (
     CREA_CHAMP,
     CREA_RESU,
     DEFI_BASE_MODALE,
+    DEFI_LIST_REEL,
+    DEFI_INTERF_DYNA,
     DYNA_VIBRA,
     FACTORISER,
+    MACR_ELEM_DYNA,
     MACRO_ELAS_MULT,
     MACRO_MATR_AJOU,
     MODE_STATIQUE,
@@ -53,6 +56,7 @@ from ..CodeCommands import (
     REST_GENE_PHYS,
 )
 from ..Utilities import force_list
+from ..Messages import UTMESS
 
 
 class DynaLineFEM:
@@ -399,7 +403,7 @@ class DynaLineFEM:
                 force_nodale["F" + dof[-1]] = 1.0
             try:
                 __ch = AFFE_CHAR_MECA(MODELE=self.getModele(), FORCE_NODALE=force_nodale)
-            except AsterError:
+            except AsterError as err:
                 continue
 
             __vectelem = CALC_VECT_ELEM(OPTION="CHAR_MECA", CHARGE=__ch)
@@ -1304,6 +1308,8 @@ class DynaLineResu:
         ARCHIVAGE=None,
         BASE_RESU=None,
         RESU_GENE=None,
+        LIST_FREQ=None,
+        FREQ=None,
         ISS="NON",
         COMPORTEMENT=None,
         SOLVEUR=None,
@@ -1316,6 +1322,8 @@ class DynaLineResu:
         self.dynaLineInitialState = dynaLineInitialState
         self.type_calcul = TYPE_CALCUL
         self.base_calcul = BASE_CALCUL
+        self.list_freq = LIST_FREQ
+        self.freq = FREQ
         self.base_resu = BASE_RESU
         self.schema_temps = SCHEMA_TEMPS
         self.archivage = ARCHIVAGE
@@ -1335,6 +1343,8 @@ class DynaLineResu:
         UNITE_RESU_FORC=None,
         PARAMETRE=None,
         GROUP_MA_INTERF=None,
+        TYPE_EXCIT=None,
+        LIST_FREQ_CALC=None,
         CALC_IMPE_FORC=None,
         VERSION_MISS=None,
         **args
@@ -1345,12 +1355,15 @@ class DynaLineResu:
         assert not (self.table_sol and self.mater_sol)
         self.unite_resu_impe = UNITE_RESU_IMPE
         self.unite_resu_forc = UNITE_RESU_FORC
+        if self.type_calcul == "HARM":
+            self.list_freq_calc = LIST_FREQ_CALC
         if PARAMETRE:
             self.parametre = force_list(PARAMETRE)[0]
         else:
             self.parametre = {}
         self.parametre["TYPE"] = "BINAIRE"
         self.group_ma_interf = GROUP_MA_INTERF
+        self.type_excit = TYPE_EXCIT
         self.calc_impe_forc = CALC_IMPE_FORC == "OUI"
         self.version_miss = VERSION_MISS
 
@@ -1454,12 +1467,18 @@ class DynaLineResu:
         if self.parametre:
             if self.type_calcul == "HARM":
                 l_is_freq_defined = [
-                    x in list(self.parametre.keys()) for x in ["FREQ_MIN", "LIST_FREQ", "FREQ_IMAG"]
+                    x in list(self.parametre.keys())
+                    for x in ["FREQ_MIN", "LIST_FREQ", "FREQ_IMAG", "FREQ"]
                 ]
                 is_freq_defined = reduce(lambda x, y: x or y, l_is_freq_defined)
                 if not is_freq_defined:
                     # recuperate frequencies from increment definition if not defined
-                    self.parametre["LIST_FREQ"] = self.dynaLineIncrement.get()["FREQ"]
+                    # self.parametre["LIST_FREQ"] = self.dynaLineIncrement.get()["FREQ"]
+                    if self.freq is not None:
+                        list_freq_c = DEFI_LIST_REEL(VALE=self.freq)
+                    else:
+                        list_freq_c = self.list_freq
+                    self.parametre["LIST_FREQ"] = list_freq_c
             keywords["PARAMETRE"] = self.parametre
         if self.group_ma_interf:
             keywords["GROUP_MA_INTERF"] = self.group_ma_interf
@@ -1470,34 +1489,71 @@ class DynaLineResu:
 
     def __getCalcMissAdditionalKeywords(self):
         """return common keywords used only for the second CALC_MISS call"""
-        keywords = {}
+        keywords_hg = {}
+        keywords_hg["TYPE_EXCIT"] = self.type_excit
+        keywords_hg["BASE_MODALE"] = self.dynaLineFEM.dynaLineBasis.get()
+        keywords_hg["TYPE"] = self.parametre["TYPE"]
+        keywords_hg["UNITE_RESU_IMPE"] = self.unite_resu_impe
+        if self.unite_resu_impe:
+            keywords_hg["UNITE_RESU_IMPE"] = self.unite_resu_impe
+            if self.unite_resu_forc:
+                keywords_hg["UNITE_RESU_FORC"] = self.unite_resu_forc
+        else:
+            if self.table_sol:
+                keywords_hg["TABLE_SOL"] = self.table_sol
+            if self.mater_sol:
+                keywords_hg["MATER_SOL"] = self.mater_sol
+            if self.version_miss:
+                keywords_hg["VERSION"] = self.version_miss
+            if self.group_ma_interf:
+                keywords_hg["GROUP_MA_INTERF"] = self.group_ma_interf
+            if self.parametre:
+                if self.type_calcul == "HARM":
+                    l_is_freq_defined = [
+                        x in list(self.parametre.keys())
+                        for x in ["FREQ_MIN", "LIST_FREQ", "FREQ_IMAG", "FREQ"]
+                    ]
+                    is_freq_defined = reduce(lambda x, y: x or y, l_is_freq_defined)
+                    if not is_freq_defined:
+                        # recuperate frequencies from increment definition if not defined
+                        # self.parametre["LIST_FREQ"] = self.dynaLineIncrement.get()["FREQ"]
+                        if self.freq is not None:
+                            list_freq_c = DEFI_LIST_REEL(VALE=self.freq)
+                        else:
+                            list_freq_c = self.list_freq
+                        self.parametre["LIST_FREQ"] = list_freq_c
+                keywords_hg["PARAMETRE"] = self.parametre
         if self.dynaLineFEM.getAmorModal():
-            keywords["AMOR_REDUIT"] = self.dynaLineFEM.getAmorModal()
+            keywords_hg["AMOR_REDUIT"] = self.dynaLineFEM.getAmorModal()
         if self.type_calcul == "HARM":
             # recuperate frequencies from increment definition
-            self.parametre["LIST_FREQ"] = self.dynaLineIncrement.get()["FREQ"]
-            for key in ["FREQ_MIN", "FREQ_MAX", "FREQ_PAS", "FREQ_IMAG"]:
-                if key in self.parametre:
-                    del self.parametre[key]
-            keywords["PARAMETRE"] = self.parametre
+            self.list_freq_calc = {}
+            keywords_hg["LIST_FREQ_CALC"] = self.list_freq_calc
+            self.list_freq_calc["AUTO"] = "NON"
+            if self.parametre["LIST_FREQ"] is not None:
+                self.list_freq_calc["LIST_FREQ"] = self.parametre["LIST_FREQ"]
+            else:
+                self.list_freq_calc["FREQ"] = self.parametre["FREQ"]
         if self.type_calcul == "HARM" and len(self.dynaLineExcit.get()) > 0:
-            keywords["EXCIT_HARMO"] = self.dynaLineExcit.get()
-        return keywords
+            keywords_hg["EXCIT_GENE"] = self.dynaLineExcit.get()
+        return keywords_hg
 
     def __getCalcMiss(self):
         """return a result from CALC_MISS (if iss)"""
         keywords = self.__getCalcMissKeywords()
         # first calc_miss with FICHIER
-        if self.calc_impe_forc and self.unite_resu_impe and self.unite_resu_forc:
+        # if self.calc_impe_forc and self.unite_resu_impe and self.unite_resu_forc:
+        if self.calc_impe_forc and self.unite_resu_impe:
             CALC_MISS(TYPE_RESU="FICHIER", **keywords)
-        keywords.update(self.__getCalcMissAdditionalKeywords())
+        # keywords.update(self.__getCalcMissAdditionalKeywords())
+        keywords_hg = self.__getCalcMissAdditionalKeywords()
         if self.resu_gene:
             resu_gene = CALC_MISS(
                 TYPE_RESU=self.type_calcul + "_GENE",
                 MODELE=self.dynaLineFEM.getModele(),
                 MATR_RIGI=self.dynaLineFEM.getRigiPhy(),
                 MATR_MASS=self.dynaLineFEM.getMassPhy(),
-                **keywords
+                **keywords_hg
             )
             # retrieve also result in gene basis
             self.parent.register_result(resgene, self.resu_gene)
@@ -1508,7 +1564,7 @@ class DynaLineResu:
                 MODELE=self.dynaLineFEM.getModele(),
                 MATR_RIGI=self.dynaLineFEM.getRigiPhy(),
                 MATR_MASS=self.dynaLineFEM.getMassPhy(),
-                **keywords
+                **keywords_hg
             )
         keywords = {}
         nomresu = REST_GENE_PHYS(

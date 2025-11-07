@@ -55,7 +55,7 @@ MOD = AFFE_MODELE(
 
 CELEM = AFFE_CARA_ELEM(
     MODELE=MOD,
-    VERIF=("MAILLE",),
+    VERIF="OUI",
     POUTRE=_F(GROUP_MA=("AB",), SECTION="RECTANGLE", CARA=("HY", "HZ"), VALE=(3.0, 2.0)),
     DISCRET=(
         _F(GROUP_MA="C", CARA="K_TR_D_N", VALE=(0.0, 0.0, 0.0, 0.0, 0.0, 0.0)),

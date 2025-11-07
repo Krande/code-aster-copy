@@ -96,7 +96,7 @@ subroutine vpini1(eigsol, modes, solveu, typcon, vecblo, &
     character(len=16) :: modrig, optiof, optiov, typeqz, typres, typcal
     character(len=19) :: amor, masse, raide, tabmod
     character(len=24) :: metres, valk(2), k24bid
-    aster_logical :: lc, lkr, lns, lqz, ltabmo
+    aster_logical :: lc, lkr, lns, lqz, ltabmo, lpg
 !
 ! -----------------------
 ! --- CORPS DE LA ROUTINE
@@ -119,7 +119,7 @@ subroutine vpini1(eigsol, modes, solveu, typcon, vecblo, &
                 method_=method, typevp_=typevp, matra_=matra, matrc_=matrc, &
                 modrig_=modrig, optiof_=optiof, typcal_=typcal, typeqz_=typeqz, &
                 typres_=typres, amor_=amor, masse_=masse, raide_=raide, tabmod_=tabmod, &
-                lc_=lc, lkr_=lkr, lns_=lns, lqz_=lqz)
+                lc_=lc, lkr_=lkr, lns_=lns, lqz_=lqz, lpg_=lpg)
 !
 ! --  DESCRIPTEURS MATRICES
     call mtdscr(raide)
@@ -285,7 +285,7 @@ subroutine vpini1(eigsol, modes, solveu, typcon, vecblo, &
             call vpfopr(optiov, typres, lmasse, lraide, lmatra, &
                         omemin, omemax, omeshi, nfreq, npiv2, &
                         omecor, precsh, nbrss, nblagr, solveu, &
-                        rbid2, ibid2)
+                        rbid2, ibid2, lpg=lpg)
             npivot = npiv2(1)
             if (mod45(1:4) .eq. 'OP45') then
                 if (nfreq .le. 0) then

@@ -28,17 +28,19 @@ module cara_elem_carte_type
 !       adr_cmp     : adresse jeveux des composantes.           jeveut(nom_carte//'.NCMP')
 !       adr_val     : adresse jeveux des valeurs.               jeveut(nom_carte//'.VALV')
 !       nbr_cmp     : nombre de composantes.
-!
+!       utilise     : indique si la carte a été affectée
 ! --------------------------------------------------------------------------------------------------
-! person_in_charge: jean-luc.flejou at edf.fr
+!
+#include "asterf_types.h"
 !
     implicit none
 !
     type cara_elem_carte
-        integer(kind=8)             :: adr_cmp
-        integer(kind=8)             :: adr_val
-        integer(kind=8)             :: nbr_cmp
-        character(len=19)   :: nom_carte
+        integer(kind=8)   :: adr_cmp
+        integer(kind=8)   :: adr_val
+        integer(kind=8)   :: nbr_cmp
+        aster_logical     :: utilise
+        character(len=19) :: nom_carte
     end type cara_elem_carte
 !
 end module

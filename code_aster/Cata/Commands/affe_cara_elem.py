@@ -23,17 +23,13 @@ from ..Commons import *
 from ..Language.DataStructure import *
 from ..Language.Syntax import *
 
+#
 import numpy as NP
-
-
-def force_tuple(obj):
-    """Force *obj* to be a tuple."""
-    if type(obj) not in (list, tuple):
-        obj = [obj]
-    return tuple(obj)
+from ...Utilities import deprecate, force_tuple, force_list
 
 
 def affe_cara_elem_prod(
+    VERIF,
     POUTRE,
     BARRE,
     COQUE,
@@ -73,11 +69,44 @@ def affe_cara_elem_prod(
             msg = str(fmt).format(**locals())
             raise CataError(msg)
 
+    # Si Lst1[ii] in Lst2 ==> plouf
+    def AbsentListe(Lst1, Lst2):
+        for ii in Lst1:
+            if ii in Lst2:
+                return False
+        return True
+
+    # Si Lst1[ii] not in Lst2 ==> plouf
+    def AllInListe(Lst1, Lst2):
+        for ii in Lst1:
+            if not ii in Lst2:
+                return False
+        return True
+
+    # Tous ou aucun des Lst1 in Lst2
+    def EnsembleInListe(Lst1, Lst2):
+        indx = 0
+        for ii in Lst1:
+            if ii in Lst2:
+                indx += 1
+        if indx == 0:
+            return True
+        if indx == len(Lst1):
+            return True
+        return False
+
+    # Fait-on la vérification des MAILLES
+    #   Par défaut OUI
+    VerifMaille = True
+    if VERIF is not None:
+        VerifMaille = not "NON" in VERIF
+    #
     # les messages doivent être courts pour être visibles dans eficas
-    sizeErr = tr("les cardinaux de CARA et VALE sont différents.")
-    defErr = tr("mauvaise définition de {prop!r}.")
+    sizeErr = tr("Les cardinaux de CARA et VALE sont différents.")
+    defErr = tr("Mauvaise définition de {prop!r}.")
     # - - - - - - - - - - - - - - -
-    if POUTRE is not None:
+    # fmt: off
+    if (POUTRE is not None) and VerifMaille:
         for i in range(len(POUTRE)):
             i1 = i + 1
             mclf = POUTRE[i]
@@ -86,31 +115,48 @@ def affe_cara_elem_prod(
                 vale = force_tuple(mclf["VALE"])
                 check(len(cara) == len(vale), sizeErr, "POUTRE", i1)
                 if mclf.get("VARI_SECT") == "CONSTANT":
+                    #
+                    check(AllInListe(["R"], cara), defErr, "POUTRE", i1, cara)
+                    #
                     rayon = valeurCara("R", cara, vale)
                     ep = valeurCara("EP", cara, vale, rayon)
                     check(rayon > 0.0, defErr, "POUTRE", i1, "R")
                     check(0 < ep <= rayon, defErr, "POUTRE", i1, ("R", "EP"))
                 elif mclf.get("VARI_SECT") == "HOMOTHETIQUE":
-                    if mclf.get("GROUP_MA"):
-                        r_debut = valeurCara("R_DEBUT", cara, vale)
-                        r_fin = valeurCara("R_FIN", cara, vale)
-                        ep_debut = valeurCara("EP_DEBUT", cara, vale, r_debut)
-                        ep_fin = valeurCara("EP_FIN", cara, vale, r_fin)
-                        check(r_debut > 0.0, defErr, "POUTRE", i1, "R_DEBUT")
-                        check(r_fin > 0.0, defErr, "POUTRE", i1, "R_FIN")
-                    check((0.0 < ep_debut <= r_debut), defErr, "POUTRE", i1, ("R1", "EP1"))
-                    check((0.0 < ep_fin <= r_fin), defErr, "POUTRE", i1, ("R2", "EP2"))
+                    #
+                    check(AllInListe(["R_DEBUT", "R_FIN"], cara),
+                          defErr, "POUTRE", i1, cara)
+                    check(EnsembleInListe(["EP_DEBUT", "EP_FIN"], cara),
+                          defErr, "POUTRE", i1, cara)
+                    #
+                    r_debut = valeurCara("R_DEBUT", cara, vale)
+                    r_fin = valeurCara("R_FIN", cara, vale)
+                    ep_debut = valeurCara("EP_DEBUT", cara, vale, r_debut)
+                    ep_fin = valeurCara("EP_FIN", cara, vale, r_fin)
+                    check(r_debut > 0.0, defErr, "POUTRE", i1, "R_DEBUT")
+                    check(r_fin > 0.0, defErr, "POUTRE", i1, "R_FIN")
+                    check((0.0 < ep_debut <= r_debut), defErr, "POUTRE", i1, ("R_DEBUT", "EP_DEBUT"))
+                    check((0.0 < ep_fin <= r_fin), defErr, "POUTRE", i1, ("R_FIN", "EP_FIN"))
             elif mclf.get("SECTION") == "RECTANGLE":
                 cara = force_tuple(mclf["CARA"])
                 vale = force_tuple(mclf["VALE"])
                 check(len(cara) == len(vale), sizeErr, "POUTRE", i1)
                 if mclf.get("VARI_SECT") == "CONSTANT":
                     if "H" in cara:
+                        #
+                        check(AbsentListe(["HY", "HZ", "EPY", "EPZ"], cara),
+                              defErr, "POUTRE", i1, cara)
+                        #
                         h = valeurCara("H", cara, vale)
                         ep = valeurCara("EP", cara, vale, h * 0.5)
                         check(h > 0.0, defErr, "POUTRE", i1, "H")
                         check((0.0 < ep <= h * 0.5), defErr, "POUTRE", i1, ("H", "EP"))
                     else:
+                        #
+                        check(AbsentListe(["H", "EP"], cara), defErr, "POUTRE", i1, cara)
+                        check(AllInListe(["HY", "HZ"], cara), defErr, "POUTRE", i1, cara)
+                        check(EnsembleInListe(["EPY", "EPZ"], cara), defErr, "POUTRE", i1, cara)
+                        #
                         hy = valeurCara("HY", cara, vale)
                         epy = valeurCara("EPY", cara, vale, hy * 0.5)
                         hz = valeurCara("HZ", cara, vale)
@@ -121,6 +167,14 @@ def affe_cara_elem_prod(
                         check((0 < epz <= hz * 0.5), defErr, "POUTRE", i1, ("HZ", "EPZ"))
                 elif mclf.get("VARI_SECT") == "HOMOTHETIQUE":
                     if "H1" in cara:
+                        #
+                        check(AllInListe(["H1", "H2"], cara),
+                              defErr, "POUTRE", i1, cara)
+                        check(EnsembleInListe(["EP1", "EP2"], cara),
+                              defErr, "POUTRE", i1, cara)
+                        check(AbsentListe(["HY1", "HY2", "HZ1", "HZ2", "EPY1", "EPY2", "EPZ1", "EPZ2"], cara),
+                              defErr, "POUTRE", i1, cara)
+                        #
                         h1 = valeurCara("H1", cara, vale)
                         ep1 = valeurCara("EP1", cara, vale, h1 * 0.5)
                         h2 = valeurCara("H2", cara, vale)
@@ -130,6 +184,14 @@ def affe_cara_elem_prod(
                         check((0 < ep1 <= h1 * 0.5), defErr, "POUTRE", i1, ("H1", "EP1"))
                         check((0 < ep2 <= h2 * 0.5), defErr, "POUTRE", i1, ("H2", "EP2"))
                     else:
+                        #
+                        check(AllInListe(["HY1", "HY2", "HZ1", "HZ2"], cara),
+                              defErr, "POUTRE", i1, cara)
+                        check(EnsembleInListe(["EPY1", "EPY2", "EPZ1", "EPZ2"], cara),
+                              defErr, "POUTRE", i1, cara)
+                        check(AbsentListe(["H1", "H2", "EP1", "EP2"], cara),
+                              defErr, "POUTRE", i1, cara)
+                        #
                         hy1 = valeurCara("HY1", cara, vale)
                         epy1 = valeurCara("EPY1", cara, vale, hy1 * 0.5)
                         hy2 = valeurCara("HY2", cara, vale)
@@ -147,6 +209,12 @@ def affe_cara_elem_prod(
                         check((0 < epz1 <= hz1 * 0.5), defErr, "POUTRE", i1, "EPZ1")
                         check((0 < epz2 <= hz2 * 0.5), defErr, "POUTRE", i1, "EPZ2")
                 elif mclf.get("VARI_SECT") == "AFFINE":
+                    #
+                    check(AllInListe(["HY", "HZ1", "HZ2"], cara),
+                          defErr, "POUTRE", i1, cara)
+                    check(EnsembleInListe(["EPY", "EPZ1", "EPZ2"], cara),
+                          defErr, "POUTRE", i1, cara)
+                    #
                     hy = valeurCara("HY", cara, vale)
                     hz1 = valeurCara("HZ1", cara, vale)
                     hz2 = valeurCara("HZ2", cara, vale)
@@ -156,53 +224,52 @@ def affe_cara_elem_prod(
                     check(hy > 0.0, defErr, "POUTRE", i1, "HY")
                     check(hz1 > 0.0, defErr, "POUTRE", i1, "HZ1")
                     check(hz2 > 0.0, defErr, "POUTRE", i1, "HZ2")
-                    check((0 < epy <= hy * 0.5), defErr, "POUTRE", i1, "EPY")
-                    check((0 < epz1 <= hz1 * 0.5), defErr, "POUTRE", i1, "EPZ1")
-                    check((0 < epz2 <= hz2 * 0.5), defErr, "POUTRE", i1, "EPZ2")
+                    check((0 < epy <= hy * 0.5), defErr, "POUTRE", i1, ("HY", "EPY"))
+                    check((0 < epz1 <= hz1 * 0.5), defErr, "POUTRE", i1, ("HZ1", "EPZ1"))
+                    check((0 < epz2 <= hz2 * 0.5), defErr, "POUTRE", i1, ("HZ2", "EPZ2"))
             elif mclf.get("SECTION") == "GENERALE":
                 if mclf.get("VARI_SECT") == "CONSTANT":
                     if mclf.get("CARA") is not None:
                         cara = force_tuple(mclf["CARA"])
                         vale = force_tuple(mclf["VALE"])
                         check(len(cara) == len(vale), sizeErr, "POUTRE", i1)
-                        a = valeurCara("A", cara, vale)
-                        iy = valeurCara("IY", cara, vale)
-                        iz = valeurCara("IZ", cara, vale)
-                        jx = valeurCara("JX", cara, vale)
-                        check(a > 0.0, defErr, "POUTRE", i1, "A")
-                        check(iy > 0.0, defErr, "POUTRE", i1, "IY")
-                        check(iz > 0.0, defErr, "POUTRE", i1, "IZ")
-                        check(jx > 0.0, defErr, "POUTRE", i1, "JX")
+                        #
+                        check(AllInListe(["A", "IY", "IZ", "JX"], cara),
+                              defErr, "POUTRE", i1, cara)
+                        #
+                        for icara in cara:
+                            # Ceux qui doivent être > 0
+                            if icara in ["A", "IY", "IZ", "JX", "AY", "AZ", "RT"]:
+                                ivale = valeurCara(icara, cara, vale)
+                                check(ivale > 0.0, defErr, "POUTRE", i1, icara)
+                            # Ceux qui doivent être >= 0
+                            if icara in ["JG"]:
+                                ivale = valeurCara(icara, cara, vale)
+                                check(ivale >= 0.0, defErr, "POUTRE", i1, icara)
+                        #
                 elif mclf.get("VARI_SECT") == "HOMOTHETIQUE":
                     cara = force_tuple(mclf["CARA"])
                     vale = force_tuple(mclf["VALE"])
                     check(len(cara) == len(vale), sizeErr, "POUTRE", i1)
-                    a1 = valeurCara("A1", cara, vale)
-                    iy1 = valeurCara("IY1", cara, vale)
-                    iz1 = valeurCara("IZ1", cara, vale)
-                    jx1 = valeurCara("JX1", cara, vale)
-                    a2 = valeurCara("A2", cara, vale)
-                    iy2 = valeurCara("IY2", cara, vale)
-                    iz2 = valeurCara("IZ2", cara, vale)
-                    jx2 = valeurCara("JX2", cara, vale)
-                    check(a1 > 0.0, defErr, "POUTRE", i1, "A1")
-                    check(iy1 > 0.0, defErr, "POUTRE", i1, "IY1")
-                    check(iz1 > 0.0, defErr, "POUTRE", i1, "IZ1")
-                    check(jx1 > 0.0, defErr, "POUTRE", i1, "JX1")
-                    check(a2 > 0.0, defErr, "POUTRE", i1, "A2")
-                    check(iy2 > 0.0, defErr, "POUTRE", i1, "IY2")
-                    check(iz2 > 0.0, defErr, "POUTRE", i1, "IZ2")
-                    check(jx2 > 0.0, defErr, "POUTRE", i1, "JX2")
+                    #
+                    check(AllInListe(["A1", "A2", "IY1", "IY2", "IZ1", "IZ2", "JX1", "JX2"], cara),
+                          defErr, "POUTRE", i1, cara)
+                    #
+                    for icara in cara:
+                        # Ceux qui doivent être > 0
+                        if icara in ["A1", "IY1", "IZ1", "JX1", "AY1", "AZ1", "RT1",
+                                     "A2", "IY2", "IZ2", "JX2", "AY2", "AZ2", "RT2"]:
+                            ivale = valeurCara(icara, cara, vale)
+                            check(ivale > 0.0, defErr, "POUTRE", i1, icara)
+                        # Ceux qui doivent être >= 0
+                        if icara in ["JG1", "JG2"]:
+                            ivale = valeurCara(icara, cara, vale)
+                            check(ivale >= 0.0, defErr, "POUTRE", i1, icara)
+                    #
             # Caractéristiques des coudes
             elif mclf.get("SECTION") == "COUDE":
-                for caraCoude in [
-                    "INDI_SIGM",
-                    "INDI_SIGM_XY",
-                    "INDI_SIGM_XZ",
-                    "COEF_FLEX",
-                    "COEF_FLEX_XY",
-                    "COEF_FLEX_XZ",
-                ]:
+                for caraCoude in ["INDI_SIGM", "INDI_SIGM_XY", "INDI_SIGM_XZ",
+                                  "COEF_FLEX", "COEF_FLEX_XY", "COEF_FLEX_XZ"]:
                     if caraCoude in mclf:
                         vale = mclf[caraCoude]
                         check(vale > 0.0, defErr, "POUTRE", i1, caraCoude)
@@ -215,20 +282,32 @@ def affe_cara_elem_prod(
                 cara = force_tuple(mclf["CARA"])
                 vale = force_tuple(mclf["VALE"])
                 check(len(cara) == len(vale), sizeErr, "BARRE", i1)
+                #
+                check(AllInListe(["R"], cara), defErr, "BARRE", i1, cara)
+                #
                 rayon = valeurCara("R", cara, vale)
                 ep = valeurCara("EP", cara, vale, rayon)
                 check(rayon > 0.0, defErr, "BARRE", i1, "R")
-                check((0.0 < ep <= rayon), defErr, "BARRE", i1, "EP")
+                check((0.0 < ep <= rayon), defErr, "BARRE", i1, ("R","EP"))
             elif mclf.get("SECTION") == "RECTANGLE":
+                # "H", "EP", "HZ", "HY", "EPY", "EPZ"
                 cara = force_tuple(mclf["CARA"])
                 vale = force_tuple(mclf["VALE"])
                 check(len(cara) == len(vale), sizeErr, "BARRE", i1)
                 if "H" in cara:
+                    # Règles
+                    check(AbsentListe(["HY", "HZ", "EPY", "EPZ"], cara), defErr, "BARRE", i1, cara)
+                    #
                     h = valeurCara("H", cara, vale)
                     ep = valeurCara("EP", cara, vale, h * 0.5)
                     check(h > 0.0, defErr, "BARRE", i1, "H")
                     check((0 < ep <= h * 0.5), defErr, "BARRE", i1, ("H", "EP"))
                 else:
+                    # Règles
+                    check(AbsentListe(["H", "EP"], cara), defErr, "BARRE", i1, cara)
+                    check(AllInListe(["HY", "HZ"], cara), defErr, "BARRE", i1, cara)
+                    check(EnsembleInListe(["EPY", "EPZ"], cara), defErr, "BARRE", i1, cara)
+                    #
                     hy = valeurCara("HY", cara, vale)
                     epy = valeurCara("EPY", cara, vale, hy * 0.5)
                     hz = valeurCara("HZ", cara, vale)
@@ -244,6 +323,9 @@ def affe_cara_elem_prod(
                     check(len(cara) == len(vale), sizeErr, "BARRE", i1)
                     vale = valeurCara("A", cara, vale)
                     check(vale > 0.0, defErr, "BARRE", i1, "A")
+                elif mclf.get("AIRE") is not None:
+                    aire = mclf.get("AIRE")
+                    check(aire > 0.0, defErr, "BARRE", i1, "AIRE")
     # - - - - - - - - - - - - - - -
     if COQUE is not None:
         for i in range(len(COQUE)):
@@ -263,12 +345,19 @@ def affe_cara_elem_prod(
                 check(vale > 0, defErr, "COQUE", i1, "COQUE_NCOU")
     # - - - - - - - - - - - - - - -
     if CABLE is not None:
+        Listemclf1 = ["AIRE", "RAYON", "DIAMETRE"]
+        Listemclf2 = ["N_INIT"]
         for i in range(len(CABLE)):
             i1 = i + 1
             mclf = CABLE[i]
-            if "SECTION" in mclf:
-                vale = mclf["SECTION"]
-                check(vale > 0.0, defErr, "CABLE", i1, "SECTION")
+            # Tous > 0
+            for icl in Listemclf1:
+                if icl in mclf:
+                    check(mclf[icl] > 0.0, defErr, "CABLE", i1, icl)
+            # Tous >= 0
+            for icl in Listemclf2:
+                if icl in mclf:
+                    check(mclf[icl] >= 0.0, defErr, "CABLE", i1, icl)
     # - - - - - - - - - - - - - - -
     if DISCRET is not None:
         pass
@@ -292,7 +381,7 @@ def affe_cara_elem_prod(
                 vale = mclf["VALE"]
                 check(vale >= 0.0, defErr, "MASS_REP", i1, "VALE")
     # - - - - - - - - - - - - - - -
-    if ORIENTATION is not None:
+    if (ORIENTATION is not None) and VerifMaille:
         for i in range(len(ORIENTATION)):
             i1 = i + 1
             mclf = ORIENTATION[i]
@@ -318,37 +407,59 @@ def affe_cara_elem_prod(
                 if len(grp_fc) > 0:
                     check(len(grp_ma) == len(grp_fc), sizeErr_RP2, "RIGI_PARASOL", i1)
     #
+    # fmt: on
     # Pour l'instant Tout est ok
     return cara_elem
+
+
+def compat_syntax(keywords):
+    """Adapt keywords *BEFORE* syntax checking.
+
+    Arguments:
+        keywords (dict): Keywords arguments of user's keywords, changed in place.
+    """
+    #
+    lesClefs = keywords.keys()
+    # ---------------------------------------------------------------- CABLE
+    if "CABLE" in lesClefs:
+        keywords["CABLE"] = force_list(keywords.get("CABLE", []))
+        for ioc in range(len(keywords["CABLE"])):
+            LesCables = keywords["CABLE"][ioc].keys()
+            if "SECTION" in LesCables:
+                LaVale = keywords["CABLE"][ioc].pop("SECTION")
+                keywords["CABLE"][ioc]["AIRE"] = LaVale
+                deprecate("SECTION", case=3, help="Use 'AIRE' instead")
+                #
 
 
 AFFE_CARA_ELEM = OPER(
     nom="AFFE_CARA_ELEM",
     sd_prod=affe_cara_elem_prod,
+    compat_syntax=compat_syntax,
     op=19,
     fr=tr("Affectation de caractéristiques à des éléments de structure"),
     reentrant="n",
     regles=(
         AU_MOINS_UN(
-            "POUTRE",
             "BARRE",
-            "COQUE",
             "CABLE",
+            "COQUE",
             "DISCRET",
             "DISCRET_2D",
-            "MASSIF",
             "GRILLE",
+            "MASSIF",
+            "MASS_REP",
             "MEMBRANE",
             "MULTIFIBRE",
+            "POUTRE",
             "RIGI_PARASOL",
-            "MASS_REP",
         ),
         PRESENT_PRESENT("MULTIFIBRE", "GEOM_FIBRE"),
         EXCLUS("DISCRET", "DISCRET_2D"),
     ),
     MODELE=SIMP(statut="o", typ=modele_sdaster),
     INFO=SIMP(statut="f", typ="I", defaut=1, into=(1, 2)),
-    VERIF=SIMP(statut="f", typ="TXM", validators=NoRepeat(), max="**", into=("MAILLE",)),
+    VERIF=SIMP(statut="f", typ="TXM", max=1, into=("OUI", "NON")),
     #
     # ==============================================================================
     POUTRE=FACT(
@@ -370,76 +481,35 @@ AFFE_CARA_ELEM = OPER(
                 ),
                 TABLE_CARA=SIMP(statut="f", typ=table_sdaster),
                 NOM_SEC=SIMP(statut="f", typ="TXM", validators=LongStr(1, 8)),
-                CARA=SIMP(
-                    statut="f",
-                    typ="TXM",
-                    min=4,
-                    max=15,
+                # Pour que tout reste aligné
+                # fmt: off
+                CARA=SIMP(statut="f", typ="TXM", min=4, max=15,
                     fr=tr("A,IY,IZ,JX sont des paramètres obligatoires"),
-                    validators=[NoRepeat(), Compulsory(["A", "IY", "IZ", "JX"])],
+                    validators=NoRepeat(),
                     into=(
-                        "A",
-                        "IY",
-                        "IZ",
-                        "AY",
-                        "AZ",
-                        "EY",
-                        "EZ",
-                        "JX",
-                        "RY",
-                        "RZ",
-                        "RT",
-                        "JG",
-                        "IYR2",
-                        "IZR2",
-                        "AI",
+                        "A",  "IY", "IZ", "AY", "AZ", "EY", "EZ", "JX", "RY", "RZ",
+                        "RT", "JG", "IYR2", "IZR2", "AI",
                     ),
                 ),
+                # fmt: on
                 VALE=SIMP(statut="f", typ="R", min=4, max=15),
             ),
             b_homothetique=BLOC(
                 condition="""equal_to("VARI_SECT", 'HOMOTHETIQUE')""",
-                CARA=SIMP(
-                    statut="o",
-                    typ="TXM",
-                    min=8,
-                    max=28,
+                # Pour que tout reste aligné : 1 section début
+                #                              2 section fin
+                # fmt: off
+                CARA=SIMP(statut="o", typ="TXM", min=8, max=28,
                     fr=tr("A1,A2,IY1,IY2,IZ1,IZ2,JX1,JX2 sont des paramètres obligatoires"),
-                    validators=[
-                        NoRepeat(),
-                        Compulsory(["A1", "A2", "IY1", "IY2", "IZ1", "IZ2", "JX1", "JX2"]),
-                    ],
+                    validators=NoRepeat(),
                     into=(
-                        "A1",
-                        "IY1",
-                        "IZ1",
-                        "AY1",
-                        "AZ1",
-                        "EY1",
-                        "EZ1",
-                        "JX1",
-                        "RY1",
-                        "RZ1",
-                        "RT1",
-                        "JG1",
-                        "IYR21",
-                        "IZR21",
-                        "A2",
-                        "IY2",
-                        "IZ2",
-                        "AY2",
-                        "AZ2",
-                        "EY2",
-                        "EZ2",
-                        "JX2",
-                        "RY2",
-                        "RZ2",
-                        "RT2",
-                        "JG2",
-                        "IYR22",
-                        "IZR22",
+                        "A1", "IY1", "IZ1", "AY1", "AZ1", "EY1", "EZ1", "JX1", "RY1", "RZ1",
+                        "A2", "IY2", "IZ2", "AY2", "AZ2", "EY2", "EZ2", "JX2", "RY2", "RZ2",
+                        "RT1", "JG1", "IYR21", "IZR21",
+                        "RT2", "JG2", "IYR22", "IZR22",
                     ),
                 ),
+                # fmt: on
                 VALE=SIMP(statut="o", typ="R", min=8, max=30),
             ),
         ),
@@ -459,60 +529,22 @@ AFFE_CARA_ELEM = OPER(
                     typ="TXM",
                     min=1,
                     max=4,
-                    validators=[
-                        NoRepeat(),
-                        OrVal(
-                            AndVal(Compulsory(["H"]), Absent(["HY", "HZ", "EPY", "EPZ"])),
-                            AndVal(
-                                Compulsory(["HY", "HZ"]),
-                                Together(["EPY", "EPZ"]),
-                                Absent(["H", "EP"]),
-                            ),
-                        ),
-                    ],
+                    validators=NoRepeat(),
                     into=("H", "EP", "HY", "HZ", "EPY", "EPZ"),
                 ),
                 VALE=SIMP(statut="o", typ="R", min=1, max=4),
             ),
             b_homothetique=BLOC(
                 condition="""equal_to("VARI_SECT", 'HOMOTHETIQUE')""",
-                CARA=SIMP(
-                    statut="o",
-                    typ="TXM",
-                    min=2,
-                    max=8,
-                    validators=[
-                        NoRepeat(),
-                        OrVal(
-                            AndVal(
-                                Compulsory(["H1", "H2"]),
-                                Together(["EP1", "EP2"]),
-                                Absent(
-                                    ["HY1", "HY2", "HZ1", "HZ2", "EPY1", "EPY2", "EPZ1", "EPZ2"]
-                                ),
-                            ),
-                            AndVal(
-                                Compulsory(["HY1", "HY2", "HZ1", "HZ2"]),
-                                Together(["EPY1", "EPY2", "EPZ1", "EPZ2"]),
-                                Absent(["H1", "H2", "EP1", "EP2"]),
-                            ),
-                        ),
-                    ],
-                    into=(
-                        "H1",
-                        "HZ1",
-                        "HY1",
-                        "EP1",
-                        "EPY1",
-                        "EPZ1",
-                        "H2",
-                        "HZ2",
-                        "HY2",
-                        "EP2",
-                        "EPY2",
-                        "EPZ2",
-                    ),
+                # Pour que tout reste aligné : 1 section début
+                #                              2 section fin
+                # fmt: off
+                CARA=SIMP(statut="o", typ="TXM", min=2, max=8,
+                    validators=NoRepeat(),
+                    into=( "H1", "HZ1", "HY1", "EP1", "EPY1", "EPZ1",
+                           "H2", "HZ2", "HY2", "EP2", "EPY2", "EPZ2", ),
                 ),
+                # fmt: on
                 VALE=SIMP(statut="o", typ="R", min=2, max=8),
             ),
             b_affine=BLOC(
@@ -522,10 +554,7 @@ AFFE_CARA_ELEM = OPER(
                     typ="TXM",
                     min=3,
                     max=6,
-                    validators=[
-                        NoRepeat(),
-                        AndVal(Compulsory(["HY", "HZ1", "HZ2"]), Together(["EPY", "EPZ1", "EPZ2"])),
-                    ],
+                    validators=NoRepeat(),
                     into=("HY", "EPY", "HZ1", "EPZ1", "HZ2", "EPZ2"),
                 ),
                 VALE=SIMP(statut="o", typ="R", min=3, max=6),
@@ -544,8 +573,8 @@ AFFE_CARA_ELEM = OPER(
                     typ="TXM",
                     min=1,
                     max=2,
-                    validators=[NoRepeat(), Compulsory("R")],
-                    fr=tr("R est un paramètre obligatoire"),
+                    validators=NoRepeat(),
+                    fr=tr("R est obligatoire"),
                     into=("R", "EP"),
                 ),
                 VALE=SIMP(statut="o", typ="R", min=1, max=2),
@@ -558,11 +587,8 @@ AFFE_CARA_ELEM = OPER(
                     typ="TXM",
                     min=2,
                     max=4,
-                    validators=[
-                        NoRepeat(),
-                        AndVal(Compulsory(["R_DEBUT", "R_FIN"]), Together(["EP_DEBUT", "EP_FIN"])),
-                    ],
-                    fr=tr("R_DEBUT, R_FIN sont des paramètres obligatoires"),
+                    validators=NoRepeat(),
+                    fr=tr("R_DEBUT, R_FIN sont obligatoires"),
                     into=("R_DEBUT", "R_FIN", "EP_DEBUT", "EP_FIN"),
                 ),
                 VALE=SIMP(statut="o", typ="R", min=2, max=4),
@@ -601,14 +627,19 @@ AFFE_CARA_ELEM = OPER(
         b_generale=BLOC(
             condition="""equal_to("SECTION", 'GENERALE')""",
             regles=(
-                PRESENT_ABSENT("TABLE_CARA", "CARA"),
                 PRESENT_PRESENT("TABLE_CARA", "NOM_SEC"),
                 PRESENT_PRESENT("CARA", "VALE"),
+                PRESENT_ABSENT("AIRE", "TABLE_CARA", "CARA"),
+                UN_PARMI("AIRE", "TABLE_CARA", "CARA"),
             ),
+            #
             TABLE_CARA=SIMP(statut="f", typ=table_sdaster),
             NOM_SEC=SIMP(statut="f", typ="TXM", validators=LongStr(1, 8)),
+            #
             CARA=SIMP(statut="f", typ="TXM", into=("A",)),
             VALE=SIMP(statut="f", typ="R", min=1, max=1),
+            #
+            AIRE=SIMP(statut="f", typ="R"),
         ),
         b_rectangle=BLOC(
             condition="""equal_to("SECTION", 'RECTANGLE')""",
@@ -617,30 +648,17 @@ AFFE_CARA_ELEM = OPER(
                 typ="TXM",
                 min=1,
                 max=4,
-                validators=[
-                    NoRepeat(),
-                    OrVal(
-                        AndVal(Compulsory(["H"]), Absent(["HY", "HZ", "EPY", "EPZ"])),
-                        AndVal(
-                            Compulsory(["HY", "HZ"]), Together(["EPY", "EPZ"]), Absent(["H", "EP"])
-                        ),
-                    ),
-                ],
+                validators=NoRepeat(),
                 into=("H", "EP", "HZ", "HY", "EPY", "EPZ"),
             ),
             VALE=SIMP(statut="o", typ="R", min=1, max=4),
         ),
         b_cercle=BLOC(
             condition="""equal_to("SECTION", 'CERCLE')""",
-            CARA=SIMP(
-                statut="o",
-                typ="TXM",
-                validators=[NoRepeat(), Compulsory(["R"])],
-                min=1,
-                max=2,
-                into=("R", "EP"),
-            ),
+            #
+            CARA=SIMP(statut="o", typ="TXM", validators=NoRepeat(), min=1, max=2, into=("R", "EP")),
             VALE=SIMP(statut="o", typ="R", min=1, max=2),
+            #
         ),
         FCX=SIMP(statut="f", typ=(fonction_sdaster, nappe_sdaster, formule)),
     ),
@@ -674,9 +692,18 @@ AFFE_CARA_ELEM = OPER(
     CABLE=FACT(
         statut="f",
         max="**",
+        regles=(UN_PARMI("AIRE", "RAYON", "DIAMETRE"),),
         GROUP_MA=SIMP(statut="o", typ=grma, validators=NoRepeat(), max="**"),
+        #
+        CARA=SIMP(statut="c", typ="TXM", min=2, max=4),
+        VALE=SIMP(statut="c", typ="R", min=2, max=4),
+        #
         N_INIT=SIMP(statut="o", typ="R"),
-        SECTION=SIMP(statut="o", typ="R"),
+        #
+        AIRE=SIMP(statut="f", typ="R"),
+        RAYON=SIMP(statut="f", typ="R"),
+        DIAMETRE=SIMP(statut="f", typ="R"),
+        #
         FCX=SIMP(statut="f", typ=(fonction_sdaster, nappe_sdaster, formule)),
     ),
     #
@@ -692,37 +719,16 @@ AFFE_CARA_ELEM = OPER(
             fr=tr(
                 "SYMETRIQUE: Affectation de matrices de rigidité, de masse ou d'amortissement à des mailles"
             ),
-            CARA=SIMP(
-                statut="f",
-                typ="TXM",
-                max=1,
+            # Pour que tout reste aligné
+            # fmt: off
+            CARA=SIMP(statut="f", typ="TXM", max=1,
                 into=(
-                    "K_T_D_N",
-                    "K_T_D_L",
-                    "K_TR_D_N",
-                    "K_TR_D_L",
-                    "K_T_N",
-                    "K_T_L",
-                    "K_TR_N",
-                    "K_TR_L",
-                    "M_T_D_N",
-                    "M_T_D_L",
-                    "M_TR_D_N",
-                    "M_TR_D_L",
-                    "M_T_N",
-                    "M_T_L",
-                    "M_TR_N",
-                    "M_TR_L",
-                    "A_T_D_N",
-                    "A_T_D_L",
-                    "A_TR_D_N",
-                    "A_TR_D_L",
-                    "A_T_N",
-                    "A_T_L",
-                    "A_TR_N",
-                    "A_TR_L",
+                    "K_T_D_N", "K_T_D_L", "K_TR_D_N", "K_TR_D_L", "K_T_N", "K_T_L", "K_TR_N", "K_TR_L",
+                    "M_T_D_N", "M_T_D_L", "M_TR_D_N", "M_TR_D_L", "M_T_N", "M_T_L", "M_TR_N", "M_TR_L",
+                    "A_T_D_N", "A_T_D_L", "A_TR_D_N", "A_TR_D_L", "A_T_N", "A_T_L", "A_TR_N", "A_TR_L",
                 ),
             ),
+            # fmt: on
             #  Affection des caractéristiques de RIGIDITE/AMORTISSEMENT/MASSE
             b_AK_T_D_N=BLOC(
                 condition="""((equal_to("CARA", 'K_T_D_N')or(equal_to("CARA", 'A_T_D_N'))))""",
@@ -810,25 +816,16 @@ AFFE_CARA_ELEM = OPER(
             fr=tr(
                 "NON-SYMETRIQUE: Affectation de matrices de rigidité, de masse ou d'amortissement à des mailles"
             ),
-            CARA=SIMP(
-                statut="f",
-                typ="TXM",
-                max=1,
+            # Pour que tout reste aligné
+            # fmt: off
+            CARA=SIMP(statut="f", typ="TXM", max=1,
                 into=(
-                    "K_T_N",
-                    "K_T_L",
-                    "K_TR_N",
-                    "K_TR_L",
-                    "M_T_N",
-                    "M_T_L",
-                    "M_TR_N",
-                    "M_TR_L",
-                    "A_T_N",
-                    "A_T_L",
-                    "A_TR_N",
-                    "A_TR_L",
+                    "K_T_N", "K_T_L", "K_TR_N", "K_TR_L",
+                    "M_T_N", "M_T_L", "M_TR_N", "M_TR_L",
+                    "A_T_N", "A_T_L", "A_TR_N", "A_TR_L",
                 ),
             ),
+            # fmt: on
             #  Affection des caractéristiques de RIGIDITE/AMORTISSEMENT/MASSE : NON-SYMETRIQUE
             b_MAK_T_N_NS=BLOC(
                 condition="""((equal_to("CARA", 'K_T_N')or(equal_to("CARA", 'A_T_N')or(equal_to("CARA", 'M_T_N')))))""",
@@ -869,37 +866,16 @@ AFFE_CARA_ELEM = OPER(
             fr=tr(
                 "SYMETRIQUE: Affectation de matrices de rigidité, de masse ou d'amortissement à des mailles"
             ),
-            CARA=SIMP(
-                statut="f",
-                typ="TXM",
-                max=1,
+            # Pour que tout reste aligné
+            # fmt: off
+            CARA=SIMP(statut="f", typ="TXM", max=1,
                 into=(
-                    "K_T_D_N",
-                    "K_T_D_L",
-                    "K_TR_D_N",
-                    "K_TR_D_L",
-                    "K_T_N",
-                    "K_T_L",
-                    "K_TR_N",
-                    "K_TR_L",
-                    "M_T_D_N",
-                    "M_T_D_L",
-                    "M_TR_D_N",
-                    "M_TR_D_L",
-                    "M_T_N",
-                    "M_T_L",
-                    "M_TR_N",
-                    "M_TR_L",
-                    "A_T_D_N",
-                    "A_T_D_L",
-                    "A_TR_D_N",
-                    "A_TR_D_L",
-                    "A_T_N",
-                    "A_T_L",
-                    "A_TR_N",
-                    "A_TR_L",
+                    "K_T_D_N", "K_T_D_L", "K_TR_D_N", "K_TR_D_L", "K_T_N", "K_T_L", "K_TR_N", "K_TR_L",
+                    "M_T_D_N", "M_T_D_L", "M_TR_D_N", "M_TR_D_L", "M_T_N", "M_T_L", "M_TR_N", "M_TR_L",
+                    "A_T_D_N", "A_T_D_L", "A_TR_D_N", "A_TR_D_L", "A_T_N", "A_T_L", "A_TR_N", "A_TR_L",
                 ),
             ),
+            # fmt: on
             #  Affection des caractéristiques de RIGIDITE/AMORTISSEMENT/MASSE
             b_AK_T_D_N=BLOC(
                 condition="""((equal_to("CARA", 'K_T_D_N')or(equal_to("CARA", 'A_T_D_N'))))""",
@@ -987,25 +963,14 @@ AFFE_CARA_ELEM = OPER(
             fr=tr(
                 "NON-SYMETRIQUE: Affectation de matrices de rigidité, de masse ou d'amortissement à des mailles"
             ),
-            CARA=SIMP(
-                statut="f",
-                typ="TXM",
-                max=1,
-                into=(
-                    "K_T_N",
-                    "K_T_L",
-                    "K_TR_N",
-                    "K_TR_L",
-                    "M_T_N",
-                    "M_T_L",
-                    "M_TR_N",
-                    "M_TR_L",
-                    "A_T_N",
-                    "A_T_L",
-                    "A_TR_N",
-                    "A_TR_L",
-                ),
+            # Pour que tout reste aligné
+            # fmt: off
+            CARA=SIMP(statut="f", typ="TXM", max=1,
+                into=( "K_T_N", "K_T_L", "K_TR_N", "K_TR_L",
+                       "M_T_N", "M_T_L", "M_TR_N", "M_TR_L",
+                       "A_T_N", "A_T_L", "A_TR_N", "A_TR_L", ),
             ),
+            # fmt: on
             #  Affection des caractéristiques de RIGIDITE/AMORTISSEMENT/MASSE : NON-SYMETRIQUE
             b_MAK_T_N_NS=BLOC(
                 condition="""((equal_to("CARA", 'K_T_N')or(equal_to("CARA", 'A_T_N')or(equal_to("CARA", 'M_T_N')))))""",
@@ -1192,7 +1157,7 @@ AFFE_CARA_ELEM = OPER(
         b_cara_gene_tuyau=BLOC(
             condition="""(equal_to("CARA", 'GENE_TUYAU'))""",
             fr=tr("Orientation des tuyaux."),
-            GROUP_NO=SIMP(statut="o", typ=grno, validators=NoRepeat(), max="**"),
+            GROUP_NO=SIMP(statut="o", typ=grno, validators=NoRepeat(), max=1),
             VALE=SIMP(
                 statut="o",
                 typ="R",
@@ -1360,31 +1325,22 @@ AFFE_CARA_ELEM = OPER(
             fr=tr("Surface servant à répartir les caractéristiques des discrets"),
         ),
         GROUP_MA_POI1=SIMP(
-            statut="f", typ=grma, max=1, fr=tr("Mailles de type point correspondant aux discrets")
+            statut="f", typ=grma, max=1, fr=tr("Mailles POINT correspondant aux discrets")
         ),
         GROUP_MA_SEG2=SIMP(
-            statut="f", typ=grma, max=1, fr=tr("Mailles de type seg2 correspondant aux discrets")
+            statut="f", typ=grma, max=1, fr=tr("Mailles SEGMENT correspondant aux discrets")
         ),
         FONC_GROUP=SIMP(statut="f", typ=(fonction_sdaster, nappe_sdaster, formule), max="**"),
         COEF_GROUP=SIMP(statut="f", typ="R", max="**"),
         REPERE=SIMP(statut="f", typ="TXM", into=("LOCAL", "GLOBAL"), defaut="GLOBAL"),
-        CARA=SIMP(
-            statut="o",
-            typ="TXM",
-            validators=NoRepeat(),
-            max=2,
-            into=(
-                "K_TR_D_N",
-                "K_T_D_N",
-                "K_TR_D_L",
-                "K_T_D_L",
-                "A_TR_D_N",
-                "A_T_D_N",
-                "A_TR_D_L",
-                "A_T_D_L",
-            ),
+        # Pour que tout reste aligné
+        # fmt: off
+        CARA=SIMP(statut="o", typ="TXM", validators=NoRepeat(), max=2,
+            into=( "K_TR_D_N", "K_T_D_N", "K_TR_D_L", "K_T_D_L",
+                   "A_TR_D_N", "A_T_D_N", "A_TR_D_L", "A_T_D_L", ),
             fr=tr("Choix des types de discrets du tapis de ressorts."),
         ),
+        # fmt: off
         b_cara=BLOC(
             condition="""exists("CARA") and (len(CARA)==1 or (len(CARA)==2 and CARA[0][2:]==CARA[1][2:]))""",
             fr=tr("Valeurs pour les discrets du tapis de ressorts."),
@@ -1395,7 +1351,7 @@ AFFE_CARA_ELEM = OPER(
                 fr=tr("Valeurs pour les discrets du tapis de ressorts."),
             ),
         ),
-        GROUP_NO_CENTRE=SIMP(statut="f", typ=grno),
+        GROUP_NO_CENTRE=SIMP(statut="f", typ=grno, max=1),
         COOR_CENTRE=SIMP(statut="f", typ="R", min=2, max=3),
         UNITE=SIMP(statut="f", typ=UnitType(), inout="out"),
     ),

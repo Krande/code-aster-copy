@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -66,13 +66,11 @@ def macr_spectre_ops(self, **args):
             if plancher["GROUP_NO"] is not None:
                 assert MAILLAGE is not None
                 if type(plancher["GROUP_NO"]) == str:
-                    noms_no = [
-                        MAILLAGE.getNodeName(n) for n in MAILLAGE.getNodes(plancher["GROUP_NO"])
-                    ]
+                    noms_no = [str(n + 1) for n in MAILLAGE.getNodes(plancher["GROUP_NO"])]
                     liste_no = liste_no + noms_no
                 else:
                     for group_no in plancher["GROUP_NO"]:
-                        noms_no = [MAILLAGE.getNodeName(n) for n in MAILLAGE.getNodes(group_no)]
+                        noms_no = [str(n + 1) for n in MAILLAGE.getNodes(group_no)]
                         liste_no = liste_no + noms_no
         planch_nodes[plancher["NOM"]] = liste_no
         l_plancher.append(plancher["NOM"])
@@ -126,7 +124,7 @@ def macr_spectre_ops(self, **args):
                             PROL_GAUCHE="CONSTANT",
                             PROL_DROITE="CONSTANT",
                             NOEUD=node,
-                            **motscles
+                            **motscles,
                         )
                     elif args.get("MULT_APPUI") is not None:
                         UTMESS("F", "SPECTRAL0_13")
@@ -141,7 +139,7 @@ def macr_spectre_ops(self, **args):
                             PROL_GAUCHE="CONSTANT",
                             PROL_DROITE="CONSTANT",
                             NOEUD=node,
-                            **motscles
+                            **motscles,
                         )
                     #
                     if resu["TABLE"] is not None:
@@ -203,7 +201,7 @@ def macr_spectre_ops(self, **args):
                                     _F(FONCTION=__spo, COEF=1.0),
                                     _F(FONCTION=resu["ACCE_" + dd], COEF=1.0),
                                 ),
-                                **motscles
+                                **motscles,
                             )
 
                         # Etape 3: Calcul des spectres d'oscillateur
@@ -217,7 +215,7 @@ def macr_spectre_ops(self, **args):
                                 FONCTION=__spo,
                                 AMOR_REDUIT=AMOR_SPEC,
                                 NORME=args["NORME"],
-                                **motscles
+                                **motscles,
                             )
                         )
                         l_fonc.append(__spo)
@@ -233,7 +231,7 @@ def macr_spectre_ops(self, **args):
                                     _F(FONCTION=__spo, COEF=1.0),
                                     _F(FONCTION=resu["DEPL_" + dd], COEF=-1.0),
                                 ),
-                                **motscles
+                                **motscles,
                             )
                         l_fonc.append(__spo)
 
@@ -313,7 +311,7 @@ def macr_spectre_ops(self, **args):
                                     _F(FONCTION=__moyza[i], LEGENDE="Z"),
                                 ),
                                 TITRE=TITRE,
-                                **motscles
+                                **motscles,
                             )
                     elif IMPRESSION["TRI"] == "DIRECTION":
                         for dd in ("X", "Y", "Z"):
@@ -346,7 +344,7 @@ def macr_spectre_ops(self, **args):
                                 UNITE=IMPRESSION["UNITE"],
                                 COURBE=l_fonc,
                                 TITRE=TITRE,
-                                **motscles
+                                **motscles,
                             )
 
             # increment de l'indice de noeud
@@ -429,7 +427,7 @@ def macr_spectre_ops(self, **args):
                                 _F(FONCTION=__snha[i], LEGENDE="H"),
                             ),
                             TITRE=TITRE,
-                            **motscles
+                            **motscles,
                         )
                     else:
                         IMPR_FONCTION(
@@ -441,7 +439,7 @@ def macr_spectre_ops(self, **args):
                                 _F(FONCTION=__snza[i], LEGENDE="Z"),
                             ),
                             TITRE=TITRE,
-                            **motscles
+                            **motscles,
                         )
             elif IMPRESSION["TRI"] == "DIRECTION":
                 if ENVELOPPE == "OUI":
@@ -476,7 +474,7 @@ def macr_spectre_ops(self, **args):
                         UNITE=IMPRESSION["UNITE"],
                         COURBE=l_fonc,
                         TITRE=TITRE,
-                        **motscles
+                        **motscles,
                     )
     # fin boucle 1 sur les planchers
     # ---------------------------------------------------------------------------------------------

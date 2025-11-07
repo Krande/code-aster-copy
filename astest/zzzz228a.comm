@@ -33,7 +33,12 @@
 #       20.0   lorsque la température dépend du temps 10.0*inst
 # ----------------------------------------------------------------------
 
-DEBUT(CODE="OUI", ERREUR=_F(ALARME="EXCEPTION"), DEBUG=_F(SDVERI="OUI"))
+from code_aster.Commands import *
+from code_aster import CA
+
+test = CA.TestCase()
+
+DEBUT(CODE="OUI", ERREUR=_F(ALARME="EXCEPTION", ERREUR_F="EXCEPTION"), DEBUG=_F(SDVERI="OUI"))
 
 M = LIRE_MAILLAGE(FORMAT="MED")
 M = DEFI_GROUP(reuse=M, MAILLAGE=M, CREA_GROUP_MA=_F(NOM="TOUT", TOUT="OUI"))
@@ -51,10 +56,26 @@ MO = AFFE_MODELE(
 # Coques Non Excentrées :
 # -----------------------
 C_Epais = 0.1
-C_Excen = 0.0
+C_Excen_dkt = 0.0
+C_Excen_cq3 = 0.0
 CARAC0 = AFFE_CARA_ELEM(
     MODELE=MO,
-    COQUE=_F(GROUP_MA="TOUT", EPAIS=C_Epais, COQUE_NCOU=5, EXCENTREMENT=C_Excen, INER_ROTA="OUI"),
+    COQUE=(
+        _F(
+            GROUP_MA=("M1", "M2", "M3"),
+            EPAIS=C_Epais,
+            COQUE_NCOU=5,
+            EXCENTREMENT=C_Excen_dkt,
+            INER_ROTA="OUI",
+        ),
+        _F(
+            GROUP_MA=("M4", "M5", "M6"),
+            EPAIS=C_Epais,
+            COQUE_NCOU=5,
+            EXCENTREMENT=C_Excen_cq3,
+            INER_ROTA="OUI",
+        ),
+    ),
 )
 
 # Validation de PREP_VARC avec un CHAMP et une NAPPE
@@ -182,11 +203,18 @@ def ChampTher(inst, zic, epais, excen):
     return tpc
 
 
-TEMPZ3 = FORMULE(
+TEMPZ31 = FORMULE(
     NOM_PARA=("INST", "EPAIS"),
     ChampTher=ChampTher,
     C_Epais=C_Epais,
-    excen=C_Excen,
+    excen=C_Excen_dkt,
+    VALE="ChampTher(INST,EPAIS,C_Epais,excen)",
+)
+TEMPZ32 = FORMULE(
+    NOM_PARA=("INST", "EPAIS"),
+    ChampTher=ChampTher,
+    C_Epais=C_Epais,
+    excen=C_Excen_cq3,
     VALE="ChampTher(INST,EPAIS,C_Epais,excen)",
 )
 
@@ -194,7 +222,10 @@ CHTEMF3 = CREA_CHAMP(
     OPERATION="AFFE",
     TYPE_CHAM="CART_TEMP_F",
     MAILLAGE=M,
-    AFFE=_F(TOUT="OUI", NOM_CMP="TEMP", VALE_F=TEMPZ3),
+    AFFE=(
+        _F(GROUP_MA=("M1", "M2", "M3"), NOM_CMP="TEMP", VALE_F=TEMPZ31),
+        _F(GROUP_MA=("M4", "M5", "M6"), NOM_CMP="TEMP", VALE_F=TEMPZ32),
+    ),
 )
 
 TEMPER3 = CREA_RESU(
@@ -263,11 +294,18 @@ TEST_RESU(
 #
 # Les coques NE SONT PAS excentrées donc c'est équivalent à EPAIS
 #   EXCEN = Excen + zic
-TEMPZ4 = FORMULE(
+TEMPZ41 = FORMULE(
     NOM_PARA=("INST", "EXCENT"),
     ChampTher=ChampTher,
     C_Epais=C_Epais,
-    excen=C_Excen,
+    excen=C_Excen_dkt,
+    VALE="ChampTher(INST,EXCENT,C_Epais,excen)",
+)
+TEMPZ42 = FORMULE(
+    NOM_PARA=("INST", "EXCENT"),
+    ChampTher=ChampTher,
+    C_Epais=C_Epais,
+    excen=C_Excen_cq3,
     VALE="ChampTher(INST,EXCENT,C_Epais,excen)",
 )
 
@@ -275,7 +313,10 @@ CHTEMF4 = CREA_CHAMP(
     OPERATION="AFFE",
     TYPE_CHAM="CART_TEMP_F",
     MAILLAGE=M,
-    AFFE=_F(TOUT="OUI", NOM_CMP="TEMP", VALE_F=TEMPZ4),
+    AFFE=(
+        _F(GROUP_MA=("M1", "M2", "M3"), NOM_CMP="TEMP", VALE_F=TEMPZ41),
+        _F(GROUP_MA=("M4", "M5", "M6"), NOM_CMP="TEMP", VALE_F=TEMPZ42),
+    ),
 )
 
 TEMPER4 = CREA_RESU(
@@ -342,19 +383,42 @@ TEST_RESU(
 # Validation de PREP_VARC avec un CHAMP et une FONCTION de (INST EXCEN)
 # ----------------------------------------------------------------------
 #
-# Les coques SONT excentrées
+# Les DKT SONT excentrées
 #   EXCEN = Excen + zic
-C_Excen = 0.3
+C_Excen_dkt = 0.3
+C_Excen_cq3 = 0.0
 CARAC5 = AFFE_CARA_ELEM(
     MODELE=MO,
-    COQUE=_F(GROUP_MA="TOUT", EPAIS=C_Epais, COQUE_NCOU=5, EXCENTREMENT=C_Excen, INER_ROTA="OUI"),
+    COQUE=(
+        _F(
+            GROUP_MA=("M1", "M2", "M3"),
+            EPAIS=C_Epais,
+            COQUE_NCOU=5,
+            EXCENTREMENT=C_Excen_dkt,
+            INER_ROTA="OUI",
+        ),
+        _F(
+            GROUP_MA=("M4", "M5", "M6"),
+            EPAIS=C_Epais,
+            COQUE_NCOU=5,
+            EXCENTREMENT=C_Excen_cq3,
+            INER_ROTA="OUI",
+        ),
+    ),
 )
 
-TEMPZ5 = FORMULE(
+TEMPZ51 = FORMULE(
     NOM_PARA=("INST", "EXCENT"),
     ChampTher=ChampTher,
     C_Epais=C_Epais,
-    excen=C_Excen,
+    excen=C_Excen_dkt,
+    VALE="ChampTher(INST,EXCENT,C_Epais,excen)",
+)
+TEMPZ52 = FORMULE(
+    NOM_PARA=("INST", "EXCENT"),
+    ChampTher=ChampTher,
+    C_Epais=C_Epais,
+    excen=C_Excen_cq3,
     VALE="ChampTher(INST,EXCENT,C_Epais,excen)",
 )
 
@@ -362,7 +426,10 @@ CHTEMF5 = CREA_CHAMP(
     OPERATION="AFFE",
     TYPE_CHAM="CART_TEMP_F",
     MAILLAGE=M,
-    AFFE=_F(TOUT="OUI", NOM_CMP="TEMP", VALE_F=TEMPZ5),
+    AFFE=(
+        _F(GROUP_MA=("M1", "M2", "M3"), NOM_CMP="TEMP", VALE_F=TEMPZ51),
+        _F(GROUP_MA=("M4", "M5", "M6"), NOM_CMP="TEMP", VALE_F=TEMPZ52),
+    ),
 )
 
 TEMPER5 = CREA_RESU(
@@ -445,15 +512,22 @@ def ChampTherXYZ(inst, xic, yic, zic, epais, excen):
     #    zic : c'est le z, on enlève donc Excen pour être dans la coque
     zzic = zic + excen
     tpc = cp3 * zzic * zzic + cp2 * zzic + cp1
-    print("inst %f    excen %f    zic %f    tpc %f" % (inst, excen, zic, tpc))
+    # print("inst %f    excen %f    zic %f    tpc %f" % (inst, excen, zic, tpc))
     return tpc
 
 
-TEMPZ6 = FORMULE(
+TEMPZ61 = FORMULE(
     NOM_PARA=("INST", "X", "Y", "Z"),
     ChampTher=ChampTherXYZ,
     C_Epais=C_Epais,
-    excen=C_Excen,
+    excen=C_Excen_dkt,
+    VALE="ChampTher(INST,X,Y,Z,C_Epais,excen)",
+)
+TEMPZ62 = FORMULE(
+    NOM_PARA=("INST", "X", "Y", "Z"),
+    ChampTher=ChampTherXYZ,
+    C_Epais=C_Epais,
+    excen=C_Excen_cq3,
     VALE="ChampTher(INST,X,Y,Z,C_Epais,excen)",
 )
 
@@ -461,7 +535,10 @@ CHTEMF6 = CREA_CHAMP(
     OPERATION="AFFE",
     TYPE_CHAM="CART_TEMP_F",
     MAILLAGE=M,
-    AFFE=_F(TOUT="OUI", NOM_CMP="TEMP", VALE_F=TEMPZ6),
+    AFFE=(
+        _F(GROUP_MA=("M1", "M2", "M3"), NOM_CMP="TEMP", VALE_F=TEMPZ61),
+        _F(GROUP_MA=("M4", "M5", "M6"), NOM_CMP="TEMP", VALE_F=TEMPZ62),
+    ),
 )
 
 TEMPER6 = CREA_RESU(
@@ -524,5 +601,62 @@ TEST_RESU(
         ),
     )
 )
+
+# ------------------------------------------------------------------------
+# Si EXCENTREMENT != 0 pour les COQUE_3D cela doit planter
+nb_ok = 0
+nb_nook = 0
+#
+try:
+    CARAC6 = AFFE_CARA_ELEM(
+        MODELE=MO,
+        COQUE=(
+            _F(
+                GROUP_MA=("M1", "M2", "M3"),
+                EPAIS=C_Epais,
+                COQUE_NCOU=5,
+                EXCENTREMENT=0.10,
+                INER_ROTA="OUI",
+            ),
+            _F(
+                GROUP_MA=("M4", "M5", "M6"),
+                EPAIS=C_Epais,
+                COQUE_NCOU=5,
+                EXCENTREMENT=0.10,
+                INER_ROTA="OUI",
+            ),
+        ),
+    )
+    nb_ok += 1
+except CA.AsterError as exc:
+    if exc.id_message == "CALCULEL2_31":
+        nb_nook += 1
+#
+try:
+    CARAC6 = AFFE_CARA_ELEM(
+        MODELE=MO,
+        COQUE=(
+            _F(
+                GROUP_MA=("M1", "M2", "M3"),
+                EPAIS=C_Epais,
+                COQUE_NCOU=5,
+                EXCENTREMENT=0.10,
+                INER_ROTA="OUI",
+            ),
+            _F(
+                GROUP_MA=("M4", "M5", "M6"),
+                EPAIS=C_Epais,
+                COQUE_NCOU=5,
+                EXCENTREMENT=-0.10,
+                INER_ROTA="OUI",
+            ),
+        ),
+    )
+    nb_ok += 1
+except CA.AsterError as exc:
+    if exc.id_message == "CALCULEL2_31":
+        nb_nook += 1
+#
+test.assertEqual(nb_nook, 2)
 
 FIN()

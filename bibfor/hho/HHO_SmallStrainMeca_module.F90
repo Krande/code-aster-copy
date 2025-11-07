@@ -193,10 +193,10 @@ contains
 !
 ! --------- Eval deformations
             E_prev = hhoEvalSymMatCell( &
-                     hhoBasisCell, hhoData%grad_degree(), coorpg(1:3), E_prev_coeff, gbs_sym)
+                     hhoBasisCell, hhoData%grad_degree(), coorpg(1:3), E_prev_coeff)
 !
             E_incr = hhoEvalSymMatCell( &
-                     hhoBasisCell, hhoData%grad_degree(), coorpg(1:3), E_incr_coeff, gbs_sym)
+                     hhoBasisCell, hhoData%grad_degree(), coorpg(1:3), E_incr_coeff)
 !
 ! -------- tranform sigm in symmetric form
 !

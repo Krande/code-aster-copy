@@ -15,20 +15,16 @@
 ! You should have received a copy of the GNU General Public License
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
-
-!
-!
-! person_in_charge: jean-luc.flejou at edf.fr
 !
 interface
-    subroutine aceaor(noma, nomo, lmax, nbepo, ntyele, nomele, ivr, nbocc)
-        character(len=8) :: noma
-        character(len=8) :: nomo
-        integer(kind=8) :: lmax
-        integer(kind=8) :: nbepo
-        integer(kind=8) :: ntyele(*)
-        character(len=16) :: nomele(*)
-        integer(kind=8) :: ivr(*)
-        integer(kind=8) :: nbocc(*)
+    subroutine aceaor(nbocc, infoconcept)
+
+    use cara_elem_info_type
+!
+    implicit none
+!
+    integer(kind=8)         :: nbocc
+    type(cara_elem_info)    :: infoconcept
+
     end subroutine aceaor
 end interface

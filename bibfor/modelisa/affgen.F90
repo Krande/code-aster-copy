@@ -16,7 +16,10 @@
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
 
-subroutine affgen(tmp, nom, nel, ntel, napcis, foncis)
+subroutine affgen(tmp, nom, nel, napcis, foncis)
+!
+    use cara_elem_parameter_module
+!
     implicit none
 #include "jeveux.h"
 #include "asterc/r8pi.h"
@@ -28,7 +31,6 @@ subroutine affgen(tmp, nom, nel, ntel, napcis, foncis)
 #include "asterfort/jexnom.h"
 #include "asterfort/utmess.h"
 !
-    integer(kind=8) :: ntel(*)
     character(len=19) :: napcis, foncis
     character(len=24) :: tmp, nom
 !       AFFECTATION DES CARACTÉRISTIQUES GÉNÉRALES CALCULÉES
@@ -46,8 +48,8 @@ subroutine affgen(tmp, nom, nel, ntel, napcis, foncis)
     real(kind=8) :: valpay(2), valpaz(2), valpaf
     character(len=24) :: nompa(2), nompaf
 !-----------------------------------------------------------------------
-    integer(kind=8) :: i, ier, igen, igen2, igeoc, igeor, isec
-    integer(kind=8) :: jdge, nel
+    integer(kind=8) :: ier, igen, igen2, igeoc, igeor, isec, ii
+    integer(kind=8) :: jdge, nel, idx1poutre, idx2poutre
     real(kind=8) :: aireint, ay, az
 !-----------------------------------------------------------------------
     data eps/1.d-3/
@@ -56,13 +58,17 @@ subroutine affgen(tmp, nom, nel, ntel, napcis, foncis)
     call jemarq()
     pi = r8pi()
 !
-    if (.not. (nel .eq. ntel(1) .or. nel .eq. ntel(2) .or. nel .eq. ntel(3) .or. &
-               nel .eq. ntel(4) .or. nel .eq. ntel(5) .or. nel .eq. ntel(11) .or. &
-               nel .eq. ntel(12) .or. nel .eq. ntel(8) .or. nel .eq. ntel(9) .or. &
-               nel .eq. ntel(10) .or. nel .eq. ntel(6) .or. nel .eq. ntel(7) .or. &
-               nel .eq. ntel(13))) then
-        call utmess('F', 'MODELISA_86')
-    end if
+!   Index de départ des poutres dans la SD cara_elem
+    idx1poutre = elem_supp%aceind(ACE_NU_POUTRE, 1)
+    idx2poutre = elem_supp%aceind(ACE_NU_POUTRE, 2)
+    do ii = idx1poutre, idx2poutre
+!       Si on trouve une poutre c'est OK sinon PLOUF
+        if (nel .eq. elem_supp%catanum(ii)) goto 100
+    end do
+    call utmess('F', 'MODELISA_86')
+100 continue
+!   On décale de -1 pour éviter les +1 après
+    idx1poutre = idx1poutre-1
 !
     call jeveuo(jexnom(tmp, nom), 'E', jdge)
     isec = nint(zr(jdge+35))
@@ -71,8 +77,8 @@ subroutine affgen(tmp, nom, nel, ntel, napcis, foncis)
 !       -  erreur   si  hy  <= 0  ou  hz  <= 0  ou
 !                       epy <= 0  ou  epz <= 0  (test dans affdef)
     if (isec .eq. 1) then
-        do i = 1, 2
-            if (i .eq. 1) then
+        do ii = 1, 2
+            if (ii .eq. 1) then
                 igeor = 24
                 igeoc = 32
                 igen = 1
@@ -118,22 +124,29 @@ subroutine affgen(tmp, nom, nel, ntel, napcis, foncis)
                 b4 = b**4
                 b3 = b**3
                 jx = a*b3*(16.d0/3.d0-3.36d0*b*(1.d0-b4/a4)/a)
-!               AY
-                if (nel .eq. ntel(1)) zr(jdge+igen+2) = 1.2d0
-                if (nel .eq. ntel(2)) zr(jdge+igen+2) = 0.d0
-                if (nel .eq. ntel(3)) zr(jdge+igen+2) = 1.2d0
-                if (nel .eq. ntel(4)) zr(jdge+igen+2) = 1.2d0
-                if (nel .eq. ntel(5)) zr(jdge+igen+2) = 1.2d0
-                if (nel .eq. ntel(11)) zr(jdge+igen+2) = 0.d0
-                if (nel .eq. ntel(12)) zr(jdge+igen+2) = 1.2d0
-!               AZ
-                if (nel .eq. ntel(1)) zr(jdge+igen+3) = 1.2d0
-                if (nel .eq. ntel(2)) zr(jdge+igen+3) = 0.d0
-                if (nel .eq. ntel(3)) zr(jdge+igen+3) = 1.2d0
-                if (nel .eq. ntel(4)) zr(jdge+igen+3) = 1.2d0
-                if (nel .eq. ntel(5)) zr(jdge+igen+3) = 1.2d0
-                if (nel .eq. ntel(11)) zr(jdge+igen+3) = 0.d0
-                if (nel .eq. ntel(12)) zr(jdge+igen+3) = 1.2d0
+!               AY & AZ
+                if (nel .eq. elem_supp%catanum(idx1poutre+ACE_MECA_POU_D_T)) then
+                    zr(jdge+igen+2) = 1.2d0
+                    zr(jdge+igen+3) = 1.2d0
+                else if (nel .eq. elem_supp%catanum(idx1poutre+ACE_MECA_POU_D_E)) then
+                    zr(jdge+igen+2) = 0.d0
+                    zr(jdge+igen+3) = 0.d0
+                else if (nel .eq. elem_supp%catanum(idx1poutre+ACE_MECA_POU_D_T_GD)) then
+                    zr(jdge+igen+2) = 1.2d0
+                    zr(jdge+igen+3) = 1.2d0
+                else if (nel .eq. elem_supp%catanum(idx1poutre+ACE_MEFS_POU_D_T)) then
+                    zr(jdge+igen+2) = 1.2d0
+                    zr(jdge+igen+3) = 1.2d0
+                else if (nel .eq. elem_supp%catanum(idx1poutre+ACE_MECA_POU_D_TG)) then
+                    zr(jdge+igen+2) = 1.2d0
+                    zr(jdge+igen+3) = 1.2d0
+                else if (nel .eq. elem_supp%catanum(idx1poutre+ACE_MECA_POU_D_EM)) then
+                    zr(jdge+igen+2) = 0.d0
+                    zr(jdge+igen+3) = 0.d0
+                else if (nel .eq. elem_supp%catanum(idx1poutre+ACE_MECA_POU_D_TGM)) then
+                    zr(jdge+igen+2) = 1.2d0
+                    zr(jdge+igen+3) = 1.2d0
+                end if
 !               JX
                 zr(jdge+igen+6) = jx
 !               RT
@@ -149,7 +162,8 @@ subroutine affgen(tmp, nom, nel, ntel, napcis, foncis)
                 zr(jdge+igen+6) = jx
 !               AY  : jdge+igen+2
 !               AZ  : jdge+igen+3
-                if (nel .eq. ntel(2) .or. nel .eq. ntel(11)) then
+                if (nel .eq. elem_supp%catanum(idx1poutre+ACE_MECA_POU_D_E) .or. &
+                    nel .eq. elem_supp%catanum(idx1poutre+ACE_MECA_POU_D_EM)) then
                     zr(jdge+igen+2) = 0.d0
                     zr(jdge+igen+3) = 0.d0
                 else
@@ -178,23 +192,26 @@ subroutine affgen(tmp, nom, nel, ntel, napcis, foncis)
                 zr(jdge+igen2-1) = hyi*hzi
             end if
 !           AY/AZ POUR TUYAUX ET 3D_FAISCEAU
-            if (nel .eq. ntel(8) .or. nel .eq. ntel(9) .or. nel .eq. ntel(10) .or. &
-                nel .eq. ntel(6) .or. nel .eq. ntel(7)) then
+            if (nel .eq. elem_supp%catanum(idx1poutre+ACE_MET3SEG3) .or. &
+                nel .eq. elem_supp%catanum(idx1poutre+ACE_MET6SEG3) .or. &
+                nel .eq. elem_supp%catanum(idx1poutre+ACE_MET3SEG4) .or. &
+                nel .eq. elem_supp%catanum(idx1poutre+ACE_MECA_POHO_HEXA8) .or. &
+                nel .eq. elem_supp%catanum(idx1poutre+ACE_MECA_POHO_HEXA20)) then
                 zr(jdge+igen+2) = 0.d0
                 zr(jdge+igen+3) = 0.d0
             end if
         end do
 !       JG1,JG2,IYR21,IYR22,IZR21,IZR22 :
-        do i = 1, 6
-            zr(jdge-1+38+i) = 0.d0
+        do ii = 1, 6
+            zr(jdge-1+38+ii) = 0.d0
         end do
     end if
 !
 !   calcul des caractéristiques générales section circulaire
 !       erreur   si re <= 0  ou  e > re ou e <= 0  (test dans affdef)
     if (isec .eq. 2) then
-        do i = 1, 2
-            if (i .eq. 1) then
+        do ii = 1, 2
+            if (ii .eq. 1) then
                 igeor = 24
                 igeoc = 32
                 igen = 1
@@ -231,7 +248,8 @@ subroutine affgen(tmp, nom, nel, ntel, napcis, foncis)
 !           RT
             zr(jdge+igen+9) = re
 !           AY et AZ
-            if (nel .eq. ntel(2) .or. nel .eq. ntel(11)) then
+            if (nel .eq. elem_supp%catanum(idx1poutre+ACE_MECA_POU_D_E) .or. &
+                nel .eq. elem_supp%catanum(idx1poutre+ACE_MECA_POU_D_EM)) then
                 zr(jdge+igen+2) = 0.0d0
                 zr(jdge+igen+3) = 0.0d0
             else
@@ -247,16 +265,19 @@ subroutine affgen(tmp, nom, nel, ntel, napcis, foncis)
 !           AI
             zr(jdge+igen2-1) = pi*ri*ri
 !           AY/AZ POUR TUYAUX ET 3D_FAISCEAU
-            if (nel .eq. ntel(8) .or. nel .eq. ntel(9) .or. nel .eq. ntel(10) .or. &
-                nel .eq. ntel(6) .or. nel .eq. ntel(7)) then
+            if (nel .eq. elem_supp%catanum(idx1poutre+ACE_MET3SEG3) .or. &
+                nel .eq. elem_supp%catanum(idx1poutre+ACE_MET6SEG3) .or. &
+                nel .eq. elem_supp%catanum(idx1poutre+ACE_MET3SEG4) .or. &
+                nel .eq. elem_supp%catanum(idx1poutre+ACE_MECA_POHO_HEXA8) .or. &
+                nel .eq. elem_supp%catanum(idx1poutre+ACE_MECA_POHO_HEXA20)) then
                 zr(jdge+igen+2) = 0.d0
                 zr(jdge+igen+3) = 0.d0
             end if
 !
         end do
 !       JG1,JG2,IYR21,IYR22,IZR21,IZR22 :
-        do i = 1, 6
-            zr(jdge-1+38+i) = 0.d0
+        do ii = 1, 6
+            zr(jdge-1+38+ii) = 0.d0
         end do
     end if
 !

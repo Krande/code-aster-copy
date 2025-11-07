@@ -56,7 +56,7 @@ def crea_grp_matiere(groupe, newgrp, iocc, m, __remodr, NOM_CHAM, __macou):
         )
     )
 
-    node_by_name = {__macou.getNodeName(node): node for node in __macou.getNodes(groupe)}
+    node_by_name = {str(node + 1): node for node in __macou.getNodes(groupe)}
 
     # dictb=table initiale (contenant éventuellement des noeuds hors matière)
     dictb = __tab.EXTR_TABLE()
@@ -715,7 +715,7 @@ def macr_lign_coupe_ops(
                 UTMESS("F", "POST0_14", valk=[group, mesh.getName()])
             for cell in mesh.getCells(group):
                 if mesh.getCellTypeName(cell)[:3] != "SEG":
-                    UTMESS("F", "POST0_15", valk=[group, mesh.getCellName(cell)])
+                    UTMESS("F", "POST0_15", valk=[group, str(cell + 1)])
             __mailla = COPIER(CONCEPT=m["MAILLAGE"])
 
             m2 = m.cree_dict_valeurs(m.mc_liste)

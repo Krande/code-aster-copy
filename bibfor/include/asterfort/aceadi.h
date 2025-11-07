@@ -21,14 +21,14 @@
 ! person_in_charge: jean-luc.flejou at edf.fr
 !
 interface
-    subroutine aceadi(noma, nomo, mcf, lmax, nbocc, infcarte, ivr )
+    subroutine aceadi(nbocc, infoconcept, infcarte, mcf)
+!
+        use cara_elem_info_type
         use cara_elem_carte_type
-        character(len=8) :: noma
-        character(len=8) :: nomo
-        character(len=*) :: mcf
-        integer(kind=8) :: lmax
-        integer(kind=8) :: nbocc
+!
+        integer(kind=8)        :: nbocc
+        type (cara_elem_info)  :: infoconcept
         type (cara_elem_carte) :: infcarte(*)
-        integer(kind=8) :: ivr(*)
+        character(len=*)       :: mcf
     end subroutine aceadi
 end interface

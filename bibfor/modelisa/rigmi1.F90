@@ -112,11 +112,11 @@ subroutine rigmi1(noma, nogr, ifreq, nfreq, ifmis, &
         rigma(3*in+1) = zr(jrig+(3*i1-3)*nbmode+3*i1-3)
         rigma(3*in+2) = zr(jrig+(3*i1-2)*nbmode+3*i1-2)
         rigma(3*in+3) = zr(jrig+(3*i1-1)*nbmode+3*i1-1)
-
+!
         r1 = rigma(3*in+1)
         r2 = rigma(3*in+2)
         r3 = rigma(3*in+3)
-
+!
         rigma(3*in+1) = r1+rigma2(3*(i1-1)+1)
         rigma(3*in+2) = r2+rigma2(3*(i1-1)+2)
         rigma(3*in+3) = r3+rigma2(3*(i1-1)+3)
