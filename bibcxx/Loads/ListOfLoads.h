@@ -140,8 +140,8 @@ class ListOfLoads : public DataStructure {
     void addLoad( const DirichletBCPtr &currentLoad ) { addLoad( currentLoad, "FIXE_CSTE" ); };
 
     void addLoad( const DirichletBCPtr &currentLoad, const std::string &type ) {
-        addLoad( currentLoad, emptyRealFunction, type );
-    };
+        addLoad( currentLoad, Function::emptyRealFunction(), type );
+    }
 
     /**
      * @brief Function d'ajout d'une charge cinematique
@@ -196,7 +196,7 @@ class ListOfLoads : public DataStructure {
     };
 
     void addLoad( const MechanicalLoadRealPtr &currentLoad, const std::string &type ) {
-        addLoad( currentLoad, emptyRealFunction, type );
+        addLoad( currentLoad, Function::emptyRealFunction(), type );
     };
 
     /**
@@ -248,7 +248,7 @@ class ListOfLoads : public DataStructure {
     };
 
     void addLoad( const MechanicalLoadComplexPtr &currentLoad ) {
-        addLoad( currentLoad, emptyRealFunction );
+        addLoad( currentLoad, Function::emptyRealFunction() );
     };
 
     /**
@@ -298,7 +298,7 @@ class ListOfLoads : public DataStructure {
     };
 
     void addLoad( const MechanicalLoadFunctionPtr &currentLoad, const std::string &type ) {
-        addLoad( currentLoad, emptyRealFunction, type );
+        addLoad( currentLoad, Function::emptyRealFunction(), type );
     };
 
     /**
@@ -355,7 +355,7 @@ class ListOfLoads : public DataStructure {
     };
 
     void addLoad( const ParallelMechanicalLoadRealPtr &currentLoad, const std::string &type ) {
-        addLoad( currentLoad, emptyRealFunction, type );
+        addLoad( currentLoad, Function::emptyRealFunction(), type );
     };
 
     /**
@@ -405,7 +405,7 @@ class ListOfLoads : public DataStructure {
     };
 
     void addLoad( const ParallelMechanicalLoadFunctionPtr &currentLoad, const std::string &type ) {
-        addLoad( currentLoad, emptyRealFunction, type );
+        addLoad( currentLoad, Function::emptyRealFunction(), type );
     };
 
     /**
@@ -458,7 +458,7 @@ class ListOfLoads : public DataStructure {
 #endif /* ASTER_HAVE_MPI */
 
     void addLoad( const ThermalLoadRealPtr &currentLoad ) {
-        addLoad( currentLoad, emptyRealFunction );
+        addLoad( currentLoad, Function::emptyRealFunction() );
     };
 
     /**
@@ -502,7 +502,7 @@ class ListOfLoads : public DataStructure {
     };
 
     void addLoad( const ThermalLoadFunctionPtr &currentLoad ) {
-        addLoad( currentLoad, emptyRealFunction );
+        addLoad( currentLoad, Function::emptyRealFunction() );
     };
 
     /**
@@ -550,7 +550,7 @@ class ListOfLoads : public DataStructure {
 #ifdef ASTER_HAVE_MPI
 
     void addLoad( const ParallelThermalLoadRealPtr &currentLoad ) {
-        addLoad( currentLoad, emptyRealFunction );
+        addLoad( currentLoad, Function::emptyRealFunction() );
     };
 
     /**
@@ -596,7 +596,7 @@ class ListOfLoads : public DataStructure {
     };
 
     void addLoad( const ParallelThermalLoadFunctionPtr &currentLoad ) {
-        addLoad( currentLoad, emptyRealFunction );
+        addLoad( currentLoad, Function::emptyRealFunction() );
     };
 
     /**
@@ -642,7 +642,7 @@ class ListOfLoads : public DataStructure {
 #endif /* ASTER_HAVE_MPI */
 
     void addLoad( const AcousticLoadComplexPtr &currentLoad ) {
-        addLoad( currentLoad, emptyRealFunction );
+        addLoad( currentLoad, Function::emptyRealFunction() );
     };
 
     /**

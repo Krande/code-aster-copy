@@ -90,10 +90,6 @@ def configure(self):
         self.environ.setdefault("CC", "mpicc")
         self.environ.setdefault("CXX", "mpicxx")
         self.environ.setdefault("FC", "mpif90")
-    else:
-        self.environ.setdefault("CC", "gcc")
-        self.environ.setdefault("CXX", "g++")
-        self.environ.setdefault("FC", "gfortran")
     self.load_compilers()
     self.check_compilers_version()
     self.check_fortran_verbose_flag()

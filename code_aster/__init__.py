@@ -67,6 +67,23 @@ __all__ = ("libaster", "rc", "__version__")
 # importing cmath may raise a fpe, maybe due to mkl...
 import cmath
 import os
+import sys
+
+python_version = sys.version_info
+
+if sys.platform == "win32" and python_version >= (3, 8):
+    # On Windows, we need to ensure that the DLLs are found, from Python 3.8 we need to
+    # use os.add_dll_directory to add the directory containing the DLLs.
+    # Add the directory of the current script to the DLL search path
+    # This is necessary for Python 3.8+ on Windows to find the DLLs.
+    # To simplify we use the LD_LIBRARY_PATH environment variable like on Unix systems.
+    ld_library_path = os.getenv("LD_LIBRARY_PATH", "")
+    if ld_library_path:
+        # Split the LD_LIBRARY_PATH and add each directory
+        for path in ld_library_path.split(os.pathsep):
+            print("Adding directory:", path)
+            if os.path.isdir(path):
+                print(os.add_dll_directory(os.path.abspath(path)))
 
 try:
     # embedded modules must be imported before libaster

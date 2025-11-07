@@ -1,5 +1,5 @@
 /* -------------------------------------------------------------------- */
-/* Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org             */
+/* Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org             */
 /* This file is part of code_aster.                                     */
 /*                                                                      */
 /* code_aster is free software: you can redistribute it and/or modify   */
@@ -16,7 +16,12 @@
 /* along with code_aster.  If not, see <http://www.gnu.org/licenses/>.  */
 /* -------------------------------------------------------------------- */
 
+#include "aster.h"
+
+#ifndef ASTER_PLATFORM_MSYS2
 #define CODEASTER_IMPORT_ARRAY 1
+#endif
+
 #include "aster_numpy.h"
 
 extern void calc_SPEC_OSCI( int, double *, double *, int, double *, int, double *, double * );
@@ -129,19 +134,23 @@ static PyObject *_INFO( PyObject *self, PyObject *args ) {
 #endif
 
 #ifndef ASTER_WITHOUT_PYMOD
-static PyMethodDef methods[] = {
-    {"SPEC_OSCI", SPEC_OSCI, METH_VARARGS, "Operation SPEC_OSCI de CALC_FONCTION"},
+static PyMethodDef methods[] = { { "SPEC_OSCI", SPEC_OSCI, METH_VARARGS,
+                                   "Operation SPEC_OSCI de CALC_FONCTION" },
 #ifdef ASTER_DEBUG_FONCTIONS
-    {"_INFO", _INFO, METH_VARARGS, "Just for test !"},
+                                 { "_INFO", _INFO, METH_VARARGS, "Just for test !" },
 #endif
-    {NULL, NULL, 0, NULL}};
+                                 { NULL, NULL, 0, NULL } };
 
 static struct PyModuleDef aster_fonctions_def = {
-    PyModuleDef_HEAD_INIT, "aster_fonctions", NULL, -1, methods, NULL, NULL, NULL, NULL};
+    PyModuleDef_HEAD_INIT, "aster_fonctions", NULL, -1, methods, NULL, NULL, NULL, NULL
+};
 
 PyObject *PyInit_aster_fonctions( void ) {
     PyObject *aster_fonctions = PyModule_Create( &aster_fonctions_def );
+
+#ifndef ASTER_PLATFORM_MSYS2
     import_array();
+#endif
     return aster_fonctions;
 }
 #endif

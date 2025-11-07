@@ -518,7 +518,7 @@ void DEFPP( CHKMSG, chkmsg, _IN ASTERINTEGER *info_alarm, _OUT ASTERINTEGER *ire
     Py_DECREF( res );
 }
 
-void DEFSS( UTALRM, utalrm, _IN char *bool, _IN STRING_SIZE lbool, _IN char *idmess,
+void DEFSS( UTALRM, utalrm, _IN char *is_bool, _IN STRING_SIZE lbool, _IN char *idmess,
             _IN STRING_SIZE lidm ) {
     /* Interface Fortran/Python pour masquer et rétablir l'affichage d'une alarme.
      *
@@ -528,7 +528,7 @@ void DEFSS( UTALRM, utalrm, _IN char *bool, _IN STRING_SIZE lbool, _IN char *idm
     char *onoff, *s_id;
     PyObject *res;
 
-    onoff = MakeCStrFromFStr( bool, lbool );
+    onoff = MakeCStrFromFStr( is_bool, lbool );
     s_id = MakeCStrFromFStr( idmess, lidm );
 
     if ( !strcmp( onoff, "OFF" ) ) {

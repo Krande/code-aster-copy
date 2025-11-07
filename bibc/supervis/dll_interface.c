@@ -1,5 +1,5 @@
 /* -------------------------------------------------------------------- */
-/* Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org             */
+/* Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org             */
 /* This file is part of code_aster.                                     */
 /*                                                                      */
 /* code_aster is free software: you can redistribute it and/or modify   */
@@ -22,7 +22,17 @@
 #include "definition_pt.h"
 #include "dll_register.h"
 
+#ifdef ASTER_PLATFORM_MSYS2
+#include <windows.h>
+#define dlopen( libname, flag ) LoadLibrary( libname )
+#define dlsym( handle, symbol ) GetProcAddress( (HMODULE)( handle ), (LPCSTR)( symbol ) )
+static inline int my_dlclose( void *handle ) { return FreeLibrary( (HMODULE)handle ) ? 0 : 1; }
+#define dlclose my_dlclose
+#define RTLD_LAZY 0
+
+#else
 #include <dlfcn.h>
+#endif
 
 /* *********************************************************************
  *

@@ -2,7 +2,7 @@
  * @file ResultNaming.cxx
  * @brief Implementation of automatic naming of jeveux objects.
  * @section LICENCE
- * Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+ * Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
  * This file is part of code_aster.
  *
  * code_aster is free software: you can redistribute it and/or modify
@@ -30,8 +30,6 @@
 #include <stdexcept>
 #include <string>
 #include <vector>
-
-FunctionPtr emptyRealFunction( new Function( "" ) );
 
 BaseFunction::BaseFunction( const std::string name, const std::string type,
                             const std::string type2 )
@@ -122,6 +120,11 @@ void BaseFunction::setAsConstant() {
         propertyAllocate();
     _funct_type = "CONSTANT";
     ( *_property )[0] = _funct_type;
+}
+
+FunctionPtr Function::emptyRealFunction() {
+    static FunctionPtr emptyRealFunction { std::make_shared< Function >( "" ) };
+    return emptyRealFunction;
 }
 
 /* Complex function */

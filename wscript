@@ -487,6 +487,12 @@ def check_platform(self):
         self.define("ASTER_PLATFORM_MINGW", 1)
         self.env.ASTER_PLATFORM_MINGW = True
         self.undefine("ASTER_PLATFORM_POSIX")
+    self.env.ASTER_PLATFORM = plt
+    if os.getenv("MSYSTEM"):
+        ## Define and additional variable for MSYS2 
+        self.define("ASTER_PLATFORM_MSYS2", 1)
+        self.env.ASTER_PLATFORM_MSYS2 = True
+
     self.define(plt, 1)
     self.end_msg(plt)
 
