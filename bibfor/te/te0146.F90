@@ -483,7 +483,7 @@ subroutine te0146(option, nomte)
             fbeton = fbeton/unite_pa
             ht = ht/unite_m
             b = 1000.d0
-            if (fbeton .le. (50*unite_pa)) then
+            if (fbeton .le. 50.d0) then
                 fctm = 0.30*((fbeton)**(2.0/3.0))
             else
                 fctm = 2.12*LOG(1.0+((fbeton)+8.0)/10.0)
@@ -507,13 +507,11 @@ subroutine te0146(option, nomte)
                 N = -effrts(comp)
                 M = -effrts(comp+3)/unite_m
 
-                if ((N .gt. 0.d0) .and. (M/abs(N) .lt. ht/6.d0) .and. &
-                    (M/abs(N) .gt. -ht/6.d0)) then
+                if ((N .gt. 0.d0) .and. (abs(M/N) .lt. ht/6.d0)) then
                     ! Full compression
                     Asmininf = 0.d0
                     Asminsup = 0.d0
-                elseif ((N .lt. 0.d0) .and. (M/abs(N) .lt. ht/6.d0) .and. &
-                        (M/abs(N) .gt. -ht/6.d0)) then
+                elseif ((N .lt. 0.d0) .and. (abs(-M/N) .lt. ht/6.d0)) then
                     ! Full tension
 
                     Act = b*ht
