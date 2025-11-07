@@ -110,6 +110,7 @@ requirements:
     - if: not win
       then:
         - libxcrypt
+        - libopenblas
 
 
 tests:

@@ -33,8 +33,9 @@ def build(self):
     if self.variant == "debug":
         env.OPTDEBUG = "-g"
 
-    # elem.1 is a runtime file needed by Python code, so install to SPDIR if provided
-    elem_install_path = env.SPDIR if env.SPDIR else env.ASTERLIBDIR
+    # elem.1 is a JEVEUX database file that must be in ASTERLIBDIR (lib directory)
+    # not in site-packages, as the runtime code expects to find it at lib/elem.1
+    elem_install_path = env.ASTERLIBDIR
 
     if self.cmd.startswith("uninstall"):
         elem = osp.join(elem_install_path, "elem.1")
