@@ -72,8 +72,8 @@ requirements:
       then:
         - libmed * *${{ mpi }}*
         - medcoupling
-        - mfront
-        - mgis
+        - mfront <5
+        - mgis <3
         - scotch
         - metis
         - mumps-include
@@ -111,6 +111,7 @@ requirements:
       then:
         - libxcrypt
         - libopenblas
+        - medcoupling
 
 
 tests:

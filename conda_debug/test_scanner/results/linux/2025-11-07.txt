@@ -1,0 +1,41 @@
+Total passing tests: 96.18% [2188/2275]
+Total failed tests: 87 of 2275
+FACTOR_11_MECA_STATIQUE (''):
+  1 [1.15%]
+  sdls505a
+MFRONT_4_COMPILATION_FAILED ('MFront compilation failed - libBehaviour.so not produced'):
+  1 [1.15%]
+  ssnv187x
+MGIS_CONFIG_ERROR ('MFront/MGIS configuration error - ASTER_BEHAVIOUR_LIB not set'):
+  20 [22.99%]
+  ssnv518a|hsna106a|comp012f|mfron02j|ssnv163e|hsnv135a|ssnv205c|comp012g|ssnv232c|ssnv205b|hsnv136d|comp012h|ssnv520a|comp012i|zzzz509f|wtnv122e|ssnv519a|ssnv163d|ssnv181b|wtnv122d
+MISSING_ASPELL ('Missing aspell spell checker'):
+  1 [1.15%]
+  supv002a
+MISSING_ASRUN (''):
+  2 [2.30%]
+  ssna110a|ssnv228b
+MISSING_FORTRAN_COMPILER ('Fortran compiler not found in runtime'):
+  1 [1.15%]
+  zzzz409a
+MISSING_HOMARD ('Missing homard'):
+  17 [19.54%]
+  zzzz175b|wtnl100f|forma01b|forma01c|zzzz356a|tpll01h|tplp107b|zzzz319b|ssnv173k|zzzz319a|zzzz121c|zzzz121d|tplp305d|wtnl100c|forma11a|tpll01j|zzzz121e
+MISSING_MEDCOUPLING ('Missing medcoupling Python module'):
+  27 [31.03%]
+  zzzz513a|zzzz142a|hplv111c|hplv106a|zzzz503h|zzzz154a|hplv106c|hplv106b|zzzz513b|hplv108e|mesh001e|hplv108c|hplv108d|hplv108b|zzzz513e|zzzz143a|hplv111a|zzzz509q|hplv111d|zzzz509r|mesh001a|zzzz507a|zzzz513c|zzzz505i|hplv111b|zzzz505g|hplv108a
+MISSING_MISS3D_PERMISSION ('Permission denied error when running MISS3D'):
+  1 [1.15%]
+  sdls118a
+MISSING_PETSC ('PETSc solver not installed'):
+  3 [3.45%]
+  zzzz512g|zzzz512f|zzzz512h
+MISSING_XMGRACE ('Missing xmgrace'):
+  5 [5.75%]
+  sdnl105b|forma10a|forma10b|forma30b|sdnl105a
+NOOK_TEST_RESU (''):
+  2 [2.30%]
+  ssls150a|sdll123d
+SEGMENTATION_FAULT ('Segmentation fault - likely memory corruption or library issue'):
+  6 [6.90%]
+  sslx101a|zzzz413a|ssnl123a|zzzz353a|forma40b|ssnl504a

@@ -1,5 +1,6 @@
 import os
 import pathlib
+import platform
 from dataclasses import dataclass
 from datetime import datetime
 import xml.etree.ElementTree as ET
@@ -97,6 +98,9 @@ def eval_tests(test_dir: str | pathlib.Path, results_dir: str | pathlib.Path = "
     # save to file with todays date
     os.makedirs('results', exist_ok=True)
     today_str = datetime.now().strftime("%Y-%m-%d")
+    os_subdir = platform.system().lower()
+    results_dir = pathlib.Path(results_dir) / os_subdir
+    results_dir.mkdir(parents=True, exist_ok=True)
     with open(f"{results_dir}/{today_str}.txt", "w") as f:
         f.write(err_str)
 

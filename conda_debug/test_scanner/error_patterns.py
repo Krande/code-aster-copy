@@ -10,6 +10,75 @@ class ErrorPattern:
 
 
 ERROR_PATTERNS = [
+    # Missing dependencies
+    ErrorPattern(
+        "MISSING_MEDCOUPLING",
+        ("ModuleNotFoundError: No module named 'medcoupling'",),
+        "Missing medcoupling Python module"
+    ),
+    ErrorPattern(
+        "MISSING_SCIPY",
+        ("ModuleNotFoundError: No module named 'scipy'",)
+    ),
+    ErrorPattern(
+        "MISSING_ASRUN",
+        ("ModuleNotFoundError: No module named 'asrun'",)
+    ),
+    ErrorPattern(
+        "MISSING_XMGRACE",
+        ("Le fichier xmgrace n'existe pas.",),
+        "Missing xmgrace"
+    ),
+    ErrorPattern(
+        "MISSING_HOMARD",
+        ("Le fichier homard est inconnu",),
+        "Missing homard"
+    ),
+    ErrorPattern(
+        "MISSING_MISS3D_PERMISSION",
+        ("run_miss3d: Permission denied",),
+        "Permission denied error when running MISS3D"
+    ),
+    ErrorPattern(
+        "MISSING_MISS3D",
+        ("run_miss3d", "The process cannot access the file")
+    ),
+    ErrorPattern(
+        "MISSING_ASPELL",
+        ("aspell", "Permission denied: 'aspell'"),
+        "Missing aspell spell checker"
+    ),
+    ErrorPattern(
+        "MISSING_PETSC",
+        ("<FERMETUR_10>", 'Le solveur "PETSc" n\'est pas install'),
+        "PETSc solver not installed"
+    ),
+    ErrorPattern(
+        "MISSING_FORTRAN_COMPILER",
+        ("FileNotFoundError: Fortran compiler not found:",),
+        "Fortran compiler not found in runtime"
+    ),
+
+    # Crash/Segmentation faults
+    ErrorPattern(
+        "SEGMENTATION_FAULT",
+        ("Segmentation fault (core dumped)",),
+        "Segmentation fault - likely memory corruption or library issue"
+    ),
+
+    # MFront/MGIS configuration errors
+    ErrorPattern(
+        "MFRONT_4_COMPILATION_FAILED",
+        ("<MFRONT_4>", "Le fichier de sortie de MFront libBehaviour.so n'a pas pu"),
+        "MFront compilation failed - libBehaviour.so not produced"
+    ),
+    ErrorPattern(
+        "MGIS_CONFIG_ERROR",
+        ("TypeError: can only concatenate str (not \"NoneType\") to str", "ASTER_BEHAVIOUR_LIB"),
+        "MFront/MGIS configuration error - ASTER_BEHAVIOUR_LIB not set"
+    ),
+
+    # MED library errors
     ErrorPattern(
         "OverflowError",
         ("OverflowError: can't convert negative int to unsigned",),
@@ -246,32 +315,6 @@ ERROR_PATTERNS = [
     ErrorPattern(
         "MODI_MAILLAGE_WIN_FATAL",
         ("MODI_MAILLAGE", "Windows fatal exception: access violation")
-    ),
-    ErrorPattern(
-        "MISSING_XMGRACE",
-        (
-            "Le fichier xmgrace n'existe pas.",
-        ),
-        "Missing xmgrace"
-    ),
-    ErrorPattern(
-        "MISSING_HOMARD",
-        (
-            "Le fichier homard est inconnu",
-        ),
-        "Missing homard"
-    ),
-    ErrorPattern(
-        "MISSING_SCIPY",
-        ("ModuleNotFoundError: No module named 'scipy'",)
-    ),
-    ErrorPattern(
-        "MISSING_MISS3D",
-        ("run_miss3d", "The process cannot access the file")
-    ),
-    ErrorPattern(
-        "MISSING_ASRUN",
-        ("ModuleNotFoundError: No module named 'asrun'",)
     ),
     ErrorPattern(
         "FILE_EXISTS_WIN183",
