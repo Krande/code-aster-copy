@@ -37,6 +37,14 @@ POST_ROCHE = MACRO(
         condition="""equal_to("VARIANTE", "RCC_MRX") """,
         SIGM_LIM=SIMP(statut="f", typ="TXM", into=("OUI", "NON"), defaut=("NON")),
         SIGM_ABAT=SIMP(statut="f", typ="TXM", into=("CODE", "REFE_ELAS"), defaut=("CODE")),
+        b_no_sigm_lim=BLOC(
+            condition="""equal_to("SIGM_LIM", "NON") """,
+            TRAC_EPSI=SIMP(statut="f", typ=(fonction_sdaster,)),
+        ),
+    ),
+    b_asnr=BLOC(
+        condition="""equal_to("VARIANTE", "ASNR") """,
+        TRAC_EPSI=SIMP(statut="f", typ=(fonction_sdaster,)),
     ),
     ZONE_ANALYSE=FACT(
         statut="o",
@@ -94,7 +102,6 @@ POST_ROCHE = MACRO(
         GROUP_MA=SIMP(statut="f", typ=grma, validators=NoRepeat(), max="**"),
         VALE=SIMP(statut="o", typ="R", val_min=0.0),
     ),
-    TRAC_EPSI=SIMP(statut="f", typ=(fonction_sdaster,)),
     TOUT_CHAM=SIMP(statut="f", typ="TXM", into=("OUI",)),
     b_nom_cham=BLOC(
         condition="""not exists("TOUT_CHAM")""",
