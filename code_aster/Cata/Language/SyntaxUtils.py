@@ -225,6 +225,13 @@ def force_list(values):
     return list(values)
 
 
+def force_tuple(values):
+    """Ensure `values` is iterable (list, tuple, array...) and return it as
+    a tuple.
+    """
+    return tuple(force_list(values))
+
+
 def value_is_sequence(value):
     """Tell if *value* is a valid object if max > 1."""
     return type(value) in (list, tuple, array, numpy.ndarray)
