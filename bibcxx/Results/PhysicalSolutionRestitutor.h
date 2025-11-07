@@ -27,7 +27,11 @@
 #include "Results/Result.h"
 #include "Studies/PhysicalProblem.h"
 
+#ifdef ASTER_HAVE_MKL
+#include <mkl_cblas.h>
+#else
 #include <cblas.h>
+#endif
 
 class PhysicalSolutionRestitutor {
   private:

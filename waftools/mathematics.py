@@ -177,8 +177,10 @@ def detect_mkl(self):
         self.env.append_value("LIB_MATH", libs)
         if self.env.CXX_NAME == 'msvc':
             self.env.append_value("LIBPATH_MATH", os.environ["MKLROOT"] + "/lib")
+            self.env.append_value("INCLUDES_MATH", os.environ["MKLROOT"] + "/include")
         else:
             self.env.append_value("LIBPATH_MATH", os.environ["MKLROOT"] + "/lib/intel64")
+            self.env.append_value("INCLUDES_MATH", os.environ["MKLROOT"] + "/include")
         self.check_math_libs_call(color="YELLOW")
     except:
         self.env.revert()
