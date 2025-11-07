@@ -166,6 +166,8 @@ subroutine lrcnme(chanom, nochmd, nomamd, nomaas, nomgd, &
         else
             call utmess('F', 'MED_70')
         end if
+        jnocmp = jcmpva
+        ncmprf = nbcmpa
 !
     else
         call ulisog(nrofic, kfic, saux01)

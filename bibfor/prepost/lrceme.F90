@@ -181,6 +181,8 @@ subroutine lrceme(chanom, nochmd, typech, nomamd, nomaas, &
         else
             call utmess('F', 'MED_70')
         end if
+        jnocmp = jcmpva
+        ncmprf = nbcmpa
 !
     else
 !
