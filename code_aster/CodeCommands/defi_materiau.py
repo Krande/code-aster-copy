@@ -43,47 +43,30 @@ class MaterialDefinition(ExecuteMacro):
         """
         if "VISC_ISOT_PLAS" in keywords:
             mcfact = keywords["VISC_ISOT_PLAS"]
-            names_mater = ("TAILLE_GRAIN", "D_DISLOC", "C_AMAS", "TAILLE_AMAS")
-            values_mater = ()
-            for name in names_mater:
-                values_mater = values_mater + (mcfact[name],)
-            values_min = (1.0e-7, 1.0e12, 0.0, 1.0e-9)
-            values_max = (1.0e-3, 1.0e20, 1.0e25, 1.0e-8)
+            # Check strict bounds for PoissonRatio, Young Modulus and TAILLE_GRAIN to avoid division by zero
+            if mcfact["YoungModulus"] <= 0.0:
+                UTMESS("F", "ELEMENTS4_67")
+            if mcfact["PoissonRatio"] <= -1.0:
+                UTMESS("F", "COMPOR1_29")
+            if mcfact["PoissonRatio"] >= 0.5:
+                UTMESS("F", "COMPOR1_30")
+            if mcfact["TAILLE_GRAIN"] <= 0.0:
+                UTMESS("F", "COMPOR1_31")
             # Adapt length and stress units
             coef_l = 1.0
             value_unit = mcfact.pop("UNITE_LONGUEUR")
-            if value_unit == "mm":
+            if value_unit == "MM":
                 coef_l = 1.0e3
-                values_min = (1.0e-4, 1.0e6, 0.0, 1.0e-6)
-                values_max = (1.0, 1.0e14, 1.0e16, 1.0e-5)
             coef_p = 1.0
             value_unit = mcfact.pop("UNITE_CONTRAINTE")
             if value_unit == "MPa":
                 coef_p = 1.0e-6
             mcfact["LengthUnit"] = coef_l
             mcfact["StressUnit"] = coef_p
-            # Perform additional bound checks
-            for i in range(len(names_mater)):
-                val = values_mater[i]
-                vmin = values_min[i]
-                vmax = values_max[i]
-                if val < vmin:
-                    name = names_mater[i]
-                    err_mess = (
-                        f"For keyword VISC_ISOT_PLAS/{name}: "
-                        + f"Value must be greater or equal than {vmin}, {val} is not."
-                    )
-                    UTMESS("F", "SUPERVIS_4", valk=("DEFI_MATERIAU", err_mess))
-                if val > vmax:
-                    name = names_mater[i]
-                    err_mess = (
-                        f"For keyword VISC_ISOT_PLAS/{name}: "
-                        + f"Value must be smaller or equal than {vmax}, {val} is not."
-                    )
-                    UTMESS("F", "SUPERVIS_4", valk=("DEFI_MATERIAU", err_mess))
 
         if "VISC_ISOT_PLAS_FO" in keywords:
             mcfact = keywords["VISC_ISOT_PLAS_FO"]
+            # Check bounds for the material properties (in VISC_ISOT_PLAS_FO only)
             names_mater = (
                 "YoungModulus",
                 "PoissonRatio",
@@ -92,45 +75,35 @@ class MaterialDefinition(ExecuteMacro):
                 "C_AMAS",
                 "TAILLE_AMAS",
             )
-            values_min = (0.0, -0.99, 1.0e-7, 1.0e12, 0.0, 1.0e-9)
-            values_max = (1.0e30, 0.49, 1.0e-3, 1.0e20, 1.0e25, 1.0e-8)
-            # Adapt length and stress units
-            coef_l = 1.0
-            value_unit = mcfact.pop("UNITE_LONGUEUR")
-            if value_unit == "mm":
-                coef_l = 1.0e3
-                values_min = (0.0, -0.99, 1.0e-4, 1.0e6, 0.0, 1.0e-6)
-                values_max = (1.0e30, 0.49, 1.0, 1.0e14, 1.0e16, 1.0e-5)
-            coef_p = 1.0
-            value_unit = mcfact.pop("UNITE_CONTRAINTE")
-            if value_unit == "MPa":
-                coef_p = 1.0e-6
-            mcfact["LengthUnit"] = coef_l
-            mcfact["StressUnit"] = coef_p
-            # Perform additional bound checks
             for i in range(len(names_mater)):
                 name = names_mater[i]
-                vmin = values_min[i]
-                vmax = values_max[i]
                 values_xy = tuple(mcfact[name].getValues())
                 if len(values_xy) % 2 != 0:
                     UTMESS("F", "UTILITAI2_68")
                 nbr = len(values_xy) // 2
                 values_mater = values_xy[nbr:]
                 for j in range(len(values_mater)):
-                    val = values_mater[j]
-                    if val < vmin:
-                        err_mess = (
-                            f"For keyword VISC_ISOT_PLAS_FO/{name}: "
-                            + f"Value {j+1} must be greater or equal than {vmin}, {val} is not."
-                        )
-                        UTMESS("F", "SUPERVIS_4", valk=("DEFI_MATERIAU", err_mess))
-                    if val > vmax:
-                        err_mess = (
-                            f"For keyword VISC_ISOT_PLAS_FO/{name}: "
-                            + f"Value {j+1} must be smaller or equal than {vmax}, {val} is not."
-                        )
-                        UTMESS("F", "SUPERVIS_4", valk=("DEFI_MATERIAU", err_mess))
+                    if name != "PoissonRatio" and values_mater[j] < 0.0:
+                        UTMESS("F", "COMPOR1_15", valk=("VISC_ISOT_PLAS_FO", name))
+                    if name == "YoungModulus" and values_mater[j] <= 0.0:
+                        UTMESS("F", "ELEMENTS4_67")
+                    if name == "PoissonRatio" and values_mater[j] <= -1.0:
+                        UTMESS("F", "COMPOR1_29")
+                    if name == "PoissonRatio" and values_mater[j] >= 0.5:
+                        UTMESS("F", "COMPOR1_30")
+                    if name == "TAILLE_GRAIN" and values_mater[j] <= 0.0:
+                        UTMESS("F", "COMPOR1_31")
+            # Adapt length and stress units
+            coef_l = 1.0
+            value_unit = mcfact.pop("UNITE_LONGUEUR")
+            if value_unit == "MM":
+                coef_l = 1.0e3
+            coef_p = 1.0
+            value_unit = mcfact.pop("UNITE_CONTRAINTE")
+            if value_unit == "MPa":
+                coef_p = 1.0e-6
+            mcfact["LengthUnit"] = coef_l
+            mcfact["StressUnit"] = coef_p
 
         if "BETON_DESORP" in keywords:
             mcfact = keywords["BETON_DESORP"]

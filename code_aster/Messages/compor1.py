@@ -112,6 +112,11 @@ Seules quelques lois de comportement qui ne nécessitent pas la méthode Deborst
  HUJEUX : erreur dans le calcul de la matrice tangente
 """
     ),
+    15: _(
+        """
+ %(k1)s : Le paramètre matériau %(k2)s renseigné se doit d'être une grandeur physique positive ou nulle.
+"""
+    ),
     16: _(
         """Les modélisations de type INCO_UPO sont interdites avec le type de
 déformation GDEF_LOG.
@@ -181,6 +186,24 @@ La modélisation %(k2)s n'est pas autorisée avec la loi de comportement %(k1)s.
     28: _(
         """
   comportement cristallin homogénéisé : les coefficients matériau ne peuvent dépendre de la température.
+"""
+    ),
+    29: _(
+        """
+Le coefficient de Poisson renseigné ne permet pas de calculer le module de cisaillement car il provoquerait une division par zéro.
+Si vous voulez un matériau générant un très important cisaillement, alors choisissez un coefficient de Poisson légèrement supérieur à -1.0 mais pas strictement égal (par exemple -0.99).
+"""
+    ),
+    30: _(
+        """
+Le coefficient de Poisson renseigné ne permet pas de calculer le module de compression car il provoquerait une division par zéro.
+Si vous voulez un matériau quasi incompressible, alors choisissez un coefficient de Poisson légèrement inférieur à 0.5 mais pas strictement égal (par exemple 0.49).
+"""
+    ),
+    31: _(
+        """
+ VISC_ISOT_PLAS(_FO) / TAILLE_GRAIN : La taille des grains renseignée ne permet pas de calculer la contrainte associée à leurs effets car elle provoquerait une division par zéro.
+Si vous voulez une très grande contrainte de ce type, alors choisissez une taille de grains légèrement supérieure à 0.0 mais pas strictement égal (par exemple 0.0000001).
 """
     ),
     32: _(

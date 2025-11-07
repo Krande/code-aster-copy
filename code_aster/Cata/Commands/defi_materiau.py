@@ -5801,56 +5801,45 @@ DEFI_MATERIAU = MACRO(
     VISC_ISOT_PLAS=FACT(
         statut="f",
         YoungModulus=SIMP(
-            statut="o",
-            typ="R",
-            val_min=0.0,
-            val_max=1.0e30,
-            fr=tr("module de Young, en unite de contrainte (Pa ou MPa)"),
+            statut="o", typ="R", val_min=0.0, fr=tr("module de Young, en unite de contrainte")
         ),
         PoissonRatio=SIMP(
-            statut="o", typ="R", val_min=-0.99, val_max=0.49, fr=tr("coefficient de Poisson")
+            statut="o", typ="R", val_min=-1.0, val_max=0.5, fr=tr("coefficient de Poisson")
         ),
         TAILLE_GRAIN=SIMP(
-            statut="o",
-            typ="R",
-            val_min=1.0e-7,  # [1.0e-7 m; 1.0e-3 m] or [1.0e-4 mm; 1.0 mm]
-            val_max=1.0,  # NB: an additional bound check is performed in adapt_syntax
-            fr=tr("taille des grains, en unite de longueur (m ou mm)"),
+            statut="o", typ="R", val_min=0.0, fr=tr("taille des grains, en unite de longueur")
         ),
         D_DISLOC=SIMP(
             statut="o",
             typ="R",
-            val_min=1.0e6,  # [1.0e12 m^-2; 1.0e20 m^-2] or [1.0e6 mm^-2; 1.0e14 mm^-2]
-            val_max=1.0e20,  # NB: an additional bound check is performed in adapt_syntax
-            fr=tr("densité de dislocation initiale (en m^-2 ou mm^-2)"),
+            val_min=0.0,
+            fr=tr("densite de dislocations initiale, en inverse d'unite de longueur au carre"),
         ),
         C_AMAS=SIMP(
             statut="o",
             typ="R",
-            val_min=0.0,  # [0.0 m^-3; 1.0e25 m^-3] or [0.0 mm^-3; 1.0e16 mm^-3]
-            val_max=1.0e25,  # NB: an additional bound check is performed in adapt_syntax
-            fr=tr("concentration des amas de soluté (en m^-3 ou mm^-3)"),
+            val_min=0.0,
+            fr=tr("concentration des amas de solutes, en inverse d'unite de longueur au cube"),
         ),
         TAILLE_AMAS=SIMP(
             statut="o",
             typ="R",
-            val_min=1.0e-9,  # [1.0e-9 m; 1.0e-8 m] or [1.0e-6 mm; 1.0e-5 mm]
-            val_max=1.0e-5,  # NB: an additional bound check is performed in adapt_syntax
-            fr=tr("taille des amas de soluté, en unite de longueur (m ou mm)"),
+            val_min=0.0,
+            fr=tr("taille des amas de solutes, en unite de longueur"),
         ),
         UNITE_LONGUEUR=SIMP(
             statut="f",
             typ="TXM",
-            into=("m", "mm"),
-            defaut="m",
-            fr=tr("unite de longueur (m ou mm), metre par defaut"),
+            into=("M", "MM"),
+            defaut="M",
+            fr=tr("unite de longueur (metre ou millimetre, metre par defaut)"),
         ),
         UNITE_CONTRAINTE=SIMP(
             statut="f",
             typ="TXM",
             into=("Pa", "MPa"),
             defaut="Pa",
-            fr=tr("unite de contrainte (Pa ou MPa), Pascal par defaut"),
+            fr=tr("unite de contrainte (Pascal ou Mega-Pascal, Pascal par defaut)"),
         ),
         # Hidden keywords
         LengthUnit=SIMP(statut="c", typ="R", defaut=1.0),
@@ -5861,7 +5850,7 @@ DEFI_MATERIAU = MACRO(
         YoungModulus=SIMP(
             statut="o",
             typ=(fonction_sdaster, nappe_sdaster, formule),
-            fr=tr("module de Young, en unite de contrainte (Pa ou MPa)"),
+            fr=tr("module de Young, en unite de contrainte"),
         ),
         PoissonRatio=SIMP(
             statut="o",
@@ -5871,36 +5860,36 @@ DEFI_MATERIAU = MACRO(
         TAILLE_GRAIN=SIMP(
             statut="o",
             typ=(fonction_sdaster, nappe_sdaster, formule),
-            fr=tr("taille des grains, en unite de longueur (m ou mm)"),
+            fr=tr("taille des grains, en unite de longueur"),
         ),
         D_DISLOC=SIMP(
             statut="o",
             typ=(fonction_sdaster, nappe_sdaster, formule),
-            fr=tr("densité de dislocation initiale (en m^-2 ou mm^-2)"),
+            fr=tr("densite de dislocations initiale, en inverse d'unite de longueur au carre"),
         ),
         C_AMAS=SIMP(
             statut="o",
             typ=(fonction_sdaster, nappe_sdaster, formule),
-            fr=tr("concentration des amas de soluté (en m^-3 ou mm^-3)"),
+            fr=tr("concentration des amas de solutes, en inverse d'unite de longueur au cube"),
         ),
         TAILLE_AMAS=SIMP(
             statut="o",
             typ=(fonction_sdaster, nappe_sdaster, formule),
-            fr=tr("taille des amas de soluté, en unite de longueur (m ou mm)"),
+            fr=tr("taille des amas de solutes, en unite de longueur"),
         ),
         UNITE_LONGUEUR=SIMP(
             statut="f",
             typ="TXM",
-            into=("m", "mm"),
-            defaut="m",
-            fr=tr("unite de longueur (m ou mm), metre par defaut"),
+            into=("M", "MM"),
+            defaut="M",
+            fr=tr("unite de longueur (metre ou millimetre, metre par defaut)"),
         ),
         UNITE_CONTRAINTE=SIMP(
             statut="f",
             typ="TXM",
             into=("Pa", "MPa"),
             defaut="Pa",
-            fr=tr("unite de contrainte (Pa ou MPa), Pascal par defaut"),
+            fr=tr("unite de contrainte (Pascal ou Mega-Pascal, Pascal par defaut)"),
         ),
         # hidden keywords
         LengthUnit=SIMP(statut="c", typ="R", defaut=1.0),

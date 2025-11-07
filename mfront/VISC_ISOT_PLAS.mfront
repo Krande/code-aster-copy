@@ -99,13 +99,13 @@
 /* Parameter ruling the implicit scheme */
 @Theta 1.0;
 @PhysicalBounds theta in [0.0:1.0];
-@Bounds theta in [0.5:1.0];
+/*@Bounds theta in [0.5:1.0];*/
 
 /* Parameter ruling the convergence criterion (1.0e-08 by default in MFront). */
 /* NB: this value can be changed via the RESI_INTE keyword in Code_Aster */
 @Epsilon 5.0e-14;
 @PhysicalBounds epsilon in [0.0:*[;
-@Bounds epsilon in [1.0e-30:1.0];
+/*@Bounds epsilon in [1.0e-30:1.0];*/
 
 /* Parameter for the maximal number of iterations (100 by default in MFront). */
 /* NB: this value can be changed via the ITER_INTE_MAXI keyword in Code_Aster */
@@ -128,46 +128,43 @@
                                 (2.6e6 Pa)*(78821.0-23.721*T(°C)) in this law */
 @MaterialProperty stress YOUNG_MODULUS;
 @PhysicalBounds YOUNG_MODULUS in [0.0:*[;
-@Bounds YOUNG_MODULUS in [0.0:1.0e30];
+/*@Bounds YOUNG_MODULUS in [0.0:1.0e30];*/
 YOUNG_MODULUS.setGlossaryName("YoungModulus");
 
 /* Poisson ratio (no unit) that is expected to be set to 0.3 in this law */
 @MaterialProperty real POISSON_RATIO;
 @PhysicalBounds POISSON_RATIO in [-1.0:0.5];
-@Bounds POISSON_RATIO in [-0.99:0.49];
+/*@Bounds POISSON_RATIO in [-0.99:0.49];*/
 POISSON_RATIO.setGlossaryName("PoissonRatio");
 
-/* Size of grains (in m if SI units are considered and in [1.0e-7m; 1.0e-3m]) */
-/* NB: checks for bounds is done during the initialization of local variables */
+/* Size of grains (in m if SI units are considered and normally in
+                                                          [1.0e-7m; 1.0e-3m]) */
 @MaterialProperty length GRAIN_SIZE;
 @PhysicalBounds GRAIN_SIZE in [0.0:*[;
-@Bounds GRAIN_SIZE in [1.0e-30:1.0e30];
+/*@Bounds GRAIN_SIZE in [1.0e-30:1.0e30];*/
 GRAIN_SIZE.setEntryName("TAILLE_GRAIN");
 
-/* Density of initial dislocations (in m^⁻2 if SI units are considered and in
-                                                    [1.0e12m^⁻2; 1.0e20m^⁻2]) */
-/* NB: checks for bounds is done during the initialization of local variables */
+/* Density of initial dislocations (in m^⁻2 if SI units are considered and
+                                        normally in [1.0e12m^⁻2; 1.0e20m^⁻2]) */
 @MaterialProperty result_type<result_type<real,length,OpDiv>,length,OpDiv>
                                                                 RHO_DISLOCATION;
 @PhysicalBounds RHO_DISLOCATION in [0.0:*[;
-@Bounds RHO_DISLOCATION in [0.0:1.0e30];
+/*@Bounds RHO_DISLOCATION in [0.0:1.0e30];*/
 RHO_DISLOCATION.setEntryName("D_DISLOC");
 
-/* Density of solute clusters (in m^-3 if SI units are considered and in
-                                                      [0.0m^-3; 1.0e25m^-3] ) */
-/* NB: checks for bounds is done during the initialization of local variables */
+/* Density of solute clusters (in m^-3 if SI units are considered and normally
+                                                   in [0.0m^-3; 1.0e25m^-3] ) */
 @MaterialProperty result_type<result_type<result_type<real,length,OpDiv>,
                              length,OpDiv>,length,OpDiv> SOLUTE_CLUSTER_DENSITY;
 @PhysicalBounds SOLUTE_CLUSTER_DENSITY in [0.0:*[;
-@Bounds SOLUTE_CLUSTER_DENSITY in [0.0:1.0e30];
+/*@Bounds SOLUTE_CLUSTER_DENSITY in [0.0:1.0e30];*/
 SOLUTE_CLUSTER_DENSITY.setEntryName("C_AMAS");
 
-/* Size of solute clusters (in m if SI units are considered and in
+/* Size of solute clusters (in m if SI units are considered and normally in
                                                           [1.0e-9m; 1.0e-8m]) */
-/* NB: checks for bounds is done during the initialization of local variables */
 @MaterialProperty length SOLUTE_CLUSTER_SIZE;
 @PhysicalBounds SOLUTE_CLUSTER_SIZE in [0.0:*[;
-@Bounds SOLUTE_CLUSTER_SIZE in [0.0:1.0e30];
+/*@Bounds SOLUTE_CLUSTER_SIZE in [0.0:1.0e30];*/
 SOLUTE_CLUSTER_SIZE.setEntryName("TAILLE_AMAS");
 
 /* One Meter expressed in the unit system of lengthes considered by the user.
@@ -175,8 +172,8 @@ SOLUTE_CLUSTER_SIZE.setEntryName("TAILLE_AMAS");
       in MFront to be consistent with Aster, since the latter do not assume that
           the physical quantities are given in the international system units */
 @MaterialProperty length ONE_METER;
-@PhysicalBounds ONE_METER in [0.0:*[;
-@Bounds ONE_METER in [1.0e-18:1.0e18];
+@PhysicalBounds ONE_METER in [1.0e-18:1.0e18];
+/*@Bounds ONE_METER in [1.0e-18:1.0e18];*/
 ONE_METER.setEntryName("LengthUnit");
 
 /* One Pascal expressed in the unit system of stresses considered by the user.
@@ -184,8 +181,8 @@ ONE_METER.setEntryName("LengthUnit");
      in MFront to be consistent with Aster, since the latter do not assume that
        the physical quantities are given in the international system of units */
 @MaterialProperty stress ONE_PASCAL;
-@PhysicalBounds ONE_PASCAL in [0.0:*[;
-@Bounds ONE_PASCAL in [1.0e-18:1.0e18];
+@PhysicalBounds ONE_PASCAL in [1.0e-18:1.0e18];
+/*@Bounds ONE_PASCAL in [1.0e-18:1.0e18];*/
 ONE_PASCAL.setEntryName("StressUnit");
 
 /* ************************************************************************** */
@@ -210,315 +207,6 @@ INDIPLAS.setEntryName("INDIPLAS");
 eel_old.setGlossaryName("ElasticStrain");
 
 /* ************************************************************************** */
-/* Section implementing a private function to check bounds dynamically        */
-/* ************************************************************************** */
-@Private{
-  /* The function areBoundsOk() returns true if bound are ok, otherwise false */
-  bool areBoundsOk(void)
-  {
-    /* Check the value of the parameter ruling the implicit scheme */
-    if (theta<real(0.5) || theta>real(1.0))
-    {
-      std::cout << "Error: the value given to MFront for the parameter ruling ";
-      std::cout << "the implicit numerical scheme and denoted 'theta' (:=";
-      std::cout << theta << ") cannot be ";
-      if (theta<real(0.0))
-      {
-        std::cout << "physically negative";
-      }
-      else if (theta<real(0.5))
-      {
-        std::cout << "lower than one-half";
-      }
-      else
-      {
-        std::cout << "physically greater than one";
-      }
-      std::cout << "." << std::endl;
-      return false;
-    }
-
-    /* Check the value of the parameter ruling the convergence criterion */
-    if (epsilon<real(1.0e-30) || epsilon>real(1.0))
-    {
-      std::cout << "Error: the value given to MFront for the parameter ruling ";
-      std::cout << "the convergence criterion denoted 'RESI_INTE' or ";
-      std::cout << "'epsilon' (:=" << epsilon << ") ";
-      if (epsilon<=real(0.0))
-      {
-        std::cout << "should be physically positive";
-      }
-      else if (epsilon<real(1.0e-30))
-      {
-        std::cout << "cannot be lower than 1.0e-30";
-      }
-      else
-      {
-        std::cout << "cannot be greater than one";
-      }
-      std::cout << "." << std::endl;
-      return false;
-    }
-
-    /* Check that the temperature T (given in °C) is not too high or above the
-        absolute zero (with a tolerance of tol_T:=0.15°C so that its value in °K
-                is invertible, which is needed for the computation of exp_Af) */
-    if (T<temperature(-273.0) || T>temperature(1.0e30))
-    {
-      std::cout << "Error: the temperature given to MFront and denoted by the ";
-      std::cout << "external state variable 'Temperature' or 'T' (:=" << T ;
-      std::cout << "°C) cannot be ";
-      if (T<temperature(-273.15))
-      {
-        std::cout << "physically lower than the absolute zero i.e. -273.15°C";
-      }
-      else if (T<temperature(-273.0))
-      {
-        std::cout << "lower than -273.0°C";
-      }
-      else
-      {
-        std::cout << "greater than 1.0e30°C";
-      }
-      std::cout << "." << std::endl;
-      return false;
-    }
-
-    /* Check the prescribed stress unit is not below/above 1 atto-/Exa-Pascal */
-    if (ONE_PASCAL<stress(1.0e-18) || ONE_PASCAL>stress(1.0e18))
-    {
-      std::cout << "Error: the stress unit given to MFront and associated ";
-      std::cout << "with the eighth material property denoted 'StressUnit', ";
-      std::cout << "'V8', or 'ONE_PASCAL' (:=" << ONE_PASCAL << ") ";
-      if (ONE_PASCAL<=stress(0.0))
-      {
-        std::cout << "should be physically positive";
-      }
-      else if (ONE_PASCAL<stress(1.0e-18))
-      {
-        std::cout << "cannot be lower than 1.0e-18 (or equivalently a stress ";
-        std::cout << "unit above the Exa-Pascal i.e. greater than 1.0EPa)";
-      }
-      else
-      {
-        std::cout << "cannot be greater than 1.0e18 (or equivalently a stress ";
-        std::cout << "unit below the atto-Pascal i.e. lower than 1.0aPa)";
-      }
-      std::cout << "." << std::endl;
-      return false;
-    }
-
-    /* Check that the provided Young modulus is not too high and positive */
-    if (YOUNG_MODULUS<=stress(0.0) || YOUNG_MODULUS>stress(1.0e30))
-    {
-      std::cout << "Error: the Young modulus given to MFront and associated ";
-      std::cout << "with the first material property denoted 'YoungModulus', ";
-      std::cout << "'V1', or 'YOUNG_MODULUS' (:=" << YOUNG_MODULUS <<" i.e. " ;
-      std::cout << YOUNG_MODULUS/ONE_PASCAL << "Pa) ";
-      if (YOUNG_MODULUS<=stress(0.0))
-      {
-        std::cout << "should be physically positive";
-      }
-      else
-      {
-        std::cout << "cannot be greater than 1.0e30 (i.e. ";
-        std::cout << stress(1.0e30)/ONE_PASCAL << "Pa)" ;
-      }
-      std::cout << "." << std::endl;
-      return false;
-    }
-
-    /* Check the provided Poisson ratio is in the interval [-0.99; 0.49] */
-    if (POISSON_RATIO<real(-0.99) || POISSON_RATIO>real(0.49))
-    {
-      std::cout << "Error: the Poisson ratio given to MFront and associated ";
-      std::cout << "with the second material property denoted 'PoissonRatio', ";
-      std::cout << "'V2', or 'POISSON_RATIO' (:=" << POISSON_RATIO <<") ";
-      if (POISSON_RATIO<=real(-1.0))
-      {
-        std::cout << "should be physically greater than minus one";
-      }
-      else if (POISSON_RATIO>=real(0.5))
-      {
-        std::cout << "should be physically lower than one-half";
-      }
-      else if (POISSON_RATIO<real(-0.99))
-      {
-        std::cout << "cannot be lower than -0.99";
-      }
-      else
-      {
-        std::cout << "cannot be greater than 0.49";
-      }
-      std::cout << "." << std::endl;
-      return false;
-    }
-
-    /* Check the prescribed length unit is not below/above 1 atto-/Exa-meter */
-    if (ONE_METER<length(1.0e-18) || ONE_METER>length(1.0e18))
-    {
-      std::cout << "Error: the length unit given to MFront and associated ";
-      std::cout << "with the seventh material property denoted 'LengthUnit', ";
-      std::cout << "'V7', or 'ONE_METER' (:=" << ONE_METER << ") ";
-      if (ONE_METER<=length(0.0))
-      {
-        std::cout << "should be physically positive";
-      }
-      else if (ONE_METER<length(1.0e-18))
-      {
-        std::cout << "cannot be lower than 1.0e-18 (or equivalently a length ";
-        std::cout << "unit above the Exa-meter i.e. greater than 1.0Em)";
-      }
-      else
-      {
-        std::cout << "cannot be greater than 1.0e18 (or equivalently a length ";
-        std::cout << "unit below the atto-meter i.e. lower than 1.0am)";
-      }
-      std::cout << "." << std::endl;
-      return false;
-    }
-
-    /* Check that the provided grain size (converted in SI unit i.e. in meter)
-            is in the physical interval [1.0e-7m; 1.0e-3m] valid for this law */
-    if (GRAIN_SIZE<real(1.0e-7)*ONE_METER|| GRAIN_SIZE>real(1.0e-3)*ONE_METER)
-    {
-      std::cout << "Error: the grain size given to MFront and associated ";
-      std::cout << "with the third material property denoted 'TAILLE_GRAIN', ";
-      std::cout << "'V3', or 'GRAIN_SIZE' (:=" << GRAIN_SIZE <<" i.e. " ;
-      std::cout << GRAIN_SIZE/ONE_METER << "m) ";
-      if (GRAIN_SIZE<=length(0.0))
-      {
-        std::cout << "should be physically positive";
-      }
-      else if (GRAIN_SIZE<length(1.0e-30))
-      {
-        std::cout << "cannot be lower than 1.0e-30 (i.e. ";
-        std::cout << real(1.0e-30)/ONE_METER << "m)";
-      }
-      else if (GRAIN_SIZE>length(1.0e30))
-      {
-        std::cout << "cannot be greater than 1.0e30 (i.e. ";
-        std::cout << real(1.0e30)/ONE_METER << "m)";
-      }
-      else if (GRAIN_SIZE<real(1.0e-7)*ONE_METER)
-      {
-        std::cout << "cannot be lower than " << real(1.0e-7)*ONE_METER;
-        std::cout << " (i.e. 1.0e-7m)";
-      }
-      else
-      {
-        std::cout << "cannot be greater than " << real(1.0e-3)*ONE_METER;
-        std::cout << " (i.e. 1.0e-3m)";
-      }
-      std::cout << "." << std::endl;
-      return false;
-    }
-
-    /* Check that the provided initial dislocation density (converted in SI unit
-          i.e. in meter^-2) is in the physical interval [1.0e12m^⁻2; 1.0e20m^⁻2]
-                                                           valid for this law */
-    if (RHO_DISLOCATION*ONE_METER*ONE_METER<real(1.0e12) ||
-                               RHO_DISLOCATION*ONE_METER*ONE_METER>real(1.0e20))
-    {
-      std::cout << "Error: the initial dislocation density given to MFront ";
-      std::cout << "and associated with the fourth material property denoted ";
-      std::cout << "'D_DISLOC', 'V4', or 'RHO_DISLOCATION' (:=";
-      std::cout << RHO_DISLOCATION << " i.e. ";
-      std::cout << RHO_DISLOCATION*ONE_METER*ONE_METER << "m^-2) cannot be ";
-      if (length(1.0)*length(1.0)*RHO_DISLOCATION<real(0.0))
-      {
-        std::cout << "physically negative";
-      }
-      else if (length(1.0)*length(1.0)*RHO_DISLOCATION>real(1.0e30))
-      {
-        std::cout << "greater than 1.0e30 (i.e. ";
-        std::cout << real(1.0e30)*ONE_METER*ONE_METER << "m^-2)";
-      }
-      else if (RHO_DISLOCATION*ONE_METER*ONE_METER<real(1.0e12))
-      {
-        std::cout << "lower than " << real(1.0e12)/(ONE_METER*ONE_METER);
-        std::cout << " (i.e. 1.0e12m^-2)";
-      }
-      else
-      {
-        std::cout << "greater than " << real(1.0e20)/(ONE_METER*ONE_METER);
-        std::cout << " (i.e. 1.0e20m^-2)";
-      }
-      std::cout << "." << std::endl;
-      return false;
-    }
-
-    /* Check that the provided solute cluster density (converted in SI unit i.e
-                  in meter^-3) is in the physical interval [0.0m^⁻3; 1.0e25m^⁻3]
-                                                           valid for this law */
-    if (SOLUTE_CLUSTER_DENSITY*ONE_METER*ONE_METER*ONE_METER<real(0.0) ||
-              SOLUTE_CLUSTER_DENSITY*ONE_METER*ONE_METER*ONE_METER>real(1.0e25))
-    {
-      std::cout << "Error: the solute cluster density given to MFront and ";
-      std::cout << "associated with the fifth material property denoted ";
-      std::cout << "'C_AMAS', 'V5', or 'SOLUTE_CLUSTER_DENSITY' (:=";
-      std::cout << SOLUTE_CLUSTER_DENSITY <<" i.e. ";
-      std::cout << SOLUTE_CLUSTER_DENSITY*ONE_METER*ONE_METER*ONE_METER;
-      std::cout << "m^-3) cannot be ";
-      if (length(1.0)*length(1.0)*length(1.0)*SOLUTE_CLUSTER_DENSITY<real(0.0))
-      {
-        std::cout << "physically negative";
-      }
-      else if (length(1.0)*length(1.0)*length(1.0)*SOLUTE_CLUSTER_DENSITY>
-                                                                   real(1.0e30))
-      {
-        std::cout << "greater than 1.0e30 (i.e. ";
-        std::cout << real(1.0e30)*ONE_METER*ONE_METER*ONE_METER << "m^-3)";
-      }
-      else
-      {
-        std::cout << "greater than ";
-        std::cout << real(1.0e25)/(ONE_METER*ONE_METER*ONE_METER);
-        std::cout << " (i.e. 1.0e25m^-3)";
-      }
-      std::cout << "." << std::endl;
-      return false;
-    }
-
-    /* Check that the provided solute cluster size (converted in SI unit i.e. in
-     meter) is in the physical interval [1.0e-9m; 1.0e-8m] valid for this law */
-    if (SOLUTE_CLUSTER_SIZE<real(1.0e-9)*ONE_METER ||
-                                     SOLUTE_CLUSTER_SIZE>real(1.0e-8)*ONE_METER)
-    {
-      std::cout << "Error: the solute cluster size given to MFront and ";
-      std::cout << "associated with the sixth material property denoted ";
-      std::cout << "'TAILLE_AMAS', 'V6', or 'SOLUTE_CLUSTER_SIZE' (:=";
-      std::cout << SOLUTE_CLUSTER_SIZE << " i.e. ";
-      std::cout << SOLUTE_CLUSTER_SIZE/ONE_METER << "m) cannot be ";
-      if (SOLUTE_CLUSTER_SIZE<length(0.0))
-      {
-        std::cout << "physically negative";
-      }
-      else if (SOLUTE_CLUSTER_SIZE>length(1.0e30))
-      {
-        std::cout << "greater than 1.0e30 (i.e. " << real(1.0e30)/ONE_METER;
-        std::cout  << "m)";
-      }
-      else if (SOLUTE_CLUSTER_SIZE<real(1.0e-9)*ONE_METER)
-      {
-        std::cout << "lower than " << real(1.0e-9)*ONE_METER;
-        std::cout << " (i.e. 1.0e-9m)";
-      }
-      else
-      {
-        std::cout << "greater than " << real(1.0e-8)*ONE_METER;
-        std::cout << " (i.e. 1.0e-8m)";
-      }
-      std::cout << "." << std::endl;
-      return false;
-    }
-
-    return true;
-  }
-
-} /* End of @Private */
-
-/* ************************************************************************** */
 /* Section providing the constant values within the implicit algorithm        */
 /* ************************************************************************** */
 
@@ -533,7 +221,6 @@ eel_old.setGlossaryName("ElasticStrain");
 
 /* Constant giving the temperature (in °C) of the absolute zero Kelvin (0°K) */
 @StaticVariable temperature T_zeroK=-273.15;
-@StaticVariable temperature tol_T=0.15;
 
 /* NB: no positive constants related to the Poisson ratio = 0.3 and the Young
                       modulus =(2.6e6 Pa)*(-23.721*T(°C)+78821.0) in this law */
@@ -717,33 +404,24 @@ eel_old.setGlossaryName("ElasticStrain");
 /* ************************************************************************** */
 
 @InitLocalVariables{
-  /* Perform the checking of bounds if checkTheBounds is set to true */
-  const auto checkTheBounds=false;
-  if (checkTheBounds)
-  {
-    /* Stop if the function areBoundsOk() returns false (bounds are not ok) */
-    if (!areBoundsOk())
-    {
-      return false;
-    }
-  }
-
   /* Compute the elastic tensor from Young modulus and Poisson ratio */
   const auto T_ok=max(T_zeroK,T);
   TK=max(temperature(0.0),T_ok-T_zeroK);
   pascal=min(max(stress(1.0e-18),abs(ONE_PASCAL)),stress(1.0e18));
   const auto young=max(stress(0.0),stress(1.0)*abs(YOUNG_MODULUS)/pascal);
-  const auto poisson=min(max(real(-0.99),POISSON_RATIO),real(0.49));
-  const auto mu2=young/(real(1.0)+poisson);
+  const auto poisson=min(max(real(-1.0),POISSON_RATIO),real(0.5));
+  const auto ipoi1=real(1.0)/max(real(1.0e-30),real(1.0)+poisson);
+  const auto ipoi2=real(1.0)/max(real(1.0e-30),real(0.5)-poisson);
+  const auto mu2=young*ipoi1;
   const auto mu=real(0.5)*mu2;
   const auto imu=real(1.0)/max(stress(1.0e-30),mu);
-  const auto lambda=poisson*mu/(real(0.5)-poisson);
+  const auto lambda=poisson*mu*ipoi2;
   D_elas=lambda*Stensor4::IxI()+mu2*Stensor4::Id();
 
   /* Two contributions of the grain size (sigHP) and temperature (VD) */
   const auto meter=min(max(length(1.0e-18),abs(ONE_METER)),length(1.0e18));
   const auto grain_size_coefficient=max(real(0.0),
-              K_mu300_2/max(length(1.0e-18),length(1.0)*abs(GRAIN_SIZE)/meter));
+              K_mu300_2/max(length(1.0e-30),length(1.0)*abs(GRAIN_SIZE)/meter));
   const auto sigHP=power<1,2>(grain_size_coefficient);
   const auto VD=(A_VD*imu)*min(max(real(0.0),B_VD*T_ok-C_VD),real(1.0));
   sigHPplusVD=sigHP+VD; /* We adimensionalize all stress quantities by mu to
@@ -777,8 +455,8 @@ eel_old.setGlossaryName("ElasticStrain");
   /* Contributions depending on the derivative dot(p) of the equivalent
    visco-plastic strain (effective stress of the network friction sigE and R) */
   exp_Bf=real(1.1)*exp(Bf);
-  exp_Af=real(0.9)*exp(Bf-Af/max(tol_T,TK)); /* NB: avoid zero division of
-                                                                        T(°K) */
+  exp_Af=real(0.9)*exp(Bf-Af/max(temperature(1.0e-30),TK)); /* NB: avoid zero
+                                                            division of T(°K) */
   sig_of_mu=sig_of*imu;
   mu_sig_od=mu/sig_od;
   ndmu_sig_od=nd*mu_sig_od;

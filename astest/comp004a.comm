@@ -64,7 +64,7 @@ MATER2_MPa_mm = DEFI_MATERIAU(
         D_DISLOC=INIT_DISLOC_mm,
         C_AMAS=CLUSTER_DENSITY_mm,
         TAILLE_AMAS=CLUSTER_SIZE_mm,
-        UNITE_LONGUEUR="mm",
+        UNITE_LONGUEUR="MM",
         UNITE_CONTRAINTE="MPa",
     ),
 )
