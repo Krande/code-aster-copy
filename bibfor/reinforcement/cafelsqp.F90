@@ -133,7 +133,7 @@ subroutine cafelsqp(cequi, effm, effn, ht, bw, &
     integer(kind=8) :: COUNT_B
     logical :: COND_B, CONSTAT, COND_FISS
     integer(kind=8) :: Niter
-    real(kind=8) :: y, y_prev, x, x_prev, x_new
+    real(kind=8) :: y, y_prev, x, x_prev, x_new, x_min, x_max
 
 !   INITIALISATION DU CODE RETOUR
     ierr = 0
@@ -241,6 +241,7 @@ subroutine cafelsqp(cequi, effm, effn, ht, bw, &
                           sigmci, sigmcs, alpha, etat, unite_m, fctm, &
                           wfins, wfini)
 
+        y_prev = y
         y = max(wfins-wmaxs, wfini-wmaxi)
         COND_B = y .le. 0.d0
 
@@ -254,6 +255,71 @@ subroutine cafelsqp(cequi, effm, effn, ht, bw, &
         ierr = 1
         goto 998
     end if
+
+! RECHERCHE SECANTE
+! ------------------------------------------------------------------------
+
+    COUNT_B = 0
+    x_max = kVAR_A
+    x_min = kVAR_B
+    if (.false.) goto 20
+    COND_B = .false.
+    Niter = 5
+    do while (.not. COND_B .and. COUNT_B .le. Niter)
+
+        if (COUNT_B .eq. 0) then
+            x_prev = kVAR_B*2
+            x = kVAR_B
+        end if
+        x_new = (x*y_prev-x_prev*y)/(y_prev-y)
+        if (x_new .le. x_min .or. x_new .ge. x_max) then
+            ! divergence, on sort
+            exit
+        end if
+
+        ssmax = x_new*facier
+        call cafels(cequi, effm, effn, ht, bw, &
+                    enrobi, enrobs, scmaxs, scmaxi, ssmax, &
+                    ferrcomp, precs, ferrsyme, slsyme, uc, um, &
+                    dnsinf, dnssup, sigmsi, sigmss, &
+                    sigmci, sigmcs, &
+                    alpha, pivot, etat, ierr)
+        COUNT_B = COUNT_B+1
+
+        if (ierr .ne. 0) then
+            goto 998
+        end if
+
+        call cafelsqp_gap(cequi, effm, ht, enrobi, enrobs, kt, eys, &
+                          phiinf, phisup, dnsinf, dnssup, sigmsi, sigmss, &
+                          sigmci, sigmcs, alpha, etat, unite_m, fctm, &
+                          wfins, wfini)
+        y_prev = y
+        y = max(wfins-wmaxs, wfini-wmaxi)
+        x_prev = x
+        x = x_new
+        COND_B = abs(y/(wmaxs+wmaxi)) .le. 1d-6
+
+        ! on met à jour kvarA et kvarb pour réduire l'intervale de recherche de la dichotomie
+        if (y .gt. 0.d0 .and. x .lt. kVAR_A) then
+            kVAR_A = x
+        else if (y .lt. 0.d0 .and. x .gt. kVAR_B) then
+            kVAR_B = x
+        end if
+
+        if (COND_B) then
+            kvarf = x
+            goto 998
+        else
+            if (abs((y_prev-y)/(wmaxs+wmaxi)) .le. 1d-6) then
+                ! dy trop faible, on sort
+                exit
+            end if
+        end if
+
+    end do
+
+20  continue
 
 !   5 - ITERATION ET DETERMINATION DE LA SOLUTION DIMENSIONNANTE
 !   ----------------------------------------------------------------------
