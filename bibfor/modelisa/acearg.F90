@@ -16,7 +16,7 @@
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
 
-subroutine acearg(infdonn, lmax, noemaf, nbocc, infcarte, ivr, zjdlm)
+subroutine acearg(nbocc, infdonn, infcarte, zjdlm)
 !
 !
 ! --------------------------------------------------------------------------------------------------
@@ -32,7 +32,7 @@ subroutine acearg(infdonn, lmax, noemaf, nbocc, infcarte, ivr, zjdlm)
     use cara_elem_carte_type
     implicit none
     type(cara_elem_info) :: infdonn
-    integer(kind=8) :: lmax, noemaf, nbocc, ivr(*), zjdlm(*)
+    integer(kind=8) :: nbocc, zjdlm(*)
     type(cara_elem_carte) :: infcarte(*)
 !
 #include "asterf_types.h"
@@ -89,7 +89,6 @@ subroutine acearg(infdonn, lmax, noemaf, nbocc, infcarte, ivr, zjdlm)
     real(kind=8), pointer :: coord(:) => null()
     integer(kind=8), pointer :: parcell(:) => null()
     blas_int :: b_1, b_3
-    aster_logical :: l_pmesh
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -99,8 +98,7 @@ subroutine acearg(infdonn, lmax, noemaf, nbocc, infcarte, ivr, zjdlm)
     noma = infdonn%maillage
     ndim = infdonn%dimmod
 !   Si c'est un maillage partionné ==> PLOUF
-    l_pmesh = isParallelMesh(noma)
-    if ( l_pmesh ) then
+    if (infdonn%IsParaMesh) then
         call utmess('F', 'AFFECARAELEM_99', sk='RIGI_GRILLE')
     endif
     ASSERT(ndim .eq. 3)
@@ -123,7 +121,7 @@ subroutine acearg(infdonn, lmax, noemaf, nbocc, infcarte, ivr, zjdlm)
     jdc(3)  = infcarte(ACE_CAR_DISCA)%adr_cmp
     jdv(3)  = infcarte(ACE_CAR_DISCA)%adr_val
 !
-    ifm = ivr(4)
+    ifm = infdonn%ivr(4)
 
     magrno = noma//'.GROUPENO'
     magrma = noma//'.GROUPEMA'
@@ -300,7 +298,7 @@ subroutine acearg(infdonn, lmax, noemaf, nbocc, infcarte, ivr, zjdlm)
                 ! on applique la rigidité sur le groupe de SEG_2
                 iv = 1
                 call affdis(ndim, 1, 0.d0, 'K_TR_D_L', rigi, &
-                            jdc, jdv, ivr, iv, kma, &
+                            jdc, jdv, infdonn%ivr, iv, kma, &
                             ncmp, ll, jdcinf, jdvinf, 1)
                 call nocart(cartdi, 3, dimcar, mode='NUM', nma=1, limanu=[parcell(i_no)])
                 call nocart(cart(ll), 3, ncmp, mode='NUM', nma=1, limanu=[parcell(i_no)])
@@ -309,7 +307,7 @@ subroutine acearg(infdonn, lmax, noemaf, nbocc, infcarte, ivr, zjdlm)
                 iv = 1
                 mass = 1.d-12
                 call affdis(ndim, 1, 0.d0, 'M_TR_D_L', mass, &
-                            jdc, jdv, ivr, iv, kma, &
+                            jdc, jdv, infdonn%ivr, iv, kma, &
                             ncmp, ll, jdcinf, jdvinf, 1)
                 call nocart(cartdi, 3, dimcar, mode='NUM', nma=1, limanu=[parcell(i_no)])
                 call nocart(cart(ll), 3, ncmp, mode='NUM', nma=1, limanu=[parcell(i_no)])

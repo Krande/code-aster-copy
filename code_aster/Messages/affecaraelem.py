@@ -251,7 +251,8 @@ Il faut avoir une seule maille SEG2 connecté à chaque noeud de la dalle.
         """AFFE_CARA_ELEM / RIGI_GRILLE
 Pour l'occurrence %(i1)d de RIGI_GRILLE, GROUP_MA_SEG2 = %(k1)s.
 La maille %(i2)d n'a aucun noeud commun avec la dalle.
-
+"""
+    ),
     31: _(
         """
 AFFE_CARA_ELEM. Vous ne pouvez pas affecter des valeurs de type "%(k2)s" au modèle %(k1)s
