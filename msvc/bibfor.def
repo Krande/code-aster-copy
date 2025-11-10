@@ -10,10 +10,13 @@ EXPORTS
     accept_
     acdoch_
     acdoch_wrap_
+    ace_affe_barre_
+    ace_affe_cable_
+    ace_affe_verif_elem_
     ace_crea_carte_
+    ace_get_node_reparti_
     ace_masse_repartie_
-    aceaba_
-    aceaca_
+    ace_verif_affe_
     aceaco_
     aceadi_
     aceagb_
@@ -29,24 +32,8 @@ EXPORTS
     aceat2_
     aceat3_
     aceatu_
-    acecel_
     acedat_
-    aceinc_
     acemmt_
-    acevba_
-    acevco_
-    acevd2_
-    acevdi_
-    acevgb_
-    acevma_
-    acevmb_
-    acevmr_
-    acevor_
-    acevpf_
-    acevpo_
-    acevrm_
-    acevrp_
-    acevtr_
     acgrcr_
     acgrdo_
     acgrpc_
@@ -78,7 +65,6 @@ EXPORTS
     afddli_
     afdi2d_
     afdi3d_
-    affbar_
     affdef_
     affdis_
     affeno_
@@ -730,17 +716,24 @@ EXPORTS
     capres_skin_
     capres_volu_
     cara_elem_parameter_module_mp_ace_carte_
+    cara_elem_parameter_module_mp_ace_codeentier_
+    cara_elem_parameter_module_mp_ace_codeformevaria_
+    cara_elem_parameter_module_mp_ace_decodenomformevaria_
+    cara_elem_parameter_module_mp_ace_decodenumformevaria_
     cara_elem_parameter_module_mp_ace_el_barre_
     cara_elem_parameter_module_mp_ace_el_cable_
     cara_elem_parameter_module_mp_ace_el_coque_
     cara_elem_parameter_module_mp_ace_el_discret_
     cara_elem_parameter_module_mp_ace_el_grille_
+    cara_elem_parameter_module_mp_ace_el_hho_
     cara_elem_parameter_module_mp_ace_el_massif_
     cara_elem_parameter_module_mp_ace_el_membrane_
     cara_elem_parameter_module_mp_ace_el_poutre_
     cara_elem_parameter_module_mp_ace_el_thhmm_
     cara_elem_parameter_module_mp_ace_grma_ma_
     cara_elem_parameter_module_mp_ace_grma_ty_
+    cara_elem_parameter_module_mp_ace_init_elem_affe_
+    cara_elem_parameter_module_mp_ace_isincode_
     cara_elem_parameter_module_mp_ace_mclef_
     cara_elem_parameter_module_mp_ace_nm_element_
     cara_elem_parameter_module_mp_mclef_grp_ma_
@@ -1109,8 +1102,6 @@ EXPORTS
     chcsur_
     check_aniso_
     check_aster_allocate_
-    check_homo_grma_
-    check_homo_ratio_
     check_model_
     checkcaraelem_
     checkconsistencyligrel_
@@ -6368,6 +6359,7 @@ EXPORTS
     pj6dco_
     pjcor2_
     pjcorr_
+    pjcovide_
     pjefca_
     pjefch_
     pjefco_
@@ -8257,7 +8249,6 @@ EXPORTS
     terefe_
     tesfin_
     tesmcl_
-    testli_
     testvois_
     tfimpr_
     tfvegr_
@@ -8570,7 +8561,6 @@ EXPORTS
     uttrir_
     utvois_
     utvtsv_
-    vafcar_
     valfor_
     vampli_
     varaff_
@@ -8642,7 +8632,6 @@ EXPORTS
     veondp_
     ver152_
     verdbl_
-    verdis_
     verecy_
     veri32_
     veri_noe_

@@ -72,7 +72,7 @@ def extract_c_symbols(obj_file):
         "DllMain", "_DllMain@12", "DllMainCRTStartup", "_DllMainCRTStartup@12",
         # CRT internal functions that should not be exported
         "_vfprintf_l", "_vsnprintf", "_vsnprintf_l", "_vsprintf_l",
-        "_fprintf_l", "_sprintf_l", "_printf_l", "_snprintf_l",
+        "_fprintf_l", "_sprintf_l", "_printf_l", "_snprintf_l", "_snprintf",
         "_scanf_l", "_fscanf_l", "_sscanf_l", "vsprintf",
     }
 
@@ -196,7 +196,6 @@ def main():
     )
     parser.add_argument(
         "--build-dir",
-        default="build/int64",
         help="Build directory containing object files"
     )
     parser.add_argument(
@@ -211,12 +210,28 @@ def main():
     )
 
     args = parser.parse_args()
-
+    script_dir = Path(__file__).parent
+    project_root = script_dir.parent
     # Get object files
     if args.obj_files:
         obj_files = [Path(f) for f in args.obj_files]
     else:
-        obj_files = find_object_files(args.build_dir, "bibc")
+        build_dir = args.build_dir
+        if not build_dir:
+            build_dirs = []
+            for pattern in ["build/int64/debug", "build/int64/release", "build/int32/debug", "build/int32/release"]:
+                build_path = project_root / pattern
+                if build_path.exists():
+                    build_dirs.append(build_path)
+            if not build_dirs:
+                print("Error: No build directory found. Please run 'waf build' first.")
+                sys.exit(1)
+
+            # Use the first found build directory (most recent)
+            build_dir = build_dirs[0]
+            print(f"Using build directory: {build_dir}")
+
+        obj_files = find_object_files(build_dir, "bibc")
 
     if not obj_files:
         print(f"No object files found in {args.build_dir}", file=sys.stderr)
@@ -235,6 +250,7 @@ def main():
     # Exclude symbols that belong to separate libs (asterGC, bibfor_ext) if their DEFs exist
     script_dir = Path(__file__).parent
     excluded = set()
+    excluded |= _read_def_exports(script_dir / "aster.def")
     excluded |= _read_def_exports(script_dir / "asterGC.def")
     excluded |= _read_def_exports(script_dir / "bibfor_ext.def")
     if excluded:

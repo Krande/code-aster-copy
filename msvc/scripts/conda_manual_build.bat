@@ -207,7 +207,7 @@ if %CLEAN_BUILD%==1 (
 )
 
 REM Update version
-python conda\scripts\update_version.py
+python conda\config\update_version.py
 
 set EXTRA_ARGS=
 if "%INCLUDE_TESTS%" == "1" (

@@ -9,10 +9,64 @@ from waflib import Logs, TaskGen, Task, Errors
 from waftools.clangdb import build_clang_compilation_db
 
 
+class defgen(Task.Task):
+    """Task to generate .def files from compiled object files using dumpbin."""
+    color = "CYAN"
+
+    def __str__(self):
+        """Provide a concise task banner to avoid dumping thousands of inputs."""
+        try:
+            out_name = self.outputs[0].name if self.outputs else "<no-output>"
+            return f"Processing defgen: {out_name}"
+        except Exception:
+            return super().__str__()
+
+    def run(self):
+        """Execute the def generation script."""
+        import subprocess
+
+        script_path = self.env.DEF_SCRIPT
+        build_dir = self.env.BUILD_DIR
+        output_file = self.outputs[0].abspath()
+
+        # Build command - the script will find object files itself
+        cmd = [
+            self.env.PYTHON[0],
+            script_path,
+            "--build-dir", build_dir,
+            "--output", output_file
+        ]
+
+
+        Logs.info(f"Generating {self.outputs[0].name}...")
+        Logs.debug(f"Command: {' '.join(cmd)}")
+
+        try:
+            result = subprocess.run(
+                cmd,
+                capture_output=True,
+                text=True,
+                check=True
+            )
+            if result.stdout:
+                Logs.debug(result.stdout)
+            if result.stderr:
+                Logs.warn(result.stderr)
+            return 0
+        except subprocess.CalledProcessError as e:
+            Logs.error(f"Def generation failed: {e}")
+            if e.stdout:
+                Logs.error(e.stdout)
+            if e.stderr:
+                Logs.error(e.stderr)
+            return 1
+
+
 class msvclibgen(Task.Task):
     # Use a minimal run_str; we will compose the full command with a response file in exec_command
     run_str = "LIB.exe /OUT:${TGT}"
     color = "BLUE"
+    after = ["defgen"]
     before = ["cshlib", "cxxshlib", "fcshlib"]
     use_msvc_entry = False
 
@@ -195,6 +249,48 @@ def extract_main_tasks(self: TaskGen.task_gen) -> LibTask:
     return LibTask(c_task_object, cxx_task_object, fc_task_object, fc_ext_task_object, gc_task_object, c_aster_object)
 
 
+def create_defgen_task(self, lib_name: str, script_name: str, input_tasks) -> Task:
+    """Create a defgen task for generating .def files from object files.
+
+    Args:
+        self: The task generator
+        lib_name: Name of the library (e.g., 'bibc', 'bibfor', 'bibcxx', 'AsterGC', 'bibfor_ext')
+        script_name: Name of the def generation script (e.g., 'def_gen_c.py')
+        input_tasks: List of compiled object files (task outputs)
+
+    Returns:
+        The created defgen task
+    """
+    bld_path = pathlib.Path(self.bld.bldnode.abspath()).resolve().absolute()
+    root_path = pathlib.Path(self.bld.root.abspath()).resolve().absolute()
+
+    # Determine output path for .def file
+    if lib_name == "AsterGC":
+        def_output_path = root_path / "msvc" / "asterGC.def"
+    elif lib_name == "bibfor_ext":
+        def_output_path = root_path / "msvc" / "bibfor_ext.def"
+    else:
+        def_output_path = root_path / "msvc" / f"{lib_name}.def"
+
+    # Create node for output
+    def_output_node = self.bld.root.make_node(def_output_path.as_posix())
+
+    # Create the defgen task
+    defgen_task = self.create_task("defgen")
+    defgen_task.inputs = input_tasks  # For dependency tracking - ensures objects are compiled first
+    defgen_task.outputs = [def_output_node]
+    # Note: The script finds object files itself via --build-dir, no need to pass them
+
+    # Set up environment variables needed by the task
+    defgen_task.env = self.env.derive()
+    defgen_task.env.DEF_SCRIPT = str(root_path / "msvc" / script_name)
+    defgen_task.env.BUILD_DIR = str(bld_path)
+
+    Logs.debug(f"Created defgen task for {lib_name}: {def_output_node}")
+
+    return defgen_task
+
+
 def create_msvclibgen_task(self, lib_name: str, input_tasks) -> Task:
     # Create a task for MSVC lib generation for C
     # the task takes in the outputs of all C tasks
@@ -279,12 +375,31 @@ def run_mvsc_lib_gen(self, task_obj: LibTask):
     if len(aster_input_tasks) == 0:
         raise Errors.WafError("Failed MSVC lib generation: No aster input tasks found")
 
+    # Create defgen tasks first - they run after compilation and before msvclibgen
+    Logs.info("Creating def generation tasks...")
+
+    bibc_defgen_task = create_defgen_task(self, "bibc", "def_gen_c.py", c_input_tasks)
+    bibcxx_defgen_task = create_defgen_task(self, "bibcxx", "def_gen_cpp.py", cxx_input_tasks)
+    bibfor_defgen_task = create_defgen_task(self, "bibfor", "def_gen_fc.py", fc_input_tasks)
+    bibfor_ext_defgen_task = create_defgen_task(self, "bibfor_ext", "def_gen_bibfor_ext.py", fc_ext_input_tasks)
+    gc_defgen_task = create_defgen_task(self, "AsterGC", "def_gen_astergc.py", gc_input_tasks)
+
+    # Create msvclibgen tasks - they run after defgen
+    Logs.info("Creating MSVC lib generation tasks...")
+
     clib_lib_task = create_msvclibgen_task(self, "bibc", c_input_tasks)
     bibcxx_lib_task = create_msvclibgen_task(self, "bibcxx", cxx_input_tasks)
     bibfor_lib_task = create_msvclibgen_task(self, "bibfor", fc_input_tasks)
     bibfor_ext_lib_task = create_msvclibgen_task(self, "bibfor_ext", fc_ext_input_tasks)
     gc_lib_task_gen = create_msvclibgen_task(self, "AsterGC", gc_input_tasks)
     bibaster_lib_task = create_msvclibgen_task(self, "aster", aster_input_tasks)
+
+    # Set up dependencies: msvclibgen tasks must run after their corresponding defgen tasks
+    clib_lib_task.set_run_after(bibc_defgen_task)
+    bibcxx_lib_task.set_run_after(bibcxx_defgen_task)
+    bibfor_lib_task.set_run_after(bibfor_defgen_task)
+    bibfor_ext_lib_task.set_run_after(bibfor_ext_defgen_task)
+    gc_lib_task_gen.set_run_after(gc_defgen_task)
 
     Logs.debug(f"{clib_lib_task.outputs=}")
     Logs.debug(f"{fclib_task.outputs=}")

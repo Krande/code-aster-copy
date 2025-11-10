@@ -49,7 +49,7 @@ clang = "19.*"
 libblas = { version = "*", build = "*mkl" }
 liblapack = { version = "*", build = "*mkl" }
 mkl-devel = { version = "2025.3.*", channel = "conda-forge" }
-ifx_win-64 = { version = "*", channel = "conda-forge" }
+ifx_win-64 = { version = "==2025.0.4", channel = "conda-forge" }
 llvmdev = "*"
 
 [feature.dev.target.win-64.dependencies]
@@ -69,8 +69,8 @@ mumps = { version = "*", build = "*release*INT64*" }
 
 [feature.debug.target.win-64.dependencies]
 hdf5 = { version = "*", build = "*debug*" }
-mfront = { version = "*", build = "*debug*" }
-mgis = { version = "*", build = "*debug*" }
+mfront = { version = ">=4.2.3", build = "*debug*" }
+mgis = { version = ">=2.2.1", build = "*debug*" }
 libmed = { version = "*", build = "*debug*INT64*" }
 medcoupling = { version = "*", build = "*debug*INT64*" }
 metis = { version = "*", build = "*debug*INT64*" }

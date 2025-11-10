@@ -6,9 +6,10 @@ This script extracts C++ symbols from compiled object files in the bibcxx direct
 and generates a module definition (.def) file for use with the MSVC linker.
 """
 
+import argparse
+import re
 import subprocess
 import sys
-import re
 from pathlib import Path
 
 
@@ -42,7 +43,7 @@ def extract_symbols(obj_files):
 
     # Exclude common non-exportable prefixes and thunks, plus const pools
     exclude_prefixes = (
-        "__imp_", "__Cxx", "__RT", "_TI", "_CT", "_Init_thread_", "$", "._", "__chkstk",
+        "__imp_", "__Cxx", "__RT", "_TI", "_CT", "_Init_thread_", "._", "__chkstk",
         "__real@", "__xmm@", "__ymm@", "__int@", "__m128@", "__m256@",
         # Project/tooling-specific we never want to export from bibcxx
         "pybind11_",
@@ -118,13 +119,18 @@ def extract_symbols(obj_files):
             if not name:
                 continue
 
+            # Check if this is an explicitly allowed mangled symbol first
+            if name in allowed_msvc_mangled:
+                symbols.add(name)
+                continue
+
             # Hard rejections
             if name in exclude_symbols:
                 continue
             if name.startswith(exclude_prefixes):
                 continue
             if name.startswith('?') or name.startswith('_Z'):
-                # Exclude MSVC and Itanium C++ mangled names
+                # Exclude MSVC and Itanium C++ mangled names (unless in allowed_msvc_mangled)
                 continue
             if ("@" in name) or ("." in name):
                 continue
@@ -180,24 +186,34 @@ def generate_def_file(symbols, output_file):
 
 
 def main():
+    parser = argparse.ArgumentParser(description="Generate bibcxx.def from C++ object files")
+    parser.add_argument("--build-dir", type=Path, help="Build directory containing object files")
+    parser.add_argument("--output", type=Path, help="Output .def file path")
+    args = parser.parse_args()
+
     # Determine paths
     script_dir = Path(__file__).parent
     project_root = script_dir.parent
 
-    # Try to find build directory
-    build_dirs = []
-    for pattern in ["build/int64/debug", "build/int64/release", "build/int32/debug", "build/int32/release"]:
-        build_path = project_root / pattern
-        if build_path.exists():
-            build_dirs.append(build_path)
+    # Use provided build directory or try to find one
+    if args.build_dir:
+        build_dir = args.build_dir
+        print(f"Using provided build directory: {build_dir}")
+    else:
+        # Try to find build directory
+        build_dirs = []
+        for pattern in ["build/int64/debug", "build/int64/release", "build/int32/debug", "build/int32/release"]:
+            build_path = project_root / pattern
+            if build_path.exists():
+                build_dirs.append(build_path)
 
-    if not build_dirs:
-        print("Error: No build directory found. Please run 'waf build' first.")
-        sys.exit(1)
+        if not build_dirs:
+            print("Error: No build directory found. Please run 'waf build' first.")
+            sys.exit(1)
 
-    # Use the first found build directory (most recent)
-    build_dir = build_dirs[0]
-    print(f"Using build directory: {build_dir}")
+        # Use the first found build directory (most recent)
+        build_dir = build_dirs[0]
+        print(f"Using build directory: {build_dir}")
 
     # Find object files
     obj_files = find_object_files(build_dir)
@@ -224,7 +240,7 @@ def main():
         sys.exit(1)
 
     # Generate .def file
-    output_file = script_dir / "bibcxx.def"
+    output_file = args.output if args.output else (script_dir / "bibcxx.def")
     generate_def_file(symbols, output_file)
 
     print(f"Successfully generated {output_file}")

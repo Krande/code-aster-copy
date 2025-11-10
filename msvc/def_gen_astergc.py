@@ -9,6 +9,7 @@ The asterGC library contains both Fortran and C++ code for garbage collection
 and memory management.
 """
 
+import argparse
 import subprocess
 import sys
 from pathlib import Path
@@ -133,24 +134,34 @@ def generate_def_file(symbols, output_file):
 
 
 def main():
+    parser = argparse.ArgumentParser(description="Generate asterGC.def from object files")
+    parser.add_argument("--build-dir", type=Path, help="Build directory containing object files")
+    parser.add_argument("--output", type=Path, help="Output .def file path")
+    args = parser.parse_args()
+
     # Determine paths
     script_dir = Path(__file__).parent
     project_root = script_dir.parent
 
-    # Try to find build directory
-    build_dirs = []
-    for pattern in ["build/int64/debug", "build/int64/release", "build/int32/debug", "build/int32/release"]:
-        build_path = project_root / pattern
-        if build_path.exists():
-            build_dirs.append(build_path)
+    # Use provided build directory or try to find one
+    if args.build_dir:
+        build_dir = args.build_dir
+        print(f"Using provided build directory: {build_dir}")
+    else:
+        # Try to find build directory
+        build_dirs = []
+        for pattern in ["build/int64/debug", "build/int64/release", "build/int32/debug", "build/int32/release"]:
+            build_path = project_root / pattern
+            if build_path.exists():
+                build_dirs.append(build_path)
 
-    if not build_dirs:
-        print("Error: No build directory found. Please run 'waf build' first.")
-        sys.exit(1)
+        if not build_dirs:
+            print("Error: No build directory found. Please run 'waf build' first.")
+            sys.exit(1)
 
-    # Use the first found build directory (most recent)
-    build_dir = build_dirs[0]
-    print(f"Using build directory: {build_dir}")
+        # Use the first found build directory (most recent)
+        build_dir = build_dirs[0]
+        print(f"Using build directory: {build_dir}")
 
     # Find object files
     obj_files = find_object_files(build_dir)
@@ -167,7 +178,7 @@ def main():
         sys.exit(1)
 
     # Generate .def file
-    output_file = script_dir / "asterGC.def"
+    output_file = args.output if args.output else (script_dir / "asterGC.def")
     generate_def_file(symbols, output_file)
 
     print(f"Successfully generated {output_file}")

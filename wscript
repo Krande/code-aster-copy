@@ -259,6 +259,8 @@ def configure(self):
         elif os.getenv('FC', '').lower().startswith('flang'):
             self.load("flang", tooldir="config")
         self.load("msvc", tooldir="config")
+        # Load MSVC manifest retry patch to handle file locking issues
+        self.load("msvc_manifest_retry", tooldir="waftools")
 
     opts = self.options
     self.setenv("default")
