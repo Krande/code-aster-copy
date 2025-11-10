@@ -46,15 +46,15 @@ subroutine w175af(modele, chfer1)
 !-------------------------------------------------------------------------------------------------
     integer(kind=8) :: gd, nocc, ncmpmx, nbtou
     integer(kind=8) :: n1, n2, n3, n4, n5, n6, n7, n8, n9, n10, n11, n12, n13, n14, n15
-    integer(kind=8) :: n16, n17, n18, n19, n20, n21, n22, n23, n24, n25, n26, n27, n28, n29, n30, n31, n32
-   integer(kind=8) :: n33, n34, n35, n36, n37, n38, n39, n41, n42, n43, n44, n45, n46, n47, n48, n49
-    integer(kind=8) :: n50, n51, n52, n53, n54, n55, n56, n57, n58, n59, n60, n61
-    integer(kind=8) ::   jmail, iocc, nbmail
+    integer(kind=8) :: n16, n17, n18, n19, n20, n21, n22, n23, n24, n25, n26
+    integer(kind=8) :: n33, n34, n35, n36, n37, n38, n39, n41, n42, n43, n44, n45, n46
+    integer(kind=8) :: n50, n51, n52, n53, n54, n55, n56, n57, n58, n59, n60, n61, n62, n63
+    integer(kind=8) ::   jmail, iocc, nbmail, n27, n28, n29, n30, n31, n32, n47, n48, n49
     real(kind=8) :: valrcb, valrco, valrmt, valrcd, valruc
     character(len=8) :: k8b, typmcl(2), noma, typcb, clacier, compress
     character(len=8) :: epucisa, ferrcomp, ferrsyme, typdiag, typstru, cond109, unitc
     character(len=16) :: meth2D
-    character(len=16) :: motcls(2), typco, ferrmin
+    character(len=16) :: motcls(2), typco, ferrmin, ferrminfiss, effechel
     character(len=24) :: mesmai
     character(len=8), pointer :: ncmp(:) => null()
     real(kind=8), pointer :: valv(:) => null()
@@ -82,7 +82,7 @@ subroutine w175af(modele, chfer1)
     call jelira(jexnum('&CATA.GD.NOMCMP', gd), 'LONMAX', ncmpmx)
 
 !
-    ASSERT(ncmpmx .eq. 61)
+    ASSERT(ncmpmx .eq. 63)
     ncmp(1) = 'TYPCOMB'
     ncmp(2) = 'CODIF'
     ncmp(3) = 'METH2D'
@@ -144,6 +144,8 @@ subroutine w175af(modele, chfer1)
     ncmp(59) = 'PHIYS'
     ncmp(60) = 'PHIZI'
     ncmp(61) = 'PHIZS'
+    ncmp(62) = 'ASMINFIS'
+    ncmp(63) = 'ECHELLE'
 
 !
 !     2. MOTS CLES GLOBAUX :
@@ -209,9 +211,8 @@ subroutine w175af(modele, chfer1)
             if (epucisa .eq. 'NON') valv(12) = 0.d0
             if (epucisa .eq. 'OUI') valv(12) = 1.d0
             call getvtx('AFFE', 'FERR_MIN', iocc=iocc, scal=ferrmin, nbret=n13)
-            if (ferrmin .eq. 'NON') valv(13) = 0.d0
-            if (ferrmin .eq. 'OUI') valv(13) = 1.d0
-            if (ferrmin .eq. 'CODE') valv(13) = 2.d0
+            if (ferrmin .eq. 'VALE_MIN') valv(13) = 1.d0
+            if (ferrmin .eq. 'BAEL91') valv(13) = 2.d0
             call getvr8('AFFE', 'RHO_LONGI_MIN', iocc=iocc, scal=valv(14), nbret=n14)
             call getvr8('AFFE', 'RHO_TRNSV_MIN', iocc=iocc, scal=valv(15), nbret=n15)
             call getvr8('AFFE', 'N', iocc=iocc, scal=valv(17), nbret=n17)
@@ -274,9 +275,8 @@ subroutine w175af(modele, chfer1)
             if (epucisa .eq. 'NON') valv(12) = 0.d0
             if (epucisa .eq. 'OUI') valv(12) = 1.d0
             call getvtx('AFFE', 'FERR_MIN', iocc=iocc, scal=ferrmin, nbret=n13)
-            if (ferrmin .eq. 'NON') valv(13) = 0.d0
-            if (ferrmin .eq. 'OUI') valv(13) = 1.d0
-            if (ferrmin .eq. 'CODE') valv(13) = 2.d0
+            if (ferrmin .eq. 'VALE_MIN') valv(13) = 1.d0
+            if (ferrmin .eq. 'EC2') valv(13) = 2.d0
             call getvr8('AFFE', 'RHO_LONGI_MIN', iocc=iocc, scal=valv(14), nbret=n14)
             call getvr8('AFFE', 'RHO_TRNSV_MIN', iocc=iocc, scal=valv(15), nbret=n15)
             call getvtx('AFFE', 'UTIL_COMPR', iocc=iocc, scal=compress, nbret=n16)
@@ -330,6 +330,12 @@ subroutine w175af(modele, chfer1)
             call getvtx('AFFE', 'TYPE_DIAGRAMME', iocc=iocc, scal=typdiag, nbret=n36)
             if (typdiag .eq. 'B1') valv(36) = 1.d0
             if (typdiag .eq. 'B2') valv(36) = 2.d0
+            call getvtx('AFFE', 'FERR_MIN_FISS', iocc=iocc, scal=ferrminfiss, nbret=n62)
+            if (ferrminfiss .eq. 'EC2') valv(62) = 1.d0
+            if (ferrminfiss .eq. 'RCC-CW') valv(62) = 2.d0
+            call getvtx('AFFE', 'EFFET_ECHELLE', iocc=iocc, scal=effechel, nbret=n63)
+            if (effechel .eq. 'OUI') valv(63) = 1.d0
+            if (effechel .eq. 'NON') valv(63) = 0.d0
         end if
 
 !
@@ -354,6 +360,11 @@ subroutine w175af(modele, chfer1)
             if (n20 .eq. 0 .or. n21 .eq. 0 .or. n22 .eq. 0 &
                 & .or. n23 .eq. 0) then
                 call utmess('F', 'CALCULEL7_18')
+            end if
+
+!          NOT POSSIBLE TO COMPUTE Asmin FOR CRACK CONTROL FOR BEAMS
+            if ((valv(62) .eq. 1.d0) .or. (valv(62) .eq. 2.d0)) then
+                call utmess('F', 'CALCULEL7_40')
             end if
         elseif (typstru .eq. '2D') then
 !           VERIFICATION DES ENROBAGES 2D
@@ -404,12 +415,6 @@ subroutine w175af(modele, chfer1)
                         call utmess('F', 'CALCULEL7_27')
                     end if
                 end if
-            end if
-        end if
-
-        if (valv(13) .eq. (1.d0)) then
-            if ((n14 .eq. 0) .or. (n15 .eq. 0)) then
-                call utmess('F', 'CALCULEL7_11')
             end if
         end if
 

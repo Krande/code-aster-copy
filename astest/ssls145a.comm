@@ -201,7 +201,6 @@ ferrDatSlu = dict(
     FERR_SYME="NON",
     FERR_COMP="OUI",
     EPURE_CISA="NON",
-    FERR_MIN="NON",
     RHO_ACIER=7800.0,
     WMAX_INF=0.00025 * mm,
     WMAX_SUP=0.0003 * mm,
