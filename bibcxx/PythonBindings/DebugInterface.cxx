@@ -36,16 +36,34 @@
 
 #include <string>
 
+#ifdef ASTER_PLATFORM_MSVC64
+extern "C" {
+#include "win_stacktrace.h"
+}
+#endif
+
 static void libaster_debugJeveuxContent( const std::string message ) {
     ASTERINTEGER unit_out = 6;
     std::string base( "G" );
     CALLO_JEIMPR( &unit_out, base, message );
 };
 
+#ifdef ASTER_PLATFORM_MSVC64
+static void libaster_printWindowsStackTrace() {
+    win_print_stacktrace(NULL);  // NULL defaults to stderr
+}
+#endif
+
 void exportDebugToPython( py::module_ &mod ) {
 
     mod.def( "debugJeveuxContent", &libaster_debugJeveuxContent );
     mod.def( "debugJeveuxExists", &jeveuxExists );
+
+#ifdef ASTER_PLATFORM_MSVC64
+    mod.def( "printWindowsStackTrace", &libaster_printWindowsStackTrace,
+             "Print current C/C++ stack trace on Windows (for debugging)" );
+#endif
+
     mod.def( "use_count", &libaster_debugRefCount< MeshPtr > );
     mod.def( "use_count", &libaster_debugRefCount< ModelPtr > );
     mod.def( "use_count", &libaster_debugRefCount< DOFNumberingPtr > );

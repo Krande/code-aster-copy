@@ -20,6 +20,8 @@ To build and test the debug version you simply add the `d` flag;
 pixi run buildd
 pixi run installd
 pixi run testd
+# test a specific test
+pixi run ctestd adlv100c
 ```
 
 The `build` and `buildd` on windows call the `msvc/scripts/conda_manual_build.bat`  

@@ -99,6 +99,7 @@ buildd = { cmd = ["msvc/scripts/conda_manual_build.bat", "--pixi-build", "--int-
 installd = { cmd = ["msvc/scripts/conda_rearrange.bat"], description = "Copy the latest build files to their respective locations" }
 testd = { cmd = ["run_ctest", "--resutest=temp\\debug", "-L", "submit", "-L", "sequential", "-LE", "need_data", "--timefactor=5.0", "--only-failed-results"], description = "Run the default sequential tests" }
 testd-eval = { cmd = ["python", "conda_debug/test_scanner/eval_tests.py", "$PIXI_PROJECT_ROOT/temp/debug", "--output", "$PIXI_PROJECT_ROOT/conda_debug/test_scanner/results"] }
+ctestd = {cmd="run_ctest --resutest=temp\\debug1 --clean -R", description="Run ctest command"}
 
 [feature.dev.target.win-64.tasks]
 test_scan = { cmd = ["python", "conda_debug/test_scanner/eval_tests.py", "--output", "conda_debug/test_scanner/results/windows/nompi"], description = "Scan the test results" }

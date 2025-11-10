@@ -180,6 +180,12 @@
 #include "Supervis/Exceptions.h"
 // Please keep '*Interface.h' files in alphabetical order to ease merging
 
+#ifdef ASTER_PLATFORM_MSVC64
+extern "C" {
+#include "win_stacktrace.h"
+}
+#endif
+
 void *numpyInitialize() {
     import_array();
     return NULL;
@@ -189,12 +195,21 @@ PYBIND11_MODULE( libaster, mod ) {
     numpyInitialize();
     initAsterModules();
 
+#ifdef ASTER_PLATFORM_MSVC64
+    // Install Windows unhandled exception filter for crashes that bypass C++ exception handling
+    // (e.g., access violations, divide by zero).
+    // Normal C++ exceptions are handled in Exceptions.cxx with stack traces.
+    win_install_crash_handler();
+#endif
+
     // hide c++ signatures
     py::options options;
     // options.disable_function_signatures();
     options.disable_enum_members_docstring();
 
-    auto cleanup_callback = []() { jeveux_finalize(); };
+    auto cleanup_callback = []() {
+        jeveux_finalize();
+    };
     mod.add_object( "_cleanup", py::capsule( cleanup_callback ) );
 
     // Definition of exceptions, thrown from 'Exceptions.cxx'/uexcep

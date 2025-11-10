@@ -38,6 +38,8 @@ from functools import partial
 
 import aster_core
 import libaster
+import faulthandler
+import sys
 
 from run_aster.run import copy_datafiles
 
@@ -101,6 +103,13 @@ class ExecutionStarter:
         copy_datafiles(params.export.datafiles)
         aster_core.register(params, MessageLog)
         libaster.jeveux_init(fcomm)
+
+        # Enable faulthandler to get Python stack traces on crashes
+        try:
+            faulthandler.enable(file=sys.stderr, all_threads=True)
+        except Exception as exc:
+            logger.debug(f"Failed to enable faulthandler: {exc}")
+
         cls._is_initialized = True
         return True
 

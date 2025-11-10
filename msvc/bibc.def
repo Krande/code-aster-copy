@@ -250,5 +250,8 @@ EXPORTS
 	utprin_
 	uttcsm_
 	uttrst_
+	win_cleanup_stacktrace
+	win_install_crash_handler
+	win_print_stacktrace
 	writdr_
 	xfini_

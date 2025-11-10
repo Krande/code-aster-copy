@@ -34,6 +34,12 @@
 
 #include <assert.h>
 
+#ifdef ASTER_PLATFORM_MSVC64
+extern "C" {
+#include "win_stacktrace.h"
+}
+#endif
+
 PyObject *AbstractErrorCpp::py_attrs() const {
     int idx = 0;
     PyObject *py_err = PyTuple_New( 4 );
@@ -79,26 +85,50 @@ void createExceptions( py::module_ &mod ) {
             if ( ptr )
                 std::rethrow_exception( ptr );
         } catch ( const ConvergenceErrorCpp &exc ) {
+#ifdef ASTER_PLATFORM_MSVC64
+            fprintf(stderr, "\n=== C++ Exception Caught: ConvergenceError ===\n");
+            win_print_stacktrace(stderr);
+#endif
             PyObject *args = exc.py_attrs();
             PyErr_SetObject( excConvergenceError.ptr(), args );
             Py_DECREF( args );
         } catch ( const IntegrationErrorCpp &exc ) {
+#ifdef ASTER_PLATFORM_MSVC64
+            fprintf(stderr, "\n=== C++ Exception Caught: IntegrationError ===\n");
+            win_print_stacktrace(stderr);
+#endif
             PyObject *args = exc.py_attrs();
             PyErr_SetObject( excIntegrationError.ptr(), args );
             Py_DECREF( args );
         } catch ( const SolverErrorCpp &exc ) {
+#ifdef ASTER_PLATFORM_MSVC64
+            fprintf(stderr, "\n=== C++ Exception Caught: SolverError ===\n");
+            win_print_stacktrace(stderr);
+#endif
             PyObject *args = exc.py_attrs();
             PyErr_SetObject( excSolverError.ptr(), args );
             Py_DECREF( args );
         } catch ( const ContactErrorCpp &exc ) {
+#ifdef ASTER_PLATFORM_MSVC64
+            fprintf(stderr, "\n=== C++ Exception Caught: ContactError ===\n");
+            win_print_stacktrace(stderr);
+#endif
             PyObject *args = exc.py_attrs();
             PyErr_SetObject( excContactError.ptr(), args );
             Py_DECREF( args );
         } catch ( const TimeLimitErrorCpp &exc ) {
+#ifdef ASTER_PLATFORM_MSVC64
+            fprintf(stderr, "\n=== C++ Exception Caught: TimeLimitError ===\n");
+            win_print_stacktrace(stderr);
+#endif
             PyObject *args = exc.py_attrs();
             PyErr_SetObject( excTimeLimitError.ptr(), args );
             Py_DECREF( args );
         } catch ( const AsterErrorCpp &exc ) {
+#ifdef ASTER_PLATFORM_MSVC64
+            fprintf(stderr, "\n=== C++ Exception Caught: AsterError ===\n");
+            win_print_stacktrace(stderr);
+#endif
             PyObject *args = exc.py_attrs();
             PyErr_SetObject( excAsterError.ptr(), args );
             Py_DECREF( args );
