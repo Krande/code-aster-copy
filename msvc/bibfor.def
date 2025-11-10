@@ -652,8 +652,17 @@ EXPORTS
     calcul_
     calcul_cara_maille_
     calcul_cwrap_
+    calcul_module_mp_ca_cpcapm__
+    calcul_module_mp_ca_cpcapp__
+    calcul_module_mp_ca_ctempm__
+    calcul_module_mp_ca_ctempp__
+    calcul_module_mp_ca_ctempr__
     calcul_module_mp_ca_numsd__
     calcul_module_mp_ca_paral__
+    calcul_module_mp_ca_td1__
+    calcul_module_mp_ca_tf1__
+    calcul_module_mp_ca_timed1__
+    calcul_module_mp_ca_timef1__
     calcul_module_mp_calcul_init_
     calcul_module_mp_calcul_status_
     calcva_
@@ -3966,6 +3975,10 @@ EXPORTS
     lcgtn_module_mp_compute_star_
     lcgtn_module_mp_computeplasticity_
     lcgtn_module_mp_dbg_
+    lcgtn_module_mp_dbg_tmp1_
+    lcgtn_module_mp_dbg_tmp2_
+    lcgtn_module_mp_dbg_tmp3_
+    lcgtn_module_mp_dbg_tmp4_
     lcgtn_module_mp_ddam_g_
     lcgtn_module_mp_djac_lbd_hat_
     lcgtn_module_mp_djac_m_hat_

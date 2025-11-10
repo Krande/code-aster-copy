@@ -121,7 +121,13 @@ def scan_cli():
         if test_dir.name in variants:
             run_type = test_dir.name
         os_subdir = platform.system().lower()
-        results_dir = output_dir / os_subdir / run_type
+        results_dir = output_dir
+        if os_subdir not in [p.name for p in output_dir.parents]:
+            print(f"Adding subdir {os_subdir} to results dir {results_dir}")
+            results_dir = results_dir / os_subdir
+        if output_dir.name not in variants:
+            results_dir = results_dir / run_type
+
         results_dir.mkdir(parents=True, exist_ok=True)
         eval_tests(test_dir, results_dir, args.set_passing_env_var)
 

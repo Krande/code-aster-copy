@@ -189,7 +189,10 @@ def _waitstatus_to_exitcode(status):
     return returncode
 
 
-if not hasattr(os, "waitstatus_to_exitcode"):
+# On Windows, always use the custom implementation because os.system() returns
+# the exit code directly, not a Unix-style wait status. The built-in
+# waitstatus_to_exitcode (Python 3.9+) expects Unix wait status and fails on Windows.
+if not hasattr(os, "waitstatus_to_exitcode") or RUNASTER_PLATFORM == "win":
     waitstatus_to_exitcode = _waitstatus_to_exitcode
 
 

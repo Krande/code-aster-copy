@@ -154,9 +154,25 @@ if "%FC%" == "ifx.exe" (
 :: Create dll debug pdb
 if "%BUILD_DEBUG%" == "1" (
     echo "Setting debug flags"
-    set FCFLAGS=%FCFLAGS% /check:stack
-    set CFLAGS=%CFLAGS% /Zi
-    set CXXFLAGS=%CXXFLAGS% /Zi
+    :: Intel Fortran Debug Flags:
+    :: /traceback - Generate detailed traceback information on runtime errors (CRITICAL for debugging)
+    :: /check:bounds - Check array bounds at runtime
+    :: /check:pointers - Check pointer validity
+    :: /debug:full - Full debug information
+    :: /Zi - Debug information for linking
+    :: /Od - Disable optimizations
+    :: /Qtrapuv - Initialize stack local variables to unusual values to aid error detection
+    :: /fp:precise - Consistent floating point results
+    :: Note: /check:uninit not supported on Windows ifx
+    set FCFLAGS=%FCFLAGS% /traceback /check:bounds /check:pointers /debug:full /Zi /Od /Qtrapuv /fp:precise
+    set CFLAGS=%CFLAGS% /Zi /Od
+    set CXXFLAGS=%CXXFLAGS% /Zi /Od
+
+    :: Intel Fortran runtime environment variables for detailed diagnostics
+    set FOR_DIAGNOSTIC_LOG_LEVEL=1
+    set FORT_FMT_RECL=1024
+    set FOR_DISABLE_STACK_TRACE=0
+    echo "Intel Fortran runtime diagnostics enabled"
 ) else (
     echo "Setting release flags"
 )
