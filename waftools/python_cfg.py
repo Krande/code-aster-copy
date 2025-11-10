@@ -143,7 +143,7 @@ check_cfg_old = getattr(Configure.ConfigurationContext, "check_cfg")
 @Configure.conf
 def check_cfg(self, *k, **kw):
     ret = check_cfg_old(self, *k, **kw)
-    if not self.env.CC_IS_INTEL:
+    if not self.env.CC_IS_INTEL and "clang" not in self.env.CC_NAME.lower():
         return ret
 
     to_be_removed = ["-ffat-lto-objects", "-flto", "-flto-partition=none", "-fuse-linker-plugin"]

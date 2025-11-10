@@ -27,7 +27,7 @@ from waflib import Configure, TaskGen, Utils, Logs
 
 
 def options(self):
-    self.load("compiler_c")
+    # already done by waftools/parallel.py: self.load("compiler_c")
     group = self.get_option_group("code_aster options")
     group.add_option(
         "-e",
@@ -54,7 +54,7 @@ def options(self):
 
 
 def configure(self):
-    self.load("compiler_c")
+    # already done by waftools/parallel.py: self.load("compiler_c")
     # preserve symbols in the dyn table for stdcalls
     if self.env.ASTER_PLATFORM_MINGW:
         self.add_linkflags(["-Wl,--export-all-symbols"])
@@ -84,8 +84,8 @@ def configure(self):
     self.check_c_compiler_flags()
 
     if self.env.ASTER_PLATFORM_MSYS2:
-        self.check_cc(lib='gfortran', uselib_store='GFORTRAN')
-        self.check_cc(lib='dbghelp', uselib_store='DBGHELP')
+        self.check_cc(lib="gfortran", uselib_store="GFORTRAN")
+        self.check_cc(lib="dbghelp", uselib_store="DBGHELP")
 
 
 @Configure.conf
@@ -140,7 +140,7 @@ def process_h(self, node):
 
 
 def post_install_links(ctx):
-    if not ctx.cmd.startswith('install'):
+    if not ctx.cmd.startswith("install"):
         return
 
     asterlibdir = Path(ctx.env.ASTERLIBDIR)
@@ -169,7 +169,6 @@ def post_install_links(ctx):
         else:
             os.symlink(libaster_path.name, linkpath)
             Logs.info(f"Created symlink: {linkpath}")
-
 
 
 def build_libbibc(self, env):
@@ -227,6 +226,7 @@ def build_libaster(self, env):
     )
 
     self.add_post_fun(post_install_links)
+
 
 @Configure.conf
 def check_c_compiler_flags(self):
