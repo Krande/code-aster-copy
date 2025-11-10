@@ -291,14 +291,11 @@ def post_mode_ops(self, MODE, GROUP_MA, MATR_MASS, CARA_ELEM=None):
 
     nume_ddl = MODE.getDOFNumbering()
     model = nume_ddl.getModel()
-    massMatrix = MODE.getMassMatrix()
 
     mater = None
     cara = CARA_ELEM
 
-    # mater = MODE.getMaterialField() : ne fonctionne pas si passage par calc_modes_multibandes
-    if massMatrix.getNumberOfElementaryMatrix() != 0:
-        mater = massMatrix.getMaterialField()
+    mater = MODE.getMaterialField()
 
     if mater is None:
         UTMESS("F", "MODAL_25")
