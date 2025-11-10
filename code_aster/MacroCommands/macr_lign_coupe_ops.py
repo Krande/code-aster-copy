@@ -149,7 +149,7 @@ def crea_grp_matiere(groupe, newgrp, iocc, m, __remodr, NOM_CHAM, __macou):
     return
 
 
-def crea_resu_local(dime, NOM_CHAM, m, resin, mail):
+def crea_resu_local(dime, NOM_CHAM, m, resin):
     epsi = 0.00000001
 
     if NOM_CHAM == "DEPL":
@@ -856,6 +856,18 @@ def macr_lign_coupe_ops(
     ):
         assert 0
 
+    # modify mesh before loading VisuCutBuilder
+    cut_to_group = {}
+    for iocc, m in enumerate(LIGN_COUPE):
+        cut_type = m["TYPE"]
+        if cut_type in ("GROUP_NO", "GROUP_MA"):
+            groupe = m[cut_type].ljust(8)
+        else:
+            ioc2 += 1
+            groupe = f"LICOF{ioc2}"
+            crea_grp_matiere(f"LICOU{ioc2}", groupe, iocc, m, __remodr, NOM_CHAM, __macou)
+        cut_to_group[iocc] = groupe
+
     if write_visu:
         visu_cut = VisuCutBuilder.from_aster_mesh(mesh=__macou)
 
@@ -882,13 +894,7 @@ def macr_lign_coupe_ops(
             motscles["TOUT_CMP"] = "OUI"
 
         cut_type = m["TYPE"]
-        if cut_type in ("GROUP_NO", "GROUP_MA"):
-            groupe = m[cut_type].ljust(8)
-        else:
-            ioc2 += 1
-            groupe = f"LICOF{ioc2}"
-            crea_grp_matiere(f"LICOU{ioc2}", groupe, iocc, m, __remodr, NOM_CHAM, __macou)
-
+        groupe: str = cut_to_group[iocc]
         # on definit l'intitulé
         if m["INTITULE"]:
             intitl = m["INTITULE"]
@@ -921,7 +927,7 @@ def macr_lign_coupe_ops(
                         )
                     )
                 else:
-                    __remodr = crea_resu_local(dime, NOM_CHAM, m, __recou, __macou)
+                    __remodr = crea_resu_local(dime, NOM_CHAM, m, __recou)
                     current_resu = __remodr
                     mcACTION.append(
                         _F(
@@ -970,6 +976,9 @@ def macr_lign_coupe_ops(
             visu_cut.add_field_on_nodes_from_aster_result_all_timesteps(
                 aster_result=current_resu, field_name=field_name, nodes=node_ids
             )
+
+            group_name = f"CUT_{intitl}"
+            visu_cut.add_group(name=group_name, ids=node_ids, geo_type=VisuCutBuilder.NODE)
 
     if write_visu:
         visu_filepath = Path(LogicalUnitFile.filename_from_unit(unit=UNITE_RESU))

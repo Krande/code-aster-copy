@@ -71,7 +71,9 @@ def test_visu_builder_works_for_node_fields(tmp_path):
     )
 
     visu_cut.add_group(name="toto", ids=[1,2], geo_type=VisuCutBuilder.NODE)
+    visu_cut.add_group(name="toto2", ids=[2,3], geo_type=VisuCutBuilder.NODE)
     visu_cut.add_group(name="tata", ids=[2,3], geo_type=VisuCutBuilder.LINE)
+    visu_cut.add_group(name="tata2", ids=[3,4], geo_type=VisuCutBuilder.LINE)
 
     temp_med_file = tmp_path / "visu_1.med"
     visu_cut.write(temp_med_file)

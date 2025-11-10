@@ -472,7 +472,20 @@ table = MACR_LIGN_COUPE(CHAM_GD=CHNO, MODELE=MO, UNITE_RESU=unite_resu, LIGN_COU
 DEFI_FICHIER(ACTION="LIBERER", UNITE=unite_resu)
 
 values = table.EXTR_TABLE().values()
-actual = np.array(
+
+dtype_table = [
+    ("ID", np.int32),
+    ("NUME_ORDRE", np.int32),
+    ("INST", np.float64),
+    ("ABSC_CURV", np.float64),
+    ("COOR_X", np.float64),
+    ("COOR_Y", np.float64),
+    ("COOR_Z", np.float64),
+    ("DX", np.float64),
+    ("DY", np.float64),
+    ("DZ", np.float64),
+]
+table_array = np.array(
     list(
         zip(
             [int(val) for val in values["INTITULE"]],
@@ -486,21 +499,23 @@ actual = np.array(
             values["DY"],
             values["DZ"],
         )
-    )
+    ),
+    dtype=dtype_table,
 )
-reference = np.loadtxt("fort.39")
+reference = np.loadtxt("fort.39", dtype=dtype_table)
 
 # # To update refence table use numpy savetxt
 # from pathlib import Path
-# np.savetxt(Path.home() / "dev" / "codeaster" / "src" / "astest" / "zzzz136c.39",
+# reference_path: Path = Path.home() / "dev" / "codeaster" / "src" / "astest" / "zzzz136c.39"
+# np.savetxt(reference_path,
 #            actual,
 #            header=f"Cut id -> name {pprint.pformat(cut_ids)}\n"
+#            f"dtype = {dtype_table}\n"
 #            "ID NUME_ORDRE INST ABSC_CURV COOR_X COOR_Y COOR_Z DX DY DZ", )
 
-test.assertArrayEqual(actual=actual, reference=reference, rtol=1.0e-07, atol=1.0e-6)
+test.assertArrayEqual(actual=table_array, reference=reference, rtol=1.0e-07, atol=1.0e-6)
 
 # testing that med and table output files match
-reference = np.array(list(zip(values["DX"], values["DY"], values["DZ"])))
 actual_medfilefiled = mc.MEDFileFieldMultiTS(medfilename_tmp)
 actual_medfield: mc.MEDCouplingFieldDouble = actual_medfilefiled.getFieldAtLevel(
     mc.ON_NODES, 1, 0, 1
@@ -510,6 +525,26 @@ components = actual_medfield.getArray().getInfoOnComponents()
 components_index_to_compare = [components.index(compo) for compo in ("DX", "DY", "DZ")]
 
 actual_med_array = actual_medfield.getArray().toNumPyArray()[:, components_index_to_compare]
-test.assertArrayEqual(actual=actual_med_array, reference=reference, rtol=1.0e-07, atol=1.0e-6)
+test.assertArrayEqual(
+    actual=actual_med_array,
+    reference=np.array(table_array[["DX", "DY", "DZ"]].tolist()),
+    rtol=1.0e-07,
+    atol=1.0e-6,
+)
+
+# Testing that CUT_20 group results in med match INTITULE 20 table results
+meshMEDFileRead = mc.MEDFileUMesh.New(medfilename_tmp)
+
+cut_20_node_ids = meshMEDFileRead.getGroupArr(1, "CUT_20").getValues()
+
+# filter table_results for INTITULE 20
+mask = table_array["ID"] == 20
+
+test.assertArrayEqual(
+    actual=actual_med_array[cut_20_node_ids],
+    reference=np.array(table_array[["DX", "DY", "DZ"]][mask].tolist()),
+    rtol=1.0e-07,
+    atol=1.0e-6,
+)
 
 FIN()

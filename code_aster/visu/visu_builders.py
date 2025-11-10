@@ -148,7 +148,7 @@ class VisuCutBuilder:
         """
         group = mc.DataArrayInt(list(ids))
         group.setName(name=name)
-        self.mesh_med.setGroupsAtLevel(self._max_geo_type - geo_type, [group])
+        self.mesh_med.addGroupsAtLevel(self._max_geo_type - geo_type, [group])
 
     def write(self, filepath: Path):
         if not self.arrays:
