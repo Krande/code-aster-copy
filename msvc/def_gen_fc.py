@@ -10,6 +10,7 @@ import argparse
 import subprocess
 import sys
 from pathlib import Path
+from def_gen_cache import DumpbinCache, run_dumpbin_for_file
 
 
 def find_object_files(build_dir):
@@ -42,19 +43,18 @@ def find_object_files(build_dir):
     return obj_files
 
 
-def extract_symbols(obj_files):
-    """Extract defined external symbols from COFF objs via dumpbin.
+def extract_symbols_from_dumpbin_lines(lines):
+    """Extract and filter symbols from dumpbin output lines.
 
-    We no longer require trailing underscores nor the "()" marker, because
-    MSVC/Intel Fortran often emit symbols without underscores and may not
-    annotate with parentheses in COFF symbol listings.
+    Args:
+        lines: List of dumpbin output lines
 
-    Additionally, filter out MSVC/Intel Fortran constant pool symbols like
-    __real@..., __xmm@..., __ymm@..., and similar, which must not be exported.
+    Returns:
+        List of filtered symbol names
     """
     import re
 
-    defined = set()
+    defined = []
 
     # Exclude common non-exportable prefixes and thunks
     exclude_prefixes = (
@@ -67,65 +67,87 @@ def extract_symbols(obj_files):
     # This will drop names containing '@' (stdcall decorations), dots, etc.
     api_name_re = re.compile(r"^[A-Za-z][A-Za-z0-9_]*$")
 
-    for obj_file in obj_files:
-        try:
-            result = subprocess.run(
-                ["dumpbin", "/SYMBOLS", str(obj_file)],
-                capture_output=True,
-                text=True,
-                check=True,
-            )
-        except FileNotFoundError:
-            print("Error: dumpbin.exe not found. Make sure MSVC tools are in PATH.")
-            sys.exit(1)
-        except subprocess.CalledProcessError:
+    for raw in lines:
+        line = raw.strip()
+        # We want: External, defined (not UNDEF), associated with a section
+        if "External" not in line or "|" not in line:
+            continue
+        if "UNDEF" in line:
+            continue
+        if "SECT" not in line:
             continue
 
-        for raw in result.stdout.splitlines():
-            line = raw.strip()
-            # We want: External, defined (not UNDEF), associated with a section
-            if "External" not in line or "|" not in line:
-                continue
-            if "UNDEF" in line:
-                continue
-            if "SECT" not in line:
-                continue
+        # right side after the '|'
+        try:
+            right = line.split("|", 1)[1].strip()
+        except Exception:
+            continue
+        if not right:
+            continue
 
-            # right side after the '|'
-            try:
-                right = line.split("|", 1)[1].strip()
-            except Exception:
-                continue
-            if not right:
-                continue
+        # The symbol token is typically the last field after the '|'
+        token = right.split()[-1]
+        name = token.strip()
+        # Some dumpbin variants append '()' to function names; strip it if present
+        if name.endswith("()"):
+            name = name[:-2]
+        if not name:
+            continue
 
-            # The symbol token is typically the last field after the '|'
-            token = right.split()[-1]
-            name = token.strip()
-            # Some dumpbin variants append '()' to function names; strip it if present
-            if name.endswith("()"):
-                name = name[:-2]
-            if not name:
-                continue
+        # Exclusions for obvious non-APIs and internals
+        if name.startswith(exclude_prefixes):
+            continue
+        if name.startswith("?"):  # C++ mangled
+            continue
+        if "." in name:          # module metadata
+            continue
+        if name.endswith("._"):# or "_module" in name or "_mp_" in name:
+            continue
+        if "@" in name:          # stdcall-size decorated or const pools
+            continue
+        if not api_name_re.match(name):
+            continue
+        if name in exclude_symbols:
+            continue
+        defined.append(name)
 
-            # Exclusions for obvious non-APIs and internals
-            if name.startswith(exclude_prefixes):
-                continue
-            if name.startswith("?"):  # C++ mangled
-                continue
-            if "." in name:          # module metadata
-                continue
-            if name.endswith("._"):# or "_module" in name or "_mp_" in name:
-                continue
-            if "@" in name:          # stdcall-size decorated or const pools
-                continue
-            if not api_name_re.match(name):
-                continue
-            if name in exclude_symbols:
-                continue
-            defined.add(name)
+    return defined
 
-    return sorted(defined)
+
+def extract_symbols(obj_files, cache=None, use_hash=False):
+    """Extract defined external symbols from COFF objs via dumpbin.
+
+    We no longer require trailing underscores nor the "()" marker, because
+    MSVC/Intel Fortran often emit symbols without underscores and may not
+    annotate with parentheses in COFF symbol listings.
+
+    Additionally, filter out MSVC/Intel Fortran constant pool symbols like
+    __real@..., __xmm@..., __ymm@..., and similar, which must not be exported.
+
+    Args:
+        obj_files: List of object file paths
+        cache: Optional DumpbinCache instance for caching
+        use_hash: If True, use file hash for cache validation; if False, use mtime
+    """
+    if cache is not None:
+        # Use cache-aware extraction
+        def extract_for_file(files):
+            """Extract symbols from a single file for caching."""
+            assert len(files) == 1
+            success, lines = run_dumpbin_for_file(files[0])
+            if success:
+                return extract_symbols_from_dumpbin_lines(lines)
+            return []
+
+        return cache.extract_symbols_with_cache(obj_files, extract_for_file, use_hash)
+    else:
+        # Original non-cached implementation
+        defined = []
+        for obj_file in obj_files:
+            success, lines = run_dumpbin_for_file(obj_file)
+            if success:
+                defined.extend(extract_symbols_from_dumpbin_lines(lines))
+        return defined
 
 
 def generate_def_file(symbols, output_file):
@@ -186,6 +208,9 @@ def main():
     parser = argparse.ArgumentParser(description="Generate bibfor.def from Fortran object files")
     parser.add_argument("--build-dir", type=Path, help="Build directory containing object files")
     parser.add_argument("--output", type=Path, help="Output .def file path")
+    parser.add_argument("--cache", type=Path, help="Cache file path (default: <output-dir>/.bibfor_defgen_cache.json)")
+    parser.add_argument("--use-hash", action="store_true", help="Use file hash instead of mtime for cache validation (slower but more reliable)")
+    parser.add_argument("--no-cache", action="store_true", help="Disable caching")
     args = parser.parse_args()
 
     # Determine paths
@@ -219,8 +244,25 @@ def main():
         print("Error: No object files found. Please compile bibfor first.")
         sys.exit(1)
 
+    # Initialize cache if enabled
+    cache = None
+    if not args.no_cache:
+        if args.cache:
+            cache_file = args.cache
+        else:
+            # Default cache location
+            output_file = args.output if args.output else (script_dir / "bibfor.def")
+            cache_file = output_file.parent / ".bibfor_defgen_cache.json"
+
+        cache = DumpbinCache(cache_file)
+        print(f"Using cache file: {cache_file}")
+
     # Extract symbols
-    symbols = set(extract_symbols(obj_files))
+    symbols = set(extract_symbols(obj_files, cache=cache, use_hash=args.use_hash))
+
+    # Save cache if used
+    if cache is not None:
+        cache.save()
 
     # Subtract symbols belonging to separate libraries if their DEFs exist
     bibfor_ext_def = script_dir / "bibfor_ext.def"

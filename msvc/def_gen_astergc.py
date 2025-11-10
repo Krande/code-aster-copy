@@ -13,6 +13,7 @@ import argparse
 import subprocess
 import sys
 from pathlib import Path
+from def_gen_cache import DumpbinCache, run_dumpbin_for_file
 
 
 def find_object_files(build_dir):
@@ -35,13 +36,18 @@ def find_object_files(build_dir):
     return obj_files
 
 
-def extract_symbols(obj_files):
-    """Extract intended export symbols using dumpbin with robust filtering.
+def extract_symbols_from_dumpbin_lines(lines):
+    """Extract and filter symbols from dumpbin output lines.
 
-    Goal: avoid exporting MSVC C++ mangled names and template/CRT internals; keep
-    only C/Fortran-like API symbols that are actually defined in these objects.
+    Args:
+        lines: List of dumpbin output lines
+
+    Returns:
+        List of filtered symbol names
     """
-    symbols = set()
+    import re
+
+    symbols = []
 
     # Exclude common non-exportable prefixes and thunks, plus const pools
     exclude_prefixes = (
@@ -57,68 +63,84 @@ def extract_symbols(obj_files):
     }
 
     # Accept only C-like api names (letters/underscores and digits)
-    import re
     api_name_re = re.compile(r"^[A-Za-z_][A-Za-z0-9_]*$")
 
-    for obj_file in obj_files:
-        try:
-            result = subprocess.run(
-                ["dumpbin", "/SYMBOLS", str(obj_file)],
-                capture_output=True,
-                text=True,
-                check=True,
-            )
-        except FileNotFoundError:
-            print("Error: dumpbin.exe not found. Make sure MSVC tools are in PATH.")
-            sys.exit(1)
-        except subprocess.CalledProcessError:
-            # Skip problematic objects but continue overall
+    for raw in lines:
+        line = raw.strip()
+        if "External" not in line or "|" not in line:
+            continue
+        if "UNDEF" in line:
+            continue
+        if "SECT" not in line:
             continue
 
-        for raw in result.stdout.splitlines():
-            line = raw.strip()
-            if "External" not in line or "|" not in line:
-                continue
-            if "UNDEF" in line:
-                continue
-            if "SECT" not in line:
-                continue
+        try:
+            right = line.split("|", 1)[1].strip()
+        except Exception:
+            continue
+        if not right:
+            continue
 
-            try:
-                right = line.split("|", 1)[1].strip()
-            except Exception:
-                continue
-            if not right:
-                continue
+        token = right.split()[-1]
+        name = token.strip()
+        if name.endswith("()"):
+            name = name[:-2]
+        if not name:
+            continue
 
-            token = right.split()[-1]
-            name = token.strip()
-            if name.endswith("()"):
-                name = name[:-2]
-            if not name:
-                continue
+        # Hard rejections
+        if name.startswith(exclude_prefixes):
+            continue
+        # Exclude MSVC and Itanium C++ mangled names
+        if name.startswith('?') or name.startswith('_Z'):
+            continue
+        # Exclude decorated/section names
+        if ("@" in name) or ("." in name):
+            continue
+        if not api_name_re.match(name):
+            continue
+        if name in exclude_symbols:
+            continue
+        # Positive allow-list: keep only clear public API prefixes
+        allowed_prefixes = ("PyInit_", "aster_gc_", "gc_")
+        #if not name.startswith(allowed_prefixes):
+        #    continue
 
-            # Hard rejections
-            if name.startswith(exclude_prefixes):
-                continue
-            # Exclude MSVC and Itanium C++ mangled names
-            if name.startswith('?') or name.startswith('_Z'):
-                continue
-            # Exclude decorated/section names
-            if ("@" in name) or ("." in name):
-                continue
-            if not api_name_re.match(name):
-                continue
-            if name in exclude_symbols:
-                continue
-            # Positive allow-list: keep only clear public API prefixes
-            allowed_prefixes = ("PyInit_", "aster_gc_", "gc_")
-            #if not name.startswith(allowed_prefixes):
-            #    continue
+        symbols.append(name)
 
-            symbols.add(name)
+    return symbols
 
-    return sorted(symbols)
+
+def extract_symbols(obj_files, cache=None, use_hash=False):
+    """Extract intended export symbols using dumpbin with robust filtering.
+
+    Goal: avoid exporting MSVC C++ mangled names and template/CRT internals; keep
+    only C/Fortran-like API symbols that are actually defined in these objects.
+
+    Args:
+        obj_files: List of object file paths
+        cache: Optional DumpbinCache instance for caching
+        use_hash: If True, use file hash for cache validation; if False, use mtime
+    """
+    if cache is not None:
+        # Use cache-aware extraction
+        def extract_for_file(files):
+            """Extract symbols from a single file for caching."""
+            assert len(files) == 1
+            success, lines = run_dumpbin_for_file(files[0])
+            if success:
+                return extract_symbols_from_dumpbin_lines(lines)
+            return []
+
+        return cache.extract_symbols_with_cache(obj_files, extract_for_file, use_hash)
+    else:
+        # Original non-cached implementation
+        symbols = []
+        for obj_file in obj_files:
+            success, lines = run_dumpbin_for_file(obj_file)
+            if success:
+                symbols.extend(extract_symbols_from_dumpbin_lines(lines))
+        return symbols
 
 
 def generate_def_file(symbols, output_file):
@@ -137,6 +159,9 @@ def main():
     parser = argparse.ArgumentParser(description="Generate asterGC.def from object files")
     parser.add_argument("--build-dir", type=Path, help="Build directory containing object files")
     parser.add_argument("--output", type=Path, help="Output .def file path")
+    parser.add_argument("--cache", type=Path, help="Cache file path (default: <output-dir>/.astergc_defgen_cache.json)")
+    parser.add_argument("--use-hash", action="store_true", help="Use file hash instead of mtime for cache validation (slower but more reliable)")
+    parser.add_argument("--no-cache", action="store_true", help="Disable caching")
     args = parser.parse_args()
 
     # Determine paths
@@ -170,8 +195,25 @@ def main():
         print("Error: No object files found. Please compile asterGC first.")
         sys.exit(1)
 
+    # Initialize cache if enabled
+    cache = None
+    if not args.no_cache:
+        if args.cache:
+            cache_file = args.cache
+        else:
+            # Default cache location
+            output_file = args.output if args.output else (script_dir / "asterGC.def")
+            cache_file = output_file.parent / ".astergc_defgen_cache.json"
+
+        cache = DumpbinCache(cache_file)
+        print(f"Using cache file: {cache_file}")
+
     # Extract symbols
-    symbols = extract_symbols(obj_files)
+    symbols = sorted(set(extract_symbols(obj_files, cache=cache, use_hash=args.use_hash)))
+
+    # Save cache if used
+    if cache is not None:
+        cache.save()
 
     if not symbols:
         print("Warning: No symbols extracted!")

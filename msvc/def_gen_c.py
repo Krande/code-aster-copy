@@ -11,6 +11,7 @@ import subprocess
 import sys
 import re
 from pathlib import Path
+from def_gen_cache import DumpbinCache, run_dumpbin_for_file
 
 
 def find_object_files(build_dir, library_name="bibc"):
@@ -50,12 +51,14 @@ def find_object_files(build_dir, library_name="bibc"):
     return unique_files
 
 
-def extract_c_symbols(obj_file):
-    """Extract C symbols from an object file using dumpbin.
+def extract_symbols_from_dumpbin_lines(lines):
+    """Extract and filter C symbols from dumpbin output lines.
 
-    Notes:
-    - Filters out import thunks (__imp_), C++/RTTI/CRT internals, and stray annotations
-      appended by dumpbin like "(__declspec(dllimport) ... )".
+    Args:
+        lines: List of dumpbin output lines
+
+    Returns:
+        Tuple of (symbols, data_symbols) - both as lists
     """
     symbols = []
     data_symbols = []
@@ -76,69 +79,112 @@ def extract_c_symbols(obj_file):
         "_scanf_l", "_fscanf_l", "_sscanf_l", "vsprintf",
     }
 
-    try:
-        # Run dumpbin to get symbols
-        result = subprocess.run(
-            ["dumpbin", "/SYMBOLS", str(obj_file)],
-            capture_output=True,
-            text=True,
-            check=True
-        )
-
-        for line in result.stdout.split('\n'):
-            # Look for External symbols that are actually defined in this object
-            if "External" in line and "|" in line:
-                if "UNDEF" in line:
-                    # skip undefined externals; they are imported from other libs
+    for line in lines:
+        # Look for External symbols that are actually defined in this object
+        if "External" in line and "|" in line:
+            if "UNDEF" in line:
+                # skip undefined externals; they are imported from other libs
+                continue
+            parts = line.split('|', 1)
+            if len(parts) >= 2:
+                # Right side typically starts with the symbol then whitespace and annotations
+                right = parts[1].strip()
+                if not right:
                     continue
-                parts = line.split('|', 1)
-                if len(parts) >= 2:
-                    # Right side typically starts with the symbol then whitespace and annotations
-                    right = parts[1].strip()
-                    if not right:
-                        continue
-                    token = right.split()[0]  # strip any trailing annotations
+                token = right.split()[0]  # strip any trailing annotations
 
-                    # strip any surrounding parentheses remnants
-                    symbol = token.strip() \
-                        .removesuffix(')') \
-                        .removeprefix('(')
+                # strip any surrounding parentheses remnants
+                symbol = token.strip() \
+                    .removesuffix(')') \
+                    .removeprefix('(')
 
-                    # Check if it's a DATA symbol (global variable)
-                    is_data = "SECT" in line and not ("()" in line or "notype" in line.lower())
+                # Check if it's a DATA symbol (global variable)
+                is_data = "SECT" in line and not ("()" in line or "notype" in line.lower())
 
-                    # Filtering rules
-                    if not symbol:
-                        continue
-                    if symbol in exclude_symbols:
-                        continue
-                    # Exclude any symbol with obvious decoration/metadata
-                    if symbol.startswith('.') or ('@' in symbol) or ('.' in symbol):
-                        continue
-                    if symbol.startswith(exclude_prefixes):
-                        continue
+                # Filtering rules
+                if not symbol:
+                    continue
+                if symbol in exclude_symbols:
+                    continue
+                # Exclude any symbol with obvious decoration/metadata
+                if symbol.startswith('.') or ('@' in symbol) or ('.' in symbol):
+                    continue
+                if symbol.startswith(exclude_prefixes):
+                    continue
 
-                    # Exclude C++ mangled names (MSVC and Itanium)
-                    if symbol.startswith('?') or symbol.startswith('_Z'):
-                        continue
+                # Exclude C++ mangled names (MSVC and Itanium)
+                if symbol.startswith('?') or symbol.startswith('_Z'):
+                    continue
 
-                    # Accept standard C/Fortran-identifiers (letters/underscore, digits/underscore)
-                    # This allows lowercase exports like r8prem_ used by Fortran-callable C shims.
-                    if not re.match(r'^_?[A-Za-z][A-Za-z0-9_]*$', symbol):
-                        continue
+                # Accept standard C/Fortran-identifiers (letters/underscore, digits/underscore)
+                # This allows lowercase exports like r8prem_ used by Fortran-callable C shims.
+                if not re.match(r'^_?[A-Za-z][A-Za-z0-9_]*$', symbol):
+                    continue
 
-                    if is_data:
-                        data_symbols.append(symbol)
-                    else:
-                        symbols.append(symbol)
-
-    except subprocess.CalledProcessError as e:
-        print(f"Warning: Failed to process {obj_file}: {e}", file=sys.stderr)
-    except FileNotFoundError:
-        print("Error: dumpbin.exe not found. Ensure MSVC tools are in PATH.", file=sys.stderr)
-        sys.exit(1)
+                if is_data:
+                    data_symbols.append(symbol)
+                else:
+                    symbols.append(symbol)
 
     return symbols, data_symbols
+
+
+def extract_c_symbols(obj_file):
+    """Extract C symbols from an object file using dumpbin.
+
+    Notes:
+    - Filters out import thunks (__imp_), C++/RTTI/CRT internals, and stray annotations
+      appended by dumpbin like "(__declspec(dllimport) ... )".
+    """
+    success, lines = run_dumpbin_for_file(obj_file)
+    if success:
+        return extract_symbols_from_dumpbin_lines(lines)
+    return [], []
+
+
+def extract_all_symbols(obj_files, cache=None, use_hash=False):
+    """Extract all C symbols from multiple object files with optional caching.
+
+    Args:
+        obj_files: List of object file paths
+        cache: Optional DumpbinCache instance for caching
+        use_hash: If True, use file hash for cache validation; if False, use mtime
+
+    Returns:
+        Tuple of (all_symbols, all_data_symbols) - both as lists
+    """
+    if cache is not None:
+        # Use cache-aware extraction
+        def extract_for_file(files):
+            """Extract symbols from a single file for caching.
+            Returns list of tuples: [('symbol', False), ('data_symbol', True), ...]
+            where the boolean indicates if it's a data symbol.
+            """
+            assert len(files) == 1
+            success, lines = run_dumpbin_for_file(files[0])
+            if success:
+                syms, data_syms = extract_symbols_from_dumpbin_lines(lines)
+                # Encode as tuples with type flag
+                result = [(s, False) for s in syms] + [(s, True) for s in data_syms]
+                return result
+            return []
+
+        # Extract with cache
+        all_tuples = cache.extract_symbols_with_cache(obj_files, extract_for_file, use_hash)
+
+        # Decode tuples back into separate lists
+        all_symbols = [s for s, is_data in all_tuples if not is_data]
+        all_data_symbols = [s for s, is_data in all_tuples if is_data]
+    else:
+        # Original non-cached implementation
+        all_symbols = []
+        all_data_symbols = []
+        for obj_file in obj_files:
+            symbols, data_symbols = extract_c_symbols(obj_file)
+            all_symbols.extend(symbols)
+            all_data_symbols.extend(data_symbols)
+
+    return all_symbols, all_data_symbols
 
 
 def _read_def_exports(def_path: Path):
@@ -208,6 +254,9 @@ def main():
         nargs='+',
         help="Specific object files to process (optional)"
     )
+    parser.add_argument("--cache", type=Path, help="Cache file path (default: <output-dir>/.bibc_defgen_cache.json)")
+    parser.add_argument("--use-hash", action="store_true", help="Use file hash instead of mtime for cache validation (slower but more reliable)")
+    parser.add_argument("--no-cache", action="store_true", help="Disable caching")
 
     args = parser.parse_args()
     script_dir = Path(__file__).parent
@@ -239,13 +288,25 @@ def main():
 
     print(f"Processing {len(obj_files)} object files...")
 
+    # Initialize cache if enabled
+    cache = None
+    if not args.no_cache:
+        if args.cache:
+            cache_file = args.cache
+        else:
+            # Default cache location
+            output_path = Path(args.output)
+            cache_file = output_path.parent / ".bibc_defgen_cache.json"
+
+        cache = DumpbinCache(cache_file)
+        print(f"Using cache file: {cache_file}")
+
     # Extract symbols from all object files
-    all_symbols = []
-    all_data_symbols = []
-    for obj_file in obj_files:
-        symbols, data_symbols = extract_c_symbols(obj_file)
-        all_symbols.extend(symbols)
-        all_data_symbols.extend(data_symbols)
+    all_symbols, all_data_symbols = extract_all_symbols(obj_files, cache=cache, use_hash=args.use_hash)
+
+    # Save cache if used
+    if cache is not None:
+        cache.save()
 
     # Exclude symbols that belong to separate libs (asterGC, bibfor_ext) if their DEFs exist
     script_dir = Path(__file__).parent

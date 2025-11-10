@@ -1,1 +1,3 @@
 *_v2.def
+# Def generation cache files
+.*_defgen_cache.json

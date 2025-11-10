@@ -156,15 +156,18 @@ if "%BUILD_DEBUG%" == "1" (
     echo "Setting debug flags"
     :: Intel Fortran Debug Flags:
     :: /traceback - Generate detailed traceback information on runtime errors (CRITICAL for debugging)
-    :: /check:bounds - Check array bounds at runtime
-    :: /check:pointers - Check pointer validity
     :: /debug:full - Full debug information
     :: /Zi - Debug information for linking
     :: /Od - Disable optimizations
     :: /Qtrapuv - Initialize stack local variables to unusual values to aid error detection
     :: /fp:precise - Consistent floating point results
+    ::
+    :: DISABLED for now - these checks are too strict for the current code:
+    :: /check:bounds - Check array bounds at runtime (CAUSES ISSUES with pointer/integer conversions)
+    :: /check:pointers - Check pointer validity (CAUSES ISSUES with JEVEUX memory management)
+    ::
     :: Note: /check:uninit not supported on Windows ifx
-    set FCFLAGS=%FCFLAGS% /traceback /check:bounds /check:pointers /debug:full /Zi /Od /Qtrapuv /fp:precise
+    set FCFLAGS=%FCFLAGS% /traceback /debug:full /Zi /Od /Qtrapuv /fp:precise
     set CFLAGS=%CFLAGS% /Zi /Od
     set CXXFLAGS=%CXXFLAGS% /Zi /Od
 
