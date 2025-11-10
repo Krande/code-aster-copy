@@ -179,6 +179,8 @@ def check_optimization_cxxflags_msvc(self):
     self.define("ASTER_DEBUG_CXX", 1)
     self.remove_optflags("CXXFLAGS")
     flags = ["/Zi", "/Od"] + Utils.to_list(self.env["CXXFLAGS_ASTER_DEBUG"])
+    # Add linker flags for full debug information (needed for proper stack traces on crashes)
+    self.env.append_unique("LINKFLAGS", ["/DEBUG:FULL", "/INCREMENTAL:NO"])
     if self.options.enable_coverage:
         # Note: MSVC uses different mechanisms for code coverage; adjust as necessary for your tooling.
         pass

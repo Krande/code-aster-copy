@@ -115,13 +115,19 @@ def scan_cli():
     test_root_dir = test_root_dir.resolve().absolute()
     variants = ["nompi", "openmpi"]
     output_dir = pathlib.Path(args.output)
-    for run_dir_xml in test_root_dir.rglob('run_testcases.xml'):
+    run_cases = list(test_root_dir.rglob('run_testcases.xml'))
+    results_dir = output_dir
+    if len(run_cases) == 0:
+        eval_tests(test_root_dir, results_dir, args.set_passing_env_var)
+        return None
+
+    for run_dir_xml in run_cases:
         test_dir = run_dir_xml.parent
         run_type = ''
         if test_dir.name in variants:
             run_type = test_dir.name
         os_subdir = platform.system().lower()
-        results_dir = output_dir
+
         if os_subdir not in [p.name for p in output_dir.parents]:
             print(f"Adding subdir {os_subdir} to results dir {results_dir}")
             results_dir = results_dir / os_subdir

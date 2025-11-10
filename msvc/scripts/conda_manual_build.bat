@@ -170,10 +170,13 @@ if "%BUILD_DEBUG%" == "1" (
     set FCFLAGS=%FCFLAGS% /traceback /debug:full /Zi /Od /Qtrapuv /fp:precise
     set CFLAGS=%CFLAGS% /Zi /Od
     set CXXFLAGS=%CXXFLAGS% /Zi /Od
+    set LDFLAGS=%LDFLAGS% /DEBUG:FULL /INCREMENTAL:NO
 
     :: Intel Fortran runtime environment variables for detailed diagnostics
+    :: Note: FORT_FMT_RECL should not be set too low to avoid "output statement overflows record" errors
+    :: The default value is typically sufficient for most cases
     set FOR_DIAGNOSTIC_LOG_LEVEL=1
-    set FORT_FMT_RECL=1024
+    :: set FORT_FMT_RECL=1024
     set FOR_DISABLE_STACK_TRACE=0
     echo "Intel Fortran runtime diagnostics enabled"
 ) else (

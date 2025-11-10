@@ -25,32 +25,18 @@ subroutine affich(nomfic, texte)
 #include "asterfort/uldefi.h"
     character(len=*) :: texte
     character(len=*) :: nomfic
-    integer(kind=8) :: ifm, ier, text_len, i, remaining, chunk_max
+    integer(kind=8) :: ifm, ier
     aster_logical :: ouvert
 !     ----------------------------------------------------------------
     ouvert = .true.
     ifm = iunifi(nomfic)
-    text_len = len_trim(texte)
-
-!     Windows console has limited record length (typically 1024 chars)
-!     Limit output to 512 characters per write to avoid overflow
-    chunk_max = 512
 !
 ! --- SI JEVEUX N'EST PAS DISPONIBLE (PAS INITIALISE OU FERME)
 !     ON SE CONTENTE DU WRITE BRUT
 !
     if (isjvup() .eq. 0) then
 !
-        ! Chunk output for Windows console compatibility
-        if (text_len .le. chunk_max) then
-            write (ifm, '(A)') texte(1:text_len)
-        else
-            do i = 1, text_len, chunk_max
-                remaining = min(chunk_max, text_len - i + 1)
-                write (ifm, '(A)', advance='no') texte(i:i+remaining-1)
-            end do
-            write (ifm, '(A)') ''
-        end if
+        write (ifm, '(A)') texte
 !
     elseif (ifm .ne. 0) then
 !        LE FICHIER EST-IL OUVERT ?
@@ -60,16 +46,7 @@ subroutine affich(nomfic, texte)
                         'O')
         end if
 !
-        ! Chunk output for Windows console compatibility
-        if (text_len .le. chunk_max) then
-            write (ifm, '(A)') texte(1:text_len)
-        else
-            do i = 1, text_len, chunk_max
-                remaining = min(chunk_max, text_len - i + 1)
-                write (ifm, '(A)', advance='no') texte(i:i+remaining-1)
-            end do
-            write (ifm, '(A)') ''
-        end if
+        write (ifm, '(A)') texte
 !
         if (.not. ouvert) then
             call uldefi(-ifm, ' ', ' ', 'A', 'A', &
