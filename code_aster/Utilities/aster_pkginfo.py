@@ -19,7 +19,7 @@
 
 from collections import namedtuple
 
-locale_dir = '@ASTERLOCALEDIR@'
+locale_dir = r'@ASTERLOCALEDIR@'
 
 version_info = namedtuple('aster_version_info', [
 'version', 'parentid', 'branch', 'date', 'from_branch', 'changes', 'uncommitted'
