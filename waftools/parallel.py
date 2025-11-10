@@ -174,12 +174,10 @@ def load_compilers_mpi(self):
         self.env["FCLINKFLAGS_MPI"] = self.env["LINKFLAGS_MPI"]
         del self.env["LINKFLAGS_MPI"]
 
-    if not self.env.CC_IS_INTEL:
-        self.check_cc(header_name="mpi.h", use="MPI")
-
     self.define("ASTER_HAVE_MPI", 1)
     self.env.BUILD_MPI = 1
     self.env.ASTER_HAVE_MPI = 1
+    self.check_mpi_fortran_interface()
 
 
 @Configure.conf
@@ -231,28 +229,44 @@ def check_openmp(self):
 @Configure.conf
 def check_sizeof_mpi_int(self):
     """Check size of MPI_Fint"""
-    if self.get_define("ASTER_HAVE_MPI"):
-        fragment = "\n".join(
-            [
-                "#include <stdio.h>",
-                '#include "mpi.h"',
-                "int main(void){",
-                "    MPI_Fint var;",
-                '    printf("%d", (int)sizeof(var));',
-                "    return 0;",
-                "}",
-                "",
-            ]
-        )
-        self.code_checker(
-            "ASTER_MPI_INT_SIZE",
-            self.check_cc,
-            fragment,
-            "Checking size of MPI_Fint integers",
-            "unexpected value for sizeof(MPI_Fint): %(size)s",
-            into=(4, 8),
-            use="MPI",
-        )
+    if not self.get_define("ASTER_HAVE_MPI"):
+        return
+    fragment = "\n".join(
+        [
+            "#include <stdio.h>",
+            '#include "mpi.h"',
+            "int main(void){",
+            "    MPI_Fint var;",
+            '    printf("%d", (int)sizeof(var));',
+            "    return 0;",
+            "}",
+            "",
+        ]
+    )
+    self.code_checker(
+        "ASTER_MPI_INT_SIZE",
+        self.check_cc,
+        fragment,
+        "Checking size of MPI_Fint integers",
+        "unexpected value for sizeof(MPI_Fint): %(size)s",
+        into=(4, 8),
+        use="MPI",
+    )
+
+
+@Configure.conf
+def check_mpi_fortran_interface(self):
+    """Check mpi fortran module"""
+    self.check_cc(header_name="mpi.h", use="MPI")
+    # because use of mpif.h is deprecated (does not work with flang)
+    fragment = "\n".join(["program main", "use mpi_f08", "end program main", ""])
+    self.check_fc(
+        fragment=fragment,
+        msg="Checking for mpi_f08 module",
+        errmsg="no, but not yet used!",
+        use="MPI",
+        mandatory=False,
+    )
 
 
 @Configure.conf
