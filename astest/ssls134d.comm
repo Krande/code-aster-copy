@@ -705,4 +705,111 @@ for j in range(len(D_ref)):
             )
 
 
+# CAS 6 - epaisseur = 200 mm et fck = 55 MPa
+# ------------------------------------------
+
+RESUELSQP = CREA_RESU(
+    OPERATION="AFFE",
+    TYPE_RESU="EVOL_ELAS",
+    AFFE=(
+        _F(NOM_CHAM="EFGE_ELNO", CHAM_GD=CHEFF1, INST=1.0, MODELE=MODEL, CARA_ELEM=CARA),
+        _F(NOM_CHAM="EFGE_ELNO", CHAM_GD=CHEFF2, INST=2.0, MODELE=MODEL, CARA_ELEM=CARA),
+        _F(NOM_CHAM="EFGE_ELNO", CHAM_GD=CHEFF3, INST=3.0, MODELE=MODEL, CARA_ELEM=CARA),
+        _F(NOM_CHAM="EFGE_ELNO", CHAM_GD=CHEFF4, INST=4.0, MODELE=MODEL, CARA_ELEM=CARA),
+        _F(NOM_CHAM="EFGE_ELNO", CHAM_GD=CHEFF5, INST=5.0, MODELE=MODEL, CARA_ELEM=CARA),
+    ),
+)
+
+
+RESUELSQP1 = CALC_FERRAILLAGE(
+    RESULTAT=RESUELSQP,
+    CARA_ELEM=CARA,
+    reuse=RESUELSQP,
+    CODIFICATION="EC2",
+    TYPE_COMB="ELS_QP",
+    UNITE_CONTRAINTE="MPa",
+    INST=(1.0, 2.0, 3.0, 4.0, 5.0),
+    AFFE=(
+        _F(
+            TOUT="OUI",
+            TYPE_STRUCTURE="2D",
+            C_INF=40,
+            C_SUP=40,
+            FCK=55.0,
+            FYK=500.0,
+            WMAX_INF=0.15,
+            WMAX_SUP=0.15,
+            PHI_INF_X=25,
+            PHI_SUP_X=25,
+            PHI_INF_Y=25,
+            PHI_SUP_Y=25,
+            SIGC_ELS_QP=0.45 * 35.0,
+            KT=0.6,
+            ALPHA_E=21.0,
+            UTIL_COMPR="NON",
+            DNSTRA_CRIT=6.0e-3,
+            ALPHA_REINF=1.0,
+            ALPHA_SHEAR=1.0,
+            ALPHA_CC=1.0,
+            EYS=210.0e3,
+            RHO_ACIER=7800,
+            FERR_MIN_FISS="EC2",
+        ),
+    ),
+)
+
+
+COMP = ["ASMINXI", "ASMINXS", "ASMINYI", "ASMINYS"]
+# -----------------------------------------------------
+# Tests pour CAS 6
+# -----------------------------------------------------
+D_ref = [
+    [842.858, 842.858, 0.00000000000000e00, 0.00000000000000e00],  # 1
+    [337.14349, 0.00000000000000e00, 0.00000000000000e00, 337.14349],  # 2
+    [203.81016, 0.00000000000000e00, 637.14349, 0.00000000000000e00],  # 3
+    [0.00000000000000e00, 203.81016, 0.00000000000000e00, 637.14349],  # 4
+    [0.00000000000000e00, 0.00000000000000e00, 842.858, 842.858],  # 5
+]
+
+D_calc = [
+    [842.8587236174427, 842.8587236174427, 0.00000000000000e00, 0.00000000000000e00],  # 1
+    [337.143489446977, 0.00000000000000e00, 0.00000000000000e00, 337.143489446977],  # 2
+    [203.8101561136437, 0.00000000000000e00, 637.1434894469771, 0.00000000000000e00],  # 3
+    [0.00000000000000e00, 203.8101561136437, 0.00000000000000e00, 637.1434894469771],  # 4
+    [0.00000000000000e00, 0.00000000000000e00, 842.8587236174427, 842.8587236174427],  # 5
+]
+
+for j in range(len(D_ref)):
+    for i, ncmp in enumerate(COMP):
+        if D_ref[j][i] == 0:
+            TEST_RESU(
+                RESU=_F(
+                    RESULTAT=RESUELSQP1,
+                    INST=j + 1.0,
+                    NOM_CHAM="FERR_ELEM",
+                    NOM_CMP=ncmp,
+                    GROUP_MA="M1",
+                    LEGENDE="ELS_QP",
+                    VALE_REFE=D_ref[j][i],
+                    VALE_CALC=D_calc[j][i],
+                    REFERENCE="ANALYTIQUE",
+                    ORDRE_GRANDEUR=1.0e-3,
+                    CRITERE="ABSOLU",
+                )
+            )
+        else:
+            TEST_RESU(
+                RESU=_F(
+                    RESULTAT=RESUELSQP1,
+                    INST=j + 1.0,
+                    NOM_CHAM="FERR_ELEM",
+                    NOM_CMP=ncmp,
+                    GROUP_MA="M1",
+                    LEGENDE="ELS_QP",
+                    VALE_REFE=D_ref[j][i],
+                    REFERENCE="ANALYTIQUE",
+                    PRECISION=1e-4,
+                    VALE_CALC=D_calc[j][i],
+                )
+            )
 FIN()

@@ -486,7 +486,7 @@ subroutine te0146(option, nomte)
             if (fbeton .le. 50.d0) then
                 fctm = 0.30*((fbeton)**(2.0/3.0))
             else
-                fctm = 2.12*LOG(1.0+((fbeton)+8.0)/10.0)
+                fctm = 2.12*LOG(1.0+(fbeton+8.0)/10.0)
             end if
 
             ! computation of k
@@ -507,7 +507,28 @@ subroutine te0146(option, nomte)
                 N = -effrts(comp)
                 M = -effrts(comp+3)/unite_m
 
-                if ((N .gt. 0.d0) .and. (abs(M/N) .lt. ht/6.d0)) then
+                ! Taking into account scale effect
+                if (effechel .eq. 1) then
+
+                    if ((ht .le. 6250.d0) .and. (ht .ge. 400.d0) .and. &
+                        (fbeton .le. 55.d0) .and. (fbeton .ge. 30.d0)) then
+                        !Scale effect is applicable according to DN 2100 RCC-CW
+
+                        kc = 1.d0
+                        Act = b*ht/2.d0
+                        m1 = 2.5d0*0.1d0-3.6d0*0.001d0*(fbeton+8) &
+                             +1.3d0*0.00001d0*(fbeton+8)**2d0
+
+                        chi0 = (6.d0*0.001d0/(ht/1000.d0)**2.d0)**m1
+                        Asmininf = kc*k*chi0*fctm*Act/facier
+                        Asminsup = Asmininf
+
+                    else
+                        !Scale effect is not applicable according to DN 2100 RCC-CW
+                        call utmess('A', 'CALCULEL7_38')
+                    end if
+
+                elseif ((N .gt. 0.d0) .and. (abs(M/N) .lt. ht/6.d0)) then
                     ! Full compression
                     Asmininf = 0.d0
                     Asminsup = 0.d0
@@ -549,28 +570,6 @@ subroutine te0146(option, nomte)
                         Asminsup = 0.d0
                     end if
 
-                end if
-
-                ! Taking into account scale effect
-                if (effechel .eq. 1) then
-
-                    if ((ht .le. 6250.d0) .and. (ht .ge. 400.d0) .and. &
-                        (fbeton .le. 55.d0) .and. (fbeton .ge. 30.d0)) then
-                        !Scale effect is applicable according to DN 2100 RCC-CW
-
-                        kc = 1.d0
-                        Act = b*ht/2.d0
-                        m1 = 2.5d0*0.1d0-3.6d0*0.001d0*(fbeton+8) &
-                             +1.3d0*0.00001d0*(fbeton+8)**2d0
-
-                        chi0 = (6.d0*0.001d0/(ht/1000.d0)**2.d0)**m1
-                        Asmininf = kc*k*chi0*fctm*Act/facier
-                        Asminsup = Asmininf
-
-                    else
-                        !Scale effect is not applicable according to DN 2100 RCC-CW
-                        call utmess('A', 'CALCULEL7_38')
-                    end if
                 end if
 
                 dnsmin(2*comp-1) = Asmininf*(unite_m)**2.d0
