@@ -229,4 +229,5 @@ def C_RELATION(command):
             "CSSM",
             "ELAS_HYPER_VISC",
             "HYPER_HILL",
+            "VISC_ISOT_PLAS",
         )
