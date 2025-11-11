@@ -188,10 +188,10 @@ def build_libaster(self, env):
 
     # Determine install path for aster.dll
     # On MSVC, DLLs go to BINDIR, on other platforms to SPDIR/ASTERLIBDIR
+    python_install_path = env.SPDIR if env.SPDIR else env.ASTERLIBDIR
     if self.env.ASTER_PLATFORM_MSVC64:
         install_path = env.ASTERBINDIR
     else:
-        python_install_path = env.SPDIR if env.SPDIR else env.ASTERLIBDIR
         install_path = python_install_path
 
     # {bibfor, bibc, bibcxx}/*.o

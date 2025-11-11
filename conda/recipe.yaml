@@ -106,6 +106,7 @@ requirements:
         - libscotch * *${{ build_type }}*INT${{ int_type }}*
         - scotch * *${{ build_type }}*INT${{ int_type }}*
         - medcoupling * *${{ build_type }}*INT${{ int_type }}*
+        - intel-fortran-rt
     - ${{ pin_compatible('numpy', upper_bound='x.x') }}
     - if: not win
       then:

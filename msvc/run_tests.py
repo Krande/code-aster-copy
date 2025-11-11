@@ -14,12 +14,21 @@ BIN_DIR = CONDA_PREFIX / "Library" / "bin"
 
 
 def init_env():
-    ASTER_DIR = CONDA_PREFIX / "Library" / "lib" / "aster"
+    # For local pixi builds, libraries go to lib/, not lib/aster/
+    # For conda-forge builds, libraries go to lib/aster/
+    ASTER_LIB_DIR = CONDA_PREFIX / "Library" / "lib"
+    ASTER_DATA_DIR = CONDA_PREFIX / "Library" / "share" / "aster"
 
-    os.environ["ASTER_DATADIR"] = (CONDA_PREFIX / "Library" / "share" / "aster").as_posix()
-    os.environ["ASTER_LIBDIR"] = ASTER_DIR.as_posix()
+    # Check if elem.1 exists in lib/aster/ (conda-forge) or lib/ (pixi)
+    if (ASTER_LIB_DIR / "aster" / "elem.1").exists():
+        ASTER_ELEMENTSDIR = ASTER_LIB_DIR / "aster"
+    else:
+        ASTER_ELEMENTSDIR = ASTER_LIB_DIR
+
+    os.environ["ASTER_DATADIR"] = ASTER_DATA_DIR.as_posix()
+    os.environ["ASTER_LIBDIR"] = ASTER_ELEMENTSDIR.as_posix()
     os.environ["ASTER_LOCALEDIR"] = (CONDA_PREFIX / "Library" / "share" / "locale" / "aster").as_posix()
-    os.environ["ASTER_ELEMENTSDIR"] = ASTER_DIR.as_posix()
+    os.environ["ASTER_ELEMENTSDIR"] = ASTER_ELEMENTSDIR.as_posix()
 
     # os.environ["OMP_DYNAMIC"] = "TRUE"
     # os.environ["OMP_NUM_THREADS"] = "1"

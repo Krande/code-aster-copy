@@ -213,8 +213,8 @@ HMODULE LoadDllAndGetFunction( const std::string &dllName, const std::string &fu
                 hDll = LoadLibraryEx( envDllPath.c_str(), NULL, LOAD_WITH_ALTERED_SEARCH_PATH );
             }
         }
-    }
 
+        // If still not found after all attempts, show error
         if ( !hDll ) {
             DWORD error = GetLastError();
             LPVOID lpMsgBuf;
