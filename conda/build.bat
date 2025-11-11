@@ -13,7 +13,7 @@ set FC=ifx.exe
 set CC=clang-cl.exe
 set CXX=clang-cl.exe
 
-SET OUTPUT_DIR=%SRC_DIR%/build/std
+SET OUTPUT_DIR=%SRC_DIR%/build
 echo "OUTPUT_DIR: %OUTPUT_DIR%"
 
 set ASTER_PLATFORM_MSVC64=1
@@ -68,8 +68,8 @@ set "INTEL_FORTRAN_VERSION=2025.1162"
 set "CONDA_BUILD_INTEL_FORTRAN=1"
 
 :: Increase compiler memory limits to avoid out-of-memory errors
-set "FOR_STACK_LIMIT=1000000000"
-set "_INTEL_COMPILER_HEAP_SIZE=2048"
+@REM set "FOR_STACK_LIMIT=1000000000"
+@REM set "_INTEL_COMPILER_HEAP_SIZE=2048"
 
 if %CC% == "cl.exe" set CFLAGS=%CFLAGS% /sourceDependencies %OUTPUT_DIR%
 
@@ -101,7 +101,7 @@ set LDFLAGS=%LDFLAGS% med.lib medC.lib medfwrap.lib medimport.lib
 
 set INCLUDES_BIBC=%PREF_ROOT%/include %SRC_DIR%/bibfor/include %INCLUDES_BIBC%
 
-set DEFINES=H5_BUILT_AS_DYNAMIC_LIB _CRT_SECURE_NO_WARNINGS _SCL_SECURE_NO_WARNINGS WIN32_LEAN_AND_MEAN
+set DEFINES=H5_BUILT_AS_DYNAMIC_LIB _CRT_SECURE_NO_WARNINGS _SCL_SECURE_NO_WARNINGS WIN32_LEAN_AND_MEAN ASTER_PLATFORM_MSVC64
 
 set DEFINES=%DEFINES% ASTER_INT8
 if "%int_type%" == "64" (
@@ -119,7 +119,11 @@ waf configure ^
   --use-config-dir=%SRC_DIR%/config/ ^
   --med-libs="med medC medfwrap medimport" ^
   --prefix=%LIB_PATH_ROOT% ^
-  --out=%SRC_DIR%/build/std ^
+  --out="%SRC_DIR%/build" ^
+  --libdir="%LIBRARY_PREFIX%/lib" ^
+  --bindir="%LIBRARY_PREFIX%/bin" ^
+  --spdir=%SP_DIR% ^
+  --disable-aster-subdir ^
   --enable-med ^
   --enable-hdf5 ^
   --enable-mumps ^
@@ -136,7 +140,7 @@ waf configure ^
   --without-repo
 
 if errorlevel 1 (
-    type %SRC_DIR%/build/std/config.log
+    type %SRC_DIR%/build/%build_type%/config.log
     exit 1
 )
 
@@ -149,16 +153,16 @@ if "%build_type%" == "debug" (
 if errorlevel 1 exit 1
 
 REM Move code_aster and run_aster directories (including subdirectories)
-move "%LIBRARY_PREFIX%\lib\aster\code_aster" "%SP_DIR%\code_aster"
-move "%LIBRARY_PREFIX%\lib\aster\run_aster" "%SP_DIR%\run_aster"
-
-REM Move all .pyd files to %SP_DIR%
-for %%f in ("%LIBRARY_PREFIX%\lib\aster\*.pyd") do move "%%f" "%SP_DIR%"
-
-REM Move all dll/lib/pdb files to %BIN_DIR%
-for %%f in ("%LIBRARY_PREFIX%\lib\aster\*.dll") do move "%%f" "%LIBRARY_BIN%"
-for %%f in ("%LIBRARY_PREFIX%\lib\aster\*.lib") do move "%%f" "%LIBRARY_BIN%"
-for %%f in ("%LIBRARY_PREFIX%\lib\aster\*.pdb") do move "%%f" "%LIBRARY_BIN%"
+@REM move "%LIBRARY_PREFIX%\lib\aster\code_aster" "%SP_DIR%\code_aster"
+@REM move "%LIBRARY_PREFIX%\lib\aster\run_aster" "%SP_DIR%\run_aster"
+@REM
+@REM REM Move all .pyd files to %SP_DIR%
+@REM for %%f in ("%LIBRARY_PREFIX%\lib\aster\*.pyd") do move "%%f" "%SP_DIR%"
+@REM
+@REM REM Move all dll/lib/pdb files to %BIN_DIR%
+@REM for %%f in ("%LIBRARY_PREFIX%\lib\aster\*.dll") do move "%%f" "%LIBRARY_BIN%"
+@REM for %%f in ("%LIBRARY_PREFIX%\lib\aster\*.lib") do move "%%f" "%LIBRARY_BIN%"
+@REM for %%f in ("%LIBRARY_PREFIX%\lib\aster\*.pdb") do move "%%f" "%LIBRARY_BIN%"
 
 echo Files moved successfully.
 

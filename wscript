@@ -120,6 +120,13 @@ def options(self):
         "[default: auto-detect from Python]",
     )
     group.add_option(
+        "--bindir",
+        dest="bindir",
+        default=None,
+        help="Binary directory for DLL files on Windows conda/rattler builds "
+        "[default: PREFIX/bin]",
+    )
+    group.add_option(
         "--disable-aster-subdir",
         dest="disable_aster_subdir",
         action="store_true",
@@ -522,6 +529,13 @@ def set_installdirs(self):
     if self.options.spdir:
         self.env.SPDIR = self.options.spdir
 
+    # Check if --bindir was explicitly provided for Windows DLL installation
+    if self.options.bindir:
+        self.env.BINDIR = self.options.bindir
+    else:
+        # Default to PREFIX/bin if not specified
+        self.env.BINDIR = osp.join(self.env.PREFIX, "bin")
+
     # For conda/rattler builds, we don't want the /aster subdirectory for libraries
     # but we DO want it for data files (tests, profile.sh, etc.)
     if self.options.disable_aster_subdir:
@@ -532,6 +546,7 @@ def set_installdirs(self):
         norm_data = lambda path: osp.normpath(osp.join(path, "aster"))
 
     self.env["ASTERLIBDIR"] = norm_lib(self.env.LIBDIR)
+    self.env["ASTERBINDIR"] = self.env.BINDIR
     self.env["ASTERINCLUDEDIR"] = norm_data(self.env.INCLUDEDIR)
     self.env["ASTERDATADIR"] = norm_data(self.env.DATADIR)
     if not self.env.LOCALEDIR:

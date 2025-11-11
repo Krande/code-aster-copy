@@ -62,6 +62,13 @@ def build(self):
 
     src_i8 = get_srcs("**/*.F90", excl="third_party_interf/*.F90")
     src_ext = get_srcs("third_party_interf/*.F90")
+
+    # Determine install paths - DLLs go to BINDIR on Windows, libs stay in LIBDIR
+    if self.env.ASTER_PLATFORM_MSVC64:
+        lib_install_path = env.ASTERBINDIR
+    else:
+        lib_install_path = env.ASTERLIBDIR
+
     # use int64 as default integer...
     self(
         features=("fc fcstlib" if self.env.ASTER_PLATFORM_MINGW else "fc fcshlib"),
@@ -71,7 +78,7 @@ def build(self):
         source=src_i8,
         use=use + ["INT64"],
         env=env.derive(),
-        install_path=env.ASTERLIBDIR,
+        install_path=lib_install_path,
     )
     # ... except for subroutines linked against external libraries
     self(
@@ -83,7 +90,7 @@ def build(self):
         defines=["WITHOUT_INT64"],
         use=use,
         env=env.derive(),
-        install_path=env.ASTERLIBDIR,
+        install_path=lib_install_path,
     )
 
 

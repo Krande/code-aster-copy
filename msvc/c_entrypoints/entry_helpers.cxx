@@ -192,13 +192,28 @@ HMODULE LoadDllAndGetFunction( const std::string &dllName, const std::string &fu
     // Load the DLL with altered search path
     HMODULE hDll = LoadLibraryEx( dllName.c_str(), NULL, LOAD_WITH_ALTERED_SEARCH_PATH );
     if ( !hDll ) {
-        // If not found, search in environment paths
-        std::vector< std::string > envVars = { "PYTHONPATH", "PATH" }; // Add more as needed
-        std::string envDllPath = SearchEnvPathsForDll( envVars, dllName );
-        if ( !envDllPath.empty() ) {
-            printf( "Loading %s from %s\n", dllName.c_str(), envDllPath.c_str() );
-            hDll = LoadLibraryEx( envDllPath.c_str(), NULL, LOAD_WITH_ALTERED_SEARCH_PATH );
+        // If not found, try in conda bin directory first
+        const char *conda_prefix = get_env_var( "CONDA_PREFIX" );
+        if ( conda_prefix != nullptr ) {
+            std::filesystem::path conda_bin_path = std::filesystem::path( conda_prefix ) / "Library" / "bin" / dllName;
+            if ( std::filesystem::exists( conda_bin_path ) ) {
+                if ( IS_ASTER_DEBUG ) {
+                    printf( "Loading %s from conda bin: %s\n", dllName.c_str(), conda_bin_path.string().c_str() );
+                }
+                hDll = LoadLibraryEx( conda_bin_path.string().c_str(), NULL, LOAD_WITH_ALTERED_SEARCH_PATH );
+            }
         }
+
+        // If still not found, search in environment paths
+        if ( !hDll ) {
+            std::vector< std::string > envVars = { "PYTHONPATH", "PATH" }; // Add more as needed
+            std::string envDllPath = SearchEnvPathsForDll( envVars, dllName );
+            if ( !envDllPath.empty() ) {
+                printf( "Loading %s from %s\n", dllName.c_str(), envDllPath.c_str() );
+                hDll = LoadLibraryEx( envDllPath.c_str(), NULL, LOAD_WITH_ALTERED_SEARCH_PATH );
+            }
+        }
+    }
 
         if ( !hDll ) {
             DWORD error = GetLastError();

@@ -144,7 +144,7 @@ def build(self):
                 defines="",
                 use=use,
                 env=env_conf,
-                install_path=env.ASTERLIBDIR,
+                install_path=None,  # Don't auto-install, handled by PostBuild
             )
         self.add_post_fun(PostBuild(mod_task, self.env.KEEP_MSVC_FILES))
 
@@ -158,15 +158,21 @@ class PostBuild:
         build_dir = pathlib.Path(bld.path.get_bld().abspath()).resolve()
         Logs.debug(f"Copying {self.mod_task.module.value} to {build_dir}")
         library_prefix_ = pathlib.Path(bld.env.PREFIX)
-        dst = library_prefix_ / f"lib/aster/{self.mod_task.module.value}.pyd"
+
+        # Determine destination: use SPDIR if available, otherwise fall back to ASTERLIBDIR
+        if bld.env.SPDIR:
+            dst_pyd = pathlib.Path(bld.env.SPDIR) / f"{self.mod_task.module.value}.pyd"
+        else:
+            dst_pyd = library_prefix_ / f"lib/aster/{self.mod_task.module.value}.pyd"
+
         if self.mod_task.action == ModuleAction.CUSTOM:
             src = build_dir / f"msvc/{self.mod_task.module.value}_proxy.dll"
-            shutil.copy(src, dst)
+            shutil.copy(src, dst_pyd)
             if self.keep_msvc_files is True:
                 Logs.debug(f"Keeping MSVC files for {self.mod_task.module.value}")
             else:
                 Logs.debug(f"Removing MSVC files for {self.mod_task.module.value}")
-                dst_dll_path = dst.with_name(dst.stem + "_proxy.dll")
+                dst_dll_path = dst_pyd.with_name(dst_pyd.stem + "_proxy.dll")
                 self._safe_delete(src, dst_dll_path, ".dll")
                 self._safe_delete(src, dst_dll_path, ".lib")
                 self._safe_delete(src, dst_dll_path, ".exp")
@@ -175,12 +181,10 @@ class PostBuild:
                 self._safe_delete(src, dst_dll_path, "_in.txt")
                 self._safe_delete(src, dst_dll_path, ".dll.manifest")
         elif self.mod_task.action == ModuleAction.COPY:
-            if self.mod_task.module.value == "libaster":
-                lib_dir_name = "bibcxx"
-            else:
-                lib_dir_name = "bibc"
+            # This shouldn't be reached anymore, but keep for compatibility
+            lib_dir_name = "bibc"
             src = build_dir / f"{lib_dir_name}/{lib_dir_name}.dll"
-            shutil.copy(src, dst)
+            shutil.copy(src, dst_pyd)
         else:
             raise ValueError(f"Unknown action {self.mod_task.action}")
 

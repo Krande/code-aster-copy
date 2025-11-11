@@ -245,6 +245,10 @@ if %CLEAN_BUILD%==1 (
       --use-config-dir=%PARENT_DIR%/config/ ^
       --med-libs="med medC medfwrap medimport" ^
       --prefix=%LIB_PATH_ROOT% ^
+      --libdir="%LIBRARY_PREFIX%/lib" ^
+      --bindir="%LIBRARY_PREFIX%/bin" ^
+      --spdir=%SP_DIR% ^
+      --disable-aster-subdir ^
       --out=%OUTPUT_DIR% ^
       --enable-med ^
       --enable-hdf5 ^
