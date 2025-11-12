@@ -122,35 +122,20 @@ void init_env( bool force = false ) {
     const char *conda_prefix = get_env_var( "CONDA_PREFIX" );
     if ( conda_prefix != nullptr ) {
         std::filesystem::path CONDA_PREFIX( conda_prefix );
-        std::filesystem::path ASTER_DIR = CONDA_PREFIX / "Library" / "lib" / "aster";
 
         std::filesystem::path ASTER_DATADIR = CONDA_PREFIX / "Library" / "share" / "aster";
-        std::filesystem::path ASTER_LIBDIR = ASTER_DIR;
-        std::filesystem::path ASTER_LOCALEDIR =
-            CONDA_PREFIX / "Library" / "share" / "locale" / "aster";
-        std::filesystem::path ASTER_ELEMENTSDIR = ASTER_DIR;
+        // Prefer lib/aster if present, else fallback to lib
+        std::filesystem::path lib_aster = CONDA_PREFIX / "Library" / "lib" / "aster";
+        std::filesystem::path lib_root  = CONDA_PREFIX / "Library" / "lib";
+        std::filesystem::path chosen_libdir = std::filesystem::exists( lib_aster ) ? lib_aster : lib_root;
+        std::filesystem::path ASTER_LIBDIR = chosen_libdir;
+        std::filesystem::path ASTER_LOCALEDIR = CONDA_PREFIX / "Library" / "share" / "locale" / "aster";
+        std::filesystem::path ASTER_ELEMENTSDIR = chosen_libdir; // elem.* lives alongside chosen libdir
 
         set_env_var( "ASTER_DATADIR", ASTER_DATADIR.string(), force, IS_ASTER_SILENT );
         set_env_var( "ASTER_LIBDIR", ASTER_LIBDIR.string(), force, IS_ASTER_SILENT );
         set_env_var( "ASTER_LOCALEDIR", ASTER_LOCALEDIR.string(), force, IS_ASTER_SILENT );
         set_env_var( "ASTER_ELEMENTSDIR", ASTER_ELEMENTSDIR.string(), force, IS_ASTER_SILENT );
-
-        // if ASTER_ELEMENTSDIR path is not in PATH env variable, append it
-        // const char *path = get_env_var("PATH" );
-        // if ( path != nullptr ) {
-        //    std::string path_str( path );
-        //    if ( path_str.find( ASTER_ELEMENTSDIR.string() ) == std::string::npos ) {
-        //        std::string new_path = path_str + ";" + ASTER_ELEMENTSDIR.string();
-        //        set_env_var( "PATH", new_path, true, true);
-        //    }
-        //    else {
-        //        std::cout << "ASTER_ELEMENTSDIR is already in PATH.\n";
-        //        // std::cout << "PATH = " << path << std::endl;
-        //    }
-        //}
-        // else {
-        //    std::cout << "PATH is not set.\n";
-        //}
 
         if ( IS_ASTER_DEBUG ) {
             // Print out all OPENMP environment variables
@@ -160,6 +145,9 @@ void init_env( bool force = false ) {
             print_env_var( "OMP_PROC_BIND" );
             print_env_var( "OMP_STACKSIZE" );
             print_env_var( "OMP_THREAD_LIMIT" );
+            print_env_var( "ASTER_DATADIR" );
+            print_env_var( "ASTER_LIBDIR" );
+            print_env_var( "ASTER_ELEMENTSDIR" );
         }
         if ( !IS_ASTER_SILENT ) {
             std::cout << "Environment variables set based on CONDA_PREFIX.\n";

@@ -16,6 +16,6 @@ if not defined CONDA_PREFIX (
 
 )
 
-call "%ASTER_ROOT%\share\aster\profile.bat
+call "%ASTER_ROOT%\share\aster\profile.bat"
 
 python -m run_aster.run_aster_main %*

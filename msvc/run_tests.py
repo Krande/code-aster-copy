@@ -8,7 +8,7 @@ import ctypes
 
 from config import ROOT_DIR
 
-CONDA_PREFIX = pathlib.Path(os.environ["CONDA_PREFIX"])
+CONDA_PREFIX = pathlib.Path(sys.prefix)
 ASTEST_DIR = ROOT_DIR / "astest"
 BIN_DIR = CONDA_PREFIX / "Library" / "bin"
 
