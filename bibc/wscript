@@ -167,7 +167,7 @@ def post_install_links(ctx):
             os.link(libaster_path, linkpath)
             Logs.info(f"Created hardlink: {linkpath}")
         else:
-            os.symlink(libaster_path, linkpath)
+            os.symlink(libaster_path.name, linkpath)
             Logs.info(f"Created symlink: {linkpath}")
 
 
