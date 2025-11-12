@@ -15,31 +15,22 @@
 ! You should have received a copy of the GNU General Public License
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
-
-!
 !
 interface
-    subroutine eclaty(nomte, elrefa, fapg, npg, npoini,&
-                      nterm1, nsomm1, csomm1, tyma, nbno2,&
-                      connx, mxnbn2, mxnbpi, mxnbte, mxnbse,&
+    subroutine eclaty(typeElemName, &
+                      elrefa, fapg, &
+                      mxnbn2, mxnbpi, mxnbte, mxnbse, &
+                      npg, npoini, &
+                      nterm1, nsomm1, csomm1, &
+                      typeCellNume, nbno2, connx, &
                       nbsel, corsel, iret)
-        integer(kind=8) :: mxnbse
-        integer(kind=8) :: mxnbte
-        integer(kind=8) :: mxnbpi
-        integer(kind=8) :: mxnbn2
-        character(len=16) :: nomte
-        character(len=8) :: elrefa
-        character(len=8) :: fapg
-        integer(kind=8) :: npg
-        integer(kind=8) :: npoini
-        integer(kind=8) :: nterm1(mxnbpi)
-        integer(kind=8) :: nsomm1(mxnbpi, mxnbte)
-        real(kind=8) :: csomm1(mxnbpi, mxnbte)
-        integer(kind=8) :: tyma(mxnbse)
-        integer(kind=8) :: nbno2(mxnbse)
-        integer(kind=8) :: connx(mxnbn2, mxnbse)
-        integer(kind=8) :: nbsel
-        integer(kind=8) :: corsel(mxnbse)
-        integer(kind=8) :: iret
+        character(len=16), intent(in) :: typeElemName
+        character(len=8), intent(in) :: elrefa, fapg
+        integer(kind=8), intent(in) :: mxnbn2, mxnbpi, mxnbte, mxnbse
+        integer(kind=8), intent(out) :: npg, npoini
+        integer(kind=8), intent(out) :: nterm1(mxnbpi), nsomm1(mxnbpi, mxnbte)
+        real(kind=8), intent(out) :: csomm1(mxnbpi, mxnbte)
+        integer(kind=8), intent(out) :: typeCellNume(mxnbse), nbno2(mxnbse), connx(mxnbn2, mxnbse)
+        integer(kind=8), intent(out) :: nbsel, corsel(mxnbse), iret
     end subroutine eclaty
 end interface
