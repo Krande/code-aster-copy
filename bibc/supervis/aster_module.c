@@ -39,6 +39,13 @@
 #include <signal.h>
 #include <stdlib.h>
 
+#ifdef ASTER_PLATFORM_MSVC64
+#include <float.h>
+#ifdef ASTER_HAVE_HDF5
+#include "hdf5.h"
+#endif
+#endif
+
 #ifdef ASTER_HAVE_PETSC
 #include "petsc.h"
 
@@ -2152,6 +2159,25 @@ static struct PyModuleDef aster_def = { PyModuleDef_HEAD_INIT,
 
 PyObject *PyInit_aster( void ) {
     PyObject *aster = (PyObject *)0;
+
+#ifdef ASTER_PLATFORM_MSVC64
+    // On Windows with MSVC, initialize floating-point control word to a known state
+    // This prevents HDF5 thread-safe library from failing in H5T__init_native_float_types
+    // The issue occurs because HDF5 tries to save/restore the FPU state but the
+    // debug CRT has stricter validation that can fail
+    unsigned int current_word = 0;
+    _controlfp_s(&current_word, 0, 0);  // Get current state
+    _controlfp_s(&current_word, _CW_DEFAULT, _MCW_EM | _MCW_RC | _MCW_PC);  // Set to default
+
+#ifdef ASTER_HAVE_HDF5
+    // Force HDF5 library initialization early to catch any errors at module load time
+    // rather than during first file access
+    hid_t fapl = H5Pcreate(H5P_FILE_ACCESS);
+    if (fapl >= 0) {
+        H5Pclose(fapl);
+    }
+#endif
+#endif
 
     /* Create the module and add the functions */
     aster = PyModule_Create( &aster_def );

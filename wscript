@@ -422,9 +422,12 @@ def build(self):
     self.recurse("catalo")
     self.recurse("data")
     self.recurse("astest")
-
+    if env.SPDIR:
+        sp_dir = self.env.SPDIR
+    else:
+        sp_dir = self.env.ASTERLIBDIR
     self.install_as(
-        osp.join(self.env.ASTERLIBDIR, "code_aster", "Utilities", "aster_config.py"),
+        osp.join(sp_dir, "code_aster", "Utilities", "aster_config.py"),
         ["aster_config.py"],
     )
 

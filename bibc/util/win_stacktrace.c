@@ -115,9 +115,6 @@ static LONG WINAPI vectored_exception_handler(EXCEPTION_POINTERS* exceptionInfo)
         exceptionCode == EXCEPTION_PRIV_INSTRUCTION ||
         exceptionCode == EXCEPTION_STACK_OVERFLOW) {
 
-        // Write to both stderr and a log file
-        FILE* log = fopen("aster_crash.log", "w");
-
         fprintf(stderr, "\n");
         fprintf(stderr, "====================================\n");
         fprintf(stderr, "Windows Exception Caught!\n");
@@ -126,22 +123,7 @@ static LONG WINAPI vectored_exception_handler(EXCEPTION_POINTERS* exceptionInfo)
         fprintf(stderr, "====================================\n");
         fflush(stderr);
 
-        if (log) {
-            fprintf(log, "\n");
-            fprintf(log, "====================================\n");
-            fprintf(log, "Windows Exception Caught!\n");
-            fprintf(log, "Exception Code: 0x%08lX\n", exceptionCode);
-            fprintf(log, "Exception Address: 0x%p\n", exceptionInfo->ExceptionRecord->ExceptionAddress);
-            fprintf(log, "====================================\n");
-            fflush(log);
-        }
-
         win_print_stacktrace(stderr);
-
-        if (log) {
-            win_print_stacktrace(log);
-            fclose(log);
-        }
 
         // Don't handle it, let it continue to other handlers (including Python's)
         // This way we get our stack trace but Python still handles the exception

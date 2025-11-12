@@ -97,7 +97,14 @@ class MedFileReader {
     int getMeshNumber() const;
 
     /** @brief get mesh from index */
-    MedMeshPtr getMesh( int index ) const { return _meshes[index]; };
+    MedMeshPtr getMesh( int index ) const {
+        if ( index < 0 || index >= static_cast< int >( _meshes.size() ) ) {
+            throw std::runtime_error( "Mesh index out of bounds: " + std::to_string( index ) +
+                                      " (available meshes: " + std::to_string( _meshes.size() ) +
+                                      ")" );
+        }
+        return _meshes[index];
+    };
 
     /** @brief get number of profile */
     int getProfileNumber() const;

@@ -55,6 +55,10 @@ int MedFilePointer::open( const std::filesystem::path &filename,
         throw std::runtime_error( "Med file access type not allowed" );
     }
     _fileId = MEDfileOpen( filename.string().c_str(), medAccessMode );
+    if ( _fileId < 0 ) {
+        _isOpen = false;
+        throw std::runtime_error( "Failed to open MED file: " + filename.string() );
+    }
     _isOpen = true;
     _parallelOpen = false;
     return 0;
@@ -76,6 +80,10 @@ int MedFilePointer::openParallel( const std::filesystem::path &filename,
         throw std::runtime_error( "Med file access type not allowed" );
     }
     _fileId = MEDparFileOpen( filename.string().c_str(), medAccessMode, comm, MPI_INFO_NULL );
+    if ( _fileId < 0 ) {
+        _isOpen = false;
+        throw std::runtime_error( "Failed to open MED file in parallel mode: " + filename.string() );
+    }
     _isOpen = true;
     _parallelOpen = true;
     return 0;
