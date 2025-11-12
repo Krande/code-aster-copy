@@ -97,6 +97,12 @@ jobs:
         env:
           PASSED_TESTS: ${{ env.PASSED_TESTS }}
 
+      - name: Save Run directory to artifacts
+        uses: actions/upload-artifact@v4
+        with:
+          name: TestResults-${{ matrix.builds.os_brief }}-${{ matrix.builds.build }}-${{ github.run_id }}
+          path: "${{ github.workspace }}\\test_output"
+
       - name: Upload all packages
         if: steps.test-eval.outputs.PASSED_TESTS == 'true'
         shell: pixi run bash -e {0}
@@ -110,8 +116,3 @@ jobs:
           done
           exit $EXIT_CODE
 
-      - name: Save Run directory to artifacts
-        uses: actions/upload-artifact@v4
-        with:
-          name: TestResults-${{ matrix.builds.os_brief }}-${{ matrix.builds.build }}-${{ github.run_id }}
-          path: "${{ github.workspace }}\\test_output"
