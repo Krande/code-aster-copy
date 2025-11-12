@@ -287,7 +287,7 @@ subroutine acearg(nbocc, infdonn, infcarte, zjdlm)
 
             ! calcul de la rigidité
             do i_no = 1, nbno
-                rigi = 1.d-3
+                rigi = 0.d0
                 if (i_val .eq. 4) then
                     rigi(3) = vale(i_val) * coeno(i_no) / i_x
                 else if (i_val .eq. 5) then
@@ -305,7 +305,7 @@ subroutine acearg(nbocc, infdonn, infcarte, zjdlm)
 
 !               affectation de matrice masse nulle
                 iv = 1
-                mass = 1.d-12
+                mass = 0.d0
                 call affdis(ndim, 1, 0.d0, 'M_TR_D_L', mass, &
                             jdc, jdv, infdonn%ivr, iv, kma, &
                             ncmp, ll, jdcinf, jdvinf, 1)
