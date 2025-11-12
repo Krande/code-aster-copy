@@ -76,10 +76,10 @@ if %CC% == "cl.exe" set CFLAGS=%CFLAGS% /sourceDependencies %OUTPUT_DIR%
 :: Create dll debug pdb
 if "%build_type%" == "debug" (
     echo "Building debug version"
-    set FCFLAGS=%FCFLAGS% /check:stack
-    set CFLAGS=%CFLAGS% /Zi
-    set CXXFLAGS=%CXXFLAGS% /Zi
-    set LDFLAGS=%LDFLAGS% /DEBUG /INCREMENTAL:NO
+    set FCFLAGS=%FCFLAGS% /check:stack /Z7 /traceback
+    set CFLAGS=%CFLAGS% /Z7 /FS /Oy-
+    set CXXFLAGS=%CXXFLAGS% /Z7 /FS /Oy-
+    set LDFLAGS=%LDFLAGS% /DEBUG:FULL /INCREMENTAL:NO /OPT:REF /OPT:ICF /PDBALTPATH:%%_PDB%%
 ) else (
     echo "Building release version"
 )
@@ -151,6 +151,19 @@ if "%build_type%" == "debug" (
 )
 
 if errorlevel 1 exit 1
+
+REM Copy PDB files to the package for debugging support
+echo Copying PDB files for debugging...
+if exist "%LIBRARY_PREFIX%\lib\aster\*.pdb" (
+    copy "%LIBRARY_PREFIX%\lib\aster\*.pdb" "%LIBRARY_BIN%\" >nul 2>&1
+)
+if exist "%LIBRARY_PREFIX%\bin\*.pdb" (
+    echo PDB files already in bin directory
+)
+
+REM Note: We use /Z7 flag which embeds debug info in .obj files rather than separate PDBs
+REM This makes the debug info self-contained and doesn't require source files to be packaged
+REM Debuggers can still show source if the user has the source tree, but it's not required for symbols
 
 REM Move code_aster and run_aster directories (including subdirectories)
 @REM move "%LIBRARY_PREFIX%\lib\aster\code_aster" "%SP_DIR%\code_aster"

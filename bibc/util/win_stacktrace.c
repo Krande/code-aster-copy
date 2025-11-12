@@ -23,6 +23,7 @@
 #include <dbghelp.h>
 #include <stdio.h>
 #include <stdlib.h>
+#include <string.h>
 
 #pragma comment(lib, "dbghelp.lib")
 
@@ -31,22 +32,9 @@
 
 static int stacktrace_initialized = 0;
 
-// Initialize symbol handler
-static void init_stacktrace() {
-    if (!stacktrace_initialized) {
-        HANDLE process = GetCurrentProcess();
-        SymSetOptions(SYMOPT_UNDNAME | SYMOPT_DEFERRED_LOADS | SYMOPT_LOAD_LINES);
-        if (SymInitialize(process, NULL, TRUE)) {
-            stacktrace_initialized = 1;
-        }
-    }
-}
-
 // Print stack trace to file
 void win_print_stacktrace(FILE* fp) {
     if (!fp) fp = stderr;
-
-    init_stacktrace();
 
     HANDLE process = GetCurrentProcess();
     HANDLE thread = GetCurrentThread();
@@ -56,6 +44,20 @@ void win_print_stacktrace(FILE* fp) {
 
     fprintf(fp, "\nC/C++ Stack trace:\n");
     fprintf(fp, "==================\n");
+
+    // Try to initialize if not already done (might already be done by Intel Fortran)
+    // We don't care if this fails - symbols might already be initialized
+    if (!stacktrace_initialized) {
+        SymSetOptions(SYMOPT_UNDNAME | SYMOPT_DEFERRED_LOADS | SYMOPT_LOAD_LINES);
+
+        // Note: With /Z7 debug format, debug info is embedded in the executable/DLL
+        // Source files are only needed if user wants to see source code in debugger
+        // Symbol resolution (function names, line numbers) works without source files
+
+        if (SymInitialize(process, NULL, TRUE) || GetLastError() == ERROR_INVALID_PARAMETER) {
+            stacktrace_initialized = 1;
+        }
+    }
 
     SYMBOL_INFO* symbol = (SYMBOL_INFO*)calloc(sizeof(SYMBOL_INFO) + MAX_SYMBOL_NAME, 1);
     if (symbol) {
@@ -123,10 +125,23 @@ static LONG WINAPI vectored_exception_handler(EXCEPTION_POINTERS* exceptionInfo)
         fprintf(stderr, "====================================\n");
         fflush(stderr);
 
+        // Print our detailed C/C++ stack trace with line numbers
+        // This works for all code (C/C++/Fortran) and shows file:line for C/C++
         win_print_stacktrace(stderr);
 
-        // Don't handle it, let it continue to other handlers (including Python's)
-        // This way we get our stack trace but Python still handles the exception
+        // Note: Intel Fortran's traceback will also be printed by its runtime handler
+        // That traceback shows better info for Fortran code, but "Unknown" for C/C++
+        // Together, these two tracebacks give complete information:
+        // - Our trace: Full info for C/C++, function names only for Fortran
+        // - Intel trace: Full info for Fortran, "Unknown" for C/C++
+
+        fprintf(stderr, "\nNote: Intel Fortran traceback will follow (if Fortran code involved)\n");
+        fprintf(stderr, "      It shows Fortran source but C/C++ shows as 'Unknown'\n");
+        fprintf(stderr, "      The above C/C++ trace shows the missing C/C++ details.\n\n");
+        fflush(stderr);
+
+        // Don't handle it, let it continue to other handlers (including Python's and Intel's)
+        // This way we get our C/C++ stack trace, Intel's Fortran trace, and Python's exception
     }
 
     return EXCEPTION_CONTINUE_SEARCH;
@@ -136,7 +151,8 @@ static PVOID vectored_handler = NULL;
 
 // Install exception handler
 void win_install_crash_handler() {
-    init_stacktrace();
+    // Don't initialize symbols here - let Intel Fortran do it if needed
+    // We'll initialize on-demand when we actually need to print a stack trace
 
     // Use vectored exception handler which has higher priority than structured exception handling
     if (!vectored_handler) {
@@ -151,8 +167,9 @@ void win_cleanup_stacktrace() {
         RemoveVectoredExceptionHandler(vectored_handler);
         vectored_handler = NULL;
     }
+    // Don't call SymCleanup here - let the process cleanup handle it
+    // This prevents conflicts with Intel Fortran runtime which may also use DbgHelp
     if (stacktrace_initialized) {
-        SymCleanup(GetCurrentProcess());
         stacktrace_initialized = 0;
     }
 }
