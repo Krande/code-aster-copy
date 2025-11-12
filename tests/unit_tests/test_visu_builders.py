@@ -51,7 +51,7 @@ def get_mesh_1d() -> mc.MEDFileUMesh:
 
 def test_visu_builder_works_for_node_fields(tmp_path):
     med_mesh = get_mesh_1d()
-    visu_cut = VisuCutBuilder(med_mesh)
+    visu_cut = VisuCutBuilder(med_mesh, prefix_output_field_name="VISU")
     visu_cut.add_field_on_nodes(
         field_name="DEPL",
         nodes=[2, 1],
@@ -83,7 +83,7 @@ def test_visu_builder_works_for_node_fields(tmp_path):
         fileName=str(temp_med_file),
         meshName=med_mesh.getName(),
         meshDimRelToMax=0,
-        fieldName="DEPL",
+        fieldName="VISU_DEPL",
         iteration=1,
         order=0,
     )
@@ -142,7 +142,7 @@ def test_visu_builder_works_for_node_fields(tmp_path):
         fileName=str(temp_med_file),
         meshName=med_mesh.getName(),
         meshDimRelToMax=0,
-        fieldName="DEPL",
+        fieldName="VISU_DEPL",
         iteration=2,
         order=0,
     )

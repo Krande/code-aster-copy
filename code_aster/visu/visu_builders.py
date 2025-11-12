@@ -19,7 +19,7 @@
 
 from math import isclose
 from pathlib import Path
-from typing import Dict, Tuple, List, Iterable, Sequence
+from typing import Dict, Tuple, List, Iterable, Sequence, Optional
 
 import numpy as np
 
@@ -42,14 +42,14 @@ class VisuCutBuilder:
     SURFACE: int = 2
     VOLUME: int = 3
 
-    def __init__(self, mesh_med: mc.MEDFileUMesh):
+    def __init__(self, mesh_med: mc.MEDFileUMesh, prefix_output_field_name: Optional[str] = None):
         self.mesh_med: mc.MEDFileUMesh = mesh_med
 
         self.arrays: Dict[Tuple[str, int, str], np.ndarray] = {}
         self.instants: Dict[Tuple[str, int, str], float] = {}
         self.components: Dict[Tuple[str, str], Iterable[str]] = {}
         self.nb_nodes: int = mesh_med.getNumberOfNodes()
-
+        self.prefix_output_field_name: Optional[str] = prefix_output_field_name
         self._all_geo_types: List[int] = self.mesh_med.getAllGeoTypes()
         if len(self._all_geo_types) > 1:
             raise NotImplementedError("Multi level meshes are not handled yet")
@@ -64,10 +64,17 @@ class VisuCutBuilder:
         nb_nodes: {self.nb_nodes}
         """
 
+    def get_output_field_name(self, field_name: str) -> str:
+        if self.prefix_output_field_name is None:
+            return field_name
+        return f"{self.prefix_output_field_name}_{field_name}"
+
     @classmethod
-    def from_aster_mesh(cls, mesh) -> "VisuCutBuilder":
+    def from_aster_mesh(
+        cls, mesh, prefix_output_field_name: Optional[str] = None
+    ) -> "VisuCutBuilder":
         mesh_med = mesh.createMedCouplingMesh()
-        return cls(mesh_med=mesh_med)
+        return cls(mesh_med=mesh_med, prefix_output_field_name=prefix_output_field_name)
 
     def add_field_on_nodes_from_aster_result_all_timesteps(
         self, aster_result, field_name: str, nodes: list[int]
@@ -129,7 +136,9 @@ class VisuCutBuilder:
             assert self.arrays[stock_address].shape == (self.nb_nodes, values.shape[1] + 1)
         else:
             self.instants[stock_address] = instant
-            self.arrays[stock_address] = np.full((self.nb_nodes, values.shape[1] + 1), np.nan)
+            self.arrays[stock_address] = np.full(
+                shape=(self.nb_nodes, values.shape[1] + 1), fill_value=np.nan
+            )
             self.components[(field_name, mc.ON_NODES)] = components
 
         current_array = self.arrays[stock_address]
@@ -148,7 +157,7 @@ class VisuCutBuilder:
         """
         group = mc.DataArrayInt(list(ids))
         group.setName(name=name)
-        self.mesh_med.addGroupsAtLevel(self._max_geo_type - geo_type, [group])
+        self.mesh_med.addGroup(meshDimRelToMaxExt=self._max_geo_type - geo_type, ids=group)
 
     def write(self, filepath: Path):
         if not self.arrays:
@@ -161,22 +170,24 @@ class VisuCutBuilder:
                 raise NotImplementedError(f"location {location} is not implemented yet")
             instant = self.instants[(field_name, nume_ordre, location)]
 
+            output_field_name = self.get_output_field_name(field_name=field_name)
+
             # Medcoupling field
             field_values = mc.DataArrayDouble(current_array[:, 1:].tolist())
             field_values.setInfoOnComponents(self.components[(field_name, location)])
-            field_values.setName(field_name)
+            field_values.setName(name=output_field_name)
 
             medc_node_field = mc.MEDCouplingFieldDouble(location, mc.ONE_TIME)
-            medc_node_field.setName(field_name)
-            medc_node_field.setArray(field_values)
-            medc_node_field.setNature(mc.IntensiveMaximum)
+            medc_node_field.setName(name=output_field_name)
+            medc_node_field.setArray(array=field_values)
+            medc_node_field.setNature(nat=mc.IntensiveMaximum)
 
-            medc_node_field.setMesh(self.mesh_med.getMeshAtLevel(0))
+            medc_node_field.setMesh(mesh=self.mesh_med.getMeshAtLevel(meshDimRelToMax=0))
 
             medc_node_field.checkConsistencyLight()
             medfield = mc.MEDFileField1TS()
-            medfield.setFieldNoProfileSBT(medc_node_field)
-            medfield.setTime(nume_ordre, 0, instant)
+            medfield.setFieldNoProfileSBT(field=medc_node_field)
+            medfield.setTime(iteration=nume_ordre, order=0, val=instant)
 
             field_file.pushBackTimeStep(medfield)
 

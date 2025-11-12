@@ -869,7 +869,7 @@ def macr_lign_coupe_ops(
         cut_to_group[iocc] = groupe
 
     if write_visu:
-        visu_cut = VisuCutBuilder.from_aster_mesh(mesh=__macou)
+        visu_cut = VisuCutBuilder.from_aster_mesh(mesh=__macou, prefix_output_fields="CUT")
 
     for iocc, m in enumerate(LIGN_COUPE):
         motscles = {}
