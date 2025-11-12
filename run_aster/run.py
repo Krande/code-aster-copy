@@ -225,11 +225,7 @@ class RunAster:
         )
         comm = self.change_comm_file(comm)
         status.update(self._exec_one(comm, timeout - status.times[-1]))
-        if platform.system() == "Windows":
-            import pathlib
-            # Intel fortran ifx automatically prints traceback on errors when compiled with /traceback.
-            print(pathlib.Path(self._output).read_text(encoding='utf-8', errors='replace'))
-        else:
+        if platform.system() != "Windows":
             self._coredump_analysis()
         return status
 
@@ -439,7 +435,9 @@ class RunAster:
             text = file_changed(text, comm)
         text = add_coding_line(text)
         if self._show_comm:
-            logger.info("\nContent of the file to execute:\n%s\n", text)
+            # Normalize line endings for consistent display on Windows
+            display_text = text.replace('\r\n', '\n').replace('\r', '\n')
+            logger.info("\nContent of the file to execute:\n%s\n", display_text)
         if not changed:
             return comm
 
@@ -646,7 +644,15 @@ def _ls(*paths):
     if RUNASTER_PLATFORM == "linux":
         proc = run(["ls", "-l"] + list(paths), stdout=PIPE, universal_newlines=True)
     else:
-        proc = run(["dir"] + list(paths), stdout=PIPE, universal_newlines=True, shell=True)
+        # Use cp850 (OEM/console codepage) which is the default for cmd.exe output
+        # /N flag uses long list format without thousand separators
+        proc = run(
+            ["dir", "/-C"] + list(paths),
+            stdout=PIPE,
+            shell=True,
+            encoding="cp850",
+            errors="replace"
+        )
     return proc.stdout
 
 

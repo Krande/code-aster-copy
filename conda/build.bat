@@ -67,21 +67,23 @@ set "INCLUDE=%BUILD_PREFIX%\opt\compiler\include\intel64;%BUILD_PREFIX%\Library\
 set "INTEL_FORTRAN_VERSION=2025.1162"
 set "CONDA_BUILD_INTEL_FORTRAN=1"
 
-:: Increase compiler memory limits to avoid out-of-memory errors
-@REM set "FOR_STACK_LIMIT=1000000000"
-@REM set "_INTEL_COMPILER_HEAP_SIZE=2048"
-
 if %CC% == "cl.exe" set CFLAGS=%CFLAGS% /sourceDependencies %OUTPUT_DIR%
+
+:: Always include debug symbols for tracebacks (minimal performance impact)
+echo "Configuring build with traceback support"
+set FCFLAGS=%FCFLAGS% /Z7 /traceback
+set CFLAGS=%CFLAGS% /Z7 /Oy- /FS
+set CXXFLAGS=%CXXFLAGS% /Z7 /Oy- /FS
+set LDFLAGS=%LDFLAGS% /DEBUG:FULL /INCREMENTAL:NO
 
 :: Create dll debug pdb
 if "%build_type%" == "debug" (
-    echo "Building debug version"
-    set FCFLAGS=%FCFLAGS% /check:stack /Z7 /traceback
-    set CFLAGS=%CFLAGS% /Z7 /FS /Oy-
-    set CXXFLAGS=%CXXFLAGS% /Z7 /FS /Oy-
-    set LDFLAGS=%LDFLAGS% /DEBUG:FULL /INCREMENTAL:NO /OPT:REF /OPT:ICF /PDBALTPATH:%%_PDB%%
+    echo "Building debug version with runtime checks"
+    set FCFLAGS=%FCFLAGS% /check:stack
+    set LDFLAGS=%LDFLAGS% /OPT:NOREF /OPT:NOICF
 ) else (
-    echo "Building release version"
+    echo "Building release version with debug symbols"
+    set LDFLAGS=%LDFLAGS% /OPT:REF /OPT:ICF
 )
 
 :: Add Math libs
@@ -151,32 +153,5 @@ if "%build_type%" == "debug" (
 )
 
 if errorlevel 1 exit 1
-
-REM Copy PDB files to the package for debugging support
-echo Copying PDB files for debugging...
-if exist "%LIBRARY_PREFIX%\lib\aster\*.pdb" (
-    copy "%LIBRARY_PREFIX%\lib\aster\*.pdb" "%LIBRARY_BIN%\" >nul 2>&1
-)
-if exist "%LIBRARY_PREFIX%\bin\*.pdb" (
-    echo PDB files already in bin directory
-)
-
-REM Note: We use /Z7 flag which embeds debug info in .obj files rather than separate PDBs
-REM This makes the debug info self-contained and doesn't require source files to be packaged
-REM Debuggers can still show source if the user has the source tree, but it's not required for symbols
-
-REM Move code_aster and run_aster directories (including subdirectories)
-@REM move "%LIBRARY_PREFIX%\lib\aster\code_aster" "%SP_DIR%\code_aster"
-@REM move "%LIBRARY_PREFIX%\lib\aster\run_aster" "%SP_DIR%\run_aster"
-@REM
-@REM REM Move all .pyd files to %SP_DIR%
-@REM for %%f in ("%LIBRARY_PREFIX%\lib\aster\*.pyd") do move "%%f" "%SP_DIR%"
-@REM
-@REM REM Move all dll/lib/pdb files to %BIN_DIR%
-@REM for %%f in ("%LIBRARY_PREFIX%\lib\aster\*.dll") do move "%%f" "%LIBRARY_BIN%"
-@REM for %%f in ("%LIBRARY_PREFIX%\lib\aster\*.lib") do move "%%f" "%LIBRARY_BIN%"
-@REM for %%f in ("%LIBRARY_PREFIX%\lib\aster\*.pdb") do move "%%f" "%LIBRARY_BIN%"
-
-echo Files moved successfully.
 
 endlocal
