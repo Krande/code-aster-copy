@@ -17,11 +17,11 @@
 ! --------------------------------------------------------------------
 !
 interface
-    subroutine vdxsig(nomte, nodeCoor, &
-                      nbLayer, siefElga)
+    subroutine vdxeps(nomte, nodeCoor, &
+                      nbLayer, epsiElga)
         character(len=16), intent(in) :: nomte
         real(kind=8), intent(in) :: nodeCoor(3, 9)
         integer(kind=8), intent(in) :: nbLayer
-        real(kind=8), intent(out) :: siefElga(6*27*nbLayer)
-    end subroutine vdxsig
+        real(kind=8), intent(out) :: epsiElga(6*27*nbLayer)
+    end subroutine vdxeps
 end interface

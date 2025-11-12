@@ -67,6 +67,7 @@ MMATUNS = ArrayOfComponents(phys=PHY.MDNS_R, locatedComponents=DDL_MECA)
 
 MMATZZR = ArrayOfComponents(phys=PHY.MSIZ_R, locatedComponents=LC.DDL_NOZ1)
 
+
 # ------------------------------------------------------------
 class MECPQS4(Element):
     """Mechanics - Plane stress- QUAD4 - Sub-integrated (with stabilization)"""

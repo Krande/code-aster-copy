@@ -15,13 +15,14 @@
 ! You should have received a copy of the GNU General Public License
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
+#include "asterf_types.h"
 !
 interface
-    subroutine vdxsig(nomte, nodeCoor, &
-                      nbLayer, siefElga)
+    subroutine vdxefgeElno(nomte, nodeCoor, &
+                           nbLayer, efgeElno)
         character(len=16), intent(in) :: nomte
         real(kind=8), intent(in) :: nodeCoor(3, 9)
         integer(kind=8), intent(in) :: nbLayer
-        real(kind=8), intent(out) :: siefElga(6*27*nbLayer)
-    end subroutine vdxsig
+        real(kind=8), intent(out) :: efgeElno(8, 9)
+    end subroutine vdxefgeElno
 end interface

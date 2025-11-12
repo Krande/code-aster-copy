@@ -15,13 +15,10 @@
 ! You should have received a copy of the GNU General Public License
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
-
-!
 !
 interface
-    subroutine postcoq3d(option,nomte,nbcou)
-        character(len=16) :: nomte
-        character(len=16) :: option
-        integer(kind=8) :: nbcou
+    subroutine postcoq3d(optionZ, nomteZ, nbLayer)
+        character(len=*), intent(in) :: optionZ, nomteZ
+        integer(kind=8), intent(in) :: nbLayer
     end subroutine postcoq3d
 end interface

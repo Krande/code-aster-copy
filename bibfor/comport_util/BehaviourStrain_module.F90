@@ -189,8 +189,7 @@ contains
             if (varcStrainHasRefe(indxVarcStrain)) then
                 call rcvarc(' ', varcName, 'REF', fami, kpg, &
                             ksp, varcRefe, iretRefe)
-                !if (exist .and. iretRefe .eq. 1) then
-                if (ASTER_FALSE) then
+                if (exist .and. iretRefe .eq. 1) then
                     call utmess("F", "COMPOR7_8")
                 end if
             end if

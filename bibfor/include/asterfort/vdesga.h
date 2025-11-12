@@ -15,23 +15,17 @@
 ! You should have received a copy of the GNU General Public License
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
-
-!
+#include "asterf_types.h"
 !
 interface
-    subroutine vdesga(kwgt, nb1, nb2, depl, btild,&
-                      indith, alpha, tempga, epsiln, sigma,&
-                      vectt)
-        integer(kind=8) :: kwgt
-        integer(kind=8) :: nb1
-        integer(kind=8) :: nb2
-        real(kind=8) :: depl(*)
-        real(kind=8) :: btild(5, 42)
-        integer(kind=8) :: indith
-        real(kind=8) :: alpha
-        real(kind=8) :: tempga(*)
-        real(kind=8) :: epsiln(6, *)
-        real(kind=8) :: sigma(6, *)
-        real(kind=8) :: vectt(3, 3)
+    subroutine vdesga(kwgt, nb1, nb2, &
+                      vectt, disp, btild, &
+                      hasTemp_, alpha_, tempKpg_, siefKpg_, &
+                      epsiKpg_)
+        integer(kind=8), intent(in) :: kwgt, nb1, nb2
+        real(kind=8), intent(in) :: vectt(3, 3), disp(42), btild(5, 42)
+        aster_logical, optional, intent(in) :: hasTemp_
+        real(kind=8), optional, intent(in) :: alpha_, tempKpg_
+        real(kind=8), optional, intent(out) :: siefKpg_(6, *), epsiKpg_(6, *)
     end subroutine vdesga
 end interface

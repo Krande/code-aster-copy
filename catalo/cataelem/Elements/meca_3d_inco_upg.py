@@ -17,8 +17,6 @@
 # along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 # --------------------------------------------------------------------
 
-# person_in_charge: mickael.abbas at edf.fr
-
 
 from cataelem.Tools.base_objects import LocatedComponents, ArrayOfComponents, SetOfNodes, ElrefeLoc
 from cataelem.Tools.base_objects import Calcul, Element
@@ -565,11 +563,7 @@ class MINC_HEXA20(Element):
         ),
         OP.EPSI_ELGA(
             te=453,
-            para_in=(
-                (SP.PDEPLAR, NDEPLAR),
-                (SP.PGEOMER, NGEOMER),
-                (OP.EPSI_ELGA.PVARCPR, LC.ZVARCPG),
-            ),
+            para_in=((SP.PDEPLAR, NDEPLAR), (SP.PGEOMER, NGEOMER)),
             para_out=((SP.PDEFOPC, EDEFOPC), (OP.EPSI_ELGA.PDEFOPG, EDEFOPG)),
         ),
         OP.EPSI_ELNO(

@@ -15,6 +15,7 @@
 ! You should have received a copy of the GNU General Public License
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
+! aslint: disable=W1501
 !
 subroutine dismlg(questi, nomobz, repi, repkz, ierd)
 !
@@ -61,6 +62,7 @@ subroutine dismlg(questi, nomobz, repi, repkz, ierd)
 !
     integer(kind=8) :: dimge(3)
     aster_logical :: melang
+    character(len=4) :: tytm
     character(len=8) :: calcri, mailla, nomacr, cellTypeName, k8bid, typmod2, typmod3
     character(len=16) :: elemTypeName, phenom, modelization, tyvois, formul
     character(len=19) :: nomob
@@ -333,7 +335,9 @@ subroutine dismlg(questi, nomobz, repi, repkz, ierd)
 
                     else if (questi .eq. 'EXI_AXIS') then
                         if (lteatt('AXIS', 'OUI', typel=elemTypeName)) repk = 'OUI'
-                        if (repk .eq. 'OUI') exit
+                        if (repk .eq. 'OUI') then
+                            exit
+                        end if
 
                     else if (questi .eq. 'EXI_COQSOL') then
                         if ((elemTypeName .eq. 'MESSHELL_SB9' .or. &
@@ -372,6 +376,20 @@ subroutine dismlg(questi, nomobz, repi, repkz, ierd)
                             repk = 'OUI'
                             exit
                         end if
+
+                    else if (questi .eq. 'EXI_C_PLAN') then
+                        if (lteatt('C_PLAN', 'OUI', typel=elemTypeName)) repk = 'OUI'
+                        if (repk .eq. 'OUI') then
+                            exit
+                        end if
+
+                    else if (questi .eq. 'EXI_ELTVOL') then
+                        call dismte('TYPE_TYPMAIL', elemTypeName, repi, tytm, ierd)
+                        if (tytm .eq. 'VOLU') then
+                            repk = 'OUI'
+                            exit
+                        end if
+
                     else
                         ASSERT(ASTER_FALSE)
 

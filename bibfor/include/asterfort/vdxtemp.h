@@ -15,13 +15,19 @@
 ! You should have received a copy of the GNU General Public License
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
+#include "asterf_types.h"
 !
 interface
-    subroutine vdxsig(nomte, nodeCoor, &
-                      nbLayer, siefElga)
-        character(len=16), intent(in) :: nomte
-        real(kind=8), intent(in) :: nodeCoor(3, 9)
-        integer(kind=8), intent(in) :: nbLayer
-        real(kind=8), intent(out) :: siefElga(6*27*nbLayer)
-    end subroutine vdxsig
+    subroutine vdxtemp(kInf, kMoy, kSup, &
+                       kpgsn, ksi3, &
+                       hasTempRefe, tempRefe, &
+                       hasTemp, tempKpg)
+        integer(kind=8), intent(in) :: kInf, kMoy, kSup
+        integer(kind=8), intent(in) :: kpgsn
+        real(kind=8), intent(in) :: ksi3
+        aster_logical, intent(in) :: hasTempRefe
+        real(kind=8), intent(in) :: tempRefe
+        aster_logical, intent(out) :: hasTemp
+        real(kind=8), intent(out) :: tempKpg
+    end subroutine vdxtemp
 end interface

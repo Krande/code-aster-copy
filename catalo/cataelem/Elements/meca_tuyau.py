@@ -342,7 +342,6 @@ class MET3SEG3(Element):
                 (SP.PCAORIE, CCAORIE),
                 (SP.PDEPLAR, DDL_MECA),
                 (OP.EPSI_ELGA.PNBSP_I, ENBSP_I),
-                (OP.EPSI_ELGA.PVARCPR, LC.ZVARCPG),
             ),
             para_out=((SP.PDEFOPC, LC.EGPS3DC), (OP.EPSI_ELGA.PDEFOPG, LC.EGPS3DR)),
         ),

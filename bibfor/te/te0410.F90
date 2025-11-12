@@ -15,34 +15,38 @@
 ! You should have received a copy of the GNU General Public License
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
-
-subroutine te0410(optioz, nomtz)
+!
+subroutine te0410(option, nomte)
+!
     implicit none
-#include "jeveux.h"
+!
 #include "asterfort/jevech.h"
 #include "asterfort/postcoq3d.h"
+#include "jeveux.h"
 !
-    character(len=*) :: optioz, nomtz
+    character(len=*), intent(in) :: option, nomte
 !
-    character(len=16) :: option, nomte
-!     ----------------------------------------------------------------
-!     CALCUL DES OPTIONS DES ELEMENTS DE COQUE 3D
-!                EPSI_ELGA
-!                SIEF_ELGA
-!                DEGE_ELGA
-!                DEGE_ELNO
+! --------------------------------------------------------------------------------------------------
 !
-
-!-----------------------------------------------------------------------
-    integer(kind=8) :: jcou
-    integer(kind=8) :: nbcou
-! DEB
+! Elementary computation
 !
-    option = optioz
-    nomte = nomtz
+! Elements: COQUE_3D
 !
-    call jevech('PNBSP_I', 'L', jcou)
-    nbcou = zi(jcou)
-    call postcoq3d(option, nomte, nbcou)
+! Options: DEGE_ELGA, DEGE_ELNO, EPSI_ELGA, SIEF_ELGA
+!
+! --------------------------------------------------------------------------------------------------
+!
+! In  option           : name of option to compute
+! In  nomte            : type of finite element
+!
+! --------------------------------------------------------------------------------------------------
+!
+    integer(kind=8) :: jvNbsp, nbLayer
+!
+! --------------------------------------------------------------------------------------------------
+!
+    call jevech('PNBSP_I', 'L', jvNbsp)
+    nbLayer = zi(jvNbsp)
+    call postcoq3d(option, nomte, nbLayer)
 !
 end subroutine

@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -324,11 +324,7 @@ class THM_HEXA20S_DIL(Element):
         ),
         OP.EPSI_ELGA(
             te=600,
-            para_in=(
-                (SP.PDEPLAR, DDL_MECA),
-                (SP.PGEOMER, NGEOMER),
-                (OP.EPSI_ELGA.PVARCPR, LC.ZVARCPG),
-            ),
+            para_in=((SP.PDEPLAR, DDL_MECA), (SP.PGEOMER, NGEOMER)),
             para_out=((SP.PDEFOPC, EDEFOPC), (OP.EPSI_ELGA.PDEFOPG, EDEFOPG)),
         ),
         OP.EPSI_ELNO(

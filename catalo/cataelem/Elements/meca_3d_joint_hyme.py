@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -151,6 +151,7 @@ class EJHYME_HEXA20(Element):
                 (SP.PINSTMR, CTEMPSR),
                 (SP.PINSTPR, CTEMPSR),
                 (SP.PMATERC, LC.CMATERC),
+                (SP.PVARCRR, LC.ZVARCPG),
                 (SP.PVARCMR, LC.ZVARCPG),
                 (OP.FULL_MECA.PVARCPR, LC.ZVARCPG),
                 (OP.FULL_MECA.PVARIMR, ZVARIPG),
@@ -176,6 +177,7 @@ class EJHYME_HEXA20(Element):
                 (SP.PINSTMR, CTEMPSR),
                 (SP.PINSTPR, CTEMPSR),
                 (SP.PMATERC, LC.CMATERC),
+                (SP.PVARCRR, LC.ZVARCPG),
                 (SP.PVARCMR, LC.ZVARCPG),
                 (OP.FULL_MECA_ELAS.PVARCPR, LC.ZVARCPG),
                 (OP.FULL_MECA_ELAS.PVARIMR, ZVARIPG),
@@ -212,6 +214,7 @@ class EJHYME_HEXA20(Element):
                 (SP.PINSTMR, CTEMPSR),
                 (SP.PINSTPR, CTEMPSR),
                 (SP.PMATERC, LC.CMATERC),
+                (SP.PVARCRR, LC.ZVARCPG),
                 (SP.PVARCMR, LC.ZVARCPG),
                 (OP.RAPH_MECA.PVARCPR, LC.ZVARCPG),
                 (OP.RAPH_MECA.PVARIMR, ZVARIPG),
@@ -240,6 +243,7 @@ class EJHYME_HEXA20(Element):
                 (SP.PINSTMR, CTEMPSR),
                 (SP.PINSTPR, CTEMPSR),
                 (SP.PMATERC, LC.CMATERC),
+                (SP.PVARCRR, LC.ZVARCPG),
                 (SP.PVARCMR, LC.ZVARCPG),
                 (OP.RIGI_MECA_ELAS.PVARCPR, LC.ZVARCPG),
                 (OP.RIGI_MECA_ELAS.PVARIMR, ZVARIPG),
@@ -258,6 +262,7 @@ class EJHYME_HEXA20(Element):
                 (SP.PINSTMR, CTEMPSR),
                 (SP.PINSTPR, CTEMPSR),
                 (SP.PMATERC, LC.CMATERC),
+                (SP.PVARCRR, LC.ZVARCPG),
                 (SP.PVARCMR, LC.ZVARCPG),
                 (OP.RIGI_MECA_TANG.PVARCPR, LC.ZVARCPG),
                 (OP.RIGI_MECA_TANG.PVARIMR, ZVARIPG),

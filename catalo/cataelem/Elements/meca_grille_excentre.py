@@ -98,6 +98,7 @@ MMATUUC = ArrayOfComponents(phys=PHY.MDEP_C, locatedComponents=NDEPLAC)
 
 MMATUUR = ArrayOfComponents(phys=PHY.MDEP_R, locatedComponents=DDL_MECA)
 
+
 # ------------------------------------------------------------
 class MEGCTR3(Element):
     """Please document this element"""
@@ -244,12 +245,7 @@ class MEGCTR3(Element):
         ),
         OP.EPSI_ELGA(
             te=433,
-            para_in=(
-                (SP.PCACOQU, CCACOQU),
-                (SP.PDEPLAR, DDL_MECA),
-                (SP.PGEOMER, NGEOMER),
-                (OP.EPSI_ELGA.PVARCPR, LC.ZVARCPG),
-            ),
+            para_in=((SP.PCACOQU, CCACOQU), (SP.PDEPLAR, DDL_MECA), (SP.PGEOMER, NGEOMER)),
             para_out=((OP.EPSI_ELGA.PDEFOPG, EDEFOPG),),
         ),
         OP.EPSI_ELNO(

@@ -15,88 +15,100 @@
 ! You should have received a copy of the GNU General Public License
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
-
-subroutine matrth(fami, npg, young, nu, alpha, &
-                  indith)
+! aslint: disable=W0413
+!
+subroutine matrth(famiZ, &
+                  elasID, elasKeywordZ, jvMaterCode, &
+                  hasTemp, tempMoy, alpha, &
+                  young_, nu_)
 !
     implicit none
 !
-!
-#include "jeveux.h"
-#include "asterfort/jevech.h"
-#include "asterfort/moytem.h"
-#include "asterfort/rccoma.h"
+#include "asterf_types.h"
+#include "asterfort/ElasticityMaterial_type.h"
 #include "asterfort/rcvala.h"
 #include "asterfort/rcvalb.h"
 #include "asterfort/utmess.h"
-    integer(kind=8) :: iret
+#include "jeveux.h"
 !
-    real(kind=8) :: valres(26)
-    integer(kind=8) :: icodre(26)
-    character(len=8) :: nompar
-    character(len=16) :: nomres(26)
-    character(len=32) :: phenom
-    real(kind=8) :: young, nu, alpha
-    integer(kind=8) :: npg
-    character(len=4) :: fami
+    character(len=*), intent(in) :: famiZ
+    integer(kind=8), intent(in) :: elasID
+    character(len=*), intent(in) :: elasKeywordZ
+    integer(kind=8), intent(in) :: jvMaterCode
+    aster_logical, intent(in) :: hasTemp
+    real(kind=8), intent(in) :: tempMoy
+    real(kind=8), intent(out) :: alpha
+    real(kind=8), optional, intent(out) :: young_, nu_
 !
+! --------------------------------------------------------------------------------------------------
 !
-!-----------------------------------------------------------------------
-    integer(kind=8) :: indith, jcou, jmate
-    real(kind=8) :: temp
-!-----------------------------------------------------------------------
-    indith = 0
-    nompar = 'TEMP'
+! COQUE_3D
 !
-    call jevech('PMATERC', 'L', jmate)
+! Get elasticity parameters
 !
-    call rccoma(zi(jmate), 'ELAS', 1, phenom, icodre(1))
+! --------------------------------------------------------------------------------------------------
 !
-    if (phenom .eq. 'ELAS') then
+    integer(kind=8), parameter :: nbPara = 1
+    character(len=8), parameter :: paraName(nbPara) = (/'TEMP'/)
+    integer(kind=8), parameter :: nbPropIsot = 3
+    character(len=16), parameter :: propNameIsot(nbPropIsot) = &
+                                    (/'E    ', 'NU   ', 'ALPHA'/)
+    integer(kind=8), parameter :: nbPropOrth = 2
+    character(len=16), parameter :: propNameOrth(nbPropOrth) = &
+                                    (/'ALPHA_L', 'ALPHA_T'/)
+    real(kind=8) :: propVale(nbPropIsot)
+    integer(kind=8) :: propCode(nbPropIsot)
+    real(kind=8) :: young, nu
+    character(len=16) :: elasKeyword
+    aster_logical :: hasAlphaTher
 !
-        call jevech('PNBSP_I', 'L', jcou)
+! --------------------------------------------------------------------------------------------------
 !
-        nomres(1) = 'E'
-        nomres(2) = 'NU'
-        nomres(3) = 'ALPHA'
-!
-        call moytem(fami, npg, 3*zi(jcou), '+', temp, &
-                    iret)
-        call rcvala(zi(jmate), ' ', phenom, 1, nompar, &
-                    [temp], 3, nomres, valres, icodre, &
-                    1)
-        if (icodre(3) .ne. 0) then
-            indith = -1
-            goto 999
-        end if
-!
-!     MATERIAU ISOTROPE
-!
-        young = valres(1)
-        nu = valres(2)
-        alpha = valres(3)
-!
-    else if (phenom .eq. 'ELAS_ORTH') then
-        nomres(1) = 'ALPHA_L'
-        nomres(2) = 'ALPHA_T'
-        call rcvalb(fami, 1, 1, '+', zi(jmate), &
-                    ' ', phenom, 0, nompar, [temp], &
-                    2, nomres, valres, icodre, 1)
-        if (icodre(1) .ne. 0) then
-            indith = -1
-            goto 999
+    hasAlphaTher = ASTER_TRUE
+    elasKeyword = elasKeywordZ
+    young = 0.d0
+    alpha = 0.d0
+    nu = 0.d0
+    if (elasID .eq. ELAS_ISOT) then
+        call rcvala(jvMaterCode, ' ', elasKeyword, &
+                    nbPara, paraName, [tempMoy], &
+                    nbPropIsot, propNameIsot, &
+                    propVale, propCode, 1)
+        if (propCode(3) .ne. 0) then
+            hasAlphaTher = ASTER_FALSE
         else
-            if ((valres(1) .eq. 0.d0) .and. (valres(2) .eq. 0.d0)) then
-                indith = -1
-                goto 999
+            young = propVale(1)
+            nu = propVale(2)
+            alpha = propVale(3)
+        end if
+
+    else if (elasID .eq. ELAS_ORTH) then
+        call rcvalb(famiZ, 1, 1, '+', &
+                    jvMaterCode, ' ', elasKeyword, &
+                    0, paraName, [tempMoy], &
+                    nbPropOrth, propNameOrth, &
+                    propVale, propCode, 1)
+        if (propCode(1) .ne. 0) then
+            hasAlphaTher = ASTER_FALSE
+        else
+            if ((propVale(1) .eq. 0.d0) .and. (propVale(2) .eq. 0.d0)) then
+                hasAlphaTher = ASTER_FALSE
             else
-                call utmess('F', 'ELEMENTS2_33')
+                call utmess('F', 'SHELL1_2')
             end if
         end if
+
     else
-        call utmess('F', 'ELEMENTS_45', sk=phenom)
+        call utmess('F', 'SHELL1_3', sk=elasKeyword)
+    end if
+    if (hasTemp .and. .not. hasAlphaTher) then
+        call utmess('F', 'SHELL1_4')
+    end if
+    if (present(young_)) then
+        young_ = young
+    end if
+    if (present(nu_)) then
+        nu_ = nu
     end if
 !
-!
-999 continue
 end subroutine

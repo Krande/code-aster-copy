@@ -333,20 +333,20 @@ subroutine calcop(option, listOptJvZ, resultIn, resultOut, listStoreJv, &
                     model, partsd, lsdpar, &
                     ibid, ibid, ibid, ibid, ibid, &
                     k24b, ibid, ibid, kbid, k24b, prbid, pcbid)
-        if (nbproc .eq. 1 .and. niv > 1) then
-            call utmess('I', 'PREPOST_25', sk=optionEff)
-        else if (nbproc .gt. 1) then
-            if (ldist) then
-                ASSERT(.not. l_pmesh)
-                call utmess('I', 'PREPOST_22', si=nbStore, sk=optionEff)
-            elseif (.not. l_pmesh) then
-                if (lsdpar) then
-                    call utmess('I', 'PREPOST_23', sk=optionEff)
-                else
-                    call utmess('I', 'PREPOST_24', sk=optionEff)
-                end if
-            end if
-        end if
+        ! if (nbproc .eq. 1 .and. niv > 1) then
+        !     call utmess('I', 'PREPOST_25', sk=optionEff)
+        ! else if (nbproc .gt. 1) then
+        !     if (ldist) then
+        !         ASSERT(.not. l_pmesh)
+        !         call utmess('I', 'PREPOST_22', si=nbStore, sk=optionEff)
+        !     elseif (.not. l_pmesh) then
+        !         if (lsdpar) then
+        !             call utmess('I', 'PREPOST_23', sk=optionEff)
+        !         else
+        !             call utmess('I', 'PREPOST_24', sk=optionEff)
+        !         end if
+        !     end if
+        ! end if
 !
         codre2 = 0
         ligrel = ' '

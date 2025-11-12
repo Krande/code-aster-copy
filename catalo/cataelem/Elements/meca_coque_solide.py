@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -56,6 +56,7 @@ MMATUUR = ArrayOfComponents(phys=PHY.MDEP_R, locatedComponents=DDL_MECA)
 MMATUNS = ArrayOfComponents(phys=PHY.MDNS_R, locatedComponents=DDL_MECA)
 
 MVECTUR = ArrayOfComponents(phys=PHY.VDEP_R, locatedComponents=DDL_MECA)
+
 
 # ----------------------------------------------------------------------------------------------
 class MESSHELL_SB9(Element):
@@ -160,13 +161,7 @@ class MESSHELL_SB9(Element):
         ),
         OP.EPSI_ELGA(
             te=125,
-            para_in=(
-                (SP.PGEOMER, LC.EGEOM3D),
-                (SP.PMATERC, LC.CMATERC),
-                (SP.PDEPLAR, DDL_MECA),
-                (SP.PVARCPR, LC.ZVARCPG),
-                (SP.PVARCRR, LC.ZVARCPG),
-            ),
+            para_in=((SP.PGEOMER, LC.EGEOM3D), (SP.PMATERC, LC.CMATERC), (SP.PDEPLAR, DDL_MECA)),
             para_out=((OP.EPSI_ELGA.PDEFOPG, LC.EGPS3DR),),
         ),
         OP.EPSI_ELNO(

@@ -15,117 +15,110 @@
 ! You should have received a copy of the GNU General Public License
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
-
-subroutine postcoq3d(option, nomte, nbcou)
+!
+subroutine postcoq3d(optionZ, nomteZ, nbLayer)
+!
     implicit none
-#include "jeveux.h"
+!
+#include "asterf_types.h"
+#include "asterfort/assert.h"
 #include "asterfort/jevech.h"
 #include "asterfort/jevete.h"
 #include "asterfort/tecach.h"
-#include "asterfort/utmess.h"
 #include "asterfort/vdefro.h"
 #include "asterfort/vdrepe.h"
 #include "asterfort/vdsiro.h"
 #include "asterfort/vdxedg.h"
+#include "asterfort/vdxeps.h"
 #include "asterfort/vdxsig.h"
-
+#include "jeveux.h"
 !
-    character(len=16) :: option, nomte
-!     ----------------------------------------------------------------
-!     CALCUL DES OPTIONS DES ELEMENTS DE COQUE 3D
-!                EPSI_ELGA
-!                SIEF_ELGA
-!                DEGE_ELGA
-!                DEGE_ELNO
+    character(len=*), intent(in) :: optionZ, nomteZ
+    integer(kind=8), intent(in) :: nbLayer
 !
-    integer(kind=8) :: npgt
-!-----------------------------------------------------------------------
-    integer(kind=8) ::  icontr, jgeom, lzi
-    integer(kind=8) :: nbcou, npgsn, npgsr
-!-----------------------------------------------------------------------
-    parameter(npgt=10)
-    integer(kind=8) :: nb1, itab(7), iret
-    real(kind=8) :: effgt(8, 9), sigpg(162*nbcou)
-    real(kind=8) :: edgpg(72), defgt(72)
+! --------------------------------------------------------------------------------------------------
+!
+! COQUE_3D
+!
+! Compute DEGE_ELGA, DEGE_ELNO, EPSI_ELGA, SIEF_ELGA
+!
+! --------------------------------------------------------------------------------------------------
+!
+! In  option           : name of option to compute
+! In  nomte            : type of finite element
+! In  nbLayer          : number of layers
+!
+! --------------------------------------------------------------------------------------------------
+!
+    integer(kind=8), parameter :: npgt = 10
     real(kind=8) :: matevn(2, 2, npgt), matevg(2, 2, npgt)
-    sigpg = 0.0d0
-! DEB
+    integer(kind=8) :: jvSigm, jvGeom, lzi, jvDege, jvEpsi
+    integer(kind=8) :: nb1, npgsn
+    character(len=16) :: option, nomte
+    integer(kind=8) :: itab(7), iret
+    real(kind=8) :: degeElga(72), degeElno(8, 9)
+    real(kind=8) :: siefElga(6*27*nbLayer), epsiElga(6*27*nbLayer)
 !
-    call jevech('PGEOMER', 'L', jgeom)
+! --------------------------------------------------------------------------------------------------
+!
+    option = optionZ
+    nomte = nomteZ
+
+! - Acces to geometry
+    call jevech('PGEOMER', 'L', jvGeom)
+
+! - Get parameters
     call jevete('&INEL.'//nomte(1:8)//'.DESI', ' ', lzi)
+    nb1 = zi(lzi-1+1)
     npgsn = zi(lzi-1+4)
 
-    if (option(1:9) .eq. '         ') then
-        call utmess('F', 'CALCULEL7_5', sk=option, si=nbcou)
-    end if
-!     LE TABLEAU SIGPG A ETE ALLOUE DE FACON STATIQUE POUR OPTIMISER
-!     LE CPU CAR LES APPELS A WKVECT DANS LES TE SONT COUTEUX.
-!
-    if (option(1:9) .eq. 'DEGE_ELGA' .or. option(1:9) .eq. 'DEGE_ELNO') then
-        call vdxedg(nomte, option, zr(jgeom), nb1, npgsr, &
-                    edgpg, defgt)
+! - Compute option
+    if (option .eq. 'DEGE_ELGA' .or. option .eq. 'DEGE_ELNO') then
+        call vdxedg(nomte, option, zr(jvGeom), &
+                    degeElga, degeElno)
+
+    elseif (option .eq. 'SIEF_ELGA') then
+        call vdxsig(nomte, zr(jvGeom), &
+                    nbLayer, siefElga)
+
+    elseif (option .eq. 'EPSI_ELGA') then
+        call vdxeps(nomte, zr(jvGeom), &
+                    nbLayer, epsiElga)
+
     else
-        call vdxsig(nomte, option, zr(jgeom), nb1, npgsr, &
-                    sigpg, effgt, nbcou)
+        ASSERT(ASTER_FALSE)
     end if
 
-!
-! --- DETERMINATION DES MATRICES DE PASSAGE DES REPERES INTRINSEQUES
-! --- AUX NOEUDS ET AUX POINTS D'INTEGRATION DE L'ELEMENT
-! --- AU REPERE UTILISATEUR :
-!     ---------------------
+! - DETERMINATION DES MATRICES DE PASSAGE DES REPERES INTRINSEQUES
+! - AUX NOEUDS ET AUX POINTS D'INTEGRATION DE L'ELEMENT
+! - AU REPERE UTILISATEUR
     call vdrepe(nomte, matevn, matevg)
-    if (option(1:9) .eq. 'EPSI_ELGA') then
+    if (option .eq. 'EPSI_ELGA') then
         call tecach('OOO', 'PDEFOPG', 'E', iret, nval=7, &
                     itab=itab)
-        icontr = itab(1)
-!
-! ----- STOCKAGE DU VECTEUR DES DEFORMATIONS
-! ----- 1 COUCHE - 3 PTS DANS L'EPAISSEUR
-!------ 162 = NPGSN*6(6 DEFORMATIONS STOCKEES)*NPGE
-!       ------------------------------------------------------
-!
-!
-! ---   PASSAGE DES DEFORMATIONS DANS LE REPERE UTILISATEUR :
+        jvEpsi = itab(1)
         call vdsiro(itab(3), itab(7), matevg, 'IU', 'G', &
-                    sigpg, zr(icontr))
-!
-!
-    else if (option(1:9) .eq. 'SIEF_ELGA') then
+                    epsiElga, zr(jvEpsi))
+
+    else if (option .eq. 'SIEF_ELGA') then
         call tecach('OOO', 'PCONTRR', 'E', iret, nval=7, &
                     itab=itab)
-        icontr = itab(1)
-!
-! ----- STOCKAGE DU VECTEUR DES CONTRAINTES EN ELASTICITE
-! ----- 1 COUCHE - 3 PTS DANS L'EPAISSEUR
-!------ 162 = NPGSN*6(6 CONTRAINTES STOCKEES)*NPGE
-!       ------------------------------------------------------
-!
-! ---   PASSAGE DES CONTRAINTES DANS LE REPERE UTILISATEUR :
+        jvSigm = itab(1)
         call vdsiro(itab(3), itab(7), matevg, 'IU', 'G', &
-                    sigpg, zr(icontr))
-!
-!
+                    siefElga, zr(jvSigm))
+
     else if (option(1:9) .eq. 'DEGE_ELGA') then
         call tecach('OOO', 'PDEFOPG', 'E', iret, nval=7, &
                     itab=itab)
-        icontr = itab(1)
-!
-! ---   PASSAGE DES DEFORMATIONS DANS LE REPERE UTILISATEUR
-!       ET STOCKAGE DES DEFORMATIONS:
-!
-        call vdefro(npgsn, matevn, edgpg, zr(icontr))
-!
+        jvDege = itab(1)
+        call vdefro(npgsn, matevn, degeElga, zr(jvDege))
+
     else if (option(1:9) .eq. 'DEGE_ELNO') then
         call tecach('OOO', 'PDEFOGR', 'E', iret, nval=7, &
                     itab=itab)
-        icontr = itab(1)
-!
-! ---   PASSAGE DES DEFORMATIONS DANS LE REPERE UTILISATEUR
-!       ET STOCKAGE DES DEFORMATIONS:
-!
-        call vdefro((nb1+1), matevn, defgt, zr(icontr))
-!
+        jvDege = itab(1)
+        call vdefro((nb1+1), matevn, degeElno, zr(jvDege))
+
     end if
 !
 end subroutine

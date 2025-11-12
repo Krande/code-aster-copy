@@ -15,91 +15,90 @@
 ! You should have received a copy of the GNU General Public License
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
-
-subroutine vdesga(kwgt, nb1, nb2, depl, btild, &
-                  indith, alpha, tempga, epsiln, sigma, &
-                  vectt)
+!
+subroutine vdesga(kwgt, nb1, nb2, &
+                  vectt, disp, btild, &
+                  hasTemp_, alpha_, tempKpg_, siefKpg_, &
+                  epsiKpg_)
+!
     implicit none
 !
-!
-#include "jeveux.h"
-!
+#include "asterf_types.h"
+#include "asterfort/assert.h"
 #include "asterfort/jevech.h"
 #include "asterfort/matrc.h"
-    real(kind=8) :: depl(*), btild(5, 42), matc(5, 5), tempga(*)
-    real(kind=8) :: vectt(3, 3)
-    real(kind=8) :: epsi(5), epstot(5), sigm(5), epsiln(6, *), sigma(6, *)
+#include "jeveux.h"
+!
+    integer(kind=8), intent(in) :: kwgt, nb1, nb2
+    real(kind=8), intent(in) :: vectt(3, 3), disp(42), btild(5, 42)
+    aster_logical, optional, intent(in) :: hasTemp_
+    real(kind=8), optional, intent(in) :: alpha_, tempKpg_
+    real(kind=8), optional, intent(out) :: siefKpg_(6, *), epsiKpg_(6, *)
+!
+! --------------------------------------------------------------------------------------------------
+!
+    real(kind=8) :: matrElas(5, 5)
+    real(kind=8) :: epsi(5), sigm(5)
     real(kind=8) :: kappa
+    integer(kind=8) :: i, jvCacoqu, k
+    aster_logical :: hasTemp
 !
-!-----------------------------------------------------------------------
-    integer(kind=8) :: i, indith, jcara, k, kwgt
-    integer(kind=8) :: nb1, nb2
-    real(kind=8) :: alpha, deux
-!-----------------------------------------------------------------------
-    deux = 2.0d0
+! --------------------------------------------------------------------------------------------------
 !
+    hasTemp = ASTER_FALSE
+    if (present(hasTemp_)) then
+        hasTemp = hasTemp_
+    end if
+
+! - Compute tensor of strains
+    epsi = 0.d0
     do i = 1, 5
-        epsi(i) = 0.d0
         do k = 1, 5*nb1+2
-            epsi(i) = epsi(i)+btild(i, k)*depl(k)
+            epsi(i) = epsi(i)+btild(i, k)*disp(k)
         end do
     end do
-!
-    epsiln(1, kwgt) = epsi(1)
-    epsiln(2, kwgt) = epsi(2)
-    epsiln(3, kwgt) = 0.d0
-    epsiln(4, kwgt) = epsi(3)/deux
-    epsiln(5, kwgt) = epsi(4)/deux
-    epsiln(6, kwgt) = epsi(5)/deux
-!
-    call jevech('PCACOQU', 'L', jcara)
-    kappa = zr(jcara+3)
-!
-    call matrc(nb2, kappa, matc, vectt)
-!
-    if (indith .eq. -1) then
-!
-!     PAS DE CONTRAINTES THERMIQUES
-!
+
+! - Mechanical strains (only to compute stress !)
+    if (hasTemp) then
+        ASSERT(.not. present(epsiKpg_))
+        epsi(1) = epsi(1)-alpha_*tempKpg_
+        epsi(2) = epsi(2)-alpha_*tempKpg_
+        epsi(3) = epsi(3)
+        epsi(4) = epsi(4)
+        epsi(5) = epsi(5)
+    end if
+
+    if (present(siefKpg_)) then
+! ----- Get kappa
+        call jevech('PCACOQU', 'L', jvCacoqu)
+        kappa = zr(jvCacoqu+3)
+
+! ----- Compute elastic matrix
+        call matrc(nb2, kappa, matrElas, vectt)
+
+! ----- Compute stress
+        sigm = 0.d0
         do i = 1, 5
-            sigm(i) = 0.d0
             do k = 1, 5
-                sigm(i) = sigm(i)+matc(i, k)*epsi(k)
+                sigm(i) = sigm(i)+matrElas(i, k)*epsi(k)
             end do
         end do
-!
-    else if (indith .eq. 0) then
-!
-!     AVEC CONTRAINTES THERMIQUES
-!
-!     POUR CELA ON PASSE PAR LES DEFORMATIONS TOTALES
-!     AU LIEU DE FAIRE ARIMETHIQUEMENT  SIGMA(ELAS) + SIGMA(THER)
-!     CECI EN RAISON DE L'HETEROGENEITE ENTRE DEFORMATION ELASTIQUE
-!     ET THERMIQUE (L'UN PEUT ETRE LINEAIE, L'AUTRE QUADRATQUE EN KSI3
-!     DEFORMATIONS TOTALES = DEFOR(ELAS) - DEFOR(THER)
-!     PUIS CONTRAINTES VRAIES = H * DEFORMATIONS TOTALES
-!
-        epstot(1) = epsi(1)-alpha*tempga(kwgt)
-        epstot(2) = epsi(2)-alpha*tempga(kwgt)
-        epstot(3) = epsi(3)
-        epstot(4) = epsi(4)
-        epstot(5) = epsi(5)
-!
-        do i = 1, 5
-            sigm(i) = 0.d0
-            do k = 1, 5
-                sigm(i) = sigm(i)+matc(i, k)*epstot(k)
-            end do
-        end do
-!
+
+        siefKpg_(1, kwgt) = sigm(1)
+        siefKpg_(2, kwgt) = sigm(2)
+        siefKpg_(3, kwgt) = 0.d0
+        siefKpg_(4, kwgt) = sigm(3)
+        siefKpg_(5, kwgt) = sigm(4)
+        siefKpg_(6, kwgt) = sigm(5)
     end if
 !
-    sigma(1, kwgt) = sigm(1)
-    sigma(2, kwgt) = sigm(2)
-    sigma(3, kwgt) = 0.d0
-    sigma(4, kwgt) = sigm(3)
-    sigma(5, kwgt) = sigm(4)
-    sigma(6, kwgt) = sigm(5)
-!
+    if (present(epsiKpg_)) then
+        epsiKpg_(1, kwgt) = epsi(1)
+        epsiKpg_(2, kwgt) = epsi(2)
+        epsiKpg_(3, kwgt) = 0.d0
+        epsiKpg_(4, kwgt) = epsi(3)/2.d0
+        epsiKpg_(5, kwgt) = epsi(4)/2.d0
+        epsiKpg_(6, kwgt) = epsi(5)/2.d0
+    end if
 !
 end subroutine

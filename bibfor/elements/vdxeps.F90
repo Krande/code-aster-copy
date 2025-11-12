@@ -16,12 +16,11 @@
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
 !
-subroutine vdxsig(nomte, nodeCoor, &
-                  nbLayer, siefElga)
+subroutine vdxeps(nomte, nodeCoor, &
+                  nbLayer, epsiElga)
 !
     implicit none
 !
-#include "asterc/r8nnem.h"
 #include "asterfort/btdfn.h"
 #include "asterfort/btdmsn.h"
 #include "asterfort/btdmsr.h"
@@ -47,13 +46,13 @@ subroutine vdxsig(nomte, nodeCoor, &
     character(len=16), intent(in) :: nomte
     real(kind=8), intent(in) :: nodeCoor(3, 9)
     integer(kind=8), intent(in) :: nbLayer
-    real(kind=8), intent(out) :: siefElga(6*27*nbLayer)
+    real(kind=8), intent(out) :: epsiElga(6*27*nbLayer)
 !
 ! --------------------------------------------------------------------------------------------------
 !
 ! COQUE_3D
 !
-! Compute SIEF_ELGA
+! Compute EPSI_ELGA
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -61,15 +60,12 @@ subroutine vdxsig(nomte, nodeCoor, &
 ! NOMBRE DE POINTS DE GAUSS DANS LA TRANCHE
     ! (POUR RESTER COHERENT AVEC SIEF_ELGA EN PLASTICITE )
     integer(kind=8), parameter :: npgLayer = 3
-    real(kind=8), parameter :: epsval(3) = (/-1.d0, 0.d0, +1.d0/)
     integer(kind=8) :: nb1, nb2, npgsn, npgsr
     integer(kind=8) :: i, j, k
-    integer(kind=8) :: jvCacoqu, jvDisp, jvNbsp, jvMater
+    integer(kind=8) :: jvCacoqu, jvDisp, jvNbsp
     integer(kind=8) :: lzi, lzr
-    integer(kind=8) :: iret
     integer(kind=8) :: iLayer, kpgLayer, kpgsn, kpgsr, kpgs, kwgt
-    integer(kind=8) :: kInf, kMoy, kSup
-    real(kind=8) :: siefKpg(6*27*nbLayer)
+    real(kind=8) :: epsiKpg(6*27*nbLayer)
     real(kind=8) :: vecta(9, 2, 3), vectn(9, 3), vectpt(9, 2, 3)
     real(kind=8) :: vectg(2, 3), vectt(3, 3)
     real(kind=8) :: hsfm(3, 9), hss(2, 9), hsj1m(3, 9), hsj1s(2, 9)
@@ -77,16 +73,12 @@ subroutine vdxsig(nomte, nodeCoor, &
     real(kind=8) :: hsf(3, 9), hsj1fx(3, 9), wgt
     real(kind=8) :: btdf(3, 42), btild(5, 42)
     real(kind=8) :: disp(42), rotf(9)
-    real(kind=8) :: alpha, epais
-    real(kind=8) :: ksi3, ksi3s2, hic, zmin
-    real(kind=8) :: tempRefe, tempKpg, tempMoy
-    aster_logical :: hasTemp, hasTempRefe
-    integer(kind=8) :: elasID
-    character(len=16) :: elasKeyword
+    real(kind=8) :: epais
+    real(kind=8) :: ksi3s2, hic, zmin
 !
 ! --------------------------------------------------------------------------------------------------
 !
-    siefElga = 0.d0
+    epsiElga = 0.d0
 
 ! - Get objects
     call jevete('&INEL.'//nomte(1:8)//'.DESI', ' ', lzi)
@@ -105,11 +97,6 @@ subroutine vdxsig(nomte, nodeCoor, &
     hic = un/nbLayer
     zmin = -0.5d0
 
-! - Get reference temperature
-    call rcvarc(' ', 'TEMP', 'REF', 'RIGI', 1, &
-                1, tempRefe, iret)
-    hasTempRefe = iret .eq. 0
-
 ! - Get displacements
     call jevech('PDEPLAR', 'L', jvDisp)
 
@@ -118,21 +105,13 @@ subroutine vdxsig(nomte, nodeCoor, &
                 vectn, vectpt)
     call trndgl(nb2, vectn, vectpt, zr(jvDisp), disp, &
                 rotf)
-
-! - Get elasticity
-    call jevech('PMATERC', 'L', jvMater)
-    call get_elas_id(zi(jvMater), elasID, elasKeyword)
 !
     kwgt = 0
     kpgs = 0
 !
     do iLayer = 1, nbLayer
-        kInf = 3*iLayer-2
-        kMoy = 3*iLayer-1
-        kSup = 3*iLayer
         do kpgLayer = 1, npgLayer
 ! --------- COTE DES POINTS D'INTEGRATION
-            ksi3 = epsval(kpgLayer)
             if (kpgLayer .eq. 1) then
                 ksi3s2 = zmin+(iLayer-1)*hic
             else if (kpgLayer .eq. 2) then
@@ -167,34 +146,15 @@ subroutine vdxsig(nomte, nodeCoor, &
                 call btdmsn(1, nb1, kpgsn, npgsr, zr(lzr), &
                             btdm, btdf, btds, btild)
 
-! ------------- Compute medium temperature
-                call moytem('MASS', npgsn, 3*nbLayer, '+', tempMoy, iret)
-
-! ------------- Get temperature
-                call vdxtemp(kInf, kMoy, kSup, &
-                             kpgsn, ksi3, &
-                             hasTempRefe, tempRefe, &
-                             hasTemp, tempKpg)
-
-! ------------- Get dilatation coefficient
-                if (hasTemp) then
-                    call matrth('MASS', &
-                                elasID, elasKeyword, zi(jvMater), &
-                                hasTemp, tempMoy, alpha)
-                else
-                    alpha = r8nnem()
-                end if
-
-! ------------- Compute stress
+! ------------- Compute strain
                 call vdesga(kwgt, nb1, nb2, &
                             vectt, disp, btild, &
-                            hasTemp, alpha, tempKpg, &
-                            siefKpg)
+                            epsiKpg_=epsiKpg)
 !
                 kpgs = kpgs+1
                 do i = 1, 6
-                    siefElga(6*((kpgsn-1)*npgLayer*nbLayer+npgLayer*(iLayer-1)+kpgLayer-1)+i) = &
-                        siefKpg(i+6*(kpgs-1))
+                    epsiElga(6*((kpgsn-1)*npgLayer*nbLayer+npgLayer*(iLayer-1)+kpgLayer-1)+i) = &
+                        epsiKpg(i+6*(kpgs-1))
                 end do
             end do
         end do
