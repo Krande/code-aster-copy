@@ -93,7 +93,7 @@ subroutine acearp(nbocc, infdonn, infcarte, grplmax, zjdlm)
     ASSERT((ndim .eq. 2) .or. (ndim .eq. 3))
 !   Si c'est un maillage partionné ==> PLOUF
     if ( infdonn%IsParaMesh ) then
-        call utmess('F', 'AFFECARAELEM_99')
+        call utmess('F', 'AFFECARAELEM_99', sk='RIGI_PARASOL')
     endif
 !
     GroupeMaxOccur = infdonn%GroupeMaxOccur

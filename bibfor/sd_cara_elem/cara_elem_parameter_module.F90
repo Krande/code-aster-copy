@@ -59,13 +59,13 @@ module cara_elem_parameter_module
     integer(kind=8), parameter :: ACE_NOTHING        =  0
 !
 !   Nombre total de mots clefs facteur
-    integer(kind=8), parameter :: ACE_NB_MCLEF = 16
+    integer(kind=8), parameter :: ACE_NB_MCLEF = 17
     character(len=16), parameter :: ACE_MCLEF(ACE_NB_MCLEF) = [ &
         'POUTRE          ','COQUE           ','DISCRET         ','ORIENTATION     ', &
         'CABLE           ','BARRE           ','MASSIF          ', &
         'POUTRE_FLUI     ','RIGI_PARASOL    ','GRILLE          ','RIGI_MISS_3D    ', &
         'DISCRET_2D      ','MEMBRANE        ','MASS_AJOU       ','MULTIFIBRE      ', &
-        'MASS_REP        ' ]
+        'MASS_REP        ','RIGI_GRILLE     ']
 !
     integer(kind=8), parameter :: ACE_POUTRE         =  1
     integer(kind=8), parameter :: ACE_COQUE          =  2
@@ -83,6 +83,7 @@ module cara_elem_parameter_module
     integer(kind=8), parameter :: ACE_MASS_AJOU      = 14
     integer(kind=8), parameter :: ACE_MULTIFIBRE     = 15
     integer(kind=8), parameter :: ACE_MASS_REP       = 16
+    integer(kind=8), parameter :: ACE_RIGI_GRILLE    = 17
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -111,7 +112,8 @@ module cara_elem_parameter_module
         ACE_GR_MAI, ACE_NOTHING, ACE_NOTHING, &
         ACE_GR_MAI, ACE_GR_PO1,  ACE_NOTHING, &
         ACE_GR_MAI, ACE_NOTHING, ACE_NOTHING, &
-        ACE_GR_MAI, ACE_GR_PO1,  ACE_NOTHING]
+        ACE_GR_MAI, ACE_GR_PO1,  ACE_NOTHING, &
+        ACE_GR_MAI, ACE_GR_SE2,  ACE_NOTHING]
 !
 ! --------------------------------------------------------------------------------------------------
 !   Toutes les cartes créées par AFFE_CARA_ELEM

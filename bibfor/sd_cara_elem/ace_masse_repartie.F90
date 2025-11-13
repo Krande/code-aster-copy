@@ -110,7 +110,7 @@ subroutine ace_masse_repartie(nbocc, infdonn, infcarte, grplmax, grpnbma, lesmai
     ASSERT((ndim .eq. 2) .or. (ndim .eq. 3))
 !   Si c'est un maillage partionné ==> PLOUF
     if (infdonn%IsParaMesh) then
-        call utmess('F', 'AFFECARAELEM_99')
+        call utmess('F', 'AFFECARAELEM_99', sk='MASS_REP')
     end if
 !
 !   Les cartes sont déjà construites : ace_crea_carte
