@@ -552,7 +552,6 @@ subroutine appcpr(kptsc)
                     '-sub_mat_mumps_cntl_3 1.e-50 '// &
                     '-sub_mat_mumps_cntl_5 0. '// &
                     '-eps_nev '//trim(nbmode_str)//' '// &
-                    '-eps_threshold '//trim(seuil_str)//' '// &
                     '-st_pc_factor_mat_solver_type mumps '// &
                     '-st_share_sub_ksp '// &
                     '-prefix_pop '// &
@@ -569,6 +568,9 @@ subroutine appcpr(kptsc)
                     '-define_subdomains '// &
                     '-has_neumann '// &
                     '-prefix_pop '
+            if (slvr(6) > 0) then
+                myopt = myopt//'-pc_hpddm_levels_1_eps_threshold_absolute '//trim(seuil_str)//' '
+            end if
         else
             myopt = '-prefix_push pc_hpddm_ '// &
                     '-prefix_push levels_1_ '// &
@@ -582,7 +584,6 @@ subroutine appcpr(kptsc)
                     '-sub_mat_mumps_cntl_5 0. '// &
                     '-svd_type lanczos '// &
                     '-svd_nsv '//trim(nbmode_str)//' '// &
-                    '-svd_relative_threshold '//trim(seuil_str)//' '// &
                     '-st_pc_factor_mat_solver_type mumps '// &
                     '-st_share_sub_ksp '// &
                     '-prefix_pop '// &
@@ -601,6 +602,9 @@ subroutine appcpr(kptsc)
                     '-define_subdomains '// &
                     '-harmonic_overlap 2 '// &
                     '-prefix_pop '
+            if (slvr(6) > 0) then
+                myopt = myopt//'-pc_hpddm_levels_1_svd_relative_threshold '//trim(seuil_str)//' '
+            end if
         end if
         call PetscOptionsInsertString(PETSC_NULL_OPTIONS, myopt, ierr)
         ASSERT(ierr == 0)
