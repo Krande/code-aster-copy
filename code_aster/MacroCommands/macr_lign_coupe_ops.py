@@ -44,6 +44,15 @@ from ..visu.visu_builders import VisuCutBuilder
 # verification que les points de la ligne de coupe sont dans la matiere
 
 
+class AxisSystem:
+    INITIAL: str = "INITIAL"
+    GLOBAL: str = "GLOBAL"
+    LOCAL: str = "LOCAL"
+    POLAR: str = "POLAIRE"
+    USER: str = "UTILISATEUR"
+    UNKNOWN: str = "UNKNOWN"
+
+
 def crea_grp_matiere(groupe, newgrp, iocc, m, __remodr, NOM_CHAM, __macou):
     motscles = {}
     if m["NOM_CMP"]:
@@ -177,7 +186,7 @@ def crea_resu_local(dime, NOM_CHAM, m, resin):
     repere_cut = m["REPERE"]
     type_cut = m["TYPE"]
 
-    if type_cut == "SEGMENT" and repere_cut == "LOCAL":
+    if type_cut == "SEGMENT" and repere_cut == AxisSystem.LOCAL:
         if not m["VECT_Y"]:
             UTMESS("F", "POST0_50")
 
@@ -218,10 +227,10 @@ def crea_resu_local(dime, NOM_CHAM, m, resin):
             args_affe = [_F(VECT_X=(cx1, cx2, cx3), VECT_Y=(cy1, cy2, cy3), TOUT="OUI")]
 
         __remodr = MODI_REPERE(
-            RESULTAT=resin, REPERE="UTILISATEUR", AFFE=args_affe, MODI_CHAM=modi_champ_args
+            RESULTAT=resin, REPERE=AxisSystem.USER, AFFE=args_affe, MODI_CHAM=modi_champ_args
         )
 
-    elif type_cut == "SEGMENT" and repere_cut == "UTILISATEUR":
+    elif type_cut == "SEGMENT" and repere_cut == AxisSystem.USER:
         alpha = m["ANGL_NAUT"][0]
         beta = m["ANGL_NAUT"][1]
         gamma = m["ANGL_NAUT"][2]
@@ -232,7 +241,7 @@ def crea_resu_local(dime, NOM_CHAM, m, resin):
             ANGL_NAUT.append(gamma)
         __remodr = MODI_REPERE(
             RESULTAT=resin,
-            REPERE="UTILISATEUR",
+            REPERE=AxisSystem.USER,
             AFFE=[_F(ANGL_NAUT=ANGL_NAUT, TOUT="OUI")],
             MODI_CHAM=modi_champ_args,
         )
@@ -251,7 +260,7 @@ def crea_resu_local(dime, NOM_CHAM, m, resin):
             RESULTAT=resin, REPERE="CYLINDRIQUE", MODI_CHAM=modi_champ_args, AFFE=affe_args
         )
 
-    elif type_cut[:5] == "GROUP" and repere_cut == "LOCAL":
+    elif type_cut[:5] == "GROUP" and repere_cut == AxisSystem.LOCAL:
         # disabled in #35098 because of a lack of test coverage
         UTMESS("F", "POST0_57")
 
@@ -263,7 +272,7 @@ def crea_resu_local(dime, NOM_CHAM, m, resin):
         __remodr = MODI_REPERE(
             RESULTAT=resin, REPERE="CYLINDRIQUE", MODI_CHAM=modi_champ_args, AFFE=affe_args
         )
-    elif (type_cut[:5] == "GROUP" or type_cut == "SEGMENT") and repere_cut == "UTILISATEUR":
+    elif (type_cut[:5] == "GROUP" or type_cut == "SEGMENT") and repere_cut == AxisSystem.USER:
         alpha = m["ANGL_NAUT"][0]
         beta = m["ANGL_NAUT"][1]
         gamma = m["ANGL_NAUT"][2]
@@ -275,7 +284,7 @@ def crea_resu_local(dime, NOM_CHAM, m, resin):
 
         __remodr = MODI_REPERE(
             RESULTAT=resin,
-            REPERE="UTILISATEUR",
+            REPERE=AxisSystem.USER,
             MODI_CHAM=modi_champ_args,
             AFFE=[_F(ANGL_NAUT=ANGL_NAUT, TOUT="OUI")],
         )
@@ -525,6 +534,22 @@ def get_coor(LIGN_COUPE, position, coord, mesh):
     return coor
 
 
+def get_result_axis_system(
+    origin_field_in_global_axis: bool, cut_axis_system: str, field_name: str
+) -> str:
+    if not origin_field_in_global_axis:
+        return AxisSystem.UNKNOWN
+    if cut_axis_system == AxisSystem.INITIAL:
+        return AxisSystem.GLOBAL
+    if cut_axis_system in (AxisSystem.POLAR, AxisSystem.USER, AxisSystem.LOCAL):
+        # only few fields are handled for axis modifications
+        if field_name in ("DEPL", "SIEF_ELNO", "SIGM_NOEU", "SIGM_ELNO", "FLUX_ELNO", "FLUX_NOEU"):
+            return cut_axis_system
+        UTMESS("A", "POST0_17", valk=[field_name, cut_axis_system])
+        return AxisSystem.GLOBAL
+    raise NotImplementedError(f"{cut_axis_system} is not implemented")
+
+
 def macr_lign_coupe_ops(
     self,
     LIGN_COUPE,
@@ -558,8 +583,6 @@ def macr_lign_coupe_ops(
     MasquerAlarme("MODELE1_58")
     MasquerAlarme("MODELE1_63")
     MasquerAlarme("MODELE1_64")
-
-    field_in_global_axis = REPERE_INIT == "GLOBAL"
 
     mcORDR = {}
 
@@ -658,12 +681,15 @@ def macr_lign_coupe_ops(
 
     assert NOM_CHAM is not None
 
-    at_least_1_axis_not_initial = any(line_def["REPERE"] != "INITIAL" for line_def in LIGN_COUPE)
-    if (
-        not field_in_global_axis
-        and at_least_1_axis_not_initial
-        and (NOM_CHAM.endswith(("ELGA", "ELNO", "ELEM")) or REPERE_INIT == "LOCAL")
-    ):
+    if REPERE_INIT is None and not NOM_CHAM.endswith(("ELGA", "ELNO", "ELEM")):
+        REPERE_INIT = AxisSystem.GLOBAL
+
+    origin_field_in_global_axis = REPERE_INIT == AxisSystem.GLOBAL
+
+    at_least_1_axis_not_initial = any(
+        line_def["REPERE"] != AxisSystem.INITIAL for line_def in LIGN_COUPE
+    )
+    if not origin_field_in_global_axis and at_least_1_axis_not_initial:
         if REPERE_INIT is None:
             UTMESS("F", "POST0_55", valk=[NOM_CHAM])
 
@@ -869,7 +895,7 @@ def macr_lign_coupe_ops(
         cut_to_group[iocc] = groupe
 
     if write_visu:
-        visu_cut = VisuCutBuilder.from_aster_mesh(mesh=__macou, prefix_output_fields="CUT")
+        visu_cut = VisuCutBuilder.from_aster_mesh(mesh=__macou, prefix_output_field_name="CUT")
 
     for iocc, m in enumerate(LIGN_COUPE):
         motscles = {}
@@ -904,56 +930,16 @@ def macr_lign_coupe_ops(
             intitl = f"l.coupe{ioc2}"
 
         current_resu = __recou
-        # Expression des contraintes aux noeuds ou des déplacements dans le
-        # repere local
-        if cut_axis_system != "INITIAL":
-            if NOM_CHAM in (
-                "DEPL",
-                "SIEF_ELNO",
-                "SIGM_NOEU",
-                "SIGM_ELNO",
-                "FLUX_ELNO",
-                "FLUX_NOEU",
-            ):
-                if cut_axis_system == "POLAIRE":
-                    mcACTION.append(
-                        _F(
-                            INTITULE=intitl,
-                            RESULTAT=__remodr,
-                            REPERE=cut_axis_system,
-                            GROUP_NO=groupe,
-                            NOM_CHAM=NOM_CHAM,
-                            **motscles,
-                        )
-                    )
-                else:
-                    __remodr = crea_resu_local(dime, NOM_CHAM, m, __recou)
-                    current_resu = __remodr
-                    mcACTION.append(
-                        _F(
-                            INTITULE=intitl,
-                            RESULTAT=__remodr,
-                            GROUP_NO=groupe,
-                            NOM_CHAM=NOM_CHAM,
-                            **motscles,
-                        )
-                    )
 
-            else:
-                UTMESS("A", "POST0_17", valk=[NOM_CHAM, cut_axis_system])
-                mcACTION.append(
-                    _F(
-                        INTITULE=intitl,
-                        RESULTAT=__recou,
-                        GROUP_NO=groupe,
-                        NOM_CHAM=NOM_CHAM,
-                        **motscles,
-                    )
-                )
+        result_axis_system = get_result_axis_system(
+            origin_field_in_global_axis=origin_field_in_global_axis,
+            cut_axis_system=cut_axis_system,
+            field_name=NOM_CHAM,
+        )
 
-        # Expression des contraintes aux noeuds ou des déplacements dans le
-        # repere d'origine du champ
-        else:
+        if result_axis_system in (AxisSystem.GLOBAL, AxisSystem.UNKNOWN):
+            # Expression des contraintes aux noeuds ou des déplacements dans le
+            # repere d'origine du champ
             mcACTION.append(
                 _F(
                     INTITULE=intitl,
@@ -963,6 +949,32 @@ def macr_lign_coupe_ops(
                     **motscles,
                 )
             )
+        elif result_axis_system == AxisSystem.POLAR:
+            mcACTION.append(
+                _F(
+                    INTITULE=intitl,
+                    RESULTAT=__remodr,
+                    REPERE=cut_axis_system,
+                    GROUP_NO=groupe,
+                    NOM_CHAM=NOM_CHAM,
+                    **motscles,
+                )
+            )
+        elif result_axis_system in (AxisSystem.USER, AxisSystem.LOCAL):
+            __remodr = crea_resu_local(dime, NOM_CHAM, m, __recou)
+            current_resu = __remodr
+            mcACTION.append(
+                _F(
+                    INTITULE=intitl,
+                    RESULTAT=__remodr,
+                    GROUP_NO=groupe,
+                    NOM_CHAM=NOM_CHAM,
+                    **motscles,
+                )
+            )
+
+        else:
+            raise ValueError(f"{result_axis_system} not handled")
 
         if write_visu:
             # ATTENTION si CHANGEMENT DE REPERE les noms de CHAMP PEUVENT CHANGER

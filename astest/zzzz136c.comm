@@ -444,9 +444,9 @@ cut_ids = {}
 cut_id = 0
 # testing various vect_y orientations
 for rot_ry in (0.0, 33.3333, 45.0, 89.9, 90.1, 135.0, 179.0):
-    vect_y_compo_z = math.sin(np.radians(rot_ry))
+    vect_y_compo_z = math.sin(math.radians(rot_ry))
     for rot_rz in (0.0, 33.0, 45.0, 89.9, 90.1, 135.0, 180.0):
-        rot_rz_rad = np.radians(rot_rz)
+        rot_rz_rad = math.radians(rot_rz)
         vect_y = (math.cos(rot_rz_rad), math.sin(rot_rz_rad), vect_y_compo_z)
         cut_name = f"vect_y = ({vect_y[0]:.3f}, {vect_y[1]:.3f}, {vect_y[2]:.3f})"
         cut_ids[cut_id] = f"segment {cut_name}"
