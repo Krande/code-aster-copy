@@ -17,14 +17,9 @@
 # along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 # --------------------------------------------------------------------
 
-# person_in_charge: anaelle.torre at edf.fr
-
-import sys
 import numpy as np
 
-import aster
 from ...Cata.Syntax import _F
-from ...Supervis import CO
 from ...Messages import UTMESS
 from ...CodeCommands import CREA_TABLE, POST_ELEM, CREA_CHAMP, PROD_MATR_CHAM
 
