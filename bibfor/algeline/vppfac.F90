@@ -55,7 +55,7 @@ subroutine vppfac(lmasse, masgen, vect, neq, nbvect, &
 !
 !
     integer(kind=8) :: lddl, laux1, laux2, iddl, ia, ieq, ivect, mxddl, iadpar(1), l1, ibid
-    integer :: iddl2, iddl3, ia2, ia3, ncdg, nbmrig, nb_nodes_mesh, kcoor, node
+    integer(kind=8) :: iddl2, iddl3, ia2, ia3, ncdg, nbmrig, nb_nodes_mesh, kcoor, node
     parameter(mxddl=6)
     character(len=8) :: nomddl(mxddl), basemo, k8b, typeq, mesh
     character(len=14) :: nume
