@@ -380,6 +380,10 @@ def check_math_libs_call_blas_lapack(self, color="RED"):
 def check_math_libs_call_cblas(self, color="RED"):
     """Compile and run a minimal program using cblas"""
     self.start_msg("Checking for cblas headers")
+    if os.environ.get("DEVTOOLS_COMPUTER_ID") == "none":
+        # skip in minimal_build
+        self.end_msg("skip", color="YELLOW")
+        return
     try:
         self.check_cc(fragment=cblas_fragment, use="MPI OPENMP MATH", mandatory=True)
     except Exception as exc:
