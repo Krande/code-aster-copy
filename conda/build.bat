@@ -124,7 +124,7 @@ waf configure ^
   --out="%SRC_DIR%/build" ^
   --libdir="%LIBRARY_PREFIX%/lib" ^
   --bindir="%LIBRARY_PREFIX%/bin" ^
-  --spdir=%SP_DIR% ^
+  --spdir="%SP_DIR%" ^
   --disable-aster-subdir ^
   --enable-med ^
   --enable-hdf5 ^

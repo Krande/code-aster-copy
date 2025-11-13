@@ -55,8 +55,6 @@ _MODULE_TASKS = [
 
 
 def options(self):
-    self.load("compiler_c")
-
     group = self.add_option_group("msvc library options")
     group.add_option(
         "--keep-msvc-files",

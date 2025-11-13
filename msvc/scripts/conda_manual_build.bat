@@ -66,6 +66,7 @@ if %PIXI_BUILD% == 1 (
     set "LIBRARY_PREFIX=%CONDA_PREFIX%/Library"
     set "ASTER_ROOT=%CONDA_PREFIX%"
     set "RUNASTER_ROOT=%CONDA_PREFIX%/Library"
+    set "SP_DIR=%CONDA_PREFIX%/Lib/site-packages"
     REM call %PARENT_DIR%\ifx_env.bat
 ) else (
     call %~dp0\conda_env.bat
@@ -132,24 +133,19 @@ REM /MD link with MSVCRT.lib. /FS allow for c compiler calls to vc140.pdb on mul
 
 set CFLAGS=%CFLAGS% /FS /MD -Wno-visibility
 set CXXFLAGS=%CXXFLAGS% /MD -Wno-visibility
-
-if "%FC%" == "ifx.exe" (
-    echo "Using Intel Fortran LLVM IFX compiler"
-    set FC_SEARCH=ifort
-    set FCFLAGS=%FCFLAGS% /4R8 /fpp /MD /names:lowercase /assume:underscore /assume:nobscc /fpe:0
-    :: Add lib paths
-    set LDFLAGS=%LDFLAGS% /LIBPATH:%LIB_PATH_ROOT%/lib /LIBPATH:%LIB_PATH_ROOT%/bin /LIBPATH:%PREF_ROOT%/libs
-    set "INCLUDE=%PREF_ROOT%\opt\compiler\include\intel64;%LIBRARY_PREFIX%\include;%INCLUDE%"
-    :: Signal to ifort.py that we're using conda-based Intel Fortran
-    set "INTEL_FORTRAN_VERSION=2025.1162"
-    set "CONDA_BUILD_INTEL_FORTRAN=1"
-) else (
-    echo "Using LLVM Flang Fortran compiler"
-    set FC_SEARCH=flang
-    set FCFLAGS=%FCFLAGS% -cpp --dependent-lib=msvcrt -fdefault-double-8 -fdefault-integer-8 -fdefault-real-8 -funderscoring
-    :: Add lib paths
-    set LDFLAGS=%LDFLAGS% -L %LIB_PATH_ROOT%/lib -L %LIB_PATH_ROOT%/bin -L %PREF_ROOT%/libs
-)
+set FCFLAGS=%FCFLAGS% /Z7 /traceback
+set CFLAGS=%CFLAGS% /Z7 /Oy- /FS
+set CXXFLAGS=%CXXFLAGS% /Z7 /Oy- /FS
+set LDFLAGS=%LDFLAGS% /DEBUG:FULL /INCREMENTAL:NO
+echo "Using Intel Fortran LLVM IFX compiler"
+set FC_SEARCH=ifort
+set FCFLAGS=%FCFLAGS% /fpp /integer-size:64 /real-size:64 /MD /names:lowercase /assume:underscore /assume:nobscc /fpe:0 /traceback /nologo
+:: Add lib paths
+set LDFLAGS=%LDFLAGS% /LIBPATH:%LIB_PATH_ROOT%/lib /LIBPATH:%LIB_PATH_ROOT%/bin /LIBPATH:%PREF_ROOT%/libs
+set "INCLUDE=%PREF_ROOT%\opt\compiler\include\intel64;%LIBRARY_PREFIX%\include;%INCLUDE%"
+:: Signal to ifort.py that we're using conda-based Intel Fortran
+set "INTEL_FORTRAN_VERSION=2025.1162"
+set "CONDA_BUILD_INTEL_FORTRAN=1"
 
 :: Create dll debug pdb
 if "%BUILD_DEBUG%" == "1" (
@@ -167,11 +163,8 @@ if "%BUILD_DEBUG%" == "1" (
     :: /check:pointers - Check pointer validity (CAUSES ISSUES with JEVEUX memory management)
     ::
     :: Note: /check:uninit not supported on Windows ifx
-    set FCFLAGS=%FCFLAGS% /traceback /debug:full /Zi /Od /Qtrapuv /fp:precise
-    set CFLAGS=%CFLAGS% /Zi /Od
-    set CXXFLAGS=%CXXFLAGS% /Zi /Od
-    set LDFLAGS=%LDFLAGS% /DEBUG:FULL /INCREMENTAL:NO
-
+    set FCFLAGS=%FCFLAGS% /check:stack
+    set LDFLAGS=%LDFLAGS% /OPT:NOREF /OPT:NOICF
     :: Intel Fortran runtime environment variables for detailed diagnostics
     :: Note: FORT_FMT_RECL should not be set too low to avoid "output statement overflows record" errors
     :: The default value is typically sufficient for most cases
@@ -181,6 +174,8 @@ if "%BUILD_DEBUG%" == "1" (
     echo "Intel Fortran runtime diagnostics enabled"
 ) else (
     echo "Setting release flags"
+    echo "Building release version with debug symbols"
+    set LDFLAGS=%LDFLAGS% /OPT:REF /OPT:ICF
 )
 
 if %CC% == "cl.exe" set CFLAGS=%CFLAGS% /sourceDependencies %OUTPUT_DIR%
@@ -247,7 +242,7 @@ if %CLEAN_BUILD%==1 (
       --prefix=%LIB_PATH_ROOT% ^
       --libdir="%LIBRARY_PREFIX%/lib" ^
       --bindir="%LIBRARY_PREFIX%/bin" ^
-      --spdir=%SP_DIR% ^
+      --spdir="%SP_DIR%" ^
       --disable-aster-subdir ^
       --out=%OUTPUT_DIR% ^
       --enable-med ^

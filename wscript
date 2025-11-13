@@ -30,7 +30,6 @@ Note:
 """
 
 import os
-import platform
 import os.path as osp
 import sys
 
@@ -113,41 +112,19 @@ def options(self):
 
     group = self.get_option_group("Build and installation options")
     group.add_option(
-        "--spdir",
-        dest="spdir",
-        default=None,
-        help="Python site-packages directory for conda/rattler builds "
-        "[default: auto-detect from Python]",
-    )
-    group.add_option(
-        "--bindir",
-        dest="bindir",
-        default=None,
-        help="Binary directory for DLL files on Windows conda/rattler builds "
-        "[default: PREFIX/bin]",
-    )
-    group.add_option(
-        "--disable-aster-subdir",
-        dest="disable_aster_subdir",
-        action="store_true",
-        default=False,
-        help="Disable the /aster subdirectory in installation paths "
-        "(useful for conda/rattler builds where files should go directly to lib)",
-    )
-    group.add_option(
         "--fast",
         dest="custom_fc_sig",
         action="store_true",
         default=False,
         help="use fast algorithm based on modification time to "
-        "check for dependencies of fortran sources",
+             "check for dependencies of fortran sources",
     )
     group.add_option(
         "--safe",
         dest="custom_fc_sig",
         action="store_false",
         help="use safe algorithm based on content to check for "
-        "implicit dependencies of fortran sources",
+             "implicit dependencies of fortran sources",
     )
     group.add_option(
         "--coverage",
@@ -175,6 +152,29 @@ def options(self):
         default=os.environ.get("ENABLE_MINGW", "0") != "0",
         help="enable cross compilation for mingw",
     )
+    # MSVC Options
+    group.add_option(
+        "--spdir",
+        dest="spdir",
+        default=None,
+        help="Python site-packages directory for conda/rattler builds "
+             "[default: auto-detect from Python]",
+    )
+    group.add_option(
+        "--bindir",
+        dest="bindir",
+        default=None,
+        help="Binary directory for DLL files on Windows conda/rattler builds "
+             "[default: PREFIX/bin]",
+    )
+    group.add_option(
+        "--disable-aster-subdir",
+        dest="disable_aster_subdir",
+        action="store_true",
+        default=False,
+        help="Disable the /aster subdirectory in installation paths "
+             "(useful for conda/rattler builds where files should go directly to lib)",
+    )
     group.add_option(
         "--msvc-entry",
         dest="msvc_entry",
@@ -194,9 +194,7 @@ def options(self):
     self.load("petsc", tooldir="waftools")
     self.load("runtest", tooldir="waftools")
 
-    if os.getenv("ASTER_PLATFORM_MSVC64", 0) in (1, "true", "TRUE", "True", "1"):
-        self.recurse("msvc")
-
+    self.recurse("msvc")
     self.recurse("libs")
     self.recurse("bibfor")
     self.recurse("code_aster")
@@ -261,8 +259,12 @@ def all_components(self):
 
 
 def configure(self):
-    if platform.system() == "Windows" and os.getenv('WAFDIR') is None:
-        print("Loading custom 'ifort' and 'msvc' toolchains")
+    # Check OS environment variable first, before platform detection
+    is_msvc_platform = os.environ.get('ASTER_PLATFORM_MSVC64') == '1' or \
+                       (sys.platform == 'win32' and os.environ.get('CC', '').lower() in ['cl.exe', 'clang-cl.exe'])
+
+    if is_msvc_platform and os.getenv('WAFDIR') is None:
+        Logs.info("Loading custom 'ifort' and 'msvc' toolchains")
         if os.getenv('FC', '').lower().startswith('ifx'):
             self.load("ifort", tooldir="config")
         elif os.getenv('FC', '').lower().startswith('flang'):
@@ -344,11 +346,12 @@ def configure(self):
     self.recurse("bibcxx")
     self.recurse("bibc")
 
-    if self.options.msvc_entry:
-        self.env["ASTER_WITH_MSVC64_ENTRY"] = True
+    if is_msvc_platform:
         self.recurse("msvc")
-    else:
-        Logs.info("Configuring without MSVC entrypoints")
+        if self.options.msvc_entry:
+            self.env["ASTER_WITH_MSVC64_ENTRY"] = True
+        else:
+            Logs.info("Configuring without MSVC entrypoints")
 
     self.load("mathematics", tooldir="waftools")
     self.load("med_cfg", tooldir="waftools")
@@ -414,10 +417,8 @@ def build(self):
     self.recurse("bibcxx")
     self.recurse("bibc")
 
-    if env.ASTER_WITH_MSVC64_ENTRY:
+    if env.ASTER_PLATFORM_MSVC64:
         self.recurse("msvc")
-    else:
-        Logs.info("Building without MSVC entrypoints")
 
     self.recurse("mfront")
     self.recurse("i18n")

@@ -75,8 +75,9 @@ def extract_symbols_from_dumpbin_lines(lines):
         "DllMain", "_DllMain@12", "DllMainCRTStartup", "_DllMainCRTStartup@12",
         # CRT internal functions that should not be exported
         "_vfprintf_l", "_vsnprintf", "_vsnprintf_l", "_vsprintf_l",
-        "_fprintf_l", "_sprintf_l", "_printf_l", "_snprintf_l", "_snprintf",
-        "_scanf_l", "_fscanf_l", "_sscanf_l", "vsprintf",
+        "_fprintf_l", "_sprintf_l", "_printf_l", "_snprintf_l", "_snprintf", "snprintf", "vsnprintf"
+                                                                                         "_scanf_l", "_fscanf_l",
+        "_sscanf_l", "vsprintf",
     }
 
     for line in lines:
@@ -255,7 +256,8 @@ def main():
         help="Specific object files to process (optional)"
     )
     parser.add_argument("--cache", type=Path, help="Cache file path (default: <output-dir>/.bibc_defgen_cache.json)")
-    parser.add_argument("--use-hash", action="store_true", help="Use file hash instead of mtime for cache validation (slower but more reliable)")
+    parser.add_argument("--use-hash", action="store_true",
+                        help="Use file hash instead of mtime for cache validation (slower but more reliable)")
     parser.add_argument("--no-cache", action="store_true", help="Disable caching")
 
     args = parser.parse_args()
@@ -329,4 +331,3 @@ def main():
 
 if __name__ == "__main__":
     main()
-

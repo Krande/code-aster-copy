@@ -102,10 +102,11 @@ installd = { cmd = ["msvc/scripts/conda_rearrange.bat"], description = "Copy the
 testd = { cmd = ["run_ctest", "--resutest=temp\\debug", "-L", "submit", "-L", "sequential", "-LE", "need_data", "--timefactor=5.0", "--only-failed-results"], description = "Run the default sequential tests" }
 testd-eval = { cmd = ["python", "conda_debug/test_scanner/eval_tests.py", "$PIXI_PROJECT_ROOT/temp/debug", "--output", "$PIXI_PROJECT_ROOT/conda_debug/test_scanner/results"] }
 ctestd = {cmd="run_ctest --resutest=temp\\debug1 --clean -R", description="Run ctest command"}
+debug = { cmd = ["python","msvc/run_tests.py", "--attach-debugger", "--test-file"], description = "Run the debug script on a specific test" }
 
 [feature.dev.target.win-64.tasks]
 test_scan = { cmd = ["python", "conda_debug/test_scanner/eval_tests.py", "--output", "conda_debug/test_scanner/results/windows/nompi"], description = "Scan the test results" }
-debug = { cmd = ["python", "msvc/run_tests.py", "--test-file", "comp008b"], description = "Run the debug script on a specific test" }
+dev = { cmd = ["python", "msvc/run_tests.py", "--test-file", "comp008b"], description = "Run the debug script on a specific test" }
 run_aster = { cmd = ["run_aster.bat"], description = "Run the aster executable (code aster needs to be built and installed)" }
 dumpbin = { cmd = ["dumpbin", ], description = "Dump the dependencies of the aster executable" }
 

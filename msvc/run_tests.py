@@ -6,7 +6,7 @@ import shutil
 import sys
 import ctypes
 
-from config import ROOT_DIR
+ROOT_DIR = pathlib.Path(__file__).parent.parent
 
 CONDA_PREFIX = pathlib.Path(sys.prefix)
 ASTEST_DIR = ROOT_DIR / "astest"
@@ -84,7 +84,8 @@ def run_specific_test(test_name: str, debug_openmp=False):
         raise FileNotFoundError(f"{export_file} does not exist")
 
     export = export_file.read_text(encoding="utf-8", errors="replace")
-
+    run_dir = ROOT_DIR / "temp/run"
+    run_dir.mkdir(parents=True, exist_ok=True)
     for line in export.split("\n"):
         if not line.startswith("F"):
             continue
@@ -93,12 +94,11 @@ def run_specific_test(test_name: str, debug_openmp=False):
         ffnum = int(line_split[-1])
         fpath = ASTEST_DIR / ffname
         if fpath.exists():
-            shutil.copy(fpath, f"fort.{ffnum}")
+            shutil.copy(fpath, run_dir / f"fort.{ffnum}")
 
     test_file = init_str + comm_file.read_text()
 
-    run_dir = ROOT_DIR / "temp/run"
-    run_dir.mkdir(parents=True, exist_ok=True)
+
     os.chdir(run_dir.as_posix())
 
     with open(run_dir / "main_test_file.py", "w") as f:
@@ -200,7 +200,7 @@ def attach_debugger():
 def manual():
     attach_debugger()
     # run the test
-    run_specific_test('zzzz185a')
+    run_specific_test('adlv100a')
 
 
 if __name__ == "__main__":
