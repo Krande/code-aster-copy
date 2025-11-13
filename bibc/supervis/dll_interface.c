@@ -30,7 +30,7 @@ static inline int my_dlclose( void *handle ) { return FreeLibrary( (HMODULE)hand
 #define dlclose my_dlclose
 #define RTLD_LAZY 0
 
-#elseif ASTER_PLATFORM_MSVC64
+#elif ASTER_PLATFORM_MSVC64
 #include <windows.h>
 // Windows-specific implementation of a function to unload libraries
 static void windows_dlclose(void *handle) {

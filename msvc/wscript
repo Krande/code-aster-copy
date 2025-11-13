@@ -95,7 +95,7 @@ def configure(self):
     )
 
     incpath = osp.join(self.path.get_src().abspath(), "c_entrypoints", "include")
-    Logs.info(f"Adding {incpath} to include path")
+    Logs.debug(f"Adding {incpath} to include path")
 
     top_dir = pathlib.Path(self.path.get_bld().abspath()).parent.parent.parent
 

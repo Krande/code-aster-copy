@@ -193,10 +193,10 @@ def options(self):
     self.load("scotch", tooldir="waftools")
     self.load("petsc", tooldir="waftools")
     self.load("runtest", tooldir="waftools")
-    env = self.env.derive()
 
-    if env.ASTER_PLATFORM_MSVC64:
+    if os.getenv("ASTER_PLATFORM_MSVC64", 0) in (1, "true", "TRUE", "True", "1"):
         self.recurse("msvc")
+
     self.recurse("libs")
     self.recurse("bibfor")
     self.recurse("code_aster")
