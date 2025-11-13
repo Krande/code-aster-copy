@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -26,7 +26,7 @@ loi = LoiComportement(
     lc_type=("MECANIQUE",),
     doc="""Relation de comportement isotrope pour les éléments discrets""",
     num_lc=0,
-    nb_vari=17,
+    nb_vari=19,
     nom_vari=(
         "FORCEX",
         "FORCEY",
@@ -45,6 +45,8 @@ loi = LoiComportement(
         "RAIDEX",
         "RAIDEY",
         "RAIDEZ",
+        "PCUMT",
+        "DISSTANG",
     ),
     mc_mater=None,
     modelisation=("DIS_T", "DIS_TR", "2D_DIS_T", "2D_DIS_TR"),

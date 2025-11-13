@@ -148,77 +148,139 @@ def check_dis_ecro_trac(keywords):
         dict_args = dict(valk=("DIS_ECRO_TRAC", "FX=f(DX) | FTAN=f(DTAN)", mess), vali=num)
         UTMESS("F", "DISCRETS_62", **dict_args)
 
+    iffx = False
+    ifft = False
     precis = 1.0e-08
     if "FX" in keywords:
         iffx = True
-        fct = keywords["FX"]
-    elif "FTAN" in keywords:
-        iffx = False
-        fct = keywords["FTAN"]
-    else:
+        fct_x = keywords["FX"]
+
+    if "FTAN" in keywords:
+        ifft = True
+        fct_t = keywords["FTAN"]
+
+    if (iffx or ifft) == False:
         _message(1)
-    # Les vérifications sur la fonction
-    #       interpolation LIN LIN
-    #       prolongée à gauche et à droite exclue
-    #       paramètre 'DX' ou 'DTAN'
-    OkFct = type(fct) is Function
-    param = fct.Parametres()
-    OkFct = OkFct and param["INTERPOL"][0] == "LIN"
-    OkFct = OkFct and param["INTERPOL"][1] == "LIN"
-    OkFct = OkFct and param["PROL_DROITE"] == "EXCLU"
-    OkFct = OkFct and param["PROL_GAUCHE"] == "EXCLU"
+
     if iffx:
+        # Les vérifications sur la fonction
+        #       interpolation LIN LIN
+        #       prolongée à gauche et à droite exclue
+        #       paramètre 'DX' ou 'DTAN'
+        OkFct = type(fct_x) is Function
+        param = fct_x.Parametres()
+        OkFct = OkFct and param["INTERPOL"][0] == "LIN"
+        OkFct = OkFct and param["INTERPOL"][1] == "LIN"
+        OkFct = OkFct and param["PROL_DROITE"] == "EXCLU"
+        OkFct = OkFct and param["PROL_GAUCHE"] == "EXCLU"
         OkFct = OkFct and param["NOM_PARA"] == "DX"
-    else:
+        if not OkFct:
+            _message(2, "%s" % param)
+
+        # avoir 3 points minimum ou exactement
+        absc_x, ordo_x = fct_x.Valeurs()
+        OkFct = OkFct and len(absc_x) >= 3
+        if not OkFct:
+            _message(3, "%s" % len(absc_x))
+
+        # Point n°1: (DX=0, FX=0)
+
+        dx = absc_x[0]
+        fx = ordo_x[0]
+        OkFct = OkFct and dx >= 0.0 and abs(dx) <= precis
+        OkFct = OkFct and fx >= 0.0 and abs(fx) <= precis
+        if not OkFct:
+            _message(4, "[%s %s]" % (dx, fx))
+
+        # fx et dx sont strictement positifs, dFx >0 , dDx >0
+        #   Au lieu de la boucle, on peut faire :
+        #       xx=np.where(np.diff(absc) <= 0.0 or np.diff(ordo) <= 0.0)[0]
+        #       if ( len(xx) != 0):
+        #           message 6 : absc[xx[0]] ordo[xx[0]] absc[xx[0]+1] ordo[xx[0]+1]
+        #       dfx= np.diff(ordo)/np.diff(absc)
+        #       xx=np.where(np.diff(dfx) <= 0.0 )[0]
+        #       if ( len(xx) != 0):
+        #           message 7 : xx[0] dfx[xx[0]] dfx[xx[0]+1]
+        for ii in range(1, len(absc_x)):
+            if absc_x[ii] <= dx or ordo_x[ii] <= fx:
+                _message(
+                    5,
+                    "Ddx, Dfx > 0 : p(i)[%s %s]  "
+                    "p(i+1)[%s %s]" % (dx, fx, absc_x[ii], ordo_x[ii]),
+                )
+            if ii == 1:
+                dfx = (ordo_x[ii] - fx) / (absc_x[ii] - dx)
+                raidex = dfx
+            else:
+                dfx = (ordo_x[ii] - fx) / (absc_x[ii] - dx)
+                if dfx > raidex:
+                    _message(6, "(%d) : %s > %s" % (ii, dfx, raidex))
+
+            dx = absc_x[ii]
+            fx = ordo_x[ii]
+            raidex = dfx
+
+    if ifft:
+        # Les vérifications sur la fonction
+        #       interpolation LIN LIN
+        #       prolongée à gauche et à droite exclue
+        #       paramètre 'DX' ou 'DTAN'
+        OkFct = type(fct_t) is Function
+        param = fct_t.Parametres()
+        OkFct = OkFct and param["INTERPOL"][0] == "LIN"
+        OkFct = OkFct and param["INTERPOL"][1] == "LIN"
+        OkFct = OkFct and param["PROL_DROITE"] == "EXCLU"
+        OkFct = OkFct and param["PROL_GAUCHE"] == "EXCLU"
         OkFct = OkFct and param["NOM_PARA"] == "DTAN"
-    if not OkFct:
-        _message(2, "%s" % param)
-    # avoir 3 points minimum ou exactement
-    absc, ordo = fct.Valeurs()
-    if iffx:
-        OkFct = OkFct and len(absc) >= 3
-    else:
+        if not OkFct:
+            _message(2, "%s" % param)
+
+        # avoir 3 points minimum ou exactement
+        absc_t, ordo_t = fct_t.Valeurs()
         if keywords["ECROUISSAGE"] == "ISOTROPE":
-            OkFct = OkFct and len(absc) >= 3
+            OkFct = OkFct and len(absc_t) >= 3
         elif keywords["ECROUISSAGE"] == "CINEMATIQUE":
-            OkFct = OkFct and len(absc) == 3
+            OkFct = OkFct and len(absc_t) == 3
         else:
             raise RuntimeError("Unknown value")
+        if not OkFct:
+            _message(3, "%s" % len(absc_t))
 
-    if not OkFct:
-        _message(3, "%s" % len(absc))
-    # Point n°1: (DX=0, FX=0)
-    dx = absc[0]
-    fx = ordo[0]
-    OkFct = OkFct and dx >= 0.0 and abs(dx) <= precis
-    OkFct = OkFct and fx >= 0.0 and abs(fx) <= precis
-    if not OkFct:
-        _message(4, "[%s %s]" % (dx, fx))
-    # FX et DX sont strictement positifs, dFx >0 , dDx >0
-    #   Au lieu de la boucle, on peut faire :
-    #       xx=np.where(np.diff(absc) <= 0.0 or np.diff(ordo) <= 0.0)[0]
-    #       if ( len(xx) != 0):
-    #           message 6 : absc[xx[0]] ordo[xx[0]] absc[xx[0]+1] ordo[xx[0]+1]
-    #       dfx= np.diff(ordo)/np.diff(absc)
-    #       xx=np.where(np.diff(dfx) <= 0.0 )[0]
-    #       if ( len(xx) != 0):
-    #           message 7 : xx[0] dfx[xx[0]] dfx[xx[0]+1]
-    for ii in range(1, len(absc)):
-        if absc[ii] <= dx or ordo[ii] <= fx:
-            _message(
-                5, "Ddx, Dfx > 0 : p(i)[%s %s]  " "p(i+1)[%s %s]" % (dx, fx, absc[ii], ordo[ii])
-            )
-        if ii == 1:
-            dfx = (ordo[ii] - fx) / (absc[ii] - dx)
+        # Point n°1: (DX=0, FX=0)
+        dx = absc_t[0]
+        fx = ordo_t[0]
+        OkFct = OkFct and dx >= 0.0 and abs(dx) <= precis
+        OkFct = OkFct and fx >= 0.0 and abs(fx) <= precis
+        if not OkFct:
+            _message(4, "[%s %s]" % (dx, fx))
+
+        # fx et dx sont strictement positifs, dFx >0 , dDx >0
+        #   Au lieu de la boucle, on peut faire :
+        #       xx=np.where(np.diff(absc) <= 0.0 or np.diff(ordo) <= 0.0)[0]
+        #       if ( len(xx) != 0):
+        #           message 6 : absc[xx[0]] ordo[xx[0]] absc[xx[0]+1] ordo[xx[0]+1]
+        #       dfx= np.diff(ordo)/np.diff(absc)
+        #       xx=np.where(np.diff(dfx) <= 0.0 )[0]
+        #       if ( len(xx) != 0):
+        #           message 7 : xx[0] dfx[xx[0]] dfx[xx[0]+1]
+        for ii in range(1, len(absc_t)):
+            if absc_t[ii] <= dx or ordo_t[ii] <= fx:
+                _message(
+                    5,
+                    "Ddx, Dfx > 0 : p(i)[%s %s]  "
+                    "p(i+1)[%s %s]" % (dx, fx, absc_t[ii], ordo_t[ii]),
+                )
+            if ii == 1:
+                dfx = (ordo_t[ii] - fx) / (absc_t[ii] - dx)
+                raidex = dfx
+            else:
+                dfx = (ordo_t[ii] - fx) / (absc_t[ii] - dx)
+                if dfx > raidex:
+                    _message(6, "(%d) : %s > %s" % (ii, dfx, raidex))
+
+            dx = absc_t[ii]
+            fx = ordo_t[ii]
             raidex = dfx
-        else:
-            dfx = (ordo[ii] - fx) / (absc[ii] - dx)
-            if dfx > raidex:
-                _message(6, "(%d) : %s > %s" % (ii, dfx, raidex))
-
-        dx = absc[ii]
-        fx = ordo[ii]
-        raidex = dfx
 
 
 def check_dis_choc_endo(keywords):

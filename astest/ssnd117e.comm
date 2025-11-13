@@ -1,0 +1,678 @@
+# coding=utf-8
+# --------------------------------------------------------------------
+# Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
+# This file is part of code_aster.
+#
+# code_aster is free software: you can redistribute it and/or modify
+# it under the terms of the GNU General Public License as published by
+# the Free Software Foundation, either version 3 of the License, or
+# (at your option) any later version.
+#
+# code_aster is distributed in the hope that it will be useful,
+# but WITHOUT ANY WARRANTY; without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+# GNU General Public License for more details.
+#
+# You should have received a copy of the GNU General Public License
+# along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
+# --------------------------------------------------------------------
+
+#
+#
+# --------------------------------------------------------------------------------------------------
+#
+#                   DISCRET COMPORTEMENT ECROUISSAGE TRACTION
+#
+#   Validation du comportement
+#
+#   Segment : K_T_D_L     K_TR_D_L
+#   Noeud   : K_T_D_N     K_TR_D_N
+#
+# --------------------------------------------------------------------------------------------------
+import numpy as NU
+
+DEBUT(CODE="OUI", ERREUR=_F(ALARME="EXCEPTION"))
+
+MAIL = LIRE_MAILLAGE(FORMAT="ASTER")
+
+MODE = AFFE_MODELE(
+    MAILLAGE=MAIL,
+    AFFE=(
+        _F(GROUP_MA="FUSIB01", PHENOMENE="MECANIQUE", MODELISATION="DIS_T"),
+        _F(GROUP_MA="FUSIB02", PHENOMENE="MECANIQUE", MODELISATION="DIS_TR"),
+        _F(GROUP_MA="FUSIB03", PHENOMENE="MECANIQUE", MODELISATION="DIS_T"),
+        _F(GROUP_MA="FUSIB04", PHENOMENE="MECANIQUE", MODELISATION="DIS_TR"),
+    ),
+)
+
+#
+ZERO = DEFI_CONSTANTE(VALE=0.0)
+#
+def Sinus(t, freq):
+    return sin(2.0 * pi * freq * t)
+
+
+Freq01 = 1.0
+U01 = 2.00
+# Le déplacement imposé
+Depla01 = FORMULE(
+    VALE="U01*Sinus(INST,Freq01)", U01=U01, Sinus=Sinus, Freq01=Freq01, NOM_PARA="INST"
+)
+Depla02 = FORMULE(
+    VALE="0.5*sqrt(2)*U01*Sinus(INST,Freq01)", U01=U01, Sinus=Sinus, Freq01=Freq01, NOM_PARA="INST"
+)
+
+# Liste d'instant
+TempsMaxi = 1.50
+DeltaPas = 0.05
+
+linstS = DEFI_LIST_REEL(DEBUT=0.0, INTERVALLE=_F(JUSQU_A=TempsMaxi, PAS=DeltaPas))
+
+CONDLIM = AFFE_CHAR_MECA_F(
+    MODELE=MODE,
+    DDL_IMPO=(
+        _F(GROUP_NO="PT1", BLOCAGE=("DEPLACEMENT", "ROTATION")),
+        _F(GROUP_NO="PT2", DX=Depla01, DY=Depla02, DZ=Depla02),
+        _F(GROUP_NO="PT3", BLOCAGE=("DEPLACEMENT", "ROTATION")),
+        _F(GROUP_NO="PT4", DX=Depla01, DY=Depla02, DZ=Depla02, DRX=ZERO, DRY=ZERO, DRZ=ZERO),
+        _F(GROUP_NO="PT5", DX=Depla01, DY=Depla02, DZ=Depla02),
+        _F(GROUP_NO="PT6", DX=Depla01, DY=Depla02, DZ=Depla02, DRX=ZERO, DRY=ZERO, DRZ=ZERO),
+    ),
+)
+
+Sy = 200.0
+Su = Sy + 250.0
+Kp = 4.0 * Sy / U01
+Puiss = 1.50
+
+
+def FctRp(p):
+    return Sy + Kp * p / pow(1.0 + pow(Kp * p / (Su - Sy), Puiss), 1.0 / Puiss)
+
+
+Lt_p = NU.arange(0.0, U01 * 40.0, 0.01)
+Lt_rp = list(map(FctRp, Lt_p))
+Lt_p += Sy / Kp
+Lt_p = list(Lt_p)
+Lt_p.insert(0, 0.0)
+Lt_rp.insert(0, 0.0)
+
+
+fcts_N = DEFI_FONCTION(NOM_PARA="DX", ABSCISSE=Lt_p, ORDONNEE=Lt_rp)
+fcts_T = DEFI_FONCTION(NOM_PARA="DTAN", ABSCISSE=Lt_p, ORDONNEE=Lt_rp)
+
+# Définition des matériaux
+Fusib01 = DEFI_MATERIAU(DIS_ECRO_TRAC=_F(FX=fcts_N, FTAN=fcts_T, ECROUISSAGE="ISOTROPE"))
+Fusib02 = DEFI_MATERIAU(DIS_ECRO_TRAC=_F(FX=fcts_N, FTAN=fcts_T, ECROUISSAGE="ISOTROPE"))
+Fusib03 = DEFI_MATERIAU(DIS_ECRO_TRAC=_F(FX=fcts_N, FTAN=fcts_T, ECROUISSAGE="ISOTROPE"))
+Fusib04 = DEFI_MATERIAU(DIS_ECRO_TRAC=_F(FX=fcts_N, FTAN=fcts_T, ECROUISSAGE="ISOTROPE"))
+
+CHMAT = AFFE_MATERIAU(
+    MAILLAGE=MAIL,
+    AFFE=(
+        _F(GROUP_MA="FUSIB01", MATER=Fusib01),
+        _F(GROUP_MA="FUSIB02", MATER=Fusib02),
+        _F(GROUP_MA="FUSIB03", MATER=Fusib03),
+        _F(GROUP_MA="FUSIB04", MATER=Fusib04),
+    ),
+)
+
+CARELEM = AFFE_CARA_ELEM(
+    MODELE=MODE,
+    DISCRET=(
+        _F(REPERE="LOCAL", CARA="K_T_D_L", GROUP_MA="FUSIB01", VALE=(Kp, Kp, Kp)),
+        _F(REPERE="LOCAL", CARA="K_TR_D_L", GROUP_MA="FUSIB02", VALE=(Kp, Kp, Kp, Kp, Kp, Kp)),
+        _F(REPERE="LOCAL", CARA="K_T_D_N", GROUP_MA="FUSIB03", VALE=(Kp, Kp, Kp)),
+        _F(REPERE="LOCAL", CARA="K_TR_D_N", GROUP_MA="FUSIB04", VALE=(Kp, Kp, Kp, Kp, Kp, Kp)),
+    ),
+)
+
+LLinst = DEFI_LIST_INST(DEFI_LIST=_F(LIST_INST=linstS))
+
+RESU = STAT_NON_LINE(
+    MODELE=MODE,
+    CHAM_MATER=CHMAT,
+    CARA_ELEM=CARELEM,
+    EXCIT=_F(CHARGE=CONDLIM),
+    COMPORTEMENT=(
+        _F(RELATION="DIS_ECRO_TRAC", GROUP_MA="FUSIB01"),
+        _F(RELATION="DIS_ECRO_TRAC", GROUP_MA="FUSIB02"),
+        _F(RELATION="DIS_ECRO_TRAC", GROUP_MA="FUSIB03"),
+        _F(RELATION="DIS_ECRO_TRAC", GROUP_MA="FUSIB04"),
+    ),
+    INCREMENT=_F(LIST_INST=LLinst),
+    CONVERGENCE=_F(ARRET="OUI", ITER_GLOB_MAXI=30),
+    NEWTON=_F(REAC_INCR=1, REAC_ITER=1, MATRICE="TANGENTE"),
+)
+# --------------------------------------------------------------------------------------------------
+#   Résultat sur Fusib01
+
+NOD_DTAN = FORMULE(VALE="sqrt(DY*DY+DZ*DZ)", NOM_PARA=["DY", "DZ"])
+NOD_FTAN = FORMULE(VALE="sqrt(VY*VY+VZ*VZ)", NOM_PARA=["VY", "VZ"])
+F_TAN = FORMULE(VALE="sqrt(V2*V2+V3*V3)", NOM_PARA=["V2", "V3"])
+D_TAN = FORMULE(VALE="sqrt(V5*V5+V6*V6)", NOM_PARA=["V5", "V6"])
+DP_TAN = FORMULE(VALE="sqrt(V10*V10+V11*V11)", NOM_PARA=["V10", "V11"])
+
+TABDEPL1 = CREA_TABLE(RESU=_F(RESULTAT=RESU, GROUP_MA="FUSIB01", NOM_CHAM="DEPL", TOUT_CMP="OUI"))
+TABSIEF1 = CREA_TABLE(
+    RESU=_F(RESULTAT=RESU, GROUP_MA="FUSIB01", NOM_CHAM="SIEF_ELGA", TOUT_CMP="OUI")
+)
+TABVARI1 = CREA_TABLE(
+    RESU=_F(RESULTAT=RESU, GROUP_MA="FUSIB01", NOM_CHAM="VARI_ELGA", TOUT_CMP="OUI")
+)
+
+TABDEPL1 = CALC_TABLE(
+    reuse=TABDEPL1,
+    TABLE=TABDEPL1,
+    ACTION=(
+        _F(OPERATION="FILTRE", NOM_PARA="NOEUD", CRIT_COMP="EQ", VALE_K="2"),
+        _F(OPERATION="OPER", FORMULE=NOD_DTAN, NOM_PARA="NOD_DTAN"),
+    ),
+)
+
+
+TABSIEF1 = CALC_TABLE(
+    reuse=TABSIEF1,
+    TABLE=TABSIEF1,
+    ACTION=(
+        _F(OPERATION="FILTRE", NOM_PARA="POINT", CRIT_COMP="EQ", VALE=2),
+        _F(OPERATION="OPER", FORMULE=NOD_FTAN, NOM_PARA="NOD_FTAN"),
+    ),
+)
+
+TABVARI1 = CALC_TABLE(
+    reuse=TABVARI1,
+    TABLE=TABVARI1,
+    ACTION=(
+        _F(OPERATION="FILTRE", NOM_PARA="POINT", CRIT_COMP="EQ", VALE=2),
+        _F(OPERATION="OPER", FORMULE=F_TAN, NOM_PARA="F_TAN"),
+        _F(OPERATION="OPER", FORMULE=D_TAN, NOM_PARA="D_TAN"),
+        _F(OPERATION="OPER", FORMULE=DP_TAN, NOM_PARA="DP_TAN"),
+        _F(
+            OPERATION="EXTR",
+            NOM_PARA=("NUME_ORDRE", "INST", "F_TAN", "D_TAN", "V18", "DP_TAN", "V19"),
+        ),
+    ),
+)
+
+TABRES1 = CALC_TABLE(
+    TABLE=TABDEPL1,
+    ACTION=(
+        _F(OPERATION="COMB", TABLE=TABSIEF1, NOM_PARA="NUME_ORDRE"),
+        _F(OPERATION="COMB", TABLE=TABVARI1, NOM_PARA="NUME_ORDRE"),
+    ),
+)
+
+
+# --------------------------------------------------------------------------------------------------
+#   Résultat sur Fusib02
+TABDEPL2 = CREA_TABLE(RESU=_F(RESULTAT=RESU, GROUP_MA="FUSIB02", NOM_CHAM="DEPL", TOUT_CMP="OUI"))
+TABSIEF2 = CREA_TABLE(
+    RESU=_F(RESULTAT=RESU, GROUP_MA="FUSIB02", NOM_CHAM="SIEF_ELGA", TOUT_CMP="OUI")
+)
+TABVARI2 = CREA_TABLE(
+    RESU=_F(RESULTAT=RESU, GROUP_MA="FUSIB02", NOM_CHAM="VARI_ELGA", TOUT_CMP="OUI")
+)
+TABDEPL2 = CALC_TABLE(
+    reuse=TABDEPL2,
+    TABLE=TABDEPL2,
+    ACTION=(
+        _F(OPERATION="FILTRE", NOM_PARA="NOEUD", CRIT_COMP="EQ", VALE_K="4"),
+        _F(OPERATION="OPER", FORMULE=NOD_DTAN, NOM_PARA="NOD_DTAN"),
+    ),
+)
+TABSIEF2 = CALC_TABLE(
+    reuse=TABSIEF2,
+    TABLE=TABSIEF2,
+    ACTION=(
+        _F(OPERATION="FILTRE", NOM_PARA="POINT", CRIT_COMP="EQ", VALE=2),
+        _F(OPERATION="OPER", FORMULE=NOD_FTAN, NOM_PARA="NOD_FTAN"),
+    ),
+)
+TABVARI2 = CALC_TABLE(
+    reuse=TABVARI2,
+    TABLE=TABVARI2,
+    ACTION=(
+        _F(OPERATION="FILTRE", NOM_PARA="POINT", CRIT_COMP="EQ", VALE=2),
+        _F(OPERATION="OPER", FORMULE=F_TAN, NOM_PARA="F_TAN"),
+        _F(OPERATION="OPER", FORMULE=D_TAN, NOM_PARA="D_TAN"),
+        _F(OPERATION="OPER", FORMULE=DP_TAN, NOM_PARA="DP_TAN"),
+        _F(
+            OPERATION="EXTR",
+            NOM_PARA=("NUME_ORDRE", "INST", "F_TAN", "D_TAN", "V18", "DP_TAN", "V19"),
+        ),
+    ),
+)
+TABRES2 = CALC_TABLE(
+    TABLE=TABDEPL2,
+    ACTION=(
+        _F(OPERATION="COMB", TABLE=TABSIEF2, NOM_PARA="NUME_ORDRE"),
+        _F(OPERATION="COMB", TABLE=TABVARI2, NOM_PARA="NUME_ORDRE"),
+    ),
+)
+# --------------------------------------------------------------------------------------------------
+#   Résultat sur Fusib03
+TABDEPL3 = CREA_TABLE(RESU=_F(RESULTAT=RESU, GROUP_MA="FUSIB03", NOM_CHAM="DEPL", TOUT_CMP="OUI"))
+TABSIEF3 = CREA_TABLE(
+    RESU=_F(RESULTAT=RESU, GROUP_MA="FUSIB03", NOM_CHAM="SIEF_ELGA", TOUT_CMP="OUI")
+)
+TABVARI3 = CREA_TABLE(
+    RESU=_F(RESULTAT=RESU, GROUP_MA="FUSIB03", NOM_CHAM="VARI_ELGA", TOUT_CMP="OUI")
+)
+TABDEPL3 = CALC_TABLE(
+    reuse=TABDEPL3,
+    TABLE=TABDEPL3,
+    ACTION=(
+        _F(OPERATION="FILTRE", NOM_PARA="NOEUD", CRIT_COMP="EQ", VALE_K="5"),
+        _F(OPERATION="OPER", FORMULE=NOD_DTAN, NOM_PARA="NOD_DTAN"),
+    ),
+)
+TABSIEF3 = CALC_TABLE(
+    reuse=TABSIEF3,
+    TABLE=TABSIEF3,
+    ACTION=(
+        _F(OPERATION="FILTRE", NOM_PARA="POINT", CRIT_COMP="EQ", VALE=1),
+        _F(OPERATION="OPER", FORMULE=NOD_FTAN, NOM_PARA="NOD_FTAN"),
+    ),
+)
+TABVARI3 = CALC_TABLE(
+    reuse=TABVARI3,
+    TABLE=TABVARI3,
+    ACTION=(
+        _F(OPERATION="FILTRE", NOM_PARA="POINT", CRIT_COMP="EQ", VALE=1),
+        _F(OPERATION="OPER", FORMULE=F_TAN, NOM_PARA="F_TAN"),
+        _F(OPERATION="OPER", FORMULE=D_TAN, NOM_PARA="D_TAN"),
+        _F(OPERATION="OPER", FORMULE=DP_TAN, NOM_PARA="DP_TAN"),
+        _F(
+            OPERATION="EXTR",
+            NOM_PARA=("NUME_ORDRE", "INST", "F_TAN", "D_TAN", "V18", "DP_TAN", "V19"),
+        ),
+    ),
+)
+TABRES3 = CALC_TABLE(
+    TABLE=TABDEPL3,
+    ACTION=(
+        _F(OPERATION="COMB", TABLE=TABSIEF3, NOM_PARA="NUME_ORDRE"),
+        _F(OPERATION="COMB", TABLE=TABVARI3, NOM_PARA="NUME_ORDRE"),
+    ),
+)
+# --------------------------------------------------------------------------------------------------
+#   Résultat sur Fusib04
+TABDEPL4 = CREA_TABLE(RESU=_F(RESULTAT=RESU, GROUP_MA="FUSIB04", NOM_CHAM="DEPL", TOUT_CMP="OUI"))
+TABSIEF4 = CREA_TABLE(
+    RESU=_F(RESULTAT=RESU, GROUP_MA="FUSIB04", NOM_CHAM="SIEF_ELGA", TOUT_CMP="OUI")
+)
+TABVARI4 = CREA_TABLE(
+    RESU=_F(RESULTAT=RESU, GROUP_MA="FUSIB04", NOM_CHAM="VARI_ELGA", TOUT_CMP="OUI")
+)
+TABDEPL4 = CALC_TABLE(
+    reuse=TABDEPL4,
+    TABLE=TABDEPL4,
+    ACTION=(
+        _F(OPERATION="FILTRE", NOM_PARA="NOEUD", CRIT_COMP="EQ", VALE_K="6"),
+        _F(OPERATION="OPER", FORMULE=NOD_DTAN, NOM_PARA="NOD_DTAN"),
+    ),
+)
+TABSIEF4 = CALC_TABLE(
+    reuse=TABSIEF4,
+    TABLE=TABSIEF4,
+    ACTION=(
+        _F(OPERATION="FILTRE", NOM_PARA="POINT", CRIT_COMP="EQ", VALE=1),
+        _F(OPERATION="OPER", FORMULE=NOD_FTAN, NOM_PARA="NOD_FTAN"),
+    ),
+)
+TABVARI4 = CALC_TABLE(
+    reuse=TABVARI4,
+    TABLE=TABVARI4,
+    ACTION=(
+        _F(OPERATION="FILTRE", NOM_PARA="POINT", CRIT_COMP="EQ", VALE=1),
+        _F(OPERATION="OPER", FORMULE=F_TAN, NOM_PARA="F_TAN"),
+        _F(OPERATION="OPER", FORMULE=D_TAN, NOM_PARA="D_TAN"),
+        _F(OPERATION="OPER", FORMULE=DP_TAN, NOM_PARA="DP_TAN"),
+        _F(
+            OPERATION="EXTR",
+            NOM_PARA=("NUME_ORDRE", "INST", "F_TAN", "D_TAN", "V18", "DP_TAN", "V19"),
+        ),
+    ),
+)
+TABRES4 = CALC_TABLE(
+    TABLE=TABDEPL4,
+    ACTION=(
+        _F(OPERATION="COMB", TABLE=TABSIEF4, NOM_PARA="NUME_ORDRE"),
+        _F(OPERATION="COMB", TABLE=TABVARI4, NOM_PARA="NUME_ORDRE"),
+    ),
+)
+# #
+# """
+# IMPR_RESU(FORMAT='RESULTAT', RESU=_F(RESULTAT=RESU,),)
+
+# IMPR_TABLE(UNITE=38,TABLE=TABRES1,FORMAT_R='E17.10')
+# IMPR_TABLE(UNITE=38,TABLE=TABRES2,FORMAT_R='E17.10')
+# IMPR_TABLE(UNITE=38,TABLE=TABRES3,FORMAT_R='E17.10')
+# IMPR_TABLE(UNITE=38,TABLE=TABRES4,FORMAT_R='E17.10')
+# """
+#
+# --------------------------------------------------------------------------------------------------
+# NUME_ORDRE
+#    INST               NOD_DTAN                 NOD_FTAN                  F_TAN                 D_TAN                 V18                 DP_TAN                V19
+ResuIntgr = {
+    1: (
+        5.0000000000e-02,
+        6.1803398875e-01,
+        2.4479779327e02,
+        2.4479779327e02,
+        6.1803398875e-01,
+        1.4025329360e00,
+        6.0395055641e-03,
+        6.0395055641e-03,
+    ),
+    2: (
+        1.0000000000e-01,
+        1.1755705046e00,
+        3.6359182479e02,
+        3.6359182479e02,
+        1.1755705046e00,
+        8.6843092800e01,
+        2.6659094260e-01,
+        2.6659094260e-01,
+    ),
+    3: (
+        1.5000000000e-01,
+        1.6180339887e00,
+        3.9812608291e02,
+        3.9812608291e02,
+        1.6180339887e00,
+        2.2346703218e02,
+        6.2271878148e-01,
+        6.2271878148e-01,
+    ),
+    4: (
+        2.0000000000e-01,
+        1.9021130326e00,
+        4.1019465908e02,
+        4.1019465908e02,
+        1.9021130326e00,
+        3.2620573892e02,
+        8.7662638489e-01,
+        8.7662638489e-01,
+    ),
+    5: (
+        2.5000000000e-01,
+        2.0000000000e00,
+        4.1334696516e02,
+        4.1334696516e02,
+        2.0000000000e00,
+        3.6327103124e02,
+        9.6663258710e-01,
+        9.6663258710e-01,
+    ),
+    6: (
+        3.0000000000e-01,
+        1.9021130326e00,
+        3.7419217820e02,
+        3.7419217820e02,
+        1.9021130326e00,
+        3.6327103124e02,
+        9.6663258710e-01,
+        9.6663258710e-01,
+    ),
+    7: (
+        3.5000000000e-01,
+        1.6180339887e00,
+        2.6056056066e02,
+        2.6056056066e02,
+        1.6180339887e00,
+        3.6327103124e02,
+        9.6663258710e-01,
+        9.6663258710e-01,
+    ),
+    8: (
+        4.0000000000e-01,
+        1.1755705046e00,
+        8.3575166995e01,
+        8.3575166995e01,
+        1.1755705046e00,
+        3.6327103124e02,
+        9.6663258710e-01,
+        9.6663258710e-01,
+    ),
+    9: (
+        4.5000000000e-01,
+        6.1803398875e-01,
+        1.3943943934e02,
+        1.3943943934e02,
+        6.1803398875e-01,
+        3.6327103124e02,
+        9.6663258710e-01,
+        9.6663258710e-01,
+    ),
+    11: (
+        5.5000000000e-01,
+        6.1803398875e-01,
+        4.2538927701e02,
+        4.2538927701e02,
+        6.1803398875e-01,
+        5.8218476568e02,
+        4.4543920378e-01,
+        1.4878259704e00,
+    ),
+    12: (
+        6.0000000000e-01,
+        1.1755705046e00,
+        4.3218671109e02,
+        4.3218671109e02,
+        1.1755705046e00,
+        8.1412906324e02,
+        9.5103726855e-02,
+        2.0283689010e00,
+    ),
+    13: (
+        6.5000000000e-01,
+        1.6180339887e00,
+        4.3565267662e02,
+        4.3565267662e02,
+        1.6180339887e00,
+        1.0024080700e03,
+        5.2890229720e-01,
+        2.4621674714e00,
+    ),
+    14: (
+        7.0000000000e-01,
+        1.9021130326e00,
+        4.3733359687e02,
+        4.3733359687e02,
+        1.9021130326e00,
+        1.1245805011e03,
+        8.0877904042e-01,
+        2.7420442146e00,
+    ),
+    15: (
+        7.5000000000e-01,
+        2.0000000000e00,
+        4.3783890390e02,
+        4.3783890390e02,
+        2.0000000000e00,
+        1.1668619814e03,
+        9.0540274025e-01,
+        2.8386679144e00,
+    ),
+    16: (
+        8.0000000000e-01,
+        1.9021130326e00,
+        3.9868411694e02,
+        3.9868411694e02,
+        1.9021130326e00,
+        1.1668619814e03,
+        9.0540274025e-01,
+        2.8386679144e00,
+    ),
+    17: (
+        8.5000000000e-01,
+        1.6180339887e00,
+        2.8505249940e02,
+        2.8505249940e02,
+        1.6180339887e00,
+        1.1668619814e03,
+        9.0540274025e-01,
+        2.8386679144e00,
+    ),
+    18: (
+        9.0000000000e-01,
+        1.1755705046e00,
+        1.0806710573e02,
+        1.0806710573e02,
+        1.1755705046e00,
+        1.1668619814e03,
+        9.0540274025e-01,
+        2.8386679144e00,
+    ),
+    19: (
+        9.5000000000e-01,
+        6.1803398875e-01,
+        1.1494750060e02,
+        1.1494750060e02,
+        6.1803398875e-01,
+        1.1668619814e03,
+        9.0540274025e-01,
+        2.8386679144e00,
+    ),
+    21: (
+        1.0500000000e00,
+        6.1803398875e-01,
+        4.3970639868e02,
+        4.3970639868e02,
+        6.1803398875e-01,
+        1.3529947826e03,
+        4.8123200796e-01,
+        3.2628386467e00,
+    ),
+    22: (
+        1.1000000000e00,
+        1.1755705046e00,
+        4.4151193260e02,
+        4.4151193260e02,
+        1.1755705046e00,
+        1.5966883269e03,
+        7.1790673086e-02,
+        3.8158613278e00,
+    ),
+    23: (
+        1.1500000000e00,
+        1.6180339887e00,
+        4.4260216756e02,
+        4.4260216756e02,
+        1.6180339887e00,
+        1.7910866936e03,
+        5.1152856984e-01,
+        4.2555992245e00,
+    ),
+    24: (
+        1.2000000000e00,
+        1.9021130326e00,
+        4.4318572288e02,
+        4.4318572288e02,
+        1.9021130326e00,
+        1.9162593268e03,
+        7.9414872539e-01,
+        4.5382193801e00,
+    ),
+    25: (
+        1.2500000000e00,
+        2.0000000000e00,
+        4.4336937364e02,
+        4.4336937364e02,
+        2.0000000000e00,
+        1.9594469688e03,
+        8.9157656591e-01,
+        4.6356472206e00,
+    ),
+    26: (
+        1.3000000000e00,
+        1.9021130326e00,
+        4.0421458667e02,
+        4.0421458667e02,
+        1.9021130326e00,
+        1.9594469688e03,
+        8.9157656591e-01,
+        4.6356472206e00,
+    ),
+    27: (
+        1.3500000000e00,
+        1.6180339887e00,
+        2.9058296914e02,
+        2.9058296914e02,
+        1.6180339887e00,
+        1.9594469688e03,
+        8.9157656591e-01,
+        4.6356472206e00,
+    ),
+    28: (
+        1.4000000000e00,
+        1.1755705046e00,
+        1.1359757547e02,
+        1.1359757547e02,
+        1.1755705046e00,
+        1.9594469688e03,
+        8.9157656591e-01,
+        4.6356472206e00,
+    ),
+    29: (
+        1.4500000000e00,
+        6.1803398875e-01,
+        1.0941703086e02,
+        1.0941703086e02,
+        6.1803398875e-01,
+        1.9594469688e03,
+        8.9157656591e-01,
+        4.6356472206e00,
+    ),
+}
+
+Lpara = [
+    ("NOD_DTAN", 1),
+    ("NOD_FTAN", 2),
+    ("F_TAN", 3),
+    ("D_TAN", 4),
+    ("V18", 5),
+    ("DP_TAN", 6),
+    ("V19", 7),
+]
+for nume_ordre in list(ResuIntgr.keys()):
+    for para, indx in Lpara:
+        TEST_TABLE(
+            TABLE=TABRES1,
+            FILTRE=_F(NOM_PARA="NUME_ORDRE", CRIT_COMP="EQ", VALE_I=nume_ordre),
+            NOM_PARA=para,
+            VALE_CALC=ResuIntgr[nume_ordre][indx],
+            VALE_REFE=ResuIntgr[nume_ordre][indx],
+            REFERENCE="SOURCE_EXTERNE",
+            PRECISION=1.0e-06,
+        )
+        TEST_TABLE(
+            TABLE=TABRES2,
+            FILTRE=_F(NOM_PARA="NUME_ORDRE", CRIT_COMP="EQ", VALE_I=nume_ordre),
+            NOM_PARA=para,
+            VALE_CALC=ResuIntgr[nume_ordre][indx],
+            VALE_REFE=ResuIntgr[nume_ordre][indx],
+            REFERENCE="SOURCE_EXTERNE",
+            PRECISION=1.0e-06,
+        )
+        TEST_TABLE(
+            TABLE=TABRES3,
+            FILTRE=_F(NOM_PARA="NUME_ORDRE", CRIT_COMP="EQ", VALE_I=nume_ordre),
+            NOM_PARA=para,
+            VALE_CALC=ResuIntgr[nume_ordre][indx],
+            VALE_REFE=ResuIntgr[nume_ordre][indx],
+            REFERENCE="SOURCE_EXTERNE",
+            PRECISION=1.0e-06,
+        )
+        TEST_TABLE(
+            TABLE=TABRES4,
+            FILTRE=_F(NOM_PARA="NUME_ORDRE", CRIT_COMP="EQ", VALE_I=nume_ordre),
+            NOM_PARA=para,
+            VALE_CALC=ResuIntgr[nume_ordre][indx],
+            VALE_REFE=ResuIntgr[nume_ordre][indx],
+            REFERENCE="SOURCE_EXTERNE",
+            PRECISION=1.0e-06,
+        )
+FIN()

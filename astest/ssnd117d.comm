@@ -1,0 +1,936 @@
+# coding=utf-8
+# --------------------------------------------------------------------
+# Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
+# This file is part of code_aster.
+#
+# code_aster is free software: you can redistribute it and/or modify
+# it under the terms of the GNU General Public License as published by
+# the Free Software Foundation, either version 3 of the License, or
+# (at your option) any later version.
+#
+# code_aster is distributed in the hope that it will be useful,
+# but WITHOUT ANY WARRANTY; without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+# GNU General Public License for more details.
+#
+# You should have received a copy of the GNU General Public License
+# along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
+# --------------------------------------------------------------------
+
+#
+#
+# --------------------------------------------------------------------------------------------------
+#
+#                   DISCRET COMPORTEMENT ECROUISSAGE TRACTION
+#
+#   Validation du comportement
+#
+#   Segment : K_T_D_L     K_TR_D_L
+#   Noeud   : K_T_D_N     K_TR_D_N
+#
+# --------------------------------------------------------------------------------------------------
+import numpy as NU
+
+DEBUT(CODE="OUI")
+
+MAIL = LIRE_MAILLAGE(FORMAT="ASTER")
+
+MODE = AFFE_MODELE(
+    MAILLAGE=MAIL,
+    AFFE=(
+        _F(GROUP_MA="FUSIB01", PHENOMENE="MECANIQUE", MODELISATION="DIS_T"),
+        _F(GROUP_MA="FUSIB02", PHENOMENE="MECANIQUE", MODELISATION="DIS_TR"),
+        _F(GROUP_MA="FUSIB03", PHENOMENE="MECANIQUE", MODELISATION="DIS_T"),
+        _F(GROUP_MA="FUSIB04", PHENOMENE="MECANIQUE", MODELISATION="DIS_TR"),
+    ),
+)
+#
+ZERO = DEFI_CONSTANTE(VALE=0.0)
+
+
+def Sinus(t, freq):
+    return sin(2.0 * pi * freq * t)
+
+
+Freq01 = 0.1
+U01 = 2.00
+# Le déplacement imposé suivant X
+Deplax = FORMULE(
+    VALE="U01*Sinus(INST,Freq01)", Freq01=Freq01, U01=U01, Sinus=Sinus, NOM_PARA="INST"
+)
+
+
+def Rampe(t):
+    if t <= 0.0:
+        return 0.0
+    if t <= 5.0:
+        return t / 5.0
+    if t <= 15.0:
+        return 1.0
+    if t <= 20.0:
+        return (20.0 - t) / 5.0
+    return 0.0
+
+
+def FDeplay(t):
+    uu = [0.20, 0.15, 0.10]
+    ff = [0.80, 1.50, 3.00]
+    ww = 2.0 * NU.pi
+    zz = 0.0
+    for u, f in zip(uu, ff):
+        zz += u * sin(ww * t * f) * Rampe(t)
+    return zz
+
+
+def FDeplaz(t):
+    uu = [-0.20, 0.15, -0.10]
+    ff = [0.90, 2.00, 2.80]
+    ww = 2.0 * NU.pi
+    zz = 0.0
+    for u, f in zip(uu, ff):
+        zz += u * sin(ww * t * f) * Rampe(t)
+    return zz
+
+
+Deplay = FORMULE(VALE="FDeplay(INST)", FDeplay=FDeplay, NOM_PARA="INST")
+Deplaz = FORMULE(VALE="FDeplaz(INST)", FDeplaz=FDeplaz, NOM_PARA="INST")
+
+# Liste d'instant
+TempsMaxi = 15.0
+DeltaPas = 0.02
+#
+# Fonction d'écrouissage
+ldepla = NU.array([0.00, 0.100, 0.200, 20.2])
+lforce = NU.array([0.00, 100.0, 120.0, 370.0])
+Kp = 1000.0
+
+fctsy = DEFI_FONCTION(NOM_PARA="DTAN", ABSCISSE=ldepla, ORDONNEE=lforce)
+
+
+Sy = 200.0
+Su = Sy + 250.0
+Kp = 4.0 * Sy / U01
+Puiss = 1.50
+
+
+def FctRp(p):
+    return Sy + Kp * p / pow(1.0 + pow(Kp * p / (Su - Sy), Puiss), 1.0 / Puiss)
+
+
+Lt_p = NU.arange(0.0, U01 * 40.0, 0.01)
+Lt_rp = list(map(FctRp, Lt_p))
+Lt_p += Sy / Kp
+Lt_p = list(Lt_p)
+Lt_p.insert(0, 0.0)
+Lt_rp.insert(0, 0.0)
+
+
+fctsx = DEFI_FONCTION(NOM_PARA="DX", ABSCISSE=Lt_p, ORDONNEE=Lt_rp)
+
+linstS = DEFI_LIST_REEL(DEBUT=0.0, INTERVALLE=_F(JUSQU_A=TempsMaxi, PAS=DeltaPas))
+
+CONDLIM = AFFE_CHAR_MECA_F(
+    MODELE=MODE,
+    DDL_IMPO=(
+        _F(GROUP_NO="PT1", BLOCAGE=("DEPLACEMENT", "ROTATION")),
+        _F(GROUP_NO="PT2", DX=Deplax, DY=Deplay, DZ=Deplaz),
+        _F(GROUP_NO="PT3", BLOCAGE=("DEPLACEMENT", "ROTATION")),
+        _F(GROUP_NO="PT4", DX=Deplax, DY=Deplay, DZ=Deplaz, DRX=Deplax, DRY=Deplax, DRZ=Deplax),
+        _F(GROUP_NO="PT5", DX=Deplax, DY=Deplay, DZ=Deplaz),
+        _F(GROUP_NO="PT6", DX=Deplax, DY=Deplay, DZ=Deplaz, DRX=Deplax, DRY=Deplax, DRZ=Deplax),
+    ),
+)
+
+# Définition des matériaux
+Fusib01 = DEFI_MATERIAU(DIS_ECRO_TRAC=_F(FTAN=fctsy, ECROUISSAGE="ISOTROPE", FX=fctsx))
+Fusib02 = DEFI_MATERIAU(DIS_ECRO_TRAC=_F(FTAN=fctsy, ECROUISSAGE="ISOTROPE", FX=fctsx))
+Fusib03 = DEFI_MATERIAU(DIS_ECRO_TRAC=_F(FTAN=fctsy, ECROUISSAGE="ISOTROPE", FX=fctsx))
+Fusib04 = DEFI_MATERIAU(DIS_ECRO_TRAC=_F(FTAN=fctsy, ECROUISSAGE="ISOTROPE", FX=fctsx))
+
+CHMAT = AFFE_MATERIAU(
+    MAILLAGE=MAIL,
+    AFFE=(
+        _F(GROUP_MA="FUSIB01", MATER=Fusib01),
+        _F(GROUP_MA="FUSIB02", MATER=Fusib02),
+        _F(GROUP_MA="FUSIB03", MATER=Fusib03),
+        _F(GROUP_MA="FUSIB04", MATER=Fusib04),
+    ),
+)
+
+
+CARELEM = AFFE_CARA_ELEM(
+    MODELE=MODE,
+    DISCRET=(
+        _F(REPERE="LOCAL", CARA="K_T_D_L", GROUP_MA="FUSIB01", VALE=(Kp, 100.0 * Kp, 100.0 * Kp)),
+        _F(
+            REPERE="LOCAL",
+            CARA="K_TR_D_L",
+            GROUP_MA="FUSIB02",
+            VALE=(Kp, 100.0 * Kp, 100.0 * Kp, 100.0 * Kp, 100.0 * Kp, 100.0 * Kp),
+        ),
+        _F(REPERE="LOCAL", CARA="K_T_D_N", GROUP_MA="FUSIB03", VALE=(Kp, 100.0 * Kp, 100.0 * Kp)),
+        _F(
+            REPERE="LOCAL",
+            CARA="K_TR_D_N",
+            GROUP_MA="FUSIB04",
+            VALE=(Kp, 100.0 * Kp, 100.0 * Kp, 100.0 * Kp, 100.0 * Kp, 100.0 * Kp),
+        ),
+    ),
+)
+
+LLinst = DEFI_LIST_INST(DEFI_LIST=_F(LIST_INST=linstS))
+
+RESU = STAT_NON_LINE(
+    MODELE=MODE,
+    CHAM_MATER=CHMAT,
+    CARA_ELEM=CARELEM,
+    EXCIT=_F(CHARGE=CONDLIM),
+    COMPORTEMENT=(
+        _F(RELATION="DIS_ECRO_TRAC", GROUP_MA="FUSIB01"),
+        _F(RELATION="DIS_ECRO_TRAC", GROUP_MA="FUSIB02"),
+        _F(RELATION="DIS_ECRO_TRAC", GROUP_MA="FUSIB03"),
+        _F(RELATION="DIS_ECRO_TRAC", GROUP_MA="FUSIB04"),
+    ),
+    INCREMENT=_F(LIST_INST=LLinst),
+    CONVERGENCE=_F(ARRET="OUI", ITER_GLOB_MAXI=30),
+    NEWTON=_F(REAC_INCR=1, REAC_ITER=1, MATRICE="TANGENTE"),
+)
+# ---------TEST SUR LA DIRECTION TANGENTE-----------------------------------------------------------------------------
+#   Résultat sur Fusib01
+TABDEPL1 = CREA_TABLE(RESU=_F(RESULTAT=RESU, GROUP_MA="FUSIB01", NOM_CHAM="DEPL", TOUT_CMP="OUI"))
+TABSIEF1 = CREA_TABLE(
+    RESU=_F(RESULTAT=RESU, GROUP_MA="FUSIB01", NOM_CHAM="SIEF_ELGA", TOUT_CMP="OUI")
+)
+TABVARI1 = CREA_TABLE(
+    RESU=_F(RESULTAT=RESU, GROUP_MA="FUSIB01", NOM_CHAM="VARI_ELGA", TOUT_CMP="OUI")
+)
+
+TABDEPL1 = CALC_TABLE(
+    reuse=TABDEPL1,
+    TABLE=TABDEPL1,
+    ACTION=(
+        _F(OPERATION="FILTRE", NOM_PARA="NOEUD", CRIT_COMP="EQ", VALE_K="2"),
+        _F(OPERATION="EXTR", NOM_PARA=("NUME_ORDRE", "INST", "DY", "DZ")),
+    ),
+)
+TABSIEF1 = CALC_TABLE(
+    reuse=TABSIEF1,
+    TABLE=TABSIEF1,
+    ACTION=(
+        _F(OPERATION="FILTRE", NOM_PARA="POINT", CRIT_COMP="EQ", VALE=2),
+        _F(OPERATION="EXTR", NOM_PARA=("NUME_ORDRE", "INST", "VY", "VZ")),
+    ),
+)
+TABVARI1 = CALC_TABLE(
+    reuse=TABVARI1,
+    TABLE=TABVARI1,
+    ACTION=(
+        _F(OPERATION="FILTRE", NOM_PARA="POINT", CRIT_COMP="EQ", VALE=2),
+        _F(OPERATION="EXTR", NOM_PARA=("NUME_ORDRE", "INST", "V2", "V3", "V5", "V6", "V18", "V19")),
+    ),
+)
+TABRES1 = CALC_TABLE(
+    TABLE=TABDEPL1,
+    ACTION=(
+        _F(OPERATION="COMB", TABLE=TABSIEF1, NOM_PARA="NUME_ORDRE"),
+        _F(OPERATION="COMB", TABLE=TABVARI1, NOM_PARA="NUME_ORDRE"),
+    ),
+)
+# --------------------------------------------------------------------------------------------------
+#   Résultat sur Fusib02
+TABDEPL2 = CREA_TABLE(RESU=_F(RESULTAT=RESU, GROUP_MA="FUSIB02", NOM_CHAM="DEPL", TOUT_CMP="OUI"))
+TABSIEF2 = CREA_TABLE(
+    RESU=_F(RESULTAT=RESU, GROUP_MA="FUSIB02", NOM_CHAM="SIEF_ELGA", TOUT_CMP="OUI")
+)
+TABVARI2 = CREA_TABLE(
+    RESU=_F(RESULTAT=RESU, GROUP_MA="FUSIB02", NOM_CHAM="VARI_ELGA", TOUT_CMP="OUI")
+)
+TABDEPL2 = CALC_TABLE(
+    reuse=TABDEPL2,
+    TABLE=TABDEPL2,
+    ACTION=(
+        _F(OPERATION="FILTRE", NOM_PARA="NOEUD", CRIT_COMP="EQ", VALE_K="4"),
+        _F(OPERATION="EXTR", NOM_PARA=("NUME_ORDRE", "INST", "DY", "DZ")),
+    ),
+)
+TABSIEF2 = CALC_TABLE(
+    reuse=TABSIEF2,
+    TABLE=TABSIEF2,
+    ACTION=(
+        _F(OPERATION="FILTRE", NOM_PARA="POINT", CRIT_COMP="EQ", VALE=2),
+        _F(OPERATION="EXTR", NOM_PARA=("NUME_ORDRE", "INST", "VY", "VZ")),
+    ),
+)
+TABVARI2 = CALC_TABLE(
+    reuse=TABVARI2,
+    TABLE=TABVARI2,
+    ACTION=(
+        _F(OPERATION="FILTRE", NOM_PARA="POINT", CRIT_COMP="EQ", VALE=2),
+        _F(OPERATION="EXTR", NOM_PARA=("NUME_ORDRE", "INST", "V2", "V3", "V5", "V6", "V18", "V19")),
+    ),
+)
+TABRES2 = CALC_TABLE(
+    TABLE=TABDEPL2,
+    ACTION=(
+        _F(OPERATION="COMB", TABLE=TABSIEF2, NOM_PARA="NUME_ORDRE"),
+        _F(OPERATION="COMB", TABLE=TABVARI2, NOM_PARA="NUME_ORDRE"),
+    ),
+)
+# --------------------------------------------------------------------------------------------------
+#   Résultat sur Fusib03
+TABDEPL3 = CREA_TABLE(RESU=_F(RESULTAT=RESU, GROUP_MA="FUSIB03", NOM_CHAM="DEPL", TOUT_CMP="OUI"))
+TABSIEF3 = CREA_TABLE(
+    RESU=_F(RESULTAT=RESU, GROUP_MA="FUSIB03", NOM_CHAM="SIEF_ELGA", TOUT_CMP="OUI")
+)
+TABVARI3 = CREA_TABLE(
+    RESU=_F(RESULTAT=RESU, GROUP_MA="FUSIB03", NOM_CHAM="VARI_ELGA", TOUT_CMP="OUI")
+)
+TABDEPL3 = CALC_TABLE(
+    reuse=TABDEPL3,
+    TABLE=TABDEPL3,
+    ACTION=(
+        _F(OPERATION="FILTRE", NOM_PARA="NOEUD", CRIT_COMP="EQ", VALE_K="5"),
+        _F(OPERATION="EXTR", NOM_PARA=("NUME_ORDRE", "INST", "DY", "DZ")),
+    ),
+)
+TABSIEF3 = CALC_TABLE(
+    reuse=TABSIEF3,
+    TABLE=TABSIEF3,
+    ACTION=(
+        _F(OPERATION="FILTRE", NOM_PARA="POINT", CRIT_COMP="EQ", VALE=1),
+        _F(OPERATION="EXTR", NOM_PARA=("NUME_ORDRE", "INST", "VY", "VZ")),
+    ),
+)
+TABVARI3 = CALC_TABLE(
+    reuse=TABVARI3,
+    TABLE=TABVARI3,
+    ACTION=(
+        _F(OPERATION="FILTRE", NOM_PARA="POINT", CRIT_COMP="EQ", VALE=1),
+        _F(OPERATION="EXTR", NOM_PARA=("NUME_ORDRE", "INST", "V2", "V3", "V5", "V6", "V18", "V19")),
+    ),
+)
+TABRES3 = CALC_TABLE(
+    TABLE=TABDEPL3,
+    ACTION=(
+        _F(OPERATION="COMB", TABLE=TABSIEF3, NOM_PARA="NUME_ORDRE"),
+        _F(OPERATION="COMB", TABLE=TABVARI3, NOM_PARA="NUME_ORDRE"),
+    ),
+)
+# --------------------------------------------------------------------------------------------------
+#   Résultat sur Fusib04
+TABDEPL4 = CREA_TABLE(RESU=_F(RESULTAT=RESU, GROUP_MA="FUSIB04", NOM_CHAM="DEPL", TOUT_CMP="OUI"))
+TABSIEF4 = CREA_TABLE(
+    RESU=_F(RESULTAT=RESU, GROUP_MA="FUSIB04", NOM_CHAM="SIEF_ELGA", TOUT_CMP="OUI")
+)
+TABVARI4 = CREA_TABLE(
+    RESU=_F(RESULTAT=RESU, GROUP_MA="FUSIB04", NOM_CHAM="VARI_ELGA", TOUT_CMP="OUI")
+)
+TABDEPL4 = CALC_TABLE(
+    reuse=TABDEPL4,
+    TABLE=TABDEPL4,
+    ACTION=(
+        _F(OPERATION="FILTRE", NOM_PARA="NOEUD", CRIT_COMP="EQ", VALE_K="6"),
+        _F(OPERATION="EXTR", NOM_PARA=("NUME_ORDRE", "INST", "DY", "DZ")),
+    ),
+)
+TABSIEF4 = CALC_TABLE(
+    reuse=TABSIEF4,
+    TABLE=TABSIEF4,
+    ACTION=(
+        _F(OPERATION="FILTRE", NOM_PARA="POINT", CRIT_COMP="EQ", VALE=1),
+        _F(OPERATION="EXTR", NOM_PARA=("NUME_ORDRE", "INST", "VY", "VZ")),
+    ),
+)
+TABVARI4 = CALC_TABLE(
+    reuse=TABVARI4,
+    TABLE=TABVARI4,
+    ACTION=(
+        _F(OPERATION="FILTRE", NOM_PARA="POINT", CRIT_COMP="EQ", VALE=1),
+        _F(OPERATION="EXTR", NOM_PARA=("NUME_ORDRE", "INST", "V2", "V3", "V5", "V6", "V18", "V19")),
+    ),
+)
+TABRES4 = CALC_TABLE(
+    TABLE=TABDEPL4,
+    ACTION=(
+        _F(OPERATION="COMB", TABLE=TABSIEF4, NOM_PARA="NUME_ORDRE"),
+        _F(OPERATION="COMB", TABLE=TABVARI4, NOM_PARA="NUME_ORDRE"),
+    ),
+)
+#
+"""
+IMPR_RESU(FORMAT='RESULTAT', RESU=_F(RESULTAT=RESU,),)
+IMPR_TABLE(UNITE=38,TABLE=TABRES1,FORMAT_R='E17.10')
+IMPR_TABLE(UNITE=38,TABLE=TABRES2,FORMAT_R='E17.10')
+IMPR_TABLE(UNITE=38,TABLE=TABRES3,FORMAT_R='E17.10')
+IMPR_TABLE(UNITE=38,TABLE=TABRES4,FORMAT_R='E17.10')
+
+Linst =  [0.40, 1.00, 1.46, 2.08, 2.52, 3.42, 4.58, 5.22, 6.12, 7.22, 7.70, 8.12, 8.56, 9.36, 9.88, 10.40,
+  10.98, 11.68, 12.32, 12.78, 13.74, 14.58, 15.22, 15.62, 16.12, 16.70, 17.48, 17.94, 18.54, 19.10, ]
+IMPR_TABLE(UNITE=39,TABLE=TABRES1,FORMAT_R='E17.10', FILTRE=_F(NOM_PARA='INST',CRIT_COMP='EQ',VALE=Linst))
+IMPR_TABLE(UNITE=39,TABLE=TABRES2,FORMAT_R='E17.10', FILTRE=_F(NOM_PARA='INST',CRIT_COMP='EQ',VALE=Linst))
+IMPR_TABLE(UNITE=39,TABLE=TABRES3,FORMAT_R='E17.10', FILTRE=_F(NOM_PARA='INST',CRIT_COMP='EQ',VALE=Linst))
+IMPR_TABLE(UNITE=39,TABLE=TABRES4,FORMAT_R='E17.10', FILTRE=_F(NOM_PARA='INST',CRIT_COMP='EQ',VALE=Linst))
+"""
+# --------------------------------------------------------------------------------------------------
+# NUME_ORDRE
+#     INST              V2                V3                V5                V6                V18                V19
+ResuIntgr = {
+    20: (
+        4.0000e-01,
+        1.5032261942e01,
+        -2.9217266927e01,
+        1.5032261942e-02,
+        -2.9217266927e-02,
+        0.0000000000e00,
+        0.0000000000e00,
+    ),
+    50: (
+        1.0000e00,
+        -3.8042260652e01,
+        4.2532540418e01,
+        -3.8042260652e-02,
+        4.2532540418e-02,
+        0.0000000000e00,
+        0.0000000000e00,
+    ),
+    73: (
+        1.4600e00,
+        8.5863925622e01,
+        -6.6672828970e01,
+        1.1153171685e-01,
+        -9.0177450007e-02,
+        3.6357562766e00,
+        3.4840255534e-02,
+    ),
+    104: (
+        2.0800e00,
+        1.7494310009e01,
+        1.1905581560e02,
+        1.2887433517e-02,
+        1.4979957667e-01,
+        1.1973301029e01,
+        1.0640738974e-01,
+    ),
+    126: (
+        2.5200e00,
+        -5.9479533366e01,
+        -1.0388721191e02,
+        -8.2697932753e-02,
+        -9.8725067959e-02,
+        1.5794252251e01,
+        1.3810734290e-01,
+    ),
+    171: (
+        3.4200e00,
+        1.2266880175e02,
+        -4.3843783269e01,
+        6.7861316671e-03,
+        -1.1958508061e-01,
+        1.1031146666e02,
+        8.9122004749e-01,
+    ),
+    229: (
+        4.5800e00,
+        -1.2952667722e02,
+        6.6316104569e01,
+        -3.4867842115e-01,
+        7.0809245791e-02,
+        2.7641195475e02,
+        2.0957854749e00,
+    ),
+    261: (
+        5.2200e00,
+        -5.1569223657e01,
+        1.4453589151e02,
+        -3.7110509727e-02,
+        3.1123953065e-01,
+        3.7022534764e02,
+        2.7233493239e00,
+    ),
+    306: (
+        6.1200e00,
+        1.5468727430e02,
+        7.6195343331e01,
+        9.1189322609e-02,
+        8.4327734827e-02,
+        6.1448836631e02,
+        4.2223769392e00,
+    ),
+    361: (
+        7.2200e00,
+        -1.8815539480e02,
+        -2.2283329317e01,
+        -4.1321598340e-01,
+        -4.5021337431e-02,
+        8.5801027435e02,
+        5.5681532168e00,
+    ),
+    385: (
+        7.7000e00,
+        1.6037331469e02,
+        1.0733484424e02,
+        1.8129156117e-01,
+        2.1013610143e-01,
+        9.1099445611e02,
+        5.8452323620e00,
+    ),
+    406: (
+        8.1200e00,
+        1.0484308531e02,
+        1.6802189859e02,
+        2.1780140124e-01,
+        6.2451581687e-02,
+        9.8932554766e02,
+        6.2458755625e00,
+    ),
+    428: (
+        8.5600e00,
+        -1.1915264233e02,
+        1.6619384281e02,
+        -3.8039974422e-01,
+        3.1435742174e-01,
+        1.0918009874e03,
+        6.7550159752e00,
+    ),
+    468: (
+        9.3600e00,
+        5.0021602310e01,
+        -2.0683643162e02,
+        1.0054421159e-01,
+        -3.3579722362e-01,
+        1.2286970267e03,
+        7.4111306672e00,
+    ),
+    494: (
+        9.8800e00,
+        -1.9928694694e02,
+        -8.8795851298e01,
+        -3.2622917197e-01,
+        6.1586928613e-02,
+        1.3201996876e03,
+        7.8357632328e00,
+    ),
+    520: (
+        1.0400e01,
+        2.9982208372e01,
+        -2.2174719842e02,
+        1.8790327428e-01,
+        -3.6521583659e-01,
+        1.4177942687e03,
+        8.2774284440e00,
+    ),
+    549: (
+        1.0980e01,
+        -1.2506143811e02,
+        8.9198566847e01,
+        -2.0415888279e-01,
+        1.9769202581e-01,
+        1.4990146549e03,
+        8.6367484746e00,
+    ),
+    584: (
+        1.1680e01,
+        -3.3055274890e00,
+        2.3677267060e02,
+        1.7218818352e-01,
+        2.2649452642e-01,
+        1.6548527359e03,
+        9.3068626916e00,
+    ),
+    616: (
+        1.2320e01,
+        -5.9696427383e01,
+        -2.3564126638e02,
+        -1.6332669011e-01,
+        -2.2312492195e-01,
+        1.7740731207e03,
+        9.8037374363e00,
+    ),
+    639: (
+        1.2780e01,
+        2.4620623711e02,
+        1.2622489067e01,
+        4.1321598340e-01,
+        4.5021337431e-02,
+        1.8406851975e03,
+        1.0075837325e01,
+    ),
+    687: (
+        1.3740e01,
+        1.8068194232e02,
+        -1.3095705693e02,
+        -7.4337370254e-03,
+        -1.4789054995e-01,
+        2.0273101314e03,
+        1.0818678957e01,
+    ),
+    729: (
+        1.4580e01,
+        -2.5818075894e02,
+        7.2651682979e01,
+        -3.8065329819e-01,
+        7.7302670078e-02,
+        2.2814547889e03,
+        1.1788436302e01,
+    ),
+}
+
+Lpara = [("V2", 1), ("V3", 2), ("V5", 3), ("V6", 4), ("V18", 5), ("V19", 6)]
+for nume_ordre in list(ResuIntgr.keys()):
+    for para, indx in Lpara:
+        TEST_TABLE(
+            TABLE=TABRES1,
+            FILTRE=_F(NOM_PARA="NUME_ORDRE", CRIT_COMP="EQ", VALE_I=nume_ordre),
+            NOM_PARA=para,
+            VALE_CALC=ResuIntgr[nume_ordre][indx],
+            VALE_REFE=ResuIntgr[nume_ordre][indx],
+            REFERENCE="SOURCE_EXTERNE",
+            PRECISION=1.0e-06,
+        )
+        TEST_TABLE(
+            TABLE=TABRES2,
+            FILTRE=_F(NOM_PARA="NUME_ORDRE", CRIT_COMP="EQ", VALE_I=nume_ordre),
+            NOM_PARA=para,
+            VALE_CALC=ResuIntgr[nume_ordre][indx],
+            VALE_REFE=ResuIntgr[nume_ordre][indx],
+            REFERENCE="SOURCE_EXTERNE",
+            PRECISION=1.0e-06,
+        )
+        TEST_TABLE(
+            TABLE=TABRES3,
+            FILTRE=_F(NOM_PARA="NUME_ORDRE", CRIT_COMP="EQ", VALE_I=nume_ordre),
+            NOM_PARA=para,
+            VALE_CALC=ResuIntgr[nume_ordre][indx],
+            VALE_REFE=ResuIntgr[nume_ordre][indx],
+            REFERENCE="SOURCE_EXTERNE",
+            PRECISION=1.0e-06,
+        )
+        TEST_TABLE(
+            TABLE=TABRES4,
+            FILTRE=_F(NOM_PARA="NUME_ORDRE", CRIT_COMP="EQ", VALE_I=nume_ordre),
+            NOM_PARA=para,
+            VALE_CALC=ResuIntgr[nume_ordre][indx],
+            VALE_REFE=ResuIntgr[nume_ordre][indx],
+            REFERENCE="SOURCE_EXTERNE",
+            PRECISION=1.0e-06,
+        )
+
+
+# ---------TEST SUR LA DIRECTION X-----------------------------------------------------------------------------
+#   Résultat sur Fusib01
+TABDEPL_X1 = CREA_TABLE(RESU=_F(RESULTAT=RESU, GROUP_MA="FUSIB01", NOM_CHAM="DEPL", TOUT_CMP="OUI"))
+TABSIEF_X1 = CREA_TABLE(
+    RESU=_F(RESULTAT=RESU, GROUP_MA="FUSIB01", NOM_CHAM="SIEF_ELGA", TOUT_CMP="OUI")
+)
+TABVARI_X1 = CREA_TABLE(
+    RESU=_F(RESULTAT=RESU, GROUP_MA="FUSIB01", NOM_CHAM="VARI_ELGA", TOUT_CMP="OUI")
+)
+
+TABDEPL_X1 = CALC_TABLE(
+    reuse=TABDEPL_X1,
+    TABLE=TABDEPL_X1,
+    ACTION=(
+        _F(OPERATION="FILTRE", NOM_PARA="NOEUD", CRIT_COMP="EQ", VALE_K="2"),
+        _F(OPERATION="EXTR", NOM_PARA=("NUME_ORDRE", "INST", "DX")),
+    ),
+)
+TABSIEF_X1 = CALC_TABLE(
+    reuse=TABSIEF_X1,
+    TABLE=TABSIEF_X1,
+    ACTION=(
+        _F(OPERATION="FILTRE", NOM_PARA="POINT", CRIT_COMP="EQ", VALE=2),
+        _F(OPERATION="EXTR", NOM_PARA=("NUME_ORDRE", "INST", "N")),
+    ),
+)
+TABVARI_X1 = CALC_TABLE(
+    reuse=TABVARI_X1,
+    TABLE=TABVARI_X1,
+    ACTION=(
+        _F(OPERATION="FILTRE", NOM_PARA="POINT", CRIT_COMP="EQ", VALE=2),
+        _F(OPERATION="EXTR", NOM_PARA=("NUME_ORDRE", "INST", "V1", "V4", "V7", "V9", "V8")),
+    ),
+)
+TABRES_X1 = CALC_TABLE(
+    TABLE=TABDEPL_X1,
+    ACTION=(
+        _F(OPERATION="COMB", TABLE=TABSIEF_X1, NOM_PARA="NUME_ORDRE"),
+        _F(OPERATION="COMB", TABLE=TABVARI_X1, NOM_PARA="NUME_ORDRE"),
+    ),
+)
+# --------------------------------------------------------------------------------------------------
+#   Résultat sur Fusib02
+TABDEPL_X2 = CREA_TABLE(RESU=_F(RESULTAT=RESU, GROUP_MA="FUSIB02", NOM_CHAM="DEPL", TOUT_CMP="OUI"))
+TABSIEF_X2 = CREA_TABLE(
+    RESU=_F(RESULTAT=RESU, GROUP_MA="FUSIB02", NOM_CHAM="SIEF_ELGA", TOUT_CMP="OUI")
+)
+TABVARI_X2 = CREA_TABLE(
+    RESU=_F(RESULTAT=RESU, GROUP_MA="FUSIB02", NOM_CHAM="VARI_ELGA", TOUT_CMP="OUI")
+)
+TABDEPL_X2 = CALC_TABLE(
+    reuse=TABDEPL_X2,
+    TABLE=TABDEPL_X2,
+    ACTION=(
+        _F(OPERATION="FILTRE", NOM_PARA="NOEUD", CRIT_COMP="EQ", VALE_K="4"),
+        _F(OPERATION="EXTR", NOM_PARA=("NUME_ORDRE", "INST", "DX")),
+    ),
+)
+TABSIEF_X2 = CALC_TABLE(
+    reuse=TABSIEF_X2,
+    TABLE=TABSIEF_X2,
+    ACTION=(
+        _F(OPERATION="FILTRE", NOM_PARA="POINT", CRIT_COMP="EQ", VALE=2),
+        _F(OPERATION="EXTR", NOM_PARA=("NUME_ORDRE", "INST", "N")),
+    ),
+)
+TABVARI_X2 = CALC_TABLE(
+    reuse=TABVARI_X2,
+    TABLE=TABVARI_X2,
+    ACTION=(
+        _F(OPERATION="FILTRE", NOM_PARA="POINT", CRIT_COMP="EQ", VALE=2),
+        _F(OPERATION="EXTR", NOM_PARA=("NUME_ORDRE", "INST", "V1", "V4", "V7", "V9", "V8")),
+    ),
+)
+TABRES_X2 = CALC_TABLE(
+    TABLE=TABDEPL_X2,
+    ACTION=(
+        _F(OPERATION="COMB", TABLE=TABSIEF_X2, NOM_PARA="NUME_ORDRE"),
+        _F(OPERATION="COMB", TABLE=TABVARI_X2, NOM_PARA="NUME_ORDRE"),
+    ),
+)
+# --------------------------------------------------------------------------------------------------
+#   Résultat sur Fusib03
+TABDEPL_X3 = CREA_TABLE(RESU=_F(RESULTAT=RESU, GROUP_MA="FUSIB03", NOM_CHAM="DEPL", TOUT_CMP="OUI"))
+TABSIEF_X3 = CREA_TABLE(
+    RESU=_F(RESULTAT=RESU, GROUP_MA="FUSIB03", NOM_CHAM="SIEF_ELGA", TOUT_CMP="OUI")
+)
+TABVARI_X3 = CREA_TABLE(
+    RESU=_F(RESULTAT=RESU, GROUP_MA="FUSIB03", NOM_CHAM="VARI_ELGA", TOUT_CMP="OUI")
+)
+TABDEPL_X3 = CALC_TABLE(
+    reuse=TABDEPL_X3,
+    TABLE=TABDEPL_X3,
+    ACTION=(
+        _F(OPERATION="FILTRE", NOM_PARA="NOEUD", CRIT_COMP="EQ", VALE_K="5"),
+        _F(OPERATION="EXTR", NOM_PARA=("NUME_ORDRE", "INST", "DX")),
+    ),
+)
+TABSIEF_X3 = CALC_TABLE(
+    reuse=TABSIEF_X3,
+    TABLE=TABSIEF_X3,
+    ACTION=(
+        _F(OPERATION="FILTRE", NOM_PARA="POINT", CRIT_COMP="EQ", VALE=1),
+        _F(OPERATION="EXTR", NOM_PARA=("NUME_ORDRE", "INST", "N")),
+    ),
+)
+TABVARI_X3 = CALC_TABLE(
+    reuse=TABVARI_X3,
+    TABLE=TABVARI_X3,
+    ACTION=(
+        _F(OPERATION="FILTRE", NOM_PARA="POINT", CRIT_COMP="EQ", VALE=1),
+        _F(OPERATION="EXTR", NOM_PARA=("NUME_ORDRE", "INST", "V1", "V4", "V7", "V9", "V8")),
+    ),
+)
+TABRES_X3 = CALC_TABLE(
+    TABLE=TABDEPL_X3,
+    ACTION=(
+        _F(OPERATION="COMB", TABLE=TABSIEF_X3, NOM_PARA="NUME_ORDRE"),
+        _F(OPERATION="COMB", TABLE=TABVARI_X3, NOM_PARA="NUME_ORDRE"),
+    ),
+)
+# --------------------------------------------------------------------------------------------------
+#   Résultat sur Fusib04
+TABDEPL_X4 = CREA_TABLE(RESU=_F(RESULTAT=RESU, GROUP_MA="FUSIB04", NOM_CHAM="DEPL", TOUT_CMP="OUI"))
+TABSIEF_X4 = CREA_TABLE(
+    RESU=_F(RESULTAT=RESU, GROUP_MA="FUSIB04", NOM_CHAM="SIEF_ELGA", TOUT_CMP="OUI")
+)
+TABVARI_X4 = CREA_TABLE(
+    RESU=_F(RESULTAT=RESU, GROUP_MA="FUSIB04", NOM_CHAM="VARI_ELGA", TOUT_CMP="OUI")
+)
+TABDEPL_X4 = CALC_TABLE(
+    reuse=TABDEPL_X4,
+    TABLE=TABDEPL_X4,
+    ACTION=(
+        _F(OPERATION="FILTRE", NOM_PARA="NOEUD", CRIT_COMP="EQ", VALE_K="6"),
+        _F(OPERATION="EXTR", NOM_PARA=("NUME_ORDRE", "INST", "DX")),
+    ),
+)
+TABSIEF_X4 = CALC_TABLE(
+    reuse=TABSIEF_X4,
+    TABLE=TABSIEF_X4,
+    ACTION=(
+        _F(OPERATION="FILTRE", NOM_PARA="POINT", CRIT_COMP="EQ", VALE=1),
+        _F(OPERATION="EXTR", NOM_PARA=("NUME_ORDRE", "INST", "N")),
+    ),
+)
+TABVARI_X4 = CALC_TABLE(
+    reuse=TABVARI_X4,
+    TABLE=TABVARI_X4,
+    ACTION=(
+        _F(OPERATION="FILTRE", NOM_PARA="POINT", CRIT_COMP="EQ", VALE=1),
+        _F(OPERATION="EXTR", NOM_PARA=("NUME_ORDRE", "INST", "V1", "V4", "V7", "V9", "V8")),
+    ),
+)
+TABRES_X4 = CALC_TABLE(
+    TABLE=TABDEPL_X4,
+    ACTION=(
+        _F(OPERATION="COMB", TABLE=TABSIEF_X4, NOM_PARA="NUME_ORDRE"),
+        _F(OPERATION="COMB", TABLE=TABVARI_X4, NOM_PARA="NUME_ORDRE"),
+    ),
+)
+#
+"""
+IMPR_RESU(FORMAT='RESULTAT', RESU=_F(RESULTAT=RESU,),)
+
+IMPR_TABLE(UNITE=38,TABLE=TABRES_X1,FORMAT_R='E17.10')
+IMPR_TABLE(UNITE=38,TABLE=TABRES_X2,FORMAT_R='E17.10')
+IMPR_TABLE(UNITE=38,TABLE=TABRES_X3,FORMAT_R='E17.10')
+IMPR_TABLE(UNITE=38,TABLE=TABRES_X4,FORMAT_R='E17.10')
+"""
+#
+# --------------------------------------------------------------------------------------------------
+# NUME_ORDRE
+#    INST               DX                 N                  V1                 V4                 V7                 V9                V8
+ResuIntgr_X = {
+    25: (
+        5.0000000000e-01,
+        6.1803398875e-01,
+        244.7964460743,
+        244.7964460743,
+        6.1803398875e-01,
+        1.4032935832925,
+        0.00604287356398,
+        0.00604287356398,
+    ),
+    75: (
+        1.5000000000e-01,
+        1.6180339887e00,
+        398.1168474073309,
+        398.1168474073309,
+        1.6180339887498956,
+        223.46952928531528,
+        0.6227418702315682,
+        0.6227418702315682,
+    ),
+    125: (
+        2.5000000000e-01,
+        2.0000000000e00,
+        413.3373524433953,
+        413.3373524433953,
+        2.0000000000e00,
+        363.2706628406693,
+        0.96665661889151,
+        0.96665661889151,
+    ),
+    175: (
+        3.5000000000e-01,
+        1.6180339887e00,
+        260.55094794335236,
+        260.55094794335236,
+        1.6180339887e00,
+        363.2706628406693,
+        0.9666566188915078,
+        0.9666566188915078,
+    ),
+    225: (
+        4.5000000000e-01,
+        6.1803398875e-01,
+        -139.44905205664315,
+        -139.44905205664315,
+        6.1803398875e-01,
+        363.2706628406693,
+        0.9666566188915102,
+        0.9666566188915102,
+    ),
+    300: (
+        6.0000000000e-01,
+        -1.1755705046e00,
+        -432.18702954255394,
+        -432.18702954255394,
+        -1.1755705046e00,
+        814.1391015425203,
+        -0.09510293072851,
+        2.02841616851152,
+    ),
+    350: (
+        7.0000000000e-01,
+        -1.9021130326e00,
+        -437.333606673385,
+        -437.333606673385,
+        -1.9021130326e00,
+        1124.5909633252998,
+        -0.808779015906808,
+        2.7420922536898034,
+    ),
+    400: (
+        8.0000000000e-01,
+        -1.9021130326e00,
+        -398.68423021282575,
+        -398.68423021282575,
+        -1.9021130326e00,
+        1166.8723357882502,
+        -0.9054024570582611,
+        2.8387156948412784,
+    ),
+    450: (
+        9.0000000000e-01,
+        -1.1755705046e00,
+        -108.06721901071096,
+        -108.06721901071096,
+        -1.1755705046e00,
+        1166.8723357882502,
+        -0.905402457058261,
+        2.8387156948412775,
+    ),
+    475: (
+        9.5000000000e-01,
+        -6.1803398875e-01,
+        114.94738732329745,
+        114.94738732329745,
+        -6.1803398875e-01,
+        1166.8723357882488,
+        -0.9054024570582611,
+        2.8387156948412784,
+    ),
+}
+
+Lpara = [("DX", 1), ("N", 2), ("V1", 3), ("V4", 4), ("V7", 5), ("V9", 6), ("V8", 7)]
+for nume_ordre in list(ResuIntgr_X.keys()):
+    for para, indx in Lpara:
+        TEST_TABLE(
+            TABLE=TABRES_X1,
+            FILTRE=_F(NOM_PARA="NUME_ORDRE", CRIT_COMP="EQ", VALE_I=nume_ordre),
+            NOM_PARA=para,
+            VALE_CALC=ResuIntgr_X[nume_ordre][indx],
+            VALE_REFE=ResuIntgr_X[nume_ordre][indx],
+            REFERENCE="SOURCE_EXTERNE",
+            PRECISION=1.0e-06,
+        )
+        TEST_TABLE(
+            TABLE=TABRES_X2,
+            FILTRE=_F(NOM_PARA="NUME_ORDRE", CRIT_COMP="EQ", VALE_I=nume_ordre),
+            NOM_PARA=para,
+            VALE_CALC=ResuIntgr_X[nume_ordre][indx],
+            VALE_REFE=ResuIntgr_X[nume_ordre][indx],
+            REFERENCE="SOURCE_EXTERNE",
+            PRECISION=1.0e-06,
+        )
+        TEST_TABLE(
+            TABLE=TABRES_X3,
+            FILTRE=_F(NOM_PARA="NUME_ORDRE", CRIT_COMP="EQ", VALE_I=nume_ordre),
+            NOM_PARA=para,
+            VALE_CALC=ResuIntgr_X[nume_ordre][indx],
+            VALE_REFE=ResuIntgr_X[nume_ordre][indx],
+            REFERENCE="SOURCE_EXTERNE",
+            PRECISION=1.0e-06,
+        )
+        TEST_TABLE(
+            TABLE=TABRES_X4,
+            FILTRE=_F(NOM_PARA="NUME_ORDRE", CRIT_COMP="EQ", VALE_I=nume_ordre),
+            NOM_PARA=para,
+            VALE_CALC=ResuIntgr_X[nume_ordre][indx],
+            VALE_REFE=ResuIntgr_X[nume_ordre][indx],
+            REFERENCE="SOURCE_EXTERNE",
+            PRECISION=1.0e-06,
+        )
+
+FIN()
