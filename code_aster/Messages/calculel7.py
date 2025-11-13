@@ -34,13 +34,6 @@ Commande CALC_FERRAILLAGE :
  le nombre de composante calculées du flux
 """
     ),
-    5: _(
-        """
-  Pour l'option %(k1)s, le nombre de couches est limité à 1,
-  or vous en avez définies %(i1)d !
-  Veuillez contacter votre assistance technique.
-"""
-    ),
     6: _(
         """
   Pour ce type d'opération, il n'est pas permis d'utiliser la structure de
@@ -67,14 +60,6 @@ Erreur utilisateur commande CALC_FERRAILLAGE / TYPE_COMB = ELS_QP :
         """
 Commande CALC_FERRAILLAGE :
    Le calcul de l'ouverture de fissure (ELS_QP) pour la codification BAEL91 est basé sur le EC2.
-"""
-    ),
-    11: _(
-        """
-Commande CALC_FERRAILLAGE :
-   FERR MIN : Dans le cadre du choix FERR_MIN = 'OUI', il faudra renseigner manuellement les valeurs des ratios de densités minimales de ferraillage
-   à travers les mots-clé RHO_LONGI_MIN et RHO_TRNSV_MIN !
-   Si vous souhaitez que l'algorithme estime lui-même le ferraillage minimal conformément aux spécifications des normes, choisir plutôt FERR_MIN = 'CODE'
 """
     ),
     12: _(
@@ -311,6 +296,24 @@ Commande CALC_FERRAILLAGE :
  Commande CALC_FERRAILLAGE :
    ELS/ELS_QP : Vous souhaitez réaliser un calcul de ferraillage de plaques (2D), avec la méthode SANDWICH.
    Cependant, cette méthode n'est conçue que pour effectuer un calcul à l'ELU ; une méthode alternative 'Multicouches' devrait être implémentée dans les prochaines versions de l'opérateur.
-"""
+   """
+    ),
+    38: _(
+        """
+ Commande CALC_FERRAILLAGE :
+   ELS_QP : L'effet d'échelle n'est pas applicable selon l'annexe du RCC-CW.
+   """
+    ),
+    39: _(
+        """
+ Commande CALC_FERRAILLAGE :
+   ELU/ELS : Le calcul de ferraillage minimal pour la maîtrise de la fissuration n'est possible qu'à l'ELS_QP. Le code retourne des valeurs nulles.
+   """
+    ),
+    40: _(
+        """
+ Commande CALC_FERRAILLAGE :
+   POUTRE : Le calcul de ferraillage minimal pour la maîtrise de la fissuration n'est pas encore possible pour les éléments POUTRE.
+   """
     ),
 }

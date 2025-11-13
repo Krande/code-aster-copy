@@ -46,6 +46,7 @@ MMATZZR = ArrayOfComponents(phys=PHY.MSIZ_R, locatedComponents=LC.DDL_NOZ1)
 
 MMATUNZ = ArrayOfComponents(phys=PHY.MZNS_R, locatedComponents=LC.ECOOR1R)
 
+
 # ------------------------------------------------------------
 class MECA_HEXS20(Element):
     """Mechanics - 3D - HEXA20 - Sub-integrated"""
@@ -691,8 +692,6 @@ class MECA_HEXS20(Element):
                 (SP.PDEPLAR, DDL_MECA),
                 (SP.PGEOMER, LC.EGEOM3D),
                 (SP.PMATERC, LC.CMATERC),
-                (OP.EPSI_ELGA.PVARCPR, LC.ZVARCPG),
-                (SP.PVARCRR, LC.ZVARCPG),
             ),
             para_out=((SP.PDEFOPC, LC.EGPS3DC), (OP.EPSI_ELGA.PDEFOPG, LC.EGPS3DR)),
         ),

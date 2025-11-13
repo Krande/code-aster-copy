@@ -15,18 +15,12 @@
 ! You should have received a copy of the GNU General Public License
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
-
-!
 !
 interface
-    subroutine vdxedg(nomte, option, xi, nb1, npgsr,&
-                      edgpg, effgt)
-        character(len=16) :: nomte
-        character(len=*) :: option
-        real(kind=8) :: xi(3, 9)
-        integer(kind=8) :: nb1
-        integer(kind=8) :: npgsr
-        real(kind=8) :: edgpg(*)
-        real(kind=8) :: effgt(8, 9)
+    subroutine vdxedg(nomte, option, nodeCoor, &
+                      degeElga, degeElno)
+        character(len=16), intent(in) :: nomte, option
+        real(kind=8), intent(in) :: nodeCoor(3, 9)
+        real(kind=8), intent(out) :: degeElga(72), degeElno(8, 9)
     end subroutine vdxedg
 end interface

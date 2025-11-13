@@ -138,15 +138,18 @@ COMBINAISON_FERRAILLAGE = MACRO(
             FERR_MIN=SIMP(
                 statut="f",
                 typ="TXM",
-                defaut="NON",
-                into=("NON", "OUI", "CODE"),
+                into=("VALE_MIN", "EC2"),
                 fr=tr("Prise en compte d'un ferraillage minimal?"),
             ),
-            RHO_LONGI_MIN=SIMP(
-                statut="f", typ="R", fr=tr("Ratio de ferraillage longitudinal minimal en %")
-            ),
-            RHO_TRNSV_MIN=SIMP(
-                statut="f", typ="R", fr=tr("Ratio de ferraillage transversal minimal en %")
+            ferrmin_=BLOC(
+                condition=""" equal_to("FERR_MIN", 'VALE_MIN')""",
+                fr=tr("Ratio de ferraillage utilisateur"),
+                RHO_LONGI_MIN=SIMP(
+                    statut="f", typ="R", fr=tr("Ratio de ferraillage longitudinal minimal en %")
+                ),
+                RHO_TRNSV_MIN=SIMP(
+                    statut="f", typ="R", fr=tr("Ratio de ferraillage transversal minimal en %")
+                ),
             ),
             c_2D=BLOC(
                 condition=""" equal_to("TYPE_STRUCTURE", '2D')""",
@@ -488,15 +491,18 @@ COMBINAISON_FERRAILLAGE = MACRO(
             FERR_MIN=SIMP(
                 statut="f",
                 typ="TXM",
-                defaut="NON",
-                into=("NON", "OUI", "CODE"),
+                into=("VALE_MIN", "BAEL91"),
                 fr=tr("Prise en compte d'un ferraillage minimal?"),
             ),
-            RHO_LONGI_MIN=SIMP(
-                statut="f", typ="R", fr=tr("Ratio de ferraillage longitudinal minimal en %")
-            ),
-            RHO_TRNSV_MIN=SIMP(
-                statut="f", typ="R", fr=tr("Ratio de ferraillage transversal minimal en %")
+            ferrmin_=BLOC(
+                condition=""" equal_to("FERR_MIN", 'VALE_MIN')""",
+                fr=tr("Ratio de ferraillage utilisateur"),
+                RHO_LONGI_MIN=SIMP(
+                    statut="f", typ="R", fr=tr("Ratio de ferraillage longitudinal minimal en %")
+                ),
+                RHO_TRNSV_MIN=SIMP(
+                    statut="f", typ="R", fr=tr("Ratio de ferraillage transversal minimal en %")
+                ),
             ),
             c_2D=BLOC(
                 condition=""" equal_to("TYPE_STRUCTURE", '2D')""",

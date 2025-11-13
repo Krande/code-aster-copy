@@ -1,5 +1,5 @@
 /* -------------------------------------------------------------------- */
-/* Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org             */
+/* Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org             */
 /* This file is part of code_aster.                                     */
 /*                                                                      */
 /* code_aster is free software: you can redistribute it and/or modify   */
@@ -21,12 +21,25 @@
 #include "aster_fort_utils.h"
 #include "definition_pt.h"
 #include "dll_register.h"
-#ifdef ASTER_PLATFORM_WINDOWS
+
+#ifdef ASTER_PLATFORM_MSYS2
 #include <windows.h>
+#define dlopen( libname, flag ) LoadLibrary( libname )
+#define dlsym( handle, symbol ) GetProcAddress( (HMODULE)( handle ), (LPCSTR)( symbol ) )
+static inline int my_dlclose( void *handle ) { return FreeLibrary( (HMODULE)handle ) ? 0 : 1; }
+#define dlclose my_dlclose
+#define RTLD_LAZY 0
+
+#elseif ASTER_PLATFORM_MSVC64
+#include <windows.h>
+// Windows-specific implementation of a function to unload libraries
+static void windows_dlclose(void *handle) {
+    FreeLibrary((HMODULE)handle);
+}
+#define dlclose windows_dlclose
 #else
 #include <dlfcn.h>
 #endif
-
 
 /* *********************************************************************
  *
@@ -53,16 +66,9 @@ PyObject *get_dll_register_dict() {
     return DLL_DICT;
 }
 
-#ifdef ASTER_PLATFORM_WINDOWS
-// Windows-specific implementation of a function to unload libraries
-static void windows_dlclose(void *handle) {
-    FreeLibrary((HMODULE)handle);
-}
-#define dlclose windows_dlclose
-#endif
-
-void DEF0(DLLCLS, dllcls) {
-    /* Unload all components */
+void DEF0( DLLCLS, dllcls ) {
+    /* Unload all components
+     */
     dll_init();
     libsymb_apply_on_all( DLL_DICT, (FUNC_PTR)dlclose, 1 );
     Py_DECREF( DLL_DICT );

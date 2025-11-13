@@ -193,7 +193,9 @@ def options(self):
     self.load("scotch", tooldir="waftools")
     self.load("petsc", tooldir="waftools")
     self.load("runtest", tooldir="waftools")
-    if platform.system() == "Windows":
+    env = self.env.derive()
+
+    if env.ASTER_PLATFORM_MSVC64:
         self.recurse("msvc")
     self.recurse("libs")
     self.recurse("bibfor")
@@ -600,7 +602,11 @@ def check_platform(self):
         self.env.ASTER_PLATFORM_POSIX = True
         self.undefine("ASTER_PLATFORM_MINGW")
         self.undefine("ASTER_PLATFORM_MSVC64")
-
+    self.env.ASTER_PLATFORM = plt
+    if os.getenv("MSYSTEM"):
+        ## Define and additional variable for MSYS2
+        self.define("ASTER_PLATFORM_MSYS2", 1)
+        self.env.ASTER_PLATFORM_MSYS2 = True
     self.define(plt, 1)
     self.end_msg(plt)
 

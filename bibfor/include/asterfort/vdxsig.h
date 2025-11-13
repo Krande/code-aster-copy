@@ -15,19 +15,13 @@
 ! You should have received a copy of the GNU General Public License
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
-
-!
 !
 interface
-    subroutine vdxsig(nomte, option, xi, nb1, npgsr,&
-                      sigmpg, effgt, nbcou)
-        character(len=16) :: nomte
-        character(len=*) :: option
-        real(kind=8) :: xi(3, 9)
-        integer(kind=8) :: nb1
-        integer(kind=8) :: npgsr
-        integer(kind=8) :: nbcou
-        real(kind=8) :: sigmpg(*)
-        real(kind=8) :: effgt(8, 9)
+    subroutine vdxsig(nomte, nodeCoor, &
+                      nbLayer, siefElga)
+        character(len=16), intent(in) :: nomte
+        real(kind=8), intent(in) :: nodeCoor(3, 9)
+        integer(kind=8), intent(in) :: nbLayer
+        real(kind=8), intent(out) :: siefElga(6*27*nbLayer)
     end subroutine vdxsig
 end interface

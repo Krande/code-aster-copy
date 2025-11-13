@@ -17,12 +17,14 @@
 ! --------------------------------------------------------------------
 !
 subroutine te0419(option, nomte)
+!
     implicit none
-#include "jeveux.h"
+!
 #include "asterfort/btdfn.h"
 #include "asterfort/btdmsn.h"
 #include "asterfort/btdmsr.h"
 #include "asterfort/btldth.h"
+#include "asterfort/get_elas_id.h"
 #include "asterfort/hsj1f.h"
 #include "asterfort/hsj1ms.h"
 #include "asterfort/jevech.h"
@@ -30,21 +32,38 @@ subroutine te0419(option, nomte)
 #include "asterfort/mahsf.h"
 #include "asterfort/mahsms.h"
 #include "asterfort/matrth.h"
+#include "asterfort/moytem.h"
+#include "asterfort/rcvarc.h"
 #include "asterfort/trnflg.h"
+#include "asterfort/vdxtemp.h"
 #include "asterfort/vectan.h"
 #include "asterfort/vexpan.h"
+#include "jeveux.h"
 !
-    character(len=16) :: option, nomte
-! ......................................................................
-!    - FONCTION REALISEE:  CALCUL DES VECTEURS ELEMENTAIRES
-!                          POUR LES ELEMENTS MEC3QU9H, MEC3TR7H
-!                          OPTIONS : 'CHAR_MECA_TEMP_R'
+    character(len=16), intent(in) :: option, nomte
 !
-!    - ARGUMENTS:
-!        DONNEES:      OPTION       -->  OPTION DE CALCUL
-!                      NOMTE        -->  NOM DU TYPE ELEMENT
-! ......................................................................
-    integer(kind=8) :: nb1, nb2, nddle, npge, npgsr, npgsn
+! --------------------------------------------------------------------------------------------------
+!
+! Elementary computation
+!
+! Elements: COQUE_3D
+!
+! Options: CHAR_MECA_TEMP_R
+!
+! --------------------------------------------------------------------------------------------------
+!
+! In  option           : name of option to compute
+! In  nomte            : type of finite element
+!
+! --------------------------------------------------------------------------------------------------
+!
+    integer(kind=8), parameter :: npge = 2
+    real(kind=8), parameter :: epsval(npge) = (/-0.577350269189626d0, 0.577350269189626d0/)
+    integer(kind=8) :: nb1, nb2, npgsn, npgsr, nddle
+    integer(kind=8) :: i, j, ib, iret
+    integer(kind=8) :: jvCacoqu, jvNbsp, jvMater, jvGeom, jvVect
+    integer(kind=8) :: lzr, lzi
+    integer(kind=8) :: kInf, kMoy, kSup
     real(kind=8) :: vecta(9, 2, 3), vectn(9, 3), vectpt(9, 2, 3), vecpt(9, 3, 3)
     real(kind=8) :: vectg(2, 3), vectt(3, 3)
     real(kind=8) :: hsfm(3, 9), hss(2, 9), hsj1m(3, 9), hsj1s(2, 9)
@@ -53,104 +72,106 @@ subroutine te0419(option, nomte)
     real(kind=8) :: btdf(3, 42), btild(5, 42)
     real(kind=8) :: forthi(42), forcth(42), vecl(51)
     real(kind=8) :: young, nu, alpha
-!-----------------------------------------------------------------------
-    integer(kind=8) :: i, ib, indic, indith, inte, intsn, intsr
-    integer(kind=8) :: j, jcara, jgeom, jvecg, kwgt, lzi, lzr
+    integer(kind=8) :: kpge, kpgsn, kpgsr, kwgt, nbLayer
+    real(kind=8) :: epais, tempKpg, tempRefe, tempMoy
+    real(kind=8) :: ksi3s2, ksi3
+    integer(kind=8) :: elasID
+    character(len=16) :: elasKeyword
+    aster_logical :: hasTempRefe, hasTemp
 !
-    real(kind=8) :: epais, temper
-!-----------------------------------------------------------------------
-    parameter(npge=2)
-    real(kind=8) :: epsval(npge), ksi3s2, ksi3
-    data epsval/-0.577350269189626d0, 0.577350269189626d0/
+! --------------------------------------------------------------------------------------------------
 !
-    call jevech('PGEOMER', 'L', jgeom)
-    call jevech('PVECTUR', 'E', jvecg)
-!
-!     RECUPERATION DES OBJETS
-!
+    call jevech('PGEOMER', 'L', jvGeom)
+    call jevech('PVECTUR', 'E', jvVect)
+
+! - Get objects
     call jevete('&INEL.'//nomte(1:8)//'.DESI', ' ', lzi)
     nb1 = zi(lzi-1+1)
     nb2 = zi(lzi-1+2)
     npgsr = zi(lzi-1+3)
     npgsn = zi(lzi-1+4)
-!
     call jevete('&INEL.'//nomte(1:8)//'.DESR', ' ', lzr)
-!
-    call jevech('PCACOQU', 'L', jcara)
-    epais = zr(jcara)
-!
     nddle = 5*nb1+2
-!
-!
-!     RECUPERATION DE LA TEMPERATURE DE REFERENCE
-!
-!
-    do i = 1, nddle
-        forcth(i) = 0.d0
-    end do
-!
-    call vectan(nb1, nb2, zr(jgeom), zr(lzr), vecta, &
+
+! - Get reference temperature
+    call rcvarc(' ', 'TEMP', 'REF', 'RIGI', 1, &
+                1, tempRefe, iret)
+    hasTempRefe = iret .eq. 0
+
+! - Get properties of shell
+    call jevech('PNBSP_I', 'L', jvNbsp)
+    nbLayer = zi(jvNbsp)
+    kInf = 1
+    kMoy = (3*nbLayer+1)/2
+    kSup = 3*nbLayer
+
+! - Get thickness
+    call jevech('PCACOQU', 'L', jvCacoqu)
+    epais = zr(jvCacoqu)
+
+! - Compute local basis
+    call vectan(nb1, nb2, zr(jvGeom), zr(lzr), vecta, &
                 vectn, vectpt)
+
+! - Get elasticity
+    call jevech('PMATERC', 'L', jvMater)
+    call get_elas_id(zi(jvMater), elasID, elasKeyword)
 !
     kwgt = 0
-    do inte = 1, npge
-        ksi3s2 = epsval(inte)/2.d0
-!
-!     CALCUL DE BTDMR, BTDSR : M=MEMBRANE , S=CISAILLEMENT , R=REDUIT
-!
-        do intsr = 1, npgsr
-            call mahsms(0, nb1, zr(jgeom), ksi3s2, intsr, &
+    forcth = 0.d0
+    do kpge = 1, npge
+        ksi3 = epsval(kpge)
+        ksi3s2 = epsval(kpge)/2.d0
+
+! ----- MEMBRANE ET CISAILLEMENT
+        do kpgsr = 1, npgsr
+            call mahsms(0, nb1, zr(jvGeom), ksi3s2, kpgsr, &
                         zr(lzr), epais, vectn, vectg, vectt, &
                         hsfm, hss)
-!
             call hsj1ms(epais, vectg, vectt, hsfm, hss, &
                         hsj1m, hsj1s)
-!
-            call btdmsr(nb1, nb2, ksi3s2, intsr, zr(lzr), &
+            call btdmsr(nb1, nb2, ksi3s2, kpgsr, zr(lzr), &
                         epais, vectpt, hsj1m, hsj1s, btdm, &
                         btds)
         end do
-!
-        do intsn = 1, npgsn
-!
-!     CALCUL DE BTDFN : F=FLEXION , N=NORMAL
-!     ET DEFINITION DE WGT=PRODUIT DES POIDS ASSOCIES AUX PTS DE GAUSS
-!                          (NORMAL) ET DU DETERMINANT DU JACOBIEN
-!
-            call mahsf(1, nb1, zr(jgeom), ksi3s2, intsn, &
+
+        do kpgsn = 1, npgsn
+! --------- FLEXION, CISAILLEMENT, NORMAL
+            call mahsf(1, nb1, zr(jvGeom), ksi3s2, kpgsn, &
                        zr(lzr), epais, vectn, vectg, vectt, &
                        hsf)
-!
-            call hsj1f(intsn, zr(lzr), epais, vectg, vectt, &
+            call hsj1f(kpgsn, zr(lzr), epais, vectg, vectt, &
                        hsf, kwgt, hsj1fx, wgt)
-!
-            call btdfn(1, nb1, nb2, ksi3s2, intsn, &
+            call btdfn(1, nb1, nb2, ksi3s2, kpgsn, &
                        zr(lzr), epais, vectpt, hsj1fx, btdf)
-!
-!     CALCUL DE BTDMN, BTDSN
-!     ET
-!     FORMATION DE BTILD
-!
-            call btdmsn(1, nb1, intsn, npgsr, zr(lzr), &
+
+! --------- Final btild
+            call btdmsn(1, nb1, kpgsn, npgsr, zr(lzr), &
                         btdm, btdf, btds, btild)
-!
-            call matrth('MASS', npgsn, young, nu, alpha, &
-                        indith)
-!
-!     CALCUL DU CHAMP DE TEMPERATURE ET(OU) DES EFFORTS THERMIQUES
-!     INDIC=1 : TEMPERATURE ET EFFORTS THERMIQUES
-!     INDIC=0 : TEMPERATURE
-!
-            indic = 1
-            ksi3 = epsval(inte)
-            call btldth('MASS', ksi3, nb1, intsn, btild, &
-                        wgt, indic, young, nu, alpha, &
-                        temper, forthi)
-!
+
+! --------- Compute medium temperature
+            call moytem('MASS', npgsn, 3*nbLayer, '+', tempMoy, iret)
+
+! --------- Get temperature
+            call vdxtemp(kInf, kMoy, kSup, &
+                         kpgsn, ksi3, &
+                         hasTempRefe, tempRefe, &
+                         hasTemp, tempKpg)
+
+! --------- Get elasticity parameters
+            call matrth('MASS', &
+                        elasID, elasKeyword, zi(jvMater), &
+                        hasTemp, tempMoy, alpha, &
+                        young, nu)
+
+! --------- Compute "thermal" force
+            call btldth(nb1, btild, wgt, &
+                        hasTemp, tempKpg, &
+                        young, nu, alpha, &
+                        forthi)
             do i = 1, nddle
                 forcth(i) = forcth(i)+forthi(i)
             end do
-!
         end do
     end do
 !
@@ -170,6 +191,6 @@ subroutine te0419(option, nomte)
         vecpt(ib, 3, 3) = vectn(ib, 3)
     end do
 !
-    call trnflg(nb2, vecpt, vecl, zr(jvecg))
+    call trnflg(nb2, vecpt, vecl, zr(jvVect))
 !
 end subroutine

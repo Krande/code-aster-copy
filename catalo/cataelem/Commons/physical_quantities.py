@@ -1599,6 +1599,8 @@ FER1_R = PhysicalQuantity(
         "PHIYS",
         "PHIZI",
         "PHIZS",
+        "ASMINFIS",
+        "ECHELLE",
     ),
     comment=""" FER1_R et FER2_R : 2 grandeurs utilisees par CALC_FERRAILLAGE
 """,
@@ -1622,6 +1624,10 @@ FER2_R = PhysicalQuantity(
         "ATOT",
         "DNSVOL",
         "CONSTRUC",
+        "ASMINXI",
+        "ASMINXS",
+        "ASMINYI",
+        "ASMINYS",
     ),
 )
 VFER0_R = PhysicalQuantity(

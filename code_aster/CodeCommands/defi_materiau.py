@@ -41,6 +41,70 @@ class MaterialDefinition(ExecuteMacro):
             keywords (dict): Keywords arguments of user's keywords, changed
                 in place.
         """
+        if "VISC_ISOT_PLAS" in keywords:
+            mcfact = keywords["VISC_ISOT_PLAS"]
+            # Check strict bounds for PoissonRatio, Young Modulus and TAILLE_GRAIN to avoid division by zero
+            if mcfact["YoungModulus"] <= 0.0:
+                UTMESS("F", "ELEMENTS4_67")
+            if mcfact["PoissonRatio"] <= -1.0:
+                UTMESS("F", "COMPOR1_29")
+            if mcfact["PoissonRatio"] >= 0.5:
+                UTMESS("F", "COMPOR1_30")
+            if mcfact["TAILLE_GRAIN"] <= 0.0:
+                UTMESS("F", "COMPOR1_31")
+            # Adapt length and stress units
+            coef_l = 1.0
+            value_unit = mcfact.pop("UNITE_LONGUEUR")
+            if value_unit == "MM":
+                coef_l = 1.0e3
+            coef_p = 1.0
+            value_unit = mcfact.pop("UNITE_CONTRAINTE")
+            if value_unit == "MPa":
+                coef_p = 1.0e-6
+            mcfact["LengthUnit"] = coef_l
+            mcfact["StressUnit"] = coef_p
+
+        if "VISC_ISOT_PLAS_FO" in keywords:
+            mcfact = keywords["VISC_ISOT_PLAS_FO"]
+            # Check bounds for the material properties (in VISC_ISOT_PLAS_FO only)
+            names_mater = (
+                "YoungModulus",
+                "PoissonRatio",
+                "TAILLE_GRAIN",
+                "D_DISLOC",
+                "C_AMAS",
+                "TAILLE_AMAS",
+            )
+            for i in range(len(names_mater)):
+                name = names_mater[i]
+                values_xy = tuple(mcfact[name].getValues())
+                if len(values_xy) % 2 != 0:
+                    UTMESS("F", "UTILITAI2_68")
+                nbr = len(values_xy) // 2
+                values_mater = values_xy[nbr:]
+                for j in range(len(values_mater)):
+                    if name != "PoissonRatio" and values_mater[j] < 0.0:
+                        UTMESS("F", "COMPOR1_15", valk=("VISC_ISOT_PLAS_FO", name))
+                    if name == "YoungModulus" and values_mater[j] <= 0.0:
+                        UTMESS("F", "ELEMENTS4_67")
+                    if name == "PoissonRatio" and values_mater[j] <= -1.0:
+                        UTMESS("F", "COMPOR1_29")
+                    if name == "PoissonRatio" and values_mater[j] >= 0.5:
+                        UTMESS("F", "COMPOR1_30")
+                    if name == "TAILLE_GRAIN" and values_mater[j] <= 0.0:
+                        UTMESS("F", "COMPOR1_31")
+            # Adapt length and stress units
+            coef_l = 1.0
+            value_unit = mcfact.pop("UNITE_LONGUEUR")
+            if value_unit == "MM":
+                coef_l = 1.0e3
+            coef_p = 1.0
+            value_unit = mcfact.pop("UNITE_CONTRAINTE")
+            if value_unit == "MPa":
+                coef_p = 1.0e-6
+            mcfact["LengthUnit"] = coef_l
+            mcfact["StressUnit"] = coef_p
+
         if "BETON_DESORP" in keywords:
             mcfact = keywords["BETON_DESORP"]
             if mcfact["LEVERETT"] == "OUI":

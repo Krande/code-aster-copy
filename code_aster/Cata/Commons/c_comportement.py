@@ -422,13 +422,18 @@ def C_COMPORTEMENT(command):
                 RESI_INTE=SIMP(statut="f", typ="R"),
                 ITER_INTE_MAXI=SIMP(statut="f", typ="I"),
             ),
+            b_visc_isot_plas_resi=BLOC(
+                condition="""(equal_to("RELATION", 'VISC_ISOT_PLAS'))""",
+                RESI_INTE=SIMP(statut="f", typ="R", defaut=5.0e-14),
+                ITER_INTE_MAXI=SIMP(statut="f", typ="I", defaut=100),
+            ),
             b_flua_resi=BLOC(
                 condition="""is_in("RELATION", ('RGI_BETON','FLUA_PORO_BETON','FLUA_ENDO_PORO', 'RGI_BETON_BA',))""",
                 RESI_INTE=SIMP(statut="f", typ="R", defaut=1.0e-6),
                 ITER_INTE_MAXI=SIMP(statut="f", typ="I", defaut=-1),
             ),
             b_other_resi=BLOC(
-                condition="""not is_in("RELATION", ('MFRONT','RGI_BETON','FLUA_PORO_BETON','FLUA_ENDO_PORO','RGI_BETON_BA',))""",
+                condition="""not is_in("RELATION", ('MFRONT','VISC_ISOT_PLAS','RGI_BETON','FLUA_PORO_BETON','FLUA_ENDO_PORO','RGI_BETON_BA',))""",
                 RESI_INTE=SIMP(statut="f", typ="R", defaut=1.0e-6),
                 ITER_INTE_MAXI=SIMP(statut="f", typ="I", defaut=20),
             ),

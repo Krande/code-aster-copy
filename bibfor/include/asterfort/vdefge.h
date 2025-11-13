@@ -15,18 +15,14 @@
 ! You should have received a copy of the GNU General Public License
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
-
-!
 !
 interface
-    subroutine vdefge(nomte, nb1, npgsr, xr, epais,&
-                      sigma, effgt)
-        character(len=16) :: nomte
-        integer(kind=8) :: nb1
-        integer(kind=8) :: npgsr
-        real(kind=8) :: xr(*)
-        real(kind=8) :: epais
-        real(kind=8) :: sigma(6, *)
-        real(kind=8) :: effgt(8, *)
+    subroutine vdefge(nomte, nb1, npgsr, xr, epais, &
+                      sigmElno, efgeElno)
+        character(len=16), intent(in) :: nomte
+        integer(kind=8), intent(in) :: nb1, npgsr
+        real(kind=8), intent(in) :: xr(*), epais
+        real(kind=8), intent(in) :: sigmElno(6, 27)
+        real(kind=8), intent(out) :: efgeElno(8, 9)
     end subroutine vdefge
 end interface

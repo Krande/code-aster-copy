@@ -332,7 +332,7 @@ class SyntaxCheckerVisitor:
                     )
             # val_min/val_max
             if valMax is not None:
-                or_equal = " or equalf" if maxIncl else ""
+                or_equal = " or equal" if maxIncl else ""
                 if complex in validType:
                     if (i.real > valMax.real or (i.real == valMax.real and not maxIncl)) or (
                         i.imag > valMax.imag or (i.imag == valMax.imag and not maxIncl)
@@ -348,7 +348,7 @@ class SyntaxCheckerVisitor:
                             ValueError, f"Value must be smaller{or_equal} than {valMax}, {i} is not"
                         )
             if valMin is not None:
-                or_equal = " or equalf" if minIncl else ""
+                or_equal = " or equal" if minIncl else ""
                 if complex in validType:
                     if (i.real < valMin.real or (i.real == valMin.real and not minIncl)) or (
                         i.imag < valMin.imag or (i.imag == valMin.imag and not minIncl)

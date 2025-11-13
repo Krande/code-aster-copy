@@ -43,6 +43,8 @@ MMATUUR = ArrayOfComponents(phys=PHY.MDEP_R, locatedComponents=DDL_MECA)
 MMATUNS = ArrayOfComponents(phys=PHY.MDNS_R, locatedComponents=DDL_MECA)
 
 MMATZZR = ArrayOfComponents(phys=PHY.MSIZ_R, locatedComponents=LC.DDL_NOZ1)
+
+
 # ----------------------------------------------------------------------------------------------
 class MECPQU4(Element):
     """Mechanics - Plane stress - QUAD4"""

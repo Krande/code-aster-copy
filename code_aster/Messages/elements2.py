@@ -43,11 +43,6 @@ cata_msg = {
  élément faisceau homogénéisé non prévu
 """
     ),
-    33: _(
-        """
- pas de dilatation thermique orthotrope pour coque_3d
-"""
-    ),
     34: _(
         """
  les vecteurs sont au nombre de 1 ou 2

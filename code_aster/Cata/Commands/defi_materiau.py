@@ -116,6 +116,9 @@ DEFI_MATERIAU = MACRO(
         ),
         EXCLUS("VENDOCHAB", "VENDOCHAB_FO"),
         EXCLUS("VISC_ENDO", "VISC_ENDO_FO"),
+        EXCLUS("VISC_ISOT_PLAS", "VISC_ISOT_PLAS_FO"),
+        PRESENT_PRESENT("VISC_ISOT_PLAS", "ELAS"),
+        PRESENT_PRESENT("VISC_ISOT_PLAS_FO", "ELAS_FO"),
         EXCLUS("META_LEMA_ANI", "META_LEMA_ANI_FO"),
         EXCLUS("Iwan", "Iwan_FO"),
         EXCLUS("MohrCoulombAS", "MohrCoulombAS_FO"),
@@ -350,6 +353,8 @@ DEFI_MATERIAU = MACRO(
             "NORTON_FO",
             "GTN",
             # MFront
+            "VISC_ISOT_PLAS",
+            "VISC_ISOT_PLAS_FO",
             "META_LEMA_ANI",
             "META_LEMA_ANI_FO",
             "BETON_BURGER",
@@ -5793,6 +5798,103 @@ DEFI_MATERIAU = MACRO(
     ),
     ####  FIN MONOCRISTAL
     ### MFRONT OFFICIAL
+    VISC_ISOT_PLAS=FACT(
+        statut="f",
+        YoungModulus=SIMP(
+            statut="o", typ="R", val_min=0.0, fr=tr("module de Young, en unite de contrainte")
+        ),
+        PoissonRatio=SIMP(
+            statut="o", typ="R", val_min=-1.0, val_max=0.5, fr=tr("coefficient de Poisson")
+        ),
+        TAILLE_GRAIN=SIMP(
+            statut="o", typ="R", val_min=0.0, fr=tr("taille des grains, en unite de longueur")
+        ),
+        D_DISLOC=SIMP(
+            statut="o",
+            typ="R",
+            val_min=0.0,
+            fr=tr("densite de dislocations initiale, en inverse d'unite de longueur au carre"),
+        ),
+        C_AMAS=SIMP(
+            statut="o",
+            typ="R",
+            val_min=0.0,
+            fr=tr("concentration des amas de solutes, en inverse d'unite de longueur au cube"),
+        ),
+        TAILLE_AMAS=SIMP(
+            statut="o",
+            typ="R",
+            val_min=0.0,
+            fr=tr("taille des amas de solutes, en unite de longueur"),
+        ),
+        UNITE_LONGUEUR=SIMP(
+            statut="f",
+            typ="TXM",
+            into=("M", "MM"),
+            defaut="M",
+            fr=tr("unite de longueur (metre ou millimetre, metre par defaut)"),
+        ),
+        UNITE_CONTRAINTE=SIMP(
+            statut="f",
+            typ="TXM",
+            into=("Pa", "MPa"),
+            defaut="Pa",
+            fr=tr("unite de contrainte (Pascal ou Mega-Pascal, Pascal par defaut)"),
+        ),
+        # Hidden keywords
+        LengthUnit=SIMP(statut="c", typ="R", defaut=1.0),
+        StressUnit=SIMP(statut="c", typ="R", defaut=1.0),
+    ),
+    VISC_ISOT_PLAS_FO=FACT(
+        statut="f",
+        YoungModulus=SIMP(
+            statut="o",
+            typ=(fonction_sdaster, nappe_sdaster, formule),
+            fr=tr("module de Young, en unite de contrainte"),
+        ),
+        PoissonRatio=SIMP(
+            statut="o",
+            typ=(fonction_sdaster, nappe_sdaster, formule),
+            fr=tr("coefficient de Poisson"),
+        ),
+        TAILLE_GRAIN=SIMP(
+            statut="o",
+            typ=(fonction_sdaster, nappe_sdaster, formule),
+            fr=tr("taille des grains, en unite de longueur"),
+        ),
+        D_DISLOC=SIMP(
+            statut="o",
+            typ=(fonction_sdaster, nappe_sdaster, formule),
+            fr=tr("densite de dislocations initiale, en inverse d'unite de longueur au carre"),
+        ),
+        C_AMAS=SIMP(
+            statut="o",
+            typ=(fonction_sdaster, nappe_sdaster, formule),
+            fr=tr("concentration des amas de solutes, en inverse d'unite de longueur au cube"),
+        ),
+        TAILLE_AMAS=SIMP(
+            statut="o",
+            typ=(fonction_sdaster, nappe_sdaster, formule),
+            fr=tr("taille des amas de solutes, en unite de longueur"),
+        ),
+        UNITE_LONGUEUR=SIMP(
+            statut="f",
+            typ="TXM",
+            into=("M", "MM"),
+            defaut="M",
+            fr=tr("unite de longueur (metre ou millimetre, metre par defaut)"),
+        ),
+        UNITE_CONTRAINTE=SIMP(
+            statut="f",
+            typ="TXM",
+            into=("Pa", "MPa"),
+            defaut="Pa",
+            fr=tr("unite de contrainte (Pascal ou Mega-Pascal, Pascal par defaut)"),
+        ),
+        # hidden keywords
+        LengthUnit=SIMP(statut="c", typ="R", defaut=1.0),
+        StressUnit=SIMP(statut="c", typ="R", defaut=1.0),
+    ),
     BETON_BURGER=FACT(
         statut="f",
         YoungModulus=SIMP(statut="o", typ="R"),

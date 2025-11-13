@@ -5,7 +5,7 @@
  * @file Function.h
  * @brief Implementation of functions.
  * @section LICENCE
- * Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+ * Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
  * This file is part of code_aster.
  *
  * code_aster is free software: you can redistribute it and/or modify
@@ -164,6 +164,12 @@ class Function : public BaseFunction {
     Function() : BaseFunction( "FONCTION", "FONCTION" ) {};
 
     Function( const std::string name ) : BaseFunction( name, "FONCTION", "FONCTION" ) {};
+
+    /**
+     * @brief Return the emptyRealFunction (a singleton)
+     *
+     */
+    static FunctionPtr emptyRealFunction();
 };
 
 /**
@@ -238,12 +244,6 @@ typedef std::shared_ptr< Function > FunctionPtr;
  * @brief  Pointer to a FunctionComplex
  */
 typedef std::shared_ptr< FunctionComplex > FunctionComplexPtr;
-
-/**
- * @name emptyRealFunction
- * @brief  Empty function
- */
-extern FunctionPtr emptyRealFunction;
 
 /**
  * @typedef ListOfFunctions

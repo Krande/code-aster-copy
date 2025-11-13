@@ -58,12 +58,13 @@ subroutine ccpara(option, &
     character(len=8), parameter :: timeCmpName(timeCmpNb) = (/'INST    ', 'DELTAT  ', 'THETA   ', &
                                                               'KHI     ', 'R       ', 'RHO     '/)
     real(kind=8) :: timeCmmVale(timeCmpNb)
+    aster_logical :: lPlate, lCplan, lCompVarc
     integer(kind=8) :: nbParaIn, iret, jvPara, iParaIn
     integer(kind=8) :: optionNume, nh
     integer(kind=8), parameter :: massDiag = 1
     real(kind=8) :: omega2, freq, time, timePrev
     character(len=2) :: chdret
-    character(len=8) :: mesh, materField, model, caraElem
+    character(len=8) :: mesh, materField, model, caraElem, answer
     character(len=24) :: sigmElno
     character(len=24) :: paraType
     character(len=24), parameter :: chtime = '&&CCPARA.CH_INST_R'
@@ -93,6 +94,20 @@ subroutine ccpara(option, &
 ! - Access to mesh
     call dismoi('NOM_MAILLA', model, 'MODELE', repk=mesh)
 
+! - Some specific elements
+    call dismoi('EXI_PLAQUE', model, 'MODELE', repk=answer)
+    lPlate = answer .eq. "OUI"
+    call dismoi('EXI_C_PLAN', model, 'MODELE', repk=answer)
+    lCPlan = answer .eq. "OUI"
+
+! - For issue35203
+    lCompVarc = ASTER_TRUE
+    if (option .eq. "EPSI_ELGA") then
+        if (.not. lPlate .and. .not. lCPlan) then
+            lCompVarc = ASTER_FALSE
+        end if
+    end if
+
 ! - Get current time (if exist)
     time = 0.d0
     if (isTransient) then
@@ -100,21 +115,15 @@ subroutine ccpara(option, &
         time = zr(jvPara)
     end if
 
-    !WRITE (6, *) " - Create maps: ", time
-
-! - Get external state variables
+! - Get external state variables: reference field only
     call vrcref(model, materField, caraElem, chvref(1:19))
-    call vrcins(model, materField, caraElem, time, chvarc(1:19), chdret)
-    !WRITE (6, *) " - Create VARC field: ", chdret
 
 ! - Loop on input parameters for input fields
     do iParaIn = 1, nbParaIn
         paraType = cataLocalis(3*iParaIn-1)
-        !WRITE (6, *) "Type du champ d'entrée <", paraType, ">"
         if (paraType .eq. chtime) then
 ! --------- Input field: time
             if (isTransient) then
-                !WRITE (6, *) " - Create time map: ", time
                 timeCmmVale(1) = time
                 timeCmmVale(2) = r8nnem()
                 timeCmmVale(3) = r8nnem()
@@ -134,7 +143,6 @@ subroutine ccpara(option, &
             else
                 freq = 1.d0
             end if
-            !WRITE (6, *) " - Create frequency map: ", freq
             call mecact('V', chfreq, 'MAILLA', mesh, 'FREQ_R', &
                         ncmp=1, nomcmp='FREQ', sr=freq)
 !
@@ -147,7 +155,6 @@ subroutine ccpara(option, &
             else
                 omega2 = 1.0d0
             end if
-            !WRITE (6, *) " - Create pulsation map: ", omega2
             call mecact('V', chome2, 'MAILLA', mesh, 'OME2_R', &
                         ncmp=1, nomcmp='OMEG2', sr=omega2)
 !
@@ -159,7 +166,6 @@ subroutine ccpara(option, &
                             0, sjv=jvPara, istop=0)
                 nh = zi(jvPara)
                 if (nh .ne. isnnem()) then
-                    !WRITE (6, *) " - Create Fourier map: ", nh
                     call mecact('V', chharm, 'MAILLA', mesh, 'HARMON', &
                                 ncmp=1, nomcmp='NH', si=nh)
 
@@ -168,28 +174,33 @@ subroutine ccpara(option, &
 !
         else if (paraType .eq. chmass) then
 ! --------- Input field: diagonal mass matrix
-            !WRITE (6, *) " - Create diagonal mass matrix map"
             call mecact('V', chmass, 'MAILLA', mesh, 'POSI', &
                         ncmp=1, nomcmp='POS', si=massDiag)
 !
         else if (paraType .eq. chvac2) then
-! --------- Input field: external state variable
+! --------- Input field: external state variable at previous time step
             if (isTransient) then
                 call rsadpa(resultIn, 'L', 1, 'INST', numeStorePrev, 0, sjv=jvPara)
                 timePrev = zr(jvPara)
             else
                 timePrev = 0.d0
             end if
-            !WRITE (6, *) " - Create external state variable field"
-            call vrcins(model, materField, caraElem, timePrev, chvac2(1:19), chdret)
+            if (lCompVarc) then
+                call vrcins(model, materField, caraElem, timePrev, chvac2(1:19), chdret)
+            end if
 !
+        else if (paraType .eq. chvarc) then
+! --------- Input field: external state variable at current time step
+            if (lCompVarc) then
+                call vrcins(model, materField, caraElem, time, chvarc(1:19), chdret)
+            end if
+
         else if (paraType .eq. chsigf) then
 ! --------- Input field: stress tensor for SIRO_ELEM
             call rsexch(' ', resultIn, 'SIGM_ELNO', numeStore, sigmElno, iret)
             if (iret .ne. 0) then
                 call rsexch('F', resultOut, 'SIGM_ELNO', numeStore, sigmElno, iret)
             end if
-            !WRITE (6, *) " - Create SIGM_ELNO field for SIRO_ELEM"
             call mearcc(option, model, sigmElno, chsigf)
 !
         end if

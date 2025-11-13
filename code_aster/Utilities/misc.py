@@ -48,7 +48,9 @@ from .strfunc import convert, maximize_lines
 from .version import get_version
 
 DEBUG = False
-TMPDIR = os.environ.get("ASTER_TMPDIR") or os.environ.get("TMPDIR") or "/tmp"
+TMPDIR = (
+    os.environ.get("ASTER_TMPDIR") or os.environ.get("TMPDIR") or os.environ.get("TEMP") or "/tmp"
+)
 
 
 def set_debug(value):

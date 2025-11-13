@@ -71,6 +71,8 @@ MMATUUR = ArrayOfComponents(phys=PHY.MDEP_R, locatedComponents=DDL_MECA)
 MMATUNS = ArrayOfComponents(phys=PHY.MDNS_R, locatedComponents=DDL_MECA)
 
 MMATZZR = ArrayOfComponents(phys=PHY.MSIZ_R, locatedComponents=LC.DDL_NOZ1)
+
+
 # ------------------------------------------------------------
 class MECA_HEXS8(Element):
     """Mechanics - 3D - HEXA8 - Sub-integrated (with stabilization)"""
@@ -573,13 +575,7 @@ class MECA_HEXS8(Element):
         ),
         OP.EPSI_ELGA(
             te=25,
-            para_in=(
-                (SP.PDEPLAR, DDL_MECA),
-                (SP.PGEOMER, LC.EGEOM3D),
-                (SP.PMATERC, LC.CMATERC),
-                (OP.EPSI_ELGA.PVARCPR, LC.ZVARCPG),
-                (SP.PVARCRR, LC.ZVARCPG),
-            ),
+            para_in=((SP.PDEPLAR, DDL_MECA), (SP.PGEOMER, LC.EGEOM3D), (SP.PMATERC, LC.CMATERC)),
             para_out=((SP.PDEFOPC, LC.EGPS3DC), (OP.EPSI_ELGA.PDEFOPG, LC.EGPS3DR)),
         ),
         OP.EPSI_ELNO(
