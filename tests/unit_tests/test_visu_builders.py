@@ -134,6 +134,15 @@ def test_visu_builder_works_for_node_fields(tmp_path):
         nume_ordre=2,
         instant=0.3,
     )
+
+    # Add field without instant or nume_ordre
+    visu_cut.add_field_on_nodes(
+        field_name="AFIELD",
+        nodes=[2, 1],
+        values=np.array([(1.0, 0.0, 0.0), (0.0, 0.0, 1.0)]),
+        components=("X", "Y", "Z"),
+    )
+
     temp_med_file = tmp_path / "visu_2.med"
     visu_cut.write(temp_med_file)
 
@@ -170,3 +179,27 @@ def test_visu_builder_works_for_node_fields(tmp_path):
     actual_mesh: mc.MEDFileUMesh = mc.MEDFileUMesh.New(str(temp_med_file))
     assert actual_mesh.getGroupArr(1, "toto").getValues() == [1, 2]
     assert actual_mesh.getGroupArr(0, "tata").getValues() == [2, 3]
+
+    # Read med output (field 1 timesteps)
+    actual_field: mc.MEDFileField1TS = mc.ReadField(
+        str(temp_med_file),
+        "VISU_AFIELD",
+    )
+    actual_array = actual_field.getArray().toNumPyArray()
+    np.testing.assert_equal(
+        actual_array,
+        np.array(
+            [
+                (np.nan, np.nan, np.nan),
+                (0.0, 0.0, 1.0),
+                (1.0, 0.0, 0.0),
+                (np.nan, np.nan, np.nan),
+                (np.nan, np.nan, np.nan),
+                (np.nan, np.nan, np.nan),
+                (np.nan, np.nan, np.nan),
+                (np.nan, np.nan, np.nan),
+                (np.nan, np.nan, np.nan),
+                (np.nan, np.nan, np.nan),
+            ]
+        ),
+    )

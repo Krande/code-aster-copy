@@ -20,6 +20,7 @@
 import os
 from math import atan2, cos, pi, sin, sqrt
 from pathlib import Path
+import numpy as np
 
 from ..Cata.Syntax import _F
 from ..CodeCommands import (
@@ -988,6 +989,18 @@ def macr_lign_coupe_ops(
             visu_cut.add_field_on_nodes_from_aster_result_all_timesteps(
                 aster_result=current_resu, field_name=field_name, nodes=node_ids
             )
+            if result_axis_system == AxisSystem.GLOBAL:
+                for axis_name, vect in (
+                    ("X", (1.0, 0.0, 0.0)),
+                    ("Y", (0.0, 1.0, 0.0)),
+                    ("Z", (0.0, 0.0, 1.0)),
+                ):
+                    visu_cut.add_field_on_nodes(
+                        field_name=f"REPERE_{axis_name}",
+                        nodes=node_ids,
+                        values=np.array([vect] * len(node_ids)),
+                        components=("X", "Y", "Z"),
+                    )
 
             group_name = f"CUT_{intitl}"
             visu_cut.add_group(name=group_name, ids=node_ids, geo_type=VisuCutBuilder.NODE)

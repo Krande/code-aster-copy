@@ -45,8 +45,8 @@ class VisuCutBuilder:
     def __init__(self, mesh_med: mc.MEDFileUMesh, prefix_output_field_name: Optional[str] = None):
         self.mesh_med: mc.MEDFileUMesh = mesh_med
 
-        self.arrays: Dict[Tuple[str, int, str], np.ndarray] = {}
-        self.instants: Dict[Tuple[str, int, str], float] = {}
+        self.arrays: Dict[Tuple[str, Optional[int], str], np.ndarray] = {}
+        self.instants: Dict[Tuple[str, Optional[int], str], float] = {}
         self.components: Dict[Tuple[str, str], Iterable[str]] = {}
         self.nb_nodes: int = mesh_med.getNumberOfNodes()
         self.prefix_output_field_name: Optional[str] = prefix_output_field_name
@@ -114,19 +114,26 @@ class VisuCutBuilder:
         nodes: Sequence[int],
         values: np.ndarray,
         components: Iterable[str],
-        nume_ordre: int,
-        instant: float,
+        nume_ordre: Optional[int] = None,
+        instant: Optional[float] = None,
     ):
         assert len(nodes) == values.shape[0]
-        stock_address: Tuple[str, int, str] = (field_name, nume_ordre, mc.ON_NODES)
+        stock_address: Tuple[str, Optional[int], str] = (field_name, nume_ordre, mc.ON_NODES)
         already_instanciated_field = stock_address in self.arrays
-        if already_instanciated_field:
-            previous_instant = self.instants[stock_address]
-            if not isclose(previous_instant, instant):
-                raise ValueError(
-                    f"{instant} differs from already affected instant {previous_instant}"
-                )
 
+        if nume_ordre is not None:
+            if instant is None:
+                raise ValueError("if nume_ordre is defined instant must also be defined")
+            if already_instanciated_field:
+                previous_instant = self.instants[stock_address]
+                if not isclose(previous_instant, instant):
+                    raise ValueError(
+                        f"{instant} differs from already affected instant {previous_instant}"
+                    )
+            else:
+                self.instants[stock_address] = instant
+
+        if already_instanciated_field:
             previous_components = self.components[(field_name, mc.ON_NODES)]
             if previous_components != components:
                 raise ValueError(
@@ -135,7 +142,6 @@ class VisuCutBuilder:
 
             assert self.arrays[stock_address].shape == (self.nb_nodes, values.shape[1] + 1)
         else:
-            self.instants[stock_address] = instant
             self.arrays[stock_address] = np.full(
                 shape=(self.nb_nodes, values.shape[1] + 1), fill_value=np.nan
             )
@@ -163,18 +169,19 @@ class VisuCutBuilder:
         if not self.arrays:
             logger.warn("Cannot write visu output because no data where set")
             return
-        field_file = mc.MEDFileFieldMultiTS()
+        field_files: Dict[Tuple[str, str], mc.MEDFileFieldMultiTS] = {}
+
+        self.mesh_med.write(str(filepath), 2)
 
         for (field_name, nume_ordre, location), current_array in self.arrays.items():
             if location != mc.ON_NODES:
                 raise NotImplementedError(f"location {location} is not implemented yet")
-            instant = self.instants[(field_name, nume_ordre, location)]
-
+            field_address = (field_name, location)
             output_field_name = self.get_output_field_name(field_name=field_name)
 
             # Medcoupling field
             field_values = mc.DataArrayDouble(current_array[:, 1:].tolist())
-            field_values.setInfoOnComponents(self.components[(field_name, location)])
+            field_values.setInfoOnComponents(self.components[field_address])
             field_values.setName(name=output_field_name)
 
             medc_node_field = mc.MEDCouplingFieldDouble(location, mc.ONE_TIME)
@@ -187,9 +194,20 @@ class VisuCutBuilder:
             medc_node_field.checkConsistencyLight()
             medfield = mc.MEDFileField1TS()
             medfield.setFieldNoProfileSBT(field=medc_node_field)
-            medfield.setTime(iteration=nume_ordre, order=0, val=instant)
 
-            field_file.pushBackTimeStep(medfield)
+            if nume_ordre is None:
+                # medfield.write(fileName=str(filepath), mode=0)
+                medfield.setTime(iteration=1, order=0, val=0)
+                # continue
+            else:
+                instant = self.instants[(field_name, nume_ordre, location)]
+                medfield.setTime(iteration=nume_ordre, order=0, val=instant)
 
-        self.mesh_med.write(str(filepath), 2)
-        field_file.write(str(filepath), 0)
+            field_multi_ts = field_files.setdefault(field_address, mc.MEDFileFieldMultiTS())
+            field_multi_ts.pushBackTimeStep(medfield)
+
+        file_fields = mc.MEDFileFields()
+        for i_field, field_file in enumerate(field_files.values()):
+            file_fields.setFieldAtPos(i_field, field_file)
+
+        file_fields.write(str(filepath), 0)
