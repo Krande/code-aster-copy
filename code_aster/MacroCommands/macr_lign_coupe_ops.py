@@ -25,6 +25,7 @@ import numpy as np
 from ..Cata.Syntax import _F
 from ..CodeCommands import (
     COPIER,
+    CREA_CHAMP,
     CREA_RESU,
     CREA_TABLE,
     DEFI_GROUP,
@@ -896,6 +897,30 @@ def macr_lign_coupe_ops(
         cut_to_group[iocc] = groupe
 
     if write_visu:
+        FIELD_DEPL_1_X = CREA_CHAMP(
+            MAILLAGE=__macou,
+            MODELE=__recou.getModel(),
+            OPERATION="AFFE",
+            TYPE_CHAM="NOEU_DEPL_R",
+            AFFE=(_F(TOUT="OUI", NOM_CMP=("DX", "DY", "DZ"), VALE=(1.0, 0.0, 0.0)),),
+        )
+        RESU_IN_REPE_X = CREA_RESU(
+            OPERATION="AFFE",
+            TYPE_RESU="EVOL_ELAS",
+            AFFE=_F(NOM_CHAM="DEPL", INST=0.0, CHAM_GD=FIELD_DEPL_1_X),
+        )
+        FIELD_DEPL_1_Y = CREA_CHAMP(
+            MAILLAGE=__macou,
+            MODELE=__recou.getModel(),
+            OPERATION="AFFE",
+            TYPE_CHAM="NOEU_DEPL_R",
+            AFFE=(_F(TOUT="OUI", NOM_CMP=("DX", "DY", "DZ"), VALE=(0.0, 1.0, 0.0)),),
+        )
+        RESU_IN_REPE_Y = CREA_RESU(
+            OPERATION="AFFE",
+            TYPE_RESU="EVOL_ELAS",
+            AFFE=_F(NOM_CHAM="DEPL", INST=0.0, CHAM_GD=FIELD_DEPL_1_Y),
+        )
         visu_cut = VisuCutBuilder.from_aster_mesh(mesh=__macou, prefix_output_field_name="CUT")
 
     for iocc, m in enumerate(LIGN_COUPE):
@@ -999,8 +1024,28 @@ def macr_lign_coupe_ops(
                         field_name=f"REPERE_{axis_name}",
                         nodes=node_ids,
                         values=np.array([vect] * len(node_ids)),
-                        components=("X", "Y", "Z"),
+                        components=("DX", "DY", "DZ"),
                     )
+            elif result_axis_system in (AxisSystem.USER, AxisSystem.LOCAL):
+                resu_xglob_in_local_system = crea_resu_local(
+                    dime=dime, NOM_CHAM="DEPL", m=m, resin=RESU_IN_REPE_X
+                )
+                resu_yglob_in_local_system = crea_resu_local(
+                    dime=dime, NOM_CHAM="DEPL", m=m, resin=RESU_IN_REPE_Y
+                )
+                # TODO express Xlocal and YLOCAL in global axis system
+                visu_cut.add_field_on_nodes_from_aster_result_all_timesteps(
+                    aster_result=resu_repe_x,
+                    field_name=field_name,
+                    nodes=node_ids,
+                    med_field_name="REPERE_X",
+                )
+                visu_cut.add_field_on_nodes_from_aster_result_all_timesteps(
+                    aster_result=resu_repe_y,
+                    field_name=field_name,
+                    nodes=node_ids,
+                    med_field_name="REPERE_Y",
+                )
 
             group_name = f"CUT_{intitl}"
             visu_cut.add_group(name=group_name, ids=node_ids, geo_type=VisuCutBuilder.NODE)

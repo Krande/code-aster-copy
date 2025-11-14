@@ -515,16 +515,18 @@ reference = np.loadtxt("fort.39", dtype=dtype_table)
 
 test.assertArrayEqual(actual=table_array, reference=reference, rtol=1.0e-07, atol=1.0e-6)
 
+meshMEDFileRead = mc.MEDFileUMesh.New(medfilename_tmp)
+
 # testing that med and table output files match
-actual_medfilefiled = mc.MEDFileFieldMultiTS(medfilename_tmp)
-actual_medfield: mc.MEDCouplingFieldDouble = actual_medfilefiled.getFieldAtLevel(
+actual_medfields = mc.MEDFileFields(medfilename_tmp)
+actual_depl_field = actual_medfields.getFieldWithName("CUT_DEPL").getFieldAtLevel(
     mc.ON_NODES, 1, 0, 1
 )
 
-components = actual_medfield.getArray().getInfoOnComponents()
+components = actual_depl_field.getArray().getInfoOnComponents()
 components_index_to_compare = [components.index(compo) for compo in ("DX", "DY", "DZ")]
 
-actual_med_array = actual_medfield.getArray().toNumPyArray()[:, components_index_to_compare]
+actual_med_array = actual_depl_field.getArray().toNumPyArray()[:, components_index_to_compare]
 test.assertArrayEqual(
     actual=actual_med_array,
     reference=np.array(table_array[["DX", "DY", "DZ"]].tolist()),
@@ -533,8 +535,6 @@ test.assertArrayEqual(
 )
 
 # Testing that CUT_20 group results in med match INTITULE 20 table results
-meshMEDFileRead = mc.MEDFileUMesh.New(medfilename_tmp)
-
 cut_20_node_ids = meshMEDFileRead.getGroupArr(1, "CUT_20").getValues()
 
 # filter table_results for INTITULE 20
@@ -546,5 +546,18 @@ test.assertArrayEqual(
     rtol=1.0e-07,
     atol=1.0e-6,
 )
-
+# testing axis fields
+print(table_array[mask].dtype)
+print(table_array[mask])
+ref_axis_cut_20 = {"X": np.array([(0.0, 1.0, 0.0)] * 3)}
+for axis, array_vects in ref_axis_cut_20.items():
+    actual_field = actual_medfields.getFieldWithName(f"CUT_REPERE_{axis}").getFieldAtLevel(
+        mc.ON_NODES, 1, 0, 1
+    )
+    components = actual_field.getArray().getInfoOnComponents()
+    components_index_to_compare = [components.index(compo) for compo in ("DX", "DY", "DZ")]
+    actual_med_array = actual_field.getArray().toNumPyArray()[:, components_index_to_compare]
+    test.assertArrayEqual(
+        actual=actual_med_array[cut_20_node_ids], reference=array_vects, rtol=1.0e-07, atol=1.0e-6
+    )
 FIN()

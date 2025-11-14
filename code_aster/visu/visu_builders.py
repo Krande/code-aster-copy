@@ -77,7 +77,7 @@ class VisuCutBuilder:
         return cls(mesh_med=mesh_med, prefix_output_field_name=prefix_output_field_name)
 
     def add_field_on_nodes_from_aster_result_all_timesteps(
-        self, aster_result, field_name: str, nodes: list[int]
+        self, aster_result, field_name: str, nodes: list[int], med_field_name: Optional[str] = None
     ):
         nume_ordres = aster_result.getAccessParameters()["NUME_ORDRE"]
         instants = aster_result.getAccessParameters().get("INST", [0])
@@ -90,17 +90,26 @@ class VisuCutBuilder:
                 nodes=nodes,
                 nume_ordre=nume_ordre,
                 instant=instant,
+                med_field_name=med_field_name,
             )
 
     def add_field_on_nodes_from_aster_result_1_timestep(
-        self, aster_result, field_name: str, nodes: list[int], nume_ordre: int, instant: float
+        self,
+        aster_result,
+        field_name: str,
+        nodes: list[int],
+        nume_ordre: int,
+        instant: float,
+        med_field_name: Optional[str] = None,
     ):
+        if med_field_name is None:
+            med_field_name = field_name
         field = aster_result.getField(field_name, nume_ordre).toSimpleFieldOnNodes()
         # extract values for cut group only
         values = field.getValues()[0][nodes]
         components = field.getComponents()
         self.add_field_on_nodes(
-            field_name=field_name,
+            field_name=med_field_name,
             nodes=nodes,
             values=values,
             components=components,
