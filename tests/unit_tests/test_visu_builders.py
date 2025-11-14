@@ -181,10 +181,7 @@ def test_visu_builder_works_for_node_fields(tmp_path):
     assert actual_mesh.getGroupArr(0, "tata").getValues() == [2, 3]
 
     # Read med output (field 1 timesteps)
-    actual_field: mc.MEDFileField1TS = mc.ReadField(
-        str(temp_med_file),
-        "VISU_AFIELD",
-    )
+    actual_field: mc.MEDFileField1TS = mc.ReadField(str(temp_med_file), "VISU_AFIELD")
     actual_array = actual_field.getArray().toNumPyArray()
     np.testing.assert_equal(
         actual_array,
