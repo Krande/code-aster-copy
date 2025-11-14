@@ -52,5 +52,8 @@ Add a static macro element.
 
         .def( "getStaticMacroElements", &SuperMesh::getStaticMacroElements, R"(
 Return all static macro elements.
+        )" )
+        .def( "getNodeLabels", &SuperMesh::getNodeLabels, R"(
+Get node labels.
         )" );
 };

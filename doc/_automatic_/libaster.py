@@ -11760,6 +11760,9 @@ class SuperMesh(Mesh):
     def getDynamicMacroElements(self):
         """Return all dynamic macro elements."""
 
+    def getNodeLabels(self):
+        """Get node labels."""
+
     def getStaticMacroElements(self):
         """Return all static macro elements."""
 
