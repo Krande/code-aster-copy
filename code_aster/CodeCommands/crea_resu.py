@@ -102,6 +102,7 @@ class ResultCreator(ExecuteCommand):
         new_model = None
         new_mater = None
         new_elemcara = None
+        new_mesh = None
         for kw in (
             "AFFE",
             "ASSE",
@@ -117,6 +118,7 @@ class ResultCreator(ExecuteCommand):
 
         if "ASSE" in keywords:
             src = fkw[0]["RESULTAT"]
+            new_mesh = src.getMesh()
             new_model = src.getModel()
             new_mater = src.getMaterialField()
             new_elemcara = src.getElementaryCharacteristics()
@@ -148,6 +150,9 @@ class ResultCreator(ExecuteCommand):
         if not new_model and get_("KUCV"):
             new_model = keywords["KUCV"]["RESU_INIT"].getModel()
 
+        print("tat; ", new_model, new_mater, new_elemcara, flush=True)
+        if new_mesh:
+            result.setMesh(new_mesh)
         if new_model:
             result.setModel(new_model, exists_ok=True)
         elif "reuse" not in keywords:
