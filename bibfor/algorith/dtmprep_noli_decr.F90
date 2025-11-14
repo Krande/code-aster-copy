@@ -230,7 +230,6 @@ subroutine dtmprep_noli_decr(sd_dtm_, sd_nl_, icomp)
     nl_title = nltype(NL_DIS_ECRO_TRAC)//intk
     call nlsav(sd_nl, _NL_TITLE, 1, iocc=i, kscal=nl_title)
 
-!   --- Verifications on the function as done in "verif_loi_mater"
     call getvid(motfac, 'FX', iocc=icomp, scal=nomfx, nbret=nbfx)
     call getvid(motfac, 'FTAN', iocc=icomp, scal=nomfyz, nbret=nbfyz)
     iloi = 0
