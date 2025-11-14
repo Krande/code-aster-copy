@@ -77,7 +77,7 @@ subroutine appcpr(kptsc)
     character(len=24) :: precon, seuil_str
     character(len=19) :: nomat, nosolv, syme
     character(len=14) :: nonu, factor
-    character(len=8) :: nomail, nbp_str, typ, nbmode_str
+    character(len=8) :: nomail, nbp_str, typ, nbmode_str, typmat
     character(len=4) :: exilag
     character(len=3) :: matd
     character(len=800) :: myopt
@@ -572,6 +572,11 @@ subroutine appcpr(kptsc)
                 myopt = myopt//'-pc_hpddm_levels_1_eps_threshold_absolute '//trim(seuil_str)//' '
             end if
         else
+            if (factor == 'lu') then
+                typmat = 'baij'
+            else
+                typmat = 'sbaij'
+            end if
             myopt = '-prefix_push pc_hpddm_ '// &
                     '-prefix_push levels_1_ '// &
                     '-pc_type asm '// &
@@ -596,7 +601,7 @@ subroutine appcpr(kptsc)
                     '-mat_mumps_icntl_25 0 '// &
                     '-mat_mumps_cntl_3 1.e-50 '// &
                     '-mat_mumps_cntl_5 0. '// &
-                    '-mat_type baij '// &
+                    '-mat_type '//typmat//' '// &
                     '-p '//trim(nbp_str)//' '// &
                     '-prefix_pop '// &
                     '-define_subdomains '// &
