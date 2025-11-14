@@ -220,6 +220,7 @@ DICT_NOM_VARI = {
     "DISSGLIS": _("dissipation de glissement"),
     "DISSIP": _("dissipation plastique"),
     "DISSTHER": _("dissipation Thermodynamique"),
+    "DISSTANG": _("DIS_ECRO_TRAC : dissipation Thermodynamique dans la direction tangentielle"),
     "DISSTOTA": _(
         "JONC_ENDO_PLAS : dissipation liée à l'endommagement et à l'écrouissage cinématique, variable interne 6"
     ),
@@ -564,6 +565,7 @@ DICT_NOM_VARI = {
     "PCENERDI": _("pourcentage d'endommagement normal (dans la zone adoucissante)"),
     "PCR": _("pression critique"),
     "PCUM": _("DIS_ECRO_TRAC : Déplacement anélastique cumulé"),
+    "PCUMT": _("DIS_ECRO_TRAC : Déplacement anélastique cumulé dans la direction tangentielle"),
     "PDISSCUM": _("puissance dissipée cumulée à chaque pas pour CRIT_RUPT"),
     "PDISS": _("puissance dissipée pour CRIT_RUPT"),
     "PERLITE": _("phase métallurgique acier variable (perlite)"),

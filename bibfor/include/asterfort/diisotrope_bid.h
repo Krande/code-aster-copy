@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -15,11 +15,14 @@
 ! You should have received a copy of the GNU General Public License
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
-
-!
 !
 interface
-    subroutine verif_loi_mater(mater)
-        character(len=8) :: mater
-    end subroutine verif_loi_mater
+    subroutine diisotrope_bid(for_discret, iret, ipi, jmat, ivarim, icontm, klv, raide) 
+        use te0047_type
+        type(te0047_dscr), intent(in)    :: for_discret
+        integer(kind=8),   intent(inout) :: iret
+        integer(kind=8),   intent(in)    :: ipi, jmat, ivarim, icontm
+        real(kind=8),      intent(inout) :: klv(78), raide(6) 
+
+    end subroutine diisotrope_bid
 end interface
