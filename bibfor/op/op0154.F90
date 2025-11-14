@@ -20,7 +20,7 @@ subroutine op0154()
 !
     use mesh_module, only: checkInclude
     use mesh_modification_module, only: meshOperModiGetPara, meshOperModiDelPara, &
-                                        meshOrieShell
+                                        meshOrieShell, meshOrieHex
     use mesh_operators_type
 !
     implicit none
@@ -62,7 +62,7 @@ subroutine op0154()
 !
 ! --------------------------------------------------------------------------------------------------
 !
-    integer(kind=8) :: n1, n2, nbocc, iOcc, nbDime, ier, iOrieShell
+    integer(kind=8) :: n1, n2, nbocc, iOcc, nbDime, ier, iOrieShell, iOrieHex
     aster_logical :: bidim, lModiTopo
     character(len=8) :: mesh, meshReuse, dispMesh
     character(len=16) :: kbi1, kbi2, option
@@ -271,14 +271,22 @@ subroutine op0154()
         call echell(geomInit, ltchar)
     end if
 
-! - For "ORIE_PEAU" , "ORIE_LIGNE" and "ORIE_NORM_COQUE"
+! - For "ORIE_PEAU" , "ORIE_LIGNE", "ORIE_NORM_COQUE" and "ORIE_HEXA27"
     call meshOperModiGetPara(mesh, meshOperModiPara)
     if (meshOperModiPara%orieShell .gt. 0) then
         do iOrieShell = 1, meshOperModiPara%orieShell
+            ! "ORIE_NORM_COQUE"
             call meshOrieShell(mesh, meshOperModiPara%meshOperOrieShell(iOrieShell))
         end do
     else
+        ! "ORIE_LIGNE" and "ORIE_PEAU"
         call orilgm(mesh)
+    end if
+    if (meshOperModiPara%orieHex .gt. 0) then
+        do iOrieHex = 1, meshOperModiPara%OrieHex
+            ! "ORIE_HEXA27"
+            call meshOrieHex(mesh, meshOperModiPara%meshOperOrieHex(iOrieHex))
+        end do
     end if
     call meshOperModiDelPara(meshOperModiPara)
 !

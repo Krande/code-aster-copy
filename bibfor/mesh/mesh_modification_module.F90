@@ -25,6 +25,8 @@ module mesh_modification_module
     public  :: meshOperModiGetPara, meshOperModiDelPara
     public  :: meshOrieShell
     private :: meshOrieShellGetPara, meshOrieShellDelPara
+    public  :: meshOrieHex
+    private :: meshOrieHexGetPara, meshOrieHexDelPara
 ! ==================================================================================================
     private
 #include "asterf_types.h"
@@ -37,6 +39,7 @@ module mesh_modification_module
 #include "asterfort/jeveuo.h"
 #include "asterfort/jexnom.h"
 #include "asterfort/jexnum.h"
+#include "asterfort/orihex.h"
 #include "asterfort/ornorm.h"
 #include "asterfort/orvlma.h"
 #include "asterfort/utmess.h"
@@ -71,11 +74,16 @@ contains
         factorKeyword = "ORIE_NORM_COQUE"
         call getfac(factorKeyword, nbFactorKeyword)
         meshOperModiPara%orieShell = nbFactorKeyword
+        factorKeyword = "ORIE_HEXA27"
+        call getfac(factorKeyword, nbFactorKeyword)
+        meshOperModiPara%orieHex = nbFactorKeyword
         factorKeyword = "ORIE_LIGNE"
         call getfac(factorKeyword, nbFactorKeyword)
         meshOperModiPara%orieLine = nbFactorKeyword
         if (meshOperModiPara%orieShell .gt. 0) then
             call meshOrieShellGetPara(meshz, meshOperModiPara)
+        elseif (meshOperModiPara%orieHex .gt. 0) then
+            call meshOrieHexGetPara(meshz, meshOperModiPara)
         end if
 !
 !   ------------------------------------------------------------------------------------------------
@@ -159,6 +167,51 @@ contains
     end subroutine
 ! --------------------------------------------------------------------------------------------------
 !
+! meshOrieHexGetPara
+!
+! Get parameters from MODI_MAILLAGE command
+!
+! In  mesh             : name of mesh
+! Out meshOperModiPara : parameters from MODI_MAILLAGE command
+!
+! --------------------------------------------------------------------------------------------------
+    subroutine meshOrieHexGetPara(meshz, meshOperModiPara)
+!   ------------------------------------------------------------------------------------------------
+! ----- Parameters
+        character(len=*), intent(in) :: meshz
+        type(MESH_OPER_MODI_PARA), intent(inout) :: meshOperModiPara
+! ----- Local
+        character(len=8) :: mesh
+        integer(kind=8) :: iFactorKeyword, nbret, nbGroupCell
+        character(len=16), parameter :: factorKeyword = "ORIE_HEXA27"
+        real(kind=8) :: orieVect(3)
+!   ------------------------------------------------------------------------------------------------
+!
+        mesh = meshZ
+
+! ----- Allocate
+        allocate (meshOperModiPara%meshOperOrieHex(meshOperModiPara%orieHex))
+
+        do iFactorKeyword = 1, meshOperModiPara%orieHex
+! --------- Get VECT_ORIE
+            call getvr8(factorKeyword, 'VECT_ORIE', iocc=iFactorKeyword, nbval=3, &
+                        vect=orieVect, nbret=nbRet)
+
+! --------- Get GROUP_MA
+            call getListOfCellGroup( &
+                mesh, factorKeyword, iFactorKeyword, &
+                nbGroupCell, &
+                meshOperModiPara%meshOperOrieHex(iFactorKeyword)%listOfGroupOfCell)
+
+! --------- Save parameters
+            meshOperModiPara%meshOperOrieHex(iFactorKeyword)%orieVect = orieVect
+            meshOperModiPara%meshOperOrieHex(iFactorKeyword)%nbGroupCell = nbGroupCell
+        end do
+!
+!   ------------------------------------------------------------------------------------------------
+    end subroutine
+! --------------------------------------------------------------------------------------------------
+!
 ! meshOperModiDelPara
 !
 ! Delete datastructure for parameters from MODI_MAILLAGE command
@@ -172,10 +225,14 @@ contains
         type(MESH_OPER_MODI_PARA), intent(inout) :: meshOperModiPara
 ! ----- Local
         integer(kind=8) :: iOrieShell
+        integer(kind=8) :: iOrieHex
 !   ------------------------------------------------------------------------------------------------
 !
         do iOrieShell = 1, meshOperModiPara%orieShell
             call meshOrieShellDelPara(meshOperModiPara%meshOperOrieShell(iOrieShell))
+        end do
+        do iOrieHex = 1, meshOperModiPara%orieHex
+            call meshOrieHexDelPara(meshOperModiPara%meshOperOrieHex(iOrieHex))
         end do
 !
 !   ------------------------------------------------------------------------------------------------
@@ -198,6 +255,26 @@ contains
 !   ------------------------------------------------------------------------------------------------
 !
         deallocate (meshOperOrieShell%listOfGroupOfCell)
+!
+!   ------------------------------------------------------------------------------------------------
+    end subroutine
+! --------------------------------------------------------------------------------------------------
+!
+! meshOrieHexDelPara
+!
+! Delete datastructure for parameters from ORIE_HEXA27
+!
+! IO  meshOperOrieHex: parameters from ORIE_HEXA27
+!
+! --------------------------------------------------------------------------------------------------
+    subroutine meshOrieHexDelPara(meshOperOrieHex)
+!   ------------------------------------------------------------------------------------------------
+! ----- Parameters
+        type(MESH_OPER_ORIE_HEXA27), intent(inout) :: meshOperOrieHex
+! ----- Local
+!   ------------------------------------------------------------------------------------------------
+!
+        deallocate (meshOperOrieHex%listOfGroupOfCell)
 !
 !   ------------------------------------------------------------------------------------------------
     end subroutine
@@ -256,6 +333,50 @@ contains
                 call utmess('I', "MESH3_4", si=nbOrie)
             end do
         end if
+
+        if (nbOrieTotal .ne. 0) then
+            call utmess('I', "MESH3_5", si=nbOrieTotal)
+        end if
+!
+!   ------------------------------------------------------------------------------------------------
+    end subroutine
+! --------------------------------------------------------------------------------------------------
+!
+! meshOrieHex
+!
+! Apply ORIE_HEXA27
+!
+! In  mesh             : name of mesh
+! IO  meshOperOrieHex: parameters from ORIE_HEXA27
+!
+! --------------------------------------------------------------------------------------------------
+    subroutine meshOrieHex(meshz, meshOperOrieHex)
+!   ------------------------------------------------------------------------------------------------
+! ----- Parameters
+        character(len=*), intent(in) :: meshz
+        type(MESH_OPER_ORIE_HEXA27), intent(in) :: meshOperOrieHex
+! ----- Local
+        character(len=8) :: mesh
+        integer(kind=8) :: iGroupCell, nbCell, nbOrie, nbOrieTotal
+        character(len=24) :: groupCellName
+        integer(kind=8), pointer :: listCellNume(:) => null()
+        real(kind=8) :: orieVect(3)
+!   ------------------------------------------------------------------------------------------------
+!
+        mesh = meshZ
+        nbOrieTotal = 0
+
+        do iGroupCell = 1, meshOperOrieHex%nbGroupCell
+            groupCellName = meshOperOrieHex%listOfGroupOfCell(iGroupCell)
+            call jelira(jexnom(mesh//'.GROUPEMA', groupCellName), 'LONUTI', nbCell)
+            call jeveuo(jexnom(mesh//'.GROUPEMA', groupCellName), 'L', vi=listCellNume)
+            call utmess('I', "MESH3_3", sk=groupCellName, si=nbCell)
+            orieVect = meshOperOrieHex%orieVect
+            nbOrie = 0
+            call orihex(mesh, listCellNume, nbCell, nbOrie, orieVect)
+            nbOrieTotal = nbOrieTotal+nbOrie
+            call utmess('I', "MESH3_4", si=nbOrie)
+        end do
 
         if (nbOrieTotal .ne. 0) then
             call utmess('I', "MESH3_5", si=nbOrieTotal)
