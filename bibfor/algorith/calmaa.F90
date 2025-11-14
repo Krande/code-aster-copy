@@ -40,7 +40,7 @@ subroutine calmaa(modelInterfaceZ, dir, &
     character(len=24), intent(in) :: lchin(1)
     character(len=8), intent(in) :: lpain(1)
     character(len=14), intent(out) :: numeDof
-    character(len=24), intent(out) :: matrAsse
+    character(len=19), intent(out) :: matrAsse
 !
 ! --------------------------------------------------------------------------------------------------
 !

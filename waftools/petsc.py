@@ -184,11 +184,9 @@ int main(void){
         vers = mat and mat.group("vers")
         major, minor, sub, patch = [int(i) for i in vers.split(".")]
         vers = f"{major}.{minor}.{sub}p{patch}"
-        ok = major == 3 and (17 <= minor < 22)
+        ok = major == 3 and minor >= 24
         if not ok:
-            self.end_msg(
-                "unsupported petsc version: {0} (expected >=3.17,<=3.21)".format(vers), "RED"
-            )
+            self.end_msg("unsupported petsc version: {0} (expected >=3.24)".format(vers), "RED")
             raise Errors.ConfigurationError
         self.define("ASTER_PETSC_VERSION", vers)
     except:
@@ -280,9 +278,7 @@ int main(void) {{
     return 1;
 #endif
     return 0;
-}}""".format(
-        name=petsc_var
-    )
+}}""".format(name=petsc_var)
     self.code_checker(
         aster_var,
         self.check_cc,

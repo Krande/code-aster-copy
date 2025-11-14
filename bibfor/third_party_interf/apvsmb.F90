@@ -21,8 +21,6 @@ subroutine apvsmb(kptsc, lmd, rsolu)
 #include "asterf_types.h"
 #include "asterf_petsc.h"
 !
-! person_in_charge: natacha.bereux at edf.fr
-! aslint:disable=
     use aster_petsc_module
     use petsc_data_module
     use saddle_point_module, only: convert_rhs_to_saddle_point
@@ -70,8 +68,7 @@ subroutine apvsmb(kptsc, lmd, rsolu)
 !     Variables PETSc
     PetscInt :: low2, high2
     PetscErrorCode ::  ierr
-    PetscScalar :: xx(1)
-    PetscOffset :: xidx
+    PetscScalar, pointer :: xx(:) => null()
     mpi_int :: mrank, msize
 !----------------------------------------------------------------
     call jemarq()
@@ -161,14 +158,14 @@ subroutine apvsmb(kptsc, lmd, rsolu)
 !       -- calcul de b=RSOLU :
 !       ------------------------------------------------
         call VecGetOwnershipRange(b, low2, high2, ierr)
-        call VecGetArray(b, xx, xidx, ierr)
+        call VecGetArray(b, xx, ierr)
         ASSERT(ierr .eq. 0)
 !
         do i = 1, high2-low2
             ieq = low2+i
-            if (ieq .gt. 0) xx(xidx+i) = rsolu(ieq)
+            if (ieq .gt. 0) xx(i) = rsolu(ieq)
         end do
-        call VecRestoreArray(b, xx, xidx, ierr)
+        call VecRestoreArray(b, xx, ierr)
         ASSERT(ierr .eq. 0)
     end if
 

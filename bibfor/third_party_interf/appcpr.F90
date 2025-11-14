@@ -20,7 +20,6 @@ subroutine appcpr(kptsc)
 !
 #include "asterf_types.h"
 #include "asterf_petsc.h"
-! person_in_charge: natacha.bereux at edf.fr
     use aster_petsc_module
     use petsc_data_module
     use augmented_lagrangian_module, only: augmented_lagrangian_apply, &
@@ -78,7 +77,7 @@ subroutine appcpr(kptsc)
     character(len=24) :: precon, seuil_str
     character(len=19) :: nomat, nosolv, syme
     character(len=14) :: nonu, factor
-    character(len=8) :: nomail, nbp_str, typ, nbmode_str
+    character(len=8) :: nomail, nbp_str, typ, nbmode_str, typmat
     character(len=4) :: exilag
     character(len=3) :: matd
     character(len=800) :: myopt
@@ -95,13 +94,12 @@ subroutine appcpr(kptsc)
     PetscInt :: low, high, bs, nterm, nsmooth
     PetscErrorCode :: ierr
     PetscReal :: fillp
-    PetscScalar :: xx_v(1)
-    PetscOffset :: xx_i
+    PetscScalar, pointer :: xx_v(:) => null()
     PetscInt, pointer :: nulg_ip(:) => null()
 
     Mat :: a, auxMat
     Vec :: coords
-    KSP :: ksp
+    KSP, pointer :: ksp => null()
     IS  :: auxIS
     PC  :: pc
     mpi_int :: mrank, msize
@@ -117,7 +115,7 @@ subroutine appcpr(kptsc)
     nonu = nonu_courant
     nosolv = nosols(kptsc)
     a = ap(kptsc)
-    ksp = kp(kptsc)
+    ksp => kp(kptsc)
 !
     call jeveuo(nosolv//'.SLVK', 'L', vk24=slvk)
     call jeveuo(nosolv//'.SLVR', 'L', vr=slvr)
@@ -288,7 +286,7 @@ subroutine appcpr(kptsc)
                 ! la matrice est centralisée
             else
                 call VecGetOwnershipRange(coords, low, high, ierr)
-                call VecGetArray(coords, xx_v, xx_i, ierr)
+                call VecGetArray(coords, xx_v, ierr)
                 ix = 0
                 do ieq = low+1, high
                     ! Noeud auquel est associé le ddl Aster ieq
@@ -298,10 +296,10 @@ subroutine appcpr(kptsc)
                     icmp = deeq((ieq-1)*2+2)
                     ASSERT((numno .gt. 0) .and. (icmp .gt. 0))
                     ix = ix+1
-                    xx_v(xx_i+ix) = coordo(dimgeo*(numno-1)+icmp)
+                    xx_v(ix) = coordo(dimgeo*(numno-1)+icmp)
                 end do
                 !
-                call VecRestoreArray(coords, xx_v, xx_i, ierr)
+                call VecRestoreArray(coords, xx_v, ierr)
                 ASSERT(ierr == 0)
             end if
             !
@@ -524,8 +522,7 @@ subroutine appcpr(kptsc)
                                  PETSC_COPY_VALUES, auxIS, ierr)
             ASSERT(ierr == 0)
 
-            ! call PCHPDDMDumpAuxiliaryMat(pc, auxIS, auxMat)
-!       Set the Neumann matrix
+!     Set the Neumann matrix
             call PCHPDDMSetAuxiliaryMat(pc, auxIS, auxMat, PETSC_NULL_FUNCTION, &
                                         PETSC_NULL_INTEGER, ierr)
             ASSERT(ierr == 0)
@@ -555,7 +552,6 @@ subroutine appcpr(kptsc)
                     '-sub_mat_mumps_cntl_3 1.e-50 '// &
                     '-sub_mat_mumps_cntl_5 0. '// &
                     '-eps_nev '//trim(nbmode_str)//' '// &
-                    '-eps_threshold '//trim(seuil_str)//' '// &
                     '-st_pc_factor_mat_solver_type mumps '// &
                     '-st_share_sub_ksp '// &
                     '-prefix_pop '// &
@@ -572,7 +568,15 @@ subroutine appcpr(kptsc)
                     '-define_subdomains '// &
                     '-has_neumann '// &
                     '-prefix_pop '
+            if (slvr(6) > 0) then
+                myopt = myopt//'-pc_hpddm_levels_1_eps_threshold_absolute '//trim(seuil_str)//' '
+            end if
         else
+            if (factor == 'lu') then
+                typmat = 'baij'
+            else
+                typmat = 'sbaij'
+            end if
             myopt = '-prefix_push pc_hpddm_ '// &
                     '-prefix_push levels_1_ '// &
                     '-pc_type asm '// &
@@ -585,7 +589,6 @@ subroutine appcpr(kptsc)
                     '-sub_mat_mumps_cntl_5 0. '// &
                     '-svd_type lanczos '// &
                     '-svd_nsv '//trim(nbmode_str)//' '// &
-                    '-svd_relative_threshold '//trim(seuil_str)//' '// &
                     '-st_pc_factor_mat_solver_type mumps '// &
                     '-st_share_sub_ksp '// &
                     '-prefix_pop '// &
@@ -598,12 +601,15 @@ subroutine appcpr(kptsc)
                     '-mat_mumps_icntl_25 0 '// &
                     '-mat_mumps_cntl_3 1.e-50 '// &
                     '-mat_mumps_cntl_5 0. '// &
-                    '-mat_type baij '// &
+                    '-mat_type '//typmat//' '// &
                     '-p '//trim(nbp_str)//' '// &
                     '-prefix_pop '// &
                     '-define_subdomains '// &
                     '-harmonic_overlap 2 '// &
                     '-prefix_pop '
+            if (slvr(6) > 0) then
+                myopt = myopt//'-pc_hpddm_levels_1_svd_relative_threshold '//trim(seuil_str)//' '
+            end if
         end if
         call PetscOptionsInsertString(PETSC_NULL_OPTIONS, myopt, ierr)
         ASSERT(ierr == 0)

@@ -20,6 +20,7 @@ module csc_matrix_type
 !
     use csc_store_type
     use sort_module, only: qsort
+    use, intrinsic :: iso_c_binding
 !
     implicit none
 !
@@ -170,6 +171,8 @@ contains
 ! Local variables
         integer(kind=8) ::  nnz, nn
 !
+        write (6, *) 'size(values) =', size(values)
+        write (6, *) 'size(rowind) =', size(rowind)
         ASSERT(size(values) == size(rowind))
         ASSERT(size(colptr) > 1)
 !

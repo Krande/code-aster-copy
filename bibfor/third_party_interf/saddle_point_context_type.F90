@@ -228,7 +228,7 @@ contains
         !
         ! Local variables
         !
-        Mat, dimension(3) :: submat
+        Mat, pointer :: submat(:) => null()
         PetscInt :: nsub
         !
         ASSERT((ctxt%data_model == distributed_data) .or. (ctxt%data_model == replicated_data))
@@ -242,9 +242,8 @@ contains
             ASSERT(ierr == 0)
         else if (ctxt%data_model == replicated_data) then
             nsub = to_petsc_int(1)
-            call MatCreateSubMatrices(a_mat, nsub, &
-                                      ctxt%is_phys, ctxt%is_phys, MAT_INITIAL_MATRIX, &
-                                      submat(1), ierr)
+            call MatCreateSubMatrices(a_mat, nsub, [ctxt%is_phys], &
+                                      [ctxt%is_phys], MAT_INITIAL_MATRIX, submat, ierr)
             ASSERT(ierr == 0)
             call MatConvert(submat(1), MATSAME, MAT_INITIAL_MATRIX, &
                             ctxt%k_mat, ierr)
@@ -262,11 +261,10 @@ contains
             ASSERT(ierr == 0)
         else if (ctxt%data_model == replicated_data) then
             nsub = to_petsc_int(1)
-            call MatCreateSubMatrices(ak_mat, nsub, &
-                                      ctxt%is_lag1, ctxt%is_phys, MAT_INITIAL_MATRIX, &
-                                      submat(2), ierr)
+            call MatCreateSubMatrices(ak_mat, nsub, [ctxt%is_lag1], &
+                                      [ctxt%is_phys], MAT_INITIAL_MATRIX, submat, ierr)
             ASSERT(ierr == 0)
-            call MatConvert(submat(2), MATSAME, MAT_INITIAL_MATRIX, &
+            call MatConvert(submat(1), MATSAME, MAT_INITIAL_MATRIX, &
                             ctxt%c_mat, ierr)
             ASSERT(ierr == 0)
         end if
@@ -277,21 +275,16 @@ contains
             ASSERT(ierr == 0)
         else if (ctxt%data_model == replicated_data) then
             nsub = to_petsc_int(1)
-            call MatCreateSubMatrices(ak_mat, nsub, &
-                                      ctxt%is_lag2, ctxt%is_phys, MAT_INITIAL_MATRIX, &
-                                      submat(3), ierr)
+            call MatCreateSubMatrices(ak_mat, nsub, [ctxt%is_lag2], &
+                                      [ctxt%is_phys], MAT_INITIAL_MATRIX, submat, ierr)
             ASSERT(ierr == 0)
-            call MatConvert(submat(3), MATSAME, MAT_INITIAL_MATRIX, &
+            call MatConvert(submat(1), MATSAME, MAT_INITIAL_MATRIX, &
                             ctxt%d_mat, ierr)
             ASSERT(ierr == 0)
         end if
         !
         if (ctxt%data_model == replicated_data) then
-            call MatDestroy(submat(1), ierr)
-            ASSERT(ierr == 0)
-            call MatDestroy(submat(2), ierr)
-            ASSERT(ierr == 0)
-            call MatDestroy(submat(3), ierr)
+            call MatDestroySubMatrices(nsub, submat, ierr)
             ASSERT(ierr == 0)
         end if
         ctxt%data_setup = .true.

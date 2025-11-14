@@ -2045,6 +2045,7 @@ class GalerkinCoarseGridCorrection:
 
         # -------- Snes Setup ----------
         Snes = PETSc.SNES().create(comm=self.comm)
+        Snes.prefix = "csnes_"
         Snes.setFunction(self.GalerkinCoarseFunction, self.Fc)
         Snes.setJacobian(self.GalerkinCoarseJacobian, self.Jc)
         # Snes.setUseMF(True)

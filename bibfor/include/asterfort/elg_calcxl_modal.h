@@ -20,7 +20,7 @@
 interface
     subroutine elg_calcxl_modal(x1, omega2, ke_mass, vlag)
 #ifdef ASTER_HAVE_PETSC
-        use aster_petsc_module
+        use petsc
         Vec :: x1, vlag
         PetscInt :: ke_mass
         real(kind=8) :: omega2

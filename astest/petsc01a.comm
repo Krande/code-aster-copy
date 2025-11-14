@@ -16,12 +16,13 @@
 # You should have received a copy of the GNU General Public License
 # along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 # --------------------------------------------------------------------
+from code_aster.CodeCommands.defi_list_reel import DEFI_LIST_REEL
 from code_aster.Utilities import petscInitialize, petscFinalize
 
 DEBUT(CODE="OUI", ERREUR=_F(ALARME="EXCEPTION"))
 
 # force PETSc to start before solves for testing purpose only - no need in regular study
-petscInitialize()
+petscInitialize("-ksp_monitor -log_view")
 
 MA = LIRE_MAILLAGE(FORMAT="MED")
 
@@ -80,6 +81,23 @@ VECAS2 = MECA_STATIQUE(
         ALGORITHME="CG",
         RESI_RELA=1.0e-08,
         OPTION_PETSC="-info -ksp_monitor_singular_value",
+    ),
+)
+
+petscFinalize()
+
+VECAS3 = STAT_NON_LINE(
+    CHAM_MATER=CHMAT,
+    EXCIT=(_F(CHARGE=CHA1), _F(CHARGE=CHA2)),
+    INCREMENT=_F(LIST_INST=DEFI_LIST_REEL(VALE=(0, 1))),
+    MODELE=MO,
+    NEWTON=_F(MATRICE="TANGENTE", PREDICTION="ELASTIQUE", REAC_INCR=1, REAC_ITER=1),
+    SOLVEUR=_F(
+        METHODE="PETSC",
+        PRE_COND="LDLT_INC",
+        ALGORITHME="CR",
+        RESI_RELA=1.0e-08,
+        OPTION_PETSC="-ksp_monitor_true_residual -log_view",
     ),
 )
 
@@ -191,6 +209,66 @@ TEST_RESU(
         ),
         _F(
             RESULTAT=VECAS2,
+            NUME_ORDRE=1,
+            NOM_CHAM="DEPL",
+            NOM_CMP="DZ",
+            GROUP_NO="NO2974",
+            VALE_CALC=-2.91729484857e-05,
+            VALE_REFE=TREF["DZ", 2],
+            PRECISION=1.0e-06,
+            REFERENCE="AUTRE_ASTER",
+        ),
+    )
+)
+
+TEST_RESU(
+    RESU=(
+        _F(
+            RESULTAT=VECAS3,
+            NUME_ORDRE=1,
+            NOM_CHAM="DEPL",
+            NOM_CMP="DY",
+            GROUP_NO="NO2958",
+            VALE_CALC=0.0100000000053,
+            VALE_REFE=0.01,
+            PRECISION=1.0e-06,
+            REFERENCE="AUTRE_ASTER",
+        ),
+        _F(
+            RESULTAT=VECAS3,
+            NUME_ORDRE=1,
+            NOM_CHAM="DEPL",
+            NOM_CMP="DZ",
+            GROUP_NO="NO2958",
+            VALE_CALC=0.000102958225651,
+            VALE_REFE=TREF["DZ", 1],
+            PRECISION=1.0e-06,
+            REFERENCE="AUTRE_ASTER",
+        ),
+        _F(
+            RESULTAT=VECAS3,
+            NUME_ORDRE=1,
+            NOM_CHAM="DEPL",
+            NOM_CMP="DX",
+            GROUP_NO="NO2974",
+            VALE_CALC=0.00430057955721,
+            VALE_REFE=TREF["DX", 2],
+            PRECISION=1.0e-06,
+            REFERENCE="AUTRE_ASTER",
+        ),
+        _F(
+            RESULTAT=VECAS3,
+            NUME_ORDRE=1,
+            NOM_CHAM="DEPL",
+            NOM_CMP="DY",
+            GROUP_NO="NO2974",
+            VALE_CALC=0.00928897505136,
+            VALE_REFE=TREF["DY", 2],
+            PRECISION=1.0e-06,
+            REFERENCE="AUTRE_ASTER",
+        ),
+        _F(
+            RESULTAT=VECAS3,
             NUME_ORDRE=1,
             NOM_CHAM="DEPL",
             NOM_CMP="DZ",

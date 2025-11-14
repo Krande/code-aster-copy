@@ -18,19 +18,22 @@
 
 !
 !
-          interface
-            subroutine ap2foi(kptsc,mpicou,nosolv,lmd,indic,its)
-                integer(kind=8) :: kptsc
-                mpi_int :: mpicou
-                character(len=19) :: nosolv
-                aster_logical :: lmd
+interface
+    subroutine ap2foi(kptsc, mpicou, nosolv, lmd, indic, its)
+#ifdef ASTER_HAVE_PETSC
+        use petscksp
+# endif
+        integer(kind=8) :: kptsc
+        mpi_int :: mpicou
+        character(len=19) :: nosolv
+        aster_logical :: lmd
 
 #ifdef ASTER_HAVE_PETSC
-                KSPConvergedReason :: indic
-                PetscInt :: its
+        KSPConvergedReason :: indic
+        PetscInt :: its
 # else
-                integer(kind=8) :: indic
-                integer(kind=8) :: its
+        integer(kind=8) :: indic
+        integer(kind=8) :: its
 # endif
-            end subroutine ap2foi
-          end interface
+    end subroutine ap2foi
+end interface

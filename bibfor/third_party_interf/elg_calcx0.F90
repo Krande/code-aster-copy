@@ -23,7 +23,6 @@ subroutine elg_calcx0()
     use aster_petsc_module
     use elg_data_module
     implicit none
-! person_in_charge: natacha.bereux at edf.fr
 #include "jeveux.h"
 #include "asterc/asmpi_comm.h"
 #include "asterfort/asmpi_info.h"
@@ -91,7 +90,7 @@ subroutine elg_calcx0()
     call KSPGetConvergedReason(elg_context(ke)%ksp, reason, ierr)
     ASSERT(ierr == 0)
 !  Reason < 0 indicates a problem during the resolution
-    if (reason < 0) then
+    if (reason%v < 0) then
         call utmess('F', 'ELIMLAGR_8')
     end if
 !

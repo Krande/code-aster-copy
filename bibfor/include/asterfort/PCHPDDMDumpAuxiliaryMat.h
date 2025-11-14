@@ -21,7 +21,7 @@
 interface
     subroutine PCHPDDMDumpAuxiliaryMat(pc, is, aux)
 #ifdef ASTER_HAVE_PETSC
-        use aster_petsc_module
+        use petsc
         PC :: pc
         IS :: is
         Mat :: aux

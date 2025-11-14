@@ -82,7 +82,7 @@ subroutine apetsc(action, solvez, matasz, rsolu, vcinez, &
 #ifdef ASTER_HAVE_PETSC
 !
 !     VARIABLES LOCALES
-    integer(kind=8) :: iprem, k, nglo, kdeb, jnequ, ier2
+    integer(kind=8) :: iprem, k, nloc, kdeb, jnequ, ier2
     integer(kind=8) :: kptsc, lslvo
     integer(kind=8) :: np, i
     real(kind=8) :: r8
@@ -164,8 +164,8 @@ subroutine apetsc(action, solvez, matasz, rsolu, vcinez, &
         ierr = to_petsc_int(ier2)
         if (ierr .ne. 0) call utmess('F', 'PETSC_1')
         do k = 1, nmxins
-            ap(k) = PETSC_NULL_MAT
-            kp(k) = PETSC_NULL_KSP
+            PetscObjectNullify(ap(k))
+            PetscObjectNullify(kp(k))
             user_ksp(k) = ASTER_FALSE
             nomats(k) = ' '
             nosols(k) = ' '
@@ -173,9 +173,9 @@ subroutine apetsc(action, solvez, matasz, rsolu, vcinez, &
             tblocs(k) = -1
             options(k) = ' '
         end do
-        xlocal = PETSC_NULL_VEC
-        xglobal = PETSC_NULL_VEC
-        xscatt = PETSC_NULL_VECSCATTER
+        PetscObjectNullify(xlocal)
+        PetscObjectNullify(xglobal)
+        PetscObjectNullify(xscatt)
         spsomu = ' '
         spmat = ' '
         spsolv = ' '
@@ -186,10 +186,10 @@ subroutine apetsc(action, solvez, matasz, rsolu, vcinez, &
 !   ----------------------------------------
     call jelira(matas//'.VALM', 'TYPE', cval=rouc)
     if (rouc .ne. 'R') call utmess('F', 'PETSC_2')
-!   nglo est le nombre total de degrés de liberté
+!   nloc est le nombre total de degrés de liberté en parallélisme classique et local en hpc
     call dismoi('NOM_NUME_DDL', matas, 'MATR_ASSE', repk=nu)
     call jeveuo(nu//'.NUME.NEQU', 'L', jnequ)
-    nglo = zi(jnequ)
+    nloc = zi(jnequ)
 !
 !  2. On recherche l'identifiant de l'image PETSc
 !  de la matrice matas
@@ -259,16 +259,16 @@ subroutine apetsc(action, solvez, matasz, rsolu, vcinez, &
 !   5. APPEL DE PETSC :
 !   -------------------
     if (action .eq. 'RESOUD') then
-        AS_ALLOCATE(vr=travail, size=nglo)
+        AS_ALLOCATE(vr=travail, size=nloc)
         do k = 1, nbsol
-            kdeb = (k-1)*nglo+1
-            b_n = to_blas_int(nglo)
+            kdeb = (k-1)*nloc+1
+            b_n = to_blas_int(nloc)
             b_incx = to_blas_int(1)
             b_incy = to_blas_int(1)
             call dcopy(b_n, rsolu(kdeb), b_incx, travail, b_incy)
             call apmain(action, kptsc, travail, vcine, istop, &
                         iret)
-            b_n = to_blas_int(nglo)
+            b_n = to_blas_int(nloc)
             b_incx = to_blas_int(1)
             b_incy = to_blas_int(1)
             call dcopy(b_n, travail, b_incx, rsolu(kdeb), b_incy)

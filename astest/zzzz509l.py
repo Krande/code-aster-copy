@@ -88,7 +88,6 @@ SOLU2 = MECA_NON_LINE(
     COMPORTEMENT=_F(RELATION="ELAS", DEFORMATION="GDEF_LOG"),
     NEWTON=_F(REAC_INCR=1, PREDICTION="ELASTIQUE", MATRICE="TANGENTE", REAC_ITER=1),
     METHODE="RASPEN",
-    CONVERGENCE=_F(RESI_GLOB_RELA=1e-12, RESI_GLOB_MAXI=1e-15, ITER_GLOB_MAXI=10),
     INCREMENT=_F(LIST_INST=DEFLIST),
     SOLVEUR=_F(METHODE="PETSC", OPTION_PETSC=myOptions),
     INFO=1,
@@ -124,7 +123,6 @@ SOLU3 = MECA_NON_LINE(
     COMPORTEMENT=_F(RELATION="ELAS", DEFORMATION="GDEF_LOG"),
     NEWTON=_F(REAC_INCR=1, PREDICTION="ELASTIQUE", MATRICE="TANGENTE", REAC_ITER=1),
     METHODE="RASPEN",
-    CONVERGENCE=_F(RESI_GLOB_RELA=1e-12, RESI_GLOB_MAXI=1e-15, ITER_GLOB_MAXI=10),
     INCREMENT=_F(LIST_INST=DEFLIST),
     SOLVEUR=_F(METHODE="PETSC", OPTION_PETSC=myOptions),
     INFO=1,
@@ -142,7 +140,7 @@ myOptions = (
     + "-ksp_type preonly -pc_type lu  -pc_factor_mat_solver_type mumps -snes_linesearch_type basic "
     # local snes
     + "-prefix_push lsnes_ "
-    + "-snes_linesearch_type basic -snes_rtol 1.e-7 -snes_atol 1.e-50 -snes_stol 1.e-50 -snes_monitor -snes_max_it 10 -snes_divergence_tolerance -1 "
+    + "-snes_linesearch_type basic -snes_rtol 1.e-7 -snes_atol 1.e-14 -snes_stol 1.e-50 -snes_monitor -snes_max_it 10 -snes_divergence_tolerance -1 "
     + "-ksp_type preonly  -pc_type lu -pc_factor_mat_solver_type mumps "
     + "-prefix_pop "
     # global snes
@@ -158,7 +156,6 @@ SOLU4 = MECA_NON_LINE(
     COMPORTEMENT=_F(RELATION="ELAS", DEFORMATION="GDEF_LOG"),
     NEWTON=_F(REAC_INCR=1, PREDICTION="ELASTIQUE", MATRICE="TANGENTE", REAC_ITER=1),
     METHODE="RASPEN",
-    # CONVERGENCE=_F(RESI_GLOB_RELA=1e-10, RESI_GLOB_MAXI=1e-15, ITER_GLOB_MAXI=10),
     INCREMENT=_F(LIST_INST=DEFLIST),
     SOLVEUR=_F(METHODE="PETSC", OPTION_PETSC=myOptions),
     INFO=1,

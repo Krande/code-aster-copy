@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -21,6 +21,7 @@
 !
 interface
     subroutine cpysol(nomat, numddl, rsolu, debglo, vecpet)
+        use, intrinsic :: iso_c_binding
 #ifdef ASTER_HAVE_PETSC
         PetscInt :: debglo
 #else

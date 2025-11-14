@@ -23,10 +23,11 @@
 # On compare les resultats obtenus avec CALC_MODES
 # selon que l'on utilise (ou non) la commande ELIM_LAGR.
 # ======================================================================
+from code_aster.Utilities import petscInitialize
 
 DEBUT(CODE="OUI", DEBUG=_F(SDVERI="OUI"))
 
-
+# petscInitialize("-start_in_debugger")
 MAIL = LIRE_MAILLAGE(UNITE=20, FORMAT="MED")
 
 MODELE = AFFE_MODELE(MAILLAGE=MAIL, AFFE=_F(TOUT="OUI", PHENOMENE="MECANIQUE", MODELISATION="3D"))

@@ -21,7 +21,7 @@ import os
 from pathlib import PureWindowsPath
 from subprocess import PIPE, Popen
 
-from waflib import Configure, Errors
+from waflib import Configure, Errors, Logs, Utils
 
 
 def options(self):
@@ -41,7 +41,7 @@ def check_python(self):
     self.load("python")
     self.check_python_version((3, 5, 0))
     self.check_python_headers()
-    if "icc" in self.env.CC_NAME.lower():
+    if self.env.CC_IS_INTEL:
         self.env["LIB_PYEXT"] = list(set(self.env["LIB_PYEXT"]))
         # Best is to clear PYEMBED and PYEXT {c/cxx}flags
         for lang in ("CFLAGS", "CXXFLAGS"):
@@ -135,3 +135,27 @@ def _get_default_pythonpath(python):
     proc = Popen([python, "-c", "import sys; print(sys.path)"], stdout=PIPE, env=env)
     system_path = eval(proc.communicate()[0])
     return system_path
+
+
+check_cfg_old = getattr(Configure.ConfigurationContext, "check_cfg")
+
+
+@Configure.conf
+def check_cfg(self, *k, **kw):
+    ret = check_cfg_old(self, *k, **kw)
+    if not self.env.CC_IS_INTEL and "clang" not in self.env.CC_NAME.lower():
+        return ret
+
+    to_be_removed = ["-ffat-lto-objects", "-flto", "-flto-partition=none", "-fuse-linker-plugin"]
+    if kw["uselib_store"] in ("PYEMBED", "PYEXT"):
+        use = kw["uselib_store"]
+        keys = [i for i in self.env.keys() if use in i]
+        for key in keys:
+            inval = Utils.to_list(self.env[key])
+            Logs.debug(f"{key}: {inval}")
+            if type(inval) in (int, str):
+                continue
+            self.env[key] = [arg for arg in inval if arg not in to_be_removed]
+            if self.env[key] != inval:
+                Logs.debug("CHANGED: %s : %s", key, self.env[key])
+    return ret

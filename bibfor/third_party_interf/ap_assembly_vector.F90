@@ -74,8 +74,7 @@ subroutine ap_assembly_vector(chno)
     mpi_int :: mrank, msize
     Vec :: assembly
     PetscInt :: low, high
-    PetscScalar :: xx(1)
-    PetscOffset :: xidx
+    PetscScalar, pointer :: xx(:) => null()
     PetscBool :: done
     PetscInt, dimension(:), pointer :: ig_petsc_c => null()
 
@@ -165,12 +164,12 @@ subroutine ap_assembly_vector(chno)
     call VecGetOwnershipRange(assembly, low, high, ierr)
     ASSERT(ierr .eq. 0)
 !
-    call VecGetArray(assembly, xx, xidx, ierr)
+    call VecGetArray(assembly, xx, ierr)
     ASSERT(ierr .eq. 0)
     do iloc = 1, nloc
         if (pddl(iloc) .eq. rang) then
             numglo = zi(jnulg-1+iloc)
-            zr(jvale-1+iloc) = xx(xidx+numglo-low+1)
+            zr(jvale-1+iloc) = xx(numglo-low+1)
         end if
         if (dbg) then
             nuno = v_deeg(2*(iloc-1)+1)
@@ -182,7 +181,7 @@ subroutine ap_assembly_vector(chno)
     end do
     if (dbg) flush (801+rang)
 !
-    call VecRestoreArray(assembly, xx, xidx, ierr)
+    call VecRestoreArray(assembly, xx, ierr)
     ASSERT(ierr .eq. 0)
 #if ASTER_PETSC_INT_SIZE == 4
     AS_DEALLOCATE(vi4=ig_petsc_c)
