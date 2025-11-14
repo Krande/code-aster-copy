@@ -32,12 +32,6 @@ def compat_syntax(keywords):
     if "reuse" in keywords and "RESULTAT" not in keywords:
         keywords["RESULTAT"] = keywords["reuse"]
 
-    # change STATIONNAIRE to STAT
-    if "ETAT_INIT" in keywords:
-        if "STATIONNAIRE" in keywords["ETAT_INIT"]:
-            del keywords["ETAT_INIT"]["STATIONNAIRE"]
-            keywords["ETAT_INIT"]["STAT"] = "OUI"
-
     # fix that INCREMENT is mandatory for transitory
     if "TYPE_CALCUL" not in keywords:
         if "ETAT_INIT" not in keywords or "STAT" in keywords["ETAT_INIT"]:
@@ -109,7 +103,7 @@ SECH_NON_LINE = OPER(
         ),
     ),
     # -------------------------------------------------------------------
-    TYPE_CALCUL=SIMP(statut="f", typ="TXM", into=("STAT", "TRAN"), defaut="TRAN"),
+    TYPE_CALCUL=SIMP(statut="f", typ="TXM", into=("TRAN",), defaut="TRAN"),
     # -------------------------------------------------------------------
     INCREMENT=C_INCREMENT(),
     # -------------------------------------------------------------------

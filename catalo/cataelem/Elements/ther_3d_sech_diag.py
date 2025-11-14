@@ -68,7 +68,6 @@ class SECH_HEXA8_D(Element):
                 (OP.CHAR_THER_EVOLNI.PCOMPOR, LC.CCOMPOT),
                 (SP.PGEOMER, LC.EGEOM3D),
                 (SP.PCAMASS, LC.CCAMA3D),
-                (OP.CHAR_THER_EVOLNI.PHYDRPM, LC.EHYDRR),
                 (SP.PMATERC, LC.CMATERC),
                 (SP.PTEMPER, DDL_THER),
                 (SP.PINSTR, LC.CTIMETR),
@@ -217,32 +216,6 @@ class SECH_HEXA8_D(Element):
             ),
             para_out=((SP.PMATTTR, MMATTTR),),
         ),
-        OP.META_ELNO(
-            te=64,
-            para_in=(
-                (SP.PCOMPME, LC.CCOMPOT),
-                (SP.PCOMPMT, LC.CCOMPOT),
-                (SP.PFTRC, LC.CFTRC),
-                (SP.PMATERC, LC.CMATERC),
-                (SP.PPHASIN, LC.EPHASES),
-                (SP.PTEMPAR, DDL_THER),
-                (SP.PTEMPER, DDL_THER),
-                (SP.PTEMPIR, DDL_THER),
-                (SP.PTIMMTR, LC.CTIMMTR),
-                (SP.PPHASEP, LC.EPHASES),
-            ),
-            para_out=((OP.META_ELNO.PPHASOUT, LC.EPHASES),),
-        ),
-        OP.META_INIT_ELNO(
-            te=321,
-            para_in=(
-                (SP.PCOMPME, LC.CCOMPOT),
-                (SP.PMATERC, LC.CMATERC),
-                (SP.PPHASII, LC.CPHASES),
-                (SP.PTEMPER, DDL_THER),
-            ),
-            para_out=((OP.META_INIT_ELNO.PPHASOUT, LC.EPHASES),),
-        ),
         OP.RIGI_THER_TANG(
             te=243,
             para_in=(
@@ -313,7 +286,6 @@ class SECH_HEXA8_D(Element):
             para_in=(
                 (OP.MASS_THER_RESI.PCOMPOR, LC.CCOMPOT),
                 (SP.PGEOMER, LC.EGEOM3D),
-                (OP.MASS_THER_RESI.PHYDRPR, LC.EHYDRR),
                 (SP.PMATERC, LC.CMATERC),
                 (SP.PTEMPEI, DDL_THER),
                 (OP.MASS_THER_RESI.PVARCPR, LC.ZVARCPG),
@@ -379,7 +351,6 @@ class SECH_HEXA8_D(Element):
                 (OP.TOU_INI_ELGA.PNEUT_R, LC.EGTINIR),
                 (OP.TOU_INI_ELGA.PSOUR_R, LC.ESOURCR),
                 (OP.TOU_INI_ELGA.PVARI_R, LC.ZVARIPG),
-                (OP.TOU_INI_ELGA.PHYDR_R, LC.EHYDRR),
                 (SP.PTEMP_R, LC.ESECHPG),
             ),
         ),
@@ -388,7 +359,6 @@ class SECH_HEXA8_D(Element):
             para_out=(
                 (OP.TOU_INI_ELNO.PFLUX_R, LC.NFLUX3R),
                 (OP.TOU_INI_ELNO.PGEOM_R, LC.EGEOM3D),
-                (OP.TOU_INI_ELNO.PHYDR_R, LC.EHYDRNO),
                 (OP.TOU_INI_ELNO.PINST_R, LC.ENINST_R),
                 (OP.TOU_INI_ELNO.PNEUT_F, LC.ENNEUT_F),
                 (OP.TOU_INI_ELNO.PNEUT_R, LC.ENNEUT_R),
