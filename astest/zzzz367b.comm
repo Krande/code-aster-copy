@@ -322,68 +322,66 @@ steelMecaField = AFFE_MATERIAU(
     AFFE_VARC=_F(TOUT="OUI", EVOL=THER1, NOM_VARC="TEMP", NOM_CHAM="TEMP", VALE_REF=20.0),
 )
 
-U_ISOT = STAT_NON_LINE(
+U_CINE = STAT_NON_LINE(
     MODELE=modelMeca,
     CHAM_MATER=steelMecaField,
     EXCIT=_F(CHARGE=clamp),
     COMPORTEMENT=(
         _F(
-            RELATION="VMIS_ISOT_LINE",
+            RELATION="VMIS_CINE_LINE",
             DEFORMATION="PETIT_REAC",
             GROUP_MA="M1",
             POST_INCR="REST_ECRO",
         ),
-        _F(RELATION="VMIS_ISOT_LINE", DEFORMATION="PETIT_REAC", GROUP_MA="M2"),
+        _F(RELATION="VMIS_CINE_LINE", DEFORMATION="PETIT_REAC", GROUP_MA="M2"),
     ),
     INCREMENT=_F(LIST_INST=timeList),
 )
 
 # Post traitement
 
-U_ISOT = CALC_CHAMP(
-    reuse=U_ISOT,
+U_CINE = CALC_CHAMP(
+    reuse=U_CINE,
     CONTRAINTE=("SIEF_NOEU"),
     VARI_INTERNE=("VARI_NOEU"),
     DEFORMATION=("EPSG_NOEU"),
-    RESULTAT=U_ISOT,
+    RESULTAT=U_CINE,
 )
 
 TEST_RESU(
     RESU=(
         _F(
             INST=100.0,
-            RESULTAT=U_ISOT,
+            RESULTAT=U_CINE,
             NOM_CHAM="VARI_NOEU",
             GROUP_NO="NO1",
             NOM_CMP="V1",
-            VALE_CALC=0.0004509557357713109,
-            VALE_REFE=0.00044,
+            VALE_CALC=360761.17312945065,
+            VALE_REFE=360761.17312945065,
             REFERENCE="SOURCE_EXTERNE",
-            PRECISION=0.25,
+            PRECISION=1e-6,
         ),
         _F(
             INST=100.0,
-            RESULTAT=U_ISOT,
+            RESULTAT=U_CINE,
             NOM_CHAM="VARI_NOEU",
-            GROUP_NO="NO6",
-            NOM_CMP="V1",
-            VALE_CALC=0.020600406860389348,
-        ),
-        _F(
-            INST=200.0,
-            RESULTAT=U_ISOT,
-            NOM_CHAM="SIEF_NOEU",
             GROUP_NO="NO1",
-            NOM_CMP="SIYY",
-            VALE_CALC=275168548.39537346,
+            NOM_CMP="V2",
+            VALE_CALC=-417993.6707036745,
+            VALE_REFE=-417993.6707036745,
+            REFERENCE="SOURCE_EXTERNE",
+            PRECISION=1e-6,
         ),
         _F(
-            INST=200.0,
-            RESULTAT=U_ISOT,
-            NOM_CHAM="SIEF_NOEU",
-            GROUP_NO="NO6",
-            NOM_CMP="SIYY",
-            VALE_CALC=435993508.935732,
+            INST=100.0,
+            RESULTAT=U_CINE,
+            NOM_CHAM="VARI_NOEU",
+            GROUP_NO="NO1",
+            NOM_CMP="V3",
+            VALE_CALC=360680.7661149096,
+            VALE_REFE=360680.7661149096,
+            REFERENCE="SOURCE_EXTERNE",
+            PRECISION=1e-6,
         ),
     )
 )
