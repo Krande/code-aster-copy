@@ -604,7 +604,7 @@ def check_platform(self):
         self.undefine("ASTER_PLATFORM_MINGW")
         self.undefine("ASTER_PLATFORM_MSVC64")
     self.env.ASTER_PLATFORM = plt
-    if os.getenv("MSYSTEM"):
+    if os.getenv("MSYSTEM") and not self.env.ASTER_PLATFORM_MSVC64:
         ## Define and additional variable for MSYS2
         self.define("ASTER_PLATFORM_MSYS2", 1)
         self.env.ASTER_PLATFORM_MSYS2 = True
