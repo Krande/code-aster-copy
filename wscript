@@ -590,7 +590,7 @@ def check_platform(self):
         self.env.ASTER_PLATFORM_MINGW = True
         self.undefine("ASTER_PLATFORM_POSIX")
         self.undefine("ASTER_PLATFORM_MSVC64")
-    elif os_name.startswith("msvc"):
+    elif os_name.startswith("msvc") and "ASTER_PLATFORM_MSVC64" in self.env.DEFINES:
         self.define("ASTER_PLATFORM_MSVC64", 1)
         self.define("ASTER_PLATFORM_WINDOWS", 1)
         self.define("H5_BUILT_AS_DYNAMIC_LIB", 1)
