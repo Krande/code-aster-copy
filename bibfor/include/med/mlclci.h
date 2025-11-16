@@ -20,16 +20,9 @@
 !
 interface
 #include "asterf_types.h"
-    
-#ifdef ASTER_PLATFORM_MSVC64
-    subroutine mlclci(fid, it, lname, gtype, sdim,&
-                      nip, giname, isname, nsmc, sgtype,&
-                      cret) BIND(C, name='MLCLCI')
-#else
     subroutine mlclci(fid, it, lname, gtype, sdim,&
                       nip, giname, isname, nsmc, sgtype,&
                       cret)
-#endif
         med_idt :: fid
         med_int :: it
         character(len=*) :: lname

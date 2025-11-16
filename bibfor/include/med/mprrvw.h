@@ -20,12 +20,7 @@
 !
 interface
 #include "asterf_types.h"
-    
-#ifdef ASTER_PLATFORM_MSVC64
-    subroutine mprrvw(fid, nom, numdt, numit, dt, val, cret) BIND(C, name='MPRRVW')
-#else
     subroutine mprrvw(fid, nom, numdt, numit, dt, val, cret)
-#endif
         med_idt :: fid
         med_int :: numdt, numit
         character(len=*) :: nom

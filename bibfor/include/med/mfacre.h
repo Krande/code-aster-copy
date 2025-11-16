@@ -20,14 +20,8 @@
 !
 interface
 #include "asterf_types.h"
-    
-#ifdef ASTER_PLATFORM_MSVC64
-    subroutine mfacre(fid, name, fname, fnum, ngro,&
-                      gname, cret) BIND(C, name='MFACRE')
-#else
     subroutine mfacre(fid, name, fname, fnum, ngro,&
                       gname, cret)
-#endif
         med_idt :: fid
         character(len=*) :: name
         character(len=*) :: fname

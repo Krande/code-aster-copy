@@ -20,16 +20,9 @@
 !
 interface
 #include "asterf_types.h"
-    
-#ifdef ASTER_PLATFORM_MSVC64
-    subroutine mlclow(fid, lname, gtype, sdim, ecoo,&
-                      swm, nip, ipcoo, wght, giname,&
-                      isname, cret) BIND(C, name='MLCLOW')
-#else
     subroutine mlclow(fid, lname, gtype, sdim, ecoo,&
                       swm, nip, ipcoo, wght, giname,&
                       isname, cret)
-#endif
         med_idt :: fid
         character(len=*) :: lname
         med_int :: gtype

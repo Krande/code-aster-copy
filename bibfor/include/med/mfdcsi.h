@@ -20,14 +20,8 @@
 !
 interface
 #include "asterf_types.h"
-    
-#ifdef ASTER_PLATFORM_MSVC64
-    subroutine mfdcsi(fid, fname, it, numdt, numit,&
-                      dt, cret) BIND(C, name='MFDCSI')
-#else
     subroutine mfdcsi(fid, fname, it, numdt, numit,&
                       dt, cret)
-#endif
         med_idt :: fid
         character(len=*) :: fname
         med_int :: it

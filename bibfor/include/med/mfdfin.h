@@ -20,14 +20,8 @@
 !
 interface
 #include "asterf_types.h"
-    
-#ifdef ASTER_PLATFORM_MSVC64
-    subroutine mfdfin(fid, fname, mname, lmesh, type,&
-                      cname, cunit, dtunit, nc, cret) BIND(C, name='MFDFIN')
-#else
     subroutine mfdfin(fid, fname, mname, lmesh, type,&
                       cname, cunit, dtunit, nc, cret)
-#endif
         med_idt :: fid
         character(len=*) :: fname
         character(len=*) :: mname

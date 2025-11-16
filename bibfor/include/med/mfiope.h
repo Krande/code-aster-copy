@@ -20,12 +20,7 @@
 !
 interface
 #include "asterf_types.h"
-    
-#ifdef ASTER_PLATFORM_MSVC64
-    subroutine mfiope(fid, name, access, cret) BIND(C, name='MFIOPE')
-#else
     subroutine mfiope(fid, name, access, cret)
-#endif
         med_idt :: fid
         character(len=*) :: name
         med_int :: access

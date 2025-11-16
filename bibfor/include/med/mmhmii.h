@@ -20,16 +20,9 @@
 !
 interface
 #include "asterf_types.h"
-    
-#ifdef ASTER_PLATFORM_MSVC64
-    subroutine mmhmii(fid, it, name, sdim, mdim,&
-                      mtype, desc, dtunit, stype, nstep,&
-                      atype, aname, aunit, cret) BIND(C, name='MMHMII')
-#else
     subroutine mmhmii(fid, it, name, sdim, mdim,&
                       mtype, desc, dtunit, stype, nstep,&
                       atype, aname, aunit, cret)
-#endif
         med_idt :: fid
         med_int :: it
         character(len=*) :: name

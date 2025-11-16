@@ -20,12 +20,7 @@
 !
 interface
 #include "asterf_types.h"
-    
-#ifdef ASTER_PLATFORM_MSVC64
-    subroutine mfdncn(fid, fname, n, cret) BIND(C, name='MFDNCN')
-#else
     subroutine mfdncn(fid, fname, n, cret)
-#endif
         med_idt :: fid
         character(len=*) :: fname
         med_int :: n

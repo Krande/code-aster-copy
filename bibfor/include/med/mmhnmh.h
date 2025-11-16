@@ -20,12 +20,7 @@
 !
 interface
 #include "asterf_types.h"
-    
-#ifdef ASTER_PLATFORM_MSVC64
-    subroutine mmhnmh(fid, n, cret) BIND(C, name='MMHNMH')
-#else
     subroutine mmhnmh(fid, n, cret)
-#endif
         med_idt :: fid
         med_int :: n
         med_int :: cret

@@ -20,12 +20,7 @@
 !
 interface
 #include "asterf_types.h"
-    
-#ifdef ASTER_PLATFORM_MSVC64
-    subroutine mficlo(fid, cret) BIND(C, name='MFICLO')
-#else
     subroutine mficlo(fid, cret)
-#endif
         med_idt :: fid
         med_int :: cret
     end subroutine mficlo

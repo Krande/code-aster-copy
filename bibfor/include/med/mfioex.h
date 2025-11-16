@@ -20,12 +20,7 @@
 !
 interface
 #include "asterf_types.h"
-    
-#ifdef ASTER_PLATFORM_MSVC64
-    subroutine mfioex(fid, class, oname, oexist, cret) BIND(C, name='MFIOEX')
-#else
     subroutine mfioex(fid, class, oname, oexist, cret)
-#endif
         med_idt :: fid
         med_int :: class
         character(len=*) :: oname

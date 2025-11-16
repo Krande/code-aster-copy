@@ -20,12 +20,7 @@
 !
 interface
 #include "asterf_types.h"
-    
-#ifdef ASTER_PLATFORM_MSVC64
-    subroutine mlbnuv(major, minor, rel, cret) BIND(C, name='MLBNUV')
-#else
     subroutine mlbnuv(major, minor, rel, cret)
-#endif
         med_int :: major
         med_int :: minor
         med_int :: rel

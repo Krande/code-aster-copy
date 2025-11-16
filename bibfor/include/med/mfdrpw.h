@@ -20,16 +20,9 @@
 !
 interface
 #include "asterf_types.h"
-    
-#ifdef ASTER_PLATFORM_MSVC64
-    subroutine mfdrpw(fid, fname, numdt, numit, dt,&
-                      etype, gtype, stm, pname, lname,&
-                      swm, cs, n, val, cret) BIND(C, name='MFDRPW')
-#else
     subroutine mfdrpw(fid, fname, numdt, numit, dt,&
                       etype, gtype, stm, pname, lname,&
                       swm, cs, n, val, cret)
-#endif
         med_idt :: fid
         character(len=*) :: fname
         med_int :: numdt

@@ -20,14 +20,8 @@
 !
 interface
 #include "asterf_types.h"
-    
-#ifdef ASTER_PLATFORM_MSVC64
-    subroutine msecre(fid, mname, mdim, smname, setype,&
-                      sgtype, etype, cret) BIND(C, name='MSECRE')
-#else
     subroutine msecre(fid, mname, mdim, smname, setype,&
                       sgtype, etype, cret)
-#endif
         med_idt :: fid
         character(len=*) :: mname
         med_int :: mdim

@@ -20,12 +20,7 @@
 !
 interface
 #include "asterf_types.h"
-    
-#ifdef ASTER_PLATFORM_MSVC64
-    subroutine mficom(fname, hdfok, medok, cret) BIND(C, name='MFICOM')
-#else
     subroutine mficom(fname, hdfok, medok, cret)
-#endif
         character(len=*) :: fname
         med_int :: hdfok
         med_int :: medok

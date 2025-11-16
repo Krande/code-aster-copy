@@ -20,14 +20,8 @@
 !
 interface
 #include "asterf_types.h"
-    
-#ifdef ASTER_PLATFORM_MSVC64
-    subroutine msdszi(fid,mname,jname,numdt,numit,it,letype,lgtype,&
-                      retype,rgtype,ncor,cret) BIND(C, name='MSDSZI')
-#else
     subroutine msdszi(fid,mname,jname,numdt,numit,it,letype,lgtype,&
                       retype,rgtype,ncor,cret)
-#endif
         med_idt :: fid
         med_int :: numdt,numit,it,letype,lgtype
         med_int :: retype,rgtype,ncor,cret

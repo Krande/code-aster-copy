@@ -20,12 +20,7 @@
 !
 interface
 #include "asterf_types.h"
-    
-#ifdef ASTER_PLATFORM_MSVC64
-    subroutine mfrdea(nflt, flt, cret) BIND(C, name='MFRDEA')
-#else
     subroutine mfrdea(nflt, flt, cret)
-#endif
         med_int :: nflt
         aster_int :: flt(*)
         med_int :: cret

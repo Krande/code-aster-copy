@@ -20,16 +20,9 @@
 !
 interface
 #include "asterf_types.h"
-    
-#ifdef ASTER_PLATFORM_MSVC64
-    subroutine mfrblc(fid, nent, nvent, ncent, cs,&
-                      swm, stm, pname, start, stride,&
-                      count, bsize, lbsize, flt, cret) BIND(C, name='MFRBLC')
-#else
     subroutine mfrblc(fid, nent, nvent, ncent, cs,&
                       swm, stm, pname, start, stride,&
                       count, bsize, lbsize, flt, cret)
-#endif
         med_idt :: fid
         med_int :: nent
         med_int :: nvent

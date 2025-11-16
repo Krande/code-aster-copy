@@ -20,16 +20,9 @@
 !
 interface
 #include "asterf_types.h"
-    
-#ifdef ASTER_PLATFORM_MSVC64
-    subroutine mmhcyw(fid, name, numdt, numit, dt,&
-                      entype, geotype, cmode, swm, n,&
-                      con, cret) BIND(C, name='MMHCYW')
-#else
     subroutine mmhcyw(fid, name, numdt, numit, dt,&
                       entype, geotype, cmode, swm, n,&
                       con, cret)
-#endif
         med_idt :: fid
         character(len=*) :: name
         med_int :: numdt

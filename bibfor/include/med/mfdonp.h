@@ -20,16 +20,9 @@
 !
 interface
 #include "asterf_types.h"
-    
-#ifdef ASTER_PLATFORM_MSVC64
-    subroutine mfdonp(fid, fname, numdt, numit, etype,&
-                      gtype, it, mname, dpname, dlname,&
-                      n, cret) BIND(C, name='MFDONP')
-#else
     subroutine mfdonp(fid, fname, numdt, numit, etype,&
                       gtype, it, mname, dpname, dlname,&
                       n, cret)
-#endif
         med_idt :: fid
         character(len=*) :: fname
         med_int :: numdt

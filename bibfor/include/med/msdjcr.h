@@ -20,12 +20,7 @@
 !
 interface
 #include "asterf_types.h"
-    
-#ifdef ASTER_PLATFORM_MSVC64
-    subroutine msdjcr(fid,lmname,jname,des,dom,rmname,cret) BIND(C, name='MSDJCR')
-#else
     subroutine msdjcr(fid,lmname,jname,des,dom,rmname,cret)
-#endif
         med_idt :: fid
         med_int :: dom, cret
         character(len=*) :: lmname,jname,des,rmname

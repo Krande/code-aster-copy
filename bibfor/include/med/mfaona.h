@@ -20,12 +20,7 @@
 !
 interface
 #include "asterf_types.h"
-    
-#ifdef ASTER_PLATFORM_MSVC64
-    subroutine mfaona(fid, maa, it, n, cret) BIND(C, name='MFAONA')
-#else
     subroutine mfaona(fid, maa, it, n, cret)
-#endif
         med_idt :: fid
         character(len=*) :: maa
         med_int :: it

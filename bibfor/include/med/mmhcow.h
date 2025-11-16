@@ -20,14 +20,8 @@
 !
 interface
 #include "asterf_types.h"
-    
-#ifdef ASTER_PLATFORM_MSVC64
-    subroutine mmhcow(fid, name, numdt, numit, dt,&
-                      swm, n, coo, cret) BIND(C, name='MMHCOW')
-#else
     subroutine mmhcow(fid, name, numdt, numit, dt,&
                       swm, n, coo, cret)
-#endif
         med_idt :: fid
         character(len=*) :: name
         med_int :: numdt

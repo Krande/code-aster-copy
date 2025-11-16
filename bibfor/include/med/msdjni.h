@@ -20,14 +20,8 @@
 !
 interface
 #include "asterf_types.h"
-    
-#ifdef ASTER_PLATFORM_MSVC64
-    subroutine msdjni(fid,lmname,ind,jname,des,dom,rmname,&
-                      nstep,ncor,cret) BIND(C, name='MSDJNI')
-#else
     subroutine msdjni(fid,lmname,ind,jname,des,dom,rmname,&
                       nstep,ncor,cret)
-#endif
         med_idt :: fid
         med_int :: ind,dom,nstep,ncor,cret
         character(len=*) :: lmname,jname,des,rmname

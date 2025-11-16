@@ -20,14 +20,8 @@
 !
 interface
 #include "asterf_types.h"
-    
-#ifdef ASTER_PLATFORM_MSVC64
-    subroutine msdcrr(fid,lmname,jname,numdt,numit,entlcl,&
-                      geolcl,entdst,geodst,corrtab,cret) BIND(C, name='MSDCRR')
-#else
     subroutine msdcrr(fid,lmname,jname,numdt,numit,entlcl,&
                       geolcl,entdst,geodst,corrtab,cret)
-#endif
         med_idt :: fid
         med_int :: numdt,numit,entlcl,geolcl,entdst
         med_int :: geodst,ncorr,corrtab(*),cret

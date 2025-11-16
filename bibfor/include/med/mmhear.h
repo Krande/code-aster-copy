@@ -20,14 +20,8 @@
 !
 interface
 #include "asterf_types.h"
-    
-#ifdef ASTER_PLATFORM_MSVC64
-    subroutine mmhear(fid, mname, numdt, numit, entype,&
-                      geotype, ename, cret) BIND(C, name='MMHEAR')
-#else
     subroutine mmhear(fid, mname, numdt, numit, entype,&
                       geotype, ename, cret)
-#endif
         med_idt :: fid
         character(len=*) :: mname
         med_int :: numdt

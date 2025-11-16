@@ -20,14 +20,8 @@
 !
 interface
 #include "asterf_types.h"
-    
-#ifdef ASTER_PLATFORM_MSVC64
-    subroutine mlclor(fid, lname, swm, ecoo, ipcoo,&
-                      wght, cret) BIND(C, name='MLCLOR')
-#else
     subroutine mlclor(fid, lname, swm, ecoo, ipcoo,&
                       wght, cret)
-#endif
         med_idt :: fid
         character(len=*) :: lname
         med_int :: swm

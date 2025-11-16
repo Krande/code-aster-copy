@@ -20,14 +20,8 @@
 !
 interface
 #include "asterf_types.h"
-    
-#ifdef ASTER_PLATFORM_MSVC64
-    subroutine mfaofi(fid, maa, it, fam, attnum,&
-                      attval, attdes, num, gro, cret) BIND(C, name='MFAOFI')
-#else
     subroutine mfaofi(fid, maa, it, fam, attnum,&
                       attval, attdes, num, gro, cret)
-#endif
         med_idt :: fid
         character(len=*) :: maa
         med_int :: it

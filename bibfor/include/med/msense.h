@@ -20,12 +20,7 @@
 !
 interface
 #include "asterf_types.h"
-    
-#ifdef ASTER_PLATFORM_MSVC64
-    subroutine msense(fid, n, cret) BIND(C, name='MSENSE')
-#else
     subroutine msense(fid, n, cret)
-#endif
         med_idt :: fid
         med_int :: n
         med_int :: cret

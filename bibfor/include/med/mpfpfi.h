@@ -20,12 +20,7 @@
 !
 interface
 #include "asterf_types.h"
-    
-#ifdef ASTER_PLATFORM_MSVC64
-    subroutine mpfpfi(fid, it, pname, psize, cret) BIND(C, name='MPFPFI')
-#else
     subroutine mpfpfi(fid, it, pname, psize, cret)
-#endif
         med_idt :: fid
         med_int :: it
         character(len=*) :: pname
