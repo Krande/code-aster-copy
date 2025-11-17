@@ -66,7 +66,7 @@ DYNA_ISS_VARI = MACRO(
         b_type_coh=BLOC(
             condition="""equal_to("TYPE", 'MITA_LUCO') """,
             VITE_ONDE=SIMP(statut="o", typ="R", val_min=0.0),
-            PARA_ALPHA=SIMP(statut="f", typ="R", defaut=0.1),
+            PARA_ALPHA=SIMP(statut="f", typ="R", defaut=0.5),
         ),
     ),
     #        LIST_FREQ        =SIMP(statut='o',typ='liste' ),
