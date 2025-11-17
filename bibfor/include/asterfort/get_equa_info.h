@@ -20,8 +20,8 @@
 !
 interface
     subroutine get_equa_info(nume_ddlz     , i_equa    , type_equa , nume_nodez  , nume_cmpz,&
-                             nume_cmp_lagrz, nume_subsz, nume_linkz, nb_node_lagr, list_node_lagr,&
-                             ligrelz)
+                             nume_cmp_lagrz, nume_subsz, nume_linkz, nb_node_lagrz, &
+                             list_node_lagrz, ligrelz)
         character(len=*), intent(in) :: nume_ddlz
         integer(kind=8), intent(in) :: i_equa
         character(len=*), intent(out) :: type_equa
@@ -30,8 +30,8 @@ interface
         integer(kind=8), optional, intent(out) :: nume_subsz
         integer(kind=8), optional, intent(out) :: nume_linkz
         integer(kind=8), optional, intent(out) :: nume_cmp_lagrz
-        integer(kind=8), optional, intent(out) :: nb_node_lagr
-        integer(kind=8), optional, pointer :: list_node_lagr(:)
+        integer(kind=8), optional, intent(out) :: nb_node_lagrz
+        integer(kind=8), optional, pointer :: list_node_lagrz(:)
         character(len=*), optional, intent(out) :: ligrelz
     end subroutine get_equa_info
 end interface

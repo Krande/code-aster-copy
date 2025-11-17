@@ -17,11 +17,12 @@
 ! --------------------------------------------------------------------
 
 subroutine get_equa_info(nume_ddlz, i_equa, type_equa, nume_nodez, nume_cmpz, &
-                         nume_cmp_lagrz, nume_subsz, nume_linkz, nb_node_lagr, list_node_lagr, &
+                         nume_cmp_lagrz, nume_subsz, nume_linkz, nb_node_lagrz, list_node_lagrz, &
                          ligrelz)
 !
     implicit none
 !
+#include "asterfort/as_deallocate.h"
 #include "asterfort/assert.h"
 #include "asterfort/dismoi.h"
 #include "asterfort/jeveuo.h"
@@ -38,8 +39,8 @@ subroutine get_equa_info(nume_ddlz, i_equa, type_equa, nume_nodez, nume_cmpz, &
     integer(kind=8), optional, intent(out) :: nume_subsz
     integer(kind=8), optional, intent(out) :: nume_linkz
     integer(kind=8), optional, intent(out) :: nume_cmp_lagrz
-    integer(kind=8), optional, intent(out) :: nb_node_lagr
-    integer(kind=8), optional, pointer :: list_node_lagr(:)
+    integer(kind=8), optional, intent(out) :: nb_node_lagrz
+    integer(kind=8), optional, pointer :: list_node_lagrz(:)
     character(len=*), optional, intent(out) :: ligrelz
 !
 ! --------------------------------------------------------------------------------------------------
@@ -72,13 +73,14 @@ subroutine get_equa_info(nume_ddlz, i_equa, type_equa, nume_nodez, nume_cmpz, &
     character(len=19) :: nume_equa, ligrel
     character(len=14) :: nume_ddl
     integer(kind=8) :: iexi, isst
-    integer(kind=8) :: idx_gd
+    integer(kind=8) :: idx_gd, nb_node_lagr
     integer(kind=8) :: ino, icmp
     logical :: l_gene
     integer(kind=8), pointer :: p_nueq(:) => null()
     integer(kind=8), pointer :: p_desc(:) => null()
     integer(kind=8), pointer :: p_deeq(:) => null()
     integer(kind=8), pointer :: p_orig(:) => null()
+    integer(kind=8), pointer :: list_node_lagr(:) => null()
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -89,6 +91,7 @@ subroutine get_equa_info(nume_ddlz, i_equa, type_equa, nume_nodez, nume_cmpz, &
     nume_subs = 0
     nume_link = 0
     nume_cmp_lagr = 0
+    nb_node_lagr = 0
 !
 ! - Get name of nume_equa
 !
@@ -185,6 +188,14 @@ subroutine get_equa_info(nume_ddlz, i_equa, type_equa, nume_nodez, nume_cmpz, &
     end if
     if (present(ligrelz)) then
         ligrelz = ligrel
+    end if
+    if (present(nb_node_lagrz)) then
+        nb_node_lagrz = nb_node_lagr
+    end if
+    if (present(list_node_lagrz)) then
+        list_node_lagrz => list_node_lagr
+    elseif (nb_node_lagr .gt. 0) then
+        AS_DEALLOCATE(vi=list_node_lagr)
     end if
 !
 end subroutine

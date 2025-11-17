@@ -74,6 +74,7 @@ MODE_ITER_INV_CATA = OPER(
     reentrant="n",
     CHAM_MATER=SIMP(statut="f", typ=cham_mater),
     CARA_ELEM=SIMP(statut="f", typ=cara_elem),
+    CENTRE=SIMP(statut="f", typ="R", min=3, max=3),
     TYPE_RESU=SIMP(
         statut="f",
         typ="TXM",

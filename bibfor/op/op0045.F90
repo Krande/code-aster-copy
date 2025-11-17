@@ -64,7 +64,7 @@ subroutine op0045()
 !
     mpi_int :: mpicou, mpicow
     integer(kind=8) :: nbpari, nbparr, nbpark
-    parameter(nbpari=8, nbparr=16, nbpark=3)
+    parameter(nbpari=8, nbparr=22, nbpark=3)
     integer(kind=8) :: iret, ibid, npivot, neqact, mxresf, nblagr, nstoc, nconv, nbvecg, nfreqg
     integer(kind=8) :: rangl, icom1, icom2
     real(kind=8) :: omemin, omemax, omeshi, vpinf, vpmax, rbid

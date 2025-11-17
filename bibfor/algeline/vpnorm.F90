@@ -17,7 +17,7 @@
 ! --------------------------------------------------------------------
 !
 subroutine vpnorm(norm, para, lmatr, neq, nbmode, &
-                  ddlexc, vecpro, resufr, xmastr, isign, &
+                  ddlexc, vecpro, resufr, isign, &
                   numddl, coef)
     implicit none
 #include "asterf_types.h"
@@ -32,7 +32,7 @@ subroutine vpnorm(norm, para, lmatr, neq, nbmode, &
 !
     character(len=*) :: norm, para
     integer(kind=8) :: nbmode, neq, lmatr, ddlexc(*)
-    real(kind=8) :: vecpro(neq, *), resufr(nbmode, *), xmastr(3), coef(*)
+    real(kind=8) :: vecpro(neq, *), resufr(nbmode, *), coef(*)
 !     NORMALISATION DE VECTEURS ET DE GRANDEURS MODALES
 !     ------------------------------------------------------------------
 ! IN  NORM   : TYPE DE NORMALISATION
@@ -56,7 +56,6 @@ subroutine vpnorm(norm, para, lmatr, neq, nbmode, &
 !        'MASS_EFFE_DX'    , 'MASS_EFFE_DY'    , 'MASS_EFFE_DZ'    ,
 !        'FACT_PARTICI_DX' , 'FACT_PARTICI_DY' , 'FACT_PARTICI_DZ' ,
 !        'MASS_EFFE_UN_DX' , 'MASS_EFFE_UN_DY' , 'MASS_EFFE_UN_DZ'
-! IN  XMASTR : MASSE DE LA STRUCTURE
 ! OUT COEF   : COEFFICIENTS
 !     ------------------------------------------------------------------
 !
@@ -167,17 +166,6 @@ subroutine vpnorm(norm, para, lmatr, neq, nbmode, &
         valk = norm
         call utmess('F', 'ALGELINE4_77', sk=valk)
 !
-    end if
-!
-    if (para .eq. 'OUI') then
-        do im = 1, nbmode
-            resufr(im, 13) = 0.d0
-            resufr(im, 14) = 0.d0
-            resufr(im, 15) = 0.d0
-            if (xmastr(1) .gt. epsi) resufr(im, 13) = resufr(im, 7)/xmastr(1)
-            if (xmastr(2) .gt. epsi) resufr(im, 14) = resufr(im, 8)/xmastr(2)
-            if (xmastr(3) .gt. epsi) resufr(im, 15) = resufr(im, 9)/xmastr(3)
-        end do
     end if
 !
     if (isign .eq. 0) then

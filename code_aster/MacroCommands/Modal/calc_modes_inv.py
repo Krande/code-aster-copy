@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -19,6 +19,7 @@
 
 from ...Cata.Syntax import _F
 from .mode_iter_inv import MODE_ITER_INV
+from ...CodeCommands import POST_ELEM
 
 
 def calc_modes_inv(self, stop_erreur, sturm, TYPE_RESU, OPTION, INFO, **args):
@@ -36,17 +37,15 @@ def calc_modes_inv(self, stop_erreur, sturm, TYPE_RESU, OPTION, INFO, **args):
 
     motcles = {}
     matrices = {}
-
-    if CARA_ELEM is not None:
-        motcles["CARA_ELEM"] = CARA_ELEM
-    if CHAM_MATER is not None:
-        motcles["CHAM_MATER"] = CHAM_MATER
+    modele = None
 
     # read the input matrices
     if TYPE_RESU == "DYNAMIQUE":
         type_vp = "FREQ"
         matrices["MATR_RIGI"] = args["MATR_RIGI"]
         matrices["MATR_MASS"] = args["MATR_MASS"]
+        if not matrices["MATR_RIGI"].getType().startswith("MATR_ASSE_GENE"):
+            modele = matrices["MATR_RIGI"].getDOFNumbering().getModel()
         if "MATR_AMOR" in args:
             matrices["MATR_AMOR"] = args["MATR_AMOR"]
 
@@ -54,13 +53,34 @@ def calc_modes_inv(self, stop_erreur, sturm, TYPE_RESU, OPTION, INFO, **args):
         type_vp = "CHAR_CRIT"
         matrices["MATR_RIGI"] = args["MATR_RIGI"]
         matrices["MATR_RIGI_GEOM"] = args["MATR_RIGI_GEOM"]
+        modele = matrices["MATR_RIGI"].getDOFNumbering().getModel()
 
     elif TYPE_RESU == "GENERAL":
         type_vp = "CHAR_CRIT"
         matrices["MATR_A"] = args["MATR_A"]
         matrices["MATR_B"] = args["MATR_B"]
+        modele = matrices["MATR_A"].getDOFNumbering().getModel()
 
     motcles.update(matrices)
+
+    if CARA_ELEM is not None:
+        motcles["CARA_ELEM"] = CARA_ELEM
+    if CHAM_MATER is not None:
+        motcles["CHAM_MATER"] = CHAM_MATER
+        # gravity center
+        if modele is not None:
+            if CARA_ELEM is not None:
+                TABLE = POST_ELEM(
+                    MODELE=modele,
+                    CARA_ELEM=CARA_ELEM,
+                    CHAM_MATER=CHAM_MATER,
+                    MASS_INER=_F(TOUT="OUI"),
+                )
+            else:
+                TABLE = POST_ELEM(MODELE=modele, CHAM_MATER=CHAM_MATER, MASS_INER=_F(TOUT="OUI"))
+            values = TABLE.EXTR_TABLE().values()
+            cdg = [values["CDG_X"][0], values["CDG_Y"][0], values["CDG_Z"][0]]
+            motcles["CENTRE"] = cdg
 
     #
     # read the keyword CALC_FREQ or CALC_CHAR_CRIT
@@ -81,7 +101,7 @@ def calc_modes_inv(self, stop_erreur, sturm, TYPE_RESU, OPTION, INFO, **args):
         PREC_SEPARE=SOLVEUR_MODAL["PREC_SEPARE"],
         NMAX_ITER_AJUSTE=SOLVEUR_MODAL["NMAX_ITER_AJUSTE"],
         PREC_AJUSTE=SOLVEUR_MODAL["PREC_AJUSTE"],
-        **motcles_calc_vp
+        **motcles_calc_vp,
     )
 
     #

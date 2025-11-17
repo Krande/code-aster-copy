@@ -76,9 +76,9 @@ subroutine op0037()
     integer(kind=8) :: nbpaft, nbpami, nbpamk, nbpamr, nbpamt, nbpara, nbpari
     integer(kind=8) :: nbpark, nbparr, nbtrou, ncmp, ncmpac, neq, npari
     integer(kind=8) :: npark, nparr, numddl, numnoe, tmod(1)
-    real(kind=8) :: dir(3), xmastr(3), maxmas, dmass
+    real(kind=8) :: dir(3), maxmas, dmass
 !-----------------------------------------------------------------------
-    parameter(nbpami=1, nbpamr=15, nbpamk=1, nbpamt=17)
+    parameter(nbpami=1, nbpamr=21, nbpamk=1, nbpamt=23)
 !     PARAMETRES "MODE_FLAMB"
     parameter(nbpafi=1, nbpafr=1, nbpafk=1, nbpaft=3)
     integer(kind=8) :: lmat(2), ibid, ifm, niv, lddl2, vali, iret
@@ -107,7 +107,9 @@ subroutine op0037()
      &  'MASS_GENE', 'RIGI_GENE', 'AMOR_GENE',&
      &  'MASS_EFFE_DX', 'MASS_EFFE_DY', 'MASS_EFFE_DZ',&
      &  'FACT_PARTICI_DX', 'FACT_PARTICI_DY', 'FACT_PARTICI_DZ',&
-     &  'MASS_EFFE_UN_DX', 'MASS_EFFE_UN_DY', 'MASS_EFFE_UN_DZ'/
+     &  'MASS_EFFE_UN_DX', 'MASS_EFFE_UN_DY', 'MASS_EFFE_UN_DZ',&
+     &  'INER_EFFE_DX', 'INER_EFFE_DY', 'INER_EFFE_DZ',&
+     &  'INER_EFFE_UN_DX', 'INER_EFFE_UN_DY', 'INER_EFFE_UN_DZ'/
     data noparf/'NUME_MODE', 'NORME', 'CHAR_CRIT'/
 !     ------------------------------------------------------------------
 !
@@ -120,10 +122,6 @@ subroutine op0037()
     lamo = .false.
     lcmplx = .false.
     lparam = .false.
-!
-    xmastr(1) = 0.d0
-    xmastr(2) = 0.d0
-    xmastr(3) = 0.d0
 !
     call getvid('  ', 'MODE', iocc=1, scal=modein, nbret=l)
 !
@@ -332,7 +330,6 @@ subroutine op0037()
         dir(3) = 0.d0
         dir(i) = 1.d0
         call massdir(masse, dir, dmass)
-        xmastr(i) = dmass
         maxmas = max(maxmas, dmass)
     end do
 
@@ -667,7 +664,8 @@ subroutine op0037()
 
 !               CALCUL DES FACTEURS DE PARTICIPATIONS ET DES MASSES EFFECTIVES
             call vppfac(lmasse, zr(lvalr+3*nbmode), zr(lmod), neq, nbmode, &
-                        nbmode, zr(lvalr+6*nbmode), zr(lvalr+9*nbmode))
+                        nbmode, zr(lvalr+6*nbmode), zr(lvalr+9*nbmode), &
+                        zr(lvalr+12*nbmode))
         else
             call utmess('A', 'ALGELINE2_89')
         end if
@@ -696,7 +694,8 @@ subroutine op0037()
 !
 !       CALCUL DES FACTEURS DE PARTICIPATIONS ET DES MASSES EFFECTIVES
         call vppfac(lmasse, zr(lvalr+3*nbmode), zr(lmod), neq, nbmode, &
-                    nbmode, zr(lvalr+6*nbmode), zr(lvalr+9*nbmode))
+                    nbmode, zr(lvalr+6*nbmode), zr(lvalr+9*nbmode), &
+                    zr(lvalr+12*nbmode))
         lparam = .true.
     end if
 !
@@ -714,11 +713,11 @@ subroutine op0037()
         else
             if (lparam) then
                 call vpnorm(norm, 'OUI', lmat(1), neq, nbmode, &
-                            zi(lddl), zr(lmod), zr(lvalr), xmastr, isign, &
+                            zi(lddl), zr(lmod), zr(lvalr), isign, &
                             numddl, zr(lcoef))
             else
                 call vpnorm(norm, 'NON', lmat(1), neq, nbmode, &
-                            zi(lddl), zr(lmod), zr(lvalr), xmastr, isign, &
+                            zi(lddl), zr(lmod), zr(lvalr), isign, &
                             numddl, zr(lcoef))
             end if
         end if

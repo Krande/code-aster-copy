@@ -41,7 +41,7 @@ cata_msg = {
     ),
     10: _(
         """
- Masses effectives unitaires non calculées par NORM_MODE
+ Masses ou inerties effectives unitaires non calculées par NORM_MODE
 """
     ),
     11: _(

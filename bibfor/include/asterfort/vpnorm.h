@@ -22,7 +22,7 @@
 !
 interface
     subroutine vpnorm(norm, para, lmatr, neq, nbmode,&
-                      ddlexc, vecpro, resufr, xmastr, isign,&
+                      ddlexc, vecpro, resufr, isign,&
                       numddl, coef)
         integer(kind=8) :: nbmode
         integer(kind=8) :: neq
@@ -32,7 +32,6 @@ interface
         integer(kind=8) :: ddlexc(*)
         real(kind=8) :: vecpro(neq, *)
         real(kind=8) :: resufr(nbmode, *)
-        real(kind=8) :: xmastr(3)
         integer(kind=8) :: isign
         integer(kind=8) :: numddl
         real(kind=8) :: coef(*)

@@ -405,6 +405,18 @@ subroutine utpar1(resu_type, nb_para_maxi, para_list, nb_para)
         para_list(ico) = 'TYPE_MODE#P#K16'
         ico = ico+1
         para_list(ico) = 'ERC_EVAL_FONC#P#R'
+        ico = ico+1
+        para_list(ico) = 'INER_EFFE_DX#P#R'
+        ico = ico+1
+        para_list(ico) = 'INER_EFFE_DY#P#R'
+        ico = ico+1
+        para_list(ico) = 'INER_EFFE_DZ#P#R'
+        ico = ico+1
+        para_list(ico) = 'INER_EFFE_UN_DX#P#R'
+        ico = ico+1
+        para_list(ico) = 'INER_EFFE_UN_DY#P#R'
+        ico = ico+1
+        para_list(ico) = 'INER_EFFE_UN_DZ#P#R'
         nb_para = ico
         ASSERT(nb_para .le. nb_para_maxi)
 !

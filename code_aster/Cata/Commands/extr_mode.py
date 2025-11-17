@@ -58,7 +58,11 @@ EXTR_MODE = OPER(
         NUME_MODE=SIMP(statut="f", typ="I", validators=NoRepeat(), max="**"),
         NUME_MODE_EXCLU=SIMP(statut="f", typ="I", validators=NoRepeat(), max="**"),
         FREQ_MIN=SIMP(statut="f", typ="R"),
-        CRIT_EXTR=SIMP(statut="f", typ="TXM", into=("MASS_EFFE_UN", "MASS_GENE", "MASS_EFFE")),
+        CRIT_EXTR=SIMP(
+            statut="f",
+            typ="TXM",
+            into=("MASS_EFFE_UN", "MASS_GENE", "MASS_EFFE", "INER_EFFE_UN", "INER_EFFE"),
+        ),
         b_freq_min=BLOC(
             condition="""exists("FREQ_MIN")""",
             FREQ_MAX=SIMP(statut="o", typ="R"),
@@ -81,7 +85,7 @@ EXTR_MODE = OPER(
             statut="f",
             typ="TXM",
             defaut="MASS_EFFE_UN",
-            into=("MASS_EFFE_UN", "MASS_GENE", "MASS_EFFE"),
+            into=("MASS_EFFE_UN", "MASS_GENE", "MASS_EFFE", "INER_EFFE_UN", "INER_EFFE"),
         ),
     ),
 )
