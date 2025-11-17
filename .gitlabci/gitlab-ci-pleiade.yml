@@ -269,6 +269,8 @@ prepare_debian-next:
     OSNAME: debian-13
   extends: .prepare
   rules:
+    - if: $BUILDTYPE == "nightly"
+      when: on_success
     - when: manual
       allow_failure: true
 
