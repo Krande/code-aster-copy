@@ -25,6 +25,7 @@
 
 #include "Utilities/PetscApplyFactorOnSubBlocks.h"
 
+#ifdef ASTER_HAVE_PETSC
 /* Helper: build J = { rows having any nonzero in B } */
 PetscErrorCode BuildJFromRHS( Mat B, IS *Jout ) {
     PetscInt N, nrhs;
@@ -326,12 +327,16 @@ PetscErrorCode MatSparseSolve_petsc( Mat FctMat, Mat RhsMat, IS ISet, Mat *SolMa
     }
     PetscFunctionReturn( PETSC_SUCCESS );
 }
+#else
+void MatSparseSolve_petsc() { std::cout << "PETSc library non available" << std::endl; };
+#endif
 
 /**
  * @brief This the python binding function to MatSparseSolve_petsc
  */
 py::object applyFactorOnSubBlocks( py::object pyFctMat, py::object pyRhsMat, py::object pyISet,
                                    py::object pyJSet ) {
+#ifdef ASTER_HAVE_PETSC4PY
     PetscErrorCode ierr;
     Mat new_mat;
 
@@ -372,4 +377,8 @@ py::object applyFactorOnSubBlocks( py::object pyFctMat, py::object pyRhsMat, py:
     } else {
         return py::none();
     }
+#else
+    PyErr_SetString( PyExc_NotImplementedError, "petsc4py is not available" );
+    throw py::error_already_set();
+#endif
 }

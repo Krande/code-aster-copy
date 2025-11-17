@@ -323,9 +323,7 @@ PYBIND11_MODULE( libaster, mod ) {
     exportParallelContactNewToPython( mod );
     exportParallelContactPairingToPython( mod );
 #endif /* ASTER_HAVE_MPI */
-#ifdef ASTER_PETSC_HAVE_MUMPS
     exportApplyFactorOnSubBlocksToPython( mod );
-#endif /* ASTER_HAVE_MUMPS */
     exportConnectionMeshToPython( mod );
     exportResultNamingToPython( mod );
     exportListOfFloatsToPython( mod );

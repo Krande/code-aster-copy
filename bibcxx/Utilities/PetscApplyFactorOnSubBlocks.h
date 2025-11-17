@@ -1,7 +1,7 @@
 /**
- * @file PetscRedistribute.cxx
+ * @file PetscApplyFactorOnSubBlocks.cxx
  * @brief Given a factored matrix, here is a petsc wrapping function
- *        to effciently compute from a sparse RHS matrixonly a subset
+ *        to efficiently compute from a sparse RHS matrix only a subset
  *        of entries of solution matrix.
  * @author Nicolas Tardieu
  * @section LICENCE
@@ -29,7 +29,7 @@
 #include "petscsystypes.h"
 #endif
 
-#ifdef ASTER_HAVE_PETSC
+#if defined( ASTER_HAVE_PETSC ) && defined( ASTER_HAVE_PETSC4PY )
 PetscErrorCode MatSparseSolve_petsc( Mat FctMat, Mat RhsMat, IS ISet, Mat *SolMat,
                                      IS *JSet = NULL );
 #else
