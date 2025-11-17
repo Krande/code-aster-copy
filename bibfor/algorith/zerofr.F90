@@ -56,7 +56,7 @@ subroutine zerofr(intini, algo, func, x1, x2, &
     real(kind=8) :: para(1)
 !
     para = 0.d0
-    call zerofr_param2(intini, algo, func, funcp, para, ASTER_FALSE, &
+    call zerofr_param2(intini, algo, func, funcp, para, 0, &
                        x1, x2, tol, itmax, solu, iret, iter)
 !
 contains
@@ -64,8 +64,9 @@ contains
     function funcp(x, param)
         real(kind=8), intent(in) :: x
         real(kind=8), intent(in) :: param(*)
-        real(kind=8) :: funcp, p
+        real(kind=8) :: funcp, p, x0
 !
+        x0 = x
         p = param(1)
         funcp = 0.0
     end function

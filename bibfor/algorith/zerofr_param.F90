@@ -16,14 +16,14 @@
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
 
-subroutine zerofr_param(intini, algo, funcp, para, x1, x2, &
+subroutine zerofr_param(intini, algo, funcp, para, nb_para, x1, x2, &
                         tol, itmax, solu, iret, iter)
     implicit none
 !
 #include "asterfort/zerofr_param2.h"
-    integer(kind=8) :: intini, itmax, iter, iret
+    integer(kind=8) :: intini, itmax, iter, iret, nb_para
     character(len=*) :: algo
-    real(kind=8) :: solu, tol, x1, x2, para(*)
+    real(kind=8) :: solu, tol, x1, x2, para(nb_para)
     interface
         function funcp(x, param)
             real(kind=8), intent(in) :: x
@@ -55,15 +55,16 @@ subroutine zerofr_param(intini, algo, funcp, para, x1, x2, &
 ! OUT ITER   : NOMBRE D'ITERATIONS EFFECTUEES
 ! ----------------------------------------------------------------------
 !
-    call zerofr_param2(intini, algo, func, funcp, para, ASTER_TRUE, &
+    call zerofr_param2(intini, algo, func, funcp, para, nb_para, &
                        x1, x2, tol, itmax, solu, iret, iter)
 !
 contains
 !
     function func(x)
         real(kind=8) :: x
-        real(kind=8) :: func
+        real(kind=8) :: func, x0
 !
+        x0 = x
         func = 0.0
     end function
 end subroutine

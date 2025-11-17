@@ -16,7 +16,7 @@
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
 
-subroutine zerofr_param2(intini, algo, func, funcp, para, has_param, x1, x2, &
+subroutine zerofr_param2(intini, algo, func, funcp, para, nb_para, x1, x2, &
                          tol, itmax, solu, iret, iter)
     implicit none
 !
@@ -29,8 +29,8 @@ subroutine zerofr_param2(intini, algo, func, funcp, para, has_param, x1, x2, &
 #include "asterfort/zerofo.h"
     integer(kind=8) :: intini, itmax, iter, iret
     character(len=*) :: algo
-    real(kind=8) :: solu, tol, x1, x2, para(*)
-    aster_logical, intent(in) :: has_param
+    integer(kind=8), intent(in) :: nb_para
+    real(kind=8) :: solu, tol, x1, x2, para(nb_para)
     interface
         function funcp(x, param)
             real(kind=8), intent(in) :: x
@@ -82,9 +82,9 @@ subroutine zerofr_param2(intini, algo, func, funcp, para, has_param, x1, x2, &
     if (intini .eq. 1) then
 !
 !       BRACKETING CROISSANT A GAUCHE ET A DROITE
-        call encadr(func, funcp, para, has_param, a, b, fa, fb, &
+        call encadr(func, funcp, para, nb_para, a, b, fa, fb, &
                     itmax, 1.6d0, iret)
-        if (iret .ne. 0) goto 9999
+        if (iret .ne. 0) goto 999
 !
     else if (intini .eq. 2) then
 !
@@ -92,9 +92,9 @@ subroutine zerofr_param2(intini, algo, func, funcp, para, has_param, x1, x2, &
 !       SOUVENT LE CAS POUR LES LOIS DE COMPORTEMENT
 !       (SI F EST CROISSANTE ET F(A)<0, OU L'INVERSE),
 !       CE QUI PERMET DE PRENDRE UN COEF MULT GRAND (10)
-        call encadr(func, funcp, para, has_param, a, b, fa, fb, &
+        call encadr(func, funcp, para, nb_para, a, b, fa, fb, &
                     itmax, 10.d0, iret)
-        if (iret .ne. 0) goto 9999
+        if (iret .ne. 0) goto 999
 !
     end if
 !
@@ -107,22 +107,22 @@ subroutine zerofr_param2(intini, algo, func, funcp, para, has_param, x1, x2, &
 !
     if (algoz .eq. 'BRENT') then
 !
-        call zerofb(func, funcp, para, has_param, a, b, tol, itmax, &
+        call zerofb(func, funcp, para, nb_para, a, b, tol, itmax, &
                     solu, iret, iter)
 !
     else if (algoz .eq. 'SECANTE') then
 !
-        call zerofc(func, funcp, para, has_param, a, b, tol, itmax, &
+        call zerofc(func, funcp, para, nb_para, a, b, tol, itmax, &
                     solu, iret, iter)
 !
     else if (algoz .eq. 'DEKKER') then
 !
-        call zerofo(func, funcp, para, has_param, a, b, tol, itmax, &
+        call zerofo(func, funcp, para, nb_para, a, b, tol, itmax, &
                     solu, iret, iter)
 !
     else if (algoz .eq. 'DEKKER2') then
 !
-        call zerof2(func, funcp, para, has_param, a, b, tol, itmax, &
+        call zerof2(func, funcp, para, nb_para, a, b, tol, itmax, &
                     solu, iret, iter)
 !
     else
@@ -132,5 +132,5 @@ subroutine zerofr_param2(intini, algo, func, funcp, para, has_param, x1, x2, &
     end if
 !
 !
-9999 continue
+999 continue
 end subroutine

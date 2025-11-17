@@ -16,7 +16,7 @@
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
 
-subroutine zerofo(func, funcp, para, has_param, x0, xap, epsi, nitmax, &
+subroutine zerofo(func, funcp, para, nb_para, x0, xap, epsi, nitmax, &
                   solu, iret, n)
     implicit none
 #include "asterf_types.h"
@@ -32,8 +32,8 @@ subroutine zerofo(func, funcp, para, has_param, x0, xap, epsi, nitmax, &
             real(kind=8) :: func
         end function
     end interface
-    real(kind=8) :: x0, xap, epsi, solu, para(*)
-    aster_logical, intent(in) :: has_param
+    integer(kind=8), intent(in) :: nb_para
+    real(kind=8) :: x0, xap, epsi, solu, para(nb_para)
     integer(kind=8) :: nitmax, iret, n
 !
 !
@@ -65,7 +65,7 @@ subroutine zerofo(func, funcp, para, has_param, x0, xap, epsi, nitmax, &
     iret = 1
     n = 1
     x = x0
-    if (has_param) then
+    if (nb_para > 0) then
         fx = funcp(x0, para)
     else
         fx = func(x0)
@@ -75,7 +75,7 @@ subroutine zerofo(func, funcp, para, has_param, x0, xap, epsi, nitmax, &
         goto 800
     end if
     y = xap
-    if (has_param) then
+    if (nb_para > 0) then
         fy = funcp(y, para)
     else
         fy = func(y)
@@ -95,7 +95,7 @@ subroutine zerofo(func, funcp, para, has_param, x0, xap, epsi, nitmax, &
         end if
 !
         n = n+1
-        if (has_param) then
+        if (nb_para > 0) then
             fz = funcp(z, para)
         else
             fz = func(z)
@@ -120,7 +120,7 @@ subroutine zerofo(func, funcp, para, has_param, x0, xap, epsi, nitmax, &
         x = y
         fx = fy
         y = z
-        if (has_param) then
+        if (nb_para > 0) then
             fy = funcp(z, para)
         else
             fy = func(z)

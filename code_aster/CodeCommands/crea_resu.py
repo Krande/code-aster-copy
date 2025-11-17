@@ -150,7 +150,6 @@ class ResultCreator(ExecuteCommand):
         if not new_model and get_("KUCV"):
             new_model = keywords["KUCV"]["RESU_INIT"].getModel()
 
-        print("tat; ", new_model, new_mater, new_elemcara, flush=True)
         if new_mesh:
             result.setMesh(new_mesh)
         if new_model:

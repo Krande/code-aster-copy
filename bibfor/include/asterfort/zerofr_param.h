@@ -19,11 +19,12 @@
 !
 !
 interface
-    subroutine zerofr_param(intini, algo, funcp, para, x1, x2,&
+    subroutine zerofr_param(intini, algo, funcp, para, nb_para, x1, x2,&
                       tol, itmax, solu, iret, iter)
         integer(kind=8) :: intini
         character(len=*) :: algo
-        real(kind=8) :: para(*)
+        real(kind=8) :: para(nb_para)
+        integer(kind=8) :: nb_para
         real(kind=8) :: x1
         real(kind=8) :: x2
         real(kind=8) :: tol

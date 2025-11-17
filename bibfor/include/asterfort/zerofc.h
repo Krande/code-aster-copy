@@ -19,11 +19,11 @@
 !
 !
 interface
-    subroutine zerofc(func, funcp, para, has_param, xmin, xmax, prec, niter,&
+    subroutine zerofc(func, funcp, para, nb_para, xmin, xmax, prec, niter,&
                       dp, iret, nit)
 #include "asterf_types.h"
-        real(kind=8) :: para(*)
-        aster_logical, intent(in) :: has_param
+        real(kind=8) :: para(nb_para)
+        integer(kind=8), intent(in) :: nb_para
         real(kind=8) :: xmin
         real(kind=8) :: xmax
         real(kind=8) :: prec

@@ -345,7 +345,8 @@ subroutine nmcine_line_gc(fami, kpg, ksp, ndim, typmod, &
             para(6:11) = sigel(1:6)
             para(12) = pragp
 !
-            call zerofr_param(0, 'DEKKER', critere, para, 0.d0, xap, precr, niter, dp, iret, ibid)
+            call zerofr_param(0, 'DEKKER', critere, para, 12, &
+                              0.d0, xap, precr, niter, dp, iret, ibid)
             if (iret .eq. 1) goto 999
             rp = sigyp+rprim*(pm+dp)
         end if

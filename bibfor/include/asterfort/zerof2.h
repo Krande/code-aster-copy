@@ -19,12 +19,12 @@
 !
 !
 interface
-    subroutine zerof2(func, funcp, para, has_param, x0, xap, epsi, nitmax,&
+    subroutine zerof2(func, funcp, para, nb_para, x0, xap, epsi, nitmax,&
                       solu, iret, n)
 #include "asterf_types.h"
         real(kind=8) :: x0
-        real(kind=8) :: para(*)
-        aster_logical, intent(in) :: has_param
+        real(kind=8) :: para(nb_para)
+        integer(kind=8), intent(in) :: nb_para
         real(kind=8) :: xap
         real(kind=8) :: epsi
         integer(kind=8) :: nitmax

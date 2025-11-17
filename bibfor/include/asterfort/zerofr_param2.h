@@ -19,13 +19,13 @@
 !
 !
 interface
-    subroutine zerofr_param2(intini, algo, func, funcp, para, has_param, x1, x2,&
+    subroutine zerofr_param2(intini, algo, func, funcp, para, nb_para, x1, x2,&
                       tol, itmax, solu, iret, iter)
 #include "asterf_types.h"
         integer(kind=8) :: intini
         character(len=*) :: algo
-        real(kind=8) :: para(*)
-    aster_logical, intent(in) :: has_param
+        real(kind=8) :: para(nb_para)
+        integer(kind=8), intent(in) :: nb_para
         real(kind=8) :: x1
         real(kind=8) :: x2
         real(kind=8) :: tol

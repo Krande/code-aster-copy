@@ -16,7 +16,7 @@
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
 !
-subroutine zerofb(func, funcp, para, has_param, x1, x2, tol, itmax, &
+subroutine zerofb(func, funcp, para, nb_para, x1, x2, tol, itmax, &
                   zbrent, iret, iter)
 !
     implicit none
@@ -34,9 +34,9 @@ subroutine zerofb(func, funcp, para, has_param, x1, x2, tol, itmax, &
             real(kind=8) :: func
         end function
     end interface
-    aster_logical, intent(in) :: has_param
+    integer(kind=8), intent(in) :: nb_para
     integer(kind=8) :: itmax, iter, iret
-    real(kind=8) :: zbrent, tol, x1, x2, eps, para(*)
+    real(kind=8) :: zbrent, tol, x1, x2, eps, para(nb_para)
     real(kind=8) :: a, b, c, d, e, fa, fb, fc, p, q, r, s, tol1, xm
 ! ----------------------------------------------------------------------
 !     BUT : TROUVER LE ZERO D'UNE FONCTION SCALAIRE REELLE
@@ -62,7 +62,7 @@ subroutine zerofb(func, funcp, para, has_param, x1, x2, tol, itmax, &
     iter = 0
     a = x1
     b = x2
-    if (has_param) then
+    if (nb_para > 0) then
         fa = funcp(a, para)
         fb = funcp(b, para)
     else
@@ -147,7 +147,7 @@ subroutine zerofb(func, funcp, para, has_param, x1, x2, tol, itmax, &
         else
             b = b+sign(tol1, xm)
         end if
-        if (has_param) then
+        if (nb_para > 0) then
             fb = funcp(b, para)
         else
             fb = func(b)

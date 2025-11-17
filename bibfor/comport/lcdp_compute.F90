@@ -149,10 +149,12 @@ function lcdp_compute(resi, rigi, elas, itemax, prec, m, eps, ep, ka, state, &
     else
         if (kam .ne. 0.0d0) then
             x0 = kam+0.5*kam
-            call zerofr_param(2, 'AUTO', f_fhat, para, kam, x0, prec, abs(itemax), ka, iret, iter)
+            call zerofr_param(2, 'AUTO', f_fhat, para, 14, &
+                              kam, x0, prec, abs(itemax), ka, iret, iter)
         else
             x0 = 1.0d0
-            call zerofr_param(2, 'AUTO', f_fhat, para, kam, x0, prec, abs(itemax), ka, iret, iter)
+            call zerofr_param(2, 'AUTO', f_fhat, para, 14, &
+                              kam, x0, prec, abs(itemax), ka, iret, iter)
         end if
         lbd = ka-kam
     end if

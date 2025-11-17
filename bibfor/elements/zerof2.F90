@@ -16,7 +16,7 @@
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
 !
-subroutine zerof2(func, funcp, para, has_param, x0, xap, epsi, nitmax, &
+subroutine zerof2(func, funcp, para, nb_para, x0, xap, epsi, nitmax, &
                   solu, iret, n)
     implicit none
 #include "asterf_types.h"
@@ -35,8 +35,8 @@ subroutine zerof2(func, funcp, para, has_param, x0, xap, epsi, nitmax, &
             real(kind=8) :: func
         end function
     end interface
-    aster_logical, intent(in) :: has_param
-    real(kind=8) :: x0, xap, epsi, solu, para(*)
+    integer(kind=8), intent(in) :: nb_para
+    real(kind=8) :: x0, xap, epsi, solu, para(nb_para)
     integer(kind=8) :: nitmax, iret
 ! ----------------------------------------------------------------------
 !     BUT:
@@ -75,13 +75,13 @@ subroutine zerof2(func, funcp, para, has_param, x0, xap, epsi, nitmax, &
 !-----------------------------------------------------------------------
     n = 1
     x = x0
-    if (has_param) then
+    if (nb_para > 0) then
         fx = funcp(x0, para)
     else
         fx = func(x0)
     end if
     y = xap
-    if (has_param) then
+    if (nb_para > 0) then
         fy = funcp(y, para)
     else
         fy = func(y)
@@ -114,7 +114,7 @@ subroutine zerof2(func, funcp, para, has_param, x0, xap, epsi, nitmax, &
         end if
 !
         n = n+1
-        if (has_param) then
+        if (nb_para > 0) then
             fz = funcp(z, para)
         else
             fz = func(z)
@@ -154,7 +154,7 @@ subroutine zerof2(func, funcp, para, has_param, x0, xap, epsi, nitmax, &
         x = y
         fx = fy
         y = z
-        if (has_param) then
+        if (nb_para > 0) then
             fy = funcp(z, para)
         else
             fy = func(z)
@@ -177,7 +177,7 @@ subroutine zerof2(func, funcp, para, has_param, x0, xap, epsi, nitmax, &
 99  continue
     do k = 1, 20
         xdbg(k) = xap/(21-k)
-        if (has_param) then
+        if (nb_para > 0) then
             fdbg(k) = funcp((xap)/(21-k), para)
         else
             fdbg(k) = func((xap)/(21-k))
@@ -198,7 +198,7 @@ subroutine zerof2(func, funcp, para, has_param, x0, xap, epsi, nitmax, &
 100 continue
     do k = 1, 20
         xdbg(k) = xap/(21-k)
-        if (has_param) then
+        if (nb_para > 0) then
             fdbg(k) = funcp((xap)/(21-k), para)
         else
             fdbg(k) = func((xap)/(21-k))
