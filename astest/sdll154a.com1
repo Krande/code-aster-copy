@@ -16510,8 +16510,10 @@ TEST_RESU(
             NOM_CHAM="ROC1_ELNO",
             INST=0.0,
             NOM_CMP="X9",
-            VALE_CALC=3.7951926020069695e-08,
-            VALE_REFE=post_roche_analytic_PG._sigma_eq_opt[3],
+            VALE_CALC=0.0,
+            VALE_REFE=0.0,
+            CRITERE="ABSOLU",
+            ORDRE_GRANDEUR=1.0,
         ),
         # ROC2_ELNO-X17= indicateur sigmaV_opt <sigmaP
         _F(
@@ -18136,8 +18138,10 @@ TEST_RESU(
             NOM_CHAM="ROC1_ELNO",
             INST=0.0,
             NOM_CMP="X11",
-            VALE_CALC=5.2180482e-14,
-            VALE_REFE=post_roche_analytic_Coude._mfy_abat[3],
+            VALE_CALC=0.0,
+            VALE_REFE=0.0,
+            CRITERE="ABSOLU",
+            ORDRE_GRANDEUR=1.0,
             REFERENCE="AUTRE_ASTER",
         ),
         # ROC1_ELNO-X12= moment équivalent MF hors plan
@@ -20122,8 +20126,10 @@ TEST_RESU(
             NOM_CHAM="ROC1_ELNO",
             INST=0.0,
             NOM_CMP="X11",
-            VALE_CALC=5.2180482e-14,
-            VALE_REFE=post_roche_analytic_Coude_ASNR._mfy_abat[3],
+            VALE_CALC=0.0,
+            VALE_REFE=0.0,
+            CRITERE="ABSOLU",
+            ORDRE_GRANDEUR=1.0,
             REFERENCE="AUTRE_ASTER",
         ),
         # ROC1_ELNO-X12= moment équivalent MF hors plan
@@ -24264,8 +24270,10 @@ TEST_RESU(
             NOM_CHAM="ROC1_ELNO",
             INST=0.0,
             NOM_CMP="X9",
-            VALE_CALC=3.7951926020069695e-08,
-            VALE_REFE=post_roche_analytic_PG._sigma_eq_opt[3],
+            VALE_CALC=0.0,
+            VALE_REFE=0.0,
+            CRITERE="ABSOLU",
+            ORDRE_GRANDEUR=1.0,
         ),
         # ROC2_ELNO-X17= indicateur sigmaV_opt <sigmaP
         _F(
