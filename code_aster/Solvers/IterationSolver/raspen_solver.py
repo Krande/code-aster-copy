@@ -25,7 +25,7 @@ import numpy as np
 from libaster import asmpi_free, asmpi_get, asmpi_set, asmpi_split
 from scipy.sparse.linalg import LinearOperator, eigsh, svds
 
-from ...Objects import redistributePetscMat
+from ...Objects import redistributePetscMat, applyFactorOnSubBlocks
 from ...Supervis import ConvergenceError
 from ...Utilities import PETSc, no_new_attributes, profile, removePETScOptions
 from ...Utilities.mpi_utils import MPI
@@ -796,10 +796,10 @@ class _RASPENSolver:
         self.J.destroy()
         if self.withCoarsePb:
             self.Jloc0.destroy()
-            del self.GCGC
+            # del self.GCGC
         if self.withSubPrecond:
             self.Jp.destroy()
-            del self.JpCtx
+            # del self.JpCtx
 
 
 class JacCtx:
@@ -1023,6 +1023,8 @@ class substPrecondCtx:
         self.GhostVec = self.Sl.DDPart.GhostPetscVec
         # Internal ghosts
         self.intGhosts = self.DDPart.interiorGhosts
+        # IS of the ghost Map (must be stored as attribute to avoid suppression by Python garbage collector)
+        self.jSet = PETSc.IS().createGeneral(self.DDPart.ghostsMap, comm=self.Jl.getComm())
 
     def buildSubstruturedJacobian(self):
         """
@@ -1039,7 +1041,7 @@ class substPrecondCtx:
         subJ.setUp()
         return subJ
 
-    def buildMatEntries(self):
+    def buildMatEntries_old(self):  # Old
         """
         Build substructured Jacobian entries
         """
@@ -1066,19 +1068,22 @@ class substPrecondCtx:
         t0 = time()
         tempMat = self.Jl.createSubMatrices(rowsIs, colsIs)[0]
         tempMat.zeroRows(self.bdDofs, 0.0)
+        MPI.ASTER_COMM_WORLD.Barrier()
         gmax = MPI.ASTER_COMM_WORLD.reduce(time() - t0, op=MPI.MAX, root=0)
         timings["Time to extract"] = gmax
+
+        # Applying forward/backward substitutions
+        t0 = time()
 
         # Build the resulting matrix
         ResMat = PETSc.Mat().createDense((self.locSize, len(self.bdDofs)), comm=comm)
         ResMat.setUp()
-
-        # Applying forward/backward substitutions
-        t0 = time()
         tempMat = tempMat.transpose()
         tempMat_T = tempMat.createTranspose(tempMat)
         LUFct.matSolve(tempMat_T, ResMat)
+        MPI.ASTER_COMM_WORLD.Barrier()
         gmax = self.Sl.comm.reduce(time() - t0, op=MPI.MAX, root=0)
+
         timings["MatSolve time"] = gmax
 
         # Building the substructured matrix as MATAIJ
@@ -1088,6 +1093,7 @@ class substPrecondCtx:
         nl = self.DDPart.intGhostSize
         SubstMat = PETSc.Mat().createAIJ(([nl, ng], [nl, ng]), comm=self.DDPart.comm)
         start, end = SubstMat.getOwnershipRange()
+        MPI.ASTER_COMM_WORLD.Barrier()
         gmax = self.Sl.comm.reduce(time() - t0, op=MPI.MAX, root=0)
         timings["Initiating Matrix"] = gmax
 
@@ -1098,20 +1104,67 @@ class substPrecondCtx:
             row = self.DDPart.interiorGhosts[i0]
             SubstMat.setValues(i, self.DDPart.ghostsMap, Mat[row])
         gmax = self.Sl.comm.reduce(time() - t0, op=MPI.MAX, root=0)
+        MPI.ASTER_COMM_WORLD.Barrier()
         timings["Setting values"] = gmax
 
         # Assembling
         t0 = time()
         SubstMat.assemble()
+        MPI.ASTER_COMM_WORLD.Barrier()
         gmax = self.Sl.comm.reduce(time() - t0, op=MPI.MAX, root=0)
         timings["Assembling time"] = gmax
 
+        MPI.ASTER_COMM_WORLD.Barrier()
         gmax = self.Sl.comm.reduce(time() - t00, op=MPI.MAX, root=0)
         timings["Total time"] = gmax
         if self.Sl.rank == 0:
             for k, v in timings.items():
                 print(f"  {k}: {v:.6f} seconds", flush=True)
 
+        return SubstMat
+
+    def buildMatEntries(self):
+        """
+        Build substructured Jacobian entries
+        """
+        # Timings
+        timings = {}
+        t00 = time()
+        # Seq Comm
+        comm = self.Jl.getComm()
+
+        # Local factorized matrix
+        LUFct = self.Sl.locKsp.getPC().getFactorMatrix()
+        LUFct.setMumpsIcntl(20, 1)
+
+        # Test local ksp
+        try:
+            self.Sl.locKsp.solve(self.Sl.Yloc, self.Sl.Yloc)
+        except:
+            raise (RuntimeError("Local snes ksp failed ! "))
+
+        # Slicing Local Jacobian only on ghost dofs
+        rowsIs = PETSc.IS().createGeneral(np.arange(self.locSize, dtype=np.int32))
+        colsIs = PETSc.IS().createGeneral(self.bdDofs)
+        tempMat = self.Jl.createSubMatrices(rowsIs, colsIs)[0]
+        tempMat.zeroRows(self.bdDofs, 0.0)
+
+        # Applying forward/backward substitutions
+        t0 = time()
+
+        # Build the resulting matrix
+
+        iSet = PETSc.IS().createGeneral(self.intGhosts, comm=comm)
+
+        SubstMat = applyFactorOnSubBlocks(LUFct, tempMat, iSet, self.jSet)
+        SubstMat.assemble()
+        MPI.ASTER_COMM_WORLD.Barrier()
+        gmax = self.Sl.comm.reduce(time() - t0, op=MPI.MAX, root=0)
+        timings["Substructured matrix build time"] = gmax
+
+        if self.Sl.rank == 0:
+            for k, v in timings.items():
+                print(f"  {k}: {v:.6f} seconds", flush=True)
         return SubstMat
 
     def setUpSksp(self):
@@ -1135,8 +1188,9 @@ class substPrecondCtx:
         # Writing ghosts values
         Yg.getArray()[:] = self.Yloc.getArray()[self.intGhosts]
         self.sksp.setFromOptions()
-        if self.Precond is None:
-            self.Precond = self.buildMatEntries()
+        if self.sksp.getPC().getType() != "none":
+            if self.Precond is None:
+                self.Precond = self.buildMatEntries()
         self.sksp.setOperators(self.subJ, self.Precond)
         self.sksp.setUp()
         # Substructured linear solve
