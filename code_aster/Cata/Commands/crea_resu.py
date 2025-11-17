@@ -19,11 +19,10 @@
 
 
 from ..Commons import *
+from ..Commons.c_comportement import compat_syntax as compat_comport
 from ..Language.DataStructure import *
 from ..Language.Syntax import *
-
-
-from ..Commons.c_comportement import compat_syntax as compat_comport
+from ..Language.SyntaxUtils import deprecate
 
 
 def compat_syntax(keywords):
@@ -31,6 +30,7 @@ def compat_syntax(keywords):
 
     # NOM_CHAM is in AFFE now
     if "NOM_CHAM" in keywords and "AFFE" in keywords:
+        deprecate("CREA_RESU/NOM_CHAM", case=1)
         if isinstance(keywords["AFFE"], (list, tuple)):
             for i in range(len(keywords["AFFE"])):
                 keywords["AFFE"][i]["NOM_CHAM"] = keywords["NOM_CHAM"]
