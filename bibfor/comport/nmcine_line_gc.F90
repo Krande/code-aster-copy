@@ -87,7 +87,7 @@ subroutine nmcine_line_gc(fami, kpg, ksp, ndim, typmod, &
 #include "asterfort/rcvalb.h"
 #include "asterfort/utmess.h"
 #include "asterfort/verift.h"
-#include "asterfort/zerofr.h"
+#include "asterfort/zerofr_param.h"
 !
     integer(kind=8)         :: kpg, ksp, ndim, imate, iret
     real(kind=8)    :: crit(10)
@@ -133,6 +133,7 @@ subroutine nmcine_line_gc(fami, kpg, ksp, ndim, typmod, &
     integer(kind=8)             :: icodre(4)
     real(kind=8)        :: valres(4)
     character(len=16)   :: nomres(4)
+    real(kind=8) :: para(12)
 ! --------------------------------------------------------------------------------------------------
 !
 !   Est ce que l'on est bon
@@ -335,7 +336,16 @@ subroutine nmcine_line_gc(fami, kpg, ksp, ndim, typmod, &
             dp0 = sieleq-sigyp-rprim*pm
             dp0 = dp0/(rprim+1.50*(deuxmup+pragp))
             xap = dp0
-            call zerofr(0, 'DEKKER', critere, 0.d0, xap, precr, niter, dp, iret, ibid)
+!
+            para(1) = deuxmup
+            para(2) = troiskp
+            para(3) = sigyp
+            para(4) = rprim
+            para(5) = pm
+            para(6:11) = sigel(1:6)
+            para(12) = pragp
+!
+            call zerofr_param(0, 'DEKKER', critere, para, 0.d0, xap, precr, niter, dp, iret, ibid)
             if (iret .eq. 1) goto 999
             rp = sigyp+rprim*(pm+dp)
         end if
@@ -450,26 +460,36 @@ contains
 ! Variables globales : évite de passer par un common !!! NE PAS LES MODIFIER !!!
 !   deuxmup, troiskp, sigyp, rprim, pm, sigel(6), pragp
 !
-    real(kind=8) function critere(xxx)
+    real(kind=8) function critere(xxx, param)
         implicit none
-        real(kind=8) ::  xxx
+        real(kind=8), intent(in) ::  xxx, param(*)
 ! --------------------------------------------------------------------------------------------------
 !   Fonction dont on cherche le zéro pour la plasticité de Von Mises cinématique
 !
 !   Variables locales
         real(kind=8) :: rpp, gp, hp, hsg, demuc, dx, fp
+!
+        real(kind=8) :: deuxmup_, troiskp_, sigyp_, rprim_, pm_, sigel_(6), pragp_
 ! --------------------------------------------------------------------------------------------------
-        rpp = sigyp+rprim*(pm+xxx)
-        gp = 1.0+1.5*pragp*xxx/rpp
-        hp = gp+1.5*deuxmup*xxx/rpp
+        deuxmup_ = param(1)
+        troiskp_ = param(2)
+        sigyp_ = param(3)
+        rprim_ = param(4)
+        pm_ = param(5)
+        sigel_(1:6) = param(6:11)
+        pragp_ = param(12)
+!
+        rpp = sigyp_+rprim_*(pm_+xxx)
+        gp = 1.0+1.5*pragp_*xxx/rpp
+        hp = gp+1.5*deuxmup_*xxx/rpp
         hsg = hp/gp
-        demuc = deuxmup+pragp
+        demuc = deuxmup_+pragp_
 !
-        dx = (hsg-1.0)*sigel(3)
-        dx = dx/(deuxmup/1.5+troiskp*hsg/3.0)
+        dx = (hsg-1.0)*sigel_(3)
+        dx = dx/(deuxmup_/1.5+troiskp_*hsg/3.0)
 !
-        fp = (sigel(1)-deuxmup*dx/3.0)**2+(sigel(2)-deuxmup*dx/3.0)**2+ &
-             (sigel(3)+2.0*deuxmup*dx/3.0)**2+sigel(4)**2
+        fp = (sigel_(1)-deuxmup_*dx/3.0)**2+(sigel_(2)-deuxmup_*dx/3.0)**2+ &
+             (sigel_(3)+2.0*deuxmup_*dx/3.0)**2+sigel_(4)**2
 !
         critere = 1.5*demuc*xxx-sqrt(1.50*fp)+rpp
 !
