@@ -134,4 +134,6 @@ subroutine te0450(nomopt, nomte)
 !
     call writeVector('PVECTUR', total_dofs, rhs)
 !
+    call hhoMecaState%free()
+!
 end subroutine
