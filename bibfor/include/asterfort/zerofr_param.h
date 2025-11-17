@@ -19,28 +19,24 @@
 !
 !
 interface
-    subroutine zerofo(func, funcp, para, has_param, x0, xap, epsi, nitmax,&
-                      solu, iret, n)
-#include "asterf_types.h"
+    subroutine zerofr_param(intini, algo, funcp, para, x1, x2,&
+                      tol, itmax, solu, iret, iter)
+        integer(kind=8) :: intini
+        character(len=*) :: algo
         real(kind=8) :: para(*)
-        aster_logical, intent(in) :: has_param
-        real(kind=8) :: x0
-        real(kind=8) :: xap
-        real(kind=8) :: epsi
-        integer(kind=8) :: nitmax
+        real(kind=8) :: x1
+        real(kind=8) :: x2
+        real(kind=8) :: tol
+        integer(kind=8) :: itmax
         real(kind=8) :: solu
         integer(kind=8) :: iret
-        integer(kind=8) :: n
+        integer(kind=8) :: iter
         interface
-        function funcp(x, param)
+            function funcp(x, param)
             real(kind=8), intent(in) :: x
             real(kind=8), intent(in) :: param(*)
             real(kind=8) :: funcp
-        end function
-        function func(x)
-            real(kind=8) :: x
-            real(kind=8) :: func
-        end function
+            end function
         end interface
-    end subroutine zerofo
+    end subroutine
 end interface
