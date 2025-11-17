@@ -279,7 +279,6 @@ def getModalMassIner(MODES, rigidBodyFields, excludedDOF, MASSE):
 
 
 def post_mode_ops(self, MODE, GROUP_MA, MATR_MASS, CARA_ELEM=None):
-
     """
     Macro-command POST_MODE
     """

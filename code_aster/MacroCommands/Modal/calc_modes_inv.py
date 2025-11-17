@@ -101,7 +101,7 @@ def calc_modes_inv(self, stop_erreur, sturm, TYPE_RESU, OPTION, INFO, **args):
         PREC_SEPARE=SOLVEUR_MODAL["PREC_SEPARE"],
         NMAX_ITER_AJUSTE=SOLVEUR_MODAL["NMAX_ITER_AJUSTE"],
         PREC_AJUSTE=SOLVEUR_MODAL["PREC_AJUSTE"],
-        **motcles_calc_vp
+        **motcles_calc_vp,
     )
 
     #

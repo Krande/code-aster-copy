@@ -166,7 +166,7 @@ def calc_modes_multi_bandes(self, stop_erreur, sturm, INFO, **args):
         FREQ=lborne,
         NIVEAU_PARALLELISME=niv_par,
         SOLVEUR=dSolveur_infomode,
-        **motfaci
+        **motfaci,
     )
 
     # Gestion des sous-bandes de frequences et construction (si //) de l'objet
@@ -233,7 +233,7 @@ def calc_modes_multi_bandes(self, stop_erreur, sturm, INFO, **args):
                 SEUIL_FREQ=CALC_FREQ["SEUIL_FREQ"],
                 NMAX_ITER_SHIFT=CALC_FREQ["NMAX_ITER_SHIFT"],
                 PREC_SHIFT=CALC_FREQ["PREC_SHIFT"],
-                **motscfa
+                **motscfa,
             )
 
             if sturm == "LOCAL":
@@ -303,7 +303,7 @@ def calc_modes_multi_bandes(self, stop_erreur, sturm, INFO, **args):
                 METHODE=METHODE,
                 OPTION=OPTION,
                 SOLVEUR=dSolveur,
-                **motscit
+                **motscit,
             )
 
             # -----------------------------------------------------------------
@@ -393,7 +393,7 @@ def calc_modes_multi_bandes(self, stop_erreur, sturm, INFO, **args):
                 FREQ=(freq_ini, freq_fin),
                 NIVEAU_PARALLELISME=niv_par,
                 SOLVEUR=dSolveur_infomode,
-                **motfaci
+                **motfaci,
             )
 
             # Recuperation du nbre de modes donnes par STURM global

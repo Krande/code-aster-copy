@@ -118,7 +118,7 @@ def calc_modes_simult(self, stop_erreur, sturm, TYPE_RESU, OPTION, INFO, **args)
         OPTION=OPTION,
         NMAX_ITER_SHIFT=calc_vp["NMAX_ITER_SHIFT"],
         PREC_SHIFT=calc_vp["PREC_SHIFT"],
-        **motcles_calc_vp
+        **motcles_calc_vp,
     )
 
     #
