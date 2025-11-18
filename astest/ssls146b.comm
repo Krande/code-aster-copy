@@ -384,6 +384,7 @@ ferrDatSlu1 = dict(
     PHI_INF_Y=0.025,
     PHI_SUP_Y=0.025,
     UTIL_COMPR="NON",
+    FERR_MIN="EC2",
 )
 
 ferrDatSlu2 = dict(
