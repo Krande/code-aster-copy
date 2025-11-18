@@ -670,11 +670,6 @@ class Coeur:
 
         MA = CREA_MAILLAGE(MAILLAGE=MA0, CREA_POI1=tuple(dict_grids))
 
-        for ac in self.collAC:
-            if "DI_CT_%s" % ac.pos_aster not in gma_names:
-                di_ct = MA.getCells("DI_%s" % ac.pos_aster)
-                MA.setGroupOfCells("DI_CT_%s" % ac.pos_aster, di_ct)
-
         if "GRIL_I" not in gma_names:
             gril_i = MA.getCells(tuple(set(grids_middle)))
             MA.setGroupOfCells("GRIL_I", gril_i)
