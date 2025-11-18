@@ -17,13 +17,8 @@
 # along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 # --------------------------------------------------------------------
 
-#
-#
-#
 DEBUT(CODE="OUI", DEBUG=_F(SDVERI="OUI"))
-##########################
-# LECTURE MAILLAGE GIBI
-##########################
+
 
 MAIL = LIRE_MAILLAGE(FORMAT="MED")
 
@@ -179,7 +174,7 @@ RES1 = (
         MODELE=MO,
         AFFE=(
             _F(
-                TOUT="OUI",
+                GROUP_MA=("SOL", "MA_HAUT"),
                 NOM_CMP=("SIXX", "SIYY", "SIZZ", "SIXY"),
                 VALE=(-5.0e6, -5.0e6, 0.0, 0.0),
             ),
@@ -268,9 +263,30 @@ RESU1 = CALC_CHAMP(reuse=RESU1, RESULTAT=RESU1, INST=10.0, FORCE="REAC_NODA")
 # RECUPERATION DES REACTIONS NODALES
 #######################################
 
-REANODA = CREA_CHAMP(
+
+DEPZERO = CREA_CHAMP(
+    MAILLAGE=MAIL,
+    OPERATION="AFFE",
+    TYPE_CHAM="NOEU_DEPL_R",
+    AFFE=(_F(TOUT="OUI", NOM_CMP=("DX", "DY"), VALE=(0.0, 0.0)),),
+)
+
+
+reacNodeExtr = CREA_CHAMP(
     TYPE_CHAM="NOEU_DEPL_R", OPERATION="EXTR", RESULTAT=RESU1, NOM_CHAM="REAC_NODA", INST=10.0
 )
+
+
+REANODA = CREA_CHAMP(
+    OPERATION="ASSE",
+    MAILLAGE=MAIL,
+    TYPE_CHAM="NOEU_DEPL_R",
+    ASSE=(
+        _F(CHAM_GD=DEPZERO, TOUT="OUI"),
+        _F(CHAM_GD=reacNodeExtr, GROUP_MA=("SOL_REST", "MA_HAUT")),
+    ),
+)
+
 
 CH3 = AFFE_CHAR_MECA(MODELE=MO1, VECT_ASSE=REANODA)
 

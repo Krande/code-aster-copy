@@ -15,39 +15,15 @@
 ! You should have received a copy of the GNU General Public License
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
-
-subroutine eclpgm(ma2, mo, cham1, ligrel, shrink, &
-                  lonmin, nch, lisch)
+!
+subroutine eclpgm(ma2, model1, cham1, ligrelIn, shrink, &
+                  edgeMin, nbField, listFieldType)
+!
     implicit none
-!   - TRAITEMENT DU MOT CLE CREA_MAILLAGE/ECLA_PG
-!-----------------------------------------------------------------------
-! BUT : CREER LE MAILLAGE (MA2) CORRESPONDANT AUX POINTS DE GAUSS
-!       DES ELEMENTS DU LIGREL (LIGREL).
 !
-! ARGUMENTS :
-!  IN/JXIN  MO : MODELE DONT ON VEUT "ECLATER" LES POINTS DE GAUSS
-!  IN/JXIN  LIGREL : NOM DU LIGREL (D'ELEMENTS DU MODELE) CORRESPONDANT
-!           AUX MAILLES QUI INTERESSENT L'UTILISATEUR.
-!           SI LIGREL=' ', ON PREND LE LIGREL DU MODELE (TOUT='OUI')
-!  IN/JXIN  CHAM1 : NOM DU CHAM_ELEM/ELGA QUE L'ON VEUT ECLATER
-!           (OU ' ' SI ON UTILISE NCH ET LISCH)
-!  IN       LISCH(*) : LISTE DES NOMS SYMBOLIQUES DES CHAMPS AUXQUELS
-!           ON S'INTERESSE. EX: (SIEF_ELGA, VARI_ELGA, ...)
-!  IN NCH : DIMENSION DE LISCH  (0 SI CHAM1/=' ')
-!  IN/JXOUT MA2 : NOM DU MAILLAGE A CREER (1 MAILLE PAR POINT DE GAUSS)
-!           LES MAILLES DE MA2 SONT TOUTES DECONNECTEES LES UNES DES
-!           DES AUTRES.
-!  IN  SHRINK : COEFFICENT DE "CONTRACTION" DES MAILLES POUR QUE
-!       CELLES-CI NE SE CHEVAUCHENT PAS.
-!       SHRINK=0.9 DONNE UN BEAU VITRAIL AVEC 10% DE NOIR.
-!  IN  LONMIN : LONGUEUR MINIMALE POUR LES ARETES DES MAILLES CREEES.
-!      (IGNORE SI LONMIN <=0)
-!      CETTE FONCTIONNALITE PERMET D'"EPAISSIR" DES ELEMENTS DE JOINT
-!      POUR QU'ON PUISSE LES VOIR.
-!-----------------------------------------------------------------------
-!
-#include "jeveux.h"
 #include "asterfort/alchml.h"
+#include "asterfort/as_allocate.h"
+#include "asterfort/as_deallocate.h"
 #include "asterfort/assert.h"
 #include "asterfort/celfpg.h"
 #include "asterfort/copisd.h"
@@ -72,45 +48,70 @@ subroutine eclpgm(ma2, mo, cham1, ligrel, shrink, &
 #include "asterfort/typele.h"
 #include "asterfort/utmess.h"
 #include "asterfort/wkvect.h"
-#include "asterfort/as_deallocate.h"
-#include "asterfort/as_allocate.h"
+#include "jeveux.h"
 !
+    character(len=8), intent(in) :: ma2, model1
+    character(len=19), intent(in) :: cham1, ligrelIn
+    real(kind=8), intent(in) :: shrink, edgeMin
+    integer(kind=8), intent(in) :: nbField
+    character(len=16), intent(in) :: listFieldType(nbField)
 !
+! --------------------------------------------------------------------------------------------------
 !
-    integer(kind=8) :: k, te, tabno(27), iret1, jobj, numa, nch
+! TRAITEMENT DU MOT CLE CREA_MAILLAGE/ECLA_PG
+!
+! BUT : CREER LE MAILLAGE (MA2) CORRESPONDANT AUX POINTS DE GAUSS
+!       DES ELEMENTS DU LIGREL (LIGREL).
+!
+! --------------------------------------------------------------------------------------------------
+!
+!  IN/JXIN  MO : MODELE DONT ON VEUT "ECLATER" LES POINTS DE GAUSS
+!  IN/JXIN  LIGREL : NOM DU LIGREL (D'ELEMENTS DU MODELE) CORRESPONDANT
+!           AUX MAILLES QUI INTERESSENT L'UTILISATEUR.
+!           SI LIGREL=' ', ON PREND LE LIGREL DU MODELE (TOUT='OUI')
+!  IN/JXIN  CHAM1 : NOM DU CHAM_ELEM/ELGA QUE L'ON VEUT ECLATER
+!           (OU ' ' SI ON UTILISE NCH ET LISCH)
+!  IN       LISCH(*) : LISTE DES NOMS SYMBOLIQUES DES CHAMPS AUXQUELS
+!           ON S'INTERESSE. EX: (SIEF_ELGA, VARI_ELGA, ...)
+!  IN NCH : DIMENSION DE LISCH  (0 SI CHAM1/=' ')
+!  IN/JXOUT MA2 : NOM DU MAILLAGE A CREER (1 MAILLE PAR POINT DE GAUSS)
+!           LES MAILLES DE MA2 SONT TOUTES DECONNECTEES LES UNES DES
+!           DES AUTRES.
+!  IN  SHRINK : COEFFICENT DE "CONTRACTION" DES MAILLES POUR QUE
+!       CELLES-CI NE SE CHEVAUCHENT PAS.
+!       SHRINK=0.9 DONNE UN BEAU VITRAIL AVEC 10% DE NOIR.
+!  IN  LONMIN : LONGUEUR MINIMALE POUR LES ARETES DES MAILLES CREEES.
+!      (IGNORE SI LONMIN <=0)
+!      CETTE FONCTIONNALITE PERMET D'"EPAISSIR" DES ELEMENTS DE JOINT
+!      POUR QU'ON PUISSE LES VOIR.
+!
+! --------------------------------------------------------------------------------------------------
+!
+    integer(kind=8), parameter :: mxnbn2 = 8, mxnbpi = 64, mxnbte = 8, mxnbse = 27
+!     MXNBN2 : MAX DU NOMBRE DE NOEUDS D'UN SOUS-ELEMENT (HEXA8)
+!     MXNBPI : MAX DU NOMBRE DE POINT_I (HEXA A 27 POINTS DE GAUSS)
+!     MXNBPI = 4X4X4
+!     MXNBTE : MAX DU NOMBRE DE TERMES DE LA C.L. DEFINISSANT 1 POINT_I
+!              AU PLUS LES 8 SOMMETS D'UN HEXA8
+!     MXNBSE : MAX DU NOMBRE DE SOUS-ELEMENTS
+    integer(kind=8) :: k, typeElemNume, tabno(27), iret1, jobj, numa
     integer(kind=8) :: igr, iel, ilmaco, illiel
     integer(kind=8) :: dimgeo, ibid, ino, ino1, ino2
     integer(kind=8) :: nbmail, nbnoeu, nbcoor, iadime, kse
     integer(kind=8) :: nbno2t, ianno2, iatypm, nuno2, nupoi2, cas
-    integer(kind=8) :: npg1, nbpi, iagese, nno2, nuse, nse1
+    integer(kind=8) :: npg, nbpi, iagese, nno2, nuse, nbSel
     integer(kind=8) :: ima, nbelgr, nupoin, npoini, iterm, ipoini
-    integer(kind=8) :: iret, ich, nch2
-    character(len=8) :: mo, ma1, ma2, elrefa, fapg, nompar
-    character(len=8) :: tych
-    character(len=16) :: nomte, lisch(nch)
-    character(len=19) :: ligrel, ligrmo, cel, cham1, ligre1
+    integer(kind=8) :: iret, iField, nch2
+    character(len=8) :: ma1, elrefa, fapg, nompar
+    character(len=8) :: fieldDisc
+    character(len=16) :: typeElemName
+    character(len=19) :: modelLigrel, cel, fieldLigrel, ligrel
     character(len=24) :: nomobj
     character(len=24) :: valk(2)
-    real(kind=8) :: x, xc, xm, shrink, lonmin
-!
-! ----------------------------------------------------------------------
-!     VARIABLES NECESSAIRES A L'APPEL DE ECLATY :
-!     ON COMPREND LE SENS DE CES VARIABLES EN REGARDANT ECLATY
-    integer(kind=8) :: mxnbn2, mxnbpi, mxnbte, mxnbse
-!     MXNBN2 : MAX DU NOMBRE DE NOEUDS D'UN SOUS-ELEMENT (HEXA8)
-    parameter(mxnbn2=8)
-!     MXNBPI : MAX DU NOMBRE DE POINT_I (HEXA A 27 POINTS DE GAUSS)
-!     MXNBPI = 4X4X4
-    parameter(mxnbpi=64)
-!     MXNBTE : MAX DU NOMBRE DE TERMES DE LA C.L. DEFINISSANT 1 POINT_I
-!              AU PLUS LES 8 SOMMETS D'UN HEXA8
-    parameter(mxnbte=8)
-!     MXNBSE : MAX DU NOMBRE DE SOUS-ELEMENTS
-    parameter(mxnbse=27)
-!
+    real(kind=8) :: x, xc, xm
     integer(kind=8) :: nbse, corsel(mxnbse)
     integer(kind=8) :: connx(mxnbn2, mxnbse), nsomm1(mxnbpi, mxnbte)
-    integer(kind=8) :: nterm1(mxnbpi), nbno2(mxnbse), tyma(mxnbse)
+    integer(kind=8) :: nterm1(mxnbpi), nbno2(mxnbse), typeCellNume(mxnbse)
     real(kind=8) :: csomm1(mxnbpi, mxnbte)
     integer(kind=8) :: ico
     integer(kind=8) :: opt, iadesc, iaoppa, nbin
@@ -119,9 +120,7 @@ subroutine eclpgm(ma2, mo, cham1, ligrel, shrink, &
     integer(kind=8), pointer :: liel(:) => null()
     real(kind=8), pointer :: vale(:) => null()
     integer(kind=8), pointer :: maco(:) => null()
-! ----------------------------------------------------------------------
-!
-!     FONCTIONS FORMULES :
+! --------------------------------------------------------------------------------------------------
 !     NUMAIL(IGR,IEL)=NUMERO DE LA MAILLE ASSOCIEE A L'ELEMENT IEL
 #define numail(igr,iel) liel(zi(illiel+igr-1)+iel-1)
 !     NBNOMA(IMA)=NOMBRE DE NOEUDS DE LA MAILLE IMA
@@ -130,12 +129,12 @@ subroutine eclpgm(ma2, mo, cham1, ligrel, shrink, &
 !                     IMA ETANT UNE MAILLE DU MAILLAGE.
 #define numglm(ima,ino) maco(zi(ilmaco+ima-1)+ino-1)
 !
-! DEB ------------------------------------------------------------------
+! --------------------------------------------------------------------------------------------------
+!
     call jemarq()
     dimgeo = 3
 !
-!
-    call dismoi('NOM_MAILLA', mo, 'MODELE', repk=ma1)
+    call dismoi('NOM_MAILLA', model1, 'MODELE', repk=ma1)
     call jeveuo(ma1//'.COORDO    .VALE', 'L', vr=vale)
     call jeveuo(ma1//'.CONNEX', 'L', vi=maco)
     call jeveuo(jexatr(ma1//'.CONNEX', 'LONCUM'), 'L', ilmaco)
@@ -144,12 +143,12 @@ subroutine eclpgm(ma2, mo, cham1, ligrel, shrink, &
 !     -- ON ACCEPTE 2 CAS DE FIGURE :
     if (cham1 .ne. ' ') then
 !       -- CAS "PROJ_CHAMP" :
-        call dismoi('TYPE_CHAMP', cham1, 'CHAMP', repk=tych)
-        ASSERT(tych .eq. 'ELGA')
-        ASSERT(nch .eq. 0)
-        ASSERT(ligrel .ne. ' ')
-        call dismoi('NOM_LIGREL', cham1, 'CHAM_ELEM', repk=ligre1)
-        ASSERT(ligre1 .eq. ligrel)
+        call dismoi('TYPE_CHAMP', cham1, 'CHAMP', repk=fieldDisc)
+        ASSERT(fieldDisc .eq. 'ELGA')
+        ASSERT(nbField .eq. 0)
+        ASSERT(ligrelIn .ne. ' ')
+        call dismoi('NOM_LIGREL', cham1, 'CHAM_ELEM', repk=fieldLigrel)
+        ASSERT(fieldLigrel .eq. ligrelIn)
         cas = 1
     else
 !       -- CAS "CREA_MAILLAGE/ECLA_PG" :
@@ -172,13 +171,13 @@ subroutine eclpgm(ma2, mo, cham1, ligrel, shrink, &
     else if (cas .eq. 2) then
         cel = '&&ECLPGM.CHAM_ELEM'
         ico = 0
-        nch2 = nch
-        call dismoi('NOM_LIGREL', mo, 'MODELE', repk=ligrmo)
-        do ich = 1, nch2
-            if (lisch(ich) (6:9) .ne. 'ELGA') then
+        nch2 = nbField
+        call dismoi('NOM_LIGREL', model1, 'MODELE', repk=modelLigrel)
+        do iField = 1, nch2
+            if (listFieldType(iField) (6:9) .ne. 'ELGA') then
                 call utmess('F', 'CALCULEL2_41')
             end if
-            call jenonu(jexnom('&CATA.OP.NOMOPT', lisch(ich)), opt)
+            call jenonu(jexnom('&CATA.OP.NOMOPT', listFieldType(iField)), opt)
             if (opt .eq. 0) goto 30
 !
             call jeveuo(jexnum('&CATA.OP.DESCOPT', opt), 'L', iadesc)
@@ -186,7 +185,7 @@ subroutine eclpgm(ma2, mo, cham1, ligrel, shrink, &
             nbin = zi(iadesc-1+2)
             nompar = zk8(iaoppa-1+nbin+1)
 !
-            call alchml(ligrmo, lisch(ich), nompar, 'V', cel, &
+            call alchml(modelLigrel, listFieldType(iField), nompar, 'V', cel, &
                         iret1, ' ')
             if (iret1 .ne. 0) goto 30
 !
@@ -194,8 +193,8 @@ subroutine eclpgm(ma2, mo, cham1, ligrel, shrink, &
             call celfpg(cel, nomobj, iret)
             call detrsd('CHAMP', cel)
             if (iret .eq. 1) then
-                valk(1) = mo
-                valk(2) = lisch(ich)
+                valk(1) = model1
+                valk(2) = listFieldType(iField)
                 call utmess('F', 'CALCULEL2_33', nk=2, valk=valk)
             end if
             call jeveuo(nomobj, 'L', jobj)
@@ -203,7 +202,7 @@ subroutine eclpgm(ma2, mo, cham1, ligrel, shrink, &
         end do
 !        -- ON N'A PAS TROUVE DE CHAMP ELGA CORRECT :
         if (ico .eq. 0) then
-            valk(1) = lisch(1)
+            valk(1) = listFieldType(1)
             call utmess('F', 'CALCULEL2_24', nk=1, valk=valk)
         end if
     end if
@@ -213,7 +212,11 @@ subroutine eclpgm(ma2, mo, cham1, ligrel, shrink, &
 !     0.2 : ON SE RESTREINT AUX MAILLES EVENTUELLEMENT SPECIFIEES PAR
 !           L'UTILISATEUR :
 !     ----------------------------------------------------------------
-    if (ligrel .eq. ' ') ligrel = ligrmo
+    if (ligrelIn .eq. ' ') then
+        ligrel = modelLigrel
+    else
+        ligrel = ligrelIn
+    end if
     call jeveuo(ligrel//'.LIEL', 'L', vi=liel)
     call jeveuo(jexatr(ligrel//'.LIEL', 'LONCUM'), 'L', illiel)
 !
@@ -226,27 +229,33 @@ subroutine eclpgm(ma2, mo, cham1, ligrel, shrink, &
     nbpi = 0
     nbno2t = 0
     do igr = 1, nbgrel(ligrel)
-        te = typele(ligrel, igr)
+        typeElemNume = typele(ligrel, igr)
         nbelgr = nbelem(ligrel, igr)
-        if (nbelgr .eq. 0) goto 1
-        call jenuno(jexnum('&CATA.TE.NOMTE', te), nomte)
-!
+        if (nbelgr .eq. 0) cycle
+        call jenuno(jexnum('&CATA.TE.NOMTE', typeElemNume), typeElemName)
         ASSERT(nch2 .gt. 0)
         numa = numail(igr, 1)
         elrefa = zk16(jobj-1+numa) (1:8)
         fapg = zk16(jobj-1+numa) (9:16)
-        if (fapg .eq. ' ') goto 1
+        if (fapg .eq. ' ') cycle
 !
-        call eclaty(nomte, elrefa, fapg, npg1, npoini, &
-                    nterm1, nsomm1, csomm1, tyma, nbno2, &
-                    connx, mxnbn2, mxnbpi, mxnbte, mxnbse, &
-                    nse1, corsel, iret)
-        nbse = nbse+nbelgr*nse1
+        call eclaty(typeElemName, &
+                    elrefa, fapg, &
+                    mxnbn2, mxnbpi, mxnbte, mxnbse, &
+                    npg, npoini, &
+                    nterm1, nsomm1, csomm1, &
+                    typeCellNume, nbno2, connx, &
+                    nbsel, corsel, iret)
+        if (iret .ne. 0) then
+            call utmess("F", "PROJECTION4_7")
+        end if
+
+        nbse = nbse+nbelgr*nbSel
         nbpi = nbpi+nbelgr*npoini
-        do kse = 1, nse1
+        do kse = 1, nbSel
             nbno2t = nbno2t+nbelgr*nbno2(kse)
         end do
-1       continue
+
     end do
 !
 !
@@ -280,22 +289,28 @@ subroutine eclpgm(ma2, mo, cham1, ligrel, shrink, &
     nupoin = 0
     nuno2 = 0
     do igr = 1, nbgrel(ligrel)
-        te = typele(ligrel, igr)
+        typeElemNume = typele(ligrel, igr)
         nbelgr = nbelem(ligrel, igr)
-        if (nbelgr .eq. 0) goto 2
-        call jenuno(jexnum('&CATA.TE.NOMTE', te), nomte)
+        if (nbelgr .eq. 0) cycle
+        call jenuno(jexnum('&CATA.TE.NOMTE', typeElemNume), typeElemName)
 !
         ASSERT(nch2 .gt. 0)
         numa = numail(igr, 1)
         elrefa = zk16(jobj-1+numa) (1:8)
         fapg = zk16(jobj-1+numa) (9:16)
-        if (fapg .eq. ' ') goto 2
+        if (fapg .eq. ' ') cycle
 !
-        call eclaty(nomte, elrefa, fapg, npg1, npoini, &
-                    nterm1, nsomm1, csomm1, tyma, nbno2, &
-                    connx, mxnbn2, mxnbpi, mxnbte, mxnbse, &
-                    nse1, corsel, iret)
-        if (nse1 .eq. 0) goto 2
+        call eclaty(typeElemName, &
+                    elrefa, fapg, &
+                    mxnbn2, mxnbpi, mxnbte, mxnbse, &
+                    npg, npoini, &
+                    nterm1, nsomm1, csomm1, &
+                    typeCellNume, nbno2, connx, &
+                    nbsel, corsel, iret)
+        if (iret .ne. 0) then
+            call utmess("F", "PROJECTION4_7")
+        end if
+        if (nbSel .eq. 0) cycle
 !
         do iel = 1, nbelgr
 !          ON RECUPERE LE NUMERO DE LA MAILLE ET LE NUMERO
@@ -320,9 +335,9 @@ subroutine eclpgm(ma2, mo, cham1, ligrel, shrink, &
 !
 !          -- STOCKAGE DES NUMEROS DES POINT_I DES SOUS-ELEMENTS
 !             ET DE LEURS COORDONNEES :
-            do kse = 1, nse1
+            do kse = 1, nbSel
                 nuse = nuse+1
-                zi(iatypm-1+nuse) = tyma(kse)
+                zi(iatypm-1+nuse) = typeCellNume(kse)
                 zi(ianno2-1+nuse) = nbno2(kse)
                 nno2 = nbno2(kse)
                 do ino2 = 1, nno2
@@ -336,12 +351,11 @@ subroutine eclpgm(ma2, mo, cham1, ligrel, shrink, &
                 end do
 !           DANS LE CAS DU QUADRILATERE ON CONTROLE L'APPLATISSEMENT
                 if (nno2 .eq. 4) then
-                    call eclapp(dimgeo, nno2, lonmin, zr(iagese+(nuno2-4)*dimgeo))
+                    call eclapp(dimgeo, nno2, edgeMin, zr(iagese+(nuno2-4)*dimgeo))
                 end if
             end do
 !
         end do
-2       continue
     end do
 !
     call jedetr(nomobj)

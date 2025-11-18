@@ -17,7 +17,7 @@
 # along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 # --------------------------------------------------------------------
 
-DEBUT(CODE="OUI", DEBUG=_F(SDVERI="OUI"))
+DEBUT(CODE="OUI", DEBUG=_F(SDVERI="OUI"), IGNORE_ALARM=("CALCULEL4_9",))
 
 sigc = 3.25
 gc = 0.150
@@ -50,7 +50,7 @@ LISTINST = DEFI_LIST_REEL(DEBUT=0.0, INTERVALLE=(_F(JUSQU_A=tfin, NOMBRE=int(tfi
 #  OPERATIONS SUR LE MAILLAGE
 ####################################
 
-MA0 = LIRE_MAILLAGE(FORMAT="MED")
+MA0 = LIRE_MAILLAGE(FORMAT="MED", VERI_MAIL=_F(VERIF="NON"))
 
 MA = CREA_MAILLAGE(MAILLAGE=MA0, LINE_QUAD=_F(TOUT="OUI"))
 
@@ -98,6 +98,7 @@ MO = AFFE_MODELE(
             MODELISATION="PLAN_JHMS",
         ),
     ),
+    INFO=2,
 )
 
 ####################################
@@ -156,6 +157,7 @@ CHAMNOF = CREA_CHAMP(
     OPERATION="AFFE",
     TYPE_CHAM="NOEU_DEPL_R",
     AFFE=(
+        _F(TOUT="OUI", NOM_CMP=("DX", "DY", "PRE1", "LH1"), VALE=(0.0, 0.0, 0.0, 0.0)),
         _F(GROUP_NO="AG", NOM_CMP=("DX", "DY"), VALE=(-3.73, -1)),
         _F(GROUP_NO="AD", NOM_CMP=("DX", "DY"), VALE=(3.73, -1)),
     ),

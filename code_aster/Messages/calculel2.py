@@ -188,14 +188,6 @@ Conseil :
   MACR_ECLA_PG(... NOM_CHAM=('SIEF_ELGA', 'VARI_ELGA'),
 """
     ),
-    25: _(
-        """
-  Attention : %(i1)d mailles de type %(k1)s n'ont pas été projetées car la famille
-  de points de Gauss sur le champ en question a une maille support 1D.
-
-  Il s'agit certainement d'éléments de joint 2D.
-"""
-    ),
     26: _(
         """
 On ne trouve pas le champ de nom %(k1)s pour le numéro d'ordre %(i1)d dans
