@@ -897,7 +897,7 @@ def macr_lign_coupe_ops(
         assert 0
 
     # modify mesh before loading VisuCutBuilder
-    cut_to_group = {}
+    cut_to_group: Dict[int, Tuple[str, str]] = {}
     for iocc, m in enumerate(LIGN_COUPE):
         cut_type = m["TYPE"]
         if cut_type in ("GROUP_NO", "GROUP_MA"):
@@ -906,7 +906,14 @@ def macr_lign_coupe_ops(
             ioc2 += 1
             groupe = f"LICOF{ioc2}"
             crea_grp_matiere(f"LICOU{ioc2}", groupe, iocc, m, __remodr, NOM_CHAM, __macou)
-        cut_to_group[iocc] = groupe
+        # on definit l'intitulé
+        if m["INTITULE"]:
+            intitl = m["INTITULE"]
+        elif cut_type in ("GROUP_NO", "GROUP_MA"):
+            intitl = groupe
+        else:
+            intitl = f"l.coupe{ioc2}"
+        cut_to_group[iocc] = groupe, intitl
 
     if write_visu:
         unit_depl_configs, compo_depl_unit = get_axis_config_for_dimension(dimension=dime)
@@ -950,15 +957,7 @@ def macr_lign_coupe_ops(
         else:
             motscles["TOUT_CMP"] = "OUI"
 
-        cut_type = m["TYPE"]
-        groupe: str = cut_to_group[iocc]
-        # on definit l'intitulé
-        if m["INTITULE"]:
-            intitl = m["INTITULE"]
-        elif cut_type in ("GROUP_NO", "GROUP_MA"):
-            intitl = groupe
-        else:
-            intitl = f"l.coupe{ioc2}"
+        groupe, intitl = cut_to_group[iocc]
 
         current_resu = __recou
 
@@ -1053,6 +1052,7 @@ def macr_lign_coupe_ops(
                     )
 
             group_name = f"CUT_{intitl}"
+            print(f"Add {group_name}")
             visu_cut.add_group(name=group_name, ids=node_ids, geo_type=VisuCutBuilder.NODE)
 
     if write_visu:
