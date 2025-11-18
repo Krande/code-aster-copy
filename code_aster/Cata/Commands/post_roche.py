@@ -35,7 +35,7 @@ POST_ROCHE = MACRO(
     VARIANTE=SIMP(statut="f", typ="TXM", into=("RCC_MRX", "ASNR"), defaut="RCC_MRX"),
     b_rccmrx=BLOC(
         condition="""equal_to("VARIANTE", "RCC_MRX") """,
-        SIGM_LIM=SIMP(statut="f", typ="TXM", into=("OUI", "NON"), defaut=("NON")),
+        SIGM_LIM=SIMP(statut="f", typ="TXM", into=("OUI", "NON"), defaut=("OUI")),
         SIGM_ABAT=SIMP(statut="f", typ="TXM", into=("CODE", "REFE_ELAS"), defaut=("CODE")),
         b_no_sigm_lim=BLOC(
             condition="""equal_to("SIGM_LIM", "NON") """,

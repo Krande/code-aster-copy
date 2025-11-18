@@ -470,6 +470,7 @@ sismique_dyn = CREA_RESU(
 # Il s'agit d'un test supplémentaire.
 # VARIANTE = 'RCC_MRX' (défaut) + SIGM_ABAT='CODE' (pas de Coude)
 resuPostRocheToutSism = POST_ROCHE(
+    SIGM_LIM="NON",
     ZONE_ANALYSE=(_F(TOUT="OUI", GROUP_NO_ORIG="A"),),
     MODELE=modele,
     NOM_CHAM=("ROC1_ELNO", "ROC2_ELNO"),
@@ -883,6 +884,7 @@ resuLuPostRocheGrMa = POST_ROCHE(
 # SIGM_ABAT='REFE_ELAS'
 # (Contrainte vraie optimisé UT02-X9 calculé avec la formule REFE_ELAS)
 resuLuPostRocheGrMa_RE = POST_ROCHE(
+    SIGM_LIM="NON",
     SIGM_ABAT="REFE_ELAS",
     ZONE_ANALYSE=(_F(GROUP_MA="TUYAU", GROUP_NO_ORIG="A"),),
     MODELE=modele,

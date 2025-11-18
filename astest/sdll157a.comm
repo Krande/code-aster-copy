@@ -109,6 +109,7 @@ maillage = DEFI_GROUP(
 nodesArc1 = maillage.getNodes("Arc_1_ordo")
 nodesArc3 = maillage.getNodes("Arc_3_ordo")
 
+
 # 3- calcul du vect_y du coude en question pour correspondre à
 # la norme RCCM_RX des moments dans le plan et hors plan du coude
 def calc_vectY(maillage, groupNoOrdo):
