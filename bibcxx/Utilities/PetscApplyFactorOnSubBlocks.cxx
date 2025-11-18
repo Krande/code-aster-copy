@@ -239,51 +239,6 @@ PetscErrorCode MatSparseSolve_petsc( Mat FctMat, Mat RhsMat, IS ISet, Mat *SolMa
 
     /* -----------------------------------------------------------------------------*/
 
-    /* ------------------------------------------------------------------------------------*/
-    /* ------------------------------- MatMatSolve APPROACH -------------------------------*/
-    /* ------------------------------------------------------------------------------------*/
-    // PetscCallMPI(MPI_Barrier(PETSC_COMM_WORLD));
-    // t0 = MPI_Wtime();
-    // Mat X, RhsMat_T;
-    // PetscCall(MatCreateDense(PETSC_COMM_SELF, PETSC_DECIDE, PETSC_DECIDE, N, nrhs, NULL, &X));
-    // PetscCall(MatTranspose(RhsMat, MAT_INITIAL_MATRIX, &RhsMat_T));
-    // PetscCall(MatCreateTranspose(RhsMat_T, &Rt));
-    // dt = MPI_Wtime() - t0;
-    // PetscCallMPI(MPI_Reduce(&dt, &dtmax, 1, MPI_DOUBLE, MPI_MAX, 0, PETSC_COMM_WORLD));
-    // MPI_Comm_rank(PETSC_COMM_WORLD, &rank);
-    // if(!rank){
-    //   PetscCall(PetscPrintf(PETSC_COMM_SELF, " pre solve time: %.6f seconds\n", (double)dtmax));
-    // }
-    // PetscCallMPI(MPI_Barrier(PETSC_COMM_WORLD));
-    // t0 = MPI_Wtime();
-    // PetscCall(MatMatSolve(FctMat, Rt, X));
-    // dt = MPI_Wtime() - t0;
-    // PetscCallMPI(MPI_Reduce(&dt, &dtmax, 1, MPI_DOUBLE, MPI_MAX, 0, PETSC_COMM_WORLD));
-    // MPI_Comm_rank(PETSC_COMM_WORLD, &rank);
-    // if(!rank){
-    //   PetscCall(PetscPrintf(PETSC_COMM_SELF, "  MatSolve time: %.6f seconds\n", (double)dtmax));
-    // }
-    // PetscCallMPI(MPI_Barrier(PETSC_COMM_WORLD));
-    // t0 = MPI_Wtime();
-    // PetscCall(MatConvert(X, MATSEQAIJ, MAT_INPLACE_MATRIX, &X));
-    // /* Timing*/
-    // dt = MPI_Wtime() - t0;
-    // PetscCallMPI(MPI_Reduce(&dt, &dtmax, 1, MPI_DOUBLE, MPI_MAX, 0, PETSC_COMM_WORLD));
-    // MPI_Comm_rank(PETSC_COMM_WORLD, &rank);
-    // if(!rank){
-    //   PetscCall(PetscPrintf(PETSC_COMM_SELF, "  post solve time: %.6f seconds\n",
-    //   (double)dtmax));
-    // }
-    // PetscCall(MatCreateSubMatrix(X, Iall, AllCols, MAT_INITIAL_MATRIX, &S));
-
-    // /* Cleanup */
-    // PetscCall(ISDestroy(&Iall));
-    // PetscCall(ISDestroy(&AllCols));
-    // PetscCall(MatDestroy(&Rt));
-    // PetscCall(MatDestroy(&RhsMat_T));
-
-    /* -----------------------------------------------------------------------------*/
-
     /* Building the final parallel matrix */
     if ( JSet == NULL ) {
         /* Return */

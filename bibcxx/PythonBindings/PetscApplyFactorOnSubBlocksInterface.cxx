@@ -33,10 +33,10 @@ void exportApplyFactorOnSubBlocksToPython( py::module_ &mod ) {
             can speed up the solve, but is most effective when the RHS column count is
             comparable to or larger than |J|.
     Arguments:
-        pyFctMat: the MUMPS factor matrix.
-        pyRHS: the sparse MATSEQAIJ holding the multiple right hand sides
-        pyISet: the index set for entries to compute
-        pyJSet: optional off diagonal layout index set
+        pyFctMat (PETSc.Mat): the MUMPS factor matrix.
+        pyRHS (PETSc.Mat): the sparse MATSEQAIJ holding the multiple right hand sides
+        pyISet (PETSc.IS): the index set for entries to compute
+        pyJSet (PETSc.IS): optional off diagonal layout index set
     Outputs:
         outMat: the petsc4py aij matrix matrix holding the solutions
 )",
