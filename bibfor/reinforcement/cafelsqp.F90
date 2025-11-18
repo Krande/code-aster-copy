@@ -246,6 +246,7 @@ subroutine cafelsqp(cequi, effm, effn, ht, bw, &
         COND_B = y .le. 0.d0
 
         if (.not. COND_B) then
+            kVAR_A = kVAR_B
             kVAR_B = kVAR_B/2.
         end if
 
@@ -356,7 +357,7 @@ subroutine cafelsqp(cequi, effm, effn, ht, bw, &
             kVAR_A = kVAR_NEW
         end if
 
-        if ((abs(kVAR_A-kVAR_B)) .lt. (0.00001)) then
+        if (abs(kVAR_A-kVAR_B) .le. 1.d-6) then
             CONSTAT = .true.
             kvarf = kVAR_B
             ssmax = kvarf*facier
