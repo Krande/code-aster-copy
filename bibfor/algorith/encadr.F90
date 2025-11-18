@@ -16,17 +16,24 @@
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
 !
-subroutine encadr(func, x1, x2, f1, f2, &
+subroutine encadr(func, funcp, para, nb_para, x1, x2, f1, f2, &
                   niter, xmult, iret)
     implicit none
+#include "asterf_types.h"
 !
     interface
+        function funcp(x, param)
+            real(kind=8), intent(in) :: x
+            real(kind=8), intent(in) :: param(*)
+            real(kind=8) :: funcp
+        end function
         function func(x)
             real(kind=8) :: x
             real(kind=8) :: func
         end function
     end interface
-    real(kind=8) :: x1, x2, f1, f2, xmult
+    integer(kind=8), intent(in) :: nb_para
+    real(kind=8) :: x1, x2, f1, f2, xmult, para(nb_para)
     integer(kind=8) :: niter, iret
 !
 !
@@ -51,8 +58,13 @@ subroutine encadr(func, x1, x2, f1, f2, &
 !
     if (x1 .eq. x2) goto 999
 !
-    f1 = func(x1)
-    f2 = func(x2)
+    if (nb_para > 0) then
+        f1 = funcp(x1, para)
+        f2 = funcp(x2, para)
+    else
+        f1 = func(x1)
+        f2 = func(x2)
+    end if
     do i = 1, niter
         if (f1*f2 .lt. 0.d0) then
             iret = 0
@@ -60,10 +72,19 @@ subroutine encadr(func, x1, x2, f1, f2, &
         end if
         if (abs(f1) .lt. abs(f2)) then
             x1 = x1+xmult*(x1-x2)
-            f1 = func(x1)
+            if (nb_para > 0) then
+                f1 = funcp(x1, para)
+            else
+                f1 = func(x1)
+            end if
         else
+
             x2 = x2+xmult*(x2-x1)
-            f2 = func(x2)
+            if (nb_para > 0) then
+                f2 = funcp(x2, para)
+            else
+                f2 = func(x2)
+            end if
         end if
     end do
 !

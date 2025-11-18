@@ -16,19 +16,27 @@
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
 !
-subroutine zerof2(func, x0, xap, epsi, nitmax, &
+subroutine zerof2(func, funcp, para, nb_para, x0, xap, epsi, nitmax, &
                   solu, iret, n)
     implicit none
+#include "asterf_types.h"
 #include "asterfort/utmess.h"
 !
 !     ARGUMENTS:
 !     ----------
     interface
-        function func(x)
-            real(kind=8) :: func, x
-        end function func
+        function funcp(xl, param)
+            real(kind=8), intent(in) :: xl
+            real(kind=8), intent(in) :: param(*)
+            real(kind=8) :: funcp
+        end function
+        function func(xl)
+            real(kind=8) :: xl
+            real(kind=8) :: func
+        end function
     end interface
-    real(kind=8) :: x0, xap, epsi, solu
+    integer(kind=8), intent(in) :: nb_para
+    real(kind=8) :: x0, xap, epsi, solu, para(nb_para)
     integer(kind=8) :: nitmax, iret
 ! ----------------------------------------------------------------------
 !     BUT:
@@ -67,9 +75,17 @@ subroutine zerof2(func, x0, xap, epsi, nitmax, &
 !-----------------------------------------------------------------------
     n = 1
     x = x0
-    fx = func(x0)
+    if (nb_para > 0) then
+        fx = funcp(x0, para)
+    else
+        fx = func(x0)
+    end if
     y = xap
-    fy = func(y)
+    if (nb_para > 0) then
+        fy = funcp(y, para)
+    else
+        fy = func(y)
+    end if
 !
     if (abs(fy) .lt. epsi) then
         z = y
@@ -98,7 +114,11 @@ subroutine zerof2(func, x0, xap, epsi, nitmax, &
         end if
 !
         n = n+1
-        fz = func(z)
+        if (nb_para > 0) then
+            fz = funcp(z, para)
+        else
+            fz = func(z)
+        end if
 !
         if (abs(fz) .lt. epsi) goto 90
         ecresd = abs(b-a)
@@ -134,7 +154,11 @@ subroutine zerof2(func, x0, xap, epsi, nitmax, &
         x = y
         fx = fy
         y = z
-        fy = func(z)
+        if (nb_para > 0) then
+            fy = funcp(z, para)
+        else
+            fy = func(z)
+        end if
 !
 !
         if (abs(fy) .lt. epsi) goto 90
@@ -153,7 +177,11 @@ subroutine zerof2(func, x0, xap, epsi, nitmax, &
 99  continue
     do k = 1, 20
         xdbg(k) = xap/(21-k)
-        fdbg(k) = func((xap)/(21-k))
+        if (nb_para > 0) then
+            fdbg(k) = funcp((xap)/(21-k), para)
+        else
+            fdbg(k) = func((xap)/(21-k))
+        end if
     end do
     vali = n
     valr(1) = x
@@ -170,7 +198,11 @@ subroutine zerof2(func, x0, xap, epsi, nitmax, &
 100 continue
     do k = 1, 20
         xdbg(k) = xap/(21-k)
-        fdbg(k) = func((xap)/(21-k))
+        if (nb_para > 0) then
+            fdbg(k) = funcp((xap)/(21-k), para)
+        else
+            fdbg(k) = func((xap)/(21-k))
+        end if
     end do
     vali = n
     valr(1) = x

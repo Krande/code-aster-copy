@@ -19,28 +19,25 @@
 !
 !
 interface
-    subroutine zerofb(func, funcp, para, nb_para, x1, x2, tol, itmax,&
-                      zbrent, iret, iter)
-#include "asterf_types.h"
+    subroutine zerofr_param(intini, algo, funcp, para, nb_para, x1, x2,&
+                      tol, itmax, solu, iret, iter)
+        integer(kind=8) :: intini
+        character(len=*) :: algo
         real(kind=8) :: para(nb_para)
-        integer(kind=8), intent(in) :: nb_para
+        integer(kind=8) :: nb_para
         real(kind=8) :: x1
         real(kind=8) :: x2
         real(kind=8) :: tol
         integer(kind=8) :: itmax
-        real(kind=8) :: zbrent
+        real(kind=8) :: solu
         integer(kind=8) :: iret
         integer(kind=8) :: iter
         interface
-        function funcp(x, param)
+            function funcp(x, param)
             real(kind=8), intent(in) :: x
             real(kind=8), intent(in) :: param(*)
             real(kind=8) :: funcp
-        end function
-        function func(x)
-            real(kind=8) :: x
-            real(kind=8) :: func
-        end function
+            end function
         end interface
-    end subroutine zerofb
+    end subroutine
 end interface

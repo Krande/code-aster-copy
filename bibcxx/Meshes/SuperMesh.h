@@ -2,7 +2,7 @@
  * @file SuperMesh.h
  * @brief Fichier entete de la classe SuperMesh
  * @section LICENCE
- *   Copyright (C) 1991 - 2023  EDF R&D                www.code-aster.org
+ *   Copyright (C) 1991 - 2025  EDF R&D                www.code-aster.org
  *
  *   This file is part of Code_Aster.
  *
@@ -69,6 +69,8 @@ class SuperMesh : public Mesh {
      * @brief Get all StaticMacroElements
      */
     std::vector< StaticMacroElementPtr > getStaticMacroElements() const;
+
+    VectorString getNodeLabels() const;
 
     bool build();
 };

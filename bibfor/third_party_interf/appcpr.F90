@@ -605,7 +605,7 @@ subroutine appcpr(kptsc)
                     '-p '//trim(nbp_str)//' '// &
                     '-prefix_pop '// &
                     '-define_subdomains '// &
-                    '-harmonic_overlap 2 '// &
+                    '-harmonic_overlap 5 '// &
                     '-prefix_pop '
             if (slvr(6) > 0) then
                 myopt = myopt//'-pc_hpddm_levels_1_svd_relative_threshold '//trim(seuil_str)//' '

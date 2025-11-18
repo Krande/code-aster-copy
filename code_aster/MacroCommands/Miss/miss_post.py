@@ -1426,12 +1426,13 @@ class PostMissChar(PostMiss):
         elif self.param["GROUP_NO_AFFE"]:
             # récuperation du maillage
             mail = self.MODELE.getMesh()
+            labels = mail.getNodeLabels()
             list_nuno_affe = []
             self.List_Noeu_Fictif = []
             for gr in self.param["GROUP_NO_AFFE"]:
-                list_nuno_affe.extend([val + 1 for val in mail.getNodes(gr)])
+                list_nuno_affe.extend([val for val in mail.getNodes(gr)])
             for nuno in list_nuno_affe:
-                self.List_Noeu_Fictif.append("N" + str(nuno))
+                self.List_Noeu_Fictif.append(labels[nuno])
         else:
             self.List_Noeu_Fictif = []
 

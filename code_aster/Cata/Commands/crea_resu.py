@@ -19,11 +19,24 @@
 
 
 from ..Commons import *
+from ..Commons.c_comportement import compat_syntax as compat_comport
 from ..Language.DataStructure import *
 from ..Language.Syntax import *
+from ..Language.SyntaxUtils import deprecate
 
 
-from ..Commons.c_comportement import compat_syntax
+def compat_syntax(keywords):
+    """Update keywords for compatibility"""
+
+    # NOM_CHAM is in AFFE now
+    if "NOM_CHAM" in keywords and "AFFE" in keywords:
+        deprecate("CREA_RESU/NOM_CHAM", case=1)
+        if isinstance(keywords["AFFE"], (list, tuple)):
+            for i in range(len(keywords["AFFE"])):
+                keywords["AFFE"][i]["NOM_CHAM"] = keywords["NOM_CHAM"]
+        else:
+            keywords["AFFE"]["NOM_CHAM"] = keywords["NOM_CHAM"]
+        del keywords["NOM_CHAM"]
 
 
 def crea_resu_prod(TYPE_RESU, **args):
@@ -76,7 +89,7 @@ def crea_resu_prod(TYPE_RESU, **args):
 CREA_RESU = OPER(
     nom="CREA_RESU",
     op=124,
-    compat_syntax=compat_syntax,
+    compat_syntax=compat_union(compat_syntax, compat_comport),
     sd_prod=crea_resu_prod,
     reentrant="f:RESULTAT|RESU_FINAL",
     fr=tr("Creer ou enrichir une structure de donnees resultat a partir de champs aux noeuds"),

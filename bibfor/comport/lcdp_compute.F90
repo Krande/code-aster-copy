@@ -26,7 +26,7 @@ function lcdp_compute(resi, rigi, elas, itemax, prec, m, eps, ep, ka, state, &
 #include "asterfort/assert.h"
 #include "asterfort/proten.h"
 #include "asterfort/zerop2.h"
-#include "asterfort/zerofr.h"
+#include "asterfort/zerofr_param.h"
 #include "asterfort/utmess.h"
 
     aster_logical, intent(in)     :: resi, rigi, elas
@@ -48,7 +48,7 @@ function lcdp_compute(resi, rigi, elas, itemax, prec, m, eps, ep, ka, state, &
     real(kind=8):: kr(size(eps)), id(size(eps), size(eps)), prodev(size(eps), size(eps))
     real(kind=8):: sel(size(eps)), selh, selq, seld(size(eps))
     real(kind=8):: kam, fm, kas, fs, bs, bk, rks, fu, lbd
-    real(kind=8):: deph, depd(size(eps)), depq, q
+    real(kind=8):: deph, depd(size(eps)), depq, q, para(14)
     real(kind=8):: p0, p1, p2, sol(2), coef, x0
     real(kind=8):: dselq_ka, dselh_ka, dka_blbd, dselh_sh, dselq_sh, dselh_q, dselq_q
     real(kind=8):: deps_selh(size(eps)), deps_selq(size(eps)), deps_seld(size(eps), size(eps))
@@ -71,6 +71,10 @@ function lcdp_compute(resi, rigi, elas, itemax, prec, m, eps, ep, ka, state, &
     selh = sum(sel(1:3))/3.d0
     seld = sel-selh*kr
     selq = sqrt(1.5d0*dot_product(seld, seld))
+!
+!   Parameters
+    para = [kam, selq, selh, m%troisa, m%troismu, m%troisk, &
+            m%b0, m%bultm, m%kac, m%kau, real(m%type_dp, kind=8), m%sy, m%h, m%syultm]
 
 ! ======================================================================
 !               INTEGRATION DE LA LOI DE COMPORTEMENT
@@ -83,7 +87,7 @@ function lcdp_compute(resi, rigi, elas, itemax, prec, m, eps, ep, ka, state, &
 ! ----------------------------------------------------------------------
 
 !   Borne du critere elastique
-    fm = f_fhat(kam)
+    fm = f_fhat(kam, para)
     if (fm .le. 0) then
         state = 0
         s = sel
@@ -97,12 +101,12 @@ function lcdp_compute(resi, rigi, elas, itemax, prec, m, eps, ep, ka, state, &
     depd = seld/m%deuxmu
     depq = selq/m%deuxmu
     kas = kam+2.0/3.0*depq
-    bs = f_b(kas)
+    bs = f_b(kas, para)
 
 !   Test d'appartenance au cone
-    fs = f_fhat(kas)
+    fs = f_fhat(kas, para)
     if (fs .ge. 0) then
-        rks = f_ecro(kas)
+        rks = f_ecro(kas, para)
         deph = (selh-rks/m%troisa)/m%troisk
         ka = kas
         ep = ep+deph*kr+depd
@@ -118,7 +122,7 @@ function lcdp_compute(resi, rigi, elas, itemax, prec, m, eps, ep, ka, state, &
 !   Resolution f_fhat(ka)=0 avec kam < ka < kas et f_fhat decroissante dans l'intervalle
 
 !   Cas de la solution saturee
-    fu = f_fhat(m%kau)
+    fu = f_fhat(m%kau, para)
 
 !   On cherche le plus petit zero de f_fhat
 !   f_fhat est quadratique ou lineaire si l'ecrouissage est lineaire ou parabolique pour R et b
@@ -136,7 +140,7 @@ function lcdp_compute(resi, rigi, elas, itemax, prec, m, eps, ep, ka, state, &
                 p2 = m%troisk*m%troisa*m%b0/m%kau+1/m%kau*(m%syultm-m%sy)/m%kau
             end if
             p0 = fm/p2
-            p1 = dka_fhat(kam)/p2
+            p1 = dka_fhat(kam, para)/p2
             call zerop2(p1, p0, sol, nrac)
             lbd = sol(nrac)
             ka = kam+lbd
@@ -145,22 +149,24 @@ function lcdp_compute(resi, rigi, elas, itemax, prec, m, eps, ep, ka, state, &
     else
         if (kam .ne. 0.0d0) then
             x0 = kam+0.5*kam
-            call zerofr(2, 'AUTO', f_fhat, kam, x0, prec, abs(itemax), ka, iret, iter)
+            call zerofr_param(2, 'AUTO', f_fhat, para, 14, &
+                              kam, x0, prec, abs(itemax), ka, iret, iter)
         else
             x0 = 1.0d0
-            call zerofr(2, 'AUTO', f_fhat, kam, x0, prec, abs(itemax), ka, iret, iter)
+            call zerofr_param(2, 'AUTO', f_fhat, para, 14, &
+                              kam, x0, prec, abs(itemax), ka, iret, iter)
         end if
         lbd = ka-kam
     end if
 
-    bk = f_b(ka)
+    bk = f_b(ka, para)
     q = m%troismu*lbd/selq
     ep = ep+lbd*(bk*kr+1.5d0*seld/selq)
     s = sel-lbd*m%troisk*bk*kr-q*seld
     state = 1
 
 !  Condition pour garantir l'unicite de la solution au probleme d'integration locale du comportement
-    if (-3.0d0*m%troisk*(dka_b(ka)*m%a*lbd+f_b(ka)*m%a) .ge. (dka_ecro(ka)+m%troismu)) then
+    if (-3.0d0*m%troisk*(dka_b(ka)*m%a*lbd+f_b(ka, para)*m%a) .ge. (dka_ecro(ka)+m%troismu)) then
         call utmess('F', 'COMPOR6_15')
     end if
 
@@ -186,12 +192,12 @@ function lcdp_compute(resi, rigi, elas, itemax, prec, m, eps, ep, ka, state, &
         q = m%troismu*lbd/selq
 
         ! Variation de kappa (fonction implicite)
-        coef = dka_fhat(ka)
+        coef = dka_fhat(ka, para)
         dselq_ka = -dselq_fhat(ka)/coef
         dselh_ka = -dselh_fhat(ka)/coef
 
         ! Variation des invariants de contrainte
-        dka_blbd = dka_b(ka)*lbd+f_b(ka)
+        dka_blbd = dka_b(ka)*lbd+f_b(ka, para)
         dselh_sh = 1-m%troisk*dselh_ka*dka_blbd
         dselq_sh = -m%troisk*dselq_ka*dka_blbd
         dselh_q = m%troismu*dselh_ka/selq
@@ -232,14 +238,21 @@ contains
 !     real(kind=8)      :: selh,selq, kam
 ! --> Derivees: dselh_*, dselq_*
 
-    real(kind=8) function f_b(ka)
-        real(kind=8)::ka
+    real(kind=8) function f_b(ka, param)
+        real(kind=8), intent(in)::ka, param(*)
+        real(kind=8) :: b0_, bultm_, kac_, kau_, type_dp_
+!
+        b0_ = param(7)
+        bultm_ = param(8)
+        kac_ = param(9)
+        kau_ = param(10)
+        type_dp_ = param(11)
         !Ecrouissage exponentiel pour b
-        if (m%type_dp .eq. 3) then
-            f_b = (m%b0-m%bultm)*exp(-ka/m%kac)+m%bultm
+        if (abs(type_dp_-3.0) < 1.d-5) then
+            f_b = (b0_-bultm_)*exp(-ka/kac_)+bultm_
             !Ecrouissage lineaire pour b
         else
-            f_b = m%b0*max(0.d0, 1-ka/m%kau)
+            f_b = b0_*max(0.d0, 1-ka/kau_)
         end if
     end function f_b
 
@@ -254,24 +267,32 @@ contains
         end if
     end function dka_b
 
-    real(kind=8) function f_ecro(ka)
-        real(kind=8)::ka
+    real(kind=8) function f_ecro(ka, param)
+        real(kind=8), intent(in)::ka, param(*)
         real(kind=8):: P2, P1
+        real(kind=8) :: type_dp_, kau_, sy_, h_, kac_, syultm_
+!
+        kac_ = param(9)
+        kau_ = param(10)
+        type_dp_ = param(11)
+        sy_ = param(12)
+        h_ = param(13)
+        syultm_ = param(14)
         !Ecrouissage lineaire pour R
-        if (m%type_dp .eq. 1) then
-            f_ecro = m%sy+m%h*min(ka, m%kau)
+        if (abs(type_dp_-1.d0) < 1.d-5) then
+            f_ecro = sy_+h_*min(ka, kau_)
             !Ecrouissage parabolique pour R
-        else if (m%type_dp .eq. 2) then
-            if (ka .le. m%kau) then
-                P2 = -1/m%kau*(m%syultm-m%sy)/m%kau
-                P1 = 2*(m%syultm-m%sy)/m%kau
-                f_ecro = P2*ka**2+P1*ka+m%sy
+        else if (abs(type_dp_-2.d0) < 1.d-5) then
+            if (ka .le. kau_) then
+                P2 = -1/kau_*(syultm_-sy_)/kau_
+                P1 = 2*(syultm_-sy_)/kau_
+                f_ecro = P2*ka**2+P1*ka+sy_
             else
-                f_ecro = m%syultm
+                f_ecro = syultm_
             end if
             !Ecrouissage exponentiel pour R
-        else if (m%type_dp .eq. 3) then
-            f_ecro = (m%sy-m%syultm)*exp(-ka/m%kac)+m%syultm
+        else if (abs(type_dp_-3.d0) < 1.d-5) then
+            f_ecro = (sy_-syultm_)*exp(-ka/kac_)+syultm_
         else
             ASSERT(.false.)
         end if
@@ -300,19 +321,33 @@ contains
         end if
     end function dka_ecro
 
-    real(kind=8) function f_fhat(ka)
-        real(kind=8)::ka
-        real(kind=8)::lbd
-        lbd = ka-kam
-        f_fhat = selq+m%troisa*selh-f_ecro(ka)-m%troismu*lbd-m%troisa*m%troisk*f_b(ka)*lbd
+    real(kind=8) function f_fhat(ka, param)
+        real(kind=8), intent(in)::ka, param(*)
+        real(kind=8)::lbd_, kam_, selq_, selh_, troisa_, troismu_, troisk_
+        kam_ = param(1)
+        selq_ = param(2)
+        selh_ = param(3)
+        troisa_ = param(4)
+        troismu_ = param(5)
+        troisk_ = param(6)
+        lbd_ = ka-kam_
+
+        f_fhat = selq_+troisa_*selh_-f_ecro(ka, param)-troismu_*lbd_ &
+                 -troisa_*troisk_*f_b(ka, param)*lbd_
     end function f_fhat
 
-    real(kind=8) function dka_fhat(ka)
-        real(kind=8)::ka
-        real(kind=8)::lbd, dka_blbd
+    real(kind=8) function dka_fhat(ka, param)
+        real(kind=8), intent(in)::ka, param(*)
+        real(kind=8)::lbd, dka_blbd, troisa_, troismu_, troisk_, kam_
+!
+        kam_ = param(1)
+        troisa_ = param(4)
+        troismu_ = param(5)
+        troisk_ = param(6)
+!
         lbd = ka-kam
-        dka_blbd = dka_b(ka)*lbd+f_b(ka)
-        dka_fhat = -dka_ecro(ka)-m%troismu-m%troisa*m%troisk*dka_blbd
+        dka_blbd = dka_b(ka)*lbd+f_b(ka, param)
+        dka_fhat = -dka_ecro(ka)-troismu_-troisa_*troisk_*dka_blbd
     end function dka_fhat
 
     real(kind=8) function dselq_fhat(ka)

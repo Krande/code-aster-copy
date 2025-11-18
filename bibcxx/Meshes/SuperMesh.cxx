@@ -2,7 +2,7 @@
  * @file SuperMesh.cxx
  * @brief Implementation de SuperMesh
  * @section LICENCE
- *   Copyright (C) 1991 - 2023  EDF R&D                www.code-aster.org
+ *   Copyright (C) 1991 - 2025  EDF R&D                www.code-aster.org
  *
  *   This file is part of Code_Aster.
  *
@@ -56,3 +56,17 @@ bool SuperMesh::build() {
     _superElements->build();
     return Mesh::build();
 };
+
+VectorString SuperMesh::getNodeLabels() const {
+
+    if ( !_nameOfNodes->exists() ) {
+        throw std::runtime_error( "Node labels do not exist" );
+    }
+
+    VectorString labels( this->getNumberOfNodes() );
+    for ( ASTERINTEGER i = 0; i < this->getNumberOfNodes(); i++ ) {
+        labels[i] = _nameOfNodes->getStringFromIndex( i + 1 );
+    }
+
+    return labels;
+}

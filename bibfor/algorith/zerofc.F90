@@ -16,18 +16,25 @@
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
 !
-subroutine zerofc(func, xmin, xmax, prec, niter, &
+subroutine zerofc(func, funcp, para, nb_para, xmin, xmax, prec, niter, &
                   dp, iret, nit)
     implicit none
+#include "asterf_types.h"
 #include "asterfort/zeroco.h"
     interface
-        function func(x)
-            real(kind=8) :: x
+        function funcp(xl, param)
+            real(kind=8), intent(in) :: xl
+            real(kind=8), intent(in) :: param(*)
+            real(kind=8) :: funcp
+        end function
+        function func(xl)
+            real(kind=8):: xl
             real(kind=8) :: func
         end function
     end interface
     integer(kind=8) :: niter, iret
-    real(kind=8) :: xmin, xmax, prec, dp
+    integer(kind=8), intent(in) :: nb_para
+    real(kind=8) :: xmin, xmax, prec, dp, para(nb_para)
 ! ----------------------------------------------------------------------
 !     RECHERCHE DU ZERO DE func. ON SAIT QUE VAL0=func(0) < 0 ET func CROISSANTE
 !     APPEL A ZEROCO (METHODE DE CORDE)
@@ -49,9 +56,17 @@ subroutine zerofc(func, xmin, xmax, prec, niter, &
     nit = 0
     iret = 1
     x(1) = xmin
-    y(1) = func(xmin)
+    if (nb_para > 0) then
+        y(1) = funcp(xmin, para)
+    else
+        y(1) = func(xmin)
+    end if
     x(2) = xmax
-    y(2) = func(xmax)
+    if (nb_para > 0) then
+        y(2) = funcp(xmax, para)
+    else
+        y(2) = func(xmax)
+    end if
     x(3) = x(1)
     y(3) = y(1)
     x(4) = x(2)
@@ -69,7 +84,11 @@ subroutine zerofc(func, xmin, xmax, prec, niter, &
         call zeroco(x, y)
 !
         dp = x(4)
-        y(4) = func(dp)
+        if (nb_para > 0) then
+            y(4) = funcp(dp, para)
+        else
+            y(4) = func(dp)
+        end if
 !
     end do
 !
