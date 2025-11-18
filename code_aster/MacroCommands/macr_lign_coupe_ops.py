@@ -20,6 +20,7 @@
 import os
 from math import atan2, cos, pi, sin, sqrt
 from pathlib import Path
+from typing import Dict, Tuple, Union
 import numpy as np
 
 from ..Cata.Syntax import _F
@@ -552,6 +553,17 @@ def get_result_axis_system(
     raise NotImplementedError(f"{cut_axis_system} is not implemented")
 
 
+def get_axis_config_for_dimension(
+    dimension: int,
+) -> Union[
+    Tuple[Dict[str, Tuple[float, float]], Tuple[str, str]],
+    Tuple[Dict[str, Tuple[float, float, float]], Tuple[str, str, str]],
+]:
+    if dimension == 2:
+        return {"X": (1.0, 0.0), "Y": (0.0, 1.0)}, ("DX", "DY")
+    return {"X": (1.0, 0.0, 0.0), "Y": (0.0, 1.0, 0.0), "Z": (0.0, 0.0, 1.0)}, ("DX", "DY", "DZ")
+
+
 def macr_lign_coupe_ops(
     self,
     LIGN_COUPE,
@@ -897,30 +909,23 @@ def macr_lign_coupe_ops(
         cut_to_group[iocc] = groupe
 
     if write_visu:
-        FIELD_DEPL_1_X = CREA_CHAMP(
-            MAILLAGE=__macou,
-            MODELE=__recou.getModel(),
-            OPERATION="AFFE",
-            TYPE_CHAM="NOEU_DEPL_R",
-            AFFE=(_F(TOUT="OUI", NOM_CMP=("DX", "DY", "DZ"), VALE=(1.0, 0.0, 0.0)),),
-        )
-        RESU_IN_REPE_X = CREA_RESU(
-            OPERATION="AFFE",
-            TYPE_RESU="EVOL_ELAS",
-            AFFE=_F(NOM_CHAM="DEPL", INST=0.0, CHAM_GD=FIELD_DEPL_1_X),
-        )
-        FIELD_DEPL_1_Y = CREA_CHAMP(
-            MAILLAGE=__macou,
-            MODELE=__recou.getModel(),
-            OPERATION="AFFE",
-            TYPE_CHAM="NOEU_DEPL_R",
-            AFFE=(_F(TOUT="OUI", NOM_CMP=("DX", "DY", "DZ"), VALE=(0.0, 1.0, 0.0)),),
-        )
-        RESU_IN_REPE_Y = CREA_RESU(
-            OPERATION="AFFE",
-            TYPE_RESU="EVOL_ELAS",
-            AFFE=_F(NOM_CHAM="DEPL", INST=0.0, CHAM_GD=FIELD_DEPL_1_Y),
-        )
+        unit_depl_configs, compo_depl_unit = get_axis_config_for_dimension(dimension=dime)
+
+        resu_unit_depl = {}
+        for direction, vect_unit in unit_depl_configs.items():
+
+            FIELD_DEPL_1 = CREA_CHAMP(
+                MAILLAGE=__macou,
+                MODELE=__recou.getModel(),
+                OPERATION="AFFE",
+                TYPE_CHAM="NOEU_DEPL_R",
+                AFFE=(_F(TOUT="OUI", NOM_CMP=compo_depl_unit, VALE=vect_unit),),
+            )
+            resu_unit_depl[direction] = CREA_RESU(
+                OPERATION="AFFE",
+                TYPE_RESU="EVOL_ELAS",
+                AFFE=_F(NOM_CHAM="DEPL", INST=0.0, CHAM_GD=FIELD_DEPL_1),
+            )
         visu_cut = VisuCutBuilder.from_aster_mesh(mesh=__macou, prefix_output_field_name="CUT")
 
     for iocc, m in enumerate(LIGN_COUPE):
@@ -1015,37 +1020,37 @@ def macr_lign_coupe_ops(
                 aster_result=current_resu, field_name=field_name, nodes=node_ids
             )
             if result_axis_system == AxisSystem.GLOBAL:
-                for axis_name, vect in (
-                    ("X", (1.0, 0.0, 0.0)),
-                    ("Y", (0.0, 1.0, 0.0)),
-                    ("Z", (0.0, 0.0, 1.0)),
-                ):
+                for axis_name, vect in unit_depl_configs.items():
                     visu_cut.add_field_on_nodes(
                         field_name=f"REPERE_{axis_name}",
                         nodes=node_ids,
                         values=np.array([vect] * len(node_ids)),
-                        components=("DX", "DY", "DZ"),
+                        components=compo_depl_unit,
                     )
             elif result_axis_system in (AxisSystem.USER, AxisSystem.LOCAL):
-                resu_xglob_in_local_system = crea_resu_local(
-                    dime=dime, NOM_CHAM="DEPL", m=m, resin=RESU_IN_REPE_X
+                # transfer matrix from local to global system
+                transfer_matrix: np.ndarray = np.full(
+                    (len(node_ids), dime, dime), fill_value=np.nan
                 )
-                resu_yglob_in_local_system = crea_resu_local(
-                    dime=dime, NOM_CHAM="DEPL", m=m, resin=RESU_IN_REPE_Y
-                )
-                # TODO express Xlocal and YLOCAL in global axis system
-                visu_cut.add_field_on_nodes_from_aster_result_all_timesteps(
-                    aster_result=resu_repe_x,
-                    field_name=field_name,
-                    nodes=node_ids,
-                    med_field_name="REPERE_X",
-                )
-                visu_cut.add_field_on_nodes_from_aster_result_all_timesteps(
-                    aster_result=resu_repe_y,
-                    field_name=field_name,
-                    nodes=node_ids,
-                    med_field_name="REPERE_Y",
-                )
+                for axis_name, resu_in_unit_direction in resu_unit_depl.items():
+                    axis_index = compo_depl_unit.index(f"D{axis_name}")
+                    axis_glob_in_local_system_tmp = crea_resu_local(
+                        dime=dime, NOM_CHAM="DEPL", m=m, resin=resu_in_unit_direction
+                    )
+
+                    field = axis_glob_in_local_system_tmp.getField("DEPL", 1).toSimpleFieldOnNodes()
+                    transfer_matrix[:, axis_index] = field.getValues()[0][node_ids]
+
+                # evaluate local axis in global coordinate system
+                for axis_name, vect_unit in unit_depl_configs.items():
+                    unit_axis = np.array(vect_unit)
+                    local_axis_in_global_system = transfer_matrix @ unit_axis
+                    visu_cut.add_field_on_nodes(
+                        field_name=f"REPERE_{axis_name}",
+                        nodes=node_ids,
+                        values=local_axis_in_global_system,
+                        components=compo_depl_unit,
+                    )
 
             group_name = f"CUT_{intitl}"
             visu_cut.add_group(name=group_name, ids=node_ids, geo_type=VisuCutBuilder.NODE)

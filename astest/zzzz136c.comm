@@ -546,10 +546,54 @@ test.assertArrayEqual(
     rtol=1.0e-07,
     atol=1.0e-6,
 )
-# testing axis fields
-print(table_array[mask].dtype)
-print(table_array[mask])
-ref_axis_cut_20 = {"X": np.array([(0.0, 1.0, 0.0)] * 3)}
+
+# testing result system axis fields
+
+# checking if axis fields are perpendicular to each other
+actual_x_local = (
+    actual_medfields.getFieldWithName(f"CUT_REPERE_X")
+    .getFieldAtLevel(mc.ON_NODES, 1, 0, 1)
+    .getArray()
+    .toNumPyArray()
+)
+actual_y_local = (
+    actual_medfields.getFieldWithName(f"CUT_REPERE_Y")
+    .getFieldAtLevel(mc.ON_NODES, 1, 0, 1)
+    .getArray()
+    .toNumPyArray()
+)
+actual_z_local = (
+    actual_medfields.getFieldWithName(f"CUT_REPERE_Z")
+    .getFieldAtLevel(mc.ON_NODES, 1, 0, 1)
+    .getArray()
+    .toNumPyArray()
+)
+dot_xy = np.array(
+    [np.dot(actual_x_local[i], actual_y_local[i]) for i in range(actual_x_local.shape[0])]
+)
+dot_xz = np.array(
+    [np.dot(actual_x_local[i], actual_z_local[i]) for i in range(actual_x_local.shape[0])]
+)
+dot_yz = np.array(
+    [np.dot(actual_y_local[i], actual_z_local[i]) for i in range(actual_x_local.shape[0])]
+)
+
+dot_ref = np.zeros(shape=(len(actual_x_local), 1))
+test.assertArrayEqual(actual=dot_xy, reference=dot_ref)
+test.assertArrayEqual(actual=dot_xz, reference=dot_ref)
+test.assertArrayEqual(actual=dot_yz, reference=dot_ref)
+
+# checking axis fields from analytic reference for cut intitule "20"
+ref_vect_x_local = np.array([0.0, 1.0, 0.0])
+ref_vect_y_local = np.array([-1.0, 0.0, 0.7071067811865475])
+ref_vect_y_local = ref_vect_y_local / np.linalg.norm(ref_vect_y_local)
+ref_vect_z_local = np.cross(ref_vect_x_local, ref_vect_y_local)
+
+ref_axis_cut_20 = {
+    "X": np.array([ref_vect_x_local] * 3),
+    "Y": np.array([ref_vect_y_local] * 3),
+    "Z": np.array([ref_vect_z_local] * 3),
+}
 for axis, array_vects in ref_axis_cut_20.items():
     actual_field = actual_medfields.getFieldWithName(f"CUT_REPERE_{axis}").getFieldAtLevel(
         mc.ON_NODES, 1, 0, 1
