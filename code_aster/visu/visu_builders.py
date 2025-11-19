@@ -170,8 +170,11 @@ class VisuCutBuilder:
             geo_type: geometry of target items VisuCutBuilder.NODE, VisuCutBuilder.LINE,
                       VisuCutBuilder.SURFACE, VisuCutBuilder.VOLUME
         """
+        # truncate group name because med only allows names length < 80
+        grp_name = name[:80]
         group = mc.DataArrayInt(list(ids))
-        group.setName(name=name)
+        group.setName(name=grp_name)
+
         self.mesh_med.addGroup(meshDimRelToMaxExt=self._max_geo_type - geo_type, ids=group)
 
     def write(self, filepath: Path):

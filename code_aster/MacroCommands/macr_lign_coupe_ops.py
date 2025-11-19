@@ -56,6 +56,10 @@ class AxisSystem:
     USER: str = "UTILISATEUR"
     UNKNOWN: str = "UNKNOWN"
 
+    @staticmethod
+    def is_handled_by_modi_repere(axis: str) -> bool:
+        return axis in (AxisSystem.LOCAL, AxisSystem.USER, AxisSystem.CYLINDRIC)
+
 
 def crea_grp_matiere(groupe, newgrp, iocc, m, __remodr, NOM_CHAM, __macou):
     motscles = {}
@@ -249,7 +253,7 @@ def crea_resu_local(dime, NOM_CHAM, m, resin):
             AFFE=[_F(ANGL_NAUT=ANGL_NAUT, TOUT="OUI")],
             MODI_CHAM=modi_champ_args,
         )
-    elif type_cut == "ARC" and repere_cut != "CYLINDRIQUE":
+    elif type_cut == "ARC" and repere_cut != AxisSystem.CYLINDRIC:
         UTMESS("F", "POST0_5", valk=[type_cut, repere_cut])
     elif type_cut == "ARC":
         ORIGINE = [m["CENTRE"][0], m["CENTRE"][1]]
@@ -261,20 +265,20 @@ def crea_resu_local(dime, NOM_CHAM, m, resin):
         elif dime == 2:
             affe_args = [_F(ORIGINE=ORIGINE, TOUT="OUI")]
         __remodr = MODI_REPERE(
-            RESULTAT=resin, REPERE="CYLINDRIQUE", MODI_CHAM=modi_champ_args, AFFE=affe_args
+            RESULTAT=resin, REPERE=AxisSystem.CYLINDRIC, MODI_CHAM=modi_champ_args, AFFE=affe_args
         )
 
     elif type_cut[:5] == "GROUP" and repere_cut == AxisSystem.LOCAL:
         # disabled in #35098 because of a lack of test coverage
         UTMESS("F", "POST0_57")
 
-    elif (type_cut[:5] == "GROUP" or type_cut == "SEGMENT") and repere_cut == "CYLINDRIQUE":
+    elif (type_cut[:5] == "GROUP" or type_cut == "SEGMENT") and repere_cut == AxisSystem.CYLINDRIC:
         if dime == 3:
             affe_args = [_F(ORIGINE=m["ORIGINE"], AXE_Z=m["AXE_Z"], TOUT="OUI")]
         elif dime == 2:
             affe_args = [_F(ORIGINE=m["ORIGINE"], TOUT="OUI")]
         __remodr = MODI_REPERE(
-            RESULTAT=resin, REPERE="CYLINDRIQUE", MODI_CHAM=modi_champ_args, AFFE=affe_args
+            RESULTAT=resin, REPERE=AxisSystem.CYLINDRIC, MODI_CHAM=modi_champ_args, AFFE=affe_args
         )
     elif (type_cut[:5] == "GROUP" or type_cut == "SEGMENT") and repere_cut == AxisSystem.USER:
         alpha = m["ANGL_NAUT"][0]
@@ -545,11 +549,8 @@ def get_result_axis_system(
         return AxisSystem.UNKNOWN
     if cut_axis_system == AxisSystem.INITIAL:
         return AxisSystem.GLOBAL
-    if cut_axis_system in (
-        AxisSystem.POLAR,
-        AxisSystem.USER,
-        AxisSystem.LOCAL,
-        AxisSystem.CYLINDRIC,
+    if cut_axis_system == AxisSystem.POLAR or AxisSystem.is_handled_by_modi_repere(
+        axis=cut_axis_system
     ):
         # only few fields are handled for axis modifications
         if field_name in ("DEPL", "SIEF_ELNO", "SIGM_NOEU", "SIGM_ELNO", "FLUX_ELNO", "FLUX_NOEU"):
@@ -996,7 +997,7 @@ def macr_lign_coupe_ops(
                     **motscles,
                 )
             )
-        elif result_axis_system in (AxisSystem.USER, AxisSystem.LOCAL, AxisSystem.CYLINDRIC):
+        elif AxisSystem.is_handled_by_modi_repere(axis=result_axis_system):
             __remodr = crea_resu_local(dime, NOM_CHAM, m, __recou)
             current_resu = __remodr
             mcACTION.append(
@@ -1032,7 +1033,7 @@ def macr_lign_coupe_ops(
                         values=np.array([vect] * len(node_ids)),
                         components=compo_depl_unit,
                     )
-            elif result_axis_system in (AxisSystem.USER, AxisSystem.LOCAL):
+            elif AxisSystem.is_handled_by_modi_repere(axis=result_axis_system):
                 # transfer matrix from local to global system
                 transfer_matrix: np.ndarray = np.full(
                     (len(node_ids), dime, dime), fill_value=np.nan
@@ -1048,6 +1049,14 @@ def macr_lign_coupe_ops(
 
                 # evaluate local axis in global coordinate system
                 for axis_name, vect_unit in unit_depl_configs.items():
+                    if (
+                        dime == 2
+                        and resu_in_unit_direction == AxisSystem.CYLINDRIC
+                        and axis_name == "Y"
+                    ):
+                        # it's not possible to acces to Y axis field in 2d results for cylindric
+                        # axis system because theta axis is mapped to Z
+                        continue
                     unit_axis = np.array(vect_unit)
                     local_axis_in_global_system = transfer_matrix @ unit_axis
                     visu_cut.add_field_on_nodes(
