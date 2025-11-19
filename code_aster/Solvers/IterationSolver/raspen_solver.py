@@ -25,7 +25,7 @@ import numpy as np
 from libaster import asmpi_free, asmpi_get, asmpi_set, asmpi_split
 from scipy.sparse.linalg import LinearOperator, eigsh, svds
 
-from ...Objects import redistributePetscMat
+from ...Objects import redistributePetscMat, applyFactorOnSubBlocks
 from ...Supervis import ConvergenceError
 from ...Utilities import PETSc, no_new_attributes, profile, removePETScOptions
 from ...Utilities.mpi_utils import MPI
@@ -796,10 +796,8 @@ class _RASPENSolver:
         self.J.destroy()
         if self.withCoarsePb:
             self.Jloc0.destroy()
-            del self.GCGC
         if self.withSubPrecond:
             self.Jp.destroy()
-            del self.JpCtx
 
 
 class JacCtx:
@@ -1023,6 +1021,8 @@ class substPrecondCtx:
         self.GhostVec = self.Sl.DDPart.GhostPetscVec
         # Internal ghosts
         self.intGhosts = self.DDPart.interiorGhosts
+        # IS of the ghost Map (must be stored as attribute to avoid suppression by Python garbage collector)
+        self.jSet = PETSc.IS().createGeneral(self.DDPart.ghostsMap, comm=self.Jl.getComm())
 
     def buildSubstruturedJacobian(self):
         """
@@ -1045,7 +1045,6 @@ class substPrecondCtx:
         """
         # Timings
         timings = {}
-        t00 = time()
         # Seq Comm
         comm = self.Jl.getComm()
 
@@ -1062,56 +1061,25 @@ class substPrecondCtx:
         # Slicing Local Jacobian only on ghost dofs
         rowsIs = PETSc.IS().createGeneral(np.arange(self.locSize, dtype=np.int32))
         colsIs = PETSc.IS().createGeneral(self.bdDofs)
-
-        t0 = time()
         tempMat = self.Jl.createSubMatrices(rowsIs, colsIs)[0]
         tempMat.zeroRows(self.bdDofs, 0.0)
-        gmax = MPI.ASTER_COMM_WORLD.reduce(time() - t0, op=MPI.MAX, root=0)
-        timings["Time to extract"] = gmax
-
-        # Build the resulting matrix
-        ResMat = PETSc.Mat().createDense((self.locSize, len(self.bdDofs)), comm=comm)
-        ResMat.setUp()
 
         # Applying forward/backward substitutions
         t0 = time()
-        tempMat = tempMat.transpose()
-        tempMat_T = tempMat.createTranspose(tempMat)
-        LUFct.matSolve(tempMat_T, ResMat)
-        gmax = self.Sl.comm.reduce(time() - t0, op=MPI.MAX, root=0)
-        timings["MatSolve time"] = gmax
 
-        # Building the substructured matrix as MATAIJ
-        t0 = time()
-        Mat = ResMat.getDenseArray()
-        ng = self.DDPart.glbGhostSize
-        nl = self.DDPart.intGhostSize
-        SubstMat = PETSc.Mat().createAIJ(([nl, ng], [nl, ng]), comm=self.DDPart.comm)
-        start, end = SubstMat.getOwnershipRange()
-        gmax = self.Sl.comm.reduce(time() - t0, op=MPI.MAX, root=0)
-        timings["Initiating Matrix"] = gmax
+        # Build the resulting matrix
 
-        # Setting values
-        t0 = time()
-        for i0, i in enumerate(range(start, end)):
-            SubstMat.setValues(i, i, 1.0)
-            row = self.DDPart.interiorGhosts[i0]
-            SubstMat.setValues(i, self.DDPart.ghostsMap, Mat[row])
-        gmax = self.Sl.comm.reduce(time() - t0, op=MPI.MAX, root=0)
-        timings["Setting values"] = gmax
+        iSet = PETSc.IS().createGeneral(self.intGhosts, comm=comm)
 
-        # Assembling
-        t0 = time()
+        SubstMat = applyFactorOnSubBlocks(LUFct, tempMat, iSet, self.jSet)
         SubstMat.assemble()
+        MPI.ASTER_COMM_WORLD.Barrier()
         gmax = self.Sl.comm.reduce(time() - t0, op=MPI.MAX, root=0)
-        timings["Assembling time"] = gmax
+        timings["Substructured matrix build time"] = gmax
 
-        gmax = self.Sl.comm.reduce(time() - t00, op=MPI.MAX, root=0)
-        timings["Total time"] = gmax
         if self.Sl.rank == 0:
             for k, v in timings.items():
                 print(f"  {k}: {v:.6f} seconds", flush=True)
-
         return SubstMat
 
     def setUpSksp(self):
@@ -1135,8 +1103,9 @@ class substPrecondCtx:
         # Writing ghosts values
         Yg.getArray()[:] = self.Yloc.getArray()[self.intGhosts]
         self.sksp.setFromOptions()
-        if self.Precond is None:
-            self.Precond = self.buildMatEntries()
+        if self.sksp.getPC().getType() != "none":
+            if self.Precond is None:
+                self.Precond = self.buildMatEntries()
         self.sksp.setOperators(self.subJ, self.Precond)
         self.sksp.setUp()
         # Substructured linear solve

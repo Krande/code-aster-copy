@@ -23,9 +23,9 @@
 ************************************************************************
 """
 
+import math
 import os
 import os.path as osp
-import subprocess
 
 import numpy as np
 
@@ -37,17 +37,17 @@ from ..Objects import (
     CommGraph,
     ConnectionMesh,
     IncompleteMesh,
-    Mesh,
-    MeshReader,
-    ParallelMesh,
     MedFileAccessType,
     MedFileReader,
+    Mesh,
     MeshBalancer,
+    MeshReader,
+    ParallelMesh,
     PythonBool,
     ResultNaming,
 )
-from ..ObjectsExt import mesh_builder
 from ..Objects.Serialization import InternalStateBuilder
+from ..ObjectsExt import mesh_builder
 from ..Utilities import MPI, ExecutionParameter, Options, SharedTmpdir, force_list, injector
 from .simplefieldonnodes_ext import SimpleFieldOnNodesReal
 
@@ -382,6 +382,14 @@ class ExtendedParallelMesh:
         """
         size = MPI.ASTER_COMM_WORLD.Get_size()
         rank = MPI.ASTER_COMM_WORLD.Get_rank()
+        size_sqrt = math.sqrt(size)
+        if (size_sqrt - int(size_sqrt)) != 0:
+            raise ValueError(
+                (
+                    "With a 2D checkerboard mesh, the number of MPI processes must be a power of 2."
+                    f" You requested {size} MPI processes which is not of power of 2."
+                )
+            )
         # number of subdomains in the x-direction
         x_size = int(np.sqrt(size))
         # global sizes
@@ -437,6 +445,14 @@ class ExtendedParallelMesh:
         """
         size = MPI.ASTER_COMM_WORLD.Get_size()
         rank = MPI.ASTER_COMM_WORLD.Get_rank()
+        size_cbrt = math.cbrt(size)
+        if (size_cbrt - int(size_cbrt)) != 0:
+            raise ValueError(
+                (
+                    "With a 3D checkerboard mesh, the number of MPI processes must be a power of 3."
+                    f" You requested {size} MPI processes which is not of power of 3."
+                )
+            )
         # number of subdomains in the x-direction
         x_size = int(np.cbrt(size))
         # global sizes
