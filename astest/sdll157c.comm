@@ -270,12 +270,13 @@ sismique_dyn = CREA_RESU(
 
 # appel à POST_ROCHE : tous chargements
 
-chPostRocheTout = POST_ROCHE(
+resuPostRocheTout = POST_ROCHE(
     ZONE_ANALYSE=(_F(TOUT="OUI", GROUP_NO_ORIG="ENCA1"),),
+    SIGM_LIM="OUI",
     RESU_MECA=(
         _F(TYPE_CHAR="POIDS", RESULTAT=poids_propre, NUME_ORDRE=1),
         _F(TYPE_CHAR="DILAT_THERM", RESULTAT=dilatation_thermique, NUME_ORDRE=1),
-        _F(TYPE_CHAR="DEPLACEMENT", RESULTAT=deplacement_impose, NUME_ORDRE=1),
+        _F(TYPE_CHAR="DDS", RESULTAT=deplacement_impose, NUME_ORDRE=1),
         _F(TYPE_CHAR="SISM_INER_SPEC", RESULTAT=sismique_dyn, DIRECTION="COMBI", TYPE_RESU="DYN"),
         _F(TYPE_CHAR="SISM_INER_SPEC", RESULTAT=sismique_qs, DIRECTION="COMBI", TYPE_RESU="QS"),
     ),
@@ -293,19 +294,35 @@ chPostRocheTout = POST_ROCHE(
 # TEST_RESU
 
 TEST_RESU(
-    CHAM_ELEM=(
-        # X13 = coefficient d'abattement optimisé gOpt
-        _F(TYPE_TEST="MAX", CHAM_GD=chPostRocheTout, NOM_CMP="X13", VALE_CALC=0.3148768865442976),
-        # X14 = coefficient d'abattement optimisé gsOpt
-        _F(TYPE_TEST="MAX", CHAM_GD=chPostRocheTout, NOM_CMP="X14", VALE_CALC=0.32827625338732247),
-        # X16 = contrainte équivalente optimisée
+    RESU=(
+        # coefficient d'abattement optimisé gOpt
+        _F(
+            TYPE_TEST="MAX",
+            RESULTAT=resuPostRocheTout,
+            INST=0.0,
+            NOM_CHAM="ROC1_ELNO",
+            NOM_CMP="X5",
+            VALE_CALC=0.3148768865442976,
+        ),
+        # coefficient d'abattement optimisé gsOpt
+        _F(
+            TYPE_TEST="MAX",
+            RESULTAT=resuPostRocheTout,
+            INST=0.0,
+            NOM_CHAM="ROC1_ELNO",
+            NOM_CMP="X7",
+            VALE_CALC=0.32827625338732247,
+        ),
+        # contrainte équivalente optimisée
         _F(
             TYPE_TEST="MAX",
             REFERENCE="AUTRE_ASTER",
-            CHAM_GD=chPostRocheTout,
-            NOM_CMP="X16",
-            VALE_CALC=237846578.25495368,
-            PRECISION=1e-2,
+            RESULTAT=resuPostRocheTout,
+            INST=0.0,
+            NOM_CHAM="ROC1_ELNO",
+            NOM_CMP="X9",
+            VALE_CALC=278390859.2482066,
+            PRECISION=16e-2,
             VALE_REFE=240.2e6,
         ),
     )
@@ -314,8 +331,9 @@ TEST_RESU(
 # appel à POST_ROCHE : comparaison à CAST3M
 
 
-chPostRoche3M = POST_ROCHE(
+resuPostRoche3M = POST_ROCHE(
     ZONE_ANALYSE=(_F(TOUT="OUI", GROUP_NO_ORIG="ENCA1"),),
+    SIGM_LIM="OUI",
     CHAM_MATER=ch_mater,
     CARA_ELEM=cara_elem,
     RESU_MECA=(
@@ -336,23 +354,38 @@ chPostRoche3M = POST_ROCHE(
 # TEST_RESU
 
 TEST_RESU(
-    CHAM_ELEM=(
-        # X13 = coefficient d'abattement optimisé gOpt
-        _F(TYPE_TEST="MAX", CHAM_GD=chPostRoche3M, NOM_CMP="X13", VALE_CALC=0.0677098215192371),
-        # X14 = coefficient d'abattement optimisé gsOpt
-        _F(TYPE_TEST="MAX", CHAM_GD=chPostRoche3M, NOM_CMP="X14", VALE_CALC=0.32919002022746363),
-        # X16 = contrainte équivalente
+    RESU=(
+        # coefficient d'abattement optimisé gOpt
         _F(
             TYPE_TEST="MAX",
-            REFERENCE="SOURCE_EXTERNE",
-            CHAM_GD=chPostRoche3M,
-            NOM_CMP="X16",
+            RESULTAT=resuPostRoche3M,
+            INST=0.0,
+            NOM_CHAM="ROC1_ELNO",
+            NOM_CMP="X5",
+            VALE_CALC=0.0677098215192371,
+        ),
+        # coefficient d'abattement optimisé gsOpt
+        _F(
+            TYPE_TEST="MAX",
+            RESULTAT=resuPostRoche3M,
+            INST=0.0,
+            NOM_CHAM="ROC1_ELNO",
+            NOM_CMP="X7",
+            VALE_CALC=0.32919002022746363,
+        ),
+        # contrainte équivalente optimisée
+        _F(
+            TYPE_TEST="MAX",
+            REFERENCE="AUTRE_ASTER",
+            RESULTAT=resuPostRoche3M,
+            INST=0.0,
+            NOM_CHAM="ROC1_ELNO",
+            NOM_CMP="X9",
             VALE_CALC=268871899.9141254,
             PRECISION=0.27,
             VALE_REFE=366.2e6,
         ),
     )
 )
-
 
 FIN()

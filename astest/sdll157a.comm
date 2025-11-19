@@ -109,6 +109,7 @@ maillage = DEFI_GROUP(
 nodesArc1 = maillage.getNodes("Arc_1_ordo")
 nodesArc3 = maillage.getNodes("Arc_3_ordo")
 
+
 # 3- calcul du vect_y du coude en question pour correspondre à
 # la norme RCCM_RX des moments dans le plan et hors plan du coude
 def calc_vectY(maillage, groupNoOrdo):
@@ -421,13 +422,14 @@ sismique_dyn = CREA_RESU(
 
 # appel à POST_ROCHE : tous chargements
 
-chPostRocheTout = POST_ROCHE(
-    RCCM_RX="NON",
+resuPostRocheTout = POST_ROCHE(
+    SIGM_LIM="NON",
+    TOUT_CHAM="OUI",
     ZONE_ANALYSE=(_F(TOUT="OUI", GROUP_NO_ORIG="ENCA1"),),
     RESU_MECA=(
         _F(TYPE_CHAR="POIDS", RESULTAT=poids_propre, NUME_ORDRE=1),
         _F(TYPE_CHAR="DILAT_THERM", RESULTAT=dilatation_thermique, NUME_ORDRE=1),
-        _F(TYPE_CHAR="DEPLACEMENT", RESULTAT=deplacement_impose, NUME_ORDRE=1),
+        _F(TYPE_CHAR="DDS", RESULTAT=deplacement_impose, NUME_ORDRE=1),
         _F(TYPE_CHAR="SISM_INER_SPEC", RESULTAT=sismique_dyn, DIRECTION="COMBI", TYPE_RESU="DYN"),
         _F(TYPE_CHAR="SISM_INER_SPEC", RESULTAT=sismique_qs, DIRECTION="COMBI", TYPE_RESU="QS"),
     ),
@@ -445,53 +447,125 @@ chPostRocheTout = POST_ROCHE(
 # TEST_RESU
 
 TEST_RESU(
-    CHAM_ELEM=(
-        # X1 = contrainte de référence
-        _F(TYPE_TEST="MAX", CHAM_GD=chPostRocheTout, NOM_CMP="X1", VALE_CALC=51345567.86322011),
-        # X2 = contrainte de référence S2
-        _F(TYPE_TEST="MAX", CHAM_GD=chPostRocheTout, NOM_CMP="X2", VALE_CALC=438204716.4623039),
-        # X3 = réversibilité locale t
-        _F(TYPE_TEST="MAX", CHAM_GD=chPostRocheTout, NOM_CMP="X3", VALE_CALC=1206427240.7464952),
-        # X4 = réversibilité locale ts
-        _F(TYPE_TEST="MAX", CHAM_GD=chPostRocheTout, NOM_CMP="X4", VALE_CALC=6.270055586584347),
-        # X5 = réversibilité totale T
-        _F(TYPE_TEST="MAX", CHAM_GD=chPostRocheTout, NOM_CMP="X5", VALE_CALC=2338.1444369750416),
-        # X6 = réversibilité totale Ts
-        _F(TYPE_TEST="MAX", CHAM_GD=chPostRocheTout, NOM_CMP="X6", VALE_CALC=0.0006976230687749453),
-        # X7 = facteur d'effet de ressort r_M
-        _F(TYPE_TEST="MAX", CHAM_GD=chPostRocheTout, NOM_CMP="X7", VALE_CALC=5.354333174961479),
-        # X8 = facteur d'effet de ressort r_S
-        _F(TYPE_TEST="MAX", CHAM_GD=chPostRocheTout, NOM_CMP="X8", VALE_CALC=5.756885904165104),
-        # X9 = facteur d'effet de ressort maximal r_M_Max
-        _F(TYPE_TEST="MAX", CHAM_GD=chPostRocheTout, NOM_CMP="X9", VALE_CALC=5.354333174961479),
-        # X10 = facteur d'effet de ressort maximal r_S_Max
-        _F(TYPE_TEST="MAX", CHAM_GD=chPostRocheTout, NOM_CMP="X10", VALE_CALC=5.756885904165104),
-        # X11 = coefficient d'abattement g
-        _F(TYPE_TEST="MAX", CHAM_GD=chPostRocheTout, NOM_CMP="X11", VALE_CALC=0.999999999946613),
-        # X12 = coefficient d'abattement gs
-        _F(TYPE_TEST="MAX", CHAM_GD=chPostRocheTout, NOM_CMP="X12", VALE_CALC=0.375348764432),
-        # X13 = coefficient d'abattement optimisé gOpt
-        _F(TYPE_TEST="MAX", CHAM_GD=chPostRocheTout, NOM_CMP="X13", VALE_CALC=0.9999999999915946),
-        # X14 = coefficient d'abattement optimisé gsOpt
-        _F(TYPE_TEST="MAX", CHAM_GD=chPostRocheTout, NOM_CMP="X14", VALE_CALC=0.975242883249),
-        # X15 = contrainte équivalente
+    RESU=(
+        # contrainte de référence
         _F(
             TYPE_TEST="MAX",
-            REFERENCE="AUTRE_ASTER",
-            CHAM_GD=chPostRocheTout,
-            NOM_CMP="X15",
-            VALE_CALC=254569819.065,
-            PRECISION=0.07,
-            VALE_REFE=240.2e6,
+            RESULTAT=resuPostRocheTout,
+            INST=0.0,
+            NOM_CHAM="ROC1_ELNO",
+            NOM_CMP="X1",
+            VALE_CALC=51345567.86322011,
         ),
-        # X16 = contrainte équivalente optimisée
+        # contrainte de référence S2
+        _F(
+            TYPE_TEST="MAX",
+            RESULTAT=resuPostRocheTout,
+            INST=0.0,
+            NOM_CHAM="ROC1_ELNO",
+            NOM_CMP="X3",
+            VALE_CALC=438204716.4623039,
+        ),
+        # réversibilité locale t
+        _F(
+            TYPE_TEST="MAX",
+            RESULTAT=resuPostRocheTout,
+            INST=0.0,
+            NOM_CHAM="ROC2_ELNO",
+            NOM_CMP="X1",
+            VALE_CALC=1206427240.7464952,
+        ),
+        # réversibilité locale ts
+        _F(
+            TYPE_TEST="MAX",
+            RESULTAT=resuPostRocheTout,
+            INST=0.0,
+            NOM_CHAM="ROC2_ELNO",
+            NOM_CMP="X3",
+            VALE_CALC=6.270055586584347,
+        ),
+        # réversibilité totale T
+        _F(
+            TYPE_TEST="MAX",
+            RESULTAT=resuPostRocheTout,
+            INST=0.0,
+            NOM_CHAM="ROC2_ELNO",
+            NOM_CMP="X5",
+            VALE_CALC=2338.1444369750416,
+        ),
+        # réversibilité totale Ts
+        _F(
+            TYPE_TEST="MAX",
+            RESULTAT=resuPostRocheTout,
+            INST=0.0,
+            NOM_CHAM="ROC2_ELNO",
+            NOM_CMP="X7",
+            VALE_CALC=0.0006976230687749453,
+        ),
+        # facteur d'effet de ressort r_M
+        _F(
+            TYPE_TEST="MAX",
+            RESULTAT=resuPostRocheTout,
+            INST=0.0,
+            NOM_CHAM="ROC2_ELNO",
+            NOM_CMP="X9",
+            VALE_CALC=5.354333174961479,
+        ),
+        # facteur d'effet de ressort r_S
+        _F(
+            TYPE_TEST="MAX",
+            RESULTAT=resuPostRocheTout,
+            INST=0.0,
+            NOM_CHAM="ROC2_ELNO",
+            NOM_CMP="X11",
+            VALE_CALC=5.756885904165104,
+        ),
+        # facteur d'effet de ressort maximal r_M_Max
+        _F(
+            TYPE_TEST="MAX",
+            RESULTAT=resuPostRocheTout,
+            INST=0.0,
+            NOM_CHAM="ROC2_ELNO",
+            NOM_CMP="X13",
+            VALE_CALC=5.354333174961479,
+        ),
+        # facteur d'effet de ressort maximal r_S_Max
+        _F(
+            TYPE_TEST="MAX",
+            RESULTAT=resuPostRocheTout,
+            INST=0.0,
+            NOM_CHAM="ROC2_ELNO",
+            NOM_CMP="X15",
+            VALE_CALC=5.756885904165104,
+        ),
+        # coefficient d'abattement optimisé gOpt
+        _F(
+            TYPE_TEST="MAX",
+            RESULTAT=resuPostRocheTout,
+            INST=0.0,
+            NOM_CHAM="ROC1_ELNO",
+            NOM_CMP="X5",
+            VALE_CALC=0.9999999999915946,
+        ),
+        # coefficient d'abattement optimisé gsOpt
+        _F(
+            TYPE_TEST="MAX",
+            RESULTAT=resuPostRocheTout,
+            INST=0.0,
+            NOM_CHAM="ROC1_ELNO",
+            NOM_CMP="X7",
+            VALE_CALC=0.975242883249,
+        ),
+        # contrainte équivalente optimisée
         _F(
             TYPE_TEST="MAX",
             REFERENCE="AUTRE_ASTER",
-            CHAM_GD=chPostRocheTout,
-            NOM_CMP="X16",
-            VALE_CALC=260312323.0,
-            PRECISION=0.09,
+            RESULTAT=resuPostRocheTout,
+            INST=0.0,
+            NOM_CHAM="ROC1_ELNO",
+            NOM_CMP="X9",
+            VALE_CALC=287832053.6075589,
+            PRECISION=0.2,
             VALE_REFE=240.2e6,
         ),
     )
@@ -500,8 +574,9 @@ TEST_RESU(
 # appel à POST_ROCHE : comparaison à CAST3M
 
 
-chPostRoche3M = POST_ROCHE(
-    RCCM_RX="NON",
+resuPostRoche3M = POST_ROCHE(
+    SIGM_LIM="NON",
+    TOUT_CHAM="OUI",
     ZONE_ANALYSE=(_F(TOUT="OUI", GROUP_NO_ORIG="ENCA1"),),
     CHAM_MATER=ch_mater,
     CARA_ELEM=cara_elem,
@@ -523,65 +598,136 @@ chPostRoche3M = POST_ROCHE(
 # TEST_RESU
 
 TEST_RESU(
-    CHAM_ELEM=(
-        # X1 = contrainte de référence
-        _F(TYPE_TEST="MAX", CHAM_GD=chPostRoche3M, NOM_CMP="X1", ORDRE_GRANDEUR=1, VALE_CALC=0.0),
-        # X2 = contrainte de référence S2
+    RESU=(
+        # contrainte de référence
         _F(
             TYPE_TEST="MAX",
+            RESULTAT=resuPostRoche3M,
+            INST=0.0,
+            NOM_CHAM="ROC1_ELNO",
+            NOM_CMP="X1",
+            ORDRE_GRANDEUR=1,
+            VALE_CALC=0.0,
+        ),
+        # contrainte de référence S2
+        _F(
+            TYPE_TEST="MAX",
+            RESULTAT=resuPostRoche3M,
+            INST=0.0,
+            NOM_CHAM="ROC1_ELNO",
+            NOM_CMP="X3",
             REFERENCE="SOURCE_EXTERNE",
-            CHAM_GD=chPostRoche3M,
-            NOM_CMP="X2",
             VALE_CALC=438204716.4623039,
             PRECISION=0.01,
             VALE_REFE=441.9e6,
         ),
-        # X3 = réversibilité locale t
-        _F(TYPE_TEST="MAX", CHAM_GD=chPostRoche3M, NOM_CMP="X3", ORDRE_GRANDEUR=1, VALE_CALC=0.0),
-        # X4 = réversibilité locale ts
-        _F(TYPE_TEST="MAX", CHAM_GD=chPostRoche3M, NOM_CMP="X4", VALE_CALC=6.270055586584347),
-        # X5 = réversibilité totale T
-        _F(TYPE_TEST="MAX", CHAM_GD=chPostRoche3M, NOM_CMP="X5", ORDRE_GRANDEUR=1, VALE_CALC=0.0),
-        # X6 = réversibilité totale Ts
-        _F(TYPE_TEST="MAX", CHAM_GD=chPostRoche3M, NOM_CMP="X6", VALE_CALC=0.0006976230687749453),
-        # X7 = facteur d'effet de ressort r_M
-        _F(TYPE_TEST="MAX", CHAM_GD=chPostRoche3M, NOM_CMP="X7", ORDRE_GRANDEUR=1, VALE_CALC=0.0),
-        # X8 = facteur d'effet de ressort r_S
+        # réversibilité locale t
         _F(
             TYPE_TEST="MAX",
+            RESULTAT=resuPostRoche3M,
+            INST=0.0,
+            NOM_CHAM="ROC2_ELNO",
+            NOM_CMP="X1",
+            ORDRE_GRANDEUR=1,
+            VALE_CALC=0.0,
+        ),
+        # réversibilité locale ts
+        _F(
+            TYPE_TEST="MAX",
+            RESULTAT=resuPostRoche3M,
+            INST=0.0,
+            NOM_CHAM="ROC2_ELNO",
+            NOM_CMP="X3",
+            VALE_CALC=6.270055586584347,
+        ),
+        # réversibilité totale T
+        _F(
+            TYPE_TEST="MAX",
+            RESULTAT=resuPostRoche3M,
+            INST=0.0,
+            NOM_CHAM="ROC2_ELNO",
+            NOM_CMP="X5",
+            ORDRE_GRANDEUR=1,
+            VALE_CALC=0.0,
+        ),
+        # réversibilité totale Ts
+        _F(
+            TYPE_TEST="MAX",
+            RESULTAT=resuPostRoche3M,
+            INST=0.0,
+            NOM_CHAM="ROC2_ELNO",
+            NOM_CMP="X7",
+            VALE_CALC=0.0006976230687749453,
+        ),
+        # facteur d'effet de ressort r_M
+        _F(
+            TYPE_TEST="MAX",
+            RESULTAT=resuPostRoche3M,
+            INST=0.0,
+            NOM_CHAM="ROC2_ELNO",
+            NOM_CMP="X9",
+            ORDRE_GRANDEUR=1,
+            VALE_CALC=0.0,
+        ),
+        # facteur d'effet de ressort r_S
+        _F(
+            TYPE_TEST="MAX",
+            RESULTAT=resuPostRoche3M,
+            INST=0.0,
+            NOM_CHAM="ROC2_ELNO",
+            NOM_CMP="X11",
             REFERENCE="SOURCE_EXTERNE",
-            CHAM_GD=chPostRoche3M,
-            NOM_CMP="X8",
             VALE_CALC=5.756885904165104,
             PRECISION=0.11,
             VALE_REFE=5.21,
         ),
-        # X9 = facteur d'effet de ressort maximal r_M_Max
-        _F(TYPE_TEST="MAX", CHAM_GD=chPostRoche3M, NOM_CMP="X9", ORDRE_GRANDEUR=1, VALE_CALC=0.0),
-        # X10 = facteur d'effet de ressort maximal r_S_Max
-        _F(TYPE_TEST="MAX", CHAM_GD=chPostRoche3M, NOM_CMP="X10", VALE_CALC=5.756885904165104),
-        # X11 = coefficient d'abattement g
-        _F(TYPE_TEST="MAX", CHAM_GD=chPostRoche3M, NOM_CMP="X11", VALE_CALC=1.0),
-        # X12 = coefficient d'abattement gs
-        _F(TYPE_TEST="MAX", CHAM_GD=chPostRoche3M, NOM_CMP="X12", VALE_CALC=0.376840072296),
-        # X13 = coefficient d'abattement optimisé gOpt
-        _F(TYPE_TEST="MAX", CHAM_GD=chPostRoche3M, NOM_CMP="X13", VALE_CALC=1.0),
-        # X14 = coefficient d'abattement optimisé gsOpt
-        _F(TYPE_TEST="MAX", CHAM_GD=chPostRoche3M, NOM_CMP="X14", VALE_CALC=0.976487058138),
-        # X15 = contrainte équivalente
+        # facteur d'effet de ressort maximal r_M_Max
         _F(
             TYPE_TEST="MAX",
-            REFERENCE="SOURCE_EXTERNE",
-            CHAM_GD=chPostRoche3M,
-            NOM_CMP="X15",
-            VALE_CALC=274094237.392,
-            PRECISION=0.26,
-            VALE_REFE=366.2e6,
+            RESULTAT=resuPostRoche3M,
+            INST=0.0,
+            NOM_CHAM="ROC2_ELNO",
+            NOM_CMP="X13",
+            ORDRE_GRANDEUR=1,
+            VALE_CALC=0.0,
         ),
-        # X16 = contrainte équivalente optimisée
-        _F(TYPE_TEST="MAX", CHAM_GD=chPostRoche3M, NOM_CMP="X16", VALE_CALC=274094237.392),
+        # facteur d'effet de ressort maximal r_S_Max
+        _F(
+            TYPE_TEST="MAX",
+            RESULTAT=resuPostRoche3M,
+            INST=0.0,
+            NOM_CHAM="ROC2_ELNO",
+            NOM_CMP="X15",
+            VALE_CALC=5.756885904165104,
+        ),
+        # coefficient d'abattement optimisé gOpt
+        _F(
+            TYPE_TEST="MAX",
+            RESULTAT=resuPostRoche3M,
+            INST=0.0,
+            NOM_CHAM="ROC1_ELNO",
+            NOM_CMP="X5",
+            VALE_CALC=1.0,
+        ),
+        # coefficient d'abattement optimisé gsOpt
+        _F(
+            TYPE_TEST="MAX",
+            RESULTAT=resuPostRoche3M,
+            INST=0.0,
+            NOM_CHAM="ROC1_ELNO",
+            NOM_CMP="X7",
+            VALE_CALC=0.976487058138,
+        ),
+        # contrainte équivalente optimisée
+        _F(
+            TYPE_TEST="MAX",
+            RESULTAT=resuPostRoche3M,
+            INST=0.0,
+            NOM_CHAM="ROC1_ELNO",
+            NOM_CMP="X9",
+            VALE_CALC=274094237.392,
+        ),
     )
 )
-
 
 FIN()
