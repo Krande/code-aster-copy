@@ -163,7 +163,6 @@ CALC_MISS(
     UNITE_IMPR_ASTER=31,
     UNITE_RESU_IMPE=32,
     UNITE_RESU_FORC=33,
-    VERSION="V6.6",
     PARAMETRE=_F(
         FREQ_MIN=fmin,
         FREQ_MAX=fmax,
