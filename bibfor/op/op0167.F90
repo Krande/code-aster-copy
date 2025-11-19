@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -93,7 +93,7 @@ subroutine op0167()
 !
     integer :: nori, ntab, n1
     integer :: k, iret, iqtr
-    real(kind=8) :: epais, shrink, lonmin
+    real(kind=8) :: epais, shrink, edgeMin
     character(len=4) :: answer
     character(len=4) :: cdim
     character(len=8) :: meshIn, meshOut, model, geofi
@@ -132,7 +132,7 @@ subroutine op0167()
     character(len=8) :: prefCellName, prefNodeName
     integer, pointer :: modiCellNume(:) => null(), modiCellType(:) => null()
     integer, pointer :: listCellNume(:) => null(), listNodeNume(:) => null()
-    character(len=16), pointer :: listField(:) => null()
+    character(len=16), pointer :: listFieldType(:) => null()
     integer, pointer :: connexAdr(:) => null()
     integer, pointer :: nbNodeByCellOut(:) => null()
     integer, pointer :: allCellNume(:) => null()
@@ -228,19 +228,19 @@ subroutine op0167()
         ASSERT(nbOccEclaPg .eq. 1)
         call getvid(keywfact, 'MODELE', iocc=1, scal=model)
         call getvr8(keywfact, 'SHRINK', iocc=1, scal=shrink)
-        call getvr8(keywfact, 'TAILLE_MIN', iocc=1, scal=lonmin)
+        call getvr8(keywfact, 'TAILLE_MIN', iocc=1, scal=edgeMin)
         call getvtx(keywfact, 'NOM_CHAM', iocc=1, nbval=0, nbret=nbField)
         if (nbField .lt. 0) then
             nbField = -nbField
-            AS_ALLOCATE(vk16=listField, size=nbField)
-            call getvtx(keywfact, 'NOM_CHAM', iocc=1, nbval=nbField, vect=listField)
+            AS_ALLOCATE(vk16=listFieldType, size=nbField)
+            call getvtx(keywfact, 'NOM_CHAM', iocc=1, nbval=nbField, vect=listFieldType)
         else
-            AS_ALLOCATE(vk16=listField, size=1)
+            AS_ALLOCATE(vk16=listFieldType, size=1)
         end if
         call exlima(keywfact, 1, 'V', model, ligrel)
         call eclpgm(meshOut, model, k19void, ligrel, shrink, &
-                    lonmin, nbField, listField)
-        AS_DEALLOCATE(vk16=listField)
+                    edgeMin, nbField, listFieldType)
+        AS_DEALLOCATE(vk16=listFieldType)
         goto 350
     end if
 !
