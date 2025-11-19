@@ -57,7 +57,7 @@ subroutine te0029(option, nomte)
     integer(kind=8) :: ndim, nno, nnos, npg, ipoids, ivf, idfdx, jgano, ivectu, imate
     integer(kind=8) :: i, j, ier, jgeom, jpres, itemps, igau
     real(kind=8) :: pgl(3, 3), xyzl(3, 4)
-    real(kind=8) :: for(6, 4), rho, epais
+    real(kind=8) :: rho, epais
     real(kind=8) :: valpar(4), pr
     character(len=8) :: nompar(4)
     character(len=16) :: elas_keyword
@@ -67,8 +67,8 @@ subroutine te0029(option, nomte)
     ! NOTICE: see the size of the arrays in the C file: c_interface_plaq_mitc_f
 
     integer(c_int) :: ncst, ncd, nk, ne0, nwinit
-    integer(c_int) :: entities0(1), entities1(1), entities2(1)
-    integer(kind=8) :: n, k, elas_id
+    integer(c_int) :: entities0(1)
+    integer(kind=8) :: elas_id
 
     integer(kind=8), parameter :: size_mat = 30, size_fenicsx = 42*42
     real(c_double) :: F_elem(size_fenicsx), F_elem_int(size_mat), w_0(size_mat)

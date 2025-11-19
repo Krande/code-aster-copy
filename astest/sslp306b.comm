@@ -44,7 +44,7 @@ def dry_(x, y, **kwargs):
 FINE_REFINEMENT = 6
 YOUNG = 10920.0
 POISSON = 0.3
-TOLERANCE = 1e-2 # Greater than sslp306a
+TOLERANCE = 1e-2  # Greater than sslp306a
 
 for thickness in [0.1, 0.001]:
 

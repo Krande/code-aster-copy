@@ -210,17 +210,6 @@ module cara_elem_parameter_module
     integer(kind=8), parameter :: ACE_MECA_2D_DIS_TR_L  = 8
 !
 ! --------------------------------------------------------------------------------------------------
-<<<<<<< HEAD
-    integer(kind=8), parameter :: ACE_NB_COQUE     = 27
-    character(len=16), parameter :: ACE_EL_COQUE(ACE_NB_COQUE) =[ &
-        'THCOTR3         ', 'THCOTR6         ', 'THCOQU4         ', 'THCOQU8         ', &
-        'THCOTR7         ', 'THCOQU9         ', 'MEDKTR3         ', 'MEDSTR3         ', &
-        'MET3TR3         ', 'MEDKQU4         ', 'MEDSQU4         ', 'MEQ4QU4         ', &
-        'MECXSE3         ', 'MEDKTG3         ', 'MEDKQG4         ', 'MEQ4GG4         ', &
-        'MET3GG3         ', 'THCASE3         ', 'THCPSE3         ', 'MEC3QU9H        ', &
-        'MEC3TR7H        ', 'MEBODKT         ', 'MEBODST         ', 'MEBOQ4G         ', &
-        'MEBOCQ3         ', 'THCOSE3         ', 'THCOSE2         ' ]
-=======
     integer(kind=8), parameter :: ACE_NB_COQUE = 28
     character(len=16), parameter :: ACE_EL_COQUE(ACE_NB_COQUE) = [ &
                                     'THCOTR3         ', 'THCOTR6         ', &
@@ -237,7 +226,6 @@ module cara_elem_parameter_module
                                     'MEBODST         ', 'MEBOQ4G         ', &
                                     'MEBOCQ3         ', 'THCOSE3         ', &
                                     'THCOSE2         ', 'PLAQ_MITC       ']
->>>>>>> e616f774f0 ([#34936] refactoring to include fenicsx in code_aster)
 !
 ! --------------------------------------------------------------------------------------------------
     integer(kind=8), parameter :: ACE_NB_CABLE     = 2
