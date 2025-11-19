@@ -101,6 +101,8 @@ PARAMS_TYPE = {
     "memjob": "int",
     "memory_limit": "float",
     "mpi_nbcpu": "int",
+    # mpi_nbnoeud is not used by run_aster but useful to run_sbatch
+    "mpi_nbnoeud": "int",
     "ncpus": "int",
     "no-mpi": "bool",
     "time_limit": "float",
@@ -127,7 +129,6 @@ PARAMS_TYPE.update(
             "mem_aster",
             "memjob",
             "mode",
-            "mpi_nbnoeud",
             "nbmaxnook",
             "noeud",
             "nomjob",
