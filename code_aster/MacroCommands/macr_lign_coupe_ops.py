@@ -51,6 +51,7 @@ class AxisSystem:
     INITIAL: str = "INITIAL"
     GLOBAL: str = "GLOBAL"
     LOCAL: str = "LOCAL"
+    CYLINDRIC: str = "CYLINDRIQUE"
     POLAR: str = "POLAIRE"
     USER: str = "UTILISATEUR"
     UNKNOWN: str = "UNKNOWN"
@@ -544,7 +545,12 @@ def get_result_axis_system(
         return AxisSystem.UNKNOWN
     if cut_axis_system == AxisSystem.INITIAL:
         return AxisSystem.GLOBAL
-    if cut_axis_system in (AxisSystem.POLAR, AxisSystem.USER, AxisSystem.LOCAL):
+    if cut_axis_system in (
+        AxisSystem.POLAR,
+        AxisSystem.USER,
+        AxisSystem.LOCAL,
+        AxisSystem.CYLINDRIC,
+    ):
         # only few fields are handled for axis modifications
         if field_name in ("DEPL", "SIEF_ELNO", "SIGM_NOEU", "SIGM_ELNO", "FLUX_ELNO", "FLUX_NOEU"):
             return cut_axis_system
@@ -990,7 +996,7 @@ def macr_lign_coupe_ops(
                     **motscles,
                 )
             )
-        elif result_axis_system in (AxisSystem.USER, AxisSystem.LOCAL):
+        elif result_axis_system in (AxisSystem.USER, AxisSystem.LOCAL, AxisSystem.CYLINDRIC):
             __remodr = crea_resu_local(dime, NOM_CHAM, m, __recou)
             current_resu = __remodr
             mcACTION.append(
