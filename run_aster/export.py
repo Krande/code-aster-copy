@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -101,6 +101,8 @@ PARAMS_TYPE = {
     "memjob": "int",
     "memory_limit": "float",
     "mpi_nbcpu": "int",
+    # mpi_nbnoeud is not used by run_aster but useful to run_sbatch
+    "mpi_nbnoeud": "int",
     "ncpus": "int",
     "no-mpi": "bool",
     "time_limit": "float",
@@ -127,7 +129,6 @@ PARAMS_TYPE.update(
             "mem_aster",
             "memjob",
             "mode",
-            "mpi_nbnoeud",
             "nbmaxnook",
             "noeud",
             "nomjob",

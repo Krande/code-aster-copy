@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -130,7 +130,7 @@ def parse_args(argv):
         action="store",
         type=int,
         default=jobs,
-        help="run the tests in parallel using the given " f"number of jobs (default: {jobs})",
+        help=f"run the tests in parallel using the given number of jobs (default: {jobs})",
     )
     parser.add_argument(
         "--testlist", action="store", metavar="FILE", help="list of testcases to run"
@@ -145,8 +145,7 @@ def parse_args(argv):
         "--resutest",
         action="store",
         metavar="DIR",
-        help="directory to write the results of the testcases "
-        "(relative to the current directory)",
+        help="directory to write the results of the testcases (relative to the current directory)",
     )
     parser.add_argument(
         "--no-resutest",
@@ -159,14 +158,14 @@ def parse_args(argv):
         "--clean",
         action="store_true",
         default="auto",
-        help="remove the content of 'resutest' directory " "before starting",
+        help="remove the content of 'resutest' directory before starting",
     )
     parser.add_argument(
         "--no-clean",
         action="store_false",
         default="auto",
         dest="clean",
-        help="do not remove the content of 'resutest' " "directory at startup",
+        help="do not remove the content of 'resutest' directory at startup",
     )
     parser.add_argument(
         "--timefactor",
@@ -200,7 +199,7 @@ def parse_args(argv):
         action="append",
         metavar="regex",
         default=[],
-        help="run tests with labels matching regular " "expression.",
+        help="run tests with labels matching regular expression.",
     )
     group.add_argument(
         "-LE",
@@ -208,7 +207,7 @@ def parse_args(argv):
         action="append",
         metavar="regex",
         default=[],
-        help="exclude tests with labels matching regular " "expression.",
+        help="exclude tests with labels matching regular expression.",
     )
     group.add_argument(
         "--print-labels", action="store_true", help="print all available test labels"
@@ -395,15 +394,17 @@ def _build_def(bindir, datadir, lexport, options):
         if testname in TEST_FILES_INTEGR:
             lab.append("SMECA_INTEGR")
         procs = mpi * thr
+        timeout = int(tim * 1.1 * float(os.environ["FACMTPS"]))
         if "sbatch" in options:
-            tim *= 10
+            # only used by ctest to order runs (separated jobs)
+            timeout *= 100
             procs = 1
         text.append(
             CTEST_DEF.format(
                 testname=testname,
                 labels=" ".join(sorted(lab)),
                 processors=procs,
-                timeout=int(tim * 1.1 * float(os.environ["FACMTPS"])),
+                timeout=timeout,
                 options=options,
                 ASTERDATADIR=datadir,
                 ext=".bat" if RUNASTER_PLATFORM == "win" else "",
