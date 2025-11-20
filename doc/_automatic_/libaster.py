@@ -12369,7 +12369,7 @@ class Modelings:
 
     FLUI_PESA_2D = 5
 
-    FLUI_STRU = 171
+    FLUI_STRU = 172
 
     FLUI_STRU_2D = 6
 
@@ -12379,9 +12379,9 @@ class Modelings:
 
     GRAD_VARI_3D = 16
 
-    GRILLE_EXCENTRE = 172
+    GRILLE_EXCENTRE = 173
 
-    GRILLE_MEMBRANE = 173
+    GRILLE_MEMBRANE = 174
 
     GVNO_3D = 17
 
@@ -12439,35 +12439,37 @@ class Modelings:
 
     JOINT_HYME_3D = 44
 
-    MEMBRANE = 174
+    MEMBRANE = 175
 
-    PLAN_INTERFACE = 179
+    PLAN_INTERFACE = 180
 
-    PLAN_INTERFACE_S = 180
+    PLAN_INTERFACE_S = 181
 
-    PLAN_JHMS = 181
+    PLAN_JHMS = 182
 
-    PLAN_JOINT = 182
+    PLAN_JOINT = 183
 
-    PLAN_JOINT_HYME = 183
+    PLAN_JOINT_HYME = 184
 
-    POU_D_E = 184
+    PLAQ_MITC = 171
 
-    POU_D_EM = 185
+    POU_D_E = 185
 
-    POU_D_SQUE = 186
+    POU_D_EM = 186
 
-    POU_D_T = 187
+    POU_D_SQUE = 187
 
-    POU_D_TG = 188
+    POU_D_T = 188
 
-    POU_D_TGM = 189
+    POU_D_TG = 189
 
-    POU_D_T_GD = 190
+    POU_D_TGM = 190
 
-    POU_FLUI_STRU = 191
+    POU_D_T_GD = 191
 
-    Planar = 175
+    POU_FLUI_STRU = 192
+
+    Planar = 176
 
     PlanarBar = 0
 
@@ -12475,9 +12477,9 @@ class Modelings:
 
     PlaneStress = 117
 
-    Q4G = 192
+    Q4G = 193
 
-    Q4GG = 193
+    Q4GG = 194
 
     SECH_3D = 45
 
@@ -12515,9 +12517,9 @@ class Modelings:
 
     THVS_3D = 62
 
-    TUYAU_3M = 194
+    TUYAU_3M = 195
 
-    TUYAU_6M = 195
+    TUYAU_6M = 196
 
     Tridimensional = 7
 

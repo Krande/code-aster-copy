@@ -17,6 +17,8 @@
 ! --------------------------------------------------------------------
 ! person_in_charge: joaquin.cornejo-fuentes at edf.fr
 !     RMQU9 - MODULE DE LA MATRICE J
+! interface c++
+! aslint: disable=W1403
 module c_interface_plaq_mitc_j
     use iso_c_binding
     implicit none

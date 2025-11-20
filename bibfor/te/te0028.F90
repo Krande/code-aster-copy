@@ -71,10 +71,6 @@ subroutine te0028(option, nomte)
 !
 ! --------------------------------------------------------------
 !
-    type(FE_Cell) :: FECell
-    type(FE_Quadrature) :: FEQuad
-    type(FE_basis) :: FEBasis
-!
     character(len=4) :: fami
     integer(kind=8) :: ndim, nno, igeom, imate, i, j
     integer(kind=8), parameter :: size_fenicsx = 42*42, size_aster = 30*30

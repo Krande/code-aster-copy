@@ -185,7 +185,6 @@ for cmp in (
     name = "D_DEPL_R_" + cmp
 
     class TempClass(Element):
-
         """Please document this element"""
 
         _name = name
