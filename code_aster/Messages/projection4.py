@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -46,6 +46,21 @@ Remarque : CAS_FIGURE est utilisé pour filtrer les mailles, du MODELE_1 ou du M
 qui portent les champs à projeter. Seuls les champs portés par les mailles qui
 correspondent à la topologie donnée sous CAS_FIGURE seront projetés sur les mailles
 du MODELE_2 ou du MAILLAGE_2.
+"""
+    ),
+    6: _(
+        """
+  Attention : %(i1)d mailles de type %(k1)s n'ont pas été projetées car la famille
+  de points de Gauss sur le champ en question a une maille support 1D.
+
+  Il s'agit peut-être d'éléments de joint 2D. Vous pouvez utilisez GROUP_MA s'il existe dans la commande.
+"""
+    ),
+    7: _(
+        """
+  Des mailles n'ont pas été projetées car la famille de points de Gauss sur le champ en question a une maille support 1D.
+
+  Il s'agit peut-être d'éléments de joint 2D. Vous pouvez utilisez GROUP_MA s'il existe dans la commande.
 """
     ),
     54: _("""Il n'y a aucun noeud sur lesquels projeter."""),

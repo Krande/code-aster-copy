@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -256,6 +256,7 @@ subroutine vrcin1(modele, chmat, carele, inst, codret, nompar)
 
 !       2.1 INTERPOLATION EN TEMPS => NOMCH
 !       ------------------------------------
+        nomevo = '        '
         if (tysd .eq. 'EVOL') then
 !           -- SI TYSD='EVOL', ON INTERPOLE AU TEMPS INST
             nomevo = zk16(jlissd-1+7*(ichs-1)+2) (1:8)

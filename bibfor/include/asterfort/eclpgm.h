@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -19,15 +19,12 @@
 !
 !
 interface
-    subroutine eclpgm(ma2, mo, cham1, ligrel, shrink,&
-                      lonmin, nch, lisch)
-        integer :: nch
-        character(len=8) :: ma2
-        character(len=8) :: mo
-        character(len=19) :: cham1
-        character(len=19) :: ligrel
-        real(kind=8) :: shrink
-        real(kind=8) :: lonmin
-        character(len=16) :: lisch(nch)
+    subroutine eclpgm(ma2, model1, cham1, ligrelIn, shrink, &
+                      edgeMin, nbField, listFieldType)
+        character(len=8), intent(in) :: ma2, model1
+        character(len=19), intent(in) :: cham1, ligrelIn
+        real(kind=8), intent(in) :: shrink, edgeMin
+        integer, intent(in) :: nbField
+        character(len=16), intent(in) :: listFieldType(nbField)
     end subroutine eclpgm
 end interface

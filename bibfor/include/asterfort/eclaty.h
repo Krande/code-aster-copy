@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2019 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -15,31 +15,22 @@
 ! You should have received a copy of the GNU General Public License
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
-
-!
 !
 interface
-    subroutine eclaty(nomte, elrefa, fapg, npg, npoini,&
-                      nterm1, nsomm1, csomm1, tyma, nbno2,&
-                      connx, mxnbn2, mxnbpi, mxnbte, mxnbse,&
+    subroutine eclaty(typeElemName, &
+                      elrefa, fapg, &
+                      mxnbn2, mxnbpi, mxnbte, mxnbse, &
+                      npg, npoini, &
+                      nterm1, nsomm1, csomm1, &
+                      typeCellNume, nbno2, connx, &
                       nbsel, corsel, iret)
-        integer :: mxnbse
-        integer :: mxnbte
-        integer :: mxnbpi
-        integer :: mxnbn2
-        character(len=16) :: nomte
-        character(len=8) :: elrefa
-        character(len=8) :: fapg
-        integer :: npg
-        integer :: npoini
-        integer :: nterm1(mxnbpi)
-        integer :: nsomm1(mxnbpi, mxnbte)
-        real(kind=8) :: csomm1(mxnbpi, mxnbte)
-        integer :: tyma(mxnbse)
-        integer :: nbno2(mxnbse)
-        integer :: connx(mxnbn2, mxnbse)
-        integer :: nbsel
-        integer :: corsel(mxnbse)
-        integer :: iret
+        character(len=16), intent(in) :: typeElemName
+        character(len=8), intent(in) :: elrefa, fapg
+        integer, intent(in) :: mxnbn2, mxnbpi, mxnbte, mxnbse
+        integer, intent(out) :: npg, npoini
+        integer, intent(out) :: nterm1(mxnbpi), nsomm1(mxnbpi, mxnbte)
+        real(kind=8), intent(out) :: csomm1(mxnbpi, mxnbte)
+        integer, intent(out) :: typeCellNume(mxnbse), nbno2(mxnbse), connx(mxnbn2, mxnbse)
+        integer, intent(out) :: nbsel, corsel(mxnbse), iret
     end subroutine eclaty
 end interface
