@@ -135,7 +135,7 @@ def parse_args(argv):
         action="store",
         type=int,
         default=jobs,
-        help="run the tests in parallel using the given " f"number of jobs (default: {jobs})",
+        help=f"run the tests in parallel using the given number of jobs (default: {jobs})",
     )
     parser.add_argument(
         "--testlist", action="store", metavar="FILE", help="list of testcases to run"
@@ -150,8 +150,7 @@ def parse_args(argv):
         "--resutest",
         action="store",
         metavar="DIR",
-        help="directory to write the results of the testcases "
-        "(relative to the current directory)",
+        help="directory to write the results of the testcases (relative to the current directory)",
     )
     parser.add_argument(
         "--no-resutest",
@@ -464,7 +463,8 @@ def _build_def(datadir, lexport, options, testdir):
         procs = mpi * thr
         timeout = int(tim * 1.1 * float(os.environ["FACMTPS"]))
         if "sbatch" in options:
-            timeout = 12 * 3600
+            # only used by ctest to order runs (separated jobs)
+            timeout *= 100
             procs = 1
         text.append(
             CTEST_DEF.format(

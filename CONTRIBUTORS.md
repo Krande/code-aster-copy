@@ -268,6 +268,7 @@ Please keep this list sorted.
 - Denis Laxalde <denis.laxalde .at. logilab.fr>
 - Alain Leufroy <alain.leufroy .at. logilab.fr>
 - Luigi Luis Paone
+- Basile Marchand <basile.marchand at simvia.tech>
 - Anthony McDonald <anthony.mcdonald .at. wave-venture.com>
 - Stephane Multon <multon .at. insa-toulouse.fr>
 - Stefan H. Reiterer <stefan.harald.reiterer .at. gmail.com>

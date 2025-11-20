@@ -407,9 +407,7 @@ class ExtendedParallelMesh:
         filename = osp.join(tmpdir.path, "buildRectangle.med")
         # Sequential build
         if rank == 0:
-            seqMesh = Mesh.buildRectangle(
-                lx=lx, ly=ly, nx=x_size * nx_loc - 1, ny=x_size * ny_loc - 1
-            )
+            seqMesh = Mesh.buildRectangle(lx=lx, ly=ly, nx=nx - 1, ny=ny_loc * x_size - 1)
             seqMesh.printMedFile(filename)
         else:
             # mandatory so that the meshes that will be created after on the other processes share the same name
@@ -445,7 +443,8 @@ class ExtendedParallelMesh:
         """
         size = MPI.ASTER_COMM_WORLD.Get_size()
         rank = MPI.ASTER_COMM_WORLD.Get_rank()
-        size_cbrt = math.cbrt(size)
+        # use math.cbrt with python>=3.11
+        size_cbrt = np.cbrt(size)
         if (size_cbrt - int(size_cbrt)) != 0:
             raise ValueError(
                 (
@@ -454,11 +453,10 @@ class ExtendedParallelMesh:
                 )
             )
         # number of subdomains in the x-direction
-        x_size = int(np.cbrt(size))
+        x_size = int(size_cbrt)
         # global sizes
         nx = nx_loc * x_size
         ny = ny_loc * x_size
-        nz = nz_loc * x_size
 
         # Compute 3D coordinates of this rank in the process grid
         rz = rank // (x_size * x_size)
@@ -484,9 +482,9 @@ class ExtendedParallelMesh:
                 ymax=ly,
                 zmin=0.0,
                 zmax=lz,
-                nx=x_size * nx_loc - 1,
-                ny=x_size * ny_loc - 1,
-                nz=x_size * nz_loc - 1,
+                nx=nx - 1,
+                ny=ny - 1,
+                nz=nz_loc * x_size - 1,
             )
             seqMesh = Mesh()
             seqMesh.buildFromMedCouplingMesh(tempMesh)
