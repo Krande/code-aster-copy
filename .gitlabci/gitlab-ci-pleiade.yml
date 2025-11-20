@@ -348,7 +348,6 @@ verification_test_pkg:
 prepare_win:
   variables:
     OSNAME: win
-    PREREQ_VERSION: 20240327
   extends: .prepare
   script:
     - !reference [.prepare, script]
