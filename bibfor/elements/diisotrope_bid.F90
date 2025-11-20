@@ -75,7 +75,7 @@ subroutine diisotrope_bid(for_discret, iret, ipi, jmat, ivarim, icontm, klv, rai
     do kk = 1, zi(ipi+2)
         ! boucle sur le nb de fonctions dan defi_materiaux
         if ('FX' .eq. zk16(zi(ipi+3)+idf+kk-1)) then
-            ! lmat=9, lfct=10
+            ! lmat=9, lfct=10 cf.d4.06.08
             ldcfct(1) = ipi+lmat-1+lfct*(kk-1)
             iloi = 1
         else if ('FTAN' .eq. zk16(zi(ipi+3)+idf+kk-1)) then
@@ -209,16 +209,23 @@ subroutine diisotrope_bid(for_discret, iret, ipi, jmat, ivarim, icontm, klv, rai
             call rk5adp(nbequa, ldcpar, ldcfct, ldccar, temps0, &
      &                  dtemps, nbdecp, errmax, y0, dy0, &
      &                  disc_isotr, resu_x, iret, ynorme)
+! La tangente est initiée par la pente initiale (axial)
+            raide(1) = ldcpar(1)/ldcpar(2)
         else
             call rk5adp(nbequa, ldcpar, ldcfct, ldccar, temps0, &
             &                  dtemps, nbdecp, errmax, y0, dy0, &
             &                  disc_isotr, resu_t, iret, ynorme)
+! La tangente est initiée par la pente initiale (tangentiel)
+            raide(2) = ldcpar(1)/ldcpar(2)
+            raide(3) = raide(2)
         end if
     end do
 
     resu = resu_t
-    do kk = 1, nbequa
+    do kk = 1, nbequa*2
         if (ANY([1, 4, 7, 8, 9] == kk)) then
+            resu(kk) = resu_x(kk)
+        else if (ANY([1, 4, 7, 8, 9] == kk-nbequa)) then
             resu(kk) = resu_x(kk)
         end if
     end do
@@ -226,20 +233,15 @@ subroutine diisotrope_bid(for_discret, iret, ipi, jmat, ivarim, icontm, klv, rai
     if (iret .ne. 0) goto 999
     !
 ! calcul de la tangente au comportement
-    if (iloi == 1) then
-        raide(1) = ldcpar(1)/ldcpar(2)
-        if (abs(resu(nbequa+4)) .gt. precis) then
-            raide(1) = resu(nbequa+1)/resu(nbequa+4)
-        end if
-    else
-        raide(2) = ldcpar(1)/ldcpar(2)
-        raide(3) = raide(2)
-        if (abs(resu(nbequa+5)) .gt. precis) then
-            raide(2) = resu(nbequa+2)/resu(nbequa+5)
-        end if
-        if (abs(resu(nbequa+6)) .gt. precis) then
-            raide(3) = resu(nbequa+3)/resu(nbequa+6)
-        end if
+    if (abs(resu(nbequa+4)) .gt. precis) then
+        raide(1) = resu(nbequa+1)/resu(nbequa+4)
+    end if
+
+    if (abs(resu(nbequa+5)) .gt. precis) then
+        raide(2) = resu(nbequa+2)/resu(nbequa+5)
+    end if
+    if (abs(resu(nbequa+6)) .gt. precis) then
+        raide(3) = resu(nbequa+3)/resu(nbequa+6)
     end if
 
 ! actualisation de la matrice quasi-tangente
@@ -256,11 +258,10 @@ subroutine diisotrope_bid(for_discret, iret, ipi, jmat, ivarim, icontm, klv, rai
             call ut2mlg(for_discret%nno, for_discret%nc, for_discret%pgl, klv, zr(imat))
         end if
     end if
-    !
+
     if (for_discret%lVect .or. for_discret%lSigm) then
 ! demi-matrice klv transformée en matrice pleine klc
         call vecma(klv, for_discret%nbt, klc, neq)
-
 ! calcul de fl = klc.dul (incrément d'effort)
         call pmavec('ZERO', neq, klc, for_discret%dul, fl)
     end if
@@ -272,27 +273,21 @@ subroutine diisotrope_bid(for_discret, iret, ipi, jmat, ivarim, icontm, klv, rai
             do ii = 1, for_discret%nc
                 zr(icontp-1+ii) = fl(ii)+zr(icontm-1+ii)
             end do
-!            if (iloi == 1) then
             zr(icontp-1+1) = resu(1)
-!            else
             zr(icontp-1+2) = resu(2)
             zr(icontp-1+3) = resu(3)
-!            end if
         else if (for_discret%nno .eq. 2) then
             do ii = 1, for_discret%nc
                 zr(icontp-1+ii) = -fl(ii)+zr(icontm-1+ii)
                 zr(icontp-1+ii+for_discret%nc) = fl(ii+for_discret%nc)+&
                 &                                zr(icontm-1+ii+for_discret%nc)
             end do
-!            if (iloi == 1) then
             zr(icontp-1+1) = resu(1)
             zr(icontp-1+1+for_discret%nc) = resu(1)
-!            else
             zr(icontp-1+2) = resu(2)
             zr(icontp-1+3) = resu(3)
             zr(icontp-1+2+for_discret%nc) = resu(2)
             zr(icontp-1+3+for_discret%nc) = resu(3)
-            !           end if
         end if
     end if
 ! Calcul des forces nodales
@@ -303,26 +298,20 @@ subroutine diisotrope_bid(for_discret, iret, ipi, jmat, ivarim, icontm, klv, rai
             do ii = 1, for_discret%nc
                 fl(ii) = fl(ii)+zr(icontm-1+ii)
             end do
-!            if (iloi == 1) then
             fl(1) = resu(1)
-!            else
             fl(2) = resu(2)
             fl(3) = resu(3)
-!            end if
         else if (for_discret%nno .eq. 2) then
             do ii = 1, for_discret%nc
                 fl(ii) = fl(ii)-zr(icontm-1+ii)
                 fl(ii+for_discret%nc) = fl(ii+for_discret%nc)+zr(icontm-1+ii+for_discret%nc)
             end do
-!            if (iloi == 1) then
             fl(1) = -resu(1)
             fl(1+for_discret%nc) = resu(1)
-!           else
             fl(2) = -resu(2)
             fl(3) = -resu(3)
             fl(2+for_discret%nc) = resu(2)
             fl(3+for_discret%nc) = resu(3)
-!           end if
         end if
 ! forces nodales aux noeuds 1 et 2 (repère global)
         if (for_discret%nc .ne. 2) then
