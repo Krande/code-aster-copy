@@ -63,21 +63,24 @@ Use 'sbatch --help' for details and example below.
 """
 
 EPILOG = """Example:
-    sbatch --wckey=p11yb:aster --partition=bm FILE.export
+    run_sbatch --wckey=p11yb:aster --partition=bm FILE.export
 or:
     export SBATCH_WCKEY=p11yb:aster
     export SBATCH_PARTITION=bm
-    sbatch FILE.export
+    run_sbatch FILE.export
 """
 
 TEMPLATE = """#!/bin/bash
 #SBATCH --job-name={name}
 
-# nbnodes
-#SBATCH -N {mpi_nbnodes}
+# number of nodes
+#SBATCH --nodes={mpi_nbnodes}
 
-# nb proc MPI total
-#SBATCH -n {mpi_nbcpu}
+# number of MPI processes
+#SBATCH --ntasks={mpi_nbcpu}
+
+# number of threads per MPI process
+#SBATCH --cpus-per-task={nbthreads} --threads-per-core=1
 
 # max walltime
 #SBATCH --time="00:00:{time_limit}"
@@ -85,8 +88,8 @@ TEMPLATE = """#!/bin/bash
 # memory in MB
 #SBATCH --mem={memory_node}M
 
-# add `--exclusive` if several nodes
-#SBATCH {opt_exclusive}
+# add `--exclusive` if several nodes, define `--partition=...`
+#SBATCH {options}
 
 # redirect output in the current directory
 #SBATCH --output={output}
@@ -108,9 +111,39 @@ def parse_args(argv):
     parser.add_argument(
         "-n", "--dry-run", action="store_true", help="do not execute, just show the script content"
     )
-    parser.add_argument("--ctest", action="store_true", help="pass the --ctest option to run_aster")
     parser.add_argument(
         "--output", action="store", help="output file (default: <export filename>-%%j.txt)"
+    )
+    parser.add_argument(
+        "--run_aster_option",
+        dest="opts",
+        action="append",
+        default=[],
+        help="option to be passed to run_aster, can be repeated "
+        "(example: --run_aster_option='--only-proc0')",
+    )
+    parser.add_argument(
+        "--ctest",
+        dest="opts",
+        action="append_const",
+        const="--ctest",
+        help="shortcut for --run_aster_option='--ctest'",
+    )
+    parser.add_argument(
+        "--time_limit",
+        dest="time_limit",
+        type=float,
+        action="store",
+        default=None,
+        help="override the time limit in seconds",
+    )
+    parser.add_argument(
+        "--memory_limit",
+        dest="memory_limit",
+        type=float,
+        action="store",
+        default=None,
+        help="override the memory limit in MB",
     )
     parser.add_argument(
         "file", metavar="FILE.export", help="Export file (.export) defining the calculation."
