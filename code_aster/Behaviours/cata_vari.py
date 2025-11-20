@@ -17,8 +17,6 @@
 # along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 # --------------------------------------------------------------------
 
-# person_in_charge: mickael.abbas at edf.fr
-
 from ..Utilities import _
 
 """Ce module définit les noms de variables internes valides.
@@ -256,8 +254,14 @@ DICT_NOM_VARI = {
         "JOINT_BA : variable scalaire de l'écrouissage isotrope pour l'endommagement en mode 2"
     ),
     "ECROCINE": _("JOINT_BA : valeur de l'écrouissage cinématique par frottement des fissures"),
-    "ECROINIT": _("Variable d'écrouissage isotrope au début de la restauration d'écrouissage"),
     "ECROISOT": _("Variable d'écrouissage isotrope"),
+    "ECRO_EPSEQ": _("Variable au début de la restauration d'écrouissage - Isotrope"),
+    "ECRO_X1": _("Variable au début de la restauration d'écrouissage - Cinematique X1"),
+    "ECRO_X2": _("Variable au début de la restauration d'écrouissage - Cinematique X2"),
+    "ECRO_X3": _("Variable au début de la restauration d'écrouissage - Cinematique X3"),
+    "ECRO_X4": _("Variable au début de la restauration d'écrouissage - Cinematique X4"),
+    "ECRO_X5": _("Variable au début de la restauration d'écrouissage - Cinematique X5"),
+    "ECRO_X6": _("Variable au début de la restauration d'écrouissage - Cinematique X6"),
     "EDISSCUM": _("énergie dissipée cumulée à chaque pas pour CRIT_RUPT"),
     "EDISS": _("énergie dissipée pour CRIT_RUPT"),
     "EFD11": _("retrait de dessiccation, composante 11"),

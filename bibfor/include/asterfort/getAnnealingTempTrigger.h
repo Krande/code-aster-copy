@@ -15,9 +15,18 @@
 ! You should have received a copy of the GNU General Public License
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
+#include "asterf_types.h"
 !
 interface
-    subroutine te0116(option, nomte)
-        character(len=16), intent(in) :: option, nomte
-    end subroutine te0116
+    subroutine getAnnealingTempTrigger(temp, T1, T2, &
+                                       lHardIsot, lHardKine, lHardMixed, &
+                                       epsq, epsqMini, &
+                                       xcin, xcinMini, &
+                                       l_anneal, l_end_anneal)
+        real(kind=8), intent(in) :: temp, T1, T2
+        aster_logical, intent(in) :: lHardIsot, lHardKine, lHardMixed
+        real(kind=8), intent(in) :: epsq, epsqMini
+        real(kind=8), intent(in) :: xcin, xcinMini
+        aster_logical, intent(out) :: l_anneal, l_end_anneal
+    end subroutine getAnnealingTempTrigger
 end interface

@@ -15,9 +15,19 @@
 ! You should have received a copy of the GNU General Public License
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
+#include "asterf_types.h"
 !
 interface
-    subroutine te0116(option, nomte)
-        character(len=16), intent(in) :: option, nomte
-    end subroutine te0116
+    subroutine getAnnealingPara(fami, jvMaterCode, kpg, ksp, &
+                                T1, temp, epsqMini, &
+                                alpha, tauInf, &
+                                lHardMixed, prager, pragerTempEcroIni)
+        character(len=*), intent(in) :: fami
+        integer(kind=8), intent(in) :: jvMaterCode
+        integer(kind=8), intent(in) :: kpg, ksp
+        real(kind=8), intent(in) :: epsqMini, T1, temp
+        real(kind=8), intent(out) :: alpha, tauInf
+        aster_logical, intent(in) :: lHardMixed
+        real(kind=8), intent(out) :: prager, pragerTempEcroIni
+    end subroutine getAnnealingPara
 end interface

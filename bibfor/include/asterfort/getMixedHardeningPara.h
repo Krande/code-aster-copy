@@ -15,9 +15,15 @@
 ! You should have received a copy of the GNU General Public License
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
+#include "asterf_types.h"
 !
 interface
-    subroutine te0116(option, nomte)
-        character(len=16), intent(in) :: option, nomte
-    end subroutine te0116
+    subroutine getMixedHardeningPara(fami, jvMaterCode, kpg, ksp, &
+                                     temp, young_, prager_, dsde_, sigy_)
+        character(len=*), intent(in) :: fami
+        integer(kind=8), intent(in) :: jvMaterCode
+        integer(kind=8), intent(in) :: kpg, ksp
+        real(kind=8), intent(in) :: temp
+        real(kind=8), optional, intent(out) :: young_, prager_, dsde_, sigy_
+    end subroutine getMixedHardeningPara
 end interface

@@ -250,6 +250,32 @@ ALPHA = DEFI_FONCTION(
 )
 
 
+# COEF DE PRAGGER POUR ECROUISSAGE MIXTE ISOT-CINE
+CP = DEFI_FONCTION(
+    NOM_PARA="TEMP",
+    VALE=(
+        20.0,
+        1.200e9,
+        700.0,
+        1.200e9,
+        800.0,
+        1.175e9,
+        900.0,
+        0.750e9,
+        1000.0,
+        0.400e9,
+        1100.0,
+        3.625e8,
+        1200.0,
+        0.750e8,
+        1300.0,
+        0.500e7,
+    ),
+    PROL_DROITE="CONSTANT",
+    PROL_GAUCHE="LINEAIRE",
+)
+
+
 #
 # PARAMETRES DE RESTAURATION D'ECROUISSAGE
 #
@@ -309,11 +335,13 @@ TAU1 = DEFI_FONCTION(
 steelMecaAnneal = DEFI_MATERIAU(
     ELAS_FO=_F(E=E, NU=NU, ALPHA=ALPHA, TEMP_DEF_ALPHA=20.00),
     ECRO_LINE_FO=_F(D_SIGM_EPSI=DSDE, SY=SIGM),
+    PRAGER_FO=_F(C=CP),
     REST_ECRO=_F(COEF_ECRO=COEF1, TAU_INF=TAU1, TEMP_MINI=Tdebut, TEMP_MAXI=Tfin),
 )
 steelMeca = DEFI_MATERIAU(
     ELAS_FO=_F(E=E, NU=NU, ALPHA=ALPHA, TEMP_DEF_ALPHA=20.00),
     ECRO_LINE_FO=_F(D_SIGM_EPSI=DSDE, SY=SIGM),
+    PRAGER_FO=_F(C=CP),
 )
 
 steelMecaField = AFFE_MATERIAU(
@@ -322,68 +350,66 @@ steelMecaField = AFFE_MATERIAU(
     AFFE_VARC=_F(TOUT="OUI", EVOL=THER1, NOM_VARC="TEMP", NOM_CHAM="TEMP", VALE_REF=20.0),
 )
 
-U_ISOT = STAT_NON_LINE(
+U_ECMI = STAT_NON_LINE(
     MODELE=modelMeca,
     CHAM_MATER=steelMecaField,
     EXCIT=_F(CHARGE=clamp),
     COMPORTEMENT=(
         _F(
-            RELATION="VMIS_ISOT_LINE",
+            RELATION="VMIS_ECMI_LINE",
             DEFORMATION="PETIT_REAC",
             GROUP_MA="M1",
             POST_INCR="REST_ECRO",
         ),
-        _F(RELATION="VMIS_ISOT_LINE", DEFORMATION="PETIT_REAC", GROUP_MA="M2"),
+        _F(RELATION="VMIS_ECMI_LINE", DEFORMATION="PETIT_REAC", GROUP_MA="M2"),
     ),
     INCREMENT=_F(LIST_INST=timeList),
 )
 
 # Post traitement
 
-U_ISOT = CALC_CHAMP(
-    reuse=U_ISOT,
+U_ECMI = CALC_CHAMP(
+    reuse=U_ECMI,
     CONTRAINTE=("SIEF_NOEU"),
     VARI_INTERNE=("VARI_NOEU"),
     DEFORMATION=("EPSG_NOEU"),
-    RESULTAT=U_ISOT,
+    RESULTAT=U_ECMI,
 )
 
 TEST_RESU(
     RESU=(
         _F(
             INST=100.0,
-            RESULTAT=U_ISOT,
+            RESULTAT=U_ECMI,
             NOM_CHAM="VARI_NOEU",
             GROUP_NO="NO1",
             NOM_CMP="V1",
-            VALE_CALC=0.0004509557357713109,
-            VALE_REFE=0.00044,
+            VALE_CALC=0.00045083477717070437,
+            VALE_REFE=0.00045083477717070437,
             REFERENCE="SOURCE_EXTERNE",
-            PRECISION=0.25,
+            PRECISION=1e-6,
         ),
         _F(
             INST=100.0,
-            RESULTAT=U_ISOT,
+            RESULTAT=U_ECMI,
             NOM_CHAM="VARI_NOEU",
-            GROUP_NO="NO6",
-            NOM_CMP="V1",
-            VALE_CALC=0.020600406860389348,
-        ),
-        _F(
-            INST=200.0,
-            RESULTAT=U_ISOT,
-            NOM_CHAM="SIEF_NOEU",
             GROUP_NO="NO1",
-            NOM_CMP="SIYY",
-            VALE_CALC=275168548.39537346,
+            NOM_CMP="V3",
+            VALE_CALC=65541.20842705974,
+            VALE_REFE=65541.20842705974,
+            REFERENCE="SOURCE_EXTERNE",
+            PRECISION=1e-6,
         ),
         _F(
-            INST=200.0,
-            RESULTAT=U_ISOT,
-            NOM_CHAM="SIEF_NOEU",
-            GROUP_NO="NO6",
-            NOM_CMP="SIYY",
-            VALE_CALC=435993508.935732,
+            INST=100.0,
+            RESULTAT=U_ECMI,
+            NOM_CHAM="VARI_NOEU",
+            GROUP_NO="NO1",
+            NOM_CMP="V5",
+            VALE_CALC=65479.727569048395,
+            VALE_REFE=65479.727569048395,
+            REFERENCE="SOURCE_EXTERNE",
+            PRECISION=1e-6,
         ),
     )
 )

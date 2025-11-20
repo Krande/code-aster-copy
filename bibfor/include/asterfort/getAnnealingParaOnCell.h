@@ -15,9 +15,14 @@
 ! You should have received a copy of the GNU General Public License
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
+#include "asterf_types.h"
 !
 interface
-    subroutine te0116(option, nomte)
-        character(len=16), intent(in) :: option, nomte
-    end subroutine te0116
+    subroutine getAnnealingParaOnCell(fami, jvMaterCode, &
+                                      T1, T2, &
+                                      epsqMini, xcinMini)
+        character(len=*), intent(in) :: fami
+        integer(kind=8), intent(in) :: jvMaterCode
+        real(kind=8), intent(out) :: T1, T2, epsqMini, xcinMini
+    end subroutine getAnnealingParaOnCell
 end interface
