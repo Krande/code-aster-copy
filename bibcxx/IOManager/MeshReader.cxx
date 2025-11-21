@@ -216,7 +216,10 @@ void MeshReader::readParallelMeshFromMedFile( ParallelMeshPtr &toReturn,
         stream << std::hex << curJoint->getOppositeDomain();
         std::string key = strToupper( ( dIn == rank ? "R" : "E" ) + std::string( stream.str() ) );
         const auto corresp = curJoint->getCorrespondence( 1, 1 );
-        allJointsMap[key] = corresp;
+        VectorLong corresp2;
+        for ( const auto &tmp : corresp )
+            corresp2.push_back( tmp );
+        allJointsMap[key] = corresp2;
 
         if ( dIn == rank ) {
             for ( int j = 0; j < corresp.size() / 2; ++j ) {
@@ -229,6 +232,9 @@ void MeshReader::readParallelMeshFromMedFile( ParallelMeshPtr &toReturn,
 
     // Read global node numbering
     const auto globNum = curMesh->getGlobalNodeNumberingAtSequence( -1, -1 );
+    VectorLong globNum2;
+    for ( const auto &num : globNum )
+        globNum2.push_back( num );
 
     VectorOfVectorsLong allJoints;
     for ( const auto &curDom : domains ) {
@@ -244,7 +250,7 @@ void MeshReader::readParallelMeshFromMedFile( ParallelMeshPtr &toReturn,
     }
 
     // Add parallel informations to mesh
-    toReturn->create_joints( domains, globNum, nodeOwner, {}, allJoints, 1 );
+    toReturn->create_joints( domains, globNum2, nodeOwner, {}, allJoints, 1 );
     toReturn->endDefinition();
 }
 #endif
