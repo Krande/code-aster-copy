@@ -29,8 +29,6 @@ module lmp_context_type
 #include "asterf_types.h"
 #include "asterf_petsc.h"
 !
-! person_in_charge: natacha.bereux at edf.fr
-!
     use aster_petsc_module
     implicit none
 !
@@ -48,9 +46,9 @@ module lmp_context_type
         ! Nombre de vecteurs de Ritz réellement utilisés dans chaque LMP (vaut ritz ou ritz+1)
         PetscInt :: ritzeff
         ! ss contient les vecteurs propres de Ritz
-        Vec, dimension(:), allocatable   :: ss
+        Vec, pointer :: ss(:) => null()
         ! yy et zz servent à appliquer le LMP
-        Vec, dimension(:), allocatable  :: yy, zz
+        Vec, pointer  :: yy(:) => null(), zz(:) => null()
         ! Valeurs propres de Ritz  (parties réelles et imaginaires)
         PetscReal, dimension(:), allocatable :: thetar, thetai
         ! Vecteur de travail
@@ -84,12 +82,6 @@ contains
         !
         ctxt%ritzeff = to_petsc_int(ctxt%ritz)
         !
-        allocate (ctxt%ss(ctxt%ritz+1), stat=ierr)
-        ASSERT(ierr == 0)
-        allocate (ctxt%yy(ctxt%ritz+1), stat=ierr)
-        ASSERT(ierr == 0)
-        allocate (ctxt%zz(ctxt%ritz+1), stat=ierr)
-        ASSERT(ierr == 0)
         allocate (ctxt%thetar(ctxt%ritz+1), stat=ierr)
         ASSERT(ierr == 0)
         allocate (ctxt%thetai(ctxt%ritz+1), stat=ierr)
@@ -116,7 +108,8 @@ contains
         ! Local variables
         !
         PetscErrorCode :: ierr
-        Vec :: xx, sn(3)
+        Vec :: xx
+        Vec, pointer :: sn(:) => null()
         PetscInt :: ii, jj, mm
         PC :: pc
         Mat :: amat
@@ -229,27 +222,23 @@ contains
         type(lmp_ctxt), intent(inout) :: ctxt
         ! Local Variables
         integer(kind=8) :: ii
+        PetscInt :: mm
         !
-        if (allocated(ctxt%ss)) then
-            do ii = 1, size(ctxt%ss)
-                call VecDestroy(ctxt%ss(ii), ierr)
-                ASSERT(ierr == 0)
-            end do
-            deallocate (ctxt%ss)
+        if (associated(ctxt%ss)) then
+            mm = ctxt%ritz+1
+            call VecDestroyVecs(mm, ctxt%ss, ierr)
         end if
-        if (allocated(ctxt%yy)) then
-            do ii = 1, size(ctxt%yy)
-                call VecDestroy(ctxt%yy(ii), ierr)
-                ASSERT(ierr == 0)
-            end do
-            deallocate (ctxt%yy)
+        if (associated(ctxt%ss)) then
+        do ii = 1, size(ctxt%yy)
+            call VecDestroy(ctxt%yy(ii), ierr)
+            ASSERT(ierr == 0)
+        end do
         end if
-        if (allocated(ctxt%zz)) then
+        if (associated(ctxt%ss)) then
             do ii = 1, size(ctxt%zz)
                 call VecDestroy(ctxt%zz(ii), ierr)
                 ASSERT(ierr == 0)
             end do
-            deallocate (ctxt%zz)
         end if
         if (allocated(ctxt%thetar)) then
             deallocate (ctxt%thetar)

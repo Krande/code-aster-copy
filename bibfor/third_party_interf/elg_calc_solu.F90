@@ -23,7 +23,6 @@ subroutine elg_calc_solu(matas1, nsecm, rsolu2, rsolu1, omega2, ke_mass)
     use aster_petsc_module
     use elg_data_module
     implicit none
-! person_in_charge: natacha.bereux at edf.fr
 !
 #include "jeveux.h"
 #include "asterfort/assert.h"
@@ -72,8 +71,8 @@ subroutine elg_calc_solu(matas1, nsecm, rsolu2, rsolu1, omega2, ke_mass)
     aster_logical::modal
     PetscErrorCode :: ierr
     PetscInt :: n1, n2, n3
-    PetscScalar :: xx(1), p1
-    PetscOffset :: xidx
+    PetscScalar :: p1
+    PetscScalar, pointer :: xx(:) => null()
     Vec :: x1, y, vlag, tmp1
 !
 !
@@ -112,12 +111,12 @@ subroutine elg_calc_solu(matas1, nsecm, rsolu2, rsolu1, omega2, ke_mass)
 !
 !     allocation et remplissage de Y = RSOLU2
     call elg_allocvr(y, to_aster_int(n3))
-    call VecGetArray(y, xx, xidx, ierr)
+    call VecGetArray(y, xx, ierr)
     ASSERT(ierr == 0)
     do ieq2 = 1, neq2
-        xx(xidx+ieq2) = rsolu2(ieq2)
+        xx(ieq2) = rsolu2(ieq2)
     end do
-    call VecRestoreArray(y, xx, xidx, ierr)
+    call VecRestoreArray(y, xx, ierr)
     ASSERT(ierr == 0)
 !
 !
@@ -135,17 +134,17 @@ subroutine elg_calc_solu(matas1, nsecm, rsolu2, rsolu1, omega2, ke_mass)
     ASSERT(ierr == 0)
 !
 !     -- on recopie X1 dans RSOLU1 :
-    call VecGetArray(x1, xx, xidx, ierr)
+    call VecGetArray(x1, xx, ierr)
     ASSERT(ierr == 0)
     ico = 0
     do k1 = 1, neq1
         if (delg(k1) .eq. 0) then
             ico = ico+1
-            rsolu1(k1) = xx(xidx+ico)
+            rsolu1(k1) = xx(ico)
         end if
     end do
     ASSERT(ico .eq. n1)
-    call VecRestoreArray(x1, xx, xidx, ierr)
+    call VecRestoreArray(x1, xx, ierr)
     ASSERT(ierr == 0)
 !
 !
@@ -161,16 +160,16 @@ subroutine elg_calc_solu(matas1, nsecm, rsolu2, rsolu1, omega2, ke_mass)
 !        remarque : il faut diviser VLAG par 2 (2 lagranges)
 !                   Lagrange "1"  et "2" :
     call jeveuo(matas1//'.CONL', 'L', vr=conl)
-    call VecGetArray(vlag, xx, xidx, ierr)
+    call VecGetArray(vlag, xx, ierr)
     ASSERT(ierr == 0)
     ico = 0
     do k1 = 1, neq1
         if (delg(k1) .eq. -1) then
             ico = ico+1
             if (modal) then
-                val = xx(xidx+ico)/2.d0
+                val = xx(ico)/2.d0
             else
-                val = xx(xidx+ico)*conl(k1)/2.d0
+                val = xx(ico)*conl(k1)/2.d0
             end if
             rsolu1(k1) = val
 ! k2 lagrange "2" associé au lagrange "1" k1
@@ -180,7 +179,7 @@ subroutine elg_calc_solu(matas1, nsecm, rsolu2, rsolu1, omega2, ke_mass)
         end if
     end do
     ASSERT(ico .eq. n2)
-    call VecRestoreArray(vlag, xx, xidx, ierr)
+    call VecRestoreArray(vlag, xx, ierr)
     ASSERT(ierr == 0)
 !
 !     -- ménage :

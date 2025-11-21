@@ -219,6 +219,40 @@ La maille %(k2)s ne fait pas partie du modèle.
 Vérifier l'affection du modèle.
 """
     ),
+    26: _(
+        """AFFE_CARA_ELEM / RIGI_GRILLE
+Pour l'occurrence %(i1)d de RIGI_GRILLE, GROUP_MA = %(k1)s.
+La maille %(i2)d n'a pas la dimension topologique égale à 2.
+"""
+    ),
+    27: _(
+        """AFFE_CARA_ELEM / RIGI_GRILLE
+Pour l'occurrence %(i1)d de RIGI_GRILLE, GROUP_MA_SEG2 = %(k1)s.
+Ce groupe contient %(i2)d mailles, mais la dalle est composée de %(i3)d noeuds.
+
+Il faut avoir autant de mailles que de noeuds.
+"""
+    ),
+    28: _(
+        """AFFE_CARA_ELEM / RIGI_GRILLE
+Pour l'occurrence %(i1)d de RIGI_GRILLE, GROUP_MA_SEG2 = %(k1)s.
+La maille %(i2)d n'est pas un SEG2.
+"""
+    ),
+    29: _(
+        """AFFE_CARA_ELEM / RIGI_GRILLE
+Pour l'occurrence %(i1)d de RIGI_GRILLE, GROUP_MA_SEG2 = %(k1)s.
+On a trouvé deux mailles (%(i2)d et %(i3)d) connectés au noeud %(i4)d de la dalle.
+
+Il faut avoir une seule maille SEG2 connecté à chaque noeud de la dalle.
+"""
+    ),
+    30: _(
+        """AFFE_CARA_ELEM / RIGI_GRILLE
+Pour l'occurrence %(i1)d de RIGI_GRILLE, GROUP_MA_SEG2 = %(k1)s.
+La maille %(i2)d n'a aucun noeud commun avec la dalle.
+"""
+    ),
     31: _(
         """
 AFFE_CARA_ELEM. Vous ne pouvez pas affecter des valeurs de type "%(k2)s" au modèle %(k1)s
@@ -246,7 +280,7 @@ section ou une variation de section le long de leur axe.
 """
     ),
     99: _(
-        """AFFE_CARA_ELEM / RIGI_PARASOL
+        """AFFE_CARA_ELEM / %(k1)s
 Il n'est actuellement pas possible d'utiliser un maillage partitionné pour un calcul parallèle.
 
 Vous avez utilisé PARTITIONNEUR="PTSCOTCH", lors du LIRE_MAILLAGE

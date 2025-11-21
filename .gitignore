@@ -22,7 +22,7 @@ vola.*
 .vscode/*
 devtools
 
-# pixi environments
+# pixi/uv environments
 .pixi
 *.egg-info
 

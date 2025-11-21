@@ -121,26 +121,6 @@ class SECH_FACE3_D(Element):
             ),
             para_out=((SP.PVECTTR, MVECTTR),),
         ),
-        OP.CHAR_THER_RAYO_F(
-            te=75,
-            para_in=(
-                (SP.PGEOMER, LC.EGEOM3D),
-                (SP.PRAYONF, LC.CRAYONF),
-                (SP.PTEMPER, DDL_THER),
-                (SP.PINSTR, LC.CTIMETR),
-            ),
-            para_out=((SP.PVECTTR, MVECTTR),),
-        ),
-        OP.CHAR_THER_RAYO_R(
-            te=75,
-            para_in=(
-                (SP.PGEOMER, LC.EGEOM3D),
-                (SP.PRAYONR, LC.CRAYONR),
-                (SP.PTEMPER, DDL_THER),
-                (SP.PINSTR, LC.CTIMETR),
-            ),
-            para_out=((SP.PVECTTR, MVECTTR),),
-        ),
         OP.CHAR_THER_ECHA_F(
             te=75,
             para_in=(
@@ -168,40 +148,11 @@ class SECH_FACE3_D(Element):
             para_in=((SP.PGEOMER, LC.EGEOM3D),),
             para_out=((OP.COOR_ELGA.PCOORPG, LC.EGGAU3D),),
         ),
-        OP.FLUX_FLUI_X(
-            te=309, para_in=((SP.PGEOMER, LC.EGEOM3D),), para_out=((SP.PMATTTR, MMATTTR),)
-        ),
-        OP.FLUX_FLUI_Y(
-            te=309, para_in=((SP.PGEOMER, LC.EGEOM3D),), para_out=((SP.PMATTTR, MMATTTR),)
-        ),
-        OP.FLUX_FLUI_Z(
-            te=309, para_in=((SP.PGEOMER, LC.EGEOM3D),), para_out=((SP.PMATTTR, MMATTTR),)
-        ),
         OP.MTAN_THER_FLUXNL(
             te=251,
             para_in=(
                 (SP.PFLUXNL, LC.CFLUXNF),
                 (SP.PGEOMER, LC.EGEOM3D),
-                (SP.PTEMPEI, DDL_THER),
-                (SP.PINSTR, LC.CTIMETR),
-            ),
-            para_out=((SP.PMATTTR, MMATTTR),),
-        ),
-        OP.MTAN_THER_RAYO_F(
-            te=251,
-            para_in=(
-                (SP.PGEOMER, LC.EGEOM3D),
-                (SP.PRAYONF, LC.CRAYONF),
-                (SP.PTEMPEI, DDL_THER),
-                (SP.PINSTR, LC.CTIMETR),
-            ),
-            para_out=((SP.PMATTTR, MMATTTR),),
-        ),
-        OP.MTAN_THER_RAYO_R(
-            te=251,
-            para_in=(
-                (SP.PGEOMER, LC.EGEOM3D),
-                (SP.PRAYONR, LC.CRAYONR),
                 (SP.PTEMPEI, DDL_THER),
                 (SP.PINSTR, LC.CTIMETR),
             ),
@@ -242,26 +193,6 @@ class SECH_FACE3_D(Element):
             para_in=(
                 (SP.PFLUXNL, LC.CFLUXNF),
                 (SP.PGEOMER, LC.EGEOM3D),
-                (SP.PTEMPEI, DDL_THER),
-                (SP.PINSTR, LC.CTIMETR),
-            ),
-            para_out=((SP.PRESIDU, MVECTTR),),
-        ),
-        OP.RESI_THER_RAYO_F(
-            te=128,
-            para_in=(
-                (SP.PGEOMER, LC.EGEOM3D),
-                (SP.PRAYONF, LC.CRAYONF),
-                (SP.PTEMPEI, DDL_THER),
-                (SP.PINSTR, LC.CTIMETR),
-            ),
-            para_out=((SP.PRESIDU, MVECTTR),),
-        ),
-        OP.RESI_THER_RAYO_R(
-            te=127,
-            para_in=(
-                (SP.PGEOMER, LC.EGEOM3D),
-                (SP.PRAYONR, LC.CRAYONR),
                 (SP.PTEMPEI, DDL_THER),
                 (SP.PINSTR, LC.CTIMETR),
             ),

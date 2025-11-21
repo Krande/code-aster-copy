@@ -98,7 +98,7 @@ contains
         ! le systeme aster complet (avec doubles multiplicateurs de Lagrange)
         ! La matrice est deja enregistree et possede l'id kptsc
         ! On prealloue la matrice PETSc correspondante
-        if (ap(kptsc) /= PETSC_NULL_MAT) then
+        if (.not. PetscObjectIsNull(ap(kptsc))) then
             call MatDestroy(ap(kptsc), ierr)
         end if
         call apalmc(kptsc)
@@ -170,9 +170,11 @@ contains
         end if
         ! Remplissage de elg_ctxt (à l'aide des matrices définies dans le
         ! saddle_point_context)
+        ! elg_ctxt%matb = tMat(1)
         call MatConvert(sp_ctxt%k_mat, MATSAME, MAT_INITIAL_MATRIX, &
                         elg_ctxt%matb, ierr)
         ASSERT(ierr == 0)
+        ! elg_ctxt%matc = tMat(1)
         call MatConvert(sp_ctxt%c_mat, MATSAME, MAT_INITIAL_MATRIX, &
                         elg_ctxt%matc, ierr)
         ASSERT(ierr == 0)
@@ -183,18 +185,20 @@ contains
         ! On n'a plus besoin du saddle_point context
         call free_saddle_point_context(sp_ctxt)
         !
-        if (elg_ctxt%tfinal == PETSC_NULL_MAT) then
+        if (PetscObjectIsNull(elg_ctxt%tfinal)) then
             ! Calcul de la base du noyau (appel SuperLU)
             if (verbose) then
                 write (6, *) " -- Construction de la base du noyau "
             end if
+            ! elg_ctxt%tfinal = tMat(1)
             call get_nullbasis(elg_ctxt%matc, elg_ctxt%tfinal)
         end if
-        if (elg_ctxt%cct == PETSC_NULL_MAT) then
+        if (PetscObjectIsNull(elg_ctxt%cct)) then
             !   -- Calcul de CCT = C * transpose(C)
             if (verbose) then
                 write (6, *) " -- Construction de CCT "
             end if
+            ! elg_ctxt%cct = tMat(1)
             call MatMatTransposeMult(elg_ctxt%matc, elg_ctxt%matc, &
                                      MAT_INITIAL_MATRIX, PETSC_DEFAULT_REAL, elg_ctxt%cct, ierr)
             ASSERT(ierr == 0)
@@ -202,7 +206,7 @@ contains
                 write (6, *) " -- Factorisation de CCT "
             end if
         end if
-        if (elg_ctxt%ksp == PETSC_NULL_KSP) then
+        if (PetscObjectIsNull(elg_ctxt%ksp)) then
 #ifdef ASTER_PETSC_HAVE_MUMPS
             !  Create linear solver context
             call KSPCreate(PETSC_COMM_SELF, elg_ctxt%ksp, ierr)
@@ -255,6 +259,7 @@ contains
         if (verbose) then
             write (6, *) " -- Projection du problème sur la base du noyau "
         end if
+        ! elg_ctxt%kproj = tMat(1)
         call MatPtAP(elg_ctxt%matb, elg_ctxt%tfinal, MAT_INITIAL_MATRIX, 1.d0, &
                      elg_ctxt%kproj, ierr)
         ASSERT(ierr == 0)

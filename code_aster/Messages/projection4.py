@@ -52,6 +52,21 @@ du MODELE_2 ou du MAILLAGE_2.
         """Vous utilisez une projection parallèle mais un sous-domaine ne possède aucune maille
          à projeter. Vous devriez utiliser le mot-clé DISTRIBUTION."""
     ),
+    6: _(
+        """
+  Attention : %(i1)d mailles de type %(k1)s n'ont pas été projetées car la famille
+  de points de Gauss sur le champ en question a une maille support 1D.
+
+  Il s'agit peut-être d'éléments de joint 2D. Vous pouvez utilisez GROUP_MA s'il existe dans la commande.
+"""
+    ),
+    7: _(
+        """
+  Des mailles n'ont pas été projetées car la famille de points de Gauss sur le champ en question a une maille support 1D.
+
+  Il s'agit peut-être d'éléments de joint 2D. Vous pouvez utilisez GROUP_MA s'il existe dans la commande.
+"""
+    ),
     54: _("""Il n'y a aucun noeud sur lesquels projeter."""),
     55: _(
         """Il n'y a pas de mailles à projeter ou en correspondance.

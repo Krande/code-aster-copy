@@ -1,0 +1,111 @@
+# coding=utf-8
+# --------------------------------------------------------------------
+# Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
+# This file is part of code_aster.
+#
+# code_aster is free software: you can redistribute it and/or modify
+# it under the terms of the GNU General Public License as published by
+# the Free Software Foundation, either version 3 of the License, or
+# (at your option) any later version.
+#
+# code_aster is distributed in the hope that it will be useful,
+# but WITHOUT ANY WARRANTY; without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+# GNU General Public License for more details.
+#
+# You should have received a copy of the GNU General Public License
+# along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
+# --------------------------------------------------------------------
+
+#
+#  VALIDATION DE LA MASSE MODALE EFFECTIVE pour un systeme de ressorts-masse
+#
+
+DEBUT(CODE="OUI", ERREUR=_F(ALARME="ALARME"), DEBUG=_F(SDVERI="OUI"))
+
+masse = 1e4
+rho = 0
+
+MA = LIRE_MAILLAGE(FORMAT="ASTER", VERI_MAIL=_F(APLAT=0.001, VERIF="NON"))
+
+
+MO = AFFE_MODELE(
+    MAILLAGE=MA,
+    AFFE=(
+        _F(GROUP_MA="BARRE", PHENOMENE="MECANIQUE", MODELISATION="DIS_T"),
+        _F(GROUP_MA="BARRE2", PHENOMENE="MECANIQUE", MODELISATION="DIS_T"),
+        _F(GROUP_MA=("POINT1"), PHENOMENE="MECANIQUE", MODELISATION="DIS_T"),
+        _F(GROUP_MA=("POINT2"), PHENOMENE="MECANIQUE", MODELISATION="DIS_T"),
+    ),
+)
+
+MAT = DEFI_MATERIAU(ELAS=_F(E=1.0e8, NU=0.0, RHO=rho))
+
+CHMAT = AFFE_MATERIAU(MAILLAGE=MA, AFFE=_F(TOUT="OUI", MATER=MAT))
+
+CARA = AFFE_CARA_ELEM(
+    MODELE=MO,
+    DISCRET=(
+        _F(CARA="K_T_D_L", VALE=(1e4, 0, 0), GROUP_MA=("BARRE",), REPERE="LOCAL"),
+        _F(CARA="K_T_D_L", VALE=(1e4, 0, 0), GROUP_MA=("BARRE2",), REPERE="LOCAL"),
+        _F(CARA="M_T_D_N", VALE=(masse,), GROUP_MA=("POINT1",)),
+        _F(CARA="M_T_D_N", VALE=(masse,), GROUP_MA=("POINT2",)),
+    ),
+)
+
+CHA1 = AFFE_CHAR_MECA(
+    MODELE=MO,
+    DDL_IMPO=(_F(GROUP_NO="N1", DX=0.0, DY=0.0, DZ=0.0), _F(GROUP_NO=("N2", "N3"), DX=0.0, DY=0.0)),
+)
+
+
+ASSEMBLAGE(
+    MODELE=MO,
+    CHAM_MATER=CHMAT,
+    CHARGE=CHA1,
+    CARA_ELEM=CARA,
+    NUME_DDL=CO("NUME"),
+    MATR_ASSE=(
+        _F(MATRICE=CO("MATR"), OPTION="RIGI_MECA"),
+        _F(MATRICE=CO("MATM"), OPTION="MASS_MECA"),
+    ),
+)
+
+# calcul des modes normaux
+MODE = CALC_MODES(
+    MATR_RIGI=MATR,
+    CHAM_MATER=CHMAT,
+    CARA_ELEM=CARA,
+    VERI_MODE=_F(STOP_ERREUR="NON"),
+    CALC_FREQ=_F(NMAX_FREQ=1),
+    MATR_MASS=MATM,
+)
+
+# sur l'ensemble des masses
+tab_tot = POST_MODE(MODE=MODE, GROUP_MA=("POINT1", "POINT2"), CARA_ELEM=CARA, MATR_MASS=MATM)
+
+# sur la masse 1
+tab1 = POST_MODE(MODE=MODE, GROUP_MA="POINT1", CARA_ELEM=CARA, MATR_MASS=MATM)
+
+# sur la masse 2
+tab2 = POST_MODE(MODE=MODE, GROUP_MA="POINT2", CARA_ELEM=CARA, MATR_MASS=MATM)
+
+#################### test POST_ELEM ######################
+
+# valeur du vecteur du mode 1 ( non normalisé)
+u1 = 6.18033988749895e-01
+u2 = 1
+
+Meeffz = ((u1) * masse + (u2) * masse) ** 2 / ((u1) ** 2 * masse + (u2) ** 2 * masse)
+Meeffez1 = (u1 * masse) ** 2 / ((u1) ** 2 * masse)
+Meeffez2 = (u2 * masse) ** 2 / ((u2) ** 2 * masse)
+
+TEST_TABLE(TABLE=tab_tot, NOM_PARA="MASS_EFFE_DZ", VALE_CALC=Meeffz)
+
+TEST_TABLE(TABLE=tab1, NOM_PARA="MASS_EFFE_DZ", VALE_CALC=Meeffez1)
+
+TEST_TABLE(TABLE=tab2, NOM_PARA="MASS_EFFE_DZ", VALE_CALC=Meeffez2)
+
+
+FIN()
+#

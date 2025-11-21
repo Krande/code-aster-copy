@@ -3510,7 +3510,7 @@ contains
                         cell_id = this%renumber_cells(cells_in(i_cell))
                         nb_cells = zero_ip
                         call this%sub_cells(cell_id, nb_cells, cells)
-                        cells_out(nb_cells_out:nb_cells_out+nb_cells) = &
+                        cells_out(nb_cells_out:nb_cells_out+nb_cells-1) = &
                             to_aster_int(cells(1:nb_cells))
                         nb_cells_out = nb_cells_out+nb_cells
                     end do

@@ -19,8 +19,11 @@
 !
 !
 interface
-    subroutine zerofc(func, xmin, xmax, prec, niter,&
+    subroutine zerofc(func, funcp, para, nb_para, xmin, xmax, prec, niter,&
                       dp, iret, nit)
+#include "asterf_types.h"
+        real(kind=8) :: para(nb_para)
+        integer(kind=8), intent(in) :: nb_para
         real(kind=8) :: xmin
         real(kind=8) :: xmax
         real(kind=8) :: prec
@@ -29,10 +32,15 @@ interface
         integer(kind=8) :: iret
         integer(kind=8) :: nit
         interface
-            function func(x)
-                real(kind=8) :: x
-                real(kind=8) :: func
-            end function
+        function funcp(x, param)
+            real(kind=8), intent(in) :: x
+            real(kind=8), intent(in) :: param(*)
+            real(kind=8) :: funcp
+        end function
+        function func(x)
+            real(kind=8) :: x
+            real(kind=8) :: func
+        end function
         end interface
     end subroutine zerofc
 end interface

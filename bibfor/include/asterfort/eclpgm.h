@@ -15,19 +15,14 @@
 ! You should have received a copy of the GNU General Public License
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
-
-!
 !
 interface
-    subroutine eclpgm(ma2, mo, cham1, ligrel, shrink,&
-                      lonmin, nch, lisch)
-        integer(kind=8) :: nch
-        character(len=8) :: ma2
-        character(len=8) :: mo
-        character(len=19) :: cham1
-        character(len=19) :: ligrel
-        real(kind=8) :: shrink
-        real(kind=8) :: lonmin
-        character(len=16) :: lisch(nch)
+    subroutine eclpgm(ma2, model1, cham1, ligrelIn, shrink, &
+                      edgeMin, nbField, listFieldType)
+        character(len=8), intent(in) :: ma2, model1
+        character(len=19), intent(in) :: cham1, ligrelIn
+        real(kind=8), intent(in) :: shrink, edgeMin
+        integer(kind=8), intent(in) :: nbField
+        character(len=16), intent(in) :: listFieldType(nbField)
     end subroutine eclpgm
 end interface

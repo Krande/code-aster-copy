@@ -23,9 +23,9 @@
 ************************************************************************
 """
 
+import math
 import os
 import os.path as osp
-import subprocess
 
 import numpy as np
 
@@ -37,17 +37,17 @@ from ..Objects import (
     CommGraph,
     ConnectionMesh,
     IncompleteMesh,
-    Mesh,
-    MeshReader,
-    ParallelMesh,
     MedFileAccessType,
     MedFileReader,
+    Mesh,
     MeshBalancer,
+    MeshReader,
+    ParallelMesh,
     PythonBool,
     ResultNaming,
 )
-from ..ObjectsExt import mesh_builder
 from ..Objects.Serialization import InternalStateBuilder
+from ..ObjectsExt import mesh_builder
 from ..Utilities import MPI, ExecutionParameter, Options, SharedTmpdir, force_list, injector
 from .simplefieldonnodes_ext import SimpleFieldOnNodesReal
 
@@ -382,6 +382,14 @@ class ExtendedParallelMesh:
         """
         size = MPI.ASTER_COMM_WORLD.Get_size()
         rank = MPI.ASTER_COMM_WORLD.Get_rank()
+        size_sqrt = math.sqrt(size)
+        if (size_sqrt - int(size_sqrt)) != 0:
+            raise ValueError(
+                (
+                    "With a 2D checkerboard mesh, the number of MPI processes must be a power of 2."
+                    f" You requested {size} MPI processes which is not of power of 2."
+                )
+            )
         # number of subdomains in the x-direction
         x_size = int(np.sqrt(size))
         # global sizes
@@ -399,9 +407,7 @@ class ExtendedParallelMesh:
         filename = osp.join(tmpdir.path, "buildRectangle.med")
         # Sequential build
         if rank == 0:
-            seqMesh = Mesh.buildRectangle(
-                lx=lx, ly=ly, nx=x_size * nx_loc - 1, ny=x_size * ny_loc - 1
-            )
+            seqMesh = Mesh.buildRectangle(lx=lx, ly=ly, nx=nx - 1, ny=ny_loc * x_size - 1)
             seqMesh.printMedFile(filename)
         else:
             # mandatory so that the meshes that will be created after on the other processes share the same name
@@ -437,12 +443,20 @@ class ExtendedParallelMesh:
         """
         size = MPI.ASTER_COMM_WORLD.Get_size()
         rank = MPI.ASTER_COMM_WORLD.Get_rank()
+        # use math.cbrt with python>=3.11
+        size_cbrt = np.cbrt(size)
+        if (size_cbrt - int(size_cbrt)) != 0:
+            raise ValueError(
+                (
+                    "With a 3D checkerboard mesh, the number of MPI processes must be a power of 3."
+                    f" You requested {size} MPI processes which is not of power of 3."
+                )
+            )
         # number of subdomains in the x-direction
-        x_size = int(np.cbrt(size))
+        x_size = int(size_cbrt)
         # global sizes
         nx = nx_loc * x_size
         ny = ny_loc * x_size
-        nz = nz_loc * x_size
 
         # Compute 3D coordinates of this rank in the process grid
         rz = rank // (x_size * x_size)
@@ -468,9 +482,9 @@ class ExtendedParallelMesh:
                 ymax=ly,
                 zmin=0.0,
                 zmax=lz,
-                nx=x_size * nx_loc - 1,
-                ny=x_size * ny_loc - 1,
-                nz=x_size * nz_loc - 1,
+                nx=nx - 1,
+                ny=ny - 1,
+                nz=nz_loc * x_size - 1,
             )
             seqMesh = Mesh()
             seqMesh.buildFromMedCouplingMesh(tempMesh)

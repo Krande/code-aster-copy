@@ -15,15 +15,17 @@
 ! You should have received a copy of the GNU General Public License
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
-
-subroutine eclaty(nomte, elrefa, fapg, npg, npoini, &
-                  nterm1, nsomm1, csomm1, tyma, nbno2, &
-                  connx, mxnbn2, mxnbpi, mxnbte, mxnbse, &
+!
+subroutine eclaty(typeElemName, &
+                  elrefa, fapg, &
+                  mxnbn2, mxnbpi, mxnbte, mxnbse, &
+                  npg, npoini, &
+                  nterm1, nsomm1, csomm1, &
+                  typeCellNume, nbno2, connx, &
                   nbsel, corsel, iret)
 !
     implicit none
 !
-#include "MeshTypes_type.h"
 #include "asterc/indik8.h"
 #include "asterfort/assert.h"
 #include "asterfort/ecla2d.h"
@@ -31,17 +33,25 @@ subroutine eclaty(nomte, elrefa, fapg, npg, npoini, &
 #include "asterfort/elraca.h"
 #include "asterfort/jedema.h"
 #include "asterfort/jemarq.h"
-    integer(kind=8) :: mxnbn2, mxnbpi, mxnbte, mxnbse
-    integer(kind=8) :: ndim, npg, connx(mxnbn2, mxnbse), nsomm1(mxnbpi, mxnbte)
-    integer(kind=8) :: nterm1(mxnbpi), nbno2(mxnbse), npoini, tyma(mxnbse)
-    integer(kind=8) :: nbsel, corsel(mxnbse), iret
-    real(kind=8) :: csomm1(mxnbpi, mxnbte)
-    character(len=8) :: elrefa, fapg
-    character(len=16) :: nomte
+#include "asterfort/utmess.h"
+#include "MeshTypes_type.h"
+!
+    character(len=16), intent(in) :: typeElemName
+    character(len=8), intent(in) :: elrefa, fapg
+    integer(kind=8), intent(in) :: mxnbn2, mxnbpi, mxnbte, mxnbse
+    integer(kind=8), intent(out) :: npg, npoini
+    integer(kind=8), intent(out) :: nterm1(mxnbpi), nsomm1(mxnbpi, mxnbte)
+    real(kind=8), intent(out) :: csomm1(mxnbpi, mxnbte)
+    integer(kind=8), intent(out) :: typeCellNume(mxnbse), nbno2(mxnbse), connx(mxnbn2, mxnbse)
+    integer(kind=8), intent(out) :: nbsel, corsel(mxnbse), iret
+!
+! --------------------------------------------------------------------------------------------------
 !
 ! BUT : DECOMPOSER LES TYPE_ELEM EN AUTANT DE SOUS-ELEMENTS QUE
 !       DE POINTS DE GAUSS.
-! ---------------------------------------------------------------------
+!
+! --------------------------------------------------------------------------------------------------
+!
 ! IN : NOMTE  : NOM D'UN TYPE_ELEM
 ! IN : ELREFA : NOM DE L'ELREFA
 ! IN : FAPG   : FAMILLE DE POINTS DE GAUSS
@@ -60,9 +70,12 @@ subroutine eclaty(nomte, elrefa, fapg, npg, npoini, &
 ! OUT : IRET = 0 -> le type_elem a été traité
 !            = 1 -> non traité
 !
-! ---------------------------------------------------------------------
+! --------------------------------------------------------------------------------------------------
+!
 ! DESCRIPTION DES POINTS INTERMEDIAIRES (POINT_I) :
-! ------------------------------------------------
+!
+! --------------------------------------------------------------------------------------------------
+!
 ! UN POINT_I EST DEFINI COMME UNE COMBINAISON LINEAIRE DES NOEUDS
 ! DE LA MAILLE SOUS-JACENTE AU TYPE_ELEM :
 ! POINT_I = SOMME COEF(K)*NOEUD(K)  (1<= K <=NTERMES)
@@ -86,10 +99,13 @@ subroutine eclaty(nomte, elrefa, fapg, npg, npoini, &
 !                    (1<= INO2 <= NNO2(KSE))
 !                    (1<= IPOINI <= NPOINI)
 !
-! ---------------------------------------------------------------------
-    integer(kind=8) :: nbfpg, nbpg(MT_NBFAMX), nufpg
+! --------------------------------------------------------------------------------------------------
+!
+    integer(kind=8) :: nbfpg, nbpg(MT_NBFAMX), nufpg, ndim
     character(len=8) :: famg(MT_NBFAMX)
-! ---------------------------------------------------------------------
+!
+! --------------------------------------------------------------------------------------------------
+!
     call jemarq()
 !
     npg = 0
@@ -109,19 +125,22 @@ subroutine eclaty(nomte, elrefa, fapg, npg, npoini, &
     npg = nbpg(nufpg)
 !
     if (ndim .eq. 2) then
-        call ecla2d(nomte, elrefa, fapg, npg, npoini, &
-                    nterm1, nsomm1, csomm1, tyma, nbno2, &
+        call ecla2d(typeElemName, elrefa, fapg, npg, npoini, &
+                    nterm1, nsomm1, csomm1, typeCellNume, nbno2, &
                     connx, mxnbn2, mxnbpi, mxnbte, mxnbse, &
                     nbsel, corsel)
         iret = 0
+
     else if (ndim .eq. 3) then
-        call ecla3d(nomte, elrefa, fapg, npg, npoini, &
-                    nterm1, nsomm1, csomm1, tyma, nbno2, &
+        call ecla3d(typeElemName, elrefa, fapg, npg, npoini, &
+                    nterm1, nsomm1, csomm1, typeCellNume, nbno2, &
                     connx, mxnbn2, mxnbpi, mxnbte, mxnbse, &
                     nbsel, corsel)
         iret = 0
+
     else
-        ASSERT(ASTER_FALSE)
+        iret = 1
+
     end if
 !
     call jedema()

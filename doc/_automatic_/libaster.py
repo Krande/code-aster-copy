@@ -11760,6 +11760,9 @@ class SuperMesh(Mesh):
     def getDynamicMacroElements(self):
         """Return all dynamic macro elements."""
 
+    def getNodeLabels(self):
+        """Get node labels."""
+
     def getStaticMacroElements(self):
         """Return all static macro elements."""
 
@@ -15998,6 +16001,26 @@ class ParallelContactPairing(ContactPairing):
 
     def getParallelFiniteElementDescriptor(self):
         """Return ParallelFiniteElementDescriptor"""
+
+
+# built-in function applyFactorOnSubBlocks in libaster
+
+
+def applyFactorOnSubBlocks(pyFctMat, pyRHS, pyISet, pyJSet=None):
+    """Given a MUMPS factor matrix and a sparse PETSc Mat as the right-hand side,
+            this routine solves for all columns. If an index set I is provided, it first
+            determines the set J of row indices where the RHS has nonzero entries, and
+            returns a sparse MATAIJ solution containing only the IxJ block. Supplying I
+            can speed up the solve, but is most effective when the RHS column count is
+            comparable to or larger than |J|.
+    Arguments:
+        pyFctMat (PETSc.Mat): the MUMPS factor matrix.
+        pyRHS (PETSc.Mat): the sparse MATSEQAIJ holding the multiple right hand sides
+        pyISet (PETSc.IS): the index set for entries to compute
+        pyJSet (PETSc.IS): optional off diagonal layout index set
+    Outputs:
+        outMat: the petsc4py aij matrix matrix holding the solutions
+    """
 
 
 # class ConnectionMesh in libaster

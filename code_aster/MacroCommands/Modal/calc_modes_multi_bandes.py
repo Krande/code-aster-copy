@@ -21,7 +21,7 @@ import aster
 from ...Messages import UTMESS
 
 from ...Cata.Syntax import _F
-from ...CodeCommands import EXTR_MODE, IMPR_CO, INFO_MODE, MODI_MODELE
+from ...CodeCommands import EXTR_MODE, IMPR_CO, INFO_MODE, MODI_MODELE, POST_ELEM
 from ...Objects import GeneralizedAssemblyMatrixReal, GeneralizedAssemblyMatrixComplex
 from ...Utilities.mpi_utils import MPI
 from .mode_iter_simult import MODE_ITER_SIMULT
@@ -45,6 +45,21 @@ def calc_modes_multi_bandes(self, stop_erreur, sturm, INFO, **args):
     STOP_BANDE_VIDE = "NON"
     CARA_ELEM = args.get("CARA_ELEM")
     CHAM_MATER = args.get("CHAM_MATER")
+    model = None
+    if not MATR_RIGI.getType().startswith("MATR_ASSE_GENE"):
+        model = MATR_RIGI.getDOFNumbering().getModel()
+
+    l_cdg = False
+    if model is not None and CHAM_MATER is not None:
+        if CARA_ELEM is not None:
+            TABLE = POST_ELEM(
+                MODELE=model, CARA_ELEM=CARA_ELEM, CHAM_MATER=CHAM_MATER, MASS_INER=_F(TOUT="OUI")
+            )
+        else:
+            TABLE = POST_ELEM(MODELE=model, CHAM_MATER=CHAM_MATER, MASS_INER=_F(TOUT="OUI"))
+        values = TABLE.EXTR_TABLE().values()
+        cdg = [values["CDG_X"][0], values["CDG_Y"][0], values["CDG_Z"][0]]
+        l_cdg = True
 
     # ----------------------------------------------------------------------
     #
@@ -151,7 +166,7 @@ def calc_modes_multi_bandes(self, stop_erreur, sturm, INFO, **args):
         FREQ=lborne,
         NIVEAU_PARALLELISME=niv_par,
         SOLVEUR=dSolveur_infomode,
-        **motfaci
+        **motfaci,
     )
 
     # Gestion des sous-bandes de frequences et construction (si //) de l'objet
@@ -204,6 +219,8 @@ def calc_modes_multi_bandes(self, stop_erreur, sturm, INFO, **args):
                 motscit["CARA_ELEM"] = CARA_ELEM
             if CHAM_MATER is not None:
                 motscit["CHAM_MATER"] = CHAM_MATER
+            if l_cdg:
+                motscit["CENTRE"] = cdg
             motscfa = {}
             if SOLVEUR_MODAL["DIM_SOUS_ESPACE"]:
                 motscfa["DIM_SOUS_ESPACE"] = SOLVEUR_MODAL["DIM_SOUS_ESPACE"]
@@ -216,7 +233,7 @@ def calc_modes_multi_bandes(self, stop_erreur, sturm, INFO, **args):
                 SEUIL_FREQ=CALC_FREQ["SEUIL_FREQ"],
                 NMAX_ITER_SHIFT=CALC_FREQ["NMAX_ITER_SHIFT"],
                 PREC_SHIFT=CALC_FREQ["PREC_SHIFT"],
-                **motscfa
+                **motscfa,
             )
 
             if sturm == "LOCAL":
@@ -286,7 +303,7 @@ def calc_modes_multi_bandes(self, stop_erreur, sturm, INFO, **args):
                 METHODE=METHODE,
                 OPTION=OPTION,
                 SOLVEUR=dSolveur,
-                **motscit
+                **motscit,
             )
 
             # -----------------------------------------------------------------
@@ -376,7 +393,7 @@ def calc_modes_multi_bandes(self, stop_erreur, sturm, INFO, **args):
                 FREQ=(freq_ini, freq_fin),
                 NIVEAU_PARALLELISME=niv_par,
                 SOLVEUR=dSolveur_infomode,
-                **motfaci
+                **motfaci,
             )
 
             # Recuperation du nbre de modes donnes par STURM global

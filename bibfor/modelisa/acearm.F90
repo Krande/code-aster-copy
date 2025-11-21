@@ -93,7 +93,7 @@ subroutine acearm(nbocc, infdonn, infcarte)
     ASSERT(ndim .eq. 3)
 !   Si c'est un maillage partionné ==> PLOUF
     if (infdonn%IsParaMesh) then
-        call utmess('F', 'AFFECARAELEM_99')
+        call utmess('F', 'AFFECARAELEM_99', sk='RIGI_MISS_3D')
     end if
 !
     call wkvect('&&TMPRIGMA', 'V V R', 3*lmax, irgma)

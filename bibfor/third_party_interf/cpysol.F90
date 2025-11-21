@@ -16,6 +16,7 @@
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
 subroutine cpysol(nomat, numddl, rsolu, debglo, vecpet)
+    use, intrinsic :: iso_c_binding
     implicit none
 #include "asterc/asmpi_comm.h"
 #include "asterc/asmpi_recv_r.h"

@@ -2,7 +2,7 @@ variables:
   MINIO_URL: https://minio.retd.edf.fr
   MINIO_MC: ./mc --insecure
   ROOT_URL: https://$GITLAB_TOKEN_NAME:$GITLAB_TOKEN@gitlab.pleiade.edf.fr/codeaster
-  PREREQ_VERSION: 20240327
+  PREREQ_VERSION: 20251026
   OSNAME: debian-12
   IMAGE_URL: ${DOCKER_NEXUS_URL}/codeaster-prerequisites:${PREREQ_VERSION}-${OSNAME}
   ASTER_BUILD: mpi
@@ -269,6 +269,8 @@ prepare_debian-next:
     OSNAME: debian-13
   extends: .prepare
   rules:
+    - if: $BUILDTYPE == "nightly"
+      when: on_success
     - when: manual
       allow_failure: true
 

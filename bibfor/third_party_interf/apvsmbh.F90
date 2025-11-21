@@ -53,7 +53,7 @@ subroutine apvsmbh(kptsc, rsolu)
 !     VARIABLES LOCALES
     integer(kind=8) :: jnequ, jnugll, jprddl, iret
     integer(kind=8) :: nloc, nglo, ndprop
-    integer(kind=8) :: bs, jcoll, jvaleu, iterm, nuno, nucmp, step
+    integer(kind=8) :: bs, jcoll, iterm, nuno, nucmp, step
     integer(kind=8), pointer :: v_nuls(:) => null()
     integer(kind=8), pointer :: v_deeg(:) => null()
 
@@ -68,6 +68,7 @@ subroutine apvsmbh(kptsc, rsolu)
 !     Variables PETSc
     PetscInt :: ndprop4, nn
     PetscInt, pointer :: v_indic(:) => null()
+    PetscScalar, pointer :: valeu(:) => null()
     PetscErrorCode :: ierr
     mpi_int :: rang
 !----------------------------------------------------------------
@@ -118,12 +119,12 @@ subroutine apvsmbh(kptsc, rsolu)
 #else
     call wkvect('&&APMAIN.INDICES', 'V V I', ndprop, vi=v_indic)
 #endif
-    call wkvect('&&APMAIN.VALEURS', 'V V R', ndprop, jvaleu)
+    call wkvect('&&APMAIN.VALEURS', 'V V R', ndprop, vr=valeu)
     iterm = 0
     do jcoll = 0, nloc-1
         if (zi(jprddl+jcoll) .eq. rang) then
             v_indic(iterm+1) = to_petsc_int(zi(jnugll+jcoll))
-            zr(jvaleu+iterm) = rsolu(jcoll+1)
+            valeu(iterm+1) = rsolu(jcoll+1)
             iterm = iterm+1
 !
             if (dbg) then
@@ -137,7 +138,7 @@ subroutine apvsmbh(kptsc, rsolu)
     end do
     if (dbg) flush (601+rang)
     nn = to_petsc_int(iterm)
-    call VecSetValues(b, nn, v_indic(1), zr(jvaleu), INSERT_VALUES, ierr)
+    call VecSetValues(b, nn, v_indic, valeu, INSERT_VALUES, ierr)
     call jedetr('&&APMAIN.INDICES')
     call jedetr('&&APMAIN.VALEURS')
     call VecAssemblyBegin(b, ierr)

@@ -1,0 +1,356 @@
+# coding=utf-8
+# --------------------------------------------------------------------
+# Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
+# This file is part of code_aster.
+#
+# code_aster is free software: you can redistribute it and/or modify
+# it under the terms of the GNU General Public License as published by
+# the Free Software Foundation, either version 3 of the License, or
+# (at your option) any later version.
+#
+# code_aster is distributed in the hope that it will be useful,
+# but WITHOUT ANY WARRANTY; without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+# GNU General Public License for more details.
+#
+# You should have received a copy of the GNU General Public License
+# along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
+# --------------------------------------------------------------------
+
+#
+DEBUT(CODE="OUI")
+
+mail = LIRE_MAILLAGE(FORMAT="MED")
+
+model = AFFE_MODELE(
+    MAILLAGE=mail,
+    AFFE=(
+        _F(GROUP_MA="DALLE", PHENOMENE="MECANIQUE", MODELISATION="DKT"),
+        _F(GROUP_MA=("RESSORT_ALL", "centre_ALL"), PHENOMENE="MECANIQUE", MODELISATION="DIS_TR"),
+    ),
+)
+
+acier = DEFI_MATERIAU(ELAS=_F(E=200000000000.0, NU=0.3))
+
+mater = AFFE_MATERIAU(MAILLAGE=mail, AFFE=(_F(GROUP_MA="DALLE", MATER=acier),))
+
+K = 1e8
+K0 = 1e-3
+carelem = AFFE_CARA_ELEM(
+    INFO=1,
+    MODELE=model,
+    COQUE=_F(GROUP_MA="DALLE", EPAIS=0.3, COQUE_NCOU=1),
+    RIGI_GRILLE=_F(
+        GROUP_MA="DALLE",
+        GROUP_MA_SEG2=("RESSORT_X", "RESSORT_Y", "RESSORT_Z", "RESSORT_RX", "RESSORT_RY"),
+        VALE=(K, K, K, K, K),
+        GROUP_NO_CENTRE=("centre_X", "centre_Y", "centre_Z", "centre_RX", "centre_RY"),
+    ),
+    DISCRET=_F(GROUP_MA="centre_ALL", CARA="K_TR_D_N", VALE=(K0, K0, K0, K0, K0, K0)),
+)
+
+BLOC = AFFE_CHAR_MECA(
+    MODELE=model,
+    LIAISON_SOLIDE=(
+        _F(GROUP_NO=("centre_RX", "NG_LIAIS_RX")),
+        _F(GROUP_NO=("centre_RY", "NG_LIAIS_RY")),
+        _F(GROUP_NO=("centre_X", "NG_LIAIS_X")),
+        _F(GROUP_NO=("centre_Y", "NG_LIAIS_Y")),
+        _F(GROUP_NO=("centre_Z", "NG_LIAIS_Z")),
+    ),
+    DDL_IMPO=(
+        _F(GROUP_NO="centre_X", DX=0, DY=0, DZ=0, DRX=0, DRY=0, DRZ=0),
+        _F(GROUP_NO="centre_Y", DX=0, DY=0, DZ=0, DRX=0, DRY=0, DRZ=0),
+        _F(GROUP_NO="centre_Z", DX=0, DY=0, DZ=0, DRZ=0),
+        _F(GROUP_NO="centre_RX", DX=0, DY=0, DRX=0, DRZ=0),
+        _F(GROUP_NO="centre_RY", DX=0, DY=0, DRY=0, DRZ=0),
+    ),
+)
+
+CHARGE_XYZ = AFFE_CHAR_MECA(MODELE=model, FORCE_NODALE=_F(GROUP_NO="PCDG", FX=K, FY=K, FZ=K))
+
+CHARGE_RX = AFFE_CHAR_MECA(MODELE=model, FORCE_NODALE=_F(GROUP_NO="PCDG", MX=K))
+
+CHARGE_RY = AFFE_CHAR_MECA(MODELE=model, FORCE_NODALE=_F(GROUP_NO="PCDG", MY=K))
+
+resu_xyz = MECA_STATIQUE(
+    MODELE=model,
+    CHAM_MATER=mater,
+    CARA_ELEM=carelem,
+    SOLVEUR=_F(NPREC=9),
+    EXCIT=(_F(CHARGE=BLOC), _F(CHARGE=CHARGE_XYZ)),
+)
+
+resu_rx = MECA_STATIQUE(
+    MODELE=model,
+    CHAM_MATER=mater,
+    CARA_ELEM=carelem,
+    SOLVEUR=_F(NPREC=9),
+    EXCIT=(_F(CHARGE=BLOC), _F(CHARGE=CHARGE_RX)),
+)
+
+resu_ry = MECA_STATIQUE(
+    MODELE=model,
+    CHAM_MATER=mater,
+    CARA_ELEM=carelem,
+    SOLVEUR=_F(NPREC=9),
+    EXCIT=(_F(CHARGE=BLOC), _F(CHARGE=CHARGE_RY)),
+)
+
+TEST_RESU(
+    RESU=(
+        _F(
+            GROUP_NO="PT01",
+            INST=0.0,
+            REFERENCE="ANALYTIQUE",
+            RESULTAT=resu_xyz,
+            NOM_CHAM="DEPL",
+            NOM_CMP="DX",
+            VALE_CALC=0.9988040922767338,
+            VALE_REFE=1.0,
+            CRITERE="RELATIF",
+            PRECISION=2e-3,
+        ),
+        _F(
+            GROUP_NO="PT02",
+            INST=0.0,
+            REFERENCE="ANALYTIQUE",
+            RESULTAT=resu_xyz,
+            NOM_CHAM="DEPL",
+            NOM_CMP="DX",
+            VALE_CALC=0.9987506944238558,
+            VALE_REFE=1.0,
+            CRITERE="RELATIF",
+            PRECISION=2e-3,
+        ),
+        _F(
+            GROUP_NO="PT03",
+            INST=0.0,
+            REFERENCE="ANALYTIQUE",
+            RESULTAT=resu_xyz,
+            NOM_CHAM="DEPL",
+            NOM_CMP="DX",
+            VALE_CALC=0.9987506944212523,
+            VALE_REFE=1.0,
+            CRITERE="RELATIF",
+            PRECISION=2e-3,
+        ),
+        _F(
+            GROUP_NO="PT04",
+            INST=0.0,
+            REFERENCE="ANALYTIQUE",
+            RESULTAT=resu_xyz,
+            NOM_CHAM="DEPL",
+            NOM_CMP="DX",
+            VALE_CALC=0.9988040922741315,
+            VALE_REFE=1.0,
+            CRITERE="RELATIF",
+            PRECISION=2e-3,
+        ),
+        _F(
+            GROUP_NO="PT01",
+            INST=0.0,
+            REFERENCE="ANALYTIQUE",
+            RESULTAT=resu_xyz,
+            NOM_CHAM="DEPL",
+            NOM_CMP="DY",
+            VALE_CALC=1.00078593959401,
+            VALE_REFE=1.0,
+            CRITERE="RELATIF",
+            PRECISION=2e-3,
+        ),
+        _F(
+            GROUP_NO="PT02",
+            INST=0.0,
+            REFERENCE="ANALYTIQUE",
+            RESULTAT=resu_xyz,
+            NOM_CHAM="DEPL",
+            NOM_CMP="DY",
+            VALE_CALC=0.9989403294797641,
+            VALE_REFE=1.0,
+            CRITERE="RELATIF",
+            PRECISION=2e-3,
+        ),
+        _F(
+            GROUP_NO="PT03",
+            INST=0.0,
+            REFERENCE="ANALYTIQUE",
+            RESULTAT=resu_xyz,
+            NOM_CHAM="DEPL",
+            NOM_CMP="DY",
+            VALE_CALC=0.9989403294784596,
+            VALE_REFE=1.0,
+            CRITERE="RELATIF",
+            PRECISION=2e-3,
+        ),
+        _F(
+            GROUP_NO="PT04",
+            INST=0.0,
+            REFERENCE="ANALYTIQUE",
+            RESULTAT=resu_xyz,
+            NOM_CHAM="DEPL",
+            NOM_CMP="DY",
+            VALE_CALC=1.0007859395953105,
+            VALE_REFE=1.0,
+            CRITERE="RELATIF",
+            PRECISION=2e-3,
+        ),
+        _F(
+            GROUP_NO="PT01",
+            INST=0.0,
+            REFERENCE="ANALYTIQUE",
+            RESULTAT=resu_xyz,
+            NOM_CHAM="DEPL",
+            NOM_CMP="DZ",
+            VALE_CALC=0.9927632183416352,
+            VALE_REFE=1.0,
+            CRITERE="RELATIF",
+            PRECISION=8e-3,
+        ),
+        _F(
+            GROUP_NO="PT02",
+            INST=0.0,
+            REFERENCE="ANALYTIQUE",
+            RESULTAT=resu_xyz,
+            NOM_CHAM="DEPL",
+            NOM_CMP="DZ",
+            VALE_CALC=0.99276321842373,
+            VALE_REFE=1.0,
+            CRITERE="RELATIF",
+            PRECISION=8e-3,
+        ),
+        _F(
+            GROUP_NO="PT03",
+            INST=0.0,
+            REFERENCE="ANALYTIQUE",
+            RESULTAT=resu_xyz,
+            NOM_CHAM="DEPL",
+            NOM_CMP="DZ",
+            VALE_CALC=0.9927632185119889,
+            VALE_REFE=1.0,
+            CRITERE="RELATIF",
+            PRECISION=8e-3,
+        ),
+        _F(
+            GROUP_NO="PT04",
+            INST=0.0,
+            REFERENCE="ANALYTIQUE",
+            RESULTAT=resu_xyz,
+            NOM_CHAM="DEPL",
+            NOM_CMP="DZ",
+            VALE_CALC=0.9927632185937411,
+            VALE_REFE=1.0,
+            CRITERE="RELATIF",
+            PRECISION=8 - 3,
+        ),
+    )
+)
+
+TEST_RESU(
+    RESU=(
+        _F(
+            GROUP_NO="PT01",
+            INST=0.0,
+            REFERENCE="ANALYTIQUE",
+            RESULTAT=resu_rx,
+            NOM_CHAM="DEPL",
+            NOM_CMP="DRX",
+            VALE_CALC=0.9865873569283771,
+            VALE_REFE=1.0,
+            CRITERE="RELATIF",
+            PRECISION=2e-2,
+        ),
+        _F(
+            GROUP_NO="PT02",
+            INST=0.0,
+            REFERENCE="ANALYTIQUE",
+            RESULTAT=resu_rx,
+            NOM_CHAM="DEPL",
+            NOM_CMP="DRX",
+            VALE_CALC=0.9865873569282871,
+            VALE_REFE=1.0,
+            CRITERE="RELATIF",
+            PRECISION=2e-2,
+        ),
+        _F(
+            GROUP_NO="PT03",
+            INST=0.0,
+            REFERENCE="ANALYTIQUE",
+            RESULTAT=resu_rx,
+            NOM_CHAM="DEPL",
+            NOM_CMP="DRX",
+            VALE_CALC=0.9865873569289713,
+            VALE_REFE=1.0,
+            CRITERE="RELATIF",
+            PRECISION=2e-2,
+        ),
+        _F(
+            GROUP_NO="PT04",
+            INST=0.0,
+            REFERENCE="ANALYTIQUE",
+            RESULTAT=resu_rx,
+            NOM_CHAM="DEPL",
+            NOM_CMP="DRX",
+            VALE_CALC=0.986587356928958,
+            VALE_REFE=1.0,
+            CRITERE="RELATIF",
+            PRECISION=2e-2,
+        ),
+    )
+)
+
+TEST_RESU(
+    RESU=(
+        _F(
+            GROUP_NO="PT01",
+            INST=0.0,
+            REFERENCE="ANALYTIQUE",
+            RESULTAT=resu_ry,
+            NOM_CHAM="DEPL",
+            NOM_CMP="DRY",
+            VALE_CALC=0.9898689613485547,
+            VALE_REFE=1.0,
+            CRITERE="RELATIF",
+            PRECISION=2e-2,
+        ),
+        _F(
+            GROUP_NO="PT02",
+            INST=0.0,
+            REFERENCE="ANALYTIQUE",
+            RESULTAT=resu_ry,
+            NOM_CHAM="DEPL",
+            NOM_CMP="DRY",
+            VALE_CALC=0.9898689613484859,
+            VALE_REFE=1.0,
+            CRITERE="RELATIF",
+            PRECISION=2e-2,
+        ),
+        _F(
+            GROUP_NO="PT03",
+            INST=0.0,
+            REFERENCE="ANALYTIQUE",
+            RESULTAT=resu_ry,
+            NOM_CHAM="DEPL",
+            NOM_CMP="DRY",
+            VALE_CALC=0.98986896134866,
+            VALE_REFE=1.0,
+            CRITERE="RELATIF",
+            PRECISION=2e-2,
+        ),
+        _F(
+            GROUP_NO="PT04",
+            INST=0.0,
+            REFERENCE="ANALYTIQUE",
+            RESULTAT=resu_ry,
+            NOM_CHAM="DEPL",
+            NOM_CMP="DRY",
+            VALE_CALC=0.9898689613486586,
+            VALE_REFE=1.0,
+            CRITERE="RELATIF",
+            PRECISION=2e-2,
+        ),
+    )
+)
+
+
+FIN()

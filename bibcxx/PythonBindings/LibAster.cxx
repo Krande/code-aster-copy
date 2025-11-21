@@ -146,6 +146,7 @@
 #include "PythonBindings/ParallelMechanicalLoadInterface.h"
 #include "PythonBindings/ParallelMeshInterface.h"
 #include "PythonBindings/ParallelThermalLoadInterface.h"
+#include "PythonBindings/PetscApplyFactorOnSubBlocksInterface.h"
 #include "PythonBindings/PetscRedistributeInterface.h"
 #include "PythonBindings/PhysicalProblemInterface.h"
 #include "PythonBindings/PhysicalQuantityInterface.h"
@@ -337,7 +338,7 @@ PYBIND11_MODULE( libaster, mod ) {
     exportParallelContactNewToPython( mod );
     exportParallelContactPairingToPython( mod );
 #endif /* ASTER_HAVE_MPI */
-
+    exportApplyFactorOnSubBlocksToPython( mod );
     exportConnectionMeshToPython( mod );
     exportResultNamingToPython( mod );
     exportListOfFloatsToPython( mod );

@@ -58,7 +58,7 @@ subroutine apksp(kptsc)
     PetscInt :: maxits
     PetscReal :: rtol, atol, dtol, aster_petsc_real
     Mat :: a
-    KSP :: ksp
+    KSP, pointer :: ksp => null()
     PetscViewerAndFormat :: vf
 !=================================================================
     call jemarq()
@@ -71,7 +71,7 @@ subroutine apksp(kptsc)
     nonu = nonu_courant
     nosolv = nosols(kptsc)
     a = ap(kptsc)
-    ksp = kp(kptsc)
+    ksp => kp(kptsc)
 !
     call jeveuo(nosolv//'.SLVK', 'L', vk24=slvk)
     call jeveuo(nosolv//'.SLVR', 'L', vr=slvr)

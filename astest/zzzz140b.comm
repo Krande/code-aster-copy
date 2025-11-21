@@ -1,0 +1,221 @@
+# coding=utf-8
+# --------------------------------------------------------------------
+# Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
+# This file is part of code_aster.
+#
+# code_aster is free software: you can redistribute it and/or modify
+# it under the terms of the GNU General Public License as published by
+# the Free Software Foundation, either version 3 of the License, or
+# (at your option) any later version.
+#
+# code_aster is distributed in the hope that it will be useful,
+# but WITHOUT ANY WARRANTY; without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+# GNU General Public License for more details.
+#
+# You should have received a copy of the GNU General Public License
+# along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
+# --------------------------------------------------------------------
+
+#
+#  Validation POST_MODE sur une barre en rotation autour de la base
+#  cas 1 : masses ponctuelles
+#  cas 2 : masse distribue
+
+DEBUT(CODE="OUI", ERREUR=_F(ALARME="ALARME"), DEBUG=_F(SDVERI="OUI"))
+
+#
+import math
+import numpy as np
+
+kr = 1e9
+L = 2
+R = 1
+S = math.pi * R**2
+
+MA = LIRE_MAILLAGE(FORMAT="ASTER", VERI_MAIL=_F(APLAT=0.001, VERIF="NON"))
+
+
+# cas d'un masse simple m ( 1 masse base pour centre de gravite a mi-hauteur)
+masse = 1e4 * 1
+rho = 1e4 * 0
+
+MO = AFFE_MODELE(
+    MAILLAGE=MA,
+    AFFE=(
+        _F(GROUP_MA="BARRE", PHENOMENE="MECANIQUE", MODELISATION="POU_D_E"),
+        _F(GROUP_MA=("POINT0"), PHENOMENE="MECANIQUE", MODELISATION="DIS_TR"),
+        _F(GROUP_MA=("MASS_PT0"), PHENOMENE="MECANIQUE", MODELISATION="DIS_T"),
+        _F(GROUP_MA=("POINT1"), PHENOMENE="MECANIQUE", MODELISATION="DIS_T"),
+    ),
+)
+
+MAT = DEFI_MATERIAU(ELAS=_F(E=1.0e8, NU=0.0, RHO=rho))
+
+CHMAT = AFFE_MATERIAU(MAILLAGE=MA, AFFE=_F(TOUT="OUI", MATER=MAT))
+
+CARA = AFFE_CARA_ELEM(
+    MODELE=MO,
+    POUTRE=(_F(SECTION="CERCLE", CARA="R", VALE=R, GROUP_MA="BARRE"),),
+    DISCRET=(
+        _F(CARA="K_TR_D_N", VALE=(0.0, 0.0, 0.0, kr, kr, kr), GROUP_MA=("POINT0")),
+        _F(CARA="M_T_D_N", VALE=(masse,), GROUP_MA=("POINT1",)),
+        _F(CARA="M_T_D_N", VALE=(masse,), GROUP_MA=("MASS_PT0",)),
+    ),
+)
+
+CHA1 = AFFE_CHAR_MECA(
+    MODELE=MO,
+    DDL_IMPO=(_F(GROUP_NO="N1", DX=0.0, DY=0.0, DZ=0.0, DRX=0, DRZ=0),),
+    LIAISON_SOLIDE=(_F(GROUP_MA="BARRE"),),
+)
+
+ASSEMBLAGE(
+    MODELE=MO,
+    CHAM_MATER=CHMAT,
+    CHARGE=CHA1,
+    CARA_ELEM=CARA,
+    NUME_DDL=CO("NUME"),
+    MATR_ASSE=(
+        _F(MATRICE=CO("MATR"), OPTION="RIGI_MECA"),
+        _F(MATRICE=CO("MATM"), OPTION="MASS_MECA"),
+    ),
+)
+
+# calcul des modes normaux
+MODE = CALC_MODES(
+    MATR_RIGI=MATR,
+    CHAM_MATER=CHMAT,
+    CARA_ELEM=CARA,
+    VERI_MODE=_F(STOP_ERREUR="NON"),
+    CALC_FREQ=_F(NMAX_FREQ=1),
+    MATR_MASS=MATM,
+)
+
+
+tab_tot = POST_MODE(
+    MODE=MODE, GROUP_MA=("MASS_PT0", "POINT1", "BARRE"), CARA_ELEM=CARA, MATR_MASS=MATM
+)
+
+tab1 = POST_MODE(MODE=MODE, GROUP_MA="POINT1", CARA_ELEM=CARA, MATR_MASS=MATM)
+
+# vecteur du mode DX , DRY
+u1 = 1
+u2 = 0.5
+inermass = masse * (L / 2) ** 2
+Meeffx = ((u1) * masse) ** 2 / ((u1) ** 2 * masse)
+InerEffDZ = ((u2) * inermass) ** 2 / ((u2) ** 2 * inermass)
+
+TEST_TABLE(TABLE=tab_tot, NOM_PARA="MASS_EFFE_DX", VALE_CALC=Meeffx)
+TEST_TABLE(TABLE=tab_tot, NOM_PARA="INER_EFFE_DY", VALE_CALC=InerEffDZ)
+
+TEST_TABLE(TABLE=tab1, NOM_PARA="MASS_EFFE_DX", VALE_CALC=masse)
+TEST_TABLE(TABLE=tab1, NOM_PARA="INER_EFFE_DY", VALE_CALC=0.0, VALE_ABS="OUI")
+
+
+# cas 2 mass repartie
+masse = 1e4 * 0
+rho = 1e4 * 1
+
+MO = AFFE_MODELE(
+    MAILLAGE=MA,
+    AFFE=(
+        _F(GROUP_MA="BARRE", PHENOMENE="MECANIQUE", MODELISATION="POU_D_E"),
+        _F(GROUP_MA=("POINT0"), PHENOMENE="MECANIQUE", MODELISATION="DIS_TR"),
+        _F(GROUP_MA=("MASS_PT0"), PHENOMENE="MECANIQUE", MODELISATION="DIS_T"),
+        _F(GROUP_MA=("POINT1"), PHENOMENE="MECANIQUE", MODELISATION="DIS_T"),
+    ),
+)
+
+MAT = DEFI_MATERIAU(ELAS=_F(E=1.0e8, NU=0.0, RHO=rho))
+
+CHMAT = AFFE_MATERIAU(MAILLAGE=MA, AFFE=_F(TOUT="OUI", MATER=MAT))
+
+CARA = AFFE_CARA_ELEM(
+    MODELE=MO,
+    POUTRE=(_F(SECTION="CERCLE", CARA="R", VALE=R, GROUP_MA="BARRE"),),
+    DISCRET=(
+        _F(CARA="K_TR_D_N", VALE=(0.0, 0.0, 0.0, kr, kr, kr), GROUP_MA=("POINT0",)),
+        _F(CARA="M_T_D_N", VALE=(masse,), GROUP_MA=("POINT1",)),
+        _F(CARA="M_T_D_N", VALE=(masse,), GROUP_MA=("MASS_PT0",)),
+    ),
+)
+
+CHA1 = AFFE_CHAR_MECA(
+    MODELE=MO,
+    DDL_IMPO=(_F(GROUP_NO="N1", DX=0.0, DY=0.0, DZ=0.0, DRX=0, DRZ=0),),
+    LIAISON_SOLIDE=(_F(GROUP_MA="BARRE"),),
+)
+
+
+ASSEMBLAGE(
+    MODELE=MO,
+    CHAM_MATER=CHMAT,
+    CHARGE=CHA1,
+    CARA_ELEM=CARA,
+    NUME_DDL=CO("NUME"),
+    MATR_ASSE=(
+        _F(MATRICE=CO("MATR"), OPTION="RIGI_MECA"),
+        _F(MATRICE=CO("MATM"), OPTION="MASS_MECA"),
+    ),
+)
+
+# calcul des modes normaux
+MODE = CALC_MODES(
+    MATR_RIGI=MATR,
+    CHAM_MATER=CHMAT,
+    CARA_ELEM=CARA,
+    VERI_MODE=_F(STOP_ERREUR="NON"),
+    CALC_FREQ=_F(NMAX_FREQ=1),
+    MATR_MASS=MATM,
+)
+
+tab_tot = POST_MODE(
+    MODE=MODE,
+    GROUP_MA=("MASS_PT0", "POINT1", "BARRE"),
+    # TOUT='OUI',
+    CARA_ELEM=CARA,
+    MATR_MASS=MATM,
+)
+
+tab1 = POST_MODE(MODE=MODE, GROUP_MA="POINT1", CARA_ELEM=CARA, MATR_MASS=MATM)
+
+masse = rho * S * L
+
+phi1 = np.array([0, 0.5, 1, 0.5])
+vect_masse1 = rho * S * np.array([13 / 35 * L, 11 / 210 * L**2, 9 * L / 70, -13 / 420 * L**2])
+vect_masse2 = rho * S * np.array([9 * L / 70, 13 * L**2 / 420, 13 / 35 * L, -11 / 210 * L**2])
+vect_masse = vect_masse1 + vect_masse2
+val1 = np.dot(np.transpose(phi1), vect_masse)
+
+mat_mass = (
+    rho
+    * S
+    * np.array(
+        [
+            [13 / 35 * L, 11 / 210 * L**2, 9 * L / 70, -13 / 420 * L**2],
+            [11 / 210 * L**2, L**3 / 105, 13 * L**2 / 420, -(L**3) / 140],
+            [9 * L / 70, 13 * L**2 / 420, 13 / 35 * L, -11 / 210 * L**2],
+            [-13 / 420 * L**2, -(L**3) / 140, -11 / 210 * L**2, L**3 / 105],
+        ]
+    )
+)
+
+val2 = np.dot(mat_mass, phi1)
+val3 = np.dot(np.transpose(phi1), val2)
+
+TEST_TABLE(TABLE=tab_tot, NOM_PARA="MASS_EFFE_DX", VALE_CALC=val1**2 / val3)
+
+
+phi1r = np.array([1, 0.5])
+vect_masse = rho * S * np.array([13 / 35 * L, -11 / 210 * L**2])
+val1 = np.dot(np.transpose(phi1r), vect_masse)
+mat_mass = rho * S * np.array([[13 / 35 * L, -11 / 210 * L**2], [-11 / 210 * L**2, L**3 / 105]])
+
+val2 = np.dot(mat_mass, phi1r)
+val3 = np.dot(np.transpose(phi1r), val2)
+
+TEST_TABLE(TABLE=tab1, NOM_PARA="MASS_EFFE_DX", VALE_CALC=val1**2 / val3)
+
+
+FIN()

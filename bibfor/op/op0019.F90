@@ -44,6 +44,7 @@ subroutine op0019()
 #include "asterfort/aceapc.h"
 #include "asterfort/aceapf.h"
 #include "asterfort/aceapo.h"
+#include "asterfort/acearg.h"
 #include "asterfort/acearm.h"
 #include "asterfort/acearp.h"
 #include "asterfort/ace_crea_carte.h"
@@ -338,6 +339,9 @@ subroutine op0019()
 !   AFFECTATION DES MATRICES AUX RAIDEURS REPARTIES
     if (nbocc(ACE_RIGI_PARASOL) .ne. 0) then
         call acearp(nbocc(ACE_RIGI_PARASOL), info_concept, info_carte, grp_lmax, affe_mail)
+    end if
+    if (nbocc(ACE_RIGI_GRILLE) .ne. 0) then
+        call acearg(nbocc(ACE_RIGI_GRILLE), info_concept, info_carte, affe_mail)
     end if
 ! --------------------------------------------------------------------------------------------------
 !   AFFECTATION DES MATRICES AUX ELEMENTS DISCRETS

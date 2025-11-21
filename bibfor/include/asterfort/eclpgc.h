@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -15,17 +15,13 @@
 ! You should have received a copy of the GNU General Public License
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
-
-!
 !
 interface
-    subroutine eclpgc(ch1, ch2, ligrel, ma2, numeq,&
+    subroutine eclpgc(ch1, ch2, ligrel, mesh2, numeEqua, &
                       nomfpg)
-        character(len=19) :: ch1
-        character(len=19) :: ch2
-        character(len=19) :: ligrel
-        character(len=8) :: ma2
-        character(len=19) :: numeq
-        character(len=24) :: nomfpg
+        character(len=19), intent(in) :: ch1, ch2, ligrel
+        character(len=8), intent(in) :: mesh2
+        character(len=19), intent(in) :: numeEqua
+        character(len=24), intent(in) :: nomfpg
     end subroutine eclpgc
 end interface

@@ -1,0 +1,517 @@
+# coding=utf-8
+# --------------------------------------------------------------------
+# Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
+# This file is part of code_aster.
+#
+# code_aster is free software: you can redistribute it and/or modify
+# it under the terms of the GNU General Public License as published by
+# the Free Software Foundation, either version 3 of the License, or
+# (at your option) any later version.
+#
+# code_aster is distributed in the hope that it will be useful,
+# but WITHOUT ANY WARRANTY; without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+# GNU General Public License for more details.
+#
+# You should have received a copy of the GNU General Public License
+# along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
+# --------------------------------------------------------------------
+
+DEBUT(CODE="OUI")
+
+MAIL0 = LIRE_MAILLAGE()
+
+MAILLAGE = CREA_MAILLAGE(MAILLAGE=MAIL0, CREA_POI1=_F(NOM_GROUP_MA="PRADIER", GROUP_NO="SRADIER"))
+
+MAILLAGE = DEFI_GROUP(
+    reuse=MAILLAGE,
+    MAILLAGE=MAILLAGE,
+    CREA_GROUP_MA=(
+        _F(
+            NOM="centre_ALL",
+            TYPE_MAILLE="POI1",
+            UNION=("centre_X", "centre_Y", "centre_Z", "centre_RX", "centre_RY"),
+        ),
+        _F(NOM="RESSORT_ALL", TYPE_MAILLE="SEG2", UNION=("GX", "GY", "GZ", "GRX", "GRY")),
+    ),
+)
+
+### 1.2.2 Rigidity (global springs) of the tests based on ssnl130 v6.02.130
+### <<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<
+### <<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<
+KX = 6.295e11
+KY = 6.295e11
+KZ = 6.864e11
+KRX = 3.188e14
+KRY = 3.188e14
+KRZ = 3.2e14
+
+K0 = 1e-3
+M0 = 1e-12  # dynamic
+
+# ----------------------------------------------------------------------
+#  DEFINITION DES MATERIAUX
+
+MAT_1 = DEFI_MATERIAU(
+    ELAS=_F(E=4.0e10, NU=1.494252874e-01, RHO=0.0e0, AMOR_ALPHA=4.5e-4, AMOR_BETA=7.0, ALPHA=0.0e0)
+)
+
+MAT_2 = DEFI_MATERIAU(
+    ELAS=_F(E=4.0e10, NU=1.494252874e-01, RHO=2.5e3, AMOR_ALPHA=4.5e-4, AMOR_BETA=7.0, ALPHA=0.0e0)
+)
+
+MAT_3 = DEFI_MATERIAU(
+    ELAS=_F(E=4.0e10, NU=1.494252874e-01, RHO=2.5e-1, AMOR_ALPHA=4.5e-4, AMOR_BETA=7.0, ALPHA=0.0e0)
+)
+#
+
+CHAMPMAT = AFFE_MATERIAU(
+    MAILLAGE=MAILLAGE,
+    AFFE=(
+        _F(GROUP_MA="MAT_1", MATER=MAT_1),
+        _F(GROUP_MA="MAT_2", MATER=MAT_2),
+        _F(GROUP_MA="VRADIER", MATER=MAT_2),
+        _F(GROUP_MA="SRADIER", MATER=MAT_3),
+    ),
+)
+
+STICKMOD = AFFE_MODELE(
+    MAILLAGE=MAILLAGE,
+    AFFE=(
+        _F(GROUP_MA="POU_D_T", PHENOMENE="MECANIQUE", MODELISATION="POU_D_T"),
+        _F(GROUP_MA="MASSES", PHENOMENE="MECANIQUE", MODELISATION="DIS_TR"),
+        _F(GROUP_MA="LIAI_NOE", PHENOMENE="MECANIQUE", MODELISATION="DIS_TR"),
+        _F(GROUP_MA=("VRADIER", "SRADIER"), PHENOMENE="MECANIQUE", MODELISATION="3D"),
+        _F(
+            GROUP_MA=("RESSORT_ALL", "centre_ALL", "PRADIER"),
+            PHENOMENE="MECANIQUE",
+            MODELISATION="DIS_TR",
+        ),
+    ),
+)
+
+CARA_ELE = AFFE_CARA_ELEM(
+    INFO=1,
+    MODELE=STICKMOD,
+    POUTRE=(
+        _F(
+            GROUP_MA="SEC_2",
+            SECTION="GENERALE",
+            CARA=("A", "IZ", "IY", "AY", "AZ", "JX", "EZ", "EY", "RY", "RZ", "RT"),
+            VALE=(87, 27569, 27569, 2, 2, 1e7, 0, 0, 1, 1, 1),
+        ),
+        _F(
+            GROUP_MA="SEC_3",
+            SECTION="GENERALE",
+            CARA=("A", "IZ", "IY", "AY", "AZ", "JX", "EZ", "EY", "RY", "RZ", "RT"),
+            VALE=(169.6, 42942, 42942, 2, 2, 1e7, 0, 0, 1, 1, 1),
+        ),
+        _F(
+            GROUP_MA="SEC_4",
+            SECTION="GENERALE",
+            CARA=("A", "IZ", "IY", "AY", "AZ", "JX", "EZ", "EY", "RY", "RZ", "RT"),
+            VALE=(94, 12500, 12500, 77.05, 77.05, 1e7, 0, 0, 1, 1, 1),
+        ),
+        _F(
+            GROUP_MA="SEC_5",
+            SECTION="GENERALE",
+            CARA=("A", "IZ", "IY", "AY", "AZ", "JX", "EZ", "EY", "RY", "RZ", "RT"),
+            VALE=(48.52, 6522.4, 6142, 5.72, 3.54, 1e6, 0, 0, 1, 1, 1),
+        ),
+        _F(
+            GROUP_MA="SEC_6",
+            SECTION="GENERALE",
+            CARA=("A", "IZ", "IY", "AY", "AZ", "JX", "EZ", "EY", "RY", "RZ", "RT"),
+            VALE=(48.52, 6522.4, 6142, 6.8, 3.95, 1e6, 0, 0, 1, 1, 1),
+        ),
+        _F(
+            GROUP_MA="SEC_7",
+            SECTION="GENERALE",
+            CARA=("A", "IZ", "IY", "AY", "AZ", "JX", "EZ", "EY", "RY", "RZ", "RT"),
+            VALE=(232.8, 10958, 21280, 4.95, 1.87, 1e7, 0, 0, 1, 1, 1),
+        ),
+        _F(
+            GROUP_MA="SEC_8",
+            SECTION="GENERALE",
+            CARA=("A", "IZ", "IY", "AY", "AZ", "JX", "EZ", "EY", "RY", "RZ", "RT"),
+            VALE=(227.7, 23000, 21079, 4.55, 3.34, 1e7, 0, 0, 1, 1, 1),
+        ),
+        _F(
+            GROUP_MA="SEC_9",
+            SECTION="GENERALE",
+            CARA=("A", "IZ", "IY", "AY", "AZ", "JX", "EZ", "EY", "RY", "RZ", "RT"),
+            VALE=(14.9, 190, 150, 1.86, 1.77, 1e5, 0, 0, 1, 1, 1),
+        ),
+        _F(
+            GROUP_MA="SEC_10",
+            SECTION="GENERALE",
+            CARA=("A", "IZ", "IY", "AY", "AZ", "JX", "EZ", "EY", "RY", "RZ", "RT"),
+            VALE=(14.3, 120, 117, 3.57, 2.2, 1e5, 0, 0, 1, 1, 1),
+        ),
+        _F(
+            GROUP_MA="SEC_11",
+            SECTION="GENERALE",
+            CARA=("A", "IZ", "IY", "AY", "AZ", "JX", "EZ", "EY", "RY", "RZ", "RT"),
+            VALE=(53.48, 548.6, 548.6, 76.4, 76.4, 1e5, 0, 0, 1, 1, 1),
+        ),
+        _F(
+            GROUP_MA="SEC_12",
+            SECTION="GENERALE",
+            CARA=("A", "IZ", "IY", "AY", "AZ", "JX", "EZ", "EY", "RY", "RZ", "RT"),
+            VALE=(53.48, 548.6, 425.3, 1.72, 1.06, 1e5, 0, 0, 1, 1, 1),
+        ),
+        _F(
+            GROUP_MA="SEC_13",
+            SECTION="GENERALE",
+            CARA=("A", "IZ", "IY", "AY", "AZ", "JX", "EZ", "EY", "RY", "RZ", "RT"),
+            VALE=(45.21, 326.1, 326.1, 1.37, 1.37, 1e5, 0, 0, 1, 1, 1),
+        ),
+        _F(
+            GROUP_MA="SEC_14",
+            SECTION="GENERALE",
+            CARA=("A", "IZ", "IY", "AY", "AZ", "JX", "EZ", "EY", "RY", "RZ", "RT"),
+            VALE=(4, 593.4, 1, 2.08, 10, 1e5, 0, 0, 1, 1, 1),
+        ),
+    ),
+    DISCRET=(
+        _F(
+            GROUP_MA=(
+                "MAS2",
+                "MAS3",
+                "MAS4",
+                "MAS5",
+                "MAS6",
+                "MAS7",
+                "MAS8",
+                "MAS9",
+                "MAS10",
+                "MAS11",
+                "MAS12",
+                "MAS13",
+                "MAS14",
+                "MAS15",
+                "MAS16",
+                "MAS17",
+                "MAS18",
+                "MAS19",
+                "MAS20",
+                "MAS21",
+                "MAS22",
+                "MAS23",
+                "MAS24",
+                "MAS25",
+                "MAS26",
+                "MAS27",
+            ),
+            CARA="K_TR_D_N",
+            VALE=(0, 0, 0, 0, 0, 0),
+        ),
+        _F(
+            GROUP_MA="MAS2",
+            CARA="M_TR_D_N",
+            VALE=(9768000, 1484000000, 1484000000, 0, 0, 0, 0, 0, 0, 0),
+        ),
+        _F(
+            GROUP_MA="MAS3",
+            CARA="M_TR_D_N",
+            VALE=(2827000, 935900000, 935900000, 0, 0, 0, 0, 0, 0, 0),
+        ),
+        _F(
+            GROUP_MA="MAS4",
+            CARA="M_TR_D_N",
+            VALE=(2827000, 935900000, 935900000, 0, 0, 0, 0, 0, 0, 0),
+        ),
+        _F(
+            GROUP_MA="MAS5",
+            CARA="M_TR_D_N",
+            VALE=(1921000, 617600000, 617600000, 0, 0, 0, 0, 0, 0, 0),
+        ),
+        _F(
+            GROUP_MA="MAS6",
+            CARA="M_TR_D_N",
+            VALE=(2175000, 707400000, 707400000, 0, 0, 0, 0, 0, 0, 0),
+        ),
+        _F(
+            GROUP_MA="MAS7",
+            CARA="M_TR_D_N",
+            VALE=(2729000, 900800000, 900800000, 0, 0, 0, 0, 0, 0, 0),
+        ),
+        _F(
+            GROUP_MA="MAS8",
+            CARA="M_TR_D_N",
+            VALE=(4020000, 910700000, 910700000, 0, 0, 0, 0, 0, 0, 0),
+        ),
+        _F(
+            GROUP_MA="MAS9",
+            CARA="M_TR_D_N",
+            VALE=(3554000, 884000000, 884000000, 1768000000, 0, 0, 0, 0, 0, 0),
+        ),
+        _F(GROUP_MA="MAS10", CARA="M_TR_D_N", VALE=(1, 1, 1, 2, 0, 0, 0, 0, 0, 0)),
+        _F(
+            GROUP_MA="MAS11",
+            CARA="M_TR_D_N",
+            VALE=(2098000, 520000000, 520000000, 1040000000, 0, 0, 0, 0, 0, 0),
+        ),
+        _F(
+            GROUP_MA="MAS12",
+            CARA="M_TR_D_N",
+            VALE=(5.246e6, 1.393e9, 1.393e9, 2.786e9, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0),
+        ),
+        _F(
+            GROUP_MA="MAS13",
+            CARA="M_TR_D_N",
+            VALE=(5.858e6, 1.525e9, 1.525e9, 3.050e9, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0),
+        ),
+        _F(
+            GROUP_MA="MAS14",
+            CARA="M_TR_D_N",
+            VALE=(6.810e6, 1.740e9, 1.740e9, 3.480e9, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0),
+        ),
+        _F(
+            GROUP_MA="MAS15",
+            CARA="M_TR_D_N",
+            VALE=(1.000e7, 2.020e9, 2.020e9, 4.040e9, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0),
+        ),
+        _F(
+            GROUP_MA="MAS16",
+            CARA="M_TR_D_N",
+            VALE=(3.000e5, 3.120e7, 2.690e7, 5.810e7, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0),
+        ),
+        _F(
+            GROUP_MA="MAS17",
+            CARA="M_TR_D_N",
+            VALE=(2.750e5, 5.700e6, 3.500e6, 9.200e6, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0),
+        ),
+        _F(
+            GROUP_MA="MAS18",
+            CARA="M_TR_D_N",
+            VALE=(2.960e6, 4.340e8, 4.260e8, 8.600e8, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0),
+        ),
+        _F(
+            GROUP_MA="MAS19",
+            CARA="M_TR_D_N",
+            VALE=(1.130e6, 3.620e7, 3.190e7, 6.810e7, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0),
+        ),
+        _F(
+            GROUP_MA="MAS20",
+            CARA="M_TR_D_N",
+            VALE=(4.230e6, 5.360e8, 5.560e8, 1.091e9, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0),
+        ),
+        _F(
+            GROUP_MA="MAS21",
+            CARA="M_TR_D_N",
+            VALE=(3.260e6, 5.390e7, 6.750e7, 1.214e8, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0),
+        ),
+        _F(
+            GROUP_MA="MAS22",
+            CARA="M_TR_D_N",
+            VALE=(4.930e6, 5.500e8, 5.280e8, 1.078e9, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0),
+        ),
+        _F(
+            GROUP_MA="MAS23",
+            CARA="M_TR_D_N",
+            VALE=(1.890e6, 1.700e8, 1.000e0, 1.700e8, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0),
+        ),
+        _F(
+            GROUP_MA="MAS24",
+            CARA="M_TR_D_N",
+            VALE=(6.980e6, 9.130e8, 6.930e8, 1.606e9, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0),
+        ),
+        _F(
+            GROUP_MA="MAS25",
+            CARA="M_TR_D_N",
+            VALE=(3.800e5, 1.000e0, 1.000e0, 1.000e0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0),
+        ),
+        _F(
+            GROUP_MA="MAS26",
+            CARA="M_TR_D_N",
+            VALE=(2.700e5, 1.000e0, 1.000e0, 1.000e0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0),
+        ),
+        _F(
+            GROUP_MA="MAS27",
+            CARA="M_TR_D_N",
+            VALE=(1.000e5, 1.000e0, 1.000e0, 1.000e0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0),
+        ),
+        # FIN DES CARACTERISTIQUES DES MASSES, LIAISONS SIMPLES NOEUD-NOEUD
+        _F(
+            GROUP_MA="RLN_1",
+            CARA="K_TR_D_L",
+            VALE=(1.000e0, 1.320e10, 7.080e8, 1.424e10, 1.000e0, 1.000e13),
+            REPERE="GLOBAL",
+        ),
+        _F(
+            GROUP_MA="RLN_2",
+            CARA="K_TR_D_L",
+            VALE=(7.800e10, 1.040e11, 6.160e9, 1.632e11, 5.560e10, 1.000e14),
+            REPERE="GLOBAL",
+        ),
+        _F(
+            GROUP_MA="RLN_3",
+            CARA="K_TR_D_L",
+            VALE=(1.692e11, 1.840e11, 1.872e10, 7.600e11, 1.800e11, 1.000e14),
+            REPERE="GLOBAL",
+        ),
+        _F(
+            GROUP_MA="RLN_4",
+            CARA="K_TR_D_L",
+            VALE=(0.000e0, 2.000e11, 5.872e10, 4.039e12, 0.000e0, 1.000e14),
+            REPERE="GLOBAL",
+        ),
+        _F(
+            GROUP_MA="RLN_5",
+            CARA="K_TR_D_L",
+            VALE=(1.900e11, 1.900e11, 2.000e9, 5.000e11, 5.000e11, 1.000e14),
+            REPERE="GLOBAL",
+        ),
+        _F(GROUP_MA="centre_ALL", CARA="K_TR_D_N", VALE=(K0, K0, K0, K0, K0, K0)),
+        _F(
+            GROUP_MA="centre_ALL",
+            CARA="M_TR_D_N",
+            VALE=(M0, M0, M0, M0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0),
+        ),
+        _F(GROUP_MA="PRADIER", CARA="M_TR_D_N", VALE=(0, 0, 0, 0, 0, 0, 0, 0, 0, 0)),
+    ),
+    RIGI_GRILLE=_F(
+        GROUP_MA="SRADIER",
+        GROUP_MA_SEG2=("GX", "GY", "GZ", "GRX", "GRY"),
+        VALE=(KX, KY, KZ, KRX, KRY),
+        GROUP_NO_CENTRE=("centre_X", "centre_Y", "centre_Z", "centre_RX", "centre_RY"),
+    ),
+    ORIENTATION=_F(GROUP_MA="PRADIER", CARA="VECT_X_Y", VALE=(0.0, 0.0, 1.0, 0.0, 1.0, 0.0)),
+)
+
+CONDLIM_LIAIS = AFFE_CHAR_MECA(
+    MODELE=STICKMOD,
+    LIAISON_SOLIDE=(
+        _F(GROUP_NO=("centre_RX", "NG_LIAIS_RX")),
+        _F(GROUP_NO=("centre_RY", "NG_LIAIS_RY")),
+        _F(GROUP_NO=("centre_X", "NG_LIAIS_X")),
+        _F(GROUP_NO=("centre_Y", "NG_LIAIS_Y")),
+        _F(GROUP_NO=("centre_Z", "NG_LIAIS_Z")),
+    ),
+)
+
+CONDLIM = AFFE_CHAR_MECA(
+    MODELE=STICKMOD,
+    DDL_IMPO=(
+        _F(GROUP_NO="centre_X", DX=0, DY=0, DZ=0, DRX=0, DRY=0, DRZ=0),
+        _F(GROUP_NO="centre_Y", DX=0, DY=0, DZ=0, DRX=0, DRY=0, DRZ=0),
+        _F(GROUP_NO="centre_Z", DX=0, DY=0, DZ=0, DRZ=0),
+        _F(GROUP_NO="centre_RX", DX=0, DY=0, DRX=0, DRZ=0),
+        _F(GROUP_NO="centre_RY", DX=0, DY=0, DRY=0, DRZ=0),
+    ),
+)
+
+#
+# LA STRUCTURE EST RIGIDIFIEE A L INTERFACE
+# ------------------------------------------
+
+
+COND_LIM = AFFE_CHAR_MECA(
+    MODELE=STICKMOD,
+    LIAISON_SOLIDE=(_F(GROUP_NO=("HRADIER",)), _F(GROUP_NO=("SRADIER",))),
+    LIAISON_UNIF=(_F(GROUP_MA="RLN_4", DDL="DX"), _F(GROUP_MA="RLN_4", DDL="DRY")),
+)
+
+
+# CALCUL DE LA MASSE ET INERTIES DE LA STRUCTURE -----------------------
+
+RIGI_ELE = CALC_MATR_ELEM(
+    MODELE=STICKMOD,
+    OPTION="RIGI_MECA",
+    CHARGE=(COND_LIM, CONDLIM_LIAIS, CONDLIM),
+    CHAM_MATER=CHAMPMAT,
+    CARA_ELEM=CARA_ELE,
+)
+
+MASS_ELE = CALC_MATR_ELEM(
+    MODELE=STICKMOD,
+    OPTION="MASS_MECA",
+    CHARGE=(COND_LIM, CONDLIM_LIAIS, CONDLIM),
+    CHAM_MATER=CHAMPMAT,
+    CARA_ELEM=CARA_ELE,
+)
+
+NUMEDDL = NUME_DDL(MATR_RIGI=RIGI_ELE)
+
+RIGIDITE = ASSE_MATRICE(MATR_ELEM=RIGI_ELE, NUME_DDL=NUMEDDL)
+
+MASSE = ASSE_MATRICE(MATR_ELEM=MASS_ELE, NUME_DDL=NUMEDDL)
+
+
+MODE = CALC_MODES(
+    MATR_RIGI=RIGIDITE,
+    MATR_MASS=MASSE,
+    OPTION="BANDE",
+    CALC_FREQ=_F(FREQ=(0.0, 15.0)),
+    VERI_MODE=_F(SEUIL=0.1, STOP_ERREUR="NON"),
+    NORM_MODE=_F(NORME="TRAN_ROTA"),
+    FILTRE_MODE=_F(CRIT_EXTR="MASS_EFFE_UN"),
+    IMPRESSION=_F(CUMUL="NON"),
+)
+
+
+TEST_RESU(
+    RESU=(
+        _F(NUME_ORDRE=1, PARA="FREQ", RESULTAT=MODE, VALE_CALC=3.95632694470227, CRITERE="RELATIF"),
+        _F(
+            NUME_ORDRE=2, PARA="FREQ", RESULTAT=MODE, VALE_CALC=3.965740295921683, CRITERE="RELATIF"
+        ),
+        _F(
+            NUME_ORDRE=3, PARA="FREQ", RESULTAT=MODE, VALE_CALC=4.781337157606542, CRITERE="RELATIF"
+        ),
+        _F(
+            NUME_ORDRE=4, PARA="FREQ", RESULTAT=MODE, VALE_CALC=4.783076674101432, CRITERE="RELATIF"
+        ),
+        _F(
+            NUME_ORDRE=5, PARA="FREQ", RESULTAT=MODE, VALE_CALC=6.978929587544154, CRITERE="RELATIF"
+        ),
+        _F(
+            NUME_ORDRE=6, PARA="FREQ", RESULTAT=MODE, VALE_CALC=7.547016419356111, CRITERE="RELATIF"
+        ),
+        _F(
+            NUME_ORDRE=7,
+            PARA="FREQ",
+            RESULTAT=MODE,
+            VALE_CALC=10.019362707505262,
+            CRITERE="RELATIF",
+        ),
+        _F(
+            NUME_ORDRE=8,
+            PARA="FREQ",
+            RESULTAT=MODE,
+            VALE_CALC=11.803285725748111,
+            CRITERE="RELATIF",
+        ),
+        _F(
+            NUME_ORDRE=9,
+            PARA="FREQ",
+            RESULTAT=MODE,
+            VALE_CALC=12.070235477533444,
+            CRITERE="RELATIF",
+        ),
+        _F(
+            NUME_ORDRE=10,
+            PARA="FREQ",
+            RESULTAT=MODE,
+            VALE_CALC=13.936710155266324,
+            CRITERE="RELATIF",
+        ),
+        _F(
+            NUME_ORDRE=11,
+            PARA="FREQ",
+            RESULTAT=MODE,
+            VALE_CALC=14.035967691491624,
+            CRITERE="RELATIF",
+        ),
+        _F(
+            NUME_ORDRE=12,
+            PARA="FREQ",
+            RESULTAT=MODE,
+            VALE_CALC=14.646107068818761,
+            CRITERE="RELATIF",
+        ),
+    )
+)
+
+FIN()

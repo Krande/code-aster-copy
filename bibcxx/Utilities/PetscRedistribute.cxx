@@ -30,6 +30,7 @@
 #ifdef ASTER_HAVE_PETSC4PY
 PetscErrorCode GetRowsIS( MPI_Comm comm, PetscSubcomm psubcomm, PetscInt nr, IS *isin ) {
 
+    PetscFunctionBegin;
     // Create the Rows index sets on each proc
     if ( psubcomm->color == 0 ) {
         Vec xred;
@@ -88,6 +89,7 @@ py::object redistributePetscMat( py::object pMat, int subCommSize ) {
 #ifdef ASTER_HAVE_PETSC
 static PetscErrorCode redistribute_petsc( Mat mat, int subCommSize, Mat *new_mat ) {
 
+    PetscFunctionBegin;
     // Variables
     MPI_Comm comm, subcomm;
     PetscSubcomm psubcomm;

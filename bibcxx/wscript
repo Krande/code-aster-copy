@@ -23,11 +23,12 @@ from waflib import Configure, Errors, Utils
 
 
 def options(self):
-    self.load("compiler_cxx")
+    # already done by waftools/parallel.py: self.load("compiler_cxx")
+    pass
 
 
 def configure(self):
-    self.load("compiler_cxx")
+    # already done by waftools/parallel.py: self.load("compiler_cxx")
     self.check_cxx_compiler_flags()
     self.check_bibcxx_depends()
     self.check_cxx_types()

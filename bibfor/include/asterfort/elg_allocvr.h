@@ -20,7 +20,7 @@
 interface
     subroutine elg_allocvr(vect1, n1)
 #ifdef ASTER_HAVE_PETSC
-        use aster_petsc_module
+        use petsc
         Vec :: vect1
 # else
         integer(kind=8) :: vect1

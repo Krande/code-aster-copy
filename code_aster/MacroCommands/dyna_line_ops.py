@@ -73,7 +73,7 @@ class DynaLineFEM:
         CHAM_MATER=None,
         CARA_ELEM=None,
         ISS="NON",
-        **args
+        **args,
     ):
         self.parent = parent
         self.keywords = {"MODELE": MODELE}
@@ -548,7 +548,7 @@ class DynaLineExcit:
             __vect = CALC_CHAR_SEISME(
                 MATR_MASS=self.dynaLineFEM.getMassPhy(),
                 MODE_STAT=self.dynaLineFEM.dynaLineBasis.getStaticMultiModes(),
-                **keywords
+                **keywords,
             )
             self.__setVectOrVectGeneToCharge(charge, __vect)
             if self.__isTypeTran:
@@ -569,7 +569,7 @@ class DynaLineExcit:
                 __vect = CALC_CHAR_SEISME(
                     MATR_MASS=self.dynaLineFEM.getMassPhy(),
                     MODE_STAT=self.dynaLineFEM.dynaLineBasis.getStaticMonoModes(),
-                    **keywords
+                    **keywords,
                 )
             else:
                 __vect = CALC_CHAR_SEISME(
@@ -709,7 +709,7 @@ class DynaLineBasis:
         ISS="NON",
         IFS="NON",
         COMPORTEMENT=None,
-        **args
+        **args,
     ):
         self.parent = parent
         self.base_resu = BASE_RESU
@@ -749,7 +749,7 @@ class DynaLineBasis:
         RHO_FLUIDE=None,
         PRESSION_FLU_IMPO=None,
         FORC_AJOU=None,
-        **args
+        **args,
     ):
         """initialize complementary parameters for ifs"""
         self.modelisation_flu = MODELISATION_FLU
@@ -887,7 +887,7 @@ class DynaLineBasis:
             MATR_RIGI=__rigiGen,
             VERI_MODE=_F(STOP_ERREUR="NON"),
             STOP_BANDE_VIDE="NON",
-            **args
+            **args,
         )
         if self.base_resu:
             nombase = REST_GENE_PHYS(RESU_GENE=__calc_modes, MODE_MECA=__modalBasis)
@@ -1023,7 +1023,7 @@ class DynaLineBasis:
             MODE_MECA=self.get(),
             NUME_DDL_GENE=self.__getNumeDdlGene(),
             MATR_MASS_AJOU=CO("addedMass"),
-            **keywords
+            **keywords,
         )
         self.__excitForcAjou = []
         for d_excit in tmp:
@@ -1090,7 +1090,7 @@ class DynaLineBasis:
                 CAS_CHARGE=elasCharges,
                 SOLVEUR=_F(METHODE="MULT_FRONT"),
                 NUME_DDL=self.dynaLineFEM.getNumeddl(),
-                **keywords
+                **keywords,
             )
         self.__elasModes = __elasModes
         return self.__elasModes
@@ -1313,7 +1313,7 @@ class DynaLineResu:
         ISS="NON",
         COMPORTEMENT=None,
         SOLVEUR=None,
-        **args
+        **args,
     ):
         self.parent = parent
         self.dynaLineFEM = dynaLineFEM
@@ -1346,8 +1346,7 @@ class DynaLineResu:
         TYPE_EXCIT=None,
         LIST_FREQ_CALC=None,
         CALC_IMPE_FORC=None,
-        VERSION_MISS=None,
-        **args
+        **args,
     ):
         """initialize complementary parameters for iss"""
         self.table_sol = TABLE_SOL
@@ -1365,7 +1364,6 @@ class DynaLineResu:
         self.group_ma_interf = GROUP_MA_INTERF
         self.type_excit = TYPE_EXCIT
         self.calc_impe_forc = CALC_IMPE_FORC == "OUI"
-        self.version_miss = VERSION_MISS
 
     def __getDynaVibraKeywords(self):
         """return common keywords used for calling DYNA_VIBRA"""
@@ -1409,7 +1407,7 @@ class DynaLineResu:
                 BASE_CALCUL=self.base_calcul,
                 MATR_MASS=self.dynaLineFEM.getMass(),
                 MATR_RIGI=self.dynaLineFEM.getRigi(),
-                **keywords
+                **keywords,
             )
         else:
             if self.resu_gene:
@@ -1419,7 +1417,7 @@ class DynaLineResu:
                     MATR_MASS=self.dynaLineFEM.getMass(),
                     MATR_RIGI=self.dynaLineFEM.getRigi(),
                     # TOUT_CHAM='OUI',
-                    **keywords
+                    **keywords,
                 )
                 # retrieve also result in gene basis
                 self.parent.register_result(resgene, self.resu_gene)
@@ -1431,7 +1429,7 @@ class DynaLineResu:
                     MATR_MASS=self.dynaLineFEM.getMass(),
                     MATR_RIGI=self.dynaLineFEM.getRigi(),
                     # TOUT_CHAM='OUI',
-                    **keywords
+                    **keywords,
                 )
             keywords = {}
             if self.dynaLineFEM.dynaLineBasis.getStaticMultiModes():
@@ -1449,7 +1447,7 @@ class DynaLineResu:
                 RESU_GENE=__dyna_vibra,
                 MODE_MECA=self.dynaLineFEM.dynaLineBasis.get(),
                 TOUT_CHAM="OUI",
-                **keywords
+                **keywords,
             )
         return nomresu
 
@@ -1483,8 +1481,6 @@ class DynaLineResu:
         if self.group_ma_interf:
             keywords["GROUP_MA_INTERF"] = self.group_ma_interf
         keywords["BASE_MODALE"] = self.dynaLineFEM.dynaLineBasis.get()
-        if self.version_miss:
-            keywords["VERSION"] = self.version_miss
         return keywords
 
     def __getCalcMissAdditionalKeywords(self):
@@ -1503,8 +1499,6 @@ class DynaLineResu:
                 keywords_hg["TABLE_SOL"] = self.table_sol
             if self.mater_sol:
                 keywords_hg["MATER_SOL"] = self.mater_sol
-            if self.version_miss:
-                keywords_hg["VERSION"] = self.version_miss
             if self.group_ma_interf:
                 keywords_hg["GROUP_MA_INTERF"] = self.group_ma_interf
             if self.parametre:
@@ -1553,7 +1547,7 @@ class DynaLineResu:
                 MODELE=self.dynaLineFEM.getModele(),
                 MATR_RIGI=self.dynaLineFEM.getRigiPhy(),
                 MATR_MASS=self.dynaLineFEM.getMassPhy(),
-                **keywords_hg
+                **keywords_hg,
             )
             # retrieve also result in gene basis
             self.parent.register_result(resgene, self.resu_gene)
@@ -1564,14 +1558,14 @@ class DynaLineResu:
                 MODELE=self.dynaLineFEM.getModele(),
                 MATR_RIGI=self.dynaLineFEM.getRigiPhy(),
                 MATR_MASS=self.dynaLineFEM.getMassPhy(),
-                **keywords_hg
+                **keywords_hg,
             )
         keywords = {}
         nomresu = REST_GENE_PHYS(
             RESU_GENE=__calc_miss,
             MODE_MECA=self.dynaLineFEM.dynaLineBasis.get(),
             TOUT_CHAM="OUI",
-            **keywords
+            **keywords,
         )
         return nomresu
 

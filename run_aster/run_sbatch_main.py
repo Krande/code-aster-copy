@@ -168,7 +168,7 @@ def check_parameters(params):
     cpu_per_node = ceil(params["mpi_nbcpu"] / nbnodes)
     params["memory_node"] = int(cpu_per_node * params["memory_limit"])
     params["time_limit"] = int(params["time_limit"])
-    if nbnodes > 1 or cpu_per_node >= 6 or "performance" in params["testlist"]:
+    if nbnodes > 1 or cpu_per_node >= 16 or "exclusive" in params["testlist"]:
         params["options"] += " --exclusive"
     if "bm" in params["testlist"]:
         params["options"] += " --partition=bm"
@@ -184,15 +184,6 @@ def main(argv=None):
 
     export = Export(args.file)
 
-    # not anymore in Export
-    with open(args.file, "r") as fobj:
-        text = fobj.read()
-    re_nod = re.compile("P +mpi_nbnoeud +([0-9]+)", re.M)
-    nbnodes = 1
-    mat = re_nod.search(text)
-    if mat:
-        nbnodes = int(mat.group(1))
-
     # initialized with default values
     addmem = CFG.get("addmem", 0.0)
     memory = args.memory_limit or export.get("memory_limit", 16384)
@@ -204,7 +195,7 @@ def main(argv=None):
     params = {
         "name": osp.splitext(osp.basename(args.file))[0],
         "mpi_nbcpu": export.get("mpi_nbcpu", 1),
-        "mpi_nbnodes": nbnodes,
+        "mpi_nbnodes": export.get("mpi_nbnoeud", 1),
         "nbthreads": export.get("ncpus", 1),
         "time_limit": args.time_limit or export.get("time_limit", 3600),
         "memory_limit": memory,

@@ -79,9 +79,9 @@ subroutine modiba(nomres, basemo, basefl, numvit, newres, &
     integer(kind=8) :: lmat(2), lddl, lvali, lvalr, lvalk
     integer(kind=8) :: npari, nparr, npark
     integer(kind=8) :: nbpari, nbparr, nbpark, nbpara
-    parameter(nbpari=1, nbparr=15, nbpark=1, nbpara=17)
+    parameter(nbpari=1, nbparr=21, nbpark=1, nbpara=23)
     real(kind=8) :: frequ, amort, omeg2, masg, rigg
-    real(kind=8) :: factx, facty, factz, depi, xmastr(3)
+    real(kind=8) :: factx, facty, factz, depi
     character(len=1) :: typmod
     character(len=19) :: numeq
     character(len=16) :: norm
@@ -104,7 +104,9 @@ subroutine modiba(nomres, basemo, basefl, numvit, newres, &
      &  'MASS_GENE', 'RIGI_GENE', 'AMOR_GENE',&
      &  'MASS_EFFE_DX', 'MASS_EFFE_DY', 'MASS_EFFE_DZ',&
      &  'FACT_PARTICI_DX', 'FACT_PARTICI_DY', 'FACT_PARTICI_DZ',&
-     &  'MASS_EFFE_UN_DX', 'MASS_EFFE_UN_DY', 'MASS_EFFE_UN_DZ'/
+     &  'MASS_EFFE_UN_DX', 'MASS_EFFE_UN_DY', 'MASS_EFFE_UN_DZ',&
+     &  'INER_EFFE_DX', 'INER_EFFE_DY', 'INER_EFFE_DZ',&
+     &  'INER_EFFE_UN_DX', 'INER_EFFE_UN_DY', 'INER_EFFE_UN_DZ'/
 !
 !     ------------------------------------------------------------------
 !
@@ -113,8 +115,6 @@ subroutine modiba(nomres, basemo, basefl, numvit, newres, &
     lmat(1) = 0
     lmat(2) = 0
     lnorm = .false.
-!   --- xmastr = [0,0,0] pour forcer les masses unitaires nulles sur les 3 directions
-    xmastr = [0.d0, 0.d0, 0.d0]
 !
 !     --- CREATION DU CONCEPT MODE_MECA DE SORTIE LE CAS ECHEANT ---
 !
@@ -194,6 +194,10 @@ subroutine modiba(nomres, basemo, basefl, numvit, newres, &
                 zr(lvalr+nbnuor*9+i-1) = factx/masg
                 zr(lvalr+nbnuor*10+i-1) = facty/masg
                 zr(lvalr+nbnuor*11+i-1) = factz/masg
+!           --- MASS_EFFE_UN_D... ---
+                zr(lvalr+nbnuor*12+i-1) = 0.d0
+                zr(lvalr+nbnuor*13+i-1) = 0.d0
+                zr(lvalr+nbnuor*14+i-1) = 0.d0
 !
                 if (itypfl .eq. 3 .or. (itypfl .eq. 4 .and. imasse .ne. 0)) then
                     lnorm = .true.
@@ -230,7 +234,7 @@ subroutine modiba(nomres, basemo, basefl, numvit, newres, &
         AS_ALLOCATE(vr=coef_mode, size=nbmode)
 !        --- ON NORMALISE LES DEFORMEES
         call vpnorm(norm, 'OUI', lmat(1), neq, nbmode, &
-                    zi(lddl), zr(lmod), zr(lvalr), xmastr, 0, &
+                    zi(lddl), zr(lmod), zr(lvalr), 0, &
                     0, coef_mode)
 !        --- ON STOCKE LES DEFORMEES
         call vpstor(-1, typmod, nomres, nbnuor, neq, &

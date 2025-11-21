@@ -24,13 +24,21 @@ from code_aster.Utilities import SharedTmpdir
 
 POURSUITE(CODE="OUI", ERREUR=_F(ALARME="EXCEPTION"))
 
+
 with SharedTmpdir("petsc04f_") as tmpdir:
+
     medfile = osp.join(tmpdir.path, "petsc04f.med")
+
     DEFI_FICHIER(UNITE=87, FICHIER=medfile, TYPE="BINARY")
     IMPR_RESU(
         FICHIER_UNIQUE="OUI", FORMAT="MED", UNITE=87, RESU=_F(RESULTAT=MESTAT), VERSION_MED="4.1.0"
     )
-
     DEFI_FICHIER(ACTION="LIBERER", UNITE=87)
+
+
+with SharedTmpdir("petsc04f_bis") as tmpdir:
+
+    medfile = osp.join(tmpdir.path, "petsc04f.med")
+    MESTAT.printMedFile(medfile, local=False)
 
 FIN()

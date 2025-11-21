@@ -62,16 +62,6 @@ CALC_MISS = MACRO(
     ),
     PROJET=SIMP(statut="f", typ="TXM", defaut="MODELE", fr=tr("Nom de l'étude Miss")),
     REPERTOIRE=SIMP(statut="f", typ="TXM", fr=tr("Répertoire de travail de Miss")),
-    b_version=BLOC(
-        condition="""not is_in("TYPE_RESU", ('HARM_GENE','TRAN_GENE'))""",
-        VERSION=SIMP(
-            statut="f",
-            typ="TXM",
-            into=("V6.7", "V6.6", "V6.5"),
-            defaut="V6.7",
-            fr=tr("Version de Miss utilisée"),
-        ),
-    ),
     b_carac_sol=BLOC(
         condition="""not is_in("TYPE_RESU", ('HARM_GENE','TRAN_GENE'))""",
         regles=(EXCLUS("TABLE_SOL", "MATER_SOL"),),
@@ -331,13 +321,6 @@ CALC_MISS = MACRO(
         param_impe=BLOC(
             condition="""not exists("UNITE_RESU_IMPE")""",
             regles=(EXCLUS("TABLE_SOL", "MATER_SOL"), UN_PARMI("TABLE_SOL", "MATER_SOL")),
-            VERSION=SIMP(
-                statut="f",
-                typ="TXM",
-                into=("V6.7", "V6.6", "V6.5"),
-                defaut="V6.7",
-                fr=tr("Version de Miss utilisée"),
-            ),
             TABLE_SOL=SIMP(
                 statut="f", typ=table_sdaster, fr=tr("Table des propriétés du sol stratifié")
             ),

@@ -120,7 +120,12 @@ subroutine nxinit(mesh, model, materField, &
 !
 ! - Create unknowns
 !
-    call ntcrch(model, nume_dof, vhydr, hydr_init)
+    if (l_dry) then
+        call ntcrch(model, nume_dof)
+    else
+        call ntcrch(model, nume_dof, vhydr, hydr_init)
+    end if
+
 !
 ! - Create input/output datastructure
 !

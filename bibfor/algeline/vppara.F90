@@ -138,7 +138,8 @@ subroutine vppara(modes, typcon, knega, lraide, lmasse, &
 !
 !        CALCUL DES FACTEURS DE PARTICIPATIONS ET DES MASSES EFFECTIVES
             call vppfac(lmasse, resur(4*mxresf+1), vectr, neq, nfreq, &
-                        mxresf, resur(7*mxresf+1), resur(10*mxresf+1))
+                        mxresf, resur(7*mxresf+1), resur(10*mxresf+1), &
+                        resur(13*mxresf+1), resur(16*mxresf+1))
 !
 !
 !        - CALCUL DE LA NORME D'ERREUR SUR LE MODE ---

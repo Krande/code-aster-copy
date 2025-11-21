@@ -20,7 +20,7 @@
 interface
     subroutine elg_calcxl(x1, vlag)
 #ifdef ASTER_HAVE_PETSC
-        use aster_petsc_module
+        use petsc
         Vec :: x1, vlag
 # else
         integer(kind=8) :: x1, vlag

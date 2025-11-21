@@ -15,12 +15,48 @@
 ! You should have received a copy of the GNU General Public License
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
-
-subroutine eclpgc(ch1, ch2, ligrel, ma2, numeq, &
+!
+subroutine eclpgc(ch1, ch2, ligrel, mesh2, numeEqua, &
                   nomfpg)
+!
     implicit none
-! person_in_charge: jacques.pellet at edf.fr
-!---------------------------------------------------------------------
+!
+#include "asterf_types.h"
+#include "asterfort/as_allocate.h"
+#include "asterfort/as_deallocate.h"
+#include "asterfort/assert.h"
+#include "asterfort/celcel.h"
+#include "asterfort/celver.h"
+#include "asterfort/chligr.h"
+#include "asterfort/cmpcha.h"
+#include "asterfort/cnscno.h"
+#include "asterfort/cnscre.h"
+#include "asterfort/detrsd.h"
+#include "asterfort/dismoi.h"
+#include "asterfort/eclaty.h"
+#include "asterfort/exisdg.h"
+#include "asterfort/jedema.h"
+#include "asterfort/jeexin.h"
+#include "asterfort/jelibe.h"
+#include "asterfort/jemarq.h"
+#include "asterfort/jenuno.h"
+#include "asterfort/jeveuo.h"
+#include "asterfort/jexatr.h"
+#include "asterfort/jexnom.h"
+#include "asterfort/jexnum.h"
+#include "asterfort/nbelem.h"
+#include "asterfort/nbgrel.h"
+#include "asterfort/typele.h"
+#include "asterfort/utmess.h"
+#include "jeveux.h"
+!
+    character(len=19), intent(in) :: ch1, ch2, ligrel
+    character(len=8), intent(in) :: mesh2
+    character(len=19), intent(in) :: numeEqua
+    character(len=24), intent(in) :: nomfpg
+!
+! --------------------------------------------------------------------------------------------------
+!
 ! BUT : "ECLATER" LE CHAM_ELEM_ELGA CH1 POUR CREER LE CHAM_NO CH2 SUR
 !        SUR LE MAILLAGE MA2.
 !
@@ -52,72 +88,34 @@ subroutine eclpgc(ch1, ch2, ligrel, ma2, numeq, &
 !           PLUSIEURS CHAMPS PEUVENT LA PARTAGER.
 !           C'EST LE CAS EN GENERAL POUR LA BOUCLE SUR LES NUME_ORDRE
 !
+! --------------------------------------------------------------------------------------------------
 !
-#include "asterf_types.h"
-#include "jeveux.h"
-#include "asterfort/as_allocate.h"
-#include "asterfort/as_deallocate.h"
-#include "asterfort/assert.h"
-#include "asterfort/celcel.h"
-#include "asterfort/celver.h"
-#include "asterfort/chligr.h"
-#include "asterfort/cmpcha.h"
-#include "asterfort/cnscno.h"
-#include "asterfort/cnscre.h"
-#include "asterfort/detrsd.h"
-#include "asterfort/dismoi.h"
-#include "asterfort/eclaty.h"
-#include "asterfort/exisdg.h"
-#include "asterfort/jedema.h"
-#include "asterfort/jeexin.h"
-#include "asterfort/jelibe.h"
-#include "asterfort/jemarq.h"
-#include "asterfort/jenuno.h"
-#include "asterfort/jeveuo.h"
-#include "asterfort/jexatr.h"
-#include "asterfort/jexnom.h"
-#include "asterfort/jexnum.h"
-#include "asterfort/nbelem.h"
-#include "asterfort/nbgrel.h"
-#include "asterfort/typele.h"
-#include "asterfort/utmess.h"
-!
-!
-! ---------------------------------------------------------------------
-!     VARIABLES NECESSAIRES A L'APPEL DE ECLATY :
-!     ON COMPREND LE SENS DE CES VARIABLES EN REGARDANT ECLATY
-    integer(kind=8) :: mxnbn2, mxnbpi, mxnbte, mxnbse
+    integer(kind=8), parameter :: mxnbn2 = 8, mxnbpi = 64, mxnbte = 8, mxnbse = 27
 !     MXNBN2 : MAX DU NOMBRE DE NOEUDS D'UN SOUS-ELEMENT (HEXA8)
-    parameter(mxnbn2=8)
 !     MXNBPI : MAX DU NOMBRE DE POINT_I (HEXA A 27 POINTS DE GAUSS)
 !     MXNBPI = 4X4X4
-    parameter(mxnbpi=64)
 !     MXNBTE : MAX DU NOMBRE DE TERMES DE LA C.L. DEFINISSANT 1 POINT_I
 !              AU PLUS LES 8 SOMMETS D'UN HEXA8
-    parameter(mxnbte=8)
 !     MXNBSE : MAX DU NOMBRE DE SOUS-ELEMENTS
-    parameter(mxnbse=27)
-!
-    integer(kind=8) :: corsel(mxnbse), nse1
+    integer(kind=8) :: corsel(mxnbse), nbSel
     integer(kind=8) :: connx(mxnbn2, mxnbse), nsomm1(mxnbpi, mxnbte)
-    integer(kind=8) :: nterm1(mxnbpi), nbno2(mxnbse), tyma(mxnbse)
+    integer(kind=8) :: nterm1(mxnbpi), nbno2(mxnbse), typeCellNume(mxnbse)
     real(kind=8) :: csomm1(mxnbpi, mxnbte)
-! ---------------------------------------------------------------------
+    integer(kind=8), parameter ::  mxcmp = 200
     aster_logical :: lvari
     integer(kind=8) :: numa, jnofpg, kk, iret
-    integer(kind=8) :: k, te, npg1, npoini, ideca2
+    integer(kind=8) :: k, typeElemNume, npg, npoini, ideca2
     integer(kind=8) :: igr, jcmaco, jcliel, jcnsl2
     integer(kind=8) :: ibid, nbpg, ino, nbgr, inogl, kse
-    integer(kind=8) :: iamol1, jcnsv2, mxcmp
+    integer(kind=8) :: iamol1, jcnsv2
     integer(kind=8) :: ima, nbelgr, jval2, nbno, nddl, iddl, adiel
     integer(kind=8) :: iipg, jceld1, moloc1, nb_cmp_mx, jcmpgd
-    parameter(mxcmp=200)
     integer(kind=8) :: nuddl(mxcmp), mxvari, iel, nb_cmp
-    character(len=8) :: ma2, nomg1, nomg2, elrefa, fapg
-    character(len=16) :: nomte
+    character(len=8) :: nomg1, nomg2, elrefa, fapg
+    character(len=16) :: typeElemName
     character(len=16) :: optio, param
-    character(len=19) :: ligrel, ch1, ch2s, ch2, numeq, ch1b
-    character(len=24) :: valk(2), nomfpg
+    character(len=19) :: ch2s, ch1b
+    character(len=24) :: valk(2)
     character(len=24), pointer :: celk(:) => null()
     real(kind=8), pointer :: celv(:) => null()
     integer(kind=8), pointer :: liel(:) => null()
@@ -125,14 +123,16 @@ subroutine eclpgc(ch1, ch2, ligrel, ma2, numeq, &
     integer(kind=8), pointer :: cata_to_field(:) => null()
     integer(kind=8), pointer :: field_to_cata(:) => null()
     character(len=8), pointer :: cmp_name(:) => null()
-!     FONCTIONS FORMULES :
+! --------------------------------------------------------------------------------------------------
 !     NBNOMA(IMA)=NOMBRE DE NOEUDS DE LA MAILLE IMA
 #define nbnoma(ima) zi(jcmaco-1+ima+1)-zi(jcmaco-1+ima)
 !     NUMGLM(IMA,INO)=NUMERO GLOBAL DU NOEUD INO DE LA MAILLE IMA
 !                     IMA ETANT UNE MAILLE DU MAILLAGE.
 #define numglm(ima,ino) connex(zi(jcmaco+ima-1)+ino-1)
 #define numail(igr,iel) liel(zi(jcliel+igr-1)+iel-1)
-! DEB -----------------------------------------------------------------
+!
+! --------------------------------------------------------------------------------------------------
+!
     call jemarq()
 !
 !
@@ -206,27 +206,20 @@ subroutine eclpgc(ch1, ch2, ligrel, ma2, numeq, &
         end do
     end if
     if (nb_cmp .gt. mxcmp) call utmess('F', 'CALCULEL2_51', ni=2, vali=[mxcmp, nb_cmp])
-!
-!
-!
-!
-!       -- CREATION D'UN CHAM_NO_S : CH2S
-!       -----------------------------------------------------
+
+! - CREATION D'UN CHAM_NO_S : CH2S
     ch2s = '&&ECLPGC.CH2S'
-    call cnscre(ma2, nomg2, nb_cmp, cmp_name, 'V', &
+    call cnscre(mesh2, nomg2, nb_cmp, cmp_name, 'V', &
                 ch2s)
     call jeveuo(ch2s//'.CNSV', 'E', jcnsv2)
     call jeveuo(ch2s//'.CNSL', 'E', jcnsl2)
-!
-!
-!
-!     -- REMPLISSAGE DU CHAM_NO :
-!     ---------------------------
+
+! - REMPLISSAGE DU CHAM_NO
     call jeveuo(nomfpg, 'L', jnofpg)
     call jeveuo(ligrel//'.LIEL', 'L', vi=liel)
     call jeveuo(jexatr(ligrel//'.LIEL', 'LONCUM'), 'L', jcliel)
-    call jeveuo(ma2//'.CONNEX', 'L', vi=connex)
-    call jeveuo(jexatr(ma2//'.CONNEX', 'LONCUM'), 'L', jcmaco)
+    call jeveuo(mesh2//'.CONNEX', 'L', vi=connex)
+    call jeveuo(jexatr(mesh2//'.CONNEX', 'LONCUM'), 'L', jcmaco)
 
     ima = 0
     nbgr = nbgrel(ligrel)
@@ -255,27 +248,29 @@ subroutine eclpgc(ch1, ch2, ligrel, ma2, numeq, &
 !
 !           -- ON ECLATE LE TYPE_ELEM :
 !           ---------------------------
-        te = typele(ligrel, igr)
-        call jenuno(jexnum('&CATA.TE.NOMTE', te), nomte)
-        call eclaty(nomte, elrefa, fapg, npg1, npoini, &
-                    nterm1, nsomm1, csomm1, tyma, nbno2, &
-                    connx, mxnbn2, mxnbpi, mxnbte, mxnbse, &
-                    nse1, corsel, iret)
+        typeElemNume = typele(ligrel, igr)
+        call jenuno(jexnum('&CATA.TE.NOMTE', typeElemNume), typeElemName)
+        call eclaty(typeElemName, &
+                    elrefa, fapg, &
+                    mxnbn2, mxnbpi, mxnbte, mxnbse, &
+                    npg, npoini, &
+                    nterm1, nsomm1, csomm1, &
+                    typeCellNume, nbno2, connx, &
+                    nbsel, corsel, iret)
         if (iret .ne. 0) then
-            call utmess('A', 'CALCULEL2_25', sk=nomte, si=nbelgr)
+            call utmess("A", "PROJECTION4_6", sk=typeElemName, si=nbelgr)
         end if
-        if (npg1 .ne. 0) then
-            if (nbpg .ne. npg1) then
-                valk(1) = nomte
+        if (npg .ne. 0) then
+            if (nbpg .ne. npg) then
+                valk(1) = typeElemName
                 call utmess('F', 'CALCULEL2_42', sk=valk(1))
             end if
         else
 !            -- ON IGNORE LES AUTRES ELEMENTS :
-            ASSERT(nse1 .eq. 0)
+            ASSERT(nbSel .eq. 0)
             goto 80
-!
         end if
-!
+
 !            -- QUELLES SONT LES CMPS PORTEES PAR LES POINTS DE GAUSS ?
 !            ----------------------------------------------------------
         if (lvari) then
@@ -299,7 +294,7 @@ subroutine eclpgc(ch1, ch2, ligrel, ma2, numeq, &
         do iel = 1, nbelgr
             if (lvari) nddl = zi(jceld1-1+zi(jceld1-1+4+igr)+4+4*(iel-1)+2)
 !
-            do kse = 1, nse1
+            do kse = 1, nbSel
 !            -- AU POINT DE GAUSS IIPG CORRESPOND LA MAILLE NUMERO IMA
 !               DANS MA2.
                 iipg = corsel(kse)
@@ -331,7 +326,7 @@ subroutine eclpgc(ch1, ch2, ligrel, ma2, numeq, &
     call detrsd('CHAMP_GD', '&&ECLPGC.CH1B2')
     call jelibe(ch1//'.CELD')
     call jelibe(ch1//'.CELV')
-    call jelibe(ma2//'.CONNEX')
+    call jelibe(mesh2//'.CONNEX')
 !
 !
 !         -- ON TRANSFORME CH2S EN VRAI CHAM_NO :
@@ -339,7 +334,7 @@ subroutine eclpgc(ch1, ch2, ligrel, ma2, numeq, &
 !     -- 2 JELIBE POUR ECONOMISER LA MEMOIRE EN DESSOUS (MARQUE):
     call jelibe(ch2s//'.CNSL')
     call jelibe(ch2s//'.CNSV')
-    call cnscno(ch2s, numeq, 'NON', 'G', ch2, &
+    call cnscno(ch2s, numeEqua, 'NON', 'G', ch2, &
                 'F', ibid)
     call detrsd('CHAM_NO_S', ch2s)
 !

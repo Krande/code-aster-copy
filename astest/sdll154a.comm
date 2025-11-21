@@ -16,6 +16,7 @@
 # You should have received a copy of the GNU General Public License
 # along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 # --------------------------------------------------------------------
+import numpy as np
 
 DEBUT(CODE="OUI", DEBUG=_F(SDVERI="OUI"), IMPR_MACRO="OUI")
 
@@ -38,6 +39,34 @@ FRMMIN1 = FORMULE(NOM_PARA=("TEMP",), VALE="410E6+(55-TEMP)*1E6")
 FRMMIN2 = FORMULE(NOM_PARA=("TEMP",), VALE="410E6+(75-TEMP)*1E6")
 FRP02MOY1 = FORMULE(NOM_PARA=("TEMP",), VALE="163E6+(55-TEMP)*1E6")
 FRP02MOY2 = FORMULE(NOM_PARA=("TEMP",), VALE="163E6+(75-TEMP)*1E6")
+
+# construction d'une courbe deformation selon la contrainte sur la base
+# de la formule de Ramberg-Osgood
+
+fepsi = FORMULE(NOM_PARA=("SIGM"), VALE=" SIGM/E + K * pow(SIGM / E, 1 / N)", E=2.0e11, K=0.01, N=2)
+
+fepsi2 = FORMULE(NOM_PARA=("SIGM"), VALE=" SIGM/E + K * pow(SIGM / E, 1 / N)", E=2.0e8, K=0.7, N=2)
+
+vale_sigm = list(np.linspace(870000.0, 870001.0, 2))
+vale_sigm.extend(np.linspace(6600000, 6800000, 1000))
+
+TRAC_EPSI = CALC_FONC_INTERP(
+    FONCTION=fepsi,
+    NOM_PARA="SIGM",
+    NOM_RESU="EPSI",
+    PROL_DROITE="EXCLU",
+    PROL_GAUCHE="EXCLU",
+    VALE_PARA=vale_sigm,
+)
+
+TRAC_EPSI2 = CALC_FONC_INTERP(
+    FONCTION=fepsi2,
+    NOM_PARA="SIGM",
+    NOM_RESU="EPSI",
+    PROL_DROITE="CONSTANT",
+    PROL_GAUCHE="CONSTANT",
+    VALE_PARA=vale_sigm,
+)
 
 acier = DEFI_MATERIAU(
     ELAS=_F(E=2.0e11, RHO=7800, ALPHA=1.2e-5, NU=0.3),
@@ -166,9 +195,16 @@ blocage_a = AFFE_CHAR_MECA(
 blocage_b = AFFE_CHAR_MECA(MODELE=modele, DDL_IMPO=(_F(GROUP_NO="B", DX=0, DZ=0)))
 
 deplacement_b = AFFE_CHAR_MECA(MODELE=modele, DDL_IMPO=(_F(GROUP_NO="B", DRX=0.02)))
+deplacement_b_neg = AFFE_CHAR_MECA(MODELE=modele, DDL_IMPO=(_F(GROUP_NO="B", DRX=-0.02)))
+
+# Test DINS / DILAT_THERM : depl_impo DY <0  pour obtenir MFZ < 0 :
+dep_imp_non_sism = AFFE_CHAR_MECA(MODELE=modele, DDL_IMPO=(_F(GROUP_NO="B", DY=-0.01)))
 
 poids = AFFE_CHAR_MECA(MODELE=modele, PESANTEUR=_F(GRAVITE=9.81, DIRECTION=(0.0, 0.0, -1.0)))
+poids_neg = AFFE_CHAR_MECA(MODELE=modele, PESANTEUR=_F(GRAVITE=9.81, DIRECTION=(0.0, 0.0, 1.0)))
 
+# CHARGEMENTS SISMIQUES
+# Spectre de réponse à 2%
 acce_xy = DEFI_FONCTION(
     NOM_PARA="FREQ",
     INTERPOL="LOG",
@@ -180,6 +216,26 @@ spect_xy = DEFI_NAPPE(
     PARA=(0.015, 0.02, 0.025),
     FONCTION=(acce_xy, acce_xy, acce_xy),
 )
+
+# Spectre de réponse 99% (on divise par 10, test informatique pure)
+acce_xy99 = DEFI_FONCTION(
+    NOM_PARA="FREQ",
+    INTERPOL="LOG",
+    VALE=(
+        1.0,
+        0.1 * 1.962,
+        10.0,
+        0.1 * 19.62,
+        30.0,
+        0.1 * 19.62,
+        100.0,
+        0.1 * 1.962,
+        10000.0,
+        0.1 * 1.962,
+    ),
+)
+spect_xy99 = DEFI_NAPPE(NOM_PARA="AMOR", INTERPOL=("LIN", "LOG"), PARA=0.99, FONCTION=acce_xy99)
+
 
 # modes
 
@@ -196,13 +252,11 @@ ASSEMBLAGE(
 )
 
 modes_dyn = CALC_MODES(
-    MATR_RIGI=matrice_rigi,
-    MATR_MASS=matrice_mass,
-    CALC_FREQ=_F(NMAX_FREQ=4),
-    CARA_ELEM=cara_elem,
-    CHAM_MATER=ch_mater,
+    MATR_RIGI=matrice_rigi, MATR_MASS=matrice_mass, CALC_FREQ=_F(NMAX_FREQ=4), CARA_ELEM=cara_elem
 )
-modes_dyn = CALC_CHAMP(reuse=modes_dyn, RESULTAT=modes_dyn, CONTRAINTE="EFGE_ELNO")
+modes_dyn = CALC_CHAMP(
+    reuse=modes_dyn, RESULTAT=modes_dyn, CONTRAINTE="EFGE_ELNO", CHAM_MATER=ch_mater
+)
 
 modes_sta = MODE_STATIQUE(
     CARA_ELEM=cara_elem,
@@ -232,6 +286,25 @@ poids_propre_champ = CREA_CHAMP(
     NUME_ORDRE=1,
 )
 
+poids_propre_neg = MECA_STATIQUE(
+    MODELE=modele,
+    CHAM_MATER=ch_mater,
+    CARA_ELEM=cara_elem,
+    EXCIT=(_F(CHARGE=blocage_a), _F(CHARGE=poids_neg)),
+    INST=0.0,
+)
+poids_propre_neg = CALC_CHAMP(
+    reuse=poids_propre_neg, RESULTAT=poids_propre_neg, CONTRAINTE="EFGE_ELNO"
+)
+
+poids_propre_champ_neg = CREA_CHAMP(
+    TYPE_CHAM="ELNO_SIEF_R",
+    OPERATION="EXTR",
+    RESULTAT=poids_propre_neg,
+    NOM_CHAM="EFGE_ELNO",
+    NUME_ORDRE=1,
+)
+
 deplacement_impose = MECA_STATIQUE(
     MODELE=modele,
     CHAM_MATER=ch_mater,
@@ -243,8 +316,50 @@ deplacement_impose = CALC_CHAMP(
     reuse=deplacement_impose, RESULTAT=deplacement_impose, CONTRAINTE="EFGE_ELNO"
 )
 
-IMPR_RESU(UNITE=6, FORMAT="RESULTAT", RESU=_F(RESULTAT=deplacement_impose, NOM_CHAM="EFGE_ELNO"))
+deplacement_impose_neg = MECA_STATIQUE(
+    MODELE=modele,
+    CHAM_MATER=ch_mater,
+    CARA_ELEM=cara_elem,
+    EXCIT=(_F(CHARGE=blocage_a), _F(CHARGE=deplacement_b_neg)),
+    INST=0.0,
+)
+deplacement_impose_neg = CALC_CHAMP(
+    reuse=deplacement_impose_neg, RESULTAT=deplacement_impose_neg, CONTRAINTE="EFGE_ELNO"
+)
 
+deplacement_impose_dins = MECA_STATIQUE(
+    MODELE=modele,
+    CHAM_MATER=ch_mater,
+    CARA_ELEM=cara_elem,
+    EXCIT=(_F(CHARGE=blocage_a), _F(CHARGE=dep_imp_non_sism)),
+    INST=1.0,
+)
+deplacement_impose_dins = CALC_CHAMP(
+    reuse=deplacement_impose_dins, RESULTAT=deplacement_impose_dins, CONTRAINTE="EFGE_ELNO"
+)
+
+ch_deplacement_impose_dins = CREA_CHAMP(
+    TYPE_CHAM="ELNO_SIEF_R",
+    OPERATION="EXTR",
+    RESULTAT=deplacement_impose_dins,
+    NOM_CHAM="EFGE_ELNO",
+    INST=1,
+)
+
+ch_deplacement_impose_dins_demi = CREA_CHAMP(
+    OPERATION="ASSE",
+    MODELE=modele,
+    TYPE_CHAM="ELNO_SIEF_R",
+    PROL_ZERO="OUI",
+    ASSE=_F(
+        COEF_R=0.5, CHAM_GD=ch_deplacement_impose_dins, TOUT="OUI", NOM_CMP=("MT", "MFY", "MFZ")
+    ),
+)
+
+
+# IMPR_RESU(UNITE=8, FORMAT="RESULTAT", RESU=_F(RESULTAT=deplacement_impose_dins, NOM_CHAM="EFGE_ELNO"))
+# IMPR_RESU(UNITE=8, FORMAT="RESULTAT", RESU=_F(RESULTAT=deplacement_impose, NOM_CHAM="EFGE_ELNO"))
+# IMPR_RESU(UNITE=6, FORMAT="RESULTAT", RESU=_F(RESULTAT=deplacement_impose_neg, NOM_CHAM="EFGE_ELNO"))
 
 tabInteg = POST_ELEM(
     MODELE=modele,
@@ -289,27 +404,101 @@ sismique = COMB_SISM_MODAL(
     COMB_MODE=_F(TYPE="SRSS"),
     COMB_DIRECTION="QUAD",
     OPTION=("EFGE_ELNO"),
-    TYPE_RESU=(
-        _F(TYPE="VALE_TOTA"),  # reponse totale
-        _F(
-            TYPE="VALE_DIRE", LIST_AXE=("X", "Y", "Z")
-        ),  # reponse directionnelle = sqrt (osci**2+pseudo**2+dds**2)
-        _F(
-            TYPE="VALE_DYNA", LIST_AXE=("X", "Y", "Z")
-        ),  # reponse part dynamique = reponse osci combinee
-        _F(
-            TYPE="VALE_QS", LIST_AXE=("X", "Y", "Z")
-        ),  # reponse part quasi statique = reponse pseudo mode
+    TYPE_RESU=(_F(TYPE="VALE_TOTA"),),  # reponse totale
+)
+
+sismique_qs = COMB_SISM_MODAL(
+    MODE_MECA=modes_dyn,
+    AMOR_REDUIT=0.99,
+    MODE_CORR="OUI",
+    PSEUDO_MODE=modes_sta,
+    TYPE_ANALYSE="MONO_APPUI",
+    SPECTRE=(
+        _F(LIST_AXE=("X", "Y"), SPEC_OSCI=spect_xy99, ECHELLE=1),
+        _F(LIST_AXE=("Z"), SPEC_OSCI=spect_xy99, ECHELLE=0.5),
     ),
+    COMB_MODE=_F(TYPE="SRSS"),
+    COMB_DIRECTION="QUAD",
+    OPTION=("EFGE_ELNO"),
+    TYPE_RESU=(_F(TYPE="VALE_TOTA"),),  # reponse totale
+)
+
+# sismique_dyn = sismique_tot - sismique_qs
+
+ch_tot = CREA_CHAMP(
+    OPERATION="EXTR",
+    TYPE_CHAM="ELNO_SIEF_R",
+    RESULTAT=sismique,  # = rep. sismique totale à 2%
+    NOM_CHAM="EFGE_ELNO",
+    NOM_CAS="TOTA",
+)
+
+ch_qs = CREA_CHAMP(
+    OPERATION="EXTR",
+    TYPE_CHAM="ELNO_SIEF_R",
+    RESULTAT=sismique_qs,  # sismique à 100%
+    NOM_CHAM="EFGE_ELNO",
+    NOM_CAS="TOTA",
+)
+
+
+ch_dyn = CREA_CHAMP(
+    TYPE_CHAM="ELNO_SIEF_R",
+    OPERATION="ASSE",
+    MODELE=modele,
+    ASSE=(
+        _F(TOUT="OUI", CHAM_GD=ch_tot, CUMUL="OUI"),
+        _F(TOUT="OUI", CHAM_GD=ch_qs, CUMUL="OUI", COEF_R=-1.0),
+    ),
+)
+
+# on affecte le champ 4 fois pour obtenir un numero d'ordre 4
+# NUME_ORDRE n'est pas disponible dans CREA_RESU
+sismique_dyn = CREA_RESU(
+    OPERATION="AFFE",
+    TYPE_RESU="MULT_ELAS",
+    AFFE=(_F(NOM_CHAM="EFGE_ELNO", CHAM_GD=ch_dyn, NOM_CAS="TOTA", MODELE=modele),),
 )
 
 
 # appel à POST_ROCHE
 
-chPostRocheTout = POST_ROCHE(
-    RCCM_RX="NON",
+
+# -------------- POST_ROCHE SISMIQUE ---------------------#
+# PostRoche tout + chargement sismique (DYN et QS):
+# Pour l'instant, ce test n'est pas tracée dans la doc V
+# Il s'agit d'un test supplémentaire.
+# VARIANTE = 'RCC_MRX' (défaut) + SIGM_ABAT='CODE' (pas de Coude)
+resuPostRocheToutSism = POST_ROCHE(
+    SIGM_LIM="NON",
     ZONE_ANALYSE=(_F(TOUT="OUI", GROUP_NO_ORIG="A"),),
     MODELE=modele,
+    NOM_CHAM=("ROC1_ELNO", "ROC2_ELNO"),
+    CARA_ELEM=cara_elem,
+    CHAM_MATER=ch_mater,
+    RESU_MECA=(
+        _F(TYPE_CHAR="POIDS", CHAM_GD=poids_propre_champ_neg),
+        _F(
+            TYPE_CHAR="DILAT_THERM",
+            RESULTAT=dilatation_thermique,
+            INST=1,
+            CRITERE="RELATIF",
+            PRECISION=1e-6,
+        ),
+        _F(TYPE_CHAR="DDS", RESULTAT=deplacement_impose, INST=0, CRITERE="ABSOLU"),
+        _F(TYPE_CHAR="SISM_INER_SPEC", RESULTAT=sismique_dyn, DIRECTION="COMBI", TYPE_RESU="DYN"),
+        _F(TYPE_CHAR="SISM_INER_SPEC", RESULTAT=sismique_qs, DIRECTION="COMBI", TYPE_RESU="QS"),
+    ),
+    PRESSION=(_F(TOUT="OUI", VALE=1e6),),
+)
+
+# Avec "Coude":
+# VARIANTE = 'RCC_MRX' (défaut) + SIGM_ABAT='CODE' (avec Coude)
+resuPostRocheToutSism_Coude = POST_ROCHE(
+    SIGM_LIM="NON",
+    ZONE_ANALYSE=(_F(GROUP_MA="TUYAU", GROUP_NO_ORIG="A"),),
+    MODELE=modele,
+    TOUT_CHAM="OUI",
     CARA_ELEM=cara_elem,
     CHAM_MATER=ch_mater,
     RESU_MECA=(
@@ -321,168 +510,281 @@ chPostRocheTout = POST_ROCHE(
             CRITERE="RELATIF",
             PRECISION=1e-6,
         ),
-        _F(TYPE_CHAR="DEPLACEMENT", RESULTAT=deplacement_impose, INST=0, CRITERE="ABSOLU"),
-        _F(TYPE_CHAR="SISM_INER_SPEC", RESULTAT=sismique, DIRECTION="COMBI"),
+        _F(TYPE_CHAR="DDS", RESULTAT=deplacement_impose, INST=0, CRITERE="ABSOLU"),
+        _F(TYPE_CHAR="SISM_INER_SPEC", RESULTAT=sismique_dyn, DIRECTION="COMBI", TYPE_RESU="DYN"),
+        _F(TYPE_CHAR="SISM_INER_SPEC", RESULTAT=sismique_qs, DIRECTION="COMBI", TYPE_RESU="QS"),
+    ),
+    PRESSION=(_F(TOUT="OUI", VALE=1e6),),
+    COUDE=_F(GROUP_MA="TUYAU", ANGLE=90, RCOURB=0.01),
+)
+
+
+# VARIANTE = 'RCC_MRX' (défaut) + SIGM_ABAT='REFE_ELAS' (avec Coude)
+# (Contrainte vraie optimisé UT02-X9 calculé avec la formule REFE_ELAS)
+resuPostRocheToutSism_Coude_RE = POST_ROCHE(
+    SIGM_ABAT="REFE_ELAS",
+    SIGM_LIM="NON",
+    ZONE_ANALYSE=(_F(GROUP_MA="TUYAU", GROUP_NO_ORIG="A"),),
+    MODELE=modele,
+    TOUT_CHAM="OUI",
+    CARA_ELEM=cara_elem,
+    CHAM_MATER=ch_mater,
+    RESU_MECA=(
+        _F(TYPE_CHAR="POIDS", CHAM_GD=poids_propre_champ),
+        _F(
+            TYPE_CHAR="DILAT_THERM",
+            RESULTAT=dilatation_thermique,
+            INST=1,
+            CRITERE="RELATIF",
+            PRECISION=1e-6,
+        ),
+        _F(TYPE_CHAR="DDS", RESULTAT=deplacement_impose, INST=0, CRITERE="ABSOLU"),
+        _F(TYPE_CHAR="SISM_INER_SPEC", RESULTAT=sismique_dyn, DIRECTION="COMBI", TYPE_RESU="DYN"),
+        _F(TYPE_CHAR="SISM_INER_SPEC", RESULTAT=sismique_qs, DIRECTION="COMBI", TYPE_RESU="QS"),
+    ),
+    PRESSION=(_F(TOUT="OUI", VALE=1e6),),
+    COUDE=_F(GROUP_MA="TUYAU", ANGLE=90, RCOURB=0.01),
+)
+
+
+# VARIANTE = 'ASNR' --> SIGM_ABAT='REFE_ELAS' (pas de choix de l'utilisateur)
+# (calcul avec Coude)
+# (Contrainte vraie optimisé UT02-X9 calculé avec la formule REFE_ELAS)
+resuPostRocheToutSism_Coude_ASNR = POST_ROCHE(
+    VARIANTE="ASNR",
+    ZONE_ANALYSE=(_F(GROUP_MA="TUYAU", GROUP_NO_ORIG="A"),),
+    MODELE=modele,
+    TOUT_CHAM="OUI",
+    CARA_ELEM=cara_elem,
+    CHAM_MATER=ch_mater,
+    RESU_MECA=(
+        _F(TYPE_CHAR="POIDS", CHAM_GD=poids_propre_champ),
+        _F(
+            TYPE_CHAR="DILAT_THERM",
+            RESULTAT=dilatation_thermique,
+            INST=1,
+            CRITERE="RELATIF",
+            PRECISION=1e-6,
+        ),
+        _F(TYPE_CHAR="DDS", RESULTAT=deplacement_impose, INST=0, CRITERE="ABSOLU"),
+        _F(TYPE_CHAR="SISM_INER_SPEC", RESULTAT=sismique_dyn, DIRECTION="COMBI", TYPE_RESU="DYN"),
+        _F(TYPE_CHAR="SISM_INER_SPEC", RESULTAT=sismique_qs, DIRECTION="COMBI", TYPE_RESU="QS"),
+    ),
+    PRESSION=(_F(TOUT="OUI", VALE=1e6),),
+    COUDE=_F(GROUP_MA="TUYAU", ANGLE=90, RCOURB=0.01),
+)
+
+
+# ------------------------------------------------------------------------------#
+# ajout du chargement de type Déplacements Imposés Non-Sismiques (DINS)
+
+# VARIANTE = 'RCC_MRX' (défaut) + SIGM_ABAT='CODE' (defaut), avec Coude
+# Vérif de la contrainte formule de contrainte vraie dans RCC_MRx
+resuPostRocheToutSism_Coude_DINS = POST_ROCHE(
+    SIGM_LIM="NON",
+    ZONE_ANALYSE=(_F(GROUP_MA="TUYAU", GROUP_NO_ORIG="A"),),
+    MODELE=modele,
+    TOUT_CHAM="OUI",
+    CARA_ELEM=cara_elem,
+    CHAM_MATER=ch_mater,
+    RESU_MECA=(
+        _F(TYPE_CHAR="POIDS", CHAM_GD=poids_propre_champ),
+        _F(TYPE_CHAR="DINS", RESULTAT=deplacement_impose_dins, INST=1, CRITERE="ABSOLU"),
+        _F(TYPE_CHAR="DDS", RESULTAT=deplacement_impose, INST=0, CRITERE="ABSOLU"),
+        _F(TYPE_CHAR="SISM_INER_SPEC", RESULTAT=sismique_dyn, DIRECTION="COMBI", TYPE_RESU="DYN"),
+        _F(TYPE_CHAR="SISM_INER_SPEC", RESULTAT=sismique_qs, DIRECTION="COMBI", TYPE_RESU="QS"),
+    ),
+    PRESSION=(_F(TOUT="OUI", VALE=1e6),),
+    COUDE=_F(GROUP_MA="TUYAU", ANGLE=90, RCOURB=0.01),
+)
+
+# VARIANTE = 'ASNR' --> SIGM_ABAT='REFE_ELAS' (pas de choix de l'utilisateur)
+# (calcul avec Coude)
+# (Contrainte vraie optimisé UT02-X9 calculé avec la formule REFE_ELAS)
+resuPostRocheSism_Coude_ASNR_DINS = POST_ROCHE(
+    VARIANTE="ASNR",
+    ZONE_ANALYSE=(_F(GROUP_MA="TUYAU", GROUP_NO_ORIG="A"),),
+    MODELE=modele,
+    TOUT_CHAM="OUI",
+    CARA_ELEM=cara_elem,
+    CHAM_MATER=ch_mater,
+    RESU_MECA=(
+        _F(TYPE_CHAR="POIDS", CHAM_GD=poids_propre_champ),
+        # _F(
+        #     TYPE_CHAR="DILAT_THERM",
+        #     RESULTAT=dilatation_thermique,
+        #     INST=1,
+        #     CRITERE="RELATIF",
+        #     PRECISION=1e-6,
+        # ),
+        # _F(TYPE_CHAR="DILAT_THERM", RESULTAT=deplacement_impose_dins, INST=1, CRITERE="ABSOLU"),
+        _F(TYPE_CHAR="DINS", RESULTAT=deplacement_impose_dins, INST=1, CRITERE="ABSOLU"),
+        _F(TYPE_CHAR="DDS", RESULTAT=deplacement_impose, INST=0, CRITERE="ABSOLU"),
+        _F(TYPE_CHAR="SISM_INER_SPEC", RESULTAT=sismique_dyn, DIRECTION="COMBI", TYPE_RESU="DYN"),
+        _F(TYPE_CHAR="SISM_INER_SPEC", RESULTAT=sismique_qs, DIRECTION="COMBI", TYPE_RESU="QS"),
+    ),
+    PRESSION=(_F(TOUT="OUI", VALE=1e6),),
+    COUDE=_F(GROUP_MA="TUYAU", ANGLE=90, RCOURB=0.01),
+)
+
+
+# Duplicate pour couverture TYPE_CHAR="DILAT_THERM"
+
+# VARIANTE = 'ASNR' --> SIGM_ABAT='REFE_ELAS'
+# (calcul avec Coude)
+# (Contrainte vraie optimisé UT02-X9 calculé avec la formule REFE_ELAS)
+resuPostRocheSism_Coude_ASNR_THER = POST_ROCHE(
+    VARIANTE="ASNR",
+    ZONE_ANALYSE=(_F(GROUP_MA="TUYAU", GROUP_NO_ORIG="A"),),
+    MODELE=modele,
+    TOUT_CHAM="OUI",
+    CARA_ELEM=cara_elem,
+    CHAM_MATER=ch_mater,
+    RESU_MECA=(
+        _F(TYPE_CHAR="POIDS", CHAM_GD=poids_propre_champ),
+        _F(TYPE_CHAR="DILAT_THERM", CHAM_GD=ch_deplacement_impose_dins_demi),
+        _F(TYPE_CHAR="DINS", CHAM_GD=ch_deplacement_impose_dins_demi),
+        _F(TYPE_CHAR="DDS", RESULTAT=deplacement_impose, INST=0, CRITERE="ABSOLU"),
+        _F(TYPE_CHAR="SISM_INER_SPEC", RESULTAT=sismique_dyn, DIRECTION="COMBI", TYPE_RESU="DYN"),
+        _F(TYPE_CHAR="SISM_INER_SPEC", RESULTAT=sismique_qs, DIRECTION="COMBI", TYPE_RESU="QS"),
+    ),
+    PRESSION=(_F(TOUT="OUI", VALE=1e6),),
+    COUDE=_F(GROUP_MA="TUYAU", ANGLE=90, RCOURB=0.01),
+)
+
+
+# -------------- FIN POST_ROCHE SISMIQUE ---------------------#
+
+
+resuPostRocheTout = POST_ROCHE(
+    SIGM_LIM="NON",
+    ZONE_ANALYSE=(_F(TOUT="OUI", GROUP_NO_ORIG="A"),),
+    MODELE=modele,
+    TOUT_CHAM="OUI",
+    CARA_ELEM=cara_elem,
+    CHAM_MATER=ch_mater,
+    RESU_MECA=(
+        _F(TYPE_CHAR="POIDS", CHAM_GD=poids_propre_champ),
+        _F(
+            TYPE_CHAR="DILAT_THERM",
+            RESULTAT=dilatation_thermique,
+            INST=1,
+            CRITERE="RELATIF",
+            PRECISION=1e-6,
+        ),
+        _F(TYPE_CHAR="DDS", RESULTAT=deplacement_impose, INST=0, CRITERE="ABSOLU"),
     ),
     PRESSION=(_F(TOUT="OUI", VALE=1e6),),
 )
 
-IMPR_RESU(
-    UNITE=6,
-    FORMAT="RESULTAT",
-    RESU=_F(
-        CHAM_GD=chPostRocheTout,
-        NOM_CMP=(
-            "X1",
-            "X2",
-            "X3",
-            "X4",
-            "X5",
-            "X6",
-            "X7",
-            "X8",
-            "X9",
-            "X10",
-            "X11",
-            "X12",
-            "X13",
-            "X14",
-            "X15",
-            "X16",
-            "X17",
-            "X18",
-            "X19",
-            "X20",
-        ),
-    ),
-)
-
-
-chPostRocheRCCMRX = POST_ROCHE(
-    RCCM_RX="OUI",
+resuPostRocheRCCMRX = POST_ROCHE(
+    SIGM_LIM="OUI",
     # ZONE_ANALYSE=(_F(TOUT="OUI", GROUP_NO_ORIG="A"),),
     # ZONE_ANALYSE=(_F(GROUP_MA="TUYAU", GROUP_NO_ORIG="A"),),
     ZONE_ANALYSE=(_F(GROUP_MA=("M1", "M2"), GROUP_NO_ORIG="A"),),
     MODELE=modele,
+    TOUT_CHAM="OUI",
     CARA_ELEM=cara_elem,
     CHAM_MATER=ch_mater,
     RESU_MECA=(
         _F(TYPE_CHAR="POIDS", RESULTAT=poids_propre, NUME_ORDRE=1),
         _F(TYPE_CHAR="DILAT_THERM", RESULTAT=dilatation_thermique, NUME_ORDRE=1),
-        _F(TYPE_CHAR="DEPLACEMENT", RESULTAT=deplacement_impose, NUME_ORDRE=1),
-        _F(TYPE_CHAR="SISM_INER_SPEC", RESULTAT=sismique, DIRECTION="COMBI"),
+        _F(TYPE_CHAR="DDS", RESULTAT=deplacement_impose, NUME_ORDRE=1),
     ),
     PRESSION=(_F(TOUT="OUI", VALE=1e6),),
 )
 
-chPostRocheGrMa = POST_ROCHE(
-    RCCM_RX="NON",
+resuPostRocheGrMa = POST_ROCHE(
+    SIGM_LIM="NON",
     # ZONE_ANALYSE=(_F(GROUP_MA="TUYAU", GROUP_NO_ORIG="A"),),
     ZONE_ANALYSE=(_F(GROUP_MA=("M2", "M1"), GROUP_NO_ORIG="A"),),
     MODELE=modele,
+    TOUT_CHAM="OUI",
     CARA_ELEM=cara_elem,
     CHAM_MATER=ch_mater,
     RESU_MECA=(
         _F(TYPE_CHAR="POIDS", RESULTAT=poids_propre, NUME_ORDRE=1),
         _F(TYPE_CHAR="DILAT_THERM", RESULTAT=dilatation_thermique, NUME_ORDRE=1),
-        _F(TYPE_CHAR="DEPLACEMENT", RESULTAT=deplacement_impose, NUME_ORDRE=1),
-        _F(TYPE_CHAR="SISM_INER_SPEC", RESULTAT=sismique, DIRECTION="COMBI"),
+        _F(TYPE_CHAR="DDS", RESULTAT=deplacement_impose, NUME_ORDRE=1),
     ),
     PRESSION=(_F(GROUP_MA="TUYAU", VALE=1e6),),
 )
 
 # Tests cas de calcul
-# 1- deplacement (D)
-# 2- deplacement + pression (DP)
-# 3- deplacement + pression + poids propre (DPG)
-# 4- seisme inertiel (S)
-# 5- seisme inertiel + pression (SP)
-# 6- seisme inertiel + pression + poids propre (SPG)
-# 7- seisme inertiel + deplacement (SD)
+# 1- deplacement (D) : (Calcul 2)
+# 2- deplacement + pression (DP) : (Calcul 3)
+# 3- deplacement + pression + poids propre (DPG) : (Calcul 4)
+# 4- pression + poids propre (PG) : (Calcul 5)
 
 
 # 1- deplacement (D)
-chPostRocheTout_D = POST_ROCHE(
-    RCCM_RX="NON",
+resuPostRocheTout_D = POST_ROCHE(
+    SIGM_LIM="NON",
     ZONE_ANALYSE=(_F(TOUT="OUI", GROUP_NO_ORIG="A"),),
     MODELE=modele,
+    TOUT_CHAM="OUI",
     CARA_ELEM=cara_elem,
     CHAM_MATER=ch_mater,
-    RESU_MECA=(_F(TYPE_CHAR="DEPLACEMENT", RESULTAT=deplacement_impose, NUME_ORDRE=1),),
+    RESU_MECA=(_F(TYPE_CHAR="DDS", RESULTAT=deplacement_impose_neg, NUME_ORDRE=1),),
 )
 
 # 2- deplacement + pression (DP)
-chPostRocheTout_DP = POST_ROCHE(
-    RCCM_RX="NON",
+resuPostRocheTout_DP = POST_ROCHE(
+    SIGM_LIM="NON",
     ZONE_ANALYSE=(_F(TOUT="OUI", GROUP_NO_ORIG="A"),),
     MODELE=modele,
+    TOUT_CHAM="OUI",
     CARA_ELEM=cara_elem,
     CHAM_MATER=ch_mater,
-    RESU_MECA=(_F(TYPE_CHAR="DEPLACEMENT", RESULTAT=deplacement_impose, NUME_ORDRE=1),),
+    RESU_MECA=(_F(TYPE_CHAR="DDS", RESULTAT=deplacement_impose, NUME_ORDRE=1),),
     PRESSION=(_F(TOUT="OUI", VALE=1e6),),
 )
 
 # 3- deplacement + pression + poids propre (DPG)
-chPostRocheTout_DPG = POST_ROCHE(
-    RCCM_RX="NON",
+# validation de TRAC_EPSI avec fonction équivalente à Ramberg-Osgood
+resuPostRocheTout_DPG = POST_ROCHE(
+    SIGM_LIM="NON",
     ZONE_ANALYSE=(_F(TOUT="OUI", GROUP_NO_ORIG="A"),),
     MODELE=modele,
+    TOUT_CHAM="OUI",
     CARA_ELEM=cara_elem,
     CHAM_MATER=ch_mater,
+    TRAC_EPSI=TRAC_EPSI,
     RESU_MECA=(
         _F(TYPE_CHAR="POIDS", RESULTAT=poids_propre, NUME_ORDRE=1),
-        _F(TYPE_CHAR="DEPLACEMENT", RESULTAT=deplacement_impose, NUME_ORDRE=1),
+        _F(TYPE_CHAR="DDS", RESULTAT=deplacement_impose, NUME_ORDRE=1),
     ),
     PRESSION=(_F(TOUT="OUI", VALE=1e6),),
 )
-
-# 4- seisme inertiel (S)
-chPostRocheTout_S = POST_ROCHE(
-    RCCM_RX="NON",
+# meme calcul avec une fonction différente pour vérifier que les résultats sont
+# différents
+resuPostRocheTout_DPG_False = POST_ROCHE(
+    SIGM_LIM="NON",
     ZONE_ANALYSE=(_F(TOUT="OUI", GROUP_NO_ORIG="A"),),
     MODELE=modele,
     CARA_ELEM=cara_elem,
     CHAM_MATER=ch_mater,
-    RESU_MECA=(_F(TYPE_CHAR="SISM_INER_SPEC", RESULTAT=sismique, DIRECTION="COMBI"),),
-)
-
-# 5- seisme inertiel + pression (SP)
-chPostRocheTout_SP = POST_ROCHE(
-    RCCM_RX="NON",
-    ZONE_ANALYSE=(_F(TOUT="OUI", GROUP_NO_ORIG="A"),),
-    MODELE=modele,
-    CARA_ELEM=cara_elem,
-    CHAM_MATER=ch_mater,
-    RESU_MECA=(_F(TYPE_CHAR="SISM_INER_SPEC", RESULTAT=sismique, DIRECTION="COMBI"),),
-    PRESSION=(_F(TOUT="OUI", VALE=1e6),),
-)
-
-# 6- seisme inertiel + pression + poids propre (SPG)
-chPostRocheTout_SPG = POST_ROCHE(
-    RCCM_RX="NON",
-    ZONE_ANALYSE=(_F(TOUT="OUI", GROUP_NO_ORIG="A"),),
-    MODELE=modele,
-    CARA_ELEM=cara_elem,
-    CHAM_MATER=ch_mater,
+    TRAC_EPSI=TRAC_EPSI2,
     RESU_MECA=(
         _F(TYPE_CHAR="POIDS", RESULTAT=poids_propre, NUME_ORDRE=1),
-        _F(TYPE_CHAR="SISM_INER_SPEC", RESULTAT=sismique, DIRECTION="COMBI"),
+        _F(TYPE_CHAR="DDS", RESULTAT=deplacement_impose, NUME_ORDRE=1),
     ),
     PRESSION=(_F(TOUT="OUI", VALE=1e6),),
 )
 
-# 7- seisme inertiel + deplacement (SD)
-chPostRocheTout_SD = POST_ROCHE(
-    RCCM_RX="NON",
+
+# 4- pression + poids propre (PG)
+resuPostRocheTout_PG = POST_ROCHE(
+    SIGM_LIM="NON",
     ZONE_ANALYSE=(_F(TOUT="OUI", GROUP_NO_ORIG="A"),),
     MODELE=modele,
+    TOUT_CHAM="OUI",
     CARA_ELEM=cara_elem,
     CHAM_MATER=ch_mater,
-    RESU_MECA=(
-        _F(TYPE_CHAR="DEPLACEMENT", RESULTAT=deplacement_impose, NUME_ORDRE=1),
-        _F(TYPE_CHAR="SISM_INER_SPEC", RESULTAT=sismique, DIRECTION="COMBI"),
-    ),
+    RESU_MECA=(_F(TYPE_CHAR="POIDS", RESULTAT=poids_propre, NUME_ORDRE=1),),
+    PRESSION=(_F(TOUT="OUI", VALE=1e6),),
 )
+
 
 ##Importation de fichier resu format 'MED' sauve au prealable
 
@@ -523,129 +825,13 @@ dilatation_thermique_lu = LIRE_RESU(
     ),
 )
 
-sismique_lu = LIRE_RESU(
-    TYPE_RESU="MODE_MECA",
-    FORMAT="MED",
-    UNITE=81,
-    MODELE=modele,
-    TOUT_ORDRE="OUI",
-    FORMAT_MED=(_F(NOM_RESU="sismique", NOM_CHAM=("EFGE_ELNO",)),),
-)
-
-ch_direX = CREA_CHAMP(
-    OPERATION="EXTR",
-    TYPE_CHAM="ELNO_SIEF_R",
-    RESULTAT=sismique_lu,
-    NOM_CHAM="EFGE_ELNO",
-    NUME_ORDRE=1,
-)
-ch_direY = CREA_CHAMP(
-    OPERATION="EXTR",
-    TYPE_CHAM="ELNO_SIEF_R",
-    RESULTAT=sismique_lu,
-    NOM_CHAM="EFGE_ELNO",
-    NUME_ORDRE=2,
-)
-ch_direZ = CREA_CHAMP(
-    OPERATION="EXTR",
-    TYPE_CHAM="ELNO_SIEF_R",
-    RESULTAT=sismique_lu,
-    NOM_CHAM="EFGE_ELNO",
-    NUME_ORDRE=3,
-)
-ch_tota = CREA_CHAMP(
-    OPERATION="EXTR",
-    TYPE_CHAM="ELNO_SIEF_R",
-    RESULTAT=sismique_lu,
-    NOM_CHAM="EFGE_ELNO",
-    NUME_ORDRE=4,
-)
-ch_dynaX = CREA_CHAMP(
-    OPERATION="EXTR",
-    TYPE_CHAM="ELNO_SIEF_R",
-    RESULTAT=sismique_lu,
-    NOM_CHAM="EFGE_ELNO",
-    NUME_ORDRE=11,
-)
-ch_dynaY = CREA_CHAMP(
-    OPERATION="EXTR",
-    TYPE_CHAM="ELNO_SIEF_R",
-    RESULTAT=sismique_lu,
-    NOM_CHAM="EFGE_ELNO",
-    NUME_ORDRE=12,
-)
-ch_dynaZ = CREA_CHAMP(
-    OPERATION="EXTR",
-    TYPE_CHAM="ELNO_SIEF_R",
-    RESULTAT=sismique_lu,
-    NOM_CHAM="EFGE_ELNO",
-    NUME_ORDRE=13,
-)
-ch_dyna = CREA_CHAMP(
-    OPERATION="EXTR",
-    TYPE_CHAM="ELNO_SIEF_R",
-    RESULTAT=sismique_lu,
-    NOM_CHAM="EFGE_ELNO",
-    NUME_ORDRE=14,
-)
-ch_qsX = CREA_CHAMP(
-    OPERATION="EXTR",
-    TYPE_CHAM="ELNO_SIEF_R",
-    RESULTAT=sismique_lu,
-    NOM_CHAM="EFGE_ELNO",
-    NUME_ORDRE=21,
-)
-ch_qsY = CREA_CHAMP(
-    OPERATION="EXTR",
-    TYPE_CHAM="ELNO_SIEF_R",
-    RESULTAT=sismique_lu,
-    NOM_CHAM="EFGE_ELNO",
-    NUME_ORDRE=22,
-)
-ch_qsZ = CREA_CHAMP(
-    OPERATION="EXTR",
-    TYPE_CHAM="ELNO_SIEF_R",
-    RESULTAT=sismique_lu,
-    NOM_CHAM="EFGE_ELNO",
-    NUME_ORDRE=23,
-)
-ch_qs = CREA_CHAMP(
-    OPERATION="EXTR",
-    TYPE_CHAM="ELNO_SIEF_R",
-    RESULTAT=sismique_lu,
-    NOM_CHAM="EFGE_ELNO",
-    NUME_ORDRE=24,
-)
-# re creer resu comb_sism_modal avec les champs lus depuis un resultat medd
-sismique_re = CREA_RESU(
-    OPERATION="AFFE",
-    TYPE_RESU="MULT_ELAS",
-    AFFE=(
-        _F(NOM_CHAM="EFGE_ELNO", CHAM_GD=ch_direX, NOM_CAS="DIRE_X", MODELE=modele),
-        _F(NOM_CHAM="EFGE_ELNO", CHAM_GD=ch_direY, NOM_CAS="DIRE_Y", MODELE=modele),
-        _F(NOM_CHAM="EFGE_ELNO", CHAM_GD=ch_direZ, NOM_CAS="DIRE_Z", MODELE=modele),
-        _F(NOM_CHAM="EFGE_ELNO", CHAM_GD=ch_tota, NOM_CAS="TOTA", MODELE=modele),
-        _F(NOM_CHAM="EFGE_ELNO", CHAM_GD=ch_dynaX, NOM_CAS="PART_DYNA_X", MODELE=modele),
-        _F(NOM_CHAM="EFGE_ELNO", CHAM_GD=ch_dynaY, NOM_CAS="PART_DYNA_Y", MODELE=modele),
-        _F(NOM_CHAM="EFGE_ELNO", CHAM_GD=ch_dynaZ, NOM_CAS="PART_DYNA_Z", MODELE=modele),
-        _F(NOM_CHAM="EFGE_ELNO", CHAM_GD=ch_dyna, NOM_CAS="PART_DYNA", MODELE=modele),
-        _F(NOM_CHAM="EFGE_ELNO", CHAM_GD=ch_qsX, NOM_CAS="PART_QS_X", MODELE=modele),
-        _F(NOM_CHAM="EFGE_ELNO", CHAM_GD=ch_qsY, NOM_CAS="PART_QS_Y", MODELE=modele),
-        _F(NOM_CHAM="EFGE_ELNO", CHAM_GD=ch_qsZ, NOM_CAS="PART_QS_Z", MODELE=modele),
-        _F(NOM_CHAM="EFGE_ELNO", CHAM_GD=ch_qs, NOM_CAS="PART_QS", MODELE=modele),
-    ),
-)
-
-# mettre lire_resu --> crea_champs et puis un crea_resu/mult_elas/nom_cas:
-
-IMPR_RESU(UNITE=6, FORMAT="RESULTAT", RESU=_F(RESULTAT=sismique_re, NOM_CHAM="EFGE_ELNO"))
-
 # 2nd appel à POST_ROCHE
 
-chLuPostRocheTout = POST_ROCHE(
-    RCCM_RX="NON",
+resuLuPostRocheTout = POST_ROCHE(
+    SIGM_LIM="NON",
     ZONE_ANALYSE=(_F(TOUT="OUI", GROUP_NO_ORIG="A"),),
     MODELE=modele,
+    TOUT_CHAM="OUI",
     CARA_ELEM=cara_elem,
     CHAM_MATER=ch_materfo,
     # INST_TEMP n'est pas utile si on utilise CHAM_GD plutôt qu'EVOL dans AFFE_MATERIAU/AFFE_VARC
@@ -653,24 +839,17 @@ chLuPostRocheTout = POST_ROCHE(
     RESU_MECA=(
         _F(TYPE_CHAR="POIDS", RESULTAT=poids_propre_lu, NUME_ORDRE=1),
         _F(TYPE_CHAR="DILAT_THERM", RESULTAT=dilatation_thermique_lu, NUME_ORDRE=1),
-        _F(TYPE_CHAR="DEPLACEMENT", RESULTAT=deplacement_impose_lu, NUME_ORDRE=1),
-        _F(TYPE_CHAR="SISM_INER_SPEC", RESULTAT=sismique_re, DIRECTION="COMBI"),
+        _F(TYPE_CHAR="DDS", RESULTAT=deplacement_impose_lu, NUME_ORDRE=1),
     ),
     PRESSION=(_F(TOUT="OUI", VALE=1e6),),
 )
 
 
-# IMPR_RESU(UNITE=6, FORMAT='RESULTAT',
-# RESU=_F(CHAM_GD=chLuPostRocheTout,
-# NOM_CMP=('X1','X2','X3','X4','X5','X6',
-# 'X7','X8','X9','X10','X11','X12',
-# 'X13','X14','X15','X16','X17','X18','X19','X20')))
-
-
-chLuPostRocheRCCMRX = POST_ROCHE(
-    RCCM_RX="OUI",
+resuLuPostRocheRCCMRX = POST_ROCHE(
+    SIGM_LIM="OUI",
     ZONE_ANALYSE=(_F(TOUT="OUI", GROUP_NO_ORIG="A"),),
     MODELE=modele,
+    TOUT_CHAM="OUI",
     CARA_ELEM=cara_elem,
     CHAM_MATER=ch_materfo,
     # INST_TEMP n'est pas utile si on utilise CHAM_GD plutôt qu'EVOL dans AFFE_MATERIAU/AFFE_VARC
@@ -678,159 +857,122 @@ chLuPostRocheRCCMRX = POST_ROCHE(
     RESU_MECA=(
         _F(TYPE_CHAR="POIDS", RESULTAT=poids_propre_lu, NUME_ORDRE=1),
         _F(TYPE_CHAR="DILAT_THERM", RESULTAT=dilatation_thermique_lu, NUME_ORDRE=1),
-        _F(TYPE_CHAR="DEPLACEMENT", RESULTAT=deplacement_impose_lu, NUME_ORDRE=1),
-        _F(TYPE_CHAR="SISM_INER_SPEC", RESULTAT=sismique_re, DIRECTION="COMBI"),
+        _F(TYPE_CHAR="DDS", RESULTAT=deplacement_impose_lu, NUME_ORDRE=1),
     ),
     PRESSION=(_F(TOUT="OUI", VALE=1e6),),
 )
 
 
-chLuPostRocheGrMa = POST_ROCHE(
-    RCCM_RX="NON",
+# VARIANTE = 'RCC_MRX' + SIGM_ABAT='CODE': par défaut
+resuLuPostRocheGrMa = POST_ROCHE(
+    SIGM_LIM="NON",
     ZONE_ANALYSE=(_F(GROUP_MA="TUYAU", GROUP_NO_ORIG="A"),),
     MODELE=modele,
+    TOUT_CHAM="OUI",
     CARA_ELEM=cara_elem,
     CHAM_MATER=ch_mater,
     RESU_MECA=(
         _F(TYPE_CHAR="POIDS", RESULTAT=poids_propre, NUME_ORDRE=1),
         _F(TYPE_CHAR="DILAT_THERM", RESULTAT=dilatation_thermique, NUME_ORDRE=1),
-        _F(TYPE_CHAR="DEPLACEMENT", RESULTAT=deplacement_impose, NUME_ORDRE=1),
-        _F(TYPE_CHAR="SISM_INER_SPEC", RESULTAT=sismique, DIRECTION="COMBI"),
+        _F(TYPE_CHAR="DDS", RESULTAT=deplacement_impose, NUME_ORDRE=1),
     ),
     PRESSION=(_F(GROUP_MA="TUYAU", VALE=1e6)),
     COUDE=_F(GROUP_MA="TUYAU", ANGLE=90, RCOURB=0.01),
 )
 
+# VARIANTE = 'RCC_MRX' (défaut)
+# SIGM_ABAT='REFE_ELAS'
+# (Contrainte vraie optimisé UT02-X9 calculé avec la formule REFE_ELAS)
+resuLuPostRocheGrMa_RE = POST_ROCHE(
+    SIGM_LIM="NON",
+    SIGM_ABAT="REFE_ELAS",
+    ZONE_ANALYSE=(_F(GROUP_MA="TUYAU", GROUP_NO_ORIG="A"),),
+    MODELE=modele,
+    TOUT_CHAM="OUI",
+    CARA_ELEM=cara_elem,
+    CHAM_MATER=ch_mater,
+    RESU_MECA=(
+        _F(TYPE_CHAR="POIDS", RESULTAT=poids_propre, NUME_ORDRE=1),
+        _F(TYPE_CHAR="DILAT_THERM", RESULTAT=dilatation_thermique, NUME_ORDRE=1),
+        _F(TYPE_CHAR="DDS", RESULTAT=deplacement_impose, NUME_ORDRE=1),
+    ),
+    PRESSION=(_F(GROUP_MA="TUYAU", VALE=1e6)),
+    COUDE=_F(GROUP_MA="TUYAU", ANGLE=90, RCOURB=0.01),
+)
+
+# VARIANTE = ASNR
+resuLuPostRocheGrMa_ASNR = POST_ROCHE(
+    VARIANTE="ASNR",
+    ZONE_ANALYSE=(_F(GROUP_MA="TUYAU", GROUP_NO_ORIG="A"),),
+    MODELE=modele,
+    TOUT_CHAM="OUI",
+    CARA_ELEM=cara_elem,
+    CHAM_MATER=ch_mater,
+    RESU_MECA=(
+        _F(TYPE_CHAR="POIDS", RESULTAT=poids_propre, NUME_ORDRE=1),
+        _F(TYPE_CHAR="DILAT_THERM", RESULTAT=dilatation_thermique, NUME_ORDRE=1),
+        _F(TYPE_CHAR="DDS", RESULTAT=deplacement_impose, NUME_ORDRE=1),
+    ),
+    PRESSION=(_F(GROUP_MA="TUYAU", VALE=1e6)),
+    COUDE=_F(GROUP_MA="TUYAU", ANGLE=90, RCOURB=0.01),
+)
+
+
 # Tests cas de calcul
 # 1- deplacement (D)
 # 2- deplacement + pression (DP)
 # 3- deplacement + pression + poids propre (DPG)
-# 4- seisme inertiel (S)
-# 5- seisme inertiel + pression (SP)
-# 6- seisme inertiel + pression + poids propre (SPG)
-# 7- seisme inertiel + deplacement (SD)
+# 4- pression + poids propre (PG)
 
 
 # 1- deplacement (D)
-chLuPostRocheTout_D = POST_ROCHE(
-    RCCM_RX="NON",
+resuLuPostRocheTout_D = POST_ROCHE(
+    SIGM_LIM="NON",
     ZONE_ANALYSE=(_F(TOUT="OUI", GROUP_NO_ORIG="A"),),
     MODELE=modele,
+    TOUT_CHAM="OUI",
     CARA_ELEM=cara_elem,
     CHAM_MATER=ch_mater,
-    RESU_MECA=(_F(TYPE_CHAR="DEPLACEMENT", RESULTAT=deplacement_impose, NUME_ORDRE=1),),
+    RESU_MECA=(_F(TYPE_CHAR="DDS", RESULTAT=deplacement_impose, NUME_ORDRE=1),),
 )
 
 # 2- deplacement + pression (DP)
-chLuPostRocheTout_DP = POST_ROCHE(
-    RCCM_RX="NON",
+resuLuPostRocheTout_DP = POST_ROCHE(
+    SIGM_LIM="NON",
     ZONE_ANALYSE=(_F(TOUT="OUI", GROUP_NO_ORIG="A"),),
     MODELE=modele,
+    TOUT_CHAM="OUI",
     CARA_ELEM=cara_elem,
     CHAM_MATER=ch_mater,
-    RESU_MECA=(_F(TYPE_CHAR="DEPLACEMENT", RESULTAT=deplacement_impose, NUME_ORDRE=1),),
+    RESU_MECA=(_F(TYPE_CHAR="DDS", RESULTAT=deplacement_impose, NUME_ORDRE=1),),
     PRESSION=(_F(TOUT="OUI", VALE=1e6),),
 )
 
 # 3- deplacement + pression + poids propre (DPG)
-chLuPostRocheTout_DPG = POST_ROCHE(
-    RCCM_RX="NON",
+resuLuPostRocheTout_DPG = POST_ROCHE(
+    SIGM_LIM="NON",
     ZONE_ANALYSE=(_F(TOUT="OUI", GROUP_NO_ORIG="A"),),
     MODELE=modele,
+    TOUT_CHAM="OUI",
     CARA_ELEM=cara_elem,
     CHAM_MATER=ch_mater,
     RESU_MECA=(
         _F(TYPE_CHAR="POIDS", RESULTAT=poids_propre, NUME_ORDRE=1),
-        _F(TYPE_CHAR="DEPLACEMENT", RESULTAT=deplacement_impose, NUME_ORDRE=1),
+        _F(TYPE_CHAR="DDS", RESULTAT=deplacement_impose, NUME_ORDRE=1),
     ),
     PRESSION=(_F(TOUT="OUI", VALE=1e6),),
 )
 
-# 4- seisme inertiel (S)
-chLuPostRocheTout_S = POST_ROCHE(
-    RCCM_RX="NON",
+# 4- pression + poids propre (PG)
+resuLuPostRocheTout_PG = POST_ROCHE(
+    SIGM_LIM="NON",
     ZONE_ANALYSE=(_F(TOUT="OUI", GROUP_NO_ORIG="A"),),
     MODELE=modele,
+    TOUT_CHAM="OUI",
     CARA_ELEM=cara_elem,
     CHAM_MATER=ch_mater,
-    RESU_MECA=(_F(TYPE_CHAR="SISM_INER_SPEC", RESULTAT=sismique, DIRECTION="COMBI"),),
-)
-
-# 5- seisme inertiel + pression (SP)
-chLuPostRocheTout_SP = POST_ROCHE(
-    RCCM_RX="NON",
-    ZONE_ANALYSE=(_F(TOUT="OUI", GROUP_NO_ORIG="A"),),
-    MODELE=modele,
-    CARA_ELEM=cara_elem,
-    CHAM_MATER=ch_mater,
-    RESU_MECA=(_F(TYPE_CHAR="SISM_INER_SPEC", RESULTAT=sismique, DIRECTION="COMBI"),),
+    RESU_MECA=(_F(TYPE_CHAR="POIDS", RESULTAT=poids_propre, NUME_ORDRE=1),),
     PRESSION=(_F(TOUT="OUI", VALE=1e6),),
-)
-
-# 6- seisme inertiel + pression + poids propre (SPG)
-chLuPostRocheTout_SPG = POST_ROCHE(
-    RCCM_RX="NON",
-    ZONE_ANALYSE=(_F(TOUT="OUI", GROUP_NO_ORIG="A"),),
-    MODELE=modele,
-    CARA_ELEM=cara_elem,
-    CHAM_MATER=ch_mater,
-    RESU_MECA=(
-        _F(TYPE_CHAR="POIDS", RESULTAT=poids_propre, NUME_ORDRE=1),
-        _F(TYPE_CHAR="SISM_INER_SPEC", RESULTAT=sismique, DIRECTION="COMBI"),
-    ),
-    PRESSION=(_F(TOUT="OUI", VALE=1e6),),
-)
-
-# 7- seisme inertiel + deplacement (SD)
-chLuPostRocheTout_SD = POST_ROCHE(
-    RCCM_RX="NON",
-    ZONE_ANALYSE=(_F(TOUT="OUI", GROUP_NO_ORIG="A"),),
-    MODELE=modele,
-    CARA_ELEM=cara_elem,
-    CHAM_MATER=ch_mater,
-    RESU_MECA=(
-        _F(TYPE_CHAR="DEPLACEMENT", RESULTAT=deplacement_impose, NUME_ORDRE=1),
-        _F(TYPE_CHAR="SISM_INER_SPEC", RESULTAT=sismique, DIRECTION="COMBI"),
-    ),
-)
-
-# 8- seisme inertiel(X) + deplacement (SD)
-chLuPostRocheTout_SDX = POST_ROCHE(
-    RCCM_RX="NON",
-    ZONE_ANALYSE=(_F(TOUT="OUI", GROUP_NO_ORIG="A"),),
-    MODELE=modele,
-    CARA_ELEM=cara_elem,
-    CHAM_MATER=ch_mater,
-    RESU_MECA=(
-        _F(TYPE_CHAR="DEPLACEMENT", RESULTAT=deplacement_impose, NUME_ORDRE=1),
-        _F(TYPE_CHAR="SISM_INER_SPEC", RESULTAT=sismique, DIRECTION="X"),
-    ),
-)
-
-# 9- seisme inertiel(Y) + deplacement (SD)
-chLuPostRocheTout_SDY = POST_ROCHE(
-    RCCM_RX="NON",
-    ZONE_ANALYSE=(_F(TOUT="OUI", GROUP_NO_ORIG="A"),),
-    MODELE=modele,
-    CARA_ELEM=cara_elem,
-    CHAM_MATER=ch_mater,
-    RESU_MECA=(
-        _F(TYPE_CHAR="DEPLACEMENT", RESULTAT=deplacement_impose, NUME_ORDRE=1),
-        _F(TYPE_CHAR="SISM_INER_SPEC", RESULTAT=sismique, DIRECTION="Y"),
-    ),
-)
-
-# 10- seisme inertiel(Z) + deplacement (SD)
-chLuPostRocheTout_SDZ = POST_ROCHE(
-    RCCM_RX="NON",
-    ZONE_ANALYSE=(_F(TOUT="OUI", GROUP_NO_ORIG="A"),),
-    MODELE=modele,
-    CARA_ELEM=cara_elem,
-    CHAM_MATER=ch_mater,
-    RESU_MECA=(
-        _F(TYPE_CHAR="DEPLACEMENT", RESULTAT=deplacement_impose, NUME_ORDRE=1),
-        _F(TYPE_CHAR="SISM_INER_SPEC", RESULTAT=sismique, DIRECTION="Z"),
-    ),
 )
 
 FIN()

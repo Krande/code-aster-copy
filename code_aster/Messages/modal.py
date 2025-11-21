@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -302,6 +302,14 @@ Opérateur DYNA_ALEA_MODAL :
   est issu le MODE_MECA de BASE_MODALE que vous avez fourni.
 
   Cette commande est CALC_MODES dans la plupart des cas. Il suffit de lui fournir le mot-clé CARA_ELEM.
+"""
+    ),
+    25: _(
+        """
+Opérateur POST_MODE :
+  On ne parvient pas à trouver le champ de matériaux associé à l'objet mode_meca fourni.
+  Vous avez certainement oublié de fournir le mot-clé CHAM_MATER à la commande CALC_MODES de laquelle
+  est issu l'objet fourni au mot-clé MODE.
 """
     ),
 }

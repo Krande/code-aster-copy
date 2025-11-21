@@ -77,7 +77,7 @@ subroutine vppost(vecrer, vecrei, vecrek, vecvp, nbpark, &
 ! --- VARIABLES LOCALES
 !
     integer(kind=8) :: nbpara
-    parameter(nbpara=27)
+    parameter(nbpara=33)
     integer(kind=8) :: nparr, ibid, nbrss, iret, lraide, lmasse, lamor, neq, lddl, lprod
     integer(kind=8) :: lmat(3), lmtpsc, lmatra, ierx, ifm, niv
     integer(kind=8) :: lresui, lresur, lresuk, lvec
@@ -105,7 +105,9 @@ subroutine vppost(vecrer, vecrei, vecrek, vecvp, nbpark, &
      &  'MASS_GENE', 'RIGI_GENE', 'AMOR_GENE',&
      &  'MASS_EFFE_DX', 'MASS_EFFE_DY', 'MASS_EFFE_DZ',&
      &  'FACT_PARTICI_DX', 'FACT_PARTICI_DY', 'FACT_PARTICI_DZ',&
-     &  'MASS_EFFE_UN_DX', 'MASS_EFFE_UN_DY', 'MASS_EFFE_UN_DZ'/
+     &  'MASS_EFFE_UN_DX', 'MASS_EFFE_UN_DY', 'MASS_EFFE_UN_DZ',&
+     &  'INER_EFFE_DX', 'INER_EFFE_DY', 'INER_EFFE_DZ',&
+     &  'INER_EFFE_UN_DX', 'INER_EFFE_UN_DY', 'INER_EFFE_UN_DZ'/
 !     ------------------------------------------------------------------
 !
 ! -----------------------

@@ -20,19 +20,14 @@ subroutine zerofr(intini, algo, func, x1, x2, &
                   tol, itmax, solu, iret, iter)
     implicit none
 !
-#include "asterfort/assert.h"
-#include "asterfort/encadr.h"
-#include "asterfort/zerof2.h"
-#include "asterfort/zerofb.h"
-#include "asterfort/zerofc.h"
-#include "asterfort/zerofo.h"
+#include "asterfort/zerofr_param2.h"
     integer(kind=8) :: intini, itmax, iter, iret
     character(len=*) :: algo
     real(kind=8) :: solu, tol, x1, x2
     interface
-        function func(x)
+        function func(x) result(fval)
             real(kind=8) :: x
-            real(kind=8) :: func
+            real(kind=8) :: fval
         end function
     end interface
 !
@@ -58,71 +53,22 @@ subroutine zerofr(intini, algo, func, x1, x2, &
 ! OUT ITER   : NOMBRE D'ITERATIONS EFFECTUEES
 ! ----------------------------------------------------------------------
 !
-    character(len=8) :: algoz
-    real(kind=8) :: a, b, fa, fb
+    real(kind=8) :: para(1)
 !
-    algoz = algo
-    a = x1
-    b = x2
+    para = 0.d0
+    call zerofr_param2(intini, algo, func, funcp, para, 0, &
+                       x1, x2, tol, itmax, solu, iret, iter)
 !
-!     ------------------------------------------------------------------
-!     RECHERCHE DE L'INTERVALLE INITIAL [A,B]
-!     ------------------------------------------------------------------
+contains
 !
-    ASSERT(intini .eq. 0 .or. intini .eq. 1 .or. intini .eq. 2)
+    function funcp(x, param)
+        real(kind=8), intent(in) :: x
+        real(kind=8), intent(in) :: param(*)
+        real(kind=8) :: funcp, p, x0
 !
-    if (intini .eq. 1) then
+        x0 = x
+        p = param(1)
+        funcp = 0.0
+    end function
 !
-!       BRACKETING CROISSANT A GAUCHE ET A DROITE
-        call encadr(func, a, b, fa, fb, &
-                    itmax, 1.6d0, iret)
-        if (iret .ne. 0) goto 9999
-!
-    else if (intini .eq. 2) then
-!
-!       BRACKETING CROISSANT UNIQUEMNT A DROITE :
-!       SOUVENT LE CAS POUR LES LOIS DE COMPORTEMENT
-!       (SI F EST CROISSANTE ET F(A)<0, OU L'INVERSE),
-!       CE QUI PERMET DE PRENDRE UN COEF MULT GRAND (10)
-        call encadr(func, a, b, fa, fb, &
-                    itmax, 10.d0, iret)
-        if (iret .ne. 0) goto 9999
-!
-    end if
-!
-!     ------------------------------------------------------------------
-!     RECHERCHE DU ZERO DE F ENTRE X1 ET X2
-!     ------------------------------------------------------------------
-!
-    if (algoz .eq. 'AUTO') algoz = 'BRENT'
-!
-!
-    if (algoz .eq. 'BRENT') then
-!
-        call zerofb(func, a, b, tol, itmax, &
-                    solu, iret, iter)
-!
-    else if (algoz .eq. 'SECANTE') then
-!
-        call zerofc(func, a, b, tol, itmax, &
-                    solu, iret, iter)
-!
-    else if (algoz .eq. 'DEKKER') then
-!
-        call zerofo(func, a, b, tol, itmax, &
-                    solu, iret, iter)
-!
-    else if (algoz .eq. 'DEKKER2') then
-!
-        call zerof2(func, a, b, tol, itmax, &
-                    solu, iret, iter)
-!
-    else
-!
-        ASSERT(.false.)
-!
-    end if
-!
-!
-9999 continue
 end subroutine

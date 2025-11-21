@@ -17,8 +17,6 @@
 # along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 # --------------------------------------------------------------------
 
-# person_in_charge: mickael.abbas at edf.fr
-
 from math import pi
 from ..Commons import *
 from ..Language.DataStructure import *
@@ -2794,7 +2792,7 @@ DEFI_MATERIAU = MACRO(
     DIS_ECRO_TRAC=FACT(
         statut="f",
         fr=tr("Loi pour un discret avec écrouissage isotrope ou cinématique."),
-        regles=(UN_PARMI("FX", "FTAN")),
+        regles=(AU_MOINS_UN("FX", "FTAN"),),
         FX=SIMP(
             statut="f",
             typ=(fonction_sdaster),
@@ -6298,10 +6296,13 @@ DEFI_MATERIAU = MACRO(
         TEMP_MINI=SIMP(statut="o", typ="R", fr=tr("Température début")),
         TEMP_MAXI=SIMP(statut="o", typ="R", fr=tr("Température fin")),
         EPSQ_MINI=SIMP(
+            statut="f", typ="R", defaut=0.0, fr=tr("Seuil mini pour la restauration - Cas isotrope")
+        ),
+        XCIN_MINI=SIMP(
             statut="f",
             typ="R",
             defaut=0.0,
-            fr=tr("Deformation plastique cumulée de début de restauration : seuil mini"),
+            fr=tr("Seuil mini pour la restauration - Cas cinématique"),
         ),
     ),
     ### RESTAURATION D'ECROUISSAGE (ANNEALING)

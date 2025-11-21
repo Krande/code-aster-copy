@@ -32,8 +32,8 @@ interface
         integer(kind=8) :: iter
         interface
             function func(x)
-                real(kind=8) :: x
-                real(kind=8) :: func
+            real(kind=8) :: x
+            real(kind=8) :: func
             end function
         end interface
     end subroutine zerofr

@@ -86,7 +86,7 @@ subroutine op0044()
 #include "asterfort/onerrf.h"
 !
     integer(kind=8) :: nbpari, nbparr, nbpark, nbpara, mxddl
-    parameter(nbpari=8, nbparr=16, nbpark=3, nbpara=27)
+    parameter(nbpari=8, nbparr=22, nbpark=3, nbpara=33)
     parameter(mxddl=1)
 !
     integer(kind=8) :: indf, ifreq, ifm, iret, ierfr, ierd, idet1, ieme1, ierx, idet2
@@ -139,7 +139,9 @@ subroutine op0044()
      &  'MASS_GENE', 'RIGI_GENE', 'AMOR_GENE',&
      &  'MASS_EFFE_DX', 'MASS_EFFE_DY', 'MASS_EFFE_DZ',&
      &  'FACT_PARTICI_DX', 'FACT_PARTICI_DY', 'FACT_PARTICI_DZ',&
-     &  'MASS_EFFE_UN_DX', 'MASS_EFFE_UN_DY', 'MASS_EFFE_UN_DZ'/
+     &  'MASS_EFFE_UN_DX', 'MASS_EFFE_UN_DY', 'MASS_EFFE_UN_DZ',&
+     &  'INER_EFFE_DX', 'INER_EFFE_DY', 'INER_EFFE_DZ',&
+     &  'INER_EFFE_UN_DX', 'INER_EFFE_UN_DY', 'INER_EFFE_UN_DZ'/
 !     ------------------------------------------------------------------
 !
     call jemarq()

@@ -19,8 +19,11 @@
 !
 !
 interface
-    subroutine encadr(func, x1, x2, f1, f2,&
+    subroutine encadr(func, funcp, para, nb_para, x1, x2, f1, f2,&
                       niter, xmult, iret)
+#include "asterf_types.h"
+        real(kind=8) :: para(nb_para)
+        integer(kind=8), intent(in) :: nb_para
         real(kind=8) :: x1
         real(kind=8) :: x2
         real(kind=8) :: f1
@@ -29,10 +32,15 @@ interface
         real(kind=8) :: xmult
         integer(kind=8) :: iret
         interface
-            function func(x)
-                real(kind=8) :: x
-                real(kind=8) :: func
-            end function
+        function funcp(x, param)
+            real(kind=8), intent(in) :: x
+            real(kind=8), intent(in) :: param(*)
+            real(kind=8) :: funcp
+        end function
+        function func(x)
+            real(kind=8) :: x
+            real(kind=8) :: func
+        end function
         end interface
     end subroutine encadr
 end interface

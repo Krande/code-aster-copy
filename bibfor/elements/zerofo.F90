@@ -16,17 +16,24 @@
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
 
-subroutine zerofo(func, x0, xap, epsi, nitmax, &
+subroutine zerofo(func, funcp, para, nb_para, x0, xap, epsi, nitmax, &
                   solu, iret, n)
     implicit none
+#include "asterf_types.h"
 !
     interface
+        function funcp(xl, param)
+            real(kind=8), intent(in) :: xl
+            real(kind=8), intent(in) :: param(*)
+            real(kind=8) :: funcp
+        end function
         function func(xl)
             real(kind=8) :: xl
             real(kind=8) :: func
         end function
     end interface
-    real(kind=8) :: x0, xap, epsi, solu
+    integer(kind=8), intent(in) :: nb_para
+    real(kind=8) :: x0, xap, epsi, solu, para(nb_para)
     integer(kind=8) :: nitmax, iret, n
 !
 !
@@ -58,13 +65,21 @@ subroutine zerofo(func, x0, xap, epsi, nitmax, &
     iret = 1
     n = 1
     x = x0
-    fx = func(x0)
+    if (nb_para > 0) then
+        fx = funcp(x0, para)
+    else
+        fx = func(x0)
+    end if
     if (abs(fx) .lt. epsi) then
         z = 0.d0
         goto 800
     end if
     y = xap
-    fy = func(y)
+    if (nb_para > 0) then
+        fy = funcp(y, para)
+    else
+        fy = func(y)
+    end if
 !
 !     DEBUT DES ITERATIONS
 !
@@ -80,7 +95,11 @@ subroutine zerofo(func, x0, xap, epsi, nitmax, &
         end if
 !
         n = n+1
-        fz = func(z)
+        if (nb_para > 0) then
+            fz = funcp(z, para)
+        else
+            fz = func(z)
+        end if
         if (abs(fz) .lt. epsi) goto 800
         if (n .gt. nitmax) goto 999
         if (fz .lt. 0.d0) then
@@ -101,7 +120,11 @@ subroutine zerofo(func, x0, xap, epsi, nitmax, &
         x = y
         fx = fy
         y = z
-        fy = func(z)
+        if (nb_para > 0) then
+            fy = funcp(z, para)
+        else
+            fy = func(z)
+        end if
 !
         if (abs(fy) .lt. epsi) goto 800
         if (n .gt. nitmax) goto 999

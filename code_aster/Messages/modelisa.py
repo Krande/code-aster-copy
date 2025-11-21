@@ -286,7 +286,7 @@ Erreur d'utilisation pour le mot clé AFFE_CARA_ELEM / ORIENTATION
     ),
     94: _(
         """
- le DESCRIPTEUR_GRANDEUR des déplacements ne tient pas sur dix entiers codés
+ le DESCRIPTEUR_GRANDEUR des déplacements ne tient pas sur 11 entiers codés
 """
     ),
     95: _(

@@ -65,7 +65,7 @@ subroutine op0168()
     real(kind=8) :: cumulx, cumuly, cumulz, dx, dy, dz, fremax
     real(kind=8) :: fremin, freq, seuil, undf
 !-----------------------------------------------------------------------
-    parameter(nbpari=1, nbparr=15, nbpark=3, nbpara=19)
+    parameter(nbpari=1, nbparr=21, nbpark=3, nbpara=25)
     integer(kind=8) :: lpar(3)
     integer(kind=8) :: vali(2)
     integer(kind=8) :: nbvect
@@ -73,8 +73,8 @@ subroutine op0168()
     character(len=1) :: typmod
     character(len=3) :: ouinon
     character(len=8) :: k8b, modeou, modein, modele, mate, cara
-    character(len=16) :: typcon, nomcmd, critfi, nompar(3), nomsy, nompav
-    character(len=16) :: nompa2(3)
+    character(len=16) :: typcon, nomcmd, critfi, nompar(6), nomsy, nompav
+    character(len=16) :: nompa2(6)
     character(len=19) :: numedd
     character(len=24) :: masse, amor, raide, refd, massi, amori, raidi, kmode
     character(len=24) :: valk(3)
@@ -86,17 +86,19 @@ subroutine op0168()
     data kvali/'&&OP0168.GRAN_MODAL_I'/
     data kvalr/'&&OP0168.GRAN_MODAL_R'/
     data kvalk/'&&OP0168.GRAN_MODAL_K_'/
-    data nompar/'MASS_EFFE_UN_DX', 'MASS_EFFE_UN_DY',&
-     &              'MASS_EFFE_UN_DZ'/
-    data nompa2/'MASS_EFFE_DX', 'MASS_EFFE_DY',&
-     &              'MASS_EFFE_DZ'/
+    data nompar/'MASS_EFFE_UN_DX', 'MASS_EFFE_UN_DY', 'MASS_EFFE_UN_DZ',&
+     &          'INER_EFFE_UN_DX', 'INER_EFFE_UN_DY', 'INER_EFFE_UN_DZ'/
+    data nompa2/'MASS_EFFE_DX', 'MASS_EFFE_DY', 'MASS_EFFE_DZ',&
+     &          'INER_EFFE_DX', 'INER_EFFE_DY', 'INER_EFFE_DZ'/
     data nopara/'NUME_MODE',&
      &  'NORME', 'TYPE_MODE', 'NOEUD_CMP',&
      &  'FREQ', 'OMEGA2', 'AMOR_REDUIT',&
      &  'MASS_GENE', 'RIGI_GENE', 'AMOR_GENE',&
      &  'MASS_EFFE_DX', 'MASS_EFFE_DY', 'MASS_EFFE_DZ',&
      &  'FACT_PARTICI_DX', 'FACT_PARTICI_DY', 'FACT_PARTICI_DZ',&
-     &  'MASS_EFFE_UN_DX', 'MASS_EFFE_UN_DY', 'MASS_EFFE_UN_DZ'/
+     &  'MASS_EFFE_UN_DX', 'MASS_EFFE_UN_DY', 'MASS_EFFE_UN_DZ',&
+     &  'INER_EFFE_DX', 'INER_EFFE_DY', 'INER_EFFE_DZ',&
+     &  'INER_EFFE_UN_DX', 'INER_EFFE_UN_DY', 'INER_EFFE_UN_DZ'/
 !     ------------------------------------------------------------------
 !
     call jemarq()
@@ -316,6 +318,76 @@ subroutine op0168()
                     do j = 1, nbmodt
                         iord = zi(jor+j-1)
                         call rsadpa(modein, 'L', 3, nompa2, iord, &
+                                    0, tjv=lpar, styp=k8b, istop=0)
+                        dx = zr(lpar(1))
+                        dy = zr(lpar(2))
+                        dz = zr(lpar(3))
+                        if (dx .eq. undf .or. dy .eq. undf .or. dz .eq. undf) then
+                            call utmess('F', 'ALGELINE3_10')
+                        end if
+                        if (n7 .ne. 0) then
+                            if (dx .ge. seuil .or. dy .ge. seuil .or. dz .ge. seuil) then
+                                nbmode = nbmode+1
+                                zi(jordr+nbmode-1) = iord
+                            end if
+                        else if (n8 .ne. 0) then
+                            if (dx .ge. seuil) then
+                                nbmode = nbmode+1
+                                zi(jordr+nbmode-1) = iord
+                            end if
+                        else if (n9 .ne. 0) then
+                            if (dy .ge. seuil) then
+                                nbmode = nbmode+1
+                                zi(jordr+nbmode-1) = iord
+                            end if
+                        else if (n10 .ne. 0) then
+                            if (dz .ge. seuil) then
+                                nbmode = nbmode+1
+                                zi(jordr+nbmode-1) = iord
+                            end if
+                        end if
+!
+                    end do
+                end if
+                if (critfi .eq. 'INER_EFFE_UN' .and. typcon(1:9) .eq. 'MODE_MECA') then
+                    do j = 1, nbmodt
+                        iord = zi(jor+j-1)
+                        call rsadpa(modein, 'L', 3, nompar(4:6), iord, &
+                                    0, tjv=lpar, styp=k8b, istop=0)
+                        dx = zr(lpar(1))
+                        dy = zr(lpar(2))
+                        dz = zr(lpar(3))
+                        if (dx .eq. undf .or. dy .eq. undf .or. dz .eq. undf) then
+                            call utmess('F', 'ALGELINE3_10')
+                        end if
+                        if (n7 .ne. 0) then
+                            if (dx .ge. seuil .or. dy .ge. seuil .or. dz .ge. seuil) then
+                                nbmode = nbmode+1
+                                zi(jordr+nbmode-1) = iord
+                            end if
+                        else if (n8 .ne. 0) then
+                            if (dx .ge. seuil) then
+                                nbmode = nbmode+1
+                                zi(jordr+nbmode-1) = iord
+                            end if
+                        else if (n9 .ne. 0) then
+                            if (dy .ge. seuil) then
+                                nbmode = nbmode+1
+                                zi(jordr+nbmode-1) = iord
+                            end if
+                        else if (n10 .ne. 0) then
+                            if (dz .ge. seuil) then
+                                nbmode = nbmode+1
+                                zi(jordr+nbmode-1) = iord
+                            end if
+                        end if
+!
+                    end do
+                end if
+                if (critfi .eq. 'INER_EFFE' .and. typcon(1:9) .eq. 'MODE_MECA') then
+                    do j = 1, nbmodt
+                        iord = zi(jor+j-1)
+                        call rsadpa(modein, 'L', 3, nompa2(4:6), iord, &
                                     0, tjv=lpar, styp=k8b, istop=0)
                         dx = zr(lpar(1))
                         dy = zr(lpar(2))

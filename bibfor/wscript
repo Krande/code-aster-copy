@@ -24,11 +24,12 @@ from waflib import Configure, Errors, Logs, Utils
 
 
 def options(self):
-    self.load("compiler_fc")
+    # already done by waftools/parallel.py: self.load("compiler_fc")
+    pass
 
 
 def configure(self):
-    self.load("compiler_fc")
+    # already done by waftools/parallel.py: self.load("compiler_fc")
     incpath = osp.join(self.path.get_src().abspath(), "include")
     self.env.append_value("INCLUDES_BIBFOR", incpath)
 
@@ -115,7 +116,7 @@ def check_fortran_compiler_flags(self):
         self.check_fortran_compiler_options("-fno-aggressive-loop-optimizations")
         # long lines after preprocessing
         self.check_fortran_compiler_options("-ffree-line-length-none")
-    if "ifort" in self.env.FC_NAME.lower():
+    if self.env.FC_IS_INTEL:
         if not self.env.ASTER_PLATFORM_MSVC64:
             # Linux-style flags
             self.check_fortran_compiler_options(["-fpe0", "-traceback"])

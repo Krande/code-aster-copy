@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -146,6 +146,14 @@ de type SISM_INER_SPEC avec TYPE_RESU valant %(k1)s.
     26: _(
         """POST_ROCHE/RESU_MECA : vous avez déclaré un chargement de type SISM_INER_SPEC avec TYPE_RESU valant %(k1)s.
 Vous devez alors également donné un chargement SISM_INER_SPEC avec TYPE_RESU='%(k2)s'.
+"""
+    ),
+    27: _(
+        """POST_ROCHE : le paramètre NOM_RESU de la fonction fournie à TRAC_EPSI est différent de EPSI.
+"""
+    ),
+    28: _(
+        """POST_ROCHE : le paramètre NOM_PARA de la fonction fournie à TRAC_EPSI est différent de SIGM.
 """
     ),
 }

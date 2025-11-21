@@ -1,0 +1,389 @@
+# coding=utf-8
+# --------------------------------------------------------------------
+# Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
+# This file is part of code_aster.
+#
+# code_aster is free software: you can redistribute it and/or modify
+# it under the terms of the GNU General Public License as published by
+# the Free Software Foundation, either version 3 of the License, or
+# (at your option) any later version.
+#
+# code_aster is distributed in the hope that it will be useful,
+# but WITHOUT ANY WARRANTY; without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+# GNU General Public License for more details.
+#
+# You should have received a copy of the GNU General Public License
+# along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
+# --------------------------------------------------------------------
+
+#
+# --------------------------------------------------------------------------------
+# TEST V1.01.367
+# ESSAI DE DILATOMETRIE (CHARGEMENT THERMIQUE CYCLIQUE) SUR UN TUBE - ACIER 316L
+# LOI ELASTOPLASTIQUE DE VON MISES A ECROUISSAGE ISOTROPE LINEAIRE
+# CALCUL 2D AXI-SYMETRIQUE
+# MAILLAGE QUAD4 (2 ELEMENTS)
+# --------------------------------------------------------------------------------
+
+DEBUT(CODE="OUI", ERREUR=_F(ALARME="EXCEPTION"), DEBUG=_F(SDVERI="OUI"))
+
+mesh = LIRE_MAILLAGE(FORMAT="ASTER")
+
+# Chargement thermique
+modelTher = AFFE_MODELE(
+    MAILLAGE=mesh, AFFE=_F(TOUT="OUI", PHENOMENE="THERMIQUE", MODELISATION="AXIS")
+)
+
+LAMBC = DEFI_FONCTION(
+    NOM_PARA="TEMP",
+    VALE=(
+        20.0,
+        14.0,
+        100.0,
+        15.2,
+        200.0,
+        16.6,
+        300.0,
+        17.9,
+        400.0,
+        19.00,
+        500.0,
+        20.6,
+        600.0,
+        21.8,
+        700.0,
+        23.1,
+        800.0,
+        24.3,
+        900.0,
+        26.0,
+        1000.0,
+        27.3,
+        1200.0,
+        29.9,
+        1450.0,
+        35.0,
+        1500.0,
+        70.0,
+    ),
+    PROL_DROITE="LINEAIRE",
+    PROL_GAUCHE="LINEAIRE",
+)
+
+RHOCPA = DEFI_FONCTION(
+    NOM_PARA="TEMP",
+    VALE=(20.0, 3900000.0, 400.0, 3900000.0, 1402.0, 3900000.0),
+    PROL_DROITE="LINEAIRE",
+    PROL_GAUCHE="LINEAIRE",
+)
+
+steelTher = DEFI_MATERIAU(THER_NL=_F(RHO_CP=RHOCPA, LAMBDA=LAMBC))
+
+steelTherField = AFFE_MATERIAU(MAILLAGE=mesh, AFFE=_F(TOUT="OUI", MATER=steelTher))
+
+TEMP1 = DEFI_FONCTION(
+    NOM_PARA="INST",
+    VALE=(0.0, 20.0, 100.0, 1125.0, 200.0, 21.0),
+    PROL_GAUCHE="CONSTANT",
+    PROL_DROITE="CONSTANT",
+)
+
+tempImpo = AFFE_CHAR_THER_F(MODELE=modelTher, TEMP_IMPO=(_F(TOUT="OUI", TEMP=TEMP1),))
+
+timeList = DEFI_LIST_REEL(
+    DEBUT=0.0, INTERVALLE=(_F(JUSQU_A=100.0, NOMBRE=100), _F(JUSQU_A=200.0, NOMBRE=100))
+)
+
+THER1 = THER_NON_LINE(
+    MODELE=modelTher,
+    CHAM_MATER=steelTherField,
+    EXCIT=_F(CHARGE=tempImpo),
+    INCREMENT=_F(LIST_INST=timeList),
+    ETAT_INIT=_F(VALE=20.0),
+    NEWTON=_F(ITER_LINE_MAXI=3),
+    CONVERGENCE=_F(RESI_GLOB_RELA=5.0e-5, ITER_GLOB_MAXI=50),
+)
+#
+# Calcul Mecanique
+#
+
+modelMeca = AFFE_MODELE(
+    MAILLAGE=mesh, AFFE=_F(TOUT="OUI", PHENOMENE="MECANIQUE", MODELISATION="AXIS")
+)
+
+clamp = AFFE_CHAR_MECA(MODELE=modelMeca, DDL_IMPO=_F(GROUP_NO=("NO1", "NO2", "NO5", "NO6"), DY=0.0))
+
+
+E = DEFI_FONCTION(
+    NOM_PARA="TEMP",
+    VALE=(
+        20.0,
+        195600.0e6,
+        100.0,
+        191200.0e6,
+        200.0,
+        185700.0e6,
+        300.0,
+        179600.0e6,
+        400.0,
+        172600.0e6,
+        500.0,
+        164500.0e6,
+        600.0,
+        155000.0e6,
+        700.0,
+        144100.0e6,
+        800.0,
+        131400.0e6,
+        900.0,
+        116800.0e6,
+        1000.0,
+        100000.0e6,
+        1100.0,
+        80000.0e6,
+        1200.0,
+        57000.0e6,
+        1300.0,
+        30000.0e6,
+        1400.0,
+        2000.0e6,
+        1500.0,
+        1000.0e6,
+    ),
+    PROL_DROITE="CONSTANT",
+    PROL_GAUCHE="LINEAIRE",
+)
+
+
+NU = DEFI_CONSTANTE(VALE=0.3)
+
+
+SIGM = DEFI_FONCTION(
+    NOM_PARA="TEMP",
+    VALE=(
+        20.0,
+        286.0e6,
+        200.0,
+        212.0e6,
+        400.0,
+        180.0e6,
+        600.0,
+        137.0e6,
+        800.0,
+        139.0e6,
+        1000.0,
+        70.0e6,
+        1100.0,
+        35.0e6,
+        1200.0,
+        16.0e6,
+        1300.0,
+        10.0e6,
+        1500.0,
+        10.0e6,
+    ),
+    PROL_DROITE="CONSTANT",
+    PROL_GAUCHE="CONSTANT",
+)
+
+DSDE = DEFI_FONCTION(
+    NOM_PARA="TEMP",
+    VALE=(
+        20.0,
+        2.400e9,
+        700.0,
+        2.400e9,
+        800.0,
+        2.350e9,
+        900.0,
+        1.500e9,
+        1000.0,
+        0.800e9,
+        1100.0,
+        0.725e9,
+        1200.0,
+        0.150e9,
+        1300.0,
+        0.010e9,
+    ),
+    PROL_DROITE="CONSTANT",
+    PROL_GAUCHE="LINEAIRE",
+)
+
+ALPHA = DEFI_FONCTION(
+    NOM_PARA="TEMP",
+    VALE=(
+        20.0,
+        14.56e-6,
+        100.0,
+        15.39e-6,
+        200.0,
+        16.21e-6,
+        300.0,
+        16.86e-6,
+        400.0,
+        17.37e-6,
+        500.0,
+        17.78e-6,
+        600.0,
+        18.12e-6,
+        700.0,
+        18.43e-6,
+        800.0,
+        18.72e-6,
+        900.0,
+        18.99e-6,
+        1000.0,
+        19.27e-6,
+        1100.0,
+        19.53e-6,
+        1200.0,
+        19.79e-6,
+        1300.0,
+        20.02e-6,
+        1600.0,
+        20.02e-6,
+    ),
+    PROL_DROITE="CONSTANT",
+    PROL_GAUCHE="CONSTANT",
+)
+
+
+#
+# PARAMETRES DE RESTAURATION D'ECROUISSAGE
+#
+Tdebut = 600.0
+# Temperature de debut de restauration
+Tfin = 1200.0
+# Temperature de restauration complete
+#
+# Valeurs du coefficient alpha en fonction de la temperature
+L_coefecro1 = [
+    680.0,
+    1.154,
+    750.0,
+    1.335,
+    825.0,
+    1.308,
+    900.0,
+    1.165,
+    1000.0,
+    0.181,
+    1075.0,
+    0.687,
+    1150.0,
+    0.408,
+]
+#
+# Valeurs du coefficient tau_infini en fonction de la temperature
+L_tauinf = [
+    Tdebut,
+    1.0,
+    680.0,
+    0.877,
+    750.0,
+    0.767,
+    825.0,
+    0.682,
+    900.0,
+    0.576,
+    1000.0,
+    0.071,
+    1075.0,
+    0.052,
+    1150.0,
+    0.045,
+    Tfin,
+    0.0,
+]
+# ------------------------------------------------
+COEF1 = DEFI_FONCTION(
+    NOM_PARA="TEMP", VALE=(L_coefecro1), PROL_DROITE="CONSTANT", PROL_GAUCHE="LINEAIRE"
+)
+#
+TAU1 = DEFI_FONCTION(
+    NOM_PARA="TEMP", VALE=(L_tauinf), PROL_DROITE="CONSTANT", PROL_GAUCHE="CONSTANT"
+)
+#
+steelMecaAnneal = DEFI_MATERIAU(
+    ELAS_FO=_F(E=E, NU=NU, ALPHA=ALPHA, TEMP_DEF_ALPHA=20.00),
+    ECRO_LINE_FO=_F(D_SIGM_EPSI=DSDE, SY=SIGM),
+    REST_ECRO=_F(COEF_ECRO=COEF1, TAU_INF=TAU1, TEMP_MINI=Tdebut, TEMP_MAXI=Tfin),
+)
+steelMeca = DEFI_MATERIAU(
+    ELAS_FO=_F(E=E, NU=NU, ALPHA=ALPHA, TEMP_DEF_ALPHA=20.00),
+    ECRO_LINE_FO=_F(D_SIGM_EPSI=DSDE, SY=SIGM),
+)
+
+steelMecaField = AFFE_MATERIAU(
+    MAILLAGE=mesh,
+    AFFE=(_F(GROUP_MA="M1", MATER=steelMecaAnneal), _F(GROUP_MA="M2", MATER=steelMeca)),
+    AFFE_VARC=_F(TOUT="OUI", EVOL=THER1, NOM_VARC="TEMP", NOM_CHAM="TEMP", VALE_REF=20.0),
+)
+
+U_CINE = STAT_NON_LINE(
+    MODELE=modelMeca,
+    CHAM_MATER=steelMecaField,
+    EXCIT=_F(CHARGE=clamp),
+    COMPORTEMENT=(
+        _F(
+            RELATION="VMIS_CINE_LINE",
+            DEFORMATION="PETIT_REAC",
+            GROUP_MA="M1",
+            POST_INCR="REST_ECRO",
+        ),
+        _F(RELATION="VMIS_CINE_LINE", DEFORMATION="PETIT_REAC", GROUP_MA="M2"),
+    ),
+    INCREMENT=_F(LIST_INST=timeList),
+)
+
+# Post traitement
+
+U_CINE = CALC_CHAMP(
+    reuse=U_CINE,
+    CONTRAINTE=("SIEF_NOEU"),
+    VARI_INTERNE=("VARI_NOEU"),
+    DEFORMATION=("EPSG_NOEU"),
+    RESULTAT=U_CINE,
+)
+
+TEST_RESU(
+    RESU=(
+        _F(
+            INST=100.0,
+            RESULTAT=U_CINE,
+            NOM_CHAM="VARI_NOEU",
+            GROUP_NO="NO1",
+            NOM_CMP="V1",
+            VALE_CALC=360761.17312945065,
+            VALE_REFE=360761.17312945065,
+            REFERENCE="SOURCE_EXTERNE",
+            PRECISION=1e-6,
+        ),
+        _F(
+            INST=100.0,
+            RESULTAT=U_CINE,
+            NOM_CHAM="VARI_NOEU",
+            GROUP_NO="NO1",
+            NOM_CMP="V2",
+            VALE_CALC=-417993.6707036745,
+            VALE_REFE=-417993.6707036745,
+            REFERENCE="SOURCE_EXTERNE",
+            PRECISION=1e-6,
+        ),
+        _F(
+            INST=100.0,
+            RESULTAT=U_CINE,
+            NOM_CHAM="VARI_NOEU",
+            GROUP_NO="NO1",
+            NOM_CMP="V3",
+            VALE_CALC=360680.7661149096,
+            VALE_REFE=360680.7661149096,
+            REFERENCE="SOURCE_EXTERNE",
+            PRECISION=1e-6,
+        ),
+    )
+)
+
+FIN()

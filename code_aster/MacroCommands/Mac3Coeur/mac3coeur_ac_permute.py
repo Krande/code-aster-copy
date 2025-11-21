@@ -39,6 +39,13 @@ def mac3coeur_ac_permute(self, **args):
     MA_FIN = args["MAILLAGE_FINAL"]
     VECT = args["TRAN"]
 
+    prefix_dil = "DI_CT"
+    check_ini = any(g.startswith(prefix_dil) for g in MA_INI.getGroupsOfCells())
+    check_fin = any(g.startswith(prefix_dil) for g in MA_FIN.getGroupsOfCells())
+    assert not (check_ini ^ check_fin), "Incompatible meshes"
+    if not check_ini:
+        prefix_dil = "DI"
+
     CREA_RESU(
         reuse=RESU_FIN,
         OPERATION="PERM_CHAM",
@@ -75,8 +82,8 @@ def mac3coeur_ac_permute(self, **args):
                 PRECISION=1.0e-10,
             ),
             _F(
-                GROUP_MA_INIT="DI_CT_%s" % POS_INIT,
-                GROUP_MA_FINAL="DI_CT_%s" % POS_FIN,
+                GROUP_MA_INIT="%s_%s" % (prefix_dil, POS_INIT),
+                GROUP_MA_FINAL="%s_%s" % (prefix_dil, POS_FIN),
                 TRAN=VECT,
                 PRECISION=1.0e-10,
             ),

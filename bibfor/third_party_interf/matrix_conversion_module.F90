@@ -288,7 +288,6 @@ contains
         Mat :: at_mat
         PetscInt :: nrow, ncol
         PetscInt, dimension(:), pointer :: rowptr_c => null(), colind_c => null()
-        integer(kind=8) :: jerr
         PetscErrorCode :: ierr
 !
 ! La structure CSR de A^T est la structure CSC de A
@@ -328,17 +327,17 @@ contains
         Mat, intent(in) :: a_mat
         PetscInt, intent(out)  :: nn
         PetscInt, dimension(:), pointer :: ia, ja
+        PetscInt, dimension(:), pointer :: pia => null(), pja => null()
         PetscScalar, dimension(:), pointer :: val
         ! Local variables
         PetscErrorCode :: ierr
-        PetscInt :: ii, shift, pia(1), pja(1), mm, nnz
+        PetscInt :: ii, shift, mm, nnz
         PetscScalar, dimension(:), pointer :: pval => null()
-        PetscOffset :: iia, jja
         PetscBool :: done
-        PetscReal :: info(MAT_INFO_SIZE)
+        MatInfo :: info
         !
         call MatGetInfo(a_mat, MAT_GLOBAL_SUM, info, ierr)
-        nnz = to_petsc_int(info(MAT_INFO_NZ_USED))
+        nnz = info%NZ_USED
         call MatGetSize(a_mat, mm, nn, ierr)
         ASSERT(ierr == 0)
         allocate (ia(mm+1), stat=ierr)
@@ -349,24 +348,22 @@ contains
         ASSERT(ierr == 0)
         shift = 1
         call MatGetRowIJ(a_mat, shift, PETSC_FALSE, PETSC_FALSE, mm, &
-                         pia, iia, pja, jja, done, ierr)
+                         pia, pja, done, ierr)
         ASSERT(ierr == 0)
         ASSERT(done .eqv. PETSC_TRUE)
-        do ii = 1, nnz
-            ja(ii) = pja(jja+ii)
-        end do
-        do ii = 1, mm+1
-            ia(ii) = pia(iia+ii)
-        end do
-        call MatRestoreRowIJ(a_mat, shift, PETSC_FALSE, PETSC_TRUE, mm, &
-                             pia, iia, pja, jja, done, ierr)
-        ASSERT(ierr == 0)
-        call MatSeqAijGetArrayF90(a_mat, pval, ierr)
+        call MatSeqAijGetArray(a_mat, pval, ierr)
         ASSERT(ierr == 0)
         do ii = 1, nnz
             val(ii) = pval(ii)
+            ja(ii) = pja(ii)
         end do
-        call MatSeqAijRestoreArrayF90(a_mat, pval, ierr)
+        do ii = 1, mm+1
+            ia(ii) = pia(ii)
+        end do
+        call MatRestoreRowIJ(a_mat, shift, PETSC_FALSE, PETSC_TRUE, mm, &
+                             pia, pja, done, ierr)
+        ASSERT(ierr == 0)
+        call MatSeqAijRestoreArray(a_mat, pval, ierr)
         ASSERT(ierr == 0)
         !
     end subroutine matseq2csr

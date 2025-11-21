@@ -61,7 +61,6 @@ MODE = "wb"
 
 
 class CalculMiss:
-
     """Définition d'un calcul MISS3D."""
 
     option_calcul = None
@@ -131,7 +130,7 @@ class CalculMiss:
         self._dbg_trace("Start")
 
         copie_fichier(self._fichier_tmp("in"), osp.join(self.param["_WRKDIR"], "MISS.IN"))
-        cmd = ExecutionParameter().get_option("prog:run_miss3d") + " " + self.param["VERSION"]
+        cmd = ExecutionParameter().get_option("prog:run_miss3d")
         iret = 4
         try:
             os.chdir(self.param["_WRKDIR"])
@@ -236,7 +235,7 @@ class CalculMiss:
             FORMAT_R="1PE16.9",
             SOUS_TITRE="PRODUIT PAR CALC_MISS",
             UNITE=ulaster.unit,
-            **other_groups
+            **other_groups,
         )
         ulaster.release()
         copie_fichier(ulaster.filename, self._fichier_tmp("aster"))
@@ -333,21 +332,18 @@ class CalculMiss:
 
 
 class CalculMissImpe(CalculMiss):
-
     """Définition d'un calcul MISS3D de type MISS_IMPE."""
 
     option_calcul = "MISS_IMPE"
 
 
 class CalculMissIssf(CalculMiss):
-
     """Définition d'un calcul MISS3D de type MISS_IMPE avec ISSF."""
 
     option_calcul = "MISS_IMPE"
 
 
 class CalculMissPost(CalculMiss):
-
     """Définition d'une exécution de CALC_MISS où seul le
     post-traitement est demandé."""
 
@@ -364,7 +360,6 @@ class CalculMissPost(CalculMiss):
 
 
 class CalculMissFichierTemps(CalculMiss):
-
     """Définition d'une exécution de CALC_MISS dans le domaine de Laplace"""
 
     option_calcul = "IMPE_LAPL"
