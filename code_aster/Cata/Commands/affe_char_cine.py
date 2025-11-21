@@ -136,6 +136,7 @@ AFFE_CHAR_CINE = OPER(
                 "LH1",
                 "GLIS",
                 "PSI",
+                "LAG_GV",
             ),
         ),
         TOUT=SIMP(statut="f", typ="TXM", into=("OUI",)),
@@ -216,6 +217,7 @@ AFFE_CHAR_CINE = OPER(
         LH1=SIMP(statut="f", typ="R"),
         GLIS=SIMP(statut="f", typ="R"),
         PSI=SIMP(statut="f", typ="R"),
+        LAG_GV=SIMP(statut="f", typ="R"),
     ),
     THER_IMPO=FACT(
         statut="f",

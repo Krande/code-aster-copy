@@ -250,6 +250,7 @@ AFFE_CHAR_MECA = OPER(
                 "PRES33",
                 "LH1",
                 "GLIS",
+                "LAG_GV",
             ),
         ),
         TOUT=SIMP(statut="f", typ="TXM", into=("OUI",)),
@@ -375,6 +376,7 @@ AFFE_CHAR_MECA = OPER(
         PRES33=SIMP(statut="f", typ="R"),
         LH1=SIMP(statut="f", typ="R"),
         GLIS=SIMP(statut="f", typ="R"),
+        LAG_GV=SIMP(statut="f", typ="R"),
     ),
     DDL_POUTRE=FACT(
         statut="f",

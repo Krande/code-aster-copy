@@ -856,10 +856,12 @@ list_cmp_depl = (
 comment_depl = """  DEPL_R/_C/_F  Deplacement reel, complexe ou fonction
        DX, DY, DZ : translation suivant X, Y ET Z (repere global)
        DRX, DRY, DRZ : rotation autour de X, Y ET Z (repere global)
-       GLIS    : translation relative suivante tangente (repere local)
+       GLIS : translation relative suivante tangente (repere local)
        PRE1, PRE2 : DDL de pression
        TEMP : DDL de temperature
-       PHI : angle de fissuration / potentiel de deplacement fluid
+       PHI : angle de fissuration /
+             angle de cisaillement plaq_mitc /
+             potentiel de deplacement fluid
        DH : diametre hydraulique
        Pour X-FEM: H1X, H1Y, H1Z
                    H2X, H2Y, H2Z
@@ -887,7 +889,7 @@ comment_depl = """  DEPL_R/_C/_F  Deplacement reel, complexe ou fonction
        D3 : projection du champ suivant le vecteur directeur (D3X,D3Y,D3Z)
        D3X, D3Y, D3Z :
        VARI :
-       LAG_GV :
+       LAG_GV : multiplicateur de lagrange (methode plaq_mitc)
        V11     : composante DU1/DX1 de la modelisation mixte second gradient
        V12     : composante DU1/DX2 de la modelisation mixte second gradient
        V13     : composante DU1/DX3 de la modelisation mixte second gradient
