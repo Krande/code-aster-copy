@@ -36,7 +36,7 @@ except ImportError:
 d = {"version": []}
 fcfg = "${HOME}/.config/aster/config.yaml"
 if os.path.isfile(fcfg):
-    d = yaml.load(open(fcfg))
+    d = yaml.safe_load(open(fcfg))
 elif os.path.isfile(fcfg):
     fcfg = os.path.splitext(fcfg)[0] + ".json"
     if os.path.isfile(fcfg):

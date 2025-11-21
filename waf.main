@@ -46,7 +46,7 @@ waf_main()
             iret=$?
             [ ${iret} -eq 4 ] && exit ${iret}
             if [ ${iret} -eq 0 ]; then
-                export ASTER_CONFIG=$(ls ${prefix}/build/codeaster-prerequisites-${VERSION}-*/*.sh | grep ${args[@]} debug | head -1)
+                export ASTER_CONFIG=$(ls ${prefix}/build/codeaster-prerequisites-${VERSION}-*/*.sh 2> /dev/null | grep ${args[@]} debug | head -1)
             else
                 printf "⚠️  code_aster requirements not found, configuration may fail!\n\n"
             fi

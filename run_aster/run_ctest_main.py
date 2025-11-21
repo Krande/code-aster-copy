@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -73,12 +73,14 @@ import re
 import sys
 import tempfile
 from glob import glob
+from math import ceil
+from pathlib import Path
 from subprocess import run
 
 from .config import CFG
 from .ctest2junit import XUnitReport
 from .run import get_nbcores
-from .utils import RUNASTER_ROOT, RUNASTER_PLATFORM
+from .utils import RUNASTER_PLATFORM, RUNASTER_ROOT
 
 USAGE = """
     run_ctest [options] [ctest-options] [other arguments...]
@@ -130,7 +132,7 @@ def parse_args(argv):
         action="store",
         type=int,
         default=jobs,
-        help="run the tests in parallel using the given " f"number of jobs (default: {jobs})",
+        help=f"run the tests in parallel using the given number of jobs (default: {jobs})",
     )
     parser.add_argument(
         "--testlist", action="store", metavar="FILE", help="list of testcases to run"
@@ -145,8 +147,7 @@ def parse_args(argv):
         "--resutest",
         action="store",
         metavar="DIR",
-        help="directory to write the results of the testcases "
-        "(relative to the current directory)",
+        help="directory to write the results of the testcases (relative to the current directory)",
     )
     parser.add_argument(
         "--no-resutest",
@@ -159,14 +160,14 @@ def parse_args(argv):
         "--clean",
         action="store_true",
         default="auto",
-        help="remove the content of 'resutest' directory " "before starting",
+        help="remove the content of 'resutest' directory before starting",
     )
     parser.add_argument(
         "--no-clean",
         action="store_false",
         default="auto",
         dest="clean",
-        help="do not remove the content of 'resutest' " "directory at startup",
+        help="do not remove the content of 'resutest' directory at startup",
     )
     parser.add_argument(
         "--timefactor",
@@ -176,6 +177,14 @@ def parse_args(argv):
         help="multiplicative factor applied to the time limit, "
         "passed through environment to run_aster "
         "(default: 1.0)",
+    )
+    parser.add_argument(
+        "--memory-per-slot",
+        action="store",
+        dest="slot_size",
+        type=float,
+        help="memory available per processor (in MB, only used to limit the number "
+        "of jobs running at the same time)",
     )
     parser.add_argument(
         "--only-failed-results",
@@ -190,6 +199,12 @@ def parse_args(argv):
         default=False,
         help=f"call run_sbatch instead of run_aster (see '{run_sbatch} --help' for specific options)",
     )
+    parser.add_argument(
+        "--testdir",
+        metavar="DIR",
+        action="store",
+        help="alternative directory containing the test cases (default: <installdir>/share/aster/tests)",
+    )
     group = parser.add_argument_group("ctest options")
     group.add_argument(
         "--rerun-failed", action="store_true", help="run only the tests that failed previously"
@@ -200,7 +215,7 @@ def parse_args(argv):
         action="append",
         metavar="regex",
         default=[],
-        help="run tests with labels matching regular " "expression.",
+        help="run tests with labels matching regular expression.",
     )
     group.add_argument(
         "-LE",
@@ -208,7 +223,7 @@ def parse_args(argv):
         action="append",
         metavar="regex",
         default=[],
-        help="exclude tests with labels matching regular " "expression.",
+        help="exclude tests with labels matching regular expression.",
     )
     group.add_argument(
         "--print-labels", action="store_true", help="print all available test labels"
@@ -234,6 +249,13 @@ def parse_args(argv):
 def _run(cmd, shell=False):
     print("execute:", " ".join(cmd))
     return run(cmd, shell=shell)
+
+
+def _rmtree(dirpath):
+    if RUNASTER_PLATFORM == "linux":
+        _run(["rm", "-rf", dirpath])
+    else:
+        _run(["rd", "/s", "/q", dirpath], shell=True)
 
 
 def main(argv=None):
@@ -262,10 +284,7 @@ def main(argv=None):
             if answ.lower() not in ("y", "o"):
                 print("interrupt by user")
                 sys.exit(1)
-        if RUNASTER_PLATFORM == "linux":
-            _run(["rm", "-rf", resutest])
-        else:
-            _run(["rd", "/s", "/q", resutest], shell=True)
+        _rmtree(resutest)
 
     if not osp.exists(resutest):
         os.makedirs(resutest, exist_ok=True)
@@ -275,7 +294,15 @@ def main(argv=None):
     opts = "--sbatch" if args.sbatch else ""
     if not args.rerun_failed:
         # create CTestTestfile.cmake
-        create_ctest_file(testlist, excl, osp.join(resutest, "CTestTestfile.cmake"), opts)
+        create_ctest_file(
+            testlist,
+            excl,
+            resutest,
+            opts,
+            nlist=None,
+            testdir=args.testdir,
+            slot_size=args.slot_size,
+        )
     parallel = CFG.get("parallel", 0)
     labels = set()
     if not parallel:
@@ -297,22 +324,29 @@ def main(argv=None):
         report.read_ctest()
         report.write_xml("run_testcases.xml")
     else:
-        _run(["rm", "-rf", resutest])
+        _rmtree(resutest)
     return proc.returncode
 
 
-def create_ctest_file(testlist, exclude, filename, options):
+def create_ctest_file(
+    testlist, exclude, destdir, options, nlist=None, testdir=None, slot_size=None
+):
     """Create the CTestTestfile.cmake file.
 
     Arguments:
         testlist (str): file containing a list of testcases.
         exclude (str): file containing a list of testcases to be excluded.
-        filename (str): Destination for the 'ctest' file.
+        destdir (str): Destination directory for the 'ctest' file(s).
         options (str): Additional command line options.
+        nlist (int, optional): Number of files to be created.
+        testdir (str, optional): directory containing the testcases.
+        slot_size (float, optional): Slots size (in MB, "memory per proc")
     """
-    datadir = osp.normpath(osp.join(RUNASTER_ROOT, "share", "aster"))
-    bindir = osp.normpath(osp.join(RUNASTER_ROOT, "bin"))
-    testdir = osp.join(datadir, "tests")
+    datadir = Path(osp.normpath(osp.join(RUNASTER_ROOT, "share", "aster"))).as_posix()
+    if testdir is None:
+        testdir = osp.join(datadir, "tests")
+    testdir = Path(testdir).absolute().as_posix()
+
     assert osp.isdir(testdir), f"no such directory {testdir}"
     re_comment = re.compile("^ *#.*$", re.M)
     if osp.isfile(testlist):
@@ -330,14 +364,28 @@ def create_ctest_file(testlist, exclude, filename, options):
         lexport = list(set(lexport).difference(excl))
 
     tag = CFG.get("version_tag", "")
-    text = [f"set(COMPONENT_NAME ASTER_{tag})", _build_def(bindir, datadir, lexport, options)]
-    with open(filename, "w") as fobj:
-        fobj.write("\n".join(text))
+    size = len(lexport) // (nlist or 1)
+    if len(lexport) % (nlist or 1):
+        size += 1
+    icount = 0
+    while lexport:
+        icount += 1
+        text = [
+            f"set(COMPONENT_NAME ASTER_{tag})",
+            _build_def(datadir, lexport[:size], options, testdir, slot_size),
+        ]
+        lexport = lexport[size:]
+        filename = osp.join(destdir, "CTestTestfile.cmake")
+        if nlist:
+            filename = osp.join(destdir, f"{icount:03d}", "CTestTestfile.cmake")
+        os.makedirs(osp.dirname(filename), exist_ok=True)
+        with open(filename, "w") as fobj:
+            fobj.write("\n".join(text))
 
 
 CTEST_DEF = """
 set(TEST_NAME ${{COMPONENT_NAME}}_{testname})
-add_test(${{TEST_NAME}} {ASTERDATADIR}/run_aster_for_ctest{ext} {options} {ASTERDATADIR}/tests/{testname}.export)
+add_test(${{TEST_NAME}} {ASTERDATADIR}/run_aster_for_ctest{ext} {options} {TESTDIR}/{testname}.export)
 set_tests_properties(${{TEST_NAME}} PROPERTIES
                      LABELS "${{COMPONENT_NAME}} {labels}"
                      PROCESSORS {processors}
@@ -357,12 +405,13 @@ zzzz401a
 """
 
 
-def _build_def(bindir, datadir, lexport, options):
+def _build_def(datadir, lexport, options, testdir, slot_size):
     re_list = re.compile("P +testlist +(.*)$", re.M)
     re_nod = re.compile("P +mpi_nbnoeud +([0-9]+)", re.M)
     re_mpi = re.compile("P +mpi_nbcpu +([0-9]+)", re.M)
     re_thr = re.compile("P +ncpus +([0-9]+)", re.M)
     re_time = re.compile("P +time_limit +([0-9]+)", re.M)
+    re_mem = re.compile("P +memory_limit +([0-9]+)", re.M)
     text = []
     for exp in lexport:
         if not osp.isfile(exp):
@@ -374,6 +423,7 @@ def _build_def(bindir, datadir, lexport, options):
         mpi = 1
         thr = 1
         tim = 86400
+        mem = 1
         with open(exp, "r") as fobj:
             export = fobj.read()
         mat = re_list.search(export)
@@ -391,21 +441,30 @@ def _build_def(bindir, datadir, lexport, options):
         mat = re_time.search(export)
         if mat:
             tim = int(mat.group(1))
+        mat = re_mem.search(export)
+        if mat:
+            mem = int(mat.group(1))
         lab.append(f"nodes={nod:02d}")
         if testname in TEST_FILES_INTEGR:
             lab.append("SMECA_INTEGR")
-        procs = mpi * thr
+        # number of "slots" to be used
+        slots = mpi * thr
+        if slot_size:
+            slots = max(slots, int(ceil(mem / slot_size)))
+        timeout = int(tim * 1.1 * float(os.environ["FACMTPS"]))
         if "sbatch" in options:
-            tim *= 10
-            procs = 1
+            # only used by ctest to order runs (separated jobs)
+            timeout *= 100
+            slots = 1
         text.append(
             CTEST_DEF.format(
                 testname=testname,
                 labels=" ".join(sorted(lab)),
-                processors=procs,
-                timeout=int(tim * 1.1 * float(os.environ["FACMTPS"])),
+                processors=slots,
+                timeout=timeout,
                 options=options,
                 ASTERDATADIR=datadir,
+                TESTDIR=testdir,
                 ext=".bat" if RUNASTER_PLATFORM == "win" else "",
             )
         )

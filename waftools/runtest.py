@@ -107,6 +107,7 @@ def configure(self):
             value = cfg.get("aster", key, fallback="")
         else:
             self.end_msg("not found")
+            self.start_msg("No resource file found, empty content")
 
     dkey = "PREFS_{}".format(key.upper())
     self.env[dkey] = value
@@ -147,8 +148,6 @@ def runtest(self):
         if not exp:
             raise FileNotFoundError(test + ".export")
         cmd = [run_aster, "--test"]
-        if self.variant == "debug":
-            cmd.extend(["-g"])
         cmd.extend(args)
         cmd.append(osp.abspath(exp[0]))
         Logs.info("running %s in '%s'" % (test, self.variant))
