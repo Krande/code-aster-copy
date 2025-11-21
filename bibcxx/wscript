@@ -60,6 +60,12 @@ def build(self):
             use=["BIBCXX", "PYBIND11", "MFRONT", "PYEMBED", "CXX", "ASAN"],
         )
 
+    # Determine install paths - DLLs go to BINDIR on Windows, libs stay in LIBDIR
+    if self.env.ASTER_PLATFORM_MSVC64:
+        lib_install_path = env.ASTERBINDIR
+    else:
+        lib_install_path = env.ASTERLIBDIR
+
     self(
         features=("cxx" if self.env.ASTER_PLATFORM_MINGW else "cxx cxxshlib"),
         name="asterbibcxx",
@@ -82,7 +88,7 @@ def build(self):
             "ASAN",
         ],
         env=env.derive(),
-        install_path=env.ASTERLIBDIR,
+        install_path=lib_install_path,
     )
 
 

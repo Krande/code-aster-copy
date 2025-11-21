@@ -25,7 +25,11 @@ def options(self):
 def configure(self):
     if not self.env["PYTHON"]:
         self.fatal("load python tool first")
-    self.env.LIBPATH_ASTERGC = self.env.ASTERLIBDIR
+    # On Windows MSVC, DLLs should go to BINDIR, otherwise to ASTERLIBDIR
+    if self.env.ASTER_PLATFORM_MSVC64:
+        self.env.LIBPATH_ASTERGC = self.env.ASTERBINDIR
+    else:
+        self.env.LIBPATH_ASTERGC = self.env.ASTERLIBDIR
 
 
 def build(self):
