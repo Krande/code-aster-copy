@@ -23,7 +23,7 @@ import os
 from pathlib import Path
 
 
-from waflib import Configure, TaskGen, Utils, Logs
+from waflib import Configure, TaskGen, Utils, Logs, Build
 
 
 def options(self):
@@ -143,7 +143,8 @@ def post_install_links(ctx):
     if not ctx.cmd.startswith("install"):
         return
 
-    asterlibdir = Path(ctx.env.ASTERLIBDIR)
+    python_install_path = ctx.env.SPDIR if ctx.env.SPDIR else ctx.env.ASTERLIBDIR
+    asterlibdir = Path(python_install_path)
 
     extlib = "so"
     mods = ["aster", "aster_core", "aster_fonctions"]
