@@ -73,13 +73,14 @@ import re
 import sys
 import tempfile
 from glob import glob
-from subprocess import run
+from math import ceil
 from pathlib import Path
+from subprocess import run
 
 from .config import CFG
 from .ctest2junit import XUnitReport
 from .run import get_nbcores
-from .utils import RUNASTER_ROOT, RUNASTER_PLATFORM
+from .utils import RUNASTER_PLATFORM, RUNASTER_ROOT
 
 USAGE = """
     run_ctest [options] [ctest-options] [other arguments...]
@@ -180,6 +181,14 @@ def parse_args(argv):
         help="multiplicative factor applied to the time limit, "
         "passed through environment to run_aster "
         "(default: 1.0)",
+    )
+    parser.add_argument(
+        "--memory-per-slot",
+        action="store",
+        dest="slot_size",
+        type=float,
+        help="memory available per processor (in MB, only used to limit the number "
+        "of jobs running at the same time)",
     )
     parser.add_argument(
         "--only-failed-results",
@@ -311,7 +320,15 @@ def main(argv=None):
     opts = "--sbatch" if args.sbatch else ""
     if not args.rerun_failed:
         # create CTestTestfile.cmake
-        create_ctest_file(testlist, excl, resutest, opts, args.nlist, testdir=args.testdir)
+        create_ctest_file(
+            testlist,
+            excl,
+            resutest,
+            opts,
+            args.nlist,
+            testdir=args.testdir,
+            slot_size=args.slot_size,
+        )
     parallel = CFG.get("parallel", 0)
     labels = set()
     if not parallel:
@@ -349,7 +366,9 @@ def main(argv=None):
     return proc.returncode
 
 
-def create_ctest_file(testlist, exclude, destdir, options, nlist=None, testdir=None):
+def create_ctest_file(
+    testlist, exclude, destdir, options, nlist=None, testdir=None, slot_size=None
+):
     """Create the CTestTestfile.cmake file.
 
     Arguments:
@@ -359,6 +378,7 @@ def create_ctest_file(testlist, exclude, destdir, options, nlist=None, testdir=N
         options (str): Additional command line options.
         nlist (int, optional): Number of files to be created.
         testdir (str, optional): directory containing the testcases.
+        slot_size (float, optional): Slots size (in MB, "memory per proc")
     """
     datadir = Path(osp.normpath(osp.join(RUNASTER_ROOT, "share", "aster"))).as_posix()
     if testdir is None:
@@ -390,7 +410,7 @@ def create_ctest_file(testlist, exclude, destdir, options, nlist=None, testdir=N
         icount += 1
         text = [
             f"set(COMPONENT_NAME ASTER_{tag})",
-            _build_def(datadir, lexport[:size], options, testdir),
+            _build_def(datadir, lexport[:size], options, testdir, slot_size),
         ]
         lexport = lexport[size:]
         filename = osp.join(destdir, "CTestTestfile.cmake")
@@ -423,12 +443,13 @@ zzzz401a
 """
 
 
-def _build_def(datadir, lexport, options, testdir):
+def _build_def(datadir, lexport, options, testdir, slot_size):
     re_list = re.compile("P +testlist +(.*)$", re.M)
     re_nod = re.compile("P +mpi_nbnoeud +([0-9]+)", re.M)
     re_mpi = re.compile("P +mpi_nbcpu +([0-9]+)", re.M)
     re_thr = re.compile("P +ncpus +([0-9]+)", re.M)
     re_time = re.compile("P +time_limit +([0-9]+)", re.M)
+    re_mem = re.compile("P +memory_limit +([0-9]+)", re.M)
     text = []
     for exp in lexport:
         if not osp.isfile(exp):
@@ -440,6 +461,7 @@ def _build_def(datadir, lexport, options, testdir):
         mpi = 1
         thr = 1
         tim = 86400
+        mem = 1
         with open(exp, "r") as fobj:
             export = fobj.read()
         mat = re_list.search(export)
@@ -457,20 +479,26 @@ def _build_def(datadir, lexport, options, testdir):
         mat = re_time.search(export)
         if mat:
             tim = int(mat.group(1))
+        mat = re_mem.search(export)
+        if mat:
+            mem = int(mat.group(1))
         lab.append(f"nodes={nod:02d}")
         if testname in TEST_FILES_INTEGR:
             lab.append("SMECA_INTEGR")
-        procs = mpi * thr
+        # number of "slots" to be used
+        slots = mpi * thr
+        if slot_size:
+            slots = max(slots, int(ceil(mem / slot_size)))
         timeout = int(tim * 1.1 * float(os.environ["FACMTPS"]))
         if "sbatch" in options:
             # only used by ctest to order runs (separated jobs)
             timeout *= 100
-            procs = 1
+            slots = 1
         text.append(
             CTEST_DEF.format(
                 testname=testname,
                 labels=" ".join(sorted(lab)),
-                processors=procs,
+                processors=slots,
                 timeout=timeout,
                 options=options,
                 ASTERDATADIR=datadir,

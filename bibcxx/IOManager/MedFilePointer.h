@@ -6,7 +6,7 @@
  * @brief Fichier entete de la classe MEdFilePointer
  * @author Nicolas Sellenet
  * @section LICENCE
- *   Copyright (C) 1991 - 2024  EDF R&D                www.code-aster.org
+ *   Copyright (C) 1991 - 2025  EDF R&D                www.code-aster.org
  *
  *   This file is part of Code_Aster.
  *
@@ -54,6 +54,9 @@ class MedFilePointer {
     bool _isOpen = false;
     /** @brief true if file is open in parallel */
     bool _parallelOpen = false;
+
+    /** @brief Check that file version match lib version */
+    void checkFileVersion();
 
   public:
     /** @brief Constructor */
