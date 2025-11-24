@@ -77,13 +77,17 @@ class VisuCutBuilder:
         return cls(mesh_med=mesh_med, prefix_output_field_name=prefix_output_field_name)
 
     def add_field_on_nodes_from_aster_result_all_timesteps(
-        self, aster_result, field_name: str, nodes: list[int], med_field_name: Optional[str] = None
+        self, aster_result, field_name: str, nodes: List[int], med_field_name: Optional[str] = None
     ):
         nume_ordres = aster_result.getAccessParameters()["NUME_ORDRE"]
         instants = aster_result.getAccessParameters().get("INST", [0])
 
         # Create field with linearise fields
-        for instant, nume_ordre in zip(instants, nume_ordres, strict=True):
+        if len(instants) != len(nume_ordres):
+            raise ValueError(
+                f"instants {instants} and nume_ordres {nume_ordres} must have the same lengths"
+            )
+        for instant, nume_ordre in zip(instants, nume_ordres):
             self.add_field_on_nodes_from_aster_result_1_timestep(
                 aster_result=aster_result,
                 field_name=field_name,
@@ -97,7 +101,7 @@ class VisuCutBuilder:
         self,
         aster_result,
         field_name: str,
-        nodes: list[int],
+        nodes: List[int],
         nume_ordre: int,
         instant: float,
         med_field_name: Optional[str] = None,
