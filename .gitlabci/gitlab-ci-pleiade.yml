@@ -20,6 +20,8 @@ variables:
   # WEEKLY_RUN should be set in scheduled pipeline
   WEEKLY_RUN: "unset"
   TZ: "Europe/Paris"
+  UV_DEFAULT_INDEX: "https://nexus.retd.edf.fr/repository/pypi-all/simple"
+  UV_INSECURE_HOST: "https://nexus.retd.edf.fr"
 
 default:
   tags:
@@ -107,6 +109,22 @@ minimal_build:
       artifacts: false
   script:
     - .gitlabci/compile_minimal.sh
+  rules:
+    - if: $CI_MERGE_REQUEST_IID
+
+python-unit-tests:
+  interruptible: true
+  stage: test
+  image: nexus.retd.edf.fr:5012/python:3.11-slim-bookworm
+  needs: []
+  before_script:
+    - apt-get install -y git
+    - pip install uv
+  script:
+    - uv run pytest ./tests --junit-xml=python_unit_tests.xml
+  artifacts:
+    reports:
+      junit: python_unit_tests.xml
   rules:
     - if: $CI_MERGE_REQUEST_IID
 
