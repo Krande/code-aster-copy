@@ -1486,7 +1486,7 @@ EPRESGA = LocatedComponents(phys=PHY.PRES_R, type="ELGA", location="RIGI", compo
 
 ETEMPMA = LocatedComponents(phys=PHY.TEMP_R, type="ELGA", location="MATER", components=("TEMP",))
 
-ETEMPNO = LocatedComponents(phys=PHY.TEMP_R, type="ELNO", components=("TEMP",))
+ETEMPNO = LocatedComponents(phys=PHY.TEMP_R, type="ELNO", components=("TEMP", "SECH"))
 
 ETEMPPG = LocatedComponents(phys=PHY.TEMP_R, type="ELGA", location="RIGI", components=("TEMP",))
 

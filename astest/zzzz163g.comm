@@ -91,6 +91,7 @@ CHAM_TEMP = CREA_CHAMP(
         _F(GROUP_MA="s_droite", NOM_CMP="TEMP", VALE=10.0),
         _F(GROUP_MA="s_gauche", NOM_CMP="TEMP", VALE=11.0),
     ),
+    PROL_ZERO="OUI",
 )
 
 L_INST = DEFI_LIST_REEL(
