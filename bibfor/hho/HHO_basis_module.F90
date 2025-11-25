@@ -1359,7 +1359,7 @@ contains
             coeff_mono(22:28) = coeff_mono(22:28)*sqrt(13.d0/measure)
 !
 !           Set to zero unused coefficient
-            coeff_shift(nb_basis+2:8) = 0.d0
+            coeff_shift(nb_basis+2:8) = 0
 !
         else
 !           Ortho-normalisation with modified Gramm-Schmidt

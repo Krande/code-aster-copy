@@ -43,6 +43,8 @@ module compensated_ops_module
         module procedure det2
     end interface det
 
+    public :: addFMA
+
 ! -------------------------------------------------------
 !
 ! Compensated algorithms from Ogita-Oishi-Rump
@@ -122,7 +124,7 @@ contains
         real(kind=8), intent(in) :: vx(:)
         real(kind=8), intent(in) :: vy(size(vx))
         real(kind=8) :: p, s, h, r, q, pp, t
-        integer(kind=8) i
+        integer(kind=8) :: i
 
         call twoproduct(vx(1), vy(1), p, s)
         do i = 2, size(vx)
@@ -140,7 +142,7 @@ contains
         real(kind=8), intent(in) :: vx(:)
         real(kind=8), intent(in) :: vy(size(vx))
         real(kind=8) :: p, s, h, r, q, pp, t
-        integer(kind=8) i
+        integer(kind=8) :: i
 
         call twoproductFMA(vx(1), vy(1), p, s)
         do i = 2, size(vx)
@@ -182,7 +184,7 @@ contains
         real(kind=8), dimension(:, :), intent(in) :: A
         real(kind=8), dimension(:), intent(in) :: x
         real(kind=8), dimension(size(A, 1)) :: y
-        integer :: i
+        integer(kind=8) :: i
 
         do i = 1, size(A, 1)
             y(i) = dot2FMA(A(i, :), x)
