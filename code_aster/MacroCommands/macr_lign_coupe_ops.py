@@ -1025,10 +1025,13 @@ def macr_lign_coupe_ops(
             visu_cut.add_field_on_nodes_from_aster_result_all_timesteps(
                 aster_result=current_resu, field_name=field_name, nodes=node_ids
             )
+
+            same_axes_for_all_cut = True
+            add_axe_mask = True
             if result_axis_system == AxisSystem.GLOBAL:
                 for axis_name, vect in unit_depl_configs.items():
                     visu_cut.add_field_on_nodes(
-                        field_name=f"REPERE_{axis_name}",
+                        field_name=f"AXE_{axis_name}",
                         nodes=node_ids,
                         values=np.array([vect] * len(node_ids)),
                         components=compo_depl_unit,
@@ -1060,14 +1063,36 @@ def macr_lign_coupe_ops(
                     unit_axis = np.array(vect_unit)
                     local_axis_in_global_system = transfer_matrix @ unit_axis
                     visu_cut.add_field_on_nodes(
-                        field_name=f"REPERE_{axis_name}",
+                        field_name=f"AXE_{axis_name}",
                         nodes=node_ids,
                         values=local_axis_in_global_system,
                         components=compo_depl_unit,
                     )
 
+                    same_axes_for_all_cut = (
+                        same_axes_for_all_cut
+                        and np.unique(local_axis_in_global_system, axis=0).shape[0] == 1
+                    )
+            else:
+                add_axe_mask = False
+
+            # Add mask to only display one node in paraview when every axes are the same
+            if add_axe_mask:
+                if same_axes_for_all_cut:
+                    # mask every node except last one
+                    axis_base_mask = np.full(shape=(len(node_ids), 1), fill_value=0, dtype=int)
+                    axis_base_mask[-1, 0] = 1
+                else:
+                    # show every node
+                    axis_base_mask = np.full(shape=(len(node_ids), 1), fill_value=1, dtype=int)
+                visu_cut.add_field_on_nodes(
+                    field_name="AXE_MASK",
+                    nodes=node_ids,
+                    values=axis_base_mask,
+                    components=("SHOW",),
+                )
+
             group_name = f"CUT_{intitl}"
-            print(f"Add {group_name}")
             visu_cut.add_group(name=group_name, ids=node_ids, geo_type=VisuCutBuilder.NODE)
 
     if write_visu:

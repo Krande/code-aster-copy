@@ -551,19 +551,19 @@ test.assertArrayEqual(
 
 # checking if axis fields are perpendicular to each other
 actual_x_local = (
-    actual_medfields.getFieldWithName(f"CUT_REPERE_X")
+    actual_medfields.getFieldWithName(f"CUT_AXE_X")
     .getFieldAtLevel(mc.ON_NODES, 1, 0, 1)
     .getArray()
     .toNumPyArray()
 )
 actual_y_local = (
-    actual_medfields.getFieldWithName(f"CUT_REPERE_Y")
+    actual_medfields.getFieldWithName(f"CUT_AXE_Y")
     .getFieldAtLevel(mc.ON_NODES, 1, 0, 1)
     .getArray()
     .toNumPyArray()
 )
 actual_z_local = (
-    actual_medfields.getFieldWithName(f"CUT_REPERE_Z")
+    actual_medfields.getFieldWithName(f"CUT_AXE_Z")
     .getFieldAtLevel(mc.ON_NODES, 1, 0, 1)
     .getArray()
     .toNumPyArray()
@@ -595,7 +595,7 @@ ref_axis_cut_20 = {
     "Z": np.array([ref_vect_z_local] * 3),
 }
 for axis, array_vects in ref_axis_cut_20.items():
-    actual_field = actual_medfields.getFieldWithName(f"CUT_REPERE_{axis}").getFieldAtLevel(
+    actual_field = actual_medfields.getFieldWithName(f"CUT_AXE_{axis}").getFieldAtLevel(
         mc.ON_NODES, 1, 0, 1
     )
     components = actual_field.getArray().getInfoOnComponents()

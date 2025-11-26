@@ -128,6 +128,7 @@ def test_visu_builder_works_for_node_fields(tmp_path):
         ),
     )
     with pytest.raises(ValueError):
+        # incoherent components
         visu_cut.add_field_on_nodes(
             field_name="DEPL",
             nodes=[1],
@@ -137,6 +138,7 @@ def test_visu_builder_works_for_node_fields(tmp_path):
             instant=0.1,
         )
     with pytest.raises(ValueError):
+        # incoherent instant
         visu_cut.add_field_on_nodes(
             field_name="DEPL",
             nodes=[1],
