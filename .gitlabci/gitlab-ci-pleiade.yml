@@ -1,6 +1,5 @@
 variables:
   MINIO_URL: https://minio.retd.edf.fr
-  MINIO_MC: ./mc --insecure
   ROOT_URL: https://$GITLAB_TOKEN_NAME:$GITLAB_TOKEN@gitlab.pleiade.edf.fr/codeaster
   PREREQ_VERSION: 20251026
   OSNAME: debian-12
@@ -57,6 +56,7 @@ before_script:
   stage: setup
   script:
     - .gitlabci/prepare.sh
+    - .gitlabci/prepare_pixi.sh
   artifacts:
     paths:
       - devtools/*
@@ -337,7 +337,7 @@ verification_test_pkg:
     - job: compile_pkg
       optional: true
   script:
-    - test "$(date +%u)" -ne ${WEEKLY_RUN} && echo "not run" && exit 0
+    - test "$(date +%u)" != "${WEEKLY_RUN}" && echo "not run" && exit 0
     - apt-get update
     - apt-get install -y cmake git wget
     - .gitlabci/add-allow-run-as-root.sh
@@ -377,7 +377,7 @@ verification_test_win:
     - job: compile_win
       optional: true
   script:
-    - test "$(date +%u)" -ne ${WEEKLY_RUN} && echo "not run" && exit 0
+    - test "$(date +%u)" != "${WEEKLY_RUN}" && echo "not run" && exit 0
     - !reference [.verification_test, script]
   allow_failure: true
 
@@ -389,7 +389,6 @@ prepare_pixi:
     OSNAME: pixi
   extends: .prepare
   script:
-    - .gitlabci/prepare_pixi.sh
     - !reference [.prepare, script]
   rules:
     - if: $BUILDTYPE == "nightly"
@@ -423,7 +422,7 @@ verification_test_pixi:
     - job: compile_pixi
       optional: true
   script:
-    - test "$(date +%u)" -ne ${WEEKLY_RUN} && echo "not run" && exit 0
+    - test "$(date +%u)" != "${WEEKLY_RUN}" && echo "not run" && exit 0
     - ls -la ${PIXI_HOME} || true
     - pixi run .gitlabci/test.sh
         -L verification
