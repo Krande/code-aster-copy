@@ -500,30 +500,23 @@ class PostRocheAnalytic:
             # selon la formule proposée par la formule REFE_ELAS
 
             # mT OK car pas d'autres chargements en Torsion
-            # # UT01-X10 :
-            self._m_t_abat = self._gopt_moment * np.abs(self._mt_deplacement_impose)
+            # # UT01-X14 :
+            self._m_t_abat_noperm = self._gopt_moment * np.abs(self._mt_deplacement_impose)
 
             # m_fy:
-            m_signe = self._mfy_poids_propre
-            sign = np.ones(len(m_signe))
-            for i in range(len(m_signe)):
-                if m_signe[i] < 0:
-                    sign[i] = -1
-
             # UT01-X11 :
-            self._mfy_abat = self._mfy_poids_propre + sign * (
-                np.abs(self._mfy_sismique_qs) + self._g_sopt_moment * np.abs(self._mfy_sismique_dyn)
+            self._mfy_abat_perm = self._mfy_poids_propre
+            # UT01-X15 :
+            self._mfy_abat_noperm = np.abs(self._mfy_sismique_qs) + self._g_sopt_moment * np.abs(
+                self._mfy_sismique_dyn
             )
 
             # m_fz
-            sign = np.ones(len(self._mfz_sismique_qs))
-            m_signe = self._mfz_depl_impo_non_sism
-            for i in range(len(m_signe)):
-                if m_signe[i] < 0:
-                    sign[i] = -1
             # UT01-X12:
-            self._mfz_abat = self._gopt_moment * self._mfz_depl_impo_non_sism + sign * (
-                np.abs(self._mfz_sismique_qs) + self._g_sopt_moment * np.abs(self._mfz_sismique_dyn)
+            self._mfz_abat_perm = self._gopt_moment * self._mfz_depl_impo_non_sism
+            # UT01-X16:
+            self._mfz_abat_noperm = np.abs(self._mfz_sismique_qs) + self._g_sopt_moment * np.abs(
+                self._mfz_sismique_dyn
             )
 
         else:  # VARIANTE=RCC_MRX
@@ -531,36 +524,41 @@ class PostRocheAnalytic:
             # Nota: g_opt_moment = gS_opt_moment = 0 si VARIANTE=RCC_MRX
 
             # m_t
-            # UT01-X10 :
-            self._m_t_abat = self._gopt * np.abs(self._mt_deplacement_impose)
+            # UT01-X14 :
+            self._m_t_abat_noperm = self._gopt * np.abs(self._mt_deplacement_impose)
 
             # m_fy:
-            m_signe = self._mfy_poids_propre
-            sign = np.ones(len(self._mfy_sismique_qs))
-            for i in range(len(m_signe)):
-                if m_signe[i] < 0:
-                    sign[i] = -1
-
             # UT01-X11 :
-            self._mfy_abat = self._mfy_poids_propre + sign * (
-                np.abs(self._mfy_sismique_qs) + self._g_sopt * np.abs(self._mfy_sismique_dyn)
+            self._mfy_abat_perm = self._mfy_poids_propre
+            # UT01-X15 :
+            self._mfy_abat_noperm = np.abs(self._mfy_sismique_qs) + self._g_sopt * np.abs(
+                self._mfy_sismique_dyn
             )
 
             # m_fz
-            sign = np.ones(len(self._mfz_sismique_qs))
-            m_signe = self._mfz_depl_impo_non_sism
-            for i in range(len(m_signe)):
-                if m_signe[i] < 0:
-                    sign[i] = -1
             # UT01-X12:
-            self._mfz_abat = self._gopt * self._mfz_depl_impo_non_sism + sign * (
-                np.abs(self._mfz_sismique_qs) + self._g_sopt * np.abs(self._mfz_sismique_dyn)
+            self._mfz_abat_perm = self._gopt * self._mfz_depl_impo_non_sism
+            # UT01-X16 :
+            self._mfz_abat_noperm = np.abs(self._mfz_sismique_qs) + self._g_sopt * np.abs(
+                self._mfz_sismique_dyn
             )
 
         # UT01-X13 (commun pour les 2) :
-        self._m_abat = np.sqrt(self._m_t_abat**2 + self._mfy_abat**2 + self._mfz_abat**2)
+        self._m_abat_perm = np.sqrt(self._mfy_abat_perm**2 + self._mfz_abat_perm**2)
+        # UT01-X17 (commun pour les 2) :
+        self._m_abat_noperm = np.sqrt(
+            self._m_t_abat_noperm**2 + self._mfy_abat_noperm**2 + self._mfz_abat_noperm**2
+        )
 
-        return self._m_t_abat, self._mfy_abat, self._mfz_abat, self._m_abat
+        return (
+            self._m_t_abat_noperm,
+            self._mfy_abat_perm,
+            self._mfz_abat_perm,
+            self._m_abat_perm,
+            self._mfy_abat_noperm,
+            self._mfz_abat_noperm,
+            self._m_abat_noperm,
+        )
 
     def calcul_sigma_eq(self):
         """calcule le sigma equivalent (UT01-X9)"""
@@ -572,24 +570,12 @@ class PostRocheAnalytic:
             _m_t_abat2 = self._gopt * self._mt_deplacement_impose
 
             # m_fy:
-            m_signe = self._mfy_poids_propre
-            sign = np.ones(len(m_signe))
-            for i in range(len(m_signe)):
-                if m_signe[i] < 0:
-                    sign[i] = -1
-
-            _mfy_abat2 = self._mfy_poids_propre + sign * (
+            _mfy_abat2 = abs(self._mfy_poids_propre) + abs(
                 np.abs(self._mfy_sismique_qs) + self._g_sopt * np.abs(self._mfy_sismique_dyn)
             )
 
             # m_fz
-            sign = np.ones(len(self._mfz_sismique_qs))
-            m_signe = self._mfz_depl_impo_non_sism
-            for i in range(len(m_signe)):
-                if m_signe[i] < 0:
-                    sign[i] = -1
-            # UT01-X12:
-            _mfz_abat2 = self._gopt * self._mfz_depl_impo_non_sism + sign * (
+            _mfz_abat2 = abs(self._gopt * self._mfz_depl_impo_non_sism) + abs(
                 np.abs(self._mfz_sismique_qs) + self._g_sopt * np.abs(self._mfz_sismique_dyn)
             )
 
@@ -655,8 +641,12 @@ class PostRocheAnalytic:
                 self._sigma_eq_opt = (
                     self._sigpres2
                     + np.sqrt(
-                        (0.87 * self._m_t_abat) ** 2
-                        + (0.79 * self._B_2) ** 2 * (self._mfy_abat**2 + self._mfz_abat**2)
+                        (0.87 * self._m_t_abat_noperm) ** 2
+                        + (0.79 * self._B_2) ** 2
+                        * (
+                            (abs(self._mfy_abat_perm) + abs(self._mfy_abat_noperm)) ** 2
+                            + (abs(self._mfz_abat_perm) + abs(self._mfz_abat_noperm)) ** 2
+                        )
                     )
                     / self._Z
                 )
