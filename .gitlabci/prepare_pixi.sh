@@ -16,4 +16,4 @@ EOF
 
 pixi --version
 pixi config set --global run-post-link-scripts insecure
-pixi global install git
+pixi global install git minio-client
