@@ -42,6 +42,10 @@ if [ -z "${changes}" ]; then
     fi
 fi
 
+if [ "${BUILDTYPE}" = "ci" ] && [ "${CI_JOB_NAME}" != "known_failures_test" ]; then
+    args+=( "--exclude-testlist" ".gitlabci/known_failures-pleiade.list" )
+fi
+
 # keep only outputs for failed tests, except for nightly runs
 if [ "${BUILDTYPE}" = "ci" ]; then
     args+=( "--only-failed-results" )
@@ -105,7 +109,7 @@ if [ "${BUILDTYPE}" = "nightly" ] || [ "${BUILDTYPE}" = "nightly-coverage" ]; th
 fi
 
 # weekly runs: coverage of keywords
-if [ "$(date +%u)" = "${WEEKLY_RUN}" ]; then
+if [ "$(date +%u)" = "${WEEKLY_RUN}" ] && [ "${OSNAME}" = "debian-12" ]; then
     .gitlabci/coverage.sh . install results
 fi
 

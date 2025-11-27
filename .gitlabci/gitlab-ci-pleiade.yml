@@ -158,7 +158,6 @@ minimal_test:
   script:
     - .gitlabci/test.sh
         -L verification
-        --exclude-testlist .gitlabci/known_failures-pleiade.list
         --resutest=results
   artifacts:
     when: always
@@ -426,6 +425,5 @@ verification_test_pixi:
     - ls -la ${PIXI_HOME} || true
     - pixi run .gitlabci/test.sh
         -L verification
-        --exclude-testlist .gitlabci/known_failures-pleiade.list
         --resutest=results
   allow_failure: true
