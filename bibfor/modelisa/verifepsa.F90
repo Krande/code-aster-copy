@@ -15,22 +15,22 @@
 ! You should have received a copy of the GNU General Public License
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
-
-subroutine verifepsa(fami, kpg, ksp, poum, &
-                     epsa, iepsa_)
 !
+subroutine verifepsa(famiZ, kpg, ksp, poumZ, epsiAnel)
+!
+    use BehaviourStrain_type
     implicit none
 !
-#include "jeveux.h"
+#include "asterc/r8nnem.h"
 #include "asterfort/assert.h"
+#include "asterfort/Behaviour_type.h"
 #include "asterfort/rcvarc.h"
+#include "jeveux.h"
 !
-    character(len=*), intent(in) :: fami
-    integer(kind=8), intent(in) :: kpg
-    integer(kind=8), intent(in) :: ksp
-    character(len=*), intent(in) :: poum
-    real(kind=8), intent(out) :: epsa(6)
-    integer(kind=8), optional, intent(out) :: iepsa_(6)
+    character(len=*), intent(in) :: famiZ
+    integer(kind=8), intent(in) :: kpg, ksp
+    character(len=*), intent(in) :: poumZ
+    real(kind=8), intent(out) :: epsiAnel(VARC_EPSA_NBCMP)
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -38,89 +38,69 @@ subroutine verifepsa(fami, kpg, ksp, poum, &
 !
 ! --------------------------------------------------------------------------------------------------
 !
-! In  fami         : Gauss family for integration point rule
-! In  kpg          : current point gauss
-! In  ksp          : current "sous-point" gauss
-! In  poum         : parameters evaluation
-!                     '-' for previous temperature
-!                     '+' for current temperature
-!                     'T' for current and previous temperature => epsa is increment
-! In  ndim         : space dimension
-! Out epsa         : anelastic strain
-! Out iepsa_       : 0 if defined
-!                    1 if not
+! In  fami             : Gauss family for integration point rule
+! In  kpg              : current point gauss
+! In  ksp              : current "sous-point" gauss
+! In  poum             : '-'  '+' or 'T' (previous, current and both)
+! Out epsiAnel         : (generic) inelastic strains
 !
 ! --------------------------------------------------------------------------------------------------
 !
-    integer(kind=8) :: i, iretm(6), iretp(6), iret(6)
-    real(kind=8) :: defam(6), defap(6)
-    character(len=6), parameter :: name_epsa(6) = (/'EPSAXX', 'EPSAYY', 'EPSAZZ', &
-                                                    'EPSAXY', 'EPSAXZ', 'EPSAYZ'/)
+    integer(kind=8) :: iCmp
+    integer(kind=8) :: iretAnelPrev(VARC_EPSA_NBCMP), iretAnelCurr(VARC_EPSA_NBCMP)
+    real(kind=8) :: epsiAnelPrev(VARC_EPSA_NBCMP), epsiAnelCurr(VARC_EPSA_NBCMP)
+    character(len=1) :: poum
 !
 ! --------------------------------------------------------------------------------------------------
 !
-    defam = 0.d0
-    defap = 0.d0
-    epsa = 0.d0
-!
+    epsiAnel = 0.d0
+    poum = poumZ
+
 ! - Get anelastic strains
-!
     if (poum .eq. 'T' .or. poum .eq. '-') then
-        do i = 1, 6
-            call rcvarc(' ', name_epsa(i), '-', fami, kpg, &
-                        ksp, defam(i), iretm(i))
-            if (iretm(i) .ne. 0) then
-                defam(i) = 0.d0
+        epsiAnelPrev = 1
+        epsiAnelPrev = r8nnem()
+        do iCmp = 1, VARC_EPSA_NBCMP
+            call rcvarc(' ', varcAnelName(iCmp), '-', famiZ, kpg, &
+                        ksp, epsiAnelPrev(iCmp), iretAnelPrev(iCmp))
+            if (iretAnelPrev(iCmp) .ne. 0) then
+                epsiAnelPrev(iCmp) = 0.d0
             end if
         end do
     end if
-!
+    epsiAnelCurr = 1
+    epsiAnelCurr = r8nnem()
     if (poum .eq. 'T' .or. poum .eq. '+') then
-        do i = 1, 6
-            call rcvarc(' ', name_epsa(i), '+', fami, kpg, &
-                        ksp, defap(i), iretp(i))
-            if (iretp(i) .ne. 0) then
-                defap(i) = 0.d0
+        do iCmp = 1, VARC_EPSA_NBCMP
+            call rcvarc(' ', varcAnelName(iCmp), '+', famiZ, kpg, &
+                        ksp, epsiAnelCurr(iCmp), iretAnelCurr(iCmp))
+            if (iretAnelCurr(iCmp) .ne. 0) then
+                epsiAnelCurr(iCmp) = 0.d0
             end if
         end do
     end if
-!
-! - Compute poum strains
-!
+
+! - Compute strains
     if (poum .eq. 'T') then
-        do i = 1, 6
-            iret(i) = iretm(i)+iretp(i)
-            if (iret(i) .eq. 0) then
-                epsa(i) = defap(i)-defam(i)
+        do iCmp = 1, VARC_EPSA_NBCMP
+            if (iretAnelPrev(iCmp)+iretAnelCurr(iCmp) .eq. 0) then
+                epsiAnel(iCmp) = epsiAnelCurr(iCmp)-epsiAnelPrev(iCmp)
             end if
         end do
-!
     else if (poum .eq. '-') then
-        do i = 1, 6
-            iret(i) = iretm(i)
-            if (iret(i) .eq. 0) then
-                epsa(i) = defam(i)
+        do iCmp = 1, VARC_EPSA_NBCMP
+            if (iretAnelPrev(iCmp) .eq. 0) then
+                epsiAnel(iCmp) = epsiAnelPrev(iCmp)
             end if
         end do
-!
     else if (poum .eq. '+') then
-        do i = 1, 6
-            iret(i) = iretp(i)
-            if (iret(i) .eq. 0) then
-                epsa(i) = defap(i)
+        do iCmp = 1, VARC_EPSA_NBCMP
+            if (iretAnelCurr(iCmp) .eq. 0) then
+                epsiAnel(iCmp) = epsiAnelCurr(iCmp)
             end if
         end do
-!
     else
-        ASSERT(((poum .eq. 'T') .or. (poum .eq. '-') .or. (poum .eq. '+')))
-    end if
-!
-! - Output errors
-!
-    if (present(iepsa_)) then
-        do i = 1, 6
-            iepsa_(i) = iret(i)
-        end do
+        ASSERT(ASTER_FALSE)
     end if
 !
 end subroutine

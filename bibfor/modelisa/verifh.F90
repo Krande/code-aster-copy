@@ -15,27 +15,25 @@
 ! You should have received a copy of the GNU General Public License
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
-
-subroutine verifh(fami, kpg, ksp, poum, j_mater, &
-                  epshy, materi_, ihydr_)
+!
+subroutine verifh(famiZ, kpg, ksp, poumZ, jvMaterCode, epsyHydr)
 !
     implicit none
 !
-#include "jeveux.h"
-#include "asterfort/rcvarc.h"
-#include "asterfort/rcvalb.h"
-#include "asterfort/tecael.h"
-#include "asterfort/utmess.h"
+#include "asterc/r8nnem.h"
+#include "asterfort/assert.h"
+#include "asterfort/ElasticityMaterial_type.h"
 #include "asterfort/get_elas_id.h"
+#include "asterfort/rcvalb.h"
+#include "asterfort/rcvarc.h"
+#include "asterfort/utmess.h"
+#include "jeveux.h"
 !
-    character(len=*), intent(in) :: fami
-    integer(kind=8), intent(in) :: kpg
-    integer(kind=8), intent(in) :: ksp
-    character(len=*), intent(in) :: poum
-    integer(kind=8), intent(in) :: j_mater
-    real(kind=8), intent(out) :: epshy
-    character(len=8), optional, intent(in) :: materi_
-    integer(kind=8), optional, intent(out) :: ihydr_
+    character(len=*), intent(in) :: famiZ
+    integer(kind=8), intent(in) :: kpg, ksp
+    character(len=*), intent(in) :: poumZ
+    integer(kind=8), intent(in) :: jvMaterCode
+    real(kind=8), intent(out) :: epsyHydr
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -44,128 +42,115 @@ subroutine verifh(fami, kpg, ksp, poum, j_mater, &
 !
 ! --------------------------------------------------------------------------------------------------
 !
-! In  fami         : Gauss family for integration point rule
-! In  kpg          : current point gauss
-! In  ksp          : current "sous-point" gauss
-! In  poum         : parameters evaluation
-!                     '-' for previous temperature
-!                     '+' for current temperature
-!                     'T' for current and previous temperature => epshy is increment
-! In  j_mater      : coded material address
-! In  materi       : name of material if multi-material Gauss point (PMF)
-! Out epshy        : strain from autogenous shrinkage (retrait endogène)
-! Out ihydr_       : 0 if hydration is defined
-!!                   1 if not
+! In  fami             : Gauss family for integration point rule
+! In  kpg              : current point gauss
+! In  ksp              : current "sous-point" gauss
+! In  poum             : '-'  '+' or 'T' (previous, current and both)
+! In  jvMaterCode      : adress for material parameters
+! Out epsyHydr         : strain from autogenous shrinkage (retrait endogène)
 !
 ! --------------------------------------------------------------------------------------------------
 !
-    character(len=8) :: materi
-    integer(kind=8) :: iret_hydr, iret_hydrm, iret_hydrp
-    real(kind=8) :: hydrm, hydrp
-    real(kind=8) :: bendom, bendop
-    integer(kind=8) :: elas_id, iadzi, iazk24, icodrm(1), icodrp(1)
-    character(len=8) :: nomres, valk(3)
-    character(len=16) :: elas_keyword
-    real(kind=8) :: valres(1)
+    character(len=8), parameter :: multiMater = " "
+    integer(kind=8), parameter :: nbProp = 1
+    integer(kind=8) :: propCodePrev(nbProp), propCodeCurr(nbProp)
+    character(len=8), parameter :: propName(nbProp) = "B_ENDOGE"
+    real(kind=8) :: propVale(nbProp)
+    character(len=8), parameter :: exteName = "HYDR"
+    integer(kind=8) :: iretHydr, iretHydrPrev, iretHydrCurr
+    real(kind=8) :: hydrPrev, hydrCurr
+    real(kind=8) :: bendoPrev, bendoCurr
+    character(len=1) :: poum
+    character(len=16) :: valk(2)
+    aster_logical :: lHasProp
+    character(len=16) :: elasKeyword
+    integer(kind=8) :: elasID
 !
 ! --------------------------------------------------------------------------------------------------
 !
-    materi = ' '
-    if (present(materi_)) then
-        materi = materi_
-    end if
-!
-    iret_hydr = 0
-    iret_hydrm = 0
-    iret_hydrp = 0
-    hydrm = 0.d0
-    hydrp = 0.d0
-    epshy = 0.d0
-!
-! - No hydratation -> strain is zero
-!
-    call rcvarc(' ', 'HYDR', '+', fami, kpg, &
-                ksp, hydrp, iret_hydr)
-    if (iret_hydr .ne. 0) then
-        goto 999
-    end if
-!
-! - Get hydratation
-!
-    if (poum .eq. 'T' .or. poum .eq. '-') then
-        call rcvarc(' ', 'HYDR', '-', fami, kpg, &
-                    ksp, hydrm, iret_hydrm)
-    end if
-!
-    if (poum .eq. 'T' .or. poum .eq. '+') then
-        call rcvarc(' ', 'HYDR', '+', fami, kpg, &
-                    ksp, hydrp, iret_hydrp)
-    end if
-!
-! - Get type of elasticity (Isotropic/Orthotropic/Transverse isotropic)
-!
-    call get_elas_id(j_mater, elas_id, elas_keyword)
-!
-! - Get elastic parameters
-!
-    nomres = 'B_ENDOGE'
-!
-    icodrm = 0
-    icodrp = 0
-    if (poum .eq. 'T' .or. poum .eq. '-') then
-        if (iret_hydrm .eq. 0) then
-            call rcvalb(fami, kpg, ksp, '-', j_mater, &
-                        materi, elas_keyword, 0, ' ', [0.d0], &
-                        1, nomres, valres(1), icodrm(1), 1)
-            bendom = valres(1)
+    epsyHydr = 0.d0
+    poum = poumZ
+
+! - Detect external state variable
+    iretHydr = 1
+    call rcvarc(' ', exteName, '+', famiZ, kpg, &
+                ksp, hydrCurr, iretHydr)
+
+    if (iretHydr .eq. 0) then
+! ----- Get values
+        iretHydrPrev = 1
+        hydrPrev = r8nnem()
+        if (poum .eq. 'T' .or. poum .eq. '-') then
+            call rcvarc(' ', exteName, '-', famiZ, kpg, &
+                        ksp, hydrPrev, iretHydrPrev)
         end if
-    end if
-    if (poum .eq. 'T' .or. poum .eq. '+') then
-        if (iret_hydrp .eq. 0) then
-            call rcvalb(fami, kpg, ksp, '+', j_mater, &
-                        materi, elas_keyword, 0, ' ', [0.d0], &
-                        1, nomres, valres(1), icodrp(1), 1)
-            bendop = valres(1)
+        iretHydrCurr = 1
+        hydrCurr = r8nnem()
+        if (poum .eq. 'T' .or. poum .eq. '+') then
+            call rcvarc(' ', exteName, '+', famiZ, kpg, &
+                        ksp, hydrCurr, iretHydrCurr)
         end if
-    end if
-!
-! - Test
-!
-    if ((icodrm(1)+icodrp(1)) .ne. 0) then
-        call tecael(iadzi, iazk24)
-        valk(1) = zk24(iazk24-1+3) (1:8)
-        valk(2) = 'HYDR'
-        valk(3) = nomres
-        call utmess('F', 'COMPOR5_32', nk=3, valk=valk)
-    end if
-!
-! - Compute strains
-!
-    if (poum .eq. 'T') then
-        if (iret_hydrm+iret_hydrp .eq. 0) then
-            epshy = (-bendop*hydrp)-(-bendom*hydrm)
+
+! ----- Get parameters
+        call get_elas_id(jvMaterCode, elasID, elasKeyword)
+        propCodePrev = 1
+        bendoPrev = r8nnem()
+        if (poum .eq. 'T' .or. poum .eq. '-') then
+            if (iretHydrPrev .eq. 0) then
+                call rcvalb(famiZ, kpg, ksp, '-', &
+                            jvMaterCode, multiMater, elasKeyword, &
+                            0, ' ', [0.d0], &
+                            nbProp, propName, propVale, &
+                            propCodePrev, 1)
+                bendoPrev = propVale(1)
+            end if
         end if
-    else if (poum .eq. '-') then
-        if (iret_hydrm .eq. 0) then
-            epshy = -bendom*hydrm
+        propCodeCurr = 1
+        bendoCurr = r8nnem()
+        if (poum .eq. 'T' .or. poum .eq. '+') then
+            if (iretHydrCurr .eq. 0) then
+                call rcvalb(famiZ, kpg, ksp, '+', &
+                            jvMaterCode, multiMater, elasKeyword, &
+                            0, ' ', [0.d0], &
+                            nbProp, propName, propVale, &
+                            propCodeCurr, 1)
+                bendoCurr = propVale(1)
+            end if
         end if
-    else if (poum .eq. '+') then
-        if (iret_hydrp .eq. 0) then
-            epshy = -bendop*hydrp
+
+! ----- Test
+        lHasProp = ASTER_FALSE
+        if (poum .eq. 'T') then
+            lHasProp = (propCodePrev(1)+propCodeCurr(1)) .eq. 0 .and. &
+                       (iretHydrCurr+iretHydrPrev) .eq. 0
+        elseif (poum .eq. '-') then
+            lHasProp = propCodePrev(1) .eq. 0 .and. &
+                       iretHydrPrev .eq. 0
+        elseif (poum .eq. '+') then
+            lHasProp = propCodeCurr(1) .eq. 0 .and. &
+                       iretHydrCurr .eq. 0
+        else
+            ASSERT(ASTER_FALSE)
         end if
-    end if
-!
-999 continue
-!
-! - Output errors
-!
-    if (present(ihydr_)) then
-        ihydr_ = 0
-        if ((iret_hydrm+iret_hydrp) .ne. 0) then
-            ihydr_ = 1
+        if (.not. lHasProp) then
+            valk(1) = exteName
+            valk(2) = propName(1)
+            call utmess('F', 'COMPOR5_32', nk=2, valk=valk)
         end if
-        if (iret_hydr .ne. 0) then
-            ihydr_ = 1
+
+! ----- Compute strains
+        if (poum .eq. 'T') then
+            if (iretHydrPrev+iretHydrCurr .eq. 0) then
+                epsyHydr = (-bendoCurr*hydrCurr)-(-bendoPrev*hydrPrev)
+            end if
+        else if (poum .eq. '-') then
+            if (iretHydrPrev .eq. 0) then
+                epsyHydr = -bendoPrev*hydrPrev
+            end if
+        else if (poum .eq. '+') then
+            if (iretHydrCurr .eq. 0) then
+                epsyHydr = -bendoCurr*hydrCurr
+            end if
         end if
     end if
 !

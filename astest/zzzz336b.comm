@@ -68,7 +68,6 @@ TEMP = {}
 l_affe_temp = []
 
 for i, inst in enumerate(l_inst):
-
     INSTN = CREA_CHAMP(
         OPERATION="AFFE",
         TYPE_CHAM="NOEU_INST_R",
@@ -115,12 +114,12 @@ SECH = CREA_CHAMP(
     OPERATION="AFFE",
     TYPE_CHAM="NOEU_TEMP_R",
     MAILLAGE=MATH,
-    AFFE=_F(TOUT="OUI", NOM_CMP="SECH", VALE=0.0),
+    AFFE=_F(GROUP_MA="MOITIE", NOM_CMP="SECH", VALE=0.0),
 )
 
 CHMA_3D = AFFE_MATERIAU(
     MAILLAGE=MATH,
-    AFFE=(_F(GROUP_MA="BAS", MATER=BETON), _F(GROUP_MA="HAUT", MATER=BETON)),
+    AFFE=(_F(TOUT="OUI", MATER=BETON),),
     AFFE_VARC=(
         _F(GROUP_MA="POUTRE", NOM_VARC="TEMP", EVOL=RESUTHER, VALE_REF=0.0),
         _F(GROUP_MA="MOITIE", NOM_VARC="SECH", CHAM_GD=SECH, VALE_REF=0.0),
@@ -426,7 +425,6 @@ TEMP0 = CREA_CHAMP(
 
 
 for i, inst in enumerate(l_inst):
-
     INSTN = CREA_CHAMP(
         OPERATION="AFFE",
         TYPE_CHAM="NOEU_INST_R",

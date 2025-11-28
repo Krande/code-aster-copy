@@ -38,9 +38,11 @@ module BehaviourStrain_type
     character(len=8), parameter :: varcStrainName(VARC_STRAIN_NBMAXI) = &
                                    (/'TEMP', 'SECH', 'HYDR', 'EPSA', 'PTOT'/)
     integer(kind=8), parameter :: varcStrainNbcmp(VARC_STRAIN_NBMAXI) = &
-                                  (/1, 1, 1, 6, 1/)
+                                  (/1, 1, 1, VARC_EPSA_NBCMP, 1/)
     aster_logical, parameter :: varcStrainHasRefe(VARC_STRAIN_NBMAXI) = &
         (/.true._1, .true._1, .false._1, .false._1, .false._1/)
+    character(len=8), parameter :: varcAnelName(VARC_EPSA_NBCMP) = &
+                                   (/'EPSAXX', 'EPSAYY', 'EPSAZZ', 'EPSAXY', 'EPSAXZ', 'EPSAYZ'/)
 
 ! ==================================================================================================
 ! Type: External state variables for anelastic strains
@@ -79,7 +81,7 @@ module BehaviourStrain_type
     end type All_Varc_Strain
 !===================================================================================================
     public :: All_Varc_Strain, Varc_Strain
-    public :: varcStrainName, varcStrainNbcmp, varcStrainHasRefe
+    public :: varcStrainName, varcStrainNbcmp, varcStrainHasRefe, varcAnelName
 contains
 !===================================================================================================
 end module
