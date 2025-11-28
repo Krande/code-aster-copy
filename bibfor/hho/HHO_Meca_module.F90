@@ -260,14 +260,10 @@ contains
 !
 ! --- large strains and use gradient
 !
-            call hhoLargeStrainLCMeca(hhoCell, hhoData, hhoQuadCellRigi, hhoMecaState%grad, &
-                                      hhoCS%fami, hhoCS%typmod, hhoCS%imater, hhoCS%compor, &
-                                      hhoCS%option, hhoCS%carcri, hhoCS%lgpg, hhoCS%nbsigm, &
+            call hhoLargeStrainLCMeca(hhoCell, hhoData, hhoQuadCellRigi, hhoCS, hhoMecaState%grad, &
                                       hhoMecaState%time_prev, hhoMecaState%time_curr, &
                                       hhoMecaState%depl_prev, hhoMecaState%depl_curr, &
-                                      hhoCS%sig_prev, hhoCS%vari_prev, hhoCS%angl_naut, &
-                                      hhoCS%mult_comp, hhoCS%c_plan, lhs, rhs, hhoCS%sig_curr, &
-                                      hhoCS%vari_curr, hhoCS%codret)
+                                      lhs, rhs)
         else
 !
 ! --- small strains and use symmetric gradient
@@ -736,17 +732,24 @@ contains
 !
 ! --------- Eval basis function at the quadrature point
 !
-            call hhoBasisCell%BSEval(coorpg(1:3), 0, hhoData%grad_degree(), BSCEval)
+            call hhoBasisCell%BSEval(coorpg(1:3), 0, &
+                                     max(hhoData%grad_degree(), hhoData%cell_degree()), &
+                                     BSCEval)
 !
 ! --------- Eval gradient at T- and T+
 !
             if (hhoCS%l_largestrain) then
-                G_curr = hhoEvalMatCell( &
-                         hhoBasisCell, hhoData%grad_degree(), coorpg(1:3), G_curr_coeff)
+                G_curr = hhoEvalMatCell(hhoCell%ndim, gbs, BSCEval, G_curr_coeff)
+!
+                if (hhoCS%axis) then
+                    ASSERT(ASTER_FALSE)
+                    call hhoAddAxisGrad(hhoCell%ndim, cbs, BSCEval, hhoMecaState%depl_curr, &
+                                        coorpg, G_curr)
+                end if
 !
 ! --------- Eval gradient of the deformation at T- and T+
 !
-                call hhoCalculF(hhoCell%ndim, G_curr, F_curr)
+                call hhoCalculF(G_curr, F_curr)
 !
                 call sigtopk1(hhoCell%ndim, Cauchy_curr, F_curr, PK1_curr)
 !

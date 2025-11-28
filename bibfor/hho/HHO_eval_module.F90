@@ -43,7 +43,7 @@ module HHO_eval_module
 !
 ! --------------------------------------------------------------------------------------------------
     public :: hhoEvalScalCell, hhoEvalScalFace, hhoEvalVecCell, hhoEvalVecFace
-    public :: hhoEvalMatCell, hhoEvalSymMatCell, hhoFuncRScalEvalCellQp
+    public :: hhoEvalMatCell, hhoEvalSymMatCell, hhoFuncRScalEvalCellQp, hhoEvalMatCell2
     public :: hhoFuncFScalEvalQp, hhoFuncRScalEvalQp, hhoFuncRVecEvalQp, hhoFuncRVecEvalCellQp
 !    private  ::
 !
@@ -214,7 +214,7 @@ contains
 !
 !===================================================================================================
 !
-    function hhoEvalMatCell(hhoBasisCell, order, pt, coeff) result(eval)
+    function hhoEvalMatCell2(hhoBasisCell, order, pt, coeff) result(eval)
 !
         implicit none
 !
@@ -249,6 +249,44 @@ contains
         deca = 0
         do i = 1, hhoBasisCell%ndim
             do j = 1, hhoBasisCell%ndim
+                eval(i, j) = ddot(b_n, coeff(deca+1:deca+size_cmp), b_one, BSCEval, b_one)
+                deca = deca+size_cmp
+            end do
+        end do
+!
+    end function
+!
+!===================================================================================================
+!
+!===================================================================================================
+!
+    function hhoEvalMatCell(ndim, gbs, BSCEval, coeff) result(eval)
+!
+        implicit none
+!
+        real(kind=8), intent(in) :: BSCEval(MSIZE_CELL_SCAL)
+        integer(kind=8), intent(in) :: ndim, gbs
+        real(kind=8), dimension(:), intent(in) :: coeff
+        real(kind=8) :: eval(3, 3)
+!
+! --------------------------------------------------------------------------------------------------
+!
+!   evaluate a matrix for given basis
+!   In BSCEval : basis cell evaluated
+!   In coeff   : polynomial coefficient of the function
+! --------------------------------------------------------------------------------------------------
+!
+        integer(kind=8) :: i, j, size_cmp, deca
+        blas_int :: b_n
+        blas_int, parameter :: b_one = to_blas_int(1)
+!
+        eval = 0.d0
+        size_cmp = gbs/(ndim*ndim)
+        b_n = to_blas_int(size_cmp)
+!
+        deca = 0
+        do i = 1, ndim
+            do j = 1, ndim
                 eval(i, j) = ddot(b_n, coeff(deca+1:deca+size_cmp), b_one, BSCEval, b_one)
                 deca = deca+size_cmp
             end do

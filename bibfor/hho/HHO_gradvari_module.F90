@@ -158,7 +158,7 @@ contains
         real(kind=8) :: dPK1_dF(3, 3, 3, 3), dPK1_dv(3, 3), dPK1_dl(3, 3)
         real(kind=8) :: dSig_dEps(6, 6), dSig_dv(6), dSig_dl(6)
         real(kind=8) :: jac_prev, jac_curr, coorpg(3), weight, coeff, mk_stab, gv_stab
-        real(kind=8) :: BSCEvalG(MSIZE_CELL_SCAL), BSCEval(MSIZE_CELL_SCAL)
+        real(kind=8) ::  BSCEval(MSIZE_CELL_SCAL)
         type(HHO_matrix) :: mk_AT, mk_TMP, gv_AT, gv_TMP, mv_AT, ml_AT, vm_AT, lm_AT
         type(HHO_matrix) :: lhs_mv, lhs_ml, lhs_mm, lhs_ll, lhs_vm, lhs_vv, lhs_vl, lhs_lm, lhs_lv
         real(kind=8) :: rhs_vari(MSIZE_TDOFS_SCAL), rhs_lagv(MSIZE_CELL_SCAL)
@@ -269,21 +269,27 @@ contains
 !
 ! --------- Eval basis function at the quadrature point
 !
-            call hhoBasisCell%BSEval(coorpg(1:3), 0, hhoData%grad_degree(), BSCEvalG)
-            call hhoBasisCell%BSEval(coorpg(1:3), 0, hhoData%cell_degree(), BSCEval)
+            call hhoBasisCell%BSEval(coorpg(1:3), 0, &
+                                     max(hhoData%grad_degree(), hhoData%cell_degree()), &
+                                     BSCEval)
 !
 ! --------- Eval gradient at T- and T+
 !
             if (hhoComporState%l_largestrain) then
-                G_prev = hhoEvalMatCell(hhoBasisCell, hhoData%grad_degree(), coorpg(1:3), &
-                                        G_prev_coeff)
-                G_curr = hhoEvalMatCell(hhoBasisCell, hhoData%grad_degree(), coorpg(1:3), &
-                                        G_curr_coeff)
+                G_prev = hhoEvalMatCell(hhoCell%ndim, mk_gbs, BSCEval, G_prev_coeff)
+                G_curr = hhoEvalMatCell(hhoCell%ndim, mk_gbs, BSCEval, G_curr_coeff)
+!
+                if (hhoComporState%axis) then
+                    call hhoAddAxisGrad(hhoCell%ndim, mk_cbs, BSCEval, hhoMecaState%depl_prev, &
+                                        coorpg, G_prev)
+                    call hhoAddAxisGrad(hhoCell%ndim, mk_cbs, BSCEval, hhoMecaState%depl_curr, &
+                                        coorpg, G_prev)
+                end if
 !
 ! --------- Eval gradient of the deformation at T- and T+
 !
-                call hhoCalculF(hhoCell%ndim, G_prev, F_prev)
-                call hhoCalculF(hhoCell%ndim, G_curr, F_curr)
+                call hhoCalculF(G_prev, F_prev)
+                call hhoCalculF(G_curr, F_curr)
 !
 ! -------- Check the jacobian jac >= r8prem
 ! -------- be carrefull with c_plan, I don't know the result
@@ -349,15 +355,15 @@ contains
             if (l_rhs) then
                 if (hhoComporState%l_largestrain) then
 ! ---------- += weight * (PK1, g_phi)
-                    call hhoComputeRhsLarge(hhoCell, Pk1, weight, BSCEvalG, mk_gbs, &
+                    call hhoComputeRhsLarge(hhoCell, Pk1, weight, BSCEval, mk_gbs, &
                                             mk_bT)
                 else
 ! ---------- += weight * (Cauchy, gs_phi)
-                    call hhoComputeRhsSmall(hhoCell, Cauchy, weight, BSCEvalG, mk_gbs_cmp, &
+                    call hhoComputeRhsSmall(hhoCell, Cauchy, weight, BSCEval, mk_gbs_cmp, &
                                             mk_bT)
                 end if
 ! ---------- += weight * (sig_gv, g_phi)
-                call hhoComputeRhsRigiTher(hhoCell, sig_gv, weight, BSCEvalG, gv_gbs, &
+                call hhoComputeRhsRigiTher(hhoCell, sig_gv, weight, BSCEval, gv_gbs, &
                                            gv_bT)
 ! ---------- += weight * (sig_vari, c_phi)
                 call hhoComputeRhsMassTher(sig_vari, weight, BSCEval, gv_cbs, &
@@ -371,39 +377,39 @@ contains
             if (l_lhs) then
                 if (hhoComporState%l_largestrain) then
 ! ---------- += weight * (dPK1_dF : g_phi, g_phi)
-                    call hhoComputeLhsLarge(hhoCell, dPK1_dF, weight, BSCEvalG, mk_gbs, &
+                    call hhoComputeLhsLarge(hhoCell, dPK1_dF, weight, BSCEval, mk_gbs, &
                                             mk_AT)
 ! ---------- += weight * (g_phi, dPK1_dv : c_phi) -> lhs_mv
                     call hhoComputeLhsLargeMV(hhoCell, dPK1_dv, weight, BSCEval, gv_cbs, &
-                                              BSCEvalG, mk_gbs, mv_AT)
+                                              mk_gbs, mv_AT)
 ! ---------- += weight * (g_phi, dPK1_dl : c_phi) -> lhs_ml
                     call hhoComputeLhsLargeML(hhoCell, dPK1_dl, weight, BSCEval, gv_cbs, &
-                                              BSCEvalG, mk_gbs, ml_AT)
+                                              mk_gbs, ml_AT)
 ! ---------- += weight * (dsv_dF : g_phi, c_phi) -> lhs_vm
                     call hhoComputeLhsLargeVM(hhoCell, dsv_dF, weight, BSCEval, gv_cbs, &
-                                              BSCEvalG, mk_gbs, vm_AT)
+                                              mk_gbs, vm_AT)
 ! ---------- += weight * (dsl_dF : g_phi, c_phi) -> lhs_lm
                     call hhoComputeLhsLargeLM(hhoCell, dsl_dF, weight, BSCEval, gv_cbs, &
-                                              BSCEvalG, mk_gbs, lm_AT)
+                                              mk_gbs, lm_AT)
                 else
 ! ---------- += weight * (dSig_deps : gs_phi, gs_phi)
-                    call hhoComputeLhsSmall(hhoCell, dSig_deps, weight, BSCEvalG, mk_gbs_sym, &
+                    call hhoComputeLhsSmall(hhoCell, dSig_deps, weight, BSCEval, mk_gbs_sym, &
                                             mk_gbs_cmp, mk_AT)
 ! ---------- += weight * (gs_phi, dSig_dv : c_phi) -> lhs_mv
                     call hhoComputeLhsSmallMV(hhoCell, dSig_dv, weight, BSCEval, gv_cbs, &
-                                              BSCEvalG, mk_gbs_cmp, mv_AT)
+                                              mk_gbs_cmp, mv_AT)
 ! ---------- += weight * (gs_phi, dSig_dl : c_phi) -> lhs_ml
                     call hhoComputeLhsSmallML(hhoCell, dSig_dl, weight, BSCEval, gv_cbs, &
-                                              BSCEvalG, mk_gbs_cmp, ml_AT)
+                                              mk_gbs_cmp, ml_AT)
 ! ---------- += weight * (dsv_dEps : gs_phi, c_phi) -> lhs_vm
                     call hhoComputeLhsSmallVM(hhoCell, dsv_dEps, weight, BSCEval, gv_cbs, &
-                                              BSCEvalG, mk_gbs_sym, mk_gbs_cmp, vm_AT)
+                                              mk_gbs_sym, mk_gbs_cmp, vm_AT)
 ! ---------- += weight * (dsl_dEps : gs_phi, c_phi) -> lhs_lm
                     call hhoComputeLhsSmallLM(hhoCell, dsl_dEps, weight, BSCEval, gv_cbs, &
-                                              BSCEvalG, mk_gbs_sym, mk_gbs_cmp, lm_AT)
+                                              mk_gbs_sym, mk_gbs_cmp, lm_AT)
                 end if
 ! ---------- += weight * (dgv_dv : g_phi, g_phi)
-                call hhoComputeLhsRigiTher(hhoCell, dsgv_dgv, weight, BSCEvalG, gv_gbs, gv_AT)
+                call hhoComputeLhsRigiTher(hhoCell, dsgv_dgv, weight, BSCEval, gv_gbs, gv_AT)
 ! ---------- += weight * (dsv_dv : c_phi, c_phi)
                 coeff = weight*dsv_dv
                 b_n = to_blas_int(gv_cbs)
@@ -531,11 +537,11 @@ contains
             ASSERT(hhoComporState%l_largestrain)
         case ('PETIT')
             ASSERT(.not. hhoComporState%l_largestrain)
+            ASSERT(.not. hhoComporState%axis)
         case default
             ASSERT(ASTER_FALSE)
         end select
         ASSERT(.not. hhoComporState%c_plan)
-        ASSERT(.not. hhoComporState%axis)
 !
     end subroutine
 !
@@ -1288,7 +1294,7 @@ contains
 !===================================================================================================
 !
     subroutine hhoComputeLhsLargeMV(hhoCell, dPK1_dv, weight, BSCEval, gv_cbs, &
-                                    BSCEvalG, mk_gbs, AT)
+                                    mk_gbs, AT)
 !
         implicit none
 !
@@ -1296,7 +1302,6 @@ contains
         real(kind=8), intent(in) :: dPK1_dv(3, 3)
         real(kind=8), intent(in) :: weight
         real(kind=8), intent(in) :: BSCEval(MSIZE_CELL_SCAL)
-        real(kind=8), intent(in) :: BSCEvalG(MSIZE_CELL_SCAL)
         integer(kind=8), intent(in) :: gv_cbs, mk_gbs
         type(HHO_matrix), intent(inout) :: AT
 !
@@ -1330,7 +1335,7 @@ contains
         do i = 1, hhoCell%ndim
             do j = 1, hhoCell%ndim
                 do k = 1, gbs_cmp
-                    call daxpy_1(gv_cbs, BSCEvalG(k), qp_Acphi(i, j, :), AT%m(row, offset:))
+                    call daxpy_1(gv_cbs, BSCEval(k), qp_Acphi(i, j, :), AT%m(row, offset:))
                     row = row+1
                 end do
             end do
@@ -1342,7 +1347,7 @@ contains
 !===================================================================================================
 !
     subroutine hhoComputeLhsLargeVM(hhoCell, dsv_dF, weight, BSCEval, gv_cbs, &
-                                    BSCEvalG, mk_gbs, AT)
+                                    mk_gbs, AT)
 !
         implicit none
 !
@@ -1350,7 +1355,6 @@ contains
         real(kind=8), intent(in) :: dsv_dF(3, 3)
         real(kind=8), intent(in) :: weight
         real(kind=8), intent(in) :: BSCEval(MSIZE_CELL_SCAL)
-        real(kind=8), intent(in) :: BSCEvalG(MSIZE_CELL_SCAL)
         integer(kind=8), intent(in) :: gv_cbs, mk_gbs
         type(HHO_matrix), intent(inout) :: AT
 !
@@ -1376,7 +1380,7 @@ contains
         offset = AT%nrows-gv_cbs+1
 !
         do i = 1, gbs_cmp
-            qp_Agphi(:, :, i) = weight*dsv_dF*BSCEvalG(i)
+            qp_Agphi(:, :, i) = weight*dsv_dF*BSCEval(i)
         end do
 !
 ! -------- Compute scalar_product of (C_sgphi(j), gphi(j))_T
@@ -1396,7 +1400,7 @@ contains
 !===================================================================================================
 !
     subroutine hhoComputeLhsLargeML(hhoCell, dPK1_dl, weight, BSCEval, gv_cbs, &
-                                    BSCEvalG, mk_gbs, AT)
+                                    mk_gbs, AT)
 !
         implicit none
 !
@@ -1404,7 +1408,6 @@ contains
         real(kind=8), intent(in) :: dPK1_dl(3, 3)
         real(kind=8), intent(in) :: weight
         real(kind=8), intent(in) :: BSCEval(MSIZE_CELL_SCAL)
-        real(kind=8), intent(in) :: BSCEvalG(MSIZE_CELL_SCAL)
         integer(kind=8), intent(in) :: gv_cbs, mk_gbs
         type(HHO_matrix), intent(inout) :: AT
 !
@@ -1437,7 +1440,7 @@ contains
         do i = 1, hhoCell%ndim
             do j = 1, hhoCell%ndim
                 do k = 1, gbs_cmp
-                    call daxpy_1(gv_cbs, BSCEvalG(k), qp_Acphi(i, j, :), AT%m(row, :))
+                    call daxpy_1(gv_cbs, BSCEval(k), qp_Acphi(i, j, :), AT%m(row, :))
                     row = row+1
                 end do
             end do
@@ -1449,7 +1452,7 @@ contains
 !===================================================================================================
 !
     subroutine hhoComputeLhsLargeLM(hhoCell, dsl_dF, weight, BSCEval, gv_cbs, &
-                                    BSCEvalG, mk_gbs, AT)
+                                    mk_gbs, AT)
 !
         implicit none
 !
@@ -1457,7 +1460,6 @@ contains
         real(kind=8), intent(in) :: dsl_dF(3, 3)
         real(kind=8), intent(in) :: weight
         real(kind=8), intent(in) :: BSCEval(MSIZE_CELL_SCAL)
-        real(kind=8), intent(in) :: BSCEvalG(MSIZE_CELL_SCAL)
         integer(kind=8), intent(in) :: gv_cbs, mk_gbs
         type(HHO_matrix), intent(inout) :: AT
 !
@@ -1482,7 +1484,7 @@ contains
         gbs_cmp = mk_gbs/(hhoCell%ndim*hhoCell%ndim)
 !
         do i = 1, gbs_cmp
-            qp_Agphi(:, :, i) = weight*dsl_dF*BSCEvalG(i)
+            qp_Agphi(:, :, i) = weight*dsl_dF*BSCEval(i)
         end do
 !
 ! -------- Compute scalar_product of (C_sgphi(j), gphi(j))_T
@@ -1502,7 +1504,7 @@ contains
 !===================================================================================================
 !
     subroutine hhoComputeLhsSmallMV(hhoCell, dSig_dv, weight, BSCEval, gv_cbs, &
-                                    BSCEvalG, mk_gbs_cmp, AT)
+                                    mk_gbs_cmp, AT)
 !
         implicit none
 !
@@ -1510,7 +1512,6 @@ contains
         real(kind=8), intent(in) :: dSig_dv(6)
         real(kind=8), intent(in) :: weight
         real(kind=8), intent(in) :: BSCEval(MSIZE_CELL_SCAL)
-        real(kind=8), intent(in) :: BSCEvalG(MSIZE_CELL_SCAL)
         integer(kind=8), intent(in) :: gv_cbs, mk_gbs_cmp
         type(HHO_matrix), intent(inout) :: AT
 !
@@ -1539,7 +1540,7 @@ contains
             qp_Acphi = weight*dSig_dv*BSCEval(k)
             deca = 1
             do i = 1, hhoCell%ndim
-                call daxpy_1(mk_gbs_cmp, qp_Acphi(i), BSCEvalG, AT%m(deca:, col))
+                call daxpy_1(mk_gbs_cmp, qp_Acphi(i), BSCEval, AT%m(deca:, col))
                 deca = deca+mk_gbs_cmp
             end do
 !
@@ -1547,11 +1548,11 @@ contains
             select case (hhoCell%ndim)
             case (3)
                 do i = 1, 3
-                    call daxpy_1(mk_gbs_cmp, qp_Acphi(3+i), BSCEvalG, AT%m(deca:, col))
+                    call daxpy_1(mk_gbs_cmp, qp_Acphi(3+i), BSCEval, AT%m(deca:, col))
                     deca = deca+mk_gbs_cmp
                 end do
             case (2)
-                call daxpy_1(mk_gbs_cmp, qp_Acphi(4), BSCEvalG, AT%m(deca:, col))
+                call daxpy_1(mk_gbs_cmp, qp_Acphi(4), BSCEval, AT%m(deca:, col))
                 deca = deca+mk_gbs_cmp
             case default
                 ASSERT(ASTER_FALSE)
@@ -1567,7 +1568,7 @@ contains
 !===================================================================================================
 !
     subroutine hhoComputeLhsSmallVM(hhoCell, dsv_dEps, weight, BSCEval, gv_cbs, &
-                                    BSCEvalG, mk_gbs_sym, mk_gbs_cmp, AT)
+                                    mk_gbs_sym, mk_gbs_cmp, AT)
 !
         implicit none
 !
@@ -1575,7 +1576,6 @@ contains
         real(kind=8), intent(in) :: dsv_dEps(6)
         real(kind=8), intent(in) :: weight
         real(kind=8), intent(in) :: BSCEval(MSIZE_CELL_SCAL)
-        real(kind=8), intent(in) :: BSCEvalG(MSIZE_CELL_SCAL)
         integer(kind=8), intent(in) :: gv_cbs, mk_gbs_sym, mk_gbs_cmp
         type(HHO_matrix), intent(inout) :: AT
 !
@@ -1601,7 +1601,7 @@ contains
         qp_dsv_dEps = weight*dsv_dEps
         deca = 1
         do i = 1, hhoCell%ndim
-            call daxpy_1(mk_gbs_cmp, qp_dsv_dEps(i), BSCEvalG, qp_Agphi(deca))
+            call daxpy_1(mk_gbs_cmp, qp_dsv_dEps(i), BSCEval, qp_Agphi(deca))
             deca = deca+mk_gbs_cmp
         end do
 !
@@ -1609,11 +1609,11 @@ contains
         select case (hhoCell%ndim)
         case (3)
             do i = 1, 3
-                call daxpy_1(mk_gbs_cmp, qp_dsv_dEps(3+i), BSCEvalG, qp_Agphi(deca))
+                call daxpy_1(mk_gbs_cmp, qp_dsv_dEps(3+i), BSCEval, qp_Agphi(deca))
                 deca = deca+mk_gbs_cmp
             end do
         case (2)
-            call daxpy_1(mk_gbs_cmp, qp_dsv_dEps(4), BSCEvalG, qp_Agphi(deca))
+            call daxpy_1(mk_gbs_cmp, qp_dsv_dEps(4), BSCEval, qp_Agphi(deca))
             deca = deca+mk_gbs_cmp
         case default
             ASSERT(ASTER_FALSE)
@@ -1634,7 +1634,7 @@ contains
 !===================================================================================================
 !
     subroutine hhoComputeLhsSmallML(hhoCell, dSig_dl, weight, BSCEval, gv_cbs, &
-                                    BSCEvalG, mk_gbs_cmp, AT)
+                                    mk_gbs_cmp, AT)
 !
         implicit none
 !
@@ -1642,7 +1642,6 @@ contains
         real(kind=8), intent(in) :: dSig_dl(6)
         real(kind=8), intent(in) :: weight
         real(kind=8), intent(in) :: BSCEval(MSIZE_CELL_SCAL)
-        real(kind=8), intent(in) :: BSCEvalG(MSIZE_CELL_SCAL)
         integer(kind=8), intent(in) :: gv_cbs, mk_gbs_cmp
         type(HHO_matrix), intent(inout) :: AT
 !
@@ -1670,7 +1669,7 @@ contains
             qp_Acphi = weight*dSig_dl*BSCEval(k)
             deca = 1
             do i = 1, hhoCell%ndim
-                call daxpy_1(mk_gbs_cmp, qp_Acphi(i), BSCEvalG, AT%m(deca:, k))
+                call daxpy_1(mk_gbs_cmp, qp_Acphi(i), BSCEval, AT%m(deca:, k))
                 deca = deca+mk_gbs_cmp
             end do
 !
@@ -1678,11 +1677,11 @@ contains
             select case (hhoCell%ndim)
             case (3)
                 do i = 1, 3
-                    call daxpy_1(mk_gbs_cmp, qp_Acphi(3+i), BSCEvalG, AT%m(deca:, k))
+                    call daxpy_1(mk_gbs_cmp, qp_Acphi(3+i), BSCEval, AT%m(deca:, k))
                     deca = deca+mk_gbs_cmp
                 end do
             case (2)
-                call daxpy_1(mk_gbs_cmp, qp_Acphi(4), BSCEvalG, AT%m(deca:, k))
+                call daxpy_1(mk_gbs_cmp, qp_Acphi(4), BSCEval, AT%m(deca:, k))
                 deca = deca+mk_gbs_cmp
             case default
                 ASSERT(ASTER_FALSE)
@@ -1695,7 +1694,7 @@ contains
 !===================================================================================================
 !
     subroutine hhoComputeLhsSmallLM(hhoCell, dsl_dEps, weight, BSCEval, gv_cbs, &
-                                    BSCEvalG, mk_gbs_sym, mk_gbs_cmp, AT)
+                                    mk_gbs_sym, mk_gbs_cmp, AT)
 !
         implicit none
 !
@@ -1703,7 +1702,6 @@ contains
         real(kind=8), intent(in) :: dsl_dEps(6)
         real(kind=8), intent(in) :: weight
         real(kind=8), intent(in) :: BSCEval(MSIZE_CELL_SCAL)
-        real(kind=8), intent(in) :: BSCEvalG(MSIZE_CELL_SCAL)
         integer(kind=8), intent(in) :: gv_cbs, mk_gbs_sym, mk_gbs_cmp
         type(HHO_matrix), intent(inout) :: AT
 !
@@ -1729,7 +1727,7 @@ contains
         qp_dsl_dEps = weight*dsl_dEps
         deca = 1
         do i = 1, hhoCell%ndim
-            call daxpy_1(mk_gbs_cmp, qp_dsl_dEps(i), BSCEvalG, qp_Agphi(deca))
+            call daxpy_1(mk_gbs_cmp, qp_dsl_dEps(i), BSCEval, qp_Agphi(deca))
             deca = deca+mk_gbs_cmp
         end do
 !
@@ -1737,11 +1735,11 @@ contains
         select case (hhoCell%ndim)
         case (3)
             do i = 1, 3
-                call daxpy_1(mk_gbs_cmp, qp_dsl_dEps(3+i), BSCEvalG, qp_Agphi(deca))
+                call daxpy_1(mk_gbs_cmp, qp_dsl_dEps(3+i), BSCEval, qp_Agphi(deca))
                 deca = deca+mk_gbs_cmp
             end do
         case (2)
-            call daxpy_1(mk_gbs_cmp, qp_dsl_dEps(4), BSCEvalG, qp_Agphi(deca))
+            call daxpy_1(mk_gbs_cmp, qp_dsl_dEps(4), BSCEval, qp_Agphi(deca))
             deca = deca+mk_gbs_cmp
         case default
             ASSERT(ASTER_FALSE)
