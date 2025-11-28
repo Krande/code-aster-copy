@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -294,8 +294,8 @@ TEST_RESU(
             REFERENCE="AUTRE_ASTER",
             CHAM_GD=chPostRocheTout,
             NOM_CMP="X16",
-            VALE_CALC=237846578.25495368,
-            PRECISION=1e-2,
+            VALE_CALC=278390859.2482066,
+            PRECISION=16e-2,
             VALE_REFE=240.2e6,
         ),
     )

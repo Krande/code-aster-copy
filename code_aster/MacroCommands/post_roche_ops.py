@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -446,9 +446,8 @@ class PostRocheCommon:
                 for i in range(nrow - 1):
                     minRP02_MIN = tabRp02min["MIN_RP02_MIN", i + 1]
                     if minRP02_MIN < 0:
-                        UTMESS(
-                            "A", "POSTROCHE_22", valk=["RP02_MIN", tabRp02min["GROUP_MA", i + 1]]
-                        )
+                        dict_args = dict(valk=["RP02_MIN", tabRp02min["GROUP_MA", i + 1]])
+                        UTMESS("A", "POSTROCHE_22", **dict_args)
                 UTMESS("F", "POSTROCHE_17", valk="RP02_MIN")
 
     def calcGeomParams(self):
@@ -1638,7 +1637,7 @@ class PostRocheCommon:
                 "X17",
                 "X18",  # R, EP
             ),
-            VALE="sqrt((X3*X16*(X17-X18)/X18)**2 + 1/X2**2*(X4**2*(X7+X10+X13)**2+X5**2*(X8+X11+X14)**2+X6**2*(X9+X12+X15)**2))",
+            VALE="sqrt((X3*X16*(X17-X18)/X18)**2 + 1/X2**2*(X4**2*(abs(X7)+X10+X13)**2+X5**2*(abs(X8)+X11+X14)**2+X6**2*(abs(X9)+X12+X15)**2))",
         )
 
         chFonc = CREA_CHAMP(
@@ -2150,9 +2149,8 @@ class PostRocheCalc:
 
         if maxX2 > 0:
             if self.numeOrdre != -1:
-                UTMESS(
-                    "A", "POSTROCHE_8", vali=self.numeOrdre, valk="la contrainte réelle optimisée"
-                )
+                dict_args = dict(vali=self.numeOrdre, valk="la contrainte réelle optimisée")
+                UTMESS("A", "POSTROCHE_8", **dict_args)
             else:
                 UTMESS("A", "POSTROCHE_9", valk="la contrainte réelle optimisée")
 
@@ -2164,9 +2162,8 @@ class PostRocheCalc:
 
         if maxX4 > 0:
             if self.numeOrdre != -1:
-                UTMESS(
-                    "A", "POSTROCHE_12", vali=self.numeOrdre, valk="la contrainte réelle optimisée"
-                )
+                dict_args = dict(vali=self.numeOrdre, valk="la contrainte réelle optimisée")
+                UTMESS("A", "POSTROCHE_12", **dict_args)
             else:
                 UTMESS("A", "POSTROCHE_13", valk="la contrainte réelle optimisée")
 
@@ -2187,12 +2184,8 @@ class PostRocheCalc:
                 )
                 UTMESS("A", "POSTROCHE_14", **valargs)
             else:
-                UTMESS(
-                    "A",
-                    "POSTROCHE_15",
-                    vali=self.param.nbIterMax,
-                    valk="la contrainte réelle optimisée",
-                )
+                dict_args = dict(vali=self.param.nbIterMax, valk="la contrainte réelle optimisée")
+                UTMESS("A", "POSTROCHE_15", **dict_args)
 
     def coef_abattement(self):
         """
