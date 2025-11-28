@@ -476,33 +476,45 @@ contains
         integer(kind=8) :: mk_cbs, mk_fbs, mk_total_dofs, iFace, iDof
         integer(kind=8) :: gv_cbs, gv_fbs, gv_total_dofs, total_dofs
         real(kind=8) :: tmp_prev(MSIZE_TDOFS_MIX), tmp_incr(MSIZE_TDOFS_MIX)
+        aster_logical :: forc_noda
 !
-        if (hhoComporState%option .ne. "RIGI_MECA" .and. hhoComporState%option .ne. &
-            "FORC_NODA" .and. hhoComporState%option .ne. "REFE_FORC_NODA") then
-            call jevech('PINSTMR', 'L', iinstm)
-            call jevech('PINSTPR', 'L', iinstp)
-            this%time_curr = zr(iinstp)
-            this%time_prev = zr(iinstm)
-            this%time_incr = this%time_curr-this%time_prev
+        forc_noda = hhoComporState%option == "FORC_NODA"
+        if (hhoComporState%option .ne. "RIGI_MECA" &
+            .and. hhoComporState%option .ne. "REFE_FORC_NODA") then
+            if (.not. forc_noda) then
+                call jevech('PINSTMR', 'L', iinstm)
+                call jevech('PINSTPR', 'L', iinstp)
+                this%time_curr = zr(iinstp)
+                this%time_prev = zr(iinstm)
+                this%time_incr = this%time_curr-this%time_prev
+            end if
 !
             call hhoMecaDofs(hhoCell, hhoData, mk_cbs, mk_fbs, mk_total_dofs)
 !
             if (hhoComporState%typmod(2) == "HHO") then
+                if (forc_noda) then
+                    call readVector('PDEPLAR', mk_total_dofs, this%depl_prev)
+                else
 !
 ! --- get displacement in T-
 !
-                call readVector('PDEPLMR', mk_total_dofs, this%depl_prev)
+                    call readVector('PDEPLMR', mk_total_dofs, this%depl_prev)
 !
 ! --- get increment displacement beetween T- and T+
 !
-                call readVector('PDEPLPR', mk_total_dofs, this%depl_incr)
+                    call readVector('PDEPLPR', mk_total_dofs, this%depl_incr)
+                end if
             else
                 ! GRAD_VARI
                 call hhoTherDofs(hhoCell, hhoData, gv_cbs, gv_fbs, gv_total_dofs)
                 total_dofs = mk_total_dofs+gv_total_dofs+gv_cbs
-                call readVector('PDEPLMR', total_dofs, tmp_prev)
-                call readVector('PDEPLPR', total_dofs, tmp_incr)
-!
+                if (forc_noda) then
+                    call readVector('PDEPLAR', total_dofs, tmp_prev)
+                else
+                    call readVector('PDEPLMR', total_dofs, tmp_prev)
+                    call readVector('PDEPLPR', total_dofs, tmp_incr)
+                end if
+                !
                 num_tot = 0
                 num_mk = 0
                 do iFace = 1, hhoCell%nbfaces
@@ -510,7 +522,9 @@ contains
                         num_tot = num_tot+1
                         num_mk = num_mk+1
                         this%depl_prev(num_mk) = tmp_prev(num_tot)
-                        this%depl_incr(num_mk) = tmp_incr(num_tot)
+                        if (.not. forc_noda) then
+                            this%depl_incr(num_mk) = tmp_incr(num_tot)
+                        end if
                     end do
                     num_tot = num_tot+gv_fbs
                 end do
@@ -518,22 +532,23 @@ contains
                     num_tot = num_tot+1
                     num_mk = num_mk+1
                     this%depl_prev(num_mk) = tmp_prev(num_tot)
-                    this%depl_incr(num_mk) = tmp_incr(num_tot)
+                    if (.not. forc_noda) then
+                        this%depl_incr(num_mk) = tmp_incr(num_tot)
+                    end if
                 end do
             end if
 !
 ! --- compute displacement in T+
 !
             call dcopy_1(mk_total_dofs, this%depl_prev, this%depl_curr)
-            call daxpy_1(mk_total_dofs, 1.d0, this%depl_incr, this%depl_curr)
+            if (.not. forc_noda) then
+                call daxpy_1(mk_total_dofs, 1.d0, this%depl_incr, this%depl_curr)
+            end if
         else if (hhoComporState%option == "RIGI_MECA") then
             call tecach('ONO', 'PINSTR', 'L', iret, iad=iinstp)
             if (iinstp .ne. 0) then
                 this%time_curr = zr(iinstp)
             end if
-        else if (hhoComporState%option == "FORC_NODA") then
-            call hhoMecaDofs(hhoCell, hhoData, mk_cbs, mk_fbs, mk_total_dofs)
-            call readVector('PDEPLAR', mk_total_dofs, this%depl_curr)
         else if (hhoComporState%option == "REFE_FORC_NODA") then
             !! Nothing to load
         else
@@ -742,7 +757,7 @@ contains
             end if
         end do
 !
-        call hho_dgemv_T(1.d0, hhoMecaState%grad, bT, 1.d0, rhs)
+        call hho_dgemv_T(1.d0, hhoMecaState%grad, bT, 0.d0, rhs)
 !
 ! --- add stabilization
 !
