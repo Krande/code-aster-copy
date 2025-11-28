@@ -106,7 +106,31 @@ resnonl = CALC_CHAMP(
     RESULTAT=resnonl,
 )
 rescoor = CALC_CHAM_ELEM(MODELE=model, OPTION="COOR_ELGA")
+
+# Check IMPR_RESU / LIRE_RESU
 IMPR_RESU(UNITE=80, RESU=_F(RESULTAT=resnonl, IMPR_NOM_VARI="OUI"), FORMAT="MED")
+
+resnonl = LIRE_RESU(
+    MODELE=model,
+    FORMAT="MED",
+    UNITE=80,
+    TYPE_RESU="EVOL_NOLI",
+    COMPORTEMENT=_F(DEFORMATION="PETIT", RELATION="VMIS_ISOT_NL", TOUT="OUI"),
+    CHAM_MATER=fieldmat,
+    EXCIT=(
+        _F(CHARGE=depl, TYPE_CHARGE="FIXE_CSTE"),
+        _F(CHARGE=load, FONC_MULT=rampe, TYPE_CHARGE="FIXE_CSTE"),
+    ),
+    FORMAT_MED=(
+        _F(NOM_RESU="resnonl", NOM_CHAM="DEPL"),
+        _F(NOM_RESU="resnonl", NOM_CHAM="SIEF_ELGA"),
+        _F(NOM_RESU="resnonl", NOM_CHAM="VARI_ELGA"),
+        _F(NOM_RESU="resnonl", NOM_CHAM="HHO_DEPL"),
+        _F(NOM_RESU="resnonl", NOM_CHAM="SIEQ_NOEU"),
+        _F(NOM_RESU="resnonl", NOM_CHAM="EPSI_ELGA"),
+    ),
+    TOUT_ORDRE="OUI",
+)
 
 TEST_RESU(
     RESU=_F(
