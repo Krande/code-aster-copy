@@ -42,6 +42,10 @@ if [ -z "${changes}" ]; then
     fi
 fi
 
+if [ "${BUILDTYPE}" = "ci" ] && [ "${CI_JOB_NAME}" != "known_failures_test" ]; then
+    args+=( "--exclude-testlist" ".gitlabci/known_failures-pleiade.list" )
+fi
+
 # keep only outputs for failed tests, except for nightly runs
 if [ "${BUILDTYPE}" = "ci" ]; then
     args+=( "--only-failed-results" )
@@ -92,18 +96,21 @@ if [ "${BUILDTYPE}" = "nightly" ] || [ "${BUILDTYPE}" = "nightly-coverage" ]; th
     tar czf code_files.tar.gz *.code
     rm -f *.${MESS_EXT} *.code
 
-    wget --no-verbose --no-check-certificate -O ./mc ${MINIO_URL}/codeaster/tools/mc
-    chmod 755 ./mc
-    ./mc --insecure alias set minio/ ${MINIO_URL} ${MINIO_LOGIN} ${MINIO_PASSWD}
+    mc --insecure alias set minio/ ${MINIO_URL} ${MINIO_LOGIN} ${MINIO_PASSWD}
     tdir="${REFREV}"
     [ "${BUILDTYPE}" = "nightly-coverage" ] && tdir="coverage"
     dest=minio/codeaster/devops/ci-${OSNAME}/results/${tdir}/verification
-    ./mc --insecure cp run_testcases.xml ${dest}/
-    ./mc --insecure cp mess_files.tar.gz ${dest}/
-    ./mc --insecure cp code_files.tar.gz ${dest}/
-    [ -f coverage.tgz ] && ./mc --insecure cp coverage.tgz ${dest}/
+    mc --insecure cp run_testcases.xml ${dest}/
+    mc --insecure cp mess_files.tar.gz ${dest}/
+    mc --insecure cp code_files.tar.gz ${dest}/
+    [ -f coverage.tgz ] && mc --insecure cp coverage.tgz ${dest}/
 
     cd ..
+fi
+
+# weekly runs: coverage of keywords
+if [ "$(date +%u)" = "${WEEKLY_RUN}" ] && [ "${OSNAME}" = "debian-12" ]; then
+    .gitlabci/coverage.sh . install results
 fi
 
 exit ${iret}
