@@ -37,13 +37,21 @@ cata_msg = {
     # /path/to/med-file.med
     6: _(
         """
-Il est déconseillé d'utiliser LIRE_MAILLAGE / PARTITIONNEUR sur de gros maillages,
-car le fichier MED a été recopié dans le répertoire de l'exécution et doit être
-recopié une deuxième fois dans un répertoire partagé pour tous les processus.
+Quand on utilise LIRE_MAILLAGE / PARTITIONNEUR, il est déconseillé de mettre
+le fichier MED en donnée et d'utiliser ensuite l'unité logique.
+Car le fichier MED est copié une première fois dans le répertoire de l'exécution
+et doit être recopié une deuxième fois dans un répertoire partagé pour tous les processus.
 
-On conseille de remplacer 'LIRE_MAILLAGE(PARTITIONNEUR=...)' par :
+On conseille donc de ne pas mettre le fichier MED parmi les fichiers de données
+et d'utiliser son chemin absolu.
+
+Soit :
 
 %(k1)s
+
+Soit :
+
+%(k2)s
 
 Il est nécessaire que le fichier MED soit dans un répertoire accessible à tous les processus
 (par exemple dans /home, /scratch...).

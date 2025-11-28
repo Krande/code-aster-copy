@@ -98,21 +98,21 @@ class MeshReader(ExecuteCommand):
         if meshname is None:
             meshname = ""
         if self._result.isParallel():
-            filename = LogicalUnitFile.filename_from_unit(unit)
-            datafiles = ExecutionParameter().export.datafiles
-            fmed = [file for file in datafiles if file.unit == unit]
-            orig = fmed[0].path if fmed else "/path/to/med-file.med"
-            syntax = f"    medfile = '{orig}'\n    mesh = CA.ParallelMesh().readMedFile(medfile)"
-            UTMESS("A", "MESH4_6", valk=syntax)
-            with SharedTmpdir("lire_maillage_") as tmpdir:
-                uniq = Path(tmpdir.path) / "mesh.med"
-                if MPI.ASTER_COMM_WORLD.rank == 0:
-                    UTMESS("I", "MESH4_7", valk=(str(filename), str(uniq)))
-                    shutil.copy(filename, uniq)
-                MPI.ASTER_COMM_WORLD.Barrier()
-                assert uniq.exists(), "shared file not found"
-                UTMESS("I", "MESH4_8", valk=str(uniq))
-                self._result.readMedFile(uniq, meshname, partitioned=False, verbose=verbose)
+            filename = Path(LogicalUnitFile.filename_from_unit(unit))
+            if filename.is_absolute():
+                UTMESS("I", "MESH4_8", valk=str(filename))
+                self._result.readMedFile(filename, meshname, partitioned=False, verbose=verbose)
+            else:
+                UTMESS("A", "MESH4_6", valk=_get_syntax(unit))
+                with SharedTmpdir("lire_maillage_") as tmpdir:
+                    uniq = Path(tmpdir.path) / "mesh.med"
+                    if MPI.ASTER_COMM_WORLD.rank == 0:
+                        UTMESS("I", "MESH4_7", valk=(str(filename), str(uniq)))
+                        shutil.copy(filename, uniq)
+                    MPI.ASTER_COMM_WORLD.Barrier()
+                    assert uniq.exists(), "shared file not found"
+                    UTMESS("I", "MESH4_8", valk=str(uniq))
+                    self._result.readMedFile(uniq, meshname, partitioned=False, verbose=verbose)
         else:
             if keywords["PARTITIONNEUR"] == "PTSCOTCH":
                 assert not haveMPI()
@@ -130,6 +130,20 @@ class MeshReader(ExecuteCommand):
             keywords (dict): User's keywords.
         """
         self._result.build()
+
+
+def _get_syntax(unit: int):
+    """Return the 2 alternative syntax"""
+    datafiles = ExecutionParameter().export.datafiles
+    fmed = [file for file in datafiles if file.unit == unit]
+    orig = fmed[0].path if fmed else "/path/to/med-file.med"
+    cmd = (
+        f"medfile = '{orig}'\n"
+        f'DEFI_FICHIER(ACTION="ASSOCIER", FICHIER=medfile, UNITE={unit}, TYPE="BINARY", ACCES="OLD")\n'
+        f'mesh = LIRE_MAILLAGE(FORMAT="MED", UNITE={unit}, PARTITIONNEUR="PTSCOTCH")'
+    )
+    pyapi = f"medfile = '{orig}'\nmesh = CA.ParallelMesh().readMedFile(medfile)"
+    return cmd, pyapi
 
 
 LIRE_MAILLAGE = MeshReader.run
