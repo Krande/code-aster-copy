@@ -81,12 +81,16 @@ class ExtendedParallelMesh:
             partitioned (bool): False if the mesh is not yet partitioned and have to
                 be partitioned before reading.
             verbose (int): Verbosity between 0 (a few details) to 2 (more verbosy).
+
+        Returns:
+            ParallelMesh: the object itself
         """
         if not partitioned:
             self, field = splitMeshAndFieldsFromMedFile(filename, outMesh=self)
             self.show(verbose & 3)
         else:
             mesh_builder.buildFromMedFile(self, filename, meshname, verbose)
+        return self
 
     def checkConsistency(self, filename):
         """Check that the partitioned mesh is consistent, i.e. that all nodes,

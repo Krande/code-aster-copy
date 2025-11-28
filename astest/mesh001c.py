@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -23,7 +23,8 @@ import code_aster
 from code_aster.Commands import DEFI_GROUP, LIRE_MAILLAGE, RECU_TABLE
 from code_aster.Utilities import shared_tmpdir
 
-code_aster.init("--test", ERREUR=_F(ALARME="EXCEPTION"))
+# pour MESH4_6 (LIRE_MAILLAGE + PARTITIONNEUR)
+CA.init("--test", ERREUR=_F(ALARME="ALARME"))
 
 # check ParallelMesh object API
 test = code_aster.TestCase()
