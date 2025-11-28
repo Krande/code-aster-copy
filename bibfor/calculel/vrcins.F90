@@ -158,6 +158,7 @@ subroutine vrcins(modelz, chmatz, carelz, inst, chvarc, &
     call jelira(chvars//'.CESV', 'LONMAX', n1)
     do k = 1, n1
         ce1v(k) = rundef
+        zl(jce1l-1+k) = .true.
     end do
 !
     call dismoi('NOM_LIGREL', modele, 'MODELE', repk=ligrmo)
