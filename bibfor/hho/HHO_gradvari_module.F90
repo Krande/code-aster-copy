@@ -1834,6 +1834,9 @@ contains
         end do
 !
         hhoCalcStabCoeffGV = 10.d0*hhoCalcStabCoeffGV/real(npg, kind=8)
+        if (hhoCalcStabCoeffGV <= 0.0) then
+            hhoCalcStabCoeffGV = 1.d0
+        end if
         ASSERT(hhoCalcStabCoeffGV > 0.d0)
 !
     end function

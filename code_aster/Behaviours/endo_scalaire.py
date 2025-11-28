@@ -40,7 +40,7 @@ loi = LoiComportement(
     ),
     mc_mater=("ELAS", "ENDO_SCALAIRE", "NON_LOCAL"),
     modelisation=("3D", "AXIS", "D_PLAN", "GRADVARI"),
-    deformation=("PETIT",),
+    deformation=("PETIT", "GDEF_LOG"),
     algo_inte=("NEWTON",),
     type_matr_tang=("PERTURBATION", "VERIFICATION"),
     proprietes=None,
