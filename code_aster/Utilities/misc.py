@@ -232,7 +232,7 @@ class SharedTmpdir(contextlib.AbstractContextManager):
             tmpdir = get_shared_tmpdir(self._prefix, self._dir)
         # wait for #0 to create the temporary directory
         tmpdir = MPI.ASTER_COMM_WORLD.bcast(tmpdir)
-        assert osp.isdir(tmpdir), f"Can not create directory on #{rank}: {tmpdir}"
+        assert osp.isdir(tmpdir), f"Can not access to the directory on #{rank}: {tmpdir}"
         self._path = tmpdir
         logger.debug("created %s", self._path)
         MPI.ASTER_COMM_WORLD.Barrier()

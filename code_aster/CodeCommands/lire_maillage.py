@@ -17,13 +17,14 @@
 # You should have received a copy of the GNU General Public License
 # along with Code_Aster.  If not, see <http://www.gnu.org/licenses/>.
 
+import shutil
+from pathlib import Path
 
 from ..Helpers import FileAccess, LogicalUnitFile
 from ..Messages import UTMESS
 from ..Objects import Mesh, ParallelMesh
 from ..Supervis import ExecuteCommand
-from ..Utilities import haveMPI
-
+from ..Utilities import MPI, ExecutionParameter, SharedTmpdir, haveMPI
 from .pre_gibi import PRE_GIBI
 from .pre_gmsh import PRE_GMSH
 from .pre_ideas import PRE_IDEAS
@@ -98,7 +99,20 @@ class MeshReader(ExecuteCommand):
             meshname = ""
         if self._result.isParallel():
             filename = LogicalUnitFile.filename_from_unit(unit)
-            self._result.readMedFile(filename, meshname, partitioned=False, verbose=verbose)
+            datafiles = ExecutionParameter().export.datafiles
+            fmed = [file for file in datafiles if file.unit == unit]
+            orig = fmed[0].path if fmed else "/path/to/med-file.med"
+            syntax = f"    medfile = '{orig}'\n    mesh = CA.ParallelMesh().readMedFile(medfile)"
+            UTMESS("A", "MESH4_6", valk=syntax)
+            with SharedTmpdir("lire_maillage_") as tmpdir:
+                uniq = Path(tmpdir.path) / "mesh.med"
+                if MPI.ASTER_COMM_WORLD.rank == 0:
+                    UTMESS("I", "MESH4_7", valk=(str(filename), str(uniq)))
+                    shutil.copy(filename, uniq)
+                MPI.ASTER_COMM_WORLD.Barrier()
+                assert uniq.exists(), "shared file not found"
+                UTMESS("I", "MESH4_8", valk=str(uniq))
+                self._result.readMedFile(uniq, meshname, partitioned=False, verbose=verbose)
         else:
             if keywords["PARTITIONNEUR"] == "PTSCOTCH":
                 assert not haveMPI()

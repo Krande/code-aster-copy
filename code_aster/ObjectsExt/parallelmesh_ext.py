@@ -114,6 +114,9 @@ class ExtendedParallelMesh:
             deterministic (bool): True if partitioning must be deterministic
             ghost (int): ghost layer number
             verbose (int): Verbosity between 0 (a few details) to 2 (more verbosy).
+
+        Returns:
+            ParallelMesh: the object itself
         """
         if not partitioned:
             returnTuple = splitMeshFromMedFile(
@@ -124,6 +127,7 @@ class ExtendedParallelMesh:
         else:
             mr = MeshReader()
             mr.readParallelMeshFromMedFile(self, os.fspath(filename), meshname, verbose & 3)
+        return self
 
     def checkConsistency(self, filename):
         """Check that the partitioned mesh is consistent, i.e. that all nodes,

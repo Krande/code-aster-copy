@@ -351,9 +351,13 @@ class ExtendedMesh:
             meshname (str): Name of the mesh to be read from file.
             verbose (int): 0 - warnings, 1 - informations about main steps,
                 2 - informations about all steps
+
+        Returns:
+            ParallelMesh: the object itself
         """
         mr = MeshReader()
         mr.readMeshFromMedFile(self, os.fspath(filename), meshname, verbose & 3)
+        return self
 
     def refine(self, ntimes=1, info=1):
         """Refine the mesh uniformly. Each edge is split in two.

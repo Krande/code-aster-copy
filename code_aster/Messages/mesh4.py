@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -34,4 +34,21 @@ cata_msg = {
         """On ne trouve pas les objets de l'appariement. Vérifiez que vous avez bien effectué le calcul."""
     ),
     5: _("""La paire demandée n'existe pas à cet index."""),
+    # /path/to/med-file.med
+    6: _(
+        """
+Il est déconseillé d'utiliser LIRE_MAILLAGE / PARTITIONNEUR sur de gros maillages,
+car le fichier MED a été recopié dans le répertoire de l'exécution et doit être
+recopié une deuxième fois dans un répertoire partagé pour tous les processus.
+
+On conseille de remplacer 'LIRE_MAILLAGE(PARTITIONNEUR=...)' par :
+
+%(k1)s
+
+Il est nécessaire que le fichier MED soit dans un répertoire accessible à tous les processus
+(par exemple dans /home, /scratch...).
+         """
+    ),
+    7: _("""Copie de '%(k1)s' vers '%(k2)s'"""),
+    8: _("""Lecture du fichier partagé '%(k1)s'..."""),
 }
