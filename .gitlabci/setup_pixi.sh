@@ -1,7 +1,7 @@
 #!/bin/bash -e
 
 echo "+ installing pixi..."
-curl -fsSL https://minio.retd.edf.fr/codeaster/tools/pixi-install.sh | bash
+curl -fsSL --insecure https://minio.retd.edf.fr/codeaster/tools/pixi-install.sh | bash
 
 
 echo "+ setting config.toml..."
