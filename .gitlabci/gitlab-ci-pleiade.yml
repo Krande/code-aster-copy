@@ -348,6 +348,7 @@ verification_test_pkg:
 prepare_win:
   variables:
     OSNAME: win
+  extends: .prepare
   script:
     - .gitlabci/prepare.sh
   rules:
