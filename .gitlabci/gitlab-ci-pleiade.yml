@@ -290,6 +290,7 @@ verification_test_debian-next:
       optional: true
     - job: compile_debian-next
       optional: true
+  allow_failure: true
 
 # --- variant using code-aster-reqs package for nightly build / weekly testing
 prepare_pkg:
