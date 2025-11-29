@@ -55,8 +55,8 @@ before_script:
   interruptible: true
   stage: setup
   script:
+    - .gitlabci/setup_pixi.sh
     - .gitlabci/prepare.sh
-    - .gitlabci/prepare_pixi.sh
   artifacts:
     paths:
       - devtools/*
