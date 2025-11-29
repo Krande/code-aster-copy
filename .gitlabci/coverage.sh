@@ -40,8 +40,8 @@ if [ -z "${CI_COMMIT_REF_NAME}" ]; then
     echo "WARNING: results are only uploaded in CI"
 else
     today=$(date +%Y-%m-%d)
-    mc --insecure ${wrkdir}/${today}.* ${MINIO_DIR}/
-    mc --insecure ${wrkdir}/last.* ${MINIO_DIR}/
+    mc --insecure cp ${wrkdir}/${today}.* ${MINIO_DIR}/
+    mc --insecure cp ${wrkdir}/last.* ${MINIO_DIR}/
 fi
 
 printf "end time : $(date)\n\n"
