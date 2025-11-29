@@ -348,9 +348,8 @@ verification_test_pkg:
 prepare_win:
   variables:
     OSNAME: win
-  extends: .prepare
   script:
-    - !reference [.prepare, script]
+    - .gitlabci/prepare.sh
   rules:
     - if: $BUILDTYPE == "nightly"
       when: on_success
