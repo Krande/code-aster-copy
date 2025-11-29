@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -125,7 +125,8 @@ field2 = field - myField
 test.assertAlmostEqual(field2.norm("NORM_2"), sqrt((4.0 + 1.0 + 4.0) * nbNodes))
 
 # For a Parallel Mesh
-meshp = LIRE_MAILLAGE(FORMAT="MED", UNITE=20, PARTITIONNEUR="PTSCOTCH")
+medfile = CA.basedir / "zzzz503a.mmed"
+meshp = CA.ParallelMesh().readMedFile(medfile)
 
 modelp = AFFE_MODELE(MAILLAGE=meshp, AFFE=_F(TOUT="OUI", PHENOMENE="MECANIQUE", MODELISATION="3D"))
 
