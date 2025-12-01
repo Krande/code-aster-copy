@@ -215,7 +215,7 @@ ConnectionMesh::ConnectionMesh( const std::string &name, const ParallelMeshPtr &
         /* Loop over the groups of nodes to tag/add those concerned by the proc */
         for ( const auto &nameOfTheGroup : groupsOfNodesToFind ) {
             if ( mesh->hasGroupOfNodes( nameOfTheGroup, true ) ) {
-                const auto &nodesToFind = mesh->getNodes( nameOfTheGroup );
+                const auto &nodesToFind = mesh->getNodes( nameOfTheGroup, true );
                 const auto numberOfNodesToFind = nodesToFind.size();
                 VectorLong nodesOfTheGroupToSend;
                 nodesOfTheGroupToSend.reserve( numberOfNodesToFind );

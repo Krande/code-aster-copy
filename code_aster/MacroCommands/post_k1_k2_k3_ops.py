@@ -316,7 +316,7 @@ def get_noeud_a_calculer(Lnoff, ndim, FOND_FISS, MAILLAGE, EnumTypes, args):
             for grpno in GROUP_NO:
                 if grpno not in MAILLAGE.getGroupsOfNodes():
                     UTMESS("F", "RUPTURE0_13", valk=grpno)
-                for node in MAILLAGE.getNodes(grpno):
+                for node in MAILLAGE.getNodes(grpno, localNumbering=True):
                     NO_AVEC.append(str(node + 1))
             NO_AVEC = list(map(lambda x: x.rstrip(), NO_AVEC))
         else:
@@ -331,7 +331,7 @@ def get_noeud_a_calculer(Lnoff, ndim, FOND_FISS, MAILLAGE, EnumTypes, args):
             for grpno in SANS_GROUP_NO:
                 if grpno not in MAILLAGE.getGroupsOfNodes():
                     UTMESS("F", "RUPTURE0_13", valk=grpno)
-                for node in MAILLAGE.getNodes(grpno):
+                for node in MAILLAGE.getNodes(grpno, localNumbering=True):
                     NO_SANS.append(str(node + 1))
             NO_SANS = list(map(lambda x: x.rstrip(), NO_SANS))
 
@@ -403,7 +403,7 @@ def get_direction(Nnoff, ndim, Lnoff, FOND_FISS, MAILLAGE):
     # suppresion des coordonnées du projeté du noeud, non utilisées ici
     basloc = NP.array(basloc).reshape((len(basloc) // nb_comp_basloc), nb_comp_basloc)[:, ndim:]
     #   recuperation des valeurs dans baseloc en indexant sur les noeuds du fond de fissure
-    index_by_nodename = {str(i + 1): i for i in MAILLAGE.getNodes()}
+    index_by_nodename = {str(i + 1): i for i in MAILLAGE.getNodes(localNumbering=True)}
     Basefo = basloc[[index_by_nodename[nodename] for nodename in Lnoff], :].flatten()
 
     VNOR = [None] * Nnoff

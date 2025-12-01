@@ -303,7 +303,7 @@ class ExtendedMesh:
         node_groups = self.getGroupsOfNodes()
         if not node_groups:
             return []
-        return [(node_group, len(self.getNodes(node_group))) for node_group in node_groups]
+        return [(node_group, len(self.getNodes(node_group, True))) for node_group in node_groups]
 
     def LIST_GROUP_MA(self):
         """Retourne la liste des groupes de mailles sous la forme :
@@ -399,7 +399,7 @@ class ExtendedMesh:
 
         return convertMesh2MedCoupling(self, spacedim_3d)
 
-    def getNodes(self, group_name=[], localNumbering=True, same_rank=None):
+    def getNodes(self, group_name=[], localNumbering=False, same_rank=None):
         """Return the list of the indexes of the nodes that belong to a group of nodes.
 
         Arguments:
@@ -415,7 +415,7 @@ class ExtendedMesh:
 
         return self._getNodes(force_list(group_name), localNumbering, val[same_rank])
 
-    def getNodesFromCells(self, group_name, localNumbering=True, same_rank=None):
+    def getNodesFromCells(self, group_name, localNumbering=False, same_rank=None):
         """Returns the nodes indexes of a group of cells.
 
         Arguments:
@@ -464,5 +464,5 @@ class ExtendedMesh:
         return [
             grp
             for grp in self.getGroupsOfNodes()
-            if any(ids in self.getNodes(grp) for ids in force_list(idnode))
+            if any(ids in self.getNodes(grp, True) for ids in force_list(idnode))
         ]

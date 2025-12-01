@@ -159,7 +159,7 @@ Arguments:
 Returns:
     list[int]: Indexes of the nodes of the group.
         )",
-              py::arg( "group_name" ) = VectorString(), py::arg( "localNumbering" ) = true,
+              py::arg( "group_name" ) = VectorString(), py::arg( "localNumbering" ) = false,
               py::arg( "same_rank" ) = PythonBool::None )
         .def( "getInnerNodes", &ParallelMesh::getInnerNodes, R"(
 Return the list of the indexes of the inner nodes in the mesh
@@ -244,7 +244,7 @@ Arguments:
 Returns:
     list[int]: Indexes of the nodes of the group.
         )",
-              py::arg( "group_name" ), py::arg( "localNumbering" ) = true,
+              py::arg( "group_name" ), py::arg( "localNumbering" ) = false,
               py::arg( "same_rank" ) = PythonBool::None )
         .def(
             "getGlobalToLocalNodeIds",

@@ -287,23 +287,23 @@ def calc_bt_ops(self, **args):
 
         n = 0
         for key in DDL_.keys():
-            n = n + len(mesh.getNodes(key))
+            n = n + len(mesh.getNodes(key, localNumbering=True))
 
         SUPPORTS = np.zeros((n, 4), dtype=int) - 1
         for key in DDL_.keys():
             a = sum(SUPPORTS[:, 0] >= 0)
-            nodes = mesh.getNodes(key)
+            nodes = mesh.getNodes(key, localNumbering=True)
             b = len(nodes)
             SUPPORTS[a : (b + a), 0] = np.asarray(nodes)
 
         n = 0
         for key in FORCE_.keys():
-            n = n + len(np.asarray(mesh.getNodes(key)))
+            n = n + len(np.asarray(mesh.getNodes(key, localNumbering=True)))
 
         FORCES = np.zeros((n, 4), dtype=int) - 1
         for key in FORCE_.keys():
             a = sum(FORCES[:, 0] >= 0)
-            nodes = mesh.getNodes(key)
+            nodes = mesh.getNodes(key, localNumbering=True)
             b = len(nodes)
             FORCES[a : (b + a), 0] = np.asarray(nodes)
 
@@ -331,7 +331,7 @@ def calc_bt_ops(self, **args):
         N_o_S = dict()
 
         for group_name in __MAIL.getGroupsOfNodes():
-            SUP = __MAIL.getNodes(group_name)
+            SUP = __MAIL.getNodes(group_name, localNumbering=True)
             b = np.zeros((len(SUP)), dtype=int)
             for i_ in range(len(SUP)):
                 dist_ = np.sqrt((GS_[:, 0] - Mesh_[int(SUP[i_]), 1]) ** 2) + np.sqrt(
@@ -1166,9 +1166,9 @@ def calc_bt_ops(self, **args):
                                         points_1[range(last_p, (last_p + int(sum(A_)))), 0:2] = A[
                                             A_, :
                                         ]
-                                        points_1[
-                                            range(last_p, (last_p + int(sum(A_)))), 2:
-                                        ] = np.array([points_1[i_, 2:]] * sum(A_))
+                                        points_1[range(last_p, (last_p + int(sum(A_)))), 2:] = (
+                                            np.array([points_1[i_, 2:]] * sum(A_))
+                                        )
 
                             # nodo_ = A[1, :]
                             # new_node = sum(np.isnan(points_1[:, 0]) == False)
@@ -1796,7 +1796,7 @@ def calc_bt_ops(self, **args):
         __group = []
 
         for i_ in range(__NE):
-            __group = __group + [("EG_%d" % (i_ + 1))]
+            __group = __group + ["EG_%d" % (i_ + 1)]
 
         motscles = {}
         motscles["BARRE"] = []
@@ -1835,7 +1835,7 @@ def calc_bt_ops(self, **args):
         __group = []
 
         for i_ in range(len(N_L[:, 0])):
-            __group = __group + [("LOAD_%d" % (i_ + 1))]
+            __group = __group + ["LOAD_%d" % (i_ + 1)]
 
         BC1["FORCE_NODALE"] = []
 
@@ -1844,7 +1844,7 @@ def calc_bt_ops(self, **args):
 
         __group = []
         for i_ in range(len(N_S[:, 0])):
-            __group = __group + [("SUP_%d" % (i_ + 1))]
+            __group = __group + ["SUP_%d" % (i_ + 1)]
 
         BC1["DDL_IMPO"] = []
 
@@ -1926,7 +1926,7 @@ def calc_bt_ops(self, **args):
         __group = []
 
         for i_ in range(__NE):
-            __group = __group + [("EG_%d" % (i_ + 1))]
+            __group = __group + ["EG_%d" % (i_ + 1)]
 
         motscles = {}
         motscles["BARRE"] = []
@@ -1964,7 +1964,7 @@ def calc_bt_ops(self, **args):
         __group = []
 
         for i_ in range(len(N_L[:, 0])):
-            __group = __group + [("LOAD_%d" % (i_ + 1))]
+            __group = __group + ["LOAD_%d" % (i_ + 1)]
 
         BC1["FORCE_NODALE"] = []
 
@@ -1973,7 +1973,7 @@ def calc_bt_ops(self, **args):
 
         __group = []
         for i_ in range(len(N_S[:, 0])):
-            __group = __group + [("SUP_%d" % (i_ + 1))]
+            __group = __group + ["SUP_%d" % (i_ + 1)]
 
         BC1["DDL_IMPO"] = []
 
@@ -2346,9 +2346,9 @@ def calc_bt_ops(self, **args):
         Holes = {}
         for key in GROUP_C.keys():
             if key == 0:
-                Bound = Cr_loop(np.array(mesh.getNodes(GROUP_C[key])))
+                Bound = Cr_loop(np.array(mesh.getNodes(GROUP_C[key], localNumbering=True)))
             else:
-                Holes[key] = Cr_loop(np.array(mesh.getNodes(GROUP_C[key])))
+                Holes[key] = Cr_loop(np.array(mesh.getNodes(GROUP_C[key], localNumbering=True)))
 
         mesh = DEFI_GROUP(reuse=mesh, MAILLAGE=mesh, **motscles1)
         return __Nodes, Bound, Holes

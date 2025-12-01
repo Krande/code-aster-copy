@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -59,13 +59,13 @@ if rank == 0:
     test.assertFalse(pMesh.hasGroupOfCells("GRPM4", True))
 elif rank == 1:
     test.assertTrue(pMesh.hasGroupOfNodes("GRPN1", True))
-    test.assertTrue([874, 914] == pMesh.getNodes("GRPN1"))
+    test.assertTrue([874, 914] == pMesh.getNodes("GRPN1", localNumbering=True))
     test.assertTrue(pMesh.hasGroupOfNodes("GRPN2", True))
-    test.assertTrue([874] == pMesh.getNodes("GRPN2"))
+    test.assertTrue([874] == pMesh.getNodes("GRPN2", localNumbering=True))
     test.assertTrue(pMesh.hasGroupOfNodes("GRPN3", True))
-    test.assertTrue([914] == pMesh.getNodes("GRPN3"))
+    test.assertTrue([914] == pMesh.getNodes("GRPN3", localNumbering=True))
     test.assertTrue(pMesh.hasGroupOfNodes("GRPN4", True))
-    test.assertTrue([874] == pMesh.getNodes("GRPN4"))
+    test.assertTrue([874] == pMesh.getNodes("GRPN4", localNumbering=True))
     test.assertTrue(pMesh.hasGroupOfCells("GRPM1", True))
     test.assertTrue([924, 939], pMesh.getCells("GRPM1"))
     test.assertTrue(pMesh.hasGroupOfCells("GRPM2", True))

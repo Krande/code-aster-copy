@@ -623,11 +623,11 @@ class Coeur:
         linked_total_nodes_names = [
             i for i in gno_names if i.startswith(("G_", "CREIBAS_", "TGBAS_", "TGHAUT_"))
         ]
-        linked_total_nodes = set(MA0.getNodes(linked_total_nodes_names))
+        linked_total_nodes = set(MA0.getNodes(linked_total_nodes_names, localNumbering=True))
 
         # Noeuds avec déplacement imposé
         load_nodes_names = [i for i in gno_names if i.startswith("P_")]
-        load_nodes = set(MA0.getNodes(load_nodes_names))
+        load_nodes = set(MA0.getNodes(load_nodes_names, localNumbering=True))
 
         # Ensemble des noeuds en liaison moins ceux avec déplacement imposé
         linked_local_nodes = linked_total_nodes - load_nodes
@@ -679,12 +679,12 @@ class Coeur:
             MA.setGroupOfCells("GRIL_E", gril_e)
 
         if "LISPG" not in gno_names:
-            lispg = MA.getNodes(tuple(set(grids_lock)))
+            lispg = MA.getNodes(tuple(set(grids_lock, localNumbering=True)))
             MA.setGroupOfNodes("LISPG", lispg)
 
         for gname in ("T_GUIDE", "EBOSUP", "EBOINF", "CRAYON", "ELA", "DIL", "MAINTIEN"):
             if gname not in gno_names:
-                nodes_grp = MA.getNodesFromCells(gname)
+                nodes_grp = MA.getNodesFromCells(gname, True)
                 MA.setGroupOfNodes(gname, nodes_grp)
 
         return MA
@@ -708,7 +708,7 @@ class Coeur:
 
         # Mailles MNT
         mnt_names = [i for i in gcells if i.startswith("MNT_")]
-        mnt_nodes = MAILL.getNodesFromCells(mnt_names)
+        mnt_nodes = MAILL.getNodesFromCells(mnt_names, True)
         mnt_x = set(coords_x[mnt_nodes])
         sz = len(mnt_x)
         assert sz == 2, "Invalid mesh %s" % sz
@@ -728,7 +728,7 @@ class Coeur:
 
             id_grid = "G_%s" % ac.pos_aster
             grp_grid = [i for i in gnodes if (i.startswith(id_grid) and i != id_grid)]
-            ls_nodes_grid = list(set(len(MAILL.getNodes(i)) for i in grp_grid))
+            ls_nodes_grid = list(set(len(MAILL.getNodes(i, localNumbering=True)) for i in grp_grid))
             sz = len(ls_nodes_grid)
             assert sz == 1, "Invalid mesh %d" % sz
             ac.nb_nodes_grid = ls_nodes_grid[0]
@@ -738,16 +738,16 @@ class Coeur:
         logger.debug("<MAC3_COEUR>: nb_tg_mesh = %s" % (self.nb_tg_mesh))
 
         # altitudes mini et maxi de la cavité de coeur
-        x_eboinf = coords_x[MAILL.getNodesFromCells("EBOINF")]
+        x_eboinf = coords_x[MAILL.getNodesFromCells("EBOINF", True)]
         self.XINFCUVE = x_eboinf.min()
         logger.debug("<MAC3_COEUR>: xinfcuve = %s" % (self.XINFCUVE))
 
-        x_maintien = coords_x[MAILL.getNodesFromCells("MAINTIEN")]
+        x_maintien = coords_x[MAILL.getNodesFromCells("MAINTIEN", True)]
         self.XSUPCUVE = x_maintien.max()
         logger.debug("<MAC3_COEUR>: xsupcuve = %s" % (self.XSUPCUVE))
 
         # altitudes mini et maxi, et longueur de l'ensemble des crayons
-        x_crayon = coords_x[MAILL.getNodesFromCells("CRAYON")]
+        x_crayon = coords_x[MAILL.getNodesFromCells("CRAYON", True)]
         self.XINFC = x_crayon.min()
         self.XSUPC = x_crayon.max()
         self.LONCR = self.XSUPC - self.XINFC
@@ -756,7 +756,7 @@ class Coeur:
         logger.debug("<MAC3_COEUR>: lcrayon = %s" % (self.LONCR))
 
         # altitudes mini et maxi, et longueur de l'ensemble des tubes
-        x_tguide = coords_x[MAILL.getNodesFromCells("T_GUIDE")]
+        x_tguide = coords_x[MAILL.getNodesFromCells("T_GUIDE", True)]
         self.XINFT = min(x_tguide)
         self.XSUPT = max(x_tguide)
         self.LONTU = self.XSUPT - self.XINFT
@@ -767,7 +767,7 @@ class Coeur:
         # altitudes moyennes des grilles
         self.altitude = []
         for igr in range(self.NBGR):
-            x_gr = coords_x[MAILL.getNodesFromCells("GRIL_%d" % (igr + 1))]
+            x_gr = coords_x[MAILL.getNodesFromCells("GRIL_%d" % (igr + 1), True)]
             h_gri = 0.5 * (x_gr.min() + x_gr.max())
             logger.debug("<MAC3_COEUR>: h_gri %s = %s" % (igr + 1, h_gri))
             self.altitude.append(h_gri)

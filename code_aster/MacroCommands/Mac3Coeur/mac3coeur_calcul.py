@@ -894,7 +894,7 @@ class Mac3CoeurDeformation(Mac3CoeurCalcul):
         )
 
         mesh = RESU.getModel().getMesh()
-        gnodes = mesh.getNodes("PMNT_S")
+        gnodes = mesh.getNodes("PMNT_S", localNumbering=True)
 
         sfield = forc_noda.toSimpleFieldOnNodes()
         fvalues, fmask = sfield.getValues()

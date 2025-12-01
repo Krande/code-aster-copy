@@ -51,6 +51,7 @@ subroutine crnggc(chamnz, l_print)
 #include "asterfort/nbec.h"
 #include "asterfort/utmess.h"
 #include "asterfort/wkvect.h"
+#include "asterfort/debug_print.h"
 #include "jeveux.h"
 #include "MeshTypes_type.h"
 !
@@ -116,11 +117,12 @@ subroutine crnggc(chamnz, l_print)
     call asmpi_info(rank=mrank, size=mnbproc)
     rang = to_aster_int(mrank)
     nbproc = to_aster_int(mnbproc)
-    DEBUG_MPI('crnlgg', rang, nbproc)
+    DEBUG_MPI('crnggc', rang, nbproc)
 
 !   RECUPERATION DU NOM DU MAILLAGE DANS LE BUT D'OBTENIR LE JOINT
     call dismoi('NUME_EQUA', chamno, 'CHAM_NO', repk=nume_equa)
     call jeveuo(nume_equa//'.REFN', 'L', jrefn)
+    call debug_print(nume_equa)
     mesh = zk24(jrefn) (1:8)
     nomgdr = zk24(jrefn+1) (1:8)
 !
@@ -239,7 +241,13 @@ subroutine crnggc(chamnz, l_print)
                 numno1 = zi(jrecep1+poscom)
 !
                 nddl = zzprno(1, numno1, 1)
-                nddlg = v_nugll(nddl)
+                nbcmp = zzprno(1, numno1, 2)
+                if (nbcmp .eq. 0) then
+                    nddlg = -1
+                else
+                    nddlg = v_nugll(nddl)
+                end if
+                write (6, *) "numno1", numno1, nddl, nddlg, nec
 !
 !           Recherche des composantes demandees
                 do iec = 1, nec
@@ -263,6 +271,9 @@ subroutine crnggc(chamnz, l_print)
             end do
         end if
 !
+        write (6, *) "zi(jrecep1) ", zi(jrecep1), nbddl
+        flush (6)
+        if (nbddl .eq. 0) cycle
         ASSERT(zi(jrecep1) .eq. nbddl)
         n4e = to_mpi_int(nbddl)
         n4r = to_mpi_int(nb_ddl_envoi)
@@ -387,7 +398,9 @@ subroutine crnggc(chamnz, l_print)
     do iaux = 1, nbddll
         nuno = v_deeq((iaux-1)*2+1)
         if (nuno .ne. 0) then
-            ASSERT(v_posdd(iaux) == v_noex(nuno))
+            if (v_posdd(iaux) .ne. v_noex(nuno)) then
+                call utmess('F', 'ASSEMBLA_9')
+            end if
         else
             ASSERT(v_posdd(iaux) .ne. -1)
         end if
