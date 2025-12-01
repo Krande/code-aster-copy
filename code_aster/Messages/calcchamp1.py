@@ -30,6 +30,10 @@ cata_msg = {
 affecté aux mailles concernées.
 Toutes les composantes sont mises à zéro."""
     ),
+    4: _(
+        """Le champ SIEF_ELGA n'est pas disponible dans le résultat. Pour le non-linéaire, on ne le calcule pas automatiquement.
+Il faut soit compléter le résultat en entrée, soit demander explicitement le calcul de SIEF_ELGA dans CALC_CHAMP. Dans ce dernier cas, vous aurez des contraintes calculées avec l'hypothèse de l'élasticité linéaire !"""
+    ),
     10: _("""Le modèle est manquant."""),
     18: _(
         """

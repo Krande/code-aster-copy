@@ -435,9 +435,13 @@ contains
                         postComp%postCompFields%sigm, iret)
             if (iret .ne. 0) then
 ! ------------- Compute and save
-                call computeField(postComp%postCompResu, "SIEF_ELGA", option)
-                call rsexch(' ', postComp%postCompResu%resultOut, 'SIEF_ELGA', numeStore, &
-                            postComp%postCompFields%sigm, iret)
+                if (postComp%postCompResu%resultType .eq. "EVOL_NOLI") then
+                    call utmess("F", "CALCCHAMP1_4")
+                else
+                    call computeField(postComp%postCompResu, "SIEF_ELGA", option)
+                    call rsexch(' ', postComp%postCompResu%resultOut, 'SIEF_ELGA', numeStore, &
+                                postComp%postCompFields%sigm, iret)
+                end if
             end if
         end if
 

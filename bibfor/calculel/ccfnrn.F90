@@ -365,6 +365,9 @@ subroutine ccfnrn(option, resuin, resultOut, lisord, nbordr, &
             if (iret .ne. 0) then
                 call rsexch(' ', resultOut, 'SIEF_ELGA', iordr, sigma, iret2)
                 if (iret2 .ne. 0) then
+                    if (resultType .eq. "EVOL_NOLI") then
+                        call utmess("F", "CALCCHAMP1_4")
+                    end if
                     optio2 = 'SIEF_ELGA'
                     if (ldist) then
                         call calcop(optio2, ' ', resuin, resultOut, lisori, &
