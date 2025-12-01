@@ -15,16 +15,13 @@
 ! You should have received a copy of the GNU General Public License
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
-
-!
-!
 #include "asterf_types.h"
 !
 interface
-    subroutine nmacex(sddisc, iterat, lextra, valext)
-        character(len=19) :: sddisc
-        integer(kind=8) :: iterat
-        aster_logical :: lextra
-        real(kind=8) :: valext(4)
+    subroutine nmacex(sddisc, iterNewt, lExtrapol, extrapolVale)
+        character(len=19), intent(in) :: sddisc
+        integer(kind=8), intent(in) :: iterNewt
+        aster_logical, intent(out) :: lExtrapol
+        real(kind=8), intent(out) :: extrapolVale(4)
     end subroutine nmacex
 end interface

@@ -15,15 +15,13 @@
 ! You should have received a copy of the GNU General Public License
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
-
-!
 !
 interface
-    subroutine nmitsp(ds_print, sddisc, iterat, retsup)
+    subroutine nmitsp(ds_print, sddisc, iterNewt, retsup)
         use NonLin_Datastructure_type
         type(NL_DS_Print), intent(in) :: ds_print
         character(len=19), intent(in) :: sddisc
-        integer(kind=8), intent(in) :: iterat
+        integer(kind=8), intent(in) :: iterNewt
         integer(kind=8), intent(out) :: retsup
     end subroutine nmitsp
 end interface
