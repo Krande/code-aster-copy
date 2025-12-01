@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -30,7 +30,10 @@ from code_aster.Commands import *
 DEBUT(CODE=_F(NIV_PUB_WEB="INTERNET"), DEBUG=_F(SDVERI="OUI"))
 
 
-mesh = LIRE_MAILLAGE(FORMAT="MED", PARTITIONNEUR="PTSCOTCH")
+from code_aster import CA
+
+medfile = str(CA.basedir / "ssnp178a.mmed")
+mesh = CA.ParallelMesh().readMedFile(medfile)
 
 mesh = MODI_MAILLAGE(reuse=mesh, MAILLAGE=mesh, ORIE_PEAU=_F(GROUP_MA_PEAU=("Encast", "load")))
 

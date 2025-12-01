@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -28,7 +28,10 @@ test = code_aster.TestCase()
 
 rank = MPI.ASTER_COMM_WORLD.Get_rank()
 
-MAIL = LIRE_MAILLAGE(FORMAT="MED", PARTITIONNEUR="PTSCOTCH", INFO=1)
+from code_aster import CA
+
+medfile = str(CA.basedir / "zzzz504w.mmed")
+MAIL = CA.ParallelMesh().readMedFile(medfile)
 DEFI_GROUP(reuse=MAIL, MAILLAGE=MAIL, CREA_GROUP_NO=_F(TOUT_GROUP_MA="OUI"))
 
 MATER = DEFI_MATERIAU(ELAS=_F(E=10000.0, NU=0.0, RHO=1.0))

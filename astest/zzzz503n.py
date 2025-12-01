@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -36,7 +36,10 @@ test = code_aster.TestCase()
 ####################################################################################
 
 
-mesh0 = LIRE_MAILLAGE(FORMAT="MED", PARTITIONNEUR="PTSCOTCH")
+from code_aster import CA
+
+medfile = str(CA.basedir / "zzzz503n.mmed")
+mesh0 = CA.ParallelMesh().readMedFile(medfile)
 
 mesh = CREA_MAILLAGE(MAILLAGE=mesh0, MODI_HHO=_F(TOUT="OUI"))
 

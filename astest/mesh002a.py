@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -69,7 +69,10 @@ pMesh3.readMedFile("ssnv187a.mmed")
 pMesh3.checkConsistency("ssnv187a.mmed")
 
 # 4) With LIRE_MAILLAGE (internal partitioning)
-pMesh4 = LIRE_MAILLAGE(UNITE=20, FORMAT="MED", PARTITIONNEUR="PTSCOTCH", INFO_MED=1)
+from code_aster import CA
+
+medfile = str(CA.basedir / "ssnv187a.mmed")
+pMesh4 = CA.ParallelMesh().readMedFile(medfile)
 
 model = AFFE_MODELE(MAILLAGE=pMesh4, AFFE=_F(MODELISATION="3D", PHENOMENE="MECANIQUE", TOUT="OUI"))
 

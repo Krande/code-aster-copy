@@ -26,7 +26,10 @@ code_aster.init("--test", ERREUR=_F(ALARME="EXCEPTION"))
 
 test = code_aster.TestCase()
 
-pMesh = LIRE_MAILLAGE(UNITE=20, FORMAT="MED", PARTITIONNEUR="PTSCOTCH")
+from code_aster import CA
+
+medfile = str(CA.basedir / "mesh002k.med")
+pMesh = CA.ParallelMesh().readMedFile(medfile)
 
 model = AFFE_MODELE(MAILLAGE=pMesh, AFFE=_F(MODELISATION="3D", PHENOMENE="MECANIQUE", TOUT="OUI"))
 

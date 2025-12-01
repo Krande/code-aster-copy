@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -30,7 +30,10 @@ nProc = code_aster.MPI.ASTER_COMM_WORLD.Get_size()
 rank = code_aster.MPI.ASTER_COMM_WORLD.Get_rank()
 
 
-pMesh = LIRE_MAILLAGE(UNITE=20, FORMAT="MED", PARTITIONNEUR="PTSCOTCH", INFO_MED=1)
+from code_aster import CA
+
+medfile = str(CA.basedir / "zzzz502m.mmed")
+pMesh = CA.ParallelMesh().readMedFile(medfile)
 pMesh = MODI_MAILLAGE(
     reuse=pMesh, MAILLAGE=pMesh, ORIE_PEAU=_F(GROUP_MA_PEAU=("HAUT", "BAS", "DROITE", "GAUCHE"))
 )

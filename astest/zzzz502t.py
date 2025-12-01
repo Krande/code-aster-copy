@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -18,6 +18,7 @@
 # --------------------------------------------------------------------
 
 import code_aster
+from code_aster import CA
 from code_aster import MPI
 from code_aster.Commands import *
 from code_aster.Utilities import ExecutionParameter, Options
@@ -38,7 +39,9 @@ part = "PTSCOTCH"  #'SANS'
 # ----------------------------------- Modèle  ---------------------------------
 # -----------------------------------------------------------------------------
 
-Mesh = LIRE_MAILLAGE(UNITE=20, FORMAT="MED", PARTITIONNEUR=part)
+
+medfile = str(CA.basedir / "zzzz502t.mmed")
+Mesh = CA.ParallelMesh().readMedFile(medfile)
 
 Model = AFFE_MODELE(
     MAILLAGE=Mesh,

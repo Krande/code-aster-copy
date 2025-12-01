@@ -20,6 +20,7 @@
 import os.path as osp
 
 import code_aster
+from code_aster import CA
 from code_aster.Commands import DEFI_GROUP, LIRE_MAILLAGE, RECU_TABLE
 from code_aster.Utilities import shared_tmpdir
 
@@ -33,7 +34,9 @@ rank = code_aster.MPI.ASTER_COMM_WORLD.Get_rank()
 # from MED format
 mesh = LIRE_MAILLAGE(UNITE=20, FORMAT="MED")
 
-pmesh = LIRE_MAILLAGE(UNITE=20, FORMAT="MED", PARTITIONNEUR="PTSCOTCH", INFO=2)
+
+medfile = str(CA.basedir / "mesh001c.mmed")
+pmesh = CA.ParallelMesh().readMedFile(medfile)
 
 pmesh = DEFI_GROUP(reuse=pmesh, MAILLAGE=pmesh, CREA_GROUP_NO=(_F(TOUT_GROUP_MA="OUI"),))
 
