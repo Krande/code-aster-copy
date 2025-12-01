@@ -547,7 +547,8 @@ class Result : public DataStructure, public ListOfTables {
      */
     virtual void printMedFile( const std::filesystem::path &fileName,
                                std::string medName = std::string(), bool local = true,
-                               bool internalVar = true ) const;
+                               bool internalVar = true,
+                               const VectorString &fields = VectorString() ) const;
 
     /**
      * @brief Get the number of steps stored in the Result

@@ -114,9 +114,6 @@ resnonl = CALC_CHAMP(
 )
 
 
-resnonl.printMedFile("/home/C00976/tmp/ssnp179y.med")
-
-
 # same result than ssnp179k since C_GRAD_VARI=0.0
 TEST_RESU(
     RESU=_F(

@@ -932,7 +932,7 @@ Result::interpolateFieldOnCellsReal( const std::string name, const ASTERDOUBLE v
 };
 
 void Result::printMedFile( const std::filesystem::path &fileName, std::string medName, bool local,
-                           bool internalVar ) const {
+                           bool internalVar, const VectorString &fields ) const {
     const auto rank = getMPIRank();
     LogicalUnitFile a;
     ASTERINTEGER retour = -1;
@@ -974,6 +974,11 @@ void Result::printMedFile( const std::filesystem::path &fileName, std::string me
         dict2.container["NOM_RESU_MED"] = medName.substr( 0, 8 );
     if ( !internalVar ) {
         dict2.container["IMPR_NOM_VARI"] = "NON";
+    }
+    if ( fields.empty() ) {
+        dict2.container["TOUT_CHAM"] = "OUI";
+    } else {
+        dict2.container["NOM_CHAM"] = fields;
     }
     listeResu.push_back( dict2 );
     dict.container["RESU"] = listeResu;

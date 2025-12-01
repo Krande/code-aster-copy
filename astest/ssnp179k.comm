@@ -118,8 +118,6 @@ resnonl = CALC_CHAMP(
     reuse=resnonl, FORCE=("FORC_NODA", "REAC_NODA"), CRITERES=("SIEQ_NOEU",), RESULTAT=resnonl
 )
 
-resnonl.printMedFile("/home/C00976/tmp/ssnp179k.med")
-
 TEST_RESU(
     RESU=_F(
         INST=1.0,

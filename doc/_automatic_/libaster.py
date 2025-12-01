@@ -13529,13 +13529,14 @@ class Result(DataStructure):
     def printListOfFields(self):
         """Print the names of all fields (real, complex, ...) stored in the result."""
 
-    def printMedFile(self, filename, medname="", local=True, internalVar=True):
+    def printMedFile(self, filename, medname="", local=True, internalVar=True, fields=[]):
         """Print the result in a MED file.
 
         Args:
             filename (Path|str): Path to the output file.
             medname (str): Name of the result in the MED file. (default: "")
             local (bool): Print only the local domain if *True*. (default: True)
+            fields (list[str]): Name of fields to save. (default: all)
         """
 
     def resize(self, nbIndexes):
@@ -13886,13 +13887,15 @@ class NonLinearResult(TransientResult):
     def getTangentMatrix(self):
         pass
 
-    def printMedFile(self, filename, medname="", local=False, internalVar=True):
+    def printMedFile(self, filename, medname="", local=False, internalVar=True, fields=[]):
         """Print the result in a MED file.
 
         Args:
             filename (Path|str): Path to the output file.
             medname (str): Name of the result in the MED file. (default: "")
             local (bool): Print only the local domain if *True*. (default: True)
+            internalVarl (bool); Save VARI_ELGA_NOMME or not. (default: True)
+            fields (list[str]): Name of fields to save. (default: all)
         """
 
     def setContact(self, *args, **kwargs):
