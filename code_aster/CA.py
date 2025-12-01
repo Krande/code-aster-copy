@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -23,7 +23,10 @@
 This modules provides a compatibility module to emulate the v17 API.
 """
 
+import os
 from functools import partial
+from pathlib import Path
+
 from .Commands import *
 from .Commands.debut import init
 from .Commands.fin import FIN as close
@@ -39,12 +42,13 @@ from .Supervis import (
     saveObjects,
 )
 from .Utilities import MPI, TestCase
-from .Utilities.version import get_version
-from .Utilities.version import version_info
+from .Utilities.version import get_version, version_info
 
 # may happen when building the doc
 __version__ = get_version() if version_info else ""
 
 exit = partial(close, exit=True)
+
+basedir = Path(os.environ.get("RUNASTER_CA_BASEDIR", "."))
 
 del get_version, version_info

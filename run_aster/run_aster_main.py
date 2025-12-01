@@ -315,6 +315,15 @@ def main(argv=None):
     if args.no_comm:
         for comm in export.commfiles:
             export.remove_file(comm)
+    if not os.environ.get("RUNASTER_CA_BASEDIR"):
+        basedir = os.fspath(Path.cwd())
+        if export.filename:
+            basedir = os.fspath(Path(export.filename).parent)
+        if export.get("service") == "testcase":
+            # run from as_run via run_testcases
+            basedir = Path(export.commfiles[0].path).parent
+        os.environ["RUNASTER_CA_BASEDIR"] = str(basedir)
+
     if direct:
         export.add_file(File(osp.abspath(args.file), filetype="comm", unit=1))
     elif not args.file or args.no_comm:

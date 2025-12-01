@@ -99,7 +99,9 @@ class MeshReader(ExecuteCommand):
             filename = Path(LogicalUnitFile.filename_from_unit(unit))
             if filename.is_absolute():
                 UTMESS("I", "MESH4_8", valk=str(filename))
-                self._result.readMedFile(filename, meshname, partitioned=False, verbose=verbose)
+                self._result.readMedFile(
+                    str(filename), meshname, partitioned=False, verbose=verbose
+                )
             else:
                 UTMESS("A", "MESH4_6", valk=_get_syntax(unit))
                 with shared_tmpdir("lire_maillage_") as tmpdir:
@@ -110,7 +112,9 @@ class MeshReader(ExecuteCommand):
                     MPI.ASTER_COMM_WORLD.Barrier()
                     assert uniq.exists(), "shared file not found"
                     UTMESS("I", "MESH4_8", valk=str(uniq))
-                    self._result.readMedFile(uniq, meshname, partitioned=False, verbose=verbose)
+                    self._result.readMedFile(
+                        str(uniq), meshname, partitioned=False, verbose=verbose
+                    )
         else:
             if keywords["PARTITIONNEUR"] == "PTSCOTCH":
                 assert not haveMPI()
@@ -140,7 +144,7 @@ def _get_syntax(unit: int):
         f'DEFI_FICHIER(ACTION="ASSOCIER", FICHIER=medfile, UNITE={unit}, TYPE="BINARY", ACCES="OLD")\n'
         f'mesh = LIRE_MAILLAGE(FORMAT="MED", UNITE={unit}, PARTITIONNEUR="PTSCOTCH")'
     )
-    pyapi = f"medfile = '{orig}'\nmesh = CA.ParallelMesh().readMedFile(medfile)"
+    pyapi = f"medfile = '{orig}'\nmesh = code_aster.ParallelMesh().readMedFile(medfile)"
     return cmd, pyapi
 
 
