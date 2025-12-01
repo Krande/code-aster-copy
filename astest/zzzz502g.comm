@@ -19,7 +19,8 @@
 
 DEBUT(CODE="OUI", ERREUR=_F(ALARME="EXCEPTION"))
 
-pMesh = LIRE_MAILLAGE(UNITE=20, FORMAT="MED", PARTITIONNEUR="PTSCOTCH", INFO_MED=1)
+medfile = CA.basedir / "zzzz502e.mmed"
+pMesh = CA.ParallelMesh().readMedFile(medfile)
 
 pMesh = DEFI_GROUP(reuse=pMesh, MAILLAGE=pMesh, CREA_GROUP_NO=_F(TOUT_GROUP_MA="OUI"))
 

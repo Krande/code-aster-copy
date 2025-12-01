@@ -94,6 +94,8 @@ Advanced features:
 
 - ``ASTER_ENABLE_MPI_CHECK``: Enables checking before MPI communications.
 - ``ASTER_ENABLE_PROC_STATUS``: Enabled if ``/proc/status`` is available.
+- ``ASTER_ENABLE_CGROUP_STATS``: Enabled if cgroup v2 measures are available.
+- ``ASTER_DISABLE_MEMORY_STATS``: To disable ``ASTER_ENABLE_PROC_STATUS`` and ``ASTER_ENABLE_CGROUP_STATS``.
 - ``ASTER_HAVE_SUPPORT_FPE``: Enabled if FPE can be catched.
 - ``ASTER_HAVE_BACKTRACE``: Enabled if GNU traceback function is available.
 - ``ASTER_HAVE_TRACEBACKQQ``: Enabled if Intel traceback function is available.

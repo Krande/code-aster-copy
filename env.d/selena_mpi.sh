@@ -5,4 +5,4 @@
 # transitional
 [ "${VERSION}" = "20240327" ] && VERSION="${VERSION}b"
 
-. /software/shared/simumeca/aster/prerequisites/${VERSION}/gcc-mkl-ompi-py311/selena_mpi.sh
+. /software/shared/simumeca/aster/prerequisites/${VERSION}/gcc-mkl-ompi59/selena_mpi.sh

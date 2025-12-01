@@ -489,7 +489,7 @@ def check_platform(self):
         self.undefine("ASTER_PLATFORM_POSIX")
     self.env.ASTER_PLATFORM = plt
     if os.getenv("MSYSTEM"):
-        ## Define and additional variable for MSYS2 
+        ## Define and additional variable for MSYS2
         self.define("ASTER_PLATFORM_MSYS2", 1)
         self.env.ASTER_PLATFORM_MSYS2 = True
 

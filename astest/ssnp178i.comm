@@ -27,7 +27,8 @@
 DEBUT(CODE="OUI", ERREUR=_F(ALARME="EXCEPTION"), DEBUG=_F(SDVERI="OUI"))
 
 
-mesh0 = LIRE_MAILLAGE(FORMAT="MED", PARTITIONNEUR="PTSCOTCH")
+medfile = CA.basedir / "ssnp178f.mmed"
+mesh0 = CA.ParallelMesh().readMedFile(medfile)
 
 mesh = CREA_MAILLAGE(MAILLAGE=mesh0, MODI_HHO=_F(TOUT="OUI"))
 
