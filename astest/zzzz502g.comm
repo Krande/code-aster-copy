@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -19,7 +19,10 @@
 
 DEBUT(CODE=_F(NIV_PUB_WEB="INTERNET"), ERREUR=_F(ALARME="EXCEPTION"))
 
-pMesh = LIRE_MAILLAGE(UNITE=20, FORMAT="MED", PARTITIONNEUR="PTSCOTCH", INFO_MED=1)
+from code_aster import CA
+
+medfile = str(CA.basedir / "zzzz502e.mmed")
+pMesh = CA.ParallelMesh().readMedFile(medfile)
 
 pMesh = DEFI_GROUP(reuse=pMesh, MAILLAGE=pMesh, CREA_GROUP_NO=_F(TOUT_GROUP_MA="OUI"))
 

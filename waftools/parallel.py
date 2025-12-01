@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -37,7 +37,7 @@ def options(self):
         dest="parallel",
         action="store_true",
         default=os.environ.get("ENABLE_MPI") != "0",
-        help="Build a parallel version with mpi (same as " "ENABLE_MPI environment variable)",
+        help="Build a parallel version with mpi (same as ENABLE_MPI environment variable)",
     )
     group.add_option(
         "--enable-openmp",
@@ -46,18 +46,6 @@ def options(self):
         help="Build a parallel version supporting OpenMP",
     )
     group.add_option("--disable-openmp", dest="openmp", action="store_false", help="Disable OpenMP")
-    group.add_option(
-        "--enable-proc-status",
-        dest="procstatus",
-        action="store_true",
-        help="force control of used memory with VmSize",
-    )
-    group.add_option(
-        "--disable-proc-status",
-        dest="procstatus",
-        action="store_false",
-        help="disable control of used memory with VmSize",
-    )
     group.add_option(
         "--enable-ccache",
         dest="ccache",
@@ -240,44 +228,20 @@ def check_sizeof_mpi_int(self):
 @Configure.conf
 def check_vmsize(self):
     """Check for VmSize 'bug' with MPI or not."""
-    opts = self.options
-    if opts.procstatus is None:
-        flag = self.get_define("ASTER_ENABLE_PROC_STATUS")
-    else:
-        flag = int(opts.procstatus)
-    if flag is not None:
-        self.start_msg("Check measure of VmSize using /proc")
-        if flag not in (0, 1, "0", "1"):
-            raise Errors.ConfigurationError("unexpected value: ASTER_ENABLE_PROC_STATUS=%s" % flag)
-        flag = int(flag)
-        if flag:
-            self.end_msg("ok (ASTER_ENABLE_PROC_STATUS=%s)" % flag)
-        else:
-            self.end_msg("disabled (ASTER_ENABLE_PROC_STATUS=%s)" % flag, "YELLOW")
-    elif not self.get_define("ASTER_HAVE_MPI"):
-        self.start_msg("Check measure of VmSize using /proc")
-        flag = 1
-        self.end_msg("default (use /proc/PID/status)")
-    else:
-        self.start_msg("Checking measure of VmSize during MPI_Init")
-        try:
-            prg = osp.join(self.bldnode.abspath(), "test_mpi_init_" + str(os.getpid()))
-            self.check_cc(fragment=fragment_failure_vmsize, mandatory=True, use="MPI", target=prg)
-            cmd = self.env["base_mpiexec"] + ["-n", "1", prg]
-            size = self.cmd_and_log(cmd)
-        except Errors.WafError:
-            self.end_msg(
-                "failed (memory consumption can not be estimated " "during the calculation)",
-                "YELLOW",
-            )
-        else:
-            self.end_msg("ok (%s)" % size)
-            flag = 1
-            self.check_require_mpiexec(prg)
-    if flag:
-        self.define("ASTER_ENABLE_PROC_STATUS", 1)
-    else:
-        self.undefine("ASTER_ENABLE_PROC_STATUS")
+    if not self.get_define("ASTER_HAVE_MPI"):
+        return
+    self.start_msg("Checking measure of VmSize during MPI_Init")
+    try:
+        prg = osp.join(self.bldnode.abspath(), "test_mpi_init_" + str(os.getpid()))
+        self.check_cc(fragment=fragment_failure_vmsize, mandatory=True, use="MPI", target=prg)
+        cmd = self.env["base_mpiexec"] + ["-n", "1", prg]
+        size = self.cmd_and_log(cmd)
+    except Errors.WafError:
+        raise Errors.ConfigurationError(
+            "failed (memory consumption can not be estimated during the calculation)"
+        )
+    self.end_msg("ok (%s)" % size)
+    self.check_require_mpiexec(prg)
 
 
 @Configure.conf
@@ -308,6 +272,7 @@ def check_require_mpiexec(self, program):
 fragment_failure_vmsize = r"""
 /*
    Check for unexpected value of VmPeak passing MPI_Init.
+   Extracted from mempid.c
 */
 
 #include <stdio.h>
@@ -326,8 +291,9 @@ long read_vmsize()
     static char sbuf[1024];
     char* str;
     int fd, size;
+    pid_t pid = getpid();
 
-    sprintf(filename, "/proc/%ld/status", (long)getpid());
+    sprintf(filename, "/proc/%ld/status", pid);
     fd = open(filename, O_RDONLY, 0);
     if (fd == -1)
         return -1;
@@ -338,19 +304,73 @@ long read_vmsize()
     return atol(str);
 }
 
+long read_memory_currrent() {
+    char cgroup_path[256] = { 0 };
+    char memory_path[512] = { 0 };
+    FILE *cgroup_file = NULL;
+    FILE *memory_file = NULL;
+    long memory_bytes;
+    pid_t pid = getpid();
+
+    snprintf( cgroup_path, sizeof( cgroup_path ), "/proc/%d/cgroup", pid );
+    cgroup_file = fopen( cgroup_path, "r" );
+    if ( !cgroup_file ) {
+        return -1;
+    }
+
+    if ( !fgets( cgroup_path, sizeof( cgroup_path ), cgroup_file ) ) {
+        fclose( cgroup_file );
+        return -1;
+    }
+    fclose( cgroup_file );
+
+    cgroup_path[strcspn( cgroup_path, "\n" )] = '\0';
+    char *cgroup_rel_path = strchr( cgroup_path, '/' );
+    if ( !cgroup_rel_path ) {
+        return -1;
+    }
+
+    // memory.current
+    snprintf( memory_path, sizeof( memory_path ), "/sys/fs/cgroup%s/memory.current",
+              cgroup_rel_path );
+    memory_file = fopen( memory_path, "r" );
+    if ( !memory_file ) {
+        return -1;
+    }
+    if ( fscanf( memory_file, "%ld", &memory_bytes ) != 1 ) {
+        fclose( memory_file );
+        return -1;
+    }
+    fclose( memory_file );
+    return memory_bytes / 1024;
+}
+
+#if defined ASTER_ENABLE_CGROUP_STATS
+#define get_vmsize read_memory_currrent
+#elif defined ASTER_ENABLE_PROC_STATUS
+#define get_vmsize read_vmsize
+#else
+#error ERROR: needs ASTER_ENABLE_PROC_STATUS or ASTER_ENABLE_CGROUP_STATS
+#endif
+
 int main(int argc, char *argv[])
 {
     int iret;
     long size;
 
-    size = read_vmsize();
+    size = get_vmsize();
 
     MPI_Init(&argc, &argv);
 
     sleep(1);
-    size = read_vmsize() - size;
+    size = get_vmsize() - size;
 
     printf("%ld kB", size);
+#if defined ASTER_ENABLE_CGROUP_STATS
+    printf(", using 'read_memory_currrent'");
+#elif defined ASTER_ENABLE_PROC_STATUS
+    printf(", using 'read_vmsize'");
+#endif
     if ( size > 10 * 1024 * 1024 ) {
         // it should be around 100 MB (dynlibs loaded)
         fprintf(stderr, "MPI initialization used more than 10 GB (%ld kB)\n", size);

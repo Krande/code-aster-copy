@@ -17,38 +17,31 @@
 # along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 # --------------------------------------------------------------------
 
-# person_in_charge: mathieu.courtois@edf.fr
+from ..Utilities import _
 
-"""
-This modules provides a compatibility module to emulate the v17 API.
-"""
+cata_msg = {
+    6: _(
+        """
+Quand on utilise LIRE_MAILLAGE / PARTITIONNEUR, il est déconseillé de mettre
+le fichier MED en donnée et d'utiliser ensuite l'unité logique.
+Car le fichier MED est copié une première fois dans le répertoire de l'exécution
+et doit être recopié une deuxième fois dans un répertoire partagé pour tous les processus.
 
-import os
-from functools import partial
-from pathlib import Path
+On conseille donc de ne pas mettre le fichier MED parmi les fichiers de données
+et d'utiliser son chemin absolu.
 
-from .Commands import *
-from .Commands.debut import init
-from .Commands.fin import FIN as close
-from .Objects import *
-from .ObjectsExt import DataStructure
-from .Supervis import (
-    AsterError,
-    ContactError,
-    ConvergenceError,
-    IntegrationError,
-    SolverError,
-    TimeLimitError,
-    saveObjects,
-)
-from .Utilities import MPI, TestCase
-from .Utilities.version import get_version, version_info
+Soit :
 
-# may happen when building the doc
-__version__ = get_version() if version_info else ""
+%(k1)s
 
-exit = partial(close, exit=True)
+Soit :
 
-basedir = Path(os.environ.get("RUNASTER_CA_BASEDIR", "."))
+%(k2)s
 
-del get_version, version_info
+Il est nécessaire que le fichier MED soit dans un répertoire accessible à tous les processus
+(par exemple dans /home, /scratch...).
+         """
+    ),
+    7: _("""Copie de '%(k1)s' vers '%(k2)s'"""),
+    8: _("""Lecture du fichier partagé '%(k1)s'..."""),
+}

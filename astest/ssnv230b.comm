@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -64,7 +64,10 @@ UN = DEFI_CONSTANTE(VALE=1.0)
 ZERO = DEFI_CONSTANTE(VALE=0.0)
 
 # [][][][][][][][] Maillage et Modele [][][][][][][][]
-mail = LIRE_MAILLAGE(FORMAT="MED", PARTITIONNEUR="PTSCOTCH")
+from code_aster import CA
+
+medfile = str(CA.basedir / "ssnv230b.mmed")
+mail = CA.ParallelMesh().readMedFile(medfile)
 
 mode = AFFE_MODELE(MAILLAGE=mail, AFFE=(_F(PHENOMENE="MECANIQUE", MODELISATION="3D", TOUT="OUI"),))
 

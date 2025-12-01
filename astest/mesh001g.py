@@ -139,7 +139,10 @@ def computation(mesh, solv):
 rank = MPI.ASTER_COMM_WORLD.Get_rank()
 nbproc = MPI.ASTER_COMM_WORLD.Get_size()
 
-mesh_p = LIRE_MAILLAGE(PARTITIONNEUR="PTSCOTCH", UNITE=20)
+from code_aster import CA
+
+medfile = str(CA.basedir / "mesh001g.mmed")
+mesh_p = CA.ParallelMesh().readMedFile(medfile)
 mesh = LIRE_MAILLAGE(UNITE=20)
 
 mesh_p2 = transfo(mesh_p)

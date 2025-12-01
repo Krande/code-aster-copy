@@ -28,7 +28,10 @@ frottement = 0.6
 raideurN = 1e10
 raideurT = 1e10
 
-MecaMail = LIRE_MAILLAGE(PARTITIONNEUR="PTSCOTCH")
+from code_aster import CA
+
+medfile = str(CA.basedir / "ssnv106a.med")
+MecaMail = CA.ParallelMesh().readMedFile(medfile)
 
 
 # Orientations des faces

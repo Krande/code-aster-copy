@@ -260,11 +260,14 @@ class ExtendedMesh:
         Arguments:
             filename (string): name of the MED file
             meshname (str): Name of the mesh to be read from file.
-            verbose (int) : 0 - warnings
-                            1 - informations about main steps
-                            2 - informations about all steps
+            verbose (int): 0 - warnings, 1 - informations about main steps,
+                2 - informations about all steps
+
+        Returns:
+            ParallelMesh: the object itself
         """
         mesh_builder.buildFromMedFile(self, filename, meshname, verbose)
+        return self
 
     def refine(self, ntimes=1, info=1):
         """Refine the mesh uniformly. Each edge is split in two.
