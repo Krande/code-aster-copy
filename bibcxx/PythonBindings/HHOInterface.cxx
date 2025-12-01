@@ -52,11 +52,16 @@ void exportHHOToPython( py::module_ &mod ) {
 
       Arguments:
             hho_field (FieldOnNodesReal): hho field like displacement or thermic
+            option (int): option to use for post-process.
+                          0: use cell DoFs only (default)
+                          1: use cell and face DoFs.
+                          2: use face DoFs only.
+            average (bool): average or not the field at nodes.
 
       Returns:
             FieldOnNodesReal: HHO field project on Lagrange space
         )",
-              py::arg( "hho_field" ) )
+              py::arg( "hho_field" ), py::arg( "option" ) = 0, py::arg( "average" ) = true )
         .def( "projectOnHHOSpace",
               py::overload_cast< const FieldOnNodesRealPtr >( &HHO::projectOnHHOSpace, py::const_ ),
               R"(

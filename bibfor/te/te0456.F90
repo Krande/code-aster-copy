@@ -22,7 +22,7 @@ subroutine te0456(nomopt, nomte)
     use HHO_quadrature_module
     use HHO_postpro_module, only: hhoPostMeca, hhoPostTher, hhoPostTherElga, hhoPostMecaGradVari, &
                                   hhoPostMecaElga
-    use HHO_init_module, only: hhoInfoInitCell
+    use HHO_init_module, only: hhoInfoInitCell, hhoInitFacesOfCell
 !
     implicit none
 !
@@ -54,12 +54,14 @@ subroutine te0456(nomopt, nomte)
 !
     if (nomopt == 'HHO_DEPL_MECA') then
 ! --- post-traitement
+        call hhoInitFacesOfCell(hhoCell)
         if (lteatt('TYPMOD2', 'HHO_GRAD')) then
             call hhoPostMecaGradVari(hhoCell, hhoData, nbnodes)
         else
             call hhoPostMeca(hhoCell, hhoData, nbnodes)
         end if
     else if (nomopt == 'HHO_TEMP_THER') then
+        call hhoInitFacesOfCell(hhoCell)
         call hhoPostTher(hhoCell, hhoData, nbnodes)
     else if (nomopt == 'TEMP_ELGA') then
         call hhoQuad%initCell(hhoCell, npg)

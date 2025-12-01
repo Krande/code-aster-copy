@@ -161,12 +161,12 @@ contains
 !
 !===================================================================================================
 !
-    subroutine hhoGeomFace(nodes_coor, nbnodes, typma, elem_dim)
+    subroutine hhoGeomFace(nodes_coor, nbnodes, nbnodes_post, typma, elem_dim)
 !
         implicit none
 !
         real(kind=8), dimension(3, 9), intent(out)  :: nodes_coor
-        integer(kind=8), intent(out)                        :: nbnodes
+        integer(kind=8), intent(out)                        :: nbnodes, nbnodes_post
         character(len=8), intent(out)               :: typma
         integer(kind=8), intent(out)                        :: elem_dim
 !
@@ -191,6 +191,7 @@ contains
 ! --- Init
         nodes_coor = 0.d0
         nbnodes = 0
+        nbnodes_post = 0
         typma = ''
         elem_dim = 0
 !
@@ -200,27 +201,31 @@ contains
         if (typma == 'QU9') then
             typma = 'QUAD4'
             nbnodes = 4
+            nbnodes_post = 9
             elem_dim = 2
         elseif (typma == 'TR7') then
             typma = 'TRIA3'
             nbnodes = 3
+            nbnodes_post = 7
             elem_dim = 2
         elseif (typma == 'SE3') then
             typma = 'SEG2'
             nbnodes = 2
+            nbnodes_post = 3
             elem_dim = 1
         else
             ASSERT(ASTER_FALSE)
         end if
 !
-        ASSERT((nbnodes .ge. 2) .and. (nbnodes .le. 9))
+        ASSERT((nbnodes .ge. 2) .and. (nbnodes .le. 4))
+        ASSERT((nbnodes_post .ge. 2) .and. (nbnodes_post .le. 9))
         ASSERT((elem_dim .eq. 1) .or. (elem_dim .eq. 2))
 !
         call jevech('PGEOMER', 'L', jv_geom)
 !
 ! - Get coordinates
 !
-        do inode = 1, nbnodes
+        do inode = 1, nbnodes_post
             do idim = 1, elem_dim+1
                 nodes_coor(idim, inode) = zr(jv_geom+(inode-1)*(elem_dim+1)+idim-1)
             end do
@@ -230,6 +235,7 @@ contains
             write (6, *) "hhoGeomFace debug"
             write (6, *) "typma: ", typma
             write (6, *) "nbnodes: ", nbnodes
+            write (6, *) "nbnodes_post: ", nbnodes_post
             do inode = 1, nbnodes
                 write (6, *) "node ", inode, ": ", nodes_coor(1:3, inode)
             end do
@@ -242,17 +248,17 @@ contains
 !
 !===================================================================================================
 !
-    subroutine hhoFaceInit(hhoFace, typma, ndim, nbnodes, nodes_coor, &
+    subroutine hhoFaceInit(hhoFace, typma, ndim, nbnodes, nbnodes_post, nodes_coor, &
                            num_nodes_loc, num_face_loc, barycenter_cell)
 !
         implicit none
 !
-        integer(kind=8), intent(in)                             :: typma
-        integer(kind=8), intent(in)                             :: ndim
-        real(kind=8), dimension(3, 4), intent(in)       :: nodes_coor
-        integer(kind=8), intent(in)                             :: nbnodes
-        integer(kind=8), dimension(5), intent(in)               :: num_nodes_loc
-        integer(kind=8), intent(in)                             :: num_face_loc
+        integer(kind=8), intent(in)                     :: typma
+        integer(kind=8), intent(in)                     :: ndim
+        real(kind=8), dimension(3, 9), intent(in)       :: nodes_coor
+        integer(kind=8), intent(in)                     :: nbnodes, nbnodes_post
+        integer(kind=8), dimension(9), intent(in)       :: num_nodes_loc
+        integer(kind=8), intent(in)                     :: num_face_loc
         real(kind=8), dimension(3), optional, intent(in):: barycenter_cell
         type(HHO_Face), intent(out)                     :: hhoFace
 !
@@ -272,15 +278,16 @@ contains
 ! Out hhoFace           : a HHO Face
 ! --------------------------------------------------------------------------------------------------
 !
-        integer(kind=8) :: numsorted(4), ino
+        integer(kind=8) :: numsorted(9), ino
         ASSERT(nbnodes .le. 4)
 !
 ! --- Init: be carefull the order to call the functions is important
 !
         hhoFace%typema = typma
         hhoFace%nbnodes = nbnodes
+        hhoFace%nbnodes_post = nbnodes_post
         hhoFace%ndim = ndim
-        hhoFace%coorno = hhoFaceInitCoor(nodes_coor, nbnodes, ndim, numsorted)
+        hhoFace%coorno = hhoFaceInitCoor(nodes_coor, nbnodes, nbnodes_post, ndim, numsorted)
         hhoFace%barycenter = barycenter(hhoFace%coorno, hhoFace%nbnodes)
         if (present(barycenter_cell)) then
             hhoFace%normal = hhoNormalFace3(hhoFace, barycenter_cell)
@@ -291,11 +298,11 @@ contains
         hhoFace%diameter = hhoDiameterFace(hhoFace)
         hhoFace%axes = hhoLocalAxesFace(hhoFace)
         hhoFace%face_loc = num_face_loc
-        do ino = 1, hhoFace%nbnodes
+        do ino = 1, hhoFace%nbnodes_post
             hhoFace%nodes_loc(ino) = num_nodes_loc(numsorted(ino))
         end do
         ! Last node is the index of barycenter
-        hhoFace%node_bar_loc = num_nodes_loc(hhoFace%nbnodes+1)
+        hhoFace%node_bar_loc = num_nodes_loc(hhoFace%nbnodes_post)
         hhoFace%l_jaco_cst = hhoIsJacobCst(hhoFace%typema, hhoFace%coorno, hhoFace%ndim+1)
 !
     end subroutine
@@ -629,22 +636,22 @@ contains
 !   In npg (optional)      : number of quadrature point for the face
 ! --------------------------------------------------------------------------------------------------
 !
-        integer(kind=8) :: nbnodes, elem_dim, numnodes(5), enumf
+        integer(kind=8) :: nbnodes, elem_dim, numnodes(9), enumf, nbnodes_post
         real(kind=8) :: nodes_coor(3, 9)
         character(len=8) :: typma
         aster_logical :: laxis
 !
 ! --- Get HHO informations
 !
-        call hhoGeomFace(nodes_coor, nbnodes, typma, elem_dim)
+        call hhoGeomFace(nodes_coor, nbnodes, nbnodes_post, typma, elem_dim)
         ASSERT(elem_dim == 1 .or. elem_dim == 2)
         call hhoDataInit(hhoData)
 !
         if (typma == 'QUAD4') then
-            numnodes(1:5) = (/1, 2, 3, 4, 9/)
+            numnodes(1:9) = (/1, 2, 3, 4, 5, 6, 7, 8, 9/)
             enumf = MT_QUAD4
         else if (typma == 'TRIA3') then
-            numnodes(1:4) = (/1, 2, 3, 7/)
+            numnodes(1:7) = (/1, 2, 3, 4, 5, 6, 7/)
             enumf = MT_TRIA3
         else if (typma == 'SEG2 ') then
             numnodes(1:3) = (/1, 2, 3/)
@@ -655,7 +662,8 @@ contains
 !
 ! --- Initialize HHO Face
 !
-        call hhoFaceInit(hhoFace, enumf, elem_dim, nbnodes, nodes_coor, numnodes, 1)
+        call hhoFaceInit(hhoFace, enumf, elem_dim, nbnodes, nbnodes_post, &
+                         nodes_coor, numnodes, 1)
 
 ! --- Get quadrature (optional)
 !
@@ -694,11 +702,12 @@ contains
 ! --------------------------------------------------------------------------------------------------
 !
         integer(kind=8), parameter                      :: max_faces = 6
-        integer(kind=8), parameter                      :: max_nodes = 5
+        integer(kind=8), parameter                      :: max_nodes = 9
         integer(kind=8), dimension(max_nodes, max_faces) :: nodes_faces
         integer(kind=8), dimension(max_faces)           :: nbnodes_faces
+        integer(kind=8), dimension(max_faces)           :: nbnodes_post_faces
         integer(kind=8), dimension(max_faces)           :: type_faces
-        real(kind=8), dimension(3, max_faces) :: coor_face
+        real(kind=8), dimension(3, max_nodes) :: coor_face
         integer(kind=8) :: i_face, i_node
 
 !
@@ -706,6 +715,7 @@ contains
             ! --- Init
             nodes_faces = 0
             nbnodes_faces = 0
+            nbnodes_post_faces = 0
             type_faces = 0
             coor_face = 0.d0
 
@@ -714,28 +724,34 @@ contains
 ! ----- !!!! Attention l'ordre des faces doit etre le meme que celui du catalogue
         !!!! Le dernier noeud est le barycentre
 ! ----- Face 1 -> N21
-                nodes_faces(1:5, 1) = (/1, 4, 3, 2, 21/)
+                nodes_faces(1:9, 1) = (/1, 4, 3, 2, 12, 11, 10, 9, 21/)
                 nbnodes_faces(1) = 4
+                nbnodes_post_faces(1) = 9
                 type_faces(1) = MT_QUAD4
 ! ----- Face 2 -> N22
-                nodes_faces(1:5, 2) = (/1, 2, 6, 5, 22/)
+                nodes_faces(1:9, 2) = (/1, 2, 6, 5, 9, 14, 17, 13, 22/)
                 nbnodes_faces(2) = 4
+                nbnodes_post_faces(2) = 9
                 type_faces(2) = MT_QUAD4
 ! ----- Face 3 -> N23
-                nodes_faces(1:5, 3) = (/2, 3, 7, 6, 23/)
+                nodes_faces(1:9, 3) = (/2, 3, 7, 6, 10, 15, 18, 14, 23/)
                 nbnodes_faces(3) = 4
+                nbnodes_post_faces(3) = 9
                 type_faces(3) = MT_QUAD4
 ! ----- Face 4 -> N24
-                nodes_faces(1:5, 4) = (/3, 4, 8, 7, 24/)
+                nodes_faces(1:9, 4) = (/3, 4, 8, 7, 11, 16, 19, 15, 24/)
                 nbnodes_faces(4) = 4
+                nbnodes_post_faces(4) = 9
                 type_faces(4) = MT_QUAD4
 ! ----- Face 5 -> N25
-                nodes_faces(1:5, 5) = (/1, 5, 8, 4, 25/)
+                nodes_faces(1:9, 5) = (/1, 5, 8, 4, 13, 20, 16, 12, 25/)
                 nbnodes_faces(5) = 4
+                nbnodes_post_faces(5) = 9
                 type_faces(5) = MT_QUAD4
 ! ----- Face 6 -> N26
-                nodes_faces(1:5, 6) = (/5, 6, 7, 8, 26/)
+                nodes_faces(1:9, 6) = (/5, 6, 7, 8, 17, 18, 19, 20, 26/)
                 nbnodes_faces(6) = 4
+                nbnodes_post_faces(6) = 9
                 type_faces(6) = MT_QUAD4
 !
             else if (hhoCell%typema == MT_TETRA4) then
@@ -743,20 +759,24 @@ contains
 ! ----- !!!! Attention l'ordre des faces doit etre le meme que celui du catalogue
         !!!! Le dernier noeud est le barycentre
 ! ----- Face 1 -> N11
-                nodes_faces(1:4, 1) = (/1, 3, 2, 11/)
+                nodes_faces(1:7, 1) = (/1, 3, 2, 7, 6, 5, 11/)
                 nbnodes_faces(1) = 3
+                nbnodes_post_faces(1) = 7
                 type_faces(1) = MT_TRIA3
 ! ----- Face 2 -> N12
-                nodes_faces(1:4, 2) = (/1, 2, 4, 12/)
+                nodes_faces(1:7, 2) = (/1, 2, 4, 5, 9, 8, 12/)
                 nbnodes_faces(2) = 3
+                nbnodes_post_faces(2) = 7
                 type_faces(2) = MT_TRIA3
 ! ----- Face 3 -> N13
-                nodes_faces(1:4, 3) = (/1, 4, 3, 13/)
+                nodes_faces(1:7, 3) = (/1, 4, 3, 8, 10, 7, 13/)
                 nbnodes_faces(3) = 3
+                nbnodes_post_faces(3) = 7
                 type_faces(3) = MT_TRIA3
 ! ----- Face 4 -> N14
-                nodes_faces(1:4, 4) = (/2, 3, 4, 14/)
+                nodes_faces(1:7, 4) = (/2, 3, 4, 6, 10, 9, 14/)
                 nbnodes_faces(4) = 3
+                nbnodes_post_faces(4) = 7
                 type_faces(4) = MT_TRIA3
 !
             else if (hhoCell%typema == MT_PYRAM5) then
@@ -764,24 +784,29 @@ contains
 ! ----- !!!! Attention l'ordre des faces doit etre le meme que celui du catalogue
         !!!! Le dernier noeud est le barycentre
 ! ----- Face 1 -> N14
-                nodes_faces(1:5, 1) = (/1, 4, 3, 2, 14/)
+                nodes_faces(1:9, 1) = (/1, 4, 3, 2, 9, 8, 7, 6, 14/)
                 nbnodes_faces(1) = 4
+                nbnodes_post_faces(1) = 9
                 type_faces(1) = MT_QUAD4
 ! ----- Face 2 -> N15
-                nodes_faces(1:4, 2) = (/1, 2, 5, 15/)
+                nodes_faces(1:7, 2) = (/1, 2, 5, 6, 11, 10, 15/)
                 nbnodes_faces(2) = 3
+                nbnodes_post_faces(2) = 7
                 type_faces(2) = MT_TRIA3
 ! ----- Face 3 -> N16
-                nodes_faces(1:4, 3) = (/2, 3, 5, 16/)
+                nodes_faces(1:7, 3) = (/2, 3, 5, 7, 12, 11, 16/)
                 nbnodes_faces(3) = 3
+                nbnodes_post_faces(3) = 7
                 type_faces(3) = MT_TRIA3
 ! ----- Face 4 -> N17
-                nodes_faces(1:4, 4) = (/3, 4, 5, 17/)
+                nodes_faces(1:7, 4) = (/3, 4, 5, 8, 13, 12, 17/)
                 nbnodes_faces(4) = 3
+                nbnodes_post_faces(4) = 7
                 type_faces(4) = MT_TRIA3
 ! ----- Face 5 -> N18
-                nodes_faces(1:4, 5) = (/4, 1, 5, 18/)
+                nodes_faces(1:7, 5) = (/4, 1, 5, 9, 10, 13, 18/)
                 nbnodes_faces(5) = 3
+                nbnodes_post_faces(5) = 7
                 type_faces(5) = MT_TRIA3
 !
             else if (hhoCell%typema == MT_PENTA6) then
@@ -789,24 +814,29 @@ contains
 ! ----- !!!! Attention l'ordre des faces doit etre le meme que celui du catalogue
         !!!! Le dernier noeud est le barycentre
 ! ----- Face 1 -> N16
-                nodes_faces(1:5, 1) = (/1, 2, 5, 4, 16/)
+                nodes_faces(1:9, 1) = (/1, 2, 5, 4, 7, 11, 13, 10, 16/)
                 nbnodes_faces(1) = 4
+                nbnodes_post_faces(1) = 9
                 type_faces(1) = MT_QUAD4
 ! ----- Face 2 -> N17
-                nodes_faces(1:5, 2) = (/2, 3, 6, 5, 17/)
+                nodes_faces(1:9, 2) = (/2, 3, 6, 5, 8, 12, 14, 11, 17/)
                 nbnodes_faces(2) = 4
+                nbnodes_post_faces(2) = 9
                 type_faces(2) = MT_QUAD4
 ! ----- Face 3 -> N18
-                nodes_faces(1:5, 3) = (/1, 4, 6, 3, 18/)
+                nodes_faces(1:9, 3) = (/1, 4, 6, 3, 10, 15, 12, 9, 18/)
                 nbnodes_faces(3) = 4
+                nbnodes_post_faces(3) = 9
                 type_faces(3) = MT_QUAD4
 ! ----- Face 4 -> N19
-                nodes_faces(1:4, 4) = (/1, 3, 2, 19/)
+                nodes_faces(1:7, 4) = (/1, 3, 2, 9, 8, 7, 19/)
                 nbnodes_faces(4) = 3
+                nbnodes_post_faces(4) = 7
                 type_faces(4) = MT_TRIA3
 ! ----- Face 5 -> N20
-                nodes_faces(1:4, 5) = (/4, 5, 6, 20/)
+                nodes_faces(1:7, 5) = (/4, 5, 6, 15, 14, 13, 20/)
                 nbnodes_faces(5) = 3
+                nbnodes_post_faces(5) = 7
                 type_faces(5) = MT_TRIA3
 !
             else if (hhoCell%typema == MT_QUAD4) then
@@ -816,18 +846,22 @@ contains
 ! ----- Face 1 -> N5
                 nodes_faces(1:3, 1) = (/1, 2, 5/)
                 nbnodes_faces(1) = 2
+                nbnodes_post_faces(1) = 3
                 type_faces(1) = MT_SEG2
 ! ----- Face 2 -> N6
                 nodes_faces(1:3, 2) = (/2, 3, 6/)
                 nbnodes_faces(2) = 2
+                nbnodes_post_faces(2) = 3
                 type_faces(2) = MT_SEG2
 ! ----- Face 3 -> N7
                 nodes_faces(1:3, 3) = (/3, 4, 7/)
                 nbnodes_faces(3) = 2
+                nbnodes_post_faces(3) = 3
                 type_faces(3) = MT_SEG2
 ! ----- Face 4 -> N8
                 nodes_faces(1:3, 4) = (/4, 1, 8/)
                 nbnodes_faces(4) = 2
+                nbnodes_post_faces(4) = 3
                 type_faces(4) = MT_SEG2
 !
             else if (hhoCell%typema == MT_TRIA3) then
@@ -837,14 +871,17 @@ contains
 ! ----- Face 1 -> N4
                 nodes_faces(1:3, 1) = (/1, 2, 4/)
                 nbnodes_faces(1) = 2
+                nbnodes_post_faces(1) = 3
                 type_faces(1) = MT_SEG2
 ! ----- Face 2 -> N5
                 nodes_faces(1:3, 2) = (/2, 3, 5/)
                 nbnodes_faces(2) = 2
+                nbnodes_post_faces(2) = 3
                 type_faces(2) = MT_SEG2
 ! ----- Face 3 -> N6
                 nodes_faces(1:3, 3) = (/3, 1, 6/)
                 nbnodes_faces(3) = 2
+                nbnodes_post_faces(3) = 3
                 type_faces(3) = MT_SEG2
 !
             else
@@ -853,11 +890,12 @@ contains
 
             do i_face = 1, hhoCell%nbfaces
                 coor_face = 0.d0
-                do i_node = 1, nbnodes_faces(i_face)
+                do i_node = 1, nbnodes_post_faces(i_face)
                     coor_face(1:3, i_node) = hhoCell%coorno(1:3, nodes_faces(i_node, i_face))
                 end do
                 call hhoFaceInit(hhoCell%faces(i_face), type_faces(i_face), hhoCell%ndim-1, &
-                                 nbnodes_faces(i_face), coor_face, nodes_faces(:, i_face), &
+                                 nbnodes_faces(i_face), nbnodes_post_faces(i_face), &
+                                 coor_face, nodes_faces(:, i_face), &
                                  i_face, hhoCell%barycenter)
             end do
             hhoCell%l_face_init = ASTER_TRUE

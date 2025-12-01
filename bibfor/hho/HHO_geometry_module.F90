@@ -26,15 +26,14 @@ module HHO_geometry_module
     implicit none
 !
     private
-#include "asterc/r8prem.h"
 #include "asterf_types.h"
+#include "asterc/r8prem.h"
 #include "asterfort/apnorm.h"
 #include "asterfort/assert.h"
 #include "asterfort/elrfdf.h"
 #include "asterfort/elrfno.h"
 #include "asterfort/elrfvf.h"
 #include "asterfort/provec.h"
-#include "blas/dnrm2.h"
 #include "MeshTypes_type.h"
 !
 ! --------------------------------------------------------------------------------------------------
@@ -210,7 +209,7 @@ contains
 !  -------------------------------------------------------------------------------------------------
         normal = 0.d0
         call CellNameL2S(hhoFace%typema, ts)
-        coor(1:3, 1:4) = hhoFace%coorno
+        coor(1:3, 1:4) = hhoFace%coorno(1:3, 1:4)
 !
         call apnorm(hhoFace%nbnodes, ts, hhoFace%ndim+1, coor, qp_param(1), &
                     qp_param(2), normal)
@@ -452,15 +451,15 @@ contains
 !
 !===================================================================================================
 !
-    function hhoFaceInitCoor(coorno, nbnodes, ndimF, numsorted_) result(nodes_face)
+    function hhoFaceInitCoor(coorno, nnos, nbnodes, ndimF, numsorted_) result(nodes_face)
 !
         implicit none
 !
         integer(kind=8), intent(in) :: ndimF
-        real(kind=8), dimension(3, 4), intent(in) :: coorno
-        integer(kind=8), intent(in) :: nbnodes
-        real(kind=8), dimension(3, 4) :: nodes_face
-        integer(kind=8), intent(out), optional :: numsorted_(4)
+        real(kind=8), dimension(3, 9), intent(in) :: coorno
+        integer(kind=8), intent(in) :: nbnodes, nnos
+        real(kind=8), dimension(3, 9) :: nodes_face
+        integer(kind=8), intent(out), optional :: numsorted_(9)
 !
 ! --------------------------------------------------------------------------------------------------
 !   We have to reorder the nodes of the face to use the same basis functions for a face
@@ -468,29 +467,29 @@ contains
 !  In HHO_Face           :: face HHO
 ! --------------------------------------------------------------------------------------------------
 !
-        integer(kind=8) :: ino, minnum1, minnum2, numsorted(4), ind, candidate(2)
+        integer(kind=8) :: ino, minnum1, minnum2, numsorted(9), ind, candidate(2)
 !
-        numsorted(:) = 0
+        numsorted = 0
 !
         if (ndimF == 1) then
-            ASSERT(nbnodes == 2)
+            ASSERT(nnos == 2)
             ind = find_lowest_vertex(coorno(:, 1), coorno(:, 2))
 !
             if (ind == 1) then
-                numsorted(1:2) = (/1, 2/)
+                numsorted(1:3) = (/1, 2, 3/)
             else if (ind == 2) then
-                numsorted(1:2) = (/2, 1/)
+                numsorted(1:3) = (/2, 1, 3/)
             else
                 ASSERT(ASTER_FALSE)
             end if
         else if (ndimF == 2) then
             minnum1 = 1
-            candidate = (/2, nbnodes/)
-            do ino = 2, nbnodes
+            candidate = (/2, nnos/)
+            do ino = 2, nnos
                 ind = find_lowest_vertex(coorno(:, minnum1), coorno(:, ino))
                 if (ind == 2) then
                     minnum1 = ino
-                    if (ino == nbnodes) then
+                    if (ino == nnos) then
                         candidate = (/ino-1, 1/)
                     else
                         candidate = (/ino-1, ino+1/)
@@ -501,64 +500,64 @@ contains
             minnum2 = candidate( &
                       find_lowest_vertex(coorno(:, candidate(1)), coorno(:, candidate(2))))
 !
-            if (nbnodes == 3) then
+            if (nnos == 3) then
                 if (minnum1 == 1) then
                     if (minnum2 == 2) then
-                        numsorted(1:3) = (/1, 2, 3/)
+                        numsorted(1:7) = (/1, 2, 3, 4, 5, 6, 7/)
                     else if (minnum2 == 3) then
-                        numsorted(1:3) = (/1, 3, 2/)
+                        numsorted(1:7) = (/1, 3, 2, 6, 5, 4, 7/)
                     else
                         ASSERT(ASTER_FALSE)
                     end if
                 else if (minnum1 == 2) then
                     if (minnum2 == 1) then
-                        numsorted(1:3) = (/2, 1, 3/)
+                        numsorted(1:7) = (/2, 1, 3, 4, 6, 5, 7/)
                     else if (minnum2 == 3) then
-                        numsorted(1:3) = (/2, 3, 1/)
+                        numsorted(1:7) = (/2, 3, 1, 5, 6, 4, 7/)
                     else
                         ASSERT(ASTER_FALSE)
                     end if
                 else if (minnum1 == 3) then
                     if (minnum2 == 1) then
-                        numsorted(1:3) = (/3, 1, 2/)
+                        numsorted(1:7) = (/3, 1, 2, 6, 4, 5, 7/)
                     else if (minnum2 == 2) then
-                        numsorted(1:3) = (/3, 2, 1/)
+                        numsorted(1:7) = (/3, 2, 1, 5, 4, 6, 7/)
                     else
                         ASSERT(ASTER_FALSE)
                     end if
                 else
                     ASSERT(ASTER_FALSE)
                 end if
-            else if (nbnodes == 4) then
+            else if (nnos == 4) then
                 if (minnum1 == 1) then
                     if (minnum2 == 2) then
-                        numsorted(1:4) = (/1, 2, 3, 4/)
+                        numsorted(1:9) = (/1, 2, 3, 4, 5, 6, 7, 8, 9/)
                     else if (minnum2 == 4) then
-                        numsorted(1:4) = (/1, 4, 3, 2/)
+                        numsorted(1:9) = (/1, 4, 3, 2, 8, 7, 6, 5, 9/)
                     else
                         ASSERT(ASTER_FALSE)
                     end if
                 else if (minnum1 == 2) then
                     if (minnum2 == 1) then
-                        numsorted(1:4) = (/2, 1, 4, 3/)
+                        numsorted(1:9) = (/2, 1, 4, 3, 5, 8, 7, 6, 9/)
                     else if (minnum2 == 3) then
-                        numsorted(1:4) = (/2, 3, 4, 1/)
+                        numsorted(1:9) = (/2, 3, 4, 1, 6, 7, 8, 5, 9/)
                     else
                         ASSERT(ASTER_FALSE)
                     end if
                 else if (minnum1 == 3) then
                     if (minnum2 == 2) then
-                        numsorted(1:4) = (/3, 2, 1, 4/)
+                        numsorted(1:9) = (/3, 2, 1, 4, 6, 5, 8, 7, 9/)
                     else if (minnum2 == 4) then
-                        numsorted(1:4) = (/3, 4, 1, 2/)
+                        numsorted(1:9) = (/3, 4, 1, 2, 7, 8, 5, 6, 9/)
                     else
                         ASSERT(ASTER_FALSE)
                     end if
                 else if (minnum1 == 4) then
                     if (minnum2 == 1) then
-                        numsorted(1:4) = (/4, 1, 2, 3/)
+                        numsorted(1:9) = (/4, 1, 2, 3, 8, 5, 6, 7, 9/)
                     else if (minnum2 == 3) then
-                        numsorted(1:4) = (/4, 3, 2, 1/)
+                        numsorted(1:9) = (/4, 3, 2, 1, 7, 6, 5, 8, 9/)
                     else
                         ASSERT(ASTER_FALSE)
                     end if

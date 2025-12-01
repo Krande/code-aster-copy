@@ -15,7 +15,7 @@
 ! You should have received a copy of the GNU General Public License
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
-! person_in_charge: mickael.abbas at edf.fr
+!
 !
 module HHO_eval_module
 !
@@ -29,8 +29,8 @@ module HHO_eval_module
     private
 #include "asterf_types.h"
 #include "asterfort/assert.h"
-#include "asterfort/fointe.h"
 #include "asterfort/elrfvf.h"
+#include "asterfort/fointe.h"
 #include "asterfort/HHO_size_module.h"
 #include "blas/ddot.h"
 #include "blas/dscal.h"
