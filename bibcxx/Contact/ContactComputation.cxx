@@ -42,13 +42,18 @@ FieldOnCellsRealPtr ContactComputation::contactData( const ContactPairingPtr con
 
     // Get pairing
     ASTERINTEGER nbContPair = contPairing->getNumberOfPairs();
-    VectorLong nbInter = contPairing->getNumberOfIntersectionPoints();
-    std::vector< VectorOfVectorsReal > inter =
-        contPairing->getIntersectionPoints( CoordinatesSpace::Slave );
-    VectorPairLong listPairs = contPairing->getListOfPairs();
-    MapLong globPairToLocaPair = contPairing->globPairToLocaPair();
+    VectorLong nbInter;
+    std::vector< VectorOfVectorsReal > inter;
+    VectorPairLong listPairs;
+    MapLong globPairToLocaPair;
 
-    AS_ASSERT( nbContPair == nbInter.size() );
+    if ( nbContPair != 0 ) {
+        nbInter = contPairing->getNumberOfIntersectionPoints();
+        inter = contPairing->getIntersectionPoints( CoordinatesSpace::Slave );
+        listPairs = contPairing->getListOfPairs();
+        globPairToLocaPair = contPairing->globPairToLocaPair();
+        AS_ASSERT( nbContPair == nbInter.size() );
+    }
 
     // Acces to list of cells
     const auto meshConnex = contPairing->getMesh()->getConnectivity();

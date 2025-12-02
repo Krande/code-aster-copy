@@ -269,18 +269,12 @@ VectorPairLong MeshPairing::getListOfPairs() const {
     VectorPairLong returnValue;
     ASTERINTEGER nbPairs = getNumberOfPairs();
 
-    if ( nbPairs == 0 ) {
-        throw std::runtime_error( "No pairs !" );
-    }
+    if ( nbPairs != 0 ) {
+        returnValue.reserve( nbPairs );
 
-    if ( _pairs.size() == 0 ) {
-        throw std::runtime_error( "No pairs from Fortran!" );
-    }
-
-    returnValue.reserve( nbPairs );
-
-    for ( auto iPair = 0; iPair < nbPairs; iPair++ ) {
-        returnValue.push_back( std::make_pair( _pairs[2 * iPair], _pairs[2 * iPair + 1] ) );
+        for ( auto iPair = 0; iPair < nbPairs; iPair++ ) {
+            returnValue.push_back( std::make_pair( _pairs[2 * iPair], _pairs[2 * iPair + 1] ) );
+        }
     }
 
     return returnValue;

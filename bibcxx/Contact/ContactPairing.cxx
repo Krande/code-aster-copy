@@ -550,9 +550,6 @@ void ContactPairing::buildFiniteElementDescriptor() {
     // Objects
     SetLong slaveNodePaired, slaveCellPaired;
 
-    // Index of current contact pair
-    // ASTERINTEGER iContPair = 0;
-
     // Object for number of cells for each type of contact cell
     MapLong contactElemType;
 
