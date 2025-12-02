@@ -10,10 +10,10 @@ set_prefix "${0}"
 MINIO_DIR=minio/codeaster/devops/coverage
 
 _help() {
-    echo usage: $(basename $0) src-directory install-directory results-directory
+    echo usage: $(basename $0) src-directory install-directory results-directory upload
 }
 
-if [ $# -ne 3 ]; then
+if [ $# -lt 3 ] || [ $# -gt 4 ]; then
     _help
     exit 1
 fi
@@ -21,27 +21,52 @@ fi
 srcdir=$1
 instdir=$2
 resdir=$3
+upload=$4
 wrkdir=build/coverage
-mkdir -p ${wrkdir}
 
-printf "\nstart time : $(date)\n"
-printf "\ndownload previous data into ${wrkdir} : $(date)\n"
+printf "\ncoverage.sh - start time - $(date)\n"
+
+if [ ! -z "${MINIO_URL}" ]; then
+    printf "\nsetting up minIO alias - $(date)\n"
+    mc --insecure alias set minio/ ${MINIO_URL} ${MINIO_LOGIN} ${MINIO_PASSWD}
+fi
+
+printf "\ndownload previous data into ${wrkdir} - $(date)\n"
+mkdir -p ${wrkdir}
 mc --insecure cp ${MINIO_DIR}/last.tested ${wrkdir}/
 
-printf "\ncoverage analysis : $(date)\n"
+printf "\nchecking testcases results directory ${resdir} - $(date)\n"
+mkdir -p ${resdir}
+
+if [ -f ${resdir}/mess_files.tar.gz ] && [ -f ${resdir}/code_files.tar.gz ]; then
+    (
+        cd ${resdir}
+        printf "extracting mess and code files...\n"
+        tar xzf mess_files.tar.gz
+        tar xzf code_files.tar.gz
+        printf "files extracted.\n"
+    )
+else
+    printf "mess and code files supposed to be here (merge-request job)\n"
+fi
+
+printf "\ncoverage analysis - $(date)\n"
 source ${instdir}/share/aster/profile.sh
 python3 ${BASE}/coverage_main.py --verbose \
     --srcdir=${srcdir} --installdir=${instdir} --resdir=${resdir} \
-    --wrkdir=${wrkdir} --previous=last --limit=180 \
+    --wrkdir=${wrkdir} --previous=last \
     --save --savetxt
+iret=$?
+# --limit=180
 
-printf "\nupload analysis onto minio : $(date)\n"
-if [ -z "${CI_COMMIT_REF_NAME}" ]; then
-    echo "WARNING: results are only uploaded in CI"
-else
+printf "\nupload analysis onto minio (upload=${upload}) - $(date)\n"
+if [ "${upload}" = "upload" ]; then
     today=$(date +%Y-%m-%d)
     mc --insecure cp ${wrkdir}/${today}.* ${MINIO_DIR}/
     mc --insecure cp ${wrkdir}/last.* ${MINIO_DIR}/
+else
+    echo "INFO: do not upload results"
 fi
 
-printf "end time : $(date)\n\n"
+printf "\nend time - $(date)\n\n"
+exit ${iret}

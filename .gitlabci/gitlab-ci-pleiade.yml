@@ -1,4 +1,7 @@
 variables:
+  GIT_STRATEGY: fetch
+  # depth must be higher than the range used to search the last tag
+  GIT_DEPTH: 100
   MINIO_URL: https://minio.retd.edf.fr
   ROOT_URL: https://$GITLAB_TOKEN_NAME:$GITLAB_TOKEN@gitlab.pleiade.edf.fr/codeaster
   PREREQ_VERSION: 20251026
@@ -261,6 +264,21 @@ verification_test:
     - job: doc_html
       artifacts: false
       optional: true
+
+keywords_coverage:
+  interruptible: true
+  stage: code-checking
+  needs:
+    - job: prepare
+    - job: compile
+    - job: verification_test
+  script:
+    - do_upload="no"
+    - test "$(date +%u)" = "${WEEKLY_RUN}" && test "${BUILDTYPE}" = "nightly" && do_upload="upload"
+    - .gitlabci/coverage.sh . ./install ./results "${do_upload}"
+  artifacts:
+    paths:
+      - build/coverage/*
 
 # --- variant debian-next for nightly build: no image available
 prepare_debian-next:

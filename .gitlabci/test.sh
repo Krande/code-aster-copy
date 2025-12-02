@@ -1,6 +1,6 @@
 #!/bin/bash
 
-jobs=${NPROC_MAX}
+jobs=${NPROC_MAX:-8}
 args=( "--clean" "--jobs=${jobs}" "$@" )
 if [ "${ASTER_BUILD}" = "debug" ]; then
     args+=( "--timefactor=16.0" )
@@ -106,11 +106,6 @@ if [ "${BUILDTYPE}" = "nightly" ] || [ "${BUILDTYPE}" = "nightly-coverage" ]; th
     [ -f coverage.tgz ] && mc --insecure cp coverage.tgz ${dest}/
 
     cd ..
-fi
-
-# weekly runs: coverage of keywords
-if [ "$(date +%u)" = "${WEEKLY_RUN}" ] && [ "${OSNAME}" = "debian-12" ]; then
-    .gitlabci/coverage.sh . install results
 fi
 
 exit ${iret}

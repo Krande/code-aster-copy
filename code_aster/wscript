@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -73,7 +73,7 @@ def check_version(self):
             assert types[0] is str, (12, values)
     except AssertionError as exc:
         raise Errors.ConfigurationError(
-            "Can not find official parent " "revision. Unexpected values: {0}".format(str(exc))
+            "Can not find official parent revision. Unexpected values: {0}".format(str(exc))
         )
     self.env.append_value("ASTER_VERSION", values)
     self.end_msg(self.env.ASTER_VERSION[:-1])
@@ -179,7 +179,7 @@ def get_revision_info_hg(self, depth):
             "-r",
             ancestors,
             "--template",
-            "{rev}:{node}:{tags}:{branch}:" "{date|shortdate}:{files}\n",
+            "{rev}:{node}:{tags}:{branch}:{date|shortdate}:{files}\n",
         ]
     ).splitlines()
     if not logs:
@@ -273,8 +273,8 @@ def get_revision_info(self):
         return DEFAULT_PKGINFO
     # check repository type
     getinfo = get_revision_info_git if osp.isdir(".git") else get_revision_info_hg
-    # search on last `depth` revisions
-    depth = 50
+    # search on last `depth` revisions - must be lesser than GIT_DEPTH in CI
+    depth = 99
     found = False
     while not found and depth < 20000:
         infos = getinfo(self, depth=depth)
