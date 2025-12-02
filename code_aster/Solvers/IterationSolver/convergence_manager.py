@@ -107,6 +107,9 @@ class ConvergenceManager(ContextMixin):
             """Reset the parameter value."""
             self._value = ConvergenceManager.undef
 
+        def isDefined(self):
+            return self.isSet() and self.hasRef()
+
         @property
         def reference(self):
             """float|int: Reference value of the parameter."""
@@ -295,11 +298,11 @@ class ConvergenceManager(ContextMixin):
         for name in mandatory:
             para = self._param.get(name)
             if para:
-                para.value = -1
+                para.value = ConvergenceManager.undef
 
-    def isInitialTimeStep(self):
+    def isInitialStep(self):
         "Tell if it is the initial time step"
-        return self.stepper.remaining() == self.stepper.size()
+        return self.stepper.isInitialStep()
 
     def hasResidual(self):
         """Tell if there is at least one residual convergence parameter.
@@ -492,9 +495,9 @@ class ConvergenceManager(ContextMixin):
         residual_rela = residual.copy()
 
         # TODO: find a better minimum value
-        if scaling < np.finfo(float).tiny:
+        if scaling < self._tiny_value:
             # Division by zero
-            resi_rela.value = -1
+            resi_rela.value = ConvergenceManager.undef
             residual_rela.setValues([-1] * residual_rela.size())
         else:
             resi_rela.value /= scaling
@@ -524,77 +527,53 @@ class ConvergenceManager(ContextMixin):
         diag = sqrt(pow(x_diag, 2) + pow(y_diag, 2) + pow(z_diag, 2))
 
         resi_geom = self.setdefault("RESI_GEOM")
-        if diag == 0.0:
-            resi_geom.value = -1.0
+        # TODO: find a better minimum value
+        if diag < self._tiny_value:
+            resi_geom.value = ConvergenceManager.undef
         else:
             resi_geom.value = displ_delta.norm("NORM_INFINITY", ["DX", "DY", "DZ"]) / diag
 
-    # @with_loglevel()
-    def isConverged(self):
-        """Tell if the convergence parameters are verified.
-
-        Returns:
-            bool: *True* if converged, *False* otherwise.
-        """
-
-        def isdefined(para):
-            return para.isSet() and para.hasRef()
-
-        logger.debug("isConverged ? %r", self._param)
-        defined = [(name, para) for name, para in self._param.items() if isdefined(para)]
-        if not defined:
-            logger.debug("no parameter set: not converged")
-            return False
-
-        for name, para in self._param.items():
-            if name == "RESI_GLOB_RELA" and para.value == -1:
-                # See special case, pass next name, para
-                continue
-            if not para.isConverged():
-                logger.debug("parameter %s is not converged", name)
-                return False
-
-        if self._check_resi_glob_rela():
-            return True
-        if not self._check_resi_glob_maxi():
-            return False
-        return True
+    def _check_resi_glob_rela(self):
         name = "RESI_GLOB_RELA"
         para = self._param[name]
-
-        if not isdefined(para):
+        if not para.isDefined():
             # If not defined, return True
             return True
 
         if para.isConverged():
             # Special case only
             return True
+        return True
 
-        # Recover RESI_GLOB_MAXI
+    @property
+    def _tiny_value(self):
+        return np.finfo(float).tiny
+
+    def _check_resi_glob_maxi(self):
         name_maxi = "RESI_GLOB_MAXI"
         resi_maxi = self._param[name_maxi]
         resiMaxiRefeIsUndefined = False
 
-        if not isdefined(resi_maxi):
+        if not resi_maxi.isDefined():
 
             resiMaxiRefeIsUndefined = True
 
-            # TODO: verify if there is a function that returns
-            # whether it is the initial time step (or statics) or not
-            if self.isInitialTimeStep():
+            if self.isInitialStep():
 
                 # the initial external force could not be zero
                 # if RESI_GLOB_MAXI is undefined
                 message = (
-                    f"{name} struggles with null initial loading."
-                    f"Try defining as well {name_maxi}."
-                    f"Verify modelisation or use another criterion."
+                    "RESI_GLOB_RELA struggles with null initial loading."
+                    "Try defining as well RESI_GLOB_MAXI."
+                    "Verify modelisation or use another criterion."
                 )
-                raise Warning(message)
+                raise logger.warning(message)
 
-            # TODO: Find a better computation of resi_maxi's reference
+            # TODO: find a better minimum value
             # e.g. use the history of previous solutions
-            resi_maxi.reference = para.reference if para.hasRef() else np.finfo(float).tiny
+            name_rela = "RESI_GLOB_RELA"
+            para = self._param[name_rela]
+            resi_maxi.reference = para.reference if para.hasRef() else self._tiny_value
 
             # TODO: Find a better location for the information message
             # UTMESS("I", "MECANONLINE2_98", valr=(resi_maxi.value, resi_maxi.reference))
@@ -604,9 +583,37 @@ class ConvergenceManager(ContextMixin):
             resi_maxi.reference = ConvergenceManager.undef
 
         if not resiMaxiIsConverged:
-            logger.debug(f"neither parameter {name} nor {name_maxi} are not converged")
+            logger.debug("neither parameter RESI_GLOB_RELA nor RESI_GLOB_MAXI are not converged")
+            return False
+        return True
+
+    # @with_loglevel()
+    def isConverged(self):
+        """Tell if the convergence parameters are verified.
+
+        Returns:
+            bool: *True* if converged, *False* otherwise.
+        """
+
+        logger.debug("isConverged ? %r", self._param)
+        defined = [(name, para) for name, para in self._param.items() if para.isDefined()]
+        if not defined:
+            logger.debug("no parameter set: not converged")
             return False
 
+        for name, para in self._param.items():
+            if name == "RESI_GLOB_RELA" and para.value == ConvergenceManager.undef:
+                # See special case, pass next name, para
+                continue
+            if not para.isConverged():
+                logger.debug("parameter %s is not converged", name)
+                return False
+
+        # Special case
+        if self._check_resi_glob_rela():
+            return True
+        if not self._check_resi_glob_maxi():
+            return False
         return True
 
     def isPrediction(self):
