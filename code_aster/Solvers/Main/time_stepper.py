@@ -173,6 +173,14 @@ class TimeStepper(Observer):
         """
         return self._last - self._current + 1
 
+    def isInitialStep(self):
+        """Tell if the current step is the first one.
+
+        Returns:
+            bool: *True* if the stepper is at the initial time.
+        """
+        return self._current == 0
+
     def isFinished(self):
         """Tell if there are steps to be computed.
 
