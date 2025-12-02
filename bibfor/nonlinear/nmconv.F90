@@ -15,15 +15,14 @@
 ! You should have received a copy of the GNU General Public License
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
-! person_in_charge: mickael.abbas at edf.fr
 ! aslint: disable=W1504
 !
-subroutine nmconv(noma, modele, ds_material, numedd, sdnume, fonact, &
+subroutine nmconv(mesh, model, ds_material, numeDof, sdnume, listFuncActi, &
                   sddyna, nlDynaDamping, &
                   ds_conv, ds_print, ds_measure, &
                   sddisc, sdcrit, sderro, ds_algopara, ds_algorom, &
-                  ds_inout, matass, solveu, ds_system, numins, &
-                  iterat, eta, ds_contact, valinc, solalg, &
+                  ds_inout, matass, solveu, ds_system, numeTime, &
+                  iterNewt, eta, ds_contact, valinc, solalg, &
                   measse, veasse)
 !
     use NonLin_Datastructure_type
@@ -58,8 +57,8 @@ subroutine nmconv(noma, modele, ds_material, numedd, sdnume, fonact, &
 #include "asterfort/nmrvai.h"
 #include "asterfort/utmess.h"
 !
-    integer(kind=8) :: fonact(*)
-    integer(kind=8) :: iterat, numins
+    integer(kind=8) :: listFuncActi(*)
+    integer(kind=8) :: iterNewt, numeTime
     type(NL_DS_AlgoPara), intent(inout) :: ds_algopara
     real(kind=8) :: eta
     character(len=19) :: sdcrit, sddisc, sdnume
@@ -68,8 +67,8 @@ subroutine nmconv(noma, modele, ds_material, numedd, sdnume, fonact, &
     character(len=19) :: matass, solveu
     character(len=19) :: measse(*), veasse(*)
     character(len=19) :: solalg(*), valinc(*)
-    character(len=8) :: noma
-    character(len=24) :: numedd, modele
+    character(len=8) :: mesh
+    character(len=24) :: numeDof, model
     type(NL_DS_Material), intent(in) :: ds_material
     type(NL_DS_Contact), intent(inout) :: ds_contact
     character(len=24) :: sderro
@@ -99,14 +98,15 @@ subroutine nmconv(noma, modele, ds_material, numedd, sdnume, fonact, &
 ! IN  SDNUME : NOM DE LA SD NUMEROTATION
 ! IN  MATASS : MATRICE DU PREMIER MEMBRE ASSEMBLEE
 ! IN  SOLVEU : SOLVEUR
-! IN  ITERAT : NUMERO D'ITERATION
 ! IN  NUMINS : NUMERO D'INSTANT
 ! IN  VALINC : VARIABLE CHAPEAU POUR INCREMENTS VARIABLES
 ! IN  SOLALG : VARIABLE CHAPEAU POUR INCREMENTS SOLUTIONS
 ! IN  VEASSE : VARIABLE CHAPEAU POUR NOM DES VECT_ASSE
 ! IN  MEASSE : VARIABLE CHAPEAU POUR NOM DES MATR_ASSE
 ! IN  ETA    : COEFFICIENT DE PILOTAGE
-! IN  SDDISC : SD DISCRETISATION TEMPORELLE
+! In  sddisc          : datastructure for time discretization
+! In  numeTime        : index of current time step
+! In  iterNewt        : index of current Newton iteration
 ! IN  SDERRO : GESTION DES ERREURS
 ! IO  ds_algopara      : datastructure for algorithm parameters
 ! In  ds_algorom       : datastructure for ROM parameters
@@ -117,14 +117,13 @@ subroutine nmconv(noma, modele, ds_material, numedd, sdnume, fonact, &
 !
 ! --------------------------------------------------------------------------------------------------
 !
-    aster_logical :: lreli, lnkry, limpex, lcont
-    real(kind=8) :: r8bid
-    real(kind=8) :: pasmin
-    real(kind=8) :: instam, instap
+    aster_logical :: lLineSearch, lNewtonKrylov, lIMPLEX, lContact, lDeborst
+    real(kind=8) :: pasMiniElas
+    real(kind=8) :: timePrev, timeCurr
     real(kind=8) :: vresi, vchar
-    aster_logical :: lerror, itemax, dvdebo
+    aster_logical :: lEventError, lIterMaxi, dvdebo
     aster_logical :: cvnewt, cvresi
-    integer(kind=8) :: nbiter, itesup
+    integer(kind=8) :: nbIter, iterSupp
     integer(kind=8) :: ifm, niv
     real(kind=8) :: line_sear_coef
     integer(kind=8) :: line_sear_iter
@@ -135,86 +134,82 @@ subroutine nmconv(noma, modele, ds_material, numedd, sdnume, fonact, &
     if (niv .ge. 2) then
         call utmess('I', 'MECANONLINE13_64')
     end if
-!
-! --- INITIALISATIONS
-!
-    itemax = .false.
-    lerror = .false.
-    cvnewt = .false.
-    pasmin = ds_algopara%pas_mini_elas
+
+! - INITIALISATIONS
+    lIterMaxi = ASTER_FALSE
+    lEventError = ASTER_FALSE
+    cvnewt = ASTER_FALSE
+    pasMiniElas = ds_algopara%pas_mini_elas
     ds_algopara%l_swapToElastic = ASTER_FALSE
     line_sear_coef = r8vide()
     line_sear_iter = -1
-!
-! --- FONCTIONNALITES ACTIVEES
-!
-    lreli = isfonc(fonact, 'RECH_LINE')
-    lnkry = isfonc(fonact, 'NEWTON_KRYLOV')
-    limpex = isfonc(fonact, 'IMPLEX')
-    lcont = isfonc(fonact, 'CONTACT')
-!
-! --- INSTANTS
-!
-    instam = diinst(sddisc, numins-1)
-    instap = diinst(sddisc, numins)
-!
+
+! - Active functionnalities
+    lLineSearch = isfonc(listFuncActi, 'RECH_LINE')
+    lNewtonKrylov = isfonc(listFuncActi, 'NEWTON_KRYLOV')
+    lIMPLEX = isfonc(listFuncActi, 'IMPLEX')
+    lContact = isfonc(listFuncActi, 'CONTACT')
+    lDeborst = isfonc(listFuncActi, 'DEBORST')
+
+! - Get time
+    timePrev = diinst(sddisc, numeTime-1)
+    timeCurr = diinst(sddisc, numeTime)
+
 ! - Set values are not affected on rows for residuals loop
-!
     call nmimr0(ds_print, 'RESI')
-!
-! --- EVENEMENT ERREUR ACTIVE ?
-!
-    call nmltev(sderro, 'ERRI', 'NEWT', lerror)
-    if (.not. lerror) then
+
+! - EVENEMENT ERREUR ACTIVE ?
+    call nmltev(sderro, 'ERRI', 'NEWT', lEventError)
+    if (.not. lEventError) then
 !
 ! ----- EXAMEN DU NOMBRE D'ITERATIONS
 !
-        call nmlerr(sddisc, 'L', 'ITERSUP', r8bid, itesup)
-        if (itesup .eq. 0) then
-            if (abs(instap-instam) .lt. pasmin) then
-                nbiter = ds_conv%iter_glob_elas
+        call nmlerr(sddisc, 'ITERSUP', paraValeI_=iterSupp)
+        if (iterSupp .eq. 0) then
+            if (abs(timeCurr-timePrev) .lt. pasMiniElas) then
+                nbIter = ds_conv%iter_glob_elas
             else
-                nbiter = ds_conv%iter_glob_maxi
+                nbIter = ds_conv%iter_glob_maxi
             end if
         else
-            call nmlerr(sddisc, 'L', 'NBITER', r8bid, nbiter)
+            call nmlerr(sddisc, 'NBITER', paraValeI_=nbIter)
         end if
-        itemax = (iterat+1) .ge. nbiter
+        lIterMaxi = (iterNewt+1) .ge. nbIter
 !
 ! ----- STATISTIQUES POUR RECHERCHE LINEAIRE
 !
-        if (lreli) then
+        if (lLineSearch) then
             line_sear_coef = ds_conv%line_sear_coef
             line_sear_iter = ds_conv%line_sear_iter
             call nmrvai(ds_measure, 'LineSearch', input_count=line_sear_iter)
         end if
 
 ! ----- Compute residuals
-        call nmresi(noma, fonact, ds_material, &
-                    numedd, sdnume, &
+        call nmresi(mesh, listFuncActi, ds_material, &
+                    numeDof, sdnume, &
                     sddyna, nlDynaDamping, &
                     ds_conv, ds_print, ds_contact, &
                     ds_inout, ds_algorom, ds_system, &
-                    matass, numins, eta, &
+                    matass, numeTime, eta, &
                     valinc, solalg, &
                     veasse, measse, &
                     vresi, vchar)
 !
 ! ----- Evaluate convergence of residuals
 !
-        call nmcore(sdcrit, sderro, fonact, numins, iterat, &
+        call nmcore(sdcrit, sderro, listFuncActi, numeTime, iterNewt, &
                     line_sear_iter, eta, vresi, vchar, ds_conv)
 !
 ! ----- METHODE IMPLEX: CONVERGENCE FORCEE
 !
-        if (limpex) then
+        if (lIMPLEX) then
             call nmeceb(sderro, 'RESI', 'CONV')
         end if
 !
 ! ----- Evaluate convergence of contact and PRED_CONTACT
 !
-        if (lcont) then
-            call cfmmcv(noma, modele, fonact, iterat, numins, &
+        if (lContact) then
+            call cfmmcv(mesh, model, listFuncActi, iterNewt, numeTime, &
                         sddyna, ds_measure, sddisc, sderro, valinc, &
                         solalg, ds_print, ds_contact)
             if (ds_contact%lContStab) then
@@ -226,63 +221,59 @@ subroutine nmconv(noma, modele, ds_material, numedd, sdnume, fonact, &
 !
 ! ----- Set value of informations in convergence table (residuals are in nmimre)
 !
-        call nmimrv(ds_print, fonact, iterat, line_sear_coef, line_sear_iter, &
+        call nmimrv(ds_print, listFuncActi, iterNewt, line_sear_coef, line_sear_iter, &
                     eta, ds_algorom%eref_rom)
 !
 ! ----- CAPTURE ERREUR EVENTUELLE
 !
-        call nmltev(sderro, 'ERRI', 'NEWT', lerror)
-        if (.not. lerror) then
-!
+        call nmltev(sderro, 'ERRI', 'NEWT', lEventError)
+        if (.not. lEventError) then
 ! --------- INFORMATION POUR DEBORST
-!
             call nmlecv(sderro, 'RESI', cvresi)
             call nmerge(sderro, 'DIVE_DEBO', dvdebo)
-            if (cvresi .and. dvdebo) then
+            if (cvresi .and. dvdebo .and. lDeborst) then
                 call utmess('I', 'MECANONLINE2_3')
             end if
 !
 ! --------- EVALUATION DE LA CONVERGENCE DE L'ITERATION DE NEWTON
 !
-            call nmevcv(sderro, fonact, 'NEWT')
+            call nmevcv(sderro, listFuncActi, 'NEWT')
             call nmlecv(sderro, 'NEWT', cvnewt)
 !
 ! --------- ENREGISTRE LES RESIDUS A CETTE ITERATION
 !
-            call dierre(sddisc, sdcrit, iterat)
+            call dierre(sddisc, sdcrit, iterNewt)
 !
 ! --------- Check if RESI_GLOB_MAXI increase
 !
-            call nmdivr(sddisc, sderro, iterat)
+            call nmdivr(sddisc, sderro, iterNewt)
 !
 ! --------- Check if RESI_GLOB_MAXI is too large
 !
-            call nmresx(sddisc, sderro, iterat)
+            call nmresx(sddisc, sderro, iterNewt)
 !
 ! --------- SI ON A CONVERGE: ON N'A PAS ATTEINT LE NB D'ITERATIONS MAXIMUM
 !
             if (cvnewt) then
-                itemax = .false.
+                lIterMaxi = ASTER_FALSE
             end if
 !
 ! --------- ENREGISTREMENT EVENEMENT MAX ITERATION DE NEWTON
 !
-            call nmcrel(sderro, 'ITER_MAXI', itemax)
+            call nmcrel(sderro, 'ITER_MAXI', lIterMaxi)
 !
 ! --------- CALCUL CRITERE DE CONVERGENCE POUR NEWTON-KRYLOV (FORCING-TERM)
 !
-            if (lnkry) then
-                call nmnkft(solveu, sddisc, iterat)
+            if (lNewtonKrylov) then
+                call nmnkft(solveu, sddisc, iterNewt)
             end if
         end if
     end if
-!
+
 ! - Set iteration number in convergence table
-!
-    call nmimci(ds_print, 'ITER_NUME', iterat, .true._1)
-!
-! --- MISE A JOUR DE L'INDICATEUR DE SUCCES SUR LES ITERATIONS DE NEWTON
-!
-    call nmadev(sddisc, sderro, iterat)
+    call nmimci(ds_print, 'ITER_NUME', iterNewt, ASTER_TRUE)
+
+! - MISE A JOUR DE L'INDICATEUR DE SUCCES SUR LES ITERATIONS DE NEWTON
+    call nmadev(sddisc, sderro, iterNewt)
 !
 end subroutine

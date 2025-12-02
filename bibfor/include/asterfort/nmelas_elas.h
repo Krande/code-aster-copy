@@ -17,18 +17,17 @@
 ! --------------------------------------------------------------------
 !
 interface
-    subroutine nmelas_elas(BEHinteg,&
-                  fami, kpg, ksp, typmod,&
-                  imate, eps, option, sig,&
-                  vi, dsidep)
+    subroutine nmelas_elas(BEHinteg, &
+                           fami, kpg, ksp, typmod, &
+                           jvMaterCode, eps, option, sig, &
+                           vi, dsidep)
         use Behaviour_type
-
         type(Behaviour_Integ), intent(in) :: BEHinteg
         character(len=*), intent(in)      :: fami
         character(len=8), intent(in)      :: typmod(*)
         character(len=16), intent(in)     :: option
-        integer(kind=8), intent(in)               :: imate, kpg, ksp
+        integer(kind=8), intent(in)       :: jvMaterCode, kpg, ksp
         real(kind=8), intent(in)          :: eps(:)
-        real(kind=8), intent(out)         :: sig(:),vi(1),dsidep(:,:)
+        real(kind=8), intent(out)         :: sig(:), vi(1), dsidep(:, :)
     end subroutine nmelas_elas
 end interface

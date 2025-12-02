@@ -15,19 +15,13 @@
 ! You should have received a copy of the GNU General Public License
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
-
-!
 !
 interface
-    subroutine verifh(fami    , kpg    , ksp    , poum    , j_mater   ,&
-                      epshy   , materi_, ihydr_ )
-        character(len=*), intent(in) :: fami
-        integer(kind=8), intent(in) :: kpg
-        integer(kind=8), intent(in) :: ksp
-        character(len=*), intent(in) :: poum
-        integer(kind=8), intent(in) :: j_mater
-        real(kind=8), intent(out) :: epshy
-        character(len=8), optional, intent(in) :: materi_
-        integer(kind=8), optional, intent(out) :: ihydr_
+    subroutine verifh(famiZ, kpg, ksp, poumZ, jvMaterCode, epsyHydr)
+        character(len=*), intent(in) :: famiZ
+        integer(kind=8), intent(in) :: kpg, ksp
+        character(len=*), intent(in) :: poumZ
+        integer(kind=8), intent(in) :: jvMaterCode
+        real(kind=8), intent(out) :: epsyHydr
     end subroutine verifh
 end interface

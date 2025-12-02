@@ -25,7 +25,7 @@ cata_msg = {
 
  Le résidu global converge plus vite que la condition des contraintes planes.
  La convergence de la condition des contraintes planes peut être améliorée en
- augmentant ITER_CPLAN_MAXI (=1 par défaut), sous le mot-clé facteur COMPORTEMENT.
+ augmentant ITER_CPLAN_MAXI, sous le mot-clé facteur COMPORTEMENT.
 
 """
     ),

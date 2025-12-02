@@ -15,168 +15,152 @@
 ! You should have received a copy of the GNU General Public License
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
-
-subroutine verifs(fami, kpg, ksp, poum, j_mater, &
-                  epsse, materi_, isech_)
+!
+subroutine verifs(famiZ, kpg, ksp, poumZ, jvMaterCode, epsiSech)
 !
     implicit none
 !
-#include "jeveux.h"
-#include "asterfort/rcvarc.h"
-#include "asterfort/rcvalb.h"
-#include "asterfort/tecael.h"
-#include "asterfort/utmess.h"
+#include "asterc/r8nnem.h"
+#include "asterfort/assert.h"
+#include "asterfort/ElasticityMaterial_type.h"
 #include "asterfort/get_elas_id.h"
+#include "asterfort/rcvalb.h"
+#include "asterfort/rcvarc.h"
+#include "asterfort/utmess.h"
+#include "jeveux.h"
 !
-    character(len=*), intent(in) :: fami
-    integer(kind=8), intent(in) :: kpg
-    integer(kind=8), intent(in) :: ksp
-    character(len=*), intent(in) :: poum
-    integer(kind=8), intent(in) :: j_mater
-    real(kind=8), intent(out) :: epsse
-    character(len=8), optional, intent(in) :: materi_
-    integer(kind=8), optional, intent(out) :: isech_
+    character(len=*), intent(in) :: famiZ
+    integer(kind=8), intent(in) :: kpg, ksp
+    character(len=*), intent(in) :: poumZ
+    integer(kind=8), intent(in) :: jvMaterCode
+    real(kind=8), intent(out) :: epsiSech
 !
 ! --------------------------------------------------------------------------------------------------
 !
-! Computation of drying shrinkages
+! Computation of drying shrinkage
 ! (inspired by verift.F90)
 !
 ! --------------------------------------------------------------------------------------------------
 !
-! In  fami         : Gauss family for integration point rule
-! In  kpg          : current point gauss
-! In  ksp          : current "sous-point" gauss
-! In  poum         : parameters evaluation
-!                     '-' for previous temperature
-!                     '+' for current temperature
-!                     'T' for current and previous temperature => epsse is increment
-! In  j_mater      : coded material address
-! In  materi       : name of material if multi-material Gauss point (PMF)
-! Out epsse        : strain from drying shrinkage (retrait de dessication)
-! Out isech_       : 0 if drying is defined
-!                    1 if not
+! In  fami             : Gauss family for integration point rule
+! In  kpg              : current point gauss
+! In  ksp              : current "sous-point" gauss
+! In  poum             : '-'  '+' or 'T' (previous, current and both)
+! In  jvMaterCode      : adress for material parameters
+! Out epsiSech         : strain from drying shrinkage (retrait de dessication)
 !
 ! --------------------------------------------------------------------------------------------------
 !
-    character(len=8) :: materi, elem_name
-    integer(kind=8) :: iret_sech, iret_sechm, iret_sechp, iret_sechref
-    real(kind=8) :: sechm, sechp, sechref
-    real(kind=8) :: kdessm, kdessp
-    integer(kind=8) :: elas_id, iadzi, iazk24, icodrm(1), icodrp(1)
-    character(len=8) :: nomres, valk(3)
-    real(kind=8) :: valres(1)
-    character(len=16) :: elas_keyword
+
+    character(len=8), parameter :: multiMater = " "
+    integer(kind=8), parameter :: nbProp = 1
+    integer(kind=8) :: propCodePrev(nbProp), propCodeCurr(nbProp)
+    character(len=8), parameter :: propName(nbProp) = "K_DESSIC"
+    real(kind=8) :: propVale(nbProp)
+    character(len=8), parameter :: exteName = "SECH"
+    integer(kind=8) :: iretSech, iretSechPrev, iretSechCurr, iretSechRefe
+    real(kind=8) :: sechPrev, sechCurr, sechRefe
+    real(kind=8) :: kdessPrev, kdessCurr
+    character(len=1) :: poum
+    character(len=16) :: valk(2)
+    aster_logical :: lHasProp
+    character(len=16) :: elasKeyword
+    integer(kind=8) :: elasID
 !
 ! --------------------------------------------------------------------------------------------------
 !
-    materi = ' '
-    if (present(materi_)) then
-        materi = materi_
-    end if
-!
-    iret_sech = 0
-    iret_sechm = 0
-    iret_sechp = 0
-    iret_sechref = 0
-    sechm = 0.d0
-    sechp = 0.d0
-    sechref = 0.d0
-    epsse = 0.d0
-!
-! - No drying -> strain is zero
-!
-    call rcvarc(' ', 'SECH', '+', fami, kpg, &
-                ksp, sechp, iret_sech)
-    if (iret_sech .ne. 0) then
-        goto 999
-    end if
-!
-! - Get drying
-!
-    call rcvarc(' ', 'SECH', 'REF', fami, kpg, &
-                ksp, sechref, iret_sechref)
-    if (iret_sechref .eq. 1) then
-        call tecael(iadzi, iazk24)
-        elem_name = zk24(iazk24-1+3) (1:8)
-        call utmess('F', 'COMPOR5_24', sk=elem_name)
-    end if
-!
-    if (poum .eq. 'T' .or. poum .eq. '-') then
-        call rcvarc(' ', 'SECH', '-', fami, kpg, &
-                    ksp, sechm, iret_sechm)
-    end if
-!
-    if (poum .eq. 'T' .or. poum .eq. '+') then
-        call rcvarc(' ', 'SECH', '+', fami, kpg, &
-                    ksp, sechp, iret_sechp)
-    end if
-!
-! - Get type of elasticity (Isotropic/Orthotropic/Transverse isotropic)
-!
-    call get_elas_id(j_mater, elas_id, elas_keyword)
-!
-! - Get elastic parameters
-!
-    nomres = 'K_DESSIC'
-!
-    icodrm = 0
-    icodrp = 0
-    if (poum .eq. 'T' .or. poum .eq. '-') then
-        if (iret_sechm .eq. 0) then
-            call rcvalb(fami, kpg, ksp, '-', j_mater, &
-                        materi, elas_keyword, 0, ' ', [0.d0], &
-                        1, nomres, valres(1), icodrm(1), 1)
-            kdessm = valres(1)
+    epsiSech = 0.d0
+    poum = poumZ
+
+! - Detect external state variable
+    iretSech = 1
+    call rcvarc(' ', exteName, '+', famiZ, kpg, &
+                ksp, sechCurr, iretSech)
+
+    if (iretSech .eq. 0) then
+! ----- Get reference value
+        iretSechRefe = 1
+        sechRefe = r8nnem()
+        call rcvarc(' ', exteName, 'REF', famiZ, kpg, &
+                    ksp, sechRefe, iretSechRefe)
+        if (iretSechRefe .eq. 1) then
+            call utmess('F', 'COMPOR5_24')
         end if
-    end if
-!
-    if (poum .eq. 'T' .or. poum .eq. '+') then
-        if (iret_sechp .eq. 0) then
-            call rcvalb(fami, kpg, ksp, '+', j_mater, &
-                        materi, elas_keyword, 0, ' ', [0.d0], &
-                        1, nomres, valres(1), icodrp(1), 1)
-            kdessp = valres(1)
+
+! ----- Get values
+        iretSechPrev = 1
+        sechPrev = r8nnem()
+        if (poum .eq. 'T' .or. poum .eq. '-') then
+            call rcvarc(' ', exteName, '-', famiZ, kpg, &
+                        ksp, sechPrev, iretSechPrev)
         end if
-    end if
-!
-! - Test
-!
-    if ((icodrm(1)+icodrp(1)) .ne. 0) then
-        call tecael(iadzi, iazk24)
-        valk(1) = zk24(iazk24-1+3) (1:8)
-        valk(2) = 'SECH'
-        valk(3) = nomres
-        call utmess('F', 'COMPOR5_32', nk=3, valk=valk)
-    end if
-!
-! - Compute strains
-!
-    if (poum .eq. 'T') then
-        if (iret_sechm+iret_sechp .eq. 0) then
-            epsse = (-kdessp*(sechref-sechp))-(-kdessm*(sechref-sechm))
+        iretSechCurr = 1
+        sechCurr = r8nnem()
+        if (poum .eq. 'T' .or. poum .eq. '+') then
+            call rcvarc(' ', exteName, '+', famiZ, kpg, &
+                        ksp, sechCurr, iretSechCurr)
         end if
-    else if (poum .eq. '-') then
-        if (iret_sechm .eq. 0) then
-            epsse = -kdessm*(sechref-sechm)
+
+! ----- Get parameters
+        call get_elas_id(jvMaterCode, elasID, elasKeyword)
+        propCodePrev = 1
+        kdessPrev = r8nnem()
+        if (poum .eq. 'T' .or. poum .eq. '-') then
+            if (iretSechPrev .eq. 0) then
+                call rcvalb(famiZ, kpg, ksp, '-', &
+                            jvMaterCode, multiMater, elasKeyword, &
+                            0, ' ', [0.d0], &
+                            nbProp, propName, propVale, &
+                            propCodePrev, 1)
+                kdessPrev = propVale(1)
+            end if
         end if
-    else if (poum .eq. '+') then
-        if (iret_sechp .eq. 0) then
-            epsse = -kdessp*(sechref-sechp)
+        propCodeCurr = 1
+        kdessCurr = r8nnem()
+        if (poum .eq. 'T' .or. poum .eq. '+') then
+            if (iretSechCurr .eq. 0) then
+                call rcvalb(famiZ, kpg, ksp, '+', &
+                            jvMaterCode, multiMater, elasKeyword, &
+                            0, ' ', [0.d0], &
+                            nbProp, propName, propVale, &
+                            propCodeCurr, 1)
+                kdessCurr = propVale(1)
+            end if
         end if
-    end if
-!
-999 continue
-!
-! - Output errors
-!
-    if (present(isech_)) then
-        isech_ = 0
-        if ((iret_sechm+iret_sechp) .ne. 0) then
-            isech_ = 1
+
+! ----- Test
+        lHasProp = ASTER_FALSE
+        if (poum .eq. 'T') then
+            lHasProp = (propCodePrev(1)+propCodeCurr(1)) .eq. 0 .and. &
+                       (iretSechCurr+iretSechPrev) .eq. 0
+        elseif (poum .eq. '-') then
+            lHasProp = propCodePrev(1) .eq. 0 .and. &
+                       iretSechPrev .eq. 0
+        elseif (poum .eq. '+') then
+            lHasProp = propCodeCurr(1) .eq. 0 .and. &
+                       iretSechCurr .eq. 0
+        else
+            ASSERT(ASTER_FALSE)
         end if
-        if (iret_sech .ne. 0) then
-            isech_ = 1
+        if (.not. lHasProp) then
+            valk(1) = exteName
+            valk(2) = propName(1)
+            call utmess('F', 'COMPOR5_32', nk=2, valk=valk)
+        end if
+
+! ----- Compute strains
+        if (poum .eq. 'T') then
+            if (iretSechPrev+iretSechCurr .eq. 0) then
+                epsiSech = (-kdessCurr*(sechRefe-sechCurr))-(-kdessPrev*(sechRefe-sechPrev))
+            end if
+        else if (poum .eq. '-') then
+            if (iretSechPrev .eq. 0) then
+                epsiSech = -kdessPrev*(sechRefe-sechPrev)
+            end if
+        else if (poum .eq. '+') then
+            if (iretSechCurr .eq. 0) then
+                epsiSech = -kdessCurr*(sechRefe-sechCurr)
+            end if
         end if
     end if
 !

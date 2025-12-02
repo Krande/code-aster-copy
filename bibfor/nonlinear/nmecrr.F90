@@ -15,8 +15,8 @@
 ! You should have received a copy of the GNU General Public License
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
-
-subroutine nmlerr(sddisc, paraNameZ, paraValeR_, paraValeI_)
+!
+subroutine nmecrr(sddisc, paraNameZ, paraValeR_, paraValeI_)
 !
     implicit none
 !
@@ -28,14 +28,14 @@ subroutine nmlerr(sddisc, paraNameZ, paraValeR_, paraValeI_)
 !
     character(len=19), intent(in) :: sddisc
     character(len=*), intent(in) :: paraNameZ
-    integer(kind=8), optional, intent(out) :: paraValeI_
-    real(kind=8), optional, intent(out) :: paraValeR_
+    integer(kind=8), optional, intent(in) :: paraValeI_
+    real(kind=8), optional, intent(in) :: paraValeR_
 !
 ! --------------------------------------------------------------------------------------------------
 !
 ! Non-linear algorithm - Discretization management
 !
-! Management of parameters - Read
+! Management of parameters - Write
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -73,49 +73,48 @@ subroutine nmlerr(sddisc, paraNameZ, paraValeR_, paraValeI_)
     sddiscIfcvName = sddisc(1:19)//'.IFCV'
     call jeveuo(sddiscIfcvName, 'E', vr=sddiscIfcv)
 
-! - Get
+! - Set
     paraValeI = 0
     paraValeR = 0.d0
+    if (present(paraValeI_)) then
+        paraValeI = paraValeI_
+    end if
+    if (present(paraValeR_)) then
+        paraValeR = paraValeR_
+    end if
+
     if (paraName .eq. 'MXITER') then
-        paraValeI = nint(sddiscIfcv(1))
+        sddiscIfcv(1) = paraValeI
 
     else if (paraName .eq. 'MNITER') then
-        paraValeI = nint(sddiscIfcv(2))
+        sddiscIfcv(2) = paraValeI
 
     else if (paraName .eq. 'NBITER') then
-        paraValeI = nint(sddiscIfcv(3))
+        sddiscIfcv(3) = paraValeI
 
     else if (paraName .eq. 'PAS_MINI_ELAS') then
-        paraValeR = sddiscIfcv(4)
+        sddiscIfcv(4) = paraValeR
 
     else if (paraName .eq. 'RESI_GLOB_RELA') then
-
-        paraValeR = sddiscIfcv(5)
+        sddiscIfcv(5) = paraValeR
 
     else if (paraName .eq. 'RESI_GLOB_MAXI') then
-        paraValeR = sddiscIfcv(6)
+        sddiscIfcv(6) = paraValeR
 
     else if (paraName .eq. 'TYPE_RESI') then
-        paraValeI = nint(sddiscIfcv(7))
+        sddiscIfcv(7) = paraValeI
 
     else if (paraName .eq. 'INIT_NEWTON_KRYLOV') then
-        paraValeR = sddiscIfcv(8)
+        sddiscIfcv(8) = paraValeR
 
     else if (paraName .eq. 'ITER_NEWTON_KRYLOV') then
-        paraValeR = sddiscIfcv(9)
+        sddiscIfcv(9) = paraValeR
 
     else if (paraName .eq. 'ITERSUP') then
-        paraValeI = nint(sddiscIfcv(10))
+        sddiscIfcv(10) = paraValeI
 
     else
         ASSERT(ASTER_FALSE)
-    end if
-
-    if (present(paraValeI_)) then
-        paraValeI_ = paraValeI
-    end if
-    if (present(paraValeR_)) then
-        paraValeR_ = paraValeR
     end if
 !
 end subroutine

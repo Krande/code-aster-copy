@@ -120,7 +120,7 @@ déformation %(k1)s sur une modélisation %(k2)s. Ce n'est pas possible.
     ),
     24: _(
         """
-Sur la maille %(k1)s le calcul prend en compte le séchage. Mais il manque la valeur de référence.
+Le calcul prend en compte le séchage. Mais il manque la valeur de référence.
 On ne peut donc pas calculer la déformation de dessication associée.
 """
     ),
@@ -132,9 +132,8 @@ est autorisé pour ce comportement.
     ),
     32: _(
         """
-Sur la maille %(k1)s la variable de commande %(k2)s est définie. Mais il manque le paramètre
-matériau %(k3)s. On ne peut donc pas calculer la déformation générée par
-la variable de commande %(k2)s.
+La variable de commande %(k1)s est définie mais il manque le paramètre matériau %(k2)s.
+On ne peut donc pas calculer la déformation générée par la variable de commande %(k1)s.
 """
     ),
     40: _(
