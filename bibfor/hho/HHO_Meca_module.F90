@@ -269,19 +269,15 @@ contains
 ! --- small strains and use symmetric gradient
 !
             if (l_rigi_meca) then
-                call hhoMatrElasMeca(hhoCell, hhoData, hhoQuadCellRigi, hhoMecaState%grad, &
-                                     hhoCS%fami, hhoCS%imater, hhoCS%option, &
-                                     hhoMecaState%time_curr, hhoCS%angl_naut, lhs)
+                call hhoMatrElasMeca(hhoCell, hhoData, hhoQuadCellRigi, hhoCS, hhoMecaState%grad, &
+                                     hhoMecaState%time_curr, lhs)
                 hhoCS%codret = 0
             else
-                call hhoSmallStrainLCMeca(hhoCell, hhoData, hhoQuadCellRigi, hhoMecaState%grad, &
-                                          hhoCS%fami, hhoCS%typmod, hhoCS%imater, hhoCS%compor, &
-                                          hhoCS%option, hhoCS%carcri, hhoCS%lgpg, hhoCS%nbsigm, &
+                call hhoSmallStrainLCMeca(hhoCell, hhoData, hhoQuadCellRigi, hhoCS, &
+                                          hhoMecaState%grad, &
                                           hhoMecaState%time_prev, hhoMecaState%time_curr, &
                                           hhoMecaState%depl_prev, hhoMecaState%depl_incr, &
-                                          hhoCS%sig_prev, hhoCS%vari_prev, hhoCS%angl_naut, &
-                                          hhoCS%mult_comp, lhs, rhs, hhoCS%sig_curr, &
-                                          hhoCS%vari_curr, hhoCS%codret)
+                                          lhs, rhs)
             end if
         end if
 !

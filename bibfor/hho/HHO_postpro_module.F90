@@ -127,7 +127,7 @@ contains
         do idim = 1, ndim
             sol_T_dim(1:cbs_cmp) = sol_T(1+(idim-1)*cbs_cmp:idim*cbs_cmp)
             do ino = 1, nbnodes
-                post_sol_T(idim, ino) = hhoEvalScalCell( &
+                post_sol_T(idim, ino) = hhoEvalScalCell2( &
                                         hhoBasisCell, hhoData%cell_degree(), &
                                         hhoCell%coorno(1:3, ino), sol_T_dim)
             end do
@@ -240,7 +240,7 @@ contains
         do idim = 1, ndim
             sol_T_dim(1:cbs_cmp) = sol_T(1+(idim-1)*cbs_cmp:idim*cbs_cmp)
             do ipg = 1, hhoQuad%nbQuadPoints
-                post_sol(idim, ipg) = hhoEvalScalCell( &
+                post_sol(idim, ipg) = hhoEvalScalCell2( &
                                       hhoBasisCell, hhoData%cell_degree(), &
                                       hhoQuad%points(1:3, ipg), sol_T_dim)
             end do
@@ -330,16 +330,16 @@ contains
         do idim = 1, ndim
             sol_U_dim(1:mk_cbs_cmp) = sol_U(1+(idim-1)*mk_cbs_cmp:idim*mk_cbs_cmp)
             do ino = 1, nbnodes
-                post_sol_T(idim, ino) = hhoEvalScalCell( &
+                post_sol_T(idim, ino) = hhoEvalScalCell2( &
                                         hhoBasisCell, hhoData%cell_degree(), &
                                         hhoCell%coorno(1:3, ino), sol_U_dim)
             end do
         end do
         do ino = 1, nbnodes
-            post_sol_T(ndim+1, ino) = hhoEvalScalCell( &
+            post_sol_T(ndim+1, ino) = hhoEvalScalCell2( &
                                       hhoBasisCell, hhoData%cell_degree(), &
                                       hhoCell%coorno(1:3, ino), sol_V)
-            post_sol_T(ndim+2, ino) = hhoEvalScalCell( &
+            post_sol_T(ndim+2, ino) = hhoEvalScalCell2( &
                                       hhoBasisCell, hhoData%cell_degree(), &
                                       hhoCell%coorno(1:3, ino), sol_L)
         end do
@@ -648,7 +648,7 @@ contains
 ! --- Compute the solution in the cell nodes
 !
         do ino = 1, nbnodes
-            post_sol_T(ino) = hhoEvalScalCell( &
+            post_sol_T(ino) = hhoEvalScalCell2( &
                               hhoBasisCell, hhoData%cell_degree(), hhoCell%coorno(1:3, ino), sol_T)
         end do
 !
@@ -733,7 +733,7 @@ contains
 ! --- Compute the solution in the cell nodes
 !
         do ipg = 1, hhoQuad%nbQuadPoints
-            post_sol(ipg) = hhoEvalScalCell( &
+            post_sol(ipg) = hhoEvalScalCell2( &
                             hhoBasisCell, hhoData%cell_degree(), hhoQuad%points(1:3, ipg), sol_T)
         end do
 !

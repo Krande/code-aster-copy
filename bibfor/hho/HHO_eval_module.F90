@@ -44,6 +44,7 @@ module HHO_eval_module
 ! --------------------------------------------------------------------------------------------------
     public :: hhoEvalScalCell, hhoEvalScalFace, hhoEvalVecCell, hhoEvalVecFace
     public :: hhoEvalMatCell, hhoEvalSymMatCell, hhoFuncRScalEvalCellQp, hhoEvalMatCell2
+    public :: hhoEvalVecCell2, hhoEvalScalCell2
     public :: hhoFuncFScalEvalQp, hhoFuncRScalEvalQp, hhoFuncRVecEvalQp, hhoFuncRVecEvalCellQp
 !    private  ::
 !
@@ -54,7 +55,7 @@ contains
 !
 !===================================================================================================
 !
-    function hhoEvalScalCell(hhoBasisCell, order, pt, coeff) result(eval)
+    function hhoEvalScalCell2(hhoBasisCell, order, pt, coeff) result(eval)
 !
         implicit none
 !
@@ -83,6 +84,38 @@ contains
         call hhoBasisCell%BSEval(pt, 0, order, BSCEval)
 !
         b_n = to_blas_int(hhoBasisCell%BSSize(0, order))
+        eval = ddot(b_n, coeff, b_one, BSCEval, b_one)
+!
+    end function
+!
+!===================================================================================================
+!
+!===================================================================================================
+!
+    function hhoEvalScalCell(cbs, BSCEval, coeff) result(eval)
+!
+        implicit none
+!
+        real(kind=8), intent(in) :: BSCEval(MSIZE_CELL_SCAL)
+        integer(kind=8), intent(in) :: cbs
+        real(kind=8), dimension(:), intent(in) :: coeff
+        real(kind=8) :: eval
+!
+! --------------------------------------------------------------------------------------------------
+!
+!   evaluate a scalar function at a point pt
+!   In hhoBasisCell : basis cell
+!   In Order        : polynomial order of the function
+!   In pt           : point where evaluate
+!   In coeff        : polynomial coefficient of the function
+! --------------------------------------------------------------------------------------------------
+!
+        blas_int :: b_n
+        blas_int, parameter :: b_one = to_blas_int(1)
+!
+        eval = 0.d0
+!
+        b_n = to_blas_int(cbs)
         eval = ddot(b_n, coeff, b_one, BSCEval, b_one)
 !
     end function
@@ -128,7 +161,45 @@ contains
 !
 !===================================================================================================
 !
-    function hhoEvalVecCell(hhoBasisCell, order, pt, coeff) result(eval)
+    function hhoEvalVecCell(ndim, cbs, BSCEval, coeff) result(eval)
+!
+        implicit none
+!
+        real(kind=8), intent(in) :: BSCEval(MSIZE_CELL_SCAL)
+        integer(kind=8), intent(in) :: ndim, cbs
+        real(kind=8), dimension(:), intent(in) :: coeff
+        real(kind=8) :: eval(3)
+!
+! --------------------------------------------------------------------------------------------------
+!
+!   evaluate a vector at a point pt
+!   In hhoBasisCell : basis cell
+!   In Order        : polynomial order of the function
+!   In pt           : point where evaluate
+!   In coeff        : polynomial coefficient of the function
+! --------------------------------------------------------------------------------------------------
+!
+        integer(kind=8) :: i, size_cmp, deca
+        blas_int :: b_n
+        blas_int, parameter :: b_one = to_blas_int(1)
+!
+        eval = 0.d0
+        size_cmp = cbs/ndim
+        b_n = to_blas_int(size_cmp)
+!
+        deca = 0
+        do i = 1, ndim
+            eval(i) = ddot(b_n, coeff(deca+1:deca+size_cmp), b_one, BSCEval, b_one)
+            deca = deca+size_cmp
+        end do
+!
+    end function
+!
+!===================================================================================================
+!
+!===================================================================================================
+!
+    function hhoEvalVecCell2(hhoBasisCell, order, pt, coeff) result(eval)
 !
         implicit none
 !
@@ -298,13 +369,12 @@ contains
 !
 !===================================================================================================
 !
-    function hhoEvalSymMatCell(hhoBasisCell, order, pt, coeff) result(eval)
+    function hhoEvalSymMatCell(ndim, gbs_sym, BSCEval, coeff) result(eval)
 !
         implicit none
 !
-        type(HHO_basis_cell), intent(inout) :: hhoBasisCell
-        integer(kind=8), intent(in) :: order
-        real(kind=8), dimension(3), intent(in) :: pt
+        real(kind=8), intent(in) :: BSCEval(MSIZE_CELL_SCAL)
+        integer(kind=8), intent(in) :: ndim, gbs_sym
         real(kind=8), dimension(:), intent(in) :: coeff
         real(kind=8) :: eval(6)
 !
@@ -319,27 +389,29 @@ contains
 !   Out mat         : format (XX YY ZZ SQRT(2)*XY SQRT(2)*XZ SQRT(2)*YZ)
 ! --------------------------------------------------------------------------------------------------
 !
-        real(kind=8), dimension(MSIZE_CELL_SCAL) :: BSCEval
         real(kind=8) :: mat(3, 3)
         integer(kind=8) :: i, j, size_cmp, deca
         blas_int :: b_n
         blas_int, parameter :: b_one = to_blas_int(1)
 !
-        size_cmp = hhoBasisCell%BSSize(0, order)
+        if (ndim == 3) then
+            size_cmp = gbs_sym/6
+        else if (ndim == 2) then
+            size_cmp = gbs_sym/3
+        else
+            ASSERT(ASTER_FALSE)
+        end if
         b_n = to_blas_int(size_cmp)
-!
-! --- Evaluate basis function at pt
-        call hhoBasisCell%BSEval(pt, 0, order, BSCEval)
 !
         deca = 0
         mat = 0.d0
-        do i = 1, hhoBasisCell%ndim
+        do i = 1, ndim
             mat(i, i) = ddot(b_n, coeff(deca+1:deca+size_cmp), b_one, BSCEval, b_one)
             deca = deca+size_cmp
         end do
 !
-        do i = 1, hhoBasisCell%ndim
-            do j = i+1, hhoBasisCell%ndim
+        do i = 1, ndim
+            do j = i+1, ndim
                 mat(i, j) = ddot(b_n, coeff(deca+1:deca+size_cmp), b_one, BSCEval, b_one)
                 deca = deca+size_cmp
             end do
