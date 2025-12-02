@@ -554,7 +554,11 @@ class ConvergenceManager(ContextMixin):
                 logger.debug("parameter %s is not converged", name)
                 return False
 
-        # -------- special case --------
+        if self._check_resi_glob_rela():
+            return True
+        if not self._check_resi_glob_maxi():
+            return False
+        return True
         name = "RESI_GLOB_RELA"
         para = self._param[name]
 
