@@ -595,6 +595,7 @@ subroutine nueffe_lag1(nbLigr, listLigr, base, numeDofZ, renumZ, &
     zk24(idref) = mesh
     zk24(idref+1) = gran_name
     zk24(idref+2) = modelZ
+    zk24(idref+3) = "SIMPLE_LAGRANGE"
 !
 ! - Create NUEQ object
 !

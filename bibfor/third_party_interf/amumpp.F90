@@ -58,6 +58,7 @@ subroutine amumpp(option, nbsol, kxmps, ldist, type, &
 #include "asterfort/asmpi_comm_vect.h"
 #include "asterfort/assert.h"
 #include "asterfort/csmbgg.h"
+#include "asterfort/filter_rhs.h"
 #include "asterfort/infdbg.h"
 #include "asterfort/jedema.h"
 #include "asterfort/jedetr.h"
@@ -323,6 +324,17 @@ subroutine amumpp(option, nbsol, kxmps, ldist, type, &
         if (.not. lpreco .and. prepos) then
 !
             if (rang .eq. 0 .or. lmhpc) then
+!           --- DANS LE CAS DES LAGRANGE EN HPC, CERTAINES CONTRIBUTIONS
+!           --- AU SECOND MEMBRE PEUVENT VENIR D'UN AUTRE PROCESSEUR
+!           --- CAR LES MAILLES TARDIVES NE SONT PAS PARTAGEES DONC
+!           --- CALCULEES SEULEMENT SUR UN PROC
+                if (lmhpc) then
+                    if (.not. ltypr) then
+                        ASSERT(.false.)
+                    end if
+                    call filter_rhs(rsolu, nonu//".NUME")
+                end if
+
 !           --- MISE A L'ECHELLE DES LAGRANGES DANS LE SECOND MEMBRE
 !           --- RANG 0 UNIQUEMENT
                 if (ltypr) then
@@ -439,6 +451,7 @@ subroutine amumpp(option, nbsol, kxmps, ldist, type, &
                     call c_f_pointer(pteur_c, csolu2, [nnbsol])
                 end if
             end if
+            call jedetr("&&AMUMPP.LAGR")
         else
             if (ltypr) then
                 if (l_debug) then

@@ -113,6 +113,7 @@ subroutine amumpm_hpc(kxmps, kmonit, impr, ifmump, &
     integer(kind=4), pointer :: iok(:) => null()
     integer(kind=4), pointer :: iok2(:) => null()
     real(kind=8), pointer :: filter(:) => null()
+    character(len=24), pointer :: refn(:) => null()
 !
 !-----------------------------------------------------------------------
     call jemarq()
@@ -220,6 +221,11 @@ subroutine amumpm_hpc(kxmps, kmonit, impr, ifmump, &
     call jeveuo(nonu//'.NUME.PDDL', 'L', vi=pddl)
     call jeveuo(nonu//'.NUME.DEEQ', 'L', vi=deeq)
     call jeveuo(nonu//'.NUME.NULG', 'L', vi=nulg)
+    call jeveuo(nonu//'.NUME.REFN', 'L', vk24=refn)
+    if (refn(4) .eq. "SIMPLE_LAGRANGE" .and. klag2 .ne. "NON") then
+        call utmess('I', 'ALGELINE_10')
+        klag2 = "NON"
+    end if
     neqg = to_mumps_int(nequ(2))
     nloc = nequ(1)
     ASSERT(n1 == nsmdi)

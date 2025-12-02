@@ -104,6 +104,7 @@ subroutine amumpm(ldist, kxmps, kmonit, impr, ifmump, &
     aster_logical ::  lvbloc
     integer(kind=8), pointer :: smdi(:) => null()
     integer(kind=8), pointer :: nequ(:) => null()
+    character(len=24), pointer :: refn(:) => null()
 !
 !-----------------------------------------------------------------------
     call jemarq()
@@ -126,6 +127,11 @@ subroutine amumpm(ldist, kxmps, kmonit, impr, ifmump, &
     nosolv = nosols(kxmps)
     nonu = nonus(kxmps)
     etam = etams(kxmps)
+    call jeveuo(nonu//'.NUME.REFN', 'L', vk24=refn)
+    if (refn(4) .eq. "SIMPLE_LAGRANGE" .and. klag2 .ne. "NON") then
+        call utmess('I', 'ALGELINE_10')
+        klag2 = "NON"
+    end if
 
 ! --- REMPLISSAGE DE DIFFERENTS OBJETS SUIVANT LE TYPE DU POINTEUR
 ! --- DE MUMPS: DMUMPS_STRUC OU ZMUMPS_STRUC

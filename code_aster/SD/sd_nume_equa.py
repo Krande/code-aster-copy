@@ -51,7 +51,7 @@ class sd_nume_equa(AsBase):
         sdu_verif_nom_gd(refn[1])
 
         # Cas ELIM_LAGR :
-        assert refn[3] in ("", "ELIM_LAGR")
+        assert refn[3] in ("", "ELIM_LAGR", "SIMPLE_LAGRANGE")
 
     def check_1(self, checker):
         if not self.exists():

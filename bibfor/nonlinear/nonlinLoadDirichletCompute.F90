@@ -26,17 +26,18 @@ subroutine nonlinLoadDirichletCompute(list_load, model, nume_dof, &
     implicit none
 !
 #include "asterf_types.h"
-#include "asterfort/ap_assembly_vector.h"
 #include "asterfort/assvec.h"
 #include "asterfort/conlag.h"
 #include "asterfort/dismoi.h"
 #include "asterfort/infdbg.h"
 #include "asterfort/isParallelMesh.h"
+#include "asterfort/jeveuo.h"
 #include "asterfort/nmchex.h"
 #include "asterfort/nmdebg.h"
 #include "asterfort/nmtime.h"
 #include "asterfort/utmess.h"
 #include "asterfort/vebume.h"
+#include "asterfort/vector_update_ghost_values.h"
 !
     character(len=19), intent(in) :: list_load
     character(len=24), intent(in) :: model, nume_dof
@@ -65,9 +66,10 @@ subroutine nonlinLoadDirichletCompute(list_load, model, nume_dof, &
 ! --------------------------------------------------------------------------------------------------
 !
     integer(kind=8) :: ifm, niv
-    character(len=19) :: vebudi, cnbudi
+    character(len=19) :: vebudi, cnbudi, nume_equa
     character(len=8) :: mesh
     real(kind=8) :: alpha
+    real(kind=8), pointer :: vale(:) => null()
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -96,7 +98,9 @@ subroutine nonlinLoadDirichletCompute(list_load, model, nume_dof, &
 !   des autres procs (ceci arrive quand un Lagrange est relié à plusieurs sous-domaines)
     call dismoi('NOM_MAILLA', model, 'MODELE', repk=mesh)
     if (isParallelMesh(mesh)) then
-        call ap_assembly_vector(cnbudi)
+        call jeveuo(cnbudi//'.VALE', 'E', vr=vale)
+        call dismoi('NUME_EQUA', cnbudi, 'CHAM_NO', repk=nume_equa)
+        call vector_update_ghost_values(vale, nume_equa, "BIDIR")
     end if
 !
 ! - Stop timer

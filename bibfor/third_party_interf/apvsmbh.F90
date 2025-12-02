@@ -75,8 +75,8 @@ subroutine apvsmbh(kptsc, rsolu)
     call jemarq()
 !
 ! -- DEBUG
-    step = -1
-    dbg = ASTER_FALSE .and. step == nstep
+    step = 1
+    dbg = ASTER_TRUE .and. step == nstep
     nstep = nstep+1
 !
 !   -- COMMUNICATEUR MPI DE TRAVAIL
