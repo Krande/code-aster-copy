@@ -2,7 +2,7 @@
  * @file HHO.h
  * @brief Header of class HHO
  * @section LICENCE
- *   Copyright (C) 1991 - 2024  EDF R&D                www.code-aster.org
+ *   Copyright (C) 1991 - 2025  EDF R&D                www.code-aster.org
  *
  *   This file is part of Code_Aster.
  *
@@ -71,7 +71,9 @@ class HHO {
     /**
      * @brief Project HHO field to H^1-field
      */
-    FieldOnNodesRealPtr projectOnLagrangeSpace( const FieldOnNodesRealPtr hho_field ) const;
+    std::variant< FieldOnNodesRealPtr, FieldOnCellsRealPtr >
+    projectOnLagrangeSpace( const FieldOnNodesRealPtr hho_field, const ASTERINTEGER opt = 0,
+                            const bool average = true ) const;
 
     /**
      * @brief Evaluate HHO field at quadrature points

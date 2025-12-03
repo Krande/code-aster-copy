@@ -233,6 +233,7 @@ CHHOBS = LocatedComponents(
     components=(("EN1", ("X[6]",)), ("EN2", ()), ("EN3", ("X[55]"))),
 )
 
+CPPOST = LocatedComponents(phys=PHY.NEUT_I, type="ELEM", components=("X[1]"))
 DEPLHHO = LocatedComponents(phys=PHY.DEPL_R, type="ELNO", components=("DX", "DY"))
 
 PFONC = LocatedComponents(phys=PHY.NEUT_K8, type="ELEM", components=("Z[10]",))
@@ -386,6 +387,7 @@ class MECA_DPQ9_HHO222(Element):
                 (SP.PGEOMER, NGEOMER),
                 (SP.PDEPLPR, DDL_MECA),
                 (OP.HHO_DEPL_MECA.PCHHOBS, CHHOBS),
+                (SP.POPPOST, CPPOST),
             ),
             para_out=((OP.HHO_DEPL_MECA.PDEPL_R, DEPLHHO),),
         ),

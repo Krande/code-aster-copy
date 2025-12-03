@@ -42,7 +42,9 @@ Args:
     filename (Path|str): Path to the output file.
     medname (str): Name of the result in the MED file. (default: "")
     local (bool): Print only the local domain if *True*. (default: True)
+    internalVarl (bool); Save VARI_ELGA_NOMME or not. (default: True)
+    fields (list[str]): Name of fields to save. (default: all)
               )",
               py::arg( "filename" ), py::arg( "medname" ) = "", py::arg( "local" ) = false,
-              py::arg( "internalVar" ) = true );
+              py::arg( "internalVar" ) = true, py::arg( "fields" ) = VectorString() );
 };

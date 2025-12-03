@@ -70,22 +70,25 @@ subroutine cpclma(nomain, nomaou, typcol, base)
 !
     call jelira(grmain, 'NOMUTI', nbgmai)
     call jecreo(ptnmou, base//' N K24')
-    call jeecra(ptnmou, 'NOMMAX', nbgmai)
-    call jecrec(grmaou, base//' V I', 'NO '//ptnmou, 'DISPERSE', 'VARIABLE', &
-                nbgmai)
+    call jeecra(ptnmou, 'NOMMAX', max(nbgmai, 1))
+    if (nbgmai > 0) then
+        call jecrec(grmaou, base//' V I', 'NO '//ptnmou, 'DISPERSE', 'VARIABLE', &
+                    nbgmai)
+
 !
-    do igroup = 1, nbgmai
-        call jenuno(jexnum(grmain, igroup), nomgrp)
-        call jecroc(jexnom(grmaou, nomgrp))
-        call jeveuo(jexnum(grmain, igroup), 'L', jnuma1)
-        call jelira(jexnum(grmain, igroup), 'LONUTI', nbmail)
-        call jeecra(jexnom(grmaou, nomgrp), 'LONMAX', max(nbmail, 1))
-        call jeecra(jexnom(grmaou, nomgrp), 'LONUTI', nbmail)
-        call jeveuo(jexnom(grmaou, nomgrp), 'E', jnuma2)
-        do jmaill = 0, nbmail-1
-            zi(jnuma2+jmaill) = zi(jnuma1+jmaill)
+        do igroup = 1, nbgmai
+            call jenuno(jexnum(grmain, igroup), nomgrp)
+            call jecroc(jexnom(grmaou, nomgrp))
+            call jeveuo(jexnum(grmain, igroup), 'L', jnuma1)
+            call jelira(jexnum(grmain, igroup), 'LONUTI', nbmail)
+            call jeecra(jexnom(grmaou, nomgrp), 'LONMAX', max(nbmail, 1))
+            call jeecra(jexnom(grmaou, nomgrp), 'LONUTI', nbmail)
+            call jeveuo(jexnom(grmaou, nomgrp), 'E', jnuma2)
+            do jmaill = 0, nbmail-1
+                zi(jnuma2+jmaill) = zi(jnuma1+jmaill)
+            end do
         end do
-    end do
+    end if
 !
 999 continue
 !

@@ -16,21 +16,20 @@
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
 
-! aslint: disable=W1504
-
 module HHO_SmallStrainMeca_module
 !
+    use Behaviour_module
+    use Behaviour_type
+    use FE_algebra_module
+    use HHO_algebra_module
     use HHO_basis_module
+    use HHO_compor_module
+    use HHO_eval_module
+    use HHO_matrix_module
     use HHO_quadrature_module
     use HHO_size_module
     use HHO_type
     use HHO_utils_module
-    use HHO_eval_module
-    use HHO_matrix_module
-    use HHO_algebra_module
-    use Behaviour_type
-    use Behaviour_module
-    use FE_algebra_module
 !
     implicit none
 !
@@ -65,39 +64,23 @@ contains
 !
 !===================================================================================================
 !
-    subroutine hhoSmallStrainLCMeca(hhoCell, hhoData, hhoQuadCellRigi, gradrec, fami, &
-                                    typmod, imate, compor, option, carcri, &
-                                    lgpg, ncomp, time_prev, time_curr, depl_prev, &
-                                    depl_incr, sigm, vim, angmas, mult_comp, &
-                                    lhs, rhs, sigp, vip, codret)
+    subroutine hhoSmallStrainLCMeca(hhoCell, hhoData, hhoQuadCellRigi, hhoCS, gradrec, &
+                                    time_prev, time_curr, depl_prev, depl_incr, &
+                                    lhs, rhs)
 !
         implicit none
 !
         type(HHO_Cell), intent(in) :: hhoCell
         type(HHO_Data), intent(in) :: hhoData
         type(HHO_Quadrature), intent(in) :: hhoQuadCellRigi
+        type(HHO_Compor_State), intent(inout) :: hhoCS
         type(HHO_matrix), intent(in) :: gradrec
-        character(len=*), intent(in) :: fami
-        character(len=8), intent(in) :: typmod(*)
-        integer(kind=8), intent(in) :: imate
-        character(len=16), intent(in) :: compor(*)
-        character(len=16), intent(in) :: option
-        real(kind=8), intent(in) :: carcri(*)
-        integer(kind=8), intent(in) :: lgpg
-        integer(kind=8), intent(in) :: ncomp
         real(kind=8), intent(in) :: time_prev
         real(kind=8), intent(in) :: time_curr
         real(kind=8), intent(in) :: depl_prev(MSIZE_TDOFS_VEC)
         real(kind=8), intent(in) :: depl_incr(MSIZE_TDOFS_VEC)
-        real(kind=8), intent(in) :: sigm(ncomp, *)
-        real(kind=8), intent(in) :: vim(lgpg, *)
-        real(kind=8), intent(in) :: angmas(*)
-        character(len=16), intent(in) :: mult_comp
         type(HHO_matrix), intent(inout) :: lhs
         real(kind=8), intent(inout) :: rhs(MSIZE_TDOFS_VEC)
-        real(kind=8), intent(inout) :: sigp(ncomp, *)
-        real(kind=8), intent(inout) :: vip(lgpg, *)
-        integer(kind=8), intent(inout) :: codret
 !
 ! --------------------------------------------------------------------------------------------------
 !   HHO - mechanics
@@ -106,28 +89,14 @@ contains
 !   In hhoCell      : the current HHO Cell
 !   In hhoData      : information on HHO methods
 !   In hhoQuadCellRigi : quadrature rules from the rigidity family
+!   InOut hhoCS        : hho compor state
 !   In gradrec      : local gradient reconstruction
-!   In fami         : familly of quadrature points (of hhoQuadCellRigi)
-!   In typmod       : type of modelization
-!   In imate        : materiau code
-!   In compor       : type of behavior
-!   In option       : option of computations
-!   In carcri       : local criterion of convergence
-!   In lgpg         : size of internal variables for 1 pg
-!   In ncomp        : number of composant of sigm et sigp
 !   In time_prev    : previous time T-
 !   In time_curr    : current time T+
 !   In depl_prev    : displacement at T-
 !   In depl_incr    : increment of displacement between T- and T+
-!   In sigm         : stress at T-  (XX, YY, ZZ, XY, XZ, YZ)
-!   In vim          : internal variables at T-
-!   In angmas       : LES TROIS ANGLES DU MOT_CLEF MASSIF
-!   In multcomp     : ?
 !   Out lhs         : local contribution (lhs)
 !   Out rhs         : local contribution (rhs)
-!   Out sig         : stress at T+  (XX, YY, ZZ, XY, XZ, YZ)
-!   Out vip         : internal variables at T+
-!   Out codret      : info on integration of the LDC
 ! --------------------------------------------------------------------------------------------------
 !
         integer(kind=8), parameter :: ksp = 1
@@ -138,7 +107,7 @@ contains
         real(kind=8) :: coorpg(3), weight
         real(kind=8) :: BSCEval(MSIZE_CELL_SCAL), bT(MSIZE_CELL_MAT)
         type(HHO_matrix) :: AT, TMP
-        integer(kind=8) :: cbs, fbs, total_dofs, faces_dofs, gbs, ipg, gbs_cmp, gbs_sym, nb_sig
+        integer(kind=8) :: cbs, fbs, total_dofs, faces_dofs, gbs, ipg, gbs_cmp, gbs_sym
         integer(kind=8) :: cod(MAX_QP_CELL)
         aster_logical :: l_lhs, l_rhs
 ! --------------------------------------------------------------------------------------------------
@@ -155,9 +124,8 @@ contains
         E_prev_coeff = 0.d0
         E_incr_coeff = 0.d0
         Cauchy_curr = 0.d0
-        l_lhs = L_MATR(option)
-        l_rhs = L_VECT(option)
-        nb_sig = nbsigm()
+        l_lhs = L_MATR(hhoCS%option)
+        l_rhs = L_VECT(hhoCS%option)
 
         if (l_lhs) then
             call AT%initialize(gbs_sym, gbs_sym, 0.d0)
@@ -167,10 +135,10 @@ contains
         call behaviourInit(BEHinteg)
 
 ! ----- Set main parameters for behaviour (on cell)
-        call behaviourSetParaCell(hhoCell%ndim, typmod, option, &
-                                  compor, carcri, &
+        call behaviourSetParaCell(hhoCell%ndim, hhoCS%typmod, hhoCS%option, &
+                                  hhoCS%compor, hhoCS%carcri, &
                                   time_prev, time_curr, &
-                                  fami, imate, &
+                                  hhoCS%fami, hhoCS%imater, &
                                   BEHinteg)
 !
 ! ----- init basis
@@ -192,42 +160,44 @@ contains
             call hhoBasisCell%BSEval(coorpg(1:3), 0, hhoData%grad_degree(), BSCEval)
 !
 ! --------- Eval deformations
-            E_prev = hhoEvalSymMatCell( &
-                     hhoBasisCell, hhoData%grad_degree(), coorpg(1:3), E_prev_coeff)
+            E_prev = hhoEvalSymMatCell(hhoCell%ndim, gbs_sym, BSCEval, E_prev_coeff)
 !
-            E_incr = hhoEvalSymMatCell( &
-                     hhoBasisCell, hhoData%grad_degree(), coorpg(1:3), E_incr_coeff)
+            E_incr = hhoEvalSymMatCell(hhoCell%ndim, gbs_sym, BSCEval, E_incr_coeff)
 !
 ! -------- tranform sigm in symmetric form
 !
-            call tranfoMatToSym(hhoCell%ndim, sigm(1:ncomp, ipg), Cauchy_prev)
+            call tranfoMatToSym(hhoCell%ndim, &
+                                hhoCS%sig_prev((ipg-1)*hhoCS%nbsigm+1:ipg*hhoCS%nbsigm), &
+                                Cauchy_prev)
 ! --------- Set main parameters for behaviour (on point)
             call behaviourSetParaPoin(ipg, ksp, BEHinteg)
 
 ! --------- Integrate
             call nmcomp(BEHinteg, &
-                        fami, ipg, 1, hhoCell%ndim, typmod, &
-                        imate, compor, carcri, time_prev, time_curr, &
+                        hhoCS%fami, ipg, 1, hhoCell%ndim, hhoCS%typmod, &
+                        hhoCS%imater, hhoCS%compor, hhoCS%carcri, time_prev, time_curr, &
                         6, E_prev, E_incr, 6, Cauchy_prev, &
-                        vim(1, ipg), option, angmas, &
-                        Cauchy_curr, vip(1, ipg), 36, dsidep, cod(ipg), mult_comp)
+                        hhoCS%vari_prev((ipg-1)*hhoCS%lgpg+1:ipg*hhoCS%lgpg), &
+                        hhoCS%option, hhoCS%angl_naut, Cauchy_curr, &
+                        hhoCS%vari_curr((ipg-1)*hhoCS%lgpg+1:ipg*hhoCS%lgpg), &
+                        36, dsidep, cod(ipg), hhoCS%mult_comp)
 !
             if (cod(ipg) .eq. 1) then
                 goto 999
             end if
 !
 ! --------- For new prediction and nmisot.F90
-            if (L_PRED(option)) then
+            if (L_PRED(hhoCS%option)) then
                 Cauchy_curr = 0.d0
             end if
 !
-            if (L_SIGM(option)) then
+            if (L_SIGM(hhoCS%option)) then
 ! -------- tranform Cauchy_curr in symmetric form
-                call tranfoSymToMat(hhoCell%ndim, Cauchy_curr, sigp(1:ncomp, ipg))
+                call tranfoSymToMat(hhoCell%ndim, Cauchy_curr, &
+                                    hhoCS%sig_curr((ipg-1)*hhoCS%nbsigm+1:ipg*hhoCS%nbsigm))
             end if
 !
-            if (l_rhs) call hhoComputeRhsSmall(hhoCell, Cauchy_curr, weight, BSCEval, gbs_cmp, &
-                                               bT)
+            if (l_rhs) call hhoComputeRhsSmall(hhoCell, Cauchy_curr, weight, BSCEval, gbs_cmp, bT)
 !
             if (l_lhs) call hhoComputeLhsSmall(hhoCell, dsidep, weight, BSCEval, gbs_sym, &
                                                gbs_cmp, AT)
@@ -263,7 +233,7 @@ contains
 !
 ! ---- Return code summary
 !
-        call codere(cod, hhoQuadCellRigi%nbQuadPoints, codret)
+        call codere(cod, hhoQuadCellRigi%nbQuadPoints, hhoCS%codret)
 !
     end subroutine
 !
@@ -271,20 +241,17 @@ contains
 !
 !===================================================================================================
 !
-    subroutine hhoMatrElasMeca(hhoCell, hhoData, hhoQuadCellRigi, gradrec, fami, &
-                               imate, option, time_curr, angmas, lhs)
+    subroutine hhoMatrElasMeca(hhoCell, hhoData, hhoQuadCellRigi, hhoCS, gradrec, &
+                               time_curr, lhs)
 !
         implicit none
 !
         type(HHO_Cell), intent(in) :: hhoCell
         type(HHO_Data), intent(in) :: hhoData
         type(HHO_Quadrature), intent(in) :: hhoQuadCellRigi
+        type(HHO_Compor_State), intent(inout) :: hhoCS
         type(HHO_matrix), intent(in) :: gradrec
-        character(len=*), intent(in) :: fami
-        integer(kind=8), intent(in) :: imate
-        character(len=16), intent(in) :: option
         real(kind=8), intent(in) :: time_curr
-        real(kind=8), intent(in) :: angmas(*)
         type(HHO_matrix), intent(inout) :: lhs
 !
 ! --------------------------------------------------------------------------------------------------
@@ -294,13 +261,9 @@ contains
 !   In hhoCell      : the current HHO Cell
 !   In hhoData      : information on HHO methods
 !   In hhoQuadCellRigi : quadrature rules from the rigidity family
+!   In hhoCS        : hho compor state
 !   In gradrec      : local gradient reconstruction
-!   In fami         : familly of quadrature points (of hhoQuadCellRigi)
-!   In typmod       : type of modelization
-!   In imate        : materiau code
-!   In option       : option of computations
 !   In time_curr    : current time T+
-!   In angmas       : LES TROIS ANGLES DU MOT_CLEF MASSIF
 !   Out lhs         : local contribution (lhs)
 ! --------------------------------------------------------------------------------------------------
 !
@@ -322,7 +285,7 @@ contains
         dsidep = 0.d0
         nb_sig = nbsigm()
 !
-        if (option /= "RIGI_MECA") then
+        if (hhoCS%option /= "RIGI_MECA") then
             ASSERT(ASTER_FALSE)
         end if
 
@@ -342,8 +305,8 @@ contains
 !
 ! --------- Compute behaviour
 !
-            call dmatmc(fami, imate, time_curr, '+', ipg, &
-                        1, angmas, nb_sig, dsidep)
+            call dmatmc(hhoCS%fami, hhoCS%imater, time_curr, '+', ipg, &
+                        1, hhoCS%angl_naut, nb_sig, dsidep)
             call tranfoTensToSym(nb_sig, dsidep, dsidep3D)
 !
             call hhoComputeLhsSmall(hhoCell, dsidep3D, weight, BSCEval, gbs_sym, &

@@ -157,11 +157,9 @@ subroutine te0448(nomopt, nomte)
         call hhoBasisCell%BSEval(coorpg(1:3), 0, hhoData%grad_degree(), BSCEval)
 !
         if (l_largestrains) then
-            G_curr = hhoEvalMatCell( &
-                     hhoBasisCell, hhoData%grad_degree(), coorpg(1:3), G_curr_coeff)
+            G_curr = hhoEvalMatCell(hhoCell%ndim, gbs, BSCEval, G_curr_coeff)
         else
-            E_curr = hhoEvalSymMatCell( &
-                     hhoBasisCell, hhoData%grad_degree(), coorpg(1:3), G_curr_coeff)
+            E_curr = hhoEvalSymMatCell(hhoCell%ndim, gbs_sym, BSCEval, G_curr_coeff)
             zr(idefo-1+(ipg-1)*nsig+1:idefo-1+ipg*nsig) = E_curr(1:nsig)
         end if
     end do

@@ -6,7 +6,7 @@
  * @brief Fichier entete de la classe NonLinearResult
  * @author Natacha Béreux
  * @section LICENCE
- *   Copyright (C) 1991 - 2024  EDF R&D                www.code-aster.org
+ *   Copyright (C) 1991 - 2025  EDF R&D                www.code-aster.org
  *
  *   This file is part of Code_Aster.
  *
@@ -68,7 +68,8 @@ class NonLinearResult : public TransientResult {
     static VectorReal getTangentMatrix( const std::string & );
 
     void printMedFile( const std::filesystem::path &fileName, std::string medName = std::string(),
-                       bool local = true, bool internalVar = true ) const;
+                       bool local = true, bool internalVar = true,
+                       const VectorString &fields = VectorString() ) const;
 };
 
 /**

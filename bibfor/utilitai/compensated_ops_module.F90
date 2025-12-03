@@ -20,10 +20,15 @@ module compensated_ops_module
 
     implicit none
 #include "asterc/fma_double.h"
+#include "asterfort/assert.h"
 
     interface dot_product
         module procedure dot2FMA
     end interface dot_product
+
+    interface norm2
+        module procedure norm2FMA
+    end interface norm2
 
     interface sum
         module procedure sum2s
@@ -31,7 +36,14 @@ module compensated_ops_module
 
     interface matmul
         module procedure matmul2
+        module procedure matmul_vect
     end interface matmul
+
+    interface det
+        module procedure det2
+    end interface det
+
+    public :: addFMA
 
 ! -------------------------------------------------------
 !
@@ -112,7 +124,7 @@ contains
         real(kind=8), intent(in) :: vx(:)
         real(kind=8), intent(in) :: vy(size(vx))
         real(kind=8) :: p, s, h, r, q, pp, t
-        integer(kind=8) i
+        integer(kind=8) :: i
 
         call twoproduct(vx(1), vy(1), p, s)
         do i = 2, size(vx)
@@ -130,7 +142,7 @@ contains
         real(kind=8), intent(in) :: vx(:)
         real(kind=8), intent(in) :: vy(size(vx))
         real(kind=8) :: p, s, h, r, q, pp, t
-        integer(kind=8) i
+        integer(kind=8) :: i
 
         call twoproductFMA(vx(1), vy(1), p, s)
         do i = 2, size(vx)
@@ -142,6 +154,16 @@ contains
         t = p+s
 
     end function dot2FMA
+
+    function norm2FMA(vx) result(t)
+        implicit none
+        real(kind=8), intent(in) :: vx(:)
+        real(kind=8) :: s, t
+
+        s = dot2FMA(vx, vx)
+        t = sqrt(s)
+
+    end function norm2FMA
 
     function matmul2(A, B) result(C)
         implicit none
@@ -156,5 +178,51 @@ contains
         end do
 
     end function matmul2
+
+    function matmul_vect(A, x) result(y)
+        implicit none
+        real(kind=8), dimension(:, :), intent(in) :: A
+        real(kind=8), dimension(:), intent(in) :: x
+        real(kind=8), dimension(size(A, 1)) :: y
+        integer(kind=8) :: i
+
+        do i = 1, size(A, 1)
+            y(i) = dot2FMA(A(i, :), x)
+        end do
+
+    end function matmul_vect
+
+    subroutine addFMA(a, b, c)
+        implicit none
+        real(kind=8), intent(in) :: a, b
+        real(kind=8), intent(inout) :: c
+
+        ! c = c + a*b
+        c = fma_double(a, b, c)
+
+    end subroutine addFMA
+
+    function det2(A) result(d)
+        implicit none
+        real(kind=8), dimension(:, :), intent(in) :: A
+        real(kind=8) :: d
+
+        d = 0.0
+        select case (size(A, 1))
+        case (2)
+            call addFMA(A(1, 1), A(2, 2), d)
+            call addFMA(-A(1, 2), A(2, 1), d)
+        case (3)
+            call addFMA(A(1, 1)*A(2, 2), A(3, 3), d)
+            call addFMA(A(1, 3)*A(2, 1), A(3, 2), d)
+            call addFMA(A(3, 1)*A(1, 2), A(2, 3), d)
+            call addFMA(-A(3, 1)*A(2, 2), A(1, 3), d)
+            call addFMA(-A(3, 3)*A(2, 1), A(1, 2), d)
+            call addFMA(-A(1, 1)*A(2, 3), A(3, 2), d)
+        case default
+            ASSERT(.false.)
+        end select
+
+    end function det2
 
 end module compensated_ops_module

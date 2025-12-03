@@ -15,7 +15,7 @@
 ! You should have received a copy of the GNU General Public License
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
-! person_in_charge: mickael.abbas at edf.fr
+!
 !
 module HHO_rhs_module
 !
@@ -28,9 +28,9 @@ module HHO_rhs_module
     implicit none
 !
     private
+#include "jeveux.h"
 #include "asterf_types.h"
 #include "asterfort/HHO_size_module.h"
-#include "jeveux.h"
 !
 ! --------------------------------------------------------------------------------------------------
 !

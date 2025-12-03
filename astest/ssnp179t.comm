@@ -21,21 +21,41 @@
 #          TEST DE VERIFICATION EN PLASTICITE INCOMPRESSIBLE           #
 #                       MEMBRANE DE COOK                               #
 ########################################################################
+from code_aster.Commands import *
+from code_aster import CA
 
-DEBUT(CODE="OUI", ERREUR=_F(ALARME="EXCEPTION"), DEBUG=_F(SDVERI="OUI"))
+DEBUT(CODE="OUI", DEBUG=_F(SDVERI="OUI"))
 
 
 mesh0 = LIRE_MAILLAGE(FORMAT="MED")
 
 mesh = CREA_MAILLAGE(MAILLAGE=mesh0, MODI_HHO=_F(TOUT="OUI"))
 
+mesh = DEFI_GROUP(reuse=mesh, MAILLAGE=mesh, CREA_GROUP_NO=(_F(GROUP_MA=("Encast")),))
+
 mesh = MODI_MAILLAGE(reuse=mesh, MAILLAGE=mesh, ORIE_PEAU=_F(GROUP_MA_PEAU=("Encast", "load")))
 
-E = 70
-ET = 0.13474
-RH = ET * E / (E - ET)
+# Replace traction curve by curve fitting (use python script for that)
+# python3 ssnp179k.21 -fi ssnp179a.21
+# ctrac = LIRE_FONCTION(UNITE=21, NOM_PARA="EPSI", PROL_DROITE="LINEAIRE")
+
+E = 206.9
+R0 = 0.495902
+L = 1.0
 mater = DEFI_MATERIAU(
-    ECRO_NL=_F(R0=0.243, RH=RH), ELAS=_F(E=E, NU=0.4999), HHO=_F(COEF_STAB=100.0 * E)
+    ECRO_NL=_F(
+        R0=R0,
+        RH=0.128791,
+        R1=-5.954458,
+        GAMMA_1=14.232798,
+        R2=6.173697,
+        GAMMA_2=14.353183,
+        RK=-24.305989,
+        P0=1.449898,
+        GAMMA_M=-16.879502,
+    ),
+    ELAS=_F(E=E, NU=0.29),
+    NON_LOCAL=_F(C_GRAD_VARI=1e-14, PENA_LAGR=0.0),
 )
 
 fieldmat = AFFE_MATERIAU(AFFE=_F(MATER=(mater,), TOUT="OUI"), MAILLAGE=mesh)
@@ -44,18 +64,25 @@ rampe = DEFI_FONCTION(
     NOM_PARA="INST", VALE=(0.0, 0.0, 1.0, 1.0), PROL_DROITE="LINEAIRE", PROL_GAUCHE="EXCLU"
 )
 
-listr = DEFI_LIST_REEL(DEBUT=0.0, INTERVALLE=(_F(JUSQU_A=0.3, NOMBRE=1), _F(JUSQU_A=1.0, NOMBRE=7)))
-
-times = DEFI_LIST_INST(
-    DEFI_LIST=_F(LIST_INST=listr), ECHEC=_F(ACTION="DECOUPE", EVENEMENT="ERREUR", SUBD_NIVEAU=3)
+listr = DEFI_LIST_REEL(
+    DEBUT=0.0,
+    INTERVALLE=(
+        _F(JUSQU_A=0.1, NOMBRE=1),
+        _F(JUSQU_A=0.5, NOMBRE=3),
+        _F(JUSQU_A=0.8, NOMBRE=4),
+        _F(JUSQU_A=1.0, NOMBRE=4),
+    ),
 )
 
-FY = FORMULE(NOM_PARA=("X", "Y", "INST"), VALE="0.1125")
+times = DEFI_LIST_INST(
+    DEFI_LIST=_F(LIST_INST=listr), ECHEC=_F(ACTION="DECOUPE", EVENEMENT="ERREUR", SUBD_NIVEAU=4)
+)
 
+FY = FORMULE(NOM_PARA=("X", "Y", "INST"), VALE="0.3125")
 
 model = AFFE_MODELE(
     AFFE=_F(
-        MODELISATION="D_PLAN_HHO", FORMULATION="QUADRATIQUE", PHENOMENE="MECANIQUE", TOUT="OUI"
+        MODELISATION="D_PLAN_GRAD_HHO", FORMULATION="QUADRATIQUE", PHENOMENE="MECANIQUE", TOUT="OUI"
     ),
     MAILLAGE=mesh,
 )
@@ -64,74 +91,34 @@ depl = AFFE_CHAR_CINE(MECA_IMPO=_F(DX=0.0, DY=0.0, GROUP_MA=("Encast",)), MODELE
 
 load = AFFE_CHAR_MECA_F(FORCE_CONTOUR=_F(FY=FY, GROUP_MA=("load",)), MODELE=model)
 
-resnonl = STAT_NON_LINE(
-    CHAM_MATER=fieldmat,
-    COMPORTEMENT=_F(DEFORMATION="PETIT", RELATION="VMIS_ISOT_NL", TOUT="OUI"),
-    CONVERGENCE=_F(ITER_GLOB_MAXI=10, RESI_GLOB_RELA=1e-6),
-    EXCIT=(
-        _F(CHARGE=depl, TYPE_CHARGE="FIXE_CSTE"),
-        _F(CHARGE=load, FONC_MULT=rampe, TYPE_CHARGE="FIXE_CSTE"),
-    ),
-    INCREMENT=_F(LIST_INST=times, INST_FIN=0.3),
-    MODELE=model,
-    NEWTON=_F(MATRICE="TANGENTE", PREDICTION="TANGENTE", REAC_ITER=1),
-    SOLVEUR=_F(METHODE="MUMPS", POSTTRAITEMENTS="FORCE"),
-    INFO=1,
-)
+UN = FORMULE(NOM_PARA=("X", "Y", "Z"), VALE="1.0")
+FX_R = AFFE_CHAR_MECA(MODELE=model, FORCE_INTERNE=_F(TOUT="OUI", FX=-1.0))
+FX_F = AFFE_CHAR_MECA_F(MODELE=model, FORCE_INTERNE=_F(TOUT="OUI", FX=UN))
+
 
 resnonl = STAT_NON_LINE(
-    reuse=resnonl,
-    RESULTAT=resnonl,
-    ETAT_INIT=_F(EVOL_NOLI=resnonl),
     CHAM_MATER=fieldmat,
-    COMPORTEMENT=_F(DEFORMATION="PETIT", RELATION="VMIS_ISOT_NL", TOUT="OUI"),
+    COMPORTEMENT=_F(DEFORMATION="GDEF_LOG", RELATION="VMIS_ISOT_NL", TOUT="OUI"),
     CONVERGENCE=_F(ITER_GLOB_MAXI=10, RESI_GLOB_RELA=1e-6),
     EXCIT=(
         _F(CHARGE=depl, TYPE_CHARGE="FIXE_CSTE"),
         _F(CHARGE=load, FONC_MULT=rampe, TYPE_CHARGE="FIXE_CSTE"),
+        _F(CHARGE=FX_R, FONC_MULT=rampe, TYPE_CHARGE="FIXE_CSTE"),
+        _F(CHARGE=FX_F, FONC_MULT=rampe, TYPE_CHARGE="FIXE_CSTE"),
     ),
     INCREMENT=_F(LIST_INST=times),
     MODELE=model,
     NEWTON=_F(MATRICE="TANGENTE", PREDICTION="TANGENTE", REAC_ITER=1),
-    SOLVEUR=_F(METHODE="MUMPS", POSTTRAITEMENTS="FORCE"),
+    SOLVEUR=_F(METHODE="MUMPS"),
     INFO=1,
 )
 
 resnonl = CALC_CHAMP(
-    reuse=resnonl,
-    CHAM_MATER=fieldmat,
-    CRITERES=("SIEQ_NOEU",),
-    DEFORMATION=("EPSI_ELGA",),
-    MODELE=model,
-    RESULTAT=resnonl,
-)
-rescoor = CALC_CHAM_ELEM(MODELE=model, OPTION="COOR_ELGA")
-
-# Check IMPR_RESU / LIRE_RESU
-IMPR_RESU(UNITE=80, RESU=_F(RESULTAT=resnonl, IMPR_NOM_VARI="OUI"), FORMAT="MED")
-
-resnonl = LIRE_RESU(
-    MODELE=model,
-    FORMAT="MED",
-    UNITE=80,
-    TYPE_RESU="EVOL_NOLI",
-    COMPORTEMENT=_F(DEFORMATION="PETIT", RELATION="VMIS_ISOT_NL", TOUT="OUI"),
-    CHAM_MATER=fieldmat,
-    EXCIT=(
-        _F(CHARGE=depl, TYPE_CHARGE="FIXE_CSTE"),
-        _F(CHARGE=load, FONC_MULT=rampe, TYPE_CHARGE="FIXE_CSTE"),
-    ),
-    FORMAT_MED=(
-        _F(NOM_RESU="resnonl", NOM_CHAM="DEPL"),
-        _F(NOM_RESU="resnonl", NOM_CHAM="SIEF_ELGA"),
-        _F(NOM_RESU="resnonl", NOM_CHAM="VARI_ELGA"),
-        _F(NOM_RESU="resnonl", NOM_CHAM="HHO_DEPL"),
-        _F(NOM_RESU="resnonl", NOM_CHAM="SIEQ_NOEU"),
-        _F(NOM_RESU="resnonl", NOM_CHAM="EPSI_ELGA"),
-    ),
-    TOUT_ORDRE="OUI",
+    reuse=resnonl, FORCE=("FORC_NODA", "REAC_NODA"), CRITERES=("SIEQ_NOEU",), RESULTAT=resnonl
 )
 
+
+# same result than ssnp179k since C_GRAD_VARI=0.0
 TEST_RESU(
     RESU=_F(
         INST=1.0,
@@ -140,10 +127,10 @@ TEST_RESU(
         RESULTAT=resnonl,
         NOM_CHAM="HHO_DEPL",
         NOM_CMP="DY",
-        VALE_CALC=2.1301163736423283,
-        VALE_REFE=2.13651,
+        VALE_CALC=6.960664462630903,
+        VALE_REFE=7.00031,
         CRITERE="RELATIF",
-        PRECISION=1.0e-2,
+        PRECISION=2.0e-2,
     )
 )
 
@@ -155,10 +142,35 @@ TEST_RESU(
         RESULTAT=resnonl,
         NOM_CHAM="HHO_DEPL",
         NOM_CMP="DX",
-        VALE_CALC=-1.6124902036824984,
-        VALE_REFE=-1.61818,
+        VALE_CALC=-6.2059596788488784,
+        VALE_REFE=-6.23907,
         CRITERE="RELATIF",
-        PRECISION=1.0e-2,
+        PRECISION=3.0e-2,
+    )
+)
+
+TEST_RESU(
+    RESU=_F(
+        INST=1.0,
+        GROUP_NO=("A",),
+        RESULTAT=resnonl,
+        NOM_CHAM="HHO_DEPL",
+        NOM_CMP="VARI",
+        VALE_CALC=0.0020329642215163434,
+        CRITERE="RELATIF",
+    )
+)
+
+TEST_RESU(
+    RESU=_F(
+        INST=1.0,
+        GROUP_NO=("A",),
+        RESULTAT=resnonl,
+        NOM_CHAM="HHO_DEPL",
+        NOM_CMP="LAG_GV",
+        CRITERE="ABSOLU",
+        ORDRE_GRANDEUR=1e-8,
+        VALE_CALC=0.0,
     )
 )
 
@@ -169,10 +181,11 @@ TEST_RESU(
         RESULTAT=resnonl,
         NOM_CHAM="SIEQ_NOEU",
         NOM_CMP="TRSIG",
-        VALE_CALC=-0.12645632606194848,
+        VALE_CALC=-0.14603549652811937,
         CRITERE="RELATIF",
     )
 )
+
 
 TEST_RESU(
     RESU=_F(
@@ -181,7 +194,7 @@ TEST_RESU(
         RESULTAT=resnonl,
         NOM_CHAM="HHO_DEPL",
         NOM_CMP="DY",
-        VALE_CALC=0.3512959305754303,
+        VALE_CALC=1.4345591643728326,
         CRITERE="RELATIF",
     )
 )
@@ -193,7 +206,7 @@ TEST_RESU(
         RESULTAT=resnonl,
         NOM_CHAM="HHO_DEPL",
         NOM_CMP="DX",
-        VALE_CALC=-0.024991009332364023,
+        VALE_CALC=-0.18507080318512215,
         CRITERE="RELATIF",
     )
 )
@@ -205,7 +218,7 @@ TEST_RESU(
         RESULTAT=resnonl,
         NOM_CHAM="SIEQ_NOEU",
         NOM_CMP="TRSIG",
-        VALE_CALC=0.4181578504282206,
+        VALE_CALC=0.8138417340120463,
         CRITERE="RELATIF",
     )
 )
@@ -213,22 +226,49 @@ TEST_RESU(
 TEST_RESU(
     RESU=_F(
         INST=1.0,
-        GROUP_MA=("M200"),
-        POINT=1,
+        GROUP_MA="load",
         RESULTAT=resnonl,
-        NOM_CHAM="EPSI_ELGA",
-        NOM_CMP="EPXY",
-        VALE_CALC=0.02566179063060396,
+        NOM_CHAM="REAC_NODA",
+        NOM_CMP="HHO_FX1",
+        VALE_CALC=10.514338703593653,
+        TYPE_TEST="SOMM_ABS",
         CRITERE="RELATIF",
     )
 )
 
+# define discrete object
+phys_pb = CA.PhysicalProblem(model, fieldmat)
+phys_pb.addDirichletBC(depl)
+phys_pb.computeDOFNumbering()
+
+hho = CA.HHO(phys_pb)
+
+reac_noda = resnonl.getField("REAC_NODA", 1.0, "INST")
+# use only face DoFs
+reac_proj = hho.projectOnLagrangeSpace(reac_noda, 2)
+reac_proj2 = hho.projectOnLagrangeSpace(reac_noda, 2, False)
+
+
+TEST_RESU(
+    CHAM_NO=_F(
+        GROUP_NO="Encast",
+        CHAM_GD=reac_proj,
+        NOM_CMP="DY",
+        VALE_CALC=8.283208933262936,
+        TYPE_TEST="SOMM_ABS",
+        CRITERE="RELATIF",
+    )
+)
 
 TEST_RESU(
     CHAM_ELEM=_F(
-        POINT=1, NOM_CMP="X", GROUP_MA="M200", CHAM_GD=rescoor, VALE_CALC=21.338104996137776
+        GROUP_NO="Encast",
+        CHAM_GD=reac_proj2,
+        NOM_CMP="DY",
+        VALE_CALC=10.416834096753952,
+        TYPE_TEST="SOMM_ABS",
+        CRITERE="RELATIF",
     )
 )
-
 
 FIN()

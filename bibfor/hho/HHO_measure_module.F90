@@ -19,6 +19,7 @@
 module HHO_measure_module
 !
     use HHO_type
+    use compensated_ops_module, only: sum, dot_product, matmul, norm2
 !
     implicit none
 !
@@ -93,7 +94,7 @@ contains
 !
         integer(kind=8), dimension(4, 5) :: tets
         integer(kind=8) :: i, j
-        real(kind=8) :: nodestet(3, 4)
+        real(kind=8) :: nodestet(3, 4), vol_tetra(5)
 ! --------------------------------------------------------------------------------------------------
 !
 ! --- split the hexa in 5 tets - see hhoSplitSimplex
@@ -108,8 +109,9 @@ contains
             do j = 1, 4
                 nodestet(1:3, j) = nodes(1:3, tets(j, i))
             end do
-            vol = vol+hho_vol_tetra(nodestet)
+            vol_tetra(i) = hho_vol_tetra(nodestet)
         end do
+        vol = sum(vol_tetra)
 !
     end function
 !
@@ -122,7 +124,7 @@ contains
         implicit none
 !
         real(kind=8), dimension(3, 6), intent(in) :: nodes
-        real(kind=8) :: vol
+        real(kind=8) :: vol, vol_tetra(3)
 !
 ! --------------------------------------------------------------------------------------------------
 !  In nodes        :: list of nodes
@@ -144,8 +146,9 @@ contains
             do j = 1, 4
                 nodestet(1:3, j) = nodes(1:3, tets(j, i))
             end do
-            vol = vol+hho_vol_tetra(nodestet)
+            vol_tetra(i) = hho_vol_tetra(nodestet)
         end do
+        vol = sum(vol_tetra)
 !
     end function
 !
@@ -167,7 +170,7 @@ contains
 !
         integer(kind=8), dimension(4, 2) :: tets
         integer(kind=8) :: i, j
-        real(kind=8) :: nodestet(3, 4)
+        real(kind=8) :: nodestet(3, 4), vol_tetra(2)
 ! --------------------------------------------------------------------------------------------------
 !
 ! --- split the pyramid in 2 tets - see hhoSplitSimplex
@@ -179,8 +182,9 @@ contains
             do j = 1, 4
                 nodestet(1:3, j) = nodes(1:3, tets(j, i))
             end do
-            vol = vol+hho_vol_tetra(nodestet)
+            vol_tetra(i) = hho_vol_tetra(nodestet)
         end do
+        vol = sum(vol_tetra)
 !
     end function
 !

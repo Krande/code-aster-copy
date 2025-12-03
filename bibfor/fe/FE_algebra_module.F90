@@ -25,6 +25,7 @@ module FE_algebra_module
 #include "blas/dgemv.h"
 #include "blas/daxpy.h"
 #include "blas/dcopy.h"
+#include "blas/ddot.h"
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -39,6 +40,7 @@ module FE_algebra_module
     public :: dgemv_T_2xn, dgemv_T_3xn, dgemv_T_4xn, dgemv_T_6xn
     public :: dgemv_2x2, dgemv_3x3, dgemv_T_4x4, dgemv_T_6x6
     public :: daxpy_1, daxpy_1x2, daxpy_1x3, daxpy_1xm, dcopy_1
+    public :: ddot_1
 !
 contains
 !
@@ -886,5 +888,53 @@ contains
 #endif
 !
     end subroutine
+!
+!===================================================================================================
+!
+!===================================================================================================
+!
+    real(kind=8) function ddot_1(n, x, y)
+!
+        implicit none
+!
+        real(kind=8), intent(in) :: x(*)
+        real(kind=8), intent(inout) :: y(*)
+        integer(kind=8), intent(in) :: n
+!
+! --------------------------------------------------------------------------------------------------
+!
+!   Encapsulation of ddot product with given size
+!
+! --------------------------------------------------------------------------------------------------
+!
+!
+        blas_int :: b_n
+        blas_int, parameter :: b_one = to_blas_int(1)
+
+#ifdef FE_USE_BLAS
+        b_n = to_blas_int(n)
+        ddot_1 = ddot(b_n, x, b_one, y, b_one)
+#else
+!
+        select case (n)
+        case (1)
+            ddot_1 = x(1)*y(1)
+        case (2)
+            ddot_1 = x(1)*y(1)+x(2)*y(2)
+        case (3)
+            ddot_1 = x(1)*y(1)+x(2)*y(2)+x(3)*y(3)
+        case (4)
+            ddot_1 = x(1)*y(1)+x(2)*y(2)+x(3)*y(3)+x(4)*y(4)
+        case (5)
+            ddot_1 = x(1)*y(1)+x(2)*y(2)+x(3)*y(3)+x(4)*y(4)+x(5)*y(5)
+        case (6)
+            ddot_1 = x(1)*y(1)+x(2)*y(2)+x(3)*y(3)+x(4)*y(4)+x(5)*y(5)+x(6)*y(6)
+        case default
+            b_n = to_blas_int(n)
+            ddot_1 = ddot(b_n, x, b_one, y, b_one)
+        end select
+#endif
+!
+    end function
 !
 end module
