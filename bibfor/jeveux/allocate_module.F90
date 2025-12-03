@@ -139,8 +139,10 @@ contains
             kmax = ktrou
         end if
         slvec%kfree = -1
-        if (ktrou+1 <= slvec%nmax .and. .not. slvec%lvec(ktrou+1)%present) then
-            slvec%kfree = ktrou+1
+        if (ktrou+1 <= slvec%nmax) then
+            if (.not. slvec%lvec(ktrou+1)%present) then
+                slvec%kfree = ktrou+1
+            end if
         end if
 !
         if (present(vl)) then
