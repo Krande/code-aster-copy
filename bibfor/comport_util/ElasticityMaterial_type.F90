@@ -15,13 +15,20 @@
 ! You should have received a copy of the GNU General Public License
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
-#include "asterfort/Behaviour_type.h"
+! aslint: disable=W1403
 !
-interface
-    subroutine verifepsa(famiZ, kpg, ksp, poumZ, epsiAnel)
-        character(len=*), intent(in) :: famiZ
-        integer, intent(in) :: kpg, ksp
-        character(len=*), intent(in) :: poumZ
-        real(kind=8), intent(out) :: epsiAnel(VARC_EPSA_NBCMP)
-    end subroutine verifepsa
-end interface
+! ==================================================================================================
+!
+! Types for elasticity material
+!
+! ==================================================================================================
+!
+module ElasticityMaterial_type
+!
+    implicit none
+!
+#include "asterf_types.h"
+!
+! false module required because of error in aslint (E1009)
+!
+end module ElasticityMaterial_type
