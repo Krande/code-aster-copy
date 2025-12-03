@@ -1217,9 +1217,7 @@ BCR = AFFE_CHAR_MECA(
     MODELE=MODELE,
     DDL_IMPO=(
         _F(GROUP_NO="BLOC", DX=0.0, DY=0.0, DZ=0.0, DRX=0.0, DRY=0.0, DRZ=0.0),
-        #                            _F(GROUP_NO='NO_AR',
-        #                                 DX=0.0,
-        #                                 DRX=0.0,),
+        _F(GROUP_NO="NO_AR", DX=0.0, DRX=0.0),
     ),
 )
 
