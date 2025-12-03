@@ -6306,6 +6306,13 @@ class PairingParameter:
             PairingAlgo: Pairing algorithm.
         """
 
+    def getAreaIntersectionTolerance(self):
+        """Return the tolerance used for the intersection area criterium. It is a value of a float
+
+        Returns:
+            float: area intersection tolerance.
+        """
+
     def getDistanceFunction(self):
         """Return the fictive distance function. It is a value of a pointer
 
@@ -6334,11 +6341,32 @@ class PairingParameter:
             InitialState: Initial contact state.
         """
 
+    def getPairingMethod(self):
+        """Return the pairing method used. It is a value of an enum
+
+        Returns:
+            PairingMethod: pairing method.
+        """
+
+    def getPairingTolerance(self):
+        """Return the pairing tolerance used. It is a value of a float
+
+        Returns:
+            float: pairing tolerance.
+        """
+
     def setAlgorithm(self, algo):
         """Set the Pairing algorithm used. It is a value of an enum
 
         Arguments:
             PairingAlgo: Pairing algorithm.
+        """
+
+    def setAreaIntersectionTolerance(self, _area_tole):
+        """Return the tolerance used for the intersection area criterium. It is a value of a float
+
+        Arguments:
+            float: area intersection tolerance.
         """
 
     def setDistanceFunction(self, dist_supp):
@@ -6367,6 +6395,20 @@ class PairingParameter:
 
         Arguments:
             InitialState: Initial contact state.
+        """
+
+    def setPairingMethod(self, pair_method):
+        """Set the cpairing method used. It is a value of an enum
+
+        Arguments:
+            PairingMethod: pairing method.
+        """
+
+    def setPairingTolerance(self, _pair_tole):
+        """Set the pairing tolerance used. It is a value of a float
+
+        Arguments:
+            float: pairing tolerance.
         """
 
     # ----------------------------------------------------------------------
@@ -6763,12 +6805,13 @@ class MeshPairing(DSWithCppPickling):
             nothing
         """
 
-    def compute(self, dist_pairing=-1.0, pair_tole=1e-08):
+    def compute(self, dist_pairing=-1.0, pair_tole=1e-08, area_tole=0.01):
         """Compute pairing
 
         Arguments:
             dist_pairing (real): tolerance from DIST_RATIO (projection outside cell)
             pair_tole (real): tolerance for pairing
+            area_tole (real): tolerance for removing intersection cells
         """
 
     def getIntersectionArea(self, *args, **kwargs):
