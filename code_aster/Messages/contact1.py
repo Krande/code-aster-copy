@@ -42,4 +42,9 @@ Soit il manque les mailles volumiques sous les mailles de peau, soit le groupe d
 Il y a un problème de dimension lié au modèle.
 """
     ),
+    5: _(
+        """
+La méthode de contact est incompatible avec un maillage parallèle.
+"""
+    ),
 }
