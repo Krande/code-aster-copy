@@ -387,7 +387,8 @@ contains
                     end if
                     call getCritParamArea(cellSlavLine, critCellArea)
 ! ----------------- Add pair
-                  if (inteArea > meshPairing%areaTole*critCellArea .and. iret == ERR_PAIR_NONE) then
+                    if (inteArea > meshPairing%areaTole*critCellArea .and. &
+                        iret == ERR_PAIR_NONE) then
 
 ! --------------------- Debug
                         if (meshPairing%debug) then
@@ -2849,7 +2850,7 @@ contains
 !   ------------------------------------------------------------------------------------------------
     end subroutine
 
-    ! --------------------------------------------------------------------------------------------------
+! --------------------------------------------------------------------------------------------------
 !
 ! getCritParamArea
 !
