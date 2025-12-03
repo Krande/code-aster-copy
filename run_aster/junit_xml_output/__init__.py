@@ -2,7 +2,7 @@
 # --------------------------------------------------------------------
 # Copyright (c) 2013 Atlassian Corporation Pty Ltd
 # Copyright HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER
-# Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -39,8 +39,6 @@
 # IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN
 # CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 
-import traceback
-
 import xml.etree.ElementTree as ET
 import xml.dom.minidom
 
@@ -48,7 +46,6 @@ __version__ = "1.0.3"
 
 
 class JunitXml:
-
     """A class which is designed to create a junit test xml file.
     Note: currently this class is designed to return the junit xml file
     in a string format (through the dump method).
@@ -113,7 +110,6 @@ class JunitXml:
 
 
 class TestCase:
-
     """A junit test case representation class.
         The JunitXml accepts a set of these and uses them to create
     the junit test xml tree

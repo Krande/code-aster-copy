@@ -165,8 +165,6 @@ minimal_test:
   artifacts:
     when: always
     paths:
-      - results/run_testcases.xml
-      - results/Testing/Temporary/*
       - results/*
     expire_in: 3 days
     reports:
