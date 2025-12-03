@@ -275,8 +275,10 @@ keywords_coverage:
     - test "$(date +%u)" = "${WEEKLY_RUN}" && test "${BUILDTYPE}" = "nightly" && do_upload="upload"
     - .gitlabci/coverage.sh . ./install ./results "${do_upload}"
   artifacts:
+    when: always
     paths:
       - build/coverage/*
+  allow_failure: true
 
 # --- variant debian-next for nightly build: no image available
 prepare_debian-next:
