@@ -12,6 +12,7 @@ paraview.compatibility.minor = 11
 #### import the simple module from the paraview
 from paraview.simple import (
     Glyph,
+    GetSettingsProxy,
     GetActiveSource,
     GetScalarBar,
     Calculator,
@@ -45,8 +46,6 @@ AXIS_TO_COLOR = {
     AxisFields.VECT_Y: [1.0, 1.0, 0.0],
     AxisFields.VECT_Z: [0.0, 1.0, 0.0],
 }
-WHITE = [1.0, 1.0, 1.0]
-BLACK = [.0, .0, .0]
 
 
 def get_available_point_arrays(source) -> dict[str, "PointData"]:
@@ -61,6 +60,12 @@ def get_available_components(point_fields_data, field_name: str) -> list[str]:
 def main():
     base_source = GetActiveSource()
     view = GetActiveView()
+    Hide(base_source, view)
+
+    palette = GetSettingsProxy("ColorPalette")
+    edge_color =palette.Foreground
+    point_color = [0.5 * val for val in edge_color]
+
     available_points_arrays = get_available_point_arrays(source=base_source)
     available_axis_arrays = tuple((field.value for field in AxisFields if field.value in available_points_arrays))
     available_non_axis_arrays = list((field for field in available_points_arrays if field not in available_axis_arrays))
@@ -76,22 +81,23 @@ def main():
     parent_filter = base_source
 
     line_source = Calculator(registrationName="LINES", Input=parent_filter)
-    line_display = Show(line_source, view, "UnstructuredGridRepresentation")
+    line_display = Show(line_source, view, )
     line_display.SetRepresentationType("Wireframe")
     line_display.RenderLinesAsTubes = 1
-    line_display.LineWidth = 10.0
+    line_display.LineWidth = 7.0
     # change solid color
-    line_display.AmbientColor = WHITE
-    line_display.DiffuseColor = WHITE
+    line_display.AmbientColor = edge_color
+    line_display.DiffuseColor = edge_color
     point_source = Calculator(registrationName="POINTS", Input=parent_filter)
-    point_display = Show(point_source, view, "UnstructuredGridRepresentation")
+    point_display = Show(point_source, view, )
     point_display.SetRepresentationType("Points")
     point_display.RenderPointsAsSpheres = 1
-    point_display.PointSize = 15.0
-    point_display.AmbientColor = BLACK
-    point_display.DiffuseColor = BLACK
+    point_display.PointSize = 10.0
+    point_display.AmbientColor = point_color
+    point_display.DiffuseColor = point_color
 
-    # TODO add Point and Line source to enhance visualisation
+    Hide(point_display, view)
+
     if available_axis_arrays:
         glyph_scale = Calculator(registrationName="SET GLYPH SIZE", Input=parent_filter)
 
