@@ -16,7 +16,7 @@
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
 
-subroutine amumph(action, solvez, matasz, rsolu, csolu, &
+subroutine amumph(actionz, solvez, matasz, rsolu, csolu, &
                   vcinez, nbsol, iret, prepos)
 !
 !
@@ -87,7 +87,7 @@ subroutine amumph(action, solvez, matasz, rsolu, csolu, &
 #include "mumps/dmumps.h"
 #include "asterfort/isParallelMatrix.h"
 
-    character(len=*) :: action, matasz, vcinez, solvez
+    character(len=*) :: actionz, matasz, vcinez, solvez
     integer(kind=8) :: iret, nbsol
     real(kind=8) :: rsolu(*)
     complex(kind=8) :: csolu(*)
@@ -106,6 +106,7 @@ subroutine amumph(action, solvez, matasz, rsolu, csolu, &
     aster_logical :: lpreco, limpr_matsing, l_parallel_matrix
     character(len=1) :: rouc, prec
     character(len=4) :: etam
+    character(len=8) :: action
     character(len=14) :: nonu, nu, impr
     character(len=19) :: matas, vcine, nomat, nosolv, solveu
     character(len=24) :: kpiv
@@ -118,6 +119,7 @@ subroutine amumph(action, solvez, matasz, rsolu, csolu, &
 !----------------------------------------------------------------
     call jemarq()
 !
+    action = actionz
     iretz = 0
     call infdbg('SOLVEUR', ifm, niv)
     if ((action(1:6) .ne. 'PRERES') .and. (action(1:6) .ne. 'RESOUD') .and. &
