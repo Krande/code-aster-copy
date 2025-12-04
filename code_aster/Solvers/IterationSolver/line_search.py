@@ -191,7 +191,10 @@ class SecantLineSearch(BaseLineSearch):
                 # converged ?
                 if f_abs < fcvg:
                     logger.debug(
-                        f"Line-search iteration {iter_best}: rho = {rho_best:.6f}, f(rho) = {f_best:.6f}"
+                        "Line-search iteration %d: rho = %.6f, f(rho) = %.6f",
+                        iter_best,
+                        rho_best,
+                        f_best,
                     )
                     return rho_best * solution
 
@@ -231,7 +234,10 @@ class SecantLineSearch(BaseLineSearch):
                                 rho1 = -p0 / p1
                         else:
                             logger.debug(
-                                f"Line-search iteration {iter_best}: rho = {rho_best:.6f}, f(rho) = {f_best:.6f}"
+                                "Line-search iteration %d: rho = %.6f, f(rho) = %.6f",
+                                iter_best,
+                                rho_best,
+                                f_best,
                             )
                             return rho_best * solution
                     else:
@@ -248,7 +254,10 @@ class SecantLineSearch(BaseLineSearch):
                         rho1 = 0.5 * (rho_neg + rho_pos)
                     else:
                         logger.debug(
-                            f"Line-search iteration {iter_best}: rho = {rho_best:.6f}, f(rho) = {f_best:.6f}"
+                            "Line-search iteration %d: rho = %.6f, f(rho) = %.6f",
+                            iter_best,
+                            rho_best,
+                            f_best,
                         )
                         return rho_best * solution
 
@@ -263,6 +272,6 @@ class SecantLineSearch(BaseLineSearch):
             f_old = f
 
         logger.debug(
-            f"Line-search iteration {iter_best}: rho = {rho_best:.6f}, f(rho) = {f_best:.6f}"
+            "Line-search iteration %d: rho = %.6f, f(rho) = %.6f", iter_best, rho_best, f_best
         )
         return rho_best * solution
