@@ -296,6 +296,8 @@ def check_asan(self):
     self.env["ASAN_PRELOAD"] = [libasan]
     self.env.append_unique("CONFIG_ENV_LD_PRELOAD", self.env["ASAN_PRELOAD"])
     self.start_msg("Setting default ASAN_OPTIONS")
-    opts = os.environ.get("ASAN_OPTIONS", ["detect_odr_violation=0,detect_leaks=0"])
+    # to use the same defaults in catalo
+    self.env["ASAN_DEFAULT_OPTIONS"] = defaults = "detect_odr_violation=0,detect_leaks=0"
+    opts = os.environ.get("ASAN_OPTIONS", f"${{ASAN_OPTIONS:-{defaults}}}")
     self.env["CONFIG_ENV_ASAN_OPTIONS"] = opts
     self.end_msg(self.env["CONFIG_ENV_ASAN_OPTIONS"])

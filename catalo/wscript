@@ -78,7 +78,8 @@ class printcata(Task.Task):
         add_to_env_paths(bld, environ, "PYTHONPATH", self.env["CODEASTERPATH"])
         add_to_env_paths(bld, environ, "PYTHONPATH", self.env["CATALOPATH"])
         add_to_env_paths(bld, environ, "LD_PRELOAD", self.env["CONFIG_ENV_LD_PRELOAD"])
-        environ["ASAN_OPTIONS"] = ",".join(self.env["CONFIG_ENV_ASAN_OPTIONS"])
+        opts = os.environ.get("ASAN_OPTIONS", self.env["ASAN_DEFAULT_OPTIONS"] or "")
+        environ["ASAN_OPTIONS"] = opts
         exec_pyaster(
             bld,
             osp.join(self.env["CATALOPATH"], "build_cata.py"),
@@ -144,7 +145,8 @@ def build_cata_ele(self, ojb, elem1, install_path):
             memlim = 2047
         environ = os.environ.copy()
         add_to_env_paths(self, environ, "LD_PRELOAD", self.env["CONFIG_ENV_LD_PRELOAD"])
-        environ["ASAN_OPTIONS"] = ",".join(self.env["CONFIG_ENV_ASAN_OPTIONS"])
+        opts = os.environ.get("ASAN_OPTIONS", self.env["ASAN_DEFAULT_OPTIONS"] or "")
+        environ["ASAN_OPTIONS"] = opts
         exec_pyaster(
             self,
             comm,

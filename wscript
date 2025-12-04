@@ -335,6 +335,11 @@ def build(self):
             'Call "waf build_debug" or "waf build_release", and read '
             "the comments in the wscript file!"
         )
+    if self.variant == "release" and self.env["CFLAGS_ASAN"]:
+        self.fatal(
+            "The project was configured with '--enable-asan' option (AddressSanitizer). "
+            "Only the 'debug' variant is relevant."
+        )
     if self.cmd.startswith("install"):
         # because we can't know which files are obsolete `rm *.py{,c,o}`
         remove_previous(
