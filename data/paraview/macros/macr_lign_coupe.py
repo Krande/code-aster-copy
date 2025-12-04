@@ -96,7 +96,7 @@ def main():
     point_display.AmbientColor = point_color
     point_display.DiffuseColor = point_color
 
-    Hide(point_display, view)
+    Hide(point_source, view)
 
     if available_axis_arrays:
         glyph_scale = Calculator(registrationName="SET GLYPH SIZE", Input=parent_filter)
