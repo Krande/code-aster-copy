@@ -76,6 +76,9 @@ class printcata(Task.Task):
         # add src/code_aster + catalo in PYTHONPATH
         add_to_env_paths(self.generator.bld, environ, "PYTHONPATH", self.env["CODEASTERPATH"])
         add_to_env_paths(self.generator.bld, environ, "PYTHONPATH", self.env["CATALOPATH"])
+        if self.env["LIB_ASAN"]:
+            add_to_env_paths(self.generator.bld, environ, "LD_PRELOAD", self.env["LIB_ASAN"])
+            environ["ASAN_OPTIONS"] = ",".join(self.env["ASAN_OPTIONS"])
         exec_pyaster(
             self.generator.bld,
             osp.join(self.env["CATALOPATH"], "build_cata.py"),
@@ -115,7 +118,7 @@ def build_cata_ele(self, ojb, elem1, install_path):
     skipped = osp.isfile(elem1path) and os.stat(elem1path).st_mtime_ns > stime
     if not skipped:
         Logs.info(
-            f"+ build the elements catalog {elem1.name} using installed " f"aster (from {ojb.name})"
+            f"+ build the elements catalog {elem1.name} using installed aster (from {ojb.name})"
         )
         # generate the command file
         comm = osp.join(builddir, "fort.1")
@@ -139,8 +142,17 @@ def build_cata_ele(self, ojb, elem1, install_path):
         memlim = 4096 + int(float(self.env["addmem"]))
         if "32" in platform.architecture()[0]:
             memlim = 2047
+        environ = os.environ.copy()
+        if self.env["LIB_ASAN"]:
+            add_to_env_paths(self, environ, "LD_PRELOAD", self.env["LIB_ASAN"])
+            environ["ASAN_OPTIONS"] = ",".join(self.env["ASAN_OPTIONS"])
         exec_pyaster(
-            self, comm, cwd=builddir, args=["--memory={0}".format(memlim)], for_catalo=True
+            self,
+            comm,
+            env=environ,
+            cwd=builddir,
+            args=["--memory={0}".format(memlim)],
+            for_catalo=True,
         )
 
     dest = osp.join(install_path, osp.basename(elem1.name))

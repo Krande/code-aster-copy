@@ -17,13 +17,12 @@
 # along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 # --------------------------------------------------------------------
 
+import os
 import os.path as osp
 import sys
-import os
 from pathlib import Path
 
-
-from waflib import Configure, TaskGen, Utils, Logs
+from waflib import Configure, Logs, TaskGen, Utils
 
 
 def options(self):
@@ -259,14 +258,30 @@ def check_optimization_cflags(self):
     if self.options.enable_coverage:
         flags.append("--coverage")
         self.add_linkflags("--coverage")
-    if self.options.enable_asan:
-        flags.extend(["-fsanitize=address", "-fno-omit-frame-pointer"])
-        self.add_linkflags(["-fsanitize=address", "-fno-omit-frame-pointer"])
-    self.env.append_unique("CFLAGS", flags)
     self.end_msg(flags)
+    self.check_asan()
 
     self.setenv("release")
     self.start_msg("Setting C optimization flags")
     flags = ["-O2"]
     self.env.append_unique("CFLAGS", flags)
     self.end_msg(flags)
+
+
+@Configure.conf
+def check_asan(self):
+    # expect to be called in the debug environment
+    if not self.options.enable_asan:
+        return
+    flags = ["-fsanitize=address", "-fno-omit-frame-pointer"]
+    self.add_linkflags(flags)
+    self.env.append_unique("CFLAGS", flags)
+
+    self.find_program("ldd")
+    libasan = self.where_is_shlib(lib="asan")
+    self.env.LIB_ASAN = [libasan]
+    self.start_msg("Setting default ASAN_OPTIONS")
+    self.env.ASAN_OPTIONS = [
+        os.environ.get("ASAN_OPTIONS", "detect_odr_violation=0,detect_leaks=0")
+    ]
+    self.end_msg(self.env.ASAN_OPTIONS)
