@@ -367,7 +367,7 @@ contains
 !
                 sol_F(1:gv_fbs) = sol((iFace-1)*(mk_fbs+gv_fbs)+1+mk_fbs: &
                                       (iFace-1)*(mk_fbs+gv_fbs)+mk_fbs+gv_fbs)
-                do ino = 1, nbnodes
+                do ino = 1, hhoFace%nbnodes_post
                     num_loc = hhoFace%nodes_loc(ino)
                     post_sol_F(ndim+1, num_loc) = post_sol_F(ndim+1, num_loc)+ &
                                                   hhoEvalScalFace( &
