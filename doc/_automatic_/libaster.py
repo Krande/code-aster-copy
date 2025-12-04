@@ -6362,7 +6362,7 @@ class PairingParameter:
             PairingAlgo: Pairing algorithm.
         """
 
-    def setAreaIntersectionTolerance(self, _area_tole):
+    def setAreaIntersectionTolerance(self, area_tole):
         """Return the tolerance used for the intersection area criterium. It is a value of a float
 
         Arguments:
@@ -6404,7 +6404,7 @@ class PairingParameter:
             PairingMethod: pairing method.
         """
 
-    def setPairingTolerance(self, _pair_tole):
+    def setPairingTolerance(self, pair_tole):
         """Set the pairing tolerance used. It is a value of a float
 
         Arguments:

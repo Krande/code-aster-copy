@@ -225,7 +225,7 @@ Set the pairing tolerance used. It is a value of a float
 Arguments:
     float: pairing tolerance.
         )",
-              py::arg( "_pair_tole" ) )
+              py::arg( "pair_tole" ) )
         .def( "getAreaIntersectionTolerance", &PairingParameter::getAreaIntersectionTolerance, R"(
 Return the tolerance used for the intersection area criterium. It is a value of a float
 
@@ -238,7 +238,7 @@ Return the tolerance used for the intersection area criterium. It is a value of 
 Arguments:
     float: area intersection tolerance.
         )",
-              py::arg( "_area_tole" ) )
+              py::arg( "area_tole" ) )
         .def( "getInitialState", &PairingParameter::getInitialState, R"(
 Return the initial contact state. It is a value of an enum
 

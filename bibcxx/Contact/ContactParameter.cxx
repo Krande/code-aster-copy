@@ -60,6 +60,6 @@ PairingParameter::PairingParameter( const py::tuple &tup ) : PairingParameter() 
     _cara = tup[++i].cast< ElementaryCharacteristicsPtr >();
 };
 py::tuple PairingParameter::_getState() const {
-    return py::make_tuple( _algo, _cont_init, _dist_ratio, (int)_beam, (int)_shell, _dist_supp,
-                           _cara );
+    return py::make_tuple( _algo, _cont_init, _dist_ratio, _pair_tole, _area_tole, (int)_beam,
+                           (int)_shell, _dist_supp, _cara );
 };

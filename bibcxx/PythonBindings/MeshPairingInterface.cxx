@@ -108,7 +108,7 @@ Arguments:
     area_tole (real): tolerance for removing intersection cells
         )",
                 py::arg( "dist_pairing" ) = -1.0, py::arg( "pair_tole" ) = 1.E-8,
-                py::arg( "area_tole" ) = 1.E-2 );
+                py::arg( "area_tole" ) = 1.E-8 );
     class_.def( "setVerbosity", &MeshPairing::setVerbosity, R"(
 Set level of verbosity
       0 - without
