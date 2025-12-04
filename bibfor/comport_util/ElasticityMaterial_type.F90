@@ -15,16 +15,20 @@
 ! You should have received a copy of the GNU General Public License
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
+! aslint: disable=W1403
+!
+! ==================================================================================================
+!
+! Types for elasticity material
+!
+! ==================================================================================================
+!
+module ElasticityMaterial_type
+!
+    implicit none
+!
 #include "asterf_types.h"
 !
-interface
-    subroutine nmcerr(sddisc, iterGlobMaxi, iterGlobElas, pasMiniElas, resiGlobMaxi, &
-                      resiGlobRela, newtKrylResi, ds_contact_)
-        use NonLin_Datastructure_type
-        character(len=19), intent(in) :: sddisc
-        integer(kind=8), intent(in) :: iterGlobMaxi, iterGlobElas
-        real(kind=8), intent(in) :: pasMiniElas, newtKrylResi
-        real(kind=8), intent(in) :: resiGlobMaxi, resiGlobRela
-        type(NL_DS_Contact), optional, intent(in) :: ds_contact_
-    end subroutine nmcerr
-end interface
+! false module required because of error in aslint (E1009)
+!
+end module ElasticityMaterial_type

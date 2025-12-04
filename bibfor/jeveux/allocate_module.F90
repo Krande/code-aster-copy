@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -139,8 +139,10 @@ contains
             kmax = ktrou
         end if
         slvec%kfree = -1
-        if (ktrou+1 <= slvec%nmax .and. .not. slvec%lvec(ktrou+1)%present) then
-            slvec%kfree = ktrou+1
+        if (ktrou+1 <= slvec%nmax) then
+            if (.not. slvec%lvec(ktrou+1)%present) then
+                slvec%kfree = ktrou+1
+            end if
         end if
 !
         if (present(vl)) then

@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -157,6 +157,7 @@ subroutine vrcins(modelz, chmatz, carelz, inst, chvarc, &
     call jelira(chvars//'.CESV', 'LONMAX', n1)
     do k = 1, n1
         ce1v(k) = rundef
+        zl(jce1l-1+k) = .true.
     end do
 !
 !

@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2020 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -19,15 +19,11 @@
 !
 !
 interface
-    subroutine verifh(fami    , kpg    , ksp    , poum    , j_mater   ,&
-                      epshy   , materi_, ihydr_ )
-        character(len=*), intent(in) :: fami
-        integer, intent(in) :: kpg
-        integer, intent(in) :: ksp
-        character(len=*), intent(in) :: poum
-        integer, intent(in) :: j_mater
-        real(kind=8), intent(out) :: epshy
-        character(len=8), optional, intent(in) :: materi_
-        integer, optional, intent(out) :: ihydr_
+    subroutine verifh(famiZ, kpg, ksp, poumZ, jvMaterCode, epsyHydr)
+        character(len=*), intent(in) :: famiZ
+        integer, intent(in) :: kpg, ksp
+        character(len=*), intent(in) :: poumZ
+        integer, intent(in) :: jvMaterCode
+        real(kind=8), intent(out) :: epsyHydr
     end subroutine verifh
 end interface

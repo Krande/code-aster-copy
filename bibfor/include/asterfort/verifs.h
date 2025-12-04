@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2020 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -15,19 +15,13 @@
 ! You should have received a copy of the GNU General Public License
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
-
-!
 !
 interface
-    subroutine verifs(fami    , kpg    , ksp    , poum    , j_mater   ,&
-                      epsse   , materi_, isech_)
-        character(len=*), intent(in) :: fami
-        integer, intent(in) :: kpg
-        integer, intent(in) :: ksp
-        character(len=*), intent(in) :: poum
-        integer, intent(in) :: j_mater
-        real(kind=8), intent(out) :: epsse
-        character(len=8), optional, intent(in) :: materi_
-        integer, optional, intent(out) :: isech_
+    subroutine verifs(famiZ, kpg, ksp, poumZ, jvMaterCode, epsiSech)
+        character(len=*), intent(in) :: famiZ
+        integer, intent(in) :: kpg, ksp
+        character(len=*), intent(in) :: poumZ
+        integer, intent(in) :: jvMaterCode
+        real(kind=8), intent(out) :: epsiSech
     end subroutine verifs
 end interface

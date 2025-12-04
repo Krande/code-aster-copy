@@ -16,44 +16,37 @@
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
 !
-subroutine nmevr0(sddisc)
+! ==================================================================================================
 !
-    implicit none
+! Types for elasticity material
 !
-#include "asterf_types.h"
-#include "asterfort/dieven.h"
-#include "asterfort/getFailAction.h"
-#include "asterfort/nmecrr.h"
-#include "asterfort/utdidt.h"
-#include "event_def.h"
+! ==================================================================================================
 !
-    character(len=19), intent(in) :: sddisc
 !
 ! --------------------------------------------------------------------------------------------------
-!
-! ROUTINE MECA_NON_LINE (ALGORITHME - EVENEMENTS)
-!
-! REINITIALISATIONS DES EVENEMENTS
-!
+! Type of elasticity
 ! --------------------------------------------------------------------------------------------------
 !
-! In  sddisc          : datastructure for time discretization
+#define ELAS_UNDEF     0
+#define ELAS_ISOT      1
+#define ELAS_ORTH      2
+#define ELAS_ISTR      3
+#define ELAS_VISC_ISOT 4
+#define ELAS_VISC_ORTH 5
+#define ELAS_VISC_ISTR 6
+#define ELAS_SHELL     7
+#define ELAS_GLRC      8
+#define ELAS_DHRC      9
+#define ELAS_MEMBRANE  10
+#define ELAS_COMPOSITE 11
+#define ELAS_FLUID     12
 !
 ! --------------------------------------------------------------------------------------------------
-!
-    integer(kind=8), parameter :: iterSuppZero = 0
-    aster_logical :: lActivate
-    integer(kind=8) :: iFail, nbFail, actionType
-!
+! External state variables linked to elasticity
 ! --------------------------------------------------------------------------------------------------
-!
-    call utdidt('L', sddisc, 'LIST', 'NECHEC', vali_=nbFail)
-    do iFail = 1, nbFail
-        call dieven(sddisc, iFail, lActivate)
-        call getFailAction(sddisc, iFail, actionType)
-        if (actionType .eq. FAIL_ACT_ITER) then
-            call nmecrr(sddisc, 'ITERSUP', paraValeI_=iterSuppZero)
-        end if
-    end do
-!
-end subroutine
+
+#define ELAS_VARC_HYDR 1
+#define ELAS_VARC_SECH 1
+#define ELAS_VARC_PTOT 1
+#define ELAS_VARC_EPSA 1
+#define ELAS_VARC_THER 1
