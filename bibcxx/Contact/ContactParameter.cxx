@@ -49,17 +49,17 @@ py::tuple FrictionParameter::_getState() const {
 PairingParameter::PairingParameter( const py::tuple &tup ) : PairingParameter() {
     int i = -1;
     _algo = tup[++i].cast< PairingAlgo >();
-    _pair_method = tup[++i].cast< PairingMethod >();
     _cont_init = tup[++i].cast< InitialState >();
     _dist_ratio = tup[++i].cast< ASTERDOUBLE >();
-    _pair_tole = tup[++i].cast< ASTERDOUBLE >();
-    _area_tole = tup[++i].cast< ASTERDOUBLE >();
     _beam = tup[++i].cast< bool >();
     _shell = tup[++i].cast< bool >();
     _dist_supp = tup[++i].cast< GenericFunctionPtr >();
     _cara = tup[++i].cast< ElementaryCharacteristicsPtr >();
+    _pair_method = tup[++i].cast< PairingMethod >();
+    _pair_tole = tup[++i].cast< ASTERDOUBLE >();
+    _area_tole = tup[++i].cast< ASTERDOUBLE >();
 };
 py::tuple PairingParameter::_getState() const {
-    return py::make_tuple( _algo, _cont_init, _dist_ratio, _pair_tole, _area_tole, (int)_beam,
-                           (int)_shell, _dist_supp, _cara );
+    return py::make_tuple( _algo, _cont_init, _dist_ratio, (int)_beam, (int)_shell, _dist_supp,
+                           _cara, _pair_method, _pair_tole, _area_tole );
 };
