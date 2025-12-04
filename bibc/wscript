@@ -182,6 +182,7 @@ def build_libbibc(self, env):
         # "GKLIB",
         "SCOTCH",
         "PETSC",
+        "ASAN",
     ]
     get_srcs = self.path.get_src().ant_glob
     # compile *.c
@@ -199,7 +200,15 @@ def build_libbibc(self, env):
 
 
 def build_libaster(self, env):
-    use = ["LIBASTER", "asterbibfor", "asterbibfor_ext", "asterbibc", "asterbibcxx", "astergc"]
+    use = [
+        "LIBASTER",
+        "ASAN",
+        "asterbibfor",
+        "asterbibfor_ext",
+        "asterbibc",
+        "asterbibcxx",
+        "astergc",
+    ]
     if self.env.ASTER_PLATFORM_MSYS2:
         use.append("GFORTRAN")
         use.append("DBGHELP")
@@ -258,8 +267,8 @@ def check_optimization_cflags(self):
     if self.options.enable_coverage:
         flags.append("--coverage")
         self.add_linkflags("--coverage")
+    self.env.append_unique("CFLAGS", flags)
     self.end_msg(flags)
-    self.check_asan()
 
     self.setenv("release")
     self.start_msg("Setting C optimization flags")
@@ -270,18 +279,23 @@ def check_optimization_cflags(self):
 
 @Configure.conf
 def check_asan(self):
-    # expect to be called in the debug environment
     if not self.options.enable_asan:
         return
+    # there is only one profile.sh, so the flags must also be set for release
+    # setup compilation flags
     flags = ["-fsanitize=address", "-fno-omit-frame-pointer"]
-    self.add_linkflags(flags)
-    self.env.append_unique("CFLAGS", flags)
+    for var in ("CFLAGS", "CXXFLAGS", "FCFLAGS"):
+        self.start_msg(f"Setting AddressSanitizer {var}")
+        self.env.append_unique(f"{var}_ASAN", flags)
+        self.end_msg(flags)
+    self.add_linkflags(flags, dest="LINKFLAGS_ASAN")
 
+    # setup runtime variables
     self.find_program("ldd")
     libasan = self.where_is_shlib(lib="asan")
-    self.env.LIB_ASAN = [libasan]
+    self.env["ASAN_PRELOAD"] = [libasan]
+    self.env.append_unique("CONFIG_ENV_LD_PRELOAD", self.env["ASAN_PRELOAD"])
     self.start_msg("Setting default ASAN_OPTIONS")
-    self.env.ASAN_OPTIONS = [
-        os.environ.get("ASAN_OPTIONS", "detect_odr_violation=0,detect_leaks=0")
-    ]
-    self.end_msg(self.env.ASAN_OPTIONS)
+    opts = os.environ.get("ASAN_OPTIONS", ["detect_odr_violation=0,detect_leaks=0"])
+    self.env["CONFIG_ENV_ASAN_OPTIONS"] = opts
+    self.end_msg(self.env["CONFIG_ENV_ASAN_OPTIONS"])

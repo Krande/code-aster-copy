@@ -301,6 +301,7 @@ def configure(self):
     self.recurse("bibfor")
     self.recurse("bibcxx")
     self.recurse("bibc")
+    self.check_asan()
 
     self.load("mathematics", tooldir="waftools")
     self.load("med_cfg", tooldir="waftools")

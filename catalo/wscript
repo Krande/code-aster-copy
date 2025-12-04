@@ -72,15 +72,15 @@ def pre_build_catalo(self):
 class printcata(Task.Task):
     def run(self):
         """Execute the command"""
+        bld = self.generator.bld
         environ = os.environ.copy()
         # add src/code_aster + catalo in PYTHONPATH
-        add_to_env_paths(self.generator.bld, environ, "PYTHONPATH", self.env["CODEASTERPATH"])
-        add_to_env_paths(self.generator.bld, environ, "PYTHONPATH", self.env["CATALOPATH"])
-        if self.env["LIB_ASAN"]:
-            add_to_env_paths(self.generator.bld, environ, "LD_PRELOAD", self.env["LIB_ASAN"])
-            environ["ASAN_OPTIONS"] = ",".join(self.env["ASAN_OPTIONS"])
+        add_to_env_paths(bld, environ, "PYTHONPATH", self.env["CODEASTERPATH"])
+        add_to_env_paths(bld, environ, "PYTHONPATH", self.env["CATALOPATH"])
+        add_to_env_paths(bld, environ, "LD_PRELOAD", self.env["CONFIG_ENV_LD_PRELOAD"])
+        environ["ASAN_OPTIONS"] = ",".join(self.env["CONFIG_ENV_ASAN_OPTIONS"])
         exec_pyaster(
-            self.generator.bld,
+            bld,
             osp.join(self.env["CATALOPATH"], "build_cata.py"),
             env=environ,
             cwd=self.outputs[0].parent.abspath(),
@@ -143,9 +143,8 @@ def build_cata_ele(self, ojb, elem1, install_path):
         if "32" in platform.architecture()[0]:
             memlim = 2047
         environ = os.environ.copy()
-        if self.env["LIB_ASAN"]:
-            add_to_env_paths(self, environ, "LD_PRELOAD", self.env["LIB_ASAN"])
-            environ["ASAN_OPTIONS"] = ",".join(self.env["ASAN_OPTIONS"])
+        add_to_env_paths(self, environ, "LD_PRELOAD", self.env["CONFIG_ENV_LD_PRELOAD"])
+        environ["ASAN_OPTIONS"] = ",".join(self.env["CONFIG_ENV_ASAN_OPTIONS"])
         exec_pyaster(
             self,
             comm,
