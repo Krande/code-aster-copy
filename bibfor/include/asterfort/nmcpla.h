@@ -17,14 +17,14 @@
 ! --------------------------------------------------------------------
 !
 interface
-    subroutine nmcpla(BEHinteg,&
+    subroutine nmcpla(BEHinteg, &
                       fami, kpg, ksp, ndim, typmod, imat, &
                       compor_plas, compor_creep, carcri, &
                       timed, timef, neps, epsdt, depst, &
                       nsig, sigd, vind, option, &
                       sigf, vinf, ndsde, dsde, iret)
         use Behaviour_type
-        type(Behaviour_Integ), intent(in) :: BEHinteg
+        type(Behaviour_Integ), intent(inout) :: BEHinteg
         integer(kind=8) :: ndsde
         character(len=*) :: fami
         integer(kind=8) :: kpg

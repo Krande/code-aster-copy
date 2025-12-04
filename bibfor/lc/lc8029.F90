@@ -32,7 +32,7 @@ subroutine lc8029(BEHinteg, &
 #include "asterfort/nmcomp.h"
 #include "asterfort/Behaviour_type.h"
 !
-    type(Behaviour_Integ), intent(in) :: BEHinteg
+    type(Behaviour_Integ), intent(inout) :: BEHinteg
     character(len=*), intent(in) :: fami
     integer(kind=8), intent(in) :: kpg
     integer(kind=8), intent(in) :: ksp
@@ -85,6 +85,8 @@ subroutine lc8029(BEHinteg, &
     write (compor_ext(NUME), '(I16)') nume_flua
     compor_ext(CREEP_NAME) = rela_flua
     compor_ext(PLAS_NAME) = rela_plas
+    BEHinteg%behavPara%nvi = nvi_flua
+    BEHinteg%behavPara%numlc = nume_flua
 !
     call nmcomp(BEHinteg, &
                 fami, kpg, ksp, ndim, typmod, &
