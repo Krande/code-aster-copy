@@ -404,7 +404,10 @@ sismique = COMB_SISM_MODAL(
     COMB_MODE=_F(TYPE="SRSS"),
     COMB_DIRECTION="QUAD",
     OPTION=("EFGE_ELNO"),
-    TYPE_RESU=(_F(TYPE="VALE_TOTA"),),  # reponse totale
+    TYPE_RESU=(
+        _F(TYPE="VALE_TOTA"),
+        _F(TYPE="VALE_DIRE", LIST_AXE=("X", "Y", "Z")),
+    ),  # reponse totale
 )
 
 sismique_qs = COMB_SISM_MODAL(
@@ -420,7 +423,10 @@ sismique_qs = COMB_SISM_MODAL(
     COMB_MODE=_F(TYPE="SRSS"),
     COMB_DIRECTION="QUAD",
     OPTION=("EFGE_ELNO"),
-    TYPE_RESU=(_F(TYPE="VALE_TOTA"),),  # reponse totale
+    TYPE_RESU=(
+        _F(TYPE="VALE_TOTA"),
+        _F(TYPE="VALE_DIRE", LIST_AXE=("X", "Y", "Z")),
+    ),  # reponse totale
 )
 
 # sismique_dyn = sismique_tot - sismique_qs
@@ -452,12 +458,98 @@ ch_dyn = CREA_CHAMP(
     ),
 )
 
+ch_tot_x = CREA_CHAMP(
+    OPERATION="EXTR",
+    TYPE_CHAM="ELNO_SIEF_R",
+    RESULTAT=sismique,  # = rep. sismique totale à 2%
+    NOM_CHAM="EFGE_ELNO",
+    NOM_CAS="DIRE_X",
+)
+
+ch_qs_x = CREA_CHAMP(
+    OPERATION="EXTR",
+    TYPE_CHAM="ELNO_SIEF_R",
+    RESULTAT=sismique_qs,  # sismique à 100%
+    NOM_CHAM="EFGE_ELNO",
+    NOM_CAS="DIRE_X",
+)
+
+
+ch_dyn_x = CREA_CHAMP(
+    TYPE_CHAM="ELNO_SIEF_R",
+    OPERATION="ASSE",
+    MODELE=modele,
+    ASSE=(
+        _F(TOUT="OUI", CHAM_GD=ch_tot_x, CUMUL="OUI"),
+        _F(TOUT="OUI", CHAM_GD=ch_qs_x, CUMUL="OUI", COEF_R=-1.0),
+    ),
+)
+
+ch_tot_y = CREA_CHAMP(
+    OPERATION="EXTR",
+    TYPE_CHAM="ELNO_SIEF_R",
+    RESULTAT=sismique,  # = rep. sismique totale à 2%
+    NOM_CHAM="EFGE_ELNO",
+    NOM_CAS="DIRE_Y",
+)
+
+ch_qs_y = CREA_CHAMP(
+    OPERATION="EXTR",
+    TYPE_CHAM="ELNO_SIEF_R",
+    RESULTAT=sismique_qs,  # sismique à 100%
+    NOM_CHAM="EFGE_ELNO",
+    NOM_CAS="DIRE_Y",
+)
+
+
+ch_dyn_y = CREA_CHAMP(
+    TYPE_CHAM="ELNO_SIEF_R",
+    OPERATION="ASSE",
+    MODELE=modele,
+    ASSE=(
+        _F(TOUT="OUI", CHAM_GD=ch_tot_y, CUMUL="OUI"),
+        _F(TOUT="OUI", CHAM_GD=ch_qs_y, CUMUL="OUI", COEF_R=-1.0),
+    ),
+)
+
+ch_tot_z = CREA_CHAMP(
+    OPERATION="EXTR",
+    TYPE_CHAM="ELNO_SIEF_R",
+    RESULTAT=sismique,  # = rep. sismique totale à 2%
+    NOM_CHAM="EFGE_ELNO",
+    NOM_CAS="DIRE_Z",
+)
+
+ch_qs_z = CREA_CHAMP(
+    OPERATION="EXTR",
+    TYPE_CHAM="ELNO_SIEF_R",
+    RESULTAT=sismique_qs,  # sismique à 100%
+    NOM_CHAM="EFGE_ELNO",
+    NOM_CAS="DIRE_Z",
+)
+
+
+ch_dyn_z = CREA_CHAMP(
+    TYPE_CHAM="ELNO_SIEF_R",
+    OPERATION="ASSE",
+    MODELE=modele,
+    ASSE=(
+        _F(TOUT="OUI", CHAM_GD=ch_tot_z, CUMUL="OUI"),
+        _F(TOUT="OUI", CHAM_GD=ch_qs_z, CUMUL="OUI", COEF_R=-1.0),
+    ),
+)
+
 # on affecte le champ 4 fois pour obtenir un numero d'ordre 4
 # NUME_ORDRE n'est pas disponible dans CREA_RESU
 sismique_dyn = CREA_RESU(
     OPERATION="AFFE",
     TYPE_RESU="MULT_ELAS",
-    AFFE=(_F(NOM_CHAM="EFGE_ELNO", CHAM_GD=ch_dyn, NOM_CAS="TOTA", MODELE=modele),),
+    AFFE=(
+        _F(NOM_CHAM="EFGE_ELNO", CHAM_GD=ch_dyn, NOM_CAS="TOTA", MODELE=modele),
+        _F(NOM_CHAM="EFGE_ELNO", CHAM_GD=ch_dyn_x, NOM_CAS="DIRE_X", MODELE=modele),
+        _F(NOM_CHAM="EFGE_ELNO", CHAM_GD=ch_dyn_y, NOM_CAS="DIRE_Y", MODELE=modele),
+        _F(NOM_CHAM="EFGE_ELNO", CHAM_GD=ch_dyn_z, NOM_CAS="DIRE_Z", MODELE=modele),
+    ),
 )
 
 
@@ -491,6 +583,78 @@ resuPostRocheToutSism = POST_ROCHE(
     ),
     PRESSION=(_F(TOUT="OUI", VALE=1e6),),
 )
+
+# Validation de DIRECTION
+
+resuPostRocheToutSismX = POST_ROCHE(
+    SIGM_LIM="NON",
+    ZONE_ANALYSE=(_F(TOUT="OUI", GROUP_NO_ORIG="A"),),
+    MODELE=modele,
+    NOM_CHAM=("ROC1_ELNO", "ROC2_ELNO"),
+    CARA_ELEM=cara_elem,
+    CHAM_MATER=ch_mater,
+    RESU_MECA=(
+        _F(TYPE_CHAR="POIDS", CHAM_GD=poids_propre_champ_neg),
+        _F(
+            TYPE_CHAR="DILAT_THERM",
+            RESULTAT=dilatation_thermique,
+            INST=1,
+            CRITERE="RELATIF",
+            PRECISION=1e-6,
+        ),
+        _F(TYPE_CHAR="DDS", RESULTAT=deplacement_impose, INST=0, CRITERE="ABSOLU"),
+        _F(TYPE_CHAR="SISM_INER_SPEC", RESULTAT=sismique_dyn, DIRECTION="X", TYPE_RESU="DYN"),
+        _F(TYPE_CHAR="SISM_INER_SPEC", RESULTAT=sismique_qs, DIRECTION="X", TYPE_RESU="QS"),
+    ),
+    PRESSION=(_F(TOUT="OUI", VALE=1e6),),
+)
+
+resuPostRocheToutSismY = POST_ROCHE(
+    SIGM_LIM="NON",
+    ZONE_ANALYSE=(_F(TOUT="OUI", GROUP_NO_ORIG="A"),),
+    MODELE=modele,
+    NOM_CHAM=("ROC1_ELNO", "ROC2_ELNO"),
+    CARA_ELEM=cara_elem,
+    CHAM_MATER=ch_mater,
+    RESU_MECA=(
+        _F(TYPE_CHAR="POIDS", CHAM_GD=poids_propre_champ_neg),
+        _F(
+            TYPE_CHAR="DILAT_THERM",
+            RESULTAT=dilatation_thermique,
+            INST=1,
+            CRITERE="RELATIF",
+            PRECISION=1e-6,
+        ),
+        _F(TYPE_CHAR="DDS", RESULTAT=deplacement_impose, INST=0, CRITERE="ABSOLU"),
+        _F(TYPE_CHAR="SISM_INER_SPEC", RESULTAT=sismique_dyn, DIRECTION="Y", TYPE_RESU="DYN"),
+        _F(TYPE_CHAR="SISM_INER_SPEC", RESULTAT=sismique_qs, DIRECTION="Y", TYPE_RESU="QS"),
+    ),
+    PRESSION=(_F(TOUT="OUI", VALE=1e6),),
+)
+
+resuPostRocheToutSismZ = POST_ROCHE(
+    SIGM_LIM="NON",
+    ZONE_ANALYSE=(_F(TOUT="OUI", GROUP_NO_ORIG="A"),),
+    MODELE=modele,
+    NOM_CHAM=("ROC1_ELNO", "ROC2_ELNO"),
+    CARA_ELEM=cara_elem,
+    CHAM_MATER=ch_mater,
+    RESU_MECA=(
+        _F(TYPE_CHAR="POIDS", CHAM_GD=poids_propre_champ_neg),
+        _F(
+            TYPE_CHAR="DILAT_THERM",
+            RESULTAT=dilatation_thermique,
+            INST=1,
+            CRITERE="RELATIF",
+            PRECISION=1e-6,
+        ),
+        _F(TYPE_CHAR="DDS", RESULTAT=deplacement_impose, INST=0, CRITERE="ABSOLU"),
+        _F(TYPE_CHAR="SISM_INER_SPEC", RESULTAT=sismique_dyn, DIRECTION="Z", TYPE_RESU="DYN"),
+        _F(TYPE_CHAR="SISM_INER_SPEC", RESULTAT=sismique_qs, DIRECTION="Z", TYPE_RESU="QS"),
+    ),
+    PRESSION=(_F(TOUT="OUI", VALE=1e6),),
+)
+
 
 # Avec "Coude":
 # VARIANTE = 'RCC_MRX' (défaut) + SIGM_ABAT='CODE' (avec Coude)
