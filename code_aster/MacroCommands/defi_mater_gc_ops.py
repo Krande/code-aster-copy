@@ -598,32 +598,32 @@ def Endo_Loca_TC(DMATER, args):
 
         fc_MPa = fc / unit_MPa
 
-        if type(MATER["E"]) != type(None):
+        if MATER["E"] is not None:
             young = float(MATER["E"])
         else:
             young = 21500 * unit_MPa * (fc_MPa / 10.0) ** (1.0 / 3.0)
 
-        if type(MATER["NU"]) != type(None):
+        if MATER["NU"] is not None:
             nu = float(MATER["NU"])
         else:
             nu = 0.2
 
-        if type(MATER["GF"]) != type(None):
+        if MATER["GF"] is not None:
             gf = float(MATER["GF"])
         else:
             gf = 73 * (unit_Pa * unit_m) * fc_MPa**0.18
 
-        if type(MATER["FT"]) != type(None):
+        if MATER["FT"] is not None:
             ft = float(MATER["FT"])
         else:
             ft = 0.3 * unit_MPa * (fc_MPa - 8) ** (2.0 / 3.0)
 
-        if type(MATER["SIGM_COMP_SEUIL"]) != type(None):
+        if MATER["SIGM_COMP_SEUIL"] is not None:
             sig0 = float(MATER["SIGM_COMP_SEUIL"])
         else:
             sig0 = 0.4 * fc
 
-        if type(MATER["COEF_ECRO_TRAC"]) != type(None):
+        if MATER["COEF_ECRO_TRAC"] is not None:
             p = float(MATER["COEF_ECRO_TRAC"])
         else:
             p = 3.2
@@ -684,7 +684,7 @@ def defi_mater_gc_ops(
     ENDO_LOCA_EXP=None,
     ENDO_LOCA_TC=None,
     BETON_GLRC=None,
-    **args
+    **args,
 ):
     """
     C'est : un parmi : ACIER  MAZARS  ENDO_FISS_EXP, ENDO_LOCA_EXP, ENDO_LOCA_TC, BETON_GLRC

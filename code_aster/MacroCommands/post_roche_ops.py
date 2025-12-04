@@ -1727,54 +1727,66 @@ class PostRocheCommon:
         """
         Calcul du champ de moment equivalent
         """
-        # X7 : coefficient d'abatement optimisé
 
-        def sign(x):
-            if x == 0.0:
-                return 1.0
-            else:
-                return x / abs(x)
-
-        fMT_abat = FORMULE(
+        fMT_abat_perm = FORMULE(
             NOM_PARA=(
-                "X1",  # MT du séisme QS (Mnope) Msi
-                "X4",  # MT du séisme DYN (msitmp) msi
                 "X7",  # MT du poids (Mperm)
                 "X10",  # MT de la dilatation thermique + dep imp non sismique (mperm)
                 "X13",  # MT du dds (mnope = ms)
                 "X16",  # gopt
-                "X17",  # gsopt
             ),
-            VALE="X7+X16*X10+sign(X7+X16*X10)*(abs(X1)+X16*abs(X13)+X17*abs(X4))",
-            sign=sign,
+            VALE="X7+X16*X10",
         )
 
-        fMFY_abat = FORMULE(
+        fMFY_abat_perm = FORMULE(
+            NOM_PARA=(
+                "X8",  # MFY du poids (Mperm)
+                "X11",  # MFY de la dilatation thermique + dep imp non sismique (mperm)
+                "X16",  # gopt
+            ),
+            VALE="X8+X16*X11",
+        )
+
+        fMFZ_abat_perm = FORMULE(
+            NOM_PARA=(
+                "X9",  # MFZ du poids (Mperm)
+                "X12",  # MFZ de la dilatation thermique + dep imp non sismique (mperm)
+                "X16",  # gopt
+            ),
+            VALE="X9+X16*X12",
+        )
+
+        fMT_abat_noperm = FORMULE(
+            NOM_PARA=(
+                "X1",  # MT du séisme QS (Mnope) Msi
+                "X4",  # MT du séisme DYN (msitmp) msi
+                "X13",  # MT du dds (mnope = ms)
+                "X16",  # gopt
+                "X17",  # gsopt
+            ),
+            VALE="abs(X1)+X16*abs(X13)+X17*abs(X4)",
+        )
+
+        fMFY_abat_noperm = FORMULE(
             NOM_PARA=(
                 "X2",  # MFY du séisme QS (Mnope) Msi
                 "X5",  # MFY du séisme DYN (msitmp) msi
-                "X8",  # MFY du poids (Mperm)
-                "X11",  # MFY de la dilatation thermique + dep imp non sismique (mperm)
                 "X14",  # MFY du dds (mnope = ms)
                 "X16",  # gopt
                 "X17",  # gsopt
             ),
-            VALE="X8+X16*X11+sign(X8+X16*X11)*(abs(X2)+X16*abs(X14)+X17*abs(X5))",
-            sign=sign,
+            VALE="abs(X2)+X16*abs(X14)+X17*abs(X5)",
         )
 
-        fMFZ_abat = FORMULE(
+        fMFZ_abat_noperm = FORMULE(
             NOM_PARA=(
                 "X3",  # MFZ du séisme QS (Mnope) Msi
                 "X6",  # MFZ du séisme DYN (msitmp) msi
-                "X9",  # MFZ du poids (Mperm)
-                "X12",  # MFZ de la dilatation thermique + dep imp non sismique (mperm)
                 "X15",  # MFZ du dds (mnope = ms)
                 "X16",  # gopt
                 "X17",  # gsopt
             ),
-            VALE="X9+X16*X12+sign(X9+X16*X12)*(abs(X3)+X16*abs(X15)+X17*abs(X6))",
-            sign=sign,
+            VALE="abs(X3)+X16*abs(X15)+X17*abs(X6)",
         )
 
         chFM_abat = CREA_CHAMP(
@@ -1784,8 +1796,15 @@ class PostRocheCommon:
             PROL_ZERO="OUI",
             AFFE=(
                 _F(
-                    NOM_CMP=("X1", "X2", "X3"),
-                    VALE_F=(fMT_abat, fMFY_abat, fMFZ_abat),
+                    NOM_CMP=("X1", "X2", "X3", "X4", "X5", "X6"),
+                    VALE_F=(
+                        fMT_abat_perm,
+                        fMFY_abat_perm,
+                        fMFZ_abat_perm,
+                        fMT_abat_noperm,
+                        fMFY_abat_noperm,
+                        fMFZ_abat_noperm,
+                    ),
                     **self.dicAllZones,
                 ),
             ),
@@ -1832,21 +1851,39 @@ class PostRocheCommon:
             ),
         )
 
-        # On évalue le champ de fonction créé à l'aide du champ utile que l'on vient de se donner
         chM_abat = CREA_CHAMP(
             OPERATION="EVAL", TYPE_CHAM="ELNO_NEUT_R", CHAM_F=chFM_abat, CHAM_PARA=(chUtil1)
         )
 
-        # Etape 3 : Calcul du moment équivalent
+        # Etape 3 : Calcul du moment équivalent +
 
-        fM_equiv = FORMULE(NOM_PARA=("X1", "X2", "X3"), VALE="sqrt(X1**2 + X2**2 + X3**2)")
+        fM_equiv_perm = FORMULE(NOM_PARA=("X1", "X2", "X3"), VALE="sqrt(X1**2 + X2**2 + X3**2)")
+        fM_equiv_noperm = FORMULE(NOM_PARA=("X4", "X5", "X6"), VALE="sqrt(X4**2 + X5**2 + X6**2)")
+
+        fMT_abat = FORMULE(
+            NOM_PARA=("X1", "X4"), VALE="abs(X1)+abs(X4)"  # MT_abat_perm  # MT_abat_noperm
+        )
+
+        fMFY_abat = FORMULE(
+            NOM_PARA=("X2", "X5"), VALE="abs(X2)+abs(X5)"  # MFY_abat_perm  # MFY_abat_noperm
+        )
+
+        fMFZ_abat = FORMULE(
+            NOM_PARA=("X3", "X6"), VALE="abs(X3)+abs(X6)"  # MFZ_abat_perm  # MFZ_abat_noperm
+        )
 
         chFM_equiv = CREA_CHAMP(
             OPERATION="AFFE",
             TYPE_CHAM="ELNO_NEUT_F",
             MODELE=self.model,
             PROL_ZERO="OUI",
-            AFFE=(_F(NOM_CMP=("X1"), VALE_F=(fM_equiv), **self.dicAllZones),),
+            AFFE=(
+                _F(
+                    NOM_CMP=("X1", "X2", "X3", "X4", "X5"),
+                    VALE_F=(fM_equiv_perm, fM_equiv_noperm, fMT_abat, fMFY_abat, fMFZ_abat),
+                    **self.dicAllZones,
+                ),
+            ),
         )
 
         chMomentEquiv = CREA_CHAMP(
@@ -1859,8 +1896,18 @@ class PostRocheCommon:
             TYPE_CHAM="ELNO_NEUT_R",
             PROL_ZERO="OUI",
             ASSE=(
-                _F(CHAM_GD=chM_abat, TOUT="OUI", NOM_CMP=("X1", "X2", "X3")),
-                _F(CHAM_GD=chMomentEquiv, TOUT="OUI", NOM_CMP=("X1"), NOM_CMP_RESU=("X4",)),
+                _F(
+                    CHAM_GD=chM_abat,
+                    TOUT="OUI",
+                    NOM_CMP=("X1", "X2", "X3", "X4", "X5", "X6"),
+                    NOM_CMP_RESU=("X1", "X2", "X3", "X5", "X6", "X7"),
+                ),
+                _F(
+                    CHAM_GD=chMomentEquiv,
+                    TOUT="OUI",
+                    NOM_CMP=("X1", "X2", "X3", "X4", "X5"),
+                    NOM_CMP_RESU=("X4", "X8", "X9", "X10", "X11"),
+                ),
             ),
         )
 
@@ -1899,7 +1946,12 @@ class PostRocheCommon:
             TYPE_CHAM="ELNO_NEUT_R",
             PROL_ZERO="OUI",
             ASSE=(
-                _F(CHAM_GD=chM_abat, TOUT="OUI", NOM_CMP=("X1", "X2", "X3")),
+                _F(
+                    CHAM_GD=chM_abat,
+                    TOUT="OUI",
+                    NOM_CMP=("X9", "X10", "X11"),
+                    NOM_CMP_RESU=("X1", "X2", "X3"),
+                ),
                 _F(
                     CHAM_GD=self.chParams,
                     TOUT="OUI",
@@ -2119,8 +2171,8 @@ class PostRocheCommon:
                 _F(
                     CHAM_GD=chMomentEquivOpt,
                     TOUT="OUI",
-                    NOM_CMP=("X1", "X2", "X3", "X4"),
-                    NOM_CMP_RESU=("X10", "X11", "X12", "X13"),
+                    NOM_CMP=("X1", "X2", "X3", "X4", "X5", "X6", "X7", "X8"),
+                    NOM_CMP_RESU=("X10", "X11", "X12", "X13", "X14", "X15", "X16", "X17"),
                 ),
             ),
         )
