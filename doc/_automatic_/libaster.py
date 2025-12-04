@@ -6805,7 +6805,7 @@ class MeshPairing(DSWithCppPickling):
             nothing
         """
 
-    def compute(self, dist_pairing=-1.0, pair_tole=1e-08, area_tole=0.01):
+    def compute(self, dist_pairing=-1.0, pair_tole=1e-08, area_tole=1e-08):
         """Compute pairing
 
         Arguments:
