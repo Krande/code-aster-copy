@@ -679,7 +679,7 @@ class Coeur:
             MA.setGroupOfCells("GRIL_E", gril_e)
 
         if "LISPG" not in gno_names:
-            lispg = MA.getNodes(tuple(set(grids_lock, localNumbering=True)))
+            lispg = MA.getNodes(tuple(set(grids_lock)), localNumbering=True)
             MA.setGroupOfNodes("LISPG", lispg)
 
         for gname in ("T_GUIDE", "EBOSUP", "EBOINF", "CRAYON", "ELA", "DIL", "MAINTIEN"):
