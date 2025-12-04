@@ -29,6 +29,7 @@ module HHO_matrix_module
 #include "asterfort/writeMatrix.h"
 #include "asterfort/readMatrix.h"
 #include "blas/daxpy.h"
+#include "blas/dgemv.h"
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -56,13 +57,14 @@ module HHO_matrix_module
         procedure, pass :: copy => hhoMatriceCopy
         procedure, pass :: add => hhoMatriceAdd
         procedure, pass :: prune => hhoMatricePrune
+        procedure, pass :: dot => hhoMatriceDot
 !
     end type HHO_matrix
 !
     public   :: HHO_matrix
     private  :: hhoMatriceInit, hhoMatriceFree, hhoMatriceWrite, hhoMatriceSetValue
     private  :: hhoMatriceRead, hhoMatricePrint, hhoMatriceCopySymU, hhoMatriceCopy
-    private  :: hhoMatriceAdd, hhoMatricePrune
+    private  :: hhoMatriceAdd, hhoMatricePrune, hhoMatriceDot
 !
 contains
 !---------------------------------------------------------------------------------------------------
@@ -291,6 +293,46 @@ contains
         do j = 1, this%ncols
             call daxpy_1(this%nrows, alpha, mat%m(:, j), this%m(:, j))
         end do
+!
+    end subroutine
+!
+!===================================================================================================
+!
+!===================================================================================================
+!
+    subroutine hhoMatriceDot(this, x, y, alpha_, beta_)
+!
+        implicit none
+!
+        class(HHO_matrix), intent(in) :: this
+        real(kind=8), intent(in) :: x(*)
+        real(kind=8), intent(in), optional :: alpha_, beta_
+        real(kind=8), intent(inout) :: y(*)
+!
+! --------------------------------------------------------------------------------------------------
+!
+!   y = beta*y+ alpha*A*x
+! --------------------------------------------------------------------------------------------------
+!
+        blas_int :: b_n, b_m, b_lda
+        blas_int, parameter :: one = to_blas_int(1)
+        real(kind=8) :: alpha, beta
+!
+        alpha = 1.d0
+        beta = 0.d0
+!
+        if (present(alpha_)) then
+            alpha = alpha_
+        end if
+        if (present(beta_)) then
+            beta = alpha_
+        end if
+!
+        b_lda = to_blas_int(this%max_nrows)
+        b_m = to_blas_int(this%nrows)
+        b_n = to_blas_int(this%ncols)
+        call dgemv('N', b_m, b_n, alpha, this%m, &
+                   b_lda, x, one, beta, y, one)
 !
     end subroutine
 !

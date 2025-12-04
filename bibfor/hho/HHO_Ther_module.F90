@@ -185,7 +185,7 @@ contains
 !
 ! ----- compute G_curr = gradrec * temp_curr
 !
-        call hho_dgemv_N(1.d0, gradrec, temp_curr, 0.0, G_curr_coeff)
+        call gradrec%dot(temp_curr, G_curr_coeff)
 !
 ! ----- Loop on quadrature point
 !

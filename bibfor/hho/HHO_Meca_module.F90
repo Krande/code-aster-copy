@@ -709,8 +709,7 @@ contains
 ! --- Compute local contribution
 !
         if (hhoCS%l_largestrain) then
-            call hho_dgemv_N(1.d0, hhoMecaState%grad, hhoMecaState%depl_curr, 0.d0, &
-                             G_curr_coeff)
+            call hhoMecaState%grad%dot(hhoMecaState%depl_curr, G_curr_coeff)
             gbs_curr = gbs
         else
             gbs_curr = gbs_sym
