@@ -56,6 +56,8 @@ class HHO {
     /** @brief Default constructor disabled */
     HHO( void ) = delete;
 
+    HHO( const ModelPtr &model );
+
     /**
      * @brief Constructor
      * @param PhysicalProblemPtr study

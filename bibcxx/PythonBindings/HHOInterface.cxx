@@ -26,6 +26,7 @@ void exportHHOToPython( py::module_ &mod ) {
 
     py::class_< HHO, HHO::HHOPtr >( mod, "HHO" )
         .def( py::init( &initFactoryPtr< HHO, PhysicalProblemPtr > ) )
+        .def( py::init( &initFactoryPtr< HHO, ModelPtr > ) )
         // fake initFactoryPtr: not a DataStructure
         .def( define_pickling< HHO >() )
         .def( "getModel", &HHO::getModel,

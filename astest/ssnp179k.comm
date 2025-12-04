@@ -216,11 +216,7 @@ TEST_RESU(
 
 
 # define discrete object
-phys_pb = CA.PhysicalProblem(model, fieldmat)
-phys_pb.addDirichletBC(depl)
-phys_pb.computeDOFNumbering()
-
-hho = CA.HHO(phys_pb)
+hho = CA.HHO(model)
 
 reac_noda = resnonl.getField("REAC_NODA", 1.0, "INST")
 # use only face DoFs

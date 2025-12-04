@@ -23,6 +23,8 @@
 #include "DataFields/FieldConverter.h"
 #include "Discretization/Calcul.h"
 
+HHO::HHO( const ModelPtr &model ) : HHO( std::make_shared< PhysicalProblem >( model, nullptr ) ) {};
+
 ModelPtr HHO::getModel() const {
     if ( _phys_problem ) {
         return _phys_problem->getModel();
