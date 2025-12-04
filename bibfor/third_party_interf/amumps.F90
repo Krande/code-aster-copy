@@ -88,7 +88,7 @@ subroutine amumps(action, kxmps, rsolu, vcine, nbsol, &
     character(len=1) :: rouc, type, prec
     character(len=3) :: matd
     character(len=5) :: etam, klag2
-    character(len=8) :: ktypr
+    character(len=8) :: ktypr, actionz
     character(len=12) :: usersm, k12bid
     character(len=14) :: nonu
     character(len=19) :: nomat
@@ -127,6 +127,9 @@ subroutine amumps(action, kxmps, rsolu, vcine, nbsol, &
     ASSERT((rouc .eq. 'R') .and. (prec .eq. 'S'))
     smpsk => smps(kxmps)
     iret = 0
+    actionz = " "
+    ASSERT(len(action) <= 8)
+    actionz(1:len(action)) = action
 !
 ! --- MUMPS PARALLELE DISTRIBUE ?
     call jeveuo(nomat//'.REFA', 'L', vk24=refa)
@@ -153,7 +156,7 @@ subroutine amumps(action, kxmps, rsolu, vcine, nbsol, &
                   (slvk(5) (1:4) .eq. 'AUTO')) .and. (.not. l_parallel_matrix) .and. (.not. lmd))
     end if
 !
-    if (action(1:5) .ne. 'DETR_') then
+    if (actionz(1:5) .ne. 'DETR_') then
         call jeveuo(nosolv//'.SLVK', 'E', vk24=slvk)
         call jeveuo(nosolv//'.SLVR', 'L', vr=slvr)
         call jeveuo(nosolv//'.SLVI', 'E', vi=slvi)
@@ -203,7 +206,7 @@ subroutine amumps(action, kxmps, rsolu, vcine, nbsol, &
 !
 !     ------------------------------------------------
 !     ------------------------------------------------
-    if (action(1:6) .eq. 'PRERES') then
+    if (actionz(1:6) .eq. 'PRERES') then
 !     ------------------------------------------------
 !     ------------------------------------------------
 !
@@ -473,7 +476,7 @@ subroutine amumps(action, kxmps, rsolu, vcine, nbsol, &
 !
 !     ------------------------------------------------
 !     ------------------------------------------------
-    else if (action(1:6) .eq. 'RESOUD') then
+    else if (actionz(1:6) .eq. 'RESOUD') then
 !     ------------------------------------------------
 !     ------------------------------------------------
 !
@@ -553,7 +556,7 @@ subroutine amumps(action, kxmps, rsolu, vcine, nbsol, &
 !
 !     ------------------------------------------------
 !     ------------------------------------------------
-    else if (action(1:5) .eq. 'DETR_') then
+    else if (actionz(1:5) .eq. 'DETR_') then
 !     ------------------------------------------------
 !     ------------------------------------------------
 !

@@ -122,8 +122,8 @@ subroutine amumph(actionz, solvez, matasz, rsolu, csolu, &
     action = actionz
     iretz = 0
     call infdbg('SOLVEUR', ifm, niv)
-    if ((action(1:6) .ne. 'PRERES') .and. (action(1:6) .ne. 'RESOUD') .and. &
-        (action(1:8) .ne. 'DETR_OCC') .and. (action(1:8) .ne. 'DETR_MAT')) then
+    if ((actionz(1:6) .ne. 'PRERES') .and. (actionz(1:6) .ne. 'RESOUD') .and. &
+        (actionz(1:8) .ne. 'DETR_OCC') .and. (actionz(1:8) .ne. 'DETR_MAT')) then
         ASSERT(.false.)
     end if
 !
@@ -222,7 +222,7 @@ subroutine amumph(actionz, solvez, matasz, rsolu, csolu, &
 !
     prec = ' '
     lpreco = .false.
-    if (action(1:8) .eq. 'DETR_OCC') then
+    if (actionz(1:8) .eq. 'DETR_OCC') then
         ASSERT(solveu .ne. ' ')
     end if
     call jeexin(solveu//'.SLVK', ibid)
@@ -239,7 +239,7 @@ subroutine amumph(actionz, solvez, matasz, rsolu, csolu, &
             else
 ! --- ON A OUBLIE UNE INITIALISATION AMONT DE MIXPRE DS .SLVK
 !     SAUF POUR CMDE ECLATEE
-                if (action(1:5) .ne. 'DETR_') then
+                if (actionz(1:5) .ne. 'DETR_') then
                     ASSERT(.false.)
                 end if
             end if
@@ -250,7 +250,7 @@ subroutine amumph(actionz, solvez, matasz, rsolu, csolu, &
         end if
     else
 ! --- ON DOIT AVOIR UNE SD_SOLVEUR.SLVK POUR CETTE OPTION
-        if ((action(1:8) .eq. 'DETR_OCC')) then
+        if ((actionz(1:8) .eq. 'DETR_OCC')) then
             ASSERT(.false.)
         end if
     end if
@@ -259,7 +259,7 @@ subroutine amumph(actionz, solvez, matasz, rsolu, csolu, &
     do k = 1, nmxins
 ! ----- ASTUCE POUR DETRUIRE TOUTES LES OCCURENCES (QQES SOIT LEUR
 !       ARITHMETIQUE) ASSOCIEES A UNE MATRICE SI 'DETR_MAT'
-        if (action(1:8) .eq. 'DETR_MAT') prec = precs(k)
+        if (actionz(1:8) .eq. 'DETR_MAT') prec = precs(k)
         if ((nomats(k) .eq. matas) .and. ((nonus(k) .eq. nu) .or. lpreco) .and. &
             (roucs(k) .eq. rouc) .and. ((precs(k) .eq. prec) .or. lpreco)) then
             if (rouc .eq. 'R') then
@@ -293,8 +293,8 @@ subroutine amumph(actionz, solvez, matasz, rsolu, csolu, &
             end if
         end if
     end do
-    if (action(1:5) .eq. 'DETR_') goto 999
-    if (action(1:6) .eq. 'RESOUD') call utmess('F', 'FACTOR_61')
+    if (actionz(1:5) .eq. 'DETR_') goto 999
+    if (actionz(1:6) .eq. 'RESOUD') call utmess('F', 'FACTOR_61')
 !
 !        Y-A-T-IL ENCORE UNE PLACE LIBRE ?
     do k = 1, nmxins
@@ -310,7 +310,7 @@ subroutine amumph(actionz, solvez, matasz, rsolu, csolu, &
 !
 !     2. QUELQUES VERIFICATIONS ET PETITES ACTIONS :
 !     ----------------------------------------------
-    if (action(1:6) .eq. 'PRERES') then
+    if (actionz(1:6) .eq. 'PRERES') then
         call dismoi('NOM_NUME_DDL', matas, 'MATR_ASSE', repk=nu)
         ASSERT(solveu .ne. ' ')
         ASSERT(nomats(kxmps) .eq. ' ')
@@ -337,7 +337,7 @@ subroutine amumph(actionz, solvez, matasz, rsolu, csolu, &
         call jeveuo(nosolv//'.SLVI', 'L', vi=slvi)
         nprec = slvi(1)
 !
-    else if (action(1:6) .eq. 'RESOUD') then
+    else if (actionz(1:6) .eq. 'RESOUD') then
         ASSERT(nbsol .ge. 1)
         nomat = nomats(kxmps)
         nosolv = nosols(kxmps)
@@ -356,7 +356,7 @@ subroutine amumph(actionz, solvez, matasz, rsolu, csolu, &
             ASSERT(nonu .eq. nu)
         end if
 !
-    else if (action(1:5) .eq. 'DETR_') then
+    else if (actionz(1:5) .eq. 'DETR_') then
         nomat = nomats(kxmps)
         ASSERT(matas .ne. ' ')
 !
@@ -399,7 +399,7 @@ subroutine amumph(actionz, solvez, matasz, rsolu, csolu, &
 ! --- NETTOYAGE DES OCCURENCES MUMPS EN MODE GESTION_MEMOIRE='EVAL' POUR
 ! --- PAR EXEMPLE NE PAS DEPASSER 5 OCCURENCES SIMULTANNEES EN CAS
 ! --- D'USAGE DU MECANISME TRY_EXCEPT PYTHON
-    if ((action(1:6) .eq. 'PRERES') .and. (slvk(9) (1:4) .eq. 'EVAL')) then
+    if ((actionz(1:6) .eq. 'PRERES') .and. (slvk(9) (1:4) .eq. 'EVAL')) then
         if (rouc .eq. 'R') then
             if (prec .eq. 'S') then
                 call amumps('DETR_OCC', kxmps, rsolu, vcine, nbsol, &
@@ -421,7 +421,7 @@ subroutine amumph(actionz, solvez, matasz, rsolu, csolu, &
     end if
 !
 ! --- GESTION DES CODES RETOUR EN CAS DE DETECTION DE SINGULARITES
-    if (action(1:6) .eq. 'PRERES') then
+    if (actionz(1:6) .eq. 'PRERES') then
         ASSERT((iretz .eq. 0) .or. (iretz .eq. 1) .or. (iretz .eq. 2))
 ! --- ATTENTION: PARAMETRE DEVELOPPEUR A DECOMMENTER POUR SORTIR LA MATRICE ET LE RHS
 ! --- NON PAS SUR LE PREMIER SYSTEME RENCONTRE (CF. DEBUT DU FICHIER) MAIS SUR LE DERNIER
