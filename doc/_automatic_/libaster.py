@@ -16910,8 +16910,13 @@ class HHO:
     def __getstate__(self):
         pass
 
-    def __init__(self, arg0):
-        pass
+    def __init__(self, *args, **kwargs):
+        """Overloaded function.
+
+        1. __init__(self: libaster.HHO, arg0: libaster.PhysicalProblem) -> None
+
+        2. __init__(self: libaster.HHO, arg0: libaster.Model) -> None
+        """
 
     def __setstate__(self, arg0):
         pass

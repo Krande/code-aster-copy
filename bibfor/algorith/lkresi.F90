@@ -59,7 +59,7 @@ subroutine lkresi(typmod, nmat, materf, timed, timef, &
     character(len=8) :: typmod
 !
     integer(kind=8) :: i, retcom, val, varv
-    real(kind=8) :: zero, vint(7), devsig(6), i1, ucrip, seuilp
+    real(kind=8) :: zero, vint(nvi), devsig(6), i1, ucrip, seuilp
     real(kind=8) :: dt, seuilv, depsv(6), dgamv
     real(kind=8) :: dxiv, xivmax, xippic, seuivm, ucriv
     real(kind=8) :: dsdenl(6, 6), kk, mu, dhds(6), ds2hds(6)

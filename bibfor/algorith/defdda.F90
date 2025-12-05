@@ -16,7 +16,7 @@
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
 !
-subroutine defdda(nbec, nbcmp, numgd, ioc, motcle, &
+subroutine defdda(nbec, nbcmp, numgd, ioc, motclez, &
                   iopt, icod)
 !    P. RICHARD     DATE 18/02/91
 !-----------------------------------------------------------------------
@@ -53,9 +53,9 @@ subroutine defdda(nbec, nbcmp, numgd, ioc, motcle, &
 #include "asterfort/wkvect.h"
 !
     character(len=8) :: nomcou
-    character(len=*) :: motcle
+    character(len=*) :: motclez
     character(len=24) :: temddl, temidc
-    character(len=24) :: valk
+    character(len=24) :: valk, motcle
     integer(kind=8) :: nbec, icod(nbec)
     aster_logical :: ok, okg
 !-----------------------------------------------------------------------
@@ -68,6 +68,7 @@ subroutine defdda(nbec, nbcmp, numgd, ioc, motcle, &
 !
     call jemarq()
 !
+    motcle = motclez
     if (motcle(1:9) .eq. 'DDL_ACTIF') then
         nbval = 0
     else
@@ -112,7 +113,7 @@ subroutine defdda(nbec, nbcmp, numgd, ioc, motcle, &
     end if
 !
     do i = 1, nbval
-        nomcou = zk80(ltddl+i-1)
+        nomcou = zk80(ltddl+i-1) (1:8)
         ok = .true.
         do j = 1, nbcmp
             if (nomcou .eq. zk8(llncmp+j-1)) then
