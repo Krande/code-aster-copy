@@ -645,7 +645,7 @@ class ExtendedParallelMesh:
             mesh_p.readMedFile(filename, deterministic=deterministic, ghost=ghost, verbose=info - 1)
             return mesh_p.refine(refine_1, info)
 
-    def getNodes(self, group_name=[], localNumbering=True, same_rank=None):
+    def getNodes(self, group_name=[], localNumbering=False, same_rank=None):
         """Return the list of the indexes of the nodes that belong to a group of nodes.
 
         Arguments:
@@ -663,7 +663,7 @@ class ExtendedParallelMesh:
 
         return self._getNodes(force_list(group_name), localNumbering, val[same_rank])
 
-    def getNodesFromCells(self, group_name, localNumbering=True, same_rank=None):
+    def getNodesFromCells(self, group_name, localNumbering=False, same_rank=None):
         """Returns the nodes indexes of a group of cells.
 
         Arguments:

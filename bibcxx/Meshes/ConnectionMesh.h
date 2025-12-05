@@ -107,13 +107,13 @@ class ConnectionMesh : public BaseMesh {
      * @param same_rank keep or not the nodes owned by the current domain
      * @return list of nodes indexes
      */
-    VectorLong getNodesFromCells( const std::string, const bool localNumbering = true,
+    VectorLong getNodesFromCells( const std::string, const bool localNumbering = false,
                                   const ASTERINTEGER same_rank = PythonBool::None ) const;
 
-    VectorLong getNodesFromCells( const VectorString &, const bool localNumbering = true,
+    VectorLong getNodesFromCells( const VectorString &, const bool localNumbering = false,
                                   const ASTERINTEGER same_rank = PythonBool::None ) const;
 
-    VectorLong getNodesFromCells( const VectorLong &cells, const bool localNumbering = true,
+    VectorLong getNodesFromCells( const VectorLong &cells, const bool localNumbering = false,
                                   const ASTERINTEGER same_rank = PythonBool::None ) const;
 
     /**

@@ -412,7 +412,7 @@ class SimpleFieldOnNodes : public DataField {
 
     void setValues( const std::map< std::string, ValueType > &values,
                     const VectorString &groupsOfNodes = {} ) {
-        setValues( values, this->getMesh()->getNodes( groupsOfNodes ) );
+        setValues( values, this->getMesh()->getNodes( groupsOfNodes, true ) );
     }
 
     /**
@@ -561,7 +561,7 @@ class SimpleFieldOnNodes : public DataField {
 
         VectorLong nodes_ = nodes;
         if ( nodes_.empty() ) {
-            nodes_ = _mesh->getNodes();
+            nodes_ = _mesh->getNodes( VectorString(), true );
         }
 
         VectorString list_cmp;

@@ -30,7 +30,7 @@ test = CA.TestCase()
 
 MA = CA.ParallelMesh.buildCube(refine=2)
 
-nodes_load = MA.getNodesFromCells("RIGHT")
+nodes_load = MA.getNodesFromCells("RIGHT", True)
 MA.setGroupOfNodes("RIGHT", nodes_load)
 
 ACIER = DEFI_MATERIAU(ELAS=_F(E=210000e6, NU=0.3))

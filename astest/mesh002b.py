@@ -34,7 +34,7 @@ pMesh = ret[0]
 # Test node gathering while partitioning mesh
 ret2 = splitMeshAndFieldsFromMedFile("fort.20", deterministic=True, nodeGrpToGather=[["ToGather"]])
 pMesh2 = ret2[0]
-nodeList = pMesh2.getNodes("ToGather")
+nodeList = pMesh2.getNodes("ToGather", localNumbering=True)
 nodeOwner = pMesh2.getNodesOwner()
 if len(nodeList) != 0:
     masterNodeOwner = nodeOwner[nodeList[0]]

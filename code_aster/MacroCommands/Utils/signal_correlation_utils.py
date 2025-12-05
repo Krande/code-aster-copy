@@ -135,7 +135,7 @@ def CALC_COHE(puls, **kwargs):
 def get_group_nom_coord(group_inter, nom_mail):
     print("in signal_correlation_utils")
     # no des noeuds
-    liste_no_interf = nom_mail.getNodes(group_inter)
+    liste_no_interf = nom_mail.getNodes(group_inter, localNumbering=True)
     # nom des noeuds
     liste_nom_no_int = [str(node + 1) for node in liste_no_interf]
     COORD_3D = nom_mail.getCoordinates().getValues()

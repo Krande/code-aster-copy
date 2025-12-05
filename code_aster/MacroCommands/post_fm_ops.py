@@ -42,7 +42,7 @@ class PostFM:
     def __init__(self, resultat, inst, temp, g_elas, g_plas, group_no):
         model = resultat.getModel()
         mesh = model.getMesh()
-        nodes = mesh.getNodes(group_no)
+        nodes = mesh.getNodes(group_no, localNumbering=True)
         # on vérifie qu'il y a un unique noeud dans le groupe de noeud => ERREUR
         if len(nodes) != 1:
             UTMESS("F", "POSTFM_1", vali=len(nodes), valk=group_no)

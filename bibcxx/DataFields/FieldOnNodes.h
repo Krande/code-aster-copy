@@ -508,7 +508,7 @@ class FieldOnNodes : public DataField, private AllowedFieldType< ValueType > {
 
         auto nbDofs = this->size();
 
-        auto nodes = this->getMesh()->getNodes( groupsOfNodes );
+        auto nodes = this->getMesh()->getNodes( groupsOfNodes, true );
         SetInt nodes_set;
         std::copy( nodes.begin(), nodes.end(), std::inserter( nodes_set, nodes_set.end() ) );
 

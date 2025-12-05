@@ -110,7 +110,7 @@ py::object getMedCouplingConversionData( const BaseMeshPtr &mesh ) {
 
     // Tri des groupes de noeuds avec shift sur l'indexe des noeuds
     for ( const auto &group_name : mesh->getGroupsOfNodes() ) {
-        for ( const auto &aster_node : mesh->getNodes( group_name ) ) {
+        for ( const auto &aster_node : mesh->getNodes( group_name, true ) ) {
             groups_n[group_name].push_back( aster_node );
         }
     }

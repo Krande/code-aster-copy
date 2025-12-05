@@ -150,9 +150,9 @@ sigelmoy(RESU_M, chfmu, "mgrplasfull")
 # TEST union des nodes de group_ma dans un seul group_no
 test = CA.TestCase()
 
-no_SSUP = set(M.getNodesFromCells("SSUP"))
-no_SINF = set(M.getNodesFromCells("SINF"))
-no_UNION = set(M.getNodes("SUNION"))
+no_SSUP = set(M.getNodesFromCells("SSUP", True))
+no_SINF = set(M.getNodesFromCells("SINF", True))
+no_UNION = set(M.getNodes("SUNION", True))
 no_SUP_INF = no_SSUP.union(no_SINF)
 test.assertEqual(no_SUP_INF, no_UNION)
 test.printSummary()

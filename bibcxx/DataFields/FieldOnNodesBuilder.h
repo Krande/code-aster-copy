@@ -66,11 +66,11 @@ FieldOnNodesPtrBuilder( const BaseMeshPtr mesh, const std::string &quantity,
     VectorLong nodes;
 
     if ( groupsOfCells.empty() || !groupsOfNodes.empty() ) {
-        nodes = mesh->getNodes( groupsOfNodes );
+        nodes = mesh->getNodes( groupsOfNodes, true );
     }
 
     if ( !groupsOfCells.empty() ) {
-        auto nodes2 = mesh->getNodesFromCells( groupsOfCells );
+        auto nodes2 = mesh->getNodesFromCells( groupsOfCells, true );
         nodes = set_union( nodes, nodes2 );
     }
 

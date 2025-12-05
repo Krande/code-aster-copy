@@ -158,10 +158,10 @@ class ParallelMesh : public BaseMesh {
      * @return list of Nodes
      */
 
-    VectorLong getNodes( const VectorString &names, const bool localNumbering = true,
+    VectorLong getNodes( const VectorString &names, const bool localNumbering = false,
                          const ASTERINTEGER same_rank = PythonBool::None ) const;
 
-    VectorLong getNodes( const std::string name = std::string(), const bool localNumbering = true,
+    VectorLong getNodes( const std::string name = std::string(), const bool localNumbering = false,
                          const ASTERINTEGER same_rank = PythonBool::None ) const;
 
     /**
@@ -215,13 +215,13 @@ class ParallelMesh : public BaseMesh {
      * @param same_rank keep or not the nodes owned by the current domain
      * @return list of Nodes
      */
-    VectorLong getNodesFromCells( const std::string name, const bool localNumbering = true,
+    VectorLong getNodesFromCells( const std::string name, const bool localNumbering = false,
                                   const ASTERINTEGER same_rank = PythonBool::None ) const;
 
-    VectorLong getNodesFromCells( const VectorString &names, const bool localNumbering = true,
+    VectorLong getNodesFromCells( const VectorString &names, const bool localNumbering = false,
                                   const ASTERINTEGER same_rank = PythonBool::None ) const;
 
-    VectorLong getNodesFromCells( const VectorLong &cells, const bool localNumbering = true,
+    VectorLong getNodesFromCells( const VectorLong &cells, const bool localNumbering = false,
                                   const ASTERINTEGER same_rank = PythonBool::None ) const;
 
     /** @brief Returns the number of joints */

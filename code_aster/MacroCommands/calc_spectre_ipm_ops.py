@@ -71,11 +71,16 @@ def calc_spectre_ipm_ops(
             if plancher["GROUP_NO"] is not None:
                 assert MAILLAGE is not None
                 if type(plancher["GROUP_NO"]) is str:
-                    noms_no = [str(n + 1) for n in MAILLAGE.getNodes(plancher["GROUP_NO"])]
+                    noms_no = [
+                        str(n + 1)
+                        for n in MAILLAGE.getNodes(plancher["GROUP_NO"], localNumbering=True)
+                    ]
                     liste_no = liste_no + noms_no
                 else:
                     for group_no in plancher["GROUP_NO"]:
-                        noms_no = [str(n + 1) for n in MAILLAGE.getNodes(group_no)]
+                        noms_no = [
+                            str(n + 1) for n in MAILLAGE.getNodes(group_no, localNumbering=True)
+                        ]
                         liste_no = liste_no + noms_no
         planch_nodes[plancher["NOM"]] = liste_no
         l_plancher.append(plancher["NOM"])

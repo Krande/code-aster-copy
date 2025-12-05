@@ -237,7 +237,7 @@ class PostBeremin:
 
             self._dictfondfiss = {}
             for group_no, nom_group_no in zip(self._l_mesh_group_no_2D, self._l_name_mesh_2D):
-                nodes = self._result.getMesh().getNodes(group_no)
+                nodes = self._result.getMesh().getNodes(group_no, localNumbering=True)
                 both = set(frontnodes).intersection(nodes)
                 both = list(both)
                 indexfrontnode = frontnodes.index(both[0])

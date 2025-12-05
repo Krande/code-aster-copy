@@ -56,7 +56,7 @@ def crea_grp_matiere(groupe, newgrp, iocc, m, __remodr, NOM_CHAM, __macou):
         )
     )
 
-    node_by_name = {str(node + 1): node for node in __macou.getNodes(groupe)}
+    node_by_name = {str(node + 1): node for node in __macou.getNodes(groupe, localNumbering=True)}
 
     # dictb=table initiale (contenant éventuellement des noeuds hors matière)
     dictb = __tab.EXTR_TABLE()
@@ -508,7 +508,7 @@ def get_coor(LIGN_COUPE, position, coord, mesh):
         group = LIGN_COUPE["GROUP_NO_" + position]
         if not mesh.hasGroupOfNodes(group):
             UTMESS("F", "POST0_13", valk=[group, mesh.getName()])
-        nodes = mesh.getNodes(group)
+        nodes = mesh.getNodes(group, localNumbering=True)
         if len(nodes) != 1:
             UTMESS("F", "POST0_27", valk=group, vali=len(nodes))
         node = nodes[0]
@@ -703,7 +703,7 @@ def macr_lign_coupe_ops(
             if not mesh.hasGroupOfNodes(group):
                 UTMESS("F", "POST0_13", valk=[group, mesh.getName()])
             l_coor_group = [group]
-            for node in mesh.getNodes(group):
+            for node in mesh.getNodes(group, localNumbering=True):
                 l_coor_group.append(
                     [coord.getNode(node).x(), coord.getNode(node).y(), coord.getNode(node).z()]
                 )
@@ -741,7 +741,7 @@ def macr_lign_coupe_ops(
             )
 
             l_coor_group = [group]
-            for node in __mailla.getNodes(group):
+            for node in __mailla.getNodes(group, localNumbering=True):
                 l_coor_group.append(
                     [coord.getNode(node).x(), coord.getNode(node).y(), coord.getNode(node).z()]
                 )

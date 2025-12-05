@@ -228,7 +228,7 @@ maillage = MA.createMedCouplingMesh()
 
 # ASTER
 coords = MA.getCoordinates().toNumpy()
-ngrp1 = MA.getNodesFromCells("couche1")
+ngrp1 = MA.getNodesFromCells("couche1", True)
 dx, dy, dz = coords[ngrp1].max(axis=0) - coords[ngrp1].min(axis=0)
 
 delta_z_1 = dz

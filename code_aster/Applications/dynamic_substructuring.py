@@ -238,7 +238,9 @@ class Interface:
                 lINodes += connect[cell]
             interfaceNodes1 = list(np.unique(np.array(lINodes)))
         else:
-            interfaceNodes1 = list(np.array(self.sub1.mesh.getNodes(self.name)))
+            interfaceNodes1 = list(
+                np.array(self.sub1.mesh.getNodes(self.name, localNumbering=True))
+            )
         if not self.sub2.mesh.hasGroupOfNodes(self.name):
             connect = self.sub2.mesh.getConnectivity()
             lCells = np.array(self.sub2.mesh.getCells(self.name))
@@ -247,7 +249,9 @@ class Interface:
                 lINodes += connect[cell]
             interfaceNodes2 = list(np.unique(np.array(lINodes)))
         else:
-            interfaceNodes2 = list(np.array(self.sub2.mesh.getNodes(self.name)))
+            interfaceNodes2 = list(
+                np.array(self.sub2.mesh.getNodes(self.name, localNumbering=True))
+            )
         interfaceNodes = np.array(interfaceNodes1 + interfaceNodes2)
         nInterfaceNodes = len(interfaceNodes)
 
@@ -386,7 +390,7 @@ class SubStructure:
         self.mesh = stiffness.getMesh()
         self.modes = modes
         coords = np.array(self.mesh.getCoordinates().getValues())
-        self.nodes = np.array(self.mesh.getNodes())
+        self.nodes = np.array(self.mesh.getNodes(localNumbering=True))
         coords = np.array(coords)
         Nb_no = len(self.nodes)
         self.coords = coords.reshape((Nb_no, 3))
