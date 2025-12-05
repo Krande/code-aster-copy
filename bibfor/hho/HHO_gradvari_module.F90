@@ -418,6 +418,12 @@ contains
 !
         end do
 !
+999     continue
+!
+! - SYNTHESE DES CODES RETOURS
+!
+        call codere(cod, hhoQuadCellRigi%nbQuadPoints, hhoComporState%codret)
+!
         call numGVMap(hhoCell, hhoData, mapMeca, mapVari, mapLagv)
         call hhoCalcStabCoeffMeca(hhoData, hhoComporState%fami, hhoMecaState%time_curr, &
                                   hhoQuadCellRigi)
@@ -480,12 +486,6 @@ contains
                              lhs_mm, lhs_mv, lhs_ml, lhs_vm, lhs_vv, &
                              lhs_vl, lhs_lm, lhs_lv, lhs_ll, lhs)
         end if
-!
-999     continue
-!
-! - SYNTHESE DES CODES RETOURS
-!
-        call codere(cod, hhoQuadCellRigi%nbQuadPoints, hhoComporState%codret)
 !
         call lhs_mm%free()
         call lhs_ll%free()
