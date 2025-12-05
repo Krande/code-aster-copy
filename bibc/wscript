@@ -283,7 +283,7 @@ def check_asan(self):
         return
     # there is only one profile.sh, so the flags must also be set for release
     # setup compilation flags
-    flags = ["-fsanitize=address", "-fno-omit-frame-pointer"]
+    flags = ["-fsanitize=address,undefined", "-fno-omit-frame-pointer"]
     for var in ("CFLAGS", "CXXFLAGS", "FCFLAGS"):
         self.start_msg(f"Setting AddressSanitizer {var}")
         self.env.append_unique(f"{var}_ASAN", flags)
@@ -297,7 +297,7 @@ def check_asan(self):
     self.env.append_unique("CONFIG_ENV_LD_PRELOAD", self.env["ASAN_PRELOAD"])
     self.start_msg("Setting default ASAN_OPTIONS")
     # to use the same defaults in catalo
-    self.env["ASAN_DEFAULT_OPTIONS"] = defaults = "detect_odr_violation=0,detect_leaks=0"
+    self.env["ASAN_DEFAULT_OPTIONS"] = defaults = "detect_odr_violation=1,detect_leaks=0"
     opts = os.environ.get("ASAN_OPTIONS", f"${{ASAN_OPTIONS:-{defaults}}}")
     self.env["CONFIG_ENV_ASAN_OPTIONS"] = opts
     self.end_msg(self.env["CONFIG_ENV_ASAN_OPTIONS"])
