@@ -695,8 +695,8 @@ MeshBalancer::findNodesAndElementsInNodesNeighborhood( const VectorInt &nodesLis
         VectorBool checkedElem( _mesh->getNumberOfCells(), false );
         VectorBool checkedNodes( _mesh->getNumberOfNodes(), false );
         const auto endPtr = reverseConnex.end();
-        const auto endGlob = g2LMap->end();
         if ( parallelMesh ) {
+            const auto endGlob = g2LMap->end();
             for ( const auto &nodeIdGlob : nodesListIn ) {
                 const auto locIter = g2LMap->find( nodeIdGlob );
                 if ( locIter == endGlob )
