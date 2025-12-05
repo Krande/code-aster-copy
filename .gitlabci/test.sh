@@ -98,13 +98,14 @@ done
 rm -f *.${MESS_EXT} *.code
 cd ..
 
-# nightly runs: archive results files
-if [ "${BUILDTYPE}" = "nightly" ] || [ "${BUILDTYPE}" = "nightly-coverage" ]; then
+# 'nightly*' runs: archive results files
+if [ "${BUILDTYPE:0:7}" = "nightly" ]; then
     cd results
 
     mc --insecure alias set minio/ ${MINIO_URL} ${MINIO_LOGIN} ${MINIO_PASSWD}
     tdir="${REFREV}"
     [ "${BUILDTYPE}" = "nightly-coverage" ] && tdir="coverage"
+    [ "${BUILDTYPE}" = "nightly-sanitize" ] && tdir="sanitize"
     dest=minio/codeaster/devops/ci-${OSNAME}/results/${tdir}/verification
     mc --insecure cp run_testcases.xml ${dest}/
     mc --insecure cp mess_files.tar.gz ${dest}/

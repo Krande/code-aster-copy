@@ -12,6 +12,13 @@ if [ "${BUILDTYPE}" = "nightly-coverage" ]; then
     fi
     opts+=( "--coverage" )
 fi
+if [ "${BUILDTYPE}" = "nightly-sanitize" ]; then
+    if [ "${ASTER_BUILD}" != "debug" ]; then
+        echo "ERROR: ASTER_BUILD must be set as 'debug'"
+        exit 4
+    fi
+    opts+=( "--enable-asan" )
+fi
 
 jobs=$(( ${NPROC_MAX:-8} / 2 ))
 
