@@ -639,7 +639,7 @@ contains
 ! --- We get the solution on the cell
 !
         call readVector('PTMPCHF', total_dofs, sol)
-        sol_T = sol(total_dofs-cbs+1:total_dofs)
+        sol_T(1:cbs) = sol(total_dofs-cbs+1:total_dofs)
 !
 ! --- init cell basis
 !
