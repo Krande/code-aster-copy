@@ -37,6 +37,7 @@ subroutine ptforp(itype, option, nomte, a, a2, &
 #include "asterf_types.h"
 #include "jeveux.h"
 #include "asterc/r8miem.h"
+#include "asterfort/assert.h"
 #include "asterfort/fointe.h"
 #include "asterfort/jevech.h"
 #include "asterfort/normev.h"
