@@ -202,25 +202,27 @@ test.assertSequenceEqual(mesh.getNodes(localNumbering=True), range(0, mesh.getNu
 test.assertSequenceEqual(mesh.getCells(), range(0, mesh.getNumberOfCells()))
 
 # do the same thing (compatibily with ParallelMesh)
-test.assertSequenceEqual(sorted(mesh.getNodes(localNumbering=True)),
-                         sorted(mesh.getNodes(localNumbering=True)))
 test.assertSequenceEqual(
-    sorted(mesh.getNodes(localNumbering=True)),
-    sorted(mesh.getNodes(localNumbering=True, same_rank=True))
-)
-test.assertSequenceEqual(sorted(mesh.getNodes(localNumbering=True)),
-                         sorted(mesh.getNodes(localNumbering=False)))
-test.assertSequenceEqual(
-    sorted(mesh.getNodes(localNumbering=True)),
-    sorted(mesh.getNodes(localNumbering=False, same_rank=True))
+    sorted(mesh.getNodes(localNumbering=True)), sorted(mesh.getNodes(localNumbering=True))
 )
 test.assertSequenceEqual(
     sorted(mesh.getNodes(localNumbering=True)),
-    sorted(mesh.getNodes(localNumbering=False, same_rank=False))
+    sorted(mesh.getNodes(localNumbering=True, same_rank=True)),
+)
+test.assertSequenceEqual(
+    sorted(mesh.getNodes(localNumbering=True)), sorted(mesh.getNodes(localNumbering=False))
 )
 test.assertSequenceEqual(
     sorted(mesh.getNodes(localNumbering=True)),
-    sorted(mesh.getNodes(localNumbering=True, same_rank=False))
+    sorted(mesh.getNodes(localNumbering=False, same_rank=True)),
+)
+test.assertSequenceEqual(
+    sorted(mesh.getNodes(localNumbering=True)),
+    sorted(mesh.getNodes(localNumbering=False, same_rank=False)),
+)
+test.assertSequenceEqual(
+    sorted(mesh.getNodes(localNumbering=True)),
+    sorted(mesh.getNodes(localNumbering=True, same_rank=False)),
 )
 
 medconn = mesh.getMedConnectivity()
@@ -264,7 +266,7 @@ test.assertTrue(mesh.hasGroupOfCells("Haut"))
 test.assertTrue(mesh.hasGroupOfCells("TEST_GMA"))
 test.assertSequenceEqual(mesh.getCells("TEST_GMA"), [0, 1])
 mesh.setGroupOfNodes("TEST_GNO", [14, 8])
-test.assertSequenceEqual(mesh.getNodes("TEST_GNO"v, localNumbering=True), [8, 14])
+test.assertSequenceEqual(mesh.getNodes("TEST_GNO", localNumbering=True), [8, 14])
 
 # refine the mesh
 mesh = mesh.refine(2)
@@ -459,8 +461,7 @@ test.assertSequenceEqual(
 )
 test.assertEqual(CA.Mesh.buildCube(refine=2).getNumberOfNodes(), 125)
 builder = CA.Mesh.buildCube()
-test.assertSequenceEqual(builder.getNodesFromCells("VOLUME", True),
-                         [0, 1, 2, 3, 4, 5, 6, 7])
+test.assertSequenceEqual(builder.getNodesFromCells("VOLUME", True), [0, 1, 2, 3, 4, 5, 6, 7])
 
 # from mesh builder - Cylinder
 builder = CA.Mesh.buildCylinder(refine=3)
@@ -474,7 +475,7 @@ test.assertEqual(CA.Mesh.buildCylinder(refine=2).getNumberOfNodes(), 1285)
 builder = CA.Mesh.buildCylinder()
 test.assertSequenceEqual(
     builder.getNodesFromCells("BOTTOM", True),
-    [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16]
+    [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16],
 )
 
 # from mesh builder -Square
