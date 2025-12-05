@@ -479,7 +479,7 @@ def main(argv=None):
                         exitcode = 0
                         continue
                     break
-            shutil.rmtree(expdir)
+            shutil.rmtree(expdir, ignore_errors=True)
             return exitcode
 
         if args.only_proc0 and procid != args.proc0id:
@@ -513,7 +513,7 @@ def main(argv=None):
     finally:
         if not args.wrkdir:
             os.chdir(osp.dirname(wrkdir))
-            shutil.rmtree(wrkdir)
+            shutil.rmtree(wrkdir, ignore_errors=True)
     return exitcode
 
 
