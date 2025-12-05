@@ -686,12 +686,12 @@ VectorLong ConnectionMesh::getNodesFromCells( const VectorLong &cells, const boo
 
 VectorLong ConnectionMesh::getNodesFromCells( const VectorString &names, const bool,
                                               const ASTERINTEGER ) const {
-    return getNodesFromCells( this->getCells( names ) );
+    return getNodesFromCells( this->getCells( names ), true );
 };
 
 VectorLong ConnectionMesh::getNodesFromCells( const std::string name, const bool,
                                               const ASTERINTEGER ) const {
-    return getNodesFromCells( this->getCells( name ) );
+    return getNodesFromCells( this->getCells( name ), true );
 };
 
 #endif /* ASTER_HAVE_MPI */

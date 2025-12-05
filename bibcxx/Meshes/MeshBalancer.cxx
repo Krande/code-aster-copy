@@ -942,7 +942,7 @@ void MeshBalancer::balanceGroups( BaseMeshPtr outMesh, const VectorLong &cellRen
         for ( const auto &name : toSendNode ) {
             mapNodesGrpNum[cmptNodes] = name;
             const auto &pair = integerShiftFromComponent< long int >( cmptNodes );
-            for ( const auto &id : _mesh->getNodes( name ) ) {
+            for ( const auto &id : _mesh->getNodes( name, true ) ) {
                 if ( ( *meshNodeOwner )[id] == rank ) {
                     ( *localNodeGroups0 )[id][pair.first] += 1UL << pair.second;
                 }
@@ -953,7 +953,7 @@ void MeshBalancer::balanceGroups( BaseMeshPtr outMesh, const VectorLong &cellRen
         for ( const auto &name : toSendNode ) {
             mapNodesGrpNum[cmptNodes] = name;
             const auto &pair = integerShiftFromComponent< long int >( cmptNodes );
-            for ( const auto &id : _mesh->getNodes( name ) ) {
+            for ( const auto &id : _mesh->getNodes( name, true ) ) {
                 const auto id2 = id - _range[0];
                 if ( id2 >= 0 && id2 < _range[1] ) {
                     ( *localNodeGroups0 )[id][pair.first] += 1UL << pair.second;
