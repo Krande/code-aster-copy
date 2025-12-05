@@ -301,6 +301,7 @@ def configure(self):
     self.recurse("bibfor")
     self.recurse("bibcxx")
     self.recurse("bibc")
+    self.check_asan()
 
     self.load("mathematics", tooldir="waftools")
     self.load("med_cfg", tooldir="waftools")
@@ -333,6 +334,11 @@ def build(self):
         self.fatal(
             'Call "waf build_debug" or "waf build_release", and read '
             "the comments in the wscript file!"
+        )
+    if self.variant == "release" and self.env["CFLAGS_ASAN"]:
+        self.fatal(
+            "The project was configured with '--enable-asan' option (AddressSanitizer). "
+            "Only the 'debug' variant is relevant."
         )
     if self.cmd.startswith("install"):
         # because we can't know which files are obsolete `rm *.py{,c,o}`

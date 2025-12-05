@@ -1,6 +1,6 @@
 #!/bin/bash
 
-jobs=${NPROC_MAX}
+jobs=${NPROC_MAX:-8}
 args=( "--clean" "--jobs=${jobs}" "$@" )
 if [ "${ASTER_BUILD}" = "debug" ]; then
     args+=( "--timefactor=16.0" )
@@ -46,11 +46,6 @@ if [ "${BUILDTYPE}" = "ci" ] && [ "${CI_JOB_NAME}" != "known_failures_test" ]; t
     args+=( "--exclude-testlist" ".gitlabci/known_failures-pleiade.list" )
 fi
 
-# keep only outputs for failed tests, except for nightly runs
-if [ "${BUILDTYPE}" = "ci" ]; then
-    args+=( "--only-failed-results" )
-fi
-
 run_ctest="./install/bin/run_ctest"
 if [ "${OSNAME}" = "win" ]; then
     export LANG=en_EN.UTF-8
@@ -89,12 +84,23 @@ if [ "${BUILDTYPE}" = "nightly-coverage" ]; then
     mv coverage.tgz results/
 fi
 
+printf "\ncreating archives {mess,code}_files.tar.gz... - $(date)\n"
+cd results
+tar czf mess_files.tar.gz *.${MESS_EXT}
+tar czf code_files.tar.gz *.code
+
+printf "\nkeeping output of failed tests in results/failures... - $(date)\n"
+mkdir failures
+failures=( $(sed -e 's/.*_//g' Testing/Temporary/LastTestsFailed.log 2> /dev/null) )
+for test in "${failures[@]}"; do
+    mv ${test}.${MESS_EXT} ${test}.code failures/
+done
+rm -f *.${MESS_EXT} *.code
+cd ..
+
 # nightly runs: archive results files
 if [ "${BUILDTYPE}" = "nightly" ] || [ "${BUILDTYPE}" = "nightly-coverage" ]; then
     cd results
-    tar czf mess_files.tar.gz *.${MESS_EXT}
-    tar czf code_files.tar.gz *.code
-    rm -f *.${MESS_EXT} *.code
 
     mc --insecure alias set minio/ ${MINIO_URL} ${MINIO_LOGIN} ${MINIO_PASSWD}
     tdir="${REFREV}"
@@ -106,11 +112,6 @@ if [ "${BUILDTYPE}" = "nightly" ] || [ "${BUILDTYPE}" = "nightly-coverage" ]; th
     [ -f coverage.tgz ] && mc --insecure cp coverage.tgz ${dest}/
 
     cd ..
-fi
-
-# weekly runs: coverage of keywords
-if [ "$(date +%u)" = "${WEEKLY_RUN}" ] && [ "${OSNAME}" = "debian-12" ]; then
-    .gitlabci/coverage.sh . install results
 fi
 
 exit ${iret}

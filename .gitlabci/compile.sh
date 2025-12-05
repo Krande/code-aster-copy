@@ -2,7 +2,7 @@
 
 echo "+ compiling..."
 
-opts=( "--prefix=./install" "--without-repo" )
+opts=( "--prefix=./install" )
 [ -f data-src/README ] && opts+=( "--with-data=data-src" )
 
 if [ "${BUILDTYPE}" = "nightly-coverage" ]; then
@@ -13,7 +13,7 @@ if [ "${BUILDTYPE}" = "nightly-coverage" ]; then
     opts+=( "--coverage" )
 fi
 
-jobs=$(( ${NPROC_MAX} / 2 ))
+jobs=$(( ${NPROC_MAX:-8} / 2 ))
 
 if [ "${OSNAME}" != "win" ]; then
     ./configure "${opts[@]}"

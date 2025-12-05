@@ -28,6 +28,7 @@
 #:  ASTER_BUILD     Build variant 'mpi', 'debug' (default: %ASTER_BUILD%)
 #:  DEFAULT         Default selected target (default: %DEFAULT%)
 #:  OPTS            Options passed to waf commands, example OPTS='-p'
+#:  CLEAN_PREREQ	For distclean, set =1 to remove codeaster-prerequisites from build/
 #:
 #:With all prerequisites well configured (example in a up-to-date container) you may run:
 #:      ./configure
@@ -122,7 +123,11 @@ doc:
 
 distclean: ##- perform a distclean of the build directory.
 	./waf_$(ASTER_BUILD) distclean
-	rm -rf build/codeaster-prerequisites-*
+	@if [ "$(CLEAN_PREREQ)" = "1" ]; then \
+		rm -rf build/codeaster-prerequisites-* ; \
+	else \
+	    echo "INFO: use 'make distclean CLEAN_PREREQ=1' to remove prerequisites" ; \
+	fi
 
 install-tests:
 	$(MAKE) fast OPTS="$(OPTS) --install-tests"

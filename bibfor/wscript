@@ -51,7 +51,7 @@ def build(self):
     env = self.all_envs[self.variant]
     get_srcs = self.path.get_src().ant_glob
 
-    use = ["BIBFOR", "MED", "PETSC", "MUMPS", "MATH", "NUMPY"]
+    use = ["BIBFOR", "MED", "PETSC", "MUMPS", "MATH", "NUMPY", "ASAN"]
     if self.env.BUILD_OPENMP:
         use.append("OPENMP")
 
@@ -466,9 +466,6 @@ def check_optimization_fcflags(self):
     if self.options.enable_coverage:
         flags.append("--coverage")
         self.env.append_unique("LINKFLAGS", "--coverage")
-    if self.options.enable_asan:
-        flags.extend(["-fsanitize=address", "-fno-omit-frame-pointer"])
-        self.env.append_unique("LINKFLAGS", ["-fsanitize=address", "-fno-omit-frame-pointer"])
     self.env.append_unique("FCFLAGS", flags)
     self.end_msg(flags)
 

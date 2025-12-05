@@ -380,7 +380,7 @@ def env2dict(self, src):
     if env["WAFBUILD_ENV"]:
         with open(env["WAFBUILD_ENV"][0]) as fobj:
             dico["BUILD_ENV"] = fobj.read()
-    dico["CONFIG_ENV"] = config_env()
+    dico["CONFIG_ENV"] = config_env(env)
     dico["addmem"] = env["addmem"]
     dico["srctest"] = os.linesep.join(
         [
@@ -821,16 +821,19 @@ def is_python_wrapped(interp):
     return wrapped
 
 
-def config_env():
+def config_env(env):
     """Return the `CONFIG_ENV_*` variables to be exported.
 
     Returns:
         str: exported variables.
     """
     lines = []
-    for var, value in os.environ.items():
+    items = list(os.environ.items())
+    items.extend(list([(var, env[var]) for var in env.keys()]))
+    for var, value in items:
         if not var.startswith("CONFIG_ENV_"):
             continue
+        value = "".join(value)
         var = re.sub("^CONFIG_ENV_", "", var)
         lines.append(f'export {var}="{value}"')
     return os.linesep.join(lines)

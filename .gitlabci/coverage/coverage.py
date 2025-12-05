@@ -12,8 +12,8 @@ import pickle
 import re
 import sys
 import time
-from shutil import copyfile
 from pathlib import Path
+from shutil import copyfile
 
 from .features import Features
 
@@ -134,7 +134,12 @@ class CoverageAnalysis:
         return test_long
 
     def check_diff(self):
-        """Check code coverage evolution since previous analysis."""
+        """Check code coverage evolution since previous analysis
+        (mixed with the report).
+
+        Returns:
+            int: number of uncovered features.
+        """
         last = self.result_file("tested", self._previous)
         if osp.exists(last):
             with open(last, "rb") as fpick:
@@ -142,7 +147,7 @@ class CoverageAnalysis:
                 prev_tested = pickle.load(fpick)
         else:
             print(f"WARNING: can not find previous analysis ({last})")
-            return
+            return -1
 
         vers = self._features.get_version()
         new = self._all.difference(prev_all)
@@ -155,6 +160,7 @@ class CoverageAnalysis:
         self.report()
         self.report("1. Anciennes fonctionnalités :")
         lst = set(prev_tested.keys()).difference(now_tested).difference(removed)
+        nberr = len(lst)
         self.report()
         self.report(f"- Anciennes fonctionnalités qui ne sont plus testées : {len(lst)}")
         # self.report("(nom du test le plus court qui vérifiait cette fonctionnalité)")
@@ -164,6 +170,7 @@ class CoverageAnalysis:
         self.report()
         self.report(f"2. Nouvelles fonctionnalités : {len(new)}")
         lst = new.difference(now_tested)
+        nberr += len(lst)
         self.report()
         self.report(f"- Nouvelles fonctionnalités qui ne sont pas testées : {len(lst)}")
         self._show_grouped(lst)
@@ -190,9 +197,11 @@ class CoverageAnalysis:
             )
             for feature in sorted(lst):
                 self._show(feature, lst)
+        return nberr
 
     def to_be_tested(self):
         """Build the list of all features."""
+        self.log("INFO: extracting features...")
         self._all = self._features.get_all()
 
     def parse(self):
@@ -342,14 +351,14 @@ def _join(parent, base):
     return parent + "/" + base
 
 
-def main(argv=None):
-    """Execute coverage.
+def parse_args(argv=None):
+    """Parse arguments.
 
     Arguments:
         argv (list, optional): Command line arguments.
 
     Returns:
-        CoverageAnalysis: object.
+        Namespace: arguments namespace.
     """
     # command arguments parser
     parser = argparse.ArgumentParser(
@@ -401,8 +410,12 @@ def main(argv=None):
     )
 
     argv = argv or sys.argv[1:]
-    args = parser.parse_args(argv)
+    return parser.parse_args(argv)
 
+
+def main(argv=None):
+    """Execute coverage analysis."""
+    args = parse_args()
     os.makedirs(args.wrkdir, exist_ok=True)
     cov = CoverageAnalysis(
         root=args.wrkdir,
@@ -415,12 +428,12 @@ def main(argv=None):
         verbose=args.verbose,
     )
     cov.check()
-    cov.check_diff()
+    nberrors = cov.check_diff()
     if args.save:
         cov.save()
     if args.savetxt:
         cov.savetxt()
-    return cov
+    sys.exit(0 if nberrors == 0 else 1)
 
 
 if __name__ == "__main__":

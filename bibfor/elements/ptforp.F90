@@ -258,10 +258,12 @@ subroutine ptforp(itype, option, nomte, a, a2, &
         global = zk8(lforc+6) .eq. 'GLOBAL'
 !       Vitesses
         call tecach('NNO', 'PVITPLU', 'L', iret, iad=ichamp)
-        do i = 1, 3
-            wv(i) = zr(ichamp-1+i)
-            wv(i+3) = zr(ichamp-1+i+ncc)
-        end do
+        if (iret .eq. 0) then
+            do i = 1, 3
+                wv(i) = zr(ichamp-1+i)
+                wv(i+3) = zr(ichamp-1+i+ncc)
+            end do
+        end if
 !       Accélérations
         call tecach('NNN', 'PACCPLU', 'L', iret, iad=ichamp)
         if (iret .eq. 0) then
