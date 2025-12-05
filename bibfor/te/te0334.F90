@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -31,8 +31,10 @@ subroutine te0334(option, nomte)
 #include "asterfort/jevech.h"
 #include "asterfort/lteatt.h"
 #include "asterfort/nbsigm.h"
+#include "asterfort/rcvarc.h"
 #include "asterfort/tecach.h"
 #include "asterfort/utmess.h"
+#include "asterfort/granvi.h"
 #include "asterfort/Behaviour_type.h"
 !
 ! person_in_charge: mickael.abbas at edf.fr
@@ -54,20 +56,22 @@ subroutine te0334(option, nomte)
     real(kind=8) :: epsi_meca(mxcmel), epsi_plas(mxcmel)
     real(kind=8) :: sigma(nbsgm)
     real(kind=8) :: epsi_creep(nbsgm)
-    integer :: i, ndim, nno, nbsig, idsig, icompo
-    integer :: npg, ipoids, ivf, idfde, igau, isig, igeom, idepl, idefp, itemps
-    integer :: imate, nbvari, ivari, jtab(7), iret
+    integer :: i, ndim, nno, nbsig, idsig
+    integer :: npg, ipoids, ivf, idfde, igau, isig, igeom, idepl, itemps, imate
+    integer :: idefp, icompo, nbvari, ivari, nvi, nvif, ibid, jtab(7), iret, ibid2
     real(kind=8) :: c1, c2, trsig
-    real(kind=8) :: angl_naut(3), nharm, e, nu, zero, un, time
+    real(kind=8) :: angl_naut(3), nharm, e, nu, zero, un, tempg, time
+    character(len=8) :: mod2d
     integer :: elas_id
-    character(len=16) :: optio2, kit_comp_2, rela_comp, elas_keyword
-    aster_logical :: l_creep
+    character(len=16) :: optio2, kit_comp_1, kit_comp_2, rela_comp, elas_keyword
+    aster_logical :: l_creep, l_temp
 !
 ! --------------------------------------------------------------------------------------------------
 !
     zero = 0.d0
     un = 1.d0
     nharm = zero
+    mod2d = '2D'
 !
 ! - Finite element informations
 !
@@ -108,7 +112,8 @@ subroutine te0334(option, nomte)
 !
     call jevech('PCOMPOR', 'L', icompo)
     rela_comp = zk16(icompo-1+RELA_NAME)
-    kit_comp_2 = zk16(icompo-1+CREEP_NAME)
+    kit_comp_1 = zk16(icompo-1+CREEP_NAME)
+    kit_comp_2 = zk16(icompo-1+PLAS_NAME)
 !
 ! - Internal variables
 !
@@ -146,7 +151,7 @@ subroutine te0334(option, nomte)
 ! - Creep strains: epsi_creep
 !
     if (rela_comp(1:13) .ne. 'BETON_GRANGER' .and. &
-        (rela_comp(1:7) .ne. 'KIT_DDI' .or. kit_comp_2(1:13) .ne. 'BETON_GRANGER')) then
+        (rela_comp(1:7) .ne. 'KIT_DDI' .or. kit_comp_1(1:13) .ne. 'BETON_GRANGER')) then
         l_creep = .false.
         do i = 1, mxcmel
             epsi_plas(i) = zero
@@ -155,19 +160,50 @@ subroutine te0334(option, nomte)
             epsi_creep(i) = zero
         end do
     else
+        call granvi(mod2d, ibid, ibid2, nvif)
         l_creep = .true.
+    end if
+!
+! - Materials parameters depend on temperature ?
+!
+    l_temp = .false.
+    if (rela_comp(1:15) .eq. 'BETON_DOUBLE_DP') then
+        nvi = 3
+        l_temp = .true.
+    else if (rela_comp(1:7) .eq. 'KIT_DDI') then
+        if (kit_comp_2(1:15) .eq. 'BETON_DOUBLE_DP') then
+            if (kit_comp_1(1:13) .eq. 'BETON_GRANGER') then
+                nvi = nvif+3
+                l_temp = .true.
+            else
+                call utmess('F', 'ELEMENTS3_76')
+            end if
+        end if
     end if
 !
 ! - Loop on Gauss points
 !
     do igau = 1, npg
 !
+! ----- Get current temperature
+!
+        call rcvarc(' ', 'TEMP', '+', 'RIGI', igau, &
+                    1, tempg, iret)
+!
+! ----- Change temperature from internal variable (maximum) for BETON_DOUBLE_DP/BETON_GRANGER
+!
+        if (l_temp) then
+            if (tempg .lt. zr(ivari+(igau-1)*nbvari+nvi-1)) then
+                tempg = zr(ivari+(igau-1)*nbvari+nvi-1)
+            end if
+        end if
+!
 ! ----- Get elastic parameters (only isotropic elasticity)
 !
         call get_elas_id(zi(imate), elas_id, elas_keyword)
         call get_elas_para('RIGI', zi(imate), '+', igau, 1, &
                            elas_id, elas_keyword, &
-                           time=time, e_=e, nu_=nu)
+                           time=time, temp=tempg, e_=e, nu_=nu)
         ASSERT(elas_id .eq. 1)
 !
 ! ----- Compute creep strains (current Gauss point)
@@ -195,11 +231,9 @@ subroutine te0334(option, nomte)
 !
         c1 = (un+nu)/e
         c2 = nu/e
-        epsi_plas(nbsig*(igau-1)+1) = epsi_meca(nbsig*(igau-1)+1)- &
-                                      (c1*sigma(1)-c2*trsig)- &
+        epsi_plas(nbsig*(igau-1)+1) = epsi_meca(nbsig*(igau-1)+1)-(c1*sigma(1)-c2*trsig)- &
                                       epsi_creep(1)
-        epsi_plas(nbsig*(igau-1)+2) = epsi_meca(nbsig*(igau-1)+2)- &
-                                      (c1*sigma(2)-c2*trsig)- &
+        epsi_plas(nbsig*(igau-1)+2) = epsi_meca(nbsig*(igau-1)+2)-(c1*sigma(2)-c2*trsig)- &
                                       epsi_creep(2)
         if (lteatt('C_PLAN', 'OUI')) then
             epsi_plas(nbsig*(igau-1)+3) = -(epsi_plas(nbsig*(igau-1)+1)+ &
@@ -222,4 +256,5 @@ subroutine te0334(option, nomte)
             zr(idefp+nbsig*(igau-1)+isig-1) = epsi_plas(nbsig*(igau-1)+isig)
         end do
     end do
+!
 end subroutine
