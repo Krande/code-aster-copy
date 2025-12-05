@@ -16,7 +16,7 @@
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
 
-subroutine vpfopr(option, typres, lmasse, lraide, ldynam, &
+subroutine vpfopr(optionz, typres, lmasse, lraide, ldynam, &
                   omemin, omemax, omeshi, nbfreq, npivot, &
                   omecor, precsh, nbrssa, nblagr, solveu, &
                   det, idet, lpg)
@@ -127,7 +127,7 @@ subroutine vpfopr(option, typres, lmasse, lraide, ldynam, &
 #include "asterfort/vpecst.h"
 #include "asterfort/vpstur.h"
 #include "asterfort/wkvect.h"
-    character(len=*) :: option
+    character(len=*) :: optionz
     character(len=16) :: typres
     character(len=19) :: solveu
     integer(kind=8) :: lmasse, lraide, ldynam, nbrssa
@@ -140,7 +140,7 @@ subroutine vpfopr(option, typres, lmasse, lraide, ldynam, &
     mpi_int :: mpicou, mpicow, rang, rangl, nbproc
     character(len=1) :: typep
     character(len=8) :: k8bid
-    character(len=16) :: ch16, valk(3)
+    character(len=16) :: ch16, valk(3), option
     character(len=24) :: k24c, k24par
     integer(kind=8) :: niv, ifm, nbessa, ier, nbfmin, nbfmax, ibid, ibande
     integer(kind=8) :: jk24c, jkpar, nbrow, frecou
@@ -148,6 +148,7 @@ subroutine vpfopr(option, typres, lmasse, lraide, ldynam, &
     aster_logical :: caldet, ldyna
 !
     call infniv(ifm, niv)
+    option = optionz
 ! MAUVAISE VALEUR DE OPTION
     if ((option .ne. 'CENTRE') .and. (option .ne. 'BANDE') .and. (option .ne. 'BANDEA') .and. &
         (option .ne. 'PLUS_PETITE') .and. (option .ne. 'TOUT') .and. (option .ne. 'STURM') .and. &
