@@ -29,7 +29,8 @@ nProc = CA.MPI.ASTER_COMM_WORLD.Get_size()
 rank = CA.MPI.ASTER_COMM_WORLD.Get_rank()
 
 
-pMesh = LIRE_MAILLAGE(UNITE=20, FORMAT="MED", PARTITIONNEUR="PTSCOTCH", INFO_MED=1)
+medfile = CA.basedir / "zzzz502m.mmed"
+pMesh = CA.ParallelMesh().readMedFile(medfile)
 pMesh = MODI_MAILLAGE(
     reuse=pMesh, MAILLAGE=pMesh, ORIE_PEAU=_F(GROUP_MA_PEAU=("HAUT", "BAS", "DROITE", "GAUCHE"))
 )

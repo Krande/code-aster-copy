@@ -88,6 +88,7 @@ subroutine mstget(matrix, keywordfactz, nbocc, ddlsta)
     call jemarq()
 !
     keywordfact = keywordfactz
+    nb_mode_appui = 0
     call dismoi('NOM_MAILLA', matrix, 'MATR_ASSE', repk=mesh)
     call dismoi('NOM_NUME_DDL', matrix, 'MATR_ASSE', repk=nume_ddl)
     call dismoi('NB_EQUA', matrix, 'MATR_ASSE', repi=neq)

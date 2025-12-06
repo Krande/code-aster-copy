@@ -114,6 +114,9 @@ class ExtendedParallelMesh:
             deterministic (bool): True if partitioning must be deterministic
             ghost (int): ghost layer number
             verbose (int): Verbosity between 0 (a few details) to 2 (more verbosy).
+
+        Returns:
+            ParallelMesh: the object itself
         """
         if not partitioned:
             returnTuple = splitMeshFromMedFile(
@@ -124,6 +127,7 @@ class ExtendedParallelMesh:
         else:
             mr = MeshReader()
             mr.readParallelMeshFromMedFile(self, os.fspath(filename), meshname, verbose & 3)
+        return self
 
     def checkConsistency(self, filename):
         """Check that the partitioned mesh is consistent, i.e. that all nodes,
@@ -641,7 +645,7 @@ class ExtendedParallelMesh:
             mesh_p.readMedFile(filename, deterministic=deterministic, ghost=ghost, verbose=info - 1)
             return mesh_p.refine(refine_1, info)
 
-    def getNodes(self, group_name=[], localNumbering=True, same_rank=None):
+    def getNodes(self, group_name=[], localNumbering=False, same_rank=None):
         """Return the list of the indexes of the nodes that belong to a group of nodes.
 
         Arguments:
@@ -659,7 +663,7 @@ class ExtendedParallelMesh:
 
         return self._getNodes(force_list(group_name), localNumbering, val[same_rank])
 
-    def getNodesFromCells(self, group_name, localNumbering=True, same_rank=None):
+    def getNodesFromCells(self, group_name, localNumbering=False, same_rank=None):
         """Returns the nodes indexes of a group of cells.
 
         Arguments:

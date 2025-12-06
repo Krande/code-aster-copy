@@ -15,73 +15,77 @@
 ! You should have received a copy of the GNU General Public License
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
+! aslint: disable=W0413
 !
-subroutine nmnkft(solver, sddisc, iterat_)
+subroutine nmnkft(solver, sddisc, iterNewt_)
 !
     implicit none
 !
 #include "asterfort/jeveuo.h"
 #include "asterfort/nmlere.h"
+#include "asterfort/nmecrr.h"
 #include "asterfort/nmlerr.h"
 !
     character(len=19), intent(in) :: solver, sddisc
-    integer(kind=8), optional, intent(in) :: iterat_
+    integer(kind=8), optional, intent(in) :: iterNewt_
 !
 ! --------------------------------------------------------------------------------------------------
 !
-! ROUTINE MECA_NON_LINE POUR METHODE DE NEWTON INEXACTE
+! Non-linear algorithm - Discretization management
 !
-! CALCUL DE LA PRECISION DE LA RESOLUTION DU SYSTEME LINEAIRE A CHAQUE
-! ITERATION DE NEWTON POUR NEWTON-KRYLOV APPELEE FORCING TERM
+! Action: update Newto-Krylov
 !
 ! --------------------------------------------------------------------------------------------------
-!
 !
 ! SCHEMA DE CALCUL INPIRE DE "SOLVING NONLINEAR EQUATION WITH
 !     NEWTON'S METHOD", C.T. KELLEY, SIAM, PAGE 62-63
-! IN  SDDISC : SD DISCRETISATION
-! IN  ITERAT : NUMERO ITERATION NEWTON
+!
+! In  solver           : name of datastructure for solver
+! In  sddisc           : datastructure for time discretization
+! In  iterNewt         : index of current Newton iteration
 !
 ! --------------------------------------------------------------------------------------------------
 !
-    integer(kind=8) ::  ibid, iterat
-    real(kind=8) :: epsi, epsold, resnew(1), resold(1), epsmin
+    integer(kind=8) :: iterNewt
+    real(kind=8) :: newtKrylResi, newtKrylResiPrev, resiCurr(1), resiPrev(1), solvMini
     real(kind=8), pointer :: slvr(:) => null()
 !
 ! --------------------------------------------------------------------------------------------------
 !
     call jeveuo(solver//'.SLVR', 'E', vr=slvr)
-    if (.not. present(iterat_)) then
-        call nmlerr(sddisc, 'L', 'INIT_NEWTON_KRYLOV', epsi, ibid)
+    if (.not. present(iterNewt_)) then
+        call nmlerr(sddisc, 'INIT_NEWTON_KRYLOV', paraValeR_=newtKrylResi)
     else
-        iterat = iterat_
-        if (iterat .eq. 0) then
-            call nmlere(sddisc, 'L', 'VCHAR', iterat, resold(1))
+        iterNewt = iterNewt_
+        if (iterNewt .eq. 0) then
+            call nmlere(sddisc, 'L', 'VCHAR', iterNewt, resiPrev(1))
         else
-            call nmlere(sddisc, 'L', 'VMAXI', iterat-1, resold(1))
+            call nmlere(sddisc, 'L', 'VMAXI', iterNewt-1, resiPrev(1))
         end if
-        call nmlerr(sddisc, 'L', 'ITER_NEWTON_KRYLOV', epsold, ibid)
-        call nmlere(sddisc, 'L', 'VMAXI', iterat, resnew(1))
-        if (resold(1) .eq. 0.d0) then
-            epsi = epsold
+        call nmlerr(sddisc, 'ITER_NEWTON_KRYLOV', paraValeR_=newtKrylResiPrev)
+        call nmlere(sddisc, 'L', 'VMAXI', iterNewt, resiCurr(1))
+        if (resiPrev(1) .eq. 0.d0) then
+            newtKrylResi = newtKrylResiPrev
             goto 10
         end if
-        if ((0.9d0*epsold**2) .gt. 0.2d0) then
-            epsi = min(max(0.1d0*resnew(1)**2/resold(1)**2, 0.9d0*epsold**2), 4.d-1*epsold)
+        if ((0.9d0*newtKrylResiPrev**2) .gt. 0.2d0) then
+            newtKrylResi = &
+                min(max(0.1d0*resiCurr(1)**2/resiPrev(1)**2, 0.9d0*newtKrylResiPrev**2), &
+                    4.d-1*newtKrylResiPrev)
         else
-            epsmin = slvr(1)
-            epsi = max(min(0.1d0*resnew(1)**2/resold(1)**2, 4.d-1*epsold), epsmin)
+            solvMini = slvr(1)
+            newtKrylResi = &
+                max(min(0.1d0*resiCurr(1)**2/resiPrev(1)**2, 4.d-1*newtKrylResiPrev), &
+                    solvMini)
         end if
     end if
 !
 10  continue
-!
-! --- STOCKAGE DE LA PRECISION CALCULEE POUR ITERATION SUIVANTE
-!
-    call nmlerr(sddisc, 'E', 'ITER_NEWTON_KRYLOV', epsi, ibid)
-!
-! --- COPIE DE LA PRECISION CALCULEE DANS LA SD SOLVEUR
-!
-    slvr(2) = epsi
+
+! - STOCKAGE DE LA PRECISION CALCULEE POUR ITERATION SUIVANTE
+    call nmecrr(sddisc, 'ITER_NEWTON_KRYLOV', paraValeR_=newtKrylResi)
+
+! - COPIE DE LA PRECISION CALCULEE DANS LA SD SOLVEUR
+    slvr(2) = newtKrylResi
 !
 end subroutine

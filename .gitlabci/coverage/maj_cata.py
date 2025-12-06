@@ -1,0 +1,5 @@
+DEBUT()
+
+MAJ_CATA(TYPE_ELEM=_F(), UNITE=6)
+
+FIN()

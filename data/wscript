@@ -36,6 +36,7 @@ Build some data files (dest: share/aster)
 
 import getpass
 import json
+import optparse
 import os
 import os.path as osp
 import pickle
@@ -52,12 +53,12 @@ except ImportError:
     pass
 
 from waflib import Configure, Errors, Logs, Utils
+
 from waftools.wafutils import pyenv_abspath
 
 
 def options(self):
     group = self.get_option_group("code_aster options")
-    # default=False in libaster, True in code_aster
     group.add_option(
         "--legacy",
         dest="legacy",
@@ -83,6 +84,42 @@ def options(self):
         action="store",
         default=None,
         help="location of the data repository (default: ../data)",
+    )
+    group.add_option(
+        "--disable-memory-stats",
+        dest="memory_stats",
+        action="store_const",
+        const="none",
+        help=(
+            "disable control of used memory with VmSize (if the platform does not "
+            "support /proc/<PID>/status nor cgroup-v2, same as setting environment "
+            "variable: ASTER_DISABLE_MEMORY_STATS)"
+        ),
+    )
+    group.add_option(
+        "--enable-proc-status",
+        dest="memory_stats",
+        action="store_const",
+        const="proc_status",
+        help="control of used memory using  /proc/<PID>/status (default)",
+    )
+    group.add_option(
+        "--disable-proc-status",
+        dest="memory_stats",
+        action="store_const",
+        const="deprecated",
+        help=optparse.SUPPRESS_HELP,
+    )
+    group.add_option(
+        "--enable-cgroup-memory-stats",
+        dest="memory_stats",
+        action="store_const",
+        const="cgroup",
+        help=(
+            "control of used memory using the cgroup-v2 stats (default: "
+            "use /proc/<PID>/status, same as setting environment variable "
+            "ASTER_ENABLE_CGROUP_STATS)"
+        ),
     )
 
     group = self.add_option_group("External programs options")
@@ -343,7 +380,7 @@ def env2dict(self, src):
     if env["WAFBUILD_ENV"]:
         with open(env["WAFBUILD_ENV"][0]) as fobj:
             dico["BUILD_ENV"] = fobj.read()
-    dico["CONFIG_ENV"] = config_env()
+    dico["CONFIG_ENV"] = config_env(env)
     dico["addmem"] = env["addmem"]
     dico["srctest"] = os.linesep.join(
         [
@@ -527,7 +564,38 @@ def check_config(self):
     # for config.txt
     self.env["addmem"] = cfg["addmem"]
     self.env["CONFIG_PARAMETERS"] = cfg
-    self.check_vmsize()
+    self.check_memory_stats()
+
+
+@Configure.conf
+def check_memory_stats(self):
+    mode = self.options.memory_stats
+    # command line option takes priority, then env vars else proc-status
+    env_disable = int(os.getenv("ASTER_DISABLE_MEMORY_STATS") or 0)
+    env_cgroup = int(os.getenv("ASTER_ENABLE_CGROUP_STATS") or 0)
+    env_proc = int(os.getenv("ASTER_ENABLE_PROC_STATUS") or 1)
+    mode = mode or (env_disable and "none")
+    mode = mode or (env_cgroup and "cgroup")
+    mode = mode or ("proc_status" if env_proc else "deprecated")
+    self.start_msg("Check for memory stats mode")
+    if mode == "none":
+        self.end_msg("do not adjust memory limit", color="YELLOW")
+        self.define("ASTER_DISABLE_MEMORY_STATS", 1)
+    elif mode == "cgroup":
+        self.end_msg("cgroup-v2")
+        self.define("ASTER_ENABLE_CGROUP_STATS", 1)
+    elif mode == "proc_status":
+        self.end_msg("/proc/<PID>/status")
+        self.define("ASTER_ENABLE_PROC_STATUS", 1)
+    elif mode == "deprecated":
+        raise Errors.ConfigurationError(
+            "'--disable-proc-status' option is not supported anymore, "
+            "use '--disable-memory-stats' or '--enable-cgroup-memory-stats' options"
+        )
+    else:
+        raise Errors.ConfigurationError(f"unexpected value: {mode}")
+    if mode != "none":
+        self.check_vmsize()
 
 
 @Configure.conf
@@ -753,16 +821,19 @@ def is_python_wrapped(interp):
     return wrapped
 
 
-def config_env():
+def config_env(env):
     """Return the `CONFIG_ENV_*` variables to be exported.
 
     Returns:
         str: exported variables.
     """
     lines = []
-    for var, value in os.environ.items():
+    items = list(os.environ.items())
+    items.extend(list([(var, env[var]) for var in env.keys()]))
+    for var, value in items:
         if not var.startswith("CONFIG_ENV_"):
             continue
+        value = "".join(value)
         var = re.sub("^CONFIG_ENV_", "", var)
         lines.append(f'export {var}="{value}"')
     return os.linesep.join(lines)

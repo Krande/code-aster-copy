@@ -73,7 +73,7 @@ def getNodesFromGroups(mesh, group_ma):
     """
     Nodes = []
     for name in group_ma:
-        Nodes += mesh.getNodesFromCells(group_name=name)
+        Nodes += mesh.getNodesFromCells(group_name=name, localNumbering=True)
 
     Nodes = list(set(Nodes))
 
@@ -123,7 +123,7 @@ def getRigidBodyModes(dofNumbering, group_ma, centerCoord):
 
     # Filter rigid modes on groups
     selectedNodes = getNodesFromGroups(mesh, group_ma)
-    meshNodes = mesh.getNodes()
+    meshNodes = mesh.getNodes(localNumbering=True)
 
     Eqn = dofNumbering.getEquationNumbering()
     if isinstance(Eqn, tuple) | isinstance(Eqn, list):

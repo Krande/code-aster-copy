@@ -91,6 +91,8 @@ subroutine te0116(option, nomte)
     lHardMixed = ASTER_FALSE
     if (rela_comp .eq. 'VMIS_ISOT_LINE') then
         lHardIsot = ASTER_TRUE
+    elseif (rela_comp .eq. 'VMIS_ISOT_TRAC') then
+        lHardIsot = ASTER_TRUE
     elseif (rela_comp .eq. 'VMIS_CINE_LINE') then
         lHardKine = ASTER_TRUE
     elseif (rela_comp .eq. 'VMIS_ECMI_LINE') then
@@ -117,7 +119,8 @@ subroutine te0116(option, nomte)
         variEcroIndx = 0
         variSaveIndx = 0
         indxEpseq = -1
-        if (rela_comp .eq. 'VMIS_ISOT_LINE') then
+        if (rela_comp .eq. 'VMIS_ISOT_LINE' .or. &
+            rela_comp .eq. 'VMIS_ISOT_TRAC') then
             nbVariEcro = 1
             variEcroIndx(1) = 1
             variSaveIndx(1) = 3

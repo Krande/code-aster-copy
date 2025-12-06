@@ -72,6 +72,15 @@ Ce message est un message d'erreur développeur.
 Contactez le support technique.
 """
     ),
+    9: _(
+        """
+À l'issue de l'étape de création de la numérotation, il n'a pas été possible de trouver un
+processeur possesseur pour tous les degrés de liberté du problème.
+
+Conseil : Si vous réaliser des manipulations de champs, vérifiez la cohérence des groupes de
+noeuds et de mailles.
+"""
+    ),
     11: _(
         """
  on ne peut assembler que des vecteurs réels ou complexes

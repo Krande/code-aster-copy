@@ -397,13 +397,13 @@ def inter(list1, list2):
     return list(set(list1).intersection(list2))
 
 
-test.assertEqual(mesh.getNumberOfNodes(), len(mesh.getNodes()))
+test.assertEqual(mesh.getNumberOfNodes(), len(mesh.getNodes(localNumbering=True)))
 test.assertEqual(mesh.getNumberOfNodes(), len(mesh.getNodes(localNumbering=True)))
 test.assertEqual(mesh.getNumberOfNodes(), len(mesh.getNodes(localNumbering=False)))
 
 test.assertEqual(mesh.getNumberOfCells(), len(mesh.getCells()))
 
-test.assertSequenceEqual(mesh.getNodes(), range(mesh.getNumberOfNodes()))
+test.assertSequenceEqual(mesh.getNodes(localNumbering=True), range(mesh.getNumberOfNodes()))
 test.assertSequenceEqual(mesh.getNodes(localNumbering=True), range(mesh.getNumberOfNodes()))
 test.assertSequenceEqual(mesh.getCells(), range(mesh.getNumberOfCells()))
 
@@ -421,7 +421,7 @@ for i in range(mesh.getNumberOfNodes()):
 test.assertTrue(len(inter(innerNodes, outerNodes)) == 0)
 
 
-test.assertSequenceEqual(sorted(mesh.getNodes()), sorted(allNodes))
+test.assertSequenceEqual(sorted(mesh.getNodes(localNumbering=True)), sorted(allNodes))
 test.assertSequenceEqual(sorted(mesh.getNodes(localNumbering=True)), sorted(allNodes))
 test.assertSequenceEqual(
     sorted(mesh.getNodes(localNumbering=False)), sorted([globalNodesNum[i] for i in allNodes])
@@ -441,20 +441,24 @@ test.assertSequenceEqual(
     sorted([globalNodesNum[i] for i in innerNodes]),
 )
 
-test.assertSequenceEqual(sorted(mesh.getNodes("Beton")), sorted(mesh.getNodes("Beton", True, None)))
 test.assertSequenceEqual(
-    sorted(mesh.getNodes("Beton")), sorted(inter(mesh.getNodes("Beton"), mesh.getNodes()))
+    sorted(mesh.getNodes("Beton", localNumbering=True)), sorted(mesh.getNodes("Beton", True, None))
 )
 test.assertSequenceEqual(
-    sorted(mesh.getNodes("Beton")),
+    sorted(mesh.getNodes("Beton", localNumbering=True)),
+    sorted(inter(mesh.getNodes("Beton", localNumbering=True), mesh.getNodes(localNumbering=True))),
+)
+test.assertSequenceEqual(
+    sorted(mesh.getNodes("Beton", localNumbering=True)),
     sorted(inter(mesh.getNodes("Beton", True), mesh.getNodes(localNumbering=True))),
 )
 test.assertSequenceEqual(
-    sorted(mesh.getNodes("Beton")),
-    sorted(inter(mesh.getNodes("Beton"), mesh.getNodes(localNumbering=True))),
+    sorted(mesh.getNodes("Beton", localNumbering=True)),
+    sorted(inter(mesh.getNodes("Beton", localNumbering=True), mesh.getNodes(localNumbering=True))),
 )
 test.assertSequenceEqual(
-    sorted(mesh.getNodes("Beton")), sorted(inter(mesh.getNodes("Beton", True), mesh.getNodes()))
+    sorted(mesh.getNodes("Beton", localNumbering=True)),
+    sorted(inter(mesh.getNodes("Beton", True), mesh.getNodes(localNumbering=True))),
 )
 test.assertSequenceEqual(
     sorted(mesh.getNodes("Beton", False)),

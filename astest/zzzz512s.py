@@ -138,7 +138,7 @@ for form in formu:
     test.assertAlmostEqual(l2_diff / l2_ref, 0.0, delta=1e-10)
 
     # project HHO solution
-    h1_field = hho.projectOnLagrangeSpace(u_sol)
+    h1_field = hho.projectOnLagrangeSpace(u_sol, 1)
     hho_field = hho.projectOnHHOSpace(h1_field)
     # not zero if k > 2 because quadratic cell
     # test.assertAlmostEqual((hho_field - u_sol).norm("NORM_2"), 0.0, delta=1e-6)

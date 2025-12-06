@@ -15,7 +15,7 @@
 ! You should have received a copy of the GNU General Public License
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
-! person_in_charge: mickael.abbas at edf.fr
+!
 !
 module HHO_basis_module
 !
@@ -25,6 +25,7 @@ module HHO_basis_module
     use HHO_quadrature_module
     use HHO_type
     use HHO_matrix_module
+    use compensated_ops_module, only: sum, dot_product, matmul, addFMA
 !
     implicit none
 !
@@ -886,10 +887,11 @@ contains
 !
         integer(kind=8) :: ifrom, ito, icoeff
         real(kind=8), dimension(3) :: peval, func, dfunc, grad
-        integer(kind=8) :: ind, imono
+        integer(kind=8) :: ind, imono, nb_coeff
         integer(kind=8), dimension(3) :: power
         real(kind=8) :: invrotmat(3, 3)
         real(kind=8), dimension(3, MSIZE_CELL_SCAL) :: Grad_mono
+        real(kind=8) :: basis_mono(3, MSIZE_CELL_SCAL)
 !
 ! ---- Check the order
         call check_order(min_order, max_order, this%hhoMono%maxOrder())
@@ -959,11 +961,14 @@ contains
                 if (this%type == BASIS_ORTHO) then
                     Grad_mono(1:2, imono) = BSGradEval(1:2, ind)
                     BSGradEval(1:2, ind) = 0.d0
-                    do icoeff = 1, this%coeff_shift(imono+1)-this%coeff_shift(imono)
-                        BSGradEval(1:2, ind) = BSGradEval(1:2, ind)+ &
-                                               this%coeff_mono(this%coeff_shift(imono)-1+icoeff)* &
-                                               Grad_mono(1:2, icoeff)
+                    nb_coeff = this%coeff_shift(imono+1)-this%coeff_shift(imono)
+                    do icoeff = 1, nb_coeff
+                        basis_mono(1:2, icoeff) = &
+                            this%coeff_mono(this%coeff_shift(imono)-1+icoeff)* &
+                            Grad_mono(1:2, icoeff)
                     end do
+                    BSGradEval(1, ind) = sum(basis_mono(1, 1:nb_coeff))
+                    BSGradEval(2, ind) = sum(basis_mono(2, 1:nb_coeff))
                 end if
             end do
 !
@@ -1032,11 +1037,15 @@ contains
                 if (this%type == BASIS_ORTHO) then
                     Grad_mono(1:3, imono) = BSGradEval(1:3, ind)
                     BSGradEval(1:3, ind) = 0.d0
-                    do icoeff = 1, this%coeff_shift(imono+1)-this%coeff_shift(imono)
-                        BSGradEval(1:3, ind) = BSGradEval(1:3, ind)+ &
-                                               this%coeff_mono(this%coeff_shift(imono)-1+icoeff)* &
-                                               Grad_mono(1:3, icoeff)
+                    nb_coeff = this%coeff_shift(imono+1)-this%coeff_shift(imono)
+                    do icoeff = 1, nb_coeff
+                        basis_mono(1:3, icoeff) = &
+                            this%coeff_mono(this%coeff_shift(imono)-1+icoeff)* &
+                            Grad_mono(1:3, icoeff)
                     end do
+                    BSGradEval(1, ind) = sum(basis_mono(1, 1:nb_coeff))
+                    BSGradEval(2, ind) = sum(basis_mono(2, 1:nb_coeff))
+                    BSGradEval(3, ind) = sum(basis_mono(3, 1:nb_coeff))
                 end if
             end do
 !
@@ -1316,7 +1325,8 @@ contains
         integer(kind=8) :: i, j, k, ipg, npg, i_ortho
         real(kind=8) :: rp(MSIZE_CELL_SCAL, MSIZE_CELL_SCAL), rc(MSIZE_CELL_SCAL, MSIZE_CELL_SCAL)
         real(kind=8) :: ra(MSIZE_CELL_SCAL, MSIZE_CELL_SCAL)
-        real(kind=8) :: ri(MSIZE_CELL_SCAL)
+        real(kind=8) :: ri(MSIZE_CELL_SCAL), w_bpg(MAX_QP)
+        real(kind=8) :: alpha
 !
         ASSERT(nb_basis <= MSIZE_CELL_SCAL)
 !
@@ -1349,7 +1359,7 @@ contains
             coeff_mono(22:28) = coeff_mono(22:28)*sqrt(13.d0/measure)
 !
 !           Set to zero unused coefficient
-            coeff_shift(nb_basis+2:8) = 0.d0
+            coeff_shift(nb_basis+2:8) = 0
 !
         else
 !           Ortho-normalisation with modified Gramm-Schmidt
@@ -1362,34 +1372,36 @@ contains
             npg = hhoQuad%nbQuadPoints
 !
             rp = 0.d0
+            w_bpg = 0.d0
             do i_ortho = 1, nb_ortho
                 rc = 0.d0
                 ra = 0.d0
 
                 do i = 1, nb_basis
-!
-                    ri = 0.d0
                     do j = 1, i-1
 !
 ! --------------------- Compute r_ij = (phi_i, phi_j)_T
 !
                         do ipg = 1, npg
-                            ri(j) = ri(j)+hhoQuad%weights(ipg)* &
-                                    basisIpg%m(i, ipg)*basisIpg%m(j, ipg)
+                            w_bpg(ipg) = hhoQuad%weights(ipg)* &
+                                         basisIpg%m(i, ipg)
                         end do
+                        ri(j) = dot_product(w_bpg(1:npg), basisIpg%m(j, 1:npg))
 !
 ! --------------------- Update phi_i
-!
+                        alpha = -ri(j)
                         do ipg = 1, npg
-                            basisIpg%m(i, ipg) = basisIpg%m(i, ipg)-ri(j)*basisIpg%m(j, ipg)
+                            call addFMA(alpha, basisIpg%m(j, ipg), basisIpg%m(i, ipg))
                         end do
                     end do
 !
 ! ------------------ Compute normalization
 !
                     do ipg = 1, npg
-                        ri(i) = ri(i)+hhoQuad%weights(ipg)*basisIpg%m(i, ipg)*basisIpg%m(i, ipg)
+                        w_bpg(ipg) = hhoQuad%weights(ipg)* &
+                                     basisIpg%m(i, ipg)
                     end do
+                    ri(i) = dot_product(w_bpg(1:npg), basisIpg%m(i, 1:npg))
 !
 ! ------------------ Rescale coefficient
 !
@@ -1401,8 +1413,9 @@ contains
 !
                     rc(i, i) = ri(i)
                     do j = 1, i-1
+                        alpha = -ri(j)
                         do k = 1, j
-                            rc(i, k) = rc(i, k)-ri(j)*rc(j, k)
+                            call addFMA(alpha, rc(j, k), rc(i, k))
                         end do
                     end do
 
@@ -1410,9 +1423,7 @@ contains
                         ra(i, 1:i) = rc(i, 1:i)
                     else
                         do j = 1, i
-                            do k = j, i
-                                ra(i, j) = ra(i, j)+rc(i, k)*rp(k, j)
-                            end do
+                            ra(i, j) = ra(i, j)+dot_product(rc(i, j:i), rp(j:i, j))
                         end do
                     end if
                 end do

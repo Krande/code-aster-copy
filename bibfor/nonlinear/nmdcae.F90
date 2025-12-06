@@ -15,36 +15,35 @@
 ! You should have received a copy of the GNU General Public License
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
-! person_in_charge: mickael.abbas at edf.fr
 !
-subroutine nmdcae(sddisc, iterat, typdec, nbrpas, ratio, &
+subroutine nmdcae(sddisc, iterNewt, typdec, nbrpas, ratio, &
                   optdec, retdec)
 !
     implicit none
 !
-#include "asterf_types.h"
 #include "asterc/r8prem.h"
+#include "asterf_types.h"
 #include "asterfort/nmacex.h"
 #include "asterfort/nmlerr.h"
 #include "asterfort/utmess.h"
 !
-    character(len=19) :: sddisc
-    integer(kind=8) :: iterat, nbrpas, retdec
-    real(kind=8) :: ratio
-    character(len=16) :: optdec
-    character(len=4) :: typdec
+    character(len=19), intent(in) :: sddisc
+    integer(kind=8), intent(in) :: iterNewt
+    integer(kind=8), intent(out) :: nbrpas, retdec
+    real(kind=8), intent(out) :: ratio
+    character(len=16), intent(out) :: optdec
+    character(len=4), intent(out) :: typdec
 !
-! ----------------------------------------------------------------------
+! --------------------------------------------------------------------------------------------------
 !
-! ROUTINE MECA_NON_LINE (GESTION DES EVENEMENTS - DECOUPE)
+! Non-linear algorithm - Discretization management
 !
-! PARAMETRES DE DECOUPE - EXTRAPOLATION DES RESIDUS
+! Event: extrapolate residuals
 !
-! ----------------------------------------------------------------------
+! --------------------------------------------------------------------------------------------------
 !
-!
-! IN  SDDISC : SD DISCRETISATION TEMPORELLE
-! IN  ITERAT : NUMERO D'ITERATION DE NEWTON
+! In  sddisc          : datastructure for time discretization
+! In  iterNewt        : index of current Newton iteration
 ! OUT RATIO  : RATIO DU PREMIER PAS DE TEMPS
 ! OUT TYPDEC : TYPE DE DECOUPE
 !              'SUBD' - SUBDIVISION PAR UN NOMBRE DE PAS DONNE
@@ -61,41 +60,36 @@ subroutine nmdcae(sddisc, iterat, typdec, nbrpas, ratio, &
 !     1 - ON A DECOUPE
 !     2 - PAS DE DECOUPE
 !
+! --------------------------------------------------------------------------------------------------
 !
-!
-!
-    real(kind=8) :: un
-    aster_logical :: lextra
-    real(kind=8) :: valext(4)
+    real(kind=8), parameter :: un = 1.d0
+    aster_logical :: lExtrapol
+    real(kind=8) :: extrapolVale(4)
     real(kind=8) :: xxbb, xa0, xa1, xdet, cresi, ciblen
-    real(kind=8) :: r8bid
-    integer(kind=8) :: mniter, mxiter
+    integer(kind=8) :: minIter, maxIter
 !
-! ----------------------------------------------------------------------
+! --------------------------------------------------------------------------------------------------
 !
-    un = 1.d0
     retdec = 0
     ratio = 0.d0
     nbrpas = -1
     optdec = 'UNIFORME'
     typdec = ' '
-!
-! --- LECTURE DES INFOS SUR LES CONVERGENCES
-!
-    call nmlerr(sddisc, 'L', 'MNITER', r8bid, mniter)
-    call nmlerr(sddisc, 'L', 'MXITER', r8bid, mxiter)
-!
-! --- EXTRAPOLATION LINEAIRE DES RESIDUS
-!
-    call nmacex(sddisc, iterat, lextra, valext)
-    xa0 = valext(1)
-    xa1 = valext(2)
-    xdet = valext(3)
-    cresi = valext(4)
-!
+
+! - LECTURE DES INFOS SUR LES CONVERGENCES
+    call nmlerr(sddisc, 'MNITER', paraValeI_=minIter)
+    call nmlerr(sddisc, 'MXITER', paraValeI_=maxIter)
+
+! - EXTRAPOLATION LINEAIRE DES RESIDUS
+    call nmacex(sddisc, iterNewt, lExtrapol, extrapolVale)
+    call nmacex(sddisc, iterNewt, lExtrapol, extrapolVale)
+    xa0 = extrapolVale(1)
+    xa1 = extrapolVale(2)
+    xdet = extrapolVale(3)
+    cresi = extrapolVale(4)
+
 ! --- CALCUL DU RATIO
-!
-    if (.not. lextra) then
+    if (.not. lExtrapol) then
         call utmess('I', 'EXTRAPOLATION_12')
         nbrpas = 4
         retdec = 1
@@ -109,14 +103,14 @@ subroutine nmdcae(sddisc, iterat, typdec, nbrpas, ratio, &
         if (xdet .le. r8prem()) then
             ratio = 24.0d0/((3.0d0*nbrpas+un)**2-un)
         else
-            if ((ciblen*1.20d0) .lt. mniter) then
+            if ((ciblen*1.20d0) .lt. minIter) then
                 ratio = 24.0d0/((3.0d0*nbrpas+un)**2-un)
             else
                 if (xa1 .le. r8prem()) then
                     ratio = 24.0d0/((3.0d0*nbrpas+un)**2-un)
                 else
-                    if ((ciblen-mxiter) .le. (-10.0d0*xa1/xdet)) then
-                        ratio = exp((ciblen-mxiter)*xdet/xa1)
+                    if ((ciblen-maxIter) .le. (-10.0d0*xa1/xdet)) then
+                        ratio = exp((ciblen-maxIter)*xdet/xa1)
                     else
                         ratio = exp(-10.0d0)
                     end if

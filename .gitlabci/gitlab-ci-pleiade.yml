@@ -1,12 +1,14 @@
 variables:
+  GIT_STRATEGY: fetch
+  # depth must be higher than the range used to search the last tag
+  GIT_DEPTH: 100
   MINIO_URL: https://minio.retd.edf.fr
-  MINIO_MC: ./mc --insecure
   ROOT_URL: https://$GITLAB_TOKEN_NAME:$GITLAB_TOKEN@gitlab.pleiade.edf.fr/codeaster
   PREREQ_VERSION: 20251026
   OSNAME: debian-12
   IMAGE_URL: ${DOCKER_NEXUS_URL}/codeaster-prerequisites:${PREREQ_VERSION}-${OSNAME}
   ASTER_BUILD: mpi
-  # BUILDTYPE: ci, nightly, nightly-coverage, code-checking, docker
+  # BUILDTYPE: ci, nightly, nightly-coverage, nightly-sanitize, code-checking, docker
   BUILDTYPE: ci
   REFREV: ${CI_MERGE_REQUEST_TARGET_BRANCH_NAME}
   GIT_SSL_NO_VERIFY: "true"
@@ -32,9 +34,6 @@ workflow:
         REFREV: main
     - if: $BUILDTYPE == "code-checking"
     - if: $BUILDTYPE == "docker"
-    - if: $BUILDTYPE == "nightly-coverage"
-      variables:
-        ASTER_BUILD: debug
 
   auto_cancel:
     on_new_commit: interruptible
@@ -56,6 +55,7 @@ before_script:
   interruptible: true
   stage: setup
   script:
+    - .gitlabci/setup_pixi.sh
     - .gitlabci/prepare.sh
   artifacts:
     paths:
@@ -158,13 +158,10 @@ minimal_test:
   script:
     - .gitlabci/test.sh
         -L verification
-        --exclude-testlist .gitlabci/known_failures-pleiade.list
         --resutest=results
   artifacts:
     when: always
     paths:
-      - results/run_testcases.xml
-      - results/Testing/Temporary/*
       - results/*
     expire_in: 3 days
     reports:
@@ -263,6 +260,26 @@ verification_test:
       artifacts: false
       optional: true
 
+keywords_coverage:
+  interruptible: true
+  stage: code-checking
+  needs:
+    - job: prepare
+    - job: compile
+    - job: verification_test
+  script:
+    - do_upload="no"
+    - test "$(date +%u)" = "${WEEKLY_RUN}" && test "${BUILDTYPE}" = "nightly" && do_upload="upload"
+    - .gitlabci/coverage.sh . ./install ./results "${do_upload}"
+  artifacts:
+    when: always
+    paths:
+      - build/coverage/*
+  rules:
+    - if: $BUILDTYPE == "nightly"
+      when: always
+  allow_failure: true
+
 # --- variant debian-next for nightly build: no image available
 prepare_debian-next:
   variables:
@@ -291,6 +308,7 @@ verification_test_debian-next:
       optional: true
     - job: compile_debian-next
       optional: true
+  allow_failure: true
 
 # --- variant using code-aster-reqs package for nightly build / weekly testing
 prepare_pkg:
@@ -337,7 +355,7 @@ verification_test_pkg:
     - job: compile_pkg
       optional: true
   script:
-    - test "$(date +%u)" -ne ${WEEKLY_RUN} && echo "not run" && exit 0
+    - test "$(date +%u)" != "${WEEKLY_RUN}" && echo "not run" && exit 0
     - apt-get update
     - apt-get install -y cmake git wget
     - .gitlabci/add-allow-run-as-root.sh
@@ -350,7 +368,7 @@ prepare_win:
     OSNAME: win
   extends: .prepare
   script:
-    - !reference [.prepare, script]
+    - .gitlabci/prepare.sh
   rules:
     - if: $BUILDTYPE == "nightly"
       when: on_success
@@ -377,7 +395,7 @@ verification_test_win:
     - job: compile_win
       optional: true
   script:
-    - test "$(date +%u)" -ne ${WEEKLY_RUN} && echo "not run" && exit 0
+    - test "$(date +%u)" != "${WEEKLY_RUN}" && echo "not run" && exit 0
     - !reference [.verification_test, script]
   allow_failure: true
 
@@ -389,7 +407,6 @@ prepare_pixi:
     OSNAME: pixi
   extends: .prepare
   script:
-    - .gitlabci/prepare_pixi.sh
     - !reference [.prepare, script]
   rules:
     - if: $BUILDTYPE == "nightly"
@@ -423,10 +440,9 @@ verification_test_pixi:
     - job: compile_pixi
       optional: true
   script:
-    - test "$(date +%u)" -ne ${WEEKLY_RUN} && echo "not run" && exit 0
+    - test "$(date +%u)" != "${WEEKLY_RUN}" && echo "not run" && exit 0
     - ls -la ${PIXI_HOME} || true
     - pixi run .gitlabci/test.sh
         -L verification
-        --exclude-testlist .gitlabci/known_failures-pleiade.list
         --resutest=results
   allow_failure: true

@@ -42,7 +42,7 @@ def get_nodes(mesh, group_no):
     nodes_num = []
     nodes_name = []
     if group_no is not None:
-        nodes_num = mesh.getNodes(group_no)
+        nodes_num = mesh.getNodes(group_no, localNumbering=True)
         nodes_name = [str(i + 1) for i in nodes_num]
     return nodes_num, nodes_name
 

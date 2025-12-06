@@ -181,7 +181,7 @@ with DebugChrono.measure("global"):
     chs.setComponentValues("X", x0)
 
     test.assertIsNone(valx.restr, msg="on all nodes")
-    facez0 = mesh.getNodes(["N1", "N2", "N3", "N4"])
+    facez0 = mesh.getNodes(["N1", "N2", "N3", "N4"], True)
     if useHPCMode():
         facez0 = list(set(facez0).intersection(mesh.getInnerNodes()))
         nbnodes = comm.allreduce(len(facez0), op=MPI.SUM)

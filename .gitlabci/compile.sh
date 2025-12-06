@@ -2,7 +2,7 @@
 
 echo "+ compiling..."
 
-opts=( "--prefix=./install" "--without-repo" )
+opts=( "--prefix=./install" )
 [ -f data-src/README ] && opts+=( "--with-data=data-src" )
 
 if [ "${BUILDTYPE}" = "nightly-coverage" ]; then
@@ -12,8 +12,15 @@ if [ "${BUILDTYPE}" = "nightly-coverage" ]; then
     fi
     opts+=( "--coverage" )
 fi
+if [ "${BUILDTYPE}" = "nightly-sanitize" ]; then
+    if [ "${ASTER_BUILD}" != "debug" ]; then
+        echo "ERROR: ASTER_BUILD must be set as 'debug'"
+        exit 4
+    fi
+    opts+=( "--enable-asan" )
+fi
 
-jobs=$(( ${NPROC_MAX} / 2 ))
+jobs=$(( ${NPROC_MAX:-8} / 2 ))
 
 if [ "${OSNAME}" != "win" ]; then
     ./configure "${opts[@]}"

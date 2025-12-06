@@ -35,6 +35,7 @@ DDL_THER = LocatedComponents(
     components=(("EN1", ("HHO_FT[15]",)), ("EN2", ()), ("EN3", ("HHO_CT[35]"))),
 )
 
+CPPOST = LocatedComponents(phys=PHY.NEUT_I, type="ELEM", components=("X[1]"))
 TEMPHHO = LocatedComponents(phys=PHY.TEMP_R, type="ELNO", components=("TEMP",))
 
 # too large to be saved so used size 1
@@ -190,6 +191,7 @@ class THER3DH27_HHO444(Element):
                 (SP.PGEOMER, LC.EGEOM3D),
                 (SP.PTMPCHF, DDL_THER),
                 (OP.HHO_TEMP_THER.PCHHOBS, CHHOBS),
+                (SP.POPPOST, CPPOST),
             ),
             para_out=((OP.HHO_TEMP_THER.PTEMP_R, TEMPHHO),),
         ),

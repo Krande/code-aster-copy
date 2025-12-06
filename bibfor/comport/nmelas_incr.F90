@@ -15,10 +15,11 @@
 ! You should have received a copy of the GNU General Public License
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
+! aslint: disable=W1306
 !
 subroutine nmelas_incr(BEHinteg, &
                        fami, kpg, ksp, typmod, &
-                       imate, deps, sigm, option, sigp, &
+                       jvMaterCode, deps, sigm, option, sigp, &
                        vip, dsidep)
 !
     use Behaviour_type
@@ -27,19 +28,21 @@ subroutine nmelas_incr(BEHinteg, &
     implicit none
 !
 #include "asterf_types.h"
-#include "asterfort/verift.h"
+#include "asterfort/ElasticityMaterial_type.h"
+#include "asterfort/get_elas_para.h"
+#include "asterfort/verifepsa.h"
 #include "asterfort/verifh.h"
 #include "asterfort/verifs.h"
-#include "asterfort/verifepsa.h"
-#include "asterfort/get_elas_para.h"
+#include "asterfort/verift.h"
 !
     type(Behaviour_Integ), intent(in) :: BEHinteg
-    character(len=*), intent(in)      :: fami
-    character(len=8), intent(in)      :: typmod(*)
-    character(len=16), intent(in)     :: option
-    integer(kind=8), intent(in)               :: imate, kpg, ksp
-    real(kind=8), intent(in)          :: sigm(:), deps(:)
-    real(kind=8), intent(out)         :: sigp(:), vip(1), dsidep(:, :)
+    character(len=*), intent(in) :: fami
+    integer(kind=8), intent(in) :: kpg, ksp
+    character(len=8), intent(in) :: typmod(*)
+    integer(kind=8), intent(in) :: jvMaterCode
+    real(kind=8), intent(in) :: deps(:), sigm(:)
+    character(len=16), intent(in) :: option
+    real(kind=8), intent(out) :: sigp(:), vip(1), dsidep(:, :)
 ! --------------------------------------------------------------------------------------------------
 !     REALISE LA LOI DE VON MISES ISOTROPE ET ELASTIQUE POUR LES
 !     ELEMENTS ISOPARAMETRIQUES EN PETITES DEFORMATIONS
@@ -62,8 +65,8 @@ subroutine nmelas_incr(BEHinteg, &
 !               ATTENTION LES TENSEURS ET MATRICES SONT RANGES DANS
 !               L'ORDRE :  XX,YY,ZZ,SQRT(2)*XY,SQRT(2)*XZ,SQRT(2)*YZ
 ! --------------------------------------------------------------------------------------------------
-    integer(kind=8), parameter :: elas_id = 1
-    character(len=16), parameter :: elas_keyword = 'ELAS'
+    integer(kind=8), parameter :: elasID = ELAS_ISOT
+    character(len=16), parameter :: elasKeyword = 'ELAS'
 ! --------------------------------------------------------------------------------------------------
     aster_logical :: cplan, resi, rigi
     integer(kind=8)       :: ndimsi, k, l
@@ -71,8 +74,8 @@ subroutine nmelas_incr(BEHinteg, &
     real(kind=8)  :: em, num, lambdam, deuxmum, troiskm
     real(kind=8)  :: ep, nup, lambdap, deuxmup, troiskp
     real(kind=8)  :: e, nu, lambda, deuxmu, troisk
-    real(kind=8)  :: deps_th, deps_hy, deps_se, deps_an(6), deps_vc(size(deps))
-    real(kind=8)  :: deps_me(size(deps)), sigmp(size(deps))
+    real(kind=8)  :: dEpsiTher, dEpsiHydr, dEpsiSech, dEpsiAnel(6), dEpsiVarc(size(deps))
+    real(kind=8)  :: dEpsiMeca(size(deps)), sigmp(size(deps))
 ! --------------------------------------------------------------------------------------------------
 
     ! Initialisation
@@ -85,13 +88,13 @@ subroutine nmelas_incr(BEHinteg, &
 
     ! Caracteristiques elastiques t- et t+
 
-    call get_elas_para(fami, imate, '-', kpg, ksp, elas_id, elas_keyword, e_=em, nu_=num, &
+    call get_elas_para(fami, jvMaterCode, '-', kpg, ksp, elasID, elasKeyword, e_=em, nu_=num, &
                        BEHinteg=BEHinteg)
     lambdam = em*num/((1-2*num)*(1+num))
     deuxmum = em/(1+num)
     troiskm = em/(1-2*num)
 
-    call get_elas_para(fami, imate, '+', kpg, ksp, elas_id, elas_keyword, e_=ep, nu_=nup, &
+    call get_elas_para(fami, jvMaterCode, '+', kpg, ksp, elasID, elasKeyword, e_=ep, nu_=nup, &
                        BEHinteg=BEHinteg)
     lambdap = ep*nup/((1-2*nup)*(1+nup))
     deuxmup = ep/(1+nup)
@@ -106,21 +109,20 @@ subroutine nmelas_incr(BEHinteg, &
     ! Contrainte initiale corrigee
     sigmp = deuxmup/deuxmum*deviator(sigm)+troiskp/troiskm*dot_product(kr, sigm)/3.d0*kr
 
-    ! Increment de variables de commande
-
-    call verift(fami, kpg, ksp, 'T', imate, epsth_=deps_th)
-    call verifh(fami, kpg, ksp, 'T', imate, deps_hy)
-    call verifs(fami, kpg, ksp, 'T', imate, deps_se)
-    call verifepsa(fami, kpg, ksp, 'T', deps_an)
-    deps_vc = (deps_th+deps_hy+deps_se)*kr+deps_an(1:ndimsi)*voigt(ndimsi)
+! - Get increment of external state variables
+    call verift(fami, kpg, ksp, 'T', jvMaterCode, epsth_=dEpsiTher)
+    call verifh(fami, kpg, ksp, 'T', jvMaterCode, dEpsiHydr)
+    call verifs(fami, kpg, ksp, 'T', jvMaterCode, dEpsiSech)
+    call verifepsa(fami, kpg, ksp, 'T', dEpsiAnel)
+    dEpsiVarc = (dEpsiTher+dEpsiHydr+dEpsiSech)*kr+dEpsiAnel(1:ndimsi)*voigt(ndimsi)
 
     ! Calcul de la contrainte
 
     if (resi) then
-        deps_me = deps-deps_vc
-        if (cplan) deps_me(3) = -(lambda*(deps_me(1)+deps_me(2))+sigmp(3))/(lambda+deuxmu)
+        dEpsiMeca = deps-dEpsiVarc
+        if (cplan) dEpsiMeca(3) = -(lambda*(dEpsiMeca(1)+dEpsiMeca(2))+sigmp(3))/(lambda+deuxmu)
 
-        sigp = sigmp+lambda*dot_product(kr, deps_me)*kr+deuxmu*deps_me
+        sigp = sigmp+lambda*dot_product(kr, dEpsiMeca)*kr+deuxmu*dEpsiMeca
         vip(1) = 0.d0
 
     else

@@ -111,7 +111,7 @@ IMPR_RESU = PROC(
                 condition="""exists("RESULTAT")""",
                 fr=tr("extraction d un champ de grandeur"),
                 regles=(
-                    EXCLUS("TOUT_CHAM", "NOM_CHAM"),
+                    UN_PARMI("TOUT_CHAM", "NOM_CHAM", TOUT_CHAM="OUI"),
                     EXCLUS(
                         "TOUT_ORDRE",
                         "NUME_ORDRE",

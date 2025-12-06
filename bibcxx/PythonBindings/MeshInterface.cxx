@@ -129,7 +129,7 @@ Arguments:
 Returns:
     list[int]: Indexes of the nodes of groups.
         )",
-              py::arg( "group_name" ) = VectorString(), py::arg( "localNumbering" ) = true,
+              py::arg( "group_name" ) = VectorString(), py::arg( "localNumbering" ) = false,
               py::arg( "same_rank" ) = PythonBool::None )
         .def( "getInnerNodes", &Mesh::getInnerNodes, R"(
 Return the list of the indexes of the nodes in the mesh
@@ -192,7 +192,7 @@ Arguments:
 Returns:
     list[int]: indexes of the nodes.
         )",
-              py::arg( "group_name" ), py::arg( "localNumbering" ) = true,
+              py::arg( "group_name" ), py::arg( "localNumbering" ) = false,
               py::arg( "same_rank" ) = PythonBool::None )
         .def( "fix", &Mesh::fix, R"(
 Fix potential problems.

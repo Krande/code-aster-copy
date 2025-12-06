@@ -43,11 +43,14 @@ FunctionPtr HHO::_createFunc( const ASTERDOUBLE &value ) const {
     return funct;
 };
 
-FieldOnNodesRealPtr HHO::projectOnLagrangeSpace( const FieldOnNodesRealPtr hho_field ) const {
+std::variant< FieldOnNodesRealPtr, FieldOnCellsRealPtr >
+HHO::projectOnLagrangeSpace( const FieldOnNodesRealPtr hho_field, const ASTERINTEGER opt,
+                             const bool average ) const {
 
     std::string option, para_name_in, para_name_out;
 
     auto model = this->getModel();
+    auto mesh = model->getMesh();
 
     if ( model->isMechanical() ) {
         option = "HHO_DEPL_MECA";
@@ -61,6 +64,13 @@ FieldOnNodesRealPtr HHO::projectOnLagrangeSpace( const FieldOnNodesRealPtr hho_f
         AS_ABORT( "Not implemented for HHO" );
     }
 
+    auto optField = std::make_shared< ConstantFieldOnCellsLong >( mesh );
+    const std::string physicalName( "NEUT_I" );
+    optField->allocate( physicalName );
+    ConstantFieldOnZone a( mesh );
+    ConstantFieldValues< ASTERINTEGER > b( { "X1" }, { opt } );
+    optField->setValueOnZone( a, b );
+
     // Main object
     CalculPtr calcul = std::make_unique< Calcul >( option );
     calcul->setModel( model );
@@ -68,6 +78,7 @@ FieldOnNodesRealPtr HHO::projectOnLagrangeSpace( const FieldOnNodesRealPtr hho_f
     // Add input fields
     calcul->addInputField( "PGEOMER", model->getMesh()->getCoordinates() );
     calcul->addInputField( para_name_in, hho_field );
+    calcul->addInputField( "POPPOST", optField );
 
     calcul->addHHOField( model->getHHOModel() );
 
@@ -78,6 +89,10 @@ FieldOnNodesRealPtr HHO::projectOnLagrangeSpace( const FieldOnNodesRealPtr hho_f
     // Compute
     if ( model->existsFiniteElement() ) {
         calcul->compute();
+    }
+
+    if ( !average ) {
+        return exitField;
     }
 
     return toFieldOnNodes( exitField );

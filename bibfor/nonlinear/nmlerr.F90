@@ -16,33 +16,31 @@
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
 
-subroutine nmlerr(sddisc, action, infz, valr, vali)
-!
-! person_in_charge: mickael.abbas at edf.fr
+subroutine nmlerr(sddisc, paraNameZ, paraValeR_, paraValeI_)
 !
     implicit none
-#include "jeveux.h"
+!
 #include "asterfort/assert.h"
 #include "asterfort/jedema.h"
 #include "asterfort/jemarq.h"
 #include "asterfort/jeveuo.h"
-    character(len=19) :: sddisc
-    character(len=1) :: action
-    character(len=*) :: infz
-    integer(kind=8) :: vali
-    real(kind=8) :: valr
+#include "jeveux.h"
 !
-! ----------------------------------------------------------------------
+    character(len=19), intent(in) :: sddisc
+    character(len=*), intent(in) :: paraNameZ
+    integer(kind=8), optional, intent(out) :: paraValeI_
+    real(kind=8), optional, intent(out) :: paraValeR_
 !
-! ROUTINE *_NON_LINE (STRUCTURES DE DONNES - SD DISCRETISATION)
+! --------------------------------------------------------------------------------------------------
 !
-! LECTURE/ECRITURE DANS SD STOCKAGE DES INFOS EN COURS DE CALCUL
+! Non-linear algorithm - Discretization management
 !
-! ----------------------------------------------------------------------
+! Management of parameters - Read
 !
-! IN  SDDISC : SD DISCRETISATION
-! IN  ACTION : 'L' OU 'E'
-! IN  INFO   : TYPE D'INFO A STOCKER OU A LIRE
+! --------------------------------------------------------------------------------------------------
+!
+! In  sddisc           : datastructure for time discretization
+! In  paraName         : parameter to manage
 !   1 MXITER               : MAX( ITER_GLOB_MAXI , ITER_GLOB_ELAS )
 !   2 MNITER               : MIN( ITER_GLOB_MAXI , ITER_GLOB_ELAS )
 !   3 NBITER               : NOMBRE MAX ITERATIONS (Y COMPRIS EXTRAPOL)
@@ -56,93 +54,68 @@ subroutine nmlerr(sddisc, action, infz, valr, vali)
 !   8 INIT_NEWTON_KRYLOV   : RESIDU INITIAL POUR NEWTON KRYLOV
 !   9 ITER_NEWTON_KRYLOV   : RESIDU COURANT POUR NEWTON KRYLOV
 !  10 ITERSUP              : =3 ON AUTORISE DES ITERATIONS EN PLUS
+! Out paraValeI        : parameter (integer)
+! Out paraValeR        : parameter (real)
 !
-! I/O VALR      : REEL   A ECRIRE OU A LIRE
-!     VALI      : ENTIER A ECRIRE OU A LIRE
+! --------------------------------------------------------------------------------------------------
 !
+    character(len=24) :: paraName
+    integer(kind=8):: paraValeI
+    real(kind=8) :: paraValeR
+    character(len=24) :: sddiscIfcvName
+    real(kind=8), pointer :: sddiscIfcv(:) => null()
 !
+! --------------------------------------------------------------------------------------------------
 !
-!
-    character(len=24) :: infocv
-    integer(kind=8) :: jifcv
-    character(len=24) :: info
-!
-! ----------------------------------------------------------------------
-!
-    call jemarq()
-!
-! --- INITIALISATIONS
-!
-    infocv = sddisc(1:19)//'.IFCV'
-    call jeveuo(infocv, 'E', jifcv)
-    info = infz
-!
-    ASSERT((action .eq. 'E') .or. (action .eq. 'L'))
-!
-    if (info .eq. 'MXITER') then
-        if (action .eq. 'L') then
-            vali = nint(zr(jifcv+1-1))
-        else if (action .eq. 'E') then
-            zr(jifcv+1-1) = vali
-        end if
-    else if (info .eq. 'MNITER') then
-        if (action .eq. 'L') then
-            vali = nint(zr(jifcv+2-1))
-        else if (action .eq. 'E') then
-            zr(jifcv+2-1) = vali
-        end if
-    else if (info .eq. 'NBITER') then
-        if (action .eq. 'L') then
-            vali = nint(zr(jifcv+3-1))
-        else if (action .eq. 'E') then
-            zr(jifcv+3-1) = vali
-        end if
-    else if (info .eq. 'PAS_MINI_ELAS') then
-        if (action .eq. 'L') then
-            valr = zr(jifcv+4-1)
-        else if (action .eq. 'E') then
-            zr(jifcv+4-1) = valr
-        end if
-    else if (info .eq. 'RESI_GLOB_RELA') then
-        if (action .eq. 'L') then
-            valr = zr(jifcv+5-1)
-        else if (action .eq. 'E') then
-            zr(jifcv+5-1) = valr
-        end if
-    else if (info .eq. 'RESI_GLOB_MAXI') then
-        if (action .eq. 'L') then
-            valr = zr(jifcv+6-1)
-        else if (action .eq. 'E') then
-            zr(jifcv+6-1) = valr
-        end if
-    else if (info .eq. 'TYPE_RESI') then
-        if (action .eq. 'L') then
-            vali = nint(zr(jifcv+7-1))
-        else if (action .eq. 'E') then
-            zr(jifcv+7-1) = vali
-        end if
-    else if (info .eq. 'INIT_NEWTON_KRYLOV') then
-        if (action .eq. 'L') then
-            valr = zr(jifcv+8-1)
-        else if (action .eq. 'E') then
-            zr(jifcv+8-1) = valr
-        end if
-    else if (info .eq. 'ITER_NEWTON_KRYLOV') then
-        if (action .eq. 'L') then
-            valr = zr(jifcv+9-1)
-        else if (action .eq. 'E') then
-            zr(jifcv+9-1) = valr
-        end if
-    else if (info .eq. 'ITERSUP') then
-        if (action .eq. 'L') then
-            vali = nint(zr(jifcv+10-1))
-        else if (action .eq. 'E') then
-            zr(jifcv+10-1) = vali
-        end if
+    paraName = paraNameZ
+
+! - Access to datastructure
+    sddiscIfcvName = sddisc(1:19)//'.IFCV'
+    call jeveuo(sddiscIfcvName, 'E', vr=sddiscIfcv)
+
+! - Get
+    paraValeI = 0
+    paraValeR = 0.d0
+    if (paraName .eq. 'MXITER') then
+        paraValeI = nint(sddiscIfcv(1))
+
+    else if (paraName .eq. 'MNITER') then
+        paraValeI = nint(sddiscIfcv(2))
+
+    else if (paraName .eq. 'NBITER') then
+        paraValeI = nint(sddiscIfcv(3))
+
+    else if (paraName .eq. 'PAS_MINI_ELAS') then
+        paraValeR = sddiscIfcv(4)
+
+    else if (paraName .eq. 'RESI_GLOB_RELA') then
+
+        paraValeR = sddiscIfcv(5)
+
+    else if (paraName .eq. 'RESI_GLOB_MAXI') then
+        paraValeR = sddiscIfcv(6)
+
+    else if (paraName .eq. 'TYPE_RESI') then
+        paraValeI = nint(sddiscIfcv(7))
+
+    else if (paraName .eq. 'INIT_NEWTON_KRYLOV') then
+        paraValeR = sddiscIfcv(8)
+
+    else if (paraName .eq. 'ITER_NEWTON_KRYLOV') then
+        paraValeR = sddiscIfcv(9)
+
+    else if (paraName .eq. 'ITERSUP') then
+        paraValeI = nint(sddiscIfcv(10))
+
     else
-        ASSERT(.false.)
+        ASSERT(ASTER_FALSE)
     end if
-!
-    call jedema()
+
+    if (present(paraValeI_)) then
+        paraValeI_ = paraValeI
+    end if
+    if (present(paraValeR_)) then
+        paraValeR_ = paraValeR
+    end if
 !
 end subroutine

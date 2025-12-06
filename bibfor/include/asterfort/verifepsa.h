@@ -15,16 +15,13 @@
 ! You should have received a copy of the GNU General Public License
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
-!
+#include "asterfort/Behaviour_type.h"
 !
 interface
-    subroutine verifepsa(fami    , kpg    , ksp    , poum    , &
-                         epsa   , iepsa_ )
-        character(len=*), intent(in) :: fami
-        integer(kind=8), intent(in) :: kpg
-        integer(kind=8), intent(in) :: ksp
-        character(len=*), intent(in) :: poum
-        real(kind=8), intent(out) :: epsa(6)
-        integer(kind=8), optional, intent(out) :: iepsa_(6)
+    subroutine verifepsa(famiZ, kpg, ksp, poumZ, epsiAnel)
+        character(len=*), intent(in) :: famiZ
+        integer(kind=8), intent(in) :: kpg, ksp
+        character(len=*), intent(in) :: poumZ
+        real(kind=8), intent(out) :: epsiAnel(VARC_EPSA_NBCMP)
     end subroutine verifepsa
 end interface

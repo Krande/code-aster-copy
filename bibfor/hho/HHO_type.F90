@@ -81,13 +81,14 @@ module HHO_type
 !
     type HHO_Face
 ! ----- Dimension topologique
-        integer(kind=8)                     :: ndim = 0
+        integer(kind=8)              :: ndim = 0
 ! ----- Type maille
-        integer(kind=8)                     :: typema = 0
+        integer(kind=8)              :: typema = 0
 ! ----- Nombre de noeuds
-        integer(kind=8)                     :: nbnodes = 0
-! ----- Coordonnees des noeuds   (max 4 noeuds pour quad)
-        real(kind=8), dimension(3, 4):: coorno = 0.d0
+        integer(kind=8)              :: nbnodes = 0
+        integer(kind=8)              :: nbnodes_post = 0
+! ----- Coordonnees des noeuds   (max 9 noeuds pour quad)
+        real(kind=8), dimension(3, 9):: coorno = 0.d0
 ! ----- Coordonnees du barycentre de la face
         real(kind=8), dimension(3)  :: barycenter = 0.d0
 ! ----- Diametre de la face
@@ -99,10 +100,10 @@ module HHO_type
 ! ----- Axes locaux de la cellule
         real(kind=8), dimension(3, 2) :: axes = 0.d0
 ! ----- Index locale des noeuds de la face
-        integer(kind=8), dimension(4)       :: nodes_loc = 0
-        integer(kind=8)                     :: node_bar_loc = 0
+        integer(kind=8), dimension(9) :: nodes_loc = 0
+        integer(kind=8)               :: node_bar_loc = 0
 ! ----- Index locale de la face pour une cellule
-        integer(kind=8)                     :: face_loc = 0
+        integer(kind=8)               :: face_loc = 0
 ! ----- Jacobien is constant
         aster_logical               :: l_jaco_cst = ASTER_FALSE
 ! ----- member function
@@ -199,7 +200,7 @@ contains
         implicit none
 !
         class(HHO_Data), intent(in) :: this
-        integer(kind=8)                     :: degree
+        integer(kind=8)             :: degree
 !
 ! --------------------------------------------------------------------------------------------------
 !

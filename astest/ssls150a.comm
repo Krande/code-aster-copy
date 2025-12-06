@@ -463,6 +463,7 @@ for j in range(len(grandeur)):
     )
 DETRUIRE(NOM=tab_UNIQUE)
 
+
 # CHEFF2-------------------------------------------------
 resu_verif = CREA_CHAMP(
     NOM_CHAM="MARG_ELEM", INST=2.0, OPERATION="EXTR", RESULTAT=MARGE1, TYPE_CHAM="ELEM_VFER2_R"
@@ -503,6 +504,7 @@ for j in range(len(grandeur)):
         LEGENDE=grandeur[j],
     )
 DETRUIRE(NOM=tab_UNIQUE)
+
 # CHEFF3-------------------------------------------------
 resu_verif = CREA_CHAMP(
     NOM_CHAM="MARG_ELEM", INST=3.0, OPERATION="EXTR", RESULTAT=MARGE1, TYPE_CHAM="ELEM_VFER2_R"
@@ -542,6 +544,8 @@ for j in range(len(grandeur)):
         LEGENDE=grandeur[j],
     )
 DETRUIRE(NOM=tab_UNIQUE)
+
+
 # CHEFF4-------------------------------------------------
 resu_verif = CREA_CHAMP(
     NOM_CHAM="MARG_ELEM", INST=4.0, OPERATION="EXTR", RESULTAT=MARGE1, TYPE_CHAM="ELEM_VFER2_R"
@@ -581,6 +585,8 @@ for j in range(len(grandeur)):
         LEGENDE=grandeur[j],
     )
 DETRUIRE(NOM=tab_UNIQUE)
+
+
 # CHEFF5-------------------------------------------------
 resu_verif = CREA_CHAMP(
     NOM_CHAM="MARG_ELEM", INST=5.0, OPERATION="EXTR", RESULTAT=MARGE1, TYPE_CHAM="ELEM_VFER2_R"
@@ -671,12 +677,12 @@ etat_STBEAM = [0.5, 0.047e-2, 0.047e-2, 0.047e-2, 9.744e6, 94.74e6, 94.74e6]
 
 etat_POST_VER = [
     0.5,
-    0.00047368690351365546,
-    0.000473654740814388,
-    0.0004736807772852236,
-    9743815.26704989,
-    94730948.1628776,
-    94736155.45704472,
+    0.0004736847756410093,
+    0.00047365606508106665,
+    0.000473679306962925,
+    9743777.376024788,
+    94731213.01621333,
+    94735861.392585,
 ]
 
 for j in range(len(grandeur)):

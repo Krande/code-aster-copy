@@ -937,7 +937,7 @@ def find_no(maya, mcsimp):
         list_no = list(mcsimp["NOEUD"])
     elif "GROUP_NO" in mcsimp:
         for group in mcsimp["GROUP_NO"]:
-            list_ind_no = maya.getNodes(group)
+            list_ind_no = maya.getNodes(group, localNumbering=True)
             for ind_no in list_ind_no:
                 nomnoe = str(ind_no + 1)
                 if nomnoe not in list_no:

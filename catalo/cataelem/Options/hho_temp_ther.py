@@ -26,14 +26,13 @@ import cataelem.Commons.attributes as AT
 
 PCHHOBS = InputParameter(phys=PHY.N3600R, comment=""" HHO - coefficient base locale""")
 
-
 PTEMP_R = OutputParameter(
     phys=PHY.TEMP_R, type="ELNO", comment=""" HHO - degres de liberte de la cellule"""
 )
 
 
 HHO_TEMP_THER = Option(
-    para_in=(SP.PGEOMER, SP.PTMPCHF, PCHHOBS),
+    para_in=(SP.PGEOMER, SP.PTMPCHF, PCHHOBS, SP.POPPOST),
     para_out=(PTEMP_R,),
     condition=(CondCalcul("+", ((AT.PHENO, "TH"), (AT.BORD, "0"), (AT.HHO, "OUI"))),),
 )

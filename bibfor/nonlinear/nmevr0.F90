@@ -15,52 +15,44 @@
 ! You should have received a copy of the GNU General Public License
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
-! person_in_charge: mickael.abbas at edf.fr
 !
 subroutine nmevr0(sddisc)
 !
     implicit none
 !
 #include "asterf_types.h"
-#include "event_def.h"
 #include "asterfort/dieven.h"
-#include "asterfort/nmlerr.h"
-#include "asterfort/utdidt.h"
 #include "asterfort/getFailAction.h"
+#include "asterfort/nmecrr.h"
+#include "asterfort/utdidt.h"
+#include "event_def.h"
 !
-    character(len=19) :: sddisc
+    character(len=19), intent(in) :: sddisc
 !
-! ----------------------------------------------------------------------
+! --------------------------------------------------------------------------------------------------
 !
 ! ROUTINE MECA_NON_LINE (ALGORITHME - EVENEMENTS)
 !
 ! REINITIALISATIONS DES EVENEMENTS
 !
-! ----------------------------------------------------------------------
+! --------------------------------------------------------------------------------------------------
 !
+! In  sddisc          : datastructure for time discretization
 !
-! In  sddisc           : datastructure for time discretization TEMPORELLE
+! --------------------------------------------------------------------------------------------------
 !
+    integer(kind=8), parameter :: iterSuppZero = 0
+    aster_logical :: lActivate
+    integer(kind=8) :: iFail, nbFail, actionType
 !
+! --------------------------------------------------------------------------------------------------
 !
-!
-    integer(kind=8) :: itesup, i_fail, nb_fail, action_type
-    real(kind=8) :: r8bid
-    aster_logical :: lacti
-!
-! ----------------------------------------------------------------------
-!
-    call utdidt('L', sddisc, 'LIST', 'NECHEC', vali_=nb_fail)
-!
-! --- DESACTIVATION DES EVENEMENTS
-!
-    do i_fail = 1, nb_fail
-        lacti = .false.
-        call dieven(sddisc, i_fail, lacti)
-        call getFailAction(sddisc, i_fail, action_type)
-        if (action_type .eq. FAIL_ACT_ITER) then
-            itesup = 0
-            call nmlerr(sddisc, 'E', 'ITERSUP', r8bid, itesup)
+    call utdidt('L', sddisc, 'LIST', 'NECHEC', vali_=nbFail)
+    do iFail = 1, nbFail
+        call dieven(sddisc, iFail, lActivate)
+        call getFailAction(sddisc, iFail, actionType)
+        if (actionType .eq. FAIL_ACT_ITER) then
+            call nmecrr(sddisc, 'ITERSUP', paraValeI_=iterSuppZero)
         end if
     end do
 !

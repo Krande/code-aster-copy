@@ -25,7 +25,7 @@ DEBUT(CODE="OUI", DEBUG=_F(SDVERI="OUI"))
 test = CA.TestCase()
 
 MA = CA.Mesh.buildCube(refine=1)
-nodes_load = MA.getNodesFromCells("TOP")
+nodes_load = MA.getNodesFromCells("TOP", True)
 
 ACIER = DEFI_MATERIAU(ELAS=_F(E=210000e6, NU=0.3))
 

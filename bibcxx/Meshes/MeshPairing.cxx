@@ -597,7 +597,7 @@ ASTERBOOL MeshPairing::build() {
 
         _slaveCells = set_difference( _slaveCells, _slaveCellsExcluded );
         AS_ASSERT( _slaveCells.size() > 0 );
-        _slaveNodes = getMesh()->getNodesFromCells( _slaveCells );
+        _slaveNodes = getMesh()->getNodesFromCells( _slaveCells, true );
     }
 
     if ( _excludedSlaveNodes.size() != 0 ) {
@@ -609,7 +609,7 @@ ASTERBOOL MeshPairing::build() {
                 throw std::runtime_error( "The group " + groupName + " doesn't exist in mesh" );
             }
 
-            VectorLong sans_gr_i = _mesh->getNodes( groupName );
+            VectorLong sans_gr_i = _mesh->getNodes( groupName, true );
             for ( auto &node : sans_gr_i ) {
                 auto cellsToExclude = this->getSlaveCellsFromNode( node );
                 auto it = _slaveCellsExcluded.end();
@@ -619,7 +619,7 @@ ASTERBOOL MeshPairing::build() {
 
         _slaveCells = set_difference( _slaveCells, _slaveCellsExcluded );
         AS_ASSERT( _slaveCells.size() > 0 );
-        _slaveNodes = getMesh()->getNodesFromCells( _slaveCells );
+        _slaveNodes = getMesh()->getNodesFromCells( _slaveCells, true );
     }
 
     _zoneHaveBeenDefined = true;

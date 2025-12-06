@@ -164,7 +164,7 @@ def macr_cara_poutre_ops(
     GROUP_MA=None,
     ORIG_INER=None,
     TABLE_CARA=None,
-    **args
+    **args,
 ):
     """
     Ecriture de la macro MACR_CARA_POUTRE
@@ -293,7 +293,7 @@ def macr_cara_poutre_ops(
             MODELE=__nomoth,
             TEMP_IMPO=_F(GROUP_NO=GROUP_MA_BORD, TEMP=0.0),
             SOURCE=_F(TOUT="OUI", SOUR=2.0),
-            **motscles
+            **motscles,
         )
 
         # POUR CHAQUE TROU DE LA SECTION :
@@ -336,7 +336,7 @@ def macr_cara_poutre_ops(
             SOLVEUR=_F(STOP_SINGULIER="NON"),
             TYPE_CALCUL="STAT",
             INCREMENT=_F(LIST_INST=DLZ),
-            **motscles
+            **motscles,
         )
 
         # ------------------------------------------------------------
@@ -367,7 +367,7 @@ def macr_cara_poutre_ops(
             if not __nomapi.hasGroupOfNodes(grthno):
                 UTMESS("F", "POUTRE0_8", valk=grthno)
 
-            if len(__nomapi.getNodes(grthno)) != 1:
+            if len(__nomapi.getNodes(grthno, localNumbering=True)) != 1:
                 UTMESS("F", "POUTRE0_3")
 
             mctimpo["TEMP_IMPO"] = _F(GROUP_NO=grthno, TEMP=__fnsec0)
@@ -696,7 +696,7 @@ def macr_cara_poutre_ops(
             l_noeud = []
             for grno in args.get("GROUP_NO"):
                 if __nomlma.hasGroupOfNodes(grno):
-                    l_noeud.extend(__nomlma.getNodes(grno))
+                    l_noeud.extend(__nomlma.getNodes(grno, localNumbering=True))
                 else:
                     UTMESS("F", "POUTRE0_8", valk=grno)
             if len(l_group_ma) != len(l_noeud):

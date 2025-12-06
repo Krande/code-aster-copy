@@ -1430,7 +1430,7 @@ class PostMissChar(PostMiss):
             list_nuno_affe = []
             self.List_Noeu_Fictif = []
             for gr in self.param["GROUP_NO_AFFE"]:
-                list_nuno_affe.extend([val for val in mail.getNodes(gr)])
+                list_nuno_affe.extend([val for val in mail.getNodes(gr, localNumbering=True)])
             for nuno in list_nuno_affe:
                 self.List_Noeu_Fictif.append(labels[nuno])
         else:

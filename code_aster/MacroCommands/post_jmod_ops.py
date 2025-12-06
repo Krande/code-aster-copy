@@ -212,7 +212,7 @@ def all_coordinates(self, MAIL):
     Store in dict type
     """
 
-    nodes = [str(node + 1) for node in MAIL.getNodes()]
+    nodes = [str(node + 1) for node in MAIL.getNodes(localNumbering=True)]
     node_co = np.reshape(MAIL.getCoordinates().getValues(), (len(nodes), 3)).tolist()
 
     all_co = dict(zip(nodes, node_co))
@@ -5337,7 +5337,9 @@ def post_jmod_ops(
                     if GROUP_NO[incr_gno] == knodes:
                         # print("collgrno[knodes]  ",collgrno[knodes])
 
-                        LIST_NODE__ = [str(node + 1) for node in MAIL.getNodes(knodes)]
+                        LIST_NODE__ = [
+                            str(node + 1) for node in MAIL.getNodes(knodes, localNumbering=True)
+                        ]
                         # print("LIST_NODE__  ",LIST_NODE__)
 
                         if incr_gno == 0:

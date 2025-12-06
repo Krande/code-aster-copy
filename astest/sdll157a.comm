@@ -106,8 +106,8 @@ maillage = DEFI_GROUP(
     ),
 )
 # 2- récupération des numéros de noeuds
-nodesArc1 = maillage.getNodes("Arc_1_ordo")
-nodesArc3 = maillage.getNodes("Arc_3_ordo")
+nodesArc1 = maillage.getNodes("Arc_1_ordo", localNumbering=True)
+nodesArc3 = maillage.getNodes("Arc_3_ordo", localNumbering=True)
 
 
 # 3- calcul du vect_y du coude en question pour correspondre à
@@ -115,7 +115,7 @@ nodesArc3 = maillage.getNodes("Arc_3_ordo")
 def calc_vectY(maillage, groupNoOrdo):
     import numpy as np
 
-    nodes = maillage.getNodes(groupNoOrdo)
+    nodes = maillage.getNodes(groupNoOrdo, localNumbering=True)
     nbNodes = len(nodes)
     dime = maillage.getDimension()
     coord = maillage.getCoordinates().getValues()

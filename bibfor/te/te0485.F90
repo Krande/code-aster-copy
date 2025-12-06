@@ -121,7 +121,7 @@ subroutine te0485(nomopt, nomte)
 !
 ! --- Save rhs
 !
-    if (lVect) then
+    if (lVect .or. nomopt == "FORC_NODA") then
         call writeVector('PVECTUR', total_dofs, rhs)
     end if
 !

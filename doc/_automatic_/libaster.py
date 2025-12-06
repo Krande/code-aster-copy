@@ -13529,13 +13529,14 @@ class Result(DataStructure):
     def printListOfFields(self):
         """Print the names of all fields (real, complex, ...) stored in the result."""
 
-    def printMedFile(self, filename, medname="", local=True, internalVar=True):
+    def printMedFile(self, filename, medname="", local=True, internalVar=True, fields=[]):
         """Print the result in a MED file.
 
         Args:
             filename (Path|str): Path to the output file.
             medname (str): Name of the result in the MED file. (default: "")
             local (bool): Print only the local domain if *True*. (default: True)
+            fields (list[str]): Name of fields to save. (default: all)
         """
 
     def resize(self, nbIndexes):
@@ -13886,13 +13887,15 @@ class NonLinearResult(TransientResult):
     def getTangentMatrix(self):
         pass
 
-    def printMedFile(self, filename, medname="", local=False, internalVar=True):
+    def printMedFile(self, filename, medname="", local=False, internalVar=True, fields=[]):
         """Print the result in a MED file.
 
         Args:
             filename (Path|str): Path to the output file.
             medname (str): Name of the result in the MED file. (default: "")
             local (bool): Print only the local domain if *True*. (default: True)
+            internalVarl (bool); Save VARI_ELGA_NOMME or not. (default: True)
+            fields (list[str]): Name of fields to save. (default: all)
         """
 
     def setContact(self, *args, **kwargs):
@@ -17070,11 +17073,16 @@ class HHO:
                     FieldOnNodesReal: HHO field
         """
 
-    def projectOnLagrangeSpace(self, hho_field):
+    def projectOnLagrangeSpace(self, hho_field, option=0, average=True):
         """Project field from HHO-space to Lagrange-space
 
         Arguments:
               hho_field (FieldOnNodesReal): hho field like displacement or thermic
+              option (int): option to use for post-process.
+                            0: use cell DoFs only (default)
+                            1: use cell and face DoFs.
+                            2: use face DoFs only.
+              average (bool): average or not the field at nodes.
 
         Returns:
               FieldOnNodesReal: HHO field project on Lagrange space

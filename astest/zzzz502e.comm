@@ -19,7 +19,8 @@
 
 DEBUT(CODE="OUI", ERREUR=_F(ALARME="EXCEPTION"))
 
-pMesh = LIRE_MAILLAGE(UNITE=20, FORMAT="MED", PARTITIONNEUR="PTSCOTCH", INFO_MED=1)
+medfile = CA.basedir / "zzzz502e.mmed"
+pMesh = CA.ParallelMesh().readMedFile(medfile)
 
 
 model = AFFE_MODELE(

@@ -51,7 +51,7 @@ def build(self):
     env = self.all_envs[self.variant]
     get_srcs = self.path.get_src().ant_glob
 
-    use = ["BIBFOR", "MED", "PETSC", "MUMPS", "MATH", "NUMPY"]
+    use = ["BIBFOR", "MED", "PETSC", "MUMPS", "MATH", "NUMPY", "ASAN"]
     if self.env.BUILD_OPENMP:
         use.append("OPENMP")
 
@@ -113,7 +113,8 @@ def check_fortran_compiler_flags(self):
         if "64" in self.env.DEST_CPU:
             self.check_fortran_compiler_options("-i8", dest="FCFLAGS_INT64")
             self.check_fortran_compiler_options("-r8", dest="FCFLAGS_INT64")
-        self.check_fortran_compiler_options(["-nogen-interfaces", "-xCORE-AVX2"])
+        self.check_fortran_compiler_options(["-nogen-interfaces"])
+        # TODO: "-xCORE-AVX2" with execute=True
         # all Intel specific features must use:
         #   ASTER_HAVE_INTEL_IFORT && ASTER_HAVE_xxx
         # this marker must be specified on command line (using -D)
@@ -472,9 +473,6 @@ def check_optimization_fcflags(self):
     if self.options.enable_coverage:
         flags.append("--coverage")
         self.env.append_unique("LINKFLAGS", "--coverage")
-    if self.options.enable_asan:
-        flags.extend(["-fsanitize=address", "-fno-omit-frame-pointer"])
-        self.env.append_unique("LINKFLAGS", ["-fsanitize=address", "-fno-omit-frame-pointer"])
     self.env.append_unique("FCFLAGS", flags)
     self.end_msg(flags)
 
