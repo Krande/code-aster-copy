@@ -1591,7 +1591,7 @@ test.assertArrayEqual(actual=actual_array[row_to_test][:, compo_indexes], refere
 # Last node is N1 (1.41421356237310E+00  1.41421356237310E+00)
 reference_array = np.array([[1.0, 0.0], [math.sqrt(2.0) / 2.0, math.sqrt(2.0) / 2.0]])
 
-actual_med_field = medfile_fields.getFieldWithName("CUT_REPERE_X").getFieldAtLevel(
+actual_med_field = medfile_fields.getFieldWithName("CUT_AXE_X").getFieldAtLevel(
     mc.ON_NODES, 1, 0, 1
 )
 components = actual_med_field.getArray().getInfoOnComponents()
