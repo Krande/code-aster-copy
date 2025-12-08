@@ -21,9 +21,9 @@
 #include "asterf_types.h"
 !
 interface
-    subroutine amumps(action, kxmps, rsolu, vcine, nbsol,&
+    subroutine amumps(actionz, kxmps, rsolu, vcine, nbsol,&
                       iret, impr, ifmump, prepos, pcentp)
-        character(len=*) :: action
+        character(len=*) :: actionz
         integer(kind=8) :: kxmps
         real(kind=8) :: rsolu(*)
         character(len=19) :: vcine

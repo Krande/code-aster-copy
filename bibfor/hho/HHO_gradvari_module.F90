@@ -167,7 +167,7 @@ contains
         integer(kind=8) :: mapLagv(MSIZE_CELL_SCAL)
         integer(kind=8) :: mk_cbs, mk_fbs, mk_total_dofs, mk_gbs, mk_gbs_sym, mk_gbs_cmp
         integer(kind=8) :: gv_cbs, gv_fbs, gv_total_dofs, gv_gbs, gv_faces_dofs, gv_cell_offset
-        integer(kind=8) :: cod(27), ipg, mk_gbs_tot
+        integer(kind=8) :: cod(MAX_QP_CELL), ipg, mk_gbs_tot
         aster_logical :: l_lhs, l_rhs, forc_noda
         blas_int :: b_n
         blas_int, parameter :: b_one = to_blas_int(1)
@@ -247,19 +247,19 @@ contains
 !
 ! ----- compute G_prev = gradrec * depl_prev (sym or not)
 !
-        call hho_dgemv_N(1.d0, hhoMecaState%grad, hhoMecaState%depl_prev, 0.d0, G_prev_coeff)
+        call hhoMecaState%grad%dot(hhoMecaState%depl_prev, G_prev_coeff)
 !
 ! ----- compute G_curr = gradrec * depl_curr (sym or not)
 !
-        call hho_dgemv_N(1.d0, hhoMecaState%grad, hhoMecaState%depl_curr, 0.d0, G_curr_coeff)
+        call hhoMecaState%grad%dot(hhoMecaState%depl_curr, G_curr_coeff)
 !
 ! ----- compute GV_prev = gradrec * vari_prev
 !
-        call hho_dgemv_N(1.d0, hhoGVState%grad, hhoGVState%vari_prev, 0.d0, GV_prev_coeff)
+        call hhoGVState%grad%dot(hhoGVState%vari_prev, GV_prev_coeff)
 !
 ! ----- compute GV_curr = gradrec * vari_curr
 !
-        call hho_dgemv_N(1.d0, hhoGVState%grad, hhoGVState%vari_curr, 0.d0, GV_curr_coeff)
+        call hhoGVState%grad%dot(hhoGVState%vari_curr, GV_curr_coeff)
 !
 ! ----- Loop on quadrature point
 !
@@ -418,6 +418,12 @@ contains
 !
         end do
 !
+999     continue
+!
+! - SYNTHESE DES CODES RETOURS
+!
+        call codere(cod, hhoQuadCellRigi%nbQuadPoints, hhoComporState%codret)
+!
         call numGVMap(hhoCell, hhoData, mapMeca, mapVari, mapLagv)
         call hhoCalcStabCoeffMeca(hhoData, hhoComporState%fami, hhoMecaState%time_curr, &
                                   hhoQuadCellRigi)
@@ -480,12 +486,6 @@ contains
                              lhs_mm, lhs_mv, lhs_ml, lhs_vm, lhs_vv, &
                              lhs_vl, lhs_lm, lhs_lv, lhs_ll, lhs)
         end if
-!
-999     continue
-!
-! - SYNTHESE DES CODES RETOURS
-!
-        call codere(cod, hhoQuadCellRigi%nbQuadPoints, hhoComporState%codret)
 !
         call lhs_mm%free()
         call lhs_ll%free()

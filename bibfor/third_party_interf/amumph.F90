@@ -119,7 +119,9 @@ subroutine amumph(actionz, solvez, matasz, rsolu, csolu, &
 !----------------------------------------------------------------
     call jemarq()
 !
-    action = actionz
+    action = " "
+    ASSERT(len(actionz) <= 8)
+    action(1:len(actionz)) = actionz
     iretz = 0
     call infdbg('SOLVEUR', ifm, niv)
     if ((action(1:6) .ne. 'PRERES') .and. (action(1:6) .ne. 'RESOUD') .and. &

@@ -17,7 +17,7 @@
 ! --------------------------------------------------------------------
 ! person_in_charge: mickael.abbas at edf.fr
 !
-subroutine ndynkk(sddyna, chaine, nomsd)
+subroutine ndynkk(sddyna, chainez, nomsd)
 !
     implicit none
 !
@@ -30,7 +30,7 @@ subroutine ndynkk(sddyna, chaine, nomsd)
 #include "asterfort/ndynlo.h"
 !
     character(len=19) :: sddyna
-    character(len=*) :: chaine
+    character(len=*) :: chainez
     character(len=19) :: nomsd
 !
 ! --------------------------------------------------------------------------------------------------
@@ -52,6 +52,7 @@ subroutine ndynkk(sddyna, chaine, nomsd)
     character(len=24) :: veol, vaol
     integer(kind=8) :: jveol, jvaol
     aster_logical :: ldyna
+    character(len=19) :: chaine
     character(len=24) :: cham24
     character(len=15) :: sdmuap, sdprmo, sdexso
 !
@@ -63,6 +64,9 @@ subroutine ndynkk(sddyna, chaine, nomsd)
 !
     ldyna = ndynlo(sddyna, 'DYNAMIQUE')
     nomsd = ' '
+    chaine = " "
+    ASSERT(len(chainez) <= 19)
+    chaine(1:len(chainez)) = chainez
 !
 ! --- ACCES AUX OBJETS DE LA SD SDDYNA
 !

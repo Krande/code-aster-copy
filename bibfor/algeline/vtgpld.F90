@@ -69,7 +69,7 @@ subroutine vtgpld(cumul, alpha, geomiz, deplaz, base, &
     integer(kind=8) :: i_ligr_mesh
     integer(kind=8), pointer :: v_prno(:) => null()
     integer(kind=8), pointer :: v_nueq(:) => null()
-    integer(kind=8) :: desc_gran(10)
+    integer(kind=8) :: desc_gran(11)
     integer(kind=8) :: idx_gd, ldim
     integer(kind=8) :: nb_cmp_gd, nb_node_mesh, nb_cmp_node, nb_ec
     integer(kind=8) :: length_prno
@@ -155,7 +155,7 @@ subroutine vtgpld(cumul, alpha, geomiz, deplaz, base, &
         i_dof = v_prno((nb_ec+2)*(i_node-1)+1)-1
         nb_cmp_node = v_prno((nb_ec+2)*(i_node-1)+2)
         if (nb_cmp_node .ne. 0) then
-            desc_gran(1:10) = 0
+            desc_gran = 0
             do i_ec = 1, nb_ec
                 desc_gran(i_ec) = v_prno((nb_ec+2)*(i_node-1)+2+i_ec)
             end do

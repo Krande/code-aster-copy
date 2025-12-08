@@ -21,8 +21,8 @@
 #include "asterf_types.h"
 !
 interface
-    subroutine amumph(action, solvez, matasz, rsolu, csolu, vcinez, nbsol, iret, prepos)
-        character(len=*) :: action, matasz, vcinez, solvez
+    subroutine amumph(actionz, solvez, matasz, rsolu, csolu, vcinez, nbsol, iret, prepos)
+        character(len=*) :: actionz, matasz, vcinez, solvez
         integer(kind=8) :: iret, nbsol
         real(kind=8) :: rsolu(*)
         complex(kind=8) :: csolu(*)

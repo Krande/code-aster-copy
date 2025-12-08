@@ -37,7 +37,7 @@ module HHO_algebra_module
 ! --------------------------------------------------------------------------------------------------
 !
 
-    public :: hho_dgemm_NN, hho_dgemm_TN, hho_dgemv_N, hho_dgemv_T
+    public :: hho_dgemm_NN, hho_dgemm_TN, hho_dgemv_T
     public :: hho_dsymv_U
 !
 contains
@@ -116,36 +116,6 @@ contains
         call dgemm('T', 'N', b_m, b_n, b_k, &
                    alpha, matA%m, b_lda, matB%m, b_ldb, &
                    beta, matC%m, b_ldc)
-!
-    end subroutine
-!
-!
-!===================================================================================================
-!
-!===================================================================================================
-!
-    subroutine hho_dgemv_N(alpha, matA, x, beta, y)
-!
-        implicit none
-!
-        type(HHO_matrix), intent(in) :: matA
-        real(kind=8), intent(in) :: x(*)
-        real(kind=8), intent(inout) :: y(*)
-        real(kind=8), intent(in) :: alpha, beta
-!
-! --------------------------------------------------------------------------------------------------
-!
-!   DGEMM blas routine for hho_matrix
-! --------------------------------------------------------------------------------------------------
-!
-        blas_int :: b_n, b_m, b_lda
-        blas_int, parameter :: one = to_blas_int(1)
-!
-        b_lda = to_blas_int(matA%max_nrows)
-        b_m = to_blas_int(matA%nrows)
-        b_n = to_blas_int(matA%ncols)
-        call dgemv('N', b_m, b_n, alpha, matA%m, &
-                   b_lda, x, one, beta, y, one)
 !
     end subroutine
 !

@@ -16,7 +16,7 @@
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
 
-subroutine amumpz(action, kxmps, csolu, vcine, nbsol, &
+subroutine amumpz(actionz, kxmps, csolu, vcine, nbsol, &
                   iret, impr, ifmump, prepos, pcentp)
 !
 !
@@ -73,7 +73,7 @@ subroutine amumpz(action, kxmps, csolu, vcine, nbsol, &
 #include "mumps/zmumps.h"
 #include "asterfort/isParallelMatrix.h"
 
-    character(len=*) :: action
+    character(len=*) :: actionz
     character(len=14) :: impr
     character(len=19) :: vcine, nosolv
     integer(kind=8) :: iret, nbsol, kxmps, ifmump, pcentp(2)
@@ -88,7 +88,7 @@ subroutine amumpz(action, kxmps, csolu, vcine, nbsol, &
     character(len=1) :: rouc, type, prec
     character(len=3) :: matd
     character(len=5) :: etam, klag2
-    character(len=8) :: ktypr
+    character(len=8) :: ktypr, action
     character(len=12) :: usersm, k12bid
     character(len=14) :: nonu
     character(len=19) :: nomat
@@ -126,6 +126,9 @@ subroutine amumpz(action, kxmps, csolu, vcine, nbsol, &
     ASSERT((rouc .eq. 'C') .and. (prec .eq. 'D'))
     zmpsk => zmps(kxmps)
     iret = 0
+    action = " "
+    ASSERT(len(actionz) <= 8)
+    action(1:len(actionz)) = actionz
 !
 ! --- MUMPS PARALLELE DISTRIBUE ?
     call jeveuo(nomat//'.REFA', 'L', vk24=refa)

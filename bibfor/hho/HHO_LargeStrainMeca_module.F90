@@ -163,11 +163,11 @@ contains
 !
 ! ----- compute G_prev = gradrec * depl_prev
 !
-        call hho_dgemv_N(1.d0, gradrec, depl_prev, 0.d0, G_prev_coeff)
+        call gradrec%dot(depl_prev, G_prev_coeff)
 !
 ! ----- compute G_curr = gradrec * depl_curr
 !
-        call hho_dgemv_N(1.d0, gradrec, depl_curr, 0.d0, G_curr_coeff)
+        call gradrec%dot(depl_curr, G_curr_coeff)
 !
 !
 ! ----- Loop on quadrature point

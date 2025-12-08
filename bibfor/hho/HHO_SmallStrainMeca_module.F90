@@ -145,10 +145,10 @@ contains
         call hhoBasisCell%initialize(hhoCell)
 !
 ! ----- compute E_prev = gradrec_sym * depl_prev
-        call hho_dgemv_N(1.d0, gradrec, depl_prev, 0.0, E_prev_coeff)
+        call gradrec%dot(depl_prev, E_prev_coeff)
 !
-! ----- compute E_incr = gradrec_sym * depl_incr
-        call hho_dgemv_N(1.d0, gradrec, depl_incr, 0.0, E_incr_coeff)
+! ----- compute E_incr = gradrec_sym * E_incr_coeff
+        call gradrec%dot(depl_incr, E_incr_coeff)
 !
 ! ----- Loop on quadrature point
 !

@@ -94,7 +94,7 @@ subroutine pjxxpr(resu1, resu2, moa1, moa2, corres, &
     character(len=8) :: kb, ma1, ma2, nume, k8b, typ1, typ2, crit, mo2
     character(len=16) :: nomsym(200), k16b, nomcmd, typres
     character(len=19) :: ch1, ch2, prfchn, ligrel, prfch2, noms2, kpar(nbmax)
-    character(len=24) :: valk(3), noojb
+    character(len=24) :: valk(3), noojb, conre(3)
 !
     character(len=24), pointer :: pjxx_k1(:) => null()
 !
@@ -360,7 +360,8 @@ subroutine pjxxpr(resu1, resu2, moa1, moa2, corres, &
     call jeexin(resu1//'           .REFD', iret)
     if (iret .gt. 0) then
         call jeexin(resu2//'           .REFD', iret)
-        if (iret .eq. 0) call refdaj(' ', resu2, -1, ' ', 'INIT', ' ', ibid)
+        conre = ' '
+        if (iret .eq. 0) call refdaj(' ', resu2, -1, ' ', 'INIT', conre, ibid)
     end if
     call jedema()
 end subroutine
