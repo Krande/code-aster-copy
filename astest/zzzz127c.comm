@@ -110,10 +110,7 @@ CALC_CHAMP(reuse=modes, RESULTAT=modes, FORCE="FORC_NODA")
 CALC_CHAMP(reuse=modes, RESULTAT=modes, FORCE="REAC_NODA")
 
 IMPR_RESU(
-    FICHIER_UNIQUE="OUI",
-    FORMAT="MED",
-    RESU=_F(NOM_CHAM="DEPL", PARTIE="REEL", RESULTAT=modes),
-    VERSION_MED="3.3.1",
+    FICHIER_UNIQUE="OUI", FORMAT="MED", RESU=_F(NOM_CHAM="DEPL", PARTIE="REEL", RESULTAT=modes)
 )
 
 # Résolution avec élimination
@@ -142,7 +139,6 @@ IMPR_RESU(
     FICHIER_UNIQUE="OUI",
     FORMAT="MED",
     RESU=_F(NOM_CHAM="DEPL", PARTIE="REEL", RESULTAT=modes_reconstruit),
-    VERSION_MED="3.3.1",
 )
 
 
