@@ -23,17 +23,8 @@ from typing import Dict, Tuple, List, Iterable, Sequence, Optional
 
 import numpy as np
 
-try:
-    from ..Utilities.import_helper import medcoupling as mc
-except (ImportError, ModuleNotFoundError):
-    import medcoupling as mc
-try:
-    from ..Utilities.logger import logger
-except (ImportError, ModuleNotFoundError):
-    import logging
-
-    logging.basicConfig(level=logging.INFO)
-    logger = logging.getLogger("code_aster")
+from ..Utilities.import_helper import medcoupling as mc
+from ..Utilities.logger import logger
 
 
 class VisuCutBuilder:
