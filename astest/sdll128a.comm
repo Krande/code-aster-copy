@@ -415,7 +415,6 @@ modele = AFFE_MODELE(
 chmat = AFFE_MATERIAU(MAILLAGE=mail, AFFE=_F(GROUP_MA="ROTOR", MATER=acier))
 
 for kk in range(0, nbV, 1):
-
     # --------------------------------
     # DEF DES SECTIONS et des RAIDEURS
     # --------------------------------
@@ -748,7 +747,7 @@ TEST_RESU(
             CRITERE="RELATIF",
         ),
         _F(
-            NUME_ORDRE=3,
+            FREQ=319.16172565657,
             PARA="AMOR_REDUIT",
             RESULTAT=lmod,
             VALE_CALC=0.19673328987463,
