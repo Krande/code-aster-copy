@@ -64,10 +64,7 @@ UN = DEFI_CONSTANTE(VALE=1.0)
 ZERO = DEFI_CONSTANTE(VALE=0.0)
 
 # [][][][][][][][] Maillage et Modele [][][][][][][][]
-from code_aster import CA
-
-medfile = str(CA.basedir / "ssnv230b.mmed")
-mail = CA.ParallelMesh().readMedFile(medfile)
+mail = LIRE_MAILLAGE(FORMAT="MED")
 
 mode = AFFE_MODELE(MAILLAGE=mail, AFFE=(_F(PHENOMENE="MECANIQUE", MODELISATION="3D", TOUT="OUI"),))
 
