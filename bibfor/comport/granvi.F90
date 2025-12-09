@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -50,22 +50,22 @@ subroutine granvi(elem_model, ndt_, ndi_, nvi_)
     if (elem_model(1:2) .eq. '3D') then
         ndt = 6
         ndi = 3
-        nvi = ndt*9+1
     else if (elem_model(1:6) .eq. 'D_PLAN' .or. elem_model(1:4) .eq. 'AXIS') then
         ndt = 4
         ndi = 3
-        nvi = ndt*9+1
     else if (elem_model(1:6) .eq. 'C_PLAN') then
         ndt = 4
         ndi = 3
-        nvi = ndt*9+1
+    else if (elem_model(1:2) .eq. '2D') then
+        ndt = 4
+        ndi = 3
     else if (elem_model(1:2) .eq. '1D') then
         ndt = 3
         ndi = 3
-        nvi = ndt*9+1
     else
         ASSERT(.false.)
     end if
+    nvi = 55
 !
     if (present(ndt_)) then
         ndt_ = ndt
