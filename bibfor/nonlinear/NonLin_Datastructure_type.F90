@@ -138,6 +138,7 @@ module NonLin_Datastructure_type
         integer(kind=8) :: nb_resi_maxi = 7
         type(NL_DS_Resi) :: list_resi(7)
         aster_logical :: l_resi_test(7) = ASTER_FALSE
+        aster_logical :: l_resi_test_save(7) = ASTER_FALSE
         integer(kind=8) :: nb_refe = 0
         integer(kind=8) :: nb_refe_maxi = 11
         type(NL_DS_RefeResi) :: list_refe(11)

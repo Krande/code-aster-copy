@@ -136,14 +136,13 @@ subroutine nmcore(sdcrit, sderro, list_func_acti, nume_inst, iter_newt, &
 !
     call nmerge(sderro, 'RESI_MAXR', l_swap_rela_maxi)
     if (l_swap_rela_maxi) then
-        call SetResi(ds_conv, type_='RESI_GLOB_RELA', l_resi_test_=.true._1)
         call SetResi(ds_conv, type_='RESI_GLOB_MAXI', l_resi_test_=.false._1)
     end if
     call nmerge(sderro, 'RESI_MAXN', l_swap_comp_rela)
     if (l_swap_comp_rela) then
-        call SetResi(ds_conv, type_='RESI_GLOB_RELA', l_resi_test_=.false._1)
         call SetResi(ds_conv, type_='RESI_COMP_RELA', l_resi_test_=.true._1)
     end if
+    call SetResi(ds_conv, type_='RESI_GLOB_RELA', l_resi_test_=.true._1)
 !
 ! - New minimum exterior load
 !

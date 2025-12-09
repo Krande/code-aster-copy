@@ -65,8 +65,7 @@ subroutine nmcore_swap(sderro, nume_inst, load_norm, load_mini, last_resi_conv, 
 !
 ! - Get parameters
 !
-    call GetResi(ds_conv, type='RESI_GLOB_RELA', user_para_=resi_glob_rela, &
-                 l_resi_test_=l_rela)
+    call GetResi(ds_conv, type='RESI_GLOB_RELA', l_resi_test_=l_rela)
     call GetResi(ds_conv, type='RESI_GLOB_MAXI', user_para_=resi_glob_maxi, &
                  l_resi_test_=l_maxi)
     call GetResi(ds_conv, type='RESI_COMP_RELA', user_para_=resi_comp_rela, &
@@ -79,8 +78,7 @@ subroutine nmcore_swap(sderro, nume_inst, load_norm, load_mini, last_resi_conv, 
             l_rela = .true._1
             l_comp = .false._1
             l_swap_comp_rela = .true._1
-            resi_glob_rela = resi_comp_rela
-            resi_glob_maxi = resi_comp_rela
+            if (.not. l_maxi) resi_glob_maxi = resi_comp_rela
         end if
     end if
 !
@@ -88,12 +86,17 @@ subroutine nmcore_swap(sderro, nume_inst, load_norm, load_mini, last_resi_conv, 
 !
     if (l_rela) then
         swap_trig = 1.d-6*load_mini
+        ds_conv%swap_trig = swap_trig
         if (load_norm .le. swap_trig) then
             if (nume_inst .gt. 1) then
-                l_rela = .false._1
-                l_maxi = .true._1
-                l_swap_rela_maxi = .true._1
-                resi_glob_maxi = last_resi_conv
+                if (l_maxi .or. l_comp) then
+                    l_rela = .false._1
+                else
+                    l_rela = .false._1
+                    l_maxi = .true._1
+                    l_swap_rela_maxi = .true._1
+                    resi_glob_maxi = last_resi_conv
+                end if
             end if
             if (l_swap_comp_rela) then
                 l_rela = .false._1
@@ -105,8 +108,7 @@ subroutine nmcore_swap(sderro, nume_inst, load_norm, load_mini, last_resi_conv, 
 !
 ! - Set new active residuals and convergence parameters
 !
-    call SetResi(ds_conv, type_='RESI_GLOB_RELA', user_para_=resi_glob_rela, &
-                 l_resi_test_=l_rela)
+    call SetResi(ds_conv, type_='RESI_GLOB_RELA', l_resi_test_=l_rela)
     call SetResi(ds_conv, type_='RESI_GLOB_MAXI', user_para_=resi_glob_maxi, &
                  l_resi_test_=l_maxi)
     call SetResi(ds_conv, type_='RESI_COMP_RELA', l_resi_test_=l_comp)
