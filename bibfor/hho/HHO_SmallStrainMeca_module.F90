@@ -147,7 +147,7 @@ contains
 ! ----- compute E_prev = gradrec_sym * depl_prev
         call gradrec%dot(depl_prev, E_prev_coeff)
 !
-! ----- compute E_incr = gradrec_sym * E_incr_coeff
+! ----- compute E_incr = gradrec_sym * depl_incr
         call gradrec%dot(depl_incr, E_incr_coeff)
 !
 ! ----- Loop on quadrature point
