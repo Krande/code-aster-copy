@@ -276,7 +276,7 @@ keywords_coverage:
     paths:
       - build/coverage/*
   rules:
-    - if: $BUILDTYPE == "nightly"
+    - if: $BUILDTYPE == "nightly" || $BUILDTYPE == "ci"
       when: always
   allow_failure: true
 
