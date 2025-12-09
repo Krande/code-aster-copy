@@ -733,35 +733,27 @@ IMPR_FONCTION(
 with SharedTmpdir("ssnp14a_") as tmpdir:
     medfile = osp.join(tmpdir.path, "resu.ssnp14a.90.med")
     DEFI_FICHIER(UNITE=90, FICHIER=medfile, TYPE="BINARY")
-    IMPR_RESU(
-        FICHIER_UNIQUE="OUI", FORMAT="MED", UNITE=90, RESU=_F(RESULTAT=U), VERSION_MED="4.1.0"
-    )
+    IMPR_RESU(FORMAT="MED", UNITE=90, RESU=_F(RESULTAT=U), VERSION_MED="4.1.0")
 
     DEFI_FICHIER(ACTION="LIBERER", UNITE=90)
 
 with SharedTmpdir("ssnp14a_") as tmpdir:
     medfile = osp.join(tmpdir.path, "resu.ssnp14a.91.med")
     DEFI_FICHIER(UNITE=91, FICHIER=medfile, TYPE="BINARY")
-    IMPR_RESU(
-        FICHIER_UNIQUE="OUI", FORMAT="MED", UNITE=91, RESU=_F(RESULTAT=U2), VERSION_MED="4.0.0"
-    )
+    IMPR_RESU(FORMAT="MED", UNITE=91, RESU=_F(RESULTAT=U2), VERSION_MED="4.0.0")
 
     DEFI_FICHIER(ACTION="LIBERER", UNITE=91)
 
 with SharedTmpdir("ssnp14a_") as tmpdir:
     medfile = osp.join(tmpdir.path, "resu.ssnp14a.92.med")
     DEFI_FICHIER(UNITE=92, FICHIER=medfile, TYPE="BINARY")
-    IMPR_RESU(
-        FICHIER_UNIQUE="OUI", FORMAT="MED", UNITE=92, RESU=_F(RESULTAT=U3), VERSION_MED="4.1.0"
-    )
+    IMPR_RESU(FORMAT="MED", UNITE=92, RESU=_F(RESULTAT=U3), VERSION_MED="4.1.0")
     DEFI_FICHIER(ACTION="LIBERER", UNITE=92)
 
 with SharedTmpdir("ssnp14a_") as tmpdir:
     medfile = osp.join(tmpdir.path, "resu.ssnp14a.94.med")
     DEFI_FICHIER(UNITE=94, FICHIER=medfile, TYPE="BINARY")
-    IMPR_RESU(
-        FICHIER_UNIQUE="OUI", FORMAT="MED", UNITE=94, RESU=_F(RESULTAT=U4), VERSION_MED="4.1.0"
-    )
+    IMPR_RESU(FORMAT="MED", UNITE=94, RESU=_F(RESULTAT=U4), VERSION_MED="4.1.0")
     DEFI_FICHIER(ACTION="LIBERER", UNITE=94)
 
 FIN()
