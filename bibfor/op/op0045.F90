@@ -83,6 +83,7 @@ subroutine op0045()
     call infmaj()
     mod45 = 'OP45'
     mod45b = mod45
+    lcomod = .false.
 !
 ! --  ETAPE 0.0: INITIALISATIONS PROPRES A CET OPERATEUR
     call vpini0(compex, modes, typcon, solveu, eigsol, &

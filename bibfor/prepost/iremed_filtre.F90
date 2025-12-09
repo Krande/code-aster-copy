@@ -72,7 +72,7 @@ subroutine iremed_filtre(nomast, nomsd, base, par_seqfile)
     integer(kind=8) :: nuanom(MT_NTYMAX, MT_NNOMAX)
     integer(kind=8) :: ino, jnoex, jnbno, jnbno1, nbnot, iproc, jno, jma, jnbma, nbmat, jmaex
     integer(kind=8) :: rang, nbproc, ityp, jtyp, jtyp2, iaux, ifm, niv, jtypg
-    integer(kind=8) :: ima, ite04, ite08, itr03, itr04, nb_comm, i_comm, domj_i
+    integer(kind=8) :: ima, nb_comm, i_comm, domj_i
     integer(kind=8) :: jjoine, jjoinr, nbnoee, nbnoer, numpro, jenvoi1, jrecep1
     integer(kind=4) :: tag4, numpr4, n4e, n4r
     character(len=8) :: nomtyp(MT_NTYMAX), k8bid
@@ -217,16 +217,15 @@ subroutine iremed_filtre(nomast, nomsd, base, par_seqfile)
         call wkvect(nomsd//'.MATY', base//' V I', MT_NTYMAX*3, jtyp)
         call wkvect(nomsd//'.MATYP', base//' V I', MT_NTYMAX*3, iaux)
         call wkvect('&&FILTRE.TYPMAILL', 'V V I', MT_NTYMAX, jtyp2)
-        call jenonu(jexnom('&CATA.TM.NOMTM', 'TETRA8'), ite08)
-        call jenonu(jexnom('&CATA.TM.NOMTM', 'TETRA4'), ite04)
-        call jenonu(jexnom('&CATA.TM.NOMTM', 'TRIA4'), itr04)
-        call jenonu(jexnom('&CATA.TM.NOMTM', 'TRIA3'), itr03)
         nbmat = 0
         do ima = 1, nbmail
             if (zi(jmaex+ima-1) == rang) then
                 ityp = typma(ima)
-                if (ityp .eq. ite08) ityp = ite04
-                if (ityp .eq. itr04) ityp = itr03
+                if (ityp .eq. MT_HEXA9) ityp = MT_HEXA8
+                if (ityp .eq. MT_TETRA15) ityp = MT_TETRA10
+                if (ityp .eq. MT_PYRAM19) ityp = MT_PYRAM13
+                if (ityp .eq. MT_PENTA21) ityp = MT_PENTA18
+                if (ityp .eq. MT_PENTA7) ityp = MT_PENTA6
                 zi(jtyp2+ityp-1) = zi(jtyp2+ityp-1)+1
                 zi(jma+ima-1) = zi(jtyp2+ityp-1)
                 nbmat = nbmat+1
@@ -258,8 +257,11 @@ subroutine iremed_filtre(nomast, nomsd, base, par_seqfile)
         do ima = 1, nbmail
             if (zi(jma+ima-1) .ne. 0) then
                 ityp = typma(ima)
-                if (ityp .eq. ite08) ityp = ite04
-                if (ityp .eq. itr04) ityp = itr03
+                if (ityp .eq. MT_HEXA9) ityp = MT_HEXA8
+                if (ityp .eq. MT_TETRA15) ityp = MT_TETRA10
+                if (ityp .eq. MT_PYRAM19) ityp = MT_PYRAM13
+                if (ityp .eq. MT_PENTA21) ityp = MT_PENTA18
+                if (ityp .eq. MT_PENTA7) ityp = MT_PENTA6
                 zi(jma+ima-1) = zi(jma+ima-1)+zi(jtyp+3*(ityp-1))-1
             end if
         end do
