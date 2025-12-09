@@ -24,9 +24,10 @@ DEBUT(CODE="OUI", DEBUG=_F(SDVERI="OUI"))
 # Elements finis couverts : 3D, DKT, GRILLE_MEMBRANE, BARRE, DIS_T_N
 # Fonctionnalités examinées :
 #  1) Affectation d'une température ELNO
-#  2) Affectation d'une déformation anélastique ELNO non nulle sur les éléments 3D
-#  3) STAT_NON_LINE pour s'assurer de la prédiction -> convergence en 1 itération
-#  4) CALC_CHAMP / VARC_ELGA
+#  2) Affectation d'un séchage ELNO
+#  3) Affectation d'une déformation anélastique ELNO non nulle sur les éléments 3D
+#  4) STAT_NON_LINE pour s'assurer de la prédiction -> convergence en 1 itération
+#  5) CALC_CHAMP / VARC_ELGA
 
 
 # Cas de chargement : sollicitation uniaxiale (traction simple) dans la direction y
@@ -35,12 +36,13 @@ DEBUT(CODE="OUI", DEBUG=_F(SDVERI="OUI"))
 
 UIMP = 2.0e-3  # déplacement d'allongement imposé (comme L=1 mm, la déformation vaut aussi uimp)
 TIMP = 100  # élévation de température (linéaire entre 0 et 1 s)
+CIMP = 50  # concentration en eau imposée (linéaire entre 0 et 50)
 EIMP = 5.0e-4  # déformation anélastique imposée dans la direction yy
 
 YOUNG = 2.0e5  # Module de young, raideur du ressort et raideur des barres (section = 1 mm2)
 NU = 0.3
 ALPHA = 1.0e-5
-
+KDESSIC = 3.6e-6
 
 ma_me = LIRE_MAILLAGE(INFO=2)
 
@@ -68,6 +70,13 @@ mat_indep_temp = DEFI_MATERIAU(
     ELAS=_F(E=YOUNG, NU=NU, ALPHA=ALPHA), ECRO_LINE=_F(SY=1000, D_SIGM_EPSI=1000)
 )
 
+
+acier_sech = DEFI_MATERIAU(
+    ELAS_FO=_F(E=f_young, NU=f_nu, ALPHA=f_alpha, TEMP_DEF_ALPHA=0, K_DESSIC=KDESSIC),
+    ECRO_LINE=_F(SY=1000, D_SIGM_EPSI=1000),
+    ECRO_NL=_F(R0=1000, RH=1000),
+    VISC_ELAS=_F(TAU=10.0, K=1.0e-6),  # Quasiment sans influence (juste pour prendre en compte)
+)
 
 acier = DEFI_MATERIAU(
     ELAS_FO=_F(E=f_young, NU=f_nu, ALPHA=f_alpha, TEMP_DEF_ALPHA=0),
@@ -122,6 +131,7 @@ champ_mask_0 = CREA_CHAMP(
         _F(GROUP_MA="barre", NOM_CMP="TEMP", VALE=0),
         _F(GROUP_MA="ressort", NOM_CMP="TEMP", VALE=0),
     ),
+    PROL_ZERO="OUI",
 )
 
 
@@ -137,6 +147,7 @@ champ_zero = CREA_CHAMP(
         _F(CHAM_GD=champ_mask_0, GROUP_MA="barre", NOM_CMP="TEMP"),
         _F(CHAM_GD=champ_mask_0, GROUP_MA="ressort", NOM_CMP="TEMP"),
     ),
+    PROL_ZERO="OUI",
 )
 
 
@@ -152,6 +163,7 @@ champ_chaud = CREA_CHAMP(
         _F(GROUP_MA="barre", NOM_CMP="TEMP", VALE=TIMP),
         _F(GROUP_MA="ressort", NOM_CMP="TEMP", VALE=TIMP),
     ),
+    PROL_ZERO="OUI",
 )
 
 
@@ -161,6 +173,34 @@ evol_th_me = CREA_RESU(
     AFFE=(
         _F(NOM_CHAM="TEMP", CHAM_GD=champ_zero, INST=0, MODELE=mo_me),
         _F(NOM_CHAM="TEMP", CHAM_GD=champ_chaud, INST=1, MODELE=mo_me),
+    ),
+)
+
+champ_zero_sech = CREA_CHAMP(
+    OPERATION="ASSE",
+    TYPE_CHAM="ELNO_TEMP_R",
+    AFFE_SP=_F(CARA_ELEM=cara_me),
+    MODELE=mo_me,
+    ASSE=(_F(CHAM_GD=champ_mask_0, GROUP_MA="massif", NOM_CMP="SECH"),),
+    PROL_ZERO="OUI",
+)
+
+champ_chaud_sech = CREA_CHAMP(
+    OPERATION="AFFE",
+    TYPE_CHAM="ELNO_TEMP_R",
+    AFFE_SP=_F(CARA_ELEM=cara_me),
+    MODELE=mo_me,
+    AFFE=(_F(GROUP_MA="massif", NOM_CMP="SECH", VALE=CIMP),),
+    PROL_ZERO="OUI",
+)
+
+
+evol_sech_me = CREA_RESU(
+    OPERATION="AFFE",
+    TYPE_RESU="EVOL_SECH",
+    AFFE=(
+        _F(NOM_CHAM="SECH", CHAM_GD=champ_zero_sech, INST=0, MODELE=mo_me),
+        _F(NOM_CHAM="SECH", CHAM_GD=champ_chaud_sech, INST=1, MODELE=mo_me),
     ),
 )
 
@@ -182,7 +222,7 @@ epsa = CREA_CHAMP(
 mate_pur = AFFE_MATERIAU(
     MODELE=mo_me,
     AFFE=(
-        _F(GROUP_MA="massif", MATER=acier),
+        _F(GROUP_MA="massif", MATER=acier_sech),
         _F(GROUP_MA="coque", MATER=acier),
         _F(GROUP_MA="grille", MATER=mat_indep_temp),
         _F(GROUP_MA="barre", MATER=mat_indep_temp),
@@ -194,7 +234,11 @@ mate_pur = AFFE_MATERIAU(
 mate_me = AFFE_MATERIAU(
     MODELE=mo_me,
     CHAM_MATER=mate_pur,
-    AFFE_VARC=(_F(NOM_VARC="TEMP", EVOL=evol_th_me, VALE_REF=0), _F(NOM_VARC="EPSA", CHAM_GD=epsa)),
+    AFFE_VARC=(
+        _F(NOM_VARC="TEMP", EVOL=evol_th_me, VALE_REF=0),
+        _F(NOM_VARC="SECH", EVOL=evol_sech_me, VALE_REF=0),
+        _F(NOM_VARC="EPSA", CHAM_GD=epsa),
+    ),
 )
 
 
@@ -333,8 +377,8 @@ TEST_RESU(
             NOM_CMP="SIYY",
             GROUP_MA="massif",
             POINT=1,
-            VALE_REFE=YOUNG * (UIMP - ALPHA * TIMP - EIMP),
-            VALE_CALC=100.0000000009786,
+            VALE_REFE=YOUNG * (UIMP - ALPHA * TIMP - EIMP - KDESSIC * CIMP),
+            VALE_CALC=64.0000000007,
             CRITERE="RELATIF",
         ),
         _F(
@@ -416,6 +460,18 @@ TEST_RESU(
             POINT=1,
             VALE_REFE=TIMP,
             VALE_CALC=100.0,
+            CRITERE="RELATIF",
+        ),
+        _F(
+            REFERENCE="ANALYTIQUE",
+            INST=1,
+            RESULTAT=evol_me,
+            NOM_CHAM="VARC_ELGA",
+            NOM_CMP="SECH",
+            GROUP_MA="massif",
+            POINT=1,
+            VALE_REFE=CIMP,
+            VALE_CALC=50.0,
             CRITERE="RELATIF",
         ),
         _F(
@@ -507,6 +563,17 @@ TEST_RESU(
             GROUP_NO="no_massif",
             VALE_REFE=TIMP,
             VALE_CALC=100.0,
+            CRITERE="RELATIF",
+        ),
+        _F(
+            REFERENCE="ANALYTIQUE",
+            INST=1,
+            RESULTAT=evol_me,
+            NOM_CHAM="VARC_NOEU",
+            NOM_CMP="SECH",
+            GROUP_NO="no_massif",
+            VALE_REFE=CIMP,
+            VALE_CALC=50.0,
             CRITERE="RELATIF",
         ),
         _F(
