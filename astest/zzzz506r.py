@@ -36,10 +36,7 @@ DEBUT(CODE=_F(NIV_PUB_WEB="INTERNET"))
 #
 # ***********************************************************************
 
-from code_aster import CA
-
-medfile = str(CA.basedir / "zzzz506r.mmed")
-MAILLAGE = CA.ParallelMesh().readMedFile(medfile)
+MAILLAGE = LIRE_MAILLAGE(FORMAT="MED")
 
 MODELE = AFFE_MODELE(
     MAILLAGE=MAILLAGE, AFFE=_F(TOUT="OUI", PHENOMENE="MECANIQUE", MODELISATION="AXIS")

@@ -24,10 +24,7 @@ from code_aster.Commands import *
 
 DEBUT(CODE=_F(NIV_PUB_WEB="INTERNET"), DEBUG=_F(SDVERI="NON"))
 
-from code_aster import CA
-
-medfile = str(CA.basedir / "zzzz413b.med")
-MAIL = CA.ParallelMesh().readMedFile(medfile)
+MAIL = LIRE_MAILLAGE(UNITE=20, FORMAT="MED")
 
 MODELE = AFFE_MODELE(
     MAILLAGE=MAIL, AFFE=_F(TOUT="OUI", PHENOMENE="MECANIQUE", MODELISATION="TUYAU_3M")

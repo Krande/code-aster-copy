@@ -19,12 +19,11 @@
 
 import code_aster
 from code_aster.Commands import *
+from code_aster import CA
 
 DEBUT(CODE=_F(NIV_PUB_WEB="INTERNET"), ERREUR=_F(ALARME="ALARME"), DEBUG=_F(SDVERI="OUI"), INFO=1)
 
 test = code_aster.TestCase()
-
-from code_aster import CA
 
 medfile = str(CA.basedir / "zzzz505b.mmed")
 mesh = CA.ParallelMesh().readMedFile(medfile)

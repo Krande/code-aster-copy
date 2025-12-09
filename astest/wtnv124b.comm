@@ -64,10 +64,7 @@ DSATU = CALC_FONC_INTERP(
 #    MAILLAGE + MODELE
 # ***********************************************************************
 
-from code_aster import CA
-
-medfile = str(CA.basedir / "ssnv168c.mmed")
-MAILLAGE = CA.ParallelMesh().readMedFile(medfile)
+MAILLAGE = LIRE_MAILLAGE(FORMAT="MED")
 
 MODELE = AFFE_MODELE(
     MAILLAGE=MAILLAGE, AFFE=_F(TOUT="OUI", PHENOMENE="MECANIQUE", MODELISATION="3D_HHMS")

@@ -30,10 +30,7 @@ DEBUT(CODE=_F(NIV_PUB_WEB="INTERNET"), DEBUG=_F(SDVERI="NON"))
 #                  DE RE-DECOUPAGE DU PAS DE TEMPS PAR EVENT-DRIVEN
 # ......................................................................
 
-from code_aster import CA
-
-medfile = str(CA.basedir / "ssnp15f.mmed")
-MA = CA.ParallelMesh().readMedFile(medfile)
+MA = LIRE_MAILLAGE(FORMAT="MED")
 
 
 MO = AFFE_MODELE(MAILLAGE=MA, AFFE=_F(TOUT="OUI", PHENOMENE="MECANIQUE", MODELISATION="3D"))

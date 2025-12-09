@@ -23,10 +23,7 @@ DEBUT(CODE=_F(NIV_PUB_WEB="INTERNET"), DEBUG=_F(SDVERI="OUI"), INFO=1)
 
 test = code_aster.TestCase()
 
-from code_aster import CA
-
-medfile = str(CA.basedir / "zzzz506k.mmed")
-Mail = CA.ParallelMesh().readMedFile(medfile)
+Mail = LIRE_MAILLAGE(FORMAT="MED")
 
 Mail = MODI_MAILLAGE(
     reuse=Mail, MAILLAGE=Mail, ORIE_PEAU=_F(GROUP_MA_PEAU=("Press", "Sym_x", "Sym_y", "Sym_z"))
