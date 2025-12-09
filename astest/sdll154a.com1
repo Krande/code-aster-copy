@@ -81,28 +81,12 @@ mfz_dins = np.array(deplacement_impose_dins_values["MFZ"])
 # -------------------------------------------------------------------------------------------------------
 # Lecture des chargements sismiques:
 # recherche NUME_ORDRE correspondant a NOM_CAS: attention que nume_ordre commence par 1
-nume_ordre_vale_tota = [list(sismique.getAccessParameters()["NOM_CAS"]).index("TOTA") + 1]
-print("nume_ordre_vale_tota:", nume_ordre_vale_tota)
 
 nume_ordre_part_dyna = [list(sismique_dyn.getAccessParameters()["NOM_CAS"]).index("TOTA") + 1]
 print("nume_ordre_part_dyna:", nume_ordre_part_dyna)
 
 nume_ordre_part_qs = [list(sismique_qs.getAccessParameters()["NOM_CAS"]).index("TOTA") + 1]
 print("nume_ordre_part_qs:", nume_ordre_part_qs)
-
-
-table = CREA_TABLE(
-    RESU=_F(
-        RESULTAT=sismique,
-        NUME_ORDRE=nume_ordre_vale_tota,
-        NOM_CHAM="EFGE_ELNO",
-        TOUT="OUI",
-        NOM_CMP=("MT", "MFY", "MFZ"),
-    )
-)
-sismique_values = table.EXTR_TABLE().values()
-mfy_sismique = np.array(sismique_values["MFY"])
-mfz_sismique = np.array(sismique_values["MFZ"])
 
 table = CREA_TABLE(
     RESU=_F(
@@ -131,6 +115,104 @@ table = CREA_TABLE(
 sismique_qs_values = table.EXTR_TABLE().values()
 mfy_sismique_qs = np.array(sismique_qs_values["MFY"])
 mfz_sismique_qs = np.array(sismique_qs_values["MFZ"])
+
+
+nume_ordre_part_dyna_x = [list(sismique_dyn.getAccessParameters()["NOM_CAS"]).index("DIRE_X") + 1]
+print("nume_ordre_part_dyna_x:", nume_ordre_part_dyna_x)
+
+nume_ordre_part_qs_x = [list(sismique_qs.getAccessParameters()["NOM_CAS"]).index("DIRE_X") + 1]
+print("nume_ordre_part_qs_x:", nume_ordre_part_qs_x)
+
+table = CREA_TABLE(
+    RESU=_F(
+        RESULTAT=sismique_dyn,
+        NUME_ORDRE=nume_ordre_part_dyna_x,
+        NOM_CHAM="EFGE_ELNO",
+        TOUT="OUI",
+        NOM_CMP=("MT", "MFY", "MFZ"),
+    )
+)
+sismique_dyn_values_x = table.EXTR_TABLE().values()
+mfy_sismique_dyn_x = np.array(sismique_dyn_values_x["MFY"])
+mfz_sismique_dyn_x = np.array(sismique_dyn_values_x["MFZ"])
+
+table = CREA_TABLE(
+    RESU=_F(
+        RESULTAT=sismique_qs,
+        NUME_ORDRE=nume_ordre_part_qs_x,
+        NOM_CHAM="EFGE_ELNO",
+        TOUT="OUI",
+        NOM_CMP=("MT", "MFY", "MFZ"),
+    )
+)
+sismique_qs_values_x = table.EXTR_TABLE().values()
+mfy_sismique_qs_x = np.array(sismique_qs_values_x["MFY"])
+mfz_sismique_qs_x = np.array(sismique_qs_values_x["MFZ"])
+
+
+nume_ordre_part_dyna_y = [list(sismique_dyn.getAccessParameters()["NOM_CAS"]).index("DIRE_Y") + 1]
+print("nume_ordre_part_dyna_x:", nume_ordre_part_dyna_x)
+
+nume_ordre_part_qs_y = [list(sismique_qs.getAccessParameters()["NOM_CAS"]).index("DIRE_Y") + 1]
+print("nume_ordre_part_qs_y:", nume_ordre_part_qs_y)
+
+table = CREA_TABLE(
+    RESU=_F(
+        RESULTAT=sismique_dyn,
+        NUME_ORDRE=nume_ordre_part_dyna_y,
+        NOM_CHAM="EFGE_ELNO",
+        TOUT="OUI",
+        NOM_CMP=("MT", "MFY", "MFZ"),
+    )
+)
+sismique_dyn_values_y = table.EXTR_TABLE().values()
+mfy_sismique_dyn_y = np.array(sismique_dyn_values_y["MFY"])
+mfz_sismique_dyn_y = np.array(sismique_dyn_values_y["MFZ"])
+
+table = CREA_TABLE(
+    RESU=_F(
+        RESULTAT=sismique_qs,
+        NUME_ORDRE=nume_ordre_part_qs_y,
+        NOM_CHAM="EFGE_ELNO",
+        TOUT="OUI",
+        NOM_CMP=("MT", "MFY", "MFZ"),
+    )
+)
+sismique_qs_values_y = table.EXTR_TABLE().values()
+mfy_sismique_qs_y = np.array(sismique_qs_values_y["MFY"])
+mfz_sismique_qs_y = np.array(sismique_qs_values_y["MFZ"])
+
+nume_ordre_part_dyna_z = [list(sismique_dyn.getAccessParameters()["NOM_CAS"]).index("DIRE_Z") + 1]
+print("nume_ordre_part_dyna_x:", nume_ordre_part_dyna_x)
+
+nume_ordre_part_qs_z = [list(sismique_qs.getAccessParameters()["NOM_CAS"]).index("DIRE_Z") + 1]
+print("nume_ordre_part_qs_z:", nume_ordre_part_qs_z)
+
+table = CREA_TABLE(
+    RESU=_F(
+        RESULTAT=sismique_dyn,
+        NUME_ORDRE=nume_ordre_part_dyna_z,
+        NOM_CHAM="EFGE_ELNO",
+        TOUT="OUI",
+        NOM_CMP=("MT", "MFY", "MFZ"),
+    )
+)
+sismique_dyn_values_z = table.EXTR_TABLE().values()
+mfy_sismique_dyn_z = np.array(sismique_dyn_values_z["MFY"])
+mfz_sismique_dyn_z = np.array(sismique_dyn_values_z["MFZ"])
+
+table = CREA_TABLE(
+    RESU=_F(
+        RESULTAT=sismique_qs,
+        NUME_ORDRE=nume_ordre_part_qs_z,
+        NOM_CHAM="EFGE_ELNO",
+        TOUT="OUI",
+        NOM_CMP=("MT", "MFY", "MFZ"),
+    )
+)
+sismique_qs_values_z = table.EXTR_TABLE().values()
+mfy_sismique_qs_z = np.array(sismique_qs_values_z["MFY"])
+mfz_sismique_qs_z = np.array(sismique_qs_values_z["MFZ"])
 
 # # PrintOut :
 # print('MFY_DYN_sis_aster = ', mfy_sismique_dyn)
@@ -180,6 +262,46 @@ post_roche_analyticSism.calcul_ressort()
 post_roche_analyticSism.calcul_abattement()
 post_roche_analyticSism.calc_moment_abat()
 post_roche_analyticSism.calcul_sigma_eq()
+
+post_roche_analyticSismX = PostRocheAnalytic(
+    mfy_poids_propre_neg,
+    mt_deplacement_impose,
+    mfy_sismique_dyn_x,
+    mfz_sismique_dyn_x,
+    mfy_sismique_qs_x,
+    mfz_sismique_qs_x,
+    pression=1e6,
+)
+post_roche_analyticSismX.calcul_ressort()
+post_roche_analyticSismX.calcul_abattement()
+post_roche_analyticSismX.calcul_sigma_eq()
+
+post_roche_analyticSismY = PostRocheAnalytic(
+    mfy_poids_propre_neg,
+    mt_deplacement_impose,
+    mfy_sismique_dyn_y,
+    mfz_sismique_dyn_y,
+    mfy_sismique_qs_y,
+    mfz_sismique_qs_y,
+    pression=1e6,
+)
+post_roche_analyticSismY.calcul_ressort()
+post_roche_analyticSismY.calcul_abattement()
+post_roche_analyticSismY.calcul_sigma_eq()
+
+post_roche_analyticSismZ = PostRocheAnalytic(
+    mfy_poids_propre_neg,
+    mt_deplacement_impose,
+    mfy_sismique_dyn_z,
+    mfz_sismique_dyn_z,
+    mfy_sismique_qs_z,
+    mfz_sismique_qs_z,
+    pression=1e6,
+)
+post_roche_analyticSismZ.calcul_ressort()
+post_roche_analyticSismZ.calcul_abattement()
+post_roche_analyticSismZ.calcul_sigma_eq()
+
 
 # VARIANTE = 'RCC_MRX' & SIGM_ABAT = 'CODE'
 post_roche_analyticSism_Coude = PostRocheAnalytic(
@@ -3398,6 +3520,162 @@ TEST_RESU(
             ORDRE_GRANDEUR=1,
             VALE_CALC=0.0,
             VALE_REFE=epsi(post_roche_analyticSism._sigma_sismique_opt_moment[3]),
+        ),
+    )
+)
+
+
+# TEST_RESU resuPostRocheToutSismX,Y,Z : VARIANTE = 'RCC_MRX', SIGM_ABAT = 'RCC_MRX'
+# validation de DIRECTION X, Y et Z, on teste seulement X9
+TEST_RESU(
+    RESU=(
+        # ROC1 : Champ principal
+        # ROC1_ELNO-X9= contrainte équivalente optimisée
+        _F(
+            GROUP_MA="M1",
+            POINT=1,
+            REFERENCE="AUTRE_ASTER",
+            RESULTAT=resuPostRocheToutSismX,
+            NOM_CHAM="ROC1_ELNO",
+            INST=0.0,
+            NOM_CMP="X9",
+            VALE_CALC=26668272.605733577,
+            VALE_REFE=post_roche_analyticSismX._sigma_eq_opt[0],
+        ),
+        _F(
+            GROUP_MA="M1",
+            POINT=2,
+            REFERENCE="AUTRE_ASTER",
+            RESULTAT=resuPostRocheToutSismX,
+            NOM_CHAM="ROC1_ELNO",
+            INST=0.0,
+            NOM_CMP="X9",
+            VALE_CALC=8147765.20255054,
+            VALE_REFE=post_roche_analyticSismX._sigma_eq_opt[1],
+        ),
+        _F(
+            GROUP_MA="M2",
+            POINT=1,
+            REFERENCE="AUTRE_ASTER",
+            RESULTAT=resuPostRocheToutSismX,
+            NOM_CHAM="ROC1_ELNO",
+            INST=0.0,
+            NOM_CMP="X9",
+            VALE_CALC=8147765.202550544,
+            VALE_REFE=post_roche_analyticSismX._sigma_eq_opt[2],
+        ),
+        _F(
+            GROUP_MA="M2",
+            POINT=2,
+            REFERENCE="AUTRE_ASTER",
+            RESULTAT=resuPostRocheToutSismX,
+            NOM_CHAM="ROC1_ELNO",
+            INST=0.0,
+            NOM_CMP="X9",
+            VALE_CALC=4837220.1449494455,
+            VALE_REFE=post_roche_analyticSismX._sigma_eq_opt[3],
+        ),
+    )
+)
+
+TEST_RESU(
+    RESU=(
+        # ROC1 : Champ principal
+        # ROC1_ELNO-X9= contrainte équivalente optimisée
+        _F(
+            GROUP_MA="M1",
+            POINT=1,
+            REFERENCE="AUTRE_ASTER",
+            RESULTAT=resuPostRocheToutSismY,
+            NOM_CHAM="ROC1_ELNO",
+            INST=0.0,
+            NOM_CMP="X9",
+            VALE_CALC=31566476.410377424,
+            VALE_REFE=post_roche_analyticSismY._sigma_eq_opt[0],
+        ),
+        _F(
+            GROUP_MA="M1",
+            POINT=2,
+            REFERENCE="AUTRE_ASTER",
+            RESULTAT=resuPostRocheToutSismY,
+            NOM_CHAM="ROC1_ELNO",
+            INST=0.0,
+            NOM_CMP="X9",
+            VALE_CALC=10046038.889891602,
+            VALE_REFE=post_roche_analyticSismY._sigma_eq_opt[1],
+        ),
+        _F(
+            GROUP_MA="M2",
+            POINT=1,
+            REFERENCE="AUTRE_ASTER",
+            RESULTAT=resuPostRocheToutSismY,
+            NOM_CHAM="ROC1_ELNO",
+            INST=0.0,
+            NOM_CMP="X9",
+            VALE_CALC=10046038.889891637,
+            VALE_REFE=post_roche_analyticSismY._sigma_eq_opt[2],
+        ),
+        _F(
+            GROUP_MA="M2",
+            POINT=2,
+            REFERENCE="AUTRE_ASTER",
+            RESULTAT=resuPostRocheToutSismY,
+            NOM_CHAM="ROC1_ELNO",
+            INST=0.0,
+            NOM_CMP="X9",
+            VALE_CALC=4850955.2135606315,
+            VALE_REFE=post_roche_analyticSismY._sigma_eq_opt[3],
+        ),
+    )
+)
+
+TEST_RESU(
+    RESU=(
+        # ROC1 : Champ principal
+        # ROC1_ELNO-X9= contrainte équivalente optimisée
+        _F(
+            GROUP_MA="M1",
+            POINT=1,
+            REFERENCE="AUTRE_ASTER",
+            RESULTAT=resuPostRocheToutSismZ,
+            NOM_CHAM="ROC1_ELNO",
+            INST=0.0,
+            NOM_CMP="X9",
+            VALE_CALC=31285705.055320945,
+            VALE_REFE=post_roche_analyticSismZ._sigma_eq_opt[0],
+        ),
+        _F(
+            GROUP_MA="M1",
+            POINT=2,
+            REFERENCE="AUTRE_ASTER",
+            RESULTAT=resuPostRocheToutSismZ,
+            NOM_CHAM="ROC1_ELNO",
+            INST=0.0,
+            NOM_CMP="X9",
+            VALE_CALC=10404890.62768962,
+            VALE_REFE=post_roche_analyticSismZ._sigma_eq_opt[1],
+        ),
+        _F(
+            GROUP_MA="M2",
+            POINT=1,
+            REFERENCE="AUTRE_ASTER",
+            RESULTAT=resuPostRocheToutSismZ,
+            NOM_CHAM="ROC1_ELNO",
+            INST=0.0,
+            NOM_CMP="X9",
+            VALE_CALC=10404890.627689626,
+            VALE_REFE=post_roche_analyticSismZ._sigma_eq_opt[2],
+        ),
+        _F(
+            GROUP_MA="M2",
+            POINT=2,
+            REFERENCE="AUTRE_ASTER",
+            RESULTAT=resuPostRocheToutSismZ,
+            NOM_CHAM="ROC1_ELNO",
+            INST=0.0,
+            NOM_CMP="X9",
+            VALE_CALC=4840159.43178769,
+            VALE_REFE=post_roche_analyticSismZ._sigma_eq_opt[3],
         ),
     )
 )
