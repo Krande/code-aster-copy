@@ -24,7 +24,7 @@ interface
                       option, angmas, sigp, nvi, vip, &
                       typmod, ndsde, dsidep, codret)
         use Behaviour_type
-        type(Behaviour_Integ), intent(in) :: BEHinteg
+        type(Behaviour_Integ), intent(inout) :: BEHinteg
         character(len=*), intent(in) :: fami
         integer(kind=8), intent(in) :: kpg
         integer(kind=8), intent(in) :: ksp

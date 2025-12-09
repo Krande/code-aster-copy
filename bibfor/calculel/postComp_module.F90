@@ -435,9 +435,13 @@ contains
                         postComp%postCompFields%sigm, iret)
             if (iret .ne. 0) then
 ! ------------- Compute and save
-                call computeField(postComp%postCompResu, "SIEF_ELGA", option)
-                call rsexch(' ', postComp%postCompResu%resultOut, 'SIEF_ELGA', numeStore, &
-                            postComp%postCompFields%sigm, iret)
+                if (postComp%postCompResu%resultType .eq. "EVOL_NOLI") then
+                    call utmess("F", "CALCCHAMP1_4")
+                else
+                    call computeField(postComp%postCompResu, "SIEF_ELGA", option)
+                    call rsexch(' ', postComp%postCompResu%resultOut, 'SIEF_ELGA', numeStore, &
+                                postComp%postCompFields%sigm, iret)
+                end if
             end if
         end if
 
@@ -717,20 +721,21 @@ contains
 ! Compute FORC_NODA
 !
 ! In  postComp          : general type for post-processing
-! In  numeDof           : numbering
+! In  numeDofIn         : numbering
 ! In  fieldOut          : JEVEUX name of output field
 !
 ! --------------------------------------------------------------------------------------------------
-    subroutine compForcNoda(postComp, numeDof, fieldOutZ)
+    subroutine compForcNoda(postComp, numeDofIn, fieldOutZ)
 !   ------------------------------------------------------------------------------------------------
 ! ----- Parameters
         type(POST_COMP), intent(in) :: postComp
-        character(len=14), intent(in) :: numeDof
+        character(len=14), intent(in) :: numeDofIn
         character(len=*), intent(in) :: fieldOutZ
 ! ----- Local
         character(len=16), parameter :: option = "FORC_NODA"
-        integer(kind=8) :: iEqua, jfi, jfr, jfo
-        character(len=24) :: fieldOut
+        character(len=14) :: numeDof
+        integer(kind=8) :: iEqua, jfi, jfr, jfo, numeNbEqua
+        character(len=24) :: fieldOut, numeEqua
         character(len=24) :: veFnod(2)
         character(len=24) :: vaFnodCR, vaFnodCI, vaFnodR
         real(kind=8), pointer :: vafnodCRVale(:) => null(), vafnodCIVale(:) => null()
@@ -764,6 +769,20 @@ contains
                          postComp%postCompFields%sigmPrev, postComp%postCompFields%sigm, &
                          postComp%postCompFields%strx, postComp%postCompFields%disp, &
                          veFnod)
+
+! ----- Get numbering
+        call dismoi('NB_EQUA', numeDofIn, 'NUME_DDL', repi=numeNbEqua)
+        numeDof = numeDofIn
+        if (numeNbEqua .ne. postComp%postCompFields%nbEqua) then
+            call dismoi('NUME_EQUA', postComp%postCompFields%disp, 'CHAM_NO', repk=numeEqua)
+            numeDof = numeEqua(1:14)
+        end if
+
+        call dismoi('NB_EQUA', numeDof, 'NUME_DDL', repi=numeNbEqua)
+        if (numeNbEqua .ne. postComp%postCompFields%nbEqua) then
+            call utmess("F", "CALCCHAMP1_5", &
+                        ni=2, vali=[numeNbEqua, postComp%postCompFields%nbEqua])
+        end if
 
 ! ----- Pre-assemblying
         vaFnodCR = " "

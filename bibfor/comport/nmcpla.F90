@@ -37,7 +37,7 @@ subroutine nmcpla(BEHinteg, &
 #include "asterfort/rcvarc.h"
 #include "asterfort/Behaviour_type.h"
 !
-    type(Behaviour_Integ), intent(in) :: BEHinteg
+    type(Behaviour_Integ), intent(inout) :: BEHinteg
     integer(kind=8) :: imat, ndim, kpg, ksp, iret
     integer(kind=8) :: neps, nsig, ndsde
     character(len=16), intent(in) :: compor_plas(COMPOR_SIZE)
@@ -121,7 +121,7 @@ subroutine nmcpla(BEHinteg, &
     integer(kind=8) :: nvi_flua, nvi_plas, idx_vi_plas
     integer(kind=8) :: i, retcom, ire2, iret1, iret2, iret3
     integer(kind=8) :: nume_plas, nume_flua
-    integer(kind=8) :: k, iter, itemax
+    integer(kind=8) :: k, iter, itemax, nvi, numlc
     integer(kind=8) :: cerr(5)
     character(len=8) :: elem_model, nomc(5)
     character(len=16) :: rela_flua, rela_plas
@@ -152,6 +152,8 @@ subroutine nmcpla(BEHinteg, &
     read (compor_plas(NUME), '(I16)') nume_plas
     read (compor_creep(NUME), '(I16)') nume_flua
     ASSERT(compor_creep(RELA_NAME) (1:13) .eq. 'BETON_GRANGER')
+    nvi = BEHinteg%behavPara%nvi
+    numlc = BEHinteg%behavPara%numlc
 !
 ! - Get size for tensors
 !
@@ -206,6 +208,8 @@ subroutine nmcpla(BEHinteg, &
 !
         l_epsi_varc = ASTER_TRUE
         sigf2 = 0.d0
+        BEHinteg%behavPara%nvi = nvi_flua
+        BEHinteg%behavPara%numlc = nume_flua
         call nmcomp(BEHinteg, &
                     fami, kpg, ksp, ndim, typmod, &
                     imat, compor_creep, carcri, timed, timef, &
@@ -213,6 +217,8 @@ subroutine nmcpla(BEHinteg, &
                     vind, option, angmas, &
                     sigf2, vinf, ndsde, dsde, &
                     iret, l_epsi_varc_=l_epsi_varc)
+        BEHinteg%behavPara%nvi = nvi
+        BEHinteg%behavPara%numlc = numlc
 !
 ! ----- Get material parameters
 !
@@ -280,6 +286,8 @@ subroutine nmcpla(BEHinteg, &
     l_epsi_varc = ASTER_FALSE
     idx_vi_plas = nvi_flua+1
     sigf = 0.d0
+    BEHinteg%behavPara%nvi = nvi_plas
+    BEHinteg%behavPara%numlc = nume_plas
     call nmcomp(BEHinteg, &
                 fami, kpg, ksp, ndim, typmod, &
                 imat, compor_plas, carcri, timed, timef, &
@@ -287,6 +295,8 @@ subroutine nmcpla(BEHinteg, &
                 vind(idx_vi_plas), option, angmas, &
                 sigf, vinf(idx_vi_plas), ndsde, dsde, &
                 retcom, l_epsi_varc_=l_epsi_varc)
+    BEHinteg%behavPara%nvi = nvi
+    BEHinteg%behavPara%numlc = numlc
     if (retcom .eq. 1) then
         iret = 1
         goto 999

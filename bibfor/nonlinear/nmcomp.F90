@@ -115,7 +115,7 @@ subroutine nmcomp(BEHinteg, &
 !
 ! --------------------------------------------------------------------------------------------------
     aster_logical :: conv_cp, l_epsi_varc, lMatr, lVari, lSigm, lMatrPred, lPred, invert
-    aster_logical :: l_defo_meca, l_czm, l_large, l_deborst, l_grad_vari
+    aster_logical :: lStrainMeca, l_czm, l_deborst
     integer(kind=8) :: icp, numlc, nvi_all, nvi, k, l, ndimsi
     integer(kind=8) :: codret_vali, codret_ldc, codret_cp
     real(kind=8):: prec
@@ -125,7 +125,7 @@ subroutine nmcomp(BEHinteg, &
     real(kind=8), allocatable:: vip_cp(:), ka3_min, k3a_min, c_min
     character(len=8)  :: materi
     character(len=8)  :: typmod_cp(2), typ_crit
-    character(len=16) :: option_cp, mult_comp, defo_ldc, defo_comp
+    character(len=16) :: option_cp, mult_comp
     type(Behaviour_Integ) :: BEHintegCP
 !
 ! --------------------------------------------------------------------------------------------------
@@ -141,29 +141,28 @@ subroutine nmcomp(BEHinteg, &
     if (present(materi_)) materi = materi_
     if (present(l_epsi_varc_)) l_epsi_varc = l_epsi_varc_
 
-    ! Variables protegees (in)
+! - Variables protegees (in)
     epsm = epsm_inp
     deps = deps_inp
 
-    ! Initialisation
+! - Initialisations
+    l_deborst = compor(PLANESTRESS) (1:7) .eq. 'DEBORST'
     codret_ldc = LDC_ERROR_NONE
     codret_cp = 0
     codret_vali = 0
-    read (compor(NUME), '(I16)') numlc
-    read (compor(NVAR), '(I16)') nvi_all
-    read (compor(DEFO_LDC), '(A16)') defo_ldc
-    read (compor(DEFO), '(A16)') defo_comp
+    numlc = BEHinteg%behavPara%numlc
+    if (l_deborst) then
+        read (compor(NVAR), '(I16)') nvi_all
+    else
+        nvi_all = BEHinteg%behavPara%nvi
+    end if
     lVari = L_VARI(option)
     lSigm = L_SIGM(option)
     lMatr = L_MATR(option)
     lMatrPred = L_MATR_PRED(option)
     lPred = L_PRED(option)
-    l_defo_meca = defo_ldc .eq. 'MECANIQUE'
+    lStrainMeca = BEHinteg%behavPara%lStrainMeca
     l_czm = typmod(2) .eq. 'ELEMJOIN' .or. typmod(2) .eq. 'INTERFAC'
-    l_grad_vari = typmod(2) .eq. 'GRADVARI'
-    l_large = defo_comp .eq. 'SIMO_MIEHE' .or. defo_comp .eq. 'GROT_GDEP' &
-              .or. defo_comp .eq. 'GREEN_LAGRANGE'
-    l_deborst = compor(PLANESTRESS) (1:7) .eq. 'DEBORST'
 
 ! --------------------------------------------------------------------------------------------------
 !   Modification des parametres en entree
@@ -181,7 +180,7 @@ subroutine nmcomp(BEHinteg, &
     end if
 
 ! En phase de prediction / defo_meca, deps est tel que deps_meca = 0 (structure additive defos)
-    if (l_defo_meca .and. lPred) then
+    if (lStrainMeca .and. lPred) then
 ! ----- Detect external state variables
         call detectVarc(BEHinteg)
 
@@ -249,7 +248,7 @@ subroutine nmcomp(BEHinteg, &
             else
                 vip_cp(1:nvi) = vim(1:nvi)
             end if
-
+            BEHintegCP%behavPara%nvi = nvi
             do icp = 1, nint(carcri(ITER_DEBORST_MAX))
 
                 ! Choix de l'option pour accéder à la matrice tangente pour methode de Newton
@@ -301,6 +300,7 @@ subroutine nmcomp(BEHinteg, &
         end if
 
         ! Integration du comportement avec le bon epzz et l'option reelle
+        BEHinteg%behavPara%nvi = nvi
         call redece(BEHinteg, &
                     fami, kpg, ksp, ndim, typmod_cp, &
                     l_epsi_varc, imate, materi, compor, mult_comp, &
@@ -358,11 +358,9 @@ subroutine nmcomp(BEHinteg, &
     end if
 
 ! - Prediction: contribution of the thermal stress to the Taylor expansion if needed
-    if (l_defo_meca .and. lPred) then
+    if (lStrainMeca .and. lPred) then
         if (.not. l_czm) then
             ndimsi = 2*ndim
-            ! A remettre suite à la fiche issue32329
-            !ASSERT(.not. l_large)
             ASSERT(typmod(2) .eq. ' ' .or. typmod(2) .eq. 'GRADVARI' .or. typmod(2) .eq. 'HHO')
             ASSERT(nsig .ge. ndimsi)
             ASSERT(size(dsidep, 1) .ge. ndimsi)
@@ -373,9 +371,11 @@ subroutine nmcomp(BEHinteg, &
     end if
 
 ! - Examen du domaine de validité
-    call lcvali(fami, kpg, ksp, imate, materi, &
-                compor, ndim, epsm, deps, instam, &
-                instap, codret_vali)
+    if (BEHinteg%behavPara%lChckBounds) then
+        call lcvali(fami, kpg, ksp, imate, materi, &
+                    compor, ndim, epsm, deps, instam, &
+                    instap, codret_vali)
+    end if
 
 900 continue
 

@@ -104,7 +104,7 @@ subroutine redece(BEHinteg, &
     real(kind=8) :: deltat, tm, tp
     real(kind=8) :: dsidep_sub(merge(nsig, 6, nsig*neps .eq. ndsde), &
                                merge(neps, 6, nsig*neps .eq. ndsde))
-    character(len=16)::defo_comp
+    character(len=16) :: defo_comp
 ! --------------------------------------------------------------------------------------------------
 
     iip = nint(carcri(ITER_INTE_PAS))
@@ -112,7 +112,7 @@ subroutine redece(BEHinteg, &
     lMatr = L_MATR(option)
     lVari = L_VARI(option)
     lMatrPred = L_MATR_PRED(option)
-    read (compor(DEFO), '(A16)') defo_comp
+    defo_comp = compor(DEFO)
 
     ! Pour les variables de commande
     ca_iredec_ = 1

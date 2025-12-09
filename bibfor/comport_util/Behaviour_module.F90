@@ -43,7 +43,7 @@ module Behaviour_module
     private :: varcIsGEOM, isSolverIsExte
     private :: prepEltSize1, prepGradVelo
     public :: getAsterVariableName, getMFrontVariableName
-    private :: setFromOption, setFromCarcri
+    private :: setFromOption, setFromCarcri, chckBounds
     public :: detectVarc, behaviourGetParameters
 ! ==================================================================================================
     private
@@ -255,6 +255,9 @@ contains
             WRITE (6, *) '<DEBUG>  Présence de métallurgie: ', BEHInteg%behavPara%lElasIsMeta
         end if
 
+! ----- Detect VERI_BORNE
+        call chckBounds(fami, jvMaterCode, BEHinteg)
+
 ! ----- Set parameters from option
         call setFromOption(option, BEHinteg)
 
@@ -315,6 +318,7 @@ contains
         type(Behaviour_Integ), intent(inout) :: BEHinteg
 ! ----- Locals
         character(len=16) :: relaComp, defoLDC, defoComp, reguVisc, postIncr, mgisAddr
+        integer(kind=8) :: nvi, numlc
 !   ------------------------------------------------------------------------------------------------
 !
         if (LDC_PREP_DEBUG .eq. 1) then
@@ -328,10 +332,13 @@ contains
         reguVisc = compor(REGUVISC)
         postIncr = compor(POSTINCR)
         mgisAddr = compor(MGIS_ADDR)
+        read (compor(NUME), '(I16)') numlc
+        read (compor(NVAR), '(I16)') nvi
 
 ! ----- Set flags from behaviour
         BEHinteg%behavPara%lFiniteStrain = defoComp .eq. 'SIMO_MIEHE' .or. &
-                                           defoComp .eq. 'GROT_GDEP'
+                                           defoComp .eq. 'GROT_GDEP' .or. &
+                                           defoComp .eq. 'GREEN_LAGRANGE'
         BEHinteg%behavPara%lGdefLog = defoComp .eq. 'GDEF_LOG'
         BEHinteg%behavPara%lAnnealing = postIncr .eq. "REST_ECRO"
         BEHinteg%behavPara%lStrainMeca = defoLDC .eq. 'MECANIQUE'
@@ -340,6 +347,8 @@ contains
         BEHinteg%behavPara%lReguVisc = reguVisc .eq. 'REGU_VISC_ELAS'
         BEHinteg%behavPara%lMetaLemaAni = relaComp .eq. 'META_LEMA_ANI'
         BEHinteg%behavESVA%behavESVAExte%mgisAddr = mgisAddr
+        BEHinteg%behavPara%nvi = nvi
+        BEHinteg%behavPara%numlc = numlc
         if (LDC_PREP_DEBUG .eq. 1) then
             WRITE (6, *) '<DEBUG>  From COMPOR - lFiniteStrain: ', BEHinteg%behavPara%lFiniteStrain
             WRITE (6, *) '<DEBUG>  From COMPOR - lGdefLog: ', BEHinteg%behavPara%lGdefLog
@@ -1602,6 +1611,42 @@ contains
 !
 !   ------------------------------------------------------------------------------------------------
     end subroutine
-
+! --------------------------------------------------------------------------------------------------
+!
+! chckBounds
+!
+! Detect VERI_BORNE
+!
+! In  fami             : Gauss family for integration point rule
+! In  jvMaterCode      : adress for material parameters
+! IO  BEHinteg         : main object for managing the integration of behavior laws
+!
+! --------------------------------------------------------------------------------------------------
+    subroutine chckBounds(fami, jvMaterCode, BEHinteg)
+!   ------------------------------------------------------------------------------------------------
+! ----- Parameters
+        character(len=4), intent(in) :: fami
+        integer(kind=8), intent(in) :: jvMaterCode
+        type(Behaviour_Integ), intent(inout) :: BEHinteg
+! ----- Local
+        integer(kind=8), parameter :: kpg = 1, ksp = 1
+        character(len=8), parameter :: materi = ' '
+        integer(kind=8), parameter :: nbProp = 4
+        character(len=16), parameter :: propName(nbProp) = (/'EPSI_MAXI', 'VEPS_MAXI', &
+                                                             'TEMP_MINI', 'TEMP_MAXI'/)
+        real(kind=8) :: propVale(nbProp)
+        integer(kind=8) :: propCode(nbProp)
+!   ------------------------------------------------------------------------------------------------
+!
+        call rcvalb(fami, kpg, ksp, '+', jvMaterCode, &
+                    materi, 'VERI_BORNE', 0, ' ', [0.d0], &
+                    nbProp, propName, propVale, propCode, 0)
+        BEHinteg%behavPara%lChckBounds = propCode(1) .eq. 0 .or. &
+                                         propCode(2) .eq. 0 .or. &
+                                         propCode(3) .eq. 0 .or. &
+                                         propCode(4) .eq. 0
+!
+!   ------------------------------------------------------------------------------------------------
+    end subroutine
 !
 end module Behaviour_module

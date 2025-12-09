@@ -312,9 +312,17 @@ void ContactPairing::createVirtualElemForContact(
         auto lFric = zone->getFrictionParameter()->hasFriction();
 
         // Get pairing for this zone
-        auto surf2Volu = zone->getSlaveCellsSurfToVolu();
         auto listOfPairsZone = this->getListOfPairs( iZone );
         auto nbPairsZone = this->getNumberOfPairs( iZone );
+
+        // Link between surface and volume
+        MapLong surf2Volu;
+        if ( contAlgo == ContactAlgo::Nitsche ) {
+            if ( mesh->isParallel() ) {
+                UTMESS( "F", "CONTACT1_5" );
+            }
+            surf2Volu = zone->getSlaveCellsSurfToVolu();
+        }
 
         // Create vector of (virtual) contact cells for this zone
         VectorPairLong listContTypeZone;
@@ -549,9 +557,6 @@ void ContactPairing::buildFiniteElementDescriptor() {
 
     // Objects
     SetLong slaveNodePaired, slaveCellPaired;
-
-    // Index of current contact pair
-    // ASTERINTEGER iContPair = 0;
 
     // Object for number of cells for each type of contact cell
     MapLong contactElemType;

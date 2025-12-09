@@ -15,7 +15,7 @@
 ! You should have received a copy of the GNU General Public License
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
-! aslint: disable=W1504,W1306
+! aslint: disable=W1504,C1505,W1306
 !
 subroutine cgfint(ndim, nno1, nno2, npg, wref, &
                   vff1, vff2, dffr1, geom, tang, &
@@ -27,7 +27,6 @@ subroutine cgfint(ndim, nno1, nno2, npg, wref, &
 !
     use Behaviour_type
     use Behaviour_module
-!
     implicit none
 !
 #include "asterf_types.h"
@@ -143,6 +142,8 @@ subroutine cgfint(ndim, nno1, nno2, npg, wref, &
     comporSheath(RELA_NAME) = relaSheath
     write (comporSheath(NUME), '(I16)') numeSheath
     write (comporSheath(NVAR), '(I16)') nbviSheath
+    BEHInteg%behavPara%nvi = nbviSheath
+    BEHInteg%behavPara%numlc = numeSheath
 !
     if (rigi) call r8inir(nddl*nddl, 0.d0, matr, 1)
     if (resi) call r8inir(nddl, 0.d0, vect, 1)

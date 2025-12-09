@@ -267,16 +267,7 @@ DYNA_V = DYNA_NON_LINE(
     MODELE=MODYN,
     CHAM_MATER=MATDYN,
     EXCIT=(_F(CHARGE=CHARGX), _F(CHARGE=ONDELATE)),
-    #                       EXCIT=(_F(CHARGE=EVOL_CH,),
-    # ),
     COMPORTEMENT=(
-        #                                _F(
-        #                                    RELATION='Iwan',
-        #                               RESI_INTE=1E-15,
-        #                               ITER_INTE_MAXI=10,
-        ##                               ITER_INTE_PAS=12,
-        #                               GROUP_MA=mail_barrage,
-        #                        ),
         _F(RELATION="ELAS", GROUP_MA=mail_barrage),
         _F(
             RELATION="ELAS",
@@ -287,7 +278,7 @@ DYNA_V = DYNA_NON_LINE(
     INCREMENT=_F(LIST_INST=DEFLIST, INST_INIT=0.0, INST_FIN=1.0),
     NEWTON=_F(MATRICE="ELASTIQUE", REAC_ITER=1, REAC_INCR=1, PREDICTION="TANGENTE"),
     CONVERGENCE=_F(RESI_GLOB_RELA=1.0e-4, ITER_GLOB_MAXI=5),
-    ARCHIVAGE=_F(LIST_INST=TEMPS, CHAM_EXCLU="SIEF_ELGA"),
+    ARCHIVAGE=_F(LIST_INST=TEMPS),
     SCHEMA_TEMPS=_F(SCHEMA="NEWMARK", BETA=0.25, GAMMA=0.5, FORMULATION="DEPLACEMENT"),
     SOLVEUR=_F(NPREC=8, METHODE="MUMPS"),
 )

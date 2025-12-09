@@ -17,14 +17,14 @@
 ! --------------------------------------------------------------------
 !
 interface
-    subroutine lc8146(BEHinteg,&
-                      fami, kpg, ksp, ndim, imate,&
-                      compor, mult_comp, carcri, instam, instap, neps,&
-                      epsm, deps, nsig, sigm, vim,&
-                      option, angmas,sigp, nvi, vip, &
+    subroutine lc8146(BEHinteg, &
+                      fami, kpg, ksp, ndim, imate, &
+                      compor, mult_comp, carcri, instam, instap, neps, &
+                      epsm, deps, nsig, sigm, vim, &
+                      option, angmas, sigp, nvi, vip, &
                       typmod, icomp, ndsde, dsidep, codret)
         use Behaviour_type
-        type(Behaviour_Integ), intent(in) :: BEHinteg
+        type(Behaviour_Integ), intent(inout) :: BEHinteg
         character(len=*), intent(in) :: fami
         integer(kind=8), intent(in) :: kpg
         integer(kind=8), intent(in) :: ksp

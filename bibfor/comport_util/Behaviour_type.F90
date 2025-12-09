@@ -98,6 +98,12 @@ module Behaviour_type
         integer(kind=8) :: kpg = 0
 ! ----- Index of "sub"-point (plates, pipes, beams, etc.)
         integer(kind=8) :: ksp = 0
+! ----- Index of law
+        integer(kind=8) :: numlc = 0
+! ----- Number of internal state variable
+        integer(kind=8) :: nvi = 0
+! ----- Flag to check bounds
+        aster_logical :: lChckBounds = ASTER_FALSE
     end type Behaviour_Para
 ! ==================================================================================================
 ! Type: External state variables - geometric properties
