@@ -46,7 +46,7 @@ class TimeStepper(Observer, EventSource):
     """
 
     _eventid = EventId.TimeStepper
-    _times = _forced = _eps = _current = _initial = _final = _last = None
+    _times = _forced = _eps = _current = _initial = _final = _last = _store = None
     _actions = _state = None
     _split = _maxLevel = _minStep = _maxStep = _initStep = None
     __setattr__ = no_new_attributes(object.__setattr__)
@@ -381,6 +381,22 @@ class TimeStepper(Observer, EventSource):
     def __repr__(self):
         return f"<TimeStepper(from {self._initial} to {self._final}, size {self.size()}: {self._times})>"
 
+    def setForceStore(self, bool):
+        """Ignore storing policy and store initial state of current time step
+
+        Arguments:
+            bool (bool): True if initial state of current time step has to be stored, else False
+        """
+        self._store = bool
+
+    def getForceStore(self):
+        """Ignore storing policy and store initial state of current time step
+
+        Returns:
+            bool: True if initial state of current time step has to be stored, else False
+        """
+        return self._store
+
     @classmethod
     def from_keywords(cls, **args):
         """Initialize a TimeStepper from user keywords as provided to
@@ -471,6 +487,8 @@ class TimeStepper(Observer, EventSource):
                     assert fail["SUBD_METHODE"] == "AUTO"
                     # TODO not supported yet
                     act = TimeStepper.AutoSplit(event, minStep=fail["SUBD_PAS_MINI"])
+            elif fail["ACTION"] == "ARCHIVAGE":
+                act = TimeStepper.Archive(event)
             else:  # not supported yet, ignored
                 # raise KeyError(rf"ACTION=\"{fail['ACTION']}\" is not yet supported")
                 continue
@@ -834,6 +852,28 @@ class TimeStepper(Observer, EventSource):
             step = stp.getCurrent()
             stp.setFinal(step, current=step)
             logger.info(MessageLog.GetText("I", "ADAPTATION_13"))
+            return True
+
+    class Archive(Action):
+        """This action finalizes the calculation without error and archives last two timesteps. (keyword value: ARCHIVAGE)."""
+
+        def call(self, **context):
+            """Execute the action.
+
+            Arguments:
+                context (dict): Context of the event.
+
+            Returns:
+                bool: always *True*.
+            """
+            stp = context.get("timeStepper")
+            step = stp.getCurrent()
+            stp.setFinal(step, current=step)
+            stp.setForceStore(True)
+
+            args = {"valk": [self._event._fieldName, self._event._cmp]}
+            logger.info(MessageLog.GetText("I", "ADAPTATION_14", **args))
+
             return True
 
     class Split(Action):

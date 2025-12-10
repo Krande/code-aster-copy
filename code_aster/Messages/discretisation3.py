@@ -48,6 +48,9 @@ Nombre de pas maximum: %(i1)d
     30: _("""Si cet événement se déclenche, on arrête le calcul."""),
     31: _("""Si cet événement se déclenche, on découpe le pas de temps."""),
     36: _("""Si cet événement se déclenche, on continue le calcul."""),
+    37: _(
+        """Si cet événement se déclenche, on arrête le calcul en archivant le dernier pas de temps."""
+    ),
     50: _("""Le schéma d'adaptation %(i1)d du pas de temps ne se déclenche pas."""),
     51: _("""Le schéma d'adaptation %(i1)d du pas de temps se déclenche à tous les instants."""),
     52: _("""Le schéma d'adaptation %(i1)d du pas de temps se déclenche pour un seuil donné."""),

@@ -437,6 +437,8 @@ class NonLinearOperator(ContextMixin, EventSource):
                     # + reset current_matrix to None (REAC_INCR)
                     state.revert()
                     continue
+                if self.stepper.getForceStore():
+                    self._storeState(state.getState(-1), ignore_policy=True)
                 self.post_hooks()
                 self.notifyObservers()
                 state.commit()

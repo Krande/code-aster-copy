@@ -138,6 +138,8 @@ subroutine dfllsv(v_sdlist_linfor, v_sdlist_eevenr, v_sdlist_eevenk, sdlist_loca
         v_sdlist_eevenr(SIZE_LEEVR*(i_fail_save-1)+2) = FAIL_ACT_CUT
     else if (action_typek .eq. failActionKeyword(FAIL_ACT_CONTINUE)) then
         v_sdlist_eevenr(SIZE_LEEVR*(i_fail_save-1)+2) = FAIL_ACT_CONTINUE
+    else if (action_typek .eq. failActionKeyword(FAIL_ACT_ARCHI)) then
+        v_sdlist_eevenr(SIZE_LEEVR*(i_fail_save-1)+2) = FAIL_ACT_ARCHI
     else
         ASSERT(.false.)
     end if
