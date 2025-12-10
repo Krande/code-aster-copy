@@ -48,7 +48,7 @@ If the version has been configured with ``--use-srun``, you *must* use:
 
 .. code-block:: sh
 
-    bin/run_aster --srun path/to/file.export
+    bin/run_aster path/to/file.export
 
 or:
 

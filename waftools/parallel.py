@@ -55,8 +55,10 @@ def options(self):
     group.add_option(
         "--use-srun",
         dest="use_srun",
+        default=os.environ.get("ENABLE_SRUN") == "1",
         action="store_true",
-        help="use 'srun' to start processes instead of 'mpiexec' (default: False)",
+        help="use 'srun' to start processes instead of 'mpiexec' (default: False), "
+        "can be set with environment variable ENABLE_SRUN=1",
     )
     group.add_option(
         "--enable-ccache",
@@ -277,22 +279,23 @@ def check_vmsize(self):
 
 @Configure.conf
 def check_require_mpiexec(self, program):
-    """Check if mpiexec is required to run a program with one process."""
+    """Check if mpiexec/srun is required to run a program with one process."""
     cfg = self.env["CONFIG_PARAMETERS"]
     previous = cfg["require_mpiexec"]
+    starter = "mpiexec" if "srun" not in program else "srun"
     cmt = ""
-    self.start_msg("Checking if mpiexec is required")
+    self.start_msg(f"Checking if {starter} is required")
     try:
         # run simple program without mpiexec
         self.cmd_and_log(program)
         required = 0
     except Errors.WafError:
-        self.end_msg("mpiexec is required")
+        self.end_msg(f"{starter} is required")
         required = 1
     else:
         if previous:
             cmt = ", but enabled by configuration parameters"
-        self.end_msg("mpiexec is not required" + cmt)
+        self.end_msg(f"{starter} is not required" + cmt)
     finally:
         os.remove(program)
     cfg["require_mpiexec"] = required or previous
