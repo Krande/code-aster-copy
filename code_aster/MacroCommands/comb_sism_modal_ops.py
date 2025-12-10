@@ -291,7 +291,6 @@ class CombModalResponse:
     """
 
     def __init__(self, comb_mode, type_analyse, amors, freqs):
-
         self._type_comb = comb_mode["TYPE"]
         self._amors = amors
         self._freqs = freqs
@@ -767,11 +766,12 @@ class BaseRunner:
         if option not in mode_meca.getFieldsNames():
             UTMESS("F", "SEISME_62", valk=option)
 
-        phis = []
+        phis = np.array([])
         if all(nume_ordre in mode_meca.getIndexes() for nume_ordre in nume_ordres):
-            for imode in nume_ordres:
-                phis.append(mode_meca.getField(option, imode).getValues())
-        return np.array(phis)
+            phis = np.empty((len(nume_ordres), mode_meca.getField(option, nume_ordres[0]).size()))
+            for i, imode in enumerate(nume_ordres):
+                phis[i] = mode_meca.getField(option, imode).getValues()
+        return phis
 
     def _s_r_freq_cut(self, spectre):
         """Value of ZPA at the cutting frequency
@@ -798,7 +798,7 @@ class BaseRunner:
         """Correction by pseudo-mode/mode statique, for TYPE_ANALYSE = 'MONO_APPUI' and 'ENVELOPPE'
 
         Args:
-            pr_wr2_phi (ndarray)    : list of produit rho*phi/omega^2
+            pr_wr2_phi (ndarray)    : sum of list of produit rho*phi/omega^2
             w_r (ndarray)           : list of omega = 2*pi*freq
             direction (str)         : X, Y or Z
             pseudo_mode (ModeResult): pseudo mode for static correction
@@ -821,7 +821,7 @@ class BaseRunner:
             phi_ps = pseudo_mode.getField("DEPL", index_pseudo_mode).getValues()
             UTMESS("F", "SEISME_10", valk=option)
             # pseudo-mode
-            R_c = (phi_ps * w_r - np.sum(pr_wr2_phi, axis=0)) * s_r_freq_cut
+            R_c = (phi_ps * w_r - pr_wr2_phi) * s_r_freq_cut
         if self._option == "ACCE_ABSOLU":
             phi_ps = pseudo_mode.getField("DEPL", index_pseudo_mode).getValues()
             # this component is zero because this correction is automatic for mono-appui
@@ -829,7 +829,7 @@ class BaseRunner:
         else:
             phi_ps = pseudo_mode.getField(self._option, index_pseudo_mode).getValues()
             # pseudo-mode
-            R_c = (phi_ps - np.sum(pr_wr2_phi, axis=0)) * s_r_freq_cut
+            R_c = (phi_ps - pr_wr2_phi) * s_r_freq_cut
 
         return R_c
 
@@ -862,7 +862,6 @@ class BaseRunner:
 
         self._directions = [direction for direction in ("X", "Y", "Z") if spectres[direction]]
         for direction in self._directions:
-
             if self._analyse == "MONO_APPUI":
                 spectre = spectres[direction][0]
                 # Spectrale values at eigen-frequencies
@@ -908,32 +907,35 @@ class BaseRunner:
 
             # Spectral response
             if self._option not in ["VITE", "ACCE_ABSOLU"]:
-                R_mi_all = (S_r_freq * d_fact_partici[direction] / w_r**2)[:, None] * self._phis
-                pr_wr2_phi_all = (d_fact_partici[direction] / w_r**2)[:, None] * self._phis
-                # interrogration ??? pq ne pas utiliser omega corrige?
-                pr_wr2_phi_c_all = (d_fact_partici[direction] / (2 * np.pi * self._freqs) ** 2)[
-                    :, None
-                ] * self._phis
+                if mode_corr == "OUI":
+                    # interrogration ??? pq ne pas utiliser omega corrige?
+                    pr_wr2_phi = np.sum(
+                        (d_fact_partici[direction] / (2 * np.pi * self._freqs) ** 2)[:, None]
+                        * self._phis,
+                        axis=0,
+                    )
+                R_mi = (S_r_freq * d_fact_partici[direction] / w_r**2)[:, None] * self._phis
+
             elif self._option == "VITE":  # ici: phis correspond à DEPL
-                R_mi_all = (S_r_freq * d_fact_partici[direction] / w_r)[:, None] * self._phis
-                pr_wr2_phi_all = (d_fact_partici[direction] / w_r)[:, None] * self._phis
-                pr_wr2_phi_c_all = (d_fact_partici[direction] / w_r)[:, None] * self._phis
+                if mode_corr == "OUI":
+                    pr_wr2_phi = np.sum(
+                        (d_fact_partici[direction] / w_r)[:, None] * self._phis, axis=0
+                    )
+                R_mi = (S_r_freq * d_fact_partici[direction] / w_r)[:, None] * self._phis
             elif self._option == "ACCE_ABSOLU":  # ici: phis correspond à DEPL
-                R_mi_all = (S_r_freq * d_fact_partici[direction])[:, None] * self._phis
-                pr_wr2_phi_all = (d_fact_partici[direction])[:, None] * self._phis
-                pr_wr2_phi_c_all = (d_fact_partici[direction])[:, None] * self._phis
+                pr_wr2_phi = np.sum((d_fact_partici[direction])[:, None] * self._phis, axis=0)
+                R_mi = (S_r_freq * d_fact_partici[direction])[:, None] * self._phis
+            self._R_mi[direction] = R_mi
             # in case where the first mode is bigger than cutting frequency
             if self._freq_coup and self._freq_coup >= self._freqs[0]:
-                R_mi = R_mi_all
-                pr_wr2_phi = pr_wr2_phi_all
-                pr_wr2_phi_c = pr_wr2_phi_c_all
+                pass
             elif self._freq_coup < self._freqs[0]:
-                R_mi = np.zeros(np.shape(self._phis))
-                pr_wr2_phi = np.zeros(np.shape(self._phis))
-                pr_wr2_phi_c = np.zeros(np.shape(self._phis))
+                if mode_corr == "OUI" or self._option == "ACCE_ABSOLU":
+                    pr_wr2_phi = np.zeros((self._phis.shape[1],))
+                R_mi = np.zeros(self._phis.shape)
                 # Raise alarm for zero mode to be considered before cutting frequency
                 UTMESS("A", "SEISME_96", valr=self._freq_coup)
-            self._R_mi[direction] = R_mi_all
+
             # step 3: modal combinaison
             # Get input COMB_MODE
             R_m2, R_qs = comb_modal_response.get(R_mi)
@@ -946,7 +948,7 @@ class BaseRunner:
                     spectre["nappe"](self._amors[-1], self._freq_coup) * spectre["coefficient"]
                 )
 
-                R_tt = (acce_unitaire.getValues() - np.sum(pr_wr2_phi, axis=0)) * s_r_freq_cut
+                R_tt = (acce_unitaire.getValues() - pr_wr2_phi) * s_r_freq_cut
                 # add to combined modale responses in square
                 R_m2 += R_tt**2
             # modale response
@@ -956,9 +958,7 @@ class BaseRunner:
             # step 5 : pseudo-mode response
             if mode_corr == "OUI":
                 S_r_freq_cut = self._s_r_freq_cut(spectre)
-                R_c = self._corr_pseudo_mode(
-                    pr_wr2_phi_c, w_r, direction, pseudo_mode, S_r_freq_cut
-                )
+                R_c = self._corr_pseudo_mode(pr_wr2_phi, w_r, direction, pseudo_mode, S_r_freq_cut)
                 # save for INFO
                 self._pseudo[direction] = S_r_freq_cut
             else:
@@ -1122,7 +1122,7 @@ class MultiAppuiRunner(BaseRunner):
     ):
         """Correction by pseudo-mode/mode statique, for MULTI_APPUI
         Args:
-            pr_wr2_phi (ndarray)    : list of produit rho*phi/omega^2
+            pr_wr2_phi (ndarray)    : sum of list of produit rho*phi/omega^2
             w_r (ndarray)           : list of omega = 2*pi*freq
             direction (str)         : X, Y or Z
             pseudo_mode (ModeResult): pseudo mode for static correction
@@ -1168,14 +1168,14 @@ class MultiAppuiRunner(BaseRunner):
 
         if self._option == "VITE":  # pseudo-mode is not allowed
             UTMESS("F", "SEISME_10", valk=option)
-            R_c_noeud = (phi_ps.getValues() * w_r - np.sum(pr_wr2_phi, axis=0)) * s_r_freq_cut
+            R_c_noeud = (phi_ps.getValues() * w_r - pr_wr2_phi) * s_r_freq_cut
         elif (
             self._option == "ACCE_ABSOLU"
         ):  # correction by pseudo-mode is not allowed for ACCE_ABSOLU in mutl_appui
             UTMESS("F", "SEISME_10", valk=option)
             R_c_noeud = np.zeros(phi_ps.size())
         else:
-            R_c_noeud = (phi_ps.getValues() - np.sum(pr_wr2_phi, axis=0)) * s_r_freq_cut
+            R_c_noeud = (phi_ps.getValues() - pr_wr2_phi) * s_r_freq_cut
 
         return R_c_noeud
 
@@ -1214,7 +1214,6 @@ class MultiAppuiRunner(BaseRunner):
 
         # Iteration on directions
         for direction in self._directions:
-
             # save for print out as INFO
             # dict of info about read spectra at eigen-frequencies by direction
             self._SA[direction] = {}
@@ -1279,25 +1278,29 @@ class MultiAppuiRunner(BaseRunner):
                 # Spectral response at node, mode, direction
 
                 if self._option == "VITE":  # ici: phis correspond à DEPL
-                    R_mi_all = (S_r_freq * fact_partici / w_r)[:, None] * self._phis
-                    pr_wr2_phi_c_all = (fact_partici / (2 * np.pi * self._freqs))[
-                        :, None
-                    ] * self._phis
+                    if mode_corr == "OUI":
+                        pr_wr2_phi = np.sum(
+                            (fact_partici / (2 * np.pi * self._freqs))[:, None] * self._phis, axis=0
+                        )
+                    R_mi = (S_r_freq * fact_partici / w_r)[:, None] * self._phis
                 elif self._option == "ACCE_ABSOLU":  # ici: phis correspond à DEPL
+                    if mode_corr == "OUI":
+                        pr_wr2_phi = np.sum((fact_partici)[:, None] * self._phis, axis=0)
                     R_mi_all = (S_r_freq * fact_partici)[:, None] * self._phis
-                    pr_wr2_phi_c_all = (fact_partici)[:, None] * self._phis
                 else:
-                    R_mi_all = (S_r_freq * fact_partici / w_r**2)[:, None] * self._phis
-                    pr_wr2_phi_c_all = (fact_partici / (2 * np.pi * self._freqs) ** 2)[
-                        :, None
-                    ] * self._phis
+                    if mode_corr == "OUI":
+                        pr_wr2_phi = np.sum(
+                            (fact_partici / (2 * np.pi * self._freqs) ** 2)[:, None] * self._phis,
+                            axis=0,
+                        )
+                    R_mi = (S_r_freq * fact_partici / w_r**2)[:, None] * self._phis
                 # Check if cutting frequency is smaller than firt mode
                 if self._freq_coup and self._freq_coup >= self._freqs[0]:
-                    R_mi = R_mi_all
-                    pr_wr2_phi_c = pr_wr2_phi_c_all
+                    pass
                 elif self._freq_coup < self._freqs[0]:
-                    R_mi = np.zeros(np.shape(phis))
-                    pr_wr2_phi_c = np.zeros(np.shape(self._phis))
+                    if mode_corr == "OUI":
+                        pr_wr2_phi = np.zeros((self._phis.shape[1],))
+                    R_mi = np.zeros(self._phis.shape)
                     # Raise alarm message if first mode bigger than cutting frequency
                     UTMESS("A", "SEISME_96", valr=self._freq_coup)
                 # saving all responses at all nodes of considerd appui
@@ -1306,7 +1309,7 @@ class MultiAppuiRunner(BaseRunner):
                 if mode_corr == "OUI":
                     s_r_freq_cut = self._s_r_freq_cut(spectre)
                     R_c_noeud = self._corr_pseudo_mode(
-                        pr_wr2_phi_c,
+                        pr_wr2_phi,
                         w_r,
                         direction,
                         pseudo_mode,
@@ -1406,8 +1409,8 @@ class MultiAppuiRunner(BaseRunner):
                     acce_unitaire = self._mode_meca.getField("DEPL", 1).copy()
                     acce_unitaire.setValues({f"D{direction}": 1.0}, [])
                     # recalculate pr_wr2_phi for acce_absolu
-                    pr_wr2_phi_all = (d_fact_partici[direction])[:, None] * phis
-                    pr_wr2_phi = pr_wr2_phi_all[self._freqs <= self._freq_coup]
+                    pr_wr2_phi = (d_fact_partici[direction])[:, None] * self._phis
+                    pr_wr2_phi = pr_wr2_phi[self._freqs <= self._freq_coup]
                     # i_appui=0 : only first support to be considered
                     index_dir = spectres[0][0].index(direction)
                     s_r_freq_cut = (

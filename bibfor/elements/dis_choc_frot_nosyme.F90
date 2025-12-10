@@ -257,7 +257,7 @@ subroutine dis_choc_frot_nosyme(DD, icodma, ulp, xg, klv, &
                 klv(idx(3, 3)) = rigtan
             else if (indic .eq. EtatGliss) then
                 klv(idx(1, 1)) = rignor
-                if (coulom .gt. 0) then
+                if (coulom .gt. 0 .and. fort .gt. 0) then
                     rtmp = -rignor*rigtan*coulom/fort*(depy-varmo(idepyp))
                     klv(idx(2, 1)) = rtmp
                     rtmp = -coulom*force(1)*rigtan/fort*(1.0-rigtan**2*(depy-varmo(idepyp))**2 &
