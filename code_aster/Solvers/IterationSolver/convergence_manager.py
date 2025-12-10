@@ -23,13 +23,15 @@ from math import sqrt
 
 from ...Objects import DiscreteComputation
 from ...Utilities import MPI, logger, no_new_attributes, profile
+from ...Messages import UTMESS
 from ..Basics import ContextMixin
+import numpy as np
 
 
 class ConvergenceManager(ContextMixin):
     """Object that decides about the convergence status."""
 
-    __needs__ = ("problem", "state", "keywords")
+    __needs__ = ("problem", "state", "stepper", "keywords")
 
     _param = _residual_reference = None
     __setattr__ = no_new_attributes(object.__setattr__)
@@ -105,10 +107,22 @@ class ConvergenceManager(ContextMixin):
             """Reset the parameter value."""
             self._value = ConvergenceManager.undef
 
+        def isDefined(self):
+            return self.isSet() and self.hasRef()
+
         @property
         def reference(self):
             """float|int: Reference value of the parameter."""
             return self._refe
+
+        @reference.setter
+        def reference(self, value):
+            """Set the parameter value.
+
+            Arguments:
+                value (float|int): Parameter value.
+            """
+            self._refe = value
 
         @property
         def value(self):
@@ -252,7 +266,7 @@ class ConvergenceManager(ContextMixin):
             instance: New object.
         """
         instance = super().builder(context)
-        for crit in ("RESI_GLOB_RELA", "RESI_GLOB_MAXI", "ITER_GLOB_MAXI", "RESI_REFE_RELA"):
+        for crit in ("ITER_GLOB_MAXI", "RESI_GLOB_RELA", "RESI_GLOB_MAXI", "RESI_REFE_RELA"):
             value = instance.get_keyword("CONVERGENCE", crit)
             if value is not None:
                 instance.setdefault(crit, value)
@@ -284,7 +298,11 @@ class ConvergenceManager(ContextMixin):
         for name in mandatory:
             para = self._param.get(name)
             if para:
-                para.value = -1
+                para.value = ConvergenceManager.undef
+
+    def isInitialStep(self):
+        "Tell if it is the initial time step"
+        return self.stepper.isInitialStep()
 
     def hasResidual(self):
         """Tell if there is at least one residual convergence parameter.
@@ -430,15 +448,12 @@ class ConvergenceManager(ContextMixin):
                 self.state.getState(-1).stress,
             ).getValues()
 
-        for [iNode, cmp], ieq in cmp2dof.items():
+        for [_, cmp], ieq in cmp2dof.items():
             f_int = 0.0
             f_ext = 0.0
             f_cont = 0.0
             f_mass = 0.0
-            if varc:
-                f_varc = varc[ieq]
-            else:
-                f_varc = 0.0
+            f_varc = varc[ieq] if varc else 0.0
 
             if cmp in ("LAGR_C", "LAGR_F1", "LAGR_F2"):
                 continue
@@ -470,20 +485,23 @@ class ConvergenceManager(ContextMixin):
         resi_maxi = self.setdefault("RESI_GLOB_MAXI")
         resi_rela = self.setdefault("RESI_GLOB_RELA")
         resi_refe = self.setdefault("RESI_REFE_RELA")
-
         resi_maxi.value = residual.norm("NORM_INFINITY")
 
         # idx = np.abs(np.asarray(residual.getValues())).argmax()
         # info = residual.getValuesWithDescription()[1]
         # print(f"MaxAbs for node {info[0][idx]+1} dof {info[1][idx]}")
         scaling = self.getRelativeScaling(residuals)
+        resi_rela.value = resi_maxi.value
         residual_rela = residual.copy()
-        if scaling == 0.0:
-            resi_rela.value = -1.0
+
+        # TODO: find a better minimum value
+        if scaling < self._tiny_value:
+            # Division by zero
+            resi_rela.value = ConvergenceManager.undef
             residual_rela.setValues([-1] * residual_rela.size())
         else:
-            resi_rela.value = resi_maxi.value / scaling
-            residual_rela = residual / scaling
+            resi_rela.value /= scaling
+            residual_rela /= scaling
 
         if resi_refe.hasRef():
             residual_refe = residual.copy()
@@ -509,10 +527,65 @@ class ConvergenceManager(ContextMixin):
         diag = sqrt(pow(x_diag, 2) + pow(y_diag, 2) + pow(z_diag, 2))
 
         resi_geom = self.setdefault("RESI_GEOM")
-        if diag == 0.0:
-            resi_geom.value = -1.0
+        # TODO: find a better minimum value
+        if diag < self._tiny_value:
+            resi_geom.value = ConvergenceManager.undef
         else:
             resi_geom.value = displ_delta.norm("NORM_INFINITY", ["DX", "DY", "DZ"]) / diag
+
+    def _check_resi_glob_rela(self):
+        name = "RESI_GLOB_RELA"
+        para = self._param[name]
+        if not para.isDefined():
+            # If not defined, return True
+            return True
+
+        if para.isConverged():
+            # Special case only
+            return True
+        return True
+
+    @property
+    def _tiny_value(self):
+        return np.finfo(float).tiny
+
+    def _check_resi_glob_maxi(self):
+        name_maxi = "RESI_GLOB_MAXI"
+        resi_maxi = self._param[name_maxi]
+        resiMaxiRefeIsUndefined = False
+
+        if not resi_maxi.isDefined():
+
+            resiMaxiRefeIsUndefined = True
+
+            if self.isInitialStep():
+
+                # the initial external force could not be zero
+                # if RESI_GLOB_MAXI is undefined
+                message = (
+                    "RESI_GLOB_RELA struggles with null initial loading."
+                    "Try defining as well RESI_GLOB_MAXI."
+                    "Verify modelisation or use another criterion."
+                )
+                raise logger.warning(message)
+
+            # TODO: find a better minimum value
+            # e.g. use the history of previous solutions
+            name_rela = "RESI_GLOB_RELA"
+            para = self._param[name_rela]
+            resi_maxi.reference = para.reference if para.hasRef() else self._tiny_value
+
+            # TODO: Find a better location for the information message
+            # UTMESS("I", "MECANONLINE2_98", valr=(resi_maxi.value, resi_maxi.reference))
+
+        resiMaxiIsConverged = resi_maxi.isConverged()
+        if resiMaxiRefeIsUndefined:
+            resi_maxi.reference = ConvergenceManager.undef
+
+        if not resiMaxiIsConverged:
+            logger.debug("neither parameter RESI_GLOB_RELA nor RESI_GLOB_MAXI are not converged")
+            return False
+        return True
 
     # @with_loglevel()
     def isConverged(self):
@@ -521,20 +594,30 @@ class ConvergenceManager(ContextMixin):
         Returns:
             bool: *True* if converged, *False* otherwise.
         """
+
         logger.debug("isConverged ? %r", self._param)
-        defined = [para for para in self._param.values() if para.isSet() and para.hasRef()]
+        defined = [(name, para) for name, para in self._param.items() if para.isDefined()]
         if not defined:
             logger.debug("no parameter set: not converged")
             return False
-        for name in self._param:
-            para = self._param[name]
+
+        for name, para in self._param.items():
+            if name == "RESI_GLOB_RELA" and para.value == ConvergenceManager.undef:
+                # See special case, pass next name, para
+                continue
             if not para.isConverged():
                 logger.debug("parameter %s is not converged", name)
                 return False
+
+        # Special case
+        if self._check_resi_glob_rela():
+            return True
+        if not self._check_resi_glob_maxi():
+            return False
         return True
 
     def isPrediction(self):
-        """Tell if the current Nuewton iteration is the prediction
+        """Tell if the current Newton iteration is the prediction
         iteration.
 
         Returns:

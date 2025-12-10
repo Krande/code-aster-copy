@@ -128,6 +128,84 @@ class SecantLineSearch(BaseLineSearch):
     def __init__(self):
         super().__init__()
 
+    @property
+    def _tiny(self):
+        return np.finfo("float64").tiny
+
+    def _setup_message(self, best, solution):
+        logger.debug(
+            "Line-search iteration %d: rho = %.6f, f(rho) = %.6f", best[0], best[1], best[2]
+        )
+        return best[1] * solution
+
+    def _apply_corde(self, f, f_old, rho_old, rho1):
+        denom = f - f_old
+        if abs(denom) > self._tiny:
+            # Apply method CORDE
+            rho1 = (f * rho_old - f_old * rho1) / denom
+            rho1 = self.check_limits(rho1)
+        elif f * (rho1 - rho_old) * denom <= 0.0:
+            rho1 = self._get("RHO_MAX")
+        else:
+            rho1 = self._get("RHO_MIN")
+        return rho1
+
+    def _apply_mixte(self, f, f_old, f0, rho_pos_old, rho_neg_old, rho_old, rho1):
+        success = True
+        sens = 1.0 if f0 <= 0.0 else -1.0
+        # Track sign changes for bisection
+        # zbborn
+        if np.sign(f) != np.sign(f0):
+            rho_pos = rho1
+            rho_neg = rho_neg_old
+            has_pos = True
+        else:
+            rho_pos = rho_pos_old
+            rho_neg = rho1
+            has_pos = False
+
+        if has_pos:
+            # Root finding in interval [rho_neg, rho_pos]
+            # zbroot
+            if abs(f) < abs(f_old):
+                # Apply method MIXTE
+                if abs(rho1 - rho_old) > self._tiny:
+                    rho1 = self._apply_mixte_special_case(f, f_old, rho_neg, rho_pos, rho_old, rho1)
+                else:
+                    success = False
+                    return rho1, rho_pos, rho_neg, success
+            else:
+                # en cas de non pertinence des iteres : dichotomie
+                rho1 = np.mean([rho_neg, rho_pos])
+        else:
+            # Increase rho aggresively to find sign change
+            rho_old = rho1
+            rho1 = 3 * rho_old
+
+        # zbproj
+        if rho1 < rho_neg:
+            if has_pos:
+                rho1 = np.mean([rho_neg, rho_pos])
+            else:
+                success = False
+                return rho1, rho_pos, rho_neg, success
+
+        if has_pos and rho1 > rho_pos:
+            rho1 = np.mean([rho_neg, rho_pos])
+
+        # zbinte
+        rho1 = sens * self.check_limits(sens * rho1)
+        return rho1, rho_pos, rho_neg, success
+
+    def _apply_mixte_special_case(self, f, f_old, rho_neg, rho_pos, rho_old, rho1):
+        p1 = (f - f_old) / (rho1 - rho_old)
+        p0 = f_old - p1 * rho_old
+        if abs(p1) <= abs(f_old) / (rho_pos + rho_old):
+            rho1 = 0.5 * (rho_neg + rho_pos)
+        else:
+            rho1 = -p0 / p1
+        return rho1
+
     @profile
     def solve(self, solution, scaling=1.0):
         """Apply linear search for mechanical problems.
@@ -144,102 +222,58 @@ class SecantLineSearch(BaseLineSearch):
 
         method = self._get("METHODE")
         assert method in ("CORDE", "MIXTE"), method
-        f0 = self.compute_f(0.0, solution)
-        fopt = np.finfo("float64").max
-        tiny = np.finfo("float64").tiny
+
+        # Initial values
+        rho0 = 0.0
+        rho1 = 1.0
+        f0 = self.compute_f(rho0, solution)
         fcvg = abs(self._get("RESI_LINE_RELA") * f0)
-        iteropt = -1
 
-        rhom, rho = 0.0, 1.0
-        rhoopt = rho
-        fm = f0
+        # Best values and updates during line search
+        best_options = (-1, rho1, np.finfo("float64").max)
+
+        # Variables for the methods CORDE and MIXTE
+        rho_old = rho0
+        f_old = f0
+        sens = 1.0
+
+        # Variables only for the method MIXTE
         if method == "MIXTE":
-            if f0 <= 0.0:
-                sens = 1.0
-            else:
-                sens = -1.0
-            rhoneg = 0.0
-            bpos = False
-        else:
-            sens = 1.0
+            sens = 1.0 if f0 <= 0.0 else -1.0
+            rho_pos = 0.0
+            rho_neg = 0.0
 
-        for iter in range(self._get("ITER_LINE_MAXI") + 1):
+        for iteration in range(self._get("ITER_LINE_MAXI") + 1):
             try:
-                f = self.compute_f(sens * rho, solution)
+                f = self.compute_f(sens * rho1, solution)
             except Exception:
                 # do we already have an rhoopt ?
-                if iter > 0:
-                    return rhoopt * solution
+                if iteration > 0:
+                    logger.warning("Exception in compute_f, returning best rho found so far")
+                    return best_options[1] * solution
                 raise
-            # keep best rho
+
+            # Update best solution if improved
             # zbopti
-            if abs(f) <= fopt:
-                rhoopt = rho
-                fopt = abs(f)
-                iteropt = iter
+            if abs(f) <= best_options[2]:
+                best_options = (iteration, rho1, abs(f))
                 # converged ?
                 if abs(f) < fcvg:
-                    logger.debug("Linesearch: iter = %d, rho = %0.6f, f(rho) = %0.6f", iter, rho, f)
-                    return rhoopt * solution
+                    return self._setup_message(best_options, solution)
 
-            rhotmp = rho
+            rho_tmp = rho1  # save current rho before update
+
             if method == "CORDE":
-                if abs(f - fm) > tiny:
-                    rho = (f * rhom - fm * rho) / (f - fm)
-                    rho = self.check_limits(rho)
-                elif f * (rho - rhom) * (f - fm) <= 0.0:
-                    rho = self._get("RHO_MAX")
-                else:
-                    rho = self._get("RHO_MIN")
+                rho1 = self._apply_corde(f, f_old, rho_old, rho1)
+
             elif method == "MIXTE":
-                # zbborn
-                if np.sign(f) == np.sign(f0):
-                    rhoneg = rho
-                else:
-                    rhopos = rho
-                    bpos = True
-                if not bpos:
-                    rhom = rho
-                    rho = 3 * rhom
-                else:
-                    # zbroot
-                    if abs(f) >= abs(fm):
-                        # en cas de non pertinence des iteres : dichotomie
-                        rho = 0.5 * (rhoneg + rhopos)
-                    else:
-                        # interpolation lineaire
-                        if abs(rho - rhom) > tiny:
-                            p1 = (f - fm) / (rho - rhom)
-                            p0 = fm - p1 * rhom
-                            if abs(p1) <= abs(fm) / (rhopos + rhom):
-                                rho = 0.5 * (rhoneg + rhopos)
-                            else:
-                                rho = -p0 / p1
-                        else:
-                            logger.debug(
-                                "Linesearch: iter = %d, rho = %0.6f, f(rho) = %0.6f",
-                                iteropt,
-                                rhoopt,
-                                fopt,
-                            )
-                            return rhoopt * solution
-                # zbproj
-                if rho < rhoneg:
-                    if bpos:
-                        rho = 0.5 * (rhoneg + rhopos)
-                    else:
-                        logger.debug(
-                            "Linesearch: iter = %d, rho = %0.6f, f(rho) = %0.6f",
-                            iteropt,
-                            rhoopt,
-                            fopt,
-                        )
-                        return rhoopt * solution
-                if bpos and rho > rhopos:
-                    rho = 0.5 * (rhoneg + rhopos)
-                # zbinte
-                rho = sens * self.check_limits(sens * rho)
-            rhom = rhotmp
-            fm = f
-        logger.debug("Linesearch: iter = %d, rho = %0.6f, f(rho) = %0.6f", iteropt, rhoopt, fopt)
-        return rhoopt * solution
+                output = self._apply_mixte(f, f_old, f0, rho_pos, rho_neg, rho_old, rho1)
+                rho1, rho_pos, rho_neg, success = output
+                if not success:
+                    return self._setup_message(best_options, solution)
+
+            # Update variables for next iteration
+            rho_old = rho_tmp
+            f_old = f
+
+        return self._setup_message(best_options, solution)
