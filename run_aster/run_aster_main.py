@@ -43,6 +43,19 @@ Using the first syntax, ``bin/run_aster`` re-runs itself with ``mpiexec`` using
 the second syntax (``mpiexec`` syntax is provided by the configuration, see
 :py:mod:`~run_aster.config`).
 
+If the version has been configured with ``--use-srun``, you *must* use:
+
+.. code-block:: sh
+
+    bin/run_aster path/to/file.export
+
+or:
+
+.. code-block:: sh
+
+    srun -n 4 [options] bin/run_aster path/to/file.export
+
+
 ``bin/run_aster`` can also directly execute a Python file (``.py`` or ``.comm``
 extension is expected) with code_aster commands.
 In this case, no data or result files are managed by ``run_aster`` and
