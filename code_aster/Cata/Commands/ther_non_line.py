@@ -52,11 +52,11 @@ def compat_syntax(keywords):
             keywords["ETAT_INIT"] = {"STAT": "OUI"}
 
     if "NEWTON" in keywords:
-        if "RECH_LINEAIRE" not in keywords:
-            keywords["RECH_LINEAIRE"] = {}
         keys = ("RESI_LINE_RELA", "ITER_LINE_MAXI")
         for key in keys:
             if key in keywords["NEWTON"]:
+                if "RECH_LINEAIRE" not in keywords:
+                    keywords["RECH_LINEAIRE"] = {}
                 keywords["RECH_LINEAIRE"][key] = keywords["NEWTON"][key]
                 del keywords["NEWTON"][key]
 
