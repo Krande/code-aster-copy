@@ -76,7 +76,7 @@ subroutine apvsmbh(kptsc, rsolu)
 !
 ! -- DEBUG
     step = 1
-    dbg = ASTER_TRUE .and. step == nstep
+    dbg = ASTER_FALSE .and. step == nstep
     nstep = nstep+1
 !
 !   -- COMMUNICATEUR MPI DE TRAVAIL

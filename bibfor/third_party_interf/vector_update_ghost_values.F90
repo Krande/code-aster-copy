@@ -58,7 +58,7 @@ subroutine vector_update_ghost_values(vector, nume_equa, mode)
     integer(kind=8) :: jjoinr, jnujoie1, jnujoir1, nbnoer, nddll
     integer(kind=8) :: numnoe, nb_comm, gd, domj_i, jnujoie2, jnujoir2
     integer(kind=8) :: jvaleue2, jvaleur2
-    aster_logical :: ldebug, l_parallel_mesh, lbidir
+    aster_logical :: ldebug, l_parallel_mesh, lbidir, lligrel_cp
     integer(kind=8), pointer :: v_nuls(:) => null()
     integer(kind=8), pointer :: v_deeg(:) => null()
     integer(kind=8), pointer :: v_comm(:) => null()
@@ -66,6 +66,7 @@ subroutine vector_update_ghost_values(vector, nume_equa, mode)
     integer(kind=8), pointer :: v_dom(:) => null()
     integer(kind=8), pointer :: v_gco(:) => null()
     integer(kind=4), pointer :: v_pgid(:) => null()
+    character(len=24), pointer :: tco(:) => null()
 !
     mpi_int :: n4r, n4e, tag4, numpr4
     mpi_int :: mrank, msize, mpicou
@@ -170,7 +171,6 @@ subroutine vector_update_ghost_values(vector, nume_equa, mode)
                 call wkvect('&&CPYSOL.TMP2R', 'V V R', max(1_8, lgenvo), jvaleur2)
             end if
 
-            call jeveuo(nojoinr, 'L', jjointr)
             if (lgenvo > 0) then
                 call jeveuo(nojoine, 'L', jjointe)
                 do jaux = 0, lgenvo-1
@@ -180,6 +180,9 @@ subroutine vector_update_ghost_values(vector, nume_equa, mode)
                 end do
             end if
 
+            if (lgrecep > 0) then
+                call jeveuo(nojoinr, 'L', jjointr)
+            end if
             if (lbidir) then
                 if (lgrecep > 0) then
                     do jaux = 0, lgrecep-1
@@ -247,6 +250,18 @@ subroutine vector_update_ghost_values(vector, nume_equa, mode)
         call jenuno(jexnum(nume_equa//'.LILI', ili), nomlig)
         call create_graph_comm(nomlig, "LIGREL", nb_comm, comm_name, tag_name)
         if (nb_comm > 0) then
+            call jeexin(nomlig//'._TCO', iret)
+            if (iret .ne. 0) then
+                call jeveuo(nomlig//'._TCO', "L", vk24=tco)
+                lligrel_cp = (tco(1) .eq. 'LIGREL_CP')
+            else
+                lligrel_cp = .false.
+            end if
+            if (lligrel_cp) then
+                call jedetr(comm_name)
+                call jedetr(tag_name)
+                cycle
+            end if
             call jeveuo(comm_name, 'L', vi=v_comm)
             call jeveuo(tag_name, 'L', vi=v_tag)
             call dismoi("JOINTS", nomlig, "LIGREL", repk=joints, arret="F")
