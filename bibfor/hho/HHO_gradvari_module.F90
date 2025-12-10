@@ -1803,7 +1803,7 @@ contains
         call rcvalb(fami, 1, 1, '+', imate, &
                     ' ', 'NON_LOCAL', 0, ' ', [0.d0], &
                     1, ['C_GRAD_VARI'], vale, iok, 1)
-        hhoCalcStabCoeffGV = vale(1)
+        hhoCalcStabCoeffGV = 10.d0*vale(1)
 !
         if (hhoCalcStabCoeffGV <= 0.0) then
             hhoCalcStabCoeffGV = 1.d0
