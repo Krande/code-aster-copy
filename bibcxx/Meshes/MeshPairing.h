@@ -229,7 +229,7 @@ class MeshPairing : public DSWithCppPickling {
     };
 
     /** @brief Main subroutine for pairing */
-    ASTERBOOL compute( ASTERDOUBLE &dist_pairing, ASTERDOUBLE &pair_tole );
+    ASTERBOOL compute( ASTERDOUBLE &dist_pairing, ASTERDOUBLE &pair_tole, ASTERDOUBLE &area_tole );
 
     /** @brief Clear pairing result */
     void clearResult();

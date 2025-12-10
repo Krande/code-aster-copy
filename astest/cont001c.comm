@@ -298,6 +298,10 @@ for i in range(DEFICO3.getNumberOfContactZones()):
     test.assertEqual(pairParam.getAlgorithm(), CA.PairingAlgo.Mortar)
     pairParam.setDistanceRatio(0.1)
     test.assertEqual(pairParam.getDistanceRatio(), 0.1)
+    pairParam.setPairingTolerance(1e-8)
+    test.assertEqual(pairParam.getPairingTolerance(), 1e-8)
+    pairParam.setAreaIntersectionTolerance(1e-8)
+    test.assertEqual(pairParam.getAreaIntersectionTolerance(), 1e-8)
 
     test.assertEqual(pairParam.getInitialState(), CA.InitialState.Interpenetrated)
     pairParam.setInitialState(CA.InitialState.Yes)

@@ -160,7 +160,7 @@ class ContactZone : public DSWithCppPickling {
     bool hasSmoothing() const { return _smoothing; };
 
     /** @brief Compute pairing of zone */
-    bool pairing( ASTERDOUBLE &dist_pairing, ASTERDOUBLE &pair_tole );
+    bool pairing( ASTERDOUBLE &dist_pairing, ASTERDOUBLE &pair_tole, ASTERDOUBLE &area_tole );
 
     /** @brief Get pairing of surface meshes */
     MeshPairingPtr getMeshPairing() { return _meshPairing; };

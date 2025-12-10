@@ -55,8 +55,11 @@ PairingParameter::PairingParameter( const py::tuple &tup ) : PairingParameter() 
     _shell = tup[++i].cast< bool >();
     _dist_supp = tup[++i].cast< GenericFunctionPtr >();
     _cara = tup[++i].cast< ElementaryCharacteristicsPtr >();
+    _pair_method = tup[++i].cast< PairingMethod >();
+    _pair_tole = tup[++i].cast< ASTERDOUBLE >();
+    _area_tole = tup[++i].cast< ASTERDOUBLE >();
 };
 py::tuple PairingParameter::_getState() const {
     return py::make_tuple( _algo, _cont_init, _dist_ratio, (int)_beam, (int)_shell, _dist_supp,
-                           _cara );
+                           _cara, _pair_method, _pair_tole, _area_tole );
 };

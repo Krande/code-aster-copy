@@ -187,7 +187,8 @@ ASTERBOOL MeshPairing::surfacesHasBeenDefined() {
     return returnValue;
 }
 
-ASTERBOOL MeshPairing::compute( ASTERDOUBLE &dist_pairing, ASTERDOUBLE &pair_tole ) {
+ASTERBOOL MeshPairing::compute( ASTERDOUBLE &dist_pairing, ASTERDOUBLE &pair_tole,
+                                ASTERDOUBLE &area_tole ) {
 
     build();
     CALL_JEMARQ();
@@ -229,7 +230,7 @@ ASTERBOOL MeshPairing::compute( ASTERDOUBLE &dist_pairing, ASTERDOUBLE &pair_tol
 
     // Main routine for pairing
     CALLO_PAIRWRAP( &method, _mesh->getName(), _currentCoordinates->getName(), mastConnexInveName,
-                    mastNeighName, slavNeighName, &pair_tole, &dist_pairing, &verbosity,
+                    mastNeighName, slavNeighName, &pair_tole, &area_tole, &dist_pairing, &verbosity,
                     &nbCellMaster, masterCells.data(), &nbCellSlave, slaveCells.data(),
                     &nbNodeMaster, masterNodes.data(), &nb_pairs, getBasename() );
 

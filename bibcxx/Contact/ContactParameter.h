@@ -30,6 +30,7 @@
 #include "Contact/ContactEnum.h"
 #include "Discretization/ElementaryCharacteristics.h"
 #include "Loads/ListOfLoads.h"
+#include "Meshes/MeshEnum.h"
 
 class ContactParameter {
   private:
@@ -163,10 +164,16 @@ typedef std::shared_ptr< FrictionParameter > FrictionParameterPtr;
 
 class PairingParameter {
   private:
+    /** @brief Method of pairing */
+    PairingMethod _pair_method;
     /** @brief Pairing algorithm = APPARIEMENT */
     PairingAlgo _algo;
     /** @brief Additional pairing distance = COEF_MULT_APPA */
     ASTERDOUBLE _dist_ratio;
+    /** @brief Additional pairing tolerance = APPA_TOLE */
+    ASTERDOUBLE _pair_tole;
+    /** @brief Additional pairing tolerance = AIRE_TOLE */
+    ASTERDOUBLE _area_tole;
     /** @brief initial contact state = CONTACT_INIT */
     InitialState _cont_init;
 
@@ -192,8 +199,11 @@ class PairingParameter {
      */
     PairingParameter()
         : _algo( PairingAlgo::Mortar ),
+          _pair_method( PairingMethod::Fast ),
           _cont_init( InitialState::Interpenetrated ),
           _dist_ratio( -1.0 ),
+          _pair_tole( 1e-8 ),
+          _area_tole( 1e-8 ),
 
           _beam( false ),
           _dist_supp( nullptr ),
@@ -206,7 +216,13 @@ class PairingParameter {
 
     PairingAlgo getAlgorithm() const { return _algo; };
 
+    PairingMethod getPairingMethod() const { return _pair_method; };
+
     ASTERDOUBLE getDistanceRatio() const { return _dist_ratio; };
+
+    ASTERDOUBLE getPairingTolerance() const { return _pair_tole; };
+
+    ASTERDOUBLE getAreaIntersectionTolerance() const { return _area_tole; };
 
     InitialState getInitialState() const { return _cont_init; };
 
@@ -216,7 +232,13 @@ class PairingParameter {
 
     void setAlgorithm( const PairingAlgo &algo ) { _algo = algo; };
 
+    void setPairingMethod( const PairingMethod &pair_method ) { _pair_method = pair_method; };
+
     void setDistanceRatio( const ASTERDOUBLE &dist_ratio ) { _dist_ratio = dist_ratio; };
+
+    void setPairingTolerance( const ASTERDOUBLE &pair_tole ) { _pair_tole = pair_tole; };
+
+    void setAreaIntersectionTolerance( const ASTERDOUBLE &area_tole ) { _area_tole = area_tole; };
 
     void setInitialState( const InitialState &cont_init ) { _cont_init = cont_init; };
 

@@ -39,6 +39,7 @@ module MeshPairing_module
     private :: inteCellChck, addPoinInte2D, addPoinInte3D, addPoinOnEdge
     private :: inteCellSegm, intePoinSort, intePoinInCell
     private :: isFatalError
+    private :: getCritParamArea
 ! ==================================================================================================
     private
 #include "asterc/r8gaem.h"
@@ -79,6 +80,8 @@ module MeshPairing_module
         aster_logical :: debug = ASTER_FALSE
 ! ----- Main tolerance for pairing
         real(kind=8) :: pairTole = 0.d0
+! ----- Tolerance to remove some intersection cells
+        real(kind=8) :: areaTole = 0.d0
 ! ----- Tolerance for extension of cell
         real(kind=8) :: distRatio = 0.d0
 ! ----- Number of pairs
@@ -173,6 +176,7 @@ contains
         real(kind=8) :: poinInte(2, MAX_NB_INTE), poinInteReal(3, MAX_NB_INTE)
         integer(kind=8) :: cellNeighNume, cellNeighIndx
         integer(kind=8), pointer :: meshMastNeigh(:) => null(), meshSlavNeigh(:) => null()
+        real(kind=8) :: critCellArea
 !   ------------------------------------------------------------------------------------------------
 !
         pair_exist = ASTER_TRUE
@@ -183,6 +187,7 @@ contains
         slavIndxMaxi = maxval(listCellSlav)
         slavIndxMini = minval(listCellSlav)
 
+        critCellArea = 0d0
 ! ----- Management of debug
         if (meshPairing%debug) then
             write (6, *) "================"
@@ -380,9 +385,10 @@ contains
                     if (meshPairing%debug) then
                         WRITE (6, *) "Intersection area: ", inteArea
                     end if
-
+                    call getCritParamArea(cellSlavLine, critCellArea)
 ! ----------------- Add pair
-                    if (inteArea > meshPairing%pairTole .and. iret == ERR_PAIR_NONE) then
+                    if (inteArea > meshPairing%areaTole*critCellArea .and. &
+                        iret == ERR_PAIR_NONE) then
 
 ! --------------------- Debug
                         if (meshPairing%debug) then
@@ -2740,8 +2746,10 @@ contains
         real(kind=8) :: inteArea
         integer(kind=8) :: nbPoinInte
         real(kind=8) :: poinInte(2, MAX_NB_INTE), poinInteReal(3, MAX_NB_INTE)
+        real(kind=8) :: critCellArea
 !   ------------------------------------------------------------------------------------------------
 !
+        critCellArea = 0d0
         if (meshPairing%debug) then
             write (6, *) "=================="
             write (6, *) "= Robust pairing ="
@@ -2816,9 +2824,9 @@ contains
                 if (meshPairing%debug) then
                     WRITE (6, *) "Intersection area: ", inteArea
                 end if
-
+                call getCritParamArea(cellSlavLine, critCellArea)
 ! ------------- Add pair
-                if (inteArea > meshPairing%pairTole .and. iret == ERR_PAIR_NONE) then
+                if (inteArea > meshPairing%areaTole*critCellArea .and. iret == ERR_PAIR_NONE) then
                     if (meshPairing%debug) then
                         call intePoinCoor(cellSlav, nbPoinInte, poinInte, poinInteReal)
                         WRITE (6, *) "Add pair: ", meshPairing%nbPair+1, &
@@ -2841,5 +2849,42 @@ contains
 !
 !   ------------------------------------------------------------------------------------------------
     end subroutine
+
+! --------------------------------------------------------------------------------------------------
 !
+! getCritParamArea
+!
+! Return the reference area of the slave cell
+!
+! In  meshPairing      : main datastructure for pairing
+! In  cellProj         : geometric properties of projected cell
+! In  nbNodeProj       : number of projected nodes
+! In  cellOrigLine     : geometric properties of projected cell in origin reference frame
+! In  cellTargLine     : geometric properties of cell where cell has been projected
+! In  normOrig         : normal to origin cell
+! In  normTarg         : normal to target cell
+! Out inteIsEmpty      : flag for empty intersection
+!
+! --------------------------------------------------------------------------------------------------
+    subroutine getCritParamArea(cellOrigLine, refCritArea)
+!   ------------------------------------------------------------------------------------------------
+! ----- Parameters
+        type(CELL_GEOM), intent(in) :: cellOrigLine
+        real(kind=8), intent(out) :: refCritArea
+!   ------------------------------------------------------------------------------------------------
+!
+        ASSERT(cellOrigLine%isLinear)
+        if (cellOrigLine%cellCode .eq. "SE2") then
+            refCritArea = 2.0d0
+        elseif (cellOrigLine%cellCode .eq. "TR3") then
+            refCritArea = 0.5d0
+        elseif (cellOrigLine%cellCode .eq. "QU4") then
+            refCritArea = 4.0d0
+        else
+            ASSERT(ASTER_FALSE)
+        end if
+!
+!   ------------------------------------------------------------------------------------------------
+    end subroutine
+! --------------------------------------------------------------------------------------------------
 end module

@@ -124,14 +124,16 @@ extern void DEFSSPPSS( AJELLT, ajellt, const char *, STRING_SIZE, const char *, 
                        const ASTERINTEGER *, ASTERINTEGER *, const char *, STRING_SIZE,
                        const char *, STRING_SIZE );
 
-#define CALLO_PAIRWRAP( a, b, c, d, e, f, g, h, i, j, k, l, m, n, o, p, q )                        \
-    CALLPOOOOOPPPPPPPPPPO( PAIRWRAP, pairwrap, a, b, c, d, e, f, g, h, i, j, k, l, m, n, o, p, q )
-extern void DEFPSSSSSPPPPPPPPPPS( PAIRWRAP, pairwrap, ASTERINTEGER *, const char *, STRING_SIZE,
-                                  const char *, STRING_SIZE, const char *, STRING_SIZE,
-                                  const char *, STRING_SIZE, const char *, STRING_SIZE,
-                                  ASTERDOUBLE *, ASTERDOUBLE *, ASTERINTEGER *, ASTERINTEGER *,
-                                  ASTERINTEGER *, ASTERINTEGER *, ASTERINTEGER *, ASTERINTEGER *,
-                                  ASTERINTEGER *, ASTERINTEGER *, const char *, STRING_SIZE );
+#define CALLO_PAIRWRAP( a, b, c, d, e, f, g, h, i, j, k, l, m, n, o, p, q, r )                     \
+    CALLPOOOOOPPPPPPPPPPPO( PAIRWRAP, pairwrap, a, b, c, d, e, f, g, h, i, j, k, l, m, n, o, p, q, \
+                            r )
+extern void DEFPSSSSSPPPPPPPPPPPS( PAIRWRAP, pairwrap, ASTERINTEGER *, const char *, STRING_SIZE,
+                                   const char *, STRING_SIZE, const char *, STRING_SIZE,
+                                   const char *, STRING_SIZE, const char *, STRING_SIZE,
+                                   ASTERDOUBLE *, ASTERDOUBLE *, ASTERDOUBLE *, ASTERINTEGER *,
+                                   ASTERINTEGER *, ASTERINTEGER *, ASTERINTEGER *, ASTERINTEGER *,
+                                   ASTERINTEGER *, ASTERINTEGER *, ASTERINTEGER *, const char *,
+                                   STRING_SIZE );
 
 #define CALLO_INTECELLAREAWRAP( a, b, c, d )                                                       \
     CALLOPPP( INTECELLAREAWRAP, intecellareawrap, a, b, c, d )

@@ -35,6 +35,7 @@ from ..Objects import (
     PairingParameter,
     ParallelContactNew,
     ParallelFrictionNew,
+    PairingMethod,
 )
 from ..Utilities import MPI
 
@@ -95,6 +96,11 @@ def defi_cont_ops(self, **keywords):
         "ADHERENT": FrictionType.Stick,
     }
     _algo_pair = {"MORTAR": PairingAlgo.Mortar}
+    _pair_method = {
+        "RAPIDE": PairingMethod.Fast,
+        "FORCEBRUTE": PairingMethod.BrutForce,
+        "PANG": PairingMethod.Legacy,
+    }
     _init_cont = {
         "INTERPENETRE": InitialState.Interpenetrated,
         "NON": InitialState.No,
@@ -169,6 +175,11 @@ def defi_cont_ops(self, **keywords):
         pairParam.setAlgorithm(_algo_pair[zone["APPARIEMENT"]])
         pairParam.setDistanceRatio(zone["COEF_MULT_APPA"])
         pairParam.setInitialState(_init_cont[zone["CONTACT_INIT"]])
+
+        if zone["APPARIEMENT"] == "MORTAR":
+            pairParam.setPairingTolerance(zone["APPA_TOLE"])
+            pairParam.setAreaIntersectionTolerance(zone["AIRE_TOLE"])
+            pairParam.setPairingMethod(_pair_method[zone["TYPE_APPA"]])
 
         if zone.get("CARA_ELEM") is not None:
             pairParam.setElementaryCharacteristics(zone["CARA_ELEM"])
